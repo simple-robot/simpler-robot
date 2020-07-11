@@ -39,6 +39,8 @@ hs_err_pid*
 .idea/**/contentModel.xml
 
 # Sensitive or high-churn files
+.idea/
+.idea/**
 .idea/**/dataSources/
 .idea/**/dataSources.ids
 .idea/**/dataSources.local.xml
@@ -131,4 +133,5 @@ buildNumber.properties
 .mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
+
 

@@ -9,7 +9,16 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>core</artifactId>
 
+    <artifactId>component-parent</artifactId>
+    <packaging>pom</packaging>
+
+    <dependencies>
+        <!-- 组件必有一个核心 -->
+        <dependency>
+            <groupId>love.forte.simple-robot-S</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
