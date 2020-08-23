@@ -32,6 +32,9 @@ interface MsgGet: OriginalDataContainer, BotCodeContainer, AccountContainer {
 
     /** 消息接收到的时间。一般是一个时间戳。 */
     val time: Long
+
+    /** 应当重写toString方法 */
+    override fun toString(): String
 }
 
 
