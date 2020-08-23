@@ -4,12 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>parent</artifactId>
-        <groupId>love.forte.simple-robot-S</groupId>
+        <groupId>love.forte.simple-robot</groupId>
         <version>2.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>core</artifactId>
+
+    <artifactId>common-parent</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>common-api</module>
+    </modules>
 
 
 </project>
