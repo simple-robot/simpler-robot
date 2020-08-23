@@ -314,7 +314,8 @@
                     <version>${dokka.version}</version>
                     <executions>
                         <execution>
-                            <phase>package</phase>
+<!--                            <phase>package</phase>-->
+                            <phase>site-deploy</phase>
                             <goals>
                                 <goal>javadocJar</goal>
                                 <goal>dokka</goal>
