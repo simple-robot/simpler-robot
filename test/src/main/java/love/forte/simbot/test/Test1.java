@@ -19,6 +19,7 @@ package love.forte.simbot.test;
 import love.forte.simbot.common.api.message.OriginalDataContainer;
 
 /**
+ * this is a doc
  * @author ForteScarlet <ForteScarlet@163.com>
  * 2020/8/23
  */
