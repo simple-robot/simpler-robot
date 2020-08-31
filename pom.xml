@@ -322,6 +322,9 @@
                         </execution>
                     </executions>
                     <configuration>
+
+                        <skip>true</skip>
+
                         <includes>
                             <include>modules.md</include>
                         </includes>
@@ -335,7 +338,7 @@
                         <noJdkLink>true</noJdkLink>
                         <noStdlibLink>true</noStdlibLink>
 
-                        <outputDir>${project.basedir}/doc</outputDir>
+                        <outputDir>../simple-robot-2.0-doc/docs/${project.name}/doc</outputDir>
 
                         <dokkaPlugins>
                             <plugin>
