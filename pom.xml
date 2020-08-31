@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>love.forte.simple-robot</groupId>
-    <artifactId>parent</artifactId>
     <packaging>pom</packaging>
-    <version>2.0-SNAPSHOT</version>
+    <artifactId>parent</artifactId>
+    <groupId>love.forte.simple-robot</groupId>
+    <version>2.0.0-ALPHA.1</version>
     <modules>
         <module>common-parent</module>
         <module>test</module>
@@ -314,7 +314,6 @@
                     <version>${dokka.version}</version>
                     <executions>
                         <execution>
-<!--                            <phase>package</phase>-->
                             <phase>site-deploy</phase>
                             <goals>
                                 <goal>javadocJar</goal>
@@ -323,7 +322,9 @@
                         </execution>
                     </executions>
                     <configuration>
-
+                        <includes>
+                            <include>modules.md</include>
+                        </includes>
                         <!-- Set to true to skip dokka task, default: false -->
 <!--                        <skip>true</skip>-->
                         <!-- Used for linking to JDK, default: 6 -->
@@ -333,6 +334,8 @@
 
                         <noJdkLink>true</noJdkLink>
                         <noStdlibLink>true</noStdlibLink>
+
+                        <outputDir>${project.basedir}/doc</outputDir>
 
                         <dokkaPlugins>
                             <plugin>

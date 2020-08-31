@@ -16,7 +16,7 @@
 
 package love.forte.simbot.test;
 
-import love.forte.simbot.common.api.message.AccountNameContainer;
+import love.forte.simbot.common.api.message.containers.AccountNameContainer;
 
 /**
  * @author ForteScarlet <ForteScarlet@163.com>
