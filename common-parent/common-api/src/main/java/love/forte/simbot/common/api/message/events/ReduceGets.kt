@@ -17,8 +17,10 @@
 package love.forte.simbot.common.api.message.events
 
 import love.forte.simbot.common.api.message.containers.AccountContainer
+import love.forte.simbot.common.api.message.containers.ActionMotivationContainer
 import love.forte.simbot.common.api.message.containers.GroupContainer
 import love.forte.simbot.common.api.message.containers.OperatingContainer
+import love.forte.simbot.common.api.message.assists.ActionMotivations
 
 /*
  * 与 **减少** 相关的事件
@@ -63,4 +65,18 @@ public interface GroupReduce: ReduceEventGet, GroupContainer, OperatingContainer
 
     @JvmDefault override val beOperatorAvatar: String?
         get() = accountAvatar
+
+
+    /**
+     * 群友减少事件类型，主要分为 **主动离开** 与 **被踢出**
+     * @property actionMotivations ActionMotivations
+     * @constructor
+     */
+    public enum class Type(override val actionMotivations: ActionMotivations): ActionMotivationContainer {
+        /** 主动离开 */
+        LEAVE(ActionMotivations.PROACTIVE),
+        /** 被踢出 */
+        KICK(ActionMotivations.PASSIVE)
+    }
+
 }

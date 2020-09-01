@@ -16,6 +16,9 @@
 
 package love.forte.simbot.common.api.message.events
 
+import love.forte.simbot.common.api.annotations.ParentListenerType
+import love.forte.simbot.common.api.message.assists.Flag
+import love.forte.simbot.common.api.message.assists.StringFlag
 import love.forte.simbot.common.api.message.containers.*
 import java.time.LocalDateTime
 
@@ -34,6 +37,7 @@ import java.time.LocalDateTime
  * - [用户容器][AccountContainer]
  * @since 2.0.0
  */
+@ParentListenerType("所有监听类型的父接口")
 public interface MsgGet: OriginalDataContainer, BotContainer, AccountContainer {
     /** 当前监听事件消息的ID。一般情况下应当是一个唯一ID。 */
     val id: String
@@ -57,13 +61,14 @@ public interface MsgGet: OriginalDataContainer, BotContainer, AccountContainer {
  *
  * 因此 [flag] 提供为默认方法并使用 [id] 作为返回值。如果有特殊需要则重写
  */
+@ParentListenerType("消息事件父接口")
 public interface MessageEventGet: MsgGet, FlagContainer {
     /**
-     * 默认使用[id]实现[flag]
+     * 默认使用 字符串[id] 实现 [flag]
      */
     @JvmDefault
-    override val flag: String
-        get() = id
+    override val flag: Flag
+        get() = StringFlag(id)
 }
 
 
@@ -74,6 +79,7 @@ public interface MessageEventGet: MsgGet, FlagContainer {
  *
  * 一般来讲应该可以得到撤回的[消息内容][MsgGet.msg]以及[撤回时间][recallTime]
  */
+@ParentListenerType("消息撤回父接口")
 public interface MessageRecallEventGet: MsgGet {
     /**
      * 撤回时间。
@@ -86,12 +92,14 @@ public interface MessageRecallEventGet: MsgGet {
 /**
  * 成员变动事件接口，是[增加事件][IncreaseEventGet] 与 [减少事件][ReduceEventGet]的父接口.
  */
+@ParentListenerType("成员数量变动父接口")
 public interface MemberChangesEventGet: MsgGet
 
 /**
  * 与 **增加** 有关的事件，例如 群友增加 或者 好友增加
  *
  */
+@ParentListenerType("数量增加父接口")
 public interface IncreaseEventGet: MemberChangesEventGet
 
 
@@ -99,5 +107,14 @@ public interface IncreaseEventGet: MemberChangesEventGet
  * 与 **减少** 有关的事件，例如 群友减少 或者 好友减少
  *
  */
+@ParentListenerType("数量减少父接口")
 public interface ReduceEventGet: MemberChangesEventGet
+
+
+/**
+ * 与 **请求** 相关的父接口
+ */
+@ParentListenerType("请求相关事件父接口")
+public interface RequestGet: MsgGet
+
 

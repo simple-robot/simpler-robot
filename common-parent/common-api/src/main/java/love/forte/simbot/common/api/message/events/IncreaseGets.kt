@@ -20,7 +20,7 @@ import love.forte.simbot.common.api.message.containers.AccountContainer
 import love.forte.simbot.common.api.message.containers.ActionMotivationContainer
 import love.forte.simbot.common.api.message.containers.GroupContainer
 import love.forte.simbot.common.api.message.containers.OperatingContainer
-import love.forte.simbot.common.api.message.types.ActionMotivations
+import love.forte.simbot.common.api.message.assists.ActionMotivations
 
 /*
  * 与 **增加** 相关的事件

@@ -16,7 +16,7 @@
 
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package love.forte.simbot.common.api.message.types
+package love.forte.simbot.common.api.message.assists
 
 /*
  *

@@ -18,8 +18,10 @@
 
 package love.forte.simbot.common.api.message.containers
 
-import love.forte.simbot.common.api.message.types.ActionMotivations
-import love.forte.simbot.common.api.message.types.Permissions
+import love.forte.simbot.common.api.annotations.ContainerType
+import love.forte.simbot.common.api.message.assists.ActionMotivations
+import love.forte.simbot.common.api.message.assists.Flag
+import love.forte.simbot.common.api.message.assists.Permissions
 
 
 /*
@@ -32,6 +34,7 @@ import love.forte.simbot.common.api.message.types.Permissions
  * 原始数据容器。
  * 定义可以得到原始数据的字符串信息。
  */
+@ContainerType("原始数据容器")
 public interface OriginalDataContainer {
     /**
      * 得到原始数据字符串。
@@ -44,6 +47,7 @@ public interface OriginalDataContainer {
  * 账户号码容器。定义可以得到一个账号的号码
  *
  */
+@ContainerType("账户号码容器")
 public interface AccountCodeContainer {
     /**
      * 账号
@@ -62,6 +66,7 @@ public interface AccountCodeContainer {
 /**
  * 账户昵称容器。定义可以得到一个账号的昵称
  */
+@ContainerType("账户昵称容器")
 public interface AccountNicknameContainer {
     /** 昵称 */
     val accountNickname: String
@@ -71,6 +76,7 @@ public interface AccountNicknameContainer {
  * 账户备注容器。定义可以得到一个账号的备注信息。可能是好友备注或者群名片。
  * 备注可能不存在
  */
+@ContainerType("账户备注容器")
 public interface AccountRemarkContainer {
     /** 好友备注或群名片 */
     val accountRemark: String?
@@ -82,6 +88,7 @@ public interface AccountRemarkContainer {
  * - [备注或昵称][accountRemarkOrNickname]
  * - [昵称与备注][accountNicknameAndRemark]
  */
+@ContainerType("账户名称容器")
 public interface AccountNameContainer : AccountNicknameContainer, AccountRemarkContainer {
     /**
      * 如果有备注则得到备注，否则得到昵称
@@ -106,6 +113,7 @@ public interface AccountNameContainer : AccountNicknameContainer, AccountRemarkC
  * 账户头像容器，定义可以得到一个头像链接。
  * 头像不是必须的，可能会不存在。
  */
+@ContainerType("账户头像容器")
 public interface AccountAvatarContainer {
     /**
      * 得到账号的头像地址. 一般来讲为`null`的可能性很小
@@ -119,12 +127,14 @@ public interface AccountAvatarContainer {
  * [用户头像容器][AccountAvatarContainer],
  * [用户账号容器][AccountCodeContainer]
  */
+@ContainerType("账户信息容器")
 public interface AccountContainer : AccountNameContainer, AccountAvatarContainer, AccountCodeContainer
 
 
 /**
  * 群号容器。定义可以得到一个群的群号
  */
+@ContainerType("群号容器")
 public interface GroupCodeContainer {
     /** 群号 */
     val groupCode: String
@@ -139,6 +149,7 @@ public interface GroupCodeContainer {
  * 群头像容器。定义可以得到群头像
  * 头像不是必须的，可能会不存在
  */
+@ContainerType("群头像容器")
 public interface GroupAvatarContainer {
     /** 群头像. 一般来讲为`null`的可能性很小 */
     val groupAvatar: String?
@@ -159,6 +170,7 @@ public interface GroupNameContainer {
  *
  * 一般代表这个人在群里的权限
  */
+@ContainerType("权限容器")
 public interface PermissionContainer {
     val permission: Permissions
 }
@@ -169,12 +181,14 @@ public interface PermissionContainer {
  * [群账号容器][GroupCodeContainer],
  * [群名称容器][GroupNameContainer]
  */
+@ContainerType("群信息容器")
 public interface GroupContainer : GroupAvatarContainer, GroupCodeContainer, GroupNameContainer
 
 
 /**
  * 机器人自身的账号容器
  */
+@ContainerType("机器人账号容器")
 public interface BotCodeContainer {
     /** 当前的bot的账号 */
     val botCode: String
@@ -186,6 +200,7 @@ public interface BotCodeContainer {
 /**
  * 机器人自身的名称容器
  */
+@ContainerType("机器人名称容器")
 public interface BotNameContainer {
     /**
      * 机器人的名称
@@ -197,6 +212,7 @@ public interface BotNameContainer {
  * 机器人自身的头像容器
  * 头像不是必须的，可能不存在
  */
+@ContainerType("机器人头像容器")
 public interface BotAvatarContainer {
     /** 机器人的头像 */
     val botAvatar: String?
@@ -208,21 +224,24 @@ public interface BotAvatarContainer {
  * [机器人名称容器][BotNameContainer],
  * [机器人头像容器][BotAvatarContainer]
  */
+@ContainerType("机器人信息容器")
 public interface BotContainer : BotCodeContainer, BotNameContainer, BotAvatarContainer
 
 
 /**
- * 标识容器。定义可以得到一个字符串标识。
+ * 标识容器。定义可以得到一个标识。
  */
+@ContainerType("标识容器")
 public interface FlagContainer {
     /** 标识 */
-    val flag: String
+    val flag: Flag
 }
 
 
 /**
  * 操作者code容器，定义可以得到操作者与被操作者的code信息.
  */
+@ContainerType("操作者账号容器容器")
 public interface OperatingCodeContainer {
     /**
      * 操作者的code
@@ -250,6 +269,7 @@ public interface OperatingCodeContainer {
 /**
  * 操作者昵称容器，定义可以得到操作者与被操作者的昵称信息.
  */
+@ContainerType("操作者昵称容器")
 public interface OperatingNicknameContainer {
     /**
      * 操作者的昵称
@@ -265,6 +285,7 @@ public interface OperatingNicknameContainer {
 /**
  * 操作者备注容器，定义可以得到操作者与被操作者的备注信息.
  */
+@ContainerType("操作者备注容器")
 public interface OperatingRemarkContainer {
     /**
      * 操作者的备注
@@ -280,6 +301,7 @@ public interface OperatingRemarkContainer {
 /**
  * 操作者名称容器，定义可以得到操作者与被操作者的昵称与备注信息.
  */
+@ContainerType("操作者名称容器")
 public interface OperatingNameContainer : OperatingNicknameContainer, OperatingRemarkContainer {
     /**
      * 操作者
@@ -327,6 +349,7 @@ public interface OperatingNameContainer : OperatingNicknameContainer, OperatingR
  * 操作者头像容器，定义可以得到一个头像链接。
  * 头像不是必须的，可能会不存在。
  */
+@ContainerType("操作者头像容器")
 public interface OperatingAvatarContainer {
     /**
      * 得到操作者的头像地址. 一般来讲为`null`的可能性很小
@@ -343,6 +366,7 @@ public interface OperatingAvatarContainer {
  * 针对一个存在 **操作** 内容的事件,
  * 此容器提供了在 **操作** 事件中的 **操作者** 与 **被操作者** 的相关信息容器
  */
+@ContainerType("操作者信息容器")
 public interface OperatingContainer:
     OperatingCodeContainer,
     OperatingNameContainer,
@@ -356,8 +380,9 @@ public interface OperatingContainer:
  *
  * 一般来讲，此容器使用在枚举类上，例如消息事件中特有的类型枚举.
  *
- * @property actionMotivations ActionMotivations 得到对应的[行动动机][ActionMotivations]
+ * @property actionMotivations ActionMotivations 得到对应的 [行动动机][ActionMotivations]
  */
+@ContainerType("行动动机容器")
 public interface ActionMotivationContainer {
     val actionMotivations: ActionMotivations
 }
