@@ -59,10 +59,11 @@ public interface PrivateMsg : MessageEventGet {
      * 私聊消息标识
      *
      * 一般可用于撤回之类的。默认为ID的值。
+     *
+     * 如果只是使用 [id] 作为flag载体，在实现的时候可以参考 [PrivateMsgIdFlagContent]
+     *
      */
-    @JvmDefault
     override val flag: Flag<FlagContent>
-        get() = FlagImpl(PrivateMsgIdFlagContent(id))
 
 
     /**
@@ -77,7 +78,7 @@ public interface PrivateMsg : MessageEventGet {
  * @property id String
  * @constructor
  */
-internal data class PrivateMsgIdFlagContent(override val id: String) : PrivateMsg.FlagContent
+public data class PrivateMsgIdFlagContent(override val id: String) : PrivateMsg.FlagContent
 
 
 
@@ -107,11 +108,11 @@ public interface GroupMsg : MessageEventGet, GroupContainer, PermissionContainer
      *
      * 群聊消息的标识
      *
-     * 一般可用于撤回之类的。默认为ID的值。
+     * 一般可用于撤回之类的。
+     *
+     * 如果只是使用 [id] 作为flag载体，在实现的时候可以参考 [GroupMsgIdFlagContent]
      */
-    @JvmDefault
     override val flag: Flag<FlagContent>
-        get() = FlagImpl(GroupMsgIdFlagContent(id))
 
 
     /**
@@ -121,12 +122,9 @@ public interface GroupMsg : MessageEventGet, GroupContainer, PermissionContainer
 
 }
 
-
 /**
- * 针对 [GroupMsg.FlagContent] 的默认实现，
- * 基于 [GroupMsg] 的 id 作为Flag的标识主体
+ * 基于ID作为标识主体的 [GroupMsg.FlagContent] 实现
  * @property id String
  * @constructor
  */
-internal data class GroupMsgIdFlagContent(override val id: String) : GroupMsg.FlagContent
-
+public data class GroupMsgIdFlagContent(override val id: String): GroupMsg.FlagContent

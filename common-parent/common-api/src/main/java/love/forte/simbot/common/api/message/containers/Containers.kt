@@ -29,6 +29,9 @@ import love.forte.simbot.common.api.message.assists.Permissions
     container
     容器接口，定义容器接口。
     一个容器代表他可以从中得到什么数据。
+
+    TODO 容器-包装
+
  */
 
 /**
