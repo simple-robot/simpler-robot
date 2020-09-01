@@ -2,7 +2,7 @@
  *
  *  * Copyright (c) 2020. ForteScarlet All rights reserved.
  *  * Project  simple-robot-S
- *  * File     MessageMsgGets.kt
+ *  * File     MessageGets.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
@@ -14,9 +14,10 @@
  *
  */
 
-package love.forte.simbot.common.api.message
+package love.forte.simbot.common.api.message.events
 
 import love.forte.simbot.common.api.message.containers.GroupContainer
+import love.forte.simbot.common.api.message.containers.PermissionContainer
 
 /*
  *
@@ -29,7 +30,7 @@ import love.forte.simbot.common.api.message.containers.GroupContainer
 
 
 /**
- * 私聊消息
+ * 私聊消息. 实现[MessageEventGet]
  */
 public interface PrivateMsg: MessageEventGet {
     /**
@@ -61,9 +62,9 @@ public interface PrivateMsg: MessageEventGet {
 
 
 /**
- * 群消息
+ * 群消息， 需要实现 [MessageEventGet] , [GroupContainer] , [PermissionContainer]
  */
-public interface GroupMsg: MessageEventGet, GroupContainer {
+public interface GroupMsg: MessageEventGet, GroupContainer, PermissionContainer {
     /**
      * 获取消息类型
      */

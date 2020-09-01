@@ -24,12 +24,12 @@ import love.forte.simbot.common.api.message.containers.AccountNameContainer;
  */
 public class TestNameAndRemark implements AccountNameContainer {
     @Override
-    public String getNickname() {
+    public String getAccountNickname() {
         return null;
     }
 
     @Override
-    public String getRemark() {
+    public String getAccountRemark() {
         return null;
     }
 }

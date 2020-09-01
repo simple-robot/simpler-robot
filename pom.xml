@@ -316,12 +316,15 @@
                         <execution>
                             <phase>site-deploy</phase>
                             <goals>
-                                <goal>javadocJar</goal>
                                 <goal>dokka</goal>
+                                <goal>javadoc</goal>
+                                <goal>javadocJar</goal>
                             </goals>
                         </execution>
                     </executions>
                     <configuration>
+
+                        <apiVersion>${project.version}</apiVersion>
 
                         <skip>true</skip>
 
@@ -334,9 +337,11 @@
                         <jdkVersion>8</jdkVersion>
                         <!-- Do not create index pages for empty packages -->
                         <skipEmptyPackages>true</skipEmptyPackages>
+                        <!-- Emit warnings about not documented members, applies globally, also can be overridden by packageOptions -->
+                        <reportUndocumented>true</reportUndocumented>
 
-                        <noJdkLink>true</noJdkLink>
-                        <noStdlibLink>true</noStdlibLink>
+                        <!--<noJdkLink>true</noJdkLink>-->
+                        <!--<noStdlibLink>true</noStdlibLink>-->
 
                         <outputDir>../simple-robot-2.0-doc/docs/${project.name}/doc</outputDir>
 

@@ -2,7 +2,7 @@
  *
  *  * Copyright (c) 2020. ForteScarlet All rights reserved.
  *  * Project  simple-robot-S
- *  * File     baseMessages.kt
+ *  * File     BaseMsgGets.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
@@ -14,13 +14,15 @@
  *
  */
 
-package love.forte.simbot.common.api.message
+package love.forte.simbot.common.api.message.events
 
-import love.forte.simbot.common.api.message.containers.AccountContainer
-import love.forte.simbot.common.api.message.containers.BotContainer
-import love.forte.simbot.common.api.message.containers.FlagContainer
-import love.forte.simbot.common.api.message.containers.OriginalDataContainer
+import love.forte.simbot.common.api.message.containers.*
 import java.time.LocalDateTime
+
+/*
+    什么? 你问为什么events包下的消息命名还是xxxMsgGet?
+    是啊, 为什么呢
+ */
 
 
 /**
@@ -46,14 +48,13 @@ public interface MsgGet: OriginalDataContainer, BotContainer, AccountContainer {
     override fun toString(): String
 }
 
-// receipt
-
-//region 消息类型事件
 
 /**
  * 与消息有关的事件
- * 除了[MsgGet]中的东西以外, 还要有一个[FlagContainer]。
+ *
+ * [MessageEventGet]中除了需要实现[MsgGet]以外, 还要实现[FlagContainer]以标识一个消息内容的标识。
  * 但是一般来讲, [FlagContainer.flag] 都可以用 [id]来代替。
+ *
  * 因此 [flag]提供为默认方法并使用[id]作为返回值。如果有特殊需要则重写
  */
 public interface MessageEventGet: MsgGet, FlagContainer {
@@ -68,8 +69,9 @@ public interface MessageEventGet: MsgGet, FlagContainer {
 
 
 /**
- * 与消息撤回有关的事件
- * 例如群消息撤回或者私聊撤回
+ * 与消息撤回有关的事件, 例如 [群消息撤回][GroupMsgRecall] 或者 [私聊撤回][PrivateMsgRecall]
+ *
+ *
  * 一般来讲应该可以得到撤回的[消息内容][MsgGet.msg]以及[撤回时间][recallTime]
  */
 public interface MessageRecallEventGet: MsgGet {
@@ -81,9 +83,34 @@ public interface MessageRecallEventGet: MsgGet {
 }
 
 
+/**
+ * 与 **增加** 有关的事件，例如 群友增加 或者 好友增加
+ * 增加事件除了存在 [事件主体账号信息][AccountContainer] 以外,
+ * 还应存在 [操作性账号信息][OperatingContainer].
+ *
+ * 但是一般来讲, [操作性账号信息][OperatingContainer]中的 **被操作者** 信息基本均等同于 [事件主体账号信息][AccountContainer],
+ * 因此此接口对 **被操作者** 信息提供默认实现, 直接指向 **主体账号信息**中对应的信息.
+ *
+ */
+public interface IncreaseEventGet: MsgGet, OperatingContainer {
+    @JvmDefault override val beOperatorCode: String
+        get() = accountCode
+    @JvmDefault override val beOperatorCodeNumber: Long
+        get() = accountCodeNumber
+
+    @JvmDefault override val beOperatorNickname: String
+        get() = accountNickname
+    @JvmDefault override val beOperatorRemark: String?
+        get() = accountRemark
+    @JvmDefault override val beOperatorRemarkOrNickname: String
+        get() = accountRemarkOrNickname
+    @JvmDefault override val beOperatorNicknameAndRemark: String
+        get() = accountNicknameAndRemark
+
+    @JvmDefault override val beOperatorAvatar: String?
+        get() = accountAvatar
+}
 
 
 
-
-//endregion
 
