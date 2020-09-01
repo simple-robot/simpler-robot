@@ -18,6 +18,7 @@
 
 package love.forte.simbot.common.api.message.containers
 
+import love.forte.simbot.common.api.message.types.ActionMotivations
 import love.forte.simbot.common.api.message.types.Permissions
 
 
@@ -42,13 +43,17 @@ public interface OriginalDataContainer {
 /**
  * 账户号码容器。定义可以得到一个账号的号码
  *
- * @property accountCode 账号
- * @property accountCodeNumber
- * 账号的数字值。(如果能作为数字的话) 默认实现为 [accountCode].[toLong]
  */
 public interface AccountCodeContainer {
+    /**
+     * 账号
+     */
     val accountCode: String
 
+    /**
+     * 账号的数字值。(如果能作为数字的话)
+     * 默认实现为 [accountCode].[toLong]
+     */
     @JvmDefault
     val accountCodeNumber: Long
         get() = accountCode.toLong()
@@ -110,8 +115,8 @@ public interface AccountAvatarContainer {
 
 /**
  * 一个账号信息容器, 继承了
- * [用户名称容器][AccountNameContainer]
- * [用户头像容器][AccountAvatarContainer]
+ * [用户名称容器][AccountNameContainer],
+ * [用户头像容器][AccountAvatarContainer],
  * [用户账号容器][AccountCodeContainer]
  */
 public interface AccountContainer : AccountNameContainer, AccountAvatarContainer, AccountCodeContainer
@@ -160,8 +165,8 @@ public interface PermissionContainer {
 
 /**
  * 群信息容器，实现
- * [群头像容器][GroupAvatarContainer]
- * [群账号容器][GroupCodeContainer]
+ * [群头像容器][GroupAvatarContainer],
+ * [群账号容器][GroupCodeContainer],
  * [群名称容器][GroupNameContainer]
  */
 public interface GroupContainer : GroupAvatarContainer, GroupCodeContainer, GroupNameContainer
@@ -199,8 +204,8 @@ public interface BotAvatarContainer {
 
 /**
  * 机器人基础信息容器, 其实现了
- * [机器人账号容器][BotCodeContainer]
- * [机器人名称容器][BotNameContainer]
+ * [机器人账号容器][BotCodeContainer],
+ * [机器人名称容器][BotNameContainer],
  * [机器人头像容器][BotAvatarContainer]
  */
 public interface BotContainer : BotCodeContainer, BotNameContainer, BotAvatarContainer
@@ -208,7 +213,6 @@ public interface BotContainer : BotCodeContainer, BotNameContainer, BotAvatarCon
 
 /**
  * 标识容器。定义可以得到一个字符串标识。
- * 但是一般来讲, [love.forte.simbot.common.api.message.MsgGet]的[FlagContainer]实现容器基本上都可以通过[love.forte.simbot.common.api.message.MsgGet.id]来实现
  */
 public interface FlagContainer {
     /** 标识 */
@@ -347,9 +351,16 @@ public interface OperatingContainer:
 }
 
 
-
-
-
+/**
+ * [行动动机][ActionMotivations]容器, 定义可以得到当前类型的动机类型。
+ *
+ * 一般来讲，此容器使用在枚举类上，例如消息事件中特有的类型枚举.
+ *
+ * @property actionMotivations ActionMotivations 得到对应的[行动动机][ActionMotivations]
+ */
+public interface ActionMotivationContainer {
+    val actionMotivations: ActionMotivations
+}
 
 
 

@@ -53,9 +53,9 @@ public interface MsgGet: OriginalDataContainer, BotContainer, AccountContainer {
  * 与消息有关的事件
  *
  * [MessageEventGet]中除了需要实现[MsgGet]以外, 还要实现[FlagContainer]以标识一个消息内容的标识。
- * 但是一般来讲, [FlagContainer.flag] 都可以用 [id]来代替。
+ * 但是一般来讲, [flag] 都可以用 [id] 来代替。
  *
- * 因此 [flag]提供为默认方法并使用[id]作为返回值。如果有特殊需要则重写
+ * 因此 [flag] 提供为默认方法并使用 [id] 作为返回值。如果有特殊需要则重写
  */
 public interface MessageEventGet: MsgGet, FlagContainer {
     /**
@@ -84,33 +84,20 @@ public interface MessageRecallEventGet: MsgGet {
 
 
 /**
+ * 成员变动事件接口，是[增加事件][IncreaseEventGet] 与 [减少事件][ReduceEventGet]的父接口.
+ */
+public interface MemberChangesEventGet: MsgGet
+
+/**
  * 与 **增加** 有关的事件，例如 群友增加 或者 好友增加
- * 增加事件除了存在 [事件主体账号信息][AccountContainer] 以外,
- * 还应存在 [操作性账号信息][OperatingContainer].
- *
- * 但是一般来讲, [操作性账号信息][OperatingContainer]中的 **被操作者** 信息基本均等同于 [事件主体账号信息][AccountContainer],
- * 因此此接口对 **被操作者** 信息提供默认实现, 直接指向 **主体账号信息**中对应的信息.
  *
  */
-public interface IncreaseEventGet: MsgGet, OperatingContainer {
-    @JvmDefault override val beOperatorCode: String
-        get() = accountCode
-    @JvmDefault override val beOperatorCodeNumber: Long
-        get() = accountCodeNumber
-
-    @JvmDefault override val beOperatorNickname: String
-        get() = accountNickname
-    @JvmDefault override val beOperatorRemark: String?
-        get() = accountRemark
-    @JvmDefault override val beOperatorRemarkOrNickname: String
-        get() = accountRemarkOrNickname
-    @JvmDefault override val beOperatorNicknameAndRemark: String
-        get() = accountNicknameAndRemark
-
-    @JvmDefault override val beOperatorAvatar: String?
-        get() = accountAvatar
-}
+public interface IncreaseEventGet: MemberChangesEventGet
 
 
-
+/**
+ * 与 **减少** 有关的事件，例如 群友减少 或者 好友减少
+ *
+ */
+public interface ReduceEventGet: MemberChangesEventGet
 

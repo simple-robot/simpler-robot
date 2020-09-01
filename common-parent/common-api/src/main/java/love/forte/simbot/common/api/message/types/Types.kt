@@ -18,8 +18,6 @@
 
 package love.forte.simbot.common.api.message.types
 
-import java.lang.reflect.Member
-
 /*
  *
  * 此处定义一些非嵌套在接口中的类型. 所谓类型，一般都是指枚举
@@ -35,8 +33,6 @@ import java.lang.reflect.Member
  * @property level 权限等级。等级越大，则代表其权限等级越高。
  */
 public enum class Permissions(public val level: Int) {
-
-
     /**
      * 群主
      */
@@ -64,6 +60,27 @@ public enum class Permissions(public val level: Int) {
 
     /** 判断是否为普通群员 */
     public fun isMember() = this == MEMBER
+}
+
+
+
+/**
+ * 行动动机类, 一般不同的消息事件中可能会有其各自独特的 **类型** 枚举,
+ * 例如
+ * [群消息类型][love.forte.simbot.common.api.message.events.GroupMsg.Type] ,
+ * [增加类型][love.forte.simbot.common.api.message.events.IncreaseEventGet.Type]
+ * 等。
+ *
+ * 这些类型中，有一部分便可以表达为一个 [行动动机][ActionMotivations],
+ * 简单来说就是可以将他们归类为 [主动][PROACTIVE] 或 [被动][PASSIVE]
+ *
+ *
+ */
+public enum class ActionMotivations {
+    /** 主动的 */
+    PROACTIVE,
+    /** 被动的 */
+    PASSIVE
 }
 
 

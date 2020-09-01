@@ -36,7 +36,7 @@ public interface PrivateMsg: MessageEventGet {
     /**
      * 获取私聊消息类型
      */
-    val type: Type
+    val privateMsgType: Type
 
     /**
      * flag标识，一般可用于撤回之类的。默认为ID的值。
@@ -66,9 +66,9 @@ public interface PrivateMsg: MessageEventGet {
  */
 public interface GroupMsg: MessageEventGet, GroupContainer, PermissionContainer {
     /**
-     * 获取消息类型
+     * 获取群消息类型
      */
-    val type: Type
+    val groupMsgType: Type
 
     /**
      * flag标识，一般可用于撤回之类的。默认为ID的值。

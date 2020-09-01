@@ -16,6 +16,9 @@
 
 package love.forte.simbot.common.api.message.events
 
+import love.forte.simbot.common.api.message.containers.ActionMotivationContainer
+import love.forte.simbot.common.api.message.types.ActionMotivations
+
 /*
  * 消息撤回相关子接口
  *
@@ -37,10 +40,10 @@ public interface GroupMsgRecall: MessageRecallEventGet {
     /**
      * 群聊撤回的类型
      */
-    public enum class Type {
+    public enum class Type(override val actionMotivations: ActionMotivations): ActionMotivationContainer {
         /** 主动的, 一般代表消息是由发送人主动撤回的 */
-        PROACTIVE,
+        PROACTIVE(ActionMotivations.PROACTIVE),
         /** 被动的, 一般代表消息是被管理员等撤回的 */
-        PASSIVE
+        PASSIVE(ActionMotivations.PASSIVE)
     }
 }
