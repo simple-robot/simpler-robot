@@ -18,13 +18,21 @@ package love.forte.simbot.common.api.message.events
 
 import love.forte.simbot.common.api.annotations.ParentListenerType
 import love.forte.simbot.common.api.message.assists.Flag
-import love.forte.simbot.common.api.message.assists.StringFlag
-import love.forte.simbot.common.api.message.containers.*
+import love.forte.simbot.common.api.message.assists.FlagContent
+import love.forte.simbot.common.api.message.containers.AccountContainer
+import love.forte.simbot.common.api.message.containers.BotContainer
+import love.forte.simbot.common.api.message.containers.FlagContainer
+import love.forte.simbot.common.api.message.containers.OriginalDataContainer
 import java.time.LocalDateTime
 
 /*
     什么? 你问为什么events包下的消息命名还是xxxMsgGet?
     是啊, 为什么呢
+ */
+
+
+/*
+ * 此模块下定义基础事件父接口
  */
 
 
@@ -57,18 +65,21 @@ public interface MsgGet: OriginalDataContainer, BotContainer, AccountContainer {
  * 与消息有关的事件
  *
  * [MessageEventGet]中除了需要实现[MsgGet]以外, 还要实现[FlagContainer]以标识一个消息内容的标识。
- * 但是一般来讲, [flag] 都可以用 [id] 来代替。
+ * 但是一般来讲, [FlagContent] 都可以用 [id] 来代替。
  *
- * 因此 [flag] 提供为默认方法并使用 [id] 作为返回值。如果有特殊需要则重写
+ * 因此 [FlagContent] 提供为默认方法并使用 [id] 作为返回值。如果有特殊需要则重写
  */
 @ParentListenerType("消息事件父接口")
-public interface MessageEventGet: MsgGet, FlagContainer {
+public interface MessageEventGet: MsgGet, FlagContainer<MessageEventGet.MessageFlagContent> {
     /**
-     * 默认使用 字符串[id] 实现 [flag]
+     * 消息类型的标识
      */
-    @JvmDefault
-    override val flag: Flag
-        get() = StringFlag(id)
+    override val flag: Flag<MessageFlagContent>
+
+    /**
+     * [MessageEventGet] 所对应的 [标识][Flag]
+     */
+    public interface MessageFlagContent: FlagContent
 }
 
 
@@ -115,6 +126,22 @@ public interface ReduceEventGet: MemberChangesEventGet
  * 与 **请求** 相关的父接口
  */
 @ParentListenerType("请求相关事件父接口")
-public interface RequestGet: MsgGet
+public interface RequestGet: MsgGet, FlagContainer<RequestGet.RequestFlagContent> {
+
+    /**
+     * 获取一个请求类型的标识
+     */
+    override val flag: Flag<RequestFlagContent>
+
+    /**
+     * 在请求类型下的 [标识主体][FlagContent] 类型
+     *
+     * 对于子接口的实现与命名，作为内部接口并不需要前缀
+     *
+     */
+    interface RequestFlagContent : FlagContent
+}
+
+
 
 

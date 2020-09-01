@@ -21,6 +21,7 @@ package love.forte.simbot.common.api.message.containers
 import love.forte.simbot.common.api.annotations.ContainerType
 import love.forte.simbot.common.api.message.assists.ActionMotivations
 import love.forte.simbot.common.api.message.assists.Flag
+import love.forte.simbot.common.api.message.assists.FlagContent
 import love.forte.simbot.common.api.message.assists.Permissions
 
 
@@ -232,9 +233,9 @@ public interface BotContainer : BotCodeContainer, BotNameContainer, BotAvatarCon
  * 标识容器。定义可以得到一个标识。
  */
 @ContainerType("标识容器")
-public interface FlagContainer {
+public interface FlagContainer<out T: FlagContent> {
     /** 标识 */
-    val flag: Flag
+    val flag: Flag<T>
 }
 
 

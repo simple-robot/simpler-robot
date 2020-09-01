@@ -20,7 +20,7 @@ package love.forte.simbot.common.api.message.assists
  *
  * 一个 **标识** 类型接口
  *
- * 标识可以是任何形式的，但是任何标识都应该存在有一个  [id]
+ * 标识可以是任何形式的，但是任何标识都应该存在有一个 [flag] 标识主体
  *
  * 通过 [标识容器][love.forte.simbot.common.api.message.containers.FlagContainer] 可以得到一个标识实例。
  *
@@ -28,27 +28,33 @@ package love.forte.simbot.common.api.message.assists
  * @date 2020/9/2
  * @since
  */
-interface Flag {
+public interface Flag<out T: FlagContent> {
+
     /**
-     * 此标识的ID
+     * 标识主体
      */
+    val flag: T
+}
+
+
+/**
+ * [Flag] 的基础实现类
+ */
+public data class FlagImpl<out T: FlagContent>(override val flag: T): Flag<T>
+
+/**
+ * function param like `val flag = flagImpl { "id" }`
+ */
+@Suppress("FunctionName")
+public inline fun <T: FlagContent> flagImpl(getFlag: () -> T): Flag<T> = FlagImpl(getFlag())
+
+
+/**
+ * [Flag] 的标识主体，定义了一个标识主体至少要存在一个 [id]
+ *
+ * @property id String
+ */
+public interface FlagContent {
     val id: String
 }
 
-
-/**
- *
- * [标识][Flag] 的简单实现类, 以一个单纯的字符串 [id] 作为此标识的载体。
- *
- * @property id String 唯一标识
- */
-data class StringFlag(override val id: String): Flag
-
-
-/**
- * 一个单例的空 [标识][Flag]
- */
-object EmptyFlag: Flag {
-    override val id: String = ""
-    override fun toString(): String = "EmptyFlag"
-}
