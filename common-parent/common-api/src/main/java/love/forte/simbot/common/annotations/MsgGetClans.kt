@@ -14,7 +14,7 @@
  *
  */
 
-package love.forte.simbot.common.api.annotations
+package love.forte.simbot.common.annotations
 
 import kotlin.annotation.AnnotationTarget.CLASS
 import love.forte.simbot.common.api.message.events.*

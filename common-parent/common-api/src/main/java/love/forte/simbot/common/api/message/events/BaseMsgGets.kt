@@ -16,7 +16,7 @@
 
 package love.forte.simbot.common.api.message.events
 
-import love.forte.simbot.common.api.annotations.ParentListenerType
+import love.forte.simbot.common.annotations.ParentListenerType
 import love.forte.simbot.common.api.message.assists.Flag
 import love.forte.simbot.common.api.message.assists.FlagContent
 import love.forte.simbot.common.api.message.containers.AccountContainer
