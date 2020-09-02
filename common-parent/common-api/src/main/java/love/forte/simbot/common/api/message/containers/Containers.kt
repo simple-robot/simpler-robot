@@ -30,8 +30,6 @@ import love.forte.simbot.common.api.message.assists.Permissions
     容器接口，定义容器接口。
     一个容器代表他可以从中得到什么数据。
 
-    TODO 容器-包装
-
  */
 
 /**
@@ -72,8 +70,8 @@ public interface AccountCodeContainer {
  */
 @ContainerType("账户昵称容器")
 public interface AccountNicknameContainer {
-    /** 昵称 */
-    val accountNickname: String
+    /** 昵称。可能会出现为null的情况 */
+    val accountNickname: String?
 }
 
 /**
@@ -82,7 +80,7 @@ public interface AccountNicknameContainer {
  */
 @ContainerType("账户备注容器")
 public interface AccountRemarkContainer {
-    /** 好友备注或群名片 */
+    /** 好友备注或群名片。可能为null */
     val accountRemark: String?
 }
 
@@ -98,7 +96,7 @@ public interface AccountNameContainer : AccountNicknameContainer, AccountRemarkC
      * 如果有备注则得到备注，否则得到昵称
      */
     @JvmDefault
-    val accountRemarkOrNickname: String
+    val accountRemarkOrNickname: String?
         get() = accountRemark ?: accountNickname
 
     /**
@@ -132,7 +130,19 @@ public interface AccountAvatarContainer {
  * [用户账号容器][AccountCodeContainer]
  */
 @ContainerType("账户信息容器")
-public interface AccountContainer : AccountNameContainer, AccountAvatarContainer, AccountCodeContainer
+public interface AccountInfoContainer : AccountNameContainer, AccountAvatarContainer, AccountCodeContainer
+
+
+/**
+ * 账号容器，可以得到一个账号的[信息][AccountInfoContainer]
+ */
+@ContainerType("账号容器")
+public interface AccountContainer {
+    /**
+     * 账号的信息。一般来讲是不可能为null的，但是其中的信息就不一定了
+     */
+    val accountInfo: AccountInfoContainer
+}
 
 
 /**
@@ -155,7 +165,7 @@ public interface GroupCodeContainer {
  */
 @ContainerType("群头像容器")
 public interface GroupAvatarContainer {
-    /** 群头像. 一般来讲为`null`的可能性很小 */
+    /** 群头像. 可能为null。但是一般来讲为`null`的可能性比较小 */
     val groupAvatar: String?
 }
 
@@ -164,19 +174,9 @@ public interface GroupAvatarContainer {
  */
 public interface GroupNameContainer {
     /**
-     * 群名称
+     * 群名称 可能出现无法获取的情况
      */
-    val groupName: String
-}
-
-/**
- * 权限容器，定义可以得到一个人的[权限][Permissions]。
- *
- * 一般代表这个人在群里的权限
- */
-@ContainerType("权限容器")
-public interface PermissionContainer {
-    val permission: Permissions
+    val groupName: String?
 }
 
 /**
@@ -186,7 +186,28 @@ public interface PermissionContainer {
  * [群名称容器][GroupNameContainer]
  */
 @ContainerType("群信息容器")
-public interface GroupContainer : GroupAvatarContainer, GroupCodeContainer, GroupNameContainer
+public interface GroupInfoContainer : GroupAvatarContainer, GroupCodeContainer, GroupNameContainer
+
+/**
+ * 可以得到一个[群信息][GroupInfoContainer]容器
+ */
+@ContainerType("群容器")
+public interface GroupContainer {
+    val groupInfo: GroupInfoContainer
+}
+
+/**
+ * 权限容器，定义可以得到一个 [权限][Permissions]。
+ *
+ * 一般代表这个人在群里的权限
+ */
+@ContainerType("权限容器")
+public interface PermissionContainer {
+    /**
+     * 权限信息。
+     */
+    val permission: Permissions
+}
 
 
 /**
@@ -229,24 +250,33 @@ public interface BotAvatarContainer {
  * [机器人头像容器][BotAvatarContainer]
  */
 @ContainerType("机器人信息容器")
-public interface BotContainer : BotCodeContainer, BotNameContainer, BotAvatarContainer
+public interface BotInfoContainer : BotCodeContainer, BotNameContainer, BotAvatarContainer
+
+
+@ContainerType("bot容器")
+public interface BotContainer {
+    /**
+     * bot信息
+     */
+    val botInfo: BotInfoContainer
+}
 
 
 /**
  * 标识容器。定义可以得到一个标识。
  */
 @ContainerType("标识容器")
-public interface FlagContainer<out T: FlagContent> {
+public interface FlagContainer<out T : FlagContent> {
     /** 标识 */
     val flag: Flag<T>
 }
 
 
 /**
- * 操作者code容器，定义可以得到操作者与被操作者的code信息.
+ * 操作者code容器
  */
-@ContainerType("操作者账号容器容器")
-public interface OperatingCodeContainer {
+@ContainerType("操作者账号容器")
+public interface OperatorCodeContainer {
     /**
      * 操作者的code
      */
@@ -258,7 +288,13 @@ public interface OperatingCodeContainer {
     @JvmDefault
     val operatorCodeNumber: Long
         get() = operatorCode.toLong()
+}
 
+/**
+ * 被操作者code容器
+ */
+@ContainerType("被操作者账号容器")
+public interface BeOperatorCodeContainer {
     /**
      * 被操作者的Code
      */
@@ -271,50 +307,64 @@ public interface OperatingCodeContainer {
 }
 
 /**
- * 操作者昵称容器，定义可以得到操作者与被操作者的昵称信息.
+ * 操作者昵称容器，定义可以得到操作者的昵称信息.
  */
 @ContainerType("操作者昵称容器")
-public interface OperatingNicknameContainer {
+public interface OperatorNicknameContainer {
     /**
      * 操作者的昵称
      */
-    val operatorNickname: String
-
-    /**
-     * 被操作者的昵称
-     */
-    val beOperatorNickname: String
+    val operatorNickname: String?
 }
 
 /**
- * 操作者备注容器，定义可以得到操作者与被操作者的备注信息.
+ * 被操作者昵称容器，定义可以得到被操作者的昵称信息.
+ */
+@ContainerType("被操作者昵称容器")
+public interface BeOperatorNicknameContainer {
+    /**
+     * 被操作者的昵称
+     */
+    val beOperatorNickname: String?
+}
+
+
+/**
+ * 操作者备注容器，定义可以得到操作者的备注信息.
  */
 @ContainerType("操作者备注容器")
-public interface OperatingRemarkContainer {
+public interface OperatorRemarkContainer {
     /**
      * 操作者的备注
      */
     val operatorRemark: String?
+}
 
+/**
+ * 被操作者备注容器，定义可以得到被操作者的备注信息.
+ */
+@ContainerType("操作者备注容器")
+public interface BeOperatorRemarkContainer {
     /**
      * 被操作者的备注
      */
     val beOperatorRemark: String?
 }
 
+
 /**
- * 操作者名称容器，定义可以得到操作者与被操作者的昵称与备注信息.
+ * 操作者名称容器，定义可以得到操作者的昵称与备注信息.
  */
 @ContainerType("操作者名称容器")
-public interface OperatingNameContainer : OperatingNicknameContainer, OperatingRemarkContainer {
+public interface OperatorNameContainer : OperatorNicknameContainer, OperatorRemarkContainer {
     /**
      * 操作者
      *
      * 如果有备注则得到备注，否则得到昵称
      */
     @JvmDefault
-    val operatorRemarkOrNickname: String
-        get() =  operatorRemark ?: operatorNickname
+    val operatorRemarkOrNickname: String?
+        get() = operatorRemark ?: operatorNickname
 
     /**
      * 操作者
@@ -327,14 +377,22 @@ public interface OperatingNameContainer : OperatingNicknameContainer, OperatingR
     @JvmDefault
     val operatorNicknameAndRemark: String
         get() = "$operatorNickname${operatorRemark?.let { "($it)" } ?: ""}"
+}
+
+
+/**
+ * 被操作者名称容器，定义可以得到被操作者的昵称与备注信息.
+ */
+@ContainerType("被操作者名称容器")
+public interface BeOperatorNameContainer : BeOperatorNicknameContainer, BeOperatorRemarkContainer {
     /**
      * 被操作者
      *
      * 如果有备注则得到备注，否则得到昵称
      */
     @JvmDefault
-    val beOperatorRemarkOrNickname: String
-        get() =  beOperatorRemark ?: beOperatorNickname
+    val beOperatorRemarkOrNickname: String?
+        get() = beOperatorRemark ?: beOperatorNickname
 
     /**
      * 被操作者
@@ -349,17 +407,26 @@ public interface OperatingNameContainer : OperatingNicknameContainer, OperatingR
         get() = "$beOperatorNickname${beOperatorRemark?.let { "($it)" } ?: ""}"
 }
 
+
 /**
  * 操作者头像容器，定义可以得到一个头像链接。
  * 头像不是必须的，可能会不存在。
  */
 @ContainerType("操作者头像容器")
-public interface OperatingAvatarContainer {
+public interface OperatorAvatarContainer {
     /**
      * 得到操作者的头像地址. 一般来讲为`null`的可能性很小
      */
     val operatorAvatar: String?
+}
 
+
+/**
+ * 被操作者头像容器，定义可以得到一个头像链接。
+ * 头像不是必须的，可能会不存在。
+ */
+@ContainerType("被操作者头像容器")
+public interface BeOperatorAvatarContainer {
     /**
      * 得到被操作者的头像地址. 一般来讲为`null`的可能性很小
      */
@@ -367,15 +434,159 @@ public interface OperatingAvatarContainer {
 }
 
 /**
+ * 操作者信息容器
+ */
+@ContainerType("操作者头像容器")
+public interface OperatorInfoContainer : OperatorCodeContainer, OperatorNameContainer, OperatorAvatarContainer
+
+/**
+ * 可以得到操作者信息的容器
+ * @property operatorInfo OperatorInfoContainer
+ */
+@ContainerType("操作者容器")
+public interface OperatorContainer {
+    /**
+     * 得到一个操作者信息
+     */
+    val operatorInfo: OperatorInfoContainer
+}
+
+/**
+ * 被操作者信息容器
+ */
+@ContainerType("被操作者头像容器")
+public interface BeOperatorInfoContainer : BeOperatorCodeContainer, BeOperatorNameContainer, BeOperatorAvatarContainer
+
+
+/**
+ * 可以得到被操作者信息的容器
+ */
+@ContainerType("被操作者容器")
+public interface BeOperatorContainer {
+    /**
+     * 得到一个被操作者信息
+     */
+    val beOperatorInfo: BeOperatorInfoContainer
+}
+
+
+/**
  * 针对一个存在 **操作** 内容的事件,
  * 此容器提供了在 **操作** 事件中的 **操作者** 与 **被操作者** 的相关信息容器
  */
-@ContainerType("操作者信息容器")
-public interface OperatingContainer:
-    OperatingCodeContainer,
-    OperatingNameContainer,
-    OperatingAvatarContainer {
+@ContainerType("操作者容器")
+public interface OperatingContainer : OperatorContainer, BeOperatorContainer
 
+
+/**
+ * 将账户作操作者。一般用于那些可以将当前事件的
+ * [账户信息][AccountInfoContainer] 作为 [操作者][OperatorInfoContainer] 而使用的地方
+ */
+public data class AccountAsOperator(private val account: AccountInfoContainer) : OperatorInfoContainer {
+    /**
+     * 被操作者的Code
+     */
+    override val operatorCode: String
+        get() = account.accountCode
+
+    /**
+     * 被操作者的昵称
+     */
+    override val operatorNickname: String?
+        get() = account.accountNickname
+
+    /**
+     * 被操作者的备注
+     */
+    override val operatorRemark: String?
+        get() = account.accountRemark
+
+    /**
+     * 得到被操作者的头像地址. 一般来讲为`null`的可能性很小
+     */
+    override val operatorAvatar: String?
+        get() = account.accountAvatar
+
+    /**
+     * 被操作者的code number
+     */
+    override val operatorCodeNumber: Long
+        get() = account.accountCodeNumber
+
+    /**
+     * 被操作者
+     *
+     * 如果有备注则得到备注，否则得到昵称
+     */
+    override val operatorRemarkOrNickname: String?
+        get() = account.accountRemarkOrNickname
+
+    /**
+     * 被操作者
+     *
+     * 昵称与备注, 返回一个`账号(备注)?`格式的字符串.
+     * 例如：
+     * - `张三(张三的备注)`
+     * - `李四` (没有备注)
+     */
+    override val operatorNicknameAndRemark: String
+        get() = account.accountNicknameAndRemark
+}
+
+
+/**
+ * 将账户作为被操作者。一般用于那些可以将当前事件的
+ * [账户信息][AccountInfoContainer] 作为 [被操作者][BeOperatorInfoContainer] 而使用的地方
+ */
+public data class AccountAsBeOperator(private val account: AccountInfoContainer) : BeOperatorInfoContainer {
+    /**
+     * 被操作者的Code
+     */
+    override val beOperatorCode: String
+        get() = account.accountCode
+
+    /**
+     * 被操作者的昵称
+     */
+    override val beOperatorNickname: String?
+        get() = account.accountNickname
+
+    /**
+     * 被操作者的备注
+     */
+    override val beOperatorRemark: String?
+        get() = account.accountRemark
+
+    /**
+     * 得到被操作者的头像地址. 一般来讲为`null`的可能性很小
+     */
+    override val beOperatorAvatar: String?
+        get() = account.accountAvatar
+
+    /**
+     * 被操作者的code number
+     */
+    override val beOperatorCodeNumber: Long
+        get() = account.accountCodeNumber
+
+    /**
+     * 被操作者
+     *
+     * 如果有备注则得到备注，否则得到昵称
+     */
+    override val beOperatorRemarkOrNickname: String?
+        get() = account.accountRemarkOrNickname
+
+    /**
+     * 被操作者
+     *
+     * 昵称与备注, 返回一个`账号(备注)?`格式的字符串.
+     * 例如：
+     * - `张三(张三的备注)`
+     * - `李四` (没有备注)
+     */
+    override val beOperatorNicknameAndRemark: String
+        get() = account.accountNicknameAndRemark
 }
 
 

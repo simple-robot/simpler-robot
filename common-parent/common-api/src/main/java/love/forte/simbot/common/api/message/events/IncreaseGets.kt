@@ -16,11 +16,8 @@
 
 package love.forte.simbot.common.api.message.events
 
-import love.forte.simbot.common.api.message.containers.AccountContainer
-import love.forte.simbot.common.api.message.containers.ActionMotivationContainer
-import love.forte.simbot.common.api.message.containers.GroupContainer
-import love.forte.simbot.common.api.message.containers.OperatingContainer
 import love.forte.simbot.common.api.message.assists.ActionMotivations
+import love.forte.simbot.common.api.message.containers.*
 
 /*
  * 与 **增加** 相关的事件
@@ -57,22 +54,12 @@ public interface GroupMemberIncrease: IncreaseEventGet, GroupContainer, Operatin
      */
     fun isBot(): Boolean
 
-    @JvmDefault override val beOperatorCode: String
-        get() = accountCode
-    @JvmDefault override val beOperatorCodeNumber: Long
-        get() = accountCodeNumber
-
-    @JvmDefault override val beOperatorNickname: String
-        get() = accountNickname
-    @JvmDefault override val beOperatorRemark: String?
-        get() = accountRemark
-    @JvmDefault override val beOperatorRemarkOrNickname: String
-        get() = accountRemarkOrNickname
-    @JvmDefault override val beOperatorNicknameAndRemark: String
-        get() = accountNicknameAndRemark
-
-    @JvmDefault override val beOperatorAvatar: String?
-        get() = accountAvatar
+    /**
+     * [被操作者][beOperatorInfo] 默认实现为 [当前主体账户][accountInfo]
+     */
+    @JvmDefault
+    override val beOperatorInfo: BeOperatorInfoContainer
+        get() = AccountAsBeOperator(accountInfo)
 
     /**
      * 增加类型

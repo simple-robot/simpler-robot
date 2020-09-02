@@ -16,11 +16,8 @@
 
 package love.forte.simbot.common.api.message.events
 
-import love.forte.simbot.common.api.message.containers.AccountContainer
-import love.forte.simbot.common.api.message.containers.ActionMotivationContainer
-import love.forte.simbot.common.api.message.containers.GroupContainer
-import love.forte.simbot.common.api.message.containers.OperatingContainer
 import love.forte.simbot.common.api.message.assists.ActionMotivations
+import love.forte.simbot.common.api.message.containers.*
 
 /*
  * 与 **减少** 相关的事件
@@ -49,22 +46,13 @@ public interface FriendReduce: ReduceEventGet
  * 因此此接口对 **被操作者** 信息提供默认实现, 直接指向 **主体账号信息**中对应的信息.
  */
 public interface GroupReduce: ReduceEventGet, GroupContainer, OperatingContainer {
-    @JvmDefault override val beOperatorCode: String
-        get() = accountCode
-    @JvmDefault override val beOperatorCodeNumber: Long
-        get() = accountCodeNumber
 
-    @JvmDefault override val beOperatorNickname: String
-        get() = accountNickname
-    @JvmDefault override val beOperatorRemark: String?
-        get() = accountRemark
-    @JvmDefault override val beOperatorRemarkOrNickname: String
-        get() = accountRemarkOrNickname
-    @JvmDefault override val beOperatorNicknameAndRemark: String
-        get() = accountNicknameAndRemark
-
-    @JvmDefault override val beOperatorAvatar: String?
-        get() = accountAvatar
+    /**
+     * [被操作者][beOperatorInfo] 默认实现为 [当前主体账户][accountInfo]
+     */
+    @JvmDefault
+    override val beOperatorInfo: BeOperatorInfoContainer
+        get() = AccountAsBeOperator(accountInfo)
 
 
     /**
