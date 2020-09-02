@@ -16,6 +16,8 @@
 
 package love.forte.simbot.common.api.messages.receipts
 
+import love.forte.simbot.common.api.carrier.Carrier
+
 /*
  * 送信器回执
  *
@@ -26,6 +28,7 @@ package love.forte.simbot.common.api.messages.receipts
  * @since
  */
 
+
 /**
  * 送信器回执的统一父接口。
  *
@@ -33,7 +36,36 @@ package love.forte.simbot.common.api.messages.receipts
  *
  * 每一个回执获取
  */
-public interface SenderReceipts<out T> {
-    suspend fun await(): T?
+public interface SenderReceipts<T> {
+    /**
+     * 得到一个回执的载体
+     */
+    val receipt: Carrier<T>
+
+    /**
+     * 如果失败，则可能存在一个异常。
+     */
+    val failed: Throwable?
+
+    /**
+     * 如果 [failed] 存在, 则抛出此异常
+     */
+    @JvmDefault
+    fun orThrow() {
+        failed?.run { throw this }
+    }
 }
 
+
+/**
+ * 群消息回执
+ * 其中 [receipt] 以字符串作为载体，代表了发出去的消息的ID
+ */
+public interface GroupMsgReceipts : SenderReceipts<String>
+
+
+/**
+ * 私信消息回执
+ * 其中 [receipt] 以字符串作为载体，代表了发出去的消息的ID
+ */
+public interface PrivateMsgReceipts : SenderReceipts<String>
