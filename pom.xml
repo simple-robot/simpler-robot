@@ -299,7 +299,8 @@
                     <configuration>
                         <!-- kotlinOptions.freeCompilerArgs = ['-Xjvm-default=enable'] -->
                         <args>
-                            <arg>-Xjvm-default=enable</arg>
+                            <!--<arg>-Xjvm-default=enable</arg>-->
+                            <arg>-Xjvm-default=all</arg>
                             <arg>-Xinline-classes</arg>
                         </args>
                         <jvmTarget>1.8</jvmTarget>

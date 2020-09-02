@@ -252,7 +252,10 @@ public interface BotAvatarContainer {
 @ContainerType("机器人信息容器")
 public interface BotInfoContainer : BotCodeContainer, BotNameContainer, BotAvatarContainer
 
-
+/**
+ * bot容器，可以得到一个 [bot信息][BotInfoContainer]
+ * @property botInfo BotInfoContainer
+ */
 @ContainerType("bot容器")
 public interface BotContainer {
     /**
@@ -446,9 +449,9 @@ public interface OperatorInfoContainer : OperatorCodeContainer, OperatorNameCont
 @ContainerType("操作者容器")
 public interface OperatorContainer {
     /**
-     * 得到一个操作者信息
+     * 得到一个操作者信息 可能会是null
      */
-    val operatorInfo: OperatorInfoContainer
+    val operatorInfo: OperatorInfoContainer?
 }
 
 /**
@@ -464,9 +467,9 @@ public interface BeOperatorInfoContainer : BeOperatorCodeContainer, BeOperatorNa
 @ContainerType("被操作者容器")
 public interface BeOperatorContainer {
     /**
-     * 得到一个被操作者信息
+     * 得到一个被操作者信息  可能会是null
      */
-    val beOperatorInfo: BeOperatorInfoContainer
+    val beOperatorInfo: BeOperatorInfoContainer?
 }
 
 
