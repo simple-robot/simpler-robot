@@ -14,11 +14,11 @@
  *
  */
 
-package love.forte.simbot.common.api.message.events
+package love.forte.simbot.common.api.messages.events
 
 import love.forte.simbot.common.annotations.MainListenerType
-import love.forte.simbot.common.api.message.assists.Permissions
-import love.forte.simbot.common.api.message.containers.*
+import love.forte.simbot.common.api.messages.assists.Permissions
+import love.forte.simbot.common.api.messages.containers.*
 
 /*
  * 此模块定义与 变更 有关的事件接口

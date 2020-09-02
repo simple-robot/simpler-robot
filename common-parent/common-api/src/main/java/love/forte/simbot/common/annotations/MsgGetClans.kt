@@ -17,8 +17,8 @@
 package love.forte.simbot.common.annotations
 
 import kotlin.annotation.AnnotationTarget.CLASS
-import love.forte.simbot.common.api.message.events.*
-import love.forte.simbot.common.api.message.containers.*
+import love.forte.simbot.common.api.messages.events.*
+import love.forte.simbot.common.api.messages.containers.*
 
 /*
  *

@@ -14,7 +14,7 @@
  *
  */
 
-package love.forte.simbot.common.api.message.assists
+package love.forte.simbot.common.api.messages.assists
 
 /**
  *
@@ -22,7 +22,7 @@ package love.forte.simbot.common.api.message.assists
  *
  * 标识可以是任何形式的，但是任何标识都应该存在有一个 [flag] 标识主体
  *
- * 通过 [标识容器][love.forte.simbot.common.api.message.containers.FlagContainer] 可以得到一个标识实例。
+ * 通过 [标识容器][love.forte.simbot.common.api.messages.containers.FlagContainer] 可以得到一个标识实例。
  *
  * @author ForteScarlet <ForteScarlet@163.com>
  * @date 2020/9/2
@@ -38,15 +38,15 @@ public interface Flag<out T: FlagContent> {
 
 
 /**
- * [Flag] 的基础实现类
+ * [Flag] 的基础数据实现类
  */
 public data class FlagImpl<out T: FlagContent>(override val flag: T): Flag<T>
 
 /**
- * function param like `val flag = flagImpl { "id" }`
+ * function param like `val flag = flag { "id" }`
  */
 @Suppress("FunctionName")
-public inline fun <T: FlagContent> flagImpl(getFlag: () -> T): Flag<T> = FlagImpl(getFlag())
+public inline fun <T: FlagContent> flag(getFlag: () -> T): Flag<T> = FlagImpl(getFlag())
 
 
 /**

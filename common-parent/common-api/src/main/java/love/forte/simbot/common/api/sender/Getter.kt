@@ -2,7 +2,7 @@
  *
  *  * Copyright (c) 2020. ForteScarlet All rights reserved.
  *  * Project  simple-robot-S
- *  * File     Test1.java
+ *  * File     Getter.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
@@ -14,19 +14,15 @@
  *
  */
 
-package love.forte.simbot.test;
-
-import love.forte.simbot.common.api.message.containers.OriginalDataContainer;
+package love.forte.simbot.common.api.sender
 
 /**
- * this is a doc
+ *
+ * 信息获取器，用来获取一些必要的信息，例如 登录信息、群信息等
+ *
  * @author ForteScarlet <ForteScarlet@163.com>
- * 2020/8/23
+ * @date 2020/9/2
+ * @since
  */
-public class Test1 {
-
-    public static void main(String[] args) {
-        OriginalDataContainer testOriginalData = new TestOriginalData();
-    }
-
+public interface Getter {
 }

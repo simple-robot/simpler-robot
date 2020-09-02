@@ -14,13 +14,13 @@
  *
  */
 
-package love.forte.simbot.common.api.message.containers
+package love.forte.simbot.common.api.messages.containers
 
 import love.forte.simbot.common.annotations.ContainerType
-import love.forte.simbot.common.api.message.assists.ActionMotivations
-import love.forte.simbot.common.api.message.assists.Flag
-import love.forte.simbot.common.api.message.assists.FlagContent
-import love.forte.simbot.common.api.message.assists.Permissions
+import love.forte.simbot.common.api.messages.assists.ActionMotivations
+import love.forte.simbot.common.api.messages.assists.Flag
+import love.forte.simbot.common.api.messages.assists.FlagContent
+import love.forte.simbot.common.api.messages.assists.Permissions
 
 
 /**

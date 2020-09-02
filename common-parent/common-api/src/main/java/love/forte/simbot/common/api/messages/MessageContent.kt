@@ -14,9 +14,9 @@
  *
  */
 
-package love.forte.simbot.common.api.message
+package love.forte.simbot.common.api.messages
 
-import love.forte.simbot.common.api.message.events.MessageEventGet
+import love.forte.simbot.common.api.messages.events.MessageEventGet
 
 /*
  *

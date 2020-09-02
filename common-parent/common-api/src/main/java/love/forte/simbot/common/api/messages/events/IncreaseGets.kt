@@ -14,10 +14,10 @@
  *
  */
 
-package love.forte.simbot.common.api.message.events
+package love.forte.simbot.common.api.messages.events
 
-import love.forte.simbot.common.api.message.assists.ActionMotivations
-import love.forte.simbot.common.api.message.containers.*
+import love.forte.simbot.common.api.messages.assists.ActionMotivations
+import love.forte.simbot.common.api.messages.containers.*
 
 /*
  * 与 **增加** 相关的事件

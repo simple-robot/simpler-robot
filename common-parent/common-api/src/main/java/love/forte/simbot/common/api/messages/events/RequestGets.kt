@@ -14,10 +14,10 @@
  *
  */
 
-package love.forte.simbot.common.api.message.events
+package love.forte.simbot.common.api.messages.events
 
 import love.forte.simbot.common.annotations.MainListenerType
-import love.forte.simbot.common.api.message.assists.Flag
+import love.forte.simbot.common.api.messages.assists.Flag
 
 /*
  * 此模块下定义请求相关的监听接口

@@ -14,12 +14,11 @@
  *
  */
 
-package love.forte.simbot.common.api.message.events
+package love.forte.simbot.common.api.messages.events
 
-import love.forte.simbot.common.api.message.assists.Flag
-import love.forte.simbot.common.api.message.assists.FlagImpl
-import love.forte.simbot.common.api.message.containers.GroupContainer
-import love.forte.simbot.common.api.message.containers.PermissionContainer
+import love.forte.simbot.common.api.messages.assists.Flag
+import love.forte.simbot.common.api.messages.containers.GroupContainer
+import love.forte.simbot.common.api.messages.containers.PermissionContainer
 
 /*
  *

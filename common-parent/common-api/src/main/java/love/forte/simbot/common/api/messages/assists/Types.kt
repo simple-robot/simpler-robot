@@ -16,7 +16,7 @@
 
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package love.forte.simbot.common.api.message.assists
+package love.forte.simbot.common.api.messages.assists
 
 /*
  *
@@ -67,8 +67,8 @@ public enum class Permissions(public val level: Int) {
 /**
  * 行动动机类, 一般不同的消息事件中可能会有其各自独特的 **类型** 枚举,
  * 例如
- * [群消息类型][love.forte.simbot.common.api.message.events.GroupMsg.Type] ,
- * [增加类型][love.forte.simbot.common.api.message.events.IncreaseEventGet.Type]
+ * [群消息类型][love.forte.simbot.common.api.messages.events.GroupMsg.Type] ,
+ * [增加类型][love.forte.simbot.common.api.messages.events.IncreaseEventGet.Type]
  * 等。
  *
  * 这些类型中，有一部分便可以表达为一个 [行动动机][ActionMotivations],

@@ -14,16 +14,16 @@
  *
  */
 
-package love.forte.simbot.common.api.message.events
+package love.forte.simbot.common.api.messages.events
 
 import love.forte.simbot.common.annotations.ParentListenerType
-import love.forte.simbot.common.api.message.MessageContent
-import love.forte.simbot.common.api.message.assists.Flag
-import love.forte.simbot.common.api.message.assists.FlagContent
-import love.forte.simbot.common.api.message.containers.AccountContainer
-import love.forte.simbot.common.api.message.containers.BotContainer
-import love.forte.simbot.common.api.message.containers.FlagContainer
-import love.forte.simbot.common.api.message.containers.OriginalDataContainer
+import love.forte.simbot.common.api.messages.MessageContent
+import love.forte.simbot.common.api.messages.assists.Flag
+import love.forte.simbot.common.api.messages.assists.FlagContent
+import love.forte.simbot.common.api.messages.containers.AccountContainer
+import love.forte.simbot.common.api.messages.containers.BotContainer
+import love.forte.simbot.common.api.messages.containers.FlagContainer
+import love.forte.simbot.common.api.messages.containers.OriginalDataContainer
 import java.time.LocalDateTime
 
 /*
