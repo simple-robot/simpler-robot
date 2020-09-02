@@ -12,11 +12,11 @@
     <artifactId>test</artifactId>
 
     <dependencies>
-        <dependency>
-            <artifactId>common-api</artifactId>
-            <groupId>love.forte.simple-robot</groupId>
-            <version>${project.version}</version>
-        </dependency>
+        <!--<dependency>-->
+        <!--    <artifactId>common-api</artifactId>-->
+        <!--    <groupId>love.forte.simple-robot</groupId>-->
+        <!--    <version>${project.version}</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>

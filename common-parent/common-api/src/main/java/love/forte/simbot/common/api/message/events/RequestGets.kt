@@ -58,6 +58,10 @@ public data class FriendAddRequestIdFlagContent(override val id: String) : Frien
  */
 public interface GroupAddRequest : RequestGet {
 
+    /**
+     * 当前请求的邀请者。在 **组件不支持** 、**请求非邀请** 等情况下可能为null
+     */
+    val invitor: GroupAddRequestInvitor?
 
     /**
      * 获取请求标识。
@@ -70,6 +74,21 @@ public interface GroupAddRequest : RequestGet {
      * 请求类型的 标识主体
      */
     public interface FlagContent : RequestGet.RequestFlagContent
+}
+
+/**
+ * [群添加请求][GroupAddRequest] 中的邀请者信息。
+ *
+ */
+public interface GroupAddRequestInvitor {
+    /** 邀请者账号。一般情况下，当前实例存在此参数便不可为null */
+    val invitorCode: String
+    /** 邀请者昵称。可能无法获取 */
+    val invitorNickname: String?
+    /** 邀请者备注 可能无法获取*/
+    val invitorRemark: String?
+    /** 备注或昵称 */
+    @JvmDefault val invitorRemarkOrNickname: String? get() = invitorRemark ?: invitorNickname
 }
 
 
