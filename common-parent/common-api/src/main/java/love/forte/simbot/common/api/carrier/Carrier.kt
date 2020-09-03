@@ -19,7 +19,7 @@ package love.forte.simbot.common.api.carrier
 import java.util.*
 
 /**
- * 一个类似于 java8 的 [java.util.Optional] 类,
+ * 一个类似于 java 的 [java.util.Optional] 类,
  * 提供一些简单的api来对一个可能为null的值进行操作。
  *
  * 其代表了一个 `回执`, 而这个回执不确定其是否为 `null`。

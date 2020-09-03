@@ -16,13 +16,16 @@
 
 package love.forte.simbot.common.api.sender
 
-import love.forte.simbot.common.api.messages.receipts.GroupMsgReceipts
-import love.forte.simbot.common.api.messages.receipts.PrivateMsgReceipts
+import love.forte.simbot.common.api.messages.receipts.SenderReceipt
+import love.forte.simbot.common.api.messages.receipts.GroupMsgReceipt
+import love.forte.simbot.common.api.messages.receipts.PrivateMsgReceipt
 
 /**
  *
  * 消息发送器。
  * 一般用来发送消息，例如私聊、群聊等。
+ *
+ * 一般来讲，消息发送后都会有一个方法对应的 [送信器回执][SenderReceipt]
  *
  * @author ForteScarlet <ForteScarlet@163.com>
  * @date 2020/9/2
@@ -36,7 +39,7 @@ public interface Sender {
      * @param msg String   消息正文
      * @return GroupMsgReceipts 消息回执
      */
-    fun sendGroupMsg(group: String, msg: String): GroupMsgReceipts
+    fun sendGroupMsg(group: String, msg: String): GroupMsgReceipt
 
 
     /**
@@ -46,7 +49,7 @@ public interface Sender {
      * @param msg String  消息正文
      * @return PrivateMsgReceipts 私聊回执
      */
-    fun sendPrivateMsg(code: String, group: String?, msg: String): PrivateMsgReceipts
+    fun sendPrivateMsg(code: String, group: String?, msg: String): PrivateMsgReceipt
 
 
     /**

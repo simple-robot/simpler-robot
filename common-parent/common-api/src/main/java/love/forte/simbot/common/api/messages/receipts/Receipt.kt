@@ -2,7 +2,7 @@
  *
  *  * Copyright (c) 2020. ForteScarlet All rights reserved.
  *  * Project  simple-robot-S
- *  * File     SenderReceipts.kt
+ *  * File     Receipt.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
@@ -18,21 +18,14 @@ package love.forte.simbot.common.api.messages.receipts
 
 import love.forte.simbot.common.api.carrier.Carrier
 
-/*
- * 送信器回执
- *
- * 回执一般就是 群聊送信回执 私聊送信回执
+/**
+ * **回执**消息接口。
  *
  * @author ForteScarlet <ForteScarlet@163.com>
- * @date 2020/9/2
+ * @date 2020/9/4
  * @since
  */
-
-
-/**
- * 送信器回执的统一父接口。
- */
-public interface SenderReceipts<T> {
+public interface Receipt<T> {
     /**
      * 得到一个回执的载体
      */
@@ -51,17 +44,3 @@ public interface SenderReceipts<T> {
         failed?.run { throw this }
     }
 }
-
-
-/**
- * 群消息回执
- * 其中 [receipt] 以字符串作为载体，代表了发出去的消息的ID
- */
-public interface GroupMsgReceipts : SenderReceipts<String>
-
-
-/**
- * 私信消息回执
- * 其中 [receipt] 以字符串作为载体，代表了发出去的消息的ID
- */
-public interface PrivateMsgReceipts : SenderReceipts<String>
