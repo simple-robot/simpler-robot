@@ -37,12 +37,12 @@ public interface FriendIncrease: IncreaseEventGet
 
 
 /**
- * 群友增加.
+ * 群友增加。
  *
- * 一般指代的是已经增加了之后.
+ * 一般指代的是已经增加了之后。
  *
  * 群友增加事件除了存在 [事件主体账号信息][AccountContainer] 以外,
- * 还应存在 [操作性账号信息][OperatingContainer].
+ * 还应存在 [操作性账号信息][OperatingContainer]。
  *
  * 但是一般来讲, [操作性账号信息][OperatingContainer]中的 **被操作者** 信息基本均等同于 [事件主体账号信息][AccountContainer],
  * 因此此接口对 **被操作者** 信息提供默认实现, 直接指向 **主体账号信息**中对应的信息.

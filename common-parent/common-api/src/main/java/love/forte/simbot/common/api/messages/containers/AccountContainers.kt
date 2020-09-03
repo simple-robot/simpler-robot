@@ -20,7 +20,7 @@ import love.forte.simbot.common.annotations.ContainerType
 
 
 /**
- * 账户号码容器。定义可以得到一个账号的号码
+ * 账户号码容器。定义可以得到一个账号的号码。
  *
  */
 @ContainerType("账户号码容器")
@@ -31,7 +31,7 @@ public interface AccountCodeContainer {
     val accountCode: String
 
     /**
-     * 账号的数字值。(如果能作为数字的话)
+     * 账号的数字值(如果能作为数字的话)。
      * 默认实现为 [accountCode].[toLong]
      */
     @JvmDefault
@@ -40,7 +40,7 @@ public interface AccountCodeContainer {
 }
 
 /**
- * 账户昵称容器。定义可以得到一个账号的昵称
+ * 账户昵称容器。定义可以得到一个账号的昵称。
  */
 @ContainerType("账户昵称容器")
 public interface AccountNicknameContainer {
@@ -50,7 +50,7 @@ public interface AccountNicknameContainer {
 
 /**
  * 账户备注容器。定义可以得到一个账号的备注信息。可能是好友备注或者群名片。
- * 备注可能不存在
+ * 备注可能不存在。
  */
 @ContainerType("账户备注容器")
 public interface AccountRemarkContainer {
@@ -67,14 +67,14 @@ public interface AccountRemarkContainer {
 @ContainerType("账户名称容器")
 public interface AccountNameContainer : AccountNicknameContainer, AccountRemarkContainer {
     /**
-     * 如果有备注则得到备注，否则得到昵称
+     * 如果有备注则得到备注，否则得到昵称。
      */
     @JvmDefault
     val accountRemarkOrNickname: String?
         get() = accountRemark ?: accountNickname
 
     /**
-     * 昵称与备注, 返回一个`账号(备注)?`格式的字符串.
+     * 昵称与备注, 返回一个`账号(备注)?`格式的字符串。
      * 例如：
      * - `张三(张三的备注)`
      * - `李四` (没有备注)
@@ -99,16 +99,16 @@ public interface AccountAvatarContainer {
 
 /**
  * 一个账号信息容器, 继承了
- * [用户名称容器][AccountNameContainer],
- * [用户头像容器][AccountAvatarContainer],
- * [用户账号容器][AccountCodeContainer]
+ * - [用户名称容器][AccountNameContainer],
+ * - [用户头像容器][AccountAvatarContainer],
+ * - [用户账号容器][AccountCodeContainer]
  */
 @ContainerType("账户信息容器")
 public interface AccountInfoContainer : AccountNameContainer, AccountAvatarContainer, AccountCodeContainer
 
 
 /**
- * 账号容器，可以得到一个账号的[信息][AccountInfoContainer]
+ * 账号容器，可以得到一个账号的[信息][AccountInfoContainer]。
  */
 @ContainerType("账号容器")
 public interface AccountContainer {

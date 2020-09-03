@@ -18,7 +18,8 @@ package love.forte.simbot.common.api.sender
 
 /**
  *
- * 信息获取器，用来获取一些必要的信息，例如 登录信息、群信息等
+ * 信息获取器，
+ * 用来获取一些必要的信息，例如 登录信息、群信息等。
  *
  * @author ForteScarlet <ForteScarlet@163.com>
  * @date 2020/9/2

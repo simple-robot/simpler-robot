@@ -68,7 +68,8 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
 
 
 /**
- * 事件父接口，是当一个监听类型为得不到 [消息文本][msg] 的事件的时候使用的接口。
+ * 事件父接口，
+ * 是当一个监听类型为得不到 [消息文本][msg] 的事件的时候使用的接口。
  *
  * 此父接口与 [MsgGet] 的唯一区别就是此接口为 [msg] 提供了无效化的默认实现。
  */
@@ -82,12 +83,12 @@ public interface EventGet : MsgGet {
 
 
 /**
- * 与消息有关的事件
+ * 与消息有关的事件。
  *
  * [MessageEventGet]中除了需要实现[MsgGet]以外, 还要实现[FlagContainer]以标识一个消息内容的标识。
  * 但是一般来讲, [FlagContent] 都可以用 [id] 来代替。
  *
- * 因此 [FlagContent] 提供为默认方法并使用 [id] 作为返回值。如果有特殊需要则重写
+ * 因此 [FlagContent] 提供为默认方法并使用 [id] 作为返回值。如果有特殊需要则重写。
  */
 @ParentListenerType("消息事件父接口")
 public interface MessageEventGet : MsgGet, FlagContainer<MessageEventGet.MessageFlagContent> {
@@ -119,7 +120,9 @@ public interface MessageEventGet : MsgGet, FlagContainer<MessageEventGet.Message
 
 
 /**
- * 与消息撤回有关的事件, 例如 [群消息撤回][GroupMsgRecall] 或者 [私聊撤回][PrivateMsgRecall]
+ * 与消息撤回有关的事件,
+ * 例如 [群消息撤回][GroupMsgRecall]
+ * 或者 [私聊撤回][PrivateMsgRecall]
  *
  *
  * 一般来讲应该可以得到撤回的[消息内容][MsgGet.msg]以及[撤回时间][recallTime]
@@ -168,10 +171,7 @@ public interface RequestGet : MsgGet, FlagContainer<RequestGet.RequestFlagConten
     override val flag: Flag<RequestFlagContent>
 
     /**
-     * 在请求类型下的 [标识主体][FlagContent] 类型
-     *
-     * 对于子接口的实现与命名，作为内部接口并不需要前缀
-     *
+     * 在请求类型下的 [标识主体][FlagContent] 类型。
      */
     interface RequestFlagContent : FlagContent
 }

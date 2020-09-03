@@ -48,7 +48,7 @@ public interface FriendAddRequest : RequestGet {
 }
 
 /**
- * 使用 id 作为标识载体的 [标识主体][FriendAddRequest.FlagContent] 实现
+ * 使用 [id] 作为标识载体的 [标识主体][FriendAddRequest.FlagContent] 实现。
  */
 public data class FriendAddRequestIdFlagContent(override val id: String) : FriendAddRequest.FlagContent
 
@@ -94,7 +94,7 @@ public interface GroupAddRequestInvitor {
 
 
 /**
- * 使用 id 作为标识载体的 [GroupAddRequest.FlagContent] 实现
+ * 使用 [id] 作为标识载体的 [GroupAddRequest.FlagContent] 实现
  */
 public data class GroupAddRequestIdFlagContent(override val id: String) : GroupAddRequest.FlagContent
 

@@ -35,9 +35,9 @@ public interface FriendReduce: ReduceEventGet
 
 
 /**
- * 群友减少事件
+ * 群友减少事件。
  *
- * 一般指群友已经减少后.
+ * 一般指群友已经减少后。
  *
  * 群友减少事件除了存在 [事件主体账号信息][AccountContainer] 以外,
  * 还应存在 [操作性账号信息][OperatingContainer].

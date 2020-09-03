@@ -29,15 +29,16 @@ import love.forte.simbot.common.api.messages.events.MessageEventGet
 
 
 /**
- * 一个 消息内容。
+ * **消息内容**。
  *
  * 它被使用在[MessageEventGet] 接口的 [MessageEventGet.msgContent] 上，表示当前消息的正文内容。
  *
- * 一个 [MessageContent] 实例至少应该保证能够得到当前消息的 [消息字符串文本][msg]
+ * 一个 [MessageContent] 实例至少应该保证能够得到当前消息的 [消息字符串文本][msg]。
  */
 public interface MessageContent {
     /**
-     * 消息字符串文本。一般来讲，如果存在一些特殊消息，那么他们会作为 **CQ** 码字符串存在于消息中。
+     * 消息字符串文本。一般来讲，如果存在一些特殊消息，
+     * 那么他们会作为 **CQ码** 字符串存在于消息中。
      */
     var msg: String?
 
@@ -48,7 +49,7 @@ public interface MessageContent {
     fun setMsg(msgContent: MessageContent)
 
     /**
-     * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的MessageContent
+     * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的 [MessageContent]
      * @param msgContent MessageContent
      * @return MessageContent
      */
@@ -70,7 +71,7 @@ public data class TextMessageContent(override var msg: String?) : MessageContent
     }
 
     /**
-     * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的MessageContent
+     * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的 [MessageContent]
      *
      * 将会直接进行字符串拼接
      */

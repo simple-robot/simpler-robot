@@ -18,7 +18,8 @@ package love.forte.simbot.common.api.sender
 
 /**
  *
- * 状态设置器，一般用于发送一些消息无关的数据，例如设置禁言等
+ * 状态设置器。
+ * 一般用于发送一些消息无关的数据，例如设置禁言等。
  *
  * @author ForteScarlet <ForteScarlet@163.com>
  * @date 2020/9/2

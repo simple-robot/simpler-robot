@@ -20,7 +20,7 @@ import love.forte.simbot.common.annotations.ContainerType
 
 
 /**
- * 机器人自身的账号容器
+ * 机器人自身的账号容器。
  */
 @ContainerType("机器人账号容器")
 public interface BotCodeContainer {
@@ -32,7 +32,7 @@ public interface BotCodeContainer {
 }
 
 /**
- * 机器人自身的名称容器
+ * 机器人自身的名称容器。
  */
 @ContainerType("机器人名称容器")
 public interface BotNameContainer {
@@ -43,8 +43,8 @@ public interface BotNameContainer {
 }
 
 /**
- * 机器人自身的头像容器
- * 头像不是必须的，可能不存在
+ * 机器人自身的头像容器。
+ * 头像不是必须的，可能不存在。
  */
 @ContainerType("机器人头像容器")
 public interface BotAvatarContainer {
@@ -53,16 +53,17 @@ public interface BotAvatarContainer {
 }
 
 /**
- * 机器人基础信息容器, 其实现了
- * [机器人账号容器][BotCodeContainer],
- * [机器人名称容器][BotNameContainer],
- * [机器人头像容器][BotAvatarContainer]
+ * 机器人基础信息容器, 其实现了：
+ * - [机器人账号容器][BotCodeContainer],
+ * - [机器人名称容器][BotNameContainer],
+ * - [机器人头像容器][BotAvatarContainer]
  */
 @ContainerType("机器人信息容器")
 public interface BotInfoContainer : BotCodeContainer, BotNameContainer, BotAvatarContainer
 
 /**
- * bot容器，可以得到一个 [bot信息][BotInfoContainer]
+ * bot容器，可以得到一个 [bot信息][BotInfoContainer]。
+ *
  * @property botInfo BotInfoContainer
  */
 @ContainerType("bot容器")

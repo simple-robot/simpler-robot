@@ -31,10 +31,6 @@ import love.forte.simbot.common.api.carrier.Carrier
 
 /**
  * 送信器回执的统一父接口。
- *
- * 一个回执可能是一个可挂起的，也可能是一个没有挂起的。
- *
- * 每一个回执获取
  */
 public interface SenderReceipts<T> {
     /**

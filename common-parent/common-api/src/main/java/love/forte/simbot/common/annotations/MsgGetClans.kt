@@ -37,14 +37,13 @@ import love.forte.simbot.common.api.messages.containers.*
  */
 
 /**
- *
  * ### **主要监听事件类型** 标记。
  *
  *
- * [MainListenerType] 一般标注一个 [MsgGet] 的具体子接口，
+ * [MainListenerType] 是一个 **主要监听事件类型** 标记。 一般标注一个 [MsgGet] 的具体子接口。
  * 例如 [PrivateMsg]。
  *
- * ##### 应优先被使用
+ * #### 应优先被使用
  *
  * 被标注的接口代表了这个接口是主要用于监听的接口。
  * 以 [PrivateMsg] 举例来说，[PrivateMsg] 继承了 [MessageEventGet] 接口，
@@ -52,7 +51,7 @@ import love.forte.simbot.common.api.messages.containers.*
  *
  * 在这其中，如果你要监听一个事件, 那么**最优先**推荐监听最下游事件 [PrivateMsg] 类型而不是他的任何父接口
  *
- * ##### 继承 [MsgGet]
+ * #### 继承 [MsgGet]
  * 所有的 **父类监听事件类型**与 **主要监听事件类型** 都应该是继承自 [MsgGet] 的接口类型。
  *
  * @see MsgGet
@@ -72,9 +71,10 @@ public annotation class MainListenerType(val comment: String = "")
  * ### **父类监听事件类型**标记
  *
  *
- * [ParentListenerType] 主要标记一个非 [主要监听事件类型][MainListenerType] 的接口。
+ * [ParentListenerType] 是一个**父类监听事件类型**标记。
+ * 主要标记一个非 [主要监听事件类型][MainListenerType] 的接口。
  *
- * 相对于 主要监听事件类型 `MainListenerType`，
+ * 相对于 [**主要监听事件类型**][MainListenerType]，
  * 父类监听事件类型是他们的父类，也是不应该优先被监听的类型。
  *
  *
@@ -103,7 +103,7 @@ public annotation class ParentListenerType(val comment: String = "")
  * ### **容器类型**标记
  *
  *
- * [ContainerType]主要标记一个**容器**类型的接口。
+ * [ContainerType] 是一个**容器类型**标记。主要标记一个**容器**类型的接口。
  * **容器**主要为了赋予实现类 **可以得到某种信息** 的能力，主要为了用于一些方法的参数与调用上。
  * 但是一般来讲，不应当使用一个 **容器** 作为监听事件的参数或类型。
  *

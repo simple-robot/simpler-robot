@@ -21,7 +21,8 @@ import love.forte.simbot.common.api.messages.receipts.PrivateMsgReceipts
 
 /**
  *
- * 消息发送用的送信器。一般用来发送消息，例如 私聊、群聊等
+ * 消息发送器。
+ * 一般用来发送消息，例如私聊、群聊等。
  *
  * @author ForteScarlet <ForteScarlet@163.com>
  * @date 2020/9/2

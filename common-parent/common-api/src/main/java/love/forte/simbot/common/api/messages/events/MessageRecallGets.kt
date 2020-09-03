@@ -28,17 +28,17 @@ import love.forte.simbot.common.api.messages.assists.ActionMotivations
  */
 
 /**
- * 私聊消息撤回
+ * 私聊消息撤回。
  */
 public interface PrivateMsgRecall: MessageRecallEventGet
 
 
 /**
- * 群聊消息撤回
+ * 群聊消息撤回。
  */
 public interface GroupMsgRecall: MessageRecallEventGet {
     /**
-     * 群聊撤回的类型
+     * 群聊撤回的类型。
      */
     public enum class Type(override val actionMotivations: ActionMotivations): ActionMotivationContainer {
         /** 主动的, 一般代表消息是由发送人主动撤回的 */

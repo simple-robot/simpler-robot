@@ -17,9 +17,10 @@
 package love.forte.simbot.common.annotations
 
 /**
- * 描述注解
+ * ### **描述**注解
  *
- * 用于作为一个针对某些东西的描述标识
+ * [SmbDescription] 是用于作为一个针对某些东西的描述标识。
+ * 简单来说，就是类似于注释一样的东西。
  *
  * @author ForteScarlet <ForteScarlet@163.com>
  * @date 2020/9/2
@@ -28,5 +29,5 @@ package love.forte.simbot.common.annotations
 @Target(allowedTargets = [AnnotationTarget.CLASS])
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
-public annotation class SimbotDescription(vararg val value: String = [])
+public annotation class SmbDescription(vararg val value: String = [])
 

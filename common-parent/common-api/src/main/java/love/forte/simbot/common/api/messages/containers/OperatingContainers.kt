@@ -324,12 +324,10 @@ public data class AccountAsBeOperator(private val account: AccountInfoContainer)
         get() = account.accountRemarkOrNickname
 
     /**
-     * 被操作者
-     *
-     * 昵称与备注, 返回一个`账号(备注)?`格式的字符串.
+     * 被操作者的昵称与备注, 返回一个`账号(备注)?`格式的字符串。
      * 例如：
      * - `张三(张三的备注)`
-     * - `李四` (没有备注)
+     * - `李四`
      */
     override val beOperatorNicknameAndRemark: String
         get() = account.accountNicknameAndRemark

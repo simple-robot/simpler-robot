@@ -31,7 +31,7 @@ import love.forte.simbot.common.api.messages.containers.PermissionContainer
 
 
 /**
- * 私聊消息. 实现[MessageEventGet]
+ * 私聊消息。
  */
 public interface PrivateMsg : MessageEventGet {
     /**
