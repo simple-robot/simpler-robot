@@ -16,8 +16,6 @@
 
 package love.forte.simbot.common.api.messages
 
-import love.forte.simbot.common.api.messages.events.MessageEventGet
-
 /*
  *
  * 定义消息正文接口及部分实现类

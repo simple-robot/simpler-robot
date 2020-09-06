@@ -20,7 +20,7 @@ import love.forte.simbot.common.utils.Carrier
 import love.forte.simbot.common.api.messages.assists.Flag
 import love.forte.simbot.common.api.messages.events.FriendAddRequest
 import love.forte.simbot.common.api.messages.events.GroupAddRequest
-import love.forte.simbot.common.api.messages.events.MessageEventGet
+import love.forte.simbot.common.api.messages.MessageEventGet
 
 /**
  *

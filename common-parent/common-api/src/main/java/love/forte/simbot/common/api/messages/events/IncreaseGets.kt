@@ -16,6 +16,7 @@
 
 package love.forte.simbot.common.api.messages.events
 
+import love.forte.simbot.common.api.messages.IncreaseEventGet
 import love.forte.simbot.common.api.messages.assists.ActionMotivations
 import love.forte.simbot.common.api.messages.containers.*
 

@@ -17,6 +17,7 @@
 package love.forte.simbot.common.api.messages.events
 
 import love.forte.simbot.common.annotations.MainListenerType
+import love.forte.simbot.common.api.messages.ChangedGet
 import love.forte.simbot.common.api.messages.assists.Permissions
 import love.forte.simbot.common.api.messages.containers.*
 
