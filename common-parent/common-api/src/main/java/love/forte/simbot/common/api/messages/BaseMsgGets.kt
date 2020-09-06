@@ -44,7 +44,6 @@ import java.time.LocalDateTime
  * - [原始信息容器][OriginalDataContainer],
  * - [bot基础信息容器][BotContainer],
  * - [用户容器][AccountContainer]
- * @since 2.0.0
  */
 @ParentListenerType("所有监听类型的父接口")
 public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer {
