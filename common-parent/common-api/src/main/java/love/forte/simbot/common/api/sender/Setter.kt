@@ -16,7 +16,7 @@
 
 package love.forte.simbot.common.api.sender
 
-import love.forte.simbot.common.api.carrier.Carrier
+import love.forte.simbot.common.utils.Carrier
 import love.forte.simbot.common.api.messages.assists.Flag
 import love.forte.simbot.common.api.messages.events.FriendAddRequest
 import love.forte.simbot.common.api.messages.events.GroupAddRequest

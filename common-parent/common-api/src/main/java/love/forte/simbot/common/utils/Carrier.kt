@@ -14,7 +14,7 @@
  *
  */
 
-package love.forte.simbot.common.api.carrier
+package love.forte.simbot.common.utils
 
 import java.util.*
 
