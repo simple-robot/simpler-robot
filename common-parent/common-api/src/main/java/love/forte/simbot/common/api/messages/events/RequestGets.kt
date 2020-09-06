@@ -17,7 +17,9 @@
 package love.forte.simbot.common.api.messages.events
 
 import love.forte.simbot.common.annotations.MainListenerType
+import love.forte.simbot.common.api.messages.assists.ActionMotivations
 import love.forte.simbot.common.api.messages.assists.Flag
+import love.forte.simbot.common.api.messages.containers.ActionMotivationContainer
 
 /*
  * 此模块下定义请求相关的监听接口
@@ -64,6 +66,11 @@ public interface GroupAddRequest : RequestGet {
     val invitor: GroupAddRequestInvitor?
 
     /**
+     * 申请的类型
+     */
+    val requestType: Type
+
+    /**
      * 获取请求标识。
      *
      * @see GroupAddRequestIdFlagContent
@@ -75,6 +82,20 @@ public interface GroupAddRequest : RequestGet {
      * [群添加请求][GroupAddRequest] 的 [请求标识主体][RequestGet.RequestFlagContent]
      */
     public interface FlagContent : RequestGet.RequestFlagContent
+
+
+    /**
+     * 群添加请求的类型。
+     */
+    public enum class Type(override val actionMotivations: ActionMotivations): ActionMotivationContainer {
+        /**
+         * 被动的，一般是指被他人邀请进入的
+         */
+        PASSIVE(ActionMotivations.PASSIVE),
+
+        /** 主动的, 一般指代入群者为主动申请加入群聊的 */
+        PROACTIVE(ActionMotivations.PROACTIVE)
+    }
 }
 
 /**

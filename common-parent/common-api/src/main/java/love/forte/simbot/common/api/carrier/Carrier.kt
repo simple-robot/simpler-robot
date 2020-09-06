@@ -93,3 +93,10 @@ public data class Carrier<T>(private val value: T? = null) {
     }
 }
 
+/**
+ * 将一个任意的值转化为 [Carrier]
+ */
+@Suppress("RedundantVisibilityModifier")
+public fun <T> T?.toCarrier(): Carrier<T> = Carrier.get(this)
+
+

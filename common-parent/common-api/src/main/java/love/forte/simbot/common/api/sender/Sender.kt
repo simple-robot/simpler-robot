@@ -16,16 +16,14 @@
 
 package love.forte.simbot.common.api.sender
 
-import love.forte.simbot.common.api.messages.receipts.SenderReceipt
-import love.forte.simbot.common.api.messages.receipts.GroupMsgReceipt
-import love.forte.simbot.common.api.messages.receipts.PrivateMsgReceipt
+import love.forte.simbot.common.api.messages.receipts.*
 
 /**
  *
  * 消息发送器。
  * 一般用来发送消息，例如私聊、群聊等。
  *
- * 一般来讲，消息发送后都会有一个方法对应的 [送信器回执][SenderReceipt]
+ * 一般来讲，消息发送后都会有一个方法对应的 [送信器回执][SenderReceipt]。
  *
  * @author ForteScarlet <ForteScarlet@163.com>
  * @date 2020/9/2
@@ -72,7 +70,16 @@ public interface Sender {
         top: Boolean = false,
         toNewMember: Boolean = false,
         confirm: Boolean = false
-    ): Boolean
+    ): GroupNoticeReceipt
 
+
+    /**
+     * 设置群签到
+     *
+     * @param groupCode 群号
+     * @param title     签到内容标题
+     * @param message   签到内容文本
+     */
+    fun sendGroupSign(groupCode: String, title: String, message: String): GroupSignReceipt
 
 }
