@@ -9,19 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>common-api</artifactId>
-
-    <properties>
-        <common-utils-version>${project.version}</common-utils-version>
-    </properties>
+    <artifactId>common-utils</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>love.forte.simple-robot</groupId>
-            <artifactId>common-utils</artifactId>
-            <version>${common-utils-version}</version>
-        </dependency>
-
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
@@ -51,6 +41,5 @@
 
         </plugins>
     </build>
-
 
 </project>

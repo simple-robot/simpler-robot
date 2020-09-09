@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>common-api</module>
+        <module>common-utils</module>
     </modules>
 
 
