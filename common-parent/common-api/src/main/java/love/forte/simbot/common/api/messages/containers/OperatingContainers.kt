@@ -183,25 +183,25 @@ public interface BeOperatorAvatarContainer {
  * 操作者信息容器
  */
 @ContainerType("操作者头像容器")
-public interface OperatorInfoContainer : OperatorCodeContainer, OperatorNameContainer, OperatorAvatarContainer
+public interface OperatorInfo : OperatorCodeContainer, OperatorNameContainer, OperatorAvatarContainer
 
 /**
  * 可以得到操作者信息的容器
  * @property operatorInfo OperatorInfoContainer
  */
-@ContainerType("操作者容器")
+@ContainerType("操作者信息")
 public interface OperatorContainer {
     /**
      * 得到一个操作者信息 可能会是null
      */
-    val operatorInfo: OperatorInfoContainer?
+    val operatorInfo: OperatorInfo?
 }
 
 /**
  * 被操作者信息容器
  */
-@ContainerType("被操作者头像容器")
-public interface BeOperatorInfoContainer : BeOperatorCodeContainer, BeOperatorNameContainer, BeOperatorAvatarContainer
+@ContainerType("被操作者信息")
+public interface BeOperatorInfo : BeOperatorCodeContainer, BeOperatorNameContainer, BeOperatorAvatarContainer
 
 
 /**
@@ -212,7 +212,7 @@ public interface BeOperatorContainer {
     /**
      * 得到一个被操作者信息  可能会是null
      */
-    val beOperatorInfo: BeOperatorInfoContainer?
+    val beOperatorInfo: BeOperatorInfo?
 }
 
 
@@ -226,9 +226,9 @@ public interface OperatingContainer : OperatorContainer, BeOperatorContainer
 
 /**
  * 将账户作操作者。一般用于那些可以将当前事件的
- * [账户信息][AccountInfoContainer] 作为 [操作者][OperatorInfoContainer] 而使用的地方
+ * [账户信息][AccountInfo] 作为 [操作者][OperatorInfo] 而使用的地方
  */
-public data class AccountAsOperator(private val account: AccountInfoContainer) : OperatorInfoContainer {
+public data class AccountAsOperator(private val account: AccountInfo) : OperatorInfo {
     /**
      * 被操作者的Code
      */
@@ -282,9 +282,9 @@ public data class AccountAsOperator(private val account: AccountInfoContainer) :
 
 /**
  * 将账户作为被操作者。一般用于那些可以将当前事件的
- * [账户信息][AccountInfoContainer] 作为 [被操作者][BeOperatorInfoContainer] 而使用的地方
+ * [账户信息][AccountInfo] 作为 [被操作者][BeOperatorInfo] 而使用的地方
  */
-public data class AccountAsBeOperator(private val account: AccountInfoContainer) : BeOperatorInfoContainer {
+public data class AccountAsBeOperator(private val account: AccountInfo) : BeOperatorInfo {
     /**
      * 被操作者的Code
      */

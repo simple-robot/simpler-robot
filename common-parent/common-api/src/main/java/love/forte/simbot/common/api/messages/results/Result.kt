@@ -46,6 +46,12 @@ public interface MultipleResults<T: Result>: Result, Iterable<T> {
     val results: List<T>
 
     /**
+     * 得到 [results] 的长度
+     */
+    @JvmDefault
+    val size: Int get() = results.size
+
+    /**
      * 获取一个迭代器
      */
     @JvmDefault
@@ -56,6 +62,7 @@ public interface MultipleResults<T: Result>: Result, Iterable<T> {
      */
     @JvmDefault
     fun isEmpty(): Boolean = results.isEmpty()
+
 
     /**
      * 将 [results] 转化为 [java.util.stream.Stream]

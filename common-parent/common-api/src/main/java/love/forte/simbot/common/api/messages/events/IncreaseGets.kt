@@ -59,7 +59,7 @@ public interface GroupMemberIncrease: IncreaseEventGet, GroupContainer, Operatin
      * [被操作者][beOperatorInfo] 默认实现为 [当前主体账户][accountInfo]
      */
     @JvmDefault
-    override val beOperatorInfo: BeOperatorInfoContainer
+    override val beOperatorInfo: BeOperatorInfo
         get() = AccountAsBeOperator(accountInfo)
 
     /**

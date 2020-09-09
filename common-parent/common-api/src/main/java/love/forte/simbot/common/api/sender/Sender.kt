@@ -52,7 +52,6 @@ public interface Sender {
 
     /**
      * 发布群公告
-     * 目前，top、toNewMember、confirm参数是无效的
      * @param group 群号
      * @param title 标题
      * @param text   正文
@@ -66,12 +65,31 @@ public interface Sender {
         group: String,
         title: String?,
         text: String?,
-        popUp: Boolean = false,
-        top: Boolean = false,
-        toNewMember: Boolean = false,
-        confirm: Boolean = false
+        popUp: Boolean,
+        top: Boolean,
+        toNewMember: Boolean,
+        confirm: Boolean
     ): GroupNoticeReceipt
 
+    /**
+     * 发布群公告
+     * @param group 群号
+     * @param title 标题
+     * @param text   正文
+     * @return 是否发布成功
+     */
+    @JvmDefault
+    fun sendGroupNotice(
+        group: String,
+        title: String?,
+        text: String?
+    ): GroupNoticeReceipt = sendGroupNotice(
+        group, title, text,
+        popUp = false,
+        top = false,
+        toNewMember = false,
+        confirm = false
+    )
 
     /**
      * 设置群签到

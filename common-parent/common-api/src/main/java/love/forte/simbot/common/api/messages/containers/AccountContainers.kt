@@ -104,17 +104,17 @@ public interface AccountAvatarContainer {
  * - [用户账号容器][AccountCodeContainer]
  */
 @ContainerType("账户信息容器")
-public interface AccountInfoContainer : AccountNameContainer, AccountAvatarContainer, AccountCodeContainer
+public interface AccountInfo : AccountNameContainer, AccountAvatarContainer, AccountCodeContainer
 
 
 /**
- * 账号容器，可以得到一个账号的[信息][AccountInfoContainer]。
+ * 账号容器，可以得到一个账号的[信息][AccountInfo]。
  */
 @ContainerType("账号容器")
 public interface AccountContainer {
     /**
      * 账号的信息。一般来讲是不可能为null的，但是其中的信息就不一定了
      */
-    val accountInfo: AccountInfoContainer
+    val accountInfo: AccountInfo
 }
 

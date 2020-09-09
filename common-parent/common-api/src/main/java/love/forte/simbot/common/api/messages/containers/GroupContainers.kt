@@ -17,6 +17,7 @@
 package love.forte.simbot.common.api.messages.containers
 
 import love.forte.simbot.common.annotations.ContainerType
+import love.forte.simbot.common.api.messages.results.Result
 
 
 /**
@@ -60,12 +61,12 @@ public interface GroupNameContainer {
  * [群名称容器][GroupNameContainer]
  */
 @ContainerType("群信息容器")
-public interface GroupInfoContainer : GroupAvatarContainer, GroupCodeContainer, GroupNameContainer
+public interface GroupInfo : GroupAvatarContainer, GroupCodeContainer, GroupNameContainer
 
 /**
- * 可以得到一个[群信息][GroupInfoContainer]容器
+ * 可以得到一个[群信息][GroupInfo]容器
  */
 @ContainerType("群容器")
 public interface GroupContainer {
-    val groupInfo: GroupInfoContainer
+    val groupInfo: GroupInfo
 }

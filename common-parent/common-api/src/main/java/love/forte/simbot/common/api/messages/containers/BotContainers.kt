@@ -59,10 +59,10 @@ public interface BotAvatarContainer {
  * - [机器人头像容器][BotAvatarContainer]
  */
 @ContainerType("机器人信息容器")
-public interface BotInfoContainer : BotCodeContainer, BotNameContainer, BotAvatarContainer
+public interface BotInfo : BotCodeContainer, BotNameContainer, BotAvatarContainer
 
 /**
- * bot容器，可以得到一个 [bot信息][BotInfoContainer]。
+ * bot容器，可以得到一个 [bot信息][BotInfo]。
  *
  * @property botInfo BotInfoContainer
  */
@@ -71,5 +71,5 @@ public interface BotContainer {
     /**
      * bot信息
      */
-    val botInfo: BotInfoContainer
+    val botInfo: BotInfo
 }
