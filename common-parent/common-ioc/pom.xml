@@ -3,19 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>parent</artifactId>
+        <artifactId>common-parent</artifactId>
         <groupId>love.forte.simple-robot</groupId>
         <version>2.0.0-ALPHA.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>common-parent</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>common-api</module>
-        <module>common-utils</module>
-        <module>common-ioc</module>
-    </modules>
+    <artifactId>common-ioc</artifactId>
 
 
 </project>

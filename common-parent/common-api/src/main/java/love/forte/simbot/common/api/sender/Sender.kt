@@ -16,7 +16,7 @@
 
 package love.forte.simbot.common.api.sender
 
-import love.forte.simbot.common.api.messages.receipts.*
+import love.forte.simbot.common.api.message.receipts.*
 
 /**
  *

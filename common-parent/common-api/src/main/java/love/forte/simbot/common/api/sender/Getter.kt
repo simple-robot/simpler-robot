@@ -16,8 +16,7 @@
 
 package love.forte.simbot.common.api.sender
 
-import love.forte.simbot.common.api.messages.containers.GroupInfo
-import love.forte.simbot.common.api.messages.results.*
+import love.forte.simbot.common.api.message.results.*
 
 /**
  *
