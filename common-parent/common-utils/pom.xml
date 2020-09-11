@@ -12,6 +12,13 @@
     <artifactId>common-utils</artifactId>
 
     <dependencies>
+
+        <!-- hutool core -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-core</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
