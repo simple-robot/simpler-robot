@@ -6,10 +6,13 @@ import java.util.concurrent.TimeUnit
 
 
 /**
- * 时间内联类。[time]参数是 **毫秒** 值。
+ * 时间**内联类**。[time]参数是 **毫秒** 值。
+ *
+ * **仅用在kotlin中。**
+ *
  * 你可以通过 中缀函数 [Number].[timeBy] ([TimeUnit]) 得到此实例，例如：
  * ```
- *  val second: Long = ...
+ *  val second: Long = 20L
  *  val time: Time = time timeBy TimeUnit.SECONDS
  * ```
  * 你也可以直接通过函数 [now] 来得到当前时间的 [Time] 值。
