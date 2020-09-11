@@ -1,17 +1,13 @@
 /*
+ * Copyright (c) 2020. ForteScarlet All rights reserved.
+ * Project  parent
+ * File     SmbDescription.kt
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  simple-robot-S
- *  * File     SimbotDescription.kt
- *  *
- *  * You can contact the author through the following channels:
- *  * github https://github.com/ForteScarlet
- *  * gitee  https://gitee.com/ForteScarlet
- *  * email  ForteScarlet@163.com
- *  * QQ     1149159218
- *  *
- *  *
- *
+ * You can contact the author through the following channels:
+ * github https://github.com/ForteScarlet
+ * gitee  https://gitee.com/ForteScarlet
+ * email  ForteScarlet@163.com
+ * QQ     1149159218
  */
 
 package love.forte.simbot.common.annotations
