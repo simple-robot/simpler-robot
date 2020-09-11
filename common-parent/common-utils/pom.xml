@@ -13,12 +13,19 @@
 
     <dependencies>
 
+        <!-- utils-annotation -->
+        <dependency>
+            <groupId>love.forte.simple-robot</groupId>
+            <artifactId>common-utils-annotation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- hutool core -->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
         </dependency>
-
+        <!-- kt -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>

@@ -2,9 +2,6 @@ package love.forte.common.utils.convert
 
 import cn.hutool.core.convert.AbstractConverter
 import cn.hutool.core.convert.ConverterRegistry
-import cn.hutool.core.lang.ParameterizedTypeImpl
-import cn.hutool.core.lang.TypeReference
-import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 import cn.hutool.core.convert.Converter as HutoolConverter
 
@@ -12,8 +9,7 @@ import cn.hutool.core.convert.Converter as HutoolConverter
 /**
  * [ConverterManagerBuilder] 的基于 **hutool-convertUtil** 的实现
  */
-public open class HutoolConverterManagerBuilderImpl :
-    _root_ide_package_.love.forte.common.utils.convert.ConverterManagerBuilder {
+public open class HutoolConverterManagerBuilderImpl : ConverterManagerBuilder {
 
     private val registry = ConverterRegistry()
 
@@ -21,7 +17,7 @@ public open class HutoolConverterManagerBuilderImpl :
     /**
      * 向当前的 [registry] 中注册一个转化器
      */
-    override fun register(target: Type, converter: _root_ide_package_.love.forte.common.utils.convert.Converter<*>): _root_ide_package_.love.forte.common.utils.convert.ConverterManagerBuilder =
+    override fun register(target: Type, converter: Converter<*>): ConverterManagerBuilder =
         this.apply {
             registry.putCustom(target, converter.asHutoolConvert())
         }
@@ -29,11 +25,10 @@ public open class HutoolConverterManagerBuilderImpl :
     /**
      * 构建要一个 [ConverterManager]
      */
-    override fun build(): _root_ide_package_.love.forte.common.utils.convert.ConverterManager {
+    override fun build(): ConverterManager {
         return HutoolConverterManagerImpl(registry)
     }
 }
-
 
 
 /**
@@ -60,11 +55,11 @@ public open class HutoolConverterImpl<T>(private val convert: (Any) -> T?) : Abs
  * 转化类型manager, 基于 [ConverterRegistry] 实现
  */
 public open class HutoolConverterManagerImpl(private val converterRegistry: ConverterRegistry) :
-    _root_ide_package_.love.forte.common.utils.convert.ConverterManager {
+    ConverterManager {
     /**
      * 获取某目标的转化器
      */
-    override fun <T> getConverterByTarget(target: Type): _root_ide_package_.love.forte.common.utils.convert.Converter<T> {
+    override fun <T> getConverterByTarget(target: Type): Converter<T> {
         return converterRegistry.getConverter<T>(target, true).asConverter()
     }
 
@@ -77,23 +72,17 @@ public open class HutoolConverterManagerImpl(private val converterRegistry: Conv
 }
 
 
-
-
-
-
-
-
-
 /**
  * 将 [Converter] 接口实例 转化为 [HutoolConverter] 接口实例
  */
-private fun <T> _root_ide_package_.love.forte.common.utils.convert.Converter<T>.asHutoolConvert(): HutoolConverter<T> = HutoolConverterImpl { convert(it) }
+private fun <T> Converter<T>.asHutoolConvert(): HutoolConverter<T> =
+    HutoolConverterImpl { convert(it) }
 
 /**
  * 将 [HutoolConverter] 接口实例 转化为 [Converter] 接口实例
  */
-private fun <T> HutoolConverter<T>.asConverter(): _root_ide_package_.love.forte.common.utils.convert.Converter<T> =
-    _root_ide_package_.love.forte.common.utils.convert.Converter<T> { convert(it, null) }
+private fun <T> HutoolConverter<T>.asConverter(): Converter<T> =
+    Converter<T> { convert(it, null) }
 
 
 

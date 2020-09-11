@@ -18,20 +18,27 @@ import java.util.Iterator;
 
 /**
  * 迭代器工具类
+ *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 public class IteratorUtil {
 
     /**
-     * 将{@link Enumeration}转化为迭代器对象
+     * 将 {@link Enumeration} 转化为迭代器对象
      * @return Iterator
      */
-    public static <T> Iterator<T> iter(Enumeration<T> enumeration){
+    public static <T> Iterator<T> enumerationIter(Enumeration<T> enumeration){
         return new EnumerateIterator<>(enumeration);
     }
 
 
 
+
+
+    /**
+     * {@link Enumeration} 的迭代器实现。
+     *
+     */
     static final class EnumerateIterator<T> implements Iterator<T>, Enumeration<T> {
         private final Enumeration<T> enumeration;
         EnumerateIterator(Enumeration<T> enumeration){
@@ -59,7 +66,7 @@ public class IteratorUtil {
 
         @Override
         public String toString() {
-            return super.toString() + "("+ enumeration.toString() +")";
+            return super.toString() + "<by>("+ enumeration.toString() +")";
         }
     }
 
