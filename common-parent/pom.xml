@@ -18,6 +18,7 @@
         <module>common-base</module>
         <module>common-language</module>
         <module>common-utils-annotation</module>
+        <module>common-configuration</module>
     </modules>
 
 

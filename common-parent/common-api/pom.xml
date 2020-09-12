@@ -11,15 +11,13 @@
 
     <artifactId>common-api</artifactId>
 
-    <properties>
-        <common-utils-version>${project.version}</common-utils-version>
-    </properties>
 
     <dependencies>
+        <!-- common-utils -->
         <dependency>
             <groupId>love.forte.simple-robot</groupId>
             <artifactId>common-utils</artifactId>
-            <version>${common-utils-version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

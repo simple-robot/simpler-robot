@@ -27,15 +27,6 @@ import java.lang.reflect.Type;
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public interface ConverterManager {
-    /**
-     * 获取某目标的转化器。
-     *
-     * @param target 目标结果
-     * @return 转化器
-     */
-    <T> Converter<T> getConverterByTarget(Type target);
-
-
 
     /**
      * 进行转化。将一个 value 值转化为指定的类型。如果无法转化则获取一个默认值。
@@ -83,4 +74,13 @@ public interface ConverterManager {
         return convert(targetClass, value, null);
     }
 
+
+
+    /**
+     * 获取某目标的转化器。
+     *
+     * @param target 目标结果
+     * @return 转化器
+     */
+    <T> Converter<T> getConverterByTarget(Type target);
 }

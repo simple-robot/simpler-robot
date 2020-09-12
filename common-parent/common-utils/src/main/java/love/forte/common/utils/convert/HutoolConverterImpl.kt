@@ -69,17 +69,17 @@ public open class HutoolConverterImpl<T>(private val convert: (Any) -> T?) : Abs
 public open class HutoolConverterManagerImpl(private val converterRegistry: ConverterRegistry) :
     ConverterManager {
     /**
-     * 获取某目标的转化器
-     */
-    override fun <T> getConverterByTarget(target: Type): Converter<T> {
-        return converterRegistry.getConverter<T>(target, true).asConverter()
-    }
-
-    /**
      * 进行值转化
      */
     override fun <T> convert(target: Type, value: Any?, defValue: T?): T? {
         return converterRegistry.convert(target, value, defValue, true)
+    }
+
+    /**
+     * 获取某目标的转化器
+     */
+    override fun <T> getConverterByTarget(target: Type): Converter<T> {
+        return converterRegistry.getConverter<T>(target, true).asConverter()
     }
 }
 
