@@ -12,14 +12,13 @@
 
 package love.forte.common.configuration;
 
-import love.forte.common.configuration.impl.ConfigurationInjectorImpl4J;
 import love.forte.common.utils.convert.ConverterManager;
 
 /**
  *
  * 配置注入器, 向一个实例中注入配置信息。
  *
- * @see ConfigurationInjectorImpl4J
+ * @see love.forte.common.configuration.impl.ConfigurationInjectorImpl
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */

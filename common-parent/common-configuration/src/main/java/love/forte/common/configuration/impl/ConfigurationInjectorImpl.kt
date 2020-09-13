@@ -65,8 +65,9 @@ object ConfigurationInjectorImpl : ConfigurationInjector {
     /**
      * 向一个配置类实例中注入配置信息。
      *
-     * @see love.forte.common.configuration.annotation.AsConfig
-     * @see love.forte.common.configuration.annotation.ConfigInject
+     * @see AsConfig
+     * @see ConfigInject
+     * @see ConfigIgnore
      *
      * @param configInstance 配置类实例
      * @param configuration 配置信息

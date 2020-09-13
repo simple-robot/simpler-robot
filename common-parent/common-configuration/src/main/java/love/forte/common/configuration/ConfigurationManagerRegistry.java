@@ -24,7 +24,6 @@ import love.forte.common.utils.convert.HutoolConverterManagerBuilderImpl;
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  * @see #register(ConfigurationParserManagerBuilder)
- * @see #register(ConfigurationParserManager)
  */
 public class ConfigurationManagerRegistry {
 
