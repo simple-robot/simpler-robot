@@ -15,7 +15,10 @@ package love.forte.simbot.common.api.message.events
 import love.forte.simbot.common.annotations.MainListenerType
 import love.forte.simbot.common.api.message.ChangedGet
 import love.forte.simbot.common.api.message.assists.Permissions
-import love.forte.simbot.common.api.message.containers.*
+import love.forte.simbot.common.api.message.containers.AccountAsBeOperator
+import love.forte.simbot.common.api.message.containers.BeOperatorInfo
+import love.forte.simbot.common.api.message.containers.GroupContainer
+import love.forte.simbot.common.api.message.containers.OperatingContainer
 
 /*
  * 此模块定义与 变更 有关的事件接口

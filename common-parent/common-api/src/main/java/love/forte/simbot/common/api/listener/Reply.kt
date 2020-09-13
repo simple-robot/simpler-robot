@@ -12,7 +12,7 @@
 
 package love.forte.simbot.common.api.listener
 
-import java.util.AbstractMap
+import java.util.*
 
 /*
     提供一些默认的Reply以表示一些常见的返回形式。

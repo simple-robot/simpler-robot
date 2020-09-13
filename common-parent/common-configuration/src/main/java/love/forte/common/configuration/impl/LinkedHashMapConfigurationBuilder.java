@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     ConfigurationBuilderImpl.java
+ * File     LinkedHashMapConfigurationBuilder.java
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -10,8 +10,11 @@
  * QQ     1149159218
  */
 
-package love.forte.common.configuration;
+package love.forte.common.configuration.impl;
 
+import love.forte.common.configuration.Configuration;
+import love.forte.common.configuration.ConfigurationBuilder;
+import love.forte.common.configuration.ConfigurationProperty;
 import love.forte.common.utils.convert.ConverterManager;
 
 import java.util.HashMap;
@@ -19,7 +22,7 @@ import java.util.Map;
 
 /**
  *
- * {@link ConfigurationBuilder} 基于 {@link LinkedHashMapConfiguration} 的基础实现类。
+ * {@link ConfigurationBuilder} 基于 {@link MapConfiguration} 的基础实现类。
  *
  * 需要提供一个类型转化器 {@link ConverterManager} 。
  *
@@ -27,8 +30,9 @@ import java.util.Map;
  */
 public class LinkedHashMapConfigurationBuilder implements ConfigurationBuilder {
 
-    private final ConverterManager converterManager;
 
+    /** 类型转化器 */
+    private final ConverterManager converterManager;
     /**
      * config map.
      */
@@ -74,6 +78,6 @@ public class LinkedHashMapConfigurationBuilder implements ConfigurationBuilder {
      */
     @Override
     public Configuration build() {
-        return new LinkedHashMapConfiguration(configMap);
+        return new MapConfiguration(configMap);
     }
 }

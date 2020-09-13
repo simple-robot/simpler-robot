@@ -12,11 +12,11 @@
 
 package love.forte.simbot.common.api.sender
 
-import love.forte.simbot.common.utils.Carrier
+import love.forte.simbot.common.api.message.MessageEventGet
 import love.forte.simbot.common.api.message.assists.Flag
 import love.forte.simbot.common.api.message.events.FriendAddRequest
 import love.forte.simbot.common.api.message.events.GroupAddRequest
-import love.forte.simbot.common.api.message.MessageEventGet
+import love.forte.simbot.common.utils.Carrier
 
 /**
  *

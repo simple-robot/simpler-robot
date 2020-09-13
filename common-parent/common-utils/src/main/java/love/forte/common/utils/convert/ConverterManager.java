@@ -22,7 +22,7 @@ import java.lang.reflect.Type;
  *
  * 如果想要实现一些跟泛型有关系的转化，例如（String 转化为 List<Int>）则可以考虑使用java的 {@link java.lang.reflect.ParameterizedType} 接口。
  *
- * 其中，hutool工具类提供了一个默认的实现类 {@link cn.hutool.core.lang.ParameterizedTypeImpl}。
+ * 其中，你可以参考 {@link love.forte.common.constant.TypeConstant} 或者 {@link love.forte.common.impl.ParameterizedTypeImpl} 。
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */

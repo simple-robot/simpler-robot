@@ -23,14 +23,16 @@ import cn.hutool.core.convert.Converter as HutoolConverter
  */
 public open class HutoolConverterManagerBuilderImpl : ConverterManagerBuilder {
 
-    private val registry = ConverterRegistry()
-
+    private lateinit var registry: ConverterRegistry
 
     /**
      * 向当前的 [registry] 中注册一个转化器
      */
     override fun register(target: Type, converter: Converter<*>): ConverterManagerBuilder =
         this.apply {
+            if(!::registry.isInitialized){
+                registry = ConverterRegistry()
+            }
             registry.putCustom(target, converter.asHutoolConvert())
         }
 
@@ -38,7 +40,11 @@ public open class HutoolConverterManagerBuilderImpl : ConverterManagerBuilder {
      * 构建要一个 [ConverterManager]
      */
     override fun build(): ConverterManager {
-        return HutoolConverterManagerImpl(registry)
+        return if(::registry.isInitialized){
+            HutoolConverterManagerImpl(registry)
+        }else{
+            HutoolConverterManagerImpl(ConverterRegistry.getInstance())
+        }
     }
 }
 

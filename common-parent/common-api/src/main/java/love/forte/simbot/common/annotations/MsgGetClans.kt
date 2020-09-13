@@ -12,10 +12,11 @@
 
 package love.forte.simbot.common.annotations
 
+import love.forte.simbot.common.api.message.MessageEventGet
+import love.forte.simbot.common.api.message.MsgGet
+import love.forte.simbot.common.api.message.containers.FlagContainer
+import love.forte.simbot.common.api.message.events.PrivateMsg
 import kotlin.annotation.AnnotationTarget.CLASS
-import love.forte.simbot.common.api.message.events.*
-import love.forte.simbot.common.api.message.containers.*
-import love.forte.simbot.common.api.message.*
 
 /*
  *

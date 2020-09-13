@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     NullConfigProperty.java
+ * File     NullConfigurationProperty.java
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -10,8 +10,9 @@
  * QQ     1149159218
  */
 
-package love.forte.common.configuration;
+package love.forte.common.configuration.impl;
 
+import love.forte.common.configuration.ConfigurationProperty;
 import love.forte.common.utils.convert.ConverterManager;
 
 import java.lang.reflect.Type;

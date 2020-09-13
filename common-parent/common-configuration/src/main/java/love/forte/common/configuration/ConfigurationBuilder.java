@@ -13,7 +13,6 @@
 package love.forte.common.configuration;
 
 import java.util.Map;
-import java.util.Properties;
 
 /**
  *
