@@ -26,15 +26,14 @@ import java.util.stream.Stream;
 /**
  * 针对 yml 格式文件的 {@link love.forte.common.configuration.ConfigurationParser} 实现。
  *
+ * 无状态，为单例解析器，通过 {@link #INSTANCE} 获取实例。
+ *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 public class YamlParser extends ReaderConfigurationParser {
 
     private static final String YAML_PARSER_TYPE = "yaml";
-    private static final YamlParser INSTANCE = new YamlParser();
-    public static YamlParser getInstance() {
-        return INSTANCE;
-    }
+    public static final YamlParser INSTANCE = new YamlParser();
     private YamlParser(){}
     /**
      * 每一个解析器都有一个对应的 <b> 类型 </b>，一般代表了配置文件的配置格式。例如 {@code properties}

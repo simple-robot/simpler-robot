@@ -22,17 +22,16 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * 针对 properties 格式的配置文件的解析器。
+ * 针对 properties 格式的配置文件的 {@link love.forte.common.configuration.ConfigurationParser} 实现。
+ *
+ * 无状态，为单例解析器，通过 {@link #INSTANCE} 获取实例。
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 public class PropertiesParser extends ReaderConfigurationParser {
 
     private static final String PROP_PARSER_TYPE = "properties";
-    private static final PropertiesParser INSTANCE = new PropertiesParser();
-    public static PropertiesParser getInstance() {
-        return INSTANCE;
-    }
+    public static final PropertiesParser INSTANCE = new PropertiesParser();
     private PropertiesParser(){}
 
     /**

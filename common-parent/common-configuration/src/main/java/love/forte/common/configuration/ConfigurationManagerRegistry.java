@@ -46,10 +46,11 @@ public class ConfigurationManagerRegistry {
      */
     public static <B extends ConfigurationParserManagerBuilder> B register(B builder) {
         // properties 解析器
-        builder.register("properties", PropertiesParser.getInstance());
+        builder.register("properties", PropertiesParser.INSTANCE);
+        builder.register("lang", PropertiesParser.INSTANCE);
         // yaml 解析器，会注册 yaml和yml两个类型
-        builder.register("yaml", YamlParser.getInstance());
-        builder.register("yml", YamlParser.getInstance());
+        builder.register("yaml", YamlParser.INSTANCE);
+        builder.register("yml", YamlParser.INSTANCE);
         return builder;
     }
 
