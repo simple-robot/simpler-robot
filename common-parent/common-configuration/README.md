@@ -1,6 +1,6 @@
 # common-configuration
 
-配置相关的模块。
+提供配置读取功能模块。
 
 
 ConfigurationManagerBuilder --> 

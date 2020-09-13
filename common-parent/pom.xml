@@ -11,6 +11,8 @@
 
     <artifactId>common-parent</artifactId>
     <packaging>pom</packaging>
+    <version>2.0.0-ALPHA.1</version>
+
     <modules>
         <module>common-api</module>
         <module>common-utils</module>
@@ -19,6 +21,7 @@
         <module>common-language</module>
         <module>common-utils-annotation</module>
         <module>common-configuration</module>
+        <module>nekolog</module>
     </modules>
 
 

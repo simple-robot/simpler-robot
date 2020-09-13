@@ -11,5 +11,13 @@
 
     <artifactId>common-language</artifactId>
 
+    <dependencies>
+        <!-- utils -->
+        <dependency>
+            <groupId>love.forte.simple-robot</groupId>
+            <artifactId>common-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

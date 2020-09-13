@@ -21,7 +21,7 @@ public class Test1 {
 
         final ConfigurationInjectorImpl injector = ConfigurationInjectorImpl.INSTANCE;
 
-        final TestConfig testConfig = new TestConfig();
+        final TestKTConf2 testConfig = new TestKTConf2();
 
         injector.inject(testConfig, configuration);
 

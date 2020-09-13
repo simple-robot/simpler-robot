@@ -25,6 +25,10 @@
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <!--</editor-fold>-->
 
+        <!-- slf4j version -->
+        <slf4j.version>1.7.30</slf4j.version>
+
+        <!-- dokka version -->
         <dokka.version>1.4.0-rc</dokka.version>
 
         <junit.jupiter.version>5.5.2</junit.jupiter.version>
@@ -181,7 +185,13 @@
                 <version>${hutool.version}</version>
             </dependency>
             <!--</editor-fold>-->
-
+            <!--<editor-fold desc="slf4j dependency">-->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <!--</editor-fold>-->
 
 
 
