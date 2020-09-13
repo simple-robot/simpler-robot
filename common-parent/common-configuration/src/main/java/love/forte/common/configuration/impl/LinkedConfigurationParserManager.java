@@ -13,6 +13,7 @@
 package love.forte.common.configuration.impl;
 
 import love.forte.common.configuration.*;
+import love.forte.common.configuration.exception.ConfigurationParseException;
 import love.forte.common.utils.convert.ConverterManager;
 
 import java.io.IOException;
@@ -21,7 +22,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 /**
  *
@@ -76,20 +76,6 @@ public class LinkedConfigurationParserManager extends ReaderConfigurationParserM
     }
 
     /**
-     *
-     * 将永远能够被插入。请直接使用 {@link #setParser(String, ConfigurationParser)}
-     *
-     * @param type   类型
-     * @param parser 解析器
-     * @param merger merge function
-     * @return 最终插入的结果
-     */
-    public ConfigurationParser merge(String type, ConfigurationParser parser, BiFunction<? super ConfigurationParser, ? super ConfigurationParser, ? extends ConfigurationParser> merger) {
-        setParser(type, parser);
-        return parser;
-    }
-
-    /**
      * 构建配置信息
      *
      * @param configMap config map.
@@ -106,19 +92,35 @@ public class LinkedConfigurationParserManager extends ReaderConfigurationParserM
 
     @Override
     protected Configuration parseReader(String type, Reader reader) throws IOException {
+        LinkedList<Exception> exs = new LinkedList<>();
         try (Reader rd = reader) {
             final LinkedList<ConfigurationParser> parserList = parsers.get(type);
             if(parserList != null){
                 for (ConfigurationParser parser : parserList) {
-                    final Map<String, Object> parse = parser.parse(rd);
-                    if(parse != null){
-                        return createConfiguration(parse);
+                    try {
+                        final Map<String, Object> parse = parser.parse(rd);
+                        if(parse != null){
+                            return createConfiguration(parse);
+                        }else{
+                            exs.add(new ConfigurationParseException("cannot parse this. (by "+ parser.getClass() +" for type "+ parser.getType() +")"));
+                        }
+                    }catch (Exception e){
+                        exs.add(e);
                     }
                 }
-
             }
-            // TODO maybe throw ex
-            return null;
+            // maybe throw ex
+            StringBuilder sb = new StringBuilder("config parse failed.");
+            if(!exs.isEmpty()){
+                sb.append("\nall exception message: \n");
+                for (Exception ex : exs) {
+                    sb.append("> ").append(ex.getLocalizedMessage()).append("\n");
+                }
+            }else{
+                sb.append(" cannot found any parser for type '").append(type).append("'.");
+            }
+
+            throw new ConfigurationParseException(sb.toString());
         }
     }
 }

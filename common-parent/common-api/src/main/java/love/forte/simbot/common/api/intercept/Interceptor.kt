@@ -21,7 +21,7 @@ import love.forte.simbot.common.constant.PriorityConstant
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-interface Interceptor<T, C: _root_ide_package_.love.forte.simbot.common.api.intercept.Context<T>> : Comparable<Interceptor<*, *>> {
+interface Interceptor<T, C: Context<T>> : Comparable<Interceptor<*, *>> {
 
     /**
      * 执行拦截，当返回值为 `true` 的时候则会被放行。

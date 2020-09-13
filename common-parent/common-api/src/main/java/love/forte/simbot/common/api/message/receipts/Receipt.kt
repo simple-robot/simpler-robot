@@ -12,7 +12,8 @@
 
 package love.forte.simbot.common.api.message.receipts
 
-import love.forte.simbot.common.utils.Carrier
+import love.forte.common.utils.Carrier
+
 
 /**
  * **回执**消息接口。

@@ -12,7 +12,7 @@
 
 package love.forte.simbot.common.api.message.containers
 
-import love.forte.simbot.common.annotations.ContainerType
+import love.forte.simbot.common.annotation.ContainerType
 import love.forte.simbot.common.api.message.assists.ActionMotivations
 import love.forte.simbot.common.api.message.assists.Flag
 import love.forte.simbot.common.api.message.assists.FlagContent

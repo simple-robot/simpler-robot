@@ -10,7 +10,7 @@
  * QQ     1149159218
  */
 
-package love.forte.simbot.common.annotations
+package love.forte.simbot.common.annotation
 
 import love.forte.simbot.common.api.message.MessageEventGet
 import love.forte.simbot.common.api.message.MsgGet

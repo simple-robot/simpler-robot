@@ -29,12 +29,27 @@
             <artifactId>jackson-dataformat-yaml</artifactId>
             <version>${yaml-version}</version>
         </dependency>
-        <!--<dependency>-->
-        <!--    <groupId>com.fasterxml.jackson.dataformat</groupId>-->
-        <!--    <artifactId>jackson-dataformat-properties</artifactId>-->
-        <!--    <version>2.9.8</version>-->
-        <!--</dependency>-->
 
     </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
 
 </project>

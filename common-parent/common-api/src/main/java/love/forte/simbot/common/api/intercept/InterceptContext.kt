@@ -56,14 +56,14 @@ public abstract class BaseContext<T>
 constructor(
     override val value: T,
     private val contextMap: MutableMap<String, Any?> = mutableMapOf()
-) : _root_ide_package_.love.forte.simbot.common.api.intercept.Context<T> {
+) : Context<T> {
     /**
      * 可以从上下文对象中获取储存的值。
      * 这些值会在当前一次拦截流程中被传递。
      *
      * @return value if exists.
      */
-    override fun get(key: String): Any? = contextMap[key]
+    override operator fun get(key: String): Any? = contextMap[key]
 
     /**
      * 可以向上下文对象中储存一些值。
@@ -71,7 +71,7 @@ constructor(
      *
      * @return old value if exists.
      */
-    override fun set(key: String, value: Any?): Any? = contextMap.put(key, value)
+    override operator fun set(key: String, value: Any?): Any? = contextMap.put(key, value)
 
 
     /**

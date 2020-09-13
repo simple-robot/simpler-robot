@@ -13,8 +13,10 @@
 package love.forte.common.configuration;
 
 import love.forte.common.configuration.impl.LinkedConfigurationParserManager;
+import love.forte.common.configuration.impl.LinkedConfigurationParserManagerBuilder;
 import love.forte.common.configuration.impl.PropertiesParser;
 import love.forte.common.configuration.impl.YamlParser;
+import love.forte.common.utils.convert.ConverterManager;
 import love.forte.common.utils.convert.HutoolConverterManagerBuilderImpl;
 
 /**
@@ -31,7 +33,9 @@ public class ConfigurationManagerRegistry {
      * @return {@link ConfigurationParserManager}
      */
     public static ConfigurationParserManager defaultManager() {
-        return register(new LinkedConfigurationParserManager(new HutoolConverterManagerBuilderImpl().build()));
+        final ConverterManager converterManager = new HutoolConverterManagerBuilderImpl().build();
+        final LinkedConfigurationParserManagerBuilder builder = new LinkedConfigurationParserManagerBuilder(converterManager);
+        return register(builder).build();
     }
 
     /**
@@ -48,22 +52,6 @@ public class ConfigurationManagerRegistry {
         builder.register("yaml", YamlParser.getInstance());
         builder.register("yml", YamlParser.getInstance());
         return builder;
-    }
-
-    /**
-     * 注册几个默认解析器到 {@link ConfigurationParserManager} 中。
-     *
-     * @param manager {@link ConfigurationParserManager}
-     * @see PropertiesParser
-     * @see YamlParser
-     */
-    public static <M extends ConfigurationParserManager> M register(M manager) {
-        // // properties 解析器
-        // manager.setParser("properties", PropertiesParser.getInstance());
-        // // yaml 解析器，会注册 yaml和yml两个类型
-        // manager.setParser("yaml", YamlParser.getInstance());
-        // manager.setParser("yml", YamlParser.getInstance());
-        return manager;
     }
 
 

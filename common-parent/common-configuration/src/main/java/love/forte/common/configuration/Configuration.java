@@ -32,6 +32,9 @@ import java.util.function.Predicate;
  *
  * 如果想要使某个配置项为null，可以尝试使用 {@link NullConfigurationProperty}。
  *
+ *
+ * @see love.forte.common.configuration.impl.MapConfiguration
+ *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @SuppressWarnings({"unused", "UnusedReturnValue"})
@@ -70,14 +73,14 @@ public interface Configuration {
     default ConfigurationProperty mergeConfig(String key, ConfigurationProperty value,
                                               BiFunction<? super ConfigurationProperty, ? super ConfigurationProperty, ? extends ConfigurationProperty> mergeFunction) {
         Objects.requireNonNull(key, "key(arg0) cannot be null.");
+        Objects.requireNonNull(value, "value(arg1) cannot be null.");
         Objects.requireNonNull(mergeFunction, "mergeFunction(arg2) cannot be null.");
-        Objects.requireNonNull(value, "mergeFunction(arg1) cannot be null.");
 
         ConfigurationProperty oldValue = getConfig(key);
         ConfigurationProperty newValue = (oldValue == null) ? value :
                 mergeFunction.apply(oldValue, value);
         if(newValue == null) {
-            throw new NullPointerException("new config property connot be null.");
+            throw new NullPointerException("new config property cannot be null.");
         } else {
             setConfig(key, newValue);
         }

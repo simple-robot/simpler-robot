@@ -12,7 +12,7 @@
 
 package love.forte.simbot.common.api.message.events
 
-import love.forte.simbot.common.annotations.MainListenerType
+import love.forte.simbot.common.annotation.MainListenerType
 import love.forte.simbot.common.api.message.RequestGet
 import love.forte.simbot.common.api.message.assists.ActionMotivations
 import love.forte.simbot.common.api.message.assists.Flag
