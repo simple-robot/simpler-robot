@@ -16,7 +16,7 @@ public class Colors {
 
     /**
      * 构造
-     * 直接通过 {@link ColorsBuilder#build()} 构建.
+     * 直接通过 {@link ColorBuilder#build()} 构建.
      */
     Colors(String str, ColorTypes... colors){
         this.COLOR_STR = str;
@@ -24,8 +24,8 @@ public class Colors {
     }
 
     /** 获取一个色彩字构建器 */
-    public static ColorsBuilder builder(){
-        return ColorsBuilder.getInstance();
+    public static ColorBuilder builder(){
+        return ColorBuilder.getInstance();
     }
 
     public ColorTypes[] getColorTypes(){

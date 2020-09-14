@@ -9,35 +9,35 @@ import java.util.StringJoiner;
  * @since JDK1.8
  **/
 @SuppressWarnings("unused")
-public class ColorsBuilder {
+public class ColorBuilder {
 
     /** 颜色起始代码 */
-    private final static String HEAD = "\u001b[";
+    protected final static String HEAD = "\u001b[";
     /** 颜色代码的结尾 */
-    private final static String COLOR_END = "m";
+    protected final static String COLOR_END = "m";
     /** 颜色结尾代码 */
-    private final static String END = "\u001b[0m";
+    protected final static String END = "\u001b[0m";
 
     /** 颜色字符串结果区 */
-    private final StringJoiner colorJoiner = new StringJoiner("", "", END);
+    protected final StringJoiner colorJoiner = new StringJoiner("", "", END);
 
     /** 按照顺序，使用的颜色列表 */
-    private final List<Integer> colors = new LinkedList<>();
+    protected final List<Integer> colors = new LinkedList<>();
     /** 当前等待区的字体的颜色 */
-    private int nowColor = -1;
+    protected int nowColor = -1;
     /** 当前等待区 */
-    private final StringBuilder nowStr = new StringBuilder();
+    protected final StringBuilder nowStr = new StringBuilder();
 
     //**************** 构造 ****************//
 
-    private ColorsBuilder(Object str, int colorsIndex){
+    protected ColorBuilder(CharSequence str, int colorsIndex){
         this.nowStr.append(str);
         this.nowColor = colorsIndex;
     }
-    private ColorsBuilder(Object str){
+    protected ColorBuilder(CharSequence str){
         this.nowStr.append(str);
     }
-    private ColorsBuilder(){
+    protected ColorBuilder(){
     }
 
     //**************** 构建相关方法 ****************//
@@ -45,16 +45,16 @@ public class ColorsBuilder {
     /**
      * 增加一个字符串，未指定颜色
      */
-    public ColorsBuilder add(Object str){
+    public ColorBuilder add(CharSequence... values){
         //未指定颜色，则暂时作为无色处理
-        add(str, -1);
+        add(-1, values);
         return this;
     }
 
     /**
      * 增加一个字符串，指定颜色
      */
-    private ColorsBuilder add(Object str, int color){
+    protected ColorBuilder add(int color, CharSequence... values){
         //判断增加的颜色是否相同或者是否为无色
         if(!(this.nowColor == -1 || color == this.nowColor)){
             //颜色不同，将上一次的字符串拼为颜色放入结果区
@@ -62,30 +62,32 @@ public class ColorsBuilder {
         }
         //替换等待区内容
         color(color);
-        this.nowStr.append(str);
+        for (Object str : values) {
+            this.nowStr.append(str);
+        }
         return this;
     }
 
-    public ColorsBuilder addNoColor(String str){
-        add(str, -1);
+    public ColorBuilder addNoColor(CharSequence... str){
+        add(-1, str);
         flush();
         return this;
     }
 
-    public ColorsBuilder add(Object str, ColorTypes colorTypes){
-        return add(str, colorTypes.getColorIndex());
+    public ColorBuilder add(ColorTypes colorTypes, CharSequence... values){
+        return add(colorTypes.getColorIndex(), values);
     }
 
 
     /**
      * 为当前等待区字符串设置颜色
      */
-    private ColorsBuilder color(int color){
+    private ColorBuilder color(int color){
         this.nowColor = color;
         return this;
     }
 
-    public ColorsBuilder color(ColorTypes color){
+    public ColorBuilder color(ColorTypes color){
         return color(color.getColorIndex());
     }
 
@@ -110,6 +112,7 @@ public class ColorsBuilder {
      * 构建一个字符串，而不构建为 {@link Colors} 实例。
      */
     public String buildString(){
+        flush();
         return colorJoiner.toString();
     }
 
@@ -119,7 +122,7 @@ public class ColorsBuilder {
     /**
      * 将当前等待区内容刷新到结果区
      */
-    private void flush(){
+    protected void flush(){
         //输出到结果区
         String outStr = nowStr.toString();
         if(outStr.length() > 0){
@@ -153,23 +156,45 @@ public class ColorsBuilder {
     //**************** 获取构建器的工厂方法 ****************//
 
     /** 获取构建器 */
-    public static ColorsBuilder getInstance(){
-        return new ColorsBuilder();
+    public static ColorBuilder getInstance(){
+        return new ColorBuilder();
     }
     /** 获取构建器 */
-    public static ColorsBuilder getInstance(String str){
-        return new ColorsBuilder(str);
+    public static ColorBuilder getInstance(String str){
+        return new ColorBuilder(str);
     }
     /** 获取构建器 */
-    public static ColorsBuilder getInstance(String str, FontColorTypes fontColor){
+    public static ColorBuilder getInstance(String str, FontColorTypes fontColor){
         return getInstance(str, fontColor.getColorIndex());
     }
     /** 获取构建器 */
-    public static ColorsBuilder getInstance(String str, BackGroundColorTypes backGroundColor){
+    public static ColorBuilder getInstance(String str, BackGroundColorTypes backGroundColor){
         return getInstance(str, backGroundColor.getColorIndex());
     }
-    private static ColorsBuilder getInstance(String str, int colorsIndex){
-        return new ColorsBuilder(str, colorsIndex);
+    private static ColorBuilder getInstance(String str, int colorsIndex){
+        return new ColorBuilder(str, colorsIndex);
+    }
+
+    //**************** 获取Nocolor构建器的工厂方法 ****************//
+
+    /** 获取构建器 */
+    public static ColorBuilder getNocolorInstance(){
+        return new NocolorBuilder();
+    }
+    /** 获取构建器 */
+    public static ColorBuilder getNocolorInstance(String str){
+        return new NocolorBuilder(str);
+    }
+    /** 获取构建器 */
+    public static ColorBuilder getNocolorInstance(String str, FontColorTypes fontColor){
+        return getNocolorInstance(str, fontColor.getColorIndex());
+    }
+    /** 获取构建器 */
+    public static ColorBuilder getNocolorInstance(String str, BackGroundColorTypes backGroundColor){
+        return getNocolorInstance(str, backGroundColor.getColorIndex());
+    }
+    private static ColorBuilder getNocolorInstance(String str, int colorsIndex){
+        return new NocolorBuilder(str, colorsIndex);
     }
 
     /**

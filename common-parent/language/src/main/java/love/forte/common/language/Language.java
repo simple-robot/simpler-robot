@@ -185,6 +185,9 @@ public class Language {
      * @return 格式化后的结果。
      */
     public static String format(String target, Object... format) {
+        if(target == null) {
+            return "null";
+        }
         if(!initialized){
             synchronized (Language.class) {
                 if(!initialized) {
