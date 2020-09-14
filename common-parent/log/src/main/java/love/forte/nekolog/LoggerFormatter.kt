@@ -19,7 +19,7 @@ package love.forte.nekolog
  */
 public fun interface LoggerFormatter {
     /**
-     * 对输出的日志进行格式化
+     * 对输出的日志进行格式化。
      */
     fun format()
 }
