@@ -9,19 +9,20 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>common-parent</artifactId>
+    <groupId>love.forte.common</groupId>
+    <artifactId>parent</artifactId>
     <packaging>pom</packaging>
     <version>2.0.0-ALPHA.1</version>
 
     <modules>
         <module>common-api</module>
-        <module>common-utils</module>
-        <module>common-ioc</module>
-        <module>common-base</module>
-        <module>common-language</module>
-        <module>common-utils-annotation</module>
-        <module>common-configuration</module>
-        <module>nekolog</module>
+        <module>utils</module>
+        <module>ioc</module>
+        <module>base</module>
+        <module>language</module>
+        <module>utils-annotation</module>
+        <module>configuration</module>
+        <module>log</module>
     </modules>
 
 

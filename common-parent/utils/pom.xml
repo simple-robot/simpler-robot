@@ -9,18 +9,23 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>love.forte.simple-robot</groupId>
-    <artifactId>common-api</artifactId>
-
+    <artifactId>utils</artifactId>
 
     <dependencies>
-        <!-- common-utils -->
+
+        <!-- utils-annotation -->
         <dependency>
             <groupId>love.forte.common</groupId>
-            <artifactId>utils</artifactId>
+            <artifactId>utils-annotation</artifactId>
             <version>${project.version}</version>
         </dependency>
 
+        <!-- hutool core -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-core</artifactId>
+        </dependency>
+        <!-- kt -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
@@ -49,6 +54,5 @@
 
         </plugins>
     </build>
-
 
 </project>

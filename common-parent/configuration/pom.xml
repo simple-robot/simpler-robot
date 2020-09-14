@@ -9,9 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>love.forte.simple-robot</groupId>
-    <artifactId>common-api</artifactId>
+    <artifactId>configuration</artifactId>
 
+    <properties>
+        <yaml-version>2.11.2</yaml-version>
+    </properties>
 
     <dependencies>
         <!-- common-utils -->
@@ -21,16 +23,15 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- properties和yaml格式化 -->
         <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>${yaml-version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
-            <scope>test</scope>
-        </dependency>
+
     </dependencies>
+
 
     <build>
         <plugins>
