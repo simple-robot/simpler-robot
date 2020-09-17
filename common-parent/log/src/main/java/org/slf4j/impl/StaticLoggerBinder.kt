@@ -19,15 +19,6 @@ import java.io.Reader
  */
 object StaticLoggerBinder {
 
-    init {
-        try {
-            Class.forName("love.forte.common.language.Language")
-            if(!love.forte.common.language.Language.isInitialized()) {
-                love.forte.common.language.Language.init()
-            }
-        }catch (e: ClassNotFoundException) {}
-    }
-
     /**
      * 配置信息
      */
@@ -74,6 +65,9 @@ object StaticLoggerBinder {
             try {
                 // contains Language.
                 Class.forName("love.forte.common.language.Language")
+                if(!love.forte.common.language.Language.isInitialized()) {
+                    love.forte.common.language.Language.init()
+                }
                 LanguageNekoLoggerFactory(colorBuilderFactory, level)
             }catch (ignore: Exception){
                 System.err.println("cannot found class 'love.forte.common.language.Language'. cannot enable language.")
