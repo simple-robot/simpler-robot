@@ -9,7 +9,7 @@ import java.util.List;
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 public class TestParent {
-    @ConfigInject(value = "user.password", orNull = true)
+    @ConfigInject(value = "password", orNull = true)
     private String password;
 
     @ConfigIgnore

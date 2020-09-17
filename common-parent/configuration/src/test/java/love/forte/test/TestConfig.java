@@ -9,9 +9,10 @@ import love.forte.common.configuration.annotation.ConfigInject;
 @AsConfig(prefix = "user", allField = true)
 public class TestConfig extends TestParent {
 
-    // @ConfigInject("name")
+    @ConfigInject("name")
     private String name;
 
+    @ConfigInject(value = "user.age2", ignorePrefix = true)
     private Integer age;
 
 

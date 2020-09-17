@@ -19,9 +19,11 @@ import love.forte.common.configuration.annotation.AsConfig
 import love.forte.common.configuration.annotation.ConfigIgnore
 import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.configuration.exception.ConfigurationInjectException
+import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.annotation.getAnnotation
 import love.forte.common.utils.convert.ConverterManager
 import love.forte.common.utils.convert.HutoolConverterManagerBuilderImpl
+import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.Type
 import kotlin.reflect.*
 import kotlin.reflect.full.declaredMembers
@@ -89,11 +91,15 @@ object ConfigurationInjectorImpl : ConfigurationInjector {
         // all members can inject.
         val members: List<InjectCallable<*>> = seq.run {
             filter {
-                if (it is KFunction) {
-                    // 如果是一个函数，则必须有且仅有一个参数
-                    it.visibility.isPublic() && it.parameters.size == 1
-                } else {
-                    getAnnotation(it, ConfigIgnore::class) == null
+                when (it) {
+                    is KFunction -> {
+                        // 如果是一个函数，则必须有且仅有一个参数
+                        it.visibility.isPublic() && it.parameters.size == 1
+                    }
+                    // 如果是属性，不能有ignore注解
+                    is KProperty ->getAnnotation(it, ConfigIgnore::class) == null
+                    // 其他的不管
+                    else -> false
                 }
             }.run {
                 // 如果要读取所有的属性，则不做过滤，否则只过滤有注解的值。

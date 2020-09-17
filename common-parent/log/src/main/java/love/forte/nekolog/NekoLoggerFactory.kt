@@ -14,6 +14,7 @@ package love.forte.nekolog
 
 import org.slf4j.ILoggerFactory
 import org.slf4j.Logger
+import org.slf4j.event.Level
 
 
 /**
@@ -25,8 +26,22 @@ public interface NekoLoggerFactory : ILoggerFactory
 
 
 
-public class BaseNekoLoggerFactory : NekoLoggerFactory {
+public abstract class BaseNekoLoggerFactory(private val colorBuilderFactory: ColorBuilderFactory, private val level: Int) : NekoLoggerFactory {
+    constructor(colorBuilderFactory: ColorBuilderFactory, level: Level): this(colorBuilderFactory, level.toInt())
+    abstract val loggerFormatter: LoggerFormatter
     override fun getLogger(name: String?): Logger {
-        TODO("Not yet implemented")
+        return NekoLogger(name ?: "neko", colorBuilderFactory, level, loggerFormatter)
     }
 }
+
+
+public class LanguageNekoLoggerFactory(colorBuilderFactory: ColorBuilderFactory, level: Level) : BaseNekoLoggerFactory(colorBuilderFactory, level) {
+    override val loggerFormatter: LoggerFormatter = LanguageLoggerFormatter
+}
+
+
+public class NoLanguageNekoLoggerFactory(colorBuilderFactory: ColorBuilderFactory, level: Level) : BaseNekoLoggerFactory(colorBuilderFactory, level) {
+    override val loggerFormatter: LoggerFormatter = NoLanguageLoggerFormatter
+}
+
+

@@ -12,20 +12,51 @@
 
 package love.forte.nekolog
 
+import org.slf4j.event.Level
 import org.slf4j.helpers.MarkerIgnoringBase
+import java.io.PrintStream
 
 
 /**
  * 将不会对带有Marker的进行实现。
  */
-class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter) : MarkerIgnoringBase() {
+open class NekoLogger(private val logName: String,
+                      private val colorBuilderFactory: ColorBuilderFactory,
+                      private val level: Int,
+                      private val msgFormatter: LoggerFormatter) : MarkerIgnoringBase() {
 
+
+    protected open val tracePrint : PrintStream = System.out
+    protected open val debugPrint : PrintStream = System.out
+    protected open val infoPrint : PrintStream = System.out
+    protected open val warnPrint : PrintStream = System.out
+    protected open val errPrint : PrintStream = System.err
+
+    private fun isEnable(level: Level): Boolean {
+        return isEnable(level.toInt())
+    }
+
+    private fun isEnable(level: Int): Boolean {
+        return this.level <= level
+    }
 
     /**
      * Return the name of this `Logger` instance.
      * @return name of this logger instance
      */
     override fun getName(): String = logName
+
+    private fun log(msg: String?, level: Level, printStream: PrintStream, err: Throwable?, vararg args: Any?) {
+        val th: Thread = Thread.currentThread()
+        val stack: StackTraceElement = th.stackTrace[3]
+        if(isEnable(level)) {
+            val formatInfo = FormatterInfo(msg, level, logName, th, stack, colorBuilderFactory.getColorBuilder(), args)
+            printStream.println(msgFormatter.format(formatInfo))
+            err?.printStackTrace(printStream)
+        }
+    }
+
+
 
     /**
      * Is the logger instance enabled for the TRACE level?
@@ -34,9 +65,7 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * false otherwise.
      * @since 1.4
      */
-    override fun isTraceEnabled(): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun isTraceEnabled(): Boolean = isEnable(Level.TRACE)
 
     /**
      * Log a message at the TRACE level.
@@ -45,7 +74,7 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * @since 1.4
      */
     override fun trace(msg: String?) {
-        TODO("Not yet implemented")
+        log(msg, Level.TRACE, tracePrint, null)
     }
 
     /**
@@ -62,7 +91,7 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * @since 1.4
      */
     override fun trace(format: String?, arg: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.TRACE, tracePrint, null, arg)
     }
 
     /**
@@ -80,7 +109,7 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * @since 1.4
      */
     override fun trace(format: String?, arg1: Any?, arg2: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.TRACE, tracePrint, null, arg1, arg2)
     }
 
     /**
@@ -100,7 +129,7 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * @since 1.4
      */
     override fun trace(format: String?, vararg arguments: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.TRACE, tracePrint, null, arguments)
     }
 
     /**
@@ -112,7 +141,7 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * @since 1.4
      */
     override fun trace(msg: String?, t: Throwable?) {
-        TODO("Not yet implemented")
+        log(msg, Level.TRACE, tracePrint, t)
     }
 
     /**
@@ -121,9 +150,7 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * @return True if this Logger is enabled for the DEBUG level,
      * false otherwise.
      */
-    override fun isDebugEnabled(): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun isDebugEnabled(): Boolean = isEnable(Level.DEBUG)
 
     /**
      * Log a message at the DEBUG level.
@@ -131,71 +158,19 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * @param msg the message string to be logged
      */
     override fun debug(msg: String?) {
-        TODO("Not yet implemented")
+        log(msg, Level.DEBUG, debugPrint, null)
     }
-
-    /**
-     * Log a message at the DEBUG level according to the specified format
-     * and argument.
-     *
-     *
-     *
-     * This form avoids superfluous object creation when the logger
-     * is disabled for the DEBUG level.
-     *
-     * @param format the format string
-     * @param arg    the argument
-     */
     override fun debug(format: String?, arg: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.DEBUG, debugPrint, null, arg)
     }
-
-    /**
-     * Log a message at the DEBUG level according to the specified format
-     * and arguments.
-     *
-     *
-     *
-     * This form avoids superfluous object creation when the logger
-     * is disabled for the DEBUG level.
-     *
-     * @param format the format string
-     * @param arg1   the first argument
-     * @param arg2   the second argument
-     */
     override fun debug(format: String?, arg1: Any?, arg2: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.DEBUG, debugPrint, null, arg1, arg2)
     }
-
-    /**
-     * Log a message at the DEBUG level according to the specified format
-     * and arguments.
-     *
-     *
-     *
-     * This form avoids superfluous string concatenation when the logger
-     * is disabled for the DEBUG level. However, this variant incurs the hidden
-     * (and relatively small) cost of creating an `Object[]` before invoking the method,
-     * even if this logger is disabled for DEBUG. The variants taking
-     * [one][.debug] and [two][.debug]
-     * arguments exist solely in order to avoid this hidden cost.
-     *
-     * @param format    the format string
-     * @param arguments a list of 3 or more arguments
-     */
     override fun debug(format: String?, vararg arguments: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.DEBUG, debugPrint, null, arguments)
     }
-
-    /**
-     * Log an exception (throwable) at the DEBUG level with an
-     * accompanying message.
-     *
-     * @param msg the message accompanying the exception
-     * @param t   the exception (throwable) to log
-     */
     override fun debug(msg: String?, t: Throwable?) {
-        TODO("Not yet implemented")
+        log(msg, Level.DEBUG, debugPrint, t)
     }
 
     /**
@@ -204,9 +179,7 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * @return True if this Logger is enabled for the INFO level,
      * false otherwise.
      */
-    override fun isInfoEnabled(): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun isInfoEnabled(): Boolean = isEnable(Level.INFO)
 
     /**
      * Log a message at the INFO level.
@@ -214,71 +187,19 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * @param msg the message string to be logged
      */
     override fun info(msg: String?) {
-        TODO("Not yet implemented")
+        log(msg, Level.INFO, infoPrint, null)
     }
-
-    /**
-     * Log a message at the INFO level according to the specified format
-     * and argument.
-     *
-     *
-     *
-     * This form avoids superfluous object creation when the logger
-     * is disabled for the INFO level.
-     *
-     * @param format the format string
-     * @param arg    the argument
-     */
     override fun info(format: String?, arg: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.INFO, infoPrint, null, arg)
     }
-
-    /**
-     * Log a message at the INFO level according to the specified format
-     * and arguments.
-     *
-     *
-     *
-     * This form avoids superfluous object creation when the logger
-     * is disabled for the INFO level.
-     *
-     * @param format the format string
-     * @param arg1   the first argument
-     * @param arg2   the second argument
-     */
     override fun info(format: String?, arg1: Any?, arg2: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.INFO, infoPrint, null, arg1, arg2)
     }
-
-    /**
-     * Log a message at the INFO level according to the specified format
-     * and arguments.
-     *
-     *
-     *
-     * This form avoids superfluous string concatenation when the logger
-     * is disabled for the INFO level. However, this variant incurs the hidden
-     * (and relatively small) cost of creating an `Object[]` before invoking the method,
-     * even if this logger is disabled for INFO. The variants taking
-     * [one][.info] and [two][.info]
-     * arguments exist solely in order to avoid this hidden cost.
-     *
-     * @param format    the format string
-     * @param arguments a list of 3 or more arguments
-     */
     override fun info(format: String?, vararg arguments: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.INFO, infoPrint, null, arguments)
     }
-
-    /**
-     * Log an exception (throwable) at the INFO level with an
-     * accompanying message.
-     *
-     * @param msg the message accompanying the exception
-     * @param t   the exception (throwable) to log
-     */
     override fun info(msg: String?, t: Throwable?) {
-        TODO("Not yet implemented")
+        log(msg, Level.INFO, infoPrint, t)
     }
 
     /**
@@ -287,9 +208,7 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * @return True if this Logger is enabled for the WARN level,
      * false otherwise.
      */
-    override fun isWarnEnabled(): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun isWarnEnabled(): Boolean = isEnable(Level.WARN)
 
     /**
      * Log a message at the WARN level.
@@ -297,71 +216,19 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * @param msg the message string to be logged
      */
     override fun warn(msg: String?) {
-        TODO("Not yet implemented")
+        log(msg, Level.WARN, warnPrint, null)
     }
-
-    /**
-     * Log a message at the WARN level according to the specified format
-     * and argument.
-     *
-     *
-     *
-     * This form avoids superfluous object creation when the logger
-     * is disabled for the WARN level.
-     *
-     * @param format the format string
-     * @param arg    the argument
-     */
     override fun warn(format: String?, arg: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.WARN, warnPrint, null, arg)
     }
-
-    /**
-     * Log a message at the WARN level according to the specified format
-     * and arguments.
-     *
-     *
-     *
-     * This form avoids superfluous string concatenation when the logger
-     * is disabled for the WARN level. However, this variant incurs the hidden
-     * (and relatively small) cost of creating an `Object[]` before invoking the method,
-     * even if this logger is disabled for WARN. The variants taking
-     * [one][.warn] and [two][.warn]
-     * arguments exist solely in order to avoid this hidden cost.
-     *
-     * @param format    the format string
-     * @param arguments a list of 3 or more arguments
-     */
     override fun warn(format: String?, vararg arguments: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.WARN, warnPrint, null, arguments)
     }
-
-    /**
-     * Log a message at the WARN level according to the specified format
-     * and arguments.
-     *
-     *
-     *
-     * This form avoids superfluous object creation when the logger
-     * is disabled for the WARN level.
-     *
-     * @param format the format string
-     * @param arg1   the first argument
-     * @param arg2   the second argument
-     */
     override fun warn(format: String?, arg1: Any?, arg2: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.WARN, warnPrint, null, arg1, arg2)
     }
-
-    /**
-     * Log an exception (throwable) at the WARN level with an
-     * accompanying message.
-     *
-     * @param msg the message accompanying the exception
-     * @param t   the exception (throwable) to log
-     */
     override fun warn(msg: String?, t: Throwable?) {
-        TODO("Not yet implemented")
+        log(msg, Level.WARN, warnPrint, t)
     }
 
     /**
@@ -370,9 +237,7 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * @return True if this Logger is enabled for the ERROR level,
      * false otherwise.
      */
-    override fun isErrorEnabled(): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun isErrorEnabled(): Boolean = isEnable(Level.ERROR)
 
     /**
      * Log a message at the ERROR level.
@@ -380,70 +245,18 @@ class NekoLogger(private val logName: String, val msgFormatter: LoggerFormatter)
      * @param msg the message string to be logged
      */
     override fun error(msg: String?) {
-        TODO("Not yet implemented")
+        log(msg, Level.ERROR, errPrint, null)
     }
-
-    /**
-     * Log a message at the ERROR level according to the specified format
-     * and argument.
-     *
-     *
-     *
-     * This form avoids superfluous object creation when the logger
-     * is disabled for the ERROR level.
-     *
-     * @param format the format string
-     * @param arg    the argument
-     */
     override fun error(format: String?, arg: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.ERROR, errPrint, null, arg)
     }
-
-    /**
-     * Log a message at the ERROR level according to the specified format
-     * and arguments.
-     *
-     *
-     *
-     * This form avoids superfluous object creation when the logger
-     * is disabled for the ERROR level.
-     *
-     * @param format the format string
-     * @param arg1   the first argument
-     * @param arg2   the second argument
-     */
     override fun error(format: String?, arg1: Any?, arg2: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.ERROR, errPrint, null, arg1, arg2)
     }
-
-    /**
-     * Log a message at the ERROR level according to the specified format
-     * and arguments.
-     *
-     *
-     *
-     * This form avoids superfluous string concatenation when the logger
-     * is disabled for the ERROR level. However, this variant incurs the hidden
-     * (and relatively small) cost of creating an `Object[]` before invoking the method,
-     * even if this logger is disabled for ERROR. The variants taking
-     * [one][.error] and [two][.error]
-     * arguments exist solely in order to avoid this hidden cost.
-     *
-     * @param format    the format string
-     * @param arguments a list of 3 or more arguments
-     */
     override fun error(format: String?, vararg arguments: Any?) {
-        TODO("Not yet implemented")
+        log(format, Level.ERROR, errPrint, null, arguments)
     }
-
-    /**
-     * Log an exception (throwable) at the ERROR level with an
-     * accompanying message.
-     *
-     * @param msg the message accompanying the exception
-     * @param t   the exception (throwable) to log
-     */
     override fun error(msg: String?, t: Throwable?) {
-        TODO("Not yet implemented")
+        log(msg, Level.ERROR, errPrint, t)
     }
 }

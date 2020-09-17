@@ -13,16 +13,23 @@
 package love.forte.common.utils.annotation
 
 import java.lang.reflect.AnnotatedElement
-import kotlin.reflect.KAnnotatedElement
-import kotlin.reflect.KCallable
-import kotlin.reflect.KClass
+import kotlin.reflect.*
+import kotlin.reflect.jvm.javaConstructor
+import kotlin.reflect.jvm.javaField
+import kotlin.reflect.jvm.javaGetter
+import kotlin.reflect.jvm.javaMethod
 
 
 /**
  * 针对kotlin下的兼容
  */
 public fun <T: Annotation> getAnnotation(callAble: KCallable<*>, type: KClass<T>) : T? {
-    return AnnotationUtil.getAnnotation(K2JAnnotatedElement(callAble), type.java)
+    val annotatedElement: AnnotatedElement = when(callAble) {
+        is KFunction -> callAble.javaMethod ?: callAble.javaConstructor ?: return null
+        is KProperty -> callAble.javaField ?: callAble.javaGetter ?: return null
+        else -> return null
+    }
+    return AnnotationUtil.getAnnotation(annotatedElement, type.java)
 }
 
 /**

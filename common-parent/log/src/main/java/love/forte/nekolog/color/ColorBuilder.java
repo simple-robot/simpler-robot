@@ -47,7 +47,7 @@ public class ColorBuilder {
      */
     public ColorBuilder add(CharSequence... values){
         //未指定颜色，则暂时作为无色处理
-        add(-1, values);
+        addNoFlush(values);
         return this;
     }
 
@@ -68,9 +68,59 @@ public class ColorBuilder {
         return this;
     }
 
+    /**
+     * 增加一个字符串，指定颜色
+     */
+    protected ColorBuilder addNoFlush(CharSequence... values){
+        for (Object str : values) {
+            this.nowStr.append(str);
+        }
+        return this;
+    }
+
     public ColorBuilder addNoColor(CharSequence... str){
         add(-1, str);
         flush();
+        return this;
+    }
+
+    public ColorBuilder append(CharSequence... str) {
+        addNoColor(str);
+        return this;
+    }
+
+    public ColorBuilder append(char c) {
+        flush();
+        color(-1);
+        this.nowStr.append(c);
+        return this;
+    }
+
+    public ColorBuilder append(int i) {
+        flush();
+        color(-1);
+        this.nowStr.append(i);
+        return this;
+    }
+
+    public ColorBuilder append(long l) {
+        flush();
+        color(-1);
+        this.nowStr.append(l);
+        return this;
+    }
+
+    public ColorBuilder append(float f) {
+        flush();
+        color(-1);
+        this.nowStr.append(f);
+        return this;
+    }
+
+    public ColorBuilder append(double d) {
+        flush();
+        color(-1);
+        this.nowStr.append(d);
         return this;
     }
 
@@ -116,8 +166,10 @@ public class ColorBuilder {
         return colorJoiner.toString();
     }
 
-
-
+    @Override
+    public String toString() {
+        return buildString();
+    }
 
     /**
      * 将当前等待区内容刷新到结果区
