@@ -32,8 +32,11 @@ import java.util.Map;
 public class AnnotationInvocationHandler implements InvocationHandler {
     private final Class<? extends Annotation> type;
     private final Map<String, Object> memberValues;
+    private final Annotation baseAnnotation;
+
     private transient volatile Method[] memberMethods = null;
     private static Method exceptionProxyGenerateException;
+
 
     static {
         Method exceptionProxyGenerateException;
@@ -46,17 +49,23 @@ public class AnnotationInvocationHandler implements InvocationHandler {
         AnnotationInvocationHandler.exceptionProxyGenerateException = exceptionProxyGenerateException;
     }
 
+    <T extends Annotation> AnnotationInvocationHandler(Class<T> annotationType, Map<String, Object> memberValues, Annotation baseAnnotation) {
+        this.type = annotationType;
+        this.memberValues = memberValues;
+        this.baseAnnotation = baseAnnotation;
+    }
+
     <T extends Annotation> AnnotationInvocationHandler(Class<T> annotationType, Map<String, Object> memberValues) {
         this.type = annotationType;
         this.memberValues = memberValues;
-
+        this.baseAnnotation = null;
     }
 
     /**
      * 一个注解的代理逻辑实例。
      */
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) {
+    public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
         final String name = method.getName();
         Class<?>[] parameterTypes = method.getParameterTypes();
         if ("equals".equals(name) && parameterTypes.length == 1 && parameterTypes[0] == Object.class) {
@@ -75,10 +84,15 @@ public class AnnotationInvocationHandler implements InvocationHandler {
                 default:
                     Object value = this.memberValues.get(name);
                     if (value == null) {
-                        // final Object defaultValue = method.getDefaultValue();
-                        // if(defaultValue != null){
-                        //     return defaultValue;
-                        // }
+                        if(baseAnnotation != null) {
+                            return method.invoke(baseAnnotation);
+                        }
+
+                        final Object defaultValue = method.getDefaultValue();
+                        if(defaultValue != null){
+                            return defaultValue;
+                        }
+
                         throw new IncompleteAnnotationException(this.type, name);
                     } else if (value instanceof ExceptionProxy && exceptionProxyGenerateException != null) {
                         try {

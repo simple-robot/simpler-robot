@@ -292,6 +292,8 @@ public class AnnotationUtil {
         final Map<String, Object> params = new HashMap<>();
         final AnnotateMapping classAnnotateMapping = fromAnnotationType.getAnnotation(AnnotateMapping.class);
         AnnotateMapping annotateMapping;
+        //noinspection unchecked
+        final Class<T> toType = (Class<T>) to.annotationType();
         for (Method method : methods) {
             if(OBJECT_METHODS.contains(method.getName())){
                 continue;
@@ -301,7 +303,7 @@ public class AnnotationUtil {
                 annotateMapping = classAnnotateMapping;
             }
             if(annotateMapping != null){
-                if(annotateMapping.type().equals(to.annotationType())){
+                if(annotateMapping.type().equals(toType)){
                     String name = annotateMapping.name();
                     if(name.length() == 0){
                         name = method.getName();
@@ -315,8 +317,7 @@ public class AnnotationUtil {
                 }
             }
         }
-        //noinspection unchecked
-        return (T) AnnotationProxyUtil.proxy(to.annotationType(), params);
+        return AnnotationProxyUtil.proxy(toType, to, params);
     }
     
     /**

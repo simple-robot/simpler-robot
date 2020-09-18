@@ -27,16 +27,28 @@ public class AnnotationProxyUtil {
     @SuppressWarnings("unchecked")
     public static <T extends Annotation> T proxy(Class<T> annotationType,
                                           ClassLoader classLoader,
+                                          Annotation baseAnnotation,
                                           Map<String, Object> params) {
 
         return (T) Proxy.newProxyInstance(classLoader,
                 new Class[]{annotationType},
-                new AnnotationInvocationHandler(annotationType, params));
+                new AnnotationInvocationHandler(annotationType, params, baseAnnotation));
+    }
+
+    public static <T extends Annotation> T proxy(Class<T> annotationType,
+                                          ClassLoader classLoader,
+                                          Map<String, Object> params) {
+
+        return proxy(annotationType, classLoader, null, params);
     }
 
 
     public static <T extends Annotation> T proxy(Class<T> annotationType, Map<String, Object> params) {
         return proxy(annotationType, annotationType.getClassLoader(), params);
+    }
+
+    public static <T extends Annotation> T proxy(Class<T> annotationType, Annotation baseAnnotation, Map<String, Object> params) {
+        return proxy(annotationType, annotationType.getClassLoader(), baseAnnotation, params);
     }
 
 
