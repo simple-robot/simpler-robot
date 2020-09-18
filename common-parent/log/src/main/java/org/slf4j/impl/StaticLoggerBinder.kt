@@ -42,7 +42,7 @@ object StaticLoggerBinder {
             // inject and return
             ConfigurationInjectorImpl.inject(NekoLogConfiguration(), config)
         }catch (e: Throwable) {
-            System.err.println("cannot found config file. use default config.")
+            System.err.println("cannot found config file. use default conafig.")
             NekoLogConfiguration()
         }
     }

@@ -53,6 +53,22 @@ public class AnnotationUtil {
     private static final Map<AnnotatedElement, Set<Class<Annotation>>> NULL_CACHE = new ConcurrentHashMap<>();
 
 
+    private static final Set<String> OBJECT_METHODS;
+
+    static {
+        OBJECT_METHODS = new HashSet<>();
+        OBJECT_METHODS.add("toString");
+        OBJECT_METHODS.add("equals");
+        OBJECT_METHODS.add("hashCode");
+        OBJECT_METHODS.add("getClass");
+        OBJECT_METHODS.add("clone");
+        OBJECT_METHODS.add("notify");
+        OBJECT_METHODS.add("notifyAll");
+        OBJECT_METHODS.add("wait");
+        OBJECT_METHODS.add("finalize");
+    }
+
+
     /**
      * 从某个类上获取注解对象，注解可以深度递归
      * 如果存在多个继承注解，则优先获取浅层第一个注解，如果浅层不存在，则返回第一个获取到的注解
@@ -266,6 +282,7 @@ public class AnnotationUtil {
         return set.add(annotation);
     }
 
+
     /**
      * 执行注解映射
      */
@@ -273,8 +290,16 @@ public class AnnotationUtil {
         final Class<? extends Annotation> fromAnnotationType = from.annotationType();
         final Method[] methods = fromAnnotationType.getMethods();
         final Map<String, Object> params = new HashMap<>();
+        final AnnotateMapping classAnnotateMapping = fromAnnotationType.getAnnotation(AnnotateMapping.class);
+        AnnotateMapping annotateMapping;
         for (Method method : methods) {
-            final AnnotateMapping annotateMapping = method.getAnnotation(AnnotateMapping.class);
+            if(OBJECT_METHODS.contains(method.getName())){
+                continue;
+            }
+            annotateMapping = method.getAnnotation(AnnotateMapping.class);
+            if(annotateMapping == null){
+                annotateMapping = classAnnotateMapping;
+            }
             if(annotateMapping != null){
                 if(annotateMapping.type().equals(to.annotationType())){
                     String name = annotateMapping.name();
@@ -284,8 +309,8 @@ public class AnnotationUtil {
                     try {
                         Object value = method.invoke(from);
                         params.put(name, value);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        throw new RuntimeException(e);
+                    } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
+                        throw new RuntimeException("cannot map " + name + " for " + method, e);
                     }
                 }
             }

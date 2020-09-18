@@ -22,7 +22,7 @@ import java.lang.annotation.*;
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Retention(RetentionPolicy.RUNTIME)    //注解会在class字节码文件中存在，在运行时可以通过反射获取到
-@Target({ElementType.METHOD}) // 使用在注解的方法上
+@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE}) // 使用在注解的方法上
 public @interface AnnotateMapping {
 
     /**
