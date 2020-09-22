@@ -23,7 +23,6 @@ import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.annotation.getAnnotation
 import love.forte.common.utils.convert.ConverterManager
 import love.forte.common.utils.convert.HutoolConverterManagerBuilderImpl
-import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.Type
 import kotlin.reflect.*
 import kotlin.reflect.full.declaredMembers
@@ -97,7 +96,7 @@ object ConfigurationInjectorImpl : ConfigurationInjector {
                         it.visibility.isPublic() && it.parameters.size == 1
                     }
                     // 如果是属性，不能有ignore注解
-                    is KProperty ->getAnnotation(it, ConfigIgnore::class) == null
+                    is KProperty -> getAnnotation(it, ConfigIgnore::class) == null
                     // 其他的不管
                     else -> false
                 }

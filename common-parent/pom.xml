@@ -18,12 +18,11 @@
         <module>common-api</module>
         <module>utils</module>
         <module>ioc</module>
-        <module>base</module>
         <module>language</module>
-        <module>utils-annotation</module>
         <module>configuration</module>
         <module>log</module>
     </modules>
+
 
 
 </project>

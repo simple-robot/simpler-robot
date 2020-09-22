@@ -29,14 +29,20 @@ public fun <T: Annotation> getAnnotation(callAble: KCallable<*>, type: KClass<T>
         is KProperty -> callAble.javaField ?: callAble.javaGetter ?: return null
         else -> return null
     }
-    return AnnotationUtil.getAnnotation(annotatedElement, type.java)
+    return AnnotationUtil.getAnnotation(
+        annotatedElement,
+        type.java
+    )
 }
 
 /**
  * 针对kotlin下的兼容
  */
 public fun <T: Annotation> getAnnotation(kClass: KClass<*>, type: KClass<T>) : T? {
-    return AnnotationUtil.getAnnotation(K2JAnnotatedElement(kClass), type.java)
+    return AnnotationUtil.getAnnotation(
+        K2JAnnotatedElement(kClass),
+        type.java
+    )
 }
 
 

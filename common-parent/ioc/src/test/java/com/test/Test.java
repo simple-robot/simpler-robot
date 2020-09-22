@@ -1,6 +1,5 @@
 package com.test;
 
-import love.forte.common.ioc.annotation.Beans;
 import love.forte.common.ioc.annotation.ConfigBeans;
 import love.forte.common.utils.annotation.AnnotationUtil;
 

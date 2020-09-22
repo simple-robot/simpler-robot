@@ -12,14 +12,6 @@
     <artifactId>utils</artifactId>
 
     <dependencies>
-
-        <!-- utils-annotation -->
-        <dependency>
-            <groupId>love.forte.common</groupId>
-            <artifactId>utils-annotation</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
         <!-- hutool core -->
         <dependency>
             <groupId>cn.hutool</groupId>
@@ -30,11 +22,12 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
         </dependency>
+        <!-- kt-ref -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
-            <scope>test</scope>
+            <artifactId>kotlin-reflect</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>

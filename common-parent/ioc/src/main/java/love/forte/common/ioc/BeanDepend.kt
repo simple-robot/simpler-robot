@@ -30,7 +30,7 @@ public fun interface InstanceInjector<T> : (T, DependBeanFactory) -> T
  * Bean Depend, 存放于 [DependCenter] 中的Bean代表。
  * 提供一个简易的 [builder][BeanDependBuilder] 来构建一个实例。
  */
-public interface BeanDepend<B>: Comparable<BeanDepend<*>> {
+public interface BeanDepend<B> : Comparable<BeanDepend<*>> {
 
     /**
      * 此bean对应的实际数据类型
@@ -73,7 +73,7 @@ public interface BeanDepend<B>: Comparable<BeanDepend<*>> {
 /**
  * [BeanDepend] 的实现类
  */
-public data class BeanDependData<B> (
+public data class BeanDependData<B>(
     override val type: Class<out B>,
     override val name: String,
     private val single: Boolean,
@@ -104,27 +104,38 @@ public class BeanDependBuilder<B> {
         this.type = type
         return this
     }
+
     fun name(name: String): BeanDependBuilder<B> {
         this.name = name
         return this
     }
+
     fun single(single: Boolean): BeanDependBuilder<B> {
         this.single = single
         return this
     }
+
     fun emptyInstanceSupplier(emptyInstanceSupplier: EmptyInstanceSupplier<B>): BeanDependBuilder<B> {
         this.emptyInstanceSupplier = emptyInstanceSupplier
         return this
     }
+
+    fun <INS : B> emptyInstanceSupplier(instance: INS): BeanDependBuilder<B> {
+        this.emptyInstanceSupplier = EmptyInstanceSupplier { instance }
+        return this
+    }
+
     fun instanceInjector(instanceInjector: InstanceInjector<B>): BeanDependBuilder<B> {
         this.instanceInjector = instanceInjector
         return this
     }
+
     fun priority(priority: Int): BeanDependBuilder<B> {
         this.priority = priority
         return this
     }
 
-    fun build(): BeanDepend<B> = BeanDependData(type!!, name!!, single, emptyInstanceSupplier!!, instanceInjector!!, priority)
+    fun build(): BeanDepend<B> =
+        BeanDependData(type!!, name!!, single, emptyInstanceSupplier!!, instanceInjector!!, priority)
 }
 
