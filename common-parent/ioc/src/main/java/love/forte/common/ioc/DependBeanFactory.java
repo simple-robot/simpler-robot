@@ -20,8 +20,9 @@ package love.forte.common.ioc;
  */
 public interface DependBeanFactory {
 
-
     <T> T get(Class<T> type);
+    <T> T get(Class<T> type, String name);
+    Object get(String name);
 
 
 

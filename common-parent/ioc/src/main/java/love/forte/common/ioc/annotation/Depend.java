@@ -34,7 +34,16 @@ public @interface Depend {
      */
     boolean orNull() default false;
 
+    /**
+     * 是否尝试通过setter注入。
+     */
+    boolean bySetter() default true;
 
+    /**
+     * 如果 {@link #bySetter()} 为 true，则此处定义setter的名称。默认为set+字段名。
+     * 注意，setter的方法参数应该与 {@link #type()} 类型一致。
+     */
+    String setterName() default "";
 
 
 

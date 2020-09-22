@@ -14,11 +14,8 @@ public class Test {
 
     public static void main(String[] args) {
 
-        final Beans annotation = AnnotationUtil.getAnnotation(Test.class, Beans.class);
 
-        System.out.println(annotation);
-        System.out.println(annotation.value());
-        System.out.println(annotation.init());
+
 
     }
 }

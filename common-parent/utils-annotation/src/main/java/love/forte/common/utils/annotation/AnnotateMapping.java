@@ -17,7 +17,11 @@ import java.lang.annotation.*;
 /**
  * 用于内部的注解继承映射
  *
- * 标注的注解方法的返回值类型应该与被映射的父类的方法返回值一致
+ * 标注的注解方法的返回值类型应该与被映射的父类的方法返回值一致。
+ *
+ * 如果映射的值都是一样的，可以将此注解标注在类上。
+ *
+ * 在类上的时候，不要设置 {@link #name()} 属性。
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */

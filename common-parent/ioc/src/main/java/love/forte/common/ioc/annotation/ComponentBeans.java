@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     Beans.java
+ * File     ComponentBeans.java
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -12,27 +12,29 @@
 
 package love.forte.common.ioc.annotation;
 
+import love.forte.common.utils.annotation.AnnotateMapping;
 import love.forte.simbot.common.constant.PriorityConstant;
 
 import java.lang.annotation.*;
 
 /**
  *
- * 标记一个类或者一个类下有返回值的方法上，使它们注入到依赖管理中。
+ * 一般为组件使用的 {@link Beans} 注解，其默认的优先级较低，但是高于核心 {@link CoreBeans} 的默认优先级。
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Retention(RetentionPolicy.RUNTIME)    //注解会在class字节码文件中存在，在运行时可以通过反射获取到
-@Target({ElementType.TYPE, ElementType.METHOD}) //接口、类、枚举、注解、方法
+@Target({ElementType.TYPE}) //接口、类、枚举、注解、方法
 @Documented
-public @interface Beans {
+@Beans
+@AnnotateMapping(type = Beans.class)
+public @interface ComponentBeans {
 
     /** 依赖对象的名称，如果没有则以类名取代 */
     String value() default "";
 
     /** 是否为单例，默认为单例 */
     boolean single() default true;
-
     /**
      * 是否将类中全部字段标记为Depend，默认为false
      * */
@@ -52,8 +54,7 @@ public @interface Beans {
 
     /**
      * 优先级。当在获取某个依赖的时候，假如在通过类型获取的时候存在多个值，会获取优先级更高级别的依赖并摒弃其他依赖。
-     * 升序排序。默认为{@link PriorityConstant#TENTH}。
+     * 升序排序。默认为组件最低。
      */
-    int priority() default PriorityConstant.TENTH;
-
+    int priority() default PriorityConstant.COMPONENT_LAST;
 }
