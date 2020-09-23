@@ -71,7 +71,8 @@ object ConfigurationInjector {
      *
      * @throws love.forte.common.configuration.exception.ConfigurationInjectException 如果注入的时候出现意外，则可能抛出此异常。
      */
-    public fun <T> inject(configInstance: T, configuration: Configuration, converterManager: ConverterManager?): T {
+    @JvmOverloads
+    public fun <T> inject(configInstance: T, configuration: Configuration, converterManager: ConverterManager? = null): T {
         val manager: ConverterManager = converterManager ?: HutoolConverterManagerBuilderImpl().build()
 
         val configClass: KClass<*> = configInstance!!::class

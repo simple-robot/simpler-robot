@@ -79,7 +79,7 @@ public data class PrivateMsgIdFlagContent(override val id: String) : PrivateMsg.
 
 
 /**
- * 群消息， 需要实现 [MessageEventGet] , [GroupContainer] , [PermissionContainer]
+ * 群消息. 实现了 [MessageEventGet] , [GroupContainer] , [PermissionContainer]
  */
 public interface GroupMsg : MessageEventGet, GroupContainer, PermissionContainer {
     /**

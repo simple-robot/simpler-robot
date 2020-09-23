@@ -19,7 +19,7 @@ import love.forte.simbot.core.annotation.ContainerType
  * 群号容器。定义可以得到一个群的群号
  */
 @ContainerType("群号容器")
-public interface GroupCodeContainer {
+public interface GroupCodeContainer : Container {
     /** 群号 */
     val groupCode: String
 
@@ -34,7 +34,7 @@ public interface GroupCodeContainer {
  * 头像不是必须的，可能会不存在
  */
 @ContainerType("群头像容器")
-public interface GroupAvatarContainer {
+public interface GroupAvatarContainer : Container {
     /** 群头像. 可能为null。但是一般来讲为`null`的可能性比较小 */
     val groupAvatar: String?
 }
@@ -42,7 +42,7 @@ public interface GroupAvatarContainer {
 /**
  * 群名称容器，定义可以得到群的群名称
  */
-public interface GroupNameContainer {
+public interface GroupNameContainer : Container {
     /**
      * 群名称 可能出现无法获取的情况
      */
@@ -56,12 +56,12 @@ public interface GroupNameContainer {
  * [群名称容器][GroupNameContainer]
  */
 @ContainerType("群信息容器")
-public interface GroupInfo : GroupAvatarContainer, GroupCodeContainer, GroupNameContainer
+public interface GroupInfo : Container, GroupAvatarContainer, GroupCodeContainer, GroupNameContainer
 
 /**
  * 可以得到一个[群信息][GroupInfo]容器
  */
 @ContainerType("群容器")
-public interface GroupContainer {
+public interface GroupContainer : Container {
     val groupInfo: GroupInfo
 }

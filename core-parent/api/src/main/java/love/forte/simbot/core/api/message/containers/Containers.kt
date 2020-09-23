@@ -20,11 +20,18 @@ import love.forte.simbot.core.api.message.assists.Permissions
 
 
 /**
+ * 所有的Container的父接口
+ */
+@ContainerType("容器")
+public interface Container
+
+
+/**
  * 原始数据容器。
  * 定义可以得到原始数据的字符串信息。
  */
 @ContainerType("原始数据容器")
-public interface OriginalDataContainer {
+public interface OriginalDataContainer : Container {
     /**
      * 得到原始数据字符串。
      * 数据不应该为null。
@@ -39,7 +46,7 @@ public interface OriginalDataContainer {
  * 一般代表这个人在群里的权限
  */
 @ContainerType("权限容器")
-public interface PermissionContainer {
+public interface PermissionContainer : Container {
     /**
      * 权限信息。
      */
@@ -52,7 +59,7 @@ public interface PermissionContainer {
  * 标识容器。定义可以得到一个标识。
  */
 @ContainerType("标识容器")
-public interface FlagContainer<out T : FlagContent> {
+public interface FlagContainer<out T : FlagContent> : Container {
     /** 标识 */
     val flag: Flag<T>
 }
@@ -66,7 +73,7 @@ public interface FlagContainer<out T : FlagContent> {
  * @property actionMotivations ActionMotivations 得到对应的 [行动动机][ActionMotivations]
  */
 @ContainerType("行动动机容器")
-public interface ActionMotivationContainer {
+public interface ActionMotivationContainer : Container {
     val actionMotivations: ActionMotivations
 }
 

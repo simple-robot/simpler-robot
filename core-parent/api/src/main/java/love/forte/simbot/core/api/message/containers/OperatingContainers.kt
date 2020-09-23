@@ -18,7 +18,7 @@ import love.forte.simbot.core.annotation.ContainerType
  * 操作者code容器
  */
 @ContainerType("操作者账号容器")
-public interface OperatorCodeContainer {
+public interface OperatorCodeContainer : Container {
     /**
      * 操作者的code
      */
@@ -36,7 +36,7 @@ public interface OperatorCodeContainer {
  * 被操作者code容器
  */
 @ContainerType("被操作者账号容器")
-public interface BeOperatorCodeContainer {
+public interface BeOperatorCodeContainer : Container {
     /**
      * 被操作者的Code
      */
@@ -52,7 +52,7 @@ public interface BeOperatorCodeContainer {
  * 操作者昵称容器，定义可以得到操作者的昵称信息.
  */
 @ContainerType("操作者昵称容器")
-public interface OperatorNicknameContainer {
+public interface OperatorNicknameContainer : Container {
     /**
      * 操作者的昵称
      */
@@ -63,7 +63,7 @@ public interface OperatorNicknameContainer {
  * 被操作者昵称容器，定义可以得到被操作者的昵称信息.
  */
 @ContainerType("被操作者昵称容器")
-public interface BeOperatorNicknameContainer {
+public interface BeOperatorNicknameContainer : Container {
     /**
      * 被操作者的昵称
      */
@@ -75,7 +75,7 @@ public interface BeOperatorNicknameContainer {
  * 操作者备注容器，定义可以得到操作者的备注信息.
  */
 @ContainerType("操作者备注容器")
-public interface OperatorRemarkContainer {
+public interface OperatorRemarkContainer : Container {
     /**
      * 操作者的备注
      */
@@ -86,7 +86,7 @@ public interface OperatorRemarkContainer {
  * 被操作者备注容器，定义可以得到被操作者的备注信息.
  */
 @ContainerType("操作者备注容器")
-public interface BeOperatorRemarkContainer {
+public interface BeOperatorRemarkContainer : Container {
     /**
      * 被操作者的备注
      */
@@ -98,7 +98,7 @@ public interface BeOperatorRemarkContainer {
  * 操作者名称容器，定义可以得到操作者的昵称与备注信息.
  */
 @ContainerType("操作者名称容器")
-public interface OperatorNameContainer : OperatorNicknameContainer, OperatorRemarkContainer {
+public interface OperatorNameContainer : Container, OperatorNicknameContainer, OperatorRemarkContainer {
     /**
      * 操作者
      *
@@ -126,7 +126,7 @@ public interface OperatorNameContainer : OperatorNicknameContainer, OperatorRema
  * 被操作者名称容器，定义可以得到被操作者的昵称与备注信息.
  */
 @ContainerType("被操作者名称容器")
-public interface BeOperatorNameContainer : BeOperatorNicknameContainer, BeOperatorRemarkContainer {
+public interface BeOperatorNameContainer : Container, BeOperatorNicknameContainer, BeOperatorRemarkContainer {
     /**
      * 被操作者
      *
@@ -155,7 +155,7 @@ public interface BeOperatorNameContainer : BeOperatorNicknameContainer, BeOperat
  * 头像不是必须的，可能会不存在。
  */
 @ContainerType("操作者头像容器")
-public interface OperatorAvatarContainer {
+public interface OperatorAvatarContainer : Container {
     /**
      * 得到操作者的头像地址. 一般来讲为`null`的可能性很小
      */
@@ -168,7 +168,7 @@ public interface OperatorAvatarContainer {
  * 头像不是必须的，可能会不存在。
  */
 @ContainerType("被操作者头像容器")
-public interface BeOperatorAvatarContainer {
+public interface BeOperatorAvatarContainer : Container {
     /**
      * 得到被操作者的头像地址. 一般来讲为`null`的可能性很小
      */
@@ -179,14 +179,14 @@ public interface BeOperatorAvatarContainer {
  * 操作者信息容器
  */
 @ContainerType("操作者头像容器")
-public interface OperatorInfo : OperatorCodeContainer, OperatorNameContainer, OperatorAvatarContainer
+public interface OperatorInfo : Container, OperatorCodeContainer, OperatorNameContainer, OperatorAvatarContainer
 
 /**
  * 可以得到操作者信息的容器
  * @property operatorInfo OperatorInfoContainer
  */
 @ContainerType("操作者信息")
-public interface OperatorContainer {
+public interface OperatorContainer : Container {
     /**
      * 得到一个操作者信息 可能会是null
      */
@@ -197,14 +197,14 @@ public interface OperatorContainer {
  * 被操作者信息容器
  */
 @ContainerType("被操作者信息")
-public interface BeOperatorInfo : BeOperatorCodeContainer, BeOperatorNameContainer, BeOperatorAvatarContainer
+public interface BeOperatorInfo : Container, BeOperatorCodeContainer, BeOperatorNameContainer, BeOperatorAvatarContainer
 
 
 /**
  * 可以得到被操作者信息的容器
  */
 @ContainerType("被操作者容器")
-public interface BeOperatorContainer {
+public interface BeOperatorContainer : Container {
     /**
      * 得到一个被操作者信息  可能会是null
      */
@@ -217,14 +217,14 @@ public interface BeOperatorContainer {
  * 此容器提供了在 **操作** 事件中的 **操作者** 与 **被操作者** 的相关信息容器
  */
 @ContainerType("操作者容器")
-public interface OperatingContainer : OperatorContainer, BeOperatorContainer
+public interface OperatingContainer : Container, OperatorContainer, BeOperatorContainer
 
 
 /**
  * 将账户作操作者。一般用于那些可以将当前事件的
  * [账户信息][AccountInfo] 作为 [操作者][OperatorInfo] 而使用的地方
  */
-public data class AccountAsOperator(private val account: AccountInfo) : OperatorInfo {
+public data class AccountAsOperator(private val account: AccountInfo) : Container, OperatorInfo {
     /**
      * 被操作者的Code
      */
@@ -280,7 +280,7 @@ public data class AccountAsOperator(private val account: AccountInfo) : Operator
  * 将账户作为被操作者。一般用于那些可以将当前事件的
  * [账户信息][AccountInfo] 作为 [被操作者][BeOperatorInfo] 而使用的地方
  */
-public data class AccountAsBeOperator(private val account: AccountInfo) : BeOperatorInfo {
+public data class AccountAsBeOperator(private val account: AccountInfo) : Container, BeOperatorInfo {
     /**
      * 被操作者的Code
      */

@@ -1,9 +1,9 @@
 package org.slf4j.impl
 
 import love.forte.common.configuration.Configuration
+import love.forte.common.configuration.ConfigurationInjector
 import love.forte.common.configuration.ConfigurationManagerRegistry
 import love.forte.common.configuration.ConfigurationParserManager
-import love.forte.common.configuration.impl.ConfigurationInjectorImpl
 import love.forte.common.utils.ResourceUtil
 import love.forte.nekolog.*
 import org.slf4j.ILoggerFactory
@@ -40,7 +40,7 @@ object StaticLoggerBinder {
             val manager: ConfigurationParserManager = ConfigurationManagerRegistry.defaultManager()
             val config: Configuration = manager.parse(type, reader)
             // inject and return
-            ConfigurationInjectorImpl.inject(NekoLogConfiguration(), config)
+            ConfigurationInjector.inject(NekoLogConfiguration(), config)
         }catch (e: Throwable) {
             System.err.println("cannot found config file. use default conafig.")
             NekoLogConfiguration()

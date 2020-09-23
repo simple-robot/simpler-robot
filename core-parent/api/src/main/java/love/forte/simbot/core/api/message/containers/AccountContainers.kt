@@ -20,7 +20,7 @@ import love.forte.simbot.core.annotation.ContainerType
  *
  */
 @ContainerType("账户号码容器")
-public interface AccountCodeContainer {
+public interface AccountCodeContainer : Container {
     /**
      * 账号
      */
@@ -39,7 +39,7 @@ public interface AccountCodeContainer {
  * 账户昵称容器。定义可以得到一个账号的昵称。
  */
 @ContainerType("账户昵称容器")
-public interface AccountNicknameContainer {
+public interface AccountNicknameContainer : Container {
     /** 昵称。可能会出现为null的情况 */
     val accountNickname: String?
 }
@@ -49,7 +49,7 @@ public interface AccountNicknameContainer {
  * 备注可能不存在。
  */
 @ContainerType("账户备注容器")
-public interface AccountRemarkContainer {
+public interface AccountRemarkContainer : Container {
     /** 好友备注或群名片。可能为null */
     val accountRemark: String?
 }
@@ -61,7 +61,7 @@ public interface AccountRemarkContainer {
  * - [昵称与备注][accountNicknameAndRemark]
  */
 @ContainerType("账户名称容器")
-public interface AccountNameContainer : AccountNicknameContainer, AccountRemarkContainer {
+public interface AccountNameContainer : Container, AccountNicknameContainer, AccountRemarkContainer {
     /**
      * 如果有备注则得到备注，否则得到昵称。
      */
@@ -86,7 +86,7 @@ public interface AccountNameContainer : AccountNicknameContainer, AccountRemarkC
  * 头像不是必须的，可能会不存在。
  */
 @ContainerType("账户头像容器")
-public interface AccountAvatarContainer {
+public interface AccountAvatarContainer : Container {
     /**
      * 得到账号的头像地址. 一般来讲为`null`的可能性很小
      */
@@ -100,14 +100,14 @@ public interface AccountAvatarContainer {
  * - [用户账号容器][AccountCodeContainer]
  */
 @ContainerType("账户信息容器")
-public interface AccountInfo : AccountNameContainer, AccountAvatarContainer, AccountCodeContainer
+public interface AccountInfo : Container, AccountNameContainer, AccountAvatarContainer, AccountCodeContainer
 
 
 /**
  * 账号容器，可以得到一个账号的[信息][AccountInfo]。
  */
 @ContainerType("账号容器")
-public interface AccountContainer {
+public interface AccountContainer : Container {
     /**
      * 账号的信息。一般来讲是不可能为null的，但是其中的信息就不一定了
      */
