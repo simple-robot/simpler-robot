@@ -12,7 +12,6 @@
 
 package love.forte.common.configuration;
 
-import love.forte.common.configuration.impl.LinkedConfigurationParserManager;
 import love.forte.common.configuration.impl.LinkedConfigurationParserManagerBuilder;
 import love.forte.common.configuration.impl.PropertiesParser;
 import love.forte.common.configuration.impl.YamlParser;

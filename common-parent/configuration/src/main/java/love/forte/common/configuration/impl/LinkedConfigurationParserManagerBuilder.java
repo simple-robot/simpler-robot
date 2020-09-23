@@ -12,7 +12,6 @@
 
 package love.forte.common.configuration.impl;
 
-import cn.hutool.core.convert.ConverterRegistry;
 import love.forte.common.configuration.ConfigurationParser;
 import love.forte.common.configuration.ConfigurationParserManager;
 import love.forte.common.configuration.ConfigurationParserManagerBuilder;

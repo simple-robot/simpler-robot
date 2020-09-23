@@ -13,7 +13,7 @@
 package love.forte.common.ioc.annotation;
 
 import love.forte.common.utils.annotation.AnnotateMapping;
-import love.forte.simbot.common.constant.PriorityConstant;
+import love.forte.simbot.core.constant.PriorityConstant;
 
 import java.lang.annotation.*;
 

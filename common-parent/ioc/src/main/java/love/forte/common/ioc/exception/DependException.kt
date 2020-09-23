@@ -12,8 +12,6 @@
 
 package love.forte.common.ioc.exception
 
-import java.lang.RuntimeException
-
 /**
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet

@@ -14,8 +14,8 @@ package love.forte.common.ioc
 
 import love.forte.common.annotation.Ignore
 import love.forte.common.configuration.Configuration
-import love.forte.common.configuration.annotation.AsConfig
 import love.forte.common.configuration.ConfigurationInjector
+import love.forte.common.configuration.annotation.AsConfig
 import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.Constr
 import love.forte.common.ioc.annotation.Depend

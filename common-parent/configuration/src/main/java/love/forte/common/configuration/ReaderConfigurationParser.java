@@ -12,8 +12,6 @@
 
 package love.forte.common.configuration;
 
-import love.forte.common.configuration.ConfigurationParser;
-
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;

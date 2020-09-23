@@ -12,8 +12,6 @@
 
 package love.forte.common.ioc.exception
 
-import java.lang.RuntimeException
-
 open class DuplicateDependNameException : DependException {
     constructor() : super()
     constructor(message: String?) : super(message)

@@ -12,7 +12,7 @@
 
 package love.forte.common.ioc
 
-import love.forte.simbot.common.constant.PriorityConstant
+import love.forte.simbot.core.constant.PriorityConstant
 
 
 /**

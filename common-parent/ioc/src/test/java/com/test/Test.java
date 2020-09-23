@@ -1,13 +1,6 @@
 package com.test;
 
 import love.forte.common.ioc.DependCenter;
-import love.forte.common.ioc.annotation.ConfigBeans;
-import love.forte.common.utils.annotation.AnnotationUtil;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>

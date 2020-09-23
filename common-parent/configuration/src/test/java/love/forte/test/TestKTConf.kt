@@ -1,7 +1,6 @@
 package love.forte.test
 
 import love.forte.common.configuration.annotation.AsConfig
-import love.forte.common.configuration.annotation.ConfigIgnore
 import love.forte.common.configuration.annotation.ConfigInject
 
 @AsConfig(prefix = "user", allField = true)

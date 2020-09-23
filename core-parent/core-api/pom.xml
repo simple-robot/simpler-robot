@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>core-parent</artifactId>
+        <groupId>love.forte.simple-robot</groupId>
+        <version>2.0.0-ALPHA.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>core-api</artifactId>
+
+    <dependencies>
+
+        <!--<editor-fold desc="commons">-->
+        <!-- common-utils -->
+        <dependency>
+            <groupId>love.forte.common</groupId>
+            <artifactId>utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- common-ioc -->
+        <dependency>
+            <groupId>love.forte.common</groupId>
+            <artifactId>ioc</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- common-configuration -->
+        <dependency>
+            <groupId>love.forte.common</groupId>
+            <artifactId>configuration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- common-log -->
+        <dependency>
+            <groupId>love.forte.common</groupId>
+            <artifactId>log</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- common-language -->
+        <dependency>
+            <groupId>love.forte.common</groupId>
+            <artifactId>language</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!--</editor-fold>-->
+
+        <!--<editor-fold desc="kotlin">-->
+        <!-- kt -->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--</editor-fold>-->
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

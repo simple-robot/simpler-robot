@@ -18,8 +18,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Map;
-import java.util.function.BiFunction;
 
 /**
  *

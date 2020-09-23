@@ -13,7 +13,6 @@
 package love.forte.common.impl;
 
 import java.io.Serializable;
-import java.lang.reflect.MalformedParameterizedTypeException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;

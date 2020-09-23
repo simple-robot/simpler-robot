@@ -15,7 +15,6 @@
     <version>2.0.0-ALPHA.1</version>
 
     <modules>
-        <module>common-api</module>
         <module>utils</module>
         <module>ioc</module>
         <module>language</module>
