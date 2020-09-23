@@ -24,18 +24,20 @@ public interface BeanDependRegistrar {
 }
 
 
+
 /**
  * [BeanDepend] 注册器
  */
 public interface BeanDependRegistry {
 
     /**
-     * 注册一个beanDepend. 会将其直接注册
+     * 注册一个beanDepend. 会将其直接注册.
      */
     fun register(beanDepend: BeanDepend<*>)
 
     /**
-     * 注册一个type. 解析注解后注册
+     * 注册一个type. 解析注解后注册.
+     * 如果注册的type是 [BeanDependRegistrar] 的实现类, 则会实例化并执行，而不是注入到依赖。
      */
     fun register(type: Class<*>)
 

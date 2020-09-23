@@ -15,6 +15,8 @@ import java.util.Map;
 public class Test {
 
     public static void main(String[] args) {
+
+
         final DependCenter center = new DependCenter();
 
         center.inject(ConfClass.class, B1.class, B2.class, B3.class);

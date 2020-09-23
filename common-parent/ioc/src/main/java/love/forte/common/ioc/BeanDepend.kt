@@ -59,6 +59,11 @@ public interface BeanDepend<B> : Comparable<BeanDepend<*>> {
      */
     val needInit: Boolean
 
+    /**
+     * 可以被Config注入
+     */
+    val asConfig: Boolean
+
 
     /** 优先级  */
     val priority: Int
@@ -78,6 +83,7 @@ public class BeanDependData<B>(
     override val name: String,
     private val single: Boolean,
     override val needInit: Boolean,
+    override val asConfig: Boolean,
     override val instanceSupplier: InstanceSupplier<B>,
     override val priority: Int
 ) : BeanDepend<B> {
@@ -118,6 +124,7 @@ public open class BeanDependBuilder<B> {
     private var name: String? = null
     private var single: Boolean = false
     private var needInit: Boolean = false
+    private var asConfig: Boolean = false
     private var instanceSupplier: InstanceSupplier<B>? = null
     // private var instanceInjector: InstanceInjector<B> = InstanceInjector { b, _ -> b }
     private var priority: Int = PriorityConstant.TENTH
@@ -142,6 +149,11 @@ public open class BeanDependBuilder<B> {
         return this
     }
 
+    fun asConfig(asConfig: Boolean): BeanDependBuilder<B> {
+        this.asConfig = asConfig
+        return this
+    }
+
     fun instanceSupplier(instanceSupplier: InstanceSupplier<B>): BeanDependBuilder<B> {
         this.instanceSupplier = instanceSupplier
         return this
@@ -163,6 +175,6 @@ public open class BeanDependBuilder<B> {
     }
 
     fun build(): BeanDepend<B> =
-        BeanDependData(type!!, name!!, single, needInit, instanceSupplier!!, priority)
+        BeanDependData(type!!, name!!, single, needInit, asConfig, instanceSupplier!!, priority)
 }
 

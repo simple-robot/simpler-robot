@@ -10,16 +10,12 @@
  * QQ     1149159218
  */
 
-package love.forte.common.configuration.impl
+package love.forte.common.configuration
 
-import love.forte.common.configuration.Configuration
-import love.forte.common.configuration.ConfigurationInjector
-import love.forte.common.configuration.ConfigurationProperty
 import love.forte.common.configuration.annotation.AsConfig
 import love.forte.common.configuration.annotation.ConfigIgnore
 import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.configuration.exception.ConfigurationInjectException
-import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.annotation.getAnnotation
 import love.forte.common.utils.convert.ConverterManager
 import love.forte.common.utils.convert.HutoolConverterManagerBuilderImpl
@@ -62,7 +58,7 @@ private inline class ConfigTarget<T>(val member: KCallable<T>) {
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
-object ConfigurationInjectorImpl : ConfigurationInjector {
+object ConfigurationInjector {
     /**
      * 向一个配置类实例中注入配置信息。
      *
@@ -75,7 +71,7 @@ object ConfigurationInjectorImpl : ConfigurationInjector {
      *
      * @throws love.forte.common.configuration.exception.ConfigurationInjectException 如果注入的时候出现意外，则可能抛出此异常。
      */
-    override fun <T> inject(configInstance: T, configuration: Configuration, converterManager: ConverterManager?): T {
+    public fun <T> inject(configInstance: T, configuration: Configuration, converterManager: ConverterManager?): T {
         val manager: ConverterManager = converterManager ?: HutoolConverterManagerBuilderImpl().build()
 
         val configClass: KClass<*> = configInstance!!::class

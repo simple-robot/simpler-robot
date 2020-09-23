@@ -14,12 +14,15 @@ package love.forte.common.ioc
 
 import love.forte.common.annotation.Ignore
 import love.forte.common.configuration.Configuration
+import love.forte.common.configuration.annotation.AsConfig
+import love.forte.common.configuration.ConfigurationInjector
 import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.Constr
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.exception.*
 import love.forte.common.utils.FieldUtil
 import love.forte.common.utils.annotation.AnnotationUtil
+import love.forte.common.utils.convert.ConverterManager
 import java.io.Closeable
 import java.lang.reflect.Field
 import java.lang.reflect.Method
@@ -50,7 +53,7 @@ constructor(
     private val nameResourceWarehouse: MutableMap<String, BeanDepend<*>> = ConcurrentHashMap<String, BeanDepend<*>>(),
     @Volatile
     private var parent: DependBeanFactory? = null,
-    private val configs: Configuration? = null // auto config able.
+    private val configuration: Configuration? = null // auto config able.
 ) : BeanDependRegistry, DependBeanFactory, Closeable {
 
     @Volatile
@@ -144,6 +147,13 @@ constructor(
             throw IllegalTypeException("$type cannot be interface or abstract.")
         }
 
+        // 如果是BeanDependRegistrar的实现类, 则会直接执行.
+        if(type.isAssignableFrom(BeanDependRegistrar::class.java)) {
+            val registrar: BeanDependRegistrar = type.newInstance() as BeanDependRegistrar
+            registrar.registerBeanDepend(AnnotationHelper, this)
+            return
+        }
+
         // 得到beans注解
         val beansAnnotation: Beans =
             AnnotationUtil.getAnnotation(type, Beans::class.java) ?: defaultAnnotation ?: throw NotBeansException(
@@ -162,6 +172,9 @@ constructor(
         builder.single(beansAnnotation.single)
         builder.needInit(beansAnnotation.init)
         builder.priority(beansAnnotation.priority)
+        val asConfig: Boolean = AnnotationUtil.containsAnnotation(type, AsConfig::class.java)
+        // 是否可以作为配置类
+        builder.asConfig(asConfig)
 
         // 实例构建函数
         val emptyInstanceFunc: () -> T = classToEmptyInstanceSupplier(type)
@@ -198,7 +211,15 @@ constructor(
             }
         } else realInstanceSupplier
 
-        builder.instanceSupplier(instanceSupplier)
+        // 如果可以作为Config注入, 追加配置注入
+        val instanceSupplierWithConfig: InstanceSupplier<T> = if(configuration !=null && asConfig) {
+            InstanceSupplier { fac ->
+                val instance: T = instanceSupplier(fac)
+                ConfigurationInjector.inject(instance, configuration, fac.getOrNull(ConverterManager::class.java))
+            }
+        }else instanceSupplier
+
+        builder.instanceSupplier(instanceSupplierWithConfig)
 
         // Register a beanDepend.
         val beanDepend: BeanDepend<T> = builder.build()
@@ -240,10 +261,12 @@ constructor(
                         ?: it.dependName
 
                 builder.name(beanDependName)
-                builder.type(it.returnType)
+                builder.type(returnType)
                 builder.needInit(beansAnnotation.init)
                 builder.single(beansAnnotation.single)
                 builder.priority(beansAnnotation.priority)
+                val asConfig: Boolean = AnnotationUtil.containsAnnotation(returnType, AsConfig::class.java)
+                // 是否可以作为Config注入
 
                 // 实例构建函数
                 val emptyInstanceFunc: (DependBeanFactory) -> Any = childMethodToEmptyInstanceSupplier(parent, it)
@@ -284,11 +307,19 @@ constructor(
                     }
                 } else realInstanceSupplier
 
+                // 如果可以作为Config注入, 追加配置注入
+                val instanceSupplierWithConfig: InstanceSupplier<Any> = if(configuration !=null && asConfig) {
+                    InstanceSupplier { fac ->
+                        val instance: Any = instanceSupplier(fac)
+                        ConfigurationInjector.inject(instance, configuration, fac.getOrNull(ConverterManager::class.java))
+                    }
+                }else instanceSupplier
+
                 // // 完整实例构建函数
                 // val instanceSupplier: InstanceSupplier<*> = InstanceSupplier { fac ->
                 //     instanceInject(emptyInstanceFunc(fac), fac)
                 // }
-                builder.instanceSupplier(instanceSupplier)
+                builder.instanceSupplier(instanceSupplierWithConfig)
                 builder.build()
             }
     }
