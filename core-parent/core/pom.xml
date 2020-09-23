@@ -9,12 +9,18 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core-api</artifactId>
+    <artifactId>core</artifactId>
 
     <dependencies>
 
         <!--<editor-fold desc="commons">-->
         <!-- common-utils -->
+        <dependency>
+            <groupId>love.forte.simple-robot</groupId>
+            <artifactId>api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>love.forte.common</groupId>
             <artifactId>utils</artifactId>

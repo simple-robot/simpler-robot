@@ -11,8 +11,10 @@
 
     <artifactId>core-parent</artifactId>
     <packaging>pom</packaging>
+
     <modules>
-        <module>core-api</module>
+        <module>api</module>
+        <module>core</module>
     </modules>
 
 
