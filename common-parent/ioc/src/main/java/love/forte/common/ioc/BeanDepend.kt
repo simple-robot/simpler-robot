@@ -18,7 +18,7 @@ import love.forte.simbot.common.constant.PriorityConstant
 /**
  * 用于 [BeanDepend] 中的用于获取实例的函数。
  */
-public fun interface EmptyInstanceSupplier<out T> : () -> T
+public fun interface InstanceSupplier<out T> : (DependBeanFactory) -> T
 
 /**
  * 通过一个bean实例和一个 [DependBeanFactory] 来对其进行注入。
@@ -50,19 +50,20 @@ public interface BeanDepend<B> : Comparable<BeanDepend<*>> {
 
 
     /**
-     * 获取一个空实例的函数
+     * 获取一个实例的函数
      */
-    val emptyInstanceSupplier: EmptyInstanceSupplier<B>
+    val instanceSupplier: InstanceSupplier<B>
 
 
     /**
      * 实例注入函数
      */
-    val instanceInjector: InstanceInjector<B>
+    // val instanceInjector: InstanceInjector<B>
 
 
     /** 优先级  */
     val priority: Int
+
 
     @JvmDefault
     override fun compareTo(other: BeanDepend<*>): Int = priority.compareTo(other.priority)
@@ -77,27 +78,23 @@ public data class BeanDependData<B>(
     override val type: Class<out B>,
     override val name: String,
     private val single: Boolean,
-    override val emptyInstanceSupplier: EmptyInstanceSupplier<B>,
-    override val instanceInjector: InstanceInjector<B>,
+    override val instanceSupplier: InstanceSupplier<B>,
+    // override val instanceInjector: InstanceInjector<B>,
     override val priority: Int
 ) : BeanDepend<B> {
-    /**
-     * 是否应为单例
-     */
     override fun isSingle(): Boolean = single
 }
 
-
 /**
- * builder. 必须要有 [type]、[name]、[emptyInstanceSupplier]、[instanceInjector]
+ * builder. 必须要有 [type]、[name]、[instanceSupplier]、[instanceInjector]
  */
-public class BeanDependBuilder<B> {
+public open class BeanDependBuilder<B> {
 
     private var type: Class<out B>? = null
     private var name: String? = null
     private var single: Boolean = false
-    private var emptyInstanceSupplier: EmptyInstanceSupplier<B>? = null
-    private var instanceInjector: InstanceInjector<B>? = null
+    private var instanceSupplier: InstanceSupplier<B>? = null
+    // private var instanceInjector: InstanceInjector<B> = InstanceInjector { b, _ -> b }
     private var priority: Int = PriorityConstant.TENTH
 
     fun type(type: Class<out B>): BeanDependBuilder<B> {
@@ -115,20 +112,20 @@ public class BeanDependBuilder<B> {
         return this
     }
 
-    fun emptyInstanceSupplier(emptyInstanceSupplier: EmptyInstanceSupplier<B>): BeanDependBuilder<B> {
-        this.emptyInstanceSupplier = emptyInstanceSupplier
+    fun instanceSupplier(instanceSupplier: InstanceSupplier<B>): BeanDependBuilder<B> {
+        this.instanceSupplier = instanceSupplier
         return this
     }
 
-    fun <INS : B> emptyInstanceSupplier(instance: INS): BeanDependBuilder<B> {
-        this.emptyInstanceSupplier = EmptyInstanceSupplier { instance }
+    fun <INS : B> instanceSupplier(instance: INS): BeanDependBuilder<B> {
+        this.instanceSupplier = InstanceSupplier { instance }
         return this
     }
 
-    fun instanceInjector(instanceInjector: InstanceInjector<B>): BeanDependBuilder<B> {
-        this.instanceInjector = instanceInjector
-        return this
-    }
+    // fun instanceInjector(instanceInjector: InstanceInjector<B>): BeanDependBuilder<B> {
+    //     this.instanceInjector = instanceInjector
+    //     return this
+    // }
 
     fun priority(priority: Int): BeanDependBuilder<B> {
         this.priority = priority
@@ -136,6 +133,6 @@ public class BeanDependBuilder<B> {
     }
 
     fun build(): BeanDepend<B> =
-        BeanDependData(type!!, name!!, single, emptyInstanceSupplier!!, instanceInjector!!, priority)
+        BeanDependData(type!!, name!!, single, instanceSupplier!!, priority)
 }
 

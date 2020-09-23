@@ -68,6 +68,28 @@ public class AnnotationUtil {
         OBJECT_METHODS.add("finalize");
     }
 
+    /**
+     * 得到一个注解的默认值代理。可以提供额外的参数。
+     * @param annotationType 注解类型。
+     * @param params 参数列表。可以为null。
+     * @return 此注解的代理实例。
+     */
+    public static <T extends Annotation> T getDefaultAnnotationProxy(Class<T> annotationType, Map<String, Object> params){
+        if(params == null) {
+            params = Collections.emptyMap();
+        }
+        return AnnotationProxyUtil.proxy(annotationType, params);
+    }
+
+    /**
+     * 得到一个注解的默认值代理。
+     * @param annotationType 注解类型。
+     * @return 此注解的代理实例。
+     */
+    public static <T extends Annotation> T getDefaultAnnotationProxy(Class<T> annotationType){
+        return AnnotationProxyUtil.proxy(annotationType, Collections.emptyMap());
+    }
+
 
     /**
      * 从某个类上获取注解对象，注解可以深度递归
@@ -96,6 +118,9 @@ public class AnnotationUtil {
         return getAnnotation(null, from, annotationType, ignored);
     }
 
+    public static boolean containsAnnotation(AnnotatedElement from, Class<? extends Annotation> annotationType){
+        return getAnnotation(from, annotationType) != null;
+    }
 
     /**
      * 从某个类上获取注解对象。注解可以深度递归。

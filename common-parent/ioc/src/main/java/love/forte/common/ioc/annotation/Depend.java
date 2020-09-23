@@ -19,20 +19,20 @@ import java.lang.annotation.*;
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Retention(RetentionPolicy.RUNTIME)    //注解会在class字节码文件中存在，在运行时可以通过反射获取到
-@Target({ElementType.FIELD}) //接口、类、枚举、注解、方法
+@Target({ElementType.FIELD, ElementType.PARAMETER}) //接口、类、枚举、注解、方法
 @Documented
 public @interface Depend {
 
     /** 使用名称对依赖进行注入，如果为空字符串则使用类型进行注入 */
     String value() default "";
 
-    /** 如果没有名称，且此参数类型不是Object类型，则通过此类型获取。 */
-    Class<?> type() default Object.class;
+    /** 如果没有名称，且此参数类型不是Void类型，则通过此类型获取。 */
+    Class<?> type() default Void.class;
 
     /**
-     * 如果获取不到，使用null代替。默认会抛出异常。
+     * 如果获取不到，则忽略而不是抛出异常。
      */
-    boolean orNull() default false;
+    boolean orIgnore() default false;
 
     /**
      * 是否尝试通过setter注入。
@@ -45,7 +45,11 @@ public @interface Depend {
      */
     String setterName() default "";
 
-
+    /**
+     * 如果自定义了 {@link #setterName()}, 则此方法可指定setter的方法参数。
+     * 虽说是指定，但是只能有一个，而且类型需要是字段类型的子类。
+     */
+    Class<?> setterParams() default Void.class;
 
 
 }

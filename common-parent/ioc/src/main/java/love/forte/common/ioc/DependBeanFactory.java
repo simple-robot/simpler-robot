@@ -24,6 +24,10 @@ public interface DependBeanFactory {
     <T> T get(Class<T> type, String name);
     Object get(String name);
 
+    <T> T getOrNull(Class<T> type);
+    <T> T getOrNull(Class<T> type, String name);
+    Object getOrNull(String name);
+
 
 
 }
