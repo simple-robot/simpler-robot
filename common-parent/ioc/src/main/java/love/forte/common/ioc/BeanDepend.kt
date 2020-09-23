@@ -54,11 +54,10 @@ public interface BeanDepend<B> : Comparable<BeanDepend<*>> {
      */
     val instanceSupplier: InstanceSupplier<B>
 
-
     /**
-     * 实例注入函数
+     * 需要被初始化
      */
-    // val instanceInjector: InstanceInjector<B>
+    val needInit: Boolean
 
 
     /** 优先级  */
@@ -74,15 +73,40 @@ public interface BeanDepend<B> : Comparable<BeanDepend<*>> {
 /**
  * [BeanDepend] 的实现类
  */
-public data class BeanDependData<B>(
+public class BeanDependData<B>(
     override val type: Class<out B>,
     override val name: String,
     private val single: Boolean,
+    override val needInit: Boolean,
     override val instanceSupplier: InstanceSupplier<B>,
-    // override val instanceInjector: InstanceInjector<B>,
     override val priority: Int
 ) : BeanDepend<B> {
     override fun isSingle(): Boolean = single
+
+    override fun toString(): String = "BeanDepend(type=$type, name=$name, single=$single, needInit=$needInit, instanceSupplier=$instanceSupplier, priority=$priority)"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as BeanDependData<*>
+
+        if (type != other.type) return false
+        if (name != other.name) return false
+        if (single != other.single) return false
+        if (priority != other.priority) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = type.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + single.hashCode()
+        result = 31 * result + priority
+        return result
+    }
+
 }
 
 /**
@@ -93,6 +117,7 @@ public open class BeanDependBuilder<B> {
     private var type: Class<out B>? = null
     private var name: String? = null
     private var single: Boolean = false
+    private var needInit: Boolean = false
     private var instanceSupplier: InstanceSupplier<B>? = null
     // private var instanceInjector: InstanceInjector<B> = InstanceInjector { b, _ -> b }
     private var priority: Int = PriorityConstant.TENTH
@@ -112,12 +137,17 @@ public open class BeanDependBuilder<B> {
         return this
     }
 
+    fun needInit(needInit: Boolean): BeanDependBuilder<B> {
+        this.needInit = needInit
+        return this
+    }
+
     fun instanceSupplier(instanceSupplier: InstanceSupplier<B>): BeanDependBuilder<B> {
         this.instanceSupplier = instanceSupplier
         return this
     }
 
-    fun <INS : B> instanceSupplier(instance: INS): BeanDependBuilder<B> {
+    fun <INS : B> instanceSupplierByInstance(instance: INS): BeanDependBuilder<B> {
         this.instanceSupplier = InstanceSupplier { instance }
         return this
     }
@@ -133,6 +163,6 @@ public open class BeanDependBuilder<B> {
     }
 
     fun build(): BeanDepend<B> =
-        BeanDependData(type!!, name!!, single, instanceSupplier!!, priority)
+        BeanDependData(type!!, name!!, single, needInit, instanceSupplier!!, priority)
 }
 

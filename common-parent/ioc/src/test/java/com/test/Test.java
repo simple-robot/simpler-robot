@@ -1,5 +1,6 @@
 package com.test;
 
+import love.forte.common.ioc.DependCenter;
 import love.forte.common.ioc.annotation.ConfigBeans;
 import love.forte.common.utils.annotation.AnnotationUtil;
 
@@ -11,15 +12,26 @@ import java.util.Map;
 /**
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
-@ConfigBeans("this is a test.")
 public class Test {
 
-    private String name;
-
     public static void main(String[] args) {
-        Map<String, List<String>> map = new HashMap<>();
+        final DependCenter center = new DependCenter();
 
-        List<String> list = map.computeIfAbsent("233", k -> new ArrayList<>());
+        center.inject(ConfClass.class, B1.class, B2.class, B3.class);
+
+        center.init();
+
+        System.out.println("initialized.");
+
+        // final BeansInt beansInt = center.get(BeansInt.class);
+        //
+        // System.out.println(beansInt);
+        // System.out.println(beansInt.getName());
+        //
+        // System.out.println(center.get(BeansInt.class));
+        // System.out.println(center.get(BeansInt.class));
+        // System.out.println(center.get(BeansInt.class));
+        // System.out.println(center.get(BeansInt.class));
 
 
     }

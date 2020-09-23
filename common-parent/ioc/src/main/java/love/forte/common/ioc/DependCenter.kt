@@ -17,12 +17,10 @@ import love.forte.common.configuration.Configuration
 import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.Constr
 import love.forte.common.ioc.annotation.Depend
-import love.forte.common.ioc.exception.DuplicateDependNameException
-import love.forte.common.ioc.exception.IllegalConstrException
-import love.forte.common.ioc.exception.IllegalTypeException
-import love.forte.common.ioc.exception.NotBeansException
+import love.forte.common.ioc.exception.*
 import love.forte.common.utils.FieldUtil
 import love.forte.common.utils.annotation.AnnotationUtil
+import java.io.Closeable
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
@@ -37,30 +35,77 @@ import kotlin.reflect.jvm.kotlinProperty
  *
  * 依赖管理中心。
  *
- * ```
- * before inject ---> bean -- [inject intercept] --> inject
- * ```
- *
  *
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  *
  * @param singletonMap 保存单例的map。在put的时候会有同步锁，所以应该不需要线程安全的Map.
- * @param nameResourceWarehouse 保存依赖的map。以name为key, 对应着唯一的值。
- * @param typeResourceWarehouse 保存依赖的map。以type为key, 可以存在多个相同的类型，但是最终只会留下一个。
+ * @param nameResourceWarehouse 保存依赖的map。以name为key, 对应着唯一的值，也是其他sourceWarehouse中最终指向的地方。
  * @param parent 依赖中心的父类依赖。
  */
 public class DependCenter
 @JvmOverloads
 constructor(
-    private val singletonMap: MutableMap<String, Any> = ConcurrentHashMap(),
+    private val singletonMap: MutableMap<String, Any> = mutableMapOf(),
     private val nameResourceWarehouse: MutableMap<String, BeanDepend<*>> = ConcurrentHashMap<String, BeanDepend<*>>(),
-    private val typeResourceWarehouse: MutableMap<Class<*>, Deque<BeanDepend<*>>> = ConcurrentHashMap<Class<*>, Deque<BeanDepend<*>>>(),
+    @Volatile
     private var parent: DependBeanFactory? = null,
     private val configs: Configuration? = null // auto config able.
-) : BeanDependRegistry {
+) : BeanDependRegistry, DependBeanFactory, Closeable {
 
-    private val needInitialized: MutableList<BeanDepend<*>> = mutableListOf()
+    @Volatile
+    private var initialized: Boolean = false
+
+
+    /**
+     * do init.
+     */
+    @Synchronized
+    public fun init() {
+        if (!initialized) {
+            synchronized(needInitialized) {
+                needInitialized.sortedBy { it.priority }
+
+                while (needInitialized.isNotEmpty()) {
+                    needInitialized.poll().let { it.instanceSupplier(this) }
+                }
+            }
+
+            // needInitialized.forEach {
+            //     if(!it.initialized) {
+            //         it.instanceSupplier(this)
+            //     }
+            // }
+            initialized = true
+        }
+    }
+
+
+    /**
+     * close.
+     */
+    override fun close() {
+        nameResourceWarehouse.values.forEach {
+            if (it is CloseProcesses) {
+                try {
+                    it.close()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    /**
+     * 需要被初始化的beans列表
+     */
+    private val needInitialized: Queue<BeanDepend<*>> = LinkedList()
+
+    /**
+     * 类型最终值。获取一个类型，先优先尝试使用此处，获取不到则去 [typeResourceWarehouse] 中寻找并固定于此处。
+     * value是可null类型，但是只适用于 [ConcurrentHashMap.computeIfAbsent]
+     */
+    private val finalTypeResourceWarehouse: MutableMap<Class<*>, String?> = ConcurrentHashMap<Class<*>, String?>()
 
     /**
      * 根据旧parent得到一个新的parent
@@ -73,12 +118,27 @@ constructor(
      * 解析注解并注入依赖。 优先使用类上注解, 如果没有则使用提供的额外注解。 如果最终都没有, 抛出异常。
      *
      * @param defaultAnnotation 如果class有的class不存在bean, 可以提供一个默认的注解实例来代替为这个class的注解。
-     * @param type 要注入的类型。
+     * @param types 要注入的class列表。
      *
      * @throws NotBeansException 如果类上、方法上都找不到[Beans]相关注解，抛出此异常。
      */
     @JvmOverloads
-    public fun <T> inject(defaultAnnotation: Beans? = defaultBeansAnnotation, type: Class<out T>) {
+    public fun inject(defaultAnnotation: Beans? = defaultBeansAnnotation, vararg types: Class<*>) {
+        types.forEach {
+            inject0(defaultAnnotation, it)
+        }
+    }
+
+
+    /**
+     * 解析注解并注入依赖。 优先使用类上注解, 如果没有则使用提供的额外注解。 如果最终都没有, 抛出异常。
+     *
+     * @param defaultAnnotation 如果class有的class不存在bean, 可以提供一个默认的注解实例来代替为这个class的注解。
+     * @param type 要注入的类型。
+     *
+     * @throws NotBeansException 如果类上、方法上都找不到[Beans]相关注解，抛出此异常。
+     */
+    private fun <T> inject0(defaultAnnotation: Beans? = defaultBeansAnnotation, type: Class<out T>) {
         // 自动解析的情况下, target type 不可以是抽象类型或者接口理类型
         if (type.isInterface || Modifier.isAbstract(type.modifiers)) {
             throw IllegalTypeException("$type cannot be interface or abstract.")
@@ -100,6 +160,7 @@ constructor(
         builder.name(beanDependName)
         builder.type(type)
         builder.single(beansAnnotation.single)
+        builder.needInit(beansAnnotation.init)
         builder.priority(beansAnnotation.priority)
 
         // 实例构建函数
@@ -108,20 +169,128 @@ constructor(
         // 值注入函数
         val instanceInject: (T, DependBeanFactory) -> T = instanceInjectFunc(beansAnnotation, type)
 
+        val single: Boolean = beansAnnotation.single
+
+        // 每次都会直接构造实例
+        val realInstanceSupplier: InstanceSupplier<T> =
+            InstanceSupplier { fac ->
+                val emptyInstance: T = emptyInstanceFunc()
+                instanceInject(emptyInstance, fac)
+                emptyInstance
+            }
+
         // 完整实例构建函数
-        val instanceSupplier: InstanceSupplier<T> = InstanceSupplier { fac ->
-            instanceInject(emptyInstanceFunc(), fac)
-        }
+        val instanceSupplier: InstanceSupplier<T> = if (single) {
+            InstanceSupplier { fac ->
+                val singleton: Any? = singletonMap[beanDependName]
+                if (singleton != null) {
+                    singleton as T
+                } else {
+                    synchronized(singletonMap) {
+                        val singleton0: Any? = singletonMap[beanDependName]
+                        if (singleton0 == null) {
+                            val instance: T = realInstanceSupplier(fac)
+                            singletonMap[beanDependName] = instance as Any
+                            instance
+                        } else singleton0 as T
+                    }
+                }
+            }
+        } else realInstanceSupplier
+
         builder.instanceSupplier(instanceSupplier)
 
         // Register a beanDepend.
-        register(builder.build())
+        val beanDepend: BeanDepend<T> = builder.build()
+        register(beanDepend)
+
+        injectChildren(beanDepend, defaultBeansAnnotation).forEach {
+            register(it)
+        }
+    }
+
+    /**
+     * 父类型下所有的子方法注入
+     */
+    private fun injectChildren(parent: BeanDepend<*>, defaultAnnotations: Beans): Sequence<BeanDepend<*>> {
+        // find children
+        return parent.type.methods.asSequence()
+            // 只允许存在@Beans的方法
+            .filter { AnnotationUtil.containsAnnotation(it, Beans::class.java) }
+            .map {
+                val modifiers: Int = it.modifiers
+                // 如果是static, 或者不是public方法
+                if (Modifier.isStatic(modifiers)) {
+                    throw IllegalTypeException("${Beans::class} cannot be annotated in static method.")
+                }
+                if (!Modifier.isPublic(modifiers)) {
+                    throw IllegalTypeException("${Beans::class} cannot be annotated in no-public method.")
+                }
+                it
+            }.map {
+                val beansAnnotation: Beans = AnnotationUtil.getAnnotation(it, Beans::class.java) ?: defaultAnnotations
+                // builder
+                val builder = BeanDependBuilder<Any>()
+
+                val returnType: Class<*> = it.returnType
+
+                // bean name
+                val beanDependName: String =
+                    beansAnnotation.value.let { beanValue -> if (beanValue.isBlank()) null else beanValue }
+                        ?: it.dependName
+
+                builder.name(beanDependName)
+                builder.type(it.returnType)
+                builder.needInit(beansAnnotation.init)
+                builder.single(beansAnnotation.single)
+                builder.priority(beansAnnotation.priority)
+
+                // 实例构建函数
+                val emptyInstanceFunc: (DependBeanFactory) -> Any = childMethodToEmptyInstanceSupplier(parent, it)
+
+                // 值注入函数
+                val instanceInject: (Any, DependBeanFactory) -> Any = instanceInjectFunc(beansAnnotation, returnType)
 
 
-        // children
-        // 只允许非static的public方法
-        type.methods.filter { AnnotationUtil.containsAnnotation(it, Beans::class.java) }
+                val single: Boolean = beansAnnotation.single
 
+                // 每次都会直接构造实例
+                val realInstanceSupplier: InstanceSupplier<Any> =
+                    InstanceSupplier { fac ->
+                        val instance: Any = emptyInstanceFunc(fac)
+                        instanceInject(instance, fac)
+                        instance
+                    }
+
+                // 完整实例构建函数
+                val instanceSupplier: InstanceSupplier<Any> = if (single) {
+                    InstanceSupplier { fac ->
+                        singletonMap[beanDependName]
+                            ?: synchronized(singletonMap) {
+                                singletonMap[beanDependName]
+                                    ?: run {
+                                        val instance: Any = realInstanceSupplier(fac)
+                                        singletonMap[beanDependName] = instance
+                                        instance
+                                    }
+
+                                // val singleton0: Any? = singletonMap[beanDependName]
+                                // if(singleton0 == null){
+                                //     val instance: Any = realInstanceSupplier(fac)
+                                //     singletonMap[beanDependName] = instance
+                                //     instance
+                                // }else singleton0
+                            }
+                    }
+                } else realInstanceSupplier
+
+                // // 完整实例构建函数
+                // val instanceSupplier: InstanceSupplier<*> = InstanceSupplier { fac ->
+                //     instanceInject(emptyInstanceFunc(fac), fac)
+                // }
+                builder.instanceSupplier(instanceSupplier)
+                builder.build()
+            }
     }
 
     /**
@@ -181,14 +350,62 @@ constructor(
         }
     }
 
+
     /**
-     * 类中标注了@Beans的方法.
+     * 类中标注了@Beans的方法的实例构建函数。
      */
-    private fun <T> childMethodToEmptyInstanceSupplier(parentType: Class<*>, childMethod: Method): () -> T {
-        val beans: Beans = AnnotationUtil.getAnnotation(childMethod, Beans::class.java)
+    private fun childMethodToEmptyInstanceSupplier(
+        parent: BeanDepend<*>,
+        method: Method
+    ): (DependBeanFactory) -> Any {
+        // val beans: Beans = AnnotationUtil.getAnnotation(method, Beans::class.java)
+        val parentName: String = parent.name
+
+        // 参数实例获取函数
+        val parameters = method.parameters
+        val parameterSupplierList: List<(DependBeanFactory) -> Any?> =
+            parameters.map {
+                // depend annotation.
+                val depend: Depend? = AnnotationUtil.getAnnotation(it, Depend::class.java)
+                val orIgnore: Boolean = depend?.orIgnore ?: false
+
+                if (depend == null) {
+                    val paramType = it.type
+                    // no depend annotation. by type.
+                    { d -> d[paramType] }
+                } else {
+                    // depend.
+                    val dependValue = depend.value
+                    if (dependValue.isBlank()) {
+                        // blank, use type.
+                        val dependType: Class<*> =
+                            depend.type.let { t -> if (t == Void::class) null else t.java } ?: it.type
+                        if (orIgnore) {
+                            { d -> d.getOrNull(dependType) }
+                        } else {
+                            { d -> d[dependType] }
+                        }
+                    } else {
+                        // not blank, use name.
+                        val name = depend.value
+                        if (orIgnore) {
+                            { d -> d.getOrNull(name) }
+                        } else {
+                            { d -> d[name] }
+                        }
+                    }
+                }
+            }
 
 
-        TODO()
+
+        return { factory ->
+            // parent instance
+            val parentInstance: Any = factory[parentName]
+            // params
+            val params = parameterSupplierList.map { sup -> sup(factory) }
+            method(parentInstance, *params.toTypedArray())
+        }
     }
 
 
@@ -309,19 +526,157 @@ constructor(
     override fun register(beanDepend: BeanDepend<*>) {
         val name: String = beanDepend.name
         nameResourceWarehouse.merge(name, beanDepend, mergeDuplicate(name))
-        val type: Class<*> = beanDepend.type
-        val deque: Deque<BeanDepend<*>> = typeResourceWarehouse.computeIfAbsent(type) { LinkedList() }
-        deque.addLast(beanDepend)
+        // 需要init但是还没有init过
+        if (beanDepend.needInit && !initialized) {
+            needInitialized.add(beanDepend)
+        } else {
+            //init 过了, 直接获取一次
+            beanDepend.instanceSupplier(this)
+        }
     }
 
     /**
      * 注册一个type. 解析注解后注册
+     * 如果这个type是[BeanDependRegistrar]的实现类, 则构建其实例并执行，而不注入到依赖中。
      */
     override fun register(type: Class<*>) {
-        inject(null, type)
+        if(type.isAssignableFrom(BeanDependRegistrar::class.java)) {
+            val registrar: BeanDependRegistrar = type.newInstance() as BeanDependRegistrar
+            registrar.registerBeanDepend(AnnotationHelper, this)
+        }else{
+            inject(null, type)
+        }
     }
 
 
+    /**
+     * 根据类型获取一个依赖实例。
+     */
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> getDepend(type: Class<out T>): BeanDepend<T>? {
+        val name: String? = finalTypeResourceWarehouse.computeIfAbsent(type) {
+            // find by all types.
+            val depends: List<BeanDepend<*>> = nameResourceWarehouse.values
+                .filter {
+                    type.isAssignableFrom(it.type)
+                }.sortedBy { it.priority }
+
+            // nothing
+            when {
+                // empty
+                depends.isEmpty() -> null
+                // more than 1
+                depends.size > 1 -> {
+                    if (depends[0].priority == depends[1].priority) {
+                        throw IllegalTypeException("Multiple depend($type) of the same priority: ${depends[0].priority}")
+                    } else {
+                        depends.first().name
+                    }
+                }
+                else -> depends.first().name
+            }
+        }
+        return name?.let { getDepend(it) as BeanDepend<T> }
+    }
+
+
+    /**
+     * 根据名称获取一个依赖实例
+     */
+    private fun getDepend(name: String): BeanDepend<*>? = nameResourceWarehouse[name]
+
+
+    /**
+     * 根据类型获取一个依赖实例。
+     * @param type 类型
+     * @throws NoSuchDependException 如果依赖没有找到则抛出异常
+     * @return 实例
+     */
+    override fun <T : Any?> get(type: Class<T>): T {
+        var parentException: Throwable? = null
+        val parentValue: T? = try {
+            parent?.get(type)
+        } catch (e: Exception) {
+            parentException = e
+            null
+        }
+        return parentValue ?: getDepend(type)?.instanceSupplier?.invoke(this) ?: throw run {
+            parentException?.let { NoSuchDependException(type.toString(), it) }
+                ?: NoSuchDependException(type.toString())
+        }
+    }
+
+    /**
+     * 根据名称和类型获取一个依赖实例。通过名称获取，并转化为type。
+     * @param type 类型
+     * @param name 依赖名称
+     * @throws NoSuchDependException 如果依赖没有找到则抛出异常
+     * @return 转化后的实例
+     */
+    override fun <T : Any?> get(type: Class<T>, name: String): T {
+        return get(name) as? T ?: throw NoSuchDependException(name)
+    }
+
+    /**
+     * 根据名称获取一个依赖。
+     * @param name 名称
+     * @throws NoSuchDependException 如果依赖没有找到则抛出异常
+     * @return 实例
+     */
+    override fun get(name: String): Any {
+        var parentException: Throwable? = null
+        val parentValue: Any? = try {
+            parent?.get(name)
+        } catch (e: Exception) {
+            parentException = e
+            null
+        }
+        return parentValue ?: getDepend(name)?.instanceSupplier?.invoke(this) ?: throw run {
+            parentException?.let { NoSuchDependException(name, it) } ?: NoSuchDependException(name)
+        }
+    }
+
+    /**
+     * 根据类型获取一个依赖实例。获取不到则会返回null。
+     * @param type 类型
+     * @return 实例
+     */
+    override fun <T : Any?> getOrNull(type: Class<T>): T? {
+        val parentValue: T? = try {
+            parent?.get(type)
+        } catch (e: Exception) {
+            null
+        }
+        return parentValue ?: getDepend(type)?.instanceSupplier?.invoke(this)
+    }
+
+    /**
+     * 根据名称和类型获取一个依赖实例。通过名称获取，并转化为type。获取不到则会返回null。
+     * @param type 类型
+     * @param name 依赖名称
+     * @return 转化后的实例
+     */
+    override fun <T : Any?> getOrNull(type: Class<T>, name: String): T? {
+        return getOrNull(name) as? T
+    }
+
+    /**
+     * 根据名称获取一个依赖。获取不到则会返回null。
+     * @param name 名称
+     * @return 实例
+     */
+    override fun getOrNull(name: String): Any? {
+        val parentValue: Any? = try {
+            parent?.get(name)
+        } catch (e: Exception) {
+            null
+        }
+        return parentValue ?: getDepend(name)?.instanceSupplier?.invoke(this)
+    }
+
+    /**
+     * companion object.
+     */
     companion object {
         private val defaultBeansAnnotation: Beans = AnnotationUtil.getDefaultAnnotationProxy(Beans::class.java)
     }
