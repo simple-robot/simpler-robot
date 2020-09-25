@@ -131,7 +131,7 @@ constructor(override val type: String, private val encode: Boolean = true) : Cod
          */
         override fun value(value: Any?): CodeBuilder<String> {
             return key?.let { k ->
-                appender.append(CAT_SPLIT).append(k).append(CAT_KV)
+                appender.append(CAT_PV).append(k).append(CAT_KV)
                 if (value != null) {
                     appender.append(CatEncoder.encodeParams(value.toString()))
                 }

@@ -19,9 +19,10 @@ import love.forte.catcode.codes.Nyanko
 import love.forte.catcode.codes.MapNeko
 
 
-public const val CAT_HEAD = "[CAT:"
+public const val CAT_TYPE = "CAT"
+public const val CAT_HEAD = "[$CAT_TYPE:"
 public const val CAT_END = "]"
-public const val CAT_SPLIT = ","
+public const val CAT_PV = ","
 public const val CAT_KV = "="
 
 /**
@@ -49,7 +50,7 @@ public val nekoMatchRegex: Regex = Regex("\\[(\\w+:\\w+(,((?![\\[\\]]).)+?)*)]")
  * 获取一个[NoraNeko]的code head。
  * 建议大写。
  */
-public fun wildcatHead(codeType: String): String = "[$codeType:"
+public fun catHead(codeType: String): String = "[$codeType:"
 
 
 /**
@@ -65,7 +66,12 @@ public fun wildcatHead(codeType: String): String = "[$codeType:"
  *
  * @since 1.8.0
  */
-interface Neko: Map<String, String>, CharSequence {
+interface Neko : Map<String, String>, CharSequence {
+
+    @JvmDefault
+    val codeType: String
+        get() = CAT_TYPE
+
     /**
      * 获取Code的类型。例如`at`
      */
@@ -132,13 +138,13 @@ interface Neko: Map<String, String>, CharSequence {
  * 定义一个可变的[Neko]标准接口。
  * - `MutableNeko`实例应当实现[MutableMap]接口，使其可以作为一个 **可变** Map使用。
  */
-interface MutableNeko: Neko, MutableMap<String, String> {
+interface MutableNeko : Neko, MutableMap<String, String> {
     /**
      * type 也是可变类型
      */
     override var type: String
 }
-
+abstract class BaseMutableNeko : MutableNeko
 
 /**
  * 定义一个任意类型的[Neko]实例。
@@ -152,10 +158,31 @@ interface MutableNeko: Neko, MutableMap<String, String> {
  *
  */
 interface NoraNeko : Neko {
-    val codeType: String
+    @JvmDefault
+    override val codeType: String
 }
+abstract class BaseNoraNeko : NoraNeko
 
 
+/**
+ * 定义一个任意类型的[MutableNeko]实例。
+ *
+ * > nora neko -> のらねこ -> 野良猫 -> 野猫 , 即不是标准意义的cat code。
+ *
+ * 例如，`[CAT:at,code=123]`即为标准cat code,
+ * 而`[CQ:at,code=123]` 则不是标注cat code, 但是除了code类型以外的规则全部一样。
+ *
+ * [MutableNoraNeko] 接口继承自 [MutableNeko] 接口, 并提供一个 [codeType] 属性以指定code类型。
+ *
+ */
+interface MutableNoraNeko : MutableNeko {
+    /**
+     * Code type也可变
+     */
+    @JvmDefault
+    override var codeType: String
+}
+abstract class BaseMutableNoraNeko : MutableNoraNeko
 
 /**
  * 一个纯空参的[Neko]实例。
@@ -166,7 +193,7 @@ interface NoraNeko : Neko {
  * 因此[mutable]所得到的实例为[love.forte.catcode.codes.MutableMapNeko]实例。
  *
  */
-public data class EmptyNeko(override val type: String): Neko {
+public data class EmptyNeko(override val type: String) : Neko {
 
     private val codeText = "$CAT_HEAD$type$CAT_END"
 
@@ -205,9 +232,9 @@ public data class EmptyNeko(override val type: String): Neko {
  * 因此[mutable]所得到的实例为[love.forte.catcode.codes.MutableMapNeko]实例。
  *
  */
-public data class EmptyNoraNeko(override val codeType: String, override val type: String): NoraNeko {
+public data class EmptyNoraNeko(override val codeType: String, override val type: String) : NoraNeko {
 
-    private val codeText = "${wildcatHead(codeType)}$type$CAT_END"
+    private val codeText = "${catHead(codeType)}$type$CAT_END"
 
     override fun toString(): String = codeText
 
