@@ -173,11 +173,11 @@ object StringTemplate: CodeTemplate<String> {
     @JvmStatic
     val instance get() = this
     private val utils: CatCodeUtil = CatCodeUtil
-    private const val AT_ALL: String = "[CAT:at,qq=all]"
+    private const val AT_ALL: String = "[CAT:at,code=all]"
     /**
-     * at别人
+     * at别人. code后面为账号
      */
-    override fun at(code: String): String = "[CAT:at,qq=$code]" 
+    override fun at(code: String): String = "[CAT:at,code=$code]"
 
     /**
      * at所有人

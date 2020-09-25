@@ -15,6 +15,7 @@
 package love.forte.catcode.codes
 
 import love.forte.catcode.*
+import java.util.function.BiConsumer
 
 
 /* ******************************************************
@@ -41,19 +42,19 @@ private val MAP_SPLIT_REGEX = Regex("=")
  * @since 1.8.0
  */
 open class MapNeko
-internal constructor(open val params: Map<String, String>, override var type: String) :
+protected constructor(open val params: Map<String, String>, override var type: String) :
         Neko,
         Map<String, String> by params {
-    internal constructor(type: String) : this(emptyMap(), type)
-    internal constructor(type: String, params: Map<String, String>) : this(params.toMap(), type)
-    internal constructor(type: String, vararg params: Pair<String, String>) : this(mapOf(*params), type)
-    internal constructor(type: String, vararg params: String) : this(mapOf(*params.map {
+    constructor(type: String) : this(emptyMap(), type)
+    constructor(type: String, params: Map<String, String>) : this(params.toMap(), type)
+    constructor(type: String, vararg params: Pair<String, String>) : this(mapOf(*params), type)
+    constructor(type: String, vararg params: String) : this(mapOf(*params.map {
         val split = it.split(MAP_SPLIT_REGEX, 2)
         split[0] to split[1]
     }.toTypedArray()), type)
 
-    /** internal constructor for mutable kqCode */
-    internal constructor(mutableKQCode: MutableNeko) : this(mutableKQCode.toMap(), mutableKQCode.type)
+    // /** internal constructor for mutable kqCode */
+    // constructor(mutableKQCode: MutableNeko) : this(mutableKQCode.toMap(), mutableKQCode.type)
 
     /**
      * Returns the length of this character sequence.
@@ -99,7 +100,7 @@ internal constructor(open val params: Map<String, String>, override var type: St
     /**
      * 转化为参数可变的[MutableNeko]
      */
-    override fun mutable(): MutableNeko = MutableMapNeko(this)
+    override fun mutable(): MutableNeko = MutableMapNeko(type, this.toMutableMap())
 
     /**
      * 转化为不可变类型[Neko]
@@ -197,7 +198,7 @@ internal constructor(open val params: Map<String, String>, override var type: St
                         val sp = it.split(Regex("="), 2)
                         sp[0] to CatDecoder.decodeParams(sp[1])
                     }.toMap().toMutableMap()
-                    MutableMapNeko(map, type)
+                    MutableMapNeko(type, map)
                 } else {
                     MutableMapNeko(type, *split.subList(1, split.size).toTypedArray())
                 }
@@ -235,20 +236,20 @@ internal constructor(open val params: Map<String, String>, override var type: St
  */
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 class MutableMapNeko
-internal constructor(override val params: MutableMap<String, String>, type: String) :
+private constructor(override val params: MutableMap<String, String>, type: String) :
         MapNeko(params, type),
     MutableNeko,
         MutableMap<String, String> by params {
-    internal constructor(type: String) : this(mutableMapOf(), type)
-    internal constructor(type: String, params: Map<String, String>) : this(params.toMutableMap(), type)
-    internal constructor(type: String, vararg params: Pair<String, String>) : this(mutableMapOf(*params), type)
-    internal constructor(type: String, vararg params: String) : this(mutableMapOf(*params.map {
+    constructor(type: String) : this(mutableMapOf(), type)
+    constructor(type: String, params: Map<String, String>) : this(params.toMutableMap(), type)
+    constructor(type: String, vararg params: Pair<String, String>) : this(mutableMapOf(*params), type)
+    constructor(type: String, vararg params: String) : this(mutableMapOf(*params.map {
         val split = it.split(MAP_SPLIT_REGEX, 2)
         split[0] to split[1]
     }.toTypedArray()), type)
 
-    /** internal constructor for kqCode */
-    internal constructor(neko: Neko) : this(neko.toMutableMap(), neko.type)
+    // /** internal constructor for kqCode */
+    // internal constructor(neko: Neko) : this(neko.toMutableMap(), neko.type)
 
     /**
      * 转化为参数可变的[MutableNeko]
@@ -258,8 +259,13 @@ internal constructor(override val params: MutableMap<String, String>, type: Stri
     /**
      * 转化为不可变类型[Neko]
      */
-    override fun immutable(): Neko = MapNeko(this)
+    override fun immutable(): Neko = MapNeko(type, this)
 
     /** toString */
     override fun toString(): String = CatCodeUtil.toCat(type, map = this)
+
+
+    override fun forEach(action: BiConsumer<in String, in String>) {
+        super<MapNeko>.forEach(action)
+    }
 }

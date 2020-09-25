@@ -24,6 +24,33 @@ public const val CAT_END = "]"
 public const val CAT_SPLIT = ","
 public const val CAT_KV = "="
 
+/**
+ * cat码匹配正则。
+ *
+ * 匹配为：`[codeType:type(,param=value)*]`, 其中不可能出现其他的 `[` 或 `]` 字符。
+ * 例如：
+ * - 正确的：`[CAT:image,file=abc.jpg]`
+ * - 正确的：`[CQ:image,file=abc.jpg]`
+ * - 错误的：`[CAT:image,[file=abc.jpg]`
+ * - 错误的：`[CQ:image;file=abc.jpg]`
+ *
+ * cat码中：
+ * - codeType标准应为`CAT`, 非标准则为大小写字母、数字或下划线。
+ * - type标准应为大小写字母、数字或下划线。
+ * - codeType与type使用 `:` 分割。
+ * - 尽可能不应出现空格。
+ * - 不应出现换行。
+ *
+ */
+public val nekoMatchRegex: Regex = Regex("\\[(\\w+:\\w+(,((?![\\[\\]]).)+?)*)]")
+
+
+/**
+ * 获取一个[NoraNeko]的code head。
+ * 建议大写。
+ */
+public fun wildcatHead(codeType: String): String = "[$codeType:"
+
 
 /**
  * 定义一个不可变的 Neko码 标准接口
@@ -102,14 +129,30 @@ interface Neko: Map<String, String>, CharSequence {
 }
 
 /**
- * 定义一个可变的KQCode标准接口
- * - MutableKQCode实例应当实现[MutableMap]接口，使其可以作为一个 **可变** Map使用。
+ * 定义一个可变的[Neko]标准接口。
+ * - `MutableNeko`实例应当实现[MutableMap]接口，使其可以作为一个 **可变** Map使用。
  */
 interface MutableNeko: Neko, MutableMap<String, String> {
     /**
      * type 也是可变类型
      */
     override var type: String
+}
+
+
+/**
+ * 定义一个任意类型的[Neko]实例。
+ *
+ * > nora neko -> のらねこ -> 野良猫 -> 野猫 , 即不是标准意义的cat code。
+ *
+ * 例如，`[CAT:at,code=123]`即为标准cat code,
+ * 而`[CQ:at,code=123]` 则不是标注cat code, 但是除了code类型以外的规则全部一样。
+ *
+ * [NoraNeko] 接口继承自 [Neko] 接口, 并提供一个 [codeType] 属性以指定code类型。
+ *
+ */
+interface NoraNeko : Neko {
+    val codeType: String
 }
 
 
@@ -120,10 +163,10 @@ interface MutableNeko: Neko, MutableMap<String, String> {
  * 此类只有**不可变**状态, 并且应当为无参[Neko]的优先使用类。由于没有参数，因此不存在任何多余的计算与转义。
  *
  * 由于不存在对应的**可变状态**,
- * 因此[mutable]所得到的实例为[com.simplerobot.modules.utils.codes.MutableMapKQCode]实例。
+ * 因此[mutable]所得到的实例为[love.forte.catcode.codes.MutableMapNeko]实例。
  *
  */
-data class EmptyNeko(override val type: String): Neko {
+public data class EmptyNeko(override val type: String): Neko {
 
     private val codeText = "$CAT_HEAD$type$CAT_END"
 
@@ -153,14 +196,46 @@ data class EmptyNeko(override val type: String): Neko {
 }
 
 
+/**
+ * 一个纯空参的[NoraNeko]实例。
+ *
+ * 此类只有**不可变**状态, 并且应当为无参[NoraNeko]的优先使用类。由于没有参数，因此不存在任何多余的计算与转义。
+ *
+ * 由于不存在对应的**可变状态**,
+ * 因此[mutable]所得到的实例为[love.forte.catcode.codes.MutableMapNeko]实例。
+ *
+ */
+public data class EmptyNoraNeko(override val codeType: String, override val type: String): NoraNeko {
+
+    private val codeText = "${wildcatHead(codeType)}$type$CAT_END"
+
+    override fun toString(): String = codeText
+
+    /**
+     * 转化为可变参的[MutableNeko]
+     */
+    override fun mutable(): MutableNeko = MapNeko.mutableByCode(codeText)
+
+    /**
+     * 转化为不可变类型[Neko]
+     */
+    override fun immutable(): Neko = this
+    override val entries: Set<Map.Entry<String, String>> = emptySet()
+    override val keys: Set<String> = emptySet()
+    override val size: Int = 0
+    override val values: Collection<String> = emptyList()
+    override fun containsKey(key: String): Boolean = false
+    override fun containsValue(value: String): Boolean = false
+    override operator fun get(key: String): String? = null
+    override fun getNoDecode(key: String): String? = null
+    override val length: Int = codeText.length
+    override operator fun get(index: Int): Char = codeText[index]
+    override fun isEmpty(): Boolean = true
+    override fun subSequence(startIndex: Int, endIndex: Int): CharSequence = codeText.subSequence(startIndex, endIndex)
+}
 
 
 
-
-
-//**************************************
-//*           for DSL
-//**************************************
 
 
 

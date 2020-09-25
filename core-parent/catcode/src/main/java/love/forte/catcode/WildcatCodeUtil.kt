@@ -14,112 +14,44 @@
 
 package love.forte.catcode
 
-import love.forte.catcode.codes.Nyanko
 import love.forte.catcode.codes.MapNeko
-
-/*
-& -> &amp;
-[ -> &#91;
-] -> &#93;
- */
-/*
-& -> &amp;
-[ -> &#91;
-] -> &#93;
-, -> &#44;
- */
-
-private val CAT_SPLIT_REGEX: Regex = Regex(CAT_KV)
-private val CAT_SPLIT_ARRAY: Array<String> = arrayOf(CAT_SPLIT)
-
-/** Cat Decoder */
-@Suppress("MemberVisibilityCanBePrivate")
-object CatDecoder {
-
-    @JvmStatic
-    val instance
-        get() = this
-
-    /** 非猫猫码文本消息解义 */
-    fun decodeText(str: String): String =
-        str .replace("&#91;", "[")
-            .replace("&#93;", "]")
-            .replace("&#09;", "\t")
-            .replace("&#10;", "\r")
-            .replace("&#13;", "\n")
-            .replace("&amp;", "&")
-
-    /** 非猫猫码文本消息解义，如果[str]为null则返回null */
-    fun decodeTextOrNull(str: String?) : String? = str?.let { decodeText(it) }
+import love.forte.catcode.codes.Nyanko
 
 
-    /** 猫猫码参数值消息解义 */
-    fun decodeParams(str: String): String =
-        str .replace("&#91;", "[")
-            .replace("&#93;", "]")
-            .replace("&#44;", ",")
-            .replace("&#09;", "\t")
-            .replace("&#10;", "\r")
-            .replace("&#13;", "\n")
-            .replace("&amp;", "&")
 
-    /** 猫猫码参数值消息解义，如果[str]为null则返回null */
-    fun decodeParamsOrNull(str: String?): String? = str?.let { decodeParams(it) }
-
-}
-
-/** Cat Encoder */
-@Suppress("MemberVisibilityCanBePrivate")
-object CatEncoder {
-
-    @JvmStatic
-    val instance
-        get() = this
-
-    /** 非猫猫码文本消息转义 */
-    fun encodeText(str: String): String =
-        str.replace("&", "&amp;")
-            .replace("[", "&#91;")
-            .replace("]", "&#93;")
-            .replace("\t", "&#09;")
-            .replace("\r", "&#10;")
-            .replace("\n", "&#13;")
-
-    /** 非猫猫码文本消息转义。如果[str]为null则返回null */
-    fun encodeTextOrNull(str: String?): String? = str?.let { encodeText(it) }
-
-    /** 猫猫码参数值消息转义 */
-    fun encodeParams(str: String): String =
-        str.replace("&", "&amp;")
-            .replace("[", "&#91;")
-            .replace("]", "&#93;")
-            .replace("\t", "&#09;")
-            .replace("\r", "&#10;")
-            .replace("\n", "&#13;")
-
-    /** 猫猫码参数值消息转义。如果[str]为null则返回null */
-    fun encodeParamsOrNull(str: String?): String? = str?.let { encodeParams(it) }
-
-}
 
 
 /**
- * 猫猫码的操作工具类
+ * 野良猫码的操作工具类。
+ *
+ * 构建此工具类需要提供一个 `codeType`参数以代表此野良猫码的类型。
+ *
+ * 所谓野良猫，即code类型不一定是`CAT`的cat码。
+ * 例如：`[CAT:at,code=123]`, 此码的类型为`CAT`, 所以是标准猫猫码，
+ * 而例如`[CQ:at,code=123]`, 此码的类型为`CQ`, 不是标准猫猫码，即为野良猫码。
+ *
+ * > 野良猫 -> のらねこ -> 野猫 -> wildcat
+ *
  */
-object CatCodeUtil {
+public open class WildcatCodeUtil(private val codeType: String) {
+
+    protected open val wildcatHead: String = wildcatHead(codeType)
+    protected open val wildcatEnd: String = CAT_END
+    protected val wildcatSplitRegex: Regex = Regex(CAT_KV)
+    protected val wildcatSplitArray: Array<String> = arrayOf(CAT_SPLIT)
 
 
     /**
      *  获取一个String为载体的[模板][CodeTemplate]
      *  @see StringTemplate
      */
-    val stringTemplate: CodeTemplate<String> get() = StringTemplate
+    open val stringTemplate: CodeTemplate<String> get() = StringTemplate
 
     /**
      *  获取[Neko]为载体的[模板][CodeTemplate]
      *  @see NekoTemplate
      */
-    val nekoTemplate: CodeTemplate<Neko> get() = NekoTemplate
+    open val nekoTemplate: CodeTemplate<Neko> get() = NekoTemplate
 
     /**
      * 构建一个String为载体类型的[构建器][CodeBuilder]
@@ -133,15 +65,11 @@ object CatCodeUtil {
     fun getNekoBuilder(type: String): CodeBuilder<Neko> = CodeBuilder.nekoBuilder(type)
 
 
-    @JvmStatic
-    val instance
-        get() = this
-
     /**
      * 仅通过一个类型获取一个猫猫码。例如`\[Cat:hi]`
      */
     fun toCat(type: String): String {
-        return "$CAT_HEAD$type$CAT_END"
+        return "$wildcatHead$type$wildcatEnd"
     }
 
     /**
@@ -152,15 +80,15 @@ object CatCodeUtil {
      */
     @JvmOverloads
     fun toCat(type: String, encode: Boolean = true, vararg pair: Pair<String, Any>): String {
-        val pre = "$CAT_HEAD$type"
+        val pre = "$wildcatHead$type"
         return if (pair.isNotEmpty()) {
-            pair.joinToString(CAT_SPLIT, "$pre$CAT_SPLIT", CAT_END) {
+            pair.joinToString(CAT_SPLIT, "$pre$CAT_SPLIT", wildcatEnd) {
                 "${it.first}$CAT_KV${
                     if (encode) CatEncoder.encodeParams(it.second.toString()) else it.second
                 }"
             }
         } else {
-            pre + CAT_END
+            pre + wildcatEnd
         }
     }
 
@@ -170,19 +98,19 @@ object CatCodeUtil {
      */
     @JvmOverloads
     fun toCat(type: String, encode: Boolean = true, map: Map<String, *>): String {
-        val pre = "$CAT_HEAD$type"
+        val pre = "$wildcatHead$type"
         return if (map.isNotEmpty()) {
             map.entries.joinToString(
                 CAT_SPLIT,
                 "$pre$CAT_SPLIT",
-                CAT_END
+                wildcatEnd
             ) {
                 "${it.key}$CAT_KV${
                     if (encode) CatEncoder.encodeParams(it.value.toString()) else it.value
                 }"
             }
         } else {
-            pre + CAT_END
+            pre + wildcatEnd
         }
     }
 
@@ -198,15 +126,15 @@ object CatCodeUtil {
         return if (params.isNotEmpty()) {
             if (encode) {
                 toCat(type, encode, *params.map {
-                    val split: List<String> = it.split(delimiters = CAT_SPLIT_ARRAY, false, 2)
+                    val split: List<String> = it.split(delimiters = wildcatSplitArray, false, 2)
                     split[0] to split[1]
                 }.toTypedArray())
             } else {
                 // 不需要转义, 直接进行字符串拼接
-                "$CAT_HEAD$type$CAT_SPLIT${params.joinToString(CAT_SPLIT)}$CAT_END"
+                "$wildcatHead$type$CAT_SPLIT${params.joinToString(CAT_SPLIT)}$wildcatEnd"
             }
         } else {
-            "$CAT_HEAD$type$CAT_END"
+            "$wildcatHead$type$wildcatEnd"
         }
     }
 
@@ -280,15 +208,15 @@ object CatCodeUtil {
      * @param postMap 后置转化函数
      * @since 1.8.0
      */
-    inline fun <T> split(text: String, postMap: String.() -> T): List<T> {
+    fun <T> split(text: String, postMap: String.() -> T): List<T> {
         // 准备list
         val list: MutableList<T> = mutableListOf()
 
-        val het = CAT_HEAD
-        val ent = CAT_END
+        val het: String = this.wildcatHead
+        val ent: String = this.wildcatEnd
 
         // 查找最近一个[Cat:字符
-        var h = text.indexOf(het)
+        var h: Int = text.indexOf(het)
         var le = -1
         var e = -1
         while (h >= 0) {
@@ -338,8 +266,8 @@ object CatCodeUtil {
         var i = -1
         var ti: Int
         var e = 0
-        val het = CAT_HEAD + type
-        val ent = CAT_END
+        val het = wildcatHead + type
+        val ent = wildcatEnd
 
         do {
             ti = text.indexOf(het, e)
@@ -381,11 +309,11 @@ object CatCodeUtil {
      * @since 1.8.0
      */
     @JvmOverloads
-    inline fun <T> getCats(text: String, type: String = "", map: (String) -> T): List<T> {
+    fun <T> getCats(text: String, type: String = "", map: (String) -> T): List<T> {
         var ti: Int
         var e = 0
-        val het = CAT_HEAD + type
-        val ent = CAT_END
+        val het = wildcatHead + type
+        val ent = wildcatEnd
         // temp list
         val list: MutableList<T> = mutableListOf()
 
@@ -423,8 +351,8 @@ object CatCodeUtil {
      */
     @JvmOverloads
     fun getParam(text: String, paramKey: String, type: String = "", index: Int = 0): String? {
-        val catHead = CAT_HEAD + type
-        val catEnd = CAT_END
+        val catHead = wildcatHead + type
+        val catEnd = wildcatEnd
         val catSpl = CAT_SPLIT
 
         var from = -1
@@ -573,8 +501,8 @@ object CatCodeUtil {
             else -> {
                 val sb = StringBuilder(text.length)
                 // 移除所有的猫猫码
-                val head = CAT_HEAD + type
-                val end = CAT_END
+                val head = wildcatHead + type
+                val end = wildcatEnd
 
                 var hi: Int = -1
                 var ei = -1
