@@ -37,6 +37,9 @@
         <!-- some version -->
         <fastjson.version>1.2.54</fastjson.version>
         <hutool.version>5.4.0</hutool.version>
+
+        <commons.version>1.0.0-ALPHA.1</commons.version>
+
     </properties>
 
     <!-- dependencies -->
@@ -47,12 +50,46 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
     <!-- dependencyManagement -->
     <dependencyManagement>
         <dependencies>
+
+            <!--<editor-fold desc="commons">-->
+            <!-- common-utils -->
+            <dependency>
+                <groupId>love.forte.common</groupId>
+                <artifactId>utils</artifactId>
+                <version>${commons.version}</version>
+            </dependency>
+            <!-- common-log -->
+            <dependency>
+                <groupId>love.forte.common</groupId>
+                <artifactId>log</artifactId>
+                <version>${commons.version}</version>
+            </dependency>
+            <!-- common-language -->
+            <dependency>
+                <groupId>love.forte.common</groupId>
+                <artifactId>language</artifactId>
+                <version>${commons.version}</version>
+            </dependency>
+            <!-- common-configuration -->
+            <dependency>
+                <groupId>love.forte.common</groupId>
+                <artifactId>configuration</artifactId>
+                <version>${commons.version}</version>
+            </dependency>
+            <!-- common-ioc -->
+            <dependency>
+                <groupId>love.forte.common</groupId>
+                <artifactId>ioc</artifactId>
+                <version>${commons.version}</version>
+            </dependency>
+            <!--</editor-fold>-->
             <!--<editor-fold desc="kotlin dependencies">-->
             <!-- kt -->
             <dependency>

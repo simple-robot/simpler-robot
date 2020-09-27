@@ -16,7 +16,6 @@
         <dependency>
             <groupId>love.forte.common</groupId>
             <artifactId>utils</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!--<editor-fold desc="kotlin">-->

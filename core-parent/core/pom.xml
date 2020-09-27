@@ -24,35 +24,30 @@
         <dependency>
             <groupId>love.forte.common</groupId>
             <artifactId>utils</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- common-ioc -->
         <dependency>
             <groupId>love.forte.common</groupId>
             <artifactId>ioc</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- common-configuration -->
         <dependency>
             <groupId>love.forte.common</groupId>
             <artifactId>configuration</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- common-log -->
         <dependency>
             <groupId>love.forte.common</groupId>
             <artifactId>log</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- common-language -->
         <dependency>
             <groupId>love.forte.common</groupId>
             <artifactId>language</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <!--</editor-fold>-->
 
