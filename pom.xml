@@ -9,7 +9,7 @@
     <groupId>love.forte.simple-robot</groupId>
     <version>2.0.0-ALPHA.1</version>
     <modules>
-        <module>common-parent</module>
+        <module>../common-parent</module>
         <module>test</module>
         <module>core-parent</module>
     </modules>
@@ -48,7 +48,6 @@
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <!-- dependencyManagement -->
@@ -484,7 +483,7 @@
                     <executions>
                         <execution>
                             <id>sign-artifacts</id>
-                            <phase>verify</phase>
+                            <phase>deploy</phase>
                             <goals>
                                 <goal>sign</goal>
                             </goals>

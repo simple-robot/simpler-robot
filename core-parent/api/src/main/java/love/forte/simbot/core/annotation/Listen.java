@@ -21,6 +21,9 @@ import love.forte.simbot.core.api.message.containers.*;
 
 /**
  * <p>监听的类型。一般来讲是一个接口类型。</p>
+ *
+ * <p> 可复数注解同样支持注解继承。但是仅允许在 直接获取 {@link Listen} 获取不到的时候才会进行深度获取。 </p>
+ *
  * <p>与具体对应的消息相关的有：</p>
  *
  * <ul>
@@ -137,7 +140,7 @@ import love.forte.simbot.core.api.message.containers.*;
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Documented
 @Repeatable(Listens.class)
 public @interface Listen {
@@ -147,5 +150,7 @@ public @interface Listen {
      */
     Class<? extends MsgGet> value();
 
+
+    int d() default 2;
 
 }

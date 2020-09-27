@@ -24,7 +24,7 @@ import java.lang.annotation.*;
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Documented
 public @interface Listens {
 

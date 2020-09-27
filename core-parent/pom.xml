@@ -15,7 +15,6 @@
     <modules>
         <module>api</module>
         <module>core</module>
-        <module>catcode</module>
     </modules>
 
 

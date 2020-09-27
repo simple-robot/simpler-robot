@@ -15,6 +15,7 @@ package love.forte.simbot.core.annotation;
 import java.lang.annotation.*;
 
 /**
+ * 监听函数过滤器。以注解的形式对监听函数进行匹配与过滤。
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Retention(RetentionPolicy.RUNTIME)    //注解会在class字节码文件中存在，在运行时可以通过反射获取到
