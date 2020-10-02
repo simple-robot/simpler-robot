@@ -22,9 +22,12 @@ import love.forte.simbot.core.api.message.MsgGet
 interface ListenerFunction {
 
     /**
-     * 判断当前监听函数是否可以触发当前监听.
+     * 判断当前监听函数是否可以触发当前类型的监听.
      */
-    fun <T: MsgGet> isListen(onType: Class<T>): Boolean
+    fun <T: MsgGet> canListen(onType: Class<T>): Boolean
+
+
+
 
 
     /**
