@@ -19,6 +19,7 @@ import love.forte.simbot.core.api.message.containers.AccountContainer
 import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.containers.FlagContainer
 import love.forte.simbot.core.api.message.containers.OriginalDataContainer
+import love.forte.simbot.core.api.message.events.*
 import java.time.LocalDateTime
 
 /*
@@ -62,6 +63,83 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
 
 
 /**
+ * 判断一个MsgGet的实例是否存在于某个集合中。
+ *
+ * 即从此集合中寻找此是否存在此类型的父类。
+ *
+ * 如果存在，返回在这个集合中的结果集，否则返回一个空集合.
+ */
+public infix fun <T : Class<out MsgGet>> MsgGet.findIn(typeCollections: Collection<T>): List<T> {
+    if(typeCollections.isEmpty()) return emptyList()
+
+    val thisClass: Class<MsgGet> = javaClass
+    return typeCollections.filter {
+        it.isAssignableFrom(thisClass)
+    }
+}
+
+/**
+ * 判断一个MsgGet的实例是否存在于某个集合中。
+ *
+ * 即从此集合中寻找此是否存在此类型的父类。
+ *
+ * 如果存在，返回在这个集合中的结果集，否则返回一个空sequence.
+ */
+public infix fun <T : Class<out MsgGet>> MsgGet.findSequenceIn(typeCollections: Collection<T>): Sequence<T> {
+    if(typeCollections.isEmpty()) return emptySequence()
+
+    val thisClass: Class<MsgGet> = javaClass
+    return typeCollections.asSequence().filter {
+        it.isAssignableFrom(thisClass)
+    }
+}
+
+/**
+ * 判断一个MsgGet的实例是否存在于某个Map中。
+ *
+ * 即从此集合中寻找此是否存在此类型的父类。
+ *
+ * 如果存在，返回在这个集合中的结果集，否则返回一个空集合.
+ */
+public infix fun <T : Class<out MsgGet>> MsgGet.findIn(typeCollections: Map<T, *>): List<T> {
+    if(typeCollections.isEmpty()) return emptyList()
+
+    val thisClass: Class<MsgGet> = javaClass
+    return typeCollections.map { it.key }.filter {
+        it.isAssignableFrom(thisClass)
+    }
+}
+
+/**
+ * 判断一个MsgGet的实例是否存在于某个Map中。
+ *
+ * 即从此集合中寻找此是否存在此类型的父类。
+ *
+ * 如果存在，返回在这个集合中的结果集，否则返回一个空sequence.
+ */
+public infix fun <T : Class<out MsgGet>, V> MsgGet.findSequenceIn(typeCollections: Map<T, V>): Sequence<V> {
+    if(typeCollections.isEmpty()) return emptySequence()
+
+    val thisClass: Class<MsgGet> = javaClass
+    return typeCollections.asSequence().filter {
+        it.key.isAssignableFrom(thisClass)
+    }.map { it.value }
+}
+
+/**
+ * 判断一个MsgGet的实例是否存在于某个Map中。
+ *
+ * 即从此集合中寻找此是否存在此类型的父类。
+ *
+ * 如果存在，返回在这个集合中的结果集，否则返回一个空集合.
+ */
+public infix fun <T : Class<out MsgGet>, V> MsgGet.findValuesIn(typeCollections: Map<T, V>): List<V> = (this findSequenceIn typeCollections).toList()
+
+
+
+
+
+/**
  * 事件父接口，
  * 是当一个监听类型为得不到 [消息文本][msg] 的事件的时候使用的接口。
  *
@@ -70,10 +148,9 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
 public interface EventGet : MsgGet {
     @JvmDefault
     override var msg: String?
-    get() = null
-    set(value) {}
+        get() = null
+        set(value) {}
 }
-
 
 
 /**
@@ -100,7 +177,10 @@ public interface MessageEventGet : MsgGet, FlagContainer<MessageEventGet.Message
     @JvmDefault
     override var msg: String?
         get() = msgContent.msg
-        set(value) { msgContent.msg = value }
+        set(value) {
+            msgContent.msg = value
+        }
+
     /**
      * 消息类型的标识
      */
@@ -187,6 +267,8 @@ public interface ChangedGet<out T> : MsgGet {
      */
     val afterChange: T
 }
+
+
 
 
 
