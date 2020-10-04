@@ -15,7 +15,7 @@ package love.forte.simbot.core.filter
 import love.forte.simbot.core.annotation.Filter
 import love.forte.simbot.core.api.message.MsgGet
 import love.forte.simbot.core.listener.ListenerContext
-
+import love.forte.simbot.core.listener.ListenerFunction
 
 
 /**
@@ -25,7 +25,8 @@ public data class FilterData(
     val filter: Filter,
     val msgGet: MsgGet,
     val atDetection: AtDetection,
-    val listenerContext: ListenerContext
+    val listenerContext: ListenerContext,
+    val listenerFunction: ListenerFunction
 )
 
 

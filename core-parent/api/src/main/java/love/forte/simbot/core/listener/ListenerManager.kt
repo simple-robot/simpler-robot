@@ -12,8 +12,52 @@
 
 package love.forte.simbot.core.listener
 
+import love.forte.simbot.core.api.message.MsgGet
+
+
+/**
+ * 消息处理器。
+ */
+interface MsgGetProcessor {
+    /**
+     * 接收到消息监听并进行处理。
+     */
+    fun onMsg(msgGet: MsgGet): ListenResult<*>
+}
+
 
 /**
  * 监听函数管理器。
  */
-interface ListenerManager
+interface ListenerManager : MsgGetProcessor {
+
+    /**
+     * 根据监听类型获取所有对应的监听函数。
+     */
+    fun <T : MsgGet> getListenerFunctions(type: Class<out T>? = null) : List<ListenerFunction>
+
+
+}
+
+
+/**
+ * 监听函数注册器。
+ */
+interface ListenerRegistrar {
+    /**
+     * 注册一个 [监听函数][ListenerFunction]。
+     */
+    fun register(listenerFunction: ListenerFunction)
+}
+
+/**
+ * 监听函数构建器。
+ */
+interface ListenerManagerBuilder {
+
+    /**
+     * 得到一个 [ListenerManager] 实例。
+     */
+    fun build(): ListenerManager
+}
+

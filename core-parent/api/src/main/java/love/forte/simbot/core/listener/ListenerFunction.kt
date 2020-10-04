@@ -27,7 +27,6 @@ interface ListenerFunction {
      */
     val name: String
 
-
     /**
      * 获取此监听函数上可以得到的注解。
      */
