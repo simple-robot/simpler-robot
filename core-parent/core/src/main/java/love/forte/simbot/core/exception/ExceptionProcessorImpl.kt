@@ -162,7 +162,11 @@ public class ExceptionProcessorImpl(handles: Array<out ExceptionHandle<*>>) : Ex
  */
 public class ExceptionProcessorBuilderImpl : ExceptionProcessorBuilder {
     private val handleList = mutableListOf<ExceptionHandle<*>>()
-    override fun register(vararg handle: ExceptionHandle<*>): ExceptionProcessorBuilderImpl {
+
+    /**
+     * 追加注册一个或多个异常处理器。
+     */
+    override fun register(vararg handle: ExceptionHandle<*>): ExceptionProcessorBuilder {
         handleList.addAll(handle)
         return this
     }
