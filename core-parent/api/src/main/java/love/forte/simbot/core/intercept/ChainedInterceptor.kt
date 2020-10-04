@@ -35,29 +35,30 @@ import love.forte.simbot.core.constant.PriorityConstant
  *
  *
  * @property T 拦截主体的类型，即拦截的时候所提供给拦截器的主要信息内容。
- * @property R 链式拦截器中放行 ([InterceptChain.pass]) 至下一条链所可以得到的结果值。
- * @property C 当前链式拦截器所对应的信息主体类型。
+ * @property R 链式拦截器中放行 ([InterceptChain.pass]) 至下一条链所可以得到的结果值类型。
+ * @property CH 拦截器链[InterceptChain]的具体类型。
+ * @property CO 当前链式拦截器所对应的信息主体类型。
  */
-public interface ChainedInterceptor<T, R, C : Context<T>> : Comparable<Interceptor<T, C>> {
+public interface ChainedInterceptor<T, R, CH : InterceptChain<T, R>, CO : Context<T>> : Comparable<Interceptor<T, CO>> {
 
     /**
      * 执行当前链式拦截器。
      */
-    fun chainedIntercept(context: C, chain: InterceptChain<T, R>)
+    fun chainedIntercept(context: CO, chain: CH)
 
 
     /**
      * 排序值，默认即为最低值。一般情况下可以不用重写此方法。
      */
     @JvmDefault
-    val priority: Int get() = PriorityConstant.LAST
+    val priority: Int
+        get() = PriorityConstant.LAST
 
     /**
      * 排序。
      */
-    override fun compareTo(other: Interceptor<T, C>): Int = priority.compareTo(other.priority)
+    override fun compareTo(other: Interceptor<T, CO>): Int = priority.compareTo(other.priority)
 }
-
 
 
 /**
@@ -68,17 +69,17 @@ public interface InterceptChain<T, R> {
 }
 
 
-
 /**
  * [ChainedInterceptor] 作为链式最结尾的抽象类。
  * 链式拦截器的最终链部分，一般来讲，其正好对应了拦截对象的主体本身。
  */
-public abstract class ChainedInterceptorTail<T, R, C : Context<T>> : ChainedInterceptor<T, R, C> {
+public abstract class ChainedInterceptorTail<T, R, CH : InterceptChain<T, R>, CO : Context<T>> :
+    ChainedInterceptor<T, R, CH, CO> {
 
     /**
      * 请不要实现方法。
      */
-    override fun chainedIntercept(context: C, chain: InterceptChain<T, R>) {
+    override fun chainedIntercept(context: CO, chain: CH) {
         doPass(context)
     }
 
@@ -86,6 +87,6 @@ public abstract class ChainedInterceptorTail<T, R, C : Context<T>> : ChainedInte
     /**
      * 执行此主体。
      */
-    abstract fun doPass(context: C): R?
+    abstract fun doPass(context: CO): R?
 }
 

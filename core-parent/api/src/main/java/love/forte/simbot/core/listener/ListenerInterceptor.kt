@@ -27,20 +27,13 @@ import love.forte.simbot.core.intercept.InterceptChain
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public interface ListenerInterceptor :
-    ChainedInterceptor<ListenerFunction, ListenResult<*>, ListenerInterceptContext>
+    ChainedInterceptor<ListenerFunction, ListenResult<*>, ListenerInterceptorChain, ListenerInterceptContext>
 
 
 /**
  * [监听函数拦截器][ListenerInterceptor] 的 [InterceptChain] 实例。
  */
-public interface ListenerInterceptorChain : InterceptChain<ListenerFunction, ListenResult<*>> {
-
-    /**
-     * 放行至下一个拦截链。
-     * 监听函数的执行结果不应为null。
-     */
-    override fun pass(context: Context<ListenerFunction>): ListenResult<*>
-}
+public interface ListenerInterceptorChain : InterceptChain<ListenerFunction, ListenResult<*>>
 
 
 

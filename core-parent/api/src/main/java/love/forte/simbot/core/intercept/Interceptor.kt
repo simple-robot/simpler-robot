@@ -16,13 +16,14 @@ import love.forte.simbot.core.constant.PriorityConstant
 
 
 /**
- * 拦截器类型接口，提供一个拦截方法。
+ * 布尔拦截器，提供一个拦截方法，方法的返回值代表是否进行 **拦截**，
+ * 即如果为true，则拦截，否则放行。
  */
 public interface Interceptor<T, C: Context<T>> : Comparable<Interceptor<T, C>> {
 
 
     /**
-     * 执行拦截。
+     * 判断是否需要进行拦截。
      * @return 是否拦截成功。如果为 **true** 则代表被拦截。
      */
     fun intercept(context: C): Boolean
