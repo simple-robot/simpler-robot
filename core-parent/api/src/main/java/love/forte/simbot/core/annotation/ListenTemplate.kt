@@ -27,7 +27,7 @@ import love.forte.simbot.core.api.message.events.*
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(PrivateMsg::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnPrivate
 
 
@@ -39,7 +39,7 @@ public annotation class OnPrivate
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMsg::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnGroup(val d: Int = 5)
 
 
@@ -51,7 +51,7 @@ public annotation class OnGroup(val d: Int = 5)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMemberPermissionChanged::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnGroupMemberPermissionChanged
 
 /**
@@ -62,7 +62,7 @@ public annotation class OnGroupMemberPermissionChanged
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupNameChanged::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnGroupNameChanged
 
 /**
@@ -73,7 +73,7 @@ public annotation class OnGroupNameChanged
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMemberRemarkChanged::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnGroupMemberRemarkChanged
 
 /**
@@ -84,7 +84,7 @@ public annotation class OnGroupMemberRemarkChanged
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMemberSpecialChanged::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnGroupMemberSpecialChanged
 
 /**
@@ -95,7 +95,7 @@ public annotation class OnGroupMemberSpecialChanged
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(FriendNicknameChanged::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnFriendNicknameChanged
 
 /**
@@ -106,7 +106,7 @@ public annotation class OnFriendNicknameChanged
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(FriendAvatarChanged::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnFriendAvatarChanged
 
 /**
@@ -117,7 +117,7 @@ public annotation class OnFriendAvatarChanged
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(FriendIncrease::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnFriendIncrease
 
 /**
@@ -128,7 +128,7 @@ public annotation class OnFriendIncrease
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMemberIncrease::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnGroupMemberIncrease
 
 /**
@@ -139,7 +139,7 @@ public annotation class OnGroupMemberIncrease
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(PrivateMsgRecall::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnPrivateMsgRecall
 
 /**
@@ -150,7 +150,7 @@ public annotation class OnPrivateMsgRecall
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMsgRecall::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnGroupMsgRecall
 
 /**
@@ -161,7 +161,7 @@ public annotation class OnGroupMsgRecall
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupReduce::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnGroupReduce
 
 /**
@@ -172,7 +172,7 @@ public annotation class OnGroupReduce
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(FriendReduce::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnFriendReduce
 
 
@@ -184,7 +184,7 @@ public annotation class OnFriendReduce
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(FriendAddRequest::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnFriendAddRequest
 
 
@@ -196,6 +196,6 @@ public annotation class OnFriendAddRequest
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupAddRequest::class)
-@AnnotateMapping(type = Listen::class)
+@AnnotateMapping(value = Listen::class)
 public annotation class OnGroupAddRequest
 
