@@ -13,7 +13,7 @@
 package love.forte.simbot.core.exception
 
 import love.forte.simbot.core.api.message.MsgGet
-import love.forte.simbot.core.intercept.Context
+import love.forte.simbot.core.intercept.BaseContext
 import love.forte.simbot.core.listener.ListenerContext
 import love.forte.simbot.core.listener.ListenerFunction
 
@@ -44,11 +44,11 @@ fun interface ExceptionHandle<E : Throwable> {
  */
 @Suppress("MemberVisibilityCanBePrivate")
 public class ExceptionHandleContext<E : Throwable>(
-    override val mainValue: E,
+    mainValue: E,
     val msgGet: MsgGet,
     val listenerFunction: ListenerFunction,
     val listenerContext: ListenerContext
-) : Context<E> {
+) : BaseContext<E>(mainValue) {
     val exception: Throwable get() = mainValue
 
     override fun toString(): String = "ExceptionHandleContext<$mainValue>(msg=$msgGet, func=$listenerFunction)"

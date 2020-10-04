@@ -71,10 +71,16 @@ constructor(val instant : MutableMap<String, Any?>, val global: MutableMap<Strin
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 @Suppress("MemberVisibilityCanBePrivate")
-class ListenerContext(val contextMap: ContextMap) : Context<ContextMap> {
+public interface ListenerContext : Context<ContextMap> {
+
+    /**
+     * context map.
+     */
+    val contextMap: ContextMap
 
     /**
      * 主体为一个 [ContextMap], 以提供监听函数间的信息传递。
      */
+    @JvmDefault
     override val mainValue: ContextMap get() = contextMap
 }

@@ -40,3 +40,4 @@ public interface Interceptor<T, C: Context<T>> : Comparable<Interceptor<T, C>> {
     override fun compareTo(other: Interceptor<T, C>): Int = priority.compareTo(other.priority)
 
 }
+

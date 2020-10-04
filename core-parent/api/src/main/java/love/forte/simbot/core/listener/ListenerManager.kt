@@ -50,6 +50,7 @@ interface ListenerRegistrar {
     fun register(listenerFunction: ListenerFunction)
 }
 
+
 /**
  * 监听函数构建器。
  */

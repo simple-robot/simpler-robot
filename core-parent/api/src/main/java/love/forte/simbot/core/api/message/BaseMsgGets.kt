@@ -57,8 +57,15 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
     /** 消息接收到的时间。一般是一个时间戳。 */
     val time: Long
 
+
     /** 应当重写toString方法 */
     override fun toString(): String
+
+
+    /**
+     * 当前类型所对应的真正要触发的监听类型，也是要触发的监听类型。
+     */
+    val listenType: Class<out MsgGet>? get() = this.javaClass
 }
 
 

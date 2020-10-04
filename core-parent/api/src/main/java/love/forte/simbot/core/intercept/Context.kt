@@ -21,12 +21,16 @@ package love.forte.simbot.core.intercept
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-interface Context<T> {
+public interface Context<T> {
 
     /**
      * 主体信息。
      */
     val mainValue: T?
-
-
 }
+
+
+/**
+ * [Context] 的抽象实现类。
+ */
+public abstract class BaseContext<T>(override val mainValue: T) : Context<T>
