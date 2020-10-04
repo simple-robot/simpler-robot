@@ -10,7 +10,7 @@
  * QQ     1149159218
  */
 
-package love.forte.simbot.core.api.listener
+package love.forte.simbot.core.api.message
 
 import java.util.*
 
