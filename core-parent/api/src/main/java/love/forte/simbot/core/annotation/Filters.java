@@ -29,17 +29,41 @@ public @interface Filters {
     Filter[] value();
 
     /**
-     * 当bot被at的时候才会触发
+     * 匹配当前消息的账号列表。
+     * 如果{@link Filter}中的 {@link Filter#codes()} 为空且 {@link Filter#codesByParent()},
+     * 则尝试使用此codes代替此filter的codes。
+     */
+    String[] codes() default {};
+
+
+    /**
+     * 匹配当前消息的群列表。
+     * 如果{@link Filter}中的 {@link Filter#groups()} 为空且 {@link Filter#groupsByParent()},
+     * 则尝试使用此groups代替此filter的groups。
+     */
+    String[] groups() default {};
+
+    /**
+     * 匹配当前消息的bot列表。
+     * 如果{@link Filter}中的 {@link Filter#bots()} 为空且 {@link Filter#botsByParent()},
+     * 则尝试使用此bots代替此filter的bots。
+     */
+    String[] bots() default {};
+
+    /**
+     * 当bot被at的时候才会触发。
      */
     boolean atBot() default false;
 
     /**
      * 有人被at了才会触发。其中可能不包括bot自身。
+     * 如果此为true，则{@link #at()} 失效。
      */
     boolean anyAt() default false;
 
     /**
-     * 当下列账号中的人被at了才会触发
+     * 当下列账号中的人被at了才会触发。
+     * 如果 {@link #anyAt()} 为true则失效。
      */
     String[] at() default {};
 

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     ListenResult.kt
+ * File     ListenResultImpl.kt
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -12,36 +12,18 @@
 
 package love.forte.simbot.core.listener
 
-
 /**
- *
- * 监听函数的执行回执。
- *
- *
- *
- * @author ForteScarlet -> https://github.com/ForteScarlet
+ * [ListenResult] 默认实现。
  */
-interface ListenResult<T> {
+open class ListenResultImpl<T>(
+    override val result: T?,
+    private val success: Boolean,
+    private val isBreak: Boolean,
+    override val throwable: Throwable?
+) : ListenResult<T> {
+    override fun isSuccess(): Boolean = success
+    override fun isBreak(): Boolean = isBreak
 
-    /**
-     * 是否执行成功。
-     */
-    fun isSuccess(): Boolean
-
-    /**
-     * 是否阻断接下来的监听函数的执行。
-     */
-    fun isBreak(): Boolean
-
-    /**
-     * 最终的执行结果。
-     */
-    val result: T?
-
-    /**
-     * 如果执行出现了异常，此处为异常。
-     */
-    val throwable: Throwable?
 
     companion object {
 
@@ -82,17 +64,6 @@ interface ListenResult<T> {
     }
 }
 
-
-open class ListenResultImpl<T>(
-    override val result: T?,
-    private val success: Boolean,
-    private val isBreak: Boolean,
-    override val throwable: Throwable?
-) : ListenResult<T> {
-    override fun isSuccess(): Boolean = success
-    override fun isBreak(): Boolean = isBreak
-
-}
 
 
 /**

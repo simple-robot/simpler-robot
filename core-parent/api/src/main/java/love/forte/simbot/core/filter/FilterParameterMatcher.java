@@ -10,14 +10,14 @@
  * QQ     1149159218
  */
 
-package love.forte.simbot.core.api.listener;
+package love.forte.simbot.core.filter;
 
 import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
  *
- * Filter动态参数匹配器
+ * 动态参数匹配器。
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */

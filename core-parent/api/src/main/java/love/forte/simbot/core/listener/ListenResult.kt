@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     ListenerFunction.kt
+ * File     ListenResult.kt
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -12,28 +12,36 @@
 
 package love.forte.simbot.core.listener
 
-import love.forte.simbot.core.api.message.MsgGet
-
 
 /**
- * 监听函数。
+ *
+ * 监听函数的执行回执。
+ *
+ *
+ *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-interface ListenerFunction {
+interface ListenResult<T> {
 
     /**
-     * 判断当前监听函数是否可以触发当前类型的监听.
+     * 是否执行成功。
      */
-    fun <T: MsgGet> canListen(onType: Class<T>): Boolean
-
-
-
-
+    fun isSuccess(): Boolean
 
     /**
-     * 执行监听函数并返回一个执行后的响应结果。
+     * 是否阻断接下来的监听函数的执行。
      */
-    fun invoke(): Any
+    fun isBreak(): Boolean
+
+    /**
+     * 最终的执行结果。
+     */
+    val result: T?
+
+    /**
+     * 如果执行出现了异常，此处为异常。
+     */
+    val throwable: Throwable?
 
 
 }
