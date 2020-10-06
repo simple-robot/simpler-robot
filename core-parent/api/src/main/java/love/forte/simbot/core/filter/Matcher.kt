@@ -17,10 +17,21 @@ package love.forte.simbot.core.filter
  * msg参数不会是空字符串。
  */
 public interface Matcher {
-
     /**
      * 通过一个[消息][msg]与当前filter的[关键词][keyword]判断此消息是否通过检测。
      */
     fun match(msg: String, keyword: Keyword): Boolean
+}
+
+
+/**
+ * 多值匹配器，用于判定当存在多个匹配函数的时候则匹配规则。
+ */
+public interface MostMatcher {
+
+    /**
+     * 匹配多个可判断函数。
+     */
+    fun mostMatch(funcs: Iterable<() -> Boolean>): Boolean
 
 }

@@ -12,6 +12,8 @@
 
 package love.forte.simbot.core.annotation;
 
+import love.forte.simbot.core.filter.MostMatchType;
+
 import java.lang.annotation.*;
 
 /**
@@ -29,9 +31,20 @@ public @interface Filters {
     Filter[] value();
 
     /**
+     * {@link #value()} 的多项匹配规则，默认为任意匹配。
+     */
+    MostMatchType mostMatchType() default MostMatchType.ANY;
+
+    /**
      * 此处为自定义过滤器的列表。
      */
     String[] customFilter() default {};
+
+    /**
+     * {@link #customFilter()} 的多项匹配规则，默认为任意匹配。
+     */
+    MostMatchType customMostMatchType() default MostMatchType.ANY;
+
 
     /**
      * 匹配当前消息的账号列表。

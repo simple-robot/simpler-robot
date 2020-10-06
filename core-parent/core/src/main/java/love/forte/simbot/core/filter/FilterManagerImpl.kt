@@ -20,8 +20,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * 恒定返回false的 [AtDetection] 实例。
  */
-internal val ConstantFalseAtDetection : AtDetection = AtDetection { false }
-
+internal val ConstantFalseAtDetection: AtDetection = AtDetection { false }
 
 
 /**
@@ -35,12 +34,12 @@ public class FilterManagerImpl : FilterManager {
     /**
      * 全部的自定义过滤器列表。
      */
-    private val _filters : MutableMap<String, ListenerFilter> = ConcurrentHashMap()
+    private val _filters: MutableMap<String, ListenerFilter> = ConcurrentHashMap()
 
     /**
      * 全部的 [AtDetectionFactory] 构建工厂。
      */
-    private val atDetectionFactories : MutableList<AtDetectionFactory> = mutableListOf()
+    private val atDetectionFactories: MutableList<AtDetectionFactory> = mutableListOf()
 
 
     /**
@@ -59,22 +58,25 @@ public class FilterManagerImpl : FilterManager {
     /**
      * 通过注解构建一个 [过滤器][ListenerFilter]
      */
-    override fun getFilter(Filters: Filters): ListenerFilter {
-        TODO("Not yet implemented")
+    override fun getFilter(filters: Filters): ListenerFilter {
+        return AnnotationFiltersListenerFilterImpl(filters, this)
     }
 
 
     /**
      * 根据一个msg实例构建一个 [AtDetection] 函数。
+     * 如果存在很多 [AtDetection] 实例，则会将他们构建为一个 [AtDetection]，并且会尝试寻找返回true的一个实例。
      */
     override fun getAtDetection(msg: MsgGet): AtDetection {
-        atDetectionFactories.forEach {
-            val atDetection = it(msg)
-            if(atDetection != null) {
-                return atDetection
+        return when(atDetectionFactories.size) {
+            0 -> ConstantFalseAtDetection
+            1 -> atDetectionFactories.first().getAtDetection(msg)
+            else -> AtDetection {
+                atDetectionFactories.any { factory ->
+                    factory(msg).atBot()
+                }
             }
         }
-        return ConstantFalseAtDetection
     }
 
     /**
@@ -90,8 +92,7 @@ public class FilterManagerImpl : FilterManager {
      * @throws FilterAlreadyExistsException 如果filter已经存在则可能抛出此异常。
      */
     override fun registerFilter(name: String, filter: ListenerFilter) {
-        _filters.merge(name, filter) {
-            oldValue, newValue ->
+        _filters.merge(name, filter) { oldValue, newValue ->
             throw FilterAlreadyExistsException("Duplicate custom filter name: $name, Conflicting filter：'$oldValue' VS '$newValue'")
         }
     }
@@ -100,4 +101,4 @@ public class FilterManagerImpl : FilterManager {
 /**
  * [AtDetectionFactory].invoke(MsgGet)。
  */
-internal operator fun AtDetectionFactory.invoke(msg: MsgGet): AtDetection? = this.getAtDetection(msg)
+internal operator fun AtDetectionFactory.invoke(msg: MsgGet): AtDetection = this.getAtDetection(msg)

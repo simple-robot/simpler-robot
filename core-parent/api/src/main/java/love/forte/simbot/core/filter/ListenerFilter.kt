@@ -71,3 +71,12 @@ public class FilterAlreadyExistsException : IllegalStateException {
     constructor(message: String?, cause: Throwable?) : super(message, cause)
     constructor(cause: Throwable?) : super(cause)
 }
+
+
+/**
+ * 过滤器不存在。
+ */
+public class NoSuchFilterException : NoSuchElementException {
+    constructor() : super()
+    constructor(s: String?) : super(s)
+}
