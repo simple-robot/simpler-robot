@@ -47,7 +47,7 @@ private val COOKIE_SPLIT_REGEX = Regex("; *")
  */
 public data class CookieValuesImpl(private val cookieValue: String) : AuthInfo.Cookies {
 
-    private val cookieMap: MutableMap<String, String> by lazy(LazyThreadSafetyMode.NONE) {
+    private val cookieMap: MutableMap<String, String> by lazy(LazyThreadSafetyMode.PUBLICATION) {
         cookieValue.split(COOKIE_SPLIT_REGEX).asSequence().filter {
             it.isNotBlank()
         }.map {
