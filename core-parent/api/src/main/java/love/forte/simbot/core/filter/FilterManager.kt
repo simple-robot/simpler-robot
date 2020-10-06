@@ -13,7 +13,6 @@
 package love.forte.simbot.core.filter
 
 import love.forte.simbot.core.annotation.Filters
-import love.forte.simbot.core.api.message.MsgGet
 
 
 /**

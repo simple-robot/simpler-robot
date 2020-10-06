@@ -13,11 +13,11 @@
 package love.forte.simbot.core.annotation;
 
 
-import java.lang.annotation.*;
-
 import love.forte.simbot.core.api.message.*;
-import love.forte.simbot.core.api.message.events.*;
 import love.forte.simbot.core.api.message.containers.*;
+import love.forte.simbot.core.api.message.events.*;
+
+import java.lang.annotation.*;
 
 /**
  * <p>监听的类型。一般来讲是一个接口类型。</p>

@@ -12,10 +12,8 @@
 
 package love.forte.simbot.core.api.message
 
-import love.forte.common.collections.ArraySet
 import love.forte.common.collections.SimpleEntry
 import love.forte.common.collections.arraySetOf
-import java.util.*
 
 /*
     提供一些默认的Reply以表示一些常见的返回形式。
