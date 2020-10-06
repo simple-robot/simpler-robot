@@ -12,6 +12,9 @@
 
 package love.forte.simbot.core.api.message
 
+import love.forte.common.collections.ArraySet
+import love.forte.common.collections.SimpleEntry
+import love.forte.common.collections.arraySetOf
 import java.util.*
 
 /*
@@ -37,13 +40,13 @@ internal constructor(
     val at: Boolean/* = true*/,
     val process: Boolean/* = false*/
 ) : Map<String, Any> {
-    private val entriesSet: Set<Map.Entry<String, Any>> = setOf(
-        AbstractMap.SimpleEntry<String, Any>("reply", reply),
-        AbstractMap.SimpleEntry<String, Any>("quote", quote),
-        AbstractMap.SimpleEntry<String, Any>("at", at),
-        AbstractMap.SimpleEntry<String, Any>("process", process),
+    private val entriesSet: Set<Map.Entry<String, Any>> = arraySetOf(
+        SimpleEntry<String, Any>("reply", reply),
+        SimpleEntry<String, Any>("quote", quote),
+        SimpleEntry<String, Any>("at", at),
+        SimpleEntry<String, Any>("process", process),
     )
-    private val keySet: Set<String> = entriesSet.map { it.key }.toSet()
+
     private val valueCollection: Collection<Any> = entriesSet.map { it.value }
 
     /**
@@ -96,10 +99,13 @@ internal constructor(
     override fun isEmpty(): Boolean = false
 
 
+
     /**
      * 通过静态方法获取实例
      */
     companion object {
+        private val keySet: Set<String> = arraySetOf("reply", "quote", "at", "process")
+
         @JvmStatic
         fun quickReply(text: String, quote: Boolean = true, at: Boolean = true) : Reply {
             return Reply(text, quote, at, false)
