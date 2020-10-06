@@ -36,24 +36,6 @@ public interface FilterParameterMatcher {
     Pattern getPattern();
 
     /**
-     * 检测文本是否符合正则。find()匹配
-     * @param text 文本
-     * @return 是否符合
-     */
-    default boolean test(String text){
-        return getPattern().asPredicate().test(text);
-    }
-
-    /**
-     * 检测文本是否符合正则。matches()匹配
-     * @param text 文本
-     * @return 是否符合
-     */
-    default boolean matches(String text){
-        return getPattern().matcher(text).matches();
-    }
-
-    /**
      * 从一段匹配的文本中提取出需要的参数。
      * 此文本需要符合正则表达式。
      * @param text 匹配的文本

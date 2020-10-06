@@ -90,20 +90,55 @@ public @interface Filter {
 
 
     /**
+     * 当bot被at的时候才会触发。
+     */
+    boolean atBot() default false;
+
+    /**
+     * 如果 {@link #atBot()} 为 false 且此参数为true，
+     * 则使用{@link Filters#atBot()} 的值。
+     */
+    boolean atBotByParent() default true;
+
+    /**
+     * 有人被at了才会触发。其中可能不包括bot自身。
+     * 如果此为true，则{@link #at()} 失效。
+     */
+    boolean anyAt() default false;
+
+    /**
+     * 如果 {@link #anyAt()} 为 false 且此参数为true，
+     * 则使用{@link Filters#anyAt()} 的值。
+     */
+    boolean anyAtByParent() default true;
+
+    /**
+     * 当下列账号中的人被at了才会触发。
+     * 如果 {@link #anyAt()} 为true则失效。
+     */
+    String[] at() default {};
+
+    /**
+     * 如果 {@link #at()} 为 空 且此参数为true，
+     * 则使用{@link Filters#at()} 的值。
+     */
+    boolean atByParent() default true;
+
+    /**
      * 匹配前是否去除前后空格。
      */
     boolean trim() default false;
 
 
     /**
-     * 是否清理其中存在的CAT码。 参数为清理的类型，例如 “at” 之类的。
+     * 是否清理其中存在的特殊码，一般为CAT码。 参数为清理的类型，例如 “at” 之类的。
      */
-    String[] clearCat() default {};
+    String[] clearCode() default {};
 
 
     /**
-     * 是否清理全部的CAT码。如果为true, 则{@link #clearCat()} 无效。
+     * 是否清理全部的特殊码，一般为CAT码。如果为true, 则{@link #clearCode()} 无效。
      */
-    boolean clearAllCat() default false;
+    boolean clearAllCode() default false;
 
 }

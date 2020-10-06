@@ -29,6 +29,11 @@ public @interface Filters {
     Filter[] value();
 
     /**
+     * 此处为自定义过滤器的列表。
+     */
+    String[] customFilter() default {};
+
+    /**
      * 匹配当前消息的账号列表。
      * 如果{@link Filter}中的 {@link Filter#codes()} 为空且 {@link Filter#codesByParent()},
      * 则尝试使用此codes代替此filter的codes。

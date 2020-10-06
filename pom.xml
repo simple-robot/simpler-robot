@@ -39,6 +39,7 @@
         <hutool.version>5.4.0</hutool.version>
 
         <commons.version>1.0.0-ALPHA.1</commons.version>
+        <catCode.version>1.0.0-ALPHA.1</catCode.version>
 
     </properties>
 
@@ -58,6 +59,12 @@
     <dependencyManagement>
         <dependencies>
 
+            <!-- catcode -->
+            <dependency>
+                <groupId>love.forte</groupId>
+                <artifactId>catcode</artifactId>
+                <version>${catCode.version}</version>
+            </dependency>
             <!--<editor-fold desc="commons">-->
             <!-- common-utils -->
             <dependency>

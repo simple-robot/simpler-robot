@@ -12,12 +12,26 @@
 
 package love.forte.simbot.core.listener
 
+import love.forte.simbot.core.api.message.MsgGet
 
-// /**
-//  * [ListenerManager] 实现。
-//  */
-// public class ListenerManagerImpl : ListenerManager {
-//
-//
-//
-// }
+
+/**
+ * [ListenerManager] 实现。
+ */
+public class ListenerManagerImpl : ListenerManager {
+
+
+    /**
+     * 接收到消息监听并进行处理。
+     */
+    override fun onMsg(msgGet: MsgGet): ListenResult<*> {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     * 根据监听类型获取所有对应的监听函数。
+     */
+    override fun <T : MsgGet> getListenerFunctions(type: Class<out T>?): List<ListenerFunction> {
+        TODO("Not yet implemented")
+    }
+}

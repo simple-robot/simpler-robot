@@ -12,6 +12,7 @@
 
 package love.forte.simbot.core.filter
 
+import love.forte.simbot.core.api.message.MsgGet
 
 
 /**
@@ -23,4 +24,31 @@ public fun interface AtDetection {
      * 如果bot被at了，则返回true。
      */
     fun atBot(): Boolean
+}
+
+
+/**
+ * [AtDetection] 工厂。
+ */
+public interface AtDetectionFactory {
+
+    /**
+     * 根据一个msg实例构建一个 [AtDetection] 函数。
+     *
+     * 在manager中，如果此方法返回了一个 null 则视为获取失败，会去尝试使用其他 factory 直至成功。
+     *
+     */
+    fun getAtDetection(msg: MsgGet): AtDetection
+}
+
+
+
+/**
+ * [AtDetection] 注册器。
+ */
+public interface AtDetectionRegistrar {
+    /**
+     * 注册一个 [AtDetection] 构建函数。
+     */
+    fun registryAtDetection(atDetectionFactory: AtDetectionFactory)
 }

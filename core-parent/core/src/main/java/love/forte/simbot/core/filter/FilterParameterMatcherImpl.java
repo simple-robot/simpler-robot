@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Filter动态参数匹配器
+ * Filter动态参数匹配器。
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @SuppressWarnings("unused")
@@ -46,17 +46,17 @@ public class FilterParameterMatcherImpl implements FilterParameterMatcher {
      */
     private final int pointSize;
 
-    /**
-     * 在对消息匹配之前，此处为前置处理器
-     */
-    private final Function<String, String> textHandler;
+    // /**
+    //  * 在对消息匹配之前，此处为前置处理器
+    //  */
+    // private final Function<String, String> textHandler;
 
 
     private FilterParameterMatcherImpl(String original, Pattern pattern, Function<String, String> textHandler, Point point){
         this.original = original;
         this.pattern = pattern;
         this.point = point;
-        this.textHandler = textHandler;
+        // this.textHandler = textHandler;
 
         if(point != null){
             int i = 0;
@@ -233,7 +233,7 @@ public class FilterParameterMatcherImpl implements FilterParameterMatcher {
      */
     @Override
     public Map<String, String> getParams(String text) {
-        text = textHandler.apply(text);
+        // text = textHandler.apply(text);
         if(point == null){
             return null;
         }

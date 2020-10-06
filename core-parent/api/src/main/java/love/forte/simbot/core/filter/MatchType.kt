@@ -39,7 +39,4 @@ enum class MatchType(private val matchFunc : (String, Keyword) -> Boolean) : Mat
      */
     override fun match(msg: String, keyword: Keyword): Boolean = matchFunc(msg, keyword)
 
-
-
-
 }
