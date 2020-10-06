@@ -47,5 +47,5 @@ public interface ListenerFilterAnnotationFactory {
     /**
      * 通过注解构建一个 [过滤器][ListenerFilter]
      */
-    fun getFilter(Filters: Filters) : ListenerFilter
+    fun getFilter(filters: Filters) : ListenerFilter
 }

@@ -12,6 +12,7 @@
 
 package love.forte.simbot.core.listener
 
+import love.forte.simbot.core.filter.AtDetectionFactory
 import love.forte.simbot.core.filter.FilterManager
 import love.forte.simbot.core.filter.ListenerFilter
 
@@ -22,6 +23,7 @@ import love.forte.simbot.core.filter.ListenerFilter
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 class ListenerManagerBuilderImpl : ListenerManagerBuilder, ListenerRegistrar {
+
     /** 监听函数列表 */
     var listenerFunctions: MutableList<ListenerFunction> = mutableListOf()
     /**
@@ -32,9 +34,9 @@ class ListenerManagerBuilderImpl : ListenerManagerBuilder, ListenerRegistrar {
     }
 
     /**
-     * 过滤器管理器
+     * at匹配器工厂。
      */
-    lateinit var filterManager: FilterManager
+    lateinit var atDetectionFactory: AtDetectionFactory
 
 
     /**
