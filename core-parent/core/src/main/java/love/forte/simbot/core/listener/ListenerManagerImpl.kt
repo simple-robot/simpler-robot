@@ -22,8 +22,14 @@ import love.forte.simbot.core.filter.FilterManager
  */
 public class ListenerManagerImpl(
     private val atDetectionFactory: AtDetectionFactory
-) : ListenerManager {
+) : ListenerManager, ListenerRegistrar {
 
+    /**
+     * 注册一个 [监听函数][ListenerFunction]。
+     */
+    override fun register(listenerFunction: ListenerFunction) {
+        TODO("Not yet implemented")
+    }
 
     /**
      * 接收到消息监听并进行处理。

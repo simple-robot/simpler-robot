@@ -22,16 +22,16 @@ import love.forte.simbot.core.filter.ListenerFilter
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-class ListenerManagerBuilderImpl : ListenerManagerBuilder, ListenerRegistrar {
+class ListenerManagerBuilderImpl : ListenerManagerBuilder {
 
-    /** 监听函数列表 */
-    var listenerFunctions: MutableList<ListenerFunction> = mutableListOf()
-    /**
-     * 注册一个 [监听函数][ListenerFunction]。
-     */
-    override fun register(listenerFunction: ListenerFunction) {
-        listenerFunctions.add(listenerFunction)
-    }
+    // /** 监听函数列表 */
+    // var listenerFunctions: MutableList<ListenerFunction> = mutableListOf()
+    // /**
+    //  * 注册一个 [监听函数][ListenerFunction]。
+    //  */
+    // override fun register(listenerFunction: ListenerFunction) {
+    //     listenerFunctions.add(listenerFunction)
+    // }
 
     /**
      * at匹配器工厂。
