@@ -28,7 +28,7 @@ import love.forte.simbot.core.api.message.containers.ActionMotivationContainer
 
 
 /**
- * 好友请求事件。 此时申请人尚未成为好友。
+ * 好友添加请求事件。 此时申请人尚未成为好友。
  */
 @MainListenerType("好友请求")
 public interface FriendAddRequest : RequestGet {
@@ -38,7 +38,7 @@ public interface FriendAddRequest : RequestGet {
      *
      * @see FriendAddRequestIdFlagContent
      */
-    override val flag: Flag<FlagContent>
+    override val flag: Flag<@JvmWildcard FlagContent>
 
     /**
      * 请求类型的 标识主体
@@ -72,7 +72,7 @@ public interface GroupAddRequest : RequestGet {
      *
      * @see GroupAddRequestIdFlagContent
      */
-    override val flag: Flag<FlagContent>
+    override val flag: Flag<@JvmWildcard FlagContent>
 
 
     /**

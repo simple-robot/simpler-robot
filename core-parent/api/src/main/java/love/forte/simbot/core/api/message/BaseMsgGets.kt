@@ -40,7 +40,26 @@ import java.time.LocalDateTime
  * 所有的监听消息都应当实现的容器：
  * - [原始信息容器][OriginalDataContainer],
  * - [bot基础信息容器][BotContainer],
- * - [用户容器][AccountContainer]
+ * - [用户容器][AccountContainer]。
+ *
+ * 作为一个[消息][MsgGet], 一般来讲，所需要实现或者监听的接口为：
+ * - [私聊消息][PrivateMsg]
+ * - [群聊消息][GroupMsg]
+ * - [群成员权限变动事件][GroupMemberPermissionChanged]
+ * - [群名称变动事件][GroupNameChanged]
+ * - [群友群名片变动事件][GroupMemberRemarkChanged]
+ * - [群友头衔变动事件][GroupMemberSpecialChanged]
+ * - [好友昵称变动事件][FriendNicknameChanged]
+ * - [好友头像变动事件][FriendAvatarChanged]
+ * - [私聊消息撤回][PrivateMsgRecall]
+ * - [群聊消息撤回][GroupMsgRecall]
+ * - [好友增加事件][FriendIncrease]
+ * - [群友增加事件][GroupMemberIncrease]
+ * - [好友减少事件][FriendReduce]
+ * - [群友减少事件][GroupReduce]
+ * - [好友添加请求事件][FriendAddRequest]
+ * - [群添加请求][GroupAddRequest]
+ *
  */
 @ParentListenerType("所有监听类型的父接口")
 public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer {
@@ -62,10 +81,10 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
     override fun toString(): String
 
 
-    /**
-     * 当前类型所对应的真正要触发的监听类型，也是要触发的监听类型。
-     */
-    val listenType: Class<out MsgGet>? get() = this.javaClass
+    // /**
+    //  * 当前类型所对应的真正要触发的监听类型，也是要触发的监听类型。
+    //  */
+    // val listenType: Class<out MsgGet>? get() = this.javaClass
 }
 
 
@@ -77,7 +96,7 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
  * 如果存在，返回在这个集合中的结果集，否则返回一个空集合.
  */
 public infix fun <T : Class<out MsgGet>> MsgGet.findIn(typeCollections: Collection<T>): List<T> {
-    if(typeCollections.isEmpty()) return emptyList()
+    if (typeCollections.isEmpty()) return emptyList()
 
     val thisClass: Class<MsgGet> = javaClass
     return typeCollections.filter {
@@ -93,7 +112,7 @@ public infix fun <T : Class<out MsgGet>> MsgGet.findIn(typeCollections: Collecti
  * 如果存在，返回在这个集合中的结果集，否则返回一个空sequence.
  */
 public infix fun <T : Class<out MsgGet>> MsgGet.findSequenceIn(typeCollections: Collection<T>): Sequence<T> {
-    if(typeCollections.isEmpty()) return emptySequence()
+    if (typeCollections.isEmpty()) return emptySequence()
 
     val thisClass: Class<MsgGet> = javaClass
     return typeCollections.asSequence().filter {
@@ -109,7 +128,7 @@ public infix fun <T : Class<out MsgGet>> MsgGet.findSequenceIn(typeCollections: 
  * 如果存在，返回在这个集合中的结果集，否则返回一个空集合.
  */
 public infix fun <T : Class<out MsgGet>> MsgGet.findIn(typeCollections: Map<T, *>): List<T> {
-    if(typeCollections.isEmpty()) return emptyList()
+    if (typeCollections.isEmpty()) return emptyList()
 
     val thisClass: Class<MsgGet> = javaClass
     return typeCollections.map { it.key }.filter {
@@ -125,7 +144,7 @@ public infix fun <T : Class<out MsgGet>> MsgGet.findIn(typeCollections: Map<T, *
  * 如果存在，返回在这个集合中的结果集，否则返回一个空sequence.
  */
 public infix fun <T : Class<out MsgGet>, V> MsgGet.findSequenceIn(typeCollections: Map<T, V>): Sequence<V> {
-    if(typeCollections.isEmpty()) return emptySequence()
+    if (typeCollections.isEmpty()) return emptySequence()
 
     val thisClass: Class<MsgGet> = javaClass
     return typeCollections.asSequence().filter {
@@ -140,10 +159,8 @@ public infix fun <T : Class<out MsgGet>, V> MsgGet.findSequenceIn(typeCollection
  *
  * 如果存在，返回在这个集合中的结果集，否则返回一个空集合.
  */
-public infix fun <T : Class<out MsgGet>, V> MsgGet.findValuesIn(typeCollections: Map<T, V>): List<V> = (this findSequenceIn typeCollections).toList()
-
-
-
+public infix fun <T : Class<out MsgGet>, V> MsgGet.findValuesIn(typeCollections: Map<T, V>): List<V> =
+    (this findSequenceIn typeCollections).toList()
 
 
 /**

@@ -59,11 +59,12 @@ public interface PrivateMsg : MessageEventGet {
      * 如果只是使用 [id] 作为flag载体，在实现的时候可以参考 [PrivateMsgIdFlagContent]
      *
      */
-    override val flag: Flag<FlagContent>
+
+    override val flag: Flag<@JvmWildcard FlagContent>
 
 
     /**
-     * 对于 [PrivateMsg] 的 [标识主体][FlagContent] 接口
+     * 对于 [PrivateMsg] 的 [标识主体][FlagContent] 接口。
      */
     public interface FlagContent : MessageEventGet.MessageFlagContent
 }
@@ -108,7 +109,7 @@ public interface GroupMsg : MessageEventGet, GroupContainer, PermissionContainer
      *
      * 如果只是使用 [id] 作为flag载体，在实现的时候可以参考 [GroupMsgIdFlagContent]
      */
-    override val flag: Flag<FlagContent>
+    override val flag: Flag<@JvmWildcard FlagContent>
 
 
     /**
