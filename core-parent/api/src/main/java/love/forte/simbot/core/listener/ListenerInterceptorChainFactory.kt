@@ -21,7 +21,7 @@ public interface ListenerInterceptorChainFactory {
     /**
      * 通过一个拦截信息主体得到拦截链。
      */
-    fun getInterceptorChain(context: ListenerInterceptContext): ListenerInterceptor
+    fun getInterceptorChain(context: ListenerInterceptContext): ListenerInterceptorChain
 }
 
 

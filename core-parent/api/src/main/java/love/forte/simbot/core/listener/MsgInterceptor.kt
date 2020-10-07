@@ -35,7 +35,9 @@ public interface MsgInterceptor : ChainedInterceptor<MsgGet, ListenResult<*>, Ms
 /**
  * [消息拦截器][MsgInterceptor] 中的 [链][MsgInterceptChain]
  */
-public interface MsgInterceptChain : InterceptChain<MsgGet, ListenResult<*>>
+public interface MsgInterceptChain : InterceptChain<MsgGet, MsgInterceptContext, ListenResult<*>> {
+    override fun pass(context: MsgInterceptContext): ListenResult<*>?
+}
 
 
 /**
@@ -59,3 +61,12 @@ public interface MsgInterceptContext : Context<MsgGet> {
             msgGet = value
         }
 }
+
+/**
+ * [MsgInterceptContext] 工厂。
+ */
+public interface MsgInterceptContextFactory {
+    /** 通过一个 [MsgGet] 构建一个 [MsgInterceptContext] 实例. */
+    fun getMsgInterceptContext(msg: MsgGet): MsgInterceptContext
+}
+

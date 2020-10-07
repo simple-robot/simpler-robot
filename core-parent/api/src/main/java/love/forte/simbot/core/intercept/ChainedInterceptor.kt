@@ -24,9 +24,9 @@ import love.forte.simbot.core.constant.PriorityConstant
  * 链式拦截与布尔拦截的区别在于，链式拦截可以在放行或拦截后执行更多的操作。
  *
  *
- * | A | ---|(pass)
- *   |      |--> | B | ---|(pass)
- *   |             |      |-->  | tail |
+ * | A |
+ *   | --------> | B |
+ *   |             | ---------> | tail |
  *   |             |               |
  *   |             | <--------- | tail |
  *   | <-------- | B |
@@ -39,7 +39,7 @@ import love.forte.simbot.core.constant.PriorityConstant
  * @property CH 拦截器链[InterceptChain]的具体类型。
  * @property CO 当前链式拦截器所对应的信息主体类型。
  */
-public interface ChainedInterceptor<T, R, CH : InterceptChain<T, R>, CO : Context<T>> : Comparable<Interceptor<T, CO>> {
+public interface ChainedInterceptor<T, R, CH : InterceptChain<T, CO, R>, CO : Context<T>> : Comparable<Interceptor<T, CO>> {
 
     /**
      * 执行当前链式拦截器。
@@ -64,8 +64,8 @@ public interface ChainedInterceptor<T, R, CH : InterceptChain<T, R>, CO : Contex
 /**
  * 链式拦截器的链，用于pass到下一条链。
  */
-public interface InterceptChain<T, R> {
-    fun pass(context: Context<T>): R?
+public interface InterceptChain<T, C: Context<T>, out R> {
+    fun pass(context: C): R?
 }
 
 
@@ -73,11 +73,11 @@ public interface InterceptChain<T, R> {
  * [ChainedInterceptor] 作为链式最结尾的抽象类。
  * 链式拦截器的最终链部分，一般来讲，其正好对应了拦截对象的主体本身。
  */
-public abstract class ChainedInterceptorTail<T, R, CH : InterceptChain<T, R>, CO : Context<T>> :
+public abstract class ChainedInterceptorTail<T, R, CH : InterceptChain<T, CO, R>, CO : Context<T>> :
     ChainedInterceptor<T, R, CH, CO> {
 
     /**
-     * 请不要实现方法。
+     * 请不要重写此方法。
      */
     override fun chainedIntercept(context: CO, chain: CH) {
         doPass(context)

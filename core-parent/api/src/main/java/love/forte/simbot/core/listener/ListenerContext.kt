@@ -12,6 +12,7 @@
 
 package love.forte.simbot.core.listener
 
+import love.forte.simbot.core.api.message.MsgGet
 import love.forte.simbot.core.intercept.Context
 import java.util.concurrent.ConcurrentHashMap
 
@@ -24,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 @Suppress("UNCHECKED_CAST", "MemberVisibilityCanBePrivate")
 public class ContextMap
-constructor(val instant : MutableMap<String, Any?>, val global: MutableMap<String, Any?> = ConcurrentHashMap()) {
+constructor(val instant: MutableMap<String, Any?>, val global: MutableMap<String, Any?> = ConcurrentHashMap()) {
     /**
      * 优先从当前instant中获取，否则从全局global中获取。
      */
@@ -51,14 +52,15 @@ constructor(val instant : MutableMap<String, Any?>, val global: MutableMap<Strin
      * 优先从当前instant中获取，否则从全局global中获取，如果还没有则使用默认值。
      * @param compute 都没有的时候使用key计算得到一个value。得到的值不可为null。
      */
-    fun <V> instantOrGlobalOrCompute(key: String, compute: (String) -> V): V = (instant[key] ?: global[key] ?: compute(key)) as V
+    fun <V> instantOrGlobalOrCompute(key: String, compute: (String) -> V): V =
+        (instant[key] ?: global[key] ?: compute(key)) as V
 
     /**
      * 优先从全局global中获取，否则从当前instant中获取。
      * @param compute 都没有的时候使用key计算得到一个value。得到的值不可为null。
      */
-    fun <V> globalOrInstantOrCompute(key: String, compute: (String) -> V): V = (global[key] ?: instant[key] ?: compute(key)) as V
-
+    fun <V> globalOrInstantOrCompute(key: String, compute: (String) -> V): V =
+        (global[key] ?: instant[key] ?: compute(key)) as V
 
 
 }
@@ -72,7 +74,6 @@ constructor(val instant : MutableMap<String, Any?>, val global: MutableMap<Strin
  */
 @Suppress("MemberVisibilityCanBePrivate")
 public interface ListenerContext : Context<ContextMap> {
-
     /**
      * context map.
      */
@@ -82,5 +83,19 @@ public interface ListenerContext : Context<ContextMap> {
      * 主体为一个 [ContextMap], 以提供监听函数间的信息传递。
      */
     @JvmDefault
-    override val mainValue: ContextMap get() = contextMap
+    override val mainValue: ContextMap
+        get() = contextMap
 }
+
+
+/**
+ * 监听函数上下文构建工厂。
+ */
+public interface ListenerContextFactory {
+    fun getListenerContext(
+        msgGet: MsgGet,
+        contextMap: ContextMap,
+    ): ListenerContext
+}
+
+

@@ -35,7 +35,14 @@ public val ListenerFunctionComparable: Comparator<ListenerFunction> = Comparator
 public interface ListenerFunction {
 
     /**
-     * 监听函数的名称。应当是唯一的。
+     * 次监听函数的唯一编号，用于防止出现重复性冲突。
+     * 在判断重复性前，会优先判断此id，再使用equals。
+     * 如果id相同，则认为其相同，则不再使用equals判断。
+     */
+    val id: String
+
+    /**
+     * 监听函数的名称。
      */
     val name: String
 
@@ -81,7 +88,7 @@ public interface ListenerFunction {
     /**
      * 执行监听函数并返回一个执行后的响应结果。
      */
-    fun invoke(): ListenResult<*>
+    fun invoke(msgGet: MsgGet, listenerContext: ListenerContext): ListenResult<*>
 }
 
 
@@ -90,4 +97,27 @@ public interface ListenerFunction {
  * 监听函数载体类型
  */
 public interface ListenerFunctionCarrierType : Type
+
+
+/**
+ * 判断监听函数是否相等。
+ */
+internal fun ListenerFunction.funcEquals(other: Any?): Boolean {
+    if(this === other) return true
+
+    if(other !is ListenerFunction) return false
+
+    if(this.id == other.id) return true
+    return this == other
+}
+
+/**
+ * 用于distinct的实例。
+ */
+public class ListenerFunctionDistinction(private val func: ListenerFunction) {
+    override operator fun equals(other: Any?): Boolean = func.funcEquals(other)
+    override fun hashCode(): Int {
+        return func.hashCode()
+    }
+}
 

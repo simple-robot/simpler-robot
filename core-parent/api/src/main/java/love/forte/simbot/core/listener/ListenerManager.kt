@@ -34,7 +34,7 @@ interface ListenerManager : MsgGetProcessor {
     /**
      * 根据监听类型获取所有对应的监听函数。
      */
-    fun <T : MsgGet> getListenerFunctions(type: Class<out T>? = null) : List<ListenerFunction>
+    fun <T : MsgGet> getListenerFunctions(type: Class<out T>? = null) : Collection<ListenerFunction>
 
 
 }

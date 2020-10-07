@@ -24,9 +24,13 @@ public interface Interceptor<T, C: Context<T>> : Comparable<Interceptor<T, C>> {
 
     /**
      * 判断是否需要进行拦截。
-     * @return 是否拦截成功。如果为 **true** 则代表被拦截。
+     *
+     * @see InterceptionType
+     *
+     * @return 拦截结果类型。枚举类型中，参数为 **true** 则代表 **被拦截**，反之同理。
+     * 例如你想要终止接下来的执行，则返回与 **true** 相关的值，例如 [InterceptionType.INTERCEPT]。
      */
-    fun intercept(context: C): Boolean
+    fun intercept(context: C): InterceptionType
 
 
     /**
@@ -40,5 +44,52 @@ public interface Interceptor<T, C: Context<T>> : Comparable<Interceptor<T, C>> {
      */
     override fun compareTo(other: Interceptor<T, C>): Int = priority.compareTo(other.priority)
 
+
 }
 
+
+
+
+/**
+ * 拦截器的拦截结果类型。
+ *
+ * 其中，参数 [prevent] 相同的值含义一致，只不过提供了几个比较好理解的类型以供个人习惯使用。
+ *
+ * 例如 [INTERCEPT] 与 [BLOCK] 含义相同，都代表拦截接下来的行动。
+ *
+ */
+public enum class InterceptionType(val isPrevent: Boolean) {
+    /** 拦截。 */
+    INTERCEPT(true),
+    /** 拦截。 */
+    BLOCK(true),
+    /** 拦截（阻止）。 */
+    PREVENT(true),
+    /** 拦截。 */
+    HOLD_UP(true),
+    /** 拦截。 */
+    HEAD_OFF(true),
+
+    //********************************//
+
+    /** 放行。 */
+    PASS(false),
+    /** 放行。 */
+    RELEASE(false),
+    /** 放行。 */
+    GREEN_LIGHT(false),
+    /** 放行。 */
+    ALLOW(false),
+
+    ;
+
+    companion object {
+        /**
+         * 根据是否拦截获取一个实例。
+         */
+        @JvmStatic
+        fun getTypeByPrevent(isPrevent: Boolean): InterceptionType = if (isPrevent) INTERCEPT else PASS
+    }
+
+
+}

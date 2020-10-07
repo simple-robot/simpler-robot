@@ -23,5 +23,4 @@ interface MsgInterceptorChainFactory {
      * 根据一个消息主体得到一个消息拦截器链实例。
      */
     fun getInterceptorChain(context: MsgInterceptContext): MsgInterceptor
-
 }

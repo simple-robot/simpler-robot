@@ -13,27 +13,38 @@
 package love.forte.simbot.core.listener
 
 import love.forte.simbot.core.api.message.MsgGet
-import love.forte.simbot.core.intercept.ChainedInterceptor
 import love.forte.simbot.core.intercept.Context
 import love.forte.simbot.core.intercept.InterceptChain
+import love.forte.simbot.core.intercept.InterceptionType
+import love.forte.simbot.core.intercept.Interceptor
 
 
 /**
  *
  * 监听函数拦截器，每一个监听函数之前都会被执行。
  *
- * 监听函数拦截器为链式拦截器
+ * 拦截器返回true代表被 **拦截**。
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public interface ListenerInterceptor :
-    ChainedInterceptor<ListenerFunction, ListenResult<*>, ListenerInterceptorChain, ListenerInterceptContext>
+public interface ListenerInterceptor : Interceptor<ListenerFunction, ListenerInterceptContext>
+
 
 
 /**
- * [监听函数拦截器][ListenerInterceptor] 的 [InterceptChain] 实例。
+ * [监听函数拦截器][ListenerInterceptor]链，用于判断是否放行。
  */
-public interface ListenerInterceptorChain : InterceptChain<ListenerFunction, ListenResult<*>>
+public interface ListenerInterceptorChain {
+    /**
+     * 检测拦截状态。
+     */
+    fun intercept(): InterceptionType
+}
+
+
+
+
+
 
 
 
@@ -53,7 +64,23 @@ public interface ListenerInterceptContext : Context<ListenerFunction> {
     val listenerContext: ListenerContext
 
     @JvmDefault
-    override val mainValue: ListenerFunction get() = listenerFunction
+    override val mainValue: ListenerFunction
+        get() = listenerFunction
 }
 
+
+/**
+ * [ListenerInterceptContext] 构建工厂。
+ */
+public interface ListenerInterceptContextFactory {
+
+    /**
+     * 通过提供的参数构建一个 [ListenerInterceptContext] 实例。
+     */
+    fun getListenerInterceptContext(
+        listenerFunction: ListenerFunction,
+        msgGet: MsgGet,
+        listenerContext: ListenerContext
+    ): ListenerInterceptContext
+}
 
