@@ -12,6 +12,7 @@
 
 package love.forte.simbot.core.listener
 
+import love.forte.simbot.core.exception.ExceptionProcessor
 import love.forte.simbot.core.filter.AtDetectionFactory
 import love.forte.simbot.core.filter.FilterManager
 import love.forte.simbot.core.filter.ListenerFilter
@@ -38,11 +39,37 @@ class ListenerManagerBuilderImpl : ListenerManagerBuilder {
      */
     lateinit var atDetectionFactory: AtDetectionFactory
 
+    /**
+     * 异常处理器。
+     */
+    lateinit var exceptionManager: ExceptionProcessor
+
+    /**
+     * 消息拦截内容。
+     */
+    lateinit var msgInterceptData: MsgInterceptData
+
+    /**
+     * 监听函数拦截内容。
+     */
+    lateinit var listenerInterceptData: ListenerInterceptData
+
+    /**
+     * 监听函数上下文内容。
+     */
+    lateinit var listenerContextData: ListenerContextData
+
 
     /**
      * 得到一个 [ListenerManager] 实例。
      */
     override fun build(): ListenerManager {
-        TODO("Not yet implemented")
+        return CoreListenerManager(
+            atDetectionFactory,
+            exceptionManager,
+            msgInterceptData,
+            listenerInterceptData,
+            listenerContextData
+        )
     }
 }

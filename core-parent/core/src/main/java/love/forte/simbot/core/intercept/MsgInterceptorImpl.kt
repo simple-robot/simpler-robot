@@ -12,6 +12,7 @@
 
 package love.forte.simbot.core.intercept
 
+import love.forte.common.ioc.DependBeanFactory
 import love.forte.simbot.core.api.message.MsgGet
 import love.forte.simbot.core.listener.*
 
@@ -21,6 +22,7 @@ import love.forte.simbot.core.listener.*
  */
 public data class MsgInterceptContextImpl(override var msgGet: MsgGet) : MsgInterceptContext
 
+
 /**
  * [MsgInterceptContextFactory] 实现，以 [MsgInterceptContextImpl] 作为返回类型。
  */
@@ -28,31 +30,55 @@ public object MsgInterceptContextFactoryImpl : MsgInterceptContextFactory {
     override fun getMsgInterceptContext(msg: MsgGet) = MsgInterceptContextImpl(msg)
 }
 
+/**
+ * 空的 [MsgInterceptChain] 实现，总是放行的。
+ */
+public object EmptyMsgInterceptChain : MsgInterceptChain {
+    override fun intercept(): InterceptionType = InterceptionType.PASS
+}
 
 
 /**
- * 消息拦截器。
+ *  [MsgInterceptChain] 实现，遍历拦截器列表并尝试寻找第一个拦截点。
  */
-public class MsgInterceptorImpl : MsgInterceptor {
-    override fun chainedIntercept(context: MsgInterceptContext, chain: MsgInterceptChain) {
-        TODO("Not yet implemented")
+public class MsgInterceptChainImpl(
+    private val interceptorList: List<MsgInterceptor>,
+    private val context: MsgInterceptContext
+) : MsgInterceptChain {
+    override fun intercept(): InterceptionType {
+        return InterceptionType.getTypeByPrevent(
+            interceptorList.any {
+                it.intercept(context).isPrevent
+            }
+        )
     }
 }
 
 
 /**
- * 消息拦截链的最终环节，即ListenerInterceptorChain
+ * [MsgInterceptChain] 工厂，
+ * 通过 [DependBeanFactory] 懒加载获取所有的 [MsgInterceptor] 实例并缓存以构建一个 [MsgInterceptChain] 实例。
  */
-public class EndOfMsgInterceptChain(
-    private val listenerInterceptorChain: ListenerInterceptorChain,
-    private val listenerContextFactory: (MsgInterceptContext) -> ListenerContext,
-) : MsgInterceptChain {
+public class MsgInterceptChainFactoryImpl(
+    private val dependBeanFactory: DependBeanFactory
+) : MsgInterceptChainFactory {
 
     /**
-     * 执行 listener 拦截器链并返回结果。
+     * 懒加载依赖中心中的所有拦截器实例。
      */
-    override fun pass(context: MsgInterceptContext): ListenResult<*>? {
-        TODO()
+    private val interceptorList: List<MsgInterceptor> by lazy {
+        dependBeanFactory.getListByType(MsgInterceptor::class.java).toList()
+    }
+
+
+    /**
+     * 根据一个消息主体得到一个消息拦截器链实例。
+     */
+    override fun getInterceptorChain(context: MsgInterceptContext): MsgInterceptChain {
+        return with(interceptorList) {
+            if(isEmpty()) EmptyMsgInterceptChain
+            else MsgInterceptChainImpl(this, context)
+        }
     }
 }
 

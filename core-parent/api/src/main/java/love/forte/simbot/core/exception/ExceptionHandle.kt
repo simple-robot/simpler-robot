@@ -14,6 +14,7 @@ package love.forte.simbot.core.exception
 
 import love.forte.simbot.core.api.message.MsgGet
 import love.forte.simbot.core.intercept.BaseContext
+import love.forte.simbot.core.listener.ListenResult
 import love.forte.simbot.core.listener.ListenerContext
 import love.forte.simbot.core.listener.ListenerFunction
 
@@ -28,8 +29,10 @@ fun interface ExceptionHandle<E : Throwable> {
 
     /**
      * 异常处理函数。对异常进行处理并得到一个监听函数的返回值。
+     *
+     * @return 监听执行相应。
      */
-    fun doHandle(context: ExceptionHandleContext<E>): Any?
+    fun doHandle(context: ExceptionHandleContext<E>): ListenResult<*>
 
 }
 
@@ -52,5 +55,4 @@ public class ExceptionHandleContext<E : Throwable>(
     val exception: Throwable get() = mainValue
 
     override fun toString(): String = "ExceptionHandleContext<$mainValue>(msg=$msgGet, func=$listenerFunction)"
-
 }

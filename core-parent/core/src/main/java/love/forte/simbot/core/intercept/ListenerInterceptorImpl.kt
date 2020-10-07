@@ -67,12 +67,12 @@ public class ListenerInterceptorChainImpl(
 
 
 /**
- * [ListenerInterceptorChainFactory] 基础实例，
+ * [ListenerInterceptChainFactory] 基础实例，
  * 通过dependBeanFactory 获取所有的拦截器并构建一个拦截链。
  * 拦截器列表仅会被获取一次。
  */
-public class ListenerInterceptorChainFactoryImpl(dependBeanFactory: DependBeanFactory) :
-    ListenerInterceptorChainFactory {
+public class ListenerInterceptChainFactoryImpl(dependBeanFactory: DependBeanFactory) :
+    ListenerInterceptChainFactory {
 
     /**
      * 懒加载所有的拦截器。

@@ -13,30 +13,25 @@
 package love.forte.simbot.core.listener
 
 import love.forte.simbot.core.api.message.MsgGet
-import love.forte.simbot.core.intercept.ChainedInterceptor
-import love.forte.simbot.core.intercept.Context
-import love.forte.simbot.core.intercept.InterceptChain
+import love.forte.simbot.core.intercept.*
 
 
 /**
  *
  * 消息拦截器，当接收到一个 [love.forte.simbot.core.api.message.MsgGet] 事件的时候触发。
  *
- * 消息拦截器为[链式拦截器][ChainedInterceptor]。
- *
  * 消息拦截器是在触发监听之前拦截的，因此如果被成功拦截，则不会触发任何监听函数。
- *
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public interface MsgInterceptor : ChainedInterceptor<MsgGet, ListenResult<*>, MsgInterceptChain, MsgInterceptContext>
+public interface MsgInterceptor : Interceptor<MsgGet, MsgInterceptContext>
 
 
 /**
- * [消息拦截器][MsgInterceptor] 中的 [链][MsgInterceptChain]
+ * [消息拦截器][MsgInterceptor] 的链，判断是否被拦截，可通过[工厂][MsgInterceptChainFactory]获取。
  */
-public interface MsgInterceptChain : InterceptChain<MsgGet, MsgInterceptContext, ListenResult<*>> {
-    override fun pass(context: MsgInterceptContext): ListenResult<*>?
+public interface MsgInterceptChain {
+    fun intercept(): InterceptionType
 }
 
 
@@ -49,7 +44,6 @@ public interface MsgInterceptContext : Context<MsgGet> {
 
     /**
      * 消息主体。可重新赋值，但是不可为null。
-     * 此消息主体在[MsgInterceptChain.pass]之前执行即可变更当前监听事件所应触发的事件。
      */
     var msgGet: MsgGet
 

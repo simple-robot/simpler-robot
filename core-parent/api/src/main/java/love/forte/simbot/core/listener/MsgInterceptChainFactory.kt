@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     ListenerInterceptorManager.kt
+ * File     MsgInterceptorChainFactory.kt
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -14,15 +14,13 @@ package love.forte.simbot.core.listener
 
 
 /**
- * 监听函数拦截链工厂，用于通过一个监听函数来构建一个拦截链。
+ *
+ * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public interface ListenerInterceptorChainFactory {
+interface MsgInterceptChainFactory {
 
     /**
-     * 通过一个拦截信息主体得到拦截链。
+     * 根据一个消息主体得到一个消息拦截器链实例。
      */
-    fun getInterceptorChain(context: ListenerInterceptContext): ListenerInterceptorChain
+    fun getInterceptorChain(context: MsgInterceptContext): MsgInterceptChain
 }
-
-
-

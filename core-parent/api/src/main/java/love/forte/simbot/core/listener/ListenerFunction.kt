@@ -88,7 +88,7 @@ public interface ListenerFunction {
     /**
      * 执行监听函数并返回一个执行后的响应结果。
      */
-    fun invoke(msgGet: MsgGet, listenerContext: ListenerContext): ListenResult<*>
+    operator fun invoke(msgGet: MsgGet, listenerContext: ListenerContext): ListenResult<*>
 }
 
 

@@ -16,9 +16,6 @@ package love.forte.simbot.core.listener
  * 无内容的result。一般用在没有监听函数执行被执行的时候。
  */
 object NothingResult : ListenResult<Nothing> {
-    /**
-     * 是否执行成功。
-     */
     override fun isSuccess(): Boolean = false
     override fun isBreak(): Boolean = false
     override val result: Nothing? = null

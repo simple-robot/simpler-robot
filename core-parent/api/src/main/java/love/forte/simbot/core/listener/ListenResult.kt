@@ -43,5 +43,12 @@ interface ListenResult<T> {
      */
     val throwable: Throwable?
 
-
 }
+
+/**
+ * 监听函数响应值工厂。
+ */
+interface ListenerResultFactory {
+    fun <T> getResult(result: T?, listenerFunction: ListenerFunction, throwable: Throwable? = null): ListenResult<T>
+}
+
