@@ -32,6 +32,28 @@ import java.time.LocalDateTime
  * 此模块下定义基础事件父接口
  */
 
+/**
+ * 所有的主要监听事件类型。
+ */
+public val MsgGetMainListenerTypes : Set<Class<out MsgGet>> =
+    setOf(
+        PrivateMsg::class.java,
+        GroupMsg::class.java,
+        GroupMemberPermissionChanged::class.java,
+        GroupNameChanged::class.java,
+        GroupMemberRemarkChanged::class.java,
+        GroupMemberSpecialChanged::class.java,
+        FriendNicknameChanged::class.java,
+        FriendAvatarChanged::class.java,
+        PrivateMsgRecall::class.java,
+        GroupMsgRecall::class.java,
+        FriendIncrease::class.java,
+        GroupMemberIncrease::class.java,
+        FriendReduce::class.java,
+        GroupReduce::class.java,
+        FriendAddRequest::class.java,
+        GroupAddRequest::class.java,
+    )
 
 
 /**
