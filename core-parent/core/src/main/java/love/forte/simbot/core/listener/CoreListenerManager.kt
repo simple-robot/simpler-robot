@@ -14,6 +14,7 @@ package love.forte.simbot.core.listener
 
 import love.forte.common.collections.concurrentQueueOf
 import love.forte.common.collections.concurrentSortedQueueOf
+import love.forte.common.sequences.distinctByMerger
 import love.forte.simbot.core.api.message.MsgGet
 import love.forte.simbot.core.exception.ExceptionHandleContext
 import love.forte.simbot.core.exception.ExceptionProcessor
@@ -72,7 +73,7 @@ public data class ListenerContextData(
  * @property listenerInterceptData 函数拦截相关所需内容。
  * @property listenerContextData 监听上下文所需内容。
  */
-public class CoreListenerManager (
+public class CoreListenerManager(
     private val atDetectionFactory: AtDetectionFactory,
     private val exceptionManager: ExceptionProcessor,
 
@@ -107,26 +108,28 @@ public class CoreListenerManager (
     private val allListenTypes: MutableSet<Class<out MsgGet>> get() = mainListenerFunctionMap.keys
 
 
+
     /**
      * 注册一个 [监听函数][ListenerFunction]。
      */
     override fun register(listenerFunction: ListenerFunction) {
         // 获取其监听类型，并作为key存入map
-        val listenType = listenerFunction.listenType
+        val listenTypes = listenerFunction.listenTypes
 
-        // merge into map.
-        mainListenerFunctionMap.merge(listenType, listenerFunctionQueue(listenerFunction)) { oldValue, value ->
-            oldValue.apply { addAll(value) }
-        }
+        listenTypes.forEach { listenType ->
+            // merge into map.
+            mainListenerFunctionMap.merge(listenType, listenerFunctionQueue(listenerFunction)) { oldValue, value ->
+                oldValue.apply { addAll(value) }
+            }
 
-        // clear cache map.
-        // 寻找并更新缓存监听
-        cacheListenerFunctionMap.forEach {
-            if (listenType.isAssignableFrom(it.key)) {
-                it.value.add(listenerFunction)
+            // clear cache map.
+            // 寻找并更新缓存监听
+            cacheListenerFunctionMap.forEach {
+                if (listenType.isAssignableFrom(it.key)) {
+                    it.value.add(listenerFunction)
+                }
             }
         }
-
     }
 
 
@@ -145,13 +148,10 @@ public class CoreListenerManager (
             }
             // 筛选并执行监听函数
             return onMsg0(msgContext.msgGet)
-
         } catch (e: Throwable) {
-            // TODO  for language.
-            logger.error("listen invoke something wrong: ${e.localizedMessage}", e)
+            logger.error("Some unexpected errors occurred in the execution of the listener: ${e.localizedMessage}", e)
             return NothingResult
         }
-
     }
 
 
@@ -182,10 +182,14 @@ public class CoreListenerManager (
                     if (interceptType.isPrevent) {
                         NothingResult
                     } else {
-                        func(msgGet, context)
+                        val invokeData = ListenerFunctionInvokeDataImpl(
+                            msgGet, context, atDetectionFactory.getAtDetection(msgGet)
+                        )
+                        // invoke func.
+                        func(invokeData)
                     }
-                }catch (funcRunEx: Throwable) {
-                    // TODO show something.
+                } catch (funcRunEx: Throwable) {
+                    logger.error("Listener execution exception: ${funcRunEx.localizedMessage}", funcRunEx)
                     NothingResult
                 }
 
@@ -258,9 +262,13 @@ public class CoreListenerManager (
                 synchronized(type) {
                     // merge.
                     cacheListenerFunctionMap.merge(type, typeQueue) { oldValue, value ->
-                        (oldValue.asSequence() + value.asSequence()).distinctBy {
-                            ListenerFunctionDistinction(it)
-                        }.toCollection(concurrentQueueOf())
+                        (oldValue.asSequence() + value.asSequence()).distinctByMerger(
+                            {
+                                ListenerFunctionDistinction(it)
+                            }, { _, func ->
+                                throw ListenerAlreadyExistsException("Duplicate listener by id: ${func.id} in $func.")
+                            }
+                        ).toCollection(concurrentQueueOf())
                     }
                 }
                 typeQueue.asSequence()

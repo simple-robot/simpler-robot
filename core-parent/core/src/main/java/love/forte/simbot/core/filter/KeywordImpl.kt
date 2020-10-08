@@ -31,6 +31,7 @@ internal val EmptyRegex = Regex("")
 internal object EmptyFilterParameterMatcher : FilterParameterMatcher {
     override fun getOriginal(): String = ""
     override fun getPattern(): Pattern = EmptyRegex.toPattern()
+    override fun getParam(name: String?, text: String?): String? = null
     override fun getParams(text: String?): MutableMap<String, String> = mutableMapOf()
 }
 

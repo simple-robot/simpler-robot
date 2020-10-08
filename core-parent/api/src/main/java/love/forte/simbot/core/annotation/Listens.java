@@ -41,7 +41,7 @@ public @interface Listens {
     int priority() default PriorityConstant.TENTH;
 
     /**
-     * 当前监听函数的name。不可重复。
+     * 当前监听函数的id。不可重复。
      */
     String name() default "";
 }

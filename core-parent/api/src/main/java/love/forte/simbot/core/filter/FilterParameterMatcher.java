@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
  *
  * 动态参数匹配器。
  *
+ * 在参数上标注注解 {@link love.forte.simbot.core.annotation.FilterValue} 来使用。
+ *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 public interface FilterParameterMatcher {
@@ -34,6 +36,16 @@ public interface FilterParameterMatcher {
      * @return 匹配正则
      */
     Pattern getPattern();
+
+
+    /**
+     * 根据变量名称获取一个动态参数。
+     * 此文本需要符合正则表达式。
+     * @param name 变量名称
+     * @param text 文本
+     * @return 得到的参数
+     */
+    String getParam(String name, String text);
 
     /**
      * 从一段匹配的文本中提取出需要的参数。

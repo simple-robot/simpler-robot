@@ -23,6 +23,22 @@ object NothingResult : ListenResult<Nothing> {
 }
 
 
+internal class ListenResultBuilder {
+    var result: Any? = null
+    var success: Boolean = true
+    var isBreak: Boolean = false
+    var throwable: Throwable? = null
+    fun build(): ListenResult<*> = with(result) {
+        val success: Boolean = this@ListenResultBuilder.success
+        val isBreak: Boolean = this@ListenResultBuilder.isBreak
+        val throwable: Throwable? = this@ListenResultBuilder.throwable
+        if (this is ListenResult<*>) this
+        else ListenResultImpl(this, success, isBreak, throwable)
+    }
+
+}
+
+
 /**
  * [ListenResult] 默认实现。
  */
@@ -74,7 +90,6 @@ open class ListenResultImpl<T>(
         }
     }
 }
-
 
 
 /**

@@ -264,6 +264,30 @@ public class AnnotationFiltersListenerFilterImpl(
     }
 
     /**
+     * 尝试从文本中提取动态过滤参数。
+     */
+    override fun getFilterValue(name: String, text: String): String? {
+        // 1. children
+        _childrenFilter.forEach {
+            val filterValue: String? = it.getFilterValue(name, text)
+            if(filterValue != null) {
+                return filterValue
+            }
+        }
+
+        // 2. customs.
+        _customFilter.forEach {
+            val filterValue: String? = it.getFilterValue(name, text)
+            if(filterValue != null) {
+                return filterValue
+            }
+        }
+
+        // nothing.
+        return null
+    }
+
+    /**
      * this matches.
      */
     private fun thisMatches(data: FilterData): Boolean {
@@ -572,4 +596,16 @@ public class AnnotationFilterListenerFilterImpl(
 
         return matchType.match(textMsg, keyword)
     }
+
+
+    /**
+     * 根据动态遍历获取一个值。
+     */
+    override fun getFilterValue(name: String, text: String): String? {
+        val matcher: FilterParameterMatcher = keyword.parameterMatcher
+        return if (matcher.pattern.matcher(text).find()) {
+            matcher.getParams(text)[name]
+        } else null
+    }
+
 }

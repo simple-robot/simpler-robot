@@ -41,6 +41,11 @@ public interface ListenerFilter {
     fun test(data: FilterData): Boolean
 
     /**
+     * 尝试从文本中提取动态过滤参数。
+     */
+    fun getFilterValue(name: String, text: String): String?
+
+    /**
      * 优先级，默认为最低级。
      */
     @JvmDefault

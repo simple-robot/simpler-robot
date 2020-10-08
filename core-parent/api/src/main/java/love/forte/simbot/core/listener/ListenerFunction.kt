@@ -14,6 +14,7 @@ package love.forte.simbot.core.listener
 
 import love.forte.simbot.core.api.message.MsgGet
 import love.forte.simbot.core.constant.PriorityConstant
+import love.forte.simbot.core.filter.AtDetection
 import love.forte.simbot.core.filter.ListenerFilter
 import java.lang.reflect.Type
 
@@ -35,7 +36,7 @@ public val ListenerFunctionComparable: Comparator<ListenerFunction> = Comparator
 public interface ListenerFunction {
 
     /**
-     * 次监听函数的唯一编号，用于防止出现重复性冲突。
+     * 此监听函数的唯一编号，用于防止出现重复冲突。
      * 在判断重复性前，会优先判断此id，再使用equals。
      * 如果id相同，则认为其相同，则不再使用equals判断。
      */
@@ -61,9 +62,9 @@ public interface ListenerFunction {
 
 
     /**
-     * 监听的类型。
+     * 监听的类型们。
      */
-    val listenType: Class<out MsgGet>
+    val listenTypes: List<Class<out MsgGet>>
 
 
     /**
@@ -75,28 +76,62 @@ public interface ListenerFunction {
     /**
      * 判断当前监听函数是否可以触发当前类型的监听.
      */
-    fun <T: MsgGet> canListen(onType: Class<T>): Boolean
+    @JvmDefault
+    fun <T: MsgGet> canListen(onType: Class<T>): Boolean {
+        return listenTypes.any { it.isAssignableFrom(onType) }
+    }
 
 
     /**
      * 当前监听函数的载体。例如一个 Class。
      * 一般如果是个method，那么此即为[Class]。
      */
-    val type: ListenerFunctionCarrierType
+    val type: Type
 
 
     /**
      * 执行监听函数并返回一个执行后的响应结果。
+     *
+     * @throws Throwable 执行可能会存在任何可能发生的以外异常。而 [ListenResult] 中包含的一般仅仅是方法执行时候出现的异常。
      */
-    operator fun invoke(msgGet: MsgGet, listenerContext: ListenerContext): ListenResult<*>
+    operator fun invoke(data: ListenerFunctionInvokeData): ListenResult<*>
 }
 
 
+/**
+ * 监听函数执行所需要的数据。
+ */
+public interface ListenerFunctionInvokeData {
+    /** 监听到的消息。 */
+    val msgGet: MsgGet
+    /** 监听函数上下文。 */
+    val context: ListenerContext
+    /** at检测器。 */
+    val atDetection: AtDetection
+}
+
 
 /**
- * 监听函数载体类型
+ * 监听器已经存在异常。
  */
-public interface ListenerFunctionCarrierType : Type
+public class ListenerAlreadyExistsException : IllegalStateException {
+    constructor() : super()
+    constructor(s: String?) : super(s)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    constructor(cause: Throwable?) : super(cause)
+}
+
+
+/**
+ * 监听器不存在异常。
+ */
+public class ListenerNotExistsException : IllegalStateException {
+    constructor() : super()
+    constructor(s: String?) : super(s)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    constructor(cause: Throwable?) : super(cause)
+}
+
 
 
 /**
