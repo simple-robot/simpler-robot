@@ -1,8 +1,12 @@
 package love.forte.test;
 
+import love.forte.common.ioc.annotation.Beans;
 import love.forte.common.utils.annotation.AnnotationUtil;
 import love.forte.simbot.core.annotation.Listen;
 import love.forte.simbot.core.api.message.MsgGet;
+import love.forte.simbot.core.configuration.CoreConverterManagerConfiguration;
+
+import java.lang.reflect.Method;
 
 /**
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
@@ -10,11 +14,15 @@ import love.forte.simbot.core.api.message.MsgGet;
 
 public class Test {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NoSuchMethodException {
 
-        final Listen annotation = AnnotationUtil.getAnnotation(Test.class, Listen.class);
+        final Method m = CoreConverterManagerConfiguration.class.getMethod("coreConverterManagerBuilder");
 
-        System.out.println(annotation);
+
+        final Beans b = AnnotationUtil.getAnnotation(m, Beans.class);
+
+        System.out.println(b);
+        System.out.println(b.priority());
 
     }
 }

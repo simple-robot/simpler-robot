@@ -30,7 +30,7 @@ public data class ListenerInterceptContextImpl(
 /**
  * [ListenerInterceptContextFactory] 实现，以 [ListenerInterceptContextImpl] 作为返回类型。
  */
-public object ListenerInterceptContextFactoryImpl : ListenerInterceptContextFactory {
+public object CoreListenerInterceptContextFactory : ListenerInterceptContextFactory {
     override fun getListenerInterceptContext(
         listenerFunction: ListenerFunction,
         msgGet: MsgGet,
@@ -71,14 +71,19 @@ public class ListenerInterceptorChainImpl(
  * 通过dependBeanFactory 获取所有的拦截器并构建一个拦截链。
  * 拦截器列表仅会被获取一次。
  */
-public class ListenerInterceptChainFactoryImpl(dependBeanFactory: DependBeanFactory) :
+public class CoreListenerInterceptChainFactory(dependBeanFactory: DependBeanFactory) :
     ListenerInterceptChainFactory {
 
     /**
      * 懒加载所有的拦截器。
      */
     private val interceptorList: List<ListenerInterceptor> by lazy {
-        dependBeanFactory.getListByType(ListenerInterceptor::class.java).toList()
+        val iType = ListenerInterceptor::class.java
+        dependBeanFactory.allBeans.mapNotNull {
+            val type = dependBeanFactory.getType(it)
+            if(iType.isAssignableFrom(type)) dependBeanFactory[it] as ListenerInterceptor
+            else null
+        }
     }
 
     /**

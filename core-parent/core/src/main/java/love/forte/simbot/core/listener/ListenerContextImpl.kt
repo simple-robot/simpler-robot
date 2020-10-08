@@ -23,8 +23,9 @@ public data class ListenerContextImpl(override val contextMap: ContextMap) : Lis
 
 /**
  * [ListenerContextFactory] 实现。
+ * 单例。
  */
-public class ListenerContextFactoryImpl : ListenerContextFactory {
+public object ListenerContextFactoryImpl : ListenerContextFactory {
     override fun getListenerContext(msgGet: MsgGet, contextMap: ContextMap): ListenerContext {
         return ListenerContextImpl(contextMap)
     }

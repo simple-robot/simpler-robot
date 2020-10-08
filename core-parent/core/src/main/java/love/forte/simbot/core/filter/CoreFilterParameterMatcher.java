@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @SuppressWarnings("unused")
-public class FilterParameterMatcherImpl implements FilterParameterMatcher {
+public class CoreFilterParameterMatcher implements FilterParameterMatcher {
 
     /**
      * 原始字符串
@@ -53,7 +53,7 @@ public class FilterParameterMatcherImpl implements FilterParameterMatcher {
     // private final Function<String, String> textHandler;
 
 
-    private FilterParameterMatcherImpl(String original, Pattern pattern, Function<String, String> textHandler, Point point) {
+    private CoreFilterParameterMatcher(String original, Pattern pattern, Function<String, String> textHandler, Point point) {
         this.original = original;
         this.pattern = pattern;
         this.point = point;
@@ -73,17 +73,17 @@ public class FilterParameterMatcherImpl implements FilterParameterMatcher {
 
     }
 
-    public static FilterParameterMatcherImpl compile(String string) {
+    public static CoreFilterParameterMatcher compile(String string) {
         return compile(string, s -> s);
     }
 
     /**
-     * 将一串字符串解析为{@link FilterParameterMatcherImpl}
+     * 将一串字符串解析为{@link CoreFilterParameterMatcher}
      *
      * @param string 字符串
-     * @return {@link FilterParameterMatcherImpl}
+     * @return {@link CoreFilterParameterMatcher}
      */
-    public static FilterParameterMatcherImpl compile(String string, Function<String, String> textHandler) {
+    public static CoreFilterParameterMatcher compile(String string, Function<String, String> textHandler) {
         Objects.requireNonNull(string);
         Objects.requireNonNull(textHandler);
 
@@ -165,11 +165,11 @@ public class FilterParameterMatcherImpl implements FilterParameterMatcher {
         }
 
         if (point == null) {
-            return new FilterParameterMatcherImpl(string, Pattern.compile(string), textHandler, null);
+            return new CoreFilterParameterMatcher(string, Pattern.compile(string), textHandler, null);
         }
 
         final Pattern pattern = point.toPattern();
-        return new FilterParameterMatcherImpl(string, pattern, textHandler, point.first());
+        return new CoreFilterParameterMatcher(string, pattern, textHandler, point.first());
     }
 
 

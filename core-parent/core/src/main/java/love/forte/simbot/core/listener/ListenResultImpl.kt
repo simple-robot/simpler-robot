@@ -28,14 +28,11 @@ internal class ListenResultBuilder {
     var success: Boolean = true
     var isBreak: Boolean = false
     var throwable: Throwable? = null
-    fun build(): ListenResult<*> = with(result) {
-        val success: Boolean = this@ListenResultBuilder.success
-        val isBreak: Boolean = this@ListenResultBuilder.isBreak
-        val throwable: Throwable? = this@ListenResultBuilder.throwable
-        if (this is ListenResult<*>) this
-        else ListenResultImpl(this, success, isBreak, throwable)
-    }
+    fun build(): ListenResult<*> = ListenResultImpl(this, success, isBreak, throwable)
+}
 
+internal fun listenResult(build: ListenResultBuilder.() -> Unit): ListenResult<*> {
+    return ListenResultBuilder().also(build).build()
 }
 
 
@@ -115,3 +112,35 @@ internal object EmptySuccessBreakResult : ListenResult<Nothing>,
  */
 internal object EmptyFailedBreakResult : ListenResult<Nothing>,
     ListenResultImpl<Nothing>(null, false, true, null)
+
+
+/**
+ * 监听响应值工厂。
+ * 单例。
+ */
+public object CoreListenerResultFactory : ListenerResultFactory {
+    override fun getResult(
+        result: Any?,
+        listenerFunction: ListenerFunction,
+        throwable: Throwable?
+    ): ListenResult<*> {
+        return if (result is ListenResult<*>) {
+            result
+        } else {
+            listenResult {
+                this.result = result
+                this.success = throwable == null && result != null
+                this.throwable = throwable
+                // TODO break.
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+

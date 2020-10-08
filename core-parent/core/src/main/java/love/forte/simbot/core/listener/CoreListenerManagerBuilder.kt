@@ -23,7 +23,7 @@ import love.forte.simbot.core.filter.ListenerFilter
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-class ListenerManagerBuilderImpl : ListenerManagerBuilder {
+public class CoreListenerManagerBuilder : ListenerManagerBuilder {
 
     // /** 监听函数列表 */
     // var listenerFunctions: MutableList<ListenerFunction> = mutableListOf()

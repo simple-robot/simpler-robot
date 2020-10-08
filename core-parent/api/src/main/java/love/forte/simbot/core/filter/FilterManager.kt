@@ -39,6 +39,22 @@ public interface FilterManager :
 }
 
 
+/**
+ * [FilterManager] 构建器，用于注册并构建一个filter。
+ */
+public interface FilterManagerBuilder {
+
+    /**
+     * 注册一个过滤器。
+     */
+    fun register(name: String, filter: ListenerFilter): FilterManagerBuilder
+
+    /**
+     * 构建一个manager
+     */
+    fun build(): FilterManager
+}
+
 
 /**
  * 注解过滤器工厂。
@@ -49,3 +65,6 @@ public interface ListenerFilterAnnotationFactory {
      */
     fun getFilter(filters: Filters) : ListenerFilter
 }
+
+
+

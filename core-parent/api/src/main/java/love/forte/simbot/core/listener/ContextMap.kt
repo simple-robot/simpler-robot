@@ -17,14 +17,14 @@ import java.util.concurrent.ConcurrentHashMap
 public interface ContextMap {
 
     /**
-     * 当前context map.
+     * 当前context map. value不允许出现null。
      */
-    val instant: MutableMap<String, Any?>
+    val instant: MutableMap<String, Any>
 
     /**
-     * 全局global map.
+     * 全局global map. value不允许出现null。
      */
-    val global: MutableMap<String, Any?>
+    val global: MutableMap<String, Any>
 
     /**
      * 优先从当前instant中获取，否则从全局global中获取。
@@ -83,7 +83,7 @@ public interface ContextMapFactory {
  */
 @Suppress("UNCHECKED_CAST", "MemberVisibilityCanBePrivate")
 public class ContextMapImpl
-constructor(override val instant: MutableMap<String, Any?>, override val global: MutableMap<String, Any?>) :
+constructor(override val instant: MutableMap<String, Any>, override val global: MutableMap<String, Any>) :
     ContextMap {
     /**
      * 优先从当前instant中获取，否则从全局global中获取。

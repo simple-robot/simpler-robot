@@ -29,7 +29,7 @@ internal val ConstantFalseAtDetection: AtDetection = AtDetection { false }
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class FilterManagerImpl : FilterManager {
+public class CoreFilterManager : FilterManager {
 
     /**
      * 全部的自定义过滤器列表。
@@ -102,3 +102,46 @@ public class FilterManagerImpl : FilterManager {
  * [AtDetectionFactory].invoke(MsgGet)。
  */
 internal operator fun AtDetectionFactory.invoke(msg: MsgGet): AtDetection = this.getAtDetection(msg)
+
+
+/**
+ * [FilterManagerBuilder] 默认实现。
+ */
+public class CoreFilterManagerBuilder : FilterManagerBuilder {
+
+    data class Filter(val name: String, val filter: ListenerFilter)
+
+    private var filters = mutableListOf<Filter>()
+
+    /**
+     * 注册一个或多个过滤器。
+     */
+    override fun register(name: String, filter: ListenerFilter): FilterManagerBuilder {
+        this.filters.add(Filter(name, filter))
+        return this
+    }
+
+    /**
+     * 构建一个manager
+     */
+    override fun build(): FilterManager {
+        val filterManager = CoreFilterManager()
+        val filters = this.filters
+        this.filters = mutableListOf()
+
+        filters.forEach {(name, filter) ->
+            filterManager.registerFilter(name, filter)
+        }
+
+        return filterManager
+    }
+}
+
+
+
+
+
+
+
+
+

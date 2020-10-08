@@ -30,6 +30,8 @@ public class FilterData(
 
 
 
+
+
 /**
  * 监听过滤器。
  */
@@ -42,8 +44,10 @@ public interface ListenerFilter {
 
     /**
      * 尝试从文本中提取动态过滤参数。
+     * 自定义实现下可以直接返回一个 `null`。
      */
-    fun getFilterValue(name: String, text: String): String?
+    @JvmDefault
+    fun getFilterValue(name: String, text: String): String? = null
 
     /**
      * 优先级，默认为最低级。

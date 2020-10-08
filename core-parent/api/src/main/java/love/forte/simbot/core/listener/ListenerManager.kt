@@ -54,7 +54,7 @@ interface ListenerRegistrar {
 /**
  * 监听函数构建器。
  */
-interface ListenerManagerBuilder {
+public interface ListenerManagerBuilder {
 
     /**
      * 得到一个 [ListenerManager] 实例。

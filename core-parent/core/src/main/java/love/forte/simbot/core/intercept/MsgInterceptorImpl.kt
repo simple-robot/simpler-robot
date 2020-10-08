@@ -26,7 +26,7 @@ public data class MsgInterceptContextImpl(override var msgGet: MsgGet) : MsgInte
 /**
  * [MsgInterceptContextFactory] 实现，以 [MsgInterceptContextImpl] 作为返回类型。
  */
-public object MsgInterceptContextFactoryImpl : MsgInterceptContextFactory {
+public object CoreMsgInterceptContextFactory : MsgInterceptContextFactory {
     override fun getMsgInterceptContext(msg: MsgGet) = MsgInterceptContextImpl(msg)
 }
 
@@ -59,7 +59,7 @@ public class MsgInterceptChainImpl(
  * [MsgInterceptChain] 工厂，
  * 通过 [DependBeanFactory] 懒加载获取所有的 [MsgInterceptor] 实例并缓存以构建一个 [MsgInterceptChain] 实例。
  */
-public class MsgInterceptChainFactoryImpl(
+public class CoreMsgInterceptChainFactory(
     private val dependBeanFactory: DependBeanFactory
 ) : MsgInterceptChainFactory {
 
@@ -67,7 +67,13 @@ public class MsgInterceptChainFactoryImpl(
      * 懒加载依赖中心中的所有拦截器实例。
      */
     private val interceptorList: List<MsgInterceptor> by lazy {
-        dependBeanFactory.getListByType(MsgInterceptor::class.java).toList()
+        val iType = MsgInterceptor::class.java
+        dependBeanFactory.allBeans.mapNotNull {
+            val type = dependBeanFactory.getType(it)
+            if(iType.isAssignableFrom(type)) {
+                dependBeanFactory[it] as MsgInterceptor
+            } else null
+        }
     }
 
 

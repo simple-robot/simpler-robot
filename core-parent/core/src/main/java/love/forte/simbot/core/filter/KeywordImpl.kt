@@ -21,7 +21,7 @@ import java.util.regex.Pattern
 public class TextKeyword(text: String) : Keyword {
     override val regex: Regex = Regex(text)
     override val text: String = text
-    override val parameterMatcher: FilterParameterMatcher = FilterParameterMatcherImpl.compile(text)
+    override val parameterMatcher: FilterParameterMatcher = CoreFilterParameterMatcher.compile(text)
 }
 
 
