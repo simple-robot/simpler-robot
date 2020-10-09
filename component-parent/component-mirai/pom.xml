@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>component-parent</artifactId>
+        <groupId>love.forte.simple-robot</groupId>
+        <version>2.0.0-ALPHA.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>component-mirai</artifactId>
+
+
+    <name>simple-robot-component-mirai</name>
+    <description>a simple-robot component for mirai</description>
+    <scm>
+        <url>https://github.com/ForteScarlet/simple-robot-component-mirai</url>
+    </scm>
+    <url>https://github.com/ForteScarlet/simple-robot-component-mirai</url>
+
+    <properties>
+        <!-- mirai -->
+        <mirai.version>1.3.1</mirai.version>
+        <mirai-serialization.version>1.1.3</mirai-serialization.version>
+    </properties>
+
+
+    <dependencies>
+
+    </dependencies>
+
+
+</project>
