@@ -139,9 +139,9 @@ import java.lang.annotation.*;
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
-@Documented
+// @Retention(RetentionPolicy.RUNTIME)
+// @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
+// @Documented
 @Repeatable(Listens.class)
 public @interface Listen {
 
@@ -150,7 +150,5 @@ public @interface Listen {
      */
     Class<? extends MsgGet> value();
 
-
-    // int d() default 2;
 
 }

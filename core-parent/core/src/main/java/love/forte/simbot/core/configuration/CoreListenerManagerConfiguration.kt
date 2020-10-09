@@ -89,6 +89,8 @@ public class CoreListenerManagerConfiguration {
     /**
      * 获取监听函数实例。通过builder构建。
      */
-    @CoreBeans
+    @CoreBeans(init = true)
     fun coreListenerManager(builder: ListenerManagerBuilder): ListenerManager = builder.build()
+
+
 }

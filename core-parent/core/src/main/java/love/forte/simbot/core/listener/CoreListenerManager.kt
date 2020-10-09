@@ -246,6 +246,11 @@ public class CoreListenerManager(
         return if (fastball != null) {
             fastball.asSequence()
         } else {
+
+            if(mainListenerFunctionMap.isEmpty()) {
+                return emptySequence()
+            }
+
             // 无法直接获取，则遍历类型并合并。
             // 获取类型对应函数列表
             val typeSeq: Sequence<ListenerFunction> = mainListenerFunctionMap.asSequence().flatMap { (k, v) ->
@@ -293,6 +298,10 @@ public class CoreListenerManager(
         return if (fastball != null) {
             fastball.toList()
         } else {
+            if(mainListenerFunctionMap.isEmpty()) {
+                return emptyList()
+            }
+
             // 无法直接获取，则遍历类型并合并。
             // 获取类型对应函数列表
             val typeSeq: Sequence<ListenerFunction> = mainListenerFunctionMap.asSequence().flatMap { (k, v) ->
