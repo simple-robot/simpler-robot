@@ -12,6 +12,7 @@
 
 package love.forte.simbot.core.api.sender
 
+import love.forte.simbot.core.api.message.MsgGet
 import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.containers.BotInfo
 
@@ -26,6 +27,14 @@ public open class MsgSender(
     @JvmField val SETTER: Setter,
     @JvmField val GETTER: Getter
 )
+
+
+public fun MsgSender(msgGet: MsgGet, factories: MsgSenderFactories): MsgSender = with(msgGet) {
+    val sender = factories.senderFactory.getOnMsgSender(this)
+    val setter = factories.setterFactory.getOnMsgSetter(this)
+    val getter = factories.getterFactory.getOnMsgGetter(this)
+    MsgSender(sender, setter, getter)
+}
 
 
 

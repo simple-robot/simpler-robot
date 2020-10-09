@@ -14,6 +14,8 @@ package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
+import love.forte.simbot.core.api.sender.MsgSenderFactories
+import love.forte.simbot.core.bot.BotManager
 import love.forte.simbot.core.exception.ExceptionProcessor
 import love.forte.simbot.core.filter.AtDetectionFactory
 import love.forte.simbot.core.listener.*
@@ -40,6 +42,11 @@ public class CoreListenerManagerConfiguration {
     @Depend
     lateinit var exceptionManager: ExceptionProcessor
 
+    @Depend
+    lateinit var msgSenderFactories: MsgSenderFactories
+
+    @Depend
+    lateinit var botManager: BotManager
 
     @Depend lateinit var msgInterceptContextFactory: MsgInterceptContextFactory // for msgInterceptData
     @Depend lateinit var msgInterceptChainFactory: MsgInterceptChainFactory // for msgInterceptData
@@ -50,6 +57,7 @@ public class CoreListenerManagerConfiguration {
 
     @Depend lateinit var listenerContextFactory: ListenerContextFactory // for ListenerContextData
     @Depend lateinit var contextMapFactory: ContextMapFactory // for ListenerContextData
+
 
 
     /**
@@ -82,6 +90,10 @@ public class CoreListenerManagerConfiguration {
             it.msgInterceptData = msgInterceptData
             it.listenerInterceptData = listenerInterceptData
             it.listenerContextData = listenerContextData
+
+            it.msgSenderFactories = msgSenderFactories
+
+            it.botManager = botManager
         }
     }
 
@@ -89,7 +101,7 @@ public class CoreListenerManagerConfiguration {
     /**
      * 获取监听函数实例。通过builder构建。
      */
-    @CoreBeans(init = true)
+    @CoreBeans
     fun coreListenerManager(builder: ListenerManagerBuilder): ListenerManager = builder.build()
 
 

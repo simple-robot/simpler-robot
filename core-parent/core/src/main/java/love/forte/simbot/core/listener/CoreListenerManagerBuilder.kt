@@ -12,6 +12,8 @@
 
 package love.forte.simbot.core.listener
 
+import love.forte.simbot.core.api.sender.MsgSenderFactories
+import love.forte.simbot.core.bot.BotManager
 import love.forte.simbot.core.exception.ExceptionProcessor
 import love.forte.simbot.core.filter.AtDetectionFactory
 import love.forte.simbot.core.filter.FilterManager
@@ -59,6 +61,15 @@ public class CoreListenerManagerBuilder : ListenerManagerBuilder {
      */
     lateinit var listenerContextData: ListenerContextData
 
+    /**
+     * sender factories.
+     */
+    lateinit var msgSenderFactories: MsgSenderFactories
+
+    /**
+     * bot manager.
+     */
+    lateinit var botManager: BotManager
 
     /**
      * 得到一个 [ListenerManager] 实例。
@@ -69,7 +80,9 @@ public class CoreListenerManagerBuilder : ListenerManagerBuilder {
             exceptionManager,
             msgInterceptData,
             listenerInterceptData,
-            listenerContextData
+            listenerContextData,
+            msgSenderFactories,
+            botManager
         )
     }
 }

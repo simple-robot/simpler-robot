@@ -20,6 +20,11 @@ import love.forte.simbot.core.annotation.FilterValue
 import love.forte.simbot.core.annotation.Filters
 import love.forte.simbot.core.annotation.Listens
 import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.sender.Getter
+import love.forte.simbot.core.api.sender.MsgSender
+import love.forte.simbot.core.api.sender.Sender
+import love.forte.simbot.core.api.sender.Setter
+import love.forte.simbot.core.filter.AtDetection
 import love.forte.simbot.core.filter.FilterManager
 import love.forte.simbot.core.filter.ListenerFilter
 import love.forte.simbot.core.filter.NoSuchFilterException
@@ -115,6 +120,16 @@ public class MethodListenerFunction(
      */
     private val methodParamsGetter: (ListenerFunctionInvokeData) -> Array<*>
 
+    private companion object Types {
+        private val msgSenderType = MsgSender::class.java
+        private val senderType = Sender::class.java
+        private val getterType = Getter::class.java
+        private val setterType = Setter::class.java
+        private val atDetectionType = AtDetection::class.java
+        private val ListensType = Listens::class.java
+        private val FiltersType = Filters::class.java
+        private val MsgGetType = MsgGet::class.java
+    }
 
     init {
         // 监听注解
@@ -158,8 +173,20 @@ public class MethodListenerFunction(
                 val dependAnnotation: Depend? = AnnotationUtil.getAnnotation(it, Depend::class.java)
                 val orIgnore: Boolean = dependAnnotation?.orIgnore ?: false
 
+                val parameterType = it.type
+
                 if (filterValue == null) {
+                    // not filterValue
                     val dependName: String? = dependAnnotation?.value?.ifBlank { null }
+
+                    when {
+                        // 参数是送信器或相关类型
+                        msgSenderType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender }
+                        senderType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender.SENDER }
+                        getterType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender.GETTER }
+                        setterType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender.SETTER }
+                        atDetectionType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.atDetection }
+                    }
 
                     if (orIgnore) {
                         if (dependName != null) {
@@ -168,9 +195,9 @@ public class MethodListenerFunction(
                             }
                         } else {
                             val type =
-                                dependAnnotation?.type?.takeIf { dt -> dt.java != Void::class.java }?.java ?: it.type
+                                dependAnnotation?.type?.takeIf { dt -> dt.java != Void::class.java }?.java ?: parameterType
                             { d ->
-                                // 如果获取到的msgGet的类型正好是此参数的类型的子类，直接使用
+                                // 如果当前的动态参数msgGet的类型正好是此参数的类型的子类，直接使用
                                 val msgGet: MsgGet = d.msgGet
                                 if (type.isAssignableFrom(msgGet.javaClass)) msgGet
                                 else dependBeanFactory.getOrNull(type)
@@ -181,7 +208,7 @@ public class MethodListenerFunction(
                             { _ -> dependBeanFactory[dependName] }
                         } else {
                             val type =
-                                dependAnnotation?.type?.takeIf { dt -> dt.java != Void::class.java }?.java ?: it.type
+                                dependAnnotation?.type?.takeIf { dt -> dt.java != Void::class.java }?.java ?: parameterType
                             { d ->
                                 // 如果获取到的msgGet的类型正好是此参数的类型的子类，直接使用
                                 val msgGet: MsgGet = d.msgGet
@@ -203,7 +230,7 @@ public class MethodListenerFunction(
                         )
                     }
 
-                    val type = it.type
+                    val type = parameterType
 
                     if (orIgnore) {
                         f@{ d ->
@@ -242,7 +269,7 @@ public class MethodListenerFunction(
      */
     override fun <A : Annotation> getAnnotation(type: Class<out A>): A? = when (type) {
         ListensType -> listensAnnotation as A
-        FiltersType -> filtersAnnotation as A
+        FiltersType -> filtersAnnotation as? A
         else -> AnnotationUtil.getAnnotation(method, type)
     }
 
@@ -290,14 +317,6 @@ public class MethodListenerFunction(
 
         // build listen result.
         return resultBuilder.build()
-    }
-
-
-    private companion object Types {
-        private val ListensType by lazy(LazyThreadSafetyMode.PUBLICATION) { Listens::class.java }
-        private val FiltersType by lazy(LazyThreadSafetyMode.PUBLICATION) { Filters::class.java }
-
-        private val MsgGetType by lazy(LazyThreadSafetyMode.PUBLICATION) { MsgGet::class.java }
     }
 }
 

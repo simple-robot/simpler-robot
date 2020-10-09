@@ -16,6 +16,6 @@ package love.forte.simbot.core
 /**
  * simbot app 启动类。
  */
-public class SimbotApplication {
+public class SimbotApp {
 
 }

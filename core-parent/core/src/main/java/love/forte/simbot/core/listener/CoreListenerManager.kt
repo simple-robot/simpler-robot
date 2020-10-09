@@ -16,6 +16,9 @@ import love.forte.common.collections.concurrentQueueOf
 import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.common.sequences.distinctByMerger
 import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.sender.MsgSender
+import love.forte.simbot.core.api.sender.MsgSenderFactories
+import love.forte.simbot.core.bot.BotManager
 import love.forte.simbot.core.exception.ExceptionHandleContext
 import love.forte.simbot.core.exception.ExceptionProcessor
 import love.forte.simbot.core.filter.AtDetectionFactory
@@ -82,7 +85,11 @@ public class CoreListenerManager(
 
     private val listenerInterceptData: ListenerInterceptData,
 
-    private val listenerContextData: ListenerContextData
+    private val listenerContextData: ListenerContextData,
+
+    private val msgSenderFactories: MsgSenderFactories,
+
+    private val botManager: BotManager
 
 ) : ListenerManager, ListenerRegistrar {
 
@@ -183,7 +190,11 @@ public class CoreListenerManager(
                         NothingResult
                     } else {
                         val invokeData = ListenerFunctionInvokeDataImpl(
-                            msgGet, context, atDetectionFactory.getAtDetection(msgGet)
+                            msgGet,
+                            context,
+                            atDetectionFactory.getAtDetection(msgGet),
+                            botManager.getBot(msgGet.botInfo),
+                            MsgSender(msgGet, msgSenderFactories)
                         )
                         // invoke func.
                         func(invokeData)

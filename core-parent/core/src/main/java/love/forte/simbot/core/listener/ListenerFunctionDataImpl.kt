@@ -13,6 +13,8 @@
 package love.forte.simbot.core.listener
 
 import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.sender.MsgSender
+import love.forte.simbot.core.bot.Bot
 import love.forte.simbot.core.filter.AtDetection
 
 /**
@@ -22,5 +24,7 @@ import love.forte.simbot.core.filter.AtDetection
 public data class ListenerFunctionInvokeDataImpl(
     override val msgGet: MsgGet,
     override val context: ListenerContext,
-    override val atDetection: AtDetection
+    override val atDetection: AtDetection,
+    override val bot: Bot,
+    override val msgSender: MsgSender
 ) : ListenerFunctionInvokeData

@@ -29,7 +29,7 @@ interface MsgGetProcessor {
 /**
  * 监听函数管理器。
  */
-interface ListenerManager : MsgGetProcessor {
+interface ListenerManager : MsgGetProcessor, ListenerRegistrar {
 
     /**
      * 根据监听类型获取所有对应的监听函数。
