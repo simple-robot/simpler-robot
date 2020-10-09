@@ -1,0 +1,196 @@
+/*
+ * Copyright (c) 2020. ForteScarlet All rights reserved.
+ * Project  parent
+ * File     MiraiMsgGet.kt
+ *
+ * You can contact the author through the following channels:
+ * github https://github.com/ForteScarlet
+ * gitee  https://gitee.com/ForteScarlet
+ * email  ForteScarlet@163.com
+ * QQ     1149159218
+ */
+
+package love.forte.simbot.component.mirai.message
+
+import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.containers.AccountInfo
+import love.forte.simbot.core.api.message.containers.BotInfo
+import net.mamoe.mirai.Bot
+import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.Friend
+import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.contact.Member
+import net.mamoe.mirai.event.events.BotEvent
+import net.mamoe.mirai.message.GroupMessageEvent
+import net.mamoe.mirai.message.MessageEvent
+import net.mamoe.mirai.message.data.MessageChain
+import net.mamoe.mirai.message.data.MessageSource
+
+
+/**
+ * mirai 事件的 [MsgGet] 基类实现
+ */
+@Suppress("MemberVisibilityCanBePrivate")
+public abstract class AbstractMiraiMsgGet<out ME : BotEvent>(
+    val event: ME
+) : MsgGet {
+
+    /** 当前监听事件消息的ID。一般情况下应当是一个唯一ID。 */
+    abstract override val id: String
+
+    /**
+     * 账号的信息。一般来讲是不可能为null的，但是其中的信息就不一定了
+     */
+    abstract override val accountInfo: AccountInfo
+
+    //**************** override ****************//
+
+    /** 消息接收到的时间。一般是一个时间戳。 */
+    override val time: Long = System.currentTimeMillis()
+
+
+    /** 应当重写toString方法 */
+    override fun toString(): String = "SimbotMiraiEvent($event)"
+
+    /**
+     * 得到原始数据字符串。
+     * 数据不应该为null。
+     */
+    override val originalData: String = event.toString()
+
+    /**
+     * bot信息
+     */
+    override val botInfo: BotInfo = MiraiBotInfo(event.bot)
+}
+
+
+/**
+ * mirai消息类型的事件基类。
+ */
+public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : AbstractMiraiMsgGet<ME>(event) {
+
+    /** 默认的ID策略，使用source获取。 */
+    override val id: String = with(event.source) {
+        "${this.fromId}.${this.id}"
+    }
+
+    /**
+     * 消息事件主体.
+     *
+     * - 对于好友消息, 这个属性为 [Friend] 的实例, 与 [sender] 引用相同;
+     * - 对于临时会话消息, 这个属性为 [Member] 的实例, 与 [sender] 引用相同;
+     * - 对于群消息, 这个属性为 [Group] 的实例, 与 [GroupMessageEvent.group] 引用相同
+     *
+     * 在回复消息时, 可通过 [subject] 作为回复对象
+     */
+    val subject: Contact get() = event.subject
+
+    /**
+     * 消息内容.
+     *
+     * 第一个元素一定为 [MessageSource], 存储此消息的发送人, 发送时间, 收信人, 消息 id 等数据.
+     * 随后的元素为拥有顺序的真实消息内容.
+     */
+    val message: MessageChain get() = event.message
+
+
+    // TODO 转为cat码的字符串
+    private var _msg: String? = message.toString()
+
+
+    override var msg: String?
+        get() = _msg
+        set(value) { _msg = value }
+
+}
+
+
+
+
+/**
+ * 基于mirai的 [Bot] 的 [BotInfo] 实现。
+ */
+public data class MiraiBotInfo(private val bot: Bot) : BotInfo {
+    /** 当前的bot的账号 */
+    override val botCode: String
+        get() = bot.id.toString()
+
+    /** 当前的bot的账号 */
+    override val botCodeNumber: Long
+        get() = bot.id
+
+    /** 机器人的名称 */
+    override val botName: String
+        get() = bot.nick
+
+    /** 机器人的头像 */
+    override val botAvatar: String
+        get() = "http://q1.qlogo.cn/g?b=qq&nk=${bot.id}&s=640"
+
+}
+
+
+/**
+ * 基于 mirai [Friend] 的 [AccountInfo] 实现。
+ */
+public data class MiraiFriendAccountInfo(private val friend: Friend) : AccountInfo {
+    /**
+     * 账号
+     */
+    override val accountCode: String
+        get() = friend.id.toString()
+
+    override val accountCodeNumber: Long
+        get() = friend.id
+
+    /** 昵称。 */
+    override val accountNickname: String
+        get() = friend.nick
+
+    /** [accountNickname] */
+    override val accountRemark: String
+        get() = accountNickname
+
+    override val accountRemarkOrNickname: String
+        get() = accountNickname
+
+    override val accountNicknameAndRemark: String
+        get() = accountNickname
+
+    /**
+     * 得到账号的头像地址. 一般来讲为`null`的可能性很小
+     */
+    override val accountAvatar: String
+        get() = friend.avatarUrl
+}
+
+
+
+/**
+ * 基于 mirai [Member] 的 [AccountInfo] 实现。
+ */
+public data class MiraiMemberAccountInfo(private val member: Member) : AccountInfo {
+    /**
+     * 账号
+     */
+    override val accountCode: String
+        get() = member.id.toString()
+
+    override val accountCodeNumber: Long
+        get() = member.id
+
+    /** 昵称。 */
+    override val accountNickname: String
+        get() = member.nick
+
+    /** [accountNickname] */
+    override val accountRemark: String
+        get() = member.nameCard
+
+    /**
+     * 得到账号的头像地址. 一般来讲为`null`的可能性很小
+     */
+    override val accountAvatar: String
+        get() = member.avatarUrl
+}
