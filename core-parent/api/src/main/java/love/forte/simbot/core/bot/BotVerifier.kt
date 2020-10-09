@@ -13,6 +13,7 @@
 package love.forte.simbot.core.bot
 
 import love.forte.simbot.core.api.message.containers.BotContainer
+import love.forte.simbot.core.api.sender.MsgSenderFactories
 
 
 /**
@@ -22,6 +23,6 @@ import love.forte.simbot.core.api.message.containers.BotContainer
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public interface BotVerifier {
-    /** 验证一个bot的注册信息，并转化为一个 [BotContainer] 实例。 */
-    fun verity(botInfo: BotRegisterInfo): BotContainer
+    /** 验证一个bot的注册信息，并转化为一个该组件对应的 [Bot] 实例。 */
+    fun verity(botInfo: BotRegisterInfo, msgSenderFactories: MsgSenderFactories): Bot
 }

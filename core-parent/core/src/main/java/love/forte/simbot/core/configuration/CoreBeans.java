@@ -21,14 +21,14 @@ import java.lang.annotation.*;
 
 /**
  *
- *
+ * 核心的 {@link Beans}，优先级默认是 {@link PriorityConstant#CORE_TENTH}
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Documented
-@Beans(priority = PriorityConstant.CORE_TENTH)
+@Beans
 @AnnotateMapping(Beans.class)
 @interface CoreBeans {
 
@@ -54,4 +54,10 @@ import java.lang.annotation.*;
      * 是否在依赖注入流程结束后初始化一次，默认为false，即使用懒加载策略。
      */
     boolean init() default false;
+
+
+    /**
+     * 优先级。
+     */
+    int priority() default PriorityConstant.CORE_TENTH;
 }

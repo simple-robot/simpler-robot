@@ -33,7 +33,6 @@ public class CoreBotManager(
      */
     private val botsMap = ConcurrentHashMap<String, Bot>()
 
-    var defBot: String? = null
 
     /**
      *
@@ -75,11 +74,25 @@ public class CoreBotManager(
      * @throws BotVerifyException 验证失败则会抛出此异常。
      */
     override fun registerBot(botRegisterInfo: BotRegisterInfo): Bot {
-        TODO("Not yet implemented")
+
+        return synchronized(botsMap) {
+            removeAndClose(botRegisterInfo.code)
+            verifier.verity(botRegisterInfo, msgSenderFactories).apply {
+                botsMap[botRegisterInfo.code] = this
+            }
+        }
     }
 
 
+
+    /**
+     * 关闭并移除。
+     */
     override fun destroyBot(code: String) {
-        TODO("Not yet implemented")
+        removeAndClose(code)
+    }
+
+    private fun removeAndClose(code: String) {
+        botsMap.remove(code)?.runCatching { close() }
     }
 }

@@ -30,6 +30,9 @@ public interface Bot: BotContainer, Closeable {
      * bot 对应的送信器。
      */
     val sender: BotSender
+
+
+
     //
     //
     // /**

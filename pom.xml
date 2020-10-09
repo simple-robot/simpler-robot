@@ -12,6 +12,7 @@
         <module>../common-parent</module>
         <module>test</module>
         <module>core-parent</module>
+        <module>component-parent</module>
     </modules>
 
     <properties>
