@@ -33,6 +33,8 @@ import love.forte.common.utils.scanner.Scanner
 import love.forte.simbot.core.annotation.SimbotApplication
 import love.forte.simbot.core.bot.BotManager
 import love.forte.simbot.core.constant.PriorityConstant
+import love.forte.simbot.core.listener.ListenerManager
+import love.forte.simbot.core.listener.MsgGetProcessor
 import java.io.Reader
 
 
@@ -60,7 +62,8 @@ public class SimbotContext
 internal constructor(
     private val dependBeanFactory: DependBeanFactory,
     val botManager: BotManager,
-    val environment: SimbotEnvironment
+    val environment: SimbotEnvironment,
+    val msgProcessor: MsgGetProcessor
 ) : DependBeanFactory by dependBeanFactory
 
 
@@ -140,9 +143,8 @@ protected constructor(
         // process pre config.
         process.pre(config)
 
-        val hi = config.getConfig("simbot.core.init")?.string ?: "hello!!!!!!!!!!!!!!!~"
-
-        println(hi)
+        // val hi = config.getConfig("simbot.core.init")?.string ?: "hello!!!!!!!!!!!!!!!~"
+        // println(hi)
 
         // merge depend center config.
         dependCenter.mergeConfig { c -> MergedConfiguration.merged(c, config) }
@@ -243,6 +245,9 @@ protected constructor(
         dependCenter.inject(types = collection.toTypedArray())
         // register simbotPackageScanEnvironment.
         dependCenter.registerInstance("simbotPackageScanEnvironment", SimbotPackageScanEnvironmentImpl(scanPackages.copyOf()))
+
+
+
     }
 
 
@@ -261,9 +266,9 @@ protected constructor(
         // 获取 botManager.
         val botManager = dependCenter[BotManager::class.java]
         val environment = dependCenter[SimbotEnvironment::class.java]
+        val msgGetProcessor = dependCenter[MsgGetProcessor::class.java]
 
-
-        return SimbotContext(dependCenter, botManager, environment)
+        return SimbotContext(dependCenter, botManager, environment, msgGetProcessor)
     }
 
 

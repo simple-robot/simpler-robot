@@ -23,6 +23,8 @@ import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.convert.ConverterManager
 import love.forte.common.utils.scanner.HutoolClassesScanner
 import love.forte.common.utils.scanner.Scanner
+import love.forte.simbot.core.CompLogger
+import love.forte.simbot.core.SimbotPackageScanEnvironment
 import love.forte.simbot.core.annotation.Listens
 import love.forte.simbot.core.filter.FilterManager
 import love.forte.simbot.core.listener.ListenerRegistrar
@@ -32,11 +34,11 @@ import love.forte.simbot.core.listener.MethodListenerFunction
 @ConfigBeans
 @AsConfig(prefix = "simbot.core")
 public class CoreMethodListenerRegistrar {
+    private companion object : CompLogger("ListenerRegistrarConfiguration")
 
 
-    @field:ConfigInject(orDefault = [""])
-    private lateinit var scanPackage: List<String>
-
+    @Depend
+    private lateinit var packageScanEnvironment: SimbotPackageScanEnvironment
 
     @Depend
     private lateinit var dependBeanFactory: DependBeanFactory
@@ -56,19 +58,13 @@ public class CoreMethodListenerRegistrar {
         val scanner: Scanner<String, Class<*>> = HutoolClassesScanner()
 
         // 扫描所有的class, 然后筛选method
-        scanPackage.forEach {
+        packageScanEnvironment.scanPackages.forEach {
             scanner.scan(it)
         }
 
         scanner.collection.asSequence().flatMap {
             // 只获取public方法
             it.methods.asSequence().filter { m ->
-                // if(it.name.endsWith("Listener1")) {
-                //     println("Listener1")
-                //     println("m: $m")
-                //     println("a: ${AnnotationUtil.getAnnotation(m, Listens::class.java)}")
-                // }
-
                 AnnotationUtil.containsAnnotation(m, Listens::class.java)
             }
         }.map {

@@ -14,8 +14,15 @@ package love.forte.test
 
 import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.ConfigBeans
+import love.forte.simbot.core.api.message.MessageContent
+import love.forte.simbot.core.api.message.TextMessageContent
+import love.forte.simbot.core.api.message.assists.Flag
+import love.forte.simbot.core.api.message.assists.flag
+import love.forte.simbot.core.api.message.containers.AccountInfo
 import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.containers.BotInfo
+import love.forte.simbot.core.api.message.events.PrivateMsg
+import love.forte.simbot.core.api.message.events.PrivateMsgIdFlagContent
 import love.forte.simbot.core.api.sender.MsgSenderFactories
 import love.forte.simbot.core.api.sender.toBotSender
 import love.forte.simbot.core.bot.*
@@ -47,3 +54,31 @@ object BotContainerObj : BotContainer {
 }
 
 
+object AccountInfoObj : AccountInfo {
+    override val accountCode: String = "666"
+    override val accountNickname: String = "forli(nick)"
+    override val accountRemark: String = "forli(remark)"
+    override val accountAvatar: String = "avatar"
+}
+
+
+
+
+object TestPrivateMsg : PrivateMsg {
+    override val privateMsgType: PrivateMsg.Type = PrivateMsg.Type.FRIEND
+    override val flag: Flag<PrivateMsg.FlagContent> = flag { PrivateMsgIdFlagContent("private") }
+    override val id: String = flag.flag.id
+    override val time: Long = System.currentTimeMillis()
+
+    override fun toString(): String = "TestPrivateMsg()"
+
+    override var msgContent: MessageContent = TextMessageContent("[at,code=123]")
+
+    override var msg: String?
+        get() = msgContent.msg
+        set(value) {}
+
+    override val originalData: String = toString()
+    override val botInfo: BotInfo = BotInfoObj
+    override val accountInfo: AccountInfo = AccountInfoObj
+}
