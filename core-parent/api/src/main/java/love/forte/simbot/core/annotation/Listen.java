@@ -139,9 +139,9 @@ import java.lang.annotation.*;
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
-// @Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.RUNTIME)
 // @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
-// @Documented
+@Documented
 @Repeatable(Listens.class)
 public @interface Listen {
 

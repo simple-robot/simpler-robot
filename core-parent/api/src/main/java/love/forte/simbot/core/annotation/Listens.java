@@ -21,6 +21,8 @@ import java.lang.annotation.*;
  *
  * 只能标注在方法上。
  *
+ * 具体可监听内容等说明请参考 {@link Listen} 注解内注释。
+ *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Retention(RetentionPolicy.RUNTIME)

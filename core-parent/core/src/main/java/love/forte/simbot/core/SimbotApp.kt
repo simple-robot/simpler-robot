@@ -152,6 +152,9 @@ protected constructor(
         // scan and inject.
         scanPackagesAndInject(config, autoConfigures)
 
+        // init depend.
+        initDependCenter()
+
         // return.
         return createSimbotContext()
     }

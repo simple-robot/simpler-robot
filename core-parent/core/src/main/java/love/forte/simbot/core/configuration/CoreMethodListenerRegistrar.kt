@@ -55,14 +55,22 @@ public class CoreMethodListenerRegistrar {
     @PostPass
     fun registerMethodListenerFunctions(registrar: ListenerRegistrar) {
 
+        logger.debug("ready to scan listeners.")
+
         val scanner: Scanner<String, Class<*>> = HutoolClassesScanner()
 
+        val scanPackages = packageScanEnvironment.scanPackages
+
+        logger.debug("listener scan packages: {}", scanPackages.joinToString(", ", "[", "]"))
+
         // 扫描所有的class, 然后筛选method
-        packageScanEnvironment.scanPackages.forEach {
+        scanPackages.forEach {
             scanner.scan(it)
         }
 
-        scanner.collection.asSequence().flatMap {
+        val collection = scanner.collection
+
+        collection.asSequence().flatMap {
             // 只获取public方法
             it.methods.asSequence().filter { m ->
                 AnnotationUtil.containsAnnotation(m, Listens::class.java)
@@ -71,6 +79,7 @@ public class CoreMethodListenerRegistrar {
             MethodListenerFunction(it, dependBeanFactory, filterManager, converterManager)
         }.forEach {
             registrar.register(it)
+            logger.debug("register listener: {0} for {1}", it.name, it.listenTypes.joinToString(", ", "[", "]"){ t -> t.simpleName })
         }
     }
 
