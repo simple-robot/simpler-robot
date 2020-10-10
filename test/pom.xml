@@ -12,11 +12,11 @@
     <artifactId>test</artifactId>
 
     <dependencies>
-        <!--<dependency>-->
-        <!--    <artifactId>common-api</artifactId>-->
-        <!--    <groupId>love.forte.simple-robot</groupId>-->
-        <!--    <version>${project.version}</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>love.forte.simple-robot</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -29,6 +29,30 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <!-- put your configurations here -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
         </plugins>
     </build>
 

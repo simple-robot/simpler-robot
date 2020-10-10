@@ -13,6 +13,7 @@
 package love.forte.simbot.core.bot
 
 import love.forte.simbot.core.api.message.containers.BotContainer
+import love.forte.simbot.core.api.message.containers.BotInfo
 import love.forte.simbot.core.api.sender.BotSender
 import java.io.Closeable
 
@@ -31,14 +32,18 @@ public interface Bot: BotContainer, Closeable {
      */
     val sender: BotSender
 
+}
 
 
-    //
-    //
-    // /**
-    //  * 尝试使这个bot重新登陆。
-    //  * 如果使用的http接口相关服务，也有可能代表进行一次在线检测。
-    //  */
-    // fun reLogin(): Boolean
+/**
+ * [Bot] 的基础抽象类。
+ */
+public abstract class BaseBot(override val sender: BotSender, override val botInfo: BotInfo) : Bot
 
+
+/**
+ * [BaseBot] 的基础实现，屏蔽了 [close]。
+ */
+public class NoNeedToCloseBot(sender: BotSender, botInfo: BotInfo): BaseBot(sender, botInfo) {
+    override fun close() { }
 }

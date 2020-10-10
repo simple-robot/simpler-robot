@@ -35,7 +35,7 @@ import java.time.LocalDateTime
 /**
  * 所有的主要监听事件类型。
  */
-public val MsgGetMainListenerTypes : Set<Class<out MsgGet>> =
+public val MsgGetMainListenerTypes: Set<Class<out MsgGet>> =
     setOf(
         PrivateMsg::class.java,
         GroupMsg::class.java,
@@ -211,7 +211,7 @@ public interface EventGet : MsgGet {
 public interface MessageEventGet : MsgGet, FlagContainer<MessageEventGet.MessageFlagContent> {
 
     /**
-     *  消息事件的消息正文文本。允许对其进行修改。
+     *  消息事件的消息正文文本。
      *
      * [消息正文][msgContent] 不允许为`null`，但是其中的 [msg][MessageContent.msg] 则不保证其内容了。
      */
@@ -220,12 +220,7 @@ public interface MessageEventGet : MsgGet, FlagContainer<MessageEventGet.Message
     /**
      * 提供一个简单的方法来获取/设置 [msgContent] 中的文本内容
      */
-    @JvmDefault
     override var msg: String?
-        get() = msgContent.msg
-        set(value) {
-            msgContent.msg = value
-        }
 
     /**
      * 消息类型的标识

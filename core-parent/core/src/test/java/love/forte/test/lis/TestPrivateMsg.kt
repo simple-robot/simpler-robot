@@ -11,6 +11,9 @@ import love.forte.simbot.core.api.message.events.PrivateMsg
 
 
 public object TestPrivateMsg : PrivateMsg {
+    override var msg: String?
+        get() = msgContent.msg
+        set(value) {}
     override val privateMsgType: PrivateMsg.Type = PrivateMsg.Type.FRIEND
     override val flag: Flag<PrivateMsg.FlagContent> = FlagImpl(TestPrivateMsgFlagContent)
     override val id: String = "test-pri"

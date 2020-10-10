@@ -26,3 +26,18 @@ public interface BotVerifier {
     /** 验证一个bot的注册信息，并转化为一个该组件对应的 [Bot] 实例。 */
     fun verity(botInfo: BotRegisterInfo, msgSenderFactories: MsgSenderFactories): Bot
 }
+
+
+/**
+ * [BotVerifier] 基础抽象类，。
+ */
+public abstract class BaseBotVerifier : BotVerifier {
+    override fun verity(botInfo: BotRegisterInfo, msgSenderFactories: MsgSenderFactories): Bot {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     *
+     */
+    abstract fun verify(botInfo: BotRegisterInfo) : BotContainer
+}

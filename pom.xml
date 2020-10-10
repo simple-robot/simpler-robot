@@ -372,8 +372,10 @@
                             <!--<arg>-Xjvm-default=enable</arg>-->
                             <arg>-Xjvm-default=all</arg>
                             <arg>-Xinline-classes</arg>
+                            <arg>-Xopt-in=kotlin.RequiresOptIn</arg>
                         </args>
                         <jvmTarget>1.8</jvmTarget>
+                        <javaParameters>true</javaParameters>
                     </configuration>
                 </plugin>
 

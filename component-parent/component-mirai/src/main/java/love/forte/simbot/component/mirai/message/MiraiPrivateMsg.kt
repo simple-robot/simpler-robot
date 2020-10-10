@@ -13,13 +13,15 @@
 package love.forte.simbot.component.mirai.message
 
 import love.forte.simbot.core.api.message.MessageContent
-import love.forte.simbot.core.api.message.TextMessageContent
 import love.forte.simbot.core.api.message.assists.Flag
 import love.forte.simbot.core.api.message.assists.flag
 import love.forte.simbot.core.api.message.containers.AccountInfo
 import love.forte.simbot.core.api.message.events.PrivateMsg
 import net.mamoe.mirai.message.FriendMessageEvent
+import net.mamoe.mirai.message.data.EmptyMessageChain
 import net.mamoe.mirai.message.data.MessageSource
+import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.asMessageChain
 
 
 /**
@@ -38,25 +40,28 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
      */
     override val privateMsgType: PrivateMsg.Type = PrivateMsg.Type.FRIEND
 
-    private var _msgContent: MessageContent = TextMessageContent(message.toString())
+    private var _msgContent: MessageContent = MiraiMessageContent(message)
 
     /**
-     *  消息事件的消息正文文本。允许对其进行修改。
-     *
-     *  TODO 临时使用 TestMessageContent
-     *
-     * [消息正文][msgContent] 不允许为`null`，但是其中的 [msg][MessageContent.msg] 则不保证其内容了。
+     *  消息事件的消息正文文本。
+     *  使用 [MiraiMessageContent]作为最终消息载体。
      */
     override var msgContent: MessageContent
         get() = _msgContent
-        set(value) { _msgContent = value }
+        set(value) {
+            _msgContent = value
+        }
 
     /**
      * 提供一个简单的方法来获取/设置 [msgContent] 中的文本内容
      */
     override var msg: String?
         get() = msgContent.msg
-        set(value) { msgContent.msg = value }
+        set(value) {
+            // todo
+            msgContent = value?.let { MiraiMessageContent(PlainText(it).asMessageChain()) }
+                ?: MiraiMessageContent(EmptyMessageChain)
+        }
 
     /**
      * 私聊消息标识，

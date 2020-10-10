@@ -10,6 +10,7 @@
  * QQ     1149159218
  */
 
+@file:JvmName("MsgSenderFactoriesUtil")
 package love.forte.simbot.core.api.sender
 
 import love.forte.simbot.core.api.message.MsgGet
@@ -43,8 +44,10 @@ public interface SetterFactory {
     /**
      * 根据一个bot信息构建一个 [Setter]. 用于构建 [love.forte.simbot.core.bot.Bot] 实例。
      */
-    fun getOnBotSetter(bot: BotContainer): Getter
+    fun getOnBotSetter(bot: BotContainer): Setter
 }
+
+
 
 
 /**
@@ -58,7 +61,7 @@ public interface SenderFactory {
     /**
      * 根据一个bot信息构建一个 [Sender]. 用于构建 [love.forte.simbot.core.bot.Bot] 实例。
      */
-    fun getOnBotSender(bot: BotContainer): Getter
+    fun getOnBotSender(bot: BotContainer): Sender
 }
 
 
@@ -74,5 +77,53 @@ public interface MsgSenderFactories {
 
 
 
+public inline class GetterFacOnMsg(private val getterFactory: GetterFactory) {
+    operator fun invoke(msg: MsgGet): Getter = getterFactory.getOnMsgGetter(msg)
+}
+public inline class GetterFacOnBot(private val getterFactory: GetterFactory) {
+    operator fun invoke(bot: BotContainer): Getter = getterFactory.getOnBotGetter(bot)
+}
 
+public fun GetterFactory.onBot(): GetterFacOnBot = GetterFacOnBot(this)
+public fun GetterFactory.onMsg(): GetterFacOnMsg = GetterFacOnMsg(this)
+public fun GetterFactory.onBot(bot: BotContainer) = this.onBot()(bot)
+public fun GetterFactory.onMsg(msg: MsgGet) = this.onMsg()(msg)
+
+public inline class SetterFacOnMsg(private val setterFactory: SetterFactory) {
+    operator fun invoke(msg: MsgGet): Setter = setterFactory.getOnMsgSetter(msg)
+}
+public inline class SetterFacOnBot(private val setterFactory: SetterFactory) {
+    operator fun invoke(bot: BotContainer): Setter = setterFactory.getOnBotSetter(bot)
+}
+
+public fun SetterFactory.onBot(): SetterFacOnBot = SetterFacOnBot(this)
+public fun SetterFactory.onMsg(): SetterFacOnMsg = SetterFacOnMsg(this)
+public fun SetterFactory.onBot(bot: BotContainer) = this.onBot()(bot)
+public fun SetterFactory.onMsg(msg: MsgGet) = this.onMsg()(msg)
+
+public inline class SenderFacOnMsg(private val senderFactory: SenderFactory) {
+    operator fun invoke(msg: MsgGet): Sender = senderFactory.getOnMsgSender(msg)
+}
+public inline class SenderFacOnBot(private val senderFactory: SenderFactory) {
+    operator fun invoke(bot: BotContainer): Sender = senderFactory.getOnBotSender(bot)
+}
+
+public fun SenderFactory.onBot(): SenderFacOnBot = SenderFacOnBot(this)
+public fun SenderFactory.onMsg(): SenderFacOnMsg = SenderFacOnMsg(this)
+public fun SenderFactory.onBot(bot: BotContainer) = this.onBot()(bot)
+public fun SenderFactory.onMsg(msg: MsgGet) = this.onMsg()(msg)
+
+
+
+/**
+ * 通过 [MsgSenderFactories] 构建 BotSender。
+ */
+public fun MsgSenderFactories.toBotSender(bot: BotContainer): BotSender {
+    return BotSender(
+        senderFactory.onBot(bot),
+        setterFactory.onBot(bot),
+        getterFactory.onBot(bot),
+        bot.botInfo
+    )
+}
 
