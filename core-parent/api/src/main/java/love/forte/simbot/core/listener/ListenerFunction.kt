@@ -67,7 +67,7 @@ public interface ListenerFunction {
     /**
      * 监听的类型们。
      */
-    val listenTypes: List<Class<out MsgGet>>
+    val listenTypes: Set<Class<out MsgGet>>
 
 
     /**
@@ -81,7 +81,7 @@ public interface ListenerFunction {
      */
     @JvmDefault
     fun <T: MsgGet> canListen(onType: Class<T>): Boolean {
-        return listenTypes.any { it.isAssignableFrom(onType) }
+        return listenTypes.contains(onType) || listenTypes.any { it.isAssignableFrom(onType) }
     }
 
 

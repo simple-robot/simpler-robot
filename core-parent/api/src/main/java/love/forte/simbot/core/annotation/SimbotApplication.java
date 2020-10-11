@@ -30,7 +30,8 @@ public @interface SimbotApplication {
      */
     SimbotResource[] value() default {
         // 默认配置文件名称为 simbotApplication.properties
-        @SimbotResource("simbotApplication.properties")
+        @SimbotResource(value = "simbotApplication.properties", orIgnore = true),
+        @SimbotResource(value = "simbotApplication.yml", orIgnore = true)
     };
 
 }

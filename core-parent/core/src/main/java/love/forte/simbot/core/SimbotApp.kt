@@ -43,7 +43,7 @@ import java.io.Reader
  */
 public interface SimbotProcess {
     fun pre(config: Configuration)
-    fun post()
+    fun post(context: SimbotContext)
 }
 
 /**
@@ -51,7 +51,7 @@ public interface SimbotProcess {
  */
 internal object NothingProcess : SimbotProcess {
     override fun pre(config: Configuration) {}
-    override fun post() {}
+    override fun post(context: SimbotContext) {}
 }
 
 
@@ -156,7 +156,10 @@ protected constructor(
         initDependCenter()
 
         // return.
-        return createSimbotContext()
+        return createSimbotContext().also {
+            // post
+            process.post(it)
+        }
     }
 
 

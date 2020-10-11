@@ -25,7 +25,11 @@ import love.forte.simbot.core.api.message.events.PrivateMsg
 import love.forte.simbot.core.api.message.events.PrivateMsgIdFlagContent
 import love.forte.simbot.core.api.sender.MsgSenderFactories
 import love.forte.simbot.core.api.sender.toBotSender
-import love.forte.simbot.core.bot.*
+import love.forte.simbot.core.bot.Bot
+import love.forte.simbot.core.bot.BotRegisterInfo
+import love.forte.simbot.core.bot.BotVerifier
+import love.forte.simbot.core.bot.NoNeedToCloseBot
+
 
 
 @ConfigBeans

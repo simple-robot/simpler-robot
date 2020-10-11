@@ -14,4 +14,6 @@ simbot.autoconfigure.configs=\
   love.forte.simbot.core.configuration.CoreErrorMsgSenderConfiguration,\
   love.forte.simbot.core.configuration.CoreMsgSenderFactoriesConfiguration,\
   love.forte.simbot.core.configuration.CoreSimbotEnvironmentConfiguration,\
-  love.forte.simbot.core.configuration.CoreBotRegistrar
+  love.forte.simbot.core.configuration.CoreBotRegistrar,\
+  love.forte.simbot.core.configuration.CoreCatConfiguration,\
+  love.forte.simbot.core.configuration.CoreBotsCoderConfiguration

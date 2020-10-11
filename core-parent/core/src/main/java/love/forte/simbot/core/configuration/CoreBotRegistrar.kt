@@ -12,12 +12,31 @@
 
 package love.forte.simbot.core.configuration
 
+import love.forte.common.configuration.annotation.AsConfig
+import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.ConfigBeans
+import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.PostPass
+import love.forte.simbot.core.CompLogger
+import love.forte.simbot.core.bot.BotManager
+import love.forte.simbot.core.bot.BotRegisterInfo
 
 
 @ConfigBeans
+@AsConfig(prefix = "simbot.core")
 public class CoreBotRegistrar {
+    private companion object : CompLogger("BotRegistrarConfiguration")
+
+    /**
+     * bot manager.
+     */
+    @Depend
+    lateinit var botManager: BotManager
+
+
+    @ConfigInject("bots", orDefault = [""])
+    lateinit var bots: List<String>
+
 
 
     /**
@@ -25,7 +44,16 @@ public class CoreBotRegistrar {
      */
     @PostPass
     public fun registerBots(){
-        TODO("注册bot。")
+
+        if(bots.isEmpty()) {
+            logger.warn("No bot information is configured.")
+        } else {
+            bots.forEach {
+                val info = BotRegisterInfo.splitTo(it)
+                logger.debug("Try to verify the bot(${info.code}) information.")
+                botManager.registerBot(info)
+            }
+        }
     }
 
 

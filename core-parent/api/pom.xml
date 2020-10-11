@@ -18,6 +18,14 @@
             <artifactId>utils</artifactId>
         </dependency>
 
+        <!-- common-ioc -->
+        <!-- ioc模块为可选依赖。 -->
+        <dependency>
+            <groupId>love.forte.common</groupId>
+            <artifactId>ioc</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!--<editor-fold desc="kotlin">-->
         <!-- kt -->
         <dependency>

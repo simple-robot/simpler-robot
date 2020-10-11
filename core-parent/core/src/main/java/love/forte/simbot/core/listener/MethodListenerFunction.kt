@@ -80,7 +80,7 @@ public class MethodListenerFunction(
     /**
      * 监听的类型们。
      */
-    override val listenTypes: List<Class<out MsgGet>>
+    override val listenTypes: Set<Class<out MsgGet>>
 
 
     /**
@@ -147,7 +147,7 @@ public class MethodListenerFunction(
         listenerInstanceGetter = { dependBeanFactory[type] }
 
         // 监听类型列表
-        listenTypes = listensAnnotation.value.map { it.value.java }
+        listenTypes = listensAnnotation.value.mapTo(mutableSetOf()) { it.value.java }
 
         if (filtersAnnotation != null) {
             // 注解过滤器对应的监听函数
