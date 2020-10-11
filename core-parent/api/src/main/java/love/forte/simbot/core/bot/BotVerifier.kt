@@ -28,16 +28,16 @@ public interface BotVerifier {
 }
 
 
-/**
- * [BotVerifier] 基础抽象类，。
- */
-public abstract class BaseBotVerifier : BotVerifier {
-    override fun verity(botInfo: BotRegisterInfo, msgSenderFactories: MsgSenderFactories): Bot {
-        TODO("Not yet implemented")
-    }
-
-    /**
-     *
-     */
-    abstract fun verify(botInfo: BotRegisterInfo) : BotContainer
-}
+// /**
+//  * [BotVerifier] 基础抽象类，。
+//  */
+// public abstract class BaseBotVerifier : BotVerifier {
+//     override fun verity(botInfo: BotRegisterInfo, msgSenderFactories: MsgSenderFactories): Bot {
+//         TODO("Not yet implemented")
+//     }
+//
+//     /**
+//      *
+//      */
+//     abstract fun verify(botInfo: BotRegisterInfo) : BotContainer
+// }

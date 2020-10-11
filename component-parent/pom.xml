@@ -15,5 +15,12 @@
         <module>component-mirai</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>love.forte.simple-robot</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>
