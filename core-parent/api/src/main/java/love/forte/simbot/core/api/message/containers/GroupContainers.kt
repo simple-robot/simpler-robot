@@ -10,6 +10,7 @@
  * QQ     1149159218
  */
 
+@file:JvmName("GroupContainers")
 package love.forte.simbot.core.api.message.containers
 
 import love.forte.simbot.core.annotation.ContainerType
@@ -65,3 +66,25 @@ public interface GroupInfo : Container, GroupAvatarContainer, GroupCodeContainer
 public interface GroupContainer : Container {
     val groupInfo: GroupInfo
 }
+
+
+/**
+ * 获取一个 [GroupContainer] 数据实例。
+ */
+@JvmName("getGroupContainer")
+@Suppress("FunctionName")
+public fun GroupContainer(groupInfo: GroupInfo) : GroupContainer = GroupContainerData(groupInfo)
+
+/**
+ * 获取一个 [GroupContainer] 数据实例。
+ * java用上面那个。
+ */
+@JvmName("#getGroupContainer")
+@Suppress("FunctionName")
+public inline fun GroupContainer(groupInfo: () -> GroupInfo) : GroupContainer = GroupContainer(groupInfo())
+
+
+
+
+/** [GroupContainer] 数据类实现。 */
+private data class GroupContainerData(override val groupInfo: GroupInfo) : GroupContainer

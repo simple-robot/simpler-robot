@@ -10,6 +10,7 @@
  * QQ     1149159218
  */
 
+@file:JvmName("AccountContainers")
 package love.forte.simbot.core.api.message.containers
 
 import love.forte.simbot.core.annotation.ContainerType
@@ -114,3 +115,22 @@ public interface AccountContainer : Container {
     val accountInfo: AccountInfo
 }
 
+
+/**
+ * 获取一个 [AccountContainer] 数据实例。
+ */
+@JvmName("getAccountContainer")
+@Suppress("FunctionName")
+public fun AccountContainer(accountInfo: AccountInfo): AccountContainer = AccountContainerData(accountInfo)
+
+/**
+ * 获取一个 [AccountContainer] 数据实例。
+ * java直接使用上面那个。
+ */
+@JvmName("#getAccountContainer")
+@Suppress("FunctionName")
+public inline fun AccountContainer(accountInfo: () -> AccountInfo): AccountContainer = AccountContainer(accountInfo())
+
+
+/** [AccountContainer] 数据类实现。 */
+private data class AccountContainerData(override val accountInfo: AccountInfo) : AccountContainer

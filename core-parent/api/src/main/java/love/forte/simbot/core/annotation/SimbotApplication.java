@@ -29,9 +29,9 @@ public @interface SimbotApplication {
      * 配置文件路径。
      */
     SimbotResource[] value() default {
-        // 默认配置文件名称为 simbotApplication.properties
-        @SimbotResource(value = "simbotApplication.properties", orIgnore = true),
-        @SimbotResource(value = "simbotApplication.yml", orIgnore = true)
+        // 默认配置文件名称为 simbot.properties
+        @SimbotResource(value = "simbot.properties", orIgnore = true),
+        @SimbotResource(value = "simbot.yml", orIgnore = true)
     };
 
 }

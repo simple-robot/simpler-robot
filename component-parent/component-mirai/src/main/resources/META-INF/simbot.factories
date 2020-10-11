@@ -1,1 +1,2 @@
-simbot.autoconfigure.configs=
+simbot.autoconfigure.configs=love.forte.simbot.component.mirai.configuration.MiraiConfiguration,\
+  love.forte.simbot.component.mirai.configuration.MiraiBotVerifierConfiguration

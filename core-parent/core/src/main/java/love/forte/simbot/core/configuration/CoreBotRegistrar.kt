@@ -23,7 +23,7 @@ import love.forte.simbot.core.bot.BotRegisterInfo
 
 
 @ConfigBeans
-@AsConfig(prefix = "simbot.core")
+@AsCoreConfig
 public class CoreBotRegistrar {
     private companion object : CompLogger("BotRegistrarConfiguration")
 
@@ -44,7 +44,6 @@ public class CoreBotRegistrar {
      */
     @PostPass
     public fun registerBots(){
-
         if(bots.isEmpty()) {
             logger.warn("No bot information is configured.")
         } else {

@@ -12,34 +12,69 @@
 
 package love.forte.simbot.component.mirai
 
-import love.forte.simbot.core.api.message.containers.BotContainer
+import kotlinx.coroutines.runBlocking
+import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
+import love.forte.simbot.component.mirai.message.MiraiBotInfo
+import love.forte.simbot.core.CompLogger
+import love.forte.simbot.core.api.message.containers.BotContainerData
 import love.forte.simbot.core.api.message.containers.BotInfo
 import love.forte.simbot.core.api.sender.BotSender
 import love.forte.simbot.core.api.sender.MsgSenderFactories
+import love.forte.simbot.core.api.sender.toBotSender
 import love.forte.simbot.core.bot.Bot
 import love.forte.simbot.core.bot.BotRegisterInfo
 import love.forte.simbot.core.bot.BotVerifier
-
+import net.mamoe.mirai.alsoLogin
+import net.mamoe.mirai.Bot as MBot
 
 /**
  * mirai bot验证器。
  */
-public class MiraiBotVerifier : BotVerifier {
+public class MiraiBotVerifier(
+    private val configurationFactory: MiraiBotConfigurationFactory,
+    private val miraiConfiguration: MiraiConfiguration
+) : BotVerifier {
+    private companion object : CompLogger("MiraiBotVerifier")
 
 
-
+    /**
+     * 验证（登录）信息并得到要给 [Bot] 实例。
+     */
     override fun verity(botInfo: BotRegisterInfo, msgSenderFactories: MsgSenderFactories): Bot {
-        TODO("Not yet implemented")
+        // try to login bot.
+        logger.debug("verify bot code: {}", botInfo.code)
+
+        val mBot = MBot(
+            botInfo.code.toLong(),
+            botInfo.verification,
+            configurationFactory.getMiraiBotConfiguration(botInfo, miraiConfiguration)
+        )
+        runCatching {
+
+
+            runBlocking {
+                mBot.alsoLogin()
+            }
+
+            val botContainer = BotContainerData(MiraiBotInfo(mBot))
+
+            val sender = msgSenderFactories.toBotSender(botContainer)
+
+            return MiraiBot(mBot, sender, botContainer.botInfo)
+        }.getOrElse {
+            mBot.close(it)
+            throw IllegalStateException("cannot login bot code: ${botInfo.code}", it)
+        }
     }
 
 }
 
 
-
-
-
+/**
+ * Mirai[Bot].
+ */
 internal class MiraiBot(
-    private val bot: net.mamoe.mirai.Bot,
+    private val bot: MBot,
     override val sender: BotSender,
     override val botInfo: BotInfo
 ) : Bot {

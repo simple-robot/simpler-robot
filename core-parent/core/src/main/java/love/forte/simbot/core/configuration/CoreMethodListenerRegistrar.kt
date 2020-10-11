@@ -32,7 +32,7 @@ import love.forte.simbot.core.listener.MethodListenerFunction
 
 
 @ConfigBeans
-@AsConfig(prefix = "simbot.core")
+@AsCoreConfig
 public class CoreMethodListenerRegistrar {
     private companion object : CompLogger("ListenerRegistrarConfiguration")
 

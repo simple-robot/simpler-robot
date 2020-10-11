@@ -49,7 +49,7 @@ public interface GroupReduce: ReduceEventGet, GroupContainer, OperatingContainer
      */
     @JvmDefault
     override val beOperatorInfo: BeOperatorInfo
-        get() = AccountAsBeOperator(accountInfo)
+        get() = accountInfo.asBeOperator()
 
 
     /**

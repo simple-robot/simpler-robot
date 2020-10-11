@@ -10,6 +10,7 @@
  * QQ     1149159218
  */
 
+@file:JvmName("OperatingContainers")
 package love.forte.simbot.core.api.message.containers
 
 import love.forte.simbot.core.annotation.ContainerType
@@ -178,7 +179,7 @@ public interface BeOperatorAvatarContainer : Container {
 /**
  * 操作者信息容器
  */
-@ContainerType("操作者头像容器")
+@ContainerType("操作者信息容器")
 public interface OperatorInfo : Container, OperatorCodeContainer, OperatorNameContainer, OperatorAvatarContainer
 
 /**
@@ -192,6 +193,24 @@ public interface OperatorContainer : Container {
      */
     val operatorInfo: OperatorInfo?
 }
+
+/**
+ * 构建一个默认数据 [OperatorContainer] 实例。
+ */
+@JvmName("getOperatorContainer")
+@Suppress("FunctionName")
+public fun OperatorContainer(operatorInfo: OperatorInfo?): OperatorContainer =
+    operatorInfo?.let { OperatorContainerData(it) } ?: EmptyOperatorContainer
+
+
+/** [OperatorContainer] 数据类实现。 */
+private data class OperatorContainerData(override val operatorInfo: OperatorInfo) : OperatorContainer
+
+/** [OperatorContainer] 空实现。 */
+private object EmptyOperatorContainer : OperatorContainer {
+    override val operatorInfo: OperatorInfo? = null
+}
+
 
 /**
  * 被操作者信息容器
@@ -212,19 +231,69 @@ public interface BeOperatorContainer : Container {
 }
 
 
+/** 获取普通 [BeOperatorContainer] 实例。*/
+@JvmName("getBeOperatorContainer")
+@Suppress("FunctionName")
+public fun BeOperatorContainer(beOperatorInfo: BeOperatorInfo?): BeOperatorContainer =
+    beOperatorInfo?.let { BeOperatorContainerData(it) } ?: EmptyBeOperatorContainer
+
+
+/** [BeOperatorContainer] 数据类实现。 */
+private data class BeOperatorContainerData(override val beOperatorInfo: BeOperatorInfo) : BeOperatorContainer
+/** [BeOperatorContainer] 空实现。 */
+private object EmptyBeOperatorContainer : BeOperatorContainer {
+    override val beOperatorInfo: BeOperatorInfo? = null
+}
+
+
 /**
  * 针对一个存在 **操作** 内容的事件,
  * 此容器提供了在 **操作** 事件中的 **操作者** 与 **被操作者** 的相关信息容器
+ *
  */
 @ContainerType("操作者容器")
 public interface OperatingContainer : Container, OperatorContainer, BeOperatorContainer
 
 
 /**
+ * 获取数据 [OperatingContainer] 实例。
+ */
+@JvmName("getOperatingContainer")
+@Suppress("FunctionName")
+public fun OperatingContainer(
+    operatorInfo: OperatorInfo?,
+    beOperatorInfo: BeOperatorInfo?
+) : OperatingContainer =
+    if (operatorInfo == null && beOperatorInfo == null) {
+        OperatingContainerData(operatorInfo, beOperatorInfo)
+    } else EmptyOperatingContainer
+
+
+
+/** [OperatingContainer] 数据类实现。 */
+private data class OperatingContainerData(
+    override val operatorInfo: OperatorInfo?,
+    override val beOperatorInfo: BeOperatorInfo?
+) : OperatingContainer
+
+/** [OperatingContainer] 空实现。 */
+private object EmptyOperatingContainer : OperatingContainer {
+    override val operatorInfo: OperatorInfo? = null
+    override val beOperatorInfo: BeOperatorInfo? = null
+}
+
+
+/**
+ * 将账户作操作者。
+ */
+public fun AccountInfo.asOperator(): OperatorInfo = AccountAsOperator(this)
+
+
+/**
  * 将账户作操作者。一般用于那些可以将当前事件的
  * [账户信息][AccountInfo] 作为 [操作者][OperatorInfo] 而使用的地方
  */
-public data class AccountAsOperator(private val account: AccountInfo) : Container, OperatorInfo {
+private data class AccountAsOperator(private val account: AccountInfo) : Container, OperatorInfo {
     /**
      * 被操作者的Code
      */
@@ -277,10 +346,16 @@ public data class AccountAsOperator(private val account: AccountInfo) : Containe
 
 
 /**
+ * 将账户作为被操作者。
+ */
+public fun AccountInfo.asBeOperator(): BeOperatorInfo = AccountAsBeOperator(this)
+
+
+/**
  * 将账户作为被操作者。一般用于那些可以将当前事件的
  * [账户信息][AccountInfo] 作为 [被操作者][BeOperatorInfo] 而使用的地方
  */
-public data class AccountAsBeOperator(private val account: AccountInfo) : Container, BeOperatorInfo {
+private data class AccountAsBeOperator(private val account: AccountInfo) : Container, BeOperatorInfo {
     /**
      * 被操作者的Code
      */

@@ -15,7 +15,6 @@ package love.forte.simbot.component.mirai.message
 import love.forte.simbot.core.api.message.MsgGet
 import love.forte.simbot.core.api.message.containers.AccountInfo
 import love.forte.simbot.core.api.message.containers.BotInfo
-import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Group
@@ -106,91 +105,3 @@ public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : Abs
 }
 
 
-
-
-/**
- * 基于mirai的 [Bot] 的 [BotInfo] 实现。
- */
-public data class MiraiBotInfo(private val bot: Bot) : BotInfo {
-    /** 当前的bot的账号 */
-    override val botCode: String
-        get() = bot.id.toString()
-
-    /** 当前的bot的账号 */
-    override val botCodeNumber: Long
-        get() = bot.id
-
-    /** 机器人的名称 */
-    override val botName: String
-        get() = bot.nick
-
-    /** 机器人的头像 */
-    override val botAvatar: String
-        get() = "http://q1.qlogo.cn/g?b=qq&nk=${bot.id}&s=640"
-
-}
-
-
-/**
- * 基于 mirai [Friend] 的 [AccountInfo] 实现。
- */
-public data class MiraiFriendAccountInfo(private val friend: Friend) : AccountInfo {
-    /**
-     * 账号
-     */
-    override val accountCode: String
-        get() = friend.id.toString()
-
-    override val accountCodeNumber: Long
-        get() = friend.id
-
-    /** 昵称。 */
-    override val accountNickname: String
-        get() = friend.nick
-
-    /** [accountNickname] */
-    override val accountRemark: String
-        get() = accountNickname
-
-    override val accountRemarkOrNickname: String
-        get() = accountNickname
-
-    override val accountNicknameAndRemark: String
-        get() = accountNickname
-
-    /**
-     * 得到账号的头像地址. 一般来讲为`null`的可能性很小
-     */
-    override val accountAvatar: String
-        get() = friend.avatarUrl
-}
-
-
-
-/**
- * 基于 mirai [Member] 的 [AccountInfo] 实现。
- */
-public data class MiraiMemberAccountInfo(private val member: Member) : AccountInfo {
-    /**
-     * 账号
-     */
-    override val accountCode: String
-        get() = member.id.toString()
-
-    override val accountCodeNumber: Long
-        get() = member.id
-
-    /** 昵称。 */
-    override val accountNickname: String
-        get() = member.nick
-
-    /** [accountNickname] */
-    override val accountRemark: String
-        get() = member.nameCard
-
-    /**
-     * 得到账号的头像地址. 一般来讲为`null`的可能性很小
-     */
-    override val accountAvatar: String
-        get() = member.avatarUrl
-}

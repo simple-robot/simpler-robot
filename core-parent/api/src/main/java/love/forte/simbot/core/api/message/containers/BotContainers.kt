@@ -48,6 +48,8 @@ public interface BotAvatarContainer : Container {
     val botAvatar: String?
 }
 
+
+
 /**
  * 机器人基础信息容器, 其实现了：
  * - [机器人账号容器][BotCodeContainer],
@@ -69,3 +71,24 @@ public interface BotContainer : Container {
      */
     val botInfo: BotInfo
 }
+
+
+/**
+ * 获取一个 [BotContainer] 数据实例。
+ */
+@JvmName("getBotContainer")
+@Suppress("FunctionName")
+public fun BotContainer(botInfo: BotInfo): BotContainer = BotContainerData(botInfo)
+
+/**
+ * 获取一个 [BotContainer] 数据实例。
+ * java直接使用上面那个。
+ */
+@JvmName("#getBotContainer")
+@Suppress("FunctionName")
+public inline fun BotContainer(botInfo: () -> BotInfo): BotContainer = BotContainer(botInfo())
+
+
+/** [BotContainer] 数据类实现。 */
+private data class BotContainerData(override val botInfo: BotInfo) : BotContainer
+

@@ -15,10 +15,7 @@ package love.forte.simbot.core.api.message.events
 import love.forte.simbot.core.annotation.MainListenerType
 import love.forte.simbot.core.api.message.ChangedGet
 import love.forte.simbot.core.api.message.assists.Permissions
-import love.forte.simbot.core.api.message.containers.AccountAsBeOperator
-import love.forte.simbot.core.api.message.containers.BeOperatorInfo
-import love.forte.simbot.core.api.message.containers.GroupContainer
-import love.forte.simbot.core.api.message.containers.OperatingContainer
+import love.forte.simbot.core.api.message.containers.*
 
 /*
  * 此模块定义与 变更 有关的事件接口
@@ -43,7 +40,7 @@ public interface GroupMemberPermissionChanged :
      */
     @JvmDefault
     override val beOperatorInfo: BeOperatorInfo
-        get() = AccountAsBeOperator(accountInfo)
+        get() = accountInfo.asBeOperator()
 
     /**
      * 是否为 **得到管理权限**
@@ -74,7 +71,7 @@ public interface GroupNameChanged :
      */
     @JvmDefault
     override val beOperatorInfo: BeOperatorInfo
-        get() = AccountAsBeOperator(accountInfo)
+        get() = accountInfo.asBeOperator()
 }
 
 
@@ -92,7 +89,7 @@ public interface GroupMemberRemarkChanged :
      */
     @JvmDefault
     override val beOperatorInfo: BeOperatorInfo
-        get() = AccountAsBeOperator(accountInfo)
+        get() = accountInfo.asBeOperator()
 }
 
 
@@ -104,12 +101,13 @@ public interface GroupMemberSpecialChanged :
     ChangedGet<String>,
     GroupContainer,
     OperatingContainer {
+
     /**
      * [被操作者][beOperatorInfo] 默认实现为 [当前主体账户][accountInfo]
      */
     @JvmDefault
     override val beOperatorInfo: BeOperatorInfo
-        get() = AccountAsBeOperator(accountInfo)
+        get() = accountInfo.asBeOperator()
 }
 
 

@@ -13,6 +13,10 @@
 package love.forte.simbot.component.mirai.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
+import love.forte.simbot.component.mirai.DefaultMiraiBotConfigurationFactory
+import love.forte.simbot.component.mirai.MiraiBotConfigurationFactory
+import love.forte.simbot.component.mirai.MiraiBotVerifier
+import love.forte.simbot.core.constant.PriorityConstant
 
 /**
  *
@@ -24,7 +28,18 @@ import love.forte.common.ioc.annotation.ConfigBeans
 public class MiraiBotVerifierConfiguration {
 
 
+    /**
+     * inject default [MiraiBotConfigurationFactory].
+     */
+    @ComponentBeans
+    fun miraiMiraiBotConfigurationFactory(): MiraiBotConfigurationFactory = DefaultMiraiBotConfigurationFactory
 
+
+    @ComponentBeans
+    fun miraiMiraiBotVerifier(
+        configurationFactory: MiraiBotConfigurationFactory,
+        miraiConfiguration: MiraiConfiguration
+    ): MiraiBotVerifier = MiraiBotVerifier(configurationFactory, miraiConfiguration)
 
 
 }
