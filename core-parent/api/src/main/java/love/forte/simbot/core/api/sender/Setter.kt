@@ -62,7 +62,11 @@ public interface Setter {
      *
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      */
-    fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean>
+    fun changeGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean>
+    @JvmDefault
+    fun changeGroupAdmin(groupCode: Long, memberCode: Long, promotion: Boolean): Carrier<Boolean> =
+        changeGroupAdmin(groupCode.toString(), memberCode.toString(), promotion)
+
 
 
     /**

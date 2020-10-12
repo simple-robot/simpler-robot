@@ -31,17 +31,7 @@ public open class MiraiMessageContent(var messageChain: MessageChain) : MessageC
      */
     override val msg: String?
         get() = messageChain.toString()
-        // set(value) {
-        //     messageChain = value?.let { PlainText(it).asMessageChain() } ?: EmptyMessageChain
-        // }
-    // /**
-    //  * 除了使用字符串文本的 [setMsg][msg] 以外，你也可以通过 [setMsg] 来将一些可能为非字符串的内容设置到一个 [MessageContent] 中。
-    //  * @param msgContent MessageContent
-    //  */
-    // override fun setMsg(msgContent: MessageContent) {
-    //     messageChain = if(msgContent is MiraiMessageContent) msgContent.messageChain
-    //     else msgContent.msg?.let { PlainText(it) }?.asMessageChain() ?: EmptyMessageChain
-    // }
+
 
     /**
      * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的 [MessageContent]

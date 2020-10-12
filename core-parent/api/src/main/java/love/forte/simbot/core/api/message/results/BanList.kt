@@ -30,7 +30,8 @@ public interface BanList : MultipleResults<BanInfo>
  */
 public interface BanInfo : Result, AccountContainer, PermissionContainer {
     /**
-     * 剩余禁言时间。如果不支持则有可能为null。
+     * 剩余禁言时间。如果不支持则有可能为 -1。
+     * 而没有被禁言一般代表为 `lastTime == 0`。
      */
     val lastTime: Long
 }

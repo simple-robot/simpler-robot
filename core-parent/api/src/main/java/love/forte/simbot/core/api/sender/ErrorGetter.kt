@@ -15,6 +15,7 @@ package love.forte.simbot.core.api.sender
 
 import love.forte.simbot.core.api.message.MsgGet
 import love.forte.simbot.core.api.message.containers.BotContainer
+import love.forte.simbot.core.api.message.containers.BotInfo
 import love.forte.simbot.core.api.message.results.*
 
 
@@ -27,8 +28,8 @@ import love.forte.simbot.core.api.message.results.*
 object ErrorGetter : Getter {
     override val authInfo: AuthInfo
         get() = NO("Getter.authInfo")
-    override val loginInfo: LoginInfo
-        get() = NO("Getter.loginInfo")
+    override val botInfo: BotInfo
+        get() = NO("Getter.botInfo")
 
     override fun getFriendInfo(code: String): FriendInfo =
         NO("Getter.getFriendInfo")

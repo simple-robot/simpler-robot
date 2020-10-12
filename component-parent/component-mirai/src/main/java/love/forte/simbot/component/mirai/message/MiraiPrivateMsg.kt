@@ -12,6 +12,7 @@
 
 package love.forte.simbot.component.mirai.message
 
+import love.forte.simbot.component.mirai.utils.toMiraiMessageContent
 import love.forte.simbot.core.api.message.MessageContent
 import love.forte.simbot.core.api.message.assists.Flag
 import love.forte.simbot.core.api.message.assists.flag
@@ -40,6 +41,8 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
      */
     override val privateMsgType: PrivateMsg.Type = PrivateMsg.Type.FRIEND
 
+
+
     private var _msgContent: MessageContent = MiraiMessageContent(message)
 
     /**
@@ -49,7 +52,7 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
     override var msgContent: MessageContent
         get() = _msgContent
         set(value) {
-            _msgContent = value
+            _msgContent = value.toMiraiMessageContent()
         }
 
     /**

@@ -21,14 +21,16 @@ import love.forte.simbot.core.api.message.containers.BotInfo
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-interface LoginInfo: BotInfo {
-    /**
-     * 等级信息。如果无法获取，则默认值为-1
-     */
-    val level: Int
-
-    /**
-     * 用于展示一个等级信息的。例如当level不支持获取的时候，返回一个 "无法获取"
-     */
-    fun showLevel(): String
+@Deprecated("May be useless.")
+public interface LoginInfo: BotInfo {
+    // /**
+    //  * 等级信息。如果无法获取，则默认值为-1
+    //  */
+    // val level: Int
+    //
+    // /**
+    //  * 用于展示一个等级信息的。
+    //  * 例如当level不支持获取的时候，返回一个 "无法获取"。
+    //  */
+    // fun showLevel(): String
 }

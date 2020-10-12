@@ -12,8 +12,10 @@
 
 package love.forte.simbot.core.api.message.results
 
+import love.forte.simbot.core.api.message.assists.Permissions
 import love.forte.simbot.core.api.message.containers.AccountContainer
 import love.forte.simbot.core.api.message.containers.GroupInfo
+import love.forte.simbot.core.api.message.containers.PermissionContainer
 
 
 /**
@@ -25,22 +27,27 @@ public interface SimpleGroupInfo : Result, GroupInfo
  *
  * 获取到的群详细信息。除了 [群简单信息][SimpleGroupInfo]以外，还有一些其他的信息。
  *
+ * 其中，如果返回值为数字类型的，获取不到均会返回一个默认值，例如 `-1`。
+ *
+ *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public interface GroupFullInfo : SimpleGroupInfo {
 
     /**
-     * 群人数上限
+     * 群人数上限。
+     * 有可能会获取不到，获取不到的时候返回一个-1。
      */
     val maximum: Int
 
     /**
-     * 当前群人数
+     * 当前群人数。
      */
     val total: Int
 
     /**
-     * 建群时间
+     * 建群时间。
+     * 有可能会获取不到，获取不到的时候返回一个-1。
      */
     val createTime: Long
 
@@ -73,11 +80,31 @@ public interface GroupFullInfo : SimpleGroupInfo {
 public interface GroupList : MultipleResults<SimpleGroupInfo>
 
 
+
 /**
- * 群主信息。
+ * 管理员信息
+ * @see GroupAdminImpl
+ */
+public interface GroupAdmin : AccountContainer, PermissionContainer {
+    @JvmDefault override val permission: Permissions get() = Permissions.ADMINISTRATOR
+}
+
+
+/**
+ * 通过一个 [AccountContainer] 来构建 [GroupAdmin] 实例
+ */
+public data class GroupAdminImpl(private val account: AccountContainer) : GroupAdmin, AccountContainer by account
+
+
+
+/**
+ * 群主信息。群主也是一个管理员。
  * @see GroupOwnerImpl
  */
-public interface GroupOwner : AccountContainer
+public interface GroupOwner : GroupAdmin, AccountContainer, PermissionContainer {
+    @JvmDefault override val permission: Permissions get() = Permissions.OWNER
+}
+
 
 /**
  * 通过一个 [AccountContainer] 来构建 [GroupOwner] 实例
@@ -85,13 +112,3 @@ public interface GroupOwner : AccountContainer
 public data class GroupOwnerImpl(private val account: AccountContainer) : GroupOwner, AccountContainer by account
 
 
-/**
- * 管理员信息
- * @see GroupAdminImpl
- */
-public interface GroupAdmin : AccountContainer
-
-/**
- * 通过一个 [AccountContainer] 来构建 [GroupAdmin] 实例
- */
-public data class GroupAdminImpl(private val account: AccountContainer) : GroupAdmin, AccountContainer by account

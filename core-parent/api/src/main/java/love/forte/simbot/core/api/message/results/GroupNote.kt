@@ -15,7 +15,7 @@ package love.forte.simbot.core.api.message.results
 
 /**
  *
- * 群公告信息
+ * 群公告信息。
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
