@@ -49,6 +49,16 @@ public interface BotAvatarContainer : Container {
 }
 
 
+/**
+ * 机器人等级容器。
+ * 等级不是必然存在的，如果无法获取，则可能返回 `-1`。
+ */
+@ContainerType("机器人等级容器")
+public interface BotLevelContainer : Container {
+    /** 机器人等级。 */
+    val botLevel: Long get() = -1
+}
+
 
 /**
  * 机器人基础信息容器, 其实现了：
@@ -57,7 +67,7 @@ public interface BotAvatarContainer : Container {
  * - [机器人头像容器][BotAvatarContainer]
  */
 @ContainerType("机器人信息容器")
-public interface BotInfo : Container, BotCodeContainer, BotNameContainer, BotAvatarContainer
+public interface BotInfo : Container, BotCodeContainer, BotNameContainer, BotAvatarContainer, BotLevelContainer
 
 /**
  * bot容器，可以得到一个 [bot信息][BotInfo]。

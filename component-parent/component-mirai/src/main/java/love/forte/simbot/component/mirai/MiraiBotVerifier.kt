@@ -16,7 +16,7 @@ import kotlinx.coroutines.runBlocking
 import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
 import love.forte.simbot.component.mirai.message.MiraiBotInfo
 import love.forte.simbot.core.CompLogger
-import love.forte.simbot.core.api.message.containers.BotContainerData
+import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.containers.BotInfo
 import love.forte.simbot.core.api.sender.BotSender
 import love.forte.simbot.core.api.sender.MsgSenderFactories
@@ -25,6 +25,7 @@ import love.forte.simbot.core.bot.Bot
 import love.forte.simbot.core.bot.BotRegisterInfo
 import love.forte.simbot.core.bot.BotVerifier
 import net.mamoe.mirai.alsoLogin
+import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
 import net.mamoe.mirai.Bot as MBot
 
 /**
@@ -51,12 +52,19 @@ public class MiraiBotVerifier(
         )
         runCatching {
 
+            with(mBot.logger) {
+                if (this is MiraiLoggerWithSwitch) {
+                    // 临时关闭logger.
+                    this.disable()
+                }
+            }
+
 
             runBlocking {
                 mBot.alsoLogin()
             }
 
-            val botContainer = BotContainerData(MiraiBotInfo(mBot))
+            val botContainer = BotContainer { MiraiBotInfo(mBot) }
 
             val sender = msgSenderFactories.toBotSender(botContainer)
 

@@ -35,6 +35,9 @@ public class MiraiBotVerifierConfiguration {
     fun miraiMiraiBotConfigurationFactory(): MiraiBotConfigurationFactory = DefaultMiraiBotConfigurationFactory
 
 
+    /**
+     * bot verifier.
+     */
     @ComponentBeans
     fun miraiMiraiBotVerifier(
         configurationFactory: MiraiBotConfigurationFactory,

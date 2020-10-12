@@ -35,6 +35,7 @@ import love.forte.simbot.core.bot.BotManager
 import love.forte.simbot.core.constant.PriorityConstant
 import love.forte.simbot.core.listener.ListenerManager
 import love.forte.simbot.core.listener.MsgGetProcessor
+import java.io.Closeable
 import java.io.Reader
 
 
@@ -63,8 +64,10 @@ internal constructor(
     private val dependBeanFactory: DependBeanFactory,
     val botManager: BotManager,
     val environment: SimbotEnvironment,
-    val msgProcessor: MsgGetProcessor
-) : DependBeanFactory by dependBeanFactory
+    val msgProcessor: MsgGetProcessor,
+    private val doClosed: Closeable = Closeable {}
+) : DependBeanFactory by dependBeanFactory,
+    Closeable by doClosed
 
 
 /**

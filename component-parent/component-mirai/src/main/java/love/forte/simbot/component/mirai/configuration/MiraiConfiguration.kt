@@ -42,7 +42,7 @@ public class MiraiConfiguration {
      * mirai心跳周期. 过长会导致被服务器断开连接. 单位毫秒
      * @see BotConfiguration.heartbeatPeriodMillis
      */
-    @field:ConfigInject("mirai.heartbeatPeriodMillis", orIgnore = true)
+    @field:ConfigInject("mirai.heartbeatPeriodMillis")
     var heartbeatPeriodMillis: Long = BotConfiguration.Default.heartbeatPeriodMillis
 
     /**

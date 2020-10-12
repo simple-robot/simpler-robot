@@ -12,7 +12,6 @@
 
 package love.forte.simbot.component.mirai.message
 
-import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.containers.BotInfo
 import net.mamoe.mirai.Bot
 
