@@ -29,18 +29,17 @@ import net.mamoe.mirai.message.data.SingleMessage
  * 将一个 [MessageContent] 转化为一个 [MiraiMessageContent]。
  */
 public fun MessageContent.toMiraiMessageContent() : MessageContent {
-    when(this) {
+    return when(this) {
         is MiraiMessageContent -> return this
         // 预期内的消息。
         is ExpectedMessageContent -> {
-
+            TODO()
         }
         else -> {
-
+            TODO()
         }
     }
 
-    TODO()
 }
 
 
@@ -49,8 +48,8 @@ public fun MessageContent.toMiraiMessageContent() : MessageContent {
  */
 public fun String.toMiraiMessageContent() : MessageContent {
     CatCodeUtil.split(this) {
-        // is a cat code.
         when {
+            // is a cat code.
             startsWith(CAT_HEAD) -> Nyanko.byCode(this)
 
             else -> TODO()

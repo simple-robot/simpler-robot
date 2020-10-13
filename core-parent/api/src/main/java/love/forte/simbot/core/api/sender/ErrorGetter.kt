@@ -26,33 +26,33 @@ import love.forte.simbot.core.api.message.results.*
  *
  */
 object ErrorGetter : Getter {
-    override val authInfo: AuthInfo
+    override val authInfo: Nothing
         get() = NO("Getter.authInfo")
-    override val botInfo: BotInfo
+    override val botInfo: Nothing
         get() = NO("Getter.botInfo")
 
-    override fun getFriendInfo(code: String): FriendInfo =
+    override fun getFriendInfo(code: String): Nothing =
         NO("Getter.getFriendInfo")
 
-    override fun getMemberInfo(group: String, code: String): GroupMemberInfo =
+    override fun getMemberInfo(group: String, code: String): Nothing =
         NO("Getter.getMemberInfo")
 
-    override fun getGroupInfo(group: String): GroupFullInfo =
+    override fun getGroupInfo(group: String): Nothing =
         NO("Getter.getGroupInfo")
 
-    override fun getFriendList(cache: Boolean, limit: Int): FriendList =
+    override fun getFriendList(cache: Boolean, limit: Int): Nothing =
         NO("Getter.getFriendList")
 
-    override fun getGroupList(cache: Boolean, limit: Int): GroupList =
+    override fun getGroupList(cache: Boolean, limit: Int): Nothing =
         NO("Getter.getGroupList")
 
-    override fun getGroupMemberList(cache: Boolean, limit: Int): GroupMemberList =
+    override fun getGroupMemberList(group: String, cache: Boolean, limit: Int): Nothing =
         NO("Getter.getGroupMemberList")
 
-    override fun getBanList(group: String, cache: Boolean, limit: Int): BanList =
+    override fun getBanList(group: String, cache: Boolean, limit: Int): Nothing =
         NO("Getter.getBanList")
 
-    override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList =
+    override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): Nothing =
         NO("Getter.getGroupNoteList")
 }
 

@@ -21,6 +21,7 @@ import love.forte.simbot.core.api.message.assists.Flag
 import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.events.FriendAddRequest
 import love.forte.simbot.core.api.message.events.GroupAddRequest
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -34,37 +35,43 @@ object ErrorSetter : Setter {
     ): Carrier<Boolean> =
         NO("Setter.setFriendAddRequest")
 
-    override fun setGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, agree: Boolean): Carrier<Boolean>  =
+    override fun setGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, agree: Boolean): Nothing  =
         NO("Setter.setGroupAddRequest")
 
-    override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> =
+    override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Nothing =
         NO("Setter.setGroupAdmin")
 
-    override fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean> =
+    override fun setGroupAnonymous(group: String, agree: Boolean): Nothing =
         NO("Setter.setGroupAnonymous")
 
-    override fun setGroupBan(groupCode: String, memberCode: String, time: Long): Carrier<Boolean> =
+    override fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Nothing =
         NO("Setter.setGroupBan")
 
-    override fun setGroupWholeBan(groupCode: String, ban: Boolean): Carrier<Boolean> =
+    override fun setGroupWholeBan(groupCode: String, ban: Boolean): Nothing =
         NO("Setter.setGroupWholeBan")
 
-    override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<Boolean> =
+    override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Nothing =
         NO("Setter.setGroupRemark")
 
-    override fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> =
+    override fun setGroupQuit(groupCode: String, forcibly: Boolean): Nothing =
         NO("Setter.setGroupLeave")
 
-    override fun setGroupMemberKick(groupCode: String, memberCode: String, blackList: Boolean): Carrier<Boolean> =
-        NO("Setter.setGroupMemberKick")
+    override fun setGroupMemberKick(
+        groupCode: String,
+        memberCode: String,
+        why: String?,
+        blackList: Boolean
+    ): Nothing = NO("Setter.setGroupMemberKick")
 
-    override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<Boolean> =
+
+
+    override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Nothing =
         NO("Setter.setGroupMemberSpecialTitle")
 
-    override fun setMsgRecall(flag: Flag<MessageEventGet.MessageFlagContent>): Carrier<Boolean> =
+    override fun setMsgRecall(flag: Flag<MessageEventGet.MessageFlagContent>): Nothing =
         NO("Setter.setMsgRecall")
 
-    override fun setGroupName(groupCode: String, name: String): Carrier<Boolean> =
+    override fun setGroupName(groupCode: String, name: String): Nothing =
         NO("Setter.setGroupName")
 }
 

@@ -14,6 +14,7 @@ package love.forte.simbot.component.mirai.message
 
 import love.forte.simbot.component.mirai.utils.toMiraiMessageContent
 import love.forte.simbot.core.api.message.MessageContent
+import love.forte.simbot.core.api.message.TextMessageContent
 import love.forte.simbot.core.api.message.assists.Flag
 import love.forte.simbot.core.api.message.assists.flag
 import love.forte.simbot.core.api.message.containers.AccountInfo
@@ -61,8 +62,7 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
     override var msg: String?
         get() = msgContent.msg
         set(value) {
-            // todo
-            msgContent = value?.let { MiraiMessageContent(PlainText(it).asMessageChain()) }
+            msgContent = value?.let { TextMessageContent(it) }
                 ?: MiraiMessageContent(EmptyMessageChain)
         }
 

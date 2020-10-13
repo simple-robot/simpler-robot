@@ -16,7 +16,9 @@ import love.forte.simbot.component.mirai.message.MiraiAuthInfo
 import love.forte.simbot.component.mirai.message.MiraiBotInfo
 import love.forte.simbot.component.mirai.message.MiraiGroupNoteList
 import love.forte.simbot.component.mirai.message.result.*
+import love.forte.simbot.core.api.message.containers.AccountCodeContainer
 import love.forte.simbot.core.api.message.containers.BotInfo
+import love.forte.simbot.core.api.message.containers.GroupCodeContainer
 import love.forte.simbot.core.api.message.results.*
 import love.forte.simbot.core.api.sender.Getter
 import net.mamoe.mirai.Bot
@@ -36,6 +38,7 @@ public class MiraiBaseGetter(private val bot: Bot) : Getter {
     private fun getFriendInfo0(code: Long): FriendInfo = MiraiFriendInfo(bot.getFriend(code))
     override fun getFriendInfo(code: String): FriendInfo = getFriendInfo0(code.toLong())
     override fun getFriendInfo(code: Long): FriendInfo = getFriendInfo0(code)
+    override fun getFriendInfo(code: AccountCodeContainer): FriendInfo = getFriendInfo(code.accountCodeNumber)
 
 
 
@@ -47,7 +50,8 @@ public class MiraiBaseGetter(private val bot: Bot) : Getter {
     }
     override fun getMemberInfo(group: String, code: String): GroupMemberInfo = getMemberInfo0(group.toLong(), code.toLong())
     override fun getMemberInfo(group: Long, code: Long): GroupMemberInfo = getMemberInfo0(group, code)
-
+    override fun getMemberInfo(group: GroupCodeContainer, code: AccountCodeContainer): GroupMemberInfo =
+        getMemberInfo(group.groupCodeNumber, code.accountCodeNumber)
 
     /**
      * mirai - 群信息
@@ -55,6 +59,7 @@ public class MiraiBaseGetter(private val bot: Bot) : Getter {
     private fun getGroupInfo0(group: Long): GroupFullInfo = MiraiGroupFullInfo(bot.getGroup(group))
     override fun getGroupInfo(group: String): GroupFullInfo = getGroupInfo0(group.toLong())
     override fun getGroupInfo(group: Long): GroupFullInfo = getGroupInfo0(group)
+    override fun getGroupInfo(group: GroupCodeContainer): GroupFullInfo = getGroupInfo(group.groupCodeNumber)
 
 
     override fun getFriendList(cache: Boolean, limit: Int): FriendList = MiraiFriendList(bot, limit)
@@ -72,6 +77,8 @@ public class MiraiBaseGetter(private val bot: Bot) : Getter {
         getGroupMemberList0(group.toLong(), cache, limit)
     override fun getGroupMemberList(group: Long, cache: Boolean, limit: Int): GroupMemberList =
         getGroupMemberList0(group, cache, limit)
+    override fun getGroupMemberList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupMemberList =
+        getGroupMemberList(group.groupCodeNumber, cache, limit)
 
 
     /**
@@ -80,6 +87,8 @@ public class MiraiBaseGetter(private val bot: Bot) : Getter {
     private fun getBanList0(group: Long, cache: Boolean, limit: Int): BanList = MiraiBanList(bot.getGroup(group), limit)
     override fun getBanList(group: String, cache: Boolean, limit: Int): BanList = getBanList0(group.toLong(), cache, limit)
     override fun getBanList(group: Long, cache: Boolean, limit: Int): BanList = getBanList0(group, cache, limit)
+    override fun getBanList(group: GroupCodeContainer, cache: Boolean, limit: Int): BanList =
+        getBanList(group.groupCodeNumber, cache, limit)
 
 
     /**
@@ -91,6 +100,9 @@ public class MiraiBaseGetter(private val bot: Bot) : Getter {
         getGroupNoteList0(group.toLong(), cache, limit)
     override fun getGroupNoteList(group: Long, cache: Boolean, limit: Int): GroupNoteList =
         getGroupNoteList0(group, cache, limit)
+
+    override fun getGroupNoteList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupNoteList =
+        getGroupNoteList(group.groupCodeNumber, cache, limit)
 
 
 

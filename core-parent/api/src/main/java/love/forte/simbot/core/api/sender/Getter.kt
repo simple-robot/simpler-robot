@@ -12,8 +12,7 @@
 
 package love.forte.simbot.core.api.sender
 
-import love.forte.simbot.core.api.message.containers.BotContainer
-import love.forte.simbot.core.api.message.containers.BotInfo
+import love.forte.simbot.core.api.message.containers.*
 import love.forte.simbot.core.api.message.results.*
 
 /**
@@ -28,7 +27,7 @@ import love.forte.simbot.core.api.message.results.*
  * 当limit <= 0的时候则认为获取所有。
  * 而是否真的可以获取**部分**，则以组件实际实现为准。
  *
- * 一般来讲，如果组件不支持某个API，则会直接抛出一个异常。
+ * 一般来讲，如果组件不支持某个API，则会直接 **抛出一个异常**。
  *
  * @author ForteScarlet <ForteScarlet@163.com>
  * @date 2020/9/2
@@ -56,6 +55,12 @@ public interface Getter : BotContainer {
     @JvmDefault
     fun getFriendInfo(code: Long): FriendInfo = getFriendInfo(code.toString())
 
+    @JvmDefault
+    fun getFriendInfo(code: AccountCodeContainer): FriendInfo = getFriendInfo(code.accountCode)
+
+    @JvmDefault
+    fun getFriendInfo(code: AccountContainer): FriendInfo = getFriendInfo(code.accountInfo)
+
     /**
      * 获取一个群友信息。
      */
@@ -63,6 +68,26 @@ public interface Getter : BotContainer {
 
     @JvmDefault
     fun getMemberInfo(group: Long, code: Long): GroupMemberInfo = getMemberInfo(group.toString(), code.toString())
+
+    @JvmDefault
+    fun getMemberInfo(group: GroupCodeContainer, code: AccountCodeContainer): GroupMemberInfo =
+        getMemberInfo(group.groupCode, code.accountCode)
+
+    @JvmDefault
+    fun getMemberInfo(group: GroupContainer, code: AccountContainer): GroupMemberInfo =
+        getMemberInfo(group, code)
+
+    @JvmDefault
+    fun <T> getMemberInfo(groupAndAccount: T): GroupMemberInfo
+            where T : GroupCodeContainer,
+                  T : AccountCodeContainer =
+        getMemberInfo(groupAndAccount, groupAndAccount)
+
+    @JvmDefault
+    fun <T> getMemberInfo(groupAndAccount: T): GroupMemberInfo
+            where T : GroupContainer,
+                  T : AccountContainer =
+        getMemberInfo(groupAndAccount, groupAndAccount)
 
 
     /**
@@ -72,6 +97,10 @@ public interface Getter : BotContainer {
 
     @JvmDefault
     fun getGroupInfo(group: Long): GroupFullInfo = getGroupInfo(group.toString())
+    @JvmDefault
+    fun getGroupInfo(group: GroupCodeContainer): GroupFullInfo = getGroupInfo(group.groupCode)
+    @JvmDefault
+    fun getGroupInfo(group: GroupContainer): GroupFullInfo = getGroupInfo(group)
 
 
     /**
@@ -105,15 +134,49 @@ public interface Getter : BotContainer {
     fun getGroupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList
 
     @JvmDefault
-    fun getGroupMemberList(group: String, limit: Int): GroupMemberList = getGroupMemberList(group, false, limit)
+    fun getGroupMemberList(group: String, limit: Int): GroupMemberList =
+        getGroupMemberList(group, false, limit)
+
     @JvmDefault
-    fun getGroupMemberList(group: String, ): GroupMemberList = getGroupMemberList(group, false, -1)
+    fun getGroupMemberList(group: String): GroupMemberList =
+        getGroupMemberList(group, false, -1)
+
+
     @JvmDefault
-    fun getGroupMemberList(group: Long, cache: Boolean, limit: Int): GroupMemberList = getGroupMemberList(group.toString(), cache, limit)
+    fun getGroupMemberList(group: Long, cache: Boolean, limit: Int): GroupMemberList =
+        getGroupMemberList(group.toString(), cache, limit)
+
     @JvmDefault
-    fun getGroupMemberList(group: Long, limit: Int): GroupMemberList = getGroupMemberList(group.toString(), false, limit)
+    fun getGroupMemberList(group: Long, limit: Int): GroupMemberList =
+        getGroupMemberList(group.toString(), false, limit)
+
     @JvmDefault
-    fun getGroupMemberList(group: Long, ): GroupMemberList = getGroupMemberList(group.toString(), false, -1)
+    fun getGroupMemberList(group: Long): GroupMemberList =
+        getGroupMemberList(group.toString(), false, -1)
+
+    @JvmDefault
+    fun getGroupMemberList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupMemberList =
+        getGroupMemberList(group.groupCode, cache, limit)
+
+    @JvmDefault
+    fun getGroupMemberList(group: GroupCodeContainer, limit: Int): GroupMemberList =
+        getGroupMemberList(group, false, limit)
+
+    @JvmDefault
+    fun getGroupMemberList(group: GroupCodeContainer): GroupMemberList =
+        getGroupMemberList(group, false, -1)
+
+    @JvmDefault
+    fun getGroupMemberList(group: GroupContainer, cache: Boolean, limit: Int): GroupMemberList =
+        getGroupMemberList(group.groupInfo, cache, limit)
+
+    @JvmDefault
+    fun getGroupMemberList(group: GroupContainer, limit: Int): GroupMemberList =
+        getGroupMemberList(group.groupInfo, false, limit)
+
+    @JvmDefault
+    fun getGroupMemberList(group: GroupContainer): GroupMemberList =
+        getGroupMemberList(group.groupInfo, false, -1)
 
     /**
      * 获取某群的被禁言人列表。
@@ -121,34 +184,90 @@ public interface Getter : BotContainer {
      * @param cache 是否使用缓存
      */
     fun getBanList(group: String, cache: Boolean, limit: Int): BanList
+
     @JvmDefault
     fun getBanList(group: String, limit: Int): BanList = getBanList(group, false, limit)
+
     @JvmDefault
     fun getBanList(group: String): BanList = getBanList(group, false, -1)
+
     @JvmDefault
     fun getBanList(group: Long, cache: Boolean, limit: Int): BanList = getBanList(group.toString(), cache, limit)
+
     @JvmDefault
     fun getBanList(group: Long, limit: Int): BanList = getBanList(group.toString(), false, limit)
+
     @JvmDefault
     fun getBanList(group: Long): BanList = getBanList(group.toString(), false, -1)
+
+    @JvmDefault
+    fun getBanList(group: GroupCodeContainer, cache: Boolean, limit: Int): BanList =
+        getBanList(group.groupCode, cache, limit)
+
+    @JvmDefault
+    fun getBanList(group: GroupCodeContainer, limit: Int): BanList =
+        getBanList(group, false, limit)
+
+    @JvmDefault
+    fun getBanList(group: GroupCodeContainer): BanList =
+        getBanList(group, false, -1)
+
+    @JvmDefault
+    fun getBanList(group: GroupContainer, cache: Boolean, limit: Int): BanList =
+        getBanList(group.groupInfo, cache, limit)
+
+    @JvmDefault
+    fun getBanList(group: GroupContainer, limit: Int): BanList =
+        getBanList(group.groupInfo, false, limit)
+
+    @JvmDefault
+    fun getBanList(group: GroupContainer): BanList =
+        getBanList(group.groupInfo, false, -1)
 
 
     /**
      * 获取群公告列表
      */
     fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList
+
     @JvmDefault
     fun getGroupNoteList(group: String, limit: Int): GroupNoteList = getGroupNoteList(group, false, limit)
+
     @JvmDefault
     fun getGroupNoteList(group: String): GroupNoteList = getGroupNoteList(group, false, -1)
+
     @JvmDefault
     fun getGroupNoteList(group: Long, cache: Boolean, limit: Int) = getGroupNoteList(group.toString(), cache, limit)
+
     @JvmDefault
     fun getGroupNoteList(group: Long, limit: Int): GroupNoteList = getGroupNoteList(group.toString(), false, limit)
+
     @JvmDefault
     fun getGroupNoteList(group: Long): GroupNoteList = getGroupNoteList(group.toString(), false, -1)
 
+    @JvmDefault
+    fun getGroupNoteList(group: GroupCodeContainer, cache: Boolean, limit: Int) =
+        getGroupNoteList(group.groupCode, cache, limit)
 
+    @JvmDefault
+    fun getGroupNoteList(group: GroupCodeContainer, limit: Int): GroupNoteList =
+        getGroupNoteList(group.groupCode, false, limit)
+
+    @JvmDefault
+    fun getGroupNoteList(group: GroupCodeContainer): GroupNoteList =
+        getGroupNoteList(group.groupCode, false, -1)
+
+    @JvmDefault
+    fun getGroupNoteList(group: GroupContainer, cache: Boolean, limit: Int) =
+        getGroupNoteList(group.groupInfo, cache, limit)
+
+    @JvmDefault
+    fun getGroupNoteList(group: GroupContainer, limit: Int): GroupNoteList =
+        getGroupNoteList(group.groupInfo, false, limit)
+
+    @JvmDefault
+    fun getGroupNoteList(group: GroupContainer): GroupNoteList =
+        getGroupNoteList(group.groupInfo, false, -1)
 
 
 }

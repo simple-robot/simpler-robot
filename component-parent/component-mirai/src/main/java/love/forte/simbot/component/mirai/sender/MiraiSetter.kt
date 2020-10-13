@@ -25,8 +25,6 @@ import love.forte.simbot.core.api.message.events.GroupAddRequest
 import love.forte.simbot.core.api.sender.Setter
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.mute
-import net.mamoe.mirai.message.data.EmptyMessageChain
-import net.mamoe.mirai.recall
 import java.util.concurrent.TimeUnit
 
 /**
@@ -54,12 +52,14 @@ public class MiraiSetter(private val bot: Bot) : Setter {
         TODO("Not yet implemented")
     }
 
+
     /**
      * 通过群申请。
      */
     override fun setGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, agree: Boolean): Carrier<Boolean> {
         TODO("Not yet implemented")
     }
+
 
     /**
      * 设置群管理。

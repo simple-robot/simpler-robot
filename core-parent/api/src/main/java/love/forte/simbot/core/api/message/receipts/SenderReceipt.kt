@@ -37,15 +37,16 @@ public interface SenderReceipt<T> : Receipt<T>
  *
  * 其中 [receipt] 以 [字符串][String] 作为载体，应代表发出去的消息的ID
  *
- * @see GroupMsgReceiptImpl
+ * @see GroupMsgReceiptData
  */
 public interface GroupMsgReceipt : SenderReceipt<String>
 
 
-public data class GroupMsgReceiptImpl
-@JvmOverloads constructor(
+public data class GroupMsgReceiptData
+// @JvmOverloads
+constructor(
     override val receipt: Carrier<String>,
-    override val failed: Throwable? = null
+    // override val failed: Throwable? = null
 ) : GroupMsgReceipt
 
 /**
@@ -53,15 +54,16 @@ public data class GroupMsgReceiptImpl
  *
  * 其中 [receipt] 以 [字符串][String] 作为载体，应代表发出去的消息的ID
  *
- * @see PrivateMsgReceiptImpl
+ * @see PrivateMsgReceiptData
  */
 public interface PrivateMsgReceipt : SenderReceipt<String>
 
 
-public data class PrivateMsgReceiptImpl
-@JvmOverloads constructor(
+public data class PrivateMsgReceiptData
+// @JvmOverloads
+constructor(
     override val receipt: Carrier<String>,
-    override val failed: Throwable? = null
+    // override val failed: Throwable? = null
 ) : PrivateMsgReceipt
 
 /**
@@ -69,15 +71,16 @@ public data class PrivateMsgReceiptImpl
  *
  * 其中 [receipt] 以 [布尔值][Boolean] 作为载体，应代表其是否发布成功。
  *
- * @see GroupNoticeReceiptImpl
+ * @see GroupNoticeReceiptData
  */
 public interface GroupNoticeReceipt : SenderReceipt<Boolean>
 
 
-public data class GroupNoticeReceiptImpl
-@JvmOverloads constructor(
+public data class GroupNoticeReceiptData
+// @JvmOverloads
+constructor(
     override val receipt: Carrier<Boolean>,
-    override val failed: Throwable? = null
+    // override val failed: Throwable? = null
 ) : GroupNoticeReceipt
 
 /**
@@ -85,13 +88,14 @@ public data class GroupNoticeReceiptImpl
  *
  * 其中 [receipt] 以 [布尔值][Boolean] 作为载体，应代表其是否签到成功。
  *
- * @see GroupNoticeReceiptImpl
+ * @see GroupNoticeReceiptData
  */
 public interface GroupSignReceipt : SenderReceipt<Boolean>
 
 
-public data class GroupSignReceiptImpl
-@JvmOverloads constructor(
+public data class GroupSignReceiptData
+// @JvmOverloads
+constructor(
     override val receipt: Carrier<Boolean>,
-    override val failed: Throwable? = null
+    // override val failed: Throwable? = null
 ) : GroupSignReceipt

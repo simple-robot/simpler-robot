@@ -25,10 +25,10 @@ import love.forte.simbot.core.api.message.receipts.PrivateMsgReceipt
  * [Sender] 的 无效化实现，所有的方法均会抛出异常。
  */
 object ErrorSender : Sender {
-    override fun sendGroupMsg(group: String, msg: String): GroupMsgReceipt =
+    override fun sendGroupMsg(group: String, msg: String): Nothing =
         NO("Sender.sendGroupMsg")
 
-    override fun sendPrivateMsg(code: String, group: String?, msg: String): PrivateMsgReceipt =
+    override fun sendPrivateMsg(code: String, group: String?, msg: String): Nothing =
         NO("Sender.sendPrivateMsg")
 
     override fun sendGroupNotice(
@@ -39,10 +39,10 @@ object ErrorSender : Sender {
         top: Boolean,
         toNewMember: Boolean,
         confirm: Boolean
-    ): GroupNoticeReceipt =
+    ): Nothing =
         NO("Sender.sendGroupNotice")
 
-    override fun sendGroupSign(groupCode: String, title: String, message: String): GroupSignReceipt =
+    override fun sendGroupSign(groupCode: String, title: String, message: String): Nothing =
         NO("Sender.sendGroupSign")
 }
 

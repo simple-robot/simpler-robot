@@ -30,4 +30,4 @@ public class UnusableSenderException : RuntimeException {
 
 
 @Suppress("FunctionName", "NOTHING_TO_INLINE")
-internal inline fun NO(msg: String = "This sender api cannot be used."): Nothing = throw UnusableSenderException(msg)
+internal inline fun NO(api: String): Nothing = throw UnusableSenderException("This sender api cannot be used: $api")

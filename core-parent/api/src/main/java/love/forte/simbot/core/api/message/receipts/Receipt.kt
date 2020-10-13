@@ -28,16 +28,16 @@ public interface Receipt<T> {
      */
     val receipt: Carrier<T>
 
-    /**
-     * 如果失败，则可能存在一个异常。
-     */
-    val failed: Throwable?
-
-    /**
-     * 如果 [failed] 存在, 则抛出此异常
-     */
-    @JvmDefault
-    fun orThrow() {
-        failed?.run { throw this }
-    }
+    // /**
+    //  * 如果失败，则可能存在一个异常。
+    //  */
+    // val failed: Throwable?
+    //
+    // /**
+    //  * 如果 [failed] 存在, 则抛出此异常
+    //  */
+    // @JvmDefault
+    // fun orThrow() {
+    //     failed?.run { throw this }
+    // }
 }
