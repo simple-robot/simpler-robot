@@ -29,7 +29,28 @@ public abstract class MiraiMessageSourceFlagContent : FlagContent {
 }
 
 
+
 /**
  * 获取标识主体的字符串ID。
  */
 public val <T : FlagContent> Flag<T>.flagId: String get() = flag.id
+
+
+public fun <C: MiraiMessageSourceFlagContent> miraiMessageFlag(flag: C): Flag<C> {
+    return MiraiMessageFlagData(flag)
+}
+
+public inline fun <C: MiraiMessageSourceFlagContent> miraiMessageFlag(flag: () -> C): Flag<C> {
+    return miraiMessageFlag(flag())
+}
+
+/**
+ * mirai 消息标识。
+ */
+public interface MiraiMessageFlag<C: MiraiMessageSourceFlagContent> : Flag<C>
+
+/**
+ * 标识类型为 [MiraiMessageSourceFlagContent] 的 [Flag] 实例，
+ * 可用于mirai的撤回。
+ */
+internal data class MiraiMessageFlagData<C: MiraiMessageSourceFlagContent>(override val flag: C) : Flag<C>, MiraiMessageFlag<C>

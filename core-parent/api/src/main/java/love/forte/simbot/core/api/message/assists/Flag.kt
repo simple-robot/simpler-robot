@@ -41,7 +41,7 @@ public data class FlagImpl<out T: FlagContent>(override val flag: T): Flag<T>
 /**
  * function param like `val flag = flag { "id" }`。
  */
-@Suppress("FunctionName")
+// @Suppress("FunctionName")
 public inline fun <T: FlagContent> flag(getFlag: () -> T): Flag<T> = FlagImpl(getFlag())
 
 

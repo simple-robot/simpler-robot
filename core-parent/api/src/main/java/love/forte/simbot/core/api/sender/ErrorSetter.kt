@@ -37,7 +37,7 @@ object ErrorSetter : Setter {
     override fun setGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, agree: Boolean): Carrier<Boolean>  =
         NO("Setter.setGroupAddRequest")
 
-    override fun changeGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> =
+    override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> =
         NO("Setter.setGroupAdmin")
 
     override fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean> =
@@ -52,7 +52,7 @@ object ErrorSetter : Setter {
     override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<Boolean> =
         NO("Setter.setGroupRemark")
 
-    override fun setGroupLeave(groupCode: String, forcibly: Boolean): Carrier<Boolean> =
+    override fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> =
         NO("Setter.setGroupLeave")
 
     override fun setGroupMemberKick(groupCode: String, memberCode: String, blackList: Boolean): Carrier<Boolean> =

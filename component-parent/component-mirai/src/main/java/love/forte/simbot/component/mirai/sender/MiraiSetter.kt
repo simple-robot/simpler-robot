@@ -12,14 +12,22 @@
 
 package love.forte.simbot.component.mirai.sender
 
-import love.forte.common.utils.Carrier
+import kotlinx.coroutines.runBlocking
+import love.forte.common.utils.*
+import love.forte.simbot.component.mirai.message.MiraiMessageFlag
+import love.forte.simbot.core.CompLogger
 import love.forte.simbot.core.api.message.MessageEventGet
 import love.forte.simbot.core.api.message.assists.Flag
+import love.forte.simbot.core.api.message.containers.AccountCodeContainer
+import love.forte.simbot.core.api.message.containers.GroupCodeContainer
 import love.forte.simbot.core.api.message.events.FriendAddRequest
 import love.forte.simbot.core.api.message.events.GroupAddRequest
 import love.forte.simbot.core.api.sender.Setter
 import net.mamoe.mirai.Bot
-import net.mamoe.mirai.contact.checkBotPermission
+import net.mamoe.mirai.contact.mute
+import net.mamoe.mirai.message.data.EmptyMessageChain
+import net.mamoe.mirai.recall
+import java.util.concurrent.TimeUnit
 
 /**
  *
@@ -28,6 +36,13 @@ import net.mamoe.mirai.contact.checkBotPermission
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public class MiraiSetter(private val bot: Bot) : Setter {
+    private companion object : CompLogger("MiraiSetter") {
+        private val setGroupAnonymous0Logger: Int by lazy(LazyThreadSafetyMode.NONE) {
+            logger.warn("It is not supported to modify the anonymous chat status, only to return to the current status. This warning will only appear once.")
+            0
+        }
+    }
+
     /**
      * 通过好友申请。
      */
@@ -53,46 +68,216 @@ public class MiraiSetter(private val bot: Bot) : Setter {
     private fun changeGroupAdmin0(groupCode: Long, memberCode: Long, promotion: Boolean): Carrier<Boolean> {
         throw IllegalStateException("Api not supported by mirai: changeGroupAdmin")
     }
+
     @Deprecated("Api not supported by mirai: changeGroupAdmin")
-    override fun changeGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> =
+    override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> =
         changeGroupAdmin0(groupCode.toLong(), memberCode.toLong(), promotion)
+
     @Deprecated("Api not supported by mirai: changeGroupAdmin")
-    override fun changeGroupAdmin(groupCode: Long, memberCode: Long, promotion: Boolean): Carrier<Boolean> =
+    override fun setGroupAdmin(groupCode: Long, memberCode: Long, promotion: Boolean): Carrier<Boolean> =
         changeGroupAdmin0(groupCode, memberCode, promotion)
 
-    override fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean> {
-        TODO("Not yet implemented")
+
+    /**
+     * 设置群匿名是否开启。
+     * 不支持修改匿名聊天状态，仅支持返回当前状态。
+     * @return 设置操作的回执，代表当前状态。
+     */
+    private fun setGroupAnonymous0(group: Long, agree: Boolean): Carrier<Boolean> {
+        setGroupAnonymous0Logger
+        return bot.getGroup(group).settings.isAnonymousChatEnabled.toCarrier()
     }
 
-    override fun setGroupBan(groupCode: String, memberCode: String, time: Long): Carrier<Boolean> {
-        TODO("Not yet implemented")
+    override fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean> =
+        setGroupAnonymous0(group.toLong(), agree)
+
+    override fun setGroupAnonymous(group: Long, agree: Boolean): Carrier<Boolean> =
+        setGroupAnonymous0(group, agree)
+
+    override fun setGroupAnonymous(group: GroupCodeContainer, agree: Boolean): Carrier<Boolean> =
+        setGroupAnonymous0(group.groupCodeNumber, agree)
+
+    /**
+     * 禁言/解除禁言
+     */
+    private fun setGroupBan0(groupCode: Long, memberCode: Long, time: Long, timeUnit: TimeUnit): Carrier<Boolean> {
+        bot.getGroupMember(groupCode, memberCode).apply {
+            time.takeIf { time > 0 }?.let { t ->
+                val muteTime: Long = t timeBy timeUnit timeAs Seconds
+                runBlocking {
+                    this@apply.mute(muteTime)
+                }
+            } ?: runBlocking {
+                this@apply.unmute()
+            }
+        }
+        return true.toCarrier()
     }
 
-    override fun setGroupWholeBan(groupCode: String, ban: Boolean): Carrier<Boolean> {
-        TODO("Not yet implemented")
+    override fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean> =
+        setGroupBan0(groupCode.toLong(), memberCode.toLong(), time, timeUnit)
+
+    override fun setGroupBan(groupCode: Long, memberCode: Long, time: Long, timeUnit: TimeUnit): Carrier<Boolean> =
+        setGroupBan0(groupCode, memberCode, time, timeUnit)
+
+    override fun setGroupBan(group: GroupCodeContainer, member: AccountCodeContainer, time: Long): Carrier<Boolean> =
+        setGroupBan(group.groupCodeNumber, member.accountCodeNumber, time)
+
+    override fun setGroupBan(
+        group: GroupCodeContainer,
+        member: AccountCodeContainer,
+        time: Long,
+        timeUnit: TimeUnit
+    ): Carrier<Boolean> = setGroupBan(group.groupCodeNumber, member.accountCodeNumber, time, timeUnit)
+
+
+    /**
+     * 设置全体禁言。
+     */
+    private fun setGroupWholeBan0(groupCode: Long, ban: Boolean): Carrier<Boolean> {
+        return bot.getGroup(groupCode).settings.apply {
+            isMuteAll = ban
+        }.isMuteAll.toCarrier()
     }
 
-    override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<Boolean> {
-        TODO("Not yet implemented")
+    override fun setGroupWholeBan(groupCode: String, ban: Boolean): Carrier<Boolean> =
+        setGroupWholeBan0(groupCode.toLong(), ban)
+
+    override fun setGroupWholeBan(groupCode: Long, ban: Boolean): Carrier<Boolean> =
+        setGroupWholeBan0(groupCode, ban)
+
+    override fun setGroupWholeBan(groupCode: GroupCodeContainer, ban: Boolean): Carrier<Boolean> =
+        setGroupWholeBan0(groupCode.groupCodeNumber, ban)
+
+    /**
+     * 设置群员的群名片。需要有对应权限。
+     */
+    private fun setGroupRemark0(groupCode: Long, memberCode: Long, remark: String?): Carrier<String> {
+        return bot.getGroupMember(groupCode, memberCode).run {
+            remark?.also { nameCard = it }
+            nameCard
+        }.toCarrier()
     }
 
-    override fun setGroupLeave(groupCode: String, forcibly: Boolean): Carrier<Boolean> {
-        TODO("Not yet implemented")
+    override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> =
+        setGroupRemark0(groupCode.toLong(), memberCode.toLong(), remark)
+
+    override fun setGroupRemark(groupCode: Long, memberCode: Long, remark: String?): Carrier<String> =
+        setGroupRemark0(groupCode, memberCode, remark)
+
+    override fun setGroupRemark(
+        group: GroupCodeContainer,
+        member: AccountCodeContainer,
+        remark: String?
+    ): Carrier<String> = setGroupRemark(group.groupCodeNumber, member.accountCodeNumber, remark)
+
+    /**
+     * 退出群或解散群。
+     * mirai尚不支持解散群。（mirai 1.3.2）
+     */
+    private fun setGroupQuit0(groupCode: Long, forcibly: Boolean): Carrier<Boolean> {
+        return runBlocking { bot.getGroup(groupCode).quit() }.toCarrier()
     }
 
-    override fun setGroupMemberKick(groupCode: String, memberCode: String, blackList: Boolean): Carrier<Boolean> {
-        TODO("Not yet implemented")
+    override fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> =
+        setGroupQuit0(groupCode.toLong(), forcibly)
+
+    override fun setGroupQuit(groupCode: Long, forcibly: Boolean): Carrier<Boolean> =
+        setGroupQuit0(groupCode, forcibly)
+
+    override fun setGroupQuit(group: GroupCodeContainer, forcibly: Boolean): Carrier<Boolean> =
+        setGroupQuit(group.groupCodeNumber, forcibly)
+
+    /**
+     * 踢出群员。
+     * [blackList] 参数无效。
+     */
+    private fun setGroupMemberKick0(
+        groupCode: Long,
+        memberCode: Long,
+        why: String?,
+        blackList: Boolean
+    ): Carrier<Boolean> {
+        runBlocking {
+            bot.getGroupMember(groupCode, memberCode).kick(why ?: "")
+        }
+        return true.toCarrier()
     }
 
-    override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<Boolean> {
-        TODO("Not yet implemented")
+    override fun setGroupMemberKick(
+        groupCode: String,
+        memberCode: String,
+        why: String?,
+        blackList: Boolean
+    ): Carrier<Boolean> =
+        setGroupMemberKick0(groupCode.toLong(), memberCode.toLong(), why, blackList)
+
+    override fun setGroupMemberKick(
+        groupCode: Long,
+        memberCode: Long,
+        why: String?,
+        blackList: Boolean
+    ): Carrier<Boolean> =
+        setGroupMemberKick0(groupCode, memberCode, why, blackList)
+
+    override fun setGroupMemberKick(
+        group: GroupCodeContainer,
+        member: AccountCodeContainer,
+        why: String?,
+        blackList: Boolean
+    ): Carrier<Boolean> = setGroupMemberKick(group.groupCodeNumber, member.accountCodeNumber, why, blackList)
+
+    /**
+     * 设置群员专属头衔。
+     */
+    private fun setGroupMemberSpecialTitle0(groupCode: Long, memberCode: Long, title: String?): Carrier<String> {
+        return bot.getGroupMember(groupCode, memberCode).run {
+            title?.also { specialTitle = it }
+            specialTitle
+        }.toCarrier()
     }
 
+    override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String> =
+        setGroupMemberSpecialTitle0(groupCode.toLong(), memberCode.toLong(), title)
+
+    override fun setGroupMemberSpecialTitle(groupCode: Long, memberCode: Long, title: String?): Carrier<String> =
+        setGroupMemberSpecialTitle0(groupCode, memberCode, title)
+
+    override fun setGroupMemberSpecialTitle(
+        group: GroupCodeContainer,
+        member: AccountCodeContainer,
+        title: String?
+    ): Carrier<String> = setGroupMemberSpecialTitle(group.groupCodeNumber, member.accountCodeNumber, title)
+
+    /**
+     * 撤回消息。需要填入一个 [Flag] 实例，而这个 [flag] 实例必须是 mirai组件所实现的 [MiraiMessageFlag] 类型。
+     *
+     * @throws IllegalArgumentException 当 [flag] 不是 [MiraiMessageFlag] 类型实例的时候。
+     */
     override fun setMsgRecall(flag: Flag<MessageEventGet.MessageFlagContent>): Carrier<Boolean> {
-        TODO("Not yet implemented")
+        if (flag is MiraiMessageFlag<*>) {
+            runBlocking { bot.recall(flag.flag.source) }
+        } else {
+            throw IllegalArgumentException("The 'flag($flag)' is not 'MiraiMessageFlag' instance, cannot be recall by MiraiSetter.")
+        }
+        return true.toCarrier()
     }
 
-    override fun setGroupName(groupCode: String, name: String): Carrier<Boolean> {
-        TODO("Not yet implemented")
+
+    /**
+     * 设置群名称。
+     * 群名称是移步上传并设置的，这里直接返回的 [name] 的值，但是不保证 [name] 被成功的设置。
+     */
+    private fun setGroupName0(groupCode: Long, name: String): Carrier<String> {
+        return name.apply { bot.getGroup(groupCode).name = this }.toCarrier()
     }
+
+    override fun setGroupName(groupCode: String, name: String): Carrier<String> =
+        setGroupName0(groupCode.toLong(), name)
+
+    override fun setGroupName(groupCode: Long, name: String): Carrier<String> =
+        setGroupName0(groupCode, name)
+
+    override fun setGroupName(group: GroupCodeContainer, name: String): Carrier<String> =
+        setGroupName(group.groupCodeNumber, name)
 }

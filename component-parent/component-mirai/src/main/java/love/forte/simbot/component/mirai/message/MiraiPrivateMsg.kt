@@ -71,11 +71,11 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
      * 非线程安全的懒加载。
      */
     override val flag: Flag<FlagContent> by lazy(LazyThreadSafetyMode.NONE) {
-        flag { FlagContent() }
+        miraiMessageFlag(FlagContent())
     }
 
     /**
-     * id 直接使用 [标识][flag] 获取。
+     * id 直接使用 [标识][flagId] 获取。
      */
     override val id: String
         get() = flag.flagId
