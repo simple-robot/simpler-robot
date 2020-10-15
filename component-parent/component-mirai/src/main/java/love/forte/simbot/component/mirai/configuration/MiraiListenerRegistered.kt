@@ -13,9 +13,11 @@
 package love.forte.simbot.component.mirai.configuration
 
 import love.forte.common.ioc.annotation.Beans
+import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.component.mirai.utils.registerSimbotEvents
 import love.forte.simbot.core.listener.ListenerManager
 import love.forte.simbot.core.listener.ListenerRegistered
+import love.forte.simbot.core.listener.MsgGetProcessor
 import net.mamoe.mirai.Bot
 
 /**
@@ -25,6 +27,10 @@ import net.mamoe.mirai.Bot
 @Beans
 public class MiraiListenerRegistered : ListenerRegistered {
 
+
+    @Depend
+    lateinit var msgGetProcessor: MsgGetProcessor
+
     /**
      * 当所有的监听函数都注册完成后,
      * 为所有的bot注册监听事件。
@@ -32,6 +38,6 @@ public class MiraiListenerRegistered : ListenerRegistered {
     override fun onRegistered(manager: ListenerManager) {
         println("注册bots.")
         // 注册Mirai的所有bot事件。
-        Bot.forEachInstance { it.registerSimbotEvents() }
+        Bot.forEachInstance { it.registerSimbotEvents(msgGetProcessor) }
     }
 }

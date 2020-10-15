@@ -20,7 +20,7 @@ import net.mamoe.mirai.Bot
 /**
  * 基于mirai的 [Bot] 的 [BotInfo] 实现。
  */
-public data class MiraiBotInfo(private val bot: Bot) : BotInfo, LoginInfo {
+public data class MiraiBotInfo(private val bot: Bot) : BotInfo {
 
     /** 当前的bot的账号 */
     override val botCode: String
@@ -37,6 +37,8 @@ public data class MiraiBotInfo(private val bot: Bot) : BotInfo, LoginInfo {
     /** 机器人的头像 */
     override val botAvatar: String
         get() = "http://q1.qlogo.cn/g?b=qq&nk=${bot.id}&s=640"
+
+    override fun toString(): String ="MiraiBotInfo(bot=$bot, code=$botCode, name=$botName)"
 }
 
 

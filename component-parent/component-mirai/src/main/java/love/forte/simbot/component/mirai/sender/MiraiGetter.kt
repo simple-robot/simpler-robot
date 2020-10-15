@@ -16,15 +16,23 @@ import love.forte.simbot.component.mirai.message.MiraiAuthInfo
 import love.forte.simbot.component.mirai.message.MiraiBotInfo
 import love.forte.simbot.component.mirai.message.MiraiGroupNoteList
 import love.forte.simbot.component.mirai.message.result.*
+import love.forte.simbot.core.api.message.MsgGet
 import love.forte.simbot.core.api.message.containers.AccountCodeContainer
+import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.containers.BotInfo
 import love.forte.simbot.core.api.message.containers.GroupCodeContainer
 import love.forte.simbot.core.api.message.results.*
 import love.forte.simbot.core.api.sender.Getter
+import love.forte.simbot.core.api.sender.GetterFactory
 import net.mamoe.mirai.Bot
 
 
-public class MiraiBaseGetter(private val bot: Bot) : Getter {
+public object MiraiGetterFactory : GetterFactory {
+    override fun getOnMsgGetter(msg: MsgGet): Getter = MiraiGetter(Bot.getInstance(msg.botInfo.botCodeNumber))
+    override fun getOnBotGetter(bot: BotContainer): Getter = MiraiGetter(Bot.getInstance(bot.botInfo.botCodeNumber))
+}
+
+public class MiraiGetter(private val bot: Bot) : Getter {
     override val authInfo: AuthInfo
         get() = MiraiAuthInfo(AndroidBotCookieUtils.cookies(bot))
 

@@ -15,6 +15,8 @@
 package love.forte.simbot.core.api.message
 
 import love.forte.catcode.CatCodeUtil
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 /*
  *
@@ -40,14 +42,6 @@ public interface MessageContent {
      * 消息字符串文本。
      */
     val msg: String?
-
-
-    /**
-     * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的 [MessageContent]
-     * @param msgContent MessageContent
-     * @return MessageContent
-     */
-    operator fun plus(msgContent: MessageContent): MessageContent
 }
 
 
@@ -55,7 +49,6 @@ public interface MessageContent {
  * 预期内的特殊消息类型，提供一些可能会用到的特殊消息类型。
  */
 public sealed class ExpectedMessageContent : MessageContent {
-    override fun plus(msgContent: MessageContent): MessageContent = this compound msgContent
 }
 
 
@@ -63,16 +56,15 @@ public sealed class ExpectedMessageContent : MessageContent {
  * 对于单一 [MessageContent] 的单层封装。
  * 通过 [toSingle] 进行构建，通过[isSingle] 进行判断。
  */
-internal data class SingleMessageContent(val single: MessageContent) : ExpectedMessageContent() {
+public data class SingleMessageContent
+internal constructor(val single: MessageContent) : ExpectedMessageContent() {
     override val msg: String?
         get() = single.msg
 
-    override fun plus(msgContent: MessageContent): MessageContent {
-        return when (msgContent) {
-            is EmptyMessageContent -> this.copy()
-            else -> this compound msgContent
-        }
-    }
+    // override fun plus(msgContent: MessageContent): MessageContent {
+    //     return if (msgContent is EmptyMessageContent) this.copy()
+    //     else this compound msgContent
+    // }
 }
 
 /**
@@ -87,16 +79,23 @@ public fun MessageContent.toSingle(): MessageContent = when (this) {
 /**
  * 判断是否为 [SingleMessageContent] 实例。
  */
-public fun MessageContent.isSingle(): Boolean = this is SingleMessageContent
+@OptIn(ExperimentalContracts::class)
+public fun MessageContent.isSingle(): Boolean {
+    contract {
+        returns(true) implies (this@isSingle is SingleMessageContent)
+    }
+    return this is SingleMessageContent
+}
 
 
 /**
  * 复合类型消息，连接两个 [MessageContent] 。
- * 复合类型消息通过 [compound] 进行构建、[isCompound] 进行判断，不能直接构建。
- * @see compound
+ * 复合类型消息通过 [plus] 进行构建、[isCompound] 进行判断，不能直接构建。
+ * @see plus
  * @see isCompound
  */
-internal data class CompoundMessageContent(
+public data class CompoundMessageContent
+internal constructor(
     val first: MessageContent,
     val second: MessageContent
 ) : ExpectedMessageContent() {
@@ -114,11 +113,17 @@ internal data class CompoundMessageContent(
 
 
 /** 判断是否为复合msg。 */
-public fun MessageContent.isCompound(): Boolean = this is CompoundMessageContent
+@OptIn(ExperimentalContracts::class)
+public fun MessageContent.isCompound(): Boolean {
+    contract {
+        returns(true) implies (this@isCompound is CompoundMessageContent)
+    }
+    return this is CompoundMessageContent
+}
 
 
 /** 复合两个message。 */
-public infix fun MessageContent.compound(other: MessageContent): MessageContent {
+public infix operator fun MessageContent.plus(other: MessageContent): MessageContent {
     return when {
         this is EmptyMessageContent && other is EmptyMessageContent -> EmptyMessageContent
         this is EmptyMessageContent -> other.toSingle()
@@ -139,27 +144,49 @@ public infix fun MessageContent.compound(other: MessageContent): MessageContent 
  */
 public object EmptyMessageContent : ExpectedMessageContent() {
     override val msg: String? = null
-    override fun plus(msgContent: MessageContent): MessageContent = msgContent
+    // override fun plus(msgContent: MessageContent): MessageContent = msgContent
 }
+
+
+/**
+ * 判断一个消息是否为 [EmptyMessageContent]。
+ */
+public fun MessageContent.isEmpty(): Boolean = this == EmptyMessageContent
 
 
 /**
  * 一个 [预期内的][ExpectedMessageContent] 以字符串消息为主体的 [MessageContent] 默认实现类。
  */
 public data class TextMessageContent(override val msg: String?) : ExpectedMessageContent() {
+    // /**
+    //  * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的 [MessageContent]
+    //  * 将会直接进行字符串拼接
+    //  */
+    // override fun plus(msgContent: MessageContent): MessageContent {
+    //     return when {
+    //         this.msg === null && msgContent.msg === null -> TextMessageContent(null)
+    //         this.msg === null -> TextMessageContent(msgContent.msg)
+    //         msgContent.msg === null -> this.copy()
+    //         else -> TextMessageContent(this.msg + msgContent.msg)
+    //     }
+    // }
+}
+
+
+/**
+ * 代表一个可能获取到 [url] 的消息类型。
+ */
+public interface NetMessageContent : MessageContent {
     /**
-     * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的 [MessageContent]
-     *
-     * 将会直接进行字符串拼接
+     * 获取url。如果获取不到则抛出异常。
+     * @throws IllegalStateException 获取不到时。
      */
-    override fun plus(msgContent: MessageContent): MessageContent {
-        return when {
-            this.msg === null && msgContent.msg === null -> TextMessageContent(null)
-            this.msg === null -> TextMessageContent(msgContent.msg)
-            msgContent.msg === null -> this.copy()
-            else -> TextMessageContent(this.msg + msgContent.msg)
-        }
-    }
+    val url: String
+
+    /**
+     * 获取url，或者null。
+     */
+    fun getUrlOrNull(): String?
 }
 
 
@@ -168,34 +195,98 @@ public data class TextMessageContent(override val msg: String?) : ExpectedMessag
  * 图片消息的 [msg] 以猫猫码展示。
  *
  * @property id 此图片的ID, 如果是本地手动构建的则可能为空字符串。
- * @property path 图片的网络路径或者本地文件路径。
- * @property url 图片对应的网络链接地址。如果是通过本地文件构建的，则会抛出异常。
+ * @property path 图片的网络路径或者本地文件路径。如果是接收到的图片，则可能为null。
+ * @property url 图片对应的网络链接地址。如果是通过本地文件构建的，获取则可能为null。
  */
 public open class ImageMessageContent(
     open val id: String,
-    open val path: String,
-    open val url: String
-) : ExpectedMessageContent() {
+    open val flash: Boolean,
+    private val _path: () -> String?,
+    private val _url: () -> String?
+) : ExpectedMessageContent(), NetMessageContent {
+
+    constructor(id: String, flash: Boolean, path: String?, url: String): this(id, flash, {path}, {url})
+
+    public override val url: String get() = _url() ?: throw IllegalStateException("Unable to get url.")
+
+    public open val path: String? = _path()
+
+    public override fun getUrlOrNull(): String? = _url()
 
     /**
      * 消息字符串文本。
      *
      */
-    override val msg: String?
-        get() = CatCodeUtil.getStringCodeBuilder("image")
-            .key("id").value(id)
-            .key("file").value(path)
-            .key("url").value(url)
-            .build()
+    override val msg: String by lazy(LazyThreadSafetyMode.NONE) {
+        val builder = CatCodeUtil.getStringCodeBuilder("image").key("id").value(id)
+        path?.let { builder.key("file").value(it) }
+        getUrlOrNull()?.let { builder.key("url").value(it) }
+        builder.build()
+    }
+
 
     /**
-     * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的 [MessageContent]
-     * @param msgContent MessageContent
-     * @return MessageContent
+     * 拷贝一个复制品。
      */
-    override fun plus(msgContent: MessageContent): MessageContent {
-        TODO("Not yet implemented")
+    protected open fun copy(): ImageMessageContent = ImageMessageContent(id, flash, _path, _url)
+
+    // /**
+    //  * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的 [MessageContent]
+    //  * @param msgContent MessageContent
+    //  * @return MessageContent
+    //  */
+    // override fun plus(msgContent: MessageContent): MessageContent {
+    //     return if (msgContent is EmptyMessageContent) this.copy()
+    //     else this compound msgContent
+    // }
+}
+
+/**
+ * 一个 [预期内的][ExpectedMessageContent] 以语音作为消息主体的 [MessageContent] 默认实现类。
+ * 语音消息的 [msg] 以猫猫码展示。
+ *
+ * @property id 此语音的ID, 如果是本地手动构建的则可能为空字符串。
+ * @property path 语音的网络路径或者本地文件路径。
+ * @property url 语音对应的网络链接地址。如果是通过本地文件构建的，获取则会抛出异常。
+ */
+public open class VoiceMessageContent(
+    open val id: String,
+    private val _path: () -> String?,
+    private val _url: () -> String?
+) : ExpectedMessageContent(), NetMessageContent {
+
+    public override val url: String get() = _url() ?: throw IllegalStateException("Unable to get url.")
+
+    public open val path: String? = _path()
+
+    public override fun getUrlOrNull(): String? = _url()
+
+    /**
+     * 消息字符串文本。
+     *
+     */
+    override val msg: String by lazy(LazyThreadSafetyMode.NONE) {
+        val builder = CatCodeUtil.getStringCodeBuilder("voice").key("id").value(id)
+        path?.let { builder.key("file").value(it) }
+        getUrlOrNull()?.let { builder.key("url").value(it) }
+        builder.build()
     }
+
+
+    /**
+     * 拷贝一个复制品。
+     */
+    protected open fun copy(): VoiceMessageContent = VoiceMessageContent(id, _path, _url)
+
+    // /**
+    //  * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的 [MessageContent]
+    //  * @param msgContent MessageContent
+    //  * @return MessageContent
+    //  */
+    // override fun plus(msgContent: MessageContent): MessageContent {
+    //     return if (msgContent is EmptyMessageContent) this.copy()
+    //     else this compound msgContent
+    // }
 }
 
 

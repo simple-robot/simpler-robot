@@ -12,6 +12,14 @@
 
 package love.forte.simbot.core.api.sender
 
+import love.forte.simbot.core.api.message.MessageContent
+import love.forte.simbot.core.api.message.assists.Flag
+import love.forte.simbot.core.api.message.containers.AccountCodeContainer
+import love.forte.simbot.core.api.message.containers.AccountContainer
+import love.forte.simbot.core.api.message.containers.GroupCodeContainer
+import love.forte.simbot.core.api.message.containers.GroupContainer
+import love.forte.simbot.core.api.message.events.GroupMsg
+import love.forte.simbot.core.api.message.events.PrivateMsg
 import love.forte.simbot.core.api.message.receipts.*
 
 /**
@@ -31,9 +39,10 @@ public interface Sender {
      * 发送一条群消息。
      * @param group String 群号
      * @param msg String   消息正文
-     * @return GroupMsgReceipts 消息回执
+     * @return GroupMsgReceipts 发出的消息的标识，可用于消息撤回。
      */
-    fun sendGroupMsg(group: String, msg: String): GroupMsgReceipt
+    fun sendGroupMsg(group: String, msg: String): Flag<GroupMsg.FlagContent>
+    // fun sendGroupMsg(group: String, msg: String): GroupMsgReceipt
 
 
     /**
@@ -43,8 +52,28 @@ public interface Sender {
      * @param msg String  消息正文
      * @return PrivateMsgReceipts 私聊回执
      */
-    fun sendPrivateMsg(code: String, group: String?, msg: String): PrivateMsgReceipt
-
+    fun sendPrivateMsg(code: String, group: String?, msg: String): Flag<PrivateMsg.FlagContent>
+    @JvmDefault
+    fun sendPrivateMsg(code: Long, group: Long?, msg: String): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code.toString(), group?.toString(), msg)
+    @JvmDefault
+    fun sendPrivateMsg(code: String, group: String?, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code, group, msg.msg ?: throw IllegalArgumentException("msg is Empty."))
+    @JvmDefault
+    fun sendPrivateMsg(code: Long, group: Long?, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code.toString(), group?.toString(), msg)
+    @JvmDefault
+    fun sendPrivateMsg(code: AccountCodeContainer, group: GroupCodeContainer?, msg: String): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code.accountCode, group?.groupCode, msg)
+    @JvmDefault
+    fun sendPrivateMsg(code: AccountContainer, group: GroupContainer?, msg: String): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code.accountInfo, group?.groupInfo, msg)
+    @JvmDefault
+    fun sendPrivateMsg(code: AccountCodeContainer, group: GroupCodeContainer?, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code.accountCode, group?.groupCode, msg)
+    @JvmDefault
+    fun sendPrivateMsg(code: AccountContainer, group: GroupContainer?, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code.accountInfo, group?.groupInfo, msg)
 
     /**
      * 发布群公告

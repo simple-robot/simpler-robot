@@ -12,6 +12,8 @@
 
 package love.forte.simbot.component.mirai.message
 
+import kotlinx.coroutines.runBlocking
+import love.forte.simbot.component.mirai.utils.EmptyMiraiMessageContent
 import love.forte.simbot.component.mirai.utils.toMiraiMessageContent
 import love.forte.simbot.core.api.message.MessageContent
 import love.forte.simbot.core.api.message.TextMessageContent
@@ -42,9 +44,7 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
      */
     override val privateMsgType: PrivateMsg.Type = PrivateMsg.Type.FRIEND
 
-
-
-    private var _msgContent: MessageContent = MiraiMessageContent(message)
+    private var _msgContent: MessageContent = MiraiMessageChainContent(message)
 
     /**
      *  消息事件的消息正文文本。
@@ -53,7 +53,7 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
     override var msgContent: MessageContent
         get() = _msgContent
         set(value) {
-            _msgContent = value.toMiraiMessageContent()
+            _msgContent = runBlocking { value.toMiraiMessageContent() }
         }
 
     /**
@@ -63,7 +63,7 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
         get() = msgContent.msg
         set(value) {
             msgContent = value?.let { TextMessageContent(it) }
-                ?: MiraiMessageContent(EmptyMessageChain)
+                ?: EmptyMiraiMessageContent
         }
 
     /**
@@ -71,7 +71,7 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
      * 非线程安全的懒加载。
      */
     override val flag: Flag<FlagContent> by lazy(LazyThreadSafetyMode.NONE) {
-        miraiMessageFlag(FlagContent())
+        miraiMessageFlag(FlagContent(event.source))
     }
 
     /**
@@ -81,11 +81,11 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
         get() = flag.flagId
 
 
-    /** inner flag content. */
-    inner class FlagContent : MiraiMessageSourceFlagContent(), PrivateMsg.FlagContent {
-        override val source: MessageSource get() = event.source
-    }
+    /** flag content. */
+    public class FlagContent(override val source: MessageSource) : MiraiMessageSourceFlagContent(), PrivateMsg.FlagContent
 }
+
+
 
 
 

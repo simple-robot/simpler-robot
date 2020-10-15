@@ -91,4 +91,6 @@ internal class MiraiBot(
             bot.close()
         }
     }
+
+    override fun toString(): String = bot.toString()
 }

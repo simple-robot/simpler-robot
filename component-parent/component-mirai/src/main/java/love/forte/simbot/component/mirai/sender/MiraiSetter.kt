@@ -17,15 +17,26 @@ import love.forte.common.utils.*
 import love.forte.simbot.component.mirai.message.MiraiMessageFlag
 import love.forte.simbot.core.CompLogger
 import love.forte.simbot.core.api.message.MessageEventGet
+import love.forte.simbot.core.api.message.MsgGet
 import love.forte.simbot.core.api.message.assists.Flag
 import love.forte.simbot.core.api.message.containers.AccountCodeContainer
+import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.containers.GroupCodeContainer
 import love.forte.simbot.core.api.message.events.FriendAddRequest
 import love.forte.simbot.core.api.message.events.GroupAddRequest
+import love.forte.simbot.core.api.sender.Getter
+import love.forte.simbot.core.api.sender.GetterFactory
 import love.forte.simbot.core.api.sender.Setter
+import love.forte.simbot.core.api.sender.SetterFactory
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.mute
 import java.util.concurrent.TimeUnit
+
+public object MiraiSetterFactory : SetterFactory {
+    override fun getOnMsgSetter(msg: MsgGet): Setter = MiraiSetter(Bot.getInstance(msg.botInfo.botCodeNumber))
+    override fun getOnBotSetter(bot: BotContainer): Setter = MiraiSetter(Bot.getInstance(bot.botInfo.botCodeNumber))
+}
+
 
 /**
  *

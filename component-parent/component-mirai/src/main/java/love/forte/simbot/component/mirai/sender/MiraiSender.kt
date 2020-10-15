@@ -12,14 +12,41 @@
 
 package love.forte.simbot.component.mirai.sender
 
-import love.forte.simbot.core.api.message.receipts.GroupMsgReceipt
+import kotlinx.coroutines.runBlocking
+import love.forte.simbot.component.mirai.message.MiraiMessageContent
+import love.forte.simbot.component.mirai.message.MiraiMessageMsgGet
+import love.forte.simbot.component.mirai.message.MiraiPrivateMsg
+import love.forte.simbot.component.mirai.message.miraiMessageFlag
+import love.forte.simbot.component.mirai.utils.toMiraiMessageContent
+import love.forte.simbot.core.api.message.MessageContent
+import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.assists.Flag
+import love.forte.simbot.core.api.message.containers.AccountCodeContainer
+import love.forte.simbot.core.api.message.containers.BotContainer
+import love.forte.simbot.core.api.message.containers.GroupCodeContainer
+import love.forte.simbot.core.api.message.events.GroupMsg
+import love.forte.simbot.core.api.message.events.PrivateMsg
 import love.forte.simbot.core.api.message.receipts.GroupNoticeReceipt
 import love.forte.simbot.core.api.message.receipts.GroupSignReceipt
-import love.forte.simbot.core.api.message.receipts.PrivateMsgReceipt
 import love.forte.simbot.core.api.sender.ErrorSender
 import love.forte.simbot.core.api.sender.Sender
+import love.forte.simbot.core.api.sender.SenderFactory
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.message.MessageReceipt
+
+
+public object MiraiSenderFactory : SenderFactory {
+    override fun getOnMsgSender(msg: MsgGet): Sender {
+        return if (msg is MiraiMessageMsgGet<*>) {
+            MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber), msg.subject)
+        } else {
+            MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber))
+        }
+    }
+    override fun getOnBotSender(bot: BotContainer): Sender = MiraiSender(Bot.getInstance(bot.botInfo.botCodeNumber))
+}
 
 
 /**
@@ -32,14 +59,56 @@ public class MiraiSender(
 ) : Sender {
 
 
-    override fun sendGroupMsg(group: String, msg: String): GroupMsgReceipt {
+    override fun sendGroupMsg(group: String, msg: String): Flag<GroupMsg.FlagContent> {
         TODO("Not yet implemented")
     }
 
 
-    override fun sendPrivateMsg(code: String, group: String?, msg: String): PrivateMsgReceipt {
-        TODO("Not yet implemented")
+    /**
+     * 发送私聊消息。
+     */
+    private fun sendPrivateMsg0(code: Long, group: Long?, msg: MessageContent): Flag<MiraiPrivateMsg.FlagContent> {
+        val miraiMsg = runBlocking { msg.toMiraiMessageContent() }
+
+        val messageReceipt: MessageReceipt<Contact> = if(group != null) {
+            runBlocking { bot.getGroupMember(group, code).run {
+                sendMessage(miraiMsg.getMessage(this))
+            } }
+        } else {
+            // 没有指定group, 则判断当前contact
+            // 存在contact，且contact不是group且id=code，则说明就是发送给此contact的。
+            if(contact !is Group && contact?.id == code) {
+                runBlocking { contact.sendMessage(miraiMsg.getMessage(contact)) }
+            } else {
+                // 认为是发送给好友的
+                val friend = bot.getFriend(code)
+                runBlocking { friend.sendMessage(miraiMsg.getMessage(friend)) }
+            }
+        }
+
+        return miraiMessageFlag<MiraiPrivateMsg.FlagContent> { MiraiPrivateMsg.FlagContent(messageReceipt.source) }
     }
+
+    override fun sendPrivateMsg(code: String, group: String?, msg: String): Flag<MiraiPrivateMsg.FlagContent> =
+        sendPrivateMsg0(code.toLong(), group?.toLong(), msg.toMiraiMessageContent())
+    override fun sendPrivateMsg(code: Long, group: Long?, msg: String): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg0(code, group, msg.toMiraiMessageContent())
+    override fun sendPrivateMsg(code: String, group: String?, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg0(code.toLong(), group?.toLong(), msg)
+    override fun sendPrivateMsg(code: Long, group: Long?, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg0(code, group, msg)
+    override fun sendPrivateMsg(
+        code: AccountCodeContainer,
+        group: GroupCodeContainer?,
+        msg: MessageContent
+    ): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg0(code.accountCodeNumber, group?.groupCodeNumber, msg)
+    override fun sendPrivateMsg(
+        code: AccountCodeContainer,
+        group: GroupCodeContainer?,
+        msg: String
+    ): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg0(code.accountCodeNumber, group?.groupCodeNumber, msg.toMiraiMessageContent())
 
 
     /**

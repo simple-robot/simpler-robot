@@ -13,16 +13,27 @@
 @file:JvmName("MiraiBotEventRegistrar")
 package love.forte.simbot.component.mirai.utils
 
+import love.forte.simbot.component.mirai.message.MiraiPrivateMsg
+import love.forte.simbot.core.listener.MsgGetProcessor
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.event.subscribeAlways
+import net.mamoe.mirai.event.subscribeFriendMessages
+import net.mamoe.mirai.message.FriendMessageEvent
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
 
 
-public fun Bot.registerSimbotEvents() {
+public fun Bot.registerSimbotEvents(msgGetProcessor: MsgGetProcessor) {
 
     this.logger.let { if (it is MiraiLoggerWithSwitch) it else null }?.enable()
 
 
-    println("register: $this")
+
+    // 好友消息
+    this.subscribeAlways<FriendMessageEvent> {
+        if(this.bot.id == this@registerSimbotEvents.id) {
+            msgGetProcessor.onMsg(MiraiPrivateMsg(this))
+        }
+    }
 
 
 
