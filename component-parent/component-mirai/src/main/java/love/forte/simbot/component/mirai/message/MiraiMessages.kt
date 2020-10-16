@@ -21,8 +21,11 @@ import net.mamoe.mirai.contact.MemberPermission
 /**
  * member 转为 [Permissions]。
  */
-public fun Member.toSimbotPermissions(): Permissions = when (this.permission) {
+public fun Member.toSimbotPermissions(): Permissions = this.permission.toSimbotPermissions()
+
+
+public fun MemberPermission.toSimbotPermissions(): Permissions = when(this) {
     MemberPermission.MEMBER -> Permissions.MEMBER
-    MemberPermission.ADMINISTRATOR -> Permissions.ADMINISTRATOR
     MemberPermission.OWNER -> Permissions.OWNER
+    MemberPermission.ADMINISTRATOR -> Permissions.ADMINISTRATOR
 }

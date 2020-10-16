@@ -115,6 +115,8 @@ public interface ListenerFunctionInvokeData {
     val bot: Bot
     /** 当前动态送信器。 */
     val msgSender: MsgSender
+    /** 根据类型获取一个实例。 */
+    operator fun get(type: Class<*>): Any?
 }
 
 

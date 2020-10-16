@@ -24,6 +24,7 @@ import love.forte.simbot.core.api.sender.Getter
 import love.forte.simbot.core.api.sender.MsgSender
 import love.forte.simbot.core.api.sender.Sender
 import love.forte.simbot.core.api.sender.Setter
+import love.forte.simbot.core.bot.Bot
 import love.forte.simbot.core.filter.AtDetection
 import love.forte.simbot.core.filter.FilterManager
 import love.forte.simbot.core.filter.ListenerFilter
@@ -126,6 +127,9 @@ public class MethodListenerFunction(
         private val getterType = Getter::class.java
         private val setterType = Setter::class.java
         private val atDetectionType = AtDetection::class.java
+        private val listenerContextType = ListenerContext::class.java
+        private val botType = Bot::class.java
+
         private val ListensType = Listens::class.java
         private val FiltersType = Filters::class.java
         private val MsgGetType = MsgGet::class.java
@@ -179,41 +183,43 @@ public class MethodListenerFunction(
                     // not filterValue
                     val dependName: String? = dependAnnotation?.value?.ifBlank { null }
 
-                    when {
-                        // 参数是送信器或相关类型
-                        msgSenderType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender }
-                        senderType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender.SENDER }
-                        getterType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender.GETTER }
-                        setterType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender.SETTER }
-                        atDetectionType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.atDetection }
-                    }
+                    // when {
+                    //     // 参数是送信器、at detection等相关类型
+                    //     msgSenderType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender }
+                    //     senderType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender.SENDER }
+                    //     getterType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender.GETTER }
+                    //     setterType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender.SETTER }
+                    //     atDetectionType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.atDetection }
+                    //     listenerContextType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.context }
+                    //     botType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.bot }
+                    // }
 
                     if (orIgnore) {
                         if (dependName != null) {
-                            { _ ->
-                                dependBeanFactory.getOrNull(dependName)
-                            }
+                            { dependBeanFactory.getOrNull(dependName) }
                         } else {
                             val type =
-                                dependAnnotation?.type?.takeIf { dt -> dt.java != Void::class.java }?.java ?: parameterType
+                                dependAnnotation?.type?.takeIf { dt -> dt.java != Void::class.java }?.java
+                                    ?: parameterType
                             { d ->
                                 // 如果当前的动态参数msgGet的类型正好是此参数的类型的子类，直接使用
                                 val msgGet: MsgGet = d.msgGet
                                 if (type.isAssignableFrom(msgGet.javaClass)) msgGet
-                                else dependBeanFactory.getOrNull(type)
+                                else d[type] ?: dependBeanFactory.getOrNull(type)
                             }
                         }
                     } else {
                         if (dependName != null) {
-                            { _ -> dependBeanFactory[dependName] }
+                            { dependBeanFactory[dependName] }
                         } else {
                             val type =
-                                dependAnnotation?.type?.takeIf { dt -> dt.java != Void::class.java }?.java ?: parameterType
+                                dependAnnotation?.type?.takeIf { dt -> dt.java != Void::class.java }?.java
+                                    ?: parameterType
                             { d ->
                                 // 如果获取到的msgGet的类型正好是此参数的类型的子类，直接使用
                                 val msgGet: MsgGet = d.msgGet
                                 if (type.isAssignableFrom(msgGet.javaClass)) msgGet
-                                else dependBeanFactory[type]
+                                else d[type] ?: dependBeanFactory[type]
                             }
                         }
                     }
@@ -230,7 +236,7 @@ public class MethodListenerFunction(
                         )
                     }
 
-                    val type = parameterType
+                    // val parameterType = parameterType
 
                     if (orIgnore) {
                         f@{ d ->
@@ -239,17 +245,17 @@ public class MethodListenerFunction(
                             if (findValue == null) {
                                 null
                             } else {
-                                converterManager.convert(type, findValue)
+                                converterManager.convert(parameterType, findValue)
                             }
                         }
                     } else {
                         f@{ d ->
-                            val msg: String = d.msgGet.msg ?: return@f null
+                            val msg: String = d.msgGet.msg ?: return@f null // todo throw ex
                             val findValue = listenAnnotationFilter?.getFilterValue(filterValueName, msg)
                             if (findValue == null) {
                                 throw IllegalStateException("Unable to extract filter value $filterValueName in method $method.")
                             } else {
-                                converterManager.convert(type, findValue)
+                                converterManager.convert(parameterType, findValue)
                             }
                         }
                     }

@@ -16,6 +16,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import love.forte.catcode.CatCodeUtil
 import love.forte.simbot.component.mirai.utils.EmptyMiraiMessageContent
+import love.forte.simbot.component.mirai.utils.toSimbotString
+import love.forte.simbot.core.api.message.BoxedMessageContent
 import love.forte.simbot.core.api.message.ImageMessageContent
 import love.forte.simbot.core.api.message.MessageContent
 import net.mamoe.mirai.contact.*
@@ -40,45 +42,100 @@ public interface MiraiMessageContent : MessageContent {
 }
 
 
-public data class MiraiCompoundMessageContent(
-    val first: MiraiMessageContent,
-    val second: MiraiMessageContent
-) : MiraiMessageContent {
+/**
+ * 存在多个列表的 Mirai list message content.
+ */
+public data class MiraiListMessageContent(val list: List<MiraiMessageContent>) : MiraiMessageContent {
     override suspend fun getMessage(contact: Contact): Message {
-        val f = contact.async { first.getMessage(contact) }
-        val s = contact.async { second.getMessage(contact) }
-        return f.await() + s.await()
-    }
+        return when {
+            list.isEmpty() -> EmptyMessageChain
+            list.size == 1 -> list[0].getMessage(contact)
+            list.size == 2 -> list.first().getMessage(contact) + list.last().getMessage(contact)
+            else -> list.map { contact.async { it.getMessage(contact) } }.asSequence().map {
+                runBlocking { it.await() }
+            }.reduce { m1, m2 -> m1 + m2 }
+        }
 
-    override val msg: String?
-        get() = "CompoundMessageContent(${(first.msg)}, ${(second.msg)})"
+    }
+    override val msg: String by lazy(LazyThreadSafetyMode.NONE) { list.joinToString("") { it.msg ?: "" } }
+
+    override val images: List<ImageMessageContent> by lazy(LazyThreadSafetyMode.NONE) {
+        list.flatMap { it.images }.takeIf { it.isNotEmpty() } ?: emptyList()
+    }
+}
+
+
+// /**
+//  * mirai 消息拼接。
+//  */
+// public fun MiraiMessageContent.plus(other: MiraiMessageContent) : MiraiMessageContent {
+//     return when {
+//         this is MiraiListMessageContent && other is MiraiListMessageContent ->
+//             MiraiListMessageContent(this.list + other.list)
+//
+//     }
+// }
+
+
+/**
+ * mirai 组件所使用的一个 [SingleMessage] 实现。
+ * 最终发送的时候将会被过滤掉。
+ */
+public object EmptySingleMessage : SingleMessage {
+    override fun contentToString(): String = ""
+    override fun toString(): String = ""
+    override fun equals(other: Any?): Boolean = other === this
+    override fun contentEquals(another: Message, ignoreCase: Boolean): Boolean = another === this
+    override fun contentEquals(another: String, ignoreCase: Boolean): Boolean = another == ""
 }
 
 
 /**
  * mirai 的 single msg.
  */
-public class MiraiSingleMessageContent(val singleMessage: SingleMessage) : MiraiMessageContent {
-    override suspend fun getMessage(contact: Contact): Message = singleMessage
+public class MiraiSingleMessageContent(val singleMessage: (Contact) -> SingleMessage, private val _msg: () -> String?) : MiraiMessageContent {
 
-    // TODO msg
-    override val msg: String = singleMessage.toString()
+    constructor(singleMessage: SingleMessage, msg: String?): this({ singleMessage }, { msg })
+
+    constructor(singleMessage: SingleMessage, msg: () -> String? = { singleMessage.toSimbotString() }): this({ singleMessage }, msg)
+
+    override suspend fun getMessage(contact: Contact): Message = singleMessage(contact)
+
+    override val msg: String? get() = _msg()
+
+    override val images: List<ImageMessageContent> = emptyList()
+
+
 }
 
 
 /**
  *
  * mirai的消息载体，一般内部存放着已经存在的 [MessageChain]。
- * 此类一般构建于接收到消息的时候。
+ * 此类一般构建于接收到消息的时候，即有明确的 [消息链][MessageChain] 的时候。
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class MiraiMessageChainContent(val messageChain: MessageChain) : MiraiMessageContent {
+public class MiraiMessageChainContent(val message: MessageChain) : MiraiMessageContent {
 
-    override suspend fun getMessage(contact: Contact): Message = messageChain
+    override suspend fun getMessage(contact: Contact): Message = message
 
-    // TODO msg
-    override val msg: String = messageChain.toString()
+    override val msg: String by lazy(LazyThreadSafetyMode.NONE) { message.toSimbotString() }
+
+    override val images: List<ImageMessageContent> by lazy(LazyThreadSafetyMode.NONE) {
+        message.asSequence()
+            .filter { it is Image || it is FlashImage }
+            .map {
+                val img: Image = if (it is FlashImage) it.image else it as Image
+                MiraiImageMessageContent(
+                    img.imageId,
+                    { null }, // no path.
+                    { runBlocking { img.queryUrl() } },
+                    it is FlashImage,
+                    { img }
+                )
+            }.toList()
+    }
 }
 
 
@@ -114,6 +171,8 @@ public class MiraiSingleAtMessageContent(private val code: Long) : MiraiMessageC
 
     // at cat msg.
     override val msg: String by lazy(LazyThreadSafetyMode.NONE) { CatCodeUtil.stringTemplate.at(code) }
+
+    override val images: List<ImageMessageContent> = emptyList()
 }
 
 /**
@@ -150,6 +209,8 @@ public class MiraiAtsMessageContent(private val codes: List<Long>) : MiraiMessag
     override val msg: String by lazy(LazyThreadSafetyMode.NONE) {
         codes.joinToString("") { CatCodeUtil.stringTemplate.at(it) }
     }
+
+    override val images: List<ImageMessageContent> = emptyList()
 }
 
 
@@ -158,27 +219,48 @@ public class MiraiAtsMessageContent(private val codes: List<Long>) : MiraiMessag
  */
 public class MiraiImageMessageContent(
     id: String,
-    path: String? = null,
-    url: String? = null,
+    path: () -> String? = { null },
+    url: () -> String? = { null },
     override val flash: Boolean = false,
     private val imageFunction: suspend (Contact) -> Image
-) :
-    ImageMessageContent(
+) : ImageMessageContent(
         id,
         flash,
-        { path },
-        { url }
+        path,
+        url
     ), MiraiMessageContent {
 
-    override suspend fun getMessage(contact: Contact): Message = imageFunction(contact).let {
-        if (flash) {
-            it.flash()
+    constructor(
+        id: String,
+        path: String? = null,
+        url: String? = null,
+        flash: Boolean,
+        imageFunction: suspend (Contact) -> Image
+    ): this(id, { path }, { url }, flash, imageFunction)
+
+    constructor(
+        id: String,
+        flash: Boolean,
+        imageFunction: suspend (Contact) -> Image
+    ): this(id, null, null, flash, imageFunction)
+
+    private lateinit var image: Image
+
+
+    override suspend fun getMessage(contact: Contact): Message =
+        if (::image.isInitialized) {
+            image
         } else {
-            it
+            val img = imageFunction(contact)
+            if (!::image.isInitialized) {
+                image = img
+            }
+            image
+        }.let {
+            if (flash) {
+                it.flash()
+            } else {
+                it
+            }
         }
-    }
-
-    override val msg: String
-        get() = super.msg
-
 }

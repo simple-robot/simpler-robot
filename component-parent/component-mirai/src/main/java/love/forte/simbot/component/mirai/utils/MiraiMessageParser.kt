@@ -21,15 +21,16 @@ import io.ktor.client.statement.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import love.forte.catcode.*
 import love.forte.catcode.codes.Nyanko
 import love.forte.simbot.component.mirai.message.*
 import love.forte.simbot.core.api.message.*
 import love.forte.simbot.core.api.message.MessageContent
-import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.uploadAsImage
-import net.mamoe.mirai.utils.toExternalImage
 import java.io.File
 import java.io.InputStream
 import java.net.URL
@@ -47,24 +48,22 @@ public suspend fun MessageContent.toMiraiMessageContent(): MiraiMessageContent {
     return when (this) {
         is MiraiMessageContent -> return this
         // 预期内的消息。
-        is ExpectedMessageContent -> when {
-            this.isEmpty() -> EmptyMiraiMessageContent
-            this.isSingle() -> this.single.toMiraiMessageContent()
-            // compound content
-            this.isCompound() -> {
-                if (first is MiraiMessageContent && second is MiraiMessageContent) {
-                    MiraiCompoundMessageContent((first as MiraiMessageContent), (second as MiraiMessageContent))
-                } else {
-                    val firstContentDef = GlobalScope.async { first.toMiraiMessageContent() }
-                    val secondContentDef = GlobalScope.async { second.toMiraiMessageContent() }
-                    val firstContent = firstContentDef.await()
-                    val secondContent = secondContentDef.await()
-                    MiraiCompoundMessageContent(firstContent, secondContent)
+        is ExpectedMessageContent -> when (this) {
+            is BoxedMessageContent -> when (this) {
+                EmptyMessageContent -> EmptyMiraiMessageContent
+                is SingleMessageContent -> single.toMiraiMessageContent()
+                is CompoundMessageContent -> {
+                    // 复合型，转化.
+                    val miraiMsgList =
+                        msgList.map {
+                            GlobalScope.async { it.toMiraiMessageContent() }
+                        }.map { it.await() }
+                    MiraiListMessageContent(miraiMsgList)
                 }
             }
 
             // image content
-            this is ImageMessageContent -> {
+            is ImageMessageContent -> {
                 // image message content.
                 if (this is MiraiImageMessageContent) {
                     this
@@ -77,24 +76,29 @@ public suspend fun MessageContent.toMiraiMessageContent(): MiraiMessageContent {
 
                     if (pathFile != null) {
                         path as String
-                        MiraiImageMessageContent(id = path, path = path, flash = this.flash) { c -> pathFile.uploadAsImage(c) }
+                        MiraiImageMessageContent(
+                            id = path,
+                            path = path,
+                            flash = this.flash
+                        ) { c -> pathFile.uploadAsImage(c) }
                     } else {
                         // 没有本地文件，查看网络文件
                         val url: String = path?.takeIf { it.startsWith("http") }
                             ?: this.getUrlOrNull()
                             ?: throw IllegalStateException("Unable to locate file: file path is not exists and no url exists.")
                         val imageURL = URL(url)
-                        MiraiImageMessageContent(id = url, url = url, flash = this.flash) { c -> imageURL.toStream().uploadAsImage(c) }
+                        MiraiImageMessageContent(id = url, url = url, flash = this.flash) { c ->
+                            imageURL.toStream().uploadAsImage(c)
+                        }
                     }
                 }
             }
-            this is VoiceMessageContent -> {
+            is VoiceMessageContent -> {
                 TODO()
             }
-            // this is TextMessageContent -> {
-            // same as 'else'.
-            // }
-            else -> {
+
+            is TextMessageContent -> {
+                // same as 'else'.
                 msg?.toMiraiMessageContent() ?: EmptyMiraiMessageContent
             }
         }
@@ -115,15 +119,13 @@ public fun String.toMiraiMessageContent(): MiraiMessageContent {
         if (startsWith(CAT_HEAD)) Nyanko.byCode(this).toMiraiMessageContent()
         // not normal text.
         else MiraiSingleMessageContent(PlainText(this.deCatText()))
-    }.reduce { acc, miraiMessageContent ->
-        MiraiCompoundMessageContent(acc, miraiMessageContent)
-    }
+    }.toList().let { MiraiListMessageContent(it) }
 }
 
 /**
  * [Neko] 转化为 [MiraiMessageContent]。
  */
-public fun Neko.toMiraiMessageContent() : MiraiMessageContent {
+public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
     return when (this.type) {
         "at" -> {
             val all = this["all"] == "true"
@@ -131,17 +133,43 @@ public fun Neko.toMiraiMessageContent() : MiraiMessageContent {
             if (all && codes.isEmpty()) {
                 MiraiSingleMessageContent(AtAll)
             } else if (codes.isEmpty()) {
-                 throw IllegalArgumentException("There is no at target.")
+                throw IllegalArgumentException("There is no at target.")
             } else {
                 // codes not empty.
                 codes.atContent()
             }
         }
 
+        // face
         "face" -> {
             val id: Int = this["id"]?.toInt() ?: throw IllegalArgumentException("no face 'id' in $this.")
             MiraiSingleMessageContent(Face(id))
         }
+
+        // 戳一戳，窗口抖动
+        "poke", "shake" -> {
+            val type: Int = this["type"]?.toInt() ?: return MiraiSingleMessageContent(PokeMessage.Poke)
+            val id: Int = this["id"]?.toInt() ?: -1
+            val code: Long = this["code"]?.toLong() ?: -1L
+            val catString = this.toString()
+            MiraiSingleMessageContent({
+                if (it is Group) {
+                    // nudge, need code
+                    if (code == -1L) {
+                        throw IllegalStateException("Unable to locate the target for nudge: no 'code' parameter in cat ${this@toMiraiMessageContent}.")
+                    }
+
+                    val nudge = it.getOrNull(code)?.nudge()
+                        ?: throw IllegalArgumentException("cannot found nudge target: no such member($code) in group($id).")
+                    it.launch { nudge.sendTo(it) }
+                    EmptySingleMessage
+                } else {
+                    // poke.
+                    PokeMessage.values.find { it.type == type && it.id == id } ?: PokeMessage.Poke
+                }
+            }) { catString }
+        }
+
 
         // image
         "image" -> {
@@ -149,7 +177,7 @@ public fun Neko.toMiraiMessageContent() : MiraiMessageContent {
             val filePath = this["file"]
             val file: File? = filePath?.let { FileUtil.file(it) }?.takeIf { it.exists() }
             val flash: Boolean = this["flash"] == "true"
-            if(file != null) {
+            if (file != null) {
                 // 存在文件
                 MiraiImageMessageContent(id = filePath, path = filePath, flash = flash) { c -> file.uploadAsImage(c) }
             } else {
@@ -159,7 +187,9 @@ public fun Neko.toMiraiMessageContent() : MiraiMessageContent {
                     ?: throw IllegalArgumentException("The img has no source in $this")
 
                 val urlId = url.toExternalForm()
-                MiraiImageMessageContent(id = urlId, url = urlId, flash = flash) { c -> url.toStream().uploadAsImage(c) }
+                MiraiImageMessageContent(id = urlId, url = urlId, flash = flash) { c ->
+                    url.toStream().uploadAsImage(c)
+                }
             }
         }
 
@@ -187,15 +217,54 @@ public fun MessageChain.toSimbotString(): String {
  * 将一个 [SingleMessage] 转化为携带catcode的字符串。
  */
 public fun SingleMessage.toSimbotString(): String {
-    return when(this) {
+    return when (this) {
         AtAll -> CatCodeUtil.stringTemplate.atAll()
+        is At -> CatCodeUtil.stringTemplate.at(target)
+        // 普通文本, 转义
+        is PlainText -> content.enCatText()
+        is Face -> CatCodeUtil.stringTemplate.face(id.toString())
+        is PokeMessage -> {
+            // poke, 戳一戳
+            CatCodeUtil.getStringCodeBuilder("poke")
+                .key("type").value(type)
+                .key("id").value(id)
+                .build()
+        }
+        is Image -> {
+            // cat code中不再携带url参数
+            // CatCodeUtil.stringTemplate.image()
+            CatCodeUtil.getStringCodeBuilder("image")
+                .key("id").value(imageId)
+                .build()
+        }
+        is FlashImage -> {
+            val img = this.image
+            // cat code中不再携带url参数
+            // CatCodeUtil.stringTemplate.image()
+            CatCodeUtil.getStringCodeBuilder("image")
+                .key("id").value(img)
+                .key("flash").value(true)
+                .build()
+        }
+        is Voice -> {
+            CatCodeUtil.getStringCodeBuilder("voice")
+                .key("id").value("$fileName.$fileSize")
+                .key("name").value(fileName)
+                .key("size").value(fileSize).apply {
+                    url?.let { key("url").value(it) }
+                }
+                .build()
 
-        else -> "[Cat:TODO,text=${this.toString().deCatParam()}]"
+        }
+        // 引用回复
+        is QuoteReply -> TODO("quoteReply to String.")
+        // 富文本，xml或json
+        is RichMessage -> TODO("rich message to String.")
+
+        // else.
+        else -> "${CAT_HEAD}mirai,text=${this.toString().deCatParam()}]"
     }
 }
-
-
-
 
 
 /**
@@ -208,7 +277,7 @@ private val httpClient: HttpClient = HttpClient()
  * 通过http网络链接得到一个输入流。
  * 通常认为是一个http-get请求
  */
-private suspend fun URL.toStream(): InputStream {
+public suspend fun URL.toStream(): InputStream {
     val urlString = this.toString()
     // QQLog.debug("mirai.http.connection.try", urlString)
     val response = httpClient.get<HttpResponse>(this)

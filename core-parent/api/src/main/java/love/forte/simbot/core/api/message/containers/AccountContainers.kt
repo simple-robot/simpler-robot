@@ -71,14 +71,15 @@ public interface AccountNameContainer : Container, AccountNicknameContainer, Acc
         get() = accountRemark ?: accountNickname
 
     /**
-     * 昵称与备注, 返回一个`账号(备注)?`格式的字符串。
+     * 昵称与备注, 返回一个`(账号(备注)?)?`格式的字符串。
      * 例如：
-     * - `张三(张三的备注)`
-     * - `李四` (没有备注)
+     * - `“张三(张三的备注)”`
+     * - `“李四”` (没有备注)
+     * - `“”` (空)
      */
     @JvmDefault
     val accountNicknameAndRemark: String
-        get() = "$accountNickname${accountRemark?.let { "($it)" } ?: ""}"
+        get() = accountRemark?.let { "$accountNickname($it)" } ?: accountNickname ?: ""
 }
 
 

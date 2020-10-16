@@ -40,6 +40,7 @@ public fun <C: MiraiMessageSourceFlagContent> miraiMessageFlag(flag: C): Flag<C>
     return MiraiMessageFlagData(flag)
 }
 
+/* for kt. */
 public inline fun <C: MiraiMessageSourceFlagContent> miraiMessageFlag(flag: () -> C): Flag<C> {
     return miraiMessageFlag(flag())
 }

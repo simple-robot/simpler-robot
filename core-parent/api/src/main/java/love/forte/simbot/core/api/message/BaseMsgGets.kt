@@ -90,9 +90,11 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
 
 
     /**
-     * 可以得到一个 **消息**
+     * 可以得到一个 **消息**。
+     * 如果你想要对消息进行 **重新定义**，
+     * 可以考虑注入一个 [love.forte.simbot.core.listener.ListenerContext] 而不是想办法重新设置 [msg]。
      */
-    var msg: String?
+    val msg: String?
 
 
     /** 消息接收到的时间。一般是一个时间戳。 */
@@ -193,9 +195,7 @@ public infix fun <T : Class<out MsgGet>, V> MsgGet.findValuesIn(typeCollections:
  */
 public interface EventGet : MsgGet {
     @JvmDefault
-    override var msg: String?
-        get() = null
-        set(value) {}
+    override val msg: String? get() = null
 }
 
 
@@ -213,14 +213,14 @@ public interface MessageEventGet : MsgGet, FlagContainer<MessageEventGet.Message
     /**
      *  消息事件的消息正文文本。
      *
-     * [消息正文][msgContent] 不允许为`null`，但是其中的 [msg][MessageContent.msg] 则不保证其内容了。
+     * [消息正文][msgContent] 不允许为`null`，但是其中的 [msg][MessageContent.msg] 则就不保证了。
      */
-    var msgContent: MessageContent
+    val msgContent: MessageContent
 
     /**
-     * 提供一个简单的方法来获取/设置 [msgContent] 中的文本内容
+     * 提供一个简单的方法来获取 [msgContent] 中的文本内容。
      */
-    override var msg: String?
+    override val msg: String?
 
     /**
      * 消息类型的标识

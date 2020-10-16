@@ -53,6 +53,7 @@ public interface Sender {
      * @return PrivateMsgReceipts 私聊回执
      */
     fun sendPrivateMsg(code: String, group: String?, msg: String): Flag<PrivateMsg.FlagContent>
+    /* 下面都是重载。 */
     @JvmDefault
     fun sendPrivateMsg(code: Long, group: Long?, msg: String): Flag<PrivateMsg.FlagContent> =
         sendPrivateMsg(code.toString(), group?.toString(), msg)
@@ -74,6 +75,31 @@ public interface Sender {
     @JvmDefault
     fun sendPrivateMsg(code: AccountContainer, group: GroupContainer?, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
         sendPrivateMsg(code.accountInfo, group?.groupInfo, msg)
+    /* group 为null的重载。 */
+    @JvmDefault
+    fun sendPrivateMsg(code: String, msg: String): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code, null, msg)
+    @JvmDefault
+    fun sendPrivateMsg(code: Long, msg: String): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code.toString(), null, msg)
+    @JvmDefault
+    fun sendPrivateMsg(code: String, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code, null, msg.msg ?: throw IllegalArgumentException("msg is Empty."))
+    @JvmDefault
+    fun sendPrivateMsg(code: Long, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code.toString(), null, msg)
+    @JvmDefault
+    fun sendPrivateMsg(code: AccountCodeContainer, msg: String): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code.accountCode, null, msg)
+    @JvmDefault
+    fun sendPrivateMsg(code: AccountContainer, msg: String): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code.accountInfo, null, msg)
+    @JvmDefault
+    fun sendPrivateMsg(code: AccountCodeContainer, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code.accountCode, null, msg)
+    @JvmDefault
+    fun sendPrivateMsg(code: AccountContainer, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+        sendPrivateMsg(code.accountInfo, null, msg)
 
     /**
      * 发布群公告

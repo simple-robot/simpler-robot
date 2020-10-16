@@ -12,13 +12,12 @@
 
 package love.forte.simbot.component.mirai.message
 
+import love.forte.simbot.component.mirai.utils.toSimbotString
 import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.assists.Permissions
 import love.forte.simbot.core.api.message.containers.AccountInfo
 import love.forte.simbot.core.api.message.containers.BotInfo
-import net.mamoe.mirai.contact.Contact
-import net.mamoe.mirai.contact.Friend
-import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.contact.Member
+import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.message.GroupMessageEvent
 import net.mamoe.mirai.message.MessageEvent
@@ -94,14 +93,14 @@ public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : Abs
     val message: MessageChain get() = event.message
 
 
-    // TODO 转为cat码的字符串
-    private var _msg: String? = message.toString()
-
-
-    override var msg: String?
-        get() = _msg
-        set(value) { _msg = value }
+    /**
+     * 消息字符串，由 [message] 懒转化为携带cat码的字符串。
+     */
+    override val msg: String? by lazy(LazyThreadSafetyMode.NONE) { message.toSimbotString() }
 
 }
+
+
+
 
 

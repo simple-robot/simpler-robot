@@ -36,19 +36,41 @@ import kotlin.contracts.contract
  * 一个 [MessageContent] 实例至少应该保证能够得到当前消息的 [消息字符串文本][msg]。
  *
  * 一般一些预期内的特殊msg，可以参考 [ExpectedMessageContent]。
+ *
+ * 对于例如 [msg]、[images]等内容的获取，有些组件可能会需要使用懒加载来提高效率。
+ * 在实现懒加载的时候不需要考虑线程安全，对于线程安全的问题应当由使用者自行考虑。
+ *
  */
 public interface MessageContent {
     /**
      * 消息字符串文本。
      */
     val msg: String?
+
+    /**
+     * 尝试寻找消息内容中的 [图片消息][ImageMessageContent]。
+     * 如果是复合消息，则寻找，如果是单独的消息，则除非自身即为图片消息，否则返回空集合。
+     * 返回的集合为read-only list.
+     *
+     *
+     */
+    val images: List<ImageMessageContent>
 }
 
 
 /**
  * 预期内的特殊消息类型，提供一些可能会用到的特殊消息类型。
  */
-public sealed class ExpectedMessageContent : MessageContent {
+public sealed class ExpectedMessageContent : MessageContent
+
+
+/**
+ * 包装性质的 [MessageContent].
+ * 包装性质的实现类不应暴露其构造，而是通过对应方法获取实例。当然，[EmptyMessageContent] 除外。
+ */
+public sealed class BoxedMessageContent : ExpectedMessageContent() {
+    /** 作为包装类型，都可以实现自我复制。 */
+    abstract fun copy(): BoxedMessageContent
 }
 
 
@@ -57,27 +79,30 @@ public sealed class ExpectedMessageContent : MessageContent {
  * 通过 [toSingle] 进行构建，通过[isSingle] 进行判断。
  */
 public data class SingleMessageContent
-internal constructor(val single: MessageContent) : ExpectedMessageContent() {
+internal constructor(val single: MessageContent) : BoxedMessageContent() {
     override val msg: String?
         get() = single.msg
 
-    // override fun plus(msgContent: MessageContent): MessageContent {
-    //     return if (msgContent is EmptyMessageContent) this.copy()
-    //     else this compound msgContent
-    // }
+    override val images: List<ImageMessageContent> get() =
+        if (single is ImageMessageContent) listOf(single)
+        else emptyList()
+
+
+    override fun copy(): SingleMessageContent = SingleMessageContent(single)
+
 }
 
 /**
- * 转化为一个 Single [MessageContent]。
+ * 转化为一个 单只 [MessageContent]，其结果为一个包装类型的最终结果。
  */
 public fun MessageContent.toSingle(): MessageContent = when (this) {
-    is EmptyMessageContent -> EmptyMessageContent
-    is SingleMessageContent -> copy()
+    is BoxedMessageContent -> copy()
     else -> SingleMessageContent(this)
 }
 
 /**
  * 判断是否为 [SingleMessageContent] 实例。
+ * 通过 [MessageContent.plus] 或 [[MessageContent.toSingle] 可能会获取到此类实例。
  */
 @OptIn(ExperimentalContracts::class)
 public fun MessageContent.isSingle(): Boolean {
@@ -89,27 +114,22 @@ public fun MessageContent.isSingle(): Boolean {
 
 
 /**
- * 复合类型消息，连接两个 [MessageContent] 。
- * 复合类型消息通过 [plus] 进行构建、[isCompound] 进行判断，不能直接构建。
- * @see plus
- * @see isCompound
+ * 消息链，复合型message。内部记录了多个 [MessageContent]。
+ * 通过 [MessageContent.plus] 可能会获取到此类实例。
  */
-public data class CompoundMessageContent
-internal constructor(
-    val first: MessageContent,
-    val second: MessageContent
-) : ExpectedMessageContent() {
-    /**
-     * 消息字符串文本。
-     */
-    override val msg: String?
-        get() = when {
-            first.msg == null && second.msg == null -> null
-            first.msg?.isBlank() == true && second.msg?.isBlank() == true -> ""
+public open class CompoundMessageContent
+internal constructor(val msgList: List<MessageContent>) : BoxedMessageContent() {
+    override val msg: String by lazy(LazyThreadSafetyMode.NONE) {
+        msgList.joinToString { it.msg ?: "" }
+    }
+    override val images: List<ImageMessageContent> by lazy(LazyThreadSafetyMode.NONE) {
+        msgList.flatMap { it.images }.takeIf { it.isNotEmpty() } ?: emptyList()
+    }
 
-            else -> first.msg + second.msg
-        }
+    override fun copy(): CompoundMessageContent = CompoundMessageContent(msgList.toList())
 }
+
+
 
 
 /** 判断是否为复合msg。 */
@@ -122,29 +142,57 @@ public fun MessageContent.isCompound(): Boolean {
 }
 
 
-/** 复合两个message。 */
+/** 尝试复合两个 message。 */
 public infix operator fun MessageContent.plus(other: MessageContent): MessageContent {
     return when {
-        this is EmptyMessageContent && other is EmptyMessageContent -> EmptyMessageContent
-        this is EmptyMessageContent -> other.toSingle()
-        other is EmptyMessageContent -> this.toSingle()
+        // 两者都是box
+        this is BoxedMessageContent && other is BoxedMessageContent -> when {
+            this == EmptyMessageContent && other is EmptyMessageContent -> EmptyMessageContent
+            this == EmptyMessageContent -> other.copy()
+            other == EmptyMessageContent -> this.copy()
 
-        this is SingleMessageContent && other is SingleMessageContent ->
-            CompoundMessageContent(this.single, other.single)
-        this is SingleMessageContent -> CompoundMessageContent(this.single, other)
-        other is SingleMessageContent -> CompoundMessageContent(this, other.single)
+            // no empty.
+            this is CompoundMessageContent && other is CompoundMessageContent ->
+                CompoundMessageContent(this.msgList + other.msgList)
+            this is CompoundMessageContent && other is SingleMessageContent ->
+                CompoundMessageContent(this.msgList + listOf(other.single))
+            this is SingleMessageContent && other is CompoundMessageContent ->
+                CompoundMessageContent(listOf(this.single) + other.msgList)
+            this is SingleMessageContent && other is SingleMessageContent ->
+                CompoundMessageContent(listOf(this.single, other.single))
+            // 不应出现的情况
+            else -> throw IllegalStateException("What shouldn't happen: $this + $other") // CompoundMessageContent(listOf(this.copy(), other.copy()))
+        }
 
-        else -> CompoundMessageContent(this, other)
+        // this is box
+        this is BoxedMessageContent -> when(this) {
+            EmptyMessageContent -> other.toSingle()
+            is SingleMessageContent -> CompoundMessageContent(listOf(this.single, other))
+            is CompoundMessageContent -> CompoundMessageContent(this.msgList + listOf(other))
+
+        }
+
+        // other is box
+        other is BoxedMessageContent -> when(other) {
+            EmptyMessageContent -> this.toSingle()
+            is SingleMessageContent -> CompoundMessageContent(listOf(this, other.single))
+            is CompoundMessageContent -> CompoundMessageContent(listOf(this) + other.msgList)
+        }
+
+        // no box.
+        else -> CompoundMessageContent(listOf(this, other))
     }
 }
 
 
 /**
- * 没有内容的[MessageContent]。
+ * 没有内容的 [MessageContent]。
+ * 也属于一个 [BoxedMessageContent]。
  */
-public object EmptyMessageContent : ExpectedMessageContent() {
+public object EmptyMessageContent : BoxedMessageContent() {
     override val msg: String? = null
-    // override fun plus(msgContent: MessageContent): MessageContent = msgContent
+    override val images: List<ImageMessageContent> = emptyList()
+    override fun copy(): EmptyMessageContent = this
 }
 
 
@@ -158,18 +206,11 @@ public fun MessageContent.isEmpty(): Boolean = this == EmptyMessageContent
  * 一个 [预期内的][ExpectedMessageContent] 以字符串消息为主体的 [MessageContent] 默认实现类。
  */
 public data class TextMessageContent(override val msg: String?) : ExpectedMessageContent() {
-    // /**
-    //  * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的 [MessageContent]
-    //  * 将会直接进行字符串拼接
-    //  */
-    // override fun plus(msgContent: MessageContent): MessageContent {
-    //     return when {
-    //         this.msg === null && msgContent.msg === null -> TextMessageContent(null)
-    //         this.msg === null -> TextMessageContent(msgContent.msg)
-    //         msgContent.msg === null -> this.copy()
-    //         else -> TextMessageContent(this.msg + msgContent.msg)
-    //     }
-    // }
+    /** 文本消息不存在images。 */
+    override val images: List<ImageMessageContent> = emptyList()
+
+
+
 }
 
 
@@ -205,11 +246,11 @@ public open class ImageMessageContent(
     private val _url: () -> String?
 ) : ExpectedMessageContent(), NetMessageContent {
 
-    constructor(id: String, flash: Boolean, path: String?, url: String): this(id, flash, {path}, {url})
+    constructor(id: String, flash: Boolean, path: String?, url: String?) : this(id, flash, { path }, { url })
 
     public override val url: String get() = _url() ?: throw IllegalStateException("Unable to get url.")
 
-    public open val path: String? = _path()
+    public open val path: String? get() = _path()
 
     public override fun getUrlOrNull(): String? = _url()
 
@@ -230,15 +271,8 @@ public open class ImageMessageContent(
      */
     protected open fun copy(): ImageMessageContent = ImageMessageContent(id, flash, _path, _url)
 
-    // /**
-    //  * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的 [MessageContent]
-    //  * @param msgContent MessageContent
-    //  * @return MessageContent
-    //  */
-    // override fun plus(msgContent: MessageContent): MessageContent {
-    //     return if (msgContent is EmptyMessageContent) this.copy()
-    //     else this compound msgContent
-    // }
+
+    override val images: List<ImageMessageContent> get() = listOf(this)
 }
 
 /**
@@ -278,15 +312,7 @@ public open class VoiceMessageContent(
      */
     protected open fun copy(): VoiceMessageContent = VoiceMessageContent(id, _path, _url)
 
-    // /**
-    //  * 一个 [消息正文][MessageContent] 应当可以与其他消息进行拼接，并得到一个新的 [MessageContent]
-    //  * @param msgContent MessageContent
-    //  * @return MessageContent
-    //  */
-    // override fun plus(msgContent: MessageContent): MessageContent {
-    //     return if (msgContent is EmptyMessageContent) this.copy()
-    //     else this compound msgContent
-    // }
+    override val images: List<ImageMessageContent> = emptyList()
 }
 
 

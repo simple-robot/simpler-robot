@@ -13,7 +13,10 @@
 package love.forte.simbot.core.listener
 
 import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.sender.Getter
 import love.forte.simbot.core.api.sender.MsgSender
+import love.forte.simbot.core.api.sender.Sender
+import love.forte.simbot.core.api.sender.Setter
 import love.forte.simbot.core.bot.Bot
 import love.forte.simbot.core.filter.AtDetection
 
@@ -27,4 +30,16 @@ public data class ListenerFunctionInvokeDataImpl(
     override val atDetection: AtDetection,
     override val bot: Bot,
     override val msgSender: MsgSender
-) : ListenerFunctionInvokeData
+) : ListenerFunctionInvokeData {
+    override fun get(type: Class<*>): Any? = when {
+        MsgSender::class.java.isAssignableFrom(type) -> msgSender
+        Sender::class.java.isAssignableFrom(type) -> msgSender.SENDER
+        Setter::class.java.isAssignableFrom(type) -> msgSender.SETTER
+        Getter::class.java.isAssignableFrom(type) -> msgSender.GETTER
+        Bot::class.java.isAssignableFrom(type) -> bot
+        AtDetection::class.java.isAssignableFrom(type) -> atDetection
+        ListenerContext::class.java.isAssignableFrom(type) -> context
+        MsgGet::class.java.isAssignableFrom(type) -> msgGet
+        else -> null
+    }
+}

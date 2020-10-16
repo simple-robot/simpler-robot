@@ -13,8 +13,11 @@
 package love.forte.simbot.component.mirai.message
 
 import love.forte.simbot.core.api.message.containers.AccountInfo
+import love.forte.simbot.core.api.message.containers.GroupInfo
 import net.mamoe.mirai.contact.Friend
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.Member
+import net.mamoe.mirai.contact.nameCardOrNick
 
 
 /**
@@ -56,7 +59,7 @@ public data class MiraiFriendAccountInfo(private val friend: Friend) : AccountIn
 /**
  * 基于 mirai [Member] 的 [AccountInfo] 实现。
  */
-public data class MiraiMemberAccountInfo(private val member: Member) : AccountInfo {
+public data class MiraiMemberAccountInfo(private val member: Member) : AccountInfo, GroupInfo {
     /**
      * 账号
      */
@@ -71,12 +74,32 @@ public data class MiraiMemberAccountInfo(private val member: Member) : AccountIn
         get() = member.nick
 
     /** [accountNickname] */
-    override val accountRemark: String
-        get() = member.nameCard
+    override val accountRemark: String?
+        get() = member.nameCard.takeIf { it.isNotEmpty() }
+
+    override val accountRemarkOrNickname: String?
+        get() = member.nameCardOrNick
+
+    override val accountNicknameAndRemark: String
+        get() = super.accountNicknameAndRemark
 
     /**
-     * 得到账号的头像地址. 一般来讲为`null`的可能性很小
+     * 得到账号的头像地址.
      */
     override val accountAvatar: String
         get() = member.avatarUrl
+
+    private val group: Group get() = member.group
+
+    override val groupCode: String
+        get() = group.id.toString()
+
+    override val groupCodeNumber: Long
+        get() = group.id
+
+    override val groupAvatar: String?
+        get() = group.avatarUrl
+
+    override val groupName: String?
+        get() = group.name
 }
