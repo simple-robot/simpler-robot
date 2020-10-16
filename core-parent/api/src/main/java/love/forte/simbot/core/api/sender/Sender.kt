@@ -42,7 +42,28 @@ public interface Sender {
      * @return GroupMsgReceipts 发出的消息的标识，可用于消息撤回。
      */
     fun sendGroupMsg(group: String, msg: String): Flag<GroupMsg.FlagContent>
-    // fun sendGroupMsg(group: String, msg: String): GroupMsgReceipt
+    /* 下面都是重载。 */
+    @JvmDefault
+    fun sendGroupMsg(group: Long, msg: String): Flag<GroupMsg.FlagContent> =
+        sendGroupMsg(group.toString(), msg)
+    @JvmDefault
+    fun sendGroupMsg(group: String, msg: MessageContent): Flag<GroupMsg.FlagContent> =
+        sendGroupMsg(group, msg.msg ?: throw IllegalArgumentException("msg is Empty."))
+    @JvmDefault
+    fun sendGroupMsg(group: Long, msg: MessageContent): Flag<GroupMsg.FlagContent> =
+        sendGroupMsg(group.toString(), msg)
+    @JvmDefault
+    fun sendGroupMsg(group: GroupCodeContainer, msg: String): Flag<GroupMsg.FlagContent> =
+        sendGroupMsg(group.groupCode, msg)
+    @JvmDefault
+    fun sendGroupMsg(group: GroupContainer, msg: String): Flag<GroupMsg.FlagContent> =
+        sendGroupMsg(group.groupInfo, msg)
+    @JvmDefault
+    fun sendGroupMsg(group: GroupCodeContainer, msg: MessageContent): Flag<GroupMsg.FlagContent> =
+        sendGroupMsg(group.groupCode, msg)
+    @JvmDefault
+    fun sendGroupMsg(group: GroupContainer, msg: MessageContent): Flag<GroupMsg.FlagContent> =
+        sendGroupMsg(group.groupInfo, msg)
 
 
     /**

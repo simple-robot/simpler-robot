@@ -78,17 +78,39 @@ public interface MessageContentBuilder {
     /** 向当前构建的消息中追加一个网络图片。 */
     fun imageUrl(url: String, flash: Boolean): MessageContentBuilder
 
+    /** 向当前构建的消息中追加一个本地图片。 */
+    @JvmDefault
+    fun imageLocal(path: String): MessageContentBuilder = imageLocal(path, false)
+
+    /** 向当前构建的消息中追加一个网络图片。 */
+    @JvmDefault
+    fun imageUrl(url: String): MessageContentBuilder = imageUrl(url, false)
+
     /** 向当前构建的消息中追加一个本地图片或网络图片。 */
     @JvmDefault
     fun image(path: String, flash: Boolean): MessageContentBuilder =
         if (path.startsWith("http")) imageUrl(path, flash)
         else imageLocal(path, flash)
 
+    /** 向当前构建的消息中追加一个本地图片或网络图片。 */
+    @JvmDefault
+    fun image(path: String): MessageContentBuilder =
+        if (path.startsWith("http")) imageUrl(path)
+        else imageLocal(path)
+
     /** 向当前构建的消息中追加一个图片流。 */
     fun image(input: InputStream, flash: Boolean): MessageContentBuilder
 
     /** 向当前构建的消息中追加一个图片字节数组。 */
     fun image(imgData: ByteArray, flash: Boolean): MessageContentBuilder
+
+    /** 向当前构建的消息中追加一个图片流。 */
+    @JvmDefault
+    fun image(input: InputStream): MessageContentBuilder = image(input, false)
+
+    /** 向当前构建的消息中追加一个图片字节数组。 */
+    @JvmDefault
+    fun image(imgData: ByteArray): MessageContentBuilder = image(imgData, false)
 
     /** 得到当前构建的消息。 */
     fun build(): MessageContent

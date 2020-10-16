@@ -266,12 +266,19 @@ public class MiraiSetter(private val bot: Bot) : Setter {
      * @throws IllegalArgumentException 当 [flag] 不是 [MiraiMessageFlag] 类型实例的时候。
      */
     override fun setMsgRecall(flag: Flag<MessageEventGet.MessageFlagContent>): Carrier<Boolean> {
-        if (flag is MiraiMessageFlag<*>) {
-            runBlocking { bot.recall(flag.flag.source) }
+        return if (flag is MiraiMessageFlag<*>) {
+            runBlocking {
+                try {
+                    bot.recall(flag.flag.source)
+                    true
+                } catch (e: IllegalStateException) {
+                    // if IllegalStateException, recall false.
+                    false
+                }
+            }
         } else {
-            throw IllegalArgumentException("The 'flag($flag)' is not 'MiraiMessageFlag' instance, cannot be recall by MiraiSetter.")
-        }
-        return true.toCarrier()
+            throw IllegalArgumentException("The 'flag($flag)' is not a 'MiraiMessageFlag' instance, cannot be recall by MiraiSetter.")
+        }.toCarrier()
     }
 
 

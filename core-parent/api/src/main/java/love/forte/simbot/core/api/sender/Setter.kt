@@ -300,7 +300,7 @@ public interface Setter {
      *
      * @param flag 消息标识
      *
-     * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
+     * @return 设置操作的回执，一般代表是否成功。**不会捕获意料外的异常**。
      */
     fun setMsgRecall(flag: Flag<MessageEventGet.MessageFlagContent>): Carrier<Boolean>
 

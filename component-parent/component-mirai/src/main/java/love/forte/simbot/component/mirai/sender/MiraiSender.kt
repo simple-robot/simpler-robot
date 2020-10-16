@@ -56,10 +56,28 @@ public class MiraiSender(
 ) : Sender {
 
 
-    override fun sendGroupMsg(group: String, msg: String): Flag<GroupMsg.FlagContent> {
-        TODO("Not yet implemented")
+    /**
+     * 发送群聊消息。
+     */
+    private fun sendGroupMsg0(group: Long, msg: MessageContent): Flag<MiraiGroupFlagContent> {
+        val miraiMsg = runBlocking { msg.toMiraiMessageContent() }
+        // get group.
+        val g = bot.getGroup(group)
+        val messageReceipt = runBlocking { g.sendMessage(miraiMsg.getMessage(g)) }
+        return miraiMessageFlag<MiraiGroupFlagContent> { MiraiGroupFlagContent(messageReceipt.source) }
     }
-
+    override fun sendGroupMsg(group: String, msg: String): Flag<MiraiGroupFlagContent> =
+        sendGroupMsg0(group.toLong(), msg.toMiraiMessageContent())
+    override fun sendGroupMsg(group: String, msg: MessageContent): Flag<GroupMsg.FlagContent> =
+        sendGroupMsg0(group.toLong(), msg)
+    override fun sendGroupMsg(group: Long, msg: String): Flag<GroupMsg.FlagContent> =
+        sendGroupMsg0(group, msg.toMiraiMessageContent())
+    override fun sendGroupMsg(group: Long, msg: MessageContent): Flag<GroupMsg.FlagContent> =
+        sendGroupMsg0(group, msg)
+    override fun sendGroupMsg(group: GroupCodeContainer, msg: MessageContent): Flag<GroupMsg.FlagContent> =
+        sendGroupMsg0(group.groupCodeNumber, msg)
+    override fun sendGroupMsg(group: GroupCodeContainer, msg: String): Flag<GroupMsg.FlagContent> =
+        sendGroupMsg0(group.groupCodeNumber, msg.toMiraiMessageContent())
 
     /**
      * 发送私聊消息。

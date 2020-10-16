@@ -10,9 +10,13 @@
  * QQ     1149159218
  */
 
+@file:JvmName("MsgSenderUtil")
 package love.forte.simbot.core.api.sender
 
+import love.forte.common.utils.Carrier
+import love.forte.simbot.core.api.message.MessageEventGet
 import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.assists.Flag
 import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.containers.BotInfo
 
@@ -26,7 +30,13 @@ public open class MsgSender(
     @JvmField val SENDER: Sender,
     @JvmField val SETTER: Setter,
     @JvmField val GETTER: Getter
-)
+) {
+    /** 撤回消息。 */
+    public open fun recall(flag: Flag<MessageEventGet.MessageFlagContent>): Carrier<Boolean> = SETTER.setMsgRecall(flag)
+
+
+
+}
 
 
 public fun MsgSender(msgGet: MsgGet, factories: MsgSenderFactories): MsgSender = with(msgGet) {
