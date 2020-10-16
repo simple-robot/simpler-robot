@@ -26,7 +26,9 @@ import java.io.FileNotFoundException
 import java.io.InputStream
 import java.net.URL
 
-
+/**
+ * [MiraiMessageContentBuilder]'s factory.
+ */
 public object MiraiMessageContentBuilderFactory : MessageContentBuilderFactory {
     override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilder()
 }
@@ -61,10 +63,14 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
     override fun at(code: AccountCodeContainer): MessageContentBuilder = at(code.accountCodeNumber)
 
 
-    override fun face(id: String): MiraiMessageContentBuilder {
-        contentList.add(MiraiSingleMessageContent(Face(id.toInt())))
+    private fun face0(id: Int): MiraiMessageContentBuilder {
+        contentList.add(MiraiSingleMessageContent(Face(id)))
         return this
     }
+
+    override fun face(id: String): MessageContentBuilder = face0(id.toInt())
+    override fun face(id: Int): MessageContentBuilder = face0(id)
+
 
     override fun imageLocal(path: String, flash: Boolean): MiraiMessageContentBuilder {
         val file = FileUtil.file(path)?.takeIf { it.exists() } ?: throw FileNotFoundException(path)

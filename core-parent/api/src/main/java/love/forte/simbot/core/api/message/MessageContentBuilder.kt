@@ -69,6 +69,8 @@ public interface MessageContentBuilder {
 
     /** 向当前构建的消息中追加一个 '表情'消息。 */
     fun face(id: String): MessageContentBuilder
+    @JvmDefault
+    fun face(id: Int): MessageContentBuilder = face(id.toString())
 
     /** 向当前构建的消息中追加一个本地图片。 */
     fun imageLocal(path: String, flash: Boolean): MessageContentBuilder

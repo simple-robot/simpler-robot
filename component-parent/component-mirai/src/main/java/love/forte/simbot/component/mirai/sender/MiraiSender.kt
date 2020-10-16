@@ -13,10 +13,7 @@
 package love.forte.simbot.component.mirai.sender
 
 import kotlinx.coroutines.runBlocking
-import love.forte.simbot.component.mirai.message.MiraiMessageContent
-import love.forte.simbot.component.mirai.message.MiraiMessageMsgGet
-import love.forte.simbot.component.mirai.message.MiraiPrivateMsg
-import love.forte.simbot.component.mirai.message.miraiMessageFlag
+import love.forte.simbot.component.mirai.message.*
 import love.forte.simbot.component.mirai.utils.toMiraiMessageContent
 import love.forte.simbot.core.api.message.MessageContent
 import love.forte.simbot.core.api.message.MsgGet
@@ -67,7 +64,7 @@ public class MiraiSender(
     /**
      * 发送私聊消息。
      */
-    private fun sendPrivateMsg0(code: Long, group: Long?, msg: MessageContent): Flag<MiraiPrivateMsg.FlagContent> {
+    private fun sendPrivateMsg0(code: Long, group: Long?, msg: MessageContent): Flag<MiraiPrivateFlagContent> {
         val miraiMsg = runBlocking { msg.toMiraiMessageContent() }
 
         val messageReceipt: MessageReceipt<Contact> = if(group != null) {
@@ -86,10 +83,10 @@ public class MiraiSender(
             }
         }
 
-        return miraiMessageFlag<MiraiPrivateMsg.FlagContent> { MiraiPrivateMsg.FlagContent(messageReceipt.source) }
+        return miraiMessageFlag<MiraiPrivateFlagContent> { MiraiPrivateFlagContent(messageReceipt.source) }
     }
 
-    override fun sendPrivateMsg(code: String, group: String?, msg: String): Flag<MiraiPrivateMsg.FlagContent> =
+    override fun sendPrivateMsg(code: String, group: String?, msg: String): Flag<MiraiPrivateFlagContent> =
         sendPrivateMsg0(code.toLong(), group?.toLong(), msg.toMiraiMessageContent())
     override fun sendPrivateMsg(code: Long, group: Long?, msg: String): Flag<PrivateMsg.FlagContent> =
         sendPrivateMsg0(code, group, msg.toMiraiMessageContent())
