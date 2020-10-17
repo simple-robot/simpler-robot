@@ -407,7 +407,7 @@ public class AnnotationFilterListenerFilterImpl(
         if (isEmpty()) {
             { true }
         } else {
-            { contains(it.accountInfo.accountCode) }
+            { it.accountInfo.accountCode in this }
         }
     }
 
@@ -427,7 +427,7 @@ public class AnnotationFilterListenerFilterImpl(
         if (isEmpty()) {
             { true }
         } else {
-            { contains(it.groupInfo.groupCode) }
+            { it.groupInfo.groupCode in this }
         }
     }
 
@@ -448,7 +448,7 @@ public class AnnotationFilterListenerFilterImpl(
         if (isEmpty()) {
             { true }
         } else {
-            { contains(it.botInfo.botCode) }
+            { it.botInfo.botCode in this }
         }
     }
 
