@@ -25,7 +25,7 @@ import java.lang.annotation.*;
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+// @Target({ElementType.TYPE})
 @Documented
 @Repeatable(Filters.class)
 public @interface Filter {
