@@ -15,9 +15,7 @@ package love.forte.simbot.core.annotation
 import love.forte.common.utils.annotation.AnnotateMapping
 import love.forte.simbot.core.api.message.events.*
 
-/*
-    注：模板注解与原本的
- */
+
 
 /**
  * 监听私聊消息。
@@ -40,7 +38,7 @@ public annotation class OnPrivate
 @MustBeDocumented
 @Listen(GroupMsg::class)
 @AnnotateMapping(value = Listen::class)
-public annotation class OnGroup(val d: Int = 5)
+public annotation class OnGroup
 
 
 /**

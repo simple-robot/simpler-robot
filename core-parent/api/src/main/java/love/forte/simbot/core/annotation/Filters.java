@@ -37,6 +37,7 @@ public @interface Filters {
 
     /**
      * 此处为自定义过滤器的列表。
+     * @see love.forte.simbot.core.filter.ListenerFilter
      */
     String[] customFilter() default {};
 
