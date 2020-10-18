@@ -12,8 +12,8 @@
 
 package love.forte.simbot.core.annotation
 
-import love.forte.simbot.core.api.message.MessageEventGet
-import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.events.MessageEventGet
+import love.forte.simbot.core.api.message.events.MsgGet
 import love.forte.simbot.core.api.message.containers.FlagContainer
 import love.forte.simbot.core.api.message.events.PrivateMsg
 import kotlin.annotation.AnnotationTarget.CLASS

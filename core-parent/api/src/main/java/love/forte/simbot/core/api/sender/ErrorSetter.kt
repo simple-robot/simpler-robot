@@ -15,8 +15,8 @@
 package love.forte.simbot.core.api.sender
 
 import love.forte.common.utils.Carrier
-import love.forte.simbot.core.api.message.MessageEventGet
-import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.events.MessageEventGet
+import love.forte.simbot.core.api.message.events.MsgGet
 import love.forte.simbot.core.api.message.assists.Flag
 import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.events.FriendAddRequest

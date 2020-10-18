@@ -12,7 +12,7 @@
 
 package love.forte.simbot.core.api.sender
 
-import love.forte.simbot.core.api.message.MessageContent
+import love.forte.simbot.core.api.message.events.MessageContent
 import love.forte.simbot.core.api.message.assists.Flag
 import love.forte.simbot.core.api.message.containers.AccountCodeContainer
 import love.forte.simbot.core.api.message.containers.AccountContainer

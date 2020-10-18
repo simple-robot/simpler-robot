@@ -1,7 +1,7 @@
 package love.forte.test.lis
 
-import love.forte.simbot.core.api.message.MessageContent
-import love.forte.simbot.core.api.message.TextMessageContent
+import love.forte.simbot.core.api.message.events.MessageContent
+import love.forte.simbot.core.api.message.events.TextMessageContent
 import love.forte.simbot.core.api.message.assists.Flag
 import love.forte.simbot.core.api.message.assists.FlagImpl
 import love.forte.simbot.core.api.message.containers.AccountInfo

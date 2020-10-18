@@ -1,11 +1,14 @@
 package love.forte.test.listest;
 
 import love.forte.common.ioc.annotation.Beans;
-import love.forte.simbot.core.annotation.*;
-import love.forte.simbot.core.api.message.MsgGet;
+import love.forte.simbot.core.annotation.Filter;
+import love.forte.simbot.core.annotation.Filters;
+import love.forte.simbot.core.annotation.Listen;
+import love.forte.simbot.core.annotation.OnPrivate;
 import love.forte.simbot.core.api.message.events.GroupMsg;
 import love.forte.simbot.core.api.message.events.PrivateMsg;
-import love.forte.simbot.core.constant.PriorityConstant;
+import love.forte.simbot.core.filter.MatchType;
+import love.forte.simbot.core.filter.MostMatchType;
 
 /**
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
@@ -14,30 +17,42 @@ import love.forte.simbot.core.constant.PriorityConstant;
 public class TestFilter {
 
 
-    @Listen(PrivateMsg.class)
-    @Filter("")
-    public void privateListen1(PrivateMsg msg){
-        // ... do something
-    }
-
-    @Listen(PrivateMsg.class)
-    @Listen(GroupMsg.class)
-    public void testListen2(MsgGet msg){
-        // ... do something
-    }
-
-
-    @Listens(value = {
-            @Listen(PrivateMsg.class),
-            @Listen(GroupMsg.class)
-    }, priority = PriorityConstant.FIRST, name = "privateListen3")
-    public void testListen3(MsgGet msg){
+    @OnPrivate
+    @Filter(value = "hi", matchType = MatchType.STARTS_WITH)
+    public void testListen1(PrivateMsg msg){
         // ... do something
     }
 
     @OnPrivate
-    @OnGroup
-    public void testListen4(MsgGet msg){
+    @Filter(value = "hi1", matchType = MatchType.STARTS_WITH)
+    @Filter(value = "hi2", matchType = MatchType.STARTS_WITH)
+    public void testListen2(PrivateMsg msg){
+        // ... do something
+    }
+
+
+    @OnPrivate
+    @Filters(value = {
+            @Filter(value = "hi1", matchType = MatchType.STARTS_WITH),
+            @Filter(value = "hi2", matchType = MatchType.STARTS_WITH)
+    },
+            mostMatchType = MostMatchType.ANY,
+            customFilter = {"f1", "f2"}
+            // ... other params
+    )
+    public void testListen3(PrivateMsg msg){
+        // ... do something
+    }
+
+    @OnPrivate
+    @Filters(customFilter = "MyFilter")
+    public void testListen4(PrivateMsg msg){
+        // ... do something
+    }
+
+    @OnPrivate
+    @Filters(customFilter = {"MyFilter1", "MyFilter2"})
+    public void testListen5(PrivateMsg msg){
         // ... do something
     }
 

@@ -13,7 +13,6 @@
 package love.forte.simbot.component.mirai.message
 
 import love.forte.simbot.core.api.message.containers.BotInfo
-import love.forte.simbot.core.api.message.results.LoginInfo
 import net.mamoe.mirai.Bot
 
 

@@ -28,7 +28,7 @@ public @interface Filters {
     /**
      * 过滤注解。可以有多个。
      */
-    Filter[] value();
+    Filter[] value() default {};
 
     /**
      * {@link #value()} 的多项匹配规则，默认为任意匹配。

@@ -13,7 +13,6 @@
 package love.forte.simbot.core.annotation;
 
 
-import love.forte.simbot.core.api.message.*;
 import love.forte.simbot.core.api.message.containers.*;
 import love.forte.simbot.core.api.message.events.*;
 

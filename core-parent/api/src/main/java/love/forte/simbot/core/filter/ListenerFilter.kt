@@ -12,7 +12,7 @@
 
 package love.forte.simbot.core.filter
 
-import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.events.MsgGet
 import love.forte.simbot.core.constant.PriorityConstant
 import love.forte.simbot.core.listener.ListenerContext
 import love.forte.simbot.core.listener.ListenerFunction

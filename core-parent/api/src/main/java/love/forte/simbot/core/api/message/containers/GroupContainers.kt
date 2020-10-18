@@ -10,7 +10,8 @@
  * QQ     1149159218
  */
 
-@file:JvmName("GroupContainers")
+@file:JvmName("Containers")
+@file:JvmMultifileClass
 package love.forte.simbot.core.api.message.containers
 
 import love.forte.simbot.core.annotation.ContainerType

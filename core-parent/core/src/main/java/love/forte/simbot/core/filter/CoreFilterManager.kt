@@ -13,7 +13,7 @@
 package love.forte.simbot.core.filter
 
 import love.forte.simbot.core.annotation.Filters
-import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.events.MsgGet
 import java.util.concurrent.ConcurrentHashMap
 
 

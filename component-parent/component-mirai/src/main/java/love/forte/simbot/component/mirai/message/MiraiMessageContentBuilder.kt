@@ -14,8 +14,8 @@ package love.forte.simbot.component.mirai.message
 
 import cn.hutool.core.io.FileUtil
 import love.forte.simbot.component.mirai.utils.toStream
-import love.forte.simbot.core.api.message.MessageContentBuilder
-import love.forte.simbot.core.api.message.MessageContentBuilderFactory
+import love.forte.simbot.core.api.message.events.MessageContentBuilder
+import love.forte.simbot.core.api.message.events.MessageContentBuilderFactory
 import love.forte.simbot.core.api.message.containers.AccountCodeContainer
 import net.mamoe.mirai.message.data.AtAll
 import net.mamoe.mirai.message.data.Face

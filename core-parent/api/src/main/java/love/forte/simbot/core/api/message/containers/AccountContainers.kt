@@ -10,7 +10,8 @@
  * QQ     1149159218
  */
 
-@file:JvmName("AccountContainers")
+@file:JvmName("Containers")
+@file:JvmMultifileClass
 package love.forte.simbot.core.api.message.containers
 
 import love.forte.simbot.core.annotation.ContainerType
@@ -41,7 +42,10 @@ public interface AccountCodeContainer : Container {
  */
 @ContainerType("账户昵称容器")
 public interface AccountNicknameContainer : Container {
-    /** 昵称。可能会出现为null的情况 */
+    /**
+     * 昵称。
+     * 可能会出现为null的情况，但是一般情况下不会。
+     */
     val accountNickname: String?
 }
 
@@ -51,7 +55,7 @@ public interface AccountNicknameContainer : Container {
  */
 @ContainerType("账户备注容器")
 public interface AccountRemarkContainer : Container {
-    /** 好友备注或群名片。可能为null */
+    /** 好友备注或群名片。可能为null。 */
     val accountRemark: String?
 }
 

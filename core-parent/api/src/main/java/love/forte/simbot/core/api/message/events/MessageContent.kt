@@ -11,8 +11,8 @@
  */
 
 @file:JvmName("MessageContents")
-
-package love.forte.simbot.core.api.message
+@file:JvmMultifileClass
+package love.forte.simbot.core.api.message.events
 
 import love.forte.catcode.CatCodeUtil
 import kotlin.contracts.ExperimentalContracts

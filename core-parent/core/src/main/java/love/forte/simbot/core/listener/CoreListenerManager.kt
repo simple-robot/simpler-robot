@@ -15,7 +15,7 @@ package love.forte.simbot.core.listener
 import love.forte.common.collections.concurrentQueueOf
 import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.common.sequences.distinctByMerger
-import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.events.MsgGet
 import love.forte.simbot.core.api.sender.MsgSender
 import love.forte.simbot.core.api.sender.MsgSenderFactories
 import love.forte.simbot.core.bot.BotManager

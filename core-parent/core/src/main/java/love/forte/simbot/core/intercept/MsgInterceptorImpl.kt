@@ -13,7 +13,7 @@
 package love.forte.simbot.core.intercept
 
 import love.forte.common.ioc.DependBeanFactory
-import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.events.MsgGet
 import love.forte.simbot.core.listener.*
 
 

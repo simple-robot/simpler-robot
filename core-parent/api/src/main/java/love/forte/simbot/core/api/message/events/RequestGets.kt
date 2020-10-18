@@ -9,11 +9,11 @@
  * email  ForteScarlet@163.com
  * QQ     1149159218
  */
-
+@file:JvmName("MsgGets")
+@file:JvmMultifileClass
 package love.forte.simbot.core.api.message.events
 
 import love.forte.simbot.core.annotation.MainListenerType
-import love.forte.simbot.core.api.message.RequestGet
 import love.forte.simbot.core.api.message.assists.ActionMotivations
 import love.forte.simbot.core.api.message.assists.Flag
 import love.forte.simbot.core.api.message.containers.ActionMotivationContainer

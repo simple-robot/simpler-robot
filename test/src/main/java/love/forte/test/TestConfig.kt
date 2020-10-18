@@ -14,8 +14,8 @@ package love.forte.test
 
 import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.ConfigBeans
-import love.forte.simbot.core.api.message.MessageContent
-import love.forte.simbot.core.api.message.TextMessageContent
+import love.forte.simbot.core.api.message.events.MessageContent
+import love.forte.simbot.core.api.message.events.TextMessageContent
 import love.forte.simbot.core.api.message.assists.Flag
 import love.forte.simbot.core.api.message.assists.flag
 import love.forte.simbot.core.api.message.containers.AccountInfo

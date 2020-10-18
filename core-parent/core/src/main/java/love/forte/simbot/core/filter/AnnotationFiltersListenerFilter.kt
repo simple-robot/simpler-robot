@@ -17,7 +17,7 @@ package love.forte.simbot.core.filter
 import love.forte.catcode.CatCodeUtil
 import love.forte.simbot.core.annotation.Filter
 import love.forte.simbot.core.annotation.Filters
-import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.events.MsgGet
 import love.forte.simbot.core.api.message.containers.AccountContainer
 import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.containers.GroupContainer

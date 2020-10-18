@@ -12,10 +12,9 @@
 
 package love.forte.simbot.core.listener
 
-import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.events.MsgGet
 import love.forte.simbot.core.api.sender.MsgSender
 import love.forte.simbot.core.bot.Bot
-import love.forte.simbot.core.bot.BotManager
 import love.forte.simbot.core.constant.PriorityConstant
 import love.forte.simbot.core.filter.AtDetection
 import love.forte.simbot.core.filter.ListenerFilter

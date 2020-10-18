@@ -2,8 +2,6 @@ package love.forte.test;
 
 import love.forte.common.ioc.annotation.Beans;
 import love.forte.common.utils.annotation.AnnotationUtil;
-import love.forte.simbot.core.annotation.Listen;
-import love.forte.simbot.core.api.message.MsgGet;
 import love.forte.simbot.core.configuration.CoreConverterManagerConfiguration;
 
 import java.lang.reflect.Method;

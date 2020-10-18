@@ -22,12 +22,11 @@ import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import love.forte.catcode.*
 import love.forte.catcode.codes.Nyanko
 import love.forte.simbot.component.mirai.message.*
-import love.forte.simbot.core.api.message.*
-import love.forte.simbot.core.api.message.MessageContent
+import love.forte.simbot.core.api.message.events.*
+import love.forte.simbot.core.api.message.events.MessageContent
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.uploadAsImage

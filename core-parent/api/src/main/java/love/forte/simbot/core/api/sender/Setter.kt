@@ -13,13 +13,11 @@
 package love.forte.simbot.core.api.sender
 
 import love.forte.common.utils.Carrier
-import love.forte.simbot.core.api.message.MessageEventGet
+import love.forte.simbot.core.api.message.events.MessageEventGet
 import love.forte.simbot.core.api.message.assists.Flag
 import love.forte.simbot.core.api.message.containers.*
 import love.forte.simbot.core.api.message.events.FriendAddRequest
 import love.forte.simbot.core.api.message.events.GroupAddRequest
-import love.forte.simbot.core.api.message.events.GroupMsg
-import love.forte.simbot.core.api.message.results.GroupMemberInfo
 import java.util.concurrent.TimeUnit
 
 /**

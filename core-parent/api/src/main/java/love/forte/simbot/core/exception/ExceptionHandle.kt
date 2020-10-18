@@ -12,7 +12,7 @@
 
 package love.forte.simbot.core.exception
 
-import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.events.MsgGet
 import love.forte.simbot.core.intercept.BaseContext
 import love.forte.simbot.core.listener.ListenResult
 import love.forte.simbot.core.listener.ListenerContext

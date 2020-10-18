@@ -14,12 +14,8 @@
 
 package love.forte.simbot.core.api.sender
 
-import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.events.MsgGet
 import love.forte.simbot.core.api.message.containers.BotContainer
-import love.forte.simbot.core.api.message.receipts.GroupMsgReceipt
-import love.forte.simbot.core.api.message.receipts.GroupNoticeReceipt
-import love.forte.simbot.core.api.message.receipts.GroupSignReceipt
-import love.forte.simbot.core.api.message.receipts.PrivateMsgReceipt
 
 /**
  * [Sender] 的 无效化实现，所有的方法均会抛出异常。

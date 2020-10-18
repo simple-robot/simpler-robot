@@ -16,7 +16,7 @@ import love.forte.simbot.component.mirai.message.MiraiAuthInfo
 import love.forte.simbot.component.mirai.message.MiraiBotInfo
 import love.forte.simbot.component.mirai.message.MiraiGroupNoteList
 import love.forte.simbot.component.mirai.message.result.*
-import love.forte.simbot.core.api.message.MsgGet
+import love.forte.simbot.core.api.message.events.MsgGet
 import love.forte.simbot.core.api.message.containers.AccountCodeContainer
 import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.containers.BotInfo
