@@ -43,12 +43,12 @@ public interface GroupMemberPermissionChanged :
         get() = accountInfo.asBeOperator()
 
     /**
-     * 是否为 **得到管理权限**
+     * 此次变动是否为 **得到管理权限**
      */
     @JvmDefault val isGetManagementRights: Boolean get() = afterChange.isOwnerOrAdmin()
 
     /**
-     * 是否为 **失去管理权限**
+     * 此次变动是否为 **失去管理权限**
      */
     @JvmDefault val isLostManagementRights: Boolean get() = afterChange.isMember()
 }
@@ -65,15 +65,7 @@ public interface GroupMemberPermissionChanged :
 public interface GroupNameChanged :
     ChangedGet<String>,
     GroupContainer,
-    OperatingContainer {
-    /**
-     * [被操作者][beOperatorInfo] 默认实现为 [当前主体账户][accountInfo]
-     */
-    @JvmDefault
-    override val beOperatorInfo: BeOperatorInfo
-        get() = accountInfo.asBeOperator()
-}
-
+    OperatorContainer
 
 
 /**

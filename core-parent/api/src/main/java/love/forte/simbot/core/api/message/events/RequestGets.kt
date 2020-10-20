@@ -16,7 +16,9 @@ package love.forte.simbot.core.api.message.events
 import love.forte.simbot.core.annotation.MainListenerType
 import love.forte.simbot.core.api.message.assists.ActionMotivations
 import love.forte.simbot.core.api.message.assists.Flag
+import love.forte.simbot.core.api.message.containers.AccountInfo
 import love.forte.simbot.core.api.message.containers.ActionMotivationContainer
+import love.forte.simbot.core.api.message.containers.OriginalDataContainer
 
 /*
  * 此模块下定义请求相关的监听接口
@@ -95,26 +97,52 @@ public interface GroupAddRequest : RequestGet {
     }
 }
 
-/**
- * [群添加请求][GroupAddRequest] 中的邀请者信息。
- *
- */
-public interface GroupAddRequestInvitor {
-    /** 邀请者账号。一般情况下，当前实例存在此参数便不可为null */
-    val invitorCode: String
-    /** 邀请者昵称。可能无法获取 */
-    val invitorNickname: String?
-    /** 邀请者备注 可能无法获取*/
-    val invitorRemark: String?
-    /** 备注或昵称 */
-    @JvmDefault val invitorRemarkOrNickname: String? get() = invitorRemark ?: invitorNickname
-}
-
 
 /**
  * 使用 [id] 作为标识载体的 [GroupAddRequest.FlagContent] 实现
  */
 public data class GroupAddRequestIdFlagContent(override val id: String) : GroupAddRequest.FlagContent
+
+
+/**
+ * [群添加请求][GroupAddRequest] 中的邀请者信息。
+ *
+ */
+public interface GroupAddRequestInvitor: OriginalDataContainer {
+    /** 邀请者账号。一般情况下，当前实例存在此参数便不可为null */
+    val invitorCode: String
+    /** 邀请者账号。 */
+    @JvmDefault
+    val invitorCodeNumber: Long get() = invitorCode.toLong()
+    /** 邀请者昵称。可能无法获取 */
+    val invitorNickname: String?
+    /** 邀请者备注。 可能无法获取*/
+    val invitorRemark: String?
+    /** 备注或昵称 */
+    @JvmDefault val invitorRemarkOrNickname: String? get() = invitorRemark ?: invitorNickname
+}
+
+/**
+ * 将 [GroupAddRequestInvitor] 转化为 [AccountInfo]。
+ */
+public fun GroupAddRequestInvitor.asAccount(): AccountInfo = GroupAddRequestInvitorAsAccountInfo(this)
+
+
+private data class GroupAddRequestInvitorAsAccountInfo(private val invitor: GroupAddRequestInvitor) : AccountInfo {
+    override val accountCode: String
+        get() = invitor.invitorCode
+    override val accountCodeNumber: Long
+        get() = invitor.invitorCodeNumber
+    override val accountNickname: String?
+        get() = invitor.invitorNickname
+    override val accountRemark: String?
+        get() = invitor.invitorRemark
+    override val accountRemarkOrNickname: String?
+        get() = invitor.invitorRemarkOrNickname
+    override val accountAvatar: String?
+        get() = null
+}
+
 
 
 

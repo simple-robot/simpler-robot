@@ -43,7 +43,7 @@ import java.lang.annotation.*;
  *     <li>{@link GroupMsgRecall} 群聊消息撤回。</li>
  *
  *     <li>{@link FriendReduce} 好友减少事件</li>
- *     <li>{@link GroupReduce} 群友减少事件。</li>
+ *     <li>{@link GroupMemberReduce} 群友减少事件。</li>
  *
  *     <li>{@link FriendAddRequest} 好友请求事件。 此时申请人尚未成为好友。</li>
  *     <li>{@link GroupAddRequest} 群添加请求。此时申请人尚未入群。</li>
@@ -104,7 +104,7 @@ import java.lang.annotation.*;
  * @see GroupMsgRecall 群聊消息撤回。
  *
  * @see FriendReduce  好友减少事件
- * @see GroupReduce 群友减少事件。
+ * @see GroupMemberReduce 群友减少事件。
  *
  * @see FriendAddRequest 好友请求事件。
  * @see GroupAddRequest 群添加请求。

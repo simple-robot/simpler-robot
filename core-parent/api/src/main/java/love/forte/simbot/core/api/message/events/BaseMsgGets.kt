@@ -20,7 +20,6 @@ import love.forte.simbot.core.api.message.containers.AccountContainer
 import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.containers.FlagContainer
 import love.forte.simbot.core.api.message.containers.OriginalDataContainer
-import java.time.LocalDateTime
 
 /*
     什么? 你问为什么events包下的消息命名还是xxxMsgGet?
@@ -50,7 +49,7 @@ public val MsgGetMainListenerTypes: Set<Class<out MsgGet>> =
         FriendIncrease::class.java,
         GroupMemberIncrease::class.java,
         FriendReduce::class.java,
-        GroupReduce::class.java,
+        GroupMemberReduce::class.java,
         FriendAddRequest::class.java,
         GroupAddRequest::class.java,
     )
@@ -78,7 +77,7 @@ public val MsgGetMainListenerTypes: Set<Class<out MsgGet>> =
  * - [好友增加事件][FriendIncrease]
  * - [群友增加事件][GroupMemberIncrease]
  * - [好友减少事件][FriendReduce]
- * - [群友减少事件][GroupReduce]
+ * - [群友减少事件][GroupMemberReduce]
  * - [好友添加请求事件][FriendAddRequest]
  * - [群添加请求][GroupAddRequest]
  *
@@ -97,7 +96,7 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
     val msg: String?
 
 
-    /** 消息接收到的时间。一般是一个时间戳。 */
+    /** 消息接收到的时间。一般是一个毫秒时间戳。 */
     val time: Long
 
 
@@ -245,10 +244,9 @@ public interface MessageEventGet : MsgGet, FlagContainer<MessageEventGet.Message
 @ParentListenerType("消息撤回父接口")
 public interface MessageRecallEventGet : MsgGet {
     /**
-     * 撤回时间。
-     * 使用[LocalDateTime]来代表一个准确时间点以防止使用事件戳导致时间格式不统一
+     * 撤回时间。毫秒时间戳
      */
-    val recallTime: LocalDateTime
+    val recallTime: Long
 }
 
 
@@ -256,7 +254,7 @@ public interface MessageRecallEventGet : MsgGet {
  * 成员变动事件接口，是[增加事件][IncreaseEventGet] 与 [减少事件][ReduceEventGet]的父接口.
  */
 @ParentListenerType("成员数量变动父接口")
-public interface MemberChangesEventGet : MsgGet
+public interface MemberChangesEventGet : EventGet
 
 /**
  * 与 **增加** 有关的事件，例如 群友增加 或者 好友增加
@@ -297,7 +295,7 @@ public interface RequestGet : MsgGet, FlagContainer<RequestGet.RequestFlagConten
  * 大多数情况下，此类事件都是在变更完了之后触发的。
  */
 @ParentListenerType("变更相关事件父接口")
-public interface ChangedGet<out T> : MsgGet {
+public interface ChangedGet<out T> : EventGet {
     /**
      * 变更之前。 不能够保证此值可以获得
      */

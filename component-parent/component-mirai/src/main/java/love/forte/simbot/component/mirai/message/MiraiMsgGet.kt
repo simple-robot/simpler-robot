@@ -12,6 +12,7 @@
 
 package love.forte.simbot.component.mirai.message
 
+import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
 import love.forte.simbot.component.mirai.utils.toSimbotString
 import love.forte.simbot.core.api.message.events.MsgGet
 import love.forte.simbot.core.api.message.containers.AccountInfo

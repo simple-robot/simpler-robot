@@ -30,6 +30,7 @@ public fun Bot.registerSimbotEvents(msgGetProcessor: MsgGetProcessor) {
 
     this.logger.let { if (it is MiraiLoggerWithSwitch) it else null }?.enable()
 
+    val botId: Long = this.id
 
 
     // 好友消息

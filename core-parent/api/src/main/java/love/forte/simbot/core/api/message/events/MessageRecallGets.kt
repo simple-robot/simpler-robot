@@ -34,6 +34,10 @@ public interface PrivateMsgRecall: MessageRecallEventGet
  * 群聊消息撤回。
  */
 public interface GroupMsgRecall: MessageRecallEventGet {
+
+    /** 群消息撤回类型。 */
+    val groupRecallType: Type
+
     /**
      * 群聊撤回的类型。
      */

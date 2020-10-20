@@ -158,7 +158,7 @@ public annotation class OnGroupMsgRecall
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
-@Listen(GroupReduce::class)
+@Listen(GroupMemberReduce::class)
 @AnnotateMapping(value = Listen::class)
 public annotation class OnGroupReduce
 

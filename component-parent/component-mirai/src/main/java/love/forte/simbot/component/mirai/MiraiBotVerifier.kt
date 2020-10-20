@@ -14,7 +14,7 @@ package love.forte.simbot.component.mirai
 
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
-import love.forte.simbot.component.mirai.message.MiraiBotInfo
+import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
 import love.forte.simbot.core.CompLogger
 import love.forte.simbot.core.api.message.containers.BotContainer
 import love.forte.simbot.core.api.message.containers.BotInfo

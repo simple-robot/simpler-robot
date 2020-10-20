@@ -10,7 +10,7 @@
  * QQ     1149159218
  */
 
-package love.forte.simbot.component.mirai.message
+package love.forte.simbot.component.mirai.message.result
 
 import love.forte.simbot.component.mirai.sender.Cookies
 import love.forte.simbot.core.api.message.results.AuthInfo
