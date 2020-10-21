@@ -12,6 +12,7 @@
 
 package love.forte.simbot.core.api.sender
 
+import love.forte.common.utils.Carrier
 import love.forte.simbot.core.api.message.events.MessageContent
 import love.forte.simbot.core.api.message.assists.Flag
 import love.forte.simbot.core.api.message.containers.AccountCodeContainer
@@ -39,30 +40,37 @@ public interface Sender {
      * 发送一条群消息。
      * @param group String 群号
      * @param msg String   消息正文
-     * @return GroupMsgReceipts 发出的消息的标识，可用于消息撤回。
+     * @return Carrier<Flag<GroupMsg.FlagContent>>. Flag为发出的消息的标识，可用于消息撤回。但是有可能为null（例如发送的消息无法撤回，比如戳一戳之类的，或者压根不支持撤回的）。
      */
-    fun sendGroupMsg(group: String, msg: String): Flag<GroupMsg.FlagContent>
+    fun sendGroupMsg(group: String, msg: String): Carrier<out Flag<GroupMsg.FlagContent>>
+
     /* 下面都是重载。 */
     @JvmDefault
-    fun sendGroupMsg(group: Long, msg: String): Flag<GroupMsg.FlagContent> =
+    fun sendGroupMsg(group: Long, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.toString(), msg)
+
     @JvmDefault
-    fun sendGroupMsg(group: String, msg: MessageContent): Flag<GroupMsg.FlagContent> =
+    fun sendGroupMsg(group: String, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group, msg.msg ?: throw IllegalArgumentException("msg is Empty."))
+
     @JvmDefault
-    fun sendGroupMsg(group: Long, msg: MessageContent): Flag<GroupMsg.FlagContent> =
+    fun sendGroupMsg(group: Long, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.toString(), msg)
+
     @JvmDefault
-    fun sendGroupMsg(group: GroupCodeContainer, msg: String): Flag<GroupMsg.FlagContent> =
+    fun sendGroupMsg(group: GroupCodeContainer, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.groupCode, msg)
+
     @JvmDefault
-    fun sendGroupMsg(group: GroupContainer, msg: String): Flag<GroupMsg.FlagContent> =
+    fun sendGroupMsg(group: GroupContainer, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.groupInfo, msg)
+
     @JvmDefault
-    fun sendGroupMsg(group: GroupCodeContainer, msg: MessageContent): Flag<GroupMsg.FlagContent> =
+    fun sendGroupMsg(group: GroupCodeContainer, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.groupCode, msg)
+
     @JvmDefault
-    fun sendGroupMsg(group: GroupContainer, msg: MessageContent): Flag<GroupMsg.FlagContent> =
+    fun sendGroupMsg(group: GroupContainer, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.groupInfo, msg)
 
 
@@ -73,53 +81,84 @@ public interface Sender {
      * @param msg String  消息正文
      * @return PrivateMsgReceipts 私聊回执
      */
-    fun sendPrivateMsg(code: String, group: String?, msg: String): Flag<PrivateMsg.FlagContent>
+    fun sendPrivateMsg(code: String, group: String?, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>>
+
     /* 下面都是重载。 */
     @JvmDefault
-    fun sendPrivateMsg(code: Long, group: Long?, msg: String): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(code: Long, group: Long?, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.toString(), group?.toString(), msg)
+
     @JvmDefault
-    fun sendPrivateMsg(code: String, group: String?, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(code: String, group: String?, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code, group, msg.msg ?: throw IllegalArgumentException("msg is Empty."))
+
     @JvmDefault
-    fun sendPrivateMsg(code: Long, group: Long?, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(code: Long, group: Long?, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.toString(), group?.toString(), msg)
+
     @JvmDefault
-    fun sendPrivateMsg(code: AccountCodeContainer, group: GroupCodeContainer?, msg: String): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(
+        code: AccountCodeContainer,
+        group: GroupCodeContainer?,
+        msg: String
+    ): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountCode, group?.groupCode, msg)
+
     @JvmDefault
-    fun sendPrivateMsg(code: AccountContainer, group: GroupContainer?, msg: String): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(
+        code: AccountContainer,
+        group: GroupContainer?,
+        msg: String
+    ): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountInfo, group?.groupInfo, msg)
+
     @JvmDefault
-    fun sendPrivateMsg(code: AccountCodeContainer, group: GroupCodeContainer?, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(
+        code: AccountCodeContainer,
+        group: GroupCodeContainer?,
+        msg: MessageContent
+    ): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountCode, group?.groupCode, msg)
+
     @JvmDefault
-    fun sendPrivateMsg(code: AccountContainer, group: GroupContainer?, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(
+        code: AccountContainer,
+        group: GroupContainer?,
+        msg: MessageContent
+    ): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountInfo, group?.groupInfo, msg)
+
     /* group 为null的重载。 */
     @JvmDefault
-    fun sendPrivateMsg(code: String, msg: String): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(code: String, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code, null, msg)
+
     @JvmDefault
-    fun sendPrivateMsg(code: Long, msg: String): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(code: Long, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.toString(), null, msg)
+
     @JvmDefault
-    fun sendPrivateMsg(code: String, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(code: String, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code, null, msg.msg ?: throw IllegalArgumentException("msg is Empty."))
+
     @JvmDefault
-    fun sendPrivateMsg(code: Long, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(code: Long, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.toString(), null, msg)
+
     @JvmDefault
-    fun sendPrivateMsg(code: AccountCodeContainer, msg: String): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(code: AccountCodeContainer, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountCode, null, msg)
+
     @JvmDefault
-    fun sendPrivateMsg(code: AccountContainer, msg: String): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(code: AccountContainer, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountInfo, null, msg)
+
     @JvmDefault
-    fun sendPrivateMsg(code: AccountCodeContainer, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(code: AccountCodeContainer, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountCode, null, msg)
+
     @JvmDefault
-    fun sendPrivateMsg(code: AccountContainer, msg: MessageContent): Flag<PrivateMsg.FlagContent> =
+    fun sendPrivateMsg(code: AccountContainer, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountInfo, null, msg)
 
     /**
@@ -141,35 +180,56 @@ public interface Sender {
         top: Boolean,
         toNewMember: Boolean,
         confirm: Boolean
-    ): GroupNoticeReceipt
+    ): Carrier<Boolean>
 
-    /**
-     * 发布群公告
-     * @param group 群号
-     * @param title 标题
-     * @param text   正文
-     * @return 是否发布成功
-     */
     @JvmDefault
     fun sendGroupNotice(
-        group: String,
+        group: Long,
         title: String?,
-        text: String?
-    ): GroupNoticeReceipt = sendGroupNotice(
-        group, title, text,
-        popUp = false,
-        top = false,
-        toNewMember = false,
-        confirm = false
-    )
+        text: String?,
+        popUp: Boolean,
+        top: Boolean,
+        toNewMember: Boolean,
+        confirm: Boolean
+    ): Carrier<Boolean> = sendGroupNotice(group.toString(), title, text, popUp, top, toNewMember, confirm)
+    @JvmDefault
+    fun sendGroupNotice(
+        group: GroupCodeContainer,
+        title: String?,
+        text: String?,
+        popUp: Boolean,
+        top: Boolean,
+        toNewMember: Boolean,
+        confirm: Boolean
+    ): Carrier<Boolean> = sendGroupNotice(group.groupCode, title, text, popUp, top, toNewMember, confirm)
+    @JvmDefault
+    fun sendGroupNotice(
+        group: GroupContainer,
+        title: String?,
+        text: String?,
+        popUp: Boolean,
+        top: Boolean,
+        toNewMember: Boolean,
+        confirm: Boolean
+    ): Carrier<Boolean> = sendGroupNotice(group.groupInfo, title, text, popUp, top, toNewMember, confirm)
+
 
     /**
      * 设置群签到
      *
-     * @param groupCode 群号
+     * @param group 群号
      * @param title     签到内容标题
      * @param message   签到内容文本
      */
-    fun sendGroupSign(groupCode: String, title: String, message: String): GroupSignReceipt
+    fun sendGroupSign(group: String, title: String, message: String): Carrier<Boolean>
+    @JvmDefault
+    fun sendGroupSign(group: Long, title: String, message: String): Carrier<Boolean> =
+        sendGroupSign(group.toString(), title, message)
+    @JvmDefault
+    fun sendGroupSign(group: GroupCodeContainer, title: String, message: String): Carrier<Boolean> =
+        sendGroupSign(group.groupCode, title, message)
+    @JvmDefault
+    fun sendGroupSign(group: GroupContainer, title: String, message: String): Carrier<Boolean> =
+        sendGroupSign(group.groupInfo, title, message)
 
 }

@@ -38,7 +38,7 @@ object ErrorSender : Sender {
     ): Nothing =
         NO("Sender.sendGroupNotice")
 
-    override fun sendGroupSign(groupCode: String, title: String, message: String): Nothing =
+    override fun sendGroupSign(group: String, title: String, message: String): Nothing =
         NO("Sender.sendGroupSign")
 }
 
