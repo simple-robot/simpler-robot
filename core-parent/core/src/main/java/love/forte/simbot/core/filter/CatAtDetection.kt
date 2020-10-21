@@ -13,7 +13,9 @@
 package love.forte.simbot.core.filter
 
 import love.forte.catcode.CatCodeUtil
-import love.forte.simbot.core.api.message.events.MsgGet
+import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.filter.AtDetection
+import love.forte.simbot.filter.AtDetectionFactory
 
 /**
  *

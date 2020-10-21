@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     CoreExceptionPrecessorConfiguration.kt
+ * File     CoreExceptionProcessorConfiguration.kt
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -15,10 +15,10 @@ package love.forte.simbot.core.configuration
 import love.forte.common.ioc.DependBeanFactory
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
-import love.forte.simbot.core.exception.ExceptionHandle
-import love.forte.simbot.core.exception.ExceptionProcessor
-import love.forte.simbot.core.exception.ExceptionProcessorBuilder
-import love.forte.simbot.core.exception.ExceptionProcessorBuilderImpl
+import love.forte.simbot.core.exception.CoreExceptionProcessorBuilder
+import love.forte.simbot.exception.ExceptionHandle
+import love.forte.simbot.exception.ExceptionProcessor
+import love.forte.simbot.exception.ExceptionProcessorBuilder
 
 
 /**
@@ -38,7 +38,7 @@ public class CoreExceptionProcessorConfiguration {
      * 异常处理器builder [ExceptionProcessorBuilder]。
      */
     @CoreBeans
-    fun coreExceptionProcessorBuilder(): ExceptionProcessorBuilder = ExceptionProcessorBuilderImpl()
+    fun coreExceptionProcessorBuilder(): ExceptionProcessorBuilder = CoreExceptionProcessorBuilder()
 
 
     /**

@@ -14,21 +14,21 @@ package love.forte.test
 
 import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.ConfigBeans
-import love.forte.simbot.core.api.message.events.MessageContent
-import love.forte.simbot.core.api.message.events.TextMessageContent
-import love.forte.simbot.core.api.message.assists.Flag
-import love.forte.simbot.core.api.message.assists.flag
-import love.forte.simbot.core.api.message.containers.AccountInfo
-import love.forte.simbot.core.api.message.containers.BotContainer
-import love.forte.simbot.core.api.message.containers.BotInfo
-import love.forte.simbot.core.api.message.events.PrivateMsg
-import love.forte.simbot.core.api.message.events.PrivateMsgIdFlagContent
-import love.forte.simbot.core.api.sender.MsgSenderFactories
-import love.forte.simbot.core.api.sender.toBotSender
-import love.forte.simbot.core.bot.Bot
-import love.forte.simbot.core.bot.BotRegisterInfo
-import love.forte.simbot.core.bot.BotVerifier
-import love.forte.simbot.core.bot.NoNeedToCloseBot
+import love.forte.simbot.api.message.events.MessageContent
+import love.forte.simbot.api.message.events.TextMessageContent
+import love.forte.simbot.api.message.assists.Flag
+import love.forte.simbot.api.message.assists.flag
+import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.BotContainer
+import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.events.PrivateMsg
+import love.forte.simbot.api.message.events.PrivateMsgIdFlagContent
+import love.forte.simbot.api.sender.MsgSenderFactories
+import love.forte.simbot.api.sender.toBotSender
+import love.forte.simbot.bot.Bot
+import love.forte.simbot.bot.BotRegisterInfo
+import love.forte.simbot.bot.BotVerifier
+import love.forte.simbot.bot.NoNeedToCloseBot
 
 
 

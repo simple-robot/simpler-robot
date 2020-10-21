@@ -16,14 +16,14 @@ import kotlinx.coroutines.runBlocking
 import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
 import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
 import love.forte.simbot.core.CompLogger
-import love.forte.simbot.core.api.message.containers.BotContainer
-import love.forte.simbot.core.api.message.containers.BotInfo
-import love.forte.simbot.core.api.sender.BotSender
-import love.forte.simbot.core.api.sender.MsgSenderFactories
-import love.forte.simbot.core.api.sender.toBotSender
-import love.forte.simbot.core.bot.Bot
-import love.forte.simbot.core.bot.BotRegisterInfo
-import love.forte.simbot.core.bot.BotVerifier
+import love.forte.simbot.api.message.containers.BotContainer
+import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.sender.BotSender
+import love.forte.simbot.api.sender.MsgSenderFactories
+import love.forte.simbot.api.sender.toBotSender
+import love.forte.simbot.bot.Bot
+import love.forte.simbot.bot.BotRegisterInfo
+import love.forte.simbot.bot.BotVerifier
 import net.mamoe.mirai.alsoLogin
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
 import net.mamoe.mirai.Bot as MBot

@@ -12,12 +12,12 @@
 
 package love.forte.simbot.component.mirai.message
 
-import love.forte.simbot.core.api.message.events.MessageContent
-import love.forte.simbot.core.api.message.assists.Flag
-import love.forte.simbot.core.api.message.assists.Permissions
-import love.forte.simbot.core.api.message.containers.AccountInfo
-import love.forte.simbot.core.api.message.containers.GroupInfo
-import love.forte.simbot.core.api.message.events.GroupMsg
+import love.forte.simbot.api.message.events.MessageContent
+import love.forte.simbot.api.message.assists.Flag
+import love.forte.simbot.api.message.assists.Permissions
+import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.events.GroupMsg
 import net.mamoe.mirai.message.GroupMessageEvent
 import net.mamoe.mirai.message.data.MessageSource
 

@@ -14,7 +14,7 @@ package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
-import love.forte.simbot.core.*
+import love.forte.simbot.*
 
 /**
  *
@@ -38,7 +38,7 @@ public class CoreSimbotEnvironmentConfiguration {
 
     @CoreBeans
     fun coreSimbotEnvironment(): SimbotEnvironment {
-        return SimbotEnvironmentImpl(
+        return CoreSimbotEnvironment(
             resourceEnvironment, argsEnvironment, packageScanEnvironment
         )
     }

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     ContextConfiguration.kt
+ * File     CoreListenerContextConfiguration.kt
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -13,9 +13,9 @@
 package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
-import love.forte.simbot.core.listener.ContextMapFactory
+import love.forte.simbot.listener.ContextMapFactory
 import love.forte.simbot.core.listener.CoreContextMapFactory
-import love.forte.simbot.core.listener.ListenerContextFactory
+import love.forte.simbot.listener.ListenerContextFactory
 import love.forte.simbot.core.listener.ListenerContextFactoryImpl
 
 

@@ -16,9 +16,9 @@ import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.simbot.component.mirai.sender.MiraiGetterFactory
 import love.forte.simbot.component.mirai.sender.MiraiSenderFactory
 import love.forte.simbot.component.mirai.sender.MiraiSetterFactory
-import love.forte.simbot.core.api.sender.GetterFactory
-import love.forte.simbot.core.api.sender.SenderFactory
-import love.forte.simbot.core.api.sender.SetterFactory
+import love.forte.simbot.api.sender.GetterFactory
+import love.forte.simbot.api.sender.SenderFactory
+import love.forte.simbot.api.sender.SetterFactory
 
 /**
  *

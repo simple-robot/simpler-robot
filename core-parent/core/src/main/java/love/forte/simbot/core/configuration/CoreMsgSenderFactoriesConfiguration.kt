@@ -13,10 +13,10 @@
 package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
-import love.forte.simbot.core.api.sender.GetterFactory
-import love.forte.simbot.core.api.sender.MsgSenderFactories
-import love.forte.simbot.core.api.sender.SenderFactory
-import love.forte.simbot.core.api.sender.SetterFactory
+import love.forte.simbot.api.sender.GetterFactory
+import love.forte.simbot.api.sender.MsgSenderFactories
+import love.forte.simbot.api.sender.SenderFactory
+import love.forte.simbot.api.sender.SetterFactory
 import love.forte.simbot.core.sender.CoreMsgSenderFactories
 
 /**

@@ -20,9 +20,9 @@ import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.component.mirai.utils.registerSimbotEvents
 import love.forte.simbot.core.CompLogger
-import love.forte.simbot.core.listener.ListenerManager
-import love.forte.simbot.core.listener.ListenerRegistered
-import love.forte.simbot.core.listener.MsgGetProcessor
+import love.forte.simbot.listener.ListenerManager
+import love.forte.simbot.listener.ListenerRegistered
+import love.forte.simbot.listener.MsgGetProcessor
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.closeAndJoin
 

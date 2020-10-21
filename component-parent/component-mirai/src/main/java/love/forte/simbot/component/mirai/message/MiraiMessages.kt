@@ -13,7 +13,7 @@
 @file:JvmName("MiraiMessages")
 package love.forte.simbot.component.mirai.message
 
-import love.forte.simbot.core.api.message.assists.Permissions
+import love.forte.simbot.api.message.assists.Permissions
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.MemberPermission
 

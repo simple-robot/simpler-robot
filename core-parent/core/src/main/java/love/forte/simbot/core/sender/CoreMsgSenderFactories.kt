@@ -12,10 +12,10 @@
 
 package love.forte.simbot.core.sender
 
-import love.forte.simbot.core.api.sender.GetterFactory
-import love.forte.simbot.core.api.sender.MsgSenderFactories
-import love.forte.simbot.core.api.sender.SenderFactory
-import love.forte.simbot.core.api.sender.SetterFactory
+import love.forte.simbot.api.sender.GetterFactory
+import love.forte.simbot.api.sender.MsgSenderFactories
+import love.forte.simbot.api.sender.SenderFactory
+import love.forte.simbot.api.sender.SetterFactory
 
 /**
  *

@@ -12,7 +12,10 @@
 
 package love.forte.simbot.core.listener
 
-import love.forte.simbot.core.api.message.events.MsgGet
+import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.listener.ContextMap
+import love.forte.simbot.listener.ListenerContext
+import love.forte.simbot.listener.ListenerContextFactory
 
 
 /**

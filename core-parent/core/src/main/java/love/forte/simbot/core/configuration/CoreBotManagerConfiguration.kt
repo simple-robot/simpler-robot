@@ -13,9 +13,9 @@
 package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
-import love.forte.simbot.core.api.sender.MsgSenderFactories
-import love.forte.simbot.core.bot.BotManager
-import love.forte.simbot.core.bot.BotVerifier
+import love.forte.simbot.api.sender.MsgSenderFactories
+import love.forte.simbot.bot.BotManager
+import love.forte.simbot.bot.BotVerifier
 import love.forte.simbot.core.bot.CoreBotManager
 
 /**

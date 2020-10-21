@@ -19,10 +19,10 @@ import love.forte.simbot.core.intercept.CoreListenerInterceptChainFactory
 import love.forte.simbot.core.intercept.CoreMsgInterceptChainFactory
 import love.forte.simbot.core.intercept.CoreListenerInterceptContextFactory
 import love.forte.simbot.core.intercept.CoreMsgInterceptContextFactory
-import love.forte.simbot.core.listener.ListenerInterceptChainFactory
-import love.forte.simbot.core.listener.ListenerInterceptContextFactory
-import love.forte.simbot.core.listener.MsgInterceptChainFactory
-import love.forte.simbot.core.listener.MsgInterceptContextFactory
+import love.forte.simbot.listener.ListenerInterceptChainFactory
+import love.forte.simbot.listener.ListenerInterceptContextFactory
+import love.forte.simbot.listener.MsgInterceptChainFactory
+import love.forte.simbot.listener.MsgInterceptContextFactory
 
 /**
  *

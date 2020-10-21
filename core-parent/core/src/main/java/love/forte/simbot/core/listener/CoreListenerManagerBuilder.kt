@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     ListenerManagerBuilderImpl.kt
+ * File     CoreListenerManagerBuilder.kt
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -12,12 +12,14 @@
 
 package love.forte.simbot.core.listener
 
-import love.forte.simbot.core.api.sender.MsgSenderFactories
-import love.forte.simbot.core.bot.BotManager
-import love.forte.simbot.core.exception.ExceptionProcessor
-import love.forte.simbot.core.filter.AtDetectionFactory
-import love.forte.simbot.core.filter.FilterManager
-import love.forte.simbot.core.filter.ListenerFilter
+import love.forte.simbot.api.sender.MsgSenderFactories
+import love.forte.simbot.bot.BotManager
+import love.forte.simbot.exception.ExceptionProcessor
+import love.forte.simbot.filter.AtDetectionFactory
+import love.forte.simbot.filter.FilterManager
+import love.forte.simbot.filter.ListenerFilter
+import love.forte.simbot.listener.ListenerManager
+import love.forte.simbot.listener.ListenerManagerBuilder
 
 /**
  *

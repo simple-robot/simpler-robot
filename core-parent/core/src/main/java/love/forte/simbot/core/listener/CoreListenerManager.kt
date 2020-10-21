@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     ListenerManagerImpl.kt
+ * File     CoreListenerManager.kt
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -15,13 +15,14 @@ package love.forte.simbot.core.listener
 import love.forte.common.collections.concurrentQueueOf
 import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.common.sequences.distinctByMerger
-import love.forte.simbot.core.api.message.events.MsgGet
-import love.forte.simbot.core.api.sender.MsgSender
-import love.forte.simbot.core.api.sender.MsgSenderFactories
-import love.forte.simbot.core.bot.BotManager
-import love.forte.simbot.core.exception.ExceptionHandleContext
-import love.forte.simbot.core.exception.ExceptionProcessor
-import love.forte.simbot.core.filter.AtDetectionFactory
+import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.api.sender.MsgSender
+import love.forte.simbot.api.sender.MsgSenderFactories
+import love.forte.simbot.bot.BotManager
+import love.forte.simbot.exception.ExceptionHandleContext
+import love.forte.simbot.exception.ExceptionProcessor
+import love.forte.simbot.filter.AtDetectionFactory
+import love.forte.simbot.listener.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*

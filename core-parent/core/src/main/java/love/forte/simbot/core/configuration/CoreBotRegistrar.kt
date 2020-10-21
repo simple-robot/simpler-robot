@@ -12,14 +12,13 @@
 
 package love.forte.simbot.core.configuration
 
-import love.forte.common.configuration.annotation.AsConfig
 import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.PostPass
 import love.forte.simbot.core.CompLogger
-import love.forte.simbot.core.bot.BotManager
-import love.forte.simbot.core.bot.BotRegisterInfo
+import love.forte.simbot.bot.BotManager
+import love.forte.simbot.bot.BotRegisterInfo
 
 
 @ConfigBeans

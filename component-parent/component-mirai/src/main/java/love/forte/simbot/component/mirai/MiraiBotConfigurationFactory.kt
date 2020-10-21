@@ -14,7 +14,7 @@ package love.forte.simbot.component.mirai
 
 import cn.hutool.crypto.SecureUtil
 import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
-import love.forte.simbot.core.bot.BotRegisterInfo
+import love.forte.simbot.bot.BotRegisterInfo
 import net.mamoe.mirai.utils.BotConfiguration
 import net.mamoe.mirai.utils.SystemDeviceInfo
 import kotlin.random.Random

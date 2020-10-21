@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     CoreMethodListenerRegistrar.kt
+ * File     CoreMethodPostListenerRegistrar.kt
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -14,18 +14,17 @@ package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.DependBeanFactory
 import love.forte.common.ioc.annotation.Beans
-import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.convert.ConverterManager
 import love.forte.common.utils.scanner.HutoolClassesScanner
 import love.forte.common.utils.scanner.Scanner
 import love.forte.simbot.core.CompLogger
-import love.forte.simbot.core.SimbotPackageScanEnvironment
-import love.forte.simbot.core.annotation.Listens
-import love.forte.simbot.core.filter.FilterManager
-import love.forte.simbot.core.listener.PostListenerRegistrar
-import love.forte.simbot.core.listener.ListenerRegistrar
+import love.forte.simbot.SimbotPackageScanEnvironment
+import love.forte.simbot.annotation.Listens
+import love.forte.simbot.filter.FilterManager
+import love.forte.simbot.listener.PostListenerRegistrar
+import love.forte.simbot.listener.ListenerRegistrar
 import love.forte.simbot.core.listener.MethodListenerFunction
 
 

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     MethodListenerRegistrar.kt
+ * File     MethodListenerFunctionFactory.kt
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -15,8 +15,9 @@ package love.forte.simbot.core.listener
 import love.forte.common.ioc.DependBeanFactory
 import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.convert.ConverterManager
-import love.forte.simbot.core.annotation.Listens
-import love.forte.simbot.core.filter.FilterManager
+import love.forte.simbot.annotation.Listens
+import love.forte.simbot.filter.FilterManager
+import love.forte.simbot.listener.ListenerFunction
 import java.lang.reflect.Modifier
 
 /**
@@ -41,7 +42,7 @@ public class MethodListenerFunctionFactoryImpl(
     private val dependBeanFactory: DependBeanFactory,
     private val filterManager: FilterManager,
     private val converterManager: ConverterManager
-) : MethodListenerFunctionFactory{
+) : MethodListenerFunctionFactory {
     override fun getListenerFunctions(type: Class<*>): List<ListenerFunction> {
         return type.declaredMethods.mapNotNull {
             AnnotationUtil.getAnnotation(it, Listens::class.java)?.run {

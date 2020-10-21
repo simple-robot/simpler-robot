@@ -22,7 +22,7 @@ import love.forte.simbot.component.mirai.SimbotMiraiLogger
 import love.forte.common.configuration.annotation.AsConfig
 import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.Beans
-import love.forte.simbot.core.annotation.AsSimbotConfig
+import love.forte.simbot.annotation.AsSimbotConfig
 import net.mamoe.mirai.utils.*
 import java.io.File
 import java.util.concurrent.TimeUnit

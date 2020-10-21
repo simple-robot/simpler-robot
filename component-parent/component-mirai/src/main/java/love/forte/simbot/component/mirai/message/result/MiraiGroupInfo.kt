@@ -12,11 +12,11 @@
 
 package love.forte.simbot.component.mirai.message.result
 
-import love.forte.simbot.core.api.message.containers.GroupInfo
-import love.forte.simbot.core.api.message.results.GroupAdmin
-import love.forte.simbot.core.api.message.results.GroupFullInfo
-import love.forte.simbot.core.api.message.results.GroupOwner
-import love.forte.simbot.core.api.message.results.SimpleGroupInfo
+import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.results.GroupAdmin
+import love.forte.simbot.api.message.results.GroupFullInfo
+import love.forte.simbot.api.message.results.GroupOwner
+import love.forte.simbot.api.message.results.SimpleGroupInfo
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.isAdministrator
 

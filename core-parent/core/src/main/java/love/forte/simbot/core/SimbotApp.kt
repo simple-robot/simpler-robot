@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     SimbotApplication.kt
+ * File     SimbotApp.kt
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -27,14 +27,13 @@ import love.forte.common.ioc.annotation.Beans
 import love.forte.common.listAs
 import love.forte.common.utils.ResourceUtil
 import love.forte.common.utils.annotation.AnnotationUtil
-import love.forte.common.utils.scanner.ClassesScanner
 import love.forte.common.utils.scanner.HutoolClassesScanner
 import love.forte.common.utils.scanner.Scanner
-import love.forte.simbot.core.annotation.SimbotApplication
-import love.forte.simbot.core.bot.BotManager
-import love.forte.simbot.core.constant.PriorityConstant
-import love.forte.simbot.core.listener.ListenerManager
-import love.forte.simbot.core.listener.MsgGetProcessor
+import love.forte.simbot.*
+import love.forte.simbot.annotation.SimbotApplication
+import love.forte.simbot.bot.BotManager
+import love.forte.simbot.constant.PriorityConstant
+import love.forte.simbot.listener.MsgGetProcessor
 import java.io.Closeable
 import java.io.Reader
 

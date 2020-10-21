@@ -12,6 +12,9 @@
 
 package love.forte.simbot.core.listener
 
+import love.forte.simbot.listener.ContextMap
+import love.forte.simbot.listener.ContextMapFactory
+import love.forte.simbot.listener.ContextMapImpl
 import java.util.concurrent.ConcurrentHashMap
 
 /**

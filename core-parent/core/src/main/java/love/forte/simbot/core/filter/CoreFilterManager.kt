@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     FilterManagerImpl.kt
+ * File     CoreFilterManager.kt
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -12,8 +12,9 @@
 
 package love.forte.simbot.core.filter
 
-import love.forte.simbot.core.annotation.Filters
-import love.forte.simbot.core.api.message.events.MsgGet
+import love.forte.simbot.annotation.Filters
+import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.filter.*
 import java.util.concurrent.ConcurrentHashMap
 
 

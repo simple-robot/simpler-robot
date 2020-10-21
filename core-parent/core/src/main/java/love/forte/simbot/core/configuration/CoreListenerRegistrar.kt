@@ -17,11 +17,11 @@ import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.PostPass
 import love.forte.simbot.core.CompLogger
-import love.forte.simbot.core.api.message.containers.BotInfo
-import love.forte.simbot.core.bot.BotManager
-import love.forte.simbot.core.listener.ListenerManager
-import love.forte.simbot.core.listener.ListenerRegistered
-import love.forte.simbot.core.listener.PostListenerRegistrar
+import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.bot.BotManager
+import love.forte.simbot.listener.ListenerManager
+import love.forte.simbot.listener.ListenerRegistered
+import love.forte.simbot.listener.PostListenerRegistrar
 
 
 @ConfigBeans

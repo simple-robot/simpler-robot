@@ -14,7 +14,7 @@ package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.simbot.core.listener.CoreListenerResultFactory
-import love.forte.simbot.core.listener.ListenerResultFactory
+import love.forte.simbot.listener.ListenerResultFactory
 
 /**
  *

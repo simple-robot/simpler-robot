@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     FilterParameterMatcherImpl.java
+ * File     CoreFilterParameterMatcher.java
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -11,6 +11,8 @@
  */
 
 package love.forte.simbot.core.filter;
+
+import love.forte.simbot.filter.FilterParameterMatcher;
 
 import java.util.HashMap;
 import java.util.Map;

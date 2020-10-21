@@ -1,14 +1,14 @@
 package love.forte.test.listest;
 
 import love.forte.common.ioc.annotation.Beans;
-import love.forte.simbot.core.annotation.Listen;
-import love.forte.simbot.core.annotation.Listens;
-import love.forte.simbot.core.annotation.OnGroup;
-import love.forte.simbot.core.annotation.OnPrivate;
-import love.forte.simbot.core.api.message.events.MsgGet;
-import love.forte.simbot.core.api.message.events.GroupMsg;
-import love.forte.simbot.core.api.message.events.PrivateMsg;
-import love.forte.simbot.core.constant.PriorityConstant;
+import love.forte.simbot.annotation.Listen;
+import love.forte.simbot.annotation.Listens;
+import love.forte.simbot.annotation.OnGroup;
+import love.forte.simbot.annotation.OnPrivate;
+import love.forte.simbot.api.message.events.MsgGet;
+import love.forte.simbot.api.message.events.GroupMsg;
+import love.forte.simbot.api.message.events.PrivateMsg;
+import love.forte.simbot.constant.PriorityConstant;
 
 /**
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>

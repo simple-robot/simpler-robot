@@ -1,8 +1,8 @@
 package love.forte.test.listest;
 
 import love.forte.common.ioc.annotation.Beans;
-import love.forte.simbot.core.filter.FilterData;
-import love.forte.simbot.core.filter.ListenerFilter;
+import love.forte.simbot.filter.FilterData;
+import love.forte.simbot.filter.ListenerFilter;
 import org.jetbrains.annotations.NotNull;
 
 /**

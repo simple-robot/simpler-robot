@@ -14,12 +14,12 @@ package love.forte.simbot.component.mirai.message.result
 
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
 import love.forte.simbot.component.mirai.message.toSimbotPermissions
-import love.forte.simbot.core.api.message.assists.Permissions
-import love.forte.simbot.core.api.message.containers.AccountInfo
-import love.forte.simbot.core.api.message.containers.GroupInfo
-import love.forte.simbot.core.api.message.results.GroupAdmin
-import love.forte.simbot.core.api.message.results.GroupMemberInfo
-import love.forte.simbot.core.api.message.results.GroupOwner
+import love.forte.simbot.api.message.assists.Permissions
+import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.results.GroupAdmin
+import love.forte.simbot.api.message.results.GroupMemberInfo
+import love.forte.simbot.api.message.results.GroupOwner
 import net.mamoe.mirai.contact.Member
 
 /**

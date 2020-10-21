@@ -12,6 +12,10 @@
 
 package love.forte.simbot.core.listener
 
+import love.forte.simbot.listener.ListenResult
+import love.forte.simbot.listener.ListenerFunction
+import love.forte.simbot.listener.ListenerResultFactory
+
 /**
  * 无内容的result。一般用在没有监听函数执行被执行的时候。
  */

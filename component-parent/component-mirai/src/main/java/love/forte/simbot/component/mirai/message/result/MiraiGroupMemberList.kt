@@ -12,9 +12,9 @@
 
 package love.forte.simbot.component.mirai.message.result
 
-import love.forte.simbot.core.api.message.containers.GroupInfo
-import love.forte.simbot.core.api.message.results.GroupMemberInfo
-import love.forte.simbot.core.api.message.results.GroupMemberList
+import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.results.GroupMemberInfo
+import love.forte.simbot.api.message.results.GroupMemberList
 import net.mamoe.mirai.contact.Group
 
 /**

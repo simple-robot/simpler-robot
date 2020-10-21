@@ -12,7 +12,8 @@
 
 package love.forte.simbot.core.bot
 
-import love.forte.simbot.core.api.sender.MsgSenderFactories
+import love.forte.simbot.api.sender.MsgSenderFactories
+import love.forte.simbot.bot.*
 import java.util.concurrent.ConcurrentHashMap
 
 /**

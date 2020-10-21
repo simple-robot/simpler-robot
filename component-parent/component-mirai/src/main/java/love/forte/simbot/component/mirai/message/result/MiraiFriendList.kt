@@ -12,8 +12,8 @@
 
 package love.forte.simbot.component.mirai.message.result
 
-import love.forte.simbot.core.api.message.results.FriendInfo
-import love.forte.simbot.core.api.message.results.FriendList
+import love.forte.simbot.api.message.results.FriendInfo
+import love.forte.simbot.api.message.results.FriendList
 import net.mamoe.mirai.Bot
 
 

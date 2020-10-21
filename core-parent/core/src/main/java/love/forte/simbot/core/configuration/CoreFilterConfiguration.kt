@@ -13,11 +13,10 @@
 package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.DependBeanFactory
-import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
-import love.forte.common.utils.annotation.AnnotationUtil
-import love.forte.simbot.core.filter.*
+import love.forte.simbot.core.filter.CoreFilterManagerBuilder
+import love.forte.simbot.filter.*
 
 /**
  *

@@ -16,7 +16,7 @@ import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.simbot.component.mirai.DefaultMiraiBotConfigurationFactory
 import love.forte.simbot.component.mirai.MiraiBotConfigurationFactory
 import love.forte.simbot.component.mirai.MiraiBotVerifier
-import love.forte.simbot.core.constant.PriorityConstant
+import love.forte.simbot.constant.PriorityConstant
 
 /**
  *
