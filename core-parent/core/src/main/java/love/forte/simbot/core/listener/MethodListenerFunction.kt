@@ -254,7 +254,8 @@ public class MethodListenerFunction(
                         }
                     } else {
                         f@{ d ->
-                            val msg: String = d.msgGet.msg ?: return@f null // todo throw ex
+                            val msg: String = d.msgGet.msg
+                                ?: throw IllegalStateException("Msg ${d.msgGet} unable to get msg.")
                             val findValue = listenAnnotationFilter?.getFilterValue(filterValueName, msg)
                             if (findValue == null) {
                                 throw IllegalStateException("Unable to extract filter value $filterValueName in method $method.")

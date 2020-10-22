@@ -38,22 +38,25 @@ public interface Setter {
      *
      * @param flag [FriendAddRequest]事件的 [flag][FriendAddRequest.flag]。
      * @param friendRemark 如果为同意，则可以设置好友的备注。可以为null。
-     * @param agree 是否同意
+     * @param agree 是否同意。
+     * @param blackList 是否列入黑名单，即不再接受此人申请。
      *
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      */
-    fun setFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>, friendRemark: String?, agree: Boolean) : Carrier<Boolean>
+    fun setFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>, friendRemark: String?, agree: Boolean, blackList: Boolean) : Carrier<Boolean>
 
 
     /**
      * 处理群添加申请。
      *
-     * @param flag [GroupAddRequest] 事件的 [flag][GroupAddRequest.flag]
-     * @param agree 是否同意
+     * @param flag [GroupAddRequest] 事件的 [flag][GroupAddRequest.flag]。
+     * @param agree 是否同意。
+     * @param blackList 是否列入黑名单，即不再接受此人申请。
+     * @param why 如果是拒绝，则此处可以填写拒绝理由。
      *
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      */
-    fun setGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, agree: Boolean): Carrier<Boolean>
+    fun setGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, agree: Boolean, blackList: Boolean, why: String?): Carrier<Boolean>
 
 
     /**

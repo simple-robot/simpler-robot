@@ -60,7 +60,13 @@ public data class FriendAddRequestIdFlagContent(override val id: String) : Frien
 public interface GroupAddRequest : RequestGet {
 
     /**
-     * 当前请求的邀请者。在 **组件不支持** 、**请求非邀请** 等情况下可能为null
+     * 代表当前实际申请入群的用户。如果是别人申请入群，则此为这个要进群的用户的信息，
+     * 如果是bot被邀请进某个群，那么这个就是bot的信息。
+     */
+    override val accountInfo: AccountInfo
+
+    /**
+     * 当前请求的邀请者。在 **组件不支持** 、**请求非邀请** 等情况下可能为null。
      */
     val invitor: GroupAddRequestInvitor?
 
@@ -106,6 +112,8 @@ public data class GroupAddRequestIdFlagContent(override val id: String) : GroupA
 
 /**
  * [群添加请求][GroupAddRequest] 中的邀请者信息。
+ *
+ * 或许会考虑直接继承 [AccountInfo]。
  *
  */
 public interface GroupAddRequestInvitor: OriginalDataContainer {

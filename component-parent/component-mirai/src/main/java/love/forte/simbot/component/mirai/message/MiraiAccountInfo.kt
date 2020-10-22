@@ -14,6 +14,8 @@ package love.forte.simbot.component.mirai.message
 
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.component.mirai.utils.userAvatar
+import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.Member
@@ -102,4 +104,45 @@ public data class MiraiMemberAccountInfo(private val member: Member) : AccountIn
 
     override val groupName: String?
         get() = group.name
+}
+
+
+/**
+ * mirai的bot对应的 [AccountInfo] 实现。
+ * 内容为信息快照，不保存 [Bot] 实例。
+ */
+public class MiraiBotAccountInfo(bot: Bot) : AccountInfo {
+    override val accountCode: String = bot.id.toString()
+    override val accountCodeNumber: Long = bot.id
+    override val accountNickname: String = bot.nick
+    override val accountRemark: String? = null
+    override val accountAvatar: String = userAvatar(bot.id)
+    override fun toString(): String {
+        return "MiraiBotAccountInfo(accountCode='$accountCode', accountCodeNumber=$accountCodeNumber, accountNickname='$accountNickname', accountRemark=$accountRemark, accountAvatar='$accountAvatar')"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as MiraiBotAccountInfo
+
+        if (accountCode != other.accountCode) return false
+        if (accountCodeNumber != other.accountCodeNumber) return false
+        if (accountNickname != other.accountNickname) return false
+        if (accountRemark != other.accountRemark) return false
+        if (accountAvatar != other.accountAvatar) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = accountCode.hashCode()
+        result = 31 * result + accountCodeNumber.hashCode()
+        result = 31 * result + accountNickname.hashCode()
+        result = 31 * result + (accountRemark?.hashCode() ?: 0)
+        result = 31 * result + accountAvatar.hashCode()
+        return result
+    }
+
 }

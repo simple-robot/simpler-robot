@@ -31,11 +31,12 @@ object ErrorSetter : Setter {
     override fun setFriendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,
-        agree: Boolean
+        agree: Boolean,
+        blackList: Boolean
     ): Carrier<Boolean> =
         NO("Setter.setFriendAddRequest")
 
-    override fun setGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, agree: Boolean): Nothing  =
+    override fun setGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, agree: Boolean, blackList: Boolean, why: String?): Nothing  =
         NO("Setter.setGroupAddRequest")
 
     override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Nothing =

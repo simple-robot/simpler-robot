@@ -26,6 +26,9 @@ import love.forte.simbot.api.message.events.FriendAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.api.sender.SetterFactory
+import love.forte.simbot.component.mirai.message.MiraiBotInvitedJoinRequestFlagContent
+import love.forte.simbot.component.mirai.message.MiraiFriendRequestFlagContent
+import love.forte.simbot.component.mirai.message.MiraiGroupMemberJoinRequestFlagContent
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.mute
 import java.util.concurrent.TimeUnit
@@ -51,22 +54,62 @@ public class MiraiSetter(private val bot: Bot) : Setter {
     }
 
     /**
-     * 通过好友申请。
+     * 设置好友申请。
      */
     override fun setFriendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,
-        agree: Boolean
+        agree: Boolean,
+        blackList: Boolean
     ): Carrier<Boolean> {
-        TODO("Not yet implemented")
+        val f = flag.flag
+        return if (f is MiraiFriendRequestFlagContent) {
+            val event = f.event
+            if (agree) {
+                runBlocking { event.accept() }
+            } else {
+                runBlocking { event.reject(blackList) }
+            }
+            true.toCarrier()
+        } else {
+            throw IllegalArgumentException("flag content $f is not Mirai's flag content and cannot be used by mirai component.")
+        }
     }
 
 
     /**
      * 通过群申请。
      */
-    override fun setGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, agree: Boolean): Carrier<Boolean> {
-        TODO("Not yet implemented")
+    override fun setGroupAddRequest(
+        flag: Flag<GroupAddRequest.FlagContent>,
+        agree: Boolean,
+        blackList: Boolean,
+        why: String?
+    ): Carrier<Boolean> {
+        return when (val f = flag.flag) {
+            // member join.
+            is MiraiGroupMemberJoinRequestFlagContent -> {
+                val event = f.event
+                if (agree) {
+                    runBlocking { event.accept() }
+                } else {
+                    runBlocking { event.reject(blackList, why ?: "") }
+                }
+                true.toCarrier()
+            }
+            // bot invited.
+            is MiraiBotInvitedJoinRequestFlagContent -> {
+                val event = f.event
+                if (agree) {
+                    runBlocking { event.accept() }
+                } else {
+                    // only ignore, no reject.
+                    runBlocking { event.ignore() }
+                }
+                true.toCarrier()
+            }
+            else -> throw IllegalArgumentException("flag content $f is not Mirai's flag content and cannot be used by mirai component.")
+        }
     }
 
 

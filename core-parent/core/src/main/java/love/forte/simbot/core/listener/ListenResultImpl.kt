@@ -12,6 +12,7 @@
 
 package love.forte.simbot.core.listener
 
+import love.forte.simbot.annotation.ListenBreak
 import love.forte.simbot.listener.ListenResult
 import love.forte.simbot.listener.ListenerFunction
 import love.forte.simbot.listener.ListenerResultFactory
@@ -135,7 +136,8 @@ public object CoreListenerResultFactory : ListenerResultFactory {
                 this.result = result
                 this.success = throwable == null && result != null
                 this.throwable = throwable
-                // TODO break.
+                // listen break.
+                this.isBreak = success && listenerFunction.getAnnotation(ListenBreak::class.java) != null
             }
         }
     }

@@ -40,6 +40,14 @@ import kotlin.contracts.contract
  * 对于例如 [msg]、[images]等内容的获取，有些组件可能会需要使用懒加载来提高效率。
  * 在实现懒加载的时候不需要考虑线程安全，对于线程安全的问题应当由使用者自行考虑。
  *
+ *
+ * 这时候就有人会问了：“为什么不提供一个方法来获取一个 [MessageContent] 中的所有类型的消息链呢？”
+ * 问得好。因为simbot几乎没有绝对定义的消息类型。at、image、text这些还好理解，因为它们很常见。
+ * 但是除了这种十分常见的消息类型以外，我不能保证所有的组件中出现的消息类型都在我的预期之内。
+ * 因此我只会陆续提供部分较为特殊的消息类型，例如 image 类型。
+ *
+ * 至于其他一切可能出现的类型，[msg] 与 [CatCodeUtil.split] 可以满足绝大部分的可能性与需求。
+ *
  */
 public interface MessageContent {
     /**
@@ -50,8 +58,8 @@ public interface MessageContent {
     /**
      * 尝试寻找消息内容中的 [图片消息][ImageMessageContent]。
      * 如果是复合消息，则寻找，如果是单独的消息，则除非自身即为图片消息，否则返回空集合。
-     * 返回的集合为read-only list.
      *
+     * 返回的集合为read-only list.
      *
      */
     val images: List<ImageMessageContent>
