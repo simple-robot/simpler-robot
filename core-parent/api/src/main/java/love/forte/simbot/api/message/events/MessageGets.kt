@@ -14,6 +14,7 @@
 package love.forte.simbot.api.message.events
 
 import love.forte.simbot.api.message.assists.Flag
+import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.containers.PermissionContainer
 
@@ -83,6 +84,10 @@ public data class PrivateMsgIdFlagContent(override val id: String) : PrivateMsg.
  * 群消息. 实现了 [MessageEventGet] , [GroupContainer] , [PermissionContainer]
  */
 public interface GroupMsg : MessageEventGet, GroupContainer, PermissionContainer {
+
+    /** 发消息的人在群里的权限。 */
+    override val permission: Permissions
+
     /**
      * 获取群消息类型
      */
@@ -125,3 +130,7 @@ public interface GroupMsg : MessageEventGet, GroupContainer, PermissionContainer
  * @constructor
  */
 public data class GroupMsgIdFlagContent(override val id: String): GroupMsg.FlagContent
+
+
+
+

@@ -14,7 +14,6 @@ package love.forte.simbot.component.mirai.sender
 
 import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.*
-import love.forte.simbot.component.mirai.message.MiraiMessageFlag
 import love.forte.simbot.core.CompLogger
 import love.forte.simbot.api.message.events.MessageEventGet
 import love.forte.simbot.api.message.events.MsgGet
@@ -26,9 +25,8 @@ import love.forte.simbot.api.message.events.FriendAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.api.sender.SetterFactory
-import love.forte.simbot.component.mirai.message.MiraiBotInvitedJoinRequestFlagContent
-import love.forte.simbot.component.mirai.message.MiraiFriendRequestFlagContent
-import love.forte.simbot.component.mirai.message.MiraiGroupMemberJoinRequestFlagContent
+import love.forte.simbot.component.mirai.message.*
+import love.forte.simbot.component.mirai.utils.EmptyMiraiMessageContent
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.mute
 import java.util.concurrent.TimeUnit
@@ -302,21 +300,24 @@ public class MiraiSetter(private val bot: Bot) : Setter {
     ): Carrier<String> = setGroupMemberSpecialTitle(group.groupCodeNumber, member.accountCodeNumber, title)
 
     /**
-     * 撤回消息。需要填入一个 [Flag] 实例，而这个 [flag] 实例必须是 mirai组件所实现的 [MiraiMessageFlag] 类型。
+     * 撤回消息。需要填入一个 [Flag] 实例，
+     * 而这个 [flag] 实例必须是 mirai组件所实现的 [MiraiMessageFlag] 类型。
      *
      * @throws IllegalArgumentException 当 [flag] 不是 [MiraiMessageFlag] 类型实例的时候。
      */
     override fun setMsgRecall(flag: Flag<MessageEventGet.MessageFlagContent>): Carrier<Boolean> {
         return if (flag is MiraiMessageFlag<*>) {
-            runBlocking {
-                try {
-                    bot.recall(flag.flag.source)
-                    true
-                } catch (e: IllegalStateException) {
-                    // if IllegalStateException, recall false.
-                    false
-                }
-            }
+                flag.flag.source?.let { source ->
+                    runBlocking {
+                        try {
+                            bot.recall(source)
+                            true
+                        } catch (e: IllegalStateException) {
+                            // if IllegalStateException, recall false.
+                            false
+                        }
+                    }
+                } ?: false
         } else {
             throw IllegalArgumentException("The 'flag($flag)' is not a 'MiraiMessageFlag' instance, cannot be recall by MiraiSetter.")
         }.toCarrier()

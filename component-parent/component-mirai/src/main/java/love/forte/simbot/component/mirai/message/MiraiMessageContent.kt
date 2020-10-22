@@ -13,15 +13,22 @@
 package love.forte.simbot.component.mirai.message
 
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import love.forte.catcode.CatCodeUtil
 import love.forte.simbot.component.mirai.utils.EmptyMiraiMessageContent
 import love.forte.simbot.component.mirai.utils.toSimbotString
 import love.forte.simbot.api.message.events.ImageMessageContent
 import love.forte.simbot.api.message.events.MessageContent
+import love.forte.simbot.api.message.events.VoiceMessageContent
+import love.forte.simbot.component.mirai.sender.isNotEmptyMsg
 import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.getFriendOrNull
+import net.mamoe.mirai.message.action.Nudge
+import net.mamoe.mirai.message.action.Nudge.Companion.sendNudge
 import net.mamoe.mirai.message.data.*
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * 一个 mirai 组件所使用的 [MessageContent] 实现。
@@ -36,7 +43,7 @@ public interface MiraiMessageContent : MessageContent {
      * 消息字符串文本。一般来讲，如果存在一些特殊消息，
      * 那么他们会作为 **Cat码** 字符串存在于消息中。
      */
-    @JvmDefault
+    // @JvmDefault
     override val msg: String?
 }
 
@@ -52,7 +59,7 @@ public data class MiraiListMessageContent(val list: List<MiraiMessageContent>) :
             list.size == 2 -> list.first().getMessage(contact) + list.last().getMessage(contact)
             else -> list.map { contact.async { it.getMessage(contact) } }.asSequence().map {
                 runBlocking { it.await() }
-            }.reduce { m1, m2 -> m1 + m2 }
+            }.filter { it.isNotEmptyMsg() }.reduceOrNull { m1, m2 -> m1 + m2 } ?: EmptyMessageChain
         }
 
     }
@@ -64,29 +71,12 @@ public data class MiraiListMessageContent(val list: List<MiraiMessageContent>) :
 }
 
 
-// /**
-//  * mirai 消息拼接。
-//  */
-// public fun MiraiMessageContent.plus(other: MiraiMessageContent) : MiraiMessageContent {
-//     return when {
-//         this is MiraiListMessageContent && other is MiraiListMessageContent ->
-//             MiraiListMessageContent(this.list + other.list)
-//
-//     }
-// }
-
 
 /**
  * mirai 组件所使用的一个 [SingleMessage] 实现。
- * 最终发送的时候将会被过滤掉。
+ * 应当保证最终发送的时候被过滤掉。
  */
-public object EmptySingleMessage : SingleMessage {
-    override fun contentToString(): String = ""
-    override fun toString(): String = ""
-    override fun equals(other: Any?): Boolean = other === this
-    override fun contentEquals(another: Message, ignoreCase: Boolean): Boolean = another === this
-    override fun contentEquals(another: String, ignoreCase: Boolean): Boolean = another == ""
-}
+public object EmptySingleMessage : SingleMessage by PlainText("")
 
 
 /**
@@ -102,10 +92,43 @@ public class MiraiSingleMessageContent(val singleMessage: (Contact) -> SingleMes
 
     override val msg: String? get() = _msg()
 
-    override val images: List<ImageMessageContent> = emptyList()
+    override val images: List<ImageMessageContent> get() = emptyList()
 
-
+    override fun toString(): String = msg ?: "SingleMessage(null)"
 }
+
+
+/**
+ * mirai 的 nudge 消息。
+ */
+public class MiraiNudgedMessageContent(private val target: Long?) : MiraiMessageContent by MiraiSingleMessageContent({ contact ->
+    when(contact) {
+        // 如果是群
+        is Group -> {
+            val code: Long = target ?: throw IllegalArgumentException("cannot found nudge target: target is empty.")
+            val nudge: Nudge = contact.getOrNull(code)?.nudge() ?: throw NoSuchElementException("cannot found nudge target: no such member($code) in group(${contact.id}).")
+            // 获取群员并发送
+            contact.launch {
+                contact.sendNudge(nudge)
+            }
+            EmptySingleMessage
+        }
+        is User -> {
+            val nudge: Nudge = contact.nudge()
+            contact.launch {
+                contact.sendNudge(nudge)
+            }
+            EmptySingleMessage
+        }
+        // 是其他人
+        else -> EmptySingleMessage
+    }
+}, { null }) {
+    override val msg: String = CatCodeUtil.getStringCodeBuilder("nudge").apply {
+        target?.let { key("target").value(it) }
+    }.build()
+}
+
 
 
 /**
@@ -215,6 +238,8 @@ public class MiraiAtsMessageContent(private val codes: List<Long>) : MiraiMessag
 
 /**
  * mirai 的 image content，代表为通过本地上传的图片信息。
+ * 此实现中，image仅会被实例化一次，而后则会被缓存。
+ * 实例化会由锁保证其唯一性。
  */
 public class MiraiImageMessageContent(
     id: String,
@@ -243,18 +268,25 @@ public class MiraiImageMessageContent(
         imageFunction: suspend (Contact) -> Image
     ): this(id, null, null, flash, imageFunction)
 
+    @Volatile
     private lateinit var image: Image
 
+    private val lock: Lock = ReentrantLock()
 
     override suspend fun getMessage(contact: Contact): Message =
         if (::image.isInitialized) {
             image
         } else {
-            val img = imageFunction(contact)
-            if (!::image.isInitialized) {
-                image = img
+            lock.lock()
+            try {
+                if (!::image.isInitialized) {
+                    val img = imageFunction(contact)
+                    image = img
+                }
+                image
+            }finally {
+                lock.unlock()
             }
-            image
         }.let {
             if (flash) {
                 it.flash()
@@ -263,3 +295,53 @@ public class MiraiImageMessageContent(
             }
         }
 }
+
+
+/**
+ * mirai 的 voice content.
+ * 此实现类似于 [MiraiImageMessageContent]，Voice的实例化会被缓存，且存在锁来保证唯一性。
+ */
+public class MiraiVoiceMessageContent(
+    id: String,
+    path: () -> String? = { null },
+    url: () -> String? = { null },
+    private val voiceFunction: suspend (Contact) -> Voice
+) : VoiceMessageContent(
+    id, path, url
+), MiraiMessageContent {
+
+    constructor(
+        id: String,
+        path: String? = null,
+        url: String? = null,
+        voiceFunction: suspend (Contact) -> Voice
+    ): this(id, { path }, { url }, voiceFunction)
+
+    constructor(
+        id: String,
+        voiceFunction: suspend (Contact) -> Voice
+    ): this(id, null, null, voiceFunction)
+
+    @Volatile
+    private lateinit var voice: Voice
+
+    private val lock: Lock = ReentrantLock()
+
+    override suspend fun getMessage(contact: Contact): Message {
+        return if (::voice.isInitialized) {
+            voice
+        } else {
+            lock.lock()
+            try {
+                if (!::voice.isInitialized) {
+                    val vo = voiceFunction(contact)
+                    voice = vo
+                }
+                voice
+            }finally {
+                lock.unlock()
+            }
+        }
+    }
+}
+

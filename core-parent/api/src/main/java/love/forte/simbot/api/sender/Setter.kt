@@ -44,6 +44,30 @@ public interface Setter {
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      */
     fun setFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>, friendRemark: String?, agree: Boolean, blackList: Boolean) : Carrier<Boolean>
+    /** 同意请求。 */
+    @JvmDefault
+    fun acceptFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>, friendRemark: String?, blackList: Boolean) : Carrier<Boolean> =
+        setFriendAddRequest(flag, friendRemark, true, blackList)
+    /** 同意请求。 */
+    @JvmDefault
+    fun acceptFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>, blackList: Boolean) : Carrier<Boolean> =
+        acceptFriendAddRequest(flag, friendRemark = null, blackList = blackList)
+    /** 同意请求。默认blackList = false. */
+    @JvmDefault
+    fun acceptFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>) : Carrier<Boolean> =
+        acceptFriendAddRequest(flag, friendRemark = null, blackList = false)
+    /** 拒绝请求。 */
+    @JvmDefault
+    fun rejectFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>, friendRemark: String?, blackList: Boolean) : Carrier<Boolean> =
+        setFriendAddRequest(flag, friendRemark, false, blackList)
+    /** 拒绝请求。 */
+    @JvmDefault
+    fun rejectFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>, blackList: Boolean) : Carrier<Boolean> =
+        rejectFriendAddRequest(flag, friendRemark = null, blackList = blackList)
+    /** 拒绝请求。默认blackList = false. */
+    @JvmDefault
+    fun rejectFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>) : Carrier<Boolean> =
+        rejectFriendAddRequest(flag, friendRemark = null, blackList = false)
 
 
     /**
@@ -57,6 +81,30 @@ public interface Setter {
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      */
     fun setGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, agree: Boolean, blackList: Boolean, why: String?): Carrier<Boolean>
+    /** 同意请求。 */
+    @JvmDefault
+    fun acceptGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, blackList: Boolean, why: String?): Carrier<Boolean> =
+        setGroupAddRequest(flag, true, blackList, why)
+    /** 同意请求。 */
+    @JvmDefault
+    fun acceptGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, why: String?): Carrier<Boolean> =
+        acceptGroupAddRequest(flag, false, why)
+    /** 同意请求。blackList默认为false。 */
+    @JvmDefault
+    fun acceptGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>): Carrier<Boolean> =
+        acceptGroupAddRequest(flag, false, null)
+    /** 拒绝请求。 */
+    @JvmDefault
+    fun rejectGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, blackList: Boolean, why: String?): Carrier<Boolean> =
+        setGroupAddRequest(flag, false, blackList, why)
+    /** 拒绝请求。 */
+    @JvmDefault
+    fun rejectGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, why: String?): Carrier<Boolean> =
+        rejectGroupAddRequest(flag, false, why)
+    /** 拒绝请求。blackList默认为false。 */
+    @JvmDefault
+    fun rejectGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>): Carrier<Boolean> =
+        rejectGroupAddRequest(flag, false, null)
 
 
     /**

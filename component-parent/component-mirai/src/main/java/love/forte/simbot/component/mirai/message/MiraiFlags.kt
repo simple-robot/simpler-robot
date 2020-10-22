@@ -16,18 +16,41 @@ package love.forte.simbot.component.mirai.message
 
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.FlagContent
+import love.forte.simbot.api.message.events.GroupMsg
+import love.forte.simbot.api.message.events.PrivateMsg
 import net.mamoe.mirai.message.data.MessageSource
+
+
 
 
 /**
  * mirai下基于 [MessageSource] 的 [标识主体][FlagContent]
  */
 public abstract class MiraiMessageSourceFlagContent : FlagContent {
-    abstract val source: MessageSource
+    abstract val source: MessageSource?
     override val id: String
-        get() = "${source.fromId}.${source.id}"
+        get() = source?.let { "MiraiMessageFlagContent(${it.fromId}.${it.id})" } ?: "EmptyMiraiMessageFlagContent(source=null)"
 }
 
+
+
+private object EmptyMiraiGroupFlagContent : MiraiMessageSourceFlagContent(), GroupMsg.FlagContent {
+    override val source: MessageSource? = null
+}
+
+public object EmptyMiraiGroupFlag : Flag<GroupMsg.FlagContent> {
+    override val flag: GroupMsg.FlagContent
+        get() = EmptyMiraiGroupFlagContent
+}
+
+private object EmptyMiraiPrivateFlagContent : MiraiMessageSourceFlagContent(), PrivateMsg.FlagContent {
+    override val source: MessageSource? = null
+}
+
+public object EmptyMiraiPrivateFlag : Flag<PrivateMsg.FlagContent> {
+    override val flag: PrivateMsg.FlagContent
+        get() = EmptyMiraiPrivateFlagContent
+}
 
 
 /**

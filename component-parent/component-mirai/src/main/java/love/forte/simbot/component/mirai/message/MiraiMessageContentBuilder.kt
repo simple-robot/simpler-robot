@@ -13,6 +13,7 @@
 package love.forte.simbot.component.mirai.message
 
 import cn.hutool.core.io.FileUtil
+import io.ktor.http.*
 import love.forte.simbot.component.mirai.utils.toStream
 import love.forte.simbot.api.message.events.MessageContentBuilder
 import love.forte.simbot.api.message.events.MessageContentBuilderFactory
@@ -24,7 +25,6 @@ import net.mamoe.mirai.message.uploadAsImage
 import java.io.ByteArrayInputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
-import java.net.URL
 
 /**
  * [MiraiMessageContentBuilder]'s factory.
@@ -80,9 +80,9 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
     }
 
     override fun imageUrl(url: String, flash: Boolean): MiraiMessageContentBuilder {
-        val URL = URL(url)
+        val u = Url(url)
         MiraiImageMessageContent(url, url = url, flash = flash) {
-            URL.toStream().uploadAsImage(it)
+            u.toStream().uploadAsImage(it)
         }.apply { contentList.add(this) }
         return this
     }

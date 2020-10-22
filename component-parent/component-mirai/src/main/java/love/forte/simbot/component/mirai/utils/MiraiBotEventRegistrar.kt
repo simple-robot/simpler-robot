@@ -11,15 +11,17 @@
  */
 
 @file:JvmName("MiraiBotEventRegistrar")
+
 package love.forte.simbot.component.mirai.utils
 
-import love.forte.simbot.component.mirai.message.MiraiGroupMsg
-import love.forte.simbot.component.mirai.message.MiraiPrivateMsg
-import love.forte.simbot.component.mirai.message.MiraiTempMsg
+import love.forte.simbot.component.mirai.message.*
 import love.forte.simbot.listener.MsgGetProcessor
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.contact.Friend
+import net.mamoe.mirai.contact.Member
+import net.mamoe.mirai.event.Listener
+import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.event.subscribeAlways
-import net.mamoe.mirai.event.subscribeFriendMessages
 import net.mamoe.mirai.message.FriendMessageEvent
 import net.mamoe.mirai.message.GroupMessageEvent
 import net.mamoe.mirai.message.TempMessageEvent
@@ -30,28 +32,67 @@ public fun Bot.registerSimbotEvents(msgGetProcessor: MsgGetProcessor) {
 
     this.logger.let { if (it is MiraiLoggerWithSwitch) it else null }?.enable()
 
-    val botId: Long = this.id
+    // val botId: Long = this.id
 
 
     // 好友消息
-    this.subscribeAlways<FriendMessageEvent> {
-        if(this.bot.id == this@registerSimbotEvents.id) {
-            msgGetProcessor.onMsg(MiraiPrivateMsg(this))
-        }
+    this.registerListenerAlways<FriendMessageEvent> {
+        msgGetProcessor.onMsg(MiraiPrivateMsg(this))
     }
     // 临时会话消息
-    this.subscribeAlways<TempMessageEvent> {
-        if(this.bot.id == this@registerSimbotEvents.id) {
-            msgGetProcessor.onMsg(MiraiTempMsg(this))
-        }
+    this.registerListenerAlways<TempMessageEvent> {
+        msgGetProcessor.onMsg(MiraiTempMsg(this))
     }
     // 群消息
-    this.subscribeAlways<GroupMessageEvent> {
-        if(this.bot.id == this@registerSimbotEvents.id) {
-            msgGetProcessor.onMsg(MiraiGroupMsg(this))
+    this.registerListenerAlways<GroupMessageEvent> {
+        msgGetProcessor.onMsg(MiraiGroupMsg(this))
+    }
+    // 好友申请
+    this.registerListenerAlways<NewFriendRequestEvent> {
+        msgGetProcessor.onMsg(MiraiFriendRequest(this))
+    }
+
+    // bot被戳事件
+    registerListenerAlways<BotNudgedEvent> {
+        if(this.from.id != this.bot.id){
+            when(val f = this.from) {
+                is Member -> msgGetProcessor.onMsg(MiraiBotGroupNudgedMsg(this, f))
+                is Friend -> msgGetProcessor.onMsg(MiraiBotFriendNudgedMsg(this, f))
+            }
+        }
+    }
+
+    // 群里其他人被戳事件
+    registerListenerAlways<MemberNudgedEvent> {
+        if(this.from.id != this.bot.id) {
+             msgGetProcessor.onMsg(MiraiMemberNudgedMsg(this))
         }
     }
 
 
 
+
+
+    // 入群申请
+    this.registerListenerAlways<MemberJoinRequestEvent> {
+        msgGetProcessor.onMsg(MiraiGroupMemberJoinRequest(this))
+    }
+    // bot被邀请入群申请
+    this.registerListenerAlways<BotInvitedJoinGroupRequestEvent> {
+        msgGetProcessor.onMsg(MiraiBotInvitedJoinGroupRequest(this))
+    }
+
+
+}
+
+/**
+ * 整合
+ */
+private inline fun <reified E : BotEvent> Bot.registerListenerAlways(crossinline handler: suspend E.(E) -> Unit):
+        Listener<E> {
+    return this.subscribeAlways {
+        if (this@subscribeAlways.bot.id == this@registerListenerAlways.id) {
+            handler(this)
+        }
+    }
 }
