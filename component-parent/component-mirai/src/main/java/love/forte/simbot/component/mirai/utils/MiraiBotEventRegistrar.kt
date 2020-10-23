@@ -61,8 +61,8 @@ public fun Bot.registerSimbotEvents(msgProcessor: MsgGetProcessor) {
 
     // bot被戳事件
     registerListenerAlways<BotNudgedEvent> {
-        if(this.from.id != this.bot.id){
-            when(val f = this.from) {
+        if (this.from.id != this.bot.id) {
+            when (val f = this.from) {
                 is Member -> msgProcessor.onMsg(MiraiBotGroupNudgedMsg(this, f))
                 is Friend -> msgProcessor.onMsg(MiraiBotFriendNudgedMsg(this, f))
             }
@@ -71,8 +71,8 @@ public fun Bot.registerSimbotEvents(msgProcessor: MsgGetProcessor) {
 
     // 群里其他人被戳事件
     registerListenerAlways<MemberNudgedEvent> {
-        if(this.from.id != this.bot.id) {
-             msgProcessor.onMsg(MiraiMemberNudgedMsg(this))
+        if (this.from.id != this.bot.id) {
+            msgProcessor.onMsg(MiraiMemberNudgedMsg(this))
         }
     }
     //endregion
@@ -103,7 +103,7 @@ public fun Bot.registerSimbotEvents(msgProcessor: MsgGetProcessor) {
     //region 群成员变动
     // 群成员增加 - member
     registerListenerAlways<MemberJoinEvent> {
-        when(this){
+        when (this) {
             // 主动入群
             is MemberJoinEvent.Active -> msgProcessor.onMsg(MiraiMemberJoined.Active(this))
             // 被动入群
@@ -115,7 +115,7 @@ public fun Bot.registerSimbotEvents(msgProcessor: MsgGetProcessor) {
     // 群成员增加 - bot
     // bot主动同意入群
     registerListenerAlways<BotJoinGroupEvent> {
-        when(this) {
+        when (this) {
             is BotJoinGroupEvent.Active -> msgProcessor.onMsg(MiraiBotJoined.Active(this))
             is BotJoinGroupEvent.Invite -> msgProcessor.onMsg(MiraiBotJoined.Invite(this))
             is BotJoinGroupEvent.Retrieve -> msgProcessor.onMsg(MiraiBotJoined.Retrieve(this))
@@ -125,15 +125,15 @@ public fun Bot.registerSimbotEvents(msgProcessor: MsgGetProcessor) {
     // 群成员减少
     // 群友减少
     registerListenerAlways<MemberLeaveEvent> {
-        when(this){
+        when (this) {
             is MemberLeaveEvent.Kick -> msgProcessor.onMsg(MiraiMemberLeaved.Kick(this))
             is MemberLeaveEvent.Quit -> msgProcessor.onMsg(MiraiMemberLeaved.Quit(this))
         }
     }
     // bot退群
     registerListenerAlways<BotLeaveEvent> {
-        when(this){
-            is BotLeaveEvent.Kick ->   msgProcessor.onMsg(MiraiBotLeaveEvent.Kick(this))
+        when (this) {
+            is BotLeaveEvent.Kick -> msgProcessor.onMsg(MiraiBotLeaveEvent.Kick(this))
             is BotLeaveEvent.Active -> msgProcessor.onMsg(MiraiBotLeaveEvent.Active(this))
         }
     }
@@ -169,37 +169,91 @@ public fun Bot.registerSimbotEvents(msgProcessor: MsgGetProcessor) {
 
     //region 禁言相关
 
-        //region 群友被禁言
-        registerListenerAlways<MemberMuteEvent> {
-            MiraiMemberMuteMsg(this).onMsg(msgProcessor)
-        }
-        //endregion
-        //region 群友被解除禁言
-        registerListenerAlways<MemberUnmuteEvent> {
-            MiraiMemberUnmuteMsg(this).onMsg(msgProcessor)
-        }
-        //endregion
-        //region bot被禁言
-        registerListenerAlways<BotMuteEvent> {
-            MiraiBotMuteMsg(this).onMsg(msgProcessor)
-        }
-        //endregion
-        //region bot被取消禁言
-        registerListenerAlways<BotUnmuteEvent> {
-            MiraiBotUnmuteMsg(this).onMsg(msgProcessor)
-        }
-        //endregion
+    //region 群友被禁言
+    registerListenerAlways<MemberMuteEvent> {
+        MiraiMemberMuteMsg(this).onMsg(msgProcessor)
+    }
+    //endregion
+    //region 群友被解除禁言
+    registerListenerAlways<MemberUnmuteEvent> {
+        MiraiMemberUnmuteMsg(this).onMsg(msgProcessor)
+    }
+    //endregion
+    //region bot被禁言
+    registerListenerAlways<BotMuteEvent> {
+        MiraiBotMuteMsg(this).onMsg(msgProcessor)
+    }
+    //endregion
+    //region bot被取消禁言
+    registerListenerAlways<BotUnmuteEvent> {
+        MiraiBotUnmuteMsg(this).onMsg(msgProcessor)
+    }
+    //endregion
 
-        //region 全员禁言 GroupMuteAllEvent
-        registerListenerAlways<GroupMuteAllEvent> {
-            MiraiMuteAllMsg(this).onMsg(msgProcessor)
-        }
-        //endregion
-
+    //region 全员禁言 GroupMuteAllEvent
+    registerListenerAlways<GroupMuteAllEvent> {
+        MiraiMuteAllMsg(this).onMsg(msgProcessor)
+    }
+    //endregion
 
     //endregion
 
 
+    // TODO register other.
+    //region 杂项事件
+    //region 好友更换头像事件
+    // registerListenerAlways<FriendAvatarChangedEvent> {
+    //     MiraiFriendAvatarChangedEvent(this).onMsg(msgProcessor)
+    // }
+    // //endregion
+    //
+    //
+    // //region 好友更换昵称事件
+    // registerListenerAlways<FriendNickChangedEvent> {
+    //     MiraiFriendNicknameChangedEvent(this).onMsg(msgProcessor)
+    // }
+    // //endregion
+    //
+    //
+    // //region 好友输入状态变更事件
+    // registerListenerAlways<FriendInputStatusChangedEvent> {
+    //     MiraiFriendInputStatusChangedEvent(this).onMsg(msgProcessor)
+    // }
+    // //endregion
+    //
+    //
+    // //region bot离线事件
+    // registerListenerAlways<BotOfflineEvent> {
+    //     MiraiBotOfflineEvent(this).onMsg(msgProcessor)
+    // }
+    // //endregion
+    //
+    // //region bot重新登录事件
+    // registerListenerAlways<BotReloginEvent> {
+    //     MiraiBotReloginEvent(this).onMsg(msgProcessor)
+    // }
+    // //endregion
+    //
+    //
+    // //region 群名称变更事件
+    // registerListenerAlways<GroupNameChangeEvent> {
+    //     MiraiGroupNameChangedEvent(this).onMsg(msgProcessor)
+    // }
+    // //endregion
+    //
+    // //region 群友群备注变更事件
+    // registerListenerAlways<MemberCardChangeEvent> {
+    //     MiraiMemberRemarkChangedEvent(this).onMsg(msgProcessor)
+    // }
+    // //endregion
+    //
+    //
+    // //region 群友群头衔变更事件
+    // registerListenerAlways<MemberSpecialTitleChangeEvent> {
+    //     MiraiMemberSpecialTitleChangedEvent(this).onMsg(msgProcessor)
+    // }
+    //endregion
+    //endregion
 
 
 
@@ -209,7 +263,6 @@ public fun Bot.registerSimbotEvents(msgProcessor: MsgGetProcessor) {
     // enable mirai log.
     logger.let { if (it is MiraiLoggerWithSwitch) it else null }?.enable()
 }
-
 
 
 /**
