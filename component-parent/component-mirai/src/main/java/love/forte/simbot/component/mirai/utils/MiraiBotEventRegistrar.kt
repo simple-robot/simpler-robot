@@ -14,7 +14,7 @@
 
 package love.forte.simbot.component.mirai.utils
 
-import love.forte.simbot.component.mirai.message.*
+import love.forte.simbot.component.mirai.message.event.*
 import love.forte.simbot.listener.MsgGetProcessor
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Friend

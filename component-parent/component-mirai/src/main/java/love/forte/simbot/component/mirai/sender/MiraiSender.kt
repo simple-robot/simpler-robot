@@ -22,10 +22,12 @@ import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
-import love.forte.simbot.api.message.receipts.GroupSignReceipt
 import love.forte.simbot.api.sender.ErrorSender
 import love.forte.simbot.api.sender.Sender
 import love.forte.simbot.api.sender.SenderFactory
+import love.forte.simbot.component.mirai.message.event.MiraiGroupFlagContent
+import love.forte.simbot.component.mirai.message.event.MiraiMessageMsgGet
+import love.forte.simbot.component.mirai.message.event.MiraiPrivateFlagContent
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Friend

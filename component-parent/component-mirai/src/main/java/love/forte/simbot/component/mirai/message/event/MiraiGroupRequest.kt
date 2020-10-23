@@ -10,13 +10,14 @@
  * QQ     1149159218
  */
 
-package love.forte.simbot.component.mirai.message
+package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.flag
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequestInvitor
+import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
 import love.forte.simbot.component.mirai.utils.userAvatar
 import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent

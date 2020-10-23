@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020. ForteScarlet All rights reserved.
  * Project  parent
- * File     MessageEvent.kt
+ * File     MiraiPrivateMsg.kt
  *
  * You can contact the author through the following channels:
  * github https://github.com/ForteScarlet
@@ -10,7 +10,7 @@
  * QQ     1149159218
  */
 
-package love.forte.simbot.component.mirai.message
+package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.events.MessageContent
 import love.forte.simbot.api.message.assists.Flag
@@ -18,6 +18,7 @@ import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.PrivateMsg
+import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.message.FriendMessageEvent
 import net.mamoe.mirai.message.TempMessageEvent
 import net.mamoe.mirai.message.data.MessageSource

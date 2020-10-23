@@ -26,7 +26,9 @@ import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.api.sender.SetterFactory
 import love.forte.simbot.component.mirai.message.*
-import love.forte.simbot.component.mirai.utils.EmptyMiraiMessageContent
+import love.forte.simbot.component.mirai.message.event.MiraiBotInvitedJoinRequestFlagContent
+import love.forte.simbot.component.mirai.message.event.MiraiFriendRequestFlagContent
+import love.forte.simbot.component.mirai.message.event.MiraiGroupMemberJoinRequestFlagContent
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.mute
 import java.util.concurrent.TimeUnit
