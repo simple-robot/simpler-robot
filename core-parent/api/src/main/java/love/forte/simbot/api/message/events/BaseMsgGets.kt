@@ -16,10 +16,7 @@ package love.forte.simbot.api.message.events
 import love.forte.simbot.annotation.ParentListenerType
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.FlagContent
-import love.forte.simbot.api.message.containers.AccountContainer
-import love.forte.simbot.api.message.containers.BotContainer
-import love.forte.simbot.api.message.containers.FlagContainer
-import love.forte.simbot.api.message.containers.OriginalDataContainer
+import love.forte.simbot.api.message.containers.*
 
 /*
     什么? 你问为什么events包下的消息命名还是xxxMsgGet?
@@ -247,6 +244,70 @@ public interface MessageRecallEventGet : MsgGet {
      * 撤回时间。毫秒时间戳。
      */
     val recallTime: Long
+}
+
+
+/**
+ * 与禁言相关的事件接口。
+ */
+@ParentListenerType("禁言事件父接口")
+public interface MuteGet : EventGet, OperatingContainer {
+    /**
+     * 剩余被禁言的时间的毫秒值。
+     * 一般如果为0则代表未处于禁言状态，而值为-1或者任何小于0的值则代表无法获取相关信息。
+     */
+    val muteTime: Long
+
+    /**
+     * 此次禁言的行动类型。（执行禁言/取消禁言）
+     */
+    val muteActionType: ActionType
+
+    /**
+     * 此次禁言的目标类型。（个体禁言/群体禁言）
+     */
+    val muteTargetType: TargetType
+
+    /**
+     * 禁言一般可能存在一个操作者。
+     * 也可能为null。
+     */
+    override val operatorInfo: OperatorInfo?
+
+    /**
+     * 事件主体用户。
+     * 当 [禁言目标类型][muteTargetType] 为[个体禁言][TargetType.UNIT]的时候，此值一般代表为被禁言的用户。
+     * 当类型为 [群体禁言][TargetType.GROUP] 的时候，此值等同于 [操作者][operatorInfo]，即执行群体禁言的用户。
+     */
+    override val accountInfo: AccountInfo
+
+    /**
+     * 被操作者则认为与当前监听事件的账号一致。
+     *
+     * 当[禁言目标类型][muteTargetType]为 [群体禁言][TargetType.GROUP] 的时候，
+     * 值一般为 null。
+     *
+     * 毕竟群体禁言没有具体的被操作者。
+     */
+    override val beOperatorInfo: BeOperatorInfo?
+        get() = accountInfo.asBeOperator()
+
+
+    /** 禁言的行动类型，代表被禁言或被取消禁言。 */
+    public enum class ActionType {
+        /** 禁言。 */
+        MUTE,
+        /** 取消禁言。 */
+        UNMUTE
+    }
+
+    /** 禁言的目标类型，代表对单一者禁言或者群体禁言。 */
+    public enum class TargetType {
+        /** 个体禁言。 */
+        UNIT,
+        /** 群体禁言。 */
+        GROUP
+    }
 }
 
 

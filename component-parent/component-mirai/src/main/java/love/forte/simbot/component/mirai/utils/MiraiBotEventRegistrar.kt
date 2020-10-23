@@ -169,7 +169,32 @@ public fun Bot.registerSimbotEvents(msgProcessor: MsgGetProcessor) {
 
     //region 禁言相关
 
+        //region 群友被禁言
+        registerListenerAlways<MemberMuteEvent> {
+            MiraiMemberMuteMsg(this).onMsg(msgProcessor)
+        }
+        //endregion
+        //region 群友被解除禁言
+        registerListenerAlways<MemberUnmuteEvent> {
+            MiraiMemberUnmuteMsg(this).onMsg(msgProcessor)
+        }
+        //endregion
+        //region bot被禁言
+        registerListenerAlways<BotMuteEvent> {
+            MiraiBotMuteMsg(this).onMsg(msgProcessor)
+        }
+        //endregion
+        //region bot被取消禁言
+        registerListenerAlways<BotUnmuteEvent> {
+            MiraiBotUnmuteMsg(this).onMsg(msgProcessor)
+        }
+        //endregion
 
+        //region 全员禁言 GroupMuteAllEvent
+        registerListenerAlways<GroupMuteAllEvent> {
+            MiraiMuteAllMsg(this).onMsg(msgProcessor)
+        }
+        //endregion
 
 
     //endregion
