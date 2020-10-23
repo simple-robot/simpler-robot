@@ -59,6 +59,12 @@ public interface GroupMemberIncrease: IncreaseEventGet, GroupContainer, Operatin
         get() = accountInfo.asBeOperator()
 
     /**
+     * 操作者。
+     * 如果是用户主动入群或者组件不支持则为null。
+     */
+    override val operatorInfo: OperatorInfo?
+
+    /**
      * 增加类型
      */
     val increaseType: Type

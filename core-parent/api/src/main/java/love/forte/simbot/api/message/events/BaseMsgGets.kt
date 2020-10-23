@@ -244,7 +244,7 @@ public interface MessageEventGet : MsgGet, FlagContainer<MessageEventGet.Message
 @ParentListenerType("消息撤回父接口")
 public interface MessageRecallEventGet : MsgGet {
     /**
-     * 撤回时间。毫秒时间戳
+     * 撤回时间。毫秒时间戳。
      */
     val recallTime: Long
 }
