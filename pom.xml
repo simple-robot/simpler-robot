@@ -38,7 +38,7 @@
         <fastjson.version>1.2.54</fastjson.version>
         <hutool.version>5.4.6</hutool.version>
 
-        <commons.version>1.0.0-ALPHA.2</commons.version>
+        <commons.version>1.0.0-ALPHA.3</commons.version>
         <catCode.version>1.0.0-ALPHA.2</catCode.version>
 
     </properties>

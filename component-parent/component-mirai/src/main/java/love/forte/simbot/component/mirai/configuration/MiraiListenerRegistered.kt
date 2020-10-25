@@ -42,7 +42,6 @@ public class MiraiListenerRegistered : ListenerRegistered {
      * 为所有的bot注册监听事件。
      */
     override fun onRegistered(manager: ListenerManager) {
-        println("注册bots.")
         // 注册Mirai的所有bot事件。
         Bot.forEachInstance { it.registerSimbotEvents(msgGetProcessor) }
         // 注册一个 ctrl+c钩子来关闭所有的bot。

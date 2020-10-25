@@ -70,7 +70,7 @@ public class MiraiConfiguration {
     @field:ConfigInject("mirai.protocol")
     var protocol: BotConfiguration.MiraiProtocol = BotConfiguration.Default.protocol
 
-    /** 关闭mirai bot logger */
+    /** 关闭mirai的bot logger */
     @field:ConfigInject("mirai.noBotLog")
     var noBotLog: Boolean = false
 
@@ -80,11 +80,11 @@ public class MiraiConfiguration {
 
     /** mirai bot log切换使用simbot的log */
     @field:ConfigInject("mirai.useSimbotBotLog")
-    var useSimbotBotLog: Boolean = false
+    var useSimbotBotLog: Boolean = true
 
     /** mirai 网络log 切换使用simbot的log */
     @field:ConfigInject("mirai.useSimbotNetworkLog")
-    var useSimbotNetworkLog: Boolean = false
+    var useSimbotNetworkLog: Boolean = true
 
     /** mirai配置自定义deviceInfoSeed的时候使用的随机种子。默认为1.  */
     @field:ConfigInject("mirai.deviceInfoSeed")
@@ -101,33 +101,9 @@ public class MiraiConfiguration {
     var cacheDirectory: String? = null
 
 
-    //
-    //
-    // @field:ConfigInject("mirai.reloginRegularly")
-    // var reloginRegularly: Long = TimeUnit.HOURS.toMillis(1)
-    //
-    // @field:ConfigInject("mirai.restartForce")
-    // var reloginForce: Boolean = false
-    //
-    // /**
-    //  * 在[botConfiguration]配置完成后可以提供一些后置处理进行配置覆盖.
-    //  */
-    // var postBotConfigurationProcessor: (String, BotConfiguration) -> BotConfiguration = {_,botConfiguration -> botConfiguration }
 
     /**
      * mirai官方配置类获取函数，默认为其默认值
-     * 函数参数为bot的账号，得到一个config实例
-     * 如果需要对[BotConfiguration]做自定义处理，请使用[postBotConfigurationProcessor]
-     *
-     * java 则使用
-     * ```java
-     * setPostBotConfigurationProcessor(code, conf -> {
-     *      // do some for conf
-     *      return conf;
-     * })
-     * ```
-     *
-     * @see postBotConfigurationProcessor
      * */
     // @set:Deprecated("use setPostBotConfigurationProcessor((code, conf) -> {...})")
     val botConfiguration: (String) -> BotConfiguration = {

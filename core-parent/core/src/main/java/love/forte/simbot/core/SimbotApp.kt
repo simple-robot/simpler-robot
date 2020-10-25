@@ -64,6 +64,7 @@ internal constructor(
     val botManager: BotManager,
     val environment: SimbotEnvironment,
     val msgProcessor: MsgGetProcessor,
+    val configuration: Configuration,
     private val doClosed: Closeable = Closeable {}
 ) : DependBeanFactory by dependBeanFactory,
     Closeable by doClosed
@@ -158,7 +159,7 @@ protected constructor(
         initDependCenter()
 
         // return.
-        return createSimbotContext().also {
+        return createSimbotContext(config).also {
             // post
             process.post(it)
         }
@@ -270,13 +271,13 @@ protected constructor(
     /**
      * 构建一个 [SimbotContext] 实例并返回。
      */
-    private fun createSimbotContext(): SimbotContext {
+    private fun createSimbotContext(configuration: Configuration): SimbotContext {
         // 获取 botManager.
         val botManager = dependCenter[BotManager::class.java]
         val environment = dependCenter[SimbotEnvironment::class.java]
         val msgGetProcessor = dependCenter[MsgGetProcessor::class.java]
 
-        return SimbotContext(dependCenter, botManager, environment, msgGetProcessor)
+        return SimbotContext(dependCenter, botManager, environment, msgGetProcessor, configuration)
     }
 
 

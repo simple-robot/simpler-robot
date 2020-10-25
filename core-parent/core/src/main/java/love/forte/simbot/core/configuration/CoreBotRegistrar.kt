@@ -46,7 +46,7 @@ public class CoreBotRegistrar {
         if(bots.isEmpty()) {
             logger.warn("No bot information is configured.")
         } else {
-            bots.forEach {
+            bots.asSequence().distinct().forEach {
                 val info = BotRegisterInfo.splitTo(it)
                 logger.debug("Try to verify the bot(${info.code}) information.")
                 botManager.registerBot(info)
