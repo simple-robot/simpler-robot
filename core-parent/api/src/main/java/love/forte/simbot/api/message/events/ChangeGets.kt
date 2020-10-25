@@ -65,7 +65,13 @@ public interface GroupMemberPermissionChanged :
 public interface GroupNameChanged :
     ChangedGet<String>,
     GroupContainer,
-    OperatorContainer
+    OperatorContainer {
+    /** 当前事件的bot的信息。 */
+    override val accountInfo: AccountInfo
+
+    /** 操作者信息。获取不到则为null。 */
+    override val operatorInfo: OperatorInfo?
+}
 
 
 /**

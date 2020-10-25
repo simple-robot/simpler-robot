@@ -9,7 +9,6 @@
     <groupId>love.forte.simple-robot</groupId>
     <version>2.0.0-ALPHA.1</version>
     <modules>
-        <module>../common-parent</module>
         <module>test</module>
         <module>core-parent</module>
         <module>component-parent</module>
@@ -37,10 +36,10 @@
 
         <!-- some version -->
         <fastjson.version>1.2.54</fastjson.version>
-        <hutool.version>5.4.0</hutool.version>
+        <hutool.version>5.4.6</hutool.version>
 
-        <commons.version>1.0.0-ALPHA.1</commons.version>
-        <catCode.version>1.0.0-ALPHA.1</catCode.version>
+        <commons.version>1.0.0-ALPHA.2</commons.version>
+        <catCode.version>1.0.0-ALPHA.2</catCode.version>
 
     </properties>
 

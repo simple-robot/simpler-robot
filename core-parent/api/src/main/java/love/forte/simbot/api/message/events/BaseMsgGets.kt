@@ -366,7 +366,18 @@ public interface ChangedGet<out T> : EventGet {
      * 变更之后。 此值应当始终可以获取。
      */
     val afterChange: T
+
+
+    /**
+     * 如果变动的主体与 **用户** 有关系，
+     * 则此参数即代表这个存在变动的用户，否则代表当前监听事件的bot。
+     */
+    override val accountInfo: AccountInfo
+
 }
+
+
+
 
 
 
