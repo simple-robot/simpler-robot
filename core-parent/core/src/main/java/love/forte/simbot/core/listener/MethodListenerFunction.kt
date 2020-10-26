@@ -373,7 +373,7 @@ internal fun Method.toListenerId(listens: Listens): String {
 
             val wholeNameMD5: String = wholeName.toMD5()
 
-            "$methodName#$wholeNameMD5"
+            "${methodIn.simpleName}.$methodName#$wholeNameMD5"
         } else this
     }
 }

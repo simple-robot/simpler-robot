@@ -19,13 +19,13 @@ import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.convert.ConverterManager
 import love.forte.common.utils.scanner.HutoolClassesScanner
 import love.forte.common.utils.scanner.Scanner
-import love.forte.simbot.core.CompLogger
 import love.forte.simbot.SimbotPackageScanEnvironment
 import love.forte.simbot.annotation.Listens
-import love.forte.simbot.filter.FilterManager
-import love.forte.simbot.listener.PostListenerRegistrar
-import love.forte.simbot.listener.ListenerRegistrar
+import love.forte.simbot.core.CompLogger
 import love.forte.simbot.core.listener.MethodListenerFunction
+import love.forte.simbot.filter.FilterManager
+import love.forte.simbot.listener.ListenerRegistrar
+import love.forte.simbot.listener.PostListenerRegistrar
 
 
 @Beans
@@ -74,7 +74,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
             MethodListenerFunction(it, dependBeanFactory, filterManager, converterManager)
         }.forEach {
             registrar.register(it)
-            logger.debug("register listener: {0} for {1}", it.name, it.listenTypes.joinToString(", ", "[", "]"){ t -> t.simpleName })
+            logger.debug("register listener: [{0}] for {1}, id={2}", it.name, it.listenTypes.joinToString(", ", "[", "]"){ t -> t.simpleName }, it.id)
         }
     }
 
