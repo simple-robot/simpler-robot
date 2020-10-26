@@ -34,6 +34,8 @@ import love.forte.simbot.annotation.SimbotApplication
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.constant.PriorityConstant
 import love.forte.simbot.listener.MsgGetProcessor
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.io.Reader
 
@@ -243,12 +245,19 @@ protected constructor(
 
         val scanner = this.scanner
 
-        scanPackages.forEach { scanner.scan(it) { c -> AnnotationUtil.containsAnnotation(c, Beans::class.java) } }
-
-        val collection = scanner.collection.toMutableSet().apply {
-            // remove all ignored.
-            removeAll(ignored)
+        scanPackages.forEach {
+            scanner.scan(it) { c ->
+                c !in ignored &&
+                AnnotationUtil.containsAnnotation(c, Beans::class.java)
+            }
+            logger.debug("package scan: {}", it)
         }
+
+        val collection = scanner.collection
+        //     .toMutableSet().apply {
+        //          // remove all ignored.
+        //          removeAll(ignored)
+        //      }
 
         // inject classes.
         dependCenter.inject(types = collection.toTypedArray())
@@ -285,6 +294,8 @@ protected constructor(
      * companion for static run.
      */
     companion object Run {
+
+        private val logger: Logger = LoggerFactory.getLogger("SimbotApp")
 
         const val SCAN_PACKAGES_KEY = "simbot.core.scan-package"
 

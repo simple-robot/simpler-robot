@@ -9,7 +9,6 @@
     <groupId>love.forte.simple-robot</groupId>
     <version>2.0.0-ALPHA.1</version>
     <modules>
-        <module>test</module>
         <module>core-parent</module>
         <module>component-parent</module>
     </modules>

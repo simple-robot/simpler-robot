@@ -9,7 +9,7 @@
  * email  ForteScarlet@163.com
  * QQ     1149159218
  */
-
+@file:JvmName("AuthInfos")
 package love.forte.simbot.api.message.results
 
 /**

@@ -9,7 +9,7 @@
  * email  ForteScarlet@163.com
  * QQ     1149159218
  */
-
+@file:JvmName("ListenerFunctions")
 package love.forte.simbot.listener
 
 import love.forte.simbot.api.message.events.MsgGet

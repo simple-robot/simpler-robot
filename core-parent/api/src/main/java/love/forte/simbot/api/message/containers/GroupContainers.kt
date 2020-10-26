@@ -80,7 +80,7 @@ public fun GroupContainer(groupInfo: GroupInfo) : GroupContainer = GroupContaine
  * 获取一个 [GroupContainer] 数据实例。
  * java用上面那个。
  */
-@JvmName("#getGroupContainer")
+@JvmName("__getGroupContainer")
 @Suppress("FunctionName")
 public inline fun GroupContainer(groupInfo: () -> GroupInfo) : GroupContainer = GroupContainer(groupInfo())
 

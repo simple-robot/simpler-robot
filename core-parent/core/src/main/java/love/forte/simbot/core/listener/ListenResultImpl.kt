@@ -9,7 +9,7 @@
  * email  ForteScarlet@163.com
  * QQ     1149159218
  */
-
+@file:JvmName("ListenResultImpls")
 package love.forte.simbot.core.listener
 
 import love.forte.simbot.annotation.ListenBreak

@@ -52,7 +52,12 @@ public class MiraiFriendNickChanged(event: FriendNickChangedEvent) : AbstractMir
  * 这是mirai的**专属事件**，属于一种[变化事件][ChangedGet]。
  * 其 **change** 的bool值代表为 **是否为输入状态**。
  */
-public class MiraiFriendInputStatusChanged(event: FriendInputStatusChangedEvent) : AbstractMiraiMsgGet<FriendInputStatusChangedEvent>(event), ChangedGet<Boolean> {
+public interface FriendInputStatusChanged : ChangedGet<Boolean>
+
+/**
+ * 好友输入状态变更事件实现。
+ */
+public class MiraiFriendInputStatusChanged(event: FriendInputStatusChangedEvent) : AbstractMiraiMsgGet<FriendInputStatusChangedEvent>(event), FriendInputStatusChanged {
     override val id: String = "MFInpStatusC-${event.hashCode()}"
     override val accountInfo: AccountInfo = MiraiFriendAccountInfo(event.friend)
     override val afterChange: Boolean get() = event.inputting

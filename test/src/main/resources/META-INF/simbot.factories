@@ -1,2 +1,0 @@
-# simbot.factories, 类似于spring.factories, 用于加载指定的配置信息。
-simbot.autoconfigure.configs=love.forte.test.TestConfig

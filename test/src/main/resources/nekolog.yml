@@ -1,9 +1,0 @@
-nekolog:
-  # 是否开启language
-  enableLanguage: true
-  # 是否开启颜色
-  enableColor: true
-  # 使用的日志等级
-  level: DEBUG
-  # 开启输出堆栈
-  enableStack: false

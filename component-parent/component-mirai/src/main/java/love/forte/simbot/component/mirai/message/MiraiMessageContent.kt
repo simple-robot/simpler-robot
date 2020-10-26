@@ -9,19 +9,19 @@
  * email  ForteScarlet@163.com
  * QQ     1149159218
  */
-
+@file:JvmName("MiraiMessageContents")
 package love.forte.simbot.component.mirai.message
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import love.forte.catcode.CatCodeUtil
-import love.forte.simbot.component.mirai.utils.EmptyMiraiMessageContent
-import love.forte.simbot.component.mirai.utils.toSimbotString
 import love.forte.simbot.api.message.events.ImageMessageContent
 import love.forte.simbot.api.message.events.MessageContent
 import love.forte.simbot.api.message.events.VoiceMessageContent
 import love.forte.simbot.component.mirai.sender.isNotEmptyMsg
+import love.forte.simbot.component.mirai.utils.EmptyMiraiMessageContent
+import love.forte.simbot.component.mirai.utils.toSimbotString
 import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.getFriendOrNull
 import net.mamoe.mirai.message.action.Nudge

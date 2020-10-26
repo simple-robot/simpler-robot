@@ -14,7 +14,7 @@
  *
  *
  */
-
+@file:JvmName("MiraiBotCookies")
 package love.forte.simbot.component.mirai.sender
 
 import net.mamoe.mirai.Bot

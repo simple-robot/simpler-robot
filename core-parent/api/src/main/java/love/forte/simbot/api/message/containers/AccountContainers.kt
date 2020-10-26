@@ -132,7 +132,7 @@ public fun AccountContainer(accountInfo: AccountInfo): AccountContainer = Accoun
  * 获取一个 [AccountContainer] 数据实例。
  * java直接使用上面那个。
  */
-@JvmName("#getAccountContainer")
+@JvmName("__getAccountContainer")
 @Suppress("FunctionName")
 public inline fun AccountContainer(accountInfo: () -> AccountInfo): AccountContainer = AccountContainer(accountInfo())
 

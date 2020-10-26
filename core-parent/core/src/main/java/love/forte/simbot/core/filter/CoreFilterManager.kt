@@ -9,7 +9,7 @@
  * email  ForteScarlet@163.com
  * QQ     1149159218
  */
-
+@file:JvmName("CoreFilterManagers")
 package love.forte.simbot.core.filter
 
 import love.forte.simbot.annotation.Filters

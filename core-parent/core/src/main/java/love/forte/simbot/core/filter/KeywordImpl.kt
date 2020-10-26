@@ -9,7 +9,7 @@
  * email  ForteScarlet@163.com
  * QQ     1149159218
  */
-
+@file:JvmName("CoreKeywords")
 package love.forte.simbot.core.filter
 
 import love.forte.simbot.filter.FilterParameterMatcher
@@ -20,9 +20,8 @@ import java.util.regex.Pattern
 /**
  * 一个普通的value值构建为 [Keyword] 实例。
  */
-public class TextKeyword(text: String) : Keyword {
+public class TextKeyword(override val text: String) : Keyword {
     override val regex: Regex = Regex(text)
-    override val text: String = text
     override val parameterMatcher: FilterParameterMatcher = CoreFilterParameterMatcher.compile(text)
 }
 
