@@ -1,5 +1,6 @@
 # simpler-robot
 
+[![](https://img.shields.io/maven-central/v/love.forte.simple-robot/parent)](https://repo1.maven.org/maven2/love/forte/simple-robot/parent/)
 
 ## 简介
 
