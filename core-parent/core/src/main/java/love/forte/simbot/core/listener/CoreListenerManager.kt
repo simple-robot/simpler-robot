@@ -185,6 +185,7 @@ public class CoreListenerManager(
                 val interceptType =
                     listenerInterceptData.chainFactory.getInterceptorChain(listenerInterceptContext).intercept()
 
+
                 // invoke with try.
                 finalResult = try {
                     if (interceptType.isPrevent) {

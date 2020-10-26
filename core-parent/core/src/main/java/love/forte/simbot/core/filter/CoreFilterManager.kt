@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * 恒定返回false的 [AtDetection] 实例。
  */
-internal val ConstantFalseAtDetection: AtDetection = AtDetection { false }
+// internal val ConstantFalseAtDetection: AtDetection = AtDetection { false }
 
 
 /**
@@ -70,13 +70,15 @@ public class CoreFilterManager : FilterManager {
      */
     override fun getAtDetection(msg: MsgGet): AtDetection {
         return when(atDetectionFactories.size) {
-            0 -> ConstantFalseAtDetection
+            0 -> AlwaysRefuseAtDetection
             1 -> atDetectionFactories.first().getAtDetection(msg)
-            else -> AtDetection {
-                atDetectionFactories.any { factory ->
-                    factory(msg).atBot()
-                }
-            }
+            else -> CompoundAtDetection(msg, atDetectionFactories)
+
+            // else -> AtDetection {
+            //     atDetectionFactories.any { factory ->
+            //         factory(msg).atBot()
+            //     }
+            // }
         }
     }
 
@@ -98,6 +100,18 @@ public class CoreFilterManager : FilterManager {
         }
     }
 }
+
+
+private class CompoundAtDetection(private val msg: MsgGet,
+                                       private val detections: List<AtDetectionFactory>) : AtDetection {
+    override fun atBot(): Boolean = detections.any { it.getAtDetection(msg).atBot() }
+    override fun atAll(): Boolean = detections.any { it.getAtDetection(msg).atAll() }
+    override fun atAny(): Boolean = detections.any { it.getAtDetection(msg).atAny() }
+    override fun at(codes: Array<String>): Boolean = detections.any { it.getAtDetection(msg).at(codes) }
+}
+
+
+
 
 /**
  * [AtDetectionFactory].invoke(MsgGet)。

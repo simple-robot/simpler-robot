@@ -12,12 +12,12 @@
 
 package love.forte.simbot.component.mirai.message.event
 
-import love.forte.simbot.api.message.events.MessageContent
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.GroupMsg
+import love.forte.simbot.api.message.events.MessageContent
 import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.message.GroupMessageEvent
 import net.mamoe.mirai.message.data.MessageSource
@@ -47,6 +47,8 @@ public class MiraiGroupMsg(event: GroupMessageEvent) :
 
     override val msgContent: MessageContent = MiraiMessageChainContent(message)
 
+    override val msg: String?
+        get() = msgContent.msg
 
     override val permission: Permissions get() = event.sender.toSimbotPermissions()
 }

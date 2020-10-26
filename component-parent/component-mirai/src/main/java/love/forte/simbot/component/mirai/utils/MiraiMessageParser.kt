@@ -25,13 +25,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import love.forte.catcode.*
 import love.forte.catcode.codes.Nyanko
-import love.forte.simbot.component.mirai.message.*
 import love.forte.simbot.api.message.events.*
 import love.forte.simbot.api.message.events.MessageContent
+import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.contact.User
-import net.mamoe.mirai.message.action.Nudge
-import net.mamoe.mirai.message.action.Nudge.Companion.sendNudge
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.uploadAsImage
 import java.io.BufferedInputStream
@@ -364,7 +361,7 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
         // todo other...
 
         else -> {
-            MiraiSingleMessageContent(PlainText("[$type(not support)]"))
+            MiraiSingleMessageContent(PlainText("(type $type not support)code=$this"))
         }
 
     }

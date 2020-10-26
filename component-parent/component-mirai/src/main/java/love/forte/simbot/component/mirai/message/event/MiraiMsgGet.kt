@@ -12,17 +12,22 @@
 
 package love.forte.simbot.component.mirai.message.event
 
-import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
-import love.forte.simbot.component.mirai.utils.toSimbotString
-import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
-import net.mamoe.mirai.contact.*
+import love.forte.simbot.api.message.events.MessageEventGet
+import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
+import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.Friend
+import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.message.GroupMessageEvent
 import net.mamoe.mirai.message.MessageEvent
 import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.message.data.MessageSource
+import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.content
 
 
 /**
@@ -66,7 +71,8 @@ public abstract class AbstractMiraiMsgGet<out ME : BotEvent>(
 /**
  * mirai消息类型的事件基类。
  */
-public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : AbstractMiraiMsgGet<ME>(event) {
+public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : AbstractMiraiMsgGet<ME>(event),
+    MessageEventGet {
 
     /** 默认的ID策略，使用source获取。 */
     override val id: String = with(event.source) {
@@ -93,10 +99,15 @@ public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : Abs
     val message: MessageChain get() = event.message
 
 
+    override fun isEmptyMsg(): Boolean = message.isEmpty()
+
+
     /**
      * 消息字符串，由 [message] 懒转化为携带cat码的字符串。
      */
-    override val msg: String? by lazy(LazyThreadSafetyMode.NONE) { message.toSimbotString() }
+    override val text: String? by lazy(LazyThreadSafetyMode.NONE) {
+        message.asSequence().filter { it is PlainText }.joinToString(" ") { it.content }
+    }
 
 }
 

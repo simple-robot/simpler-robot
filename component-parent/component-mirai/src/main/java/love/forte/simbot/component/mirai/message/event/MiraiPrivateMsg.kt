@@ -12,21 +12,16 @@
 
 package love.forte.simbot.component.mirai.message.event
 
-import love.forte.simbot.api.message.events.MessageContent
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.events.MessageContent
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.message.FriendMessageEvent
 import net.mamoe.mirai.message.TempMessageEvent
 import net.mamoe.mirai.message.data.MessageSource
-
-
-
-
-
 
 
 /**
@@ -52,20 +47,12 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
      *  使用 [MiraiMessageContent]作为最终消息载体。
      */
     override val msgContent: MessageContent = MiraiMessageChainContent(message)
-        // get() = _msgContent
-        // set(value) {
-        //     _msgContent = runBlocking { value.toMiraiMessageContent() }
-        // }
 
     /**
      * 提供一个简单的方法来获取 [msgContent] 中的文本内容。
      */
     override val msg: String?
         get() = msgContent.msg
-        // set(value) {
-        //     msgContent = value?.let { TextMessageContent(it) }
-        //         ?: EmptyMiraiMessageContent
-        // }
 
     /**
      * 私聊消息标识，

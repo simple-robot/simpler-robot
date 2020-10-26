@@ -34,6 +34,10 @@ public class FilterData(
 
 /**
  * 监听过滤器。
+ *
+ * 过滤器属于 [监听函数][ListenerFunction] 的一种属性，
+ * 因此何时何地进行过滤匹配 应当由 [监听函数][ListenerFunction] 进行实现。
+ *
  */
 public interface ListenerFilter {
 

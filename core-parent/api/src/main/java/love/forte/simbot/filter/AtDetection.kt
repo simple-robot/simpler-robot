@@ -18,13 +18,67 @@ import love.forte.simbot.api.message.events.MsgGet
 /**
  * at检测器。用于判断bot是否被at了。
  */
-public fun interface AtDetection {
+public interface AtDetection {
 
     /**
      * 如果bot被at了，则返回true。
      */
     fun atBot(): Boolean
+
+    /**
+     * at了全体。
+     */
+    fun atAll(): Boolean
+
+    /**
+     * at了任意一个人。
+     */
+    fun atAny(): Boolean
+
+    /**
+     * at了指定的这些用户。
+     */
+    fun at(codes: Array<String>): Boolean
 }
+
+/**
+ * 总是允许的 [AtDetection] 实例。
+ */
+public object AlwaysAllowedAtDetection : AtDetection {
+    override fun atBot(): Boolean = true
+    override fun atAll(): Boolean = true
+    override fun atAny(): Boolean = true
+    override fun at(codes: Array<String>): Boolean = true
+}
+
+/**
+ * 总是拒绝的 [AtDetection] 实例。
+ */
+public object AlwaysRefuseAtDetection : AtDetection {
+    override fun atBot(): Boolean = false
+    override fun atAll(): Boolean = false
+    override fun atAny(): Boolean = false
+    override fun at(codes: Array<String>): Boolean = false
+}
+
+/**
+ * 使用固定常量值的 [AtDetection] 实例。
+ */
+public data class ConstantAtDetection(
+    private val atBot: Boolean,
+    private val atAll: Boolean,
+    private val atAny: Boolean,
+    private val at: Boolean,
+) : AtDetection {
+    override fun atBot(): Boolean = atBot
+    override fun atAll(): Boolean = atAll
+    override fun atAny(): Boolean = atAny
+    override fun at(codes: Array<String>): Boolean = at
+}
+
+
+
+
 
 
 /**

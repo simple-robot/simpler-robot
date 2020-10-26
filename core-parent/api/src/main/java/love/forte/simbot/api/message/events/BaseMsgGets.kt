@@ -13,6 +13,7 @@
 @file:JvmMultifileClass
 package love.forte.simbot.api.message.events
 
+import love.forte.catcode.CatCodeUtil
 import love.forte.simbot.annotation.ParentListenerType
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.FlagContent
@@ -85,12 +86,30 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
     val id: String
 
 
+    // /**
+    //  * 可以得到一个 **消息**。
+    //  * 如果你想要对消息进行 **重新定义**，
+    //  * 可以考虑注入一个 [love.forte.simbot.core.listener.ListenerContext] 而不是想办法重新设置 [msg]。
+    //  */
+    // val msg: String?
+
     /**
-     * 可以得到一个 **消息**。
-     * 如果你想要对消息进行 **重新定义**，
-     * 可以考虑注入一个 [love.forte.simbot.core.listener.ListenerContext] 而不是想办法重新设置 [msg]。
+     * 可以得到一个 **文本**。
+     *
+     *  这个文本应当是不包含任何 CAT码 的纯文本消息。
+     *
+     *  而关于存在CAT码的特殊消息，可参考 [MessageEventGet.msg].
+     *
      */
-    val msg: String?
+    val text: String?
+
+
+    /**
+     * 判断当前消息中是否为空消息。
+     * 空消息指的是不存在msg，即msg == null，而不是msg为空字符。
+     */
+    @JvmDefault
+    fun isEmptyMsg(): Boolean = text == null
 
 
     /** 消息接收到的时间。一般是一个毫秒时间戳。 */
@@ -191,7 +210,7 @@ public infix fun <T : Class<out MsgGet>, V> MsgGet.findValuesIn(typeCollections:
  */
 public interface EventGet : MsgGet {
     @JvmDefault
-    override val msg: String? get() = null
+    override val text: String? get() = null
 }
 
 
@@ -213,10 +232,47 @@ public interface MessageEventGet : MsgGet, FlagContainer<MessageEventGet.Message
      */
     val msgContent: MessageContent
 
+
+
+    // /**
+    //  * 提供一个简单的方法来获取 [msgContent] 中的文本内容。
+    //  */
+    // override val msg: String?
+
+
     /**
-     * 提供一个简单的方法来获取 [msgContent] 中的文本内容。
+     * 可以得到一个 **消息**。
+     * 如果你想要对消息进行 **重新定义**，
+     * 可以考虑注入一个 [love.forte.simbot.core.listener.ListenerContext] 而不是想办法重新设置 [msg]。
      */
-    override val msg: String?
+    val msg: String?
+
+    /**
+     * 可以得到一个 **文本**。
+     *
+     * [文本][text] 与[消息][msg] 之间的区别在于，
+     * 文本中包含的仅仅为一个 "文本消息内容"，其理应不会包含任何例如CAT码、图片、表情等任何非文本内容。
+     *
+     * 例如msg中为 `hi [CAT:face,id=2] hello`, 则文本值内容为 `hi hello`。
+     *
+     * [过滤器][love.forte.simbot.annotation.Filters] 中的 value值文本过滤将会使用 [text] 值进行判断。
+     * 假如有特殊需要（例如判断是否存在图片等）可以选择 自定义 [过滤器][love.forte.simbot.filter.ListenerFilter]。
+     *
+     * 此处提供使用 [CatCodeUtil.remove] 的默认值，但是建议由组件进行实现以实现更高效的获取。
+     *
+     *
+     */
+    @JvmDefault
+    override val text: String? get() = msg?.let { CatCodeUtil.remove(it, trim = false) }
+
+
+    /**
+     * 判断当前消息中是否为空消息。
+     * 空消息指的是不存在msg，即msg == null，而不是msg为空字符。
+     */
+    @JvmDefault
+    override fun isEmptyMsg(): Boolean = msg == null
+
 
     /**
      * 消息类型的标识

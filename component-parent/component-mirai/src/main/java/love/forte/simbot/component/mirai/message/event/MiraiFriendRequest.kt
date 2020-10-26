@@ -60,7 +60,7 @@ public class MiraiFriendRequest(event: NewFriendRequestEvent) :
     override val accountInfo: AccountInfo = MiraiFriendRequester(event)
 
     /** 好友申请的消息。如果消息为空，则返回null。 */
-    override val msg: String? = event.message.takeIf { it.isNotBlank() }
+    override val text: String? = event.message.takeIf { it.isNotBlank() }
 
     override val flag: Flag<MiraiFriendRequestFlagContent> = flag { MiraiFriendRequestFlagContent(event) }
 }

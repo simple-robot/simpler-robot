@@ -25,10 +25,7 @@ import love.forte.simbot.api.sender.MsgSender
 import love.forte.simbot.api.sender.Sender
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.bot.Bot
-import love.forte.simbot.filter.AtDetection
-import love.forte.simbot.filter.FilterManager
-import love.forte.simbot.filter.ListenerFilter
-import love.forte.simbot.filter.NoSuchFilterException
+import love.forte.simbot.filter.*
 import love.forte.simbot.listener.ListenResult
 import love.forte.simbot.listener.ListenerContext
 import love.forte.simbot.listener.ListenerFunction
@@ -107,6 +104,27 @@ public class MethodListenerFunction(
                 addAll(customFilter)
             }
         }
+
+
+    /**
+     * 执行过滤。
+     */
+    private fun doFilter(msgGet: MsgGet,
+                         atDetection: AtDetection,
+                         listenerContext: ListenerContext): Boolean {
+        if (listenAnnotationFilter == null && customFilter.isEmpty()) {
+            return true
+        }
+
+        val data = FilterData(msgGet, atDetection, listenerContext, this)
+        val af = listenAnnotationFilter?.test(data) ?: true
+        return if (!af) {
+            false
+        } else {
+            // 有一个false就终止
+            !customFilter.any { !it.test(data) }
+        }
+    }
 
 
     /**
@@ -244,8 +262,8 @@ public class MethodListenerFunction(
 
                     if (orIgnore) {
                         f@{ d ->
-                            val msg: String = d.msgGet.msg ?: return@f null
-                            val findValue: String? = listenAnnotationFilter?.getFilterValue(filterValueName, msg)
+                            val text: String = d.msgGet.text ?: return@f null
+                            val findValue: String? = listenAnnotationFilter?.getFilterValue(filterValueName, text)
                             if (findValue == null) {
                                 null
                             } else {
@@ -254,9 +272,9 @@ public class MethodListenerFunction(
                         }
                     } else {
                         f@{ d ->
-                            val msg: String = d.msgGet.msg
+                            val text: String = d.msgGet.text
                                 ?: throw IllegalStateException("Msg ${d.msgGet} unable to get msg.")
-                            val findValue = listenAnnotationFilter?.getFilterValue(filterValueName, msg)
+                            val findValue = listenAnnotationFilter?.getFilterValue(filterValueName, text)
                             if (findValue == null) {
                                 throw IllegalStateException("Unable to extract filter value $filterValueName in method $method.")
                             } else {
@@ -289,8 +307,15 @@ public class MethodListenerFunction(
      * 执行监听函数并返回一个执行后的响应结果。
      */
     override fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> {
-        val resultBuilder = ListenResultBuilder()
+        // do filter
+        val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
+        if (!filter) {
+            // 没有通过检测
+            return EmptyFailedNoBreakResult
+        }
 
+
+        val resultBuilder = ListenResultBuilder()
         // 获取实例
         val instance: Any = runCatching {
             listenerInstanceGetter()

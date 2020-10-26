@@ -35,7 +35,7 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
         override val accountInfo: AccountInfo = MiraiMemberAccountInfo(event.author)
 
         /** 暂时不支持获取撤回掉的消息。 */
-        override val msg: String? get() = null
+        override val text: String? get() = null
 
         /** 如果操作者与消息作者相同即为主动，否则为被动。 */
         override val groupRecallType: GroupMsgRecall.Type = if (event.operatorOrBot.id == event.authorId) {
@@ -55,7 +55,7 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
         /** 撤回的操作人，就是好友。 */
         override val accountInfo: AccountInfo = MiraiFriendAccountInfo(event.bot.getFriend(event.operator))
         /** 暂时不支持获取消息原文。 */
-        override val msg: String? get() = null
+        override val text: String? get() = null
 
         override val recallTime: Long = System.currentTimeMillis()
     }

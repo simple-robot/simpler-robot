@@ -16,8 +16,6 @@ import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.exception.ExceptionProcessor
 import love.forte.simbot.filter.AtDetectionFactory
-import love.forte.simbot.filter.FilterManager
-import love.forte.simbot.filter.ListenerFilter
 import love.forte.simbot.listener.ListenerManager
 import love.forte.simbot.listener.ListenerManagerBuilder
 

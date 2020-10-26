@@ -17,10 +17,11 @@ package love.forte.simbot.core.filter
 import love.forte.catcode.CatCodeUtil
 import love.forte.simbot.annotation.Filter
 import love.forte.simbot.annotation.Filters
-import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.containers.AccountContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupContainer
+import love.forte.simbot.api.message.events.MessageEventGet
+import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.filter.*
 
 
@@ -198,9 +199,13 @@ public class AnnotationFiltersListenerFilterImpl(
         if (this) {
             // 要匹配at
             f@{
-                // 如果获取到的msg为null，则认为其无法匹配msg，直接放行。
-                val text: String = it.msg ?: return@f true
-                CatCodeUtil.contains(text, "at")
+                if (it is MessageEventGet) {
+                    // 如果获取到的msg为null，则认为其无法匹配msg，直接放行。
+                    val text: String = it.msg ?: return@f true
+                    CatCodeUtil.contains(text, "at")
+                } else {
+                    false
+                }
             }
 
         } else {
@@ -220,11 +225,16 @@ public class AnnotationFiltersListenerFilterImpl(
             { true }
         } else {
             f@{
-                // 如果获取到的为null，则认为其无法判断at，直接放行。
-                val text = it.msg ?: return@f true
-                at.all { atCode ->
-                    CatCodeUtil.contains(text, "at", "code", atCode)
+                if (it is MessageEventGet) {
+                    // 如果获取到的为null，则认为其无法判断at，直接放行。
+                    val text = it.msg ?: return@f true
+                    at.all { atCode ->
+                        CatCodeUtil.contains(text, "at", "code", atCode)
+                    }
+                } else {
+                    false
                 }
+
             }
         }
     }
@@ -474,9 +484,14 @@ public class AnnotationFilterListenerFilterImpl(
         if (this) {
             // 要匹配at
             f@{
-                // 如果获取到的msg为null，则认为其无法匹配msg，直接放行。
-                val text: String = it.msg ?: return@f true
-                CatCodeUtil.contains(text, "at")
+                if (it is MessageEventGet) {
+                    // 如果获取到的msg为null，则认为其无法匹配msg，直接放行。
+                    val text: String = it.msg ?: return@f true
+                    CatCodeUtil.contains(text, "at")
+                } else {
+                    false
+                }
+
             }
 
         } else {
@@ -497,14 +512,21 @@ public class AnnotationFilterListenerFilterImpl(
             { true }
         } else {
             f@{
-                // 如果获取到的为null，则认为其无法判断at，直接放行。
-                val text = it.msg ?: return@f true
-                at.all { atCode ->
-                    CatCodeUtil.contains(text, "at", "code", atCode)
+                if (it is MessageEventGet) {
+                    // 如果获取到的为null，则认为其无法判断at，直接放行。
+                    val text = it.msg ?: return@f true
+                    at.all { atCode ->
+                        CatCodeUtil.contains(text, "at", "code", atCode)
+                    }
+                } else {
+                    false
                 }
+
             }
         }
     }
+
+    private val atAll: Boolean = filter.at.contains("all")
 
 
     /** 消息文本前置处理函数 */
@@ -564,6 +586,7 @@ public class AnnotationFilterListenerFilterImpl(
      */
     override fun test(data: FilterData): Boolean {
         val msg: MsgGet = data.msgGet
+
         // 1 bot
         if (!botsTestFunc(msg)) {
             return false
@@ -578,24 +601,45 @@ public class AnnotationFilterListenerFilterImpl(
         }
         // 4 at
         // 4.1 bot at
-        if (atBot && !data.atDetection.atBot()) {
+        val atDetection: AtDetection = data.atDetection
+
+        if (atBot && !atDetection.atBot()) {
             return false
         }
         // 4.2 any at.
-        if (!anyAtTestFunc(msg)) {
+        if (anyAt && !atDetection.atAny()) {
             return false
         }
+
         // 4.3 assign at.
-        if (!atTestFunc(msg)) {
+        if (at.isNotEmpty() && !atDetection.at(at)) {
             return false
         }
+
+        if (atAll && !atDetection.atAll()) {
+            return false
+        }
+
+        // // 4.2 any at.
+        // if (!anyAtTestFunc(msg)) {
+        //     return false
+        // }
+        // // 4.3 assign at.
+        // if (!atTestFunc(msg)) {
+        //     return false
+        // }
 
 
         // 5 msg matches
-        // 如果msg为null，则认为其无法匹配文本，直接放行。
-        val textMsg: String = msg.msg ?: return true
+        // no msg. return true.
+        if (msg.isEmptyMsg()) {
+            return true
+        }
 
-        return matchType.match(textMsg, keyword)
+        // 如果msg为null，则认为其无法匹配文本，直接放行。
+        val msgText: String = msg.text ?: return true
+
+        return matchType.match(msgText, keyword)
     }
 
 

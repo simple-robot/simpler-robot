@@ -14,8 +14,9 @@ package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.PrePass
-import love.forte.simbot.filter.AtDetectionRegistrar
+import love.forte.simbot.constant.PriorityConstant
 import love.forte.simbot.core.filter.CatAtDetectionFactory
+import love.forte.simbot.filter.AtDetectionRegistrar
 
 /**
  *
@@ -28,7 +29,7 @@ public class CoreAtDetectionRegistrar {
     /**
      * 注册一个 [CatAtDetectionFactory]。
      */
-    @PrePass
+    @PrePass(priority = PriorityConstant.CORE_TENTH)
     fun registerAtDetectionFactory(registrar: AtDetectionRegistrar) {
         registrar.registryAtDetection(CatAtDetectionFactory)
     }
