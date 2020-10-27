@@ -28,6 +28,7 @@ import love.forte.common.listAs
 import love.forte.common.utils.ResourceUtil
 import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.scanner.HutoolClassesScanner
+import love.forte.common.utils.scanner.ResourcesScanner
 import love.forte.common.utils.scanner.Scanner
 import love.forte.simbot.*
 import love.forte.simbot.annotation.SimbotApplication
@@ -37,6 +38,7 @@ import love.forte.simbot.listener.MsgGetProcessor
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.Closeable
+import java.io.File
 import java.io.Reader
 
 
@@ -97,6 +99,9 @@ protected constructor(
     args: List<String>
 ) {
 
+    var showLogo: Boolean = true
+    var showTips: Boolean = true
+
     protected open val defaultScanPackageArray: Array<String> = arrayOf(defaultScanPackage)
 
     /** 资源环境，即启动的时候使用的配置文件环境，会在 [initDependCenterWithRunData] 阶段注入依赖。 */
@@ -133,6 +138,10 @@ protected constructor(
      */
     @Synchronized
     internal fun run(): SimbotContext {
+        // show logo.
+        if (showLogo) { Logo.show() }
+
+
         // val appConfig = appConfiguration
 
         // load all auto config.
@@ -400,3 +409,62 @@ protected constructor(
 internal fun <T> DependCenter.registerInstance(name: String, instance: T) {
     this.register(InstanceBeanDepend(name, PriorityConstant.CORE_TENTH, instance = instance))
 }
+
+
+// logo. logo? logo!
+private object Logo {
+    private const val DEF_LOGO = """
+     _           _           _   
+    (_)         | |         | |  
+ ___ _ _ __ ___ | |__   ___ | |_ 
+/ __| | '_ ` _ \| '_ \ / _ \| __|
+\__ \ | | | | | | |_) | (_) | |_ 
+|___/_|_| |_| |_|_.__/ \___/ \__|
+                    @ForteScarlet
+    """
+    private val LOGO_PATH: String =
+        "META-INF" + File.separator + "simbot" + File.separator + "logo"
+    val logo: String by lazy(LazyThreadSafetyMode.NONE) {
+        runCatching {
+            ResourcesScanner().scan(LOGO_PATH) { it.toASCIIString().endsWith("simbLogo") }
+                .collection.randomOrNull()
+                ?.toURL()?.readText(Charsets.UTF_8)
+                ?: return@runCatching DEF_LOGO
+        }.getOrDefault(DEF_LOGO)
+    }
+
+}
+private fun Logo.show() {
+    println(logo)
+    // val logoLen = logo.length.takeIf { it > 0 } ?: 1
+    // val totalTime = 5000L
+    // val sleepTime: Long = totalTime / logoLen
+    // logo.lines().forEach {
+    //     it.forEach { c ->
+    //         print(c)
+    //         Thread.sleep(sleepTime)
+    //     }
+    //     println()
+    //     Thread.sleep(sleepTime)
+    // }
+    //
+    // for (i in 1..(3000 / 60)) {
+    //     for (j in 1..6) {
+    //         print(".")
+    //         Thread.sleep(10)
+    //     }
+    //     print("\b\b\b\b\b\b")
+    // }
+    // println("√")
+}
+
+
+fun main() {
+    Logo.show()
+}
+
+
+
+
+
+
