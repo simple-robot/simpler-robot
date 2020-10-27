@@ -100,8 +100,12 @@ protected constructor(
     args: List<String>
 ) {
 
-    var showLogo: Boolean = true
-    var showTips: Boolean = true
+    var showLogo: Boolean = kotlin.runCatching {
+        defaultConfiguration?.getConfig("simbot.showLogo")?.boolean
+    }.getOrNull() ?: true
+    var showTips: Boolean = kotlin.runCatching {
+        defaultConfiguration?.getConfig("simbot.showTips")?.boolean
+    }.getOrNull() ?: true
 
     protected open val defaultScanPackageArray: Array<String> = arrayOf(defaultScanPackage)
 
