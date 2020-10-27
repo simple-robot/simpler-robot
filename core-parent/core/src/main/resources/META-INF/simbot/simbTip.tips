@@ -11,6 +11,7 @@
 你知道吗？simbot开发团队与forte-common开发团队、catCode开发团队的关系非常好，经常会一起玩玩游戏摸摸鱼。
 你知道吗？simbot中代码注释的编辑者与文档编辑者是同一个人。
 你知道吗？simbot除了有QQ交流群，实际上还有TG交流群。
+你知道吗？simbot开发团队一直想要尝试在项目中加入logo与tips。
 你知道吗？simbot1.x版本核心模块的java总代码量有5w+行，其中纯代码有2.1w+行，比httpapi组件(java)和mirai组件(kt按1:2换算为java)的代码加起来还多。
 你知道吗？simbot1.x版本httpapi组件的java总代码量距离上万只差42行，其中纯代码有4k+行。
 你知道吗？simbot1.x版本mirai组件的kotlin总代码量有9.2k+行，其中纯代码有4k行，如果按照1:2换算成java代码的话那么它便是1.x版本中组件中代码量最多的。
