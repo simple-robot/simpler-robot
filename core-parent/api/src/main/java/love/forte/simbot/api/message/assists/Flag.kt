@@ -52,7 +52,7 @@ public inline fun <T: FlagContent> flag(getFlag: () -> T): Flag<T> = FlagImpl(ge
 /**
  * [Flag] 的标识主体，定义了一个标识主体至少要存在一个 [id]。
  *
- * @see love.forte.simbot.api.message.events.MessageEventGet.MessageFlagContent
+ * @see love.forte.simbot.api.message.events.MessageGet.MessageFlagContent
  *
  * @see love.forte.simbot.api.message.events.GroupMsg.FlagContent
  * @see love.forte.simbot.api.message.events.PrivateMsg.FlagContent

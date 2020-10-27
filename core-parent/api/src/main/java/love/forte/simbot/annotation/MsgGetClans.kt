@@ -12,9 +12,9 @@
 
 package love.forte.simbot.annotation
 
-import love.forte.simbot.api.message.events.MessageEventGet
-import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.containers.FlagContainer
+import love.forte.simbot.api.message.events.MessageGet
+import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.events.PrivateMsg
 import kotlin.annotation.AnnotationTarget.CLASS
 
@@ -44,8 +44,8 @@ import kotlin.annotation.AnnotationTarget.CLASS
  * #### 应优先被使用
  *
  * 被标注的接口代表了这个接口是主要用于监听的接口。
- * 以 [PrivateMsg] 举例来说，[PrivateMsg] 继承了 [MessageEventGet] 接口，
- * 而 [MessageEventGet] 又继承了 [MsgGet] 与 [FlagContainer] 。
+ * 以 [PrivateMsg] 举例来说，[PrivateMsg] 继承了 [MessageGet] 接口，
+ * 而 [MessageGet] 又继承了 [MsgGet] 与 [FlagContainer] 。
  *
  * 在这其中，如果你要监听一个事件, 那么**最优先**推荐监听最下游事件 [PrivateMsg] 类型而不是他的任何父接口
  *

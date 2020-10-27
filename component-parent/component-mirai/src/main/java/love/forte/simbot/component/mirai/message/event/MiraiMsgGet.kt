@@ -14,7 +14,7 @@ package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
-import love.forte.simbot.api.message.events.MessageEventGet
+import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
 import net.mamoe.mirai.contact.Contact
@@ -72,7 +72,7 @@ public abstract class AbstractMiraiMsgGet<out ME : BotEvent>(
  * mirai消息类型的事件基类。
  */
 public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : AbstractMiraiMsgGet<ME>(event),
-    MessageEventGet {
+    MessageGet {
 
     /** 默认的ID策略，使用source获取。 */
     override val id: String = with(event.source) {

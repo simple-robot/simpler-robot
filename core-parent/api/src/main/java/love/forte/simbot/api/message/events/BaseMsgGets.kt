@@ -98,7 +98,7 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
      *
      *  这个文本应当是不包含任何 CAT码 的纯文本消息。
      *
-     *  而关于存在CAT码的特殊消息，可参考 [MessageEventGet.msg].
+     *  而关于存在CAT码的特殊消息，可参考 [MessageGet.msg].
      *
      */
     val text: String?
@@ -217,13 +217,13 @@ public interface EventGet : MsgGet {
 /**
  * 与消息有关的事件。
  *
- * [MessageEventGet]中除了需要实现[MsgGet]以外, 还要实现[FlagContainer]以标识一个消息内容的标识。
+ * [MessageGet]中除了需要实现[MsgGet]以外, 还要实现[FlagContainer]以标识一个消息内容的标识。
  * 但是一般来讲, [FlagContent] 都可以用 [id] 来代替。
  *
  * 因此 [FlagContent] 提供为默认方法并使用 [id] 作为返回值。如果有特殊需要则重写。
  */
 @ParentListenerType("消息事件父接口")
-public interface MessageEventGet : MsgGet, FlagContainer<MessageEventGet.MessageFlagContent> {
+public interface MessageGet : MsgGet, FlagContainer<MessageGet.MessageFlagContent> {
 
     /**
      *  消息事件的消息正文文本。
@@ -280,7 +280,7 @@ public interface MessageEventGet : MsgGet, FlagContainer<MessageEventGet.Message
     override val flag: Flag<MessageFlagContent>
 
     /**
-     * [MessageEventGet] 所对应的 [标识][Flag]
+     * [MessageGet] 所对应的 [标识][Flag]
      */
     public interface MessageFlagContent : FlagContent
 }

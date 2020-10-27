@@ -13,11 +13,14 @@
 package love.forte.simbot.api.sender
 
 import love.forte.common.utils.Carrier
-import love.forte.simbot.api.message.events.MessageEventGet
 import love.forte.simbot.api.message.assists.Flag
-import love.forte.simbot.api.message.containers.*
+import love.forte.simbot.api.message.containers.AccountCodeContainer
+import love.forte.simbot.api.message.containers.AccountContainer
+import love.forte.simbot.api.message.containers.GroupCodeContainer
+import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.events.FriendAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequest
+import love.forte.simbot.api.message.events.MessageGet
 import java.util.concurrent.TimeUnit
 
 /**
@@ -351,7 +354,7 @@ public interface Setter {
      *
      * @return 设置操作的回执，一般代表是否成功。**不会捕获意料外的异常**。
      */
-    fun setMsgRecall(flag: Flag<MessageEventGet.MessageFlagContent>): Carrier<Boolean>
+    fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean>
 
 
     /**

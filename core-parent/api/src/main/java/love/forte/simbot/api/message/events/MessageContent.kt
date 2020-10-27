@@ -31,7 +31,7 @@ import kotlin.contracts.contract
 /**
  * **消息内容**。
  *
- * 它被使用在[MessageEventGet] 接口的 [MessageEventGet.msgContent] 上，表示当前消息的正文内容。
+ * 它被使用在[MessageGet] 接口的 [MessageGet.msgContent] 上，表示当前消息的正文内容。
  *
  * 一个 [MessageContent] 实例至少应该保证能够得到当前消息的 [消息字符串文本][msg]。
  *

@@ -15,12 +15,12 @@
 package love.forte.simbot.api.sender
 
 import love.forte.common.utils.Carrier
-import love.forte.simbot.api.message.events.MessageEventGet
-import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.events.FriendAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequest
+import love.forte.simbot.api.message.events.MessageGet
+import love.forte.simbot.api.message.events.MsgGet
 import java.util.concurrent.TimeUnit
 
 
@@ -69,7 +69,7 @@ object ErrorSetter : Setter {
     override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Nothing =
         NO("Setter.setGroupMemberSpecialTitle")
 
-    override fun setMsgRecall(flag: Flag<MessageEventGet.MessageFlagContent>): Nothing =
+    override fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Nothing =
         NO("Setter.setMsgRecall")
 
     override fun setGroupName(groupCode: String, name: String): Nothing =

@@ -20,7 +20,7 @@ import love.forte.simbot.annotation.Filters
 import love.forte.simbot.api.message.containers.AccountContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupContainer
-import love.forte.simbot.api.message.events.MessageEventGet
+import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.filter.*
 
@@ -199,7 +199,7 @@ public class AnnotationFiltersListenerFilterImpl(
         if (this) {
             // 要匹配at
             f@{
-                if (it is MessageEventGet) {
+                if (it is MessageGet) {
                     // 如果获取到的msg为null，则认为其无法匹配msg，直接放行。
                     val text: String = it.msg ?: return@f true
                     CatCodeUtil.contains(text, "at")
@@ -225,7 +225,7 @@ public class AnnotationFiltersListenerFilterImpl(
             { true }
         } else {
             f@{
-                if (it is MessageEventGet) {
+                if (it is MessageGet) {
                     // 如果获取到的为null，则认为其无法判断at，直接放行。
                     val text = it.msg ?: return@f true
                     at.all { atCode ->
@@ -484,7 +484,7 @@ public class AnnotationFilterListenerFilterImpl(
         if (this) {
             // 要匹配at
             f@{
-                if (it is MessageEventGet) {
+                if (it is MessageGet) {
                     // 如果获取到的msg为null，则认为其无法匹配msg，直接放行。
                     val text: String = it.msg ?: return@f true
                     CatCodeUtil.contains(text, "at")
@@ -512,7 +512,7 @@ public class AnnotationFilterListenerFilterImpl(
             { true }
         } else {
             f@{
-                if (it is MessageEventGet) {
+                if (it is MessageGet) {
                     // 如果获取到的为null，则认为其无法判断at，直接放行。
                     val text = it.msg ?: return@f true
                     at.all { atCode ->

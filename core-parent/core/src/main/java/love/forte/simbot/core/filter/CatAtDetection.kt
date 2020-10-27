@@ -13,7 +13,7 @@
 package love.forte.simbot.core.filter
 
 import love.forte.catcode.CatCodeUtil
-import love.forte.simbot.api.message.events.MessageEventGet
+import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.filter.AlwaysRefuseAtDetection
 import love.forte.simbot.filter.AtDetection
@@ -33,7 +33,7 @@ public object CatAtDetectionFactory : AtDetectionFactory {
      */
     override fun getAtDetection(msg: MsgGet): AtDetection {
         // 不属于一个消息类型事件，则获取不到at信息。
-        if (msg !is MessageEventGet) {
+        if (msg !is MessageGet) {
             return AlwaysRefuseAtDetection
         }
         // 如果消息为null，直接返回false

@@ -14,21 +14,21 @@ package love.forte.simbot.component.mirai.sender
 
 import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.*
-import love.forte.simbot.core.CompLogger
-import love.forte.simbot.api.message.events.MessageEventGet
-import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
 import love.forte.simbot.api.message.events.FriendAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequest
+import love.forte.simbot.api.message.events.MessageGet
+import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.api.sender.SetterFactory
-import love.forte.simbot.component.mirai.message.*
+import love.forte.simbot.component.mirai.message.MiraiMessageFlag
 import love.forte.simbot.component.mirai.message.event.MiraiBotInvitedJoinRequestFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiFriendRequestFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiGroupMemberJoinRequestFlagContent
+import love.forte.simbot.core.CompLogger
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.mute
 import java.util.concurrent.TimeUnit
@@ -307,7 +307,7 @@ public class MiraiSetter(private val bot: Bot) : Setter {
      *
      * @throws IllegalArgumentException 当 [flag] 不是 [MiraiMessageFlag] 类型实例的时候。
      */
-    override fun setMsgRecall(flag: Flag<MessageEventGet.MessageFlagContent>): Carrier<Boolean> {
+    override fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
         return if (flag is MiraiMessageFlag<*>) {
                 flag.flag.source?.let { source ->
                     runBlocking {

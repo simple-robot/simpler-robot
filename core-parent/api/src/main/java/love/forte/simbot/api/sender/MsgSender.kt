@@ -14,11 +14,11 @@
 package love.forte.simbot.api.sender
 
 import love.forte.common.utils.Carrier
-import love.forte.simbot.api.message.events.MessageEventGet
-import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.events.MessageGet
+import love.forte.simbot.api.message.events.MsgGet
 
 /**
  *
@@ -32,7 +32,7 @@ public open class MsgSender(
     @JvmField val GETTER: Getter
 ) {
     /** 撤回消息。 */
-    public open fun recall(flag: Flag<MessageEventGet.MessageFlagContent>): Carrier<Boolean> = SETTER.setMsgRecall(flag)
+    public open fun recall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean> = SETTER.setMsgRecall(flag)
 
 
 

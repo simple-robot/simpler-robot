@@ -15,10 +15,11 @@ package love.forte.simbot.annotation;
 
 import love.forte.simbot.api.message.containers.*;
 import love.forte.simbot.api.message.events.*;
-import love.forte.simbot.api.message.containers.*;
-import love.forte.simbot.api.message.events.*;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * <p>监听的类型。一般来讲是一个接口类型。</p>
@@ -57,7 +58,7 @@ import java.lang.annotation.*;
  * <ul>
  *     <li>{@link MsgGet} 所有消息类型的父接口。</li>
  *     <li>{@link EventGet} 事件类型的父接口。</li>
- *     <li>{@link MessageEventGet} 与消息有关的事件父接口。</li>
+ *     <li>{@link MessageGet} 与消息有关的事件父接口。</li>
  *     <li>{@link MessageRecallEventGet} 与消息撤回有关的事件父接口。</li>
  *     <li>{@link MemberChangesEventGet} 成员变动事件父接口。</li>
  *     <li>{@link IncreaseEventGet} 与增加有关的事件父接口。</li>
@@ -115,7 +116,7 @@ import java.lang.annotation.*;
  *
  * @see MsgGet 所有消息类型的父接口。
  * @see EventGet 事件类型的父接口。
- * @see MessageEventGet 与消息有关的事件父接口。
+ * @see MessageGet 与消息有关的事件父接口。
  * @see MessageRecallEventGet 与消息撤回有关的事件父接口。
  * @see MemberChangesEventGet 成员变动事件父接口。
  * @see IncreaseEventGet 与增加有关的事件父接口。

@@ -31,7 +31,7 @@ import love.forte.simbot.api.message.containers.PermissionContainer
 /**
  * 私聊消息。
  */
-public interface PrivateMsg : MessageEventGet {
+public interface PrivateMsg : MessageGet {
     /**
      * 获取私聊消息类型
      */
@@ -67,7 +67,7 @@ public interface PrivateMsg : MessageEventGet {
     /**
      * 对于 [PrivateMsg] 的 [标识主体][FlagContent] 接口。
      */
-    public interface FlagContent : MessageEventGet.MessageFlagContent
+    public interface FlagContent : MessageGet.MessageFlagContent
 }
 
 /**
@@ -81,9 +81,9 @@ public data class PrivateMsgIdFlagContent(override val id: String) : PrivateMsg.
 
 
 /**
- * 群消息. 实现了 [MessageEventGet] , [GroupContainer] , [PermissionContainer]
+ * 群消息. 实现了 [MessageGet] , [GroupContainer] , [PermissionContainer]
  */
-public interface GroupMsg : MessageEventGet, GroupContainer, PermissionContainer {
+public interface GroupMsg : MessageGet, GroupContainer, PermissionContainer {
 
     /** 发消息的人在群里的权限。 */
     override val permission: Permissions
@@ -120,7 +120,7 @@ public interface GroupMsg : MessageEventGet, GroupContainer, PermissionContainer
     /**
      * 对于 [GroupMsg] 的 [标识主体][FlagContent] 接口
      */
-    public interface FlagContent : MessageEventGet.MessageFlagContent
+    public interface FlagContent : MessageGet.MessageFlagContent
 
 }
 
