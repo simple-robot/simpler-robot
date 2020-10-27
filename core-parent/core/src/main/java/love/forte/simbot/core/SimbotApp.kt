@@ -139,7 +139,12 @@ protected constructor(
     @Synchronized
     internal fun run(): SimbotContext {
         // show logo.
-        if (showLogo) { Logo.show() }
+        if (showLogo) {
+            Logo.show()
+        }
+        if (showTips) {
+            Tips.show()
+        }
 
 
         // val appConfig = appConfiguration
@@ -257,7 +262,7 @@ protected constructor(
         scanPackages.forEach {
             scanner.scan(it) { c ->
                 c !in ignored &&
-                AnnotationUtil.containsAnnotation(c, Beans::class.java)
+                        AnnotationUtil.containsAnnotation(c, Beans::class.java)
             }
             logger.debug("package scan: {}", it)
         }
@@ -271,8 +276,10 @@ protected constructor(
         // inject classes.
         dependCenter.inject(types = collection.toTypedArray())
         // register simbotPackageScanEnvironment.
-        dependCenter.registerInstance("simbotPackageScanEnvironment", SimbotPackageScanEnvironmentImpl(scanPackages.copyOf()))
-
+        dependCenter.registerInstance(
+            "simbotPackageScanEnvironment",
+            SimbotPackageScanEnvironmentImpl(scanPackages.copyOf())
+        )
 
 
     }
@@ -434,8 +441,10 @@ private object Logo {
     }
 
 }
+
 private fun Logo.show() {
     println(logo)
+    println()
     // val logoLen = logo.length.takeIf { it > 0 } ?: 1
     // val totalTime = 5000L
     // val sleepTime: Long = totalTime / logoLen
@@ -458,10 +467,34 @@ private fun Logo.show() {
     // println("√")
 }
 
+// tips!
+private object Tips {
+    private val TIP_PATH: String =
+        "META-INF" + File.separator + "simbot" + File.separator + "simbTip.tips"
+    val randomTip: String? by lazy(LazyThreadSafetyMode.NONE) {
+        runCatching {
+            ResourceUtil.getResourceUtf8Reader(TIP_PATH)
+                ?.useLines {
+                    it.filter { s -> s.isNotBlank() }.toList().randomOrNull()
+                }
+                ?: return@runCatching null
+        }.getOrNull()
+    }
+}
 
-// fun main() {
-//     Logo.show()
-// }
+
+private fun Tips.show() {
+    randomTip?.run {
+        println("Tips: $this")
+        println()
+    }
+}
+
+
+fun main() {
+    Logo.show()
+    Tips.show()
+}
 
 
 
