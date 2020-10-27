@@ -39,6 +39,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.io.File
+import java.io.PrintStream
 import java.io.Reader
 
 
@@ -442,9 +443,9 @@ private object Logo {
 
 }
 
-private fun Logo.show() {
-    println(logo)
-    println()
+private fun Logo.show(print: PrintStream = System.out) {
+    print.println(logo)
+    print.println()
     // val logoLen = logo.length.takeIf { it > 0 } ?: 1
     // val totalTime = 5000L
     // val sleepTime: Long = totalTime / logoLen
@@ -467,7 +468,7 @@ private fun Logo.show() {
     // println("√")
 }
 
-// tips!
+// tips! Do you know?
 private object Tips {
     private val TIP_PATH: String =
         "META-INF" + File.separator + "simbot" + File.separator + "simbTip.tips"
@@ -483,18 +484,14 @@ private object Tips {
 }
 
 
-private fun Tips.show() {
+private fun Tips.show(print: PrintStream = System.out) {
     randomTip?.run {
-        println("Tips: $this")
-        println()
+        print.println("Tips: $this")
+        print.println()
     }
 }
 
 
-fun main() {
-    Logo.show()
-    Tips.show()
-}
 
 
 
