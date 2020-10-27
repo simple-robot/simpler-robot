@@ -459,9 +459,9 @@ private fun Logo.show() {
 }
 
 
-fun main() {
-    Logo.show()
-}
+// fun main() {
+//     Logo.show()
+// }
 
 
 
