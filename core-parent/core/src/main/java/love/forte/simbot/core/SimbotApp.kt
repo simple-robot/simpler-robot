@@ -99,6 +99,7 @@ protected constructor(
     private val defaultConfiguration: Configuration?,
     args: List<String>
 ) {
+    private val logger: Logger = LoggerFactory.getLogger("SimbotApp")
 
     var showLogo: Boolean = kotlin.runCatching {
         defaultConfiguration?.getConfig("simbot.showLogo")?.boolean
@@ -316,7 +317,7 @@ protected constructor(
      */
     companion object Run {
 
-        private val logger: Logger = LoggerFactory.getLogger("SimbotApp")
+        // private val logger: Logger = LoggerFactory.getLogger("SimbotApp")
 
         const val SCAN_PACKAGES_KEY = "simbot.core.scan-package"
 
@@ -382,7 +383,6 @@ protected constructor(
             val resourceData: List<SimbotResourceData> = when {
                 /** 如果是class，执行另一个方法。 */
                 app is Class<*> -> return run(app, loader, parentDependBeanFactory, defaultConfiguration, *args)
-
                 app is SimbotResourceData -> listOf(app)
                 app is List<*> && listAs<SimbotResourceData, Any?>(app) != null -> app as List<SimbotResourceData>
                 else -> {
