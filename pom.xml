@@ -50,20 +50,9 @@
         <!-- sb maven version -->
         <sb-maven.version>2.3.4.RELEASE</sb-maven.version>
 
-
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>io.ktor</groupId>
-            <artifactId>ktor-client-core</artifactId>
-        </dependency>
 
-        <dependency>
-            <groupId>io.ktor</groupId>
-            <artifactId>ktor-client-core-jvm</artifactId>
-        </dependency>
-    </dependencies>
 
     <!-- dependencyManagement -->
     <dependencyManagement>
@@ -152,10 +141,16 @@
                 <artifactId>kotlin-reflect</artifactId>
                 <version>${kotlin.version}</version>
             </dependency>
-            <!-- ktx -->
+            <!-- ktx coroutines -->
             <dependency>
                 <groupId>org.jetbrains.kotlinx</groupId>
                 <artifactId>kotlinx-coroutines-core</artifactId>
+                <version>${kotlinx.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlinx</groupId>
+                <artifactId>kotlinx-serialization-json</artifactId>
                 <version>${kotlinx.version}</version>
             </dependency>
 

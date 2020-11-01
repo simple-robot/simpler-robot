@@ -27,10 +27,6 @@
 
     <artifactId>http-client-core</artifactId>
 
-    <properties>
-        <kotlin.version>1.4.10</kotlin.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
