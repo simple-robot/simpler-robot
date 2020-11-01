@@ -54,16 +54,7 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>io.ktor</groupId>
-            <artifactId>ktor-client-core</artifactId>
-            <version>${ktor.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.ktor</groupId>
-            <artifactId>ktor-client-core-jvm</artifactId>
-            <version>${ktor.version}</version>
-        </dependency>
+
     </dependencies>
 
     <!-- dependencyManagement -->
@@ -606,12 +597,6 @@
         </pluginRepository>
     </pluginRepositories>
 
-    <repositories>
-        <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com</url>
-        </repository>
-    </repositories>
 
     <!-- licenses -->
     <licenses>
