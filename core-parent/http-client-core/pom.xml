@@ -25,11 +25,27 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>http-template</artifactId>
+    <artifactId>http-client-core</artifactId>
 
     <properties>
         <kotlin.version>1.4.10</kotlin.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>

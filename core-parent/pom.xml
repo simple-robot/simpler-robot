@@ -15,8 +15,8 @@
     <modules>
         <module>api</module>
         <module>core</module>
-        <module>http-template-core</module>
-        <module>http-template-ktor</module>
+        <module>http-client-core</module>
+        <module>http-client-ktor</module>
     </modules>
 
 
