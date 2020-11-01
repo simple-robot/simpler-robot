@@ -12,7 +12,6 @@
     <artifactId>core</artifactId>
 
     <dependencies>
-
         <!--<editor-fold desc="commons">-->
         <!-- common-utils -->
         <dependency>
