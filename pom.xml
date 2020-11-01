@@ -31,9 +31,13 @@
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <!--</editor-fold>-->
+
+        <!-- moshi version -->
+        <moshi.version>1.11.0</moshi.version>
+
         <!-- slf4j version -->
         <slf4j.version>1.7.30</slf4j.version>
-
+        <!-- junit version -->
         <junit.jupiter.version>5.5.2</junit.jupiter.version>
 
         <!-- some version -->
@@ -57,6 +61,12 @@
     <!-- dependencyManagement -->
     <dependencyManagement>
         <dependencies>
+            <!-- moshi -->
+            <dependency>
+                <groupId>com.squareup.moshi</groupId>
+                <artifactId>moshi</artifactId>
+                <version>${moshi.version}</version>
+            </dependency>
             <!--<editor-fold desc="simbot">-->
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
@@ -71,6 +81,26 @@
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
                 <artifactId>component-mirai</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
+                <artifactId>http-client-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
+                <artifactId>http-client-ktor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
+                <artifactId>serialization-json-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
+                <artifactId>serialization-json-moshi</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!--</editor-fold>-->

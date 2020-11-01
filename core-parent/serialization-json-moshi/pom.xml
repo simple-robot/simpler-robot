@@ -3,23 +3,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>parent</artifactId>
+        <artifactId>core-parent</artifactId>
         <groupId>love.forte.simple-robot</groupId>
         <version>2.0.0-ALPHA.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core-parent</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>serialization-json-moshi</artifactId>
 
-    <modules>
-        <module>api</module>
-        <module>core</module>
-        <module>http-client-core</module>
-        <module>http-client-ktor</module>
-        <module>serialization-json-core</module>
-        <module>serialization-json-moshi</module>
-    </modules>
-
+    <dependencies>
+        <dependency>
+            <groupId>com.squareup.moshi</groupId>
+            <artifactId>moshi</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
