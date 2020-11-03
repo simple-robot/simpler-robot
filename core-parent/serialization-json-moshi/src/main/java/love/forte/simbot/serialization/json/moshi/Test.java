@@ -12,6 +12,7 @@
 
 package love.forte.simbot.serialization.json.moshi;
 
+import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
@@ -25,7 +26,11 @@ public class Test {
 
         String jsonStr = "{\"username\":\"jack\",\"password\":\"123\"}";
 
-        final User user = moshi.adapter(User.class).fromJson(jsonStr);
+
+        final JsonAdapter<User> adapter = moshi.adapter(User.class);
+        final User user = adapter.fromJson(jsonStr);
+
+        // adapter.toJson();
 
         System.out.println(user);
 
