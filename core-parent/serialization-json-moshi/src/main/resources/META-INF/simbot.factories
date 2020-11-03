@@ -1,0 +1,1 @@
+simbot.autoconfigure.configs=love.forte.simbot.serialization.json.moshi.MoshiJsonSerializerConfiguration

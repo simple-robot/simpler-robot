@@ -10,7 +10,7 @@
  * QQ     1149159218
  */
 
-package love.forte.simbot.serialization.json.moshi;
+package test;
 
 /**
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>

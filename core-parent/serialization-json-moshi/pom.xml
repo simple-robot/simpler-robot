@@ -11,11 +11,37 @@
 
     <artifactId>serialization-json-moshi</artifactId>
 
+
     <dependencies>
+        <!-- common-ioc -->
+        <dependency>
+            <groupId>love.forte.common</groupId>
+            <artifactId>ioc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>love.forte.simple-robot</groupId>
+            <artifactId>serialization-json-core</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.squareup.moshi</groupId>
             <artifactId>moshi</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
