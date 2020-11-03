@@ -18,6 +18,18 @@
         </dependency>
 
         <dependency>
+            <groupId>love.forte.simple-robot</groupId>
+            <artifactId>serialization-json-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>love.forte.simple-robot</groupId>
+            <artifactId>serialization-json-moshi</artifactId>
+            <scope>test</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
         </dependency>
@@ -31,6 +43,12 @@
             <groupId>io.ktor</groupId>
             <artifactId>ktor-client-core-jvm</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-client-cio-jvm</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>

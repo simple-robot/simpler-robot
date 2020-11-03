@@ -127,6 +127,7 @@ private class MapHttpHeaders(private val map: MutableMap<String, MutableList<Str
         put(header, mutableListOf(value))
     }
 
+    override fun toString(): String = "HttpHeader$map"
 
 
 }

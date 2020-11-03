@@ -22,7 +22,7 @@ public interface HttpTemplate {
 
     /**
      * get请求。
-     * @param responseType 响应body封装类型。
+     * @param responseType 响应body封装类型。如果为null则认为忽略返回值，则response中的getBody也为null。
      */
     fun <T> get(url: String, responseType: Class<T>): HttpResponse<T>
 
@@ -75,14 +75,6 @@ public interface HttpTemplate {
      */
     fun <T> postForm(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T>
 
-    // /**
-    //  * post/form 请求。
-    //  * @param responseType 响应body封装类型。
-    //  * @param headers 请求头信息。
-    //  * @param requestForm 请求参数，一个对象实例，此对象实例只会获取其中一层字段值作为表单提交，不会像json那样嵌套获取。如果字段对应的是一个其他的实例，则会直接获取其toString的值。
-    //  */
-    // fun <T> postForm(url: String, headers: HttpHeaders?, requestForm: Any?, responseType: Class<T>): HttpResponse<T>
-
     /**
      * post/form 请求。
      * @param responseType 响应body封装类型。
@@ -90,6 +82,20 @@ public interface HttpTemplate {
      * @param requestForm 请求参数，一个对象实例，此对象实例只会获取其中一层字段值作为表单提交，不会像json那样嵌套获取。如果字段对应的是一个其他的实例，则会直接获取其toString的值。
      */
     fun <T> postForm(url: String, headers: HttpHeaders?, requestForm: Map<String, Any>?, responseType: Class<T>): HttpResponse<T>
+
+
+    /**
+     * 使用请求实例请求。
+     */
+    fun <T> request(request: HttpRequest<T>): HttpResponse<T?>
+
+    /**
+     * 请求多个，其中，如果 [HttpRequest.responseType] 为null，则其请求结果将不会出现返回值中。
+     * @param parallel 是否异步请求
+     * @return 全部的响应结果，其顺序为 [requests] 中的顺序。
+     */
+    fun requestAll(parallel: Boolean, vararg requests: HttpRequest<*>): List<HttpResponse<*>>
+
 
 }
 
@@ -122,33 +128,13 @@ public interface HttpResponse<T> {
     val message: String?
 }
 
-//
-// /**
-//  * 将一个实例对象解析为单层提交表单。
-//  */
-// public fun Any.toRequestForm(): Map<String, Any> {
-//     return when(this) {
-//         is String, is Number, is Char, is Boolean -> mapOf("" to this)
-//
-//         is Date -> mapOf("" to time)
-//         is Instant -> mapOf("" to this.toEpochMilli())
-//         is Map<*, *> -> this.asSequence()
-//             .filter { it.key != null && it.value != null }
-//             .map { it.key.toString() to it.value.toString() }
-//             .toMap()
-//         is Pair<*, *> -> if (first != null && second != null) mapOf(first.toString() to second.toString()) else emptyMap()
-//         is Map.Entry<*, *> -> if (key != null && value != null) mapOf(key.toString() to value.toString()) else emptyMap()
-//         is Collection<*> -> mapOf("" to this)
-//         else -> {
-//             if ()
-//             this::class.members
-//
-//
-//             TODO()
-//         }
-//     }
-// }
 
+public data class HttpResponseData<T>(
+    override val statusCode: Int,
+    override val body: T,
+    override val headers: HttpHeaders,
+    override val message: String?
+): HttpResponse<T>
 
 
 
