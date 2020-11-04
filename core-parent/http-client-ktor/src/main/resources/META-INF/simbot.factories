@@ -1,0 +1,1 @@
+simbot.autoconfigure.configs=love.forte.simbot.http.template.ktor.KtorHttpTemplateConfiguration

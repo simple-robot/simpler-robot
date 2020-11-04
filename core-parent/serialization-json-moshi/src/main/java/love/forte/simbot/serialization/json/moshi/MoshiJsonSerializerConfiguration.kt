@@ -13,8 +13,8 @@
 package love.forte.simbot.serialization.json.moshi
 
 import com.squareup.moshi.Moshi
-import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.ConfigBeans
+import love.forte.common.ioc.annotation.SpareBeans
 
 /**
  *
@@ -29,14 +29,14 @@ public class MoshiJsonSerializerConfiguration {
      * 一个 [Moshi.Builder]。
      * 可以通过 prePass 来对builder进行中间操作。
      */
-    @Beans("moshiBuilder")
+    @SpareBeans("moshiBuilder")
     public fun moshiBuilder(): Moshi.Builder = Moshi.Builder()
 
     /**
      * 构建一个 [MoshiJsonSerializerFactory] 实例。需要注入一个 [Moshi.Builder] 实例。
      * 如果需要对 [Moshi.Builder] 进行自定义，可以通过 prePass 来对builder进行中间操作。
      */
-    @Beans("moshiJsonSerializerFactory")
+    @SpareBeans("moshiJsonSerializerFactory")
     public fun moshiJsonSerializerFactory(moshiBuilder: Moshi.Builder): MoshiJsonSerializerFactory = MoshiJsonSerializerFactory(moshiBuilder.build())
 
 

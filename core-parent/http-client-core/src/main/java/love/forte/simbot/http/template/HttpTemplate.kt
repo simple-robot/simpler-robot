@@ -15,7 +15,25 @@ package love.forte.simbot.http.template
 
 
 /**
- * 简易的 http 客户端，提供部分最常见的一些请求方式。
+ *
+ * ## 简易的 http 客户端
+ *
+ * 简易的 http 客户端，提供部分最常见的一些可以得到返回值的 **同步** 请求方式。
+ *
+ *
+ * ## 同步请求
+ *
+ * 此模板下的所有请求均为 **同步请求**，即它们均可以得到一个或多个 [响应体][HttpResponse]。
+ *
+ *
+ * ## Json序列化
+ *
+ * 针对于请求与响应的 json 序列化是通过 `serialization-json-*(json序列化相关模块)` 完成的。
+ *
+ * 但是此模块不会引入 `serialization-json-*` 相关依赖，如果任何实现模块有需要则自行引入。
+ * 一般子模块在实现的时候，只需要引入 `serialization-json-core` 而不是一个具体实现的模块,
+ * 其序列化具体实现则取决于使用者的实际项目环境而定。
+ *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public interface HttpTemplate {

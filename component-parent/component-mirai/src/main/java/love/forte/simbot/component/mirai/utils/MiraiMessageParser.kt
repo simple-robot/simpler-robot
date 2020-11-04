@@ -207,33 +207,6 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
         "nudge" -> {
             val target = this["target"]
             MiraiNudgedMessageContent(target?.toLong())
-            // MiraiSingleMessageContent ({ contact ->
-            //     when(contact) {
-            //         // 如果是群
-            //         is Group -> {
-            //             val code: Long = target?.toLong() ?: throw IllegalArgumentException("cannot found nudge target: target is empty.")
-            //             val nudge: Nudge = contact.getOrNull(code)?.nudge() ?: throw NoSuchElementException("cannot found nudge target: no such member($code) in group(${contact.id}).")
-            //             // 获取群员并发送
-            //             contact.launch {
-            //                 contact.sendNudge(nudge)
-            //             }
-            //             EmptySingleMessage
-            //         }
-            //         is User -> {
-            //             val nudge: Nudge = contact.nudge()
-            //             contact.launch {
-            //                 contact.sendNudge(nudge)
-            //             }
-            //             EmptySingleMessage
-            //         }
-            //         // 是其他人
-            //         else -> EmptySingleMessage
-            //     }
-            // }, {
-            //     CatCodeUtil.getStringCodeBuilder("nudge").apply {
-            //         target?.let { key("target").value(it) }
-            //     }.build()
-            // })
         }
 
 

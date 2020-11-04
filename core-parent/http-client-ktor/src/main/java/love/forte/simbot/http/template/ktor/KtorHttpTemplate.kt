@@ -36,7 +36,7 @@ private val APPLICATION_FORM_URLENCODED = ContentType("application", "x-www-form
 
 /**
  *
- * 基于 ktor cio client 的 http请求模板。
+ * 基于 ktor cio client 的 http 请求模板。
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
@@ -178,15 +178,18 @@ constructor(
     }
 
     /**
-     * 请求多个请求
-     * @param parallel Boolean
-     * @param requests Array<out HttpRequest<*>>
+     * 请求多个请求. 当 [parallel] 为true的时候，通过协程并行计算多个请求。
+     *
+     * 返回的 list 定义为 **read-only** list, 不应做修改。
+     *
+     * @param requests 请求列表。
      * @return List<HttpResponse<*>>
      */
     override fun requestAll(parallel: Boolean, vararg requests: HttpRequest<*>): List<HttpResponse<*>> {
         if (requests.isEmpty()) {
             return emptyList()
         }
+
 
         fun getBlock(headers: HttpHeaders?): HttpRequestBuilder.() -> Unit {
             return {
@@ -196,144 +199,146 @@ constructor(
             }
         }
 
-        return if (parallel) {
-            requests.map { request ->
-                val url = request.url
-                val headers = request.headers
-                val params = request.requestParam
-                val responseType = request.responseType
+        return if (requests.size == 1) {
+            // only one.
+            listOf(request(requests.first()))
+        } else {
+            if (parallel) {
+                requests.map { request ->
+                    val url = request.url
+                    val headers = request.headers
+                    val params = request.requestParam
+                    val responseType = request.responseType
 
-                val block: HttpRequestBuilder.() -> Unit = getBlock(headers)
+                    val block: HttpRequestBuilder.() -> Unit = getBlock(headers)
 
-                // first:  type
-                // second: async response
-                responseType to
-                        when (request.type) {
+                    // first:  type
+                    // second: async response
+                    responseType to
+                            when (request.type) {
 
-                            // get
-                            HttpRequestType.GET -> {
-                                val getBlock: HttpRequestBuilder.() -> Unit = {
-                                    block()
-                                    val requestParams = params as? Map<String, Any?>
-                                    requestParams?.forEach { (k, v) ->
-                                        parameter(k, v)
-                                    }
-                                }
-                                GlobalScope.async { client.get<KtorHttpResponse>(url, getBlock) }
-                            }
-
-                            // post
-                            HttpRequestType.POST -> {
-                                val postBlock: HttpRequestBuilder.() -> Unit = {
-                                    block()
-                                    if (this.contentType() == null) {
-                                        this.contentType(APPLICATION_JSON)
-                                    }
-                                    params?.let {
-                                        when (it) {
-                                            is List<*> -> jsonSerializerFactory.getJsonSerializer<Any>(List::class.java)
-                                            is Set<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Set::class.java)
-                                            is Map<*, *> -> jsonSerializerFactory.getJsonSerializer<Any>(Map::class.java)
-                                            is Collection<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Collection::class.java)
-                                            else -> jsonSerializerFactory.getJsonSerializer(it.javaClass)
-                                        }?.apply {
-                                            body = toJson(it)
-                                        }
-                                    }
-                                }
-                                GlobalScope.async { client.post<KtorHttpResponse>(url, postBlock) }
-                            }
-
-                            // form
-                            HttpRequestType.FORM -> {
-                                val postBlock: HttpRequestBuilder.() -> Unit = {
-                                    block()
-                                    if (this.contentType() == null) {
-                                        this.contentType(APPLICATION_FORM_URLENCODED)
-                                    }
-                                    val requestForm = params as? Map<String, Any?>?
-                                    requestForm?.also {
-                                        it.forEach { (k, v) ->
+                                // get
+                                HttpRequestType.GET -> {
+                                    val getBlock: HttpRequestBuilder.() -> Unit = {
+                                        block()
+                                        val requestParams = params as? Map<String, Any?>
+                                        requestParams?.forEach { (k, v) ->
                                             parameter(k, v)
                                         }
                                     }
+                                    GlobalScope.async { client.get<KtorHttpResponse>(url, getBlock) }
                                 }
-                                GlobalScope.async { client.submitForm<KtorHttpResponse>(url, block = postBlock) }
-                            }
-                        }
-            }.map { runBlocking { it.second.await().toResponse(it.first) } }
-        } else {
-            // no pall, block.
-            requests.map { request ->
-                val url = request.url
-                val headers = request.headers
-                val params = request.requestParam
-                val responseType = request.responseType
 
-                val block: HttpRequestBuilder.() -> Unit = getBlock(headers)
+                                // post
+                                HttpRequestType.POST -> {
+                                    val postBlock: HttpRequestBuilder.() -> Unit = {
+                                        block()
+                                        if (this.contentType() == null) {
+                                            this.contentType(APPLICATION_JSON)
+                                        }
+                                        params?.let {
+                                            when (it) {
+                                                is List<*> -> jsonSerializerFactory.getJsonSerializer<Any>(List::class.java)
+                                                is Set<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Set::class.java)
+                                                is Map<*, *> -> jsonSerializerFactory.getJsonSerializer<Any>(Map::class.java)
+                                                is Collection<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Collection::class.java)
+                                                else -> jsonSerializerFactory.getJsonSerializer(it.javaClass)
+                                            }?.apply {
+                                                body = toJson(it)
+                                            }
+                                        }
+                                    }
+                                    GlobalScope.async { client.post<KtorHttpResponse>(url, postBlock) }
+                                }
 
-                // first:  type
-                // second: response
-                val response = when (request.type) {
-
-                    // get
-                    HttpRequestType.GET -> {
-                        val getBlock: HttpRequestBuilder.() -> Unit = {
-                            block()
-                            val requestParams = params as? Map<String, Any?>
-                            requestParams?.forEach { (k, v) ->
-                                parameter(k, v)
-                            }
-                        }
-                        runBlocking { client.get<KtorHttpResponse>(url, getBlock) }
-                    }
-
-                    // post
-                    HttpRequestType.POST -> {
-                        val postBlock: HttpRequestBuilder.() -> Unit = {
-                            block()
-                            if (this.contentType() == null) {
-                                this.contentType(APPLICATION_JSON)
-                            }
-                            params?.let {
-                                when (it) {
-                                    is List<*> -> jsonSerializerFactory.getJsonSerializer<Any>(List::class.java)
-                                    is Set<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Set::class.java)
-                                    is Map<*, *> -> jsonSerializerFactory.getJsonSerializer<Any>(Map::class.java)
-                                    is Collection<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Collection::class.java)
-                                    else -> jsonSerializerFactory.getJsonSerializer(it.javaClass)
-                                }?.apply {
-                                    body = toJson(it)
+                                // form
+                                HttpRequestType.FORM -> {
+                                    val postBlock: HttpRequestBuilder.() -> Unit = {
+                                        block()
+                                        if (this.contentType() == null) {
+                                            this.contentType(APPLICATION_FORM_URLENCODED)
+                                        }
+                                        val requestForm = params as? Map<String, Any?>?
+                                        requestForm?.also {
+                                            it.forEach { (k, v) ->
+                                                parameter(k, v)
+                                            }
+                                        }
+                                    }
+                                    GlobalScope.async { client.submitForm<KtorHttpResponse>(url, block = postBlock) }
                                 }
                             }
-                        }
-                        runBlocking { client.post<KtorHttpResponse>(url, postBlock) }
-                    }
+                }.map { runBlocking { it.second.await().toResponse(it.first) } }
+            } else {
+                // no pall, block.
+                requests.map { request ->
+                    val url = request.url
+                    val headers = request.headers
+                    val params = request.requestParam
+                    val responseType = request.responseType
 
-                    // form
-                    HttpRequestType.FORM -> {
-                        val postBlock: HttpRequestBuilder.() -> Unit = {
-                            block()
-                            if (this.contentType() == null) {
-                                this.contentType(APPLICATION_FORM_URLENCODED)
-                            }
-                            val requestForm = params as? Map<String, Any?>?
-                            requestForm?.also {
-                                it.forEach { (k, v) ->
+                    val block: HttpRequestBuilder.() -> Unit = getBlock(headers)
+
+                    // first:  type
+                    // second: response
+                    val response = when (request.type) {
+
+                        // get
+                        HttpRequestType.GET -> {
+                            val getBlock: HttpRequestBuilder.() -> Unit = {
+                                block()
+                                val requestParams = params as? Map<String, Any?>
+                                requestParams?.forEach { (k, v) ->
                                     parameter(k, v)
                                 }
                             }
+                            runBlocking { client.get<KtorHttpResponse>(url, getBlock) }
                         }
-                        runBlocking { client.submitForm<KtorHttpResponse>(url, block = postBlock) }
+
+                        // post
+                        HttpRequestType.POST -> {
+                            val postBlock: HttpRequestBuilder.() -> Unit = {
+                                block()
+                                if (this.contentType() == null) {
+                                    this.contentType(APPLICATION_JSON)
+                                }
+                                params?.let {
+                                    when (it) {
+                                        is List<*> -> jsonSerializerFactory.getJsonSerializer<Any>(List::class.java)
+                                        is Set<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Set::class.java)
+                                        is Map<*, *> -> jsonSerializerFactory.getJsonSerializer<Any>(Map::class.java)
+                                        is Collection<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Collection::class.java)
+                                        else -> jsonSerializerFactory.getJsonSerializer(it.javaClass)
+                                    }?.apply {
+                                        body = toJson(it)
+                                    }
+                                }
+                            }
+                            runBlocking { client.post<KtorHttpResponse>(url, postBlock) }
+                        }
+
+                        // form
+                        HttpRequestType.FORM -> {
+                            val postBlock: HttpRequestBuilder.() -> Unit = {
+                                block()
+                                if (this.contentType() == null) {
+                                    this.contentType(APPLICATION_FORM_URLENCODED)
+                                }
+                                val requestForm = params as? Map<String, Any?>?
+                                requestForm?.also {
+                                    it.forEach { (k, v) ->
+                                        parameter(k, v)
+                                    }
+                                }
+                            }
+                            runBlocking { client.submitForm<KtorHttpResponse>(url, block = postBlock) }
+                        }
                     }
+                    response.toResponse(responseType)
                 }
-                response.toResponse(responseType)
             }
-
-
         }
 
-        // TODO()
     }
 
 }

@@ -23,9 +23,10 @@ import love.forte.simbot.serialization.json.JsonSerializerFactory
 /**
  *
  *
+ * 配置 ktor http template.
+ *
  * @author ForteScarlet <ForteScarlet@163.com>
  * @date 2020/11/4
- * @since
  */
 @ConfigBeans
 public class KtorHttpTemplateConfiguration {

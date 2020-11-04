@@ -14,7 +14,9 @@
     </modules>
 
     <url>https://github.com/ForteScarlet/simpler-robot</url>
-    <scm><url>https://github.com/ForteScarlet/simpler-robot</url></scm>
+    <scm>
+        <url>https://github.com/ForteScarlet/simpler-robot</url>
+    </scm>
 
     <name>simpler-robot</name>
     <description>simple-robot是一个通用bot开发框架，以同一种灵活的标准来编写不同平台的bot应用。而simpler-robot便是simple-robot 2.x版本命名。</description>
@@ -41,7 +43,7 @@
         <junit.jupiter.version>5.5.2</junit.jupiter.version>
 
         <!-- some version -->
-        <fastjson.version>1.2.54</fastjson.version>
+        <fastjson.version>1.2.74</fastjson.version>
         <hutool.version>5.4.6</hutool.version>
 
         <commons.version>1.0.0-ALPHA.3</commons.version>
@@ -57,16 +59,9 @@
     </properties>
 
 
-
     <!-- dependencyManagement -->
     <dependencyManagement>
         <dependencies>
-            <!-- moshi -->
-            <dependency>
-                <groupId>com.squareup.moshi</groupId>
-                <artifactId>moshi</artifactId>
-                <version>${moshi.version}</version>
-            </dependency>
             <!--<editor-fold desc="simbot">-->
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
@@ -75,14 +70,17 @@
             </dependency>
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
-                <artifactId>common-api</artifactId>
+                <artifactId>api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!--<editor-fold desc="component">-->
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
                 <artifactId>component-mirai</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!--</editor-fold>-->
+            <!--<editor-fold desc="http-client">-->
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
                 <artifactId>http-client-core</artifactId>
@@ -93,6 +91,8 @@
                 <artifactId>http-client-ktor</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!--</editor-fold>-->
+            <!--<editor-fold desc="serialization">-->
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
                 <artifactId>serialization-json-core</artifactId>
@@ -103,6 +103,12 @@
                 <artifactId>serialization-json-moshi</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
+                <artifactId>serialization-json-fastjson</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--</editor-fold>-->
             <!--</editor-fold>-->
             <!--<editor-fold desc="catCode">-->
             <!-- catcode -->
@@ -197,11 +203,17 @@
                 <scope>test</scope>
             </dependency>
             <!--</editor-fold>-->
-            <!--<editor-fold desc="fastjson dependency">-->
+            <!--<editor-fold desc="json dependencies">-->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
+            </dependency>
+            <!-- moshi -->
+            <dependency>
+                <groupId>com.squareup.moshi</groupId>
+                <artifactId>moshi</artifactId>
+                <version>${moshi.version}</version>
             </dependency>
             <!--</editor-fold>-->
             <!--<editor-fold desc="hutool dependencies">-->
@@ -488,7 +500,7 @@
                             <include>modules.md</include>
                         </includes>
                         <!-- Set to true to skip dokka task, default: false -->
-<!--                        <skip>true</skip>-->
+                        <!--                        <skip>true</skip>-->
                         <!-- Used for linking to JDK, default: 6 -->
                         <jdkVersion>8</jdkVersion>
                         <!-- Do not create index pages for empty packages -->
@@ -590,7 +602,8 @@
                             <checkModificationExclude>JdonAccessory/jdon-hibernate3x/jdon-hibernate3x.iml
                             </checkModificationExclude>
                             <checkModificationExclude>JdonAccessory/jdon-jdbc/jdon-jdbc.iml</checkModificationExclude>
-                            <checkModificationExclude>JdonAccessory/jdon-remote/jdon-remote.iml</checkModificationExclude>
+                            <checkModificationExclude>JdonAccessory/jdon-remote/jdon-remote.iml
+                            </checkModificationExclude>
                             <checkModificationExclude>JdonAccessory/jdon-struts1x/jdon-struts1x.iml
                             </checkModificationExclude>
                         </checkModificationExcludes>

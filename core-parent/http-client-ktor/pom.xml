@@ -30,7 +30,7 @@
 
         <dependency>
             <groupId>love.forte.simple-robot</groupId>
-            <artifactId>serialization-json-moshi</artifactId>
+            <artifactId>serialization-json-fastjson</artifactId>
             <scope>test</scope>
             <optional>true</optional>
         </dependency>
