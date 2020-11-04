@@ -17,11 +17,11 @@ package love.forte.simbot.runtime
  *
  * 运行时参数接口。
  *
+ * 尚未实现。
+ *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
+@Deprecated("尚未实现。")
 public interface RunParameter {
-
-
-
 
 }
