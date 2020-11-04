@@ -86,12 +86,17 @@ public interface HttpTemplate {
 
     /**
      * 使用请求实例请求。
+     * 如果 [request.type][HttpRequest.type] 为 [get][HttpRequestType.GET] 或者 [form][HttpRequestType.FORM]，
+     * 则 [request.requestParam][HttpRequest.requestParam] 应该为 `Map<String, Any?>?` 类型实例。
      */
     fun <T> request(request: HttpRequest<T>): HttpResponse<T>
 
     /**
      * 请求多个，其中，如果 [HttpRequest.responseType] 为null，则其请求结果将不会出现返回值中。
-     * @param parallel 是否异步请求
+     *
+     * 如果[parallel] 为true，则应并行请求[requests]并按照顺序同步返回最终结果。如果为false，则按照顺序依次阻塞请求所有。
+     *
+     * @param parallel 是否异步请求。
      * @return 全部的响应结果，其顺序为 [requests] 中的顺序。
      */
     fun requestAll(parallel: Boolean, vararg requests: HttpRequest<*>): List<HttpResponse<*>>
@@ -102,6 +107,7 @@ public interface HttpTemplate {
 
 /**
  * http 的请求相应简易模型。
+ * 记得重写 [toString]
  */
 public interface HttpResponse<T> {
     /**
@@ -126,6 +132,11 @@ public interface HttpResponse<T> {
      * 如果响应出现错误等情况，则此处可能为响应的错误信息。
      */
     val message: String?
+
+    /**
+     * 需要重写toString
+     */
+    override fun toString(): String
 }
 
 
