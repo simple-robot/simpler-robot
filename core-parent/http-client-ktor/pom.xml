@@ -18,6 +18,12 @@
         </dependency>
 
         <dependency>
+            <groupId>love.forte.common</groupId>
+            <artifactId>ioc</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>love.forte.simple-robot</groupId>
             <artifactId>serialization-json-core</artifactId>
         </dependency>
