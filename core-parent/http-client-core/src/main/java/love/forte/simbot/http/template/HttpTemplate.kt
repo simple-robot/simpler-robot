@@ -39,20 +39,20 @@ public interface HttpTemplate {
      * @param headers 请求头信息。
      * @param requestParam 请求参数。
      */
-    fun <T> get(url: String, headers: HttpHeaders?, requestParam: Map<String, Any>?, responseType: Class<T>): HttpResponse<T>
+    fun <T> get(url: String, headers: HttpHeaders?, requestParam: Map<String, Any?>?, responseType: Class<T>): HttpResponse<T>
 
     /**
      * post/json 请求。
      * @param responseType 响应body封装类型。
      */
-    fun <T> postJson(url: String, responseType: Class<T>): HttpResponse<T>
+    fun <T> post(url: String, responseType: Class<T>): HttpResponse<T>
 
     /**
      * post/json 请求。
      * @param responseType 响应body封装类型。
      * @param headers 请求头信息。
      */
-    fun <T> postJson(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T>
+    fun <T> post(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T>
 
     /**
      * post/json 请求。
@@ -60,20 +60,20 @@ public interface HttpTemplate {
      * @param headers 请求头信息。
      * @param requestBody 请求参数，一个对象实例，或者一个json字符串。
      */
-    fun <T> postJson(url: String, headers: HttpHeaders?, requestBody: Any?, responseType: Class<T>): HttpResponse<T>
+    fun <T> post(url: String, headers: HttpHeaders?, requestBody: Any?, responseType: Class<T>): HttpResponse<T>
 
     /**
      * post/form 请求。
      * @param responseType 响应body封装类型。
      */
-    fun <T> postForm(url: String, responseType: Class<T>): HttpResponse<T>
+    fun <T> form(url: String, responseType: Class<T>): HttpResponse<T>
 
     /**
      * post/form 请求。
      * @param responseType 响应body封装类型。
      * @param headers 请求头信息。
      */
-    fun <T> postForm(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T>
+    fun <T> form(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T>
 
     /**
      * post/form 请求。
@@ -81,13 +81,13 @@ public interface HttpTemplate {
      * @param headers 请求头信息。
      * @param requestForm 请求参数，一个对象实例，此对象实例只会获取其中一层字段值作为表单提交，不会像json那样嵌套获取。如果字段对应的是一个其他的实例，则会直接获取其toString的值。
      */
-    fun <T> postForm(url: String, headers: HttpHeaders?, requestForm: Map<String, Any>?, responseType: Class<T>): HttpResponse<T>
+    fun <T> form(url: String, headers: HttpHeaders?, requestForm: Map<String, Any?>?, responseType: Class<T>): HttpResponse<T>
 
 
     /**
      * 使用请求实例请求。
      */
-    fun <T> request(request: HttpRequest<T>): HttpResponse<T?>
+    fun <T> request(request: HttpRequest<T>): HttpResponse<T>
 
     /**
      * 请求多个，其中，如果 [HttpRequest.responseType] 为null，则其请求结果将不会出现返回值中。

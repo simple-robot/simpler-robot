@@ -9,23 +9,30 @@
  * email  ForteScarlet@163.com
  * QQ     1149159218
  */
-
+@file:JvmName("KtorHttpTemplates")
 package love.forte.simbot.http.template.ktor
 
 import io.ktor.client.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
+import io.ktor.http.*
 import io.ktor.util.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import love.forte.simbot.http.template.*
 import love.forte.simbot.http.template.HttpHeaders
 import love.forte.simbot.http.template.HttpRequest
-import love.forte.simbot.http.template.HttpResponse
-import love.forte.simbot.http.template.HttpTemplate
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 import io.ktor.client.statement.HttpResponse as KtorHttpResponse
+
+
+
+private val APPLICATION_JSON = ContentType("application", "json")
+private val APPLICATION_FORM_URLENCODED = ContentType("application", "x-www-form-urlencoded")
+
 
 /**
  *
@@ -36,80 +43,165 @@ import io.ktor.client.statement.HttpResponse as KtorHttpResponse
 public class KtorHttpTemplate
 @JvmOverloads
 constructor(
-    private val httpClient: HttpClient = HttpClient(),
+    private val client: HttpClient = HttpClient() ,
     private val jsonSerializerFactory: JsonSerializerFactory
 ) : HttpTemplate {
 
 
-    /**
-     * ktor get请求。
-     */
-    override fun <T> get(url: String, responseType: Class<T>): HttpResponse<T> = runBlocking {
-        val response: KtorHttpResponse = httpClient.get(url)
-
-        if (responseType == String::class.java) {
-            KtorHttpResponseImpl(response) { it } as HttpResponse<T>
+    private fun <T> KtorHttpResponse.toResponse(responseType: Class<T>): HttpResponse<T> {
+        return if (responseType == String::class.java) {
+            KtorHttpResponseImpl(this) { it } as HttpResponse<T>
         } else {
             val jsonSerializer = jsonSerializerFactory.getJsonSerializer(responseType)
-            KtorHttpResponseImpl(response) { jsonSerializer.fromJson(it) }
+            KtorHttpResponseImpl(this) { jsonSerializer.fromJson(it) }
         }
     }
 
-    override fun <T> get(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T> {
-        println("no.")
-        TODO("Not yet implemented")
-    }
+    /**
+     * ktor get请求。
+     */
+    override fun <T> get(url: String, responseType: Class<T>): HttpResponse<T> =
+        get(url, null, null, responseType)
 
+    /**
+     * ktor get请求。
+     */
+    override fun <T> get(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T> =
+        get(url, headers, null, responseType)
+
+    /**
+     * ktor get请求。
+     */
     override fun <T> get(
         url: String,
         headers: HttpHeaders?,
-        requestParam: Map<String, Any>?,
+        requestParam: Map<String, Any?>?,
         responseType: Class<T>
-    ): HttpResponse<T> {
-        TODO("Not yet implemented")
+    ): HttpResponse<T> = runBlocking {
+        val response: KtorHttpResponse = client.get(url) {
+            headers?.forEach { (k, vs) ->
+                headers { appendAll(k, vs) }
+            }
+            requestParam?.forEach { (k, v) ->
+                parameter(k, v)
+            }
+        }
+
+        response.toResponse(responseType)
     }
 
-    override fun <T> postJson(url: String, responseType: Class<T>): HttpResponse<T> {
-        TODO("Not yet implemented")
-    }
 
-    override fun <T> postJson(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T> {
-        TODO("Not yet implemented")
-    }
+    override fun <T> post(url: String, responseType: Class<T>): HttpResponse<T> =
+        post(url, null, null, responseType)
 
-    override fun <T> postJson(
+    override fun <T> post(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T> =
+        post(url, headers, null, responseType)
+
+    override fun <T> post(
         url: String,
         headers: HttpHeaders?,
         requestBody: Any?,
         responseType: Class<T>
-    ): HttpResponse<T> {
-        TODO("Not yet implemented")
+    ): HttpResponse<T> = runBlocking {
+        val response: KtorHttpResponse = client.post(url) {
+            headers?.forEach { (k, vs) ->
+                headers { appendAll(k, vs) }
+            }
+            if (this.contentType() == null) {
+                this.contentType(APPLICATION_JSON)
+            }
+            requestBody?.let {
+                when (it) {
+                    is List<*> -> jsonSerializerFactory.getJsonSerializer<Any>(List::class.java)
+                    is Set<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Set::class.java)
+                    is Map<*, *> -> jsonSerializerFactory.getJsonSerializer<Any>(Map::class.java)
+                    is Collection<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Collection::class.java)
+                    else -> jsonSerializerFactory.getJsonSerializer(it.javaClass)
+                }?.apply {
+                    body = toJson(it)
+                }
+            }
+        }
+
+
+        response.toResponse(responseType)
     }
 
-    override fun <T> postForm(url: String, responseType: Class<T>): HttpResponse<T> {
-        TODO("Not yet implemented")
-    }
+    override fun <T> form(url: String, responseType: Class<T>): HttpResponse<T> =
+        form(url, null, null, responseType)
 
-    override fun <T> postForm(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T> {
-        TODO("Not yet implemented")
-    }
+    override fun <T> form(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T> =
+        form(url, headers, null, responseType)
 
-    override fun <T> postForm(
+    override fun <T> form(
         url: String,
         headers: HttpHeaders?,
-        requestForm: Map<String, Any>?,
+        requestForm: Map<String, Any?>?,
         responseType: Class<T>
-    ): HttpResponse<T> {
-        TODO("Not yet implemented")
+    ): HttpResponse<T> = runBlocking {
+        val response: KtorHttpResponse = client.submitForm(url) {
+            headers?.forEach { (k, vs) ->
+                headers { appendAll(k, vs) }
+            }
+            if (this.contentType() == null) {
+                this.contentType(APPLICATION_FORM_URLENCODED)
+            }
+            requestForm?.also {
+                formData {
+                    it.forEach { (k, v) ->
+                        v?.also { vIt ->
+                            this.append(FormPart(k, vIt))
+                        }
+
+                    }
+                }
+                // formData(*it.map { entry -> FormPart(entry.key, entry.value) }.toTypedArray())
+            }
+        }
+
+        response.toResponse(responseType)
     }
 
 
-    override fun <T> request(request: HttpRequest<T>): HttpResponse<T?> {
-        TODO("Not yet implemented")
+    /**
+     * 发送一个请求。
+     * @param request HttpRequest<T>
+     * @return HttpResponse<T> 响应体
+     */
+    override fun <T> request(request: HttpRequest<T>): HttpResponse<T> {
+        val url = request.url
+        val headers = request.headers
+        val params = request.requestParam
+        val responseType = request.responseType
+
+        return when(request.type) {
+            HttpRequestType.GET -> get(url, headers, params as? Map<String, Any?>, responseType)
+            HttpRequestType.FORM -> form(url, headers, params as? Map<String, Any?>, responseType)
+            HttpRequestType.POST -> post(url, headers, params, responseType)
+        }
     }
 
+    /**
+     * 请求多个请求
+     * @param parallel Boolean
+     * @param requests Array<out HttpRequest<*>>
+     * @return List<HttpResponse<*>>
+     */
     override fun requestAll(parallel: Boolean, vararg requests: HttpRequest<*>): List<HttpResponse<*>> {
-        TODO("Not yet implemented")
+        if (requests.isEmpty()) {
+            return emptyList()
+        }
+        // if (parallel) {
+        //     requests.map { request ->
+        //         when(request.type) {
+        //             HttpRequestType.GET -> get(url, headers, params as? Map<String, Any?>, responseType)
+        //             HttpRequestType.FORM -> form(url, headers, params as? Map<String, Any?>, responseType)
+        //             HttpRequestType.POST -> post(url, headers, params, responseType)
+        //         }
+        //     }
+        // }
+
+        TODO()
     }
 
 }

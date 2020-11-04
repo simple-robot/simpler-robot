@@ -47,7 +47,10 @@ public class MoshiJsonSerializerFactory(private val moshi: Moshi): JsonSerialize
     override fun <T : Any?> getJsonSerializer(type: Type): JsonSerializer<T> = moshi.adapter<T>(type).toJsonSerializer()
 
     /** 得到对应类型的json解析器。 */
-    override fun <T : Any?> getJsonSerializer(type: Class<T>): JsonSerializer<T> = moshi.adapter(type).toJsonSerializer()
+    override fun <T : Any?> getJsonSerializer(type: Class<T>): JsonSerializer<T> = when(type) {
+        // is List<*> -> getJsonSerializer(type.type)
+        else -> moshi.adapter(type).toJsonSerializer()
+    }
 }
 
 

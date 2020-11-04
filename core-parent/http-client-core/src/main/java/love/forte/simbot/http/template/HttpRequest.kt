@@ -33,7 +33,7 @@ public interface HttpRequest<T> {
      * 请求后的响应值类型。可以为null。
      * 如果为null则认为此请求的返回值将被忽略。
       */
-    val responseType: Class<T>?
+    val responseType: Class<T>
 
     /**
      * 请求头。可以为null。
@@ -42,7 +42,7 @@ public interface HttpRequest<T> {
 
     /**
      * 请求参数。
-     * 如果不是 `post/json` 类型，则此值需要为一个 `Map<String, Any>`。
+     * 如果不是 `post/json` 类型，则此值需要为一个 `Map<String, Any?>`。
      */
     val requestParam: Any?
 
@@ -53,9 +53,9 @@ public interface HttpRequest<T> {
  */
 public data class GetHttpRequest<T>(
     override val url: String,
-    override val responseType: Class<T>?,
+    override val responseType: Class<T>,
     override val headers: HttpHeaders?,
-    override val requestParam: Any?
+    override val requestParam: Map<String, Any?>?
 ): HttpRequest<T> {
     override val type: HttpRequestType
         get() = HttpRequestType.GET
@@ -67,7 +67,7 @@ public data class GetHttpRequest<T>(
  */
 public data class PostHttpRequest<T>(
     override val url: String,
-    override val responseType: Class<T>?,
+    override val responseType: Class<T>,
     override val headers: HttpHeaders?,
     override val requestParam: Any?
 ): HttpRequest<T> {
@@ -75,15 +75,18 @@ public data class PostHttpRequest<T>(
         get() = HttpRequestType.POST
 }
 
-
-
-
-
-
-
-
-
-
+/**
+ * post 类型的请求。
+ */
+public data class FormHttpRequest<T>(
+    override val url: String,
+    override val responseType: Class<T>,
+    override val headers: HttpHeaders?,
+    override val requestParam: Map<String, Any?>?
+): HttpRequest<T> {
+    override val type: HttpRequestType
+        get() = HttpRequestType.POST
+}
 
 
 
@@ -91,5 +94,5 @@ public data class PostHttpRequest<T>(
  * 请求类型。
  */
 public enum class HttpRequestType {
-    GET, POST
+    GET, POST, FORM
 }
