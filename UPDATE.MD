@@ -12,5 +12,6 @@ first alpha version.
 - [serialization-json-fastjson](./core-parent/serialization-json-fastjson)
 - [serialization-json-moshi](./core-parent/serialization-json-moshi)
 
-追加 [Spring-boot-starter](./spring-boot-starter) 模块。
+追加 [Spring-boot-starter](./spring-boot-starter) 模块及其子模块：
+- [core-Spring-boot-starter](./spring-boot-starter/core-spring-boot-starter) 模块
 
