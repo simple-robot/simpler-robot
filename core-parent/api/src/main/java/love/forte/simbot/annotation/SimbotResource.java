@@ -12,7 +12,7 @@
 
 package love.forte.simbot.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
 
 /**
  *

@@ -13,7 +13,6 @@
 package love.forte.simbot.annotation;
 
 import love.forte.simbot.constant.PriorityConstant;
-import love.forte.simbot.constant.PriorityConstant;
 
 import java.lang.annotation.*;
 

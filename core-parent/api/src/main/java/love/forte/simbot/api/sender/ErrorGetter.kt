@@ -13,8 +13,8 @@
 @file:JvmName("ErrorGetterFactories")
 package love.forte.simbot.api.sender
 
-import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.containers.BotContainer
+import love.forte.simbot.api.message.events.MsgGet
 
 
 /**

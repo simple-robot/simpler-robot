@@ -16,8 +16,8 @@ import love.forte.common.ioc.DependBeanFactory
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.core.intercept.CoreListenerInterceptChainFactory
-import love.forte.simbot.core.intercept.CoreMsgInterceptChainFactory
 import love.forte.simbot.core.intercept.CoreListenerInterceptContextFactory
+import love.forte.simbot.core.intercept.CoreMsgInterceptChainFactory
 import love.forte.simbot.core.intercept.CoreMsgInterceptContextFactory
 import love.forte.simbot.listener.ListenerInterceptChainFactory
 import love.forte.simbot.listener.ListenerInterceptContextFactory

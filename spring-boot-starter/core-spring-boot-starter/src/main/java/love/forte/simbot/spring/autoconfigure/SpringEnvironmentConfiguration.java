@@ -14,7 +14,7 @@ package love.forte.simbot.spring.autoconfigure;
 
 import love.forte.common.configuration.Configuration;
 import love.forte.common.configuration.ConfigurationProperty;
-import org.springframework.beans.factory.annotation.Autowired;
+import love.forte.common.utils.convert.ConverterManager;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
@@ -29,19 +29,20 @@ import java.util.Map;
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
-@org.springframework.context.annotation.Configuration
 public class SpringEnvironmentConfiguration implements Configuration {
 
     private final ConfigurableEnvironment environment;
 
-    @Autowired
-    public SpringEnvironmentConfiguration(ConfigurableEnvironment environment) {
+    private final ConverterManager converterManager;
+
+    public SpringEnvironmentConfiguration(ConfigurableEnvironment environment, ConverterManager converterManager) {
         this.environment = environment;
+        this.converterManager = converterManager;
     }
 
     @Override
     public ConfigurationProperty getConfig(String key) {
-        return new SpringConfigurationProperty(key);
+        return containsConfig(key) ? new SpringConfigurationProperty(key) : null;
     }
 
     @Override
@@ -94,11 +95,8 @@ public class SpringEnvironmentConfiguration implements Configuration {
 
         @Override
         public <T> T getObject(Type type) {
-            if (type instanceof Class) {
-                return environment.getProperty(key, (Class<T>) type);
-            } else {
-                throw new IllegalArgumentException("spring config property Cannot get value result by Type: " + type);
-            }
+            String property = environment.getProperty(key);
+            return converterManager.convert(type, property);
         }
 
         @Override

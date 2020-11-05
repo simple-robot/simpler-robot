@@ -13,6 +13,8 @@
 package love.forte.simbot.intercept
 
 import love.forte.simbot.constant.PriorityConstant
+import love.forte.simbot.intercept.InterceptionType.BLOCK
+import love.forte.simbot.intercept.InterceptionType.INTERCEPT
 
 
 /**

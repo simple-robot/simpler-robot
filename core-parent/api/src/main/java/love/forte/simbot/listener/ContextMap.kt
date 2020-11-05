@@ -12,8 +12,6 @@
 
 package love.forte.simbot.listener
 
-import java.util.concurrent.ConcurrentHashMap
-
 public interface ContextMap {
 
     /**

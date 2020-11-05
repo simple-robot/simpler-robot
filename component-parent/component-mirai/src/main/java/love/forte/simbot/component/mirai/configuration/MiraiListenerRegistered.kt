@@ -19,7 +19,7 @@ import kotlinx.coroutines.runBlocking
 import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.component.mirai.utils.registerSimbotEvents
-import love.forte.simbot.core.CompLogger
+import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.listener.ListenerManager
 import love.forte.simbot.listener.ListenerRegistered
 import love.forte.simbot.listener.MsgGetProcessor
@@ -32,7 +32,7 @@ import net.mamoe.mirai.closeAndJoin
  */
 @Beans
 public class MiraiListenerRegistered : ListenerRegistered {
-    private companion object : CompLogger("ListenerRegistered")
+    private companion object : TypedCompLogger(MiraiListenerRegistered::class.java)
 
     @Depend
     lateinit var msgGetProcessor: MsgGetProcessor

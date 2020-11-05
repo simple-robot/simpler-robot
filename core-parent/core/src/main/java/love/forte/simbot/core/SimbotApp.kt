@@ -153,13 +153,6 @@ protected constructor(
         }
 
 
-        // val appConfig = appConfiguration
-
-        // load all auto config.
-        val autoConfigures = initDependCenterWithAutoConfigures()
-        // init with run data.
-        initDependCenterWithRunData()
-
         // load configs.
         val config = loadResourcesToConfiguration().let {
             if (defaultConfiguration != null) MergedConfiguration.merged(defaultConfiguration, it)
@@ -168,14 +161,19 @@ protected constructor(
         // process pre config.
         process.pre(config)
 
+        // load all auto config.
+        val autoConfigures = initDependCenterWithAutoConfigures()
+        // init with run data.
+        initDependCenterWithRunData()
+
         // val hi = config.getConfig("simbot.core.init")?.string ?: "hello!!!!!!!!!!!!!!!~"
         // println(hi)
 
         // merge depend center config.
-        dependCenter.mergeConfig { c -> MergedConfiguration.merged(c, config) }
+        // dependCenter.mergeConfig { c -> MergedConfiguration.merged(c, config) }
 
         // scan and inject.
-        scanPackagesAndInject(config, autoConfigures)
+        scanPackagesAndInject(dependCenter.configuration, autoConfigures)
 
         // init depend.
         initDependCenter()
@@ -195,7 +193,11 @@ protected constructor(
         // 首先扫描并加载所有默认配置信息。
         val autoConfigures = autoConfigures(loader)
 
-        dependCenter = DependCenter(parent = parentDependBeanFactory)
+        dependCenter = if (defaultConfiguration != null) {
+            DependCenter(parent = parentDependBeanFactory, configuration = defaultConfiguration)
+        } else {
+            DependCenter(parent = parentDependBeanFactory)
+        }
 
         // 加载所有的自动配置类
         autoConfigures.forEach {

@@ -16,7 +16,6 @@ import love.forte.common.ioc.annotation.Beans;
 import love.forte.common.ioc.annotation.Depend;
 import love.forte.common.utils.annotation.AnnotateMapping;
 import love.forte.simbot.constant.PriorityConstant;
-import love.forte.simbot.constant.PriorityConstant;
 
 import java.lang.annotation.*;
 

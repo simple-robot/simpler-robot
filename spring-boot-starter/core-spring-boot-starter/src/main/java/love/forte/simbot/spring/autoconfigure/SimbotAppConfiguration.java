@@ -12,21 +12,25 @@
 
 package love.forte.simbot.spring.autoconfigure;
 
+import cn.hutool.core.convert.ConverterRegistry;
+import love.forte.common.utils.convert.ConverterManager;
+import love.forte.common.utils.convert.HutoolConverterManagerImpl;
 import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.annotation.SimbotResource;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.ConfigurableEnvironment;
 
 /**
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Configuration
 @Import({
-        SpringEnvironmentConfiguration.class,
         SimbotAppProperties.class,
         SpringDependBeanFactory.class
 })
@@ -35,21 +39,28 @@ import org.springframework.context.annotation.Import;
 })
 public class SimbotAppConfiguration {
 
-    private final SpringEnvironmentConfiguration springEnvironmentConfiguration;
     private final SimbotAppProperties simbotAppProperties;
     private final SpringDependBeanFactory springDependBeanFactory;
     private final ApplicationArguments applicationArguments;
 
 
-    public SimbotAppConfiguration(SpringEnvironmentConfiguration springEnvironmentConfiguration, SimbotAppProperties simbotAppProperties, SpringDependBeanFactory springDependBeanFactory, ApplicationArguments applicationArguments) {
-        this.springEnvironmentConfiguration = springEnvironmentConfiguration;
+    public SimbotAppConfiguration(SimbotAppProperties simbotAppProperties, SpringDependBeanFactory springDependBeanFactory, ApplicationArguments applicationArguments) {
         this.simbotAppProperties = simbotAppProperties;
         this.springDependBeanFactory = springDependBeanFactory;
         this.applicationArguments = applicationArguments;
     }
 
+    /**
+     * simbot configuration 类型转化器。
+     */
     @Bean
-    public SimbotContext simbotApp() {
+    @ConditionalOnMissingBean(ConverterManager.class)
+    public ConverterManager converterManager(){
+        return new HutoolConverterManagerImpl(ConverterRegistry.getInstance());
+    }
+
+    @Bean("simbotContext")
+    public SimbotContext simbotApp(ConfigurableEnvironment environment, ConverterManager converterManager) {
         Class<?> applicationClass = simbotAppProperties.getAppClass();
         if (applicationClass == null) {
             applicationClass = SimbotAppConfiguration.class;
@@ -60,6 +71,10 @@ public class SimbotAppConfiguration {
         if (loader == null) {
             loader = ClassLoader.getSystemClassLoader();
         }
+
+
+        SpringEnvironmentConfiguration springEnvironmentConfiguration = new SpringEnvironmentConfiguration(environment, converterManager);
+
         // run simbot app.
         return SimbotApp.run(applicationClass, loader, springDependBeanFactory, springEnvironmentConfiguration, sourceArgs);
     }

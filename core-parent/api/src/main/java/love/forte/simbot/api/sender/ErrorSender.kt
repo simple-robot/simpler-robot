@@ -14,8 +14,8 @@
 
 package love.forte.simbot.api.sender
 
-import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.containers.BotContainer
+import love.forte.simbot.api.message.events.MsgGet
 
 /**
  * [Sender] 的 无效化实现，所有的方法均会抛出异常。

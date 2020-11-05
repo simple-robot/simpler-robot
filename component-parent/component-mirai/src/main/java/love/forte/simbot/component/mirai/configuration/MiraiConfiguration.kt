@@ -40,7 +40,7 @@ public class MiraiConfiguration {
      * mirai心跳周期. 过长会导致被服务器断开连接. 单位毫秒
      * @see BotConfiguration.heartbeatPeriodMillis
      */
-    @field:ConfigInject("mirai.heartbeatPeriodMillis")
+    @field:ConfigInject("mirai.heartbeatPeriodMillis", orIgnore = true)
     var heartbeatPeriodMillis: Long = BotConfiguration.Default.heartbeatPeriodMillis
 
     /**
@@ -48,54 +48,54 @@ public class MiraiConfiguration {
      * 一旦心跳超时, 整个网络服务将会重启 (将消耗约 1s). 除正在进行的任务 (如图片上传) 会被中断外, 事件和插件均不受影响.
      * @see BotConfiguration.heartbeatTimeoutMillis
      */
-    @field:ConfigInject("mirai.heartbeatTimeoutMillis")
+    @field:ConfigInject("mirai.heartbeatTimeoutMillis", orIgnore = true)
     var heartbeatTimeoutMillis: Long = BotConfiguration.Default.heartbeatTimeoutMillis
 
     /** 心跳失败后的第一次重连前的等待时间. */
-    @field:ConfigInject("mirai.firstReconnectDelayMillis")
+    @field:ConfigInject("mirai.firstReconnectDelayMillis", orIgnore = true)
     var firstReconnectDelayMillis: Long = BotConfiguration.Default.firstReconnectDelayMillis
 
     /** 重连失败后, 继续尝试的每次等待时间 */
-    @field:ConfigInject("mirai.reconnectPeriodMillis")
+    @field:ConfigInject("mirai.reconnectPeriodMillis", orIgnore = true)
     var reconnectPeriodMillis: Long = BotConfiguration.Default.reconnectPeriodMillis
 
     /** 最多尝试多少次重连 */
-    @field:ConfigInject("mirai.reconnectionRetryTimes")
+    @field:ConfigInject("mirai.reconnectionRetryTimes", orIgnore = true)
     var reconnectionRetryTimes: Int = BotConfiguration.Default.reconnectionRetryTimes
 
 
     /** 使用协议类型 */
-    @field:ConfigInject("mirai.protocol")
+    @field:ConfigInject("mirai.protocol", orIgnore = true)
     var protocol: BotConfiguration.MiraiProtocol = BotConfiguration.Default.protocol
 
     /** 关闭mirai的bot logger */
-    @field:ConfigInject("mirai.noBotLog")
+    @field:ConfigInject("mirai.noBotLog", orIgnore = true)
     var noBotLog: Boolean = false
 
     /** 关闭mirai网络日志 */
-    @field:ConfigInject("mirai.noNetworkLog")
+    @field:ConfigInject("mirai.noNetworkLog", orIgnore = true)
     var noNetworkLog: Boolean = false
 
     /** mirai bot log切换使用simbot的log */
-    @field:ConfigInject("mirai.useSimbotBotLog")
+    @field:ConfigInject("mirai.useSimbotBotLog", orIgnore = true)
     var useSimbotBotLog: Boolean = true
 
     /** mirai 网络log 切换使用simbot的log */
-    @field:ConfigInject("mirai.useSimbotNetworkLog")
+    @field:ConfigInject("mirai.useSimbotNetworkLog", orIgnore = true)
     var useSimbotNetworkLog: Boolean = true
 
     /** mirai配置自定义deviceInfoSeed的时候使用的随机种子。默认为1.  */
-    @field:ConfigInject("mirai.deviceInfoSeed")
+    @field:ConfigInject("mirai.deviceInfoSeed", orIgnore = true)
     var deviceInfoSeed: Long = 1L
 
 
     // @field:ConfigInject("mirai.autoRelogin")
     // var autoRelogin: Boolean = false
 
-    @field:ConfigInject("mirai.cacheType")
+    @field:ConfigInject("mirai.cacheType", orIgnore = true)
     var cacheType: MiraiCacheType = MiraiCacheType.FILE
 
-    @field:ConfigInject("mirai.cacheDirectory")
+    @field:ConfigInject("mirai.cacheDirectory", orIgnore = true)
     var cacheDirectory: String? = null
 
 

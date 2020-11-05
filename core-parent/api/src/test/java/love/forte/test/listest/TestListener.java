@@ -5,8 +5,8 @@ import love.forte.simbot.annotation.Listen;
 import love.forte.simbot.annotation.Listens;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.annotation.OnPrivate;
-import love.forte.simbot.api.message.events.MsgGet;
 import love.forte.simbot.api.message.events.GroupMsg;
+import love.forte.simbot.api.message.events.MsgGet;
 import love.forte.simbot.api.message.events.PrivateMsg;
 import love.forte.simbot.constant.PriorityConstant;
 

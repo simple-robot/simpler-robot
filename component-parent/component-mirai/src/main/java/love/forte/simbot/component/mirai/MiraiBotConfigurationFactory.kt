@@ -12,13 +12,9 @@
 
 package love.forte.simbot.component.mirai
 
-import cn.hutool.crypto.SecureUtil
-import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
 import love.forte.simbot.bot.BotRegisterInfo
+import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
 import net.mamoe.mirai.utils.BotConfiguration
-import net.mamoe.mirai.utils.SystemDeviceInfo
-import kotlin.random.Random
-import kotlin.random.nextInt
 
 /**
  * 用于获取一个根据bot对应的 [BotConfiguration] 实例。

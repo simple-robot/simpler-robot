@@ -13,10 +13,10 @@
 package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
-import love.forte.simbot.listener.ContextMapFactory
 import love.forte.simbot.core.listener.CoreContextMapFactory
-import love.forte.simbot.listener.ListenerContextFactory
 import love.forte.simbot.core.listener.ListenerContextFactoryImpl
+import love.forte.simbot.listener.ContextMapFactory
+import love.forte.simbot.listener.ListenerContextFactory
 
 
 /**

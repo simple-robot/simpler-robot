@@ -28,7 +28,7 @@ import love.forte.simbot.component.mirai.message.MiraiMessageFlag
 import love.forte.simbot.component.mirai.message.event.MiraiBotInvitedJoinRequestFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiFriendRequestFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiGroupMemberJoinRequestFlagContent
-import love.forte.simbot.core.CompLogger
+import love.forte.simbot.core.TypedCompLogger
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.mute
 import java.util.concurrent.TimeUnit
@@ -46,7 +46,7 @@ public object MiraiSetterFactory : SetterFactory {
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public class MiraiSetter(private val bot: Bot) : Setter {
-    private companion object : CompLogger("MiraiSetter") {
+    private companion object : TypedCompLogger(MiraiSetter::class.java) {
         private val setGroupAnonymous0Logger: Int by lazy(LazyThreadSafetyMode.NONE) {
             logger.warn("It is not supported to modify the anonymous chat status, only to return to the current status. This warning will only appear once.")
             0

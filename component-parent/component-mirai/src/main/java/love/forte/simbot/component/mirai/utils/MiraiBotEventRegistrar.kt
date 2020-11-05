@@ -15,8 +15,6 @@
 package love.forte.simbot.component.mirai.utils
 
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.component.mirai.message.event.MiraiBotPermissionChanged
-import love.forte.simbot.component.mirai.message.event.MiraiMemberPermissionChanged
 import love.forte.simbot.component.mirai.message.event.*
 import love.forte.simbot.listener.MsgGetProcessor
 import net.mamoe.mirai.Bot
@@ -28,11 +26,7 @@ import net.mamoe.mirai.event.subscribeAlways
 import net.mamoe.mirai.message.FriendMessageEvent
 import net.mamoe.mirai.message.GroupMessageEvent
 import net.mamoe.mirai.message.TempMessageEvent
-import net.mamoe.mirai.qqandroid.network.Packet
-import net.mamoe.mirai.utils.MiraiExperimentalAPI
-import net.mamoe.mirai.utils.MiraiInternalAPI
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
-import net.mamoe.mirai.utils.SinceMirai
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

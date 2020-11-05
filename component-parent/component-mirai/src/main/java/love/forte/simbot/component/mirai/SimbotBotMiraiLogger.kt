@@ -17,7 +17,6 @@
 
 package love.forte.simbot.component.mirai
 
-import net.mamoe.mirai.Bot
 import net.mamoe.mirai.utils.MiraiLoggerPlatformBase
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

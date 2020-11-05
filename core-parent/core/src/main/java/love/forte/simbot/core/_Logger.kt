@@ -16,8 +16,12 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 
-public abstract class CompLogger(name: String) {
+public abstract class NamedCompLogger(name: String) {
     val logger: Logger = LoggerFactory.getLogger(name)
+}
+
+public abstract class TypedCompLogger(type: Class<*>) {
+    val logger: Logger = LoggerFactory.getLogger(type)
 }
 
 

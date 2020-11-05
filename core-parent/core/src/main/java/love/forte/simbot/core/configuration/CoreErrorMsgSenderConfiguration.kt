@@ -14,7 +14,6 @@ package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.simbot.api.sender.*
-import love.forte.simbot.api.sender.ErrorSenderFactory
 import love.forte.simbot.constant.PriorityConstant
 
 /**

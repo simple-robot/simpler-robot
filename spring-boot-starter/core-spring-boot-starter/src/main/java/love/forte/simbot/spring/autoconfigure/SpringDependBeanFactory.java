@@ -130,6 +130,10 @@ public class SpringDependBeanFactory implements DependBeanFactory {
 
     @Override
     public Class<?> getType(String name) {
-        return beanFactory.getType(name);
+        try {
+            return beanFactory.getType(name);
+        } catch (NoSuchBeanDefinitionException e) {
+             return null;
+        }
     }
 }

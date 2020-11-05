@@ -24,6 +24,13 @@
         <dependency>
             <groupId>love.forte.simple-robot</groupId>
             <artifactId>core</artifactId>
+            <exclusions>
+                <!-- exclusion log. -->
+                <exclusion>
+                    <groupId>love.forte.common</groupId>
+                    <artifactId>log</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

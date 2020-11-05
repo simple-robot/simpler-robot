@@ -12,9 +12,9 @@
 
 package love.forte.simbot.component.mirai.message.result
 
-import love.forte.simbot.component.mirai.message.MiraiFriendAccountInfo
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.results.FriendInfo
+import love.forte.simbot.component.mirai.message.MiraiFriendAccountInfo
 import net.mamoe.mirai.contact.Friend
 
 /**

@@ -110,6 +110,21 @@
                 <version>${project.version}</version>
             </dependency>
             <!--</editor-fold>-->
+
+            <!--<editor-fold desc="spring-boot-starter">-->
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
+                <artifactId>core-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!--</editor-fold>-->
+
             <!--</editor-fold>-->
             <!--<editor-fold desc="catCode">-->
             <!-- catcode -->
@@ -493,7 +508,7 @@
                     <version>${dokka.version}</version>
                     <executions>
                         <execution>
-                            <phase>install</phase>
+                            <phase>pre-site</phase>
                             <goals>
                                 <!--<goal>dokka</goal>-->
                                 <!--<goal>javadoc</goal>-->

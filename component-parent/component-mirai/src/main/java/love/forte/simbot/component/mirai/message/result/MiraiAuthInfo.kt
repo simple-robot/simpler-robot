@@ -12,8 +12,8 @@
 
 package love.forte.simbot.component.mirai.message.result
 
-import love.forte.simbot.component.mirai.sender.Cookies
 import love.forte.simbot.api.message.results.AuthInfo
+import love.forte.simbot.component.mirai.sender.Cookies
 
 /**
  * mirai权限信息

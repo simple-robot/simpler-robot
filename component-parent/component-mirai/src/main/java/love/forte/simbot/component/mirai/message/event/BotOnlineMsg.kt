@@ -18,7 +18,6 @@ import kotlinx.coroutines.runBlocking
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.events.EventGet
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
-import net.mamoe.mirai.Bot
 import net.mamoe.mirai.event.events.BotOfflineEvent
 import net.mamoe.mirai.event.events.BotReloginEvent
 

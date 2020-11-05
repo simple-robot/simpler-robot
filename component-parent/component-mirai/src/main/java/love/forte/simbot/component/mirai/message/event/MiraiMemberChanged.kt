@@ -18,7 +18,6 @@ import love.forte.simbot.api.message.events.GroupMemberReduce
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
 import love.forte.simbot.component.mirai.message.result.MiraiGroupInfo
-import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.event.events.*
 
 

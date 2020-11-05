@@ -16,15 +16,15 @@ import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.PostPass
-import love.forte.simbot.core.CompLogger
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.bot.BotRegisterInfo
+import love.forte.simbot.core.TypedCompLogger
 
 
 @ConfigBeans
 @AsCoreConfig
 public class CoreBotRegistrar {
-    private companion object : CompLogger("BotRegistrarConfiguration")
+    private companion object : TypedCompLogger(CoreBotRegistrar::class.java)
 
     /**
      * bot manager.

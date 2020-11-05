@@ -12,7 +12,6 @@
 
 package love.forte.simbot.bot
 
-import love.forte.catcode.CatDecoder
 import love.forte.simbot.api.message.containers.BotCodeContainer
 import love.forte.simbot.api.message.containers.BotContainer
 
