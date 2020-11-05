@@ -38,7 +38,7 @@ public class SimbotBotMiraiLogger(botCode: Long) : MiraiLoggerPlatformBase() {
      *
      * 它只用于帮助调试或统计. 十分建议清晰定义 identity
      */
-    override val identity: String = "Simbot-Mirai-$botCode"
+    override val identity: String = "${SimbotBotMiraiLogger::class.java.name}-$botCode"
 
     private val logger: Logger = LoggerFactory.getLogger(identity)
 

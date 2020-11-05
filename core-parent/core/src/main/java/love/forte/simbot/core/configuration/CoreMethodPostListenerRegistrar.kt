@@ -78,7 +78,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
         }.forEach {
             registrar.register(it)
             logger.debug(
-                "register listener: [{0}] for {1}, id={2}",
+                "register listener: [{}] for {}, id={}",
                 it.name,
                 it.listenTypes.joinToString(", ", "[", "]") { t -> t.simpleName },
                 it.id
