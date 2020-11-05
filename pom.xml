@@ -11,6 +11,7 @@
     <modules>
         <module>core-parent</module>
         <module>component-parent</module>
+        <module>spring-boot-starter</module>
     </modules>
 
     <url>https://github.com/ForteScarlet/simpler-robot</url>
