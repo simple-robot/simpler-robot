@@ -47,7 +47,7 @@
         <fastjson.version>1.2.74</fastjson.version>
         <hutool.version>5.4.6</hutool.version>
 
-        <commons.version>1.0.0-ALPHA.3</commons.version>
+        <commons.version>1.0.0-ALPHA.4</commons.version>
         <catCode.version>1.0.0-ALPHA.2</catCode.version>
 
         <!-- plugins -->
@@ -384,6 +384,14 @@
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <excludes>
+                            <exclude>
+                                <groupId>org.springframework.boot</groupId>
+                                <artifactId>spring-boot-configuration-processor</artifactId>
+                            </exclude>
+                        </excludes>
+                    </configuration>
                 </plugin>
                 <!--<plugin>-->
                 <!--    <groupId>org.apache.maven.plugins</groupId>-->
