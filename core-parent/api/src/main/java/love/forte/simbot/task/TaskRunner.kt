@@ -10,7 +10,7 @@
  * QQ     1149159218
  */
 
-package love.forte.simbot.async
+package love.forte.simbot.task
 
 import java.util.concurrent.Callable
 import java.util.concurrent.TimeoutException
@@ -71,7 +71,7 @@ public interface Task<out V> {
     fun isDone(): Boolean
 
     /**
-     * 等待异步任务执行结束并获取其结果。
+     * 等待任务执行结束并获取其结果。
      */
     @Throws(Exception::class)
     fun await(): V

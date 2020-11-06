@@ -17,7 +17,10 @@
     <url>https://github.com/ForteScarlet/simpler-robot</url>
     <scm>
         <url>https://github.com/ForteScarlet/simpler-robot</url>
+        <tag>simbot</tag>
     </scm>
+
+
 
     <name>simpler-robot</name>
     <description>simple-robot是一个通用bot开发框架，以同一种灵活的标准来编写不同平台的bot应用。而simpler-robot便是simple-robot 2.x版本命名。</description>
@@ -45,7 +48,7 @@
 
         <!-- some version -->
         <fastjson.version>1.2.74</fastjson.version>
-        <hutool.version>5.4.6</hutool.version>
+        <hutool.version>5.4.7</hutool.version>
 
         <commons.version>1.0.0-ALPHA.4</commons.version>
         <catCode.version>1.0.0-ALPHA.2</catCode.version>
@@ -685,7 +688,11 @@
     <developers>
         <developer>
             <roles>
-                <role>a single programmer</role>
+                <role>Project manager</role>
+                <role>Architect</role>
+                <role>Developer</role>
+                <role>Cleaner</role>
+                <role>Mascot</role>
             </roles>
             <name>ForteScarlet</name>
             <email>ForteScarlet@163.com</email>

@@ -8,3 +8,4 @@ public interface Test<T> {
     T get();
 
 }
+

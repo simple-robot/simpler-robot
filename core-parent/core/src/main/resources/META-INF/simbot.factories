@@ -17,4 +17,6 @@ simbot.autoconfigure.configs=\
   love.forte.simbot.core.configuration.CoreBotRegistrar,\
   love.forte.simbot.core.configuration.CoreCatConfiguration,\
   love.forte.simbot.core.configuration.CoreBotsCoderConfiguration,\
-  love.forte.simbot.core.configuration.CoreListenerRegistrar
+  love.forte.simbot.core.configuration.CoreListenerRegistrar,\
+  love.forte.simbot.core.configuration.ExecutorServiceProperties,\
+  love.forte.simbot.core.configuration.TaskRunnerConfiguration
