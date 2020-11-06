@@ -17,6 +17,7 @@ package love.forte.simbot.core
 import love.forte.common.configuration.Configuration
 import love.forte.common.configuration.ConfigurationManagerRegistry
 import love.forte.common.configuration.ConfigurationParserManager
+import love.forte.common.configuration.impl.LinkedMapConfiguration
 import love.forte.common.configuration.impl.MergedConfiguration
 import love.forte.common.exception.ResourceException
 import love.forte.common.ifOr
@@ -247,9 +248,9 @@ protected constructor(
                 val type: String = resourceData.type
                 confReaderManager.parse(type, it)
             }
-        }.reduce { c1, c2 ->
+        }.reduceOrNull { c1, c2 ->
             MergedConfiguration.merged(c1, c2)
-        }
+        } ?: LinkedMapConfiguration()
     }
 
 

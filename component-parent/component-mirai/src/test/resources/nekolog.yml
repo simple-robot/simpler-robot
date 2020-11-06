@@ -1,0 +1,4 @@
+nekolog:
+  level: DEBUG
+  enableThread: false
+  enableStack: true
