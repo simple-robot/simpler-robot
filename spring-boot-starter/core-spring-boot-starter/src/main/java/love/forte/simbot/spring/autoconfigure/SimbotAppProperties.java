@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 public class SimbotAppProperties {
     /**
      * 启动类路径。
+     * 此参数仅存在于Springboot-starter中。
      */
     private Class<?> appClass;
 }

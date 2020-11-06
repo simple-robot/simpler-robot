@@ -20,7 +20,6 @@ package love.forte.simbot.component.mirai.configuration
 import cn.hutool.crypto.SecureUtil
 import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.Beans
-import love.forte.simbot.annotation.AsSimbotConfig
 import love.forte.simbot.component.mirai.SimbotMiraiLogger
 import net.mamoe.mirai.utils.*
 import java.io.File
@@ -33,14 +32,14 @@ import kotlin.random.nextInt
  *
  */
 @Beans
-@AsSimbotConfig
+@AsMiraiConfig
 public class MiraiConfiguration {
 
     /**
      * mirai心跳周期. 过长会导致被服务器断开连接. 单位毫秒
      * @see BotConfiguration.heartbeatPeriodMillis
      */
-    @field:ConfigInject("mirai.heartbeatPeriodMillis", orIgnore = true)
+    @field:ConfigInject
     var heartbeatPeriodMillis: Long = BotConfiguration.Default.heartbeatPeriodMillis
 
     /**
@@ -48,54 +47,54 @@ public class MiraiConfiguration {
      * 一旦心跳超时, 整个网络服务将会重启 (将消耗约 1s). 除正在进行的任务 (如图片上传) 会被中断外, 事件和插件均不受影响.
      * @see BotConfiguration.heartbeatTimeoutMillis
      */
-    @field:ConfigInject("mirai.heartbeatTimeoutMillis", orIgnore = true)
+    @field:ConfigInject
     var heartbeatTimeoutMillis: Long = BotConfiguration.Default.heartbeatTimeoutMillis
 
     /** 心跳失败后的第一次重连前的等待时间. */
-    @field:ConfigInject("mirai.firstReconnectDelayMillis", orIgnore = true)
+    @field:ConfigInject
     var firstReconnectDelayMillis: Long = BotConfiguration.Default.firstReconnectDelayMillis
 
     /** 重连失败后, 继续尝试的每次等待时间 */
-    @field:ConfigInject("mirai.reconnectPeriodMillis", orIgnore = true)
+    @field:ConfigInject
     var reconnectPeriodMillis: Long = BotConfiguration.Default.reconnectPeriodMillis
 
     /** 最多尝试多少次重连 */
-    @field:ConfigInject("mirai.reconnectionRetryTimes", orIgnore = true)
+    @field:ConfigInject
     var reconnectionRetryTimes: Int = BotConfiguration.Default.reconnectionRetryTimes
 
 
     /** 使用协议类型 */
-    @field:ConfigInject("mirai.protocol", orIgnore = true)
+    @field:ConfigInject
     var protocol: BotConfiguration.MiraiProtocol = BotConfiguration.Default.protocol
 
     /** 关闭mirai的bot logger */
-    @field:ConfigInject("mirai.noBotLog", orIgnore = true)
+    @field:ConfigInject
     var noBotLog: Boolean = false
 
     /** 关闭mirai网络日志 */
-    @field:ConfigInject("mirai.noNetworkLog", orIgnore = true)
+    @field:ConfigInject
     var noNetworkLog: Boolean = false
 
     /** mirai bot log切换使用simbot的log */
-    @field:ConfigInject("mirai.useSimbotBotLog", orIgnore = true)
+    @field:ConfigInject
     var useSimbotBotLog: Boolean = true
 
     /** mirai 网络log 切换使用simbot的log */
-    @field:ConfigInject("mirai.useSimbotNetworkLog", orIgnore = true)
+    @field:ConfigInject
     var useSimbotNetworkLog: Boolean = true
 
     /** mirai配置自定义deviceInfoSeed的时候使用的随机种子。默认为1.  */
-    @field:ConfigInject("mirai.deviceInfoSeed", orIgnore = true)
+    @field:ConfigInject
     var deviceInfoSeed: Long = 1L
 
 
     // @field:ConfigInject("mirai.autoRelogin")
     // var autoRelogin: Boolean = false
 
-    @field:ConfigInject("mirai.cacheType", orIgnore = true)
+    @field:ConfigInject
     var cacheType: MiraiCacheType = MiraiCacheType.FILE
 
-    @field:ConfigInject("mirai.cacheDirectory", orIgnore = true)
+    @field:ConfigInject
     var cacheDirectory: String? = null
 
 

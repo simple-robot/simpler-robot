@@ -14,6 +14,7 @@
 
     <modules>
         <module>core-spring-boot-starter</module>
+        <module>component-mirai-spring-boot-starter</module>
     </modules>
 
 

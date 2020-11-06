@@ -34,9 +34,9 @@ public class SimbotCoreConfigurationProperties {
     /**
      * 注册的bot列表信息。
      * 其格式为 xxxx:yyyy,xxxx:yyyy 。
-     * 其中，xxxx一般代表为账号信息，yyyy一般代表为权限信息，例如密码，或者上报地址。
+     * 其中，xxxx一般代表为账号信息，yyyy一般代表为权限信息，例如密码，或者上报地址, 可以有多个参数。
      */
-    private List<String> bots;
+    private List<String> bots = null;
 
 
     /**
