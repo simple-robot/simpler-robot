@@ -1,0 +1,7 @@
+simbot:
+  core:
+    task:
+      pool:
+        core-pool-size: 8
+
+

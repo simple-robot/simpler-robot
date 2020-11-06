@@ -16,6 +16,7 @@
 
 package love.forte.simbot.core.configuration
 
+import love.forte.common.configuration.annotation.AsConfig
 import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.ConfigBeans
 import java.util.concurrent.*
@@ -24,22 +25,28 @@ import java.util.concurrent.*
 /**
  * 线程池配置信息。
  */
-@AsCoreConfig
+@AsConfig(prefix = "simbot.core.task.pool")
 @ConfigBeans
 public class ExecutorServiceProperties {
 
     /**
      * 核心池的大小
+     * TODO 根据CPU计算
      */
-    @ConfigInject
-    var corePoolSize = 0
+    @field:ConfigInject
+    var corePoolSize = 1
+    set(value) {
+        println("set: $value")
+        field = value
+    }
 
 
     /**
      * 线程池最大线程数，这个参数也是一个非常重要的参数，它表示在线程池中最多能创建多少个线程；
+     * TODO 根据CPU计算
      */
-    @ConfigInject
-    var maximumPoolSize = 500
+    @field:ConfigInject
+    var maximumPoolSize = 4
 
     /**
      * 表示线程没有任务执行时最多保持多久时间会终止。
@@ -50,7 +57,7 @@ public class ExecutorServiceProperties {
      * 直到线程池中的线程数为0；
      */
     @ConfigInject
-    var keepAliveTime: Long = 5
+    var keepAliveTime: Long = 60 * 1000
 
     /**
      * 默认为毫秒值
@@ -97,6 +104,10 @@ public class ExecutorServiceProperties {
             workQueue,
             threadFactory
         )
+    }
+
+    override fun toString(): String {
+        return "ExecutorServiceProperties(corePoolSize=$corePoolSize, maximumPoolSize=$maximumPoolSize, keepAliveTime=$keepAliveTime, timeUnit=$timeUnit, workQueue=$workQueue, threadFactory=$threadFactory)"
     }
 
 }

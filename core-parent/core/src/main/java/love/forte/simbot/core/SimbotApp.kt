@@ -154,7 +154,7 @@ protected constructor(
 
 
         // load configs.
-        val config = loadResourcesToConfiguration().let {
+        val config: Configuration = loadResourcesToConfiguration().let {
             if (defaultConfiguration != null) MergedConfiguration.merged(defaultConfiguration, it)
             else it
         }
@@ -162,7 +162,7 @@ protected constructor(
         process.pre(config)
 
         // load all auto config.
-        val autoConfigures = initDependCenterWithAutoConfigures()
+        val autoConfigures = initDependCenterWithAutoConfigures(config)
         // init with run data.
         initDependCenterWithRunData()
 
@@ -189,15 +189,11 @@ protected constructor(
     /**
      * 获取自动装配信息并加载所有auto config类。
      */
-    private fun initDependCenterWithAutoConfigures(): Set<Class<*>> {
+    private fun initDependCenterWithAutoConfigures(config: Configuration): Set<Class<*>> {
         // 首先扫描并加载所有默认配置信息。
         val autoConfigures = autoConfigures(loader)
 
-        dependCenter = if (defaultConfiguration != null) {
-            DependCenter(parent = parentDependBeanFactory, configuration = defaultConfiguration)
-        } else {
-            DependCenter(parent = parentDependBeanFactory)
-        }
+        dependCenter =  DependCenter(parent = parentDependBeanFactory, configuration = config)
 
         // 加载所有的自动配置类
         autoConfigures.forEach {
