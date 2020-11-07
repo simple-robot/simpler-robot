@@ -103,6 +103,11 @@ springboot-starter中理应排除了所有的`forte-common.log(日志)`模块，
         </exclusion>
     </exclusions>
 </dependency>
+<!-- 导入forte-common日志模块 -->
+<dependency>
+    <groupId>love.forte.common</groupId>
+    <artifactId>log</artifactId>
+</dependency>
 ```
 
 
