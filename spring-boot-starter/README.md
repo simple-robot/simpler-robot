@@ -20,7 +20,7 @@ springboot-starter模块下的内容理应会生成spring相关的metadata以实
         <dependency>
             <groupId>love.forte.simple-robot</groupId>
             <artifactId>parent</artifactId>
-            <version>2.0.0-ALPHA.2</version>
+            <version>${simbot.version}</version>
             <scope>import</scope>
             <type>pom</type>
         </dependency>
