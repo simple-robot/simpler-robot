@@ -2,7 +2,8 @@
 ## ALPHA.1
 first alpha version.
 
-## now(ALPHA.2)
+
+## ALPHA.2
 `MessageEventGet` 更名为 `MessageGet`。
 
 优化部分日志输出。
