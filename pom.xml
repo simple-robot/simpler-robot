@@ -527,7 +527,7 @@
                     </executions>
                     <configuration>
 
-                        <skip>true</skip>
+                        <!--<skip>true</skip>-->
 
                         <includes>
                             <include>modules.md</include>
