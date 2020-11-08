@@ -264,7 +264,7 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
         // 分享
         "share" -> {
             // 至少需要一个url
-            val url: String = this["url"] ?: throw IllegalArgumentException("The url parameter could not be found in $this.")
+            val url: String = this["url"] ?: throw IllegalArgumentException("The 'url' could not be found in $this.")
             val title: String? =this["title"]
             val content: String? = this["content"]
             val coverUrl: String? = this["coverUrl"]
@@ -332,8 +332,14 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
             MiraiSingleMessageContent(xml)
         }
 
+        // 引用回复
+        "quote" -> {
+            val id = this["id"] ?: throw IllegalArgumentException("The 'id' cannot be found in $this")
 
-        // todo other...
+
+
+            TODO()
+        }
 
 
         else -> {
@@ -410,7 +416,7 @@ public fun SingleMessage.toSimbotString(): String {
             CatCodeUtil.getStringCodeBuilder("quote")
                 .key("id").value(with(this.source){ "$fromId.$id" })
                 // 此项参数是否需要存在?
-                .key("msg").value(this.source.originalMessage.toSimbotString())
+                // .key("msg").value(this.source.originalMessage.toSimbotString())
                 .build()
         }
 

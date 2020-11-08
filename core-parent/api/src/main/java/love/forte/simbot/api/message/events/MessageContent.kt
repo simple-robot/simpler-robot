@@ -31,6 +31,9 @@ import kotlin.contracts.contract
 /**
  * **消息内容**。
  *
+ * 从 [MessageGet.msgContent] 获取到的消息内容有可能是一个 **复合消息**，即一个 msgContent 中存在多个不同类型的消息，
+ * 也有可能只是一个 **独立消息**，即其本身就是全部的消息内容。
+ *
  * 它被使用在[MessageGet] 接口的 [MessageGet.msgContent] 上，表示当前消息的正文内容。
  *
  * 一个 [MessageContent] 实例至少应该保证能够得到当前消息的 [消息字符串文本][msg]。
@@ -45,8 +48,20 @@ import kotlin.contracts.contract
  * 问得好。因为simbot几乎没有绝对定义的消息类型。at、image、text这些还好理解，因为它们很常见。
  * 但是除了这种十分常见的消息类型以外，我不能保证所有的组件中出现的消息类型都在我的预期之内。
  * 因此我只会陆续提供部分较为特殊的消息类型，例如 image 类型。
+ * 而其他类型的消息，或许会陆续进行支持，也或许会仅仅提供一个 `type` 参数进行区分。
  *
  * 至于其他一切可能出现的类型，[msg] 与 [CatCodeUtil.split] 可以满足绝大部分的可能性与需求。
+ *
+ * 如果你不关心特殊消息的具体内容，而只需要消息中的纯文本部分的内容，那么你可以考虑使用 [MsgGet.text]。
+ *
+ * 如果你只需要一些目前可以提供的特殊消息内容，例如 **图片** 内容，那么你可以使用 [images]。
+ *
+ * 如果你想要自行解析任何 **可能** 出现的消息内容，例如可能会出现的 **face(表情)**、**nudge(头像戳一戳)**、**share(分享)** 等，
+ * 那么你需要考虑使用 [MessageGet.msg] 或者 [MessageContent.msg] 来根据其中的CAT码自行进行解析。
+ *
+ * 但是需要注意的是，有些情况下，[MessageGet.msg] 相比较于 [MsgGet.text] 的效率会更加低下，而有些时候则恰恰相反，
+ * 这取决于组件的实现细节，还需要仔细参阅对应组件的文档说明来进行抉择。
+ *
  *
  */
 public interface MessageContent {
@@ -54,6 +69,11 @@ public interface MessageContent {
      * 消息字符串文本。
      */
     val msg: String?
+
+    // /**
+    //  * 此消息的消息类型。
+    //  */
+    // val type: String
 
     /**
      * 尝试寻找消息内容中的 [图片消息][ImageMessageContent]。
