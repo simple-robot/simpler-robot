@@ -173,6 +173,8 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
             }
         }
 
+        "atAll", "atall" -> MiraiSingleMessageContent(AtAll)
+
         // face
         "face" -> {
             val id: Int = this["id"]?.toInt() ?: throw IllegalArgumentException("no face 'id' in $this.")
@@ -332,6 +334,7 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
 
 
         // todo other...
+
 
         else -> {
             MiraiSingleMessageContent(PlainText("(type $type not support)code=$this"))
