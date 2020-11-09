@@ -157,5 +157,8 @@ public interface BotRegistrar {
  * bot注销器。
  */
 public interface BotDestroyer {
+    /**
+     * 销毁一个bot，或者说关闭并移除一个bot。
+     */
     fun destroyBot(code: String)
 }
