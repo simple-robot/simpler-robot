@@ -37,7 +37,6 @@
         <dependency>
             <groupId>love.forte</groupId>
             <artifactId>catcode</artifactId>
-            <version>1.0.0-ALPHA.1</version>
         </dependency>
 
         <dependency>
