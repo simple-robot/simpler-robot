@@ -15,6 +15,7 @@
 package love.forte.simbot.api.message.events
 
 import love.forte.catcode.CatCodeUtil
+import love.forte.catcode.Neko
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -75,14 +76,23 @@ public interface MessageContent {
     //  */
     // val type: String
 
+
+    @Deprecated("直接cats多好")
+    val images: List<ImageMessageContent>
+
+
     /**
-     * 尝试寻找消息内容中的 [图片消息][ImageMessageContent]。
-     * 如果是复合消息，则寻找，如果是单独的消息，则除非自身即为图片消息，否则返回空集合。
+     * 获取此消息中的所有可能包含的cat码。
      *
-     * 返回的集合为read-only list.
+     * 此处所获得的cat码指的是 **所有** 消息链中元素的cat码，
+     * 也就是说一段普通的 **文本消息** 也会被作为cat码进行处理，其类型为 `message`, 参数只有一个 `text`，代表其正文信息。
+     *
+     *
      *
      */
-    val images: List<ImageMessageContent>
+    @Deprecated("TODO")
+    val cats: List<Neko> get() = listOf()
+
 }
 
 
