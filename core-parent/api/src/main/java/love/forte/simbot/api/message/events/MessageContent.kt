@@ -68,6 +68,8 @@ import kotlin.contracts.contract
 public interface MessageContent {
     /**
      * 消息字符串文本。
+     *
+     * 一般来讲，[msg] 就相当于将 [cats] 中的内容全部toString并拼接在了一起。
      */
     val msg: String?
 
@@ -87,7 +89,7 @@ public interface MessageContent {
      * 此处所获得的cat码指的是 **所有** 消息链中元素的cat码，
      * 也就是说一段普通的 **文本消息** 也会被作为cat码进行处理，其类型为 `message`, 参数只有一个 `text`，代表其正文信息。
      *
-     *
+     * 对于组件实现，一般需要耗时获取的属性可通过 `lazy cat` 来进行实现。
      *
      */
     @Deprecated("TODO")
