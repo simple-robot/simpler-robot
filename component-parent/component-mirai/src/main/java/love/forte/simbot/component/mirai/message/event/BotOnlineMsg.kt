@@ -61,7 +61,7 @@ public sealed class MiraiBotOffline<E : BotOfflineEvent>(event: E) : AbstractMir
     public abstract val cause: Throwable?
 
     /**
-     * 本次下线所出现的原因与消息。
+     * 本次下线所出现的原因与消息。可能为null。
      */
     public abstract val message: String?
 
