@@ -10,18 +10,17 @@
  * QQ     1149159218
  */
 @file:JvmName("MiraiMessageContents")
+
 package love.forte.simbot.component.mirai.message
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import love.forte.catcode.CatCodeUtil
-import love.forte.simbot.api.message.events.ImageMessageContent
+import love.forte.catcode.Neko
 import love.forte.simbot.api.message.events.MessageContent
-import love.forte.simbot.api.message.events.VoiceMessageContent
 import love.forte.simbot.component.mirai.sender.isNotEmptyMsg
-import love.forte.simbot.component.mirai.utils.EmptyMiraiMessageContent
-import love.forte.simbot.component.mirai.utils.toSimbotString
+import love.forte.simbot.component.mirai.utils.toNeko
 import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.getFriendOrNull
 import net.mamoe.mirai.message.action.Nudge
@@ -45,6 +44,19 @@ public interface MiraiMessageContent : MessageContent {
      */
     // @JvmDefault
     override val msg: String?
+        get() = cats.joinToString("") {
+            if (it.type == "text") {
+                it["text"] ?: ""
+            } else {
+                it.toString()
+            }
+        }
+
+
+    /**
+     * mirai消息转化为cat码进行展示。
+     */
+    override val cats: List<Neko>
 }
 
 
@@ -63,13 +75,15 @@ public data class MiraiListMessageContent(val list: List<MiraiMessageContent>) :
         }
 
     }
-    override val msg: String by lazy(LazyThreadSafetyMode.NONE) { list.joinToString("") { it.msg ?: "" } }
 
-    override val images: List<ImageMessageContent> by lazy(LazyThreadSafetyMode.NONE) {
-        list.flatMap { it.images }.takeIf { it.isNotEmpty() } ?: emptyList()
+    /**
+     * lazy parse to cat.
+     */
+    override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        list.asSequence().flatMap { it.cats.asSequence() }.toList()
     }
-}
 
+}
 
 
 /**
@@ -82,53 +96,61 @@ public object EmptySingleMessage : SingleMessage by PlainText("")
 /**
  * mirai 的 single msg.
  */
-public class MiraiSingleMessageContent(val singleMessage: (Contact) -> SingleMessage, private val _msg: () -> String?) : MiraiMessageContent {
+public class MiraiSingleMessageContent(
+    val singleMessage: (Contact) -> SingleMessage,
+    private val _neko: () -> Neko?
+) : MiraiMessageContent {
 
-    constructor(singleMessage: SingleMessage, msg: String?): this({ singleMessage }, { msg })
+    constructor(singleMessage: SingleMessage, neko: Neko?) : this({ singleMessage }, { neko })
 
-    constructor(singleMessage: SingleMessage, msg: () -> String? = { singleMessage.toSimbotString() }): this({ singleMessage }, msg)
+    constructor(
+        singleMessage: SingleMessage,
+        neko: () -> Neko? = { singleMessage.toNeko() }
+    ) : this({ singleMessage }, neko)
+
+    private val neko: Neko? by lazy(LazyThreadSafetyMode.PUBLICATION) { _neko() }
 
     override suspend fun getMessage(contact: Contact): Message = singleMessage(contact)
 
-    override val msg: String? get() = _msg()
-
-    override val images: List<ImageMessageContent> get() = emptyList()
-
     override fun toString(): String = msg ?: "SingleMessage(null)"
+
+    override val cats: List<Neko>
+        get() = neko?.let { listOf(it) } ?: emptyList()
 }
 
 
 /**
  * mirai 的 nudge 消息。
  */
-public class MiraiNudgedMessageContent(private val target: Long?) : MiraiMessageContent by MiraiSingleMessageContent({ contact ->
-    when(contact) {
-        // 如果是群
-        is Group -> {
-            val code: Long = target ?: throw IllegalArgumentException("cannot found nudge target: target is empty.")
-            val nudge: Nudge = contact.getOrNull(code)?.nudge() ?: throw NoSuchElementException("cannot found nudge target: no such member($code) in group(${contact.id}).")
-            // 获取群员并发送
-            contact.launch {
-                contact.sendNudge(nudge)
+public class MiraiNudgedMessageContent(private val target: Long?) :
+    MiraiMessageContent by MiraiSingleMessageContent({ contact ->
+        when (contact) {
+            // 如果是群
+            is Group -> {
+                val code: Long = target ?: throw IllegalArgumentException("cannot found nudge target: target is empty.")
+                val nudge: Nudge = contact.getOrNull(code)?.nudge()
+                    ?: throw NoSuchElementException("cannot found nudge target: no such member($code) in group(${contact.id}).")
+                // 获取群员并发送
+                contact.launch {
+                    contact.sendNudge(nudge)
+                }
+                EmptySingleMessage
             }
-            EmptySingleMessage
-        }
-        is User -> {
-            val nudge: Nudge = contact.nudge()
-            contact.launch {
-                contact.sendNudge(nudge)
+            is User -> {
+                val nudge: Nudge = contact.nudge()
+                contact.launch {
+                    contact.sendNudge(nudge)
+                }
+                EmptySingleMessage
             }
-            EmptySingleMessage
+            // 是其他人
+            else -> EmptySingleMessage
         }
-        // 是其他人
-        else -> EmptySingleMessage
-    }
-}, { null }) {
+    }, { null }) {
     override val msg: String = CatCodeUtil.getStringCodeBuilder("nudge").apply {
         target?.let { key("target").value(it) }
     }.build()
 }
-
 
 
 /**
@@ -139,33 +161,16 @@ public class MiraiNudgedMessageContent(private val target: Long?) : MiraiMessage
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public class MiraiMessageChainContent(val message: MessageChain) : MiraiMessageContent {
-
     override suspend fun getMessage(contact: Contact): Message = message
-
-    override val msg: String by lazy(LazyThreadSafetyMode.NONE) { message.toSimbotString() }
-
-    override val images: List<ImageMessageContent> by lazy(LazyThreadSafetyMode.NONE) {
-        message.asSequence()
-            .filter { it is Image || it is FlashImage }
-            .map {
-                val img: Image = if (it is FlashImage) it.image else it as Image
-                MiraiImageMessageContent(
-                    img.imageId,
-                    { null }, // no path.
-                    { runBlocking { img.queryUrl() } },
-                    it is FlashImage,
-                    { img }
-                )
-            }.toList()
-    }
+    override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) { message.toNeko() }
 }
 
 
-public fun List<Long>.atContent(): MiraiMessageContent = when {
-    this.isEmpty() -> EmptyMiraiMessageContent
-    this.size == 1 -> MiraiSingleAtMessageContent(this[0])
-    else -> MiraiAtsMessageContent(this)
-}
+// public fun List<Long>.atContent(): MiraiMessageContent = when {
+//     this.isEmpty() -> EmptyMiraiMessageContent
+//     this.size == 1 -> MiraiSingleAtMessageContent(this[0])
+//     else -> MiraiAtsMessageContent(this)
+// }
 
 
 /**
@@ -191,49 +196,46 @@ public class MiraiSingleAtMessageContent(private val code: Long) : MiraiMessageC
         }
     }
 
-    // at cat msg.
-    override val msg: String by lazy(LazyThreadSafetyMode.NONE) { CatCodeUtil.stringTemplate.at(code) }
-
-    override val images: List<ImageMessageContent> = emptyList()
+    override val cats: List<Neko> = listOf(CatCodeUtil.nekoTemplate.at(code))
 }
 
-/**
- * at 多个指定的人的 message。
- */
-public class MiraiAtsMessageContent(private val codes: List<Long>) : MiraiMessageContent {
-    override suspend fun getMessage(contact: Contact): Message {
-        return if (contact is Group) {
-            codes.asSequence().map { At(contact[it]) as MessageChain }.reduce { acc, at -> acc + at }
-        } else {
-            if (contact is Member) {
-                codes.asSequence().map {
-                    if (contact.id == it) {
-                        At(contact)
-                    } else {
-                        At(contact.group[it])
-                    } as MessageChain
-                }.reduce { acc, at -> acc + at }
-
-            } else {
-                codes.asSequence().map {
-                    if (contact is Friend && contact.id == it) {
-                        PlainText("@${contact.nameCardOrNick}")
-                    } else {
-                        val name: String = contact.bot.getFriendOrNull(it)?.nameCardOrNick ?: it.toString()
-                        PlainText("@$name")
-                    } as MessageChain
-                }.reduce { acc, at -> acc + at }
-            }
-        }
-    }
-
-    // at cat msg.
-    override val msg: String by lazy(LazyThreadSafetyMode.NONE) {
-        codes.joinToString("") { CatCodeUtil.stringTemplate.at(it) }
-    }
-
-    override val images: List<ImageMessageContent> = emptyList()
-}
+// /**
+//  * at 多个指定的人的 message。
+//  */
+// public class MiraiAtsMessageContent(private val codes: List<Long>) : MiraiMessageContent {
+//     override suspend fun getMessage(contact: Contact): Message {
+//         return if (contact is Group) {
+//             codes.asSequence().map { At(contact[it]) as MessageChain }.reduce { acc, at -> acc + at }
+//         } else {
+//             if (contact is Member) {
+//                 codes.asSequence().map {
+//                     if (contact.id == it) {
+//                         At(contact)
+//                     } else {
+//                         At(contact.group[it])
+//                     } as MessageChain
+//                 }.reduce { acc, at -> acc + at }
+//
+//             } else {
+//                 codes.asSequence().map {
+//                     if (contact is Friend && contact.id == it) {
+//                         PlainText("@${contact.nameCardOrNick}")
+//                     } else {
+//                         val name: String = contact.bot.getFriendOrNull(it)?.nameCardOrNick ?: it.toString()
+//                         PlainText("@$name")
+//                     } as MessageChain
+//                 }.reduce { acc, at -> acc + at }
+//             }
+//         }
+//     }
+//
+//     // at cat msg.
+//     override val msg: String by lazy(LazyThreadSafetyMode.NONE) {
+//         codes.joinToString("") { CatCodeUtil.stringTemplate.at(it) }
+//     }
+//
+//     override val images: List<ImageMessageContent> = emptyList()
+// }
 
 
 /**
@@ -242,50 +244,57 @@ public class MiraiAtsMessageContent(private val codes: List<Long>) : MiraiMessag
  * 实例化会由锁保证其唯一性。
  */
 public class MiraiImageMessageContent(
-    id: String,
-    path: () -> String? = { null },
-    url: () -> String? = { null },
-    override val flash: Boolean = false,
-    private val imageFunction: suspend (Contact) -> Image
-) : ImageMessageContent(
-        id,
-        flash,
-        path,
-        url
-    ), MiraiMessageContent {
+    val flash: Boolean = false,
+    private val imageFunction: suspend (Contact) -> Image,
+    private val _neko: () -> Neko
+) : MiraiMessageContent {
 
-    constructor(
-        id: String,
-        path: String? = null,
-        url: String? = null,
-        flash: Boolean,
-        imageFunction: suspend (Contact) -> Image
-    ): this(id, { path }, { url }, flash, imageFunction)
-
-    constructor(
-        id: String,
-        flash: Boolean,
-        imageFunction: suspend (Contact) -> Image
-    ): this(id, null, null, flash, imageFunction)
 
     @Volatile
-    private lateinit var image: Image
+    private lateinit var friendImage: Image
+    private lateinit var groupImage: Image
 
-    private val lock: Lock = ReentrantLock()
+    private val groupLock: Lock = ReentrantLock()
+    private val friendLock: Lock = ReentrantLock()
 
-    override suspend fun getMessage(contact: Contact): Message =
-        if (::image.isInitialized) {
-            image
-        } else {
-            lock.lock()
-            try {
-                if (!::image.isInitialized) {
-                    val img = imageFunction(contact)
-                    image = img
+    override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) { listOf(_neko()) }
+
+    /**
+     * get image msg. 区分群消息与好友消息
+     * @param contact Contact
+     * @return Message
+     */
+    override suspend fun getMessage(contact: Contact): Message {
+        return if (contact is Group) {
+            // is group
+            if (::groupImage.isInitialized) {
+                groupImage
+            } else {
+                groupLock.lock()
+                try {
+                    if (!::groupImage.isInitialized) {
+                        val img = imageFunction(contact)
+                        groupImage = img
+                    }
+                    groupImage
+                } finally {
+                    groupLock.unlock()
                 }
-                image
-            }finally {
-                lock.unlock()
+            }
+        } else {
+            if (::friendImage.isInitialized) {
+                friendImage
+            } else {
+                friendLock.lock()
+                try {
+                    if (!::friendImage.isInitialized) {
+                        val img = imageFunction(contact)
+                        friendImage = img
+                    }
+                    friendImage
+                } finally {
+                    friendLock.unlock()
+                }
             }
         }.let {
             if (flash) {
@@ -294,6 +303,9 @@ public class MiraiImageMessageContent(
                 it
             }
         }
+    }
+
+
 }
 
 
@@ -302,30 +314,16 @@ public class MiraiImageMessageContent(
  * 此实现类似于 [MiraiImageMessageContent]，Voice的实例化会被缓存，且存在锁来保证唯一性。
  */
 public class MiraiVoiceMessageContent(
-    id: String,
-    path: () -> String? = { null },
-    url: () -> String? = { null },
-    private val voiceFunction: suspend (Contact) -> Voice
-) : VoiceMessageContent(
-    id, path, url
-), MiraiMessageContent {
-
-    constructor(
-        id: String,
-        path: String? = null,
-        url: String? = null,
-        voiceFunction: suspend (Contact) -> Voice
-    ): this(id, { path }, { url }, voiceFunction)
-
-    constructor(
-        id: String,
-        voiceFunction: suspend (Contact) -> Voice
-    ): this(id, null, null, voiceFunction)
+    private val voiceFunction: suspend (Contact) -> Voice,
+    private val _neko: () -> Neko
+) : MiraiMessageContent {
 
     @Volatile
     private lateinit var voice: Voice
 
     private val lock: Lock = ReentrantLock()
+
+    override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) { listOf(_neko()) }
 
     override suspend fun getMessage(contact: Contact): Message {
         return if (::voice.isInitialized) {
@@ -338,7 +336,7 @@ public class MiraiVoiceMessageContent(
                     voice = vo
                 }
                 voice
-            }finally {
+            } finally {
                 lock.unlock()
             }
         }

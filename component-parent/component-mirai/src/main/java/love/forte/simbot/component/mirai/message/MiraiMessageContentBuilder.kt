@@ -74,21 +74,21 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
 
     override fun imageLocal(path: String, flash: Boolean): MiraiMessageContentBuilder {
         val file = FileUtil.file(path)?.takeIf { it.exists() } ?: throw FileNotFoundException(path)
-        val imageContent = MiraiImageMessageContent(path, path = path, flash = flash) { file.uploadAsImage(it) }
+        val imageContent = MiraiImageMessageContent(flash = flash) { file.uploadAsImage(it) }
         contentList.add(imageContent)
         return this
     }
 
     override fun imageUrl(url: String, flash: Boolean): MiraiMessageContentBuilder {
         val u = Url(url)
-        MiraiImageMessageContent(url, url = url, flash = flash) {
+        MiraiImageMessageContent(flash = flash) {
             u.toStream().uploadAsImage(it)
         }.apply { contentList.add(this) }
         return this
     }
 
     override fun image(input: InputStream, flash: Boolean): MiraiMessageContentBuilder {
-        MiraiImageMessageContent(id = "", flash){
+        MiraiImageMessageContent(flash){
             input.uploadAsImage(it)
         }.apply { contentList.add(this) }
         return this
