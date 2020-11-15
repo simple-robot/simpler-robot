@@ -19,3 +19,7 @@ first alpha version.
 追加 [Spring-boot-starter](./spring-boot-starter) 模块及其子模块：
 - [core-spring-boot-starter](./spring-boot-starter/core-spring-boot-starter) 模块
 - [component-mirai-Spring-boot-starter](./spring-boot-starter/component-mirai-spring-boot-starter) 模块
+
+
+## ALPHA.3
+core-starter移除部分多余控制台输出。
