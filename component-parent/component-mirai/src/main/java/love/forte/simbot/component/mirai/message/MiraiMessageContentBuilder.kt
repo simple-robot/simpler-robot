@@ -14,6 +14,7 @@ package love.forte.simbot.component.mirai.message
 
 import cn.hutool.core.io.FileUtil
 import io.ktor.http.*
+import love.forte.catcode.CatCodeUtil
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.events.MessageContentBuilder
 import love.forte.simbot.api.message.events.MessageContentBuilderFactory
@@ -74,21 +75,35 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
 
     override fun imageLocal(path: String, flash: Boolean): MiraiMessageContentBuilder {
         val file = FileUtil.file(path)?.takeIf { it.exists() } ?: throw FileNotFoundException(path)
-        val imageContent = MiraiImageMessageContent(flash = flash) { file.uploadAsImage(it) }
+        val imageNeko = CatCodeUtil
+            .getNekoBuilder("image", true)
+            .key("file").value(path)
+            .key("type").value("local")
+            .build()
+        val imageContent = MiraiImageMessageContent(flash, imageNeko) { file.uploadAsImage(it) }
         contentList.add(imageContent)
         return this
     }
 
     override fun imageUrl(url: String, flash: Boolean): MiraiMessageContentBuilder {
         val u = Url(url)
-        MiraiImageMessageContent(flash = flash) {
+        val imageNeko = CatCodeUtil
+            .getNekoBuilder("image", true)
+            .key("file").value(url)
+            .key("type").value("network")
+            .build()
+        MiraiImageMessageContent(flash, imageNeko) {
             u.toStream().uploadAsImage(it)
         }.apply { contentList.add(this) }
         return this
     }
 
     override fun image(input: InputStream, flash: Boolean): MiraiMessageContentBuilder {
-        MiraiImageMessageContent(flash){
+        val imageNeko = CatCodeUtil
+            .getNekoBuilder("image", true)
+            .key("type").value("inputStream")
+            .build()
+        MiraiImageMessageContent(flash, imageNeko){
             input.uploadAsImage(it)
         }.apply { contentList.add(this) }
         return this

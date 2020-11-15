@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <artifactId>parent</artifactId>
     <groupId>love.forte.simple-robot</groupId>
-    <version>2.0.0-ALPHA.2</version>
+    <version>2.0.0-ALPHA.3</version><!--v-->
     <modules>
         <module>core-parent</module>
         <module>component-parent</module>
@@ -368,6 +368,7 @@
             </plugin>
             <!-- (1) deploy插件 -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
             </plugin>
             <!-- （2）sonatype的staging插件 -->
@@ -527,7 +528,7 @@
                     </executions>
                     <configuration>
 
-                        <!--<skip>true</skip>-->
+                        <skip>true</skip>
 
                         <includes>
                             <include>modules.md</include>
@@ -543,36 +544,8 @@
 
                         <!--<noJdkLink>true</noJdkLink>-->
                         <!--<noStdlibLink>true</noStdlibLink>-->
+                        <!--<outputDir>../simple-robot-2.0-doc/docs/${project.name}/doc</outputDir>-->
 
-                        <outputDir>../simple-robot-2.0-doc/docs/${project.name}/doc</outputDir>
-
-                        <dokkaPlugins>
-                            <!--<plugin>-->
-                            <!--    <groupId>org.jetbrains.dokka</groupId>-->
-                            <!--    <artifactId>dokka-base</artifactId>-->
-                            <!--    <version>${dokka.version}</version>-->
-                            <!--</plugin>-->
-                            <!--<plugin>-->
-                            <!--    <groupId>org.jetbrains.dokka</groupId>-->
-                            <!--    <artifactId>gfm-plugin</artifactId>-->
-                            <!--    <version>${dokka.version}</version>-->
-                            <!--</plugin>-->
-                            <!--<plugin>-->
-                            <!--    <groupId>org.jetbrains.dokka</groupId>-->
-                            <!--    <artifactId>jekyll-plugin</artifactId>-->
-                            <!--    <version>${dokka.version}</version>-->
-                            <!--</plugin>-->
-                            <!--<plugin>-->
-                            <!--    <groupId>org.jetbrains.dokka</groupId>-->
-                            <!--    <artifactId>javadoc-plugin</artifactId>-->
-                            <!--    <version>${dokka.version}</version>-->
-                            <!--</plugin>-->
-                            <!--<plugin>-->
-                            <!--    <groupId>org.jetbrains.dokka</groupId>-->
-                            <!--    <artifactId>kotlin-as-java-plugin</artifactId>-->
-                            <!--    <version>${dokka.version}</version>-->
-                            <!--</plugin>-->
-                        </dokkaPlugins>
                     </configuration>
                 </plugin>
 
@@ -580,6 +553,7 @@
                 <!-- maven仓库相关插件 -->
                 <!-- (1) deploy插件 -->
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>2.8.2</version>
                     <executions>

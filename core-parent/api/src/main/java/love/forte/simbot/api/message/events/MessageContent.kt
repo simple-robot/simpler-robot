@@ -14,10 +14,7 @@
 @file:JvmMultifileClass
 package love.forte.simbot.api.message.events
 
-import love.forte.catcode.CatCodeUtil
 import love.forte.catcode.Neko
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
 
 /*
  *
@@ -95,7 +92,9 @@ public interface MessageContent {
 
     @Deprecated("use cats plz.")
     @JvmDefault
-    val images: List<ImageMessageContent> get() = emptyList()
+    val images: List<ImageMessageContent> get() = emptyList<ImageMessageContent>().also {
+        System.err.println("'getImages()' is Deprecated. use 'getCats()' plz.")
+    }
 
 
     /**
@@ -107,7 +106,13 @@ public interface MessageContent {
      * 对于组件实现，一般需要耗时获取的属性可通过 `lazy cat` 来进行实现。
      *
      */
-    val cats: List<Neko> // get() = listOf()
+    val cats: List<Neko>
+
+    /**
+     * 获取指定过滤类型的 [cats] 列表。
+     */
+    @JvmDefault
+    fun getCats(vararg types: String) = cats.filter { it.type in types }
 
 }
 
@@ -115,7 +120,7 @@ public interface MessageContent {
 /**
  * @see MessageContent.cats
  */
-@Deprecated("不再使用")
+@Deprecated("not use.")
 public object ImageMessageContent
 
 

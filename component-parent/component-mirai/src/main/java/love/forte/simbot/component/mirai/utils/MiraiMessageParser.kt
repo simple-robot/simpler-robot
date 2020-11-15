@@ -49,108 +49,11 @@ public val EmptyMiraiMessageContent: MiraiMessageContent = MiraiMessageChainCont
  * 将一个 [MessageContent] 转化为一个 [MiraiMessageContent]。
  */
 public fun MessageContent.toMiraiMessageContent(): MiraiMessageContent {
-
     return if(this is MiraiMessageContent) {
         this
     } else {
         msg?.toMiraiMessageContent() ?: EmptyMiraiMessageContent
     }
-
-    // return when (this) {
-    //     is MiraiMessageContent -> return this
-        // // 预期内的消息。
-        // is ExpectedMessageContent -> when (this) {
-        //     is BoxedMessageContent -> when (this) {
-        //         EmptyMessageContent -> EmptyMiraiMessageContent
-        //         is SingleMessageContent -> single.toMiraiMessageContent()
-        //         is CompoundMessageContent -> {
-        //             // 复合型，转化.
-        //             val miraiMsgList =
-        //                 msgList.map {
-        //                     GlobalScope.async { it.toMiraiMessageContent() }
-        //                 }.map { it.await() }
-        //             MiraiListMessageContent(miraiMsgList)
-        //         }
-        //     }
-        //
-        //     // image content
-        //     is ImageMessageContent -> {
-        //         // image message content.
-        //         if (this is MiraiImageMessageContent) {
-        //             this
-        //         } else {
-        //             // 先尝试获取path
-        //             val path: String? = this.path
-        //             val pathFile: File? = this.path?.let {
-        //                 FileUtil.file(it)
-        //             }.takeIf { it?.exists() == true }
-        //
-        //             if (pathFile != null) {
-        //                 path as String
-        //                 MiraiImageMessageContent(
-        //                     id = path,
-        //                     path = path,
-        //                     flash = this.flash
-        //                 ) { c -> pathFile.uploadAsImage(c) }
-        //             } else {
-        //                 // 没有本地文件，查看网络文件
-        //                 val url: String = path?.takeIf { it.startsWith("http") }
-        //                     ?: this.getUrlOrNull()
-        //                     ?: throw IllegalStateException("Unable to locate file: file path is not exists and no url exists.")
-        //                 val imageURL = Url(url)
-        //                 MiraiImageMessageContent(id = url, url = url, flash = this.flash) { c ->
-        //                     imageURL.toStream().uploadAsImage(c)
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     // voice content.
-        //     is VoiceMessageContent -> {
-        //         if (this is MiraiVoiceMessageContent) {
-        //             this
-        //         } else {
-        //             // 先尝试获取path
-        //             val path: String? = this.path
-        //             val pathFile: File? = this.path?.let {
-        //                 FileUtil.file(it)
-        //             }.takeIf { it?.exists() == true }
-        //
-        //             if (pathFile != null) {
-        //                 path as String
-        //                 MiraiVoiceMessageContent(
-        //                     id = path,
-        //                     path = path,
-        //                 ) { c ->
-        //                     if (c is Group) {
-        //                         BufferedInputStream(pathFile.inputStream()).use { c.uploadVoice(it) }
-        //                     } else throw IllegalStateException("Mirai does not support sending private voice.")
-        //                 }
-        //             } else {
-        //                 // 没有本地文件，查看网络文件
-        //                 val url: String = path?.takeIf { it.startsWith("http") }
-        //                     ?: this.getUrlOrNull()
-        //                     ?: throw IllegalStateException("Unable to locate file: file path is not exists and no url exists.")
-        //                 val voiceURL = Url(url)
-        //                 MiraiVoiceMessageContent(id = url, url = url) { c ->
-        //                     if (c is Group) {
-        //                         voiceURL.toStream().use { c.uploadVoice(it) }
-        //                     } else throw IllegalStateException("Mirai does not support sending private voice.")
-        //
-        //                 }
-        //             }
-        //         }
-        //     }
-        //
-        //     is TextMessageContent -> {
-        //         // same as 'else'.
-        //         msg?.toMiraiMessageContent() ?: EmptyMiraiMessageContent
-        //     }
-        // }
-        // else -> {
-        //     msg?.toMiraiMessageContent() ?: EmptyMiraiMessageContent
-        // }
-    // }
-
 }
 
 
@@ -229,7 +132,8 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
             val flash: Boolean = this["flash"] == "true"
             if (file != null) {
                 // 存在文件
-                MiraiImageMessageContent(flash = flash) { c -> file.uploadAsImage(c) }
+                val imageNeko = CatCodeUtil.nekoTemplate.image(filePath)
+                MiraiImageMessageContent(flash, imageNeko) { c -> file.uploadAsImage(c) }
             } else {
                 // 没有文件，看看有没有url。
                 val url = filePath?.takeIf { it.startsWith("http") }?.let { Url(it) }
@@ -237,7 +141,8 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
                     ?: throw IllegalArgumentException("The img has no source in $this")
 
                 // val urlId = url.encodedPath
-                MiraiImageMessageContent(flash = flash) { c ->
+                val imageNeko = CatCodeUtil.nekoTemplate.image(url.toString())
+                MiraiImageMessageContent(flash, imageNeko) { c ->
                     url.toStream().uploadAsImage(c)
                 }
             }
@@ -250,7 +155,8 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
             val file: File? = filePath?.let { FileUtil.file(it) }?.takeIf { it.exists() }
             if (file != null) {
                 // 存在文件
-                MiraiVoiceMessageContent(id = filePath, path = filePath) { c ->
+                val recordNeko = CatCodeUtil.nekoTemplate.record(filePath)
+                MiraiVoiceMessageContent(recordNeko) { c ->
                     if (c is Group) {
                         BufferedInputStream(file.inputStream()).use { c.uploadVoice(it) }
                     } else throw IllegalStateException("Mirai does not support sending private voice.")
@@ -262,7 +168,8 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
                     ?: throw IllegalArgumentException("The voice has no source in $this")
 
                 val urlId = url.encodedPath
-                MiraiVoiceMessageContent(id = urlId, url = urlId) { c ->
+                val recordNeko = CatCodeUtil.nekoTemplate.record(urlId)
+                MiraiVoiceMessageContent(recordNeko) { c ->
                     if (c is Group) {
                         url.toStream().use { c.uploadVoice(it) }
                     } else throw IllegalStateException("Mirai does not support sending private voice.")
@@ -342,13 +249,13 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
         }
 
         // 引用回复
-        "quote" -> {
-            val id = this["id"] ?: throw IllegalArgumentException("The 'id' cannot be found in $this")
-
-
-
-            TODO()
-        }
+        // "quote" -> {
+        //     val id = this["id"] ?: throw IllegalArgumentException("The 'id' cannot be found in $this")
+        //
+        //
+        //
+        //     TODO()
+        // }
 
 
         else -> {
@@ -365,7 +272,7 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
  * 将一个 [MessageChain] 转化为携带catcode的字符串。
  */
 public fun MessageChain.toCatCode(): String {
-    return this.asSequence().map { it.toCatCode() }.joinToString()
+    return this.asSequence().map { it.toNeko() }.joinToString("") { it.toString() }
 }
 
 /**
@@ -452,8 +359,8 @@ public fun SingleMessage.toCatCode(): String {
             // "[mirai:at:$target,$display]"
             // val miraiCode = this.toString()
             // CatCodeUtil.getStringCodeBuilder(this.content)
-            CatCodeUtil.getStringCodeBuilder("miraiCode")
-                .key("string").value(this.toString()).build()
+            CatCodeUtil.getStringCodeBuilder("mirai")
+                .key("value").value(this.toString()).build()
         }
     }
 }
@@ -513,9 +420,8 @@ public fun SingleMessage.toNeko(): Neko {
         }
         // 引用回复
         is QuoteReply -> {
-            CatCodeUtil.getNekoBuilder("quote", true)
+            CatCodeUtil.getLazyNekoBuilder("quote", true)
                 .key("id").value(with(this.source){ "$fromId.$id" })
-                // 此项参数是否需要存在?
                 .key("quote").value { this.source.originalMessage.toCatCode() }
                 .build()
         }

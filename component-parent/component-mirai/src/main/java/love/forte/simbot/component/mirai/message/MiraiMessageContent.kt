@@ -245,8 +245,8 @@ public class MiraiSingleAtMessageContent(private val code: Long) : MiraiMessageC
  */
 public class MiraiImageMessageContent(
     val flash: Boolean = false,
-    private val imageFunction: suspend (Contact) -> Image,
-    private val _neko: () -> Neko
+    neko: Neko,
+    private val imageFunction: suspend (Contact) -> Image
 ) : MiraiMessageContent {
 
 
@@ -257,7 +257,7 @@ public class MiraiImageMessageContent(
     private val groupLock: Lock = ReentrantLock()
     private val friendLock: Lock = ReentrantLock()
 
-    override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) { listOf(_neko()) }
+    override val cats: List<Neko> = listOf(neko)
 
     /**
      * get image msg. 区分群消息与好友消息
@@ -314,8 +314,8 @@ public class MiraiImageMessageContent(
  * 此实现类似于 [MiraiImageMessageContent]，Voice的实例化会被缓存，且存在锁来保证唯一性。
  */
 public class MiraiVoiceMessageContent(
-    private val voiceFunction: suspend (Contact) -> Voice,
-    private val _neko: () -> Neko
+    neko: Neko,
+    private val voiceFunction: suspend (Contact) -> Voice
 ) : MiraiMessageContent {
 
     @Volatile
@@ -323,7 +323,7 @@ public class MiraiVoiceMessageContent(
 
     private val lock: Lock = ReentrantLock()
 
-    override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) { listOf(_neko()) }
+    override val cats: List<Neko> = listOf(neko)
 
     override suspend fun getMessage(contact: Contact): Message {
         return if (::voice.isInitialized) {
