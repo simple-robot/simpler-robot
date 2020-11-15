@@ -243,9 +243,13 @@ public interface MessageGet : MsgGet, FlagContainer<MessageGet.MessageFlagConten
     /**
      * 可以得到一个 **消息**。
      * 如果你想要对消息进行 **重新定义**，
-     * 可以考虑注入一个 [love.forte.simbot.core.listener.ListenerContext] 而不是想办法重新设置 [msg]。
+     * 可以考虑注入一个 [love.forte.simbot.listener.ListenerContext] 而不是想办法重新设置 [msg]。
+     *
+     * 默认获取的即为 [msgContent.msg][MessageContent.msg].
+     *
      */
-    val msg: String?
+    @JvmDefault
+    val msg: String? get() = msgContent.msg
 
     /**
      * 可以得到一个 **文本**。

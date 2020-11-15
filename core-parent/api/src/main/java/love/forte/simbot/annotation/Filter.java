@@ -12,6 +12,7 @@
 
 package love.forte.simbot.annotation;
 
+import love.forte.simbot.api.message.events.MsgGet;
 import love.forte.simbot.filter.MatchType;
 
 import java.lang.annotation.Documented;
@@ -135,13 +136,17 @@ public @interface Filter {
 
     /**
      * 是否清理其中存在的特殊码，一般为CAT码。 参数为清理的类型，例如 “at” 之类的。
+     * @deprecated 使用 {@link MsgGet#getText()} 进行过滤匹配，按照约定其中不应存在任何CAT码。
      */
+    @Deprecated
     String[] clearCode() default {};
 
 
     /**
      * 是否清理全部的特殊码，一般为CAT码。如果为true, 则{@link #clearCode()} 无效。
+     * @deprecated 使用 {@link MsgGet#getText()} 进行过滤匹配，按照约定其中不应存在任何CAT码。
      */
+    @Deprecated
     boolean clearAllCode() default false;
 
 }

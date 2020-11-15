@@ -426,6 +426,7 @@ public fun SingleMessage.toNeko(): Neko {
                 .build()
         }
 
+
         // 富文本，xml或json
         is RichMessage -> CatCodeUtil.getNekoBuilder("rich", true)
             .key("content").value(content)
