@@ -75,6 +75,9 @@ simbot.core.appClass=xxx.xxx.XxxClass
 
 
 ## 注意事项
+
+### log
+
 springboot-starter中理应排除了所有的`forte-common.log(日志)`模块，而使用的是springboot的默认日志实现。
 
 如果在使用的时候出现了日志冲突，你可以选择排除掉依赖中的`forte-common.log`日志模块：
@@ -110,8 +113,11 @@ springboot-starter中理应排除了所有的`forte-common.log(日志)`模块，
 </dependency>
 ```
 
+### 依赖
 
-
+虽然`simbot`可以通过 `@Beans` 注入Springboot中的内容，但是Spring却无法通过 `@Component` 注入 `simbot` 中的部分内容。
+在starter中，我整合了部分可能会用到的依赖并注入到了Spring中，但是难免会有疏漏。
+你可以通过构建一个自定义的Configuration，并或者借助 `DependCenter` 来手动获取一些 `simbot` 中才会存在的依赖。
 
 
 
