@@ -22,6 +22,18 @@ first alpha version.
 
 
 ## ALPHA.3
+
+### 核心
+
 core-starter移除部分多余控制台输出。
+
 重新定义 [MessageContent](./core-parent/api/src/main/java/love/forte/simbot/api/message/events/MessageContent.kt) 的定义，
-并在 [mirai组件](./component-parent/component-mirai) 中重新实现。 其中，暂时保留 曾经的`MessageContent.getImages`方法，但是此方法已不存在任何作用，并会给出一个警告。 
+并在 [mirai组件](./component-parent/component-mirai) 中重新实现。 其中，暂时保留 曾经的`MessageContent.getImages`方法，但是此方法已不存在任何作用，并会给出一个警告。
+
+### 组件
+
+mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组构建图片实例的相关内容，当group和friend两个目标图片实例均被构建后，会主动调用`close()`，而在其中一方实例化完成后，会 **尝试** 调用`input.reset`。
+ 
+上述调整中，构建group和friend目标图片的时候调整为共用同一个锁。 
+
+

@@ -21,6 +21,8 @@ package love.forte.simbot.api.message.assists
  *
  * 通过 [标识容器][love.forte.simbot.api.message.containers.FlagContainer] 可以得到一个标识实例。
  *
+ * ※ td: 或许可以重新考虑定义。
+ *
  * @author ForteScarlet <ForteScarlet@163.com>
  * @date 2020/9/2
  * @since

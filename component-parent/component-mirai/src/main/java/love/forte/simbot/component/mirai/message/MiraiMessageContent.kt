@@ -21,7 +21,6 @@ import love.forte.catcode.Neko
 import love.forte.simbot.api.message.events.MessageContent
 import love.forte.simbot.component.mirai.sender.isNotEmptyMsg
 import love.forte.simbot.component.mirai.utils.toNeko
-import love.forte.simbot.listener.ListenerContext
 import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.getFriendOrNull
 import net.mamoe.mirai.message.action.Nudge
@@ -238,8 +237,8 @@ public class MiraiImageMessageContent(
     private lateinit var friendImage: Image
     private lateinit var groupImage: Image
 
-    private val groupLock: Lock = ReentrantLock()
-    private val friendLock: Lock = ReentrantLock()
+    private val lock: Lock = ReentrantLock()
+    // private val friendLock: Lock = ReentrantLock()
 
     override val cats: List<Neko> = listOf(neko)
 
@@ -254,7 +253,7 @@ public class MiraiImageMessageContent(
             if (::groupImage.isInitialized) {
                 groupImage
             } else {
-                groupLock.lock()
+                lock.lock()
                 try {
                     if (!::groupImage.isInitialized) {
                         val img = imageFunction(contact)
@@ -262,15 +261,15 @@ public class MiraiImageMessageContent(
                     }
                     groupImage
                 } finally {
-                    groupLock.unlock()
-                    friendLock.lock()
+                    lock.unlock()
+                    lock.lock()
                     try {
                         // if all init, do close.
                         if (::friendImage.isInitialized) {
                             close()
                         }
                     }finally {
-                        friendLock.unlock()
+                        lock.unlock()
                     }
                 }
             }
@@ -278,7 +277,7 @@ public class MiraiImageMessageContent(
             if (::friendImage.isInitialized) {
                 friendImage
             } else {
-                friendLock.lock()
+                lock.lock()
                 try {
                     if (!::friendImage.isInitialized) {
                         val img = imageFunction(contact)
@@ -286,14 +285,14 @@ public class MiraiImageMessageContent(
                     }
                     friendImage
                 } finally {
-                    friendLock.unlock()
-                    groupLock.lock()
+                    lock.unlock()
+                    lock.lock()
                     try {
                         if (::groupImage.isInitialized) {
                             close()
                         }
                     } finally {
-                        groupLock.unlock()
+                        lock.unlock()
                     }
                 }
             }
