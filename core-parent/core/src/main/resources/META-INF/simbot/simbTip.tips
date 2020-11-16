@@ -1,4 +1,5 @@
 你知道吗？simbot开发团队所有成员的出生日期都在1999年。
+你知道吗？simple-robot的命名由来是因为开发者并不会起名字，因此选择了简单易懂的simple。
 你知道吗？simbot开发团队所有成员的出生日期都在8月。
 你知道吗？simbot中代码注释的编辑者与文档编辑者是同一个人。
 你知道吗？simbot开发团队的成员们都很喜欢kotlin，因为它们都很喜欢java。
@@ -23,7 +24,7 @@
 你知道吗？catCode开发团队的成员们都很喜欢猫。
 你知道吗？catCode的规范来源于CQ码。
 你知道吗？catCode的名称之所以叫做”猫猫码“而不是”猫码“是因为前者听上去比较可爱。
-你知道吗？catCode可以直接通过kotlin发布全平台库（JVM/JS/Native），但是它们的开发团队不知道如何发布，便暂时搁置了。
+你知道吗？catCode实际上可以直接通过kotlin发布全平台库（JVM/JS/Native），但是catCode团队不知道如何发布，便暂时搁置了。
 你知道吗？你不知道。
 你知道吗？你知道的。
 你知道吗？那些开头是”你知道吗？“的tips中的内容很多都是谎言，但同时也是事实。
@@ -32,4 +33,10 @@
 你知道一共有多少条tips吗？
 监听函数曾经并不是接口类型的。
 如果你能够了解何时该使用CatCodeUtil或MessageContentBuilder，那么你的程序效率会更高，反之则会使得效率变得更低。
-之所以MessageGet中要区分text、msg、msgContent，是因为要同时考虑组件实现、消息过滤匹配、消息发送等多个方面的效率问题。
+之所以MessageGet中要区分text、msg、msgContent，是因为要同时考虑组件实现、消息过滤匹配、消息发送等多个方面的效率问题与兼容问题。
+simbot中内置的默认log实现nekolog整合了国际化language模块，但是考虑到切换日志后的兼容性，simbot中并没有使用这一特性。
+simbot2.x的github地址是https://github.com/ForteScarlet/simpler-robot 。
+simbot2.x中极大的利用了依赖注入的自动装配功能，这有效的改善了1.x中出现的强耦合的情况。
+simbot2.x中大大减少了第三方依赖的数量，但同时也大大增加了simbot依赖模块的数量。但至少官方的模块是更可控的，不是吗？
+simbot2.x中的flag的设计是为了使得同一个类型的接口能够拥有可区分的职责。
+simbot的整体架构是编绘于脑海中并不断发生着变动的。
