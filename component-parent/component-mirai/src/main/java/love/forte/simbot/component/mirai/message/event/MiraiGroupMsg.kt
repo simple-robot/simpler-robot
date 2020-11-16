@@ -47,8 +47,8 @@ public class MiraiGroupMsg(event: GroupMessageEvent) :
 
     override val msgContent: MessageContent = MiraiMessageChainContent(message)
 
-    override val msg: String?
-        get() = msgContent.msg
+    // override val msg: String?
+    //     get() = msgContent.msg
 
     override val permission: Permissions get() = event.sender.toSimbotPermissions()
 }

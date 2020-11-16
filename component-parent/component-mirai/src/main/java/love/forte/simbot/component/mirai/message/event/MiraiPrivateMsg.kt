@@ -48,11 +48,11 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
      */
     override val msgContent: MessageContent = MiraiMessageChainContent(message)
 
-    /**
-     * 提供一个简单的方法来获取 [msgContent] 中的文本内容。
-     */
-    override val msg: String?
-        get() = msgContent.msg
+    // /**
+    //  * 提供一个简单的方法来获取 [msgContent] 中的文本内容。
+    //  */
+    // override val msg: String?
+    //     get() = msgContent.msg
 
     /**
      * 私聊消息标识，
@@ -101,11 +101,11 @@ public class MiraiTempMsg(event: TempMessageEvent) :
      */
     override val msgContent: MessageContent = MiraiMessageChainContent(message)
 
-    /**
-     * 提供一个简单的方法来获取 [msgContent] 中的文本内容。
-     */
-    override val msg: String?
-        get() = msgContent.msg
+    // /**
+    //  * 提供一个简单的方法来获取 [msgContent] 中的文本内容。
+    //  */
+    // override val msg: String?
+    //     get() = msgContent.msg
 
     /**
      * 私聊消息标识，

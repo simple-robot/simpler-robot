@@ -620,15 +620,6 @@ public class AnnotationFilterListenerFilterImpl(
             return false
         }
 
-        // // 4.2 any at.
-        // if (!anyAtTestFunc(msg)) {
-        //     return false
-        // }
-        // // 4.3 assign at.
-        // if (!atTestFunc(msg)) {
-        //     return false
-        // }
-
 
         // 5 msg matches
         // no msg. return true.
@@ -637,7 +628,7 @@ public class AnnotationFilterListenerFilterImpl(
         }
 
         // 如果msg为null，则认为其无法匹配文本，直接放行。
-        val msgText: String = msg.text ?: return true
+        val msgText: String = msg.text?.let(textPre) ?: return true
 
         return matchType.match(msgText, keyword)
     }

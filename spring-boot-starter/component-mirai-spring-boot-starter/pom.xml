@@ -40,6 +40,13 @@
 
         <dependency>
             <groupId>love.forte.common</groupId>
+            <artifactId>log</artifactId>
+            <scope>test</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>love.forte.common</groupId>
             <artifactId>configuration</artifactId>
         </dependency>
 

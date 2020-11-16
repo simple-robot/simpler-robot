@@ -90,6 +90,9 @@ public interface MessageContent {
     val msg: String?
 
 
+    /**
+     * TODO 两个版本内删除。
+     */
     @Deprecated("use cats plz.")
     @JvmDefault
     val images: List<ImageMessageContent> get() = emptyList<ImageMessageContent>().also {

@@ -34,7 +34,7 @@ public class MiraiBotGroupNudgedMsg(event: BotNudgedEvent, member: Member) : Abs
 
     override val accountInfo: AccountInfo = MiraiMemberAccountInfo(member)
 
-    override val msg: String get() = msgContent.msg
+    // override val msg: String get() = msgContent.msg
 
     /** 头像戳一戳消息属于系统消息。 */
     override val groupMsgType: GroupMsg.Type get() = GroupMsg.Type.SYS
@@ -58,7 +58,7 @@ public class MiraiBotFriendNudgedMsg(event: BotNudgedEvent, friend: Friend) :
     PrivateMsg {
     override val id: String = "${event.from.id}.${event.bot.id}"
     override val accountInfo: AccountInfo = MiraiFriendAccountInfo(friend)
-    override val msg: String get() = msgContent.msg
+    // override val msg: String get() = msgContent.msg
 
     /** 头像戳一戳属于好友消息 */
     override val privateMsgType: PrivateMsg.Type get() = PrivateMsg.Type.FRIEND
@@ -77,7 +77,7 @@ public class MiraiBotFriendNudgedMsg(event: BotNudgedEvent, friend: Friend) :
 public class MiraiMemberNudgedMsg(event: MemberNudgedEvent) : AbstractMiraiMsgGet<MemberNudgedEvent>(event), GroupMsg {
     override val id: String = "${event.from.id}.${event.bot.id}"
     override val accountInfo: AccountInfo = MiraiMemberAccountInfo(event.member)
-    override val msg: String get() = msgContent.msg
+    // override val msg: String get() = msgContent.msg
     override val permission: Permissions = event.member.permission.toSimbotPermissions()
     override val groupMsgType: GroupMsg.Type get() = GroupMsg.Type.SYS
     override val flag: EmptyMiraiGroupFlag get() = EmptyMiraiGroupFlag

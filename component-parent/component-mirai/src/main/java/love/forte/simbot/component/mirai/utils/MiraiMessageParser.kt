@@ -114,7 +114,7 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
                     // poke.
                     PokeMessage.values.find { p -> p.type == type && p.id == id } ?: PokeMessage.Poke
                 }
-            }) { cat }
+            }, cat)
         }
 
         // 头像抖动

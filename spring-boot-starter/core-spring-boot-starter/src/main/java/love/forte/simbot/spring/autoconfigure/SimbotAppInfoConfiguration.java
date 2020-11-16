@@ -12,10 +12,12 @@
 
 package love.forte.simbot.spring.autoconfigure;
 
+import love.forte.common.ioc.annotation.Beans;
 import love.forte.simbot.SimbotArgsEnvironment;
 import love.forte.simbot.SimbotEnvironment;
 import love.forte.simbot.SimbotPackageScanEnvironment;
 import love.forte.simbot.SimbotResourceEnvironment;
+import love.forte.simbot.api.message.events.MessageContentBuilderFactory;
 import love.forte.simbot.bot.BotManager;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.listener.MsgGetProcessor;
@@ -73,7 +75,10 @@ public class SimbotAppInfoConfiguration {
         return simbotContext.getConfiguration();
     }
 
-
+    @Bean("simbotMessageContentBuilderFactory")
+    public MessageContentBuilderFactory messageContentBuilderFactory(){
+        return simbotContext.get(MessageContentBuilderFactory.class);
+    }
 
 
 }

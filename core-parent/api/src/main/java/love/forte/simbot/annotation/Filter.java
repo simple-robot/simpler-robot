@@ -136,6 +136,9 @@ public @interface Filter {
 
     /**
      * 是否清理其中存在的特殊码，一般为CAT码。 参数为清理的类型，例如 “at” 之类的。
+     *
+     * TODO 2个版本内将会被删除。
+     *
      * @deprecated 使用 {@link MsgGet#getText()} 进行过滤匹配，按照约定其中不应存在任何CAT码。
      */
     @Deprecated
@@ -144,6 +147,9 @@ public @interface Filter {
 
     /**
      * 是否清理全部的特殊码，一般为CAT码。如果为true, 则{@link #clearCode()} 无效。
+     *
+     * TODO 2个版本内将会被删除。
+     *
      * @deprecated 使用 {@link MsgGet#getText()} 进行过滤匹配，按照约定其中不应存在任何CAT码。
      */
     @Deprecated

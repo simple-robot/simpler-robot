@@ -15,6 +15,7 @@ package love.forte.simbot.component.mirai.message
 import cn.hutool.core.io.FileUtil
 import io.ktor.http.*
 import love.forte.catcode.CatCodeUtil
+import love.forte.catcode.Neko
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.events.MessageContentBuilder
 import love.forte.simbot.api.message.events.MessageContentBuilderFactory
@@ -24,8 +25,10 @@ import net.mamoe.mirai.message.data.Face
 import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.message.uploadAsImage
 import java.io.ByteArrayInputStream
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
+import java.lang.Exception
 
 /**
  * [MiraiMessageContentBuilder]'s factory.
@@ -74,8 +77,8 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
 
 
     override fun imageLocal(path: String, flash: Boolean): MiraiMessageContentBuilder {
-        val file = FileUtil.file(path)?.takeIf { it.exists() } ?: throw FileNotFoundException(path)
-        val imageNeko = CatCodeUtil
+        val file: File = FileUtil.file(path)?.takeIf { it.exists() } ?: throw FileNotFoundException(path)
+        val imageNeko: Neko = CatCodeUtil
             .getNekoBuilder("image", true)
             .key("file").value(path)
             .key("type").value("local")
@@ -87,7 +90,7 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
 
     override fun imageUrl(url: String, flash: Boolean): MiraiMessageContentBuilder {
         val u = Url(url)
-        val imageNeko = CatCodeUtil
+        val imageNeko: Neko = CatCodeUtil
             .getNekoBuilder("image", true)
             .key("file").value(url)
             .key("type").value("network")
@@ -103,8 +106,10 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
             .getNekoBuilder("image", true)
             .key("type").value("inputStream")
             .build()
-        MiraiImageMessageContent(flash, imageNeko){
-            input.uploadAsImage(it)
+        MiraiImageMessageContent(flash, imageNeko, { input.close().also { println("do close.") } }){
+            input.uploadAsImage(it).also {
+                try { input.reset() } catch (e: Exception){ }
+            }
         }.apply { contentList.add(this) }
         return this
     }

@@ -25,10 +25,12 @@ import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.event.subscribeAlways
 import net.mamoe.mirai.message.FriendMessageEvent
 import net.mamoe.mirai.message.GroupMessageEvent
+import net.mamoe.mirai.message.MessageEvent
 import net.mamoe.mirai.message.TempMessageEvent
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.concurrent.TimeUnit
 
 //region 处理监听消息
 private fun <M : MsgGet> M.onMsg(msgProcessor: MsgGetProcessor) = msgProcessor.onMsg(this)
@@ -271,7 +273,9 @@ private inline fun <reified E : BotEvent> Bot.registerListenerAlways(crossinline
         Listener<E> {
     return this.subscribeAlways {
         if (this@subscribeAlways.bot.id == this@registerListenerAlways.id) {
+            val n1 = System.nanoTime()
             handler(this)
+            val n2 = System.nanoTime()
         }
     }
 }
