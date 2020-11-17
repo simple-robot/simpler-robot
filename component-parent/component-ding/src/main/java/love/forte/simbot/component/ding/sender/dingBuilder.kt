@@ -12,9 +12,9 @@
 
 package love.forte.simbot.component.ding.sender
 
-import love.forte.simbot.component.ding.ComponentDingProperties
 import love.forte.simbot.component.ding.sceret.DingSecretCalculator
 import love.forte.simbot.http.template.HttpTemplate
+import love.forte.simbot.serialization.json.JsonSerializerFactory
 
 
 /**
@@ -25,8 +25,8 @@ data class DingSenderInfo(
     val webhook: String,
     val secret: String?,
     val secretCalculator: DingSecretCalculator,
-    val http: HttpTemplate,
-    val config: ComponentDingProperties
+    val httpTemplate: HttpTemplate,
+    val jsonSerializerFactory: JsonSerializerFactory
 )
 
 /**
@@ -44,6 +44,6 @@ object DingSenderBuilderImpl : DingSenderBuilder {
         // 完整的webhook，携带access_token
         val webhookIntegral = "${info.webhook}?access_token=${info.accessToken}"
 
-        return DingSenderImpl(webhookIntegral, info.secret, info.secretCalculator, info.http)
+        return DingSenderImpl(webhookIntegral, info.secret, info.secretCalculator, info.httpTemplate, info.jsonSerializerFactory)
     }
 }

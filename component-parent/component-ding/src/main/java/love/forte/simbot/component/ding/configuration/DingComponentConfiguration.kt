@@ -17,13 +17,10 @@ package love.forte.simbot.component.ding.configuration
 import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.bot.BotRegisterInfo
-import love.forte.simbot.component.ding.ComponentDingProperties
 import love.forte.simbot.component.ding.sceret.DefaultDingSecretCalculator
 import love.forte.simbot.component.ding.sceret.DingSecretCalculator
 import love.forte.simbot.component.ding.sender.*
 import love.forte.simbot.http.template.HttpTemplate
-import java.util.regex.Pattern
-
 
 
 /**

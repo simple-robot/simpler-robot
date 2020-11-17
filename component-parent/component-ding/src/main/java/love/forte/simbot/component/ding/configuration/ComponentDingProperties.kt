@@ -11,7 +11,7 @@
  *  * QQ     1149159218
  *
  */
-package love.forte.simbot.component.ding
+package love.forte.simbot.component.ding.configuration
 
 import love.forte.common.configuration.annotation.AsConfig
 import love.forte.common.ioc.annotation.ConfigBeans

@@ -1,0 +1,2 @@
+simbot.autoconfigure.configs=love.forte.simbot.component.ding.configuration.ComponentDingProperties,\
+love.forte.simbot.component.ding.configuration.DingComponentConfiguration
