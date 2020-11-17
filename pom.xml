@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <artifactId>parent</artifactId>
     <groupId>love.forte.simple-robot</groupId>
-    <version>2.0.0-ALPHA.3</version><!--v-->
+    <version>2.0.0-ALPHA.4</version><!--v-->
     <modules>
         <module>core-parent</module>
         <module>component-parent</module>
@@ -81,6 +81,11 @@
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
                 <artifactId>component-mirai</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
+                <artifactId>component-ding</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!--</editor-fold>-->
