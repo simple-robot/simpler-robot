@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>component-mirai</module>
+        <!--<module>component-xiaolz-oopshttpapi</module>-->
     </modules>
 
     <dependencies>
