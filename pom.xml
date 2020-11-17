@@ -32,7 +32,7 @@
         <!--</editor-fold>-->
         <!--<editor-fold desc="kt prop">-->
         <kotlin.version>1.4.10</kotlin.version>
-        <ktor.version>1.4.1</ktor.version>
+        <ktor.version>1.4.2</ktor.version>
         <kotlinx.version>1.3.9</kotlinx.version>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
@@ -192,6 +192,27 @@
                 <artifactId>ktor-client-cio-jvm</artifactId>
                 <version>${ktor.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-server-core</artifactId>
+                <version>${ktor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-server-netty</artifactId>
+                <version>${ktor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-server-jetty</artifactId>
+                <version>${ktor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-server-servlet</artifactId>
+                <version>${ktor.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-stdlib</artifactId>
