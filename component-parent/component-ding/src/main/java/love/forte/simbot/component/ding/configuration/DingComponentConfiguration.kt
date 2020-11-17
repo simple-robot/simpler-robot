@@ -20,7 +20,9 @@ import love.forte.simbot.bot.BotRegisterInfo
 import love.forte.simbot.component.ding.sceret.DefaultDingSecretCalculator
 import love.forte.simbot.component.ding.sceret.DingSecretCalculator
 import love.forte.simbot.component.ding.sender.*
+import love.forte.simbot.constant.PriorityConstant
 import love.forte.simbot.http.template.HttpTemplate
+import love.forte.simbot.serialization.json.JsonSerializerFactory
 
 
 /**
@@ -28,7 +30,7 @@ import love.forte.simbot.http.template.HttpTemplate
  * @author ForteScarlet <ForteScarlet@163.com>
  * 2020/8/8
  */
-@Beans
+@Beans(priority = PriorityConstant.COMPONENT_TENTH)
 class DingComponentConfiguration {
 
 
@@ -37,13 +39,13 @@ class DingComponentConfiguration {
      * @see DingSecretCalculator
      * @see DefaultDingSecretCalculator
      */
-    @Beans
+    @Beans(priority = PriorityConstant.COMPONENT_TENTH)
     fun defaultDingSecretCalculator(): DefaultDingSecretCalculator = DefaultDingSecretCalculator
 
     /**
      * sender builder
      */
-    @Beans
+    @Beans(priority = PriorityConstant.COMPONENT_TENTH)
     fun dingSenderBuilder(): DingSenderBuilderImpl = DingSenderBuilderImpl
 
     /**
@@ -58,16 +60,17 @@ class DingComponentConfiguration {
      * @param config 配置信息
      * @param dingSecretCalculator 签名计算器
      */
-    @Beans
+    @Beans(priority = PriorityConstant.COMPONENT_TENTH)
     fun getDingSenderManager(config: ComponentDingProperties,
                              dingSecretCalculator: DingSecretCalculator,
-                             senderBuilder: DingSenderBuilder
+                             senderBuilder: DingSenderBuilder,
+                             jsonSerializerFactory: JsonSerializerFactory
     ): DingSenderManager {
         val senders: MutableMap<String, DingSender> = config.bots.asSequence().map {sp ->
             val bot = BotRegisterInfo.splitTo(sp)
             val secret: String? = bot.code.takeIf { it.isNotBlank() }
             val accessToken: String = bot.verification
-            val dingSenderInfo = DingSenderInfo(accessToken, config.webhook, secret, dingSecretCalculator, httpTemplate, config)
+            val dingSenderInfo = DingSenderInfo(accessToken, config.webhook, secret, dingSecretCalculator, httpTemplate, jsonSerializerFactory)
             val dingSender = senderBuilder.getDingSender(dingSenderInfo)
             accessToken to dingSender
         }.toMap(mutableMapOf())
