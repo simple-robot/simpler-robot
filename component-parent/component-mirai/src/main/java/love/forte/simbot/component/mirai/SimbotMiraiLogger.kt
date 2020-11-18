@@ -16,7 +16,6 @@ package love.forte.simbot.component.mirai
 
 import net.mamoe.mirai.utils.MiraiLoggerPlatformBase
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 /**
  * 默认使用的普通日志实现，不会区分bot
