@@ -1,10 +1,13 @@
 package love.forte.test.listest;
 
 import love.forte.common.ioc.annotation.Beans;
+import love.forte.common.ioc.annotation.Depend;
 import love.forte.simbot.annotation.Listen;
 import love.forte.simbot.annotation.Listens;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.annotation.OnPrivate;
+import love.forte.simbot.api.message.MessageContentBuilder;
+import love.forte.simbot.api.message.MessageContentBuilderFactory;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.message.events.MsgGet;
 import love.forte.simbot.api.message.events.PrivateMsg;
