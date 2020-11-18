@@ -21,9 +21,11 @@ import org.slf4j.LoggerFactory
 /**
  * 默认使用的普通日志实现，不会区分bot
  */
-object SimbotMiraiLogger : MiraiLoggerPlatformBase() {
+public class SimbotMiraiLogger(
+    private val logger: Logger
+) : MiraiLoggerPlatformBase() {
     override val identity: String = "simbot-mirai"
-    private val logger: Logger = LoggerFactory.getLogger(SimbotMiraiLogger::class.java)
+    // private val logger: Logger = LoggerFactory.getLogger(SimbotMiraiLogger::class.java)
 
     override fun debug0(message: String?, e: Throwable?) {
         e?.let { logger.debug(message, it) } ?: logger.debug("{}", message)

@@ -19,6 +19,8 @@ import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.Beans
 import love.forte.simbot.component.mirai.SimbotMiraiLogger
 import net.mamoe.mirai.utils.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -142,7 +144,10 @@ public class MiraiConfiguration {
         // MiraiLoggerWithSwitch
         // 默认情况下都是关闭状态的log
         if(useSimbotBotLog){
-            conf.botLoggerSupplier = { SimbotMiraiLogger.withSwitch(true) }
+            conf.botLoggerSupplier = {
+                val logger: Logger = LoggerFactory.getLogger("M/Bot ${it.id}")
+                SimbotMiraiLogger(logger).withSwitch(true)
+            }
         }else{
             val oldBotLoggerSup = conf.botLoggerSupplier
             conf.botLoggerSupplier = {
@@ -151,7 +156,10 @@ public class MiraiConfiguration {
             }
         }
         if(useSimbotNetworkLog){
-            conf.networkLoggerSupplier = { SimbotMiraiLogger.withSwitch(true) }
+            conf.networkLoggerSupplier = {
+                val logger: Logger = LoggerFactory.getLogger("M/Net ${it.id}")
+                SimbotMiraiLogger(logger).withSwitch(true)
+            }
         }else{
             val oldNetworkLoggerSup = conf.networkLoggerSupplier
             conf.networkLoggerSupplier = {
