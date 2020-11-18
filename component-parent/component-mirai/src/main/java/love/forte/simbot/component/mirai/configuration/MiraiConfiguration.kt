@@ -12,6 +12,7 @@
  *
  */
 @file:JvmName("MiraiConfigurations")
+
 package love.forte.simbot.component.mirai.configuration
 
 import cn.hutool.crypto.SecureUtil
@@ -97,13 +98,11 @@ public class MiraiConfiguration {
     var cacheDirectory: String? = null
 
 
-
     /**
      * mirai官方配置类获取函数，默认为其默认值
      * */
     // @set:Deprecated("use setPostBotConfigurationProcessor((code, conf) -> {...})")
-    val botConfiguration: (String) -> BotConfiguration = {
-        code ->
+    val botConfiguration: (String) -> BotConfiguration = { code ->
         val conf = BotConfiguration()
         conf.deviceInfo = { MiraiSystemDeviceInfo(code, deviceInfoSeed) }
         conf.heartbeatPeriodMillis = this.heartbeatPeriodMillis
@@ -112,99 +111,64 @@ public class MiraiConfiguration {
         conf.reconnectPeriodMillis = this.reconnectPeriodMillis
         conf.reconnectionRetryTimes = this.reconnectionRetryTimes
         conf.protocol = this.protocol
-        conf.fileCacheStrategy = when(this.cacheType) {
+        conf.fileCacheStrategy = when (this.cacheType) {
             // 内存缓存
             MiraiCacheType.MEMORY -> FileCacheStrategy.MemoryCache
             // 文件缓存
-            MiraiCacheType.FILE, -> {
+            MiraiCacheType.FILE -> {
                 val cacheDir = this.cacheDirectory
-                if(cacheDir?.isNotBlank() == true){
+                if (cacheDir?.isNotBlank() == true) {
                     val directory = File(cacheDir)
-                    if(!directory.exists()){
+                    if (!directory.exists()) {
                         // 不存在，创建
                         directory.mkdirs()
                     }
-                    if(!directory.isDirectory){
+                    if (!directory.isDirectory) {
                         throw IllegalArgumentException("'$cacheDir' is not a directory.")
                     }
                     FileCacheStrategy.TempCache(directory)
-                }else{
+                } else {
                     FileCacheStrategy.MemoryCache
                 }
             }
         }
 
 
-        if(noBotLog){
+        if (noBotLog) {
             conf.noBotLog()
         }
-        if(noNetworkLog){
+        if (noNetworkLog) {
             conf.noNetworkLog()
         }
         // MiraiLoggerWithSwitch
         // 默认情况下都是关闭状态的log
-        if(useSimbotBotLog){
+        if (useSimbotBotLog) {
             conf.botLoggerSupplier = {
                 val logger: Logger = LoggerFactory.getLogger("M/Bot ${it.id}")
                 SimbotMiraiLogger(logger).withSwitch(true)
             }
-        }else{
+        } else {
             val oldBotLoggerSup = conf.botLoggerSupplier
             conf.botLoggerSupplier = {
                 val logger = oldBotLoggerSup(it)
-                if(logger is MiraiLoggerWithSwitch) logger else logger.withSwitch(true)
+                if (logger is MiraiLoggerWithSwitch) logger else logger.withSwitch(true)
             }
         }
-        if(useSimbotNetworkLog){
+        if (useSimbotNetworkLog) {
             conf.networkLoggerSupplier = {
                 val logger: Logger = LoggerFactory.getLogger("M/Net ${it.id}")
                 SimbotMiraiLogger(logger).withSwitch(true)
             }
-        }else{
+        } else {
             val oldNetworkLoggerSup = conf.networkLoggerSupplier
             conf.networkLoggerSupplier = {
                 val logger = oldNetworkLoggerSup(it)
-                if(logger is MiraiLoggerWithSwitch) logger else logger.withSwitch(true)
+                if (logger is MiraiLoggerWithSwitch) logger else logger.withSwitch(true)
             }
         }
 
         conf
-        // if(inheritCoroutineContext) {
-        //     conf.inheritCoroutineContext()
-        // }
-
-        // post processor
-        // postBotConfigurationProcessor(code, conf)
     }
-    // @Suppress("SetterBackingFieldAssignment")
-    // set(value) {
-    //     postBotConfigurationProcessor = {
-    //         code, _ ->
-    //         value(code)
-    //     }
-    // }
-
-
-    // /**
-    //  * 通过实例设置configuration.
-    //  * 此方法将会完全覆盖原有的所有默认配置。
-    //  */
-    // fun setBotConfiguration(configuration: BotConfiguration){
-        // val confNetworkLoggerSup = configuration.networkLoggerSupplier
-        // val confBotLoggerSup = configuration.botLoggerSupplier
-        // 设置日志开关
-        // postBotConfigurationProcessor = {_,_ ->
-        //     configuration.networkLoggerSupplier = {
-        //         val netWorkLogger = confNetworkLoggerSup(it)
-        //         if (netWorkLogger is MiraiLoggerWithSwitch) netWorkLogger else netWorkLogger.withSwitch(true)
-        //     }
-        //     configuration.botLoggerSupplier = {
-        //         val botLogger = confBotLoggerSup(it)
-        //         if (botLogger is MiraiLoggerWithSwitch) botLogger else botLogger.withSwitch(true)
-        //     }
-        //     configuration
-        // }
-    // }
 }
 
 /**
@@ -213,6 +177,7 @@ public class MiraiConfiguration {
 enum class MiraiCacheType {
     /** 文件缓存 */
     FILE,
+
     /** 内存缓存 */
     MEMORY
 }
@@ -224,12 +189,12 @@ enum class MiraiCacheType {
 open class MiraiSystemDeviceInfo
 @JvmOverloads
 constructor(
-        code: Long,
-        seed: Long,
-        randomFactory: (code: Long, seed: Long) -> Random = { c,s -> Random(c * s) }
-): SystemDeviceInfo() {
-    constructor(codeId: String, seedNum: Long): this(codeId.toLong(), seedNum)
-    constructor(codeId: String, seedNum: Long, randomFactory: (code: Long, seed: Long) -> Random):
+    code: Long,
+    seed: Long,
+    randomFactory: (code: Long, seed: Long) -> Random = { c, s -> Random(c * s) }
+) : SystemDeviceInfo() {
+    constructor(codeId: String, seedNum: Long) : this(codeId.toLong(), seedNum)
+    constructor(codeId: String, seedNum: Long, randomFactory: (code: Long, seed: Long) -> Random) :
             this(codeId.toLong(), seedNum, randomFactory)
 
 
@@ -243,10 +208,10 @@ constructor(
     override val model: ByteArray = "mirai-simbot".toByteArray()
 
     override val fingerprint: ByteArray =
-            "mamoe/mirai/mirai:10/MIRAI.200122.001/${getRandomString(7, '0'..'9', random)}:user/release-keys".toByteArray()
+        "mamoe/mirai/mirai:10/MIRAI.200122.001/${getRandomString(7, '0'..'9', random)}:user/release-keys".toByteArray()
     override val bootId: ByteArray = generateUUID(SecureUtil.md5().digest(getRandomByteArray(16, random))).toByteArray()
     override val procVersion: ByteArray =
-            "Linux version 3.0.31-${getRandomString(8, random)} (android-build@xxx.xxx.xxx.xxx.com)".toByteArray()
+        "Linux version 3.0.31-${getRandomString(8, random)} (android-build@xxx.xxx.xxx.xxx.com)".toByteArray()
 
     override val imsiMd5: ByteArray = SecureUtil.md5().digest(getRandomByteArray(16, random))
     override val imei: String = getRandomString(15, '0'..'9', random)
@@ -271,7 +236,7 @@ internal fun getRandomByteArray(length: Int, r: Random): ByteArray = ByteArray(l
  * 随机生成长度为 [length] 的 [String].
  */
 internal fun getRandomString(length: Int, r: Random): String =
-        getRandomString(length, r, *defaultRanges)
+    getRandomString(length, r, *defaultRanges)
 
 private val defaultRanges: Array<CharRange> = arrayOf('a'..'z', 'A'..'Z', '0'..'9')
 
@@ -279,23 +244,25 @@ private val defaultRanges: Array<CharRange> = arrayOf('a'..'z', 'A'..'Z', '0'..'
  * 根据所给 [charRange] 随机生成长度为 [length] 的 [String].
  */
 internal fun getRandomString(length: Int, charRange: CharRange, r: Random): String =
-        String(CharArray(length) { charRange.random(r) })
+    String(CharArray(length) { charRange.random(r) })
 
 /**
  * 根据所给 [charRanges] 随机生成长度为 [length] 的 [String].
  */
 internal fun getRandomString(length: Int, r: Random, vararg charRanges: CharRange): String =
-        String(CharArray(length) { charRanges[r.nextInt(0..charRanges.lastIndex)].random(r) })
+    String(CharArray(length) { charRanges[r.nextInt(0..charRanges.lastIndex)].random(r) })
 
 private fun generateUUID(md5: ByteArray): String {
     return "${md5[0, 3]}-${md5[4, 5]}-${md5[6, 7]}-${md5[8, 9]}-${md5[10, 15]}"
 }
+
 @JvmSynthetic
 internal operator fun ByteArray.get(rangeStart: Int, rangeEnd: Int): String = buildString {
     for (it in rangeStart..rangeEnd) {
         append(this@get[it].fixToString())
     }
 }
+
 private fun Byte.fixToString(): String {
     return when (val b = this.toInt() and 0xff) {
         in 0..15 -> "0${this.toString(16).toUpperCase()}"

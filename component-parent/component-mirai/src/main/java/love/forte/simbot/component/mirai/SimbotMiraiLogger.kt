@@ -25,7 +25,6 @@ public class SimbotMiraiLogger(
     private val logger: Logger
 ) : MiraiLoggerPlatformBase() {
     override val identity: String = "simbot-mirai"
-    // private val logger: Logger = LoggerFactory.getLogger(SimbotMiraiLogger::class.java)
 
     override fun debug0(message: String?, e: Throwable?) {
         e?.let { logger.debug(message, it) } ?: logger.debug("{}", message)
