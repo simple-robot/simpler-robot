@@ -39,3 +39,18 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 上述调整中，构建group和friend目标图片的时候调整为共用同一个锁。 
 
 
+
+### ALPHA.4(now)
+
+### 核心
+
+调整 MessageContentBuilder 的包路径，移出`event`层级。
+
+### 组件
+
+- 追加1.x中的[钉钉组件](./component-parent/component-ding)。
+
+
+
+
+

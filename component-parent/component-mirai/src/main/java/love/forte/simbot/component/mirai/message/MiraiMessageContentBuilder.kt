@@ -19,8 +19,8 @@ import io.ktor.http.*
 import love.forte.catcode.CatCodeUtil
 import love.forte.catcode.Neko
 import love.forte.simbot.api.message.containers.AccountCodeContainer
-import love.forte.simbot.api.message.events.MessageContentBuilder
-import love.forte.simbot.api.message.events.MessageContentBuilderFactory
+import love.forte.simbot.api.message.MessageContentBuilder
+import love.forte.simbot.api.message.MessageContentBuilderFactory
 import love.forte.simbot.component.mirai.utils.toStream
 import net.mamoe.mirai.message.data.AtAll
 import net.mamoe.mirai.message.data.Face
