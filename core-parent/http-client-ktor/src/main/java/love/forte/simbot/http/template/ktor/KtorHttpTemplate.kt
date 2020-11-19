@@ -29,6 +29,8 @@ import love.forte.simbot.http.template.*
 import love.forte.simbot.http.template.HttpHeaders
 import love.forte.simbot.http.template.HttpRequest
 import love.forte.simbot.serialization.json.JsonSerializerFactory
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import io.ktor.client.statement.HttpResponse as KtorHttpResponse
 
 
@@ -352,6 +354,8 @@ public class KtorHttpResponseImpl<T>(
     bodySerializer: (String) -> T
 ) : HttpResponse<T> {
 
+    private val logger: Logger = LoggerFactory.getLogger(KtorHttpResponseImpl::class.java)
+
     private var _contentAsync: Deferred<String?>? = if (ignoreContent) {
         null
     } else {
@@ -391,6 +395,7 @@ public class KtorHttpResponseImpl<T>(
 
     /** body. */
     override val body: T by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        logger.debug(content)
         content?.let { bodySerializer(it) } ?: throw IllegalStateException()
     }
 
