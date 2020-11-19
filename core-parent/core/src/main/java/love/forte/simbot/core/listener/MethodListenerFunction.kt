@@ -278,7 +278,7 @@ public class MethodListenerFunction(
                                 ?: throw IllegalStateException("Msg ${d.msgGet} unable to get msg.")
                             val findValue = listenAnnotationFilter?.getFilterValue(filterValueName, text)
                             if (findValue == null) {
-                                throw IllegalStateException("Unable to extract filter value $filterValueName in method $method.")
+                                throw IllegalStateException("Unable to extract filter value '$filterValueName' in method $method.")
                             } else {
                                 converterManager.convert(parameterType, findValue)
                             }

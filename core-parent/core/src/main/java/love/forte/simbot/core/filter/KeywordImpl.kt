@@ -23,8 +23,8 @@ import java.util.regex.Pattern
  * 一个普通的value值构建为 [Keyword] 实例。
  */
 public class TextKeyword(override val text: String) : Keyword {
-    override val regex: Regex = Regex(text)
     override val parameterMatcher: FilterParameterMatcher = CoreFilterParameterMatcher.compile(text)
+    override val regex: Regex = parameterMatcher.pattern.toRegex()
 }
 
 
