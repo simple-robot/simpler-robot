@@ -52,10 +52,6 @@ public data class LovelyCatEventLogin(
     override val botJsonInfo: String
         get() = msg
 
-    /** bot id */
-    override val botId: String
-        get() = robWxid
-
     /**
      *  登录事件不存在text。
      */

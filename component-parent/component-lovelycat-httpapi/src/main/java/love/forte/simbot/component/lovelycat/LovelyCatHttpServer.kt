@@ -20,21 +20,30 @@ import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.request.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.util.pipeline.*
+import io.ktor.utils.io.*
+import love.forte.simbot.component.lovelycat.message.event.BaseLovelyCatMsg
 import love.forte.simbot.serialization.json.JsonSerializer
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 import java.io.Closeable
 
+
+
 private val jsonContentType = ContentType.parse("application/json")
 
+
+
 private class JsonContentConverter(private val fac: JsonSerializerFactory) : ContentConverter {
+
     override suspend fun convertForReceive(
         context: PipelineContext<ApplicationReceiveRequest, ApplicationCall>
     ): Any? {
-        println("context.subject.type: ${context.subject.type}")
-        return null
+        val channel = context.subject.value as ByteReadChannel
+        val message = channel.readUTF8Line() ?: "{}"
+        return fac.getJsonSerializer(context.subject.type.java).fromJson(message)
     }
 
     override suspend fun convertForSend(
@@ -59,11 +68,19 @@ interface LovelyCatHttpServer : Closeable {
 
 
 public class LovelyCatKtorHttpServer(
+    /** 类型转化函数，根据 'Event' 参数获取对应的解析对象 */
+    // private val msgParser: Map<String, (Map<String, *>) -> BaseLovelyCatMsg>,
     applicationEngineFactory: ApplicationEngineFactory<ApplicationEngine, out ApplicationEngine.Configuration>,
     jsonSerializerFactory: JsonSerializerFactory,
     port: Int,
     path: String
 ) : LovelyCatHttpServer {
+
+    init {
+        Runtime.getRuntime().addShutdownHook(Thread {
+            close()
+        })
+    }
 
     /**
      * the server instance.
@@ -81,8 +98,18 @@ public class LovelyCatKtorHttpServer(
                     // TODO
                     val params = call.receive<Map<String, *>>()
                     println(params)
-                    // ok status.
-                    call.response.status(HttpStatusCode.OK)
+                    val eventType = params["Event"]?.toString()
+
+                    if (eventType == null) {
+                        // 404. no event.
+                        call.response.status(HttpStatusCode.NotFound)
+                        call.respondText { "param 'Event' not found: is Empty." }
+                    } else {
+                        // ok status.
+                        call.response.status(HttpStatusCode.OK)
+
+                    }
+
                 }
             }
         }
@@ -102,6 +129,12 @@ public class LovelyCatKtorHttpServer(
     }
 
 }
+
+
+
+private data class ResponseData(
+    private val message: String
+)
 
 
 

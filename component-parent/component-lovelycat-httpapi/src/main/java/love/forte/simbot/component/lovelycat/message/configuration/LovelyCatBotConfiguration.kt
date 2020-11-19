@@ -18,12 +18,13 @@ package love.forte.simbot.component.lovelycat.message.configuration
 
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.Bot
-import love.forte.simbot.bot.BotManager
 import love.forte.simbot.bot.BotRegisterInfo
 import love.forte.simbot.bot.BotVerifier
 import love.forte.simbot.core.configuration.ComponentBeans
 
-
+/**
+ * lovely cat 验证器。
+ */
 @ComponentBeans
 public class LovelyCatBotVerifier : BotVerifier {
     /** 验证一个bot的注册信息，并转化为一个该组件对应的 [Bot] 实例。 */
@@ -31,3 +32,5 @@ public class LovelyCatBotVerifier : BotVerifier {
         TODO("Not yet implemented")
     }
 }
+
+

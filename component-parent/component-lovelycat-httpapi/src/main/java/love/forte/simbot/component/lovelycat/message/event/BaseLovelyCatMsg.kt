@@ -20,6 +20,7 @@ package love.forte.simbot.component.lovelycat.message.event
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.component.lovelycat.message.event.LovelyCatMsg.Companion.NON_TYPE
 import kotlin.reflect.KClass
 
 
@@ -30,20 +31,34 @@ public val LovelyCatEventTypes: Map<String, KClass<out BaseLovelyCatMsg>> =
 
 
 /**
- * lovelyCat 基础的事件父类。
- *
- * @property event 事件的名称
+ * LovelyCat msg.
+ * @property event String
  */
-public abstract class BaseLovelyCatMsg(val event: String, override val originalData: String) : MsgGet {
-    // abstract val event: String
-
-    /** bot id */
-    abstract val botId: String
+public interface LovelyCatMsg : MsgGet {
+    val event: String
 
     /**
      * 类型。如果是-999则代表没有此值。
      */
-    open val type: Int = NON_TYPE
+    val type: Int
+
+
+    companion object {
+        /** 当不存在一个 'type' 的时候使用此值。 */
+        const val NON_TYPE = -999
+    }
+}
+
+
+/**
+ * lovelyCat 基础的事件父类。
+ *
+ * @property event 事件的名称
+ */
+public abstract class BaseLovelyCatMsg(override val event: String, override val originalData: String) : LovelyCatMsg {
+
+    override val type: Int
+        get() = NON_TYPE
 
     /**
      * 接收到的消息类型。某些事件中也可能是 'json_msg'
@@ -91,16 +106,7 @@ public abstract class BaseLovelyCatMsg(val event: String, override val originalD
     // override val accountInfo: AccountInfo
     //     get() = TODO("Not yet implemented")
 
-
-    companion object {
-        /** 当不存在一个 'type' 的时候使用此值。 */
-        const val NON_TYPE = -999
-    }
 }
-
-
-
-
 
 
 /**
@@ -149,7 +155,7 @@ public fun lovelyCatBotInfo(
     botCode: String,
     botName: String,
     botAvatar: String? = null
-) : BotInfo = LovelyCatBotInfo(botCode, botName, botAvatar)
+): BotInfo = LovelyCatBotInfo(botCode, botName, botAvatar)
 
 
 /**
