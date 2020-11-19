@@ -21,7 +21,7 @@
 
     <properties>
         <!-- mirai -->
-        <mirai.version>1.3.2</mirai.version>
+        <mirai.version>1.3.3</mirai.version>
     </properties>
 
 

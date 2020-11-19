@@ -42,7 +42,8 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 ### ALPHA.4(now)
 
-- kotlin update to v1.4.20
+- `kotlin` update to `v1.4.20`
+- `ktor` update to `v1.4.2`
 
 ### 核心
 
@@ -51,6 +52,8 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 ### 组件
 
 - 追加1.x中的[钉钉组件](./component-parent/component-ding)。
+
+- mirai组件 `mirai` update to `v1.3.3`
 
 
 
