@@ -106,7 +106,7 @@ public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : Abs
     /**
      * 消息字符串，由 [message] 懒转化为不携带cat码的纯文本字符串。
      */
-    override val text: String? = message.asSequence().filterIsInstance<PlainText>().joinToString(" ") { it.content }
+    override val text: String? =message.asSequence().filterIsInstance<PlainText>().joinToString(" ") { it.content }.takeIf { it.isNotBlank() }
 
 }
 

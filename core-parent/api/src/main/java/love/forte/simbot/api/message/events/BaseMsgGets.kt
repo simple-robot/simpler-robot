@@ -256,6 +256,8 @@ public interface MessageGet : MsgGet, FlagContainer<MessageGet.MessageFlagConten
     /**
      * 可以得到一个 **文本**。
      *
+     * 如果本次消息中不存在**文本** 或者实现类型不支持获取文本，得到null。
+     *
      * [文本][text] 与[消息][msg] 之间的区别在于，
      * 文本中包含的仅仅为一个 "文本消息内容"，其理应不会包含任何例如CAT码、图片、表情等任何非文本内容。
      *
