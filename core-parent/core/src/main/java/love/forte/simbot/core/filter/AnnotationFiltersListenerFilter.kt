@@ -349,7 +349,7 @@ public interface AnnotationFilterListenerFilter : ListenerFilter {
     /**
      * 匹配关键词内容。
      */
-    val keyword: Keyword
+    val keyword: Keyword?
 
     /**
      * 匹配模式。
@@ -394,8 +394,8 @@ public class AnnotationFilterListenerFilterImpl(
     /**
      * 匹配关键词内容。
      */
-    override val keyword: Keyword = with(filter.value) {
-        if (isBlank()) EmptyKeyword else TextKeyword(this)
+    override val keyword: Keyword? = with(filter.value) {
+        if (isBlank()) null else TextKeyword(this)
     }
 
     /**
@@ -629,10 +629,15 @@ public class AnnotationFilterListenerFilterImpl(
             return true
         }
 
-        // 如果msg为null，则认为其无法匹配文本，直接放行。
-        val msgText: String = msg.text?.let(textPre) ?: return true
+        return if (keyword == null) {
+            true
+        } else {
+            // 如果msg为null，则认为其无法匹配文本，直接放行。
+            val msgText: String = msg.text?.let(textPre) ?: return true
+            matchType.match(msgText, keyword)
+        }
 
-        return matchType.match(msgText, keyword)
+
     }
 
 
@@ -640,7 +645,7 @@ public class AnnotationFilterListenerFilterImpl(
      * 根据动态遍历获取一个值。
      */
     override fun getFilterValue(name: String, text: String): String? {
-        val matcher: FilterParameterMatcher = keyword.parameterMatcher
+        val matcher: FilterParameterMatcher = keyword?.parameterMatcher ?: return null
         return if (matcher.pattern.matcher(text).find()) {
             matcher.getParams(text)[name]
         } else null

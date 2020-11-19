@@ -108,10 +108,10 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
 
     /**
      * 判断当前消息中是否为空消息。
-     * 空消息指的是不存在msg，即msg == null，而不是msg为空字符。
+     * 空消息指的是不存在text，即text == null || text.isBlank。
      */
     @JvmDefault
-    fun isEmptyMsg(): Boolean = text == null
+    fun isEmptyMsg(): Boolean = text?.isBlank() == true
 
 
     /** 消息接收到的时间。一般是一个毫秒时间戳。 */
