@@ -21,6 +21,7 @@ import love.forte.common.ioc.annotation.PostPass
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.core.TypedCompLogger
+import love.forte.simbot.core.infof
 import love.forte.simbot.listener.ListenerManager
 import love.forte.simbot.listener.ListenerRegistered
 import love.forte.simbot.listener.PostListenerRegistrar
@@ -72,9 +73,9 @@ public class CoreListenerRegistrar {
         botManager.bots.forEach {
             val info: BotInfo = it.botInfo
             if (info.botLevel >= 0) {
-                logger.info("Start the registration Bot: code={}, name={}, level={}", info.botCode, info.botName, info.botLevel)
+                logger.infof("Start the registration Bot: code={}, name={}, level={}", info.botCode, info.botName, info.botLevel)
             } else {
-                logger.info("Start the registration Bot: code={}, name={}", info.botCode, info.botName)
+                logger.infof("Start the registration Bot: code={}, name={}", info.botCode, info.botName)
             }
 
         }

@@ -15,6 +15,8 @@
 @file:JvmName("HttpTemplateUtil")
 package love.forte.simbot.http.template
 
+import love.forte.simbot.http.HttpTemplateException
+
 
 /**
  *
@@ -35,6 +37,8 @@ package love.forte.simbot.http.template
  * 但是此模块不会引入 `serialization-json-*` 相关依赖，如果任何实现模块有需要则自行引入。
  * 一般子模块在实现的时候，只需要引入 `serialization-json-core` 而不是一个具体实现的模块,
  * 其序列化具体实现则取决于使用者的实际项目环境而定。
+ *
+ * @throws love.forte.simbot.http.HttpTemplateException
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
@@ -158,6 +162,15 @@ public interface HttpResponse<T> {
      */
     override fun toString(): String
 }
+
+
+public fun <T> HttpResponse<T>.assertBody(): T {
+    return if (statusCode < 300) {
+        body
+    } else throw HttpTemplateException(statusCode, message)
+}
+
+
 
 
 public data class HttpResponseData<T>(

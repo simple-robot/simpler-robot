@@ -1,0 +1,8 @@
+simbot:
+  core:
+    bots:
+
+  component:
+    lovelycat:
+      port: 8889
+      path: /cat
