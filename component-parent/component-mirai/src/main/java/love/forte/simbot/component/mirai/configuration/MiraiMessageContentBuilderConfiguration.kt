@@ -17,6 +17,7 @@ package love.forte.simbot.component.mirai.configuration
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.simbot.api.message.MessageContentBuilderFactory
 import love.forte.simbot.component.mirai.message.MiraiMessageContentBuilderFactory
+import love.forte.simbot.core.configuration.ComponentBeans
 
 /**
  *

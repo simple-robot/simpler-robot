@@ -12,7 +12,7 @@
  *
  */
 
-package love.forte.simbot.component.mirai.configuration;
+package love.forte.simbot.core.configuration;
 
 import love.forte.common.ioc.annotation.Beans;
 import love.forte.common.ioc.annotation.Depend;
@@ -32,7 +32,7 @@ import java.lang.annotation.*;
 @Documented
 @Beans
 @AnnotateMapping(Beans.class)
-@interface ComponentBeans {
+public @interface ComponentBeans {
 
     /** 依赖对象的名称，如果没有则以类名取代 */
     String value() default "";
