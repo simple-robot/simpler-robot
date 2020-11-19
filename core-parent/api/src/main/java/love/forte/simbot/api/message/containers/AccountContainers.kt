@@ -141,3 +141,37 @@ public inline fun AccountContainer(accountInfo: () -> AccountInfo): AccountConta
 
 /** [AccountContainer] 数据类实现。 */
 private data class AccountContainerData(override val accountInfo: AccountInfo) : AccountContainer
+
+
+
+public fun BotInfo.botAsAccountInfo() : AccountInfo = BotAccountInfo(this)
+
+/**
+ * 将 [BotInfo] 作为一个 [AccountInfo]
+ */
+private data class BotAccountInfo(private val botInfo: BotInfo) : AccountInfo {
+    /**
+     * 昵称。
+     * 可能会出现为null的情况，但是一般情况下不会。
+     */
+    override val accountNickname: String?
+        get() = botInfo.botName
+
+    /** 好友备注或群名片。可能为null。 */
+    override val accountRemark: String?
+        get() = null
+
+    /**
+     * 得到账号的头像地址. 一般来讲为`null`的可能性很小
+     */
+    override val accountAvatar: String?
+        get() = botInfo.botAvatar
+
+    /**
+     * 账号
+     */
+    override val accountCode: String
+        get() = botInfo.botCode
+
+}
+
