@@ -37,10 +37,14 @@ public class Test {
         LovelyCatApiTemplateImpl api = new LovelyCatApiTemplateImpl(template, url);
 
         String id = "wxid_bqy1ezxxkdat22";
-        System.out.println(api.getRobotName(id));
-        System.out.println(api.getRobotHeadImgUrl(id));
+
+        try {
+            System.out.println(api.getRobotName(id));
+            System.out.println(api.getRobotHeadImgUrl(id));
+        } finally {
+            System.exit(1);
+        }
 
 
-        System.exit(1);
     }
 }
