@@ -1,0 +1,3 @@
+simbot.autoconfigure.configs=love.forte.simbot.component.lovelycat.message.configuration.LovelyCatServerProperties,\
+love.forte.simbot.component.lovelycat.message.configuration.LovelyCatServerConfiguration,\
+love.forte.simbot.component.lovelycat.message.configuration.LovelyCatBotVerifier
