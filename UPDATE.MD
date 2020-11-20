@@ -40,7 +40,7 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 
 
-### ALPHA.4(now)
+### ALPHA.4
 
 - `kotlin` update to `v1.4.20`
 - `ktor` update to `v1.4.2`
@@ -57,6 +57,12 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 - mirai组件 `mirai` update to `v1.3.3`
 
 
+### fix
+
+- fix #1 ： 修复 `@Filters` 导致纯文本消息监听失效。
+- fix #2 ：修复动态参数解析。
+- try fix #3 ： 尝试修复mirai组件执行一段时间后会自行关闭的问题。
 
 
+## ALPHA.5(NOW)
 
