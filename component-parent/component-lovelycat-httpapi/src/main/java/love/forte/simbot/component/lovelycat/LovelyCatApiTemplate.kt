@@ -29,6 +29,9 @@ import love.forte.simbot.serialization.json.JsonSerializerFactory
  */
 public interface LovelyCatApiTemplate {
 
+    //**************** 取自身数据相关 ****************//
+
+
     /**
      * 功能=取登录账号昵称
      * robot_wxid, 文本型
@@ -51,6 +54,9 @@ public interface LovelyCatApiTemplate {
      * api=GetLoggedAccountList
      */
     fun getLoggedAccountList(): LoggedAccountList
+
+
+    //**************** 发送消息相关 ****************//
 
 
     /**
@@ -160,6 +166,10 @@ public interface LovelyCatApiTemplate {
      * api=SendMusicMsg
      */
     fun sendMusicMsg(robotWxid: String, toWxid: String, name: String, type: Int): LovelyCatApiResult
+
+    //**************** 取数据相关 ****************//
+
+
 
 
 
