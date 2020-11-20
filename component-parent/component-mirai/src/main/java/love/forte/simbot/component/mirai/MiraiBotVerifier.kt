@@ -64,10 +64,6 @@ public class MiraiBotVerifier(
 
             runBlocking {
                 mBot.alsoLogin()
-                // add shutdown hook.
-                Runtime.getRuntime().addShutdownHook(Thread {
-                    mBot.close()
-                })
             }
 
             val botContainer = BotContainer { MiraiBotInfo(mBot) }
