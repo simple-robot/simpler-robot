@@ -21,26 +21,46 @@ import love.forte.simbot.component.lovelycat.LovelyCatApiTemplateImpl;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.http.template.HttpTemplate;
+import love.forte.simbot.serialization.json.JsonSerializerFactory;
 
 /**
  * @author ForteScarlet
  */
 @SimbotApplication
 public class Test {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         SimbotContext context = SimbotApp.run(Test.class, args);
 
         HttpTemplate template = context.get(HttpTemplate.class);
 
         String url = "http://127.0.0.1:88/httpAPI";
 
-        LovelyCatApiTemplateImpl api = new LovelyCatApiTemplateImpl(template, url);
+        JsonSerializerFactory fac = context.get(JsonSerializerFactory.class);
 
-        String id = "wxid_bqy1ezxxkdat22";
+        LovelyCatApiTemplateImpl api = new LovelyCatApiTemplateImpl(template, url, fac);
+
+        String botId = "wxid_bqy1ezxxkdat22";
+        String fromWxid = "11046274610@chatroom";
+        String finalFromWxid = "wxid_khv2ht7uwa5x22";
 
         try {
-            System.out.println(api.getRobotName(id));
-            System.out.println(api.getRobotHeadImgUrl(id));
+            // System.out.println(api.getRobotName(id));
+            // System.out.println("-");
+            // System.out.println(api.getRobotHeadImgUrl(id));
+            // System.out.println("-");
+            // System.out.println(api.getLoggedAccountList());
+            // System.out.println("-");
+            // api.sendTextMsg("wxid_bqy1ezxxkdat22", "wxid_bqy1ezxxkdat22", "hello");
+            // System.out.println("-");
+            System.out.println(api.sendMusicMsg(botId, fromWxid, "音乐分享 t0", 0));
+            System.out.println(api.sendMusicMsg(botId, fromWxid, "音乐分享 t1", 1));
+            System.out.println(api.sendMusicMsg(botId, fromWxid, "音乐分享 t2", 2));
+            System.out.println("-");
+            // System.out.println(api.getLoggedAccountList());
+            // System.out.println("-");
+
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             System.exit(1);
         }
