@@ -50,7 +50,7 @@
         <fastjson.version>1.2.74</fastjson.version>
         <hutool.version>5.4.7</hutool.version>
 
-        <commons.version>1.0.0-ALPHA.4</commons.version>
+        <commons.version>1.0.0-ALPHA.5</commons.version>
         <catCode.version>1.0.0-ALPHA.3</catCode.version>
 
         <!-- plugins -->

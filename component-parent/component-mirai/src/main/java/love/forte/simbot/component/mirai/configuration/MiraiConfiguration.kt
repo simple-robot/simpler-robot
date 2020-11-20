@@ -144,7 +144,7 @@ public class MiraiConfiguration {
         // 默认情况下都是关闭状态的log
         if (useSimbotBotLog) {
             conf.botLoggerSupplier = {
-                val logger: Logger = LoggerFactory.getLogger("M/Bot ${it.id}")
+                val logger: Logger = LoggerFactory.getLogger("love.forte.component.mirai.bot.${it.id}")
                 SimbotMiraiLogger(logger).withSwitch(true)
             }
         } else {
@@ -156,7 +156,7 @@ public class MiraiConfiguration {
         }
         if (useSimbotNetworkLog) {
             conf.networkLoggerSupplier = {
-                val logger: Logger = LoggerFactory.getLogger("M/Net ${it.id}")
+                val logger: Logger = LoggerFactory.getLogger("love.forte.component.mirai.net.${it.id}")
                 SimbotMiraiLogger(logger).withSwitch(true)
             }
         } else {

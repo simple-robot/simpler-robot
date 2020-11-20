@@ -44,6 +44,7 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 - `kotlin` update to `v1.4.20`
 - `ktor` update to `v1.4.2`
+- `forte-common-ioc` to `v1.0.0-ALPHA.5`
 
 ### 核心
 
