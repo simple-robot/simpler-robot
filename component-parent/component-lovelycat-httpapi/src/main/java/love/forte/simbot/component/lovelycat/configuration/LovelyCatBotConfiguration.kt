@@ -14,7 +14,7 @@
  *
  */
 
-package love.forte.simbot.component.lovelycat.message.configuration
+package love.forte.simbot.component.lovelycat.configuration
 
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.Bot

@@ -14,7 +14,7 @@
  *
  */
 
-package love.forte.simbot.component.lovelycat.message.configuration
+package love.forte.simbot.component.lovelycat.configuration
 
 import love.forte.common.configuration.annotation.AsConfig
 import love.forte.common.ioc.annotation.ConfigBeans
