@@ -27,6 +27,7 @@ import love.forte.simbot.listener.ListenerRegistered
 import love.forte.simbot.listener.MsgGetProcessor
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.closeAndJoin
+import net.mamoe.mirai.join
 
 /**
  *
@@ -46,9 +47,24 @@ public class MiraiListenerRegistered : ListenerRegistered {
     override fun onRegistered(manager: ListenerManager) {
         // 注册Mirai的所有bot事件。
         Bot.forEachInstance { it.registerSimbotEvents(msgGetProcessor) }
+
+        val botAliveThread = BotAliveThread("mirai-bot-alive").apply { start() }
+
         // 注册一个 ctrl+c钩子来关闭所有的bot。
         Runtime.getRuntime().addShutdownHook(Thread {
-            logger.debug("try to close all bots...")
+            kotlin.runCatching {
+                botAliveThread.interrupt()
+            }.getOrElse { e ->
+                logger.error("mirai-bot-alive thread interrupt failed. try to shutdown.", e)
+                kotlin.runCatching {
+                    @Suppress("DEPRECATION")
+                    botAliveThread.stop()
+                }.getOrElse {
+                    logger.error("shutdown mirai-bot-alive thread failed.")
+                }
+            }
+
+            logger.info("try to close all bots...")
             val waiting = mutableListOf<Pair<Long, Deferred<*>>>()
             // close all bot.
             Bot.botInstancesSequence.map {
@@ -66,7 +82,22 @@ public class MiraiListenerRegistered : ListenerRegistered {
                 }
 
             }
-            logger.debug(" all bots closed.")
+            logger.info(" all bots closed.")
         })
+    }
+}
+
+
+private class BotAliveThread(name: String) : Thread(name) {
+    override fun run() {
+        val bots = Bot.botInstances
+        while(!interrupted() && bots.isNotEmpty()) {
+            kotlin.runCatching {
+                bots.forEach {
+                    runBlocking { it.join() }
+                }
+            }
+        }
+
     }
 }
