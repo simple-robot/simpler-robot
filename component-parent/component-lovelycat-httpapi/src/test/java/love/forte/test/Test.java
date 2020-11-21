@@ -28,7 +28,7 @@ import love.forte.simbot.serialization.json.JsonSerializerFactory;
  */
 @SimbotApplication
 public class Test {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         SimbotContext context = SimbotApp.run(Test.class, args);
 
         HttpTemplate template = context.get(HttpTemplate.class);
@@ -40,8 +40,8 @@ public class Test {
         LovelyCatApiTemplateImpl api = new LovelyCatApiTemplateImpl(template, url, fac);
 
         String botId = "wxid_bqy1ezxxkdat22";
-        String fromWxid = "11046274610@chatroom";
-        String finalFromWxid = "wxid_khv2ht7uwa5x22";
+        String groupWxid = "11046274610@chatroom";
+        String forteWxid = "wxid_khv2ht7uwa5x22";
 
         try {
             // System.out.println(api.getRobotName(id));
@@ -52,11 +52,45 @@ public class Test {
             // System.out.println("-");
             // api.sendTextMsg("wxid_bqy1ezxxkdat22", "wxid_bqy1ezxxkdat22", "hello");
             // System.out.println("-");
-            System.out.println(api.sendMusicMsg(botId, fromWxid, "音乐分享 t0", 0));
-            System.out.println(api.sendMusicMsg(botId, fromWxid, "音乐分享 t1", 1));
-            System.out.println(api.sendMusicMsg(botId, fromWxid, "音乐分享 t2", 2));
+            // System.out.println(api.sendMusicMsg(botId, groupWxid, "音乐分享 t0", 0));
+            // System.out.println(api.sendMusicMsg(botId, groupWxid, "音乐分享 t1", 1));
+            // System.out.println(api.sendMusicMsg(botId, groupWxid, "音乐分享 t2", 2));
+            // System.out.println("-");
+            // api.getFriendList(botId);
+            // System.out.println("-");
+            // System.out.println(api.getFriendList(botId));
+            // System.out.println("-");
+            // api.getGroupList(botId);
+            // System.out.println();
+            // System.out.println("-");
+            // System.out.println(api.getGroupMemberDetailInfo(botId, forteWxid, groupWxid));
+            // System.out.println("-");
+            api.getGroupMemberList(botId, groupWxid);
+            System.out.println();
             System.out.println("-");
-            // System.out.println(api.getLoggedAccountList());
+            // api.getFriendList(botId);
+            // System.out.println();
+            // System.out.println("-");
+            // api.getFriendList(botId);
+            // System.out.println();
+            // System.out.println("-");
+            // api.getFriendList(botId);
+            // System.out.println();
+            // System.out.println("-");
+            // api.getFriendList(botId);
+            // System.out.println();
+            // System.out.println("-");
+            // api.getFriendList(botId);
+            // System.out.println();
+            // System.out.println("-");
+            // api.getFriendList(botId);
+            // System.out.println();
+            // System.out.println("-");
+            // api.getFriendList(botId);
+            // System.out.println();
+            // System.out.println("-");
+            // api.getFriendList(botId);
+            // System.out.println();
             // System.out.println("-");
 
         } catch (Exception e) {

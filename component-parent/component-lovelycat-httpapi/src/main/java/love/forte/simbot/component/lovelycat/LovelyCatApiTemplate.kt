@@ -18,6 +18,8 @@
 package love.forte.simbot.component.lovelycat
 
 import love.forte.common.impl.ParameterizedTypeImpl
+import love.forte.simbot.annotation.OnGroupMemberReduce
+import love.forte.simbot.annotation.OnGroupReduce
 import love.forte.simbot.component.lovelycat.message.*
 import love.forte.simbot.http.template.HttpTemplate
 import love.forte.simbot.http.template.assertBody
@@ -170,6 +172,66 @@ public interface LovelyCatApiTemplate {
     //**************** 取数据相关 ****************//
 
 
+    /**
+     * 功能=取好友列表
+     * robot_wxid, 文本型, 可空, 如不填，则取的是所有登录账号的好友列表
+     * is_refresh, 逻辑型, 可空, 为真将重新加载（注意切记不要频繁加载这里），不然将取缓存，默认为假
+     * api=GetFriendList
+     */
+    fun getFriendList(robotWxid: String, isRefresh: Boolean): List<CatFriendInfo>
+    @JvmDefault
+    fun getFriendList(robotWxid: String) =
+        getFriendList(robotWxid, false)
+
+
+    /**
+     * 功能=取群聊列表
+     * robot_wxid, 文本型, 可空, 取哪个账号的列表，不填则取全部
+     * is_refresh, 逻辑型, 可空, 为真将重新加载（注意切记不要频繁加载这里），不然将取缓存，默认为假
+     * api=GetGroupList
+     */
+    fun getGroupList(robotWxid: String, isRefresh: Boolean): List<CatGroupInfo>
+    @JvmDefault
+    fun getGroupList(robotWxid: String) =
+        getGroupList(robotWxid, false)
+
+
+    /**
+     * 功能=取群成员详细
+     * robot_wxid, 文本型, , 已登机器人账号ID
+     * group_wxid, 文本型, , 群ID
+     * member_wxid, 文本型, , 群成员ID
+     * is_refresh, 逻辑型, 可空, 为真将重新加载（注意切记不要频繁加载这里），不然将取缓存，默认为假
+     * api=GetGroupMemberDetailInfo
+     */
+    fun getGroupMemberDetailInfo(robotWxid: String, groupWxid: String, memberWxid: String, isRefresh: Boolean): CatGroupMemberInfo
+    @JvmDefault
+    fun getGroupMemberDetailInfo(robotWxid: String, groupWxid: String, memberWxid: String) =
+        getGroupMemberDetailInfo(robotWxid, groupWxid, memberWxid, false)
+
+
+    /**
+     * 功能=取群成员列表
+     * robot_wxid, 文本型, , 已登账号ID
+     * group_wxid, 文本型, , 群ID
+     * is_refresh, 逻辑型, 可空, 为真将重新加载列表（注意切记不要频繁加载这里），不然将取缓存，默认为假
+     * api=GetGroupMemberList
+     */
+    fun getGroupMemberList(robotWxid: String, groupWxid: String, isRefresh: Boolean)
+    @JvmDefault
+    fun getGroupMemberList(robotWxid: String, groupWxid: String) = getGroupMemberList(robotWxid, groupWxid, false)
+
+    //**************** 请求相关 ****************//
+
+    /**
+     * 功能=接收好友转账
+     * robot_wxid, 文本型, , 哪个机器人收到的好友转账，就填那个机器人的ID
+     * from_wxid, 文本型, , 好友的ID（给你转账的那个人的ID）
+     * json_msg, 文本型, , 请传入转账事件里的原消息
+     * api=AcceptTransfer
+     */
+    fun acceptTransfer(robotWxid: String, fromWxid: String, jsonMsg: String)
+
 
 
 
@@ -223,7 +285,6 @@ constructor(
      */
     private inline fun <reified T> post(requestBody: Any?): T {
         val resp = httpTemplate.post(url = url, headers = null, requestBody = requestBody, responseType = T::class.java)
-        System.err.println(resp.content)
         return resp.assertBody()
     }
 
@@ -452,6 +513,87 @@ constructor(
         val name: String,
         val type: Int
     ) { val api = "SendMusicMsg" }
+
+
+    /**
+     * 功能=取好友列表
+     * robot_wxid, 文本型, 可空, 如不填，则取的是所有登录账号的好友列表
+     * is_refresh, 逻辑型, 可空, 为真将重新加载（注意切记不要频繁加载这里），不然将取缓存，默认为假
+     * api=GetFriendList
+     */
+    override fun getFriendList(robotWxid: String, isRefresh: Boolean): List<CatFriendInfo> {
+        return post<CatFriendListResult>(GetFriendListRequestData(robotWxid, isRefresh)).data
+    }
+    private data class GetFriendListRequestData(
+        val robot_wxid: String,
+        val is_refresh: Boolean
+    ) { val api = "GetFriendList" }
+
+    /**
+     * 功能=取群聊列表
+     * robot_wxid, 文本型, 可空, 取哪个账号的列表，不填则取全部
+     * is_refresh, 逻辑型, 可空, 为真将重新加载（注意切记不要频繁加载这里），不然将取缓存，默认为假
+     * api=GetGroupList
+     */
+    override fun getGroupList(robotWxid: String, isRefresh: Boolean): List<CatGroupInfo> {
+        return post<CatGroupListResult>(GetGroupListRequestData(robotWxid, isRefresh)).data
+    }
+    private data class GetGroupListRequestData(
+        val robot_wxid: String,
+        val is_refresh: Boolean
+    ) { val api = "GetGroupList" }
+
+    /**
+     * 功能=取群成员详细
+     * robot_wxid, 文本型, , 已登机器人账号ID
+     * group_wxid, 文本型, , 群ID
+     * member_wxid, 文本型, , 群成员ID
+     * is_refresh, 逻辑型, 可空, 为真将重新加载（注意切记不要频繁加载这里），不然将取缓存，默认为假
+     * api=GetGroupMemberDetailInfo
+     */
+    override fun getGroupMemberDetailInfo(
+        robotWxid: String,
+        groupWxid: String,
+        memberWxid: String,
+        isRefresh: Boolean
+    ): CatGroupMemberInfo {
+        return post<GroupMemberDetailInfoResult>(GetGroupMemberDetailInfoRequestData(robotWxid, groupWxid, memberWxid, isRefresh)).data
+    }
+    private data class GetGroupMemberDetailInfoRequestData(
+        val robot_wxid: String,
+        val group_wxid: String,
+        val member_wxid: String,
+        val is_refresh: Boolean
+    ) { val api = "GetGroupMemberDetailInfo" }
+
+
+    /**
+     * 功能=取群成员列表
+     * robot_wxid, 文本型, , 已登账号ID
+     * group_wxid, 文本型, , 群ID
+     * is_refresh, 逻辑型, 可空, 为真将重新加载列表（注意切记不要频繁加载这里），不然将取缓存，默认为假
+     * api=GetGroupMemberList
+     */
+    override fun getGroupMemberList(robotWxid: String, groupWxid: String, isRefresh: Boolean) {
+        val rep = post<String>(GetGroupMemberListRequestData(robotWxid, groupWxid, isRefresh))
+        println(rep)
+    }
+    private data class GetGroupMemberListRequestData(
+        val robot_wxid: String,
+        val group_wxid: String,
+        val is_refresh: Boolean
+    ) { val api = "GetGroupMemberList" }
+
+    /**
+     * 功能=接收好友转账
+     * robot_wxid, 文本型, , 哪个机器人收到的好友转账，就填那个机器人的ID
+     * from_wxid, 文本型, , 好友的ID（给你转账的那个人的ID）
+     * json_msg, 文本型, , 请传入转账事件里的原消息
+     * api=AcceptTransfer
+     */
+    override fun acceptTransfer(robotWxid: String, fromWxid: String, jsonMsg: String) {
+        TODO("Not yet implemented")
+    }
 }
 
 

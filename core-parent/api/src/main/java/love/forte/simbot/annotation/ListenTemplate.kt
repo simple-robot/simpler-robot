@@ -162,7 +162,19 @@ public annotation class OnGroupMsgRecall
 @MustBeDocumented
 @Listen(GroupMemberReduce::class)
 @AnnotateMapping(value = Listen::class)
+@Deprecated("Naming errors, please use @OnGroupMemberReduce", ReplaceWith("@OnGroupMemberReduce"))
 public annotation class OnGroupReduce
+
+/**
+ * 监听群友减少事件。
+ *
+ */
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@MustBeDocumented
+@Listen(GroupMemberReduce::class)
+@AnnotateMapping(value = Listen::class)
+public annotation class OnGroupMemberReduce
 
 /**
  * 监听好友减少事件。
