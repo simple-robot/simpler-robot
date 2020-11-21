@@ -65,7 +65,7 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 
 ## ALPHA.5(NOW)
-
+存在不兼容更新且本次更新仅包含以下的不兼容内容。
 ### api
 - ※ 不兼容更新：`MessageContent` 包路径变更：`love.forte.simbot.api.message.event.MessageContent` -> `love.forte.simbot.api.message.MessageContent`
 
