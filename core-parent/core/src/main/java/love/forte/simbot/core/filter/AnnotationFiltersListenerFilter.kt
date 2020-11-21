@@ -635,7 +635,13 @@ public class AnnotationFilterListenerFilterImpl(
             true
         } else {
             // 如果text为null，则认为其无法进行文本匹配，直接放行。
-            val msgText: String = msg.text?.let(textPre) ?: return true
+            val msgText: String = msg.text?.let(textPre) ?: let {
+                return if (msg is MessageGet) {
+                    // 如果是messageGet实例，理论上text不应该为null。
+                    // 此时将text视为空字符串进行匹配。
+                    matchType.match("", keyword)
+                } else false
+            }
             matchType.match(msgText, keyword)
         }
 
