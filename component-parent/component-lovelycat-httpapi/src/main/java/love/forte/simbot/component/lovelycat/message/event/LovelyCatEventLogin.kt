@@ -21,13 +21,16 @@ import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.containers.botAsAccountInfo
 import love.forte.simbot.api.message.events.MsgGet
 
-
+/**
+ * 一个bot上线后触发的事件。
+ */
 public interface LovelyCatLogin : MsgGet {
     /**
      * 当前账号的JSON对象，具体JSON结构请查看日志.
      */
     val botJsonInfo: String
 }
+
 
 /**
  * 新的账号登录成功/下线时

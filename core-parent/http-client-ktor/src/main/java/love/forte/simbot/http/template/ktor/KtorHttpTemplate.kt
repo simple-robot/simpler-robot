@@ -388,7 +388,7 @@ public class KtorHttpResponseImpl<T>(
 
         }
 
-    private val content: String? get() = _content
+    override val content: String? get() = _content
 
     /** status code. */
     override val statusCode: Int = response.status.value

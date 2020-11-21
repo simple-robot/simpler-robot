@@ -24,7 +24,7 @@ import love.forte.simbot.component.lovelycat.message.event.LovelyCatMsg.Companio
 import kotlin.reflect.KClass
 
 
-public val LovelyCatEventTypes: Map<String, KClass<out BaseLovelyCatMsg>> =
+public val lovelyCatEventTypes: Map<String, KClass<out BaseLovelyCatMsg>> =
     mapOf(
         "EventLogin" to LovelyCatEventLogin::class,
     )

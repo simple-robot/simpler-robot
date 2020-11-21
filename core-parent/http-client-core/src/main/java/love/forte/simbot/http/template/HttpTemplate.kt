@@ -145,6 +145,11 @@ public interface HttpResponse<T> {
      */
     val body: T
 
+    /**
+     * 接受到的响应值字符串文本
+     */
+    val content: String?
+
 
     /**
      * 获取响应的请求头信息。
@@ -176,6 +181,7 @@ public fun <T> HttpResponse<T>.assertBody(): T {
 public data class HttpResponseData<T>(
     override val statusCode: Int,
     override val body: T,
+    override val content: String?,
     override val headers: HttpHeaders,
     override val message: String?
 ): HttpResponse<T>
