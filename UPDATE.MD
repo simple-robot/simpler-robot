@@ -59,9 +59,9 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 ### fix
 
-- fix #1 ： 修复 `@Filters` 导致纯文本消息监听失效。
-- fix #2 ：修复动态参数解析。
-- fix #3 ： 尝试修复mirai组件执行一段时间后会自行关闭的问题。
+- fix [#1 `@Filters` 导致纯文本消息监听失效](https://github.com/ForteScarlet/simpler-robot/issues/1)
+- fix [#2  动态参数解析异常](https://github.com/ForteScarlet/simpler-robot/issues/2)
+- fix [#3 mirai组件执行一段时间后会自行关闭](https://github.com/ForteScarlet/simpler-robot/issues/3)
 
 
 ## ALPHA.5
@@ -75,6 +75,14 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 - ※ 不兼容更新：`MessageContent` 包路径变更：`love.forte.simbot.api.message.event.MessageContent` -> `love.forte.simbot.api.message.MessageContent`
 
 
-## ALPHA.6(NOW)
+## ALPHA.6
+
+### fix
+- fix [#5 依赖缺失](https://github.com/ForteScarlet/simpler-robot/issues/5) 
+- fix [#6 无文本事件匹配异常](https://github.com/ForteScarlet/simpler-robot/issues/6) 
+
+
+
+## ALPHA.7(NOW)
 
 
