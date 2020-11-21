@@ -83,8 +83,13 @@ constructor(
         responseType: Class<T>
     ): HttpResponse<T> = runBlocking {
         val response: KtorHttpResponse = client.get(url) {
+
+            Cookie()
+
             headers?.forEach { (k, vs) ->
-                headers { appendAll(k, vs) }
+                headers {
+                    appendAll(k, vs)
+                }
             }
             requestParam?.forEach { (k, v) ->
                 parameter(k, v)

@@ -16,7 +16,7 @@ package love.forte.simbot.http.template
 
 /**
  *
- * http 请求头类型，可用于请求或者接受相应。
+ * http 请求头列表类型，可用于请求或者接受相应。
  *
  * 请求头类似于键值对格式，但是key对应的value是可以存在多个的，
  * 因此其为一个 `Map<String, List<String>>` 。
