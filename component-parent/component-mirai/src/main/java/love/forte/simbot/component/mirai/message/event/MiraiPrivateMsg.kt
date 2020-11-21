@@ -18,7 +18,7 @@ import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.containers.GroupInfo
-import love.forte.simbot.api.message.events.MessageContent
+import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.message.FriendMessageEvent

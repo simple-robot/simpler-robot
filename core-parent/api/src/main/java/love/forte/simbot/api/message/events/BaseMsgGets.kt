@@ -17,6 +17,7 @@ package love.forte.simbot.api.message.events
 
 import love.forte.catcode.CatCodeUtil
 import love.forte.simbot.annotation.ParentListenerType
+import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.FlagContent
 import love.forte.simbot.api.message.containers.*

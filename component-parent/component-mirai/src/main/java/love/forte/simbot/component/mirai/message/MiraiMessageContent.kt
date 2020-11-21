@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import love.forte.catcode.CatCodeUtil
 import love.forte.catcode.Neko
-import love.forte.simbot.api.message.events.MessageContent
+import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.component.mirai.sender.isNotEmptyMsg
 import love.forte.simbot.component.mirai.utils.toNeko
 import net.mamoe.mirai.contact.*

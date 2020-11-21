@@ -20,7 +20,7 @@ import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
-import love.forte.simbot.api.message.events.MessageContent
+import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.ErrorSender
 import love.forte.simbot.api.sender.Sender

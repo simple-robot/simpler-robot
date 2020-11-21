@@ -17,7 +17,6 @@ package love.forte.simbot.api.message
 
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.AccountContainer
-import love.forte.simbot.api.message.events.MessageContent
 import java.io.InputStream
 
 

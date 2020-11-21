@@ -21,7 +21,7 @@ import love.forte.simbot.api.message.containers.AccountContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
 import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.events.GroupMsg
-import love.forte.simbot.api.message.events.MessageContent
+import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.api.message.receipts.SenderReceipt
 

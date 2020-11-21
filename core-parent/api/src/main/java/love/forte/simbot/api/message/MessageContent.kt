@@ -14,7 +14,7 @@
 
 @file:JvmName("MessageContents")
 @file:JvmMultifileClass
-package love.forte.simbot.api.message.events
+package love.forte.simbot.api.message
 
 import love.forte.catcode.Neko
 
