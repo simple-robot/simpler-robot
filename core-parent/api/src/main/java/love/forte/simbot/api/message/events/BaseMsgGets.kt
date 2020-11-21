@@ -21,6 +21,7 @@ import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.FlagContent
 import love.forte.simbot.api.message.containers.*
+import org.jetbrains.annotations.Contract
 
 /*
     什么? 你问为什么events包下的消息命名还是xxxMsgGet?
@@ -99,9 +100,14 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
     /**
      * 可以得到一个 **文本**。
      *
-     *  这个文本应当是不包含任何 CAT码 的纯文本消息。
+     * 这个文本应当是不包含任何 CAT码 的纯文本消息。
      *
-     *  而关于存在CAT码的特殊消息，可参考 [MessageGet.msg].
+     * 而关于存在CAT码的特殊消息，可参考 [MessageGet.msg].
+     *
+     * 只要是支持text的消息类型，text则不允许为null，默认情况下，通过 [isEmptyMsg] 判断当前是否支持text匹配。
+     * 一般情况下不要修改 [isEmptyMsg] 匹配规则，如果text为null却被匹配了可能会导致异常出现或逻辑错误。
+     *
+     * @see isEmptyMsg
      *
      */
     val text: String?
@@ -109,10 +115,18 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
 
     /**
      * 判断当前消息中是否为空消息。
-     * 空消息指的是不存在text，即text == null || text.isBlank。
+     * 空消息指的是不存在text，即text == null。
+     * 当text == ‘’（空字符串），说明当前消息支持text但是不存在消息，
+     * 当text == null，说明当前消息不支持text。
+     *
+     * 默认情况下，通过 [isEmptyMsg] 判断当前是否支持text匹配。
+     * 一般情况下不要修改 [isEmptyMsg] 匹配规则，如果text为null却被匹配了会导致异常出现。
+     *
+     * @see text
      */
     @JvmDefault
-    fun isEmptyMsg(): Boolean = text?.isBlank() == true
+    fun isEmptyMsg(): Boolean = text == null
+
 
 
     /** 消息接收到的时间。一般是一个毫秒时间戳。 */

@@ -40,7 +40,7 @@ public class MiraiGroupMemberJoinRequest(event: MemberJoinRequestEvent) :
 
     override val accountInfo: AccountInfo = MiraiGroupMemberJoinAccountInfo(event)
 
-    override val text: String? = event.message.takeIf { it.isNotBlank() }
+    override val text: String = event.message //.takeIf { it.isNotBlank() }
 
     /** 无法确认邀请者。 */
     override val invitor: GroupAddRequestInvitor? = null

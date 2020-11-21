@@ -624,7 +624,9 @@ public class AnnotationFilterListenerFilterImpl(
 
 
         // 5 msg matches
+
         // no msg. return true.
+        // 如果是empty msg, 说明当前监听消息不支持文本匹配, 则不进行keyword匹配。
         if (msg.isEmptyMsg()) {
             return true
         }
@@ -632,7 +634,7 @@ public class AnnotationFilterListenerFilterImpl(
         return if (keyword == null) {
             true
         } else {
-            // 如果msg为null，则认为其无法匹配文本，直接放行。
+            // 如果text为null，则认为其无法进行文本匹配，直接放行。
             val msgText: String = msg.text?.let(textPre) ?: return true
             matchType.match(msgText, keyword)
         }
