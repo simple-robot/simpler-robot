@@ -36,7 +36,7 @@ public class MoshiJsonSerializerConfiguration {
 
     /**
      * 构建一个 [MoshiJsonSerializerFactory] 实例。需要注入一个 [Moshi.Builder] 实例。
-     * 如果需要对 [Moshi.Builder] 进行自定义，可以通过 prePass 来对builder进行中间操作。
+     * 如果需要对 [Moshi.Builder] 进行自定义，可以通过 prePass 来对builder进行中间操作或直接注入一个 [Moshi.Builder] 实例。
      */
     @SpareBeans("moshiJsonSerializerFactory")
     public fun moshiJsonSerializerFactory(moshiBuilder: Moshi.Builder): MoshiJsonSerializerFactory = MoshiJsonSerializerFactory(moshiBuilder.build())
