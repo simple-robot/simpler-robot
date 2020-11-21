@@ -26,6 +26,17 @@
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>love.forte.simple-robot</groupId>
+            <artifactId>http-client-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>love.forte.simple-robot</groupId>
+            <artifactId>http-client-ktor</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-crypto</artifactId>

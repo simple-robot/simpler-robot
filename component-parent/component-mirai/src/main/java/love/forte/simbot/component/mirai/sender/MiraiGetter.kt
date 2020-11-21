@@ -23,20 +23,21 @@ import love.forte.simbot.api.message.results.*
 import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.api.sender.GetterFactory
 import love.forte.simbot.component.mirai.message.result.*
+import love.forte.simbot.http.template.HttpTemplate
 import net.mamoe.mirai.Bot
 
 
-public object MiraiGetterFactory : GetterFactory {
-    override fun getOnMsgGetter(msg: MsgGet): Getter = MiraiGetter(Bot.getInstance(msg.botInfo.botCodeNumber))
-    override fun getOnBotGetter(bot: BotContainer): Getter = MiraiGetter(Bot.getInstance(bot.botInfo.botCodeNumber))
+public class MiraiGetterFactory(private val http: HttpTemplate) : GetterFactory {
+    override fun getOnMsgGetter(msg: MsgGet): Getter = MiraiGetter(Bot.getInstance(msg.botInfo.botCodeNumber), http)
+    override fun getOnBotGetter(bot: BotContainer): Getter = MiraiGetter(Bot.getInstance(bot.botInfo.botCodeNumber), http)
 }
 
-public class MiraiGetter(private val bot: Bot) : Getter {
+public class MiraiGetter(private val bot: Bot, private val http: HttpTemplate) : Getter {
     override val authInfo: AuthInfo
         get() = MiraiAuthInfo(AndroidBotCookieUtils.cookies(bot))
 
     override val botInfo: BotInfo
-        get() = MiraiBotInfo(bot)
+        get() = MiraiBotInfo(bot, http)
 
 
     /**

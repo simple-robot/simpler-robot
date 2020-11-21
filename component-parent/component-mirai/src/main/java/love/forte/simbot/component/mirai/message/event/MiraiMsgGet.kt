@@ -58,14 +58,13 @@ public abstract class AbstractMiraiMsgGet<out ME : BotEvent>(
 
     /**
      * 得到原始数据字符串。
-     * 数据不应该为null。
      */
     override val originalData: String = event.toString()
 
     /**
-     * bot信息
+     * bot信息。此处的信息将无法获取到level。
      */
-    override val botInfo: BotInfo = MiraiBotInfo(event.bot)
+    override val botInfo: BotInfo get() = MiraiBotInfo(event.bot)
 }
 
 
@@ -104,9 +103,9 @@ public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : Abs
 
 
     /**
-     * 消息字符串，由 [message] 懒转化为不携带cat码的纯文本字符串。
+     * 消息字符串，由 [message] 转化为不携带cat码的纯文本字符串。
      */
-    override val text: String? =message.asSequence().filterIsInstance<PlainText>().joinToString(" ") { it.content }.takeIf { it.isNotBlank() }
+    override val text: String? = message.asSequence().filterIsInstance<PlainText>().joinToString(" ") { it.content }.takeIf { it.isNotBlank() }
 
 }
 

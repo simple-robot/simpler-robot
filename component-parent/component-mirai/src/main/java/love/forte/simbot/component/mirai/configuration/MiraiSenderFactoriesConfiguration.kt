@@ -22,6 +22,7 @@ import love.forte.simbot.component.mirai.sender.MiraiGetterFactory
 import love.forte.simbot.component.mirai.sender.MiraiSenderFactory
 import love.forte.simbot.component.mirai.sender.MiraiSetterFactory
 import love.forte.simbot.core.configuration.ComponentBeans
+import love.forte.simbot.http.template.HttpTemplate
 
 /**
  *
@@ -36,7 +37,7 @@ public class MiraiSenderFactoriesConfiguration {
     @ComponentBeans
     fun miraiSetterFactory(): SetterFactory = MiraiSetterFactory
     @ComponentBeans
-    fun miraiGetterFactory(): GetterFactory = MiraiGetterFactory
+    fun miraiGetterFactory(http: HttpTemplate): GetterFactory = MiraiGetterFactory(http)
 
 
 
