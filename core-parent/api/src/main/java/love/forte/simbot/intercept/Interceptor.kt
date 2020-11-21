@@ -74,6 +74,8 @@ public enum class InterceptionType(val isPrevent: Boolean) {
     /** 拦截。 */
     HEAD_OFF(true),
 
+
+
     //********************************//
 
     /** 放行。 */
@@ -85,6 +87,11 @@ public enum class InterceptionType(val isPrevent: Boolean) {
     /** 放行。 */
     ALLOW(false),
 
+    // Easter eggs
+    @Suppress("EnumEntryName")
+    `(x)`(false),
+    @Suppress("EnumEntryName")
+    `(v)`(true),
     ;
 
     companion object {

@@ -24,8 +24,6 @@ import love.forte.simbot.intercept.Interceptor
  *
  * 监听函数拦截器，每一个监听函数之前都会被执行。
  *
- * 拦截器返回true代表被 **拦截**。
- *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public interface ListenerInterceptor : Interceptor<ListenerFunction, ListenerInterceptContext>
