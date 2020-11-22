@@ -21,7 +21,6 @@ import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.FlagContent
 import love.forte.simbot.api.message.containers.*
-import org.jetbrains.annotations.Contract
 
 /*
     什么? 你问为什么events包下的消息命名还是xxxMsgGet?

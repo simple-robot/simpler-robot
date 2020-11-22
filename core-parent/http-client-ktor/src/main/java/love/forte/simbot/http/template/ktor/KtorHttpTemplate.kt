@@ -152,10 +152,7 @@ constructor(
             requestParam?.forEach { (k, v) ->
                 parameter(k, v)
             }
-
         }
-
-
         response.toResponse(responseType)
     }
 
@@ -481,7 +478,7 @@ public class KtorHttpResponseImpl<T>(
     /** body. */
     override val body: T by lazy(LazyThreadSafetyMode.PUBLICATION) {
         logger.debug(content)
-        content?.let { bodySerializer(it) } ?: throw IllegalStateException()
+        content?.let { bodySerializer(it) } ?: throw IllegalStateException("content is empty.")
     }
 
     /** headers. */

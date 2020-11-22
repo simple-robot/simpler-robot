@@ -15,13 +15,13 @@
 package love.forte.simbot.api.sender
 
 import love.forte.common.utils.Carrier
+import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.AccountContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
 import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.events.GroupMsg
-import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.api.message.receipts.SenderReceipt
 

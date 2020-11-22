@@ -27,7 +27,9 @@ import kotlinx.coroutines.runBlocking
 import love.forte.catcode.*
 import love.forte.catcode.codes.Nyanko
 import love.forte.simbot.api.message.MessageContent
-import love.forte.simbot.component.mirai.message.*
+import love.forte.simbot.component.mirai.message.EmptySingleMessage
+import love.forte.simbot.component.mirai.message.MiraiMessageContent
+import love.forte.simbot.component.mirai.message.MiraiSingleMessageContent
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.uploadAsImage
