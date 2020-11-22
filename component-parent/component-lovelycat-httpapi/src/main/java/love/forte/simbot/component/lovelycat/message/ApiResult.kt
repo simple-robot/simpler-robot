@@ -20,12 +20,6 @@ import love.forte.simbot.api.message.containers.*
 import love.forte.simbot.api.message.results.GroupMemberInfo
 
 
-// public interface LovelyCatApiResult {
-//     val code: Int
-//     val result: String
-//     val data: String
-// }
-
 
 public interface ApiResult<T> {
     val code: Int

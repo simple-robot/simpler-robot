@@ -17,6 +17,7 @@
 package love.forte.test;
 
 import love.forte.simbot.annotation.SimbotApplication;
+import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate;
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplateImpl;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
@@ -37,7 +38,7 @@ public class Test {
 
         JsonSerializerFactory fac = context.get(JsonSerializerFactory.class);
 
-        LovelyCatApiTemplateImpl api = new LovelyCatApiTemplateImpl(template, url, fac);
+        LovelyCatApiTemplate api = new LovelyCatApiTemplateImpl(template, url, fac);
 
         String botId = "wxid_bqy1ezxxkdat22";
         String groupWxid = "11046274610@chatroom";
