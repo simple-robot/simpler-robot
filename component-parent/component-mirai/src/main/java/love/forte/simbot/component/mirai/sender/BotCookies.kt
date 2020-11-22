@@ -150,7 +150,7 @@ object AndroidBotCookieUtils {
 /**
  * 通过bot得到[Cookies]信息。
  */
-val Bot.cookies get() = AndroidBotCookieUtils.cookies(this)
+val Bot.cookies: Cookies get() = AndroidBotCookieUtils.cookies(this)
 
 
 /*

@@ -26,6 +26,7 @@ import love.forte.simbot.bot.BotVerifier
 import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
 import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
 import love.forte.simbot.core.TypedCompLogger
+import love.forte.simbot.http.template.HttpTemplate
 import net.mamoe.mirai.alsoLogin
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
 import net.mamoe.mirai.Bot as MBot
@@ -35,7 +36,8 @@ import net.mamoe.mirai.Bot as MBot
  */
 public class MiraiBotVerifier(
     private val configurationFactory: MiraiBotConfigurationFactory,
-    private val miraiConfiguration: MiraiConfiguration
+    private val miraiConfiguration: MiraiConfiguration,
+    private val httpTemplate: HttpTemplate
 ) : BotVerifier {
     private companion object : TypedCompLogger(MiraiBotVerifier::class.java)
 
@@ -66,7 +68,7 @@ public class MiraiBotVerifier(
                 mBot.alsoLogin()
             }
 
-            val botContainer = BotContainer { MiraiBotInfo(mBot) }
+            val botContainer = BotContainer { MiraiBotInfo(mBot, httpTemplate) }
 
             val sender = msgSenderFactories.toBotSender(botContainer)
 

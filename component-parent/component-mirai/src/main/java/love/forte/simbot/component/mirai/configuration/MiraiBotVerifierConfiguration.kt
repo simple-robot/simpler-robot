@@ -19,6 +19,7 @@ import love.forte.simbot.component.mirai.DefaultMiraiBotConfigurationFactory
 import love.forte.simbot.component.mirai.MiraiBotConfigurationFactory
 import love.forte.simbot.component.mirai.MiraiBotVerifier
 import love.forte.simbot.core.configuration.ComponentBeans
+import love.forte.simbot.http.template.HttpTemplate
 
 /**
  *
@@ -43,8 +44,9 @@ public class MiraiBotVerifierConfiguration {
     @ComponentBeans
     fun miraiMiraiBotVerifier(
         configurationFactory: MiraiBotConfigurationFactory,
-        miraiConfiguration: MiraiConfiguration
-    ): MiraiBotVerifier = MiraiBotVerifier(configurationFactory, miraiConfiguration)
+        miraiConfiguration: MiraiConfiguration,
+        httpTemplate: HttpTemplate
+    ): MiraiBotVerifier = MiraiBotVerifier(configurationFactory, miraiConfiguration, httpTemplate)
 
 
 }

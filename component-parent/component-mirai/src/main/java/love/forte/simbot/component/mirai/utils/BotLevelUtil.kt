@@ -19,6 +19,7 @@ package love.forte.simbot.component.mirai.utils
 
 import love.forte.simbot.component.mirai.sender.cookies
 import love.forte.simbot.http.template.HttpTemplate
+import love.forte.simbot.http.template.assertBody
 import net.mamoe.mirai.Bot
 import java.util.regex.Pattern
 
@@ -43,19 +44,17 @@ object BotLevelUtil {
      * @return [bot]的level. 如果获取不到/接口变更/cookie失效等，就会得到-1.
      */
     fun level(bot: Bot, http: HttpTemplate): Int {
-        // TODO
-        return DEFAULT_VALUE
-        // try {
-        //     val cookies = bot.cookies
-        //     val vipHtml = http.get(VIP_URL, null, cookies.cookiesMap) ?: return DEFAULT_VALUE
-        //
-        //     val matcher = levelPattern.matcher(vipHtml)
-        //     return if(matcher.find()){
-        //         matcher.group(1).toInt()
-        //     }else DEFAULT_VALUE
-        // }catch (e: Throwable){
-        //     return DEFAULT_VALUE
-        // }
+        return try {
+            val cookies = bot.cookies
+            val vipHtml = http.get(VIP_URL, null, cookies.cookiesMap, null, String::class.java)
+            val message = vipHtml.assertBody()
+            val matcher = levelPattern.matcher(message)
+            if(matcher.find()){
+                matcher.group(1).toInt()
+            } else DEFAULT_VALUE
+        }catch (e: Throwable){
+            DEFAULT_VALUE
+        }
     }
 
 }
