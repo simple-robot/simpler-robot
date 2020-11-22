@@ -11,8 +11,8 @@
  *  * QQ     1149159218
  *
  */
-@file:JvmName("KtorHttpTemplates")
 
+@file:JvmName("KtorHttpTemplates")
 package love.forte.simbot.http.template.ktor
 
 import io.ktor.client.*
@@ -36,6 +36,11 @@ import io.ktor.client.statement.HttpResponse as KtorHttpResponse
 
 private val APPLICATION_JSON = ContentType("application", "json")
 private val APPLICATION_FORM_URLENCODED = ContentType("application", "x-www-form-urlencoded")
+
+private var USER_AGENT_KEY_NAME = "User-Agent"
+private var USER_AGENT_WIN10_CHROME =
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+private var USER_AGENT_MAC_FIREFOX = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1"
 
 
 /**
@@ -65,34 +70,91 @@ constructor(
      * ktor get请求。
      */
     override fun <T> get(url: String, responseType: Class<T>): HttpResponse<T> =
-        get(url, null, null, responseType)
+        get(url, null, cookies = null, null, responseType)
 
     /**
      * ktor get请求。
      */
     override fun <T> get(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T> =
-        get(url, headers, null, responseType)
+        get(url, headers, cookies = null, null, responseType)
+
 
     /**
      * ktor get请求。
      */
+    override fun <T> get(url: String, cookies: HttpCookies?, responseType: Class<T>): HttpResponse<T> =
+        get(url, null, cookies, null, responseType)
+
+
+    /**
+     * ktor get请求。
+     */
+    override fun <T> get(url: String, requestParam: Map<String, Any?>?, responseType: Class<T>): HttpResponse<T> =
+        get(url, null, cookies = null, requestParam, responseType)
+
+    /**
+     * get请求。
+     * @param responseType 响应body封装类型。
+     * @param headers 请求头信息。
+     * @param requestParam 请求参数。
+     */
     override fun <T> get(
         url: String,
         headers: HttpHeaders?,
+        cookieMap: Map<String, String>?,
+        requestParam: Map<String, Any?>?,
+        responseType: Class<T>
+    ): HttpResponse<T> =
+        get(url, headers, cookieMap?.let { httpCookies(it) }, requestParam, responseType)
+
+    /**
+     * get请求。
+     * @param responseType 响应body封装类型。
+     * @param headers 请求头信息。
+     * @param requestParam 请求参数。
+     */
+    @OptIn(KtorExperimentalAPI::class)
+    override fun <T> get(
+        url: String,
+        headers: HttpHeaders?,
+        cookies: HttpCookies?,
         requestParam: Map<String, Any?>?,
         responseType: Class<T>
     ): HttpResponse<T> = runBlocking {
         val response: KtorHttpResponse = client.get(url) {
+
 
             headers?.forEach { (k, vs) ->
                 headers {
                     appendAll(k, vs)
                 }
             }
+
+            headers {
+                if (get(io.ktor.http.HttpHeaders.UserAgent) == null) {
+                    userAgent(USER_AGENT_WIN10_CHROME)
+                }
+            }
+
+            val appendCookies: String? = cookies?.takeIf { it.isNotEmpty() }
+                ?.asSequence()
+                ?.map { "${it.name}=${it.value}" }
+                ?.plus(cookies().asSequence().map { "${it.name}=${it.value}" })
+                ?.joinToString("; ")
+
+            if (appendCookies != null) {
+                headers {
+                    append(io.ktor.http.HttpHeaders.Cookie, appendCookies)
+                }
+            }
+
+
             requestParam?.forEach { (k, v) ->
                 parameter(k, v)
             }
+
         }
+
 
         response.toResponse(responseType)
     }
@@ -114,8 +176,8 @@ constructor(
             headers?.forEach { (k, vs) ->
                 headers { appendAll(k, vs) }
             }
-            if (this.contentType() == null) {
-                this.contentType(APPLICATION_JSON)
+            if (contentType() == null) {
+                contentType(APPLICATION_JSON)
             }
             requestBody?.let {
                 when (it) {
@@ -152,8 +214,8 @@ constructor(
             headers?.forEach { (k, vs) ->
                 headers { appendAll(k, vs) }
             }
-            if (this.contentType() == null) {
-                this.contentType(APPLICATION_FORM_URLENCODED)
+            if (contentType() == null) {
+                contentType(APPLICATION_FORM_URLENCODED)
             }
             requestForm?.also {
                 it.forEach { (k, v) ->
@@ -178,7 +240,7 @@ constructor(
         val responseType = request.responseType
 
         return when (request.type) {
-            HttpRequestType.GET -> get(url, headers, params as? Map<String, Any?>, responseType)
+            HttpRequestType.GET -> get(url, headers, cookies = null, params as? Map<String, Any?>, responseType)
             HttpRequestType.FORM -> form(url, headers, params as? Map<String, Any?>, responseType)
             HttpRequestType.POST -> post(url, headers, params, responseType)
         }
@@ -248,7 +310,9 @@ constructor(
                                                 is List<*> -> jsonSerializerFactory.getJsonSerializer<Any>(List::class.java)
                                                 is Set<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Set::class.java)
                                                 is Map<*, *> -> jsonSerializerFactory.getJsonSerializer<Any>(Map::class.java)
-                                                is Collection<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Collection::class.java)
+                                                is Collection<*> -> jsonSerializerFactory.getJsonSerializer<Any>(
+                                                    Collection::class.java
+                                                )
                                                 else -> jsonSerializerFactory.getJsonSerializer(it.javaClass)
                                             }?.apply {
                                                 body = toJson(it)
@@ -351,6 +415,21 @@ constructor(
 }
 
 
+private fun HttpCookie.toKtorCookie(domain: String?, path: String?): Cookie {
+    return Cookie(
+        name,
+        value,
+        maxAge = maxAge,
+        domain = if (this.domain == null) domain else this.domain,
+        path = if (this.path == null) path else this.path
+    )
+}
+
+
+
+
+
+
 public class KtorHttpResponseImpl<T>(
     response: KtorHttpResponse,
     ignoreContent: Boolean = false,
@@ -364,10 +443,13 @@ public class KtorHttpResponseImpl<T>(
     } else {
         GlobalScope.async {
             val content = response.content
-            content.readUTF8Line().apply {
+            StringBuilder().apply {
+                var readLine: Boolean
+                do {
+                    readLine = content.readUTF8LineTo(this)
+                } while(readLine)
                 content.cancel()
-            }
-
+            }.toString()
         }
     }
 

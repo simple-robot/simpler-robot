@@ -50,7 +50,29 @@ private data class HttpCookieData(
     override val domain: String?,
     override val path: String?,
     override val maxAge: Int
-) : HttpCookie
+) : HttpCookie {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as HttpCookieData
+
+        if (name != other.name) return false
+        if (value != other.value) return false
+        if (domain != other.domain) return false
+        if (path != other.path) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + value.hashCode()
+        result = 31 * result + (domain?.hashCode() ?: 0)
+        result = 31 * result + (path?.hashCode() ?: 0)
+        return result
+    }
+}
 
 
 /**

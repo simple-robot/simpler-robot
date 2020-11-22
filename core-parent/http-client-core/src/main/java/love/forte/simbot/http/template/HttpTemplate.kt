@@ -63,7 +63,31 @@ public interface HttpTemplate {
      * @param headers 请求头信息。
      * @param requestParam 请求参数。
      */
-    fun <T> get(url: String, headers: HttpHeaders?, requestParam: Map<String, Any?>?, responseType: Class<T>): HttpResponse<T>
+    fun <T> get(url: String, cookies: HttpCookies?, responseType: Class<T>): HttpResponse<T>
+
+    /**
+     * get请求。
+     * @param responseType 响应body封装类型。
+     * @param headers 请求头信息。
+     * @param requestParam 请求参数。
+     */
+    fun <T> get(url: String, requestParam: Map<String, Any?>?, responseType: Class<T>): HttpResponse<T>
+
+    /**
+     * get请求。
+     * @param responseType 响应body封装类型。
+     * @param headers 请求头信息。
+     * @param requestParam 请求参数。
+     */
+    fun <T> get(url: String, headers: HttpHeaders?, cookies: HttpCookies?, requestParam: Map<String, Any?>?, responseType: Class<T>): HttpResponse<T>
+
+    /**
+     * get请求。
+     * @param responseType 响应body封装类型。
+     * @param headers 请求头信息。
+     * @param requestParam 请求参数。
+     */
+    fun <T> get(url: String, headers: HttpHeaders?, cookieMap: Map<String, String>?, requestParam: Map<String, Any?>?, responseType: Class<T>): HttpResponse<T>
 
     /**
      * post/json 请求。

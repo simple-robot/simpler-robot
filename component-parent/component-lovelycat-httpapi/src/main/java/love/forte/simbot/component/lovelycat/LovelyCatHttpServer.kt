@@ -42,7 +42,15 @@ private class JsonContentConverter(private val fac: JsonSerializerFactory) : Con
         context: PipelineContext<ApplicationReceiveRequest, ApplicationCall>
     ): Any? {
         val channel = context.subject.value as ByteReadChannel
-        val message = channel.readUTF8Line() ?: "{}"
+        val message = StringBuilder().apply {
+            var readLine: Boolean
+            do {
+                readLine = channel.readUTF8LineTo(this)
+            } while(readLine)
+            // while(content.readUTF8LineTo(this)) { }
+            channel.cancel()
+        }.toString()
+        // val message = channel.readUTF8Line() ?: "{}"
         return fac.getJsonSerializer(context.subject.type.java).fromJson(message)
     }
 
