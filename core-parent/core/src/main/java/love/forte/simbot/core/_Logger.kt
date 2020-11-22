@@ -32,36 +32,36 @@ public abstract class TypedCompLogger(type: Class<*>) {
 
 
 public inline fun Logger.infof(target: String, vararg args: Any?) {
-    info(Language.format(target, args))
+    info(Language.format(target, *args))
 }
 public inline fun Logger.debugf(target: String, vararg args: Any?) {
-    debug(Language.format(target, args))
+    debug(Language.format(target, *args))
 }
 public inline fun Logger.warnf(target: String, vararg args: Any?) {
-    warn(Language.format(target, args))
+    warn(Language.format(target, *args))
 }
 public inline fun Logger.errorf(target: String, vararg args: Any?) {
-    error(Language.format(target, args))
+    error(Language.format(target, *args))
 }
 public inline fun Logger.tracef(target: String, vararg args: Any?) {
-    trace(Language.format(target, args))
+    trace(Language.format(target, *args))
 }
 
 
 public inline fun Logger.infoEf(target: String, e: Throwable, vararg args: Any?) {
-    info(Language.format(target, args), e)
+    info(Language.format(target, *args), e)
 }
 public inline fun Logger.debugEf(target: String, e: Throwable, vararg args: Any?) {
-    debug(Language.format(target, args), e)
+    debug(Language.format(target, *args), e)
 }
 public inline fun Logger.warnEf(target: String, e: Throwable, vararg args: Any?) {
-    warn(Language.format(target, args), e)
+    warn(Language.format(target, *args), e)
 }
 public inline fun Logger.errorEf(target: String, e: Throwable, vararg args: Any?) {
-    error(Language.format(target, args), e)
+    error(Language.format(target, *args), e)
 }
 public inline fun Logger.traceEf(target: String, e: Throwable, vararg args: Any?) {
-    trace(Language.format(target, args), e)
+    trace(Language.format(target, *args), e)
 }
 
 
