@@ -89,3 +89,6 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 ### core
 - 优化过滤器匹配规则，如果事件为 `MessageGet` 类型并且text属性为null, 强制将text视为空字符串进行匹配。
+
+### fix 
+- fix [#8 多bot消息重复触发](https://github.com/ForteScarlet/simpler-robot/issues/8)
