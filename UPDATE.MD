@@ -94,6 +94,6 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 - get请求支持携带cookies。
 
 ### fix 
-- fix [#8 ](https://github.com/ForteScarlet/simpler-robot/issues/8) (多bot消息重复触发)
+- fix [#8 ](https://github.com/ForteScarlet/simpler-robot/issues/8) (多bot下群消息重复触发)
 
 ## ALPHA.8(NOW)
