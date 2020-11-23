@@ -271,11 +271,10 @@ public fun Bot.registerSimbotEvents(msgProcessor: MsgGetProcessor) {
  */
 private inline fun <reified E : BotEvent> Bot.registerListenerAlways(crossinline handler: suspend E.(E) -> Unit):
         Listener<E> {
+    val listenBotId = this.id
     return this.subscribeAlways {
-        if (this@subscribeAlways.bot.id == this@registerListenerAlways.id) {
-            val n1 = System.nanoTime()
+        if (bot.id == listenBotId) {
             handler(this)
-            val n2 = System.nanoTime()
         }
     }
 }

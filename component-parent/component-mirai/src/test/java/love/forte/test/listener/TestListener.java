@@ -11,33 +11,16 @@ import love.forte.simbot.filter.MatchType;
 
 @Beans
 public class TestListener {
-
-    //
-    // @OnPrivate
-    // @Filter(value = "hi", matchType = MatchType.STARTS_WITH)
-    // @Filter(value = "hello", matchType = MatchType.STARTS_WITH)
-    // public void l1(PrivateMsg msg){
-    //     System.out.println("hi or hello.");
-    // }
-    // @OnPrivate
-    // @Filter(value = "mua", matchType = MatchType.STARTS_WITH)
-    // @Filter(value = "qaq", matchType = MatchType.STARTS_WITH)
-    // public void l2(PrivateMsg msg){
-    //     System.out.println("mua or qaq.");
-    // }
-
-    @OnPrivate
-    @Filter(value = "hi", matchType = MatchType.STARTS_WITH)
-    @Filter(value = "hello", matchType = MatchType.STARTS_WITH)
-    public void l1(PrivateMsg m, MsgSender sender){
-        sender.SENDER.sendPrivateMsg(m, "hi or hello.");
-    }
-    @OnPrivate
-    @Filter(value = "lll", matchType = MatchType.STARTS_WITH)
-    @Filter(value = "qaq", matchType = MatchType.STARTS_WITH)
-    public void l2(PrivateMsg m, MsgSender sender){
-        sender.SENDER.sendPrivateMsg(m, "lll or qaq.");
+    @OnGroup
+    @Filter(bots = "2370606773", groups = "703454734")
+    public void gro1(GroupMsg msg){
+        System.err.println("2370606773: " + msg);
     }
 
+    @OnGroup
+    @Filter(bots = "3521361891", groups = "703454734")
+    public void gro2(GroupMsg msg){
+        System.err.println("3521361891: " + msg);
+    }
 
 }
