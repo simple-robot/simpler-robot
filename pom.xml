@@ -56,7 +56,7 @@
         <!-- plugins -->
 
         <!-- dokka version -->
-        <dokka.version>1.4.0-rc</dokka.version>
+        <dokka.version>1.4.10.2</dokka.version>
         <!-- sb maven version -->
         <sb-maven.version>2.3.4.RELEASE</sb-maven.version>
 
