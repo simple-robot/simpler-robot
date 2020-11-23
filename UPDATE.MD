@@ -59,9 +59,9 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 ### fix
 
-- fix [#1 `@Filters` 导致纯文本消息监听失效](https://github.com/ForteScarlet/simpler-robot/issues/1)
-- fix [#2  动态参数解析异常](https://github.com/ForteScarlet/simpler-robot/issues/2)
-- fix [#3 mirai组件执行一段时间后会自行关闭](https://github.com/ForteScarlet/simpler-robot/issues/3)
+- fix [#1 ](https://github.com/ForteScarlet/simpler-robot/issues/1) (`@Filters` 导致纯文本消息监听失效)
+- fix [#2 ](https://github.com/ForteScarlet/simpler-robot/issues/2) (动态参数解析异常)
+- fix [#3 ](https://github.com/ForteScarlet/simpler-robot/issues/3) (mirai组件执行一段时间后会自行关闭)
 
 
 ## ALPHA.5
@@ -78,8 +78,8 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 ## ALPHA.6
 
 ### fix
-- fix [#5 依赖缺失](https://github.com/ForteScarlet/simpler-robot/issues/5) 
-- fix [#6 无文本事件匹配异常](https://github.com/ForteScarlet/simpler-robot/issues/6) 
+- fix [#5 ](https://github.com/ForteScarlet/simpler-robot/issues/5) (依赖缺失)
+- fix [#6 ](https://github.com/ForteScarlet/simpler-robot/issues/6) (无文本事件匹配异常)
 
 
 
@@ -90,7 +90,10 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 ### core
 - 优化过滤器匹配规则，如果事件为 `MessageGet` 类型并且text属性为null, 强制将text视为空字符串进行匹配。
 
+### http-client-core
+- get请求支持携带cookies。
+
 ### fix 
-- fix [#8 多bot消息重复触发](https://github.com/ForteScarlet/simpler-robot/issues/8)
+- fix [#8 ](https://github.com/ForteScarlet/simpler-robot/issues/8) (多bot消息重复触发)
 
 ## ALPHA.8(NOW)
