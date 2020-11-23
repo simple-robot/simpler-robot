@@ -14,7 +14,7 @@
     <modules>
         <module>component-mirai</module>
         <module>component-ding</module>
-        <!--<module>component-lovelycat-httpapi</module>-->
+        <module>component-lovelycat-httpapi</module>
         <!--<module>component-xiaolz-oopshttpapi</module>-->
     </modules>
 
