@@ -83,7 +83,7 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 
 
-## ALPHA.7(NOW)
+## ALPHA.7
 
 - update `hutool` to `v5.5.1`
 
@@ -92,3 +92,5 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 ### fix 
 - fix [#8 多bot消息重复触发](https://github.com/ForteScarlet/simpler-robot/issues/8)
+
+## ALPHA.8(NOW)
