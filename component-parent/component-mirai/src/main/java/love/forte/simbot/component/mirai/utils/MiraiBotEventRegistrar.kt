@@ -272,6 +272,7 @@ public fun Bot.registerSimbotEvents(msgProcessor: MsgGetProcessor) {
  */
 private inline fun <reified E : BotEvent> Bot.registerListenerAlways(crossinline handler: suspend E.(E) -> Unit):
         Listener<E> {
+    // id for filter.
     val listenBotId = this.id
     return this.subscribeAlways {
         if (bot.id == listenBotId) {
