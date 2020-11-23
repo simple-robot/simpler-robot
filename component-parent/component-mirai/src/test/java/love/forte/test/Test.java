@@ -8,6 +8,8 @@ import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.core.SimbotProcess;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
@@ -15,8 +17,15 @@ import org.jetbrains.annotations.NotNull;
 @SimbotApplication
 public class Test implements SimbotProcess {
     public static void main(String[] args) throws InterruptedException {
-        SimbotContext context = SimbotApp.run(new Test(), args);
-        BotManager manager = context.get(BotManager.class);
+
+        Logger logger = LoggerFactory.getLogger(Test.class);
+
+        logger.info("a\na");
+        logger.info("b\r\nb");
+        logger.info("c>\r<c");
+
+        // SimbotContext context = SimbotApp.run(new Test(), args);
+        // BotManager manager = context.get(BotManager.class);
 
         // for (Bot bot : manager.getBots()) {
         //     System.out.println(bot.getSender().getBotInfo());
