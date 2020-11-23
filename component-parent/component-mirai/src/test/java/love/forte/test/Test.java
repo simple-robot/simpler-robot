@@ -17,14 +17,14 @@ import org.slf4j.LoggerFactory;
 @SimbotApplication
 public class Test implements SimbotProcess {
     public static void main(String[] args) throws InterruptedException {
+        //
+        // Logger logger = LoggerFactory.getLogger(Test.class);
+        //
+        // logger.info("a\na");
+        // logger.info("b\r\nb");
+        // logger.info("c>\r<c");
 
-        Logger logger = LoggerFactory.getLogger(Test.class);
-
-        logger.info("a\na");
-        logger.info("b\r\nb");
-        logger.info("c>\r<c");
-
-        // SimbotContext context = SimbotApp.run(new Test(), args);
+        SimbotContext context = SimbotApp.run(new Test(), args);
         // BotManager manager = context.get(BotManager.class);
 
         // for (Bot bot : manager.getBots()) {
@@ -47,7 +47,6 @@ public class Test implements SimbotProcess {
 
     @Override
     public void post(@NotNull SimbotContext context) {
-        System.out.println("run finished.");
         context.getBotManager().getBots().forEach(b -> {
             b.getSender().SENDER.sendPrivateMsg("1149159218", "我好了");
         });

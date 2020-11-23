@@ -36,7 +36,8 @@ import org.slf4j.LoggerFactory
 private fun <M : MsgGet> M.onMsg(msgProcessor: MsgGetProcessor) = msgProcessor.onMsg(this)
 //endregion
 
-private val logger: Logger = LoggerFactory.getLogger("MiraiBotEventRegistrar")
+private val logger: Logger = LoggerFactory.getLogger("love.forte.simbot.component.mirai.MiraiBotEventRegistrar")
+
 
 public fun Bot.registerSimbotEvents(msgProcessor: MsgGetProcessor) {
 
