@@ -96,4 +96,11 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 ### fix 
 - fix [#8 ](https://github.com/ForteScarlet/simpler-robot/issues/8) (多bot下群消息重复触发)
 
-## ALPHA.8(NOW)
+
+## ALPHA.8 
+
+### fix
+- fix [#9 ](https://github.com/ForteScarlet/simpler-robot/issues/9) (多bot下监听函数重复缓存)
+
+
+## ALPHA.9(NOW)
