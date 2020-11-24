@@ -56,7 +56,7 @@
         <!-- plugins -->
 
         <!-- dokka version -->
-        <dokka.version>1.4.10.2</dokka.version>
+        <dokka.version>1.4.0-rc</dokka.version>
         <!-- sb maven version -->
         <sb-maven.version>2.3.4.RELEASE</sb-maven.version>
 
@@ -387,7 +387,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
-            <!-- doc -->
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
@@ -556,9 +555,7 @@
 
                         <!--<skip>true</skip>-->
 
-                        <includes>
-                            <include>modules.md</include>
-                        </includes>
+
                         <!-- Set to true to skip dokka task, default: false -->
                         <!--                        <skip>true</skip>-->
                         <!-- Used for linking to JDK, default: 6 -->
