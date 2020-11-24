@@ -17,27 +17,7 @@ import org.slf4j.LoggerFactory;
 @SimbotApplication
 public class Test implements SimbotProcess {
     public static void main(String[] args) throws InterruptedException {
-        //
-        // Logger logger = LoggerFactory.getLogger(Test.class);
-        //
-        // logger.info("a\na");
-        // logger.info("b\r\nb");
-        // logger.info("c>\r<c");
-
-        SimbotContext context = SimbotApp.run(new Test(), args);
-        // BotManager manager = context.get(BotManager.class);
-
-        // for (Bot bot : manager.getBots()) {
-        //     System.out.println(bot.getSender().getBotInfo());
-        // }
-        //
-        // Thread.sleep(5000);
-        //
-        //
-        // context.close();
-        //
-        // System.exit(-1);
-
+        SimbotApp.run(new Test(), args);
     }
 
     @Override

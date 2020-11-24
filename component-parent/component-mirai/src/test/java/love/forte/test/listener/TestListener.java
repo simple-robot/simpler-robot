@@ -13,5 +13,10 @@ import love.forte.simbot.filter.MatchType;
 @Beans
 public class TestListener {
 
+    @OnGroup
+    @Filter(groups = "703454734")
+    public void group(GroupMsg msg){
+        System.out.println(msg.getBotInfo().getBotCode() + " on group msg: " + msg);
+    }
 
 }
