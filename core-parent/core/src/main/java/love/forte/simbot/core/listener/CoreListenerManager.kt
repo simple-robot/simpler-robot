@@ -96,7 +96,7 @@ public class CoreListenerManager(
 
 ) : ListenerManager, ListenerRegistrar {
 
-    private val logger: Logger = LoggerFactory.getLogger("CoreListenerManager")
+    private val logger: Logger = LoggerFactory.getLogger(CoreListenerManager::class.java)
 
     /**
      * 监听函数集合，通过对应的监听类型进行分类。
@@ -110,13 +110,6 @@ public class CoreListenerManager(
      * 当 [register] 了新的监听函数后对应相关类型将会被清理。
      */
     private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, Queue<ListenerFunction>> = ConcurrentHashMap()
-
-
-    /**
-     * 目前所有监听中的类型。
-     */
-    private val allListenTypes: MutableSet<Class<out MsgGet>> get() = mainListenerFunctionMap.keys
-
 
 
     /**
@@ -134,11 +127,14 @@ public class CoreListenerManager(
 
             // clear cache map.
             // 寻找并更新缓存监听
-            cacheListenerFunctionMap.forEach {
-                if (listenType.isAssignableFrom(it.key)) {
-                    it.value.add(listenerFunction)
-                }
-            }
+            // no. 直接清除缓存。
+            cacheListenerFunctionMap.clear()
+
+            // cacheListenerFunctionMap.forEach {
+            //     if (listenType.isAssignableFrom(it.key)) {
+                    // it.value.add(listenerFunction)
+                // }
+            // }
         }
     }
 
@@ -169,7 +165,6 @@ public class CoreListenerManager(
      * 筛选监听函数
      */
     private fun onMsg0(msgGet: MsgGet): ListenResult<*> {
-
         val funcs = getListenerFunctions(msgGet.javaClass, true)
         return if (funcs.isEmpty()) {
             NothingResult
@@ -245,59 +240,6 @@ public class CoreListenerManager(
 
     }
 
-    /**
-     * 根据一个监听器类型获取对应监听函数。
-     *
-     * 寻找 main funcs 中为 [type] 的父类的类型。
-     *
-     */
-    private fun <T : MsgGet> getListenerFunctionSequence(
-        type: Class<out T>,
-        cache: Boolean
-    ): Sequence<ListenerFunction> {
-        // 尝试直接获取
-        // fastball n. 直球
-        val fastball = mainListenerFunctionMap[type] ?: cacheListenerFunctionMap[type]
-        return if (fastball != null) {
-            fastball.asSequence()
-        } else {
-
-            if(mainListenerFunctionMap.isEmpty()) {
-                return emptySequence()
-            }
-
-            // 无法直接获取，则遍历类型并合并。
-            // 获取类型对应函数列表
-            val typeSeq: Sequence<ListenerFunction> = mainListenerFunctionMap.asSequence().flatMap { (k, v) ->
-                if (k.isAssignableFrom(type)) {
-                    v.asSequence()
-                } else {
-                    emptySequence()
-                }
-            }
-
-            if (cache) {
-                val typeQueue: Queue<ListenerFunction> = typeSeq.toCollection(concurrentQueueOf())
-                // lock and cache it.
-                synchronized(type) {
-                    // merge.
-                    cacheListenerFunctionMap.merge(type, typeQueue) { oldValue, value ->
-                        (oldValue.asSequence() + value.asSequence()).distinctByMerger(
-                            {
-                                ListenerFunctionDistinction(it)
-                            }, { _, func ->
-                                throw ListenerAlreadyExistsException("Duplicate listener by id: ${func.id} in $func.")
-                            }
-                        ).toCollection(concurrentQueueOf())
-                    }
-                }
-                typeQueue.asSequence()
-            } else {
-                typeSeq
-            }
-        }
-    }
-
 
     /**
      * 根据一个监听器类型获取对应监听函数。
@@ -308,39 +250,31 @@ public class CoreListenerManager(
     private fun <T : MsgGet> getListenerFunctions(type: Class<out T>, cache: Boolean): Collection<ListenerFunction> {
         // 尝试直接获取
         // fastball n. 直球
-        val fastball = mainListenerFunctionMap[type] ?: cacheListenerFunctionMap[type]
+        // 只取缓存，main listener中的内容用于遍历检测。
+        val fastball = cacheListenerFunctionMap[type]
 
         return if (fastball != null) {
+            // 有缓存，return；
             fastball.toList()
         } else {
             if(mainListenerFunctionMap.isEmpty()) {
                 return emptyList()
             }
 
-            // 无法直接获取，则遍历类型并合并。
+            // 获取不到缓存信息，则遍历类型。
             // 获取类型对应函数列表
-            val typeSeq: Sequence<ListenerFunction> = mainListenerFunctionMap.asSequence().flatMap { (k, v) ->
+            val typeList = LinkedList<ListenerFunction>()
+
+            mainListenerFunctionMap.forEach { (k, v)->
                 if (k.isAssignableFrom(type)) {
-                    v.asSequence()
-                } else {
-                    emptySequence()
+                    typeList.addAll(v)
                 }
             }
 
             if (cache) {
-                val typeQueue: Queue<ListenerFunction> = typeSeq.toCollection(concurrentQueueOf())
-                // lock and cache it.
-                synchronized(type) {
-                    // merge.
-                    cacheListenerFunctionMap.merge(type, typeQueue) { oldValue, value ->
-                        (oldValue.asSequence() + value.asSequence()).distinctBy {
-                            ListenerFunctionDistinction(it)
-                        }.toCollection(concurrentQueueOf())
-                    }
-                }
-                typeQueue.toList()
+                cacheListenerFunctionMap.computeIfAbsent(type) { typeList }
             } else {
-                typeSeq.toList()
+                typeList
             }
         }
 
