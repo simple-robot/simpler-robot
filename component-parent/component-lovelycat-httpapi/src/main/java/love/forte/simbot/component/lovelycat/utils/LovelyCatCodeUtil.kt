@@ -46,7 +46,7 @@ public object LovelyCatCodeUtil {
             // 存在 at, replace.
             CatCodeUtil.split(text.replace("[@at", "${CAT_HEAD}at")) {
                 if (startsWith(CAT_HEAD)) {
-                    Nyanko.byCode(this)
+                    Nyanko.byCode(this.replace(",wxid=", ",code="))
                 } else {
                     // is text.
                     CatCodeUtil.toNeko("text", false, "text=${CatEncoder.encodeParams(text)}")
