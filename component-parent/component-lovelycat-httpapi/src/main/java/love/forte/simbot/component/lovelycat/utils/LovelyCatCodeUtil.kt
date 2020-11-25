@@ -41,7 +41,7 @@ public object LovelyCatCodeUtil {
     fun splitAtOnTextToNeko(text: String): List<Neko> {
         val firstOf = text.indexOf("[@at")
         return if (firstOf < 0) {
-            listOf(CatCodeUtil.getNekoBuilder("text", true).key("text").value(text).build())
+            listOf(CatCodeUtil.toNeko("text", false, "text=${CatEncoder.encodeParams(text)}"))
         } else {
             // 存在 at, replace.
             CatCodeUtil.split(text.replace("[@at", "${CAT_HEAD}at")) {
