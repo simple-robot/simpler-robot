@@ -20,10 +20,7 @@ import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.GroupMsg
-import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
-import love.forte.simbot.component.mirai.message.MiraiMessageSourceFlagContent
-import love.forte.simbot.component.mirai.message.miraiMessageFlag
-import love.forte.simbot.component.mirai.message.toSimbotPermissions
+import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.message.GroupMessageEvent
 import net.mamoe.mirai.message.data.MessageSource
 

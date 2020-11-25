@@ -20,6 +20,8 @@ import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.containers.botAsAccountInfo
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
+import javax.xml.crypto.Data
 
 /**
  * 一个bot上线后触发的事件。
@@ -33,17 +35,30 @@ public interface LovelyCatLogin : MsgGet {
 
 
 /**
- * 新的账号登录成功/下线时
+ * 新的账号登录成功/下线时。
  *
+ * 事件名=EventLogin
  */
-public data class LovelyCatEventLogin(
+public class LovelyCatEventLogin
+private constructor(
     private val robWxid: String,
     private val robName: String,
     override val type: Int,
     /** 当前账号的JSON对象，具体JSON结构请查看日志 */
-    override val msg: String,
-    override val originalData: String
+    val msg: String,
+    override val originalData: String,
+    private val api: LovelyCatApiTemplate?
 ) : BaseLovelyCatMsg("EventLogin", originalData), LovelyCatLogin {
+    data class DataMapping(
+        val robWxid: String,
+        val robName: String,
+        val type: Int,
+        val msg: String
+    ): LovelyCatDataMapping<LovelyCatEventLogin>() {
+        override fun mapTo(originalData: String, api: LovelyCatApiTemplate?): LovelyCatEventLogin {
+            return LovelyCatEventLogin(robWxid, robName, type, msg, originalData, api)
+        }
+    }
     /*
         事件名=EventLogin	新的账号登录成功/下线时，运行这里
         rob_wxid, 文本型
@@ -71,4 +86,29 @@ public data class LovelyCatEventLogin(
      */
     override val accountInfo: AccountInfo
         get() = botInfo.botAsAccountInfo()
+
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as LovelyCatEventLogin
+
+        if (robWxid != other.robWxid) return false
+        if (robName != other.robName) return false
+        if (type != other.type) return false
+        if (msg != other.msg) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = robWxid.hashCode()
+        result = 31 * result + robName.hashCode()
+        result = 31 * result + type
+        result = 31 * result + msg.hashCode()
+        return result
+    }
+
+
 }

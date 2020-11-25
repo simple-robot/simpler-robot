@@ -21,11 +21,12 @@
     <parent>
         <artifactId>component-parent</artifactId>
         <groupId>love.forte.simple-robot</groupId>
-        <version>2.0.0-ALPHA.7</version><!--v-->
+        <version>2.0.0-ALPHA.9</version><!--v-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>component-lovelycat-httpapi</artifactId>
+
 
     <dependencies>
         <dependency>
@@ -78,10 +79,26 @@
 
     <build>
         <plugins>
+            <!-- doc -->
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+            </plugin>
+
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
             </plugin>
+
+            <plugin>
+                <!-- skip deploy -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 

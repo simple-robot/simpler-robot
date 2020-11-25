@@ -54,7 +54,7 @@ public abstract class AbstractMiraiMsgGet<out ME : BotEvent>(
 
 
     /** 应当重写toString方法 */
-    override fun toString(): String = "MiraiEvent($event)"
+    override fun toString(): String = "MiraiEvent(id=$id, event=$event)"
 
     /**
      * 得到原始数据字符串。

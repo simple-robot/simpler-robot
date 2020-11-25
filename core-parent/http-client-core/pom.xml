@@ -21,7 +21,7 @@
     <parent>
         <artifactId>core-parent</artifactId>
         <groupId>love.forte.simple-robot</groupId>
-        <version>2.0.0-ALPHA.7</version><!--v-->
+        <version>2.0.0-ALPHA.9</version><!--v-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -36,6 +36,12 @@
 
     <build>
         <plugins>
+            <!-- doc -->
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+            </plugin>
+
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>

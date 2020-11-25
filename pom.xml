@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <artifactId>parent</artifactId>
     <groupId>love.forte.simple-robot</groupId>
-    <version>2.0.0-ALPHA.7</version><!--v-->
+    <version>2.0.0-ALPHA.9</version><!--v-->
     <modules>
         <module>core-parent</module>
         <module>component-parent</module>
@@ -48,7 +48,7 @@
 
         <!-- some version -->
         <fastjson.version>1.2.74</fastjson.version>
-        <hutool.version>5.4.7</hutool.version>
+        <hutool.version>5.5.1</hutool.version>
 
         <commons.version>1.0.0-ALPHA.5</commons.version>
         <catCode.version>1.0.0-ALPHA.3</catCode.version>
@@ -387,7 +387,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
-            <!-- doc -->
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
@@ -556,9 +555,7 @@
 
                         <!--<skip>true</skip>-->
 
-                        <includes>
-                            <include>modules.md</include>
-                        </includes>
+
                         <!-- Set to true to skip dokka task, default: false -->
                         <!--                        <skip>true</skip>-->
                         <!-- Used for linking to JDK, default: 6 -->

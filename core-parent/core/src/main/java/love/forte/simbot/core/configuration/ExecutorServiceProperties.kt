@@ -33,10 +33,6 @@ public class ExecutorServiceProperties {
      */
     @field:ConfigInject
     var corePoolSize = 1
-    set(value) {
-        println("set: $value")
-        field = value
-    }
 
 
     /**

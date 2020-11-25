@@ -19,7 +19,9 @@ package love.forte.simbot.component.lovelycat.message.event
 
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.component.lovelycat.message.event.LovelyCatMsg.Companion.NON_TYPE
 import kotlin.reflect.KClass
 
@@ -60,53 +62,38 @@ public abstract class BaseLovelyCatMsg(override val event: String, override val 
     override val type: Int
         get() = NON_TYPE
 
-    /**
-     * 接收到的消息类型。某些事件中也可能是 'json_msg'
-     */
-    abstract val msg: String
+    // /**
+    //  * 接收到的消息。某些事件中也可能是 'json_msg'
+    //  */
+    // abstract val msg: String
 
 
     /** 当前监听事件消息的ID。一般情况下应当是一个唯一ID。 */
     override val id: String = ""
 
-    // /**
-    //  * 可以得到一个 **文本**。
-    //  *
-    //  *  这个文本应当是不包含任何 CAT码 的纯文本消息。
-    //  *
-    //  *  而关于存在CAT码的特殊消息，可参考 [MessageGet.msg].
-    //  *
-    //  */
-    // override val text: String?
-    //     get() = TODO("Not yet implemented")
 
     /** 消息接收到的时候的事件戳。可能会与实际接收到消息的时间有所偏差。 */
-    override val time: Long = System.currentTimeMillis()
+    override val time: Long = System.currentTimeMillis() - 10
+
 
     /** 应当重写toString方法 */
     override fun toString(): String {
-        return "LovelyCat()"
+        return "LovelyCat(event=$event, originalData=$originalData)"
     }
 
-    // /**
-    //  * 得到原始数据字符串。
-    //  * 数据不应该为null。
-    //  */
-    // override val originalData: String get() = msg
 
-    // /**
-    //  * bot信息
-    //  */
-    // override val botInfo: BotInfo
-    //     get() = TODO("Not yet implemented")
 
-    // /**
-    //  * 账号的信息。一般来讲是不可能为null的，但是其中的信息就不一定了
-    //  */
-    // override val accountInfo: AccountInfo
-    //     get() = TODO("Not yet implemented")
+    /** DataMapping. */
+    abstract class LovelyCatDataMapping<T: BaseLovelyCatMsg> {
+        abstract fun mapTo(originalData: String, api: LovelyCatApiTemplate?): T
+    }
 
 }
+
+
+
+
+
 
 
 /**
@@ -144,6 +131,29 @@ private data class LovelyCatAccountInfo(
 
 
 /**
+ * lovelyCat groupInfo.
+ */
+@JvmOverloads
+public fun lovelyCatGroupInfo(
+    groupCode: String,
+    groupName: String? = null,
+    groupAvatar: String? = null
+): GroupInfo = LovelyCatGroupInfo(groupCode, groupName, groupAvatar)
+
+
+
+
+/**
+ * simple data class instance for [GroupInfo].
+ */
+private data class LovelyCatGroupInfo(
+    override val groupCode: String,
+    override val groupName: String?,
+    override val groupAvatar: String?
+): GroupInfo
+
+
+/**
  * 根据具体参数构建一个data class.
  * @param botCode String
  * @param botName String
@@ -157,6 +167,14 @@ public fun lovelyCatBotInfo(
     botAvatar: String? = null
 ): BotInfo = LovelyCatBotInfo(botCode, botName, botAvatar)
 
+
+public fun lovelyCatBotInfo(
+    botCode: String, api: LovelyCatApiTemplate?
+): BotInfo = LovelyCatBotInfo(
+    botCode,
+    api?.getRobotName(botCode)?.botName ?: "",
+    api?.getRobotHeadImgUrl(botCode)?.botAvatar
+)
 
 /**
  * simple data instance for [BotInfo]

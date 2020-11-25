@@ -17,14 +17,7 @@
 package love.forte.simbot.component.lovelycat.message
 
 import love.forte.simbot.api.message.containers.*
-import love.forte.simbot.api.message.results.GroupMemberInfo
 
-
-// public interface LovelyCatApiResult {
-//     val code: Int
-//     val result: String
-//     val data: String
-// }
 
 
 public interface ApiResult<T> {
@@ -240,8 +233,26 @@ public data class CatGroupMemberInfo(
 
 }
 
+public data class GroupMemberListResult(
+    override val code: Int,
+    override val result: String,
+    override val data: List<CatSimpleGroupMemberInfo>
+) : ApiResult<List<CatSimpleGroupMemberInfo>>
 
 
+public data class CatSimpleGroupMemberInfo(
+    /*
+        {
+            "Name": "\u674e\u5609\u56fe",
+            "wxid": "wxid_tkst1wt4we1622",
+            "Robot_wxid": "wxid_bqy1ezxxkdat22"
+        }
+     */
+    val name: String,
+    val wxid: String,
+    val robotWxid: String
+
+)
 
 
 
