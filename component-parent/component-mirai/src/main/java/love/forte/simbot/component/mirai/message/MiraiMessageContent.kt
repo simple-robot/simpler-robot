@@ -46,11 +46,15 @@ public abstract class MiraiMessageContent : MessageContent {
      */
     // @JvmDefault
     override val msg: String? by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        cats.joinToString("") {
-            if (it.type == "text") {
-                it["text"] ?: ""
-            } else {
-                it.toString()
+        when {
+            cats.isEmpty() -> ""
+            cats.size == 1 && cats.first().type == "text" -> cats.first()["text"] ?: ""
+            else -> cats.joinToString("") {
+                if (it.type == "text") {
+                    it["text"] ?: ""
+                } else {
+                    it.toString()
+                }
             }
         }
     }

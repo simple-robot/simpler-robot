@@ -376,7 +376,8 @@ public fun SingleMessage.toNeko(): Neko {
         // at
         is At -> CatCodeUtil.nekoTemplate.at(target)
         // 普通文本, 转义
-        is PlainText -> CatCodeUtil.getNekoBuilder("text", true).key("text").value(content).build()
+        is PlainText -> CatCodeUtil.toNeko("text", false, "text=${CatEncoder.encodeParams(content)}")
+        //.key("text").value(content).build()
         is Face -> CatCodeUtil.nekoTemplate.face(id.toString())
         is VipFace -> CatCodeUtil.getNekoBuilder("vipFace", true)
             .key("kindId").value(this.kind.id)
