@@ -19,17 +19,32 @@ import love.forte.catcode.CatCodeUtil
 import love.forte.catcode.CatEncoder
 import love.forte.catcode.Neko
 import love.forte.simbot.api.message.MessageContent
+import love.forte.simbot.component.lovelycat.utils.LovelyCatCodeUtil
 
 
 /**
  * 可爱猫文本消息正文。
  */
-public data class LovelyCatTextMessageContent(override val msg: String): MessageContent {
+public data class LovelyCatTextMessageContent(private val originalMsg: String): MessageContent {
+
     /**
      * 获取此消息中的所有可能包含的cat码。
      * text message content中仅包含一个纯文本neko。
      */
-    override val cats: List<Neko> = listOf(CatCodeUtil.toNeko("text", false, "text=${CatEncoder.encodeParams(msg)}"))
+    override val cats: List<Neko> = LovelyCatCodeUtil.splitAtOnTextToNeko(originalMsg)
+
+
+    override val msg: String = when{
+        cats.isEmpty() -> ""
+        cats.size == 1 && cats.first().type == "text" -> cats.first()["text"] ?: ""
+        else -> cats.joinToString {
+            if (it.type == "text") {
+                it["text"] ?: ""
+            } else {
+                it
+            }
+        }
+    }
 }
 
 
@@ -137,6 +152,34 @@ public data class LovelyCatRedEnvelopeMessageContent(override val msg: String): 
  * type=2002
  */
 public data class LovelyCatAppMessageContent(private val app: String): LovelyCatNekoMessageContent(CatCodeUtil.getNekoBuilder("app", true).key("content").value(app).build())
+
+
+
+//
+// /**
+//  * 群邀请消息。
+//  * type=2003
+//  */
+// public data class LovelyCatGroupInviteMessageContent(private val text: String, private val jsonMsg: String): MessageContent {
+//     /**
+//      * 消息字符串文本。
+//      *
+//      * 一般来讲，[msg] 就相当于将 [cats] 中的内容全部toString并拼接在了一起，但是text文本不再表现为cat码。
+//      */
+//     override val msg: String
+//         get() = jsonMsg
+//
+//     /**
+//      * 获取此消息中的所有可能包含的cat码。
+//      *
+//      * 此处所获得的cat码指的是 **所有** 消息链中元素的cat码，
+//      * 也就是说一段普通的 **文本消息** 也会被作为cat码进行处理，其类型为 `message`, 参数只有一个 `text`，代表其正文信息。
+//      *
+//      * 对于组件实现，一般需要耗时获取的属性可通过 `lazy cat` 来进行实现。
+//      *
+//      */
+//     override val cats: List<Neko> = listOf(CatCodeUtil.toNeko())
+// }
 
 /**
  * 其他未知类型消息正文。

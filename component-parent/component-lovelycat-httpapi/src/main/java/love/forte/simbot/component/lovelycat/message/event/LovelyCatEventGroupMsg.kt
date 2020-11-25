@@ -12,6 +12,7 @@
  *
  */
 
+@file:JvmName("LovelyCatEventGroupMsgs")
 package love.forte.simbot.component.lovelycat.message.event
 
 import love.forte.simbot.api.message.MessageContent
@@ -20,83 +21,43 @@ import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.containers.GroupInfo
-import love.forte.simbot.api.message.events.GroupMsg
+import love.forte.simbot.api.message.events.*
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.component.lovelycat.message.*
+import love.forte.simbot.serialization.json.JsonSerializerFactory
+
+
+public const val GROUP_EVENT_TYPE = "EventGroupMsg"
+
+/**
+ * lovely cat 群事件消息接口.
+ */
+public interface LovelyCatEventGroupMsg : LovelyCatMsg {
+    val robotWxid: String
+    override val type: Int
+    val fromWxid: String
+    val fromName: String
+    val finalFromWxid: String
+    val finalFromName: String
+    val toWxid: String
+}
 
 
 /**
- * 事件名=EventGroupMsg，
- * 群消息事件（收到群消息时，运行这里）
- * @author ForteScarlet
+ * 可作为普通消息使用的 [LovelyCatEventGroupMsg] 实现。
  */
-public class LovelyCatEventGroupMsg
-private constructor(
-    private val robotWxid: String,
+public class LovelyCatEventTextAbleGroupMsg(
+    override val robotWxid: String,
     override val type: Int,
-    private val fromWxid: String,
-    private val fromName: String,
-    private val finalFromWxid: String,
-    private val finalFromName: String,
-    private val toWxid: String,
-    private val _msg: String,
+    override val fromWxid: String,
+    override val fromName: String,
+    override val finalFromWxid: String,
+    override val finalFromName: String,
+    override val toWxid: String,
+    override val msgContent: MessageContent,
     override val originalData: String,
-    private val api: LovelyCatApiTemplate?
-) : BaseLovelyCatMsg("EventGroupMsg", originalData), GroupMsg {
-    data class DataMapping(
-        val robotWxid: String,
-        val type: Int,
-        val fromWxid: String,
-        val fromName: String,
-        val finalFromWxid: String,
-        val finalFromName: String,
-        val toWxid: String,
-        val msg: String,
-    ) : BaseLovelyCatMsg.LovelyCatDataMapping<LovelyCatEventGroupMsg>() {
-        override fun mapTo(originalData: String, api: LovelyCatApiTemplate?): LovelyCatEventGroupMsg {
-            return LovelyCatEventGroupMsg(
-                robotWxid,
-                type,
-                fromWxid,
-                fromName,
-                finalFromWxid,
-                finalFromName,
-                toWxid,
-                msg,
-                originalData,
-                api
-            )
-        }
-    }
-    /*
-    robot_wxid, 文本型, , 机器人账号id（就是这条消息是哪个机器人的，因为可能登录多个机器人）
-    type, 整数型, ,
-        1/文本消息
-        3/图片消息
-        34/语音消息
-        42/名片消息
-        43/视频
-        47/动态表情
-        48/地理位置
-        49/分享链接
-        2001/红包
-        2002/小程序
-        2003/群邀请
-        更多请参考sdk模块常量值
-    from_wxid, 文本型, , 来源群id
-    from_name, 文本型, , 来源群昵称
-    final_from_wxid, 文本型, , 具体发消息的群成员id
-    final_from_name, 文本型, , 具体发消息的群成员昵称
-    to_wxid, 文本型, , 接收消息的人id，（一般是机器人收到了，也有可能是机器人发出的消息，别人收到了，那就是别人）
-    msg, 文本型, , 消息内容
-     */
-
-    // /**
-    //  * 接收到的消息类型。某些事件中也可能是 'json_msg'
-    //  */
-    // override val msg: String
-    //     get() = TODO("Not yet implemented")
-
+    api: LovelyCatApiTemplate?
+) : BaseLovelyCatMsg(GROUP_EVENT_TYPE, originalData), GroupMsg, LovelyCatEventGroupMsg {
     /**
      * 暂时无法区分权限，所有人都视为群员。
      */
@@ -130,52 +91,179 @@ private constructor(
      * bot信息。
      */
     override val botInfo: BotInfo = lovelyCatBotInfo(robotWxid, api)
+}
 
+
+/**
+ * 群邀请事件。
+ */
+public class LovelyCatGroupInviteGroupMsg(
+    override val robotWxid: String,
+    override val type: Int,
+    override val fromWxid: String,
+    override val fromName: String,
+    override val finalFromWxid: String,
+    override val finalFromName: String,
+    override val toWxid: String,
+    override val originalData: String,
+    override val text: String,
+    api: LovelyCatApiTemplate?
+) : BaseLovelyCatMsg("EventGroupMsg", originalData), GroupAddRequest, LovelyCatEventGroupMsg {
 
     /**
-     *  消息事件的消息正文文本。
-     *
-     * [消息正文][msgContent] 不允许为`null`，但是其中的 [msg][MessageContent.msg] 则就不保证了。
+     * bot信息
      */
-    override val msgContent: MessageContent = when (type) {
-        /*
-            1/文本消息
-            3/图片消息
-            47/动态表情
-            34/语音消息
-            42/名片消息
-            43/视频
-            48/地理位置
-            49/分享链接
-            2001/红包
-            2002/小程序
-            2003/群邀请
-         */
-        // text type.
-        1 -> LovelyCatTextMessageContent(_msg)
-        // img type.
-        3, 47 -> LovelyCatImageMessageContent(_msg)
-        // record type.
-        34 -> LovelyCatRecordMessageContent(_msg)
-        // share card type.
-        42 -> LovelyCatShareCardMessageContent(_msg)
-        // video type.
-        43 -> LovelyCatVideoMessageContent(_msg)
-        // location type.
-        // {"x":"36.678349","y":"117.041023","desc":"明湖天地D座(济南市天桥区明湖东路8号)","title":"天桥区明湖东路10-6号"}
-        // TODO
-        // 48 -> LovelyCatLocationMessageContent(_msg)
-        // share link type.
-        49 -> LovelyCatShareLinkMessageContent(_msg)
-        // 红包消息.
-        // {msg=收到红包，请在手机上查看, from_wxid=wxid_khv2ht7uwa5x22, Event=EventFriendMsg, from_name=主号 , type=2001, robot_wxid=wxid_bqy1ezxxkdat22, to_wxid=wxid_bqy1ezxxkdat22}
-        2001 -> LovelyCatRedEnvelopeMessageContent(_msg)
-        // 2002/小程序
-        2002 -> LovelyCatAppMessageContent(_msg)
-        // 2003/群邀请 TODO
+    override val botInfo: BotInfo = lovelyCatBotInfo(robotWxid, api)
 
-        else -> LovelyCatUnknownMessageContent(_msg, type)
-    }
+    /**
+     * 代表当前实际申请入群的用户。如果是别人申请入群，则此为这个要进群的用户的信息，
+     * 如果是bot被邀请进某个群，那么这个就是bot的信息。
+     */
+    override val accountInfo: AccountInfo = lovelyCatAccountInfo(finalFromWxid, finalFromName)
+
+    /**
+     * 当前请求的邀请者。在 **组件不支持** 、**请求非邀请** 等情况下可能为null。
+     */
+    override val invitor: GroupAddRequestInvitor = accountInfo.asInvitor()
+
+    /**
+     * 申请的类型
+     */
+    override val requestType: GroupAddRequest.Type
+        get() = GroupAddRequest.Type.PASSIVE
+
+    /**
+     * 获取请求标识。
+     *
+     * @see GroupAddRequestIdFlagContent
+     */
+    override val flag: Flag<GroupAddRequest.FlagContent> = LovelyCatGroupInviteEventFlag(originalData)
 
 
 }
+
+/**
+ * 记录了原始消息json的群邀请事件flag。
+ */
+private class LovelyCatGroupInviteEventFlag(jsonMsg: String) : Flag<GroupAddRequest.FlagContent> {
+    /**
+     * 标识主体
+     */
+    override val flag: GroupAddRequest.FlagContent = GroupAddRequestIdFlagContent(jsonMsg)
+}
+
+
+/**
+ * Group msg 事件数据映射。
+ */
+data class GroupMsgDataMapping(
+    val robotWxid: String,
+    val type: Int,
+    val fromWxid: String,
+    val fromName: String,
+    val finalFromWxid: String,
+    val finalFromName: String,
+    val toWxid: String,
+    /** 只允许两种值：1，string，2：单层map */
+    val msg: Any,
+) : BaseLovelyCatMsg.LovelyCatDataMapping<LovelyCatEventGroupMsg>() {
+    override fun mapTo(
+        originalData: String,
+        api: LovelyCatApiTemplate?,
+        jsonSerializerFactory: JsonSerializerFactory
+    ): LovelyCatEventGroupMsg {
+        val msgContent: MessageContent =
+            when (type) {
+                /*
+                    1/文本消息
+                    3/图片消息
+                    47/动态表情
+                    34/语音消息
+                    42/名片消息
+                    43/视频
+                    49/分享链接
+                    2001/红包
+                    2002/小程序
+                    48/地理位置 // location json.
+
+                    2003/群邀请 // invite
+                 */
+                // text type.
+                1 -> LovelyCatTextMessageContent(msg.toString())
+                // img type.
+                3, 47 -> LovelyCatImageMessageContent(msg.toString())
+                // record type.
+                34 -> LovelyCatRecordMessageContent(msg.toString())
+                // share card type.
+                42 -> LovelyCatShareCardMessageContent(msg.toString())
+                // video type.
+                43 -> LovelyCatVideoMessageContent(msg.toString())
+                // location type.
+                // {"x":"36.678349","y":"117.041023","desc":"明湖天地D座(济南市天桥区明湖东路8号)","title":"天桥区明湖东路10-6号"}
+                48 -> {
+                    val paramMap = msg as Map<String, *>
+                    val location = LovelyCatLocation(
+                        paramMap["x"]?.toString() ?: "",
+                        paramMap["y"]?.toString() ?: "",
+                        paramMap["desc"]?.toString() ?: "",
+                        paramMap["title"]?.toString() ?: ""
+                    )
+                    LovelyCatLocationMessageContent(location)
+                }
+                // share link type.
+                49 -> LovelyCatShareLinkMessageContent(msg.toString())
+                // 红包消息.
+                // {msg=收到红包，请在手机上查看, from_wxid=wxid_khv2ht7uwa5x22, Event=EventFriendMsg, from_name=主号 , type=2001, robot_wxid=wxid_bqy1ezxxkdat22, to_wxid=wxid_bqy1ezxxkdat22}
+                2001 -> LovelyCatRedEnvelopeMessageContent(msg.toString())
+                // 2002/小程序
+                2002 -> LovelyCatAppMessageContent(msg.toString())
+                // 2003/群邀请, 视为text消息。
+                2003 -> {
+                    // 群邀请，使用群邀请消息类型
+                    return LovelyCatGroupInviteGroupMsg(
+                        robotWxid, type, fromWxid, fromName, finalFromWxid, finalFromName,
+                        toWxid, originalData, msg.toString(), api
+                    )
+                }
+                // other unknown msg.
+                else -> LovelyCatUnknownMessageContent(msg.toString(), type)
+            }
+
+        return LovelyCatEventTextAbleGroupMsg(
+            robotWxid, type, fromWxid, fromName, finalFromWxid, finalFromName,
+            toWxid, msgContent, originalData, api
+        )
+    }
+}
+
+
+/**
+ * parser event: [GROUP_EVENT_TYPE]
+ */
+public object LovelyCatEventGroupMsgParser : LovelyCatEventParser {
+    override fun invoke(
+        originalData: String,
+        api: LovelyCatApiTemplate?,
+        jsonSerializerFactory: JsonSerializerFactory,
+        param: Map<String, *>
+    ): LovelyCatMsg {
+        fun toErr(param: String) = IllegalStateException("missing param: $param")
+
+        return GroupMsgDataMapping(
+            param["robot_wxid"]?.toString() ?: throw toErr("robot_wxid"),
+            param["type"] as? Int ?: throw toErr("type"),
+            param["from_wxid"]?.toString() ?: throw toErr("from_wxid"),
+            param["from_name"]?.toString() ?: throw toErr("from_name"),
+            param["final_from_wxid"]?.toString() ?: throw toErr("final_from_wxid"),
+            param["final_from_name"]?.toString() ?: throw toErr("final_from_name"),
+            param["to_wxid"]?.toString() ?: throw toErr("to_wxid"),
+            param["msg"] ?: throw toErr("msg")
+        ).mapTo(originalData, api, jsonSerializerFactory)
+
+
+    }
+}
+
+
+
+

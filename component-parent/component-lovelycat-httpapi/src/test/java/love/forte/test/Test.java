@@ -32,17 +32,17 @@ public class Test {
     public static void main(String[] args) {
         SimbotContext context = SimbotApp.run(Test.class, args);
 
-        HttpTemplate template = context.get(HttpTemplate.class);
-
-        String url = "http://127.0.0.1:88/httpAPI";
-
-        JsonSerializerFactory fac = context.get(JsonSerializerFactory.class);
-
-        LovelyCatApiTemplate api = new LovelyCatApiTemplateImpl(template, url, fac);
-
-        String botId = "wxid_bqy1ezxxkdat22";
-        String groupWxid = "11046274610@chatroom";
-        String forteWxid = "wxid_khv2ht7uwa5x22";
+        // HttpTemplate template = context.get(HttpTemplate.class);
+        //
+        // String url = "http://127.0.0.1:88/httpAPI";
+        //
+        // JsonSerializerFactory fac = context.get(JsonSerializerFactory.class);
+        //
+        // LovelyCatApiTemplate api = new LovelyCatApiTemplateImpl(template, url, fac);
+        //
+        // String botId = "wxid_bqy1ezxxkdat22";
+        // String groupWxid = "11046274610@chatroom";
+        // String forteWxid = "wxid_khv2ht7uwa5x22";
 
 
         // try {

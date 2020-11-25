@@ -15,6 +15,8 @@
 package love.forte.test.listener;
 
 import love.forte.common.ioc.annotation.Beans;
+import love.forte.simbot.annotation.OnGroup;
+import love.forte.simbot.api.message.events.GroupMsg;
 
 /**
  * @author ForteScarlet
@@ -23,8 +25,11 @@ import love.forte.common.ioc.annotation.Beans;
 public class TestListener {
 
 
-    public void group(){
-
+    @OnGroup
+    public void group(GroupMsg msg){
+        System.out.println(msg);
+        System.out.println(msg.getText());
+        System.out.println(msg.getMsg());
     }
 
 }

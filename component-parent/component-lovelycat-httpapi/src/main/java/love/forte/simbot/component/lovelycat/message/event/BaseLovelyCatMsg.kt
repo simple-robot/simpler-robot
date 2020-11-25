@@ -23,6 +23,7 @@ import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.component.lovelycat.message.event.LovelyCatMsg.Companion.NON_TYPE
+import love.forte.simbot.serialization.json.JsonSerializerFactory
 import kotlin.reflect.KClass
 
 
@@ -82,18 +83,16 @@ public abstract class BaseLovelyCatMsg(override val event: String, override val 
     }
 
 
-
     /** DataMapping. */
-    abstract class LovelyCatDataMapping<T: BaseLovelyCatMsg> {
-        abstract fun mapTo(originalData: String, api: LovelyCatApiTemplate?): T
+    abstract class LovelyCatDataMapping<out T : LovelyCatMsg> {
+        abstract fun mapTo(
+            originalData: String,
+            api: LovelyCatApiTemplate?,
+            jsonSerializerFactory: JsonSerializerFactory
+        ): T
     }
 
 }
-
-
-
-
-
 
 
 /**
@@ -141,8 +140,6 @@ public fun lovelyCatGroupInfo(
 ): GroupInfo = LovelyCatGroupInfo(groupCode, groupName, groupAvatar)
 
 
-
-
 /**
  * simple data class instance for [GroupInfo].
  */
@@ -150,7 +147,7 @@ private data class LovelyCatGroupInfo(
     override val groupCode: String,
     override val groupName: String?,
     override val groupAvatar: String?
-): GroupInfo
+) : GroupInfo
 
 
 /**

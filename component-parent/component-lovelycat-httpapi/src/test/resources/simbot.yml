@@ -1,6 +1,7 @@
 simbot:
   core:
     bots:
+      - wxid_bqy1ezxxkdat22:http://127.0.0.1:88/httpAPI
   component:
     lovelycat:
       port: 8889

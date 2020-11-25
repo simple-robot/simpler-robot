@@ -21,6 +21,7 @@ import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.containers.botAsAccountInfo
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
+import love.forte.simbot.serialization.json.JsonSerializerFactory
 import javax.xml.crypto.Data
 
 /**
@@ -55,7 +56,7 @@ private constructor(
         val type: Int,
         val msg: String
     ): LovelyCatDataMapping<LovelyCatEventLogin>() {
-        override fun mapTo(originalData: String, api: LovelyCatApiTemplate?): LovelyCatEventLogin {
+        override fun mapTo(originalData: String, api: LovelyCatApiTemplate?, jsonSerializerFactory: JsonSerializerFactory): LovelyCatEventLogin {
             return LovelyCatEventLogin(robWxid, robName, type, msg, originalData, api)
         }
     }

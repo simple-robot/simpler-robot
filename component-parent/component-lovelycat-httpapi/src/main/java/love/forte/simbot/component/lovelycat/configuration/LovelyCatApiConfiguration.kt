@@ -16,18 +16,29 @@
 
 package love.forte.simbot.component.lovelycat.configuration
 
+import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.ConfigBeans
+import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
+import love.forte.simbot.component.lovelycat.LovelyCatApiTemplateImpl
+import love.forte.simbot.http.template.HttpTemplate
+import love.forte.simbot.serialization.json.JsonSerializerFactory
 
 
 @ConfigBeans
 public class LovelyCatApiConfiguration {
 
 
-    // fun lovelyCatApiTemplate(httpTemplate: HttpTemplate, lovelyCatServerProperties: LovelyCatServerProperties) : LovelyCatApiTemplate {
-    //     LovelyCatApiTemplateImpl(
-    //         httpTemplate,
-    //
-    //     )
-    // }
+    // TODO 一个bot一个api
+    @Beans
+    fun lovelyCatApiTemplate(httpTemplate: HttpTemplate,
+                             jsonSerializerFactory: JsonSerializerFactory,
+                             lovelyCatServerProperties: LovelyCatServerProperties) : LovelyCatApiTemplate {
+        return LovelyCatApiTemplateImpl(
+            httpTemplate,
+            //TODO
+            "http://127.0.0.1:88/httpAPI",
+            jsonSerializerFactory
+        )
+    }
 
 }

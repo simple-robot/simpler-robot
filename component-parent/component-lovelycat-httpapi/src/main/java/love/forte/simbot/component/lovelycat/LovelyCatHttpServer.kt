@@ -26,6 +26,8 @@ import io.ktor.server.engine.*
 import io.ktor.util.pipeline.*
 import io.ktor.utils.io.*
 import love.forte.simbot.component.lovelycat.message.event.BaseLovelyCatMsg
+import love.forte.simbot.component.lovelycat.message.event.LovelyCatParser
+import love.forte.simbot.listener.MsgGetProcessor
 import love.forte.simbot.serialization.json.JsonSerializer
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 import java.io.Closeable
@@ -77,12 +79,16 @@ interface LovelyCatHttpServer : Closeable {
 
 public class LovelyCatKtorHttpServer(
     /** 类型转化函数，根据 'Event' 参数获取对应的解析对象 */
-    // private val msgParser: Map<String, (Map<String, *>) -> BaseLovelyCatMsg>,
+    lovelyCatParser: LovelyCatParser,
     applicationEngineFactory: ApplicationEngineFactory<ApplicationEngine, out ApplicationEngine.Configuration>,
+    api: LovelyCatApiTemplate,
     jsonSerializerFactory: JsonSerializerFactory,
+    msgGetProcessor: MsgGetProcessor,
     port: Int,
     path: String
 ) : LovelyCatHttpServer {
+
+    private val mapSerializer = jsonSerializerFactory.getJsonSerializer<Map<String, *>>(Map::class.java)
 
     init {
         Runtime.getRuntime().addShutdownHook(Thread {
@@ -103,16 +109,25 @@ public class LovelyCatKtorHttpServer(
             routing {
                 // listen path.
                 post(path) {
-                    // TODO
-                    val params = call.receive<Map<String, *>>()
-                    println(params)
+                    val originalData = call.receive<String>()
+
+                    val params = mapSerializer.fromJson(originalData)
+
                     val eventType = params["Event"]?.toString()
+
+                    println("eventType: $eventType")
 
                     if (eventType == null) {
                         // 404. no event.
                         call.response.status(HttpStatusCode.NotFound)
                         call.respondText { "param 'Event' not found: is Empty." }
                     } else {
+                        val parse = lovelyCatParser.parse(eventType, originalData, api, jsonSerializerFactory, params)
+
+                        if (parse != null) {
+                            msgGetProcessor.onMsg(parse)
+                        }
+
                         // ok status.
                         call.response.status(HttpStatusCode.OK)
 

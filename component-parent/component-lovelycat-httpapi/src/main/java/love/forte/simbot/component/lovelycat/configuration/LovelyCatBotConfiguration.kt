@@ -16,21 +16,52 @@
 
 package love.forte.simbot.component.lovelycat.configuration
 
+import love.forte.common.ioc.annotation.Depend
+import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.sender.MsgSenderFactories
+import love.forte.simbot.api.sender.toBotSender
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotRegisterInfo
 import love.forte.simbot.bot.BotVerifier
+import love.forte.simbot.component.lovelycat.LovelyCatApiTemplateImpl
+import love.forte.simbot.component.lovelycat.LovelyCatBot
+import love.forte.simbot.component.lovelycat.LovelyCatBotSender
+import love.forte.simbot.component.lovelycat.message.event.lovelyCatBotInfo
 import love.forte.simbot.core.configuration.ComponentBeans
+import love.forte.simbot.http.template.HttpTemplate
+import love.forte.simbot.serialization.json.JsonSerializerFactory
 
 /**
  * lovely cat 验证器。
  */
 @ComponentBeans
 public class LovelyCatBotVerifier : BotVerifier {
+
+    @Depend
+    lateinit var httpTemplate: HttpTemplate
+    @Depend
+    lateinit var jsonSerializerFactory: JsonSerializerFactory
+
     /** 验证一个bot的注册信息，并转化为一个该组件对应的 [Bot] 实例。 */
     override fun verity(botInfo: BotRegisterInfo, msgSenderFactories: MsgSenderFactories): Bot {
-        TODO("Not yet implemented")
+        val code = botInfo.code
+        val path = botInfo.verification
+        val api = LovelyCatApiTemplateImpl(httpTemplate, path, jsonSerializerFactory)
+        // 寻找登录bot中是否存在此code
+        val accountList = api.getLoggedAccountList()
+
+        val contains = accountList.accountList.any { code == it.wxid }
+
+        if (contains) {
+            val botContainer = BotContainer(lovelyCatBotInfo(code, api))
+            val botSender = msgSenderFactories.toBotSender(botContainer)
+            return LovelyCatBot(code, api, botSender)
+        } else {
+            throw IllegalStateException("cannot found bot id '$code' in ${accountList.accountList.map { it.wxid }}")
+        }
     }
 }
+
+
 
 
