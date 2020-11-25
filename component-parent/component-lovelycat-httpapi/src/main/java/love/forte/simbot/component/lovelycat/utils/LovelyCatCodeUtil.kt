@@ -14,7 +14,10 @@
 
 package love.forte.simbot.component.lovelycat.utils
 
-import love.forte.catcode.*
+import love.forte.catcode.CAT_HEAD
+import love.forte.catcode.CatCodeUtil
+import love.forte.catcode.CatEncoder
+import love.forte.catcode.Neko
 import love.forte.catcode.codes.Nyanko
 
 

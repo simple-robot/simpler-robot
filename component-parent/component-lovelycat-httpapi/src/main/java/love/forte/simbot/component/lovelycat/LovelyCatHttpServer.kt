@@ -25,13 +25,11 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.util.pipeline.*
 import io.ktor.utils.io.*
-import love.forte.simbot.component.lovelycat.message.event.BaseLovelyCatMsg
 import love.forte.simbot.component.lovelycat.message.event.LovelyCatParser
 import love.forte.simbot.listener.MsgGetProcessor
 import love.forte.simbot.serialization.json.JsonSerializer
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 import java.io.Closeable
-
 
 
 private val jsonContentType = ContentType.parse("application/json")

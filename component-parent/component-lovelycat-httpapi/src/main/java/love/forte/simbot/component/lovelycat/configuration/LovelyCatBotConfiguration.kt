@@ -25,7 +25,6 @@ import love.forte.simbot.bot.BotRegisterInfo
 import love.forte.simbot.bot.BotVerifier
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplateImpl
 import love.forte.simbot.component.lovelycat.LovelyCatBot
-import love.forte.simbot.component.lovelycat.LovelyCatBotSender
 import love.forte.simbot.component.lovelycat.message.event.lovelyCatBotInfo
 import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.http.template.HttpTemplate

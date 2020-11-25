@@ -22,7 +22,6 @@ import love.forte.simbot.api.message.containers.botAsAccountInfo
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.serialization.json.JsonSerializerFactory
-import javax.xml.crypto.Data
 
 /**
  * 一个bot上线后触发的事件。

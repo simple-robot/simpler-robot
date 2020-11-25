@@ -16,7 +16,6 @@
 package love.forte.simbot.component.lovelycat.message
 
 import love.forte.catcode.CatCodeUtil
-import love.forte.catcode.CatEncoder
 import love.forte.catcode.Neko
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.component.lovelycat.utils.LovelyCatCodeUtil

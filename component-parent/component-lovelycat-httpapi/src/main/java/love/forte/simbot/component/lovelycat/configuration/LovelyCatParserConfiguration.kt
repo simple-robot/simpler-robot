@@ -14,7 +14,6 @@
 
 package love.forte.simbot.component.lovelycat.configuration
 
-import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.simbot.component.lovelycat.message.event.DefaultLovelyCatParser
 import love.forte.simbot.component.lovelycat.message.event.GROUP_EVENT_TYPE

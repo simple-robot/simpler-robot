@@ -17,12 +17,8 @@
 package love.forte.test;
 
 import love.forte.simbot.annotation.SimbotApplication;
-import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate;
-import love.forte.simbot.component.lovelycat.LovelyCatApiTemplateImpl;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
-import love.forte.simbot.http.template.HttpTemplate;
-import love.forte.simbot.serialization.json.JsonSerializerFactory;
 
 /**
  * @author ForteScarlet
