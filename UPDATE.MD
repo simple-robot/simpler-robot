@@ -104,3 +104,7 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 
 ## ALPHA.9(NOW)
+
+### lovelycat 
+- 实现登录账号验证
+- 实现群聊消息监听
