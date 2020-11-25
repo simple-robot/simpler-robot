@@ -153,6 +153,23 @@ private data class GroupAddRequestInvitorAsAccountInfo(private val invitor: Grou
         get() = null
 }
 
+/**
+ * 将 [GroupAddRequestInvitor] 转化为 [AccountInfo]。
+ */
+public fun AccountInfo.asInvitor(): GroupAddRequestInvitor = AccountInfoAsGroupAddRequestInvitor(this)
+
+
+private data class AccountInfoAsGroupAddRequestInvitor(private val accountInfo: AccountInfo) : GroupAddRequestInvitor {
+    override val invitorCode: String
+        get() = accountInfo.accountCode
+    override val invitorNickname: String?
+        get() = accountInfo.accountNickname
+    override val invitorRemark: String?
+        get() = accountInfo.accountRemark
+    override val originalData: String
+        get() = accountInfo.toString()
+}
+
 
 
 
