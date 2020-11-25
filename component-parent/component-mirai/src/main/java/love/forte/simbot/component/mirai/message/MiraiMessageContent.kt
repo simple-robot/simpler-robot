@@ -43,6 +43,7 @@ public abstract class MiraiMessageContent : MessageContent {
     /**
      * 消息字符串文本。一般来讲，如果存在一些特殊消息，
      * 那么他们会作为 **Cat码** 字符串存在于消息中。
+     * 如果类型为text，不会以cat码的格式被展示。
      */
     // @JvmDefault
     override val msg: String? by lazy(LazyThreadSafetyMode.PUBLICATION) {
