@@ -25,6 +25,9 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.util.pipeline.*
 import io.ktor.utils.io.*
+import love.forte.simbot.bot.Bot
+import love.forte.simbot.bot.BotManager
+import love.forte.simbot.bot.NoSuchBotException
 import love.forte.simbot.component.lovelycat.message.event.LovelyCatParser
 import love.forte.simbot.listener.MsgGetProcessor
 import love.forte.simbot.serialization.json.JsonSerializer
@@ -81,7 +84,7 @@ public class LovelyCatKtorHttpServer(
     /** 类型转化函数，根据 'Event' 参数获取对应的解析对象 */
     lovelyCatParser: LovelyCatParser,
     applicationEngineFactory: ApplicationEngineFactory<ApplicationEngine, out ApplicationEngine.Configuration>,
-    api: LovelyCatApiTemplate,
+    botManager: BotManager,
     jsonSerializerFactory: JsonSerializerFactory,
     msgGetProcessor: MsgGetProcessor,
     port: Int,
@@ -123,6 +126,18 @@ public class LovelyCatKtorHttpServer(
                         call.response.status(HttpStatusCode.NotFound)
                         call.respondText { "param 'Event' not found: Event is Empty." }
                     } else {
+
+                        val botId = (params["robot_wxid"] ?: params["rob_wxid"])?.toString()
+                            ?: throw NoSuchBotException("no param 'robot_wxid' or 'rob_wxid' in lovelycat request param.")
+
+                        val bot: Bot = botManager.getBot(botId)
+
+                        if (bot !is LovelyCatBot) {
+                            throw IllegalStateException("Bot($botId) instance should be lovelyCat bot instance, but: ${bot::class.java}")
+                        }
+
+                        val api = bot.api
+
                         val parse = lovelyCatParser.parse(eventType, originalData, api, jsonSerializerFactory, params)
 
                         if (parse != null) {

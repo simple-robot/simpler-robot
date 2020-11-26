@@ -12,8 +12,7 @@
  *
  */
 
-@file:JvmName("LovelyCatEvents")
-@file:JvmMultifileClass
+@file:JvmName("LovelyCatPrivateEvents")
 package love.forte.simbot.component.lovelycat.message.event
 
 import love.forte.simbot.api.message.MessageContent
@@ -34,7 +33,7 @@ public const val PRIVATE_MSG_EVENT = "EventFriendMsg"
  * @author ForteScarlet
  */
 public interface LovelyCatPrivateMsgEvent : LovelyCatMsg {
-    val robotWxid: String
+    override val robotWxid: String
     override val type: Int
     val fromWxid: String
     val fromName: String
@@ -214,7 +213,7 @@ data class PrivateMsgDataMapping(
 public object LovelyCatPrivateMsgEventParser : LovelyCatEventParser {
     override fun invoke(
         original: String,
-        api: LovelyCatApiTemplate?,
+        api: LovelyCatApiTemplate,
         jsonSerializerFactory: JsonSerializerFactory,
         params: Map<String, *>
     ): LovelyCatMsg {

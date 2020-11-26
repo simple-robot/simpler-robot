@@ -32,7 +32,7 @@ public interface LovelyCatParser {
     fun parse(
         event: String,
         originalData: String,
-        api: LovelyCatApiTemplate?,
+        api: LovelyCatApiTemplate,
         jsonSerializerFactory: JsonSerializerFactory,
         params: Map<String, *>
     ): LovelyCatMsg?
@@ -43,10 +43,10 @@ public interface LovelyCatParser {
  * 对某个类型进行解析的解析器。
  */
 public interface LovelyCatEventParser :
-        (String, LovelyCatApiTemplate?, JsonSerializerFactory, Map<String, *>) -> LovelyCatMsg {
+        (String, LovelyCatApiTemplate, JsonSerializerFactory, Map<String, *>) -> LovelyCatMsg {
     override operator fun invoke(
         original: String,
-        api: LovelyCatApiTemplate?,
+        api: LovelyCatApiTemplate,
         jsonSerializerFactory: JsonSerializerFactory,
         params: Map<String, *>
     ): LovelyCatMsg
@@ -76,7 +76,7 @@ public class DefaultLovelyCatParser : LovelyCatParser {
     override fun parse(
         event: String,
         originalData: String,
-        api: LovelyCatApiTemplate?,
+        api: LovelyCatApiTemplate,
         jsonSerializerFactory: JsonSerializerFactory,
         params: Map<String, *>
     ): LovelyCatMsg? {

@@ -26,8 +26,8 @@ import love.forte.simbot.component.lovelycat.message.event.lovelyCatBotInfo
  * @author ForteScarlet
  */
 public class LovelyCatBot(
-    private val code: String,
-    private val api: LovelyCatApiTemplate,
+    val code: String,
+    val api: LovelyCatApiTemplate,
     override val sender: BotSender
 ) : Bot {
 

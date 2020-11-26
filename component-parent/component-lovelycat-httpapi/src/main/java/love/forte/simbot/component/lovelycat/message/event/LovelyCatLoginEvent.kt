@@ -13,9 +13,7 @@
  *  *
  *
  */
-@file:JvmName("LovelyCatEvents")
-@file:JvmMultifileClass
-
+@file:JvmName("LovelyCatLoginEvents")
 package love.forte.simbot.component.lovelycat.message.event
 
 import love.forte.simbot.api.message.containers.AccountInfo
@@ -30,7 +28,7 @@ public const val LOGIN_EVENT = "EventLogin"
 /**
  * 一个bot上线后触发的事件。
  */
-public interface LovelyCatLogin : MsgGet {
+public interface LovelyCatLogin : LovelyCatMsg  {
     /**
      * 当前账号的JSON对象，具体JSON结构请查看日志.
      */
@@ -58,7 +56,7 @@ public interface LovelyCatLogin : MsgGet {
  *
  * 事件名=EventLogin
  */
-public class LovelyCatEventLogin
+public class LovelyCatLoginEvent
 internal constructor(
     private val robWxid: String,
     private val robName: String,
@@ -68,6 +66,11 @@ internal constructor(
     override val originalData: String,
     private val api: LovelyCatApiTemplate?
 ) : BaseLovelyCatMsg(LOGIN_EVENT, originalData), LovelyCatLogin {
+    /**
+     * 此事件对应的botId。
+     */
+    override val robotWxid: String
+        get() = robWxid
 
     /*
         事件名=EventLogin	新的账号登录成功/下线时，运行这里
@@ -102,7 +105,7 @@ internal constructor(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as LovelyCatEventLogin
+        other as LovelyCatLoginEvent
 
         if (robWxid != other.robWxid) return false
         if (robName != other.robName) return false
@@ -124,7 +127,7 @@ internal constructor(
 public object LovelyCatLoginEventParser : LovelyCatEventParser {
     override fun invoke(
         original: String,
-        api: LovelyCatApiTemplate?,
+        api: LovelyCatApiTemplate,
         jsonSerializerFactory: JsonSerializerFactory,
         params: Map<String, *>
     ): LovelyCatMsg {
@@ -137,7 +140,7 @@ public object LovelyCatLoginEventParser : LovelyCatEventParser {
         override val originalData: String,
         private val api: LovelyCatApiTemplate?
          */
-        return LovelyCatEventLogin(
+        return LovelyCatLoginEvent(
             params.orParamErr("rob_wxid").toString(),
             params.orParamErr("rob_name").toString(),
             params.orParamErr("type") as Int,

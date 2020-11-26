@@ -13,8 +13,7 @@
  *  *
  *
  */
-@file:JvmName("LovelyCatEvents")
-
+@file:JvmName("BaseLovelyCatEvents")
 package love.forte.simbot.component.lovelycat.message.event
 
 import love.forte.simbot.api.message.containers.AccountInfo
@@ -27,10 +26,10 @@ import love.forte.simbot.serialization.json.JsonSerializerFactory
 import kotlin.reflect.KClass
 
 
-public val lovelyCatEventTypes: Map<String, KClass<out BaseLovelyCatMsg>> =
-    mapOf(
-        "EventLogin" to LovelyCatEventLogin::class,
-    )
+// public val lovelyCatEventTypes: Map<String, KClass<out BaseLovelyCatMsg>> =
+//     mapOf(
+//         "EventLogin" to LovelyCatLoginEvent::class,
+//     )
 
 
 /**
@@ -45,6 +44,10 @@ public interface LovelyCatMsg : MsgGet {
      */
     val type: Int
 
+    /**
+     * 此事件对应的botId。
+     */
+    val robotWxid: String
 
     companion object {
         /** 当不存在一个 'type' 的时候使用此值。 */

@@ -34,6 +34,7 @@ public class LovelyCatParserConfiguration {
         defParser.registerParser(LOGIN_EVENT, LovelyCatLoginEventParser)
         defParser.registerParser(GROUP_MSG_EVENT, LovelyCatGroupMsgEventParser)
         defParser.registerParser(PRIVATE_MSG_EVENT, LovelyCatPrivateMsgEventParser)
+        defParser.registerParser(RECEIVED_TRANSFER_EVENT, LovelyCatReceivedTransferEventParser)
 
         return defParser
     }

@@ -12,8 +12,7 @@
  *
  */
 
-@file:JvmName("LovelyCatEvents")
-@file:JvmMultifileClass
+@file:JvmName("LovelyCatGroupMsgEvents")
 package love.forte.simbot.component.lovelycat.message.event
 
 import love.forte.simbot.api.message.MessageContent
@@ -34,7 +33,7 @@ public const val GROUP_MSG_EVENT = "EventGroupMsg"
  * lovely cat 群事件消息接口.
  */
 public interface LovelyCatGroupMsgEvent : LovelyCatMsg {
-    val robotWxid: String
+    override val robotWxid: String
     override val type: Int
     val fromWxid: String
     val fromName: String
@@ -242,7 +241,7 @@ data class GroupMsgDataMapping(
 public object LovelyCatGroupMsgEventParser : LovelyCatEventParser {
     override fun invoke(
         original: String,
-        api: LovelyCatApiTemplate?,
+        api: LovelyCatApiTemplate,
         jsonSerializerFactory: JsonSerializerFactory,
         params: Map<String, *>
     ): LovelyCatMsg {
