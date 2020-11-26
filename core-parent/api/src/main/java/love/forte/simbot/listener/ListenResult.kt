@@ -50,7 +50,7 @@ interface ListenResult<T> {
 /**
  * 监听函数响应值工厂。
  */
-interface ListenerResultFactory {
+public interface ListenerResultFactory {
     fun getResult(result: Any?, listenerFunction: ListenerFunction, throwable: Throwable? = null): ListenResult<*>
 }
 

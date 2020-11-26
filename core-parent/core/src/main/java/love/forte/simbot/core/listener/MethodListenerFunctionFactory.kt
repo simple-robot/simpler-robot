@@ -20,6 +20,7 @@ import love.forte.common.utils.convert.ConverterManager
 import love.forte.simbot.annotation.Listens
 import love.forte.simbot.filter.FilterManager
 import love.forte.simbot.listener.ListenerFunction
+import love.forte.simbot.listener.ListenerResultFactory
 import java.lang.reflect.Modifier
 
 /**
@@ -43,7 +44,8 @@ public interface MethodListenerFunctionFactory {
 public class MethodListenerFunctionFactoryImpl(
     private val dependBeanFactory: DependBeanFactory,
     private val filterManager: FilterManager,
-    private val converterManager: ConverterManager
+    private val converterManager: ConverterManager,
+    private val listenerResultFactory: ListenerResultFactory
 ) : MethodListenerFunctionFactory {
     override fun getListenerFunctions(type: Class<*>): List<ListenerFunction> {
         return type.declaredMethods.mapNotNull {
@@ -52,7 +54,7 @@ public class MethodListenerFunctionFactoryImpl(
                     // not public.
                     throw IllegalStateException("@Listens can only be annotate on public methods, but method: $it")
                 } else {
-                    MethodListenerFunction(it, dependBeanFactory, filterManager, converterManager)
+                    MethodListenerFunction(it, dependBeanFactory, filterManager, converterManager, listenerResultFactory)
                 }
             }
         }
