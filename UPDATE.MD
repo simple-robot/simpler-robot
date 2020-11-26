@@ -114,3 +114,5 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 ## ALPHA.10(NOW)
 
+### core
+- 移除 `MessageContent.getImages()`。
