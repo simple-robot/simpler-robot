@@ -25,7 +25,6 @@ import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.listener.MethodListenerFunction
 import love.forte.simbot.filter.FilterManager
 import love.forte.simbot.listener.ListenerRegistrar
-import love.forte.simbot.listener.ListenerResultFactory
 import love.forte.simbot.listener.PostListenerRegistrar
 
 
@@ -45,9 +44,6 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
 
     @Depend
     private lateinit var converterManager: ConverterManager
-
-    @Depend
-    private lateinit var listenerResultFactory: ListenerResultFactory
 
     /**
      * 扫描并注册监听函数。
@@ -80,7 +76,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                 AnnotationUtil.containsAnnotation(m, Listens::class.java)
             }
         }.map {
-            MethodListenerFunction(it, dependBeanFactory, filterManager, converterManager, listenerResultFactory)
+            MethodListenerFunction(it, dependBeanFactory, filterManager, converterManager)
         }.forEach {
             registrar.register(it)
             logger.debug(

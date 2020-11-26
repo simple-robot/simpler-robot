@@ -12,7 +12,6 @@
  *
  */
 @file:JvmName("MethodListenerFunctions")
-
 package love.forte.simbot.core.listener
 
 import love.forte.common.ioc.DependBeanFactory
@@ -21,7 +20,6 @@ import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.convert.ConverterManager
 import love.forte.simbot.annotation.FilterValue
 import love.forte.simbot.annotation.Filters
-import love.forte.simbot.annotation.ListenBreak
 import love.forte.simbot.annotation.Listens
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.Getter
@@ -30,7 +28,10 @@ import love.forte.simbot.api.sender.Sender
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.filter.*
-import love.forte.simbot.listener.*
+import love.forte.simbot.listener.ListenResult
+import love.forte.simbot.listener.ListenerContext
+import love.forte.simbot.listener.ListenerFunction
+import love.forte.simbot.listener.ListenerFunctionInvokeData
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Type
@@ -55,8 +56,7 @@ public class MethodListenerFunction(
     private val method: Method,
     private val dependBeanFactory: DependBeanFactory,
     private val filterManager: FilterManager,
-    private val converterManager: ConverterManager,
-    private val listenerResultFactory: ListenerResultFactory
+    private val converterManager: ConverterManager
 ) : ListenerFunction {
 
     /**
@@ -68,11 +68,6 @@ public class MethodListenerFunction(
      * 此监听函数上的 [Filters] 注解。如果有的话。
      */
     private val filtersAnnotation: Filters?
-
-    /**
-     * 此监听函数上的 [ListenBreak] 注解。如果有的话。
-     */
-    private val listenBreakAnnotation: ListenBreak?
 
     /**
      * 此监听函数的唯一编号，用于防止出现重复冲突。
@@ -116,11 +111,9 @@ public class MethodListenerFunction(
     /**
      * 执行过滤。
      */
-    private fun doFilter(
-        msgGet: MsgGet,
-        atDetection: AtDetection,
-        listenerContext: ListenerContext
-    ): Boolean {
+    private fun doFilter(msgGet: MsgGet,
+                         atDetection: AtDetection,
+                         listenerContext: ListenerContext): Boolean {
         if (listenAnnotationFilter == null && customFilter.isEmpty()) {
             return true
         }
@@ -163,20 +156,16 @@ public class MethodListenerFunction(
 
         private val ListensType = Listens::class.java
         private val FiltersType = Filters::class.java
-        private val BreakType = ListenBreak::class.java
         private val MsgGetType = MsgGet::class.java
     }
 
     init {
         // 监听注解
-        listensAnnotation = AnnotationUtil.getAnnotation(method, ListensType)
+        listensAnnotation = AnnotationUtil.getAnnotation(method, Listens::class.java)
             ?: throw IllegalStateException("cannot found annotation '@Listens' in method $method")
 
         // 过滤注解
-        filtersAnnotation = AnnotationUtil.getAnnotation(method, FiltersType)
-
-        // break注解
-        listenBreakAnnotation = AnnotationUtil.getAnnotation(method, BreakType)
+        filtersAnnotation = AnnotationUtil.getAnnotation(method, Filters::class.java)
 
         id = method.toListenerId(listensAnnotation)
         name = method.toListenerName(listensAnnotation)
@@ -309,11 +298,9 @@ public class MethodListenerFunction(
     /**
      * 获取此监听函数上可以得到的注解。
      */
-    @Suppress("UNCHECKED_CAST")
     override fun <A : Annotation> getAnnotation(type: Class<out A>): A? = when (type) {
         ListensType -> listensAnnotation as A
         FiltersType -> filtersAnnotation as? A
-        BreakType -> listenBreakAnnotation as? A
         else -> AnnotationUtil.getAnnotation(method, type)
     }
 
@@ -330,42 +317,44 @@ public class MethodListenerFunction(
         }
 
 
-        // var err: Throwable? = null
-        // val resultBuilder = ListenResultBuilder()
+        val resultBuilder = ListenResultBuilder()
         // 获取实例
         val instance: Any = runCatching {
             listenerInstanceGetter()
         }.getOrElse {
-            return listenerResultFactory.getResult(null, this, it)
-
+            resultBuilder.success = false
+            resultBuilder.throwable = it
+            return resultBuilder.build()
         }
 
         // 获取方法参数
         val params: Array<*> = runCatching {
-                methodParamsGetter(data)
-            }.getOrElse {
-                return listenerResultFactory.getResult(null, this, it)
-            }
+            methodParamsGetter(data)
+        }.getOrElse {
+            resultBuilder.success = false
+            resultBuilder.throwable = it
+            return resultBuilder.build()
+        }
 
         // 执行方法
         val invokeResult: Any? = runCatching {
-                method(instance, *params)
-            }.getOrElse {
-                // invoke err.
-                val err = if (it is InvocationTargetException) {
-                    it.targetException
-                } else it
-                return listenerResultFactory.getResult(null, this, err)
+            method(instance, *params).apply {
+                resultBuilder.success = this != null
             }
+        }.getOrElse {
+            // invoke err.
+            resultBuilder.throwable = if (it is InvocationTargetException) {
+                it.targetException
+            } else it
+            resultBuilder.success = false
+            return resultBuilder.build()
+        }
 
-
-        // // set result
-        // resultBuilder.result = invokeResult
-
-        return listenerResultFactory.getResult(invokeResult, this)
+        // set result
+        resultBuilder.result = invokeResult
 
         // build listen result.
-        // return resultBuilder.build()
+        return resultBuilder.build()
     }
 }
 
