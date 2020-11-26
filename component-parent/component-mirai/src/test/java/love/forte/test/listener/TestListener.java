@@ -14,14 +14,9 @@ public class TestListener {
 
     @OnPrivate
     @ListenBreak
-
     public boolean m1(MsgGet msg) {
-        System.out.println("m1");
-        System.out.println("on: " + msg);
         String text = msg.getText().trim();
 
-        System.out.println(text);
-        System.out.println(text.startsWith("h"));
 
         return text.startsWith("h");
     }
@@ -31,8 +26,6 @@ public class TestListener {
             priority = PriorityConstant.FIFTH
     )
     public void m2(MsgGet msg) {
-        System.out.println("m2");
-        System.out.println("on: " + msg);
     }
 
 }
