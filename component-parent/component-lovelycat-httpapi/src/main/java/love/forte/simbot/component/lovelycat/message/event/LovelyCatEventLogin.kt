@@ -13,6 +13,8 @@
  *  *
  *
  */
+@file:JvmName("LovelyCatEvents")
+@file:JvmMultifileClass
 
 package love.forte.simbot.component.lovelycat.message.event
 
@@ -22,6 +24,8 @@ import love.forte.simbot.api.message.containers.botAsAccountInfo
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.serialization.json.JsonSerializerFactory
+
+public const val LOGIN_EVENT = "EventLogin"
 
 /**
  * 一个bot上线后触发的事件。
@@ -33,6 +37,21 @@ public interface LovelyCatLogin : MsgGet {
     val botJsonInfo: String
 }
 
+// public data class LoginDataMapping(
+//     val robWxid: String,
+//     val robName: String,
+//     val type: Int,
+//     val msg: String
+// ) : BaseLovelyCatMsg.LovelyCatDataMapping<LovelyCatEventLogin>() {
+//     override fun mapTo(
+//         originalData: String,
+//         api: LovelyCatApiTemplate?,
+//         jsonSerializerFactory: JsonSerializerFactory
+//     ): LovelyCatEventLogin {
+//         return LovelyCatEventLogin(robWxid, robName, type, msg, originalData, api)
+//     }
+// }
+
 
 /**
  * 新的账号登录成功/下线时。
@@ -40,7 +59,7 @@ public interface LovelyCatLogin : MsgGet {
  * 事件名=EventLogin
  */
 public class LovelyCatEventLogin
-private constructor(
+internal constructor(
     private val robWxid: String,
     private val robName: String,
     override val type: Int,
@@ -48,17 +67,8 @@ private constructor(
     val msg: String,
     override val originalData: String,
     private val api: LovelyCatApiTemplate?
-) : BaseLovelyCatMsg("EventLogin", originalData), LovelyCatLogin {
-    data class DataMapping(
-        val robWxid: String,
-        val robName: String,
-        val type: Int,
-        val msg: String
-    ): LovelyCatDataMapping<LovelyCatEventLogin>() {
-        override fun mapTo(originalData: String, api: LovelyCatApiTemplate?, jsonSerializerFactory: JsonSerializerFactory): LovelyCatEventLogin {
-            return LovelyCatEventLogin(robWxid, robName, type, msg, originalData, api)
-        }
-    }
+) : BaseLovelyCatMsg(LOGIN_EVENT, originalData), LovelyCatLogin {
+
     /*
         事件名=EventLogin	新的账号登录成功/下线时，运行这里
         rob_wxid, 文本型
@@ -109,6 +119,34 @@ private constructor(
         result = 31 * result + msg.hashCode()
         return result
     }
-
-
 }
+
+public object LovelyCatLoginEventParser : LovelyCatEventParser {
+    override fun invoke(
+        original: String,
+        api: LovelyCatApiTemplate?,
+        jsonSerializerFactory: JsonSerializerFactory,
+        params: Map<String, *>
+    ): LovelyCatMsg {
+        /*
+        private val robWxid: String,
+        private val robName: String,
+        override val type: Int,
+        /** 当前账号的JSON对象，具体JSON结构请查看日志 */
+        val msg: String,
+        override val originalData: String,
+        private val api: LovelyCatApiTemplate?
+         */
+        return LovelyCatEventLogin(
+            params.orParamErr("rob_wxid").toString(),
+            params.orParamErr("rob_name").toString(),
+            params.orParamErr("type") as Int,
+            params.orParamErr("msg").toString(),
+            original,
+            api
+        )
+    }
+}
+
+
+

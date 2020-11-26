@@ -15,10 +15,7 @@
 package love.forte.simbot.component.lovelycat.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
-import love.forte.simbot.component.lovelycat.message.event.DefaultLovelyCatParser
-import love.forte.simbot.component.lovelycat.message.event.GROUP_EVENT_TYPE
-import love.forte.simbot.component.lovelycat.message.event.LovelyCatEventGroupMsgParser
-import love.forte.simbot.component.lovelycat.message.event.LovelyCatParser
+import love.forte.simbot.component.lovelycat.message.event.*
 import love.forte.simbot.core.configuration.ComponentBeans
 
 
@@ -33,8 +30,11 @@ public class LovelyCatParserConfiguration {
     @ComponentBeans("lovelyCatParser")
     fun lovelyCatParser(): LovelyCatParser {
         val defParser = DefaultLovelyCatParser()
-        // group event.
-        defParser.registerParser(GROUP_EVENT_TYPE, LovelyCatEventGroupMsgParser)
+
+        defParser.registerParser(LOGIN_EVENT, LovelyCatLoginEventParser)
+        defParser.registerParser(GROUP_EVENT, LovelyCatGroupMsgEventParser)
+
+
         return defParser
     }
 

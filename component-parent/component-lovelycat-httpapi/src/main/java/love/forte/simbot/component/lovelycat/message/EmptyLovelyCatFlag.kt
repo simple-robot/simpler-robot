@@ -19,15 +19,18 @@ import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.PrivateMsg
 
 
-public object EmptyLovelyCatPrivateMsgFlagContent : PrivateMsg.FlagContent {
-    override val id: String get() = ""
-}
-
 
 public object EmptyLovelyCatGroupMsgFlag : Flag<GroupMsg.FlagContent> {
     override val flag: GroupMsg.FlagContent
-        get() = EmptyLovelyCatGroupMsgFlagContent
+        get() = EmptyLovelyCatFlagContent
 }
-public object EmptyLovelyCatGroupMsgFlagContent : GroupMsg.FlagContent {
+
+public object EmptyLovelyCatPrivateMsgFlag : Flag<PrivateMsg.FlagContent> {
+    override val flag: PrivateMsg.FlagContent
+        get() = EmptyLovelyCatFlagContent
+}
+
+
+public object EmptyLovelyCatFlagContent : GroupMsg.FlagContent, PrivateMsg.FlagContent {
     override val id: String get() = ""
 }

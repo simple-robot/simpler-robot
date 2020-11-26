@@ -185,3 +185,10 @@ private data class LovelyCatBotInfo(
     override val botName: String,
     override val botAvatar: String?
 ) : BotInfo
+
+
+
+@Suppress("NOTHING_TO_INLINE")
+public inline fun Map<String, *>.orParamErr(param: String): Any {
+    return this[param] ?: throw IllegalStateException("missing param: $param")
+}

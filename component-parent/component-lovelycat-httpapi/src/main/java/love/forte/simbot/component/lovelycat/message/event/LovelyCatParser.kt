@@ -43,7 +43,14 @@ public interface LovelyCatParser {
  * 对某个类型进行解析的解析器。
  */
 public interface LovelyCatEventParser :
-        (String, LovelyCatApiTemplate?, JsonSerializerFactory, Map<String, *>) -> LovelyCatMsg
+        (String, LovelyCatApiTemplate?, JsonSerializerFactory, Map<String, *>) -> LovelyCatMsg {
+    override operator fun invoke(
+        original: String,
+        api: LovelyCatApiTemplate?,
+        jsonSerializerFactory: JsonSerializerFactory,
+        params: Map<String, *>
+    ): LovelyCatMsg
+}
 
 
 /**

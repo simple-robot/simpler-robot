@@ -12,7 +12,8 @@
  *
  */
 
-@file:JvmName("LovelyCatEventGroupMsgs")
+@file:JvmName("LovelyCatEvents")
+@file:JvmMultifileClass
 package love.forte.simbot.component.lovelycat.message.event
 
 import love.forte.simbot.api.message.MessageContent
@@ -27,7 +28,7 @@ import love.forte.simbot.component.lovelycat.message.*
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 
 
-public const val GROUP_EVENT_TYPE = "EventGroupMsg"
+public const val GROUP_EVENT = "EventGroupMsg"
 
 /**
  * lovely cat 群事件消息接口.
@@ -57,7 +58,7 @@ public class LovelyCatEventTextAbleGroupMsg(
     override val msgContent: MessageContent,
     override val originalData: String,
     api: LovelyCatApiTemplate?
-) : BaseLovelyCatMsg(GROUP_EVENT_TYPE, originalData), GroupMsg, LovelyCatEventGroupMsg {
+) : BaseLovelyCatMsg(GROUP_EVENT, originalData), GroupMsg, LovelyCatEventGroupMsg {
     /**
      * 暂时无法区分权限，所有人都视为群员。
      */
@@ -238,27 +239,25 @@ data class GroupMsgDataMapping(
 
 
 /**
- * parser event: [GROUP_EVENT_TYPE]
+ * parser event: [GROUP_EVENT]
  */
-public object LovelyCatEventGroupMsgParser : LovelyCatEventParser {
+public object LovelyCatGroupMsgEventParser : LovelyCatEventParser {
     override fun invoke(
-        originalData: String,
+        original: String,
         api: LovelyCatApiTemplate?,
         jsonSerializerFactory: JsonSerializerFactory,
-        param: Map<String, *>
+        params: Map<String, *>
     ): LovelyCatMsg {
-        fun toErr(param: String) = IllegalStateException("missing param: $param")
-
         return GroupMsgDataMapping(
-            param["robot_wxid"]?.toString() ?: throw toErr("robot_wxid"),
-            param["type"] as? Int ?: throw toErr("type"),
-            param["from_wxid"]?.toString() ?: throw toErr("from_wxid"),
-            param["from_name"]?.toString() ?: throw toErr("from_name"),
-            param["final_from_wxid"]?.toString() ?: throw toErr("final_from_wxid"),
-            param["final_from_name"]?.toString() ?: throw toErr("final_from_name"),
-            param["to_wxid"]?.toString() ?: throw toErr("to_wxid"),
-            param["msg"] ?: throw toErr("msg")
-        ).mapTo(originalData, api, jsonSerializerFactory)
+            params.orParamErr("robot_wxid").toString(),
+            params.orParamErr("type") as Int,
+            params.orParamErr("from_wxid").toString(),
+            params.orParamErr("from_name").toString(),
+            params.orParamErr("final_from_wxid").toString(),
+            params.orParamErr("final_from_name").toString(),
+            params.orParamErr("to_wxid").toString(),
+            params.orParamErr("msg").toString(),
+        ).mapTo(original, api, jsonSerializerFactory)
 
 
     }
