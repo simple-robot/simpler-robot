@@ -28,12 +28,12 @@ import love.forte.simbot.component.lovelycat.message.*
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 
 
-public const val GROUP_EVENT = "EventGroupMsg"
+public const val GROUP_MSG_EVENT = "EventGroupMsg"
 
 /**
  * lovely cat 群事件消息接口.
  */
-public interface LovelyCatEventGroupMsg : LovelyCatMsg {
+public interface LovelyCatGroupMsgEvent : LovelyCatMsg {
     val robotWxid: String
     override val type: Int
     val fromWxid: String
@@ -45,9 +45,9 @@ public interface LovelyCatEventGroupMsg : LovelyCatMsg {
 
 
 /**
- * 可作为普通消息使用的 [LovelyCatEventGroupMsg] 实现。
+ * 可作为普通消息使用的 [LovelyCatGroupMsgEvent] 实现。
  */
-public class LovelyCatEventTextAbleGroupMsg(
+public class LovelyCatTextAbleGroupMsgEvent(
     override val robotWxid: String,
     override val type: Int,
     override val fromWxid: String,
@@ -58,7 +58,7 @@ public class LovelyCatEventTextAbleGroupMsg(
     override val msgContent: MessageContent,
     override val originalData: String,
     api: LovelyCatApiTemplate?
-) : BaseLovelyCatMsg(GROUP_EVENT, originalData), GroupMsg, LovelyCatEventGroupMsg {
+) : BaseLovelyCatMsg(GROUP_MSG_EVENT, originalData), GroupMsg, LovelyCatGroupMsgEvent {
     /**
      * 暂时无法区分权限，所有人都视为群员。
      */
@@ -98,7 +98,7 @@ public class LovelyCatEventTextAbleGroupMsg(
 /**
  * 群邀请事件。
  */
-public class LovelyCatGroupInviteGroupMsg(
+public class LovelyCatGroupInviteGroupMsgEvent(
     override val robotWxid: String,
     override val type: Int,
     override val fromWxid: String,
@@ -109,7 +109,7 @@ public class LovelyCatGroupInviteGroupMsg(
     override val originalData: String,
     override val text: String,
     api: LovelyCatApiTemplate?
-) : BaseLovelyCatMsg("EventGroupMsg", originalData), GroupAddRequest, LovelyCatEventGroupMsg {
+) : BaseLovelyCatMsg(GROUP_MSG_EVENT, originalData), GroupAddRequest, LovelyCatGroupMsgEvent {
 
     /**
      * bot信息
@@ -139,14 +139,12 @@ public class LovelyCatGroupInviteGroupMsg(
      * @see GroupAddRequestIdFlagContent
      */
     override val flag: Flag<GroupAddRequest.FlagContent> = LovelyCatGroupInviteEventFlag(originalData)
-
-
 }
 
 /**
  * 记录了原始消息json的群邀请事件flag。
  */
-private class LovelyCatGroupInviteEventFlag(jsonMsg: String) : Flag<GroupAddRequest.FlagContent> {
+internal class LovelyCatGroupInviteEventFlag(jsonMsg: String) : Flag<GroupAddRequest.FlagContent> {
     /**
      * 标识主体
      */
@@ -167,12 +165,12 @@ data class GroupMsgDataMapping(
     val toWxid: String,
     /** 只允许两种值：1，string，2：单层map */
     val msg: Any,
-) : BaseLovelyCatMsg.LovelyCatDataMapping<LovelyCatEventGroupMsg>() {
+) : BaseLovelyCatMsg.LovelyCatDataMapping<LovelyCatGroupMsgEvent>() {
     override fun mapTo(
         originalData: String,
         api: LovelyCatApiTemplate?,
         jsonSerializerFactory: JsonSerializerFactory
-    ): LovelyCatEventGroupMsg {
+    ): LovelyCatGroupMsgEvent {
         val msgContent: MessageContent =
             when (type) {
                 /*
@@ -221,7 +219,7 @@ data class GroupMsgDataMapping(
                 // 2003/群邀请, 视为text消息。
                 2003 -> {
                     // 群邀请，使用群邀请消息类型
-                    return LovelyCatGroupInviteGroupMsg(
+                    return LovelyCatGroupInviteGroupMsgEvent(
                         robotWxid, type, fromWxid, fromName, finalFromWxid, finalFromName,
                         toWxid, originalData, msg.toString(), api
                     )
@@ -230,7 +228,7 @@ data class GroupMsgDataMapping(
                 else -> LovelyCatUnknownMessageContent(msg.toString(), type)
             }
 
-        return LovelyCatEventTextAbleGroupMsg(
+        return LovelyCatTextAbleGroupMsgEvent(
             robotWxid, type, fromWxid, fromName, finalFromWxid, finalFromName,
             toWxid, msgContent, originalData, api
         )
@@ -239,7 +237,7 @@ data class GroupMsgDataMapping(
 
 
 /**
- * parser event: [GROUP_EVENT]
+ * parser event: [GROUP_MSG_EVENT]
  */
 public object LovelyCatGroupMsgEventParser : LovelyCatEventParser {
     override fun invoke(
@@ -258,8 +256,6 @@ public object LovelyCatGroupMsgEventParser : LovelyCatEventParser {
             params.orParamErr("to_wxid").toString(),
             params.orParamErr("msg").toString(),
         ).mapTo(original, api, jsonSerializerFactory)
-
-
     }
 }
 

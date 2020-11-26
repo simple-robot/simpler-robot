@@ -32,8 +32,8 @@ public class LovelyCatParserConfiguration {
         val defParser = DefaultLovelyCatParser()
 
         defParser.registerParser(LOGIN_EVENT, LovelyCatLoginEventParser)
-        defParser.registerParser(GROUP_EVENT, LovelyCatGroupMsgEventParser)
-
+        defParser.registerParser(GROUP_MSG_EVENT, LovelyCatGroupMsgEventParser)
+        defParser.registerParser(PRIVATE_MSG_EVENT, LovelyCatPrivateMsgEventParser)
 
         return defParser
     }
