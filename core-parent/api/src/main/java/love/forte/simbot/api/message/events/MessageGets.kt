@@ -49,6 +49,9 @@ public interface PrivateMsg : MessageGet {
         /** 来自群的临时会话 */
         GROUP_TEMP,
 
+        /** 系统消息 */
+        SYS,
+
         /** 其他 */
         OTHER
 
