@@ -110,7 +110,7 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 - 实现群聊消息监听
 
 ### fix 
-- fix [#10 ](https://github.com/ForteScarlet/simpler-robot/issues/10) (@ListenBreak未实现)
+- fix [#10 ](https://github.com/ForteScarlet/simpler-robot/issues/10) (@ListenBreak未被实现)
 
 ## ALPHA.10(NOW)
 
