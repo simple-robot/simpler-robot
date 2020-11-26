@@ -29,7 +29,6 @@ public class LovelyCatApiConfiguration {
 
 
     // TODO 一个bot一个api
-    @Beans
     fun lovelyCatApiTemplate(
         httpTemplate: HttpTemplate,
         jsonSerializerFactory: JsonSerializerFactory

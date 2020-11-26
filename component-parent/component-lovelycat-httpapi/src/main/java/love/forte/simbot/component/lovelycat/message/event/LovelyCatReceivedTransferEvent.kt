@@ -45,6 +45,13 @@ public interface LovelyCatReceivedTransfer: LovelyCatMsg, BotContainer, AccountC
     val transferInfo: TransferInfo
 
     /**
+     * 文本消息即为 [transferInfo] 中的备注信息。
+     */
+    @JvmDefault
+    override val text: String
+        get() = transferInfo.remark
+
+    /**
      * 接受转账。
      */
     fun accept()
@@ -72,11 +79,6 @@ public class LovelyCatReceivedTransferEvent(
     private val api: LovelyCatApiTemplate,
     originalData: String
 ) : BaseLovelyCatMsg(RECEIVED_TRANSFER_EVENT, originalData), LovelyCatReceivedTransfer {
-    /**
-     * 转账事件不存在文本
-     */
-    override val text: String?
-        get() = null
 
     /**
      * bot信息

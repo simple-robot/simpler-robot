@@ -247,10 +247,10 @@ protected constructor(
                 }
             }
 
-            simbotAppLogger.debugf("resource [{}] loaded.", resourceName)
 
             // parse to configuration.
             resourceReader?.let {
+                simbotAppLogger.debugf("resource [{}] loaded.", resourceName)
                 val type: String = resourceData.type
                 confReaderManager.parse(type, it)
             }

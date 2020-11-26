@@ -20,6 +20,7 @@ import love.forte.simbot.annotation.Listens;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.component.lovelycat.message.event.LovelyCatReceivedTransfer;
+import love.forte.simbot.component.lovelycat.message.event.LovelyCatScanCashMoney;
 
 /**
  * @author ForteScarlet
@@ -29,13 +30,25 @@ public class TestListener {
 
 
     @Listen(LovelyCatReceivedTransfer.class)
-    public void group(LovelyCatReceivedTransfer receivedTransfer){
+    public void transfer(LovelyCatReceivedTransfer receivedTransfer){
         System.out.println("==================");
         System.out.println(receivedTransfer.getMoney());
         System.out.println(receivedTransfer.getTransferInfo());
         System.out.println(receivedTransfer.getTransferInfo().getMoney());
         System.out.println(receivedTransfer.getTransferInfo().getMoney().doubleValue());
         receivedTransfer.accept();
+        System.out.println("==================");
+    }
+
+
+    @Listen(LovelyCatScanCashMoney.class)
+    public void scanPay(LovelyCatScanCashMoney scanCashMoney){
+        System.out.println("==================");
+        System.out.println(scanCashMoney.getMoney());
+        System.out.println(scanCashMoney.getAccountInfo());
+        System.out.println(scanCashMoney.getPaySourceInfo());
+        System.out.println(scanCashMoney.getText());
+        System.out.println(scanCashMoney.getPayInfo().getMilliTimestamp());
         System.out.println("==================");
     }
 

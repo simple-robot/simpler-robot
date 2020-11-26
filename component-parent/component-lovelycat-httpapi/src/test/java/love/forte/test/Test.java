@@ -26,7 +26,7 @@ import love.forte.simbot.core.SimbotContext;
 @SimbotApplication
 public class Test {
     public static void main(String[] args) {
-        SimbotContext context = SimbotApp.run(Test.class, args);
+        SimbotApp.run(Test.class, args);
 
         // HttpTemplate template = context.get(HttpTemplate.class);
         //
