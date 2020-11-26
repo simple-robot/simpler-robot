@@ -55,6 +55,11 @@ open class ListenResultImpl<T>(
     override fun isSuccess(): Boolean = success
     override fun isBreak(): Boolean = isBreak
 
+    override fun toString(): String {
+        return "ListenResult(result=$result, success=$success, isBreak=$isBreak, throwable=$throwable)"
+    }
+
+
 
     companion object {
 
@@ -136,9 +141,18 @@ public object CoreListenerResultFactory : ListenerResultFactory {
         } else {
             listenResult {
                 this.result = result
-                this.success = throwable == null && result != null
+                if (throwable != null) {
+                    this.success = false
+                } else {
+                    this.success = when (result) {
+                        is Boolean -> result
+                        else -> result != null
+                    }
+                }
+
                 this.throwable = throwable
                 // listen break.
+
                 this.isBreak = success && listenerFunction.getAnnotation(ListenBreak::class.java) != null
             }
         }

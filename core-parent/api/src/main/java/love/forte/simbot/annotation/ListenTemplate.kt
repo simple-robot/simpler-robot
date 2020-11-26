@@ -211,3 +211,19 @@ public annotation class OnFriendAddRequest
 @AnnotateMapping(value = Listen::class)
 public annotation class OnGroupAddRequest
 
+
+/**
+ * 监听群禁言事件。
+ *
+ */
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@MustBeDocumented
+@Listen(GroupMute::class)
+@AnnotateMapping(value = Listen::class)
+public annotation class OnGroupMute
+
+
+
+
+

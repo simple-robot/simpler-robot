@@ -115,6 +115,7 @@ public class LovelyCatKtorHttpServer(
 
                     val eventType = params["Event"]?.toString()
 
+                    // TODO test
                     println("eventType: $eventType")
 
                     if (eventType == null) {

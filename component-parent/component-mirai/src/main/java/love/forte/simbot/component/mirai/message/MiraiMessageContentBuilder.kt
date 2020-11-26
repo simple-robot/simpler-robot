@@ -107,7 +107,8 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
             .getNekoBuilder("image", true)
             .key("type").value("inputStream")
             .build()
-        MiraiImageMessageContent(flash, imageNeko, { input.close().also { println("do close.") } }){
+        // TODO
+        MiraiImageMessageContent(flash, imageNeko, { input.close() }){
             input.uploadAsImage(it).also {
                 try { input.reset() } catch (e: Exception){ }
             }
