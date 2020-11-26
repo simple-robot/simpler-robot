@@ -103,8 +103,14 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 - fix [#9 ](https://github.com/ForteScarlet/simpler-robot/issues/9) (多bot下监听函数重复缓存)
 
 
-## ALPHA.9(NOW)
+## ALPHA.9
 
 ### lovelycat 
 - 实现登录账号验证
 - 实现群聊消息监听
+
+### fix 
+- fix [#10 ](https://github.com/ForteScarlet/simpler-robot/issues/10) (@ListenBreak未实现)
+
+## ALPHA.10(NOW)
+
