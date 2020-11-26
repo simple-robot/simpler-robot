@@ -78,6 +78,9 @@ internal constructor(
     Closeable by doClosed
 
 
+internal val simbotAppLogger: Logger = LoggerFactory.getLogger(SimbotApp::class.java)
+
+
 /**
  * simbot app 启动类。
  *
@@ -102,7 +105,6 @@ protected constructor(
     private val defaultConfiguration: Configuration?,
     args: List<String>
 ) {
-    private val logger: Logger = LoggerFactory.getLogger("SimbotApp")
 
     var showLogo: Boolean = kotlin.runCatching {
         defaultConfiguration?.getConfig("simbot.showLogo")?.boolean
@@ -235,7 +237,7 @@ protected constructor(
             val resourceName = resourceData.resource
 
             // get reader.
-            val resourceReader: Reader? = kotlin.runCatching {
+            val resourceReader: Reader? = runCatching {
                 ResourceUtil.getResourceUtf8Reader(resourceName)
             }.getOrElse { e ->
                 if (resourceData.orIgnore) {
@@ -244,6 +246,8 @@ protected constructor(
                     throw ResourceException("Unable to read resource: $resourceName", e)
                 }
             }
+
+            simbotAppLogger.debugf("resource [{}] loaded.", resourceName)
 
             // parse to configuration.
             resourceReader?.let {
@@ -271,7 +275,7 @@ protected constructor(
                 c !in ignored &&
                         AnnotationUtil.containsAnnotation(c, Beans::class.java)
             }
-            logger.debug("package scan: {}", it)
+            simbotAppLogger.debug("package scan: {}", it)
         }
 
         val collection = scanner.collection

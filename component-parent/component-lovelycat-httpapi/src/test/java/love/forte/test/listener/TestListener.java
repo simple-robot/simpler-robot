@@ -15,8 +15,11 @@
 package love.forte.test.listener;
 
 import love.forte.common.ioc.annotation.Beans;
+import love.forte.simbot.annotation.Listen;
+import love.forte.simbot.annotation.Listens;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.api.message.events.GroupMsg;
+import love.forte.simbot.component.lovelycat.message.event.LovelyCatReceivedTransfer;
 
 /**
  * @author ForteScarlet
@@ -25,11 +28,15 @@ import love.forte.simbot.api.message.events.GroupMsg;
 public class TestListener {
 
 
-    @OnGroup
-    public void group(GroupMsg msg){
-        System.out.println(msg);
-        System.out.println(msg.getText());
-        System.out.println(msg.getMsg());
+    @Listen(LovelyCatReceivedTransfer.class)
+    public void group(LovelyCatReceivedTransfer receivedTransfer){
+        System.out.println("==================");
+        System.out.println(receivedTransfer.getMoney());
+        System.out.println(receivedTransfer.getTransferInfo());
+        System.out.println(receivedTransfer.getTransferInfo().getMoney());
+        System.out.println(receivedTransfer.getTransferInfo().getMoney().doubleValue());
+        receivedTransfer.accept();
+        System.out.println("==================");
     }
 
 }

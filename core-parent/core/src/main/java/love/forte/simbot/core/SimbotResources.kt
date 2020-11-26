@@ -60,6 +60,7 @@ public fun autoConfigures(loader: ClassLoader): Set<Class<*>> {
     val classSet = mutableSetOf<Class<*>>()
 
     (jarResources + resources).forEach {
+        simbotAppLogger.debugf("load auto configure resource: {}", it)
         Properties().apply {
             load(BufferedReader(InputStreamReader(it.openStream(), StandardCharsets.UTF_8)))
         }.apply {
