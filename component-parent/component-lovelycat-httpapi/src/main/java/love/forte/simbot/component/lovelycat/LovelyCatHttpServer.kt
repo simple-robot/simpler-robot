@@ -120,7 +120,7 @@ public class LovelyCatKtorHttpServer(
                     if (eventType == null) {
                         // 404. no event.
                         call.response.status(HttpStatusCode.NotFound)
-                        call.respondText { "param 'Event' not found: is Empty." }
+                        call.respondText { "param 'Event' not found: Event is Empty." }
                     } else {
                         val parse = lovelyCatParser.parse(eventType, originalData, api, jsonSerializerFactory, params)
 
