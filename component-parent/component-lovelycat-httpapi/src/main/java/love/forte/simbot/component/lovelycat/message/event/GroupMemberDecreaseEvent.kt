@@ -23,6 +23,7 @@ import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.containers.OperatorInfo
 import love.forte.simbot.api.message.events.GroupMemberReduce
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
+import love.forte.simbot.serialization.json.JsonSerializerFactory
 
 public const val GROUP_MEMBER_DECREASE_EVENT = "EventGroupMemberDecrease"
 
@@ -36,12 +37,12 @@ public const val GROUP_MEMBER_DECREASE_EVENT = "EventGroupMemberDecrease"
 public interface LovelyCatGroupMemberDecrease : LovelyCatMsg, GroupMemberReduce
 
 
-public class GroupMemberDecreaseEvent(
+public class LovelyCatGroupMemberDecreaseEvent(
     override val robotWxid: String,
     fromWxid: String,
     fromName: String,
-    api: LovelyCatApiTemplate,
     private val jsonMsg: String,
+    api: LovelyCatApiTemplate,
     original: String
 ) : BaseLovelyCatMsg(GROUP_MEMBER_DECREASE_EVENT, original), LovelyCatGroupMemberDecrease {
     /**
@@ -88,7 +89,24 @@ public class GroupMemberDecreaseEvent(
  */
 
 
+public object LovelyCatGroupMemberDecreaseEventParser : LovelyCatEventParser {
+    override fun invoke(
+        original: String,
+        api: LovelyCatApiTemplate,
+        jsonSerializerFactory: JsonSerializerFactory,
+        params: Map<String, *>
+    ): LovelyCatGroupMemberDecrease {
+        return LovelyCatGroupMemberDecreaseEvent(
+            params.orParamErr("robot_wxid").toString(),
+            params.orParamErr("from_wxid").toString(),
+            params.orParamErr("from_name").toString(),
+            params.orParamErr("json_msg").toString(),
+            api, original
+        )
 
+
+    }
+}
 
 
 

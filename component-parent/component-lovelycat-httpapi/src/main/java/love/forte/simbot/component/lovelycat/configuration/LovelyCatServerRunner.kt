@@ -25,7 +25,7 @@ import love.forte.simbot.listener.ListenerRegistered
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-@ComponentBeans
+@ComponentBeans("lovelyCatServerRunner")
 public class LovelyCatServerRunner : ListenerRegistered {
 
     @Depend

@@ -20,7 +20,7 @@ import love.forte.common.configuration.annotation.AsConfig
 import love.forte.common.ioc.annotation.ConfigBeans
 
 
-@ConfigBeans
+@ConfigBeans("lovelyCatServerProperties")
 @AsConfig(prefix = "simbot.component.lovelycat", allField = true)
 public class LovelyCatServerProperties {
     /**

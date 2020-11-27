@@ -33,7 +33,7 @@ import love.forte.simbot.serialization.json.JsonSerializerFactory
 /**
  * lovely cat 验证器。
  */
-@ComponentBeans
+@ComponentBeans("lovelyCatBotVerifier")
 public class LovelyCatBotVerifier : BotVerifier {
 
     @Depend

@@ -23,7 +23,7 @@ import love.forte.simbot.core.configuration.ComponentBeans
  *
  * @author ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("lovelyCatParserConfiguration")
 public class LovelyCatParserConfiguration {
 
 
@@ -39,7 +39,8 @@ public class LovelyCatParserConfiguration {
         defParser.registerParser(FRIEND_VERIFY_EVENT, LovelyCatFriendVerifyEventParser)
         defParser.registerParser(CONTACTS_CHANGES_EVENT, LovelyCatContactsChangeEventParser)
         defParser.registerParser(GROUP_MEMBER_ADD_EVENT, LovelyCatGroupMemberAddEventParser)
-
+        defParser.registerParser(GROUP_MEMBER_DECREASE_EVENT, LovelyCatGroupMemberDecreaseEventParser)
+        defParser.registerParser(SYS_MSG_EVENT, LovelyCatSysMsgEventParser)
 
         return defParser
     }
