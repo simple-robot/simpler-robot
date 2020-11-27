@@ -59,7 +59,7 @@ public interface GroupMemberReduce: ReduceEventGet, GroupContainer, OperatingCon
         get() = accountInfo.asBeOperator()
 
     /**
-     * 增加类型
+     * 减少类型
      */
     val reduceType: Type
 
