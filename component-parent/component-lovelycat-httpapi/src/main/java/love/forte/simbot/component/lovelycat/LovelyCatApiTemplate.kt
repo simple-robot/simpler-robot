@@ -433,6 +433,7 @@ constructor(
      * 功能=取登录账号昵称
      * robot_wxid, 文本型
      * api=GetRobotName
+     * TODO cache
      */
     override fun getRobotName(robotWxid: String): RobotName {
         return postForLovelyCatResult(
@@ -449,6 +450,7 @@ constructor(
      * robot_wxid, 文本型
      * api=GetRobotHeadimgurl
      * @return RobotHeadImgUrl
+     * TODO cache
      */
     override fun getRobotHeadImgUrl(robotWxid: String): RobotHeadImgUrl {
         return postForLovelyCatResult(
@@ -463,6 +465,7 @@ constructor(
     /**
      * 功能=取登录账号列表
      * api=GetLoggedAccountList
+     * TODO cache
      */
     override fun getLoggedAccountList(): LoggedAccountList {
         return postForLovelyCatResult("api" to "GetLoggedAccountList").let {

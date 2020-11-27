@@ -171,6 +171,7 @@ data class PrivateMsgDataMapping(
                 // location type.
                 // {"x":"36.678349","y":"117.041023","desc":"明湖天地D座(济南市天桥区明湖东路8号)","title":"天桥区明湖东路10-6号"}
                 48 -> {
+                    @Suppress("UNCHECKED_CAST")
                     val paramMap = msg as Map<String, *>
                     val location = LovelyCatLocation(
                         paramMap["x"]?.toString() ?: "",
