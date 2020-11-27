@@ -30,7 +30,7 @@ import love.forte.simbot.serialization.json.JsonSerializerFactory
  * @author ForteScarlet <ForteScarlet@163.com>
  * 2020/8/8
  */
-@Beans(priority = PriorityConstant.COMPONENT_TENTH)
+@Beans(value = "dingComponentConfiguration", priority = PriorityConstant.COMPONENT_TENTH)
 class DingComponentConfiguration {
 
 
@@ -39,13 +39,13 @@ class DingComponentConfiguration {
      * @see DingSecretCalculator
      * @see DefaultDingSecretCalculator
      */
-    @Beans(priority = PriorityConstant.COMPONENT_TENTH)
+    @Beans(value = "defaultDingSecretCalculator", priority = PriorityConstant.COMPONENT_TENTH)
     fun defaultDingSecretCalculator(): DefaultDingSecretCalculator = DefaultDingSecretCalculator
 
     /**
      * sender builder
      */
-    @Beans(priority = PriorityConstant.COMPONENT_TENTH)
+    @Beans(value = "dingSenderBuilder", priority = PriorityConstant.COMPONENT_TENTH)
     fun dingSenderBuilder(): DingSenderBuilderImpl = DingSenderBuilderImpl
 
     /**
@@ -60,7 +60,7 @@ class DingComponentConfiguration {
      * @param config 配置信息
      * @param dingSecretCalculator 签名计算器
      */
-    @Beans(priority = PriorityConstant.COMPONENT_TENTH)
+    @Beans(value = "getDingSenderManager", priority = PriorityConstant.COMPONENT_TENTH)
     fun getDingSenderManager(config: ComponentDingProperties,
                              dingSecretCalculator: DingSecretCalculator,
                              senderBuilder: DingSenderBuilder,

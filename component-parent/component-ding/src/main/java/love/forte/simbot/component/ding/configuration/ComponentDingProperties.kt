@@ -22,7 +22,7 @@ import love.forte.common.ioc.annotation.ConfigBeans
  *
  * @author ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("componentDingProperties")
 @AsConfig(prefix = "simbot.component.ding", allField = true)
 class ComponentDingProperties {
     /**
