@@ -27,21 +27,21 @@ import love.forte.simbot.http.template.HttpTemplate
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("miraiBotVerifierConfiguration")
 public class MiraiBotVerifierConfiguration {
 
 
     /**
      * inject default [MiraiBotConfigurationFactory].
      */
-    @ComponentBeans
+    @ComponentBeans("miraiMiraiBotConfigurationFactory")
     fun miraiMiraiBotConfigurationFactory(): MiraiBotConfigurationFactory = DefaultMiraiBotConfigurationFactory
 
 
     /**
      * bot verifier.
      */
-    @ComponentBeans
+    @ComponentBeans("miraiMiraiBotVerifier")
     fun miraiMiraiBotVerifier(
         configurationFactory: MiraiBotConfigurationFactory,
         miraiConfiguration: MiraiConfiguration,

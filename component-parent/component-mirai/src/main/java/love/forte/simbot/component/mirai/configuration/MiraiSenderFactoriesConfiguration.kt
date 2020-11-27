@@ -28,15 +28,15 @@ import love.forte.simbot.http.template.HttpTemplate
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("miraiSenderFactoriesConfiguration")
 public class MiraiSenderFactoriesConfiguration {
 
 
-    @ComponentBeans
+    @ComponentBeans("miraiSenderFactory")
     fun miraiSenderFactory(): SenderFactory = MiraiSenderFactory
-    @ComponentBeans
+    @ComponentBeans("miraiSetterFactory")
     fun miraiSetterFactory(): SetterFactory = MiraiSetterFactory
-    @ComponentBeans
+    @ComponentBeans("miraiGetterFactory")
     fun miraiGetterFactory(http: HttpTemplate): GetterFactory = MiraiGetterFactory(http)
 
 

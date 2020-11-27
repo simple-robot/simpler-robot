@@ -33,7 +33,7 @@ import net.mamoe.mirai.join
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ComponentBeans
+@ComponentBeans("miraiListenerRegistered")
 public class MiraiListenerRegistered : ListenerRegistered {
     private companion object : TypedCompLogger(MiraiListenerRegistered::class.java)
 

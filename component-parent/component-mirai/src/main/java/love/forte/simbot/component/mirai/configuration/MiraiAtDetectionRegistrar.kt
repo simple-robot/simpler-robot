@@ -32,7 +32,7 @@ import net.mamoe.mirai.message.data.MessageChain
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("miraiAtDetectionRegistrar")
 public class MiraiAtDetectionRegistrar {
 
 

@@ -23,13 +23,13 @@ import love.forte.simbot.core.configuration.ComponentBeans
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("miraiMessageContentBuilderConfiguration")
 public class MiraiMessageContentBuilderConfiguration {
 
     /**
      * mirai的content builder factory.
      */
-    @ComponentBeans(init = false)
+    @ComponentBeans(value = "miraiMessageContentBuilderFactory", init = false)
     fun miraiMessageContentBuilderFactory(): MessageContentBuilderFactory = MiraiMessageContentBuilderFactory
 
 

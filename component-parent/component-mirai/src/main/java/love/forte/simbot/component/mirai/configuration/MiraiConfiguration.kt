@@ -31,7 +31,7 @@ import kotlin.random.nextInt
  *
  *
  */
-@Beans
+@Beans("miraiConfiguration")
 @AsMiraiConfig
 public class MiraiConfiguration {
 
