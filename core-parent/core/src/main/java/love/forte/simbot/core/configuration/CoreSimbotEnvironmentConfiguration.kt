@@ -24,7 +24,7 @@ import love.forte.simbot.*
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreSimbotEnvironmentConfiguration")
 public class CoreSimbotEnvironmentConfiguration {
 
 
@@ -38,7 +38,7 @@ public class CoreSimbotEnvironmentConfiguration {
     private lateinit var packageScanEnvironment: SimbotPackageScanEnvironment
 
 
-    @CoreBeans
+    @CoreBeans("coreSimbotEnvironment")
     fun coreSimbotEnvironment(): SimbotEnvironment {
         return CoreSimbotEnvironment(
             resourceEnvironment, argsEnvironment, packageScanEnvironment

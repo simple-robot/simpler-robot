@@ -24,14 +24,14 @@ import love.forte.simbot.listener.ListenerResultFactory
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreListenResultConfiguration")
 public class CoreListenResultConfiguration {
 
 
     /**
      * listen result 工厂。
      */
-    @CoreBeans
+    @CoreBeans("coreListenerResultFactory")
     fun coreListenerResultFactory(): ListenerResultFactory = CoreListenerResultFactory
 
 }

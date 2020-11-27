@@ -26,7 +26,7 @@ import love.forte.simbot.exception.ExceptionProcessorBuilder
 /**
  * 配置异常处理器。
  */
-@ConfigBeans
+@ConfigBeans("coreExceptionProcessorConfiguration")
 public class CoreExceptionProcessorConfiguration {
 
     /**
@@ -39,7 +39,7 @@ public class CoreExceptionProcessorConfiguration {
     /**
      * 异常处理器builder [ExceptionProcessorBuilder]。
      */
-    @CoreBeans
+    @CoreBeans("coreExceptionProcessorBuilder")
     fun coreExceptionProcessorBuilder(): ExceptionProcessorBuilder = CoreExceptionProcessorBuilder()
 
 
@@ -49,7 +49,7 @@ public class CoreExceptionProcessorConfiguration {
      * @see ExceptionProcessor
      *
      */
-    @CoreBeans
+    @CoreBeans("coreExceptionProcessor")
     fun coreExceptionProcessor(builder: ExceptionProcessorBuilder): ExceptionProcessor {
         val eType = ExceptionHandle::class.java
         val handles: Collection<ExceptionHandle<*>> =

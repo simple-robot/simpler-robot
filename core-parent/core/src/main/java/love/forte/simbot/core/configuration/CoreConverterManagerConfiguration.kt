@@ -32,7 +32,7 @@ import love.forte.simbot.annotation.Converter as ConverterAnnotation
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreConverterManagerConfiguration")
 public class CoreConverterManagerConfiguration {
 
 

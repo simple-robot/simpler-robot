@@ -23,8 +23,8 @@ import love.forte.simbot.bot.BotRegisterInfo
 import love.forte.simbot.core.TypedCompLogger
 
 
-@ConfigBeans
 @AsCoreConfig
+@ConfigBeans("coreBotRegistrar")
 public class CoreBotRegistrar {
     private companion object : TypedCompLogger(CoreBotRegistrar::class.java)
 

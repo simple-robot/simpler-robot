@@ -27,7 +27,7 @@ import love.forte.simbot.listener.ListenerRegistered
 import love.forte.simbot.listener.PostListenerRegistrar
 
 
-@ConfigBeans
+@ConfigBeans("coreListenerRegistrar")
 public class CoreListenerRegistrar {
     private companion object : TypedCompLogger(CoreListenerRegistrar::class.java)
 

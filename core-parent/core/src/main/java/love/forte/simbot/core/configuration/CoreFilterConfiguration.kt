@@ -26,7 +26,7 @@ import love.forte.simbot.filter.*
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreFilterConfiguration")
 public class CoreFilterConfiguration {
 
     /**
@@ -38,7 +38,7 @@ public class CoreFilterConfiguration {
     /**
      * filter manager 构建器。
      */
-    @CoreBeans
+    @CoreBeans("coreFilterManagerBuilder")
     fun coreFilterManagerBuilder(): FilterManagerBuilder = CoreFilterManagerBuilder()
 
 
@@ -51,7 +51,7 @@ public class CoreFilterConfiguration {
      * @see ListenerFilterRegistrar
      * @see ListenerFilterAnnotationFactory
      */
-    @CoreBeans
+    @CoreBeans("coreFilterManager")
     fun coreFilterManager(builder: FilterManagerBuilder): FilterManager {
         val allNames = dependBeanFactory.allBeans
 

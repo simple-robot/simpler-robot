@@ -24,17 +24,17 @@ import love.forte.simbot.constant.PriorityConstant
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreErrorMsgSenderConfiguration")
 public class CoreErrorMsgSenderConfiguration {
 
 
-    @CoreBeans(priority = PriorityConstant.LAST)
+    @CoreBeans(value = "coreErrorSenderFactory", priority = PriorityConstant.LAST)
     public fun coreErrorSenderFactory(): SenderFactory = ErrorSenderFactory
 
-    @CoreBeans(priority = PriorityConstant.LAST)
+    @CoreBeans(value = "coreErrorSetterFactory", priority = PriorityConstant.LAST)
     public fun coreErrorSetterFactory(): SetterFactory = ErrorSetterFactory
 
-    @CoreBeans(priority = PriorityConstant.LAST)
+    @CoreBeans(value = "coreErrorGetterFactory", priority = PriorityConstant.LAST)
     public fun coreErrorGetterFactory(): GetterFactory = ErrorGetterFactory
 
 

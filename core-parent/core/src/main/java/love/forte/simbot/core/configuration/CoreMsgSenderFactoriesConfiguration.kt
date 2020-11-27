@@ -26,14 +26,14 @@ import love.forte.simbot.core.sender.CoreMsgSenderFactories
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreMsgSenderFactoriesConfiguration")
 public class CoreMsgSenderFactoriesConfiguration {
 
 
     /**
      * config [MsgSenderFactories].
      */
-    @CoreBeans
+    @CoreBeans("coreMsgSenderFactories")
     fun coreMsgSenderFactories(
         senderFactory: SenderFactory,
         setterFactory: SetterFactory,

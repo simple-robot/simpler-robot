@@ -27,20 +27,20 @@ import love.forte.simbot.listener.ListenerContextFactory
  *
  * @author ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreListenerContextConfiguration")
 public class CoreListenerContextConfiguration {
 
     /**
      * 使用单例对象 [CoreContextMapFactory]。
      */
-    @CoreBeans
+    @CoreBeans("coreContextMapFactory")
     fun coreContextMapFactory(): ContextMapFactory = CoreContextMapFactory
 
 
     /**
      * 配置 [ListenerContextFactoryImpl]
      */
-    @CoreBeans
+    @CoreBeans("coreListenerContextFactory")
     fun coreListenerContextFactory(): ListenerContextFactory = ListenerContextFactoryImpl
 
 }

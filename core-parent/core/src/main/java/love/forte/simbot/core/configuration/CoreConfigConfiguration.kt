@@ -25,11 +25,11 @@ import love.forte.common.utils.convert.ConverterManager
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreConfigConfiguration")
 public class CoreConfigConfiguration {
 
 
-    @CoreBeans
+    @CoreBeans("coreConfigurationManagerBuilder")
     fun coreConfigurationManagerBuilder(converterManager: ConverterManager): ConfigurationParserManagerBuilder {
         return LinkedConfigurationParserManagerBuilder(converterManager)
     }

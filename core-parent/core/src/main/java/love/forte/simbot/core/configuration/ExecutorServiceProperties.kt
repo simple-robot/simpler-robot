@@ -24,7 +24,7 @@ import java.util.concurrent.*
  * 线程池配置信息。
  */
 @AsConfig(prefix = "simbot.core.task.pool")
-@ConfigBeans
+@ConfigBeans("executorServiceProperties")
 public class ExecutorServiceProperties {
 
     /**

@@ -22,12 +22,12 @@ import love.forte.simbot.bot.CoreBotsEncoder
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreBotsCoderConfiguration")
 public class CoreBotsCoderConfiguration {
 
-    @CoreBeans
+    @CoreBeans("coreBotsEncoder")
     public fun coreBotsEncoder(): CoreBotsEncoder = CoreBotsEncoder
-    @CoreBeans
+    @CoreBeans("coreBotsDecoder")
     public fun coreBotsDecoder(): CoreBotsDecoder = CoreBotsDecoder
 
 }

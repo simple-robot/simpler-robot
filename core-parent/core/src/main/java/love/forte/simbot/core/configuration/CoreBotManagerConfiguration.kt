@@ -26,13 +26,13 @@ import love.forte.simbot.core.bot.CoreBotManager
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreBotManagerConfiguration")
 public class CoreBotManagerConfiguration {
 
     /**
      * 配置一个 [BotManager] 实例。
      */
-    @CoreBeans
+    @CoreBeans("coreBotManager")
     fun coreBotManager(
         verifier: BotVerifier,
         msgSenderFactories: MsgSenderFactories

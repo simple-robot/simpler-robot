@@ -30,7 +30,7 @@ import love.forte.simbot.listener.MsgInterceptContextFactory
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreInterceptFactoryConfiguration")
 public class CoreInterceptFactoryConfiguration {
 
     /**
@@ -43,7 +43,7 @@ public class CoreInterceptFactoryConfiguration {
     /**
      * 配置 [ListenerInterceptChainFactory] 。
      */
-    @CoreBeans
+    @CoreBeans("coreListenerInterceptChainFactory")
     fun coreListenerInterceptChainFactory(): ListenerInterceptChainFactory =
         CoreListenerInterceptChainFactory(dependBeanFactory)
 
@@ -51,7 +51,7 @@ public class CoreInterceptFactoryConfiguration {
     /**
      * 配置 [ListenerInterceptContextFactory]。
      */
-    @CoreBeans
+    @CoreBeans("coreListenerInterceptContextFactory")
     fun coreListenerInterceptContextFactory(): ListenerInterceptContextFactory =
         CoreListenerInterceptContextFactory
 
@@ -60,7 +60,7 @@ public class CoreInterceptFactoryConfiguration {
     /**
      * 配置 [MsgInterceptChainFactory] 。
      */
-    @CoreBeans
+    @CoreBeans("coreMsgInterceptChainFactory")
     fun coreMsgInterceptChainFactory(): MsgInterceptChainFactory =
         CoreMsgInterceptChainFactory(dependBeanFactory)
 
@@ -68,7 +68,7 @@ public class CoreInterceptFactoryConfiguration {
     /**
      * 配置 [MsgInterceptContextFactory]。
      */
-    @CoreBeans
+    @CoreBeans("coreMsgInterceptContextFactory")
     fun coreMsgInterceptContextFactory(): MsgInterceptContextFactory =
         CoreMsgInterceptContextFactory
 

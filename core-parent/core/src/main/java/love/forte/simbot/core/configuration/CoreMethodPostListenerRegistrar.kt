@@ -29,7 +29,7 @@ import love.forte.simbot.listener.ListenerResultFactory
 import love.forte.simbot.listener.PostListenerRegistrar
 
 
-@Beans
+@Beans("coreMethodPostListenerRegistrar")
 public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
     private companion object : TypedCompLogger(CoreMethodPostListenerRegistrar::class.java)
 

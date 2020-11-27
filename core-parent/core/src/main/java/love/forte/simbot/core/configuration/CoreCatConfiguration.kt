@@ -23,18 +23,18 @@ import love.forte.common.ioc.annotation.ConfigBeans
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreCatConfiguration")
 class CoreCatConfiguration {
 
 
 
-    @CoreBeans
+    @CoreBeans("coreCatCodeDecoder")
     fun coreCatCodeDecoder(): CatDecoder = CatDecoder
 
-    @CoreBeans
+    @CoreBeans("coreCatCodeEncoder")
     fun coreCatCodeEncoder(): CatEncoder = CatEncoder
 
-    @CoreBeans
+    @CoreBeans("coreCatCodeUtil")
     fun coreCatCodeUtil(): CatCodeUtil = CatCodeUtil
 
 

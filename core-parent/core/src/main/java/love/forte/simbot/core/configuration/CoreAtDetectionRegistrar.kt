@@ -24,7 +24,7 @@ import love.forte.simbot.filter.AtDetectionRegistrar
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreAtDetectionRegistrar")
 public class CoreAtDetectionRegistrar {
 
 

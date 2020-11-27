@@ -25,15 +25,15 @@ import java.util.concurrent.ExecutorService
  * @date 2020/11/6
  * @since
  */
-@ConfigBeans
+@ConfigBeans("taskRunnerConfiguration")
 public class TaskRunnerConfiguration {
 
 
-    @CoreBeans
+    @CoreBeans("executorService")
     fun executorService(executorService: ExecutorServiceProperties): ExecutorService = executorService.createExecutorService()
 
 
-    @CoreBeans
+    @CoreBeans("scheduledExecutorServiceTaskRunner")
     fun scheduledExecutorServiceTaskRunner(executorService: ExecutorService): ExecutorServiceTaskRunner {
         return ExecutorServiceTaskRunner(executorService)
     }

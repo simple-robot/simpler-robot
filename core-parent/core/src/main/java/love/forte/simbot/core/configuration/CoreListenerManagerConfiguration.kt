@@ -32,7 +32,7 @@ import love.forte.simbot.listener.*
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans
+@ConfigBeans("coreListenerManagerConfiguration")
 public class CoreListenerManagerConfiguration {
 
 
@@ -70,7 +70,7 @@ public class CoreListenerManagerConfiguration {
      * 监听函数管理器builder。
      * 需要的参数真多啊。
      */
-    @CoreBeans
+    @CoreBeans("coreListenerManagerBuilder")
     fun coreListenerManagerBuilder(): ListenerManagerBuilder {
 
         // 消息拦截内容。
@@ -107,7 +107,7 @@ public class CoreListenerManagerConfiguration {
     /**
      * 获取监听函数实例。通过builder构建。
      */
-    @CoreBeans
+    @CoreBeans("coreListenerManager")
     fun coreListenerManager(builder: ListenerManagerBuilder): ListenerManager = builder.build()
 
 
