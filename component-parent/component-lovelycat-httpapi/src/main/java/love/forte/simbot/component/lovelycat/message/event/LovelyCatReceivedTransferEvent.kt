@@ -56,6 +56,11 @@ public interface LovelyCatReceivedTransfer: LovelyCatMsg, BotContainer, AccountC
      */
     fun accept()
 
+    /**
+     * 是否为接受转账之后。
+     */
+    fun isAccepted(): Boolean
+
 }
 
 
@@ -72,7 +77,7 @@ public class LovelyCatReceivedTransferEvent(
     override val robotWxid: String,
     private val fromWxid: String,
     fromName: String,
-    // toWxid: String,
+    toWxid: String,
     override val money: String,
     private val jsonMsg: String,
     override val transferInfo: TransferInfo,
@@ -96,6 +101,10 @@ public class LovelyCatReceivedTransferEvent(
     override fun accept() {
         api.acceptTransfer(robotWxid, fromWxid, jsonMsg)
     }
+
+    private val botOnMsg = robotWxid == toWxid
+
+    override fun isAccepted(): Boolean = !botOnMsg
 }
 
 
@@ -112,7 +121,7 @@ public object LovelyCatReceivedTransferEventParser : LovelyCatEventParser {
         params.orParamErr("robot_wxid").toString(),
         params.orParamErr("from_wxid").toString(),
         params.orParamErr("from_name").toString(),
-        // params.orParamErr("to_wxid").toString(),
+        params.orParamErr("to_wxid").toString(),
         params.orParamErr("money").toString(),
         params.orParamErr("json_msg").toString(),
         jsonSerializerFactory.getJsonSerializer(TransferInfo::class.java).fromJson(params.orParamErr("json_msg").toString()),

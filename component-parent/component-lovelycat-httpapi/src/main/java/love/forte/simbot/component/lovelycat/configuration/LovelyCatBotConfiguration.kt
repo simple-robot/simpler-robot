@@ -23,9 +23,11 @@ import love.forte.simbot.api.sender.toBotSender
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotRegisterInfo
 import love.forte.simbot.bot.BotVerifier
+import love.forte.simbot.component.lovelycat.LovelyCatApiManager
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplateImpl
 import love.forte.simbot.component.lovelycat.LovelyCatBot
 import love.forte.simbot.component.lovelycat.message.event.lovelyCatBotInfo
+import love.forte.simbot.component.lovelycat.set
 import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.http.template.HttpTemplate
 import love.forte.simbot.serialization.json.JsonSerializerFactory
@@ -40,6 +42,9 @@ public class LovelyCatBotVerifier : BotVerifier {
     lateinit var httpTemplate: HttpTemplate
     @Depend
     lateinit var jsonSerializerFactory: JsonSerializerFactory
+    @Depend
+    lateinit var apiManager: LovelyCatApiManager
+
 
     /** 验证一个bot的注册信息，并转化为一个该组件对应的 [Bot] 实例。 */
     override fun verity(botInfo: BotRegisterInfo, msgSenderFactories: MsgSenderFactories): Bot {
@@ -48,10 +53,11 @@ public class LovelyCatBotVerifier : BotVerifier {
         val api = LovelyCatApiTemplateImpl(httpTemplate, path, jsonSerializerFactory)
         // 寻找登录bot中是否存在此code
         val accountList = api.getLoggedAccountList()
-
         val contains = accountList.accountList.any { code == it.wxid }
 
         if (contains) {
+            // save api info.
+            apiManager[code] = api
             val botContainer = BotContainer(lovelyCatBotInfo(code, api))
             val botSender = msgSenderFactories.toBotSender(botContainer)
             return LovelyCatBot(code, api, botSender)

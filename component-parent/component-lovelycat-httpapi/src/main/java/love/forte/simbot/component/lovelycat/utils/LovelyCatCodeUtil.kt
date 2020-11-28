@@ -43,13 +43,16 @@ public object LovelyCatCodeUtil {
         return if (firstOf < 0) {
             listOf(CatCodeUtil.toNeko("text", false, "text=${CatEncoder.encodeParams(text)}"))
         } else {
+            println(text.replace("[@at", "${CAT_HEAD}at"))
             // 存在 at, replace.
             CatCodeUtil.split(text.replace("[@at", "${CAT_HEAD}at")) {
                 if (startsWith(CAT_HEAD)) {
+                    println("cat: $this")
                     Nyanko.byCode(this.replace(",wxid=", ",code="))
                 } else {
                     // is text.
-                    CatCodeUtil.toNeko("text", false, "text=${CatEncoder.encodeParams(text)}")
+                    println("txt: $this")
+                    CatCodeUtil.toNeko("text", false, "text=${CatEncoder.encodeParams(this)}")
                 }
             }
         }

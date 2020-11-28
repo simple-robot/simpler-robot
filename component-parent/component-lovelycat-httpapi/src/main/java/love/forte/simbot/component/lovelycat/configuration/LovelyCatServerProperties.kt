@@ -38,4 +38,10 @@ public class LovelyCatServerProperties {
      */
     var path: String = "/lovelycat"
 
+
+    /**
+     * 是否开启 CORS 支持。默认为true。
+      */
+    var enableCors: Boolean = true
+
 }

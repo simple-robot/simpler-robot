@@ -20,27 +20,23 @@ import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.Sender
 import love.forte.simbot.api.sender.SenderFactory
-import love.forte.simbot.bot.BotManager
-import love.forte.simbot.component.lovelycat.LovelyCatBot
+import love.forte.simbot.component.lovelycat.LovelyCatApiManager
+import love.forte.simbot.component.lovelycat.get
 
 
 /**
  * Sender Factory
  */
-public class LovelyCatSenderFactory(private val botManager: BotManager) : SenderFactory {
+public class LovelyCatSenderFactory(private val apiManager: LovelyCatApiManager) : SenderFactory {
 
     /**
      * 根据一个msg构建一个 [Sender]. 用于在触发监听消息的时候构建其信息。
      */
     override fun getOnMsgSender(msg: MsgGet): Sender {
         val botCode = msg.botInfo.botCode
-        val bot = botManager.getBot(botCode)
+        val api = apiManager[botCode] ?: throw IllegalStateException("cannot found bot($botCode)'s api.")
 
-        if (bot !is LovelyCatBot) {
-            throw IllegalStateException("bot($botCode)")
-        }
-
-        return LovelyCatSender(botCode, bot.api)
+        return LovelyCatSender(botCode, api)
     }
 
     /**
@@ -48,12 +44,9 @@ public class LovelyCatSenderFactory(private val botManager: BotManager) : Sender
      */
     override fun getOnBotSender(bot: BotContainer): Sender {
         val botCode = bot.botInfo.botCode
-        val botInfo = botManager.getBot(botCode)
+        val api = apiManager[botCode] ?: throw IllegalStateException("cannot found bot($botCode)'s api.")
 
-        if (botInfo !is LovelyCatBot) {
-            throw IllegalStateException("bot($botCode)")
-        }
 
-        return LovelyCatSender(botCode, botInfo.api)
+        return LovelyCatSender(botCode, api)
     }
 }

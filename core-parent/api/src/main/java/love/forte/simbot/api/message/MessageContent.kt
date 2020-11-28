@@ -92,15 +92,6 @@ public interface MessageContent {
     val msg: String?
 
 
-    // /**
-    //  * 两个版本内删除。
-    //  */
-    // @Deprecated("use cats plz.")
-    // @JvmDefault
-    // val images: List<ImageMessageContent> get() = emptyList<ImageMessageContent>().also {
-    //     System.err.println("'getImages()' is Deprecated. use 'getCats()' plz.")
-    // }
-
 
     /**
      * 获取此消息中的所有可能包含的cat码。
@@ -121,12 +112,6 @@ public interface MessageContent {
 
 }
 
-//
-// /**
-//  * @see MessageContent.cats
-//  */
-// @Deprecated("not use.")
-// public object ImageMessageContent
 
 
 

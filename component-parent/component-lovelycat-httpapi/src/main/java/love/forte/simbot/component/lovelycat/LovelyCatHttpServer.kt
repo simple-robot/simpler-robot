@@ -25,10 +25,10 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.util.pipeline.*
 import io.ktor.utils.io.*
-import love.forte.simbot.bot.Bot
-import love.forte.simbot.bot.BotManager
 import love.forte.simbot.bot.NoSuchBotException
+import love.forte.simbot.component.lovelycat.configuration.LovelyCatServerProperties
 import love.forte.simbot.component.lovelycat.message.event.LovelyCatParser
+import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.listener.MsgGetProcessor
 import love.forte.simbot.serialization.json.JsonSerializer
 import love.forte.simbot.serialization.json.JsonSerializerFactory
@@ -36,7 +36,7 @@ import java.io.Closeable
 
 
 private val jsonContentType = ContentType.parse("application/json")
-
+private val htmlContentType = ContentType.parse("text/html")
 
 /**
  * maybe not use.
@@ -84,14 +84,17 @@ public class LovelyCatKtorHttpServer(
     /** 类型转化函数，根据 'Event' 参数获取对应的解析对象 */
     lovelyCatParser: LovelyCatParser,
     applicationEngineFactory: ApplicationEngineFactory<ApplicationEngine, out ApplicationEngine.Configuration>,
-    botManager: BotManager,
+    apiManager: LovelyCatApiManager,
     jsonSerializerFactory: JsonSerializerFactory,
     msgGetProcessor: MsgGetProcessor,
-    port: Int,
-    path: String
+    private val lovelyCatServerProperties: LovelyCatServerProperties,
 ) : LovelyCatHttpServer {
+    private companion object : TypedCompLogger(LovelyCatKtorHttpServer::class.java)
 
     private val mapSerializer = jsonSerializerFactory.getJsonSerializer<Map<String, *>>(Map::class.java)
+
+    private val port get() = lovelyCatServerProperties.port
+    private val path get() = lovelyCatServerProperties.path
 
     init {
         Runtime.getRuntime().addShutdownHook(Thread {
@@ -109,6 +112,10 @@ public class LovelyCatKtorHttpServer(
                 register(jsonContentType, JsonContentConverter(jsonSerializerFactory))
             }
 
+            if(lovelyCatServerProperties.enableCors) {
+                install(CORS)
+            }
+
             routing {
                 // listen path.
                 post(path) {
@@ -118,7 +125,6 @@ public class LovelyCatKtorHttpServer(
 
                     val eventType = params["Event"]?.toString()
 
-                    // TODO test
                     println("eventType: $eventType")
 
                     if (eventType == null) {
@@ -130,13 +136,7 @@ public class LovelyCatKtorHttpServer(
                         val botId = (params["robot_wxid"] ?: params["rob_wxid"])?.toString()
                             ?: throw NoSuchBotException("no param 'robot_wxid' or 'rob_wxid' in lovelycat request param.")
 
-                        val bot: Bot = botManager.getBot(botId)
-
-                        if (bot !is LovelyCatBot) {
-                            throw IllegalStateException("Bot($botId) instance should be lovelyCat bot instance, but: ${bot::class.java}")
-                        }
-
-                        val api = bot.api
+                        val api = apiManager[botId] ?: throw IllegalStateException("cannot found Bot($botId)'s api template.")
 
                         val parse = lovelyCatParser.parse(eventType, originalData, api, jsonSerializerFactory, params)
 
@@ -146,10 +146,16 @@ public class LovelyCatKtorHttpServer(
 
                         // ok status.
                         call.response.status(HttpStatusCode.OK)
+                    }
+                }
 
+                get("/simbot/lovelyCat") {
+                    call.respondText(htmlContentType) {
+                        "<h2>lovely cat server enabled!</h2> "
                     }
 
                 }
+
             }
         }
     }
@@ -158,6 +164,8 @@ public class LovelyCatKtorHttpServer(
 
     override fun start() {
         server.start()
+        logger.info("lovelycat ktor server started on <address>:$port$path")
+
     }
 
     /**

@@ -20,7 +20,7 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
-import love.forte.simbot.bot.BotManager
+import love.forte.simbot.component.lovelycat.LovelyCatApiManager
 import love.forte.simbot.component.lovelycat.LovelyCatHttpServer
 import love.forte.simbot.component.lovelycat.LovelyCatKtorHttpServer
 import love.forte.simbot.component.lovelycat.message.event.LovelyCatParser
@@ -56,17 +56,16 @@ public class LovelyCatServerConfiguration {
         applicationEngineFactory: ApplicationEngineFactory<ApplicationEngine, out ApplicationEngine.Configuration>,
         lovelyCatServerProperties: LovelyCatServerProperties,
         lovelyCatParser: LovelyCatParser,
-        botManager: BotManager,
+        apiManager: LovelyCatApiManager,
         msgGetProcessor: MsgGetProcessor,
     ): LovelyCatHttpServer {
         return LovelyCatKtorHttpServer(
             lovelyCatParser,
             applicationEngineFactory,
-            botManager,
+            apiManager,
             jsonSerializerFactory,
             msgGetProcessor,
-            lovelyCatServerProperties.port,
-            lovelyCatServerProperties.path
+            lovelyCatServerProperties
         )
     }
 
