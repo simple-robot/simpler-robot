@@ -44,6 +44,12 @@ public class LovelyCatMessageContentBuilder : MessageContentBuilder {
         }
         return _sb
     }
+    private val sbOrEmpty: String
+    get() = if (!::_sb.isInitialized) {
+        ""
+    } else {
+        _sb.toString()
+    }
 
     private lateinit var _img: MutableList<String>
     private val img: MutableList<String>
@@ -52,6 +58,12 @@ public class LovelyCatMessageContentBuilder : MessageContentBuilder {
             _img = mutableListOf()
         }
         return _img
+    }
+    private val imgOrEmpty: List<String>
+    get() = if (!::_img.isInitialized) {
+        emptyList()
+    } else {
+        _img
     }
 
     private lateinit var _at: MutableList<String>
@@ -62,6 +74,12 @@ public class LovelyCatMessageContentBuilder : MessageContentBuilder {
         }
         return _at
     }
+    private val atOrEmpty: List<String>
+        get() = if (!::_at.isInitialized) {
+            emptyList()
+        } else {
+            _at
+        }
 
     private var atAll = false
 
@@ -115,6 +133,12 @@ public class LovelyCatMessageContentBuilder : MessageContentBuilder {
 
     /** 得到当前构建的消息。 */
     override fun build(): MessageContent {
-        TODO("Not yet implemented")
+        println(atOrEmpty)
+        return LovelyCatForSendMessageContent(
+            sbOrEmpty,
+            imgOrEmpty,
+            atOrEmpty,
+            atAll
+        )
     }
 }

@@ -180,8 +180,8 @@ public data class LovelyCatUnknownMessageContent(private val content: String, pr
 public class LovelyCatForSendMessageContent
 internal constructor(
     val text: String,
-    val image: Array<String>,
-    val at: Array<String>,
+    val image: List<String>,
+    val at: List<String>,
     val atAll: Boolean
 ) : MessageContent {
 

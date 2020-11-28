@@ -20,12 +20,14 @@ import love.forte.simbot.annotation.Filter;
 import love.forte.simbot.annotation.Listen;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.annotation.OnPrivate;
+import love.forte.simbot.api.message.MessageContent;
+import love.forte.simbot.api.message.MessageContentBuilder;
+import love.forte.simbot.api.message.MessageContentBuilderFactory;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.message.events.PrivateMsg;
 import love.forte.simbot.api.sender.MsgSender;
 import love.forte.simbot.component.lovelycat.message.event.LovelyCatReceivedTransfer;
 import love.forte.simbot.component.lovelycat.message.event.LovelyCatScanCashMoney;
-import love.forte.simbot.filter.MatchType;
 
 /**
  * @author ForteScarlet
@@ -34,8 +36,15 @@ import love.forte.simbot.filter.MatchType;
 public class TestListener {
 
 
+    private final MessageContentBuilderFactory messageContentBuilderFactory;
+
+    public TestListener(MessageContentBuilderFactory messageContentBuilderFactory) {
+        this.messageContentBuilderFactory = messageContentBuilderFactory;
+    }
+
+
     @OnGroup
-    @Filter(value = "爱你", atBot = true, matchType = MatchType.STARTS_WITH, trim = true)
+    @Filter(atBot = true)
     public void groupMsg(GroupMsg msg, MsgSender sender) {
         System.out.println("text: " + msg.getText());
         System.out.println("msg : " + msg.getMsg());
@@ -45,8 +54,12 @@ public class TestListener {
             System.out.println(cat);
         }
 
+        MessageContentBuilder builder = messageContentBuilderFactory.getMessageContentBuilder();
+
+        MessageContent msgContent = builder.at(msg).text("at你爹？").build();
+
         // 复读
-        sender.SENDER.sendGroupMsg(msg, "我也爱你");
+        sender.SENDER.sendGroupMsg(msg, msgContent);
     }
 
     @OnPrivate

@@ -16,6 +16,7 @@
 
 package love.forte.simbot.component.lovelycat.configuration
 
+import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.simbot.component.lovelycat.message.LovelyCatMessageContentBuilderFactory
 
@@ -23,6 +24,7 @@ import love.forte.simbot.component.lovelycat.message.LovelyCatMessageContentBuil
 @ConfigBeans("lovelyCatMessageContentConfiguration")
 public class LovelyCatMessageContentConfiguration {
 
+    @Beans
     public fun lovelyCatMessageContentBuilderFactory() =
         LovelyCatMessageContentBuilderFactory
 

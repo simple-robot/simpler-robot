@@ -111,7 +111,7 @@ public class LovelyCatSender(
                             api.sendLinkMsg(botId, target, title, text, targetUrl, pic, icon)
                         }
                         else -> {
-                            // todo ?
+                            // ignore?
                         }
 
                     }
@@ -121,7 +121,7 @@ public class LovelyCatSender(
                     needAtCode.takeIf { it.isNotEmpty() }?.let {
                         val ats = needAtCode.joinToString(",")
                         needAtCode.clear()
-                        api.sendGroupMsgAndAt(botId, target, ats, "", this)
+                        api.sendGroupMsgAndAt(botId, target, ats, null, this)
                     } ?: run {
                         if (atAll) {
                             api.modifyGroupNotice(botId, target, this.takeIf { it.isNotBlank() } ?: "@全体成员")
@@ -138,7 +138,7 @@ public class LovelyCatSender(
 
             // need at.
             needAtCode.takeIf { it.isNotEmpty() }?.let {
-                api.sendGroupMsgAndAt(botId, target, it.joinToString(","), "", " ")
+                api.sendGroupMsgAndAt(botId, target, it.joinToString(","), null, " ")
             }
         // }
     }
@@ -165,7 +165,7 @@ public class LovelyCatSender(
             } else {
                 val ats = msg.at
                 if (ats.isNotEmpty()) {
-                    api.sendGroupMsgAndAt(botId, target, ats.joinToString(","), "", msgText)
+                    api.sendGroupMsgAndAt(botId, target, ats.joinToString(","), null, msgText)
                 } else {
                     api.sendTextMsg(botId, target, msgText)
                 }
@@ -193,20 +193,20 @@ public class LovelyCatSender(
                 // send img
                 "image" -> {
                     // maybe... local file to base64
-                    val path = neko["file"] ?: neko["url"] ?: throw IllegalArgumentException("cannot found param 'path' or 'url' in $neko.")
+                    val path = neko["file"] ?: neko["url"] ?: throw IllegalArgumentException("cannot found param 'file' or 'url' in $neko.")
                     api.sendImageMsg(botId, target, path)
                 }
 
                 // send video
                 "video" -> {
                     // 只支持本地文件。
-                    val path = neko["file"] ?: throw IllegalArgumentException("cannot found param 'path' in $neko.")
+                    val path = neko["file"] ?: throw IllegalArgumentException("cannot found param 'file' in $neko.")
                     api.sendVideoMsg(botId, target, path)
                 }
 
                 // send file video
                 "file" -> {
-                    val path = neko["file"] ?: throw IllegalArgumentException("cannot found param 'path' in $neko.")
+                    val path = neko["file"] ?: throw IllegalArgumentException("cannot found param 'file' in $neko.")
                     api.sendFileMsg(botId, target, path)
                 }
 
@@ -233,7 +233,7 @@ public class LovelyCatSender(
                     needAtCode.takeIf { it.isNotEmpty() }?.let {
                         val ats = needAtCode.joinToString(",")
                         needAtCode.clear()
-                        api.sendGroupMsgAndAt(botId, target, ats, "", textMsg)
+                        api.sendGroupMsgAndAt(botId, target, ats, null, textMsg)
                     } ?: run {
                         if (atAll) {
                             api.modifyGroupNotice(botId, target, textMsg.takeIf { it.isNotBlank() } ?: "@全体成员")
@@ -245,14 +245,14 @@ public class LovelyCatSender(
                 }
 
                 else -> {
-                    // todo?
+                    // ignore?
                 }
             }
         }
 
         // need at.
         needAtCode.takeIf { it.isNotEmpty() }?.let {
-            api.sendGroupMsgAndAt(botId, target, it.joinToString(","), "", " ")
+            api.sendGroupMsgAndAt(botId, target, it.joinToString(","), null, " ")
         }
     }
 

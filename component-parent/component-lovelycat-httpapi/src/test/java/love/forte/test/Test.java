@@ -16,15 +16,22 @@
 
 package love.forte.test;
 
+import love.forte.common.configuration.Configuration;
 import love.forte.simbot.annotation.SimbotApplication;
+import love.forte.simbot.api.message.MessageContent;
+import love.forte.simbot.api.message.MessageContentBuilder;
+import love.forte.simbot.api.message.MessageContentBuilderFactory;
+import love.forte.simbot.bot.Bot;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
+import love.forte.simbot.core.SimbotProcess;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author ForteScarlet
  */
 @SimbotApplication
-public class Test {
+public class Test implements SimbotProcess {
     public static void main(String[] args) {
         SimbotApp.run(Test.class, args);
 
@@ -50,5 +57,19 @@ public class Test {
         // }
 
 
+    }
+
+    @Override
+    public void pre(@NotNull Configuration config) {
+
+    }
+
+    @Override
+    public void post(@NotNull SimbotContext context) {
+        MessageContentBuilderFactory factory = context.get(MessageContentBuilderFactory.class);
+        MessageContentBuilder builder = factory.getMessageContentBuilder();
+        MessageContent msg = builder.at("wxid_khv2ht7uwa5x22").text("你煞笔").build();
+        Bot bot = context.getBotManager().getDefaultBot();
+        bot.getSender().SENDER.sendGroupMsg("18367333210@chatroom", msg);
     }
 }

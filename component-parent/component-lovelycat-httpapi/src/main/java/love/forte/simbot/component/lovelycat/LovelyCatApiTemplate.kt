@@ -125,7 +125,7 @@ public interface LovelyCatApiTemplate {
         robotWxid: String,
         groupWxid: String,
         memberWxid: String,
-        memberName: String,
+        memberName: String?,
         msg: String
     ): LovelyCatApiResult
 
@@ -577,7 +577,7 @@ constructor(
         robotWxid: String,
         groupWxid: String,
         memberWxid: String,
-        memberName: String,
+        memberName: String?,
         msg: String
     ): LovelyCatApiResult {
         return post(SendGroupMsgAndAtRequestData(robotWxid, groupWxid, memberWxid, memberName, msg))
@@ -587,7 +587,7 @@ constructor(
         val robot_wxid: String,
         val group_wxid: String,
         val member_wxid: String,
-        val member_name: String,
+        val member_name: String?,
         val msg: String
     ) : RequestApiData("SendGroupMsgAndAt")
 
