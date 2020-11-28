@@ -21,12 +21,12 @@ import love.forte.common.ioc.annotation.ConfigBeans
 
 
 @ConfigBeans("lovelyCatServerProperties")
-@AsConfig(prefix = "simbot.component.lovelycat", allField = true)
+@AsConfig(prefix = "simbot.component.lovelycat.server", allField = true)
 public class LovelyCatServerProperties {
     /**
      * 是否开启http服务器。
      */
-    var enableHttpServer: Boolean = true
+    var enable: Boolean = true
 
     /**
      * 开启http服务的端口号
@@ -41,7 +41,8 @@ public class LovelyCatServerProperties {
 
     /**
      * 是否开启 CORS 支持。默认为true。
-      */
-    var enableCors: Boolean = true
+     * ※ 内置server服务器为ktor。
+     */
+    var cors: Boolean = true
 
 }

@@ -17,7 +17,8 @@
 package love.forte.simbot.component.lovelycat.message
 
 import love.forte.simbot.api.message.containers.*
-
+import love.forte.simbot.api.message.results.FriendInfo
+import love.forte.simbot.component.lovelycat.message.event.lovelyCatAccountInfo
 
 
 public interface ApiResult<T> {
@@ -115,32 +116,35 @@ public data class CatFriendInfo(
     val wxid: String,
     val note: String,
     val robotWxid: String
-) : AccountInfo, BotCodeContainer {
-    /**
-     * 账号
-     */
-    override val accountCode: String
-        get() = wxid
+) : FriendInfo, BotCodeContainer {
 
     /** 当前的bot的账号 */
     override val botCode: String
         get() = robotWxid
 
     /**
-     * 昵称。
-     * 可能会出现为null的情况，但是一般情况下不会。
+     * 无法获取好友分组信息。
      */
-    override val accountNickname: String?
-        get() = name
-
-    /** 好友备注或群名片。可能为null。 */
-    override val accountRemark: String?
-        get() = note
-
-    /** 没有头像信息 */
-    override val accountAvatar: String?
+    override val grouping: String?
         get() = null
+
+    /**
+     * 得到原始数据字符串。
+     * 数据不应该为null。
+     */
+    override val originalData: String
+        get() = toString()
+
+    /**
+     * 账号的信息。
+     * 没有头像信息，但是似乎有备注信息。
+     */
+    override val accountInfo: AccountInfo = lovelyCatAccountInfo(wxid, name, note)
 }
+
+
+
+
 
 public data class CatGroupListResult(
     override val code: Int,

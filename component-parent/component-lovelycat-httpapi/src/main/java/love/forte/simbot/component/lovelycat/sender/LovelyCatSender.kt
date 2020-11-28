@@ -34,7 +34,7 @@ private object Empty
 
 
 /**
- * 可爱猫送信器
+ * 可爱猫送信器。
  */
 public class LovelyCatSender(
     private val botId: String,

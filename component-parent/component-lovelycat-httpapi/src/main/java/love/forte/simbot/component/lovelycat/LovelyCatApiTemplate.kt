@@ -668,6 +668,7 @@ constructor(
      * robot_wxid, 文本型, 可空, 如不填，则取的是所有登录账号的好友列表
      * is_refresh, 逻辑型, 可空, 为真将重新加载（注意切记不要频繁加载这里），不然将取缓存，默认为假
      * api=GetFriendList
+     * TODO cache
      */
     override fun getFriendList(robotWxid: String, isRefresh: Boolean): List<CatFriendInfo> {
         return post<CatFriendListResult>(GetFriendListRequestData(robotWxid, isRefresh)).data
@@ -683,6 +684,7 @@ constructor(
      * robot_wxid, 文本型, 可空, 取哪个账号的列表，不填则取全部
      * is_refresh, 逻辑型, 可空, 为真将重新加载（注意切记不要频繁加载这里），不然将取缓存，默认为假
      * api=GetGroupList
+     * TODO cache
      */
     override fun getGroupList(robotWxid: String, isRefresh: Boolean): List<CatGroupInfo> {
         return post<CatGroupListResult>(GetGroupListRequestData(robotWxid, isRefresh)).data
@@ -700,6 +702,7 @@ constructor(
      * member_wxid, 文本型, , 群成员ID
      * is_refresh, 逻辑型, 可空, 为真将重新加载（注意切记不要频繁加载这里），不然将取缓存，默认为假
      * api=GetGroupMemberDetailInfo
+     * TODO cache
      */
     override fun getGroupMemberDetailInfo(
         robotWxid: String,
@@ -731,6 +734,7 @@ constructor(
      * group_wxid, 文本型, , 群ID
      * is_refresh, 逻辑型, 可空, 为真将重新加载列表（注意切记不要频繁加载这里），不然将取缓存，默认为假
      * api=GetGroupMemberList
+     * TODO cache
      */
     override fun getGroupMemberList(robotWxid: String, groupWxid: String, isRefresh: Boolean): List<CatSimpleGroupMemberInfo> {
         return post<GroupMemberListResult>(GetGroupMemberListRequestData(robotWxid, groupWxid, isRefresh)).data

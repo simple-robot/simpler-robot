@@ -112,7 +112,7 @@ public class LovelyCatKtorHttpServer(
                 register(jsonContentType, JsonContentConverter(jsonSerializerFactory))
             }
 
-            if(lovelyCatServerProperties.enableCors) {
+            if(lovelyCatServerProperties.cors) {
                 install(CORS)
             }
 

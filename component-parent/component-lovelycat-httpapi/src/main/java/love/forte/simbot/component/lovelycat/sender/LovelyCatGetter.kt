@@ -23,6 +23,9 @@ import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.component.lovelycat.message.event.lovelyCatBotInfo
 
 
+/**
+ * 可爱猫取信器。
+ */
 public class LovelyCatGetter(
     private val botId: String,
     private val api: LovelyCatApiTemplate
@@ -44,14 +47,19 @@ public class LovelyCatGetter(
      * 获取一个好友的信息。
      */
     override fun getFriendInfo(code: String): FriendInfo {
-        TODO("Not yet implemented")
+        val friendList = api.getFriendList(botId, true)
+        return friendList.find { it.wxid == code } ?: throw NoSuchElementException("friend: $code")
     }
 
     /**
      * 获取一个群友信息。
      */
     override fun getMemberInfo(group: String, code: String): GroupMemberInfo {
-        TODO("Not yet implemented")
+        val groupMemberInfo = api.getGroupMemberDetailInfo(botId, group, code, true)
+        val groupInfo = api.getGroupList(botId, true).find { it.groupCode == group }
+            ?: throw NoSuchElementException("group: $group")
+
+        TODO()
     }
 
     /**

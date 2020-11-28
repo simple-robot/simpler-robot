@@ -39,7 +39,7 @@ public class LovelyCatServerRunner : ListenerRegistered {
      * 启动http服务（如果需要）
      */
     override fun onRegistered(manager: ListenerManager) {
-        if (lovelyCatServerProperties.enableHttpServer) {
+        if (lovelyCatServerProperties.enable) {
             val lovelyCatHttpServer: LovelyCatHttpServer = dependCenter[LovelyCatHttpServer::class.java]
             val port: Int = lovelyCatServerProperties.port
             logger.debug("try to start lovely cat http server on port $port")
