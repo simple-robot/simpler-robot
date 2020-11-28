@@ -33,9 +33,6 @@ public class CoreBotManagerConfiguration {
      * 配置一个 [BotManager] 实例。
      */
     @CoreBeans("coreBotManager")
-    fun coreBotManager(
-        verifier: BotVerifier,
-        msgSenderFactories: MsgSenderFactories
-    ): BotManager = CoreBotManager(verifier, msgSenderFactories)
+    fun coreBotManager(verifier: BotVerifier, msgSenderFactories: MsgSenderFactories): BotManager = CoreBotManager(verifier, msgSenderFactories)
 
 }

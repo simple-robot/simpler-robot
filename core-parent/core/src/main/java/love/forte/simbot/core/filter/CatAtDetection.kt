@@ -14,10 +14,11 @@
 
 package love.forte.simbot.core.filter
 
-import love.forte.catcode.CatCodeUtil
+import love.forte.catcode.Neko
+import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.filter.AlwaysRefuseAtDetection
+import love.forte.simbot.filter.AlwaysAllowedAtDetection
 import love.forte.simbot.filter.AtDetection
 import love.forte.simbot.filter.AtDetectionFactory
 
@@ -34,56 +35,51 @@ public object CatAtDetectionFactory : AtDetectionFactory {
      *
      */
     override fun getAtDetection(msg: MsgGet): AtDetection {
-        // 不属于一个消息类型事件，则获取不到at信息。
+        // 不属于一个消息类型事件，无法获取cat特殊码，则获取不到at信息, 则一律放行
         if (msg !is MessageGet) {
-            return AlwaysRefuseAtDetection
+            return AlwaysAllowedAtDetection
         }
-        // 如果消息为null，直接返回false
-        if (msg.isEmptyMsg()) {
-            return AlwaysRefuseAtDetection
-        }
-        val text: String = msg.msg ?: return AlwaysRefuseAtDetection
 
+        // val text: String = msg.msg ?: return AlwaysRefuseAtDetection
+        //
         val botCode: String = msg.botInfo.botCode
+
         // 使用catCode检测。
-        // CatCodeUtil.contains(text, "at", "code", botCode)
-        return CatAtDetection(text, botCode)
+        return CatAtDetection(msg.msgContent, botCode)
     }
 }
 
-private data class CatAtDetection(private val text: String, private val botCode: String) : AtDetection {
-    override fun atBot(): Boolean = CatCodeUtil.contains(text, "at", "code", botCode)
+/**
+ * neko at 检测。非线程安全。
+ */
+private data class CatAtDetection(private val messageContent: MessageContent, private val botCode: String) : AtDetection {
 
-    override fun atAll(): Boolean =
-        CatCodeUtil.contains(text, "at", "all", "true")
-                || CatCodeUtil.contains(text, "at", "code", "all")
+    private lateinit var _cats: List<Neko>
+    private val cats: List<Neko>
+    get() {
+        if (!::_cats.isInitialized) {
+            _cats = messageContent.cats
+        }
+        return _cats
+    }
 
-    override fun atAny(): Boolean  = CatCodeUtil.contains(text, "at")
+
+    override fun atBot(): Boolean {
+        println("botCode: $botCode")
+        return cats.any { neko -> neko.type == "at" && neko["code"] == botCode }
+    }
+
+    override fun atAll(): Boolean {
+        return cats.any { neko -> neko.type == "at" && (neko["all"] == "true" || neko["code"] == "all" ) }
+    }
+
+    override fun atAny(): Boolean {
+        return cats.any { neko -> neko.type == "at" }
+    }
 
     override fun at(codes: Array<String>): Boolean {
-        return codes.all { atCode ->
-            CatCodeUtil.contains(text, "at", "code", atCode)
+        return codes.all {
+            cats.any { neko -> neko.type == "at" && neko["code"] == it }
         }
     }
 }
-
-    // /**
-    //  * 根据一个msg实例构建一个 [AtDetection] 函数。
-    //  * 在manager中，如果此方法返回了一个 null 则视为获取失败，会去尝试使用其他 factory 直至成功。
-    //  *
-    //  */
-    // override fun getAtDetection(msg: MsgGet): AtDetection = AtDetection {
-    //     // 不属于一个消息类型事件，则获取不到at信息。
-    //     if (msg !is MessageEventGet) {
-    //         return@AtDetection false
-    //     }
-    //     // 如果消息为null，直接返回false
-    //     if (msg.isEmptyMsg()) {
-    //         return@AtDetection false
-    //     }
-    //     val text: String = msg.msg ?: return@AtDetection false
-    //
-    //     val botCode: String = msg.botInfo.botCode
-    //     // 使用catCode检测。
-    //     CatCodeUtil.contains(text, "at", "code", botCode)
-    // }
