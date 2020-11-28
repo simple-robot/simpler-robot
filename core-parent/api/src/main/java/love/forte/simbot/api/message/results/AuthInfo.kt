@@ -67,3 +67,37 @@ public data class CookieValuesImpl(private val cookieValue: String) : AuthInfo.C
 
     override fun toString(): String = cookieMap.toString()
 }
+
+
+/**
+ * 空值实现。
+ */
+public object EmptyAuthInfo : AuthInfo {
+    override val cookies: AuthInfo.Cookies
+        get() = EmptyCookie
+    override val token: String?
+        get() = null
+    override val originalData: String
+        get() = "{}"
+
+    /**
+     * 空值实现。
+     */
+    object EmptyCookie : AuthInfo.Cookies {
+        override fun get(key: String): String? = null
+        override fun toMap(): MutableMap<String, String> = mutableMapOf()
+        override fun toString(): String = "{}"
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
