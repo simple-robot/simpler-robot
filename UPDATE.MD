@@ -118,7 +118,7 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 ### core
 - 移除 `MessageContent.getImages()`。
 
-### lovelycat 
+### [lovelycat](./component-parent/component-lovelycat-httpapi)
 - 实现私聊消息监听
 - 实现转账事件监听与接受转账
 - 实现扫描支付事件监听
