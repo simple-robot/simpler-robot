@@ -55,11 +55,11 @@ public class LovelyCatGetter(
      * 获取一个群友信息。
      */
     override fun getMemberInfo(group: String, code: String): GroupMemberInfo {
-        val groupMemberInfo = api.getGroupMemberDetailInfo(botId, group, code, true)
-        val groupInfo = api.getGroupList(botId, true).find { it.groupCode == group }
-            ?: throw NoSuchElementException("group: $group")
+        // val groupMemberInfo = api.getGroupMemberDetailInfo(botId, group, code, true)
+        // val groupInfo = api.getGroupList(botId, true).find { it.groupCode == group }
+        //     ?: throw NoSuchElementException("group: $group")
 
-        TODO()
+        TODO("Not yet implemented")
     }
 
     /**
