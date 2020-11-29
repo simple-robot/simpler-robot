@@ -134,7 +134,7 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 ### fix
 - fix [#11 ](https://github.com/ForteScarlet/simpler-robot/issues/11) (发送多个图片导致同步锁异常)
-
+- fix [#12 ](https://github.com/ForteScarlet/simpler-robot/issues/12) (为GroupAddRequest追加群容器)
 
 
 
