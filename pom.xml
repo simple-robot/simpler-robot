@@ -85,6 +85,11 @@
             </dependency>
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
+                <artifactId>component-lovelycat-httpapi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
                 <artifactId>component-ding</artifactId>
                 <version>${project.version}</version>
             </dependency>
