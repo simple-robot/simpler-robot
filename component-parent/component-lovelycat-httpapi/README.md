@@ -10,12 +10,14 @@
 ## 注意事项
 - 可爱猫官方论坛：http://www.keaimao.com.cn , 
 可爱猫相关资源文件贴：http://www.keaimao.com.cn/forum.php?mod=viewthread&tid=127&extra=page%3D1
-
 - 可爱猫组件所测试并对接的为`httpAPI 2.0(低配版)`插件
-
+- 可爱猫组件内置`http-client-ktor`模块，并使用 `http-client-core` 标准发送http请求。
+- 可爱猫内置的`http-server`基于 `ktor-netty`。 
 - 可爱猫组件中绝大部分 `xxxInfo`中都只能获取到code和nickname，而无法获取到备注与头像信息。尤其为头像信息，基本上没有。
 
 - 可爱猫账号ID与群ID均为字符串，不可转化为数字。
+
+
 
 ### CatCode
 - 通过MessageBuilder的图片流或字节数组构建的时候，会将图片转化为base64数据，效率较低。
