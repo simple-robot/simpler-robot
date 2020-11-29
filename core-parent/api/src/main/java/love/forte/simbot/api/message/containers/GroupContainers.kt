@@ -14,6 +14,7 @@
 
 @file:JvmName("Containers")
 @file:JvmMultifileClass
+
 package love.forte.simbot.api.message.containers
 
 import love.forte.simbot.annotation.ContainerType
@@ -62,6 +63,22 @@ public interface GroupNameContainer : Container {
 @ContainerType("群信息容器")
 public interface GroupInfo : Container, GroupAvatarContainer, GroupCodeContainer, GroupNameContainer
 
+
+@JvmOverloads
+public fun simpleGroupInfo(
+    groupCode: String,
+    groupName: String? = null,
+    groupAvatar: String? = null,
+): GroupInfo = SimpleGroupInfo(groupCode, groupName, groupAvatar)
+
+
+private data class SimpleGroupInfo(
+    override val groupCode: String,
+    override val groupName: String?,
+    override val groupAvatar: String?,
+) : GroupInfo
+
+
 /**
  * 可以得到一个[群信息][GroupInfo]容器
  */
@@ -76,7 +93,7 @@ public interface GroupContainer : Container {
  */
 @JvmName("getGroupContainer")
 @Suppress("FunctionName")
-public fun GroupContainer(groupInfo: GroupInfo) : GroupContainer = GroupContainerData(groupInfo)
+public fun GroupContainer(groupInfo: GroupInfo): GroupContainer = GroupContainerData(groupInfo)
 
 /**
  * 获取一个 [GroupContainer] 数据实例。
@@ -84,9 +101,7 @@ public fun GroupContainer(groupInfo: GroupInfo) : GroupContainer = GroupContaine
  */
 @JvmName("__getGroupContainer")
 @Suppress("FunctionName")
-public inline fun GroupContainer(groupInfo: () -> GroupInfo) : GroupContainer = GroupContainer(groupInfo())
-
-
+public inline fun GroupContainer(groupInfo: () -> GroupInfo): GroupContainer = GroupContainer(groupInfo())
 
 
 /** [GroupContainer] 数据类实现。 */

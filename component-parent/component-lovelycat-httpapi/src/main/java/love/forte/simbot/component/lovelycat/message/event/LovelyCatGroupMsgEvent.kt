@@ -121,6 +121,9 @@ public class LovelyCatGroupInviteGroupMsgEvent(
      */
     override val accountInfo: AccountInfo = lovelyCatAccountInfo(finalFromWxid, finalFromName)
 
+    /** 当前被申请加入的群聊信息。 */
+    override val groupInfo: GroupInfo = lovelyCatGroupInfo(fromWxid, fromName)
+
     /**
      * 当前请求的邀请者。在 **组件不支持** 、**请求非邀请** 等情况下可能为null。
      */

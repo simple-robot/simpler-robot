@@ -18,9 +18,7 @@ package love.forte.simbot.api.message.events
 import love.forte.simbot.annotation.MainListenerType
 import love.forte.simbot.api.message.assists.ActionMotivations
 import love.forte.simbot.api.message.assists.Flag
-import love.forte.simbot.api.message.containers.AccountInfo
-import love.forte.simbot.api.message.containers.ActionMotivationContainer
-import love.forte.simbot.api.message.containers.OriginalDataContainer
+import love.forte.simbot.api.message.containers.*
 
 /*
  * 此模块下定义请求相关的监听接口
@@ -59,7 +57,7 @@ public data class FriendAddRequestIdFlagContent(override val id: String) : Frien
 /**
  * 群添加请求。此时申请人尚未入群。
  */
-public interface GroupAddRequest : RequestGet {
+public interface GroupAddRequest : RequestGet, GroupContainer {
 
     /**
      * 代表当前实际申请入群的用户。如果是别人申请入群，则此为这个要进群的用户的信息，

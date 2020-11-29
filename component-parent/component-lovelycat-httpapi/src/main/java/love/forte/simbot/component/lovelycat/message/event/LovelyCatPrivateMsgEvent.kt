@@ -19,6 +19,7 @@ import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.*
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.component.lovelycat.message.*
@@ -105,6 +106,12 @@ public class LovelyCatGroupInvitePrivateMsgEvent(
     override val accountInfo: AccountInfo = lovelyCatAccountInfo(fromWxid, fromName)
 
     /**
+     * 尚不知道私聊群邀请的数据类型来源。
+     */
+    @Deprecated("尚不知道私聊群邀请的数据类型来源。")
+    override val groupInfo: GroupInfo = lovelyCatGroupInfo("", "")
+
+    /**
      * 当前请求的邀请者。在 **组件不支持** 、**请求非邀请** 等情况下可能为null。
      */
     override val invitor: GroupAddRequestInvitor = accountInfo.asInvitor()
@@ -155,7 +162,6 @@ data class PrivateMsgDataMapping(
                     2001/红包
                     2002/小程序
                     48/地理位置 // location json.
-
                     2003/群邀请 // invite
                  */
                 // text type.
@@ -188,7 +194,7 @@ data class PrivateMsgDataMapping(
                 2001 -> LovelyCatRedEnvelopeMessageContent(msg.toString())
                 // 2002/小程序
                 2002 -> LovelyCatAppMessageContent(msg.toString())
-                // 2003/群邀请, 视为text消息。
+                // 2003
                 2003 -> {
                     // 群邀请，使用群邀请消息类型
                     return LovelyCatGroupInvitePrivateMsgEvent(

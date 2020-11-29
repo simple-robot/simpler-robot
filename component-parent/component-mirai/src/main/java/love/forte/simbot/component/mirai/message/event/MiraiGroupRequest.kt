@@ -17,9 +17,12 @@ package love.forte.simbot.component.mirai.message.event
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.flag
 import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.containers.simpleGroupInfo
 import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequestInvitor
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
+import love.forte.simbot.component.mirai.message.result.MiraiGroupInfo
 import love.forte.simbot.component.mirai.utils.userAvatar
 import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
@@ -39,6 +42,8 @@ public class MiraiGroupMemberJoinRequest(event: MemberJoinRequestEvent) :
     override val id: String = event.eventId.toString()
 
     override val accountInfo: AccountInfo = MiraiGroupMemberJoinAccountInfo(event)
+
+    override val groupInfo: GroupInfo = MiraiGroupInfo(event.group)
 
     override val text: String = event.message //.takeIf { it.isNotBlank() }
 
@@ -83,6 +88,8 @@ public class MiraiBotInvitedJoinGroupRequest(event: BotInvitedJoinGroupRequestEv
     override val id: String = event.eventId.toString()
 
     override val accountInfo: AccountInfo = MiraiBotAccountInfo(event.bot)
+
+    override val groupInfo: GroupInfo = simpleGroupInfo(event.groupId.toString(), event.groupName)
 
     /** bot被邀请则不存在什么消息。 */
     override val text: String? = null
