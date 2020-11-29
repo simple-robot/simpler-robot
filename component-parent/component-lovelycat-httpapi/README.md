@@ -1,5 +1,11 @@
 # lovely cat httpapi 组件
 
+可爱猫官方论坛：http://www.keaimao.com.cn
+
+可爱猫相关资源文件贴：http://www.keaimao.com.cn/forum.php?mod=viewthread&tid=127&extra=page%3D1
+
+> 可爱猫是一个轻巧、免费、高效的机器人核心，功能需要安装“应用”实现。登录可爱猫，完成教程后，建议可爱猫交流板块，下载安装您所需要的应用，创造让大家喜爱并且属于你自己的专属机器人。
+> —————— [可爱猫开发者文档·序言](https://www.kancloud.cn/yangtaott/dsaw)
 
 
 ## 配置
@@ -8,8 +14,7 @@
 ```
 
 ## 注意事项
-- 可爱猫官方论坛：http://www.keaimao.com.cn , 
-可爱猫相关资源文件贴：http://www.keaimao.com.cn/forum.php?mod=viewthread&tid=127&extra=page%3D1
+- 
 - 可爱猫组件所测试并对接的为`httpAPI 2.0(低配版)`插件
 - 可爱猫组件内置`http-client-ktor`模块，并使用 `http-client-core` 标准发送http请求。
 - 可爱猫内置的`http-server`基于 `ktor-netty`。 
