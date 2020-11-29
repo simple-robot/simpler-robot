@@ -23,3 +23,9 @@ typealias WeakRef<T> = java.lang.ref.WeakReference<T>
 typealias SoftRef<T> = java.lang.ref.SoftReference<T>
 /** 虚引用 */
 typealias PhantomRef<T> = java.lang.ref.PhantomReference<T>
+/** 原子引用 */
+typealias AtomicRef<T> = java.util.concurrent.atomic.AtomicReference<T>
+/** Lock */
+typealias Lock = java.util.concurrent.locks.Lock
+/** Read write lock */
+typealias ReadWriteLock = java.util.concurrent.locks.ReadWriteLock
