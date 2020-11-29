@@ -16,6 +16,7 @@
 package love.forte.simbot.component.mirai.message
 
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import love.forte.catcode.CatCodeUtil
@@ -46,7 +47,7 @@ public abstract class MiraiMessageContent : MessageContent {
      * 如果类型为text，不会以cat码的格式被展示。
      */
     // @JvmDefault
-    override val msg: String? by lazy(LazyThreadSafetyMode.PUBLICATION) {
+    override val msg: String by lazy(LazyThreadSafetyMode.PUBLICATION) {
         when {
             cats.isEmpty() -> ""
             cats.size == 1 && cats.first().type == "text" -> cats.first()["text"] ?: ""
@@ -106,14 +107,14 @@ public object EmptySingleMessage : SingleMessage by PlainText("")
  */
 public class MiraiSingleMessageContent(
     val singleMessage: (Contact) -> SingleMessage,
-    private val neko: Neko?
+    private val neko: Neko?,
 ) : MiraiMessageContent() {
 
     constructor(singleMessage: SingleMessage, neko: Neko?) : this({ singleMessage }, neko)
 
     constructor(
         singleMessage: SingleMessage,
-        neko: () -> Neko? = { singleMessage.toNeko() }
+        neko: () -> Neko? = { singleMessage.toNeko() },
     ) : this({ singleMessage }, neko())
 
     // private val neko: Neko? by lazy(LazyThreadSafetyMode.PUBLICATION) { _neko() }
@@ -168,9 +169,7 @@ public class MiraiNudgedMessageContent(private val target: Long?) :
     }
 
 
-
 }
-
 
 
 /**
@@ -184,13 +183,6 @@ public class MiraiMessageChainContent(val message: MessageChain) : MiraiMessageC
     override suspend fun getMessage(contact: Contact): Message = message
     override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) { message.toNeko() }
 }
-
-
-// public fun List<Long>.atContent(): MiraiMessageContent = when {
-//     this.isEmpty() -> EmptyMiraiMessageContent
-//     this.size == 1 -> MiraiSingleAtMessageContent(this[0])
-//     else -> MiraiAtsMessageContent(this)
-// }
 
 
 /**
@@ -223,29 +215,22 @@ public class MiraiSingleAtMessageContent(private val code: Long) : MiraiMessageC
 /**
  * mirai 的 image content，代表为通过本地上传的图片信息。
  * 此实现中，image仅会被实例化一次，而后则会被缓存。
- * 实例化会由锁保证其唯一性。
+ * 线程并不安全。
  */
 public class MiraiImageMessageContent(
-    val flash: Boolean = false,
+    private val flash: Boolean = false,
     neko: Neko,
-    private val close: () -> Unit = {},
-    private val imageFunction: suspend (Contact) -> Image
+    private val imageFunction: suspend (Contact) -> Image,
 ) : MiraiMessageContent() {
 
     override fun toString(): String = "MiraiImageContent(flash=$flash,image=${
-        when {
-            !::friendImage.isInitialized && !::groupImage.isInitialized -> "(Not initialized yet.)"
-            ::friendImage.isInitialized -> friendImage.toString()
-            else -> groupImage.toString()
-        }
+        if (!::image.isInitialized) "(Not initialized yet.)"
+        else image.toString()
     })"
 
     @Volatile
-    private lateinit var friendImage: Image
-    private lateinit var groupImage: Image
+    private lateinit var image: Image
 
-    private val lock: Lock = ReentrantLock()
-    // private val friendLock: Lock = ReentrantLock()
 
     override val cats: List<Neko> = listOf(neko)
 
@@ -255,54 +240,19 @@ public class MiraiImageMessageContent(
      * @return Message
      */
     override suspend fun getMessage(contact: Contact): Message {
-        return if (contact is Group) {
-            // is group
-            if (::groupImage.isInitialized) {
-                groupImage
-            } else {
-                lock.lock()
-                try {
-                    if (!::groupImage.isInitialized) {
-                        val img = imageFunction(contact)
-                        groupImage = img
-                    }
-                    groupImage
-                } finally {
-                    lock.unlock()
-                    lock.lock()
-                    try {
-                        // if all init, do close.
-                        if (::friendImage.isInitialized) {
-                            close()
-                        }
-                    }finally {
-                        lock.unlock()
-                    }
-                }
-            }
+        return if (::image.isInitialized) {
+            image
         } else {
-            if (::friendImage.isInitialized) {
-                friendImage
-            } else {
-                lock.lock()
-                try {
-                    if (!::friendImage.isInitialized) {
-                        val img = imageFunction(contact)
-                        friendImage = img
-                    }
-                    friendImage
-                } finally {
-                    lock.unlock()
-                    lock.lock()
+            if (!::image.isInitialized) {
+                val img = imageFunction(contact)
+                if (!::image.isInitialized) {
                     try {
-                        if (::groupImage.isInitialized) {
-                            close()
-                        }
-                    } finally {
-                        lock.unlock()
+                        image = img
+                    } catch (ignore: Exception) {
                     }
                 }
             }
+            image
         }.let {
             if (flash) {
                 it.flash()
@@ -322,13 +272,11 @@ public class MiraiImageMessageContent(
  */
 public class MiraiVoiceMessageContent(
     neko: Neko,
-    private val voiceFunction: suspend (Contact) -> Voice
+    private val voiceFunction: suspend (Contact) -> Voice,
 ) : MiraiMessageContent() {
 
     @Volatile
     private lateinit var voice: Voice
-
-    private val lock: Lock = ReentrantLock()
 
     override val cats: List<Neko> = listOf(neko)
 
@@ -336,16 +284,17 @@ public class MiraiVoiceMessageContent(
         return if (::voice.isInitialized) {
             voice
         } else {
-            lock.lock()
-            try {
+            if (!::voice.isInitialized) {
+                val vo = voiceFunction(contact)
                 if (!::voice.isInitialized) {
-                    val vo = voiceFunction(contact)
-                    voice = vo
+                    try {
+                        voice = vo
+                    } catch (ignore: Exception) {
+                    }
                 }
-                voice
-            } finally {
-                lock.unlock()
+
             }
+            voice
         }
     }
 }

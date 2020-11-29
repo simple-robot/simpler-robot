@@ -83,7 +83,11 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
             .getNekoBuilder("image", true)
             .key("file").value(path)
             .key("type").value("local")
-            .build()
+            .apply {
+                if (flash) {
+                    key("flash").value(true)
+                }
+            }.build()
         val imageContent = MiraiImageMessageContent(flash, imageNeko) { file.uploadAsImage(it) }
         contentList.add(imageContent)
         return this
@@ -95,7 +99,11 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
             .getNekoBuilder("image", true)
             .key("file").value(url)
             .key("type").value("network")
-            .build()
+            .apply {
+                if (flash) {
+                    key("flash").value(true)
+                }
+            }.build()
         MiraiImageMessageContent(flash, imageNeko) {
             u.toStream().uploadAsImage(it)
         }.apply { contentList.add(this) }
@@ -105,13 +113,14 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
     override fun image(input: InputStream, flash: Boolean): MiraiMessageContentBuilder {
         val imageNeko = CatCodeUtil
             .getNekoBuilder("image", true)
-            .key("type").value("inputStream")
-            .build()
-        // TODO
-        MiraiImageMessageContent(flash, imageNeko, { input.close() }){
-            input.uploadAsImage(it).also {
-                try { input.reset() } catch (e: Exception){ }
-            }
+            .key("type").value("stream")
+            .apply {
+                if (flash) {
+                   key("flash").value(true)
+                }
+            }.build()
+        MiraiImageMessageContent(flash, imageNeko){
+            input.uploadAsImage(it)
         }.apply { contentList.add(this) }
         return this
     }

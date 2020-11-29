@@ -47,11 +47,11 @@ public val EmptyMiraiMessageContent: MiraiMessageContent = MiraiMessageChainCont
 /**
  * 将一个 [MessageContent] 转化为一个 [MiraiMessageContent]。
  */
-public fun MessageContent.toMiraiMessageContent(): MiraiMessageContent {
+public fun MessageContent.toMiraiMessageContent(message: MessageChain?): MiraiMessageContent {
     return if(this is MiraiMessageContent) {
         this
     } else {
-        msg?.toMiraiMessageContent() ?: EmptyMiraiMessageContent
+        msg.toMiraiMessageContent(message)
     }
 }
 
@@ -59,10 +59,10 @@ public fun MessageContent.toMiraiMessageContent(): MiraiMessageContent {
 /**
  * 将可能存在catcode的字符串文本转化为 [MiraiMessageContent]。
  */
-public fun String.toMiraiMessageContent(): MiraiMessageContent {
+public fun String.toMiraiMessageContent(message: MessageChain?): MiraiMessageContent {
     return CatCodeUtil.split(this) {
         // cat code.
-        if (startsWith(CAT_HEAD)) Nyanko.byCode(this).toMiraiMessageContent()
+        if (startsWith(CAT_HEAD)) Nyanko.byCode(this).toMiraiMessageContent(message)
         // normal text.
         else MiraiSingleMessageContent(PlainText(this.deCatText()))
     }.let { MiraiListMessageContent(it) }
@@ -71,7 +71,7 @@ public fun String.toMiraiMessageContent(): MiraiMessageContent {
 /**
  * [Neko] 转化为 [MiraiMessageContent]。
  */
-public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
+public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageContent {
     return when (this.type) {
         "at" -> {
             val all = this["all"] == "true"
@@ -125,6 +125,21 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
 
         // image
         "image" -> {
+            // id, if contains
+            if (message != null) {
+                val id = this["id"]
+                if (id != null) {
+                    val foundImg = message.find {
+                        (it is Image && it.imageId == id) ||
+                                (it is FlashImage && it.image.imageId == id)
+                    }
+                    if (foundImg != null) {
+                        return MiraiSingleMessageContent(foundImg)
+                    }
+                }
+            }
+
+
             // file, or url
             val filePath = this["file"]
             val file: File? = filePath?.let { FileUtil.file(it) }?.takeIf { it.exists() }
@@ -149,6 +164,17 @@ public fun Neko.toMiraiMessageContent(): MiraiMessageContent {
 
         // voice
         "voice" -> {
+            if (message != null) {
+                val id = this["id"]
+                if (id != null) {
+                    val findVoice = message.find { it is Voice && it.id == id }
+                    if (findVoice != null) {
+                        return MiraiSingleMessageContent(findVoice)
+                    }
+                }
+            }
+
+
             // file, or url
             val filePath = this["file"]
             val file: File? = filePath?.let { FileUtil.file(it) }?.takeIf { it.exists() }
@@ -290,83 +316,6 @@ public fun MessageChain.toNeko(): List<Neko> {
 
 /**
  * 将一个 [SingleMessage] 转化为携带cat字符串。
- */
-public fun SingleMessage.toCatCode(): String {
-    return when (this) {
-        // at all
-        AtAll -> CatCodeUtil.stringTemplate.atAll()
-        // at
-        is At -> CatCodeUtil.stringTemplate.at(target)
-        // 普通文本, 转义
-        is PlainText -> content.enCatText()
-        is Face -> CatCodeUtil.stringTemplate.face(id.toString())
-        is VipFace -> CatCodeUtil.getStringCodeBuilder("vipFace")
-            .key("kindId").value(this.kind.id)
-            .key("kindName").value(this.kind.name)
-            .key("count").value(this.count)
-            .build()
-
-        is PokeMessage -> {
-            // poke, 戳一戳
-            CatCodeUtil.getStringCodeBuilder("poke", false)
-                .key("type").value(type)
-                .key("id").value(id)
-                .build()
-        }
-        is Image -> {
-            // cat code中不再携带url参数
-            // CatCodeUtil.stringTemplate.image()
-            CatCodeUtil.getStringCodeBuilder("image")
-                .key("id").value(imageId)
-                .build()
-        }
-        is FlashImage -> {
-            val img = this.image
-            // cat code中不再携带url参数
-            // CatCodeUtil.stringTemplate.image()
-            CatCodeUtil.getStringCodeBuilder("image")
-                .key("id").value(img)
-                .key("flash").value(true)
-                .build()
-        }
-        is Voice -> {
-            CatCodeUtil.getStringCodeBuilder("voice")
-                .key("id").value("$fileName.$fileSize")
-                .key("name").value(fileName)
-                .key("size").value(fileSize).apply {
-                    url?.let { key("url").value(it) }
-                }
-                .build()
-
-        }
-        // 引用回复
-        is QuoteReply -> {
-            CatCodeUtil.getStringCodeBuilder("quote")
-                .key("id").value(with(this.source){ "$fromId.$id" })
-                // 此项参数是否需要存在?
-                // .key("msg").value(this.source.originalMessage.toSimbotString())
-                .build()
-        }
-
-        // 富文本，xml或json
-        is RichMessage -> CatCodeUtil.getStringCodeBuilder("rich")
-            .key("content").value(content)
-            .build()
-
-        // else.
-        else -> {
-            // "[mirai:at:$target,$display]"
-            // val miraiCode = this.toString()
-            // CatCodeUtil.getStringCodeBuilder(this.content)
-            CatCodeUtil.getStringCodeBuilder("mirai")
-                .key("value").value(this.toString()).build()
-        }
-    }
-}
-
-
-/**
- * 将一个 [SingleMessage] 转化为携带cat字符串。
  * 普通文本会被转化为 [CAT:text,text=xxx]
  */
 public fun SingleMessage.toNeko(): Neko {
@@ -410,7 +359,7 @@ public fun SingleMessage.toNeko(): Neko {
         }
         is Voice -> {
             CatCodeUtil.getLazyNekoBuilder("voice", true)
-                .key("id").value("$fileName.$fileSize")
+                .key("id").value { id }
                 .key("name").value(fileName)
                 .key("size").value(fileSize).apply {
                     url?.let { key("url").value(it) }
@@ -467,3 +416,7 @@ public suspend fun Url.toStream(): InputStream {
         throw IllegalStateException("connection to '$urlString' failed ${status.value}: ${status.description}")
     }
 }
+
+
+
+private val Voice.id: String get() = md5.decodeToString()

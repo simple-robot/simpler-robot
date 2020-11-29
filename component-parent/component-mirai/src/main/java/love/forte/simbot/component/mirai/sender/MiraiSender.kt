@@ -36,12 +36,13 @@ import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.Message
+import net.mamoe.mirai.message.data.MessageChain
 
 
 public object MiraiSenderFactory : SenderFactory {
     override fun getOnMsgSender(msg: MsgGet): Sender {
         return if (msg is MiraiMessageMsgGet<*>) {
-            MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber), msg.subject)
+            MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber), msg.subject, msg.message)
         } else {
             MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber))
         }
@@ -57,7 +58,9 @@ public object MiraiSenderFactory : SenderFactory {
 public class MiraiSender(
     private val bot: Bot,
     /** 当前收到的消息的实例。如果是一个botSender则会为null。 */
-    private val contact: Contact? = null
+    private val contact: Contact? = null,
+    /** 当前收到的消息。如果是一个botSender则会为null。 */
+    private val message: MessageChain? = null
 ) : Sender {
 
 
@@ -65,7 +68,7 @@ public class MiraiSender(
      * 发送群聊消息。
      */
     private fun sendGroupMsg0(group: Long, msg: MessageContent): Carrier<Flag<MiraiGroupFlagContent>> {
-        val miraiMsg = runBlocking { msg.toMiraiMessageContent() }
+        val miraiMsg = runBlocking { msg.toMiraiMessageContent(message) }
         // get group.
         val g: Group = bot.getGroup(group)
         val messageReceipt = runBlocking {
@@ -82,13 +85,13 @@ public class MiraiSender(
     }
 
     override fun sendGroupMsg(group: String, msg: String): Carrier<Flag<MiraiGroupFlagContent>> =
-        sendGroupMsg0(group.toLong(), msg.toMiraiMessageContent())
+        sendGroupMsg0(group.toLong(), msg.toMiraiMessageContent(message))
 
     override fun sendGroupMsg(group: String, msg: MessageContent): Carrier<Flag<MiraiGroupFlagContent>> =
         sendGroupMsg0(group.toLong(), msg)
 
     override fun sendGroupMsg(group: Long, msg: String): Carrier<Flag<MiraiGroupFlagContent>> =
-        sendGroupMsg0(group, msg.toMiraiMessageContent())
+        sendGroupMsg0(group, msg.toMiraiMessageContent(message))
 
     override fun sendGroupMsg(group: Long, msg: MessageContent): Carrier<Flag<MiraiGroupFlagContent>> =
         sendGroupMsg0(group, msg)
@@ -97,13 +100,13 @@ public class MiraiSender(
         sendGroupMsg0(group.groupCodeNumber, msg)
 
     override fun sendGroupMsg(group: GroupCodeContainer, msg: String): Carrier<Flag<MiraiGroupFlagContent>> =
-        sendGroupMsg0(group.groupCodeNumber, msg.toMiraiMessageContent())
+        sendGroupMsg0(group.groupCodeNumber, msg.toMiraiMessageContent(message))
 
     /**
      * 发送私聊消息。
      */
     private fun sendPrivateMsg0(code: Long, group: Long?, msg: MessageContent): Carrier<Flag<MiraiPrivateFlagContent>> {
-        val miraiMsg = runBlocking { msg.toMiraiMessageContent() }
+        val miraiMsg = runBlocking { msg.toMiraiMessageContent(message) }
 
         val messageReceipt: MessageReceipt<Contact>? = if (group != null) {
             runBlocking {
@@ -139,10 +142,10 @@ public class MiraiSender(
     }
 
     override fun sendPrivateMsg(code: String, group: String?, msg: String): Carrier<Flag<MiraiPrivateFlagContent>> =
-        sendPrivateMsg0(code.toLong(), group?.toLong(), msg.toMiraiMessageContent())
+        sendPrivateMsg0(code.toLong(), group?.toLong(), msg.toMiraiMessageContent(message))
 
     override fun sendPrivateMsg(code: Long, group: Long?, msg: String): Carrier<Flag<MiraiPrivateFlagContent>> =
-        sendPrivateMsg0(code, group, msg.toMiraiMessageContent())
+        sendPrivateMsg0(code, group, msg.toMiraiMessageContent(message))
 
     override fun sendPrivateMsg(
         code: String,
@@ -166,7 +169,7 @@ public class MiraiSender(
         group: GroupCodeContainer?,
         msg: String
     ): Carrier<Flag<MiraiPrivateFlagContent>> =
-        sendPrivateMsg0(code.accountCodeNumber, group?.groupCodeNumber, msg.toMiraiMessageContent())
+        sendPrivateMsg0(code.accountCodeNumber, group?.groupCodeNumber, msg.toMiraiMessageContent(message))
 
 
     /**

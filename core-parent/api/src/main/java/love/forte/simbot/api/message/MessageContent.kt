@@ -89,7 +89,7 @@ public interface MessageContent {
      *
      * 一般来讲，[msg] 就相当于将 [cats] 中的内容全部toString并拼接在了一起，但是text文本不再表现为cat码。
      */
-    val msg: String?
+    val msg: String
 
 
 

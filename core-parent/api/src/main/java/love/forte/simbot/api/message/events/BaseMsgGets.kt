@@ -265,7 +265,7 @@ public interface MessageGet : MsgGet, FlagContainer<MessageGet.MessageFlagConten
      *
      */
     @JvmDefault
-    val msg: String? get() = msgContent.msg
+    val msg: String get() = msgContent.msg
 
     /**
      * 可以得到一个 **文本**。
