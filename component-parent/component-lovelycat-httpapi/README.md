@@ -1,10 +1,10 @@
-# lovely cat httpapi 组件
+# lovely cat httpapi 组件 - 微信
 
 可爱猫官方论坛：http://www.keaimao.com.cn
 
 可爱猫相关资源文件贴：http://www.keaimao.com.cn/forum.php?mod=viewthread&tid=127&extra=page%3D1
 
-> 可爱猫是一个轻巧、免费、高效的机器人核心，功能需要安装“应用”实现。登录可爱猫，完成教程后，建议可爱猫交流板块，下载安装您所需要的应用，创造让大家喜爱并且属于你自己的专属机器人。
+> 可爱猫是一个轻巧、免费、高效的(微信)机器人核心，功能需要安装“应用”实现。登录可爱猫，完成教程后，建议可爱猫交流板块，下载安装您所需要的应用，创造让大家喜爱并且属于你自己的专属机器人。
 > —————— [可爱猫开发者文档·序言](https://www.kancloud.cn/yangtaott/dsaw)
 
 
