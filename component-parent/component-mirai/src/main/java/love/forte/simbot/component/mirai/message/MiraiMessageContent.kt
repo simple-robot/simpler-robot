@@ -16,7 +16,6 @@
 package love.forte.simbot.component.mirai.message
 
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import love.forte.catcode.CatCodeUtil
@@ -29,8 +28,6 @@ import net.mamoe.mirai.getFriendOrNull
 import net.mamoe.mirai.message.action.Nudge
 import net.mamoe.mirai.message.action.Nudge.Companion.sendNudge
 import net.mamoe.mirai.message.data.*
-import java.util.concurrent.locks.Lock
-import java.util.concurrent.locks.ReentrantLock
 
 /**
  * 一个 mirai 组件所使用的 [MessageContent] 实现。

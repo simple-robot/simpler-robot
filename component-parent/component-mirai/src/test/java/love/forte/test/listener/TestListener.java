@@ -1,13 +1,12 @@
 package love.forte.test.listener;
 
 import love.forte.common.ioc.annotation.Beans;
-import love.forte.simbot.annotation.*;
+import love.forte.simbot.annotation.Filter;
+import love.forte.simbot.annotation.OnGroup;
+import love.forte.simbot.annotation.OnPrivate;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.message.events.MessageGet;
-import love.forte.simbot.api.message.events.MsgGet;
-import love.forte.simbot.api.message.events.PrivateMsg;
 import love.forte.simbot.api.sender.MsgSender;
-import love.forte.simbot.constant.PriorityConstant;
 
 @Beans
 public class TestListener {

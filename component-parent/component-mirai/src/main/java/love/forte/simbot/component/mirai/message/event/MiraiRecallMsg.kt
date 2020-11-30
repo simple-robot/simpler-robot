@@ -36,7 +36,9 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
         /** 有可能是bot自己。 */
         override val accountInfo: AccountInfo = MiraiMemberAccountInfo(event.author)
 
-        /** 暂时不支持获取撤回掉的消息。 */
+        /**
+         * 暂时不支持获取撤回掉的消息。
+         */
         override val text: String? get() = null
 
         /** 如果操作者与消息作者相同即为主动，否则为被动。 */

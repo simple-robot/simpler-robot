@@ -23,6 +23,7 @@ import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequestInvitor
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
 import love.forte.simbot.component.mirai.message.result.MiraiGroupInfo
+import love.forte.simbot.component.mirai.utils.groupAvatar
 import love.forte.simbot.component.mirai.utils.userAvatar
 import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
@@ -71,10 +72,10 @@ private data class MiraiGroupMemberJoinAccountInfo(private val event: MemberJoin
         get() = event.fromId.toString()
     override val accountCodeNumber: Long
         get() = event.fromId
-    override val accountNickname: String?
+    override val accountNickname: String
         get() = event.fromNick
     override val accountRemark: String? = null
-    override val accountAvatar: String? = userAvatar(event.fromId)
+    override val accountAvatar: String = userAvatar(event.fromId)
 }
 
 
@@ -89,7 +90,7 @@ public class MiraiBotInvitedJoinGroupRequest(event: BotInvitedJoinGroupRequestEv
 
     override val accountInfo: AccountInfo = MiraiBotAccountInfo(event.bot)
 
-    override val groupInfo: GroupInfo = simpleGroupInfo(event.groupId.toString(), event.groupName)
+    override val groupInfo: GroupInfo = simpleGroupInfo(event.groupId.toString(), event.groupName, groupAvatar(event.groupId))
 
     /** bot被邀请则不存在什么消息。 */
     override val text: String? = null

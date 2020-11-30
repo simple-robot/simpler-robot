@@ -5,7 +5,6 @@ import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.core.SimbotProcess;
-import love.forte.simbot.intercept.InterceptionType;
 import org.jetbrains.annotations.NotNull;
 
 /**
