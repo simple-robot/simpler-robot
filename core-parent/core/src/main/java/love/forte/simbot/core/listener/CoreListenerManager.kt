@@ -233,7 +233,7 @@ public class CoreListenerManager(
         return if (type == null) {
             mainListenerFunctionMap.values.asSequence().flatMap { it.asSequence() }.toList()
         } else {
-            getListenerFunctions(type, false)
+            getListenerFunctions(type, false).toList()
         }
 
     }
@@ -252,26 +252,40 @@ public class CoreListenerManager(
         val fastball = cacheListenerFunctionMap[type]
 
         return if (fastball != null) {
-            // 有缓存，return；
-            fastball.toList()
+            // 有缓存，return
+           fastball
         } else {
             if(mainListenerFunctionMap.isEmpty()) {
                 return emptyList()
             }
 
-            // 获取不到缓存信息，则遍历类型。
-            // 获取类型对应函数列表
-            val typeList = LinkedList<ListenerFunction>()
-
-            mainListenerFunctionMap.forEach { (k, v)->
-                if (k.isAssignableFrom(type)) {
-                    typeList.addAll(v)
-                }
-            }
+            // // 获取不到缓存信息，则遍历类型。
+            // // 获取类型对应函数列表
+            // val typeList = LinkedList<ListenerFunction>()
+            //
+            // mainListenerFunctionMap.forEach { (k, v)->
+            //     if (k.isAssignableFrom(type)) {
+            //         typeList.addAll(v)
+            //     }
+            // }
 
             if (cache) {
-                cacheListenerFunctionMap.computeIfAbsent(type) { typeList }
+                cacheListenerFunctionMap.computeIfAbsent(type) {
+                    val typeList = LinkedList<ListenerFunction>()
+                    mainListenerFunctionMap.forEach { (k, v)->
+                        if (k.isAssignableFrom(type)) {
+                            typeList.addAll(v)
+                        }
+                    }
+                    typeList
+                }
             } else {
+                val typeList = LinkedList<ListenerFunction>()
+                mainListenerFunctionMap.forEach { (k, v)->
+                    if (k.isAssignableFrom(type)) {
+                        typeList.addAll(v)
+                    }
+                }
                 typeList
             }
         }
