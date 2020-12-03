@@ -16,6 +16,7 @@
 
 package love.forte.simbot.component.lovelycat.sender
 
+import javafx.concurrent.ScheduledService
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.results.*
 import love.forte.simbot.api.sender.Getter

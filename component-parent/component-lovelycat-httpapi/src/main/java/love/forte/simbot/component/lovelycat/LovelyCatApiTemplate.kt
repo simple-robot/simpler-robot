@@ -379,7 +379,8 @@ public class LovelyCatApiTemplateImpl
 constructor(
     private val httpTemplate: HttpTemplate,
     private val url: String,
-    jsonSerializerFactory: JsonSerializerFactory
+    jsonSerializerFactory: JsonSerializerFactory,
+    private val lovelyCatApiCache: LovelyCatApiCache
 ) : LovelyCatApiTemplate {
 
 
@@ -402,8 +403,9 @@ constructor(
         host: Int,
         // 默认路径，一般情况下不可修改也不需要修改
         path: String = "/httpAPI",
-        jsonSerializerFactory: JsonSerializerFactory
-    ) : this(httpTemplate, "http://$ip:$host$path", jsonSerializerFactory)
+        jsonSerializerFactory: JsonSerializerFactory,
+        lovelyCatApiCache: LovelyCatApiCache
+    ) : this(httpTemplate, "http://$ip:$host$path", jsonSerializerFactory, lovelyCatApiCache)
 
 
     /**
@@ -433,15 +435,22 @@ constructor(
      * 功能=取登录账号昵称
      * robot_wxid, 文本型
      * api=GetRobotName
-     * TODO cache
      */
     override fun getRobotName(robotWxid: String): RobotName {
-        return postForLovelyCatResult(
-            "api" to "GetRobotName",
-            "robot_wxid" to robotWxid
-        ).let { r ->
-            r.letData("GetRobotName") { RobotName(it) }
+        return lovelyCatApiCache.computeBotName {
+            postForLovelyCatResult(
+                "api" to "GetRobotName",
+                "robot_wxid" to robotWxid
+            ).let { r ->
+                r.letData("GetRobotName") { RobotName(it) }
+            }
         }
+        // return postForLovelyCatResult(
+        //     "api" to "GetRobotName",
+        //     "robot_wxid" to robotWxid
+        // ).let { r ->
+        //     r.letData("GetRobotName") { RobotName(it) }
+        // }
     }
 
 
@@ -450,27 +459,36 @@ constructor(
      * robot_wxid, 文本型
      * api=GetRobotHeadimgurl
      * @return RobotHeadImgUrl
-     * TODO cache
      */
     override fun getRobotHeadImgUrl(robotWxid: String): RobotHeadImgUrl {
-        return postForLovelyCatResult(
-            "api" to "GetRobotHeadimgurl",
-            "robot_wxid" to robotWxid
-        ).let { r ->
-            r.letData("GetRobotHeadimgurl") { RobotHeadImgUrl(it) }
+        return lovelyCatApiCache.computeBotHeadImgUrl {
+            postForLovelyCatResult(
+                "api" to "GetRobotHeadimgurl",
+                "robot_wxid" to robotWxid
+            ).let { r ->
+                r.letData("GetRobotHeadimgurl") { RobotHeadImgUrl(it) }
+            }
         }
+        // return postForLovelyCatResult(
+        //     "api" to "GetRobotHeadimgurl",
+        //     "robot_wxid" to robotWxid
+        // ).let { r ->
+        //     r.letData("GetRobotHeadimgurl") { RobotHeadImgUrl(it) }
+        // }
     }
 
 
     /**
      * 功能=取登录账号列表
      * api=GetLoggedAccountList
-     * TODO cache
      */
     override fun getLoggedAccountList(): LoggedAccountList {
-        return postForLovelyCatResult("api" to "GetLoggedAccountList").let {
-            LoggedAccountList(loggedAccountListSerializer.fromJson(it.data))
+        return lovelyCatApiCache.computeLoggedAccountList {
+            LoggedAccountList(loggedAccountListSerializer.fromJson(postForLovelyCatResult("api" to "GetLoggedAccountList").data))
         }
+        // return postForLovelyCatResult("api" to "GetLoggedAccountList").let {
+        //     LoggedAccountList(loggedAccountListSerializer.fromJson(it.data))
+        // }
     }
 
     /**
@@ -668,10 +686,12 @@ constructor(
      * robot_wxid, 文本型, 可空, 如不填，则取的是所有登录账号的好友列表
      * is_refresh, 逻辑型, 可空, 为真将重新加载（注意切记不要频繁加载这里），不然将取缓存，默认为假
      * api=GetFriendList
-     * TODO cache
      */
     override fun getFriendList(robotWxid: String, isRefresh: Boolean): List<CatFriendInfo> {
-        return post<CatFriendListResult>(GetFriendListRequestData(robotWxid, isRefresh)).data
+        return lovelyCatApiCache.computeCatFriendInfoList {
+            post<CatFriendListResult>(GetFriendListRequestData(robotWxid, isRefresh)).data
+        }
+        // return post<CatFriendListResult>(GetFriendListRequestData(robotWxid, isRefresh)).data
     }
 
     private data class GetFriendListRequestData(
@@ -684,10 +704,11 @@ constructor(
      * robot_wxid, 文本型, 可空, 取哪个账号的列表，不填则取全部
      * is_refresh, 逻辑型, 可空, 为真将重新加载（注意切记不要频繁加载这里），不然将取缓存，默认为假
      * api=GetGroupList
-     * TODO cache
      */
     override fun getGroupList(robotWxid: String, isRefresh: Boolean): List<CatGroupInfo> {
-        return post<CatGroupListResult>(GetGroupListRequestData(robotWxid, isRefresh)).data
+        return lovelyCatApiCache.computeCatGroupInfoList {
+            post<CatGroupListResult>(GetGroupListRequestData(robotWxid, isRefresh)).data
+        }
     }
 
     private data class GetGroupListRequestData(
@@ -702,7 +723,6 @@ constructor(
      * member_wxid, 文本型, , 群成员ID
      * is_refresh, 逻辑型, 可空, 为真将重新加载（注意切记不要频繁加载这里），不然将取缓存，默认为假
      * api=GetGroupMemberDetailInfo
-     * TODO cache
      */
     override fun getGroupMemberDetailInfo(
         robotWxid: String,
@@ -710,14 +730,16 @@ constructor(
         memberWxid: String,
         isRefresh: Boolean
     ): CatGroupMemberInfo {
-        return post<GroupMemberDetailInfoResult>(
-            GetGroupMemberDetailInfoRequestData(
-                robotWxid,
-                groupWxid,
-                memberWxid,
-                isRefresh
-            )
-        ).data
+        return lovelyCatApiCache.computeCatGroupMemberInfo {
+            post<GroupMemberDetailInfoResult>(
+                GetGroupMemberDetailInfoRequestData(
+                    robotWxid,
+                    groupWxid,
+                    memberWxid,
+                    isRefresh
+                )
+            ).data
+        }
     }
 
     private data class GetGroupMemberDetailInfoRequestData(
@@ -734,10 +756,11 @@ constructor(
      * group_wxid, 文本型, , 群ID
      * is_refresh, 逻辑型, 可空, 为真将重新加载列表（注意切记不要频繁加载这里），不然将取缓存，默认为假
      * api=GetGroupMemberList
-     * TODO cache
      */
     override fun getGroupMemberList(robotWxid: String, groupWxid: String, isRefresh: Boolean): List<CatSimpleGroupMemberInfo> {
-        return post<GroupMemberListResult>(GetGroupMemberListRequestData(robotWxid, groupWxid, isRefresh)).data
+        return lovelyCatApiCache.computeCatSimpleGroupMemberInfoList {
+            post<GroupMemberListResult>(GetGroupMemberListRequestData(robotWxid, groupWxid, isRefresh)).data
+        }
     }
 
     private data class GetGroupMemberListRequestData(
