@@ -113,7 +113,7 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 - fix [#10 ](https://github.com/ForteScarlet/simpler-robot/issues/10) (@ListenBreak未被实现)
 
 
-## ALPHA.10(NOW)
+## ALPHA.10
 
 ### core
 - 移除 `MessageContent.getImages()`。
@@ -137,7 +137,10 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 - fix [#12 ](https://github.com/ForteScarlet/simpler-robot/issues/12) (为GroupAddRequest追加群容器)
 
 
+## ALPHA.11(NOW)
 
+### core
+- `ListenerContext` 中追加两个获取方法。
 
 
 

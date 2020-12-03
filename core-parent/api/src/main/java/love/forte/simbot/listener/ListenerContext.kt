@@ -37,6 +37,23 @@ public interface ListenerContext : Context<ContextMap> {
     @JvmDefault
     override val mainValue: ContextMap
         get() = contextMap
+
+    /**
+     * 从 global 中获取信息。
+     */
+    @JvmDefault
+    fun global(key: String): Any? {
+        return contextMap.global[key]
+    }
+
+    /**
+     * 从 instant 中获取信息。
+     */
+    @JvmDefault
+    fun instant(key: String): Any? {
+        return contextMap.instant[key]
+    }
+
 }
 
 
