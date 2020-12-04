@@ -106,7 +106,6 @@ public class LazyTimeLimitCache<T> {
                 writeLock.lock();
                 try {
                     en = entity;
-                    System.out.println("en: " + en);
                     if (en != null) {
                         e = en;
                     } else {
