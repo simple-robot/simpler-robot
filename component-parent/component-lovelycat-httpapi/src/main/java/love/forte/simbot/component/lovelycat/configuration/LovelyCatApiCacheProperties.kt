@@ -45,23 +45,4 @@ public class LovelyCatApiCacheProperties {
      */
     var unit = TimeUnit.MINUTES
 
-
-    /**
-     * 缓存同步锁类型。默认悲观锁。
-     */
-    var lockType = LockType.PESSIMISTIC
-
-}
-
-
-/**
- * 锁类型。
- */
-public enum class LockType {
-    /** 乐观锁。 */
-    OPTIMISTIC,
-    /** 悲观锁。 */
-    PESSIMISTIC,
-    /** 无锁。慎用。 */
-    NO
 }

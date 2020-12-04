@@ -22,6 +22,10 @@ import love.forte.simbot.api.message.MessageContent;
 import love.forte.simbot.api.message.MessageContentBuilder;
 import love.forte.simbot.api.message.MessageContentBuilderFactory;
 import love.forte.simbot.bot.Bot;
+import love.forte.simbot.bot.BotManager;
+import love.forte.simbot.component.lovelycat.configuration.LovelyCatApiCacheConfiguration;
+import love.forte.simbot.component.lovelycat.message.LovelyCatApiCache;
+import love.forte.simbot.component.lovelycat.message.RobotName;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.core.SimbotProcess;
@@ -33,7 +37,15 @@ import org.jetbrains.annotations.NotNull;
 @SimbotApplication
 public class Test implements SimbotProcess {
     public static void main(String[] args) {
-        SimbotApp.run(Test.class, args);
+        SimbotContext context = SimbotApp.run(Test.class, args);
+
+        LovelyCatApiCache cache = context.get(LovelyCatApiCache.class);
+
+        System.out.println(cache.computeBotName(() -> {
+            System.out.println("init");
+            return new RobotName("name");
+        }));
+
 
         // HttpTemplate template = context.get(HttpTemplate.class);
         //
@@ -66,10 +78,13 @@ public class Test implements SimbotProcess {
 
     @Override
     public void post(@NotNull SimbotContext context) {
-        MessageContentBuilderFactory factory = context.get(MessageContentBuilderFactory.class);
-        MessageContentBuilder builder = factory.getMessageContentBuilder();
-        MessageContent msg = builder.at("wxid_khv2ht7uwa5x22").text("你煞笔").build();
-        Bot bot = context.getBotManager().getDefaultBot();
-        bot.getSender().SENDER.sendGroupMsg("18367333210@chatroom", msg);
+        BotManager botManager = context.getBotManager();
+        if (!botManager.getBots().isEmpty()){
+            MessageContentBuilderFactory factory = context.get(MessageContentBuilderFactory.class);
+            MessageContentBuilder builder = factory.getMessageContentBuilder();
+            MessageContent msg = builder.at("wxid_khv2ht7uwa5x22").text("你煞笔").build();
+            Bot bot = botManager.getDefaultBot();
+            bot.getSender().SENDER.sendGroupMsg("18367333210@chatroom", msg);
+        }
     }
 }

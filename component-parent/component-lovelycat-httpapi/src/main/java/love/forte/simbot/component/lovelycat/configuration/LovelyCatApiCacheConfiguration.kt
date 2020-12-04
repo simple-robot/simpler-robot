@@ -26,7 +26,10 @@ import love.forte.simbot.core.configuration.ComponentBeans
  * @author ForteScarlet
  */
 @ConfigBeans
-public class LovelyCatApiCacheConfiguration {
+public class LovelyCatApiCacheConfiguration(
+    private val cacheProperties: LovelyCatApiCacheProperties
+) {
+
 
     @ComponentBeans("lovelyCatApiCache", priority = PriorityConstant.LAST)
     fun lovelyCatApiCache(): LovelyCatApiCache {

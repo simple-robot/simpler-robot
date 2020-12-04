@@ -5,4 +5,6 @@ love.forte.simbot.component.lovelycat.configuration.LovelyCatServerRunner,\
 love.forte.simbot.component.lovelycat.configuration.LovelyCatParserConfiguration,\
 love.forte.simbot.component.lovelycat.configuration.LovelyCatMessageContentConfiguration,\
 love.forte.simbot.component.lovelycat.configuration.LovelyCatMsgSenderConfiguration,\
-love.forte.simbot.component.lovelycat.configuration.LovelyCatApiManagerConfiguration
+love.forte.simbot.component.lovelycat.configuration.LovelyCatApiManagerConfiguration,\
+love.forte.simbot.component.lovelycat.configuration.LovelyCatApiCacheProperties,\
+love.forte.simbot.component.lovelycat.configuration.LovelyCatApiCacheConfiguration

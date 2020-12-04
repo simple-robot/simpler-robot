@@ -33,39 +33,69 @@ public interface LovelyCatApiCache {
     fun computeBotName(compute: () -> RobotName): RobotName
 
     /**
+     * 清除 [RobotName] 缓存。
+     */
+    fun cleanBotName()
+
+    /**
      * 获取缓存或计算 [RobotHeadImgUrl].
      */
     fun computeBotHeadImgUrl(compute: () -> RobotHeadImgUrl): RobotHeadImgUrl
 
+    /**
+     * 清除 [RobotHeadImgUrl] 缓存。
+     */
+    fun cleanBotHeadImgUrl()
 
     /**
      * 获取缓存或计算 [LoggedAccountList].
      */
     fun computeLoggedAccountList(compute: () -> LoggedAccountList): LoggedAccountList
 
+    /**
+     * 清除 [LoggedAccountList] 缓存。
+     */
+    fun cleanLoggedAccountList()
 
     /**
      * 获取缓存或计算 [CatFriendInfo] 列表。
      */
     fun computeCatFriendInfoList(compute: () -> List<CatFriendInfo>): List<CatFriendInfo>
 
+    /**
+     * 清除 [CatFriendInfo] 缓存。
+     */
+    fun cleanCatFriendInfoList()
 
     /**
      * 获取缓存或计算 [CatGroupInfo] 列表。
      */
     fun computeCatGroupInfoList(compute: () -> List<CatGroupInfo>): List<CatGroupInfo>
 
+    /**
+     * 清除 [CatGroupInfo] 缓存。
+     */
+    fun cleanCatGroupInfoList()
 
     /**
      * 获取缓存或计算 [CatGroupMemberInfo]。
      */
     fun computeCatGroupMemberInfo(compute: () -> CatGroupMemberInfo): CatGroupMemberInfo
 
+    /**
+     * 清除 [CatGroupMemberInfo] 缓存。
+     */
+    fun cleanCatGroupMemberInfo()
 
     /**
      * 获取缓存或计算 [CatSimpleGroupMemberInfo] 列表。
      */
     fun computeCatSimpleGroupMemberInfoList(compute: () -> List<CatSimpleGroupMemberInfo>): List<CatSimpleGroupMemberInfo>
+
+    /**
+     * 清除 [CatSimpleGroupMemberInfo] 缓存。
+     */
+    fun cleanCatSimpleGroupMemberInfoList()
 }
 
 
@@ -80,4 +110,11 @@ public object FakeLovelyCatApiCache : LovelyCatApiCache {
     override fun computeCatGroupInfoList(compute: () -> List<CatGroupInfo>): List<CatGroupInfo> = compute()
     override fun computeCatGroupMemberInfo(compute: () -> CatGroupMemberInfo): CatGroupMemberInfo = compute()
     override fun computeCatSimpleGroupMemberInfoList(compute: () -> List<CatSimpleGroupMemberInfo>): List<CatSimpleGroupMemberInfo> = compute()
+    override fun cleanBotName() { }
+    override fun cleanBotHeadImgUrl() { }
+    override fun cleanLoggedAccountList() { }
+    override fun cleanCatFriendInfoList() { }
+    override fun cleanCatGroupInfoList() { }
+    override fun cleanCatGroupMemberInfo() { }
+    override fun cleanCatSimpleGroupMemberInfoList() { }
 }
