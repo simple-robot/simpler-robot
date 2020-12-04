@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.StampedLock;
 import java.util.function.Supplier;
 
 /**
@@ -28,6 +29,7 @@ import java.util.function.Supplier;
  */
 public class LazyTimeLimitCache<T> {
     private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
+    // private final ReadWriteLock lock = new StampedLock().asReadWriteLock();
     private final long time;
     private volatile long nextTime = -1;
     private volatile T entity;
@@ -52,6 +54,18 @@ public class LazyTimeLimitCache<T> {
      */
     private boolean isExpired() {
         return System.currentTimeMillis() > nextTime;
+    }
+
+
+    public void clean(){
+        Lock writeLock = this.lock.writeLock();
+        writeLock.lock();
+        try {
+            entity = null;
+            nextTime = -1;
+        } finally {
+            writeLock.unlock();
+        }
     }
 
 

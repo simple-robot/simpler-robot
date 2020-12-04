@@ -14,70 +14,62 @@
 
 package love.forte.simbot.component.lovelycat.message
 
-import love.forte.simbot.ReadWriteLock
-import java.util.concurrent.locks.ReentrantReadWriteLock
+import love.forte.simbot.component.lovelycat.utils.LazyTimeLimitCache
 
 
 /**
  *
  * @author ForteScarlet
  */
-public class ReadWriteLovelyCatApiCache(private val time: Long) : LovelyCatApiCache {
+public class ReadWriteLovelyCatApiCache(time: Long) : LovelyCatApiCache {
 
+    private val botNameCache = LazyTimeLimitCache<RobotName>(time)
+    private val botHeadImgUrlCache = LazyTimeLimitCache<RobotHeadImgUrl>(time)
+    private val loggedAccountListCache = LazyTimeLimitCache<LoggedAccountList>(time)
+    private val catFriendInfoListCache = LazyTimeLimitCache<List<CatFriendInfo>>(time)
+    private val catGroupInfoListCache = LazyTimeLimitCache<List<CatGroupInfo>>(time)
+    private val catGroupMemberInfoCache = LazyTimeLimitCache<CatGroupMemberInfo>(time)
+    private val catSimpleGroupMemberInfoListCache = LazyTimeLimitCache<List<CatSimpleGroupMemberInfo>>(time)
 
-    override fun computeBotName(compute: () -> RobotName): RobotName {
-        TODO("Not yet implemented")
-    }
+    override fun computeBotName(compute: () -> RobotName): RobotName = botNameCache.compute(compute)
 
     override fun cleanBotName() {
-        TODO("Not yet implemented")
+        botNameCache.clean()
     }
 
-    override fun computeBotHeadImgUrl(compute: () -> RobotHeadImgUrl): RobotHeadImgUrl {
-        TODO("Not yet implemented")
-    }
+    override fun computeBotHeadImgUrl(compute: () -> RobotHeadImgUrl): RobotHeadImgUrl = botHeadImgUrlCache.compute(compute)
 
     override fun cleanBotHeadImgUrl() {
-        TODO("Not yet implemented")
+        botHeadImgUrlCache.clean()
     }
 
-    override fun computeLoggedAccountList(compute: () -> LoggedAccountList): LoggedAccountList {
-        TODO("Not yet implemented")
-    }
+    override fun computeLoggedAccountList(compute: () -> LoggedAccountList): LoggedAccountList = loggedAccountListCache.compute(compute)
 
     override fun cleanLoggedAccountList() {
-        TODO("Not yet implemented")
+        loggedAccountListCache.clean()
     }
 
-    override fun computeCatFriendInfoList(compute: () -> List<CatFriendInfo>): List<CatFriendInfo> {
-        TODO("Not yet implemented")
-    }
+    override fun computeCatFriendInfoList(compute: () -> List<CatFriendInfo>): List<CatFriendInfo> = catFriendInfoListCache.compute(compute)
 
     override fun cleanCatFriendInfoList() {
-        TODO("Not yet implemented")
+        catFriendInfoListCache.clean()
     }
 
-    override fun computeCatGroupInfoList(compute: () -> List<CatGroupInfo>): List<CatGroupInfo> {
-        TODO("Not yet implemented")
-    }
+    override fun computeCatGroupInfoList(compute: () -> List<CatGroupInfo>): List<CatGroupInfo> = catGroupInfoListCache.compute(compute)
 
     override fun cleanCatGroupInfoList() {
-        TODO("Not yet implemented")
+        catGroupInfoListCache.clean()
     }
 
-    override fun computeCatGroupMemberInfo(compute: () -> CatGroupMemberInfo): CatGroupMemberInfo {
-        TODO("Not yet implemented")
-    }
+    override fun computeCatGroupMemberInfo(compute: () -> CatGroupMemberInfo): CatGroupMemberInfo = catGroupMemberInfoCache.compute(compute)
 
     override fun cleanCatGroupMemberInfo() {
-        TODO("Not yet implemented")
+        catGroupMemberInfoCache.clean()
     }
 
-    override fun computeCatSimpleGroupMemberInfoList(compute: () -> List<CatSimpleGroupMemberInfo>): List<CatSimpleGroupMemberInfo> {
-        TODO("Not yet implemented")
-    }
+    override fun computeCatSimpleGroupMemberInfoList(compute: () -> List<CatSimpleGroupMemberInfo>): List<CatSimpleGroupMemberInfo> = catSimpleGroupMemberInfoListCache.compute(compute)
 
     override fun cleanCatSimpleGroupMemberInfoList() {
-        TODO("Not yet implemented")
+        catSimpleGroupMemberInfoListCache.clean()
     }
 }

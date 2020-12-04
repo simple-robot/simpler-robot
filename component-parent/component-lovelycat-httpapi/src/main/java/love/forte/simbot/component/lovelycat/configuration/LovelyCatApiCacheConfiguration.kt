@@ -17,6 +17,7 @@ package love.forte.simbot.component.lovelycat.configuration
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.simbot.component.lovelycat.message.FakeLovelyCatApiCache
 import love.forte.simbot.component.lovelycat.message.LovelyCatApiCache
+import love.forte.simbot.component.lovelycat.message.ReadWriteLovelyCatApiCache
 import love.forte.simbot.constant.PriorityConstant
 import love.forte.simbot.core.configuration.ComponentBeans
 
@@ -33,8 +34,11 @@ public class LovelyCatApiCacheConfiguration(
 
     @ComponentBeans("lovelyCatApiCache", priority = PriorityConstant.LAST)
     fun lovelyCatApiCache(): LovelyCatApiCache {
-        // TODO
-        return FakeLovelyCatApiCache
+        return if (cacheProperties.enable) {
+            ReadWriteLovelyCatApiCache(cacheProperties.durationUnit.toMillis(cacheProperties.duration))
+        } else {
+            FakeLovelyCatApiCache
+        }
     }
 
 }

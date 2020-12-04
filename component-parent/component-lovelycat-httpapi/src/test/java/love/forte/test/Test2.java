@@ -16,6 +16,8 @@ package love.forte.test;
 
 import love.forte.simbot.component.lovelycat.utils.LazyTimeLimitCache;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 
 /**
  * @author ForteScarlet
@@ -23,19 +25,41 @@ import love.forte.simbot.component.lovelycat.utils.LazyTimeLimitCache;
 public class Test2 {
     public static void main(String[] args) throws InterruptedException {
 
-        LazyTimeLimitCache<Integer> cache = new LazyTimeLimitCache<>(1000);
+        AtomicReference<Integer> ref = new AtomicReference<>(null);
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 500; i++) {
             int index = i;
             new Thread(() -> {
-                cache.compute(() -> {
-                    // 如果被计算了则会输出
-                    System.out.println("compute time: " + System.currentTimeMillis());
-                    System.out.println("compute by:   " + index);
-                    return index;
-                });
+                Integer get;
+                if (index == 100) {
+                    get = ref.updateAndGet(old -> null);
+                } else {
+                    get = ref.updateAndGet(old -> {
+                        if (old == null) {
+                            System.out.println("compute.");
+                            return index;
+                        } else {
+                            return old;
+                        }
+                    });
+                }
+                System.out.println("index: " + index + ", get: " + get);
             }).start();
         }
+
+        // LazyTimeLimitCache<Integer> cache = new LazyTimeLimitCache<>(1000);
+        //
+        // for (int i = 0; i < 4; i++) {
+        //     int index = i;
+        //     new Thread(() -> {
+        //         cache.compute(() -> {
+        //             // 如果被计算了则会输出
+        //             System.out.println("compute time: " + System.currentTimeMillis());
+        //             System.out.println("compute by:   " + index);
+        //             return index;
+        //         });
+        //     }).start();
+        // }
 
     }
 }

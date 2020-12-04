@@ -37,12 +37,12 @@ public class LovelyCatApiCacheProperties {
     /**
      * 每个值的缓存时长。默认为一分钟。小于等于0则等同于 `enable = false`。
      */
-    var duration = 1
+    var duration: Long = 1L
 
 
     /**
      * 缓存时长单位。默认为分钟。
      */
-    var unit = TimeUnit.MINUTES
+    var durationUnit = TimeUnit.MINUTES
 
 }
