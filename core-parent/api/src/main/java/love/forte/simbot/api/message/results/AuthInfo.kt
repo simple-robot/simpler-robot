@@ -68,11 +68,15 @@ public data class CookieValuesImpl(private val cookieValue: String) : AuthInfo.C
     override fun toString(): String = cookieMap.toString()
 }
 
+/**
+ * 获取一个 [AuthInfo] 的空值实现。
+ */
+public fun emptyAuthInfo(): AuthInfo = EmptyAuthInfo
 
 /**
  * 空值实现。
  */
-public object EmptyAuthInfo : AuthInfo {
+private object EmptyAuthInfo : AuthInfo {
     override val cookies: AuthInfo.Cookies
         get() = EmptyCookie
     override val token: String?
@@ -83,7 +87,7 @@ public object EmptyAuthInfo : AuthInfo {
     /**
      * 空值实现。
      */
-    object EmptyCookie : AuthInfo.Cookies {
+    private object EmptyCookie : AuthInfo.Cookies {
         override fun get(key: String): String? = null
         override fun toMap(): MutableMap<String, String> = mutableMapOf()
         override fun toString(): String = "{}"
