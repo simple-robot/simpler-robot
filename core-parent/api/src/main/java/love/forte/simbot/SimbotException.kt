@@ -28,6 +28,10 @@ public interface SimbotError
 public interface SimbotRuntimeError : SimbotError
 
 
+public interface SimbotIllegalStateError : SimbotRuntimeError
+
+public interface SimbotIllegalArgumentError : SimbotRuntimeError
+
 
 /**
  * simbot 的运行时异常。
@@ -64,7 +68,18 @@ public open class SimbotException : Exception, SimbotError {
 /**
  * simbot 的 [IllegalStateException] 异常实例。
  */
-public open class SimbotIllegalStateException : IllegalStateException, SimbotRuntimeError {
+public open class SimbotIllegalStateException : IllegalStateException, SimbotIllegalStateError {
+    constructor() : super()
+    constructor(s: String?) : super(s)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    constructor(cause: Throwable?) : super(cause)
+}
+
+
+/**
+ * simbot 的 [IllegalArgumentException] 异常实例。
+ */
+public open class SimbotIllegalArgumentException : IllegalArgumentException, SimbotIllegalArgumentError {
     constructor() : super()
     constructor(s: String?) : super(s)
     constructor(message: String?, cause: Throwable?) : super(message, cause)
