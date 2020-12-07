@@ -151,7 +151,7 @@ simbot.component.lovelycat.api.cache.duration=1
 # 常用值：MILLISECONDS SECONDS MINUTES 
 simbot.component.lovelycat.api.cache.durationUnit=MINUTES
 ```
-- 追加可使用的Getter（仅实现了极少数api）
+- 实现Getter。
 
 ### core
 - `ListenerContext` 中追加两个获取方法。
