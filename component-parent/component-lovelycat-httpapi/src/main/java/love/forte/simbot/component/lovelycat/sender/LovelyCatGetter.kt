@@ -20,11 +20,9 @@ import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.results.*
 import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
+import love.forte.simbot.component.lovelycat.message.CatGroupInfo
 import love.forte.simbot.component.lovelycat.message.event.lovelyCatBotInfo
-import love.forte.simbot.component.lovelycat.message.result.LovelyCatFriendList
-import love.forte.simbot.component.lovelycat.message.result.LovelyCatGroupFullInfo
-import love.forte.simbot.component.lovelycat.message.result.LovelyCatGroupList
-import love.forte.simbot.component.lovelycat.message.result.LovelyCatGroupMemberInfo
+import love.forte.simbot.component.lovelycat.message.result.*
 
 
 /**
@@ -60,21 +58,16 @@ public class LovelyCatGetter(
      */
     override fun getMemberInfo(group: String, code: String): GroupMemberInfo {
         val groupMemberDetailInfo = api.getGroupMemberDetailInfo(botId, group, code, true)
-        val groupInfo = api.getGroupList(botId, true).find { it.groupCode == group }
-            ?: throw NoSuchElementException("group: $group")
-
-        return LovelyCatGroupMemberInfo(groupMemberDetailInfo.toString(), groupMemberDetailInfo, groupInfo)
+        val groupInfo = findGroupInfo(group)
+        return LovelyCatGroupMemberInfo(groupMemberDetailInfo, groupInfo)
     }
 
     /**
      * 获取一个群详细信息
      */
     override fun getGroupInfo(group: String): GroupFullInfo {
-        val groupInfo = api.getGroupList(botId, true).find { it.groupCode == group }
-            ?: throw NoSuchElementException("group: $group")
-
+        val groupInfo = findGroupInfo(group)
         val memberSize = api.getGroupMemberList(botId, group, true).size
-
         return LovelyCatGroupFullInfo(groupInfo.toString(), groupInfo, memberSize)
     }
 
@@ -83,7 +76,7 @@ public class LovelyCatGetter(
      * @param cache 是否使用缓存。
      */
     override fun getFriendList(cache: Boolean, limit: Int): FriendList {
-        val friendList = api.getFriendList(botId, cache)
+        val friendList = api.getFriendList(botId, !cache)
 
         return if (limit > 0 && limit < friendList.size) {
             LovelyCatFriendList(friendList.subList(0, limit - 1))
@@ -95,7 +88,7 @@ public class LovelyCatGetter(
      * @param cache 是否使用缓存。
      */
     override fun getGroupList(cache: Boolean, limit: Int): GroupList {
-        val groupList = api.getGroupList(botId, cache)
+        val groupList = api.getGroupList(botId, !cache)
 
         return if (limit > 0 && limit < groupList.size) {
             LovelyCatGroupList(groupList.subList(0, limit - 1))
@@ -107,22 +100,59 @@ public class LovelyCatGetter(
      * 获取群成员列表
      */
     override fun getGroupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList {
-        TODO("Not yet implemented")
+        val groupInfo = findGroupInfo(group)
+
+        val memberList = api.getGroupMemberList(botId, group, !cache)
+
+        return LovelyCatGroupMemberList(groupInfo, memberList)
     }
 
     /**
-     * 获取某群的被禁言人列表。
-     * @param group 群号
-     * @param cache 是否使用缓存
+     * 无法获取禁言列表。
      */
-    override fun getBanList(group: String, cache: Boolean, limit: Int): BanList {
-        TODO("Not yet implemented")
-    }
+    @Deprecated("Unable to get banned list.")
+    override fun getBanList(group: String, cache: Boolean, limit: Int): BanList = EmptyBanList
 
     /**
-     * 获取群公告列表
+     * 无法获取群公告。
      */
-    override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList {
-        TODO("Not yet implemented")
+    @Deprecated("Unable to get the group note list.")
+    override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList = EmptyGroupNoteList
+
+
+
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun findGroupInfo(group: String): CatGroupInfo {
+        return api.getGroupList(botId, true).find { it.groupCode == group }
+            ?: throw NoSuchElementException("group: $group")
     }
+
 }
+
+
+
+
+
+
+/**
+ * empty [BanList].
+ */
+private object EmptyBanList : BanList {
+    override val originalData: String
+        get() = "EmptyBanList([])"
+
+    override val results: List<BanInfo>
+        get() = emptyList()
+}
+
+
+private object EmptyGroupNoteList : GroupNoteList {
+    override val originalData: String
+        get() = "EmptyGroupNoteList([])"
+
+    override val results: List<GroupNote>
+        get() = emptyList()
+}
+
+
+
