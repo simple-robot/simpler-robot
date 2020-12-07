@@ -116,6 +116,8 @@ public interface ListenerFunctionInvokeData {
     val bot: Bot
     /** 当前动态送信器。 */
     val msgSender: MsgSender
+    /** 监听函数拦截器。 */
+    val listenerInterceptorChain: ListenerInterceptorChain
     /**
      * 根据类型获取一个实例。
      * 有可能存在一些额外参数。

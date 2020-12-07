@@ -51,6 +51,11 @@ public interface MsgInterceptContext : Context<MsgGet> {
      */
     var msgGet: MsgGet
 
+    /**
+     * 监听上下文。
+     */
+    val listenerContext: ListenerContext
+
     /** same as [msgGet] */
     @JvmDefault
     override var mainValue: MsgGet
@@ -65,6 +70,6 @@ public interface MsgInterceptContext : Context<MsgGet> {
  */
 public interface MsgInterceptContextFactory {
     /** 通过一个 [MsgGet] 构建一个 [MsgInterceptContext] 实例. */
-    fun getMsgInterceptContext(msg: MsgGet): MsgInterceptContext
+    fun getMsgInterceptContext(msg: MsgGet, listenerContext: ListenerContext): MsgInterceptContext
 }
 

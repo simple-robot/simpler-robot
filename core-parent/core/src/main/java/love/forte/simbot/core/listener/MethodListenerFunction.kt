@@ -320,11 +320,14 @@ public class MethodListenerFunction(
     override fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> {
         // do filter
         val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
-        if (!filter) {
+        if (!filter || data.listenerInterceptorChain.intercept().isPrevent) {
             // 没有通过检测
             return EmptyFailedNoBreakResult
         }
-
+        // // 如果被拦截
+        // if (data.listenerInterceptorChain.intercept().isPrevent) {
+        //     return EmptyFailedNoBreakResult
+        // }
 
         // val resultBuilder = ListenResultBuilder()
         // 获取实例

@@ -142,16 +142,21 @@ public class CoreListenerManager(
      */
     override fun onMsg(msgGet: MsgGet): ListenResult<*> {
         try {
+            // not empty, intercept.
+            val context: ListenerContext = listenerContextData.getContext(msgGet)
+
             // 构建一个消息拦截器context
-            val msgContext = msgInterceptData.contextFactory.getMsgInterceptContext(msgGet)
+            val msgContext = msgInterceptData.contextFactory.getMsgInterceptContext(msgGet, context)
             val msgChain = msgInterceptData.chainFactory.getInterceptorChain(msgContext)
+
+
 
             // 如果被拦截, 返回默认值
             if (msgChain.intercept().isPrevent) {
                 return NothingResult
             }
             // 筛选并执行监听函数
-            return onMsg0(msgContext.msgGet)
+            return onMsg0(msgContext.msgGet, context)
         } catch (e: Throwable) {
             logger.error("Some unexpected errors occurred in the execution of the listener: ${e.localizedMessage}", e)
             return NothingResult
@@ -162,13 +167,13 @@ public class CoreListenerManager(
     /**
      * 筛选监听函数
      */
-    private fun onMsg0(msgGet: MsgGet): ListenResult<*> {
+    private fun onMsg0(msgGet: MsgGet, context: ListenerContext): ListenResult<*> {
         val funcs = getListenerFunctions(msgGet.javaClass, true)
         return if (funcs.isEmpty()) {
             NothingResult
         } else {
-            // not empty, intercept.
-            val context: ListenerContext = listenerContextData.getContext(msgGet)
+            // // not empty, intercept.
+            // val context: ListenerContext = listenerContextData.getContext(msgGet)
 
             var finalResult: ListenResult<*> = NothingResult
 
@@ -177,25 +182,24 @@ public class CoreListenerManager(
                 val listenerInterceptContext =
                     listenerInterceptData.contextFactory.getListenerInterceptContext(func, msgGet, context)
 
-                val interceptType =
-                    listenerInterceptData.chainFactory.getInterceptorChain(listenerInterceptContext).intercept()
-
+                val interceptorChain = listenerInterceptData.chainFactory.getInterceptorChain(listenerInterceptContext)
 
                 // invoke with try.
                 finalResult = try {
-                    if (interceptType.isPrevent) {
-                        NothingResult
-                    } else {
+                    // if (interceptType.isPrevent) {
+                    //     NothingResult
+                    // } else {
                         val invokeData = ListenerFunctionInvokeDataImpl(
                             msgGet,
                             context,
                             atDetectionFactory.getAtDetection(msgGet),
                             botManager.getBot(msgGet.botInfo),
-                            MsgSender(msgGet, msgSenderFactories)
+                            MsgSender(msgGet, msgSenderFactories),
+                            interceptorChain
                         )
                         // invoke func.
                         func(invokeData)
-                    }
+                    // }
                 } catch (funcRunEx: Throwable) {
                     logger.error("Listener execution exception: ${funcRunEx.localizedMessage}", funcRunEx)
                     NothingResult

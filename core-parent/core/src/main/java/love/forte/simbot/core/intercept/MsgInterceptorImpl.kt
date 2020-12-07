@@ -23,14 +23,14 @@ import love.forte.simbot.listener.*
 /**
  * 消息拦截器的[上下文][MsgInterceptContext]实例。
  */
-public data class MsgInterceptContextImpl(override var msgGet: MsgGet) : MsgInterceptContext
+public data class MsgInterceptContextImpl(override var msgGet: MsgGet, override val listenerContext: ListenerContext) : MsgInterceptContext
 
 
 /**
  * [MsgInterceptContextFactory] 实现，以 [MsgInterceptContextImpl] 作为返回类型。
  */
 public object CoreMsgInterceptContextFactory : MsgInterceptContextFactory {
-    override fun getMsgInterceptContext(msg: MsgGet) = MsgInterceptContextImpl(msg)
+    override fun getMsgInterceptContext(msg: MsgGet, listenerContext: ListenerContext) = MsgInterceptContextImpl(msg, listenerContext)
 }
 
 /**

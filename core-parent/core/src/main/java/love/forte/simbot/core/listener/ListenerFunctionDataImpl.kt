@@ -23,6 +23,7 @@ import love.forte.simbot.bot.Bot
 import love.forte.simbot.filter.AtDetection
 import love.forte.simbot.listener.ListenerContext
 import love.forte.simbot.listener.ListenerFunctionInvokeData
+import love.forte.simbot.listener.ListenerInterceptorChain
 
 /**
  *
@@ -33,7 +34,8 @@ public data class ListenerFunctionInvokeDataImpl(
     override val context: ListenerContext,
     override val atDetection: AtDetection,
     override val bot: Bot,
-    override val msgSender: MsgSender
+    override val msgSender: MsgSender,
+    override val listenerInterceptorChain: ListenerInterceptorChain
 ) : ListenerFunctionInvokeData {
     override fun get(type: Class<*>): Any? = when {
         MsgSender::class.java.isAssignableFrom(type) -> msgSender

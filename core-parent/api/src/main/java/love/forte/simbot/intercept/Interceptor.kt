@@ -57,7 +57,7 @@ public interface Interceptor<T, C: Context<T>> : Comparable<Interceptor<T, C>> {
 /**
  * 拦截器的拦截结果类型。
  *
- * 其中，参数 [prevent] 相同的值含义一致，只不过提供了几个比较好理解的类型以供个人习惯使用。
+ * 其中，参数 [isPrevent] 相同的值含义一致，只不过提供了几个比较好理解的类型以供个人习惯使用。
  *
  * 例如 [INTERCEPT] 与 [BLOCK] 含义相同，都代表拦截接下来的行动。
  *
