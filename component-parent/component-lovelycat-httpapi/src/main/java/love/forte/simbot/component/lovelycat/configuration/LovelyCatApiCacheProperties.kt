@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit
 /**
  * 可爱猫api缓存配置信息。
  * @author ForteScarlet
- * TODO
  */
 @ConfigBeans
 @AsConfig(prefix = "simbot.component.lovelycat.api.cache", allField = true)

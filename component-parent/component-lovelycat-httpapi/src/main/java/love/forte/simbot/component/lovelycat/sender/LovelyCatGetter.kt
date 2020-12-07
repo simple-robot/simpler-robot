@@ -16,7 +16,6 @@
 
 package love.forte.simbot.component.lovelycat.sender
 
-import javafx.concurrent.ScheduledService
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.results.*
 import love.forte.simbot.api.sender.Getter
@@ -35,7 +34,7 @@ public class LovelyCatGetter(
      * 得到当前bot的权限信息。
      */
     override val authInfo: AuthInfo
-        get() = EmptyAuthInfo
+        get() = emptyAuthInfo()
 
     /**
      * 获取当前bot的基础信息。

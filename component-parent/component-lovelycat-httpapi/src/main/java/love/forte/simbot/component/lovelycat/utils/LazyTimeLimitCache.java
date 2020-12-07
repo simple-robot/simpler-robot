@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.concurrent.locks.StampedLock;
 import java.util.function.Supplier;
 
 /**
@@ -28,8 +27,7 @@ import java.util.function.Supplier;
  * @author ForteScarlet
  */
 public class LazyTimeLimitCache<T> {
-    private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
-    // private final ReadWriteLock lock = new StampedLock().asReadWriteLock();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final long time;
     private volatile long nextTime = -1;
     private volatile T entity;
@@ -57,7 +55,7 @@ public class LazyTimeLimitCache<T> {
     }
 
 
-    public void clean(){
+    public void clean() {
         Lock writeLock = this.lock.writeLock();
         writeLock.lock();
         try {
@@ -73,6 +71,21 @@ public class LazyTimeLimitCache<T> {
      * 获取或计算。
      */
     public T compute(Supplier<T> computer) {
+        Lock writeLock = this.lock.writeLock();
+        // check time
+        if (isExpired()) {
+            writeLock.lock();
+            try {
+                if (isExpired()) {
+                    refreshTime();
+                    // compute.
+                    entity = computer.get();
+                }
+            } finally {
+                writeLock.unlock();
+            }
+        }
+
         T e;
         Lock readLock = this.lock.readLock();
         readLock.lock();
@@ -82,27 +95,11 @@ public class LazyTimeLimitCache<T> {
             readLock.unlock();
         }
 
-        Lock writeLock = this.lock.writeLock();
-        // check time
-        if (isExpired()) {
-            writeLock.lock();
-            try {
-                refreshTime();
-                entity = null;
-            } finally {
-                writeLock.unlock();
-            }
-        }
-
         if (e == null) {
             T en = entity;
             if (en != null) {
                 e = en;
             } else {
-                /*
-                    当锁变为非公平锁的时候，entity的值便不再原子性（大概），即第一个写锁变量赋值结束后，
-                    第二个写锁获取到的entity依旧是null。
-                 */
                 writeLock.lock();
                 try {
                     en = entity;
