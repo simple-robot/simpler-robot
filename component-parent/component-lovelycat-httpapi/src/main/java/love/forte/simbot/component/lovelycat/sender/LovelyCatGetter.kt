@@ -21,6 +21,10 @@ import love.forte.simbot.api.message.results.*
 import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.component.lovelycat.message.event.lovelyCatBotInfo
+import love.forte.simbot.component.lovelycat.message.result.LovelyCatFriendList
+import love.forte.simbot.component.lovelycat.message.result.LovelyCatGroupFullInfo
+import love.forte.simbot.component.lovelycat.message.result.LovelyCatGroupList
+import love.forte.simbot.component.lovelycat.message.result.LovelyCatGroupMemberInfo
 
 
 /**
@@ -55,18 +59,23 @@ public class LovelyCatGetter(
      * 获取一个群友信息。
      */
     override fun getMemberInfo(group: String, code: String): GroupMemberInfo {
-        // val groupMemberInfo = api.getGroupMemberDetailInfo(botId, group, code, true)
-        // val groupInfo = api.getGroupList(botId, true).find { it.groupCode == group }
-        //     ?: throw NoSuchElementException("group: $group")
+        val groupMemberDetailInfo = api.getGroupMemberDetailInfo(botId, group, code, true)
+        val groupInfo = api.getGroupList(botId, true).find { it.groupCode == group }
+            ?: throw NoSuchElementException("group: $group")
 
-        TODO("Not yet implemented")
+        return LovelyCatGroupMemberInfo(groupMemberDetailInfo.toString(), groupMemberDetailInfo, groupInfo)
     }
 
     /**
      * 获取一个群详细信息
      */
     override fun getGroupInfo(group: String): GroupFullInfo {
-        TODO("Not yet implemented")
+        val groupInfo = api.getGroupList(botId, true).find { it.groupCode == group }
+            ?: throw NoSuchElementException("group: $group")
+
+        val memberSize = api.getGroupMemberList(botId, group, true).size
+
+        return LovelyCatGroupFullInfo(groupInfo.toString(), groupInfo, memberSize)
     }
 
     /**
@@ -74,7 +83,11 @@ public class LovelyCatGetter(
      * @param cache 是否使用缓存。
      */
     override fun getFriendList(cache: Boolean, limit: Int): FriendList {
-        TODO("Not yet implemented")
+        val friendList = api.getFriendList(botId, cache)
+
+        return if (limit > 0 && limit < friendList.size) {
+            LovelyCatFriendList(friendList.subList(0, limit - 1))
+        } else LovelyCatFriendList(friendList)
     }
 
     /**
@@ -82,7 +95,12 @@ public class LovelyCatGetter(
      * @param cache 是否使用缓存。
      */
     override fun getGroupList(cache: Boolean, limit: Int): GroupList {
-        TODO("Not yet implemented")
+        val groupList = api.getGroupList(botId, cache)
+
+        return if (limit > 0 && limit < groupList.size) {
+            LovelyCatGroupList(groupList.subList(0, limit - 1))
+        } else LovelyCatGroupList(groupList)
+
     }
 
     /**

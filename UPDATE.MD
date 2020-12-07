@@ -139,8 +139,27 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 ## ALPHA.11(NOW)
 
+### lovelycat 
+- 追加api内置缓存配置。
+```properties
+# 是否启用组件内置api缓存，默认开启
+simbot.component.lovelycat.api.cache.enable=true
+# 缓存时效，默认为1
+simbot.component.lovelycat.api.cache.duration=1
+# 缓存时效的时间单位，默认为分钟。值为 java.util.concurrent.TimeUnit 枚举的元素值。
+# 可选值：NANOSECONDS MICROSECONDS MILLISECONDS SECONDS MINUTES HOURS DAYS
+# 常用值：MILLISECONDS SECONDS MINUTES 
+simbot.component.lovelycat.api.cache.durationUnit=MINUTES
+```
+- 追加可使用的Getter（仅实现了极少数api）
+
 ### core
 - `ListenerContext` 中追加两个获取方法。
+
+
+### fix 
+- [#14](https://github.com/ForteScarlet/simpler-robot/issues/14) 监听函数拦截器拦截范围过大
+- [#15](https://github.com/ForteScarlet/simpler-robot/issues/15) `MsgInterceptor`追加可获取监听上下文
 
 
 

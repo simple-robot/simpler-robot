@@ -18,6 +18,10 @@ package love.forte.simbot.component.lovelycat.message
 
 import love.forte.simbot.api.message.containers.*
 import love.forte.simbot.api.message.results.FriendInfo
+import love.forte.simbot.api.message.results.GroupAdmin
+import love.forte.simbot.api.message.results.GroupFullInfo
+import love.forte.simbot.api.message.results.GroupOwner
+import love.forte.simbot.api.message.results.SimpleGroupInfo
 import love.forte.simbot.component.lovelycat.message.event.lovelyCatAccountInfo
 
 
@@ -49,7 +53,7 @@ public data class RobotName(
 public data class RobotHeadImgUrl(
     val headImgUrl: String
 ) : BotAvatarContainer {
-    override val botAvatar: String?
+    override val botAvatar: String
         get() = headImgUrl
 
 }
@@ -164,7 +168,7 @@ public data class CatGroupInfo(
     val wxid: String,
     val name: String,
     val robotWxid: String
-) : GroupInfo, BotCodeContainer {
+) : SimpleGroupInfo, BotCodeContainer {
     /** 群号 */
     override val groupCode: String
         get() = wxid
@@ -180,8 +184,11 @@ public data class CatGroupInfo(
     /**
      * 群名称 可能出现无法获取的情况
      */
-    override val groupName: String?
+    override val groupName: String
         get() = name
+
+    override val originalData: String
+        get() = toString()
 }
 
 
@@ -212,7 +219,7 @@ public data class CatGroupMemberInfo(
      * 昵称。
      * 可能会出现为null的情况，但是一般情况下不会。
      */
-    override val accountNickname: String?
+    override val accountNickname: String
         get() = name
 
     /** 当前的bot的账号 */
@@ -226,7 +233,7 @@ public data class CatGroupMemberInfo(
     /**
      * 得到账号的头像地址. 一般来讲为`null`的可能性很小
      */
-    override val accountAvatar: String?
+    override val accountAvatar: String
         get() = img
 
     /**
