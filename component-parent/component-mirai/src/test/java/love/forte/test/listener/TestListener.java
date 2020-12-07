@@ -14,9 +14,16 @@ public class TestListener {
 
 
     @OnPrivate
-    public void listen(PrivateMsg msg, MsgSender sender) {
+    public void listen1(PrivateMsg msg, MsgSender sender) {
+        System.out.println("listen1");
         // 直接复读消息的最优方案
         sender.SENDER.sendPrivateMsg(msg, msg.getMsgContent());
+    }
+
+    @OnPrivate
+    @Filter("hi")
+    public void listen2(PrivateMsg msg, MsgSender sender) {
+        System.out.println("listen2");
     }
 
     @OnGroup
