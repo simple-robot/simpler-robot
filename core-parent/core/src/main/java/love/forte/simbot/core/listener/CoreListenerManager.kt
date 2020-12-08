@@ -16,6 +16,7 @@
 package love.forte.simbot.core.listener
 
 import love.forte.common.collections.concurrentSortedQueueOf
+import love.forte.simbot.LogAble
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.MsgSender
 import love.forte.simbot.api.sender.MsgSenderFactories
@@ -196,7 +197,7 @@ public class CoreListenerManager(
                     )
                     func(invokeData)
                 } catch (funcRunEx: Throwable) {
-                    logger.error("Listener '${func.name}' execution exception: ${funcRunEx.localizedMessage}; by listener id ${func.id}", funcRunEx)
+                    (if (func is LogAble) func.log else logger).error("Listener '${func.name}' execution exception: $funcRunEx", funcRunEx)
                     NothingResult
                 }
 
@@ -208,7 +209,7 @@ public class CoreListenerManager(
                         exceptionManager.getHandle(ex.javaClass)?.run {
                             doHandle(ExceptionHandleContext(ex, msgGet, func, context))
                         } ?: run {
-                            logger.error("Listener execution exception: ${ex.localizedMessage}; by listener id '${func.id}'", ex)
+                            (if (func is LogAble) func.log else logger).error("Listener execution exception: $ex", ex)
                             NothingResult
                         }
                     } else this

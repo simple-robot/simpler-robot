@@ -18,6 +18,7 @@ import love.forte.common.ioc.DependBeanFactory
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.convert.ConverterManager
+import love.forte.simbot.LogAble
 import love.forte.simbot.annotation.FilterValue
 import love.forte.simbot.annotation.Filters
 import love.forte.simbot.annotation.ListenBreak
@@ -30,6 +31,8 @@ import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.filter.*
 import love.forte.simbot.listener.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Type
@@ -56,7 +59,8 @@ public class MethodListenerFunction(
     private val filterManager: FilterManager,
     private val converterManager: ConverterManager,
     private val listenerResultFactory: ListenerResultFactory
-) : ListenerFunction {
+) : ListenerFunction, LogAble {
+    override val log: Logger = LoggerFactory.getLogger(method.declaringClass.typeName + "." + method.name)
 
     /**
      * 此监听函数上的 [Listens] 注解。
