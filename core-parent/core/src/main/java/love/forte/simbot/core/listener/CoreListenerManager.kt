@@ -206,8 +206,13 @@ public class CoreListenerManager(
                 finalResult = with(finalResult) {
                     val ex = this.throwable
                     if (ex != null) {
-                        exceptionManager.getHandle(ex.javaClass)?.run {
+                        val handle = exceptionManager.getHandle(ex.javaClass)
+                        handle?.runCatching {
                             doHandle(ExceptionHandleContext(ex, msgGet, func, context))
+                        }?.getOrElse {
+                            // 异常处理报错
+                            (if(handle is LogAble) handle.log else logger).error("Exception handle failed: $it", it)
+                            null
                         } ?: run {
                             (if (func is LogAble) func.log else logger).error("Listener execution exception: $ex", ex)
                             NothingResult
