@@ -137,7 +137,7 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 - fix [#12 ](https://github.com/ForteScarlet/simpler-robot/issues/12) (为GroupAddRequest追加群容器)
 
 
-## ALPHA.11(NOW)
+## ALPHA.11
 
 ### lovelycat 
 - 追加api内置缓存配置。
