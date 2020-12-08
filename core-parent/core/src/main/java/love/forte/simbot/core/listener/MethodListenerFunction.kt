@@ -30,6 +30,7 @@ import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.filter.*
 import love.forte.simbot.listener.*
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Type
 import java.security.MessageDigest
@@ -351,7 +352,10 @@ public class MethodListenerFunction(
         val invokeResult: Any? = runCatching {
             method(instance, *params)
         }.getOrElse {
-            return listenerResultFactory.getResult(null, this, it)
+            val cause = if (it is InvocationTargetException) {
+                it.targetException
+            } else it
+            return listenerResultFactory.getResult(null, this, cause)
         }
 
         // set result
@@ -364,7 +368,7 @@ public class MethodListenerFunction(
 
 
 /**
- * method 取得唯一ID。
+ * method 取得唯一ID。直接获取完整路径。
  */
 internal fun Method.toListenerId(listens: Listens): String {
     return with(listens.name) {
@@ -379,7 +383,7 @@ internal fun Method.toListenerId(listens: Listens): String {
 
             val wholeNameMD5: String = wholeName.toMD5()
 
-            "${methodIn.simpleName}.$methodName#$wholeNameMD5"
+            "${methodIn.typeName}.$methodName#$wholeNameMD5"
         } else this
     }
 }

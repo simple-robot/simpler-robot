@@ -89,9 +89,9 @@ public enum class InterceptionType(val isPrevent: Boolean) {
 
     // Easter eggs
     @Suppress("EnumEntryName")
-    `(x)`(false),
+    `(x)`(INTERCEPT.isPrevent),
     @Suppress("EnumEntryName")
-    `(v)`(true),
+    `(v)`(ALLOW.isPrevent),
     ;
 
     companion object {

@@ -52,9 +52,16 @@ public class ExceptionHandleContext<E : Throwable>(
     mainValue: E,
     val msgGet: MsgGet,
     val listenerFunction: ListenerFunction,
-    val listenerContext: ListenerContext
+    val listenerContext: ListenerContext,
 ) : BaseContext<E>(mainValue) {
-    val exception: Throwable get() = mainValue
+    @Deprecated("Renamed to 'cause'",
+        ReplaceWith("cause"),
+        level = DeprecationLevel.WARNING
+    )
+    val exception: Throwable
+        get() = mainValue
 
-    override fun toString(): String = "ExceptionHandleContext<$mainValue>(msg=$msgGet, func=$listenerFunction)"
+    val cause: Throwable get() = mainValue
+
+    override fun toString(): String = "ExceptionHandleContext<${mainValue::class.java}>(causeMsg=${mainValue.localizedMessage}, msg=$msgGet, func=$listenerFunction)"
 }

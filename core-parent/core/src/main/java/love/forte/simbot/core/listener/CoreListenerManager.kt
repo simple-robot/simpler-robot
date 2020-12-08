@@ -12,6 +12,7 @@
  *
  */
 @file:JvmName("CoreListenerManagers")
+
 package love.forte.simbot.core.listener
 
 import love.forte.common.collections.concurrentSortedQueueOf
@@ -48,7 +49,7 @@ public data class MsgInterceptData(
  */
 public data class ListenerInterceptData(
     val contextFactory: ListenerInterceptContextFactory,
-    val chainFactory: ListenerInterceptChainFactory
+    val chainFactory: ListenerInterceptChainFactory,
 )
 
 
@@ -57,7 +58,7 @@ public data class ListenerInterceptData(
  */
 public data class ListenerContextData(
     val contextFactory: ListenerContextFactory,
-    val contextMapFactory: ContextMapFactory
+    val contextMapFactory: ContextMapFactory,
 ) {
     fun getContext(msgGet: MsgGet): ListenerContext {
         return contextMapFactory.contextMap.let {
@@ -90,9 +91,9 @@ public class CoreListenerManager(
 
     private val msgSenderFactories: MsgSenderFactories,
 
-    private val botManager: BotManager
+    private val botManager: BotManager,
 
-) : ListenerManager, ListenerRegistrar {
+    ) : ListenerManager, ListenerRegistrar {
 
     private val logger: Logger = LoggerFactory.getLogger(CoreListenerManager::class.java)
 
@@ -130,8 +131,8 @@ public class CoreListenerManager(
 
             // cacheListenerFunctionMap.forEach {
             //     if (listenType.isAssignableFrom(it.key)) {
-                    // it.value.add(listenerFunction)
-                // }
+            // it.value.add(listenerFunction)
+            // }
             // }
         }
     }
@@ -148,7 +149,6 @@ public class CoreListenerManager(
             // 构建一个消息拦截器context
             val msgContext = msgInterceptData.contextFactory.getMsgInterceptContext(msgGet, context)
             val msgChain = msgInterceptData.chainFactory.getInterceptorChain(msgContext)
-
 
 
             // 如果被拦截, 返回默认值
@@ -186,22 +186,17 @@ public class CoreListenerManager(
 
                 // invoke with try.
                 finalResult = try {
-                    // if (interceptType.isPrevent) {
-                    //     NothingResult
-                    // } else {
-                        val invokeData = ListenerFunctionInvokeDataImpl(
-                            msgGet,
-                            context,
-                            atDetectionFactory.getAtDetection(msgGet),
-                            botManager.getBot(msgGet.botInfo),
-                            MsgSender(msgGet, msgSenderFactories),
-                            interceptorChain
-                        )
-                        // invoke func.
-                        func(invokeData)
-                    // }
+                    val invokeData = ListenerFunctionInvokeDataImpl(
+                        msgGet,
+                        context,
+                        atDetectionFactory.getAtDetection(msgGet),
+                        botManager.getBot(msgGet.botInfo),
+                        MsgSender(msgGet, msgSenderFactories),
+                        interceptorChain
+                    )
+                    func(invokeData)
                 } catch (funcRunEx: Throwable) {
-                    logger.error("Listener execution exception: ${funcRunEx.localizedMessage}", funcRunEx)
+                    logger.error("Listener '${func.name}' execution exception: ${funcRunEx.localizedMessage}; by listener id ${func.id}", funcRunEx)
                     NothingResult
                 }
 
@@ -213,7 +208,7 @@ public class CoreListenerManager(
                         exceptionManager.getHandle(ex.javaClass)?.run {
                             doHandle(ExceptionHandleContext(ex, msgGet, func, context))
                         } ?: run {
-                            ex.printStackTrace()
+                            logger.error("Listener execution exception: ${ex.localizedMessage}; by listener id '${func.id}'", ex)
                             NothingResult
                         }
                     } else this
@@ -257,9 +252,9 @@ public class CoreListenerManager(
 
         return if (fastball != null) {
             // 有缓存，return
-           fastball
+            fastball
         } else {
-            if(mainListenerFunctionMap.isEmpty()) {
+            if (mainListenerFunctionMap.isEmpty()) {
                 return emptyList()
             }
 
@@ -276,7 +271,7 @@ public class CoreListenerManager(
             if (cache) {
                 cacheListenerFunctionMap.computeIfAbsent(type) {
                     val typeList = LinkedList<ListenerFunction>()
-                    mainListenerFunctionMap.forEach { (k, v)->
+                    mainListenerFunctionMap.forEach { (k, v) ->
                         if (k.isAssignableFrom(type)) {
                             typeList.addAll(v)
                         }
@@ -285,7 +280,7 @@ public class CoreListenerManager(
                 }
             } else {
                 val typeList = LinkedList<ListenerFunction>()
-                mainListenerFunctionMap.forEach { (k, v)->
+                mainListenerFunctionMap.forEach { (k, v) ->
                     if (k.isAssignableFrom(type)) {
                         typeList.addAll(v)
                     }

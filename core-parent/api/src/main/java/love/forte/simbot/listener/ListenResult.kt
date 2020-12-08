@@ -23,7 +23,7 @@ package love.forte.simbot.listener
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-interface ListenResult<T> {
+public interface ListenResult<T> {
 
     /**
      * 是否执行成功。

@@ -67,8 +67,9 @@ open class ListenResultImpl<T>(
          * 构建一个成功的result。
          */
         @JvmStatic
+        @JvmOverloads
         @Suppress("UNCHECKED_CAST")
-        fun <T> success(result: T?, isBreak: Boolean): ListenResult<T> {
+        fun <T> success(result: T? = null, isBreak: Boolean = false): ListenResult<T> {
             return result?.let { ListenResultImpl(it, true, isBreak, null) } ?: kotlin.run {
                 if (isBreak) {
                     EmptySuccessBreakResult as ListenResult<T>
@@ -82,8 +83,9 @@ open class ListenResultImpl<T>(
          * 构建一个失败的result。
          */
         @JvmStatic
+        @JvmOverloads
         @Suppress("UNCHECKED_CAST")
-        fun <T> failed(result: T?, throwable: Throwable?, isBreak: Boolean): ListenResult<T> {
+        fun <T> failed(result: T? = null, throwable: Throwable? = null, isBreak: Boolean = false): ListenResult<T> {
             return result?.let { ListenResultImpl(it, false, isBreak, throwable) } ?: kotlin.run {
                 val canObj: Boolean = isBreak && throwable == null
                 if (canObj) {

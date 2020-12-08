@@ -21,9 +21,17 @@ public class TestListener {
     }
 
     @OnPrivate
-    @Filter("hi")
+    @Filter("hi1")
     public void listen2(PrivateMsg msg, MsgSender sender) {
         System.out.println("listen2");
+        throw new RuntimeException("text err.");
+    }
+
+    @OnPrivate
+    @Filter("hi2")
+    public void listen3(PrivateMsg msg, MsgSender sender) {
+        System.out.println("listen2");
+        throw new IllegalStateException("state err.");
     }
 
     @OnGroup
