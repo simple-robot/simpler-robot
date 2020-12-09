@@ -43,7 +43,11 @@ public interface ListenResult<T> {
     /**
      * 如果执行出现了异常，此处为异常。
      */
-    val throwable: Throwable?
+    val cause: Throwable?
+
+    @JvmDefault
+    @Deprecated("Renamed to 'cause'", ReplaceWith("cause"))
+    val throwable: Throwable? get() = cause
 
 }
 

@@ -27,7 +27,7 @@ object NothingResult : ListenResult<Nothing> {
     override fun isSuccess(): Boolean = false
     override fun isBreak(): Boolean = false
     override val result: Nothing? = null
-    override val throwable: Throwable? = null
+    override val cause: Throwable? = null
 }
 
 
@@ -51,13 +51,13 @@ open class ListenResultImpl<T>(
     override val result: T?,
     private val success: Boolean,
     private val isBreak: Boolean,
-    override val throwable: Throwable?,
+    override val cause: Throwable?,
 ) : ListenResult<T> {
     override fun isSuccess(): Boolean = success
     override fun isBreak(): Boolean = isBreak
 
     override fun toString(): String {
-        return "ListenResult(result=$result, success=$success, isBreak=$isBreak, throwable=$throwable)"
+        return "ListenResult(result=$result, success=$success, isBreak=$isBreak, cause=$cause)"
     }
 
 
@@ -86,10 +86,10 @@ open class ListenResultImpl<T>(
         @JvmStatic
         @JvmOverloads
         @Suppress("UNCHECKED_CAST")
-        fun <T> failed(result: T? = null, throwable: Throwable? = null, isBreak: Boolean = false): ListenResult<T> {
-            return result?.let { ListenResultImpl(it, false, isBreak, throwable) }
+        fun <T> failed(result: T? = null, cause: Throwable? = null, isBreak: Boolean = false): ListenResult<T> {
+            return result?.let { ListenResultImpl(it, false, isBreak, cause) }
                 ?: run {
-                    val canObj: Boolean = isBreak && throwable == null
+                    val canObj: Boolean = isBreak && cause == null
                     if (canObj) {
                         if (isBreak) {
                             EmptyFailedBreakResult as ListenResult<T>
@@ -97,7 +97,7 @@ open class ListenResultImpl<T>(
                             EmptyFailedNoBreakResult as ListenResult<T>
                         }
                     } else {
-                        ListenResultImpl(null, false, isBreak, throwable)
+                        ListenResultImpl(null, false, isBreak, cause)
                     }
                 }
         }

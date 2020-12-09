@@ -162,5 +162,8 @@ simbot.component.lovelycat.api.cache.durationUnit=MINUTES
 - [#15](https://github.com/ForteScarlet/simpler-robot/issues/15) `MsgInterceptor`追加可获取监听上下文
 
 
+## ALPHA.12(NOW)
+### api
+- ListenResult 的 属性 `throwable` 重命名为 `cause`。
 
 

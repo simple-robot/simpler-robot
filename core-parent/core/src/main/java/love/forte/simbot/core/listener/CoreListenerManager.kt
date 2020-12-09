@@ -204,7 +204,7 @@ public class CoreListenerManager(
 
                 // if ex
                 finalResult = with(finalResult) {
-                    val ex = this.throwable
+                    val ex = this.cause
                     if (ex != null) {
                         val handle = exceptionManager.getHandle(ex.javaClass)
                         handle?.runCatching {
