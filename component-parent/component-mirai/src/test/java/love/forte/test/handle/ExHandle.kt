@@ -29,19 +29,30 @@ import org.slf4j.LoggerFactory
  */
 @Beans
 public class ExHandle : ExceptionHandle<IllegalStateException> {
-
     private val logger: Logger = LoggerFactory.getLogger(ExHandle::class.java)
-
     /**
      * do handle.
      */
     override fun doHandle(context: ExceptionHandleContext<IllegalStateException>): ListenResult<*> {
-
         logger.error("failed: {}", context.cause.localizedMessage)
         logger.error("cause: {}", context.cause.toString())
+        return ListenResultImpl.failed(null)
+    }
+}
 
-
-
+/**
+ *
+ * @author ForteScarlet
+ */
+@Beans
+public class ExHandle2 : ExceptionHandle<IllegalStateException> {
+    private val logger: Logger = LoggerFactory.getLogger(ExHandle::class.java)
+    /**
+     * do handle.
+     */
+    override fun doHandle(context: ExceptionHandleContext<IllegalStateException>): ListenResult<*> {
+        logger.error("failed: {}", context.cause.localizedMessage)
+        logger.error("cause: {}", context.cause.toString())
         return ListenResultImpl.failed(null)
     }
 }
