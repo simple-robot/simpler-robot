@@ -80,8 +80,6 @@ public class CoreExceptionProcessor(handles: Array<out ExceptionHandle<*>>) : Ex
             }
 
             catchType to it
-        }.distinctByMerger({ p -> p.first }) { k, _ ->
-            throw SimbotIllegalArgumentException("Duplicate exception handling target: ${k.typeName}")
         }.groupBy({ it.first }, { it.second })
             .asSequence()
             .filter { it.value.isNotEmpty() }
