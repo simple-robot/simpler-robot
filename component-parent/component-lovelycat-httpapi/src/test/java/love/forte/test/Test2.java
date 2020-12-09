@@ -14,7 +14,7 @@
 
 package love.forte.test;
 
-import love.forte.simbot.component.lovelycat.utils.LazyTimeLimitCache;
+import love.forte.simbot.core.listener.ListenResultImpl;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -24,6 +24,8 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class Test2 {
     public static void main(String[] args) throws InterruptedException {
+
+        ListenResultImpl.success();
 
         AtomicReference<Integer> ref = new AtomicReference<>(null);
 

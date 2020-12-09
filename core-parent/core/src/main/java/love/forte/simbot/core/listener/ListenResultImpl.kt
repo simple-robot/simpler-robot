@@ -12,6 +12,7 @@
  *
  */
 @file:JvmName("ListenResultImpls")
+
 package love.forte.simbot.core.listener
 
 import love.forte.simbot.annotation.ListenBreak
@@ -50,7 +51,7 @@ open class ListenResultImpl<T>(
     override val result: T?,
     private val success: Boolean,
     private val isBreak: Boolean,
-    override val throwable: Throwable?
+    override val throwable: Throwable?,
 ) : ListenResult<T> {
     override fun isSuccess(): Boolean = success
     override fun isBreak(): Boolean = isBreak
@@ -58,7 +59,6 @@ open class ListenResultImpl<T>(
     override fun toString(): String {
         return "ListenResult(result=$result, success=$success, isBreak=$isBreak, throwable=$throwable)"
     }
-
 
 
     companion object {
@@ -70,13 +70,14 @@ open class ListenResultImpl<T>(
         @JvmOverloads
         @Suppress("UNCHECKED_CAST")
         fun <T> success(result: T? = null, isBreak: Boolean = false): ListenResult<T> {
-            return result?.let { ListenResultImpl(it, true, isBreak, null) } ?: kotlin.run {
-                if (isBreak) {
-                    EmptySuccessBreakResult as ListenResult<T>
-                } else {
-                    EmptySuccessNoBreakResult as ListenResult<T>
+            return result?.let { ListenResultImpl(it, true, isBreak, null) }
+                ?: run {
+                    if (isBreak) {
+                        EmptySuccessBreakResult as ListenResult<T>
+                    } else {
+                        EmptySuccessNoBreakResult as ListenResult<T>
+                    }
                 }
-            }
         }
 
         /**
@@ -86,18 +87,19 @@ open class ListenResultImpl<T>(
         @JvmOverloads
         @Suppress("UNCHECKED_CAST")
         fun <T> failed(result: T? = null, throwable: Throwable? = null, isBreak: Boolean = false): ListenResult<T> {
-            return result?.let { ListenResultImpl(it, false, isBreak, throwable) } ?: kotlin.run {
-                val canObj: Boolean = isBreak && throwable == null
-                if (canObj) {
-                    if (isBreak) {
-                        EmptyFailedBreakResult as ListenResult<T>
+            return result?.let { ListenResultImpl(it, false, isBreak, throwable) }
+                ?: run {
+                    val canObj: Boolean = isBreak && throwable == null
+                    if (canObj) {
+                        if (isBreak) {
+                            EmptyFailedBreakResult as ListenResult<T>
+                        } else {
+                            EmptyFailedNoBreakResult as ListenResult<T>
+                        }
                     } else {
-                        EmptyFailedNoBreakResult as ListenResult<T>
+                        ListenResultImpl(null, false, isBreak, throwable)
                     }
-                } else {
-                    ListenResultImpl(null, false, isBreak, throwable)
                 }
-            }
         }
     }
 }
@@ -136,7 +138,7 @@ public object CoreListenerResultFactory : ListenerResultFactory {
     override fun getResult(
         result: Any?,
         listenerFunction: ListenerFunction,
-        throwable: Throwable?
+        throwable: Throwable?,
     ): ListenResult<*> {
         return if (result is ListenResult<*>) {
             result
