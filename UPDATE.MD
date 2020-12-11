@@ -162,5 +162,10 @@ simbot.component.lovelycat.api.cache.durationUnit=MINUTES
 - [#15](https://github.com/ForteScarlet/simpler-robot/issues/15) `MsgInterceptor`追加可获取监听上下文
 
 
+## ALPHA.12
+
+### mirai
+- [#17](https://github.com/ForteScarlet/simpler-robot/issues/17) 实现撤回消息内容获取
+
 
 
