@@ -60,9 +60,8 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
      * 私聊消息标识，
      * 非线程安全的懒加载。
      */
-    override val flag: Flag<MiraiPrivateFlagContent> by lazy(LazyThreadSafetyMode.NONE) {
-        miraiMessageFlag(MiraiPrivateFlagContent(event.source))
-    }
+    override val flag: Flag<MiraiPrivateFlagContent> = miraiMessageFlag(MiraiPrivateFlagContent(event.source))
+
 
     /**
      * id 直接使用 [标识][flagId] 获取。
@@ -113,9 +112,7 @@ public class MiraiTempMsg(event: TempMessageEvent) :
      * 私聊消息标识，
      * 非线程安全的懒加载。
      */
-    override val flag: Flag<MiraiPrivateFlagContent> by lazy(LazyThreadSafetyMode.NONE) {
-        miraiMessageFlag(MiraiPrivateFlagContent(event.source))
-    }
+    override val flag: Flag<MiraiPrivateFlagContent> = miraiMessageFlag(MiraiPrivateFlagContent(event.source))
 
     /**
      * id 直接使用 [标识][flagId] 获取。

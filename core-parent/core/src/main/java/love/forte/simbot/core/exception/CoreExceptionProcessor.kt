@@ -87,7 +87,7 @@ public class CoreExceptionProcessor(handles: Array<out ExceptionHandle<*>>) : Ex
                 val value = it.value
                 if (value.size > 1) {
                     val showJoin = value.joinToString(", ", "[", "]")
-                    throw IllegalStateException("There cannot be multiple exception handles for an exception type. but exception type '${it.key.name}' has ${value.size}: $showJoin")
+                    throw IllegalStateException("Cannot be multiple exception handles for an exception type. but exception type '${it.key.name}' has ${value.size}: $showJoin")
                 } else it.key to value[0]
             }
             .filter {
