@@ -17,12 +17,14 @@
 package love.forte.simbot.component.lovelycat.sender
 
 import love.forte.common.utils.Carrier
+import love.forte.common.utils.toCarrier
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.events.FriendAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.results.*
+import love.forte.simbot.api.sender.ErrorSetter
 import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
@@ -45,7 +47,8 @@ public class LovelyCatSetter(
         agree: Boolean,
         blackList: Boolean,
     ): Carrier<Boolean> {
-        TODO("Not yet implemented")
+        api.agreeFriendVerify(botId, flag.flag.id)
+        return true.toCarrier()
     }
 
     override fun setGroupAddRequest(
@@ -54,31 +57,34 @@ public class LovelyCatSetter(
         blackList: Boolean,
         why: String?,
     ): Carrier<Boolean> {
-        TODO("Not yet implemented")
+        api.agreeGroupInvite(botId, flag.flag.id)
+        return true.toCarrier()
     }
 
     override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> {
-        TODO("Not yet implemented")
+        ErrorSetter.setGroupAdmin(groupCode, memberCode, promotion)
     }
 
     override fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean> {
-        TODO("Not yet implemented")
+        ErrorSetter.setGroupAnonymous(group, agree)
     }
 
     override fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean> {
-        TODO("Not yet implemented")
+        ErrorSetter.setGroupBan(groupCode, memberCode, time, timeUnit)
     }
 
     override fun setGroupWholeBan(groupCode: String, ban: Boolean): Carrier<Boolean> {
-        TODO("Not yet implemented")
+        ErrorSetter.setGroupWholeBan(groupCode, ban)
     }
 
     override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> {
-        TODO("Not yet implemented")
+        ErrorSetter.setGroupRemark(groupCode, memberCode, remark)
     }
 
     override fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> {
-        TODO("Not yet implemented")
+        val result = api.quitGroup(botId, groupCode)
+        // check success?
+        return true.toCarrier()
     }
 
     override fun setGroupMemberKick(
@@ -87,19 +93,22 @@ public class LovelyCatSetter(
         why: String?,
         blackList: Boolean,
     ): Carrier<Boolean> {
-        TODO("Not yet implemented")
+        api.removeGroupMember(botId, groupCode, memberCode)
+        // check success?
+        return true.toCarrier()
     }
 
     override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String> {
-        TODO("Not yet implemented")
+        ErrorSetter.setGroupMemberSpecialTitle(groupCode, memberCode, title)
     }
 
     override fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
-        TODO("Not yet implemented")
+        ErrorSetter.setMsgRecall(flag)
     }
 
     override fun setGroupName(groupCode: String, name: String): Carrier<String> {
-        TODO("Not yet implemented")
+        api.modifyGroupName(botId, groupCode, name)
+        return name.toCarrier()
     }
 }
 
