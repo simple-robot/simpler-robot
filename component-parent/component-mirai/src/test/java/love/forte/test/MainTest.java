@@ -14,13 +14,15 @@
 
 package love.forte.test;
 
+import java.awt.*;
+
 /**
  * @author ForteScarlet
  */
 public class MainTest {
     public static void main(String[] args) {
 
-        System.out.println(MainTest.class.getTypeName());
+        System.out.println(Desktop.isDesktopSupported());
 
     }
 }
