@@ -16,6 +16,9 @@
 
 package love.forte.simbot.api.sender
 
+import love.forte.common.utils.Carrier
+import love.forte.common.utils.toCarrier
+
 
 public class UnusableSenderException : RuntimeException {
     constructor() : super()
@@ -33,3 +36,8 @@ public class UnusableSenderException : RuntimeException {
 
 @Suppress("FunctionName", "NOTHING_TO_INLINE")
 internal inline fun NO(api: String): Nothing = throw UnusableSenderException("This sender api cannot be used: $api")
+
+
+internal inline val FalseCarrier: Carrier<Boolean> get() = false.toCarrier()
+
+

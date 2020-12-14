@@ -13,6 +13,7 @@
  */
 @file:JvmName("Containers")
 @file:JvmMultifileClass
+
 package love.forte.simbot.api.message.containers
 
 import love.forte.simbot.annotation.ContainerType
@@ -71,6 +72,29 @@ public interface BotLevelContainer : Container {
  */
 @ContainerType("机器人信息容器")
 public interface BotInfo : Container, BotCodeContainer, BotNameContainer, BotAvatarContainer, BotLevelContainer
+
+
+/**
+ * 提供一个内容为空的bot信息实例。
+ */
+public fun emptyBotInfo(): BotInfo = EmptyBotInfo
+
+/**
+ * 信息内容为空的 [BotInfo] 实例。
+ */
+private object EmptyBotInfo : BotInfo {
+    override val botCode: String
+        get() = ""
+    override val botName: String
+        get() = ""
+    override val botAvatar: String?
+        get() = null
+
+    override fun toString(): String {
+        return "EmptyBotInfo(Nothing here)"
+    }
+}
+
 
 /**
  * bot容器，可以得到一个 [bot信息][BotInfo]。

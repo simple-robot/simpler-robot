@@ -12,9 +12,13 @@
  *
  */
 
+@file:JvmMultifileClass
+@file:JvmName("Results")
 package love.forte.simbot.api.message.results
 
 import love.forte.simbot.api.message.containers.AccountContainer
+import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.emptyAccountInfo
 
 
 /**
@@ -35,4 +39,33 @@ public interface FriendInfo: Result, AccountContainer {
  * 好友列表。
  */
 public interface FriendList: MultipleResults<FriendInfo>
+
+
+/**
+ * [FriendInfo] 的空值实现。
+ */
+public fun emptyFriendInfo() = object : FriendInfo {
+    override val accountInfo: AccountInfo
+        get() = emptyAccountInfo()
+    override val originalData: String
+        get() = "{}"
+    override val grouping: String?
+        get() = null
+
+    override fun toString(): String {
+        return "EmptyFriendInfo"
+    }
+}
+
+
+public fun emptyFriendList() = object : FriendList {
+    override val originalData: String
+        get() = "[]"
+    override val results: List<FriendInfo>
+        get() = emptyList()
+
+    override fun toString(): String {
+        return "EmptyFriendList"
+    }
+}
 
