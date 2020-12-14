@@ -160,3 +160,16 @@ public fun emptyGroupInfo(): GroupFullInfo = object : GroupFullInfo {
 }
 
 
+/**
+ * [GroupList] 无效化实现。
+ */
+public fun emptyGroupList(): GroupList = object : GroupList {
+    override val originalData: String
+        get() = "[]"
+    override val results: List<SimpleGroupInfo>
+        get() = emptyList()
+
+    override fun toString(): String {
+        return "EmptyGroupList"
+    }
+}
