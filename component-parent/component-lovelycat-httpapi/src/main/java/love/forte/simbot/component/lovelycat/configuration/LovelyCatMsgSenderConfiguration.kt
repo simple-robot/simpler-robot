@@ -21,6 +21,7 @@ import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.simbot.component.lovelycat.LovelyCatApiManager
 import love.forte.simbot.component.lovelycat.sender.LovelyCatGetterFactory
 import love.forte.simbot.component.lovelycat.sender.LovelyCatSenderFactory
+import love.forte.simbot.component.lovelycat.sender.LovelyCatSetterFactory
 
 
 @ConfigBeans("lovelyCatMsgSenderConfiguration")
@@ -34,6 +35,11 @@ public class LovelyCatMsgSenderConfiguration {
     @Beans("lovelyCatGetterFactory")
     public fun lovelyCatGetterFactory(apiManager: LovelyCatApiManager): LovelyCatGetterFactory {
         return LovelyCatGetterFactory(apiManager)
+    }
+
+    @Beans("lovelyCatSetterFactory")
+    public fun lovelyCatSetterFactory(apiManager: LovelyCatApiManager): LovelyCatSetterFactory {
+        return LovelyCatSetterFactory(apiManager)
     }
 
 

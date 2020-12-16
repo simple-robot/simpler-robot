@@ -12,6 +12,8 @@
  *
  */
 
+@file:JvmMultifileClass
+@file:JvmName("Results")
 package love.forte.simbot.api.message.results
 
 
@@ -58,3 +60,43 @@ interface GroupNote : Result {
  * 群公告列表
  */
 interface GroupNoteList : MultipleResults<GroupNote>
+
+
+/**
+ * [GroupNote] 无效化实现。
+ */
+public fun emptyGroupNote(): GroupNote = object : GroupNote {
+    override val originalData: String
+        get() = "{}"
+    override val title: String
+        get() = ""
+    override val text: String
+        get() = ""
+    override val top: Boolean
+        get() = false
+    override val forNew: Boolean
+        get() = false
+    override val confirm: Boolean
+        get() = false
+    override val issuingTime: Long
+        get() = -1
+
+    override fun toString(): String {
+        return "EmptyGroupNote"
+    }
+}
+
+
+/**
+ * [GroupNoteList] 无效化实现。
+ */
+public fun emptyGroupNoteList(): GroupNoteList = object : GroupNoteList {
+    override val originalData: String
+        get() = "[]"
+    override val results: List<GroupNote>
+        get() = emptyList()
+
+    override fun toString(): String {
+        return "EmptyGroupNoteList"
+    }
+}

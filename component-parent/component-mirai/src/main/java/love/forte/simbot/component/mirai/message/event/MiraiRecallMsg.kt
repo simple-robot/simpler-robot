@@ -14,11 +14,15 @@
 
 package love.forte.simbot.component.mirai.message.event
 
+import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.GroupMsgRecall
+import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.api.message.events.PrivateMsgRecall
 import love.forte.simbot.component.mirai.message.MiraiFriendAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
+import love.forte.simbot.component.mirai.message.MiraiMessageCache
 import net.mamoe.mirai.event.events.MessageRecallEvent
 import net.mamoe.mirai.event.events.author
 import net.mamoe.mirai.event.events.operatorOrBot
@@ -30,16 +34,30 @@ import net.mamoe.mirai.event.events.operatorOrBot
 public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractMiraiMsgGet<E>(event) {
     override val id: String = "REC-${event.authorId}.${event.messageId}.${event.messageInternalId}"
 
-    /** 群消息撤回。 */
-    public class GroupRecall(event: MessageRecallEvent.GroupRecall) :
+
+    /**
+     * 群消息撤回。
+     */
+    public class GroupRecall(event: MessageRecallEvent.GroupRecall, private val cache: MiraiMessageCache) :
         MiraiMsgRecall<MessageRecallEvent.GroupRecall>(event), GroupMsgRecall {
         /** 有可能是bot自己。 */
         override val accountInfo: AccountInfo = MiraiMemberAccountInfo(event.author)
 
+
+        private val cacheMsg: GroupMsg?
+            get() = cache.getGroupMsg("${event.authorId}.${event.messageId}.${event.messageInternalId}")
+
         /**
          * 暂时不支持获取撤回掉的消息。
          */
-        override val text: String? get() = null
+        override val text: String? get() {
+            return cacheMsg?.text
+        }
+
+
+        override val msgContent: MessageContent?
+            get() = cacheMsg?.msgContent
+
 
         /** 如果操作者与消息作者相同即为主动，否则为被动。 */
         override val groupRecallType: GroupMsgRecall.Type = if (event.operatorOrBot.id == event.authorId) {
@@ -52,14 +70,26 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
         override val recallTime: Long = System.currentTimeMillis()
     }
 
-    /** 好友消息撤回 */
-    public class FriendRecall(event: MessageRecallEvent.FriendRecall) :
+    /**
+     * 好友消息撤回
+     */
+    public class FriendRecall(event: MessageRecallEvent.FriendRecall, private val cache: MiraiMessageCache) :
         MiraiMsgRecall<MessageRecallEvent.FriendRecall>(event),
         PrivateMsgRecall {
         /** 撤回的操作人，就是好友。 */
         override val accountInfo: AccountInfo = MiraiFriendAccountInfo(event.bot.getFriend(event.operator))
-        /** 暂时不支持获取消息原文。 */
-        override val text: String? get() = null
+
+        private val cacheMsg: PrivateMsg?
+            get() = cache.getPrivateMsg("${event.operator}.${event.messageId}.${event.messageInternalId}")
+
+
+        /**
+         * 缓存中获取消息。
+         */
+        override val text: String? get() = cacheMsg?.text
+
+        override val msgContent: MessageContent?
+            get() = cacheMsg?.msgContent
 
         override val recallTime: Long = System.currentTimeMillis()
     }

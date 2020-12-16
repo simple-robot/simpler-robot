@@ -12,11 +12,12 @@
  *
  */
 
+@file:JvmMultifileClass
+@file:JvmName("Results")
 package love.forte.simbot.api.message.results
 
-import love.forte.simbot.api.message.containers.AccountContainer
-import love.forte.simbot.api.message.containers.GroupContainer
-import love.forte.simbot.api.message.containers.PermissionContainer
+import love.forte.simbot.api.message.assists.Permissions
+import love.forte.simbot.api.message.containers.*
 
 
 /**
@@ -32,3 +33,39 @@ public interface GroupMemberInfo : Result, GroupContainer, AccountContainer, Per
  * 群成员列表。
  */
 public interface GroupMemberList : MultipleResults<GroupMemberInfo>, GroupContainer
+
+
+/**
+ * [GroupMemberInfo] 的无效化实现。
+ */
+public fun emptyGroupMemberInfo() : GroupMemberInfo = object : GroupMemberInfo {
+    override val accountInfo: AccountInfo
+        get() = emptyAccountInfo()
+    override val originalData: String
+        get() = "{}"
+    override val permission: Permissions
+        get() = Permissions.MEMBER
+    override val groupInfo: GroupInfo
+        get() = emptyGroupInfo()
+
+    override fun toString(): String {
+        return "EmptyGroupMemberInfo"
+    }
+}
+
+
+/**
+ * [GroupMemberList] 的无效化实现。
+ */
+public fun emptyGroupMemberList() : GroupMemberList = object : GroupMemberList {
+    override val originalData: String
+        get() = "[]"
+    override val groupInfo: GroupInfo
+        get() = emptyGroupInfo()
+    override val results: List<GroupMemberInfo>
+        get() = emptyList()
+
+    override fun toString(): String {
+        return "EmptyGroupMemberList"
+    }
+}

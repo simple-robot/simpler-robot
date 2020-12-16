@@ -111,6 +111,26 @@ public interface AccountAvatarContainer : Container {
 public interface AccountInfo : Container, AccountNameContainer, AccountAvatarContainer, AccountCodeContainer
 
 
+public fun emptyAccountInfo() : AccountInfo = EmptyAccountInfo
+
+private object EmptyAccountInfo : AccountInfo {
+    override val accountCode: String
+        get() = ""
+    override val accountNickname: String?
+        get() = null
+    override val accountRemark: String?
+        get() = null
+    override val accountAvatar: String?
+        get() = null
+    override fun toString(): String {
+        return "EmptyAccountInfo"
+    }
+}
+
+
+
+
+
 /**
  * 账号容器，可以得到一个账号的[信息][AccountInfo]。
  */

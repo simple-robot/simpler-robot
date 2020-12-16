@@ -12,18 +12,19 @@
  *
  */
 
+@file:JvmMultifileClass
+@file:JvmName("Results")
 package love.forte.simbot.api.message.results
 
 import love.forte.simbot.api.message.assists.Permissions
-import love.forte.simbot.api.message.containers.AccountContainer
-import love.forte.simbot.api.message.containers.GroupInfo
-import love.forte.simbot.api.message.containers.PermissionContainer
+import love.forte.simbot.api.message.containers.*
 
 
 /**
  * 简单的群信息，只包含了[群基础信息][GroupInfo]
  */
 public interface SimpleGroupInfo : Result, GroupInfo
+
 
 /**
  *
@@ -76,6 +77,7 @@ public interface GroupFullInfo : SimpleGroupInfo {
     val admins: List<GroupAdmin>
 }
 
+
 /**
  * 群列表，得到一些群的基础信息
  */
@@ -114,3 +116,60 @@ public interface GroupOwner : GroupAdmin, AccountContainer, PermissionContainer 
 public data class GroupOwnerImpl(private val account: AccountContainer) : GroupOwner, AccountContainer by account
 
 
+
+private object EmptyGroupOwner : GroupOwner {
+    override val accountInfo: AccountInfo
+        get() = emptyAccountInfo()
+
+    override fun toString(): String {
+        return "EmptyGroupOwner"
+    }
+}
+
+
+/**
+ * [GroupInfo] 的空值实现。所有属性均为空或无效默认值。
+ */
+public fun emptyGroupInfo(): GroupFullInfo = object : GroupFullInfo {
+    override val originalData: String
+        get() = "{}"
+    override val groupCode: String
+        get() = ""
+    override val groupAvatar: String?
+        get() = null
+    override val groupName: String?
+        get() = null
+    override val maximum: Int
+        get() = -1
+    override val total: Int
+        get() = -1
+    override val createTime: Long
+        get() = -1
+    override val simpleIntroduction: String?
+        get() = null
+    override val fullIntroduction: String?
+        get() = null
+    override val owner: GroupOwner
+        get() = EmptyGroupOwner
+    override val admins: List<GroupAdmin>
+        get() = emptyList()
+
+    override fun toString(): String {
+        return "EmptyGroupInfo"
+    }
+}
+
+
+/**
+ * [GroupList] 无效化实现。
+ */
+public fun emptyGroupList(): GroupList = object : GroupList {
+    override val originalData: String
+        get() = "[]"
+    override val results: List<SimpleGroupInfo>
+        get() = emptyList()
+
+    override fun toString(): String {
+        return "EmptyGroupList"
+    }
+}

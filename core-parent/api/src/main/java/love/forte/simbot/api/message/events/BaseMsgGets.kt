@@ -229,6 +229,17 @@ public interface EventGet : MsgGet {
     override val text: String? get() = null
 }
 
+/**
+ * [MessageContent] 容器，标记可以得到一个 [消息正文][msgContent]. 被使用与 [MessageGet] 和 [MessageRecallEventGet].
+ * 在 [消息事件][MessageGet] 中，[msgContent] 是不允许为 `null` 的，但是在 [撤回事件][MessageRecallEventGet] 中暂时定义为允许为null。
+ */
+public interface MessageContentContainer {
+    /**
+     *  消息事件的消息正文文本。
+     */
+    val msgContent: MessageContent?
+}
+
 
 /**
  * 与消息有关的事件。
@@ -239,21 +250,14 @@ public interface EventGet : MsgGet {
  * 因此 [FlagContent] 提供为默认方法并使用 [id] 作为返回值。如果有特殊需要则重写。
  */
 @ParentListenerType("消息事件父接口")
-public interface MessageGet : MsgGet, FlagContainer<MessageGet.MessageFlagContent> {
+public interface MessageGet : MsgGet, MessageContentContainer, FlagContainer<MessageGet.MessageFlagContent> {
 
     /**
      *  消息事件的消息正文文本。
      *
      * [消息正文][msgContent] 不允许为`null`，但是其中的 [msg][MessageContent.msg] 则就不保证了。
      */
-    val msgContent: MessageContent
-
-
-
-    // /**
-    //  * 提供一个简单的方法来获取 [msgContent] 中的文本内容。
-    //  */
-    // override val msg: String?
+    override val msgContent: MessageContent
 
 
     /**
@@ -317,11 +321,31 @@ public interface MessageGet : MsgGet, FlagContainer<MessageGet.MessageFlagConten
  * 一般来讲应该可以得到撤回的[消息内容][MsgGet.msg]以及[撤回时间][recallTime]
  */
 @ParentListenerType("消息撤回父接口")
-public interface MessageRecallEventGet : MsgGet {
+public interface MessageRecallEventGet : MsgGet, MessageContentContainer {
     /**
      * 撤回时间。毫秒时间戳。
      */
     val recallTime: Long
+
+    /**
+     * 获取被撤回的这条消息的 纯文本 内容。
+     * 如果无法获取的消息内容，则得到 `null`。
+     */
+    override val text: String?
+
+    /**
+     * 被撤回的 [消息正文][MessageContent].
+     * 并非所有的组件都支持获取到撤回的值，因此 [msgContent] 定义为允许为null。
+     */
+    override val msgContent: MessageContent?
+
+
+    /**
+     * 由于 [msgContent] 可能为`null`，因此 [msg] 也可能为`null`。
+     */
+    @JvmDefault
+    val msg: String? get() = msgContent?.msg
+
 }
 
 

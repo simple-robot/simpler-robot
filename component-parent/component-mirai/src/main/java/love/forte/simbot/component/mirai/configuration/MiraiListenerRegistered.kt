@@ -19,7 +19,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import love.forte.common.ioc.annotation.Depend
-import love.forte.simbot.component.mirai.utils.registerSimbotEvents
+import love.forte.simbot.component.mirai.utils.MiraiBotEventRegistrar
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.listener.ListenerManager
@@ -40,13 +40,16 @@ public class MiraiListenerRegistered : ListenerRegistered {
     @Depend
     lateinit var msgGetProcessor: MsgGetProcessor
 
+    @Depend
+    lateinit var miraiBotEventRegistrar: MiraiBotEventRegistrar
+
     /**
      * 当所有的监听函数都注册完成后,
      * 为所有的bot注册监听事件。
      */
     override fun onRegistered(manager: ListenerManager) {
         // 注册Mirai的所有bot事件。
-        Bot.forEachInstance { it.registerSimbotEvents(msgGetProcessor) }
+        Bot.forEachInstance { miraiBotEventRegistrar.registerSimbotEvents(it, msgGetProcessor) }
 
         val botAliveThread = BotAliveThread("mirai-bot-alive").apply { start() }
 

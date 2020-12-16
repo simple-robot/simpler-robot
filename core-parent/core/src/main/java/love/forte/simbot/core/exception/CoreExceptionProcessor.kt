@@ -14,13 +14,14 @@
 
 package love.forte.simbot.core.exception
 
+import love.forte.common.sequences.distinctByMerger
+import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.exception.ExceptionHandle
 import love.forte.simbot.exception.ExceptionHandleContext
 import love.forte.simbot.exception.ExceptionProcessor
 import love.forte.simbot.exception.ExceptionProcessorBuilder
 import java.lang.reflect.ParameterizedType
 import kotlin.reflect.jvm.kotlinFunction
-
 
 
 /**
@@ -86,7 +87,7 @@ public class CoreExceptionProcessor(handles: Array<out ExceptionHandle<*>>) : Ex
                 val value = it.value
                 if (value.size > 1) {
                     val showJoin = value.joinToString(", ", "[", "]")
-                    throw IllegalStateException("There cannot be multiple exception handles for an exception type. but exception type '${it.key.name}' has ${value.size}: $showJoin")
+                    throw IllegalStateException("Cannot be multiple exception handles for an exception type. but exception type '${it.key.name}' has ${value.size}: $showJoin")
                 } else it.key to value[0]
             }
             .filter {
@@ -154,7 +155,7 @@ public class CoreExceptionProcessor(handles: Array<out ExceptionHandle<*>>) : Ex
         }) as? ExceptionHandle<E>
     }
 
-    companion object ExceptionClassCompanion {
+    private companion object ExceptionClassCompanion {
         private val runtimeExceptionClass = RuntimeException::class.java
         private val exceptionClass = Exception::class.java
     }

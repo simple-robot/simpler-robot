@@ -12,10 +12,15 @@
  *
  */
 
+@file:JvmMultifileClass
+@file:JvmName("Results")
 package love.forte.simbot.api.message.results
 
+import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.AccountContainer
+import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.PermissionContainer
+import love.forte.simbot.api.message.containers.emptyAccountInfo
 
 
 /**
@@ -38,3 +43,35 @@ public interface BanInfo : Result, AccountContainer, PermissionContainer {
     val lastTime: Long
 }
 
+/**
+ * [BanInfo] 空值实现。
+ */
+public fun emptyBanInfo(): BanInfo = object : BanInfo {
+    override val accountInfo: AccountInfo
+        get() = emptyAccountInfo()
+    override val originalData: String
+        get() = "{}"
+    override val permission: Permissions
+        get() = Permissions.MEMBER
+    override val lastTime: Long
+        get() = -1
+
+    override fun toString(): String {
+        return "EmptyBanInfo"
+    }
+}
+
+
+/**
+ * [BanList] 的空值实现。
+ */
+public fun emptyBanList(): BanList = object: BanList {
+    override val originalData: String
+        get() = "[]"
+    override val results: List<BanInfo>
+        get() = emptyList()
+
+    override fun toString(): String {
+        return "EmptyBanList"
+    }
+}

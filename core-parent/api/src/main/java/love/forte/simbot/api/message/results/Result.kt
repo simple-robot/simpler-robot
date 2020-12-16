@@ -11,7 +11,8 @@
  *  * QQ     1149159218
  *
  */
-
+@file:JvmMultifileClass
+@file:JvmName("Results")
 package love.forte.simbot.api.message.results
 
 import love.forte.simbot.api.message.containers.OriginalDataContainer

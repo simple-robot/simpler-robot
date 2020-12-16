@@ -11,7 +11,8 @@
  *  * QQ     1149159218
  *
  */
-@file:JvmName("AuthInfos")
+@file:JvmMultifileClass
+@file:JvmName("Results")
 package love.forte.simbot.api.message.results
 
 /**

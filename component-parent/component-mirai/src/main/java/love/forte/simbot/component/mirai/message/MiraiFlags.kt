@@ -13,7 +13,6 @@
  */
 
 @file:JvmName("MiraiFlags")
-
 package love.forte.simbot.component.mirai.message
 
 import love.forte.simbot.api.message.assists.Flag
@@ -31,7 +30,7 @@ import net.mamoe.mirai.message.data.MessageSource
 public abstract class MiraiMessageSourceFlagContent : FlagContent {
     abstract val source: MessageSource?
     override val id: String
-        get() = source?.let { "MiraiMessageFlagContent(${it.fromId}.${it.id})" } ?: "EmptyMiraiMessageFlagContent(source=null)"
+        get() = source?.let { "${it.fromId}.${it.id}.${it.internalId}" } ?: "EmptyMiraiMessageFlagContent(source=null)"
 }
 
 
