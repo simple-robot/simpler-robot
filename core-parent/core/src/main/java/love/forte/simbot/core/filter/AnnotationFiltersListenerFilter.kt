@@ -475,7 +475,7 @@ public class AnnotationFilterListenerFilterImpl(
     /** at任意人就会触发。 */
     override val anyAt: Boolean = with(filter.anyAt) {
         if (!this && filter.anyAtByParent) filters.anyAt
-        else filters.anyAt
+        else this
     }
 
 

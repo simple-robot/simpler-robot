@@ -20,7 +20,7 @@ import love.forte.simbot.listener.ListenerInterceptContext
 import love.forte.simbot.listener.ListenerInterceptor
 
 
-@Beans
+// @Beans
 public class Interceptor1 : ListenerInterceptor {
     override fun intercept(context: ListenerInterceptContext): InterceptionType {
         println("intercepted.")
