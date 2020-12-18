@@ -174,3 +174,22 @@ simbot.component.lovelycat.api.cache.durationUnit=MINUTES
 
 
 ### (NOW)
+
+### mirai
+提供新配置项：
+```properties
+# 默认值为 DEFAULT 
+simbot.component.mirai.loginSolverType=DEFAULT
+
+# 如果不为空，此处指定一个 deviceInfo 的 json文件路径。
+simbot.component.mirai.deviceInfoFile=
+```
+
+配置项`loginSolverType`代表mirai组件所使用的登录验证码处理器，值为 `love.forte.simbot.component.mirai.configuration.MiraiLoginSolverType` 枚举的元素值。
+可选项：
+- DEFAULT - mirai使用的默认验证码处理器，会根据当前系统环境判断是使用弹窗验证码还是图形字符验证码。
+- SWING - mirai实现的Swing图形验证码处理器。
+- STANDARD_CHAR_IMAGE - mirai实现的字符图片验证码处理器。但是目前来看可能会造成登录卡死。
+- TEMP_IMAGE - simbot-mirai组件实现的临时图片验证码处理器。会将验证码图片保存至临时文件并等待输入。
+
+配置项`deviceInfoFile`允许指定一个 deviceInfo 的 json文件路径。

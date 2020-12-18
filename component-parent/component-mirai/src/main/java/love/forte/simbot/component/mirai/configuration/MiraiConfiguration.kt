@@ -63,9 +63,12 @@ public class MiraiConfiguration {
     var reconnectionRetryTimes: Int = BotConfiguration.Default.reconnectionRetryTimes
 
 
-    /** 使用协议类型 */
+    /**
+     * 使用协议类型。
+     * 默认使用 [安卓手机协议][BotConfiguration.MiraiProtocol.ANDROID_PHONE]。
+     */
     @field:ConfigInject
-    var protocol: BotConfiguration.MiraiProtocol = BotConfiguration.Default.protocol
+    var protocol: BotConfiguration.MiraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE
 
     /** 关闭mirai的bot logger */
     @field:ConfigInject
@@ -97,6 +100,11 @@ public class MiraiConfiguration {
     @field:ConfigInject
     var cacheDirectory: String? = null
 
+    @field:ConfigInject
+    var loginSolverType: MiraiLoginSolverType = MiraiLoginSolverType.DEFAULT
+
+    @field:ConfigInject
+    var deviceInfoFile: String? = null
 
     /**
      * mirai官方配置类获取函数，默认为其默认值
@@ -104,13 +112,24 @@ public class MiraiConfiguration {
     // @set:Deprecated("use setPostBotConfigurationProcessor((code, conf) -> {...})")
     val botConfiguration: (String) -> BotConfiguration = { code ->
         val conf = BotConfiguration()
-        conf.deviceInfo = { MiraiSystemDeviceInfo(code, deviceInfoSeed) }
+
+        deviceInfoFile.takeIf { it?.isNotBlank() == true }?.let {
+            conf.fileBasedDeviceInfo(it)
+        } ?: run {
+            conf.deviceInfo = { MiraiSystemDeviceInfo(code, deviceInfoSeed) }
+        }
+
+
         conf.heartbeatPeriodMillis = this.heartbeatPeriodMillis
         conf.heartbeatTimeoutMillis = this.heartbeatTimeoutMillis
         conf.firstReconnectDelayMillis = this.firstReconnectDelayMillis
         conf.reconnectPeriodMillis = this.reconnectPeriodMillis
         conf.reconnectionRetryTimes = this.reconnectionRetryTimes
         conf.protocol = this.protocol
+
+        // 验证码处理器
+        conf.loginSolver = this.loginSolverType.getter(null)
+
         conf.fileCacheStrategy = when (this.cacheType) {
             // 内存缓存
             MiraiCacheType.MEMORY -> FileCacheStrategy.MemoryCache
@@ -174,13 +193,43 @@ public class MiraiConfiguration {
 /**
  * mirai的图片文件缓存策略
  */
-enum class MiraiCacheType {
+public enum class MiraiCacheType {
     /** 文件缓存 */
     FILE,
 
     /** 内存缓存 */
     MEMORY
 }
+
+
+/**
+ * mirai 验证码处理器类型。
+ * @see LoginSolver
+ */
+public enum class MiraiLoginSolverType(internal val getter: (Any?) -> LoginSolver) {
+    /** 默认使用的验证码处理器。 */
+    DEFAULT({ LoginSolver.Default }),
+
+    /** 图形验证码处理器 */
+    SWING({ SwingSolver }),
+
+    /** 图形文字处理器 */
+    STANDARD_CHAR_IMAGE({
+        StandardCharImageLoginSolver(
+            { readLine() ?: throw net.mamoe.mirai.network.NoStandardInputForCaptchaException(null) },
+            null
+        )
+    }),
+    /** 临时图片文件验证码 */
+    TEMP_IMAGE({
+        love.forte.simbot.component.mirai.MiraiTempImgLoginSolver {
+            readLine() ?: throw net.mamoe.mirai.network.NoStandardInputForCaptchaException(null)
+        }
+    })
+
+
+}
+
 
 /**
  * [SystemDeviceInfo] 实例，尝试着固定下随机值
@@ -191,7 +240,7 @@ open class MiraiSystemDeviceInfo
 constructor(
     code: Long,
     seed: Long,
-    randomFactory: (code: Long, seed: Long) -> Random = { c, s -> Random(c * s) }
+    randomFactory: (code: Long, seed: Long) -> Random = { c, s -> Random(c * s) },
 ) : SystemDeviceInfo() {
     constructor(codeId: String, seedNum: Long) : this(codeId.toLong(), seedNum)
     constructor(codeId: String, seedNum: Long, randomFactory: (code: Long, seed: Long) -> Random) :
