@@ -15,7 +15,7 @@
         <module>component-mirai</module>
         <module>component-ding</module>
         <module>component-lovelycat-httpapi</module>
-        <module>component-onebot</module>
+        <!--<module>component-onebot</module>-->
     </modules>
 
     <dependencies>
