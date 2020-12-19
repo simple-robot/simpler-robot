@@ -173,7 +173,7 @@ simbot.component.lovelycat.api.cache.durationUnit=MINUTES
 
 
 
-### (NOW)
+### BETA.1
 
 ### mirai
 提供新配置项：
