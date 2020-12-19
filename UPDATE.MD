@@ -197,5 +197,6 @@ simbot.component.mirai.deviceInfoFile=
 ### jackson-serialization
 发布[jackson序列化模块](core-parent/serialization-json-jackson), 实现于 [json序列化核心模块](core-parent/serialization-json-core)。
 
+
 ### fix
 [#21](https://github.com/ForteScarlet/simpler-robot/issues/21) @Filter(anyAt = true) 无效

@@ -14,15 +14,20 @@
 
 package love.forte.simbot.spring.autoconfigure.properties;
 
-import love.forte.common.configuration.annotation.ConfigInject;
 import love.forte.simbot.component.mirai.configuration.MiraiCacheType;
+import love.forte.simbot.component.mirai.configuration.MiraiLoginSolverType;
 import net.mamoe.mirai.utils.BotConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
+ * simbot配置文件对应实例。实际上没有被使用到，仅用作提供springboot的配置文件快捷提醒。
+ *
+ * 真正使用到的配置类为 {@link love.forte.simbot.component.mirai.configuration.MiraiConfiguration}
+ *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
+@SuppressWarnings("JavadocReference")
 @Component
 @ConfigurationProperties(prefix = "simbot.component.mirai")
 @lombok.Getter
@@ -38,7 +43,6 @@ public class SimbotCompMiraiConfigurationProperties {
      *
      * @see BotConfiguration#heartbeatPeriodMillis
      */
-    @ConfigInject
     private long heartbeatPeriodMillis = getDef().getHeartbeatPeriodMillis();
 
     /**
@@ -47,62 +51,60 @@ public class SimbotCompMiraiConfigurationProperties {
      *
      * @see BotConfiguration#heartbeatTimeoutMillis
      */
-    @ConfigInject
     private long heartbeatTimeoutMillis = getDef().getHeartbeatTimeoutMillis();
 
     /**
      * 心跳失败后的第一次重连前的等待时间。
      */
-    @ConfigInject
     private long firstReconnectDelayMillis = getDef().getFirstReconnectDelayMillis();
 
     /**
      * 重连失败后, 继续尝试的每次等待时间。
      */
-    @ConfigInject
     private long reconnectPeriodMillis = getDef().getReconnectPeriodMillis();
 
     /** 最多尝试多少次重连。 */
-    @ConfigInject
     private int reconnectionRetryTimes = getDef().getReconnectionRetryTimes();
 
 
     /** 使用协议类型。 */
-    @ConfigInject
-    private BotConfiguration.MiraiProtocol protocol = getDef().getProtocol();
+    private BotConfiguration.MiraiProtocol protocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE;
 
     /** 关闭mirai的bot logger */
-    @ConfigInject
     private boolean noBotLog = false;
 
     /** 关闭mirai网络日志 */
-    @ConfigInject
     private boolean noNetworkLog = false;
 
     /** mirai bot log切换使用simbot的log */
-    @ConfigInject
     private boolean useSimbotBotLog = true;
 
     /** mirai 网络log 切换使用simbot的log */
-    @ConfigInject
     private boolean useSimbotNetworkLog = true;
 
     /**
      *  mirai配置自定义deviceInfoSeed的时候使用的随机种子。默认为1.
      *  实质上这个参数影响并不大。
      */
-    @ConfigInject
     private long deviceInfoSeed = 1L;
 
     /**
      * mirai缓存策略。
      */
-    @ConfigInject
     private MiraiCacheType cacheType = MiraiCacheType.FILE;
 
     /**
      * 如果mirai缓存为文件，且此参数不为空，则使用此参数中的文件路径作为缓存路径。
      */
-    @ConfigInject
     private String cacheDirectory = "";
+
+    /**
+     * mirai登录验证码处理器。
+     */
+    private MiraiLoginSolverType loginSolverType = MiraiLoginSolverType.DEFAULT;
+
+    /**
+     * mirai设备信息文件路径。
+     */
+    private String deviceInfoFile = null;
 }
