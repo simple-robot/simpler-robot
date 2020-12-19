@@ -20,6 +20,7 @@
         <module>serialization-json-core</module>
         <module>serialization-json-moshi</module>
         <module>serialization-json-fastjson</module>
+        <module>serialization-json-jackson</module>
     </modules>
 
 

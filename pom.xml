@@ -26,6 +26,9 @@
     <description>simple-robot是一个通用bot开发框架，以同一种灵活的标准来编写不同平台的bot应用。而simpler-robot便是simple-robot 2.x版本命名。</description>
 
     <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+
         <!--<editor-fold desc="encode prop">-->
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
@@ -38,8 +41,6 @@
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <!--</editor-fold>-->
 
-        <!-- moshi version -->
-        <moshi.version>1.11.0</moshi.version>
 
         <!-- slf4j version -->
         <slf4j.version>1.7.30</slf4j.version>
@@ -48,6 +49,8 @@
 
         <!-- some version -->
         <fastjson.version>1.2.74</fastjson.version>
+        <jackson.version>2.11.3</jackson.version>
+        <moshi.version>1.11.0</moshi.version>
         <hutool.version>5.5.1</hutool.version>
 
         <commons.version>1.0.0-ALPHA.5</commons.version>
@@ -270,6 +273,12 @@
                 <groupId>com.squareup.moshi</groupId>
                 <artifactId>moshi</artifactId>
                 <version>${moshi.version}</version>
+            </dependency>
+            <!-- jackson - json -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
             <!--</editor-fold>-->
             <!--<editor-fold desc="hutool dependencies">-->

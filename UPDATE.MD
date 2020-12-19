@@ -181,7 +181,7 @@ simbot.component.lovelycat.api.cache.durationUnit=MINUTES
 # 默认值为 DEFAULT 
 simbot.component.mirai.loginSolverType=DEFAULT
 
-# 如果不为空，此处指定一个 deviceInfo 的 json文件路径。
+# 如果不为空，此处代表指定一个 deviceInfo 的 json文件路径。
 simbot.component.mirai.deviceInfoFile=
 ```
 
@@ -192,4 +192,10 @@ simbot.component.mirai.deviceInfoFile=
 - STANDARD_CHAR_IMAGE - mirai实现的字符图片验证码处理器。但是目前来看可能会造成登录卡死。
 - TEMP_IMAGE - simbot-mirai组件实现的临时图片验证码处理器。会将验证码图片保存至临时文件并等待输入。
 
-配置项`deviceInfoFile`允许指定一个 deviceInfo 的 json文件路径。
+配置项`deviceInfoFile`允许指定一个 deviceInfo 的 json文件路径。（[#20](https://github.com/ForteScarlet/simpler-robot/issues/20)）
+
+### jackson-serialization
+发布[jackson序列化模块](core-parent/serialization-json-jackson), 实现于 [json序列化核心模块](core-parent/serialization-json-core)。
+
+### fix
+[#21](https://github.com/ForteScarlet/simpler-robot/issues/21) @Filter(anyAt = true) 无效
