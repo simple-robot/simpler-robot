@@ -173,7 +173,13 @@ simbot.component.lovelycat.api.cache.durationUnit=MINUTES
 
 
 
-### BETA.1
+## BETA.1
+
+### **注意**
+未来(可能会出现)的[全平台猫猫码](https://github.com/ForteScarlet/CatCode-multiplatform) 的jvm平台实现将会变更包路径，届时请注意代码兼容问题。
+
+不过变的路径是前缀路径，一个全局替换就能解决的。
+
 
 ### mirai
 提供新配置项：
@@ -192,7 +198,7 @@ simbot.component.mirai.deviceInfoFile=
 - STANDARD_CHAR_IMAGE - mirai实现的字符图片验证码处理器。但是目前来看可能会造成登录卡死。
 - TEMP_IMAGE - simbot-mirai组件实现的临时图片验证码处理器。会将验证码图片保存至临时文件并等待输入。
 
-配置项`deviceInfoFile`允许指定一个 deviceInfo 的 json文件路径。（[#20](https://github.com/ForteScarlet/simpler-robot/issues/20)）
+配置项`deviceInfoFile`允许指定一个 deviceInfo 的 json文件路径。( [#20](https://github.com/ForteScarlet/simpler-robot/issues/20) )
 
 ### jackson-serialization
 发布[jackson序列化模块](core-parent/serialization-json-jackson), 实现于 [json序列化核心模块](core-parent/serialization-json-core)。
