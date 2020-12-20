@@ -26,6 +26,8 @@ import java.io.File
 import kotlin.random.Random
 import kotlin.random.nextInt
 
+private const val MIRAI_LOG_NAME_PREFIX = "love.forte.simbot.component.mirai"
+
 /**
  * Mirai配置类
  *
@@ -163,7 +165,7 @@ public class MiraiConfiguration {
         // 默认情况下都是关闭状态的log
         if (useSimbotBotLog) {
             conf.botLoggerSupplier = {
-                val logger: Logger = LoggerFactory.getLogger("love.forte.component.mirai.bot.${it.id}")
+                val logger: Logger = LoggerFactory.getLogger("$MIRAI_LOG_NAME_PREFIX.bot.${it.id}")
                 SimbotMiraiLogger(logger).withSwitch(true)
             }
         } else {
@@ -175,7 +177,7 @@ public class MiraiConfiguration {
         }
         if (useSimbotNetworkLog) {
             conf.networkLoggerSupplier = {
-                val logger: Logger = LoggerFactory.getLogger("love.forte.component.mirai.net.${it.id}")
+                val logger: Logger = LoggerFactory.getLogger("$MIRAI_LOG_NAME_PREFIX.net.${it.id}")
                 SimbotMiraiLogger(logger).withSwitch(true)
             }
         } else {
