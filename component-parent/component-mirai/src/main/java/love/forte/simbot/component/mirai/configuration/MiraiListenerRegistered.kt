@@ -26,11 +26,9 @@ import love.forte.simbot.listener.ListenerManager
 import love.forte.simbot.listener.ListenerRegistered
 import love.forte.simbot.listener.MsgGetProcessor
 import net.mamoe.mirai.Bot
-import net.mamoe.mirai.closeAndJoin
-import net.mamoe.mirai.join
 
 /**
- *
+ * 监听函数注册后执行。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 @ComponentBeans("miraiListenerRegistered")
@@ -49,7 +47,7 @@ public class MiraiListenerRegistered : ListenerRegistered {
      */
     override fun onRegistered(manager: ListenerManager) {
         // 注册Mirai的所有bot事件。
-        Bot.forEachInstance { miraiBotEventRegistrar.registerSimbotEvents(it, msgGetProcessor) }
+        Bot.instancesSequence.forEach { miraiBotEventRegistrar.registerSimbotEvents(it, msgGetProcessor) }
 
         val botAliveThread = BotAliveThread("mirai-bot-alive").apply { start() }
 
@@ -70,7 +68,7 @@ public class MiraiListenerRegistered : ListenerRegistered {
             logger.info("try to close all bots...")
             val waiting = mutableListOf<Pair<Long, Deferred<*>>>()
             // close all bot.
-            Bot.botInstancesSequence.map {
+            Bot.instancesSequence.map {
                 it.id to GlobalScope.async {
                     logger.debug("try to close bot(${it.id})")
                     it.closeAndJoin()
@@ -93,8 +91,10 @@ public class MiraiListenerRegistered : ListenerRegistered {
 
 private class BotAliveThread(name: String) : Thread(name) {
     override fun run() {
-        val bots = Bot.botInstances
-        while(!interrupted() && bots.isNotEmpty()) {
+        // var bots = Bot.instances
+        while(!interrupted()) {
+            val bots = Bot.instances
+            if (bots.isEmpty()) { break }
             kotlin.runCatching {
                 bots.forEach {
                     runBlocking { it.join() }
