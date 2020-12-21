@@ -14,7 +14,6 @@
 
 package love.forte.simbot.spring.autoconfigure.properties;
 
-import love.forte.simbot.component.mirai.configuration.MiraiCacheType;
 import love.forte.simbot.component.mirai.configuration.MiraiLoginSolverType;
 import net.mamoe.mirai.utils.BotConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -87,11 +86,6 @@ public class SimbotCompMiraiConfigurationProperties {
      *  实质上这个参数影响并不大。
      */
     private long deviceInfoSeed = 1L;
-
-    /**
-     * mirai缓存策略。
-     */
-    private MiraiCacheType cacheType = MiraiCacheType.FILE;
 
     /**
      * 如果mirai缓存为文件，且此参数不为空，则使用此参数中的文件路径作为缓存路径。

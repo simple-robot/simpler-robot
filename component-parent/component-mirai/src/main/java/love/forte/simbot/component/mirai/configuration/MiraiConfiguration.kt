@@ -69,7 +69,7 @@ public class MiraiConfiguration {
      * 默认使用 [安卓手机协议][BotConfiguration.MiraiProtocol.ANDROID_PHONE]。
      */
     @field:ConfigInject
-    var protocol: BotConfiguration.MiraiProtocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE
+    var protocol: BotConfiguration.MiraiProtocol = BotConfiguration.Default.protocol
 
     /** 关闭mirai的bot logger */
     @field:ConfigInject
@@ -93,14 +93,6 @@ public class MiraiConfiguration {
 
     // @field:ConfigInject("mirai.autoRelogin")
     // var autoRelogin: Boolean = false
-
-    @field:ConfigInject
-    @Deprecated("not used")
-    var cacheType: MiraiCacheType = MiraiCacheType.FILE
-
-    @field:ConfigInject
-    @Deprecated("not used")
-    var cacheDirectory: String? = null
 
     @field:ConfigInject
     var loginSolverType: MiraiLoginSolverType = MiraiLoginSolverType.DEFAULT
@@ -193,18 +185,6 @@ public class MiraiConfiguration {
     }
 }
 
-/**
- * mirai的图片文件缓存策略
- */
-@Deprecated("not used")
-public enum class MiraiCacheType {
-    /** 文件缓存 */
-    FILE,
-
-    /** 内存缓存 */
-    MEMORY
-}
-
 
 /**
  * mirai 验证码处理器类型。
@@ -249,14 +229,15 @@ internal fun simbotMiraiDeviceInfo(c: Long, s: Long): DeviceInfo {
         // "mirai-simbot",
         // "mirai-simbot",
         // "mirai-simbot",
-        display = "MIRAI-SIMBOT.114514.001".toByteArray(),
+        display = "MIRAI-SIMBOT.200122.001".toByteArray(),
         product = "mirai-simbot".toByteArray(),
         device = "mirai-simbot".toByteArray(),
         board = "mirai-simbot".toByteArray(),
         brand = "forte".toByteArray(),
         model = "mirai-simbot".toByteArray(),
         bootloader = "unknown".toByteArray(),
-        fingerprint = "simbot/component/mirai/mirai:10/MIRAI.114514.001/1919810:user/release-keys".toByteArray(),
+                    // mamoe/mirai/mirai:10/MIRAI.200122.001/
+        fingerprint = "mamoe/mirai/mirai:10/MIRAI.200122.001/${getRandomString(7, '0'..'9', r)}:user/release-keys".toByteArray(),
         bootId = generateUUID(SecureUtil.md5().digest(getRandomByteArray(16, r))).toByteArray(),
         procVersion = "Linux version 3.0.31-${getRandomString(8, r)} (android-build@xxx.xxx.xxx.xxx.com)".toByteArray(),
         baseBand = byteArrayOf(),
