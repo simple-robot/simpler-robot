@@ -34,7 +34,6 @@ import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain
@@ -112,12 +111,7 @@ public class MiraiSender(
         val messageReceipt: MessageReceipt<Contact>? = if (group != null) {
             runBlocking {
                 bot.member(group, code).run {
-                    if (this is NormalMember) {
-                        @Suppress("USELESS_CAST")
-                        (this as NormalMember).sendMessage(miraiMsg.getMessage(this))
-                    } else {
-                        throw IllegalStateException("Only NormalMember supports sendMessage.")
-                    }
+                    sendMessage(miraiMsg.getMessage(this))
                 }
             }
         } else {
