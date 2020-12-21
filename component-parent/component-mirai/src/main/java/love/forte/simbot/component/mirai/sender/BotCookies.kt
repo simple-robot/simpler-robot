@@ -23,16 +23,17 @@ import java.nio.charset.Charset
  */
 
 /**
- * 通过mirai安卓协议的[net.mamoe.mirai.qqandroid.QQAndroidBot]得到部分敏感信息.
+ * 通过mirai安卓协议的[net.mamoe.mirai.internal.QQAndroidBot]得到部分敏感信息.
  * 无法保证此类永远可用。此类的信息依赖于mirai的内部代码构造。
  * 最后测试可用版本：mirai:1.2.1
  *
- * @see net.mamoe.mirai.qqandroid.QQAndroidBot
- * @see net.mamoe.mirai.qqandroid.network.QQAndroidClient
- * @see net.mamoe.mirai.qqandroid.network.WLoginSigInfo
+ * @see net.mamoe.mirai.internal.QQAndroidBot
+ * @see net.mamoe.mirai.internal.network.QQAndroidClient
+ * @see net.mamoe.mirai.internal.network.WLoginSigInfo
  *
  */
 object AndroidBotCookieUtils {
+    private const val MIRAI_PACKAGE = "net.mamoe.mirai.internal"
     private var success: Boolean = false
     private lateinit var botClientGetter: Method
     private lateinit var clientClazz: Class<*>
@@ -48,7 +49,7 @@ object AndroidBotCookieUtils {
     private lateinit var getPayTokenMethod: Method // ByteArray
 
     /**
-     * @see net.mamoe.mirai.qqandroid.network.WLoginSimpleInfo
+     * @see net.mamoe.mirai.internal.network.WLoginSimpleInfo
      */
     private lateinit var getWLoginSimpleInfoMethod: Method // WLoginSimpleInfo
 
@@ -56,20 +57,22 @@ object AndroidBotCookieUtils {
     private lateinit var getDataMethod: Method
     private var cause: Throwable? = null
 
+
+
     init {
         try {
             // bot client field
-            botClientGetter = Class.forName("net.mamoe.mirai.qqandroid.QQAndroidBotBase")
+            botClientGetter = Class.forName("$MIRAI_PACKAGE.QQAndroidBotBase")
                 .getDeclaredMethod("getClient").also { it.isAccessible = true }
 
             // client clazz
-            clientClazz = Class.forName("net.mamoe.mirai.qqandroid.network.QQAndroidClient")
+            clientClazz = Class.forName("$MIRAI_PACKAGE.network.QQAndroidClient")
 
             // get wLoginSigInfo method
             getWLoginSigInfoMethod = clientClazz.getDeclaredMethod("getWLoginSigInfo").also { it.isAccessible = true }
 
             // WLoginSigInfo class
-            wLoginSigInfoClazz = Class.forName("net.mamoe.mirai.qqandroid.network.WLoginSigInfo")
+            wLoginSigInfoClazz = Class.forName("$MIRAI_PACKAGE.network.WLoginSigInfo")
 
             // info getter
             getSKeyMethod = wLoginSigInfoClazz.getDeclaredMethod("getSKey").also { it.isAccessible = true }
@@ -83,7 +86,7 @@ object AndroidBotCookieUtils {
             getWLoginSimpleInfoMethod = wLoginSigInfoClazz.getDeclaredMethod("getSimpleInfo").also { it.isAccessible = true }
 
             // data getter
-            keyWithCreationTimeClazz = Class.forName("net.mamoe.mirai.qqandroid.network.KeyWithCreationTime")
+            keyWithCreationTimeClazz = Class.forName("$MIRAI_PACKAGE.network.KeyWithCreationTime")
             getDataMethod = keyWithCreationTimeClazz.getDeclaredMethod("getData").also { it.isAccessible = true }
 
             success = true
