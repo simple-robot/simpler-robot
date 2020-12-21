@@ -34,6 +34,7 @@ import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain
@@ -70,7 +71,7 @@ public class MiraiSender(
     private fun sendGroupMsg0(group: Long, msg: MessageContent): Carrier<Flag<MiraiGroupFlagContent>> {
         val miraiMsg = runBlocking { msg.toMiraiMessageContent(message) }
         // get group.
-        val g: Group = bot.getGroup(group)
+        val g: Group = bot.group(group)
         val messageReceipt = runBlocking {
             val message: Message = miraiMsg.getMessage(g)
             if (message.isNotEmptyMsg()) {
@@ -111,7 +112,12 @@ public class MiraiSender(
         val messageReceipt: MessageReceipt<Contact>? = if (group != null) {
             runBlocking {
                 bot.getGroupMember(group, code).run {
-                    sendMessage(miraiMsg.getMessage(this))
+                    if (this is NormalMember) {
+                        @Suppress("USELESS_CAST")
+                        (this as NormalMember).sendMessage(miraiMsg.getMessage(this))
+                    } else {
+                        throw IllegalStateException("Only NormalMember supports sendMessage.")
+                    }
                 }
             }
         } else {
@@ -126,7 +132,7 @@ public class MiraiSender(
                 }
             } else {
                 // 认为是发送给好友的
-                val friend: Friend = bot.getFriend(code)
+                val friend: Friend = bot.friend(code)
                 runBlocking {
                     val message: Message = miraiMsg.getMessage(friend)
                     if (message.isNotEmptyMsg()) {
@@ -174,12 +180,8 @@ public class MiraiSender(
 
     /**
      * mirai 仅支持设置新成员入群公告。
-     * 因此，只有当参数：[toNewMember] = `true` 的时候此api才可用，
      * 且除 [group]、[title]、[text] 以外的其他参数基本无效。
      * (mirai)
-     *
-     * @throws IllegalStateException [toNewMember] = `false` 时。
-     *
      */
     private fun setGroupNewMemberNotice0(
         group: Long,
@@ -190,7 +192,7 @@ public class MiraiSender(
         title?.let { builder.append(it).appendLine().appendLine() }
         text?.let { builder.append(it).appendLine() }
         val noticeText: String = builder.toString()
-        bot.getGroup(group).settings.entranceAnnouncement = noticeText
+        bot.group(group).settings.entranceAnnouncement = noticeText
         return true.toCarrier()
     }
 

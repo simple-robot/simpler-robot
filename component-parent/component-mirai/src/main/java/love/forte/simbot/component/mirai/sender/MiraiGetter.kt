@@ -54,7 +54,7 @@ public class MiraiGetter(private val bot: Bot, private val http: HttpTemplate) :
      * mirai - 群友信息。
      */
     private fun getMemberInfo0(group: Long, code: Long): GroupMemberInfo {
-        return MiraiGroupMemberInfo(bot.groupMember(group, code))
+        return MiraiGroupMemberInfo(bot.member(group, code))
     }
     override fun getMemberInfo(group: String, code: String): GroupMemberInfo = getMemberInfo0(group.toLong(), code.toLong())
     override fun getMemberInfo(group: Long, code: Long): GroupMemberInfo = getMemberInfo0(group, code)
