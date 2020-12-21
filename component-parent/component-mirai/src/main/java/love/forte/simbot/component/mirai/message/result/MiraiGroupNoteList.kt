@@ -24,11 +24,10 @@ import net.mamoe.mirai.contact.Group
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public class MiraiGroupNoteList(group: Group) : GroupNoteList {
-
     /** 入群公告。 */
     private val entranceAnnouncement: String = group.settings.entranceAnnouncement
 
-    override val results: List<GroupNote> by lazy(LazyThreadSafetyMode.NONE) { listOf(MiraiGroupNote()) }
+    override val results: List<GroupNote> = listOf(MiraiGroupNote())
 
     override val originalData: String = "MiraiGroupNoteList(group=$group)"
 
