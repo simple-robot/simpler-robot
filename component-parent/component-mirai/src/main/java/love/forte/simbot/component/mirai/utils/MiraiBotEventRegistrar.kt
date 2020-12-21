@@ -42,7 +42,7 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
     private val logger: Logger = LoggerFactory.getLogger(MiraiBotEventRegistrar::class.java)
 
 
-    @MiraiExperimentalApi
+    @OptIn(MiraiExperimentalApi::class)
     fun registerSimbotEvents(bot: Bot, msgProcessor: MsgGetProcessor) = bot.run {
 
         //region 消息相关

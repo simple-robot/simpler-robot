@@ -30,16 +30,18 @@ import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
-import net.mamoe.mirai.message.uploadAsImage
+import net.mamoe.mirai.message.data.Image.Key.queryUrl
+import net.mamoe.mirai.utils.MiraiExperimentalApi
+import net.mamoe.mirai.utils.uploadAsImage
 import java.io.BufferedInputStream
 import java.io.File
 import java.io.InputStream
 
-/**
- * message chain 为 [EmptyMessageChain] 的 [MiraiMessageContent]。
- */
-@get:JvmName("getEmptyMiraiMessageContent")
-public val EmptyMiraiMessageContent: MiraiMessageContent = MiraiMessageChainContent(EmptyMessageChain)
+// /**
+//  * message chain 为 [EmptyMessageChain] 的 [MiraiMessageContent]。
+//  */
+// @get:JvmName("getEmptyMiraiMessageContent")
+// public val EmptyMiraiMessageContent: MiraiMessageContent = MiraiMessageChainContent(EmptyMessageChain)
 
 
 
@@ -71,6 +73,7 @@ public fun String.toMiraiMessageContent(message: MessageChain?): MiraiMessageCon
 /**
  * [Neko] 转化为 [MiraiMessageContent]。
  */
+@OptIn(MiraiExperimentalApi::class)
 public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageContent {
     return when (this.type) {
         "at" -> {
@@ -94,7 +97,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
 
         // 戳一戳，窗口抖动
         "poke", "shake" -> {
-            val type: Int = this["type"]?.toInt() ?: return MiraiSingleMessageContent(PokeMessage.Poke)
+            val type: Int = this["type"]?.toInt() ?: return MiraiSingleMessageContent(PokeMessage.ChuoYiChuo)
             val id: Int = this["id"]?.toInt() ?: -1
             val code: Long = this["code"]?.toLong() ?: -1L
             val cat = this
@@ -105,13 +108,13 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
                         throw IllegalStateException("Unable to locate the target for nudge: no 'code' parameter in cat ${this@toMiraiMessageContent}.")
                     }
 
-                    val nudge = it.getOrNull(code)?.nudge()
+                    val nudge = it[code]?.nudge()
                         ?: throw IllegalArgumentException("cannot found nudge target: no such member($code) in group($id).")
                     it.launch { nudge.sendTo(it) }
                     EmptySingleMessage
                 } else {
                     // poke.
-                    PokeMessage.values.find { p -> p.type == type && p.id == id } ?: PokeMessage.Poke
+                    PokeMessage.values.find { p -> p.pokeType == type && p.id == id } ?: PokeMessage.ChuoYiChuo
                 }
             }, cat)
         }
@@ -217,7 +220,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
             val content: String = this["content"] ?: "{}"
             // 如果没有serviceId，认为其为lightApp
             val serviceId: Int = this["serviceId"]?.toInt() ?: return MiraiSingleMessageContent(LightApp(content))
-            MiraiSingleMessageContent(ServiceMessage(serviceId, content))
+            MiraiSingleMessageContent(SimpleServiceMessage(serviceId, content))
         }
 
 
@@ -337,7 +340,7 @@ public fun SingleMessage.toNeko(): Neko {
         is PokeMessage -> {
             // poke, 戳一戳
             CatCodeUtil.getNekoBuilder("poke", false)
-                .key("type").value(type)
+                .key("type").value(pokeType)
                 .key("id").value(id)
                 .build()
         }
@@ -370,7 +373,7 @@ public fun SingleMessage.toNeko(): Neko {
         // 引用回复
         is QuoteReply -> {
             CatCodeUtil.getLazyNekoBuilder("quote", true)
-                .key("id").value(with(this.source){ "$fromId.$id" })
+                .key("id").value(with(this.source){ "$fromId.${this.ids.joinToString(",", "[", "]")}" })
                 .key("quote").value { this.source.originalMessage.toCatCode() }
                 .build()
         }
