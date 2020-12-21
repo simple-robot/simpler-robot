@@ -111,7 +111,7 @@ public class MiraiSender(
 
         val messageReceipt: MessageReceipt<Contact>? = if (group != null) {
             runBlocking {
-                bot.getGroupMember(group, code).run {
+                bot.member(group, code).run {
                     if (this is NormalMember) {
                         @Suppress("USELESS_CAST")
                         (this as NormalMember).sendMessage(miraiMsg.getMessage(this))

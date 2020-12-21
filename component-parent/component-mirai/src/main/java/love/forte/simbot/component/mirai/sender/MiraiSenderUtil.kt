@@ -26,22 +26,15 @@ import net.mamoe.mirai.message.data.MessageChain
  * 获取某个群的群员。
  */
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun Bot.getGroupMember(groupCode: Long, memberCode: Long): Member = getGroup(groupCode)[memberCode]
+@Deprecated("use member(...)", ReplaceWith("member(groupCode, memberCode)"))
+internal inline fun Bot.getGroupMember(groupCode: Long, memberCode: Long): Member = member(groupCode, memberCode)
 
 /**
  * 获取某个群的群员。
  */
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun Bot.getGroupMemberOrNull(groupCode: Long, memberCode: Long): Member? = getGroupOrNull(groupCode)?.getOrNull(memberCode)
-
-
-/**
- * 判断 [Message] 不为空。
- */
-internal fun Message.isEmptyMsg(): Boolean =
-            this === EmptySingleMessage ||
-            this === EmptyMessageChain ||
-            if (this is MessageChain) this.isEmpty() else false
+@Deprecated("use memberOrNull(...)", ReplaceWith("memberOrNull(groupCode, memberCode)"))
+internal inline fun Bot.getGroupMemberOrNull(groupCode: Long, memberCode: Long): Member? = memberOrNull(groupCode, memberCode)
 
 
 /**
