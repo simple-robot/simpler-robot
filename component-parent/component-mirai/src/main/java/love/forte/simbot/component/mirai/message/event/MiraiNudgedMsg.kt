@@ -25,18 +25,21 @@ import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.event.events.BotNudgedEvent
 import net.mamoe.mirai.event.events.MemberNudgedEvent
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 
 /**
- * bot在群里被头像戳一戳了。
+ * bot在群里被群成员头像戳一戳了。
  */
-public class MiraiBotGroupNudgedMsg(event: BotNudgedEvent, member: Member) : AbstractMiraiMsgGet<BotNudgedEvent>(event),
+@MiraiExperimentalApi
+public class MiraiBotGroupNudgedByMemberMsg constructor(
+    event: BotNudgedEvent.InGroup.ByMember,
+    member: Member,
+) : AbstractMiraiMsgGet<BotNudgedEvent.InGroup.ByMember>(event),
     GroupMsg {
     override val id: String = "${event.from.id}.${event.bot.id}"
 
     override val accountInfo: AccountInfo = MiraiMemberAccountInfo(member)
-
-    // override val msg: String get() = msgContent.msg
 
     /** 头像戳一戳消息属于系统消息。 */
     override val groupMsgType: GroupMsg.Type get() = GroupMsg.Type.SYS
@@ -52,15 +55,16 @@ public class MiraiBotGroupNudgedMsg(event: BotNudgedEvent, member: Member) : Abs
     override val permission: Permissions = member.permission.toSimbotPermissions()
 }
 
+
 /**
  * bot在好友聊天中被头像戳一戳了。
  */
-public class MiraiBotFriendNudgedMsg(event: BotNudgedEvent, friend: Friend) :
-    AbstractMiraiMsgGet<BotNudgedEvent>(event),
+@MiraiExperimentalApi
+public class MiraiBotPrivateSessionNudgedByFriendMsg(event: BotNudgedEvent.InPrivateSession.ByFriend, friend: Friend) :
+    AbstractMiraiMsgGet<BotNudgedEvent.InPrivateSession.ByFriend>(event),
     PrivateMsg {
     override val id: String = "${event.from.id}.${event.bot.id}"
     override val accountInfo: AccountInfo = MiraiFriendAccountInfo(friend)
-    // override val msg: String get() = msgContent.msg
 
     /** 头像戳一戳属于好友消息 */
     override val privateMsgType: PrivateMsg.Type get() = PrivateMsg.Type.FRIEND
@@ -76,10 +80,10 @@ public class MiraiBotFriendNudgedMsg(event: BotNudgedEvent, friend: Friend) :
 /**
  * 群员被戳了。
  */
+@MiraiExperimentalApi
 public class MiraiMemberNudgedMsg(event: MemberNudgedEvent) : AbstractMiraiMsgGet<MemberNudgedEvent>(event), GroupMsg {
     override val id: String = "${event.from.id}.${event.bot.id}"
     override val accountInfo: AccountInfo = MiraiMemberAccountInfo(event.member)
-    // override val msg: String get() = msgContent.msg
     override val permission: Permissions = event.member.permission.toSimbotPermissions()
     override val groupMsgType: GroupMsg.Type get() = GroupMsg.Type.SYS
     override val flag: EmptyMiraiGroupFlag get() = EmptyMiraiGroupFlag

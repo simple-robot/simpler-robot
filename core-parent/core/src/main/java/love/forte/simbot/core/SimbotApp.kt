@@ -103,8 +103,10 @@ protected constructor(
     private val process: SimbotProcess,
     // 可以提供一个基础的额外配置信息。
     private val defaultConfiguration: Configuration?,
-    args: List<String>
+    args: List<String>,
+    private val logger: Logger = simbotAppLogger,
 ) {
+
 
     var showLogo: Boolean = kotlin.runCatching {
         defaultConfiguration?.getConfig("simbot.showLogo")?.boolean
@@ -365,7 +367,8 @@ protected constructor(
                 resourceData,
                 process,
                 defaultConfiguration,
-                args.asList()
+                args.asList(),
+                LoggerFactory.getLogger(appType)
             ).run()
         }
 
@@ -411,7 +414,8 @@ protected constructor(
                 resourceData,
                 process,
                 defaultConfiguration,
-                args.asList()
+                args.asList(),
+                LoggerFactory.getLogger(app::class.java)
             ).run()
         }
 
