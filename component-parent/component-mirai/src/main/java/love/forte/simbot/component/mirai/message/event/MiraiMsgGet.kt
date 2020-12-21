@@ -24,8 +24,7 @@ import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.event.events.BotEvent
-import net.mamoe.mirai.message.GroupMessageEvent
-import net.mamoe.mirai.message.MessageEvent
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.message.data.MessageSource
 import net.mamoe.mirai.message.data.PlainText
@@ -76,7 +75,7 @@ public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : Abs
 
     /** 默认的ID策略，使用source获取。 */
     override val id: String = with(event.source) {
-        "${this.fromId}.${this.id}"
+        "${this.fromId}.${this.ids.joinToString(",")}"
     }
 
     /**

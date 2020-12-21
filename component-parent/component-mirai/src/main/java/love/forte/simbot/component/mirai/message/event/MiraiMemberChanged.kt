@@ -21,6 +21,7 @@ import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
 import love.forte.simbot.component.mirai.message.result.MiraiGroupInfo
 import net.mamoe.mirai.event.events.*
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 
 /**
@@ -82,13 +83,15 @@ public sealed class MiraiBotJoined<E : BotJoinGroupEvent>(event: BotJoinGroupEve
     override fun isBot(): Boolean = true
 
     /** 主动入群者。 */
-    public class Active(event: BotJoinGroupEvent.Active) : MiraiBotJoined<BotJoinGroupEvent.Active>(event) {
+    @OptIn(MiraiExperimentalApi::class)
+    public class Active constructor(event: BotJoinGroupEvent.Active) : MiraiBotJoined<BotJoinGroupEvent.Active>(event) {
         /** 类型是主动添加的。 */
         override val increaseType: GroupMemberIncrease.Type
             get() = GroupMemberIncrease.Type.PROACTIVE
     }
 
     /** 被邀请入群者。 */
+    @OptIn(MiraiExperimentalApi::class)
     public class Invite(event: BotJoinGroupEvent.Invite) : MiraiBotJoined<BotJoinGroupEvent.Invite>(event) {
         /** 类型是被邀请的。 */
         override val increaseType: GroupMemberIncrease.Type
@@ -96,6 +99,7 @@ public sealed class MiraiBotJoined<E : BotJoinGroupEvent>(event: BotJoinGroupEve
         override val operatorInfo: OperatorInfo = MiraiMemberAccountInfo(event.invitor).asOperator()
     }
 
+    @OptIn(MiraiExperimentalApi::class)
     public class Retrieve(event: BotJoinGroupEvent.Retrieve) : MiraiBotJoined<BotJoinGroupEvent.Retrieve>(event) {
         /** 类型是主动添加的。 */
         override val increaseType: GroupMemberIncrease.Type
@@ -145,11 +149,13 @@ public sealed class MiraiBotLeaveEvent<E : BotLeaveEvent>(event: E) :
     override val groupInfo: GroupInfo = MiraiGroupInfo(event.group)
 
     /** bot被踢出。 */
+    @OptIn(MiraiExperimentalApi::class)
     public class Kick(event: BotLeaveEvent.Kick) : MiraiBotLeaveEvent<BotLeaveEvent.Kick>(event) {
         override val reduceType: GroupMemberReduce.Type = GroupMemberReduce.Type.KICK
         override val operatorInfo: OperatorInfo = MiraiMemberAccountInfo(event.operatorOrBot).asOperator()
     }
     /** bot主动退出。 */
+    @OptIn(MiraiExperimentalApi::class)
     public class Active(event: BotLeaveEvent.Active) : MiraiBotLeaveEvent<BotLeaveEvent.Active>(event) {
         override val reduceType: GroupMemberReduce.Type = GroupMemberReduce.Type.LEAVE
         override val operatorInfo: OperatorInfo? = null

@@ -44,7 +44,7 @@ public class MiraiGroupMemberJoinRequest(event: MemberJoinRequestEvent) :
 
     override val accountInfo: AccountInfo = MiraiGroupMemberJoinAccountInfo(event)
 
-    override val groupInfo: GroupInfo = MiraiGroupInfo(event.group)
+    override val groupInfo: GroupInfo by lazy(LazyThreadSafetyMode.NONE) { event.group?.let { MiraiGroupInfo(it) } ?: throw IllegalStateException("Bot has dropped out of the group.") }
 
     override val text: String = event.message //.takeIf { it.isNotBlank() }
 
@@ -95,7 +95,8 @@ public class MiraiBotInvitedJoinGroupRequest(event: BotInvitedJoinGroupRequestEv
     /** bot被邀请则不存在什么消息。 */
     override val text: String? = null
 
-    override val invitor: GroupAddRequestInvitor = MiraiBotInvitedJoinInvitor(event.invitor)
+    override val invitor: GroupAddRequestInvitor? = event.invitor?.let { MiraiBotInvitedJoinInvitor(it) }
+
 
     /** 永远是被动的。 */
     override val requestType: GroupAddRequest.Type = GroupAddRequest.Type.PASSIVE

@@ -40,10 +40,10 @@ private data class MiraiFriendRequester(private val event: NewFriendRequestEvent
     override val accountCodeNumber: Long
         get() = event.fromId
 
-    override val accountNickname: String?
+    override val accountNickname: String
         get() = event.fromNick
     override val accountRemark: String? = null
-    override val accountAvatar: String?
+    override val accountAvatar: String
         get() = userAvatar(event.fromId)
 }
 

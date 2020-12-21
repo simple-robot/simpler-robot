@@ -22,6 +22,7 @@ import love.forte.simbot.api.message.events.EventGet
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
 import net.mamoe.mirai.event.events.BotOfflineEvent
 import net.mamoe.mirai.event.events.BotReloginEvent
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 
 /**
@@ -100,6 +101,8 @@ public sealed class MiraiBotOffline<E : BotOfflineEvent>(event: E) : AbstractMir
      * 其他掉线原因。
      */
     public class Other(event: BotOfflineEvent) : MiraiBotOffline<BotOfflineEvent>(event) {
+        
+        @OptIn(MiraiExperimentalApi::class)
         override val cause: Throwable? = if (event is BotOfflineEvent.CauseAware) event.cause else null
         override val message: String?
             get() = cause?.localizedMessage

@@ -23,6 +23,7 @@ import love.forte.simbot.api.message.events.PrivateMsgRecall
 import love.forte.simbot.component.mirai.message.MiraiFriendAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
+import love.forte.simbot.component.mirai.sender.friend
 import net.mamoe.mirai.event.events.MessageRecallEvent
 import net.mamoe.mirai.event.events.author
 import net.mamoe.mirai.event.events.operatorOrBot
@@ -32,7 +33,7 @@ import net.mamoe.mirai.event.events.operatorOrBot
  * mirai的 消息撤回事件。
  */
 public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractMiraiMsgGet<E>(event) {
-    override val id: String = "REC-${event.authorId}.${event.messageId}.${event.messageInternalId}"
+    override val id: String = "REC-${event.authorId}.${event.messageIds.joinToString(",")}.${event.messageInternalIds.joinToString(",")}"
 
 
     /**
@@ -45,7 +46,7 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
 
 
         private val cacheMsg: GroupMsg?
-            get() = cache.getGroupMsg("${event.authorId}.${event.messageId}.${event.messageInternalId}")
+            get() = cache.getGroupMsg("${event.authorId}.${event.messageIds.joinToString(",")}.${event.messageInternalIds.joinToString(",")}")
 
         /**
          * 暂时不支持获取撤回掉的消息。
@@ -77,10 +78,10 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
         MiraiMsgRecall<MessageRecallEvent.FriendRecall>(event),
         PrivateMsgRecall {
         /** 撤回的操作人，就是好友。 */
-        override val accountInfo: AccountInfo = MiraiFriendAccountInfo(event.bot.getFriend(event.operator))
+        override val accountInfo: AccountInfo = MiraiFriendAccountInfo(event.bot.friend(event.operator))
 
         private val cacheMsg: PrivateMsg?
-            get() = cache.getPrivateMsg("${event.operator}.${event.messageId}.${event.messageInternalId}")
+            get() = cache.getPrivateMsg("${event.operator}.${event.messageIds.joinToString(",")}.${event.messageInternalIds.joinToString(",")}")
 
 
         /**

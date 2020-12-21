@@ -21,8 +21,8 @@ import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.component.mirai.message.*
-import net.mamoe.mirai.message.FriendMessageEvent
-import net.mamoe.mirai.message.TempMessageEvent
+import net.mamoe.mirai.event.events.FriendMessageEvent
+import net.mamoe.mirai.event.events.TempMessageEvent
 import net.mamoe.mirai.message.data.MessageSource
 
 
