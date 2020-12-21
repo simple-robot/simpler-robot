@@ -5,7 +5,7 @@
     <parent>
         <groupId>love.forte.simple-robot</groupId>
         <artifactId>component-parent</artifactId>
-        <version>2.0.0-BETA.1</version><!--v-->
+        <version>2.0.0-BETA.2</version><!--v-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -21,7 +21,8 @@
 
     <properties>
         <!-- mirai -->
-        <mirai.version>1.3.3</mirai.version>
+        <!--<mirai.version>1.3.3</mirai.version>-->
+        <mirai.version>2.0-M1-1</mirai.version>
     </properties>
 
 
@@ -42,17 +43,17 @@
             <artifactId>hutool-crypto</artifactId>
         </dependency>
 
+        <!--&lt;!&ndash; https://bintray.com/him188moe/mirai/mirai-core-api &ndash;&gt;-->
+        <!--<dependency>-->
+        <!--    <groupId>net.mamoe</groupId>-->
+        <!--    <artifactId>mirai-core-api-jvm</artifactId>-->
+        <!--    <version>${mirai.version}</version>-->
+        <!--</dependency>-->
+
         <!-- https://bintray.com/him188moe/mirai/mirai-core -->
         <dependency>
             <groupId>net.mamoe</groupId>
-            <artifactId>mirai-core</artifactId>
-            <version>${mirai.version}</version>
-        </dependency>
-
-        <!-- https://bintray.com/him188moe/mirai/mirai-core-qqandroid -->
-        <dependency>
-            <groupId>net.mamoe</groupId>
-            <artifactId>mirai-core-qqandroid</artifactId>
+            <artifactId>mirai-core-jvm</artifactId>
             <version>${mirai.version}</version>
         </dependency>
 
