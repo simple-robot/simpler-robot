@@ -17,7 +17,6 @@ package love.forte.simbot.component.mirai.sender
 import love.forte.simbot.component.mirai.message.EmptySingleMessage
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Member
-import net.mamoe.mirai.getGroupOrNull
 import net.mamoe.mirai.message.data.EmptyMessageChain
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain

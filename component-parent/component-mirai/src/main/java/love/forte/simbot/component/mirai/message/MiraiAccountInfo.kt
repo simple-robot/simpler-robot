@@ -81,7 +81,7 @@ public data class MiraiMemberAccountInfo(private val member: Member) : AccountIn
     override val accountRemark: String?
         get() = member.nameCard.takeIf { it.isNotEmpty() }
 
-    override val accountRemarkOrNickname: String?
+    override val accountRemarkOrNickname: String
         get() = member.nameCardOrNick
 
     override val accountNicknameAndRemark: String
@@ -101,10 +101,10 @@ public data class MiraiMemberAccountInfo(private val member: Member) : AccountIn
     override val groupCodeNumber: Long
         get() = group.id
 
-    override val groupAvatar: String?
+    override val groupAvatar: String
         get() = group.avatarUrl
 
-    override val groupName: String?
+    override val groupName: String
         get() = group.name
 }
 

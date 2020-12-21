@@ -23,7 +23,7 @@ import love.forte.simbot.api.message.results.BanList
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
 import love.forte.simbot.component.mirai.message.toSimbotPermissions
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.contact.Member
+import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.contact.isMuted
 import java.util.concurrent.TimeUnit
 
@@ -51,7 +51,7 @@ public class MiraiBanList(group: Group, limit: Int = -1) : BanList {
 /**
  * ban info.
  */
-public class MiraiBanInfo(member: Member) : BanInfo, AccountContainer {
+public class MiraiBanInfo(member: NormalMember) : BanInfo, AccountContainer {
     override val lastTime: Long = (member.muteTimeRemaining timeBy TimeUnit.SECONDS).toMillis()
     override val originalData: String = "MiraiBanInfo(member=$member)"
     override val accountInfo: AccountInfo = MiraiMemberAccountInfo(member)

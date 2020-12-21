@@ -17,7 +17,6 @@ package love.forte.simbot.component.mirai.message
 
 import love.forte.common.collections.LRULinkedHashMap
 import love.forte.simbot.api.message.events.GroupMsg
-import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.PrivateMsg
 import net.mamoe.mirai.event.events.MessageRecallEvent
 import java.util.concurrent.locks.StampedLock
@@ -75,7 +74,7 @@ private object EmptyMiraiMessageCache : MiraiMessageCache {
 
 
 /**
- * 基于 `LRUHashMap` 的简易缓存器。需要提供 [最大容量][category] 和 初始化 `Map`用的[初始化容量][initialCapacity]。
+ * 基于 `LRUHashMap` 的简易缓存器。需要提供 [最大容量][category] 和 初始化 [Map] 用的初始化容量 `initialCapacity`。
  * 会存在整体性读写锁竞争，效率一般。
  */
 public class LRUMiraiMessageCache(priCapacity: Int, priInitialCapacity: Int, priLoadFactor: Float,

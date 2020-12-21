@@ -15,9 +15,7 @@
 package love.forte.simbot.component.mirai.configuration
 
 import love.forte.common.configuration.annotation.AsConfig
-import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.ConfigBeans
-import love.forte.simbot.component.mirai.message.EmptyMiraiGroupFlag
 import love.forte.simbot.component.mirai.message.LRUMiraiMessageCache
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
 import love.forte.simbot.component.mirai.message.emptyMiraiMessageCache

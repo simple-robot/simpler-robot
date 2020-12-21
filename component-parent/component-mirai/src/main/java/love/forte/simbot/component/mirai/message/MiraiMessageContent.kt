@@ -24,10 +24,10 @@ import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.component.mirai.sender.isNotEmptyMsg
 import love.forte.simbot.component.mirai.utils.toNeko
 import net.mamoe.mirai.contact.*
-import net.mamoe.mirai.getFriendOrNull
 import net.mamoe.mirai.message.action.Nudge
 import net.mamoe.mirai.message.action.Nudge.Companion.sendNudge
 import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 /**
  * 一个 mirai 组件所使用的 [MessageContent] 实现。
@@ -107,7 +107,7 @@ public class MiraiSingleMessageContent(
     private val neko: Neko?,
 ) : MiraiMessageContent() {
 
-    constructor(singleMessage: SingleMessage, neko: Neko?) : this({ singleMessage }, neko)
+    // constructor(singleMessage: SingleMessage, neko: Neko?) : this({ singleMessage }, neko)
 
     constructor(
         singleMessage: SingleMessage,
@@ -118,7 +118,7 @@ public class MiraiSingleMessageContent(
 
     override suspend fun getMessage(contact: Contact): Message = singleMessage(contact)
 
-    override fun toString(): String = msg ?: "SingleMessage(null)"
+    override fun toString(): String = msg
 
     override val cats: List<Neko>
         get() = neko?.let { listOf(it) } ?: emptyList()
@@ -140,12 +140,13 @@ public class MiraiNudgedMessageContent(private val target: Long?) :
 
     override val cats: List<Neko> = listOf(neko)
 
+    @OptIn(MiraiExperimentalApi::class)
     override suspend fun getMessage(contact: Contact): Message {
         return when (contact) {
             // 如果是群
             is Group -> {
                 val code: Long = target ?: throw IllegalArgumentException("cannot found nudge target: target is empty.")
-                val nudge: Nudge = contact.getOrNull(code)?.nudge()
+                val nudge: Nudge = contact[code]?.nudge()
                     ?: throw NoSuchElementException("cannot found nudge target: no such member($code) in group(${contact.id}).")
                 // 获取群员并发送
                 contact.launch {
@@ -188,18 +189,18 @@ public class MiraiMessageChainContent(val message: MessageChain) : MiraiMessageC
 public class MiraiSingleAtMessageContent(private val code: Long) : MiraiMessageContent() {
     override suspend fun getMessage(contact: Contact): Message {
         return if (contact is Group) {
-            At(contact[code])
+            At(contact.getOrFail(code))
         } else {
             if (contact is Member) {
                 if (contact.id == code) {
                     At(contact)
                 } else {
-                    At(contact.group[code])
+                    At(contact.group.getOrFail(code))
                 }
             } else if (contact is Friend && contact.id == code) {
                 PlainText("@${contact.nameCardOrNick}")
             } else {
-                val name: String = contact.bot.getFriendOrNull(code)?.nameCardOrNick ?: code.toString()
+                val name: String = contact.bot.getFriend(code)?.nameCardOrNick ?: code.toString()
                 PlainText("@$name")
             }
         }

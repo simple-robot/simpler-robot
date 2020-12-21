@@ -15,12 +15,12 @@
 package love.forte.test.config;
 
 
-import kotlin.io.ConsoleKt;
 import love.forte.common.ioc.annotation.ConfigBeans;
 import love.forte.simbot.bot.BotRegisterInfo;
 import love.forte.simbot.component.mirai.MiraiBotConfigurationFactory;
 import love.forte.simbot.component.mirai.configuration.MiraiConfiguration;
-import net.mamoe.mirai.utils.*;
+import net.mamoe.mirai.utils.BotConfiguration;
+import net.mamoe.mirai.utils.SwingSolver;
 import org.jetbrains.annotations.NotNull;
 
 /**

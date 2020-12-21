@@ -30,7 +30,7 @@ import net.mamoe.mirai.message.data.MessageSource
 public abstract class MiraiMessageSourceFlagContent : FlagContent {
     abstract val source: MessageSource?
     override val id: String
-        get() = source?.let { "${it.fromId}.${it.id}.${it.internalId}" } ?: "EmptyMiraiMessageFlagContent(source=null)"
+        get() = source?.let { "${it.fromId}.${it.ids.joinToString(",")}.${it.internalIds.joinToString(",")}" } ?: "EmptyMiraiMessageFlagContent(source=null)"
 }
 
 

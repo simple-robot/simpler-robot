@@ -14,7 +14,6 @@
 
 package love.forte.test
 
-import love.forte.common.ioc.annotation.Beans
 import love.forte.simbot.intercept.InterceptionType
 import love.forte.simbot.listener.ListenerInterceptContext
 import love.forte.simbot.listener.ListenerInterceptor

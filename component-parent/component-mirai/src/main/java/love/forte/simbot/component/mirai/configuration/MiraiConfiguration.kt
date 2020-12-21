@@ -22,7 +22,6 @@ import love.forte.simbot.component.mirai.SimbotMiraiLogger
 import net.mamoe.mirai.utils.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.io.File
 import kotlin.random.Random
 import kotlin.random.nextInt
 

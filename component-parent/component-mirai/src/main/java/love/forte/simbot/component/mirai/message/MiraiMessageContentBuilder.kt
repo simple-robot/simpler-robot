@@ -25,7 +25,7 @@ import love.forte.simbot.component.mirai.utils.toStream
 import net.mamoe.mirai.message.data.AtAll
 import net.mamoe.mirai.message.data.Face
 import net.mamoe.mirai.message.data.PlainText
-import net.mamoe.mirai.message.uploadAsImage
+import net.mamoe.mirai.utils.uploadAsImage
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileNotFoundException
