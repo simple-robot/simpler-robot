@@ -27,6 +27,7 @@ import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
 import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.http.template.HttpTemplate
+import net.mamoe.mirai.BotFactory
 import net.mamoe.mirai.alsoLogin
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
 import net.mamoe.mirai.Bot as MBot
@@ -49,11 +50,12 @@ public class MiraiBotVerifier(
         // try to login bot.
         logger.debug("verify bot code: {}", botInfo.code)
 
-        val mBot = MBot(
-            botInfo.code.toLong(),
+
+        val mBot = BotFactory.newBot(botInfo.code.toLong(),
             botInfo.verification,
             configurationFactory.getMiraiBotConfiguration(botInfo, miraiConfiguration)
         )
+
         runCatching {
 
             with(mBot.logger) {

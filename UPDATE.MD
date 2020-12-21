@@ -208,3 +208,27 @@ simbot.component.mirai.deviceInfoFile=
 [#21](https://github.com/ForteScarlet/simpler-robot/issues/21) `@Filter(anyAt = true)` 无效
 
 
+## BETA.2
+
+`kotlin -> v1.4.21`
+
+### mirai
+
+更新mirai至`v2.0-M1-1`。可参考：[mirai-2.0-M1](https://github.com/mamoe/mirai/releases/tag/2.0-M1)、[mirai-2.0-M1-1](https://github.com/mamoe/mirai/releases/tag/2.0-M1-1)
+
+- 更新后，移除配置项：
+```
+# 以下两个为mirai缓存策略相关。此配置标记为mirai内部API，因此移除相关配置信息。
+simbot.component.mirai.cacheType
+simbot.component.mirai.cacheDirectory
+```
+
+- 不推荐使用配置项：
+```
+# 登录验证码处理器。只建议选择 DEFAULT 或 TEMP_IMAGE
+simbot.component.mirai.loginSolver
+```
+
+- 暂时不提供mirai日志的新配置，可通过[高级配置](https://www.yuque.com/simpler-robot/simpler-robot-doc/lnx5nh#jlb7w) 来自定义mirai配置。
+
+

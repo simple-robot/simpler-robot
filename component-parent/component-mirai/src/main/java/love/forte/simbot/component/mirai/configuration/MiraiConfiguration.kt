@@ -92,14 +92,15 @@ public class MiraiConfiguration {
     @field:ConfigInject
     var deviceInfoSeed: Long = 1L
 
-
     // @field:ConfigInject("mirai.autoRelogin")
     // var autoRelogin: Boolean = false
 
     @field:ConfigInject
+    @Deprecated("not used")
     var cacheType: MiraiCacheType = MiraiCacheType.FILE
 
     @field:ConfigInject
+    @Deprecated("not used")
     var cacheDirectory: String? = null
 
     @field:ConfigInject
@@ -112,13 +113,13 @@ public class MiraiConfiguration {
      * mirai官方配置类获取函数，默认为其默认值
      * */
     // @set:Deprecated("use setPostBotConfigurationProcessor((code, conf) -> {...})")
-    val botConfiguration: (String) -> BotConfiguration = { code ->
+    val botConfiguration: (String) -> BotConfiguration = {
         val conf = BotConfiguration()
 
         deviceInfoFile.takeIf { it?.isNotBlank() == true }?.let {
             conf.fileBasedDeviceInfo(it)
         } ?: run {
-            conf.deviceInfo = { MiraiSystemDeviceInfo(code, deviceInfoSeed) }
+            conf.deviceInfo = { simbotMiraiDeviceInfo(it.id, deviceInfoSeed) }
         }
 
 
@@ -132,27 +133,28 @@ public class MiraiConfiguration {
         // 验证码处理器
         conf.loginSolver = this.loginSolverType.getter(null)
 
-        conf.fileCacheStrategy = when (this.cacheType) {
-            // 内存缓存
-            MiraiCacheType.MEMORY -> FileCacheStrategy.MemoryCache
-            // 文件缓存
-            MiraiCacheType.FILE -> {
-                val cacheDir = this.cacheDirectory
-                if (cacheDir?.isNotBlank() == true) {
-                    val directory = File(cacheDir)
-                    if (!directory.exists()) {
-                        // 不存在，创建
-                        directory.mkdirs()
-                    }
-                    if (!directory.isDirectory) {
-                        throw IllegalArgumentException("'$cacheDir' is not a directory.")
-                    }
-                    FileCacheStrategy.TempCache(directory)
-                } else {
-                    FileCacheStrategy.MemoryCache
-                }
-            }
-        }
+
+        // conf.fileCacheStrategy = when (this.cacheType) {
+        //     // 内存缓存
+        //     MiraiCacheType.MEMORY -> FileCacheStrategy.MemoryCache
+        //     // 文件缓存
+        //     MiraiCacheType.FILE -> {
+        //         val cacheDir = this.cacheDirectory
+        //         if (cacheDir?.isNotBlank() == true) {
+        //             val directory = File(cacheDir)
+        //             if (!directory.exists()) {
+        //                 // 不存在，创建
+        //                 directory.mkdirs()
+        //             }
+        //             if (!directory.isDirectory) {
+        //                 throw IllegalArgumentException("'$cacheDir' is not a directory.")
+        //             }
+        //             FileCacheStrategy.TempCache(directory)
+        //         } else {
+        //             FileCacheStrategy.MemoryCache
+        //         }
+        //     }
+        // }
 
 
         if (noBotLog) {
@@ -195,6 +197,7 @@ public class MiraiConfiguration {
 /**
  * mirai的图片文件缓存策略
  */
+@Deprecated("not used")
 public enum class MiraiCacheType {
     /** 文件缓存 */
     FILE,
@@ -213,9 +216,12 @@ public enum class MiraiLoginSolverType(internal val getter: (Any?) -> LoginSolve
     DEFAULT({ LoginSolver.Default }),
 
     /** 图形验证码处理器 */
+    @MiraiExperimentalApi
     SWING({ SwingSolver }),
 
     /** 图形文字处理器 */
+    @MiraiInternalApi
+    @MiraiExperimentalApi
     STANDARD_CHAR_IMAGE({
         StandardCharImageLoginSolver(
             { readLine() ?: throw net.mamoe.mirai.network.NoStandardInputForCaptchaException(null) },
@@ -225,7 +231,7 @@ public enum class MiraiLoginSolverType(internal val getter: (Any?) -> LoginSolve
     /** 临时图片文件验证码 */
     TEMP_IMAGE({
         love.forte.simbot.component.mirai.MiraiTempImgLoginSolver {
-            readLine() ?: throw net.mamoe.mirai.network.NoStandardInputForCaptchaException(null)
+            readLine() ?: throw kotlin.IllegalStateException("line read null.")
         }
     })
 
@@ -233,40 +239,77 @@ public enum class MiraiLoginSolverType(internal val getter: (Any?) -> LoginSolve
 }
 
 
-/**
- * [SystemDeviceInfo] 实例，尝试着固定下随机值
- * @param code bot的账号
- */
-open class MiraiSystemDeviceInfo
-@JvmOverloads
-constructor(
-    code: Long,
-    seed: Long,
-    randomFactory: (code: Long, seed: Long) -> Random = { c, s -> Random(c * s) },
-) : SystemDeviceInfo() {
-    constructor(codeId: String, seedNum: Long) : this(codeId.toLong(), seedNum)
-    constructor(codeId: String, seedNum: Long, randomFactory: (code: Long, seed: Long) -> Random) :
-            this(codeId.toLong(), seedNum, randomFactory)
 
+internal fun simbotMiraiDeviceInfo(c: Long, s: Long): DeviceInfo {
+    val r = Random(c * s)
+    return DeviceInfo(
+        // "MIRAI-SIMBOT.200122.001",
+        // "mirai-simbot",
+        // "mirai-simbot",
+        // "mirai-simbot",
+        // "mirai-simbot",
+        // "mirai-simbot",
+        // "mirai-simbot",
+        display = "MIRAI-SIMBOT.114514.001".toByteArray(),
+        product = "mirai-simbot".toByteArray(),
+        device = "mirai-simbot".toByteArray(),
+        board = "mirai-simbot".toByteArray(),
+        brand = "forte".toByteArray(),
+        model = "mirai-simbot".toByteArray(),
+        bootloader = "unknown".toByteArray(),
+        fingerprint = "simbot/component/mirai/mirai:10/MIRAI.114514.001/1919810:user/release-keys".toByteArray(),
+        bootId = generateUUID(SecureUtil.md5().digest(getRandomByteArray(16, r))).toByteArray(),
+        procVersion = "Linux version 3.0.31-${getRandomString(8, r)} (android-build@xxx.xxx.xxx.xxx.com)".toByteArray(),
+        baseBand = byteArrayOf(),
+        version = DeviceInfo.Version(),
+        simInfo = "T-Mobile".toByteArray(),
+        osType = "android".toByteArray(),
+        macAddress = "02:00:00:00:00:00".toByteArray(),
+        wifiBSSID = "02:00:00:00:00:00".toByteArray(),
+        wifiSSID = "<unknown ssid>".toByteArray(),
+        imsiMd5 = SecureUtil.md5().digest(getRandomByteArray(16, r)),
+        imei = getRandomString(15, '0'..'9', r),
+        apn = "wifi".toByteArray()
 
-    private val random: Random = randomFactory(code, seed)
-
-
-    override val display: ByteArray = "MIRAI-SIMBOT.200122.001".toByteArray()
-    override val product: ByteArray = "mirai-simbot".toByteArray()
-    override val device: ByteArray = "mirai-simbot".toByteArray()
-    override val board: ByteArray = "mirai-simbot".toByteArray()
-    override val model: ByteArray = "mirai-simbot".toByteArray()
-
-    override val fingerprint: ByteArray =
-        "mamoe/mirai/mirai:10/MIRAI.200122.001/${getRandomString(7, '0'..'9', random)}:user/release-keys".toByteArray()
-    override val bootId: ByteArray = generateUUID(SecureUtil.md5().digest(getRandomByteArray(16, random))).toByteArray()
-    override val procVersion: ByteArray =
-        "Linux version 3.0.31-${getRandomString(8, random)} (android-build@xxx.xxx.xxx.xxx.com)".toByteArray()
-
-    override val imsiMd5: ByteArray = SecureUtil.md5().digest(getRandomByteArray(16, random))
-    override val imei: String = getRandomString(15, '0'..'9', random)
+    )
 }
+
+
+
+// /**
+//  * `SystemDeviceInfo` 实例，尝试着固定下随机值
+//  * @param code bot的账号
+//  */
+// open class MiraiSystemDeviceInfo1
+// @JvmOverloads
+// constructor(
+//     code: Long,
+//     seed: Long,
+//     randomFactory: (code: Long, seed: Long) -> Random = { c, s -> Random(c * s) },
+// ) : DeviceInfo() {
+//     constructor(codeId: String, seedNum: Long) : this(codeId.toLong(), seedNum)
+//     constructor(codeId: String, seedNum: Long, randomFactory: (code: Long, seed: Long) -> Random) :
+//             this(codeId.toLong(), seedNum, randomFactory)
+//
+//
+//     private val random: Random = randomFactory(code, seed)
+//
+//
+//     override val display: ByteArray = "MIRAI-SIMBOT.200122.001".toByteArray()
+//     override val product: ByteArray = "mirai-simbot".toByteArray()
+//     override val device: ByteArray = "mirai-simbot".toByteArray()
+//     override val board: ByteArray = "mirai-simbot".toByteArray()
+//     override val model: ByteArray = "mirai-simbot".toByteArray()
+//
+//     override val fingerprint: ByteArray =
+//         "mamoe/mirai/mirai:10/MIRAI.200122.001/${getRandomString(7, '0'..'9', random)}:user/release-keys".toByteArray()
+//     override val bootId: ByteArray = generateUUID(SecureUtil.md5().digest(getRandomByteArray(16, random))).toByteArray()
+//     override val procVersion: ByteArray =
+//         "Linux version 3.0.31-${getRandomString(8, random)} (android-build@xxx.xxx.xxx.xxx.com)".toByteArray()
+//
+//     override val imsiMd5: ByteArray = SecureUtil.md5().digest(getRandomByteArray(16, random))
+//     override val imei: String = getRandomString(15, '0'..'9', random)
+// }
 
 /*
  * 以下源代码修改自
@@ -281,29 +324,35 @@ constructor(
 /**
  * 生成长度为 [length], 元素为随机 `0..255` 的 [ByteArray]
  */
+@JvmSynthetic
 internal fun getRandomByteArray(length: Int, r: Random): ByteArray = ByteArray(length) { r.nextInt(0..255).toByte() }
 
 /**
  * 随机生成长度为 [length] 的 [String].
  */
+@JvmSynthetic
 internal fun getRandomString(length: Int, r: Random): String =
     getRandomString(length, r, *defaultRanges)
 
-private val defaultRanges: Array<CharRange> = arrayOf('a'..'z', 'A'..'Z', '0'..'9')
+@JvmSynthetic
+internal val defaultRanges: Array<CharRange> = arrayOf('a'..'z', 'A'..'Z', '0'..'9')
 
 /**
  * 根据所给 [charRange] 随机生成长度为 [length] 的 [String].
  */
+@JvmSynthetic
 internal fun getRandomString(length: Int, charRange: CharRange, r: Random): String =
     String(CharArray(length) { charRange.random(r) })
 
 /**
  * 根据所给 [charRanges] 随机生成长度为 [length] 的 [String].
  */
+@JvmSynthetic
 internal fun getRandomString(length: Int, r: Random, vararg charRanges: CharRange): String =
     String(CharArray(length) { charRanges[r.nextInt(0..charRanges.lastIndex)].random(r) })
 
-private fun generateUUID(md5: ByteArray): String {
+@JvmSynthetic
+internal fun generateUUID(md5: ByteArray): String {
     return "${md5[0, 3]}-${md5[4, 5]}-${md5[6, 7]}-${md5[8, 9]}-${md5[10, 15]}"
 }
 
@@ -314,7 +363,8 @@ internal operator fun ByteArray.get(rangeStart: Int, rangeEnd: Int): String = bu
     }
 }
 
-private fun Byte.fixToString(): String {
+@JvmSynthetic
+internal fun Byte.fixToString(): String {
     return when (val b = this.toInt() and 0xff) {
         in 0..15 -> "0${this.toString(16).toUpperCase()}"
         else -> b.toString(16).toUpperCase()

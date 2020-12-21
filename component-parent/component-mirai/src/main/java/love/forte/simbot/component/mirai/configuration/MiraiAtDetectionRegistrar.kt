@@ -27,6 +27,7 @@ import love.forte.simbot.filter.AtDetectionRegistrar
 import net.mamoe.mirai.message.data.At
 import net.mamoe.mirai.message.data.AtAll
 import net.mamoe.mirai.message.data.MessageChain
+import net.mamoe.mirai.message.data.firstIsInstanceOrNull
 
 /**
  *
