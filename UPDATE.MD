@@ -216,6 +216,8 @@ simbot.component.mirai.deviceInfoFile=
 
 更新mirai至`v2.0-M1-1`。可参考：[mirai-2.0-M1](https://github.com/mamoe/mirai/releases/tag/2.0-M1)、[mirai-2.0-M1-1](https://github.com/mamoe/mirai/releases/tag/2.0-M1-1)
 
+此版本的官方更新中似乎对"**登录提示版本过低**"等问题存在改善与修复。
+
 - 更新后，移除配置项：
 ```
 # 以下两个为mirai缓存策略相关。此配置标记为mirai内部API，因此移除相关配置信息。
@@ -232,3 +234,5 @@ simbot.component.mirai.loginSolver
 - 暂时不提供mirai日志的新配置，可通过[高级配置](https://www.yuque.com/simpler-robot/simpler-robot-doc/lnx5nh#jlb7w) 来自定义mirai配置。
 
 
+
+## NOW
