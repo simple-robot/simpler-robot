@@ -23,7 +23,7 @@ import love.forte.simbot.core.configuration.ComponentBeans
 
 
 /**
- *
+ * 可爱猫api缓存配置。
  * @author ForteScarlet
  */
 @ConfigBeans

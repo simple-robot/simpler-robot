@@ -16,11 +16,16 @@ package love.forte.simbot.component.lovelycat.configuration
 
 import love.forte.common.configuration.annotation.AsConfig
 import love.forte.common.ioc.annotation.ConfigBeans
+import love.forte.simbot.component.lovelycat.message.LovelyCatApiCache
 import java.util.concurrent.TimeUnit
 
 
 /**
  * 可爱猫api缓存配置信息。
+ *
+ * @see LovelyCatApiCacheConfiguration
+ * @see LovelyCatApiCache
+ *
  * @author ForteScarlet
  */
 @ConfigBeans

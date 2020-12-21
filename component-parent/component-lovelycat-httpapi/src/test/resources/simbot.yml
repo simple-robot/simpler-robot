@@ -1,13 +1,11 @@
 simbot:
-  core:
-    bots:
-      - wxid_bqy1ezxxkdat22:http://127.0.0.1:88/httpAPI
-  component:
-    lovelycat:
-      server:
-        port: 8889
-        path: /cat
-
-      api:
-        cache:
-          enable: true
+    component:
+        lovelycat:
+            api:
+                cache:
+                    duration: 30
+                    durationUnit: SECONDS
+                    enable: true
+            server:
+                path: /cat
+                port: 8889

@@ -18,7 +18,7 @@ import love.forte.simbot.component.lovelycat.utils.LazyTimeLimitCache
 
 
 /**
- *
+ * 可爱猫组件读写缓存器。
  * @author ForteScarlet
  */
 public class ReadWriteLovelyCatApiCache(time: Long) : LovelyCatApiCache {
