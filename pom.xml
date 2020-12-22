@@ -13,6 +13,7 @@
         <module>component-parent</module>
         <module>spring-boot-starter</module>
         <module>serialization</module>
+        <module>http</module>
     </modules>
 
     <url>https://github.com/ForteScarlet/simpler-robot</url>
@@ -101,13 +102,13 @@
             <!--</editor-fold>-->
             <!--<editor-fold desc="http-client">-->
             <dependency>
-                <groupId>love.forte.simple-robot</groupId>
-                <artifactId>http-client-core</artifactId>
+                <groupId>love.forte.simple-robot.http</groupId>
+                <artifactId>client-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>love.forte.simple-robot</groupId>
-                <artifactId>http-client-ktor</artifactId>
+                <groupId>love.forte.simple-robot.http</groupId>
+                <artifactId>client-ktor</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!--</editor-fold>-->

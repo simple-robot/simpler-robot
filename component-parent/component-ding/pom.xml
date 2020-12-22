@@ -27,14 +27,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>love.forte.simple-robot</groupId>
-            <artifactId>http-client-core</artifactId>
+            <groupId>love.forte.simple-robot.http</groupId>
+            <artifactId>client-core</artifactId>
         </dependency>
 
         <!-- 默认使用ktor -->
         <dependency>
-            <groupId>love.forte.simple-robot</groupId>
-            <artifactId>http-client-ktor</artifactId>
+            <groupId>love.forte.simple-robot.http</groupId>
+            <artifactId>client-ktor</artifactId>
         </dependency>
 
         <dependency>

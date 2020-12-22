@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -8,23 +9,19 @@
         <version>2.0.0-BETA.4</version><!--v-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>love.forte.simple-robot.serialization</groupId>
-    <artifactId>parent</artifactId>
     <packaging>pom</packaging>
 
+    <groupId>love.forte.simple-robot.http</groupId>
+    <artifactId>parent</artifactId>
+
     <modules>
-        <module>json-core</module>
-        <module>json-moshi</module>
-        <module>json-fastjson</module>
-        <module>json-jackson</module>
+        <module>client-core</module>
+        <module>client-ktor</module>
     </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-
-
 
 </project>

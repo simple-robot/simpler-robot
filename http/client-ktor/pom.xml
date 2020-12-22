@@ -3,18 +3,18 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>core-parent</artifactId>
-        <groupId>love.forte.simple-robot</groupId>
+        <artifactId>parent</artifactId>
+        <groupId>love.forte.simple-robot.http</groupId>
         <version>2.0.0-BETA.4</version><!--v-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>http-client-ktor</artifactId>
+    <artifactId>client-ktor</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>love.forte.simple-robot</groupId>
-            <artifactId>http-client-core</artifactId>
+            <groupId>love.forte.simple-robot.http</groupId>
+            <artifactId>client-core</artifactId>
         </dependency>
 
         <dependency>
