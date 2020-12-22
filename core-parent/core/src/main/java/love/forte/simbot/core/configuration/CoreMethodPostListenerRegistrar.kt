@@ -54,7 +54,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
      */
     override fun registerListenerFunctions(registrar: ListenerRegistrar) {
 
-        logger.info("ready to register method listeners.")
+        logger.info("Ready to register method listeners.")
 
         // val scanner: Scanner<String, Class<*>> = HutoolClassesScanner()
         //
@@ -72,8 +72,14 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
 
         logger.debug("Number of beans to be scanned: {}", allBeans.size)
 
-        allBeans.asSequence().map {
-            dependBeanFactory.getType(it)
+        allBeans.asSequence().mapNotNull {
+            kotlin.runCatching {
+                dependBeanFactory.getType(it)
+            }.getOrElse {
+                logger.warn("Can not get type from depend '$it'. This may be an environmental issue or a class loader issue.")
+                logger.warn("The scan of the listener function for '$it' will be ignored.")
+                null
+            }
         }.distinct().flatMap {
             // 只获取public方法
             it.methods.asSequence().filter { m ->
@@ -84,14 +90,14 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
         }.forEach {
             registrar.register(it)
             logger.debug(
-                "register listener: [{}] for {}, id={}",
+                "Register listener: [{}] for {}, id={}",
                 it.name,
                 it.listenTypes.joinToString(", ", "[", "]") { t -> t.simpleName },
                 it.id
             )
         }
 
-        logger.info("method listeners Registration is complete.")
+        logger.info("Method listeners Registration is complete.")
         if (!logger.isDebugEnabled) {
             logger.info("If you want to view the details, please enable log debug。")
         }
