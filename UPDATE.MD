@@ -236,3 +236,7 @@ simbot.component.mirai.loginSolver
 
 
 ## BETA.3
+
+### fix 
+- [#25](https://github.com/ForteScarlet/simpler-robot/issues/25) mirai组件（含starter）登录日志卡死。 
+- [#26](https://github.com/ForteScarlet/simpler-robot/issues/26) 整合Springboot时配置文件无法正确解析带“-”的键值。
