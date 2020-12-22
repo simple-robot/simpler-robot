@@ -31,7 +31,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 /**
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @Import({
         SimbotAppProperties.class,
         SpringDependBeanFactory.class
@@ -69,10 +69,14 @@ public class SimbotAppConfiguration {
         }
 
         final String[] sourceArgs = applicationArguments.getSourceArgs();
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        if (loader == null) {
-            loader = ClassLoader.getSystemClassLoader();
-        }
+        // ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        // if (loader == null) {
+        //     loader = ClassLoader.getSystemClassLoader();
+        // }
+        ClassLoader loader = ClassLoader.getSystemClassLoader();
+        // if (loader == null) {
+        //     loader = ClassLoader.getSystemClassLoader();
+        // }
 
 
         SpringEnvironmentConfiguration springEnvironmentConfiguration = new SpringEnvironmentConfiguration(environment, converterManager);

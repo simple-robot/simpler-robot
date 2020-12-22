@@ -58,16 +58,15 @@ public class MiraiBotVerifier(
 
         runCatching {
 
+            runBlocking {
+                mBot.alsoLogin()
+            }
+
             with(mBot.logger) {
                 if (this is MiraiLoggerWithSwitch) {
                     // 临时关闭logger.
                     this.disable()
                 }
-            }
-
-
-            runBlocking {
-                mBot.alsoLogin()
             }
 
             val botContainer = BotContainer { MiraiBotInfo(mBot, httpTemplate) }

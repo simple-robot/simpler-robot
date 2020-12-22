@@ -124,7 +124,6 @@ public class MiraiConfiguration {
         // 验证码处理器
         conf.loginSolver = this.loginSolverType.getter(null)
 
-
         // conf.fileCacheStrategy = when (this.cacheType) {
         //     // 内存缓存
         //     MiraiCacheType.MEMORY -> FileCacheStrategy.MemoryCache

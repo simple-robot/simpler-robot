@@ -33,8 +33,8 @@ public class VerifyConfigFactory implements MiraiBotConfigurationFactory {
     @Override
     public BotConfiguration getMiraiBotConfiguration(@NotNull BotRegisterInfo botInfo, @NotNull MiraiConfiguration simbotMiraiConfig) {
         BotConfiguration conf = simbotMiraiConfig.getBotConfiguration().invoke(botInfo.getCode());
-        // 使用图形验证码处理器
-        conf.setLoginSolver(SwingSolver.INSTANCE);
+        // // 使用图形验证码处理器
+        // conf.setLoginSolver(SwingSolver.INSTANCE);
         return conf;
     }
 }
