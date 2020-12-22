@@ -15,6 +15,7 @@
 package love.forte.simbot.spring.autoconfigure;
 
 import cn.hutool.core.convert.ConverterRegistry;
+import cn.hutool.core.util.ClassLoaderUtil;
 import love.forte.common.utils.convert.ConverterManager;
 import love.forte.common.utils.convert.HutoolConverterManagerImpl;
 import love.forte.simbot.annotation.SimbotApplication;
@@ -46,7 +47,10 @@ public class SimbotAppConfiguration {
     private final ApplicationArguments applicationArguments;
 
 
-    public SimbotAppConfiguration(SimbotAppProperties simbotAppProperties, SpringDependBeanFactory springDependBeanFactory, ApplicationArguments applicationArguments) {
+    public SimbotAppConfiguration(SimbotAppProperties simbotAppProperties,
+                                  SpringDependBeanFactory springDependBeanFactory,
+                                  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+                                          ApplicationArguments applicationArguments) {
         this.simbotAppProperties = simbotAppProperties;
         this.springDependBeanFactory = springDependBeanFactory;
         this.applicationArguments = applicationArguments;
@@ -57,7 +61,7 @@ public class SimbotAppConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(ConverterManager.class)
-    public ConverterManager converterManager(){
+    public ConverterManager converterManager() {
         return new HutoolConverterManagerImpl(ConverterRegistry.getInstance());
     }
 
@@ -69,14 +73,13 @@ public class SimbotAppConfiguration {
         }
 
         final String[] sourceArgs = applicationArguments.getSourceArgs();
-        // ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        // if (loader == null) {
-        //     loader = ClassLoader.getSystemClassLoader();
-        // }
-        ClassLoader loader = ClassLoader.getSystemClassLoader();
-        // if (loader == null) {
-        //     loader = ClassLoader.getSystemClassLoader();
-        // }
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        if (loader == null) {
+            loader = getClass().getClassLoader();
+        }
+        if (loader == null) {
+            loader = ClassLoader.getSystemClassLoader();
+        }
 
 
         SpringEnvironmentConfiguration springEnvironmentConfiguration = new SpringEnvironmentConfiguration(environment, converterManager);
@@ -84,17 +87,6 @@ public class SimbotAppConfiguration {
         // run simbot app.
         return SimbotApp.run(applicationClass, loader, springDependBeanFactory, springEnvironmentConfiguration, sourceArgs);
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
