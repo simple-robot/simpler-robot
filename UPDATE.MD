@@ -27,7 +27,7 @@ first alpha version.
 
 core-starter移除部分多余控制台输出。
 
-重新定义 [MessageContent](./core-parent/api/src/main/java/love/forte/simbot/api/message/events/MessageContent.kt) ，
+重新定义 [MessageContent](./core-parent/api/src/main/java/love/forte/simbot/api/message/MessageContent.kt) ，
 并在 [mirai组件](./component-parent/component-mirai) 中重新实现。 
 
 其中，暂时保留 曾经的`MessageContent.getImages`方法，但是此方法已**不存在任何作用**。
