@@ -24,15 +24,46 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
-    <output url="file://$MODULE_DIR$/../../http/target/classes" />
-    <output-test url="file://$MODULE_DIR$/../../http/target/test-classes" />
-    <content url="file://$MODULE_DIR$/../../http/client-ktor">
-      <sourceFolder url="file://$MODULE_DIR$/../../http/client-ktor/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../http/client-ktor/src/main/resources" type="java-resource" />
-      <excludeFolder url="file://$MODULE_DIR$/../../http/client-ktor/target" />
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="client-core" />
+    <orderEntry type="library" name="Maven: love.forte.common:ioc:1.0.0-ALPHA.5" level="project" />
+    <orderEntry type="library" name="Maven: love.forte.common:utils:1.0.0-ALPHA.5" level="project" />
+    <orderEntry type="library" name="Maven: cn.hutool:hutool-core:5.5.1" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-reflect:1.4.21" level="project" />
+    <orderEntry type="library" name="Maven: love.forte.common:configuration:1.0.0-ALPHA.5" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.11.2" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.11.3" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.11.3" level="project" />
+    <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.26" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.11.2" level="project" />
+    <orderEntry type="module" module-name="json-core" />
+    <orderEntry type="module" module-name="json-fastjson" />
+    <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.74" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.21" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:1.4.21" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.21" level="project" />
+    <orderEntry type="library" name="Maven: io.ktor:ktor-client-core:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: io.ktor:ktor-client-core-jvm:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib-common:1.4.10" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.3.9-native-mt-2" level="project" />
+    <orderEntry type="library" name="Maven: io.ktor:ktor-http-jvm:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: io.ktor:ktor-utils-jvm:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: io.ktor:ktor-io-jvm:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: io.ktor:ktor-http-cio-jvm:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: io.ktor:ktor-network-jvm:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: io.ktor:ktor-client-cio-jvm:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: io.ktor:ktor-network-tls-jvm:1.4.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jetbrains.kotlin:kotlin-test:1.4.21" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jetbrains.kotlin:kotlin-test-common:1.4.21" level="project" />
   </component>
 </module>

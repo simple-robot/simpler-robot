@@ -201,7 +201,7 @@ simbot.component.mirai.deviceInfoFile=
 配置项`deviceInfoFile`允许指定一个 deviceInfo 的 json文件路径。( [#20](https://github.com/ForteScarlet/simpler-robot/issues/20) )
 
 ### jackson-serialization
-- 发布[jackson序列化模块](core-parent/serialization-json-jackson), 实现于 [json序列化核心模块](core-parent/serialization-json-core)。
+- 发布[jackson序列化模块](serialization/json-jackson), 实现于 [json序列化核心模块](serialization/json-core)。
 
 
 ### fix
@@ -242,6 +242,22 @@ simbot.component.mirai.loginSolver
 - [#26](https://github.com/ForteScarlet/simpler-robot/issues/26) 整合Springboot时配置文件无法正确解析带“-”的键值。
 
 
-## BETA.3.1
+## BETA.4
 
-### fix
+- [#27](https://github.com/ForteScarlet/simpler-robot/issues/27) 调整模块间关系：
+  
+  新增[序列化模块](serialization)
+    - [json序列化核心](serialization/json-core)
+    - [json序列化-moshi实现](serialization/json-moshi)
+    - [json序列化-fastjson实现](serialization/json-fastjson)
+    - [json序列化-jackson实现](serialization/json-jackson)
+  
+  新增[http模块](http)
+    - [http客户端核心](http/client-core)
+    - [http客户端-ktor实现](http/client-ktor)
+
+### spring-boot-starter
+
+- 调整修复classloader问题。   
+
+
