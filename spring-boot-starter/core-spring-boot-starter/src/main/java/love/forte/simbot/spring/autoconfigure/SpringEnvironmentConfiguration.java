@@ -24,6 +24,7 @@ import org.springframework.core.env.MutablePropertySources;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 /**
  *
@@ -62,7 +63,12 @@ public class SpringEnvironmentConfiguration implements Configuration {
 
     @Override
     public boolean containsConfig(String key) {
-        return environment.containsProperty(key);
+        boolean contains = environment.containsProperty(key);
+        if (!contains) {
+            final String newKey = resetKey(key);
+            contains = environment.containsProperty(newKey);
+        }
+        return contains;
     }
 
     @Override
@@ -70,6 +76,19 @@ public class SpringEnvironmentConfiguration implements Configuration {
         return environment.getPropertySources().size();
     }
 
+    private static String resetKey(String key){
+        StringBuilder sb = new StringBuilder(key.length());
+        // 将驼峰转化为短杠
+        key.chars().flatMap(c -> {
+            if (Character.isUpperCase(c)) {
+                return IntStream.of('-', Character.toLowerCase(c));
+            } else {
+                return IntStream.of(c);
+            }
+        }).forEach(c -> sb.append((char) c));
+
+        return sb.toString();
+    }
 
 
     private class SpringConfigurationProperty implements ConfigurationProperty {
@@ -77,7 +96,14 @@ public class SpringEnvironmentConfiguration implements Configuration {
         private final String key;
 
         SpringConfigurationProperty(String key){
-            this.key = key;
+            String resetKey;
+            if (environment.containsProperty(key)) {
+                this.key = key;
+            } else if (environment.containsProperty((resetKey = resetKey(key)))) {
+                this.key = resetKey;
+            } else {
+                throw new IllegalArgumentException("cannot found config properties for key '"+key+"' or '"+ resetKey +"'");
+            }
         }
 
         @Override
@@ -97,8 +123,13 @@ public class SpringEnvironmentConfiguration implements Configuration {
 
         @Override
         public <T> T getObject(Type type) {
-            String property = environment.getProperty(key);
-            return converterManager.convert(type, property);
+            if (type instanceof Class<?>) {
+                //noinspection unchecked
+                return getObject((Class<T>) type);
+            } else {
+                String property = environment.getProperty(key);
+                return converterManager.convert(type, property);
+            }
         }
 
         @Override
