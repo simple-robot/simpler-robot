@@ -73,14 +73,14 @@ public class SimbotAppConfiguration {
         }
 
         final String[] sourceArgs = applicationArguments.getSourceArgs();
-        ClassLoader loader = ClassLoader.getSystemClassLoader();
-        // ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        // if (loader == null) {
-        //     loader = getClass().getClassLoader();
-        // }
-        // if (loader == null) {
-        //     loader = ClassLoader.getSystemClassLoader();
-        // }
+        // ClassLoader loader = ClassLoader.getSystemClassLoader();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        if (loader == null) {
+            loader = getClass().getClassLoader();
+        }
+        if (loader == null) {
+            loader = ClassLoader.getSystemClassLoader();
+        }
 
 
         SpringEnvironmentConfiguration springEnvironmentConfiguration = new SpringEnvironmentConfiguration(environment, converterManager);
