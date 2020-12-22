@@ -235,4 +235,4 @@ simbot.component.mirai.loginSolver
 
 
 
-## NOW
+## BETA.3
