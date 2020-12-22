@@ -78,8 +78,8 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
             runCatching {
                 dependBeanFactory.getType(beanName)
             }.getOrElse { e ->
-                logger.warn("Can not get type from depend '$beanName'. This may be an environmental issue or a class loader issue.")
-                logger.warn("The scan of the listener function for '$beanName' will be ignored.")
+                logger.warn("Can not get type from depend '{}'. This may be an environmental issue or a class loader issue.", beanName)
+                logger.warn("The scan of the listener function for '{}' will be ignored.", beanName)
                 logger.debug("Get type from depend '$beanName' failed.", e)
                 null
             }
