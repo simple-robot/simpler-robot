@@ -74,12 +74,13 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
 
         logger.debug("Number of beans to be scanned: {}", allBeans.size)
 
-        allBeans.asSequence().mapNotNull {
+        allBeans.asSequence().mapNotNull { beanName ->
             runCatching {
-                dependBeanFactory.getType(it)
-            }.getOrElse {
-                logger.warn("Can not get type from depend '$it'. This may be an environmental issue or a class loader issue.")
-                logger.warn("The scan of the listener function for '$it' will be ignored.")
+                dependBeanFactory.getType(beanName)
+            }.getOrElse { e ->
+                logger.warn("Can not get type from depend '$beanName'. This may be an environmental issue or a class loader issue.")
+                logger.warn("The scan of the listener function for '$beanName' will be ignored.")
+                logger.debug("Get type from depend '$beanName' failed.", e)
                 null
             }
         }.distinct().flatMap {
