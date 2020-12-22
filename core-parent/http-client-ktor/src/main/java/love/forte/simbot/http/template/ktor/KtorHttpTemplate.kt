@@ -57,6 +57,7 @@ constructor(
 ) : HttpTemplate {
 
 
+    @Suppress("UNCHECKED_CAST")
     private fun <T> KtorHttpResponse.toResponse(responseType: Class<T>): HttpResponse<T> {
         return if (responseType == String::class.java) {
             KtorHttpResponseImpl(this) { it } as HttpResponse<T>
@@ -230,6 +231,7 @@ constructor(
      * @param request HttpRequest<T>
      * @return HttpResponse<T> 响应体
      */
+    @Suppress("UNCHECKED_CAST")
     override fun <T> request(request: HttpRequest<T>): HttpResponse<T> {
         val url = request.url
         val headers = request.headers
@@ -251,6 +253,7 @@ constructor(
      * @param requests 请求列表。
      * @return List<HttpResponse<*>>
      */
+    @Suppress("UNCHECKED_CAST")
     override fun requestAll(parallel: Boolean, vararg requests: HttpRequest<*>): List<HttpResponse<*>> {
         if (requests.isEmpty()) {
             return emptyList()

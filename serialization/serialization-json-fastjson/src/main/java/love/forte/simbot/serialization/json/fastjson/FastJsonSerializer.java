@@ -12,7 +12,8 @@
  *
  */
 
-package love.forte.simbot.serialization.json.fastjson;import com.alibaba.fastjson.JSON;
+package love.forte.simbot.serialization.json.fastjson;
+import com.alibaba.fastjson.JSON;
 import love.forte.simbot.serialization.json.JsonSerializer;
 
 import java.lang.reflect.Type;

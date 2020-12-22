@@ -289,7 +289,7 @@ public interface MessageGet : MsgGet, MessageContentContainer, FlagContainer<Mes
      *
      */
     @JvmDefault
-    override val text: String? get() = msg?.let { CatCodeUtil.remove(it, trim = false) }
+    override val text: String? get() = msg.let { CatCodeUtil.remove(it, trim = false) }
 
 
     /**
@@ -297,7 +297,7 @@ public interface MessageGet : MsgGet, MessageContentContainer, FlagContainer<Mes
      * 空消息指的是不存在msg，即msg == null，而不是msg为空字符。
      */
     @JvmDefault
-    override fun isEmptyMsg(): Boolean = msg == null
+    override fun isEmptyMsg(): Boolean = false
 
 
     /**

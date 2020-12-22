@@ -132,6 +132,11 @@
                 <artifactId>json-fastjson</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>love.forte.simple-robot.serialization</groupId>
+                <artifactId>json-jackson</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!--</editor-fold>-->
 
             <!--<editor-fold desc="spring-boot-starter">-->

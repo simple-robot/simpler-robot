@@ -53,7 +53,7 @@ public interface Sender {
 
     @JvmDefault
     fun sendGroupMsg(group: String, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
-        sendGroupMsg(group, msg.msg ?: throw IllegalArgumentException("msg is Empty."))
+        sendGroupMsg(group, msg.msg)
 
     @JvmDefault
     fun sendGroupMsg(group: Long, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
@@ -92,7 +92,7 @@ public interface Sender {
 
     @JvmDefault
     fun sendPrivateMsg(code: String, group: String?, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
-        sendPrivateMsg(code, group, msg.msg ?: throw IllegalArgumentException("msg is Empty."))
+        sendPrivateMsg(code, group, msg.msg)
 
     @JvmDefault
     fun sendPrivateMsg(code: Long, group: Long?, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
@@ -141,7 +141,7 @@ public interface Sender {
 
     @JvmDefault
     fun sendPrivateMsg(code: String, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
-        sendPrivateMsg(code, null, msg.msg ?: throw IllegalArgumentException("msg is Empty."))
+        sendPrivateMsg(code, null, msg.msg)
 
     @JvmDefault
     fun sendPrivateMsg(code: Long, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =

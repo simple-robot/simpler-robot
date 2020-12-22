@@ -33,8 +33,8 @@
         </dependency>
 
         <dependency>
-            <groupId>love.forte.simple-robot</groupId>
-            <artifactId>serialization-json-core</artifactId>
+            <groupId>love.forte.simple-robot.serialization</groupId>
+            <artifactId>json-core</artifactId>
         </dependency>
         <!-- jackson - json -->
         <dependency>

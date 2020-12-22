@@ -17,7 +17,6 @@
         <module>core</module>
         <module>http-client-core</module>
         <module>http-client-ktor</module>
-        <!--<module>time-task-core</module>-->
     </modules>
 
 

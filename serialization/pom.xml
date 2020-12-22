@@ -11,6 +11,7 @@
 
     <groupId>love.forte.simple-robot.serialization</groupId>
     <artifactId>parent</artifactId>
+    <packaging>pom</packaging>
 
     <modules>
         <module>serialization-json-core</module>
@@ -23,5 +24,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
+
 
 </project>
