@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <artifactId>parent</artifactId>
     <groupId>love.forte.simple-robot</groupId>
-    <version>2.0.0-BETA.3</version><!--v-->
+    <version>2.0.0-BETA.4</version><!--v-->
     <modules>
         <module>core-parent</module>
         <module>component-parent</module>
@@ -62,7 +62,7 @@
         <!-- dokka version -->
         <dokka.version>1.4.0-rc</dokka.version>
         <!-- sb maven version -->
-        <sb-maven.version>2.3.4.RELEASE</sb-maven.version>
+        <spring.version>2.3.5.RELEASE</spring.version>
 
     </properties>
 
@@ -440,7 +440,7 @@
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${sb-maven.version}</version>
+                    <version>${spring.version}</version>
                     <executions>
                         <execution>
                             <id>repackage</id>
