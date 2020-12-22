@@ -5,7 +5,7 @@
     <parent>
         <groupId>love.forte.simple-robot</groupId>
         <artifactId>component-parent</artifactId>
-        <version>2.0.0-BETA.4</version><!--v-->
+        <version>2.0.0-BETA.5</version><!--v-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
