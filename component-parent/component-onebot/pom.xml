@@ -1,18 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ /*
-  ~  * Copyright (c) 2020. ForteScarlet All rights reserved.
-  ~  * Project  simple-robot
-  ~  * File     MiraiAvatar.kt
-  ~  *
-  ~  * You can contact the author through the following channels:
-  ~  * github https://github.com/ForteScarlet
-  ~  * gitee  https://gitee.com/ForteScarlet
-  ~  * email  ForteScarlet@163.com
-  ~  * QQ     1149159218
-  ~  */
-  -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -29,5 +15,17 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -38,14 +38,14 @@
         </dependency>
 
         <dependency>
-            <groupId>love.forte.simple-robot</groupId>
-            <artifactId>serialization-json-core</artifactId>
+            <groupId>love.forte.simple-robot.serialization</groupId>
+            <artifactId>json-core</artifactId>
         </dependency>
 
         <!-- 默认使用fastjson -->
         <dependency>
-            <groupId>love.forte.simple-robot</groupId>
-            <artifactId>serialization-json-fastjson</artifactId>
+            <groupId>love.forte.simple-robot.serialization</groupId>
+            <artifactId>json-fastjson</artifactId>
         </dependency>
 
     </dependencies>

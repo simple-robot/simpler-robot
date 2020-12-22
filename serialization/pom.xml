@@ -9,16 +9,19 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>core-parent</artifactId>
-    <packaging>pom</packaging>
+    <groupId>love.forte.simple-robot.serialization</groupId>
+    <artifactId>parent</artifactId>
 
     <modules>
-        <module>api</module>
-        <module>core</module>
-        <module>http-client-core</module>
-        <module>http-client-ktor</module>
-        <!--<module>time-task-core</module>-->
+        <module>serialization-json-core</module>
+        <module>serialization-json-moshi</module>
+        <module>serialization-json-fastjson</module>
+        <module>serialization-json-jackson</module>
     </modules>
 
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
 
 </project>

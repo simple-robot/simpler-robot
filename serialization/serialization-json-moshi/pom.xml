@@ -3,16 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>core-parent</artifactId>
-        <groupId>love.forte.simple-robot</groupId>
+        <artifactId>parent</artifactId>
+        <groupId>love.forte.simple-robot.serialization</groupId>
         <version>2.0.0-BETA.4</version><!--v-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>serialization-json-fastjson</artifactId>
+    <artifactId>json-moshi</artifactId>
+
 
     <dependencies>
-
         <!-- common-ioc -->
         <dependency>
             <groupId>love.forte.common</groupId>
@@ -25,10 +25,14 @@
         </dependency>
 
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
+            <groupId>com.squareup.moshi</groupId>
+            <artifactId>moshi</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -37,6 +41,15 @@
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
