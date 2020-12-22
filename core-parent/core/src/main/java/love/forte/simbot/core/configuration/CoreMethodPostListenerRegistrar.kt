@@ -33,9 +33,8 @@ import love.forte.simbot.listener.PostListenerRegistrar
 public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
     private companion object : TypedCompLogger(CoreMethodPostListenerRegistrar::class.java)
 
-
-    @Depend
-    private lateinit var packageScanEnvironment: SimbotPackageScanEnvironment
+    // @Depend
+    // private lateinit var packageScanEnvironment: SimbotPackageScanEnvironment
 
     @Depend
     private lateinit var dependBeanFactory: DependBeanFactory
@@ -55,6 +54,9 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
     override fun registerListenerFunctions(registrar: ListenerRegistrar) {
 
         logger.info("Ready to register method listeners.")
+        if (!logger.isDebugEnabled) {
+            logger.info("If you want to view the details, please enable log debug.")
+        }
 
         // val scanner: Scanner<String, Class<*>> = HutoolClassesScanner()
         //
@@ -73,7 +75,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
         logger.debug("Number of beans to be scanned: {}", allBeans.size)
 
         allBeans.asSequence().mapNotNull {
-            kotlin.runCatching {
+            runCatching {
                 dependBeanFactory.getType(it)
             }.getOrElse {
                 logger.warn("Can not get type from depend '$it'. This may be an environmental issue or a class loader issue.")
@@ -98,9 +100,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
         }
 
         logger.info("Method listeners Registration is complete.")
-        if (!logger.isDebugEnabled) {
-            logger.info("If you want to view the details, please enable log debug。")
-        }
+
 
     }
 
