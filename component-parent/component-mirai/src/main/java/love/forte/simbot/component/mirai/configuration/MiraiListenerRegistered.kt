@@ -18,6 +18,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.component.mirai.utils.MiraiBotEventRegistrar
 import love.forte.simbot.core.TypedCompLogger
@@ -32,8 +33,12 @@ import net.mamoe.mirai.Bot
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 @ComponentBeans("miraiListenerRegistered")
+@AsMiraiConfig
 public class MiraiListenerRegistered : ListenerRegistered {
     private companion object : TypedCompLogger(MiraiListenerRegistered::class.java)
+
+    @field:ConfigInject
+    var daemon: Boolean = false
 
     @Depend
     lateinit var msgGetProcessor: MsgGetProcessor
@@ -49,7 +54,7 @@ public class MiraiListenerRegistered : ListenerRegistered {
         // 注册Mirai的所有bot事件。
         Bot.instancesSequence.forEach { miraiBotEventRegistrar.registerSimbotEvents(it, msgGetProcessor) }
 
-        val botAliveThread = BotAliveThread("mirai-bot-alive").apply { start() }
+        val botAliveThread = BotAliveThread("mirai-bot-alive", daemon).apply { start() }
 
         // 注册一个 ctrl+c钩子来关闭所有的bot。
         Runtime.getRuntime().addShutdownHook(Thread {
@@ -89,7 +94,11 @@ public class MiraiListenerRegistered : ListenerRegistered {
 }
 
 
-private class BotAliveThread(name: String) : Thread(name) {
+private class BotAliveThread(name: String, daemon: Boolean = false) : Thread(name) {
+    init {
+        isDaemon = daemon
+    }
+
     override fun run() {
         // var bots = Bot.instances
         while(!interrupted()) {

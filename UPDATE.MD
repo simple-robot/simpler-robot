@@ -261,3 +261,11 @@ simbot.component.mirai.loginSolver
 - 调整修复classloader问题。   
 
 
+## （NOW）
+
+### mirai
+- 追加配置项：
+```properties
+simbot.component.mirai.daemon=false
+```
+此配置为设置抱持mirai的存活线程是否作为**守护线程**。一般可以在与spring-boot-web相整合的时候设置为true。

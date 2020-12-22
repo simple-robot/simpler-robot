@@ -98,7 +98,7 @@ public class MiraiConfiguration {
     var loginSolverType: MiraiLoginSolverType = MiraiLoginSolverType.DEFAULT
 
     @field:ConfigInject
-    var deviceInfoFile: String? = null
+    var deviceInfoFile: String? = ""
 
     /**
      * mirai官方配置类获取函数，默认为其默认值

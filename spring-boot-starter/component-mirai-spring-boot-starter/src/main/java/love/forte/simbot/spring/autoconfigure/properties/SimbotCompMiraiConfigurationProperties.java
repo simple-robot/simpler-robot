@@ -65,9 +65,13 @@ public class SimbotCompMiraiConfigurationProperties {
     /** 最多尝试多少次重连。 */
     private int reconnectionRetryTimes = getDef().getReconnectionRetryTimes();
 
-
     /** 使用协议类型。 */
     private BotConfiguration.MiraiProtocol protocol = BotConfiguration.MiraiProtocol.ANDROID_PHONE;
+
+    /**
+     * 是否将保持bot存活的线程作为 “守护线程”
+     */
+    private boolean daemon = false;
 
     /** 关闭mirai的bot logger */
     private boolean noBotLog = false;
@@ -100,5 +104,5 @@ public class SimbotCompMiraiConfigurationProperties {
     /**
      * mirai设备信息文件路径。
      */
-    private String deviceInfoFile = null;
+    private String deviceInfoFile = "";
 }
