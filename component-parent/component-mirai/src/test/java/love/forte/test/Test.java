@@ -13,14 +13,7 @@ import org.jetbrains.annotations.NotNull;
 @SimbotApplication
 public class Test implements SimbotProcess {
     public static void main(String[] args) throws InterruptedException {
-        Thread t = new Thread(() -> {
-            SimbotApp.run(new Test(), args);
-        });
-        t.setDaemon(true);
-        t.start();
-
-        Thread.sleep(100000);
-
+        SimbotApp.run(Test.class, args);
     }
 
     @Override
