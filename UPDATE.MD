@@ -269,3 +269,8 @@ simbot.component.mirai.loginSolver
 simbot.component.mirai.daemon=false
 ```
 此配置为设置抱持mirai的存活线程是否作为**守护线程**。一般可以在与spring-boot-web相整合的时候设置为true。
+
+- 优化发送网络图片/语音时的并发请求。
+
+### http-client-ktor
+- 更新ktor版本至`v1.4.3`。同时解决mirai发送网络图片会发生版本冲突的问题。

@@ -37,7 +37,7 @@
         <!--</editor-fold>-->
         <!--<editor-fold desc="kt prop">-->
         <kotlin.version>1.4.21</kotlin.version>
-        <ktor.version>1.4.2</ktor.version>
+        <ktor.version>1.4.3</ktor.version>
         <kotlinx.version>1.4.0</kotlinx.version>
         <kotlinx-serialization.version>1.0.1</kotlinx-serialization.version>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
