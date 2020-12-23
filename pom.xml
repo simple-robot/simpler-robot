@@ -63,7 +63,7 @@
         <!-- plugins -->
 
         <!-- dokka version -->
-        <dokka.version>1.4.0-rc</dokka.version>
+        <dokka.version>1.4.20</dokka.version>
         <!-- sb maven version -->
         <spring.version>2.3.5.RELEASE</spring.version>
 
@@ -591,11 +591,15 @@
                         <!-- Do not create index pages for empty packages -->
                         <skipEmptyPackages>true</skipEmptyPackages>
                         <!-- Emit warnings about not documented members, applies globally, also can be overridden by packageOptions -->
-                        <reportUndocumented>true</reportUndocumented>
+                        <reportUndocumented>false</reportUndocumented>
 
-                        <!--<noJdkLink>true</noJdkLink>-->
-                        <!--<noStdlibLink>true</noStdlibLink>-->
                         <!--<outputDir>../simple-robot-2.0-doc/docs/${project.name}/doc</outputDir>-->
+
+                        <!-- Use default or set to custom path to cache directory to enable package-list caching. -->
+                        <!-- When set to default, caches stored in $USER_HOME/.cache/dokka -->
+                        <cacheRoot>default</cacheRoot>
+
+                        <offlineMode>true</offlineMode>
 
                     </configuration>
                 </plugin>
