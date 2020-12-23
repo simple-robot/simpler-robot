@@ -268,7 +268,7 @@ simbot.component.mirai.loginSolver
 ```properties
 simbot.component.mirai.daemon=false
 ```
-此配置为设置抱持mirai的存活线程是否作为**守护线程**。一般可以在与spring-boot-web相整合的时候设置为true。
+此配置为设置保持mirai的存活线程是否作为**守护线程**。一般可以在与spring-boot-web相整合的时候设置为true。
 
 - 优化发送网络图片/语音时的并发请求。
 
