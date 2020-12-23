@@ -261,7 +261,7 @@ simbot.component.mirai.loginSolver
 - 调整修复classloader问题。   
 
 
-## （NOW）
+## BETA.5
 
 ### mirai
 - 追加配置项：
@@ -273,4 +273,4 @@ simbot.component.mirai.daemon=false
 - 优化发送网络图片/语音时的并发请求。
 
 ### http-client-ktor
-- 更新ktor版本至`v1.4.3`。同时解决mirai发送网络图片会发生版本冲突的问题。
+- 更新ktor版本至`v1.4.3`。
