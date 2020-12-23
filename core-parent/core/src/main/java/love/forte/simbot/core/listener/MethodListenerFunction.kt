@@ -366,7 +366,7 @@ public class MethodListenerFunction(
         // resultBuilder.result = invokeResult
 
         // build listen result.
-        return return listenerResultFactory.getResult(invokeResult, this)
+        return listenerResultFactory.getResult(invokeResult, this)
     }
 }
 

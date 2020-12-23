@@ -14,7 +14,7 @@ package love.forte.simbot.component.ding.sender
 
 import love.forte.simbot.component.ding.messages.DingSpecialMessage
 import love.forte.simbot.component.ding.messages.DingSpecialMessageChain
-import love.forte.simbot.component.ding.messages.toChain
+import love.forte.simbot.component.ding.messages.toDingChain
 import love.forte.simbot.component.ding.sceret.DingSecretCalculator
 import love.forte.simbot.component.ding.utils.DingCatUtil
 import love.forte.simbot.http.template.HttpHeaders
@@ -29,7 +29,7 @@ interface DingSender {
     fun sendMsg(msg: String): String
     fun sendMsg(msg: DingSpecialMessageChain): String
     @JvmDefault
-    fun sendMsg(msg: DingSpecialMessage): String = sendMsg(msg.toChain())
+    fun sendMsg(msg: DingSpecialMessage): String = sendMsg(msg.toDingChain())
 }
 
 private val jsonHeaders = HttpHeaders.instance.apply { add("Content-Type", "application/json; charset=utf-8") }

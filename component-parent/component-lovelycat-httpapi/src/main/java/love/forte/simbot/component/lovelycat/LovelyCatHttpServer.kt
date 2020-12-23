@@ -33,6 +33,7 @@ import love.forte.simbot.listener.MsgGetProcessor
 import love.forte.simbot.serialization.json.JsonSerializer
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 import java.io.Closeable
+import kotlin.reflect.jvm.jvmErasure
 
 
 private val jsonContentType = ContentType.parse("application/json")
@@ -56,7 +57,7 @@ private class JsonContentConverter(private val fac: JsonSerializerFactory) : Con
             channel.cancel()
         }.toString()
         // val message = channel.readUTF8Line() ?: "{}"
-        return fac.getJsonSerializer(context.subject.type.java).fromJson(message)
+        return fac.getJsonSerializer(context.subject.typeInfo.jvmErasure.java).fromJson(message)
     }
 
     override suspend fun convertForSend(
@@ -176,12 +177,6 @@ public class LovelyCatKtorHttpServer(
     }
 
 }
-
-
-
-private data class ResponseData(
-    private val message: String
-)
 
 
 

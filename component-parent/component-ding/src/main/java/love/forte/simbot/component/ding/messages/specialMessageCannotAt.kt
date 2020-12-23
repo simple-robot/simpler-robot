@@ -137,10 +137,11 @@ sealed class DingActionCard : BaseNormalDingSpecialMessage<DingActionCard>("acti
  * 整体跳转ActionCard
  *
  */
-data class DingWholeActionCard(
+public data class DingWholeActionCard(
         override val title: String, override val text: String, override val btnOrientation: String,
         val singleTitle: String, val singleURL: String
 ) : DingActionCard() {
+    @Suppress("unused")
     constructor(title: String, text: String, btnOrientation: String, btn: DingAutonomyActionCardButtons):
             this(title, text, btnOrientation, btn.title, btn.actionURL)
 
@@ -172,7 +173,7 @@ data class DingWholeActionCard(
                 other.btns.plusElement(DingAutonomyActionCardButtons(this.singleTitle, this.singleURL))
             }
         }
-        return DingAutonomyActionCard(title, text, btnOrientation, btns)
+        return DingAutonomyActionCard(mergeTitle, mergeText, mergeBtnOrientation, btns)
     }
 
 }
@@ -203,7 +204,7 @@ data class DingAutonomyActionCard(
                 this.btns + other.btns
             }
         }
-        return DingAutonomyActionCard(title, text, btnOrientation, btns)
+        return DingAutonomyActionCard(mergeTitle, mergeText, mergeBtnOrientation, btns)
     }
 
     override fun equals(other: Any?): Boolean {

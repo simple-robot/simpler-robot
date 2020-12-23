@@ -119,17 +119,19 @@ public class MiraiSetter(private val bot: Bot) : Setter {
      * 设置群管理。
      */
     @Deprecated("Api not supported by mirai: changeGroupAdmin")
-    private fun changeGroupAdmin0(groupCode: Long, memberCode: Long, promotion: Boolean): Carrier<Boolean> {
+    private fun changeGroupAdmin0(): Nothing {
         throw IllegalStateException("Api not supported by mirai: changeGroupAdmin")
     }
 
     @Deprecated("Api not supported by mirai: changeGroupAdmin")
+    @Suppress("DEPRECATION")
     override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> =
-        changeGroupAdmin0(groupCode.toLong(), memberCode.toLong(), promotion)
+        changeGroupAdmin0()
 
     @Deprecated("Api not supported by mirai: changeGroupAdmin")
+    @Suppress("DEPRECATION")
     override fun setGroupAdmin(groupCode: Long, memberCode: Long, promotion: Boolean): Carrier<Boolean> =
-        changeGroupAdmin0(groupCode, memberCode, promotion)
+        changeGroupAdmin0()
 
 
     /**

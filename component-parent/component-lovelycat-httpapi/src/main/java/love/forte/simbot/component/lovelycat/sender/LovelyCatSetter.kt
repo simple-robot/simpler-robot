@@ -82,7 +82,8 @@ public class LovelyCatSetter(
     }
 
     override fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> {
-        val result = api.quitGroup(botId, groupCode)
+        // val result =
+        api.quitGroup(botId, groupCode)
         // check success?
         return true.toCarrier()
     }

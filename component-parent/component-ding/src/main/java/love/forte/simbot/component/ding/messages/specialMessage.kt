@@ -13,12 +13,13 @@
 package love.forte.simbot.component.ding.messages
 
 import love.forte.simbot.component.ding.exception.DingSpecialMessageException
-import java.util.*
 
+/** msgtype key */
+internal const val MSG_TYPE_KEY = "msgtype"
 
 /**
  * 最终的消息json汇总链
- * 最终的msgtype会根据[DingSpecialMessageChain]的构造参数`spMessageChain`的第一个**非`at`**类型的消息为准。
+ * 最终的msg type会根据[DingSpecialMessageChain]的构造参数`spMessageChain`的第一个**非`at`**类型的消息为准。
  * 如果要作为发送消息的json串，请获取并转化[data]而不是此类自身
  */
 @Suppress("JoinDeclarationAndAssignment", "MemberVisibilityCanBePrivate")
@@ -27,7 +28,7 @@ open class DingSpecialMessageChain(spMessageChain: Array<DingSpecialMessage>) {
     val data: Map<String, Any>
     init {
         msgType = spMessageChain.firstOrNull { it.type != "at" }?.type ?: throw DingSpecialMessageException("no msg type")
-        val mutableMap = mutableMapOf<String, Any>("msgtype" to msgType)
+        val mutableMap = mutableMapOf<String, Any>(MSG_TYPE_KEY to msgType)
         spMessageChain.asSequence().sortedBy { it.type == "at" }.map { it.type to it }.forEach {
             // merge
             mutableMap.merge(it.first, it.second) {
@@ -61,7 +62,6 @@ open class DingSpecialMessageChain(spMessageChain: Array<DingSpecialMessage>) {
  *
  *  一般来讲，不出意外的话以上几个类型的实现都是`data class`的形式
  *
- *  @param T 类型自己
  * @author ForteScarlet <ForteScarlet></ForteScarlet>@163.com>
  * @date 2020/8/7
  */
@@ -75,7 +75,7 @@ interface DingSpecialMessage: Comparable<DingSpecialMessage> {
 
     /**
      * 获取他的一些参数
-     * 其中，一般来讲，获取'msgtype'则为获取[.getType]
+     * 其中，一般来讲，获取 'msgtype' 则为获取[.getType]
      * @param key 参数的key值
      * @return 获取到的值，nullable
      */
@@ -95,8 +95,6 @@ interface DingSpecialMessage: Comparable<DingSpecialMessage> {
     override fun compareTo(other: DingSpecialMessage): Int
 }
 
-/** msgtype key */
-internal const val MSG_TYPE_KEY = "msgtype"
 
 
 /**
@@ -118,6 +116,7 @@ abstract class BaseDingSpecialMessage<T: DingSpecialMessage>(override val type: 
     /**
      * 将一个额外的类型转化为当前类型
      */
+    @Suppress("UNCHECKED_CAST")
     open fun transform(other: DingSpecialMessage): T = other as T
 
     /**
@@ -133,8 +132,9 @@ abstract class BaseDingSpecialMessage<T: DingSpecialMessage>(override val type: 
 }
 
 /**
- * 基于[MutableMap]的抽象类，[DingSpecialMessage.get]方法委托于[MutableMap]
+ * 基于[MutableMap]的抽象类，[DingSpecialMessage.get]方法委托于[MutableMap]。
  */
+@Suppress("unused")
 abstract class BaseMapDingSpecialMessage<T: DingSpecialMessage>(type: String, delegateMap: MutableMap<String, Any> = mutableMapOf()): BaseDingSpecialMessage<T>(type), MutableMap<String, Any> by delegateMap
 
 
@@ -145,11 +145,6 @@ abstract class BaseNormalDingSpecialMessage<T: DingSpecialMessage>(type: String)
 
 
 /**
- * 组成一对儿[Map.Entry]
- */
-internal infix fun <K, V> K.with(other: V): Map.Entry<K, V> = AbstractMap.SimpleEntry(this, other)
-
-/**
  * 与其他类型进行排序
  */
 internal infix fun DingSpecialMessage.compareWith(other: DingSpecialMessage): Int = if(other.type == "at") 1 else this.type.compareTo(other.type)
@@ -157,9 +152,16 @@ internal infix fun DingSpecialMessage.compareWith(other: DingSpecialMessage): In
 /**
  * 单个消息转化为[DingSpecialMessageChain]
  */
-fun DingSpecialMessage.toChain(): DingSpecialMessageChain = DingSpecialMessageChain(arrayOf(this))
+fun DingSpecialMessage.toDingChain(): DingSpecialMessageChain = DingSpecialMessageChain(arrayOf(this))
 
 /**
  * 多个消息转化为[DingSpecialMessageChain]
  */
-fun Array<DingSpecialMessage>.toChain(): DingSpecialMessageChain = DingSpecialMessageChain(this)
+@Suppress("unused")
+fun Array<DingSpecialMessage>.toDingChain(): DingSpecialMessageChain = DingSpecialMessageChain(this)
+
+/**
+ * 多个消息转化为[DingSpecialMessageChain]
+ */
+@Suppress("unused")
+fun Collection<DingSpecialMessage>.toDingChain(): DingSpecialMessageChain = DingSpecialMessageChain(*this.toTypedArray())

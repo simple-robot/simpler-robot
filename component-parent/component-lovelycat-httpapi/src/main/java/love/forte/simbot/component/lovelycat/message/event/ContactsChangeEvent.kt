@@ -37,7 +37,6 @@ public interface LovelyCatContactsChange : LovelyCatMsg, MemberChangesEventGet
  */
 public class LovelyCatContactsChangeEvent(
     override val robotWxid: String,
-    type: Int,
     fromWxid: String,
     fromName: String,
     private val msg: String?,
@@ -80,11 +79,11 @@ public object LovelyCatContactsChangeEventParser : LovelyCatEventParser {
     ): LovelyCatContactsChange {
         return LovelyCatContactsChangeEvent(
             params.orParamErr("robot_wxid").toString(),
-            params.orParamErr("type") as Int,
             params.orParamErr("from_wxid").toString(),
             params.orParamErr("from_name").toString(),
             params["msg"]?.toString(),
-            api, original
+            api,
+            original
         )
 
     }

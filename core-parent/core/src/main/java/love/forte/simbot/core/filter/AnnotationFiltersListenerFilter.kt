@@ -87,7 +87,7 @@ public interface AnnotationFiltersListenerFilter : ListenerFilter {
  */
 public class AnnotationFiltersListenerFilterImpl(
     filters: Filters,
-    filterManager: FilterManager
+    filterManager: FilterManager,
 ) : AnnotationFiltersListenerFilter {
 
     /**
@@ -203,7 +203,7 @@ public class AnnotationFiltersListenerFilterImpl(
             f@{
                 if (it is MessageGet) {
                     // 如果获取到的msg为null，则认为其无法匹配msg，直接放行。
-                    val text: String = it.msg ?: return@f true
+                    val text: String = it.msg
                     CatCodeUtil.contains(text, "at")
                 } else {
                     false
@@ -229,7 +229,7 @@ public class AnnotationFiltersListenerFilterImpl(
             f@{
                 if (it is MessageGet) {
                     // 如果获取到的为null，则认为其无法判断at，直接放行。
-                    val text = it.msg ?: return@f true
+                    val text = it.msg
                     at.all { atCode ->
                         CatCodeUtil.contains(text, "at", "code", atCode)
                     }
@@ -242,27 +242,25 @@ public class AnnotationFiltersListenerFilterImpl(
     }
 
 
-
-
     /**
      * 判断某个消息是否能够进行监听。
      */
     override fun test(data: FilterData): Boolean {
         // 1. children
         val childrenMost: Boolean = with(_childrenFilter) {
-           if(isNotEmpty()) {
-               childrenMostMatchType.mostMatch(_childrenFilter.map {
-                   { it.test(data) }
-               })
-           } else true
+            if (isNotEmpty()) {
+                childrenMostMatchType.mostMatch(_childrenFilter.map {
+                    { it.test(data) }
+                })
+            } else true
         }
-        if(!childrenMost) {
+        if (!childrenMost) {
             return false
         }
 
 
         // 2. this match.
-        if(!thisMatches(data)){
+        if (!thisMatches(data)) {
             return false
         }
 
@@ -283,7 +281,7 @@ public class AnnotationFiltersListenerFilterImpl(
         // 1. children
         _childrenFilter.forEach {
             val filterValue: String? = it.getFilterValue(name, text)
-            if(filterValue != null) {
+            if (filterValue != null) {
                 return filterValue
             }
         }
@@ -291,7 +289,7 @@ public class AnnotationFiltersListenerFilterImpl(
         // 2. customs.
         _customFilter.forEach {
             val filterValue: String? = it.getFilterValue(name, text)
-            if(filterValue != null) {
+            if (filterValue != null) {
                 return filterValue
             }
         }
@@ -335,11 +333,6 @@ public class AnnotationFiltersListenerFilterImpl(
     }
 
 }
-
-
-
-
-
 
 
 /**
@@ -388,7 +381,7 @@ public interface AnnotationFilterListenerFilter : ListenerFilter {
  * [AnnotationFilterListenerFilter] 实现。
  */
 public class AnnotationFilterListenerFilterImpl(
-    filter: Filter, filters: Filters
+    filter: Filter, filters: Filters,
 ) : AnnotationFilterListenerFilter {
 
     /**
@@ -479,29 +472,6 @@ public class AnnotationFilterListenerFilterImpl(
     }
 
 
-    /**
-     * any at 检测函数。
-     */
-    private val anyAtTestFunc: (MsgGet) -> Boolean = with(anyAt) {
-        if (this) {
-            // 要匹配at
-            f@{
-                if (it is MessageGet) {
-                    // 如果获取到的msg为null，则认为其无法匹配msg，直接放行。
-                    val text: String = it.msg ?: return@f true
-                    CatCodeUtil.contains(text, "at")
-                } else {
-                    false
-                }
-
-            }
-
-        } else {
-            { true }
-        }
-    }
-
-
     /** 当at了指定的人的时候才会触发。 */
     override val at: Array<String> = with(filter.at) {
         if (isEmpty() && filter.atByParent) filters.at
@@ -509,79 +479,16 @@ public class AnnotationFilterListenerFilterImpl(
     }
 
 
-    private val atTestFunc: (MsgGet) -> Boolean = with(at) {
-        if (isEmpty()) {
-            { true }
-        } else {
-            f@{
-                if (it is MessageGet) {
-                    // 如果获取到的为null，则认为其无法判断at，直接放行。
-                    val text = it.msg ?: return@f true
-                    at.all { atCode ->
-                        CatCodeUtil.contains(text, "at", "code", atCode)
-                    }
-                } else {
-                    false
-                }
-
-            }
-        }
-    }
-
     private val atAll: Boolean = filter.at.contains("all")
 
 
     /** 消息文本前置处理函数 */
-    private val textPre: (String) -> String
-
-
-    // 初始化text前置处理函数
-    init {
-        val filterClearAllCode = filter.clearAllCode
-        textPre = if (filter.trim) {
-            when {
-                filterClearAllCode -> {
-                    {
-                        it.trim().let { trimText ->
-                            CatCodeUtil.remove(trimText)
-                        }
-                    }
-                }
-                filter.clearCode.isNotEmpty() -> {
-                    val filterClearCodes = filter.clearCode
-                    {
-                        it.trim().let { trimText ->
-                            filterClearCodes.fold(trimText) { m, t ->
-                                CatCodeUtil.removeByType(t, m)
-                            }
-                        }
-                    }
-                }
-                // 不清除code
-                else -> {
-                    { it.trim() }
-                }
-            }
-        } else {
-            when {
-                filterClearAllCode -> {
-                    { CatCodeUtil.remove(it) }
-                }
-                filter.clearCode.isNotEmpty() -> {
-                    val filterClearCodes = filter.clearCode
-                    {
-                        filterClearCodes.fold(it) { m, t ->
-                            CatCodeUtil.removeByType(t, m)
-                        }
-                    }
-                }
-                // 不清除code
-                else -> {
-                    { it }
-                }
-            }
-        }
+    private val textPre: (String) -> String = if (filter.trim) {
+        { it.trim() }
+    } else {
+        { it }
     }
+
 
     /**
      * 判断某个消息是否能够进行监听。
