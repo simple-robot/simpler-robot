@@ -18,6 +18,8 @@ package love.forte.simbot.component.mirai.message
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import love.forte.catcode.CatCodeUtil
 import love.forte.catcode.Neko
 import love.forte.simbot.api.message.MessageContent
@@ -229,6 +231,8 @@ public class MiraiImageMessageContent(
     @Volatile
     private lateinit var image: Image
 
+    /** lock */
+    private val lock = Mutex()
 
     override val cats: List<Neko> = listOf(neko)
 
@@ -242,13 +246,16 @@ public class MiraiImageMessageContent(
             image
         } else {
             if (!::image.isInitialized) {
-                val img = imageFunction(contact)
-                if (!::image.isInitialized) {
-                    try {
-                        image = img
-                    } catch (ignore: Exception) {
+                lock.withLock {
+                    if (!::image.isInitialized) {
+                        // try {
+                        image = imageFunction(contact)
+                        // } catch (ignore: Exception) {
+                        // }
                     }
                 }
+                // val img = imageFunction(contact)
+
             }
             image
         }.let {
@@ -276,6 +283,9 @@ public class MiraiVoiceMessageContent(
     @Volatile
     private lateinit var voice: Voice
 
+    /** lock */
+    private val lock = Mutex()
+
     override val cats: List<Neko> = listOf(neko)
 
     override suspend fun getMessage(contact: Contact): Message {
@@ -283,11 +293,12 @@ public class MiraiVoiceMessageContent(
             voice
         } else {
             if (!::voice.isInitialized) {
-                val vo = voiceFunction(contact)
-                if (!::voice.isInitialized) {
-                    try {
-                        voice = vo
-                    } catch (ignore: Exception) {
+                lock.withLock {
+                    if (!::voice.isInitialized) {
+                        // try {
+                        voice = voiceFunction(contact)
+                        // } catch (ignore: Exception) {
+                        // }
                     }
                 }
 
