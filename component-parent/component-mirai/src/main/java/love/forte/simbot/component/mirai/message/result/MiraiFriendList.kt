@@ -23,7 +23,7 @@ import net.mamoe.mirai.Bot
  * [FriendList] 实现。
  */
 public class MiraiFriendList(bot: Bot, limit: Int = -1) : FriendList {
-    override val results: List<FriendInfo> by lazy(LazyThreadSafetyMode.NONE) {
+    override val results: List<FriendInfo> by lazy(LazyThreadSafetyMode.PUBLICATION) {
         if (limit > 0) {
             bot.friends.asSequence().take(limit).map { MiraiFriendInfo(it) }.toList()
         } else {

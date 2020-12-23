@@ -44,7 +44,7 @@ public class MiraiGroupMemberJoinRequest(event: MemberJoinRequestEvent) :
 
     override val accountInfo: AccountInfo = MiraiGroupMemberJoinAccountInfo(event)
 
-    override val groupInfo: GroupInfo by lazy(LazyThreadSafetyMode.NONE) { event.group?.let { MiraiGroupInfo(it) } ?: throw IllegalStateException("Bot has dropped out of the group.") }
+    override val groupInfo: GroupInfo by lazy(LazyThreadSafetyMode.PUBLICATION) { event.group?.let { MiraiGroupInfo(it) } ?: throw IllegalStateException("Bot has dropped out of the group.") }
 
     override val text: String = event.message //.takeIf { it.isNotBlank() }
 

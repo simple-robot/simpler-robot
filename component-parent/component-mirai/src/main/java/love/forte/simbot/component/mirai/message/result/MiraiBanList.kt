@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit
  */
 public class MiraiBanList(group: Group, limit: Int = -1) : BanList {
 
-    override val results: List<BanInfo> by lazy(LazyThreadSafetyMode.NONE) {
+    override val results: List<BanInfo> by lazy(LazyThreadSafetyMode.PUBLICATION) {
         if (limit > 0) {
             group.members.asSequence().take(limit).mapNotNull {
                 it.takeIf { m -> m.isMuted }?.let { m -> MiraiBanInfo(m) }

@@ -49,7 +49,7 @@ public object MiraiSetterFactory : SetterFactory {
  */
 public class MiraiSetter(private val bot: Bot) : Setter {
     private companion object : TypedCompLogger(MiraiSetter::class.java) {
-        private val setGroupAnonymous0Logger: Int by lazy(LazyThreadSafetyMode.NONE) {
+        private val setGroupAnonymous0Logger: Int by lazy(LazyThreadSafetyMode.PUBLICATION) {
             logger.warn("It is not supported to modify the anonymous chat status, only to return to the current status. This warning will only appear once.")
             0
         }

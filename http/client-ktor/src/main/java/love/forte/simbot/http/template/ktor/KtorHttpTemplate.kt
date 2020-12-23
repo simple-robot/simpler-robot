@@ -485,7 +485,7 @@ public class KtorHttpResponseImpl<T>(
     }
 
     /** headers. */
-    override val headers: HttpHeaders by lazy(LazyThreadSafetyMode.NONE) {
+    override val headers: HttpHeaders by lazy(LazyThreadSafetyMode.PUBLICATION) {
         HttpHeaders.fromMultiValueMap(response.headers.toMap())
     }
 

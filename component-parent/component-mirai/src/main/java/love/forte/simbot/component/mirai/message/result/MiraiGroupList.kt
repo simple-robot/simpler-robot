@@ -23,7 +23,7 @@ import net.mamoe.mirai.Bot
  * mirai [GroupList] 实现。
  */
 public class MiraiGroupList(bot: Bot, limit: Int = -1) : GroupList {
-    override val results: List<SimpleGroupInfo> by lazy(LazyThreadSafetyMode.NONE) {
+    override val results: List<SimpleGroupInfo> by lazy(LazyThreadSafetyMode.PUBLICATION) {
         if(limit > 0) {
             bot.groups.asSequence().take(limit).map { MiraiGroupInfo(it) }.toList()
         } else {

@@ -43,7 +43,7 @@ public class MiraiGroupMsg(event: GroupMessageEvent) :
 
     override val groupMsgType: GroupMsg.Type = GroupMsg.Type.NORMAL
 
-    override val flag: Flag<MiraiGroupFlagContent> by lazy(LazyThreadSafetyMode.NONE) {
+    override val flag: Flag<MiraiGroupFlagContent> by lazy(LazyThreadSafetyMode.PUBLICATION) {
         miraiMessageFlag(MiraiGroupFlagContent(event.source))
     }
 

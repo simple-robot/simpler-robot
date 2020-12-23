@@ -445,7 +445,7 @@ private object Logo {
     """
     private val LOGO_PATH: String =
         "META-INF" + File.separator + "simbot" + File.separator + "logo"
-    val logo: String by lazy(LazyThreadSafetyMode.NONE) {
+    val logo: String by lazy(LazyThreadSafetyMode.PUBLICATION) {
         runCatching {
             ResourcesScanner().scan(LOGO_PATH) { it.toASCIIString().endsWith("simbLogo") }
                 .collection.randomOrNull()
@@ -485,7 +485,7 @@ private fun Logo.show(print: PrintStream = System.out) {
 private object Tips {
     private val TIP_PATH: String =
         "META-INF" + File.separator + "simbot" + File.separator + "simbTip.tips"
-    val randomTip: String? by lazy(LazyThreadSafetyMode.NONE) {
+    val randomTip: String? by lazy(LazyThreadSafetyMode.PUBLICATION) {
         runCatching {
             ResourceUtil.getResourceUtf8Reader(TIP_PATH)
                 ?.useLines {

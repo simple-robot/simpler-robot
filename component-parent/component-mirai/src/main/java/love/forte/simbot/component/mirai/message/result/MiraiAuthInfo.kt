@@ -22,10 +22,10 @@ import love.forte.simbot.component.mirai.sender.Cookies
  * @see Cookies
  */
 open class MiraiAuthInfo(private val _cookies: Cookies): AuthInfo {
-    private val _cookiesMap: Map<String, String> by lazy(LazyThreadSafetyMode.NONE) { _cookies.cookiesMap }
+    private val _cookiesMap: Map<String, String> by lazy(LazyThreadSafetyMode.PUBLICATION) { _cookies.cookiesMap }
 
     /** cookies信息。 */
-    override val cookies: AuthInfo.Cookies by lazy(LazyThreadSafetyMode.NONE) { MiraiAuthInfoCookies() }
+    override val cookies: AuthInfo.Cookies by lazy(LazyThreadSafetyMode.PUBLICATION) { MiraiAuthInfoCookies() }
 
     /** 这里的token是bkn */
     override val token: String = _cookies.bkn.toString()
