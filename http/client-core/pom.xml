@@ -5,7 +5,7 @@
     <parent>
         <artifactId>http-parent</artifactId>
         <groupId>love.forte.simple-robot.http</groupId>
-        <version>2.0.0-BETA.5</version><!--v-->
+        <version>2.0.0-BETA.6</version><!--v-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

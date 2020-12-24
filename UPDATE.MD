@@ -274,3 +274,6 @@ simbot.component.mirai.daemon=false
 
 ### http-client-ktor
 - 更新ktor版本至`v1.4.3`。
+
+
+## NOW
