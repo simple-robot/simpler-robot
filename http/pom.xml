@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
 
     <groupId>love.forte.simple-robot.http</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>http-parent</artifactId>
 
     <modules>
         <module>client-core</module>

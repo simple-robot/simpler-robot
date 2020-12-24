@@ -10,7 +10,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>love.forte.simple-robot.time-task</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>time-task-parent</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>time-task-core</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
