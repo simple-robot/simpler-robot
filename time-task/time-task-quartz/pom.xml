@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>time-task-parent</artifactId>
+        <groupId>love.forte.simple-robot.time-task</groupId>
+        <version>2.0.0-BETA.6</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>time-task-quartz</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>love.forte.simple-robot.time-task</groupId>
+            <artifactId>time-task-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>love.forte.common</groupId>
+            <artifactId>ioc</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+</project>

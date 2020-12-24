@@ -17,6 +17,8 @@ package love.forte.simbot.timer;
 /**
  * 时间周期表现为 {@code cron} 的定时任务。
  *
+ * 不一定所有的定时任务都支持cron表达式。
+ *
  * @author ForteScarlet
  */
 public interface CronTask extends Task {
