@@ -68,10 +68,10 @@ public interface Task {
 
 
     /**
-     * 这个任务的 ‘寿命’，即这个任务的最大重复执行次数。
+     * 这个任务的最大重复执行次数。
      *
      * @return 返回最大重复执行次数。如果为无限次数，返回 {@code -1}。
      */
-    long life();
+    long repeat();
 
 }
