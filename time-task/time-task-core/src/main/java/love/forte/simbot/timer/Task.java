@@ -21,6 +21,8 @@ package love.forte.simbot.timer;
  *
  * 任务没有参数，也没有返回值，但是它应当可以与依赖注入相互结合。
  *
+ * 实现时需要保证 {@link #equals(Object)} 和 {@link #hashCode()} 是指向 {@link #id()} 的。
+ *
  * @author ForteScarlet
  */
 public interface Task {
@@ -47,24 +49,17 @@ public interface Task {
     String cycle();
 
     /**
+     * 周期类型。目前为 fixed 和 cron
+     * @return type
+     */
+    CycleType cycleType();
+
+    /**
      * 执行一个任务。这个任务没有返回值，也没有参数。
      *
      * @throws Exception 可能会存在任何异常。
      */
     void execute() throws Exception;
-
-    /**
-     * 此任务是否已经开始了。
-     * @return 如果返回 {@code true} 则代表此任务已经被激活过了。反之则代表尚未激活。
-     */
-    boolean isStarted();
-
-
-    /**
-     * 此任务是否已经结束了。
-     * @return 如果返回 {@code true} 则代表此任务已经结束了。一般有限次数的任务才会End，或者手动结束。反之则代表尚未激活。
-     */
-    boolean isEnded();
 
 
     /**

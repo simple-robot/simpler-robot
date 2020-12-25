@@ -16,11 +16,19 @@
 
 package love.forte.simbot.timer.quartz;
 
-import love.forte.simbot.timer.MutableTimerManager;
-import love.forte.simbot.timer.Task;
-import org.quartz.Scheduler;
+import love.forte.common.ioc.DependBeanFactory;
+import love.forte.simbot.LogAble;
+import love.forte.simbot.exception.ExceptionProcessor;
+import love.forte.simbot.timer.*;
+import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.WeakHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 基于 {@link org.quartz.Scheduler} 的定时任务管理器。
@@ -29,10 +37,22 @@ import java.util.Collection;
 public class SchedulerTimerManager implements MutableTimerManager {
 
     private final Scheduler scheduler;
+    private final DependBeanFactory dependBeanFactory;
+    private final ExceptionProcessor exceptionProcessor;
 
-    public SchedulerTimerManager(Scheduler scheduler) {
+    static final String TASK_KEY = "task";
+    static final String LOG_KEY = "logger";
+    static final String B_F_KEY = "dependBeanFactory";
+    static final String E_P_KEY = "exceptionProcessor";
+    static final String GROUP = "simbot-task";
+
+    public SchedulerTimerManager(Scheduler scheduler, DependBeanFactory dependBeanFactory, ExceptionProcessor exceptionProcessor) {
         this.scheduler = scheduler;
+        this.dependBeanFactory = dependBeanFactory;
+        this.exceptionProcessor = exceptionProcessor;
     }
+
+    private final WeakHashMap<Task, Job> weakTaskJob = new WeakHashMap<>(8);
 
 
     /**
@@ -40,15 +60,13 @@ public class SchedulerTimerManager implements MutableTimerManager {
      *
      * @param task task
      * @return 是否添加成功。如果失败，
-     * 一般可能为task已经无效、
-     * task已经开始 ({@link Task#isStarted()})、
-     * task已经结束 ({@link Task#isEnded()})、task寿命({@link Task#life()}) 无效等。
      * @throws IllegalArgumentException 如果ID已经存在。
      * @throws IllegalStateException    {@link Task#cycle()} 解析错误。
+     * @throws TimerException 添加到调度器失败。
      */
     @Override
     public boolean addTask(Task task) {
-        return false;
+        return addTask(task, 0);
     }
 
     /**
@@ -56,18 +74,102 @@ public class SchedulerTimerManager implements MutableTimerManager {
      *
      * @param task  task
      * @param delay 延迟时间。
-     * @return 是否添加成功。如果失败，
-     * 一般可能为task已经无效、
-     * task已经开始 ({@link Task#isStarted()})、
-     * task已经结束 ({@link Task#isEnded()})、task寿命({@link Task#life()}) 无效等。
+     * @return 是否添加成功。
      * @throws IllegalArgumentException 如果ID已经存在。
      * @throws IllegalStateException    {@link Task#cycle()} 解析错误。
+     * @throws TimerException 添加到调度器失败。
      */
     @Override
     public boolean addTask(Task task, long delay) {
+
+        // 已经存在此task
+        if (weakTaskJob.containsKey(task)) {
+            throw new IllegalArgumentException("Duplicate task " + task);
+        }
+
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put(TASK_KEY, task);
+        jobDataMap.put(B_F_KEY, dependBeanFactory);
+        jobDataMap.put(E_P_KEY, exceptionProcessor);
+
+        Logger logger;
+        if (task instanceof LogAble) {
+            logger = ((LogAble) task).getLog();
+        } else {
+            logger = LoggerFactory.getLogger("love.forte.simbot.timer[" + task.id() + "]");
+        }
+
+        jobDataMap.put(LOG_KEY, logger);
+
+        JobDetail job = JobBuilder.newJob(QuartzJob.class)
+                .setJobData(jobDataMap)
+                .withIdentity(task.id(), GROUP)
+                .withDescription(task.name()).build();
+
         // 判断是否为周期时间
-        String cycle = task.cycle();
-        return false;
+        CycleType cycleType = task.cycleType();
+
+        TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger()
+                .forJob(job)
+                .withIdentity("tri_" + job.getKey().getName(), job.getKey().getGroup());
+
+        if (delay > 0) {
+            triggerBuilder.startAt(new Date(System.currentTimeMillis() + delay));
+        } else {
+            triggerBuilder.startNow();
+        }
+
+        Trigger trigger;
+        long repeat;
+
+        switch (cycleType) {
+            case FIXED:
+                long millFixed;
+                if (task instanceof FixedTask) {
+                    FixedTask fixedTask = (FixedTask) task;
+                    millFixed = fixedTask.timeUnit().toMillis(fixedTask.duration());
+                } else {
+                    millFixed = Long.parseLong(task.cycle());
+                }
+
+                SimpleScheduleBuilder fixedScheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
+                        .withIntervalInMilliseconds(millFixed);
+
+                repeat = task.repeat();
+                if (repeat > 0) {
+                    fixedScheduleBuilder.withRepeatCount((int) repeat);
+                } else {
+                    fixedScheduleBuilder.repeatForever();
+                }
+                trigger = triggerBuilder.withSchedule(fixedScheduleBuilder).build();
+
+                break;
+            case CRON:
+                String cron;
+                if (task instanceof CronTask) {
+                    CronTask cronTask = (CronTask) task;
+                    cron = cronTask.cron();
+                } else {
+                    cron = task.cycle();
+                }
+
+                CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cron);
+                trigger = triggerBuilder.withSchedule(cronScheduleBuilder).build();
+
+                break;
+
+
+            default: throw new IllegalStateException("未知异常-schedulerTimerManager");
+        }
+
+
+        try {
+            scheduler.scheduleJob(job, trigger);
+        } catch (SchedulerException e) {
+            throw new TimerException("", e);
+        }
+
+        return true;
     }
 
     /**

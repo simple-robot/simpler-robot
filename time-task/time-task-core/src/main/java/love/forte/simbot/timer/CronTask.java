@@ -39,4 +39,12 @@ public interface CronTask extends Task {
         return cron();
     }
 
+    /**
+     * 周期类型。固定为 {@link CycleType#CRON}
+     * @return type
+     */
+    @Override
+    default CycleType cycleType() {
+        return CycleType.CRON;
+    }
 }

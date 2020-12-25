@@ -46,4 +46,14 @@ public interface FixedTask extends Task {
     default String cycle() {
         return String.valueOf(timeUnit().toMillis(duration()));
     }
+
+
+    /**
+     * 周期类型。固定为 {@link CycleType#FIXED}
+     * @return type
+     */
+    @Override
+    default CycleType cycleType() {
+        return CycleType.FIXED;
+    }
 }

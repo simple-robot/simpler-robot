@@ -16,19 +16,37 @@
 
 package love.forte.simbot.timer.quartz;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import love.forte.common.ioc.DependBeanFactory;
+import love.forte.simbot.exception.ExceptionHandle;
+import love.forte.simbot.exception.ExceptionProcessor;
+import love.forte.simbot.timer.Task;
+import org.quartz.*;
+import org.slf4j.Logger;
+
+import static love.forte.simbot.timer.quartz.SchedulerTimerManager.*;
 
 /**
  * @author ForteScarlet
  */
-public class QuartzJob implements Job {
+public final class QuartzJob implements Job {
     /**
      *
      */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        // do..?
+        JobDetail jobDetail = context.getJobDetail();
+        JobDataMap jobDataMap = jobDetail.getJobDataMap();
+        Task task = (Task) jobDataMap.get(TASK_KEY);
+        // DependBeanFactory dependBeanFactory = (DependBeanFactory) jobDataMap.get(B_F_KEY);
+        // ExceptionProcessor exceptionProcessor = (ExceptionProcessor) jobDataMap.get(E_P_KEY);
+        Logger logger = (Logger) jobDataMap.get(LOG_KEY);
+
+        try {
+            task.execute();
+        } catch (Exception e) {
+            logger.error("Timed task ["+ jobDetail.getKey() +"] is abnormal", e);
+        }
+
+
     }
 }

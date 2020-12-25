@@ -276,4 +276,7 @@ simbot.component.mirai.daemon=false
 - 更新ktor版本至`v1.4.3`。
 
 
-## NOW
+## BETA.6
+
+### fix
+- [#28](https://github.com/ForteScarlet/simpler-robot/issues/27) GroupMsgRecall 获取群信息

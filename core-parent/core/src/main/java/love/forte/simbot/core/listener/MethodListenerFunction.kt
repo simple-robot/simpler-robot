@@ -24,11 +24,6 @@ import love.forte.simbot.annotation.Filters
 import love.forte.simbot.annotation.ListenBreak
 import love.forte.simbot.annotation.Listens
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.api.sender.Getter
-import love.forte.simbot.api.sender.MsgSender
-import love.forte.simbot.api.sender.Sender
-import love.forte.simbot.api.sender.Setter
-import love.forte.simbot.bot.Bot
 import love.forte.simbot.filter.*
 import love.forte.simbot.listener.*
 import org.slf4j.Logger
@@ -45,8 +40,8 @@ import kotlin.reflect.jvm.kotlinFunction
  *
  * @property method method实例。
  * @property dependBeanFactory 依赖工厂。需要其可以获取除了 [MsgGet] 以外的动态参数，
- * 例如 [love.forte.simbot.core.api.sender.Sender]
- * 或 [love.forte.simbot.core.filter.AtDetection]。
+ * 例如 [love.forte.simbot.api.sender.Sender]
+ * 或 [love.forte.simbot.filter.AtDetection]。
  * @property filterManager 过滤器工厂。
  * @property
  *
@@ -155,18 +150,18 @@ public class MethodListenerFunction(
     private val methodParamsGetter: (ListenerFunctionInvokeData) -> Array<*>
 
     private companion object Types {
-        private val msgSenderType = MsgSender::class.java
-        private val senderType = Sender::class.java
-        private val getterType = Getter::class.java
-        private val setterType = Setter::class.java
-        private val atDetectionType = AtDetection::class.java
-        private val listenerContextType = ListenerContext::class.java
-        private val botType = Bot::class.java
+        // private val msgSenderType = MsgSender::class.java
+        // private val senderType = Sender::class.java
+        // private val getterType = Getter::class.java
+        // private val setterType = Setter::class.java
+        // private val atDetectionType = AtDetection::class.java
+        // private val listenerContextType = ListenerContext::class.java
+        // private val botType = Bot::class.java
 
         private val ListensType = Listens::class.java
         private val FiltersType = Filters::class.java
         private val ListenBreakType = ListenBreak::class.java
-        private val MsgGetType = MsgGet::class.java
+        // private val MsgGetType = MsgGet::class.java
     }
 
     init {

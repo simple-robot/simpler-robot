@@ -16,8 +16,10 @@
 
 package love.forte.simbot.timer.quartz.configuration;
 
+import love.forte.common.ioc.DependBeanFactory;
 import love.forte.common.ioc.annotation.ConfigBeans;
 import love.forte.common.ioc.annotation.SpareBeans;
+import love.forte.simbot.exception.ExceptionProcessor;
 import love.forte.simbot.timer.quartz.SchedulerTimerManager;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -42,8 +44,8 @@ public class QuartzConfiguration {
     }
 
     @SpareBeans("schedulerTimerManager")
-    public SchedulerTimerManager schedulerTimerManager(Scheduler scheduler){
-        return new SchedulerTimerManager(scheduler);
+    public SchedulerTimerManager schedulerTimerManager(Scheduler scheduler, DependBeanFactory dependBeanFactory, ExceptionProcessor exceptionProcessor){
+        return new SchedulerTimerManager(scheduler, dependBeanFactory, exceptionProcessor);
     }
 
 

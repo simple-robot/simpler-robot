@@ -17,7 +17,7 @@ package love.forte.simbot
 
 /**
  *
- * 一个可选接口。
+ * 一个可选接口，代表当前实例拥有获取一个其日志的能力。
  * 当你使用此接口的时候，则说明你的项目环境中存在 `slf4j-api` 依赖环境。
  *
  * @author ForteScarlet
