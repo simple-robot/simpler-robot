@@ -24,16 +24,30 @@ package love.forte.simbot.timer;
 public interface MutableTimerManager extends TimerManager {
 
     /**
-     * 添加/注册一个 task。
+     * 添加/注册一个 task。首次任务立即执行。
      * @param task task
      * @return 是否添加成功。如果失败，
      * 一般可能为task已经无效、
      * task已经开始 ({@link Task#isStarted()})、
-     * task已经结束 ({@link Task#isEnded()})、task寿命({@link Task#life()}) 无效等。
+     * task已经结束 ({@link Task#isEnded()})、task寿命({@link Task#repeat()}) 无效等。
      * @throws IllegalArgumentException 如果ID已经存在。
      * @throws IllegalStateException {@link Task#cycle()} 解析错误。
      */
     boolean addTask(Task task);
+
+
+    /**
+     * 添加/注册一个 task，并延迟指定时间后执行。
+     * @param task task
+     * @param delay 延迟时间。
+     * @return 是否添加成功。如果失败，
+     * 一般可能为task已经无效、
+     * task已经开始 ({@link Task#isStarted()})、
+     * task已经结束 ({@link Task#isEnded()})、task寿命({@link Task#repeat()}) 无效等。
+     * @throws IllegalArgumentException 如果ID已经存在。
+     * @throws IllegalStateException {@link Task#cycle()} 解析错误。
+     */
+    boolean addTask(Task task, long delay);
 
 
     /**
