@@ -16,6 +16,7 @@ package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.GroupMsgRecall
 import love.forte.simbot.api.message.events.PrivateMsg
@@ -23,6 +24,7 @@ import love.forte.simbot.api.message.events.PrivateMsgRecall
 import love.forte.simbot.component.mirai.message.MiraiFriendAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
+import love.forte.simbot.component.mirai.message.result.MiraiGroupFullInfo
 import love.forte.simbot.component.mirai.sender.friend
 import net.mamoe.mirai.event.events.MessageRecallEvent
 import net.mamoe.mirai.event.events.author
@@ -44,6 +46,7 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
         /** 有可能是bot自己。 */
         override val accountInfo: AccountInfo = MiraiMemberAccountInfo(event.author)
 
+        override val groupInfo: GroupInfo = MiraiGroupFullInfo(event.group)
 
         private val cacheMsg: GroupMsg?
             get() = cache.getGroupMsg("${event.authorId}.${event.messageIds.joinToString(",")}.${event.messageInternalIds.joinToString(",")}")
