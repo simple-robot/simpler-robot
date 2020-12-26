@@ -83,7 +83,6 @@ public class CoreListenerManager(
     private val atDetectionFactory: AtDetectionFactory,
     private val exceptionManager: ExceptionProcessor,
 
-
     private val msgInterceptData: MsgInterceptData,
 
     private val listenerInterceptData: ListenerInterceptData,
@@ -114,6 +113,9 @@ public class CoreListenerManager(
 
     /**
      * 注册一个 [监听函数][ListenerFunction]。
+     *
+     * 每次注册一个新的监听函数的时候，会刷新内置的 **全部** 缓存，会一定程度上影响到其他应用。
+     *
      */
     override fun register(listenerFunction: ListenerFunction) {
         // 获取其监听类型，并作为key存入map
@@ -130,11 +132,6 @@ public class CoreListenerManager(
             // no. 直接清除缓存。
             cacheListenerFunctionMap.clear()
 
-            // cacheListenerFunctionMap.forEach {
-            //     if (listenType.isAssignableFrom(it.key)) {
-            // it.value.add(listenerFunction)
-            // }
-            // }
         }
     }
 
