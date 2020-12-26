@@ -16,6 +16,11 @@
 
 package love.forte.simbot.timer;
 
+import love.forte.simbot.LogAble;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.function.Supplier;
@@ -27,13 +32,14 @@ import java.util.function.Supplier;
  *
  * @author ForteScarlet
  */
-public abstract class MethodTask extends BaseTask implements Task {
+public abstract class MethodTask extends BaseTask implements Task, LogAble {
 
     /**
      * 方法实例。
      */
     protected final Method method;
     protected final Supplier<Object> supplier;
+    protected final Logger logger;
 
     protected MethodTask(
             String id, String name, String cycle, CycleType cycleType, long repeat, long delay,
@@ -43,6 +49,7 @@ public abstract class MethodTask extends BaseTask implements Task {
         checkMethod(method);
         this.method = method;
         this.supplier = instanceSupplier;
+        this.logger = methodLogger(method);
     }
 
     protected MethodTask(
@@ -53,6 +60,7 @@ public abstract class MethodTask extends BaseTask implements Task {
         checkMethod(method);
         this.method = method;
         this.supplier = instanceSupplier;
+        this.logger = methodLogger(method);
     }
 
     protected MethodTask(
@@ -63,6 +71,7 @@ public abstract class MethodTask extends BaseTask implements Task {
         checkMethod(method);
         this.method = method;
         this.supplier = instanceSupplier;
+        this.logger = methodLogger(method);
     }
 
     static void checkMethod(Method method) {
@@ -93,5 +102,18 @@ public abstract class MethodTask extends BaseTask implements Task {
     public void execute() throws Exception {
         Object instance = supplier.get();
         method.invoke(instance);
+    }
+
+
+    static Logger methodLogger(Method method) {
+        String declaringClassName = method.getDeclaringClass().getName();
+        return LoggerFactory.getLogger(declaringClassName + "." + method.getName());
+    }
+
+
+    @NotNull
+    @Override
+    public Logger getLog() {
+        return logger;
     }
 }
