@@ -278,5 +278,26 @@ simbot.component.mirai.daemon=false
 
 ## BETA.6
 
+### time-task
+- 实现定时任务模块 ([#24](https://github.com/ForteScarlet/simpler-robot/issues/24)), 并向下兼容一个版本(`v2.0.0-BETA.5`).
+所谓向下兼容，即第一个发布的版本为上一个版本，因此你可以直接通过上一个版本的版本号使用此模块，但是无法想要进行统一版本控制，需要手动填入版本号。
+
+  目前定时任务相关模块为：
+    - [定时任务核心模块](./time-task/time-task-core)
+      - [定时任务模块quartz实现](./time-task/time-task-quartz)
+  
+使用(以quartz模块为例)：
+```xml
+  <dependency>
+    <groupId>love.forte.simple-robot.time-task</groupId>
+    <artifactId>time-task-quartz</artifactId>
+    <version>2.0.0-BETA.5</version>
+</dependency>
+```
+
+虽然发布的兼容版本只有上一个版本，但是理论上其他`BETA`旧版本(`2.0.0-BETA.x`)也可以使用。
+
+
+
 ### fix
 - [#28](https://github.com/ForteScarlet/simpler-robot/issues/27) GroupMsgRecall 获取群信息
