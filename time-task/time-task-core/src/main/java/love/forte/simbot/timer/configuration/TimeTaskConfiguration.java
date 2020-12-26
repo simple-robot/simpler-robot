@@ -22,6 +22,8 @@ import love.forte.simbot.listener.ListenerManager;
 import love.forte.simbot.listener.ListenerRegistered;
 import love.forte.simbot.timer.*;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -35,6 +37,8 @@ import java.util.function.Supplier;
 @ConfigBeans
 public class TimeTaskConfiguration implements ListenerRegistered {
 
+    private static final Logger logger = LoggerFactory.getLogger(TimeTaskConfiguration.class);
+
     @Depend
     private DependBeanFactory dependBeanFactory;
 
@@ -47,6 +51,7 @@ public class TimeTaskConfiguration implements ListenerRegistered {
     @Override
     public void onRegistered(@NotNull ListenerManager manager) {
         Set<String> allBeans = dependBeanFactory.getAllBeans();
+        logger.debug("Prepare to scan for scheduled tasks.");
         for (String bean : allBeans) {
             Class<?> type = dependBeanFactory.getType(bean);
             if (AnnotationUtil.containsAnnotation(type, EnableTimeTask.class)) {
@@ -73,12 +78,15 @@ public class TimeTaskConfiguration implements ListenerRegistered {
                         supplier = () -> dependBeanFactory.get(bean);
                     }
 
+
                     if (cron != null) {
                         long delay = cron.delay();
                         Task cronTask = new CronMethodTask(id, name, cron.value(), cron.repeat(), delay, method, supplier);
                         if (delay > 0) {
+                            logger.debug("Register cron scheduled task '{}' for delay {} mills.", name, delay);
                             timerManager.addTask(cronTask, delay);
                         } else {
+                            logger.debug("Register cron scheduled task '{}'.", name);
                             timerManager.addTask(cronTask);
                         }
                     }
@@ -87,14 +95,17 @@ public class TimeTaskConfiguration implements ListenerRegistered {
                         long delay = fixed.delay();
                         Task fixedTask = new FixedMethodTask(id, name, fixed.value(), fixed.timeUnit(), fixed.repeat(), delay, method, supplier);
                         if (delay > 0) {
+                            logger.debug("Register fixed scheduled task '{}' for delay {} mills.", name, delay);
                             timerManager.addTask(fixedTask, delay);
                         } else {
+                            logger.debug("Register fixed scheduled task '{}'.", name);
                             timerManager.addTask(fixedTask);
                         }
                     }
                 }
             }
         }
+        logger.debug("The scheduled task scan ends.");
     }
 
 
