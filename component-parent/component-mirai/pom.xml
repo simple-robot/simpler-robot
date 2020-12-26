@@ -29,6 +29,13 @@
     <dependencies>
 
         <dependency>
+            <groupId>love.forte.simple-robot.time-task</groupId>
+            <artifactId>time-task-quartz</artifactId>
+            <scope>test</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>love.forte.simple-robot.http</groupId>
             <artifactId>client-core</artifactId>
         </dependency>

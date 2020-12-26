@@ -21,20 +21,17 @@ import love.forte.simbot.LogAble;
 import love.forte.simbot.exception.ExceptionProcessor;
 import love.forte.simbot.timer.*;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.WeakHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 
 /**
  * 基于 {@link org.quartz.Scheduler} 的定时任务管理器。
  * @author ForteScarlet
  */
-public class SchedulerTimerManager implements MutableTimerManager {
+public class SchedulerTimerManager implements TimerManager {
 
     private final Scheduler scheduler;
     private final DependBeanFactory dependBeanFactory;
@@ -51,8 +48,6 @@ public class SchedulerTimerManager implements MutableTimerManager {
         this.dependBeanFactory = dependBeanFactory;
         this.exceptionProcessor = exceptionProcessor;
     }
-
-    private final WeakHashMap<Task, Job> weakTaskJob = new WeakHashMap<>(8);
 
 
     /**
@@ -81,11 +76,7 @@ public class SchedulerTimerManager implements MutableTimerManager {
      */
     @Override
     public boolean addTask(Task task, long delay) {
-
-        // 已经存在此task
-        if (weakTaskJob.containsKey(task)) {
-            throw new IllegalArgumentException("Duplicate task " + task);
-        }
+        final String id = task.id();
 
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put(TASK_KEY, task);
@@ -93,6 +84,7 @@ public class SchedulerTimerManager implements MutableTimerManager {
         jobDataMap.put(E_P_KEY, exceptionProcessor);
 
         Logger logger;
+
         if (task instanceof LogAble) {
             logger = ((LogAble) task).getLog();
         } else {
@@ -103,8 +95,10 @@ public class SchedulerTimerManager implements MutableTimerManager {
 
         JobDetail job = JobBuilder.newJob(QuartzJob.class)
                 .setJobData(jobDataMap)
-                .withIdentity(task.id(), GROUP)
-                .withDescription(task.name()).build();
+                .withIdentity(id, GROUP)
+                .withDescription(task.name())
+                .setJobData(jobDataMap)
+                .build();
 
         // 判断是否为周期时间
         CycleType cycleType = task.cycleType();
@@ -166,7 +160,19 @@ public class SchedulerTimerManager implements MutableTimerManager {
         try {
             scheduler.scheduleJob(job, trigger);
         } catch (SchedulerException e) {
-            throw new TimerException("", e);
+            throw new TimerException("Schedule Job '"+ id +"' failed.", e);
+        }
+
+        try {
+            if (!scheduler.isStarted()) {
+                synchronized (scheduler) {
+                    if (!scheduler.isStarted()){
+                        scheduler.start();
+                    }
+                }
+            }
+        } catch (SchedulerException e) {
+            throw new TimerException("Scheduler start failed.", e);
         }
 
         return true;
@@ -180,8 +186,12 @@ public class SchedulerTimerManager implements MutableTimerManager {
      * @return 如果存在任务，返回被终止的任务，否则返回 {@code null}。
      */
     @Override
-    public Task removeTask(String id) {
-        return null;
+    public boolean removeTask(String id) {
+        try {
+            return scheduler.deleteJob(new JobKey(id, GROUP));
+        } catch (SchedulerException e) {
+            throw new TimerException("Delete scheduler Job failed.", e);
+        }
     }
 
     /**
@@ -191,7 +201,20 @@ public class SchedulerTimerManager implements MutableTimerManager {
      */
     @Override
     public Collection<? extends Task> taskList() {
-        return null;
+        try {
+            Set<JobKey> keys = scheduler.getJobKeys(GroupMatcher.anyGroup());
+            List<Task> tasks = new ArrayList<>(keys.size());
+            for (JobKey key : keys) {
+                JobDetail job = scheduler.getJobDetail(key);
+                Task task = (Task) job.getJobDataMap().get(TASK_KEY);
+                if (task != null) {
+                    tasks.add(task);
+                }
+            }
+            return tasks;
+        } catch (SchedulerException e) {
+            throw new TimerException("Can not get scheduler job keys.", e);
+        }
     }
 
     /**
@@ -202,6 +225,15 @@ public class SchedulerTimerManager implements MutableTimerManager {
      */
     @Override
     public Task getTask(String id) {
-        return null;
+        JobKey jobKey = new JobKey(id, GROUP);
+        try {
+            JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+            if (jobDetail == null) {
+                return null;
+            }
+            return (Task) jobDetail.getJobDataMap().get(TASK_KEY);
+        } catch (SchedulerException e) {
+            throw new TimerException("Can not get job detail by id '"+ id +"' of jobKey " + jobKey, e);
+        }
     }
 }

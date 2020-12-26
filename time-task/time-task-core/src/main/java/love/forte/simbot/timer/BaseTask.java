@@ -27,6 +27,16 @@ public abstract class BaseTask implements Task {
     private final String cycle;
     private final CycleType cycleType;
     private final long repeat;
+    private final long delay;
+
+    protected BaseTask(String id, String name, String cycle, CycleType cycleType, long repeat, long delay) {
+        this.id = id;
+        this.name = name;
+        this.cycle = cycle;
+        this.cycleType = cycleType;
+        this.repeat = repeat;
+        this.delay = delay;
+    }
 
     protected BaseTask(String id, String name, String cycle, CycleType cycleType, long repeat) {
         this.id = id;
@@ -34,6 +44,7 @@ public abstract class BaseTask implements Task {
         this.cycle = cycle;
         this.cycleType = cycleType;
         this.repeat = repeat;
+        this.delay = 0;
     }
 
     protected BaseTask(String id, String name, String cycle, CycleType cycleType) {
@@ -41,7 +52,8 @@ public abstract class BaseTask implements Task {
         this.name = name;
         this.cycle = cycle;
         this.cycleType = cycleType;
-        this.repeat = -1;
+        this.repeat = 0;
+        this.delay = 0;
     }
 
 
@@ -64,5 +76,9 @@ public abstract class BaseTask implements Task {
     @Override
     public long repeat() {
         return repeat;
+    }
+    @Override
+    public long delay() {
+        return delay;
     }
 }

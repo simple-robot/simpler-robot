@@ -69,4 +69,10 @@ public interface Task {
      */
     long repeat();
 
+    /**
+     * 首次延迟时间。
+     * @return 延迟时间
+     */
+    long delay();
+
 }

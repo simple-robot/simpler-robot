@@ -17,6 +17,19 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>love.forte.common</groupId>
+            <artifactId>ioc</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>love.forte.simple-robot</groupId>
+            <artifactId>api</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

@@ -15,8 +15,6 @@
 package love.forte.simbot.timer;
 
 
-import com.sun.istack.internal.Nullable;
-
 import java.util.Collection;
 
 /**
@@ -42,6 +40,37 @@ public interface TimerManager {
      */
     Task getTask(String id);
 
+
+
+    /**
+     * 添加/注册一个 task。首次任务立即执行。
+     * @param task task
+     * @return 是否添加成功。
+     * @throws IllegalArgumentException 如果ID已经存在。
+     * @throws IllegalStateException {@link Task#cycle()} 解析错误。
+     */
+    boolean addTask(Task task);
+
+
+    /**
+     * 添加/注册一个 task，并延迟指定时间后执行。
+     * @param task task
+     * @param delay 延迟时间。
+     * @return 是否添加成功。
+     * @throws IllegalArgumentException 如果ID已经存在。
+     * @throws IllegalStateException {@link Task#cycle()} 解析错误。
+     */
+    boolean addTask(Task task, long delay);
+
+
+    /**
+     * 移除/停止一个任务。
+     * 移除的同时会尝试终止此任务之后的执行。
+     *
+     * @param id ID
+     * @return 如果存在任务，返回被终止的任务，否则返回 {@code null}。
+     */
+    boolean removeTask(String id);
 
 
 }

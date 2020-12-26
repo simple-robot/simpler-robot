@@ -36,6 +36,16 @@ public abstract class MethodTask extends BaseTask implements Task {
     protected final Supplier<Object> supplier;
 
     protected MethodTask(
+            String id, String name, String cycle, CycleType cycleType, long repeat, long delay,
+            Method method, Supplier<Object> instanceSupplier
+    ) {
+        super(id, name, cycle, cycleType, repeat, delay);
+        checkMethod(method);
+        this.method = method;
+        this.supplier = instanceSupplier;
+    }
+
+    protected MethodTask(
             String id, String name, String cycle, CycleType cycleType, long repeat,
             Method method, Supplier<Object> instanceSupplier
     ) {
@@ -73,4 +83,15 @@ public abstract class MethodTask extends BaseTask implements Task {
         }
     }
 
+
+    /**
+     * 执行一个任务。这个任务没有返回值，也没有参数。
+     *
+     * @throws Exception 可能会存在任何异常。
+     */
+    @Override
+    public void execute() throws Exception {
+        Object instance = supplier.get();
+        method.invoke(instance);
+    }
 }

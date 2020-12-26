@@ -27,6 +27,12 @@ public abstract class BaseFixedTask extends BaseTask implements FixedTask {
     private final long duration;
     private final TimeUnit timeUnit;
 
+    protected BaseFixedTask(String id, String name, long duration, TimeUnit timeUnit, long repeat, long delay) {
+        super(id, name, String.valueOf(timeUnit.toMillis(duration)), CycleType.FIXED, repeat, delay);
+        this.duration = duration;
+        this.timeUnit = timeUnit;
+    }
+
     protected BaseFixedTask(String id, String name, long duration, TimeUnit timeUnit, long repeat) {
         super(id, name, String.valueOf(timeUnit.toMillis(duration)), CycleType.FIXED, repeat);
         this.duration = duration;

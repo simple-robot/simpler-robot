@@ -23,6 +23,10 @@ package love.forte.simbot.timer;
 public abstract class BaseCronTask extends BaseTask implements CronTask {
 
 
+    protected BaseCronTask(String id, String name, String cron, long repeat, long delay) {
+        super(id, name, cron, CycleType.CRON, repeat, delay);
+    }
+
     protected BaseCronTask(String id, String name, String cron, long repeat) {
         super(id, name, cron, CycleType.CRON, repeat);
     }
