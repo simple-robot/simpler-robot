@@ -16,10 +16,61 @@
 
 package love.forte.simbot.timer;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.function.Supplier;
+
 /**
  * 基于某个 JavaMethod 实例的Task调用。
+ * <p>
+ * Method不允许存在参数，且必须是 <code>PUBLIC</code> 的。
  *
  * @author ForteScarlet
  */
-public class MethodTask {
+public abstract class MethodTask extends BaseTask implements Task {
+
+    /**
+     * 方法实例。
+     */
+    protected final Method method;
+    protected final Supplier<Object> supplier;
+
+    protected MethodTask(
+            String id, String name, String cycle, CycleType cycleType, long repeat,
+            Method method, Supplier<Object> instanceSupplier
+    ) {
+        super(id, name, cycle, cycleType, repeat);
+        checkMethod(method);
+        this.method = method;
+        this.supplier = instanceSupplier;
+    }
+
+    protected MethodTask(
+            String id, String name, String cycle, CycleType cycleType,
+            Method method, Supplier<Object> instanceSupplier
+    ) {
+        super(id, name, cycle, cycleType);
+        checkMethod(method);
+        this.method = method;
+        this.supplier = instanceSupplier;
+    }
+
+    static void checkMethod(Method method) {
+        if (method == null) {
+            throw new NullPointerException("Method is null.");
+        }
+        String name = method.toGenericString();
+        int modifiers = method.getModifiers();
+        if (!Modifier.isPublic(modifiers)) {
+            throw new IllegalStateException("Method '"+ name +"' is not public.");
+        }
+        if (Modifier.isAbstract(modifiers)) {
+            throw new IllegalStateException("Method '"+ name +"' is abstract.");
+        }
+        int parameterCount = method.getParameterCount();
+        if (parameterCount > 0) {
+            throw new IllegalStateException("Method cannot have parameters, but there are " + parameterCount);
+        }
+    }
+
 }
