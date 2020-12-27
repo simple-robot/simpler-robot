@@ -82,8 +82,10 @@ public class TestListener {
 ```java
 @Beans
 public class TestListener {
+  /** 通过依赖注入得到消息构建器工厂。 */  
   @Depend
   private MessageContentBuilderFactory builderFactory;
+  
   /** 监听群里的 'hi! forte' 消息并作出回应 */
   @OnGroup
   public void listenGroup(GroupMsg msg, MsgSender sender){
