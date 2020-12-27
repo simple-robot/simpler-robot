@@ -12,6 +12,8 @@
 
 simpler-robot是一个JVM平台的通用机器人开发框架，基于核心API开发不同平台的机器人应用。
 
+## 支持平台
+
 目前支持的机器人平台：
 - QQ
     - mirai
@@ -25,14 +27,14 @@ simpler-robot是一个JVM平台的通用机器人开发框架，基于核心API�
 - TG
 - discord    
 
+## 文档
 
 simpler-robot文档：https://www.yuque.com/simpler-robot/simpler-robot-doc
 
-
+## 其他模块
 
 simpler-robot所独立的公共模块项目：
 - github: https://github.com/ForteScarlet/forte-common
-
 
 
 simpler-robot所使用的特殊码CatCode：
