@@ -10,7 +10,20 @@
 但是整体性的使用思路与理念不会变。
 
 
-simpler-robot是一个机器人开发框架，其他的介绍我还没想好。
+simpler-robot是一个JVM平台的通用机器人开发框架，基于核心API开发不同平台的机器人应用。
+
+目前支持的机器人平台：
+- QQ
+    - mirai
+- wechat
+    - 可爱猫
+
+
+计划中准备支持的平台：
+- QQ
+    - onebot(QQ机器人通用协议)
+- TG
+- discord    
 
 
 simpler-robot文档：https://www.yuque.com/simpler-robot/simpler-robot-doc
@@ -26,3 +39,60 @@ simpler-robot所使用的特殊码CatCode：
 - github: https://github.com/ForteScarlet/CatCode
 - gitee : https://gitee.com/ForteScarlet/CatCode
 
+
+## 极简示例
+
+### 监听消息
+
+```java
+@Beans
+public class TestListener {
+  /** 发送一句“我收到了”，并再复读收到的所有消息 */
+  @OnPrivate
+  public void listen(PrivateMsg msg, MsgSender sender) {
+    sender.SENDER.sendPrivateMsg(msg, "我收到了");
+    sender.SENDER.sendPrivateMsg(msg, msg.getMsgContent());
+  }
+}
+```
+
+### 监听并筛选消息
+
+```java
+@Beans
+public class TestListener {
+  /** 监听群里的 'hi! forte' 消息并作出回应 */
+  @OnGroup
+  @Filter("hi! forte")
+  public void listenGroup(GroupMsg msg, MsgSender sender) {
+    // 获取发消息的人的账号
+    String accountCode = m.getAccountInfo().getAccountCode();
+    // 准备at这个人的CatCode
+    String at = CatCodeUtil.INSTANCE.getStringTemplate().at(accountCode);
+    // 发送消息
+    sender.SENDER.sendGroupMsg(m, at + " 我在哦");
+  }
+}
+```
+
+或
+
+```java
+@Beans
+public class TestListener {
+  @Depend
+  private MessageContentBuilderFactory builderFactory;
+  /** 监听群里的 'hi! forte' 消息并作出回应 */
+  @OnGroup
+  public void listenGroup(GroupMsg msg, MsgSender sender){
+    // 获取发消息的人的账号
+    String accountCode = msg.getAccountInfo().getAccountCode();
+    // 获取消息构建器
+    MessageContentBuilder builder = builderFactory.getMessageContentBuilder();
+    // 构建消息实例
+    MessageContent msgContent = builder.at(accountCode).text(" 我在哦").build();
+    // 发送消息
+    sender.SENDER.sendGroupMsg(msg, msgContent);
+  }
+}
+```
