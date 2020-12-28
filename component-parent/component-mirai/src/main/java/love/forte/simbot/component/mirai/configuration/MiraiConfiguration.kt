@@ -94,8 +94,8 @@ public class MiraiConfiguration {
     // @field:ConfigInject("mirai.autoRelogin")
     // var autoRelogin: Boolean = false
 
-    @field:ConfigInject
-    var loginSolverType: MiraiLoginSolverType = MiraiLoginSolverType.DEFAULT
+    // @field:ConfigInject
+    // var loginSolverType: MiraiLoginSolverType = MiraiLoginSolverType.DEFAULT
 
     @field:ConfigInject
     var deviceInfoFile: String? = ""
@@ -121,8 +121,8 @@ public class MiraiConfiguration {
         conf.reconnectionRetryTimes = this.reconnectionRetryTimes
         conf.protocol = this.protocol
 
-        // 验证码处理器
-        conf.loginSolver = this.loginSolverType.getter(null)
+        // // 验证码处理器
+        // conf.loginSolver = this.loginSolverType.getter(null)
 
         // conf.fileCacheStrategy = when (this.cacheType) {
         //     // 内存缓存
@@ -185,49 +185,10 @@ public class MiraiConfiguration {
 }
 
 
-/**
- * mirai 验证码处理器类型。
- * @see LoginSolver
- */
-public enum class MiraiLoginSolverType(internal val getter: (Any?) -> LoginSolver) {
-    /** 默认使用的验证码处理器。 */
-    DEFAULT({ LoginSolver.Default }),
-
-    /** 图形验证码处理器 */
-    @MiraiExperimentalApi
-    SWING({ SwingSolver }),
-
-    /** 图形文字处理器 */
-    @MiraiInternalApi
-    @MiraiExperimentalApi
-    STANDARD_CHAR_IMAGE({
-        StandardCharImageLoginSolver(
-            { readLine() ?: throw net.mamoe.mirai.network.NoStandardInputForCaptchaException(null) },
-            null
-        )
-    }),
-    /** 临时图片文件验证码 */
-    TEMP_IMAGE({
-        love.forte.simbot.component.mirai.MiraiTempImgLoginSolver {
-            readLine() ?: throw kotlin.IllegalStateException("line read null.")
-        }
-    })
-
-
-}
-
-
 
 internal fun simbotMiraiDeviceInfo(c: Long, s: Long): DeviceInfo {
     val r = Random(c * s)
     return DeviceInfo(
-        // "MIRAI-SIMBOT.200122.001",
-        // "mirai-simbot",
-        // "mirai-simbot",
-        // "mirai-simbot",
-        // "mirai-simbot",
-        // "mirai-simbot",
-        // "mirai-simbot",
         display = "MIRAI-SIMBOT.200122.001".toByteArray(),
         product = "mirai-simbot".toByteArray(),
         device = "mirai-simbot".toByteArray(),

@@ -295,10 +295,7 @@ public class MiraiVoiceMessageContent(
             if (!::voice.isInitialized) {
                 lock.withLock {
                     if (!::voice.isInitialized) {
-                        // try {
                         voice = voiceFunction(contact)
-                        // } catch (ignore: Exception) {
-                        // }
                     }
                 }
 

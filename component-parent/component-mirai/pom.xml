@@ -20,21 +20,12 @@
     <url>https://github.com/ForteScarlet/simpler-robot/tree/master/component-parent/component-mirai</url>
 
     <properties>
-        <!-- mirai -->
-        <!--<mirai.version>1.3.3</mirai.version>-->
-        <mirai.version>2.0-M1-1</mirai.version>
+        <mirai.version>2.0-M2</mirai.version>
+        <mirai-login-solver-selenium.version>1.0-dev-6</mirai-login-solver-selenium.version>
     </properties>
 
 
     <dependencies>
-
-        <dependency>
-            <groupId>love.forte.simple-robot.time-task</groupId>
-            <artifactId>time-task-quartz</artifactId>
-            <scope>test</scope>
-            <optional>true</optional>
-        </dependency>
-
         <dependency>
             <groupId>love.forte.simple-robot.http</groupId>
             <artifactId>client-core</artifactId>
@@ -50,18 +41,18 @@
             <artifactId>hutool-crypto</artifactId>
         </dependency>
 
-        <!--&lt;!&ndash; https://bintray.com/him188moe/mirai/mirai-core-api &ndash;&gt;-->
-        <!--<dependency>-->
-        <!--    <groupId>net.mamoe</groupId>-->
-        <!--    <artifactId>mirai-core-api-jvm</artifactId>-->
-        <!--    <version>${mirai.version}</version>-->
-        <!--</dependency>-->
-
         <!-- https://bintray.com/him188moe/mirai/mirai-core -->
         <dependency>
             <groupId>net.mamoe</groupId>
             <artifactId>mirai-core-jvm</artifactId>
             <version>${mirai.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.mamoe</groupId>
+            <artifactId>mirai-login-solver-selenium</artifactId>
+            <version>${mirai-login-solver-selenium.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- kt -->

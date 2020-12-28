@@ -14,7 +14,6 @@
 
 package love.forte.simbot.spring.autoconfigure.properties;
 
-import love.forte.simbot.component.mirai.configuration.MiraiLoginSolverType;
 import net.mamoe.mirai.utils.BotConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -96,10 +95,10 @@ public class SimbotCompMiraiConfigurationProperties {
      */
     private String cacheDirectory = "";
 
-    /**
-     * mirai登录验证码处理器。
-     */
-    private MiraiLoginSolverType loginSolverType = MiraiLoginSolverType.DEFAULT;
+    // /**
+    //  * mirai登录验证码处理器。
+    //  */
+    // private MiraiLoginSolverType loginSolverType = MiraiLoginSolverType.DEFAULT;
 
     /**
      * mirai设备信息文件路径。

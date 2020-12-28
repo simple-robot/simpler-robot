@@ -31,9 +31,9 @@ import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
+import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
+import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import net.mamoe.mirai.utils.MiraiExperimentalApi
-import net.mamoe.mirai.utils.uploadAsImage
-import java.io.BufferedInputStream
 import java.io.File
 import java.io.InputStream
 
@@ -128,10 +128,10 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
 
         // image
         "image" -> {
-            // id, if contains
-            if (message != null) {
-                val id = this["id"]
-                if (id != null) {
+            val id = this["id"]
+            if (id != null) {
+                // id, if contains
+                if (message != null) {
                     val foundImg = message.find {
                         (it is Image && it.imageId == id) ||
                                 (it is FlashImage && it.image.imageId == id)
@@ -140,7 +140,12 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
                         return MiraiSingleMessageContent(foundImg)
                     }
                 }
+
+                return MiraiSingleMessageContent(Image(id))
             }
+
+
+
 
 
             // file, or url
@@ -186,7 +191,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
                 val recordNeko = CatCodeUtil.nekoTemplate.record(filePath)
                 MiraiVoiceMessageContent(recordNeko) { c ->
                     if (c is Group) {
-                        BufferedInputStream(file.inputStream()).use { c.uploadVoice(it) }
+                        file.toExternalResource().use { c.uploadVoice(it) }
                     } else throw IllegalStateException("Mirai does not support sending private voice.")
                 }
             } else {
@@ -199,7 +204,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
                 val recordNeko = CatCodeUtil.nekoTemplate.record(urlId)
                 MiraiVoiceMessageContent(recordNeko) { c ->
                     if (c is Group) {
-                        url.toStream().use { c.uploadVoice(it) }
+                        url.toStream().toExternalResource().use { c.uploadVoice(it) }
                     } else throw IllegalStateException("Mirai does not support sending private voice.")
                 }
             }
@@ -276,18 +281,11 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
             MiraiSingleMessageContent(xml)
         }
 
-        // 引用回复
-        // "quote" -> {
-        //     val id = this["id"] ?: throw IllegalArgumentException("The 'id' cannot be found in $this")
-        //
-        //
-        //
-        //     TODO()
-        // }
-
 
         else -> {
-            MiraiSingleMessageContent(PlainText("(type $type not support)code=$this"))
+            val kvs = this.entries.joinToString(",") { it.key + "=" + it.value }
+            MiraiSingleMessageContent(PlainText("$type($kvs)"))
+
         }
 
     }
@@ -329,8 +327,16 @@ public fun SingleMessage.toNeko(): Neko {
         is At -> CatCodeUtil.nekoTemplate.at(target)
         // 普通文本, 转义
         is PlainText -> CatCodeUtil.toNeko("text", false, "text=${CatEncoder.encodeParams(content)}")
-        //.key("text").value(content).build()
+        // face
         is Face -> CatCodeUtil.nekoTemplate.face(id.toString())
+
+        // market face
+        is MarketFace -> CatCodeUtil.getNekoBuilder("marketFace", true)
+            .key("id").value(id)
+            .key("name").value(name)
+            .build()
+
+        // vip face
         is VipFace -> CatCodeUtil.getNekoBuilder("vipFace", true)
             .key("kindId").value(this.kind.id)
             .key("kindName").value(this.kind.name)
@@ -386,11 +392,8 @@ public fun SingleMessage.toNeko(): Neko {
 
         // else.
         else -> {
-            // "[mirai:at:$target,$display]"
-            // val miraiCode = this.toString()
-            // CatCodeUtil.getStringCodeBuilder(this.content)
-            CatCodeUtil.getNekoBuilder("miraiCode", true)
-                .key("string").value(this.toString()).build()
+            CatCodeUtil.getNekoBuilder("mirai", true)
+                .key("code").value(this.toString()).build()
         }
     }
 }
@@ -408,7 +411,7 @@ private val httpClient: HttpClient = HttpClient()
  */
 public suspend fun Url.toStream(): InputStream {
     val urlString = this.toString()
-    // debug("mirai.http.connection.try", urlString)
+    // bot?.logger?.debug("mirai.http.connection.try", urlString)
     val response = httpClient.get<HttpResponse>(this)
     val status = response.status
     if (status.value < 300) {

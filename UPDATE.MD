@@ -191,7 +191,7 @@ simbot.component.mirai.loginSolverType=DEFAULT
 simbot.component.mirai.deviceInfoFile=
 ```
 
-配置项`loginSolverType`代表mirai组件所使用的登录验证码处理器，值为 `love.forte.simbot.component.mirai.configuration.MiraiLoginSolverType` 枚举的元素值。
+配置项`loginSolverType`代表mirai组件所使用的登录验证码处理器，值为 ~~`love.forte.simbot.component.mirai.configuration.MiraiLoginSolverType`~~ 枚举的元素值。
 可选项：
   - DEFAULT - mirai使用的默认验证码处理器，会根据当前系统环境判断是使用弹窗验证码还是图形字符验证码。
   - SWING - mirai实现的Swing图形验证码处理器。
@@ -296,6 +296,16 @@ simbot.component.mirai.daemon=false
 ```
 
 虽然发布的兼容版本只有上一个版本，但是理论上其他`BETA`旧版本(`2.0.0-BETA.x`)也可以使用。
+
+
+### mirai
+- 更新mirai版本到 [v2.0-M2](https://github.com/mamoe/mirai/releases/tag/2.0-M2) 。
+  - 其中，mirai更新了对 `滑动验证` 的支持，可以参考 [mirai文档-登录](https://github.com/mamoe/mirai/blob/dev/docs/Bots.md#2-%E7%99%BB%E5%BD%95) 、 [mirai-login-solver-selenium](https://github.com/project-mirai/mirai-login-solver-selenium) 。
+  mirai组件同样不强制引用此依赖，如果需要请添加相关依赖: `net.mamoe:mirai-login-solver-selenium:${version}`
+    
+- 移除配置项 `simbot.component.mirai.loginSolverType`。
+
+- 使用CatCode发送图片的时候，如果存在id参数，则会通过`Image($id)`构建图片。因此如果id未知，则不要使用id。
 
 
 
