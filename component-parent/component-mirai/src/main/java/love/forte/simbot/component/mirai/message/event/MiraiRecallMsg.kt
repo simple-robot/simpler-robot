@@ -25,7 +25,6 @@ import love.forte.simbot.component.mirai.message.MiraiFriendAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
 import love.forte.simbot.component.mirai.message.result.MiraiGroupFullInfo
-import love.forte.simbot.component.mirai.sender.friend
 import net.mamoe.mirai.event.events.MessageRecallEvent
 import net.mamoe.mirai.event.events.operatorOrBot
 

@@ -47,12 +47,13 @@ public interface GroupMemberPermissionChanged :
     /**
      * 此次变动是否为 **得到管理权限**
      */
-    @JvmDefault val isGetManagementRights: Boolean get() = afterChange.isOwnerOrAdmin()
+    @JvmDefault val isGetManagementRights: Boolean get() = afterChange?.isOwnerOrAdmin() == true
+
 
     /**
      * 此次变动是否为 **失去管理权限**
      */
-    @JvmDefault val isLostManagementRights: Boolean get() = afterChange.isMember()
+    @JvmDefault val isLostManagementRights: Boolean get() = afterChange?.isMember() == true
 }
 
 

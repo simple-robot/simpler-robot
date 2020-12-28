@@ -20,7 +20,6 @@ import love.forte.simbot.bot.BotRegisterInfo;
 import love.forte.simbot.component.mirai.MiraiBotConfigurationFactory;
 import love.forte.simbot.component.mirai.configuration.MiraiConfiguration;
 import net.mamoe.mirai.utils.BotConfiguration;
-import net.mamoe.mirai.utils.SwingSolver;
 import org.jetbrains.annotations.NotNull;
 
 /**

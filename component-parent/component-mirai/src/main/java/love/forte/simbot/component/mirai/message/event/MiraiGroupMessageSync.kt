@@ -20,9 +20,7 @@ import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMessageChainContent
-import love.forte.simbot.component.mirai.message.MiraiMessageContent
 import love.forte.simbot.component.mirai.message.miraiMessageFlag
-import net.mamoe.mirai.contact.OtherClient
 import net.mamoe.mirai.event.events.GroupMessageSyncEvent
 import net.mamoe.mirai.message.data.source
 

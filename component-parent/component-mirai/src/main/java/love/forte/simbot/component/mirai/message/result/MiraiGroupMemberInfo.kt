@@ -28,6 +28,9 @@ import net.mamoe.mirai.contact.Member
  * mirai 的 [GroupMemberInfo] 实现。
  */
 public class MiraiGroupMemberInfo(member: Member) : GroupMemberInfo {
+
+
+
     override val originalData: String = member.toString()
     override fun toString(): String = "MiraiGroupMemberInfo(original=$originalData)"
 
