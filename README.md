@@ -63,9 +63,9 @@ public class TestListener {
 ```java
 @Beans
 public class TestListener {
-  /** 监听群里的 'hi! forte' 消息并作出回应 */
+  /** 监听群里的 'hi! simbot' 消息并作出回应 */
   @OnGroup
-  @Filter("hi! forte")
+  @Filter("hi! simbot")
   public void listenGroup(GroupMsg msg, MsgSender sender) {
     // 获取发消息的人的账号
     String accountCode = m.getAccountInfo().getAccountCode();
@@ -86,8 +86,9 @@ public class TestListener {
   @Depend
   private MessageContentBuilderFactory builderFactory;
   
-  /** 监听群里的 'hi! forte' 消息并作出回应 */
+  /** 监听群里的 'hi! simbot' 消息并作出回应 */
   @OnGroup
+  @Filter("hi! simbot")
   public void listenGroup(GroupMsg msg, MsgSender sender){
     // 获取发消息的人的账号
     String accountCode = msg.getAccountInfo().getAccountCode();
