@@ -111,6 +111,14 @@ public class LovelyCatSetter(
         api.modifyGroupName(botId, groupCode, name)
         return name.toCarrier()
     }
+
+    /**
+     * 删除好友
+     */
+    override fun setFriendDelete(friend: String): Carrier<Boolean> {
+        api.deleteFriend(botId, friend)
+        return true.toCarrier()
+    }
 }
 
 

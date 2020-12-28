@@ -332,4 +332,4 @@ simbot.component.mirai.daemon=false
 
 
 ### fix
-- [#28](https://github.com/ForteScarlet/simpler-robot/issues/27) GroupMsgRecall 获取群信息
+- [#28](https://github.com/ForteScarlet/simpler-robot/issues/28) GroupMsgRecall 获取群信息
