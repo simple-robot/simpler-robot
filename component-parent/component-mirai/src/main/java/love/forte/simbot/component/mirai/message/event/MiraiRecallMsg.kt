@@ -43,7 +43,7 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
     public class GroupRecall(event: MessageRecallEvent.GroupRecall, private val cache: MiraiMessageCache) :
         MiraiMsgRecall<MessageRecallEvent.GroupRecall>(event), GroupMsgRecall {
         /** 有可能是bot自己。 */
-        override val accountInfo: AccountInfo = MiraiMemberAccountInfo(event.author)
+        override val accountInfo: AccountInfo = MiraiMemberAccountInfo(event.authorId, event.author)
 
         override val groupInfo: GroupInfo = MiraiGroupFullInfo(event.group)
 
@@ -51,7 +51,7 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
             get() = cache.getGroupMsg("${event.authorId}.${event.messageIds.joinToString(",")}.${event.messageInternalIds.joinToString(",")}")
 
         /**
-         * 暂时不支持获取撤回掉的消息。
+         * 通过缓存获取撤回的消息内容。
          */
         override val text: String? get() {
             return cacheMsg?.text
@@ -80,7 +80,7 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
         MiraiMsgRecall<MessageRecallEvent.FriendRecall>(event),
         PrivateMsgRecall {
         /** 撤回的操作人，就是好友。 */
-        override val accountInfo: AccountInfo = MiraiFriendAccountInfo(event.bot.friend(event.operator))
+        override val accountInfo: AccountInfo = MiraiFriendAccountInfo(event.operatorId, event.operator)
 
         private val cacheMsg: PrivateMsg?
             get() = cache.getPrivateMsg("${event.operator}.${event.messageIds.joinToString(",")}.${event.messageInternalIds.joinToString(",")}")
