@@ -23,6 +23,7 @@ import love.forte.simbot.component.mirai.message.flagId
 import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.listener.MsgGetProcessor
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.data.GroupHonorListData
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.event.subscribeAlways
@@ -275,6 +276,12 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         }
         //endregion
         //endregion
+
+        // region 群成员荣耀变更事件
+        registerListenerAlways<MemberHonorChangeEvent> {
+            MiraiGroupHonorChangedMsg(this).onMsg(msgProcessor)
+        }
+
 
 
         // enable mirai log.

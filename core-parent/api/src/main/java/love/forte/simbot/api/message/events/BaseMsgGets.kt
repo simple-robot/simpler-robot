@@ -456,18 +456,20 @@ public interface RequestGet : MsgGet, FlagContainer<RequestGet.RequestFlagConten
 /**
  * 出现变化的事件。例如**权限变更**、**头像变更**、**名称变更**等等。
  * 大多数情况下，此类事件都是在变更完了之后触发的。
+ *
+ * 变化的 [beforeChange] 和 [afterChange] 都有可能为null，但是正常情况下，他们两个中至少有一个不为null。
  */
 @ParentListenerType("变更相关事件父接口")
 public interface ChangedGet<out T> : EventGet {
     /**
-     * 变更之前。 不能够保证此值可以获得
+     * 变更之前。可能为null。
      */
     val beforeChange: T?
 
     /**
-     * 变更之后。 此值应当始终可以获取。
+     * 变更之后。可能为null。
      */
-    val afterChange: T
+    val afterChange: T?
 
 
     /**
