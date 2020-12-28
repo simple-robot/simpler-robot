@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.mirai.message.event
 
+import love.forte.common.utils.secondToMill
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.events.MessageGet
@@ -77,6 +78,8 @@ public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : Abs
     override val id: String = with(event.source) {
         "${this.fromId}.${this.ids.joinToString(",")}"
     }
+
+    override val time: Long get() = event.time.secondToMill()
 
     /**
      * 消息事件主体.

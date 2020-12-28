@@ -16,11 +16,17 @@ package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.assists.Flag
+import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.GroupContainer
+import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.containers.PermissionContainer
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMessageChainContent
 import love.forte.simbot.component.mirai.message.miraiMessageFlag
+import love.forte.simbot.component.mirai.message.result.MiraiGroupInfo
+import love.forte.simbot.component.mirai.message.toSimbotPermissions
 import net.mamoe.mirai.event.events.GroupMessageSyncEvent
 import net.mamoe.mirai.message.data.source
 
@@ -30,7 +36,7 @@ import net.mamoe.mirai.message.data.source
  * 暂时不将此类型归为 [群消息][love.forte.simbot.api.message.events.GroupMsg]，
  * 但是属于[消息事件][MessageGet]。
  */
-public interface MiraiGroupMessageSync : MessageGet
+public interface MiraiGroupMessageSync : MessageGet, GroupContainer, PermissionContainer
 
 
 
@@ -46,6 +52,12 @@ public class MiraiGroupMessageSyncImpl(event: GroupMessageSyncEvent) : MiraiMess
      *  消息事件的消息正文文本。
      */
     override val msgContent: MessageContent = MiraiMessageChainContent(message)
+
+
+    override val groupInfo: GroupInfo = MiraiGroupInfo(event.group)
+
+    override val permission: Permissions
+        get() = event.sender.toSimbotPermissions()
 
     /**
      * 消息标识

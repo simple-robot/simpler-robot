@@ -49,8 +49,6 @@ public class MiraiOtherClientMessageImpl(event: OtherClientMessageEvent) :
     override val client: OtherClient
         get() = event.client
 
-    override val time: Long = event.time.secondToMill()
-
 
     /** 当前监听事件消息的ID。一般情况下应当是一个唯一ID。 */
     override val id: String
