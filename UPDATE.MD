@@ -307,7 +307,7 @@ simbot.component.mirai.daemon=false
   - 其中，mirai更新了对 `滑动验证` 的支持，可以参考 [mirai文档-登录](https://github.com/mamoe/mirai/blob/dev/docs/Bots.md#2-%E7%99%BB%E5%BD%95) 、 [mirai-login-solver-selenium](https://github.com/project-mirai/mirai-login-solver-selenium) 。
   mirai组件同样不强制引用此依赖，如果需要请添加相关依赖: `net.mamoe:mirai-login-solver-selenium:${version}`
     
-- 移除配置项 `simbot.component.mirai.loginSolverType`。
+- **移除配置项** `simbot.component.mirai.loginSolverType`。
 
 - 使用CatCode发送图片的时候，如果存在id参数，则会通过`Image($id)`构建图片。因此如果id未知，则不要使用id。
 
@@ -327,7 +327,7 @@ simbot.component.mirai.daemon=false
   监听方式：此事件会被处理为一个 **私聊消息(`PrivateMsg`)**。你也可以使用mirai的专属事件监听： `@Listen(MiraiOtherClientMessage.class)`
   
 - 提供mirai的特殊监听事件 `love.forte.simbot.component.mirai.message.event.MiraiGroupMessageSync` 客户端发送群消息时的同步。
-  监听方式：此事件**不会**被处理为一个 **群消息(`GroupMsg`)**。使用mirai的专属事件监听：`@Listen(MiraiGroupMessageSync.class)`
+  监听方式：此事件 **不会** 被处理为一个 **群消息(`GroupMsg`)**。使用mirai的专属事件监听：`@Listen(MiraiGroupMessageSync.class)`
 
 
 

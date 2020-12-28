@@ -44,6 +44,9 @@ simpler-robot所使用的特殊码CatCode：
 
 ## 极简示例
 
+文档-快速开始：https://www.yuque.com/simpler-robot/simpler-robot-doc/qeyorq
+
+
 ### 监听消息
 
 ```java
