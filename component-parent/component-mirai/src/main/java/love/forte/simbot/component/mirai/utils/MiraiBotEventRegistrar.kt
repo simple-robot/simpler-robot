@@ -23,10 +23,8 @@ import love.forte.simbot.component.mirai.message.flagId
 import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.listener.MsgGetProcessor
 import net.mamoe.mirai.Bot
-import net.mamoe.mirai.data.GroupHonorListData
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.*
-import net.mamoe.mirai.event.subscribeAlways
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
 import org.slf4j.Logger
@@ -277,10 +275,49 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         //endregion
         //endregion
 
-        // region 群成员荣耀变更事件
+        //region 群成员荣耀变更事件
         registerListenerAlways<MemberHonorChangeEvent> {
-            MiraiGroupHonorChangedMsg(this).onMsg(msgProcessor)
+            MiraiGroupHonorChangedImpl(this).onMsg(msgProcessor)
         }
+        //endregion
+
+        // region 群龙王变动事件
+        registerListenerAlways<GroupTalkativeChangeEvent> {
+            MiraiGroupTalkativeChangedImpl(this).onMsg(msgProcessor)
+        }
+        //endregion
+
+        // region 其他客户端上线事件
+        registerListenerAlways<OtherClientOnlineEvent> {
+            MiraiOtherClientOnlineImpl(this).onMsg(msgProcessor)
+        }
+        // endregion
+
+
+        // region 其他客户端离线事件
+        registerListenerAlways<OtherClientOfflineEvent> {
+            MiraiOtherClientOfflineImpl(this).onMsg(msgProcessor)
+        }
+        // endregion
+
+
+        // region 其他客户端发送消息给Bot
+        registerListenerAlways<OtherClientMessageEvent> {
+            MiraiOtherClientMessageImpl(this).onMsg(msgProcessor)
+        }
+        // endregion
+
+
+        // region 其他客户端发送群消息时的同步
+        registerListenerAlways<GroupMessageSyncEvent> {
+            MiraiGroupMessageSyncImpl(this).onMsg(msgProcessor)
+        }
+        // endregion
+
+
+        // region
+
+        // endregion
 
 
 

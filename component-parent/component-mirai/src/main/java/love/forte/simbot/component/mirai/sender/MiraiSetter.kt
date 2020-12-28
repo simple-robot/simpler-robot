@@ -18,7 +18,6 @@ import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.*
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountCodeContainer
-import love.forte.simbot.api.message.containers.AccountContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
 import love.forte.simbot.api.message.events.FriendAddRequest

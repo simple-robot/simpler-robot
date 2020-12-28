@@ -15,19 +15,11 @@
 package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.containers.AccountInfo
-import love.forte.simbot.api.message.containers.GroupInfo
-import love.forte.simbot.api.message.containers.OperatorInfo
-import love.forte.simbot.api.message.containers.asOperator
 import love.forte.simbot.api.message.events.ChangedGet
-import love.forte.simbot.api.message.events.GroupMemberSpecialChanged
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
-import love.forte.simbot.component.mirai.message.result.MiraiGroupInfo
 import net.mamoe.mirai.data.GroupHonorType
 import net.mamoe.mirai.event.events.MemberHonorChangeEvent
-import net.mamoe.mirai.event.events.MemberSpecialTitleChangeEvent
-import net.mamoe.mirai.event.events.operatorOrBot
 import net.mamoe.mirai.utils.MiraiExperimentalApi
-
 
 /**
  * 群成员荣耀信息变更事件。
@@ -40,8 +32,14 @@ import net.mamoe.mirai.utils.MiraiExperimentalApi
  *
  */
 @OptIn(MiraiExperimentalApi::class)
-public class MiraiGroupHonorChangedMsg(event: MemberHonorChangeEvent) : AbstractMiraiMsgGet<MemberHonorChangeEvent>(event),
-    ChangedGet<GroupHonorType> {
+public interface MiraiGroupHonorChanged: ChangedGet<GroupHonorType>
+
+
+
+
+@OptIn(MiraiExperimentalApi::class)
+public class MiraiGroupHonorChangedImpl(event: MemberHonorChangeEvent) : AbstractMiraiMsgGet<MemberHonorChangeEvent>(event),
+    MiraiGroupHonorChanged {
     /** 当前监听事件消息的ID。*/
     override val id: String
         get() = "MGHCM-${event.hashCode()}"

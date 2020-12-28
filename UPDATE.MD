@@ -281,6 +281,8 @@ simbot.component.mirai.daemon=false
 ### 核心
 - `Setter` 追加API: `setFriendDelete(friend)` - 删除好友
 
+私聊类型(`PrivateMsg.Type`) 增加一个类型 `SELF`, 代表私聊类型为自己。
+
 ### time-task
 - 实现定时任务模块 ([#24](https://github.com/ForteScarlet/simpler-robot/issues/24)), 并向下兼容一个版本(`v2.0.0-BETA.5`).
 所谓向下兼容，即第一个发布的版本为上一个版本，因此你可以直接通过上一个版本的版本号使用此模块，但是无法想要进行统一版本控制，需要手动填入版本号。
@@ -294,7 +296,6 @@ simbot.component.mirai.daemon=false
   <dependency>
     <groupId>love.forte.simple-robot.time-task</groupId>
     <artifactId>time-task-quartz</artifactId>
-    <version>2.0.0-BETA.5</version>
 </dependency>
 ```
 
@@ -309,6 +310,24 @@ simbot.component.mirai.daemon=false
 - 移除配置项 `simbot.component.mirai.loginSolverType`。
 
 - 使用CatCode发送图片的时候，如果存在id参数，则会通过`Image($id)`构建图片。因此如果id未知，则不要使用id。
+
+- 提供mirai的特殊监听事件 `love.forte.simbot.component.mirai.message.event.MiraiGroupHonorChanged` 荣耀变动事件。
+监听方式：`@Listen(MiraiGroupHonorChanged.class)`。
+  
+- 提供mirai的特殊监听事件 `love.forte.simbot.component.mirai.message.event.MiraiGroupTalkativeChanged` 群龙王变动事件。
+监听方式：`@Listen(MiraiGroupTalkativeChanged.class)`。
+  
+- 提供mirai的特殊监听事件 `love.forte.simbot.component.mirai.message.event.MiraiOtherClientOnline` 其他设备上线事件。
+  监听方式：`@Listen(MiraiOtherClientOnline.class)`。
+  
+- 提供mirai的特殊监听事件 `love.forte.simbot.component.mirai.message.event.MiraiOtherClientOffline` 其他设备下线事件。
+  监听方式：`@Listen(MiraiOtherClientOffline.class)`。
+  
+- 提供mirai的特殊监听事件 `love.forte.simbot.component.mirai.message.event.MiraiOtherClientMessage` 其他客户端发送消息给Bot事件。
+  监听方式：此事件会被处理为一个 **私聊消息(`PrivateMsg`)**。你也可以使用mirai的专属事件监听： `@Listen(MiraiOtherClientMessage.class)`
+  
+- 提供mirai的特殊监听事件 `love.forte.simbot.component.mirai.message.event.MiraiGroupMessageSync` 客户端发送群消息时的同步。
+  监听方式：此事件**不会**被处理为一个 **群消息(`GroupMsg`)**。使用mirai的专属事件监听：`@Listen(MiraiGroupMessageSync.class)`
 
 
 

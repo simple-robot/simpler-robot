@@ -301,7 +301,7 @@ public interface MessageGet : MsgGet, MessageContentContainer, FlagContainer<Mes
 
 
     /**
-     * 消息类型的标识
+     * 消息标识.
      */
     override val flag: Flag<MessageFlagContent>
 

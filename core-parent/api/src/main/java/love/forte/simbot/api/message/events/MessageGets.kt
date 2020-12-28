@@ -52,6 +52,11 @@ public interface PrivateMsg : MessageGet {
         /** 系统消息 */
         SYS,
 
+        /**
+         * 自己
+         */
+        SELF,
+
         /** 其他 */
         OTHER
 

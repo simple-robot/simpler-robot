@@ -118,7 +118,7 @@ public class MiraiBotAccountInfo(bot: Bot) : AccountInfo {
     override val accountCodeNumber: Long = bot.id
     override val accountNickname: String = bot.nick
     override val accountRemark: String? = null
-    override val accountAvatar: String = userAvatar(bot.id)
+    override val accountAvatar: String = bot.avatarUrl
     override fun toString(): String {
         return "MiraiBotAccountInfo(accountCode='$accountCode', accountCodeNumber=$accountCodeNumber, accountNickname='$accountNickname', accountRemark=$accountRemark, accountAvatar='$accountAvatar')"
     }
