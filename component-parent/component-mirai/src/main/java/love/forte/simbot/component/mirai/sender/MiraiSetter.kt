@@ -18,6 +18,7 @@ import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.*
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountCodeContainer
+import love.forte.simbot.api.message.containers.AccountContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
 import love.forte.simbot.api.message.events.FriendAddRequest
@@ -347,4 +348,19 @@ public class MiraiSetter(private val bot: Bot) : Setter {
 
     override fun setGroupName(group: GroupCodeContainer, name: String): Carrier<String> =
         setGroupName(group.groupCodeNumber, name)
+
+    /**
+     * 删除好友。
+     */
+    private fun setFriendDelete0(code: Long): Carrier<Boolean> {
+        runBlocking { bot.friend(code).delete() }
+        return true.toCarrier()
+    }
+
+    override fun setFriendDelete(friend: String): Carrier<Boolean> =
+        setFriendDelete0(friend.toLong())
+    override fun setFriendDelete(friend: Long): Carrier<Boolean> =
+        setFriendDelete0(friend)
+    override fun setFriendDelete(friend: AccountCodeContainer): Carrier<Boolean> =
+        setFriendDelete0(friend.accountCodeNumber)
 }

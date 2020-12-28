@@ -76,6 +76,12 @@ object ErrorSetter : Setter {
 
     override fun setGroupName(groupCode: String, name: String): Nothing =
         NO("Setter.setGroupName")
+
+    /**
+     * 删除好友
+     */
+    override fun setFriendDelete(friend: String): Nothing =
+        NO("Setter.setFriendDelete")
 }
 
 

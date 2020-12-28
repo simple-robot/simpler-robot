@@ -375,5 +375,16 @@ public interface Setter {
     fun setGroupName(group: GroupContainer, name: String): Carrier<String> = setGroupName(group.groupInfo, name)
 
 
+    /**
+     * 删除好友
+     */
+    fun setFriendDelete(friend: String): Carrier<Boolean>
+    @JvmDefault
+    fun setFriendDelete(friend: Long): Carrier<Boolean> = setFriendDelete(friend.toString())
+    @JvmDefault
+    fun setFriendDelete(friend: AccountContainer): Carrier<Boolean> = setFriendDelete(friend.accountInfo)
+    @JvmDefault
+    fun setFriendDelete(friend: AccountCodeContainer): Carrier<Boolean> = setFriendDelete(friend.accountCode)
+
 
 }

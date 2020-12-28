@@ -69,6 +69,11 @@ public object FailedSetter : Setter {
     override fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean> = FalseCarrier
 
     override fun setGroupName(groupCode: String, name: String): Carrier<String> = Carrier.empty()
+
+    /**
+     * 删除好友
+     */
+    override fun setFriendDelete(friend: String): Carrier<Boolean> = FalseCarrier
 }
 
 
