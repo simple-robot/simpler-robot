@@ -214,7 +214,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
         "share" -> {
             // 至少需要一个url
             val url: String = this["url"] ?: throw IllegalArgumentException("The 'url' could not be found in $this.")
-            val title: String? =this["title"]
+            val title: String =this["title"] ?: "分享链接"
             val content: String? = this["content"]
             val coverUrl: String? = this["coverUrl"]
 
