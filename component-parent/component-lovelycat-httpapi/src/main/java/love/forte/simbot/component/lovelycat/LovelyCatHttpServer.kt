@@ -33,6 +33,7 @@ import love.forte.simbot.listener.MsgGetProcessor
 import love.forte.simbot.serialization.json.JsonSerializer
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 import java.io.Closeable
+import kotlin.concurrent.thread
 import kotlin.reflect.jvm.jvmErasure
 
 
@@ -98,7 +99,7 @@ public class LovelyCatKtorHttpServer(
     private val path get() = lovelyCatServerProperties.path
 
     init {
-        Runtime.getRuntime().addShutdownHook(Thread {
+        Runtime.getRuntime().addShutdownHook(thread(false) {
             close()
         })
     }
