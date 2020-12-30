@@ -27,6 +27,7 @@ import love.forte.simbot.listener.ListenerManager
 import love.forte.simbot.listener.ListenerRegistered
 import love.forte.simbot.listener.MsgGetProcessor
 import net.mamoe.mirai.Bot
+import kotlin.concurrent.thread
 
 /**
  * 监听函数注册后执行。
@@ -56,8 +57,8 @@ public class MiraiListenerRegistered : ListenerRegistered {
 
         val botAliveThread = BotAliveThread("mirai-bot-alive", daemon).apply { start() }
 
-        // 注册一个 ctrl+c钩子来关闭所有的bot。
-        Runtime.getRuntime().addShutdownHook(Thread {
+        // 注册一个 钩子来关闭所有的bot。
+        Runtime.getRuntime().addShutdownHook(thread {
             kotlin.runCatching {
                 botAliveThread.interrupt()
             }.getOrElse { e ->
