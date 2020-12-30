@@ -19,6 +19,7 @@ import cn.hutool.core.lang.JarClassLoader
 import love.forte.common.collections.emptyIterator
 import love.forte.common.collections.plus
 import love.forte.common.utils.scanner.ResourcesScanner
+import org.slf4j.Logger
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
@@ -39,7 +40,7 @@ private val JARS_RESOURCES = arrayOf("lib", "SIMBOT-INF/lib")
 /**
  * 读取所有需要自动装配的类信息。
  */
-public fun autoConfigures(loader: ClassLoader): Set<Class<*>> {
+internal fun autoConfigures(loader: ClassLoader, logger: Logger = simbotAppLogger): Set<Class<*>> {
 
 
     val jarResources: Iterator<URL> = JarClassLoader().runCatching {
@@ -60,7 +61,7 @@ public fun autoConfigures(loader: ClassLoader): Set<Class<*>> {
     val classSet = mutableSetOf<Class<*>>()
 
     (jarResources + resources).forEach {
-        simbotAppLogger.debugf("load auto configure resource: {}", it)
+        logger.debugf("load auto configure resource: {}", it)
         Properties().apply {
             load(BufferedReader(InputStreamReader(it.openStream(), StandardCharsets.UTF_8)))
         }.apply {

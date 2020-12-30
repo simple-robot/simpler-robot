@@ -1,4 +1,4 @@
 nekolog:
   level: DEBUG
-  enableThread: true
+  enableThread: false
 #  enableStack: true

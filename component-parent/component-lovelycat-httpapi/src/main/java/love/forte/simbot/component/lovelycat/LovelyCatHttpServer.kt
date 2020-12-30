@@ -99,7 +99,7 @@ public class LovelyCatKtorHttpServer(
     private val path get() = lovelyCatServerProperties.path
 
     init {
-        Runtime.getRuntime().addShutdownHook(thread(false) {
+        Runtime.getRuntime().addShutdownHook(thread(start = false) {
             close()
         })
     }
