@@ -115,14 +115,14 @@ public class TestListener {
 
 
 ## 捐助我
-如果你喜欢这个项目，不妨试着[捐助](https://www.yuque.com/docs/share/43264d27-99a7-4287-97c0-b387f5b0947e?# 《支持与赞助》)一下我们，十分感谢。
+如果你喜欢这个项目，不妨试着 [捐助](https://www.yuque.com/docs/share/43264d27-99a7-4287-97c0-b387f5b0947e) 一下我们，十分感谢。
 
 
 ## 特别鸣谢
 
 [![](https://logonoid.com/images/thumbs/intellij-idea-logo.png "IntelliJ IDEA")](https://www.jetbrains.com/idea/)
 
-感谢[jetbrains](https://www.jetbrains.com/ "jetbrains") 为团队提供的免费[IntelliJ IDEA](https://www.jetbrains.com/idea/ "IntelliJ IDEA") 授权，也希望大家能够支持IDEA，支持正版。
+感谢 [jetbrains](https://www.jetbrains.com/ "jetbrains") 为团队提供的免费 [IntelliJ IDEA](https://www.jetbrains.com/idea/ "IntelliJ IDEA") 授权，也希望大家能够支持IDEA，支持正版。
 
 
 
