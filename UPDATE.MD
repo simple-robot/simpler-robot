@@ -343,7 +343,7 @@ simbot.component.mirai.daemon=false
 # 是否启用启动时的tips。默认启动
 simbot.core.tips.enable=true
 # 使用tips时的数据源。可选：GITHUB、GITEE、LOCAL。其中，其他数据源如果失败，最终会尝试使用LOCAL。
-# 默认GITHUB源。
+# 默认GITEE源。
 simbot.core.tips.resource=GITHUB
 # 是否展示启动时的logo。默认开启。
 simbot.core.logo.enable=true

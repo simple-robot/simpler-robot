@@ -40,10 +40,9 @@ import love.forte.simbot.constant.PriorityConstant
 import love.forte.simbot.listener.MsgGetProcessor
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.io.Closeable
-import java.io.File
-import java.io.PrintStream
-import java.io.Reader
+import java.io.*
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 /**
@@ -73,7 +72,7 @@ internal constructor(
     val environment: SimbotEnvironment,
     val msgProcessor: MsgGetProcessor,
     val configuration: Configuration,
-    private val doClosed: Closeable = Closeable {}
+    private val doClosed: Closeable = Closeable {},
 ) : DependBeanFactory by dependBeanFactory,
     Closeable by doClosed
 
@@ -104,15 +103,15 @@ protected constructor(
     // 可以提供一个基础的额外配置信息。
     private val defaultConfiguration: Configuration?,
     args: List<String>,
-    private val logger: Logger = simbotAppLogger,
+    internal val logger: Logger = simbotAppLogger,
 ) {
 
 
-    var showLogo: Boolean = kotlin.runCatching {
-        defaultConfiguration?.getConfig("simbot.showLogo")?.boolean
+    var showLogo: Boolean = runCatching {
+        defaultConfiguration?.getConfig(Logo.ENABLE_KEY)?.boolean
     }.getOrNull() ?: true
-    var showTips: Boolean = kotlin.runCatching {
-        defaultConfiguration?.getConfig("simbot.showTips")?.boolean
+    var showTips: Boolean = runCatching {
+        defaultConfiguration?.getConfig(Tips.ENABLE_KEY)?.boolean
     }.getOrNull() ?: true
 
     protected open val defaultScanPackageArray: Array<String> = arrayOf(defaultScanPackage)
@@ -129,10 +128,10 @@ protected constructor(
      */
     protected open val configurationManager: ConfigurationParserManager = ConfigurationManagerRegistry.defaultManager()
 
-    /**
-     * 流程配置。
-     */
-    protected open val appConfiguration = SimbotAppConfiguration()
+    // /**
+    //  * 流程配置。
+    //  */
+    // protected open val appConfiguration = SimbotAppConfiguration()
 
     /**
      * 包扫描器。 默认为 [HutoolClassesScanner]。
@@ -155,6 +154,13 @@ protected constructor(
         if (showLogo) {
             Logo.show()
         }
+
+        runCatching {
+            defaultConfiguration?.getConfig(Tips.RESOURCE_CONF_KEY)?.getObject(TipOnline::class.java)?.let {
+                Tips.TIP_ONLINE_PATH = it
+            }
+        }
+
         if (showTips) {
             Tips.show()
         }
@@ -198,9 +204,9 @@ protected constructor(
      */
     private fun initDependCenterWithAutoConfigures(config: Configuration): Set<Class<*>> {
         // 首先扫描并加载所有默认配置信息。
-        val autoConfigures = autoConfigures(loader)
+        val autoConfigures = autoConfigures(loader, logger)
 
-        dependCenter =  DependCenter(parent = parentDependBeanFactory, configuration = config)
+        dependCenter = DependCenter(parent = parentDependBeanFactory, configuration = config)
 
         // 加载所有的自动配置类
         autoConfigures.forEach {
@@ -252,7 +258,7 @@ protected constructor(
 
             // parse to configuration.
             resourceReader?.let {
-                simbotAppLogger.debugf("resource [{}] loaded.", resourceName)
+                logger.debugf("resource [{}] loaded.", resourceName)
                 val type: String = resourceData.type
                 confReaderManager.parse(type, it)
             }
@@ -277,7 +283,7 @@ protected constructor(
                 c !in ignored &&
                         AnnotationUtil.containsAnnotation(c, Beans::class.java)
             }
-            simbotAppLogger.debug("package scan: {}", it)
+            logger.debug("package scan: {}", it)
         }
 
         val collection = scanner.collection
@@ -324,9 +330,7 @@ protected constructor(
      */
     companion object Run {
 
-        // private val logger: Logger = LoggerFactory.getLogger("SimbotApp")
-
-        const val SCAN_PACKAGES_KEY = "simbot.core.scan-package"
+        internal const val SCAN_PACKAGES_KEY = "simbot.core.scan-package"
 
         /**
          * 启动，使用一个class启动。
@@ -338,7 +342,7 @@ protected constructor(
             loader: ClassLoader = Thread.currentThread().contextClassLoader ?: ClassLoader.getSystemClassLoader(),
             parentDependBeanFactory: DependBeanFactory? = null,
             defaultConfiguration: Configuration? = null,
-            vararg args: String
+            vararg args: String,
         ): SimbotContext {
 
             // 资源配置数据，获取appType的注解。
@@ -383,7 +387,7 @@ protected constructor(
             loader: ClassLoader = Thread.currentThread().contextClassLoader ?: ClassLoader.getSystemClassLoader(),
             parentDependBeanFactory: DependBeanFactory? = null,
             defaultConfiguration: Configuration? = null,
-            vararg args: String
+            vararg args: String,
         ): SimbotContext {
 
             // 资源配置数据，允许app直接作为注解数据填入。
@@ -443,6 +447,7 @@ private object Logo {
 |___/_|_| |_| |_|_.__/ \___/ \__|
                     @ForteScarlet
     """
+    internal const val ENABLE_KEY = "simbot.core.logo.enable"
     private val LOGO_PATH: String =
         "META-INF" + File.separator + "simbot" + File.separator + "logo"
     val logo: String by lazy(LazyThreadSafetyMode.PUBLICATION) {
@@ -459,41 +464,71 @@ private object Logo {
 private fun Logo.show(print: PrintStream = System.out) {
     print.println(logo)
     print.println()
-    // val logoLen = logo.length.takeIf { it > 0 } ?: 1
-    // val totalTime = 5000L
-    // val sleepTime: Long = totalTime / logoLen
-    // logo.lines().forEach {
-    //     it.forEach { c ->
-    //         print(c)
-    //         Thread.sleep(sleepTime)
-    //     }
-    //     println()
-    //     Thread.sleep(sleepTime)
-    // }
-    //
-    // for (i in 1..(3000 / 60)) {
-    //     for (j in 1..6) {
-    //         print(".")
-    //         Thread.sleep(10)
-    //     }
-    //     print("\b\b\b\b\b\b")
-    // }
-    // println("√")
 }
+
+private object DisableTips : NullPointerException("Disable online tips.")
+
 
 // tips! Do you know?
 private object Tips {
+
+    private val logger: Logger = LoggerFactory.getLogger("love.forte.simbot.tips")
+
+    internal const val RESOURCE_CONF_KEY = "simbot.core.tips.resource"
+    internal const val ENABLE_KEY = "simbot.core.tips.enable"
+
     private val TIP_PATH: String =
         "META-INF" + File.separator + "simbot" + File.separator + "simbTip.tips"
-    val randomTip: String? by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        runCatching {
-            ResourceUtil.getResourceUtf8Reader(TIP_PATH)
-                ?.useLines {
-                    it.filter { s -> s.isNotBlank() }.toList().randomOrNull()
+
+    internal var TIP_ONLINE_PATH: TipOnline? = null
+        get() {
+            if (field != null) {
+                return field
+            }
+            return when (val resource = System.getProperty(RESOURCE_CONF_KEY)) {
+                "gitee", "GITEE", null -> TipOnline.GITEE
+                "github", "GITHUB" -> TipOnline.GITHUB
+                else -> {
+                    logger.warn("Unknown tips resource: {}, used Gitee resource.", resource)
+                    TipOnline.GITEE
                 }
-                ?: return@runCatching null
-        }.getOrNull()
+            }
+        }
+
+
+    val randomTip: String? by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        kotlin.runCatching {
+            val url = TIP_ONLINE_PATH?.url ?: throw DisableTips
+
+            logger.trace("Tips online resource {}, url: {}", TIP_ONLINE_PATH, url)
+
+            (URL(url).openConnection() as HttpURLConnection).run {
+                readTimeout = 5000
+                connectTimeout = 5000
+                connect()
+                takeIf { responseCode < 300 }
+                    ?: throw IOException("Online tips connection failed. ${errorStream.reader().use { it.readText() }}")
+            }.inputStream.reader()
+        }.getOrElse { e ->
+            if (e != DisableTips) {
+                logger.debugEf("Read online tips failed: {}", e, e.localizedMessage)
+            }
+            runCatching {
+                ResourceUtil.getResourceUtf8Reader(TIP_PATH)
+            }.getOrNull()
+        }?.useLines {
+            it.filter { s -> s.isNotBlank() }.toList().randomOrNull()
+        }
     }
+
+
+
+}
+
+
+internal enum class TipOnline(val url: String) {
+    GITHUB("https://raw.githubusercontent.com/ForteScarlet/simpler-robot/dev/tips/tips.tips"),
+    GITEE("https://gitee.com/ForteScarlet/simpler-robot/raw/dev/tips/tips.tips"),
 }
 
 
