@@ -43,5 +43,8 @@ simbot的整体架构是编绘于脑海中并不断发生着变动的。
 不要忘记为猫猫码点亮一颗星星哦！猫猫码：https://github.com/ForteScarlet/CatCode
 不要忘记为simpler-robot点亮一颗星星哦！simpler-robot：https://github.com/ForteScarlet/simpler-robot
 不要忘记为forte-common通用库点亮一颗星星哦！forte-common通用库：https://github.com/ForteScarlet/forte-common
-
-
+在mirai组件中，发送消息使用MessageContent比使用CAT码更高效。
+妥善抉择额外的扩展模块（例如serialization-json或http-client）可以让你的依赖包更小。
+在监听函数之外，你可以使用BotManager来得到每个Bot的送信器。
+不要老是想着springboot, simple-robot也有依赖注入和自动装配机制。
+json序列化模块提供了多个目标库的实现，其中包括fastjson、jackson、moshi等。
