@@ -16,6 +16,7 @@
         <module>component-ding</module>
         <module>component-lovelycat-httpapi</module>
         <module>component-onebot</module>
+        <module>component-telegram</module>
     </modules>
 
     <dependencies>
