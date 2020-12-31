@@ -14,12 +14,18 @@
 
 package love.forte.simbot.serialization.json.jackson;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import love.forte.common.ioc.annotation.ConfigBeans;
 import love.forte.common.ioc.annotation.SpareBeans;
 
 /**
  * jackson json serialization 配置类。
+ *
  * @author ForteScarlet
  */
 @ConfigBeans
@@ -28,7 +34,14 @@ public class JacksonSerializerConfiguration {
 
     @SpareBeans("objectMapper")
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(JsonGenerator.Feature.IGNORE_UNKNOWN, true);
+        objectMapper.configure(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN,true);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+        objectMapper.registerModule(new KotlinModule());
+        return objectMapper;
     }
 
 

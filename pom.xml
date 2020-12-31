@@ -54,6 +54,7 @@
         <!-- some version -->
         <fastjson.version>1.2.74</fastjson.version>
         <jackson.version>2.11.3</jackson.version>
+        <jackson-kt-module.version>2.11.4</jackson-kt-module.version>
         <moshi.version>1.11.0</moshi.version>
         <hutool.version>5.5.1</hutool.version>
         <quartz.version>2.3.2</quartz.version>
@@ -307,6 +308,11 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-kotlin</artifactId>
+                <version>${jackson-kt-module.version}</version>
             </dependency>
             <!--</editor-fold>-->
             <!--<editor-fold desc="hutool dependencies">-->

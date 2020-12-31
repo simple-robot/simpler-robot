@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>spring-boot-starter</artifactId>
         <groupId>love.forte.simple-robot</groupId>
-        <version>2.0.0-BETA.7</version><!--v-->
+        <version>2.0.0-BETA.7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>component-mirai-spring-boot-starter</artifactId>
+    <artifactId>component-lovelycat-httpapi-spring-boot-starter</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>2.3.5.RELEASE</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -31,21 +49,42 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <!--<version>2.2.7.RELEASE</version>-->
-            <!--<scope>test</scope>-->
             <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>love.forte.simple-robot</groupId>
-            <artifactId>component-mirai</artifactId>
+            <artifactId>component-lovelycat-httpapi</artifactId>
             <exclusions>
                 <!-- exclusion log. -->
                 <exclusion>
                     <groupId>love.forte.common</groupId>
                     <artifactId>log</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>io.ktor</groupId>
+                    <artifactId>ktor-server-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.ktor</groupId>
+                    <artifactId>ktor-server-netty</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>love.forte.simple-robot.serialization</groupId>
+                    <artifactId>json-fastjson</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>love.forte.simple-robot.serialization</groupId>
+            <artifactId>json-jackson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <!--<version>2.12.0</version>-->
         </dependency>
 
         <dependency>
@@ -53,16 +92,6 @@
             <artifactId>log</artifactId>
             <scope>test</scope>
             <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>love.forte.common</groupId>
-            <artifactId>configuration</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>love.forte.common</groupId>
-            <artifactId>ioc</artifactId>
         </dependency>
 
         <dependency>

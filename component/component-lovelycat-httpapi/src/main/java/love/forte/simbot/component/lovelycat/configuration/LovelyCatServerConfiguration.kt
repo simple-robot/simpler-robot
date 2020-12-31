@@ -18,6 +18,8 @@ package love.forte.simbot.component.lovelycat.configuration
 
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import love.forte.common.ioc.DependCenter
+import love.forte.common.ioc.InstanceBeanDepend
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.component.lovelycat.LovelyCatApiManager
@@ -33,15 +35,14 @@ import love.forte.simbot.serialization.json.JsonSerializerFactory
  * @property jsonSerializerFactory JsonSerializerFactory
  */
 @ConfigBeans("lovelyCatServerConfiguration")
-public class LovelyCatServerConfiguration {
+public class LovelyCatServerConfiguration{
 
     @Depend
     lateinit var jsonSerializerFactory: JsonSerializerFactory
 
+    @Depend
+    lateinit var dependCenter: DependCenter
 
-    @ComponentBeans("applicationEngineFactory")
-    public fun applicationEngineFactory(): ApplicationEngineFactory<ApplicationEngine, out ApplicationEngine.Configuration> =
-        Netty
 
     /**
      *
@@ -53,12 +54,19 @@ public class LovelyCatServerConfiguration {
      */
     @ComponentBeans("lovelyCatHttpServer")
     public fun lovelyCatHttpServer(
-        applicationEngineFactory: ApplicationEngineFactory<ApplicationEngine, out ApplicationEngine.Configuration>,
         lovelyCatServerProperties: LovelyCatServerProperties,
         lovelyCatParser: LovelyCatParser,
         apiManager: LovelyCatApiManager,
         msgGetProcessor: MsgGetProcessor,
     ): LovelyCatHttpServer {
+        //
+        val applicationEngineFactory: ApplicationEngineFactory<ApplicationEngine, out ApplicationEngine.Configuration> =
+            dependCenter.getOrNull(ApplicationEngineFactory::class.java) ?: run {
+                Netty.also {
+                    dependCenter.register(InstanceBeanDepend("applicationEngineFactory", instance = it))
+                }
+            }
+
         return LovelyCatKtorHttpServer(
             lovelyCatParser,
             applicationEngineFactory,
@@ -70,3 +78,4 @@ public class LovelyCatServerConfiguration {
     }
 
 }
+

@@ -70,7 +70,7 @@ public class JacksonSerializer<T> implements JsonSerializer<T> {
         try {
             return objectMapper.readValue(json, javaType);
         } catch (JsonProcessingException e) {
-            throw new JsonDeserializationException(json, e);
+            throw new JsonDeserializationException(json, javaType, e);
         }
     }
 }

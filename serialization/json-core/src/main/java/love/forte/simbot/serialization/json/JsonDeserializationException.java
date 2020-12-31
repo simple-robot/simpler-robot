@@ -14,6 +14,7 @@
 
 package love.forte.simbot.serialization.json;
 
+import java.lang.reflect.Type;
 import java.security.PrivilegedActionException;
 
 /**
@@ -54,8 +55,8 @@ public class JsonDeserializationException extends IllegalArgumentException {
      *                unknown.)
      * @since 1.5
      */
-    public JsonDeserializationException(String message, Throwable cause) {
-        super(message, cause);
+    public JsonDeserializationException(String message, Type type, Throwable cause) {
+        super(type + " from " + message, cause);
     }
 
     /**

@@ -23,6 +23,7 @@ import love.forte.common.ioc.annotation.ConfigBeans
 @ConfigBeans("lovelyCatServerProperties")
 @AsConfig(prefix = "simbot.component.lovelycat.server", allField = true)
 public class LovelyCatServerProperties {
+
     /**
      * 是否开启http服务器。
      */
