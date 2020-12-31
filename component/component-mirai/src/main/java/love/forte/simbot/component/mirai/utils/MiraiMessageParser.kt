@@ -44,13 +44,11 @@ import java.io.InputStream
 // public val EmptyMiraiMessageContent: MiraiMessageContent = MiraiMessageChainContent(EmptyMessageChain)
 
 
-
-
 /**
  * 将一个 [MessageContent] 转化为一个 [MiraiMessageContent]。
  */
 public fun MessageContent.toMiraiMessageContent(message: MessageChain?): MiraiMessageContent {
-    return if(this is MiraiMessageContent) {
+    return if (this is MiraiMessageContent) {
         this
     } else {
         msg.toMiraiMessageContent(message)
@@ -76,6 +74,10 @@ public fun String.toMiraiMessageContent(message: MessageChain?): MiraiMessageCon
 @OptIn(MiraiExperimentalApi::class)
 public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageContent {
     return when (this.type) {
+        "text", "message" -> this["text"]?.let {
+            MiraiSingleMessageContent(PlainText(it))
+        } ?: MiraiSingleMessageContent(EmptySingleMessage)
+
         "at" -> {
             val all = this["all"] == "true"
             val code = this["code"]?.toLong()
@@ -83,7 +85,8 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
                 MiraiSingleMessageContent(AtAll)
             } else {
                 // codes not empty.
-                code?.let { MiraiSingleAtMessageContent(it) } ?: throw IllegalArgumentException("no at 'code' in $this.")
+                code?.let { MiraiSingleAtMessageContent(it) }
+                    ?: throw IllegalArgumentException("no at 'code' in $this.")
             }
         }
 
@@ -143,9 +146,6 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
 
                 return MiraiSingleMessageContent(Image(id))
             }
-
-
-
 
 
             // file, or url
@@ -214,7 +214,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
         "share" -> {
             // 至少需要一个url
             val url: String = this["url"] ?: throw IllegalArgumentException("The 'url' could not be found in $this.")
-            val title: String =this["title"] ?: "分享链接"
+            val title: String = this["title"] ?: "分享链接"
             val content: String? = this["content"]
             val coverUrl: String? = this["coverUrl"]
 
@@ -379,7 +379,7 @@ public fun SingleMessage.toNeko(): Neko {
         // 引用回复
         is QuoteReply -> {
             CatCodeUtil.getLazyNekoBuilder("quote", true)
-                .key("id").value(with(this.source){ "$fromId.${this.ids.joinToString(",", "[", "]")}" })
+                .key("id").value(with(this.source) { "$fromId.${this.ids.joinToString(",", "[", "]")}" })
                 .key("quote").value { this.source.originalMessage.toCatCode() }
                 .build()
         }
@@ -422,7 +422,6 @@ public suspend fun Url.toStream(): InputStream {
         throw IllegalStateException("connection to '$urlString' failed ${status.value}: ${status.description}")
     }
 }
-
 
 
 private val Voice.id: String get() = md5.decodeToString()

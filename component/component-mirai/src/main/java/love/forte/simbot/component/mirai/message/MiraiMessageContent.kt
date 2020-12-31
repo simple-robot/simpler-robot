@@ -109,6 +109,21 @@ public class MiraiSingleMessageContent(
     private val neko: Neko?,
 ) : MiraiMessageContent() {
 
+    companion object Empty : MiraiMessageContent() {
+        /**
+         * empty single message.
+         */
+        override suspend fun getMessage(contact: Contact): Message {
+            return EmptySingleMessage
+        }
+
+        /**
+         * empty list.
+         */
+        override val cats: List<Neko>
+            get() = emptyList()
+    }
+
     // constructor(singleMessage: SingleMessage, neko: Neko?) : this({ singleMessage }, neko)
 
     constructor(

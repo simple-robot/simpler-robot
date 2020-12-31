@@ -95,11 +95,6 @@ public class SimbotCompMiraiConfigurationProperties {
      */
     private String cacheDirectory = "";
 
-    // /**
-    //  * mirai登录验证码处理器。
-    //  */
-    // private MiraiLoginSolverType loginSolverType = MiraiLoginSolverType.DEFAULT;
-
     /**
      * mirai设备信息文件路径。
      */

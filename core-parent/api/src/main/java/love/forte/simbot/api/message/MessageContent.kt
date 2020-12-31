@@ -97,7 +97,7 @@ public interface MessageContent {
      * 获取此消息中的所有可能包含的cat码。
      *
      * 此处所获得的cat码指的是 **所有** 消息链中元素的cat码，
-     * 也就是说一段普通的 **文本消息** 也会被作为cat码进行处理，其类型为 `message`, 参数只有一个 `text`，代表其正文信息。
+     * 也就是说一段普通的 **文本消息** 也会被作为cat码进行处理，其类型为 `text`, 参数只有一个 `text`，代表其正文信息。此可参考 [猫猫码通用定义](https://www.yuque.com/simpler-robot/catcode/gvdfn6#GUJKg)。
      *
      * 对于组件实现，一般需要耗时获取的属性可通过 `lazy cat` 来进行实现。
      *
