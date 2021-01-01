@@ -2,7 +2,6 @@
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import kotlin.concurrent.thread
 import kotlin.coroutines.suspendCoroutine
 
 /*
@@ -24,13 +23,13 @@ import kotlin.coroutines.suspendCoroutine
 
 suspend fun getInt(num: Int): String {
     return suspendCoroutine {
-        thread {
+        // thread {
             println("$num\t before ${Thread.currentThread()}")
-            Thread.sleep(1000)
+            // Thread.sleep(1000)
             it.resumeWith(Result.success("NUM($num)")).also {
                 println("$num\t after ${Thread.currentThread()}")
 
-            }
+            // }
         }
     }
 }
