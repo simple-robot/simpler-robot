@@ -285,7 +285,6 @@ constructor(
                     // second: async response
                     responseType to
                             when (request.type) {
-
                                 // get
                                 HttpRequestType.GET -> {
                                     val getBlock: HttpRequestBuilder.() -> Unit = {
@@ -295,7 +294,7 @@ constructor(
                                             parameter(k, v)
                                         }
                                     }
-                                    GlobalScope.async { client.get<KtorHttpResponse>(url, getBlock) }
+                                    GlobalScope.async { client.get(url, getBlock) }
                                 }
 
                                 // post
@@ -319,7 +318,7 @@ constructor(
                                             }
                                         }
                                     }
-                                    GlobalScope.async { client.post<KtorHttpResponse>(url, postBlock) }
+                                    GlobalScope.async { client.post(url, postBlock) }
                                 }
 
                                 // form
@@ -402,7 +401,7 @@ constructor(
                                     }
                                 }
                             }
-                            runBlocking { client.submitForm<KtorHttpResponse>(url, block = postBlock) }
+                            runBlocking { client.submitForm(url, block = postBlock) }
                         }
                     }
                     response.toResponse(responseType)
