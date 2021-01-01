@@ -63,7 +63,7 @@ open class DingSenderImpl(
     /**
      * http发送消息
      */
-    private fun send(json: String): String {
+    private fun send(json: String): String? {
         return http.post(url, jsonHeaders, json, String::class.java).body
     }
 
@@ -82,7 +82,7 @@ open class DingSenderImpl(
      */
     override fun sendMsg(msg: DingSpecialMessageChain): String {
         val jsonSerializer = jsonSerializerFactory.getJsonSerializer(Map::class.java)
-        return send(jsonSerializer.toJson(msg.data))
+        return send(jsonSerializer.toJson(msg.data)) ?: ""
     }
 
 

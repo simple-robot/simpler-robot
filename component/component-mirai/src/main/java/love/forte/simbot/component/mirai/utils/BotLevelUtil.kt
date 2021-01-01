@@ -47,7 +47,7 @@ object BotLevelUtil {
         return try {
             val cookies = bot.cookies
             val vipHtml = http.get(VIP_URL, null, cookies.cookiesMap, null, String::class.java)
-            val message = vipHtml.assertBody()
+            val message = vipHtml.assertBody()!!
             val matcher = levelPattern.matcher(message)
             if(matcher.find()){
                 matcher.group(1).toInt()

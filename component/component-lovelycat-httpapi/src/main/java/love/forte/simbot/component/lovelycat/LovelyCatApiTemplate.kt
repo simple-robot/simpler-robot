@@ -423,7 +423,7 @@ constructor(
      */
     private inline fun <reified T> post(requestBody: Any?): T {
         val resp = httpTemplate.post(url = url, headers = null, requestBody = requestBody, responseType = T::class.java)
-        return resp.assertBody()
+        return resp.assertBody()!!
     }
 
 

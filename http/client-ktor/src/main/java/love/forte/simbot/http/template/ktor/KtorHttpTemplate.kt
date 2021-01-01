@@ -479,9 +479,10 @@ public class KtorHttpResponseImpl<T>(
     override val statusCode: Int = response.status.value
 
     /** body. */
-    override val body: T by lazy(LazyThreadSafetyMode.PUBLICATION) {
+    override val body: T? by lazy(LazyThreadSafetyMode.PUBLICATION) {
         logger.debug(content)
-        content?.let { bodySerializer(it) } ?: throw IllegalStateException("content is empty.")
+        content?.let { bodySerializer(it) }
+            //?: throw IllegalStateException("content is empty.")
     }
 
     /** headers. */
