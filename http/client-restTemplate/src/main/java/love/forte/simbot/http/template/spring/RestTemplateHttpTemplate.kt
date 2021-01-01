@@ -15,6 +15,7 @@
  */
 package love.forte.simbot.http.template.spring
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -190,7 +191,7 @@ class RestTemplateHttpTemplate(private val restTemplate: RestTemplate) : BaseHtt
 
     private suspend fun <T> doRequest(req: Request<T>): ResponseEntity<T> {
         return suspendCoroutine {
-            thread {
+            Dispatchers.Default.dispatch(it.context) {
                 it.resumeWith(runCatching { restTemplate.exchange(req.url, req.method, req.entity, req.responseType) })
             }
         }
