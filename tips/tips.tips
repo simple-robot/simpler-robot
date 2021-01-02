@@ -38,7 +38,9 @@ simbot2.x中大大减少了第三方依赖的数量，但同时也大大增加�
 simbot2.x中的flag的设计是为了使得同一个类型的接口能够拥有可区分的职责。
 simbot的整体架构是编绘于脑海中并不断发生着变动的。
 注意保护颈椎，多站起来活动活动是个不错的选择。
-记得多喝水哦。
+记得多喝水。
+站起来活动一下吧。
+看看远处的风景。
 善用@FilterValue可以简化你的代码与逻辑。
 不要忘记为猫猫码点亮一颗星星哦！猫猫码：https://github.com/ForteScarlet/CatCode
 不要忘记为simpler-robot点亮一颗星星哦！simpler-robot：https://github.com/ForteScarlet/simpler-robot
@@ -47,4 +49,5 @@ simbot的整体架构是编绘于脑海中并不断发生着变动的。
 妥善抉择额外的扩展模块（例如serialization-json或http-client）可以让你的依赖包更小。
 在监听函数之外，你可以使用BotManager来得到每个Bot的送信器。
 不要老是想着springboot, simple-robot也有依赖注入和自动装配机制。
-json序列化模块提供了多个目标库的实现，其中包括fastjson、jackson、moshi等。
+json序列化模块提供了多个目标库的实现，其中包括fastjson、jackson、moshi等，你完全可以根据当前项目环境选择一个合适的模块。
+http-client模块提供了多个目标库的实现，其中包括ktor-cio-client、restTemplate、urlConnection等，你完全可以根据当前项目环境选择一个合适的模块。
