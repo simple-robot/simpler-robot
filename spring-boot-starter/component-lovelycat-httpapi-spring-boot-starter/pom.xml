@@ -69,11 +69,21 @@
                     <groupId>io.ktor</groupId>
                     <artifactId>ktor-server-netty</artifactId>
                 </exclusion>
+                <!-- exclusion ktor client -->
+                <exclusion>
+                    <groupId>love.forte.simple-robot.http</groupId>
+                    <artifactId>client-ktor</artifactId>
+                </exclusion>
                 <exclusion>
                     <groupId>love.forte.simple-robot.serialization</groupId>
                     <artifactId>json-fastjson</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>love.forte.simple-robot.http</groupId>
+            <artifactId>client-restTemplate</artifactId>
         </dependency>
 
         <dependency>
@@ -84,7 +94,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
-            <!--<version>2.12.0</version>-->
         </dependency>
 
         <dependency>

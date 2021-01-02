@@ -1,10 +1,9 @@
-import kotlinx.coroutines.*
-import java.util.concurrent.Executor
+
+import kotlinx.coroutines.Dispatchers
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 import kotlin.coroutines.*
-import kotlin.reflect.full.callSuspend
 
 /*
  *
@@ -43,7 +42,7 @@ suspend fun getInt(num: Int): String {
         //     it.resume(str)
         //     println("恢复调用了 $str")
         // }, 2, TimeUnit.SECONDS)
-        println("'$num' 已经开始等待了. ")
+        println("'$num' 已经开始获取了. ")
     }
 }
 
@@ -84,6 +83,9 @@ suspend fun main() {
     // println("主挂起2")
     // delay(2000)
 
+    (0..99999999).forEach {
+
+    }
     println("end.")
     println("${System.currentTimeMillis() - s} ms.")
 

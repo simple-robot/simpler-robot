@@ -37,11 +37,6 @@ import io.ktor.client.statement.HttpResponse as KtorHttpResponse
 private val APPLICATION_JSON = ContentType("application", "json")
 private val APPLICATION_FORM_URLENCODED = ContentType("application", "x-www-form-urlencoded")
 
-private var USER_AGENT_KEY_NAME = "User-Agent"
-private var USER_AGENT_WIN10_CHROME =
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
-private var USER_AGENT_MAC_FIREFOX = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1"
-
 
 /**
  *

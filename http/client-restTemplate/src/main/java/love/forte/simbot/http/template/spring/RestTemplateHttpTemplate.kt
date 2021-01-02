@@ -27,7 +27,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.RestTemplate
 import java.util.*
-import kotlin.concurrent.thread
 import kotlin.coroutines.suspendCoroutine
 import org.springframework.http.HttpHeaders as SpringHeaders
 
@@ -54,33 +53,37 @@ class RestTemplateHttpTemplate(private val restTemplate: RestTemplate) : BaseHtt
         val entity: ResponseEntity<T>
         val headerEmpty = headers == null || headers.isEmpty()
         val cookieEmpty = cookies == null || cookies.isEmpty()
-        if (headerEmpty && cookieEmpty) {
-            entity = if (requestParam != null) {
-                restTemplate.getForEntity(url, responseType, requestParam)
-            } else {
-                restTemplate.getForEntity(url, responseType)
-            }
-        } else {
-            val spHeaders = SpringHeaders()
-            if (!headerEmpty) {
-                headers as HttpHeaders
-                spHeaders.putAll(headers)
-            }
-            if (!cookieEmpty) {
-                cookies as HttpCookies
-                val cookieList: MutableList<String> = ArrayList(cookies.size)
-                val sb = StringBuilder()
-                cookies.forEach {
-                    sb.append(it.name).append('=').append(it.value)
-                    cookieList.add(sb.toString())
-                    sb.delete(0, sb.length)
-                }
 
-                spHeaders[SpringHeaders.COOKIE] = cookieList
-            }
-            val requestEntity = HttpEntity<Any>(spHeaders)
-            entity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, responseType, requestParam)
+        val headers0: HttpHeaders = if (!headerEmpty) {
+            headers as HttpHeaders
+        } else {
+            HttpHeaders.instance
         }
+        headers0.setUserAgentChromeIfAbsent()
+
+        val spHeaders = SpringHeaders()
+        spHeaders.putAll(headers0)
+
+        if (!cookieEmpty) {
+            cookies as HttpCookies
+            val cookieList: MutableList<String> = ArrayList(cookies.size)
+            val sb = StringBuilder()
+            cookies.forEach {
+                sb.append(it.name).append('=').append(it.value)
+                cookieList.add(sb.toString())
+                sb.delete(0, sb.length)
+            }
+
+            spHeaders[SpringHeaders.COOKIE] = cookieList
+        }
+        val requestEntity = HttpEntity<Any>(spHeaders)
+
+        entity = restTemplate.exchange(url,
+            HttpMethod.GET,
+            requestEntity,
+            responseType,
+            requestParam ?: emptyMap<String, Any?>())
+
         return RestHttpResponse(entity)
     }
 
@@ -94,7 +97,7 @@ class RestTemplateHttpTemplate(private val restTemplate: RestTemplate) : BaseHtt
         url: String,
         headers: HttpHeaders?,
         requestBody: Any?,
-        responseType: Class<T>
+        responseType: Class<T>,
     ): HttpResponse<T> {
         val headerEmpty = headers == null || headers.isEmpty()
         val spHeader = SpringHeaders()
@@ -143,50 +146,18 @@ class RestTemplateHttpTemplate(private val restTemplate: RestTemplate) : BaseHtt
      * 则 [request.requestParam][HttpRequest.requestParam] 应该为 `Map<String, Any?>?` 类型实例。
      */
     override fun <T> request(request: HttpRequest<T>): HttpResponse<T> {
-        // val typeWithMedia = when(request.type) {
-        //     HttpRequestType.GET -> HttpMethod.GET to null
-        //     HttpRequestType.POST -> HttpMethod.POST to MediaType.APPLICATION_JSON
-        //     HttpRequestType.FORM -> HttpMethod.POST to MediaType.APPLICATION_FORM_URLENCODED
-        // }
-        //
-        // val spHeader = SpringHeaders()
-        // typeWithMedia.second?.also {
-        //     spHeader.contentType = it
-        // }
-        // request.headers?.also {
-        //     spHeader.putAll(it)
-        // }
-        //
-        // cookies
-
-        // val entity = restTemplate.exchange(request.url, typeWithMedia.first, HttpEntity(request.requestParam, spHeader), request.responseType)
         val entity = runBlocking { doRequest(Request(request)) }
         return RestHttpResponse(entity)
     }
 
 
     private suspend fun <T> requestSuspend(request: HttpRequest<T>): HttpResponse<T> {
-        // val req = Request(request)
-        // val typeWithMedia = when(request.type) {
-        //     HttpRequestType.GET -> HttpMethod.GET to null
-        //     HttpRequestType.POST -> HttpMethod.POST to MediaType.APPLICATION_JSON
-        //     HttpRequestType.FORM -> HttpMethod.POST to MediaType.APPLICATION_FORM_URLENCODED
-        // }
-        //
-        // val spHeader = SpringHeaders()
-        // typeWithMedia.second?.also {
-        //     spHeader.contentType = it
-        // }
-        // request.headers?.also {
-        //     spHeader.putAll(it)
-        // }
 
         // cookies
         val entity = doRequest(Request(request))
         return RestHttpResponse(entity)
 
     }
-
 
 
     private suspend fun <T> doRequest(req: Request<T>): ResponseEntity<T> {
@@ -216,41 +187,41 @@ class RestTemplateHttpTemplate(private val restTemplate: RestTemplate) : BaseHtt
     }
 
 
-
-
 }
 
 private inline class Request<T>(val request: HttpRequest<T>) {
     val url: String get() = request.url
 
     val method: HttpMethod
-    get() = when(request.type) {
-        HttpRequestType.GET -> HttpMethod.GET
-        HttpRequestType.POST -> HttpMethod.POST
-        HttpRequestType.FORM -> HttpMethod.POST
-    }
+        get() = when (request.type) {
+            HttpRequestType.GET -> HttpMethod.GET
+            HttpRequestType.POST -> HttpMethod.POST
+            HttpRequestType.FORM -> HttpMethod.POST
+        }
 
     val media: MediaType?
-    get() = when(request.type) {
-        HttpRequestType.GET -> null
-        HttpRequestType.POST -> MediaType.APPLICATION_JSON
-        HttpRequestType.FORM -> MediaType.APPLICATION_FORM_URLENCODED
-    }
+        get() = when (request.type) {
+            HttpRequestType.GET -> null
+            HttpRequestType.POST -> MediaType.APPLICATION_JSON
+            HttpRequestType.FORM -> MediaType.APPLICATION_FORM_URLENCODED
+        }
 
     val springHeaders: SpringHeaders
-    get() {
-        val spHeader = SpringHeaders()
-        media?.also {
-            spHeader.contentType = it
+        get() {
+            val spHeader = SpringHeaders()
+            media?.also {
+                spHeader.contentType = it
+            }
+            (request.headers ?: HttpHeaders.instance).also {
+                it.setUserAgentChromeIfAbsent()
+                spHeader.putAll(it)
+            }
+
+            return spHeader
         }
-        request.headers?.also {
-            spHeader.putAll(it)
-        }
-        return spHeader
-    }
 
     val entity: HttpEntity<*>
-    get() = HttpEntity(request.requestParam, springHeaders)
+        get() = HttpEntity(request.requestParam, springHeaders)
 
     val responseType get() = request.responseType
 }

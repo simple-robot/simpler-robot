@@ -75,7 +75,7 @@
     <!-- dependencyManagement -->
     <dependencyManagement>
         <dependencies>
-            <!--<editor-fold desc="simbot">-->
+            <!--<editor-fold desc="core">-->
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
                 <artifactId>core</artifactId>
@@ -112,6 +112,11 @@
             <dependency>
                 <groupId>love.forte.simple-robot.http</groupId>
                 <artifactId>client-ktor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>love.forte.simple-robot.http</groupId>
+                <artifactId>client-restTemplate</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!--</editor-fold>-->

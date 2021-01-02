@@ -12,7 +12,39 @@
  *
  */
 
+@file:JvmName("HttpHeadersTemplate")
 package love.forte.simbot.http.template
+
+public const val USER_AGENT_KEY_NAME = "User-Agent"
+public const val USER_AGENT_WIN10_CHROME =
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+public const val USER_AGENT_MAC_FIREFOX = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1"
+
+
+public var HttpHeaders.userAgent: String?
+    get() = this[USER_AGENT_KEY_NAME]?.firstOrNull()
+    set(value) {
+        value?.let {
+            this.set(USER_AGENT_KEY_NAME, it)
+        }
+    }
+
+public fun HttpHeaders.setUserAgentChrome() {
+    this.userAgent = USER_AGENT_WIN10_CHROME
+}
+public fun HttpHeaders.setUserAgentFireFox() {
+    this.userAgent = USER_AGENT_MAC_FIREFOX
+}
+public fun HttpHeaders.setUserAgentChromeIfAbsent() {
+    if (this.userAgent == null){
+        this.setUserAgentChrome()
+    }
+}
+public fun HttpHeaders.setUserAgentFireFoxIfAbsent() {
+    if (this.userAgent == null) {
+        this.setUserAgentFireFox()
+    }
+}
 
 /**
  *
