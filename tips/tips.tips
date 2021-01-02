@@ -51,3 +51,7 @@ simbot的整体架构是编绘于脑海中并不断发生着变动的。
 不要老是想着springboot, simple-robot也有依赖注入和自动装配机制。
 json序列化模块提供了多个目标库的实现，其中包括fastjson、jackson、moshi等，你完全可以根据当前项目环境选择一个合适的模块。
 http-client模块提供了多个目标库的实现，其中包括ktor-cio-client、restTemplate、urlConnection等，你完全可以根据当前项目环境选择一个合适的模块。
+你可以用ListenerContext来实现Listener之间的信息传递。
+你可以在启动类上实现SimbotProcess接口来实现参与启动前与启动后的部分操作。
+你可以通过AtDetectionRegistrar.registryAtDetection来注册一个AT匹配器。
+你可以通过ListenerFilterRegistrar.registerFilter或者注入一个自定义的ListenerFilter（记得@Beans要指定名称）来注册一个自定义过滤器。

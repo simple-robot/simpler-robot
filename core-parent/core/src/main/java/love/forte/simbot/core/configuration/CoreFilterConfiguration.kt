@@ -55,11 +55,11 @@ public class CoreFilterConfiguration {
     fun coreFilterManager(builder: FilterManagerBuilder): FilterManager {
         val allNames = dependBeanFactory.allBeans
 
-        allNames.forEach {
-            val type = dependBeanFactory.getType(it)
+        allNames.forEach { name ->
+            val type = dependBeanFactory.getType(name)
             if(type is ListenerFilter) {
                 // is filter, register it.
-                builder.register(it, type)
+                builder.register(name, type)
             }
         }
 
