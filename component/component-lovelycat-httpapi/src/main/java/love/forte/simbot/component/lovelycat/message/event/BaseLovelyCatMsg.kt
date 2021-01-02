@@ -23,7 +23,6 @@ import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.component.lovelycat.message.event.LovelyCatMsg.Companion.NON_TYPE
 import love.forte.simbot.serialization.json.JsonSerializerFactory
-import kotlin.reflect.KClass
 
 
 // public val lovelyCatEventTypes: Map<String, KClass<out BaseLovelyCatMsg>> =

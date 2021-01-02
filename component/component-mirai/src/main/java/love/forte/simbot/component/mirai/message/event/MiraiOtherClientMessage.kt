@@ -14,7 +14,6 @@
 
 package love.forte.simbot.component.mirai.message.event
 
-import love.forte.common.utils.secondToMill
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountInfo

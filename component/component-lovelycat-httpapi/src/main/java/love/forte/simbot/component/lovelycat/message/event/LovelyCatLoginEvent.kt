@@ -19,7 +19,6 @@ package love.forte.simbot.component.lovelycat.message.event
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.containers.botAsAccountInfo
-import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 

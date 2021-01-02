@@ -19,7 +19,6 @@ import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.convert.ConverterManager
-import love.forte.simbot.SimbotPackageScanEnvironment
 import love.forte.simbot.annotation.Listens
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.listener.MethodListenerFunction

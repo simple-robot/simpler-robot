@@ -16,7 +16,6 @@
 package love.forte.simbot.component.lovelycat.message.event
 
 import love.forte.common.utils.Millis
-import love.forte.common.utils.Time
 import love.forte.common.utils.timeAs
 import love.forte.common.utils.timeBy
 import love.forte.simbot.api.message.containers.AccountContainer

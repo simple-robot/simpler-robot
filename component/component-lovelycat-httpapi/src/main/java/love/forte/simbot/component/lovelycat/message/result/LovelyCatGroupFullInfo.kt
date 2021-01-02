@@ -19,7 +19,6 @@ import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.results.GroupAdmin
 import love.forte.simbot.api.message.results.GroupFullInfo
 import love.forte.simbot.api.message.results.GroupOwner
-import love.forte.simbot.component.lovelycat.LovelyCatApiException
 import love.forte.simbot.component.lovelycat.message.CatGroupInfo
 
 

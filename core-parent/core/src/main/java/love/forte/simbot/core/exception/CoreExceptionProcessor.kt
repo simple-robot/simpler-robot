@@ -14,8 +14,6 @@
 
 package love.forte.simbot.core.exception
 
-import love.forte.common.sequences.distinctByMerger
-import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.exception.ExceptionHandle
 import love.forte.simbot.exception.ExceptionHandleContext
 import love.forte.simbot.exception.ExceptionProcessor

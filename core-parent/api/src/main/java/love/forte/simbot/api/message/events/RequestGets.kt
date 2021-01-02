@@ -18,7 +18,10 @@ package love.forte.simbot.api.message.events
 import love.forte.simbot.annotation.MainListenerType
 import love.forte.simbot.api.message.assists.ActionMotivations
 import love.forte.simbot.api.message.assists.Flag
-import love.forte.simbot.api.message.containers.*
+import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.ActionMotivationContainer
+import love.forte.simbot.api.message.containers.GroupContainer
+import love.forte.simbot.api.message.containers.OriginalDataContainer
 
 /*
  * 此模块下定义请求相关的监听接口

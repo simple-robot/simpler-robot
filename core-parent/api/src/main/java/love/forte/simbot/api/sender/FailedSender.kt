@@ -16,7 +16,6 @@
 package love.forte.simbot.api.sender
 
 import love.forte.common.utils.Carrier
-import love.forte.common.utils.toCarrier
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.events.GroupMsg

@@ -18,9 +18,6 @@ package love.forte.simbot.component.lovelycat.message
 
 import love.forte.simbot.api.message.containers.*
 import love.forte.simbot.api.message.results.FriendInfo
-import love.forte.simbot.api.message.results.GroupAdmin
-import love.forte.simbot.api.message.results.GroupFullInfo
-import love.forte.simbot.api.message.results.GroupOwner
 import love.forte.simbot.api.message.results.SimpleGroupInfo
 import love.forte.simbot.component.lovelycat.message.event.lovelyCatAccountInfo
 

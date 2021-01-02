@@ -15,7 +15,6 @@
 package love.forte.simbot.spring.autoconfigure;
 
 import cn.hutool.core.convert.ConverterRegistry;
-import cn.hutool.core.util.ClassLoaderUtil;
 import love.forte.common.utils.convert.ConverterManager;
 import love.forte.common.utils.convert.HutoolConverterManagerImpl;
 import love.forte.simbot.annotation.SimbotApplication;

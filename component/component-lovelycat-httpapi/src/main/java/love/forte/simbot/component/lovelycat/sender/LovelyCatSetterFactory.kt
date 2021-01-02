@@ -19,7 +19,6 @@ package love.forte.simbot.component.lovelycat.sender
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.Sender
-import love.forte.simbot.api.sender.SenderFactory
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.api.sender.SetterFactory
 import love.forte.simbot.component.lovelycat.LovelyCatApiManager

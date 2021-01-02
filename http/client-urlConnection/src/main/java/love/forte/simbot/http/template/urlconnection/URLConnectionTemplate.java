@@ -15,8 +15,6 @@
 package love.forte.simbot.http.template.urlconnection;
 
 
-import love.forte.simbot.http.template.BaseHttpTemplate;
-
 /**
  * @author ForteScarlet
  */

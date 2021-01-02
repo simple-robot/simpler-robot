@@ -19,18 +19,12 @@ package love.forte.simbot.component.lovelycat.sender
 import love.forte.common.utils.Carrier
 import love.forte.common.utils.toCarrier
 import love.forte.simbot.api.message.assists.Flag
-import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.events.FriendAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.message.events.MessageGet
-import love.forte.simbot.api.message.results.*
 import love.forte.simbot.api.sender.ErrorSetter
-import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
-import love.forte.simbot.component.lovelycat.message.CatGroupInfo
-import love.forte.simbot.component.lovelycat.message.event.lovelyCatBotInfo
-import love.forte.simbot.component.lovelycat.message.result.*
 import java.util.concurrent.TimeUnit
 
 
