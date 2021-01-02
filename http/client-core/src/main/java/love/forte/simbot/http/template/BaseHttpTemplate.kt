@@ -74,7 +74,7 @@ public abstract class BaseHttpTemplate : HttpTemplate {
      * @param responseType 响应body封装类型。
      */
     override fun <T> post(url: String, responseType: Class<T>): HttpResponse<T> =
-        post(url = url, headers = null, requestBody = null, responseType)
+        post(url = url, headers = null, cookies = null, requestBody = null, responseType)
 
     /**
      * post/json 请求。
@@ -82,14 +82,59 @@ public abstract class BaseHttpTemplate : HttpTemplate {
      * @param headers 请求头信息。
      */
     override fun <T> post(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T> =
-        post(url = url, headers = headers, requestBody = null, responseType)
+        post(url = url, headers = headers, cookies = null, requestBody = null, responseType)
+
+    /**
+     * post/json 请求。
+     * @param responseType 响应body封装类型。
+     * @param cookies 请求cookies列表。
+     * @param headers 请求头信息。
+     */
+    override fun <T> post(
+        url: String,
+        headers: HttpHeaders?,
+        cookies: HttpCookies?,
+        responseType: Class<T>,
+    ): HttpResponse<T> =
+        post(url = url, headers = headers, cookies = cookies, requestBody = null, responseType)
+
+    /**
+     * post/json 请求。
+     * @param responseType 响应body封装类型。
+     * @param cookies 请求cookies列表。
+     * @param headers 请求头信息。
+     */
+    override fun <T> post(
+        url: String,
+        headers: HttpHeaders?,
+        cookieMap: Map<String, String>?,
+        responseType: Class<T>,
+    ): HttpResponse<T> =
+        post(url = url, headers = headers, cookies = cookieMap?.let { httpCookies(it) }, requestBody = null, responseType)
+
+    /**
+     * post/json 请求。
+     * @param responseType 响应body封装类型。
+     * @param headers 请求头信息。
+     * @param cookies 请求cookies列表。
+     * @param requestBody 请求参数，一个对象实例，或者一个json字符串。
+     */
+    override fun <T> post(
+        url: String,
+        headers: HttpHeaders?,
+        cookieMap: Map<String, String>?,
+        requestBody: Any?,
+        responseType: Class<T>,
+    ): HttpResponse<T> =
+        post(url = url, headers = headers, cookies = cookieMap?.let { httpCookies(it) }, requestBody = requestBody, responseType)
+
 
     /**
      * post/form 请求。
      * @param responseType 响应body封装类型。
      */
     override fun <T> form(url: String, responseType: Class<T>): HttpResponse<T> =
-        form(url = url, headers = null, requestForm = null, responseType)
+        form(url = url, headers = null, cookies = null, requestForm = null, responseType)
 
     /**
      * post/form 请求。
@@ -97,5 +142,52 @@ public abstract class BaseHttpTemplate : HttpTemplate {
      * @param headers 请求头信息。
      */
     override fun <T> form(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T> =
-        form(url = url, headers = headers, requestForm = null, responseType)
+        form(url = url, headers = headers, cookies = null, requestForm = null, responseType)
+
+    /**
+     * post/form 请求。
+     * @param responseType 响应body封装类型。
+     * @param cookies 请求cookies。
+     * @param headers 请求头信息。
+     */
+    override fun <T> form(
+        url: String,
+        headers: HttpHeaders?,
+        cookies: HttpCookies?,
+        responseType: Class<T>,
+    ): HttpResponse<T> =
+        form(url = url, headers = headers, cookies = cookies, requestForm = null, responseType)
+
+
+    /**
+     * post/form 请求。
+     * @param responseType 响应body封装类型。
+     * @param cookieMap 请求cookies。
+     * @param headers 请求头信息。
+     */
+    override fun <T> form(
+        url: String,
+        headers: HttpHeaders?,
+        cookieMap: Map<String, String>?,
+        responseType: Class<T>,
+    ): HttpResponse<T> =
+        form(url = url, headers = headers, cookies = cookieMap?.let { httpCookies(it) }, requestForm = null, responseType)
+
+
+    /**
+     * post/form 请求。
+     * @param responseType 响应body封装类型。
+     * @param headers 请求头信息。
+     * @param cookieMap 请求cookies。
+     * @param requestForm 请求参数，一个对象实例，此对象实例只会获取其中一层字段值作为表单提交，不会像json那样嵌套获取。如果字段对应的是一个其他的实例，则会直接获取其toString的值。
+     */
+    override fun <T> form(
+        url: String,
+        headers: HttpHeaders?,
+        cookieMap: Map<String, String>?,
+        requestForm: Map<String, Any?>?,
+        responseType: Class<T>,
+    ): HttpResponse<T> =
+        form(url = url, headers = headers, cookies = cookieMap?.let { httpCookies(it) }, requestForm = requestForm, responseType)
+
 }

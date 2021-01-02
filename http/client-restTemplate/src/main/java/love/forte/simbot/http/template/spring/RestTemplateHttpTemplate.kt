@@ -13,6 +13,7 @@
  *  *
  *
  */
+@file:JvmName("RestTemplateHttpTemplates")
 package love.forte.simbot.http.template.spring
 
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +30,22 @@ import org.springframework.web.client.RestTemplate
 import java.util.*
 import kotlin.coroutines.suspendCoroutine
 import org.springframework.http.HttpHeaders as SpringHeaders
+
+
+private fun SpringHeaders.cookies(cookies: HttpCookies?) {
+    if (cookies != null && cookies.isNotEmpty()) {
+        val cookieList: MutableList<String> = ArrayList(cookies.size)
+        val sb = StringBuilder()
+        cookies.forEach {
+            sb.append(it.name).append('=').append(it.value)
+            cookieList.add(sb.toString())
+            sb.delete(0, sb.length)
+        }
+
+        this[SpringHeaders.COOKIE] = cookieList
+    }
+}
+
 
 /**
  * 基于 [org.springframework.web.client.RestTemplate] 的 [love.forte.simbot.http.template.HttpTemplate] 实现。
@@ -52,7 +69,6 @@ class RestTemplateHttpTemplate(private val restTemplate: RestTemplate) : BaseHtt
     ): HttpResponse<T> {
         val entity: ResponseEntity<T>
         val headerEmpty = headers == null || headers.isEmpty()
-        val cookieEmpty = cookies == null || cookies.isEmpty()
 
         val headers0: HttpHeaders = if (!headerEmpty) {
             headers as HttpHeaders
@@ -63,19 +79,9 @@ class RestTemplateHttpTemplate(private val restTemplate: RestTemplate) : BaseHtt
 
         val spHeaders = SpringHeaders()
         spHeaders.putAll(headers0)
+        spHeaders.cookies(cookies)
 
-        if (!cookieEmpty) {
-            cookies as HttpCookies
-            val cookieList: MutableList<String> = ArrayList(cookies.size)
-            val sb = StringBuilder()
-            cookies.forEach {
-                sb.append(it.name).append('=').append(it.value)
-                cookieList.add(sb.toString())
-                sb.delete(0, sb.length)
-            }
 
-            spHeaders[SpringHeaders.COOKIE] = cookieList
-        }
         val requestEntity = HttpEntity<Any>(spHeaders)
 
         entity = restTemplate.exchange(url,
@@ -96,20 +102,23 @@ class RestTemplateHttpTemplate(private val restTemplate: RestTemplate) : BaseHtt
     override fun <T> post(
         url: String,
         headers: HttpHeaders?,
+        cookies: HttpCookies?,
         requestBody: Any?,
         responseType: Class<T>,
     ): HttpResponse<T> {
         val headerEmpty = headers == null || headers.isEmpty()
-        val spHeader = SpringHeaders()
-        spHeader.contentType = MediaType.APPLICATION_JSON
+        val spHeaders = SpringHeaders()
+        spHeaders.contentType = MediaType.APPLICATION_JSON
 
         if (!headerEmpty) {
             // set content type as application/json
             headers as HttpHeaders
-            spHeader.putAll(headers)
+            spHeaders.putAll(headers)
         }
+        spHeaders.cookies(cookies)
 
-        val entity = restTemplate.postForEntity(url, HttpEntity(requestBody, spHeader), responseType)
+
+        val entity = restTemplate.postForEntity(url, HttpEntity(requestBody, spHeaders), responseType)
         return RestHttpResponse(entity)
     }
 
@@ -122,21 +131,23 @@ class RestTemplateHttpTemplate(private val restTemplate: RestTemplate) : BaseHtt
     override fun <T> form(
         url: String,
         headers: HttpHeaders?,
+        cookies: HttpCookies?,
         requestForm: Map<String, Any?>?,
         responseType: Class<T>,
     ): HttpResponse<T> {
         val headerEmpty = headers == null || headers.isEmpty()
-        val spHeader = SpringHeaders()
+        val spHeaders = SpringHeaders()
         // application/x-www-form-urlencoded
-        spHeader.contentType = MediaType.APPLICATION_FORM_URLENCODED
+        spHeaders.contentType = MediaType.APPLICATION_FORM_URLENCODED
 
         if (!headerEmpty) {
             // set content type as application/json
             headers as HttpHeaders
-            spHeader.putAll(headers)
+            spHeaders.putAll(headers)
         }
+        spHeaders.cookies(cookies)
 
-        val entity = restTemplate.postForEntity(url, HttpEntity(requestForm, spHeader), responseType)
+        val entity = restTemplate.postForEntity(url, HttpEntity(requestForm, spHeaders), responseType)
         return RestHttpResponse(entity)
     }
 
@@ -208,16 +219,18 @@ private inline class Request<T>(val request: HttpRequest<T>) {
 
     val springHeaders: SpringHeaders
         get() {
-            val spHeader = SpringHeaders()
+            val spHeaders = SpringHeaders()
             media?.also {
-                spHeader.contentType = it
+                spHeaders.contentType = it
             }
             (request.headers ?: HttpHeaders.instance).also {
                 it.setUserAgentChromeIfAbsent()
-                spHeader.putAll(it)
+                spHeaders.putAll(it)
             }
 
-            return spHeader
+            spHeaders.cookies(request.cookies)
+
+            return spHeaders
         }
 
     val entity: HttpEntity<*>

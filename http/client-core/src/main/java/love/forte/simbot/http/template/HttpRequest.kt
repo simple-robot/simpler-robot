@@ -43,6 +43,11 @@ public interface HttpRequest<T> {
     val headers: HttpHeaders?
 
     /**
+     * 请求的cookies。可以为null。
+     */
+    val cookies: HttpCookies?
+
+    /**
      * 请求参数。
      * 如果不是 `post/json` 类型，则此值需要为一个 `Map<String, Any?>`。
      */
@@ -59,6 +64,7 @@ constructor(
     override val url: String,
     override val responseType: Class<T>,
     override val headers: HttpHeaders? = null,
+    override val cookies: HttpCookies? = null,
     override val requestParam: Map<String, Any?>? = null
 ) : HttpRequest<T> {
     override val type: HttpRequestType
@@ -75,6 +81,7 @@ constructor(
     override val url: String,
     override val responseType: Class<T>,
     override val headers: HttpHeaders? = null,
+    override val cookies: HttpCookies? = null,
     override val requestParam: Any? = null
 ) : HttpRequest<T> {
     override val type: HttpRequestType
@@ -90,6 +97,7 @@ constructor(
     override val url: String,
     override val responseType: Class<T>,
     override val headers: HttpHeaders? = null,
+    override val cookies: HttpCookies? = null,
     override val requestParam: Map<String, Any?>? = null
 ) : HttpRequest<T> {
     override val type: HttpRequestType

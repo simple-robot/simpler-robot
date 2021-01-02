@@ -60,15 +60,13 @@ public interface HttpTemplate {
     /**
      * get请求。
      * @param responseType 响应body封装类型。
-     * @param headers 请求头信息。
-     * @param requestParam 请求参数。
+     * @param cookies cookie信息。
      */
     fun <T> get(url: String, cookies: HttpCookies?, responseType: Class<T>): HttpResponse<T>
 
     /**
      * get请求。
      * @param responseType 响应body封装类型。
-     * @param headers 请求头信息。
      * @param requestParam 请求参数。
      */
     fun <T> get(url: String, requestParam: Map<String, Any?>?, responseType: Class<T>): HttpResponse<T>
@@ -105,10 +103,36 @@ public interface HttpTemplate {
     /**
      * post/json 请求。
      * @param responseType 响应body封装类型。
+     * @param cookies 请求cookies列表。
      * @param headers 请求头信息。
+     */
+    fun <T> post(url: String, headers: HttpHeaders?, cookies: HttpCookies?, responseType: Class<T>): HttpResponse<T>
+
+    /**
+     * post/json 请求。
+     * @param responseType 响应body封装类型。
+     * @param cookieMap 请求cookies列表。
+     * @param headers 请求头信息。
+     */
+    fun <T> post(url: String, headers: HttpHeaders?, cookieMap: Map<String, String>?, responseType: Class<T>): HttpResponse<T>
+
+    /**
+     * post/json 请求。
+     * @param responseType 响应body封装类型。
+     * @param headers 请求头信息。
+     * @param cookieMap 请求cookies列表。
      * @param requestBody 请求参数，一个对象实例，或者一个json字符串。
      */
-    fun <T> post(url: String, headers: HttpHeaders?, requestBody: Any?, responseType: Class<T>): HttpResponse<T>
+    fun <T> post(url: String, headers: HttpHeaders?, cookieMap: Map<String, String>?, requestBody: Any?, responseType: Class<T>): HttpResponse<T>
+
+    /**
+     * post/json 请求。
+     * @param responseType 响应body封装类型。
+     * @param headers 请求头信息。
+     * @param cookies 请求cookies列表。
+     * @param requestBody 请求参数，一个对象实例，或者一个json字符串。
+     */
+    fun <T> post(url: String, headers: HttpHeaders?, cookies: HttpCookies?, requestBody: Any?, responseType: Class<T>): HttpResponse<T>
 
     /**
      * post/form 请求。
@@ -126,10 +150,36 @@ public interface HttpTemplate {
     /**
      * post/form 请求。
      * @param responseType 响应body封装类型。
+     * @param cookies 请求cookies。
      * @param headers 请求头信息。
+     */
+    fun <T> form(url: String, headers: HttpHeaders?, cookies: HttpCookies?, responseType: Class<T>): HttpResponse<T>
+
+    /**
+     * post/form 请求。
+     * @param responseType 响应body封装类型。
+     * @param cookieMap 请求cookies。
+     * @param headers 请求头信息。
+     */
+    fun <T> form(url: String, headers: HttpHeaders?, cookieMap: Map<String, String>?, responseType: Class<T>): HttpResponse<T>
+
+    /**
+     * post/form 请求。
+     * @param responseType 响应body封装类型。
+     * @param headers 请求头信息。
+     * @param cookies 请求cookies。
      * @param requestForm 请求参数，一个对象实例，此对象实例只会获取其中一层字段值作为表单提交，不会像json那样嵌套获取。如果字段对应的是一个其他的实例，则会直接获取其toString的值。
      */
-    fun <T> form(url: String, headers: HttpHeaders?, requestForm: Map<String, Any?>?, responseType: Class<T>): HttpResponse<T>
+    fun <T> form(url: String, headers: HttpHeaders?, cookies: HttpCookies?, requestForm: Map<String, Any?>?, responseType: Class<T>): HttpResponse<T>
+
+    /**
+     * post/form 请求。
+     * @param responseType 响应body封装类型。
+     * @param headers 请求头信息。
+     * @param cookieMap 请求cookies。
+     * @param requestForm 请求参数，一个对象实例，此对象实例只会获取其中一层字段值作为表单提交，不会像json那样嵌套获取。如果字段对应的是一个其他的实例，则会直接获取其toString的值。
+     */
+    fun <T> form(url: String, headers: HttpHeaders?, cookieMap: Map<String, String>?, requestForm: Map<String, Any?>?, responseType: Class<T>): HttpResponse<T>
 
 
     /**

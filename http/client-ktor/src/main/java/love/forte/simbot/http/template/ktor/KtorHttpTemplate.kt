@@ -38,6 +38,36 @@ private val APPLICATION_JSON = ContentType("application", "json")
 private val APPLICATION_FORM_URLENCODED = ContentType("application", "x-www-form-urlencoded")
 
 
+private fun HttpRequestBuilder.appendCookies(cookies: HttpCookies?) {
+    val appendCookies: String? = cookies?.takeIf { it.isNotEmpty() }
+        ?.asSequence()
+        ?.map { "${it.name}=${it.value}" }
+        ?.plus(cookies().asSequence().map { "${it.name}=${it.value}" })
+        ?.joinToString("; ")
+
+    if (appendCookies != null) {
+        headers {
+            append(io.ktor.http.HttpHeaders.Cookie, appendCookies)
+        }
+    }
+}
+
+
+private fun HttpRequestBuilder.body(requestBody: Any?, jsonSerializerFactory: JsonSerializerFactory) {
+    requestBody?.let {
+        when (it) {
+            is List<*> -> jsonSerializerFactory.getJsonSerializer<Any>(List::class.java)
+            is Set<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Set::class.java)
+            is Map<*, *> -> jsonSerializerFactory.getJsonSerializer<Any>(Map::class.java)
+            is Collection<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Collection::class.java)
+            else -> jsonSerializerFactory.getJsonSerializer(it.javaClass)
+        }?.apply {
+            body = toJson(it)
+        }
+    }
+}
+
+
 /**
  *
  * 基于 ktor cio client 的 http 请求模板。
@@ -49,7 +79,7 @@ public class KtorHttpTemplate
 constructor(
     private val client: HttpClient = HttpClient(),
     private val jsonSerializerFactory: JsonSerializerFactory
-) : HttpTemplate {
+) : BaseHttpTemplate() {
 
 
     @Suppress("UNCHECKED_CAST")
@@ -61,47 +91,6 @@ constructor(
             KtorHttpResponseImpl(this) { jsonSerializer.fromJson(it) }
         }
     }
-
-    /**
-     * ktor get请求。
-     */
-    override fun <T> get(url: String, responseType: Class<T>): HttpResponse<T> =
-        get(url, null, cookies = null, null, responseType)
-
-    /**
-     * ktor get请求。
-     */
-    override fun <T> get(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T> =
-        get(url, headers, cookies = null, null, responseType)
-
-
-    /**
-     * ktor get请求。
-     */
-    override fun <T> get(url: String, cookies: HttpCookies?, responseType: Class<T>): HttpResponse<T> =
-        get(url, null, cookies, null, responseType)
-
-
-    /**
-     * ktor get请求。
-     */
-    override fun <T> get(url: String, requestParam: Map<String, Any?>?, responseType: Class<T>): HttpResponse<T> =
-        get(url, null, cookies = null, requestParam, responseType)
-
-    /**
-     * get请求。
-     * @param responseType 响应body封装类型。
-     * @param headers 请求头信息。
-     * @param requestParam 请求参数。
-     */
-    override fun <T> get(
-        url: String,
-        headers: HttpHeaders?,
-        cookieMap: Map<String, String>?,
-        requestParam: Map<String, Any?>?,
-        responseType: Class<T>
-    ): HttpResponse<T> =
-        get(url, headers, cookieMap?.let { httpCookies(it) }, requestParam, responseType)
 
     /**
      * get请求。
@@ -132,18 +121,8 @@ constructor(
                 }
             }
 
-            val appendCookies: String? = cookies?.takeIf { it.isNotEmpty() }
-                ?.asSequence()
-                ?.map { "${it.name}=${it.value}" }
-                ?.plus(cookies().asSequence().map { "${it.name}=${it.value}" })
-                ?.joinToString("; ")
-
-            if (appendCookies != null) {
-                headers {
-                    append(io.ktor.http.HttpHeaders.Cookie, appendCookies)
-                }
-            }
-
+            // append cookies
+            appendCookies(cookies)
 
             requestParam?.forEach { (k, v) ->
                 parameter(k, v)
@@ -153,15 +132,11 @@ constructor(
     }
 
 
-    override fun <T> post(url: String, responseType: Class<T>): HttpResponse<T> =
-        post(url, null, null, responseType)
-
-    override fun <T> post(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T> =
-        post(url, headers, null, responseType)
 
     override fun <T> post(
         url: String,
         headers: HttpHeaders?,
+        cookies: HttpCookies?,
         requestBody: Any?,
         responseType: Class<T>
     ): HttpResponse<T> = runBlocking {
@@ -172,32 +147,34 @@ constructor(
             if (contentType() == null) {
                 contentType(APPLICATION_JSON)
             }
-            requestBody?.let {
-                when (it) {
-                    is List<*> -> jsonSerializerFactory.getJsonSerializer<Any>(List::class.java)
-                    is Set<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Set::class.java)
-                    is Map<*, *> -> jsonSerializerFactory.getJsonSerializer<Any>(Map::class.java)
-                    is Collection<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Collection::class.java)
-                    else -> jsonSerializerFactory.getJsonSerializer(it.javaClass)
-                }?.apply {
-                    body = toJson(it)
-                }
-            }
+
+            // append cookies
+            appendCookies(cookies)
+
+            // set body
+            body(requestBody, jsonSerializerFactory)
+            // requestBody?.let {
+            //     when (it) {
+            //         is List<*> -> jsonSerializerFactory.getJsonSerializer<Any>(List::class.java)
+            //         is Set<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Set::class.java)
+            //         is Map<*, *> -> jsonSerializerFactory.getJsonSerializer<Any>(Map::class.java)
+            //         is Collection<*> -> jsonSerializerFactory.getJsonSerializer<Any>(Collection::class.java)
+            //         else -> jsonSerializerFactory.getJsonSerializer(it.javaClass)
+            //     }?.apply {
+            //         body = toJson(it)
+            //     }
+            // }
         }
 
 
         response.toResponse(responseType)
     }
 
-    override fun <T> form(url: String, responseType: Class<T>): HttpResponse<T> =
-        form(url, null, null, responseType)
-
-    override fun <T> form(url: String, headers: HttpHeaders?, responseType: Class<T>): HttpResponse<T> =
-        form(url, headers, null, responseType)
 
     override fun <T> form(
         url: String,
         headers: HttpHeaders?,
+        cookies: HttpCookies?,
         requestForm: Map<String, Any?>?,
         responseType: Class<T>
     ): HttpResponse<T> = runBlocking {
@@ -210,10 +187,12 @@ constructor(
             if (contentType() == null) {
                 contentType(APPLICATION_FORM_URLENCODED)
             }
-            requestForm?.also {
-                it.forEach { (k, v) ->
-                    parameter(k, v)
-                }
+
+            // append cookies
+            appendCookies(cookies)
+
+            requestForm?.onEach { (k, v) ->
+                parameter(k, v)
             }
         }
 
@@ -230,13 +209,14 @@ constructor(
     override fun <T> request(request: HttpRequest<T>): HttpResponse<T> {
         val url = request.url
         val headers = request.headers
+        val cookies = request.cookies
         val params = request.requestParam
         val responseType = request.responseType
 
         return when (request.type) {
-            HttpRequestType.GET -> get(url, headers, cookies = null, params as? Map<String, Any?>, responseType)
-            HttpRequestType.FORM -> form(url, headers, params as? Map<String, Any?>, responseType)
-            HttpRequestType.POST -> post(url, headers, params, responseType)
+            HttpRequestType.GET -> get(url, headers, cookies, params as? Map<String, Any?>, responseType)
+            HttpRequestType.FORM -> form(url, headers, cookies, params as? Map<String, Any?>, responseType)
+            HttpRequestType.POST -> post(url, headers, cookies, params, responseType)
         }
     }
 
