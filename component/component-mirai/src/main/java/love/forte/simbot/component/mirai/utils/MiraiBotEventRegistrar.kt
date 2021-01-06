@@ -38,6 +38,14 @@ private fun <M : MsgGet> M.onMsg(msgProcessor: MsgGetProcessor) = msgProcessor.o
 @ComponentBeans
 public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
 
+    @Volatile
+    var started: Boolean = false
+    private set
+
+    public fun started() {
+        started = true
+    }
+
     private val logger: Logger = LoggerFactory.getLogger(MiraiBotEventRegistrar::class.java)
 
 

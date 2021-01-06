@@ -15,6 +15,8 @@
 package love.forte.simbot.component.mirai
 
 import kotlinx.coroutines.runBlocking
+import love.forte.common.ioc.DependCenter
+import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.sender.BotSender
@@ -25,8 +27,10 @@ import love.forte.simbot.bot.BotRegisterInfo
 import love.forte.simbot.bot.BotVerifier
 import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
 import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
+import love.forte.simbot.component.mirai.utils.MiraiBotEventRegistrar
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.http.template.HttpTemplate
+import love.forte.simbot.listener.MsgGetProcessor
 import net.mamoe.mirai.BotFactory
 import net.mamoe.mirai.alsoLogin
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
@@ -38,7 +42,9 @@ import net.mamoe.mirai.Bot as MBot
 public class MiraiBotVerifier(
     private val configurationFactory: MiraiBotConfigurationFactory,
     private val miraiConfiguration: MiraiConfiguration,
-    private val httpTemplate: HttpTemplate
+    private val httpTemplate: HttpTemplate,
+    private val miraiBotEventRegistrar: MiraiBotEventRegistrar,
+    private val dependCenter: DependCenter
 ) : BotVerifier {
     private companion object : TypedCompLogger(MiraiBotVerifier::class.java)
 
@@ -72,6 +78,12 @@ public class MiraiBotVerifier(
             val botContainer = BotContainer { MiraiBotInfo(mBot, httpTemplate) }
 
             val sender = msgSenderFactories.toBotSender(botContainer)
+
+            // if started
+            if (miraiBotEventRegistrar.started) {
+                val msgGetProcessor = dependCenter[MsgGetProcessor::class.java]
+                miraiBotEventRegistrar.registerSimbotEvents(mBot, msgGetProcessor)
+            }
 
             return MiraiBot(mBot, sender, botContainer.botInfo)
         }.getOrElse {

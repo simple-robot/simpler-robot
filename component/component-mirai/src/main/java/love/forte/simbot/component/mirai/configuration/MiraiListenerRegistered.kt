@@ -55,6 +55,8 @@ public class MiraiListenerRegistered : ListenerRegistered {
         // 注册Mirai的所有bot事件。
         Bot.instancesSequence.forEach { miraiBotEventRegistrar.registerSimbotEvents(it, msgGetProcessor) }
 
+        miraiBotEventRegistrar.started()
+
         val botAliveThread = BotAliveThread("mirai-bot-alive", daemon).apply { start() }
 
         // 注册一个 钩子来关闭所有的bot。
