@@ -39,7 +39,7 @@ public interface ListenerContext : Context<ContextMap> {
         get() = contextMap
 
     /**
-     * 从 global 中获取信息。
+     * 从 `global` 中获取信息。
      */
     @JvmDefault
     fun global(key: String): Any? {
@@ -47,11 +47,27 @@ public interface ListenerContext : Context<ContextMap> {
     }
 
     /**
-     * 从 instant 中获取信息。
+     * 从 `instant` 中获取信息。
      */
     @JvmDefault
     fun instant(key: String): Any? {
         return contextMap.instant[key]
+    }
+
+    /**
+     * 向 `global` 中设置信息。
+     */
+    @JvmDefault
+    fun global(key: String, value: Any): Any? {
+        return contextMap.global.put(key, value)
+    }
+
+    /**
+     * 向 `instant` 中设置信息。
+     */
+    @JvmDefault
+    fun instant(key: String, value: Any): Any? {
+        return contextMap.instant.put(key, value)
     }
 
 }
