@@ -21,6 +21,7 @@ import java.lang.annotation.*;
 
 /**
  * 监听函数过滤器。以注解的形式对监听函数进行匹配与过滤。
+ *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Retention(RetentionPolicy.RUNTIME)    //注解会在class字节码文件中存在，在运行时可以通过反射获取到
@@ -34,12 +35,22 @@ public @interface Filters {
     Filter[] value() default {};
 
     /**
+     * 定义参见 {@link Filter#target()}.
+     *
+     * @return 匹配目标。
+     * @see Filter#target()
+     */
+    String target() default "";
+
+
+    /**
      * {@link #value()} 的多项匹配规则，默认为任意匹配。
      */
     MostMatchType mostMatchType() default MostMatchType.ANY;
 
     /**
      * 此处为自定义过滤器的列表。
+     *
      * @see ListenerFilter
      */
     String[] customFilter() default {};
@@ -88,8 +99,6 @@ public @interface Filters {
      * 如果 {@link #anyAt()} 为true则失效。
      */
     String[] at() default {};
-
-
 
 
 }

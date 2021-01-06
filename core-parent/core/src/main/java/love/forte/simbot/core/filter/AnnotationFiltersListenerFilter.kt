@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -88,6 +88,7 @@ public interface AnnotationFiltersListenerFilter : ListenerFilter {
 public class AnnotationFiltersListenerFilterImpl(
     filters: Filters,
     filterManager: FilterManager,
+    filterTargetManager: FilterTargetManager,
 ) : AnnotationFiltersListenerFilter {
 
     /**
@@ -97,7 +98,7 @@ public class AnnotationFiltersListenerFilterImpl(
         filters.value.run {
             if (isEmpty()) emptyList()
             else map {
-                AnnotationFilterListenerFilterImpl(it, filters)
+                AnnotationFilterListenerFilterImpl(it, filters, filterTargetManager)
             }
         }
 
@@ -345,9 +346,19 @@ public interface AnnotationFilterListenerFilter : ListenerFilter {
     val keyword: Keyword?
 
     /**
+     * 过滤器的目标处理器。
+     */
+    val filterTargetProcessor: FilterTargetProcessor
+
+    /**
      * 匹配模式。
      */
     val matchType: MatchType
+
+    /**
+     * 此过滤器的过滤目标。
+     */
+    val target: String
 
     /**
      * 匹配这段消息的账号列表。
@@ -382,6 +393,7 @@ public interface AnnotationFilterListenerFilter : ListenerFilter {
  */
 public class AnnotationFilterListenerFilterImpl(
     filter: Filter, filters: Filters,
+    filterTargetManager: FilterTargetManager,
 ) : AnnotationFilterListenerFilter {
 
     /**
@@ -391,10 +403,27 @@ public class AnnotationFilterListenerFilterImpl(
         if (isBlank()) null else TextKeyword(this)
     }
 
+
     /**
      * 文本匹配模式。
      */
     override val matchType: MatchType = filter.matchType
+
+
+    /**
+     * 过滤目标。
+     */
+    override val target: String = with(filter.target) {
+        (if (isEmpty() && filter.targetByParent) {
+            filters.target
+        } else this).takeIf { it.isNotEmpty() } ?: FilterTargets.TEXT
+    }
+
+
+    /**
+     * 过滤器的目标处理器。
+     */
+    override val filterTargetProcessor: FilterTargetProcessor = filterTargetManager.getProcessor(target)
 
 
     /**
@@ -532,17 +561,22 @@ public class AnnotationFilterListenerFilterImpl(
 
         // 5 msg matches
 
+
         // no msg. return true.
         // 如果是empty msg, 说明当前监听消息不支持文本匹配, 则不进行keyword匹配。
         if (msg.isEmptyMsg()) {
             return true
         }
 
+
         return if (keyword == null) {
             true
         } else {
             // 如果text为null，则认为其无法进行文本匹配，直接放行。
-            val msgText: String = msg.text?.let(textPre) ?: let {
+            // val msgText: String = msg.text?.let(textPre) ?: let {
+
+            val msgText: String = filterTargetProcessor.getTargetText(data)
+                ?.let(textPre) ?: let {
                 return if (msg is MessageGet) {
                     // 如果是messageGet实例，理论上text不应该为null。
                     // 此时将text视为空字符串进行匹配。

@@ -20,9 +20,9 @@ import love.forte.simbot.filter.*
 import java.util.concurrent.ConcurrentHashMap
 
 
-/**
- * 恒定返回false的 [AtDetection] 实例。
- */
+// /**
+//  * 恒定返回false的 [love.forte.simbot.filter.AtDetection] 实例。
+//  */
 // internal val ConstantFalseAtDetection: AtDetection = AtDetection { false }
 
 
@@ -32,7 +32,9 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class CoreFilterManager : FilterManager {
+public class CoreFilterManager(
+    private val filterTargetManager: FilterTargetManager
+) : FilterManager {
 
     /**
      * 全部的自定义过滤器列表。
@@ -62,7 +64,7 @@ public class CoreFilterManager : FilterManager {
      * 通过注解构建一个 [过滤器][ListenerFilter]
      */
     override fun getFilter(filters: Filters): ListenerFilter {
-        return AnnotationFiltersListenerFilterImpl(filters, this)
+        return AnnotationFiltersListenerFilterImpl(filters, this, filterTargetManager)
     }
 
 
@@ -124,7 +126,7 @@ internal operator fun AtDetectionFactory.invoke(msg: MsgGet): AtDetection = this
 /**
  * [FilterManagerBuilder] 默认实现。
  */
-public class CoreFilterManagerBuilder : FilterManagerBuilder {
+public class CoreFilterManagerBuilder(private val filterTargetManager: FilterTargetManager) : FilterManagerBuilder {
 
     data class Filter(val name: String, val filter: ListenerFilter)
 
@@ -142,7 +144,7 @@ public class CoreFilterManagerBuilder : FilterManagerBuilder {
      * 构建一个manager
      */
     override fun build(): FilterManager {
-        val filterManager = CoreFilterManager()
+        val filterManager = CoreFilterManager(filterTargetManager)
         val filters = this.filters
         this.filters = mutableListOf()
 

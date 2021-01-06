@@ -18,6 +18,7 @@ import love.forte.common.ioc.DependBeanFactory
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.core.filter.CoreFilterManagerBuilder
+import love.forte.simbot.core.filter.CoreFilterTargetManager
 import love.forte.simbot.filter.*
 
 /**
@@ -39,8 +40,16 @@ public class CoreFilterConfiguration {
      * filter manager 构建器。
      */
     @CoreBeans("coreFilterManagerBuilder")
-    fun coreFilterManagerBuilder(): FilterManagerBuilder = CoreFilterManagerBuilder()
+    fun coreFilterManagerBuilder(filterTargetManager: FilterTargetManager): FilterManagerBuilder = CoreFilterManagerBuilder(filterTargetManager)
 
+    /**
+     * [FilterTargetManager] 实例。
+     */
+    @CoreBeans("coreFilterTargetManager")
+    fun coreFilterTargetManager(): FilterTargetManager = CoreFilterTargetManager().apply {
+        // add all default checkers
+        checkers.addAll(defaultProcessorChecker)
+    }
 
     /**
      * filter manager. 通过构建器创建。
