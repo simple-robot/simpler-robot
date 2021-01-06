@@ -34,21 +34,6 @@ public interface LovelyCatLogin : LovelyCatMsg  {
     val botJsonInfo: String
 }
 
-// public data class LoginDataMapping(
-//     val robWxid: String,
-//     val robName: String,
-//     val type: Int,
-//     val msg: String
-// ) : BaseLovelyCatMsg.LovelyCatDataMapping<LovelyCatEventLogin>() {
-//     override fun mapTo(
-//         originalData: String,
-//         api: LovelyCatApiTemplate?,
-//         jsonSerializerFactory: JsonSerializerFactory
-//     ): LovelyCatEventLogin {
-//         return LovelyCatEventLogin(robWxid, robName, type, msg, originalData, api)
-//     }
-// }
-
 
 /**
  * 新的账号登录成功/下线时。
