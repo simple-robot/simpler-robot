@@ -17,8 +17,8 @@
     <modules>
         <module>client-core</module>
         <module>client-ktor</module>
-        <module>client-urlConnection</module>
         <module>client-restTemplate</module>
+        <module>client-urlConnection</module>
     </modules>
 
     <properties>
