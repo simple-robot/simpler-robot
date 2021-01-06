@@ -24,7 +24,7 @@ import love.forte.simbot.api.message.events.*
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(PrivateMsg::class)
 @AnnotateMapping(value = Listen::class)
@@ -36,7 +36,7 @@ public annotation class OnPrivate
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMsg::class)
 @AnnotateMapping(value = Listen::class)
@@ -48,7 +48,7 @@ public annotation class OnGroup
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMemberPermissionChanged::class)
 @AnnotateMapping(value = Listen::class)
@@ -59,7 +59,7 @@ public annotation class OnGroupMemberPermissionChanged
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupNameChanged::class)
 @AnnotateMapping(value = Listen::class)
@@ -70,7 +70,7 @@ public annotation class OnGroupNameChanged
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMemberRemarkChanged::class)
 @AnnotateMapping(value = Listen::class)
@@ -81,7 +81,7 @@ public annotation class OnGroupMemberRemarkChanged
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMemberSpecialChanged::class)
 @AnnotateMapping(value = Listen::class)
@@ -92,7 +92,7 @@ public annotation class OnGroupMemberSpecialChanged
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(FriendNicknameChanged::class)
 @AnnotateMapping(value = Listen::class)
@@ -103,7 +103,7 @@ public annotation class OnFriendNicknameChanged
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(FriendAvatarChanged::class)
 @AnnotateMapping(value = Listen::class)
@@ -114,7 +114,7 @@ public annotation class OnFriendAvatarChanged
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(FriendIncrease::class)
 @AnnotateMapping(value = Listen::class)
@@ -125,7 +125,7 @@ public annotation class OnFriendIncrease
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMemberIncrease::class)
 @AnnotateMapping(value = Listen::class)
@@ -136,7 +136,7 @@ public annotation class OnGroupMemberIncrease
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(PrivateMsgRecall::class)
 @AnnotateMapping(value = Listen::class)
@@ -147,7 +147,7 @@ public annotation class OnPrivateMsgRecall
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMsgRecall::class)
 @AnnotateMapping(value = Listen::class)
@@ -158,7 +158,7 @@ public annotation class OnGroupMsgRecall
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMemberReduce::class)
 @AnnotateMapping(value = Listen::class)
@@ -170,7 +170,7 @@ public annotation class OnGroupReduce
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMemberReduce::class)
 @AnnotateMapping(value = Listen::class)
@@ -181,7 +181,7 @@ public annotation class OnGroupMemberReduce
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(FriendReduce::class)
 @AnnotateMapping(value = Listen::class)
@@ -193,7 +193,7 @@ public annotation class OnFriendReduce
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(FriendAddRequest::class)
 @AnnotateMapping(value = Listen::class)
@@ -205,7 +205,7 @@ public annotation class OnFriendAddRequest
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupAddRequest::class)
 @AnnotateMapping(value = Listen::class)
@@ -217,7 +217,7 @@ public annotation class OnGroupAddRequest
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMute::class)
 @AnnotateMapping(value = Listen::class)

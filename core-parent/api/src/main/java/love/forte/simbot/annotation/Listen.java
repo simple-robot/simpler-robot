@@ -18,10 +18,7 @@ package love.forte.simbot.annotation;
 import love.forte.simbot.api.message.containers.*;
 import love.forte.simbot.api.message.events.*;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Repeatable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.*;
 
 /**
  * <p>监听的类型。一般来讲是一个接口类型。</p>
@@ -144,7 +141,7 @@ import java.lang.annotation.RetentionPolicy;
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-// @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
+@Target({ElementType.METHOD, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Documented
 @Repeatable(Listens.class)
 public @interface Listen {
