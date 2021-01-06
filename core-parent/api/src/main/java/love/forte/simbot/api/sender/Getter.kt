@@ -102,7 +102,7 @@ public interface Getter : BotContainer {
     @JvmDefault
     fun getGroupInfo(group: GroupCodeContainer): GroupFullInfo = getGroupInfo(group.groupCode)
     @JvmDefault
-    fun getGroupInfo(group: GroupContainer): GroupFullInfo = getGroupInfo(group)
+    fun getGroupInfo(group: GroupContainer): GroupFullInfo = getGroupInfo(group.groupInfo)
 
 
     /**
