@@ -347,5 +347,24 @@ simbot.core.tips.enable=true
 simbot.core.tips.resource=GITHUB
 # 是否展示启动时的logo。默认开启。
 simbot.core.logo.enable=true
-
 ```
+
+### 新模块
+- [http-client-restTemplate](./http/client-restTemplate) 使用spring-web的`restTemplate`的http客户端模块，适用于在整合springboot的时候减少项目环境中的额外依赖。
+- [serialization-json-jackson](./serialization/json-jackson) 使用jackson的json序列化模块。一般可用作在整合springboot的时候减少项目环境中的额外依赖。
+
+
+
+### 新实现
+- [#29](https://github.com/ForteScarlet/simpler-robot/issues/29) `@Filter` 和 `@Filters` 提供了一个 `target` 参数以允许使用其他的过滤目标。
+  例如`text`则使用`MsgGet.getText`进行过滤，而`msg`则使用`MessageGet.getMsg`进行过滤。
+  可以通过操作 `love.forte.simbot.filter.FilterTargetManager` 类的实例来实现追加、移除解析器。
+  提供了一个 `FilterTargets` 常量类来降低一些target目标手写的出错概率。
+  具体描述可参考 `love.forte.simbot.annotation.Filter#target` 的文档注释或等待文档相关章节的更新。
+
+- [#33](https://github.com/ForteScarlet/simpler-robot/issues/33) 现在 `@Listens`、`@Listen` 和对应的模板注解允许标记在类上。
+
+### fix
+- 自定义Filter无法被使用
+- [#34](https://github.com/ForteScarlet/simpler-robot/issues/34) mirai组件下动态注册的bot无法触发监听
+- [#35](https://github.com/ForteScarlet/simpler-robot/issues/35) 可爱猫组件获取群信息异常

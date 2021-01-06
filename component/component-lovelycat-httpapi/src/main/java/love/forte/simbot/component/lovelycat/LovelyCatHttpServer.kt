@@ -121,33 +121,42 @@ public class LovelyCatKtorHttpServer(
             routing {
                 // listen path.
                 post(path) {
-                    val originalData = call.receive<String>()
+                    try {
+                        val originalData = call.receive<String>()
 
-                    val params = mapSerializer.fromJson(originalData)
 
-                    val eventType = params["Event"]?.toString()
+                        val params = mapSerializer.fromJson(originalData)
 
-                    println("eventType: $eventType")
+                        val eventType = params["Event"]?.toString()
 
-                    if (eventType == null) {
-                        // 404. no event.
-                        call.response.status(HttpStatusCode.NotFound)
-                        call.respondText { "param 'Event' not found: Event is Empty." }
-                    } else {
+                        log.debug("On event request. type: $eventType, originalData: $originalData")
 
-                        val botId = (params["robot_wxid"] ?: params["rob_wxid"])?.toString()
-                            ?: throw NoSuchBotException("no param 'robot_wxid' or 'rob_wxid' in lovelycat request param.")
+                        if (eventType == null) {
+                            // 404. no event.
+                            call.respond(HttpStatusCode.NotFound) { "param 'Event' not found: Event is Empty." }
+                        } else {
 
-                        val api = apiManager[botId] ?: throw IllegalStateException("cannot found Bot($botId)'s api template.")
+                            val botId = (params["robot_wxid"] ?: params["rob_wxid"])?.toString()
+                                ?: throw NoSuchBotException("no param 'robot_wxid' or 'rob_wxid' in lovelycat request param.")
 
-                        val parse = lovelyCatParser.parse(eventType, originalData, api, jsonSerializerFactory, params)
+                            val api = apiManager[botId] ?: throw IllegalStateException("cannot found Bot($botId)'s api template.")
 
-                        if (parse != null) {
-                            msgGetProcessor.onMsg(parse)
+                            try {
+                                val parse = lovelyCatParser.parse(eventType, originalData, api, jsonSerializerFactory, params)
+                                if (parse != null) {
+                                    msgGetProcessor.onMsg(parse)
+                                }
+                                // ok status.
+                                call.respond(HttpStatusCode.OK)
+                            } catch (e: Exception) {
+                                call.respond(HttpStatusCode.InternalServerError, e.toString())
+                                log.error("Parse event instance failed by originalData: $originalData", e)
+                            }
+
                         }
-
-                        // ok status.
-                        call.response.status(HttpStatusCode.OK)
+                    } catch (ex: Exception) {
+                        call.respond(HttpStatusCode.InternalServerError, ex.toString())
+                        log.error("Internal server error.", ex)
                     }
                 }
 
@@ -157,6 +166,7 @@ public class LovelyCatKtorHttpServer(
                     }
 
                 }
+
 
             }
         }

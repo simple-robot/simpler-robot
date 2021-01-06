@@ -35,4 +35,6 @@ public class LovelyCatGroupMemberList(
         LovelyCatGroupMemberInfo(it, groupInfo)
     }
 
+    override fun toString(): String = originalData
+
 }

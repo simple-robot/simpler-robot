@@ -133,7 +133,7 @@ public class LovelyCatMessageContentBuilder : MessageContentBuilder {
 
     /** 得到当前构建的消息。 */
     override fun build(): MessageContent {
-        println(atOrEmpty)
+        // println(atOrEmpty)
         return LovelyCatForSendMessageContent(
             sbOrEmpty,
             imgOrEmpty,

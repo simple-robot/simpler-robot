@@ -32,6 +32,9 @@ public class LovelyCatGroupFullInfo(
     override val total: Int
 ): GroupFullInfo, GroupInfo by catGroupInfo {
 
+    override fun toString(): String = catGroupInfo.toString()
+
+
     /**
      * 无法获取群人数上限。但是似乎微信群固定人数为500， 因此使用 `500` 。
      */

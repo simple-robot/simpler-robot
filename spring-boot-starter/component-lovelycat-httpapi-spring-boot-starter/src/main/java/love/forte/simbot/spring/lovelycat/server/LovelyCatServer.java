@@ -75,8 +75,8 @@ public class LovelyCatServer {
 
         String originalJson = jsonMapSerializer.toJson(params);
 
-        System.out.println(params);
-        System.out.println(originalJson);
+        // System.out.println(params);
+        // System.out.println(originalJson);
         lovelyCatParser.parse(eventStr, originalJson, api, jsonSerializerFactory, params);
         return Collections.singletonMap("code", 200);
     }

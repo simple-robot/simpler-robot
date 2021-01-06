@@ -19,10 +19,7 @@ import love.forte.common.ioc.annotation.Depend
 import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.convert.ConverterManager
 import love.forte.simbot.LogAble
-import love.forte.simbot.annotation.FilterValue
-import love.forte.simbot.annotation.Filters
-import love.forte.simbot.annotation.ListenBreak
-import love.forte.simbot.annotation.Listens
+import love.forte.simbot.annotation.*
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.filter.*
 import love.forte.simbot.listener.*
@@ -67,6 +64,12 @@ public class MethodListenerFunction(
      */
     private val filtersAnnotation: Filters?
 
+    /**
+     * 此函数是否属于一个 **备用函数**.
+     *
+     * @see love.forte.simbot.annotation.SpareListen
+     */
+    override val spare: Boolean
 
     /**
      * 此监听函数上的 [ListenBreak] 注解。如果有的话。
@@ -96,40 +99,28 @@ public class MethodListenerFunction(
      */
     private val listenAnnotationFilter: ListenerFilter?
 
-    /**
-     * 自定义注解列表。
-     */
-    private val customFilter: List<ListenerFilter>
 
     /**
      * 此监听函数对应的监听器列表。
      */
     override val filters: List<ListenerFilter>
-        get() = (listenAnnotationFilter?.let { mutableListOf(it) } ?: mutableListOf()).apply {
-            if (customFilter.isNotEmpty()) {
-                addAll(customFilter)
-            }
-        }
+        get() = (listenAnnotationFilter?.let { listOf(it) } ?: emptyList())
 
 
     /**
      * 执行过滤。
      */
-    private fun doFilter(msgGet: MsgGet,
-                         atDetection: AtDetection,
-                         listenerContext: ListenerContext): Boolean {
-        if (listenAnnotationFilter == null && customFilter.isEmpty()) {
+    private fun doFilter(
+        msgGet: MsgGet,
+        atDetection: AtDetection,
+        listenerContext: ListenerContext
+    ): Boolean {
+        if (listenAnnotationFilter == null) {
             return true
         }
 
         val data = FilterData(msgGet, atDetection, listenerContext, this)
-        val af = listenAnnotationFilter?.test(data) ?: true
-        return if (!af) {
-            false
-        } else {
-            // 有一个false就终止
-            !customFilter.any { !it.test(data) }
-        }
+        return listenAnnotationFilter.test(data)
     }
 
 
@@ -158,19 +149,25 @@ public class MethodListenerFunction(
         // private val listenerContextType = ListenerContext::class.java
         // private val botType = Bot::class.java
 
-        private val ListensType = Listens::class.java
-        private val FiltersType = Filters::class.java
-        private val ListenBreakType = ListenBreak::class.java
+        private inline val ListensType get() = Listens::class.java
+        private inline val FiltersType get() = Filters::class.java
+        private inline val ListenBreakType get() = ListenBreak::class.java
+        private inline val SpareListenType get() = SpareListen::class.java
         // private val MsgGetType = MsgGet::class.java
     }
 
     init {
         // 监听注解
         listensAnnotation = AnnotationUtil.getAnnotation(method, ListensType)
+            ?: AnnotationUtil.getAnnotation(method.declaringClass, ListensType)
             ?: throw IllegalStateException("cannot found annotation '@Listens' in method $method")
 
         // 过滤注解
         filtersAnnotation = AnnotationUtil.getAnnotation(method, FiltersType)
+
+        // 判断是否存在@Spare注解
+        spare = AnnotationUtil.containsAnnotation(method, SpareListenType)
+
 
         listenBreakAnnotation = AnnotationUtil.getAnnotation(method, ListenBreakType)
 
@@ -190,13 +187,14 @@ public class MethodListenerFunction(
                 filterManager.getFilter(it)
             }
 
-            // 自定义过滤器列表
-            customFilter = filtersAnnotation.customFilter.map {
-                filterManager.getFilter(it) ?: throw NoSuchFilterException(it)
-            }.sortedBy { it.priority }
+            // // 自定义过滤器列表
+            // customFilter = filtersAnnotation.customFilter.map {
+            //     filterManager.getFilter(it) ?: throw NoSuchFilterException(it)
+            // }.sortedBy { it.priority }
+
+
         } else {
             listenAnnotationFilter = null
-            customFilter = emptyList()
 
         }
 

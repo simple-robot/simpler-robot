@@ -14,6 +14,7 @@
 
 package love.forte.simbot.core.configuration
 
+import jdk.nashorn.internal.ir.annotations.Ignore
 import love.forte.common.ioc.DependBeanFactory
 import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.Depend
@@ -77,7 +78,8 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
             runCatching {
                 dependBeanFactory.getType(beanName)
             }.getOrElse { e ->
-                logger.warn("Can not get type from depend '{}'. This may be an environmental issue or a class loader issue.", beanName)
+                logger.warn("Can not get type from depend '{}'. This may be an environmental issue or a class loader issue.",
+                    beanName)
                 logger.warn("The scan of the listener function for '{}' will be ignored.", beanName)
                 logger.debug("Get type from depend '$beanName' failed.", e)
                 null
@@ -85,7 +87,9 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
         }.distinct().flatMap {
             // 只获取public方法
             it.methods.asSequence().filter { m ->
-                AnnotationUtil.containsAnnotation(m, Listens::class.java)
+                AnnotationUtil.containsAnnotation(m.declaringClass, Listens::class.java) ||
+                        (!AnnotationUtil.containsAnnotation(m, Ignore::class.java) &&
+                                AnnotationUtil.containsAnnotation(m, Listens::class.java))
             }
         }.map {
             MethodListenerFunction(it, dependBeanFactory, filterManager, converterManager, listenerResultFactory)
@@ -98,6 +102,8 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                 it.id
             )
         }
+
+        AnnotationUtil.cleanCache()
 
         logger.info("Method listeners Registration is complete.")
 

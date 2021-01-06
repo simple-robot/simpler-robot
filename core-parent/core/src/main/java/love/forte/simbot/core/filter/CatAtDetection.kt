@@ -65,7 +65,6 @@ private data class CatAtDetection(private val messageContent: MessageContent, pr
 
 
     override fun atBot(): Boolean {
-        println("botCode: $botCode")
         return cats.any { neko -> neko.type == "at" && neko["code"] == botCode }
     }
 

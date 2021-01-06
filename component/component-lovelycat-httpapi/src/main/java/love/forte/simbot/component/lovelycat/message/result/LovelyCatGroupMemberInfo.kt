@@ -30,6 +30,8 @@ public class LovelyCatGroupMemberInfo(
     private val catGroupInfo: CatGroupInfo
 ) : GroupMemberInfo {
 
+
+
     /**
      * 无法断定群员权限，因此全部定义为 **群员**。
      */
@@ -43,6 +45,10 @@ public class LovelyCatGroupMemberInfo(
 
     override val originalData: String
         get() = catAccountInfo.toString()
+
+    override fun toString(): String {
+        return "LovelyCatGroupMemberInfo(permission=$permission, accountInfo=$accountInfo, groupInfo=$groupInfo)"
+    }
 
 
 }

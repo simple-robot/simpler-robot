@@ -15,20 +15,56 @@
 package love.forte.test.listener;
 
 import love.forte.common.ioc.annotation.Beans;
-import love.forte.simbot.annotation.OnPrivate;
+import love.forte.simbot.annotation.*;
 import love.forte.simbot.api.message.events.PrivateMsg;
 import love.forte.simbot.api.sender.MsgSender;
+import love.forte.simbot.bot.BotManager;
+import love.forte.simbot.bot.BotRegisterInfo;
+import love.forte.simbot.filter.FilterTargets;
+import love.forte.simbot.listener.ListenerContext;
 
-@Beans
+import java.util.Objects;
+
 /**
  * @author ForteScarlet
  */
+@Beans
+// @OnPrivate
 public class TestListener {
-    /** 发送一句“我收到了”，并再复读收到的所有消息 */
-    @OnPrivate
-    public void listen(PrivateMsg msg, MsgSender sender) {
+
+
+
+    @Listens(
+            value = @Listen(PrivateMsg.class),
+            priority = 0
+    )
+    @Filters(customFilter = "MyFilter")
+    public void listen1(PrivateMsg msg, MsgSender sender, ListenerContext context) {
+        System.out.println("l1");
         sender.SENDER.sendPrivateMsg(msg, "我收到了");
         sender.SENDER.sendPrivateMsg(msg, msg.getMsgContent());
+        if (Objects.equals(msg.getText(), "2")) {
+            System.out.println("set value.");
+            context.instant("value", "value");
+        }
+    }
+
+    @Listens(
+            value = @Listen(PrivateMsg.class),
+            priority = 1
+    )
+    @Filter(value = "value", target = FilterTargets.CONTEXT_INSTANT_NULLABLE + "value")
+    public void listen2(PrivateMsg msg, MsgSender sender) {
+        System.out.println("l2");
+        sender.SENDER.sendPrivateMsg(msg, "我收到了.");
+        sender.SENDER.sendPrivateMsg(msg, msg.getMsgContent());
+    }
+
+
+    @Filter(value = "r")
+    @OnPrivate
+    public void lis3(BotManager botManager) {
+        botManager.registerBot(new BotRegisterInfo("3521361891", "LiChengYang9983."));
     }
 
 }

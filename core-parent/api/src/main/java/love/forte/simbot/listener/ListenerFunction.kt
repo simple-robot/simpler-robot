@@ -51,6 +51,12 @@ public interface ListenerFunction {
      */
     val name: String
 
+    /**
+     * 此函数是否属于一个 **备用函数**.
+     *
+     * @see love.forte.simbot.annotation.SpareListen
+     */
+    val spare: Boolean
 
     /**
      * 监听函数的优先级，默认为 [普通第十级][PriorityConstant.TENTH].

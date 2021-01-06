@@ -19,6 +19,7 @@ package love.forte.simbot.component.lovelycat
 
 import love.forte.common.impl.ParameterizedTypeImpl
 import love.forte.simbot.component.lovelycat.message.*
+import love.forte.simbot.http.HttpTemplateException
 import love.forte.simbot.http.template.HttpTemplate
 import love.forte.simbot.http.template.assertBody
 import love.forte.simbot.serialization.json.JsonSerializerFactory
@@ -126,7 +127,7 @@ public interface LovelyCatApiTemplate {
         groupWxid: String,
         memberWxid: String,
         memberName: String?,
-        msg: String
+        msg: String,
     ): LovelyCatApiResult
 
 
@@ -154,7 +155,7 @@ public interface LovelyCatApiTemplate {
      */
     fun sendLinkMsg(
         robotWxid: String, toWxid: String, title: String, text: String,
-        targetUrl: String?, picUrl: String?, iconUrl: String?
+        targetUrl: String?, picUrl: String?, iconUrl: String?,
     ): LovelyCatApiResult
 
 
@@ -209,7 +210,7 @@ public interface LovelyCatApiTemplate {
         robotWxid: String,
         groupWxid: String,
         memberWxid: String,
-        isRefresh: Boolean
+        isRefresh: Boolean,
     ): CatGroupMemberInfo
 
     @JvmDefault
@@ -359,9 +360,6 @@ public interface LovelyCatApiTemplate {
     fun appendLogs(msg1: String, msg2: String?): LovelyCatApiResult
 
 
-
-
-
 }
 
 
@@ -380,12 +378,11 @@ constructor(
     private val httpTemplate: HttpTemplate,
     private val url: String,
     jsonSerializerFactory: JsonSerializerFactory,
-    private val lovelyCatApiCache: LovelyCatApiCache
+    private val lovelyCatApiCache: LovelyCatApiCache,
 ) : LovelyCatApiTemplate {
 
 
     // private val infoBuff: Map<String, Any> =
-
 
 
     private val loggedAccountListSerializer =
@@ -404,7 +401,7 @@ constructor(
         // 默认路径，一般情况下不可修改也不需要修改
         path: String = "/httpAPI",
         jsonSerializerFactory: JsonSerializerFactory,
-        lovelyCatApiCache: LovelyCatApiCache
+        lovelyCatApiCache: LovelyCatApiCache,
     ) : this(httpTemplate, "http://$ip:$host$path", jsonSerializerFactory, lovelyCatApiCache)
 
 
@@ -412,7 +409,7 @@ constructor(
      * do post.
      */
     private inline fun <reified T> post(vararg pair: Pair<String, *>): T {
-        return post(if(pair.size == 1) Collections.singletonMap(pair[0].first, pair[0].second) else mapOf(*pair))
+        return post(if (pair.size == 1) Collections.singletonMap(pair[0].first, pair[0].second) else mapOf(*pair))
     }
 
     /**
@@ -422,8 +419,17 @@ constructor(
      * @return T
      */
     private inline fun <reified T> post(requestBody: Any?): T {
-        val resp = httpTemplate.post(url = url, headers = null, cookies = null, requestBody = requestBody, responseType = T::class.java)
-        return resp.assertBody()!!
+        try {
+            val resp = httpTemplate.post(url = url,
+                headers = null,
+                cookies = null,
+                requestBody = requestBody,
+                responseType = T::class.java)
+            return resp.assertBody()!!
+        } catch (e: Exception) {
+            throw IllegalStateException("Post $url for '${T::class}' failed.", e)
+        }
+
     }
 
 
@@ -505,7 +511,7 @@ constructor(
     private data class SendTextMsgRequestData(
         val robot_wxid: String,
         val to_wxid: String,
-        val msg: String
+        val msg: String,
     ) : RequestApiData("SendTextMsg")
 
 
@@ -523,7 +529,7 @@ constructor(
     private data class SendImageMsgRequestData(
         val robot_wxid: String,
         val to_wxid: String,
-        val path: String
+        val path: String,
     ) : RequestApiData("SendImageMsg")
 
 
@@ -541,7 +547,7 @@ constructor(
     private data class SendVideoMsgRequestData(
         val robot_wxid: String,
         val to_wxid: String,
-        val path: String
+        val path: String,
     ) : RequestApiData("SendVideoMsg")
 
     /**
@@ -559,7 +565,7 @@ constructor(
     private data class SendFileMsgRequestData(
         val robot_wxid: String,
         val to_wxid: String,
-        val path: String
+        val path: String,
     ) : RequestApiData("SendFileMsg")
 
 
@@ -578,7 +584,7 @@ constructor(
     private data class SendCardMsgRequestData(
         val robot_wxid: String,
         val to_wxid: String,
-        val card_data: String
+        val card_data: String,
     ) : RequestApiData("SendCardMsg")
 
 
@@ -596,7 +602,7 @@ constructor(
         groupWxid: String,
         memberWxid: String,
         memberName: String?,
-        msg: String
+        msg: String,
     ): LovelyCatApiResult {
         return post(SendGroupMsgAndAtRequestData(robotWxid, groupWxid, memberWxid, memberName, msg))
     }
@@ -606,7 +612,7 @@ constructor(
         val group_wxid: String,
         val member_wxid: String,
         val member_name: String?,
-        val msg: String
+        val msg: String,
     ) : RequestApiData("SendGroupMsgAndAt")
 
 
@@ -622,7 +628,7 @@ constructor(
     }
 
     private data class SendEmojiMsgRequestData(
-        val robot_wxid: String, val to_wxid: String, val path: String
+        val robot_wxid: String, val to_wxid: String, val path: String,
     ) : RequestApiData("SendEmojiMsg")
 
 
@@ -645,7 +651,7 @@ constructor(
         text: String,
         targetUrl: String?,
         picUrl: String?,
-        iconUrl: String?
+        iconUrl: String?,
     ): LovelyCatApiResult {
         return post(SendLinkMsgRequestData(robotWxid, toWxid, title, text, targetUrl, picUrl, iconUrl))
     }
@@ -657,7 +663,7 @@ constructor(
         val text: String,
         val target_url: String?,
         val pic_url: String?,
-        val icon_url: String?
+        val icon_url: String?,
     ) : RequestApiData("SendLinkMsg")
 
 
@@ -677,7 +683,7 @@ constructor(
         val robot_wxid: String,
         val to_wxid: String,
         val name: String,
-        val type: Int
+        val type: Int,
     ) : RequestApiData("SendMusicMsg")
 
 
@@ -696,7 +702,7 @@ constructor(
 
     private data class GetFriendListRequestData(
         val robot_wxid: String,
-        val is_refresh: Boolean
+        val is_refresh: Boolean,
     ) : RequestApiData("GetFriendList")
 
     /**
@@ -713,7 +719,7 @@ constructor(
 
     private data class GetGroupListRequestData(
         val robot_wxid: String,
-        val is_refresh: Boolean
+        val is_refresh: Boolean,
     ) : RequestApiData("GetGroupList")
 
     /**
@@ -728,7 +734,7 @@ constructor(
         robotWxid: String,
         groupWxid: String,
         memberWxid: String,
-        isRefresh: Boolean
+        isRefresh: Boolean,
     ): CatGroupMemberInfo {
         return lovelyCatApiCache.computeCatGroupMemberInfo {
             post<GroupMemberDetailInfoResult>(
@@ -746,7 +752,7 @@ constructor(
         val robot_wxid: String,
         val group_wxid: String,
         val member_wxid: String,
-        val is_refresh: Boolean
+        val is_refresh: Boolean,
     ) : RequestApiData("GetGroupMemberDetailInfo")
 
 
@@ -757,7 +763,11 @@ constructor(
      * is_refresh, 逻辑型, 可空, 为真将重新加载列表（注意切记不要频繁加载这里），不然将取缓存，默认为假
      * api=GetGroupMemberList
      */
-    override fun getGroupMemberList(robotWxid: String, groupWxid: String, isRefresh: Boolean): List<CatSimpleGroupMemberInfo> {
+    override fun getGroupMemberList(
+        robotWxid: String,
+        groupWxid: String,
+        isRefresh: Boolean,
+    ): List<CatSimpleGroupMemberInfo> {
         return lovelyCatApiCache.computeCatSimpleGroupMemberInfoList {
             post<GroupMemberListResult>(GetGroupMemberListRequestData(robotWxid, groupWxid, isRefresh)).data
         }
@@ -766,7 +776,7 @@ constructor(
     private data class GetGroupMemberListRequestData(
         val robot_wxid: String,
         val group_wxid: String,
-        val is_refresh: Boolean
+        val is_refresh: Boolean,
     ) : RequestApiData("GetGroupMemberList")
 
     /**
@@ -779,11 +789,12 @@ constructor(
     override fun acceptTransfer(robotWxid: String, fromWxid: String, jsonMsg: String): LovelyCatApiResult {
         return post(AcceptTransferRequestData(robotWxid, fromWxid, jsonMsg))
     }
+
     private data class AcceptTransferRequestData(
         val robot_wxid: String,
         val from_wxid: String,
-        val json_msg: String
-    ): RequestApiData("AcceptTransfer")
+        val json_msg: String,
+    ) : RequestApiData("AcceptTransfer")
 
 
     /**
@@ -795,10 +806,11 @@ constructor(
     override fun agreeGroupInvite(robotWxid: String, jsonMsg: String): LovelyCatApiResult {
         return post(AgreeGroupInviteRequestData(robotWxid, jsonMsg))
     }
+
     private data class AgreeGroupInviteRequestData(
         val robot_wxid: String,
-        val json_msg: String
-    ): RequestApiData("AgreeGroupInvite")
+        val json_msg: String,
+    ) : RequestApiData("AgreeGroupInvite")
 
     /**
      *功能=同意好友请求
@@ -810,10 +822,11 @@ constructor(
     override fun agreeFriendVerify(robotWxid: String, jsonMsg: String): LovelyCatApiResult {
         return post(AgreeFriendVerifyRequestData(robotWxid, jsonMsg))
     }
+
     private data class AgreeFriendVerifyRequestData(
         val robot_wxid: String,
-        val json_msg: String
-    ): RequestApiData("AgreeGroupInvite")
+        val json_msg: String,
+    ) : RequestApiData("AgreeGroupInvite")
 
 
     /**
@@ -826,11 +839,12 @@ constructor(
     override fun modifyFriendNote(robotWxid: String, friendWxid: String, note: String): LovelyCatApiResult {
         return post(ModifyFriendNoteRequestData(robotWxid, friendWxid, note))
     }
+
     private data class ModifyFriendNoteRequestData(
         val robot_wxid: String,
         val friend_wxid: String,
-        val note: String
-    ): RequestApiData("ModifyFriendNote")
+        val note: String,
+    ) : RequestApiData("ModifyFriendNote")
 
     /**
      * 功能=删除好友
@@ -841,10 +855,11 @@ constructor(
     override fun deleteFriend(robotWxid: String, friendWxid: String): LovelyCatApiResult {
         return post(DeleteFriendRequestData(robotWxid, friendWxid))
     }
+
     private data class DeleteFriendRequestData(
         val robot_wxid: String,
-        val friend_wxid: String
-    ): RequestApiData("DeleteFriend")
+        val friend_wxid: String,
+    ) : RequestApiData("DeleteFriend")
 
     /**
      * 功能=踢出群成员
@@ -856,11 +871,12 @@ constructor(
     override fun removeGroupMember(robotWxid: String, groupWxid: String, memberWxid: String): LovelyCatApiResult {
         return post(RemoveGroupMemberRequestData(robotWxid, groupWxid, memberWxid))
     }
+
     private data class RemoveGroupMemberRequestData(
         val robot_wxid: String,
         val group_wxid: String,
-        val member_wxid: String
-    ): RequestApiData("RemoveGroupMember")
+        val member_wxid: String,
+    ) : RequestApiData("RemoveGroupMember")
 
     /**
      * 功能=修改群名称
@@ -872,11 +888,12 @@ constructor(
     override fun modifyGroupName(robotWxid: String, groupWxid: String, groupName: String): LovelyCatApiResult {
         return post(ModifyGroupNameRequestData(robotWxid, groupWxid, groupName))
     }
+
     private data class ModifyGroupNameRequestData(
         val robot_wxid: String,
         val group_wxid: String,
-        val group_name: String
-    ): RequestApiData("ModifyGroupName")
+        val group_name: String,
+    ) : RequestApiData("ModifyGroupName")
 
     /**
      * 功能=修改群公告
@@ -888,11 +905,12 @@ constructor(
     override fun modifyGroupNotice(robotWxid: String, groupWxid: String, content: String): LovelyCatApiResult {
         return post(ModifyGroupNoticeRequestData(robotWxid, groupWxid, content))
     }
+
     private data class ModifyGroupNoticeRequestData(
         val robot_wxid: String,
         val group_wxid: String,
-        val content: String
-    ): RequestApiData("ModifyGroupNotice")
+        val content: String,
+    ) : RequestApiData("ModifyGroupNotice")
 
     /**
      * 功能=建立新群
@@ -903,10 +921,11 @@ constructor(
     override fun buildingGroup(robotWxid: String, friendArr: Array<String>): LovelyCatApiResult {
         return post(BuildingGroupRequestData(robotWxid, friendArr.asList()))
     }
+
     private data class BuildingGroupRequestData(
         val robot_wxid: String,
-        val friend_arr: List<String>
-    ): RequestApiData("BuildingGroup")
+        val friend_arr: List<String>,
+    ) : RequestApiData("BuildingGroup")
 
     /**
      * 功能=退出群聊
@@ -917,10 +936,11 @@ constructor(
     override fun quitGroup(robotWxid: String, groupWxid: String): LovelyCatApiResult {
         return post(QuitGroupRequestData(robotWxid, groupWxid))
     }
+
     private data class QuitGroupRequestData(
         val robot_wxid: String,
-        val group_wxid: String
-    ): RequestApiData("QuitGroup")
+        val group_wxid: String,
+    ) : RequestApiData("QuitGroup")
 
     /**
      * 功能=邀请加入群聊
@@ -932,11 +952,12 @@ constructor(
     override fun inviteInGroup(robotWxid: String, groupWxid: String, friendWxid: String): LovelyCatApiResult {
         return post(InviteInGroupRequestData(robotWxid, groupWxid, friendWxid))
     }
+
     private data class InviteInGroupRequestData(
         val robot_wxid: String,
         val group_wxid: String,
-        val friend_wxid: String
-    ): RequestApiData("InviteInGroup")
+        val friend_wxid: String,
+    ) : RequestApiData("InviteInGroup")
 
     /**
      * 功能=取应用目录
@@ -955,13 +976,13 @@ constructor(
     override fun appendLogs(msg1: String, msg2: String?): LovelyCatApiResult {
         return post(AppendLogsRequestData(msg1, msg2))
     }
+
     private data class AppendLogsRequestData(
         val msg1: String,
         val msg2: String?,
-    ): RequestApiData("AppendLogs")
+    ) : RequestApiData("AppendLogs")
 
 }
-
 
 
 private inline fun <R> LovelyCatApiResult.letData(api: String, block: (String) -> R): R {

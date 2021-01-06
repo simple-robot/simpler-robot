@@ -279,7 +279,7 @@ public class CoreListenerManager(
                             typeList.addAll(v)
                         }
                     }
-                    typeList
+                    typeList.also { listener -> listener.sortBy { it.priority } }
                 }
             } else {
                 val typeList = LinkedList<ListenerFunction>()
@@ -288,7 +288,7 @@ public class CoreListenerManager(
                         typeList.addAll(v)
                     }
                 }
-                typeList
+                typeList.also { listener -> listener.sortBy { it.priority } }
             }
         }
 

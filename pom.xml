@@ -37,9 +37,9 @@
         <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
         <!--</editor-fold>-->
         <!--<editor-fold desc="kt prop">-->
-        <kotlin.version>1.4.21</kotlin.version>
+        <kotlin.version>1.4.30-M1</kotlin.version>
         <ktor.version>1.4.3</ktor.version>
-        <kotlinx.version>1.4.0</kotlinx.version>
+        <kotlinx.version>1.4.1</kotlinx.version>
         <kotlinx-serialization.version>1.0.1</kotlinx-serialization.version>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>

@@ -43,9 +43,9 @@ public class Test implements SimbotProcess {
         System.out.println(getter.getBotInfo());
         System.out.println(getter.getBotInfo());
         System.out.println(getter.getBotInfo());
-        System.out.println(getter.getBotInfo());
-        System.out.println(getter.getBotInfo());
-        System.out.println(getter.getBotInfo());
+        // System.out.println(getter.getBotInfo());
+        // System.out.println(getter.getBotInfo());
+        // System.out.println(getter.getBotInfo());
 
 
         // HttpTemplate template = context.get(HttpTemplate.class);

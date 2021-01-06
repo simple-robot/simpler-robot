@@ -16,13 +16,16 @@
 
 package love.forte.simbot.spring.lovelycat.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import love.forte.simbot.component.lovelycat.configuration.LovelyCatServerProperties;
 import love.forte.simbot.spring.autoconfigure.properties.SimbotCompLovelycatServerProperties;
 import love.forte.simbot.spring.lovelycat.server.LovelyCatServer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @author ForteScarlet
@@ -49,6 +52,12 @@ public class LovelycatServerConfiguration {
         properties.setPort(simbotCompLovelycatServerProperties.getPort());
         properties.setPath(simbotCompLovelycatServerProperties.getPath());
         return properties;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public RestTemplate restTemplate(){
+        return new RestTemplate();
     }
 
 }
