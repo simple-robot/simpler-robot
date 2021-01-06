@@ -10,11 +10,11 @@ first alpha version.
 - 调整核心中method-listener的注册方式为全局扫描。
 
 - [core-parent](./core-parent)下新增模块：
-    - [http-client-core](./core-parent/http-client-core) http-client模块核心
-    - [http-client-ktor](./core-parent/http-client-ktor) ktor-http-client模块
-    - [serialization-json-core](./core-parent/serialization-json-core) json序列化模块核心
-    - [serialization-json-fastjson](./core-parent/serialization-json-fastjson) fastjson-json序列化模块
-    - [serialization-json-moshi](./core-parent/serialization-json-moshi) moshi-json序列化模块
+    - [http-client-core](./http/client-core) http-client模块核心
+    - [http-client-ktor](./http/client-ktor) ktor-http-client模块
+    - [serialization-json-core](./serialization/json-core) json序列化模块核心
+    - [serialization-json-fastjson](./serialization/json-fastjson) fastjson-json序列化模块
+    - [serialization-json-moshi](./serialization/json-moshi) moshi-json序列化模块
 
 - 追加 [Spring-boot-starter](./spring-boot-starter) 模块及其子模块：
     - [core-spring-boot-starter](./spring-boot-starter/core-spring-boot-starter) 模块
@@ -28,7 +28,7 @@ first alpha version.
 core-starter移除部分多余控制台输出。
 
 重新定义 [MessageContent](./core-parent/api/src/main/java/love/forte/simbot/api/message/MessageContent.kt) ，
-并在 [mirai组件](./component-parent/component-mirai) 中重新实现。 
+并在 [mirai组件](./component/component-mirai) 中重新实现。 
 
 其中，暂时保留 曾经的`MessageContent.getImages`方法，但是此方法已**不存在任何作用**。
 
@@ -52,7 +52,7 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 ### 组件
 
-- 追加1.x中的[钉钉组件](./component-parent/component-ding)。
+- 追加1.x中的[钉钉组件](./component/component-ding)。
 
 - mirai组件 `mirai` update to `v1.3.3`
 
@@ -118,7 +118,7 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 ### core
 - 移除 `MessageContent.getImages()`。
 
-### [lovelycat](./component-parent/component-lovelycat-httpapi)
+### [lovelycat](./component/component-lovelycat-httpapi)
 - 实现私聊消息监听
 - 实现转账事件监听与接受转账
 - 实现扫描支付事件监听
@@ -352,7 +352,7 @@ simbot.core.logo.enable=true
 ### 新模块
 - [http-client-restTemplate](./http/client-restTemplate) 使用spring-web的`restTemplate`的http客户端模块，适用于在整合springboot的时候减少项目环境中的额外依赖。
 - [serialization-json-jackson](./serialization/json-jackson) 使用jackson的json序列化模块。一般可用作在整合springboot的时候减少项目环境中的额外依赖。
-
+- [lovelycat-springboot-starter](./spring-boot-starter/component-lovelycat-httpapi-spring-boot-starter) 可爱猫的springboot-starter。使用的时候注意参考文档：https://www.yuque.com/simpler-robot/simpler-robot-doc/rv3ux2
 
 
 ### 新实现
