@@ -18,8 +18,6 @@ import love.forte.common.ioc.annotation.Beans;
 import love.forte.simbot.intercept.InterceptionType;
 import love.forte.simbot.listener.ListenerInterceptContext;
 import love.forte.simbot.listener.ListenerInterceptor;
-import love.forte.simbot.listener.MsgInterceptContext;
-import love.forte.simbot.listener.MsgInterceptor;
 import org.jetbrains.annotations.NotNull;
 
 /**

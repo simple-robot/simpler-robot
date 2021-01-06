@@ -16,7 +16,6 @@ package love.forte.test.interceptor;
 
 import love.forte.common.ioc.annotation.Beans;
 import love.forte.simbot.api.message.events.MessageGet;
-import love.forte.simbot.api.message.events.MsgGet;
 import love.forte.simbot.intercept.InterceptionType;
 import love.forte.simbot.listener.MsgInterceptContext;
 import love.forte.simbot.listener.MsgInterceptor;

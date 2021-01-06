@@ -16,7 +16,6 @@
 
 package love.forte.simbot.spring.lovelycat.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import love.forte.simbot.component.lovelycat.configuration.LovelyCatServerProperties;
 import love.forte.simbot.spring.autoconfigure.properties.SimbotCompLovelycatServerProperties;
 import love.forte.simbot.spring.lovelycat.server.LovelyCatServer;

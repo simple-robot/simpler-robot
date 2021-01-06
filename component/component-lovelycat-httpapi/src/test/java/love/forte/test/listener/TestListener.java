@@ -14,21 +14,11 @@
 
 package love.forte.test.listener;
 
-import love.forte.catcode.Neko;
 import love.forte.common.ioc.annotation.Beans;
-import love.forte.simbot.annotation.Filter;
-import love.forte.simbot.annotation.Listen;
 import love.forte.simbot.annotation.OnGroup;
-import love.forte.simbot.annotation.OnPrivate;
-import love.forte.simbot.api.message.MessageContent;
-import love.forte.simbot.api.message.MessageContentBuilder;
-import love.forte.simbot.api.message.MessageContentBuilderFactory;
 import love.forte.simbot.api.message.events.GroupMsg;
-import love.forte.simbot.api.message.events.PrivateMsg;
 import love.forte.simbot.api.message.results.GroupMemberInfo;
 import love.forte.simbot.api.sender.MsgSender;
-import love.forte.simbot.component.lovelycat.message.event.LovelyCatReceivedTransfer;
-import love.forte.simbot.component.lovelycat.message.event.LovelyCatScanCashMoney;
 
 /**
  * @author ForteScarlet

@@ -16,7 +16,6 @@ package love.forte.simbot.component.mirai
 
 import kotlinx.coroutines.runBlocking
 import love.forte.common.ioc.DependCenter
-import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.sender.BotSender

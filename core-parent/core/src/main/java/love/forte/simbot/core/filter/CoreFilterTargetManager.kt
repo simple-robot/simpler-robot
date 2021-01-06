@@ -17,7 +17,6 @@ package love.forte.simbot.core.filter
 import love.forte.simbot.filter.FilterTargetManager
 import love.forte.simbot.filter.FilterTargetProcessor
 import love.forte.simbot.filter.FilterTargetProcessorChecker
-import java.sql.SQLOutput
 import java.util.concurrent.CopyOnWriteArrayList
 
 

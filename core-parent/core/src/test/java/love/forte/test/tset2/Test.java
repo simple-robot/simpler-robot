@@ -1,8 +1,5 @@
 package love.forte.test.tset2;
 
-import love.forte.simbot.filter.ListenContextFilterTargetProcessor;
-import love.forte.simbot.filter.FilterTargets;
-
 /**
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */

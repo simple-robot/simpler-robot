@@ -19,7 +19,6 @@ package love.forte.simbot.component.lovelycat
 
 import love.forte.common.impl.ParameterizedTypeImpl
 import love.forte.simbot.component.lovelycat.message.*
-import love.forte.simbot.http.HttpTemplateException
 import love.forte.simbot.http.template.HttpTemplate
 import love.forte.simbot.http.template.assertBody
 import love.forte.simbot.serialization.json.JsonSerializerFactory

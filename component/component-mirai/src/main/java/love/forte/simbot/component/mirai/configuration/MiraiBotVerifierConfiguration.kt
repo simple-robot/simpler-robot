@@ -16,14 +16,12 @@ package love.forte.simbot.component.mirai.configuration
 
 import love.forte.common.ioc.DependCenter
 import love.forte.common.ioc.annotation.ConfigBeans
-import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.component.mirai.DefaultMiraiBotConfigurationFactory
 import love.forte.simbot.component.mirai.MiraiBotConfigurationFactory
 import love.forte.simbot.component.mirai.MiraiBotVerifier
 import love.forte.simbot.component.mirai.utils.MiraiBotEventRegistrar
 import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.http.template.HttpTemplate
-import love.forte.simbot.listener.MsgGetProcessor
 
 /**
  *
