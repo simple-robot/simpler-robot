@@ -64,7 +64,7 @@ open class DingSenderImpl(
      * http发送消息
      */
     private fun send(json: String): String? {
-        return http.post(url, jsonHeaders, json, String::class.java).body
+        return http.post(url, jsonHeaders, cookies = null, json, String::class.java).body
     }
 
     /**
