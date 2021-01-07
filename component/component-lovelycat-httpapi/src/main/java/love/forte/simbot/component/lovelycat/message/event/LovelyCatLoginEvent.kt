@@ -114,7 +114,7 @@ public object LovelyCatLoginEventParser : LovelyCatEventParser {
         api: LovelyCatApiTemplate,
         jsonSerializerFactory: JsonSerializerFactory,
         params: Map<String, *>
-    ): LovelyCatMsg {
+    ): LovelyCatLogin {
         /*
         private val robWxid: String,
         private val robName: String,
@@ -133,6 +133,8 @@ public object LovelyCatLoginEventParser : LovelyCatEventParser {
             api
         )
     }
+
+    override fun type(): Class<out LovelyCatMsg> = LovelyCatLogin::class.java
 }
 
 

@@ -36,6 +36,12 @@ public interface LovelyCatParser {
         jsonSerializerFactory: JsonSerializerFactory,
         params: Map<String, *>
     ): LovelyCatMsg?
+
+    /**
+     * 判断此事件对应的类型。
+     */
+    fun type(event: String): Class<out LovelyCatMsg>?
+
 }
 
 
@@ -50,6 +56,12 @@ public interface LovelyCatEventParser :
         jsonSerializerFactory: JsonSerializerFactory,
         params: Map<String, *>
     ): LovelyCatMsg
+
+    /**
+     * 得到对应的事件类型
+     */
+    fun type(): Class<out LovelyCatMsg>
+
 }
 
 
@@ -82,4 +94,11 @@ public class DefaultLovelyCatParser : LovelyCatParser {
     ): LovelyCatMsg? {
         return parserMap[event]?.invoke(originalData, api, jsonSerializerFactory, params)
     }
+
+
+    /**
+     * 判断此事件对应的类型。
+     */
+    override fun type(event: String) = parserMap[event]?.type()
+
 }

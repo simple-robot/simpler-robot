@@ -105,6 +105,7 @@ public object LovelyCatFriendVerifyEventParser : LovelyCatEventParser {
             api, original
         )
     }
+    override fun type(): Class<out LovelyCatMsg> = LovelyCatFriendVerify::class.java
 }
 
 

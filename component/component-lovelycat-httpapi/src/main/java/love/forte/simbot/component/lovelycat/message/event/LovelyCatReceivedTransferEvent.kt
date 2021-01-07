@@ -127,6 +127,8 @@ public object LovelyCatReceivedTransferEventParser : LovelyCatEventParser {
         jsonSerializerFactory.getJsonSerializer(TransferInfo::class.java).fromJson(params.orParamErr("json_msg").toString()),
         api, original
     )
+
+    override fun type(): Class<out LovelyCatMsg> = LovelyCatReceivedTransfer::class.java
 }
 
 

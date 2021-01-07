@@ -165,7 +165,7 @@ public object LovelyCatScanCashMoneyEventParser: LovelyCatEventParser {
         api: LovelyCatApiTemplate,
         jsonSerializerFactory: JsonSerializerFactory,
         params: Map<String, *>
-    ): LovelyCatScanCashMoneyEvent {
+    ): LovelyCatScanCashMoney {
 
         val jsonMsg = params.orParamErr("json_msg").toString()
 
@@ -179,4 +179,6 @@ public object LovelyCatScanCashMoneyEventParser: LovelyCatEventParser {
             api, original
         )
     }
+
+    override fun type(): Class<out LovelyCatMsg> = LovelyCatScanCashMoney::class.java
 }

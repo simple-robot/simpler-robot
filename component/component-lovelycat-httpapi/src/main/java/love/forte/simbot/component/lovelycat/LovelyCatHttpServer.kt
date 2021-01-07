@@ -30,6 +30,7 @@ import love.forte.simbot.component.lovelycat.configuration.LovelyCatServerProper
 import love.forte.simbot.component.lovelycat.message.event.LovelyCatParser
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.listener.MsgGetProcessor
+import love.forte.simbot.listener.onMsg
 import love.forte.simbot.serialization.json.JsonSerializer
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 import java.io.Closeable
@@ -124,12 +125,11 @@ public class LovelyCatKtorHttpServer(
                     try {
                         val originalData = call.receive<String>()
 
-
                         val params = mapSerializer.fromJson(originalData)
 
                         val eventType = params["Event"]?.toString()
 
-                        log.debug("On event request. type: $eventType, originalData: $originalData")
+                        logger.debug("On event request. type: $eventType, originalData: $originalData")
 
                         if (eventType == null) {
                             // 404. no event.
@@ -142,21 +142,32 @@ public class LovelyCatKtorHttpServer(
                             val api = apiManager[botId] ?: throw IllegalStateException("cannot found Bot($botId)'s api template.")
 
                             try {
-                                val parse = lovelyCatParser.parse(eventType, originalData, api, jsonSerializerFactory, params)
-                                if (parse != null) {
-                                    msgGetProcessor.onMsg(parse)
-                                }
+                                // val parse =
+                                // if (parse != null) {
+                                    lovelyCatParser.type(eventType)?.let { t ->
+                                        msgGetProcessor.onMsg(t) {
+                                            lovelyCatParser.parse(eventType, originalData, api, jsonSerializerFactory, params)
+                                        }
+                                    }?.let {
+                                        // ok
+                                        call.respond(HttpStatusCode.OK, it.result ?: "{}")
+                                    } ?: kotlin.run {
+                                        val respMsg = "Cannot found any event type for event '$eventType'."
+                                        call.respond(HttpStatusCode.NotFound) { respMsg }
+                                        logger.warn("$respMsg response 404.")
+                                    }
+                                // }
                                 // ok status.
-                                call.respond(HttpStatusCode.OK)
+                                // call.respond(HttpStatusCode.OK)
                             } catch (e: Exception) {
                                 call.respond(HttpStatusCode.InternalServerError, e.toString())
-                                log.error("Parse event instance failed by originalData: $originalData", e)
+                                logger.error("Parse event instance failed by originalData: $originalData", e)
                             }
 
                         }
                     } catch (ex: Exception) {
                         call.respond(HttpStatusCode.InternalServerError, ex.toString())
-                        log.error("Internal server error.", ex)
+                        logger.error("Internal server error.", ex)
                     }
                 }
 

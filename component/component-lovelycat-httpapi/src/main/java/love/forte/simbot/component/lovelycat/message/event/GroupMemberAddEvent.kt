@@ -114,4 +114,6 @@ public object LovelyCatGroupMemberAddEventParser : LovelyCatEventParser {
             api, original
         )
     }
+
+    override fun type(): Class<out LovelyCatMsg> = LovelyCatGroupMemberAdd::class.java
 }

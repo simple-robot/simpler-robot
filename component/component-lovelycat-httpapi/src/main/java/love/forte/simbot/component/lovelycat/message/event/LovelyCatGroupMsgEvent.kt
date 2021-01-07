@@ -168,6 +168,12 @@ data class GroupMsgDataMapping(
     /** 只允许两种值：1，string，2：单层map */
     val msg: Any,
 ) : BaseLovelyCatMsg.LovelyCatDataMapping<LovelyCatGroupMsgEvent>() {
+    companion object {
+        internal fun typeTo(type: Int): Class<out LovelyCatGroupMsgEvent> {
+            return if (type == 2003) LovelyCatGroupInviteGroupMsgEvent::class.java
+            else LovelyCatTextAbleGroupMsgEvent::class.java
+        }
+    }
     override fun mapTo(
         originalData: String,
         api: LovelyCatApiTemplate?,
@@ -248,7 +254,7 @@ public object LovelyCatGroupMsgEventParser : LovelyCatEventParser {
         api: LovelyCatApiTemplate,
         jsonSerializerFactory: JsonSerializerFactory,
         params: Map<String, *>
-    ): LovelyCatMsg {
+    ): LovelyCatGroupMsgEvent {
         return GroupMsgDataMapping(
             params.orParamErr("robot_wxid").toString(),
             params.orParamErr("type") as Int,
@@ -260,6 +266,8 @@ public object LovelyCatGroupMsgEventParser : LovelyCatEventParser {
             params.orParamErr("msg").toString(),
         ).mapTo(original, api, jsonSerializerFactory)
     }
+
+    override fun type(): Class<out LovelyCatMsg> =LovelyCatGroupMsgEvent::class.java
 }
 
 

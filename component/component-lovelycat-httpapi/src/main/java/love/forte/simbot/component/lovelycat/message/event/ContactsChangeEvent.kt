@@ -85,8 +85,10 @@ public object LovelyCatContactsChangeEventParser : LovelyCatEventParser {
             api,
             original
         )
-
     }
+
+    override fun type(): Class<out LovelyCatMsg> = LovelyCatContactsChange::class.java
+
 }
 
 

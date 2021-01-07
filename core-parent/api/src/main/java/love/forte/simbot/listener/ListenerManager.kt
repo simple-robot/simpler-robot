@@ -11,7 +11,7 @@
  *  * QQ     1149159218
  *
  */
-
+@file:JvmName("ListenerManagers")
 package love.forte.simbot.listener
 
 import love.forte.simbot.api.message.events.MsgGet
@@ -23,8 +23,62 @@ import love.forte.simbot.api.message.events.MsgGet
 interface MsgGetProcessor {
     /**
      * 接收到消息监听并进行处理。
+     * Java中，更建议使用 [onMsgIfExist]，kt中，更建议使用 `MsgGetProcessor.onMsg<T> { ... }`。
      */
     fun onMsg(msgGet: MsgGet): ListenResult<*>
+
+    /**
+     * 判断是否存在某个类型的监听函数。
+     */
+    fun <T : MsgGet> contains(type: Class<out T>): Boolean
+
+    /**
+     * 如果存在则触发，否则得到null。
+     * @param type [MsgGet]类型
+     * @param msgGet 需要触发的实例。
+     */
+    @JvmDefault
+    fun <T : MsgGet> onMsgIfExist(type: Class<out T>, msgGet: MsgGet): ListenResult<*>? {
+        return if (contains(type)) {
+            onMsg(msgGet)
+        } else null
+    }
+
+    /**
+     * 如果存在则触发，否则得到null。
+     * @param type [MsgGet]类型。
+     * @param msgGetBlock MsgGet实例获取函数。
+     *
+     */
+    @JvmDefault
+    fun <T : MsgGet> onMsgIfExist(type: Class<out T>, msgGetBlock: () -> MsgGet): ListenResult<*>? {
+        return if (contains(type)) {
+            onMsg(msgGetBlock())
+        } else null
+    }
+
+
+
+}
+
+
+/**
+ * 检测，如果存在则触发监听流程，否则得到null。
+ */
+public inline fun <reified T : MsgGet> MsgGetProcessor.onMsg(block: () -> T?): ListenResult<*>? {
+    return if (contains(T::class.java)) {
+        block()?.let { onMsg(it) }
+    } else null
+}
+
+
+/**
+ * 检测，如果存在则触发监听流程，否则得到null。
+ */
+public inline fun <T : MsgGet> MsgGetProcessor.onMsg(type: Class<out T>, block: () -> T?): ListenResult<*>? {
+    return if (contains(type)) {
+        block()?.let { onMsg(it) }
+    } else null
 }
 
 

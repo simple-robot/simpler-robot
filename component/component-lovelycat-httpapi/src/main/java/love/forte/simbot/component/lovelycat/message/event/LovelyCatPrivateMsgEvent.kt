@@ -223,7 +223,7 @@ public object LovelyCatPrivateMsgEventParser : LovelyCatEventParser {
         api: LovelyCatApiTemplate,
         jsonSerializerFactory: JsonSerializerFactory,
         params: Map<String, *>
-    ): LovelyCatMsg {
+    ): LovelyCatPrivateMsgEvent {
         return PrivateMsgDataMapping(
             params.orParamErr("robot_wxid").toString(),
             params.orParamErr("type") as Int,
@@ -233,6 +233,8 @@ public object LovelyCatPrivateMsgEventParser : LovelyCatEventParser {
             params.orParamErr("msg").toString(),
         ).mapTo(original, api, jsonSerializerFactory)
     }
+
+    override fun type(): Class<out LovelyCatMsg> = LovelyCatPrivateMsgEvent::class.java
 }
 
 

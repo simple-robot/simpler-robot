@@ -55,7 +55,7 @@ public class LovelyCatGroupMemberDecreaseEvent(
      * TODO 信息大概在 [jsonMsg] 中。
      */
     override val accountInfo: AccountInfo
-        get() = TODO("Not yet implemented")
+        get() = TODO("Not yet implemented. ")
 
     /**
      * 有时候群友减少也可能代表是bot被踢出了某个群.
@@ -103,9 +103,9 @@ public object LovelyCatGroupMemberDecreaseEventParser : LovelyCatEventParser {
             params.orParamErr("json_msg").toString(),
             api, original
         )
-
-
     }
+
+    override fun type(): Class<out LovelyCatMsg> = LovelyCatGroupMemberDecrease::class.java
 }
 
 

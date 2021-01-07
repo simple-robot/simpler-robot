@@ -127,6 +127,8 @@ public class CoreListenerManager(
                 oldValue.apply { addAll(value) }
             }
 
+            ConcurrentHashMap<Int, Int>().clear()
+
             // clear cache map.
             // 寻找并更新缓存监听
             // no. 直接清除缓存。
@@ -163,6 +165,15 @@ public class CoreListenerManager(
 
 
     /**
+     * 判断当前是否存在某个类型的监听函数。
+     */
+    override fun <T : MsgGet> contains(type: Class<T>): Boolean {
+        return getListenerFunctions(type, true).isNotEmpty()
+    }
+
+
+
+    /**
      * 筛选监听函数
      */
     private fun onMsg0(msgGet: MsgGet, context: ListenerContext): ListenResult<*> {
@@ -170,9 +181,6 @@ public class CoreListenerManager(
         return if (funcs.isEmpty()) {
             NothingResult
         } else {
-            // // not empty, intercept.
-            // val context: ListenerContext = listenerContextData.getContext(msgGet)
-
             var finalResult: ListenResult<*> = NothingResult
 
             for (func: ListenerFunction in funcs) {
@@ -261,15 +269,6 @@ public class CoreListenerManager(
                 return emptyList()
             }
 
-            // // 获取不到缓存信息，则遍历类型。
-            // // 获取类型对应函数列表
-            // val typeList = LinkedList<ListenerFunction>()
-            //
-            // mainListenerFunctionMap.forEach { (k, v)->
-            //     if (k.isAssignableFrom(type)) {
-            //         typeList.addAll(v)
-            //     }
-            // }
 
             if (cache) {
                 cacheListenerFunctionMap.computeIfAbsent(type) {
