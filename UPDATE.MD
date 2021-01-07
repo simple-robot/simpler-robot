@@ -368,3 +368,14 @@ simbot.core.logo.enable=true
 - 自定义Filter无法被使用
 - [#34](https://github.com/ForteScarlet/simpler-robot/issues/34) mirai组件下动态注册的bot无法触发监听
 - [#35](https://github.com/ForteScarlet/simpler-robot/issues/35) 可爱猫组件获取群信息异常
+
+
+## BETA.8
+
+
+
+### feature
+- [#36](https://github.com/ForteScarlet/simpler-robot/issues/36) 优化事件触发机制，当不存在对应的监听函数时，不应当执行事件流程（例如触发拦截器）。
+
+### fix 
+- [#39](https://github.com/ForteScarlet/simpler-robot/issues/39) 监听函数优先级失效

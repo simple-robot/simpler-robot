@@ -167,7 +167,7 @@ public class CoreListenerManager(
     /**
      * 判断当前是否存在某个类型的监听函数。
      */
-    override fun <T : MsgGet> contains(type: Class<T>): Boolean {
+    override fun <T : MsgGet> contains(type: Class<out T>): Boolean {
         return getListenerFunctions(type, true).isNotEmpty()
     }
 
@@ -235,7 +235,6 @@ public class CoreListenerManager(
         }
     }
 
-
     /**
      * 根据监听类型获取所有对应的监听函数。
      */
@@ -245,8 +244,9 @@ public class CoreListenerManager(
         } else {
             getListenerFunctions(type, false).toList()
         }
-
     }
+
+
 
 
     /**
