@@ -17,7 +17,6 @@ package love.forte.simbot.listener
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.MsgSender
 import love.forte.simbot.bot.Bot
-import love.forte.simbot.constant.PriorityConstant
 import love.forte.simbot.filter.AtDetection
 import love.forte.simbot.filter.ListenerFilter
 import java.lang.reflect.Type
@@ -33,7 +32,7 @@ public val ListenerFunctionComparable: Comparator<ListenerFunction> = Comparator
 /**
  * 监听函数。
  *
- * @see love.forte.simbot.core.annotation.Listen
+ * @see love.forte.simbot.annotation.Listen
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
@@ -59,10 +58,9 @@ public interface ListenerFunction {
     val spare: Boolean
 
     /**
-     * 监听函数的优先级，默认为 [普通第十级][PriorityConstant.TENTH].
+     * 监听函数的优先级。
      */
-    @JvmDefault
-    val priority: Int get() = PriorityConstant.TENTH
+    val priority: Int
 
 
     /**

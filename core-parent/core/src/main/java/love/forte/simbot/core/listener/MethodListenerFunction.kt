@@ -72,6 +72,12 @@ public class MethodListenerFunction(
     override val spare: Boolean
 
     /**
+     * 此监听函数的优先级。
+     */
+    override val priority: Int
+        get() = listensAnnotation.priority
+
+    /**
      * 此监听函数上的 [ListenBreak] 注解。如果有的话。
      */
     private val listenBreakAnnotation: ListenBreak?
