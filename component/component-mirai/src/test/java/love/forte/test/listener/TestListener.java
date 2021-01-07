@@ -15,11 +15,13 @@
 package love.forte.test.listener;
 
 import love.forte.common.ioc.annotation.Beans;
-import love.forte.simbot.annotation.*;
+import love.forte.simbot.annotation.Filter;
+import love.forte.simbot.annotation.Filters;
+import love.forte.simbot.annotation.Listen;
+import love.forte.simbot.annotation.Listens;
 import love.forte.simbot.api.message.events.PrivateMsg;
 import love.forte.simbot.api.sender.MsgSender;
-import love.forte.simbot.bot.BotManager;
-import love.forte.simbot.bot.BotRegisterInfo;
+import love.forte.simbot.constant.PriorityConstant;
 import love.forte.simbot.filter.FilterTargets;
 import love.forte.simbot.listener.ListenerContext;
 
@@ -51,7 +53,7 @@ public class TestListener {
 
     @Listens(
             value = @Listen(PrivateMsg.class),
-            priority = 1
+            priority = PriorityConstant.COMPONENT_EIGHTH
     )
     @Filter(value = "value", target = FilterTargets.CONTEXT_INSTANT_NULLABLE + "value")
     public void listen2(PrivateMsg msg, MsgSender sender) {
@@ -61,10 +63,10 @@ public class TestListener {
     }
 
 
-    @Filter(value = "r")
-    @OnPrivate
-    public void lis3(BotManager botManager) {
-        botManager.registerBot(new BotRegisterInfo("3521361891", "LiChengYang9983."));
-    }
+    // @Filter(value = "r")
+    // @OnPrivate
+    // public void lis3(BotManager botManager) {
+    //     botManager.registerBot(new BotRegisterInfo("3521361891", "LiChengYang9983."));
+    // }
 
 }
