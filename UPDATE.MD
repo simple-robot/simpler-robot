@@ -378,6 +378,7 @@ simbot.core.logo.enable=true
 - 弃用 `GroupAdmin`、`GroupOwner`、`GroupMemberInfo`、`BanInfo`、`FriendInfo`
   中的 `getAccountInfo`, 而是使得他们本身就属于 `AccountInfo`.
 
+- 追加一个 `PrivateMsg(私聊事件)`的子事件类型 `FriendMsg(好友私聊事件)`, 其代表为一个确认为 **好友** 的私聊消息。
 
 ### 可爱猫
 - 优化springboot-starter，如果不加 `@EnableSimbot` 不会再报错了。

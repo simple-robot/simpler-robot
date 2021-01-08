@@ -15,6 +15,7 @@
 package love.forte.simbot.component.mirai.message
 
 import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.FriendAccountInfo
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import net.mamoe.mirai.Bot
@@ -24,7 +25,7 @@ import net.mamoe.mirai.contact.*
 /**
  * 基于 mirai [Friend] 的 [AccountInfo] 实现。
  */
-public data class MiraiFriendAccountInfo(private val friendId: Long, private val friend: Friend?) : AccountInfo {
+public data class MiraiFriendAccountInfo(private val friendId: Long, private val friend: Friend?) : FriendAccountInfo {
 
     constructor(friend: Friend) : this(friend.id, friend)
 

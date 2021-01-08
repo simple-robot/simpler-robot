@@ -17,6 +17,7 @@ package love.forte.simbot.api.message.events
 
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.Permissions
+import love.forte.simbot.api.message.containers.FriendAccountInfo
 import love.forte.simbot.api.message.containers.GroupAccountContainer
 import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.containers.PermissionContainer
@@ -80,6 +81,26 @@ public interface PrivateMsg : MessageGet {
      */
     public interface FlagContent : MessageGet.MessageFlagContent
 }
+
+
+/**
+ * 一个 **好友消息**。此事件类型继承自 [PrivateMsg], 并代表此事件的消息来源能够确定为一个**好友**。
+ * [privateMsgType] 应该固定为 [PrivateMsg.Type.FRIEND]。
+ */
+public interface FriendMsg : PrivateMsg {
+    /**
+     * 类型，固定为[PrivateMsg.Type.FRIEND]。
+     */
+    @JvmDefault
+    override val privateMsgType: PrivateMsg.Type
+        get() = PrivateMsg.Type.FRIEND
+
+    /**
+     * 好友账号信息。
+     */
+    override val accountInfo: FriendAccountInfo
+}
+
 
 /**
  * 针对于 [PrivateMsg] 的 [标识主体][PrivateMsg.FlagContent] 的实现

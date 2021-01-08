@@ -51,17 +51,6 @@ public interface GroupAccountTitleContainer : Container {
     val accountTitle: String?
 }
 
-/**
- * 群成员禁言信息容器。
- */
-@ContainerType("群成员禁言信息容器")
-public interface GroupAccountMuteContainer : Container {
-    /**
-     * 禁言信息容器，在不支持的情况下得到 `-1`。
-     */
-    val muteTime: Long
-}
-
 
 /**
  * 一个群用户账号信息容器, 继承了

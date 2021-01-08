@@ -15,11 +15,11 @@
 package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.assists.Permissions
-import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.FriendAccountInfo
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.events.FriendMsg
 import love.forte.simbot.api.message.events.GroupMsg
-import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.component.mirai.message.*
 import love.forte.simbot.component.mirai.message.result.MiraiGroupInfo
 import net.mamoe.mirai.contact.Friend
@@ -63,12 +63,12 @@ public class MiraiBotGroupNudgedByMemberMsg constructor(
 @MiraiExperimentalApi
 public class MiraiBotPrivateSessionNudgedByFriendMsg(event: BotNudgedEvent.InPrivateSession.ByFriend, friend: Friend) :
     AbstractMiraiMsgGet<BotNudgedEvent.InPrivateSession.ByFriend>(event),
-    PrivateMsg {
+    FriendMsg {
     override val id: String = "${event.from.id}.${event.bot.id}"
-    override val accountInfo: AccountInfo = MiraiFriendAccountInfo(friend)
-
-    /** 头像戳一戳属于好友消息 */
-    override val privateMsgType: PrivateMsg.Type get() = PrivateMsg.Type.FRIEND
+    override val accountInfo: FriendAccountInfo = MiraiFriendAccountInfo(friend)
+    //
+    // /** 私聊的头像戳一戳属于系统消息 */
+    // override val privateMsgType: PrivateMsg.Type get() = PrivateMsg.Type.SYS
 
     /** empty flag. */
     override val flag: EmptyMiraiPrivateFlag get() = EmptyMiraiPrivateFlag

@@ -17,8 +17,10 @@ package love.forte.simbot.component.mirai.message.event
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.FriendAccountInfo
 import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.events.FriendMsg
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.event.events.FriendMessageEvent
@@ -30,17 +32,12 @@ import net.mamoe.mirai.message.data.MessageSource
  * mirai的私聊消息事件。此为好友私聊。
  */
 public class MiraiPrivateMsg(event: FriendMessageEvent) :
-    MiraiMessageMsgGet<FriendMessageEvent>(event), PrivateMsg {
+    MiraiMessageMsgGet<FriendMessageEvent>(event), FriendMsg {
 
     /**
      * 账号的信息。
      */
-    override val accountInfo: AccountInfo = MiraiFriendAccountInfo(event.friend)
-
-    /**
-     * 获取私聊消息类型，好友类型。
-     */
-    override val privateMsgType: PrivateMsg.Type = PrivateMsg.Type.FRIEND
+    override val accountInfo: FriendAccountInfo = MiraiFriendAccountInfo(event.friend)
 
     // private var _msgContent: MessageContent = MiraiMessageChainContent(message)
 

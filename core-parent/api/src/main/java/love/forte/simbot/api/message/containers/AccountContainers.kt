@@ -113,9 +113,10 @@ public interface AccountInfo : Container, AccountNameContainer, AccountAvatarCon
 
 public fun emptyAccountInfo() : AccountInfo = EmptyAccountInfo
 public fun emptyGroupAccountInfo() : GroupAccountInfo = EmptyAccountInfo
+public fun emptyFriendAccountInfo() : FriendAccountInfo = EmptyAccountInfo
 
 
-private object EmptyAccountInfo : GroupAccountInfo {
+private object EmptyAccountInfo : AccountInfo, GroupAccountInfo, FriendAccountInfo {
     override val accountCode: String
         get() = ""
     override val accountNickname: String?

@@ -19,6 +19,7 @@ import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.containers.FriendAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.*
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
@@ -53,7 +54,7 @@ public class LovelyCatTextAblePrivateMsgEvent(
     override val msgContent: MessageContent,
     override val originalData: String,
     api: LovelyCatApiTemplate?
-) : BaseLovelyCatMsg(PRIVATE_MSG_EVENT, originalData), PrivateMsg, LovelyCatPrivateMsgEvent {
+) : BaseLovelyCatMsg(PRIVATE_MSG_EVENT, originalData), FriendMsg, LovelyCatPrivateMsgEvent {
 
     /**
      * 获取私聊消息类型，固定为好友消息。
@@ -70,7 +71,7 @@ public class LovelyCatTextAblePrivateMsgEvent(
     /**
      * 账号的信息。
      */
-    override val accountInfo: AccountInfo = lovelyCatAccountInfo(fromWxid, fromName)
+    override val accountInfo: FriendAccountInfo = lovelyCatFriendAccountInfo(fromWxid, fromName)
 
     /**
      * bot信息。
