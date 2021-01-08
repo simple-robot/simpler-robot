@@ -117,7 +117,7 @@ public data class CatFriendInfo(
     val wxid: String,
     val note: String,
     val robotWxid: String
-) : FriendInfo, BotCodeContainer {
+) : FriendInfo, AccountInfo by lovelyCatAccountInfo(wxid, name, note), BotCodeContainer {
 
     /** 当前的bot的账号 */
     override val botCode: String
@@ -135,12 +135,6 @@ public data class CatFriendInfo(
      */
     override val originalData: String
         get() = toString()
-
-    /**
-     * 账号的信息。
-     * 没有头像信息，但是似乎有备注信息。
-     */
-    override val accountInfo: AccountInfo = lovelyCatAccountInfo(wxid, name, note)
 }
 
 

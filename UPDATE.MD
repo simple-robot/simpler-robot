@@ -373,7 +373,11 @@ simbot.core.logo.enable=true
 ## BETA.8
 
 ### 核心
-- [#40](https://github.com/ForteScarlet/simpler-robot/issues/40) 为`群成员`等相关的信息提供一些额外的参数，例如用户头衔`accountTitle`，生效于与群成员有关的地方，例如群聊消息、获取到的群成员列表信息等。
+- [#40](https://github.com/ForteScarlet/simpler-robot/issues/40) 提供一个`AccountInfo`的子类型 `GroupAccountInfo`并为`群成员`等相关的信息提供一些额外的参数，例如用户头衔`accountTitle`，生效于与群成员有关的地方，例如群聊消息、获取到的群成员列表信息等。
+
+- 弃用 `GroupAdmin`、`GroupOwner`、`GroupMemberInfo`、`BanInfo`、`FriendInfo`
+  中的 `getAccountInfo`, 而是使得他们本身就属于 `AccountInfo`.
+
 
 ### 可爱猫
 - 优化springboot-starter，如果不加 `@EnableSimbot` 不会再报错了。
@@ -381,6 +385,7 @@ simbot.core.logo.enable=true
 
 ### feature
 - [#36](https://github.com/ForteScarlet/simpler-robot/issues/36) 优化事件触发机制，当不存在对应的监听函数时，不应当执行事件流程（例如触发拦截器）。
+
 
 ### fix 
 - [#39](https://github.com/ForteScarlet/simpler-robot/issues/39) 监听函数优先级失效

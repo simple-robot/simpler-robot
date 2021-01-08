@@ -27,11 +27,17 @@ import love.forte.simbot.api.message.containers.emptyAccountInfo
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public interface FriendInfo: Result, AccountContainer {
+public interface FriendInfo: Result, AccountInfo, AccountContainer {
     /**
      * 好友所在分组。如果无法获取则可能得到一个 null 值。
      */
     val grouping: String?
+
+    @JvmDefault
+    @Deprecated("Use self.", ReplaceWith("this"))
+    override val accountInfo: AccountInfo
+        get() = this
+
 }
 
 
@@ -44,9 +50,10 @@ public interface FriendList: MultipleResults<FriendInfo>
 /**
  * [FriendInfo] 的空值实现。
  */
-public fun emptyFriendInfo() = object : FriendInfo {
-    override val accountInfo: AccountInfo
-        get() = emptyAccountInfo()
+public fun emptyFriendInfo(): FriendInfo = EmptyFriendInfo
+
+
+private object EmptyFriendInfo : FriendInfo, AccountInfo by emptyAccountInfo() {
     override val originalData: String
         get() = "{}"
     override val grouping: String?
