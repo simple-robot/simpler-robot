@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.mirai.sender
 
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.*
 import love.forte.simbot.api.message.assists.Flag
@@ -32,12 +33,16 @@ import love.forte.simbot.component.mirai.message.event.MiraiFriendRequestFlagCon
 import love.forte.simbot.component.mirai.message.event.MiraiGroupMemberJoinRequestFlagContent
 import love.forte.simbot.core.TypedCompLogger
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.contact.PermissionDeniedException
 import net.mamoe.mirai.message.data.MessageSource.Key.recall
 import java.util.concurrent.TimeUnit
 
 public object MiraiSetterFactory : SetterFactory {
-    override fun getOnMsgSetter(msg: MsgGet): Setter = MiraiSetter(Bot.getInstance(msg.botInfo.botCodeNumber))
-    override fun getOnBotSetter(bot: BotContainer): Setter = MiraiSetter(Bot.getInstance(bot.botInfo.botCodeNumber))
+    override fun getOnMsgSetter(msg: MsgGet, def: Setter.Def): Setter =
+        MiraiSetter(Bot.getInstance(msg.botInfo.botCodeNumber), def)
+
+    override fun getOnBotSetter(bot: BotContainer, def: Setter.Def): Setter =
+        MiraiSetter(Bot.getInstance(bot.botInfo.botCodeNumber), def)
 }
 
 
@@ -47,7 +52,7 @@ public object MiraiSetterFactory : SetterFactory {
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class MiraiSetter(private val bot: Bot) : Setter {
+public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : Setter {
     private companion object : TypedCompLogger(MiraiSetter::class.java) {
         private val setGroupAnonymous0Logger: Int by lazy(LazyThreadSafetyMode.PUBLICATION) {
             logger.warn("It is not supported to modify the anonymous chat status, only to return to the current status. This warning will only appear once.")
@@ -68,9 +73,9 @@ public class MiraiSetter(private val bot: Bot) : Setter {
         return if (f is MiraiFriendRequestFlagContent) {
             val event = f.event
             if (agree) {
-                runBlocking { event.accept() }
+                bot.launch { event.accept() }
             } else {
-                runBlocking { event.reject(blackList) }
+                bot.launch { event.reject(blackList) }
             }
             true.toCarrier()
         } else {
@@ -93,9 +98,9 @@ public class MiraiSetter(private val bot: Bot) : Setter {
             is MiraiGroupMemberJoinRequestFlagContent -> {
                 val event = f.event
                 if (agree) {
-                    runBlocking { event.accept() }
+                    bot.launch { event.accept() }
                 } else {
-                    runBlocking { event.reject(blackList, why ?: "") }
+                    bot.launch { event.reject(blackList, why ?: "") }
                 }
                 true.toCarrier()
             }
@@ -103,10 +108,10 @@ public class MiraiSetter(private val bot: Bot) : Setter {
             is MiraiBotInvitedJoinRequestFlagContent -> {
                 val event = f.event
                 if (agree) {
-                    runBlocking { event.accept() }
+                    bot.launch { event.accept() }
                 } else {
                     // only ignore, no reject.
-                    runBlocking { event.ignore() }
+                    bot.launch { event.ignore() }
                 }
                 true.toCarrier()
             }
@@ -115,23 +120,11 @@ public class MiraiSetter(private val bot: Bot) : Setter {
     }
 
 
-    /**
-     * 设置群管理。
-     */
-    @Deprecated("Api not supported by mirai: changeGroupAdmin")
-    private fun changeGroupAdmin0(): Nothing {
-        throw IllegalStateException("Api not supported by mirai: changeGroupAdmin")
-    }
-
-    @Deprecated("Api not supported by mirai: changeGroupAdmin")
-    @Suppress("DEPRECATION")
     override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> =
-        changeGroupAdmin0()
+        defSetter.setGroupAdmin(groupCode, memberCode, promotion)
 
-    @Deprecated("Api not supported by mirai: changeGroupAdmin")
-    @Suppress("DEPRECATION")
     override fun setGroupAdmin(groupCode: Long, memberCode: Long, promotion: Boolean): Carrier<Boolean> =
-        changeGroupAdmin0()
+        defSetter.setGroupAdmin(groupCode, memberCode, promotion)
 
 
     /**
@@ -160,10 +153,10 @@ public class MiraiSetter(private val bot: Bot) : Setter {
         bot.member(groupCode, memberCode).apply {
             time.takeIf { time > 0 }?.let { t ->
                 val muteTime: Long = t timeBy timeUnit timeAs Seconds
-                runBlocking {
+                bot.launch {
                     this@apply.mute(muteTime.toInt())
                 }
-            } ?: runBlocking {
+            } ?: bot.launch {
                 this@apply.unmute()
             }
         }
@@ -254,7 +247,7 @@ public class MiraiSetter(private val bot: Bot) : Setter {
         memberCode: Long,
         why: String?,
     ): Carrier<Boolean> {
-        runBlocking {
+        bot.launch {
             bot.member(groupCode, memberCode).kick(why ?: "")
         }
         return true.toCarrier()
@@ -310,6 +303,7 @@ public class MiraiSetter(private val bot: Bot) : Setter {
      * 而这个 [flag] 实例必须是 mirai组件所实现的 [MiraiMessageFlag] 类型。
      *
      * @throws IllegalArgumentException 当 [flag] 不是 [MiraiMessageFlag] 类型实例的时候。
+     * @throws PermissionDeniedException 无权操作的时候
      */
     override fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
         return if (flag is MiraiMessageFlag<*>) {
@@ -352,14 +346,16 @@ public class MiraiSetter(private val bot: Bot) : Setter {
      * 删除好友。
      */
     private fun setFriendDelete0(code: Long): Carrier<Boolean> {
-        runBlocking { bot.friend(code).delete() }
+        bot.launch { bot.friend(code).delete() }
         return true.toCarrier()
     }
 
     override fun setFriendDelete(friend: String): Carrier<Boolean> =
         setFriendDelete0(friend.toLong())
+
     override fun setFriendDelete(friend: Long): Carrier<Boolean> =
         setFriendDelete0(friend)
+
     override fun setFriendDelete(friend: AccountCodeContainer): Carrier<Boolean> =
         setFriendDelete0(friend.accountCodeNumber)
 }

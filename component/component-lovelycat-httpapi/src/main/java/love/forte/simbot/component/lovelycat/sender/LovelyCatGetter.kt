@@ -30,7 +30,8 @@ import love.forte.simbot.component.lovelycat.message.result.*
  */
 public class LovelyCatGetter(
     private val botId: String,
-    private val api: LovelyCatApiTemplate
+    private val api: LovelyCatApiTemplate,
+    private val def: Getter
 ) : Getter {
     /**
      * 得到当前bot的权限信息。
@@ -111,13 +112,13 @@ public class LovelyCatGetter(
      * 无法获取禁言列表。
      */
     @Deprecated("Unable to get banned list.")
-    override fun getBanList(group: String, cache: Boolean, limit: Int): BanList = EmptyBanList
+    override fun getBanList(group: String, cache: Boolean, limit: Int) = def.getBanList(group, cache, limit)
 
     /**
      * 无法获取群公告。
      */
     @Deprecated("Unable to get the group note list.")
-    override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList = EmptyGroupNoteList
+    override fun getGroupNoteList(group: String, cache: Boolean, limit: Int) = def.getGroupNoteList(group, cache, limit)
 
 
 
@@ -133,26 +134,26 @@ public class LovelyCatGetter(
 
 
 
-
-/**
- * empty [BanList].
- */
-private object EmptyBanList : BanList {
-    override val originalData: String
-        get() = "EmptyBanList([])"
-
-    override val results: List<BanInfo>
-        get() = emptyList()
-}
-
-
-private object EmptyGroupNoteList : GroupNoteList {
-    override val originalData: String
-        get() = "EmptyGroupNoteList([])"
-
-    override val results: List<GroupNote>
-        get() = emptyList()
-}
+//
+// /**
+//  * empty [BanList].
+//  */
+// private object EmptyBanList : BanList {
+//     override val originalData: String
+//         get() = "EmptyBanList([])"
+//
+//     override val results: List<BanInfo>
+//         get() = emptyList()
+// }
+//
+//
+// private object EmptyGroupNoteList : GroupNoteList {
+//     override val originalData: String
+//         get() = "EmptyGroupNoteList([])"
+//
+//     override val results: List<GroupNote>
+//         get() = emptyList()
+// }
 
 
 

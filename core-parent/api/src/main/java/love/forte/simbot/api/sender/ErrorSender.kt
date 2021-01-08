@@ -50,7 +50,7 @@ object ErrorSender : Sender.Def {
  * [ErrorGetter] 的构建工厂，得到的 [Getter] 实例的所有方法均会抛出异常。
  */
 @get:JvmName("getErrorSenderFactory")
-public val ErrorSenderFactory : SenderFactory = object : SenderFactory {
-    override fun getOnMsgSender(msg: MsgGet): Sender = ErrorSender
-    override fun getOnBotSender(bot: BotContainer): Sender = ErrorSender
+public val ErrorSenderFactory : DefaultSenderFactory = object : DefaultSenderFactory {
+    override fun getOnMsgSender(msg: MsgGet): Sender.Def = ErrorSender
+    override fun getOnBotSender(bot: BotContainer): Sender.Def = ErrorSender
 }

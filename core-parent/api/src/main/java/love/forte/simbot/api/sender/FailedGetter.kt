@@ -52,7 +52,7 @@ public object FailedGetter : Getter.Def {
  * 获取一个总是返回失败默认值的实现类。
  */
 @get:JvmName("getFailedGetterFactory")
-public val FailedGetterFactory : GetterFactory = object: GetterFactory {
-    override fun getOnMsgGetter(msg: MsgGet): Getter = FailedGetter
-    override fun getOnBotGetter(bot: BotContainer): Getter = FailedGetter
+public val FailedGetterFactory : DefaultGetterFactory = object: DefaultGetterFactory {
+    override fun getOnMsgGetter(msg: MsgGet): Getter.Def = FailedGetter
+    override fun getOnBotGetter(bot: BotContainer): Getter.Def = FailedGetter
 }

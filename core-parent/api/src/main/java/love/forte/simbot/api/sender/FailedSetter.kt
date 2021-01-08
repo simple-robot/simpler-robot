@@ -82,8 +82,8 @@ public object FailedSetter : Setter.Def {
  * 获取一个总是返回失败默认值的实现类。
  */
 @get:JvmName("getFailedSetterFactory")
-public val FailedSetterFactory : SetterFactory = object: SetterFactory {
-    override fun getOnMsgSetter(msg: MsgGet): Setter = FailedSetter
-    override fun getOnBotSetter(bot: BotContainer): Setter = FailedSetter
+public val FailedSetterFactory : DefaultSetterFactory = object: DefaultSetterFactory {
+    override fun getOnMsgSetter(msg: MsgGet): Setter.Def = FailedSetter
+    override fun getOnBotSetter(bot: BotContainer): Setter.Def = FailedSetter
 }
 

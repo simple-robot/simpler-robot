@@ -90,9 +90,9 @@ object ErrorSetter : Setter.Def {
  * [ErrorGetter] 的构建工厂，得到的 [Getter] 实例的所有方法均会抛出异常。
  */
 @get:JvmName("getErrorSenderFactory")
-public val ErrorSetterFactory : SetterFactory = object : SetterFactory {
-    override fun getOnMsgSetter(msg: MsgGet): Setter = ErrorSetter
-    override fun getOnBotSetter(bot: BotContainer): Setter = ErrorSetter
+public val ErrorSetterFactory : DefaultSetterFactory = object : DefaultSetterFactory {
+    override fun getOnMsgSetter(msg: MsgGet): Setter.Def = ErrorSetter
+    override fun getOnBotSetter(bot: BotContainer): Setter.Def = ErrorSetter
 }
 
 

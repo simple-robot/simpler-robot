@@ -19,6 +19,7 @@ import love.forte.common.ioc.DependCenter
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.sender.BotSender
+import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.api.sender.toBotSender
 import love.forte.simbot.bot.Bot
@@ -76,7 +77,9 @@ public class MiraiBotVerifier(
 
             val botContainer = BotContainer { MiraiBotInfo(mBot, httpTemplate) }
 
-            val sender = msgSenderFactories.toBotSender(botContainer)
+            val defFactories = dependCenter[DefaultMsgSenderFactories::class.java]
+
+            val sender = msgSenderFactories.toBotSender(botContainer, defFactories)
 
             // if started
             if (miraiBotEventRegistrar.started) {

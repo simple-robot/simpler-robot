@@ -26,12 +26,12 @@ public interface GetterFactory {
     /**
      * 根据一个msg构建一个 [Getter]. 用于在触发监听消息的时候构建其信息。
      */
-    fun getOnMsgGetter(msg: MsgGet): Getter
+    fun getOnMsgGetter(msg: MsgGet, def: Getter.Def): Getter
 
     /**
      * 根据一个bot信息构建一个 [Getter]. 用于构建 [love.forte.simbot.core.bot.Bot] 实例。
      */
-    fun getOnBotGetter(bot: BotContainer): Getter
+    fun getOnBotGetter(bot: BotContainer, def: Getter.Def): Getter
 }
 
 
@@ -42,11 +42,11 @@ public interface SetterFactory {
     /**
      * 根据一个msg构建一个 [Setter]. 用于在触发监听消息的时候构建其信息。
      */
-    fun getOnMsgSetter(msg: MsgGet): Setter
+    fun getOnMsgSetter(msg: MsgGet, def: Setter.Def): Setter
     /**
      * 根据一个bot信息构建一个 [Setter]. 用于构建 [love.forte.simbot.core.bot.Bot] 实例。
      */
-    fun getOnBotSetter(bot: BotContainer): Setter
+    fun getOnBotSetter(bot: BotContainer, def: Setter.Def): Setter
 }
 
 
@@ -59,11 +59,11 @@ public interface SenderFactory {
     /**
      * 根据一个msg构建一个 [Sender]. 用于在触发监听消息的时候构建其信息。
      */
-    fun getOnMsgSender(msg: MsgGet): Sender
+    fun getOnMsgSender(msg: MsgGet, def: Sender.Def): Sender
     /**
      * 根据一个bot信息构建一个 [Sender]. 用于构建 [love.forte.simbot.core.bot.Bot] 实例。
      */
-    fun getOnBotSender(bot: BotContainer): Sender
+    fun getOnBotSender(bot: BotContainer, def: Sender.Def): Sender
 }
 
 
@@ -78,53 +78,38 @@ public interface MsgSenderFactories {
 }
 
 
-
-public inline class GetterFacOnMsg(private val getterFactory: GetterFactory) {
-    operator fun invoke(msg: MsgGet): Getter = getterFactory.getOnMsgGetter(msg)
-}
 public inline class GetterFacOnBot(private val getterFactory: GetterFactory) {
-    operator fun invoke(bot: BotContainer): Getter = getterFactory.getOnBotGetter(bot)
+    operator fun invoke(bot: BotContainer, def: Getter.Def): Getter = getterFactory.getOnBotGetter(bot, def)
 }
 
 public fun GetterFactory.onBot(): GetterFacOnBot = GetterFacOnBot(this)
-public fun GetterFactory.onMsg(): GetterFacOnMsg = GetterFacOnMsg(this)
-public fun GetterFactory.onBot(bot: BotContainer) = this.onBot()(bot)
-public fun GetterFactory.onMsg(msg: MsgGet) = this.onMsg()(msg)
+public fun GetterFactory.onBot(bot: BotContainer, def: Getter.Def) = this.onBot()(bot, def)
 
-public inline class SetterFacOnMsg(private val setterFactory: SetterFactory) {
-    operator fun invoke(msg: MsgGet): Setter = setterFactory.getOnMsgSetter(msg)
-}
 public inline class SetterFacOnBot(private val setterFactory: SetterFactory) {
-    operator fun invoke(bot: BotContainer): Setter = setterFactory.getOnBotSetter(bot)
+    operator fun invoke(bot: BotContainer, def: Setter.Def): Setter = setterFactory.getOnBotSetter(bot, def)
 }
 
 public fun SetterFactory.onBot(): SetterFacOnBot = SetterFacOnBot(this)
-public fun SetterFactory.onMsg(): SetterFacOnMsg = SetterFacOnMsg(this)
-public fun SetterFactory.onBot(bot: BotContainer) = this.onBot()(bot)
-public fun SetterFactory.onMsg(msg: MsgGet) = this.onMsg()(msg)
+public fun SetterFactory.onBot(bot: BotContainer, def: Setter.Def) = this.onBot()(bot, def)
 
-public inline class SenderFacOnMsg(private val senderFactory: SenderFactory) {
-    operator fun invoke(msg: MsgGet): Sender = senderFactory.getOnMsgSender(msg)
-}
 public inline class SenderFacOnBot(private val senderFactory: SenderFactory) {
-    operator fun invoke(bot: BotContainer): Sender = senderFactory.getOnBotSender(bot)
+    operator fun invoke(bot: BotContainer, def: Sender.Def): Sender = senderFactory.getOnBotSender(bot, def)
 }
 
 public fun SenderFactory.onBot(): SenderFacOnBot = SenderFacOnBot(this)
-public fun SenderFactory.onMsg(): SenderFacOnMsg = SenderFacOnMsg(this)
-public fun SenderFactory.onBot(bot: BotContainer) = this.onBot()(bot)
-public fun SenderFactory.onMsg(msg: MsgGet) = this.onMsg()(msg)
-
+public fun SenderFactory.onBot(bot: BotContainer, def: Sender.Def) = this.onBot()(bot, def)
 
 
 /**
  * 通过 [MsgSenderFactories] 构建 BotSender。
  */
-public fun MsgSenderFactories.toBotSender(bot: BotContainer): BotSender {
+public fun MsgSenderFactories.toBotSender(
+    bot: BotContainer, defFactory: DefaultMsgSenderFactories
+): BotSender {
     return BotSender(
-        senderFactory.onBot(bot),
-        setterFactory.onBot(bot),
-        getterFactory.onBot(bot),
+        senderFactory.onBot(bot, defFactory.defaultSenderFactory.getOnBotSender(bot)),
+        setterFactory.onBot(bot, defFactory.defaultSetterFactory.getOnBotSetter(bot)),
+        getterFactory.onBot(bot, defFactory.defaultGetterFactory.getOnBotGetter(bot)),
         bot.botInfo
     )
 }

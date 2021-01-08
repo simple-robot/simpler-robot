@@ -22,7 +22,6 @@ import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.events.FriendAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.message.events.MessageGet
-import love.forte.simbot.api.sender.ErrorSetter
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import java.util.concurrent.TimeUnit
@@ -33,7 +32,8 @@ import java.util.concurrent.TimeUnit
  */
 public class LovelyCatSetter(
     private val botId: String,
-    private val api: LovelyCatApiTemplate
+    private val api: LovelyCatApiTemplate,
+    private val def: Setter
 ) : Setter {
     override fun setFriendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
@@ -56,27 +56,26 @@ public class LovelyCatSetter(
     }
 
     override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> {
-        ErrorSetter.setGroupAdmin(groupCode, memberCode, promotion)
+        return def.setGroupAdmin(groupCode, memberCode, promotion)
     }
 
     override fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean> {
-        ErrorSetter.setGroupAnonymous(group, agree)
+        return def.setGroupAnonymous(group, agree)
     }
 
     override fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean> {
-        ErrorSetter.setGroupBan(groupCode, memberCode, time, timeUnit)
+        return def.setGroupBan(groupCode, memberCode, time, timeUnit)
     }
 
     override fun setGroupWholeBan(groupCode: String, ban: Boolean): Carrier<Boolean> {
-        ErrorSetter.setGroupWholeBan(groupCode, ban)
+        return def.setGroupWholeBan(groupCode, ban)
     }
 
     override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> {
-        ErrorSetter.setGroupRemark(groupCode, memberCode, remark)
+        return def.setGroupRemark(groupCode, memberCode, remark)
     }
 
     override fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> {
-        // val result =
         api.quitGroup(botId, groupCode)
         // check success?
         return true.toCarrier()
@@ -94,11 +93,11 @@ public class LovelyCatSetter(
     }
 
     override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String> {
-        ErrorSetter.setGroupMemberSpecialTitle(groupCode, memberCode, title)
+        return def.setGroupMemberSpecialTitle(groupCode, memberCode, title)
     }
 
     override fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
-        ErrorSetter.setMsgRecall(flag)
+        return def.setMsgRecall(flag)
     }
 
     override fun setGroupName(groupCode: String, name: String): Carrier<String> {

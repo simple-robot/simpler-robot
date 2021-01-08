@@ -14,6 +14,7 @@
 
 package love.forte.simbot.core.listener
 
+import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.exception.ExceptionProcessor
@@ -28,15 +29,6 @@ import love.forte.simbot.listener.ListenerManagerBuilder
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public class CoreListenerManagerBuilder : ListenerManagerBuilder {
-
-    // /** 监听函数列表 */
-    // var listenerFunctions: MutableList<ListenerFunction> = mutableListOf()
-    // /**
-    //  * 注册一个 [监听函数][ListenerFunction]。
-    //  */
-    // override fun register(listenerFunction: ListenerFunction) {
-    //     listenerFunctions.add(listenerFunction)
-    // }
 
     /**
      * at匹配器工厂。
@@ -69,6 +61,11 @@ public class CoreListenerManagerBuilder : ListenerManagerBuilder {
     lateinit var msgSenderFactories: MsgSenderFactories
 
     /**
+     * def msg Sender
+     */
+    lateinit var defMsgSenderFactories: DefaultMsgSenderFactories
+
+    /**
      * bot manager.
      */
     lateinit var botManager: BotManager
@@ -84,6 +81,7 @@ public class CoreListenerManagerBuilder : ListenerManagerBuilder {
             listenerInterceptData,
             listenerContextData,
             msgSenderFactories,
+            defMsgSenderFactories,
             botManager
         )
     }

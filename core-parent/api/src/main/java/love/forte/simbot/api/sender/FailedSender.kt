@@ -49,7 +49,7 @@ public object FailedSender : Sender.Def {
  * 获取一个总是返回失败默认值的实现类。
  */
 @get:JvmName("getFailedSenderFactory")
-public val FailedSenderFactory : SenderFactory = object: SenderFactory {
-    override fun getOnMsgSender(msg: MsgGet): Sender = FailedSender
-    override fun getOnBotSender(bot: BotContainer): Sender = FailedSender
+public val FailedSenderFactory : DefaultSenderFactory = object: DefaultSenderFactory {
+    override fun getOnMsgSender(msg: MsgGet): Sender.Def = FailedSender
+    override fun getOnBotSender(bot: BotContainer): Sender.Def = FailedSender
 }

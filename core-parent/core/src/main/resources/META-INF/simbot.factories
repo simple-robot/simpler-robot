@@ -11,7 +11,7 @@ simbot.autoconfigure.configs=\
   love.forte.simbot.core.configuration.CoreListenerManagerConfiguration,\
   love.forte.simbot.core.configuration.CoreListenResultConfiguration,\
   love.forte.simbot.core.configuration.CoreMethodPostListenerRegistrar,\
-  love.forte.simbot.core.configuration.CoreErrorMsgSenderConfiguration,\
+  love.forte.simbot.core.configuration.CoreDefaultMsgSenderConfiguration,\
   love.forte.simbot.core.configuration.CoreMsgSenderFactoriesConfiguration,\
   love.forte.simbot.core.configuration.CoreSimbotEnvironmentConfiguration,\
   love.forte.simbot.core.configuration.CoreBotRegistrar,\

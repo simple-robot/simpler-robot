@@ -387,6 +387,15 @@ simbot.core.logo.enable=true
 ### feature
 - [#36](https://github.com/ForteScarlet/simpler-robot/issues/36) 优化事件触发机制，当不存在对应的监听函数时，不应当执行事件流程（例如触发拦截器）。
 
+- [#18](https://github.com/ForteScarlet/simpler-robot/issues/18) 提供配置项：
+```properties
+# 默认（遇到不支持的API时使用的）送信器。
+# 是枚举 love.forte.simbot.core.configuration.DefaultSenderType 的元素值。
+# 默认为 'ERROR'，即会抛出一个错误。
+# 目前可选：ERROR (会直接抛出异常)、FAILED (会返回一个默认的失败返回值)
+simbot.core.sender.default.type=ERROR
+
+```
 
 ### fix 
 - [#39](https://github.com/ForteScarlet/simpler-robot/issues/39) 监听函数优先级失效

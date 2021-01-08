@@ -2,10 +2,7 @@ package love.forte.test;
 
 import love.forte.common.configuration.Configuration;
 import love.forte.simbot.annotation.SimbotApplication;
-import love.forte.simbot.api.message.results.GroupMemberInfo;
-import love.forte.simbot.api.message.results.GroupMemberList;
-import love.forte.simbot.api.message.results.SimpleGroupInfo;
-import love.forte.simbot.api.sender.Getter;
+import love.forte.simbot.api.sender.Sender;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.core.SimbotProcess;
@@ -26,21 +23,7 @@ public class Test implements SimbotProcess {
 
     @Override
     public void post(@NotNull SimbotContext context) {
-        Getter getter = context.getBotManager().getDefaultBot().getSender().GETTER;
-
-        for (SimpleGroupInfo group : getter.getGroupList()) {
-            System.out.println("群：" + group.getGroupName() + "("+ group.getGroupCode() +")");
-            GroupMemberList memberList = getter.getGroupMemberList(group);
-            for (GroupMemberInfo member : memberList) {
-                System.out.print("\t");
-                System.out.print("成员：" + member.getAccountRemarkOrNickname() + "("+ member.getAccountCode() +")");
-                String title = member.getAccountTitle();
-                if (title != null) {
-                    System.out.print(" ["+ title +"]");
-                }
-                System.out.println();
-            }
-        }
-
+        Sender s = context.getBotManager().getDefaultBot().getSender().SENDER;
+        System.out.println(s.sendGroupSign(100000, "", ""));
     }
 }

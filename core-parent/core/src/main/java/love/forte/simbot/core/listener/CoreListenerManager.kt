@@ -18,6 +18,7 @@ package love.forte.simbot.core.listener
 import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.simbot.LogAble
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSender
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.BotManager
@@ -90,6 +91,7 @@ public class CoreListenerManager(
     private val listenerContextData: ListenerContextData,
 
     private val msgSenderFactories: MsgSenderFactories,
+    private val defMsgSenderFactories: DefaultMsgSenderFactories,
 
     private val botManager: BotManager,
 
@@ -197,7 +199,7 @@ public class CoreListenerManager(
                         context,
                         atDetectionFactory.getAtDetection(msgGet),
                         botManager.getBot(msgGet.botInfo),
-                        MsgSender(msgGet, msgSenderFactories),
+                        MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories),
                         interceptorChain
                     )
                     func(invokeData)

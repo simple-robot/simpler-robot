@@ -24,7 +24,6 @@ import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.PrivateMsg
-import love.forte.simbot.api.sender.ErrorSender
 import love.forte.simbot.api.sender.Sender
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.component.lovelycat.message.LovelyCatForSendMessageContent
@@ -38,7 +37,8 @@ private object Empty
  */
 public class LovelyCatSender(
     private val botId: String,
-    private val api: LovelyCatApiTemplate
+    private val api: LovelyCatApiTemplate,
+    private val def: Sender
 ) : Sender {
 
     /**
@@ -342,7 +342,7 @@ public class LovelyCatSender(
      */
     @Deprecated("Not support")
     override fun sendGroupSign(group: String, title: String, message: String): Carrier<Boolean> {
-        ErrorSender.sendGroupSign(group, title, message)
+        return def.sendGroupSign(group, title, message)
     }
 }
 

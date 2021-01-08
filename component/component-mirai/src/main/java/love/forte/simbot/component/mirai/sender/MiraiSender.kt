@@ -22,7 +22,6 @@ import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.api.sender.ErrorSender
 import love.forte.simbot.api.sender.Sender
 import love.forte.simbot.api.sender.SenderFactory
 import love.forte.simbot.component.mirai.message.event.MiraiGroupFlagContent
@@ -40,15 +39,16 @@ import net.mamoe.mirai.message.data.MessageChain
 
 
 public object MiraiSenderFactory : SenderFactory {
-    override fun getOnMsgSender(msg: MsgGet): Sender {
+    override fun getOnMsgSender(msg: MsgGet, def: Sender.Def): Sender {
         return if (msg is MiraiMessageMsgGet<*>) {
-            MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber), msg.subject, msg.message)
+            MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber), msg.subject, msg.message, def)
         } else {
-            MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber))
+            MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber), defSender = def)
         }
     }
 
-    override fun getOnBotSender(bot: BotContainer): Sender = MiraiSender(Bot.getInstance(bot.botInfo.botCodeNumber))
+    override fun getOnBotSender(bot: BotContainer, def: Sender.Def): Sender =
+        MiraiSender(Bot.getInstance(bot.botInfo.botCodeNumber), defSender = def)
 }
 
 
@@ -62,7 +62,7 @@ public class MiraiSender(
     /** 当前收到的消息。如果是一个botSender则会为null。 */
     private val message: MessageChain? = null,
     /** 默认送信器。 */
-    private val defSender: Sender = ErrorSender
+    private val defSender: Sender,
 ) : Sender {
 
 
@@ -231,7 +231,7 @@ public class MiraiSender(
      */
     @Deprecated("mirai does not support api: group sign.")
     override fun sendGroupSign(group: String, title: String, message: String): Carrier<Boolean> {
-        ErrorSender.sendGroupSign(group, title, message)
+        return defSender.sendGroupSign(group, title, message)
     }
 
     /**
@@ -240,7 +240,6 @@ public class MiraiSender(
      */
     @Deprecated("mirai does not support api: group sign.")
     override fun sendGroupSign(group: Long, title: String, message: String): Carrier<Boolean> {
-        ErrorSender.sendGroupSign(group, title, message)
-        return false.toCarrier()
+        return defSender.sendGroupSign(group, title, message)
     }
 }

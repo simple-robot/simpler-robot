@@ -13,6 +13,7 @@
  */
 
 @file:JvmName("MsgSenderUtil")
+
 package love.forte.simbot.api.sender
 
 import love.forte.common.utils.Carrier
@@ -31,23 +32,25 @@ import love.forte.simbot.api.message.events.MsgGet
 public open class MsgSender(
     @JvmField val SENDER: Sender,
     @JvmField val SETTER: Setter,
-    @JvmField val GETTER: Getter
+    @JvmField val GETTER: Getter,
 ) {
     /** 撤回消息。 */
     public open fun recall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean> = SETTER.setMsgRecall(flag)
 
 
-
 }
 
 
-public fun MsgSender(msgGet: MsgGet, factories: MsgSenderFactories): MsgSender = with(msgGet) {
-    val sender = factories.senderFactory.getOnMsgSender(this)
-    val setter = factories.setterFactory.getOnMsgSetter(this)
-    val getter = factories.getterFactory.getOnMsgGetter(this)
+public fun MsgSender(
+    msgGet: MsgGet,
+    factories: MsgSenderFactories,
+    defFactories: DefaultMsgSenderFactories,
+): MsgSender = with(msgGet) {
+    val sender = factories.senderFactory.getOnMsgSender(this, defFactories.defaultSenderFactory.getOnMsgSender(this))
+    val setter = factories.setterFactory.getOnMsgSetter(this, defFactories.defaultSetterFactory.getOnMsgSetter(this))
+    val getter = factories.getterFactory.getOnMsgGetter(this, defFactories.defaultGetterFactory.getOnMsgGetter(this))
     MsgSender(sender, setter, getter)
 }
-
 
 
 /**
@@ -57,5 +60,5 @@ public open class BotSender(
     sender: Sender,
     setter: Setter,
     getter: Getter,
-    override val botInfo: BotInfo
+    override val botInfo: BotInfo,
 ) : MsgSender(sender, setter, getter), BotContainer

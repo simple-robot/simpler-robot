@@ -33,18 +33,18 @@ public class LovelyCatSetterFactory(private val apiManager: LovelyCatApiManager)
     /**
      * 根据一个msg构建一个 [Sender]. 用于在触发监听消息的时候构建其信息。
      */
-    override fun getOnMsgSetter(msg: MsgGet): Setter {
+    override fun getOnMsgSetter(msg: MsgGet, def: Setter.Def): Setter {
         val botCode = msg.botInfo.botCode
         val api = apiManager[botCode] ?: throw IllegalStateException("cannot found bot($botCode)'s api.")
-        return LovelyCatSetter(botCode, api)
+        return LovelyCatSetter(botCode, api, def)
     }
 
     /**
      * 根据一个bot信息构建一个 [Sender]. 用于构建 [love.forte.simbot.core.bot.Bot] 实例。
      */
-    override fun getOnBotSetter(bot: BotContainer): Setter {
+    override fun getOnBotSetter(bot: BotContainer, def: Setter.Def): Setter {
         val botCode = bot.botInfo.botCode
         val api = apiManager[botCode] ?: throw IllegalStateException("cannot found bot($botCode)'s api.")
-        return LovelyCatSetter(botCode, api)
+        return LovelyCatSetter(botCode, api, def)
     }
 }

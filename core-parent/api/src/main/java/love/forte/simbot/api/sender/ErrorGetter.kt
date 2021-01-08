@@ -61,7 +61,7 @@ public object ErrorGetter : Getter.Def {
  * [ErrorGetter] 的构建工厂，得到的 [Getter] 实例的所有方法均会抛出异常。
  */
 @get:JvmName("getErrorGetterFactory")
-public val ErrorGetterFactory : GetterFactory = object : GetterFactory {
-    override fun getOnMsgGetter(msg: MsgGet): Getter = ErrorGetter
-    override fun getOnBotGetter(bot: BotContainer): Getter = ErrorGetter
+public val ErrorGetterFactory : DefaultGetterFactory = object : DefaultGetterFactory {
+    override fun getOnMsgGetter(msg: MsgGet): Getter.Def = ErrorGetter
+    override fun getOnBotGetter(bot: BotContainer): Getter.Def = ErrorGetter
 }

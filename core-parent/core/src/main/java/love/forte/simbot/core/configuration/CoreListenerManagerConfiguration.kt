@@ -16,6 +16,7 @@ package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
+import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.core.listener.CoreListenerManagerBuilder
@@ -52,18 +53,29 @@ public class CoreListenerManagerConfiguration {
     lateinit var msgSenderFactories: MsgSenderFactories
 
     @Depend
+    lateinit var defMsgSenderFactories: DefaultMsgSenderFactories
+
+    @Depend
     lateinit var botManager: BotManager
 
-    @Depend lateinit var msgInterceptContextFactory: MsgInterceptContextFactory // for msgInterceptData
-    @Depend lateinit var msgInterceptChainFactory: MsgInterceptChainFactory // for msgInterceptData
+    @Depend
+    lateinit var msgInterceptContextFactory: MsgInterceptContextFactory // for msgInterceptData
+
+    @Depend
+    lateinit var msgInterceptChainFactory: MsgInterceptChainFactory // for msgInterceptData
 
 
-    @Depend lateinit var listenerInterceptContextFactory: ListenerInterceptContextFactory // for ListenerInterceptData
-    @Depend lateinit var listenerInterceptChainFactory: ListenerInterceptChainFactory // for ListenerInterceptData
+    @Depend
+    lateinit var listenerInterceptContextFactory: ListenerInterceptContextFactory // for ListenerInterceptData
 
-    @Depend lateinit var listenerContextFactory: ListenerContextFactory // for ListenerContextData
-    @Depend lateinit var contextMapFactory: ContextMapFactory // for ListenerContextData
+    @Depend
+    lateinit var listenerInterceptChainFactory: ListenerInterceptChainFactory // for ListenerInterceptData
 
+    @Depend
+    lateinit var listenerContextFactory: ListenerContextFactory // for ListenerContextData
+
+    @Depend
+    lateinit var contextMapFactory: ContextMapFactory // for ListenerContextData
 
 
     /**
@@ -98,6 +110,7 @@ public class CoreListenerManagerConfiguration {
             it.listenerContextData = listenerContextData
 
             it.msgSenderFactories = msgSenderFactories
+            it.defMsgSenderFactories = defMsgSenderFactories
 
             it.botManager = botManager
         }
