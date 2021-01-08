@@ -17,7 +17,7 @@ package love.forte.simbot.component.mirai.message.result
 import love.forte.common.utils.timeBy
 import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.AccountContainer
-import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.results.BanInfo
 import love.forte.simbot.api.message.results.BanList
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
@@ -54,6 +54,6 @@ public class MiraiBanList(group: Group, limit: Int = -1) : BanList {
 public class MiraiBanInfo(member: NormalMember) : BanInfo, AccountContainer {
     override val lastTime: Long = (member.muteTimeRemaining timeBy TimeUnit.SECONDS).toMillis()
     override val originalData: String = "MiraiBanInfo(member=$member)"
-    override val accountInfo: AccountInfo = MiraiMemberAccountInfo(member)
+    override val accountInfo: GroupAccountInfo = MiraiMemberAccountInfo(member)
     override val permission: Permissions = member.toSimbotPermissions()
 }

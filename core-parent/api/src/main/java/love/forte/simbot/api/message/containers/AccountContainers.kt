@@ -112,9 +112,10 @@ public interface AccountInfo : Container, AccountNameContainer, AccountAvatarCon
 
 
 public fun emptyAccountInfo() : AccountInfo = EmptyAccountInfo
+public fun emptyGroupAccountInfo() : GroupAccountInfo = EmptyAccountInfo
 
 
-private object EmptyAccountInfo : AccountInfo {
+private object EmptyAccountInfo : GroupAccountInfo {
     override val accountCode: String
         get() = ""
     override val accountNickname: String?
@@ -123,8 +124,11 @@ private object EmptyAccountInfo : AccountInfo {
         get() = null
     override val accountAvatar: String?
         get() = null
+    override val accountTitle: String?
+        get() = null
+
     override fun toString(): String {
-        return "EmptyAccountInfo"
+        return "EmptyAccountInfo()"
     }
 }
 

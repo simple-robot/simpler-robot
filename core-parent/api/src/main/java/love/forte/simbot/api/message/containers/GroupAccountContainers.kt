@@ -74,7 +74,15 @@ public interface GroupAccountMuteContainer : Container {
 public interface GroupAccountInfo : Container, AccountInfo,
     GroupAccountNameContainer, GroupAccountAvatarContainer,
     GroupAccountCodeContainer, GroupAccountTitleContainer,
-    GroupAccountMuteContainer, AnonymousContainer {
+    AnonymousContainer {
+
+    /**
+     * 群用户的头衔。在不支持的情况下将会得到 `null`。
+     *
+     * 有些情况下，支持获取但是可能会得到空字符串。
+     */
+    override val accountTitle: String?
+
 
     /**
      * 判断当前用户是否为 ** 匿名用户 **，当不支持匿名的时候则会恒返回 `false`。

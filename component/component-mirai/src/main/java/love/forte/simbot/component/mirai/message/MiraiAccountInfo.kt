@@ -14,7 +14,6 @@
 
 package love.forte.simbot.component.mirai.message
 
-import love.forte.common.utils.secondToMill
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
@@ -103,16 +102,6 @@ public data class MiraiMemberAccountInfo(private val memberId: Long, private val
      */
     override val accountTitle: String
         get() = _member.specialTitle
-
-    /**
-     * 禁言信息容器，在不支持的情况下（用户为匿名用户时）得到 `-1`。
-     */
-    override val muteTime: Long
-        get() = with(_member) {
-            if (this is NormalMember) {
-                muteTimeRemaining.secondToMill()
-            } else -1
-        }
 
     override val anonymous: Boolean
         get() = _member is AnonymousMember

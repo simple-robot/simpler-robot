@@ -12,30 +12,30 @@
  *
  */
 
-@file:JvmName("#ErrorMsgSenders")
-
+@file:JvmName("ErrorMsgSenders")
 package love.forte.simbot.api.sender
 
 import love.forte.common.utils.Carrier
 import love.forte.common.utils.toCarrier
+import love.forte.simbot.api.SimbotApiException
 
 
-public class UnusableSenderException : RuntimeException {
+public class UnusableApiException : SimbotApiException {
     constructor() : super()
     constructor(message: String?) : super(message)
     constructor(message: String?, cause: Throwable?) : super(message, cause)
     constructor(cause: Throwable?) : super(cause)
-    constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
-        message,
-        cause,
-        enableSuppression,
-        writableStackTrace
-    )
+    // constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+    //     message,
+    //     cause,
+    //     enableSuppression,
+    //     writableStackTrace
+    // )
 }
 
 
 @Suppress("FunctionName", "NOTHING_TO_INLINE")
-internal inline fun NO(api: String): Nothing = throw UnusableSenderException("This sender api cannot be used: $api")
+internal inline fun NO(api: String): Nothing = throw UnusableApiException("This api cannot be used: $api")
 
 
 internal inline val FalseCarrier: Carrier<Boolean> get() = false.toCarrier()

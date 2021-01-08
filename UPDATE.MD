@@ -372,6 +372,8 @@ simbot.core.logo.enable=true
 
 ## BETA.8
 
+### 核心
+- [#40](https://github.com/ForteScarlet/simpler-robot/issues/40) 为`群成员`等相关的信息提供一些额外的参数，例如用户头衔`accountTitle`，生效于与群成员有关的地方，例如群聊消息、获取到的群成员列表信息等。
 
 ### 可爱猫
 - 优化springboot-starter，如果不加 `@EnableSimbot` 不会再报错了。

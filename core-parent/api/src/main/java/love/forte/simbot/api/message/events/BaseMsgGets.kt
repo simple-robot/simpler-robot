@@ -84,7 +84,7 @@ public val MsgGetMainListenerTypes: Set<Class<out MsgGet>> =
  *
  */
 @ParentListenerType("所有监听类型的父接口")
-public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer {
+public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer, TimeContainer {
     /** 当前监听事件消息的ID。一般情况下应当是一个唯一ID。 */
     val id: String
 
@@ -129,7 +129,7 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer 
 
 
     /** 消息接收到的时间。一般是一个毫秒时间戳。 */
-    val time: Long
+    override val time: Long
 
 
     /** 应当重写toString方法 */

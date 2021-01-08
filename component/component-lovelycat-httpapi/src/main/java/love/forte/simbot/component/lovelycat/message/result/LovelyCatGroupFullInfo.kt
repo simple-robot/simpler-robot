@@ -14,7 +14,7 @@
 
 package love.forte.simbot.component.lovelycat.message.result
 
-import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.results.GroupAdmin
 import love.forte.simbot.api.message.results.GroupFullInfo
@@ -63,14 +63,12 @@ public class LovelyCatGroupFullInfo(
         get() = emptyList()
 }
 
-private object NonGroupOwner : GroupOwner {
-    override val accountInfo: AccountInfo
-        get() = NonGroupOwnerAccountInfo
+private object NonGroupOwner : GroupOwner, GroupAccountInfo by NonGroupOwnerAccountInfo {
     override fun toString(): String {
         return "NonGroupOwner(Unable to determine the group owner information.)"
     }
 }
-private object NonGroupOwnerAccountInfo : AccountInfo {
+private object NonGroupOwnerAccountInfo : GroupAccountInfo {
     override val accountCode: String
         get() = ""
     override val accountNickname: String?
@@ -78,6 +76,8 @@ private object NonGroupOwnerAccountInfo : AccountInfo {
     override val accountRemark: String?
         get() = null
     override val accountAvatar: String?
+        get() = null
+    override val accountTitle: String?
         get() = null
 
     override fun toString(): String {

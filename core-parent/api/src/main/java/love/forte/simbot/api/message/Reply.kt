@@ -33,6 +33,7 @@ import love.forte.common.collections.arraySetOf
  *
  *
  */
+@Deprecated("TODO 尚待实现")
 public data class Reply
 internal constructor(
     val reply: String,

@@ -20,6 +20,7 @@ import love.forte.simbot.api.message.assists.ActionMotivations
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.FlagContent
 import love.forte.simbot.api.message.assists.Permissions
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -67,6 +68,75 @@ public interface AnonymousContainer : Container {
      */
     val anonymous: Boolean
 }
+
+
+/**
+ * 禁言时间容器，代表此容器能够获得一个 **禁言时间（毫秒值）**。
+ */
+public interface MuteTimeContainer : Container {
+    /**
+     * (剩余的)禁言时间。当不支持或无法获取的时候返回 `-1`。
+     */
+    val muteTime: Long
+}
+
+
+/**
+ * 时间容器，代表此容器能够获得一个 **时间（毫秒值）**。
+ */
+public interface TimeContainer : Container {
+    /**
+     * 获取时间。少数获取不到的情况下会返回`-1`, 但是一般大多数情况以当前时间戳代替。
+     * 不出意外，此值代表毫秒值。
+     */
+    val time: Long
+
+
+    /**
+     * 根据给定的时间格式进行时间转化。不出意外的话，其中的[TimeUnit]必然是[TimeUnit.MILLISECONDS]。
+     *
+     * In Kotlin:
+     *
+     * ```kotlin
+     *
+     * // Demo1.kt
+     *
+     * val timeContainer: TimeContainer = ...
+     * // 获取时间的秒值信息。
+     * val secondTime = t.time { ::toSeconds }
+     *
+     * println(secondTime)
+     *
+     * ```
+     *
+     * In Java:
+     *
+     * ```java
+     *
+     * // Demo2.java
+     *
+     * TimeContainer timeContainer = ...;
+     * // 获取时间对应的秒值。
+     * long second = timeContainer.getTime(unit -> unit::toSeconds);
+     *
+     * System.out.println(second);
+     *
+     * ```
+     *
+     */
+    @JvmDefault
+    fun <N> getTime(unit: TimeUnit.() -> ((Long) -> N)): N = unit(TimeUnit.MILLISECONDS)(time)
+
+    companion object {
+        @JvmSynthetic
+        inline fun <N> TimeContainer.time(unit: TimeUnit.() -> ((Long) -> N)): N = unit(TimeUnit.MILLISECONDS)(time)
+    }
+
+}
+
+
+
+
 
 
 /**

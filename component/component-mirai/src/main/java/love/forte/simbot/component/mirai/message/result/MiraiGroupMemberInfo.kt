@@ -15,7 +15,7 @@
 package love.forte.simbot.component.mirai.message.result
 
 import love.forte.simbot.api.message.assists.Permissions
-import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.results.GroupAdmin
 import love.forte.simbot.api.message.results.GroupMemberInfo
@@ -27,16 +27,15 @@ import net.mamoe.mirai.contact.Member
 /**
  * mirai 的 [GroupMemberInfo] 实现。
  */
-public class MiraiGroupMemberInfo(member: Member) : GroupMemberInfo {
-
+public class MiraiGroupMemberInfo(member: Member) :
+    GroupMemberInfo,
+    GroupAccountInfo by MiraiMemberAccountInfo(member) {
 
 
     override val originalData: String = member.toString()
     override fun toString(): String = "MiraiGroupMemberInfo(original=$originalData)"
 
     override val groupInfo: GroupInfo = MiraiGroupInfo(member.group)
-
-    override val accountInfo: AccountInfo = MiraiMemberAccountInfo(member)
 
     override val permission: Permissions = member.toSimbotPermissions()
 }
@@ -45,14 +44,10 @@ public class MiraiGroupMemberInfo(member: Member) : GroupMemberInfo {
 /**
  * 将一个 member 作为 管理员。
  */
-public class MiraiGroupAdminInfo(member: Member) : GroupAdmin {
-    override val accountInfo: AccountInfo = MiraiMemberAccountInfo(member)
-}
+public class MiraiGroupAdminInfo(member: Member) : GroupAdmin, GroupAccountInfo by MiraiMemberAccountInfo(member)
 
 
 /**
  * 将一个 member 作为 群主。
  */
-public class MiraiGroupOwnerInfo(member: Member) : GroupOwner {
-    override val accountInfo: AccountInfo = MiraiMemberAccountInfo(member)
-}
+public class MiraiGroupOwnerInfo(member: Member) : GroupOwner, GroupAccountInfo by MiraiMemberAccountInfo(member)

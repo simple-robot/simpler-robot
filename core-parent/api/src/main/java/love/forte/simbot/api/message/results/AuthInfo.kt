@@ -85,6 +85,10 @@ private object EmptyAuthInfo : AuthInfo {
     override val originalData: String
         get() = "{}"
 
+    override fun toString(): String {
+        return "EmptyAuthInfo()"
+    }
+
     /**
      * 空值实现。
      */
