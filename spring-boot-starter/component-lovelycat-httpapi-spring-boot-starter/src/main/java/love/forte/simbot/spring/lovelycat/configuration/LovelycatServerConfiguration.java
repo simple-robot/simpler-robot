@@ -16,14 +16,17 @@
 
 package love.forte.simbot.spring.lovelycat.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import love.forte.simbot.component.lovelycat.configuration.LovelyCatServerProperties;
 import love.forte.simbot.spring.autoconfigure.properties.SimbotCompLovelycatServerProperties;
 import love.forte.simbot.spring.lovelycat.server.LovelyCatServer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -57,6 +60,13 @@ public class LovelycatServerConfiguration {
     @ConditionalOnMissingBean
     public RestTemplate restTemplate(){
         return new RestTemplate();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnBean(Jackson2ObjectMapperBuilder.class)
+    public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder){
+        return builder.build();
     }
 
 }

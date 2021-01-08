@@ -17,7 +17,7 @@ package love.forte.simbot.component.mirai.message.event
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.Permissions
-import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.component.mirai.message.*
@@ -35,7 +35,7 @@ public class MiraiGroupMsg(event: GroupMessageEvent) :
 
     private val miraiGroupMemberInfo = MiraiMemberAccountInfo(event.sender)
 
-    override val accountInfo: AccountInfo
+    override val accountInfo: GroupAccountInfo
         get() = miraiGroupMemberInfo
 
     override val groupInfo: GroupInfo

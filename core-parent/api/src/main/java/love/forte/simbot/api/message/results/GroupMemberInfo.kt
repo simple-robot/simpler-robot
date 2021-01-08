@@ -29,6 +29,7 @@ import love.forte.simbot.api.message.containers.*
 public interface GroupMemberInfo : Result, GroupContainer, AccountContainer, PermissionContainer
 
 
+
 /**
  * 群成员列表。
  */

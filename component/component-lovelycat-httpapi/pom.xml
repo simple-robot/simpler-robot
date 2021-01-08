@@ -21,6 +21,12 @@
         <dependency>
             <groupId>love.forte.simple-robot.http</groupId>
             <artifactId>client-ktor</artifactId>
+            <!--<exclusions>-->
+            <!--    <exclusion>-->
+            <!--        <groupId>love.forte.simple-robot.serialization</groupId>-->
+            <!--        <artifactId>json-fastjson</artifactId>-->
+            <!--    </exclusion>-->
+            <!--</exclusions>-->
         </dependency>
 
         <dependency>
@@ -38,6 +44,10 @@
             <artifactId>json-core</artifactId>
         </dependency>
 
+        <!--<dependency>-->
+        <!--    <groupId>love.forte.simple-robot.serialization</groupId>-->
+        <!--    <artifactId>json-jackson</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>love.forte.simple-robot.serialization</groupId>
             <artifactId>json-fastjson</artifactId>

@@ -20,6 +20,7 @@ import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.*
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
@@ -80,7 +81,8 @@ public class LovelyCatTextAbleGroupMsgEvent(
     /**
      * 账号的信息。
      */
-    override val accountInfo: AccountInfo = lovelyCatAccountInfo(finalFromWxid, finalFromName)
+    override val accountInfo: GroupAccountInfo =
+        lovelyCatGroupAccountInfo(accountCode = finalFromWxid, accountNickname = finalFromName, accountTitle = null)
 
     /**
      * 群信息。

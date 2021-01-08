@@ -60,7 +60,9 @@ public class MiraiSender(
     /** 当前收到的消息的实例。如果是一个botSender则会为null。 */
     private val contact: Contact? = null,
     /** 当前收到的消息。如果是一个botSender则会为null。 */
-    private val message: MessageChain? = null
+    private val message: MessageChain? = null,
+    /** 默认送信器。 */
+    private val defSender: Sender = ErrorSender
 ) : Sender {
 
 
@@ -150,7 +152,7 @@ public class MiraiSender(
     override fun sendPrivateMsg(
         code: String,
         group: String?,
-        msg: MessageContent
+        msg: MessageContent,
     ): Carrier<Flag<MiraiPrivateFlagContent>> =
         sendPrivateMsg0(code.toLong(), group?.toLong(), msg)
 
@@ -160,14 +162,14 @@ public class MiraiSender(
     override fun sendPrivateMsg(
         code: AccountCodeContainer,
         group: GroupCodeContainer?,
-        msg: MessageContent
+        msg: MessageContent,
     ): Carrier<Flag<MiraiPrivateFlagContent>> =
         sendPrivateMsg0(code.accountCodeNumber, group?.groupCodeNumber, msg)
 
     override fun sendPrivateMsg(
         code: AccountCodeContainer,
         group: GroupCodeContainer?,
-        msg: String
+        msg: String,
     ): Carrier<Flag<MiraiPrivateFlagContent>> =
         sendPrivateMsg0(code.accountCodeNumber, group?.groupCodeNumber, msg.toMiraiMessageContent(message))
 
@@ -180,7 +182,7 @@ public class MiraiSender(
     private fun setGroupNewMemberNotice0(
         group: Long,
         title: String?,
-        text: String?
+        text: String?,
     ): Carrier<Boolean> {
         val builder = StringBuilder()
         title?.let { builder.append(it).appendLine().appendLine() }
@@ -197,10 +199,11 @@ public class MiraiSender(
         popUp: Boolean,
         top: Boolean,
         toNewMember: Boolean,
-        confirm: Boolean
+        confirm: Boolean,
     ): Carrier<Boolean> =
         if (toNewMember) setGroupNewMemberNotice0(group, title, text)
         else false.toCarrier()
+
     override fun sendGroupNotice(
         group: String,
         title: String?,
@@ -208,8 +211,9 @@ public class MiraiSender(
         popUp: Boolean,
         top: Boolean,
         toNewMember: Boolean,
-        confirm: Boolean
+        confirm: Boolean,
     ): Carrier<Boolean> = sendGroupNotice(group.toLong(), title, text, popUp, top, toNewMember, confirm)
+
     override fun sendGroupNotice(
         group: GroupCodeContainer,
         title: String?,
@@ -217,7 +221,7 @@ public class MiraiSender(
         popUp: Boolean,
         top: Boolean,
         toNewMember: Boolean,
-        confirm: Boolean
+        confirm: Boolean,
     ): Carrier<Boolean> = sendGroupNotice(group.groupCodeNumber, title, text, popUp, top, toNewMember, confirm)
 
 
@@ -229,6 +233,7 @@ public class MiraiSender(
     override fun sendGroupSign(group: String, title: String, message: String): Carrier<Boolean> {
         ErrorSender.sendGroupSign(group, title, message)
     }
+
     /**
      * mirai 不支持群签到。
      * （mirai v1.3.2）

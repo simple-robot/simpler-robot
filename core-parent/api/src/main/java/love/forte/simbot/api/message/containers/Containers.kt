@@ -57,6 +57,17 @@ public interface PermissionContainer : Container {
 }
 
 
+/**
+ * 匿名容器，代表此容器是 **可能匿名的**。
+ */
+@ContainerType("可匿名容器")
+public interface AnonymousContainer : Container {
+    /**
+     * 当前是否为 **匿名** 状态。
+     */
+    val anonymous: Boolean
+}
+
 
 /**
  * 标识容器。定义可以得到一个标识。

@@ -14,13 +14,12 @@
 
 package love.forte.simbot.component.mirai.message
 
+import love.forte.common.utils.secondToMill
 import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import net.mamoe.mirai.Bot
-import net.mamoe.mirai.contact.Friend
-import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.contact.Member
-import net.mamoe.mirai.contact.nameCardOrNick
+import net.mamoe.mirai.contact.*
 
 
 /**
@@ -68,7 +67,7 @@ public data class MiraiFriendAccountInfo(private val friendId: Long, private val
 /**
  * 基于 mirai [Member] 的 [AccountInfo] 实现。
  */
-public data class MiraiMemberAccountInfo(private val memberId: Long, private val member: Member?) : AccountInfo, GroupInfo {
+public data class MiraiMemberAccountInfo(private val memberId: Long, private val member: Member?) : GroupAccountInfo, GroupInfo {
 
     constructor(member: Member) : this(member.id, member)
 
@@ -98,6 +97,25 @@ public data class MiraiMemberAccountInfo(private val memberId: Long, private val
 
     override val accountNicknameAndRemark: String
         get() = super.accountNicknameAndRemark
+
+    /**
+     * 获取此用户的群头衔。
+     */
+    override val accountTitle: String
+        get() = _member.specialTitle
+
+    /**
+     * 禁言信息容器，在不支持的情况下（用户为匿名用户时）得到 `-1`。
+     */
+    override val muteTime: Long
+        get() = with(_member) {
+            if (this is NormalMember) {
+                muteTimeRemaining.secondToMill()
+            } else -1
+        }
+
+    override val anonymous: Boolean
+        get() = _member is AnonymousMember
 
     /**
      * 得到账号的头像地址.

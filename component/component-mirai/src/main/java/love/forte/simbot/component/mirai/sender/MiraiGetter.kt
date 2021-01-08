@@ -20,6 +20,7 @@ import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.containers.GroupCodeContainer
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.results.*
+import love.forte.simbot.api.sender.ErrorGetter
 import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.api.sender.GetterFactory
 import love.forte.simbot.component.mirai.message.result.*
@@ -29,10 +30,15 @@ import net.mamoe.mirai.Bot
 
 public class MiraiGetterFactory(private val http: HttpTemplate) : GetterFactory {
     override fun getOnMsgGetter(msg: MsgGet): Getter = MiraiGetter(Bot.getInstance(msg.botInfo.botCodeNumber), http)
-    override fun getOnBotGetter(bot: BotContainer): Getter = MiraiGetter(Bot.getInstance(bot.botInfo.botCodeNumber), http)
+    override fun getOnBotGetter(bot: BotContainer): Getter =
+        MiraiGetter(Bot.getInstance(bot.botInfo.botCodeNumber), http)
 }
 
-public class MiraiGetter(private val bot: Bot, private val http: HttpTemplate) : Getter {
+public class MiraiGetter(
+    private val bot: Bot,
+    private val http: HttpTemplate,
+    private val defGetter: Getter = ErrorGetter,
+) : Getter {
     override val authInfo: AuthInfo
         get() = MiraiAuthInfo(AndroidBotCookieUtils.cookies(bot))
 
@@ -49,14 +55,16 @@ public class MiraiGetter(private val bot: Bot, private val http: HttpTemplate) :
     override fun getFriendInfo(code: AccountCodeContainer): FriendInfo = getFriendInfo(code.accountCodeNumber)
 
 
-
     /**
      * mirai - 群友信息。
      */
     private fun getMemberInfo0(group: Long, code: Long): GroupMemberInfo {
         return MiraiGroupMemberInfo(bot.member(group, code))
     }
-    override fun getMemberInfo(group: String, code: String): GroupMemberInfo = getMemberInfo0(group.toLong(), code.toLong())
+
+    override fun getMemberInfo(group: String, code: String): GroupMemberInfo =
+        getMemberInfo0(group.toLong(), code.toLong())
+
     override fun getMemberInfo(group: Long, code: Long): GroupMemberInfo = getMemberInfo0(group, code)
     override fun getMemberInfo(group: GroupCodeContainer, code: AccountCodeContainer): GroupMemberInfo =
         getMemberInfo(group.groupCodeNumber, code.accountCodeNumber)
@@ -81,10 +89,13 @@ public class MiraiGetter(private val bot: Bot, private val http: HttpTemplate) :
      */
     private fun getGroupMemberList0(group: Long, limit: Int): GroupMemberList =
         MiraiGroupMemberList(bot.group(group), limit)
+
     override fun getGroupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList =
         getGroupMemberList0(group.toLong(), limit)
+
     override fun getGroupMemberList(group: Long, cache: Boolean, limit: Int): GroupMemberList =
         getGroupMemberList0(group, limit)
+
     override fun getGroupMemberList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupMemberList =
         getGroupMemberList(group.groupCodeNumber, cache, limit)
 
@@ -106,12 +117,12 @@ public class MiraiGetter(private val bot: Bot, private val http: HttpTemplate) :
     private fun getGroupNoteList0(group: Long): GroupNoteList = MiraiGroupNoteList(bot.group(group))
     override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList =
         getGroupNoteList0(group.toLong())
+
     override fun getGroupNoteList(group: Long, cache: Boolean, limit: Int): GroupNoteList =
         getGroupNoteList0(group)
 
     override fun getGroupNoteList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupNoteList =
         getGroupNoteList(group.groupCodeNumber, cache, limit)
-
 
 
 }

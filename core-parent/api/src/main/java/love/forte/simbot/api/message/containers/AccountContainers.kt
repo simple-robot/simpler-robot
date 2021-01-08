@@ -113,6 +113,7 @@ public interface AccountInfo : Container, AccountNameContainer, AccountAvatarCon
 
 public fun emptyAccountInfo() : AccountInfo = EmptyAccountInfo
 
+
 private object EmptyAccountInfo : AccountInfo {
     override val accountCode: String
         get() = ""

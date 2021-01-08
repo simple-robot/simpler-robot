@@ -179,6 +179,12 @@
                 <artifactId>component-mirai-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
+                <artifactId>component-lovelycat-httpapi-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!--</editor-fold>-->
 
             <!--</editor-fold>-->

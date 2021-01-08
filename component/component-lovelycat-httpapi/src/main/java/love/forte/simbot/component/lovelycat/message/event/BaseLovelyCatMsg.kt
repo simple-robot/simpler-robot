@@ -18,6 +18,7 @@ package love.forte.simbot.component.lovelycat.message.event
 
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
@@ -115,6 +116,26 @@ public fun lovelyCatAccountInfo(
 
 
 /**
+ * 根据具体参数构建一个data class.
+ * @param accountCode String
+ * @param accountNickname String?
+ * @param accountRemark String?
+ * @param accountAvatar String?
+ * @return AccountInfo
+ */
+@JvmOverloads
+public fun lovelyCatGroupAccountInfo(
+    accountCode: String,
+    accountNickname: String? = null,
+    accountRemark: String? = null,
+    accountAvatar: String? = null,
+    accountTitle: String? = null,
+    muteTime: Long = -1
+): GroupAccountInfo =
+    LovelyCatGroupAccountInfo(accountCode, accountNickname, accountRemark, accountAvatar, accountTitle, muteTime)
+
+
+/**
  * simple data class instance for [AccountInfo].
  *
  * @property accountCode String
@@ -129,6 +150,25 @@ private data class LovelyCatAccountInfo(
     override val accountRemark: String?,
     override val accountAvatar: String?
 ) : AccountInfo
+
+
+/**
+ * simple data class instance for [GroupAccountInfo].
+ *
+ * @property accountCode String
+ * @property accountNickname String?
+ * @property accountRemark String?
+ * @property accountAvatar String?
+ * @constructor
+ */
+private data class LovelyCatGroupAccountInfo(
+    override val accountCode: String,
+    override val accountNickname: String?,
+    override val accountRemark: String?,
+    override val accountAvatar: String?,
+    override val accountTitle: String?,
+    override val muteTime: Long
+) : GroupAccountInfo
 
 
 /**

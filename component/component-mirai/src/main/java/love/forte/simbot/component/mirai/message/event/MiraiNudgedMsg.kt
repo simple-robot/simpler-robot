@@ -16,6 +16,7 @@ package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.PrivateMsg
@@ -39,7 +40,7 @@ public class MiraiBotGroupNudgedByMemberMsg constructor(
     GroupMsg {
     override val id: String = "${event.from.id}.${event.bot.id}"
 
-    override val accountInfo: AccountInfo = MiraiMemberAccountInfo(member)
+    override val accountInfo: GroupAccountInfo = MiraiMemberAccountInfo(member)
 
     /** 头像戳一戳消息属于系统消息。 */
     override val groupMsgType: GroupMsg.Type get() = GroupMsg.Type.SYS
@@ -83,7 +84,7 @@ public class MiraiBotPrivateSessionNudgedByFriendMsg(event: BotNudgedEvent.InPri
 @MiraiExperimentalApi
 public class MiraiMemberNudgedMsg(event: MemberNudgedEvent) : AbstractMiraiMsgGet<MemberNudgedEvent>(event), GroupMsg {
     override val id: String = "${event.from.id}.${event.bot.id}"
-    override val accountInfo: AccountInfo = MiraiMemberAccountInfo(event.member)
+    override val accountInfo: GroupAccountInfo = MiraiMemberAccountInfo(event.member)
     override val permission: Permissions = event.member.permission.toSimbotPermissions()
     override val groupMsgType: GroupMsg.Type get() = GroupMsg.Type.SYS
     override val flag: EmptyMiraiGroupFlag get() = EmptyMiraiGroupFlag
