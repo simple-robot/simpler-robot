@@ -22,7 +22,7 @@ import love.forte.simbot.api.message.events.MsgGet
 /**
  * [Sender] 的 无效化实现，所有的方法均会抛出异常。
  */
-object ErrorSender : Sender {
+object ErrorSender : Sender.Def {
     override fun sendGroupMsg(group: String, msg: String): Nothing =
         NO("Sender.sendGroupMsg")
 

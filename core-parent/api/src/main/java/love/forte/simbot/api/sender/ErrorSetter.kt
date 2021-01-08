@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit
 /**
  * [Setter] 的 无效化实现，所有的方法均会抛出异常。
  */
-object ErrorSetter : Setter {
+object ErrorSetter : Setter.Def {
     override fun setFriendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,

@@ -30,7 +30,7 @@ import love.forte.simbot.api.message.results.*
  * - 如果返回值为字符串类型的，返回空字符串（`""`）;
  * - 如果返回值为列表/数组类型的，返回元素为空的实例;
  */
-public object FailedGetter : Getter {
+public object FailedGetter : Getter.Def {
     override val authInfo: AuthInfo
         get() = emptyAuthInfo()
     override val botInfo: BotInfo

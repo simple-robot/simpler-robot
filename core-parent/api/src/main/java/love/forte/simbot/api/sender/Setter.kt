@@ -37,6 +37,10 @@ import java.util.concurrent.TimeUnit
  */
 public interface Setter {
 
+    /**
+     * 一个标识用的接口，用于标记一个 [Setter] 接口的实现为 **默认** 送信器。
+     */
+    interface Def : Setter
 
     /**
      * 处理好友添加申请。

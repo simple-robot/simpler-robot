@@ -39,6 +39,11 @@ import love.forte.simbot.api.message.receipts.SenderReceipt
 public interface Sender {
 
     /**
+     * 一个标识用的接口，用于标记一个 [Sender] 接口的实现为 **默认** 送信器。
+     */
+    interface Def : Sender
+
+    /**
      * 发送一条群消息。
      * @param group String 群号
      * @param msg String   消息正文
@@ -235,3 +240,6 @@ public interface Sender {
         sendGroupSign(group.groupInfo, title, message)
 
 }
+
+
+

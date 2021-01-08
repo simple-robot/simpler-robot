@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit
 /**
  * [Setter] 的无效化实现，返回失败或空的默认值。
  */
-public object FailedSetter : Setter {
+public object FailedSetter : Setter.Def {
     override fun setFriendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,

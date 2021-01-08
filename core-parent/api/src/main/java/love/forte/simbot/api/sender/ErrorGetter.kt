@@ -25,7 +25,7 @@ import love.forte.simbot.api.message.events.MsgGet
  * @see ErrorGetterFactory
  *
  */
-public object ErrorGetter : Getter {
+public object ErrorGetter : Getter.Def {
     override val authInfo: Nothing
         get() = NO("Getter.authInfo")
     override val botInfo: Nothing

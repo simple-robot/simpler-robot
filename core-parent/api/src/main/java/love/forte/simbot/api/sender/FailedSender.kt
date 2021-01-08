@@ -25,7 +25,7 @@ import love.forte.simbot.api.message.events.PrivateMsg
 /**
  * 永远失效的送信器。不会抛出异常，但是也不会生效。
  */
-public object FailedSender : Sender {
+public object FailedSender : Sender.Def {
 
     override fun sendGroupMsg(group: String, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> = Carrier.empty()
 

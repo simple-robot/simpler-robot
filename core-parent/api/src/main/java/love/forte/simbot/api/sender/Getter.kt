@@ -37,6 +37,10 @@ import love.forte.simbot.api.message.results.*
  */
 public interface Getter : BotContainer {
 
+    /**
+     * 一个标识用的接口，用于标记一个 [Getter] 接口的实现为 **默认** 送信器。
+     */
+    interface Def : Getter
 
     /**
      * 得到当前bot的权限信息。
