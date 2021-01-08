@@ -373,6 +373,9 @@ simbot.core.logo.enable=true
 ## BETA.8
 
 
+### 可爱猫
+- 优化springboot-starter，如果不加 `@EnableSimbot` 不会再报错了。
+
 
 ### feature
 - [#36](https://github.com/ForteScarlet/simpler-robot/issues/36) 优化事件触发机制，当不存在对应的监听函数时，不应当执行事件流程（例如触发拦截器）。

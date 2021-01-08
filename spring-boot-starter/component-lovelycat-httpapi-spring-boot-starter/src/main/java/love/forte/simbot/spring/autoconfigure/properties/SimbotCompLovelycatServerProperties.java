@@ -20,7 +20,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * 用于映射可爱猫组件的配置文件用的类，但是会被使用。
+ * 用于映射可爱猫组件的配置文件用的类，会被使用。
  * @see love.forte.simbot.component.lovelycat.configuration.LovelyCatServerProperties
  * @see love.forte.simbot.spring.lovelycat.configuration.LovelycatServerConfiguration
  * @author ForteScarlet

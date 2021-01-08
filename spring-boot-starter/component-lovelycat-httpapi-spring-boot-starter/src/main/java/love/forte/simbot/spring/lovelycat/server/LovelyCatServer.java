@@ -25,6 +25,7 @@ import love.forte.simbot.listener.MsgGetProcessor;
 import love.forte.simbot.serialization.json.JsonSerializer;
 import love.forte.simbot.serialization.json.JsonSerializerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,6 +38,7 @@ import java.util.Map;
  * @author ForteScarlet
  */
 @RestController
+@ConditionalOnBean(SimbotContext.class)
 public class LovelyCatServer {
 
     private final SimbotContext simbotContext;
