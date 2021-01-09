@@ -104,12 +104,12 @@ public fun SenderFactory.onBot(bot: BotContainer, def: Sender.Def) = this.onBot(
  * 通过 [MsgSenderFactories] 构建 BotSender。
  */
 public fun MsgSenderFactories.toBotSender(
-    bot: BotContainer, defFactory: DefaultMsgSenderFactories
+    bot: BotContainer, defFactories: DefaultMsgSenderFactories
 ): BotSender {
     return BotSender(
-        senderFactory.onBot(bot, defFactory.defaultSenderFactory.getOnBotSender(bot)),
-        setterFactory.onBot(bot, defFactory.defaultSetterFactory.getOnBotSetter(bot)),
-        getterFactory.onBot(bot, defFactory.defaultGetterFactory.getOnBotGetter(bot)),
+        senderFactory.onBot(bot, defFactories.defaultSenderFactory.getOnBotSender(bot)),
+        setterFactory.onBot(bot, defFactories.defaultSetterFactory.getOnBotSetter(bot)),
+        getterFactory.onBot(bot, defFactories.defaultGetterFactory.getOnBotGetter(bot)),
         bot.botInfo
     )
 }

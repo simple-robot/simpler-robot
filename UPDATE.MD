@@ -380,6 +380,9 @@ simbot.core.logo.enable=true
 
 - 追加一个 `PrivateMsg(私聊事件)`的子事件类型 `FriendMsg(好友私聊事件)`, 其代表为一个确认为 **好友** 的私聊消息。
 
+### Mirai
+- 更新至 [v2.0-M2-2](https://github.com/mamoe/mirai/releases/tag/2.0-M2-2) 版本。
+
 ### 可爱猫
 - 优化springboot-starter，如果不加 `@EnableSimbot` 不会再报错了。
 

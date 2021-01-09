@@ -14,6 +14,7 @@
 
 package love.forte.simbot.core.bot
 
+import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.*
 import java.util.concurrent.ConcurrentHashMap
@@ -28,7 +29,8 @@ import java.util.concurrent.ConcurrentHashMap
  */
 public class CoreBotManager(
     private val verifier: BotVerifier,
-    private val msgSenderFactories: MsgSenderFactories
+    private val msgSenderFactories: MsgSenderFactories,
+    private val defSenderFactories: DefaultMsgSenderFactories,
 ) : BotManager {
 
     /**
@@ -80,7 +82,7 @@ public class CoreBotManager(
 
         return synchronized(botsMap) {
             removeAndClose(botRegisterInfo.code)
-            verifier.verity(botRegisterInfo, msgSenderFactories).apply {
+            verifier.verity(botRegisterInfo, msgSenderFactories, defSenderFactories).apply {
                 botsMap[botRegisterInfo.code] = this
             }
         }

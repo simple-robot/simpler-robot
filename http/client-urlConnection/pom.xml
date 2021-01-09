@@ -32,9 +32,36 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+            <!-- (1) deploy插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <!-- （2）sonatype的staging插件 -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <configuration>
+                    <skipStaging>true</skipStaging>
+                    <skipLocalStaging>true</skipLocalStaging>
+                    <skipRemoteStaging>true</skipRemoteStaging>
+                </configuration>
+            </plugin>
+            <!-- （3）SCM插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <!-- GPG -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
                 <configuration>
                     <skip>true</skip>
                 </configuration>

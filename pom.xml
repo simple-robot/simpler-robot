@@ -78,12 +78,12 @@
             <!--<editor-fold desc="core">-->
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
-                <artifactId>core</artifactId>
+                <artifactId>api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
-                <artifactId>api</artifactId>
+                <artifactId>core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!--<editor-fold desc="component">-->

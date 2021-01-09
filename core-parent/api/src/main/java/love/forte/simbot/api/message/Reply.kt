@@ -12,6 +12,8 @@
  *
  */
 
+@file:Suppress("DEPRECATION")
+
 package love.forte.simbot.api.message
 
 import love.forte.common.collections.SimpleEntry

@@ -14,6 +14,7 @@
 
 @file:JvmMultifileClass
 @file:JvmName("Results")
+
 package love.forte.simbot.api.message.results
 
 import love.forte.simbot.api.message.assists.Permissions
@@ -26,7 +27,8 @@ import love.forte.simbot.api.message.containers.*
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public interface GroupMemberInfo : Result, GroupAccountInfo, GroupContainer, PermissionContainer, GroupAccountContainer {
+public interface GroupMemberInfo : Result, GroupAccountInfo, GroupContainer, PermissionContainer,
+    GroupAccountContainer {
     /**
      * TODO 1~2个版本内删除。
      */
@@ -35,7 +37,6 @@ public interface GroupMemberInfo : Result, GroupAccountInfo, GroupContainer, Per
     override val accountInfo: GroupAccountInfo
         get() = this
 }
-
 
 
 /**
@@ -47,24 +48,25 @@ public interface GroupMemberList : MultipleResults<GroupMemberInfo>, GroupContai
 /**
  * [GroupMemberInfo] 的无效化实现。
  */
-public fun emptyGroupMemberInfo() : GroupMemberInfo = object : GroupMemberInfo, GroupAccountInfo by emptyGroupAccountInfo() {
-    override val originalData: String
-        get() = "{}"
-    override val permission: Permissions
-        get() = Permissions.MEMBER
-    override val groupInfo: GroupInfo
-        get() = emptyGroupInfo()
+public fun emptyGroupMemberInfo(): GroupMemberInfo =
+    object : GroupMemberInfo, GroupAccountInfo by emptyGroupAccountInfo() {
+        override val originalData: String
+            get() = "{}"
+        override val permission: Permissions
+            get() = Permissions.MEMBER
+        override val groupInfo: GroupInfo
+            get() = emptyGroupInfo()
 
-    override fun toString(): String {
-        return "EmptyGroupMemberInfo"
+        override fun toString(): String {
+            return "EmptyGroupMemberInfo"
+        }
     }
-}
 
 
 /**
  * [GroupMemberList] 的无效化实现。
  */
-public fun emptyGroupMemberList() : GroupMemberList = object : GroupMemberList {
+public fun emptyGroupMemberList(): GroupMemberList = object : GroupMemberList {
     override val originalData: String
         get() = "[]"
     override val groupInfo: GroupInfo

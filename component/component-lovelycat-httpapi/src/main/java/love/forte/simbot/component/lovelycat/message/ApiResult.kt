@@ -205,7 +205,7 @@ public data class CatGroupMemberInfo(
     val wxid: String,
     val city: String,
     val robotWxid: String
-) : AccountInfo, BotCodeContainer {
+) : GroupAccountInfo, BotCodeContainer {
     /**
      * 昵称。
      * 可能会出现为null的情况，但是一般情况下不会。
@@ -233,6 +233,13 @@ public data class CatGroupMemberInfo(
     override val accountCode: String
         get() = wxid
 
+    /**
+     * 群用户的头衔。在不支持的情况下将会得到 `null`。
+     *
+     * 有些情况下，支持获取但是可能会得到空字符串。
+     */
+    override val accountTitle: String?
+        get() = null
 }
 
 public data class GroupMemberListResult(
@@ -254,7 +261,7 @@ public data class CatSimpleGroupMemberInfo(
     val wxid: String,
     val robotWxid: String
 
-): AccountInfo, BotCodeContainer {
+): GroupAccountInfo, BotCodeContainer {
     /**
      * 昵称。
      * 可能会出现为null的情况，但是一般情况下不会。
@@ -281,6 +288,14 @@ public data class CatSimpleGroupMemberInfo(
      */
     override val accountCode: String
         get() = wxid
+
+    /**
+     * 群用户的头衔。在不支持的情况下将会得到 `null`。
+     *
+     * 有些情况下，支持获取但是可能会得到空字符串。
+     */
+    override val accountTitle: String?
+        get() = null
 }
 
 

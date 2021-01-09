@@ -55,5 +55,5 @@ public class MiraiGroupTalkativeChangedImpl(event: GroupTalkativeChangeEvent) :
     /**
      * 用户信息为变动后的用户。
      */
-    override val accountInfo: AccountInfo get() = afterChange.accountInfo
+    override val accountInfo: AccountInfo get() = afterChange
 }

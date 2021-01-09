@@ -18,6 +18,7 @@ package love.forte.simbot.component.lovelycat.configuration
 
 import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.api.message.containers.BotContainer
+import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.api.sender.toBotSender
 import love.forte.simbot.bot.Bot
@@ -50,7 +51,7 @@ public class LovelyCatBotVerifier : BotVerifier {
 
 
     /** 验证一个bot的注册信息，并转化为一个该组件对应的 [Bot] 实例。 */
-    override fun verity(botInfo: BotRegisterInfo, msgSenderFactories: MsgSenderFactories): Bot {
+    override fun verity(botInfo: BotRegisterInfo, msgSenderFactories: MsgSenderFactories, defFactories: DefaultMsgSenderFactories): Bot {
         val code = botInfo.code
         val path = botInfo.verification
         val api = LovelyCatApiTemplateImpl(httpTemplate, path, jsonSerializerFactory, lovelyCatApiCache)
@@ -62,7 +63,7 @@ public class LovelyCatBotVerifier : BotVerifier {
             // save api info.
             apiManager[code] = api
             val botContainer = BotContainer(lovelyCatBotInfo(code, api))
-            val botSender = msgSenderFactories.toBotSender(botContainer)
+            val botSender = msgSenderFactories.toBotSender(botContainer, defFactories)
             return LovelyCatBot(code, api, botSender)
         } else {
             throw IllegalStateException("cannot found bot id '$code' in ${accountList.accountList.map { it.wxid }}")

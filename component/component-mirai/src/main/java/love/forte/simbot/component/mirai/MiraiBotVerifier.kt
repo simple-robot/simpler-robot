@@ -44,7 +44,7 @@ public class MiraiBotVerifier(
     private val miraiConfiguration: MiraiConfiguration,
     private val httpTemplate: HttpTemplate,
     private val miraiBotEventRegistrar: MiraiBotEventRegistrar,
-    private val dependCenter: DependCenter
+    private val dependCenter: DependCenter,
 ) : BotVerifier {
     private companion object : TypedCompLogger(MiraiBotVerifier::class.java)
 
@@ -52,7 +52,11 @@ public class MiraiBotVerifier(
     /**
      * 验证（登录）信息并得到要给 [Bot] 实例。
      */
-    override fun verity(botInfo: BotRegisterInfo, msgSenderFactories: MsgSenderFactories): Bot {
+    override fun verity(
+        botInfo: BotRegisterInfo,
+        msgSenderFactories: MsgSenderFactories,
+        defFactories: DefaultMsgSenderFactories,
+    ): Bot {
         // try to login bot.
         logger.debug("verify bot code: {}", botInfo.code)
 
@@ -76,8 +80,6 @@ public class MiraiBotVerifier(
             }
 
             val botContainer = BotContainer { MiraiBotInfo(mBot, httpTemplate) }
-
-            val defFactories = dependCenter[DefaultMsgSenderFactories::class.java]
 
             val sender = msgSenderFactories.toBotSender(botContainer, defFactories)
 
@@ -103,7 +105,7 @@ public class MiraiBotVerifier(
 internal class MiraiBot(
     private val bot: MBot,
     override val sender: BotSender,
-    override val botInfo: BotInfo
+    override val botInfo: BotInfo,
 ) : Bot {
     override fun close() {
         runCatching {
