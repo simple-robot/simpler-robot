@@ -394,8 +394,10 @@ simbot.core.logo.enable=true
 # 默认为 'ERROR'，即会抛出一个错误。
 # 目前可选：ERROR (会直接抛出异常)、FAILED (会返回一个默认的失败返回值)
 simbot.core.sender.default.type=ERROR
-
 ```
+
+- [#32](https://github.com/ForteScarlet/simpler-robot/issues/32) 实现备用监听 `@SpareListen` 以及一个习惯用法 `@Spare`.
+
 
 ### fix 
 - [#39](https://github.com/ForteScarlet/simpler-robot/issues/39) 监听函数优先级失效

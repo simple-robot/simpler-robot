@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -17,12 +17,18 @@ package love.forte.simbot.annotation;
 import java.lang.annotation.*;
 
 /**
- * 当标注此注解在一个监听函数上的时候，此函数如果 **执行成功** ，则会阻断后续其他监听函数的执行。
+ * 标记为一个 <b>备用</b> 监听器。
  *
- * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
+ * 从注解为旧版本的习惯兼容，其效果等同于 {@link SpareListen}，但是会被标记为过时。
+ *
+ * @author ForteScarlet
+ * @see SpareListen
+ * @see love.forte.simbot.listener.ListenerFunction
  */
 @Retention(RetentionPolicy.RUNTIME)    //注解会在class字节码文件中存在，在运行时可以通过反射获取到
-@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE}) //接口、类、枚举、注解、方法
+@Target({ElementType.METHOD}) //接口、类、枚举、注解、方法
 @Documented
-public @interface ListenBreak {
+@SpareListen
+@Deprecated
+public @interface Spare {
 }

@@ -194,7 +194,11 @@ protected constructor(
         // return.
         return createSimbotContext(config).also {
             // post
-            process.post(it)
+            try {
+                process.post(it)
+            } catch (e: Exception) {
+                logger.error("SimbotProcess.post failed.", e);
+            }
         }
     }
 
@@ -520,7 +524,6 @@ private object Tips {
             it.filter { s -> s.isNotBlank() }.toList().randomOrNull()
         }
     }
-
 
 
 }

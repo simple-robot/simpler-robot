@@ -14,7 +14,6 @@
 
 package love.forte.test.interceptor;
 
-import love.forte.common.ioc.annotation.Beans;
 import love.forte.simbot.intercept.InterceptionType;
 import love.forte.simbot.listener.ListenerInterceptContext;
 import love.forte.simbot.listener.ListenerInterceptor;
@@ -23,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author ForteScarlet
  */
-@Beans
+// @Beans
 public class MyListenInterceptor implements ListenerInterceptor {
 
     @NotNull

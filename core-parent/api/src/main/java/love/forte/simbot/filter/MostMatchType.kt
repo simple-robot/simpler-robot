@@ -17,28 +17,28 @@ package love.forte.simbot.filter
 
 /**
  *
- * 多匹配类型，当存在多个可匹配值（例如codes等），
+ * 过滤器的多匹配类型，当存在多个可匹配值（例如codes等），
  * 则此函数指定一个多值的匹配规则。
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-enum class MostMatchType(private val mostMatchFunc: (Iterable<() -> Boolean>) -> Boolean) : MostMatcher {
+enum class MostMatchType(private val mostMatchFunc: (FilterData, Iterable<(FilterData) -> Boolean>) -> Boolean) : MostMatcher {
     /** 任意匹配。 */
-    ANY({ it.any { t -> t() } }),
+    ANY({ d, it ->  it.any { t -> t(d) } }),
 
     /** 全部匹配。 */
-    ALL({ it.all { t -> t() } }),
+    ALL({ d, it -> it.all { t -> t(d) } }),
 
     /** 任意不匹配。 */
-    ANY_NO({ it.any { t -> !t() } }),
+    ANY_NO({ d, it ->  it.any { t -> !t(d) } }),
 
     /** 没有任何匹配。 */
-    NONE({ it.all { t -> !t() } });
+    NONE({ d, it ->  it.all { t -> !t(d) } });
 
 
     /**
      * 匹配多个可判断函数。
      */
-    override fun mostMatch(funcs: Iterable<() -> Boolean>): Boolean =
-        mostMatchFunc(funcs)
+    override fun mostMatch(filterData: FilterData, funcs: Iterable<(FilterData) -> Boolean>): Boolean =
+        mostMatchFunc(filterData, funcs)
 }

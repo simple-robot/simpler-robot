@@ -41,12 +41,15 @@ public class FilterData(
  * 因此何时何地进行过滤匹配 应当由 [监听函数][ListenerFunction] 进行实现。
  *
  */
-public interface ListenerFilter {
+public interface ListenerFilter : (FilterData) -> Boolean {
 
     /**
      * 判断某个消息是否能够进行监听。
      */
     fun test(data: FilterData): Boolean
+
+    @JvmDefault
+    override fun invoke(p1: FilterData): Boolean = test(p1)
 
     /**
      * 尝试从文本中提取动态过滤参数。

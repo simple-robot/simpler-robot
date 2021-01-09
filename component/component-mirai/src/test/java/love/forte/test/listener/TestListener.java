@@ -15,22 +15,41 @@
 package love.forte.test.listener;
 
 import love.forte.common.ioc.annotation.Beans;
-import love.forte.simbot.annotation.OnGroup;
-import love.forte.simbot.api.message.containers.GroupAccountInfo;
-import love.forte.simbot.api.message.events.GroupMsg;
+import love.forte.simbot.annotation.ListenBreak;
+import love.forte.simbot.annotation.OnPrivate;
+import love.forte.simbot.annotation.SpareListen;
+import love.forte.simbot.api.message.containers.AccountInfo;
+import love.forte.simbot.api.message.events.PrivateMsg;
 
 /**
  * @author ForteScarlet
  */
 @Beans
-// @OnPrivate
+@OnPrivate
 public class TestListener {
 
 
-    @OnGroup
-    public void lis3(GroupMsg msg) {
-        GroupAccountInfo accountInfo = msg.getAccountInfo();
-        System.out.println(accountInfo.getAccountNickname() + ":" + accountInfo.getAccountTitle());
+
+    @ListenBreak
+    public void lis1(PrivateMsg msg) {
+        System.out.println("lis1.");
+        AccountInfo accountInfo = msg.getAccountInfo();
+        System.out.println(accountInfo.getAccountNickname());
+    }
+
+
+    public boolean lis2(PrivateMsg msg) {
+        System.out.println("lis2.");
+        AccountInfo accountInfo = msg.getAccountInfo();
+        System.out.println(accountInfo.getAccountNickname() + ": " + msg.getText());
+        return msg.getText().equals("123");
+    }
+
+    @SpareListen
+    public void lis3(PrivateMsg msg) {
+        System.out.println("spare!");
+        AccountInfo accountInfo = msg.getAccountInfo();
+        System.out.println(accountInfo.getAccountNickname());
     }
 
 }

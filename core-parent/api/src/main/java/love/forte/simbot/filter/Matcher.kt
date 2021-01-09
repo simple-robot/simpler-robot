@@ -26,6 +26,7 @@ public interface Matcher {
 }
 
 
+
 /**
  * 多值匹配器，用于判定当存在多个匹配函数的时候则匹配规则。
  */
@@ -34,6 +35,6 @@ public interface MostMatcher {
     /**
      * 匹配多个可判断函数。
      */
-    fun mostMatch(funcs: Iterable<() -> Boolean>): Boolean
+    fun mostMatch(filterData: FilterData, funcs: Iterable<(FilterData) -> Boolean>): Boolean
 
 }

@@ -22,6 +22,9 @@ import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSender
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.BotManager
+import love.forte.simbot.core.listener.ListenerFunctionGroups.Companion.isEmpty
+import love.forte.simbot.core.listener.ListenerFunctionGroups.Companion.isNotEmpty
+import love.forte.simbot.core.listener.ListenerFunctionGroups.Companion.marge
 import love.forte.simbot.exception.ExceptionHandleContext
 import love.forte.simbot.exception.ExceptionProcessor
 import love.forte.simbot.filter.AtDetectionFactory
@@ -70,6 +73,20 @@ public data class ListenerContextData(
 }
 
 
+private data class ListenerFunctionGroups(
+    val normal: Collection<ListenerFunction>,
+    val spare: Collection<ListenerFunction>
+) {
+    companion object {
+        val empty = ListenerFunctionGroups(emptyList(), emptyList())
+        fun ListenerFunctionGroups.marge(): Collection<ListenerFunction> = if (isEmpty()) emptyList() else normal + spare
+        fun ListenerFunctionGroups.isEmpty(): Boolean = normal.isEmpty() && spare.isEmpty()
+        fun ListenerFunctionGroups.isNotEmpty(): Boolean = !isEmpty()
+    }
+}
+
+
+
 /**
  * 核心对于 [ListenerManager] 的实现。
  *
@@ -110,7 +127,8 @@ public class CoreListenerManager(
      * 监听函数缓冲区，对后续出现的消息类型进行记录并缓存。
      * 当 [register] 了新的监听函数后对应相关类型将会被清理。
      */
-    private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, Queue<ListenerFunction>> = ConcurrentHashMap()
+    private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, ListenerFunctionGroups> = ConcurrentHashMap()
+    // private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, Queue<ListenerFunction>> = ConcurrentHashMap()
 
 
     /**
@@ -135,6 +153,8 @@ public class CoreListenerManager(
             // 寻找并更新缓存监听
             // no. 直接清除缓存。
             cacheListenerFunctionMap.clear()
+
+            logger.debug("Listener cache cleaned.")
 
         }
     }
@@ -185,15 +205,18 @@ public class CoreListenerManager(
         } else {
             var finalResult: ListenResult<*> = NothingResult
 
-            for (func: ListenerFunction in funcs) {
+            var anySuccess = false
+            var doBreak = false
 
+            // do listen function
+            fun doListen(func: ListenerFunction): ListenResult<*> {
                 val listenerInterceptContext =
                     listenerInterceptData.contextFactory.getListenerInterceptContext(func, msgGet, context)
 
                 val interceptorChain = listenerInterceptData.chainFactory.getInterceptorChain(listenerInterceptContext)
 
                 // invoke with try.
-                finalResult = try {
+                return try {
                     val invokeData = ListenerFunctionInvokeDataImpl(
                         msgGet,
                         context,
@@ -207,10 +230,11 @@ public class CoreListenerManager(
                     (if (func is LogAble) func.log else logger).error("Listener '${func.name}' execution exception: $funcRunEx", funcRunEx)
                     NothingResult
                 }
+            }
 
-
-                // if ex
-                finalResult = with(finalResult) {
+            // 如果出现异常，处理
+            fun doResultIfFail(func: ListenerFunction, result: ListenResult<*>): ListenResult<*> {
+                return with(result) {
                     val ex = this.cause
                     if (ex != null) {
                         val handle = exceptionManager.getHandle(ex.javaClass)
@@ -226,12 +250,82 @@ public class CoreListenerManager(
                         }
                     } else this
                 }
+            }
+
+
+            for (func: ListenerFunction in funcs.normal) {
+                //
+                // val listenerInterceptContext =
+                //     listenerInterceptData.contextFactory.getListenerInterceptContext(func, msgGet, context)
+                //
+                // val interceptorChain = listenerInterceptData.chainFactory.getInterceptorChain(listenerInterceptContext)
+                //
+                // // invoke with try.
+                // finalResult = try {
+                //     val invokeData = ListenerFunctionInvokeDataImpl(
+                //         msgGet,
+                //         context,
+                //         atDetectionFactory.getAtDetection(msgGet),
+                //         botManager.getBot(msgGet.botInfo),
+                //         MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories),
+                //         interceptorChain
+                //     )
+                //     func(invokeData)
+                // } catch (funcRunEx: Throwable) {
+                //     (if (func is LogAble) func.log else logger).error("Listener '${func.name}' execution exception: $funcRunEx", funcRunEx)
+                //     NothingResult
+                // }
+                //
+                //
+                //
+                //
+
+                finalResult = doListen(func)
+
+                if (finalResult.isSuccess()) {
+                    anySuccess = true
+                }
+
+                // if ex
+                finalResult = doResultIfFail(func, finalResult)
+                // finalResult = with(finalResult) {
+                //     val ex = this.cause
+                //     if (ex != null) {
+                //         val handle = exceptionManager.getHandle(ex.javaClass)
+                //         handle?.runCatching {
+                //             doHandle(ExceptionHandleContext(ex, msgGet, func, context))
+                //         }?.getOrElse {
+                //             // 异常处理报错
+                //             (if(handle is LogAble) handle.log else logger).error("Exception handle failed: $it", it)
+                //             null
+                //         } ?: run {
+                //             (if (func is LogAble) func.log else logger).error("Listener execution exception: $ex", ex)
+                //             NothingResult
+                //         }
+                //     } else this
+                // }
 
                 // if break, break.
                 if (finalResult.isBreak()) {
+                    doBreak = true
+                    logger.debug("Normal Listener chain break on ${func.name} ( ${func.id} )")
                     break
                 }
             }
+
+            // 如果没有break，也没有任何函数成功，执行spare函数
+            if (!anySuccess && !doBreak) {
+                for (func: ListenerFunction in funcs.spare) {
+                    finalResult = doListen(func)
+                    finalResult = doResultIfFail(func, finalResult)
+                    if (finalResult.isBreak()) {
+                        logger.debug("Spare Listener chain break on ${func.name} ( ${func.id} )")
+                        break
+                    }
+                }
+            }
+
+
 
             return finalResult
         }
@@ -244,7 +338,7 @@ public class CoreListenerManager(
         return if (type == null) {
             mainListenerFunctionMap.values.asSequence().flatMap { it.asSequence() }.toList()
         } else {
-            getListenerFunctions(type, false).toList()
+            getListenerFunctions(type, false).marge()
         }
     }
 
@@ -257,7 +351,7 @@ public class CoreListenerManager(
      * 寻找 main funcs 中为 [type] 的父类的类型。
      *
      */
-    private fun <T : MsgGet> getListenerFunctions(type: Class<out T>, cache: Boolean): Collection<ListenerFunction> {
+    private fun <T : MsgGet> getListenerFunctions(type: Class<out T>, cache: Boolean): ListenerFunctionGroups {
         // 尝试直接获取
         // fastball n. 直球
         // 只取缓存，main listener中的内容用于遍历检测。
@@ -268,32 +362,51 @@ public class CoreListenerManager(
             fastball
         } else {
             if (mainListenerFunctionMap.isEmpty()) {
-                return emptyList()
+                return ListenerFunctionGroups.empty
             }
-
 
             if (cache) {
                 cacheListenerFunctionMap.computeIfAbsent(type) {
-                    val typeList = LinkedList<ListenerFunction>()
+                    val typeNormalList = LinkedList<ListenerFunction>()
+                    val typeSpareList = LinkedList<ListenerFunction>()
+                    // val typeList = SortedQueue<ListenerFunction>(Comparator.comparing { it.priority })
                     mainListenerFunctionMap.forEach { (k, v) ->
                         if (k.isAssignableFrom(type)) {
-                            typeList.addAll(v)
+                            v.forEach { lis ->
+                                if (lis.spare) typeSpareList.add(lis)
+                                else typeNormalList.add(lis)
+                            }
                         }
                     }
-                    typeList.also { listener -> listener.sortBy { it.priority } }
-                }
-            } else {
-                val typeList = LinkedList<ListenerFunction>()
-                mainListenerFunctionMap.forEach { (k, v) ->
-                    if (k.isAssignableFrom(type)) {
-                        typeList.addAll(v)
+
+                    ListenerFunctionGroups(
+                        typeNormalList.also { normalLs -> normalLs.sortBy { it.priority } },
+                        typeSpareList.also { spareLs -> spareLs.sortBy { it.priority } },
+                    ).also {
+                        logger.debug("Init Listener function caches for event type '${type.name}'. normal listeners ${typeNormalList.size}, spare listeners ${typeSpareList.size}.")
                     }
                 }
-                typeList.also { listener -> listener.sortBy { it.priority } }
+            } else {
+                // val typeList = LinkedList<ListenerFunction>()
+                val typeNormalList = LinkedList<ListenerFunction>()
+                val typeSpareList = LinkedList<ListenerFunction>()
+                mainListenerFunctionMap.forEach { (k, v) ->
+                    if (k.isAssignableFrom(type)) {
+                        v.forEach { lis ->
+                            if (lis.spare) typeSpareList.add(lis)
+                            else typeNormalList.add(lis)
+                        }
+                    }
+                }
+                // typeList.also { listener -> listener.sortBy { it.priority } }
+                ListenerFunctionGroups(
+                    typeNormalList.also { normalLs -> normalLs.sortBy { it.priority } },
+                    typeSpareList.also { spareLs -> spareLs.sortBy { it.priority } },
+                )
             }
         }
 
 
     }
-
 }
+

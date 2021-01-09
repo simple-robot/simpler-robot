@@ -30,6 +30,11 @@ import love.forte.simbot.filter.*
 public interface AnnotationFiltersListenerFilter : ListenerFilter {
 
     /**
+     * 进行过滤匹配。
+     */
+    override fun test(data: FilterData): Boolean
+
+    /**
      * 获取所有的子过滤器。
      */
     val childrenFilter: List<ListenerFilter>
@@ -53,7 +58,6 @@ public interface AnnotationFiltersListenerFilter : ListenerFilter {
      * 匹配当前消息的账号列表。
      */
     val codes: Array<String>
-
 
     /**
      * 匹配当前消息的群列表。
@@ -250,9 +254,7 @@ public class AnnotationFiltersListenerFilterImpl(
         // 1. children
         val childrenMost: Boolean = with(_childrenFilter) {
             if (isNotEmpty()) {
-                childrenMostMatchType.mostMatch(_childrenFilter.map {
-                    { it.test(data) }
-                })
+                childrenMostMatchType.mostMatch(data, this)
             } else true
         }
         if (!childrenMost) {
@@ -268,9 +270,7 @@ public class AnnotationFiltersListenerFilterImpl(
         // 3. customs.
         return with(_customFilter) {
             if (isNotEmpty()) {
-                customFilterMostMatchType.mostMatch(_customFilter.map {
-                    { it.test(data) }
-                })
+                customFilterMostMatchType.mostMatch(data, this)
             } else true
         }
     }

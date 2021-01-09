@@ -24,6 +24,7 @@ public class Test implements SimbotProcess {
     @Override
     public void post(@NotNull SimbotContext context) {
         Sender s = context.getBotManager().getDefaultBot().getSender().SENDER;
+        s.sendPrivateMsg(1149159218, "我好了。");
         System.out.println(s.sendGroupSign(100000, "", ""));
     }
 }
