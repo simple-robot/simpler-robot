@@ -45,16 +45,23 @@ public interface MultipleResults<T: Result>: Result, Iterable<T> {
     val results: List<T>
 
     /**
-     * 得到 [results] 的长度
+     * 得到 [results] 的长度。
      */
     @JvmDefault
-    val size: Int get() = results.size
+    @get:Deprecated("Just use 'size()'.", ReplaceWith("size()"), level = DeprecationLevel.HIDDEN)
+    val size: Int get() = size()
+
+    /**
+     * 习惯用法, 得到 [results] 的长度。
+     */
+    @JvmDefault
+    fun size(): Int = results.size
 
     /**
      * 获取一个迭代器
      */
     @JvmDefault
-    override fun iterator(): Iterator<T> = results.iterator()
+    override operator fun iterator(): Iterator<T> = results.iterator()
 
     /**
      * 结果集是否为空
@@ -70,3 +77,9 @@ public interface MultipleResults<T: Result>: Result, Iterable<T> {
     fun stream(): java.util.stream.Stream<T> = results.stream()
 
 }
+
+
+/**
+ * [MultipleResults].[size][MultipleResults.size].
+ */
+public val <T : Result> MultipleResults<T>.size: Int get() = results.size

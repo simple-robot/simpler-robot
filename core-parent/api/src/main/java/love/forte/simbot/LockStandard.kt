@@ -13,7 +13,7 @@
  *  *
  *
  */
-@file:JvmName("LockStandard")
+@file:JvmName("LockStandards")
 package love.forte.simbot
 
 
