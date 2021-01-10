@@ -56,3 +56,5 @@ http-client模块提供了多个目标库的实现，其中包括ktor-cio-client
 你可以通过AtDetectionRegistrar.registryAtDetection来注册一个AT匹配器。
 你可以通过ListenerFilterRegistrar.registerFilter或者注入一个自定义的ListenerFilter（记得@Beans要指定名称）来注册一个自定义过滤器。
 善用@Filter的target可以让你拥有更灵活的过滤规则。
+simbot的第一次提交是2019年三月。
+simbot2.x的第一次提交是2020年七月。
