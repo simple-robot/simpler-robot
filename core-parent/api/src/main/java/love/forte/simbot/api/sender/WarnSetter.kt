@@ -17,7 +17,6 @@ package love.forte.simbot.api.sender
 import love.forte.simbot.LogAble
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.slf4j.event.Level
 
 
 /**
@@ -26,9 +25,8 @@ import org.slf4j.event.Level
  * @author ForteScarlet
  * @since 2.0.0-BETA.9
  */
-public class LoggerSetter(
-    private val logLevel: Level,
-    override val log: Logger = LoggerFactory.getLogger(LoggerGetter::class.java),
+public class WarnSetter(
+    override val log: Logger = LoggerFactory.getLogger(WarnGetter::class.java),
 ) : LogAble {
 
 }
