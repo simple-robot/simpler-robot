@@ -11,6 +11,8 @@
 
     <artifactId>component-lovelycat-httpapi</artifactId>
 
+    <url>https://github.com/ForteScarlet/simpler-robot/tree/dev/component/component-lovelycat-httpapi</url>
+
 
     <dependencies>
         <dependency>

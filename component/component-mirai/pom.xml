@@ -15,9 +15,9 @@
     <name>component-mirai</name>
     <description>a simple-robot component for mirai</description>
     <scm>
-        <url>https://github.com/ForteScarlet/simpler-robot/tree/master/component-parent/component-mirai</url>
+        <url>https://github.com/ForteScarlet/simpler-robot/tree/dev/component/component-mirai</url>
     </scm>
-    <url>https://github.com/ForteScarlet/simpler-robot/tree/master/component-parent/component-mirai</url>
+    <url>https://github.com/ForteScarlet/simpler-robot/tree/dev/component/component-mirai</url>
 
     <properties>
         <mirai.version>2.0-M2-2</mirai.version>

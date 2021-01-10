@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>component-onebot</artifactId>
+    <url>https://github.com/ForteScarlet/simpler-robot/tree/dev/component/component-onebot</url>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

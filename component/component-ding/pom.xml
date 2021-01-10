@@ -25,6 +25,8 @@
 
     <artifactId>component-ding</artifactId>
 
+    <url>https://github.com/ForteScarlet/simpler-robot/tree/dev/component/component-ding</url>
+
     <dependencies>
         <dependency>
             <groupId>love.forte.simple-robot.http</groupId>
