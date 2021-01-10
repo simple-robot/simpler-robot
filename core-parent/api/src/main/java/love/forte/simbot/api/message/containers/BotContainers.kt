@@ -68,10 +68,30 @@ public interface BotLevelContainer : Container {
  * 机器人基础信息容器, 其实现了：
  * - [机器人账号容器][BotCodeContainer],
  * - [机器人名称容器][BotNameContainer],
- * - [机器人头像容器][BotAvatarContainer]
+ * - [机器人头像容器][BotAvatarContainer],
+ * - [机器人等级容器][BotLevelContainer]
+ *
+ * 同时，[bot信息][BotInfo]也属于一种 [账号信息][AccountInfo] (since `2.0.0-BETA.9`).
+ *
  */
 @ContainerType("机器人信息容器")
-public interface BotInfo : Container, BotCodeContainer, BotNameContainer, BotAvatarContainer, BotLevelContainer
+public interface BotInfo : Container,
+    BotCodeContainer, BotNameContainer, BotAvatarContainer, BotLevelContainer,
+    AccountInfo {
+    @JvmDefault
+    override val accountCode: String
+        get() = botCode
+    @JvmDefault
+    override val accountNickname: String
+        get() = botName
+    /** bot对于自己没有昵称。 */
+    @JvmDefault
+    override val accountRemark: String?
+        get() = null
+    @JvmDefault
+    override val accountAvatar: String?
+        get() = botAvatar
+}
 
 
 /**

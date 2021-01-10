@@ -404,3 +404,11 @@ simbot.core.sender.default.type=ERROR
 
 ### fix 
 - [#39](https://github.com/ForteScarlet/simpler-robot/issues/39) 监听函数优先级失效
+
+
+## BETA.9
+
+### 核心
+
+- 现在`BotInfo(bot信息)`也属于一种`AccountInfo(账号信息)`了。
+
