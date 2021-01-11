@@ -3,6 +3,7 @@ package love.forte.test;
 import love.forte.common.configuration.Configuration;
 import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.api.sender.Sender;
+import love.forte.simbot.bot.Bot;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.core.SimbotProcess;
@@ -23,8 +24,9 @@ public class Test implements SimbotProcess {
 
     @Override
     public void post(@NotNull SimbotContext context) {
-        Sender s = context.getBotManager().getDefaultBot().getSender().SENDER;
-        s.sendPrivateMsg(1149159218, "我好了。");
-        System.out.println(s.sendGroupSign(100000, "", ""));
+        for (Bot bot : context.getBotManager().getBots()) {
+            Sender s = bot.getSender().SENDER;
+            s.sendPrivateMsg(1149159218, "我好了。" + bot.getSender().GETTER.getAuthInfo().getCookies());
+        }
     }
 }

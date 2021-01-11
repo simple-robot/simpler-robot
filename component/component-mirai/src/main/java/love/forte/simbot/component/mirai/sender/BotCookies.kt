@@ -36,11 +36,11 @@ object AndroidBotCookieUtils {
     private const val MIRAI_PACKAGE = "net.mamoe.mirai.internal"
     private var success: Boolean = false
     private lateinit var botClientGetter: Method
-    private lateinit var clientClazz: Class<*>
+    // private lateinit var clientClazz: Class<*>
     private lateinit var getWLoginSigInfoMethod: Method
-    private lateinit var wLoginSigInfoClazz: Class<*>
+    // private lateinit var wLoginSigInfoClazz: Class<*>
 
-    // getter method
+    // getter
     private lateinit var getSKeyMethod: Method // SKey -> data -> ByteArray
     private lateinit var getAccessTokenMethod: Method // AccessToken -> data -> ByteArray
     private lateinit var getSuperKeyMethod: Method // ByteArray
@@ -53,7 +53,7 @@ object AndroidBotCookieUtils {
      */
     private lateinit var getWLoginSimpleInfoMethod: Method // WLoginSimpleInfo
 
-    private lateinit var keyWithCreationTimeClazz: Class<*>
+    // private lateinit var keyWithCreationTimeClazz: Class<*>
     private lateinit var getDataMethod: Method
     private var cause: Throwable? = null
 
@@ -62,17 +62,17 @@ object AndroidBotCookieUtils {
     init {
         try {
             // bot client field
-            botClientGetter = Class.forName("$MIRAI_PACKAGE.QQAndroidBotBase")
+            botClientGetter = Class.forName("$MIRAI_PACKAGE.QQAndroidBot")
                 .getDeclaredMethod("getClient").also { it.isAccessible = true }
 
             // client clazz
-            clientClazz = Class.forName("$MIRAI_PACKAGE.network.QQAndroidClient")
+            val clientClazz = Class.forName("$MIRAI_PACKAGE.network.QQAndroidClient")
 
             // get wLoginSigInfo method
             getWLoginSigInfoMethod = clientClazz.getDeclaredMethod("getWLoginSigInfo").also { it.isAccessible = true }
 
             // WLoginSigInfo class
-            wLoginSigInfoClazz = Class.forName("$MIRAI_PACKAGE.network.WLoginSigInfo")
+            val wLoginSigInfoClazz = Class.forName("$MIRAI_PACKAGE.network.WLoginSigInfo")
 
             // info getter
             getSKeyMethod = wLoginSigInfoClazz.getDeclaredMethod("getSKey").also { it.isAccessible = true }
@@ -86,7 +86,7 @@ object AndroidBotCookieUtils {
             getWLoginSimpleInfoMethod = wLoginSigInfoClazz.getDeclaredMethod("getSimpleInfo").also { it.isAccessible = true }
 
             // data getter
-            keyWithCreationTimeClazz = Class.forName("$MIRAI_PACKAGE.network.KeyWithCreationTime")
+            val keyWithCreationTimeClazz = Class.forName("$MIRAI_PACKAGE.network.KeyWithCreationTime")
             getDataMethod = keyWithCreationTimeClazz.getDeclaredMethod("getData").also { it.isAccessible = true }
 
             success = true
@@ -169,9 +169,12 @@ val Bot.cookies: Cookies get() = AndroidBotCookieUtils.cookies(this)
 data class Cookies(
     val uin: String,
     val skey: String,
-    val p_uin: String,
+    val pUin: String,
     val psKey: String // p_skey
 ) {
+
+    @Deprecated("Use 'pUin'.", ReplaceWith("pUin"))
+    val p_uin: String get() = pUin
 
     /** bkn */
     val bkn: Int get() = toBkn(skey)
@@ -184,7 +187,7 @@ data class Cookies(
         get() {
             return mutableMapOf(
                 "uin" to uin,
-                "p_uin" to p_uin,
+                "p_uin" to pUin,
                 "skey" to skey,
                 "p_skey" to psKey
             )
