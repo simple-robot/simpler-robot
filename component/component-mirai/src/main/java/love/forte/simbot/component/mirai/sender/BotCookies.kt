@@ -25,14 +25,14 @@ import java.nio.charset.Charset
 /**
  * 通过mirai安卓协议的[net.mamoe.mirai.internal.QQAndroidBot]得到部分敏感信息.
  * 无法保证此类永远可用。此类的信息依赖于mirai的内部代码构造。
- * 最后测试可用版本：mirai:1.2.1
+ * 最后测试可用版本 `2.0-M2-2`
  *
  * @see net.mamoe.mirai.internal.QQAndroidBot
  * @see net.mamoe.mirai.internal.network.QQAndroidClient
  * @see net.mamoe.mirai.internal.network.WLoginSigInfo
  *
  */
-object AndroidBotCookieUtils {
+object UnsafeViolenceAndroidBotCookieUtils {
     private const val MIRAI_PACKAGE = "net.mamoe.mirai.internal"
     private var success: Boolean = false
     private lateinit var botClientGetter: Method
@@ -97,8 +97,8 @@ object AndroidBotCookieUtils {
 
     /**
      * 得到cookies
-     * @throws IllegalStateException 如果[AndroidBotCookieUtils]不可用，则会抛出此异常。
-     * 如果[AndroidBotCookieUtils.cause]不为null，则会同时输出其信息。
+     * @throws IllegalStateException 如果[UnsafeViolenceAndroidBotCookieUtils]不可用，则会抛出此异常。
+     * 如果[UnsafeViolenceAndroidBotCookieUtils.cause]不为null，则会同时输出其信息。
      * @throws Exception 可能会出现任何不可预测的异常。
      */
     @Throws(Exception::class)
@@ -153,7 +153,7 @@ object AndroidBotCookieUtils {
 /**
  * 通过bot得到[Cookies]信息。
  */
-val Bot.cookies: Cookies get() = AndroidBotCookieUtils.cookies(this)
+val Bot.cookies: Cookies get() = UnsafeViolenceAndroidBotCookieUtils.cookies(this)
 
 
 /*

@@ -41,7 +41,7 @@ public class MiraiGetter(
     private val defGetter: Getter,
 ) : Getter {
     override val authInfo: AuthInfo
-        get() = MiraiAuthInfo(AndroidBotCookieUtils.cookies(bot))
+        get() = MiraiAuthInfo(UnsafeViolenceAndroidBotCookieUtils.cookies(bot))
 
     override val botInfo: BotInfo
         get() = MiraiBotInfo(bot, http)
