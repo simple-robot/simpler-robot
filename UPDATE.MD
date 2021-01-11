@@ -414,5 +414,7 @@ simbot.core.sender.default.type=ERROR
 
 - `MultipleResults` 的实现类中，`getSize()` 更替为更符合习惯的 `size()`。*暂时兼容旧方法几个版本。*
 
+- 增加一个获取空的 `MessageContent` 实例的方法: `MessageContents.emptyContent()`
+ 
 ### Mirai
 - 优化mirai中针对 `MessageContentBuilder.text(...)` 的操作。
