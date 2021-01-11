@@ -91,7 +91,10 @@ public interface MessageContent {
      */
     val msg: String
 
-
+    /**
+     * 需要重写equals。
+     */
+    override operator fun equals(other: Any?): Boolean
 
     /**
      * 获取此消息中的所有可能包含的cat码。

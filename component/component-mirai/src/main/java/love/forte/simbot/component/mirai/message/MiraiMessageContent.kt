@@ -31,6 +31,12 @@ import net.mamoe.mirai.message.action.Nudge.Companion.sendNudge
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 
+
+internal interface NekoAble {
+    val neko: Neko?
+}
+
+
 /**
  * 一个 mirai 组件所使用的 [MessageContent] 实现。
  */
@@ -106,8 +112,8 @@ public object EmptySingleMessage : SingleMessage by PlainText("")
  */
 public class MiraiSingleMessageContent(
     val singleMessage: (Contact) -> SingleMessage,
-    private val neko: Neko?,
-) : MiraiMessageContent() {
+    override val neko: Neko?,
+) : MiraiMessageContent(), NekoAble {
 
     companion object Empty : MiraiMessageContent() {
         /**
@@ -122,9 +128,38 @@ public class MiraiSingleMessageContent(
          */
         override val cats: List<Neko>
             get() = emptyList()
+
+
+        override fun equals(other: Any?): Boolean {
+            if (other === null) {
+                return false
+            }
+            if (other === Empty) {
+                return true
+            }
+            if (other is MiraiSingleMessageContent) {
+                return other.neko == null
+            }
+
+            return false
+        }
     }
 
-    // constructor(singleMessage: SingleMessage, neko: Neko?) : this({ singleMessage }, neko)
+    override fun equals(other: Any?): Boolean {
+        if (other === null) {
+            return false
+        }
+        if (other === Empty) {
+            return neko == null
+        }
+
+        if (other is MiraiSingleMessageContent) {
+            return neko == other.neko
+        }
+        return false
+    }
+
+    override fun hashCode(): Int = neko.hashCode()
 
     constructor(
         singleMessage: SingleMessage,
@@ -145,7 +180,7 @@ public class MiraiSingleMessageContent(
 /**
  * mirai 的 nudge 消息。
  */
-public class MiraiNudgedMessageContent(private val target: Long?) :
+public data class MiraiNudgedMessageContent(private val target: Long?) :
     MiraiMessageContent() {
 
     /**
@@ -194,16 +229,26 @@ public class MiraiNudgedMessageContent(private val target: Long?) :
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class MiraiMessageChainContent(val message: MessageChain) : MiraiMessageContent() {
+public data class MiraiMessageChainContent(val message: MessageChain) : MiraiMessageContent() {
     override suspend fun getMessage(contact: Contact): Message = message
     override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) { message.toNeko() }
+    override fun equals(other: Any?): Boolean {
+        if (other == null) {
+            return false
+        }
+        if (other is MiraiMessageChainContent) {
+            return other.message == message
+        }
+
+        return false
+    }
 }
 
 
 /**
  * at 一个指定的人的 message。
  */
-public class MiraiSingleAtMessageContent(private val code: Long) : MiraiMessageContent() {
+public data class MiraiSingleAtMessageContent(private val code: Long) : MiraiMessageContent() {
     override suspend fun getMessage(contact: Contact): Message {
         return if (contact is Group) {
             At(contact.getOrFail(code))
@@ -230,18 +275,39 @@ public class MiraiSingleAtMessageContent(private val code: Long) : MiraiMessageC
 /**
  * mirai 的 image content，代表为通过本地上传的图片信息。
  * 此实现中，image仅会被实例化一次，而后则会被缓存。
- * 线程并不安全。
  */
 public class MiraiImageMessageContent(
     private val flash: Boolean = false,
-    neko: Neko,
+    override val neko: Neko,
     private val imageFunction: suspend (Contact) -> Image,
-) : MiraiMessageContent() {
+) : MiraiMessageContent(), NekoAble {
 
     override fun toString(): String = "MiraiImageContent(flash=$flash,image=${
         if (!::image.isInitialized) "(Not initialized yet.)"
         else image.toString()
     })"
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) {
+            return false
+        }
+        if (other is MiraiImageMessageContent) {
+            return flash == other.flash && (
+                    neko["id"]?.equals(other.neko["id"]) == true
+                            || neko["file"]?.equals(other.neko["file"]) == true
+                            || neko["url"]?.equals(other.neko["url"]) == true
+                    )
+        }
+
+        if (other is NekoAble) {
+            return neko == other.neko
+        }
+
+        return false
+    }
+
+
+    override fun hashCode(): Int = hash
 
     @Volatile
     private lateinit var image: Image
@@ -250,6 +316,8 @@ public class MiraiImageMessageContent(
     private val lock = Mutex()
 
     override val cats: List<Neko> = listOf(neko)
+
+    private val hash = neko.hashCode()
 
     /**
      * get image msg. 区分群消息与好友消息
@@ -263,14 +331,9 @@ public class MiraiImageMessageContent(
             if (!::image.isInitialized) {
                 lock.withLock {
                     if (!::image.isInitialized) {
-                        // try {
                         image = imageFunction(contact)
-                        // } catch (ignore: Exception) {
-                        // }
                     }
                 }
-                // val img = imageFunction(contact)
-
             }
             image
         }.let {
@@ -291,9 +354,9 @@ public class MiraiImageMessageContent(
  * 此实现类似于 [MiraiImageMessageContent]，Voice的实例化会被缓存，且存在锁来保证唯一性。
  */
 public class MiraiVoiceMessageContent(
-    neko: Neko,
+    override val neko: Neko,
     private val voiceFunction: suspend (Contact) -> Voice,
-) : MiraiMessageContent() {
+) : MiraiMessageContent(), NekoAble {
 
     @Volatile
     private lateinit var voice: Voice
@@ -301,6 +364,7 @@ public class MiraiVoiceMessageContent(
     /** lock */
     private val lock = Mutex()
 
+    private val hash = neko.hashCode()
     override val cats: List<Neko> = listOf(neko)
 
     override suspend fun getMessage(contact: Contact): Message {
@@ -318,5 +382,28 @@ public class MiraiVoiceMessageContent(
             voice
         }
     }
+
+    override fun hashCode(): Int {
+        return hash
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) {
+            return false
+        }
+        if (other is NekoAble) {
+            val otherNeko = if (other is MiraiVoiceMessageContent) other.neko else other.neko ?: return false
+            return with(otherNeko.type) { this == "voice" || this == "record" }
+                    && (
+                    neko["id"]?.equals(otherNeko["id"]) == true
+                            || neko["file"]?.equals(otherNeko["file"]) == true
+                            || neko["url"]?.equals(otherNeko["url"]) == true
+                    )
+        }
+
+
+        return false
+    }
+
 }
 

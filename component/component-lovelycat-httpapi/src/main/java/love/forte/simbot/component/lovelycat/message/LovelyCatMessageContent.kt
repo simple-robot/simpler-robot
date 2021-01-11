@@ -177,7 +177,7 @@ public data class LovelyCatUnknownMessageContent(private val content: String, pr
  * - image
  *
  */
-public class LovelyCatForSendMessageContent
+public data class LovelyCatForSendMessageContent
 internal constructor(
     val text: String,
     val image: List<String>,
