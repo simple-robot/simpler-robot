@@ -50,7 +50,7 @@ public fun interface MessageContentBuilderFactory {
 public interface MessageContentBuilder {
 
     /** 最基础的消息类型。向当前构建的消息中追加一个 文本消息。 */
-    fun text(text: String): MessageContentBuilder
+    fun text(text: CharSequence): MessageContentBuilder
 
     /** 向当前构建的消息中追加一个 'at全体'的消息。 */
     fun atAll(): MessageContentBuilder

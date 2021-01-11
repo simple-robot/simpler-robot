@@ -17,6 +17,8 @@
 package love.forte.simbot.api.message
 
 import love.forte.catcode.Neko
+import love.forte.simbot.api.message.EmptyContent.cats
+import love.forte.simbot.api.message.EmptyContent.msg
 
 /*
  *
@@ -113,6 +115,46 @@ public interface MessageContent {
     @JvmDefault
     fun getCats(vararg types: String) = cats.filter { it.type in types }
 
+
+    /**
+     * 判断当前的消息是否为一个**空消息**。
+     * 一个空消息要求 [cats] 为空, 且 [msg] 为空。
+     */
+    @JvmDefault
+    fun isEmpty(): Boolean = cats.isEmpty() && msg.isEmpty()
+
+}
+
+
+/**
+ * 得到一个恒为空消息的实例。
+ */
+public fun emptyContent(): MessageContent = EmptyContent
+
+
+/**
+ * 一个**空消息**实例。其他一切 `isEmpty() == true` 的实例均会 `equals == true`.
+ */
+private object EmptyContent: MessageContent {
+    override val msg: String get() = ""
+
+    override fun equals(other: Any?): Boolean {
+        if (other === EmptyContent) {
+            return true
+        }
+        if (other !is MessageContent) {
+            return false
+        }
+
+        return other.isEmpty()
+    }
+
+    override fun isEmpty(): Boolean = true
+
+    override fun hashCode(): Int = 0
+
+    override val cats: List<Neko>
+        get() = emptyList()
 }
 
 

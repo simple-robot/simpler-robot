@@ -413,3 +413,6 @@ simbot.core.sender.default.type=ERROR
 - 现在`BotInfo(bot信息)`也属于一种`AccountInfo(账号信息)`了。
 
 - `MultipleResults` 的实现类中，`getSize()` 更替为更符合习惯的 `size()`。*暂时兼容旧方法几个版本。*
+
+### Mirai
+- 优化mirai中针对 `MessageContentBuilder.text(...)` 的操作。

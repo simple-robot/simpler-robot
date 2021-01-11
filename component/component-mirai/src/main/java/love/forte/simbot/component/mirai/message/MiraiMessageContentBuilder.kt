@@ -46,19 +46,30 @@ public object MiraiMessageContentBuilderFactory : MessageContentBuilderFactory {
  */
 public class MiraiMessageContentBuilder : MessageContentBuilder {
 
+    private var texts = StringBuilder()
+
     private val contentList = mutableListOf<MiraiMessageContent>()
 
-    override fun text(text: String): MessageContentBuilder {
-        contentList.add(MiraiSingleMessageContent(PlainText(text)))
+    private fun checkText() {
+        if (texts.isNotEmpty()) {
+            contentList.add(MiraiSingleMessageContent(PlainText(texts.toString())))
+            texts.clear()
+        }
+    }
+
+    override fun text(text: CharSequence): MessageContentBuilder {
+        texts.append(text)
         return this
     }
 
     override fun atAll(): MiraiMessageContentBuilder {
+        checkText()
         contentList.add(MiraiSingleMessageContent(AtAll))
         return this
     }
 
     private fun at0(code: Long): MiraiMessageContentBuilder {
+        checkText()
         contentList.add(MiraiSingleAtMessageContent(code))
         return this
     }
@@ -69,6 +80,7 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
 
 
     private fun face0(id: Int): MiraiMessageContentBuilder {
+        checkText()
         contentList.add(MiraiSingleMessageContent(Face(id)))
         return this
     }
@@ -89,6 +101,7 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
                 }
             }.build()
         val imageContent = MiraiImageMessageContent(flash, imageNeko) { file.uploadAsImage(it) }
+        checkText()
         contentList.add(imageContent)
         return this
     }
@@ -106,7 +119,10 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
             }.build()
         MiraiImageMessageContent(flash, imageNeko) {
             u.toStream().uploadAsImage(it)
-        }.apply { contentList.add(this) }
+        }.apply {
+            checkText()
+            contentList.add(this)
+        }
         return this
     }
 
@@ -121,7 +137,10 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
             }.build()
         MiraiImageMessageContent(flash, imageNeko){
             input.uploadAsImage(it)
-        }.apply { contentList.add(this) }
+        }.apply {
+            checkText()
+            contentList.add(this)
+        }
         return this
     }
 
@@ -130,5 +149,8 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
         return image(input, flash)
     }
 
-    override fun build(): MiraiMessageContent = MiraiListMessageContent(contentList.toList())
+    override fun build(): MiraiMessageContent {
+        checkText()
+        return MiraiListMessageContent(contentList.toList())
+    }
 }

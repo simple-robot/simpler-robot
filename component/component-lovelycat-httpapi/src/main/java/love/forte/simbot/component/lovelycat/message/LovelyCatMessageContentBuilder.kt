@@ -84,7 +84,7 @@ public class LovelyCatMessageContentBuilder : MessageContentBuilder {
     private var atAll = false
 
     /** 最基础的消息类型。向当前构建的消息中追加一个 文本消息。 */
-    override fun text(text: String): LovelyCatMessageContentBuilder = apply {
+    override fun text(text: CharSequence): LovelyCatMessageContentBuilder = apply {
         sb.append(text)
     }
 
