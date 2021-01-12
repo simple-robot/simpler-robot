@@ -1,24 +1,46 @@
-# simpler-robot
 
-[![](https://img.shields.io/maven-central/v/love.forte.simple-robot/parent)](https://repo1.maven.org/maven2/love/forte/simple-robot/parent/)
+[comment]: <> (# simpler-robot)
+[comment]: <> ([![]&#40;https://img.shields.io/maven-central/v/love.forte.simple-robot/parent&#41;]&#40;https://repo1.maven.org/maven2/love/forte/simple-robot/parent/&#41;)
+
+<div align="center">
+    <img src="./logo/logo-4@0,1x.png"/>
+    <h3>
+        - simpler-robot -
+    </h3>
+    <span>
+        <a href="https://github.com/ForteScarlet/simpler-robot" target="_blank">github</a>
+    </span> 
+    &nbsp;&nbsp; | &nbsp;&nbsp;
+    <span>
+        <a href="https://gitee.com/ForteScarlet/simpler-robot" target="_blank">gitee</a>
+    </span> <br />
+    <small> &gt; 感谢 <a href="https://github.com/ForteScarlet/CatCode" target="_blank">CatCode</a> 开发团队成员制作的simbot logo &lt; </small> <br />
+    <a href="https://repo1.maven.org/maven2/love/forte/simple-robot/parent/" target="_blank" >
+        <img src="https://img.shields.io/maven-central/v/love.forte.simple-robot/parent" />
+    </a>
+
+</div>
 
 ## 简介
 
-这是simple-robot的2.x版本。
+这是一个通用机器人开发框架，是simple-robot(下文简称`simbot`)的2.x版本。
 
-虽然说是2.x版本，但是内容大幅更改，例如包路径、类定义、api以及模块依赖结构，可以直接当成一个新框架用了。
-但是整体性的使用思路与理念不会变。
+`simbot` 是一个JVM平台的通用机器人开发框架，基于simbot核心API并对接开发不同平台的机器人应用，你可以使用相同的代码风格来开发不同平台的机器人。
 
+`simbot` 在发展过程中，很多功能的使用灵感来自于springboot，例如基础依赖注入与注解监听，并且对于一些主要组件专门提供了springboot-starter模块以方便开发者快速整合springboot（当然，如果可以，我依旧更希望你使用原生simbot环境）。
 
-simpler-robot是一个JVM平台的通用机器人开发框架，基于核心API开发不同平台的机器人应用。
+`simbot` 提供了丰富的api接口与各种模块以支持机器人开发者与组件开发者使用，对于机器人开发者，你可以通过功能丰富的注解来实现各种较为复杂的事件匹配逻辑。对于组件开发者，你拥有很高的可选择性与灵活性来针对一个平台进行对接。
+
+以及更多高级特性等待你的发现...
+
 
 ## 支持平台
 
 目前支持的机器人平台：
 - QQ
-    - mirai
+    - [mirai](https://github.com/mamoe/mirai)
 - wechat
-    - 可爱猫
+    - [可爱猫](http://www.keaimao.com.cn/)
 
 
 计划中准备支持的平台：
