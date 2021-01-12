@@ -1,7 +1,3 @@
-
-[comment]: <> (# simpler-robot)
-[comment]: <> ([![]&#40;https://img.shields.io/maven-central/v/love.forte.simple-robot/parent&#41;]&#40;https://repo1.maven.org/maven2/love/forte/simple-robot/parent/&#41;)
-
 <div align="center">
     <img src="./logo/logo-4@0,1x.png"/>
     <h3>
@@ -15,6 +11,7 @@
         <a href="https://gitee.com/ForteScarlet/simpler-robot" target="_blank">gitee</a>
     </span> <br />
     <small> &gt; 感谢 <a href="https://github.com/ForteScarlet/CatCode" target="_blank">CatCode</a> 开发团队成员制作的simbot logo &lt; </small> <br />
+    <small> &gt; 走过路过，不要忘记留下一个⭐喔~ &lt; </small> <br />
     <a href="https://repo1.maven.org/maven2/love/forte/simple-robot/parent/" target="_blank" >
         <img src="https://img.shields.io/maven-central/v/love.forte.simple-robot/parent" />
     </a>
