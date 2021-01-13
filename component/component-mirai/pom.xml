@@ -34,19 +34,19 @@
         <dependency>
             <groupId>love.forte.simple-robot.http</groupId>
             <artifactId>client-ktor</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.ktor</groupId>
-                    <artifactId>ktor-client-cio-jvm</artifactId>
-                </exclusion>
-            </exclusions>
+            <!--<exclusions>-->
+            <!--    <exclusion>-->
+            <!--        <groupId>io.ktor</groupId>-->
+            <!--        <artifactId>ktor-client-cio-jvm</artifactId>-->
+            <!--    </exclusion>-->
+            <!--</exclusions>-->
         </dependency>
 
-        <dependency>
-            <groupId>io.ktor</groupId>
-            <artifactId>ktor-client-okhttp</artifactId>
-            <version>1.5.0</version>
-        </dependency>
+        <!--<dependency>-->
+        <!--    <groupId>io.ktor</groupId>-->
+        <!--    <artifactId>ktor-client-okhttp</artifactId>-->
+        <!--    <version>1.5.0</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>cn.hutool</groupId>
