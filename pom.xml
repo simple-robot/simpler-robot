@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <artifactId>parent</artifactId>
     <groupId>love.forte.simple-robot</groupId>
-    <version>2.0.0-BETA.9</version><!--v-->
+    <version>2.0.0-RC.1</version><!--v-->
     <modules>
         <module>core-parent</module>
         <module>component</module>
