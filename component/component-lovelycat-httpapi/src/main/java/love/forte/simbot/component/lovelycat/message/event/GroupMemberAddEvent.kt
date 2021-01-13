@@ -58,7 +58,7 @@ public class LovelyCatGroupMemberAddEvent(
      *
      */
     override val accountInfo: AccountInfo
-        get() = TODO()
+        get() = TODO("尚且未知数据格式。原始json: $jsonMsg")
 
     /**
      * 有时候群友增加也可能代表是bot进入了某个群.
@@ -74,7 +74,9 @@ public class LovelyCatGroupMemberAddEvent(
      *
      */
     override val operatorInfo: OperatorInfo?
-        get() = null
+        get() {
+            return null
+        }
 
     /**
      * 增加类型，默认为 [邀请进入][GroupMemberIncrease.Type.INVITED]

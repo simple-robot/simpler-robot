@@ -30,10 +30,10 @@ import love.forte.simbot.api.message.containers.*
 public interface GroupMemberInfo : Result, GroupAccountInfo, GroupContainer, PermissionContainer,
     GroupAccountContainer {
     /**
-     * TODO 1~2个版本内删除。
+     * TODO 2.0.0-BETA.10删除。
      */
     @JvmDefault
-    @Deprecated("Use self.", ReplaceWith("this"), DeprecationLevel.WARNING)
+    @Deprecated("Use self.", ReplaceWith("this"), DeprecationLevel.ERROR)
     override val accountInfo: GroupAccountInfo
         get() = this
 }

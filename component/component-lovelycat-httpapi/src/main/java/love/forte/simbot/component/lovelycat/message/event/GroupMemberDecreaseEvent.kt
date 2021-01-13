@@ -55,7 +55,7 @@ public class LovelyCatGroupMemberDecreaseEvent(
      * TODO 信息大概在 [jsonMsg] 中。
      */
     override val accountInfo: AccountInfo
-        get() = TODO("Not yet implemented. ")
+        get() = TODO("尚且未知数据格式。原始json: $jsonMsg")
 
     /**
      * 有时候群友减少也可能代表是bot被踢出了某个群.
@@ -65,7 +65,7 @@ public class LovelyCatGroupMemberDecreaseEvent(
 
     /**
      * 减少类型,
-     * TODO 暂时默认为自行离开。
+     * 暂时默认为自行离开。
      */
     override val reduceType: GroupMemberReduce.Type
         get() = GroupMemberReduce.Type.LEAVE
