@@ -416,7 +416,7 @@ simbot.core.sender.default.type=ERROR
 
 - 增加一个获取空的 `MessageContent` 实例的方法: `MessageContents.emptyContent()`
 
-- 修复内部`Ignore`导包错误。
+- 修复内部`Ignore`处理错误。
  
 ### Mirai
 - 优化mirai中针对 `MessageContentBuilder.text(...)` 的操作。
