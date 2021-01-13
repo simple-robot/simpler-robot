@@ -406,7 +406,7 @@ simbot.core.sender.default.type=ERROR
 - [#39](https://github.com/ForteScarlet/simpler-robot/issues/39) 监听函数优先级失效
 
 
-## BETA.9
+## RC.1
 
 ### 核心
 
@@ -424,7 +424,8 @@ simbot.core.sender.default.type=ERROR
 - 更新mirai为 `v2.0-RC`。
 - 优化mirai组件中针对 `MessageContentBuilder.text(...)` 的操作。
 - 优化mirai组件中的私聊发送。
-- 内置默认使用的 `http-client-ktor` 切换为与mirai内部一致的okhttp。
+- 内置默认使用的 `http-client-ktor` 切换为与mirai内部一致的`client-okhttp`。
 
 ### http-client-ktor
 - 更新ktor为 `v1.5.0`
+- 优化实例化流程
