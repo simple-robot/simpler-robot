@@ -36,7 +36,7 @@ public data class MiraiFriendAccountInfo(private val friendId: Long, private val
      * 账号
      */
     override val accountCode: String
-        get() = _friend.id.toString()
+        get() = friendId.toString()
 
     override val accountCodeNumber: Long
         get() = _friend.id
@@ -64,6 +64,38 @@ public data class MiraiFriendAccountInfo(private val friendId: Long, private val
 
 
 
+public data class MiraiStrangerAccountInfo(private val strangerId: Long, private val stranger: Stranger?) : FriendAccountInfo {
+    constructor(stranger: Stranger) : this(stranger.id, stranger)
+
+    private val _stranger: Stranger
+        get() = stranger ?: throw NullPointerException("Stranger($strangerId)")
+
+    /**
+     * 账号
+     */
+    override val accountCode: String
+        get() = strangerId.toString()
+
+    /**
+     * 昵称。
+     * 可能会出现为null的情况，但是一般情况下不会。
+     */
+    override val accountNickname: String
+        get() = _stranger.nick
+
+    /** 好友备注或群名片。可能为null。 */
+    override val accountRemark: String?
+        get() = null
+
+    /**
+     * 得到账号的头像地址. 一般来讲为`null`的可能性很小
+     */
+    override val accountAvatar: String?
+        get() = _stranger.avatarUrl
+}
+
+
+
 /**
  * 基于 mirai [Member] 的 [AccountInfo] 实现。
  */
@@ -79,7 +111,7 @@ public data class MiraiMemberAccountInfo(private val memberId: Long, private val
      * 账号
      */
     override val accountCode: String
-        get() = _member.id.toString()
+        get() = memberId.toString()
 
     override val accountCodeNumber: Long
         get() = _member.id

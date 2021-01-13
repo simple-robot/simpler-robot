@@ -20,7 +20,7 @@
     <url>https://github.com/ForteScarlet/simpler-robot/tree/dev/component/component-mirai</url>
 
     <properties>
-        <mirai.version>2.0-M2-2</mirai.version>
+        <mirai.version>2.0-RC</mirai.version>
         <mirai-login-solver-selenium.version>1.0-dev-6</mirai-login-solver-selenium.version>
     </properties>
 
@@ -34,19 +34,19 @@
         <dependency>
             <groupId>love.forte.simple-robot.http</groupId>
             <artifactId>client-ktor</artifactId>
-            <!--<exclusions>-->
-            <!--    <exclusion>-->
-            <!--        <groupId>io.ktor</groupId>-->
-            <!--        <artifactId>ktor-client-cio-jvm</artifactId>-->
-            <!--    </exclusion>-->
-            <!--</exclusions>-->
+            <exclusions>
+                <exclusion>
+                    <groupId>io.ktor</groupId>
+                    <artifactId>ktor-client-cio-jvm</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
-        <!--<dependency>-->
-        <!--    <groupId>io.ktor</groupId>-->
-        <!--    <artifactId>ktor-client-okhttp</artifactId>-->
-        <!--    <version>1.5.0</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>io.ktor</groupId>
+            <artifactId>ktor-client-okhttp</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>cn.hutool</groupId>
@@ -60,12 +60,12 @@
             <version>${mirai.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>net.mamoe</groupId>
-            <artifactId>mirai-login-solver-selenium</artifactId>
-            <version>${mirai-login-solver-selenium.version}</version>
-            <optional>true</optional>
-        </dependency>
+        <!--<dependency>-->
+        <!--    <groupId>net.mamoe</groupId>-->
+        <!--    <artifactId>mirai-login-solver-selenium</artifactId>-->
+        <!--    <version>${mirai-login-solver-selenium.version}</version>-->
+        <!--    <optional>true</optional>-->
+        <!--</dependency>-->
 
         <!-- kt -->
         <dependency>

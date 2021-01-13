@@ -24,7 +24,7 @@ import love.forte.simbot.api.message.events.FriendMsg
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.event.events.FriendMessageEvent
-import net.mamoe.mirai.event.events.TempMessageEvent
+import net.mamoe.mirai.event.events.GroupTempMessageEvent
 import net.mamoe.mirai.message.data.MessageSource
 
 
@@ -72,8 +72,8 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
  * mirai的私聊消息事件。此为群临时会话消息。
  * 可以得到群信息。
  */
-public class MiraiTempMsg(event: TempMessageEvent) :
-    MiraiMessageMsgGet<TempMessageEvent>(event), PrivateMsg, GroupContainer {
+public class MiraiTempMsg(event: GroupTempMessageEvent) :
+    MiraiMessageMsgGet<GroupTempMessageEvent>(event), PrivateMsg, GroupContainer {
 
     private val tempAccountInfo = MiraiMemberAccountInfo(event.sender)
 
@@ -98,12 +98,6 @@ public class MiraiTempMsg(event: TempMessageEvent) :
      *  使用 [MiraiMessageContent]作为最终消息载体。
      */
     override val msgContent: MessageContent = MiraiMessageChainContent(message)
-
-    // /**
-    //  * 提供一个简单的方法来获取 [msgContent] 中的文本内容。
-    //  */
-    // override val msg: String?
-    //     get() = msgContent.msg
 
     /**
      * 私聊消息标识，

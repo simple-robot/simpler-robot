@@ -20,6 +20,7 @@ import love.forte.simbot.api.message.events.GroupMemberReduce
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
 import love.forte.simbot.component.mirai.message.result.MiraiGroupInfo
+import love.forte.simbot.component.mirai.message.result.MiraiGroupMemberInfo
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 
@@ -39,14 +40,17 @@ public sealed class MiraiMemberJoined<E : MemberJoinEvent>(event: E) : AbstractM
     override fun isBot(): Boolean = false
 
     /** mirai(1.3.2) 无法定位操作者。 */
-    override val operatorInfo: OperatorInfo?
-        get() = null
+
 
     /** 主动入群者。 */
     public class Active(event: MemberJoinEvent.Active) : MiraiMemberJoined<MemberJoinEvent.Active>(event) {
         /** 类型是主动添加的。 */
         override val increaseType: GroupMemberIncrease.Type
             get() = GroupMemberIncrease.Type.PROACTIVE
+
+        /** 主动入群，不存在邀请者。 */
+        override val operatorInfo: OperatorInfo?
+            get() = null
     }
 
     /** 被邀请入群者。 */
@@ -54,12 +58,23 @@ public sealed class MiraiMemberJoined<E : MemberJoinEvent>(event: E) : AbstractM
         /** 类型是被邀请的。 */
         override val increaseType: GroupMemberIncrease.Type
             get() = GroupMemberIncrease.Type.INVITED
+
+
+        override val operatorInfo: OperatorInfo = MiraiGroupMemberInfo(event.invitor).asOperator()
+
     }
 
+    /**
+     * 群主恢复身份入群
+     */
     public class Retrieve(event: MemberJoinEvent.Retrieve) : MiraiMemberJoined<MemberJoinEvent.Retrieve>(event) {
         /** 类型是主动添加的。 */
         override val increaseType: GroupMemberIncrease.Type
             get() = GroupMemberIncrease.Type.PROACTIVE
+
+        /** 恢复身份不存在邀请者。 */
+        override val operatorInfo: OperatorInfo?
+            get() = null
     }
 }
 

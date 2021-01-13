@@ -21,7 +21,11 @@ import love.forte.simbot.component.mirai.sender.cookies
 import love.forte.simbot.http.template.HttpTemplate
 import love.forte.simbot.http.template.assertBody
 import net.mamoe.mirai.Bot
+import java.util.*
 import java.util.regex.Pattern
+
+
+internal data class BotKey(private val id: Long)
 
 /**
  *
@@ -31,6 +35,9 @@ import java.util.regex.Pattern
  * @author lcy
  */
 object BotLevelUtil {
+
+    private val levelCache: MutableMap<BotKey, Int> = WeakHashMap()
+
     private val levelPattern: Pattern = Pattern.compile("<em class=\"levelimg\">(\\d+)</em>")
     private const val VIP_URL = "https://vip.qq.com/client/level"
 
@@ -44,17 +51,29 @@ object BotLevelUtil {
      * @return [bot]的level. 如果获取不到/接口变更/cookie失效等，就会得到-1.
      */
     fun level(bot: Bot, http: HttpTemplate): Int {
-        return try {
-            val cookies = bot.cookies
-            val vipHtml = http.get(VIP_URL, null, cookies.cookiesMap, null, String::class.java)
-            val message = vipHtml.assertBody()!!
-            val matcher = levelPattern.matcher(message)
-            if(matcher.find()){
-                matcher.group(1).toInt()
-            } else DEFAULT_VALUE
-        }catch (e: Throwable){
-            DEFAULT_VALUE
+        val botKey = BotKey(bot.id)
+        val level = levelCache[botKey]
+        if (level != null) {
+            return level
         }
+        return synchronized(this) {
+            levelCache[botKey] ?: try {
+                val cookies = bot.cookies ?: return DEFAULT_VALUE
+
+                val vipHtml = http.get(VIP_URL, null, cookies.cookiesMap, null, String::class.java)
+                val message = vipHtml.assertBody()!!
+                val matcher = levelPattern.matcher(message)
+                val getLevel = if (matcher.find()) {
+                    matcher.group(1).toInt()
+                } else DEFAULT_VALUE
+                levelCache[botKey] = getLevel
+                getLevel
+            } catch (e: Throwable) {
+                DEFAULT_VALUE
+            }
+
+        }
+
     }
 
 }

@@ -31,8 +31,8 @@ import love.forte.simbot.component.mirai.message.miraiMessageFlag
 import love.forte.simbot.component.mirai.utils.toMiraiMessageContent
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
-import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Group
+import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain
@@ -127,14 +127,20 @@ public class MiraiSender(
                     } else null
                 }
             } else {
+
                 // 认为是发送给好友的
-                val friend: Friend = bot.friend(code)
-                runBlocking {
-                    val message: Message = miraiMsg.getMessage(friend)
-                    if (message.isNotEmptyMsg()) {
-                        friend.sendMessage(message)
-                    } else null
-                }
+                val friend: User = bot.friendOrNull(code)
+                    ?: (if (contact is Group) {
+                        contact.memberOrNull(code)
+                    } else null)
+                    ?: bot.getStranger(code)
+                    ?: throw NoSuchElementException("User($code)${if (contact is Group) " or Member on Group(${contact.id})" else ""}")
+                    runBlocking {
+                        val message: Message = miraiMsg.getMessage(friend)
+                        if (message.isNotEmptyMsg()) {
+                            friend.sendMessage(message)
+                        } else null
+                    }
             }
         }
 

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @SimbotApplication
 public class Test implements SimbotProcess {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         SimbotApp.run(Test.class, args);
     }
 

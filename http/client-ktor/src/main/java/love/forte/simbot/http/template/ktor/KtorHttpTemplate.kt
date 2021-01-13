@@ -16,6 +16,7 @@
 package love.forte.simbot.http.template.ktor
 
 import io.ktor.client.*
+import io.ktor.client.engine.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
@@ -77,10 +78,11 @@ private fun HttpRequestBuilder.body(requestBody: Any?, jsonSerializerFactory: Js
 public class KtorHttpTemplate
 @JvmOverloads
 constructor(
-    private val client: HttpClient = HttpClient(),
+    private val engineFactory: HttpClientEngineFactory<*>,
     private val jsonSerializerFactory: JsonSerializerFactory
 ) : BaseHttpTemplate() {
 
+    private val client: HttpClient = HttpClient(engineFactory)
 
     @Suppress("UNCHECKED_CAST")
     private fun <T> KtorHttpResponse.toResponse(responseType: Class<T>): HttpResponse<T> {

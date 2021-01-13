@@ -421,7 +421,10 @@ simbot.core.sender.default.type=ERROR
 - 简单优化/增加部分log日志。
  
 ### Mirai
-- 优化mirai中针对 `MessageContentBuilder.text(...)` 的操作。
+- 更新mirai为 `v2.0-RC`。
+- 优化mirai组件中针对 `MessageContentBuilder.text(...)` 的操作。
+- 优化mirai组件中的私聊发送。
+- 内置默认使用的 `http-client-ktor` 切换为与mirai内部一致的okhttp。
 
-
-
+### http-client-ktor
+- 更新ktor为 `v1.5.0`

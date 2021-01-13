@@ -30,3 +30,6 @@ internal inline fun Bot.friend(friend: Long): Friend = this.getFriendOrFail(frie
 internal inline fun Bot.memberOrNull(group: Long, code: Long): NormalMember? = this.getGroup(group)?.get(code)
 internal inline fun Bot.groupOrNull(group: Long): Group? = this.getGroup(group)
 internal inline fun Bot.friendOrNull(friend: Long): Friend? = this.getFriend(friend)
+
+internal inline fun Group.member(code: Long): NormalMember = this.getOrFail(code)
+internal inline fun Group.memberOrNull(code: Long): NormalMember? = this[code]

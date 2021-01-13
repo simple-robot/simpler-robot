@@ -23,6 +23,9 @@ import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.listener.MsgGetProcessor
 import love.forte.simbot.listener.onMsg
 import net.mamoe.mirai.Bot
+import net.mamoe.mirai.contact.Friend
+import net.mamoe.mirai.contact.Member
+import net.mamoe.mirai.contact.Stranger
 import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.utils.MiraiExperimentalApi
@@ -62,7 +65,7 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
             }
         }
         // 临时会话消息
-        registerListenerAlways<TempMessageEvent> {
+        registerListenerAlways<GroupTempMessageEvent> {
             msgProcessor.onMsg {
                 MiraiTempMsg(this).also {
                     cache.cachePrivateMsg(it.flag.flagId, it)
@@ -83,22 +86,30 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         }
 
         // bot被戳事件
-        registerListenerAlways<BotNudgedEvent> {
+        registerListenerAlways<NudgeEvent> {
             // if (this.from.id != this.bot.id) {
-            when (this) {
-                is BotNudgedEvent.InGroup.ByMember -> msgProcessor.onMsg { MiraiBotGroupNudgedByMemberMsg(this, from) }
-                is BotNudgedEvent.InPrivateSession.ByFriend -> msgProcessor.onMsg {
-                    MiraiBotPrivateSessionNudgedByFriendMsg(this, from)
+            if (this.from.id != this.bot.id) {
+                when(val sub = this.from) {
+                    is Friend -> msgProcessor.onMsg { MiraiNudgedEvent.ByFriend(this, sub) }
+                    is Member -> msgProcessor.onMsg { MiraiNudgedEvent.ByMember(this, sub) }
+                    is Stranger -> msgProcessor.onMsg { MiraiNudgedEvent.ByStranger(this, sub) }
                 }
-                else -> {
-                }
+
             }
+            // when (this) {
+            //     is BotNudgedEvent.InGroup.ByMember -> msgProcessor.onMsg { MiraiNudgedEvent(this, from) }
+            //     is BotNudgedEvent.InPrivateSession.ByFriend -> msgProcessor.onMsg {
+            //         MiraiBotPrivateSessionNudgedByFriendMsg(this, from)
+            //     }
+            //     else -> {
+            //     }
+            // }
         }
 
         // 群里其他人被戳事件
-        registerListenerAlways<MemberNudgedEvent> {
-            msgProcessor.onMsg { MiraiMemberNudgedMsg(this) }
-        }
+        // registerListenerAlways<MemberNudgedEvent> {
+        //     msgProcessor.onMsg { MiraiMemberNudgedMsg(this) }
+        // }
         //endregion
 
 

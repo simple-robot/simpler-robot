@@ -15,12 +15,16 @@
 package love.forte.simbot.component.mirai.sender
 
 import net.mamoe.mirai.Bot
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 import java.nio.charset.Charset
 
 /*
     通过一个bot得到cookie信息
  */
+
+internal val logger: Logger = LoggerFactory.getLogger("love.forte.simbot.component.mirai.MiraiBotCookies")
 
 /**
  * 通过mirai安卓协议的[net.mamoe.mirai.internal.QQAndroidBot]得到部分敏感信息.
@@ -104,8 +108,8 @@ object UnsafeViolenceAndroidBotCookieUtils {
     @Throws(Exception::class)
     fun cookies(bot: Bot): Cookies {
         if (!success) {
-            cause?.run { throw IllegalStateException("can not use.", this) }
-                ?: throw IllegalStateException("can not use.")
+            cause?.run { throw IllegalStateException("Can not use.", this) }
+                ?: throw IllegalStateException("Can not use.")
         }
         // get bot client
         val client = botClientGetter(bot)
@@ -153,7 +157,12 @@ object UnsafeViolenceAndroidBotCookieUtils {
 /**
  * 通过bot得到[Cookies]信息。
  */
-val Bot.cookies: Cookies get() = UnsafeViolenceAndroidBotCookieUtils.cookies(this)
+val Bot.cookies: Cookies? get() = try {
+    UnsafeViolenceAndroidBotCookieUtils.cookies(this)
+} catch (e: Exception) {
+    logger.error("Cannot get bot cookies.", e)
+    null
+}
 
 
 /*
