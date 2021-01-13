@@ -39,6 +39,7 @@
         <!--<editor-fold desc="kt prop">-->
         <kotlin.version>1.4.30-M1</kotlin.version>
         <ktor.version>1.4.3</ktor.version>
+        <ktor-okhttp.version>1.5.0</ktor-okhttp.version>
         <kotlinx.version>1.4.1</kotlinx.version>
         <kotlinx-serialization.version>1.0.1</kotlinx-serialization.version>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
@@ -244,6 +245,11 @@
                 <groupId>io.ktor</groupId>
                 <artifactId>ktor-client-cio-jvm</artifactId>
                 <version>${ktor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-client-okhttp</artifactId>
+                <version>${ktor-okhttp.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.ktor</groupId>
