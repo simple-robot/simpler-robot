@@ -14,7 +14,7 @@
 
 package love.forte.simbot.core.configuration
 
-import jdk.nashorn.internal.ir.annotations.Ignore
+import love.forte.common.annotation.Ignore
 import love.forte.common.ioc.DependBeanFactory
 import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.Depend
