@@ -319,6 +319,7 @@ public fun MessageChain.toNeko(): List<Neko> {
  * 将一个 [SingleMessage] 转化为携带cat字符串。
  * 普通文本会被转化为 [CAT:text,text=xxx]
  */
+@OptIn(MiraiExperimentalApi::class)
 public fun SingleMessage.toNeko(): Neko {
     return when (this) {
         // at all
@@ -424,4 +425,5 @@ public suspend fun Url.toStream(): InputStream {
 }
 
 
+@OptIn(MiraiExperimentalApi::class)
 private val Voice.id: String get() = md5.decodeToString()

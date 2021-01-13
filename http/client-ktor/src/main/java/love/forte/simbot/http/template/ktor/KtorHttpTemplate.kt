@@ -76,9 +76,8 @@ private fun HttpRequestBuilder.body(requestBody: Any?, jsonSerializerFactory: Js
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public class KtorHttpTemplate
-@JvmOverloads
 constructor(
-    private val engineFactory: HttpClientEngineFactory<*>,
+    engineFactory: HttpClientEngineFactory<*>,
     private val jsonSerializerFactory: JsonSerializerFactory
 ) : BaseHttpTemplate() {
 

@@ -411,13 +411,9 @@ simbot.core.sender.default.type=ERROR
 ### 核心
 
 - 现在`BotInfo(bot信息)`也属于一种`AccountInfo(账号信息)`了。
-
 - `MultipleResults` 的实现类中，`getSize()` 更替为更符合习惯的 `size()`。*暂时兼容旧方法几个版本。*
-
 - 增加一个获取空的 `MessageContent` 实例的方法: `MessageContents.emptyContent()`
-
 - 修复内部`Ignore`处理错误。
-
 - 简单优化/增加部分log日志。
  
 ### Mirai
@@ -425,6 +421,7 @@ simbot.core.sender.default.type=ERROR
 - 优化mirai组件中针对 `MessageContentBuilder.text(...)` 的操作。
 - 优化mirai组件中的私聊发送。
 - 内置默认使用的 `http-client-ktor` 切换为与mirai内部一致的`client-okhttp`。
+- 修复cookies获取。
 
 ### http-client-ktor
 - 更新ktor为 `v1.5.0`
