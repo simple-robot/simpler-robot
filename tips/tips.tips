@@ -59,3 +59,4 @@ http-client模块提供了多个目标库的实现，其中包括ktor-cio-client
 善用@Filter的target可以让你拥有更灵活的过滤规则。
 simbot的第一次提交是2019年三月。
 simbot2.x的第一次提交是2020年七月。
+如果你有一个基于simbot的优秀项目，欢迎通过github issue、github讨论区等方式联系开发团队对你酷酷的项目进行展示。
