@@ -426,3 +426,9 @@ simbot.core.sender.default.type=ERROR
 ### http-client-ktor
 - 更新ktor为 `v1.5.0`
 - 优化实例化流程
+
+
+## now
+
+### mirai
+- 兼容 `record` 类型CAT码。
