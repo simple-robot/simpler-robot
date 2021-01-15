@@ -170,8 +170,8 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
             }
         }
 
-        // voice
-        "voice" -> {
+        // voice or record
+        "voice", "record" -> {
             if (message != null) {
                 val id = this["id"]
                 if (id != null) {
