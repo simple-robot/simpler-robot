@@ -171,10 +171,10 @@ data class GroupMsgDataMapping(
     val msg: Any,
 ) : BaseLovelyCatMsg.LovelyCatDataMapping<LovelyCatGroupMsgEvent>() {
     companion object {
-        internal fun typeTo(type: Int): Class<out LovelyCatGroupMsgEvent> {
-            return if (type == 2003) LovelyCatGroupInviteGroupMsgEvent::class.java
-            else LovelyCatTextAbleGroupMsgEvent::class.java
-        }
+        // internal fun typeTo(type: Int): Class<out LovelyCatGroupMsgEvent> {
+        //     return if (type == 2003) LovelyCatGroupInviteGroupMsgEvent::class.java
+        //     else LovelyCatTextAbleGroupMsgEvent::class.java
+        // }
     }
     override fun mapTo(
         originalData: String,
@@ -269,7 +269,7 @@ public object LovelyCatGroupMsgEventParser : LovelyCatEventParser {
         ).mapTo(original, api, jsonSerializerFactory)
     }
 
-    override fun type(): Class<out LovelyCatMsg> =LovelyCatGroupMsgEvent::class.java
+    override fun type(): Class<out LovelyCatMsg>? = null
 }
 
 

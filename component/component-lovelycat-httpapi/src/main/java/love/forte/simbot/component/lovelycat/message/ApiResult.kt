@@ -24,16 +24,23 @@ import love.forte.simbot.component.lovelycat.message.event.lovelyCatAccountInfo
 
 public interface ApiResult<T> {
     val code: Int
-    val result: String
+    val result: String?
     val data: T?
 }
 
 
-public data class LovelyCatApiResult(
-    override val code: Int,
-    override val result: String,
-    override val data: String?
-) : ApiResult<String>
+// public class LovelyCatApiResult : ApiResult<String> {
+//     @field:JvmName("code")
+//     override var code: Int = -1
+//     @field:JvmName("result")
+//     override var result: String? = null
+//     @field:JvmName("data")
+//     override var data: String? = null
+//
+//     override fun toString(): String {
+//         return "LovelyCatApiResult(code=$code, result='$result', data=$data)"
+//     }
+// }
 
 
 
@@ -58,7 +65,7 @@ public data class RobotHeadImgUrl(
 
 /** bot head url */
 public data class LoggedAccountList(
-    val accountList: List<CatBotInfo>
+    val accountList: List<CatBotInfo> = emptyList()
 )
 
 
@@ -67,23 +74,23 @@ public data class LoggedAccountList(
  */
 public data class CatBotInfo(
     @Deprecated("update_desc: robot_wxid、head_url、wx_hand、这三个属性为兼容老版本出现的，建议更换新属性", ReplaceWith("wxid"))
-    val robotWxid: String,
+    val robotWxid: String?,
     val wxid: String,
-    val wxNum: String,
+    val wxNum: String?,
     val nickname: String,
     @Deprecated("update_desc: robot_wxid、head_url、wx_hand、这三个属性为兼容老版本出现的，建议更换新属性", ReplaceWith("headimgurl"))
-    val headUrl: String,
+    val headUrl: String?,
     val headimgurl: String,
-    val signature: String,
-    val backgroundimgurl: String,
+    val signature: String?,
+    val backgroundimgurl: String?,
     // "robot_wxid、head_url、wx_hand、这三个属性为兼容老版本出现的，建议更换新属性",
-    val update_desc: String,
-    val status: Int,
+    val update_desc: String?,
+    val status: Int?,
     @Deprecated("update_desc: robot_wxid、head_url、wx_hand、这三个属性为兼容老版本出现的，建议更换新属性", ReplaceWith("wxWindHandle"))
     val wxHand: Int?,
-    val wxWindHandle: Int,
-    val pid: Int,
-    val loginTime: Int
+    val wxWindHandle: Int?,
+    val pid: Int?,
+    val loginTime: Int?
 ) : BotInfo {
     override val botCode: String
         get() = wxid
@@ -99,7 +106,7 @@ public data class CatBotInfo(
 public data class CatFriendListResult(
     override val code: Int,
     override val result: String,
-    override val data: List<CatFriendInfo>
+    override val data: List<CatFriendInfo> = emptyList()
 ) : ApiResult<List<CatFriendInfo>>
 
 
@@ -115,7 +122,7 @@ public data class CatFriendInfo(
      */
     val name: String,
     val wxid: String,
-    val note: String,
+    val note: String?,
     val robotWxid: String
 ) : FriendInfo, AccountInfo by lovelyCatAccountInfo(wxid, name, note), BotCodeContainer {
 
@@ -144,7 +151,7 @@ public data class CatFriendInfo(
 public data class CatGroupListResult(
     override val code: Int,
     override val result: String,
-    override val data: List<CatGroupInfo>
+    override val data: List<CatGroupInfo> = emptyList()
 ) : ApiResult<List<CatGroupInfo>>
 
 
@@ -203,7 +210,7 @@ public data class CatGroupMemberInfo(
     val img: String,
     val name: String,
     val wxid: String,
-    val city: String,
+    val city: String?,
     val robotWxid: String
 ) : GroupAccountInfo, BotCodeContainer {
     /**
@@ -245,7 +252,7 @@ public data class CatGroupMemberInfo(
 public data class GroupMemberListResult(
     override val code: Int,
     override val result: String,
-    override val data: List<CatSimpleGroupMemberInfo>
+    override val data: List<CatSimpleGroupMemberInfo> = emptyList()
 ) : ApiResult<List<CatSimpleGroupMemberInfo>>
 
 

@@ -22,8 +22,6 @@ package love.forte.simbot.component.lovelycat.message
  *
  * 缓存中的各种 **计算** 建议使用同步锁而不是CAS以避免出现多次重复请求.
  *
- * TODO implement
- *
  */
 public interface LovelyCatApiCache {
 

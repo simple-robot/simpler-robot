@@ -235,7 +235,7 @@ public object LovelyCatPrivateMsgEventParser : LovelyCatEventParser {
         ).mapTo(original, api, jsonSerializerFactory)
     }
 
-    override fun type(): Class<out LovelyCatMsg> = LovelyCatPrivateMsgEvent::class.java
+    override fun type(): Class<out LovelyCatMsg>? = null
 }
 
 

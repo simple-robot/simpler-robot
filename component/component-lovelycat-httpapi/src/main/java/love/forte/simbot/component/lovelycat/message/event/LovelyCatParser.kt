@@ -38,6 +38,11 @@ public interface LovelyCatParser {
     ): LovelyCatMsg?
 
     /**
+     * 根据类型获取一个对应的解析器。如果为null则说明没有对应的解析器。
+     */
+    fun parser(event: String): LovelyCatEventParser?
+
+    /**
      * 判断此事件对应的类型。
      */
     fun type(event: String): Class<out LovelyCatMsg>?
@@ -58,9 +63,9 @@ public interface LovelyCatEventParser :
     ): LovelyCatMsg
 
     /**
-     * 得到对应的事件类型
+     * 得到对应的事件类型。可能为 `null`。当为null的时候代表此消息可能存在多个类型，需要实例化后进行判断。
      */
-    fun type(): Class<out LovelyCatMsg>
+    fun type(): Class<out LovelyCatMsg>?
 
 }
 
@@ -92,9 +97,16 @@ public class DefaultLovelyCatParser : LovelyCatParser {
         jsonSerializerFactory: JsonSerializerFactory,
         params: Map<String, *>
     ): LovelyCatMsg? {
-        return parserMap[event]?.invoke(originalData, api, jsonSerializerFactory, params)
+        return parser(event)?.invoke(originalData, api, jsonSerializerFactory, params)
     }
 
+
+    /**
+     * 根据类型获取一个对应的解析器。如果为null则说明没有对应的解析器。
+     */
+    override fun parser(event: String): LovelyCatEventParser? {
+        return parserMap[event]
+    }
 
     /**
      * 判断此事件对应的类型。

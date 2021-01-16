@@ -19,6 +19,8 @@ package love.forte.simbot.spring.lovelycat.server;
 import love.forte.simbot.bot.NoSuchBotException;
 import love.forte.simbot.component.lovelycat.LovelyCatApiManager;
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate;
+import love.forte.simbot.component.lovelycat.message.event.LovelyCatEventParser;
+import love.forte.simbot.component.lovelycat.message.event.LovelyCatMsg;
 import love.forte.simbot.component.lovelycat.message.event.LovelyCatParser;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.listener.MsgGetProcessor;
@@ -77,9 +79,18 @@ public class LovelyCatServer {
 
         String originalJson = jsonMapSerializer.toJson(params);
 
-        // System.out.println(params);
-        // System.out.println(originalJson);
-        lovelyCatParser.parse(eventStr, originalJson, api, jsonSerializerFactory, params);
+        LovelyCatEventParser parser = lovelyCatParser.parser(eventStr);
+
+        if (parser != null) {
+            Class<? extends LovelyCatMsg> type = parser.type();
+            if (type != null) {
+                return msgGetProcessor.onMsgIfExist(type, () -> parser.invoke(originalJson, api, jsonSerializerFactory, params));
+            } else {
+                LovelyCatMsg lovelyCatMsg = parser.invoke(originalJson, api, jsonSerializerFactory, params);
+                return msgGetProcessor.onMsgIfExist(lovelyCatMsg.getClass(), lovelyCatMsg);
+            }
+        }
+
         return Collections.singletonMap("code", 200);
     }
 

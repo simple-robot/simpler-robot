@@ -369,7 +369,6 @@ public class CoreListenerManager(
                 cacheListenerFunctionMap.computeIfAbsent(type) {
                     val typeNormalList = LinkedList<ListenerFunction>()
                     val typeSpareList = LinkedList<ListenerFunction>()
-                    // val typeList = SortedQueue<ListenerFunction>(Comparator.comparing { it.priority })
                     mainListenerFunctionMap.forEach { (k, v) ->
                         if (k.isAssignableFrom(type)) {
                             v.forEach { lis ->

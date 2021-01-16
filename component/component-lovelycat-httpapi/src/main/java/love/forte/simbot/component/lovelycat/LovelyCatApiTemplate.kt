@@ -20,7 +20,6 @@ package love.forte.simbot.component.lovelycat
 import love.forte.common.impl.ParameterizedTypeImpl
 import love.forte.simbot.component.lovelycat.message.*
 import love.forte.simbot.http.template.HttpTemplate
-import love.forte.simbot.http.template.assertBody
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 import java.util.*
 
@@ -376,7 +375,7 @@ public class LovelyCatApiTemplateImpl
 constructor(
     private val httpTemplate: HttpTemplate,
     private val url: String,
-    jsonSerializerFactory: JsonSerializerFactory,
+    private val jsonSerializerFactory: JsonSerializerFactory,
     private val lovelyCatApiCache: LovelyCatApiCache,
 ) : LovelyCatApiTemplate {
 
@@ -423,8 +422,12 @@ constructor(
                 headers = null,
                 cookies = null,
                 requestBody = requestBody,
-                responseType = T::class.java)
-            return resp.assertBody()!!
+                // responseType = T::class.java)
+                responseType = String::class.java)
+            val jsonP = jsonSerializerFactory.getJsonSerializer(T::class.java)
+            return jsonP.fromJson(resp.body)
+            // return
+            // return resp.assertBody()!!
         } catch (e: Exception) {
             throw IllegalStateException("Post $url for '${T::class}' failed.", e)
         }
@@ -491,9 +494,6 @@ constructor(
         return lovelyCatApiCache.computeLoggedAccountList {
             LoggedAccountList(loggedAccountListSerializer.fromJson(postForLovelyCatResult("api" to "GetLoggedAccountList").data))
         }
-        // return postForLovelyCatResult("api" to "GetLoggedAccountList").let {
-        //     LoggedAccountList(loggedAccountListSerializer.fromJson(it.data))
-        // }
     }
 
     /**
