@@ -35,6 +35,8 @@ public interface RejectDecideAbility<REJECT> : Ability {
 
 
 
+
+
 /**
  * 可进行 **决定** 的接口。
  * 此接口存在一个任意泛型，来规定做出决策的时候是否需要什么。
