@@ -132,6 +132,8 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
         // image
         "image" -> {
             val id = this["id"]
+            val flash = this["flash"] == "true"
+
             if (id != null) {
                 // id, if contains
                 if (message != null) {
@@ -140,7 +142,22 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
                                 (it is FlashImage && it.image.imageId == id)
                     }
                     if (foundImg != null) {
-                        return MiraiSingleMessageContent(foundImg)
+                        if(foundImg is Image) {
+                            return if (flash) {
+                                MiraiSingleMessageContent(foundImg.flash())
+                            } else {
+                                MiraiSingleMessageContent(foundImg)
+                            }
+                        }
+                        if(foundImg is FlashImage) {
+                            return if (flash) {
+                                MiraiSingleMessageContent(foundImg.image.flash())
+                            } else {
+                                MiraiSingleMessageContent(foundImg.image)
+                            }
+                            // return MiraiSingleMessageContent(foundImg.image.flash())
+
+                        }
                     }
                 }
 
@@ -151,7 +168,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
             // file, or url
             val filePath = this["file"]
             val file: File? = filePath?.let { FileUtil.file(it) }?.takeIf { it.exists() }
-            val flash: Boolean = this["flash"] == "true"
+            // val flash: Boolean = this["flash"] == "true"
             if (file != null) {
                 // 存在文件
                 val imageNeko = CatCodeUtil.nekoTemplate.image(filePath)
