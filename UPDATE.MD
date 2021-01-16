@@ -428,7 +428,16 @@ simbot.core.sender.default.type=ERROR
 - 优化实例化流程
 
 
-## now
+## RC.2
 
 ### mirai
+- 更新至 [v2.0.0](https://github.com/mamoe/mirai/releases/tag/2.0.0)
 - 兼容 `record` 类型CAT码。
+
+### 可爱猫
+
+
+
+### fix
+- [44](https://github.com/ForteScarlet/simpler-robot/issues/44) 可爱猫json消息解析异常
+- [45](https://github.com/ForteScarlet/simpler-robot/issues/45) 可爱猫 springboot starter无法触发监听
