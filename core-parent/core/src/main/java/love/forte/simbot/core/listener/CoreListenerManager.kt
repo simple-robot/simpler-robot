@@ -147,14 +147,14 @@ public class CoreListenerManager(
                 oldValue.apply { addAll(value) }
             }
 
-            ConcurrentHashMap<Int, Int>().clear()
-
             // clear cache map.
-            // 寻找并更新缓存监听
-            // no. 直接清除缓存。
-            cacheListenerFunctionMap.clear()
+            // 清除缓存
+            if (cacheListenerFunctionMap.isNotEmpty()) {
+                cacheListenerFunctionMap.clear()
+                logger.debug("Listener cache cleaned.")
+            }
 
-            logger.debug("Listener cache cleaned.")
+
 
         }
     }
