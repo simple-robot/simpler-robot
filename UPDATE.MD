@@ -432,3 +432,4 @@ simbot.core.sender.default.type=ERROR
 
 ### mirai
 - 兼容 `record` 类型CAT码。
+- 优化通过ID发送图片的时候的闪照处理。
