@@ -17,6 +17,8 @@
 package love.forte.test;
 
 import love.forte.common.ioc.annotation.Beans;
+import love.forte.common.ioc.annotation.Depend;
+import love.forte.simbot.bot.BotManager;
 import love.forte.simbot.timer.EnableTimeTask;
 import love.forte.simbot.timer.Fixed;
 
@@ -29,6 +31,11 @@ import java.util.concurrent.TimeUnit;
 @EnableTimeTask
 public class MyTest {
 
+    /**
+     * 获取bot管理器。
+     */
+    @Depend
+    private BotManager botManager;
 
     /**
      * 5分钟执行一次。
