@@ -58,17 +58,6 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
             logger.info("If you want to view the details, please enable log debug.")
         }
 
-        // val scanner: Scanner<String, Class<*>> = HutoolClassesScanner()
-        //
-        // val scanPackages = packageScanEnvironment.scanPackages
-
-        // logger.debug("listener scan packages: {}", scanPackages.joinToString(", ", "[", "]"))
-
-        // 扫描所有的class, 然后筛选method
-        // scanPackages.forEach {
-        //     scanner.scan(it)
-        // }
-
         // 获取所有已经加载的依赖信息并扫描
         val allBeans = dependBeanFactory.allBeans
 
@@ -84,15 +73,15 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                 logger.debug("Get type from depend '$beanName' failed.", e)
                 null
             }
-        }.distinct().flatMap {
+        }.distinct().flatMap { type ->
             // 只获取public方法
-            it.methods.asSequence().filter { m ->
+            type.methods.asSequence().filter { m ->
                 AnnotationUtil.containsAnnotation(m.declaringClass, Listens::class.java) ||
                         (!AnnotationUtil.containsAnnotation(m, Ignore::class.java) &&
                                 AnnotationUtil.containsAnnotation(m, Listens::class.java))
+            }.map {
+                MethodListenerFunction(it, type, dependBeanFactory, filterManager, converterManager, listenerResultFactory)
             }
-        }.map {
-            MethodListenerFunction(it, dependBeanFactory, filterManager, converterManager, listenerResultFactory)
         }.forEach {
             registrar.register(it)
             logger.debug(

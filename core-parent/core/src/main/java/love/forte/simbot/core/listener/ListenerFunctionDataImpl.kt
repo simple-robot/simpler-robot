@@ -15,10 +15,7 @@
 package love.forte.simbot.core.listener
 
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.api.sender.MsgSender
-import love.forte.simbot.api.sender.Sender
-import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.filter.AtDetection
 import love.forte.simbot.listener.ListenerContext
@@ -26,7 +23,7 @@ import love.forte.simbot.listener.ListenerFunctionInvokeData
 import love.forte.simbot.listener.ListenerInterceptorChain
 
 /**
- *
+ * 监听函数触发所携带的参数接口默认数据实现。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public data class ListenerFunctionInvokeDataImpl(
@@ -38,14 +35,14 @@ public data class ListenerFunctionInvokeDataImpl(
     override val listenerInterceptorChain: ListenerInterceptorChain
 ) : ListenerFunctionInvokeData {
     override fun get(type: Class<*>): Any? = when {
-        MsgSender::class.java.isAssignableFrom(type) -> msgSender
-        Sender::class.java.isAssignableFrom(type) -> msgSender.SENDER
-        Setter::class.java.isAssignableFrom(type) -> msgSender.SETTER
-        Getter::class.java.isAssignableFrom(type) -> msgSender.GETTER
-        Bot::class.java.isAssignableFrom(type) -> bot
-        AtDetection::class.java.isAssignableFrom(type) -> atDetection
-        ListenerContext::class.java.isAssignableFrom(type) -> context
-        MsgGet::class.java.isAssignableFrom(type) -> msgGet
+        type.isAssignableFrom(msgSender::class.java) -> msgSender
+        type.isAssignableFrom(msgSender.SENDER::class.java) -> msgSender.SENDER
+        type.isAssignableFrom(msgSender.SETTER::class.java) -> msgSender.SETTER
+        type.isAssignableFrom(msgSender.GETTER::class.java) -> msgSender.GETTER
+        type.isAssignableFrom(bot::class.java) -> bot
+        type.isAssignableFrom(atDetection::class.java) -> atDetection
+        type.isAssignableFrom(context::class.java) -> context
+        type.isAssignableFrom(msgGet::class.java) -> msgGet
         else -> null
     }
 }

@@ -443,3 +443,42 @@ simbot.core.sender.default.type=ERROR
 - [44](https://github.com/ForteScarlet/simpler-robot/issues/44) 可爱猫json消息解析异常
 - [45](https://github.com/ForteScarlet/simpler-robot/issues/45) 可爱猫 springboot starter无法触发监听
 
+
+
+## RC.3
+
+### 核心
+- [#51](https://github.com/ForteScarlet/simpler-robot/issues/51) 优化监听函数监听参数与监听类型不一致而导致的错误，并增加解析期警告异常。
+```java
+// 监听函数解析期间会输出警告日志，因为你监听了 GroupMsg, 而参数中的 PrivateMsg 却没有被监听，它在触发监听时会抛出异常。
+@OnGroup
+public void listen(PrivateMsg msg) {
+    // ...    
+}
+```
+
+```java
+// 监听函数解析期间会输出警告日志，因为你监听了 GroupMsg, 而参数中的 PrivateMsg 却没有被监听，它将永远为null。
+@OnGroup
+public void listen(@Depend(orIgnore = true) PrivateMsg msg) {
+    // ...    
+}
+```
+
+- [#52](https://github.com/ForteScarlet/simpler-robot/issues/52) 支持`kotlin`的`nullable`参数，使其等效于 `@Depend(orIgnore = true)`。
+```kotlin
+// myBean 可以为null，因此如果依赖管理找不到此实例则会得到null值，而不是抛出异常。
+@OnGroup
+fun listen(msg: GroupMsg, myBean: MyBean?) {
+    // ...
+}
+```
+
+- [#53](https://github.com/ForteScarlet/simpler-robot/issues/53) 支持`kotlin`的扩展函数写法。(注: 不支持顶级函数。需要有携带 @Beans 的类所包含。)
+```kotlin
+// In Java like: listen(PrivateMsg msg) { /* ... */ }
+@OnPrivate
+fun PrivateMsg.listen() {
+    println(this.text)
+}
+```

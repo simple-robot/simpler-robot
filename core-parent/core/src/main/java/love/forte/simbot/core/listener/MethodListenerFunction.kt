@@ -12,6 +12,7 @@
  *
  */
 @file:JvmName("MethodListenerFunctions")
+
 package love.forte.simbot.core.listener
 
 import love.forte.common.ioc.DependBeanFactory
@@ -19,6 +20,7 @@ import love.forte.common.ioc.annotation.Depend
 import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.convert.ConverterManager
 import love.forte.simbot.LogAble
+import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.annotation.*
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.filter.*
@@ -27,8 +29,10 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
-import java.lang.reflect.Type
+import java.lang.reflect.Modifier
 import java.security.MessageDigest
+import kotlin.reflect.KFunction
+import kotlin.reflect.KParameter
 import kotlin.reflect.jvm.kotlinFunction
 
 /**
@@ -47,12 +51,16 @@ import kotlin.reflect.jvm.kotlinFunction
 @Suppress("JoinDeclarationAndAssignment")
 public class MethodListenerFunction(
     private val method: Method,
+    declClass: Class<*>,
     private val dependBeanFactory: DependBeanFactory,
     private val filterManager: FilterManager,
     private val converterManager: ConverterManager,
-    private val listenerResultFactory: ListenerResultFactory
-) : ListenerFunction, LogAble {
+    private val listenerResultFactory: ListenerResultFactory,
+
+    ) : ListenerFunction, LogAble {
     override val log: Logger = LoggerFactory.getLogger(method.declaringClass.typeName + "." + method.name)
+
+    private val isStatic: Boolean = Modifier.isStatic(method.modifiers)
 
     /**
      * 此监听函数上的 [Listens] 注解。
@@ -119,12 +127,11 @@ public class MethodListenerFunction(
     private fun doFilter(
         msgGet: MsgGet,
         atDetection: AtDetection,
-        listenerContext: ListenerContext
+        listenerContext: ListenerContext,
     ): Boolean {
         if (listenAnnotationFilter == null) {
             return true
         }
-
         val data = FilterData(msgGet, atDetection, listenerContext, this)
         return listenAnnotationFilter.test(data)
     }
@@ -134,12 +141,18 @@ public class MethodListenerFunction(
      * 当前监听函数的载体。例如一个 Class。
      * 一般如果是个method，那么此即为[Class]。
      */
-    override val type: Type
+    override val type: Class<*> =
+        if (isStatic) {
+            declClass
+        } else {
+            method.declaringClass
+        }
+
 
     /**
      * 此监听函数的实例获取函数。
      */
-    private val listenerInstanceGetter: () -> Any
+    private val listenerInstanceGetter: () -> Any?
 
     /**
      * 此方法的参数获取函数。
@@ -165,8 +178,11 @@ public class MethodListenerFunction(
     init {
         // 监听注解
         listensAnnotation = AnnotationUtil.getAnnotation(method, ListensType)
-            ?: AnnotationUtil.getAnnotation(method.declaringClass, ListensType)
-            ?: throw IllegalStateException("cannot found annotation '@Listens' in method $method")
+            ?: method.declaringClass?.let { declaringClass ->
+                AnnotationUtil.getAnnotation(declaringClass,
+                    ListensType)
+            }
+                    ?: throw IllegalStateException("cannot found annotation '@Listens' in method $method")
 
         // 过滤注解
         filtersAnnotation = AnnotationUtil.getAnnotation(method, FiltersType)
@@ -180,29 +196,24 @@ public class MethodListenerFunction(
         id = method.toListenerId(listensAnnotation)
         name = method.toListenerName(listensAnnotation)
 
-        type = method.declaringClass
 
-        listenerInstanceGetter = { dependBeanFactory[type] }
+        listenerInstanceGetter = if (isStatic) {
+            ::nullInstanceGetter
+        } else {
+            { dependBeanFactory[type] }
+        }
 
         // 监听类型列表
         listenTypes = listensAnnotation.value.mapTo(mutableSetOf()) { it.value.java }
 
-        if (filtersAnnotation != null) {
-            // 注解过滤器对应的监听函数
-            listenAnnotationFilter = filtersAnnotation.let {
-                filterManager.getFilter(it)
-            }
-
-            // // 自定义过滤器列表
-            // customFilter = filtersAnnotation.customFilter.map {
-            //     filterManager.getFilter(it) ?: throw NoSuchFilterException(it)
-            // }.sortedBy { it.priority }
-
-
-        } else {
-            listenAnnotationFilter = null
-
+        listenAnnotationFilter = filtersAnnotation?.let {
+            filterManager.getFilter(it)
         }
+
+        val kFunction: KFunction<*>? = method.kotlinFunction
+        val ktParameters = kFunction?.parameters
+
+        val firstInstance = ktParameters?.firstOrNull()?.kind == KParameter.Kind.INSTANCE
 
 
         // init method args getter.
@@ -210,25 +221,44 @@ public class MethodListenerFunction(
             method.parameters.mapIndexed { i, it ->
                 val filterValue: FilterValue? = AnnotationUtil.getAnnotation(it, FilterValue::class.java)
                 val dependAnnotation: Depend? = AnnotationUtil.getAnnotation(it, Depend::class.java)
-                val orIgnore: Boolean = dependAnnotation?.orIgnore ?: false
+
+                val orIgnore: Boolean = dependAnnotation?.orIgnore ?: kotlin.runCatching {
+                    // try as kt param
+                    // val kParameter: KParameter? = method.kotlinFunction?.parameters?.get(i)
+                    val parameter = ktParameters?.get(if (firstInstance) i + 1 else i)
+                    parameter?.type?.isMarkedNullable ?: false
+                }.getOrDefault(false)
 
                 val parameterType = it.type
+
+                // if this parameter type is MsgGet, check and warn if need.
+                if (!orIgnore && MsgGet::class.java.isAssignableFrom(parameterType)) {
+                    // 如果你所监听的类型中没有你填入参数的类型，且orIgnore=false
+                    val none = listenTypes.none { listenType ->
+                        listenType.isAssignableFrom(parameterType)
+                    }
+                    if (none) {
+                        val (logInfo, logExInfo) = if (orIgnore) {
+                            ListenerParameterTypeMismatchWarn("Listener function ($name) parameter($i) type mismatch. Listened: $listenTypes, but: $parameterType. This is likely to cause an exception.",
+                                "Listener function ($name)'s parameter($i) not being listened and will not be ignored. You Listen: '$listenTypes', but: '$parameterType'. This is likely to cause an exception.")
+                        } else {
+                            ListenerParameterTypeMismatchWarn("Listener function ($name) parameter($i) type mismatch. Listened: $listenTypes, but: $parameterType. It will always be null.",
+                                "Listener function ($name)'s parameter($i) not being listened. You Listen: '$listenTypes', but: '$parameterType'. Since Parameter($i) can be omitted, it will always be null.")
+                        }
+                        if (log.isDebugEnabled) {
+                            log.warn(logInfo)
+                            log.debug("", ListenerParameterTypeMismatchException(logExInfo))
+                        } else {
+                            log.warn(logInfo, ListenerParameterTypeMismatchException(logExInfo))
+                        }
+
+                    }
+                }
+
 
                 if (filterValue == null) {
                     // not filterValue
                     val dependName: String? = dependAnnotation?.value?.ifBlank { null }
-
-                    // when {
-                    //     // 参数是送信器、at detection等相关类型
-                    //     msgSenderType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender }
-                    //     senderType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender.SENDER }
-                    //     getterType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender.GETTER }
-                    //     setterType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.msgSender.SETTER }
-                    //     atDetectionType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.atDetection }
-                    //     listenerContextType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.context }
-                    //     botType.isAssignableFrom(parameterType) -> return@mapIndexed { d -> d.bot }
-                    // }
-
                     if (orIgnore) {
                         if (dependName != null) {
                             { dependBeanFactory.getOrNull(dependName) }
@@ -248,7 +278,7 @@ public class MethodListenerFunction(
                             { dependBeanFactory[dependName] }
                         } else {
                             val type =
-                                dependAnnotation?.type?.takeIf { dt -> dt.java != Void::class.java }?.java
+                                dependAnnotation?.type?.java?.takeIf { dt -> dt != Void::class.java }
                                     ?: parameterType
                             { d ->
                                 // 如果获取到的msgGet的类型正好是此参数的类型的子类，直接使用
@@ -297,7 +327,6 @@ public class MethodListenerFunction(
                     }
 
                 }
-
             }
 
 
@@ -335,12 +364,9 @@ public class MethodListenerFunction(
 
         // val resultBuilder = ListenResultBuilder()
         // 获取实例
-        val instance: Any = runCatching {
+        val instance: Any? = runCatching {
             listenerInstanceGetter()
         }.getOrElse {
-            // resultBuilder.success = false
-            // resultBuilder.throwable = it
-            // return resultBuilder.build()
             return listenerResultFactory.getResult(null, this, it)
         }
 
@@ -426,12 +452,23 @@ internal fun String.toMD5(): String {
 }
 
 
+internal data class ListenerParameterTypeMismatchWarn(val log: String, val exLog: String)
+
+
+/**
+ * 监听参数未被监听异常。
+ */
+@Suppress("unused")
+public class ListenerParameterTypeMismatchException : SimbotIllegalArgumentException {
+    constructor() : super()
+    constructor(s: String?) : super(s)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    constructor(cause: Throwable?) : super(cause)
+}
 
 
 
-
-
-
+internal fun nullInstanceGetter(): Any? = null
 
 
 

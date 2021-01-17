@@ -92,7 +92,7 @@ public interface ListenerFunction {
 
     /**
      * 当前监听函数的载体。例如一个 Class。
-     * 一般如果是个method，那么此即为[Class]。
+     * 例如如果是个method，那么此即为 method所在的 [Class]。
      */
     val type: Type
 
