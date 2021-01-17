@@ -14,8 +14,8 @@
 
 package love.forte.simbot.listener
 
+import love.forte.simbot.Context
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.intercept.Context
 import love.forte.simbot.intercept.InterceptionType
 import love.forte.simbot.intercept.Interceptor
 

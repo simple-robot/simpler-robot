@@ -482,3 +482,5 @@ fun PrivateMsg.listen() {
     println(this.text)
 }
 ```
+
+- 移动接口类路径：`love.forte.simbot.intercept.Context` -> `love.forte.simbot.Context`。正常情况下，此变动不会影响正常使用。

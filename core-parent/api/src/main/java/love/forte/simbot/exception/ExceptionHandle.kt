@@ -14,8 +14,8 @@
 
 package love.forte.simbot.exception
 
+import love.forte.simbot.BaseContext
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.intercept.BaseContext
 import love.forte.simbot.listener.ListenResult
 import love.forte.simbot.listener.ListenerContext
 import love.forte.simbot.listener.ListenerFunction

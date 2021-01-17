@@ -14,6 +14,7 @@
 
 package love.forte.simbot.intercept
 
+import love.forte.simbot.Context
 import love.forte.simbot.constant.PriorityConstant
 
 

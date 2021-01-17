@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -12,14 +12,15 @@
  *
  */
 
-package love.forte.simbot.intercept
+package love.forte.simbot
 
 
 /**
  *
- * 上下文接口，用于在[Interceptor]中作为参数。
+ * **上下文** 接口。
+ * 一个上下文接口代表其实现者中存在一个 [主体信息][mainValue]。
  *
- * 上下文中存在一个对应的 [mainValue] 代表当前拦截中的拦截主体。
+ * 例如, 上下文接口使用与 [拦截器][love.forte.simbot.intercept.Interceptor] 或 [处理器][love.forte.simbot.processor.Processor] 接口中以规定他们各自实现类的 **主体信息**。
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */

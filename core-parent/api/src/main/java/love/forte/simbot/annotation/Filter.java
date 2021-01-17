@@ -16,6 +16,7 @@ package love.forte.simbot.annotation;
 
 import love.forte.simbot.api.message.events.MessageGet;
 import love.forte.simbot.api.message.events.MsgGet;
+import love.forte.simbot.filter.FilterTargetManager;
 import love.forte.simbot.filter.FilterTargets;
 import love.forte.simbot.filter.MatchType;
 import love.forte.simbot.listener.ContextMap;
@@ -74,9 +75,17 @@ public @interface Filter {
      * <p>
      * {@code @Filter(target = FilterTargets.CONTEXT_GLOBAL_NONNULL + "myTarget") // 使用 getContextMap().getGlobal().get("myTarget") 中的值进行过滤。}
      *
+     * 当然，除了上述的可选值以外，你也可以通过 {@link love.forte.common.ioc.annotation.PrePass} 操作 {@link FilterTargetManager#getCheckers()} 中的返回值来添加你的自定义解析器。
+     *
      * @return filter target.
      * @see FilterTargets
+     * @see FilterTargetManager
+     * @see love.forte.simbot.filter.FilterTargetProcessorChecker
+     * @see love.forte.simbot.filter.FilterTargetProcessor
      * <p>
+     *
+     * @since 2.0.0
+     *
      */
     String target() default "";
 

@@ -49,6 +49,8 @@ public interface FilterTargetProcessorChecker {
 
 /**
  * Filter的target处理器，同于根据 `target` 的值获取一个 `String` 类型的值以进行过滤匹配。
+ *
+ * TODO 实现 [love.forte.simbot.processor.Processor] 接口。
  */
 public interface FilterTargetProcessor {
 
