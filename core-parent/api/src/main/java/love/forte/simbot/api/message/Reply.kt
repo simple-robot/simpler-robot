@@ -19,6 +19,41 @@ package love.forte.simbot.api.message
 import love.forte.common.collections.SimpleEntry
 import love.forte.common.collections.arraySetOf
 
+
+/**
+ * 可回复接口。
+ * 此接口的实现类可以提供一些通用的快速回复模板方法。
+ *
+ * 按照约定：
+ *  - `reply` 代表快捷回复的消息，用于消息回复，string类型
+ *  - `quote` 代表是否要引用被回复人的消息，boolean类型
+ *  - `at` 代表是否要at被回复人，boolean类型
+ *  - `process` 代表请求类型的消息的时候 同意/拒绝 当前请求，boolean类型。为null则视为不处理。
+ *
+ * 提供一个简便的默认实现类 [Reply]。不出意外的话，直接通过 [Reply] 所提供的静态方法构建实例即可。
+ *
+ * @see Reply
+ */
+public interface ReplyAble {
+    val reply: String?
+    val quote: Boolean
+    val at: Boolean
+    val process: Boolean?
+
+    /**
+     * 一个空内容、无效化的 [ReplyAble] 实现。
+     */
+    companion object Empty : ReplyAble {
+        override val reply: String? get() = null
+        override val quote: Boolean get() = false
+        override val at: Boolean get() = false
+        override val process: Boolean? get() = null
+    }
+
+}
+
+
+
 /*
     提供一些默认的Reply以表示一些常见的返回形式。
  */
@@ -26,29 +61,53 @@ import love.forte.common.collections.arraySetOf
 /**
  * 快捷回复类，提供一些常见的快速回复内容。
  * [Reply]实现了[Map]接口，可以被视为Map使用。但是需要注意的是，[Reply]是不可变的。
+ * [Reply]实现了[ReplyAble]接口，可以被视为ReplyAble使用并提供快速回复功能。
  *
- * 按照规定：
- * - reply 代表快捷回复的消息，用于消息回复，string类型
- * - quote 代表是否要引用被回复人的消息，boolean类型
- * - at 代表是否要at被回复人，boolean类型
- * - process 代表请求类型的消息的时候是否同意当前请求，boolean类型
  *
  *
  */
 @Deprecated("TODO 尚待实现")
 public data class Reply
 internal constructor(
-    val reply: String,
-    val quote: Boolean/* = true*/,
-    val at: Boolean/* = true*/,
-    val process: Boolean/* = false*/
-) : Map<String, Any> {
-    private val entriesSet: Set<Map.Entry<String, Any>> = arraySetOf(
-        SimpleEntry<String, Any>("reply", reply),
-        SimpleEntry<String, Any>("quote", quote),
-        SimpleEntry<String, Any>("at", at),
-        SimpleEntry<String, Any>("process", process),
-    )
+    override val reply: String?,
+    override val quote: Boolean,
+    override val at: Boolean,
+    override val process: Boolean?,
+) : Map<String, Any>, ReplyAble {
+
+    private val entriesSet: Set<Map.Entry<String, Any>> = when {
+        reply == null && process != null -> {
+            arraySetOf(
+                SimpleEntry<String, Any>("quote", quote),
+                SimpleEntry<String, Any>("at", at),
+                SimpleEntry<String, Any>("process", process),
+            )
+        }
+        process == null && reply != null -> {
+            arraySetOf(
+                SimpleEntry<String, Any>("reply", reply),
+                SimpleEntry<String, Any>("quote", quote),
+                SimpleEntry<String, Any>("at", at),
+            )
+        }
+        process == null && reply == null -> {
+            arraySetOf(
+                SimpleEntry<String, Any>("quote", quote),
+                SimpleEntry<String, Any>("at", at),
+            )
+        }
+        else -> {
+            arraySetOf(
+                SimpleEntry<String, Any>("reply", reply!!),
+                SimpleEntry<String, Any>("quote", quote),
+                SimpleEntry<String, Any>("at", at),
+                SimpleEntry<String, Any>("process", process!!),
+            )
+        }
+    }
+
+    private val keySet: Set<String> = entriesSet.mapTo(mutableSetOf()) { it.key }
+
 
     private val valueCollection: Collection<Any> = entriesSet.map { it.value }
 
@@ -60,12 +119,12 @@ internal constructor(
     /**
      * Returns a read-only [Set] of all keys in this map.
      */
-    override val keys: Set<String> = keySet
+    override val keys: Set<String> get() = keySet
 
     /**
      * Returns the number of key/value pairs in the map.
      */
-    override val size: Int = 4
+    override val size: Int get() = entriesSet.size
 
     /**
      * Returns a read-only [Collection] of all values in this map. Note that this collection may contain duplicate values.
@@ -102,24 +161,37 @@ internal constructor(
     override fun isEmpty(): Boolean = false
 
 
-
     /**
      * 通过静态方法获取实例
      */
     companion object {
-        private val keySet: Set<String> = arraySetOf("reply", "quote", "at", "process")
 
+        /**
+         * 回复消息。
+         */
         @JvmStatic
-        fun quickReply(text: String, quote: Boolean = true, at: Boolean = true) : Reply {
-            return Reply(text, quote, at, false)
+        fun quickReply(text: String?, quote: Boolean = true, at: Boolean = true): Reply {
+            return Reply(text, quote, at, null)
         }
-        @JvmStatic fun quickAccept() : Reply = Accept
-        @JvmStatic fun quickReject() : Reply = Reject
+
+        /**
+         * 通过请求。
+         */
+        @JvmStatic
+        fun quickAccept(): Reply = Accept
+
+        /**
+         * 拒绝请求。
+         */
+        @JvmStatic
+        fun quickReject(): Reply = Reject
+
 
         /** 同意某请求 */
-        private val Accept: Reply = Reply("", quote = true, at = true, process = true)
+        private val Accept: Reply = Reply(null, quote = false, at = false, process = true)
+
         /** 拒绝某请求 */
-        private val Reject: Reply = Reply("", quote = true, at = true, process = false)
+        private val Reject: Reply = Reply(null, quote = false, at = false, process = false)
     }
 
 }
