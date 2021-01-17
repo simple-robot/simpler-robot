@@ -27,15 +27,14 @@ import love.forte.simbot.api.message.containers.*
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public interface GroupMemberInfo : Result, GroupAccountInfo, GroupContainer, PermissionContainer,
-    GroupAccountContainer {
-    /**
-     * TODO 2.0.0-BETA.10删除。
-     */
-    @JvmDefault
-    @Deprecated("Use self.", ReplaceWith("this"), DeprecationLevel.ERROR)
-    override val accountInfo: GroupAccountInfo
-        get() = this
+public interface GroupMemberInfo : Result, GroupAccountInfo, GroupContainer, PermissionContainer {
+    // /**
+    //  * TODO 2.0.0-BETA.10删除。
+    //  */
+    // @JvmDefault
+    // @Deprecated("Use self.", ReplaceWith("this"), DeprecationLevel.ERROR)
+    // override val accountInfo: GroupAccountInfo
+    //     get() = this
 }
 
 

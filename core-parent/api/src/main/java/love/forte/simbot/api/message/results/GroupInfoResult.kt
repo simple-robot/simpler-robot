@@ -89,15 +89,15 @@ public interface GroupList : MultipleResults<SimpleGroupInfo>
  * 管理员信息
  * @see GroupAdminImpl
  */
-public interface GroupAdmin : GroupAccountInfo, PermissionContainer, GroupAccountContainer {
+public interface GroupAdmin : GroupAccountInfo, PermissionContainer {
 
-    /**
-     * TODO 2.0.0-BETA.10删除
-     */
-    @JvmDefault
-    @Deprecated("Use self.", ReplaceWith("this"), DeprecationLevel.ERROR)
-    override val accountInfo: GroupAccountInfo
-        get() = this
+    // /**
+    //  * 2.0.0-RC.2 删除
+    //  */
+    // @JvmDefault
+    // @Deprecated("Use self.", ReplaceWith("this"), DeprecationLevel.ERROR)
+    // override val accountInfo: GroupAccountInfo
+    //     get() = this
 
     @JvmDefault override val permission: Permissions get() = Permissions.ADMINISTRATOR
 }
@@ -106,23 +106,24 @@ public interface GroupAdmin : GroupAccountInfo, PermissionContainer, GroupAccoun
 /**
  * 通过一个 [AccountContainer] 来构建 [GroupAdmin] 实例
  */
-public data class GroupAdminImpl(private val account: GroupAccountInfo) : GroupAdmin, GroupAccountInfo by account
+public data class GroupAdminImpl(private val account: GroupAccountInfo) : GroupAdmin, GroupAccountInfo by account {
 
+}
 
 
 /**
  * 群主信息。群主也是一个管理员。
  * @see GroupOwnerImpl
  */
-public interface GroupOwner : GroupAdmin, GroupAccountInfo, PermissionContainer, GroupAccountContainer {
+public interface GroupOwner : GroupAdmin, GroupAccountInfo, PermissionContainer {
 
-    /**
-     * TODO 1~2个版本后删除。
-     */
-    @JvmDefault
-    @Deprecated("Use self.", ReplaceWith("this"), DeprecationLevel.WARNING)
-    override val accountInfo: GroupAccountInfo
-        get() = this
+    // /**
+    //  * 2.0.0-RC.2 删除。
+    //  */
+    // @JvmDefault
+    // @Deprecated("Use self.", ReplaceWith("this"), DeprecationLevel.WARNING)
+    // override val accountInfo: GroupAccountInfo
+    //     get() = this
 
     @JvmDefault override val permission: Permissions get() = Permissions.OWNER
 }
