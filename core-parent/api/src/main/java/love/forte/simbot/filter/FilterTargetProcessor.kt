@@ -14,7 +14,9 @@
 
 package love.forte.simbot.filter
 
+import love.forte.simbot.Context
 import love.forte.simbot.filter.FilterTargetProcessor.DefaultProcessor.getTargetText
+import love.forte.simbot.processor.Processor
 import java.util.regex.Pattern
 
 
@@ -46,14 +48,17 @@ public interface FilterTargetProcessorChecker {
     }
 }
 
+public data class FilterTargetProcessorContext(override val mainValue: FilterData) : Context<FilterData>
 
 /**
  * Filter的target处理器，同于根据 `target` 的值获取一个 `String` 类型的值以进行过滤匹配。
  *
- * TODO 实现 [love.forte.simbot.processor.Processor] 接口。
+ * [过滤器目标处理器][FilterTargetProcessor] 属于一种 [处理器][Processor]。
  */
-public interface FilterTargetProcessor {
+public interface FilterTargetProcessor : Processor<FilterData, FilterTargetProcessorContext, String?> {
 
+    @JvmDefault
+    override fun processor(processContext: FilterTargetProcessorContext): String? = getTargetText(processContext.mainValue)
 
     /**
      * 获取目标匹配值。

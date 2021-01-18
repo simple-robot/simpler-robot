@@ -97,7 +97,7 @@ object DingCatUtil {
 //                // feed card 转化为CQ还挺麻烦的, 毕竟设计到数组
 //
 //
-//                TODO()
+//
 //            }
             else -> DingText(kqCode.toString())
         }

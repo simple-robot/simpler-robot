@@ -34,7 +34,7 @@ public interface ListenResultProcessor : Processor<ListenResult<*>, ListenResult
     /**
      * 接收 [ListenResultProcessorContext] 进行处理（例如解析并进行自动回复等）。
      *
-     * @return 是否处理成功。TODO
+     * @return 是否处理成功。
      */
     override fun processor(processContext: ListenResultProcessorContext): Boolean
 
@@ -67,6 +67,7 @@ public interface ListenResultProcessorContext : Context<ListenResult<*>> {
     @JvmDefault
     override val mainValue: ListenResult<*> get() = listenResult
 }
+
 
 
 /**
