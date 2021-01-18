@@ -82,10 +82,11 @@ import love.forte.simbot.api.message.EmptyContent.msg
  * 一般情况下我会将他们的大致解析原理注明在文档或者注释中，使用者需要根据具体需求和实现来判断使用哪种方式会更加高效。
  *
  *
+ * since 2.0.0: [MessageContent] 也属于一种 [CharSequence].
  *
  *
  */
-public interface MessageContent {
+public interface MessageContent : CharSequence {
     /**
      * 消息字符串文本。
      *
@@ -94,9 +95,37 @@ public interface MessageContent {
     val msg: String
 
     /**
+     * Returns the length of this character sequence.
+     */
+    @JvmDefault
+    override val length: Int
+        get() = msg.length
+
+    /**
+     * Returns the character at the specified [index] in this character sequence.
+     *
+     * @throws [IndexOutOfBoundsException] if the [index] is out of bounds of this character sequence.
+     *
+     * Note that the [String] implementation of this interface in Kotlin/JS has unspecified behavior
+     * if the [index] is out of its bounds.
+     */
+    @JvmDefault
+    override fun get(index: Int): Char = msg[index]
+
+    /**
+     * Returns a new character sequence that is a subsequence of this character sequence,
+     * starting at the specified [startIndex] and ending right before the specified [endIndex].
+     *
+     * @param startIndex the start index (inclusive).
+     * @param endIndex the end index (exclusive).
+     */
+    @JvmDefault
+    override fun subSequence(startIndex: Int, endIndex: Int): CharSequence = msg.subSequence(startIndex, endIndex)
+
+    /**
      * 需要重写equals。
      */
-    override operator fun equals(other: Any?): Boolean
+    override fun equals(other: Any?): Boolean
 
     /**
      * 获取此消息中的所有可能包含的cat码。
