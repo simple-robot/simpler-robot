@@ -67,8 +67,21 @@ public interface ReplyAble {
 @Deprecated("TODO 尚待实现")
 public data class Reply
 internal constructor(
+    /**
+     * 快速回复的文本消息内容，等同于使用 [love.forte.simbot.api.sender.Sender] 中的对应方法。
+     */
     override val reply: CharSequence?,
+
+    /**
+     *  进行回复的时候，是否at消息回复目标。
+     *  此参数只有在能够AT他人的地方使用，例如群聊时。
+     */
     override val at: Boolean,
+
+    /**
+     * 同意或拒绝当前申请。
+     * 只有当当前消息类型为一个 **申请** 相关的消息时有效，例如加群申请事件。
+     */
     override val process: Boolean?,
 ) : Map<String, Any>, ReplyAble {
 
@@ -100,6 +113,8 @@ internal constructor(
 
 
     private val valueCollection: Collection<Any> = entriesSet.map { it.value }
+
+    // -- map --
 
     /**
      * Returns a read-only [Set] of all key/value pairs in this map.
@@ -145,7 +160,7 @@ internal constructor(
     }
 
     /**
-     * Returns `true` if the map is empty (contains no elements), `false` otherwise.
+     * Never empty.
      */
     override fun isEmpty(): Boolean = false
 
@@ -159,7 +174,7 @@ internal constructor(
          * 回复消息。
          */
         @JvmStatic
-        fun quickReply(
+        fun reply(
             text: CharSequence?,
             at: Boolean = true,
         ): ReplyAble {
@@ -173,13 +188,13 @@ internal constructor(
          * 通过请求。
          */
         @JvmStatic
-        fun quickAccept(): ReplyAble = Accept
+        fun accept(): ReplyAble = Accept
 
         /**
          * 拒绝请求。
          */
         @JvmStatic
-        fun quickReject(): ReplyAble = Reject
+        fun reject(): ReplyAble = Reject
 
 
 
