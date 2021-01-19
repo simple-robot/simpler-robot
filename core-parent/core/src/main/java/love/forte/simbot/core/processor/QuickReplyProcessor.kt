@@ -41,21 +41,6 @@ import love.forte.simbot.processor.ListenResultProcessorContext
 public class QuickReplyProcessor(private val messageContentBuilderFactory: MessageContentBuilderFactory) :
     ListenResultProcessor {
 
-    private companion object {
-        private const val NOTHING = -1
-        private const val GROUP_MSG = 1
-        private const val PRIVATE_MSG = 2
-
-        private val booleanArray = arrayOf("true", "false")
-
-        private val MsgGet.modifier: Int
-            get() = when (this) {
-                is PrivateMsg -> PRIVATE_MSG
-                is GroupMsg -> GROUP_MSG
-                else -> NOTHING
-            }
-    }
-
 
     /**
      * 接收 [ListenResultProcessorContext] 进行处理（例如解析并进行自动回复等）。
