@@ -140,6 +140,7 @@ public class QuickReplyProcessor(private val messageContentBuilderFactory: Messa
                 }
             }
 
+            // 请求类型
             is RequestGet -> {
                 fun doProcess(process: Boolean): Boolean {
                     val flag = msgGet.flag
@@ -170,6 +171,8 @@ public class QuickReplyProcessor(private val messageContentBuilderFactory: Messa
                     else -> false
                 }
             }
+
+            // 其他未知
             else -> return false
         }
 
