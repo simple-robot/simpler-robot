@@ -70,8 +70,8 @@ public class CoreListenerRegistrar {
 
 
         // show bots.
-        botManager.bots.forEach {
-            val info: BotInfo = it.botInfo
+        botManager.bots.forEach { bot ->
+            val info: BotInfo = bot.botInfo
             logger.debug("Try get botInfo for ${info.botName}(${info.botCode})")
             if (info.botLevel >= 0) {
                 logger.infof("Start the registration Bot: code={}, name={}, level={}", info.botCode, info.botName, info.botLevel)
