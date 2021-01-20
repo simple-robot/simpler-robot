@@ -447,6 +447,10 @@ simbot.core.sender.default.type=ERROR
 
 ## RC.3
 
+不出意外，这或许是最后一个RC。
+
+- 暂停`component-ding`模块的更新，直到新的钉钉模块开发完成。在那之前，版本控制所管理的钉钉模块版本为 `2.0.0-RC.2`。
+
 ### 核心
 - [#51](https://github.com/ForteScarlet/simpler-robot/issues/51) 优化监听函数监听参数与监听类型不一致而导致的错误，并增加解析期警告异常。
 ```java
@@ -484,3 +488,6 @@ fun PrivateMsg.listen() {
 ```
 
 - 移动接口类路径：`love.forte.simbot.intercept.Context` -> `love.forte.simbot.Context`。正常情况下，此变动不会影响正常使用。
+
+
+
