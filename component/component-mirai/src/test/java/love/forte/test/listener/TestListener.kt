@@ -21,6 +21,7 @@ import love.forte.simbot.annotation.Listens
 import love.forte.simbot.api.message.Reply
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.PrivateMsg
+import love.forte.simbot.component.mirai.message.event.MiraiPrivateMsg
 
 /**
  * @author ForteScarlet
@@ -40,6 +41,6 @@ class TestListener {
         ]
     )
     @Filters(atBot = true)
-    fun listen() = Reply.reply("Hello. this is Quick reply.", at = true)
+    fun listen(msg: MiraiPrivateMsg) = Reply.reply("Hello. this is Quick reply.", at = true)
 }
 

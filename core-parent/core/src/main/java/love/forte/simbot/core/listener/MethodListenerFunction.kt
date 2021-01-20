@@ -235,10 +235,13 @@ public class MethodListenerFunction(
                 if (!orIgnore && MsgGet::class.java.isAssignableFrom(parameterType)) {
                     // 如果你所监听的类型中没有你填入参数的类型，且orIgnore=false
                     val none = listenTypes.none { listenType ->
-                        listenType.isAssignableFrom(parameterType)
+                        parameterType.isAssignableFrom(listenType)
                     }
+
+
+
                     if (none) {
-                        val (logInfo, logExInfo) = if (orIgnore) {
+                        val (logInfo, logExInfo) = if (!orIgnore) {
                             ListenerParameterTypeMismatchWarn("Listener function ($name) parameter($i) type mismatch. Listened: $listenTypes, but: $parameterType. This is likely to cause an exception.",
                                 "Listener function ($name)'s parameter($i) not being listened and will not be ignored. You Listen: '$listenTypes', but: '$parameterType'. This is likely to cause an exception.")
                         } else {
@@ -465,7 +468,6 @@ public class ListenerParameterTypeMismatchException : SimbotIllegalArgumentExcep
     constructor(message: String?, cause: Throwable?) : super(message, cause)
     constructor(cause: Throwable?) : super(cause)
 }
-
 
 
 internal fun nullInstanceGetter(): Any? = null
