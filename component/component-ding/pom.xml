@@ -53,22 +53,69 @@
     </dependencies>
 
 
+    <!--<build>-->
+    <!--    <plugins>-->
+    <!--        &lt;!&ndash; doc &ndash;&gt;-->
+    <!--        <plugin>-->
+    <!--            <groupId>org.jetbrains.dokka</groupId>-->
+    <!--            <artifactId>dokka-maven-plugin</artifactId>-->
+    <!--        </plugin>-->
+    <!--        <plugin>-->
+    <!--            <groupId>org.jetbrains.kotlin</groupId>-->
+    <!--            <artifactId>kotlin-maven-plugin</artifactId>-->
+    <!--        </plugin>-->
+    <!--        <plugin>-->
+    <!--            <groupId>org.apache.maven.plugins</groupId>-->
+    <!--            <artifactId>maven-compiler-plugin</artifactId>-->
+    <!--        </plugin>-->
+    <!--    </plugins>-->
+    <!--</build>-->
+
     <build>
         <plugins>
-            <!-- doc -->
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-            </plugin>
+            <!-- (1) deploy插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <!-- （2）sonatype的staging插件 -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <configuration>
+                    <skipStaging>true</skipStaging>
+                    <skipLocalStaging>true</skipLocalStaging>
+                    <skipRemoteStaging>true</skipRemoteStaging>
+                </configuration>
+            </plugin>
+            <!-- （3）SCM插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <!-- GPG -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
         </plugins>
     </build>
+
 
 </project>
