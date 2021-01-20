@@ -193,7 +193,8 @@ internal fun reply(
         false
     } else {
         if (reply is MessageContent) {
-            val atReply = if (at) {
+            // 私聊消息不触发AT
+            val atReply = if ((msgGet !is PrivateMsg) && at) {
                 val builder = messageContentBuilderFactory.getMessageContentBuilder()
                 val atMsg = builder.at(msgGet.accountInfo).build()
                 reply(msgGet, sender, atMsg)
@@ -204,7 +205,7 @@ internal fun reply(
         } else {
             val builder = messageContentBuilderFactory.getMessageContentBuilder()
 
-            if (at) {
+            if ((msgGet !is PrivateMsg) && at) {
                 builder.at(msgGet.accountInfo)
             }
 

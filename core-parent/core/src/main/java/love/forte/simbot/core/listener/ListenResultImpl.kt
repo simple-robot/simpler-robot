@@ -36,7 +36,7 @@ internal class ListenResultBuilder {
     var success: Boolean = true
     var isBreak: Boolean = false
     var throwable: Throwable? = null
-    fun build(): ListenResult<*> = ListenResultImpl(this, success, isBreak, throwable)
+    fun build(): ListenResult<*> = ListenResultImpl(result, success, isBreak, throwable)
 }
 
 internal fun listenResult(build: ListenResultBuilder.() -> Unit): ListenResult<*> {

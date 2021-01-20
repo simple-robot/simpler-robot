@@ -15,6 +15,7 @@
 package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
+import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.simbot.bot.CoreBotsDecoder
 import love.forte.simbot.bot.CoreBotsEncoder
 
@@ -25,9 +26,11 @@ import love.forte.simbot.bot.CoreBotsEncoder
 @ConfigBeans("coreBotsCoderConfiguration")
 public class CoreBotsCoderConfiguration {
 
-    @CoreBeans("coreBotsEncoder")
+    @SpareBeans("coreBotsEncoder")
     public fun coreBotsEncoder(): CoreBotsEncoder = CoreBotsEncoder
-    @CoreBeans("coreBotsDecoder")
+
+
+    @SpareBeans("coreBotsDecoder")
     public fun coreBotsDecoder(): CoreBotsDecoder = CoreBotsDecoder
 
 }

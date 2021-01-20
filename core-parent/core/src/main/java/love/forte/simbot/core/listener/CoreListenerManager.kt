@@ -16,6 +16,7 @@
 package love.forte.simbot.core.listener
 
 import love.forte.common.collections.concurrentSortedQueueOf
+import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.simbot.LogAble
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
@@ -29,6 +30,8 @@ import love.forte.simbot.exception.ExceptionHandleContext
 import love.forte.simbot.exception.ExceptionProcessor
 import love.forte.simbot.filter.AtDetectionFactory
 import love.forte.simbot.listener.*
+import love.forte.simbot.processor.ListenResultProcessorManager
+import love.forte.simbot.processor.context
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -75,16 +78,17 @@ public data class ListenerContextData(
 
 private data class ListenerFunctionGroups(
     val normal: Collection<ListenerFunction>,
-    val spare: Collection<ListenerFunction>
+    val spare: Collection<ListenerFunction>,
 ) {
     companion object {
         val empty = ListenerFunctionGroups(emptyList(), emptyList())
-        fun ListenerFunctionGroups.marge(): Collection<ListenerFunction> = if (isEmpty()) emptyList() else normal + spare
+        fun ListenerFunctionGroups.marge(): Collection<ListenerFunction> =
+            if (isEmpty()) emptyList() else normal + spare
+
         fun ListenerFunctionGroups.isEmpty(): Boolean = normal.isEmpty() && spare.isEmpty()
         fun ListenerFunctionGroups.isNotEmpty(): Boolean = !isEmpty()
     }
 }
-
 
 
 /**
@@ -97,20 +101,29 @@ private data class ListenerFunctionGroups(
  * @property listenerInterceptData 函数拦截相关所需内容。
  * @property listenerContextData 监听上下文所需内容。
  */
+@SpareBeans("coreListenerManager")
 public class CoreListenerManager(
     private val atDetectionFactory: AtDetectionFactory,
     private val exceptionManager: ExceptionProcessor,
 
-    private val msgInterceptData: MsgInterceptData,
+    // private val msgInterceptData: MsgInterceptData,
+    private val msgInterceptContextFactory: MsgInterceptContextFactory,
+    private val msgInterceptChainFactory: MsgInterceptChainFactory,
 
-    private val listenerInterceptData: ListenerInterceptData,
+    // private val listenerInterceptData: ListenerInterceptData,
+    private val listenerInterceptContextFactory: ListenerInterceptContextFactory,
+    private val listenerInterceptChainFactory: ListenerInterceptChainFactory,
 
-    private val listenerContextData: ListenerContextData,
+    // private val listenerContextData: ListenerContextData,
+    private val listenerContextFactory: ListenerContextFactory,
+    private val contextMapFactory: ContextMapFactory,
 
     private val msgSenderFactories: MsgSenderFactories,
     private val defMsgSenderFactories: DefaultMsgSenderFactories,
 
     private val botManager: BotManager,
+
+    private val resultProcessorManager: ListenResultProcessorManager,
 
     ) : ListenerManager, ListenerRegistrar {
 
@@ -155,7 +168,6 @@ public class CoreListenerManager(
             }
 
 
-
         }
     }
 
@@ -166,17 +178,21 @@ public class CoreListenerManager(
     override fun onMsg(msgGet: MsgGet): ListenResult<*> {
         try {
             // not empty, intercept.
-            val context: ListenerContext = listenerContextData.getContext(msgGet)
+            // val context: ListenerContext = getContext(msgGet)
+            val context: ListenerContext = listenerContextFactory.getListenerContext(msgGet, contextMapFactory.contextMap)
+
+            // val context: ListenerContext = getContext(msgGet)
 
             // 构建一个消息拦截器context
-            val msgContext = msgInterceptData.contextFactory.getMsgInterceptContext(msgGet, context)
-            val msgChain = msgInterceptData.chainFactory.getInterceptorChain(msgContext)
+            val msgContext = msgInterceptContextFactory.getMsgInterceptContext(msgGet, context)
+            val msgChain = msgInterceptChainFactory.getInterceptorChain(msgContext)
 
 
             // 如果被拦截, 返回默认值
             if (msgChain.intercept().isPrevent) {
                 return NothingResult
             }
+
             // 筛选并执行监听函数
             return onMsg0(msgContext.msgGet, context)
         } catch (e: Throwable) {
@@ -194,12 +210,12 @@ public class CoreListenerManager(
     }
 
 
-
     /**
      * 筛选监听函数
      */
     private fun onMsg0(msgGet: MsgGet, context: ListenerContext): ListenResult<*> {
         val funcs = getListenerFunctions(msgGet.javaClass, true)
+        var invokeData: ListenerFunctionInvokeData? = null
         return if (funcs.isEmpty()) {
             NothingResult
         } else {
@@ -211,13 +227,13 @@ public class CoreListenerManager(
             // do listen function
             fun doListen(func: ListenerFunction): ListenResult<*> {
                 val listenerInterceptContext =
-                    listenerInterceptData.contextFactory.getListenerInterceptContext(func, msgGet, context)
+                    listenerInterceptContextFactory.getListenerInterceptContext(func, msgGet, context)
 
-                val interceptorChain = listenerInterceptData.chainFactory.getInterceptorChain(listenerInterceptContext)
+                val interceptorChain = listenerInterceptChainFactory.getInterceptorChain(listenerInterceptContext)
 
                 // invoke with try.
                 return try {
-                    val invokeData = ListenerFunctionInvokeDataImpl(
+                    invokeData = ListenerFunctionInvokeDataImpl(
                         msgGet,
                         context,
                         atDetectionFactory.getAtDetection(msgGet),
@@ -225,9 +241,10 @@ public class CoreListenerManager(
                         MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories),
                         interceptorChain
                     )
-                    func(invokeData)
+                    func(invokeData!!)
                 } catch (funcRunEx: Throwable) {
-                    (if (func is LogAble) func.log else logger).error("Listener '${func.name}' execution exception: $funcRunEx", funcRunEx)
+                    (if (func is LogAble) func.log else logger).error("Listener '${func.name}' execution exception: $funcRunEx",
+                        funcRunEx)
                     NothingResult
                 }
             }
@@ -242,7 +259,7 @@ public class CoreListenerManager(
                             doHandle(ExceptionHandleContext(ex, msgGet, func, context))
                         }?.getOrElse {
                             // 异常处理报错
-                            (if(handle is LogAble) handle.log else logger).error("Exception handle failed: $it", it)
+                            (if (handle is LogAble) handle.log else logger).error("Exception handle failed: $it", it)
                             null
                         } ?: run {
                             (if (func is LogAble) func.log else logger).error("Listener execution exception: $ex", ex)
@@ -254,31 +271,6 @@ public class CoreListenerManager(
 
 
             for (func: ListenerFunction in funcs.normal) {
-                //
-                // val listenerInterceptContext =
-                //     listenerInterceptData.contextFactory.getListenerInterceptContext(func, msgGet, context)
-                //
-                // val interceptorChain = listenerInterceptData.chainFactory.getInterceptorChain(listenerInterceptContext)
-                //
-                // // invoke with try.
-                // finalResult = try {
-                //     val invokeData = ListenerFunctionInvokeDataImpl(
-                //         msgGet,
-                //         context,
-                //         atDetectionFactory.getAtDetection(msgGet),
-                //         botManager.getBot(msgGet.botInfo),
-                //         MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories),
-                //         interceptorChain
-                //     )
-                //     func(invokeData)
-                // } catch (funcRunEx: Throwable) {
-                //     (if (func is LogAble) func.log else logger).error("Listener '${func.name}' execution exception: $funcRunEx", funcRunEx)
-                //     NothingResult
-                // }
-                //
-                //
-                //
-                //
 
                 finalResult = doListen(func)
 
@@ -288,22 +280,6 @@ public class CoreListenerManager(
 
                 // if ex
                 finalResult = doResultIfFail(func, finalResult)
-                // finalResult = with(finalResult) {
-                //     val ex = this.cause
-                //     if (ex != null) {
-                //         val handle = exceptionManager.getHandle(ex.javaClass)
-                //         handle?.runCatching {
-                //             doHandle(ExceptionHandleContext(ex, msgGet, func, context))
-                //         }?.getOrElse {
-                //             // 异常处理报错
-                //             (if(handle is LogAble) handle.log else logger).error("Exception handle failed: $it", it)
-                //             null
-                //         } ?: run {
-                //             (if (func is LogAble) func.log else logger).error("Listener execution exception: $ex", ex)
-                //             NothingResult
-                //         }
-                //     } else this
-                // }
 
                 // if break, break.
                 if (finalResult.isBreak()) {
@@ -312,6 +288,7 @@ public class CoreListenerManager(
                     break
                 }
             }
+
 
             // 如果没有break，也没有任何函数成功，执行spare函数
             if (!anySuccess && !doBreak) {
@@ -325,6 +302,11 @@ public class CoreListenerManager(
                 }
             }
 
+            // do processor
+
+            invokeData?.run {
+                resultProcessorManager.processor(context(finalResult, this))
+            }
 
 
             return finalResult
@@ -341,8 +323,6 @@ public class CoreListenerManager(
             getListenerFunctions(type, false).marge()
         }
     }
-
-
 
 
     /**

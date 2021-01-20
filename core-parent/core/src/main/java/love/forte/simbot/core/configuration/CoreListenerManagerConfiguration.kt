@@ -14,7 +14,6 @@
 
 package love.forte.simbot.core.configuration
 
-import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
@@ -33,7 +32,7 @@ import love.forte.simbot.listener.*
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans("coreListenerManagerConfiguration")
+// @ConfigBeans("coreListenerManagerConfiguration")
 public class CoreListenerManagerConfiguration {
 
 
@@ -82,7 +81,7 @@ public class CoreListenerManagerConfiguration {
      * 监听函数管理器builder。
      * 需要的参数真多啊。
      */
-    @CoreBeans("coreListenerManagerBuilder")
+    // @CoreBeans("coreListenerManagerBuilder")
     fun coreListenerManagerBuilder(): ListenerManagerBuilder {
 
         // 消息拦截内容。
@@ -120,7 +119,7 @@ public class CoreListenerManagerConfiguration {
     /**
      * 获取监听函数实例。通过builder构建。
      */
-    @CoreBeans("coreListenerManager")
+    // @CoreBeans("coreListenerManager")
     fun coreListenerManager(builder: ListenerManagerBuilder): ListenerManager = builder.build()
 
 

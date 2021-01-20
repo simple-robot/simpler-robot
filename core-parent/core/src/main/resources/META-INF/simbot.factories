@@ -1,14 +1,14 @@
 # simbot.factories, 类似于spring.factories, 用于加载指定的配置信息。
 simbot.autoconfigure.configs=\
   love.forte.simbot.core.configuration.CoreAtDetectionRegistrar,\
-  love.forte.simbot.core.configuration.CoreBotManagerConfiguration,\
+  love.forte.simbot.core.bot.CoreBotManager,\
   love.forte.simbot.core.configuration.CoreConfigConfiguration,\
   love.forte.simbot.core.configuration.CoreConverterManagerConfiguration,\
   love.forte.simbot.core.configuration.CoreExceptionProcessorConfiguration,\
   love.forte.simbot.core.configuration.CoreFilterConfiguration,\
   love.forte.simbot.core.configuration.CoreInterceptFactoryConfiguration,\
   love.forte.simbot.core.configuration.CoreListenerContextConfiguration,\
-  love.forte.simbot.core.configuration.CoreListenerManagerConfiguration,\
+  love.forte.simbot.core.listener.CoreListenerManager,\
   love.forte.simbot.core.configuration.CoreListenResultConfiguration,\
   love.forte.simbot.core.configuration.CoreMethodPostListenerRegistrar,\
   love.forte.simbot.core.configuration.CoreDefaultMsgSenderConfiguration,\
@@ -19,4 +19,6 @@ simbot.autoconfigure.configs=\
   love.forte.simbot.core.configuration.CoreBotsCoderConfiguration,\
   love.forte.simbot.core.configuration.CoreListenerRegistrar,\
   love.forte.simbot.core.configuration.ExecutorServiceProperties,\
-  love.forte.simbot.core.configuration.TaskRunnerConfiguration
+  love.forte.simbot.core.configuration.TaskRunnerConfiguration,\
+  love.forte.simbot.core.configuration.ListenResultProcessorConfiguration,\
+  love.forte.simbot.core.processor.CoreListenResultProcessorManager

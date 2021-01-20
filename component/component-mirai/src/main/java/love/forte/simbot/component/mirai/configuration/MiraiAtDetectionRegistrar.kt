@@ -57,7 +57,7 @@ private object MiraiAtDetectionFactory : AtDetectionFactory {
     override fun getAtDetection(msg: MsgGet): AtDetection {
         return if (msg is MiraiMessageMsgGet<*>) {
             val botCode = msg.event.bot.id
-            MiraiAtDetection(botCode, msg.message)
+            MiraiAtDetection(botCode, msg)
         } else {
             AlwaysRefuseAtDetection
         }
@@ -67,7 +67,10 @@ private object MiraiAtDetectionFactory : AtDetectionFactory {
 /**
  * mirai at检测器。
  */
-private data class MiraiAtDetection(private val botCode: Long, private val message: MessageChain) : AtDetection {
+private data class MiraiAtDetection(private val botCode: Long, private val msg: MiraiMessageMsgGet<*>) : AtDetection {
+
+    private val message: MessageChain get() = msg.message
+
     override fun atBot(): Boolean {
         return message.any {
             it is At && it.target == botCode

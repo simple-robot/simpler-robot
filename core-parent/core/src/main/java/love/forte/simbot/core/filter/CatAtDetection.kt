@@ -15,9 +15,9 @@
 package love.forte.simbot.core.filter
 
 import love.forte.catcode.Neko
-import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.filter.AlwaysAllowedAtDetection
 import love.forte.simbot.filter.AtDetection
 import love.forte.simbot.filter.AtDetectionFactory
@@ -45,14 +45,16 @@ public object CatAtDetectionFactory : AtDetectionFactory {
         val botCode: String = msg.botInfo.botCode
 
         // 使用catCode检测。
-        return CatAtDetection(msg.msgContent, botCode)
+        return CatAtDetection(msg, botCode)
     }
 }
 
 /**
  * neko at 检测。非线程安全。
  */
-private data class CatAtDetection(private val messageContent: MessageContent, private val botCode: String) : AtDetection {
+private data class CatAtDetection(private val msg: MessageGet, private val botCode: String) : AtDetection {
+
+    private val messageContent get() = msg.msgContent
 
     private lateinit var _cats: List<Neko>
     private val cats: List<Neko>
@@ -65,15 +67,15 @@ private data class CatAtDetection(private val messageContent: MessageContent, pr
 
 
     override fun atBot(): Boolean {
-        return cats.any { neko -> neko.type == "at" && neko["code"] == botCode }
+        return msg is PrivateMsg || cats.any { neko -> neko.type == "at" && neko["code"] == botCode }
     }
 
     override fun atAll(): Boolean {
-        return cats.any { neko -> neko.type == "at" && (neko["all"] == "true" || neko["code"] == "all" ) }
+        return msg is PrivateMsg || cats.any { neko -> neko.type == "at" && (neko["all"] == "true" || neko["code"] == "all" ) }
     }
 
     override fun atAny(): Boolean {
-        return cats.any { neko -> neko.type == "at" }
+        return msg is PrivateMsg || cats.any { neko -> neko.type == "at" }
     }
 
     override fun at(codes: Array<String>): Boolean {

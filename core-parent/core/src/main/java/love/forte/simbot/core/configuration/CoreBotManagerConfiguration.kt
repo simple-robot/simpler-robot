@@ -14,7 +14,6 @@
 
 package love.forte.simbot.core.configuration
 
-import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.BotManager
@@ -27,13 +26,14 @@ import love.forte.simbot.core.bot.CoreBotManager
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@ConfigBeans("coreBotManagerConfiguration")
+// @ConfigBeans("coreBotManagerConfiguration")
+@Deprecated("No use.")
 public class CoreBotManagerConfiguration {
 
     /**
      * 配置一个 [BotManager] 实例。
      */
-    @CoreBeans("coreBotManager")
+    // @CoreBeans("coreBotManager")
     fun coreBotManager(
         verifier: BotVerifier,
         msgSenderFactories: MsgSenderFactories,

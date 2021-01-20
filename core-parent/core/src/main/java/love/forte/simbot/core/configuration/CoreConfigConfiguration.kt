@@ -17,6 +17,7 @@ package love.forte.simbot.core.configuration
 import love.forte.common.configuration.ConfigurationParserManagerBuilder
 import love.forte.common.configuration.impl.LinkedConfigurationParserManagerBuilder
 import love.forte.common.ioc.annotation.ConfigBeans
+import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.common.utils.convert.ConverterManager
 
 /**
@@ -29,7 +30,7 @@ import love.forte.common.utils.convert.ConverterManager
 public class CoreConfigConfiguration {
 
 
-    @CoreBeans("coreConfigurationManagerBuilder")
+    @SpareBeans("coreConfigurationManagerBuilder")
     fun coreConfigurationManagerBuilder(converterManager: ConverterManager): ConfigurationParserManagerBuilder {
         return LinkedConfigurationParserManagerBuilder(converterManager)
     }

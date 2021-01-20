@@ -14,6 +14,7 @@
 
 package love.forte.simbot.core.bot
 
+import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.*
@@ -27,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
+@SpareBeans("coreBotManager")
 public class CoreBotManager(
     private val verifier: BotVerifier,
     private val msgSenderFactories: MsgSenderFactories,

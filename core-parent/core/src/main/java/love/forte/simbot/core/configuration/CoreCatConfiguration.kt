@@ -18,6 +18,7 @@ import love.forte.catcode.CatCodeUtil
 import love.forte.catcode.CatDecoder
 import love.forte.catcode.CatEncoder
 import love.forte.common.ioc.annotation.ConfigBeans
+import love.forte.common.ioc.annotation.SpareBeans
 
 /**
  *
@@ -28,13 +29,13 @@ class CoreCatConfiguration {
 
 
 
-    @CoreBeans("coreCatCodeDecoder")
+    @SpareBeans("coreCatCodeDecoder")
     fun coreCatCodeDecoder(): CatDecoder = CatDecoder
 
-    @CoreBeans("coreCatCodeEncoder")
+    @SpareBeans("coreCatCodeEncoder")
     fun coreCatCodeEncoder(): CatEncoder = CatEncoder
 
-    @CoreBeans("coreCatCodeUtil")
+    @SpareBeans("coreCatCodeUtil")
     fun coreCatCodeUtil(): CatCodeUtil = CatCodeUtil
 
 

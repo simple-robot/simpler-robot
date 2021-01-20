@@ -24,16 +24,28 @@ public interface AtDetection {
 
     /**
      * 如果bot被at了，则返回true。
+     *
+     * ### since 2.0.0-RC.2
+     *
+     * 如果当前消息类型为 [私聊消息][love.forte.simbot.api.message.events.PrivateMsg], 则直接视为 `true`。
      */
     fun atBot(): Boolean
 
     /**
      * at了全体。
+     *
+     * ### since 2.0.0-RC.2
+     *
+     * 如果当前消息类型为 [私聊消息][love.forte.simbot.api.message.events.PrivateMsg], 则直接视为 `true`。
      */
     fun atAll(): Boolean
 
     /**
      * at了任意一个人。
+     *
+     * ### since 2.0.0-RC.2
+     *
+     * 如果当前消息类型为 [私聊消息][love.forte.simbot.api.message.events.PrivateMsg], 则直接视为 `true`。
      */
     fun atAny(): Boolean
 

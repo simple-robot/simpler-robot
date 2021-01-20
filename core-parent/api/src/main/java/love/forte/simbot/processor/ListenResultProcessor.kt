@@ -13,9 +13,11 @@
  */
 
 @file:JvmName("ListenResultProcessors")
+
 package love.forte.simbot.processor
 
 import love.forte.simbot.Context
+import love.forte.simbot.constant.PriorityConstant
 import love.forte.simbot.listener.ListenResult
 import love.forte.simbot.listener.ListenerFunctionInvokeData
 
@@ -37,6 +39,13 @@ public interface ListenResultProcessor : Processor<ListenResult<*>, ListenResult
      * @return 是否处理成功。
      */
     override fun processor(processContext: ListenResultProcessorContext): Boolean
+
+
+    /**
+     * 优先级。默认最低。
+     */
+    @JvmDefault
+    val priority: Int get() = PriorityConstant.LAST
 
 }
 
@@ -65,17 +74,19 @@ public interface ListenResultProcessorContext : Context<ListenResult<*>> {
      * Same as [ListenResult].
      */
     @JvmDefault
-    override val mainValue: ListenResult<*> get() = listenResult
+    override val mainValue: ListenResult<*>
+        get() = listenResult
 }
-
 
 
 /**
  * 获取一个 [ListenResultProcessorContext] 的实例。
  */
-public fun context(listenResult: ListenResult<*>, listenerFunctionInvokeData: ListenerFunctionInvokeData): ListenResultProcessorContext =
+public fun context(
+    listenResult: ListenResult<*>,
+    listenerFunctionInvokeData: ListenerFunctionInvokeData,
+): ListenResultProcessorContext =
     ListenResultProcessorContextImpl(listenResult, listenerFunctionInvokeData)
-
 
 
 /**
@@ -83,5 +94,5 @@ public fun context(listenResult: ListenResult<*>, listenerFunctionInvokeData: Li
  */
 private data class ListenResultProcessorContextImpl(
     override val listenResult: ListenResult<*>,
-    override val listenerFunctionInvokeData: ListenerFunctionInvokeData
+    override val listenerFunctionInvokeData: ListenerFunctionInvokeData,
 ) : ListenResultProcessorContext

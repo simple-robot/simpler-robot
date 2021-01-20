@@ -17,6 +17,7 @@ package love.forte.simbot.core.configuration
 import love.forte.common.ioc.DependBeanFactory
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
+import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.convert.Converter
 import love.forte.common.utils.convert.ConverterManager
@@ -46,14 +47,14 @@ public class CoreConverterManagerConfiguration {
     /**
      * 获取一个转化器builder。
      */
-    @CoreBeans
+    @SpareBeans
     fun coreConverterManagerBuilder(): ConverterManagerBuilder = HutoolConverterManagerBuilderImpl()
 
 
     /**
      * 通过builder获取转化器。
      */
-    @CoreBeans
+    @SpareBeans
     fun coreConverterManager(builder: ConverterManagerBuilder): ConverterManager {
 
         val converterType = Converter::class.java

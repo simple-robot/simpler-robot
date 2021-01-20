@@ -74,15 +74,16 @@ public class CoreListenerManagerBuilder : ListenerManagerBuilder {
      * 得到一个 [ListenerManager] 实例。
      */
     override fun build(): ListenerManager {
-        return CoreListenerManager(
-            atDetectionFactory,
-            exceptionManager,
-            msgInterceptData,
-            listenerInterceptData,
-            listenerContextData,
-            msgSenderFactories,
-            defMsgSenderFactories,
-            botManager
-        )
+        TODO()
+        // return CoreListenerManager(
+        //     atDetectionFactory,
+        //     exceptionManager,
+        //     msgInterceptData,
+        //     listenerInterceptData,
+        //     listenerContextData,
+        //     msgSenderFactories,
+        //     defMsgSenderFactories,
+        //     botManager
+        // )
     }
 }

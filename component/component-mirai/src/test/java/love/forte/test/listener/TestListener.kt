@@ -15,7 +15,11 @@
 package love.forte.test.listener
 
 import love.forte.common.ioc.annotation.Beans
-import love.forte.simbot.annotation.OnPrivate
+import love.forte.simbot.annotation.Filters
+import love.forte.simbot.annotation.Listen
+import love.forte.simbot.annotation.Listens
+import love.forte.simbot.api.message.Reply
+import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.PrivateMsg
 
 /**
@@ -24,9 +28,18 @@ import love.forte.simbot.api.message.events.PrivateMsg
 @Beans
 class TestListener {
 
-    @OnPrivate
-    fun PrivateMsg.listen() {
-        println("listen: ${this.text}")
-    }
+    /**
+     * 监听 [私聊消息][PrivateMsg]与[群聊消息][GroupMsg],
+     * 并在收到消息的时候统一回复 "Hello. this is Quick reply.", 如果在群聊中，会AT触发事件的人。
+     * 其中，在群聊中需要被AT。
+     */
+    @Listens(
+        value = [
+            Listen(PrivateMsg::class),
+            Listen(GroupMsg::class),
+        ]
+    )
+    @Filters(atBot = true)
+    fun listen() = Reply.reply("Hello. this is Quick reply.", at = true)
 }
 
