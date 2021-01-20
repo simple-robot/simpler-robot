@@ -56,10 +56,9 @@ object BotLevelUtil {
         if (level != null) {
             return level
         }
-        return synchronized(this) {
+        return synchronized(bot) {
             levelCache[botKey] ?: try {
                 val cookies = bot.cookies ?: return DEFAULT_VALUE
-
                 val vipHtml = http.get(VIP_URL, null, cookies.cookiesMap, null, String::class.java)
                 val message = vipHtml.assertBody()!!
                 val matcher = levelPattern.matcher(message)
