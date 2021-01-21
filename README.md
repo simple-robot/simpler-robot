@@ -30,6 +30,9 @@
 
 以及更多高级特性等待你的发现...
 
+<br>
+
+旧版本考古 -> [simple-robot 1.x](https://github.com/ForteScarlet/simple-robot-core)
 
 ## 支持平台
 
