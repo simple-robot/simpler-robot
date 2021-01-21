@@ -18,6 +18,7 @@ import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.SpareBeans
+import love.forte.simbot.http.configuration.HttpProperties
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 
 /**
@@ -35,7 +36,10 @@ public class KtorHttpTemplateConfiguration {
     public fun ktorHttpClientEngineFactory(): HttpClientEngineFactory<*> = CIO
 
     @SpareBeans("ktorHttpTemplate")
-    public fun ktorHttpTemplate(engineFactory: HttpClientEngineFactory<*>, jsonSerializerFactory: JsonSerializerFactory) =
-        KtorHttpTemplate(engineFactory, jsonSerializerFactory = jsonSerializerFactory)
+    public fun ktorHttpTemplate(
+        engineFactory: HttpClientEngineFactory<*>,
+       jsonSerializerFactory: JsonSerializerFactory,
+       httpProperties: HttpProperties
+    ) = KtorHttpTemplate(engineFactory, jsonSerializerFactory = jsonSerializerFactory, httpProperties = httpProperties)
 
 }

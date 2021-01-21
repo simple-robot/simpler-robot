@@ -49,6 +49,9 @@ private fun SpringHeaders.cookies(cookies: HttpCookies?) {
 
 /**
  * 基于 [org.springframework.web.client.RestTemplate] 的 [love.forte.simbot.http.template.HttpTemplate] 实现。
+ *
+ * 需要注意的是，由于使用的是spring的rest template，因此相关配置都优先使用你自己的配置。例如 `timeout`。
+ *
  * @author ForteScarlet
  */
 @SpareBeans

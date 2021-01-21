@@ -16,8 +16,9 @@
 
 package love.forte.simbot.spring.lovelycat.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import love.forte.simbot.component.lovelycat.configuration.LovelyCatServerProperties;
+import love.forte.simbot.core.SimbotContext;
+import love.forte.simbot.http.configuration.HttpProperties;
 import love.forte.simbot.spring.autoconfigure.properties.SimbotCompLovelycatServerProperties;
 import love.forte.simbot.spring.lovelycat.server.LovelyCatServer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -37,6 +38,7 @@ import org.springframework.web.client.RestTemplate;
         SimbotCompLovelycatServerProperties.class,
         LovelyCatServer.class
 })
+@ConditionalOnBean(SimbotContext.class)
 public class LovelycatServerConfiguration {
 
     private final SimbotCompLovelycatServerProperties simbotCompLovelycatServerProperties;
@@ -56,17 +58,18 @@ public class LovelycatServerConfiguration {
         return properties;
     }
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Bean
     @ConditionalOnMissingBean
-    public RestTemplate restTemplate(){
-        return new RestTemplate();
+    public RestTemplate restTemplate(SimbotContext simbotContext){
+        HttpProperties httpProperties = simbotContext.get(HttpProperties.class);
+
+        SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+        simpleClientHttpRequestFactory.setConnectTimeout(httpProperties.getConnectTimeout().intValue());
+        simpleClientHttpRequestFactory.setReadTimeout(httpProperties.getRequestTimeout().intValue());
+
+        return new RestTemplate(simpleClientHttpRequestFactory);
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnBean(Jackson2ObjectMapperBuilder.class)
-    public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder){
-        return builder.build();
-    }
 
 }

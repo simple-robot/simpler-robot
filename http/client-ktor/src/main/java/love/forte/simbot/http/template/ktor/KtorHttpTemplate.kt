@@ -17,6 +17,7 @@ package love.forte.simbot.http.template.ktor
 
 import io.ktor.client.*
 import io.ktor.client.engine.*
+import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
@@ -26,20 +27,22 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import love.forte.simbot.http.configuration.HttpProperties
 import love.forte.simbot.http.template.*
-import love.forte.simbot.http.template.HttpHeaders
-import love.forte.simbot.http.template.HttpRequest
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import io.ktor.client.statement.HttpResponse as KtorHttpResponse
+import love.forte.simbot.http.template.HttpCookies as SimbotHttpCookies
+import love.forte.simbot.http.template.HttpHeaders as SimbotHttpHeaders
+import love.forte.simbot.http.template.HttpRequest as SimbotHttpRequest
 
 
 private val APPLICATION_JSON = ContentType("application", "json")
 private val APPLICATION_FORM_URLENCODED = ContentType("application", "x-www-form-urlencoded")
 
 
-private fun HttpRequestBuilder.appendCookies(cookies: HttpCookies?) {
+private fun HttpRequestBuilder.appendCookies(cookies: SimbotHttpCookies?) {
     val appendCookies: String? = cookies?.takeIf { it.isNotEmpty() }
         ?.asSequence()
         ?.map { "${it.name}=${it.value}" }
@@ -48,7 +51,7 @@ private fun HttpRequestBuilder.appendCookies(cookies: HttpCookies?) {
 
     if (appendCookies != null) {
         headers {
-            append(io.ktor.http.HttpHeaders.Cookie, appendCookies)
+            append(HttpHeaders.Cookie, appendCookies)
         }
     }
 }
@@ -78,10 +81,23 @@ private fun HttpRequestBuilder.body(requestBody: Any?, jsonSerializerFactory: Js
 public class KtorHttpTemplate
 constructor(
     engineFactory: HttpClientEngineFactory<*>,
-    private val jsonSerializerFactory: JsonSerializerFactory
+    private val jsonSerializerFactory: JsonSerializerFactory,
+    httpProperties: HttpProperties
 ) : BaseHttpTemplate() {
 
-    private val client: HttpClient = HttpClient(engineFactory)
+    private companion object Logger {
+        private val logger = LoggerFactory.getLogger(KtorHttpTemplate::class.java)
+    }
+
+    private val requestTimeout = httpProperties.requestTimeout
+    private val connectTimeout = httpProperties.connectTimeout
+
+    private val client: HttpClient = HttpClient(engineFactory) {
+        install(HttpTimeout) {
+            requestTimeoutMillis = requestTimeout
+            connectTimeoutMillis = connectTimeout
+        }
+    }
 
     @Suppress("UNCHECKED_CAST")
     private fun <T> KtorHttpResponse.toResponse(responseType: Class<T>): HttpResponse<T> {
@@ -102,13 +118,13 @@ constructor(
     @OptIn(KtorExperimentalAPI::class)
     override fun <T> get(
         url: String,
-        headers: HttpHeaders?,
-        cookies: HttpCookies?,
+        headers: SimbotHttpHeaders?,
+        cookies: SimbotHttpCookies?,
         requestParam: Map<String, Any?>?,
         responseType: Class<T>
     ): HttpResponse<T> = runBlocking {
+        logger.debug("Get -> {}", url)
         val response: KtorHttpResponse = client.get(url) {
-
 
             headers?.forEach { (k, vs) ->
                 headers {
@@ -117,7 +133,7 @@ constructor(
             }
 
             headers {
-                if (get(io.ktor.http.HttpHeaders.UserAgent) == null) {
+                if (get(HttpHeaders.UserAgent) == null) {
                     userAgent(USER_AGENT_WIN10_CHROME)
                 }
             }
@@ -136,11 +152,12 @@ constructor(
 
     override fun <T> post(
         url: String,
-        headers: HttpHeaders?,
-        cookies: HttpCookies?,
+        headers: SimbotHttpHeaders?,
+        cookies: SimbotHttpCookies?,
         requestBody: Any?,
         responseType: Class<T>
     ): HttpResponse<T> = runBlocking {
+        logger.debug("Post -> {}", url)
         val response: KtorHttpResponse = client.post(url) {
             headers?.forEach { (k, vs) ->
                 headers { appendAll(k, vs) }
@@ -174,13 +191,12 @@ constructor(
 
     override fun <T> form(
         url: String,
-        headers: HttpHeaders?,
-        cookies: HttpCookies?,
+        headers: SimbotHttpHeaders?,
+        cookies: SimbotHttpCookies?,
         requestForm: Map<String, Any?>?,
         responseType: Class<T>
     ): HttpResponse<T> = runBlocking {
-
-
+        logger.debug("Form -> {}", url)
         val response: KtorHttpResponse = client.submitForm(url) {
             headers?.forEach { (k, vs) ->
                 headers { appendAll(k, vs) }
@@ -207,12 +223,14 @@ constructor(
      * @return HttpResponse<T> 响应体
      */
     @Suppress("UNCHECKED_CAST")
-    override fun <T> request(request: HttpRequest<T>): HttpResponse<T> {
+    override fun <T> request(request: SimbotHttpRequest<T>): HttpResponse<T> {
         val url = request.url
         val headers = request.headers
         val cookies = request.cookies
         val params = request.requestParam
         val responseType = request.responseType
+
+        logger.debug("Request ${request.type} -> {}", url)
 
         return when (request.type) {
             HttpRequestType.GET -> get(url, headers, cookies, params as? Map<String, Any?>, responseType)
@@ -230,13 +248,13 @@ constructor(
      * @return List<HttpResponse<*>>
      */
     @Suppress("UNCHECKED_CAST")
-    override fun requestAll(parallel: Boolean, vararg requests: HttpRequest<*>): List<HttpResponse<*>> {
+    override fun requestAll(parallel: Boolean, vararg requests: SimbotHttpRequest<*>): List<HttpResponse<*>> {
         if (requests.isEmpty()) {
             return emptyList()
         }
 
 
-        fun getBlock(headers: HttpHeaders?): HttpRequestBuilder.() -> Unit {
+        fun getBlock(headers: SimbotHttpHeaders?): HttpRequestBuilder.() -> Unit {
             return {
                 headers?.forEach { (k, vs) ->
                     headers { appendAll(k, vs) }
@@ -255,8 +273,9 @@ constructor(
                     val params = request.requestParam
                     val responseType = request.responseType
 
-                    val block: HttpRequestBuilder.() -> Unit = getBlock(headers)
+                    logger.debug("Request ${request.type} -> {}", url)
 
+                    val block: HttpRequestBuilder.() -> Unit = getBlock(headers)
                     // first:  type
                     // second: async response
                     responseType to
@@ -324,6 +343,8 @@ constructor(
                     val responseType = request.responseType
 
                     val block: HttpRequestBuilder.() -> Unit = getBlock(headers)
+
+                    logger.debug("Request ${request.type} -> {}", url)
 
                     // first:  type
                     // second: response
@@ -455,14 +476,14 @@ public class KtorHttpResponseImpl<T>(
 
     /** body. */
     override val body: T? by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        logger.debug(content)
+        logger.debug("Response content -> {}", content)
         content?.let { bodySerializer(it) }
             //?: throw IllegalStateException("content is empty.")
     }
 
     /** headers. */
-    override val headers: HttpHeaders by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        HttpHeaders.fromMultiValueMap(response.headers.toMap())
+    override val headers: SimbotHttpHeaders by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        SimbotHttpHeaders.fromMultiValueMap(response.headers.toMap())
     }
 
     /** error msg. */

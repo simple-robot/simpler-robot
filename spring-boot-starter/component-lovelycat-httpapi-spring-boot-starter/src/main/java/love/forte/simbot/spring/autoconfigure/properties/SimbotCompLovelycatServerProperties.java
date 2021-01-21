@@ -16,6 +16,8 @@
 
 package love.forte.simbot.spring.autoconfigure.properties;
 
+import love.forte.simbot.core.SimbotContext;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "simbot.component.lovelycat.server")
 @lombok.Setter
 @lombok.Getter
+@ConditionalOnBean(SimbotContext.class)
 public class SimbotCompLovelycatServerProperties {
 
     /**
