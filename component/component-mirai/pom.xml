@@ -5,12 +5,13 @@
     <parent>
         <groupId>love.forte.simple-robot</groupId>
         <artifactId>component-parent</artifactId>
-        <version>2.0.0-RC.3</version><!--v-->
+        <version>2.0.0-RC.3-snapshot</version><!--v-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>component-mirai</artifactId>
 
+    <!--2.0.0-RC.3-snapshot-->
 
     <name>component-mirai</name>
     <description>a simple-robot component for mirai</description>

@@ -14,7 +14,6 @@
 
 package love.forte.simbot.component.mirai.configuration
 
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -47,6 +46,9 @@ public class MiraiListenerRegistered : ListenerRegistered {
     @Depend
     lateinit var miraiBotEventRegistrar: MiraiBotEventRegistrar
 
+    // bot alive thraed
+    private lateinit var botAliveThread: BotAliveThread
+
     /**
      * 当所有的监听函数都注册完成后,
      * 为所有的bot注册监听事件。
@@ -57,7 +59,7 @@ public class MiraiListenerRegistered : ListenerRegistered {
 
         miraiBotEventRegistrar.started()
 
-        val botAliveThread = BotAliveThread("mirai-bot-alive", daemon).apply { start() }
+        botAliveThread = BotAliveThread("mirai-bot-alive", daemon).apply { start() }
 
         // 注册一个 钩子来关闭所有的bot。
         Runtime.getRuntime().addShutdownHook(thread(start = false) {
@@ -74,18 +76,21 @@ public class MiraiListenerRegistered : ListenerRegistered {
             }
 
             logger.info("try to close all bots...")
-            val waiting = mutableListOf<Pair<Long, Deferred<*>>>()
+            // val waiting = mutableListOf<Pair<Long, Deferred<*>>>()
             // close all bot.
-            Bot.instancesSequence.map {
+            val waiting = Bot.instances.map {
                 it.id to GlobalScope.async {
-                    logger.debug("try to close bot(${it.id})")
+                    logger.debug("try to close bot(${it.id})...")
                     it.closeAndJoin()
                 }
-            }.forEach {
-                waiting.add(it)
-            }
+            }.toList()
+            // {
+            //     waiting.add(it)
+            // }
+
             runBlocking {
                 waiting.forEach {
+                    logger.debug("Waiting bot(${it.first}) close...")
                     it.second.await()
                     logger.debug("bot(${it.first}) closed.")
                 }
@@ -104,7 +109,7 @@ private class BotAliveThread(name: String, daemon: Boolean = false) : Thread(nam
 
     override fun run() {
         // var bots = Bot.instances
-        while(!interrupted()) {
+        while(!isInterrupted) {
             val bots = Bot.instances
             if (bots.isEmpty()) { break }
             kotlin.runCatching {
