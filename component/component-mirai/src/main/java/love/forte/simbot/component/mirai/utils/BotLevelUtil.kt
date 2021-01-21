@@ -58,7 +58,7 @@ object BotLevelUtil {
         }
         return synchronized(bot) {
             levelCache[botKey] ?: try {
-                val cookies = bot.cookies ?: return DEFAULT_VALUE
+                val cookies = bot.cookies ?: return@synchronized DEFAULT_VALUE
                 val vipHtml = http.get(VIP_URL, null, cookies.cookiesMap, null, String::class.java)
                 val message = vipHtml.assertBody()!!
                 val matcher = levelPattern.matcher(message)
@@ -70,7 +70,6 @@ object BotLevelUtil {
             } catch (e: Throwable) {
                 DEFAULT_VALUE
             }
-
         }
 
     }

@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.concurrent.thread
 
 
 /**
@@ -107,10 +108,10 @@ protected constructor(
 ) {
 
 
-    var showLogo: Boolean = runCatching {
+    private var showLogo: Boolean = runCatching {
         defaultConfiguration?.getConfig(Logo.ENABLE_KEY)?.boolean
     }.getOrNull() ?: true
-    var showTips: Boolean = runCatching {
+    private var showTips: Boolean = runCatching {
         defaultConfiguration?.getConfig(Tips.ENABLE_KEY)?.boolean
     }.getOrNull() ?: true
 
@@ -197,7 +198,7 @@ protected constructor(
             try {
                 process.post(it)
             } catch (e: Exception) {
-                logger.error("SimbotProcess.post failed.", e);
+                logger.error("SimbotProcess.post failed.", e)
             }
         }
     }
@@ -211,6 +212,11 @@ protected constructor(
         val autoConfigures = autoConfigures(loader, logger)
 
         dependCenter = DependCenter(parent = parentDependBeanFactory, configuration = config)
+
+        // register shutdown hook
+        Runtime.getRuntime().addShutdownHook(thread(start = false) {
+            dependCenter.close()
+        })
 
         // 加载所有的自动配置类
         autoConfigures.forEach {
