@@ -6,7 +6,7 @@
     <parent>
         <artifactId>spring-boot-starter</artifactId>
         <groupId>love.forte.simple-robot</groupId>
-        <version>2.0.0-SNAPSHOT</version><!--v-->
+        <version>2.0.0-RC.4</version><!--v-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
     <artifactId>parent</artifactId>
     <groupId>love.forte.simple-robot</groupId>
-    <version>2.0.0-SNAPSHOT</version><!--v-->
+    <version>2.0.0-RC.4</version><!--v-->
     <modules>
         <module>core-parent</module>
         <module>component</module>
@@ -488,10 +488,10 @@
                 <artifactId>maven-deploy-plugin</artifactId>
             </plugin>
             <!-- （2）sonatype的staging插件 -->
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-            </plugin>
+            <!--<plugin>-->
+            <!--    <groupId>org.sonatype.plugins</groupId>-->
+            <!--    <artifactId>nexus-staging-maven-plugin</artifactId>-->
+            <!--</plugin>-->
             <!-- （3）SCM插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -820,27 +820,41 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <!--<version>1.6.8</version>-->
-                        <!--<extensions>true</extensions>-->
-                        <!--<configuration>-->
-                        <!--    <serverId>oss</serverId>-->
-                        <!--    <nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
-                        <!--    <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
-                        <!--</configuration>-->
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <!--<version>1.6</version>-->
-                        <!--<executions>-->
-                        <!--    <execution>-->
-                        <!--        <id>sign-artifacts</id>-->
-                        <!--        <phase>verify</phase>-->
-                        <!--        <goals>-->
-                        <!--            <goal>sign</goal>-->
-                        <!--        </goals>-->
-                        <!--    </execution>-->
-                        <!--</executions>-->
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>snapshots</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>snapshots-repo</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>
