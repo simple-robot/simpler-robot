@@ -27,9 +27,10 @@ import static java.lang.annotation.ElementType.*;
  * @author ForteScarlet
  */
 @SuppressWarnings("unused")
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.CLASS)
 @Target({TYPE, FIELD, CONSTRUCTOR, METHOD, PARAMETER})
 @Documented
 public @interface ThreadSafe {
+    /** 可以有一些说明之类的东西。 */
     String value() default "";
 }
