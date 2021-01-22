@@ -39,7 +39,7 @@ public fun interface MessageContentBuilderFactory {
  * 但是对于一种组件来讲，猫猫码的解析会增加对效率的损耗。
  *
  * 因此为了兼顾 **灵活与扩展** 和 **效率**，除了猫猫码以外，
- * 我提供了 [MessageContentBuilder]，
+ * 提供了 [MessageContentBuilder]，
  * 使得一些十分常见的消息类型（例如图片、at等）可以通过组件的实现来达到更低的解析成本。
  *
  *
@@ -49,7 +49,17 @@ public fun interface MessageContentBuilderFactory {
  */
 public interface MessageContentBuilder {
 
-    /** 最基础的消息类型。向当前构建的消息中追加一个 文本消息。 */
+    /**
+     * 最基础的消息类型。向当前构建的消息中追加一个 文本消息。
+     * 当同时调用多次[text]的时候，其效果应当等同于多次内容的拼接。例如：
+     * ```
+     * builder.text("aaa").text(",").text("bbb").text(",").text("ccc")
+     * ```
+     * 其效果应当等同于：
+     * ```
+     * builder.text("aaa,bbb,ccc")
+     * ```
+     */
     fun text(text: CharSequence): MessageContentBuilder
 
     /** 向当前构建的消息中追加一个 'at全体'的消息。 */
@@ -74,7 +84,9 @@ public interface MessageContentBuilder {
     @JvmDefault
     fun face(id: Int): MessageContentBuilder = face(id.toString())
 
-    /** 向当前构建的消息中追加一个本地图片。 */
+    /**
+     * 向当前构建的消息中追加一个本地图片。
+     */
     fun imageLocal(path: String, flash: Boolean): MessageContentBuilder
 
     /** 向当前构建的消息中追加一个网络图片。 */
@@ -100,19 +112,31 @@ public interface MessageContentBuilder {
         if (path.startsWith("http")) imageUrl(path)
         else imageLocal(path)
 
-    /** 向当前构建的消息中追加一个图片流。 */
+    /**
+     * 向当前构建的消息中追加一个图片流。
+     * 此方法内应当自动关闭[input]，但是并不会保证方法调用后立即对输入流进行读取或使用，也因此不会保证此方法调用后[input]会立即关闭。
+     * 因此不建议对此方法的 [input] 进行后续的其他操作。
+     */
     fun image(input: InputStream, flash: Boolean): MessageContentBuilder
+
 
     /** 向当前构建的消息中追加一个图片字节数组。 */
     fun image(imgData: ByteArray, flash: Boolean): MessageContentBuilder
 
-    /** 向当前构建的消息中追加一个图片流。 */
+    /**
+     * 向当前构建的消息中追加一个图片流。
+     * 此方法内应当自动关闭[input]，但是并不会保证方法调用后立即对输入流进行读取或使用，也因此不会保证此方法调用后[input]会立即关闭。
+     * 因此不建议对此方法的 [input] 进行后续的其他操作。
+     */
     @JvmDefault
     fun image(input: InputStream): MessageContentBuilder = image(input, false)
 
     /** 向当前构建的消息中追加一个图片字节数组。 */
     @JvmDefault
     fun image(imgData: ByteArray): MessageContentBuilder = image(imgData, false)
+
+    // TODO 支持与其他 [MessageContent] 进行合并/拼接。
+    // fun context(messageContent: MessageContent): MessageContentBuilder
 
     /** 得到当前构建的消息。 */
     fun build(): MessageContent

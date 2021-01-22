@@ -49,6 +49,18 @@ public interface ListenResult<T> {
     @Deprecated("Renamed to 'cause'", ReplaceWith("cause"))
     val throwable: Throwable? get() = cause
 
+
+    /**
+     * Default默认的无效实现, 会用于对一些无效化响应值进行判断。
+     * @since 2.0.0
+     */
+    companion object Default : ListenResult<Nothing> {
+        override fun isSuccess(): Boolean = false
+        override fun isBreak(): Boolean = false
+        override val result: Nothing? = null
+        override val cause: Throwable? = null
+    }
+
 }
 
 /**

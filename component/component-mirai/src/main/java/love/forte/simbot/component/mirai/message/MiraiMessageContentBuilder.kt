@@ -117,8 +117,8 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
                     key("flash").value(true)
                 }
             }.build()
-        MiraiImageMessageContent(flash, imageNeko) {
-            u.toStream().uploadAsImage(it)
+        MiraiImageMessageContent(flash, imageNeko) { contact ->
+            u.toStream().use { stream -> stream.uploadAsImage(contact) }
         }.apply {
             checkText()
             contentList.add(this)
@@ -135,8 +135,8 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
                    key("flash").value(true)
                 }
             }.build()
-        MiraiImageMessageContent(flash, imageNeko){
-            input.uploadAsImage(it)
+        MiraiImageMessageContent(flash, imageNeko){ contact ->
+            input.use { inp -> inp.uploadAsImage(contact) }
         }.apply {
             checkText()
             contentList.add(this)

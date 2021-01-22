@@ -20,9 +20,7 @@ import love.forte.simbot.listener.ListenResult
 import love.forte.simbot.listener.ListenerFunction
 import love.forte.simbot.listener.ListenerResultFactory
 
-/**
- * 无内容的result。一般用在没有监听函数执行被执行的时候。
- */
+@Deprecated("Use ListenResult.Default", ReplaceWith("ListenResult"), DeprecationLevel.ERROR)
 object NothingResult : ListenResult<Nothing> {
     override fun isSuccess(): Boolean = false
     override fun isBreak(): Boolean = false

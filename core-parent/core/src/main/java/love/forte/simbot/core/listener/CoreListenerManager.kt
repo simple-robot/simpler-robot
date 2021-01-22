@@ -190,14 +190,14 @@ public class CoreListenerManager(
 
             // 如果被拦截, 返回默认值
             if (msgChain.intercept().isPrevent) {
-                return NothingResult
+                return ListenResult
             }
 
             // 筛选并执行监听函数
             return onMsg0(msgContext.msgGet, context)
         } catch (e: Throwable) {
             logger.error("Some unexpected errors occurred in the execution of the listener: ${e.localizedMessage}", e)
-            return NothingResult
+            return ListenResult
         }
     }
 
@@ -217,9 +217,9 @@ public class CoreListenerManager(
         val funcs = getListenerFunctions(msgGet.javaClass, true)
         var invokeData: ListenerFunctionInvokeData? = null
         return if (funcs.isEmpty()) {
-            NothingResult
+            ListenResult
         } else {
-            var finalResult: ListenResult<*> = NothingResult
+            var finalResult: ListenResult<*> = ListenResult
 
             var anySuccess = false
             var doBreak = false
@@ -245,7 +245,13 @@ public class CoreListenerManager(
                 } catch (funcRunEx: Throwable) {
                     (if (func is LogAble) func.log else logger).error("Listener '${func.name}' execution exception: $funcRunEx",
                         funcRunEx)
-                    NothingResult
+                    ListenResult
+                }.also {
+                    if (finalResult != ListenResult) {
+                        invokeData?.run {
+                            resultProcessorManager.processor(context(finalResult, this))
+                        }
+                    }
                 }
             }
 
@@ -263,7 +269,7 @@ public class CoreListenerManager(
                             null
                         } ?: run {
                             (if (func is LogAble) func.log else logger).error("Listener execution exception: $ex", ex)
-                            NothingResult
+                            ListenResult
                         }
                     } else this
                 }
@@ -304,9 +310,7 @@ public class CoreListenerManager(
 
             // do processor
 
-            invokeData?.run {
-                resultProcessorManager.processor(context(finalResult, this))
-            }
+
 
 
             return finalResult

@@ -121,7 +121,7 @@ public class LovelyCatMessageContentBuilder : MessageContentBuilder {
 
     /** 向当前构建的消息中追加一个图片流。 */
     override fun image(input: InputStream, flash: Boolean): LovelyCatMessageContentBuilder = apply {
-        val base64 = Base64.encode(input)
+        val base64 = input.use { Base64.encode(it) }
         img.add("BASE64:$base64")
     }
 

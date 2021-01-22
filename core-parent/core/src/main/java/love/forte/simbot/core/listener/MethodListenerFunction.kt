@@ -128,13 +128,10 @@ public class MethodListenerFunction(
         msgGet: MsgGet,
         atDetection: AtDetection,
         listenerContext: ListenerContext,
-    ): Boolean {
-        if (listenAnnotationFilter == null) {
-            return true
-        }
+    ): Boolean = listenAnnotationFilter?.let { annotationFilter ->
         val data = FilterData(msgGet, atDetection, listenerContext, this)
-        return listenAnnotationFilter.test(data)
-    }
+        return annotationFilter.test(data)
+    } ?: true
 
 
     /**
@@ -357,8 +354,8 @@ public class MethodListenerFunction(
         // do filter
         val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
         if (!filter || data.listenerInterceptorChain.intercept().isPrevent) {
-            // 没有通过检测
-            return EmptyFailedNoBreakResult
+            // 没有通过检测, 返回ListenResult默认的无效化实现。
+            return ListenResult
         }
         // // 如果被拦截
         // if (data.listenerInterceptorChain.intercept().isPrevent) {
