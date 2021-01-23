@@ -10,13 +10,30 @@
     <span>
         <a href="https://gitee.com/ForteScarlet/simpler-robot" target="_blank">gitee</a>
     </span> <br />
-    <small> &gt; 感谢 <a href="https://github.com/ForteScarlet/CatCode" target="_blank">CatCode</a> 开发团队成员制作的simbot logo &lt; </small> <br />
-    <small> &gt; 走过路过，不要忘记点亮一颗⭐喔~ &lt; </small> <br />
-    <a href="https://repo1.maven.org/maven2/love/forte/simple-robot/parent/" target="_blank" >
-        <img src="https://img.shields.io/maven-central/v/love.forte.simple-robot/parent" />
-    </a>
+    <small> &gt; 感谢 <a href="https://github.com/ForteScarlet/CatCode" target="_blank">CatCode</a> 开发团队成员制作的simbot logo &lt; </small>
+    <br>
+    <small> &gt; 走过路过，不要忘记点亮一颗⭐喔~ &lt; </small> 
+    <br>
+<a href="https://repo1.maven.org/maven2/love/forte/simple-robot/parent/" target="_blank">
+  <img src="https://img.shields.io/nexus/r/love.forte.simple-robot/parent?label=simbot-releases&server=https%3A%2F%2Foss.sonatype.org" /></a>
+<a href="https://oss.sonatype.org/content/repositories/snapshots/love/forte/simple-robot/parent/" target="_blank">
+  <img src="https://img.shields.io/nexus/s/love.forte.simple-robot/parent?label=simbot-snapshot&server=https%3A%2F%2Foss.sonatype.org" /></a>
+<a href="https://www.yuque.com/simpler-robot/simpler-robot-doc" target="_blank">
+  <img src="https://img.shields.io/badge/doc-yuque-brightgreen" /></a>
+   <hr>
+   <img src="https://img.shields.io/github/repo-size/ForteScarlet/simpler-robot" />
+   <img src="https://img.shields.io/github/issues-closed/ForteScarlet/simpler-robot?color=green" />
+   <a href="./LICENSE"><img src="https://img.shields.io/github/license/ForteScarlet/simpler-robot" /></a>
+    </div>
 
-</div>
+
+
+
+
+
+
+
+
 
 ## 简介
 
@@ -48,6 +65,9 @@
     - onebot(QQ机器人通用协议)
 - TG
 - discord    
+- 钉钉
+  - 企业内建应用事件
+  - 企业内建群BOT
 
 ## 文档
 
