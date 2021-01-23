@@ -21,9 +21,17 @@
 <a href="https://www.yuque.com/simpler-robot/simpler-robot-doc" target="_blank">
   <img src="https://img.shields.io/badge/doc-yuque-brightgreen" /></a>
    <hr>
+   <img src="https://img.shields.io/github/stars/ForteScarlet/simpler-robot" />
+   <img src="https://img.shields.io/github/forks/ForteScarlet/simpler-robot" />
+   <img src="https://img.shields.io/github/watchers/ForteScarlet/simpler-robot" />
    <img src="https://img.shields.io/github/repo-size/ForteScarlet/simpler-robot" />
+   <img src="https://img.shields.io/tokei/lines/github/ForteScarlet/simpler-robot" />
+   <a href="https://github.com/ForteScarlet/simpler-robot/releases/latest"><img src="https://img.shields.io/github/v/release/ForteScarlet/simpler-robot" /></a>
    <img src="https://img.shields.io/github/issues-closed/ForteScarlet/simpler-robot?color=green" />
    <a href="./LICENSE"><img src="https://img.shields.io/github/license/ForteScarlet/simpler-robot" /></a>
+<br>
+   <img src="https://img.shields.io/github/last-commit/ForteScarlet/simpler-robot" />
+   <img src="https://img.shields.io/github/last-commit/ForteScarlet/simpler-robot" />
     </div>
 
 
@@ -165,6 +173,12 @@ public class TestListener {
 [![](https://logonoid.com/images/thumbs/intellij-idea-logo.png "IntelliJ IDEA")](https://www.jetbrains.com/idea/)
 
 感谢 [jetbrains](https://www.jetbrains.com/ "jetbrains") 为团队提供的免费 [IntelliJ IDEA](https://www.jetbrains.com/idea/ "IntelliJ IDEA") 授权，也希望大家能够支持IDEA，支持正版。
+
+*****
+
+[![](./logo/CatCodeLogo@0,1x.png)](https://github.com/ForteScarlet/CatCode)
+
+感谢 [猫猫码](https://github.com/ForteScarlet/CatCode "CatCode") 为本项目提供支持并绘制项目LOGO。
 
 
 
