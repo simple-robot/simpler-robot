@@ -60,17 +60,15 @@ internal fun autoConfigures(loader: ClassLoader, logger: Logger = simbotAppLogge
     // class list.
     val classSet = mutableSetOf<Class<*>>()
 
-    (jarResources + resources).forEach {
-        logger.debugf("load auto configure resource: {}", it)
+    (jarResources + resources).forEach { url ->
+        logger.debugf("load auto configure resource: {}", url)
         Properties().apply {
-            load(BufferedReader(InputStreamReader(it.openStream(), StandardCharsets.UTF_8)))
+            load(BufferedReader(InputStreamReader(url.openStream(), StandardCharsets.UTF_8)))
         }.apply {
             getProperty(AUTO_CONFIG_KEY)?.split(",")
                 ?.filter { it.isNotBlank() }
                 ?.map { Class.forName(it) }
-                ?.forEach {
-                    classSet.add(it)
-                }
+                ?.forEach { classSet.add(it) }
         }
     }
 
