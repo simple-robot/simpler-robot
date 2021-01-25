@@ -20,7 +20,7 @@ import love.forte.simbot.api.message.results.GroupFullInfo
 import love.forte.simbot.api.message.results.GroupOwner
 import love.forte.simbot.api.message.results.SimpleGroupInfo
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.contact.isAdministrator
+import net.mamoe.mirai.contact.isOperator
 
 /**
  * mirai group info.
@@ -66,9 +66,9 @@ public class MiraiGroupFullInfo(group: Group) : GroupInfo by MiraiGroupInfo(grou
      * 管理员与群主。
      */
     override val admins: List<GroupAdmin> by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        (sequenceOf(owner) + group.members.asSequence()
-            .filter { it.isAdministrator() }
-            .map { MiraiGroupAdminInfo(it) }).toList()
+        group.members.asSequence()
+            .filter { it.isOperator() }
+            .map { MiraiGroupAdminInfo(it) }.toList()
     }
 
 
