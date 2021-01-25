@@ -13,6 +13,7 @@
  */
 
 @file:JvmName("SimbotApps")
+
 package love.forte.simbot.core
 
 import cn.hutool.core.io.FileUtil
@@ -46,11 +47,9 @@ import java.net.URL
 import kotlin.concurrent.thread
 
 
-
-
 private const val RESOURCE_FILE = "file:"
 private const val RESOURCE_CLASSPATH = "classpath:"
-
+private const val RESOURCE_HTTP = "http://"
 
 
 /**
@@ -252,14 +251,12 @@ protected constructor(
     private fun loadResourcesToConfiguration(): Configuration {
         val confReaderManager = configurationManager
 
-        val args = simbotArgsEnvironment.args
-
         val activeResources = simbotResourceEnvironment.resourceDataList.filter {
             val commands = it.commands
             commands.isEmpty() || commands.all { c -> simbotArgsEnvironment.contains(c) }
         }
 
-        logger.info("Active resources: ${activeResources.map { it.resource } }")
+        logger.info("Active resources: ${activeResources.map { it.resource }}")
 
         // 加载所有的配置类信息
         return activeResources.mapNotNull { resourceData ->
@@ -267,6 +264,7 @@ protected constructor(
 
             // get reader.
             val resourceReader: Reader? = runCatching {
+
                 when {
                     resourceName.startsWith(RESOURCE_FILE) -> {
                         // starts with 'file', try get Reader by file
@@ -274,6 +272,9 @@ protected constructor(
                     }
                     resourceName.startsWith(RESOURCE_CLASSPATH) -> {
                         ResourceUtil.getResourceUtf8Reader(resourceName.substring(RESOURCE_CLASSPATH.length))
+                    }
+                    resourceName.startsWith(RESOURCE_HTTP) -> {
+                        URL(resourceName).connection { "Online resource connection failed. $it" }
                     }
                     else -> {
                         // try file first.
@@ -541,13 +542,15 @@ private object Tips {
 
             logger.trace("Tips online resource {}, url: {}", TIP_ONLINE_PATH, url)
 
-            (URL(url).openConnection() as HttpURLConnection).run {
-                readTimeout = 5000
-                connectTimeout = 5000
-                connect()
-                takeIf { responseCode < 300 }
-                    ?: throw IOException("Online tips connection failed. ${errorStream.reader().use { it.readText() }}")
-            }.inputStream.reader()
+            URL(url).connection { "Online tips connection failed. $it" }
+
+            // (URL(url).openConnection() as HttpURLConnection).run {
+            //     readTimeout = 5000
+            //     connectTimeout = 5000
+            //     connect()
+            //     takeIf { responseCode < 300 }
+            //         ?: throw IOException("Online tips connection failed. ${errorStream.reader().use { it.readText() }}")
+            // }.inputStream.reader()
         }.getOrElse { e ->
             if (e != DisableTips) {
                 logger.debugEf("Read online tips failed: {}", e, e.localizedMessage)
@@ -578,7 +581,19 @@ private fun Tips.show(print: PrintStream = System.out) {
 }
 
 
-
+private inline fun URL.connection(
+    readTimeout: Int = 5000, connectTimeout: Int = 5000,
+    onError: (errorStreamReaderText: String) -> String,
+): Reader {
+    // 网络请求
+    return (this.openConnection() as HttpURLConnection).run {
+        this.readTimeout = readTimeout
+        this.connectTimeout = connectTimeout
+        connect()
+        takeIf { responseCode < 300 }
+            ?: throw IOException(onError(errorStream.reader().use { it.readText() }))
+    }.inputStream.reader()
+}
 
 
 
