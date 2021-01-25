@@ -14,6 +14,7 @@
  *
  */
 @file:JvmName("lovelycatHttpServers")
+
 package love.forte.simbot.component.lovelycat
 
 import io.ktor.application.*
@@ -29,6 +30,7 @@ import love.forte.simbot.bot.NoSuchBotException
 import love.forte.simbot.component.lovelycat.configuration.LovelyCatServerProperties
 import love.forte.simbot.component.lovelycat.message.event.LovelyCatParser
 import love.forte.simbot.core.TypedCompLogger
+import love.forte.simbot.listener.ListenResult
 import love.forte.simbot.listener.MsgGetProcessor
 import love.forte.simbot.listener.onMsg
 import love.forte.simbot.serialization.json.JsonSerializer
@@ -47,14 +49,14 @@ private val htmlContentType = ContentType.parse("text/html")
 private class JsonContentConverter(private val fac: JsonSerializerFactory) : ContentConverter {
 
     override suspend fun convertForReceive(
-        context: PipelineContext<ApplicationReceiveRequest, ApplicationCall>
+        context: PipelineContext<ApplicationReceiveRequest, ApplicationCall>,
     ): Any? {
         val channel = context.subject.value as ByteReadChannel
         val message = StringBuilder().apply {
             var readLine: Boolean
             do {
                 readLine = channel.readUTF8LineTo(this)
-            } while(readLine)
+            } while (readLine)
             // while(content.readUTF8LineTo(this)) { }
             channel.cancel()
         }.toString()
@@ -65,12 +67,11 @@ private class JsonContentConverter(private val fac: JsonSerializerFactory) : Con
     override suspend fun convertForSend(
         context: PipelineContext<Any, ApplicationCall>,
         contentType: ContentType,
-        value: Any
+        value: Any,
     ): Any? {
         val jsonSerializer: JsonSerializer<Any> = fac.getJsonSerializer(context.subject.javaClass)
         return jsonSerializer.toJson(context.subject)
     }
-
 
 
 }
@@ -80,7 +81,6 @@ interface LovelyCatHttpServer : Closeable {
     @Throws(Exception::class)
     fun start()
 }
-
 
 
 public class LovelyCatKtorHttpServer(
@@ -115,7 +115,7 @@ public class LovelyCatKtorHttpServer(
                 register(jsonContentType, JsonContentConverter(jsonSerializerFactory))
             }
 
-            if(lovelyCatServerProperties.cors) {
+            if (lovelyCatServerProperties.cors) {
                 install(CORS)
             }
 
@@ -139,23 +139,38 @@ public class LovelyCatKtorHttpServer(
                             val botId = (params["robot_wxid"] ?: params["rob_wxid"])?.toString()
                                 ?: throw NoSuchBotException("no param 'robot_wxid' or 'rob_wxid' in lovelycat request param.")
 
-                            val api = apiManager[botId] ?: throw IllegalStateException("cannot found Bot($botId)'s api template.")
+                            val api = apiManager[botId]
+                                ?: throw IllegalStateException("cannot found Bot($botId)'s api template.")
 
                             try {
                                 // val parse =
                                 // if (parse != null) {
-                                    lovelyCatParser.type(eventType)?.let { t ->
+                                lovelyCatParser.type(eventType).let { t ->
+                                    if (t != null) {
                                         msgGetProcessor.onMsg(t) {
-                                            lovelyCatParser.parse(eventType, originalData, api, jsonSerializerFactory, params)
+                                            lovelyCatParser.parse(eventType,
+                                                originalData,
+                                                api,
+                                                jsonSerializerFactory,
+                                                params)
                                         }
-                                    }?.let {
-                                        // ok
-                                        call.respond(HttpStatusCode.OK, it.result ?: "{}")
-                                    } ?: kotlin.run {
-                                        val respMsg = "Cannot found any event type for event '$eventType'."
-                                        call.respond(HttpStatusCode.NotFound) { respMsg }
-                                        logger.warn("$respMsg response 404.")
+                                    } else {
+                                        val msg = lovelyCatParser.parse(eventType,
+                                            originalData,
+                                            api,
+                                            jsonSerializerFactory,
+                                            params)
+                                        msg?.let { m -> msgGetProcessor.onMsg(m::class.java) { m } ?: ListenResult }
                                     }
+
+                                }?.let {
+                                    // ok
+                                    call.respond(HttpStatusCode.OK, it.result ?: "{}")
+                                } ?: kotlin.run {
+                                    val respMsg = "Cannot found any event type for event '$eventType'."
+                                    call.respond(HttpStatusCode.NotFound, respMsg)
+                                    logger.warn("$respMsg response 404.")
+                                }
                                 // }
                                 // ok status.
                                 // call.respond(HttpStatusCode.OK)
@@ -182,7 +197,6 @@ public class LovelyCatKtorHttpServer(
             }
         }
     }
-
 
 
     override fun start() {
