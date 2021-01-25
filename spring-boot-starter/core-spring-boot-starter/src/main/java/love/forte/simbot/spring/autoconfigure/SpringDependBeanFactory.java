@@ -17,10 +17,14 @@ package love.forte.simbot.spring.autoconfigure;
 import love.forte.common.ioc.DependBeanFactory;
 import love.forte.common.ioc.exception.DependException;
 import love.forte.common.ioc.exception.NoSuchDependException;
+import org.springframework.aop.SpringProxy;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.ClassUtils;
 
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.function.Function;
@@ -130,10 +134,37 @@ public class SpringDependBeanFactory implements DependBeanFactory {
         return Arrays.stream(beanDefinitionNames).collect(Collectors.toSet());
     }
 
+    /**
+     * 获取类型。如果获取的类型为一个动态代理类型，则会尝试获取他的真正类型。
+     *
+     * @see SpringProxy
+     * @see AopUtils
+     *
+     * @param name bean name
+     * @return real type.
+     */
     @Override
     public Class<?> getType(String name) {
         try {
-            return beanFactory.getType(name);
+            Class<?> type = beanFactory.getType(name);
+            if (type == null) {
+                return null;
+            }
+
+            // see AopUtils#isAopProxy
+            boolean isProxy = (Proxy.isProxyClass(type) && SpringProxy.class.isAssignableFrom(type)) ||
+                    (type.getName().contains(ClassUtils.CGLIB_CLASS_SEPARATOR));
+
+            if (isProxy) {
+                // is proxy.
+                type = AopUtils.getTargetClass(beanFactory.getBean(name));
+            }
+
+            if (name.equals("testListener")) {
+                System.out.println(name + "(2): " + type);
+            }
+
+            return type;
         } catch (NoSuchBeanDefinitionException e) {
              return null;
         }

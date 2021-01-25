@@ -51,6 +51,7 @@ import kotlin.reflect.jvm.kotlinFunction
 @Suppress("JoinDeclarationAndAssignment")
 public class MethodListenerFunction(
     private val method: Method,
+    private val instanceName: String?,
     declClass: Class<*>,
     private val dependBeanFactory: DependBeanFactory,
     private val filterManager: FilterManager,
@@ -197,7 +198,7 @@ public class MethodListenerFunction(
         listenerInstanceGetter = if (isStatic) {
             ::nullInstanceGetter
         } else {
-            { dependBeanFactory[type] }
+            { dependBeanFactory[instanceName] }
         }
 
         // 监听类型列表

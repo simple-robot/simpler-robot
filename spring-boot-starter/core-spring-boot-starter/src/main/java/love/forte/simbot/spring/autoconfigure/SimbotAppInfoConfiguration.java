@@ -33,51 +33,45 @@ import org.springframework.context.annotation.Import;
 @Import({SimbotAppConfiguration.class})
 public class SimbotAppInfoConfiguration {
 
-    private final SimbotContext simbotContext;
-
-    public SimbotAppInfoConfiguration(SimbotContext simbotContext) {
-        this.simbotContext = simbotContext;
-    }
-
 
     @Bean("simbotBotManager")
-    public BotManager botManager(){
+    public BotManager botManager(SimbotContext simbotContext){
         return simbotContext.getBotManager();
     }
 
 
     @Bean("simbotSimbotEnvironment")
-    public SimbotEnvironment simbotEnvironment(){
+    public SimbotEnvironment simbotEnvironment(SimbotContext simbotContext){
         return simbotContext.getEnvironment();
     }
 
     @Bean("simbotResourceEnvironment")
-    public SimbotResourceEnvironment resourceEnvironment(){
+    public SimbotResourceEnvironment resourceEnvironment(SimbotContext simbotContext){
         return simbotContext.getEnvironment().getResourceEnvironment();
     }
 
     @Bean("simbotArgsEnvironment")
-    public SimbotArgsEnvironment argsEnvironment(){
+    public SimbotArgsEnvironment argsEnvironment(SimbotContext simbotContext){
         return simbotContext.getEnvironment().getArgsEnvironment();
     }
 
     @Bean("simbotPackageScanEnvironment")
-    public SimbotPackageScanEnvironment packageScanEnvironment(){
+    public SimbotPackageScanEnvironment packageScanEnvironment(SimbotContext simbotContext){
         return simbotContext.getEnvironment().getPackageScanEnvironment();
     }
 
     @Bean("simbotMsgGetProcessor")
-    public MsgGetProcessor msgGetProcessor(){
+    public MsgGetProcessor msgGetProcessor(SimbotContext simbotContext){
         return simbotContext.getMsgProcessor();
     }
 
     @Bean("simbotConfiguration")
-    public love.forte.common.configuration.Configuration configuration(){
+    public love.forte.common.configuration.Configuration configuration(SimbotContext simbotContext){
         return simbotContext.getConfiguration();
     }
 
     @Bean("simbotMessageContentBuilderFactory")
-    public MessageContentBuilderFactory messageContentBuilderFactory(){
+    public MessageContentBuilderFactory messageContentBuilderFactory(SimbotContext simbotContext){
         return simbotContext.get(MessageContentBuilderFactory.class);
     }
 

@@ -29,6 +29,10 @@ import love.forte.simbot.listener.ListenerResultFactory
 import love.forte.simbot.listener.PostListenerRegistrar
 
 
+private data class BeanNameType<T>(val name: String, val type: Class<T>)
+
+
+
 @Beans("coreMethodPostListenerRegistrar")
 public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
     private companion object : TypedCompLogger(CoreMethodPostListenerRegistrar::class.java)
@@ -65,7 +69,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
 
         allBeans.asSequence().mapNotNull { beanName ->
             runCatching {
-                dependBeanFactory.getType(beanName)
+                BeanNameType(beanName, dependBeanFactory.getType(beanName))
             }.getOrElse { e ->
                 logger.warn("Can not get type from depend '{}'. This may be an environmental issue or a class loader issue.",
                     beanName)
@@ -73,14 +77,14 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                 logger.debug("Get type from depend '$beanName' failed.", e)
                 null
             }
-        }.distinct().flatMap { type ->
+        }.distinct().flatMap { (name, type) ->
             // 只获取public方法
             type.methods.asSequence().filter { m ->
                 AnnotationUtil.containsAnnotation(m.declaringClass, Listens::class.java) ||
                         (!AnnotationUtil.containsAnnotation(m, Ignore::class.java) &&
                                 AnnotationUtil.containsAnnotation(m, Listens::class.java))
             }.map {
-                MethodListenerFunction(it, type, dependBeanFactory, filterManager, converterManager, listenerResultFactory)
+                MethodListenerFunction(it, name, type, dependBeanFactory, filterManager, converterManager, listenerResultFactory)
             }
         }.forEach {
             registrar.register(it)
