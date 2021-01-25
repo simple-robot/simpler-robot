@@ -6,6 +6,7 @@
         <groupId>love.forte.simple-robot</groupId>
         <artifactId>component-parent</artifactId>
         <version>${simbot.project.version}</version><!--v-->
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

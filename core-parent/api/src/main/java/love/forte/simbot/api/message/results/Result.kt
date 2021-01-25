@@ -45,13 +45,6 @@ public interface MultipleResults<T: Result>: Result, Iterable<T> {
     val results: List<T>
 
     /**
-     * 得到 [results] 的长度。
-     */
-    @JvmDefault
-    @get:Deprecated("Just use 'size()'.", ReplaceWith("size()"), level = DeprecationLevel.HIDDEN)
-    val size: Int get() = size()
-
-    /**
      * 习惯用法, 得到 [results] 的长度。
      */
     @JvmDefault
@@ -81,5 +74,6 @@ public interface MultipleResults<T: Result>: Result, Iterable<T> {
 
 /**
  * [MultipleResults].[size][MultipleResults.size].
+ * @since 2.0.0
  */
-public val <T : Result> MultipleResults<T>.size: Int get() = results.size
+public inline val <T : Result> MultipleResults<T>.size: Int get() = results.size

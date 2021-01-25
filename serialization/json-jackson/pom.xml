@@ -6,6 +6,7 @@
         <artifactId>serialization-parent</artifactId>
         <groupId>love.forte.simple-robot.serialization</groupId>
         <version>${simbot.project.version}</version><!--v-->
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
