@@ -152,17 +152,14 @@ public class SpringDependBeanFactory implements DependBeanFactory {
             }
 
             // see AopUtils#isAopProxy
-            boolean isProxy = (Proxy.isProxyClass(type) && SpringProxy.class.isAssignableFrom(type)) ||
-                    (type.getName().contains(ClassUtils.CGLIB_CLASS_SEPARATOR));
+            boolean isProxy = (SpringProxy.class.isAssignableFrom(type) && Proxy.isProxyClass(type)) ||
+                        (type.getName().contains(ClassUtils.CGLIB_CLASS_SEPARATOR));
+                if (isProxy) {
+                    // is proxy.
+                    type = AopUtils.getTargetClass(beanFactory.getBean(name));
+                }
 
-            if (isProxy) {
-                // is proxy.
-                type = AopUtils.getTargetClass(beanFactory.getBean(name));
-            }
 
-            if (name.equals("testListener")) {
-                System.out.println(name + "(2): " + type);
-            }
 
             return type;
         } catch (NoSuchBeanDefinitionException e) {
