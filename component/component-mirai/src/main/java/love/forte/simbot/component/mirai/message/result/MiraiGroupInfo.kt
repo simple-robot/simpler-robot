@@ -48,7 +48,7 @@ public class MiraiGroupFullInfo(group: Group) : GroupInfo by MiraiGroupInfo(grou
     override val maximum: Int = -1
 
     /** 群人数。 */
-    override val total: Int = group.members.size
+    override val total: Int = group.members.size + 1
 
     @Deprecated("无法获取建群时间。")
     override val createTime: Long = -1
