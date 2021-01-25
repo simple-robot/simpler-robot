@@ -44,10 +44,16 @@ public class MiraiGroupMemberInfo(member: Member) :
 /**
  * 将一个 member 作为 管理员。
  */
-public class MiraiGroupAdminInfo(member: Member) : GroupAdmin, GroupAccountInfo by MiraiMemberAccountInfo(member)
+public class MiraiGroupAdminInfo(member: Member) : GroupAdmin, GroupAccountInfo by MiraiMemberAccountInfo(member) {
+    private val str = "GroupAdmin(group=${member.group}, admin=$member)"
+    override fun toString(): String = str
+}
 
 
 /**
  * 将一个 member 作为 群主。
  */
-public class MiraiGroupOwnerInfo(member: Member) : GroupOwner, GroupAccountInfo by MiraiMemberAccountInfo(member)
+public class MiraiGroupOwnerInfo(member: Member) : GroupOwner, GroupAccountInfo by MiraiMemberAccountInfo(member) {
+    private val str = "GroupOwner(group=${member.group}, owner=$member)"
+    override fun toString(): String = str
+}
