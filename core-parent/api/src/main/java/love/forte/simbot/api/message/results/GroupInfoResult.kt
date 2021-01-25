@@ -106,9 +106,7 @@ public interface GroupAdmin : GroupAccountInfo, PermissionContainer {
 /**
  * 通过一个 [AccountContainer] 来构建 [GroupAdmin] 实例
  */
-public data class GroupAdminImpl(private val account: GroupAccountInfo) : GroupAdmin, GroupAccountInfo by account {
-
-}
+public data class GroupAdminImpl(private val account: GroupAccountInfo) : GroupAdmin, GroupAccountInfo by account
 
 
 /**
