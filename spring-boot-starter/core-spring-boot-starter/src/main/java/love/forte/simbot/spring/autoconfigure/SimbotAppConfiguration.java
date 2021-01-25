@@ -18,7 +18,6 @@ import cn.hutool.core.convert.ConverterRegistry;
 import love.forte.common.utils.convert.ConverterManager;
 import love.forte.common.utils.convert.HutoolConverterManagerImpl;
 import love.forte.simbot.annotation.SimbotApplication;
-import love.forte.simbot.annotation.SimbotResource;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import org.springframework.boot.ApplicationArguments;
@@ -37,7 +36,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
         SpringDependBeanFactory.class
 })
 @SimbotApplication({
-        @SimbotResource(value = "def-empty.properties", orIgnore = true)
+        // @SimbotResource(value = "def-empty.properties", orIgnore = true)
 })
 public class SimbotAppConfiguration {
 

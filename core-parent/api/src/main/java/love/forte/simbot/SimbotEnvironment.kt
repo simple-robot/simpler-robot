@@ -12,8 +12,10 @@
  *
  */
 @file:JvmName("SimbotEnvironments")
+
 package love.forte.simbot
 
+import love.forte.simbot.SimbotArgsEnvironment.PRE.PREFIX
 import love.forte.simbot.annotation.SimbotResource
 
 
@@ -31,7 +33,7 @@ public data class SimbotResourceData(
     val resource: String,
     val type: String,
     val orIgnore: Boolean,
-    val commands: List<String>
+    val commands: List<String>,
 )
 
 
@@ -75,30 +77,37 @@ public data class SimbotResourceEnvironmentImpl(override val resourceDataList: L
 
 /**
  *  SimbotArgsEnvironment. 启动参数内容。
+ *  simbot下的启动参数内容只会获取前缀为 [`--S`][PREFIX] 的参数，比如说 `--Sdev`(得到 `dev`)、`--Sexample.test=abc`(得到`example.test`)
  */
 public interface SimbotArgsEnvironment {
+    /**
+     * 获取启动参数列表。其中， `--S`的前缀已经被移除。
+     */
     val args: Array<String>
+
+    /**
+     * 判断是否存在某个启动参数。不需要携带 `--S` 前缀。
+     */
+    fun contains(arg: String): Boolean
+
+    companion object PRE {
+        const val PREFIX = "--S"
+    }
 }
 
 /**
  * [SimbotArgsEnvironment] 默认实现。
  */
-public data class SimbotArgsEnvironmentImpl(override val args: Array<String>) :
-    SimbotArgsEnvironment {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as SimbotArgsEnvironmentImpl
-
-        if (!args.contentEquals(other.args)) return false
-
-        return true
+public class SimbotArgsEnvironmentImpl(args: Array<String>) : SimbotArgsEnvironment {
+    private val simbotArgs: List<String> = args.mapNotNull { arg ->
+        arg.takeIf { it.startsWith(PREFIX) }?.substring(PREFIX.length)
     }
 
-    override fun hashCode(): Int {
-        return args.contentHashCode()
-    }
+    override val args: Array<String>
+        get() = simbotArgs.toTypedArray()
+
+
+    override fun contains(arg: String): Boolean = simbotArgs.contains(arg)
 }
 
 
@@ -147,5 +156,5 @@ public interface SimbotEnvironment {
 public data class CoreSimbotEnvironment(
     override val resourceEnvironment: SimbotResourceEnvironment,
     override val argsEnvironment: SimbotArgsEnvironment,
-    override val packageScanEnvironment: SimbotPackageScanEnvironment
+    override val packageScanEnvironment: SimbotPackageScanEnvironment,
 ) : SimbotEnvironment

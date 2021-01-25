@@ -276,9 +276,12 @@ public data class MiraiSingleAtMessageContent(private val code: Long) : MiraiMes
  * mirai 的 image content，代表为通过本地上传的图片信息。
  * 此实现中，image仅会被实例化一次，而后则会被缓存。
  */
-public class MiraiImageMessageContent(
+public class MiraiImageMessageContent
+constructor(
     private val flash: Boolean = false,
     override val neko: Neko,
+    /** 是否优先上传到某个群。 */
+    private val groupFirst: Boolean = false,
     private val imageFunction: suspend (Contact) -> Image,
 ) : MiraiMessageContent(), NekoAble {
 

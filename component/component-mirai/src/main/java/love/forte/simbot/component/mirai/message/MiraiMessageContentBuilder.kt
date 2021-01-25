@@ -22,6 +22,9 @@ import love.forte.simbot.api.message.MessageContentBuilder
 import love.forte.simbot.api.message.MessageContentBuilderFactory
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.component.mirai.utils.toStream
+import net.mamoe.mirai.Bot
+import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.AtAll
 import net.mamoe.mirai.message.data.Face
 import net.mamoe.mirai.message.data.PlainText
@@ -34,22 +37,37 @@ import java.io.InputStream
 /**
  * [MiraiMessageContentBuilder]'s factory.
  */
-public object MiraiMessageContentBuilderFactory : MessageContentBuilderFactory {
-    override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilder()
-}
+public sealed class MiraiMessageContentBuilderFactory : MessageContentBuilderFactory {
 
+    /** 普通的图片上传策略。 */
+    internal object MiraiMessageContentBuilderFactoryImgNormal : MiraiMessageContentBuilderFactory() {
+        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgNormal()
+    }
+
+    /** 优先尝试通过一个任意的群进行上传的图片上传策略。 */
+    internal object MiraiMessageContentBuilderFactoryImgGroupFirst : MiraiMessageContentBuilderFactory() {
+        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgGroupFirst()
+    }
+
+    companion object {
+        fun instance(imgGroupFirst: Boolean): MiraiMessageContentBuilderFactory {
+            return if (imgGroupFirst) {
+                MiraiMessageContentBuilderFactoryImgGroupFirst
+            } else {
+                MiraiMessageContentBuilderFactoryImgNormal
+            }
+        }
+    }
+}
 
 
 /**
  * mirai对 [MessageContentBuilder] 的实现。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class MiraiMessageContentBuilder : MessageContentBuilder {
-
-    private var texts = StringBuilder()
-
+public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
+    private val texts = StringBuilder()
     private val contentList = mutableListOf<MiraiMessageContent>()
-
     private fun checkText() {
         if (texts.isNotEmpty()) {
             contentList.add(MiraiSingleMessageContent(PlainText(texts.toString())))
@@ -78,7 +96,6 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
     override fun at(code: Long): MessageContentBuilder = at0(code)
     override fun at(code: AccountCodeContainer): MessageContentBuilder = at(code.accountCodeNumber)
 
-
     private fun face0(id: Int): MiraiMessageContentBuilder {
         checkText()
         contentList.add(MiraiSingleMessageContent(Face(id)))
@@ -88,8 +105,7 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
     override fun face(id: String): MessageContentBuilder = face0(id.toInt())
     override fun face(id: Int): MessageContentBuilder = face0(id)
 
-
-    override fun imageLocal(path: String, flash: Boolean): MiraiMessageContentBuilder {
+    override fun imageLocal(path: String, flash: Boolean): MessageContentBuilder {
         val file: File = FileUtil.file(path)?.takeIf { it.exists() } ?: throw FileNotFoundException(path)
         val imageNeko: Neko = CatCodeUtil
             .getNekoBuilder("image", true)
@@ -100,14 +116,16 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
                     key("flash").value(true)
                 }
             }.build()
-        val imageContent = MiraiImageMessageContent(flash, imageNeko) { file.uploadAsImage(it) }
+        val imageContent = imageLocal0(file, imageNeko, flash)
         checkText()
         contentList.add(imageContent)
         return this
     }
 
-    override fun imageUrl(url: String, flash: Boolean): MiraiMessageContentBuilder {
-        val u = Url(url)
+    abstract fun imageLocal0(file: File, imageNeko: Neko, flash: Boolean): MiraiMessageContent
+
+
+    override fun imageUrl(url: String, flash: Boolean): MessageContentBuilder {
         val imageNeko: Neko = CatCodeUtil
             .getNekoBuilder("image", true)
             .key("file").value(url)
@@ -117,32 +135,34 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
                     key("flash").value(true)
                 }
             }.build()
-        MiraiImageMessageContent(flash, imageNeko) { contact ->
-            u.toStream().use { stream -> stream.uploadAsImage(contact) }
-        }.apply {
+        imageUrl0(url, imageNeko, flash).apply {
             checkText()
             contentList.add(this)
         }
         return this
     }
 
+    abstract fun imageUrl0(url: String, imageNeko: Neko, flash: Boolean): MiraiMessageContent
+
+
     override fun image(input: InputStream, flash: Boolean): MiraiMessageContentBuilder {
-        val imageNeko = CatCodeUtil
+        val imageNeko: Neko = CatCodeUtil
             .getNekoBuilder("image", true)
             .key("type").value("stream")
             .apply {
                 if (flash) {
-                   key("flash").value(true)
+                    key("flash").value(true)
                 }
             }.build()
-        MiraiImageMessageContent(flash, imageNeko){ contact ->
-            input.use { inp -> inp.uploadAsImage(contact) }
-        }.apply {
+        image0(input, imageNeko, flash).apply {
             checkText()
             contentList.add(this)
         }
         return this
     }
+
+    abstract fun image0(input: InputStream, imageNeko: Neko, flash: Boolean): MiraiMessageContent
+
 
     override fun image(imgData: ByteArray, flash: Boolean): MiraiMessageContentBuilder {
         val input = ByteArrayInputStream(imgData)
@@ -152,5 +172,72 @@ public class MiraiMessageContentBuilder : MessageContentBuilder {
     override fun build(): MiraiMessageContent {
         checkText()
         return MiraiListMessageContent(contentList.toList())
+    }
+}
+
+
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun Contact.findAnyGroup(): Group? {
+    return bot.groups.firstOrNull()
+        ?: Bot.instancesSequence.flatMap { b -> b.groups }.firstOrNull()
+}
+
+/**
+ * [MiraiMessageContentBuilder] 实现。
+ * @author ForteScarlet -> https://github.com/ForteScarlet
+ */
+internal class MiraiMessageContentBuilderImgGroupFirst : MiraiMessageContentBuilder() {
+
+    override fun imageLocal0(file: File, imageNeko: Neko, flash: Boolean): MiraiImageMessageContent {
+        return MiraiImageMessageContent(flash, imageNeko) { contact ->
+            // try get group first.
+            contact.findAnyGroup()?.let { group ->
+                file.uploadAsImage(group)
+            } ?: file.uploadAsImage(contact)
+        }
+    }
+
+    override fun imageUrl0(url: String, imageNeko: Neko, flash: Boolean): MiraiMessageContent {
+        return MiraiImageMessageContent(flash, imageNeko) { contact ->
+            Url(url).toStream().use { stream ->
+                contact.findAnyGroup()?.let { group ->
+                    stream.uploadAsImage(group)
+                } ?: stream.uploadAsImage(contact)
+            }
+
+        }
+    }
+
+    override fun image0(input: InputStream, imageNeko: Neko, flash: Boolean): MiraiMessageContent {
+        return MiraiImageMessageContent(flash, imageNeko) { contact ->
+            input.use { inp ->
+                contact.findAnyGroup()?.let { group ->
+                    inp.uploadAsImage(group)
+                } ?: inp.uploadAsImage(contact)
+            }
+        }
+    }
+}
+
+
+/**
+ * [MiraiMessageContentBuilder] 实现。其中，对于图片的上传为正常的上传模式，即当前为好友就使用好友上传，是群就使用群上传。
+ * @author ForteScarlet -> https://github.com/ForteScarlet
+ */
+internal class MiraiMessageContentBuilderImgNormal : MiraiMessageContentBuilder() {
+    override fun imageLocal0(file: File, imageNeko: Neko, flash: Boolean): MiraiImageMessageContent {
+        return MiraiImageMessageContent(flash, imageNeko) { file.uploadAsImage(it) }
+    }
+
+    override fun imageUrl0(url: String, imageNeko: Neko, flash: Boolean): MiraiMessageContent {
+        return MiraiImageMessageContent(flash, imageNeko) { contact ->
+            Url(url).toStream().use { stream -> stream.uploadAsImage(contact) }
+        }
+    }
+
+    override fun image0(input: InputStream, imageNeko: Neko, flash: Boolean): MiraiMessageContent {
+        return MiraiImageMessageContent(flash, imageNeko) { contact ->
+            input.use { inp -> inp.uploadAsImage(contact) }
+        }
     }
 }
