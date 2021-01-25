@@ -5,7 +5,7 @@
     <parent>
         <artifactId>http-parent</artifactId>
         <groupId>love.forte.simple-robot.http</groupId>
-        <version>${simbot.project.version}</version><!--v-->
+        <version>2.0.0-SNAPSHOT</version><!--v-->
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
