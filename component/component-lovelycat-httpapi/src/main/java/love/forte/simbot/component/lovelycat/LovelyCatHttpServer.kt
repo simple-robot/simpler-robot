@@ -133,14 +133,14 @@ public class LovelyCatKtorHttpServer(
 
                         if (eventType == null) {
                             // 404. no event.
-                            call.respond(HttpStatusCode.NotFound) { "param 'Event' not found: Event is Empty." }
+                            call.respond(HttpStatusCode.NotFound) { "Param 'Event' not found: Event is Empty." }
                         } else {
 
                             val botId = (params["robot_wxid"] ?: params["rob_wxid"])?.toString()
-                                ?: throw NoSuchBotException("no param 'robot_wxid' or 'rob_wxid' in lovelycat request param.")
+                                ?: throw NoSuchBotException("No param 'robot_wxid' or 'rob_wxid' in lovelycat request param.")
 
                             val api = apiManager[botId]
-                                ?: throw IllegalStateException("cannot found Bot($botId)'s api template.")
+                                ?: throw IllegalStateException("Cannot found Bot($botId)'s api template.")
 
                             try {
                                 // val parse =
@@ -188,7 +188,7 @@ public class LovelyCatKtorHttpServer(
 
                 get("/simbot/lovelyCat") {
                     call.respondText(htmlContentType) {
-                        "<h2>lovely cat server enabled!</h2> "
+                        "<h2>Lovely cat server enabled!</h2> "
                     }
 
                 }
