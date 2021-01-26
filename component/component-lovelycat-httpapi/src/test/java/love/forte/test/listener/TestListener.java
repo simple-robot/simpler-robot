@@ -17,6 +17,7 @@ package love.forte.test.listener;
 import love.forte.common.ioc.annotation.Beans;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.annotation.OnPrivate;
+import love.forte.simbot.api.message.Reply;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.message.events.PrivateMsg;
 import love.forte.simbot.api.sender.MsgSender;
@@ -29,14 +30,14 @@ public class TestListener {
 
     @OnGroup
     public Object groupMsg(GroupMsg msg, MsgSender sender) {
-        System.out.println(msg.getGroupInfo());
-        return msg.getMsgContent();
+        // sender.SENDER.sendGroupMsg("");
+        return Reply.reply(msg.getMsgContent(), true);
+        // return msg.getMsgContent();
     }
 
     @OnPrivate
     public Object privateMsg(PrivateMsg msg, MsgSender sender) {
-
-        return msg.getMsgContent();
+        return Reply.reply(msg.getMsgContent(), true);
     }
 
 }

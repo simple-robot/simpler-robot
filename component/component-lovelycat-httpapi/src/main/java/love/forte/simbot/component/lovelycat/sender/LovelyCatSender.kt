@@ -46,7 +46,6 @@ public class LovelyCatSender(
      * 通过携带 catCode 的文本消息进行发送消息发送。
      */
     private fun sendMsg(target: String, msg: String) {
-
             val needAtCode: MutableList<String> = mutableListOf()
             var atAll = false
 

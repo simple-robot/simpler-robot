@@ -45,7 +45,7 @@ public class CoreBotRegistrar {
      */
     @PostPass
     public fun registerBots(){
-        if(bots.isEmpty()) {
+        if(bots.isEmpty() && botManager.bots.isEmpty()) {
             logger.warn("No bot information is configured.")
         } else {
             bots.asSequence().distinct().forEach {

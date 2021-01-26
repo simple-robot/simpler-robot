@@ -76,6 +76,10 @@ public class CoreBotManager(
         get() = botsMap.values.toMutableList()
 
 
+    override fun isEmpty(): Boolean {
+        return botsMap.isEmpty()
+    }
+
     /**
      * 验证或登录一个bot。
      * @throws BotVerifyException 验证失败则会抛出此异常。

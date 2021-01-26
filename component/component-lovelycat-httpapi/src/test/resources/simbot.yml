@@ -3,6 +3,11 @@ simbot:
         bots: wxid_bqy1ezxxkdat22:http://127.0.0.1:88/httpAPI
     component:
         lovelycat:
+            bot:
+                autoConfig:
+                    enable: true
+                    paths:
+                        - http://127.0.0.1:88/httpAPI
             api:
                 cache:
                     duration: 30

@@ -44,9 +44,9 @@ public class LovelyCatMessageContentBuilder : MessageContentBuilder {
         }
         return _sb
     }
-    private val sbOrEmpty: String
+    private val sbOrSpace: String
     get() = if (!::_sb.isInitialized) {
-        ""
+        " "
     } else {
         _sb.toString()
     }
@@ -135,7 +135,7 @@ public class LovelyCatMessageContentBuilder : MessageContentBuilder {
     override fun build(): MessageContent {
         // println(atOrEmpty)
         return LovelyCatForSendMessageContent(
-            sbOrEmpty,
+            sbOrSpace,
             imgOrEmpty,
             atOrEmpty,
             atAll

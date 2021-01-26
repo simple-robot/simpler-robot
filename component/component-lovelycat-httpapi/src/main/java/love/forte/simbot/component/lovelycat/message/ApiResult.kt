@@ -215,7 +215,6 @@ public data class CatGroupMemberInfo(
 ) : GroupAccountInfo, BotCodeContainer {
     /**
      * 昵称。
-     * 可能会出现为null的情况，但是一般情况下不会。
      */
     override val accountNickname: String
         get() = name

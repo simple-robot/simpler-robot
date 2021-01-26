@@ -603,7 +603,10 @@ constructor(
         memberName: String?,
         msg: String,
     ): LovelyCatApiResult {
-        return post(SendGroupMsgAndAtRequestData(robotWxid, groupWxid, memberWxid, memberName, msg))
+        val atMemberName: String = memberName
+            ?: getGroupMemberDetailInfo(robotWxid, groupWxid, memberWxid).name
+
+        return post(SendGroupMsgAndAtRequestData(robotWxid, groupWxid, memberWxid, atMemberName, msg))
     }
 
     private data class SendGroupMsgAndAtRequestData(

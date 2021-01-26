@@ -82,6 +82,12 @@ public interface BotManager : BotRegistrar, BotDestroyer {
      *
      */
     val bots: List<Bot>
+
+    /**
+     * 判断是否为空。
+     */
+    fun isEmpty(): Boolean = bots.isEmpty()
+
 }
 
 
