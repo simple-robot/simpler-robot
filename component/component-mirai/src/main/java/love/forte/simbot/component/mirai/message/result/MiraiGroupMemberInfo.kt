@@ -38,6 +38,12 @@ public class MiraiGroupMemberInfo(member: Member) :
      */
     val joinTime = if (member is NormalMember) member.joinTimestamp.secondToMill() else -1
 
+    /**
+     * 最后发言时间。
+     */
+    val lastSpeakTime = if (member is NormalMember) member.lastSpeakTimestamp.secondToMill() else -1
+
+
     override val originalData: String = member.toString()
 
     override fun toString(): String = "MiraiGroupMemberInfo(original=$originalData)"
