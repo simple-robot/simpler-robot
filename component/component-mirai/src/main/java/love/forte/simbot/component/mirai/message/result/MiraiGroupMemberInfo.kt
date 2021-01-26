@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.mirai.message.result
 
+import love.forte.common.utils.secondToMill
 import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
@@ -23,6 +24,7 @@ import love.forte.simbot.api.message.results.GroupOwner
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
 import love.forte.simbot.component.mirai.message.toSimbotPermissions
 import net.mamoe.mirai.contact.Member
+import net.mamoe.mirai.contact.NormalMember
 
 /**
  * mirai 的 [GroupMemberInfo] 实现。
@@ -31,8 +33,13 @@ public class MiraiGroupMemberInfo(member: Member) :
     GroupMemberInfo,
     GroupAccountInfo by MiraiMemberAccountInfo(member) {
 
+    /**
+     * 入群时间。
+     */
+    val joinTime = if (member is NormalMember) member.joinTimestamp.secondToMill() else -1
 
     override val originalData: String = member.toString()
+
     override fun toString(): String = "MiraiGroupMemberInfo(original=$originalData)"
 
     override val groupInfo: GroupInfo = MiraiGroupInfo(member.group)
