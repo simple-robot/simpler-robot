@@ -21,8 +21,10 @@ import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.containers.simpleGroupInfo
 import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequestInvitor
+import love.forte.simbot.api.message.events.asInvitor
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
 import love.forte.simbot.component.mirai.message.result.MiraiGroupInfo
+import love.forte.simbot.component.mirai.message.result.MiraiGroupMemberInfo
 import love.forte.simbot.component.mirai.utils.groupAvatar
 import love.forte.simbot.component.mirai.utils.userAvatar
 import net.mamoe.mirai.contact.Friend
@@ -48,11 +50,15 @@ public class MiraiGroupMemberJoinRequest(event: MemberJoinRequestEvent) :
 
     override val text: String = event.message //.takeIf { it.isNotBlank() }
 
-    /** 无法确认邀请者。 */
-    override val invitor: GroupAddRequestInvitor? = null
+    /**
+     * 可能获取邀请者。
+     */
+    override val invitor: GroupAddRequestInvitor? = event.invitor?.let { MiraiGroupMemberInfo(it) }?.asInvitor()
 
-    /** 无法区分是否为被邀请，因此默认认为是主动入群的。 */
-    override val requestType: GroupAddRequest.Type = GroupAddRequest.Type.PROACTIVE
+    /**
+     * 存在邀请者即为被邀请，否则为主动入群。
+     */
+    override val requestType: GroupAddRequest.Type = if (event.invitor == null) GroupAddRequest.Type.PROACTIVE else GroupAddRequest.Type.PASSIVE
 
     /** 标识。 */
     override val flag: Flag<MiraiGroupMemberJoinRequestFlagContent> = flag { MiraiGroupMemberJoinRequestFlagContent(event) }
