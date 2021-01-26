@@ -55,6 +55,7 @@ public class QuickReplyProcessor(private val messageContentBuilderFactory: Messa
         val setter = listenerFunctionInvokeData.msgSender.SETTER
 
         val result = processContext.listenResult.result
+
         if (result == null || result == ReplyAble.Empty) {
             return false
         }

@@ -28,15 +28,17 @@ import love.forte.simbot.api.sender.MsgSender;
 public class TestListener {
 
     @OnGroup
-    public void groupMsg(GroupMsg msg, MsgSender sender) {
+    public Object groupMsg(GroupMsg msg, MsgSender sender) {
         System.out.println("On msg: " + msg.getText());
-        sender.SENDER.sendGroupMsg(msg, msg.getMsgContent());
+        // sender.SENDER.sendGroupMsg(msg, msg.getMsgContent());
+        return msg.getMsgContent();
     }
 
     @OnPrivate
-    public void privateMsg(PrivateMsg msg, MsgSender sender) {
+    public Object privateMsg(PrivateMsg msg, MsgSender sender) {
         System.out.println("On msg: " + msg.getText());
-        sender.SENDER.sendPrivateMsg(msg, msg.getMsgContent());
+        return msg.getMsgContent();
+        // sender.SENDER.sendPrivateMsg(msg, msg.getMsgContent());
     }
 
 }

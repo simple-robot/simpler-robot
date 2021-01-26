@@ -246,10 +246,10 @@ public class CoreListenerManager(
                     (if (func is LogAble) func.log else logger).error("Listener '${func.name}' execution exception: $funcRunEx",
                         funcRunEx)
                     ListenResult
-                }.also {
-                    if (finalResult != ListenResult) {
+                }.also { result ->
+                    if (result != ListenResult) {
                         invokeData?.run {
-                            resultProcessorManager.processor(context(finalResult, this))
+                            resultProcessorManager.processor(context(result, this))
                         }
                     }
                 }
