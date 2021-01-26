@@ -19,11 +19,13 @@ package love.forte.simbot.component.lovelycat.sender
 import love.forte.common.utils.Carrier
 import love.forte.common.utils.toCarrier
 import love.forte.simbot.api.message.assists.Flag
+import love.forte.simbot.api.message.containers.GroupCodeContainer
 import love.forte.simbot.api.message.events.FriendAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
+import love.forte.simbot.component.lovelycat.message.event.GROUP_SUFFIX
 import java.util.concurrent.TimeUnit
 
 
@@ -63,13 +65,21 @@ public class LovelyCatSetter(
         return def.setGroupAnonymous(group, agree)
     }
 
+    override fun setGroupAnonymous(group: Long, agree: Boolean): Carrier<Boolean> =
+        setGroupAnonymous("$group$GROUP_SUFFIX", agree)
+
     override fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean> {
         return def.setGroupBan(groupCode, memberCode, time, timeUnit)
     }
 
+
     override fun setGroupWholeBan(groupCode: String, ban: Boolean): Carrier<Boolean> {
         return def.setGroupWholeBan(groupCode, ban)
     }
+
+    override fun setGroupWholeBan(groupCode: Long, ban: Boolean): Carrier<Boolean> =
+        setGroupWholeBan("$groupCode$GROUP_SUFFIX", ban)
+
 
     override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> {
         return def.setGroupRemark(groupCode, memberCode, remark)
@@ -80,6 +90,10 @@ public class LovelyCatSetter(
         // check success?
         return true.toCarrier()
     }
+
+    override fun setGroupQuit(group: GroupCodeContainer, forcibly: Boolean): Carrier<Boolean> =
+        setGroupQuit("$group$GROUP_SUFFIX", forcibly)
+
 
     override fun setGroupMemberKick(
         groupCode: String,
@@ -104,6 +118,10 @@ public class LovelyCatSetter(
         api.modifyGroupName(botId, groupCode, name)
         return name.toCarrier()
     }
+
+    override fun setGroupName(groupCode: Long, name: String): Carrier<String> =
+        setGroupName("$groupCode$GROUP_SUFFIX", name)
+
 
     /**
      * 删除好友

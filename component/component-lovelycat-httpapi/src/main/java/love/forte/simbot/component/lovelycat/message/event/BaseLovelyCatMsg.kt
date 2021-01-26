@@ -211,6 +211,10 @@ public fun lovelyCatGroupInfo(
 ): GroupInfo = LovelyCatGroupInfo(groupCode, groupName, groupAvatar)
 
 
+
+public const val GROUP_SUFFIX = "@chatroom"
+
+
 /**
  * simple data class instance for [GroupInfo].
  */
@@ -218,7 +222,11 @@ private data class LovelyCatGroupInfo(
     override val groupCode: String,
     override val groupName: String?,
     override val groupAvatar: String?
-) : GroupInfo
+) : GroupInfo {
+    override val groupCodeNumber: Long
+    // xxxxxxx@chatroom
+        get() = groupCode.substring(0, groupCode.length - GROUP_SUFFIX.length).toLong()
+}
 
 
 /**

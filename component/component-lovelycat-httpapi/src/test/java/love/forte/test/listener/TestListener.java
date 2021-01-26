@@ -29,16 +29,14 @@ public class TestListener {
 
     @OnGroup
     public Object groupMsg(GroupMsg msg, MsgSender sender) {
-        System.out.println("On msg: " + msg.getText());
-        // sender.SENDER.sendGroupMsg(msg, msg.getMsgContent());
+        System.out.println(msg.getGroupInfo());
         return msg.getMsgContent();
     }
 
     @OnPrivate
     public Object privateMsg(PrivateMsg msg, MsgSender sender) {
-        System.out.println("On msg: " + msg.getText());
+
         return msg.getMsgContent();
-        // sender.SENDER.sendPrivateMsg(msg, msg.getMsgContent());
     }
 
 }

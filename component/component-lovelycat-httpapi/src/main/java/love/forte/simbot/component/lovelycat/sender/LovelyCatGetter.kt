@@ -21,6 +21,7 @@ import love.forte.simbot.api.message.results.*
 import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.component.lovelycat.message.CatGroupInfo
+import love.forte.simbot.component.lovelycat.message.event.GROUP_SUFFIX
 import love.forte.simbot.component.lovelycat.message.event.lovelyCatBotInfo
 import love.forte.simbot.component.lovelycat.message.result.*
 
@@ -54,6 +55,7 @@ public class LovelyCatGetter(
         return friendList.find { it.wxid == code } ?: throw NoSuchElementException("friend: $code")
     }
 
+
     /**
      * 获取一个群友信息。
      */
@@ -71,6 +73,9 @@ public class LovelyCatGetter(
         val memberSize = api.getGroupMemberList(botId, group, true).size
         return LovelyCatGroupFullInfo(groupInfo.toString(), groupInfo, memberSize)
     }
+
+    override fun getGroupInfo(group: Long): GroupFullInfo = getGroupInfo("$group$GROUP_SUFFIX")
+
 
     /**
      * 获取好友列表
@@ -108,17 +113,31 @@ public class LovelyCatGetter(
         return LovelyCatGroupMemberList(groupInfo, memberList)
     }
 
+    override fun getGroupMemberList(group: Long, cache: Boolean, limit: Int): GroupMemberList =
+        getGroupMemberList("$group$GROUP_SUFFIX", cache, limit)
+
     /**
      * 无法获取禁言列表。
      */
     @Deprecated("Unable to get banned list.")
     override fun getBanList(group: String, cache: Boolean, limit: Int) = def.getBanList(group, cache, limit)
 
+    @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
+    @Deprecated("Unable to get banned list.")
+    override fun getBanList(group: Long, cache: Boolean, limit: Int): BanList =
+        getBanList("$group$GROUP_SUFFIX", cache, limit)
+
+
     /**
      * 无法获取群公告。
      */
     @Deprecated("Unable to get the group note list.")
     override fun getGroupNoteList(group: String, cache: Boolean, limit: Int) = def.getGroupNoteList(group, cache, limit)
+
+    @Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
+    @Deprecated("Unable to get the group note list.")
+    override fun getGroupNoteList(group: Long, cache: Boolean, limit: Int): GroupNoteList =
+        getGroupNoteList("$group$GROUP_SUFFIX", cache, limit)
 
 
 
@@ -131,29 +150,6 @@ public class LovelyCatGetter(
 }
 
 
-
-
-
-//
-// /**
-//  * empty [BanList].
-//  */
-// private object EmptyBanList : BanList {
-//     override val originalData: String
-//         get() = "EmptyBanList([])"
-//
-//     override val results: List<BanInfo>
-//         get() = emptyList()
-// }
-//
-//
-// private object EmptyGroupNoteList : GroupNoteList {
-//     override val originalData: String
-//         get() = "EmptyGroupNoteList([])"
-//
-//     override val results: List<GroupNote>
-//         get() = emptyList()
-// }
 
 
 

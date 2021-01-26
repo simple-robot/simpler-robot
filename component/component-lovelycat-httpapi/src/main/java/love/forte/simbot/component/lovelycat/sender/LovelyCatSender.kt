@@ -27,6 +27,7 @@ import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.api.sender.Sender
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.component.lovelycat.message.LovelyCatForSendMessageContent
+import love.forte.simbot.component.lovelycat.message.event.GROUP_SUFFIX
 
 
 private object Empty
@@ -269,6 +270,10 @@ public class LovelyCatSender(
         return Carrier.empty()
     }
 
+    override fun sendGroupMsg(group: Long, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
+        sendGroupMsg("$group$GROUP_SUFFIX", msg)
+
+
     /**
      * 发送一条群消息。回执必然为空。
      *
@@ -277,6 +282,10 @@ public class LovelyCatSender(
         sendMsg(group, msg)
         return Carrier.empty()
     }
+
+    override fun sendGroupMsg(group: Long, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
+        sendGroupMsg("$group$GROUP_SUFFIX", msg)
+
 
 
 
@@ -336,6 +345,18 @@ public class LovelyCatSender(
         } ?: Carrier.get(false)
     }
 
+    override fun sendGroupNotice(
+        group: Long,
+        title: String?,
+        text: String?,
+        popUp: Boolean,
+        top: Boolean,
+        toNewMember: Boolean,
+        confirm: Boolean
+    ): Carrier<Boolean> =
+        sendGroupNotice("$group$GROUP_SUFFIX", title, text, popUp, top, toNewMember, confirm)
+
+
 
     /**
      * 不支持群签到。
@@ -344,6 +365,11 @@ public class LovelyCatSender(
     override fun sendGroupSign(group: String, title: String, message: String): Carrier<Boolean> {
         return def.sendGroupSign(group, title, message)
     }
+
+    @Suppress("DEPRECATION")
+    override fun sendGroupSign(group: Long, title: String, message: String): Carrier<Boolean> =
+        sendGroupSign("$group$GROUP_SUFFIX", title, message)
+
 }
 
 
