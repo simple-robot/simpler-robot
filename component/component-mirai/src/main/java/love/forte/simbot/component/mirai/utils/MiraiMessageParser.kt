@@ -298,6 +298,55 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
             MiraiSingleMessageContent(xml)
         }
 
+        // 音乐分享
+        "music" -> {
+            val kindString = this["type"] ?: this["kind"] ?: throw IllegalArgumentException("No 'type' or 'kind' in $this")
+            val musicUrl = this["musicUrl"] ?: this["audio"] ?: throw IllegalArgumentException("No 'musicUrl' or audio in $this")
+
+            // `neteaseCloud`、`qq`、`migu`
+
+            var musicKindDisplay: String
+            var musicPictureUrl: String
+            var musicJumpUrl: String
+
+            @Suppress("SpellCheckingInspection")
+            val musicKind = when(kindString) {
+                "neteaseCloud", "NeteaseCloud", "neteaseCloudMusic", "NeteaseCloudMusic" -> MusicKind.NeteaseCloudMusic.also {
+                    musicKindDisplay = "网易云音乐"
+                    musicPictureUrl = "https://s4.music.126.net/style/web2/img/default/default_album.jpg"
+                    musicJumpUrl = "https://music.163.com/"
+                }
+                "QQ", "qq", "qqMusic", "QQMusic" -> MusicKind.QQMusic.also {
+                    musicKindDisplay = "QQ音乐"
+                    musicPictureUrl = "https://y.gtimg.cn/mediastyle/app/download/img/logo.png?max_age=2592000"
+                    musicJumpUrl = "https://y.qq.com/"
+                }
+                "migu", "Migu", "miguMusic", "MiguMusic" -> MusicKind.MiguMusic.also {
+                    musicKindDisplay = "咪咕音乐"
+                    musicPictureUrl = "https://cdnmusic.migu.cn/tycms_picture/20/10/294/201020171104983_90x26_2640.png"
+                    musicJumpUrl = "https://music.migu.cn/"
+                }
+                else -> throw NoSuchElementException("Music kind: $kindString")
+            }
+
+            // title
+            val title = this["title"] ?: musicKindDisplay
+
+            // jump url
+            val jumpUrl = this["jumpUrl"] ?: this["jump"] ?: musicJumpUrl
+
+            // 消息图片url
+            val pictureUrl = this["pictureUrl"] ?: this["picture"] ?: musicPictureUrl
+
+            // 消息卡片内容
+            val summary = this["summary"] ?: this["content"] ?: "$musicKindDisplay :$jumpUrl"
+
+            val brief = this["brief"] ?: "[分享]$musicKindDisplay"
+
+            MiraiSingleMessageContent(MusicShare(musicKind, title, summary, jumpUrl, pictureUrl, musicUrl, brief))
+        }
+
+
 
         else -> {
             val kvs = this.entries.joinToString(",") { it.key + "=" + it.value }
