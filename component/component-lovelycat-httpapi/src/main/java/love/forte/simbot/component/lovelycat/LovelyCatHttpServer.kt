@@ -110,6 +110,8 @@ public class LovelyCatKtorHttpServer(
                     <!DOCTYPE html>
                     <html lang="zh-CN">
                     <head>
+                    <title>Simbot Lovely Cat Server</title>
+                    <link rel="icon" type="image/png" sizes="144x144" href="https://gitee.com/ForteScarlet/simpler-robot/raw/dev/logo/logo-4@0,1x.png"/>
                     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
                     </head>
                     <body>
@@ -117,12 +119,12 @@ public class LovelyCatKtorHttpServer(
                           <div class="col-md-2  col-sm-0" ></div>
                           <div class="col-md-8 col-sm-12">
                               <div class="page-header">
-                                <h1>Lovely cat http server <small>by <a href='https://github.com/ForteScarlet/simpler-robot'>simbot</a></small></h1>
+                                <h1>Lovely cat http server <small>by <a target='_blank' href='https://github.com/ForteScarlet/simpler-robot'>simbot</a></small></h1>
                               </div>
                               <div class="jumbotron">
                                   <div class="container">
                                     <h1>Lovely cat server enabled!</h1>
-                                    <p>Started time: $value.</p>
+                                    <p>Started time: ${value.toString().replaceFirst('T', ' ')}</p>
                                   </div>
                               </div>
                           </div>
@@ -139,6 +141,8 @@ public class LovelyCatKtorHttpServer(
                     <!DOCTYPE html>
                     <html lang="zh-CN">
                     <head>
+                    <title>Simbot Lovely Cat Server</title>
+                    <link rel="icon" type="image/png" sizes="144x144" href="https://gitee.com/ForteScarlet/simpler-robot/raw/dev/logo/logo-4@0,1x.png"/>
                     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
                     </head>
                     <body>
@@ -146,7 +150,7 @@ public class LovelyCatKtorHttpServer(
                           <div class="col-md-2  col-sm-0" ></div>
                           <div class="col-md-8 col-sm-12">
                               <div class="page-header">
-                                <h1>Lovely cat http server <small>by <a href='https://github.com/ForteScarlet/simpler-robot'>simbot</a></small></h1>
+                                <h1>Lovely cat http server <small>by <a target='_blank' href='https://github.com/ForteScarlet/simpler-robot'>simbot</a></small></h1>
                               </div>
                               <div class="jumbotron">
                                 <div class="container">
