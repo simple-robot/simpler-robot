@@ -57,10 +57,8 @@ private class JsonContentConverter(private val fac: JsonSerializerFactory) : Con
             do {
                 readLine = channel.readUTF8LineTo(this)
             } while (readLine)
-            // while(content.readUTF8LineTo(this)) { }
             channel.cancel()
         }.toString()
-        // val message = channel.readUTF8Line() ?: "{}"
         return fac.getJsonSerializer(context.subject.typeInfo.jvmErasure.java).fromJson(message)
     }
 
