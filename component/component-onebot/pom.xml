@@ -23,6 +23,12 @@
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>nothing</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
@@ -31,6 +37,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>nothing</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
@@ -39,6 +51,12 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>nothing</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
                 <configuration>
                     <skipStaging>true</skipStaging>
                     <skipLocalStaging>true</skipLocalStaging>
@@ -49,6 +67,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-scm-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>nothing</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
@@ -57,6 +81,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>nothing</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
