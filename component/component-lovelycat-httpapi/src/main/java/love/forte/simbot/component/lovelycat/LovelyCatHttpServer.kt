@@ -104,6 +104,7 @@ public class LovelyCatKtorHttpServer(
 
     private var startedTime: LocalDateTime? = null
         set(value) {
+            field = value
             if (value != null) {
                 showInfo =
                     """
@@ -134,7 +135,6 @@ public class LovelyCatKtorHttpServer(
                     </html>
                 """.trimIndent()
             }
-            field = value
         }
 
     private var showInfo: String = """
