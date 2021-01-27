@@ -22,9 +22,9 @@ import love.forte.simbot.component.lovelycat.LovelyCatHttpServer
 import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.listener.ListenerManager
 import love.forte.simbot.listener.ListenerRegistered
+import love.forte.simbot.utils.onShutdown
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import kotlin.concurrent.thread
 
 @ComponentBeans("lovelyCatServerRunner")
 public class LovelyCatServerRunner : ListenerRegistered {
@@ -41,12 +41,17 @@ public class LovelyCatServerRunner : ListenerRegistered {
      */
     override fun onRegistered(manager: ListenerManager) {
         if (lovelyCatServerProperties.enable) {
-            val lovelyCatHttpServer: LovelyCatHttpServer = dependCenter[LovelyCatHttpServer::class.java]
+            val lovelyCatHttpServer: LovelyCatHttpServer = dependCenter.getOrNull(LovelyCatHttpServer::class.java) ?: kotlin.run {
+                logger.warn("Cannot found any LovelyCatHttpServer's instance.")
+                return
+            }
             val port: Int = lovelyCatServerProperties.port
             logger.debug("try to start lovely cat http server on port $port")
             lovelyCatHttpServer.start()
             // Registrar close hook
-            Runtime.getRuntime().addShutdownHook(thread(start = false) { lovelyCatHttpServer.close() })
+            onShutdown("Lovely cat http server", logger) {
+                lovelyCatHttpServer.close()
+            }
 
             logger.info("lovely cat http server started. port: $port")
         } else {
@@ -55,7 +60,7 @@ public class LovelyCatServerRunner : ListenerRegistered {
     }
 
 
-    companion object {
+    private companion object {
         private val logger: Logger = LoggerFactory.getLogger(LovelyCatServerRunner::class.java)
     }
 }

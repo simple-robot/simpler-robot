@@ -78,8 +78,16 @@ private class JsonContentConverter(private val fac: JsonSerializerFactory) : Con
 
 
 interface LovelyCatHttpServer : Closeable {
+    /**
+     * 启动可爱猫服务器。
+     */
     @Throws(Exception::class)
     fun start()
+
+    /**
+     * 关闭可爱猫服务器。
+     */
+    override fun close()
 }
 
 
@@ -280,7 +288,7 @@ public class LovelyCatKtorHttpServer(
      * close server.
      */
     override fun close() {
-        server.stop(5000, 5000)
+        server.stop(1000, 6000)
     }
 
 }
