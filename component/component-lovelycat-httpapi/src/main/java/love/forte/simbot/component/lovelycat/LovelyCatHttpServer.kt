@@ -133,7 +133,7 @@ public class LovelyCatKtorHttpServer(
 
                         if (eventType == null) {
                             // 404. no event.
-                            call.respond(HttpStatusCode.NotFound) { "Param 'Event' not found: Event is Empty." }
+                            call.respond(HttpStatusCode.NotFound, message = "Param 'Event' not found: Event is Empty.")
                         } else {
 
                             val botId = (params["robot_wxid"] ?: params["rob_wxid"])?.toString()
@@ -165,23 +165,23 @@ public class LovelyCatKtorHttpServer(
 
                                 }?.let {
                                     // ok
-                                    call.respond(HttpStatusCode.OK, it.result ?: "{}")
+                                    call.respond(HttpStatusCode.OK, message = it.result ?: "{}")
                                 } ?: kotlin.run {
                                     val respMsg = "Cannot found any event type for event '$eventType'."
-                                    call.respond(HttpStatusCode.NotFound, respMsg)
+                                    call.respond(HttpStatusCode.NotFound, message = respMsg)
                                     logger.warn("$respMsg response 404.")
                                 }
                                 // }
                                 // ok status.
                                 // call.respond(HttpStatusCode.OK)
                             } catch (e: Exception) {
-                                call.respond(HttpStatusCode.InternalServerError, e.toString())
+                                call.respond(HttpStatusCode.InternalServerError, message = e.toString())
                                 logger.error("Parse event instance failed by originalData: $originalData", e)
                             }
 
                         }
                     } catch (ex: Exception) {
-                        call.respond(HttpStatusCode.InternalServerError, ex.toString())
+                        call.respond(HttpStatusCode.InternalServerError, message = ex.toString())
                         logger.error("Internal server error.", ex)
                     }
                 }
