@@ -37,6 +37,7 @@ import love.forte.simbot.serialization.json.JsonSerializer
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 import java.io.Closeable
 import java.net.InetAddress
+import java.time.LocalDateTime
 import kotlin.concurrent.thread
 import kotlin.reflect.jvm.jvmErasure
 
@@ -100,6 +101,64 @@ public class LovelyCatKtorHttpServer(
 
     private val port get() = lovelyCatServerProperties.port
     private val path get() = lovelyCatServerProperties.path
+
+    private var startedTime: LocalDateTime? = null
+        set(value) {
+            if (value != null) {
+                showInfo =
+                    """
+                    <!DOCTYPE html>
+                    <html lang="zh-CN">
+                    <head>
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+                    </head>
+                    <body>
+                    <div class='row'>
+                          <div class="col-md-2  col-sm-0" ></div>
+                          <div class="col-md-8 col-sm-12">
+                              <div class="page-header">
+                                <h1>Lovely cat http server <small>by <a href='https://github.com/ForteScarlet/simpler-robot'>simbot</a></small></h1>
+                              </div>
+                              <div class="jumbotron">
+                                  <div class="container">
+                                    <h1>Lovely cat server enabled!</h1>
+                                    <p>Started time: $value.</p>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="col-md-2  col-sm-0" ></div>
+                    </div>
+                    </body>
+                    </html>
+                """.trimIndent()
+            }
+            field = value
+        }
+
+    private var showInfo: String = """
+                    <!DOCTYPE html>
+                    <html lang="zh-CN">
+                    <head>
+                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+                    </head>
+                    <body>
+                    <div class='row'>
+                          <div class="col-md-2  col-sm-0" ></div>
+                          <div class="col-md-8 col-sm-12">
+                              <div class="page-header">
+                                <h1>Lovely cat http server <small>by <a href='https://github.com/ForteScarlet/simpler-robot'>simbot</a></small></h1>
+                              </div>
+                              <div class="jumbotron">
+                                <div class="container">
+                                    <h1>Lovely cat server enabled?</h1>
+                                </div>
+                              </div>
+                          </div>
+                          <div class="col-md-2  col-sm-0" ></div>
+                    </div>
+                    </body>
+                    </html>
+                """.trimIndent()
 
     init {
         Runtime.getRuntime().addShutdownHook(thread(start = false) {
@@ -189,9 +248,7 @@ public class LovelyCatKtorHttpServer(
                 }
 
                 get("/simbot/lovelyCat") {
-                    call.respondText(htmlContentType) {
-                        "<h2>Lovely cat server enabled!</h2> "
-                    }
+                    call.respondText(htmlContentType) { showInfo }
 
                 }
 
@@ -203,9 +260,12 @@ public class LovelyCatKtorHttpServer(
 
     override fun start() {
         server.start()
+        startedTime = LocalDateTime.now()
         try {
             val localHost = InetAddress.getLocalHost()
-            logger.info("Lovelycat ktor server started on http://${localHost.address}:$port$path")
+            val address = localHost.hostAddress
+            logger.info("Lovelycat ktor server started on http://$address:$port$path")
+            logger.info("You can try visit http://$address:$port/simbot/lovelyCat for test.")
         } catch (e: Exception) {
             logger.info("Lovelycat ktor server started on http://<IP>:$port$path")
         }
