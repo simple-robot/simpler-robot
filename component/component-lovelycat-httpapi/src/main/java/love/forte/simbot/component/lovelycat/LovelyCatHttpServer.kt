@@ -36,6 +36,7 @@ import love.forte.simbot.listener.onMsg
 import love.forte.simbot.serialization.json.JsonSerializer
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 import java.io.Closeable
+import java.net.InetAddress
 import kotlin.concurrent.thread
 import kotlin.reflect.jvm.jvmErasure
 
@@ -81,6 +82,9 @@ interface LovelyCatHttpServer : Closeable {
 }
 
 
+/**
+ * 可爱猫事件监听http server。
+ */
 public class LovelyCatKtorHttpServer(
     /** 类型转化函数，根据 'Event' 参数获取对应的解析对象 */
     lovelyCatParser: LovelyCatParser,
@@ -199,7 +203,12 @@ public class LovelyCatKtorHttpServer(
 
     override fun start() {
         server.start()
-        logger.info("lovelycat ktor server started on <address>:$port$path")
+        try {
+            val localHost = InetAddress.getLocalHost()
+            logger.info("Lovelycat ktor server started on http://${localHost.address}:$port$path")
+        } catch (e: Exception) {
+            logger.info("Lovelycat ktor server started on http://<IP>:$port$path")
+        }
 
     }
 
