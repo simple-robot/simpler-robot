@@ -5,7 +5,7 @@ simbot:
         lovelycat:
             bot:
                 autoConfig:
-                    enable: false
+                    enable: true
                     paths:
                         - http://127.0.0.1:88/httpAPI
             api:

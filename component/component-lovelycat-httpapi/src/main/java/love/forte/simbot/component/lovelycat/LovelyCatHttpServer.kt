@@ -207,7 +207,16 @@ public class LovelyCatKtorHttpServer(
                                 ?: throw NoSuchBotException("No param 'robot_wxid' or 'rob_wxid' in lovelycat request param.")
 
                             val api = apiManager[botId]
-                                ?: throw IllegalStateException("Cannot found Bot($botId)'s api template.")
+                                ?: run {
+                                    val e = IllegalStateException("Cannot found Bot($botId)'s api template. This bot may not be registered.")
+                                    call.respond(HttpStatusCode.BadRequest, message = e.localizedMessage)
+                                    if (logger.isDebugEnabled) {
+                                        logger.error(e.localizedMessage, e)
+                                    } else {
+                                        logger.error(e.localizedMessage)
+                                    }
+                                    return@post
+                                }
 
                             try {
                                 // val parse =
