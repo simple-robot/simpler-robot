@@ -38,7 +38,6 @@ import love.forte.simbot.serialization.json.JsonSerializerFactory
 import java.io.Closeable
 import java.net.InetAddress
 import java.time.LocalDateTime
-import kotlin.concurrent.thread
 import kotlin.reflect.jvm.jvmErasure
 
 
@@ -172,11 +171,6 @@ public class LovelyCatKtorHttpServer(
                     </html>
                 """.trimIndent()
 
-    init {
-        Runtime.getRuntime().addShutdownHook(thread(start = false) {
-            close()
-        })
-    }
 
     /**
      * the server instance.
@@ -213,7 +207,16 @@ public class LovelyCatKtorHttpServer(
                                 ?: throw NoSuchBotException("No param 'robot_wxid' or 'rob_wxid' in lovelycat request param.")
 
                             val api = apiManager[botId]
-                                ?: throw IllegalStateException("Cannot found Bot($botId)'s api template.")
+                                ?: run {
+                                    val e = IllegalStateException("Cannot found Bot($botId)'s api template. This bot may not be registered.")
+                                    call.respond(HttpStatusCode.BadRequest, message = e.localizedMessage)
+                                    if (logger.isDebugEnabled) {
+                                        logger.error(e.localizedMessage, e)
+                                    } else {
+                                        logger.error(e.localizedMessage)
+                                    }
+                                    return@post
+                                }
 
                             try {
                                 // val parse =
