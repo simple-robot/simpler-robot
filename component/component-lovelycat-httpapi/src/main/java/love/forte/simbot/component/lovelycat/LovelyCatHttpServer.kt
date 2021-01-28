@@ -38,7 +38,6 @@ import love.forte.simbot.serialization.json.JsonSerializerFactory
 import java.io.Closeable
 import java.net.InetAddress
 import java.time.LocalDateTime
-import kotlin.concurrent.thread
 import kotlin.reflect.jvm.jvmErasure
 
 
@@ -172,11 +171,6 @@ public class LovelyCatKtorHttpServer(
                     </html>
                 """.trimIndent()
 
-    init {
-        Runtime.getRuntime().addShutdownHook(thread(start = false) {
-            close()
-        })
-    }
 
     /**
      * the server instance.
