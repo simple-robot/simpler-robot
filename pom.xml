@@ -4,10 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>love.forte.simple-robot</groupId>
+        <artifactId>parent</artifactId>
+        <version>2.0.0.1-SNAPSHOT</version><!--v-->
+        <relativePath>./parent/pom.xml</relativePath>
+    </parent>
+
     <packaging>pom</packaging>
-    <artifactId>parent</artifactId>
-    <groupId>love.forte.simple-robot</groupId>
-    <version>2.0.0-SNAPSHOT</version><!--v-->
+    <artifactId>project</artifactId>
+
     <modules>
         <module>core-parent</module>
         <module>component</module>
@@ -17,459 +23,454 @@
         <module>time-task</module>
     </modules>
 
-    <url>https://github.com/ForteScarlet/simpler-robot</url>
-    <scm>
-        <url>https://github.com/ForteScarlet/simpler-robot</url>
-        <tag>simbot</tag>
-    </scm>
+    <!--<url>https://github.com/ForteScarlet/simpler-robot</url>-->
+    <!--<scm>-->
+    <!--    <url>https://github.com/ForteScarlet/simpler-robot</url>-->
+    <!--    <tag>simbot</tag>-->
+    <!--</scm>-->
 
 
 
-    <name>simpler-robot</name>
-    <description>simple-robot是一个通用bot开发框架，以同一种灵活的标准来编写不同平台的bot应用。而simpler-robot便是simple-robot 2.x版本命名。</description>
+    <!--<name>simpler-robot</name>-->
+    <!--<description>simple-robot是一个通用bot开发框架，以同一种灵活的标准来编写不同平台的bot应用。而simpler-robot便是simple-robot 2.x版本命名。</description>-->
 
-    <properties>
-        <!--<simbot.project.version>2.0.0-SNAPSHOT</simbot.project.version>-->
+    <!--<properties>-->
+    <!--    &lt;!&ndash;<simbot.project.version>2.0.0-SNAPSHOT</simbot.project.version>&ndash;&gt;-->
 
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+    <!--    <maven.compiler.source>8</maven.compiler.source>-->
+    <!--    <maven.compiler.target>8</maven.compiler.target>-->
 
-        <!--<editor-fold desc="encode prop">-->
-        <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
-        <!--</editor-fold>-->
-        <!--<editor-fold desc="kt prop">-->
-        <kotlin.version>1.4.30-M1</kotlin.version>
-        <ktor.version>1.5.0</ktor.version>
-        <kotlinx.version>1.4.1</kotlinx.version>
-        <kotlinx-serialization.version>1.0.1</kotlinx-serialization.version>
-        <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
-        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <!--</editor-fold>-->
-
-
-        <!-- slf4j version -->
-        <slf4j.version>1.7.30</slf4j.version>
-        <!-- junit version -->
-        <junit.jupiter.version>5.5.2</junit.jupiter.version>
-
-        <!-- some version -->
-        <fastjson.version>1.2.74</fastjson.version>
-        <jackson.version>2.11.3</jackson.version>
-        <jackson-kt-module.version>2.11.4</jackson-kt-module.version>
-        <moshi.version>1.11.0</moshi.version>
-        <hutool.version>5.5.1</hutool.version>
-        <quartz.version>2.3.2</quartz.version>
-
-        <commons.version>1.0.0-ALPHA.5</commons.version>
-        <catCode.version>1.0.0-ALPHA.3</catCode.version>
-
-        <!-- plugins -->
-
-        <!-- dokka version -->
-        <dokka.version>1.4.0-rc</dokka.version>
-        <!-- sb maven version -->
-        <spring.version>2.3.5.RELEASE</spring.version>
-
-    </properties>
+    <!--    &lt;!&ndash;<editor-fold desc="encode prop">&ndash;&gt;-->
+    <!--    <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>-->
+    <!--    <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>-->
+    <!--    &lt;!&ndash;</editor-fold>&ndash;&gt;-->
+    <!--    &lt;!&ndash;<editor-fold desc="kt prop">&ndash;&gt;-->
+    <!--    <kotlin.version>1.4.30-M1</kotlin.version>-->
+    <!--    <ktor.version>1.5.0</ktor.version>-->
+    <!--    <kotlinx.version>1.4.1</kotlinx.version>-->
+    <!--    <kotlinx-serialization.version>1.0.1</kotlinx-serialization.version>-->
+    <!--    <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>-->
+    <!--    <kotlin.compiler.incremental>true</kotlin.compiler.incremental>-->
+    <!--    &lt;!&ndash;</editor-fold>&ndash;&gt;-->
 
 
-    <!-- dependencyManagement -->
-    <dependencyManagement>
-        <dependencies>
-            <!--<editor-fold desc="core">-->
-            <dependency>
-                <groupId>love.forte.simple-robot</groupId>
-                <artifactId>api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>love.forte.simple-robot</groupId>
-                <artifactId>core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <!--<editor-fold desc="component">-->
-            <dependency>
-                <groupId>love.forte.simple-robot</groupId>
-                <artifactId>component-mirai</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>love.forte.simple-robot</groupId>
-                <artifactId>component-lovelycat-httpapi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>love.forte.simple-robot</groupId>
-                <artifactId>component-ding</artifactId>
-                <version>2.0.0-RC.2</version>
-            </dependency>
-            <!--</editor-fold>-->
-            <!--<editor-fold desc="http-client">-->
-            <dependency>
-                <groupId>love.forte.simple-robot.http</groupId>
-                <artifactId>client-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>love.forte.simple-robot.http</groupId>
-                <artifactId>client-ktor</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>love.forte.simple-robot.http</groupId>
-                <artifactId>client-restTemplate</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <!--</editor-fold>-->
-            <!--<editor-fold desc="serialization">-->
-            <dependency>
-                <groupId>love.forte.simple-robot.serialization</groupId>
-                <artifactId>parent</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>love.forte.simple-robot.serialization</groupId>
-                <artifactId>json-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>love.forte.simple-robot.serialization</groupId>
-                <artifactId>json-moshi</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>love.forte.simple-robot.serialization</groupId>
-                <artifactId>json-fastjson</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>love.forte.simple-robot.serialization</groupId>
-                <artifactId>json-jackson</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <!--</editor-fold>-->
-            <!--<editor-fold desc="time-task">-->
-            <dependency>
-                <groupId>love.forte.simple-robot.time-task</groupId>
-                <artifactId>time-task-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>love.forte.simple-robot.time-task</groupId>
-                <artifactId>time-task-quartz</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <!--</editor-fold>-->
+    <!--    &lt;!&ndash; slf4j version &ndash;&gt;-->
+    <!--    <slf4j.version>1.7.30</slf4j.version>-->
+    <!--    &lt;!&ndash; junit version &ndash;&gt;-->
+    <!--    <junit.jupiter.version>5.5.2</junit.jupiter.version>-->
+
+    <!--    &lt;!&ndash; some version &ndash;&gt;-->
+    <!--    <fastjson.version>1.2.74</fastjson.version>-->
+    <!--    <jackson.version>2.11.3</jackson.version>-->
+    <!--    <jackson-kt-module.version>2.11.4</jackson-kt-module.version>-->
+    <!--    <moshi.version>1.11.0</moshi.version>-->
+    <!--    <hutool.version>5.5.1</hutool.version>-->
+    <!--    <quartz.version>2.3.2</quartz.version>-->
+
+    <!--    <commons.version>1.0.0-ALPHA.5</commons.version>-->
+    <!--    <catCode.version>1.0.0-ALPHA.3</catCode.version>-->
+
+    <!--    &lt;!&ndash; plugins &ndash;&gt;-->
+
+    <!--    &lt;!&ndash; dokka version &ndash;&gt;-->
+    <!--    <dokka.version>1.4.0-rc</dokka.version>-->
+    <!--    &lt;!&ndash; sb maven version &ndash;&gt;-->
+    <!--    <spring.version>2.3.5.RELEASE</spring.version>-->
+
+    <!--</properties>-->
 
 
-            <!--<editor-fold desc="spring-boot-starter">-->
-            <dependency>
-                <groupId>love.forte.simple-robot</groupId>
-                <artifactId>spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+    <!--&lt;!&ndash; dependencyManagement &ndash;&gt;-->
+    <!--<dependencyManagement>-->
+    <!--    <dependencies>-->
+    <!--        &lt;!&ndash;<editor-fold desc="core">&ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot</groupId>-->
+    <!--            <artifactId>api</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot</groupId>-->
+    <!--            <artifactId>core</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash;<editor-fold desc="component">&ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot</groupId>-->
+    <!--            <artifactId>component-mirai</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot</groupId>-->
+    <!--            <artifactId>component-lovelycat-httpapi</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot</groupId>-->
+    <!--            <artifactId>component-ding</artifactId>-->
+    <!--            <version>2.0.0-RC.2</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash;</editor-fold>&ndash;&gt;-->
+    <!--        &lt;!&ndash;<editor-fold desc="http-client">&ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot.http</groupId>-->
+    <!--            <artifactId>client-core</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot.http</groupId>-->
+    <!--            <artifactId>client-ktor</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot.http</groupId>-->
+    <!--            <artifactId>client-restTemplate</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash;</editor-fold>&ndash;&gt;-->
+    <!--        &lt;!&ndash;<editor-fold desc="serialization">&ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot.serialization</groupId>-->
+    <!--            <artifactId>project</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot.serialization</groupId>-->
+    <!--            <artifactId>json-core</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot.serialization</groupId>-->
+    <!--            <artifactId>json-moshi</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot.serialization</groupId>-->
+    <!--            <artifactId>json-fastjson</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot.serialization</groupId>-->
+    <!--            <artifactId>json-jackson</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash;</editor-fold>&ndash;&gt;-->
+    <!--        &lt;!&ndash;<editor-fold desc="time-task">&ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot.time-task</groupId>-->
+    <!--            <artifactId>time-task-core</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot.time-task</groupId>-->
+    <!--            <artifactId>time-task-quartz</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash;</editor-fold>&ndash;&gt;-->
 
-            <dependency>
-                <groupId>love.forte.simple-robot</groupId>
-                <artifactId>core-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 
-            <dependency>
-                <groupId>love.forte.simple-robot</groupId>
-                <artifactId>component-mirai-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+    <!--        &lt;!&ndash;<editor-fold desc="spring-boot-starter">&ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot</groupId>-->
+    <!--            <artifactId>spring-boot-starter</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
 
-            <dependency>
-                <groupId>love.forte.simple-robot</groupId>
-                <artifactId>component-lovelycat-httpapi-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <!--</editor-fold>-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot</groupId>-->
+    <!--            <artifactId>core-spring-boot-starter</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
 
-            <!--</editor-fold>-->
-            <!--<editor-fold desc="catCode">-->
-            <!-- catcode -->
-            <dependency>
-                <groupId>love.forte</groupId>
-                <artifactId>catcode</artifactId>
-                <version>${catCode.version}</version>
-            </dependency>
-            <!--</editor-fold>-->
-            <!--<editor-fold desc="commons">-->
-            <!-- common-utils -->
-            <dependency>
-                <groupId>love.forte.common</groupId>
-                <artifactId>utils</artifactId>
-                <version>${commons.version}</version>
-            </dependency>
-            <!-- common-log -->
-            <dependency>
-                <groupId>love.forte.common</groupId>
-                <artifactId>log</artifactId>
-                <version>${commons.version}</version>
-            </dependency>
-            <!-- common-language -->
-            <dependency>
-                <groupId>love.forte.common</groupId>
-                <artifactId>language</artifactId>
-                <version>${commons.version}</version>
-            </dependency>
-            <!-- common-configuration -->
-            <dependency>
-                <groupId>love.forte.common</groupId>
-                <artifactId>configuration</artifactId>
-                <version>${commons.version}</version>
-            </dependency>
-            <!-- common-ioc -->
-            <dependency>
-                <groupId>love.forte.common</groupId>
-                <artifactId>ioc</artifactId>
-                <version>${commons.version}</version>
-            </dependency>
-            <!--</editor-fold>-->
-            <!--<editor-fold desc="kotlin dependencies">-->
-            <!-- kt -->
-            <dependency>
-                <groupId>io.ktor</groupId>
-                <artifactId>ktor-client-core</artifactId>
-                <version>${ktor.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.ktor</groupId>
-                <artifactId>ktor-client-core-jvm</artifactId>
-                <version>${ktor.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.ktor</groupId>
-                <artifactId>ktor-client-cio-jvm</artifactId>
-                <version>${ktor.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.ktor</groupId>
-                <artifactId>ktor-client-okhttp</artifactId>
-                <version>${ktor.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.ktor</groupId>
-                <artifactId>ktor-server-core</artifactId>
-                <version>${ktor.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.ktor</groupId>
-                <artifactId>ktor-server-netty</artifactId>
-                <version>${ktor.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.ktor</groupId>
-                <artifactId>ktor-server-jetty</artifactId>
-                <version>${ktor.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.ktor</groupId>
-                <artifactId>ktor-server-servlet</artifactId>
-                <version>${ktor.version}</version>
-            </dependency>
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot</groupId>-->
+    <!--            <artifactId>component-mirai-spring-boot-starter</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
 
-            <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-stdlib</artifactId>
-                <version>${kotlin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-stdlib-jdk8</artifactId>
-                <version>${kotlin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-stdlib-jdk7</artifactId>
-                <version>${kotlin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-stdlib-common</artifactId>
-                <version>${kotlin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-reflect</artifactId>
-                <version>${kotlin.version}</version>
-            </dependency>
-            <!-- ktx coroutines -->
-            <dependency>
-                <groupId>org.jetbrains.kotlinx</groupId>
-                <artifactId>kotlinx-coroutines-core</artifactId>
-                <version>${kotlinx.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.jetbrains.kotlinx</groupId>
-                <artifactId>kotlinx-coroutines-jdk8</artifactId>
-                <version>${kotlinx.version}</version>
-            </dependency>
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.simple-robot</groupId>-->
+    <!--            <artifactId>component-lovelycat-httpapi-spring-boot-starter</artifactId>-->
+    <!--            <version>${project.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash;</editor-fold>&ndash;&gt;-->
 
-            <dependency>
-                <groupId>org.jetbrains.kotlinx</groupId>
-                <artifactId>kotlinx-serialization-json</artifactId>
-                <version>${kotlinx-serialization.version}</version>
-            </dependency>
+    <!--        &lt;!&ndash;</editor-fold>&ndash;&gt;-->
+    <!--        &lt;!&ndash;<editor-fold desc="catCode">&ndash;&gt;-->
+    <!--        &lt;!&ndash; catcode &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte</groupId>-->
+    <!--            <artifactId>catcode</artifactId>-->
+    <!--            <version>${catCode.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash;</editor-fold>&ndash;&gt;-->
+    <!--        &lt;!&ndash;<editor-fold desc="commons">&ndash;&gt;-->
+    <!--        &lt;!&ndash; common-utils &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.common</groupId>-->
+    <!--            <artifactId>utils</artifactId>-->
+    <!--            <version>${commons.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash; common-log &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.common</groupId>-->
+    <!--            <artifactId>log</artifactId>-->
+    <!--            <version>${commons.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash; common-language &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.common</groupId>-->
+    <!--            <artifactId>language</artifactId>-->
+    <!--            <version>${commons.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash; common-configuration &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.common</groupId>-->
+    <!--            <artifactId>configuration</artifactId>-->
+    <!--            <version>${commons.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash; common-ioc &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>love.forte.common</groupId>-->
+    <!--            <artifactId>ioc</artifactId>-->
+    <!--            <version>${commons.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash;</editor-fold>&ndash;&gt;-->
+    <!--        &lt;!&ndash;<editor-fold desc="kotlin dependencies">&ndash;&gt;-->
+    <!--        &lt;!&ndash; kt &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>io.ktor</groupId>-->
+    <!--            <artifactId>ktor-client-core</artifactId>-->
+    <!--            <version>${ktor.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>io.ktor</groupId>-->
+    <!--            <artifactId>ktor-client-core-jvm</artifactId>-->
+    <!--            <version>${ktor.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>io.ktor</groupId>-->
+    <!--            <artifactId>ktor-client-cio-jvm</artifactId>-->
+    <!--            <version>${ktor.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>io.ktor</groupId>-->
+    <!--            <artifactId>ktor-client-okhttp</artifactId>-->
+    <!--            <version>${ktor.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>io.ktor</groupId>-->
+    <!--            <artifactId>ktor-server-core</artifactId>-->
+    <!--            <version>${ktor.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>io.ktor</groupId>-->
+    <!--            <artifactId>ktor-server-netty</artifactId>-->
+    <!--            <version>${ktor.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>io.ktor</groupId>-->
+    <!--            <artifactId>ktor-server-jetty</artifactId>-->
+    <!--            <version>${ktor.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>io.ktor</groupId>-->
+    <!--            <artifactId>ktor-server-servlet</artifactId>-->
+    <!--            <version>${ktor.version}</version>-->
+    <!--        </dependency>-->
 
-            <!-- kt test -->
-            <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-test</artifactId>
-                <version>${kotlin.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <!--</editor-fold>-->
-            <!--<editor-fold desc="json dependencies">-->
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
-            </dependency>
-            <!-- moshi -->
-            <dependency>
-                <groupId>com.squareup.moshi</groupId>
-                <artifactId>moshi</artifactId>
-                <version>${moshi.version}</version>
-            </dependency>
-            <!-- jackson - json -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-kotlin</artifactId>
-                <version>${jackson-kt-module.version}</version>
-            </dependency>
-            <!--</editor-fold>-->
-            <!--<editor-fold desc="hutool dependencies">-->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-aop</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-bloomFilter</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-cache</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-core</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-cron</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-crypto</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-db</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-dfa</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-extra</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-http</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-log</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-script</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-setting</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-system</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-json</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-captcha</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-poi</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-socket</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-            <!--</editor-fold>-->
-            <!--<editor-fold desc="slf4j dependency">-->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <!--</editor-fold>-->
-            <!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz</artifactId>
-                <version>${quartz.version}</version>
-            </dependency>
+    <!--        <dependency>-->
+    <!--            <groupId>org.jetbrains.kotlin</groupId>-->
+    <!--            <artifactId>kotlin-stdlib</artifactId>-->
+    <!--            <version>${kotlin.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.jetbrains.kotlin</groupId>-->
+    <!--            <artifactId>kotlin-stdlib-jdk8</artifactId>-->
+    <!--            <version>${kotlin.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.jetbrains.kotlin</groupId>-->
+    <!--            <artifactId>kotlin-stdlib-jdk7</artifactId>-->
+    <!--            <version>${kotlin.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.jetbrains.kotlin</groupId>-->
+    <!--            <artifactId>kotlin-stdlib-common</artifactId>-->
+    <!--            <version>${kotlin.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.jetbrains.kotlin</groupId>-->
+    <!--            <artifactId>kotlin-reflect</artifactId>-->
+    <!--            <version>${kotlin.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash; ktx coroutines &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.jetbrains.kotlinx</groupId>-->
+    <!--            <artifactId>kotlinx-coroutines-core</artifactId>-->
+    <!--            <version>${kotlinx.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.jetbrains.kotlinx</groupId>-->
+    <!--            <artifactId>kotlinx-coroutines-jdk8</artifactId>-->
+    <!--            <version>${kotlinx.version}</version>-->
+    <!--        </dependency>-->
 
-        </dependencies>
-    </dependencyManagement>
+    <!--        <dependency>-->
+    <!--            <groupId>org.jetbrains.kotlinx</groupId>-->
+    <!--            <artifactId>kotlinx-serialization-json</artifactId>-->
+    <!--            <version>${kotlinx-serialization.version}</version>-->
+    <!--        </dependency>-->
+
+    <!--        &lt;!&ndash; kt test &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.jetbrains.kotlin</groupId>-->
+    <!--            <artifactId>kotlin-test</artifactId>-->
+    <!--            <version>${kotlin.version}</version>-->
+    <!--            <scope>test</scope>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash;</editor-fold>&ndash;&gt;-->
+    <!--        &lt;!&ndash;<editor-fold desc="json dependencies">&ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>com.alibaba</groupId>-->
+    <!--            <artifactId>fastjson</artifactId>-->
+    <!--            <version>${fastjson.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash; moshi &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>com.squareup.moshi</groupId>-->
+    <!--            <artifactId>moshi</artifactId>-->
+    <!--            <version>${moshi.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash; jackson - json &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>com.fasterxml.jackson.core</groupId>-->
+    <!--            <artifactId>jackson-databind</artifactId>-->
+    <!--            <version>${jackson.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>com.fasterxml.jackson.module</groupId>-->
+    <!--            <artifactId>jackson-module-kotlin</artifactId>-->
+    <!--            <version>${jackson-kt-module.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash;</editor-fold>&ndash;&gt;-->
+    <!--        &lt;!&ndash;<editor-fold desc="hutool dependencies">&ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-all</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-aop</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-bloomFilter</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-cache</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-core</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-cron</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-crypto</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-db</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-dfa</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-extra</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-http</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-log</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-script</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-setting</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-system</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-json</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-captcha</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-poi</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>cn.hutool</groupId>-->
+    <!--            <artifactId>hutool-socket</artifactId>-->
+    <!--            <version>${hutool.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash;</editor-fold>&ndash;&gt;-->
+    <!--        &lt;!&ndash;<editor-fold desc="slf4j dependency">&ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.slf4j</groupId>-->
+    <!--            <artifactId>slf4j-api</artifactId>-->
+    <!--            <version>${slf4j.version}</version>-->
+    <!--        </dependency>-->
+    <!--        &lt;!&ndash;</editor-fold>&ndash;&gt;-->
+    <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.quartz-scheduler/quartz &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.quartz-scheduler</groupId>-->
+    <!--            <artifactId>quartz</artifactId>-->
+    <!--            <version>${quartz.version}</version>-->
+    <!--        </dependency>-->
+
+    <!--    </dependencies>-->
+    <!--</dependencyManagement>-->
 
     <!-- build plugins -->
     <build>
         <plugins>
-            <!--<plugin>-->
-            <!--    <groupId>org.codehaus.mojo</groupId>-->
-            <!--    <artifactId>versions-maven-plugin</artifactId>-->
-            <!--    <version>2.8.1</version>-->
-            <!--</plugin>-->
             <!-- compiler plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -512,263 +513,263 @@
         </plugins>
 
 
-        <pluginManagement>
-            <plugins>
-                <!-- sb maven -->
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring.version}</version>
-                    <executions>
-                        <execution>
-                            <id>repackage</id>
-                            <goals>
-                                <goal>repackage</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <excludes>
-                            <exclude>
-                                <groupId>org.springframework.boot</groupId>
-                                <artifactId>spring-boot-configuration-processor</artifactId>
-                            </exclude>
-                        </excludes>
-                    </configuration>
-                </plugin>
-                <!--<plugin>-->
-                <!--    <groupId>org.apache.maven.plugins</groupId>-->
-                <!--    <artifactId>maven-compiler-plugin</artifactId>-->
-                <!--    <configuration>-->
-                <!--        <source>8</source>-->
-                <!--        <target>8</target>-->
-                <!--    </configuration>-->
-                <!--</plugin>-->
-                <!-- compiler plugin -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.7.0</version>
-                    <executions>
-                        <!-- 替换会被 maven 特别处理的 default-compile -->
-                        <execution>
-                            <id>default-compile</id>
-                            <phase>none</phase>
-                        </execution>
-                        <!-- 替换会被 maven 特别处理的 default-testCompile -->
-                        <execution>
-                            <id>default-testCompile</id>
-                            <phase>none</phase>
-                        </execution>
-                        <execution>
-                            <id>java-compile</id>
-                            <phase>compile</phase>
-                            <goals>
-                                <goal>compile</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>java-test-compile</id>
-                            <phase>test-compile</phase>
-                            <goals>
-                                <goal>testCompile</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <source>8</source>
-                        <target>8</target>
-                        <compilerArgs>
-                            <arg>-parameters</arg>
-                        </compilerArgs>
-                    </configuration>
-                </plugin>
+        <!--<pluginManagement>-->
+        <!--    <plugins>-->
+        <!--        &lt;!&ndash; sb maven &ndash;&gt;-->
+        <!--        <plugin>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-maven-plugin</artifactId>-->
+        <!--            <version>${spring.version}</version>-->
+        <!--            <executions>-->
+        <!--                <execution>-->
+        <!--                    <id>repackage</id>-->
+        <!--                    <goals>-->
+        <!--                        <goal>repackage</goal>-->
+        <!--                    </goals>-->
+        <!--                </execution>-->
+        <!--            </executions>-->
+        <!--            <configuration>-->
+        <!--                <excludes>-->
+        <!--                    <exclude>-->
+        <!--                        <groupId>org.springframework.boot</groupId>-->
+        <!--                        <artifactId>spring-boot-configuration-processor</artifactId>-->
+        <!--                    </exclude>-->
+        <!--                </excludes>-->
+        <!--            </configuration>-->
+        <!--        </plugin>-->
+        <!--        &lt;!&ndash;<plugin>&ndash;&gt;-->
+        <!--        &lt;!&ndash;    <groupId>org.apache.maven.plugins</groupId>&ndash;&gt;-->
+        <!--        &lt;!&ndash;    <artifactId>maven-compiler-plugin</artifactId>&ndash;&gt;-->
+        <!--        &lt;!&ndash;    <configuration>&ndash;&gt;-->
+        <!--        &lt;!&ndash;        <source>8</source>&ndash;&gt;-->
+        <!--        &lt;!&ndash;        <target>8</target>&ndash;&gt;-->
+        <!--        &lt;!&ndash;    </configuration>&ndash;&gt;-->
+        <!--        &lt;!&ndash;</plugin>&ndash;&gt;-->
+        <!--        &lt;!&ndash; compiler plugin &ndash;&gt;-->
+        <!--        <plugin>-->
+        <!--            <groupId>org.apache.maven.plugins</groupId>-->
+        <!--            <artifactId>maven-compiler-plugin</artifactId>-->
+        <!--            <version>3.7.0</version>-->
+        <!--            <executions>-->
+        <!--                &lt;!&ndash; 替换会被 maven 特别处理的 default-compile &ndash;&gt;-->
+        <!--                <execution>-->
+        <!--                    <id>default-compile</id>-->
+        <!--                    <phase>none</phase>-->
+        <!--                </execution>-->
+        <!--                &lt;!&ndash; 替换会被 maven 特别处理的 default-testCompile &ndash;&gt;-->
+        <!--                <execution>-->
+        <!--                    <id>default-testCompile</id>-->
+        <!--                    <phase>none</phase>-->
+        <!--                </execution>-->
+        <!--                <execution>-->
+        <!--                    <id>java-compile</id>-->
+        <!--                    <phase>compile</phase>-->
+        <!--                    <goals>-->
+        <!--                        <goal>compile</goal>-->
+        <!--                    </goals>-->
+        <!--                </execution>-->
+        <!--                <execution>-->
+        <!--                    <id>java-test-compile</id>-->
+        <!--                    <phase>test-compile</phase>-->
+        <!--                    <goals>-->
+        <!--                        <goal>testCompile</goal>-->
+        <!--                    </goals>-->
+        <!--                </execution>-->
+        <!--            </executions>-->
+        <!--            <configuration>-->
+        <!--                <source>8</source>-->
+        <!--                <target>8</target>-->
+        <!--                <compilerArgs>-->
+        <!--                    <arg>-parameters</arg>-->
+        <!--                </compilerArgs>-->
+        <!--            </configuration>-->
+        <!--        </plugin>-->
 
-                <!-- java源码 -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>3.0.0</version>
-                    <configuration>
-                        <attach>true</attach>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <phase>compile</phase>
-                            <goals>
-                                <goal>jar-no-fork</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
+        <!--        &lt;!&ndash; java源码 &ndash;&gt;-->
+        <!--        <plugin>-->
+        <!--            <groupId>org.apache.maven.plugins</groupId>-->
+        <!--            <artifactId>maven-source-plugin</artifactId>-->
+        <!--            <version>3.0.0</version>-->
+        <!--            <configuration>-->
+        <!--                <attach>true</attach>-->
+        <!--            </configuration>-->
+        <!--            <executions>-->
+        <!--                <execution>-->
+        <!--                    <phase>compile</phase>-->
+        <!--                    <goals>-->
+        <!--                        <goal>jar-no-fork</goal>-->
+        <!--                    </goals>-->
+        <!--                </execution>-->
+        <!--            </executions>-->
+        <!--        </plugin>-->
 
-                <!-- kt-maven-plugin -->
-                <plugin>
-                    <groupId>org.jetbrains.kotlin</groupId>
-                    <artifactId>kotlin-maven-plugin</artifactId>
-                    <version>${kotlin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>compile</id>
-                            <phase>process-sources</phase>
-                            <goals>
-                                <goal>compile</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <!-- kotlinOptions.freeCompilerArgs = ['-Xjvm-default=enable'] -->
-                        <args>
-                            <!--<arg>-Xjvm-default=enable</arg>-->
-                            <arg>-Xjvm-default=all</arg>
-                            <arg>-Xinline-classes</arg>
-                            <arg>-Xopt-in=kotlin.RequiresOptIn</arg>
-                        </args>
-                        <jvmTarget>1.8</jvmTarget>
-                        <javaParameters>true</javaParameters>
-                    </configuration>
-                </plugin>
+        <!--        &lt;!&ndash; kt-maven-plugin &ndash;&gt;-->
+        <!--        <plugin>-->
+        <!--            <groupId>org.jetbrains.kotlin</groupId>-->
+        <!--            <artifactId>kotlin-maven-plugin</artifactId>-->
+        <!--            <version>${kotlin.version}</version>-->
+        <!--            <executions>-->
+        <!--                <execution>-->
+        <!--                    <id>compile</id>-->
+        <!--                    <phase>process-sources</phase>-->
+        <!--                    <goals>-->
+        <!--                        <goal>compile</goal>-->
+        <!--                    </goals>-->
+        <!--                </execution>-->
+        <!--            </executions>-->
+        <!--            <configuration>-->
+        <!--                &lt;!&ndash; kotlinOptions.freeCompilerArgs = ['-Xjvm-default=enable'] &ndash;&gt;-->
+        <!--                <args>-->
+        <!--                    &lt;!&ndash;<arg>-Xjvm-default=enable</arg>&ndash;&gt;-->
+        <!--                    <arg>-Xjvm-default=all</arg>-->
+        <!--                    <arg>-Xinline-classes</arg>-->
+        <!--                    <arg>-Xopt-in=kotlin.RequiresOptIn</arg>-->
+        <!--                </args>-->
+        <!--                <jvmTarget>1.8</jvmTarget>-->
+        <!--                <javaParameters>true</javaParameters>-->
+        <!--            </configuration>-->
+        <!--        </plugin>-->
 
-                <!-- dokka -->
-                <plugin>
-                    <groupId>org.jetbrains.dokka</groupId>
-                    <artifactId>dokka-maven-plugin</artifactId>
-                    <!--<version>1.3.9</version>-->
-                    <version>${dokka.version}</version>
-                    <executions>
-                        <execution>
-                            <phase>install</phase>
-                            <goals>
-                                <!--<goal>dokka</goal>-->
-                                <!--<goal>javadoc</goal>-->
-                                <goal>javadocJar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
+        <!--        &lt;!&ndash; dokka &ndash;&gt;-->
+        <!--        <plugin>-->
+        <!--            <groupId>org.jetbrains.dokka</groupId>-->
+        <!--            <artifactId>dokka-maven-plugin</artifactId>-->
+        <!--            &lt;!&ndash;<version>1.3.9</version>&ndash;&gt;-->
+        <!--            <version>${dokka.version}</version>-->
+        <!--            <executions>-->
+        <!--                <execution>-->
+        <!--                    <phase>install</phase>-->
+        <!--                    <goals>-->
+        <!--                        &lt;!&ndash;<goal>dokka</goal>&ndash;&gt;-->
+        <!--                        &lt;!&ndash;<goal>javadoc</goal>&ndash;&gt;-->
+        <!--                        <goal>javadocJar</goal>-->
+        <!--                    </goals>-->
+        <!--                </execution>-->
+        <!--            </executions>-->
+        <!--            <configuration>-->
 
-                        <!--<skip>true</skip>-->
-
-
-                        <!-- Set to true to skip dokka task, default: false -->
-                        <!--                        <skip>true</skip>-->
-                        <!-- Used for linking to JDK, default: 6 -->
-                        <jdkVersion>8</jdkVersion>
-                        <!-- Do not create index pages for empty packages -->
-                        <skipEmptyPackages>true</skipEmptyPackages>
-                        <!-- Emit warnings about not documented members, applies globally, also can be overridden by packageOptions -->
-                        <reportUndocumented>false</reportUndocumented>
-
-                        <skipDeprecated>true</skipDeprecated>
-                        <!--<outputDir>../simple-robot-2.0-doc/docs/${project.name}/doc</outputDir>-->
-
-                        <!-- Use default or set to custom path to cache directory to enable package-list caching. -->
-                        <!-- When set to default, caches stored in $USER_HOME/.cache/dokka -->
-                        <cacheRoot>default</cacheRoot>
-
-                        <offlineMode>true</offlineMode>
-
-                    </configuration>
-                </plugin>
+        <!--                &lt;!&ndash;<skip>true</skip>&ndash;&gt;-->
 
 
-                <!-- maven仓库相关插件 -->
-                <!-- (1) deploy插件 -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-deploy-plugin</artifactId>
+        <!--                &lt;!&ndash; Set to true to skip dokka task, default: false &ndash;&gt;-->
+        <!--                &lt;!&ndash;                        <skip>true</skip>&ndash;&gt;-->
+        <!--                &lt;!&ndash; Used for linking to JDK, default: 6 &ndash;&gt;-->
+        <!--                <jdkVersion>8</jdkVersion>-->
+        <!--                &lt;!&ndash; Do not create index pages for empty packages &ndash;&gt;-->
+        <!--                <skipEmptyPackages>true</skipEmptyPackages>-->
+        <!--                &lt;!&ndash; Emit warnings about not documented members, applies globally, also can be overridden by packageOptions &ndash;&gt;-->
+        <!--                <reportUndocumented>false</reportUndocumented>-->
 
-                    <!--<version>3.0.0-M1</version>-->
-                    <version>2.8.2</version>
-                    <executions>
-                        <execution>
-                            <id>default-deploy</id>
-                            <phase>deploy</phase>
-                            <goals>
-                                <goal>deploy</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <!-- （2）sonatype的staging插件 -->
-                <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.6.8</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <serverId>oss</serverId>
-                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                    </configuration>
-                </plugin>
-                <!-- （3）SCM插件 -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-scm-plugin</artifactId>
-                    <version>1.8.1</version>
-                </plugin>
-                <!-- （4）release插件，下面checkModificationExcludes是排除一些目录文件不要发布。 -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.3</version>
-                    <configuration>
-                        <mavenExecutorId>forked-path</mavenExecutorId>
-                        <useReleaseProfile>false</useReleaseProfile>
-                        <arguments>-Psonatype-oss-release</arguments>
-                        <pushChanges>false</pushChanges>
-                        <localCheckout>false</localCheckout>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                        <checkModificationExcludes>
-                            <checkModificationExclude>.idea/</checkModificationExclude>
-                            <checkModificationExclude>.idea/*</checkModificationExclude>
-                            <checkModificationExclude>test/</checkModificationExclude>
-                            <checkModificationExclude>test/*</checkModificationExclude>
-                            <checkModificationExclude>.idea/libraries/*</checkModificationExclude>
-                            <checkModificationExclude>pom.xml</checkModificationExclude>
-                            <checkModificationExclude>release-pom.xml</checkModificationExclude>
+        <!--                <skipDeprecated>true</skipDeprecated>-->
+        <!--                &lt;!&ndash;<outputDir>../simple-robot-2.0-doc/docs/${project.name}/doc</outputDir>&ndash;&gt;-->
 
-                            <checkModificationExclude>jdonframework.iml</checkModificationExclude>
-                            <checkModificationExclude>JdonAccessory/jdon-hibernate3x/jdon-hibernate3x.iml
-                            </checkModificationExclude>
-                            <checkModificationExclude>JdonAccessory/jdon-jdbc/jdon-jdbc.iml</checkModificationExclude>
-                            <checkModificationExclude>JdonAccessory/jdon-remote/jdon-remote.iml
-                            </checkModificationExclude>
-                            <checkModificationExclude>JdonAccessory/jdon-struts1x/jdon-struts1x.iml
-                            </checkModificationExclude>
-                        </checkModificationExcludes>
-                    </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-scm-plugin</artifactId>
-                            <version>1.8.1</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <!-- GPG
-                第3步：进行GPG签名加密，
-                这是对生成的jar包，javadoc包等进行签名加密，
-                保证你的文件上传到服务器过程中不会被拦截和破解安全，服务器那边使用你提供的密钥对进行解密。
-                在pom.xml的build一级目录下的plugins里面加入下面：
-                -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>1.6</version>
-                    <executions>
-                        <execution>
-                            <id>sign-artifacts</id>
-                            <phase>install</phase>
-                            <goals>
-                                <goal>sign</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <!--                &lt;!&ndash; Use default or set to custom path to cache directory to enable package-list caching. &ndash;&gt;-->
+        <!--                &lt;!&ndash; When set to default, caches stored in $USER_HOME/.cache/dokka &ndash;&gt;-->
+        <!--                <cacheRoot>default</cacheRoot>-->
+
+        <!--                <offlineMode>true</offlineMode>-->
+
+        <!--            </configuration>-->
+        <!--        </plugin>-->
+
+
+        <!--        &lt;!&ndash; maven仓库相关插件 &ndash;&gt;-->
+        <!--        &lt;!&ndash; (1) deploy插件 &ndash;&gt;-->
+        <!--        <plugin>-->
+        <!--            <groupId>org.apache.maven.plugins</groupId>-->
+        <!--            <artifactId>maven-deploy-plugin</artifactId>-->
+
+        <!--            &lt;!&ndash;<version>3.0.0-M1</version>&ndash;&gt;-->
+        <!--            <version>2.8.2</version>-->
+        <!--            <executions>-->
+        <!--                <execution>-->
+        <!--                    <id>default-deploy</id>-->
+        <!--                    <phase>deploy</phase>-->
+        <!--                    <goals>-->
+        <!--                        <goal>deploy</goal>-->
+        <!--                    </goals>-->
+        <!--                </execution>-->
+        <!--            </executions>-->
+        <!--        </plugin>-->
+        <!--        &lt;!&ndash; （2）sonatype的staging插件 &ndash;&gt;-->
+        <!--        <plugin>-->
+        <!--            <groupId>org.sonatype.plugins</groupId>-->
+        <!--            <artifactId>nexus-staging-maven-plugin</artifactId>-->
+        <!--            <version>1.6.8</version>-->
+        <!--            <extensions>true</extensions>-->
+        <!--            <configuration>-->
+        <!--                <serverId>oss</serverId>-->
+        <!--                <nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
+        <!--                <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
+        <!--            </configuration>-->
+        <!--        </plugin>-->
+        <!--        &lt;!&ndash; （3）SCM插件 &ndash;&gt;-->
+        <!--        <plugin>-->
+        <!--            <groupId>org.apache.maven.plugins</groupId>-->
+        <!--            <artifactId>maven-scm-plugin</artifactId>-->
+        <!--            <version>1.8.1</version>-->
+        <!--        </plugin>-->
+        <!--        &lt;!&ndash; （4）release插件，下面checkModificationExcludes是排除一些目录文件不要发布。 &ndash;&gt;-->
+        <!--        <plugin>-->
+        <!--            <groupId>org.apache.maven.plugins</groupId>-->
+        <!--            <artifactId>maven-release-plugin</artifactId>-->
+        <!--            <version>2.5.3</version>-->
+        <!--            <configuration>-->
+        <!--                <mavenExecutorId>forked-path</mavenExecutorId>-->
+        <!--                <useReleaseProfile>false</useReleaseProfile>-->
+        <!--                <arguments>-Psonatype-oss-release</arguments>-->
+        <!--                <pushChanges>false</pushChanges>-->
+        <!--                <localCheckout>false</localCheckout>-->
+        <!--                <autoVersionSubmodules>true</autoVersionSubmodules>-->
+        <!--                <checkModificationExcludes>-->
+        <!--                    <checkModificationExclude>.idea/</checkModificationExclude>-->
+        <!--                    <checkModificationExclude>.idea/*</checkModificationExclude>-->
+        <!--                    <checkModificationExclude>test/</checkModificationExclude>-->
+        <!--                    <checkModificationExclude>test/*</checkModificationExclude>-->
+        <!--                    <checkModificationExclude>.idea/libraries/*</checkModificationExclude>-->
+        <!--                    <checkModificationExclude>pom.xml</checkModificationExclude>-->
+        <!--                    <checkModificationExclude>release-pom.xml</checkModificationExclude>-->
+
+        <!--                    <checkModificationExclude>jdonframework.iml</checkModificationExclude>-->
+        <!--                    <checkModificationExclude>JdonAccessory/jdon-hibernate3x/jdon-hibernate3x.iml-->
+        <!--                    </checkModificationExclude>-->
+        <!--                    <checkModificationExclude>JdonAccessory/jdon-jdbc/jdon-jdbc.iml</checkModificationExclude>-->
+        <!--                    <checkModificationExclude>JdonAccessory/jdon-remote/jdon-remote.iml-->
+        <!--                    </checkModificationExclude>-->
+        <!--                    <checkModificationExclude>JdonAccessory/jdon-struts1x/jdon-struts1x.iml-->
+        <!--                    </checkModificationExclude>-->
+        <!--                </checkModificationExcludes>-->
+        <!--            </configuration>-->
+        <!--            <dependencies>-->
+        <!--                <dependency>-->
+        <!--                    <groupId>org.apache.maven.plugins</groupId>-->
+        <!--                    <artifactId>maven-scm-plugin</artifactId>-->
+        <!--                    <version>1.8.1</version>-->
+        <!--                </dependency>-->
+        <!--            </dependencies>-->
+        <!--        </plugin>-->
+        <!--        &lt;!&ndash; GPG-->
+        <!--        第3步：进行GPG签名加密，-->
+        <!--        这是对生成的jar包，javadoc包等进行签名加密，-->
+        <!--        保证你的文件上传到服务器过程中不会被拦截和破解安全，服务器那边使用你提供的密钥对进行解密。-->
+        <!--        在pom.xml的build一级目录下的plugins里面加入下面：-->
+        <!--        &ndash;&gt;-->
+        <!--        <plugin>-->
+        <!--            <groupId>org.apache.maven.plugins</groupId>-->
+        <!--            <artifactId>maven-gpg-plugin</artifactId>-->
+        <!--            <version>1.6</version>-->
+        <!--            <executions>-->
+        <!--                <execution>-->
+        <!--                    <id>sign-artifacts</id>-->
+        <!--                    <phase>install</phase>-->
+        <!--                    <goals>-->
+        <!--                        <goal>sign</goal>-->
+        <!--                    </goals>-->
+        <!--                </execution>-->
+        <!--            </executions>-->
+        <!--        </plugin>-->
+        <!--    </plugins>-->
+        <!--</pluginManagement>-->
     </build>
 
     <pluginRepositories>
@@ -778,30 +779,6 @@
             <url>https://jcenter.bintray.com/</url>
         </pluginRepository>
     </pluginRepositories>
-
-
-    <!-- licenses -->
-    <licenses>
-        <license>
-            <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-
-    <!-- developers -->
-    <developers>
-        <developer>
-            <roles>
-                <role>Project manager</role>
-                <role>Architect</role>
-                <role>Developer</role>
-                <role>Cleaner</role>
-                <role>Mascot</role>
-            </roles>
-            <name>ForteScarlet</name>
-            <email>ForteScarlet@163.com</email>
-        </developer>
-    </developers>
 
     <distributionManagement>
         <snapshotRepository>
