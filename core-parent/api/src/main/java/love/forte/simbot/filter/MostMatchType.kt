@@ -12,33 +12,44 @@
  *
  */
 
+@file:JvmName("MostMatchTypes")
 package love.forte.simbot.filter
 
 
 /**
  *
- * 过滤器的多匹配类型，当存在多个可匹配值（例如codes等），
+ * 过滤器的多匹配类型，当存在多个可匹配值（filter），
  * 则此函数指定一个多值的匹配规则。
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-enum class MostMatchType(private val mostMatchFunc: (FilterData, Iterable<(FilterData) -> Boolean>) -> Boolean) : MostMatcher {
+enum class MostMatchType(
+    val filterMatcher: MostFilterMatcher,
+    private val stringMatcher: MostMatcher<String>
+) : MostMatcher<String> by stringMatcher {
     /** 任意匹配。 */
-    ANY({ d, it ->  it.any { t -> t(d) } }),
+    ANY(::any, ::any),
 
     /** 全部匹配。 */
-    ALL({ d, it -> it.all { t -> t(d) } }),
+    ALL(::all, ::all),
 
     /** 任意不匹配。 */
-    ANY_NO({ d, it ->  it.any { t -> !t(d) } }),
+    ANY_NO(::anyNo, ::anyNo),
 
     /** 没有任何匹配。 */
-    NONE({ d, it ->  it.all { t -> !t(d) } });
+    NONE(::none, ::none);
 
 
     /**
      * 匹配多个可判断函数。
      */
-    override fun mostMatch(filterData: FilterData, funcs: Iterable<(FilterData) -> Boolean>): Boolean =
-        mostMatchFunc(filterData, funcs)
+    fun mostMatch(filterData: FilterData, funcs: Iterable<(FilterData) -> Boolean>): Boolean =
+        filterMatcher(filterData, funcs)
+
 }
+
+
+internal fun <T> any(value: T, matchers: Iterable<(T) -> Boolean>): Boolean = matchers.any { t -> t(value) }
+internal fun <T> all(value: T, matchers: Iterable<(T) -> Boolean>): Boolean = matchers.all { t -> t(value) }
+internal fun <T> anyNo(value: T, matchers: Iterable<(T) -> Boolean>): Boolean = matchers.any { t -> !t(value) }
+internal fun <T> none(value: T, matchers: Iterable<(T) -> Boolean>): Boolean = matchers.all { t -> !t(value) }

@@ -42,7 +42,7 @@ public interface AnnotationFiltersListenerFilter : ListenerFilter {
     /**
      * 子过滤器多项匹配规则。
      */
-    val childrenMostMatchType: MostMatcher
+    val childrenMostMatchType: MostFilterMatcher
 
     /**
      * 获取所有的自定义过滤器。
@@ -52,7 +52,7 @@ public interface AnnotationFiltersListenerFilter : ListenerFilter {
     /**
      * 自定义过滤器多项匹配规则。
      */
-    val customFilterMostMatchType: MostMatcher
+    val customFilterMostMatchType: MostFilterMatcher
 
     /**
      * 匹配当前消息的账号列表。
@@ -126,7 +126,7 @@ public class AnnotationFiltersListenerFilterImpl(
     /**
      * 子过滤器多项匹配规则。
      */
-    override val childrenMostMatchType: MostMatcher = filters.mostMatchType
+    override val childrenMostMatchType: MostFilterMatcher = filters.mostMatchType.filterMatcher
 
     /**
      * 获取所有的自定义过滤器。
@@ -137,7 +137,7 @@ public class AnnotationFiltersListenerFilterImpl(
     /**
      * 自定义过滤器多项匹配规则。
      */
-    override val customFilterMostMatchType: MostMatcher = filters.customMostMatchType
+    override val customFilterMostMatchType: MostFilterMatcher = filters.customMostMatchType.filterMatcher
 
     /**
      * 匹配当前消息的账号列表。

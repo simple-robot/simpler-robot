@@ -25,15 +25,16 @@ public object FilterTargets {
 
     // context.[g|i|b].[n|a].value
 
+    internal const val CONTEXT = "context"
     internal const val GLOBAL = "global"
     internal const val INSTANT = "instant"
     internal const val BOTH = "both"
 
-    internal const val CONTEXT_GLOBAL = "context.$GLOBAL"
-    internal const val CONTEXT_INSTANT = "context.$INSTANT"
+    internal const val CONTEXT_GLOBAL = "$CONTEXT.$GLOBAL"
+    internal const val CONTEXT_INSTANT = "$CONTEXT.$INSTANT"
 
     /** 优先尝试使用instant，如果没有则尝试global。 */
-    internal const val CONTEXT_BOTH = "context.$BOTH"
+    internal const val CONTEXT_BOTH = "$CONTEXT.$BOTH"
 
     internal const val NULLABLE = "nullable"
     internal const val NONNULL = "nonnull"

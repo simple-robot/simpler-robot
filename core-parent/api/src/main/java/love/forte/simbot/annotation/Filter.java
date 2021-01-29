@@ -91,6 +91,7 @@ public @interface Filter {
 
     /**
      * 如果 {@link #target()} 未指定，是否尝试使用 {@link Filters#target()} .
+     * @since 2.0.0
      */
     boolean targetByParent() default true;
 

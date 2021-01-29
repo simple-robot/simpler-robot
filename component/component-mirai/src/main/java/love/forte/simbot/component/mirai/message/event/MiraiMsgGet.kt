@@ -75,7 +75,7 @@ public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : Abs
     MessageGet {
 
     /** 默认的ID策略，使用source获取。 */
-    override val id: String = with(event.source) {
+    override val id: String get() = with(event.source) {
         "${this.fromId}.${this.ids.joinToString(",")}"
     }
 
