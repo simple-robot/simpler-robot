@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.mirai.sender
 
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.*
@@ -21,13 +22,12 @@ import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
-import love.forte.simbot.api.message.events.FriendAddRequest
-import love.forte.simbot.api.message.events.GroupAddRequest
-import love.forte.simbot.api.message.events.MessageGet
-import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.api.message.containers.GroupContainer
+import love.forte.simbot.api.message.events.*
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.api.sender.SetterFactory
 import love.forte.simbot.component.mirai.message.MiraiMessageFlag
+import love.forte.simbot.component.mirai.message.MiraiMessageSourceFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiBotInvitedJoinRequestFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiFriendRequestFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiGroupMemberJoinRequestFlagContent
@@ -73,9 +73,9 @@ public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : 
         return if (f is MiraiFriendRequestFlagContent) {
             val event = f.event
             if (agree) {
-                bot.launch { event.accept() }
+                GlobalScope.launch { event.accept() }
             } else {
-                bot.launch { event.reject(blackList) }
+                GlobalScope.launch { event.reject(blackList) }
             }
             true.toCarrier()
         } else {
@@ -98,9 +98,9 @@ public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : 
             is MiraiGroupMemberJoinRequestFlagContent -> {
                 val event = f.event
                 if (agree) {
-                    bot.launch { event.accept() }
+                    GlobalScope.launch { event.accept() }
                 } else {
-                    bot.launch { event.reject(blackList, why ?: "") }
+                    GlobalScope.launch { event.reject(blackList, why ?: "") }
                 }
                 true.toCarrier()
             }
@@ -108,10 +108,10 @@ public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : 
             is MiraiBotInvitedJoinRequestFlagContent -> {
                 val event = f.event
                 if (agree) {
-                    bot.launch { event.accept() }
+                    GlobalScope.launch { event.accept() }
                 } else {
                     // only ignore, no reject.
-                    bot.launch { event.ignore() }
+                    GlobalScope.launch { event.ignore() }
                 }
                 true.toCarrier()
             }
@@ -153,10 +153,10 @@ public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : 
         bot.member(groupCode, memberCode).apply {
             time.takeIf { time > 0 }?.let { t ->
                 val muteTime: Long = t timeBy timeUnit timeAs Seconds
-                bot.launch {
+                GlobalScope.launch {
                     this@apply.mute(muteTime.toInt())
                 }
-            } ?: bot.launch {
+            } ?: GlobalScope.launch {
                 this@apply.unmute()
             }
         }
@@ -247,7 +247,7 @@ public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : 
         memberCode: Long,
         why: String?,
     ): Carrier<Boolean> {
-        bot.launch {
+        GlobalScope.launch {
             bot.member(groupCode, memberCode).kick(why ?: "")
         }
         return true.toCarrier()
@@ -346,7 +346,7 @@ public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : 
      * 删除好友。
      */
     private fun setFriendDelete0(code: Long): Carrier<Boolean> {
-        bot.launch { bot.friend(code).delete() }
+        GlobalScope.launch { bot.friend(code).delete() }
         return true.toCarrier()
     }
 
@@ -358,4 +358,43 @@ public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : 
 
     override fun setFriendDelete(friend: AccountCodeContainer): Carrier<Boolean> =
         setFriendDelete0(friend.accountCodeNumber)
+
+
+    /**
+     * 设置群精华消息。
+     */
+    fun setGroupEssenceMessage(group: Long, msgFlag: Flag<GroupMsg.FlagContent>): Carrier<Boolean> {
+        if (msgFlag !is MiraiMessageFlag) {
+            throw IllegalArgumentException("Mirai only supports setting the essence message through the group Msg.flag under mirai, but type(${msgFlag::class.java})")
+        }
+        (msgFlag.flag as MiraiMessageSourceFlagContent).source?.let { s ->
+            GlobalScope.launch { bot.getGroupOrFail(group.toLong()).setEssenceMessage(s) }
+            true.toCarrier()
+        } ?: throw IllegalArgumentException("Mirai message source is empty.")
+
+        return true.toCarrier()
+    }
+
+    /**
+     * 设置群精华消息。
+     */
+    fun setGroupEssenceMessage(group: String, msgFlag: Flag<GroupMsg.FlagContent>) =
+        setGroupEssenceMessage(group.toLong(), msgFlag)
+
+    /**
+     * 设置群精华消息。
+     */
+    fun setGroupEssenceMessage(group: GroupCodeContainer, msgFlag: Flag<GroupMsg.FlagContent>) =
+        setGroupEssenceMessage(group.groupCodeNumber, msgFlag)
+
+    /**
+     * 设置群精华消息。
+     */
+    fun setGroupEssenceMessage(group: GroupContainer, msgFlag: Flag<GroupMsg.FlagContent>) =
+        setGroupEssenceMessage(group.groupInfo, msgFlag)
+
+
+
+
+
 }

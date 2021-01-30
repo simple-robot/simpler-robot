@@ -72,7 +72,12 @@ public inline fun <C: MiraiMessageSourceFlagContent> miraiMessageFlag(flag: () -
 /**
  * mirai 消息标识。
  */
-public interface MiraiMessageFlag<C: MiraiMessageSourceFlagContent> : Flag<C>
+public interface MiraiMessageFlag<C: MiraiMessageSourceFlagContent> : Flag<C> {
+    /**
+     * 获取一个 [mirai消息标识主体][MiraiMessageSourceFlagContent].
+     */
+    override val flag: C
+}
 
 /**
  * 标识类型为 [MiraiMessageSourceFlagContent] 的 [Flag] 实例，
