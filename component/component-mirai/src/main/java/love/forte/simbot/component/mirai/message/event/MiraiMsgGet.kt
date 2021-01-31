@@ -21,9 +21,6 @@ import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
 import net.mamoe.mirai.contact.Contact
-import net.mamoe.mirai.contact.Friend
-import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.MessageChain
@@ -75,7 +72,7 @@ public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : Abs
     MessageGet {
 
     /** 默认的ID策略，使用source获取。 */
-    override val id: String = with(event.source) {
+    override val id: String get() = with(event.source) {
         "${this.fromId}.${this.ids.joinToString(",")}"
     }
 
@@ -83,12 +80,7 @@ public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : Abs
 
     /**
      * 消息事件主体.
-     *
-     * - 对于好友消息, 这个属性为 [Friend] 的实例, 与 [sender] 引用相同;
-     * - 对于临时会话消息, 这个属性为 [Member] 的实例, 与 [sender] 引用相同;
-     * - 对于群消息, 这个属性为 [Group] 的实例, 与 [GroupMessageEvent.group] 引用相同
-     *
-     * 在回复消息时, 可通过 [subject] 作为回复对象
+     * @see MessageEvent.subject
      */
     val subject: Contact get() = event.subject
 

@@ -81,6 +81,12 @@
 
 simpler-robot文档：https://www.yuque.com/simpler-robot/simpler-robot-doc
 
+## Demo
+各个组件的Demo项目正在逐步建设。
+目前已经存在的Demo：
+- [原生simbot-mirai-demo](https://github.com/simple-robot/simbot-mirai-demo)
+
+
 ## 新特性
 既然是相对于1.x版本的新版本，那么必然会有更优异的特性。
 

@@ -77,6 +77,9 @@ public interface ListenerContext : Context<ContextMap> {
  * 监听函数上下文构建工厂。
  */
 public interface ListenerContextFactory {
+    /**
+     * 通过 [当前监听事件实例][msgGet] 和 [上下文映射表][contextMap] 构建一个本次监听所需的上下文实例。
+     */
     fun getListenerContext(
         msgGet: MsgGet,
         contextMap: ContextMap,

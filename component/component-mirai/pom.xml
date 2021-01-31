@@ -5,7 +5,7 @@
     <parent>
         <groupId>love.forte.simple-robot</groupId>
         <artifactId>component-parent</artifactId>
-        <version>2.0.0-SNAPSHOT</version><!--v-->
+        <version>2.0.0.1-SNAPSHOT</version><!--v-->
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -22,7 +22,7 @@
     <url>https://github.com/ForteScarlet/simpler-robot/tree/dev/component/component-mirai</url>
 
     <properties>
-        <mirai.version>2.1.1</mirai.version>
+        <mirai.version>2.2.0</mirai.version>
         <mirai-login-solver-selenium.version>1.0-dev-6</mirai-login-solver-selenium.version>
     </properties>
 

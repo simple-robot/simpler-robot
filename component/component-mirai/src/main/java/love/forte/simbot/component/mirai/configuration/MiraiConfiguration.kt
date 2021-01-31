@@ -91,14 +91,15 @@ public class MiraiConfiguration {
     @field:ConfigInject
     var deviceInfoSeed: Long = 1L
 
-    // @field:ConfigInject("mirai.autoRelogin")
-    // var autoRelogin: Boolean = false
-
-    // @field:ConfigInject
-    // var loginSolverType: MiraiLoginSolverType = MiraiLoginSolverType.DEFAULT
 
     @field:ConfigInject
     var deviceInfoFile: String? = ""
+
+    /**
+     * @see BotConfiguration.highwayUploadCoroutineCount
+     */
+    @field:ConfigInject
+    var highwayUploadCoroutineCount: Int = BotConfiguration.Default.highwayUploadCoroutineCount
 
     /**
      * mirai官方配置类获取函数，默认为其默认值
