@@ -99,7 +99,7 @@ simpler-robot文档：https://www.yuque.com/simpler-robot/simpler-robot-doc
 - 更灵活的事件监听。优化核心注解`@Listen`的使用。
 - 更灵活的事件过滤。优化核心注解`@Filter`的使用。
 - 分工更明确的模块。核心、组件、序列化、http客户端、定时任务...各司其职，并提供丰富的实现模块来减少你的项目冗余依赖量。
-- 更好的问题反馈。所有的官方模块都会汇总于此。开启一个[issue](https://github.com/ForteScarlet/simpler-robot/issues) 来反馈问题的效率远远高于在群里茫然的提问。
+- 更好的问题反馈。所有的官方模块都会汇总于此。开启一个 [issue](https://github.com/ForteScarlet/simpler-robot/issues) 来反馈问题的效率远远高于在群里茫然的提问。
 - 以及更多...
 
 
