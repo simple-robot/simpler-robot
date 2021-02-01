@@ -6,7 +6,7 @@
     <parent>
         <artifactId>project</artifactId>
         <groupId>love.forte.simple-robot</groupId>
-        <version>2.0.0.1-SNAPSHOT</version><!--v-->
+        <version>2.0.0</version><!--v-->
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -19,7 +19,7 @@
         <module>client-core</module>
         <module>client-ktor</module>
         <module>client-restTemplate</module>
-        <module>client-urlConnection</module>
+        <!--<module>client-urlConnection</module>-->
     </modules>
 
     <properties>
