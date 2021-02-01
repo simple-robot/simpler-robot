@@ -159,7 +159,7 @@ object UnsafeViolenceAndroidBotCookieUtils {
  */
 val Bot.cookies: Cookies? get() = try {
     UnsafeViolenceAndroidBotCookieUtils.cookies(this)
-} catch (e: Exception) {
+} catch (e: Throwable) {
     logger.error("Cannot get bot cookies.", e)
     null
 }
