@@ -23,6 +23,7 @@ import love.forte.simbot.api.message.events.MessageGet
 public object TextFilterTargetProcessor :
     FilterTargetProcessor by TextTarget,
     ConstFilterTargetProcessorChecker<FilterTargetProcessor>(FilterTargets.TEXT, TextTarget) {
+
     private object TextTarget : FilterTargetProcessor {
         /** 获取目标匹配值。*/
         override fun getTargetText(filterData: FilterData): String? = filterData.msgGet.text

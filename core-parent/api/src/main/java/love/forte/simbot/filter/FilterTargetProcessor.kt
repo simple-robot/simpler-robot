@@ -62,6 +62,14 @@ public interface FilterTargetProcessor : Processor<FilterData, FilterTargetProce
 
     /**
      * 获取目标匹配值。
+     *
+     * 此值最终会与 [love.forte.simbot.annotation.Filter.value] 进行匹配比对。
+     * 如果返回值为null：如果当前事件类型为 [消息事件][love.forte.simbot.api.message.events.MessageGet]，
+     * 那么理论上是不允许为null的，因此如果最终为null，则会视为**空字符串**(`''`) 进行匹配。
+     * 如果是其他事件类型，直接认定为匹配失败。
+     *
+     * 当然，如果[love.forte.simbot.annotation.Filter.value]为空，则会直接放行。
+     *
      */
     fun getTargetText(filterData: FilterData): String?
 
