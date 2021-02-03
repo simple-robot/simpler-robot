@@ -16,7 +16,7 @@
 @file:JvmMultifileClass
 package love.forte.simbot.api.message
 
-import love.forte.catcode.Neko
+import catcode.Neko
 import love.forte.simbot.api.message.EmptyContent.cats
 import love.forte.simbot.api.message.EmptyContent.msg
 

@@ -16,9 +16,9 @@
 
 package love.forte.simbot.component.lovelycat.sender
 
-import love.forte.catcode.CAT_HEAD
-import love.forte.catcode.CatCodeUtil
-import love.forte.catcode.codes.Nyanko
+import catcode.CAT_HEAD
+import catcode.CatCodeUtil
+import catcode.codes.Nyanko
 import love.forte.common.utils.Carrier
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.assists.Flag

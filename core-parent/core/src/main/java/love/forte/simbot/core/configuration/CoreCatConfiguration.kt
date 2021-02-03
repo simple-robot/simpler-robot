@@ -14,9 +14,9 @@
 
 package love.forte.simbot.core.configuration
 
-import love.forte.catcode.CatCodeUtil
-import love.forte.catcode.CatDecoder
-import love.forte.catcode.CatEncoder
+import catcode.CatCodeUtil
+import catcode.CatDecoder
+import catcode.CatEncoder
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.SpareBeans
 

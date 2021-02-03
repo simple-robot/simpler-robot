@@ -16,6 +16,8 @@
 
 package love.forte.simbot.component.mirai.utils
 
+import catcode.*
+import catcode.codes.Nyanko
 import cn.hutool.core.io.FileUtil
 import io.ktor.client.*
 import io.ktor.client.request.*
@@ -24,8 +26,6 @@ import io.ktor.http.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import love.forte.catcode.*
-import love.forte.catcode.codes.Nyanko
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.contact.Group

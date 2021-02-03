@@ -14,10 +14,10 @@
 
 package love.forte.simbot.component.mirai.message
 
+import catcode.CatCodeUtil
+import catcode.Neko
 import cn.hutool.core.io.FileUtil
 import io.ktor.http.*
-import love.forte.catcode.CatCodeUtil
-import love.forte.catcode.Neko
 import love.forte.simbot.api.message.MessageContentBuilder
 import love.forte.simbot.api.message.MessageContentBuilderFactory
 import love.forte.simbot.api.message.containers.AccountCodeContainer

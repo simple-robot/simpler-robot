@@ -14,9 +14,10 @@
 
 package love.forte.simbot.component.ding.utils
 
+import catcode.CatCodeUtil
+import catcode.CodeTemplate
+import catcode.Neko
 import love.forte.catcode.CatCodeUtil
-import love.forte.catcode.CodeTemplate
-import love.forte.catcode.Neko
 import love.forte.simbot.component.ding.exception.DingSpecialMessageException
 import love.forte.simbot.component.ding.exception.DingUnsupportedCodeException
 import love.forte.simbot.component.ding.messages.*

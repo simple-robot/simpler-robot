@@ -29,7 +29,8 @@ class TestListener {
         println("msg     : " + msg.msg)
         println("content : " + msg.msgContent)
         msg.msgContent.cats.forEach {
-            println(it)
+            println(it::class)
+            println(it.toString())
         }
 
     }

@@ -33,7 +33,7 @@ public fun interface MessageContentBuilderFactory {
  * 用于构建一个 [MessageContent] 实例的构建器，
  * 可通过注入一个 [MessageContentBuilderFactory] 来获取当前组件所提供的工厂实现。
  *
- * 不同于使用[猫猫码工具][love.forte.catcode.CatCodeUtil]，
+ * 不同于使用[猫猫码工具][catcode.CatCodeUtil]，
  * 猫猫码作为一种中间化的消息格式，有着更为灵活的实现方式与更高兼容性与扩展性。
  *
  * 但是对于一种组件来讲，猫猫码的解析会增加对效率的损耗。

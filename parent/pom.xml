@@ -56,7 +56,7 @@
         <quartz.version>2.3.2</quartz.version>
 
         <commons.version>1.0.0-ALPHA.5</commons.version>
-        <catCode.version>1.0.0-ALPHA.3</catCode.version>
+        <catCode.version>1.0.0-BETA.1</catCode.version>
 
         <!-- plugins -->
 

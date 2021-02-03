@@ -14,7 +14,7 @@
 
 package love.forte.simbot.core.filter
 
-import love.forte.catcode.Neko
+import catcode.Neko
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.events.PrivateMsg

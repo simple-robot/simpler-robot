@@ -15,13 +15,13 @@
 
 package love.forte.simbot.component.mirai.message
 
+import catcode.CatCodeUtil
+import catcode.Neko
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import love.forte.catcode.CatCodeUtil
-import love.forte.catcode.Neko
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.component.mirai.sender.isNotEmptyMsg
 import love.forte.simbot.component.mirai.utils.toNeko
