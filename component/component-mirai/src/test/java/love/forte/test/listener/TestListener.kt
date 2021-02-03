@@ -15,21 +15,23 @@
 package love.forte.test.listener
 
 import love.forte.common.ioc.annotation.Beans
-import love.forte.simbot.annotation.OnGroup
 import love.forte.simbot.annotation.OnPrivate
-import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.api.message.events.MessageGet
 
 /**
  * @author ForteScarlet
  */
 @Beans
 class TestListener {
-
     @OnPrivate
-    @OnGroup
-    fun listen(msg: MsgGet) {
-        println(msg)
+    fun listen(msg: MessageGet) {
+        println("text    : " + msg.text)
+        println("msg     : " + msg.msg)
+        println("content : " + msg.msgContent)
+        msg.msgContent.cats.forEach {
+            println(it)
+        }
 
-    }// = Reply.reply("Hello. this is Quick reply.", at = true)
+    }
 }
 
