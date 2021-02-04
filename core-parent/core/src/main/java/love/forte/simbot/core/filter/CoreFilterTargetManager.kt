@@ -17,6 +17,7 @@ package love.forte.simbot.core.filter
 import love.forte.simbot.filter.FilterTargetManager
 import love.forte.simbot.filter.FilterTargetProcessor
 import love.forte.simbot.filter.FilterTargetProcessorChecker
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 
 
@@ -27,11 +28,18 @@ import java.util.concurrent.CopyOnWriteArrayList
  */
 public class CoreFilterTargetManager : FilterTargetManager {
 
+    private val targetCache: MutableMap<String, Int> = ConcurrentHashMap(8)
+
     /**
      * 获取已存在的处理器列表。 此列表为 [可变列表][MutableList],
      * 允许变更其中 [FilterTargetProcessorChecker] 的内容，例如顺序等。
      */
     override val checkers: MutableList<FilterTargetProcessorChecker> = CopyOnWriteArrayList()
+        get() {
+            // 每次获取此值，都会清空target缓存
+            targetCache.clear()
+            return field
+        }
 
     /**
      * 获取一个 [target] 所对应的解析器。会按照保存中的所有解析器的 [FilterTargetProcessorChecker.check] 进行判断，
@@ -40,12 +48,26 @@ public class CoreFilterTargetManager : FilterTargetManager {
      *
      */
     override fun getProcessor(target: String): FilterTargetProcessor {
-        for (checker in checkers) {
-            val processor = checker.check(target)
+        // try for cache
+        val cacheChecker = targetCache[target]?.let { index -> checkers[index] }
+
+        var processor: FilterTargetProcessor? = cacheChecker?.check(target)
+
+        if (processor != null) {
+            return processor
+        } else {
+            targetCache.remove(target)
+        }
+
+
+        for ((i, checker) in checkers.withIndex()) {
+            processor = checker.check(target)
             if (processor != null) {
+                targetCache[target] = i
                 return processor
             }
         }
+
         @Suppress("UNREACHABLE_CODE")
         return FilterTargetProcessorChecker.check(target)
     }

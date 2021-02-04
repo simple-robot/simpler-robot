@@ -129,4 +129,7 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 
 ## [RC.3](https://github.com/ForteScarlet/simpler-robot/releases/tag/v2.0.0-RC.3)
 
+## RC.4
+### 核心
+- 优化过滤器目标处理器。
 
