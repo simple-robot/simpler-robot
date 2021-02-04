@@ -132,4 +132,5 @@ mirai组件中优化 `MessageContentBuilder` 中，通过input流和byte数组�
 ## RC.4
 ### 核心
 - 优化过滤器目标处理器。
+- 更新猫猫码至 [v1.0.0-BETA.1](https://github.com/ForteScarlet/CatCode/releases/tag/v1.0.0-BETA.1)
 
