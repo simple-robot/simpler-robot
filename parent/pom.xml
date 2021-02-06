@@ -770,9 +770,6 @@
 
         <profile>
             <id>snapshot</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <repositories>
                 <repository>
                     <id>snapshots-repo</id>
