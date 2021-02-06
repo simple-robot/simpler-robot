@@ -20,6 +20,7 @@ import catcode.*
 import catcode.codes.Nyanko
 import cn.hutool.core.io.FileUtil
 import io.ktor.client.*
+import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -28,6 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.component.mirai.message.*
+import love.forte.simbot.component.mirai.message.event.MiraiMessageMsgGet
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
@@ -47,11 +49,14 @@ import java.io.InputStream
 /**
  * 将一个 [MessageContent] 转化为一个 [MiraiMessageContent]。
  */
-public fun MessageContent.toMiraiMessageContent(message: MessageChain?): MiraiMessageContent {
+public fun MessageContent.toMiraiMessageContent(
+    message: MessageChain?,
+    cache: MiraiMessageCache? = null,
+): MiraiMessageContent {
     return if (this is MiraiMessageContent) {
         this
     } else {
-        msg.toMiraiMessageContent(message)
+        msg.toMiraiMessageContent(message, cache)
     }
 }
 
@@ -59,10 +64,10 @@ public fun MessageContent.toMiraiMessageContent(message: MessageChain?): MiraiMe
 /**
  * 将可能存在catcode的字符串文本转化为 [MiraiMessageContent]。
  */
-public fun String.toMiraiMessageContent(message: MessageChain?): MiraiMessageContent {
+public fun String.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessageCache? = null): MiraiMessageContent {
     return CatCodeUtil.split(this) {
         // cat code.
-        if (startsWith(CAT_HEAD)) Nyanko.byCode(this).toMiraiMessageContent(message)
+        if (startsWith(CAT_HEAD)) Nyanko.byCode(this).toMiraiMessageContent(message, cache)
         // normal text.
         else MiraiSingleMessageContent(PlainText(this.deCatText()))
     }.let { MiraiListMessageContent(it) }
@@ -72,7 +77,7 @@ public fun String.toMiraiMessageContent(message: MessageChain?): MiraiMessageCon
  * [Neko] 转化为 [MiraiMessageContent]。
  */
 @OptIn(MiraiExperimentalApi::class)
-public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageContent {
+public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessageCache? = null): MiraiMessageContent {
     return when (this.type) {
         "text", "message" -> this["text"]?.let {
             MiraiSingleMessageContent(PlainText(it))
@@ -142,14 +147,14 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
                                 (it is FlashImage && it.image.imageId == id)
                     }
                     if (foundImg != null) {
-                        if(foundImg is Image) {
+                        if (foundImg is Image) {
                             return if (flash) {
                                 MiraiSingleMessageContent(foundImg.flash())
                             } else {
                                 MiraiSingleMessageContent(foundImg)
                             }
                         }
-                        if(foundImg is FlashImage) {
+                        if (foundImg is FlashImage) {
                             return if (flash) {
                                 MiraiSingleMessageContent(foundImg.image.flash())
                             } else {
@@ -300,8 +305,10 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
 
         // 音乐分享
         "music" -> {
-            val kindString = this["type"] ?: this["kind"] ?: throw IllegalArgumentException("No 'type' or 'kind' in $this")
-            val musicUrl = this["musicUrl"] ?: this["audio"] ?: throw IllegalArgumentException("No 'musicUrl' or audio in $this")
+            val kindString =
+                this["type"] ?: this["kind"] ?: throw IllegalArgumentException("No 'type' or 'kind' in $this")
+            val musicUrl =
+                this["musicUrl"] ?: this["audio"] ?: throw IllegalArgumentException("No 'musicUrl' or audio in $this")
 
             // `neteaseCloud`、`qq`、`migu`
 
@@ -310,7 +317,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
             var musicJumpUrl: String
 
             @Suppress("SpellCheckingInspection")
-            val musicKind = when(kindString) {
+            val musicKind = when (kindString) {
                 "neteaseCloud", "NeteaseCloud", "neteaseCloudMusic", "NeteaseCloudMusic" -> MusicKind.NeteaseCloudMusic.also {
                     musicKindDisplay = "网易云音乐"
                     musicPictureUrl = "https://s4.music.126.net/style/web2/img/default/default_album.jpg"
@@ -347,6 +354,19 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
         }
 
 
+        // 引用回复，当不支持缓存、无法获取等情况的时候会忽略。
+        "quote" -> {
+            this["id"]?.let { id ->
+                val cacheMsg =
+                    cache?.getGroupMsg(id) ?: cache?.getPrivateMsg(id) ?: return@let MiraiSingleMessageContent
+                if (cacheMsg !is MiraiMessageMsgGet<*>) {
+                    return@let MiraiSingleMessageContent
+                }
+
+                MiraiSingleMessageContent(QuoteReply(cacheMsg.message))
+            } ?: MiraiSingleMessageContent
+        }
+
 
         else -> {
             val kvs = this.entries.joinToString(",") { it.key + "=" + it.value }
@@ -363,19 +383,19 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?): MiraiMessageConte
 /**
  * 将一个 [MessageChain] 转化为携带catcode的字符串。
  */
-public fun MessageChain.toCatCode(): String {
-    return this.asSequence().map { it.toNeko() }.joinToString("") { it.toString() }
+public fun MessageChain.toCatCode(cache: MiraiMessageCache? = null): String {
+    return this.asSequence().map { it.toNeko(cache) }.joinToString("") { it.toString() }
 }
 
 /**
  * 将一个 [MessageChain] 转化为携带 [Neko] 的列表。
  */
-public fun MessageChain.toNeko(): List<Neko> {
+public fun MessageChain.toNeko(cache: MiraiMessageCache? = null): List<Neko> {
     return this.mapNotNull {
         if (it is MessageSource) {
             null
         } else {
-            it.toNeko()
+            it.toNeko(cache)
         }
     }
 }
@@ -386,7 +406,7 @@ public fun MessageChain.toNeko(): List<Neko> {
  * 普通文本会被转化为 [CAT:text,text=xxx]
  */
 @OptIn(MiraiExperimentalApi::class)
-public fun SingleMessage.toNeko(): Neko {
+public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
     return when (this) {
         // at all
         AtAll -> CatCodeUtil.nekoTemplate.atAll()
@@ -445,12 +465,33 @@ public fun SingleMessage.toNeko(): Neko {
         }
         // 引用回复
         is QuoteReply -> {
+            val id = source.cacheId
             CatCodeUtil.getLazyNekoBuilder("quote", true)
-                .key("id").value(with(this.source) { "$fromId.${this.ids.joinToString(",", "[", "]")}" })
-                .key("quote").value { this.source.originalMessage.toCatCode() }
+                .key("id").value(id)
+                .key("quote").value { this.source.originalMessage.toCatCode(cache) }
                 .build()
+            // do cache?
+
         }
 
+        // 转发消息
+        is ForwardMessage -> {
+            CatCodeUtil.getNekoBuilder("forward", true)
+                /*
+                title: String,
+                brief: String,
+                source: String,
+                summary: String
+                 */
+                .key("title").value(title)
+                .key("brief").value(brief)
+                .key("source").value(source)
+                .key("summary").value(summary)
+                /*
+                maybe nodes..?
+                 */
+                .build()
+        }
 
         // 富文本，xml或json
         is RichMessage -> CatCodeUtil.getNekoBuilder("rich", true)
@@ -469,7 +510,12 @@ public fun SingleMessage.toNeko(): Neko {
 /**
  * ktor http client
  */
-private val httpClient: HttpClient = HttpClient()
+private val httpClient: HttpClient = HttpClient() {
+    install(HttpTimeout) {
+        requestTimeoutMillis = 30_000
+        connectTimeoutMillis = 20_000
+    }
+}
 
 
 /**
@@ -492,4 +538,5 @@ public suspend fun Url.toStream(): InputStream {
 
 
 @OptIn(MiraiExperimentalApi::class)
-private val Voice.id: String get() = md5.decodeToString()
+private val Voice.id: String
+    get() = md5.decodeToString()

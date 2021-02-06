@@ -15,15 +15,11 @@
 package love.forte.test.listener
 
 import love.forte.common.ioc.annotation.Beans
-import love.forte.simbot.annotation.Filter
 import love.forte.simbot.annotation.Listen
 import love.forte.simbot.annotation.Listens
-import love.forte.simbot.api.message.Reply
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.constant.PriorityConstant
-import love.forte.simbot.filter.FilterTargets
-import love.forte.simbot.filter.MatchType
 import love.forte.simbot.listener.ListenerContext
 
 /**
@@ -35,18 +31,18 @@ class TestListener {
 
     @Listens(value = [Listen(PrivateMsg::class)],
         priority = PriorityConstant.FIRST)
-    @Filter("h", matchType = MatchType.STARTS_WITH)
-    fun ListenerContext.listen(msgGet: MessageGet) = Reply.reply(text = "1!").also {
-        if (msgGet.text == "hello") {
-            this.instant("hello", true)
-        }
+    // @Filter("h", matchType = MatchType.STARTS_WITH)
+    fun ListenerContext.listen(msgGet: MessageGet): Any? {
+        println(msgGet)
+        println(msgGet.msg)
+        return msgGet.msgContent
     }
 
 
-    @Listens(value = [Listen(PrivateMsg::class)],
-        priority = PriorityConstant.SECOND)
-    @Filter("true", target = FilterTargets.CONTEXT_INSTANT_NULLABLE + "hello")
-    fun PrivateMsg.listen2() = this.msgContent
+    // @Listens(value = [Listen(PrivateMsg::class)],
+    //     priority = PriorityConstant.SECOND)
+    // @Filter("true", target = FilterTargets.CONTEXT_INSTANT_NULLABLE + "hello")
+    // fun PrivateMsg.listen2() = this.msgContent
 
 
 }

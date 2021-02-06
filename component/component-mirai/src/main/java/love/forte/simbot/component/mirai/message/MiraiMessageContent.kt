@@ -229,9 +229,9 @@ public data class MiraiNudgedMessageContent(private val target: Long?) :
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public data class MiraiMessageChainContent(val message: MessageChain) : MiraiMessageContent() {
+public class MiraiMessageChainContent constructor(val message: MessageChain, cache: MiraiMessageCache? = null) : MiraiMessageContent() {
     override suspend fun getMessage(contact: Contact): Message = message
-    override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) { message.toNeko() }
+    override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) { message.toNeko(cache) }
     override fun equals(other: Any?): Boolean {
         if (other == null) {
             return false
