@@ -14,7 +14,6 @@
 
 package love.forte.simbot.component.ding.utils
 
-import catcode.CatCodeUtil
 import catcode.CodeTemplate
 import catcode.Neko
 import love.forte.catcode.CatCodeUtil
