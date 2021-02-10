@@ -16,6 +16,7 @@ package love.forte.simbot.core.filter;
 
 import love.forte.simbot.filter.FilterParameterMatcher;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -23,6 +24,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Filter动态参数匹配器。
@@ -122,7 +124,7 @@ public class CoreFilterParameterMatcher implements FilterParameterMatcher {
                         if (builder.length() > 0) {
                             point = nextPoint(builder, index++, point, true);
                             final Pattern pointPattern = point.pointPattern;
-                            final int groups = pointPattern.matcher("").groupCount();
+                            final int groups = pointPattern == null ? 0 : pointPattern.matcher("").groupCount();
                             if (groups > 0) {
                                 index += groups;
                             }
@@ -144,7 +146,8 @@ public class CoreFilterParameterMatcher implements FilterParameterMatcher {
                     if (last != null && last.equals('{')) {
                         if (builder.length() > 0) {
                             point = nextPoint(builder, -1, point, false);
-                            final int groups = point.pointPattern.matcher("").groupCount();
+                            Pattern pointPattern = point.pointPattern;
+                            final int groups = pointPattern == null ? 0 : pointPattern.matcher("").groupCount();
                             if (groups > 0) {
                                 index += groups;
                             }
@@ -274,7 +277,7 @@ public class CoreFilterParameterMatcher implements FilterParameterMatcher {
     @Override
     public Map<String, String> getParams(String text) {
         if (point == null) {
-            return null;
+            return Collections.emptyMap();
         }
 
         final Matcher matcher = pattern.matcher(text);
@@ -288,7 +291,7 @@ public class CoreFilterParameterMatcher implements FilterParameterMatcher {
             });
             return matches;
         } else {
-            return null;
+            return Collections.emptyMap();
         }
     }
 
@@ -313,12 +316,18 @@ public class CoreFilterParameterMatcher implements FilterParameterMatcher {
         int index;
         Point next;
         Point pre;
+        // 可能为null
         Pattern pointPattern;
 
         Point(String name, String text, int index, Point pre, Point next) {
             this.name = name;
             this.text = text;
-            this.pointPattern = Pattern.compile(text);
+            try {
+                this.pointPattern = Pattern.compile(text);
+            } catch (PatternSyntaxException e) {
+                this.pointPattern = null;
+
+            }
             this.index = index;
             this.next = next;
             this.pre = pre;
