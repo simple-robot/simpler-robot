@@ -231,7 +231,16 @@ public data class MiraiNudgedMessageContent(private val target: Long?) :
  */
 public class MiraiMessageChainContent constructor(val message: MessageChain, cache: MiraiMessageCache? = null) : MiraiMessageContent() {
     override suspend fun getMessage(contact: Contact): Message = message
+    // private lateinit var _cats: List<Neko>
     override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) { message.toNeko(cache) }
+    // override val cats: List<Neko>
+    // get() {
+    //     if (!::_cats.isInitialized) {
+    //         _cats = message.toNeko(cache)
+    //     }
+    //     return _cats
+    // }
+
     override fun equals(other: Any?): Boolean {
         if (other == null) {
             return false
@@ -242,6 +251,15 @@ public class MiraiMessageChainContent constructor(val message: MessageChain, cac
 
         return false
     }
+    override fun hashCode(): Int {
+        return message.hashCode()
+    }
+
+    override fun toString(): String {
+        return "MiraiMessageChainContent(originalMessage=$message)"
+    }
+
+
 }
 
 
@@ -281,7 +299,7 @@ constructor(
     private val flash: Boolean = false,
     override val neko: Neko,
     /** 是否优先上传到某个群。 */
-    private val groupFirst: Boolean = false,
+    // private val groupFirst: Boolean = false,
     private val imageFunction: suspend (Contact) -> Image,
 ) : MiraiMessageContent(), NekoAble {
 

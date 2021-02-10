@@ -41,16 +41,16 @@ public sealed class MiraiMessageContentBuilderFactory : MessageContentBuilderFac
 
     /** 普通的图片上传策略。 */
     internal object MiraiMessageContentBuilderFactoryImgNormal : MiraiMessageContentBuilderFactory() {
-        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgNormal()
+        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgNormal
     }
 
     /** 优先尝试通过一个任意的群进行上传的图片上传策略。 */
     internal object MiraiMessageContentBuilderFactoryImgGroupFirst : MiraiMessageContentBuilderFactory() {
-        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgGroupFirst()
+        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgGroupFirst
     }
 
     companion object {
-        fun instance(imgGroupFirst: Boolean): MiraiMessageContentBuilderFactory {
+        fun instance(imgGroupFirst: Boolean = false): MiraiMessageContentBuilderFactory {
             return if (imgGroupFirst) {
                 MiraiMessageContentBuilderFactoryImgGroupFirst
             } else {
@@ -70,7 +70,7 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
     private val contentList = mutableListOf<MiraiMessageContent>()
     private fun checkText() {
         if (texts.isNotEmpty()) {
-            contentList.add(MiraiSingleMessageContent(PlainText(texts.toString())))
+            contentList.add(MiraiSingleMessageContent(PlainText(texts)))
             texts.clear()
         }
     }
@@ -186,11 +186,10 @@ internal inline fun Contact.findAnyGroup(): Group? {
  * [MiraiMessageContentBuilder] 实现。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-internal class MiraiMessageContentBuilderImgGroupFirst : MiraiMessageContentBuilder() {
+internal object MiraiMessageContentBuilderImgGroupFirst : MiraiMessageContentBuilder() {
 
     override fun imageLocal0(file: File, imageNeko: Neko, flash: Boolean): MiraiImageMessageContent {
         return MiraiImageMessageContent(flash, imageNeko) { contact ->
-            // try get group first.
             contact.findAnyGroup()?.let { group ->
                 file.uploadAsImage(group)
             } ?: file.uploadAsImage(contact)
@@ -224,7 +223,7 @@ internal class MiraiMessageContentBuilderImgGroupFirst : MiraiMessageContentBuil
  * [MiraiMessageContentBuilder] 实现。其中，对于图片的上传为正常的上传模式，即当前为好友就使用好友上传，是群就使用群上传。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-internal class MiraiMessageContentBuilderImgNormal : MiraiMessageContentBuilder() {
+internal object MiraiMessageContentBuilderImgNormal : MiraiMessageContentBuilder() {
     override fun imageLocal0(file: File, imageNeko: Neko, flash: Boolean): MiraiImageMessageContent {
         return MiraiImageMessageContent(flash, imageNeko) { file.uploadAsImage(it) }
     }
