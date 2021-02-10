@@ -18,7 +18,6 @@
         <dependency>
             <groupId>love.forte.simple-robot</groupId>
             <artifactId>api</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
