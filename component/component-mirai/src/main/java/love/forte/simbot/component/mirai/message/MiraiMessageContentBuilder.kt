@@ -41,12 +41,12 @@ public sealed class MiraiMessageContentBuilderFactory : MessageContentBuilderFac
 
     /** 普通的图片上传策略。 */
     internal object MiraiMessageContentBuilderFactoryImgNormal : MiraiMessageContentBuilderFactory() {
-        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgNormal
+        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgNormal()
     }
 
     /** 优先尝试通过一个任意的群进行上传的图片上传策略。 */
     internal object MiraiMessageContentBuilderFactoryImgGroupFirst : MiraiMessageContentBuilderFactory() {
-        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgGroupFirst
+        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgGroupFirst()
     }
 
     companion object {
@@ -186,7 +186,7 @@ internal inline fun Contact.findAnyGroup(): Group? {
  * [MiraiMessageContentBuilder] 实现。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-internal object MiraiMessageContentBuilderImgGroupFirst : MiraiMessageContentBuilder() {
+internal class MiraiMessageContentBuilderImgGroupFirst : MiraiMessageContentBuilder() {
 
     override fun imageLocal0(file: File, imageNeko: Neko, flash: Boolean): MiraiImageMessageContent {
         return MiraiImageMessageContent(flash, imageNeko) { contact ->
@@ -223,7 +223,7 @@ internal object MiraiMessageContentBuilderImgGroupFirst : MiraiMessageContentBui
  * [MiraiMessageContentBuilder] 实现。其中，对于图片的上传为正常的上传模式，即当前为好友就使用好友上传，是群就使用群上传。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-internal object MiraiMessageContentBuilderImgNormal : MiraiMessageContentBuilder() {
+internal class MiraiMessageContentBuilderImgNormal : MiraiMessageContentBuilder() {
     override fun imageLocal0(file: File, imageNeko: Neko, flash: Boolean): MiraiImageMessageContent {
         return MiraiImageMessageContent(flash, imageNeko) { file.uploadAsImage(it) }
     }
