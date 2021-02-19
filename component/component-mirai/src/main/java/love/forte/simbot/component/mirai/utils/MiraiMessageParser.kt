@@ -236,11 +236,20 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
         "share" -> {
             // 至少需要一个url
             val url: String = this["url"] ?: throw IllegalArgumentException("The 'url' could not be found in $this.")
-            val title: String = this["title"] ?: "分享链接"
-            val content: String? = this["content"]
-            val coverUrl: String? = this["coverUrl"]
+            val title: String = this["title"] ?: "链接分享"
+            val content: String = this["content"] ?: "链接分享"
+            val coverUrl: String? = this["coverUrl"] ?: this["image"]
 
-            MiraiSingleMessageContent(RichMessage.share(url, title, content, coverUrl))
+            coverUrl?.let { cov -> MiraiSingleMessageContent(RichMessage.share(url, title, content, cov)) }
+                ?: run {
+                    val neko = CatCodeUtil.getNekoBuilder("share", true)
+                        .value("url", url)
+                        .value("title", title)
+                        .value("content", content)
+                        .value("coverUrl", coverUrl)
+                        .build()
+                    MiraiSingleMessageContent( { c -> RichMessage.share(url, title, content, c.bot.avatarUrl) }, neko)
+                }
         }
 
         "rich" -> {
@@ -308,7 +317,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
             val kindString =
                 this["type"] ?: this["kind"] ?: throw IllegalArgumentException("No 'type' or 'kind' in $this")
             val musicUrl =
-                this["musicUrl"] ?: this["audio"] ?: throw IllegalArgumentException("No 'musicUrl' or audio in $this")
+                this["musicUrl"] ?: this["audio"] ?: throw IllegalArgumentException("No 'musicUrl' or 'audio' in $this")
 
             // `neteaseCloud`、`qq`、`migu`
 
@@ -371,7 +380,6 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
         else -> {
             val kvs = this.entries.joinToString(",") { it.key + "=" + it.value }
             MiraiSingleMessageContent(PlainText("$type($kvs)"))
-
         }
 
     }
@@ -540,3 +548,7 @@ public suspend fun Url.toStream(): InputStream {
 @OptIn(MiraiExperimentalApi::class)
 private val Voice.id: String
     get() = md5.decodeToString()
+
+
+private fun <T> CodeBuilder<T>.value(key: String, value: Any?): CodeBuilder<T> = value?.let { v -> key(key).value(v) } ?: this
+
