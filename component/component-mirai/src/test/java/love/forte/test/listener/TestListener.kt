@@ -30,16 +30,15 @@ class TestListener {
     @OnPrivate
     @Filters(Filter("share"))
     fun share(sender: Sender){
-        println("share")
-        val share = "[CAT:share,coverUrl=http://nhy-file-upload.test.upcdn.net/robot/img/%E6%AC%A2%E8%BF%8E.jpg,title=抢红包啦,content=土豪来抢红包？,url=https://baidu.com]"
-        sender.sendPrivateMsg(1149159218, share)
+        val share1 = "[CAT:share,image=http://nhy-file-upload.test.upcdn.net/robot/img/%E6%AC%A2%E8%BF%8E.jpg,title=抢红包啦,content=土豪来抢红包？,url=https://baidu.com]"
+        val share2 = "[CAT:share,title=抢红包啦,content=土豪来抢红包？,url=https://baidu.com]"
+        val share3 = "[CAT:share,image=http://forte.love:15520/img/r,title=抢红包啦,content=土豪来抢红包？,url=https://baidu.com]"
+        sender.sendPrivateMsg(1149159218, share1)
+        sender.sendPrivateMsg(1149159218, share2)
+        sender.sendPrivateMsg(1149159218, share3)
     }
 
 
-    // @Listens(value = [Listen(PrivateMsg::class)],
-    //     priority = PriorityConstant.SECOND)
-    // @Filter("true", target = FilterTargets.CONTEXT_INSTANT_NULLABLE + "hello")
-    // fun PrivateMsg.listen2() = this.msgContent
 
 
 }
