@@ -84,7 +84,6 @@ public class MethodListenerFunction(
      * 此监听函数的优先级。
      */
     override val priority: Int
-        get() = listensAnnotation.priority
 
     /**
      * 此监听函数上的 [ListenBreak] 注解。如果有的话。
@@ -166,6 +165,7 @@ public class MethodListenerFunction(
         // private val listenerContextType = ListenerContext::class.java
         // private val botType = Bot::class.java
 
+        private inline val priorityType get() = Priority::class.java
         private inline val ListensType get() = Listens::class.java
         private inline val FiltersType get() = Filters::class.java
         private inline val ListenBreakType get() = ListenBreak::class.java
@@ -181,6 +181,9 @@ public class MethodListenerFunction(
                     ListensType)
             }
                     ?: throw IllegalStateException("cannot found annotation '@Listens' in method $method")
+
+        // 优先级值
+        priority = AnnotationUtil.getAnnotation(method, priorityType)?.value ?: listensAnnotation.priority
 
         // 过滤注解
         filtersAnnotation = AnnotationUtil.getAnnotation(method, FiltersType)

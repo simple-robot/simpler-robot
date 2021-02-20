@@ -40,7 +40,12 @@ public @interface Listens {
     /**
      * 优先级。
      * 假如出现了多个监听器处理同一个消息，使用此参数对其进行排序。
-     * 默认为 {@link PriorityConstant#TENTH}
+     * 默认为 {@link PriorityConstant#TENTH}.
+     *
+     * 如果监听函数上存在 {@link Priority}, 则优先使用{@link Priority}.
+     *
+     * @see Priority
+     *
      */
     int priority() default PriorityConstant.TENTH;
 
