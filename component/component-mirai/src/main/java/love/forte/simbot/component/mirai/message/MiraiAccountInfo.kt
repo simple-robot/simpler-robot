@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.mirai.message
 
+import love.forte.common.utils.secondToMill
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.FriendAccountInfo
 import love.forte.simbot.api.message.containers.GroupAccountInfo
@@ -88,9 +89,9 @@ public data class MiraiStrangerAccountInfo(private val strangerId: Long, private
         get() = null
 
     /**
-     * 得到账号的头像地址. 一般来讲为`null`的可能性很小
+     * 得到账号的头像地址。
      */
-    override val accountAvatar: String?
+    override val accountAvatar: String
         get() = _stranger.avatarUrl
 }
 
@@ -106,6 +107,17 @@ public data class MiraiMemberAccountInfo(private val memberId: Long, private val
     private val _member: Member
         get() = member ?: throw NullPointerException("Member($memberId)")
 
+    private val _normalMember: NormalMember?
+        get() = with(_member) { if (this is NormalMember) this else null }
+
+    override val joinTime: Long
+        get() = _normalMember?.joinTimestamp?.secondToMill() ?: -1
+
+    override val lastSpeakTime: Long
+        get() = _normalMember?.lastSpeakTimestamp?.secondToMill() ?: -1
+
+    override val muteTime: Long
+        get() = _normalMember?.muteTimeRemaining?.secondToMill() ?: -1
 
     /**
      * 账号

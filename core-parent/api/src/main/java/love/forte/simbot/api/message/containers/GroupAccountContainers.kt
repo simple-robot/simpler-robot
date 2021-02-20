@@ -58,12 +58,13 @@ public interface GroupAccountTitleContainer : Container {
  * - [群用户头像容器][GroupAccountAvatarContainer],
  * - [群用户账号容器][GroupAccountCodeContainer],
  * - [群用户头衔容器][GroupAccountTitleContainer],
+ * - [禁言时间容器][MuteTimeContainer]
  */
 @ContainerType("群账户信息容器")
 public interface GroupAccountInfo : Container, AccountInfo,
     GroupAccountNameContainer, GroupAccountAvatarContainer,
     GroupAccountCodeContainer, GroupAccountTitleContainer,
-    AnonymousContainer {
+    AnonymousContainer, MuteTimeContainer {
 
     /**
      * 群用户的头衔。在不支持的情况下将会得到 `null`。
@@ -78,6 +79,26 @@ public interface GroupAccountInfo : Container, AccountInfo,
      */
     override val anonymous: Boolean
         get() = false
+
+
+    /**
+     * 成员的最后发言时间，毫秒值。当组件不支持的时候会得到 `-1`。
+     */
+    val lastSpeakTime: Long
+        get() = -1
+
+
+    /**
+     * 成员的入群时间，毫秒事件戳。当组件不支持的时候会得到 `-1`。
+     */
+    val joinTime: Long
+        get() = -1
+
+
+    /**
+     * 群成员的剩余禁言时间，毫秒。当组件不支持的时候会得到 `-1`。
+     */
+    override val muteTime: Long get() = -1
 
 }
 
