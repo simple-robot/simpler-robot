@@ -45,6 +45,7 @@ public class MiraiMemberMuteMsg(event: MemberMuteEvent) : AbstractMiraiMsgGet<Me
 
     /** 执行禁言的操作者 */
     override val operatorInfo: OperatorInfo = MiraiMemberAccountInfo(event.operatorOrBot).asOperator()
+    override val beOperatorInfo: BeOperatorInfo = accountInfo.asBeOperator()
 }
 
 /**
@@ -64,6 +65,7 @@ public class MiraiMemberUnmuteMsg(event: MemberUnmuteEvent) : AbstractMiraiMsgGe
     override val muteTargetType: MuteGet.TargetType
         get() = MuteGet.TargetType.UNIT
     override val operatorInfo: OperatorInfo = MiraiMemberAccountInfo(event.operatorOrBot).asOperator()
+    override val beOperatorInfo: BeOperatorInfo = accountInfo.asBeOperator()
 }
 
 
@@ -80,6 +82,7 @@ public class MiraiBotMuteMsg(event: BotMuteEvent) : AbstractMiraiMsgGet<BotMuteE
     override val muteTargetType: MuteGet.TargetType
         get() = MuteGet.TargetType.UNIT
     override val operatorInfo: OperatorInfo = MiraiMemberAccountInfo(event.operator).asOperator()
+    override val beOperatorInfo: BeOperatorInfo = accountInfo.asBeOperator()
 }
 
 
@@ -96,6 +99,7 @@ public class MiraiBotUnmuteMsg(event: BotUnmuteEvent) : AbstractMiraiMsgGet<BotU
     override val muteTargetType: MuteGet.TargetType
         get() = MuteGet.TargetType.UNIT
     override val operatorInfo: OperatorInfo = MiraiMemberAccountInfo(event.operator).asOperator()
+    override val beOperatorInfo: BeOperatorInfo = accountInfo.asBeOperator()
 }
 
 

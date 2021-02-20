@@ -317,11 +317,13 @@ public interface MessageGet : MsgGet, MessageContentContainer, FlagContainer<Mes
  * 例如 [群消息撤回][GroupMsgRecall]
  * 或者 [私聊撤回][PrivateMsgRecall]
  *
+ * 撤回消息存在一个 [操作者][operatorInfo] 与 [被操作者][beOperatorInfo]，分别对应执行撤回操作的人与被撤回消息的人。
+ * 当然，他们有可能会是同一个人。
  *
  * 一般来讲应该可以得到撤回的[消息内容][MsgGet.msg]以及[撤回时间][recallTime]
  */
 @ParentListenerType("消息撤回父接口")
-public interface MessageRecallEventGet : MsgGet, MessageContentContainer {
+public interface MessageRecallEventGet : MsgGet, MessageContentContainer, OperatingContainer {
     /**
      * 撤回时间。毫秒时间戳。
      */
@@ -345,6 +347,16 @@ public interface MessageRecallEventGet : MsgGet, MessageContentContainer {
      */
     @JvmDefault
     val msg: String? get() = msgContent?.msg
+
+    /**
+     * 操作者。代表撤回这条消息的人。
+     */
+    override val operatorInfo: OperatorInfo?
+
+    /**
+     * 被操作者。代表被撤回消息的人。
+     */
+    override val beOperatorInfo: BeOperatorInfo?
 
 }
 
@@ -392,7 +404,7 @@ public interface MuteGet : EventGet, OperatingContainer {
      * 毕竟群体禁言没有具体的被操作者。
      */
     override val beOperatorInfo: BeOperatorInfo?
-        get() = accountInfo.asBeOperator()
+        // get() = accountInfo.asBeOperator()
 
 
     /** 禁言的行动类型，代表被禁言或被取消禁言。 */

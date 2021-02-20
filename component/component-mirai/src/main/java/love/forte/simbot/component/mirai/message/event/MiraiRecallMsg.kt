@@ -15,8 +15,7 @@
 package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.MessageContent
-import love.forte.simbot.api.message.containers.AccountInfo
-import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.containers.*
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.GroupMsgRecall
 import love.forte.simbot.api.message.events.PrivateMsg
@@ -41,10 +40,23 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
      */
     public class GroupRecall(event: MessageRecallEvent.GroupRecall, private val cache: MiraiMessageCache) :
         MiraiMsgRecall<MessageRecallEvent.GroupRecall>(event), GroupMsgRecall {
-        /** 有可能是bot自己。 */
+        /**
+         * 被撤回消息的发送者。有可能是bot自己。
+         */
         override val accountInfo: AccountInfo = MiraiMemberAccountInfo(event.authorId, event.author)
 
         override val groupInfo: GroupInfo = MiraiGroupFullInfo(event.group)
+
+        /**
+         * 操作者。代表撤回这条消息的人。
+         */
+        override val operatorInfo: OperatorInfo = with(event.operatorOrBot) { MiraiMemberAccountInfo(id, this) }.asOperator()
+
+        /**
+         * 被操作者。代表被撤回消息的人，也是消息的原作者。
+         */
+        override val beOperatorInfo: BeOperatorInfo = accountInfo.asBeOperator()
+
 
         private val cacheMsg: GroupMsg?
             get() = cache.getGroupMsg("${event.authorId}.${event.messageIds.joinToString(",")}.${event.messageInternalIds.joinToString(",")}")
@@ -78,12 +90,22 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
     public class FriendRecall(event: MessageRecallEvent.FriendRecall, private val cache: MiraiMessageCache) :
         MiraiMsgRecall<MessageRecallEvent.FriendRecall>(event),
         PrivateMsgRecall {
-        /** 撤回的操作人，就是好友。 */
+
+        /** 撤回的操作人，也应该是消息的原作者。是好友。 */
         override val accountInfo: AccountInfo = MiraiFriendAccountInfo(event.operatorId, event.operator)
 
         private val cacheMsg: PrivateMsg?
             get() = cache.getPrivateMsg("${event.operator}.${event.messageIds.joinToString(",")}.${event.messageInternalIds.joinToString(",")}")
 
+        /**
+         * 操作者。代表撤回这条消息的人。
+         */
+        override val operatorInfo: OperatorInfo = accountInfo.asOperator()
+
+        /**
+         * 被操作者。代表被撤回消息的人。
+         */
+        override val beOperatorInfo: BeOperatorInfo = accountInfo.asBeOperator()
 
         /**
          * 缓存中获取消息。
