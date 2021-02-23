@@ -224,7 +224,8 @@ public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : 
 
     /**
      * 退出群或解散群。
-     * mirai尚不支持解散群。（mirai 1.3.2）
+     *
+     * ※ mirai尚不支持解散群。（mirai 2.4.0）
      */
     private fun setGroupQuit0(groupCode: Long): Carrier<Boolean> {
         return runBlocking { bot.group(groupCode).quit() }.toCarrier()
