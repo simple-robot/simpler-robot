@@ -189,14 +189,14 @@ public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : 
         }.isMuteAll.toCarrier()
     }
 
-    override fun setGroupWholeBan(groupCode: String, ban: Boolean): Carrier<Boolean> =
-        setGroupWholeBan0(groupCode.toLong(), ban)
+    override fun setGroupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> =
+        setGroupWholeBan0(groupCode.toLong(), mute)
 
-    override fun setGroupWholeBan(groupCode: Long, ban: Boolean): Carrier<Boolean> =
-        setGroupWholeBan0(groupCode, ban)
+    override fun setGroupWholeBan(groupCode: Long, mute: Boolean): Carrier<Boolean> =
+        setGroupWholeBan0(groupCode, mute)
 
-    override fun setGroupWholeBan(groupCode: GroupCodeContainer, ban: Boolean): Carrier<Boolean> =
-        setGroupWholeBan0(groupCode.groupCodeNumber, ban)
+    override fun setGroupWholeBan(groupCode: GroupCodeContainer, mute: Boolean): Carrier<Boolean> =
+        setGroupWholeBan0(groupCode.groupCodeNumber, mute)
 
     /**
      * 设置群员的群名片。需要有对应权限。

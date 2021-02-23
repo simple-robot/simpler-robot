@@ -231,16 +231,16 @@ public interface Setter {
      *
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      */
-    fun setGroupWholeBan(groupCode: String, ban: Boolean): Carrier<Boolean>
+    fun setGroupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean>
     @JvmDefault
-    fun setGroupWholeBan(groupCode: Long, ban: Boolean): Carrier<Boolean> =
-        setGroupWholeBan(groupCode.toString(), ban)
+    fun setGroupWholeBan(groupCode: Long, mute: Boolean): Carrier<Boolean> =
+        setGroupWholeBan(groupCode.toString(), mute)
     @JvmDefault
-    fun setGroupWholeBan(groupCode: GroupCodeContainer, ban: Boolean): Carrier<Boolean> =
-        setGroupWholeBan(groupCode.groupCode, ban)
+    fun setGroupWholeBan(groupCode: GroupCodeContainer, mute: Boolean): Carrier<Boolean> =
+        setGroupWholeBan(groupCode.groupCode, mute)
     @JvmDefault
-    fun setGroupWholeBan(groupCode: GroupContainer, ban: Boolean): Carrier<Boolean> =
-        setGroupWholeBan(groupCode.groupInfo, ban)
+    fun setGroupWholeBan(groupCode: GroupContainer, mute: Boolean): Carrier<Boolean> =
+        setGroupWholeBan(groupCode.groupInfo, mute)
 
 
     /**

@@ -73,12 +73,12 @@ public class LovelyCatSetter(
     }
 
 
-    override fun setGroupWholeBan(groupCode: String, ban: Boolean): Carrier<Boolean> {
-        return def.setGroupWholeBan(groupCode, ban)
+    override fun setGroupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> {
+        return def.setGroupWholeBan(groupCode, mute)
     }
 
-    override fun setGroupWholeBan(groupCode: Long, ban: Boolean): Carrier<Boolean> =
-        setGroupWholeBan("$groupCode$GROUP_SUFFIX", ban)
+    override fun setGroupWholeBan(groupCode: Long, mute: Boolean): Carrier<Boolean> =
+        setGroupWholeBan("$groupCode$GROUP_SUFFIX", mute)
 
 
     override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> {

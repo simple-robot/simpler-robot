@@ -50,7 +50,7 @@ object ErrorSetter : Setter.Def {
     override fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Nothing =
         NO("Setter.setGroupBan")
 
-    override fun setGroupWholeBan(groupCode: String, ban: Boolean): Nothing =
+    override fun setGroupWholeBan(groupCode: String, mute: Boolean): Nothing =
         NO("Setter.setGroupWholeBan")
 
     override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Nothing =

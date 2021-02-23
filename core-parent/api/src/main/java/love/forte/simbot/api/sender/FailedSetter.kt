@@ -49,7 +49,7 @@ public object FailedSetter : Setter.Def {
     override fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean> =
         FalseCarrier
 
-    override fun setGroupWholeBan(groupCode: String, ban: Boolean): Carrier<Boolean> = FalseCarrier
+    override fun setGroupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> = FalseCarrier
 
     override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> =
         Carrier.empty()
