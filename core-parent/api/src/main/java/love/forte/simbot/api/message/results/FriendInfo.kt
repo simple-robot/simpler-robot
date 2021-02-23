@@ -27,16 +27,12 @@ import love.forte.simbot.api.message.containers.emptyAccountInfo
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public interface FriendInfo: Result, AccountInfo, AccountContainer {
+public interface FriendInfo: Result, AccountInfo {
     /**
      * 好友所在分组。如果无法获取则可能得到一个 null 值。
      */
     val grouping: String?
 
-    @JvmDefault
-    @Deprecated("Use self.", ReplaceWith("this"))
-    override val accountInfo: AccountInfo
-        get() = this
 
 }
 

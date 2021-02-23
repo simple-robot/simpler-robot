@@ -91,13 +91,6 @@ public interface GroupList : MultipleResults<SimpleGroupInfo>
  */
 public interface GroupAdmin : GroupAccountInfo, PermissionContainer {
 
-    // /**
-    //  * 2.0.0-RC.2 删除
-    //  */
-    // @JvmDefault
-    // @Deprecated("Use self.", ReplaceWith("this"), DeprecationLevel.ERROR)
-    // override val accountInfo: GroupAccountInfo
-    //     get() = this
 
     @JvmDefault override val permission: Permissions get() = Permissions.ADMINISTRATOR
 }
@@ -115,13 +108,6 @@ public data class GroupAdminImpl(private val account: GroupAccountInfo) : GroupA
  */
 public interface GroupOwner : GroupAdmin, GroupAccountInfo, PermissionContainer {
 
-    // /**
-    //  * 2.0.0-RC.2 删除。
-    //  */
-    // @JvmDefault
-    // @Deprecated("Use self.", ReplaceWith("this"), DeprecationLevel.WARNING)
-    // override val accountInfo: GroupAccountInfo
-    //     get() = this
 
     @JvmDefault override val permission: Permissions get() = Permissions.OWNER
 }
