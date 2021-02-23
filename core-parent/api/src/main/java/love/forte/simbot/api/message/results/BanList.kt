@@ -29,14 +29,26 @@ import love.forte.simbot.api.message.containers.emptyGroupAccountInfo
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public interface BanList : MultipleResults<BanInfo>
+public interface MuteList : BanList
 
-
-
+/**
+ *
+ * 被禁言人列表。
+ *
+ * @author ForteScarlet -> https://github.com/ForteScarlet
+ */
+public interface BanList : MultipleResults<MuteInfo>
 
 
 /**
  * 被禁言者的信息。其中包括 [账号信息][AccountContainer]、[权限信息][PermissionContainer]
+ * @since 2.0.2
+ */
+public interface MuteInfo : BanInfo
+
+
+/**
+ * 封禁信息。
  */
 public interface BanInfo : Result, PermissionContainer, GroupAccountInfo {
 
@@ -50,12 +62,12 @@ public interface BanInfo : Result, PermissionContainer, GroupAccountInfo {
 
 
 /**
- * [BanInfo] 空值实现。
+ * [MuteInfo] 空值实现。
  */
-public fun emptyBanInfo(): BanInfo = EmptyBanInfo
+public fun emptyMuteInfo(): MuteInfo = EmptyMuteInfo
 
 
-private object EmptyBanInfo : BanInfo, GroupAccountInfo by emptyGroupAccountInfo() {
+private object EmptyMuteInfo : MuteInfo, GroupAccountInfo by emptyGroupAccountInfo() {
     override val originalData: String
         get() = "{}"
     override val permission: Permissions
@@ -64,24 +76,24 @@ private object EmptyBanInfo : BanInfo, GroupAccountInfo by emptyGroupAccountInfo
         get() = -1
 
     override fun toString(): String {
-        return "EmptyBanInfo"
+        return "EmptyMuteInfo"
     }
 }
 
 
 /**
- * [BanList] 的空值实现。
+ * [MuteList] 的空值实现。
  */
-public fun emptyBanList(): BanList = EmptyBanList
+public fun emptyBanList(): MuteList = EmptyMuteList
 
 
-private object EmptyBanList : BanList {
+private object EmptyMuteList : MuteList {
     override val originalData: String
         get() = "[]"
-    override val results: List<BanInfo>
+    override val results: List<MuteInfo>
         get() = emptyList()
 
     override fun toString(): String {
-        return "EmptyBanList"
+        return "EmptyMuteList"
     }
 }

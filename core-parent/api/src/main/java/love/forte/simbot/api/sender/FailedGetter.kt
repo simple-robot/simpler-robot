@@ -41,7 +41,7 @@ public object FailedGetter : Getter.Def {
     override fun getFriendList(cache: Boolean, limit: Int): FriendList = emptyFriendList()
     override fun getGroupList(cache: Boolean, limit: Int): GroupList = emptyGroupList()
     override fun getGroupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList = emptyGroupMemberList()
-    override fun getBanList(group: String, cache: Boolean, limit: Int): BanList = emptyBanList()
+    override fun getBanList(group: String, cache: Boolean, limit: Int): MuteList = emptyBanList()
     override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList = emptyGroupNoteList()
 }
 

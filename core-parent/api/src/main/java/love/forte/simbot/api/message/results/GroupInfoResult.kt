@@ -14,6 +14,7 @@
 
 @file:JvmMultifileClass
 @file:JvmName("Results")
+
 package love.forte.simbot.api.message.results
 
 import love.forte.simbot.api.message.assists.Permissions
@@ -72,17 +73,24 @@ public interface GroupFullInfo : SimpleGroupInfo {
 
 
     /**
-     * 群管理员列表
+     * 群管理员列表，不包含上述的群主。
      */
     val admins: List<GroupAdmin>
 }
+
+public val GroupFullInfo.adminsAndOwner: List<GroupAdmin>
+    get() {
+        return admins.takeIf { it.isNotEmpty() }
+            ?.let {
+                it + owner
+            } ?: listOf(owner)
+    }
 
 
 /**
  * 群列表，得到一些群的基础信息
  */
 public interface GroupList : MultipleResults<SimpleGroupInfo>
-
 
 
 /**
@@ -92,7 +100,9 @@ public interface GroupList : MultipleResults<SimpleGroupInfo>
 public interface GroupAdmin : GroupAccountInfo, PermissionContainer {
 
 
-    @JvmDefault override val permission: Permissions get() = Permissions.ADMINISTRATOR
+    @JvmDefault
+    override val permission: Permissions
+        get() = Permissions.ADMINISTRATOR
 }
 
 
@@ -109,7 +119,9 @@ public data class GroupAdminImpl(private val account: GroupAccountInfo) : GroupA
 public interface GroupOwner : GroupAdmin, GroupAccountInfo, PermissionContainer {
 
 
-    @JvmDefault override val permission: Permissions get() = Permissions.OWNER
+    @JvmDefault
+    override val permission: Permissions
+        get() = Permissions.OWNER
 }
 
 
@@ -117,7 +129,6 @@ public interface GroupOwner : GroupAdmin, GroupAccountInfo, PermissionContainer 
  * 通过一个 [AccountContainer] 来构建 [GroupOwner] 实例
  */
 public data class GroupOwnerImpl(private val account: GroupAccountInfo) : GroupOwner, GroupAccountInfo by account
-
 
 
 private object EmptyGroupOwner : GroupOwner, GroupAccountInfo by emptyGroupAccountInfo() {

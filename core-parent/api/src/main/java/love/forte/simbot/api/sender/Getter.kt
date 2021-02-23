@@ -189,45 +189,45 @@ public interface Getter : BotContainer {
      * @param group 群号
      * @param cache 是否使用缓存
      */
-    fun getBanList(group: String, cache: Boolean, limit: Int): BanList
+    fun getBanList(group: String, cache: Boolean, limit: Int): MuteList
 
     @JvmDefault
-    fun getBanList(group: String, limit: Int): BanList = getBanList(group, false, limit)
+    fun getBanList(group: String, limit: Int): MuteList = getBanList(group, false, limit)
 
     @JvmDefault
-    fun getBanList(group: String): BanList = getBanList(group, false, -1)
+    fun getBanList(group: String): MuteList = getBanList(group, false, -1)
 
     @JvmDefault
-    fun getBanList(group: Long, cache: Boolean, limit: Int): BanList = getBanList(group.toString(), cache, limit)
+    fun getBanList(group: Long, cache: Boolean, limit: Int): MuteList = getBanList(group.toString(), cache, limit)
 
     @JvmDefault
-    fun getBanList(group: Long, limit: Int): BanList = getBanList(group.toString(), false, limit)
+    fun getBanList(group: Long, limit: Int): MuteList = getBanList(group.toString(), false, limit)
 
     @JvmDefault
-    fun getBanList(group: Long): BanList = getBanList(group.toString(), false, -1)
+    fun getBanList(group: Long): MuteList = getBanList(group.toString(), false, -1)
 
     @JvmDefault
-    fun getBanList(group: GroupCodeContainer, cache: Boolean, limit: Int): BanList =
+    fun getBanList(group: GroupCodeContainer, cache: Boolean, limit: Int): MuteList =
         getBanList(group.groupCode, cache, limit)
 
     @JvmDefault
-    fun getBanList(group: GroupCodeContainer, limit: Int): BanList =
+    fun getBanList(group: GroupCodeContainer, limit: Int): MuteList =
         getBanList(group, false, limit)
 
     @JvmDefault
-    fun getBanList(group: GroupCodeContainer): BanList =
+    fun getBanList(group: GroupCodeContainer): MuteList =
         getBanList(group, false, -1)
 
     @JvmDefault
-    fun getBanList(group: GroupContainer, cache: Boolean, limit: Int): BanList =
+    fun getBanList(group: GroupContainer, cache: Boolean, limit: Int): MuteList =
         getBanList(group.groupInfo, cache, limit)
 
     @JvmDefault
-    fun getBanList(group: GroupContainer, limit: Int): BanList =
+    fun getBanList(group: GroupContainer, limit: Int): MuteList =
         getBanList(group.groupInfo, false, limit)
 
     @JvmDefault
-    fun getBanList(group: GroupContainer): BanList =
+    fun getBanList(group: GroupContainer): MuteList =
         getBanList(group.groupInfo, false, -1)
 
 

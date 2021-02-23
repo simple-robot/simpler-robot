@@ -31,6 +31,7 @@ import net.mamoe.mirai.contact.NormalMember
  */
 public class MiraiGroupMemberInfo(member: Member) :
     GroupMemberInfo,
+    GroupInfo by MiraiGroupInfo(member.group),
     GroupAccountInfo by MiraiMemberAccountInfo(member) {
 
     /**
@@ -50,8 +51,6 @@ public class MiraiGroupMemberInfo(member: Member) :
     override val originalData: String = member.toString()
 
     override fun toString(): String = "MiraiGroupMemberInfo(original=$originalData)"
-
-    override val groupInfo: GroupInfo = MiraiGroupInfo(member.group)
 
     override val permission: Permissions = member.toSimbotPermissions()
 }

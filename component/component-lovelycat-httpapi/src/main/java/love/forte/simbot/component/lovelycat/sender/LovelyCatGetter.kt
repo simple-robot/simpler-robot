@@ -124,7 +124,7 @@ public class LovelyCatGetter(
 
     @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
     @Deprecated("Unable to get banned list.")
-    override fun getBanList(group: Long, cache: Boolean, limit: Int): BanList =
+    override fun getBanList(group: Long, cache: Boolean, limit: Int): MuteList =
         getBanList("$group$GROUP_SUFFIX", cache, limit)
 
 

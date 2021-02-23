@@ -104,10 +104,10 @@ public class MiraiGetter(
     /**
      * mirai - ban list.
      */
-    private fun getBanList0(group: Long, limit: Int): BanList = MiraiBanList(bot.group(group), limit)
-    override fun getBanList(group: String, cache: Boolean, limit: Int): BanList = getBanList0(group.toLong(), limit)
-    override fun getBanList(group: Long, cache: Boolean, limit: Int): BanList = getBanList0(group, limit)
-    override fun getBanList(group: GroupCodeContainer, cache: Boolean, limit: Int): BanList =
+    private fun getBanList0(group: Long, limit: Int): MuteList = MiraiMuteList(bot.group(group), limit)
+    override fun getBanList(group: String, cache: Boolean, limit: Int): MuteList = getBanList0(group.toLong(), limit)
+    override fun getBanList(group: Long, cache: Boolean, limit: Int): MuteList = getBanList0(group, limit)
+    override fun getBanList(group: GroupCodeContainer, cache: Boolean, limit: Int): MuteList =
         getBanList(group.groupCodeNumber, cache, limit)
 
 

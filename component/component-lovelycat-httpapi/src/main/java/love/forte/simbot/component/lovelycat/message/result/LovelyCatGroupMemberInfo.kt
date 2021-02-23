@@ -16,8 +16,8 @@ package love.forte.simbot.component.lovelycat.message.result
 
 import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.GroupAccountInfo
-import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.results.GroupMemberInfo
+import love.forte.simbot.api.message.results.SimpleGroupInfo
 import love.forte.simbot.component.lovelycat.message.CatGroupInfo
 
 
@@ -28,7 +28,9 @@ import love.forte.simbot.component.lovelycat.message.CatGroupInfo
 public class LovelyCatGroupMemberInfo(
     private val catGroupAccountInfo: GroupAccountInfo,
     private val catGroupInfo: CatGroupInfo
-) : GroupMemberInfo, GroupAccountInfo by catGroupAccountInfo {
+) : GroupMemberInfo,
+    SimpleGroupInfo by catGroupInfo,
+    GroupAccountInfo by catGroupAccountInfo {
 
 
     /**
@@ -36,9 +38,6 @@ public class LovelyCatGroupMemberInfo(
      */
     override val permission: Permissions
         get() = Permissions.MEMBER
-
-    override val groupInfo: GroupInfo
-        get() = catGroupInfo
 
     override val originalData: String
         get() = catGroupAccountInfo.toString()
