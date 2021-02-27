@@ -23,7 +23,9 @@ import static java.lang.annotation.ElementType.*;
 
 /**
  * 用于标记一个东西是线程不安全的，可能会标记一个类，或者一个方法。
- * 此注解仅用作标记，存在于源码而非运行时。
+ * <p>
+ * 此注解仅用作标记。
+ *
  * @author ForteScarlet
  */
 @SuppressWarnings("unused")
@@ -31,6 +33,8 @@ import static java.lang.annotation.ElementType.*;
 @Target({TYPE, FIELD, CONSTRUCTOR, METHOD, PARAMETER})
 @Documented
 public @interface ThreadUnsafe {
-    /** 可以有一些说明之类的东西。 */
+    /**
+     * 可以有一些说明之类的东西。
+     */
     String value() default "";
 }

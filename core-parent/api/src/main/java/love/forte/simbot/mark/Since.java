@@ -20,7 +20,9 @@ import static java.lang.annotation.ElementType.*;
 
 /**
  * 有时候可能不同的版本存在不同的更新，此注解用于记录多次更新时的变动等信息。
- * 此注解不保留在运行时。
+ * <p>
+ * 仅用于标记。
+ *
  * @author ForteScarlet
  */
 @SuppressWarnings("unused")
@@ -29,11 +31,19 @@ import static java.lang.annotation.ElementType.*;
 @Repeatable(Since.SinceList.class)
 @Documented
 public @interface Since {
-    /** 版本 */
+    /**
+     * 版本
+     */
     String value() default "";
-    /** 说明 */
+
+    /**
+     * 说明
+     */
     String[] desc() default {};
-    /** 时间 */
+
+    /**
+     * 时间
+     */
     String time() default "";
 
 
