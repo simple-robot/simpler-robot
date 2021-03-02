@@ -7,7 +7,6 @@
     <groupId>love.forte.simple-robot</groupId>
     <artifactId>parent</artifactId>
     <version>2.0.2</version><!--v-->
-    <!--<version>2.0.1-SNAPSHOT</version>&lt;!&ndash;v&ndash;&gt;-->
     <packaging>pom</packaging>
 
     <modules>
@@ -36,8 +35,8 @@
         <!--<editor-fold desc="kt prop">-->
         <kotlin.version>1.4.30</kotlin.version>
         <ktor.version>1.5.0</ktor.version>
-        <kotlinx.version>1.4.1</kotlinx.version>
-        <kotlinx-serialization.version>1.0.1</kotlinx-serialization.version>
+        <kotlinx.version>1.4.2</kotlinx.version>
+        <kotlinx-serialization.version>1.1.0-RC</kotlinx-serialization.version>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <!--</editor-fold>-->
@@ -49,7 +48,7 @@
         <junit.jupiter.version>5.5.2</junit.jupiter.version>
 
         <!-- some version -->
-        <fastjson.version>1.2.74</fastjson.version>
+        <fastjson.version>1.2.75</fastjson.version>
         <jackson.version>2.11.3</jackson.version>
         <jackson-kt-module.version>2.11.4</jackson-kt-module.version>
         <moshi.version>1.11.0</moshi.version>
