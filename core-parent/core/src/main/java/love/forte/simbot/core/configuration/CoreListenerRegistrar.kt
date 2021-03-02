@@ -69,17 +69,23 @@ public class CoreListenerRegistrar {
         }
 
 
-        // show bots.
-        botManager.bots.forEach { bot ->
-            val info: BotInfo = bot.botInfo
-            logger.debug("Try get botInfo for ${info.botName}(${info.botCode})")
-            if (info.botLevel >= 0) {
-                logger.infof("Start the registration Bot: code={}, name={}, level={}", info.botCode, info.botName, info.botLevel)
-            } else {
-                logger.infof("Start the registration Bot: code={}, name={}", info.botCode, info.botName)
-            }
+        val bots = botManager.bots
 
+        // show bots.
+        if (bots.isEmpty()) {
+            logger.warn("Registration Bots is empty.")
+        } else {
+            bots.forEach { bot ->
+                val info: BotInfo = bot.botInfo
+                logger.debug("Try get botInfo for ${info.botName}(${info.botCode})")
+                if (info.botLevel >= 0) {
+                    logger.infof("Registration Bot: code={}, name={}, level={}", info.botCode, info.botName, info.botLevel)
+                } else {
+                    logger.infof("Registration Bot: code={}, name={}", info.botCode, info.botName)
+                }
+            }
         }
+
 
     }
 }

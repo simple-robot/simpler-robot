@@ -313,7 +313,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
         }
 
         // 音乐分享
-        "music" -> {
+        "music", "musicShare" -> {
             val kindString =
                 this["type"] ?: this["kind"] ?: throw IllegalArgumentException("No 'type' or 'kind' in $this")
             val musicUrl =
@@ -327,17 +327,17 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
 
             @Suppress("SpellCheckingInspection")
             val musicKind = when (kindString) {
-                "neteaseCloud", "NeteaseCloud", "neteaseCloudMusic", "NeteaseCloudMusic" -> MusicKind.NeteaseCloudMusic.also {
+                "neteaseCloud", "NeteaseCloud", "neteaseCloudMusic", "NeteaseCloudMusic", MusicKind.NeteaseCloudMusic.name -> MusicKind.NeteaseCloudMusic.also {
                     musicKindDisplay = "网易云音乐"
                     musicPictureUrl = "https://s4.music.126.net/style/web2/img/default/default_album.jpg"
                     musicJumpUrl = "https://music.163.com/"
                 }
-                "QQ", "qq", "qqMusic", "QQMusic" -> MusicKind.QQMusic.also {
+                "QQ", "qq", "qqMusic", "QQMusic", MusicKind.QQMusic.name -> MusicKind.QQMusic.also {
                     musicKindDisplay = "QQ音乐"
                     musicPictureUrl = "https://y.gtimg.cn/mediastyle/app/download/img/logo.png?max_age=2592000"
                     musicJumpUrl = "https://y.qq.com/"
                 }
-                "migu", "Migu", "miguMusic", "MiguMusic" -> MusicKind.MiguMusic.also {
+                "migu", "Migu", "miguMusic", "MiguMusic", MusicKind.MiguMusic.name -> MusicKind.MiguMusic.also {
                     musicKindDisplay = "咪咕音乐"
                     musicPictureUrl = "https://cdnmusic.migu.cn/tycms_picture/20/10/294/201020171104983_90x26_2640.png"
                     musicJumpUrl = "https://music.migu.cn/"
@@ -375,7 +375,6 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 MiraiSingleMessageContent(QuoteReply(cacheMsg.message))
             } ?: MiraiSingleMessageContent
         }
-
 
         else -> {
             val kvs = this.entries.joinToString(",") { it.key + "=" + it.value }
@@ -501,6 +500,19 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
                 .build()
         }
 
+        is MusicShare -> {
+            // 音乐分享
+            CatCodeUtil.getNekoBuilder("music", true)
+                .key("kind").value(kind.showKind)
+                .key("musicUrl").value(musicUrl)
+                .key("title").value(title)
+                .key("jumpUrl").value(jumpUrl)
+                .key("pictureUrl").value(pictureUrl)
+                .key("summary").value(summary)
+                .key("brief").value(brief)
+                .build()
+        }
+
         // 富文本，xml或json
         is RichMessage -> CatCodeUtil.getNekoBuilder("rich", true)
             .key("content").value(content)
@@ -552,3 +564,11 @@ private val Voice.id: String
 
 private fun <T> CodeBuilder<T>.value(key: String, value: Any?): CodeBuilder<T> = value?.let { v -> key(key).value(v) } ?: this
 
+
+
+private val MusicKind.showKind: String get() = when(this) {
+    MusicKind.NeteaseCloudMusic -> "neteaseCloud"
+    MusicKind.QQMusic -> "QQ"
+    MusicKind.MiguMusic -> "migu"
+    // else -> "Unknown"
+}

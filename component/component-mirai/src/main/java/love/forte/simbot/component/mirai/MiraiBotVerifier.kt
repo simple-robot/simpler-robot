@@ -61,38 +61,42 @@ public class MiraiBotVerifier(
         logger.debug("verify bot code: {}", botInfo.code)
 
 
-        val mBot = BotFactory.newBot(botInfo.code.toLong(),
-            botInfo.verification,
-            configurationFactory.getMiraiBotConfiguration(botInfo, miraiConfiguration)
-        )
+        var mBot: net.mamoe.mirai.Bot? = null
+
 
         runCatching {
 
+            mBot = BotFactory.newBot(botInfo.code.toLong(),
+                botInfo.verification,
+                configurationFactory.getMiraiBotConfiguration(botInfo, miraiConfiguration)
+            )
+
             runBlocking {
-                mBot.alsoLogin()
+                mBot!!.alsoLogin()
             }
 
-            with(mBot.logger) {
+            with(mBot!!.logger) {
                 if (this is MiraiLoggerWithSwitch) {
                     // 临时关闭logger.
                     this.disable()
                 }
             }
 
-            val botContainer = BotContainer { MiraiBotInfo(mBot, httpTemplate) }
+            val botContainer = BotContainer { MiraiBotInfo(mBot!!, httpTemplate) }
 
             val sender = msgSenderFactories.toBotSender(botContainer, defFactories)
 
             // if started
             if (miraiBotEventRegistrar.started) {
                 val msgGetProcessor = dependCenter[MsgGetProcessor::class.java]
-                miraiBotEventRegistrar.registerSimbotEvents(mBot, msgGetProcessor)
+                miraiBotEventRegistrar.registerSimbotEvents(mBot!!, msgGetProcessor)
             }
 
-            return MiraiBot(mBot, sender, botContainer.botInfo)
+            return MiraiBot(mBot!!, sender, botContainer.botInfo)
         }.getOrElse {
-            mBot.close(it)
-            throw IllegalStateException("cannot login bot code: ${botInfo.code}", it)
+            logger.error("Verifier bot(${botInfo.code}) failed.")
+            mBot?.close(it)
+            throw IllegalStateException("Cannot verifier bot code: ${botInfo.code}", it)
         }
     }
 
