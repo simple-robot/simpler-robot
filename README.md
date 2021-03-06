@@ -69,7 +69,7 @@
 
 计划中准备支持的平台：
 - QQ
-    - onebot(QQ机器人通用协议)
+    - onebot(QQ机器人通用协议) (分支开发中)
 - TG
 - discord    
 - 钉钉
@@ -81,9 +81,7 @@
 simpler-robot文档：https://www.yuque.com/simpler-robot/simpler-robot-doc
 
 ## Demo
-各个组件的Demo项目正在逐步建设。
-目前已经存在的Demo：
-- [原生simbot-mirai-demo](https://github.com/simple-robot/simbot-mirai-demo)
+前往 [simbot-demos](https://github.com/simple-robot) 寻找并使用你所需要的demo，或通过pl协助我们完善demo。
 
 
 ## 新特性
