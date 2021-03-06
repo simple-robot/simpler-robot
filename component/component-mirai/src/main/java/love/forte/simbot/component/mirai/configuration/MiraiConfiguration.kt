@@ -16,12 +16,18 @@
 package love.forte.simbot.component.mirai.configuration
 
 import cn.hutool.crypto.SecureUtil
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.Beans
+import love.forte.common.utils.ResourceUtil
 import love.forte.simbot.component.mirai.SimbotMiraiLogger
+import love.forte.simbot.core.TypedCompLogger
 import net.mamoe.mirai.utils.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.File
+import java.io.FileWriter
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -35,6 +41,8 @@ private const val MIRAI_LOG_NAME_PREFIX = "love.forte.simbot.component.mirai"
 @Beans("miraiConfiguration")
 @AsMiraiConfig
 public class MiraiConfiguration {
+
+    private companion object : TypedCompLogger(MiraiConfiguration::class.java)
 
     /**
      * mirai心跳周期. 过长会导致被服务器断开连接. 单位毫秒
@@ -96,6 +104,12 @@ public class MiraiConfiguration {
     var deviceInfoFile: String? = ""
 
     /**
+     *  是否输出设备信息
+     */
+    @field:ConfigInject
+    var deviceInfoOutput: Boolean = false
+
+    /**
      * @see BotConfiguration.highwayUploadCoroutineCount
      */
     @field:ConfigInject
@@ -105,13 +119,46 @@ public class MiraiConfiguration {
      * mirai官方配置类获取函数，默认为其默认值
      * */
     // @set:Deprecated("use setPostBotConfigurationProcessor((code, conf) -> {...})")
+
     val botConfiguration: (String) -> BotConfiguration = {
         val conf = BotConfiguration()
 
-        deviceInfoFile.takeIf { it?.isNotBlank() == true }?.let {
-            conf.fileBasedDeviceInfo(it)
+        deviceInfoFile.takeIf { it?.isNotBlank() == true }?.runCatching {
+            logger.info("Try to use device info file: $this")
+            val jsonReader = ResourceUtil.getResourceUtf8Reader(this)
+            val json = jsonReader.use { it.readText() }
+            conf.loadDeviceInfoJson(json)
+        }?.getOrElse { e ->
+            logger.error("Load device Info json file: $deviceInfoFile failed. get device by simbot default.", e)
+            null
         } ?: run {
-            conf.deviceInfo = { simbotMiraiDeviceInfo(it.id, deviceInfoSeed) }
+            conf.deviceInfo = {
+                val devInfo = simbotMiraiDeviceInfo(it.id, deviceInfoSeed)
+
+                if (deviceInfoOutput) {
+                    kotlin.runCatching {
+                        val devInfoJson = Json {
+                            isLenient = true
+                            ignoreUnknownKeys = true
+                            prettyPrint = true
+                        }.encodeToString(devInfo)
+                        val outFile = File("simbot-devInfo.json")
+                        if (!outFile.exists()) {
+                            outFile.let { f ->
+                                f.parentFile.mkdirs()
+                                f.createNewFile()
+                            }
+                        }
+                        FileWriter(outFile).use {
+                                w -> w.write(devInfoJson)
+                            logger.info("DevInfo write to ${outFile.canonicalPath}")
+                        }
+                    }.getOrElse { e -> logger.error("Write devInfo failed.", e) }
+                }
+
+
+                devInfo
+            }
         }
 
 
