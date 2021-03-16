@@ -26,6 +26,7 @@ import love.forte.simbot.api.sender.toBotSender
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotRegisterInfo
 import love.forte.simbot.bot.BotVerifier
+import love.forte.simbot.bot.BotVerifyException
 import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
 import love.forte.simbot.component.mirai.configuration.miraiBotLogger
 import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
@@ -107,7 +108,7 @@ public class MiraiBotVerifier(
         }.getOrElse {
             logger.error("Verifier bot(${botInfo.code}) failed.")
             mBot?.close(it)
-            throw IllegalStateException("Cannot verifier bot code: ${botInfo.code}", it)
+            throw BotVerifyException("Cannot verifier bot code: ${botInfo.code}", it)
         }
     }
 
