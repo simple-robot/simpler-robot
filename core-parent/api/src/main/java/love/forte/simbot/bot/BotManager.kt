@@ -117,11 +117,7 @@ public object CoreBotsDecoder {
  * bot进行注册的时候使用的数据类。
  * [code] 与 [verification] 都可能根据组件的变化而可能存在为空的情况。
  *
- * [code] 和 [verification] 出现以下内容需要进行转义：
  *
- * - `&` -> `&nbsp;`
- * - `,` -> `&#44;`
- * - `:` -> `&#58;`
  *
  * @property code 一般指账号信息。
  * @property verification 验证信息。一般可以代表账号的密码或者上报路径的链接。
@@ -133,6 +129,14 @@ public data class BotRegisterInfo(val code: String, val verification: String) {
 
         /**
          * 转义经过逗号切割的字符串，其中应为 “xxx:xxx”的格式。
+         *
+         *
+         * [code] 与 [verification] 出现以下内容会进行反转义：
+         *
+         * - `&nbsp;` -> `&`
+         * - `&#44;` -> `,`
+         * - `&#58;` -> `:`
+         *
          */
         @JvmStatic
         public fun splitTo(configTextPair: String): BotRegisterInfo {
