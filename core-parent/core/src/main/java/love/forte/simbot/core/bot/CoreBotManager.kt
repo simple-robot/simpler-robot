@@ -15,9 +15,11 @@
 package love.forte.simbot.core.bot
 
 import love.forte.common.ioc.annotation.SpareBeans
+import love.forte.simbot.LogAble
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.*
+import love.forte.simbot.core.TypedCompLogger
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -35,10 +37,12 @@ public class CoreBotManager(
     private val defSenderFactories: DefaultMsgSenderFactories,
 ) : BotManager {
 
+    private companion object : TypedCompLogger(BotManager::class.java)
+
     /**
      * bot map.
      */
-    private val botsMap = ConcurrentHashMap<String, Bot>()
+    private val botsMap = ConcurrentHashMap<String, Bot>(4)
 
 
     /**
@@ -50,7 +54,7 @@ public class CoreBotManager(
      */
     override val defaultBot: Bot
         get() = with(botsMap.entries) {
-            if(isEmpty()) throw NoSuchBotException("No bot can be acquired.")
+            if (isEmpty()) throw NoSuchBotException("No bot can be acquired.")
             else first().value
         }
 
@@ -85,15 +89,10 @@ public class CoreBotManager(
      * @throws BotVerifyException 验证失败则会抛出此异常。
      */
     override fun registerBot(botRegisterInfo: BotRegisterInfo): Bot {
-
-        return synchronized(botsMap) {
-            removeAndClose(botRegisterInfo.code)
-            verifier.verity(botRegisterInfo, msgSenderFactories, defSenderFactories).apply {
-                botsMap[botRegisterInfo.code] = this
-            }
+        return botsMap.computeIfAbsent(botRegisterInfo.code) {
+            verifier.verity(botRegisterInfo, msgSenderFactories, defSenderFactories)
         }
     }
-
 
 
     /**
@@ -104,6 +103,12 @@ public class CoreBotManager(
     }
 
     private fun removeAndClose(code: String) {
-        botsMap.remove(code)?.runCatching { close() }
+        val removedBot = botsMap.remove(code)
+
+        removedBot?.runCatching { close() }?.getOrElse { e ->
+            val log = if (removedBot is LogAble) removedBot.log else logger
+
+            log.error("Bot($code) close error.", e)
+        }
     }
 }

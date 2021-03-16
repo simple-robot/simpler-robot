@@ -61,7 +61,7 @@ public val MsgGetMainListenerTypes: Set<Class<out MsgGet>> =
  *
  * 所有的监听消息都应当实现的容器：
  * - [原始信息容器][OriginalDataContainer],
- * - [bot基础信息容器][BotContainer],
+ * - [bot基础信息容器][botContainer],
  * - [用户容器][AccountContainer]。
  *
  * 作为一个[消息][MsgGet], 一般来讲，所需要实现或者监听的接口为：

@@ -14,10 +14,7 @@
 @file:JvmName("LovelyCatReceivedTransferEvents")
 package love.forte.simbot.component.lovelycat.message.event
 
-import love.forte.simbot.api.message.containers.AccountContainer
-import love.forte.simbot.api.message.containers.AccountInfo
-import love.forte.simbot.api.message.containers.BotContainer
-import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.containers.*
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.serialization.json.JsonSerializerFactory
 import java.math.BigDecimal
@@ -28,7 +25,7 @@ public const val RECEIVED_TRANSFER_EVENT = "EventReceivedTransfer"
  *
  * 可爱猫转账事件接口。
  *
- * 其继承 [Bot容器][BotContainer]、[账号容器][AccountContainer]
+ * 其继承 [Bot容器][botContainer]、[账号容器][AccountContainer]
  *
  * @author ForteScarlet
  */

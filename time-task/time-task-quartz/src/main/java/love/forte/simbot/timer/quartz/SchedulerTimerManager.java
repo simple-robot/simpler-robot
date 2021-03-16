@@ -88,7 +88,7 @@ public class SchedulerTimerManager implements TimerManager {
         if (task instanceof LogAble) {
             logger = ((LogAble) task).getLog();
         } else {
-            logger = LoggerFactory.getLogger("love.forte.simbot.timer[" + task.id() + "]");
+            logger = LoggerFactory.getLogger("love.forte.simbot.timer." + task.id());
         }
 
         jobDataMap.put(LOG_KEY, logger);

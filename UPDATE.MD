@@ -1,3 +1,10 @@
+# 2.0.4
+- 尝试修改bot动态注册相关逻辑
+
+
+
+
+
 # 2.0.0
 ## ALPHA.1
 first alpha version.

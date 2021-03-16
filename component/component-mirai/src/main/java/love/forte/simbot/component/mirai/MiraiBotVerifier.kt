@@ -16,8 +16,9 @@ package love.forte.simbot.component.mirai
 
 import kotlinx.coroutines.runBlocking
 import love.forte.common.ioc.DependCenter
-import love.forte.simbot.api.message.containers.BotContainer
+import love.forte.simbot.LogAble
 import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.containers.botContainer
 import love.forte.simbot.api.sender.BotSender
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
@@ -26,6 +27,7 @@ import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotRegisterInfo
 import love.forte.simbot.bot.BotVerifier
 import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
+import love.forte.simbot.component.mirai.configuration.miraiBotLogger
 import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
 import love.forte.simbot.component.mirai.utils.MiraiBotEventRegistrar
 import love.forte.simbot.core.TypedCompLogger
@@ -34,7 +36,9 @@ import love.forte.simbot.listener.MsgGetProcessor
 import net.mamoe.mirai.BotFactory
 import net.mamoe.mirai.alsoLogin
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
+import org.slf4j.Logger
 import net.mamoe.mirai.Bot as MBot
+import net.mamoe.mirai.Bot.Companion as MiraiBot
 
 /**
  * mirai bot验证器。
@@ -64,25 +68,32 @@ public class MiraiBotVerifier(
         var mBot: net.mamoe.mirai.Bot? = null
 
 
+
         runCatching {
+            mBot = MiraiBot.getInstanceOrNull(botInfo.code.toLong())
 
-            mBot = BotFactory.newBot(botInfo.code.toLong(),
-                botInfo.verification,
-                configurationFactory.getMiraiBotConfiguration(botInfo, miraiConfiguration)
-            )
+            // 如果此bot尚未登录，则登录。
+            if (mBot == null) {
+                mBot = BotFactory.newBot(botInfo.code.toLong(),
+                    botInfo.verification,
+                    configurationFactory.getMiraiBotConfiguration(botInfo, miraiConfiguration)
+                )
 
-            runBlocking {
-                mBot!!.alsoLogin()
-            }
+                runBlocking {
+                    mBot!!.alsoLogin()
+                }
 
-            with(mBot!!.logger) {
-                if (this is MiraiLoggerWithSwitch) {
-                    // 临时关闭logger.
-                    this.disable()
+                // 只有从未登录过的时候才会临时关闭logger.
+                with(mBot!!.logger) {
+                    if (this is MiraiLoggerWithSwitch) {
+                        // 临时关闭logger.
+                        this.disable()
+                    }
                 }
             }
 
-            val botContainer = BotContainer { MiraiBotInfo(mBot!!, httpTemplate) }
+
+            val botContainer = botContainer { MiraiBotInfo(mBot!!, httpTemplate) }
 
             val sender = msgSenderFactories.toBotSender(botContainer, defFactories)
 
@@ -110,11 +121,13 @@ internal class MiraiBot(
     private val bot: MBot,
     override val sender: BotSender,
     override val botInfo: BotInfo,
-) : Bot {
+) : Bot, LogAble {
+    override val log: Logger = miraiBotLogger(bot.id)
+
     override fun close() {
         runCatching {
             bot.close()
-        }
+        }.getOrElse {  }
     }
 
     override fun toString(): String = bot.toString()

@@ -33,6 +33,12 @@ import kotlin.random.nextInt
 
 private const val MIRAI_LOG_NAME_PREFIX = "love.forte.simbot.component.mirai"
 
+
+public fun miraiBotLogger(botCode: Long, type: String? = null): Logger {
+    return type?.let { t -> LoggerFactory.getLogger("$MIRAI_LOG_NAME_PREFIX.$t.$botCode") }
+        ?: LoggerFactory.getLogger("$MIRAI_LOG_NAME_PREFIX.$botCode")
+}
+
 /**
  * Mirai配置类
  *
@@ -205,7 +211,8 @@ public class MiraiConfiguration {
         // 默认情况下都是关闭状态的log
         if (useSimbotBotLog) {
             conf.botLoggerSupplier = {
-                val logger: Logger = LoggerFactory.getLogger("$MIRAI_LOG_NAME_PREFIX.bot.${it.id}")
+                // val logger: Logger = LoggerFactory.getLogger("$MIRAI_LOG_NAME_PREFIX.bot.${it.id}")
+                val logger: Logger = miraiBotLogger(it.id, "bot")
                 SimbotMiraiLogger(logger).withSwitch(true)
             }
         } else {
@@ -217,7 +224,8 @@ public class MiraiConfiguration {
         }
         if (useSimbotNetworkLog) {
             conf.networkLoggerSupplier = {
-                val logger: Logger = LoggerFactory.getLogger("$MIRAI_LOG_NAME_PREFIX.net.${it.id}")
+                // val logger: Logger = LoggerFactory.getLogger("$MIRAI_LOG_NAME_PREFIX.net.${it.id}")
+                val logger: Logger = miraiBotLogger(it.id, "net")
                 SimbotMiraiLogger(logger).withSwitch(true)
             }
         } else {
@@ -263,41 +271,6 @@ internal fun simbotMiraiDeviceInfo(c: Long, s: Long): DeviceInfo {
 }
 
 
-
-// /**
-//  * `SystemDeviceInfo` 实例，尝试着固定下随机值
-//  * @param code bot的账号
-//  */
-// open class MiraiSystemDeviceInfo1
-// @JvmOverloads
-// constructor(
-//     code: Long,
-//     seed: Long,
-//     randomFactory: (code: Long, seed: Long) -> Random = { c, s -> Random(c * s) },
-// ) : DeviceInfo() {
-//     constructor(codeId: String, seedNum: Long) : this(codeId.toLong(), seedNum)
-//     constructor(codeId: String, seedNum: Long, randomFactory: (code: Long, seed: Long) -> Random) :
-//             this(codeId.toLong(), seedNum, randomFactory)
-//
-//
-//     private val random: Random = randomFactory(code, seed)
-//
-//
-//     override val display: ByteArray = "MIRAI-SIMBOT.200122.001".toByteArray()
-//     override val product: ByteArray = "mirai-simbot".toByteArray()
-//     override val device: ByteArray = "mirai-simbot".toByteArray()
-//     override val board: ByteArray = "mirai-simbot".toByteArray()
-//     override val model: ByteArray = "mirai-simbot".toByteArray()
-//
-//     override val fingerprint: ByteArray =
-//         "mamoe/mirai/mirai:10/MIRAI.200122.001/${getRandomString(7, '0'..'9', random)}:user/release-keys".toByteArray()
-//     override val bootId: ByteArray = generateUUID(SecureUtil.md5().digest(getRandomByteArray(16, random))).toByteArray()
-//     override val procVersion: ByteArray =
-//         "Linux version 3.0.31-${getRandomString(8, random)} (android-build@xxx.xxx.xxx.xxx.com)".toByteArray()
-//
-//     override val imsiMd5: ByteArray = SecureUtil.md5().digest(getRandomByteArray(16, random))
-//     override val imei: String = getRandomString(15, '0'..'9', random)
-// }
 
 /*
  * 以下源代码修改自

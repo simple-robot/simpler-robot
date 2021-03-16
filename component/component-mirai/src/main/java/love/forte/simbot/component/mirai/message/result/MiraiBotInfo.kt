@@ -44,7 +44,7 @@ public data class MiraiBotInfo(private val bot: Bot, private val http: HttpTempl
     override val botLevel: Long
         get() = http?.let { BotLevelUtil.level(bot, it).toLong() } ?: -1
 
-    override fun toString(): String ="MiraiBotInfo(bot=$bot, code=$botCode, name=$botName${if (botLevel >= 0) ", level=$botLevel" else ""})"
+    override fun toString(): String ="Bot(bot=$bot, code=$botCode, name=$botName${if (botLevel >= 0) ", level=$botLevel" else ""})"
 }
 
 

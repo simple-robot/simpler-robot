@@ -17,7 +17,7 @@
 package love.forte.simbot.component.lovelycat.configuration
 
 import love.forte.common.ioc.annotation.Depend
-import love.forte.simbot.api.message.containers.BotContainer
+import love.forte.simbot.api.message.containers.botContainer
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.api.sender.toBotSender
@@ -62,7 +62,7 @@ public class LovelyCatBotVerifier : BotVerifier {
         if (contains) {
             // save api info.
             apiManager[code] = api
-            val botContainer = BotContainer(lovelyCatBotInfo(code, api))
+            val botContainer = botContainer(lovelyCatBotInfo(code, api))
             val botSender = msgSenderFactories.toBotSender(botContainer, defFactories)
             return LovelyCatBot(code, api, botSender)
         } else {
