@@ -25,7 +25,7 @@ import java.lang.annotation.*;
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Retention(RetentionPolicy.RUNTIME)    //注解会在class字节码文件中存在，在运行时可以通过反射获取到
-@Target({ElementType.METHOD}) //接口、类、枚举、注解、方法
+@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE}) //接口、类、枚举、注解、方法
 @Documented
 public @interface Filters {
 
