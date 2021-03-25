@@ -29,9 +29,13 @@ public class LovelyCatGroupMemberInfo(
     private val catGroupAccountInfo: GroupAccountInfo,
     private val catGroupInfo: CatGroupInfo
 ) : GroupMemberInfo,
-    SimpleGroupInfo by catGroupInfo,
     GroupAccountInfo by catGroupAccountInfo {
 
+    /**
+     * 群成员对应的群信息。
+     */
+    override val groupInfo: SimpleGroupInfo
+        get() = catGroupInfo
 
     /**
      * 无法断定群员权限，因此全部定义为 **群员**。

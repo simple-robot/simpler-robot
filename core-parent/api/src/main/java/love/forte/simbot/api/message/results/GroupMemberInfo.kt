@@ -27,15 +27,13 @@ import love.forte.simbot.api.message.containers.*
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public interface GroupMemberInfo : Result, GroupAccountInfo, SimpleGroupInfo, GroupContainer, PermissionContainer {
+public interface GroupMemberInfo : Result, GroupAccountInfo, GroupContainer, PermissionContainer {
 
     /**
-     * deprecated since 2.0.2
+     * 群成员对应的群信息。
      */
     @JvmDefault
-    @Deprecated("Use this.", ReplaceWith("this"))
-    override val groupInfo: GroupInfo
-        get() = this
+    override val groupInfo: SimpleGroupInfo
 }
 
 
@@ -50,8 +48,11 @@ public interface GroupMemberList : MultipleResults<GroupMemberInfo>, GroupContai
  */
 public fun emptyGroupMemberInfo(): GroupMemberInfo =
     object : GroupMemberInfo,
-        SimpleGroupInfo by emptyGroupInfo(),
         GroupAccountInfo by emptyGroupAccountInfo() {
+
+        override val groupInfo: SimpleGroupInfo
+            get() = emptyGroupInfo()
+
         override val originalData: String
             get() = "{}"
         override val permission: Permissions

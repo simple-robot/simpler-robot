@@ -2,7 +2,7 @@
 name: I found some bug
 about: 发现并反馈一个bug。请充分测试并确保这是确实是一个bug。
 title: "[BUG] "
-labels: suspected bug
+labels: bug
 assignees: ForteScarlet
 
 ---
