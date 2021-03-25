@@ -130,7 +130,8 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
         // 头像抖动
         "nudge" -> {
             val target = this["target"]
-            MiraiNudgedMessageContent(target?.toLong())
+            val from = this["from"]
+            MiraiNudgedMessageContent(from?.toLong(), target?.toLong())
         }
 
 

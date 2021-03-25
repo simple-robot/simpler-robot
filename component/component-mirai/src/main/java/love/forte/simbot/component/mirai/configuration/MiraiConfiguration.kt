@@ -142,7 +142,7 @@ public class MiraiConfiguration {
                 val devInfo = simbotMiraiDeviceInfo(it.id, deviceInfoSeed)
 
                 if (deviceInfoOutput) {
-                    kotlin.runCatching {
+                    runCatching {
                         val devInfoJson = Json {
                             isLenient = true
                             ignoreUnknownKeys = true
@@ -150,16 +150,22 @@ public class MiraiConfiguration {
                         }.encodeToString(devInfo)
                         val outFile = File("simbot-devInfo.json")
                         if (!outFile.exists()) {
-                            outFile.let { f ->
-                                f.parentFile.mkdirs()
-                                f.createNewFile()
+                            outFile.apply {
+                                parentFile?.mkdirs()
+                                createNewFile()
                             }
                         }
                         FileWriter(outFile).use {
                                 w -> w.write(devInfoJson)
                             logger.info("DevInfo write to ${outFile.canonicalPath}")
                         }
-                    }.getOrElse { e -> logger.error("Write devInfo failed.", e) }
+                    }.getOrElse { e ->
+                        logger.error("Write devInfo failed: {}", e.localizedMessage)
+                        if (!logger.isDebugEnabled) {
+                            logger.error("Enable debug log for more information.")
+                        }
+                        logger.debug("Write devInfo failed.", e)
+                    }
                 }
 
 
