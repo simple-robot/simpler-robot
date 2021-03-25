@@ -104,7 +104,7 @@ public sealed class MiraiNudgedEvent<C : Contact> constructor(
 
 
     // nudge目标为bot。
-    override val msgContent: MiraiNudgedMessageContent = MiraiNudgedMessageContent(event.bot.id)
+    override val msgContent: MiraiNudgedMessageContent = MiraiNudgedMessageContent(event.from.id, event.target.id)
 }
 
 //

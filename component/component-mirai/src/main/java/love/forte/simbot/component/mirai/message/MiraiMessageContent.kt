@@ -180,13 +180,14 @@ public class MiraiSingleMessageContent(
 /**
  * mirai 的 nudge 消息。
  */
-public data class MiraiNudgedMessageContent(private val target: Long?) :
+public data class MiraiNudgedMessageContent(private val from: Long?, private val target: Long?) :
     MiraiMessageContent() {
 
     /**
      * nudge neko.
      */
     private val neko: Neko = CatCodeUtil.getNekoBuilder("nudge", false).apply {
+        from?.let { key("from").value(it) }
         target?.let { key("target").value(it) }
     }.build()
 
@@ -197,9 +198,9 @@ public data class MiraiNudgedMessageContent(private val target: Long?) :
         return when (contact) {
             // 如果是群
             is Group -> {
-                val code: Long = target ?: throw IllegalArgumentException("cannot found nudge target: target is empty.")
+                val code: Long = target ?: throw IllegalArgumentException("Cannot found nudge target: target is empty.")
                 val nudge: Nudge = contact[code]?.nudge()
-                    ?: throw NoSuchElementException("cannot found nudge target: no such member($code) in group(${contact.id}).")
+                    ?: throw NoSuchElementException("Cannot found nudge target: no such member($code) in group(${contact.id}).")
                 // 获取群员并发送
                 contact.launch {
                     contact.sendNudge(nudge)
