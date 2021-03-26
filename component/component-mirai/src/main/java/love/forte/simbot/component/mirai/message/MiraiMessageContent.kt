@@ -108,7 +108,9 @@ public object EmptySingleMessage : SingleMessage by PlainText("")
 
 
 /**
- * mirai 的 single msg.
+ * mirai 的 single msg, 其中包含一个可用于发送的 [singleMessage获取函数][singleMessage].
+ * 此函数根据参数 [发送目标][Contact] 得到一个可发送的消息并进行发送。
+ * 如果消息发送无法得到singleMessage（例如戳一戳那种异步消息），可以返回一个 [EmptySingleMessage].
  */
 public class MiraiSingleMessageContent(
     val singleMessage: (Contact) -> SingleMessage,
