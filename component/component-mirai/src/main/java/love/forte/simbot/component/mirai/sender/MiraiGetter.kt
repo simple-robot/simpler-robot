@@ -22,6 +22,7 @@ import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.results.*
 import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.api.sender.GetterFactory
+import love.forte.simbot.component.mirai.SimbotExperimentalApi
 import love.forte.simbot.component.mirai.message.result.*
 import love.forte.simbot.http.template.HttpTemplate
 import net.mamoe.mirai.Bot
@@ -115,7 +116,8 @@ public class MiraiGetter(
      * mirai - group note list.
      * 注：mirai仅支持获取入群公告。(mirai 1.3.2)
      */
-    private fun getGroupNoteList0(group: Long): GroupNoteList = MiraiGroupNoteList(bot.group(group))
+    private fun getGroupNoteList0(group: Long): GroupNoteList =
+        MiraiGroupNoteList(bot.group(group))
     override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList =
         getGroupNoteList0(group.toLong())
 
@@ -124,6 +126,26 @@ public class MiraiGetter(
 
     override fun getGroupNoteList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupNoteList =
         getGroupNoteList(group.groupCodeNumber, cache, limit)
+
+
+    /**
+     * 得到一个群文件
+     */
+    @SimbotExperimentalApi
+    fun getGroupFiles(group: Long): GroupFile? {
+        bot.group(group).filesRoot
+        TODO("Not imp.")
+    }
+
+
+    /**
+     * 根据文件ID获取群文件。
+     */
+    fun getGroupFile(group: Long, id: String): GroupFile? {
+        TODO("Not imp.")
+    }
+
+
 
 
 }

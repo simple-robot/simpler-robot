@@ -1,5 +1,6 @@
 package love.forte.test;
 
+import catcode.CatCodeUtil;
 import love.forte.common.configuration.Configuration;
 import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.api.sender.Sender;
@@ -27,6 +28,7 @@ public class Test implements SimbotProcess {
         for (Bot bot : context.getBotManager().getBots()) {
             Sender s = bot.getSender().SENDER;
             s.sendPrivateMsg(1149159218, "我好了。" + bot.getSender().GETTER.getAuthInfo().getCookies());
+            s.sendPrivateMsg(1149159218, CatCodeUtil.getInstance().getStringTemplate().image("classpath:1.jpg"));
         }
     }
 }
