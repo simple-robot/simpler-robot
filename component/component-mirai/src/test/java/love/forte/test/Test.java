@@ -25,10 +25,23 @@ public class Test implements SimbotProcess {
 
     @Override
     public void post(@NotNull SimbotContext context) {
-        for (Bot bot : context.getBotManager().getBots()) {
-            Sender s = bot.getSender().SENDER;
-            s.sendPrivateMsg(1149159218, "我好了。" + bot.getSender().GETTER.getAuthInfo().getCookies());
-            s.sendPrivateMsg(1149159218, CatCodeUtil.getInstance().getStringTemplate().image("classpath:1.jpg"));
-        }
+        Bot bot = context.getBotManager().getDefaultBot();
+        // group 1043409458
+        String path = "/test";
+        String file = "F:\\for study\\教学学习\\PIC_1495967657370.JPG";
+
+        String fileCat = CatCodeUtil.getInstance().toCat("file", true, "file=" + file, "path=" + path);
+
+        Sender sender = bot.getSender().SENDER;
+
+        sender.sendGroupMsg(1043409458, fileCat);
+
+        System.out.println("uploaded");
+
+        // for (Bot bot : context.getBotManager().getBots()) {
+        //     Sender s = bot.getSender().SENDER;
+        //     s.sendPrivateMsg(1149159218, "我好了。" + bot.getSender().GETTER.getAuthInfo().getCookies());
+        //     s.sendPrivateMsg(1149159218, CatCodeUtil.getInstance().getStringTemplate().image("classpath:1.jpg"));
+        // }
     }
 }

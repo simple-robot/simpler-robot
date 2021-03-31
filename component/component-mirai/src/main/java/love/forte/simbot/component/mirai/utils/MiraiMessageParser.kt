@@ -336,7 +336,9 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                     val fileNeko = CatCodeUtil.toNeko("file", "file" cTo filePath)
                     MiraiFileMessageContent(fileNeko, path) { c ->
                         if (c is Group) {
-                            c.uploadFile(path, file)
+                            // c.uploadFile(path, file)
+                            c.filesRoot.resolve(path).upload(file = file, callback = null)
+                            // c.uploadFile(path = path, file = file)
                         } else throw IllegalStateException("File only support upload to group now.")
                     }
                 } else {
