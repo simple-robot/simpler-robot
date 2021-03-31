@@ -373,6 +373,7 @@ constructor(
 }
 
 
+
 /**
  * mirai 的 voice content.
  * 此实现类似于 [MiraiImageMessageContent]，Voice的实例化会被缓存，且存在锁来保证唯一性。
@@ -430,4 +431,76 @@ public class MiraiVoiceMessageContent(
     }
 
 }
+
+
+
+/**
+ * mirai 的 file content，代表为上传的群文件信息。
+ */
+public class MiraiFileMessageContent
+constructor(
+    override val neko: Neko,
+    private val uploadPath: String,
+    /** 是否优先上传到某个群。 */
+    private val fileFunction: suspend (Contact) -> FileMessage,
+) : MiraiMessageContent(), NekoAble {
+
+    override fun toString(): String = "MiraiFileContent(file=${
+        if (!::file.isInitialized) "(Not initialized yet.)"
+        else file.toString()
+    })"
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) {
+            return false
+        }
+        if (other is MiraiFileMessageContent) {
+            return neko["file"] == other.neko["file"] && uploadPath == other.uploadPath
+        }
+
+        if (other is NekoAble) {
+            return neko == other.neko
+        }
+
+        return false
+    }
+
+
+    override fun hashCode(): Int = hash
+
+    @Volatile
+    private lateinit var file: FileMessage
+
+    /** lock */
+    private val lock = Mutex()
+
+    override val cats: List<Neko> = listOf(neko)
+
+    private val hash = neko.hashCode()
+
+    /**
+     * get image msg. 区分群消息与好友消息
+     * @param contact Contact
+     * @return Message
+     */
+    override suspend fun getMessage(contact: Contact): Message {
+        return if (::file.isInitialized) {
+            file
+        } else {
+            if (!::file.isInitialized) {
+                lock.withLock {
+                    if (!::file.isInitialized) {
+                        file = fileFunction(contact)
+                    }
+                }
+            }
+            file
+
+            TODO()
+        }
+    }
+
+
+}
+
 

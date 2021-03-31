@@ -26,30 +26,25 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.utils.io.jvm.javaio.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.component.mirai.message.*
 import love.forte.simbot.component.mirai.message.event.MiraiMessageMsgGet
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
+import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.RemoteFile
+import net.mamoe.mirai.utils.RemoteFile.Companion.uploadFile
 import java.io.File
 import java.io.InputStream
 import java.net.URL
 
-// /**
-//  * message chain 为 [EmptyMessageChain] 的 [MiraiMessageContent]。
-//  */
-// @get:JvmName("getEmptyMiraiMessageContent")
-// public val EmptyMiraiMessageContent: MiraiMessageContent = MiraiMessageChainContent(EmptyMessageChain)
 
+internal const val CLASSPATH_HEAD = "classpath:"
 
 /**
  * mirai消息转化器，将一个 [Neko] 转化为 [MiraiMessageContent].
@@ -207,8 +202,6 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                                 } else {
                                     MiraiSingleMessageContent(foundImg.image)
                                 }
-                                // return MiraiSingleMessageContent(foundImg.image.flash())
-
                             }
                         }
                     }
@@ -221,15 +214,13 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 val filePath = this["file"]
 
                 // if resource
-                if (filePath != null && filePath.startsWith("classpath:")) {
-                    val filePath0 = filePath.substring("classpath:".length)
+                if (filePath != null && filePath.startsWith(CLASSPATH_HEAD)) {
+                    val filePath0 = filePath.substring(CLASSPATH_HEAD.length)
                     val classPathUrl: URL? = ResourceUtil.getResource(filePath0)
-                    val imageNeko = CatCodeUtil.nekoTemplate.image(filePath0)
                     if (classPathUrl != null) {
+                        val imageNeko = CatCodeUtil.nekoTemplate.image(filePath0)
                         return MiraiImageMessageContent(flash, imageNeko) { c ->
-                            withContext(Dispatchers.IO) {
-                                classPathUrl.openStream().use { inp -> inp.uploadAsImage(c) }
-                            }
+                            classPathUrl.externalResource().use { res -> c.uploadImage(res) }
                         }
                     }
                 }
@@ -249,7 +240,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                     // val urlId = url.encodedPath
                     val imageNeko = CatCodeUtil.nekoTemplate.image(url.toString())
                     MiraiImageMessageContent(flash, imageNeko) { c ->
-                        url.toStream().uploadAsImage(c)
+                        url.toStream().use { s -> s.uploadAsImage(c) }
                     }
                 }
             }
@@ -271,16 +262,14 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 val filePath = this["file"]
 
                 // if resource
-                if (filePath != null && filePath.startsWith("classpath:")) {
-                    val filePath0 = filePath.substring("classpath:".length)
+                if (filePath != null && filePath.startsWith(CLASSPATH_HEAD)) {
+                    val filePath0 = filePath.substring(CLASSPATH_HEAD.length)
                     val classPathUrl: URL? = ResourceUtil.getResource(filePath0)
                     val recordNeko = CatCodeUtil.nekoTemplate.record(filePath)
                     if (classPathUrl != null) {
                         return MiraiVoiceMessageContent(recordNeko) { c ->
                             if (c is Group) {
-                                withContext(Dispatchers.IO) {
-                                    classPathUrl.openStream().toExternalResource().use { c.uploadVoice(it) }
-                                }
+                                classPathUrl.externalResource().use { c.uploadVoice(it) }
                             } else throw IllegalStateException("Mirai only support sending group voice.")
                         }
                     }
@@ -306,29 +295,68 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                     val recordNeko = CatCodeUtil.nekoTemplate.record(urlId)
                     MiraiVoiceMessageContent(recordNeko) { c ->
                         if (c is Group) {
-                            url.toStream().toExternalResource().use { c.uploadVoice(it) }
+                            url.toStream().use { s ->
+                                s.toExternalResource().use { c.uploadVoice(it) }
+                            }
                         } else throw IllegalStateException("Mirai only support sending group voice.")
                     }
                 }
             }
 
 
-
             // 群文件上传
             "file" -> {
                 // 上传文件路径
-                val file = this["file"] ?: throw IllegalArgumentException("No 'file' in $this")
+                val filePath = this["file"] ?: throw IllegalArgumentException("No 'file' in $this")
+
                 // 上传到的路径
                 val path = this["path"] ?: RemoteFile.ROOT_PATH
-
                 // file (if classpath or not)
 
+                // if classpath
+                if (filePath.startsWith(CLASSPATH_HEAD)) {
+                    val filePath0 = filePath.substring(CLASSPATH_HEAD.length)
+                    val classPathUrl: URL? = ResourceUtil.getResource(filePath0)
+                    if (classPathUrl != null) {
+                        val fileNeko = CatCodeUtil.toNeko("file", "file" cTo filePath0)
+                        // return Mirai
+                        return MiraiFileMessageContent(fileNeko, path) { c ->
+                            if (c is Group) {
+                                classPathUrl.externalResource().use { res ->
+                                    c.uploadFile(path, res)
+                                }
+                            } else throw IllegalStateException("File only support upload to group now.")
+                        }
+                    }
+                }
 
+                val file: File? = filePath.let { FileUtil.file(it) }?.takeIf { it.exists() }
+                if (file != null) {
+                    // 存在文件
+                    val fileNeko = CatCodeUtil.toNeko("file", "file" cTo filePath)
+                    MiraiFileMessageContent(fileNeko, path) { c ->
+                        if (c is Group) {
+                            c.uploadFile(path, file)
+                        } else throw IllegalStateException("File only support upload to group now.")
+                    }
+                } else {
+                    // 没有文件，看看有没有url
+                    val url = filePath.takeIf { it.startsWith("http") }?.let { Url(it) }
+                        ?: this["url"]?.let { Url(it) }
+                        ?: throw IllegalArgumentException("There is no 'file' or 'url' starts with 'http' in $this")
 
-                TODO("")
+                    val urlId = url.encodedPath
+                    val fileNeko = CatCodeUtil.toNeko("file", "file" cTo urlId, "url" cTo urlId)
+                    MiraiFileMessageContent(fileNeko, path) { c ->
+                        if (c is Group) {
+                            url.toStream().use { s ->
+                                s.toExternalResource().use { c.uploadFile(path, it) }
+                            }
+                        } else throw IllegalStateException("File only support upload to group now.")
+                    }
+
+                }
             }
-
-
 
 
             // 分享
@@ -676,3 +704,31 @@ private val MusicKind.showKind: String
         MusicKind.MiguMusic -> "migu"
         // else -> "Unknown"
     }
+
+
+
+
+/**
+ * 获取 [URL] 的 [ExternalResource]。
+ */
+private suspend fun URL.externalResource(formatName: String? = null): ExternalResource {
+    return runInterruptible(context = Dispatchers.IO) {
+        openStream().use { s -> s.toExternalResource(formatName) }
+    }
+}
+
+/**
+ * 获取 [URL] 的输入流。
+ */
+private suspend fun URL.stream(): InputStream {
+    return runInterruptible(context = Dispatchers.IO) {
+        openStream()
+    }
+}
+
+
+private inline fun <T> inIO(crossinline block: suspend CoroutineScope.() -> T): T {
+    return runBlocking {
+        withContext(Dispatchers.IO) { block() }
+    }
+}
