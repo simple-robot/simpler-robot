@@ -32,7 +32,7 @@ public object CoreContextMapFactory : ContextMapFactory {
     private val instant: MutableMap<String, Any> get() = ConcurrentHashMap()
 
     /**
-     * 全局global map. 单例唯一。
+     * 全局global map. 唯一。
      */
     private val global: MutableMap<String, Any> = ConcurrentHashMap()
 

@@ -71,6 +71,13 @@ public interface ContextMap {
  * [ContextMap] 工厂。获取一个contextMap。
  */
 public interface ContextMapFactory {
+
+    /**
+     * 为当前监听事件获取一个[上下文映射表][ContextMap]实例。
+     *
+     * 每当监听函数可以成功进行执行的时候，都会调用此函数以获取一个对应的监听函数。
+     *
+     */
     val contextMap: ContextMap
 }
 
