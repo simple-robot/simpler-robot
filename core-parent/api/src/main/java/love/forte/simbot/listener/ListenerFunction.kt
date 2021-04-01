@@ -120,7 +120,10 @@ public interface ListenerFunctionInvokeData {
     val bot: Bot
     /** 当前动态送信器。 */
     val msgSender: MsgSender
-    /** 监听函数拦截器。 */
+    /**
+     *  监听函数拦截器。
+     *  如果是空的可以使用 [love.forte.simbot.core.intercept.EmptyListenerInterceptorChain].
+     */
     val listenerInterceptorChain: ListenerInterceptorChain
     /**
      * 根据类型获取一个实例。
