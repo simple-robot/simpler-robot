@@ -129,10 +129,10 @@ public class MiraiGetter(
 
 
     /**
-     * 得到一个群文件
+     * 得到群文件列表
      */
     @SimbotExperimentalApi
-    fun getGroupFiles(group: Long): GroupFile? {
+    fun getGroupFiles(group: Long): FileResults? {
         bot.group(group).filesRoot
         TODO("Not imp.")
     }
@@ -141,7 +141,8 @@ public class MiraiGetter(
     /**
      * 根据文件ID获取群文件。
      */
-    fun getGroupFile(group: Long, id: String): GroupFile? {
+    @SimbotExperimentalApi
+    fun getGroupFile(group: Long, id: String): FileResult? {
         TODO("Not imp.")
     }
 

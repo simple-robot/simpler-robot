@@ -23,6 +23,8 @@ import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.*
 
 
+public fun Friend.asAccountInfo(): AccountInfo = MiraiFriendAccountInfo(this)
+
 /**
  * 基于 mirai [Friend] 的 [AccountInfo] 实现。
  */
@@ -64,6 +66,8 @@ public data class MiraiFriendAccountInfo(private val friendId: Long, private val
 }
 
 
+public fun Stranger.asAccountInfo(): AccountInfo = MiraiStrangerAccountInfo(this)
+
 
 public data class MiraiStrangerAccountInfo(private val strangerId: Long, private val stranger: Stranger?) : FriendAccountInfo {
     constructor(stranger: Stranger) : this(stranger.id, stranger)
@@ -97,10 +101,12 @@ public data class MiraiStrangerAccountInfo(private val strangerId: Long, private
 
 
 
+public fun Member.asAccountInfo(): AccountInfo = MiraiMemberAccountInfo(this)
+
 /**
  * 基于 mirai [Member] 的 [AccountInfo] 实现。
  */
-public data class MiraiMemberAccountInfo(private val memberId: Long, private val member: Member?) : GroupAccountInfo, GroupInfo {
+public data class MiraiMemberAccountInfo constructor(private val memberId: Long, private val member: Member?) : GroupAccountInfo, GroupInfo {
 
     constructor(member: Member) : this(member.id, member)
 
@@ -172,6 +178,9 @@ public data class MiraiMemberAccountInfo(private val memberId: Long, private val
     override val groupName: String
         get() = group.name
 }
+
+
+public fun Bot.asAccountInfo(): AccountInfo = MiraiBotAccountInfo(this)
 
 
 /**

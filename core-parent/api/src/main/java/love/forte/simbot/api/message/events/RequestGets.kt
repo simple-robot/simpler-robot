@@ -69,6 +69,11 @@ public interface GroupAddRequest : RequestGet, GroupContainer {
     override val accountInfo: AccountInfo
 
     /**
+     * 发起请求的用户信息。等同于 [accountInfo].
+     */
+    val requestAccountInfo: AccountInfo get() = accountInfo
+
+    /**
      * 当前请求的邀请者。在 **组件不支持** 、**请求非邀请** 等情况下可能为null。
      */
     val invitor: GroupAddRequestInvitor?

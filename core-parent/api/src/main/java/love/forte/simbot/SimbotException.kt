@@ -85,3 +85,14 @@ public open class SimbotIllegalArgumentException : IllegalArgumentException, Sim
     constructor(message: String?, cause: Throwable?) : super(message, cause)
     constructor(cause: Throwable?) : super(cause)
 }
+
+
+/**
+ * simbot的预期内的异常。
+ */
+public open class SimbotExpectedException : IllegalStateException, SimbotIllegalStateError {
+    constructor() : super()
+    constructor(s: String?) : super(s)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    constructor(cause: Throwable?) : super(cause)
+}

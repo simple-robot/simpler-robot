@@ -18,7 +18,7 @@ package love.forte.simbot.component.mirai
 
 
 /**
- * simbot中的一些实验性的API或者方法。
+ * simbot中的一些实验性的API。
  *
  */
 @Retention(AnnotationRetention.BINARY)

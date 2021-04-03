@@ -77,3 +77,21 @@ public interface MultipleResults<T: Result>: Result, Iterable<T> {
  * @since 2.0.0
  */
 public inline val <T : Result> MultipleResults<T>.size: Int get() = results.size
+
+
+
+/**
+ * 复数返回值类型之一。区别在于此为一个节点，每个节点都能继续向下获取剩余元素。
+ *
+ */
+public interface NodeResult<T> : MultipleResults<NodeResult<T>> {
+    /**
+     * 当前元素。
+     */
+    val value: T
+
+    /**
+     * 此节点元素下的其他元素。
+     */
+    override val results: List<NodeResult<T>>
+}
