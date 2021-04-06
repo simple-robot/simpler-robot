@@ -27,8 +27,9 @@ public class Test implements SimbotProcess {
     public void post(@NotNull SimbotContext context) {
         Bot bot = context.getBotManager().getDefaultBot();
         // group 1043409458
-        String path = "/test";
-        String file = "F:\\for study\\教学学习\\PIC_1495967657370.JPG";
+        String path = "/test/testImg.jpg";
+        // String file = "C:\\Users\\Administrator\\Desktop\\表情\\QQ图片20210217201307.jpg";
+        String file = "C:\\Users\\Administrator\\Desktop\\表情\\QQ图片20210217201243.jpg";
 
         String fileCat = CatCodeUtil.getInstance().toCat("file", true, "file=" + file, "path=" + path);
 

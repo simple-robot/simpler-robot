@@ -20,6 +20,7 @@ import catcode.*
 import catcode.codes.Nyanko
 import cn.hutool.core.io.FileUtil
 import cn.hutool.core.io.resource.ResourceUtil
+import cn.hutool.core.util.StrUtil
 import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*
@@ -42,6 +43,11 @@ import net.mamoe.mirai.utils.RemoteFile.Companion.uploadFile
 import java.io.File
 import java.io.InputStream
 import java.net.URL
+import java.util.*
+import java.util.concurrent.ThreadLocalRandom
+import kotlin.NoSuchElementException
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 
 internal const val CLASSPATH_HEAD = "classpath:"
@@ -309,20 +315,31 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 // 上传文件路径
                 val filePath = this["file"] ?: throw IllegalArgumentException("No 'file' in $this")
 
+                val formatName = this["formatName"]
+
                 // 上传到的路径
-                val path = this["path"] ?: RemoteFile.ROOT_PATH
-                // file (if classpath or not)
+                val path = this["path"]
+                    ?: if (formatName != null) RemoteFile.ROOT_PATH + UUID.idString() + "." + formatName
+                    else RemoteFile.ROOT_PATH + UUID.idString()
 
                 // if classpath
                 if (filePath.startsWith(CLASSPATH_HEAD)) {
                     val filePath0 = filePath.substring(CLASSPATH_HEAD.length)
                     val classPathUrl: URL? = ResourceUtil.getResource(filePath0)
                     if (classPathUrl != null) {
-                        val fileNeko = CatCodeUtil.toNeko("file", "file" cTo filePath0)
+                        val fileNeko = CatCodeUtil.getNekoBuilder("file", true)
+                            .key("file").value(filePath0)
+                            .key("path").value(path)
+                            .apply {
+                                if (formatName != null) {
+                                    key("formatName").value(formatName)
+                                }
+                            }
+                            .build()
                         // return Mirai
                         return MiraiFileMessageContent(fileNeko, path) { c ->
                             if (c is Group) {
-                                classPathUrl.externalResource().use { res ->
+                                classPathUrl.externalResource(formatName).use { res ->
                                     c.uploadFile(path, res)
                                 }
                             } else throw IllegalStateException("File only support upload to group now.")
@@ -333,12 +350,21 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 val file: File? = filePath.let { FileUtil.file(it) }?.takeIf { it.exists() }
                 if (file != null) {
                     // 存在文件
-                    val fileNeko = CatCodeUtil.toNeko("file", "file" cTo filePath)
+                    val fileNeko = CatCodeUtil.getNekoBuilder("file", true)
+                        .key("file").value(filePath)
+                        .key("path").value(path)
+                        .apply {
+                            if (formatName != null) {
+                                key("formatName").value(formatName)
+                            }
+                        }
+                        .build()
                     MiraiFileMessageContent(fileNeko, path) { c ->
                         if (c is Group) {
-                            c.uploadFile(path, file)
-                            // c.filesRoot.resolve(path).upload(file = file, callback = null)
-                            // c.uploadFile(path = path, file = file)
+                            file.toExternalResource(formatName).use { res ->
+                                c.uploadFile(path, res)
+
+                            }
                         } else throw IllegalStateException("File only support upload to group now.")
                     }
                 } else {
@@ -348,11 +374,24 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                         ?: throw IllegalArgumentException("There is no 'file' or 'url' starts with 'http' in $this")
 
                     val urlId = url.encodedPath
-                    val fileNeko = CatCodeUtil.toNeko("file", "file" cTo urlId, "url" cTo urlId)
+                    val fileNeko = CatCodeUtil.getNekoBuilder("file", true)
+                        .key("file").value(urlId)
+                        .key("path").value(path)
+                        .key("url").value(urlId).apply {
+                            if (formatName != null) {
+                                key("formatName").value(formatName)
+                            }
+                        }
+                        .build()
+
+                    // val fileNeko = CatCodeUtil.toNeko("file", "file" cTo urlId, "url" cTo urlId)
+
                     MiraiFileMessageContent(fileNeko, path) { c ->
                         if (c is Group) {
                             url.toStream().use { s ->
-                                s.toExternalResource().use { c.uploadFile(path, it) }
+                                s.toExternalResource(formatName).use {
+                                    c.uploadFile(path, it)
+                                }
                             }
                         } else throw IllegalStateException("File only support upload to group now.")
                     }
@@ -459,7 +498,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
 
                 @Suppress("SpellCheckingInspection")
                 val musicKind = when (kindString) {
-                    "neteaseCloud", "NeteaseCloud", "neteaseCloudMusic", "NeteaseCloudMusic", MusicKind.NeteaseCloudMusic.name -> MusicKind.NeteaseCloudMusic.also {
+                    "neteaseCloud", "NeteaseCloud", "neteaseCloudMusic", "NeteaseCloudMusic", "163", MusicKind.NeteaseCloudMusic.name -> MusicKind.NeteaseCloudMusic.also {
                         musicKindDisplay = "网易云音乐"
                         musicPictureUrl = "https://s4.music.126.net/style/web2/img/default/default_album.jpg"
                         musicJumpUrl = "https://music.163.com/"
@@ -709,8 +748,6 @@ private val MusicKind.showKind: String
     }
 
 
-
-
 /**
  * 获取 [URL] 的 [ExternalResource]。
  */
@@ -734,4 +771,64 @@ private inline fun <T> inIO(crossinline block: suspend CoroutineScope.() -> T): 
     return runBlocking {
         withContext(Dispatchers.IO) { block() }
     }
+}
+
+
+private inline val UUID: Id
+    get() {
+        return ThreadLocalRandom.current().let { r ->
+            val randomBytes = ByteArray(16)
+            r.nextBytes(randomBytes)
+
+            randomBytes[6] = randomBytes[6] and 0x0f
+            randomBytes[6] = randomBytes[6] or 0x40
+            randomBytes[8] = randomBytes[8] and 0x3f
+            randomBytes[8] = randomBytes[8] or 0x80.toByte()
+
+            Id(randomBytes)
+        }
+    }
+
+
+private inline class Id(private val data: ByteArray) {
+
+    fun idString(): String {
+        var msb: Long = 0
+        var lsb: Long = 0
+        for (i in 0..7) {
+            msb = msb shl 8 or (data[i] and 0xff.toByte()).toLong()
+        }
+        for (i in 8..15) {
+            lsb = lsb shl 8 or (data[i] and 0xff.toByte()).toLong()
+        }
+
+        val mostSigBits: Long = msb
+
+        val leastSigBits: Long = lsb
+
+        val builder = StrUtil.builder(32)
+        StringBuilder(32).run {
+            append(digits(mostSigBits shr 32, 8))
+            append(digits(mostSigBits shr 16, 4))
+            append(digits(mostSigBits, 4))
+            append(digits(leastSigBits shr 48, 4))
+            append(digits(leastSigBits, 12))
+        }
+
+        return builder.toString()
+    }
+
+}
+
+// ------------------------------------------------------------------------------------------------------------------- Private method start
+/**
+ * 返回指定数字对应的hex值
+ *
+ * @param val    值
+ * @param digits 位
+ * @return 值
+ */
+private fun digits(`val`: Long, digits: Int): String? {
+    val hi = 1L shl digits * 4
+    return java.lang.Long.toHexString(hi or (`val` and hi - 1)).substring(1)
 }
