@@ -437,7 +437,9 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
 
             // 骰子
             "dice" -> {
-                val dice: Dice = this["value"]?.let { v -> Dice(v.toInt()) } ?: Dice.random()
+                val dice: Dice = if (this["random"] == "true") Dice.random()
+                else this["value"]?.let { v -> Dice(v.toInt()) } ?: Dice.random()
+
                 MiraiSingleMessageContent(dice)
             }
 
@@ -671,8 +673,9 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
         }
 
         is Dice -> {
-            CatCodeUtil.getLazyNekoBuilder("dice", false)
+            CatCodeUtil.getNekoBuilder("dice", false)
                 .key("value").value(value)
+                .key("random").value(true)
                 .build()
         }
 
