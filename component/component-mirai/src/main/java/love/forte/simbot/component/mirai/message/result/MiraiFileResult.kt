@@ -22,6 +22,7 @@ import kotlinx.coroutines.runBlocking
 import love.forte.simbot.api.message.results.FileInfo
 import love.forte.simbot.api.message.results.FileResult
 import love.forte.simbot.api.message.results.NodeResult
+import love.forte.simbot.component.mirai.utils.asStream
 import net.mamoe.mirai.utils.RemoteFile
 import java.util.stream.Stream
 
@@ -55,8 +56,7 @@ public class MiraiFileResult(private val file: RemoteFile) : FileResult {
     override fun stream(): Stream<NodeResult<FileInfo>> = runBlocking {
         if (file.exists()) {
             // 存在文件
-            file.listFiles().map { f -> MiraiFileResult(f) }
-            TODO("TODO!")
+            file.listFiles().map { f -> MiraiFileResult(f) }.asStream()
         } else Stream.empty()
     }
 }
