@@ -511,7 +511,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
             }
 
             else -> {
-                val kvs = this.entries.joinToString(",") { it.key + "=" + it.value }
+                val kvs = this.entries.joinToString(", ") { it.key + "=" + it.value }
                 MiraiSingleMessageContent(PlainText("$type($kvs)"))
             }
 
