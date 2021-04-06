@@ -487,10 +487,11 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 // 消息图片url
                 val pictureUrl = this["pictureUrl"] ?: this["picture"] ?: musicPictureUrl
 
-                // 消息卡片内容
-                val summary = this["summary"] ?: this["content"] ?: "$musicKindDisplay :$jumpUrl"
-
                 val brief = this["brief"] ?: "[分享]$musicKindDisplay"
+
+                // 消息卡片内容
+                val summary = this["summary"] ?: this["content"] ?: brief
+
 
                 MiraiSingleMessageContent(MusicShare(musicKind, title, summary, jumpUrl, pictureUrl, musicUrl, brief))
             }
