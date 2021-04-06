@@ -14,10 +14,14 @@
 
 package love.forte.test.listener
 
+import catcode.CatCodeUtil
 import love.forte.common.ioc.annotation.Beans
+import love.forte.simbot.annotation.Filter
+import love.forte.simbot.annotation.FilterValue
 import love.forte.simbot.annotation.OnGroup
-import love.forte.simbot.annotation.OnPrivate
-import love.forte.simbot.api.message.events.MessageGet
+import love.forte.simbot.api.message.events.GroupMsg
+import love.forte.simbot.api.sender.Sender
+import love.forte.simbot.filter.MatchType
 
 /**
  * @author ForteScarlet
@@ -38,11 +42,10 @@ class TestListener {
     // }
 
     @OnGroup
-    @OnPrivate
-    fun MessageGet.listen() {
-        println(msg)
+    @Filter("#[投骰]个{{m,\\d+}}", matchType = MatchType.REGEX_MATCHES, trim = true, atBot = true)
+    fun GroupMsg.listen(@FilterValue("m") m: Int, sender: Sender) {
+        sender.sendGroupMsg(this, CatCodeUtil.toCat("dice", false, "value=$m"))
     }
-
 
 
 }

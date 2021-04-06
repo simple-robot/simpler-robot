@@ -27,17 +27,26 @@ public class Test implements SimbotProcess {
     public void post(@NotNull SimbotContext context) {
         Bot bot = context.getBotManager().getDefaultBot();
         // group 1043409458
-        String path = "/test/testImg.jpg";
-        // String file = "C:\\Users\\Administrator\\Desktop\\表情\\QQ图片20210217201307.jpg";
-        String file = "C:\\Users\\Administrator\\Desktop\\表情\\QQ图片20210217201243.jpg";
-
-        String fileCat = CatCodeUtil.getInstance().toCat("file", true, "file=" + file, "path=" + path);
-
+        // String path = "/test/testImg.jpg";
+        // // String file = "C:\\Users\\Administrator\\Desktop\\表情\\QQ图片20210217201307.jpg";
+        // String file = "C:\\Users\\Administrator\\Desktop\\表情\\QQ图片20210217201243.jpg";
+        //
+        // String fileCat = CatCodeUtil.getInstance().toCat("file", true, "file=" + file, "path=" + path);
+        //
         Sender sender = bot.getSender().SENDER;
+        //
+        // sender.sendGroupMsg(1043409458, fileCat);
+        //
+        // System.out.println("uploaded");
 
-        sender.sendGroupMsg(1043409458, fileCat);
+        CatCodeUtil util = CatCodeUtil.getInstance();
 
-        System.out.println("uploaded");
+        sender.sendGroupMsg(1043409458, util.toCat("dice", "value=1"));
+        sender.sendGroupMsg(1043409458, util.toCat("dice", "value=2"));
+        sender.sendGroupMsg(1043409458, util.toCat("dice", "value=3"));
+        sender.sendGroupMsg(1043409458, util.toCat("dice", "value=4"));
+        sender.sendGroupMsg(1043409458, util.toCat("dice", "value=5"));
+        sender.sendGroupMsg(1043409458, util.toCat("dice", "value=6"));
 
         // for (Bot bot : context.getBotManager().getBots()) {
         //     Sender s = bot.getSender().SENDER;
