@@ -421,7 +421,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                     // builder
 //                val keys = xmlCode.params.keys
 
-                    this.item {
+                    item {
                         xmlCode["bg"]?.also { this.bg = it.toInt() }
                         xmlCode["layout"]?.also { this.layout = it.toInt() }
                         // picture(coverUrl: String)
