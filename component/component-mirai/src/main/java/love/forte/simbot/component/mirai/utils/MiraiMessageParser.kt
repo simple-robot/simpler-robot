@@ -435,6 +435,11 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 MiraiSingleMessageContent(LightApp(content))
             }
 
+            // 骰子
+            "dice" -> {
+                val dice: Dice = this["value"]?.let { v -> Dice(v.toInt()) } ?: Dice.random()
+                MiraiSingleMessageContent(dice)
+            }
 
             "xml" -> {
                 val xmlCode = this
@@ -643,6 +648,17 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
                 .build()
 
         }
+        is FileMessage -> {
+            CatCodeUtil.getNekoBuilder("file", true)
+                .key("id").value(id)
+                .key("internalId").value(internalId)
+                .key("name").value(name)
+                .key("size").value(size)
+                .key("size").value(size)
+                .build()
+        }
+
+
         // 引用回复
         is QuoteReply -> {
             val id = source.cacheId
@@ -652,6 +668,12 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
                 .build()
             // do cache?
 
+        }
+
+        is Dice -> {
+            CatCodeUtil.getLazyNekoBuilder("dice", false)
+                .key("value").value(value)
+                .build()
         }
 
         // 转发消息
