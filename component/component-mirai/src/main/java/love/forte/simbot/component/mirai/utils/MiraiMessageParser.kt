@@ -43,9 +43,7 @@ import net.mamoe.mirai.utils.RemoteFile.Companion.uploadFile
 import java.io.File
 import java.io.InputStream
 import java.net.URL
-import java.util.*
 import java.util.concurrent.ThreadLocalRandom
-import kotlin.NoSuchElementException
 import kotlin.experimental.and
 import kotlin.experimental.or
 
@@ -757,7 +755,29 @@ public suspend fun Url.toStream(): InputStream {
 
 @OptIn(MiraiExperimentalApi::class)
 private val Voice.id: String
-    get() = md5.decodeToString()
+    get() = byteArrayToHexString(md5)
+
+
+private val hexArray = charArrayOf(
+    '0', '1', '2', '3', '4', '5', '6', '7',
+    '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+)
+
+//将byte数组转换成16进制字符串
+private fun byteArrayToHexString(arr: ByteArray): String {
+    val resultSb = StringBuilder()
+    for (b in arr) {
+        var n = b.toInt()
+        if (n < 0) {
+            n += 256
+        }
+        val d1 = n / 16
+        val d2 = n % 16
+
+        resultSb.append(hexArray[d1]).append(hexArray[d2])
+    }
+    return resultSb.toString()
+}
 
 
 private fun <T> CodeBuilder<T>.value(key: String, value: Any?): CodeBuilder<T> =

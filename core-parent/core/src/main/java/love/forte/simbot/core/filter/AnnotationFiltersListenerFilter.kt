@@ -596,8 +596,9 @@ public class AnnotationFilterListenerFilterImpl(
     override fun getFilterValue(name: String, text: String): String? {
         val matcher: FilterParameterMatcher = keyword?.parameterMatcher ?: return null
         val targetText = textPre(text)
-        return if (matcher.pattern.matcher(targetText).find()) {
-            matcher.getParams(targetText)[name]
+
+        return if (matcher.matches(targetText)) {
+            matcher.getParameters(targetText)[name]
         } else null
     }
 

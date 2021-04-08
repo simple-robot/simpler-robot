@@ -15,6 +15,7 @@
 package love.forte.simbot.core.filter;
 
 import love.forte.simbot.filter.FilterParameterMatcher;
+import love.forte.simbot.filter.FilterParameters;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,7 +33,21 @@ import java.util.regex.PatternSyntaxException;
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @SuppressWarnings("unused")
+@Deprecated
 public class CoreFilterParameterMatcher implements FilterParameterMatcher {
+    /**
+     * 从一段匹配的文本中提取出需要的参数。
+     * <p>
+     * 此文本需要符合正则表达式, 否则得到null。
+     *
+     * @param text 匹配文本
+     * @return 参数提取器。
+     */
+    @Override
+    public FilterParameters getParameters(String text) {
+        // TODO
+        return null;
+    }
 
     /**
      * 原始字符串
@@ -236,6 +251,16 @@ public class CoreFilterParameterMatcher implements FilterParameterMatcher {
         return pattern;
     }
 
+    /**
+     * 是否匹配
+     *
+     * @param text text
+     * @return matches.
+     */
+    @Override
+    public boolean matches(String text) {
+        return pattern.matcher(text).find();
+    }
 
     /**
      * 根据变量名称获取一个动态参数。

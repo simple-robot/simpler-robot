@@ -15,6 +15,7 @@
 package love.forte.simbot.core.filter
 
 import love.forte.simbot.filter.FilterParameterMatcher
+import love.forte.simbot.filter.FilterParameters
 import love.forte.simbot.filter.Keyword
 import java.util.regex.Pattern
 
@@ -34,8 +35,10 @@ internal val EmptyRegex = Regex("")
 internal object EmptyFilterParameterMatcher : FilterParameterMatcher {
     override fun getOriginal(): String = ""
     override fun getPattern(): Pattern = EmptyRegex.toPattern()
+    override fun matches(text: String?): Boolean = false
     override fun getParam(name: String?, text: String?): String? = null
     override fun getParams(text: String?): Map<String, String> = emptyMap()
+    override fun getParameters(text: String?): FilterParameters = EmptyFilterParameters
 }
 
 
@@ -49,3 +52,7 @@ public object EmptyKeyword : Keyword {
 }
 
 
+
+public object EmptyFilterParameters : FilterParameters {
+    override fun get(key: String?): String? = null
+}
