@@ -29,7 +29,9 @@ import java.util.regex.Pattern
  */
 public class RegexFilterParameterMatcher(private val originalValue: String) : FilterParameterMatcher {
 
-    private val regex: Regex by lazy {
+
+
+    internal val regex: Regex by lazy {
         val regexValue = originalValue.toDynamicParametersRegexValue()
         println("regex value: $regexValue")
         Regex(regexValue)

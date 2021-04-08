@@ -24,8 +24,13 @@ import java.util.regex.Pattern
  * 一个普通的value值构建为 [Keyword] 实例。
  */
 public class TextKeyword(override val text: String) : Keyword {
-    override val parameterMatcher: FilterParameterMatcher = CoreFilterParameterMatcher.compile(text)
-    override val regex: Regex = parameterMatcher.pattern.toRegex()
+    override val parameterMatcher: FilterParameterMatcher
+    override val regex: Regex
+    init {
+        val regexParameterMatcher = RegexFilterParameterMatcher(text)
+        parameterMatcher = regexParameterMatcher
+        regex = regexParameterMatcher.regex
+    }
 }
 
 
