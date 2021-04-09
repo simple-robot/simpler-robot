@@ -31,6 +31,7 @@ import kotlinx.coroutines.*
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.component.mirai.message.*
 import love.forte.simbot.component.mirai.message.event.MiraiMessageMsgGet
+import net.mamoe.mirai.contact.FileSupported
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
@@ -336,11 +337,11 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                             .build()
                         // return Mirai
                         return MiraiFileMessageContent(fileNeko, path) { c ->
-                            if (c is Group) {
+                            if (c is FileSupported) {
                                 classPathUrl.externalResource(formatName).use { res ->
                                     c.uploadFile(path, res)
                                 }
-                            } else throw IllegalStateException("File only support upload to group now.")
+                            } else throw IllegalStateException("Classpath file only support upload to 'FileSupported' instance, but '${c::class.java}'")
                         }
                     }
                 }
@@ -358,12 +359,12 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                         }
                         .build()
                     MiraiFileMessageContent(fileNeko, path) { c ->
-                        if (c is Group) {
+                        if (c is FileSupported) {
                             file.toExternalResource(formatName).use { res ->
                                 c.uploadFile(path, res)
 
                             }
-                        } else throw IllegalStateException("File only support upload to group now.")
+                        } else throw IllegalStateException("File only support upload to 'FileSupported' instance. but ${c::class.java}")
                     }
                 } else {
                     // 没有文件，看看有没有url
@@ -385,13 +386,13 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                     // val fileNeko = CatCodeUtil.toNeko("file", "file" cTo urlId, "url" cTo urlId)
 
                     MiraiFileMessageContent(fileNeko, path) { c ->
-                        if (c is Group) {
+                        if (c is FileSupported) {
                             url.toStream().use { s ->
                                 s.toExternalResource(formatName).use {
                                     c.uploadFile(path, it)
                                 }
                             }
-                        } else throw IllegalStateException("File only support upload to group now.")
+                        } else throw IllegalStateException("Remote file only support upload to 'FileSupported' instance, but '${c::class.java}'")
                     }
 
                 }
