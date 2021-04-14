@@ -211,11 +211,11 @@ protected constructor(
 
 
     /**
-     * 获取自动装配信息并加载所有auto config类。
+     * 获取自动装配信息并加载所有auto config类, 以及扫描的包路径。
      */
     private fun initDependCenterWithAutoConfigures(config: Configuration): Set<Class<*>> {
         // 首先扫描并加载所有默认配置信息。
-        val autoConfigures = autoConfigures(loader, logger)
+        val (autoConfigures) = autoConfigures(loader, logger)
 
         dependCenter = DependCenter(parent = parentDependBeanFactory, configuration = config)
 
@@ -490,14 +490,13 @@ private object Logo {
     internal const val ENABLE_KEY = "simbot.core.logo.enable"
     private val LOGO_PATH: String =
         "META-INF" + File.separator + "simbot" + File.separator + "logo"
-    val logo: String by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        runCatching {
-            ResourcesScanner().scan(LOGO_PATH) { it.toASCIIString().endsWith("simbLogo") }
-                .collection.randomOrNull()
-                ?.toURL()?.readText(Charsets.UTF_8)
-                ?: return@runCatching DEF_LOGO
-        }.getOrDefault(DEF_LOGO)
-    }
+    val logo: String = runCatching {
+        ResourcesScanner().scan(LOGO_PATH) { it.toASCIIString().endsWith("simbLogo") }
+            .collection.randomOrNull()
+            ?.toURL()?.readText(Charsets.UTF_8)
+            ?: return@runCatching DEF_LOGO
+    }.getOrDefault(DEF_LOGO)
+
 
 }
 
@@ -506,7 +505,7 @@ private fun Logo.show(print: PrintStream = System.out) {
     print.println()
 }
 
-private object DisableTips : NullPointerException("Disable online tips.")
+private class DisableTips : NullPointerException("Disable online tips.")
 
 
 // tips! Do you know?
@@ -522,10 +521,10 @@ private object Tips {
 
     internal var TIP_ONLINE_PATH: TipOnline? = null
         get() {
-            if (field != null) {
-                return field
-            }
-            return when (val resource = System.getProperty(RESOURCE_CONF_KEY)) {
+            // if (field != null) {
+            //     return field
+            // }
+            return field ?: when (val resource = System.getProperty(RESOURCE_CONF_KEY)) {
                 "gitee", "GITEE", null -> TipOnline.GITEE
                 "github", "GITHUB" -> TipOnline.GITHUB
                 else -> {
@@ -536,31 +535,19 @@ private object Tips {
         }
 
 
-    val randomTip: String? by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        kotlin.runCatching {
-            val url = TIP_ONLINE_PATH?.url ?: throw DisableTips
-
-            logger.trace("Tips online resource {}, url: {}", TIP_ONLINE_PATH, url)
-
-            URL(url).connection { "Online tips connection failed. $it" }
-
-            // (URL(url).openConnection() as HttpURLConnection).run {
-            //     readTimeout = 5000
-            //     connectTimeout = 5000
-            //     connect()
-            //     takeIf { responseCode < 300 }
-            //         ?: throw IOException("Online tips connection failed. ${errorStream.reader().use { it.readText() }}")
-            // }.inputStream.reader()
-        }.getOrElse { e ->
-            if (e != DisableTips) {
-                logger.debugEf("Read online tips failed: {}", e, e.localizedMessage)
-            }
-            runCatching {
-                ResourceUtil.getResourceUtf8Reader(TIP_PATH)
-            }.getOrNull()
-        }?.useLines {
-            it.filter { s -> s.isNotBlank() }.toList().randomOrNull()
+    val randomTip: String? = runCatching {
+        val url = TIP_ONLINE_PATH?.url ?: throw DisableTips()
+        logger.trace("Tips online resource {}, url: {}", TIP_ONLINE_PATH, url)
+        URL(url).connection { "Online tips connection failed. $it" }
+    }.getOrElse { e ->
+        if (e !is DisableTips) {
+            logger.debugEf("Read online tips failed: {}", e, e.localizedMessage)
         }
+        runCatching {
+            ResourceUtil.getResourceUtf8Reader(TIP_PATH)
+        }.getOrNull()
+    }?.useLines {
+        it.filter { s -> s.isNotBlank() }.toList().randomOrNull()
     }
 
 

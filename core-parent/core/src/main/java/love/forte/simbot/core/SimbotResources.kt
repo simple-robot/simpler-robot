@@ -38,9 +38,15 @@ private val JARS_RESOURCES = arrayOf("lib", "SIMBOT-INF/lib")
 
 
 /**
+ * 自动装配信息数据类。
+ */
+internal data class AutoConfiguresData(val classes: Set<Class<*>>)
+
+
+/**
  * 读取所有需要自动装配的类信息。
  */
-internal fun autoConfigures(loader: ClassLoader, logger: Logger = simbotAppLogger): Set<Class<*>> {
+internal fun autoConfigures(loader: ClassLoader, logger: Logger = simbotAppLogger): AutoConfiguresData {
 
 
     val jarResources: Iterator<URL> = JarClassLoader().runCatching {
@@ -52,7 +58,10 @@ internal fun autoConfigures(loader: ClassLoader, logger: Logger = simbotAppLogge
             addURL(it.toURL())
         }
         getResources(AUTO_CONFIG_PATH)?.iterator()
-    }.getOrNull() ?: emptyIterator()
+    }.getOrElse { e ->
+        logger.debug("JarResources load failed. This is an unexpected exception. {}", e.localizedMessage)
+        null
+    } ?: emptyIterator()
 
 
     val resources = loader.getResources(AUTO_CONFIG_PATH).iterator()
@@ -73,7 +82,7 @@ internal fun autoConfigures(loader: ClassLoader, logger: Logger = simbotAppLogge
     }
 
 
-    return classSet
+    return AutoConfiguresData(classSet)
 }
 
 
