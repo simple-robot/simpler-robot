@@ -215,7 +215,8 @@ protected constructor(
      */
     private fun initDependCenterWithAutoConfigures(config: Configuration): Set<Class<*>> {
         // 首先扫描并加载所有默认配置信息。
-        val (autoConfigures) = autoConfigures(loader, logger)
+        // TODO scan packages
+        val (autoConfigures, autoScanPackages) = autoConfigures(loader, logger)
 
         dependCenter = DependCenter(parent = parentDependBeanFactory, configuration = config)
 

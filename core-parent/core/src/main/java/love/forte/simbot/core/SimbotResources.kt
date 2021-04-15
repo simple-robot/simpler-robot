@@ -33,6 +33,7 @@ import java.util.*
 private const val AUTO_CONFIG_PATH = "META-INF/simbot.factories"
 
 private const val AUTO_CONFIG_KEY = "simbot.autoconfigure.configs"
+private const val AUTO_SCAN_PACKAGE_KEY = "simbot.autoconfigure.package"
 
 private val JARS_RESOURCES = arrayOf("lib", "SIMBOT-INF/lib")
 
@@ -40,7 +41,7 @@ private val JARS_RESOURCES = arrayOf("lib", "SIMBOT-INF/lib")
 /**
  * 自动装配信息数据类。
  */
-internal data class AutoConfiguresData(val classes: Set<Class<*>>)
+internal data class AutoConfiguresData(val classes: Set<Class<*>>, val packages: Set<String>)
 
 
 /**
@@ -48,6 +49,7 @@ internal data class AutoConfiguresData(val classes: Set<Class<*>>)
  */
 internal fun autoConfigures(loader: ClassLoader, logger: Logger = simbotAppLogger): AutoConfiguresData {
 
+    // get auto load classes
 
     val jarResources: Iterator<URL> = JarClassLoader().runCatching {
         ResourcesScanner().apply {
@@ -64,10 +66,13 @@ internal fun autoConfigures(loader: ClassLoader, logger: Logger = simbotAppLogge
     } ?: emptyIterator()
 
 
-    val resources = loader.getResources(AUTO_CONFIG_PATH).iterator()
+    val loaderResources = loader.getResources(AUTO_CONFIG_PATH)
+
+    val resources = loaderResources.iterator()
 
     // class list.
     val classSet = mutableSetOf<Class<*>>()
+    val packageSet = mutableSetOf<String>()
 
     (jarResources + resources).forEach { url ->
         logger.debugf("load auto configure resource: {}", url)
@@ -78,11 +83,17 @@ internal fun autoConfigures(loader: ClassLoader, logger: Logger = simbotAppLogge
                 ?.filter { it.isNotBlank() }
                 ?.map { Class.forName(it) }
                 ?.forEach { classSet.add(it) }
+
+            getProperty(AUTO_SCAN_PACKAGE_KEY)?.split(",")
+                ?.filter { it.isNotBlank() }
+                ?.forEach { packageSet.add(it) }
         }
     }
 
 
-    return AutoConfiguresData(classSet)
+
+
+    return AutoConfiguresData(classSet, packageSet)
 }
 
 
