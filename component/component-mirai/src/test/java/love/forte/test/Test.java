@@ -1,6 +1,7 @@
 package love.forte.test;
 
 import catcode.CatCodeUtil;
+import love.forte.aa.MyTestAA;
 import love.forte.common.configuration.Configuration;
 import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.api.sender.Sender;
@@ -16,7 +17,13 @@ import org.jetbrains.annotations.NotNull;
 @SimbotApplication
 public class Test implements SimbotProcess {
     public static void main(String[] args) {
-        SimbotApp.run(Test.class, args);
+        SimbotContext context = SimbotApp.run(Test.class, args);
+
+        System.out.println(context.get(MyTestAA.class));
+
+        context.close();
+
+        System.exit(1);
     }
 
     @Override

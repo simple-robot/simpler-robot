@@ -33,7 +33,6 @@ public class RegexFilterParameterMatcher(private val originalValue: String) : Fi
 
     internal val regex: Regex by lazy {
         val regexValue = originalValue.toDynamicParametersRegexValue()
-        println("regex value: $regexValue")
         Regex(regexValue)
     }
 
