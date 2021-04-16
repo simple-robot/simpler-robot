@@ -102,7 +102,7 @@ internal val simbotAppLogger: Logger = LoggerFactory.getLogger(SimbotApp::class.
 public open class SimbotApp
 protected constructor(
     /** 当不存在 scanPackage 配置项的时候，使用此扫描路径。不可为空。 */
-    defaultScanPackage: String,
+    defaultScanPackage: Array<String>,
     private val loader: ClassLoader,
     private val parentDependBeanFactory: DependBeanFactory?,
     resourceData: List<SimbotResourceData>,
@@ -121,7 +121,7 @@ protected constructor(
         defaultConfiguration?.getConfig(Tips.ENABLE_KEY)?.boolean
     }.getOrNull() ?: true
 
-    protected open val defaultScanPackageArray: Array<String> = arrayOf(defaultScanPackage)
+    protected open val defaultScanPackageArray: Array<String> = defaultScanPackage
 
     /** 资源环境，即启动的时候使用的配置文件环境，会在 [initDependCenterWithRunData] 阶段注入依赖。 */
     protected open val simbotResourceEnvironment: SimbotResourceEnvironment =
@@ -213,10 +213,9 @@ protected constructor(
     /**
      * 获取自动装配信息并加载所有auto config类, 以及扫描的包路径。
      */
-    private fun initDependCenterWithAutoConfigures(config: Configuration): Set<Class<*>> {
+    private fun initDependCenterWithAutoConfigures(config: Configuration): AutoConfiguresData {
         // 首先扫描并加载所有默认配置信息。
-        // TODO scan packages
-        val (autoConfigures, autoScanPackages) = autoConfigures(loader, logger)
+        val autoConfigures = autoConfigures(loader, logger)
 
         dependCenter = DependCenter(parent = parentDependBeanFactory, configuration = config)
 
@@ -226,7 +225,7 @@ protected constructor(
         })
 
         // 加载所有的自动配置类
-        autoConfigures.forEach {
+        autoConfigures.classes.forEach {
             dependCenter.register(it)
         }
 
@@ -312,10 +311,12 @@ protected constructor(
     /**
      * 扫描并注入。
      */
-    private fun scanPackagesAndInject(config: Configuration, ignored: Set<Class<*>>) {
+    private fun scanPackagesAndInject(config: Configuration, autoConfigure: AutoConfiguresData) {
+        val ignored: Set<Class<*>> = autoConfigure.classes
+
         // scanPackage.
-        val scanPackages = config.getConfig(SCAN_PACKAGES_KEY)?.getObject(Array<String>::class.java)
-            ?: defaultScanPackageArray
+        val scanPackages = config.getConfig(SCAN_PACKAGES_KEY)?.getObject(Array<String>::class.java)?.asList()
+            ?: (defaultScanPackageArray + autoConfigure.packages).distinct()
 
         val scanner = this.scanner
 
@@ -336,9 +337,10 @@ protected constructor(
         // inject classes.
         dependCenter.inject(types = collection.toTypedArray())
         // register simbotPackageScanEnvironment.
+
         dependCenter.registerInstance(
             "simbotPackageScanEnvironment",
-            SimbotPackageScanEnvironmentImpl(scanPackages.copyOf())
+            SimbotPackageScanEnvironmentImpl(scanPackages.toTypedArray())
         )
 
 
@@ -406,7 +408,7 @@ protected constructor(
 
             // run and return.
             return SimbotApp(
-                defPackage,
+                arrayOf(defPackage),
                 loader,
                 parentDependBeanFactory,
                 resourceData,
@@ -453,7 +455,7 @@ protected constructor(
 
             // run and return.
             return SimbotApp(
-                defPackage,
+                arrayOf(defPackage),
                 loader,
                 parentDependBeanFactory,
                 resourceData,
