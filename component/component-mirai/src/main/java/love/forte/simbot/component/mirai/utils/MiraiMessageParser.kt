@@ -739,7 +739,6 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
                 .key("internalId").value(internalId)
                 .key("name").value(name)
                 .key("size").value(size)
-                .key("size").value(size)
                 .build()
         }
 
