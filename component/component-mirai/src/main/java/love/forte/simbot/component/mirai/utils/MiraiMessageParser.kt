@@ -799,8 +799,8 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
 
         // mirai不支持的消息
         is UnsupportedMessage -> {
-            CatCodeUtil.getLazyNekoBuilder("unsupported", true)
-                .key("struct").value { struct.byteArrayToHexString() }
+            CatCodeUtil.getNekoBuilder("unsupported", true)
+                .key("struct").value(struct.byteArrayToHexString())
                 .key("warning").value("Unsupported message. 不建议频繁获取struct，存在性能浪费。")
                 .build()
         }
