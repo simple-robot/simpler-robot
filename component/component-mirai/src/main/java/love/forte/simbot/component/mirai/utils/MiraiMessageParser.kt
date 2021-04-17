@@ -322,7 +322,9 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 val formatName = this["formatName"]
 
                 // 上传到的路径
-                val path: String? = this["path"]
+                val path: String? = this["path"]?.let { p ->
+                    if (p.endsWith('/')) p.substringBeforeLast('/') else p
+                }
 
                 if (filePath == null) {
                     if (path == null) {
@@ -336,7 +338,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                             if (c is FileSupported) {
                                 val resolve = c.filesRoot.resolve(path)
                                 if (!resolve.exists()) {
-                                    val mkdir = c.filesRoot.resolve(path).mkdir()
+                                    val mkdir = resolve.mkdir()
                                     if (!mkdir) {
                                         logger.warn("Path {} mkdir in {} failed: return false.", path, c.id)
                                     }
@@ -380,7 +382,6 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                             if (c is FileSupported) {
                                 val resolve = c.filesRoot.resolve(path0.substringBeforeLast("/"))
                                 if (!resolve.exists()) {
-                                    resolve.isDirectory()
                                     val mkdir = resolve.mkdir()
                                     if (!mkdir) {
                                         logger.warn("Path {} mkdir in {} failed: return false.", path, c.id)
@@ -416,7 +417,6 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                         if (c is FileSupported) {
                             val resolve = c.filesRoot.resolve(path0.substringBeforeLast("/"))
                             if (!resolve.exists()) {
-                                resolve.isDirectory()
                                 val mkdir = resolve.mkdir()
                                 if (!mkdir) {
                                     logger.warn("Path {} mkdir in {} failed: return false.", path, c.id)

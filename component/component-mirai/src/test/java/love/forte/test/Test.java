@@ -41,7 +41,8 @@ public class Test implements SimbotProcess {
 
         String fileCat = CatCodeUtil.getInstance()
                 .toCat("file", true,
-                        "file=" + file, "path=" + path);
+                        "file=" + file,
+                        "path=" + path);
         //
         Sender sender = bot.getSender().SENDER;
         //

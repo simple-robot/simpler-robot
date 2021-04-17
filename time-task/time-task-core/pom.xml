@@ -6,7 +6,7 @@
     <parent>
         <artifactId>time-task-parent</artifactId>
         <groupId>love.forte.simple-robot.time-task</groupId>
-        <version>2.0.6</version><!--v-->
+        <version>2.0.6-BETA.1</version><!--v-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
