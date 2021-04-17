@@ -80,7 +80,6 @@ internal val parsers: MutableMap<String, MiraiMessageParser> = mutableMapOf()
 private val FILE_PATH_SPLIT = Regex("[/\\\\]")
 
 
-
 /**
  * 追加一条消息解析器。
  * 如果对应解析的类型 [forType] 已经存在解析器，则返回值得到被替换的解析器。
@@ -325,7 +324,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 // 上传到的路径
                 val path: String? = this["path"]
 
-                if(filePath == null) {
+                if (filePath == null) {
                     if (path == null) {
                         throw IllegalArgumentException("No 'file' or 'path' in $this")
                     } else {
@@ -357,7 +356,8 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 if (filePath.startsWith(CLASSPATH_HEAD)) {
                     val filePath0 = filePath.substring(CLASSPATH_HEAD.length)
                     val path0 = path ?: run {
-                        val fileName = filePath0.split(FILE_PATH_SPLIT).lastOrNull { it.isNotBlank() } ?: UUID.idString()
+                        val fileName =
+                            filePath0.split(FILE_PATH_SPLIT).lastOrNull { it.isNotBlank() } ?: UUID.idString()
                         if (formatName != null) RemoteFile.ROOT_PATH + fileName + "." + formatName
                         else RemoteFile.ROOT_PATH + fileName
                     }
@@ -430,7 +430,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 } else {
                     // 没有文件，看看有没有url
                     val url = filePath.takeIf { it.startsWith("http") }?.let { Url(it) }
-                        // ?: this["url"]?.let { Url(it) }
+                    // ?: this["url"]?.let { Url(it) }
                         ?: throw IllegalArgumentException("There is no 'file' or 'url' starts with 'http' in $this")
 
                     val path0 = path
@@ -504,7 +504,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 val dice: Dice = if (this["random"] == "true") Dice.random()
                 else this["value"]?.let { v ->
                     v.toInt().absoluteValue.let { vInt ->
-                        if (vInt in 1 .. 6) Dice(vInt)
+                        if (vInt in 1..6) Dice(vInt)
                         else Dice((vInt % 6) + 1)
                     }
                 } ?: Dice.random()
@@ -616,12 +616,32 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
             "quote" -> {
                 this["id"]?.let { id ->
                     val cacheMsg =
-                        cache?.getGroupMsg(id) ?: cache?.getPrivateMsg(id) ?: return@let MiraiSingleMessageContent
-                    if (cacheMsg !is MiraiMessageMsgGet<*>) {
-                        return@let MiraiSingleMessageContent
+                        cache?.getGroupMsg(id)
+                            ?: cache?.getPrivateMsg(id)
+                            ?: message?.takeIf { m ->
+                                m.findIsInstance<MessageSource>()?.cacheId?.let { mid -> mid == id }
+                                    ?: false
+                            }
+                            ?: return@let MiraiSingleMessageContent
+
+                    when (cacheMsg) {
+                        is MiraiMessageMsgGet<*> -> MiraiSingleMessageContent(QuoteReply(cacheMsg.message))
+                        is MessageChain -> MiraiSingleMessageContent(QuoteReply(cacheMsg))
+                        is MessageSource -> MiraiSingleMessageContent(QuoteReply(cacheMsg))
+                        else -> MiraiSingleMessageContent
                     }
 
-                    MiraiSingleMessageContent(QuoteReply(cacheMsg.message))
+                    // if (cacheMsg is MessageChain) {
+                    //     return@let MiraiSingleMessageContent(QuoteReply(cacheMsg))
+                    // }
+                    // if (cacheMsg is MessageSource) {
+                    //     return@let MiraiSingleMessageContent(QuoteReply(cacheMsg))
+                    // }
+                    // if (cacheMsg !is MiraiMessageMsgGet<*>) {
+                    //     return@let MiraiSingleMessageContent
+                    // }
+                    //
+                    // MiraiSingleMessageContent(QuoteReply(cacheMsg.message))
                 } ?: run {
                     // 不存在ID，尝试通过messageChain
                     message?.quote()?.let { MiraiSingleMessageContent(it) }
@@ -806,7 +826,7 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
 
         // else.
         else -> {
-            CatCodeUtil.getNekoBuilder("mirai", true)
+            CatCodeUtil.getNekoBuilder("other", true)
                 .key("code").value(this.toString()).build()
         }
     }
