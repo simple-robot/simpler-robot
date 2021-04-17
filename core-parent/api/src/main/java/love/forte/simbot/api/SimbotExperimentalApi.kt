@@ -14,7 +14,7 @@
  *
  */
 
-package love.forte.simbot.component.mirai
+package love.forte.simbot.api
 
 
 /**
