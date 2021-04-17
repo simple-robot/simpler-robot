@@ -113,7 +113,7 @@ public object EmptySingleMessage : SingleMessage by PlainText("")
  * 如果消息发送无法得到singleMessage（例如戳一戳那种异步消息），可以返回一个 [EmptySingleMessage].
  */
 public class MiraiSingleMessageContent(
-    val singleMessage: (Contact) -> SingleMessage,
+    val singleMessage: suspend (Contact) -> SingleMessage,
     override val neko: Neko?,
 ) : MiraiMessageContent(), NekoAble {
 

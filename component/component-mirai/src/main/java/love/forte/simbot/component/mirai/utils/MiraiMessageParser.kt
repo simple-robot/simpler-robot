@@ -20,7 +20,6 @@ import catcode.*
 import catcode.codes.Nyanko
 import cn.hutool.core.io.FileUtil
 import cn.hutool.core.io.resource.ResourceUtil
-import cn.hutool.core.util.StrUtil
 import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*
@@ -31,10 +30,12 @@ import kotlinx.coroutines.*
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.component.mirai.message.*
 import love.forte.simbot.component.mirai.message.event.MiraiMessageMsgGet
+import love.forte.simbot.component.mirai.sender.logger
 import net.mamoe.mirai.contact.FileSupported
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
+import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
@@ -47,6 +48,7 @@ import java.net.URL
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.experimental.and
 import kotlin.experimental.or
+import kotlin.math.absoluteValue
 
 
 internal const val CLASSPATH_HEAD = "classpath:"
@@ -73,6 +75,10 @@ public fun interface MiraiMessageParser {
  * 额外的Mirai消息解析器列表。
  */
 internal val parsers: MutableMap<String, MiraiMessageParser> = mutableMapOf()
+
+
+private val FILE_PATH_SPLIT = Regex("[/\\\\]")
+
 
 
 /**
@@ -312,70 +318,129 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
             // 群文件上传
             "file" -> {
                 // 上传文件路径
-                val filePath = this["file"] ?: throw IllegalArgumentException("No 'file' in $this")
+                val filePath = this["file"] ?: this["url"]
 
                 val formatName = this["formatName"]
 
                 // 上传到的路径
-                val path = this["path"]
-                    ?: if (formatName != null) RemoteFile.ROOT_PATH + UUID.idString() + "." + formatName
+                val path: String? = this["path"]
+
+                if(filePath == null) {
+                    if (path == null) {
+                        throw IllegalArgumentException("No 'file' or 'path' in $this")
+                    } else {
+                        // mkdir
+                        val fileNeko = CatCodeUtil.getNekoBuilder("file", true)
+                            .key("path").value(path)
+                            .build()
+                        return MiraiSingleMessageContent(singleMessage = { c ->
+                            if (c is FileSupported) {
+                                val resolve = c.filesRoot.resolve(path)
+                                if (!resolve.exists()) {
+                                    val mkdir = c.filesRoot.resolve(path).mkdir()
+                                    if (!mkdir) {
+                                        logger.warn("Path {} mkdir in {} failed: return false.", path, c.id)
+                                    }
+                                }
+                                EmptySingleMessage
+                            } else throw IllegalStateException("Classpath file only support upload to 'FileSupported' instance, but '${c::class.java}'")
+                        }, fileNeko)
+                    }
+                }
+
+                /*
+                ?: if (formatName != null) RemoteFile.ROOT_PATH + UUID.idString() + "." + formatName
                     else RemoteFile.ROOT_PATH + UUID.idString()
+                 */
 
                 // if classpath
                 if (filePath.startsWith(CLASSPATH_HEAD)) {
                     val filePath0 = filePath.substring(CLASSPATH_HEAD.length)
+                    val path0 = path ?: run {
+                        val fileName = filePath0.split(FILE_PATH_SPLIT).lastOrNull { it.isNotBlank() } ?: UUID.idString()
+                        if (formatName != null) RemoteFile.ROOT_PATH + fileName + "." + formatName
+                        else RemoteFile.ROOT_PATH + fileName
+                    }
+
+
                     val classPathUrl: URL? = ResourceUtil.getResource(filePath0)
                     if (classPathUrl != null) {
                         val fileNeko = CatCodeUtil.getNekoBuilder("file", true)
                             .key("file").value(filePath0)
-                            .key("path").value(path)
+                            .key("path").value(path0)
                             .apply {
                                 if (formatName != null) {
                                     key("formatName").value(formatName)
                                 }
                             }
                             .build()
+
                         // return Mirai
-                        return MiraiFileMessageContent(fileNeko, path) { c ->
+                        return MiraiFileMessageContent(fileNeko, path0) { c ->
                             if (c is FileSupported) {
+                                val resolve = c.filesRoot.resolve(path0.substringBeforeLast("/"))
+                                if (!resolve.exists()) {
+                                    resolve.isDirectory()
+                                    val mkdir = resolve.mkdir()
+                                    if (!mkdir) {
+                                        logger.warn("Path {} mkdir in {} failed: return false.", path, c.id)
+                                    }
+                                }
                                 classPathUrl.externalResource(formatName).use { res ->
-                                    c.uploadFile(path, res)
+                                    c.uploadFile(path0, res)
                                 }
                             } else throw IllegalStateException("Classpath file only support upload to 'FileSupported' instance, but '${c::class.java}'")
                         }
-                    }
+                    } else throw IllegalArgumentException("Cannot resolve classpath file: $filePath0")
                 }
 
                 val file: File? = filePath.let { FileUtil.file(it) }?.takeIf { it.exists() }
                 if (file != null) {
                     // 存在文件
+
+                    val path0 = path ?: run {
+                        if (formatName != null) RemoteFile.ROOT_PATH + file.nameWithoutExtension + "." + formatName
+                        else RemoteFile.ROOT_PATH + file.name
+                    }
+
                     val fileNeko = CatCodeUtil.getNekoBuilder("file", true)
                         .key("file").value(filePath)
-                        .key("path").value(path)
+                        .key("path").value(path0)
                         .apply {
                             if (formatName != null) {
                                 key("formatName").value(formatName)
                             }
                         }
                         .build()
-                    MiraiFileMessageContent(fileNeko, path) { c ->
+                    MiraiFileMessageContent(fileNeko, path0) { c ->
                         if (c is FileSupported) {
+                            val resolve = c.filesRoot.resolve(path0.substringBeforeLast("/"))
+                            if (!resolve.exists()) {
+                                resolve.isDirectory()
+                                val mkdir = resolve.mkdir()
+                                if (!mkdir) {
+                                    logger.warn("Path {} mkdir in {} failed: return false.", path, c.id)
+                                }
+                            }
                             file.toExternalResource(formatName).use { res ->
-                                c.uploadFile(path, res)
-
+                                c.uploadFile(path0, res)
                             }
                         } else throw IllegalStateException("File only support upload to 'FileSupported' instance. but ${c::class.java}")
                     }
                 } else {
                     // 没有文件，看看有没有url
                     val url = filePath.takeIf { it.startsWith("http") }?.let { Url(it) }
-                        ?: this["url"]?.let { Url(it) }
+                        // ?: this["url"]?.let { Url(it) }
                         ?: throw IllegalArgumentException("There is no 'file' or 'url' starts with 'http' in $this")
+
+                    val path0 = path
+                        ?: if (formatName != null) RemoteFile.ROOT_PATH + UUID.idString() + "." + formatName
+                        else RemoteFile.ROOT_PATH + UUID.idString()
 
                     val urlId = url.encodedPath
                     val fileNeko = CatCodeUtil.getNekoBuilder("file", true)
                         .key("file").value(urlId)
-                        .key("path").value(path)
+                        .key("path").value(path0)
                         .key("url").value(urlId).apply {
                             if (formatName != null) {
                                 key("formatName").value(formatName)
@@ -385,11 +450,11 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
 
                     // val fileNeko = CatCodeUtil.toNeko("file", "file" cTo urlId, "url" cTo urlId)
 
-                    MiraiFileMessageContent(fileNeko, path) { c ->
+                    MiraiFileMessageContent(fileNeko, path0) { c ->
                         if (c is FileSupported) {
                             url.toStream().use { s ->
                                 s.toExternalResource(formatName).use {
-                                    c.uploadFile(path, it)
+                                    c.uploadFile(path0, it)
                                 }
                             }
                         } else throw IllegalStateException("Remote file only support upload to 'FileSupported' instance, but '${c::class.java}'")
@@ -437,7 +502,12 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
             // 骰子
             "dice" -> {
                 val dice: Dice = if (this["random"] == "true") Dice.random()
-                else this["value"]?.let { v -> Dice(v.toInt()) } ?: Dice.random()
+                else this["value"]?.let { v ->
+                    v.toInt().absoluteValue.let { vInt ->
+                        if (vInt in 1 .. 6) Dice(vInt)
+                        else Dice((vInt % 6) + 1)
+                    }
+                } ?: Dice.random()
 
                 MiraiSingleMessageContent(dice)
             }
@@ -552,7 +622,20 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                     }
 
                     MiraiSingleMessageContent(QuoteReply(cacheMsg.message))
-                } ?: MiraiSingleMessageContent
+                } ?: run {
+                    // 不存在ID，尝试通过messageChain
+                    message?.quote()?.let { MiraiSingleMessageContent(it) }
+                        ?: MiraiSingleMessageContent
+                }
+            }
+
+            // 未知消息
+            "unsupported" -> {
+                val struct: String = this["struct"] ?: return MiraiSingleMessageContent
+
+                val structByteArray = struct.hexStringToByteArray()
+
+                MiraiSingleMessageContent(UnsupportedMessage(structByteArray))
             }
 
             else -> {
@@ -646,6 +729,7 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
                 .key("size").value(fileSize).apply {
                     url?.let { key("url").value(it) }
                 }
+                .key("md5").value { this.md5.byteArrayToHexString() }
                 .build()
 
         }
@@ -667,8 +751,6 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
                 .key("id").value(id)
                 .key("quote").value { this.source.originalMessage.toCatCode(cache) }
                 .build()
-            // do cache?
-
         }
 
         is Dice -> {
@@ -715,6 +797,14 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
             .key("content").value(content)
             .build()
 
+        // mirai不支持的消息
+        is UnsupportedMessage -> {
+            CatCodeUtil.getLazyNekoBuilder("unsupported", true)
+                .key("struct").value { struct.byteArrayToHexString() }
+                .key("warning").value("Unsupported message. 不建议频繁获取struct，存在性能浪费。")
+                .build()
+        }
+
         // else.
         else -> {
             CatCodeUtil.getNekoBuilder("mirai", true)
@@ -756,7 +846,7 @@ public suspend fun Url.toStream(): InputStream {
 
 @OptIn(MiraiExperimentalApi::class)
 private val Voice.id: String
-    get() = byteArrayToHexString(md5)
+    get() = md5.byteArrayToHexString()
 
 
 private val hexArray = charArrayOf(
@@ -765,9 +855,9 @@ private val hexArray = charArrayOf(
 )
 
 //将byte数组转换成16进制字符串
-private fun byteArrayToHexString(arr: ByteArray): String {
+private fun ByteArray.byteArrayToHexString(): String {
     val resultSb = StringBuilder()
-    for (b in arr) {
+    for (b in this) {
         var n = b.toInt()
         if (n < 0) {
             n += 256
@@ -778,6 +868,29 @@ private fun byteArrayToHexString(arr: ByteArray): String {
         resultSb.append(hexArray[d1]).append(hexArray[d2])
     }
     return resultSb.toString()
+}
+
+/**
+ * 将十六进制字符串转化为字节数组
+ */
+private fun String.hexStringToByteArray(): ByteArray {
+    if (length % 2 != 0) {
+        throw IllegalArgumentException("Hex str need % 2 == 0, but length $length in $this")
+    }
+
+    val arrayLength = length / 2
+
+    val byteArray = ByteArray(arrayLength)
+
+    val builder = StringBuilder()
+
+    for (i in 0 until arrayLength) {
+        val hex0 = builder.append(this[i * 2]).append(this[(i * 2) + 1]).toString()
+        byteArray[i] = hex0.toByte(16)
+        builder.clear()
+    }
+
+    return byteArray
 }
 
 
@@ -852,8 +965,7 @@ private inline class Id(private val data: ByteArray) {
 
         val leastSigBits: Long = lsb
 
-        val builder = StrUtil.builder(32)
-        StringBuilder(32).run {
+        val builder = StringBuilder(32).run {
             append(digits(mostSigBits shr 32, 8))
             append(digits(mostSigBits shr 16, 4))
             append(digits(mostSigBits, 4))
@@ -874,7 +986,8 @@ private inline class Id(private val data: ByteArray) {
  * @param digits 位
  * @return 值
  */
-private fun digits(`val`: Long, digits: Int): String? {
+private fun digits(`val`: Long, digits: Int): String {
     val hi = 1L shl digits * 4
-    return java.lang.Long.toHexString(hi or (`val` and hi - 1)).substring(1)
+    return (hi or (`val` and hi - 1)).toString(16).substring(1)
+    // return java.lang.Long.toHexString().substring(1)
 }

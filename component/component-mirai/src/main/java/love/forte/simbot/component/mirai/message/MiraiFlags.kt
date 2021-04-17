@@ -31,7 +31,7 @@ public abstract class MiraiMessageSourceFlagContent : FlagContent {
     abstract val source: MessageSource?
     override val id: String
         // get() = source?.let { "${it.fromId}.${it.ids.joinToString(",")}.${it.internalIds.joinToString(",")}" } ?: "EmptyMiraiMessageFlagContent(source=null)"
-        get() = source?.let { it.cacheId } ?: "EmptyMiraiMessageFlagContent(source=null)"
+        get() = source?.cacheId ?: "EmptyMiraiMessageFlagContent(source=null)"
 }
 
 
