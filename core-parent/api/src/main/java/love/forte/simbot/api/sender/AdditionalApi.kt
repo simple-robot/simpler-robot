@@ -37,7 +37,7 @@ import love.forte.simbot.api.message.results.Result
  *
  * @since 2.0.6~2.1.0
  */
-@SimbotExperimentalApi
+@SimbotExperimentalApi("尚在测试阶段")
 interface AdditionalApi<R : Result> {
 
     /**
