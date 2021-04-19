@@ -41,7 +41,7 @@ public class Test {
 
         Getter getter = bot.getSender().GETTER;
 
-        AdditionalApi<FileResults> groupFiles = MiraiAdditionalApis.groupFiles(1043409458);
+        AdditionalApi<FileResults> groupFiles = MiraiAdditionalApis.groupFiles(1043409458L);
 
         FileResults results = getter.additionalExecute(groupFiles);
 
