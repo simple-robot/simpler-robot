@@ -1,7 +1,19 @@
+/*
+ *
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
+ *  *
+ *  * You can contact the author through the following channels:
+ *  * github https://github.com/ForteScarlet
+ *  * gitee  https://gitee.com/ForteScarlet
+ *  * email  ForteScarlet@163.com
+ *  * QQ     1149159218
+ *
+ */
+
 package love.forte.test;
 
-import love.forte.common.configuration.Configuration;
-import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.api.message.results.FileInfo;
 import love.forte.simbot.api.message.results.FileResult;
 import love.forte.simbot.api.message.results.FileResults;
@@ -11,28 +23,20 @@ import love.forte.simbot.bot.Bot;
 import love.forte.simbot.component.mirai.additional.MiraiAdditionalApis;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
-import love.forte.simbot.core.SimbotProcess;
-import org.jetbrains.annotations.NotNull;
 
 /**
- * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
+ * @author ForteScarlet
  */
-@SimbotApplication
-public class Test implements SimbotProcess {
+public class Test {
     public static void main(String[] args) {
         SimbotContext context = SimbotApp.run(Test.class, args);
 
+        post(context);
+
         context.close();
-
-        System.exit(1);
     }
 
-    @Override
-    public void pre(@NotNull Configuration config) {
-    }
-
-    @Override
-    public void post(@NotNull SimbotContext context) {
+    public static void post(SimbotContext context) {
         Bot bot = context.getBotManager().getDefaultBot();
 
         Getter getter = bot.getSender().GETTER;
@@ -52,6 +56,5 @@ public class Test implements SimbotProcess {
             System.out.println(info.getUrl());
             System.out.println();
         }
-
     }
 }
