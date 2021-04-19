@@ -28,7 +28,16 @@ import love.forte.simbot.api.sender.Getter
  * @date 2020/9/4
  * @since
  */
-public interface Result: OriginalDataContainer
+public interface Result: OriginalDataContainer {
+
+    /**
+     * 空的伴生对象。
+     */
+    companion object Empty : Result {
+        override val originalData: String
+            get() = "EmptyResult()"
+    }
+}
 
 
 
@@ -69,6 +78,17 @@ public interface MultipleResults<T: Result>: Result, Iterable<T> {
     @JvmDefault
     fun stream(): java.util.stream.Stream<T> = results.stream()
 
+
+    /**
+     * 空的伴生对象。
+     */
+    companion object Empty : MultipleResults<Nothing> {
+        override val originalData: String
+            get() = "EmptyMultipleResults()"
+        override val results: List<Nothing>
+            get() = emptyList()
+    }
+
 }
 
 
@@ -94,4 +114,24 @@ public interface NodeResult<T> : MultipleResults<NodeResult<T>> {
      * 此节点元素下的其他元素。
      */
     override val results: List<NodeResult<T>>
+
 }
+
+
+/**
+ * 得到一个没有子节点的单节点result。
+ */
+public fun <T> singletonNodeResult(value: T): NodeResult<T> = SingletonNodeResult(value)
+
+
+
+private data class SingletonNodeResult<T>(override val value: T) : NodeResult<T> {
+    override val originalData: String
+        get() = "SingletonNodeResult($value)"
+
+    override fun toString(): String = originalData
+
+    override val results: List<NodeResult<T>>
+        get() = emptyList()
+}
+

@@ -32,7 +32,7 @@ import love.forte.simbot.api.message.results.Result
  * 接口的实现由各个组件进行，并应当对其的实现有着详细的描述。
  *
  *
- * 额外的API接口中，[R] 代表这个API所最终的返回值类型，这个类型必须是 [Result] 类型的子接口。
+ * 额外的API接口中，[R] 代表这个API所最终的返回值类型，这个类型必须是 [Result] 类型。
  *
  *
  * @since 2.0.6~2.1.0
