@@ -15,8 +15,10 @@
 @file:JvmName("ErrorGetterFactories")
 package love.forte.simbot.api.sender
 
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.api.message.results.Result
 
 
 /**
@@ -54,6 +56,9 @@ public object ErrorGetter : Getter.Def {
 
     override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): Nothing =
         NO("Getter.getGroupNoteList")
+
+    @SimbotExperimentalApi
+    override fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): Nothing = NO("Getter.additionalApi.${additionalApi.additionalApiName}")
 }
 
 

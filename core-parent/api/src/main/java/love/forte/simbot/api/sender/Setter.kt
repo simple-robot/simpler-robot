@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit
  * @date 2020/9/2
  * @since
  */
-public interface Setter {
+public interface Setter : Communicator {
 
     /**
      * 一个标识用的接口，用于标记一个 [Setter] 接口的实现为 **默认** 送信器。

@@ -17,12 +17,14 @@
 package love.forte.simbot.api.sender
 
 import love.forte.common.utils.Carrier
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.events.FriendAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.api.message.results.Result
 import java.util.concurrent.TimeUnit
 
 
@@ -82,6 +84,10 @@ object ErrorSetter : Setter.Def {
      */
     override fun setFriendDelete(friend: String): Nothing =
         NO("Setter.setFriendDelete")
+
+    @SimbotExperimentalApi
+    override fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): Nothing =
+        NO("Setter.additionalApi.${additionalApi.additionalApiName}")
 }
 
 

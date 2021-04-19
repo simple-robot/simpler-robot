@@ -35,7 +35,7 @@ import love.forte.simbot.api.message.results.*
  * @date 2020/9/2
  * @since
  */
-public interface Getter : BotContainer {
+public interface Getter : Communicator, BotContainer {
 
     /**
      * 一个标识用的接口，用于标记一个 [Getter] 接口的实现为 **默认** 送信器。
@@ -274,6 +274,5 @@ public interface Getter : BotContainer {
     @JvmDefault
     fun getGroupNoteList(group: GroupContainer): GroupNoteList =
         getGroupNoteList(group.groupInfo, false, -1)
-
 
 }
