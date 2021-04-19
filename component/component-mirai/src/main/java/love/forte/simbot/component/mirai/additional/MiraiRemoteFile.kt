@@ -1,20 +1,18 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  component-onebot
- *  * File     MiraiFile.kt
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
-package love.forte.simbot.component.mirai.message.result
+package love.forte.simbot.component.mirai.additional
 
 import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.secondToMill
@@ -39,7 +37,9 @@ public class MiraiRemoteFile(private val file: RemoteFile) : FileInfo {
     private val fileInfo get() = runBlocking { file.getInfo() }
 
     override val originalData: String
-        get() = file.toString()
+        get() = "RemoteFile(file=$file)"
+
+    override fun toString(): String = originalData
 
     /**
      * 文件ID。
@@ -75,6 +75,15 @@ public class MiraiRemoteFile(private val file: RemoteFile) : FileInfo {
 
     override fun exists(): Boolean = runBlocking { file.exists() }
 
+
+    override val md5: ByteArray?
+        get() = runBlocking { file.getDownloadInfo()?.md5 }
+
+    override val sha1: ByteArray?
+        get() = runBlocking { file.getDownloadInfo()?.sha1 }
+
+    override val url: String?
+        get() = runBlocking { file.getDownloadInfo()?.url }
 
     /**
      * 上传者信息。

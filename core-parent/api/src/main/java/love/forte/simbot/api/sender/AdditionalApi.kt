@@ -17,7 +17,6 @@
 package love.forte.simbot.api.sender
 
 import love.forte.simbot.SimbotRuntimeException
-import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.results.Result
 
 
@@ -38,7 +37,7 @@ import love.forte.simbot.api.message.results.Result
  *
  * @since 2.0.6~2.1.0
  */
-@SimbotExperimentalApi("尚在测试阶段")
+// @SimbotExperimentalApi("尚在测试阶段")
 public interface AdditionalApi<R : Result> {
 
     /**
@@ -51,12 +50,11 @@ public interface AdditionalApi<R : Result> {
      * 可以提供一个默认值获取器，当一些不支持的组件使用的时候，可以得到一个默认值。
      * 如果在组件不支持且不存在默认值的情况下，会抛出异常。
      */
-    val defaultValueProducer: AdditionalApiDefaultValueProducer<R>?
+    val defaultValueProducer: AdditionalApiDefaultValueProducer<R>? get() = null
 
 }
 
 
-@OptIn(SimbotExperimentalApi::class)
 public inline val <R : Result> AdditionalApi<R>.defaultValue: R? get() = defaultValueProducer?.defaultValue
 
 

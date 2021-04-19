@@ -52,7 +52,10 @@ public object MiraiSetterFactory : SetterFactory {
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : Setter {
+public class MiraiSetter(
+    private val bot: Bot,
+    private val defSetter: Setter,
+) : Setter {
     private companion object : TypedCompLogger(MiraiSetter::class.java) {
         private val setGroupAnonymous0Logger: Int by lazy(LazyThreadSafetyMode.PUBLICATION) {
             logger.warn("It is not supported to modify the anonymous chat status, only to return to the current status. This warning will only appear once.")
@@ -393,9 +396,6 @@ public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : 
      */
     fun setGroupEssenceMessage(group: GroupContainer, msgFlag: Flag<GroupMsg.FlagContent>) =
         setGroupEssenceMessage(group.groupInfo, msgFlag)
-
-
-
 
 
 }

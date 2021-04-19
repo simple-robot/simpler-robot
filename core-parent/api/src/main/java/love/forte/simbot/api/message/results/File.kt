@@ -96,6 +96,21 @@ public interface FileInfo : Result, TimeContainer, AccountContainer {
      */
     fun exists(): Boolean
 
+    /**
+     * 文件MD5。不保证能够获取。
+     */
+    val md5: ByteArray?
+
+    /**
+     * 文件sha1。不保证能够获取。
+     */
+    val sha1: ByteArray?
+
+    /**
+     * 文件远程路径。不保证能够获取。
+     */
+    val url: String?
+
 }
 
 

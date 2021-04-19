@@ -1,11 +1,14 @@
 package love.forte.test;
 
-import catcode.CatCodeUtil;
-import love.forte.aa.MyTestAA;
 import love.forte.common.configuration.Configuration;
 import love.forte.simbot.annotation.SimbotApplication;
-import love.forte.simbot.api.sender.Sender;
+import love.forte.simbot.api.message.results.FileInfo;
+import love.forte.simbot.api.message.results.FileResult;
+import love.forte.simbot.api.message.results.FileResults;
+import love.forte.simbot.api.sender.AdditionalApi;
+import love.forte.simbot.api.sender.Getter;
 import love.forte.simbot.bot.Bot;
+import love.forte.simbot.component.mirai.additional.MiraiAdditionalApis;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.core.SimbotProcess;
@@ -19,8 +22,6 @@ public class Test implements SimbotProcess {
     public static void main(String[] args) {
         SimbotContext context = SimbotApp.run(Test.class, args);
 
-        System.out.println(context.get(MyTestAA.class));
-
         context.close();
 
         System.exit(1);
@@ -33,36 +34,24 @@ public class Test implements SimbotProcess {
     @Override
     public void post(@NotNull SimbotContext context) {
         Bot bot = context.getBotManager().getDefaultBot();
-        // group 1043409458
-        String path = "/test/1.gif";
-        // String file = "C:\\Users\\Administrator\\Desktop\\表情\\QQ图片20210217201307.jpg";
-        // String file = "C:\\Users\\Administrator\\Desktop\\表情\\QQ图片20210217201243.jpg";
-        String file = "classpath:1.gif";
 
-        String fileCat = CatCodeUtil.getInstance()
-                .toCat("file", true,
-                        "file=" + file,
-                        "path=" + path);
-        //
-        Sender sender = bot.getSender().SENDER;
-        //
-        sender.sendGroupMsg(1043409458, fileCat);
-        //
-        // System.out.println("uploaded");
+        Getter getter = bot.getSender().GETTER;
 
-        // CatCodeUtil util = CatCodeUtil.getInstance();
-        //
-        // sender.sendGroupMsg(1043409458, util.toCat("dice", "value=1"));
-        // sender.sendGroupMsg(1043409458, util.toCat("dice", "value=2"));
-        // sender.sendGroupMsg(1043409458, util.toCat("dice", "value=3"));
-        // sender.sendGroupMsg(1043409458, util.toCat("dice", "value=4"));
-        // sender.sendGroupMsg(1043409458, util.toCat("dice", "value=5"));
-        // sender.sendGroupMsg(1043409458, util.toCat("dice", "value=6"));
+        AdditionalApi<FileResults> groupFiles = MiraiAdditionalApis.groupFiles(1043409458);
 
-        // for (Bot bot : context.getBotManager().getBots()) {
-        //     Sender s = bot.getSender().SENDER;
-        //     s.sendPrivateMsg(1149159218, "我好了。" + bot.getSender().GETTER.getAuthInfo().getCookies());
-        //     s.sendPrivateMsg(1149159218, CatCodeUtil.getInstance().getStringTemplate().image("classpath:1.jpg"));
-        // }
+        FileResults results = getter.additionalExecute(groupFiles);
+
+        System.out.println(results);
+        for (FileResult result : results.getResults()) {
+            System.out.println(result);
+            FileInfo info = result.getValue();
+            System.out.println(info);
+            System.out.println(info.getName());
+            System.out.println(info.isFile());
+            System.out.println(info.isDirectory());
+            System.out.println(info.getUrl());
+            System.out.println();
+        }
+
     }
 }

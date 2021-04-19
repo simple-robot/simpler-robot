@@ -16,7 +16,6 @@
 
 package love.forte.simbot.api.sender
 
-import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.results.Result
 
 
@@ -42,7 +41,6 @@ public interface Communicator {
      * @throws love.forte.simbot.SimbotRuntimeException 可能存在任何错误，例如不支持的额外api、api执行异常等。
      * @throws SimbotAdditionalApiException 可能存在任何错误，例如不支持的额外api、api执行异常等。
      */
-    @SimbotExperimentalApi
     fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): R {
         return additionalApi.defaultValue ?: throw SimbotAdditionalApiException("Additional api '${additionalApi.additionalApiName}' not support.")
     }
