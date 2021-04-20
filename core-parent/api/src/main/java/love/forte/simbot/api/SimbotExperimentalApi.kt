@@ -32,4 +32,4 @@ package love.forte.simbot.api
     AnnotationTarget.CONSTRUCTOR
 )
 @MustBeDocumented
-public annotation class SimbotExperimentalApi(val info: String = "Simbot实验性API")
+public annotation class SimbotExperimentalApi(val info: String = "实验性API, 未来可能存在变更")
