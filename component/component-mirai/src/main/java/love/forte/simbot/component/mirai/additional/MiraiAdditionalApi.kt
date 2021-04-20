@@ -12,13 +12,17 @@
  *
  */
 
-@file:JvmName("MiraiAdditionalApis")
+@file:JvmName("_MiraiAdditionalApis")
 @file:Suppress("unused")
 
 package love.forte.simbot.component.mirai.additional
 
+import love.forte.simbot.api.SimbotExperimentalApi
+import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.GroupCodeContainer
 import love.forte.simbot.api.message.containers.GroupContainer
+import love.forte.simbot.api.message.events.GroupMsg
+import love.forte.simbot.api.message.results.CarrierResult
 import love.forte.simbot.api.message.results.FileResult
 import love.forte.simbot.api.message.results.FileResults
 import love.forte.simbot.api.message.results.Result
@@ -33,10 +37,7 @@ import net.mamoe.mirai.message.data.MessageChain
 /**
  * mirai组件下的额外API的父接口
  */
-public interface MiraiAdditionalApi<R : Result?> : AdditionalApi<R> {
-
-
-}
+public interface MiraiAdditionalApi<R : Result?> : AdditionalApi<R>
 
 
 /**
@@ -46,7 +47,7 @@ public interface MiraiGetterAdditionalApi<R : Result?> : MiraiAdditionalApi<R> {
     /**
      * 通过当前Getter中可提供的元素执行当前API.
      */
-    fun execute(getterInfo: GetterInfo) : R
+    fun execute(getterInfo: GetterInfo): R
 }
 
 /**
@@ -61,7 +62,7 @@ public interface MiraiSetterAdditionalApi<R : Result?> : MiraiAdditionalApi<R> {
     /**
      * 通过当前Getter中可提供的元素执行当前API.
      */
-    fun execute(setterInfo: SetterInfo) : R
+    fun execute(setterInfo: SetterInfo): R
 }
 
 /**
@@ -76,67 +77,135 @@ public interface MiraiSenderAdditionalApi<R : Result?> : MiraiAdditionalApi<R> {
     /**
      * 通过当前Getter中可提供的元素执行当前API.
      */
-    fun execute(senderInfo: SenderInfo) : R
+    fun execute(senderInfo: SenderInfo): R
 }
 
 /**
  * Sender中可提供的参数。
  */
-public data class SenderInfo(val bot: Bot, val contact: Contact?, val message: MessageChain?, val cache: MiraiMessageCache)
-
-
-
+public data class SenderInfo(
+    val bot: Bot,
+    val contact: Contact?,
+    val message: MessageChain?,
+    val cache: MiraiMessageCache,
+)
 
 
 //**************** api list ****************//
 
+@Suppress("MemberVisibilityCanBePrivate")
+@SimbotExperimentalApi
+public object MiraiAdditionalApis {
 
-//region 群文件列表
+    public val GETTER = Getter
+    public val SETTER = Setter
+    public val SENDER = Sender
 
-/**
- * 获取群文件根目录下的文件列表。
- */
-public fun groupFiles(group: Long): AdditionalApi<FileResults> = MiraiGroupFilesApi(group)
-public fun groupFiles(group: String): AdditionalApi<FileResults> = groupFiles(group.toLong())
-public fun groupFiles(group: GroupCodeContainer): AdditionalApi<FileResults> = groupFiles(group.groupCodeNumber)
-public fun groupFiles(group: GroupContainer): AdditionalApi<FileResults> = groupFiles(group.groupInfo)
+    /**
+     * Additional api for Getter.
+     */
+    public object Getter {
+        //region 群文件列表
 
-//endregion
+        /**
+         * 获取群文件根目录下的文件列表。
+         */
+        public fun getGroupFiles(group: Long): AdditionalApi<FileResults> = MiraiGroupFilesApi(group)
+        public fun getGroupFiles(group: String): AdditionalApi<FileResults> = getGroupFiles(group.toLong())
+        public fun getGroupFiles(group: GroupCodeContainer): AdditionalApi<FileResults> = getGroupFiles(group.groupCodeNumber)
+        public fun getGroupFiles(group: GroupContainer): AdditionalApi<FileResults> = getGroupFiles(group.groupInfo)
+
+        //endregion
+
+        //region 群文件 byId
+
+        /**
+         * 根据ID寻找文件
+         */
+        @JvmOverloads
+        public fun getGroupFileById(group: Long, id: String, deep: Boolean = true): AdditionalApi<FileResult> =
+            MiraiGroupFileByIdApi(group, id, deep)
+
+        @JvmOverloads
+        public fun getGroupFileById(group: String, id: String, deep: Boolean = true): AdditionalApi<FileResult> =
+            getGroupFileById(group.toLong(), id, deep)
+
+        @JvmOverloads
+        public fun getGroupFileById(
+            group: GroupCodeContainer,
+            id: String,
+            deep: Boolean = true,
+        ): AdditionalApi<FileResult> = getGroupFileById(group.groupCodeNumber, id, deep)
+
+        @JvmOverloads
+        public fun getGroupFileById(group: GroupContainer, id: String, deep: Boolean = true): AdditionalApi<FileResult> =
+            getGroupFileById(group.groupInfo, id, deep)
+
+        //endregion
 
 
-//region 群文件 byId
+        //region 群文件 byPath
+        /**
+         * 根据路径寻找文件
+         */
+        public fun getGroupFileByPath(group: Long, path: String): AdditionalApi<FileResult> =
+            MiraiGroupFileByPathApi(group, path)
 
-/**
- * 根据ID寻找文件
- */
-@JvmOverloads
-public fun groupFileById(group: Long, id: String, deep: Boolean = true): AdditionalApi<FileResult> = MiraiGroupFileByIdApi(group, id, deep)
-@JvmOverloads
-public fun groupFileById(group: String, id: String, deep: Boolean = true): AdditionalApi<FileResult> = groupFileById(group.toLong(), id, deep)
-@JvmOverloads
-public fun groupFileById(group: GroupCodeContainer, id: String, deep: Boolean = true): AdditionalApi<FileResult> = groupFileById(group.groupCodeNumber, id, deep)
-@JvmOverloads
-public fun groupFileById(group: GroupContainer, id: String, deep: Boolean = true): AdditionalApi<FileResult> = groupFileById(group.groupInfo, id, deep)
+        public fun getGroupFileByPath(group: String, path: String): AdditionalApi<FileResult> =
+            getGroupFileByPath(group.toLong(), path)
 
-//endregion
+        public fun getGroupFileByPath(group: GroupCodeContainer, path: String): AdditionalApi<FileResult> =
+            getGroupFileByPath(group.groupCodeNumber, path)
 
+        public fun getGroupFileByPath(group: GroupContainer, path: String): AdditionalApi<FileResult> =
+            getGroupFileByPath(group.groupInfo, path)
 
-//region 群文件 byPath
-/**
- * 根据路径寻找文件
- */
-public fun groupFileByPath(group: Long, path: String): AdditionalApi<FileResult> = MiraiGroupFileByPathApi(group, path)
-public fun groupFileByPath(group: String, path: String): AdditionalApi<FileResult> = groupFileByPath(group.toLong(), path)
-public fun groupFileByPath(group: GroupCodeContainer, path: String): AdditionalApi<FileResult> = groupFileByPath(group.groupCodeNumber, path)
-public fun groupFileByPath(group: GroupContainer, path: String): AdditionalApi<FileResult> = groupFileByPath(group.groupInfo, path)
-
-//endregion
+        //endregion
 
 
+    }
+
+    /**
+     * Additional api for Setter.
+     */
+    public object Setter {
+
+        //region 群精华消息
+        /**
+         * 设置群精华消息
+         */
+        public fun setGroupEssenceMessage(group: Long, flag: Flag<GroupMsg.FlagContent>): AdditionalApi<CarrierResult<Boolean>> =
+            MiraiEssenceMessageApi(group, flag)
+
+        public fun setGroupEssenceMessage(group: String, flag: Flag<GroupMsg.FlagContent>): AdditionalApi<CarrierResult<Boolean>> =
+            setGroupEssenceMessage(group.toLong(), flag)
+
+        public fun setGroupEssenceMessage(
+            group: GroupCodeContainer,
+            flag: Flag<GroupMsg.FlagContent>,
+        ): AdditionalApi<CarrierResult<Boolean>> = setGroupEssenceMessage(group.groupCodeNumber, flag)
+
+        public fun setGroupEssenceMessage(
+            group: GroupContainer,
+            flag: Flag<GroupMsg.FlagContent>,
+        ): AdditionalApi<CarrierResult<Boolean>> = setGroupEssenceMessage(group.groupInfo, flag)
+
+
+        // endregion
 
 
 
+    }
 
+    /**
+     * Additional api for Sender.
+     */
+    public object Sender {
+
+    }
+
+
+}
 
 
 

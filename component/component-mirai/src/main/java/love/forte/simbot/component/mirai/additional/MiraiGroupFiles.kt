@@ -21,7 +21,10 @@ import love.forte.simbot.api.message.results.FileResults
 
 
 /**
- * 用于获取群文件列表的额外API，属于一个 [mirai getter额外API][MiraiGetterAdditionalApi]
+ * 用于获取群文件列表的额外API，属于一个 [mirai getter额外API][MiraiGetterAdditionalApi].
+ *
+ * @see groupFiles
+ *
  */
 public data class MiraiGroupFilesApi(val group: Long) : MiraiGetterAdditionalApi<FileResults> {
     /**
@@ -46,6 +49,8 @@ public data class MiraiGroupFilesApi(val group: Long) : MiraiGetterAdditionalApi
  *
  * 可通过 [deep] 决定是否深入子文件夹获取。
  *
+ * @see groupFileById
+ *
  */
 public data class MiraiGroupFileByIdApi(val group: Long, val id: String, val deep: Boolean = true) :
     MiraiGetterAdditionalApi<FileResult> {
@@ -62,6 +67,8 @@ public data class MiraiGroupFileByIdApi(val group: Long, val id: String, val dee
 
 /**
  * 用于通过某文件的 [路径][path] 获取 [指定群][group] 文件的额外API。
+ *
+ * @see groupFileByPath
  *
  */
 public data class MiraiGroupFileByPathApi(val group: Long, val path: String) : MiraiGetterAdditionalApi<FileResult> {

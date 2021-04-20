@@ -373,34 +373,28 @@ public class MiraiSetter(
 
     /**
      * 设置群精华消息。
+     *
+     * 请通过 [additionalExecute] 配合 [love.forte.simbot.component.mirai.additional.MiraiEssenceMessageApi] 使用。
      */
+    @Deprecated("Use additionalExecute by MiraiEssenceMessageApi")
     fun setGroupEssenceMessage(group: Long, msgFlag: Flag<GroupMsg.FlagContent>): Carrier<Boolean> {
         if (msgFlag !is MiraiMessageFlag) {
             throw IllegalArgumentException("Mirai only supports setting the essence message through the group Msg.flag under mirai, but type(${msgFlag::class.java})")
         }
         (msgFlag.flag as MiraiMessageSourceFlagContent).source?.let { s ->
-            GlobalScope.launch { bot.getGroupOrFail(group.toLong()).setEssenceMessage(s) }
+            GlobalScope.launch { bot.getGroupOrFail(group).setEssenceMessage(s) }
             true.toCarrier()
         } ?: throw IllegalArgumentException("Mirai message source is empty.")
 
         return true.toCarrier()
     }
-
-    /**
-     * 设置群精华消息。
-     */
+    @Deprecated("Use additionalExecute by MiraiEssenceMessageApi")
     fun setGroupEssenceMessage(group: String, msgFlag: Flag<GroupMsg.FlagContent>) =
         setGroupEssenceMessage(group.toLong(), msgFlag)
-
-    /**
-     * 设置群精华消息。
-     */
+    @Deprecated("Use additionalExecute by MiraiEssenceMessageApi")
     fun setGroupEssenceMessage(group: GroupCodeContainer, msgFlag: Flag<GroupMsg.FlagContent>) =
         setGroupEssenceMessage(group.groupCodeNumber, msgFlag)
-
-    /**
-     * 设置群精华消息。
-     */
+    @Deprecated("Use additionalExecute by MiraiEssenceMessageApi")
     fun setGroupEssenceMessage(group: GroupContainer, msgFlag: Flag<GroupMsg.FlagContent>) =
         setGroupEssenceMessage(group.groupInfo, msgFlag)
 

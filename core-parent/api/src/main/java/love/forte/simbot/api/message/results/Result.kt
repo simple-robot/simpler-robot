@@ -13,6 +13,7 @@
  */
 @file:JvmMultifileClass
 @file:JvmName("Results")
+
 package love.forte.simbot.api.message.results
 
 import love.forte.simbot.api.message.containers.OriginalDataContainer
@@ -28,7 +29,7 @@ import love.forte.simbot.api.sender.Getter
  * @date 2020/9/4
  * @since
  */
-public interface Result: OriginalDataContainer {
+public interface Result : OriginalDataContainer {
 
     /**
      * 空的伴生对象。
@@ -40,15 +41,13 @@ public interface Result: OriginalDataContainer {
 }
 
 
-
-
 /**
  * 存在多个内容的**返回值** 。
  *
  * 一般可以代表在 [获取器][Getter] 中所得到的信息的值。
  *
  */
-public interface MultipleResults<T: Result>: Result, Iterable<T> {
+public interface MultipleResults<T : Result> : Result, Iterable<T> {
 
     /** 得到结果集合。可能会是空的，但不应为null。 */
     val results: List<T>
@@ -99,7 +98,6 @@ public interface MultipleResults<T: Result>: Result, Iterable<T> {
 public inline val <T : Result> MultipleResults<T>.size: Int get() = results.size
 
 
-
 /**
  * 复数返回值类型之一。区别在于此为一个节点，每个节点都能继续向下获取剩余元素。
  *
@@ -124,7 +122,6 @@ public interface NodeResult<T> : MultipleResults<NodeResult<T>> {
 public fun <T> singletonNodeResult(value: T): NodeResult<T> = SingletonNodeResult(value)
 
 
-
 private data class SingletonNodeResult<T>(override val value: T) : NodeResult<T> {
     override val originalData: String
         get() = "SingletonNodeResult($value)"
@@ -135,3 +132,35 @@ private data class SingletonNodeResult<T>(override val value: T) : NodeResult<T>
         get() = emptyList()
 }
 
+
+/**
+ * 类似于 [love.forte.common.utils.Carrier] 的 Result实例，内部存在一个 [value] 值。
+ *
+ * 但是此类不提供carrier中那些 orElse 之类的方法。
+ *
+ */
+public data class CarrierResult<T : Any?> internal constructor(val value: T) : Result {
+    override val originalData: String = "Result($value)"
+
+    companion object {
+        private val TrueResult = CarrierResult(true)
+        private val FalseResult = CarrierResult(false)
+        private val NullResult = CarrierResult(null)
+
+        @JvmStatic
+        @Suppress("UNCHECKED_CAST")
+        fun <T : Any?> valueOf(value: T): CarrierResult<T> {
+            return when (value) {
+                null -> NullResult as CarrierResult<T>
+                true -> TrueResult as CarrierResult<T>
+                false -> FalseResult as CarrierResult<T>
+                else -> CarrierResult(value)
+            }
+        }
+
+
+    }
+}
+
+
+public fun <T: Any?> T.toCarrierResult(): CarrierResult<T> = CarrierResult.valueOf(this)

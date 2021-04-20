@@ -56,7 +56,12 @@ public class MiraiGetter(
     /**
      * mirai-获取好友信息。
      */
-    private fun getFriendInfo0(code: Long): FriendInfo = MiraiFriendInfo(bot.friend(code))
+    private fun getFriendInfo0(code: Long): FriendInfo {
+        return bot.friendOrNull(code)?.let { f -> MiraiFriendInfo(f) }
+            ?: bot.getStranger(code)?.let { s -> MiraiStrangerInfo(s) }
+            ?: throw NoSuchElementException("No such friend or stranger $code from bot ${bot.id}")
+    }
+
     override fun getFriendInfo(code: String): FriendInfo = getFriendInfo0(code.toLong())
     override fun getFriendInfo(code: Long): FriendInfo = getFriendInfo0(code)
     override fun getFriendInfo(code: AccountCodeContainer): FriendInfo = getFriendInfo(code.accountCodeNumber)
@@ -123,6 +128,7 @@ public class MiraiGetter(
      */
     private fun getGroupNoteList0(group: Long): GroupNoteList =
         MiraiGroupNoteList(bot.group(group))
+
     override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList =
         getGroupNoteList0(group.toLong())
 
@@ -143,7 +149,6 @@ public class MiraiGetter(
 
         return super.additionalExecute(additionalApi)
     }
-
 
 
 }
