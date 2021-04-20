@@ -49,6 +49,9 @@ public interface MiraiGetterAdditionalApi<R : Result?> : MiraiAdditionalApi<R> {
     fun execute(getterInfo: GetterInfo) : R
 }
 
+/**
+ * Getter中可提供的参数。
+ */
 public data class GetterInfo(val bot: Bot, val http: HttpTemplate?)
 
 /**
@@ -61,7 +64,9 @@ public interface MiraiSetterAdditionalApi<R : Result?> : MiraiAdditionalApi<R> {
     fun execute(setterInfo: SetterInfo) : R
 }
 
-
+/**
+ * Setter中可提供的参数。
+ */
 public data class SetterInfo(val bot: Bot)
 
 /**
@@ -74,7 +79,9 @@ public interface MiraiSenderAdditionalApi<R : Result?> : MiraiAdditionalApi<R> {
     fun execute(senderInfo: SenderInfo) : R
 }
 
-
+/**
+ * Sender中可提供的参数。
+ */
 public data class SenderInfo(val bot: Bot, val contact: Contact?, val message: MessageChain?, val cache: MiraiMessageCache)
 
 
