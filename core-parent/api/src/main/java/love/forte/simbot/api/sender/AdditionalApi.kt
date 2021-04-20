@@ -38,7 +38,7 @@ import love.forte.simbot.api.message.results.Result
  * @since 2.0.6~2.1.0
  */
 // @SimbotExperimentalApi("尚在测试阶段")
-public interface AdditionalApi<R : Result> {
+public interface AdditionalApi<R : Result?> {
 
     /**
      * 额外API的描述名称。
@@ -61,7 +61,7 @@ public inline val <R : Result> AdditionalApi<R>.defaultValue: R? get() = default
 /**
  * 额外API的默认值获取器。
  */
-public fun interface AdditionalApiDefaultValueProducer<R : Result> {
+public fun interface AdditionalApiDefaultValueProducer<R : Result?> {
     /**
      * 得到一个默认值。
      */
