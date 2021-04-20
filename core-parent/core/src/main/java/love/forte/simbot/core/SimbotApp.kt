@@ -394,7 +394,7 @@ protected constructor(
                 AnnotationUtil.getAnnotation(appType, SimbotApplication::class.java)?.value
                     ?.map {
                         it.toData()
-                    } ?: throw IllegalArgumentException("There is no resource data info.")
+                    } ?: throw IllegalArgumentException("There is no resource data info or SimbotApplication annotation.")
 
             // 流程接口实例。
             val process: SimbotProcess = if (SimbotProcess::class.java.isAssignableFrom(appType)) {

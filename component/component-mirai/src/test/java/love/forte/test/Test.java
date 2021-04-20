@@ -14,6 +14,7 @@
 
 package love.forte.test;
 
+import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.api.message.results.FileInfo;
 import love.forte.simbot.api.message.results.FileResult;
 import love.forte.simbot.api.message.results.FileResults;
@@ -27,13 +28,14 @@ import love.forte.simbot.core.SimbotContext;
 /**
  * @author ForteScarlet
  */
+@SimbotApplication
 public class Test {
     public static void main(String[] args) {
         SimbotContext context = SimbotApp.run(Test.class, args);
 
         post(context);
 
-        context.close();
+        // context.close();
     }
 
     public static void post(SimbotContext context) {
@@ -41,7 +43,7 @@ public class Test {
 
         Getter getter = bot.getSender().GETTER;
 
-        AdditionalApi<FileResults> groupFiles = MiraiAdditionalApis.groupFiles(1043409458L);
+        AdditionalApi<FileResults> groupFiles = MiraiAdditionalApis.GETTER.getGroupFiles(1043409458L);
 
         FileResults results = getter.additionalExecute(groupFiles);
 

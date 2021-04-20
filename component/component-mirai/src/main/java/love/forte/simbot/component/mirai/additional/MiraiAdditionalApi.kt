@@ -97,8 +97,11 @@ public data class SenderInfo(
 @SimbotExperimentalApi
 public object MiraiAdditionalApis {
 
+    @JvmField
     public val GETTER = Getter
+    @JvmField
     public val SETTER = Setter
+    @JvmField
     public val SENDER = Sender
 
     /**

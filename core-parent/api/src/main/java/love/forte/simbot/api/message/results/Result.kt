@@ -141,6 +141,7 @@ private data class SingletonNodeResult<T>(override val value: T) : NodeResult<T>
  */
 public data class CarrierResult<T : Any?> internal constructor(val value: T) : Result {
     override val originalData: String = "Result($value)"
+    override fun toString(): String = originalData
 
     companion object {
         private val TrueResult = CarrierResult(true)
