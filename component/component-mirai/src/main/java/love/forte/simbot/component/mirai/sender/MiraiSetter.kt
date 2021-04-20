@@ -24,8 +24,12 @@ import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
 import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.events.*
+import love.forte.simbot.api.message.results.Result
+import love.forte.simbot.api.sender.AdditionalApi
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.api.sender.SetterFactory
+import love.forte.simbot.component.mirai.additional.MiraiSetterAdditionalApi
+import love.forte.simbot.component.mirai.additional.SetterInfo
 import love.forte.simbot.component.mirai.message.MiraiMessageFlag
 import love.forte.simbot.component.mirai.message.MiraiMessageSourceFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiBotInvitedJoinRequestFlagContent
@@ -57,11 +61,14 @@ public class MiraiSetter(
     private val defSetter: Setter,
 ) : Setter {
     private companion object : TypedCompLogger(MiraiSetter::class.java) {
-        private val setGroupAnonymous0Logger: Int by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        private val setGroupAnonymous0Logger: Int by lazy(LazyThreadSafetyMode.NONE) {
             logger.warn("It is not supported to modify the anonymous chat status, only to return to the current status. This warning will only appear once.")
             0
         }
     }
+
+    private val setterInfo = SetterInfo(bot)
+
 
     /**
      * 设置好友申请。
@@ -397,5 +404,12 @@ public class MiraiSetter(
     fun setGroupEssenceMessage(group: GroupContainer, msgFlag: Flag<GroupMsg.FlagContent>) =
         setGroupEssenceMessage(group.groupInfo, msgFlag)
 
+
+    override fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): R {
+        if (additionalApi is MiraiSetterAdditionalApi) {
+            return additionalApi.execute(setterInfo)
+        }
+        return super.additionalExecute(additionalApi)
+    }
 
 }

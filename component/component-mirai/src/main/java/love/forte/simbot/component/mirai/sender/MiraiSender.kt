@@ -22,8 +22,12 @@ import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.api.message.results.Result
+import love.forte.simbot.api.sender.AdditionalApi
 import love.forte.simbot.api.sender.Sender
 import love.forte.simbot.api.sender.SenderFactory
+import love.forte.simbot.component.mirai.additional.MiraiSenderAdditionalApi
+import love.forte.simbot.component.mirai.additional.SenderInfo
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
 import love.forte.simbot.component.mirai.message.event.MiraiGroupFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiMessageMsgGet
@@ -67,6 +71,9 @@ public class MiraiSender(
 
     private val cache: MiraiMessageCache
 ) : Sender {
+
+
+    private val senderInfo = SenderInfo(bot, contact, message, cache)
 
 
     /**
@@ -251,4 +258,12 @@ public class MiraiSender(
     override fun sendGroupSign(group: Long, title: String, message: String): Carrier<Boolean> {
         return defSender.sendGroupSign(group, title, message)
     }
+
+    override fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): R {
+        if (additionalApi is MiraiSenderAdditionalApi) {
+            return additionalApi.execute(senderInfo)
+        }
+        return super.additionalExecute(additionalApi)
+    }
+
 }
