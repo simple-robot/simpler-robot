@@ -19,6 +19,7 @@ package love.forte.simbot.api.message
 import catcode.Neko
 import love.forte.simbot.api.message.EmptyContent.cats
 import love.forte.simbot.api.message.EmptyContent.msg
+import org.jetbrains.annotations.Contract
 
 /*
  *
@@ -152,7 +153,30 @@ public interface MessageContent : CharSequence {
     @JvmDefault
     fun isEmpty(): Boolean = cats.isEmpty() && msg.isEmpty()
 
+
+    /**
+     * 重构这个MessageContent，根据Cat的规则进行重构（例如移除消息中的某条类型的消息或增加某条消息等。），并得到一个新的 [MessageContent] 实例。
+     *
+     * @throws IllegalStateException 当前消息不支持重构
+     */
+    @JvmDefault
+    @Contract(pure = true)
+    fun refactor(messageReconstructor: ReconstructorFunction<MessageReconstructor>): MessageContent {
+        throw IllegalStateException("The current message does not support reconstruction.")
+    }
+
+
 }
+
+
+/**
+ * 用于消除kotlin函数参数中烦人的的 [Unit] 兼容问题而使用的接口函数。
+ * 提供一个类型的参数。
+ */
+public fun interface ReconstructorFunction<T> {
+    fun invoke(arg: T)
+}
+
 
 
 /**
