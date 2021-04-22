@@ -12,6 +12,8 @@
  *
  */
 
+
+
 package love.forte.simbot.api.message
 
 import catcode.CatKV
@@ -29,6 +31,7 @@ import love.forte.simbot.api.message.MessageReconstructor.*
  *
  *
  */
+@Suppress("unused")
 public interface MessageReconstructor {
 
     /**
