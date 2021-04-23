@@ -16,7 +16,6 @@
 
 package love.forte.simbot.api.message
 
-import catcode.CatKV
 import love.forte.simbot.api.message.MessageReconstructor.*
 
 /**
@@ -73,10 +72,8 @@ public interface MessageReconstructor {
         /**
          * 根据参数移除当前类型的消息.
          *
-         * [CatKV] 可以通过 [CatKV.kv] 进行构建。
-         *
          */
-        fun remove(vararg params: CatKV<String, String>)
+        fun remove(params: Map<String, String>)
     }
 
     /**
