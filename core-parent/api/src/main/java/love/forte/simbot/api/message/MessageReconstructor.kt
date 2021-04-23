@@ -29,6 +29,12 @@ import love.forte.simbot.api.message.MessageReconstructor.*
  * - [纯文本][TextAction]
  *
  *
+ * 重构器一般用于对 **接受到的消息** 进行重构，由组件进行相比于操作cat码更为高效的实现。
+ *
+ * 不保证所有组件均支持消息重构操作。
+ *
+ * 如果没有特殊说明，不保证线程安全。
+ *
  */
 @Suppress("unused")
 public interface MessageReconstructor {
@@ -84,6 +90,11 @@ public interface MessageReconstructor {
             get() = "at"
 
         /**
+         * 移除非at全体的消息。
+         */
+        override fun remove()
+
+        /**
          * 移除at全体的消息。
          */
         fun removeAtAll()
@@ -130,7 +141,7 @@ public interface MessageReconstructor {
         /**
          * 根据 `url` 移除图片消息
          */
-        fun removeByUrl(file: String)
+        fun removeByUrl(url: String)
 
     }
 

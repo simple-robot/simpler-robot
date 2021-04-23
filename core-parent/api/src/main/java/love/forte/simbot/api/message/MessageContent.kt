@@ -159,6 +159,21 @@ public interface MessageContent : CharSequence {
     /**
      * 重构这个MessageContent，根据Cat的规则进行重构（例如移除消息中的某条类型的消息或增加某条消息等。），并得到一个新的 [MessageContent] 实例。
      *
+     * 得到新实例的前提是你对此消息存在一次任意的改动（无论是否生效）。
+     *
+     * 如果没有任何操作：
+     *
+     * ```java
+     * // java
+     * refactor(r -> {})
+     * ```
+     * ```kotlin
+     * // kotlin
+     * refactor {  }
+     * ```
+     *
+     * 则无法保证返回值为100%的 **新实例**。
+     *
      * @throws IllegalStateException 当前消息不支持重构
      */
     @JvmDefault
