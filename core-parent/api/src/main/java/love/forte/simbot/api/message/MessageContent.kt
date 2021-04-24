@@ -178,7 +178,7 @@ public interface MessageContent : CharSequence {
      */
     @JvmDefault
     @Contract(pure = true)
-    fun refactor(messageReconstructor: ReconstructorFunction<MessageReconstructor>): MessageContent {
+    fun refactor(messageReconstructor: ReconstructorFunction): MessageContent {
         throw IllegalStateException("The current message content does not support reconstruction.")
     }
 
@@ -187,11 +187,12 @@ public interface MessageContent : CharSequence {
 
 
 /**
- * 用于消除kotlin函数参数中烦人的的 [Unit] 兼容问题而使用的接口函数。
- * 提供一个类型的参数。
+ *
+ * 重构器函数，提供一个 [消息重构器][MessageReconstructor] 并对其执行操作。
  */
-public fun interface ReconstructorFunction<T> {
-    operator fun invoke(arg: T)
+// 用于消除kotlin函数参数中烦人的的 [Unit] 兼容问题而使用的接口函数。
+public fun interface ReconstructorFunction {
+    operator fun invoke(arg: MessageReconstructor)
 }
 
 
