@@ -21,6 +21,8 @@ import net.mamoe.mirai.message.data.Image.Key.queryUrl
 
 /**
  * mirai组件针对消息链 [MiraiMessageChainContent] 进行重构的重构器。
+ *
+ * @see MiraiMessageChainContent
  */
 internal class MiraiMessageChainReconstructor(private val messageChainContent: MiraiMessageChainContent) :
     MiraiMessageReconstructor {
@@ -72,7 +74,10 @@ internal class MiraiMessageChainReconstructor(private val messageChainContent: M
      * 对消息链进行操作。
      */
     private inline fun changeChain(block: Sequence<SingleMessage>.() -> Sequence<SingleMessage>) {
-        newChainSequence = newChainSequence?.block()
+        if (newChainSequence == null) {
+            newChainSequence = messageChainContent.message.asSequence()
+        }
+        newChainSequence = newChainSequence?.block().also { changed = true }
     }
 
     private abstract class BaseChainAction : MiraiMessageReconstructor.MiraiAction {

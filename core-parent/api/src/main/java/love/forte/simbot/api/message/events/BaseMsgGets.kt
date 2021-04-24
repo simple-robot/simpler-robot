@@ -287,9 +287,13 @@ public interface MessageGet : MsgGet, MessageContentContainer, FlagContainer<Mes
      * 此处提供使用 [CatCodeUtil.remove] 的默认值，但是建议由组件进行实现以实现更高效的获取。
      *
      *
+     *
+     * 对于一个存在消息的事件 [MessageGet], 认为其 [text] 不可为 `null`。假若事件中不存在纯文本消息，则得到空字符串。
+     *
+     *
      */
     @JvmDefault
-    override val text: String? get() = msg.let { CatCodeUtil.remove(it, trim = false) }
+    override val text: String get() = msg.let { CatCodeUtil.remove(it, trim = false) }
 
 
     /**

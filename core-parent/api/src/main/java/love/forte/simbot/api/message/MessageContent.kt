@@ -179,7 +179,7 @@ public interface MessageContent : CharSequence {
     @JvmDefault
     @Contract(pure = true)
     fun refactor(messageReconstructor: ReconstructorFunction<MessageReconstructor>): MessageContent {
-        throw IllegalStateException("The current message does not support reconstruction.")
+        throw IllegalStateException("The current message content does not support reconstruction.")
     }
 
 
@@ -191,7 +191,7 @@ public interface MessageContent : CharSequence {
  * 提供一个类型的参数。
  */
 public fun interface ReconstructorFunction<T> {
-    fun invoke(arg: T)
+    operator fun invoke(arg: T)
 }
 
 

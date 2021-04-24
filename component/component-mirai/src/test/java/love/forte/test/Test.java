@@ -33,7 +33,7 @@ public class Test {
     public static void main(String[] args) {
         SimbotContext context = SimbotApp.run(Test.class, args);
 
-        post(context);
+        // post(context);
 
         // context.close();
     }

@@ -23,6 +23,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import love.forte.simbot.api.message.MessageContent
+import love.forte.simbot.api.message.MessageReconstructor
+import love.forte.simbot.api.message.ReconstructorFunction
 import love.forte.simbot.component.mirai.sender.isNotEmptyMsg
 import love.forte.simbot.component.mirai.utils.toNeko
 import net.mamoe.mirai.contact.*
@@ -232,17 +234,19 @@ public data class MiraiNudgedMessageContent(private val from: Long?, private val
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class MiraiMessageChainContent constructor(val message: MessageChain, cache: MiraiMessageCache? = null) : MiraiMessageContent() {
+public class MiraiMessageChainContent constructor(val message: MessageChain, private var cache: MiraiMessageCache? = null) : MiraiMessageContent() {
     override suspend fun getMessage(contact: Contact): Message = message
-    // private lateinit var _cats: List<Neko>
-    override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) { message.toNeko(cache) }
-    // override val cats: List<Neko>
-    // get() {
-    //     if (!::_cats.isInitialized) {
-    //         _cats = message.toNeko(cache)
-    //     }
-    //     return _cats
-    // }
+    private lateinit var _cats: List<Neko>
+    // override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) { message.toNeko(cache) }
+    override val cats: List<Neko>
+    get() {
+        if(!::_cats.isInitialized) {
+            _cats = message.toNeko(cache)
+            cache = null
+        }
+        return _cats
+    }
+
 
     override fun equals(other: Any?): Boolean {
         if (other == null) {
@@ -262,6 +266,15 @@ public class MiraiMessageChainContent constructor(val message: MessageChain, cac
         return "MiraiMessageChainContent(originalMessage=$message)"
     }
 
+
+    /**
+     * 消息重构
+     *
+     * @see MiraiMessageChainReconstructor
+     */
+    override fun refactor(messageReconstructor: ReconstructorFunction<MessageReconstructor>): MessageContent {
+        return MiraiMessageChainReconstructor(this).apply {messageReconstructor(this) }.build()
+    }
 
 }
 

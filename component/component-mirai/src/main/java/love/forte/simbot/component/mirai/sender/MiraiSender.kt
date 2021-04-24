@@ -41,6 +41,7 @@ import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain
+import net.mamoe.mirai.message.data.isContentEmpty
 
 
 public class MiraiSenderFactory(private val cache: MiraiMessageCache) : SenderFactory {
@@ -132,7 +133,7 @@ public class MiraiSender(
             if (contact !is Group && contact?.id == code) {
                 runBlocking {
                     val message: Message = miraiMsg.getMessage(contact)
-                    if (message.isNotEmptyMsg()) {
+                    if (!message.isContentEmpty()) {
                         contact.sendMessage(message)
                     } else null
                 }
