@@ -165,11 +165,11 @@ public interface MessageContent : CharSequence {
      *
      * ```java
      * // java
-     * refactor(r -> {})
+     * refactor(r -> { ... })
      * ```
      * ```kotlin
      * // kotlin
-     * refactor {  }
+     * refactor { ... }
      * ```
      *
      * 则无法保证返回值为100%的 **新实例**。
@@ -190,7 +190,7 @@ public interface MessageContent : CharSequence {
  *
  * 重构器函数，提供一个 [消息重构器][MessageReconstructor] 并对其执行操作。
  */
-// 用于消除kotlin函数参数中烦人的的 [Unit] 兼容问题而使用的接口函数。
+// 用于消除kotlin函数参数中烦人的的 Unit 兼容问题而使用的接口函数。
 public fun interface ReconstructorFunction {
     operator fun invoke(arg: MessageReconstructor)
 }
