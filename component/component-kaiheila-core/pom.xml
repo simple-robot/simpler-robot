@@ -17,10 +17,10 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-crypto</artifactId>
-        </dependency>
+        <!--<dependency>-->
+        <!--    <groupId>cn.hutool</groupId>-->
+        <!--    <artifactId>hutool-crypto</artifactId>-->
+        <!--</dependency>-->
 
         <!-- kt -->
         <dependency>
@@ -34,6 +34,12 @@
             <artifactId>kotlinx-coroutines-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-serialization-json</artifactId>
+            <!--<version>${serialization.version}</version>-->
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -41,6 +47,19 @@
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
+                <configuration>
+                    <jvmTarget>1.8</jvmTarget>
+                    <compilerPlugins>
+                        <plugin>kotlinx-serialization</plugin>
+                    </compilerPlugins>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-serialization</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <!-- dokka -->
@@ -48,6 +67,7 @@
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
