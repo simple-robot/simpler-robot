@@ -15,6 +15,7 @@
     <modules>
         <module>component-mirai</module>
         <module>component-lovelycat-httpapi</module>
+        <module>component-kaiheila-core</module>
 
     </modules>
 
