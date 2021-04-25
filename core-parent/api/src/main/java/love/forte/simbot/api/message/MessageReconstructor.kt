@@ -80,6 +80,11 @@ public interface MessageReconstructor {
          *
          */
         fun remove(params: Map<String, String>)
+
+        /**
+         * 仅保留当前类型的全部消息。
+         */
+        fun survive()
     }
 
     /**
@@ -98,6 +103,23 @@ public interface MessageReconstructor {
          * 移除at全体的消息。
          */
         fun removeAtAll()
+
+        /**
+         * 仅保留at全体的消息。
+         */
+        fun surviveAtAll()
+
+        /**
+         * 移除所有at相关的，包括普通at和at全体
+         */
+        fun removeAnyAt()
+
+        /**
+         * 仅保留所有at相关的，包括普通at和at全体
+         */
+        fun surviveAnyAt()
+
+
 
         /**
          * 根据code移除at消息。

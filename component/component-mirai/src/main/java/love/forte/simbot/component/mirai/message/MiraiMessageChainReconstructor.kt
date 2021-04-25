@@ -96,6 +96,10 @@ internal class MiraiMessageChainReconstructor(private val messageChainContent: M
             changeChain { filter { m -> m !is At } }
         }
 
+        override fun survive() {
+            changeChain { filter { m -> m is At } }
+        }
+
         override fun removeByParams(params: Map<String, String>) {
             val code = params["code"] ?: params["target"] ?: params["qq"] ?: return
             removeByCode(code)
@@ -103,6 +107,18 @@ internal class MiraiMessageChainReconstructor(private val messageChainContent: M
 
         override fun removeAtAll() {
             changeChain { filter { m -> m !is AtAll } }
+        }
+
+        override fun surviveAtAll() {
+            changeChain { filter { m -> m is AtAll } }
+        }
+
+        override fun removeAnyAt() {
+            changeChain { filter { m -> m !is AtAll && m !is At } }
+        }
+
+        override fun surviveAnyAt() {
+            changeChain { filter { m -> m is AtAll || m is At } }
         }
 
         override fun removeByCode(code: String) {
@@ -122,6 +138,10 @@ internal class MiraiMessageChainReconstructor(private val messageChainContent: M
     private inner class ChainFaceAction : BaseChainAction(), MiraiMessageReconstructor.MiraiFaceAction {
         override fun remove() {
             changeChain { filter { m -> m !is Face } }
+        }
+
+        override fun survive() {
+            changeChain { filter { m -> m is Face } }
         }
 
         override fun removeByParams(params: Map<String, String>) {
@@ -146,6 +166,10 @@ internal class MiraiMessageChainReconstructor(private val messageChainContent: M
     private inner class ChainImageAction : BaseChainAction(), MiraiMessageReconstructor.MiraiImageAction {
         override fun remove() {
             changeChain { filter { m -> m !is Image } }
+        }
+
+        override fun survive() {
+            changeChain { filter { m -> m is Image } }
         }
 
         override fun removeByParams(params: Map<String, String>) {
@@ -189,6 +213,10 @@ internal class MiraiMessageChainReconstructor(private val messageChainContent: M
 
         override fun remove() {
             changeChain { filter { m -> m !is PlainText } }
+        }
+
+        override fun survive() {
+            changeChain { filter { m -> m is PlainText } }
         }
 
         override fun removeBy(match: (String) -> Boolean) {

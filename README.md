@@ -70,6 +70,7 @@
 计划中准备支持的平台：
 - QQ
     - onebot(QQ机器人通用协议) (分支开发中 *暂缓*)
+- [开黑啦](https://developer.kaiheila.cn/)
 - telegram (分支开发中)
 - discord    
 - 钉钉
