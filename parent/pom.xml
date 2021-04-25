@@ -36,7 +36,7 @@
         <kotlin.version>1.4.32</kotlin.version>
         <ktor.version>1.5.0</ktor.version>
         <kotlinx.version>1.4.2</kotlinx.version>
-        <kotlinx-serialization.version>1.1.0-RC</kotlinx-serialization.version>
+        <kotlinx-serialization.version>1.1.0</kotlinx-serialization.version>
         <kotlin.compiler.jvmTarget>1.8</kotlin.compiler.jvmTarget>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <!--</editor-fold>-->
@@ -747,7 +747,7 @@
     <licenses>
         <license>
             <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 

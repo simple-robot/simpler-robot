@@ -125,7 +125,7 @@ private fun String.toDynamicParametersRegexValue(): String {
     // 忽略本次（上次为转义符
     var ignoreThis = false
     // 上一个也是 {
-    var last: Char? = null
+    // var last: Char? = null
     // 正在获取
     var on = false
     val iter = this.iterator()
@@ -139,14 +139,14 @@ private fun String.toDynamicParametersRegexValue(): String {
             if (ignoreThis) {
                 ignoreThis = false
                 temp.append(c)
-                last = c
+                // last = c
                 continue
             }
             // if is end.
             if (c == '{') {
                 startNum++
                 temp.append(c)
-                last = c
+                // last = c
 
             } else if (c == '}') {
                 if (startNum == 0) {
@@ -159,24 +159,24 @@ private fun String.toDynamicParametersRegexValue(): String {
                 } else {
                     startNum--
                     temp.append(c)
-                    last = c
+                    // last = c
                 }
             } else {
                 temp.append(c)
-                last = c
+                // last = c
             }
 
         } else {
             if (ignoreThis) {
                 ignoreThis = false
                 builder.append(c)
-                last = c
+                // last = c
                 continue
             }
             if (c == '}') {
                 startNum--
                 builder.append(c)
-                last = c
+                // last = c
             } else if (c == '{') {
                 if (startNum == 0) {
                     // if next also
@@ -186,11 +186,11 @@ private fun String.toDynamicParametersRegexValue(): String {
                 } else {
                     startNum++
                     builder.append(c)
-                    last = c
+                    // last = c
                 }
             } else {
                 builder.append(c)
-                last = c
+                // last = c
             }
         }
     }

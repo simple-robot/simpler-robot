@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.kaiheila.`object`
 
+import kotlinx.serialization.Serializable
 import love.forte.simbot.api.message.containers.AccountInfo
 
 
@@ -51,6 +52,13 @@ public interface KaiheilaUser : KaiheilaObjects, AccountInfo {
 
     /** 用户的id */
     val id: String
+
+    @JvmDefault
+    override val accountCode: String get() = id
+
+    // TODO id格式?
+    // override val accountCodeNumber: Long get() = super.accountCodeNumber
+
 
     /** 用户名称 */
     val username: String
@@ -120,8 +128,45 @@ public interface KaiheilaUser : KaiheilaObjects, AccountInfo {
     override val accountRemark: String get() = nickname
 
     /**
-     * 用户在当前服务器中的角色 id 组成的列表
+     * 用户在当前服务器中的角色 id 组成的列表。
      */
     val roles: List<Int>
-
 }
+
+
+/**
+ * [KaiheilaUser] 数据类实现。
+ */
+@Serializable
+public data class KaiheilaUserImpl(
+    override val id: String,
+    override val username: String,
+    override val identifyNum: String,
+    override val online: Boolean,
+    override val status: Int,
+    override val avatar: String,
+    override val bot: Boolean,
+    override val mobileVerified: Boolean,
+    override val system: Boolean,
+    override val mobilePrefix: String,
+    override val mobile: String,
+    override val invitedCount: Int,
+    override val nickname: String,
+    override val roles: List<Int>
+) : KaiheilaUser {
+    override val originalData: String get() = toString()
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
