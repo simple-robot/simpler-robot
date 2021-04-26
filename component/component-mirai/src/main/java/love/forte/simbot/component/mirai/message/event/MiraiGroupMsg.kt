@@ -15,7 +15,6 @@
 package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.MessageContent
-import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
@@ -43,9 +42,8 @@ public class MiraiGroupMsg(event: GroupMessageEvent) :
 
     override val groupMsgType: GroupMsg.Type = GroupMsg.Type.NORMAL
 
-    override val flag: Flag<MiraiGroupFlagContent> by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        miraiMessageFlag(MiraiGroupFlagContent(event.source))
-    }
+    override val flag: GroupMsg.MessageFlag = miraiGroupFlag { MiraiGroupFlagContent(event.source) }
+
 
     override val msgContent: MessageContent = MiraiMessageChainContent(message)
 
@@ -57,5 +55,5 @@ public class MiraiGroupMsg(event: GroupMessageEvent) :
 
 
 /** flag content. */
-public class MiraiGroupFlagContent(override val source: MessageSource) :
-    MiraiMessageSourceFlagContent(), GroupMsg.FlagContent
+public class MiraiGroupFlagContent(override val source: MessageSource) : MiraiMessageSourceFlagContent(),
+    GroupMsg.FlagContent

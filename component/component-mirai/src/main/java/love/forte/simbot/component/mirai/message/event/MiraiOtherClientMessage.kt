@@ -15,12 +15,12 @@
 package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.MessageContent
-import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMessageChainContent
-import love.forte.simbot.component.mirai.message.miraiMessageFlag
+import love.forte.simbot.component.mirai.message.MiraiPrivateMsgFlag
+import love.forte.simbot.component.mirai.message.miraiPrivateFlag
 import net.mamoe.mirai.contact.OtherClient
 import net.mamoe.mirai.event.events.OtherClientMessageEvent
 import net.mamoe.mirai.message.data.source
@@ -74,5 +74,5 @@ public class MiraiOtherClientMessageImpl(event: OtherClientMessageEvent) :
     /**
      * 私聊消息标识。
      */
-    override val flag: Flag<MiraiPrivateFlagContent> = miraiMessageFlag(MiraiPrivateFlagContent(message.source))
+    override val flag: MiraiPrivateMsgFlag = miraiPrivateFlag { MiraiPrivateFlagContent(message.source) }
 }

@@ -70,14 +70,16 @@ public class ListenerFunctionInvokeDataLazyImpl(
     override val listenerInterceptorChain: ListenerInterceptorChain by lazy(mode, _listenerInterceptorChain)
 
     override fun get(type: Class<*>): Any? = when {
-        MsgSender::class.java.isAssignableFrom(type) -> msgSender
-        Sender::class.java.isAssignableFrom(type) -> msgSender.SENDER
-        Setter::class.java.isAssignableFrom(type) -> msgSender.SETTER
-        Getter::class.java.isAssignableFrom(type) -> msgSender.GETTER
-        Bot::class.java.isAssignableFrom(type) -> bot
-        AtDetection::class.java.isAssignableFrom(type) -> atDetection
-        ListenerContext::class.java.isAssignableFrom(type) -> context
-        MsgGet::class.java.isAssignableFrom(type) -> msgGet
+        MsgSender::class.java.isAssignableFrom(type) -> msgSender.takeTypeIf(type)
+        Sender::class.java.isAssignableFrom(type) -> msgSender.SENDER.takeTypeIf(type)
+        Setter::class.java.isAssignableFrom(type) -> msgSender.SETTER.takeTypeIf(type)
+        Getter::class.java.isAssignableFrom(type) -> msgSender.GETTER.takeTypeIf(type)
+        Bot::class.java.isAssignableFrom(type) -> bot.takeTypeIf(type)
+        AtDetection::class.java.isAssignableFrom(type) -> atDetection.takeTypeIf(type)
+        ListenerContext::class.java.isAssignableFrom(type) -> context.takeTypeIf(type)
+        MsgGet::class.java.isAssignableFrom(type) -> msgGet.takeTypeIf(type)
         else -> null
     }
 }
+
+private inline fun <reified T> T.takeTypeIf(type: Class<*>): T? = takeIf { t -> type.isAssignableFrom(t!!::class.java) }

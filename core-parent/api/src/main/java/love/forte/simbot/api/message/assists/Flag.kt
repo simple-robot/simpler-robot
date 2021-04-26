@@ -44,7 +44,7 @@ public interface Flag<out T: FlagContent> {
 /**
  * [Flag] 的基础数据实现类。
  */
-public data class FlagImpl<out T: FlagContent>(override val flag: T): Flag<T>
+public data class FlagImpl<T: FlagContent>(override val flag: T): Flag<T>
 
 /**
  * function param like `val flag = flag { "id" }`。

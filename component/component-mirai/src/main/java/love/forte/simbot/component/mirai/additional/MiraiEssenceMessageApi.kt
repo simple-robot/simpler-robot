@@ -20,7 +20,6 @@ import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.results.CarrierResult
 import love.forte.simbot.api.message.results.toCarrierResult
 import love.forte.simbot.component.mirai.message.MiraiMessageFlag
-import love.forte.simbot.component.mirai.message.MiraiMessageSourceFlagContent
 
 
 /**
@@ -37,13 +36,13 @@ public data class MiraiEssenceMessageApi(val group: Long, val flag: Flag<GroupMs
      */
     override fun execute(setterInfo: SetterInfo): CarrierResult<Boolean> {
 
-        if (flag !is MiraiMessageFlag) {
+        if (flag !is MiraiMessageFlag<*>) {
             throw IllegalArgumentException("Mirai only supports setting the essence message through the group Msg.flag under mirai, but type(${flag::class.java})")
         }
 
         val bot = setterInfo.bot
 
-        return (flag.flag as MiraiMessageSourceFlagContent).source?.let { s ->
+        return flag.flagSource.source?.let { s ->
             runBlocking { bot.getGroupOrFail(group).setEssenceMessage(s) }.toCarrierResult()
         } ?: throw IllegalArgumentException("Mirai message source is empty.")
 

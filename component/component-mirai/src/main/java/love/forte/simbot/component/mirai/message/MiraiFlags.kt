@@ -19,6 +19,8 @@ import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.FlagContent
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.PrivateMsg
+import love.forte.simbot.component.mirai.message.event.MiraiGroupFlagContent
+import love.forte.simbot.component.mirai.message.event.MiraiPrivateFlagContent
 import net.mamoe.mirai.message.data.MessageSource
 
 
@@ -42,7 +44,7 @@ private object EmptyMiraiGroupFlagContent : MiraiMessageSourceFlagContent(), Gro
     override val source: MessageSource? = null
 }
 
-public object EmptyMiraiGroupFlag : Flag<GroupMsg.FlagContent> {
+public object EmptyMiraiGroupFlag : GroupMsg.MessageFlag {
     override val flag: GroupMsg.FlagContent
         get() = EmptyMiraiGroupFlagContent
 }
@@ -51,7 +53,7 @@ private object EmptyMiraiPrivateFlagContent : MiraiMessageSourceFlagContent(), P
     override val source: MessageSource? = null
 }
 
-public object EmptyMiraiPrivateFlag : Flag<PrivateMsg.FlagContent> {
+public object EmptyMiraiPrivateFlag : PrivateMsg.MessageFlag {
     override val flag: PrivateMsg.FlagContent
         get() = EmptyMiraiPrivateFlagContent
 }
@@ -62,28 +64,72 @@ public object EmptyMiraiPrivateFlag : Flag<PrivateMsg.FlagContent> {
  */
 public val <T : FlagContent> Flag<T>.flagId: String get() = flag.id
 
+//
+// public fun <C: MiraiMessageSourceFlagContent> miraiMessageFlag(flag: C): Flag<C> {
+//     return MiraiMessageFlagData(flag)
+// }
+//
+// /* for kt. */
+// public inline fun <C: MiraiMessageSourceFlagContent> miraiMessageFlag(flag: () -> C): Flag<C> {
+//     return miraiMessageFlag(flag())
+// }
 
-public fun <C: MiraiMessageSourceFlagContent> miraiMessageFlag(flag: C): Flag<C> {
-    return MiraiMessageFlagData(flag)
+public fun miraiGroupFlag(flag: MiraiGroupFlagContent): MiraiGroupMsgFlag {
+    return MiraiGroupMsgFlagData(flag)
 }
 
 /* for kt. */
-public inline fun <C: MiraiMessageSourceFlagContent> miraiMessageFlag(flag: () -> C): Flag<C> {
-    return miraiMessageFlag(flag())
+public inline fun miraiGroupFlag(flag: () -> MiraiGroupFlagContent): MiraiGroupMsgFlag {
+    return miraiGroupFlag(flag())
+}
+
+
+public fun miraiPrivateFlag(flag: MiraiPrivateFlagContent): MiraiPrivateMsgFlag {
+    return MiraiPrivateMsgFlagData(flag)
+}
+
+/* for kt. */
+public inline fun miraiPrivateFlag(flag: () -> MiraiPrivateFlagContent): MiraiPrivateMsgFlag {
+    return miraiPrivateFlag(flag())
 }
 
 /**
- * mirai 消息标识。
+ * mirai 消息标识, 此接口应当与 [Flag] 相关接口一同实现。
  */
-public interface MiraiMessageFlag<C: MiraiMessageSourceFlagContent> : Flag<C> {
+public interface MiraiMessageFlag<C: MiraiMessageSourceFlagContent> {
     /**
      * 获取一个 [mirai消息标识主体][MiraiMessageSourceFlagContent].
      */
-    override val flag: C
+    val flagSource: C
 }
+
+//
+// /**
+//  * mirai 消息标识。
+//  */
+// public interface MiraiMessageFlag<C: MiraiMessageSourceFlagContent> : Flag<C> {
+//     /**
+//      * 获取一个 [mirai消息标识主体][MiraiMessageSourceFlagContent].
+//      */
+//     override val flag: C
+// }
+
+public interface MiraiPrivateMsgFlag : MiraiMessageFlag<MiraiPrivateFlagContent>, PrivateMsg.MessageFlag
 
 /**
  * 标识类型为 [MiraiMessageSourceFlagContent] 的 [Flag] 实例，
  * 可用于mirai的撤回。
  */
-internal data class MiraiMessageFlagData<C: MiraiMessageSourceFlagContent>(override val flag: C) : Flag<C>, MiraiMessageFlag<C>
+internal data class MiraiPrivateMsgFlagData(override val flag: MiraiPrivateFlagContent) : MiraiPrivateMsgFlag {
+    override val flagSource: MiraiPrivateFlagContent
+        get() = flag
+}
+
+public interface MiraiGroupMsgFlag : MiraiMessageFlag<MiraiGroupFlagContent>, GroupMsg.MessageFlag
+
+
+internal data class MiraiGroupMsgFlagData(override val flag: MiraiGroupFlagContent) : MiraiGroupMsgFlag {
+    override val flagSource: MiraiGroupFlagContent
+        get() = flag
+}
+

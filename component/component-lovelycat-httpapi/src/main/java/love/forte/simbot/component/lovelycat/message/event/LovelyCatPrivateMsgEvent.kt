@@ -65,7 +65,7 @@ public class LovelyCatTextAblePrivateMsgEvent(
     /**
     *  lovelycat 似乎不支持消息撤回.
     */
-    override val flag: Flag<PrivateMsg.FlagContent>
+    override val flag: PrivateMsg.MessageFlag
         get() = EmptyLovelyCatPrivateMsgFlag
 
     /**

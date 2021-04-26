@@ -31,7 +31,6 @@ import love.forte.simbot.api.sender.SetterFactory
 import love.forte.simbot.component.mirai.additional.MiraiSetterAdditionalApi
 import love.forte.simbot.component.mirai.additional.SetterInfo
 import love.forte.simbot.component.mirai.message.MiraiMessageFlag
-import love.forte.simbot.component.mirai.message.MiraiMessageSourceFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiBotInvitedJoinRequestFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiFriendRequestFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiGroupMemberJoinRequestFlagContent
@@ -318,7 +317,7 @@ public class MiraiSetter(
      */
     override fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
         return if (flag is MiraiMessageFlag<*>) {
-            flag.flag.source?.let { source ->
+            flag.flagSource.source?.let { source ->
                 runBlocking {
                     try {
                         source.recall()
@@ -378,10 +377,10 @@ public class MiraiSetter(
      */
     @Deprecated("Use additionalExecute by MiraiEssenceMessageApi")
     fun setGroupEssenceMessage(group: Long, msgFlag: Flag<GroupMsg.FlagContent>): Carrier<Boolean> {
-        if (msgFlag !is MiraiMessageFlag) {
+        if (msgFlag !is MiraiMessageFlag<*>) {
             throw IllegalArgumentException("Mirai only supports setting the essence message through the group Msg.flag under mirai, but type(${msgFlag::class.java})")
         }
-        (msgFlag.flag as MiraiMessageSourceFlagContent).source?.let { s ->
+        msgFlag.flagSource.source?.let { s ->
             GlobalScope.launch { bot.getGroupOrFail(group).setEssenceMessage(s) }
             true.toCarrier()
         } ?: throw IllegalArgumentException("Mirai message source is empty.")
