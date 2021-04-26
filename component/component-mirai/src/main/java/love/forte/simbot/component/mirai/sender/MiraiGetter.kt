@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.mirai.sender
 
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.BotInfo
@@ -23,6 +24,7 @@ import love.forte.simbot.api.message.results.*
 import love.forte.simbot.api.sender.AdditionalApi
 import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.api.sender.GetterFactory
+import love.forte.simbot.component.mirai.MiraiBotInfo
 import love.forte.simbot.component.mirai.additional.GetterInfo
 import love.forte.simbot.component.mirai.additional.MiraiGetterAdditionalApi
 import love.forte.simbot.component.mirai.message.result.*
@@ -46,11 +48,11 @@ public class MiraiGetter(
 
     private val getterInfo = GetterInfo(bot, http)
 
+    @OptIn(SimbotExperimentalApi::class)
     override val authInfo: AuthInfo
         get() = MiraiAuthInfo(UnsafeViolenceAndroidBotCookieUtils.cookies(bot))
 
-    override val botInfo: BotInfo
-        get() = MiraiBotInfo(bot, http)
+    override val botInfo: BotInfo get() = MiraiBotInfo.getInstance(bot, http)
 
 
     /**

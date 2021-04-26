@@ -14,6 +14,7 @@
 @file:JvmName("MiraiBotCookies")
 package love.forte.simbot.component.mirai.sender
 
+import love.forte.simbot.api.SimbotExperimentalApi
 import net.mamoe.mirai.Bot
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -36,6 +37,7 @@ internal val logger: Logger = LoggerFactory.getLogger("love.forte.simbot.compone
  * @see net.mamoe.mirai.internal.network.WLoginSigInfo
  *
  */
+@SimbotExperimentalApi("不建议外部使用此类")
 object UnsafeViolenceAndroidBotCookieUtils {
     private const val MIRAI_PACKAGE = "net.mamoe.mirai.internal"
     private var success: Boolean = false
@@ -157,6 +159,7 @@ object UnsafeViolenceAndroidBotCookieUtils {
 /**
  * 通过bot得到[Cookies]信息。
  */
+@OptIn(SimbotExperimentalApi::class)
 val Bot.cookies: Cookies? get() = try {
     UnsafeViolenceAndroidBotCookieUtils.cookies(this)
 } catch (e: Throwable) {

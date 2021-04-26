@@ -29,7 +29,6 @@ import love.forte.simbot.bot.BotVerifier
 import love.forte.simbot.bot.BotVerifyException
 import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
 import love.forte.simbot.component.mirai.configuration.miraiBotLogger
-import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
 import love.forte.simbot.component.mirai.utils.MiraiBotEventRegistrar
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.http.template.HttpTemplate
@@ -40,6 +39,9 @@ import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
 import org.slf4j.Logger
 import net.mamoe.mirai.Bot as MBot
 import net.mamoe.mirai.Bot.Companion as MiraiBot
+
+
+
 
 /**
  * mirai bot验证器。
@@ -94,7 +96,7 @@ public class MiraiBotVerifier(
             }
 
 
-            val botContainer = botContainer { MiraiBotInfo(mBot!!, httpTemplate) }
+            val botContainer = botContainer { MiraiBotInfo.getInstance(mBot!!, httpTemplate) }
 
             val sender = msgSenderFactories.toBotSender(botContainer, defFactories)
 
@@ -127,7 +129,10 @@ internal class MiraiBot(
 
     override fun close() {
         runCatching {
+            val id = bot.id
             bot.close()
+            // Destroy bot self cache.
+            MiraiBotInfo.destroyBotInfo(id)
         }.getOrElse {  }
     }
 
