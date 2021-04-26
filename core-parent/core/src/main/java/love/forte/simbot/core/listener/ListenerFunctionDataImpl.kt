@@ -15,7 +15,10 @@
 package love.forte.simbot.core.listener
 
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.api.sender.MsgSender
+import love.forte.simbot.api.sender.Sender
+import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.filter.AtDetection
 import love.forte.simbot.listener.ListenerContext
@@ -43,6 +46,38 @@ public data class ListenerFunctionInvokeDataImpl(
         type.isAssignableFrom(atDetection::class.java) -> atDetection
         type.isAssignableFrom(context::class.java) -> context
         type.isAssignableFrom(msgGet::class.java) -> msgGet
+        else -> null
+    }
+}
+
+
+
+
+public class ListenerFunctionInvokeDataLazyImpl(
+    mode: LazyThreadSafetyMode,
+    _msgGet: () -> MsgGet,
+    _context: () -> ListenerContext,
+    _atDetection: () -> AtDetection,
+    _bot: () -> Bot,
+    _msgSender: () -> MsgSender,
+    _listenerInterceptorChain: () -> ListenerInterceptorChain
+): ListenerFunctionInvokeData {
+    override val msgGet: MsgGet by lazy(mode, _msgGet)
+    override val context: ListenerContext by lazy(mode, _context)
+    override val atDetection: AtDetection by lazy(mode, _atDetection)
+    override val bot: Bot by lazy(mode, _bot)
+    override val msgSender: MsgSender by lazy(mode, _msgSender)
+    override val listenerInterceptorChain: ListenerInterceptorChain by lazy(mode, _listenerInterceptorChain)
+
+    override fun get(type: Class<*>): Any? = when {
+        MsgSender::class.java.isAssignableFrom(type) -> msgSender
+        Sender::class.java.isAssignableFrom(type) -> msgSender.SENDER
+        Setter::class.java.isAssignableFrom(type) -> msgSender.SETTER
+        Getter::class.java.isAssignableFrom(type) -> msgSender.GETTER
+        Bot::class.java.isAssignableFrom(type) -> bot
+        AtDetection::class.java.isAssignableFrom(type) -> atDetection
+        ListenerContext::class.java.isAssignableFrom(type) -> context
+        MsgGet::class.java.isAssignableFrom(type) -> msgGet
         else -> null
     }
 }

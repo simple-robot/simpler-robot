@@ -233,14 +233,25 @@ public class CoreListenerManager(
 
                 // invoke with try.
                 return try {
-                    invokeData = ListenerFunctionInvokeDataImpl(
-                        msgGet,
-                        context,
-                        atDetectionFactory.getAtDetection(msgGet),
-                        botManager.getBot(msgGet.botInfo),
-                        MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories),
-                        interceptorChain
+                    invokeData = ListenerFunctionInvokeDataLazyImpl(
+                        LazyThreadSafetyMode.NONE,
+                        { msgGet },
+                        { context },
+                        { atDetectionFactory.getAtDetection(msgGet) },
+                        { botManager.getBot(msgGet.botInfo) },
+                        { MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories) },
+                        { interceptorChain }
                     )
+
+                    // invokeData = ListenerFunctionInvokeDataImpl(
+                    //     msgGet,
+                    //     context,
+                    //     atDetectionFactory.getAtDetection(msgGet),
+                    //     botManager.getBot(msgGet.botInfo),
+                    //     MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories),
+                    //     interceptorChain
+                    // )
+
                     func(invokeData!!)
                 } catch (funcRunEx: Throwable) {
                     (if (func is LogAble) func.log else logger).error("Listener '${func.name}' execution exception: $funcRunEx",

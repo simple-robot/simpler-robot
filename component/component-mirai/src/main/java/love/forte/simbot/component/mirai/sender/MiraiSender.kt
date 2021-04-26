@@ -29,6 +29,7 @@ import love.forte.simbot.api.sender.SenderFactory
 import love.forte.simbot.component.mirai.additional.MiraiSenderAdditionalApi
 import love.forte.simbot.component.mirai.additional.SenderInfo
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
+import love.forte.simbot.component.mirai.message.event.AbstractMiraiMsgGet
 import love.forte.simbot.component.mirai.message.event.MiraiGroupFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiMessageMsgGet
 import love.forte.simbot.component.mirai.message.event.MiraiPrivateFlagContent
@@ -46,10 +47,16 @@ import net.mamoe.mirai.message.data.isContentEmpty
 
 public class MiraiSenderFactory(private val cache: MiraiMessageCache) : SenderFactory {
     override fun getOnMsgSender(msg: MsgGet, def: Sender.Def): Sender {
-        return if (msg is MiraiMessageMsgGet<*>) {
-            MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber), msg.subject, msg.message, def, cache)
-        } else {
-            MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber), defSender = def, cache = cache)
+        return when (msg) {
+            is MiraiMessageMsgGet<*> -> {
+                MiraiSender(msg.event.bot, msg.subject, msg.message, def, cache)
+            }
+            is AbstractMiraiMsgGet<*> -> {
+                MiraiSender(msg.event.bot, defSender = def, cache = cache)
+            }
+            else -> {
+                MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber), defSender = def, cache = cache)
+            }
         }
     }
 
