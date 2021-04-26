@@ -227,7 +227,7 @@ public interface Setter : Communicator {
      * 开启全群禁言。一般需要当前账号拥有对应权限。
      *
      * @param groupCode 群号
-     * @param ban 是否开启
+     * @param mute 是否开启
      *
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      */
