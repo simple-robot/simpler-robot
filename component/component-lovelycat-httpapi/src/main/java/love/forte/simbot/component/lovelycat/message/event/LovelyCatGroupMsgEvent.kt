@@ -75,7 +75,7 @@ public class LovelyCatTextAbleGroupMsgEvent(
     /**
      *  lovelycat 似乎不支持消息撤回.
      */
-    override val flag: Flag<GroupMsg.FlagContent>
+    override val flag: GroupMsg.MessageFlag
         get() = EmptyLovelyCatGroupMsgFlag
 
     /**
