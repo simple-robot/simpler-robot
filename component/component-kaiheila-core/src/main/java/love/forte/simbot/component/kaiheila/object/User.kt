@@ -16,7 +16,11 @@ package love.forte.simbot.component.kaiheila.`object`
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
 
 
 /**
@@ -49,15 +53,13 @@ import love.forte.simbot.api.message.containers.AccountInfo
  *
  * @author ForteScarlet
  */
-public interface KaiheilaUser : KaiheilaObjects, AccountInfo {
+public interface User : KaiheilaObjects, AccountInfo {
 
     /** 用户的id */
     val id: String
 
     @JvmDefault
     override val accountCode: String get() = id
-
-
 
     /** 用户名称 */
     val username: String
@@ -130,14 +132,26 @@ public interface KaiheilaUser : KaiheilaObjects, AccountInfo {
      * 用户在当前服务器中的角色 id 组成的列表。
      */
     val roles: List<Int>
+
+
+    companion object : SerializerModuleRegistrar {
+        override fun SerializersModuleBuilder.serializerModule() {
+            polymorphic(User::class) {
+                subclass(UserImpl::class)
+                default { UserImpl.serializer() }
+            }
+        }
+    }
+
 }
 
 
 /**
- * [KaiheilaUser] 数据类实现。
+ * [User] 数据类实现。
  */
 @Serializable
-public data class KaiheilaUserImpl(
+@SerialName(UserImpl.SERIAL_NAME)
+public data class UserImpl(
     override val id: String,
     override val username: String,
     @SerialName("identify_num")
@@ -156,8 +170,11 @@ public data class KaiheilaUserImpl(
     override val invitedCount: Int,
     override val nickname: String,
     override val roles: List<Int>
-) : KaiheilaUser {
+) : User {
     override val originalData: String get() = toString()
+    internal companion object {
+        const val SERIAL_NAME = "USER_I"
+    }
 }
 
 
