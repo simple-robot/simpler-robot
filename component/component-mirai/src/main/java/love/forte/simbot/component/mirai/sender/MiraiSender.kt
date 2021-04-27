@@ -224,7 +224,8 @@ public class MiraiSender(
         confirm: Boolean,
     ): Carrier<Boolean> =
         if (toNewMember) setGroupNewMemberNotice0(group, title, text)
-        else false.toCarrier()
+        else defSender.sendGroupNotice(group, title, text, popUp, top, toNewMember, confirm)
+    // false.toCarrier()
 
     override fun sendGroupNotice(
         group: String,
