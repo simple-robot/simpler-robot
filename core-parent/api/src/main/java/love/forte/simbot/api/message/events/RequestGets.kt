@@ -43,7 +43,7 @@ public interface FriendAddRequest : RequestGet {
      *
      * @see FriendAddRequestIdFlagContent
      */
-    override val flag: Flag<@JvmWildcard FlagContent>
+    override val flag: Flag<FlagContent>
 
     /**
      * 请求类型的 标识主体

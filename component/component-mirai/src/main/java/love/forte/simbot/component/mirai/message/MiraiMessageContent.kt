@@ -23,7 +23,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import love.forte.simbot.api.message.MessageContent
-import love.forte.simbot.api.message.MessageReconstructor
 import love.forte.simbot.api.message.ReconstructorFunction
 import love.forte.simbot.component.mirai.sender.isNotEmptyMsg
 import love.forte.simbot.component.mirai.utils.toNeko
@@ -272,7 +271,7 @@ public class MiraiMessageChainContent constructor(val message: MessageChain, pri
      *
      * @see MiraiMessageChainReconstructor
      */
-    override fun refactor(messageReconstructor: ReconstructorFunction<MessageReconstructor>): MessageContent {
+    override fun refactor(messageReconstructor: ReconstructorFunction): MessageContent {
         return MiraiMessageChainReconstructor(this).apply {messageReconstructor(this) }.build()
     }
 

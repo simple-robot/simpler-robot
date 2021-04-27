@@ -23,7 +23,6 @@ import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
 import love.forte.simbot.component.mirai.message.toSimbotPermissions
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.NormalMember
-import net.mamoe.mirai.contact.isMuted
 import java.util.concurrent.TimeUnit
 
 /**

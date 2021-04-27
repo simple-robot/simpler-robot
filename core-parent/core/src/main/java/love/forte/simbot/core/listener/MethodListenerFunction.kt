@@ -23,7 +23,10 @@ import love.forte.simbot.LogAble
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.annotation.*
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.filter.*
+import love.forte.simbot.filter.AtDetection
+import love.forte.simbot.filter.FilterData
+import love.forte.simbot.filter.FilterManager
+import love.forte.simbot.filter.ListenerFilter
 import love.forte.simbot.listener.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

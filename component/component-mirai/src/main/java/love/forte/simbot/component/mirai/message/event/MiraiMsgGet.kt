@@ -19,7 +19,7 @@ import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.component.mirai.message.result.MiraiBotInfo
+import love.forte.simbot.component.mirai.MiraiBotInfo
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
@@ -61,7 +61,7 @@ public abstract class AbstractMiraiMsgGet<out ME : BotEvent>(
     /**
      * bot信息。此处的信息将无法获取到level。
      */
-    override val botInfo: BotInfo get() = MiraiBotInfo(event.bot)
+    override val botInfo: BotInfo = MiraiBotInfo.getInstance(event.bot)
 }
 
 

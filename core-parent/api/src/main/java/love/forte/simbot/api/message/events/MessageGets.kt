@@ -15,7 +15,6 @@
 @file:JvmMultifileClass
 package love.forte.simbot.api.message.events
 
-import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.FriendAccountInfo
 import love.forte.simbot.api.message.containers.GroupAccountContainer
@@ -73,13 +72,19 @@ public interface PrivateMsg : MessageGet {
      *
      */
 
-    override val flag: Flag<@JvmWildcard FlagContent>
+    override val flag: MessageFlag
 
 
     /**
      * 对于 [PrivateMsg] 的 [标识主体][FlagContent] 接口。
      */
     public interface FlagContent : MessageGet.MessageFlagContent
+
+    /**
+     * 私聊消息标识。
+     */
+    public interface MessageFlag : MessageGet.MessageFlag<FlagContent>
+
 }
 
 
@@ -150,13 +155,19 @@ public interface GroupMsg : MessageGet, GroupContainer, GroupAccountContainer, P
      *
      * 如果只是使用 [id] 作为flag载体，在实现的时候可以参考 [GroupMsgIdFlagContent]
      */
-    override val flag: Flag<@JvmWildcard FlagContent>
+    override val flag: MessageFlag
 
 
     /**
      * 对于 [GroupMsg] 的 [标识主体][FlagContent] 接口
      */
     public interface FlagContent : MessageGet.MessageFlagContent
+
+    /**
+     * 群消息标识。
+     */
+    public interface MessageFlag : MessageGet.MessageFlag<FlagContent>
+
 
 }
 

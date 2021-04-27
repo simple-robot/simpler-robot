@@ -15,18 +15,14 @@
 package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.MessageContent
-import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.containers.PermissionContainer
 import love.forte.simbot.api.message.events.MessageGet
-import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
-import love.forte.simbot.component.mirai.message.MiraiMessageChainContent
-import love.forte.simbot.component.mirai.message.miraiMessageFlag
+import love.forte.simbot.component.mirai.message.*
 import love.forte.simbot.component.mirai.message.result.MiraiGroupInfo
-import love.forte.simbot.component.mirai.message.toSimbotPermissions
 import net.mamoe.mirai.event.events.GroupMessageSyncEvent
 import net.mamoe.mirai.message.data.source
 
@@ -39,8 +35,9 @@ import net.mamoe.mirai.message.data.source
 public interface MiraiGroupMessageSync : MessageGet, GroupContainer, PermissionContainer
 
 
-
-
+/**
+ * 虽然接口定义不归类为群消息，但是实际上其本质仍为群消息。
+ */
 public class MiraiGroupMessageSyncImpl(event: GroupMessageSyncEvent) : MiraiMessageMsgGet<GroupMessageSyncEvent>(event),
     MiraiGroupMessageSync {
     /**
@@ -62,5 +59,5 @@ public class MiraiGroupMessageSyncImpl(event: GroupMessageSyncEvent) : MiraiMess
     /**
      * 消息标识
      */
-    override val flag: Flag<MessageGet.MessageFlagContent> = miraiMessageFlag(MiraiGroupFlagContent(message.source))
+    override val flag: MiraiGroupMsgFlag = miraiGroupFlag { MiraiGroupFlagContent(message.source) }
 }
