@@ -20,6 +20,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import love.forte.simbot.component.kaiheila.`object`.Channel
+import love.forte.simbot.component.kaiheila.`object`.Guild
 import love.forte.simbot.component.kaiheila.`object`.Role
 import love.forte.simbot.component.kaiheila.`object`.User
 import java.util.concurrent.CopyOnWriteArraySet
@@ -37,21 +38,27 @@ public fun init() {
     serializerModuleRegistrars.add(Role)
     serializerModuleRegistrars.add(Channel)
     serializerModuleRegistrars.add(User)
-    // serializerModuleRegistrars.add(User)
+    serializerModuleRegistrars.add(Guild)
 }
 
 
-public val kaiheilaJson: Json = Json {
-    init()
-    serializersModule = SerializersModule {
-        serializerModuleRegistrars.forEach {
-            it.apply {
-                serializerModule()
+public data class KaiheilaJson(val json: Json)
+
+
+
+public val kaiheilaJson: Json by lazy {
+    Json {
+        init()
+        serializersModule = SerializersModule {
+            serializerModuleRegistrars.forEach {
+                it.apply {
+                    serializerModule()
+                }
             }
         }
-    }
-    isLenient = true
-    ignoreUnknownKeys = true
-    classDiscriminator = "#KHLT"
+        isLenient = true
+        ignoreUnknownKeys = true
+        classDiscriminator = "#KHLT"
 
+    }
 }
