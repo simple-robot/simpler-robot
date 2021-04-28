@@ -25,9 +25,7 @@ import love.forte.simbot.component.mirai.utils.toStream
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.message.data.AtAll
-import net.mamoe.mirai.message.data.Face
-import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -65,6 +63,7 @@ public sealed class MiraiMessageContentBuilderFactory : MessageContentBuilderFac
  * mirai对 [MessageContentBuilder] 的实现。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
+@Suppress("unused")
 public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
     private val texts = StringBuilder()
     private val contentList = mutableListOf<MiraiMessageContent>()
@@ -168,6 +167,70 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
         val input = ByteArrayInputStream(imgData)
         return image(input, flash)
     }
+
+
+    /**
+     * 直接追加一个 [MiraiMessageContent].
+     */
+    fun messageContent(content: MiraiMessageContent): MiraiMessageContentBuilder {
+        checkText()
+        contentList.add(content)
+        return this
+    }
+
+    /**
+     * 直接追加一个mirai原生 [Message] 实例。
+     */
+    fun singleMessage(singleMessage: SingleMessage): MiraiMessageContentBuilder {
+        checkText()
+        contentList.add(MiraiSingleMessageContent(singleMessage))
+        return this
+    }
+    /**
+     * 直接追加一个mirai原生 [Message] 实例。
+     */
+    fun message(message: Message): MiraiMessageContentBuilder {
+        when (message) {
+            is SingleMessage -> {
+                checkText()
+                contentList.add(MiraiSingleMessageContent(message))
+            }
+            is MessageChain -> {
+                checkText()
+                contentList.add(MiraiMessageChainContent(message))
+            }
+            else -> {
+                throw IllegalArgumentException("Unknown message type. Message must be SingleMessage or MessageChain.")
+            }
+        }
+        return this
+    }
+
+    /**
+     * 通过消息构建函数构建一个 [SingleMessage]
+     * for kt.
+     */
+    @JvmSynthetic
+    fun message(neko: Neko?, messageBlock: suspend (Contact) -> SingleMessage) : MiraiMessageContentBuilder {
+        val msg = MiraiSingleMessageContent(messageBlock, neko)
+        checkText()
+        contentList.add(msg)
+        return this
+    }
+
+    @Suppress("FunctionName")
+    @JvmName("messageLazy")
+    fun __messageNoSuspend(neko: Neko?, messageBlock: (Contact) -> SingleMessage) : MiraiMessageContentBuilder {
+        val msg = MiraiSingleMessageContent({ c -> messageBlock(c) }, neko)
+        checkText()
+        contentList.add(msg)
+        return this
+    }
+
+
+
+
+
 
     override fun build(): MiraiMessageContent {
         checkText()
