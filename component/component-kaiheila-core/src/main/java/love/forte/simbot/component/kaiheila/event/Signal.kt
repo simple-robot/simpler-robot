@@ -22,6 +22,12 @@ import love.forte.simbot.component.kaiheila.KaiheilaRuntimeException
 import love.forte.simbot.component.kaiheila.event.KaiheilaSignalReconnectException.Companion.reconnectException
 import love.forte.simbot.component.kaiheila.event.Event as KhlEvent
 
+typealias Signal_0<E> = Signal.Event<E>
+typealias Signal_1 = Signal.Hello
+typealias Signal_2 = Signal.Ping
+typealias Signal_3 = Signal.Pong
+typealias Signal_5 = Signal.Reconnect
+typealias Signal_6 = Signal.ResumeAck
 
 /**
  * 提供一个参数，得到一个json字符串的工厂。
@@ -29,6 +35,7 @@ import love.forte.simbot.component.kaiheila.event.Event as KhlEvent
 public interface JsonValueFactory<P> {
     fun jsonValue(p: P): String
 }
+
 
 
 /**
