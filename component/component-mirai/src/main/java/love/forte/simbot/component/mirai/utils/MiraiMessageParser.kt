@@ -13,7 +13,6 @@
  */
 
 @file:JvmName("MiraiMessageParsers")
-
 package love.forte.simbot.component.mirai.utils
 
 import catcode.*
@@ -87,6 +86,7 @@ private val FILE_PATH_SPLIT = Regex("[/\\\\]")
  * 不会顶替内置的解析逻辑，但是会覆盖他们的流程。
  *
  */
+@Suppress("unused")
 @Synchronized
 public fun addMiraiMessageParser(forType: String, parser: MiraiMessageParser): MiraiMessageParser? {
     return parsers.put(forType, parser)
@@ -930,19 +930,16 @@ private val MusicKind.showKind: String
  * 获取 [URL] 的 [ExternalResource]。
  */
 private suspend fun URL.externalResource(formatName: String? = null): ExternalResource {
-    return runInterruptible(context = Dispatchers.IO) {
-        openStream().use { s -> s.toExternalResource(formatName) }
+    val stream = stream()
+    return withContext(Dispatchers.IO) {
+        stream.use { s -> s.toExternalResource(formatName) }
     }
 }
 
 /**
  * 获取 [URL] 的输入流。
  */
-private suspend fun URL.stream(): InputStream {
-    return runInterruptible(context = Dispatchers.IO) {
-        openStream()
-    }
-}
+private fun URL.stream(): InputStream = openStream()
 
 
 private inline fun <T> inIO(crossinline block: suspend CoroutineScope.() -> T): T {
