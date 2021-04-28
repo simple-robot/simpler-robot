@@ -14,6 +14,8 @@
 
 package love.forte.simbot.component.kaiheila
 
+import love.forte.simbot.SimbotRuntimeException
+
 /*
     占位文件
  */
@@ -23,3 +25,18 @@ public interface Kaiheila
 
 // signaling
 // signal
+
+
+
+
+public open class KaiheilaRuntimeException : SimbotRuntimeException {
+    constructor() : super()
+    constructor(message: String?) : super(message)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    constructor(cause: Throwable?) : super(cause)
+    constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+        message,
+        cause,
+        enableSuppression,
+        writableStackTrace)
+}

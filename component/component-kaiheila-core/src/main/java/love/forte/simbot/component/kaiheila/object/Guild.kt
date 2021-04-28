@@ -123,6 +123,7 @@ public interface Guild : KaiheilaObjects, GroupInfo {
             polymorphic(Guild::class) {
                 subclass(GuildImpl::class)
                 default { GuildImpl.serializer() }
+
             }
         }
     }
