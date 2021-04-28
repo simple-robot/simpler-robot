@@ -942,13 +942,6 @@ private suspend fun URL.externalResource(formatName: String? = null): ExternalRe
 private fun URL.stream(): InputStream = openStream()
 
 
-private inline fun <T> inIO(crossinline block: suspend CoroutineScope.() -> T): T {
-    return runBlocking {
-        withContext(Dispatchers.IO) { block() }
-    }
-}
-
-
 private inline val UUID: Id
     get() {
         return ThreadLocalRandom.current().let { r ->
