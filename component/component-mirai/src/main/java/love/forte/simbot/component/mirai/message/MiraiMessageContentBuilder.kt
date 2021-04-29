@@ -39,12 +39,12 @@ public sealed class MiraiMessageContentBuilderFactory : MessageContentBuilderFac
 
     /** 普通的图片上传策略。 */
     internal object MiraiMessageContentBuilderFactoryImgNormal : MiraiMessageContentBuilderFactory() {
-        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgNormal()
+        override fun getMessageContentBuilder(): MiraiMessageContentBuilder = MiraiMessageContentBuilderImgNormal()
     }
 
     /** 优先尝试通过一个任意的群进行上传的图片上传策略。 */
     internal object MiraiMessageContentBuilderFactoryImgGroupFirst : MiraiMessageContentBuilderFactory() {
-        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgGroupFirst()
+        override fun getMessageContentBuilder(): MiraiMessageContentBuilder = MiraiMessageContentBuilderImgGroupFirst()
     }
 
     companion object {

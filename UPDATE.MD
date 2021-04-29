@@ -8,6 +8,7 @@
 
 ## mirai组件
 - 简单调整 mirai组件内部的 `BotAliveThread` 终止方式。
+- 为mirai组件中的 ``  
 - 消息撤回支持解析普通的flagContent.id。（即支持消息标识序列化）
   
   需要注意的是，这次支持并不会兼容之前版本的flagContent.id，只有2.0.6及之后版本的id允许反序列化。（因为变更了id的规则和内容）
