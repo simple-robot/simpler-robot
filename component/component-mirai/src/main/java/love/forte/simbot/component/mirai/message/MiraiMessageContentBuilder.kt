@@ -36,6 +36,8 @@ import java.io.InputStream
  * [MiraiMessageContentBuilder]'s factory.
  */
 public sealed class MiraiMessageContentBuilderFactory : MessageContentBuilderFactory {
+    /** Mirai组件所使用的消息构建器。 */
+    abstract override fun getMessageContentBuilder(): MiraiMessageContentBuilder
 
     /** 普通的图片上传策略。 */
     internal object MiraiMessageContentBuilderFactoryImgNormal : MiraiMessageContentBuilderFactory() {
@@ -220,7 +222,7 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
 
     @Suppress("FunctionName")
     @JvmName("messageLazy")
-    fun __messageNoSuspend(neko: Neko?, messageBlock: (Contact) -> SingleMessage) : MiraiMessageContentBuilder {
+    fun __messageBlocking(neko: Neko?, messageBlock: (Contact) -> SingleMessage) : MiraiMessageContentBuilder {
         val msg = MiraiSingleMessageContent({ c -> messageBlock(c) }, neko)
         checkText()
         contentList.add(msg)
