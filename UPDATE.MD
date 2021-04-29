@@ -54,6 +54,10 @@
               // 这是为Java使用者调用的方法，含义与上面这个一样，只不过函数不是suspend类型。
               - messageLazy(Neko?, (Contact) -> SingleMessage)
   
+              // 对于上述这两个有函数的方法，如果你想发送的消息无法返回一个 SingleMessage, 而是直接调用方法发送（例如mirai发送头像戳一戳nudge），
+              // 那么你可以在发送完成后返回一个:
+              // Java: EmptySingleMessage.INSTANCE
+              // Kotlin: EmptySingleMessage
            */
   
           // 构建为消息正文，并发送
