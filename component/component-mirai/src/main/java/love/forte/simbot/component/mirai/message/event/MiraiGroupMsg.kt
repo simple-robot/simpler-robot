@@ -54,6 +54,8 @@ public class MiraiGroupMsg(event: GroupMessageEvent) :
 }
 
 
-/** flag content. */
-public class MiraiGroupFlagContent(override val source: MessageSource) : MiraiMessageSourceFlagContent(),
-    GroupMsg.FlagContent
+/** flag content for group. */
+public class MiraiGroupFlagContent(override val source: MessageSource) : MiraiMessageSourceFlagContent(), GroupMsg.FlagContent {
+    // public constructor(): this(MessageSource())
+
+}

@@ -48,7 +48,12 @@ public interface FriendAddRequest : RequestGet {
     /**
      * 请求类型的 标识主体
      */
-    public interface FlagContent : RequestGet.RequestFlagContent
+    public interface FlagContent : RequestGet.RequestFlagContent {
+        companion object {
+            @JvmStatic
+            fun byId(id: String): FlagContent = FriendAddRequestIdFlagContent(id)
+        }
+    }
 }
 
 /**
@@ -88,13 +93,18 @@ public interface GroupAddRequest : RequestGet, GroupContainer {
      *
      * @see GroupAddRequestIdFlagContent
      */
-    override val flag: Flag<@JvmWildcard FlagContent>
+    override val flag: Flag<FlagContent>
 
 
     /**
      * [群添加请求][GroupAddRequest] 的 [请求标识主体][RequestGet.RequestFlagContent]
      */
-    public interface FlagContent : RequestGet.RequestFlagContent
+    public interface FlagContent : RequestGet.RequestFlagContent {
+        companion object {
+            @JvmStatic
+            fun byId(id: String): FlagContent = GroupAddRequestIdFlagContent(id)
+        }
+    }
 
 
     /**

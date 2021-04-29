@@ -46,6 +46,18 @@ public interface Flag<out T: FlagContent> {
  */
 public data class FlagImpl<T: FlagContent>(override val flag: T): Flag<T>
 
+
+/**
+ * 根据一个 [FlagContent] 得到一个 [Flag] 实例。
+ */
+public fun <T : FlagContent> getFlag(context: T): Flag<T> = FlagImpl(context)
+
+/**
+ * 根据一个 [id] 和一个 [FlagContent]构建器 得到一个 [Flag] 实例。
+ */
+public fun <T : FlagContent> getFlagById(id: String, content: (String) -> T): Flag<T> = FlagImpl(content(id))
+
+
 /**
  * function param like `val flag = flag { "id" }`。
  */

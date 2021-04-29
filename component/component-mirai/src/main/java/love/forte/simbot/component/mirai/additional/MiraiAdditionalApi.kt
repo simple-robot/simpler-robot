@@ -32,6 +32,7 @@ import love.forte.simbot.http.template.HttpTemplate
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.message.data.MessageChain
+import net.mamoe.mirai.message.data.MessageSource
 
 
 /**
@@ -174,24 +175,40 @@ public object MiraiAdditionalApis {
     public object Setter {
 
         //region 群精华消息
+
         /**
          * 设置群精华消息
          */
         public fun setGroupEssenceMessage(group: Long, flag: Flag<GroupMsg.FlagContent>): AdditionalApi<CarrierResult<Boolean>> =
             MiraiEssenceMessageApi(group, flag)
-
         public fun setGroupEssenceMessage(group: String, flag: Flag<GroupMsg.FlagContent>): AdditionalApi<CarrierResult<Boolean>> =
             setGroupEssenceMessage(group.toLong(), flag)
-
         public fun setGroupEssenceMessage(
             group: GroupCodeContainer,
             flag: Flag<GroupMsg.FlagContent>,
         ): AdditionalApi<CarrierResult<Boolean>> = setGroupEssenceMessage(group.groupCodeNumber, flag)
-
         public fun setGroupEssenceMessage(
             group: GroupContainer,
             flag: Flag<GroupMsg.FlagContent>,
         ): AdditionalApi<CarrierResult<Boolean>> = setGroupEssenceMessage(group.groupInfo, flag)
+
+        /**
+         * 设置群精华消息.
+         *
+         * [sourceBlock] 为一个消息源构建函数，通过一个botId得到一个Mirai原生的 [消息实例][MessageSource].
+         */
+        public fun setGroupEssenceMessage(group: Long, sourceBlock: (Long) -> MessageSource): AdditionalApi<CarrierResult<Boolean>> =
+            MiraiEssenceMessageApi(group, sourceBlock)
+        public fun setGroupEssenceMessage(group: String, sourceBlock: (Long) -> MessageSource): AdditionalApi<CarrierResult<Boolean>> =
+            setGroupEssenceMessage(group.toLong(), sourceBlock)
+        public fun setGroupEssenceMessage(
+            group: GroupCodeContainer,
+            sourceBlock: (Long) -> MessageSource
+        ): AdditionalApi<CarrierResult<Boolean>> = setGroupEssenceMessage(group.groupCodeNumber, sourceBlock)
+        public fun setGroupEssenceMessage(
+            group: GroupContainer,
+            sourceBlock: (Long) -> MessageSource
+        ): AdditionalApi<CarrierResult<Boolean>> = setGroupEssenceMessage(group.groupInfo, sourceBlock)
 
 
         // endregion

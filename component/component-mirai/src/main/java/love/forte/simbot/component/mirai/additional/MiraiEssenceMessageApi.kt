@@ -19,15 +19,19 @@ import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.results.CarrierResult
 import love.forte.simbot.api.message.results.toCarrierResult
-import love.forte.simbot.component.mirai.message.MiraiMessageFlag
+import love.forte.simbot.component.mirai.message.messageSource
+import net.mamoe.mirai.message.data.MessageSource
 
 
 /**
  * mirai 设置群精华消息API。
  * @author ForteScarlet
  */
-public data class MiraiEssenceMessageApi(val group: Long, val flag: Flag<GroupMsg.FlagContent>) :
-    MiraiSetterAdditionalApi<CarrierResult<Boolean>> {
+public class MiraiEssenceMessageApi(val group: Long, private val source: (Long) -> MessageSource) : MiraiSetterAdditionalApi<CarrierResult<Boolean>> {
+    public constructor(group: Long, flag: Flag<GroupMsg.FlagContent>): this(group, { id -> flag.messageSource(id) })
+
+
+
     override val additionalApiName: String
         get() = "EssenceMessage"
 
@@ -35,16 +39,10 @@ public data class MiraiEssenceMessageApi(val group: Long, val flag: Flag<GroupMs
      * 执行设置某个消息为精华消息。
      */
     override fun execute(setterInfo: SetterInfo): CarrierResult<Boolean> {
-
-        if (flag !is MiraiMessageFlag<*>) {
-            throw IllegalArgumentException("Mirai only supports setting the essence message through the group Msg.flag under mirai, but type(${flag::class.java})")
-        }
-
+        // if (flag !is MiraiMessageFlag<*>) {
+        //     throw IllegalArgumentException("Mirai only supports setting the essence message through the group Msg.flag under mirai, but type(${flag::class.java})")
+        // }
         val bot = setterInfo.bot
-
-        return flag.flagSource.source?.let { s ->
-            runBlocking { bot.getGroupOrFail(group).setEssenceMessage(s) }.toCarrierResult()
-        } ?: throw IllegalArgumentException("Mirai message source is empty.")
-
+        return runBlocking { bot.getGroupOrFail(group).setEssenceMessage(source(bot.id)) }.toCarrierResult()
     }
 }

@@ -78,7 +78,12 @@ public interface PrivateMsg : MessageGet {
     /**
      * 对于 [PrivateMsg] 的 [标识主体][FlagContent] 接口。
      */
-    public interface FlagContent : MessageGet.MessageFlagContent
+    public interface FlagContent : MessageGet.MessageFlagContent {
+        companion object {
+            @JvmStatic
+            fun byId(id: String): FlagContent = PrivateMsgIdFlagContent(id)
+        }
+    }
 
     /**
      * 私聊消息标识。
@@ -161,7 +166,12 @@ public interface GroupMsg : MessageGet, GroupContainer, GroupAccountContainer, P
     /**
      * 对于 [GroupMsg] 的 [标识主体][FlagContent] 接口
      */
-    public interface FlagContent : MessageGet.MessageFlagContent
+    public interface FlagContent : MessageGet.MessageFlagContent {
+        companion object {
+            @JvmStatic
+            fun byId(id: String): FlagContent = GroupMsgIdFlagContent(id)
+        }
+    }
 
     /**
      * 群消息标识。
