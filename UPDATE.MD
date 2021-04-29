@@ -9,38 +9,41 @@
 ## mirai组件
 - 简单调整 mirai组件内部的 `BotAliveThread` 终止方式。
 - 消息撤回支持解析普通的flagContent.id。（即支持消息标识序列化）
-你可以：
-```java
-    public void listen(GroupMsg msg, Setter setter) {
-        // 这是正常得到的flag。
-        GroupMsg.MessageFlag flag = msg.getFlag();
-        // 得到这个flag的id。
-        String id = flag.getFlag().getId();
-        System.out.println("id = " + id);
-
-        // 假设你中途序列化了，并只保存了ID值。
-        // 你可以通过 Flags.getFlag 或者 Flags.getFlagById 进行反序列化。
-        // 方法1：Flags.getFlag
-        // getFlag需要一个FlagContent参数，
-        // 对于群消息，你可以使用 GroupMsg.FlagContent.byId(id)
-        // 对于私聊消息，你可以使用 PrivateMsg.FlagContent.byId(id)
-
-        Flag<GroupMsg.FlagContent> flagById1 = Flags.getFlag(GroupMsg.FlagContent.byId(id));
-
-        // 方法2：Flags.getFlagById
-        // getFlagById需要一个ID参数，以及一个 “通过ID获取Content” 的函数。
-        // 关于第二个函数参数，
-        // 对于群消息，你可以使用 Flags.getFlagById(id, GroupMsg.FlagContent::byId);
-        // 这等同于 Flags.getFlagById(id, id -> GroupMsg.FlagContent.byId(id));
-        // 对于私聊消息，你可以使用 Flags.getFlagById(id, PrivateMsg.FlagContent::byId);
-        // 这等同于 Flags.getFlagById(id, id -> PrivateMsg.FlagContent.byId(id));
-
-        Flag<GroupMsg.FlagContent> flagById2 = Flags.getFlagById(id, GroupMsg.FlagContent::byId);
-
-
-        // 反序列化后进行撤回
-        setter.setMsgRecall(flagById1);
-    }
-```
+  
+  需要注意的是，这次支持并不会兼容之前版本的flagContent.id，只有2.0.6及之后版本的id允许反序列化。（因为变更了id的规则和内容）
+  
+  简单示例：
+  ```java
+       public void listen(GroupMsg msg, Setter setter) {
+           // 这是正常得到的flag。
+           GroupMsg.MessageFlag flag = msg.getFlag();
+           // 得到这个flag的id。
+           String id = flag.getFlag().getId();
+           System.out.println("id = " + id);
+   
+           // 假设你中途序列化了，并只保存了ID值。
+           // 你可以通过 Flags.getFlag 或者 Flags.getFlagById 进行反序列化。
+           // 方法1：Flags.getFlag
+           // getFlag需要一个FlagContent参数，
+           // 对于群消息，你可以使用 GroupMsg.FlagContent.byId(id)
+           // 对于私聊消息，你可以使用 PrivateMsg.FlagContent.byId(id)
+   
+           Flag<GroupMsg.FlagContent> flagById1 = Flags.getFlag(GroupMsg.FlagContent.byId(id));
+   
+           // 方法2：Flags.getFlagById
+           // getFlagById需要一个ID参数，以及一个 “通过ID获取Content” 的函数。
+           // 关于第二个函数参数，
+           // 对于群消息，你可以使用 Flags.getFlagById(id, GroupMsg.FlagContent::byId);
+           // 这等同于 Flags.getFlagById(id, id -> GroupMsg.FlagContent.byId(id));
+           // 对于私聊消息，你可以使用 Flags.getFlagById(id, PrivateMsg.FlagContent::byId);
+           // 这等同于 Flags.getFlagById(id, id -> PrivateMsg.FlagContent.byId(id));
+   
+           Flag<GroupMsg.FlagContent> flagById2 = Flags.getFlagById(id, GroupMsg.FlagContent::byId);
+   
+   
+           // 反序列化后进行撤回
+           setter.setMsgRecall(flagById1);
+       }
+   ```
 
 
