@@ -15,11 +15,13 @@
 package love.forte.simbot.filter
 
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.mark.ThreadUnsafe
 
 
 /**
  * at检测器。用于判断bot是否被at了。
  */
+@ThreadUnsafe
 public interface AtDetection {
 
     /**
@@ -117,6 +119,13 @@ public interface AtDetectionFactory {
 public interface AtDetectionRegistrar {
     /**
      * 注册一个 [AtDetection] 构建函数。
+     * 默认为向尾部注册。
      */
     fun registryAtDetection(atDetectionFactory: AtDetectionFactory)
+
+    /**
+     * 向首部注册一个 [AtDetection] 构建函数。
+     */
+    fun registryAtDetectionFirst(atDetectionFactory: AtDetectionFactory)
+
 }

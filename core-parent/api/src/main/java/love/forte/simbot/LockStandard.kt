@@ -34,11 +34,12 @@ public inline fun <T> Lock.use(block: () -> T): T {
  * 读锁执行
  */
 public inline fun <T> ReadWriteLock.read(block: () -> T): T {
-    readLock().lock()
+    val lock = readLock()
+    lock.lock()
     return try {
         block()
     } finally {
-        readLock().unlock()
+        lock.unlock()
     }
 }
 
@@ -47,10 +48,11 @@ public inline fun <T> ReadWriteLock.read(block: () -> T): T {
  * write lock.
  */
 public inline fun <T> ReadWriteLock.write(block: () -> T): T {
-    writeLock().lock()
+    val lock = writeLock()
+    lock.lock()
     return try {
         block()
     } finally {
-        writeLock().unlock()
+        lock.unlock()
     }
 }

@@ -76,7 +76,7 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
         }
     }
 
-    override fun text(text: CharSequence): MessageContentBuilder {
+    override fun text(text: CharSequence): MiraiMessageContentBuilder {
         texts.append(text)
         return this
     }
@@ -94,8 +94,8 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
     }
 
     override fun at(code: String): MiraiMessageContentBuilder = at0(code.toLong())
-    override fun at(code: Long): MessageContentBuilder = at0(code)
-    override fun at(code: AccountCodeContainer): MessageContentBuilder = at(code.accountCodeNumber)
+    override fun at(code: Long): MiraiMessageContentBuilder = at0(code)
+    override fun at(code: AccountCodeContainer): MiraiMessageContentBuilder = at(code.accountCodeNumber)
 
     private fun face0(id: Int): MiraiMessageContentBuilder {
         checkText()
@@ -103,10 +103,10 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
         return this
     }
 
-    override fun face(id: String): MessageContentBuilder = face0(id.toInt())
-    override fun face(id: Int): MessageContentBuilder = face0(id)
+    override fun face(id: String): MiraiMessageContentBuilder = face0(id.toInt())
+    override fun face(id: Int): MiraiMessageContentBuilder = face0(id)
 
-    override fun imageLocal(path: String, flash: Boolean): MessageContentBuilder {
+    override fun imageLocal(path: String, flash: Boolean): MiraiMessageContentBuilder {
         val file: File = FileUtil.file(path)?.takeIf { it.exists() } ?: throw FileNotFoundException(path)
         val imageNeko: Neko = CatCodeUtil
             .getNekoBuilder("image", true)
@@ -126,7 +126,7 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
     abstract fun imageLocal0(file: File, imageNeko: Neko, flash: Boolean): MiraiMessageContent
 
 
-    override fun imageUrl(url: String, flash: Boolean): MessageContentBuilder {
+    override fun imageUrl(url: String, flash: Boolean): MiraiMessageContentBuilder {
         val imageNeko: Neko = CatCodeUtil
             .getNekoBuilder("image", true)
             .key("file").value(url)

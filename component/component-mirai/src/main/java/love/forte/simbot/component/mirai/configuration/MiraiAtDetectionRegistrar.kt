@@ -41,7 +41,7 @@ public class MiraiAtDetectionRegistrar {
      */
     @PrePass(priority = PriorityConstant.COMPONENT_TENTH)
     fun registerMiraiAtDetectionFactory(registrar: AtDetectionRegistrar) {
-        registrar.registryAtDetection(MiraiAtDetectionFactory)
+        registrar.registryAtDetectionFirst(MiraiAtDetectionFactory)
     }
 
 }
