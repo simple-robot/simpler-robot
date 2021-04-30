@@ -74,6 +74,7 @@
   
   简单示例：
   ```java
+       @Listen(GroupMsg.class)
        public void listen(GroupMsg msg, Setter setter) {
            // 这是正常得到的flag。
            GroupMsg.MessageFlag flag = msg.getFlag();
