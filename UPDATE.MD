@@ -6,6 +6,8 @@
 
 - 尝试修复一段时间运行后卡死(无法接收处理消息)的问题。 (#92)
 
+- 尝试优化 `AtDetection` 相关的效率。
+
 ## mirai组件
 - 简单调整 mirai组件内部的 `BotAliveThread` 终止方式。
 - 为mirai组件中的 `MiraiMessageContentBuilder` 提供更多支持原生mirai消息构建的方法。  

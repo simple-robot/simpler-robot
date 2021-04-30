@@ -12,6 +12,7 @@
  *
  */
 @file:JvmName("CoreFilterManagers")
+
 package love.forte.simbot.core.filter
 
 import love.forte.simbot.annotation.Filters
@@ -39,7 +40,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public class CoreFilterManager(
-    private val filterTargetManager: FilterTargetManager
+    private val filterTargetManager: FilterTargetManager,
 ) : FilterManager {
 
 
@@ -87,12 +88,14 @@ public class CoreFilterManager(
      * 如果存在很多 [AtDetection] 实例，则会将他们构建为一个 [AtDetection]，并且会尝试寻找返回true的一个实例。
      */
     override fun getAtDetection(msg: MsgGet): AtDetection {
-        // lock read
+        // lock for read
         atDetectionUpdateLock.read {
-            return when(atDetectionFactories.size) {
-                0 -> AlwaysRefuseAtDetection
-                1 -> atDetectionFactories.first().getAtDetection(msg)
-                else -> CompoundAtDetection(msg, _atDetectionFactoryRandomAccessList)
+            return _atDetectionFactoryRandomAccessList.let { list ->
+                when (list.size) {
+                    0 -> AlwaysRefuseAtDetection
+                    1 -> list.first().getAtDetection(msg)
+                    else -> CompoundAtDetection(msg, list)
+                }
             }
         }
     }
@@ -103,7 +106,7 @@ public class CoreFilterManager(
      */
     @Suppress("UNCHECKED_CAST")
     override fun registryAtDetection(atDetectionFactory: AtDetectionFactory) {
-        // lock write
+        // lock for write
         atDetectionUpdateLock.write {
             atDetectionFactories.addLast(atDetectionFactory)
             if (_atDetectionFactoryRandomAccessList is Deque<*>) {
@@ -122,7 +125,7 @@ public class CoreFilterManager(
      */
     @Suppress("UNCHECKED_CAST")
     override fun registryAtDetectionFirst(atDetectionFactory: AtDetectionFactory) {
-        // lock write
+        // lock for write
         atDetectionUpdateLock.write {
             atDetectionFactories.addFirst(atDetectionFactory)
             if (_atDetectionFactoryRandomAccessList is Deque<*>) {
@@ -158,9 +161,8 @@ internal object NotInit : AtDetection {
 /**
  * 组合式的 [AtDetection] 实现, 其内部记录多个 [AtDetection] 实例并逐一判断。
  */
-private class CompoundAtDetection(private val msg: MsgGet, private var detections: List<AtDetectionFactory>) : AtDetection {
-
-    // TODO 需要测试
+public class CompoundAtDetection(private val msg: MsgGet, private var detections: List<AtDetectionFactory>) :
+    AtDetection {
 
     // init for array
     private val detectionsArray: Array<AtDetection> = Array(detections.size) { NotInit }
@@ -185,12 +187,13 @@ private class CompoundAtDetection(private val msg: MsgGet, private var detection
             }
             index++
             // 如果没有下一个了, 说明都遍历完了, 清除引用
-            if (!hasNext()) { detections = emptyList() }
+            if (!hasNext()) {
+                detections = emptyList()
+            }
 
             return next
         }
     }
-
 
 
     override fun atBot(): Boolean = detectionsIterable.any { it.atBot() }
@@ -198,8 +201,6 @@ private class CompoundAtDetection(private val msg: MsgGet, private var detection
     override fun atAny(): Boolean = detectionsIterable.any { it.atAny() }
     override fun at(codes: Array<String>): Boolean = detectionsIterable.any { it.at(codes) }
 }
-
-
 
 
 /**
@@ -233,7 +234,7 @@ public class CoreFilterManagerBuilder(private val filterTargetManager: FilterTar
         val filters = this.filters
         this.filters = mutableListOf()
 
-        filters.forEach {(name, filter) ->
+        filters.forEach { (name, filter) ->
             filterManager.registerFilter(name, filter)
         }
 

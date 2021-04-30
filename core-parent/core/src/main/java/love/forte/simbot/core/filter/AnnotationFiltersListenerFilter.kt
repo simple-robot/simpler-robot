@@ -572,7 +572,7 @@ public class AnnotationFilterListenerFilterImpl(
         return if (keyword == null) {
             true
         } else {
-            // 如果text为null，则认为其无法进行文本匹配，直接放行。
+            // 如果text为null，则认为其无法进行文本匹配。
             // val msgText: String = msg.text?.let(textPre) ?: let {
 
             val msgText: String = filterTargetProcessor.getTargetText(data)
