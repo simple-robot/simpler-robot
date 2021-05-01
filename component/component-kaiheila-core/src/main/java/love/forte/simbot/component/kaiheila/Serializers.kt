@@ -23,6 +23,7 @@ import love.forte.simbot.component.kaiheila.`object`.Channel
 import love.forte.simbot.component.kaiheila.`object`.Guild
 import love.forte.simbot.component.kaiheila.`object`.Role
 import love.forte.simbot.component.kaiheila.`object`.User
+import org.jetbrains.annotations.TestOnly
 import java.util.concurrent.CopyOnWriteArraySet
 
 
@@ -45,7 +46,7 @@ public fun init() {
 public data class KaiheilaJson(val json: Json)
 
 
-
+@get:TestOnly
 public val kaiheilaJson: Json by lazy {
     Json {
         init()
