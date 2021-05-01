@@ -26,6 +26,7 @@ import love.forte.simbot.listener.ListenerManager
 import love.forte.simbot.listener.ListenerRegistered
 import love.forte.simbot.listener.MsgGetProcessor
 import net.mamoe.mirai.Bot
+import org.slf4j.LoggerFactory
 import kotlin.concurrent.thread
 
 /**
@@ -63,6 +64,7 @@ public class MiraiListenerRegistered : ListenerRegistered {
 
         // 注册一个 钩子来关闭所有的bot。
         Runtime.getRuntime().addShutdownHook(thread(start = false) {
+
             kotlin.runCatching {
                 botAliveThread.interrupt()
             }.getOrElse { e ->
@@ -103,20 +105,36 @@ public class MiraiListenerRegistered : ListenerRegistered {
 
 
 private class BotAliveThread(name: String, daemon: Boolean = false) : Thread(name) {
+    private val logger = LoggerFactory.getLogger("THLog-$name")
+
     init {
         isDaemon = daemon
     }
 
+    private var running = true
+
+    override fun interrupt() {
+        running = false
+        super.interrupt()
+    }
+
+
     override fun run() {
         // var bots = Bot.instances
-        while(!isInterrupted) {
-            val bots = Bot.instances
-            if (bots.isEmpty()) { break }
-            kotlin.runCatching {
-                bots.forEach {
-                    runBlocking { it.join() }
+        try {
+            while (running && !isInterrupted) {
+                val bots = Bot.instances
+                if (bots.isEmpty()) {
+                    sleep(100)
+                }
+                kotlin.runCatching {
+                    bots.forEach {
+                        runBlocking { it.join() }
+                    }
                 }
             }
+        } catch (e: InterruptedException) {
+            logger.debug("BotAliveThread interrupted. {}", e.toString())
         }
 
     }

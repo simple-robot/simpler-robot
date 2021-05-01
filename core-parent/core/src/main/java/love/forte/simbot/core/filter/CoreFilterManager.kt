@@ -12,12 +12,19 @@
  *
  */
 @file:JvmName("CoreFilterManagers")
+
 package love.forte.simbot.core.filter
 
 import love.forte.simbot.annotation.Filters
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.filter.*
+import love.forte.simbot.mark.ThreadUnsafe
+import love.forte.simbot.read
+import love.forte.simbot.write
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.locks.ReadWriteLock
+import java.util.concurrent.locks.ReentrantReadWriteLock
 
 
 // /**
@@ -33,19 +40,27 @@ import java.util.concurrent.ConcurrentHashMap
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public class CoreFilterManager(
-    private val filterTargetManager: FilterTargetManager
+    private val filterTargetManager: FilterTargetManager,
 ) : FilterManager {
+
 
     /**
      * 全部的自定义过滤器列表。
      */
     private val _filters: MutableMap<String, ListenerFilter> = ConcurrentHashMap()
 
+    /** [AtDetectionFactory] 相关读写锁 */
+    private val atDetectionUpdateLock: ReadWriteLock = ReentrantReadWriteLock()
+
     /**
      * 全部的 [AtDetectionFactory] 构建工厂。
      */
-    private val atDetectionFactories: MutableList<AtDetectionFactory> = mutableListOf()
+    private val atDetectionFactories: Deque<AtDetectionFactory> = LinkedList()
 
+    /**
+     * 用于构建 [CompoundAtDetection] 的, 可随机访问的列表元素。
+     */
+    private var _atDetectionFactoryRandomAccessList: List<AtDetectionFactory> = emptyList()
 
     /**
      * 获取所有的监听过滤器。
@@ -73,24 +88,54 @@ public class CoreFilterManager(
      * 如果存在很多 [AtDetection] 实例，则会将他们构建为一个 [AtDetection]，并且会尝试寻找返回true的一个实例。
      */
     override fun getAtDetection(msg: MsgGet): AtDetection {
-        return when(atDetectionFactories.size) {
-            0 -> AlwaysRefuseAtDetection
-            1 -> atDetectionFactories.first().getAtDetection(msg)
-            else -> CompoundAtDetection(msg, atDetectionFactories)
-
-            // else -> AtDetection {
-            //     atDetectionFactories.any { factory ->
-            //         factory(msg).atBot()
-            //     }
-            // }
+        // lock for read
+        atDetectionUpdateLock.read {
+            return _atDetectionFactoryRandomAccessList.let { list ->
+                when (list.size) {
+                    0 -> AlwaysRefuseAtDetection
+                    1 -> list.first().getAtDetection(msg)
+                    else -> CompoundAtDetection(msg, list)
+                }
+            }
         }
     }
 
     /**
      * 注册一个 [AtDetection] 构建函数。
+     * 在尾部追加。
      */
+    @Suppress("UNCHECKED_CAST")
     override fun registryAtDetection(atDetectionFactory: AtDetectionFactory) {
-        atDetectionFactories.add(atDetectionFactory)
+        // lock for write
+        atDetectionUpdateLock.write {
+            atDetectionFactories.addLast(atDetectionFactory)
+            if (_atDetectionFactoryRandomAccessList is Deque<*>) {
+                // add to last
+                (_atDetectionFactoryRandomAccessList as Deque<AtDetectionFactory>).addLast(atDetectionFactory)
+            } else {
+                // not deque
+                _atDetectionFactoryRandomAccessList = atDetectionFactories.toList()
+            }
+        }
+    }
+
+    /**
+     * 注册一个 [AtDetection] 构建函数。
+     * 在头部追加。
+     */
+    @Suppress("UNCHECKED_CAST")
+    override fun registryAtDetectionFirst(atDetectionFactory: AtDetectionFactory) {
+        // lock for write
+        atDetectionUpdateLock.write {
+            atDetectionFactories.addFirst(atDetectionFactory)
+            if (_atDetectionFactoryRandomAccessList is Deque<*>) {
+                // add to first
+                (_atDetectionFactoryRandomAccessList as Deque<AtDetectionFactory>).addFirst(atDetectionFactory)
+            } else {
+                // not deque, reset
+                _atDetectionFactoryRandomAccessList = atDetectionFactories.toList()
+            }
+        }
     }
 
     /**
@@ -105,16 +150,57 @@ public class CoreFilterManager(
     }
 }
 
-
-private class CompoundAtDetection(private val msg: MsgGet,
-                                       private val detections: List<AtDetectionFactory>) : AtDetection {
-    override fun atBot(): Boolean = detections.any { it.getAtDetection(msg).atBot() }
-    override fun atAll(): Boolean = detections.any { it.getAtDetection(msg).atAll() }
-    override fun atAny(): Boolean = detections.any { it.getAtDetection(msg).atAny() }
-    override fun at(codes: Array<String>): Boolean = detections.any { it.getAtDetection(msg).at(codes) }
+internal object NotInit : AtDetection {
+    override fun atBot(): Nothing = error("NotInit")
+    override fun atAll(): Nothing = error("NotInit")
+    override fun atAny(): Nothing = error("NotInit")
+    override fun at(codes: Array<String>): Nothing = error("NotInit")
 }
 
 
+/**
+ * 组合式的 [AtDetection] 实现, 其内部记录多个 [AtDetection] 实例并逐一判断。
+ */
+public class CompoundAtDetection(private val msg: MsgGet, private var detections: List<AtDetectionFactory>) :
+    AtDetection {
+
+    // init for array
+    private val detectionsArray: Array<AtDetection> = Array(detections.size) { NotInit }
+
+    private val detectionsIterable = DetectionsIterable()
+
+    private inner class DetectionsIterable : Iterable<AtDetection> {
+        override fun iterator(): Iterator<AtDetection> = DetectionsIterator()
+    }
+
+    @ThreadUnsafe
+    private inner class DetectionsIterator : Iterator<AtDetection> {
+        private var index: Int = 0
+        override fun hasNext(): Boolean = index <= detectionsArray.lastIndex
+        override fun next(): AtDetection {
+            var next = detectionsArray[index]
+            // if not init
+            if (next === NotInit) {
+                next = detections[index].getAtDetection(msg).also {
+                    detectionsArray[index] = it
+                }
+            }
+            index++
+            // 如果没有下一个了, 说明都遍历完了, 清除引用
+            if (!hasNext()) {
+                detections = emptyList()
+            }
+
+            return next
+        }
+    }
+
+
+    override fun atBot(): Boolean = detectionsIterable.any { it.atBot() }
+    override fun atAll(): Boolean = detectionsIterable.any { it.atAll() }
+    override fun atAny(): Boolean = detectionsIterable.any { it.atAny() }
+    override fun at(codes: Array<String>): Boolean = detectionsIterable.any { it.at(codes) }
+}
 
 
 /**
@@ -148,7 +234,7 @@ public class CoreFilterManagerBuilder(private val filterTargetManager: FilterTar
         val filters = this.filters
         this.filters = mutableListOf()
 
-        filters.forEach {(name, filter) ->
+        filters.forEach { (name, filter) ->
             filterManager.registerFilter(name, filter)
         }
 

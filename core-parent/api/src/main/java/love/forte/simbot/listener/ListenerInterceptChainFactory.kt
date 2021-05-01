@@ -12,6 +12,8 @@
  *
  */
 
+@file:JvmName("ListenerInterceptChainFactories")
+
 package love.forte.simbot.listener
 
 
@@ -24,7 +26,20 @@ public interface ListenerInterceptChainFactory {
      * 通过一个拦截信息主体得到拦截链。
      */
     fun getInterceptorChain(context: ListenerInterceptContext): ListenerInterceptorChain
+
+    /**
+     * 判断拦截器是否为空。
+     * 建议在获取拦截链之前判断以减少开销。
+     */
+    fun isEmpty(): Boolean
 }
+
+
+/**
+ * 如果非空，获取拦截链。
+ */
+public inline fun ListenerInterceptChainFactory.getInterceptorChainOnNonEmpty(contextBlock: () -> ListenerInterceptContext): ListenerInterceptorChain? =
+    if (isEmpty()) null else getInterceptorChain(contextBlock())
 
 
 

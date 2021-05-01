@@ -22,7 +22,6 @@ import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
-import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.events.*
 import love.forte.simbot.api.message.results.Result
 import love.forte.simbot.api.sender.AdditionalApi
@@ -34,9 +33,11 @@ import love.forte.simbot.component.mirai.message.MiraiMessageFlag
 import love.forte.simbot.component.mirai.message.event.MiraiBotInvitedJoinRequestFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiFriendRequestFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiGroupMemberJoinRequestFlagContent
+import love.forte.simbot.component.mirai.message.messageSource
 import love.forte.simbot.core.TypedCompLogger
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.PermissionDeniedException
+import net.mamoe.mirai.message.data.MessageSource
 import net.mamoe.mirai.message.data.MessageSource.Key.recall
 import java.util.concurrent.TimeUnit
 
@@ -316,22 +317,49 @@ public class MiraiSetter(
      * @throws PermissionDeniedException 无权操作的时候
      */
     override fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
-        return if (flag is MiraiMessageFlag<*>) {
-            flag.flagSource.source?.let { source ->
-                runBlocking {
-                    try {
-                        source.recall()
-                        // bot.recall(source)
-                        true
-                    } catch (e: IllegalStateException) {
-                        // if IllegalStateException, recall false.
-                        false
-                    }
+        val source: MessageSource = flag.messageSource(bot.id)
+        // val source: MessageSource = if (flag is MiraiMessageFlag<*>) {
+        //     flag.flagSource.source ?: throw IllegalStateException("MessageFlag's messageSource is empty.")
+        // } else {
+        //     val cacheId = flag.flag.id
+        //     val data = kotlin.runCatching { cacheIdToMessageSourceBuilder(cacheId) }.getOrElse { e ->
+        //         throw IllegalArgumentException("Failed to parse flag id.", e)
+        //     }
+        //     // build source.
+        //     data.build(bot.id)
+        // }
+
+        return runBlocking {
+            try {
+                source.recall()
+                true
+            } catch (e: PermissionDeniedException) {
+                logger.warn("Recall msg failed: Permission denied.", e)
+                false
+            } catch (e: IllegalStateException) {
+                // MiraiImpl.recallMessage: end-check
+                // // 1001: No message meets the requirements (实际上是没权限, 管理员在尝试撤回群主的消息)
+                // // 154: timeout
+                // // 3: <no message>
+
+                // if IllegalStateException, recall false.
+                val localizedMessage = e.localizedMessage
+
+                val warnMsgAlso = when {
+                    localizedMessage.contains("result=1001") -> "没有权限或权限不足"
+                    localizedMessage.contains("result=154") -> "timeout"
+                    else -> null
                 }
-            } ?: false
-        } else {
-            throw IllegalArgumentException("The 'flag($flag)' is not a 'MiraiMessageFlag' instance, cannot be recall by MiraiSetter.")
+
+                warnMsgAlso?.let { w ->
+                    logger.warn("Recall msg failed: $w", e)
+                } ?: run {
+                    logger.warn("Recall msg failed.", e)
+                }
+                false
+            }
         }.toCarrier()
+
     }
 
 
@@ -387,15 +415,6 @@ public class MiraiSetter(
 
         return true.toCarrier()
     }
-    @Deprecated("Use additionalExecute by MiraiEssenceMessageApi")
-    fun setGroupEssenceMessage(group: String, msgFlag: Flag<GroupMsg.FlagContent>) =
-        setGroupEssenceMessage(group.toLong(), msgFlag)
-    @Deprecated("Use additionalExecute by MiraiEssenceMessageApi")
-    fun setGroupEssenceMessage(group: GroupCodeContainer, msgFlag: Flag<GroupMsg.FlagContent>) =
-        setGroupEssenceMessage(group.groupCodeNumber, msgFlag)
-    @Deprecated("Use additionalExecute by MiraiEssenceMessageApi")
-    fun setGroupEssenceMessage(group: GroupContainer, msgFlag: Flag<GroupMsg.FlagContent>) =
-        setGroupEssenceMessage(group.groupInfo, msgFlag)
 
 
     override fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): R {
