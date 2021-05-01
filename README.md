@@ -20,7 +20,7 @@
 <a href="https://oss.sonatype.org/content/repositories/snapshots/love/forte/simple-robot/parent/" target="_blank">
   <img alt="snapshot" src="https://img.shields.io/nexus/s/love.forte.simple-robot/parent?label=simbot-snapshot&server=https%3A%2F%2Foss.sonatype.org" /></a>
 <a href="https://www.yuque.com/simpler-robot/simpler-robot-doc" target="_blank">
-  <img alt=""doc src="https://img.shields.io/badge/doc-yuque-brightgreen" /></a>
+  <img alt="doc" src="https://img.shields.io/badge/doc-yuque-brightgreen" /></a>
    <hr>
    <img alt="stars" src="https://img.shields.io/github/stars/ForteScarlet/simpler-robot" />
    <img alt="forks" src="https://img.shields.io/github/forks/ForteScarlet/simpler-robot" />
