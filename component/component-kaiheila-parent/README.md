@@ -46,7 +46,7 @@
 
 ### simple-robot简介
 
-☞ [simple-robot](../../UPDATE.MD)
+☞ [simple-robot](../../README.md)
 
 ### 开黑啦组件简介
 
