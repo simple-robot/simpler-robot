@@ -1,6 +1,6 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
-    <img src="./logo/logo-4@0,1x.png" alt="logo"/>
+    <img src="../../logo/logo-4@0,1x.png" alt="logo"/>
     <h3>
         - simpler-robot -
     </h3>
@@ -20,7 +20,7 @@
 <a href="https://oss.sonatype.org/content/repositories/snapshots/love/forte/simple-robot/parent/" target="_blank">
   <img alt="snapshot" src="https://img.shields.io/nexus/s/love.forte.simple-robot/parent?label=simbot-snapshot&server=https%3A%2F%2Foss.sonatype.org" /></a>
 <a href="https://www.yuque.com/simpler-robot/simpler-robot-doc" target="_blank">
-  <img alt=""doc src="https://img.shields.io/badge/doc-yuque-brightgreen" /></a>
+  <img alt="doc" src="https://img.shields.io/badge/doc-yuque-brightgreen" /></a>
    <hr>
    <img alt="stars" src="https://img.shields.io/github/stars/ForteScarlet/simpler-robot" />
    <img alt="forks" src="https://img.shields.io/github/forks/ForteScarlet/simpler-robot" />
@@ -30,7 +30,7 @@
    <a href="https://github.com/ForteScarlet/simpler-robot/releases/latest"><img alt="release" src="https://img.shields.io/github/v/release/ForteScarlet/simpler-robot" /></a>
    <img alt="issues" src="https://img.shields.io/github/issues-closed/ForteScarlet/simpler-robot?color=green" />
    <img alt="last commit" src="https://img.shields.io/github/last-commit/ForteScarlet/simpler-robot" />
-   <a href="./LICENSE"><img alt="license" src="https://img.shields.io/github/license/ForteScarlet/simpler-robot" /></a>
+   <a href="../../LICENSE"><img alt="license" src="https://img.shields.io/github/license/ForteScarlet/simpler-robot" /></a>
     </div>
 
 
@@ -173,7 +173,7 @@ public class TestListener {
 
 *****
 
-[![](./logo/CatCodeLogo@0,1x.png)](https://github.com/ForteScarlet/CatCode)
+[![](../../logo/CatCodeLogo@0,1x.png "CatCode")](https://github.com/ForteScarlet/CatCode)
 
 感谢 [猫猫码](https://github.com/ForteScarlet/CatCode "CatCode") 为本项目提供支持并绘制项目LOGO。
 
