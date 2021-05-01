@@ -27,8 +27,9 @@ public interface Kaiheila
 // signal
 
 
-
-
+/**
+ * 开黑啦相关异常。
+ */
 public open class KaiheilaRuntimeException : SimbotRuntimeException {
     constructor() : super()
     constructor(message: String?) : super(message)
@@ -40,3 +41,22 @@ public open class KaiheilaRuntimeException : SimbotRuntimeException {
         enableSuppression,
         writableStackTrace)
 }
+
+
+/**
+ * 开黑啦 [超速限制](https://developer.kaiheila.cn/doc/rate-limit) 异常。
+ */
+public open class KaiheilaRateLimitException : KaiheilaRuntimeException {
+    constructor() : super()
+    constructor(message: String?) : super(message)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    constructor(cause: Throwable?) : super(cause)
+    constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+        message,
+        cause,
+        enableSuppression,
+        writableStackTrace)
+}
+
+
+

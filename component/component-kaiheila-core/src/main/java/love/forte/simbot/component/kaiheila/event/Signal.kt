@@ -18,11 +18,11 @@ package love.forte.simbot.component.kaiheila.event
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 import love.forte.simbot.component.kaiheila.KaiheilaRuntimeException
 import love.forte.simbot.component.kaiheila.event.KaiheilaSignalReconnectException.Companion.reconnectException
-import love.forte.simbot.component.kaiheila.event.Event as KhlEvent
 
-typealias Signal_0<E> = Signal.Event<E>
+typealias Signal_0 = Signal.Event
 typealias Signal_1 = Signal.Hello
 typealias Signal_2 = Signal.Ping
 typealias Signal_3 = Signal.Pong
@@ -37,14 +37,13 @@ public interface JsonValueFactory<P> {
 }
 
 
-
 /**
  * 开黑啦 websocket概述 - [信令](https://developer.kaiheila.cn/doc/websocket#%E4%BF%A1%E4%BB%A4%E6%A0%BC%E5%BC%8F)
  *
  * 信令基本格式：
  * ```json
  * {
- *     "s" : 1,  // int, 信令，详情参照信令说明
+ *     "s" : 1,  // int, 信令，详情参考信令说明
  *     "d" : [], // 数据字段mixed
  *     "sn" : 0, // int, 该字段并不一定有，只在s=0时有，与webhook一致。
  * }
@@ -73,7 +72,11 @@ public sealed class Signal<T> {
      *
      */
     @Serializable
-    public data class Event<E : KhlEvent>(override val s: Int, override val d: E?, override val sn: Int?) : Signal<E>()
+    public data class Event(
+        override val s: Int,
+        override val d: JsonElement,
+        override val sn: Int,
+    ) : Signal<JsonElement>()
     //endregion
 
 
@@ -215,6 +218,7 @@ public sealed class Signal<T> {
         RESUME_FAIL_MISS_PARAM(40106, "resume 失败, 缺少参数"),
         SESSION_EXPIRED(40107, "当前 session 已过期 (resume 失败, PING的sn无效)"),
         SN_INVALID_OR_NON_EXISTENT(40108, "无效的sn , 或 sn 已经不存在 (resume 失败, PING的 sn 无效)"),
+
         /** 其他未知 */
         UNKNOWN(-99999, "未知错误")
         ;
@@ -222,7 +226,7 @@ public sealed class Signal<T> {
         companion object {
             @JvmStatic
             fun byCode(code: Int): ReconnectCode {
-                return when(code) {
+                return when (code) {
                     RESUME_FAIL_MISS_PARAM.code -> RESUME_FAIL_MISS_PARAM
                     SESSION_EXPIRED.code -> SESSION_EXPIRED
                     SN_INVALID_OR_NON_EXISTENT.code -> SN_INVALID_OR_NON_EXISTENT

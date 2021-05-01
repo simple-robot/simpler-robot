@@ -23,8 +23,12 @@
     <dependencies>
         <dependency>
             <groupId>love.forte.simple-robot</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>api</artifactId>
         </dependency>
+        <!--<dependency>-->
+        <!--    <groupId>love.forte.simple-robot</groupId>-->
+        <!--    <artifactId>core</artifactId>-->
+        <!--</dependency>-->
     </dependencies>
 
 </project>
