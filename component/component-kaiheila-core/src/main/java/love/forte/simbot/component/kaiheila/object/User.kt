@@ -137,7 +137,7 @@ public interface User : KaiheilaObjects, AccountInfo {
     companion object : SerializerModuleRegistrar {
         override fun SerializersModuleBuilder.serializerModule() {
             polymorphic(User::class) {
-                subclass(UserImpl::class)
+                subclass(UserImpl.serializer())
                 default { UserImpl.serializer() }
             }
         }

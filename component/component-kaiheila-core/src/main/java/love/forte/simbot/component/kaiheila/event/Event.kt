@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit
  *
  * @author ForteScarlet
  */
-public interface Event<E> {
+public interface Event<E : Event.Extra<T>, T> {
 
     /**
      * 消息频道类型, `GROUP` 为频道消息
@@ -195,10 +195,15 @@ public interface Event<E> {
 
 }
 
+
+
+
+
+
 /**
  * 判断 [Event.authorId] 是否等于 `"1"`
  */
-public fun Event<*>.isFromSys(): Boolean = authorId == "1"
+public fun Event<*, *>.isFromSys(): Boolean = authorId == "1"
 
 
 
