@@ -33,6 +33,7 @@ import love.forte.simbot.component.mirai.message.event.MiraiGroupFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiMessageMsgGet
 import love.forte.simbot.component.mirai.message.event.MiraiPrivateFlagContent
 import love.forte.simbot.component.mirai.utils.toMiraiMessageContent
+import love.forte.simbot.processor.RemoteResourceInProcessor
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
@@ -43,23 +44,23 @@ import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.message.data.isContentEmpty
 
 
-public class MiraiSenderFactory(private val cache: MiraiMessageCache) : SenderFactory {
+public class MiraiSenderFactory(private val cache: MiraiMessageCache, private val remoteResourceInProcessor: RemoteResourceInProcessor) : SenderFactory {
     override fun getOnMsgSender(msg: MsgGet, def: Sender.Def): Sender {
         return when (msg) {
             is MiraiMessageMsgGet<*> -> {
-                MiraiSender(msg.event.bot, msg.subject, msg.message, def, cache)
+                MiraiSender(msg.event.bot, msg.subject, msg.message, def, cache, remoteResourceInProcessor)
             }
             is AbstractMiraiMsgGet<*> -> {
-                MiraiSender(msg.event.bot, defSender = def, cache = cache)
+                MiraiSender(msg.event.bot, defSender = def, cache = cache, remoteResourceInProcessor = remoteResourceInProcessor)
             }
             else -> {
-                MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber), defSender = def, cache = cache)
+                MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber), defSender = def, cache = cache, remoteResourceInProcessor = remoteResourceInProcessor)
             }
         }
     }
 
     override fun getOnBotSender(bot: BotContainer, def: Sender.Def): Sender =
-        MiraiSender(Bot.getInstance(bot.botInfo.botCodeNumber), defSender = def, cache = cache)
+        MiraiSender(Bot.getInstance(bot.botInfo.botCodeNumber), defSender = def, cache = cache, remoteResourceInProcessor = remoteResourceInProcessor)
 }
 
 
@@ -75,7 +76,9 @@ public class MiraiSender(
     /** 默认送信器。 */
     private val defSender: Sender,
 
-    private val cache: MiraiMessageCache
+    private val cache: MiraiMessageCache,
+
+    private val remoteResourceInProcessor: RemoteResourceInProcessor
 ) : Sender {
 
 
@@ -86,7 +89,7 @@ public class MiraiSender(
      * 发送群聊消息。
      */
     private fun sendGroupMsg0(group: Long, msg: MessageContent): Carrier<MiraiGroupMsgFlag> {
-        val miraiMsg = runBlocking { msg.toMiraiMessageContent(message, cache) }
+        val miraiMsg = runBlocking { msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor) }
         // get group.
         val g: Group = bot.group(group)
         val messageReceipt = runBlocking {
@@ -103,13 +106,13 @@ public class MiraiSender(
     }
 
     override fun sendGroupMsg(group: String, msg: String) =
-        sendGroupMsg0(group.toLong(), msg.toMiraiMessageContent(message, cache))
+        sendGroupMsg0(group.toLong(), msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor))
 
     override fun sendGroupMsg(group: String, msg: MessageContent) =
         sendGroupMsg0(group.toLong(), msg)
 
     override fun sendGroupMsg(group: Long, msg: String) =
-        sendGroupMsg0(group, msg.toMiraiMessageContent(message, cache))
+        sendGroupMsg0(group, msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor))
 
     override fun sendGroupMsg(group: Long, msg: MessageContent) =
         sendGroupMsg0(group, msg)
@@ -118,13 +121,13 @@ public class MiraiSender(
         sendGroupMsg0(group.groupCodeNumber, msg)
 
     override fun sendGroupMsg(group: GroupCodeContainer, msg: String) =
-        sendGroupMsg0(group.groupCodeNumber, msg.toMiraiMessageContent(message, cache))
+        sendGroupMsg0(group.groupCodeNumber, msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor))
 
     /**
      * 发送私聊消息。
      */
     private fun sendPrivateMsg0(code: Long, group: Long?, msg: MessageContent): Carrier<MiraiPrivateMsgFlag> {
-        val miraiMsg = runBlocking { msg.toMiraiMessageContent(message, cache) }
+        val miraiMsg = runBlocking { msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor) }
 
         val messageReceipt: MessageReceipt<Contact>? = if (group != null) {
             runBlocking {
@@ -166,10 +169,10 @@ public class MiraiSender(
     }
 
     override fun sendPrivateMsg(code: String, group: String?, msg: String) =
-        sendPrivateMsg0(code.toLong(), group?.toLong(), msg.toMiraiMessageContent(message))
+        sendPrivateMsg0(code.toLong(), group?.toLong(), msg.toMiraiMessageContent(message, remoteResourceInProcessor = remoteResourceInProcessor))
 
     override fun sendPrivateMsg(code: Long, group: Long?, msg: String) =
-        sendPrivateMsg0(code, group, msg.toMiraiMessageContent(message))
+        sendPrivateMsg0(code, group, msg.toMiraiMessageContent(message, remoteResourceInProcessor = remoteResourceInProcessor))
 
     override fun sendPrivateMsg(
         code: String,
@@ -193,7 +196,7 @@ public class MiraiSender(
         group: GroupCodeContainer?,
         msg: String,
     ) =
-        sendPrivateMsg0(code.accountCodeNumber, group?.groupCodeNumber, msg.toMiraiMessageContent(message))
+        sendPrivateMsg0(code.accountCodeNumber, group?.groupCodeNumber, msg.toMiraiMessageContent(message, remoteResourceInProcessor = remoteResourceInProcessor))
 
 
     /**

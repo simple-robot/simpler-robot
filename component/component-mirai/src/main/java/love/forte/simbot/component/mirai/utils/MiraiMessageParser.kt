@@ -13,6 +13,7 @@
  */
 
 @file:JvmName("MiraiMessageParsers")
+
 package love.forte.simbot.component.mirai.utils
 
 import catcode.*
@@ -25,11 +26,18 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.utils.io.jvm.javaio.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.component.mirai.message.*
 import love.forte.simbot.component.mirai.message.event.MiraiMessageMsgGet
 import love.forte.simbot.component.mirai.sender.logger
+import love.forte.simbot.processor.RemoteResourceContext
+import love.forte.simbot.processor.RemoteResourceInProcessor
+import love.forte.simbot.processor.doProcess
+import love.forte.simbot.utils.onShutdown
 import net.mamoe.mirai.contact.FileSupported
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
@@ -99,11 +107,12 @@ public fun addMiraiMessageParser(forType: String, parser: MiraiMessageParser): M
 public fun MessageContent.toMiraiMessageContent(
     message: MessageChain?,
     cache: MiraiMessageCache? = null,
+    remoteResourceInProcessor: RemoteResourceInProcessor,
 ): MiraiMessageContent {
     return if (this is MiraiMessageContent) {
         this
     } else {
-        msg.toMiraiMessageContent(message, cache)
+        msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor)
     }
 }
 
@@ -113,10 +122,14 @@ public fun MessageContent.toMiraiMessageContent(
  * @param message 当前发送消息的时候，如果是在某个事件中发送消息，此处为当前事件可能接收到的消息链。
  * @param cache mirai消息缓存器。
  */
-public fun String.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessageCache? = null): MiraiMessageContent {
+public fun String.toMiraiMessageContent(
+    message: MessageChain?,
+    cache: MiraiMessageCache? = null,
+    remoteResourceInProcessor: RemoteResourceInProcessor,
+): MiraiMessageContent {
     return CatCodeUtil.split(this) {
         // cat code.
-        if (startsWith(CAT_HEAD)) Nyanko.byCode(this).toMiraiMessageContent(message, cache)
+        if (startsWith(CAT_HEAD)) Nyanko.byCode(this).toMiraiMessageContent(message, cache, remoteResourceInProcessor)
         // normal text.
         else MiraiSingleMessageContent(PlainText(this.deCatText()))
     }.let { MiraiListMessageContent(it) }
@@ -126,7 +139,11 @@ public fun String.toMiraiMessageContent(message: MessageChain?, cache: MiraiMess
  * [Neko] 转化为 [MiraiMessageContent]。
  */
 @OptIn(MiraiExperimentalApi::class)
-public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessageCache? = null): MiraiMessageContent {
+public fun Neko.toMiraiMessageContent(
+    message: MessageChain?,
+    cache: MiraiMessageCache? = null,
+    remoteResourceInProcessor: RemoteResourceInProcessor,
+): MiraiMessageContent {
     return parsers[this.type]?.run { this@toMiraiMessageContent.parse(message, cache) }
         ?: when (this.type) {
             "text", "message" -> this["text"]?.let {
@@ -243,22 +260,30 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                     MiraiImageMessageContent(flash, imageNeko) { c -> file.uploadAsImage(c) }
                 } else {
                     // 没有文件，看看有没有url。
-                    val url = filePath?.takeIf { it.startsWith("http") }?.let { Url(it) }
-                        ?: this["url"]?.let { Url(it) }
+                    // val url = filePath?.takeIf { it.startsWith("http") }?.let { Url(it) }
+                    //     ?: this["url"]?.let { Url(it) }
+                    //     ?: throw IllegalArgumentException("The img has no source in $this")
+
+                    // remoteResourceInProcessor
+                    val urlString = filePath?.takeIf { it.startsWith("http") }
+                        ?: this["url"]
                         ?: throw IllegalArgumentException("The img has no source in $this")
 
+
                     // val urlId = url.encodedPath
-                    val imageNeko = CatCodeUtil.nekoTemplate.image(url.toString())
+                    val imageNeko = CatCodeUtil.nekoTemplate.image(urlString)
                     MiraiImageMessageContent(flash, imageNeko) { c ->
-                        url.toStream().use { s -> s.uploadAsImage(c) }
+                        val context = RemoteResourceContext(urlString, id)
+                        remoteResourceInProcessor.getStream(context).use { s -> s.uploadAsImage(c) }
                     }
                 }
             }
 
             // voice or record
             "voice", "record" -> {
+                val id = this["id"]
+
                 if (message != null) {
-                    val id = this["id"]
                     if (id != null) {
                         val findVoice = message.find { it is Voice && it.id == id }
                         if (findVoice != null) {
@@ -297,17 +322,23 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                     }
                 } else {
                     // 没有文件，看看有没有url。
-                    val url = filePath?.takeIf { it.startsWith("http") }?.let { Url(it) }
-                        ?: this["url"]?.let { Url(it) }
+                    // val url = filePath?.takeIf { it.startsWith("http") }?.let { Url(it) }
+                    //     ?: this["url"]?.let { Url(it) }
+                    //     ?: throw IllegalArgumentException("The voice has no source in $this")
+                    val urlString = filePath?.takeIf { it.startsWith("http") }
+                        ?: this["url"]
                         ?: throw IllegalArgumentException("The voice has no source in $this")
 
-                    val urlId = url.encodedPath
-                    val recordNeko = CatCodeUtil.nekoTemplate.record(urlId)
+                    // val urlId = url.encodedPath
+                    val recordNeko = CatCodeUtil.nekoTemplate.record(urlString)
                     MiraiVoiceMessageContent(recordNeko) { c ->
                         if (c is Group) {
-                            url.toStream().use { s ->
-                                s.toExternalResource().use { c.uploadVoice(it) }
-                            }
+                            val context = RemoteResourceContext(urlString, id)
+                            remoteResourceInProcessor.getStream(context).toExternalResource().use { resource -> c.uploadVoice(resource) }
+
+                            // url.toStream().use { s ->
+                            //     s.toExternalResource().use { c.uploadVoice(it) }
+                            // }
                         } else throw IllegalStateException("Mirai only support sending group voice.")
                     }
                 }
@@ -429,19 +460,20 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                     }
                 } else {
                     // 没有文件，看看有没有url
-                    val url = filePath.takeIf { it.startsWith("http") }?.let { Url(it) }
-                    // ?: this["url"]?.let { Url(it) }
+                    // val url = filePath.takeIf { it.startsWith("http") }?.let { Url(it) }
+                    //     ?: throw IllegalArgumentException("There is no 'file' or 'url' starts with 'http' in $this")
+                    val urlString = filePath.takeIf { it.startsWith("http") }
                         ?: throw IllegalArgumentException("There is no 'file' or 'url' starts with 'http' in $this")
 
                     val path0 = path
                         ?: if (formatName != null) RemoteFile.ROOT_PATH + UUID.idString() + "." + formatName
                         else RemoteFile.ROOT_PATH + UUID.idString()
 
-                    val urlId = url.encodedPath
+                    // val urlId = id
                     val fileNeko = CatCodeUtil.getNekoBuilder("file", true)
-                        .key("file").value(urlId)
+                        .key("file").value(urlString)
                         .key("path").value(path0)
-                        .key("url").value(urlId).apply {
+                        .key("url").value(urlString).apply {
                             if (formatName != null) {
                                 key("formatName").value(formatName)
                             }
@@ -452,11 +484,17 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
 
                     MiraiFileMessageContent(fileNeko, path0) { c ->
                         if (c is FileSupported) {
-                            url.toStream().use { s ->
+                            val context = RemoteResourceContext(urlString)
+                            remoteResourceInProcessor.getStream(context).use { s ->
                                 s.toExternalResource(formatName).use {
                                     c.uploadFile(path0, it)
                                 }
                             }
+                            // url.toStream().use { s ->
+                            //     s.toExternalResource(formatName).use {
+                            //         c.uploadFile(path0, it)
+                            //     }
+                            // }
                         } else throw IllegalStateException("Remote file only support upload to 'FileSupported' instance, but '${c::class.java}'")
                     }
 
@@ -841,7 +879,13 @@ private val httpClient: HttpClient = HttpClient() {
         requestTimeoutMillis = 30_000
         connectTimeoutMillis = 20_000
     }
+}.also {
+    onShutdown("MiraiParser-httpClient") { it.close() }
 }
+
+
+
+public suspend fun RemoteResourceInProcessor.getStream(context: RemoteResourceContext): InputStream = this.doProcess(context)
 
 
 /**

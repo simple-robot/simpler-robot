@@ -15,13 +15,9 @@
 package love.forte.test;
 
 import love.forte.simbot.annotation.SimbotApplication;
-import love.forte.simbot.api.message.results.FileInfo;
-import love.forte.simbot.api.message.results.FileResult;
-import love.forte.simbot.api.message.results.FileResults;
-import love.forte.simbot.api.sender.AdditionalApi;
-import love.forte.simbot.api.sender.Getter;
+import love.forte.simbot.api.sender.Sender;
 import love.forte.simbot.bot.Bot;
-import love.forte.simbot.component.mirai.additional.MiraiAdditionalApis;
+import love.forte.simbot.bot.BotManager;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 
@@ -33,30 +29,26 @@ public class Test {
     public static void main(String[] args) {
         SimbotContext context = SimbotApp.run(Test.class, args);
 
+
         // post(context);
 
-        // context.close();
+        context.close();
+
+        System.out.println("context.close.");
     }
 
     public static void post(SimbotContext context) {
-        Bot bot = context.getBotManager().getDefaultBot();
+        BotManager manager = context.getBotManager();
 
-        Getter getter = bot.getSender().GETTER;
+        Bot defaultBot = manager.getDefaultBot();
 
-        AdditionalApi<FileResults> groupFiles = MiraiAdditionalApis.GETTER.getGroupFiles(1043409458L);
+        String cat = "[CAT:image,file=http://forte.love:15520/img/r]";
 
-        FileResults results = getter.additionalExecute(groupFiles);
+        Sender sender = defaultBot.getSender().SENDER;
 
-        System.out.println(results);
-        for (FileResult result : results.getResults()) {
-            System.out.println(result);
-            FileInfo info = result.getValue();
-            System.out.println(info);
-            System.out.println(info.getName());
-            System.out.println(info.isFile());
-            System.out.println(info.isDirectory());
-            System.out.println(info.getUrl());
-            System.out.println();
-        }
+        System.out.println(sender.sendGroupMsg(1043409458L, cat + cat + cat + cat));
+        System.out.println(sender.sendGroupMsg(1043409458L, cat + cat));
+        System.out.println(sender.sendGroupMsg(1043409458L, cat));
+
     }
 }
