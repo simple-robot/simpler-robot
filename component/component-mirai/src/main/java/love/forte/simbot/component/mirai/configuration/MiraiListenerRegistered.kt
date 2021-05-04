@@ -89,7 +89,7 @@ public class MiraiListenerRegistered : ListenerRegistered, SimbotContextClosedHa
             }
 
         }
-        logger.info(" all bots closed.")
+        logger.info("all bots closed.")
     }
 
 
