@@ -14,8 +14,6 @@
 
 package love.forte.simbot.component.mirai.sender
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.*
 import love.forte.simbot.api.message.assists.Flag
@@ -388,7 +386,7 @@ public class MiraiSetter(
      * 删除好友。
      */
     private fun setFriendDelete0(code: Long): Carrier<Boolean> {
-        GlobalScope.launch { bot.friend(code).delete() }
+        runBlocking { bot.friend(code).delete() }
         return true.toCarrier()
     }
 
