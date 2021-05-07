@@ -23,7 +23,10 @@ import love.forte.common.ioc.annotation.Beans
 import love.forte.common.utils.ResourceUtil
 import love.forte.simbot.component.mirai.SimbotMiraiLogger
 import love.forte.simbot.core.TypedCompLogger
-import net.mamoe.mirai.utils.*
+import net.mamoe.mirai.utils.BotConfiguration
+import net.mamoe.mirai.utils.DeviceInfo
+import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
+import net.mamoe.mirai.utils.withSwitch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File

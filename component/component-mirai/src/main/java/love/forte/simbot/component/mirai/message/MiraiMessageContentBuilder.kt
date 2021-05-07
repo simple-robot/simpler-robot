@@ -25,9 +25,7 @@ import love.forte.simbot.component.mirai.utils.toStream
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.message.data.AtAll
-import net.mamoe.mirai.message.data.Face
-import net.mamoe.mirai.message.data.PlainText
+import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -38,15 +36,17 @@ import java.io.InputStream
  * [MiraiMessageContentBuilder]'s factory.
  */
 public sealed class MiraiMessageContentBuilderFactory : MessageContentBuilderFactory {
+    /** Mirai组件所使用的消息构建器。 */
+    abstract override fun getMessageContentBuilder(): MiraiMessageContentBuilder
 
     /** 普通的图片上传策略。 */
     internal object MiraiMessageContentBuilderFactoryImgNormal : MiraiMessageContentBuilderFactory() {
-        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgNormal()
+        override fun getMessageContentBuilder(): MiraiMessageContentBuilder = MiraiMessageContentBuilderImgNormal()
     }
 
     /** 优先尝试通过一个任意的群进行上传的图片上传策略。 */
     internal object MiraiMessageContentBuilderFactoryImgGroupFirst : MiraiMessageContentBuilderFactory() {
-        override fun getMessageContentBuilder(): MessageContentBuilder = MiraiMessageContentBuilderImgGroupFirst()
+        override fun getMessageContentBuilder(): MiraiMessageContentBuilder = MiraiMessageContentBuilderImgGroupFirst()
     }
 
     companion object {
@@ -65,6 +65,7 @@ public sealed class MiraiMessageContentBuilderFactory : MessageContentBuilderFac
  * mirai对 [MessageContentBuilder] 的实现。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
+@Suppress("unused")
 public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
     private val texts = StringBuilder()
     private val contentList = mutableListOf<MiraiMessageContent>()
@@ -75,7 +76,7 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
         }
     }
 
-    override fun text(text: CharSequence): MessageContentBuilder {
+    override fun text(text: CharSequence): MiraiMessageContentBuilder {
         texts.append(text)
         return this
     }
@@ -93,8 +94,8 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
     }
 
     override fun at(code: String): MiraiMessageContentBuilder = at0(code.toLong())
-    override fun at(code: Long): MessageContentBuilder = at0(code)
-    override fun at(code: AccountCodeContainer): MessageContentBuilder = at(code.accountCodeNumber)
+    override fun at(code: Long): MiraiMessageContentBuilder = at0(code)
+    override fun at(code: AccountCodeContainer): MiraiMessageContentBuilder = at(code.accountCodeNumber)
 
     private fun face0(id: Int): MiraiMessageContentBuilder {
         checkText()
@@ -102,10 +103,10 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
         return this
     }
 
-    override fun face(id: String): MessageContentBuilder = face0(id.toInt())
-    override fun face(id: Int): MessageContentBuilder = face0(id)
+    override fun face(id: String): MiraiMessageContentBuilder = face0(id.toInt())
+    override fun face(id: Int): MiraiMessageContentBuilder = face0(id)
 
-    override fun imageLocal(path: String, flash: Boolean): MessageContentBuilder {
+    override fun imageLocal(path: String, flash: Boolean): MiraiMessageContentBuilder {
         val file: File = FileUtil.file(path)?.takeIf { it.exists() } ?: throw FileNotFoundException(path)
         val imageNeko: Neko = CatCodeUtil
             .getNekoBuilder("image", true)
@@ -125,7 +126,7 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
     abstract fun imageLocal0(file: File, imageNeko: Neko, flash: Boolean): MiraiMessageContent
 
 
-    override fun imageUrl(url: String, flash: Boolean): MessageContentBuilder {
+    override fun imageUrl(url: String, flash: Boolean): MiraiMessageContentBuilder {
         val imageNeko: Neko = CatCodeUtil
             .getNekoBuilder("image", true)
             .key("file").value(url)
@@ -168,6 +169,70 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
         val input = ByteArrayInputStream(imgData)
         return image(input, flash)
     }
+
+
+    /**
+     * 直接追加一个 [MiraiMessageContent].
+     */
+    fun messageContent(content: MiraiMessageContent): MiraiMessageContentBuilder {
+        checkText()
+        contentList.add(content)
+        return this
+    }
+
+    /**
+     * 直接追加一个mirai原生 [Message] 实例。
+     */
+    fun singleMessage(singleMessage: SingleMessage): MiraiMessageContentBuilder {
+        checkText()
+        contentList.add(MiraiSingleMessageContent(singleMessage))
+        return this
+    }
+    /**
+     * 直接追加一个mirai原生 [Message] 实例。
+     */
+    fun message(message: Message): MiraiMessageContentBuilder {
+        when (message) {
+            is SingleMessage -> {
+                checkText()
+                contentList.add(MiraiSingleMessageContent(message))
+            }
+            is MessageChain -> {
+                checkText()
+                contentList.add(MiraiMessageChainContent(message))
+            }
+            else -> {
+                throw IllegalArgumentException("Unknown message type. Message must be SingleMessage or MessageChain.")
+            }
+        }
+        return this
+    }
+
+    /**
+     * 通过消息构建函数构建一个 [SingleMessage]
+     * for kt.
+     */
+    @JvmSynthetic
+    fun message(neko: Neko?, messageBlock: suspend (Contact) -> SingleMessage) : MiraiMessageContentBuilder {
+        val msg = MiraiSingleMessageContent(messageBlock, neko)
+        checkText()
+        contentList.add(msg)
+        return this
+    }
+
+    @Suppress("FunctionName")
+    @JvmName("messageLazy")
+    fun __messageBlocking(neko: Neko?, messageBlock: (Contact) -> SingleMessage) : MiraiMessageContentBuilder {
+        val msg = MiraiSingleMessageContent({ c -> messageBlock(c) }, neko)
+        checkText()
+        contentList.add(msg)
+        return this
+    }
+
+
+
+
+
 
     override fun build(): MiraiMessageContent {
         checkText()

@@ -39,6 +39,8 @@ public interface OriginalDataContainer : Container {
     /**
      * 得到原始数据字符串。
      * 数据不应该为null。
+     *
+     * 原始数据信息一般用于debug或测试用，大部分情况下功能类似于toString。
      */
     val originalData: String
 }
@@ -143,9 +145,10 @@ public interface TimeContainer : Container {
  * 标识容器。定义可以得到一个标识。
  */
 @ContainerType("标识容器")
-public interface FlagContainer<out T : FlagContent> : Container {
+// public interface FlagContainer<out T : FlagContent> : Container {
+public interface FlagContainer<F : Flag<T>, out T : FlagContent> : Container {
     /** 标识 */
-    val flag: Flag<T>
+    val flag: F
 }
 
 

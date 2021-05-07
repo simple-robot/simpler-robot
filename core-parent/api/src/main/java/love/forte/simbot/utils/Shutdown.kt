@@ -27,8 +27,14 @@ private val shutdownLogger: Logger = LoggerFactory.getLogger("love.forte.simbot.
  * 注册一个shutdown hook。
  */
 public fun onShutdown(name: String? = null, logger: Logger = shutdownLogger, block: () -> Unit) {
+    val realName = name ?: run {
+        val stackTraceElement = Thread.currentThread().stackTrace[3]
+        stackTraceElement.apply {
+            "$className.$methodName ($fileName)"
+        }
+    }
     Runtime.getRuntime().addShutdownHook(thread(start = false, name = "$name-shutdown-hook") {
-        logger.debug("Try shutdown {}...", name)
+        logger.debug("Try shutdown {}...", realName)
         val s = System.currentTimeMillis()
         block()
         logger.debug("$name shutdown successfully on {} ms.", System.currentTimeMillis() - s)

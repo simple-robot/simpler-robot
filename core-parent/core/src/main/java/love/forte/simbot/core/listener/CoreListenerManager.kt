@@ -23,6 +23,8 @@ import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSender
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.BotManager
+import love.forte.simbot.core.intercept.EmptyListenerInterceptorChain
+import love.forte.simbot.core.intercept.EmptyMsgInterceptChain
 import love.forte.simbot.core.listener.ListenerFunctionGroups.Companion.isEmpty
 import love.forte.simbot.core.listener.ListenerFunctionGroups.Companion.isNotEmpty
 import love.forte.simbot.core.listener.ListenerFunctionGroups.Companion.marge
@@ -180,12 +182,21 @@ public class CoreListenerManager(
             // not empty, intercept.
             // val context: ListenerContext = getContext(msgGet)
             val context: ListenerContext = listenerContextFactory.getListenerContext(msgGet, contextMapFactory.contextMap)
+            //
+            // // val context: ListenerContext = getContext(msgGet)
+            //
+            // // 构建一个消息拦截器context
+            // val msgContext = msgInterceptContextFactory.getMsgInterceptContext(msgGet, context)
+            // val msgChain = msgInterceptChainFactory.getInterceptorChain(msgContext)
 
-            // val context: ListenerContext = getContext(msgGet)
+            var msgInterceptContext: MsgInterceptContext? = null
 
-            // 构建一个消息拦截器context
-            val msgContext = msgInterceptContextFactory.getMsgInterceptContext(msgGet, context)
-            val msgChain = msgInterceptChainFactory.getInterceptorChain(msgContext)
+            val msgChain = msgInterceptChainFactory.getInterceptorChainOnNonEmpty {
+                // 构建一个消息拦截器context
+                msgInterceptContextFactory.getMsgInterceptContext(msgGet, context).also {
+                    msgInterceptContext = it
+                }
+            } ?: EmptyMsgInterceptChain
 
 
             // 如果被拦截, 返回默认值
@@ -194,7 +205,7 @@ public class CoreListenerManager(
             }
 
             // 筛选并执行监听函数
-            return onMsg0(msgContext.msgGet, context)
+            return onMsg0(msgInterceptContext?.msgGet ?: msgGet, context)
         } catch (e: Throwable) {
             logger.error("Some unexpected errors occurred in the execution of the listener: ${e.localizedMessage}", e)
             return ListenResult
@@ -226,21 +237,35 @@ public class CoreListenerManager(
 
             // do listen function
             fun doListen(func: ListenerFunction): ListenResult<*> {
-                val listenerInterceptContext =
-                    listenerInterceptContextFactory.getListenerInterceptContext(func, msgGet, context)
 
-                val interceptorChain = listenerInterceptChainFactory.getInterceptorChain(listenerInterceptContext)
+                // val listenerInterceptContext =
+                // val interceptorChain = listenerInterceptChainFactory.getInterceptorChain(listenerInterceptContext)
+
+                val interceptorChain = listenerInterceptChainFactory.getInterceptorChainOnNonEmpty {
+                    listenerInterceptContextFactory.getListenerInterceptContext(func, msgGet, context)
+                } ?: EmptyListenerInterceptorChain
 
                 // invoke with try.
                 return try {
-                    invokeData = ListenerFunctionInvokeDataImpl(
-                        msgGet,
-                        context,
-                        atDetectionFactory.getAtDetection(msgGet),
-                        botManager.getBot(msgGet.botInfo),
-                        MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories),
-                        interceptorChain
+                    invokeData = ListenerFunctionInvokeDataLazyImpl(
+                        LazyThreadSafetyMode.NONE,
+                        { msgGet },
+                        { context },
+                        { atDetectionFactory.getAtDetection(msgGet) },
+                        { botManager.getBot(msgGet.botInfo) },
+                        { MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories) },
+                        { interceptorChain }
                     )
+
+                    // invokeData = ListenerFunctionInvokeDataImpl(
+                    //     msgGet,
+                    //     context,
+                    //     atDetectionFactory.getAtDetection(msgGet),
+                    //     botManager.getBot(msgGet.botInfo),
+                    //     MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories),
+                    //     interceptorChain
+                    // )
+
                     func(invokeData!!)
                 } catch (funcRunEx: Throwable) {
                     (if (func is LogAble) func.log else logger).error("Listener '${func.name}' execution exception: $funcRunEx",

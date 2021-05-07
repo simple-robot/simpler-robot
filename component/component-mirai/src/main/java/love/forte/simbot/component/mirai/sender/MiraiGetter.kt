@@ -21,8 +21,12 @@ import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.containers.GroupCodeContainer
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.results.*
+import love.forte.simbot.api.sender.AdditionalApi
 import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.api.sender.GetterFactory
+import love.forte.simbot.component.mirai.MiraiBotInfo
+import love.forte.simbot.component.mirai.additional.GetterInfo
+import love.forte.simbot.component.mirai.additional.MiraiGetterAdditionalApi
 import love.forte.simbot.component.mirai.message.result.*
 import love.forte.simbot.http.template.HttpTemplate
 import net.mamoe.mirai.Bot
@@ -41,17 +45,25 @@ public class MiraiGetter(
     private val http: HttpTemplate,
     private val defGetter: Getter,
 ) : Getter {
+
+    private val getterInfo = GetterInfo(bot, http)
+
+    @OptIn(SimbotExperimentalApi::class)
     override val authInfo: AuthInfo
         get() = MiraiAuthInfo(UnsafeViolenceAndroidBotCookieUtils.cookies(bot))
 
-    override val botInfo: BotInfo
-        get() = MiraiBotInfo(bot, http)
+    override val botInfo: BotInfo get() = MiraiBotInfo.getInstance(bot, http)
 
 
     /**
      * mirai-获取好友信息。
      */
-    private fun getFriendInfo0(code: Long): FriendInfo = MiraiFriendInfo(bot.friend(code))
+    private fun getFriendInfo0(code: Long): FriendInfo {
+        return bot.friendOrNull(code)?.let { f -> MiraiFriendInfo(f) }
+            ?: bot.getStranger(code)?.let { s -> MiraiStrangerInfo(s) }
+            ?: throw NoSuchElementException("No such friend or stranger $code from bot ${bot.id}")
+    }
+
     override fun getFriendInfo(code: String): FriendInfo = getFriendInfo0(code.toLong())
     override fun getFriendInfo(code: Long): FriendInfo = getFriendInfo0(code)
     override fun getFriendInfo(code: AccountCodeContainer): FriendInfo = getFriendInfo(code.accountCodeNumber)
@@ -118,6 +130,7 @@ public class MiraiGetter(
      */
     private fun getGroupNoteList0(group: Long): GroupNoteList =
         MiraiGroupNoteList(bot.group(group))
+
     override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList =
         getGroupNoteList0(group.toLong())
 
@@ -129,24 +142,15 @@ public class MiraiGetter(
 
 
     /**
-     * 得到群文件列表
+     * 额外API
      */
-    @SimbotExperimentalApi
-    fun getGroupFiles(group: Long): FileResults? {
-        bot.group(group).filesRoot
-        TODO("Not imp.")
+    override fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): R {
+        if (additionalApi is MiraiGetterAdditionalApi) {
+            return additionalApi.execute(getterInfo)
+        }
+
+        return super.additionalExecute(additionalApi)
     }
-
-
-    /**
-     * 根据文件ID获取群文件。
-     */
-    @SimbotExperimentalApi
-    fun getGroupFile(group: Long, id: String): FileResult? {
-        TODO("Not imp.")
-    }
-
-
 
 
 }

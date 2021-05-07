@@ -20,7 +20,7 @@
 <a href="https://oss.sonatype.org/content/repositories/snapshots/love/forte/simple-robot/parent/" target="_blank">
   <img alt="snapshot" src="https://img.shields.io/nexus/s/love.forte.simple-robot/parent?label=simbot-snapshot&server=https%3A%2F%2Foss.sonatype.org" /></a>
 <a href="https://www.yuque.com/simpler-robot/simpler-robot-doc" target="_blank">
-  <img alt=""doc src="https://img.shields.io/badge/doc-yuque-brightgreen" /></a>
+  <img alt="doc" src="https://img.shields.io/badge/doc-yuque-brightgreen" /></a>
    <hr>
    <img alt="stars" src="https://img.shields.io/github/stars/ForteScarlet/simpler-robot" />
    <img alt="forks" src="https://img.shields.io/github/forks/ForteScarlet/simpler-robot" />
@@ -69,9 +69,10 @@
 
 计划中准备支持的平台：
 - QQ
-    - onebot(QQ机器人通用协议) (分支开发中 *暂缓*)
-- telegram (分支开发中)
-- discord    
+  - onebot(QQ机器人通用协议) ([分支](https://github.com/ForteScarlet/simpler-robot/tree/component-onebot-dev)开发中 *暂缓*)
+- [开黑啦](./component/component-kaiheila-parent) ([分支](https://github.com/ForteScarlet/simpler-robot/tree/kaiheila-dev)开发中)
+- telegram
+- discord
 - 钉钉
   - 企业内建应用事件
   - 企业内建群BOT

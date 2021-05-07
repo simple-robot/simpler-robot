@@ -98,6 +98,10 @@ public class CoreListenerInterceptChainFactory(dependBeanFactory: DependBeanFact
             else ListenerInterceptorChainImpl(this, context)
         }
     }
+
+
+    override fun isEmpty(): Boolean = interceptorList.isEmpty()
+
 }
 
 

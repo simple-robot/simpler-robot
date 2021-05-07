@@ -49,7 +49,7 @@ import kotlin.concurrent.thread
 
 private const val RESOURCE_FILE = "file:"
 private const val RESOURCE_CLASSPATH = "classpath:"
-private const val RESOURCE_HTTP = "http://"
+private const val RESOURCE_HTTP = "http"
 
 
 /**
@@ -79,9 +79,51 @@ internal constructor(
     val environment: SimbotEnvironment,
     val msgProcessor: MsgGetProcessor,
     val configuration: Configuration,
-    private val doClosed: Closeable = Closeable {},
-) : DependBeanFactory by dependBeanFactory,
-    Closeable by doClosed
+    private val closeHandleList: List<SimbotContextClosedHandle> = emptyList(),
+) : DependBeanFactory by dependBeanFactory, Closeable {
+    private companion object : TypedCompLogger(SimbotContext::class.java)
+
+    override fun close() {
+        // run doClosed list
+        closeHandleList.forEach { handle ->
+            kotlin.runCatching {
+                logger.debug("Execute handle ${handle.handleName}")
+                handle.simbotClose(this)
+                logger.debug("Execute handle ${handle.handleName} finish.")
+            }.getOrElse { e ->
+                val handleLogger = if (handle is LogAble) handle.log else LoggerFactory.getLogger(handle::class.java)
+                handleLogger.error("SimbotContext close handle '${handle.handleName}' execute failed!", e)
+            }
+        }
+    }
+}
+
+
+/**
+ * [SimbotContext] 被 [SimbotContext.close] 的时候所使用的处理器。
+ *
+ * 尽可能不要在此逻辑中使用带有阻塞的逻辑。
+ *
+ * 所有异常均会被捕获并输出为错误日志。
+ *
+ * 所有的 [SimbotContextClosedHandle] 都会在 [SimbotContext] 构建的时候被初始化完毕.
+ *
+ */
+public interface SimbotContextClosedHandle {
+    /**
+     * 一个名称，可重写并用于日志提示。
+     */
+    @JvmDefault
+    val handleName: String get() = "SimbotContextClosedHandle-Default"
+
+    /**
+     * 执行close操作。
+     *
+     * @throws Exception 可能出现任何异常, 异常均会被捕获。
+     */
+    @Throws(Exception::class)
+    fun simbotClose(context: SimbotContext)
+}
 
 
 internal val simbotAppLogger: Logger = LoggerFactory.getLogger(SimbotApp::class.java)
@@ -364,7 +406,10 @@ protected constructor(
         val environment = dependCenter[SimbotEnvironment::class.java]
         val msgGetProcessor = dependCenter[MsgGetProcessor::class.java]
 
-        return SimbotContext(dependCenter, botManager, environment, msgGetProcessor, configuration)
+        // 获取所有的异常处理器。
+        val handles: List<SimbotContextClosedHandle> = dependCenter.getListByType(SimbotContextClosedHandle::class.java).toList()
+
+        return SimbotContext(dependCenter, botManager, environment, msgGetProcessor, configuration, handles)
     }
 
 
@@ -394,7 +439,8 @@ protected constructor(
                 AnnotationUtil.getAnnotation(appType, SimbotApplication::class.java)?.value
                     ?.map {
                         it.toData()
-                    } ?: throw IllegalArgumentException("There is no resource data info.")
+                    }
+                    ?: throw IllegalArgumentException("There is no resource data info or SimbotApplication annotation.")
 
             // 流程接口实例。
             val process: SimbotProcess = if (SimbotProcess::class.java.isAssignableFrom(appType)) {

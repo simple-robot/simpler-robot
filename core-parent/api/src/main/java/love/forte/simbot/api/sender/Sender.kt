@@ -35,7 +35,7 @@ import love.forte.simbot.api.message.events.PrivateMsg
  * @date 2020/9/2
  * @since
  */
-public interface Sender {
+public interface Sender : Communicator {
 
     /**
      * 一个标识用的接口，用于标记一个 [Sender] 接口的实现为 **默认** 送信器。

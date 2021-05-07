@@ -1,5 +1,6 @@
 simbot.autoconfigure.configs=love.forte.simbot.component.mirai.configuration.MiraiAtDetectionRegistrar,\
   love.forte.simbot.component.mirai.configuration.MiraiConfiguration,\
+  love.forte.simbot.component.mirai.configuration.MiraiBotManager,\
   love.forte.simbot.component.mirai.configuration.MiraiKtorConfiguration,\
   love.forte.simbot.component.mirai.configuration.MiraiBotVerifierConfiguration,\
   love.forte.simbot.component.mirai.configuration.MiraiListenerRegistered,\

@@ -15,7 +15,6 @@
 package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.MessageContent
-import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.FriendAccountInfo
 import love.forte.simbot.api.message.containers.GroupContainer
@@ -57,7 +56,7 @@ public class MiraiPrivateMsg(event: FriendMessageEvent) :
      * 私聊消息标识，
      * 非线程安全的懒加载。
      */
-    override val flag: Flag<MiraiPrivateFlagContent> = miraiMessageFlag(MiraiPrivateFlagContent(event.source))
+    override val flag: MiraiPrivateMsgFlag = miraiPrivateFlag { MiraiPrivateFlagContent(event.source) }
 
 
     /**
@@ -103,7 +102,7 @@ public class MiraiTempMsg(event: GroupTempMessageEvent) :
      * 私聊消息标识，
      * 非线程安全的懒加载。
      */
-    override val flag: Flag<MiraiPrivateFlagContent> = miraiMessageFlag(MiraiPrivateFlagContent(event.source))
+    override val flag: MiraiPrivateMsgFlag = miraiPrivateFlag { MiraiPrivateFlagContent(event.source) }
 
     /**
      * id 直接使用 [标识][flagId] 获取。

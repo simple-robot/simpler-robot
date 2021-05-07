@@ -50,13 +50,13 @@ public data class MiraiFriendAccountInfo(private val friendId: Long, private val
 
     /** [accountNickname] */
     override val accountRemark: String
-        get() = accountNickname
+        get() = _friend.remark
 
-    override val accountRemarkOrNickname: String
-        get() = accountNickname
-
-    override val accountNicknameAndRemark: String
-        get() = accountNickname
+    // override val accountRemarkOrNickname: String
+    //     get() = accountNickname
+    //
+    // override val accountNicknameAndRemark: String
+    //     get() = accountNickname
 
     /**
      * 得到账号的头像地址. 一般来讲为`null`的可能性很小

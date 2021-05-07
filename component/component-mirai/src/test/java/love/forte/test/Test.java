@@ -1,68 +1,54 @@
+/*
+ *
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
+ *  *
+ *  * You can contact the author through the following channels:
+ *  * github https://github.com/ForteScarlet
+ *  * gitee  https://gitee.com/ForteScarlet
+ *  * email  ForteScarlet@163.com
+ *  * QQ     1149159218
+ *
+ */
+
 package love.forte.test;
 
-import catcode.CatCodeUtil;
-import love.forte.aa.MyTestAA;
-import love.forte.common.configuration.Configuration;
 import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.api.sender.Sender;
 import love.forte.simbot.bot.Bot;
+import love.forte.simbot.bot.BotManager;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
-import love.forte.simbot.core.SimbotProcess;
-import org.jetbrains.annotations.NotNull;
 
 /**
- * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
+ * @author ForteScarlet
  */
 @SimbotApplication
-public class Test implements SimbotProcess {
+public class Test {
     public static void main(String[] args) {
         SimbotContext context = SimbotApp.run(Test.class, args);
 
-        System.out.println(context.get(MyTestAA.class));
+
+        // post(context);
 
         context.close();
 
-        System.exit(1);
+        System.out.println("context.close.");
     }
 
-    @Override
-    public void pre(@NotNull Configuration config) {
-    }
+    public static void post(SimbotContext context) {
+        BotManager manager = context.getBotManager();
 
-    @Override
-    public void post(@NotNull SimbotContext context) {
-        Bot bot = context.getBotManager().getDefaultBot();
-        // group 1043409458
-        String path = "/test/1.gif";
-        // String file = "C:\\Users\\Administrator\\Desktop\\表情\\QQ图片20210217201307.jpg";
-        // String file = "C:\\Users\\Administrator\\Desktop\\表情\\QQ图片20210217201243.jpg";
-        String file = "classpath:1.gif";
+        Bot defaultBot = manager.getDefaultBot();
 
-        String fileCat = CatCodeUtil.getInstance()
-                .toCat("file", true,
-                        "file=" + file,
-                        "path=" + path);
-        //
-        Sender sender = bot.getSender().SENDER;
-        //
-        sender.sendGroupMsg(1043409458, fileCat);
-        //
-        // System.out.println("uploaded");
+        String cat = "[CAT:image,file=http://forte.love:15520/img/r]";
 
-        // CatCodeUtil util = CatCodeUtil.getInstance();
-        //
-        // sender.sendGroupMsg(1043409458, util.toCat("dice", "value=1"));
-        // sender.sendGroupMsg(1043409458, util.toCat("dice", "value=2"));
-        // sender.sendGroupMsg(1043409458, util.toCat("dice", "value=3"));
-        // sender.sendGroupMsg(1043409458, util.toCat("dice", "value=4"));
-        // sender.sendGroupMsg(1043409458, util.toCat("dice", "value=5"));
-        // sender.sendGroupMsg(1043409458, util.toCat("dice", "value=6"));
+        Sender sender = defaultBot.getSender().SENDER;
 
-        // for (Bot bot : context.getBotManager().getBots()) {
-        //     Sender s = bot.getSender().SENDER;
-        //     s.sendPrivateMsg(1149159218, "我好了。" + bot.getSender().GETTER.getAuthInfo().getCookies());
-        //     s.sendPrivateMsg(1149159218, CatCodeUtil.getInstance().getStringTemplate().image("classpath:1.jpg"));
-        // }
+        System.out.println(sender.sendGroupMsg(1043409458L, cat + cat + cat + cat));
+        System.out.println(sender.sendGroupMsg(1043409458L, cat + cat));
+        System.out.println(sender.sendGroupMsg(1043409458L, cat));
+
     }
 }

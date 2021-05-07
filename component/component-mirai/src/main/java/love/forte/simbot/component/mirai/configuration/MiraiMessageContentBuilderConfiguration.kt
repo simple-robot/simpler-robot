@@ -16,7 +16,6 @@ package love.forte.simbot.component.mirai.configuration
 
 import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.ConfigBeans
-import love.forte.simbot.api.message.MessageContentBuilderFactory
 import love.forte.simbot.component.mirai.message.MiraiMessageContentBuilderFactory
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.configuration.ComponentBeans
@@ -38,7 +37,7 @@ public class MiraiMessageContentBuilderConfiguration {
      * mirai的content builder factory.
      */
     @ComponentBeans(value = "miraiMessageContentBuilderFactory", init = false)
-    fun miraiMessageContentBuilderFactory(): MessageContentBuilderFactory {
+    fun miraiMessageContentBuilderFactory(): MiraiMessageContentBuilderFactory {
         logger.debug("Mirai message content builder img group first: $imgGroupFirst")
         return MiraiMessageContentBuilderFactory.instance(imgGroupFirst)
     }

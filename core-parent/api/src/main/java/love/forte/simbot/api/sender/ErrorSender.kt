@@ -18,6 +18,7 @@ package love.forte.simbot.api.sender
 
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.api.message.results.Result
 
 /**
  * [Sender] 的 无效化实现，所有的方法均会抛出异常。
@@ -42,6 +43,9 @@ object ErrorSender : Sender.Def {
 
     override fun sendGroupSign(group: String, title: String, message: String): Nothing =
         NO("Sender.sendGroupSign")
+
+    override fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): Nothing =
+        NO("Sender.additionalApi.${additionalApi.additionalApiName}")
 }
 
 

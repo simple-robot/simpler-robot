@@ -16,7 +16,7 @@
 
 package love.forte.simbot.api.sender
 
-import love.forte.simbot.api.SimbotExperimentalApi
+import love.forte.simbot.SimbotRuntimeException
 import love.forte.simbot.api.message.results.Result
 
 
@@ -32,13 +32,13 @@ import love.forte.simbot.api.message.results.Result
  * 接口的实现由各个组件进行，并应当对其的实现有着详细的描述。
  *
  *
- * 额外的API接口中，[R] 代表这个API所最终的返回值类型，这个类型必须是 [Result] 类型的子接口。
+ * 额外的API接口中，[R] 代表这个API所最终的返回值类型，这个类型必须是 [Result] 类型。
  *
  *
  * @since 2.0.6~2.1.0
  */
-@SimbotExperimentalApi("尚在测试阶段")
-interface AdditionalApi<R : Result> {
+// @SimbotExperimentalApi("尚在测试阶段")
+public interface AdditionalApi<R : Result?> {
 
     /**
      * 额外API的描述名称。
@@ -46,6 +46,42 @@ interface AdditionalApi<R : Result> {
      */
     val additionalApiName: String
 
+    /**
+     * 可以提供一个默认值获取器，当一些不支持的组件使用的时候，可以得到一个默认值。
+     * 如果在组件不支持且不存在默认值的情况下，会抛出异常。
+     */
+    val defaultValueProducer: AdditionalApiDefaultValueProducer<R>? get() = null
+
+}
 
 
+public inline val <R : Result> AdditionalApi<R>.defaultValue: R? get() = defaultValueProducer?.defaultValue
+
+
+/**
+ * 额外API的默认值获取器。
+ */
+public fun interface AdditionalApiDefaultValueProducer<R : Result?> {
+    /**
+     * 得到一个默认值。
+     */
+    fun defaultValue(): R
+}
+
+
+public inline val <R : Result> AdditionalApiDefaultValueProducer<R>.defaultValue: R get() = defaultValue()
+
+
+
+
+public open class SimbotAdditionalApiException : SimbotRuntimeException {
+    constructor() : super()
+    constructor(message: String?) : super(message)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    constructor(cause: Throwable?) : super(cause)
+    constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+        message,
+        cause,
+        enableSuppression,
+        writableStackTrace)
 }

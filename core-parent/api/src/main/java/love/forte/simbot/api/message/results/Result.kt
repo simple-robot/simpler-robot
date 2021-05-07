@@ -13,6 +13,7 @@
  */
 @file:JvmMultifileClass
 @file:JvmName("Results")
+
 package love.forte.simbot.api.message.results
 
 import love.forte.simbot.api.message.containers.OriginalDataContainer
@@ -28,9 +29,16 @@ import love.forte.simbot.api.sender.Getter
  * @date 2020/9/4
  * @since
  */
-public interface Result: OriginalDataContainer
+public interface Result : OriginalDataContainer {
 
-
+    /**
+     * 空的伴生对象。
+     */
+    companion object Empty : Result {
+        override val originalData: String
+            get() = "EmptyResult()"
+    }
+}
 
 
 /**
@@ -39,7 +47,7 @@ public interface Result: OriginalDataContainer
  * 一般可以代表在 [获取器][Getter] 中所得到的信息的值。
  *
  */
-public interface MultipleResults<T: Result>: Result, Iterable<T> {
+public interface MultipleResults<T : Result> : Result, Iterable<T> {
 
     /** 得到结果集合。可能会是空的，但不应为null。 */
     val results: List<T>
@@ -69,6 +77,17 @@ public interface MultipleResults<T: Result>: Result, Iterable<T> {
     @JvmDefault
     fun stream(): java.util.stream.Stream<T> = results.stream()
 
+
+    /**
+     * 空的伴生对象。
+     */
+    companion object Empty : MultipleResults<Nothing> {
+        override val originalData: String
+            get() = "EmptyMultipleResults()"
+        override val results: List<Nothing>
+            get() = emptyList()
+    }
+
 }
 
 
@@ -77,7 +96,6 @@ public interface MultipleResults<T: Result>: Result, Iterable<T> {
  * @since 2.0.0
  */
 public inline val <T : Result> MultipleResults<T>.size: Int get() = results.size
-
 
 
 /**
@@ -94,4 +112,56 @@ public interface NodeResult<T> : MultipleResults<NodeResult<T>> {
      * 此节点元素下的其他元素。
      */
     override val results: List<NodeResult<T>>
+
 }
+
+
+/**
+ * 得到一个没有子节点的单节点result。
+ */
+public fun <T> singletonNodeResult(value: T): NodeResult<T> = SingletonNodeResult(value)
+
+
+private data class SingletonNodeResult<T>(override val value: T) : NodeResult<T> {
+    override val originalData: String
+        get() = "SingletonNodeResult($value)"
+
+    override fun toString(): String = originalData
+
+    override val results: List<NodeResult<T>>
+        get() = emptyList()
+}
+
+
+/**
+ * 类似于 [love.forte.common.utils.Carrier] 的 Result实例，内部存在一个 [value] 值。
+ *
+ * 但是此类不提供carrier中那些 orElse 之类的方法。
+ *
+ */
+public data class CarrierResult<T : Any?> internal constructor(val value: T) : Result {
+    override val originalData: String = "Result($value)"
+    override fun toString(): String = originalData
+
+    companion object {
+        private val TrueResult = CarrierResult(true)
+        private val FalseResult = CarrierResult(false)
+        private val NullResult = CarrierResult(null)
+
+        @JvmStatic
+        @Suppress("UNCHECKED_CAST")
+        fun <T : Any?> valueOf(value: T): CarrierResult<T> {
+            return when (value) {
+                null -> NullResult as CarrierResult<T>
+                true -> TrueResult as CarrierResult<T>
+                false -> FalseResult as CarrierResult<T>
+                else -> CarrierResult(value)
+            }
+        }
+
+
+    }
+}
+
+
+public fun <T: Any?> T.toCarrierResult(): CarrierResult<T> = CarrierResult.valueOf(this)

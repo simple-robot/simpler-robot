@@ -23,6 +23,7 @@ import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequestInvitor
 import love.forte.simbot.api.message.events.asInvitor
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
+import love.forte.simbot.component.mirai.message.MiraiEventFlagContent
 import love.forte.simbot.component.mirai.message.result.MiraiGroupInfo
 import love.forte.simbot.component.mirai.message.result.MiraiGroupMemberInfo
 import love.forte.simbot.component.mirai.utils.groupAvatar
@@ -67,10 +68,9 @@ public class MiraiGroupMemberJoinRequest(event: MemberJoinRequestEvent) :
 /**
  * 他人申请入群时的flag content.
  */
-public data class MiraiGroupMemberJoinRequestFlagContent(val event: MemberJoinRequestEvent) :
-        GroupAddRequest.FlagContent {
-    override val id: String = event.eventId.toString()
-}
+public class MiraiGroupMemberJoinRequestFlagContent(event: MemberJoinRequestEvent) :
+        GroupAddRequest.FlagContent, MiraiEventFlagContent<MemberJoinRequestEvent>(event, { e -> e.eventId.toString() })
+
 
 /** 申请入群事件的用户信息。 */
 private data class MiraiGroupMemberJoinAccountInfo(private val event: MemberJoinRequestEvent) : AccountInfo {
@@ -115,9 +115,8 @@ public class MiraiBotInvitedJoinGroupRequest(event: BotInvitedJoinGroupRequestEv
 /**
  * bot被邀请时的flag content。
  */
-public data class MiraiBotInvitedJoinRequestFlagContent(val event: BotInvitedJoinGroupRequestEvent) : GroupAddRequest.FlagContent {
-    override val id: String = event.eventId.toString()
-}
+public class MiraiBotInvitedJoinRequestFlagContent(event: BotInvitedJoinGroupRequestEvent) : GroupAddRequest.FlagContent,
+    MiraiEventFlagContent<BotInvitedJoinGroupRequestEvent>(event, { e -> e.eventId.toString() })
 
 
 /**

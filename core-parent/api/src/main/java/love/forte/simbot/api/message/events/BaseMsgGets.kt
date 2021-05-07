@@ -250,7 +250,8 @@ public interface MessageContentContainer {
  * 因此 [FlagContent] 提供为默认方法并使用 [id] 作为返回值。如果有特殊需要则重写。
  */
 @ParentListenerType("消息事件父接口")
-public interface MessageGet : MsgGet, MessageContentContainer, FlagContainer<MessageGet.MessageFlagContent> {
+public interface MessageGet : MsgGet, MessageContentContainer,
+    FlagContainer<MessageGet.MessageFlag<out MessageGet.MessageFlagContent>, MessageGet.MessageFlagContent> {
 
     /**
      *  消息事件的消息正文文本。
@@ -287,9 +288,13 @@ public interface MessageGet : MsgGet, MessageContentContainer, FlagContainer<Mes
      * 此处提供使用 [CatCodeUtil.remove] 的默认值，但是建议由组件进行实现以实现更高效的获取。
      *
      *
+     *
+     * 对于一个存在消息的事件 [MessageGet], 认为其 [text] 不可为 `null`。假若事件中不存在纯文本消息，则得到空字符串。
+     *
+     *
      */
     @JvmDefault
-    override val text: String? get() = msg.let { CatCodeUtil.remove(it, trim = false) }
+    override val text: String get() = msg.let { CatCodeUtil.remove(it, trim = false) }
 
 
     /**
@@ -303,12 +308,18 @@ public interface MessageGet : MsgGet, MessageContentContainer, FlagContainer<Mes
     /**
      * 消息标识.
      */
-    override val flag: Flag<MessageFlagContent>
+    override val flag: MessageFlag<out MessageFlagContent>
 
     /**
      * [MessageGet] 所对应的 [标识][Flag]
      */
     public interface MessageFlagContent : FlagContent
+
+    /**
+     * [flag]的标识实例。
+     */
+    public interface MessageFlag<T : MessageFlagContent> : Flag<T>
+
 }
 
 
@@ -451,7 +462,7 @@ public interface ReduceEventGet : MemberChangesEventGet
  * 与 **请求** 相关的父接口
  */
 @ParentListenerType("请求相关事件父接口")
-public interface RequestGet : MsgGet, FlagContainer<RequestGet.RequestFlagContent> {
+public interface RequestGet : MsgGet, FlagContainer<Flag<RequestGet.RequestFlagContent>, RequestGet.RequestFlagContent> {
 
     /**
      * 获取一个请求类型的标识

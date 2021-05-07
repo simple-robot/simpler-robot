@@ -89,6 +89,8 @@ public class CoreMsgInterceptChainFactory(
             else MsgInterceptChainImpl(this, context)
         }
     }
+
+    override fun isEmpty(): Boolean = interceptorList.isEmpty()
 }
 
 

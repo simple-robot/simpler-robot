@@ -14,11 +14,14 @@
 
 @file:JvmName("MessageContents")
 @file:JvmMultifileClass
+@file:Suppress("unused")
+
 package love.forte.simbot.api.message
 
 import catcode.Neko
 import love.forte.simbot.api.message.EmptyContent.cats
 import love.forte.simbot.api.message.EmptyContent.msg
+import org.jetbrains.annotations.Contract
 
 /*
  *
@@ -56,10 +59,10 @@ import love.forte.simbot.api.message.EmptyContent.msg
 /**
  * **消息内容**。
  *
- * 从 [MessageGet.msgContent] 获取到的消息内容有可能是一个 **复合消息**，即一个 msgContent 中存在多个不同类型的消息，
+ * 从 [love.forte.simbot.api.message.events.MessageGet.msgContent] 获取到的消息内容有可能是一个 **复合消息**，即一个 msgContent 中存在多个不同类型的消息，
  * 也有可能只是一个 **独立消息**，即其本身就是全部的消息内容。
  *
- * 它被使用在[MessageGet] 接口的 [MessageGet.msgContent] 上，表示当前消息的正文内容。
+ * 它被使用在[love.forte.simbot.api.message.events.MessageGet] 接口的 [love.forte.simbot.api.message.events.MessageGet.msgContent] 上，表示当前消息的正文内容。
  *
  * 一个 [MessageContent] 实例至少应该保证能够得到当前消息的 [消息字符串文本][msg]。
  *
@@ -71,14 +74,14 @@ import love.forte.simbot.api.message.EmptyContent.msg
  *
  * [MessageContent.cats] 中的 `text` 文本消息也会被作为 `cat` 码进行表现，其type为 `text`。
  *
- * [MessageContent.cats] 、[MessageContent.msg] 与 [MsgGet.text] 本质上都是对消息内容的一种展现形式，
+ * [MessageContent.cats] 、[MessageContent.msg] 与 [love.forte.simbot.api.message.events.MsgGet.text] 本质上都是对消息内容的一种展现形式，
  * [MessageContent.cats] 主要用于应对一串消息中出现的所有可能的消息类型，来使得使用者可以按需解析。
  * [MessageContent.msg] 是上述的 `cats` 的一种字符串表现，一般可用于对消息链序列化并保存。
- * [MsgGet.text] 是所有事件类型都可以获取的一种属性，其表示这个事件中可能存在的 "文本消息" 内容，而不会包含任何 **特殊** 消息，
+ * [love.forte.simbot.api.message.events.MsgGet.text] 是所有事件类型都可以获取的一种属性，其表示这个事件中可能存在的 "文本消息" 内容，而不会包含任何 **特殊** 消息，
  * 其主要用于对消息的过滤、关键字的匹配或者应对一些不需要解析特殊消息码的场景。
  *
  *
- * 不同的组件对于 [MessageContent] 和 [MsgGet.text] 的实现都会是不同的，
+ * 不同的组件对于 [MessageContent] 和 [love.forte.simbot.api.message.events.MsgGet.text] 的实现都会是不同的，
  * 一般情况下我会将他们的大致解析原理注明在文档或者注释中，使用者需要根据具体需求和实现来判断使用哪种方式会更加高效。
  *
  *
@@ -152,7 +155,46 @@ public interface MessageContent : CharSequence {
     @JvmDefault
     fun isEmpty(): Boolean = cats.isEmpty() && msg.isEmpty()
 
+
+    /**
+     * 重构这个MessageContent，根据Cat的规则进行重构（例如移除消息中的某条类型的消息或增加某条消息等。），并得到一个新的 [MessageContent] 实例。
+     *
+     * 得到新实例的前提是你对此消息存在一次任意的改动（无论是否生效）。
+     *
+     * 如果没有任何操作：
+     *
+     * ```java
+     * // java
+     * refactor(r -> { ... })
+     * ```
+     * ```kotlin
+     * // kotlin
+     * refactor { ... }
+     * ```
+     *
+     * 则无法保证返回值为100%的 **新实例**。
+     *
+     * @throws IllegalStateException 当前消息不支持重构
+     */
+    @JvmDefault
+    @Contract(pure = true)
+    fun refactor(messageReconstructor: ReconstructorFunction): MessageContent {
+        throw IllegalStateException("The current message content does not support reconstruction.")
+    }
+
+
 }
+
+
+/**
+ *
+ * 重构器函数，提供一个 [消息重构器][MessageReconstructor] 并对其执行操作。
+ */
+// 用于消除kotlin函数参数中烦人的的 Unit 兼容问题而使用的接口函数。
+public fun interface ReconstructorFunction {
+    operator fun invoke(arg: MessageReconstructor)
+}
+
 
 
 /**

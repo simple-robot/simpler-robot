@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit
  * @date 2020/9/2
  * @since
  */
-public interface Setter {
+public interface Setter : Communicator {
 
     /**
      * 一个标识用的接口，用于标记一个 [Setter] 接口的实现为 **默认** 送信器。
@@ -227,7 +227,7 @@ public interface Setter {
      * 开启全群禁言。一般需要当前账号拥有对应权限。
      *
      * @param groupCode 群号
-     * @param ban 是否开启
+     * @param mute 是否开启
      *
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      */

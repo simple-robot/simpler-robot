@@ -22,18 +22,22 @@ import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
-import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.events.*
+import love.forte.simbot.api.message.results.Result
+import love.forte.simbot.api.sender.AdditionalApi
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.api.sender.SetterFactory
+import love.forte.simbot.component.mirai.additional.MiraiSetterAdditionalApi
+import love.forte.simbot.component.mirai.additional.SetterInfo
 import love.forte.simbot.component.mirai.message.MiraiMessageFlag
-import love.forte.simbot.component.mirai.message.MiraiMessageSourceFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiBotInvitedJoinRequestFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiFriendRequestFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiGroupMemberJoinRequestFlagContent
+import love.forte.simbot.component.mirai.message.messageSource
 import love.forte.simbot.core.TypedCompLogger
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.PermissionDeniedException
+import net.mamoe.mirai.message.data.MessageSource
 import net.mamoe.mirai.message.data.MessageSource.Key.recall
 import java.util.concurrent.TimeUnit
 
@@ -52,13 +56,19 @@ public object MiraiSetterFactory : SetterFactory {
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : Setter {
+public class MiraiSetter(
+    private val bot: Bot,
+    private val defSetter: Setter,
+) : Setter {
     private companion object : TypedCompLogger(MiraiSetter::class.java) {
-        private val setGroupAnonymous0Logger: Int by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        private val setGroupAnonymous0Logger: Int by lazy(LazyThreadSafetyMode.NONE) {
             logger.warn("It is not supported to modify the anonymous chat status, only to return to the current status. This warning will only appear once.")
             0
         }
     }
+
+    private val setterInfo = SetterInfo(bot)
+
 
     /**
      * 设置好友申请。
@@ -307,22 +317,49 @@ public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : 
      * @throws PermissionDeniedException 无权操作的时候
      */
     override fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
-        return if (flag is MiraiMessageFlag<*>) {
-            flag.flag.source?.let { source ->
-                runBlocking {
-                    try {
-                        source.recall()
-                        // bot.recall(source)
-                        true
-                    } catch (e: IllegalStateException) {
-                        // if IllegalStateException, recall false.
-                        false
-                    }
+        val source: MessageSource = flag.messageSource(bot.id)
+        // val source: MessageSource = if (flag is MiraiMessageFlag<*>) {
+        //     flag.flagSource.source ?: throw IllegalStateException("MessageFlag's messageSource is empty.")
+        // } else {
+        //     val cacheId = flag.flag.id
+        //     val data = kotlin.runCatching { cacheIdToMessageSourceBuilder(cacheId) }.getOrElse { e ->
+        //         throw IllegalArgumentException("Failed to parse flag id.", e)
+        //     }
+        //     // build source.
+        //     data.build(bot.id)
+        // }
+
+        return runBlocking {
+            try {
+                source.recall()
+                true
+            } catch (e: PermissionDeniedException) {
+                logger.warn("Recall msg failed: Permission denied.", e)
+                false
+            } catch (e: IllegalStateException) {
+                // MiraiImpl.recallMessage: end-check
+                // // 1001: No message meets the requirements (实际上是没权限, 管理员在尝试撤回群主的消息)
+                // // 154: timeout
+                // // 3: <no message>
+
+                // if IllegalStateException, recall false.
+                val localizedMessage = e.localizedMessage
+
+                val warnMsgAlso = when {
+                    localizedMessage.contains("result=1001") -> "没有权限或权限不足"
+                    localizedMessage.contains("result=154") -> "timeout"
+                    else -> null
                 }
-            } ?: false
-        } else {
-            throw IllegalArgumentException("The 'flag($flag)' is not a 'MiraiMessageFlag' instance, cannot be recall by MiraiSetter.")
+
+                warnMsgAlso?.let { w ->
+                    logger.warn("Recall msg failed: $w", e)
+                } ?: run {
+                    logger.warn("Recall msg failed.", e)
+                }
+                false
+            }
         }.toCarrier()
+
     }
 
 
@@ -363,39 +400,28 @@ public class MiraiSetter(private val bot: Bot, private val defSetter: Setter) : 
 
     /**
      * 设置群精华消息。
+     *
+     * 请通过 [additionalExecute] 配合 [love.forte.simbot.component.mirai.additional.MiraiEssenceMessageApi] 使用。
      */
+    @Deprecated("Use additionalExecute by MiraiEssenceMessageApi")
     fun setGroupEssenceMessage(group: Long, msgFlag: Flag<GroupMsg.FlagContent>): Carrier<Boolean> {
-        if (msgFlag !is MiraiMessageFlag) {
+        if (msgFlag !is MiraiMessageFlag<*>) {
             throw IllegalArgumentException("Mirai only supports setting the essence message through the group Msg.flag under mirai, but type(${msgFlag::class.java})")
         }
-        (msgFlag.flag as MiraiMessageSourceFlagContent).source?.let { s ->
-            GlobalScope.launch { bot.getGroupOrFail(group.toLong()).setEssenceMessage(s) }
+        msgFlag.flagSource.source?.let { s ->
+            GlobalScope.launch { bot.getGroupOrFail(group).setEssenceMessage(s) }
             true.toCarrier()
         } ?: throw IllegalArgumentException("Mirai message source is empty.")
 
         return true.toCarrier()
     }
 
-    /**
-     * 设置群精华消息。
-     */
-    fun setGroupEssenceMessage(group: String, msgFlag: Flag<GroupMsg.FlagContent>) =
-        setGroupEssenceMessage(group.toLong(), msgFlag)
 
-    /**
-     * 设置群精华消息。
-     */
-    fun setGroupEssenceMessage(group: GroupCodeContainer, msgFlag: Flag<GroupMsg.FlagContent>) =
-        setGroupEssenceMessage(group.groupCodeNumber, msgFlag)
-
-    /**
-     * 设置群精华消息。
-     */
-    fun setGroupEssenceMessage(group: GroupContainer, msgFlag: Flag<GroupMsg.FlagContent>) =
-        setGroupEssenceMessage(group.groupInfo, msgFlag)
-
-
-
-
+    override fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): R {
+        if (additionalApi is MiraiSetterAdditionalApi) {
+            return additionalApi.execute(setterInfo)
+        }
+        return super.additionalExecute(additionalApi)
+    }
 
 }

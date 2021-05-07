@@ -24,7 +24,7 @@ package love.forte.simbot.bot
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class NoSuchBotException : IllegalStateException {
+public open class NoSuchBotException : IllegalStateException {
     constructor() : super()
     constructor(s: String?) : super(s)
     constructor(message: String?, cause: Throwable?) : super(message, cause)
@@ -35,7 +35,18 @@ public class NoSuchBotException : IllegalStateException {
 /**
  * bot 验证（登录）异常。
  */
-public class BotVerifyException : IllegalStateException {
+public open class BotVerifyException : IllegalStateException {
+    constructor() : super()
+    constructor(s: String?) : super(s)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    constructor(cause: Throwable?) : super(cause)
+}
+
+
+/**
+ * Bot已经存在异常。
+ */
+public open class BotAlreadyRegisteredException : BotVerifyException {
     constructor() : super()
     constructor(s: String?) : super(s)
     constructor(message: String?, cause: Throwable?) : super(message, cause)
