@@ -82,10 +82,12 @@ public class MiraiSetter(
         val f = flag.flag
         return if (f is MiraiFriendRequestFlagContent) {
             val event = f.event
-            if (agree) {
-                GlobalScope.launch { event.accept() }
-            } else {
-                GlobalScope.launch { event.reject(blackList) }
+            runBlocking {
+                if (agree) {
+                    event.accept()
+                } else {
+                    event.reject(blackList)
+                }
             }
             true.toCarrier()
         } else {
@@ -107,21 +109,25 @@ public class MiraiSetter(
             // member join.
             is MiraiGroupMemberJoinRequestFlagContent -> {
                 val event = f.event
-                if (agree) {
-                    GlobalScope.launch { event.accept() }
-                } else {
-                    GlobalScope.launch { event.reject(blackList, why ?: "") }
+                runBlocking {
+                    if (agree) {
+                        event.accept()
+                    } else {
+                        event.reject(blackList, why ?: "")
+                    }
                 }
                 true.toCarrier()
             }
             // bot invited.
             is MiraiBotInvitedJoinRequestFlagContent -> {
                 val event = f.event
-                if (agree) {
-                    GlobalScope.launch { event.accept() }
-                } else {
-                    // only ignore, no reject.
-                    GlobalScope.launch { event.ignore() }
+                runBlocking {
+                    if (agree) {
+                        event.accept()
+                    } else {
+                        // only ignore, no reject.
+                        event.ignore()
+                    }
                 }
                 true.toCarrier()
             }
@@ -161,13 +167,11 @@ public class MiraiSetter(
      */
     private fun setGroupBan0(groupCode: Long, memberCode: Long, time: Long, timeUnit: TimeUnit): Carrier<Boolean> {
         bot.member(groupCode, memberCode).apply {
-            time.takeIf { time > 0 }?.let { t ->
-                val muteTime: Long = t timeBy timeUnit timeAs Seconds
-                GlobalScope.launch {
+            runBlocking {
+                time.takeIf { time > 0 }?.let { t ->
+                    val muteTime: Long = t timeBy timeUnit timeAs Seconds
                     this@apply.mute(muteTime.toInt())
-                }
-            } ?: GlobalScope.launch {
-                this@apply.unmute()
+                } ?: this@apply.unmute()
             }
         }
         return true.toCarrier()
@@ -258,7 +262,7 @@ public class MiraiSetter(
         memberCode: Long,
         why: String?,
     ): Carrier<Boolean> {
-        GlobalScope.launch {
+        runBlocking {
             bot.member(groupCode, memberCode).kick(why ?: "")
         }
         return true.toCarrier()
@@ -409,8 +413,7 @@ public class MiraiSetter(
             throw IllegalArgumentException("Mirai only supports setting the essence message through the group Msg.flag under mirai, but type(${msgFlag::class.java})")
         }
         msgFlag.flagSource.source?.let { s ->
-            GlobalScope.launch { bot.getGroupOrFail(group).setEssenceMessage(s) }
-            true.toCarrier()
+            runBlocking { bot.getGroupOrFail(group).setEssenceMessage(s).toCarrier() }
         } ?: throw IllegalArgumentException("Mirai message source is empty.")
 
         return true.toCarrier()
