@@ -27,7 +27,6 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import love.forte.simbot.api.message.MessageContent
@@ -175,24 +174,46 @@ public fun Neko.toMiraiMessageContent(
             "poke", "shake" -> {
                 val type: Int = this["type"]?.toInt() ?: return MiraiSingleMessageContent(PokeMessage.ChuoYiChuo)
                 val id: Int = this["id"]?.toInt() ?: -1
-                val code: Long = this["code"]?.toLong() ?: -1L
+                // val code: Long = this["code"]?.toLong() ?: -1L
                 val cat = this
-                MiraiSingleMessageContent({
-                    if (it is Group) {
-                        // nudge, need code
-                        if (code == -1L) {
-                            throw IllegalStateException("Unable to locate the target for nudge: no 'code' parameter in cat ${this@toMiraiMessageContent}.")
-                        }
-
-                        val nudge = it[code]?.nudge()
-                            ?: throw IllegalArgumentException("Cannot found nudge target: no such member($code) in group($id).")
-                        it.launch { nudge.sendTo(it) }
-                        EmptySingleMessage
-                    } else {
-                        // poke.
-                        PokeMessage.values.find { p -> p.pokeType == type && p.id == id } ?: PokeMessage.ChuoYiChuo
-                    }
-                }, cat)
+                // val from = message?.bot?.id
+                // if (type)
+                // val nudgeContent = MiraiNudgedMessageContent(from, code)
+                // if (it is Group) {
+                //     // nudge, need code
+                //     if (code == -1L) {
+                //         throw IllegalStateException("Unable to locate the target for nudge: no 'code' parameter in cat ${this@toMiraiMessageContent}.")
+                //     }
+                //
+                //     val nudge = it[code]?.nudge()
+                //         ?: throw IllegalArgumentException("Cannot found nudge target: no such member($code) in group($id).")
+                //
+                //
+                //     // it.launch { nudge.sendTo(it) }
+                //     // EmptySingleMessage
+                // } else {
+                    // poke.
+                    val poke = PokeMessage.values.find { p -> p.pokeType == type && p.id == id } ?: PokeMessage.ChuoYiChuo
+                MiraiSingleMessageContent(poke){ cat }
+            // }
+                // MiraiSingleMessageContent({
+                    // if (it is Group) {
+                    //     // nudge, need code
+                    //     if (code == -1L) {
+                    //         throw IllegalStateException("Unable to locate the target for nudge: no 'code' parameter in cat ${this@toMiraiMessageContent}.")
+                    //     }
+                    //
+                    //     val nudge = it[code]?.nudge()
+                    //         ?: throw IllegalArgumentException("Cannot found nudge target: no such member($code) in group($id).")
+                    //     val from = message?.bot?.id
+                    //     MiraiNudgedMessageContent(from, nudge.target.id)
+                    //     // it.launch { nudge.sendTo(it) }
+                    //     // EmptySingleMessage
+                    // } else {
+                    //     // poke.
+                    //     PokeMessage.values.find { p -> p.pokeType == type && p.id == id } ?: PokeMessage.ChuoYiChuo
+                    // }
+                // }, cat)
             }
 
             // 头像抖动
