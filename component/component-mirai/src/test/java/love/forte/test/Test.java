@@ -14,18 +14,21 @@
 
 package love.forte.test;
 
+import love.forte.common.configuration.Configuration;
 import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.api.sender.Sender;
 import love.forte.simbot.bot.Bot;
 import love.forte.simbot.bot.BotManager;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
+import love.forte.simbot.core.SimbotProcess;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author ForteScarlet
  */
 @SimbotApplication
-public class Test {
+public class Test implements SimbotProcess {
     public static void main(String[] args) {
         SimbotContext context = SimbotApp.run(Test.class, args);
 
@@ -37,7 +40,13 @@ public class Test {
         System.out.println("context.close.");
     }
 
-    public static void post(SimbotContext context) {
+    @Override
+    public void pre(@NotNull Configuration config) {
+
+    }
+
+    @Override
+    public void post(SimbotContext context) {
         BotManager manager = context.getBotManager();
 
         Bot defaultBot = manager.getDefaultBot();
@@ -46,8 +55,8 @@ public class Test {
 
         Sender sender = defaultBot.getSender().SENDER;
 
-        System.out.println(sender.sendGroupMsg(1043409458L, cat + cat + cat + cat));
-        System.out.println(sender.sendGroupMsg(1043409458L, cat + cat));
+        // System.out.println(sender.sendGroupMsg(1043409458L, cat + cat + cat + cat));
+        // System.out.println(sender.sendGroupMsg(1043409458L, cat + cat));
         System.out.println(sender.sendGroupMsg(1043409458L, cat));
 
     }
