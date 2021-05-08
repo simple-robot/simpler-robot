@@ -467,7 +467,7 @@ public interface RequestGet : MsgGet, FlagContainer<Flag<RequestGet.RequestFlagC
     /**
      * 获取一个请求类型的标识
      */
-    override val flag: Flag<RequestFlagContent>
+    override val flag: Flag<@JvmWildcard RequestFlagContent>
 
     /**
      * 在请求类型下的 [标识主体][FlagContent] 类型。
