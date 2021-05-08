@@ -15,16 +15,17 @@
 package love.forte.simbot.component.lovelycat.message
 
 import love.forte.simbot.api.message.events.GroupMsg
+import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.PrivateMsg
 
 
 
-public object EmptyLovelyCatGroupMsgFlag : GroupMsg.MessageFlag {
+public object EmptyLovelyCatGroupMsgFlag : MessageGet.MessageFlag<GroupMsg.FlagContent> {
     override val flag: GroupMsg.FlagContent
         get() = EmptyLovelyCatFlagContent
 }
 
-public object EmptyLovelyCatPrivateMsgFlag : PrivateMsg.MessageFlag {
+public object EmptyLovelyCatPrivateMsgFlag : MessageGet.MessageFlag<PrivateMsg.FlagContent> {
     override val flag: PrivateMsg.FlagContent
         get() = EmptyLovelyCatFlagContent
 }

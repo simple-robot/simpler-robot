@@ -318,7 +318,7 @@ public class MiraiSetter(
      * @throws IllegalArgumentException 当 [flag] 不是 [MiraiMessageFlag] 类型实例的时候。
      * @throws PermissionDeniedException 无权操作的时候
      */
-    override fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
+    override fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
         val source: MessageSource = flag.messageSource(bot.id)
         // val source: MessageSource = if (flag is MiraiMessageFlag<*>) {
         //     flag.flagSource.source ?: throw IllegalStateException("MessageFlag's messageSource is empty.")

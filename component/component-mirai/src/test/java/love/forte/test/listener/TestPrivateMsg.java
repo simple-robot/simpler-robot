@@ -17,6 +17,7 @@ package love.forte.test.listener;
 import love.forte.simbot.api.message.MessageContent;
 import love.forte.simbot.api.message.containers.AccountInfo;
 import love.forte.simbot.api.message.containers.BotInfo;
+import love.forte.simbot.api.message.events.MessageGet;
 import love.forte.simbot.api.message.events.PrivateMsg;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,10 +73,9 @@ public class TestPrivateMsg implements PrivateMsg {
 
     @NotNull
     @Override
-    public MessageFlag getFlag() {
+    public MessageGet.MessageFlag<TestPriCont> getFlag() {
         return null;
     }
-
-
-
 }
+
+interface TestPriCont extends PrivateMsg.FlagContent {}

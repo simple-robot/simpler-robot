@@ -220,9 +220,9 @@ public infix fun <T : Class<out MsgGet>, V> MsgGet.findValuesIn(typeCollections:
 
 /**
  * 事件父接口，
- * 是当一个监听类型为得不到 [消息文本][msg] 的事件的时候使用的接口。
+ * 是当一个监听类型为得不到 [消息文本][text] 的事件的时候使用的接口。
  *
- * 此父接口与 [MsgGet] 的唯一区别就是此接口为 [msg] 提供了无效化的默认实现。
+ * 此父接口与 [MsgGet] 的唯一区别就是此接口为 [text] 提供了无效化的默认实现。
  */
 public interface EventGet : MsgGet {
     @JvmDefault
@@ -251,7 +251,7 @@ public interface MessageContentContainer {
  */
 @ParentListenerType("消息事件父接口")
 public interface MessageGet : MsgGet, MessageContentContainer,
-    FlagContainer<MessageGet.MessageFlag<out MessageGet.MessageFlagContent>, MessageGet.MessageFlagContent> {
+    FlagContainer<MessageGet.MessageFlag<MessageGet.MessageFlagContent>, MessageGet.MessageFlagContent> {
 
     /**
      *  消息事件的消息正文文本。
@@ -308,7 +308,7 @@ public interface MessageGet : MsgGet, MessageContentContainer,
     /**
      * 消息标识.
      */
-    override val flag: MessageFlag<out MessageFlagContent>
+    override val flag: MessageFlag<@JvmWildcard MessageFlagContent>
 
     /**
      * [MessageGet] 所对应的 [标识][Flag]
@@ -318,7 +318,7 @@ public interface MessageGet : MsgGet, MessageContentContainer,
     /**
      * [flag]的标识实例。
      */
-    public interface MessageFlag<T : MessageFlagContent> : Flag<T>
+    public interface MessageFlag<out T : MessageFlagContent> : Flag<T>
 
 }
 
@@ -331,7 +331,7 @@ public interface MessageGet : MsgGet, MessageContentContainer,
  * 撤回消息存在一个 [操作者][operatorInfo] 与 [被操作者][beOperatorInfo]，分别对应执行撤回操作的人与被撤回消息的人。
  * 当然，他们有可能会是同一个人。
  *
- * 一般来讲应该可以得到撤回的[消息内容][MsgGet.msg]以及[撤回时间][recallTime]
+ * 一般来讲应该可以得到撤回的[消息内容][MessageContentContainer.msgContent]以及[撤回时间][recallTime]
  */
 @ParentListenerType("消息撤回父接口")
 public interface MessageRecallEventGet : MsgGet, MessageContentContainer, OperatingContainer {

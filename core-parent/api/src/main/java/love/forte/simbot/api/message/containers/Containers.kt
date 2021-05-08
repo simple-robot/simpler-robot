@@ -146,7 +146,7 @@ public interface TimeContainer : Container {
  */
 @ContainerType("标识容器")
 // public interface FlagContainer<out T : FlagContent> : Container {
-public interface FlagContainer<F : Flag<T>, out T : FlagContent> : Container {
+public interface FlagContainer<out F : Flag<T>, out T : FlagContent> : Container {
     /** 标识 */
     val flag: F
 }

@@ -66,7 +66,7 @@ public object FailedSetter : Setter.Def {
     override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String> =
         Carrier.empty()
 
-    override fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean> = FalseCarrier
+    override fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> = FalseCarrier
 
     override fun setGroupName(groupCode: String, name: String): Carrier<String> = Carrier.empty()
 
