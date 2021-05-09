@@ -14,28 +14,23 @@
 
 package love.forte.simbot.mark;
 
-import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.*;
-
 /**
- * 用于标记一个东西是线程安全的，可能会标记一个类，或者一个方法。
+ * 此注解为仅用于标记的注解。标记一个类、方法、属性等为一个 <em>懒加载/延迟加载</em> 的属性。
  * <p>
- * 此注解仅用作标记。
+ * 即被标记的元素所应体现的结果可能不是即时的。
+ * <p>
+ * 与之相对的是 {@link InstantInit}, 即代表即时加载的注解 .
  *
  * @author ForteScarlet
+ * @see InstantInit
  */
-@SuppressWarnings("unused")
-@Retention(RetentionPolicy.CLASS)
-@Target({TYPE, FIELD, CONSTRUCTOR, METHOD, PARAMETER})
-@Documented
 @MarkOnly
-public @interface ThreadSafe {
-    /**
-     * 可以有一些说明之类的东西。
-     */
-    String value() default "";
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.LOCAL_VARIABLE})
+@Retention(RetentionPolicy.CLASS)
+public @interface LazyInit {
 }
