@@ -13,10 +13,15 @@
  */
 @file:JvmName("MessageContents")
 @file:JvmMultifileClass
+
 package love.forte.simbot.api.message
 
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.AccountContainer
+import love.forte.simbot.mark.InstantInit
+import love.forte.simbot.mark.LazyInit
+import java.io.IOException
 import java.io.InputStream
 
 
@@ -71,9 +76,11 @@ public interface MessageContentBuilder {
     /** 向当前构建的消息中追加一个 'at某人'的消息。 */
     @JvmDefault
     fun at(code: Long): MessageContentBuilder = at(code.toString())
+
     /** 向当前构建的消息中追加一个 'at某人'的消息。 */
     @JvmDefault
     fun at(code: AccountCodeContainer): MessageContentBuilder = at(code.accountCode)
+
     /** 向当前构建的消息中追加一个 'at某人'的消息。 */
     @JvmDefault
     fun at(code: AccountContainer): MessageContentBuilder = at(code.accountInfo)
@@ -114,10 +121,58 @@ public interface MessageContentBuilder {
 
     /**
      * 向当前构建的消息中追加一个图片流。
-     * 此方法内应当自动关闭[input]，但是并不会保证方法调用后立即对输入流进行读取或使用，也因此不会保证此方法调用后[input]会立即关闭。
-     * 因此不建议对此方法的 [input] 进行后续的其他操作。
+     *
+     * 此输入流会立即被使用，需要手动关闭 [输入流][input].
      */
+    @InstantInit
     fun image(input: InputStream, flash: Boolean): MessageContentBuilder
+
+
+    /**
+     * 向当前构建的消息中追加一个图片流。
+     *
+     * 图片流实例需要在 [inputStreamMotionActuator] 函数中进行获取、执行并手动关闭.
+     *
+     * TODO
+     *
+     * 建议：
+     * - 获取图片流的逻辑置于函数内部，以防止当此函数未调用时不会造成输入流溢出；
+     * - 在函数体内部添加try-catch-finally以保证输入流会正确关闭。
+     *
+     * ```java
+     * MessageContentBuilder c = //... ;
+            c.image(action -> {
+            // 简易获取输入流的逻辑.
+            try (InputStream in = new ByteArrayInputStream(new byte[0])) {
+            // 使用这个输入流执行逻辑.
+            action.invoke(in);
+            }
+
+            });
+     *
+     * ```
+     *
+     */
+    @LazyInit
+    @SimbotExperimentalApi
+    fun image(inputStreamMotionActuator: InputStreamMotionActuator<InputStream>, flash: Boolean): MessageContentBuilder = TODO()
+
+    /**
+     * 向当前构建的消息中追加一个图片流。
+     *
+     * TODO
+     *
+     * 图片流实例需要在 [inputStreamMotionActuator] 函数中进行获取、执行并手动关闭.
+     *
+     *
+     * 建议：
+     * - 获取图片流的逻辑置于函数内部，以防止当此函数未调用时不会造成输入流溢出；
+     * - 在函数体内部添加try-catch-finally以保证输入流会正确关闭。
+     *
+     */
+    @LazyInit
+    @SimbotExperimentalApi
+    fun image(inputStreamMotionActuator: InputStreamMotionActuator<InputStream>): MessageContentBuilder = image(inputStreamMotionActuator, false)
 
 
     /** 向当前构建的消息中追加一个图片字节数组。 */
@@ -125,10 +180,10 @@ public interface MessageContentBuilder {
 
     /**
      * 向当前构建的消息中追加一个图片流。
-     * 此方法内应当自动关闭[input]，但是并不会保证方法调用后立即对输入流进行读取或使用，也因此不会保证此方法调用后[input]会立即关闭。
-     * 因此不建议对此方法的 [input] 进行后续的其他操作。
+     * 此输入流会立即被使用，需要手动关闭 [输入流][input].
      */
     @JvmDefault
+    @InstantInit
     fun image(input: InputStream): MessageContentBuilder = image(input, false)
 
     /** 向当前构建的消息中追加一个图片字节数组。 */
@@ -140,4 +195,13 @@ public interface MessageContentBuilder {
 
     /** 得到当前构建的消息。 */
     fun build(): MessageContent
+}
+
+
+/**
+ * 动作执行器。
+ */
+public fun interface InputStreamMotionActuator<T> {
+    @Throws(IOException::class)
+    fun invoke(action: (T) -> Unit)
 }
