@@ -18,19 +18,21 @@ import catcode.CatCodeUtil
 import catcode.Neko
 import cn.hutool.core.io.FileUtil
 import io.ktor.http.*
+import love.forte.simbot.api.message.InputStreamMotionActuator
 import love.forte.simbot.api.message.MessageContentBuilder
 import love.forte.simbot.api.message.MessageContentBuilderFactory
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.component.mirai.utils.toStream
+import love.forte.simbot.mark.InstantInit
+import love.forte.simbot.mark.LazyInit
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.utils.ExternalResource
+import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
-import java.io.ByteArrayInputStream
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.InputStream
+import java.io.*
 
 /**
  * [MiraiMessageContentBuilder]'s factory.
@@ -162,7 +164,36 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
         return this
     }
 
+    override fun image(
+        inputStreamMotionActuator: InputStreamMotionActuator<InputStream>,
+        flash: Boolean,
+    ): MessageContentBuilder {
+        val imageNeko: Neko = CatCodeUtil
+            .getNekoBuilder("image", true)
+            .key("type").value("stream")
+            .apply {
+                if (flash) {
+                    key("flash").value(true)
+                }
+            }.build()
+
+        image1(inputStreamMotionActuator, imageNeko, flash).apply {
+            checkText()
+            contentList.add(this)
+        }
+
+        return this
+    }
+
+    @InstantInit
     abstract fun image0(input: InputStream, imageNeko: Neko, flash: Boolean): MiraiMessageContent
+
+    @LazyInit
+    abstract fun image1(
+        inputStreamMotionActuator: InputStreamMotionActuator<InputStream>,
+        imageNeko: Neko,
+        flash: Boolean,
+    ): MiraiMessageContent
 
 
     override fun image(imgData: ByteArray, flash: Boolean): MiraiMessageContentBuilder {
@@ -188,6 +219,7 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
         contentList.add(MiraiSingleMessageContent(singleMessage))
         return this
     }
+
     /**
      * 直接追加一个mirai原生 [Message] 实例。
      */
@@ -213,7 +245,7 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
      * for kt.
      */
     @JvmSynthetic
-    fun message(neko: Neko?, messageBlock: suspend (Contact) -> SingleMessage) : MiraiMessageContentBuilder {
+    fun message(neko: Neko?, messageBlock: suspend (Contact) -> SingleMessage): MiraiMessageContentBuilder {
         val msg = MiraiSingleMessageContent(messageBlock, neko)
         checkText()
         contentList.add(msg)
@@ -222,16 +254,12 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
 
     @Suppress("FunctionName")
     @JvmName("messageLazy")
-    fun __messageBlocking(neko: Neko?, messageBlock: (Contact) -> SingleMessage) : MiraiMessageContentBuilder {
+    fun __messageBlocking(neko: Neko?, messageBlock: (Contact) -> SingleMessage): MiraiMessageContentBuilder {
         val msg = MiraiSingleMessageContent({ c -> messageBlock(c) }, neko)
         checkText()
         contentList.add(msg)
         return this
     }
-
-
-
-
 
 
     override fun build(): MiraiMessageContent {
@@ -272,15 +300,44 @@ internal class MiraiMessageContentBuilderImgGroupFirst : MiraiMessageContentBuil
         }
     }
 
+    @InstantInit
     override fun image0(input: InputStream, imageNeko: Neko, flash: Boolean): MiraiMessageContent {
+        val resource = input.toExternalResource()
         return MiraiImageMessageContent(flash, imageNeko) { contact ->
-            input.use { inp ->
-                contact.findAnyGroup()?.let { group ->
-                    inp.uploadAsImage(group)
-                } ?: inp.uploadAsImage(contact)
+            resource.use { res ->
+                contact.findAnyGroup()?.uploadImage(res) ?: contact.uploadImage(res)
             }
         }
     }
+
+    @LazyInit
+    override fun image1(
+        inputStreamMotionActuator: InputStreamMotionActuator<InputStream>,
+        imageNeko: Neko,
+        flash: Boolean,
+    ): MiraiMessageContent {
+
+        return MiraiImageMessageContent(flash, imageNeko) { contact ->
+            var resource: ExternalResource? = null
+
+            // // upload action.
+            // val action: (InputStream) -> Unit =
+
+            try {
+                inputStreamMotionActuator.invoke { inp ->
+                    resource = inp.toExternalResource()
+                }
+            } catch (ioe: IOException) {
+                throw IllegalStateException("Image resource init failed", ioe)
+            }
+
+            resource?.use { res ->
+                contact.findAnyGroup()?.uploadImage(res) ?: contact.uploadImage(res)
+            } ?: throw IllegalStateException("Image resource not init.")
+
+        }
+    }
+
 }
 
 
@@ -299,9 +356,41 @@ internal class MiraiMessageContentBuilderImgNormal : MiraiMessageContentBuilder(
         }
     }
 
+    @InstantInit
     override fun image0(input: InputStream, imageNeko: Neko, flash: Boolean): MiraiMessageContent {
+        val resource = input.toExternalResource()
         return MiraiImageMessageContent(flash, imageNeko) { contact ->
-            input.use { inp -> inp.uploadAsImage(contact) }
+            resource.use { contact.uploadImage(it) }
         }
     }
+
+    @LazyInit
+    @Suppress("BlockingMethodInNonBlockingContext")
+    override fun image1(
+        inputStreamMotionActuator: InputStreamMotionActuator<InputStream>,
+        imageNeko: Neko,
+        flash: Boolean,
+    ): MiraiMessageContent {
+
+        return MiraiImageMessageContent(flash, imageNeko) { contact ->
+            var resource: ExternalResource? = null
+
+            // // upload action.
+            // val action: (InputStream) -> Unit =
+
+            try {
+                inputStreamMotionActuator.invoke { inp ->
+                    resource = inp.toExternalResource()
+                }
+            } catch (ioe: IOException) {
+                throw IllegalStateException("Image resource init failed", ioe)
+            }
+
+            resource?.use { contact.uploadImage(it) } ?: throw IllegalStateException("Image resource not init.")
+
+        }
+
+
+    }
+
 }

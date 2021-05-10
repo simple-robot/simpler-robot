@@ -307,6 +307,7 @@ public data class MiraiSingleAtMessageContent(private val code: Long) : MiraiMes
 
 /**
  * mirai 的 image content，代表为通过本地上传的图片信息。
+ *
  * 此实现中，image仅会被实例化一次，而后则会被缓存。
  */
 public class MiraiImageMessageContent
