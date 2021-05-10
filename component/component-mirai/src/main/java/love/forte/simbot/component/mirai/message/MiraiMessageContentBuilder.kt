@@ -18,6 +18,7 @@ import catcode.CatCodeUtil
 import catcode.Neko
 import cn.hutool.core.io.FileUtil
 import io.ktor.http.*
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.InputStreamMotionActuator
 import love.forte.simbot.api.message.MessageContentBuilder
 import love.forte.simbot.api.message.MessageContentBuilderFactory
@@ -164,6 +165,7 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
         return this
     }
 
+    @OptIn(SimbotExperimentalApi::class)
     override fun image(
         inputStreamMotionActuator: InputStreamMotionActuator<InputStream>,
         flash: Boolean,
@@ -311,6 +313,7 @@ internal class MiraiMessageContentBuilderImgGroupFirst : MiraiMessageContentBuil
     }
 
     @LazyInit
+    @Suppress("BlockingMethodInNonBlockingContext")
     override fun image1(
         inputStreamMotionActuator: InputStreamMotionActuator<InputStream>,
         imageNeko: Neko,
