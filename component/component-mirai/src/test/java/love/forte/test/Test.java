@@ -35,9 +35,9 @@ public class Test implements SimbotProcess {
 
         // post(context);
 
-        context.close();
+        // context.close();
 
-        System.out.println("context.close.");
+        // System.out.println("context.close.");
     }
 
     @Override

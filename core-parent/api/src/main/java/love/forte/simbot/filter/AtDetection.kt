@@ -127,15 +127,15 @@ public abstract class CacheableAtDetection : AtDetection {
         }
     }
 
-    private var _atBot: Answer
-    private var _atAll: Answer
-    private var _atAny: Answer
+    private var _atBot: Answer = Answer.NotInit
+    private var _atAll: Answer = Answer.NotInit
+    private var _atAny: Answer = Answer.NotInit
 
-    init {
-        _atBot = initAtBot()
-        _atAll = initAtAll()
-        _atAny = initAtAny()
-    }
+    // init {
+    //     _atBot = initAtBot()
+    //     _atAll = initAtAll()
+    //     _atAny = initAtAny()
+    // }
 
     private lateinit var _codeCache: Set<String>
     private val codeCache: Set<String>
@@ -149,9 +149,9 @@ public abstract class CacheableAtDetection : AtDetection {
             return _codeCache
         }
 
-    private fun initAtBot(): Answer = atBotInit()?.let { b -> Answer.Checked.check(b) } ?: Answer.NotInit
-    private fun initAtAll(): Answer = atAllInit()?.let { b -> Answer.Checked.check(b) } ?: Answer.NotInit
-    private fun initAtAny(): Answer = atAnyInit()?.let { b -> Answer.Checked.check(b) } ?: Answer.NotInit
+    // private fun initAtBot(): Answer = atBotInit()?.let { b -> Answer.Checked.check(b) } ?: Answer.NotInit
+    // private fun initAtAll(): Answer = atAllInit()?.let { b -> Answer.Checked.check(b) } ?: Answer.NotInit
+    // private fun initAtAny(): Answer = atAnyInit()?.let { b -> Answer.Checked.check(b) } ?: Answer.NotInit
 
     /** 如果atBot有一个固定的初始默认状态，则返回，否则返回null。 */
     protected open fun atBotInit(): Boolean? = null
