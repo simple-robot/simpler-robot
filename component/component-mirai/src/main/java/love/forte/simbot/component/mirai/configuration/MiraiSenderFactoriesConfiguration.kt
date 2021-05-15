@@ -83,7 +83,7 @@ public object MiraiRemoteResourceInProcessor : TypedCompLogger(MiraiRemoteResour
                 connectTimeoutMillis = 20_000
             }
         }.also {
-            onShutdown { it.close() }
+            onShutdown("MiraiRemoteResourceInProcessor", logger = logger) { it.close() }
         }
     }
 
