@@ -17,6 +17,7 @@ package love.forte.simbot.component.mirai.configuration
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.PrePass
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.component.mirai.message.event.MiraiMessageMsgGet
 import love.forte.simbot.constant.PriorityConstant
 import love.forte.simbot.core.filter.CatAtDetectionFactory
@@ -67,10 +68,11 @@ private object MiraiAtDetectionFactory : AtDetectionFactory {
  */
 private class MiraiAtDetection(private val botCode: Long, msg: MiraiMessageMsgGet<*>) : CacheableAtDetection() {
     private val message: MessageChain = msg.message
+    private val priMsg = msg is PrivateMsg
 
-    override fun atBotInit(): Boolean? = if (message.isEmpty()) false else null
-    override fun atAllInit(): Boolean? = if (message.isEmpty()) false else null
-    override fun atAnyInit(): Boolean? = if (message.isEmpty()) false else null
+    override fun atBotInit(): Boolean? = if (message.isEmpty()) priMsg else null
+    override fun atAllInit(): Boolean? = if (message.isEmpty()) priMsg else null
+    override fun atAnyInit(): Boolean? = if (message.isEmpty()) priMsg else null
 
 
     override fun checkAtBot(): Boolean = message.any { m -> m is At && m.target == botCode }

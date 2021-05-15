@@ -130,8 +130,6 @@ public interface MessageContentBuilder {
     //  *
     //  * 图片流实例需要在 [inputStreamMotionActuator] 函数中进行获取、执行并手动关闭.
     //  *
-    //  * TODO
-    //  *
     //  * 建议：
     //  * - 获取图片流的逻辑置于函数内部，以防止当此函数未调用时造成的输入流溢出；
     //  * - 在函数体内部添加try-catch-finally以保证输入流会正确关闭。
@@ -152,7 +150,7 @@ public interface MessageContentBuilder {
     //  */
     // @LazyInit
     // @SimbotExperimentalApi
-    // fun image(inputStreamMotionActuator: InputStreamMotionActuator<InputStream>, flash: Boolean): MessageContentBuilder = TODO()
+    // fun image(inputStreamMotionActuator: InputStreamMotionActuator<InputStream>, flash: Boolean): MessageContentBuilder
     //
     // /**
     //  * 向当前构建的消息中追加一个图片流。

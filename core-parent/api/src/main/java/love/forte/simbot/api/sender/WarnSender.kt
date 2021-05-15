@@ -14,19 +14,45 @@
 
 package love.forte.simbot.api.sender
 
+import love.forte.common.utils.Carrier
 import love.forte.simbot.LogAble
+import love.forte.simbot.api.message.assists.Flag
+import love.forte.simbot.api.message.events.GroupMsg
+import love.forte.simbot.api.message.events.PrivateMsg
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 
 /**
- * TODO
  * 一个通过Logger输出警告信息的 [Sender.Def] 送信器。
  * @author ForteScarlet
  * @since 2.0.0-BETA.9
  */
 public class WarnSender(
     override val log: Logger = LoggerFactory.getLogger(WarnGetter::class.java),
-) : LogAble {
+) : LogAble, Sender.Def {
 
+    private inline fun apiWarn(name: String, def: () -> Any?) {
+        log.warn("Sender api {} is not supported. Will return to the default value {}", name, def())
+    }
+
+    override fun sendGroupMsg(group: String, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
+        apiWarn("sendGroupMsg") { null }.let { Carrier.empty() }
+
+
+    override fun sendPrivateMsg(code: String, group: String?, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
+        apiWarn("sendPrivateMsg") { null }.let { Carrier.empty() }
+
+    override fun sendGroupNotice(
+        group: String,
+        title: String?,
+        text: String?,
+        popUp: Boolean,
+        top: Boolean,
+        toNewMember: Boolean,
+        confirm: Boolean,
+    ): Carrier<Boolean> = apiWarn("sendGroupNotice") { null }.let { Carrier.empty() }
+
+    override fun sendGroupSign(group: String, title: String, message: String): Carrier<Boolean> =
+        apiWarn("sendGroupSign") { null }.let { Carrier.empty() }
 }
