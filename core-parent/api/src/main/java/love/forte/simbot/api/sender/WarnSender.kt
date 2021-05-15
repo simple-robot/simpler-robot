@@ -28,9 +28,8 @@ import org.slf4j.LoggerFactory
  * @author ForteScarlet
  * @since 2.0.0-BETA.9
  */
-public class WarnSender(
-    override val log: Logger = LoggerFactory.getLogger(WarnGetter::class.java),
-) : LogAble, Sender.Def {
+public object WarnSender : LogAble, Sender.Def {
+    override val log: Logger = LoggerFactory.getLogger(WarnGetter::class.java)
 
     private inline fun apiWarn(name: String, def: () -> Any?) {
         log.warn("Sender api {} is not supported. Will return to the default value {}", name, def())

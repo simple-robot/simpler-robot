@@ -31,9 +31,8 @@ import java.util.concurrent.TimeUnit
  * @author ForteScarlet
  * @since 2.0.0-BETA.9
  */
-public class WarnSetter(
-    override val log: Logger = LoggerFactory.getLogger(WarnGetter::class.java),
-) : LogAble, Setter.Def {
+public object WarnSetter : LogAble, Setter.Def {
+    override val log: Logger = LoggerFactory.getLogger(WarnGetter::class.java)
 
     private inline fun apiWarn(name: String, def: () -> Any?) {
         log.warn("Setter api {} is not supported. Will return to the default value {}", name, def())

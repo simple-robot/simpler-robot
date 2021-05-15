@@ -28,9 +28,8 @@ import org.slf4j.LoggerFactory
  * @since 2.0.0-BETA.9
  */
 @Suppress("ComplexRedundantLet")
-public class WarnGetter(
-    override val log: Logger = LoggerFactory.getLogger(WarnGetter::class.java),
-) : LogAble, Getter.Def {
+public object WarnGetter : LogAble, Getter.Def {
+    override val log: Logger = LoggerFactory.getLogger(WarnGetter::class.java)
 
     private inline fun apiWarn(name: String, def: () -> Any?) {
         log.warn("Getter api {} is not supported. Will return to the default value {}", name, def())

@@ -15,7 +15,9 @@
 package love.forte.simbot.api.sender
 
 
-
+/**
+ * 异常送信器工厂
+ */
 public object ErrorFactories : DefaultMsgSenderFactories {
     override val defaultSenderFactory: DefaultSenderFactory
         get() = ErrorSenderFactory
