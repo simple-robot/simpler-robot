@@ -32,9 +32,10 @@ import java.util.Properties;
 
 /**
  * quartz配置类。
+ *
  * @author ForteScarlet
  */
-@SuppressWarnings("FieldMayBeFinal")
+@SuppressWarnings({"FieldMayBeFinal", "unused"})
 @ConfigBeans
 @AsConfig(prefix = "simbot.timeTask.quartz")
 public class QuartzConfiguration {
@@ -114,7 +115,7 @@ public class QuartzConfiguration {
     }
 
     @SpareBeans("schedulerTimerManager")
-    public SchedulerTimerManager schedulerTimerManager(Scheduler scheduler, DependBeanFactory dependBeanFactory, ExceptionProcessor exceptionProcessor){
+    public SchedulerTimerManager schedulerTimerManager(Scheduler scheduler, DependBeanFactory dependBeanFactory, ExceptionProcessor exceptionProcessor) {
         return new SchedulerTimerManager(scheduler, dependBeanFactory, exceptionProcessor);
     }
 
