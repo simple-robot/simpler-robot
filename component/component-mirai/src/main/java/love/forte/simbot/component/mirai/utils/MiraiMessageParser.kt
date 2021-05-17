@@ -192,27 +192,27 @@ public fun Neko.toMiraiMessageContent(
                 //     // it.launch { nudge.sendTo(it) }
                 //     // EmptySingleMessage
                 // } else {
-                    // poke.
-                    val poke = PokeMessage.values.find { p -> p.pokeType == type && p.id == id } ?: PokeMessage.ChuoYiChuo
-                MiraiSingleMessageContent(poke){ cat }
-            // }
+                // poke.
+                val poke = PokeMessage.values.find { p -> p.pokeType == type && p.id == id } ?: PokeMessage.ChuoYiChuo
+                MiraiSingleMessageContent(poke) { cat }
+                // }
                 // MiraiSingleMessageContent({
-                    // if (it is Group) {
-                    //     // nudge, need code
-                    //     if (code == -1L) {
-                    //         throw IllegalStateException("Unable to locate the target for nudge: no 'code' parameter in cat ${this@toMiraiMessageContent}.")
-                    //     }
-                    //
-                    //     val nudge = it[code]?.nudge()
-                    //         ?: throw IllegalArgumentException("Cannot found nudge target: no such member($code) in group($id).")
-                    //     val from = message?.bot?.id
-                    //     MiraiNudgedMessageContent(from, nudge.target.id)
-                    //     // it.launch { nudge.sendTo(it) }
-                    //     // EmptySingleMessage
-                    // } else {
-                    //     // poke.
-                    //     PokeMessage.values.find { p -> p.pokeType == type && p.id == id } ?: PokeMessage.ChuoYiChuo
-                    // }
+                // if (it is Group) {
+                //     // nudge, need code
+                //     if (code == -1L) {
+                //         throw IllegalStateException("Unable to locate the target for nudge: no 'code' parameter in cat ${this@toMiraiMessageContent}.")
+                //     }
+                //
+                //     val nudge = it[code]?.nudge()
+                //         ?: throw IllegalArgumentException("Cannot found nudge target: no such member($code) in group($id).")
+                //     val from = message?.bot?.id
+                //     MiraiNudgedMessageContent(from, nudge.target.id)
+                //     // it.launch { nudge.sendTo(it) }
+                //     // EmptySingleMessage
+                // } else {
+                //     // poke.
+                //     PokeMessage.values.find { p -> p.pokeType == type && p.id == id } ?: PokeMessage.ChuoYiChuo
+                // }
                 // }, cat)
             }
 
@@ -355,7 +355,8 @@ public fun Neko.toMiraiMessageContent(
                     MiraiVoiceMessageContent(recordNeko) { c ->
                         if (c is Group) {
                             val context = RemoteResourceContext(urlString, id)
-                            remoteResourceInProcessor.getStream(context).toExternalResource().use { resource -> c.uploadVoice(resource) }
+                            remoteResourceInProcessor.getStream(context).toExternalResource()
+                                .use { resource -> c.uploadVoice(resource) }
 
                             // url.toStream().use { s ->
                             //     s.toExternalResource().use { c.uploadVoice(it) }
@@ -575,8 +576,11 @@ public fun Neko.toMiraiMessageContent(
                 val xmlCode = this
                 // 解析的参数
                 val serviceId = this["serviceId"]?.toInt() ?: 60
+
                 // 构建xml
-                val xml = buildXmlMessage(serviceId) {
+                val xml = this["content"]?.let { content ->
+                    SimpleServiceMessage(serviceId, content)
+                } ?: buildXmlMessage(serviceId) {
                     // action
                     xmlCode["action"]?.also { this.action = it }
                     // 一般为点击这条消息后跳转的链接
@@ -616,6 +620,7 @@ public fun Neko.toMiraiMessageContent(
                 }
                 MiraiSingleMessageContent(xml)
             }
+
 
             // 音乐分享
             "music", "musicShare" -> {
@@ -872,14 +877,16 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
 
         // 富文本，xml或json
         is RichMessage -> CatCodeUtil.getNekoBuilder("rich", true)
-            .key("content").value(content)
-            .build()
+            .key("content").value(content).let {
+                if (this is ServiceMessage) {
+                    it.key("serviceId").value(this.serviceId)
+                } else it
+            }.build()
 
         // mirai不支持的消息
         is UnsupportedMessage -> {
             CatCodeUtil.getNekoBuilder("unsupported", true)
                 .key("struct").value(struct.byteArrayToHexString())
-                .key("warning").value("Unsupported message. 不建议频繁获取struct，存在性能浪费。")
                 .build()
         }
 
@@ -905,8 +912,8 @@ private val httpClient: HttpClient = HttpClient() {
 }
 
 
-
-public suspend fun RemoteResourceInProcessor.getStream(context: RemoteResourceContext): InputStream = this.doProcess(context)
+public suspend fun RemoteResourceInProcessor.getStream(context: RemoteResourceContext): InputStream =
+    this.doProcess(context)
 
 
 /**

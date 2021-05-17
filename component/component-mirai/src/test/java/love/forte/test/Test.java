@@ -16,9 +16,6 @@ package love.forte.test;
 
 import love.forte.common.configuration.Configuration;
 import love.forte.simbot.annotation.SimbotApplication;
-import love.forte.simbot.api.sender.Sender;
-import love.forte.simbot.bot.Bot;
-import love.forte.simbot.bot.BotManager;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.core.SimbotProcess;
@@ -47,17 +44,17 @@ public class Test implements SimbotProcess {
 
     @Override
     public void post(SimbotContext context) {
-        BotManager manager = context.getBotManager();
-
-        Bot defaultBot = manager.getDefaultBot();
-
-        String cat = "[CAT:image,file=http://forte.love:15520/img/r]";
-
-        Sender sender = defaultBot.getSender().SENDER;
-
-        // System.out.println(sender.sendGroupMsg(1043409458L, cat + cat + cat + cat));
-        // System.out.println(sender.sendGroupMsg(1043409458L, cat + cat));
-        System.out.println(sender.sendGroupMsg(1043409458L, cat));
+        // BotManager manager = context.getBotManager();
+        //
+        // Bot defaultBot = manager.getDefaultBot();
+        //
+        // String cat = "[CAT:image,file=http://forte.love:15520/img/r]";
+        //
+        // Sender sender = defaultBot.getSender().SENDER;
+        //
+        // // System.out.println(sender.sendGroupMsg(1043409458L, cat + cat + cat + cat));
+        // // System.out.println(sender.sendGroupMsg(1043409458L, cat + cat));
+        // System.out.println(sender.sendGroupMsg(1043409458L, cat));
 
     }
 }
