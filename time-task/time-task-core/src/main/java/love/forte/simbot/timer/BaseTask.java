@@ -81,4 +81,19 @@ public abstract class BaseTask implements Task {
     public long delay() {
         return delay;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BaseTask baseTask = (BaseTask) o;
+
+        return id().equals(baseTask.id());
+    }
+
+    @Override
+    public int hashCode() {
+        return id().hashCode();
+    }
 }
