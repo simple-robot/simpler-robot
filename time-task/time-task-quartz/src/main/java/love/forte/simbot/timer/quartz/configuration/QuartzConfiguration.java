@@ -102,8 +102,6 @@ public class QuartzConfiguration {
         defaultProperties.setProperty("org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread", String.valueOf(threadPoolThreadsInheritContextClassLoaderOfInitializingThread));
         defaultProperties.setProperty("org.quartz.jobStore.class", String.valueOf(jobStoreClass));
 
-        stdSchedulerFactory.getScheduler();
-
         stdSchedulerFactory.initialize(defaultProperties);
         return stdSchedulerFactory;
     }

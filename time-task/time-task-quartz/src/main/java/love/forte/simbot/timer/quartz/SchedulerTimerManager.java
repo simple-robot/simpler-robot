@@ -122,6 +122,7 @@ public class SchedulerTimerManager implements TimerManager {
                 }
 
                 if (delay > 0) {
+                    // 有首次延时
                     triggerBuilder.startAt(new Date(System.currentTimeMillis() + delay));
                 } else if (delay == 0) {
                     triggerBuilder.startNow();
@@ -134,12 +135,18 @@ public class SchedulerTimerManager implements TimerManager {
                 SimpleScheduleBuilder fixedScheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                         .withIntervalInMilliseconds(millFixed);
 
+
+
                 repeat = task.repeat();
                 if (repeat > 0) {
                     fixedScheduleBuilder.withRepeatCount((int) repeat);
-                } else {
+                } else if (repeat < 0) {
+                    // 如果小于0，则代表无限重复
                     fixedScheduleBuilder.repeatForever();
                 }
+                // 否则为0，则代表不要重复
+
+
                 trigger = triggerBuilder.withSchedule(fixedScheduleBuilder).build();
 
                 break;
@@ -165,7 +172,7 @@ public class SchedulerTimerManager implements TimerManager {
 
 
             default:
-                throw new IllegalStateException("预期内未知异常-schedulerTimerManager for cycType: " + cycleType);
+                throw new IllegalStateException("未知异常-schedulerTimerManager for cycType: " + cycleType);
         }
 
 

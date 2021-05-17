@@ -106,14 +106,14 @@ public class SimpleTaskBuilder {
     }
 
 
-    public Cron cronCycle() {
+    public CronBuilder cronCycle() {
         this.cycleType = CycleType.CRON;
-        return new Cron();
+        return new CronBuilder();
     }
 
-    public Fixed fixedCycle() {
+    public FixedBuilder fixedCycle() {
         this.cycleType = CycleType.FIXED;
-        return new Fixed();
+        return new FixedBuilder();
     }
 
 
@@ -188,8 +188,8 @@ public class SimpleTaskBuilder {
     /**
      * builder for cron.
      */
-    private class Cron extends SimpleTaskBuilder {
-        private Cron() {
+    private class CronBuilder extends SimpleTaskBuilder {
+        private CronBuilder() {
         }
 
         /**
@@ -199,7 +199,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Cron id(String id) {
+        public CronBuilder id(String id) {
             SimpleTaskBuilder.this.id(id);
             return this;
         }
@@ -210,7 +210,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Cron randomId() {
+        public CronBuilder randomId() {
             SimpleTaskBuilder.this.randomId();
             return this;
         }
@@ -222,7 +222,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Cron name(String name) {
+        public CronBuilder name(String name) {
             SimpleTaskBuilder.this.name(name);
             return this;
         }
@@ -234,7 +234,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Cron repeat(long repeat) {
+        public CronBuilder repeat(long repeat) {
             SimpleTaskBuilder.this.repeat(repeat);
             return this;
         }
@@ -256,12 +256,12 @@ public class SimpleTaskBuilder {
         }
 
         @Override
-        public Cron cronCycle() {
+        public CronBuilder cronCycle() {
             return this;
         }
 
         @Override
-        public Fixed fixedCycle() {
+        public FixedBuilder fixedCycle() {
             return SimpleTaskBuilder.this.fixedCycle();
         }
 
@@ -271,7 +271,7 @@ public class SimpleTaskBuilder {
          * @return self
          */
         @Override
-        public Cron repeatForever() {
+        public CronBuilder repeatForever() {
             SimpleTaskBuilder.this.repeatForever();
             return this;
         }
@@ -284,7 +284,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Cron delay(long delay, TimeUnit delayTimeUnit) {
+        public CronBuilder delay(long delay, TimeUnit delayTimeUnit) {
             SimpleTaskBuilder.this.delay(delay, delayTimeUnit);
             return this;
         }
@@ -296,7 +296,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Cron delay(long delay) {
+        public CronBuilder delay(long delay) {
             SimpleTaskBuilder.this.delay(delay);
             return this;
         }
@@ -308,7 +308,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Cron taskRunner(TaskRunner taskRunner) {
+        public CronBuilder taskRunner(TaskRunner taskRunner) {
             SimpleTaskBuilder.this.taskRunner(taskRunner);
             return this;
         }
@@ -328,8 +328,8 @@ public class SimpleTaskBuilder {
     /**
      * builder for fixed.
      */
-    public class Fixed extends SimpleTaskBuilder {
-        private Fixed() {
+    public class FixedBuilder extends SimpleTaskBuilder {
+        private FixedBuilder() {
         }
 
         private long duration = -1;
@@ -342,7 +342,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Fixed id(String id) {
+        public FixedBuilder id(String id) {
             SimpleTaskBuilder.this.id(id);
             return this;
         }
@@ -353,7 +353,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Fixed randomId() {
+        public FixedBuilder randomId() {
             SimpleTaskBuilder.this.randomId();
             return this;
         }
@@ -365,7 +365,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Fixed name(String name) {
+        public FixedBuilder name(String name) {
             SimpleTaskBuilder.this.name(name);
             return this;
         }
@@ -377,7 +377,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Fixed repeat(long repeat) {
+        public FixedBuilder repeat(long repeat) {
             SimpleTaskBuilder.this.repeat(repeat);
             return this;
         }
@@ -389,21 +389,21 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Fixed cycle(String cycle) {
+        public FixedBuilder cycle(String cycle) {
             long du = Long.parseLong(cycle);
             this.duration = du;
             SimpleTaskBuilder.this.cycle(String.valueOf(du));
             return this;
         }
 
-        public Fixed duration(long duration, TimeUnit timeUnit) {
+        public FixedBuilder duration(long duration, TimeUnit timeUnit) {
             this.duration = duration;
             this.timeUnit = timeUnit;
             SimpleTaskBuilder.this.cycle(String.valueOf(timeUnit.toMillis(duration)));
             return this;
         }
 
-        public Fixed duration(long duration) {
+        public FixedBuilder duration(long duration) {
             return duration(duration, TimeUnit.MILLISECONDS);
         }
 
@@ -413,12 +413,12 @@ public class SimpleTaskBuilder {
         }
 
         @Override
-        public Cron cronCycle() {
+        public CronBuilder cronCycle() {
             return SimpleTaskBuilder.this.cronCycle();
         }
 
         @Override
-        public Fixed fixedCycle() {
+        public FixedBuilder fixedCycle() {
             return this;
         }
 
@@ -428,7 +428,7 @@ public class SimpleTaskBuilder {
          * @return self
          */
         @Override
-        public Fixed repeatForever() {
+        public FixedBuilder repeatForever() {
             SimpleTaskBuilder.this.repeatForever();
             return this;
         }
@@ -441,7 +441,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Fixed delay(long delay, TimeUnit delayTimeUnit) {
+        public FixedBuilder delay(long delay, TimeUnit delayTimeUnit) {
             SimpleTaskBuilder.this.delay(delay, delayTimeUnit);
             return this;
         }
@@ -453,7 +453,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Fixed delay(long delay) {
+        public FixedBuilder delay(long delay) {
             SimpleTaskBuilder.this.delay(delay);
             return this;
         }
@@ -465,7 +465,7 @@ public class SimpleTaskBuilder {
          * @return self.
          */
         @Override
-        public Fixed taskRunner(TaskRunner taskRunner) {
+        public FixedBuilder taskRunner(TaskRunner taskRunner) {
             SimpleTaskBuilder.this.taskRunner(taskRunner);
             return this;
         }
