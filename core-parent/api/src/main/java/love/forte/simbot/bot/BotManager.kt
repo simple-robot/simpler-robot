@@ -121,7 +121,7 @@ public interface BotRegistrar {
      * 验证或登录一个bot。如果账号已经存在，则在非必要情况下不会实质进行登录，但或许会存在验证。
      * @throws BotVerifyException 验证失败则会抛出此异常。
      */
-    fun registerBot(botRegisterInfo: BotRegisterInfo): Bot
+    fun registerBot(botRegisterInfo: BotVerifyInfo): Bot
 }
 
 
