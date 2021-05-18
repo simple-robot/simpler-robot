@@ -205,7 +205,7 @@ public data class BotRegisterInfo(override val code: String, override val verifi
 
 
     companion object {
-        private val SPLIT_REGEX = Regex(":")
+        // private val SPLIT_REGEX = Regex(":")
 
 
         /**
