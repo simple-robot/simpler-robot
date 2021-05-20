@@ -89,20 +89,19 @@ public class MiraiSender(
      * 发送群聊消息。
      */
     private fun sendGroupMsg0(group: Long, msg: MessageContent): Carrier<MiraiGroupMsgFlag> {
-        val miraiMsg = runBlocking { msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor) }
-        // get group.
-        val g: Group = bot.group(group)
-        val messageReceipt = runBlocking {
+        return runBlocking {
+            val miraiMsg = msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor)
+            // get group.
+            val g: Group = bot.group(group)
             val message: Message = miraiMsg.getMessage(g)
-            if (message.isNotEmptyMsg()) {
+            val messageReceipt = if (message.isNotEmptyMsg()) {
                 g.sendMessage(message)
-            } else {
-                null
-            }
+            } else null
+
+            messageReceipt?.let {
+                miraiGroupFlag { MiraiGroupFlagContent(it.source) }
+            }.toCarrier()
         }
-        return messageReceipt?.let {
-            miraiGroupFlag { MiraiGroupFlagContent(it.source) }
-        }.toCarrier()
     }
 
     override fun sendGroupMsg(group: String, msg: String) =
