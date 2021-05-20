@@ -44,23 +44,35 @@ import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.message.data.isContentEmpty
 
 
-public class MiraiSenderFactory(private val cache: MiraiMessageCache, private val remoteResourceInProcessor: RemoteResourceInProcessor) : SenderFactory {
+public class MiraiSenderFactory(
+    private val cache: MiraiMessageCache,
+    private val remoteResourceInProcessor: RemoteResourceInProcessor,
+) : SenderFactory {
     override fun getOnMsgSender(msg: MsgGet, def: Sender.Def): Sender {
         return when (msg) {
             is MiraiMessageMsgGet<*> -> {
                 MiraiSender(msg.event.bot, msg.subject, msg.message, def, cache, remoteResourceInProcessor)
             }
             is AbstractMiraiMsgGet<*> -> {
-                MiraiSender(msg.event.bot, defSender = def, cache = cache, remoteResourceInProcessor = remoteResourceInProcessor)
+                MiraiSender(msg.event.bot,
+                    defSender = def,
+                    cache = cache,
+                    remoteResourceInProcessor = remoteResourceInProcessor)
             }
             else -> {
-                MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber), defSender = def, cache = cache, remoteResourceInProcessor = remoteResourceInProcessor)
+                MiraiSender(Bot.getInstance(msg.botInfo.botCodeNumber),
+                    defSender = def,
+                    cache = cache,
+                    remoteResourceInProcessor = remoteResourceInProcessor)
             }
         }
     }
 
     override fun getOnBotSender(bot: BotContainer, def: Sender.Def): Sender =
-        MiraiSender(Bot.getInstance(bot.botInfo.botCodeNumber), defSender = def, cache = cache, remoteResourceInProcessor = remoteResourceInProcessor)
+        MiraiSender(Bot.getInstance(bot.botInfo.botCodeNumber),
+            defSender = def,
+            cache = cache,
+            remoteResourceInProcessor = remoteResourceInProcessor)
 }
 
 
@@ -78,7 +90,7 @@ public class MiraiSender(
 
     private val cache: MiraiMessageCache,
 
-    private val remoteResourceInProcessor: RemoteResourceInProcessor
+    private val remoteResourceInProcessor: RemoteResourceInProcessor,
 ) : Sender {
 
 
@@ -126,52 +138,52 @@ public class MiraiSender(
      * 发送私聊消息。
      */
     private fun sendPrivateMsg0(code: Long, group: Long?, msg: MessageContent): Carrier<MiraiPrivateMsgFlag> {
-        val miraiMsg = runBlocking { msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor) }
-
-        val messageReceipt: MessageReceipt<Contact>? = if (group != null) {
-            runBlocking {
+        return runBlocking {
+            val miraiMsg = msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor)
+            val messageReceipt: MessageReceipt<Contact>? = if (group != null) {
                 bot.member(group, code).run {
                     sendMessage(miraiMsg.getMessage(this))
                 }
-            }
-        } else {
-            // 没有指定group, 则判断当前contact
-            // 存在contact，且contact不是group且id=code，则说明就是发送给此contact的。
-            if (contact !is Group && contact?.id == code) {
-                runBlocking {
+            } else {
+                // 没有指定group, 则判断当前contact
+                // 存在contact，且contact不是group且id=code，则说明就是发送给此contact的。
+                if (contact !is Group && contact?.id == code) {
                     val message: Message = miraiMsg.getMessage(contact)
                     if (!message.isContentEmpty()) {
                         contact.sendMessage(message)
                     } else null
-                }
-            } else {
+                } else {
 
-                // 认为是发送给好友的
-                val friend: User = bot.friendOrNull(code)
-                    ?: (if (contact is Group) {
-                        contact.memberOrNull(code)
-                    } else null)
-                    ?: bot.getStranger(code)
-                    ?: throw NoSuchElementException("User($code)${if (contact is Group) " or Member on Group(${contact.id})" else ""}")
-                    runBlocking {
-                        val message: Message = miraiMsg.getMessage(friend)
-                        if (message.isNotEmptyMsg()) {
-                            friend.sendMessage(message)
-                        } else null
-                    }
+                    // 认为是发送给好友的
+                    val friend: User = bot.friendOrNull(code)
+                        ?: (if (contact is Group) {
+                            contact.memberOrNull(code)
+                        } else null)
+                        ?: bot.getStranger(code)
+                        ?: throw NoSuchElementException("User($code)${if (contact is Group) " or Member on Group(${contact.id})" else ""}")
+                    val message: Message = miraiMsg.getMessage(friend)
+                    if (message.isNotEmptyMsg()) {
+                        friend.sendMessage(message)
+                    } else null
+                }
             }
+
+            messageReceipt?.let {
+                miraiPrivateFlag { MiraiPrivateFlagContent(it.source) }
+            }.toCarrier()
         }
 
-        return messageReceipt?.let {
-            miraiPrivateFlag { MiraiPrivateFlagContent(it.source) }
-        }.toCarrier()
     }
 
     override fun sendPrivateMsg(code: String, group: String?, msg: String) =
-        sendPrivateMsg0(code.toLong(), group?.toLong(), msg.toMiraiMessageContent(message, remoteResourceInProcessor = remoteResourceInProcessor))
+        sendPrivateMsg0(code.toLong(),
+            group?.toLong(),
+            msg.toMiraiMessageContent(message, remoteResourceInProcessor = remoteResourceInProcessor))
 
     override fun sendPrivateMsg(code: Long, group: Long?, msg: String) =
-        sendPrivateMsg0(code, group, msg.toMiraiMessageContent(message, remoteResourceInProcessor = remoteResourceInProcessor))
+        sendPrivateMsg0(code,
+            group,
+            msg.toMiraiMessageContent(message, remoteResourceInProcessor = remoteResourceInProcessor))
 
     override fun sendPrivateMsg(
         code: String,
@@ -195,7 +207,9 @@ public class MiraiSender(
         group: GroupCodeContainer?,
         msg: String,
     ) =
-        sendPrivateMsg0(code.accountCodeNumber, group?.groupCodeNumber, msg.toMiraiMessageContent(message, remoteResourceInProcessor = remoteResourceInProcessor))
+        sendPrivateMsg0(code.accountCodeNumber,
+            group?.groupCodeNumber,
+            msg.toMiraiMessageContent(message, remoteResourceInProcessor = remoteResourceInProcessor))
 
 
     /**
