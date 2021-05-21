@@ -73,7 +73,7 @@ public fun interface MiraiMessageParser {
      * 如果返回一个null，则视为 **解析失败**.
      *
      */
-    fun Neko.parse(message: MessageChain?, cache: MiraiMessageCache?): MiraiMessageContent?
+    fun parse(neko: Neko, message: MessageChain?, cache: MiraiMessageCache?): MiraiMessageContent?
 }
 
 
@@ -143,7 +143,7 @@ public fun Neko.toMiraiMessageContent(
     cache: MiraiMessageCache? = null,
     remoteResourceInProcessor: RemoteResourceInProcessor,
 ): MiraiMessageContent {
-    return parsers[this.type]?.run { this@toMiraiMessageContent.parse(message, cache) }
+    return parsers[this.type]?.parse(this, message, cache)
         ?: when (this.type) {
             "text", "message" -> this["text"]?.let {
                 MiraiSingleMessageContent(PlainText(it))
