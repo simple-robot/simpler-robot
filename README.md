@@ -190,9 +190,9 @@ public class TestListener {
 
 ## 特别鸣谢
 
-[![](https://logonoid.com/images/thumbs/intellij-idea-logo.png "IntelliJ IDEA")](https://www.jetbrains.com/idea/)
+[![](./logo/jetbrains.png "jetbrains")](https://www.jetbrains.com/?from=simpler-robot)
 
-感谢 [jetbrains](https://www.jetbrains.com/ "jetbrains") 为团队提供的免费 [IntelliJ IDEA](https://www.jetbrains.com/idea/ "IntelliJ IDEA") 授权，也希望大家能够支持IDEA，支持正版。
+感谢 [jetbrains](https://www.jetbrains.com/ "jetbrains") 为团队提供的免费授权，也希望大家能够支持jetbrains及其产品，支持正版。
 
 *****
 
