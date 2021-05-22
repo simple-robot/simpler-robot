@@ -138,7 +138,7 @@ simpler-robot所使用的特殊码CatCode：
 
 [<img src=".github/logo/jetbrains.png" width="200" alt="jetbrains" />](https://www.jetbrains.com/?from=simpler-robot)
 
-感谢 [jetbrains](https://www.jetbrains.com/ "jetbrains") 为团队提供的免费授权，也希望大家能够支持jetbrains及其产品，支持正版。
+感谢 [jetbrains](https://www.jetbrains.com/?from=simpler-robot "jetbrains") 为团队提供的免费授权，也希望大家能够支持jetbrains及其产品，支持正版。
 
 *****
 [<img src=".github/logo/CatCodeLogo@0,1x.png" alt="jetbrains" />](https://github.com/ForteScarlet/CatCode)
