@@ -1,6 +1,6 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
-    <img src="./logo/logo-4@0,1x.png" alt="logo"/>
+    <img src=".github/logo/logo-4@0,1x.png" alt="logo"/>
     <h3>
         - simpler-robot -
     </h3>
@@ -136,13 +136,12 @@ simpler-robot所使用的特殊码CatCode：
 
 ## 特别鸣谢
 
-[![](./logo/jetbrains.png "jetbrains")](https://www.jetbrains.com/?from=simpler-robot)
+[<img src=".github/logo/jetbrains.png" width="200" alt="jetbrains" />](https://www.jetbrains.com/?from=simpler-robot)
 
 感谢 [jetbrains](https://www.jetbrains.com/ "jetbrains") 为团队提供的免费授权，也希望大家能够支持jetbrains及其产品，支持正版。
 
 *****
-
-[![](./logo/CatCodeLogo@0,1x.png)](https://github.com/ForteScarlet/CatCode)
+[<img src=".github/logo/CatCodeLogo@0,1x.png" alt="jetbrains" />](https://github.com/ForteScarlet/CatCode)
 
 感谢 [猫猫码](https://github.com/ForteScarlet/CatCode "CatCode") 为本项目提供支持并绘制项目LOGO。
 
