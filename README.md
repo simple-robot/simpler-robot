@@ -1,6 +1,6 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
-    <img src="./logo/logo-4@0,1x.png" alt="logo"/>
+    <img src=".github/logo/logo-4@0,1x.png" alt="logo"/>
     <h3>
         - simpler-robot -
     </h3>
@@ -112,68 +112,14 @@ simpler-robot所使用的特殊码CatCode：
 - gitee : https://gitee.com/ForteScarlet/CatCode
 
 
-## 极简示例
+## 快速开始
 
 文档-快速开始：https://www.yuque.com/simpler-robot/simpler-robot-doc/qeyorq
 
 
-### 监听消息
+## 极简示例
+查看 [极简示例](document/simple-show.md)
 
-```java
-@Beans
-public class TestListener {
-  /** 发送一句“我收到了”，并再复读收到的所有消息 */
-  @OnPrivate
-  public void listen(PrivateMsg msg, MsgSender sender) {
-    sender.SENDER.sendPrivateMsg(msg, "我收到了");
-    sender.SENDER.sendPrivateMsg(msg, msg.getMsgContent());
-  }
-}
-```
-
-### 监听并筛选消息
-
-```java
-@Beans
-public class TestListener {
-  /** 监听群里的 'hi! simbot' 消息并作出回应 */
-  @OnGroup
-  @Filter("hi! simbot")
-  public void listenGroup(GroupMsg msg, MsgSender sender) {
-    // 获取发消息的人的账号
-    String accountCode = m.getAccountInfo().getAccountCode();
-    // 准备at这个人的CatCode
-    String at = CatCodeUtil.INSTANCE.getStringTemplate().at(accountCode);
-    // 发送消息
-    sender.SENDER.sendGroupMsg(m, at + " 我在哦");
-  }
-}
-```
-
-或
-
-```java
-@Beans
-public class TestListener {
-  /** 通过依赖注入得到消息构建器工厂。 */  
-  @Depend
-  private MessageContentBuilderFactory builderFactory;
-  
-  /** 监听群里的 'hi! simbot' 消息并作出回应 */
-  @OnGroup
-  @Filter("hi! simbot")
-  public void listenGroup(GroupMsg msg, MsgSender sender){
-    // 获取发消息的人的账号
-    String accountCode = msg.getAccountInfo().getAccountCode();
-    // 获取消息构建器
-    MessageContentBuilder builder = builderFactory.getMessageContentBuilder();
-    // 构建消息实例
-    MessageContent msgContent = builder.at(accountCode).text(" 我在哦").build();
-    // 发送消息
-    sender.SENDER.sendGroupMsg(msg, msgContent);
-  }
-}
-```
 
 
 ## 协助我
@@ -190,13 +136,12 @@ public class TestListener {
 
 ## 特别鸣谢
 
-[![](https://logonoid.com/images/thumbs/intellij-idea-logo.png "IntelliJ IDEA")](https://www.jetbrains.com/idea/)
+[<img src=".github/logo/jetbrains.png" width="200" alt="jetbrains" />](https://www.jetbrains.com/?from=simpler-robot)
 
-感谢 [jetbrains](https://www.jetbrains.com/ "jetbrains") 为团队提供的免费 [IntelliJ IDEA](https://www.jetbrains.com/idea/ "IntelliJ IDEA") 授权，也希望大家能够支持IDEA，支持正版。
+感谢 [jetbrains](https://www.jetbrains.com/?from=simpler-robot "jetbrains") 为团队提供的免费授权，也希望大家能够支持jetbrains及其产品，支持正版。
 
 *****
-
-[![](./logo/CatCodeLogo@0,1x.png)](https://github.com/ForteScarlet/CatCode)
+[<img src=".github/logo/CatCodeLogo@0,1x.png" alt="jetbrains" />](https://github.com/ForteScarlet/CatCode)
 
 感谢 [猫猫码](https://github.com/ForteScarlet/CatCode "CatCode") 为本项目提供支持并绘制项目LOGO。
 
