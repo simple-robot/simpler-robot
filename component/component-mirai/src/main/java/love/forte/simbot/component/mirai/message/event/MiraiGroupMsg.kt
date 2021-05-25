@@ -19,6 +19,7 @@ import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.GroupMsg
+import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.MessageSource
@@ -42,7 +43,7 @@ public class MiraiGroupMsg(event: GroupMessageEvent) :
 
     override val groupMsgType: GroupMsg.Type = GroupMsg.Type.NORMAL
 
-    override val flag: GroupMsg.MessageFlag = miraiGroupFlag { MiraiGroupFlagContent(event.source) }
+    override val flag: MessageGet.MessageFlag<GroupMsg.FlagContent> = miraiGroupFlag { MiraiGroupFlagContent(event.source) }
 
 
     override val msgContent: MessageContent = MiraiMessageChainContent(message)

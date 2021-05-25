@@ -6,7 +6,7 @@
     <parent>
         <artifactId>time-task-parent</artifactId>
         <groupId>love.forte.simple-robot.time-task</groupId>
-        <version>2.0.6-BETA.4</version><!--v-->
+        <version>2.0.8</version><!--v-->
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -32,6 +32,29 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+
+        <!-- kt -->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+        </dependency>
+
+        <!-- kt -->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+        </dependency>
+
     </dependencies>
 
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
+
+        </plugins>
+    </build>
 </project>

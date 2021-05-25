@@ -29,6 +29,7 @@ import java.util.*;
 
 /**
  * 基于 {@link org.quartz.Scheduler} 的定时任务管理器。
+ *
  * @author ForteScarlet
  */
 public class SchedulerTimerManager implements TimerManager {
@@ -51,17 +52,17 @@ public class SchedulerTimerManager implements TimerManager {
 
 
     /**
-     * 添加/注册一个 task。首次任务立即执行。
+     * 添加/注册一个 task。
      *
      * @param task task
      * @return 是否添加成功。如果失败，
      * @throws IllegalArgumentException 如果ID已经存在。
      * @throws IllegalStateException    {@link Task#cycle()} 解析错误。
-     * @throws TimerException 添加到调度器失败。
+     * @throws TimerException           添加到调度器失败。
      */
     @Override
     public boolean addTask(Task task) {
-        return addTask(task, 0);
+        return addTask(task, task.delay());
     }
 
     /**
@@ -72,7 +73,7 @@ public class SchedulerTimerManager implements TimerManager {
      * @return 是否添加成功。
      * @throws IllegalArgumentException 如果ID已经存在。
      * @throws IllegalStateException    {@link Task#cycle()} 解析错误。
-     * @throws TimerException 添加到调度器失败。
+     * @throws TimerException           添加到调度器失败。
      */
     @Override
     public boolean addTask(Task task, long delay) {
@@ -107,12 +108,6 @@ public class SchedulerTimerManager implements TimerManager {
                 .forJob(job)
                 .withIdentity("tri_" + job.getKey().getName(), job.getKey().getGroup());
 
-        if (delay > 0) {
-            triggerBuilder.startAt(new Date(System.currentTimeMillis() + delay));
-        } else {
-            triggerBuilder.startNow();
-        }
-
         Trigger trigger;
         long repeat;
 
@@ -126,19 +121,42 @@ public class SchedulerTimerManager implements TimerManager {
                     millFixed = Long.parseLong(task.cycle());
                 }
 
+                if (delay > 0) {
+                    // 有首次延时
+                    triggerBuilder.startAt(new Date(System.currentTimeMillis() + delay));
+                } else if (delay == 0) {
+                    triggerBuilder.startNow();
+                } else {
+                    // 小于0，则说明不要首次延迟执行
+                    // 那么开始触发的时间即为任务下次延迟的时间。
+                    triggerBuilder.startAt(new Date(System.currentTimeMillis() + millFixed));
+                }
+
                 SimpleScheduleBuilder fixedScheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
                         .withIntervalInMilliseconds(millFixed);
+
+
 
                 repeat = task.repeat();
                 if (repeat > 0) {
                     fixedScheduleBuilder.withRepeatCount((int) repeat);
-                } else {
+                } else if (repeat < 0) {
+                    // 如果小于0，则代表无限重复
                     fixedScheduleBuilder.repeatForever();
                 }
+                // 否则为0，则代表不要重复
+
+
                 trigger = triggerBuilder.withSchedule(fixedScheduleBuilder).build();
 
                 break;
             case CRON:
+                // cron下，触发器没有什么首次执行一说。
+                if (delay > 0) {
+                    triggerBuilder.startAt(new Date(System.currentTimeMillis() + delay));
+                } else {
+                    triggerBuilder.startNow();
+                }
                 String cron;
                 if (task instanceof CronTask) {
                     CronTask cronTask = (CronTask) task;
@@ -153,20 +171,21 @@ public class SchedulerTimerManager implements TimerManager {
                 break;
 
 
-            default: throw new IllegalStateException("未知异常-schedulerTimerManager");
+            default:
+                throw new IllegalStateException("未知异常-schedulerTimerManager for cycType: " + cycleType);
         }
 
 
         try {
             scheduler.scheduleJob(job, trigger);
         } catch (SchedulerException e) {
-            throw new TimerException("Schedule Job '"+ id +"' failed.", e);
+            throw new TimerException("Schedule Job '" + id + "' failed.", e);
         }
 
         try {
             if (!scheduler.isStarted()) {
                 synchronized (scheduler) {
-                    if (!scheduler.isStarted()){
+                    if (!scheduler.isStarted()) {
                         scheduler.start();
                     }
                 }
@@ -233,7 +252,7 @@ public class SchedulerTimerManager implements TimerManager {
             }
             return (Task) jobDetail.getJobDataMap().get(TASK_KEY);
         } catch (SchedulerException e) {
-            throw new TimerException("Can not get job detail by id '"+ id +"' of jobKey " + jobKey, e);
+            throw new TimerException("Can not get job detail by id '" + id + "' of jobKey " + jobKey, e);
         }
     }
 }

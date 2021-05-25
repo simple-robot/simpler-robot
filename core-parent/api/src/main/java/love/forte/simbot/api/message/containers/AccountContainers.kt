@@ -14,6 +14,7 @@
 
 @file:JvmName("Containers")
 @file:JvmMultifileClass
+
 package love.forte.simbot.api.message.containers
 
 import love.forte.simbot.annotation.ContainerType
@@ -111,9 +112,9 @@ public interface AccountAvatarContainer : Container {
 public interface AccountInfo : Container, AccountNameContainer, AccountAvatarContainer, AccountCodeContainer
 
 
-public fun emptyAccountInfo() : AccountInfo = EmptyAccountInfo
-public fun emptyGroupAccountInfo() : GroupAccountInfo = EmptyAccountInfo
-public fun emptyFriendAccountInfo() : FriendAccountInfo = EmptyAccountInfo
+public fun emptyAccountInfo(): AccountInfo = EmptyAccountInfo
+public fun emptyGroupAccountInfo(): GroupAccountInfo = EmptyAccountInfo
+public fun emptyFriendAccountInfo(): FriendAccountInfo = EmptyAccountInfo
 
 
 private object EmptyAccountInfo : AccountInfo, GroupAccountInfo, FriendAccountInfo {
@@ -134,7 +135,24 @@ private object EmptyAccountInfo : AccountInfo, GroupAccountInfo, FriendAccountIn
 }
 
 
+/**
+ * 构建一个 [AccountInfo] 实例。
+ */
+@JvmOverloads
+public fun accountInfo(
+    accountCode: String,
+    accountNickname: String? = null,
+    accountRemark: String? = null,
+    accountAvatar: String? = null,
+): AccountInfo = AccountInfoData(accountCode, accountNickname, accountRemark, accountAvatar)
 
+
+private data class AccountInfoData(
+    override val accountCode: String,
+    override val accountNickname: String?,
+    override val accountRemark: String?,
+    override val accountAvatar: String?,
+) : AccountInfo
 
 
 /**
@@ -169,8 +187,7 @@ public inline fun AccountContainer(accountInfo: () -> AccountInfo): AccountConta
 private data class AccountContainerData(override val accountInfo: AccountInfo) : AccountContainer
 
 
-
-public fun BotInfo.botAsAccountInfo() : AccountInfo = BotAccountInfo(this)
+public fun BotInfo.botAsAccountInfo(): AccountInfo = BotAccountInfo(this)
 
 /**
  * 将 [BotInfo] 作为一个 [AccountInfo]

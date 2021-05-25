@@ -30,6 +30,7 @@ import static java.lang.annotation.ElementType.*;
 @Target({TYPE, FIELD, CONSTRUCTOR, METHOD, PARAMETER})
 @Repeatable(Since.SinceList.class)
 @Documented
+@MarkOnly
 public @interface Since {
     /**
      * 版本
@@ -50,6 +51,7 @@ public @interface Since {
     @Retention(RetentionPolicy.CLASS)
     @Target({TYPE, FIELD, CONSTRUCTOR, METHOD, PARAMETER})
     @Documented
+    @MarkOnly
     @SuppressWarnings("AlibabaClassMustHaveAuthor")
     @interface SinceList {
         Since[] value() default {};

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -12,11 +12,12 @@
  *
  */
 
-package love.forte.simbot.component.mirai
+package love.forte.simbot.component.mirai.configuration
 
 import kotlinx.coroutines.runBlocking
 import love.forte.common.ioc.DependCenter
 import love.forte.simbot.LogAble
+import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.containers.botContainer
 import love.forte.simbot.api.sender.BotSender
@@ -27,8 +28,8 @@ import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotRegisterInfo
 import love.forte.simbot.bot.BotVerifier
 import love.forte.simbot.bot.BotVerifyException
-import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
-import love.forte.simbot.component.mirai.configuration.miraiBotLogger
+import love.forte.simbot.component.mirai.MiraiBotConfigurationFactory
+import love.forte.simbot.component.mirai.MiraiBotInfo
 import love.forte.simbot.component.mirai.utils.MiraiBotEventRegistrar
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.http.template.HttpTemplate
@@ -53,7 +54,10 @@ public class MiraiBotVerifier(
     private val miraiBotEventRegistrar: MiraiBotEventRegistrar,
     private val dependCenter: DependCenter,
 ) : BotVerifier {
-    private companion object : TypedCompLogger(MiraiBotVerifier::class.java)
+    internal companion object : TypedCompLogger(MiraiBotVerifier::class.java) {
+        fun MBot.toContainer(httpTemplate: HttpTemplate?): BotContainer = botContainer { MiraiBotInfo.getInstance(this, httpTemplate) }
+        fun MsgSenderFactories.getBotSender(botContainer: BotContainer,  defFactories: DefaultMsgSenderFactories): BotSender = this.toBotSender(botContainer, defFactories)
+    }
 
 
     /**
@@ -96,9 +100,12 @@ public class MiraiBotVerifier(
             }
 
 
-            val botContainer = botContainer { MiraiBotInfo.getInstance(mBot!!, httpTemplate) }
+            val botContainer = mBot!!.toContainer(httpTemplate)
 
-            val sender = msgSenderFactories.toBotSender(botContainer, defFactories)
+            // val botContainer = botContainer { MiraiBotInfo.getInstance(mBot!!, httpTemplate) }
+
+            // val sender = msgSenderFactories.toBotSender(botContainer, defFactories)
+            val sender = msgSenderFactories.getBotSender(botContainer, defFactories)
 
             // if started
             if (miraiBotEventRegistrar.started) {
@@ -137,4 +144,7 @@ internal class MiraiBot(
     }
 
     override fun toString(): String = bot.toString()
+
+    override fun equals(other: Any?): Boolean = bot == other
+    override fun hashCode(): Int = bot.hashCode()
 }

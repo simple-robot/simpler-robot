@@ -35,11 +35,16 @@ object ErrorSetter : Setter.Def {
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,
         agree: Boolean,
-        blackList: Boolean
+        blackList: Boolean,
     ): Carrier<Boolean> =
         NO("Setter.setFriendAddRequest")
 
-    override fun setGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, agree: Boolean, blackList: Boolean, why: String?): Nothing  =
+    override fun setGroupAddRequest(
+        flag: Flag<GroupAddRequest.FlagContent>,
+        agree: Boolean,
+        blackList: Boolean,
+        why: String?,
+    ): Nothing =
         NO("Setter.setGroupAddRequest")
 
     override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Nothing =
@@ -64,15 +69,14 @@ object ErrorSetter : Setter.Def {
         groupCode: String,
         memberCode: String,
         why: String?,
-        blackList: Boolean
+        blackList: Boolean,
     ): Nothing = NO("Setter.setGroupMemberKick")
-
 
 
     override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Nothing =
         NO("Setter.setGroupMemberSpecialTitle")
 
-    override fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Nothing =
+    override fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Nothing =
         NO("Setter.setMsgRecall")
 
     override fun setGroupName(groupCode: String, name: String): Nothing =
@@ -89,12 +93,11 @@ object ErrorSetter : Setter.Def {
 }
 
 
-
 /**
  * [ErrorGetter] 的构建工厂，得到的 [Getter] 实例的所有方法均会抛出异常。
  */
 @get:JvmName("getErrorSenderFactory")
-public val ErrorSetterFactory : DefaultSetterFactory = object : DefaultSetterFactory {
+public val ErrorSetterFactory: DefaultSetterFactory = object : DefaultSetterFactory {
     override fun getOnMsgSetter(msg: MsgGet): Setter.Def = ErrorSetter
     override fun getOnBotSetter(bot: BotContainer): Setter.Def = ErrorSetter
 }

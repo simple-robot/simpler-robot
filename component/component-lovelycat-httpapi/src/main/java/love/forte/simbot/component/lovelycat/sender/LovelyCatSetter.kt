@@ -110,7 +110,7 @@ public class LovelyCatSetter(
         return def.setGroupMemberSpecialTitle(groupCode, memberCode, title)
     }
 
-    override fun setMsgRecall(flag: Flag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
+    override fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
         return def.setMsgRecall(flag)
     }
 

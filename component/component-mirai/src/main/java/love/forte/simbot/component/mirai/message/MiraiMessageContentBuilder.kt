@@ -17,15 +17,18 @@ package love.forte.simbot.component.mirai.message
 import catcode.CatCodeUtil
 import catcode.Neko
 import cn.hutool.core.io.FileUtil
-import io.ktor.http.*
 import love.forte.simbot.api.message.MessageContentBuilder
 import love.forte.simbot.api.message.MessageContentBuilderFactory
 import love.forte.simbot.api.message.containers.AccountCodeContainer
-import love.forte.simbot.component.mirai.utils.toStream
+import love.forte.simbot.mark.InstantInit
+import love.forte.simbot.processor.RemoteResourceContext
+import love.forte.simbot.processor.RemoteResourceInProcessor
+import love.forte.simbot.processor.SuspendRemoteResourceInProcessor
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -40,21 +43,21 @@ public sealed class MiraiMessageContentBuilderFactory : MessageContentBuilderFac
     abstract override fun getMessageContentBuilder(): MiraiMessageContentBuilder
 
     /** 普通的图片上传策略。 */
-    internal object MiraiMessageContentBuilderFactoryImgNormal : MiraiMessageContentBuilderFactory() {
-        override fun getMessageContentBuilder(): MiraiMessageContentBuilder = MiraiMessageContentBuilderImgNormal()
+    internal class MiraiMessageContentBuilderFactoryImgNormal(private val remoteResourceInProcessor: RemoteResourceInProcessor) : MiraiMessageContentBuilderFactory() {
+        override fun getMessageContentBuilder(): MiraiMessageContentBuilder = MiraiMessageContentBuilderImgNormal(remoteResourceInProcessor)
     }
 
     /** 优先尝试通过一个任意的群进行上传的图片上传策略。 */
-    internal object MiraiMessageContentBuilderFactoryImgGroupFirst : MiraiMessageContentBuilderFactory() {
-        override fun getMessageContentBuilder(): MiraiMessageContentBuilder = MiraiMessageContentBuilderImgGroupFirst()
+    internal class MiraiMessageContentBuilderFactoryImgGroupFirst(private val remoteResourceInProcessor: RemoteResourceInProcessor) : MiraiMessageContentBuilderFactory() {
+        override fun getMessageContentBuilder(): MiraiMessageContentBuilder = MiraiMessageContentBuilderImgGroupFirst(remoteResourceInProcessor)
     }
 
     companion object {
-        fun instance(imgGroupFirst: Boolean = false): MiraiMessageContentBuilderFactory {
+        fun instance(imgGroupFirst: Boolean = false, remoteResourceInProcessor: RemoteResourceInProcessor): MiraiMessageContentBuilderFactory {
             return if (imgGroupFirst) {
-                MiraiMessageContentBuilderFactoryImgGroupFirst
+                MiraiMessageContentBuilderFactoryImgGroupFirst(remoteResourceInProcessor)
             } else {
-                MiraiMessageContentBuilderFactoryImgNormal
+                MiraiMessageContentBuilderFactoryImgNormal(remoteResourceInProcessor)
             }
         }
     }
@@ -162,7 +165,37 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
         return this
     }
 
+    // @OptIn(SimbotExperimentalApi::class)
+    // override fun image(
+    //     inputStreamMotionActuator: InputStreamMotionActuator<InputStream>,
+    //     flash: Boolean,
+    // ): MessageContentBuilder {
+    //     val imageNeko: Neko = CatCodeUtil
+    //         .getNekoBuilder("image", true)
+    //         .key("type").value("stream")
+    //         .apply {
+    //             if (flash) {
+    //                 key("flash").value(true)
+    //             }
+    //         }.build()
+    //
+    //     image1(inputStreamMotionActuator, imageNeko, flash).apply {
+    //         checkText()
+    //         contentList.add(this)
+    //     }
+    //
+    //     return this
+    // }
+
+    @InstantInit
     abstract fun image0(input: InputStream, imageNeko: Neko, flash: Boolean): MiraiMessageContent
+
+    // @LazyInit
+    // abstract fun image1(
+    //     inputStreamMotionActuator: InputStreamMotionActuator<InputStream>,
+    //     imageNeko: Neko,
+    //     flash: Boolean,
+    // ): MiraiMessageContent
 
 
     override fun image(imgData: ByteArray, flash: Boolean): MiraiMessageContentBuilder {
@@ -188,6 +221,7 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
         contentList.add(MiraiSingleMessageContent(singleMessage))
         return this
     }
+
     /**
      * 直接追加一个mirai原生 [Message] 实例。
      */
@@ -213,7 +247,7 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
      * for kt.
      */
     @JvmSynthetic
-    fun message(neko: Neko?, messageBlock: suspend (Contact) -> SingleMessage) : MiraiMessageContentBuilder {
+    fun message(neko: Neko?, messageBlock: suspend (Contact) -> SingleMessage): MiraiMessageContentBuilder {
         val msg = MiraiSingleMessageContent(messageBlock, neko)
         checkText()
         contentList.add(msg)
@@ -222,16 +256,12 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
 
     @Suppress("FunctionName")
     @JvmName("messageLazy")
-    fun __messageBlocking(neko: Neko?, messageBlock: (Contact) -> SingleMessage) : MiraiMessageContentBuilder {
+    fun __messageBlocking(neko: Neko?, messageBlock: (Contact) -> SingleMessage): MiraiMessageContentBuilder {
         val msg = MiraiSingleMessageContent({ c -> messageBlock(c) }, neko)
         checkText()
         contentList.add(msg)
         return this
     }
-
-
-
-
 
 
     override fun build(): MiraiMessageContent {
@@ -251,7 +281,7 @@ internal inline fun Contact.findAnyGroup(): Group? {
  * [MiraiMessageContentBuilder] 实现。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-internal class MiraiMessageContentBuilderImgGroupFirst : MiraiMessageContentBuilder() {
+internal class MiraiMessageContentBuilderImgGroupFirst(private val remoteResourceInProcessor: RemoteResourceInProcessor) : MiraiMessageContentBuilder() {
 
     override fun imageLocal0(file: File, imageNeko: Neko, flash: Boolean): MiraiImageMessageContent {
         return MiraiImageMessageContent(flash, imageNeko) { contact ->
@@ -262,22 +292,31 @@ internal class MiraiMessageContentBuilderImgGroupFirst : MiraiMessageContentBuil
     }
 
     override fun imageUrl0(url: String, imageNeko: Neko, flash: Boolean): MiraiMessageContent {
+        val urlContext = RemoteResourceContext(url)
+
+        var input: InputStream? = null
+        if (remoteResourceInProcessor !is SuspendRemoteResourceInProcessor) {
+            input = remoteResourceInProcessor.processor(urlContext)
+        }
+
         return MiraiImageMessageContent(flash, imageNeko) { contact ->
-            Url(url).toStream().use { stream ->
+            val i = input ?: (remoteResourceInProcessor as SuspendRemoteResourceInProcessor).suspendableProcessor(urlContext)
+            i.use { stream ->
                 contact.findAnyGroup()?.let { group ->
                     stream.uploadAsImage(group)
                 } ?: stream.uploadAsImage(contact)
             }
 
+
         }
     }
 
+    @InstantInit
     override fun image0(input: InputStream, imageNeko: Neko, flash: Boolean): MiraiMessageContent {
+        val resource = input.toExternalResource()
         return MiraiImageMessageContent(flash, imageNeko) { contact ->
-            input.use { inp ->
-                contact.findAnyGroup()?.let { group ->
-                    inp.uploadAsImage(group)
-                } ?: inp.uploadAsImage(contact)
+            resource.use { res ->
+                contact.findAnyGroup()?.uploadImage(res) ?: contact.uploadImage(res)
             }
         }
     }
@@ -288,20 +327,60 @@ internal class MiraiMessageContentBuilderImgGroupFirst : MiraiMessageContentBuil
  * [MiraiMessageContentBuilder] 实现。其中，对于图片的上传为正常的上传模式，即当前为好友就使用好友上传，是群就使用群上传。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-internal class MiraiMessageContentBuilderImgNormal : MiraiMessageContentBuilder() {
+internal class MiraiMessageContentBuilderImgNormal(private val remoteResourceInProcessor: RemoteResourceInProcessor) : MiraiMessageContentBuilder() {
     override fun imageLocal0(file: File, imageNeko: Neko, flash: Boolean): MiraiImageMessageContent {
         return MiraiImageMessageContent(flash, imageNeko) { file.uploadAsImage(it) }
     }
 
     override fun imageUrl0(url: String, imageNeko: Neko, flash: Boolean): MiraiMessageContent {
+        val urlContext = RemoteResourceContext(url)
+
+        var input: InputStream? = null
+        if (remoteResourceInProcessor !is SuspendRemoteResourceInProcessor) {
+            input = remoteResourceInProcessor.processor(urlContext)
+        }
+
         return MiraiImageMessageContent(flash, imageNeko) { contact ->
-            Url(url).toStream().use { stream -> stream.uploadAsImage(contact) }
+            val i = input ?: (remoteResourceInProcessor as SuspendRemoteResourceInProcessor).suspendableProcessor(urlContext)
+            i.use { stream -> stream.uploadAsImage(contact) }
         }
     }
 
+    @InstantInit
     override fun image0(input: InputStream, imageNeko: Neko, flash: Boolean): MiraiMessageContent {
+        val resource = input.toExternalResource()
         return MiraiImageMessageContent(flash, imageNeko) { contact ->
-            input.use { inp -> inp.uploadAsImage(contact) }
+            resource.use { contact.uploadImage(it) }
         }
     }
+
+    // @LazyInit
+    // @Suppress("BlockingMethodInNonBlockingContext")
+    // override fun image1(
+    //     inputStreamMotionActuator: InputStreamMotionActuator<InputStream>,
+    //     imageNeko: Neko,
+    //     flash: Boolean,
+    // ): MiraiMessageContent {
+    //
+    //     return MiraiImageMessageContent(flash, imageNeko) { contact ->
+    //         var resource: ExternalResource? = null
+    //
+    //         // // upload action.
+    //         // val action: (InputStream) -> Unit =
+    //
+    //         try {
+    //             inputStreamMotionActuator.invoke { inp ->
+    //                 resource = inp.toExternalResource()
+    //             }
+    //         } catch (ioe: IOException) {
+    //             throw IllegalStateException("Image resource init failed", ioe)
+    //         }
+    //
+    //         resource?.use { contact.uploadImage(it) } ?: throw IllegalStateException("Image resource not init.")
+    //
+    //     }
+    //
+    //
+    // }
+
 }

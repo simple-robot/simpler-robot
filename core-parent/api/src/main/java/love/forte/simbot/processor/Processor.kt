@@ -14,6 +14,7 @@
 @file:JvmName("Processors")
 package love.forte.simbot.processor
 
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Context
 
 
@@ -27,8 +28,32 @@ public interface Processor<T, C : Context<T>, R> {
     /**
      * 提供一个 [处理上下文][processContext] 并进行处理，得到一个[结果][R]。
      */
+    @Throws(Exception::class)
     fun processor(processContext: C): R
 }
+
+
+/**
+ *一个提供了 `suspend` 函数的 [处理器][Processor].
+ *
+ * [Processor] 中原本的 [processor] 函数则默认使用阻塞的 [suspendableProcessor].
+ *
+ */
+public interface SuspendableProcessor<T, C : Context<T>, R> : Processor<T, C, R> {
+
+    /**
+     * 阻塞的 [suspendableProcessor].
+     */
+    @JvmDefault
+    override fun processor(processContext: C): R = runBlocking { suspendableProcessor(processContext) }
+
+    /**
+     * 提供一个 [处理上下文][processContext] 并进行处理，得到一个[结果][R]。
+     */
+    suspend fun suspendableProcessor(processContext: C): R
+}
+
+
 
 
 

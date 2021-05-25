@@ -81,10 +81,13 @@ private object EmptyMuteInfo : MuteInfo, GroupAccountInfo by emptyGroupAccountIn
 }
 
 
+@Deprecated("Use emptyMuteList()", ReplaceWith("emptyMuteList()"))
+public fun emptyBanList() = emptyMuteList()
+
 /**
  * [MuteList] 的空值实现。
  */
-public fun emptyBanList(): MuteList = EmptyMuteList
+public fun emptyMuteList(): MuteList = EmptyMuteList
 
 
 private object EmptyMuteList : MuteList {

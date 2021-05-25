@@ -13,6 +13,7 @@
  */
 
 @file:JvmName("MiraiMessageParsers")
+
 package love.forte.simbot.component.mirai.utils
 
 import catcode.*
@@ -25,11 +26,17 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.utils.io.jvm.javaio.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.component.mirai.message.*
 import love.forte.simbot.component.mirai.message.event.MiraiMessageMsgGet
 import love.forte.simbot.component.mirai.sender.logger
+import love.forte.simbot.processor.RemoteResourceContext
+import love.forte.simbot.processor.RemoteResourceInProcessor
+import love.forte.simbot.processor.doProcess
+import love.forte.simbot.utils.onShutdown
 import net.mamoe.mirai.contact.FileSupported
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
@@ -66,7 +73,7 @@ public fun interface MiraiMessageParser {
      * 如果返回一个null，则视为 **解析失败**.
      *
      */
-    fun Neko.parse(message: MessageChain?, cache: MiraiMessageCache?): MiraiMessageContent?
+    fun parse(neko: Neko, message: MessageChain?, cache: MiraiMessageCache?): MiraiMessageContent?
 }
 
 
@@ -99,11 +106,12 @@ public fun addMiraiMessageParser(forType: String, parser: MiraiMessageParser): M
 public fun MessageContent.toMiraiMessageContent(
     message: MessageChain?,
     cache: MiraiMessageCache? = null,
+    remoteResourceInProcessor: RemoteResourceInProcessor,
 ): MiraiMessageContent {
     return if (this is MiraiMessageContent) {
         this
     } else {
-        msg.toMiraiMessageContent(message, cache)
+        msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor)
     }
 }
 
@@ -113,10 +121,14 @@ public fun MessageContent.toMiraiMessageContent(
  * @param message 当前发送消息的时候，如果是在某个事件中发送消息，此处为当前事件可能接收到的消息链。
  * @param cache mirai消息缓存器。
  */
-public fun String.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessageCache? = null): MiraiMessageContent {
+public fun String.toMiraiMessageContent(
+    message: MessageChain?,
+    cache: MiraiMessageCache? = null,
+    remoteResourceInProcessor: RemoteResourceInProcessor,
+): MiraiMessageContent {
     return CatCodeUtil.split(this) {
         // cat code.
-        if (startsWith(CAT_HEAD)) Nyanko.byCode(this).toMiraiMessageContent(message, cache)
+        if (startsWith(CAT_HEAD)) Nyanko.byCode(this).toMiraiMessageContent(message, cache, remoteResourceInProcessor)
         // normal text.
         else MiraiSingleMessageContent(PlainText(this.deCatText()))
     }.let { MiraiListMessageContent(it) }
@@ -126,8 +138,12 @@ public fun String.toMiraiMessageContent(message: MessageChain?, cache: MiraiMess
  * [Neko] 转化为 [MiraiMessageContent]。
  */
 @OptIn(MiraiExperimentalApi::class)
-public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessageCache? = null): MiraiMessageContent {
-    return parsers[this.type]?.run { this@toMiraiMessageContent.parse(message, cache) }
+public fun Neko.toMiraiMessageContent(
+    message: MessageChain?,
+    cache: MiraiMessageCache? = null,
+    remoteResourceInProcessor: RemoteResourceInProcessor,
+): MiraiMessageContent {
+    return parsers[this.type]?.parse(this, message, cache)
         ?: when (this.type) {
             "text", "message" -> this["text"]?.let {
                 MiraiSingleMessageContent(PlainText(it))
@@ -158,24 +174,46 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
             "poke", "shake" -> {
                 val type: Int = this["type"]?.toInt() ?: return MiraiSingleMessageContent(PokeMessage.ChuoYiChuo)
                 val id: Int = this["id"]?.toInt() ?: -1
-                val code: Long = this["code"]?.toLong() ?: -1L
+                // val code: Long = this["code"]?.toLong() ?: -1L
                 val cat = this
-                MiraiSingleMessageContent({
-                    if (it is Group) {
-                        // nudge, need code
-                        if (code == -1L) {
-                            throw IllegalStateException("Unable to locate the target for nudge: no 'code' parameter in cat ${this@toMiraiMessageContent}.")
-                        }
-
-                        val nudge = it[code]?.nudge()
-                            ?: throw IllegalArgumentException("Cannot found nudge target: no such member($code) in group($id).")
-                        it.launch { nudge.sendTo(it) }
-                        EmptySingleMessage
-                    } else {
-                        // poke.
-                        PokeMessage.values.find { p -> p.pokeType == type && p.id == id } ?: PokeMessage.ChuoYiChuo
-                    }
-                }, cat)
+                // val from = message?.bot?.id
+                // if (type)
+                // val nudgeContent = MiraiNudgedMessageContent(from, code)
+                // if (it is Group) {
+                //     // nudge, need code
+                //     if (code == -1L) {
+                //         throw IllegalStateException("Unable to locate the target for nudge: no 'code' parameter in cat ${this@toMiraiMessageContent}.")
+                //     }
+                //
+                //     val nudge = it[code]?.nudge()
+                //         ?: throw IllegalArgumentException("Cannot found nudge target: no such member($code) in group($id).")
+                //
+                //
+                //     // it.launch { nudge.sendTo(it) }
+                //     // EmptySingleMessage
+                // } else {
+                // poke.
+                val poke = PokeMessage.values.find { p -> p.pokeType == type && p.id == id } ?: PokeMessage.ChuoYiChuo
+                MiraiSingleMessageContent(poke) { cat }
+                // }
+                // MiraiSingleMessageContent({
+                // if (it is Group) {
+                //     // nudge, need code
+                //     if (code == -1L) {
+                //         throw IllegalStateException("Unable to locate the target for nudge: no 'code' parameter in cat ${this@toMiraiMessageContent}.")
+                //     }
+                //
+                //     val nudge = it[code]?.nudge()
+                //         ?: throw IllegalArgumentException("Cannot found nudge target: no such member($code) in group($id).")
+                //     val from = message?.bot?.id
+                //     MiraiNudgedMessageContent(from, nudge.target.id)
+                //     // it.launch { nudge.sendTo(it) }
+                //     // EmptySingleMessage
+                // } else {
+                //     // poke.
+                //     PokeMessage.values.find { p -> p.pokeType == type && p.id == id } ?: PokeMessage.ChuoYiChuo
+                // }
+                // }, cat)
             }
 
             // 头像抖动
@@ -243,22 +281,30 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                     MiraiImageMessageContent(flash, imageNeko) { c -> file.uploadAsImage(c) }
                 } else {
                     // 没有文件，看看有没有url。
-                    val url = filePath?.takeIf { it.startsWith("http") }?.let { Url(it) }
-                        ?: this["url"]?.let { Url(it) }
+                    // val url = filePath?.takeIf { it.startsWith("http") }?.let { Url(it) }
+                    //     ?: this["url"]?.let { Url(it) }
+                    //     ?: throw IllegalArgumentException("The img has no source in $this")
+
+                    // remoteResourceInProcessor
+                    val urlString = filePath?.takeIf { it.startsWith("http") }
+                        ?: this["url"]
                         ?: throw IllegalArgumentException("The img has no source in $this")
 
+
                     // val urlId = url.encodedPath
-                    val imageNeko = CatCodeUtil.nekoTemplate.image(url.toString())
+                    val imageNeko = CatCodeUtil.nekoTemplate.image(urlString)
                     MiraiImageMessageContent(flash, imageNeko) { c ->
-                        url.toStream().use { s -> s.uploadAsImage(c) }
+                        val context = RemoteResourceContext(urlString, id)
+                        remoteResourceInProcessor.getStream(context).use { s -> s.uploadAsImage(c) }
                     }
                 }
             }
 
             // voice or record
             "voice", "record" -> {
+                val id = this["id"]
+
                 if (message != null) {
-                    val id = this["id"]
                     if (id != null) {
                         val findVoice = message.find { it is Voice && it.id == id }
                         if (findVoice != null) {
@@ -297,17 +343,24 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                     }
                 } else {
                     // 没有文件，看看有没有url。
-                    val url = filePath?.takeIf { it.startsWith("http") }?.let { Url(it) }
-                        ?: this["url"]?.let { Url(it) }
+                    // val url = filePath?.takeIf { it.startsWith("http") }?.let { Url(it) }
+                    //     ?: this["url"]?.let { Url(it) }
+                    //     ?: throw IllegalArgumentException("The voice has no source in $this")
+                    val urlString = filePath?.takeIf { it.startsWith("http") }
+                        ?: this["url"]
                         ?: throw IllegalArgumentException("The voice has no source in $this")
 
-                    val urlId = url.encodedPath
-                    val recordNeko = CatCodeUtil.nekoTemplate.record(urlId)
+                    // val urlId = url.encodedPath
+                    val recordNeko = CatCodeUtil.nekoTemplate.record(urlString)
                     MiraiVoiceMessageContent(recordNeko) { c ->
                         if (c is Group) {
-                            url.toStream().use { s ->
-                                s.toExternalResource().use { c.uploadVoice(it) }
-                            }
+                            val context = RemoteResourceContext(urlString, id)
+                            remoteResourceInProcessor.getStream(context).toExternalResource()
+                                .use { resource -> c.uploadVoice(resource) }
+
+                            // url.toStream().use { s ->
+                            //     s.toExternalResource().use { c.uploadVoice(it) }
+                            // }
                         } else throw IllegalStateException("Mirai only support sending group voice.")
                     }
                 }
@@ -429,19 +482,20 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                     }
                 } else {
                     // 没有文件，看看有没有url
-                    val url = filePath.takeIf { it.startsWith("http") }?.let { Url(it) }
-                    // ?: this["url"]?.let { Url(it) }
+                    // val url = filePath.takeIf { it.startsWith("http") }?.let { Url(it) }
+                    //     ?: throw IllegalArgumentException("There is no 'file' or 'url' starts with 'http' in $this")
+                    val urlString = filePath.takeIf { it.startsWith("http") }
                         ?: throw IllegalArgumentException("There is no 'file' or 'url' starts with 'http' in $this")
 
                     val path0 = path
                         ?: if (formatName != null) RemoteFile.ROOT_PATH + UUID.idString() + "." + formatName
                         else RemoteFile.ROOT_PATH + UUID.idString()
 
-                    val urlId = url.encodedPath
+                    // val urlId = id
                     val fileNeko = CatCodeUtil.getNekoBuilder("file", true)
-                        .key("file").value(urlId)
+                        .key("file").value(urlString)
                         .key("path").value(path0)
-                        .key("url").value(urlId).apply {
+                        .key("url").value(urlString).apply {
                             if (formatName != null) {
                                 key("formatName").value(formatName)
                             }
@@ -452,11 +506,17 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
 
                     MiraiFileMessageContent(fileNeko, path0) { c ->
                         if (c is FileSupported) {
-                            url.toStream().use { s ->
+                            val context = RemoteResourceContext(urlString)
+                            remoteResourceInProcessor.getStream(context).use { s ->
                                 s.toExternalResource(formatName).use {
                                     c.uploadFile(path0, it)
                                 }
                             }
+                            // url.toStream().use { s ->
+                            //     s.toExternalResource(formatName).use {
+                            //         c.uploadFile(path0, it)
+                            //     }
+                            // }
                         } else throw IllegalStateException("Remote file only support upload to 'FileSupported' instance, but '${c::class.java}'")
                     }
 
@@ -516,8 +576,11 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 val xmlCode = this
                 // 解析的参数
                 val serviceId = this["serviceId"]?.toInt() ?: 60
+
                 // 构建xml
-                val xml = buildXmlMessage(serviceId) {
+                val xml = this["content"]?.let { content ->
+                    SimpleServiceMessage(serviceId, content)
+                } ?: buildXmlMessage(serviceId) {
                     // action
                     xmlCode["action"]?.also { this.action = it }
                     // 一般为点击这条消息后跳转的链接
@@ -557,6 +620,7 @@ public fun Neko.toMiraiMessageContent(message: MessageChain?, cache: MiraiMessag
                 }
                 MiraiSingleMessageContent(xml)
             }
+
 
             // 音乐分享
             "music", "musicShare" -> {
@@ -781,6 +845,7 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
 
         // 转发消息
         is ForwardMessage -> {
+            // TODO
             CatCodeUtil.getNekoBuilder("forward", true)
                 /*
                 title: String,
@@ -813,14 +878,16 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
 
         // 富文本，xml或json
         is RichMessage -> CatCodeUtil.getNekoBuilder("rich", true)
-            .key("content").value(content)
-            .build()
+            .key("content").value(content).let {
+                if (this is ServiceMessage) {
+                    it.key("serviceId").value(this.serviceId)
+                } else it
+            }.build()
 
         // mirai不支持的消息
         is UnsupportedMessage -> {
             CatCodeUtil.getNekoBuilder("unsupported", true)
                 .key("struct").value(struct.byteArrayToHexString())
-                .key("warning").value("Unsupported message. 不建议频繁获取struct，存在性能浪费。")
                 .build()
         }
 
@@ -841,7 +908,13 @@ private val httpClient: HttpClient = HttpClient() {
         requestTimeoutMillis = 30_000
         connectTimeoutMillis = 20_000
     }
+}.also {
+    onShutdown("MiraiParser-httpClient") { it.close() }
 }
+
+
+public suspend fun RemoteResourceInProcessor.getStream(context: RemoteResourceContext): InputStream =
+    this.doProcess(context)
 
 
 /**

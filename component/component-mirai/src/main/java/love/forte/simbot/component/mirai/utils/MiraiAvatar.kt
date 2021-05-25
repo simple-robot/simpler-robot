@@ -19,7 +19,7 @@ package love.forte.simbot.component.mirai.utils
 /**
  * 用户头像。
  */
-public fun userAvatar(id: Long): String = "http://q1.qlogo.cn/g?b=qq&nk=$id&s=640"
+public fun userAvatar(id: Long): String = "https://q1.qlogo.cn/g?b=qq&nk=$id&s=640"
 
 /**
  * 群头像。

@@ -25,7 +25,7 @@ package love.forte.simbot.timer;
  *
  * @author ForteScarlet
  */
-public interface Task {
+public interface Task extends TaskRunner {
 
     /**
      * 这个定时任务的ID。ID是不可重复的，用于被 {@link TimerManager} 进行检索。
@@ -59,13 +59,14 @@ public interface Task {
      *
      * @throws Exception 可能会存在任何异常。
      */
+    @Override
     void execute() throws Exception;
 
 
     /**
      * 这个任务的最大重复执行次数。
      *
-     * @return 返回最大重复执行次数。如果为无限次数，返回 {@code -1}。
+     * @return 返回最大重复执行次数。如果为无限次数，返回 {@code -1}。如果没有重复次数（例如仅用于初始时执行一次），返回 {@code 0}。
      */
     long repeat();
 
@@ -74,5 +75,13 @@ public interface Task {
      * @return 延迟时间
      */
     long delay();
+
+    /**
+     * 得到一个task builder。
+     * @return builder.
+     */
+    static SimpleTaskBuilder builder() {
+        return new SimpleTaskBuilder();
+    }
 
 }

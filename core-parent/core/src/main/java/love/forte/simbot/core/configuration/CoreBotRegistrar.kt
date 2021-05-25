@@ -19,7 +19,7 @@ import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.PostPass
 import love.forte.simbot.bot.BotManager
-import love.forte.simbot.bot.BotRegisterInfo
+import love.forte.simbot.bot.botVerifyInfoBySplit
 import love.forte.simbot.core.TypedCompLogger
 
 
@@ -49,7 +49,7 @@ public class CoreBotRegistrar {
             logger.warn("No bot information is configured.")
         } else {
             bots.asSequence().distinct().forEach {
-                val info = BotRegisterInfo.splitTo(it)
+                val info = botVerifyInfoBySplit(it)
                 logger.debug("Try to verify the bot(${info.code}) information.")
                 botManager.registerBot(info)
             }

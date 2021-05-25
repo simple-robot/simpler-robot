@@ -27,7 +27,7 @@ import love.forte.simbot.api.sender.MsgSenderFactories
 public interface BotVerifier {
     /** 验证一个bot的注册信息，并转化为一个该组件对应的 [Bot] 实例。 */
     fun verity(
-        botInfo: BotRegisterInfo,
+        botInfo: BotVerifyInfo,
         msgSenderFactories: MsgSenderFactories,
         defFactories: DefaultMsgSenderFactories,
     ): Bot

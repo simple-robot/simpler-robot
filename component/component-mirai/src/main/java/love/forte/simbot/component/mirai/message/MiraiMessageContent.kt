@@ -18,7 +18,6 @@ package love.forte.simbot.component.mirai.message
 import catcode.CatCodeUtil
 import catcode.Neko
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -205,16 +204,12 @@ public data class MiraiNudgedMessageContent(private val from: Long?, private val
                 val nudge: Nudge = contact[code]?.nudge()
                     ?: throw NoSuchElementException("Cannot found nudge target: no such member($code) in group(${contact.id}).")
                 // 获取群员并发送
-                contact.launch {
-                    contact.sendNudge(nudge)
-                }
+                contact.sendNudge(nudge)
                 EmptySingleMessage
             }
             is User -> {
                 val nudge: Nudge = contact.nudge()
-                contact.launch {
-                    contact.sendNudge(nudge)
-                }
+                contact.sendNudge(nudge)
                 EmptySingleMessage
             }
             // 是其他人
@@ -233,18 +228,22 @@ public data class MiraiNudgedMessageContent(private val from: Long?, private val
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class MiraiMessageChainContent constructor(val message: MessageChain, private var cache: MiraiMessageCache? = null) : MiraiMessageContent() {
+public class MiraiMessageChainContent constructor(
+    val message: MessageChain,
+    private var cache: MiraiMessageCache? = null,
+) : MiraiMessageContent() {
     override suspend fun getMessage(contact: Contact): Message = message
     private lateinit var _cats: List<Neko>
+
     // override val cats: List<Neko> by lazy(LazyThreadSafetyMode.PUBLICATION) { message.toNeko(cache) }
     override val cats: List<Neko>
-    get() {
-        if(!::_cats.isInitialized) {
-            _cats = message.toNeko(cache)
-            cache = null
+        get() {
+            if (!::_cats.isInitialized) {
+                _cats = message.toNeko(cache)
+                cache = null
+            }
+            return _cats
         }
-        return _cats
-    }
 
 
     override fun equals(other: Any?): Boolean {
@@ -257,6 +256,7 @@ public class MiraiMessageChainContent constructor(val message: MessageChain, pri
 
         return false
     }
+
     override fun hashCode(): Int {
         return message.hashCode()
     }
@@ -272,7 +272,7 @@ public class MiraiMessageChainContent constructor(val message: MessageChain, pri
      * @see MiraiMessageChainReconstructor
      */
     override fun refactor(messageReconstructor: ReconstructorFunction): MessageContent {
-        return MiraiMessageChainReconstructor(this).apply {messageReconstructor(this) }.build()
+        return MiraiMessageChainReconstructor(this).apply { messageReconstructor(this) }.build()
     }
 
 }
@@ -307,6 +307,7 @@ public data class MiraiSingleAtMessageContent(private val code: Long) : MiraiMes
 
 /**
  * mirai 的 image content，代表为通过本地上传的图片信息。
+ *
  * 此实现中，image仅会被实例化一次，而后则会被缓存。
  */
 public class MiraiImageMessageContent
@@ -385,7 +386,6 @@ constructor(
 }
 
 
-
 /**
  * mirai 的 voice content.
  * 此实现类似于 [MiraiImageMessageContent]，Voice的实例化会被缓存，且存在锁来保证唯一性。
@@ -443,7 +443,6 @@ public class MiraiVoiceMessageContent(
     }
 
 }
-
 
 
 /**

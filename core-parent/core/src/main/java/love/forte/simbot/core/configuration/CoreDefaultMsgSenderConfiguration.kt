@@ -51,8 +51,13 @@ public class CoreDefaultMsgSenderConfiguration {
 public enum class DefaultSenderType(val factories: () -> DefaultMsgSenderFactories) {
     /** 总是会抛出异常的默认送信器。 */
     ERROR({ love.forte.simbot.api.sender.ErrorFactories }),
+
     /** 总是会返回一个失败默认值的默认送信器。 */
     FAILED({ love.forte.simbot.api.sender.FailedFactories }),
 
+    /**
+     * 提供一个返回默认值且会提供一个警告日志的默认送信器。
+     */
+    WARN({ love.forte.simbot.api.sender.WarnFactories })
 
 }

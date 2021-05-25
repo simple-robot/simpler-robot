@@ -30,9 +30,7 @@ import static love.forte.simbot.timer.quartz.SchedulerTimerManager.TASK_KEY;
  * @author ForteScarlet
  */
 public final class QuartzJob implements Job {
-    /**
-     *
-     */
+
     @Override
     public void execute(JobExecutionContext context) {
         JobDetail jobDetail = context.getJobDetail();

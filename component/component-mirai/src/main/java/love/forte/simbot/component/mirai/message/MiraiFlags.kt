@@ -157,7 +157,7 @@ private object EmptyMiraiGroupFlagContent : MiraiMessageSourceFlagContent(), Gro
     override val source: MessageSource? = null
 }
 
-public object EmptyMiraiGroupFlag : GroupMsg.MessageFlag {
+public object EmptyMiraiGroupFlag : MessageGet.MessageFlag<GroupMsg.FlagContent> {
     override val flag: GroupMsg.FlagContent
         get() = EmptyMiraiGroupFlagContent
 }
@@ -166,7 +166,7 @@ private object EmptyMiraiPrivateFlagContent : MiraiMessageSourceFlagContent(), P
     override val source: MessageSource? = null
 }
 
-public object EmptyMiraiPrivateFlag : PrivateMsg.MessageFlag {
+public object EmptyMiraiPrivateFlag : MessageGet.MessageFlag<PrivateMsg.FlagContent> {
     override val flag: PrivateMsg.FlagContent
         get() = EmptyMiraiPrivateFlagContent
 }
@@ -227,7 +227,7 @@ public interface MiraiMessageFlag<C : MiraiMessageSourceFlagContent> {
 //     override val flag: C
 // }
 
-public interface MiraiPrivateMsgFlag : MiraiMessageFlag<MiraiPrivateFlagContent>, PrivateMsg.MessageFlag
+public interface MiraiPrivateMsgFlag : MiraiMessageFlag<MiraiPrivateFlagContent>, MessageGet.MessageFlag<PrivateMsg.FlagContent>
 
 /**
  * 标识类型为 [MiraiMessageSourceFlagContent] 的 [Flag] 实例，
@@ -238,7 +238,7 @@ internal data class MiraiPrivateMsgFlagData(override val flag: MiraiPrivateFlagC
         get() = flag
 }
 
-public interface MiraiGroupMsgFlag : MiraiMessageFlag<MiraiGroupFlagContent>, GroupMsg.MessageFlag
+public interface MiraiGroupMsgFlag : MiraiMessageFlag<MiraiGroupFlagContent>, MessageGet.MessageFlag<GroupMsg.FlagContent>
 
 
 internal data class MiraiGroupMsgFlagData(override val flag: MiraiGroupFlagContent) : MiraiGroupMsgFlag {

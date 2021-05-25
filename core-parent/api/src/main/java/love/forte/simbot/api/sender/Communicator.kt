@@ -23,8 +23,7 @@ import love.forte.simbot.api.message.results.Result
  * 通讯器接口，为三个送信器的统一父接口。
  *
  *
- * 通讯器接口定义一个 [additional]
- *
+ * 通讯器接口定义一个额外执行 [additionalExecute] 入口以支持组件对各自的特殊api进行实现与支持。
  *
  *
  * @see Setter

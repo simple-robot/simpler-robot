@@ -32,6 +32,7 @@ import static java.lang.annotation.ElementType.*;
 @Retention(RetentionPolicy.CLASS)
 @Target({TYPE, FIELD, CONSTRUCTOR, METHOD, PARAMETER})
 @Documented
+@MarkOnly
 public @interface ThreadUnsafe {
     /**
      * 可以有一些说明之类的东西。

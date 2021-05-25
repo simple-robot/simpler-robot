@@ -20,6 +20,8 @@ import kotlinx.coroutines.runBlocking
 import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.component.mirai.utils.MiraiBotEventRegistrar
+import love.forte.simbot.core.SimbotContext
+import love.forte.simbot.core.SimbotContextClosedHandle
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.listener.ListenerManager
@@ -35,7 +37,7 @@ import kotlin.concurrent.thread
  */
 @ComponentBeans("miraiListenerRegistered")
 @AsMiraiConfig
-public class MiraiListenerRegistered : ListenerRegistered {
+public class MiraiListenerRegistered : ListenerRegistered, SimbotContextClosedHandle {
     private companion object : TypedCompLogger(MiraiListenerRegistered::class.java)
 
     @field:ConfigInject
@@ -47,8 +49,53 @@ public class MiraiListenerRegistered : ListenerRegistered {
     @Depend
     lateinit var miraiBotEventRegistrar: MiraiBotEventRegistrar
 
-    // bot alive thraed
+    // bot alive thread
     private lateinit var botAliveThread: BotAliveThread
+
+    override val handleName: String
+        get() = "MiraiListenerRegisteredHandle"
+
+    private fun shutdown() {
+        kotlin.runCatching {
+            botAliveThread.interrupt()
+        }.getOrElse { e ->
+            logger.error("mirai-bot-alive thread interrupt failed. try to shutdown.", e)
+            kotlin.runCatching {
+                @Suppress("DEPRECATION")
+                botAliveThread.stop()
+            }.getOrElse {
+                logger.error("shutdown mirai-bot-alive thread failed.")
+            }
+        }
+
+        logger.info("try to close all bots...")
+        // val waiting = mutableListOf<Pair<Long, Deferred<*>>>()
+        // close all bot.
+        val waiting = Bot.instances.map {
+            it.id to GlobalScope.async {
+                logger.debug("try to close bot(${it.id})...")
+                it.closeAndJoin()
+            }
+        }.toList()
+        // {
+        //     waiting.add(it)
+        // }
+
+        runBlocking {
+            waiting.forEach {
+                logger.debug("Waiting bot(${it.first}) close...")
+                it.second.await()
+                logger.debug("bot(${it.first}) closed.")
+            }
+
+        }
+        logger.info("all bots closed.")
+    }
+
+
+    override fun simbotClose(context: SimbotContext) {
+        shutdown()
+    }
 
     /**
      * 当所有的监听函数都注册完成后,
@@ -63,43 +110,7 @@ public class MiraiListenerRegistered : ListenerRegistered {
         botAliveThread = BotAliveThread("mirai-bot-alive", daemon).apply { start() }
 
         // 注册一个 钩子来关闭所有的bot。
-        Runtime.getRuntime().addShutdownHook(thread(start = false) {
-
-            kotlin.runCatching {
-                botAliveThread.interrupt()
-            }.getOrElse { e ->
-                logger.error("mirai-bot-alive thread interrupt failed. try to shutdown.", e)
-                kotlin.runCatching {
-                    @Suppress("DEPRECATION")
-                    botAliveThread.stop()
-                }.getOrElse {
-                    logger.error("shutdown mirai-bot-alive thread failed.")
-                }
-            }
-
-            logger.info("try to close all bots...")
-            // val waiting = mutableListOf<Pair<Long, Deferred<*>>>()
-            // close all bot.
-            val waiting = Bot.instances.map {
-                it.id to GlobalScope.async {
-                    logger.debug("try to close bot(${it.id})...")
-                    it.closeAndJoin()
-                }
-            }.toList()
-            // {
-            //     waiting.add(it)
-            // }
-
-            runBlocking {
-                waiting.forEach {
-                    logger.debug("Waiting bot(${it.first}) close...")
-                    it.second.await()
-                    logger.debug("bot(${it.first}) closed.")
-                }
-
-            }
-            logger.info(" all bots closed.")
-        })
+        Runtime.getRuntime().addShutdownHook(thread(start = false) { shutdown() })
     }
 }
 

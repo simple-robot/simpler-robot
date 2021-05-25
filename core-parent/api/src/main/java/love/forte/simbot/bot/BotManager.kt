@@ -114,54 +114,14 @@ public object CoreBotsDecoder {
 
 
 /**
- * bot进行注册的时候使用的数据类。
- * [code] 与 [verification] 都可能根据组件的变化而可能存在为空的情况。
- *
- *
- *
- * @property code 一般指账号信息。
- * @property verification 验证信息。一般可以代表账号的密码或者上报路径的链接。
- */
-public data class BotRegisterInfo(val code: String, val verification: String) {
-    companion object {
-
-        private val SPLIT_REGEX = Regex(":")
-
-        /**
-         * 转义经过逗号切割的字符串，其中应为 “xxx:xxx”的格式。
-         *
-         *
-         * [code] 与 [verification] 出现以下内容会进行反转义：
-         *
-         * - `&nbsp;` -> `&`
-         * - `&#44;` -> `,`
-         * - `&#58;` -> `:`
-         *
-         */
-        @JvmStatic
-        public fun splitTo(configTextPair: String): BotRegisterInfo {
-            // 切割后转义
-            val split = configTextPair.split(SPLIT_REGEX, 2)
-            return BotRegisterInfo(
-                CoreBotsDecoder.decoder(split[0]),
-                if (split.size > 1) {
-                    CoreBotsDecoder.decoder(split[1])
-                } else ""
-            )
-        }
-    }
-}
-
-
-/**
  * bot注册器。
  */
 public interface BotRegistrar {
     /**
-     * 验证或登录一个bot。
+     * 验证或登录一个bot。如果账号已经存在，则在非必要情况下不会实质进行登录，但或许会存在验证。
      * @throws BotVerifyException 验证失败则会抛出此异常。
      */
-    fun registerBot(botRegisterInfo: BotRegisterInfo): Bot
+    fun registerBot(botRegisterInfo: BotVerifyInfo): Bot
 }
 
 

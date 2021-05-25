@@ -72,7 +72,7 @@ public interface PrivateMsg : MessageGet {
      *
      */
 
-    override val flag: MessageFlag
+    override val flag: MessageGet.MessageFlag<@JvmWildcard FlagContent>
 
 
     /**
@@ -85,10 +85,10 @@ public interface PrivateMsg : MessageGet {
         }
     }
 
-    /**
-     * 私聊消息标识。
-     */
-    public interface MessageFlag : MessageGet.MessageFlag<FlagContent>
+    // /**
+    //  * 私聊消息标识。
+    //  */
+    // public interface MessageFlag : MessageGet.MessageFlag<FlagContent>
 
 }
 
@@ -160,7 +160,7 @@ public interface GroupMsg : MessageGet, GroupContainer, GroupAccountContainer, P
      *
      * 如果只是使用 [id] 作为flag载体，在实现的时候可以参考 [GroupMsgIdFlagContent]
      */
-    override val flag: MessageFlag
+    override val flag: MessageGet.MessageFlag<@JvmWildcard FlagContent>
 
 
     /**
@@ -173,10 +173,11 @@ public interface GroupMsg : MessageGet, GroupContainer, GroupAccountContainer, P
         }
     }
 
-    /**
-     * 群消息标识。
-     */
-    public interface MessageFlag : MessageGet.MessageFlag<FlagContent>
+    //
+    // /**
+    //  * 群消息标识。
+    //  */
+    // public interface MessageFlag : MessageGet.MessageFlag<FlagContent>
 
 
 }

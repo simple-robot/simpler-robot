@@ -88,7 +88,7 @@ public class CoreBotManager(
      * 验证或登录一个bot。
      * @throws BotVerifyException 验证失败则会抛出此异常。
      */
-    override fun registerBot(botRegisterInfo: BotRegisterInfo): Bot {
+    override fun registerBot(botRegisterInfo: BotVerifyInfo): Bot {
         return botsMap.computeIfAbsent(botRegisterInfo.code) {
             verifier.verity(botRegisterInfo, msgSenderFactories, defSenderFactories)
         }
