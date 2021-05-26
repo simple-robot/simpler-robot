@@ -62,7 +62,7 @@ public interface ListenerInterceptContext : Context<ListenerFunction> {
     /** 当前监听上下文 */
     val listenerContext: ListenerContext
 
-    @JvmDefault
+    // @JvmDefault
     override val mainValue: ListenerFunction
         get() = listenerFunction
 }

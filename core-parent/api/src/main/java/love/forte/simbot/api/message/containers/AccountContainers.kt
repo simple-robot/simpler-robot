@@ -35,7 +35,7 @@ public interface AccountCodeContainer : Container {
      * 账号的数字值(如果能作为数字的话)。
      * 默认实现为 [accountCode].[toLong]
      */
-    @JvmDefault
+    // @JvmDefault
     val accountCodeNumber: Long
         get() = accountCode.toLong()
 }
@@ -73,7 +73,7 @@ public interface AccountNameContainer : Container, AccountNicknameContainer, Acc
     /**
      * 如果有备注则得到备注，否则得到昵称。
      */
-    @JvmDefault
+    // @JvmDefault
     val accountRemarkOrNickname: String?
         get() = accountRemark ?: accountNickname
 
@@ -84,7 +84,7 @@ public interface AccountNameContainer : Container, AccountNicknameContainer, Acc
      * - `“李四”` (没有备注)
      * - `“”` (空)
      */
-    @JvmDefault
+    // @JvmDefault
     val accountNicknameAndRemark: String
         get() = accountRemark?.let { "$accountNickname($it)" } ?: accountNickname ?: ""
 }

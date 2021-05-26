@@ -57,7 +57,7 @@ public interface MsgInterceptContext : Context<MsgGet> {
     val listenerContext: ListenerContext
 
     /** same as [msgGet] */
-    @JvmDefault
+    // @JvmDefault
     override var mainValue: MsgGet
         get() = msgGet
         set(value) {

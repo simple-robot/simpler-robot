@@ -100,7 +100,7 @@ public interface MessageContent : CharSequence {
     /**
      * Returns the length of this character sequence.
      */
-    @JvmDefault
+    // @JvmDefault
     override val length: Int
         get() = msg.length
 
@@ -112,7 +112,7 @@ public interface MessageContent : CharSequence {
      * Note that the [String] implementation of this interface in Kotlin/JS has unspecified behavior
      * if the [index] is out of its bounds.
      */
-    @JvmDefault
+    // @JvmDefault
     override fun get(index: Int): Char = msg[index]
 
     /**
@@ -122,7 +122,7 @@ public interface MessageContent : CharSequence {
      * @param startIndex the start index (inclusive).
      * @param endIndex the end index (exclusive).
      */
-    @JvmDefault
+    // @JvmDefault
     override fun subSequence(startIndex: Int, endIndex: Int): CharSequence = msg.subSequence(startIndex, endIndex)
 
     /**
@@ -144,7 +144,7 @@ public interface MessageContent : CharSequence {
     /**
      * 获取指定过滤类型的 [cats] 列表。
      */
-    @JvmDefault
+    // @JvmDefault
     fun getCats(vararg types: String) = cats.filter { it.type in types }
 
 
@@ -152,7 +152,7 @@ public interface MessageContent : CharSequence {
      * 判断当前的消息是否为一个**空消息**。
      * 一个空消息要求 [cats] 为空, 且 [msg] 为空。
      */
-    @JvmDefault
+    // @JvmDefault
     fun isEmpty(): Boolean = cats.isEmpty() && msg.isEmpty()
 
 
@@ -176,7 +176,7 @@ public interface MessageContent : CharSequence {
      *
      * @throws IllegalStateException 当前消息不支持重构
      */
-    @JvmDefault
+    // @JvmDefault
     @Contract(pure = true)
     fun refactor(messageReconstructor: ReconstructorFunction): MessageContent {
         throw IllegalStateException("The current message content does not support reconstruction.")

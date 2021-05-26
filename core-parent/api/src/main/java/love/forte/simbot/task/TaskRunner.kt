@@ -27,7 +27,7 @@ public fun interface Runner : Runnable {
     /**
      * override from [Runnable.run].
      */
-    @JvmDefault
+    // @JvmDefault
     override fun run() {
         this()
     }

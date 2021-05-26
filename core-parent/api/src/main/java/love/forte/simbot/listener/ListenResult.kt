@@ -45,7 +45,7 @@ public interface ListenResult<T> {
      */
     val cause: Throwable?
 
-    @JvmDefault
+    // @JvmDefault
     @Deprecated("Renamed to 'cause'", ReplaceWith("cause"))
     val throwable: Throwable? get() = cause
 

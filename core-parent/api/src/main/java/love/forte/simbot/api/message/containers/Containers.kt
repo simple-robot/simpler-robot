@@ -126,7 +126,7 @@ public interface TimeContainer : Container {
      * ```
      *
      */
-    @JvmDefault
+    // @JvmDefault
     fun <N> getTime(unit: TimeUnit.() -> ((Long) -> N)): N = unit(TimeUnit.MILLISECONDS)(time)
 
     companion object {

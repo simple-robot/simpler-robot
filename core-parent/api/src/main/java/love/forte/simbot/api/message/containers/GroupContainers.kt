@@ -29,7 +29,7 @@ public interface GroupCodeContainer : Container {
     val groupCode: String
 
     /** 群号的[Long]类型。如果可以作为数字的话。 */
-    @JvmDefault
+    // @JvmDefault
     val groupCodeNumber: Long
         get() = groupCode.toLong()
 }

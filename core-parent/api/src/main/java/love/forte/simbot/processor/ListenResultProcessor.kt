@@ -44,7 +44,7 @@ public interface ListenResultProcessor : Processor<ListenResult<*>, ListenResult
     /**
      * 优先级。默认最低。
      */
-    @JvmDefault
+    // @JvmDefault
     val priority: Int get() = PriorityConstant.LAST
 
 }
@@ -73,7 +73,7 @@ public interface ListenResultProcessorContext : Context<ListenResult<*>> {
     /**
      * Same as [ListenResult].
      */
-    @JvmDefault
+    // @JvmDefault
     override val mainValue: ListenResult<*>
         get() = listenResult
 }

@@ -53,7 +53,7 @@ public interface ChainedInterceptor<T, R, CH : InterceptChain<T, CO, R>, CO : Co
     /**
      * 排序值，默认即为最低值。一般情况下可以不用重写此方法。
      */
-    @JvmDefault
+    // @JvmDefault
     val priority: Int
         get() = PriorityConstant.LAST
 
