@@ -17,10 +17,10 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>love.forte.simple-robot</groupId>
-            <artifactId>api</artifactId>
-        </dependency>
+        <!--<dependency>-->
+        <!--    <groupId>love.forte.simple-robot</groupId>-->
+        <!--    <artifactId>api</artifactId>-->
+        <!--</dependency>-->
     </dependencies>
 
 </project>
