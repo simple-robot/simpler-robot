@@ -16,6 +16,12 @@
 
 package love.forte.simbot.component.kaiheila
 
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.SerializersModuleBuilder
@@ -61,5 +67,13 @@ public val kaiheilaJson: Json by lazy {
         ignoreUnknownKeys = true
         classDiscriminator = "#KHLT"
 
+    }
+}
+
+public object BooleanAsIntSerializer : KSerializer<Boolean> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BooleanAsInt", PrimitiveKind.INT)
+    override fun deserialize(decoder: Decoder): Boolean = decoder.decodeInt() == 0
+    override fun serialize(encoder: Encoder, value: Boolean) {
+        encoder.encodeInt(if (value) 0 else 1)
     }
 }

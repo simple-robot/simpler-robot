@@ -16,6 +16,8 @@
 
 package love.forte.simbot.component.kaiheila.api
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import love.forte.simbot.builder.Builder
 import love.forte.simbot.component.kaiheila.api.ApiData.Req
 import love.forte.simbot.component.kaiheila.api.ApiData.Resp
@@ -61,6 +63,9 @@ public sealed interface ApiData {
 
     /**
      * [Response][Resp]. 请求响应相关的数据类。
+     *
+     * @see BaseResp
+     *
      */
     public interface Resp : ApiData
 
@@ -68,15 +73,81 @@ public sealed interface ApiData {
 
 
 /**
+ * 返回值 [data] 为一个json实例对象的结果。
+ */
+@Serializable
+public data class ObjectResp<RESP : Resp>(
+    /**
+     * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
+     */
+    val code: Int,
+    /**
+     * string, 错误消息，具体的返回消息会根据Accept-Language来返回。
+     */
+    val message: String,
+    /**
+     * mixed, 具体的数据。
+     */
+    val data: RESP?
+)
+
+/**
+ * 返回值为一个列表（数组）实例对象的结果。
+ *
+ * 列表返回的时候会有三个属性
+ * - `items`, 为列表结果
+ * - `meta`, 为分页信息
+ * - `sort`, 为排序信息
+ *
+ * 其中，如果无法确定sort类型（字段值），则直接使用 Map<String, Int>
+ *
+ */
+@Serializable
+public data class ListResp<RESP : Resp, SORT>(
+    /**
+     * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
+     */
+    val code: Int,
+    /**
+     * string, 错误消息，具体的返回消息会根据Accept-Language来返回。
+     */
+    val message: String,
+    /**
+     * mixed, 具体的数据。
+     */
+    val data: ListRespData<RESP, SORT>
+)
+
+
+@Serializable
+public data class ListRespData<RESP : Resp, SORT>(
+    val items: List<RESP>,
+    val meta: RespMeta,
+    val sort: SORT
+)
+
+@Serializable
+public data class RespMeta(
+    val page: Int,
+    @SerialName("page_total")
+    val pageTotal: Int,
+    @SerialName("page_size")
+    val pageSize: Int,
+    val total: Int
+)
+
+
+
+/**
  * [Req] 基础抽象类。
  */
-public abstract class BaseReq<RESP : Resp>(override val respType: KClass<out RESP>) : Req<RESP> {
+public abstract class BaseReq<RESP : Resp>(
+    override val respType: KClass<out RESP>,
+) : Req<RESP> {
     /**
      * api请求路径。
      */
     abstract override val route: String
-
-
 
 }
 
