@@ -20,18 +20,18 @@ package love.forte.simbot.component.kaiheila.api
 
 
 /**
- * 一个[开黑啦的API][https://developer.kaiheila.cn/doc/reference]信息。
+ * 一个[开黑啦的API][https://developer.kaiheila.cn/doc/reference]版本信息。
  *
  * 其主要记录一个API的版本信息。
  *
- * [version] 属性将会作为 [KaiheilaApi] 的唯一标识。
+ * [version] 属性将会作为 [ApiVersion] 的唯一标识。
  *
  *
- * @see BaseKaiheilaApi
- * @see KaiheilaApiData
+ * @see BaseApiVersion
+ * @see ApiVersionData
  *
  */
-public interface KaiheilaApi {
+public interface ApiVersion {
     /**
      * api的版本编号。以 `v3` 为例，版本号则为 `3`。
      */
@@ -63,14 +63,14 @@ public interface KaiheilaApi {
 
 
 /**
- * [KaiheilaApi] 基础抽象类。
+ * [ApiVersion] 基础抽象类。
  */
-public abstract class BaseKaiheilaApi(override val versionNumber: Int) : KaiheilaApi {
+public abstract class BaseApiVersion(override val versionNumber: Int) : ApiVersion {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as BaseKaiheilaApi
+        other as BaseApiVersion
 
         if (version != other.version) return false
 
@@ -84,12 +84,19 @@ public abstract class BaseKaiheilaApi(override val versionNumber: Int) : Kaiheil
 
 
 /**
- * [KaiheilaApi]基础实现。
+ * [ApiVersion]基础实现。
  */
-public class KaiheilaApiData(versionNumber: Int) : BaseKaiheilaApi(versionNumber)
+public class ApiVersionData(versionNumber: Int) : BaseApiVersion(versionNumber)
 
 
 /**
- * get instance for [KaiheilaApi] by [KaiheilaApi.versionNumber] value.
+ * get instance for [ApiVersion] by [ApiVersion.versionNumber] value.
  */
-public inline fun kaiheilaApi(versionNumber: () -> Int) = KaiheilaApiData(versionNumber())
+public fun apiVersion(versionNumber: Int) : ApiVersion = ApiVersionData(versionNumber)
+
+
+/**
+ * get instance for [ApiVersion] by [ApiVersion.versionNumber] value.
+ */
+public inline fun apiVersion(versionNumber: () -> Int) : ApiVersion = apiVersion(versionNumber())
+
