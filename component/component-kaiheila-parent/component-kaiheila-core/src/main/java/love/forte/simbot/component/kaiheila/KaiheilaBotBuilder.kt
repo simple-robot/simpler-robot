@@ -17,8 +17,6 @@ package love.forte.simbot.component.kaiheila
 import love.forte.simbot.builder.Builder
 import love.forte.simbot.component.kaiheila.api.ApiConfiguration
 import love.forte.simbot.component.kaiheila.api.ApiConfigurationBuilder
-import love.forte.simbot.component.kaiheila.api.apiVersionNumber
-import love.forte.simbot.component.kaiheila.api.authorizationTypeByBot
 import love.forte.simbot.component.kaiheila.api.apiConfiguration as api_apiConfiguration
 
 
@@ -27,6 +25,12 @@ public interface KaiheilaBotBuilder<B : KaiheilaBot> : Builder<B> {
     var clientId: String?
     var token: String? // null able
     var clientSecret: String? // null able
+
+    companion object Builder {
+        @JvmStatic fun websocketBotBuilder() = WebsocketBotBuilder()
+        @JvmStatic fun webhookBotBuilder() = WebhookBotBuilder()
+    }
+
 }
 
 /**
@@ -145,30 +149,3 @@ private data class WebhookBotImpl(
     override var encryptKey: String?
 ) : WebhookBot
 
-
-fun main() {
-    val bot1 = websocketBot {
-        apiConfiguration {
-            apiVersionNumber = 3
-            authorizationTypeByBot()
-            this.language = "zh_cn"
-        }
-        clientId = "clientId"
-        token = "token"
-        clientSecret = "secret"
-    }
-
-    val bot2 = webhookBot {
-        apiConfiguration {
-            apiVersionNumber = 3
-            authorizationTypeByBot()
-            this.language = "zh_cn"
-        }
-        clientId = "clientId"
-        token = "token"
-        clientSecret = "secret"
-        verifyToken = "verifyToken"
-        encryptKey = null
-    }
-    println(bot1)
-}
