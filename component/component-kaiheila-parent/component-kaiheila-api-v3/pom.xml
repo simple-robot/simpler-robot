@@ -17,4 +17,11 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>love.forte.simple-robot</groupId>
+            <artifactId>component-kaiheila-core</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

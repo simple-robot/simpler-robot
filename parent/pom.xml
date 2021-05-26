@@ -103,6 +103,21 @@
                 <artifactId>component-ding</artifactId>
                 <version>2.0.0-RC.2</version>
             </dependency>
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
+                <artifactId>component-kaiheila-parent</artifactId>
+                <version>${simbot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
+                <artifactId>component-kaiheila-core</artifactId>
+                <version>${simbot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
+                <artifactId>component-kaiheila-api-v3</artifactId>
+                <version>${simbot.version}</version>
+            </dependency>
             <!--</editor-fold>-->
             <!--<editor-fold desc="http-client">-->
             <dependency>

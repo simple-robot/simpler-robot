@@ -46,6 +46,14 @@ public interface ApiData {
          * 此次请求所发送的数据。为null则代表没有参数。
          */
         val parameters: Any?
+
+        /**
+         * 获取请求的鉴权token。
+         *
+         * - 机器人。TOKEN_TYPE = Bot。 `Authorization: Bot BHsTZ4232tLatgV5AFyjoqZGAHHmpl9mTxYQ/u4/80=`
+         * - Oauth2。TOKEN_TYPE = Bearer。 `Authorization: Bearer BHsTZ4232tLatgV5AFyjoqZGAHHmpl9mTxYQ/u4/80=`
+         */
+        val authorization: String?
     }
 
     /**
@@ -54,3 +62,7 @@ public interface ApiData {
     public interface Resp : ApiData
 
 }
+
+
+
+
