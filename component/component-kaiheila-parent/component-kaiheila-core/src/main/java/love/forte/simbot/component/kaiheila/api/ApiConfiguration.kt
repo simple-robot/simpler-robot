@@ -24,6 +24,8 @@ package love.forte.simbot.component.kaiheila.api
  *
  * 参考 [开黑啦常规http接口规范][https://developer.kaiheila.cn/doc/reference#%E5%B8%B8%E8%A7%84%20http%20%E6%8E%A5%E5%8F%A3%E8%A7%84%E8%8C%83]
  *
+ * @see ApiConfigurationBuilder
+ *
  * @author ForteScarlet
  */
 public interface ApiConfiguration {
@@ -117,6 +119,15 @@ set(value) {
     apiVersion = value?.let { apiVersion { it } }
 }
 
+@ApiConfigurationBuildDsl
+public fun ApiConfigurationBuilder.authorizationTypeByBot() {
+    authorizationType = AuthorizationType.BOT
+}
+
+@ApiConfigurationBuildDsl
+public fun ApiConfigurationBuilder.authorizationTypeByOauth2() {
+    authorizationType = AuthorizationType.OAUTH2
+}
 
 
 
