@@ -14,7 +14,7 @@
 
 package love.forte.simbot.component.mirai
 
-import love.forte.simbot.bot.BotRegisterInfo
+import love.forte.simbot.bot.BotVerifyInfo
 import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
 import net.mamoe.mirai.utils.BotConfiguration
 
@@ -22,7 +22,7 @@ import net.mamoe.mirai.utils.BotConfiguration
  * 用于获取一个根据bot对应的 [BotConfiguration] 实例。
  */
 public interface MiraiBotConfigurationFactory {
-    fun getMiraiBotConfiguration(botInfo: BotRegisterInfo, simbotMiraiConfig: MiraiConfiguration): BotConfiguration
+    fun getMiraiBotConfiguration(botInfo: BotVerifyInfo, simbotMiraiConfig: MiraiConfiguration): BotConfiguration
 }
 
 
@@ -30,7 +30,7 @@ public interface MiraiBotConfigurationFactory {
  * 默认的 [MiraiBotConfigurationFactory] 实现。
  */
 public object DefaultMiraiBotConfigurationFactory : MiraiBotConfigurationFactory {
-    override fun getMiraiBotConfiguration(botInfo: BotRegisterInfo, simbotMiraiConfig: MiraiConfiguration): BotConfiguration {
+    override fun getMiraiBotConfiguration(botInfo: BotVerifyInfo, simbotMiraiConfig: MiraiConfiguration): BotConfiguration {
         return simbotMiraiConfig.botConfiguration(botInfo.code)
     }
 }

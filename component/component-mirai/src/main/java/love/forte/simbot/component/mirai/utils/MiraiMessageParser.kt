@@ -1031,7 +1031,8 @@ private inline val UUID: Id
     }
 
 
-private inline class Id(private val data: ByteArray) {
+@JvmInline
+private value class Id(private val data: ByteArray) {
 
     fun idString(): String {
         var msb: Long = 0

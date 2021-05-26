@@ -77,7 +77,7 @@ public class MiraiBotManager(
         get() = _bots.values.toList()
 
 
-    override fun registerBot(botRegisterInfo: BotRegisterInfo): Bot {
+    override fun registerBot(botRegisterInfo: BotVerifyInfo): Bot {
         // 如果账号本身就存在，直接返回
         val botCode = botRegisterInfo.code
         val foundBot: Bot? = _bots[botCode]

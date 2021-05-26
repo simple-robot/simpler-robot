@@ -201,8 +201,8 @@ class RestTemplateHttpTemplate(private val restTemplate: RestTemplate) : BaseHtt
 
 
 }
-
-private inline class Request<T>(val request: HttpRequest<T>) {
+@JvmInline
+private value class Request<T>(val request: HttpRequest<T>) {
     val url: String get() = request.url
 
     val method: HttpMethod
