@@ -66,6 +66,27 @@ public interface ApiData {
 
 }
 
+
+/**
+ * [Req] 基础抽象类。
+ */
+public abstract class BaseReq<RESP : Resp>(override val respType: KClass<out RESP>) : Req<RESP> {
+    /**
+     * api请求路径。
+     */
+    abstract override val route: String
+
+
+
+}
+
+
+
+
+
+
+
+
 public data class ReqData<RESP : Resp>
 @JvmOverloads
 constructor(
@@ -76,7 +97,6 @@ constructor(
 ) : Req<RESP>
 
 
-@Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
 @DslMarker
 public annotation class ReqBuilderDsl
@@ -85,9 +105,10 @@ public annotation class ReqBuilderDsl
 public class ReqBuilder<RESP : Resp>
 @JvmOverloads
 constructor(var respType: KClass<out RESP>? = null, var route: String? = null) :
-Builder<Req<RESP>> {
+    Builder<Req<RESP>> {
     @ReqBuilderDsl
     var authorization: String? = null
+
     @ReqBuilderDsl
     var parameters: Any? = null
 
@@ -102,7 +123,9 @@ Builder<Req<RESP>> {
 }
 
 
-
-public inline fun <RESP : Resp> req(block: ReqBuilder<RESP>.() -> Unit) : Req<RESP> {
-    return ReqBuilder<RESP>().apply(block).build()
+public inline fun <reified RESP : Resp> req(
+    route: String? = null,
+    block: ReqBuilder<RESP>.() -> Unit,
+): Req<RESP> {
+    return ReqBuilder(RESP::class, route).apply(block).build()
 }
