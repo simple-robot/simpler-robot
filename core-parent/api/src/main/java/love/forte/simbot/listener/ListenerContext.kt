@@ -34,14 +34,14 @@ public interface ListenerContext : Context<ContextMap> {
     /**
      * 主体为一个 [ContextMap], 以提供监听函数间的信息传递。
      */
-    @JvmDefault
+    // @JvmDefault
     override val mainValue: ContextMap
         get() = contextMap
 
     /**
      * 从 `global` 中获取信息。
      */
-    @JvmDefault
+    // @JvmDefault
     fun global(key: String): Any? {
         return contextMap.global[key]
     }
@@ -49,7 +49,7 @@ public interface ListenerContext : Context<ContextMap> {
     /**
      * 从 `instant` 中获取信息。
      */
-    @JvmDefault
+    // @JvmDefault
     fun instant(key: String): Any? {
         return contextMap.instant[key]
     }
@@ -57,7 +57,7 @@ public interface ListenerContext : Context<ContextMap> {
     /**
      * 向 `global` 中设置信息。
      */
-    @JvmDefault
+    // @JvmDefault
     fun global(key: String, value: Any): Any? {
         return contextMap.global.put(key, value)
     }
@@ -65,7 +65,7 @@ public interface ListenerContext : Context<ContextMap> {
     /**
      * 向 `instant` 中设置信息。
      */
-    @JvmDefault
+    // @JvmDefault
     fun instant(key: String, value: Any): Any? {
         return contextMap.instant.put(key, value)
     }

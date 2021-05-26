@@ -84,7 +84,7 @@ public interface ListenerFunction {
     /**
      * 判断当前监听函数是否可以触发当前类型的监听.
      */
-    @JvmDefault
+    // @JvmDefault
     fun <T: MsgGet> canListen(onType: Class<T>): Boolean {
         return listenTypes.contains(onType) || listenTypes.any { it.isAssignableFrom(onType) }
     }

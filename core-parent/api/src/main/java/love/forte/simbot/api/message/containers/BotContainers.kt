@@ -28,7 +28,7 @@ public interface BotCodeContainer : Container {
     val botCode: String
 
     /** 得到[botCode]的[Long]类型。如果可以作为数字的话。 */
-    @JvmDefault
+    // @JvmDefault
     val botCodeNumber: Long get() = botCode.toLong()
 }
 
@@ -61,7 +61,7 @@ public interface BotAvatarContainer : Container {
 @ContainerType("机器人等级容器")
 public interface BotLevelContainer : Container {
     /** 机器人等级。 */
-    @JvmDefault
+    // @JvmDefault
     val botLevel: Long get() = -1
 }
 
@@ -80,17 +80,17 @@ public interface BotLevelContainer : Container {
 public interface BotInfo : Container,
     BotCodeContainer, BotNameContainer, BotAvatarContainer, BotLevelContainer,
     AccountInfo {
-    @JvmDefault
+    // @JvmDefault
     override val accountCode: String
         get() = botCode
-    @JvmDefault
+    // @JvmDefault
     override val accountNickname: String
         get() = botName
     /** bot对于自己没有昵称。 */
-    @JvmDefault
+    // @JvmDefault
     override val accountRemark: String?
         get() = null
-    @JvmDefault
+    // @JvmDefault
     override val accountAvatar: String?
         get() = botAvatar
 }

@@ -51,7 +51,7 @@ public abstract class MiraiMessageContent : MessageContent {
      * 那么他们会作为 **Cat码** 字符串存在于消息中。
      * 如果类型为text，不会以cat码的格式被展示。
      */
-    // @JvmDefault
+    // // @JvmDefault
     override val msg: String by lazy(LazyThreadSafetyMode.PUBLICATION) {
         when {
             cats.isEmpty() -> ""

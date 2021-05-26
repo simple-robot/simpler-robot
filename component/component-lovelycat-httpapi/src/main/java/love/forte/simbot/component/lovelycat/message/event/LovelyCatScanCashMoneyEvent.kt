@@ -57,12 +57,12 @@ public interface LovelyCatScanCashMoney: LovelyCatMsg, BotContainer, AccountCont
      * 可能为null。
      *
      * */
-    @JvmDefault
+    // @JvmDefault
     override val text: String?
         get() = payInfo.remark
 
     /** 账号信息等同于 [paySourceInfo]. */
-    @JvmDefault
+    // @JvmDefault
     override val accountInfo: AccountInfo
         get() = paySourceInfo
 

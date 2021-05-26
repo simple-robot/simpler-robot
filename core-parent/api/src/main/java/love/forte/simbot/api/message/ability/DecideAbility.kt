@@ -45,7 +45,7 @@ public interface PureAcceptDecideAbility<ACCEPT> : AcceptDecideAbility<ACCEPT?> 
     /**
      * 一个不需要参数的'接受'决策。默认情况下，其等同于当决策参数为null的时候。
      */
-    @JvmDefault
+    // @JvmDefault
     fun accept(): Boolean = accept(null)
 
 
@@ -63,7 +63,7 @@ public interface PureRejectDecideAbility<REJECT> : RejectDecideAbility<REJECT?> 
     /**
      * 一个不需要参数的'拒绝'决策。默认情况下，其等同于当决策参数为null的时候。
      */
-    @JvmDefault
+    // @JvmDefault
     fun reject(): Boolean = reject(null)
 
     /**

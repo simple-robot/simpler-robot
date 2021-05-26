@@ -54,7 +54,7 @@ public interface GroupMemberReduce: ReduceEventGet, GroupContainer, OperatingCon
     /**
      * [被操作者][beOperatorInfo] 默认实现为 [当前主体账户][accountInfo]
      */
-    @JvmDefault
+    // @JvmDefault
     override val beOperatorInfo: BeOperatorInfo
         get() = accountInfo.asBeOperator()
 
