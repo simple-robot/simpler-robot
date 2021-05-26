@@ -118,12 +118,46 @@ public data class ListResp<RESP : Resp, SORT>(
     val data: ListRespData<RESP, SORT>
 )
 
+/**
+ * 返回值为一个列表（数组）实例对象的结果。
+ *
+ * 列表返回的时候会有三个属性
+ * - `items`, 为列表结果
+ * - `meta`, 为分页信息
+ * - `sort`, 为排序信息
+ *
+ * 其中，sort 类型为 Map<String, Int>
+ *
+ */
+@Serializable
+public data class ListRespForMapSort<RESP : Resp>(
+    /**
+     * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
+     */
+    val code: Int,
+    /**
+     * string, 错误消息，具体的返回消息会根据Accept-Language来返回。
+     */
+    val message: String,
+    /**
+     * mixed, 具体的数据。
+     */
+    val data: ListRespDataForMapSort<RESP>
+)
+
 
 @Serializable
 public data class ListRespData<RESP : Resp, SORT>(
-    val items: List<RESP>,
+    val items: List<RESP> = emptyList(),
     val meta: RespMeta,
-    val sort: SORT
+    val sort: SORT? = null
+)
+
+@Serializable
+public data class ListRespDataForMapSort<RESP : Resp>(
+    val items: List<RESP> = emptyList(),
+    val meta: RespMeta,
+    val sort: Map<String, Int> = emptyMap()
 )
 
 @Serializable
