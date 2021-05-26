@@ -29,7 +29,7 @@ import kotlin.reflect.KClass
  *
  * @author ForteScarlet
  */
-public interface ApiData {
+public sealed interface ApiData {
 
     /**
      * [Request][Req]. 请求相关的数据类。
