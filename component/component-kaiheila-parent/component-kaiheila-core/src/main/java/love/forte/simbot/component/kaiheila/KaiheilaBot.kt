@@ -12,8 +12,11 @@
  *
  */
 
+@file:Suppress("unused")
+@file:JvmName("KaiheilaBots")
 package love.forte.simbot.component.kaiheila
 
+import love.forte.simbot.component.kaiheila.api.ApiConfiguration
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -30,6 +33,11 @@ import kotlin.contracts.contract
  * @author ForteScarlet
  */
 public interface KaiheilaBot {
+
+    /**
+     * 此bot所使用的api配置信息。
+     */
+    val apiConfiguration: ApiConfiguration
 
     /**
      * Client id.
