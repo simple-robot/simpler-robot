@@ -12,8 +12,11 @@
  *
  */
 
+@file:JvmName("ApiDataUtil")
+
 package love.forte.simbot.component.kaiheila.api
 
+import love.forte.simbot.builder.Builder
 import love.forte.simbot.component.kaiheila.api.ApiData.Req
 import love.forte.simbot.component.kaiheila.api.ApiData.Resp
 import kotlin.reflect.KClass
@@ -63,6 +66,43 @@ public interface ApiData {
 
 }
 
+public data class ReqData<RESP : Resp>
+@JvmOverloads
+constructor(
+    override val respType: KClass<out RESP>,
+    override val route: String,
+    override val authorization: String? = null,
+    override val parameters: Any? = null,
+) : Req<RESP>
+
+
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
+@DslMarker
+public annotation class ReqBuilderDsl
+
+
+public class ReqBuilder<RESP : Resp>
+@JvmOverloads
+constructor(var respType: KClass<out RESP>? = null, var route: String? = null) :
+Builder<Req<RESP>> {
+    @ReqBuilderDsl
+    var authorization: String? = null
+    @ReqBuilderDsl
+    var parameters: Any? = null
+
+    /** Build instance. */
+    override fun build(): Req<RESP> = ReqData(
+        requireNotNull(respType) { "Require respType was null." },
+        requireNotNull(route) { "Require route was null." },
+        authorization,
+        parameters
+    )
+
+}
 
 
 
+public inline fun <RESP : Resp> req(block: ReqBuilder<RESP>.() -> Unit) : Req<RESP> {
+    return ReqBuilder<RESP>().apply(block).build()
+}
