@@ -24,10 +24,7 @@ import love.forte.simbot.api.sender.BotSender
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.api.sender.toBotSender
-import love.forte.simbot.bot.Bot
-import love.forte.simbot.bot.BotRegisterInfo
-import love.forte.simbot.bot.BotVerifier
-import love.forte.simbot.bot.BotVerifyException
+import love.forte.simbot.bot.*
 import love.forte.simbot.component.mirai.MiraiBotConfigurationFactory
 import love.forte.simbot.component.mirai.MiraiBotInfo
 import love.forte.simbot.component.mirai.utils.MiraiBotEventRegistrar
@@ -64,7 +61,7 @@ public class MiraiBotVerifier(
      * 验证（登录）信息并得到要给 [Bot] 实例。
      */
     override fun verity(
-        botInfo: BotRegisterInfo,
+        botInfo: BotVerifyInfo,
         msgSenderFactories: MsgSenderFactories,
         defFactories: DefaultMsgSenderFactories,
     ): Bot {
@@ -82,7 +79,7 @@ public class MiraiBotVerifier(
             // 如果此bot尚未登录，则登录。
             if (mBot == null) {
                 mBot = BotFactory.newBot(botInfo.code.toLong(),
-                    botInfo.verification,
+                    requireNotNull(botInfo.verification) { "Bot verification (password) was null." },
                     configurationFactory.getMiraiBotConfiguration(botInfo, miraiConfiguration)
                 )
 

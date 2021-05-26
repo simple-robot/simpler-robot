@@ -78,21 +78,24 @@ public interface MsgSenderFactories {
 }
 
 
-public inline class GetterFacOnBot(private val getterFactory: GetterFactory) {
+@JvmInline
+public value class GetterFacOnBot(private val getterFactory: GetterFactory) {
     operator fun invoke(bot: BotContainer, def: Getter.Def): Getter = getterFactory.getOnBotGetter(bot, def)
 }
 
 public fun GetterFactory.onBot(): GetterFacOnBot = GetterFacOnBot(this)
 public fun GetterFactory.onBot(bot: BotContainer, def: Getter.Def) = this.onBot()(bot, def)
 
-public inline class SetterFacOnBot(private val setterFactory: SetterFactory) {
+@JvmInline
+public value class SetterFacOnBot(private val setterFactory: SetterFactory) {
     operator fun invoke(bot: BotContainer, def: Setter.Def): Setter = setterFactory.getOnBotSetter(bot, def)
 }
 
 public fun SetterFactory.onBot(): SetterFacOnBot = SetterFacOnBot(this)
 public fun SetterFactory.onBot(bot: BotContainer, def: Setter.Def) = this.onBot()(bot, def)
 
-public inline class SenderFacOnBot(private val senderFactory: SenderFactory) {
+@JvmInline
+public value class SenderFacOnBot(private val senderFactory: SenderFactory) {
     operator fun invoke(bot: BotContainer, def: Sender.Def): Sender = senderFactory.getOnBotSender(bot, def)
 }
 

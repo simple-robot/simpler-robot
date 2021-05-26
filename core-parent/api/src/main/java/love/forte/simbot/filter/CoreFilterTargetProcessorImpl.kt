@@ -53,7 +53,8 @@ public object MsgFilterTargetProcessor :
  * 将 `target` 根据 `.` 切割后的结果。
  * split的长度应该为 `4`.
  */
-internal inline class ContextFilterTargetSplit(private val split: List<String>) {
+@JvmInline
+internal value class ContextFilterTargetSplit(private val split: List<String>) {
     val targetMap: String get() = split[1]
     val nullable: Boolean get() = with(split[2]) { this == FilterTargets.NULLABLE }
     val valueName: String get() = split[3]
