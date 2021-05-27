@@ -22,8 +22,8 @@ import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.api.sender.toBotSender
 import love.forte.simbot.bot.Bot
-import love.forte.simbot.bot.BotRegisterInfo
 import love.forte.simbot.bot.BotVerifier
+import love.forte.simbot.bot.BotVerifyInfo
 import love.forte.simbot.component.lovelycat.LovelyCatApiManager
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplateImpl
 import love.forte.simbot.component.lovelycat.LovelyCatBot
@@ -51,9 +51,9 @@ public class LovelyCatBotVerifier : BotVerifier {
 
 
     /** 验证一个bot的注册信息，并转化为一个该组件对应的 [Bot] 实例。 */
-    override fun verity(botInfo: BotRegisterInfo, msgSenderFactories: MsgSenderFactories, defFactories: DefaultMsgSenderFactories): Bot {
+    override fun verity(botInfo: BotVerifyInfo, msgSenderFactories: MsgSenderFactories, defFactories: DefaultMsgSenderFactories): Bot {
         val code = botInfo.code
-        val path = botInfo.verification
+        val path = botInfo.verification ?: throw IllegalStateException("Require verification (request path) was null.")
         val api = LovelyCatApiTemplateImpl(httpTemplate, path, jsonSerializerFactory, lovelyCatApiCache)
         // 寻找登录bot中是否存在此code
         val accountList = api.getLoggedAccountList()

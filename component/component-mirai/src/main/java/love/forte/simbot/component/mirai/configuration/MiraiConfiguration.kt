@@ -336,8 +336,8 @@ internal operator fun ByteArray.get(rangeStart: Int, rangeEnd: Int): String = bu
 @JvmSynthetic
 internal fun Byte.fixToString(): String {
     return when (val b = this.toInt() and 0xff) {
-        in 0..15 -> "0${this.toString(16).toUpperCase()}"
-        else -> b.toString(16).toUpperCase()
+        in 0..15 -> "0${this.toString(16).uppercase()}"
+        else -> b.toString(16).uppercase()
     }
 }
 
