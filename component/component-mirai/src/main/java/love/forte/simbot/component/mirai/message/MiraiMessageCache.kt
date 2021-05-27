@@ -18,6 +18,7 @@ package love.forte.simbot.component.mirai.message
 import love.forte.common.collections.LRULinkedHashMap
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.PrivateMsg
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.event.events.MessageRecallEvent
 import java.util.concurrent.locks.StampedLock
 
@@ -40,12 +41,21 @@ public interface MiraiMessageCache {
      */
     fun cacheGroupMsg(id: String, msg: GroupMsg)
 
+    /**
+     * 群聊消息是否可以缓存
+     */
+    val groupMsgCacheable: Boolean
+
 
     /**
      * 缓存一个私聊消息实例。
      */
     fun cachePrivateMsg(id: String, msg: PrivateMsg)
 
+    /**
+     * 私聊消息是否可以缓存。
+     */
+    val privateMsgCacheable: Boolean
 
     /**
      * 获取群聊消息缓存。
@@ -70,6 +80,8 @@ private object EmptyMiraiMessageCache : MiraiMessageCache {
     override fun cachePrivateMsg(id: String, msg: PrivateMsg) { }
     override fun getGroupMsg(id: String): GroupMsg? = null
     override fun getPrivateMsg(id: String): PrivateMsg? = null
+    override val groupMsgCacheable: Boolean get() = false
+    override val privateMsgCacheable: Boolean get() = false
 }
 
 
@@ -94,6 +106,8 @@ public class LRUMiraiMessageCache(priCapacity: Int, priInitialCapacity: Int, pri
     private val privateLock: StampedLock = StampedLock()
     private val groupLock: StampedLock = StampedLock()
 
+    override val groupMsgCacheable: Boolean get() = true
+    override val privateMsgCacheable: Boolean get() = true
 
     override fun cacheGroupMsg(id: String, msg: GroupMsg) {
         val stamp = groupLock.writeLock()
@@ -150,3 +164,13 @@ public class LRUMiraiMessageCache(priCapacity: Int, priInitialCapacity: Int, pri
 
 
 
+public fun cacheId(authorId: Long, messageIds: IntArray, messageInternalIds: IntArray): String {
+    return "$authorId.${messageIds.joinToString(",")}.${messageInternalIds.joinToString(",")}"
+}
+
+
+public inline val MessageEvent.cacheId: String
+    get() = cacheId(this.sender.id, this.source.ids, this.source.internalIds)
+
+public inline val MessageRecallEvent.cacheId: String
+    get() = cacheId(this.authorId, this.messageIds, this.messageInternalIds)

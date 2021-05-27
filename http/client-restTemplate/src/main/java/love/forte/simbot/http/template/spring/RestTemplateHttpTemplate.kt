@@ -16,10 +16,7 @@
 @file:JvmName("RestTemplateHttpTemplates")
 package love.forte.simbot.http.template.spring
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.simbot.http.template.*
 import org.springframework.http.HttpEntity
@@ -189,6 +186,7 @@ class RestTemplateHttpTemplate(private val restTemplate: RestTemplate) : BaseHtt
      * @param parallel 是否异步请求。
      * @return 全部的响应结果，其顺序为 [requests] 中的顺序。
      */
+    @OptIn(DelicateCoroutinesApi::class)
     override fun requestAll(parallel: Boolean, vararg requests: HttpRequest<*>): List<HttpResponse<*>> {
         return if (parallel) {
             requests.map {

@@ -53,7 +53,7 @@ public class LovelyCatBotVerifier : BotVerifier {
     /** 验证一个bot的注册信息，并转化为一个该组件对应的 [Bot] 实例。 */
     override fun verity(botInfo: BotVerifyInfo, msgSenderFactories: MsgSenderFactories, defFactories: DefaultMsgSenderFactories): Bot {
         val code = botInfo.code
-        val path = botInfo.verification!!
+        val path = botInfo.verification ?: throw IllegalStateException("Require verification (request path) was null.")
         val api = LovelyCatApiTemplateImpl(httpTemplate, path, jsonSerializerFactory, lovelyCatApiCache)
         // 寻找登录bot中是否存在此code
         val accountList = api.getLoggedAccountList()

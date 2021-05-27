@@ -218,7 +218,7 @@ data class Cookies(
 internal fun toBkn(skey: String): Int {
     var hash = 5381
     for (element in skey) {
-        hash += (hash shl 5/* << 5*/) + element.toInt()
+        hash += (hash shl 5/* << 5*/) + element.code
     }
     return hash and 2147483647 /*& 2147483647*/
 }
@@ -234,7 +234,7 @@ internal fun toGtk(pskey: String): Long {
     val p_skey = pskey
     var hash: Long = 5381
     for (element in p_skey) {
-        hash += (hash shl 5) + element.toInt()
+        hash += (hash shl 5) + element.code
         // hash += (hash shl 5 and 0x7fffffff) + element.toInt() and 0x7fffffff
         // hash = hash and 0x7fffffff
     }

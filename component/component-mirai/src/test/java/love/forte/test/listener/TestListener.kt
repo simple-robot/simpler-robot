@@ -14,7 +14,6 @@
 
 package love.forte.test.listener
 
-import love.forte.common.ioc.annotation.Beans
 import love.forte.simbot.annotation.OnGroup
 import love.forte.simbot.annotation.OnPrivate
 import love.forte.simbot.filter.AtDetection
@@ -22,7 +21,7 @@ import love.forte.simbot.filter.AtDetection
 /**
  * @author ForteScarlet
  */
-@Beans
+// @Beans
 class TestListener {
 
 

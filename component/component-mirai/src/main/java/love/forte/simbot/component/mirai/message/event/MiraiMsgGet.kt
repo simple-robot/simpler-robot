@@ -20,6 +20,7 @@ import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.component.mirai.MiraiBotInfo
+import love.forte.simbot.component.mirai.message.cacheId
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.event.events.BotEvent
 import net.mamoe.mirai.event.events.MessageEvent
@@ -72,9 +73,7 @@ public abstract class MiraiMessageMsgGet<out ME : MessageEvent>(event: ME) : Abs
     MessageGet {
 
     /** 默认的ID策略，使用source获取。 */
-    override val id: String get() = with(event.source) {
-        "${this.fromId}.${this.ids.joinToString(",")}"
-    }
+    override val id: String get() = event.cacheId
 
     override val time: Long get() = event.time.secondToMill()
 
