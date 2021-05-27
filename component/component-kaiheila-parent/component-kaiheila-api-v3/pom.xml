@@ -22,6 +22,16 @@
             <groupId>love.forte.simple-robot</groupId>
             <artifactId>component-kaiheila-core</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit5</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
