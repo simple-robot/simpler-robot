@@ -41,12 +41,21 @@ public interface MiraiMessageCache {
      */
     fun cacheGroupMsg(id: String, msg: GroupMsg)
 
+    /**
+     * 群聊消息是否可以缓存
+     */
+    val groupMsgCacheable: Boolean
+
 
     /**
      * 缓存一个私聊消息实例。
      */
     fun cachePrivateMsg(id: String, msg: PrivateMsg)
 
+    /**
+     * 私聊消息是否可以缓存。
+     */
+    val privateMsgCacheable: Boolean
 
     /**
      * 获取群聊消息缓存。
@@ -71,6 +80,8 @@ private object EmptyMiraiMessageCache : MiraiMessageCache {
     override fun cachePrivateMsg(id: String, msg: PrivateMsg) { }
     override fun getGroupMsg(id: String): GroupMsg? = null
     override fun getPrivateMsg(id: String): PrivateMsg? = null
+    override val groupMsgCacheable: Boolean get() = false
+    override val privateMsgCacheable: Boolean get() = false
 }
 
 
@@ -95,6 +106,8 @@ public class LRUMiraiMessageCache(priCapacity: Int, priInitialCapacity: Int, pri
     private val privateLock: StampedLock = StampedLock()
     private val groupLock: StampedLock = StampedLock()
 
+    override val groupMsgCacheable: Boolean get() = true
+    override val privateMsgCacheable: Boolean get() = true
 
     override fun cacheGroupMsg(id: String, msg: GroupMsg) {
         val stamp = groupLock.writeLock()

@@ -59,8 +59,6 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
         override val beOperatorInfo: BeOperatorInfo = accountInfo.asBeOperator()
 
 
-        private var _cacheMsg: GroupMsg? = null
-
         private val cacheMsg: GroupMsg? by lazy(LazyThreadSafetyMode.PUBLICATION) {
             cache.getGroupMsg(event.cacheId)
         }

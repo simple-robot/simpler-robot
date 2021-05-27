@@ -56,27 +56,58 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
     fun registerSimbotEvents(bot: Bot, msgProcessor: MsgGetProcessor) = bot.run {
 
         //region 消息相关
-        // 好友消息
-        registerListenerAlways<FriendMessageEvent> {
-            msgProcessor.onMsg {
-                MiraiPrivateMsg(this).also {
+        // private 消息
+        // 如果允许私聊消息缓存，则直接实例化消息
+        if (cache.privateMsgCacheable) {
+            // 好友消息
+            registerListenerAlways<FriendMessageEvent> {
+                val msg = MiraiPrivateMsg(this).also {
                     cache.cachePrivateMsg(this@registerListenerAlways.cacheId, it)
                 }
+                msgProcessor.onMsg { msg }
             }
-        }
-        // 临时会话消息
-        registerListenerAlways<GroupTempMessageEvent> {
-            msgProcessor.onMsg {
-                MiraiTempMsg(this).also {
+            // 临时会话消息
+            registerListenerAlways<GroupTempMessageEvent> {
+                val msg = MiraiTempMsg(this).also {
                     cache.cachePrivateMsg(this@registerListenerAlways.cacheId, it)
+                }
+                msgProcessor.onMsg { msg }
+            }
+        } else {
+            // 否则懒触发事件
+            // 好友消息
+            registerListenerAlways<FriendMessageEvent> {
+                msgProcessor.onMsg {
+                    MiraiPrivateMsg(this).also {
+                        cache.cachePrivateMsg(this@registerListenerAlways.cacheId, it)
+                    }
+                }
+            }
+            // 临时会话消息
+            registerListenerAlways<GroupTempMessageEvent> {
+                msgProcessor.onMsg {
+                    MiraiTempMsg(this).also {
+                        cache.cachePrivateMsg(this@registerListenerAlways.cacheId, it)
+                    }
                 }
             }
         }
         // 群消息
-        registerListenerAlways<GroupMessageEvent> {
-            msgProcessor.onMsg {
-                MiraiGroupMsg(this).also {
+        // 如果允许缓存，则每次都直接实例化消息对象
+        if (cache.groupMsgCacheable) {
+            registerListenerAlways<GroupMessageEvent> {
+                val msg = MiraiGroupMsg(this).also {
                     cache.cacheGroupMsg(this@registerListenerAlways.cacheId, it)
+                }
+                msgProcessor.onMsg { msg }
+            }
+        } else {
+            // 否则事件懒触发
+            registerListenerAlways<GroupMessageEvent> {
+                msgProcessor.onMsg {
+                    MiraiGroupMsg(this).also {
+                        cache.cacheGroupMsg(this@registerListenerAlways.cacheId, it)
+                    }
                 }
             }
         }
