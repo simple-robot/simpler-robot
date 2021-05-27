@@ -145,7 +145,7 @@ public interface GroupAddRequestInvitor: OriginalDataContainer {
     /** 邀请者备注。 可能无法获取*/
     val invitorRemark: String?
     /** 备注或昵称 */
-    @JvmDefault val invitorRemarkOrNickname: String? get() = invitorRemark ?: invitorNickname
+    /* @JvmDefault */val invitorRemarkOrNickname: String? get() = invitorRemark ?: invitorNickname
 }
 
 /**

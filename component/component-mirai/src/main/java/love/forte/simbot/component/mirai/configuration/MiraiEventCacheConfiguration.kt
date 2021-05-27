@@ -48,10 +48,10 @@ public class MiraiEventCacheConfiguration {
     /** 群消息Map初始容量 */
     var groInitialCapacity: Int = 128
 
-    /** 私聊缓存Map负载因子。默认为 1.0。 */
-    var priLoadFactor: Float = 1F
-    /** 群消息缓存Map负载因子。默认为 1.0。 */
-    var groLoadFactor: Float = 1F
+    /** 私聊缓存Map负载因子。默认为 0.75。 */
+    var priLoadFactor: Float = 0.75F
+    /** 群消息缓存Map负载因子。默认为 0.75。 */
+    var groLoadFactor: Float = 0.75F
 
 
 
