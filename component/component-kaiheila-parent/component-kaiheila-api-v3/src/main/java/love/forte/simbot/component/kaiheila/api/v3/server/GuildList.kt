@@ -16,11 +16,7 @@ package love.forte.simbot.component.kaiheila.api.v3.server
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import love.forte.simbot.component.kaiheila.BooleanAsIntSerializer
-import love.forte.simbot.component.kaiheila.api.ListResp
-import love.forte.simbot.component.kaiheila.kaiheilaJson
-import org.jetbrains.annotations.TestOnly
 
 
 @Serializable
@@ -99,53 +95,6 @@ public data class GuildListResp(
 
 @Serializable
 public data class GuildApiRespSort(val id: Int)
-
-
-// TODO delete
-@TestOnly
-fun test() {
-
-
-    val data = kaiheilaJson.decodeFromString<ListResp<GuildListResp, GuildApiRespSort>>("""
-        {
-            "code": 0,
-            "message": "操作成功",
-            "data": {
-                "items": [
-                    {
-                        "id": "xxx",
-                        "name": "test",
-                        "topic": "",
-                        "master_id": "xxx",
-                        "icon": "",
-                        "notify_type": 2,
-                        "region": "beijing",
-                        "enable_open": 0,
-                        "open_id": "0",
-                        "default_channel_id": "xxx",
-                        "welcome_channel_id": "xxx"
-                    }
-                ],
-                "meta": {
-                    "page": 1,
-                    "page_total": 1,
-                    "page_size": 100,
-                    "total": 2
-                },
-                "sort": {
-                    "id": 1
-                }
-            }
-        }
-    """.trimIndent())
-
-    println(data)
-
-    println(data.data.sort)
-    println(data.data.sort?.javaClass)
-
-
-}
 
 
 
