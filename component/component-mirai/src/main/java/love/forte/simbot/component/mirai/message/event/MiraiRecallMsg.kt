@@ -23,6 +23,7 @@ import love.forte.simbot.api.message.events.PrivateMsgRecall
 import love.forte.simbot.component.mirai.message.MiraiFriendAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
+import love.forte.simbot.component.mirai.message.cacheId
 import love.forte.simbot.component.mirai.message.result.MiraiGroupFullInfo
 import net.mamoe.mirai.event.events.MessageRecallEvent
 import net.mamoe.mirai.event.events.operatorOrBot
@@ -58,8 +59,11 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
         override val beOperatorInfo: BeOperatorInfo = accountInfo.asBeOperator()
 
 
-        private val cacheMsg: GroupMsg?
-            get() = cache.getGroupMsg("${event.authorId}.${event.messageIds.joinToString(",")}.${event.messageInternalIds.joinToString(",")}")
+        private var _cacheMsg: GroupMsg? = null
+
+        private val cacheMsg: GroupMsg? by lazy(LazyThreadSafetyMode.PUBLICATION) {
+            cache.getGroupMsg(event.cacheId)
+        }
 
         /**
          * 通过缓存获取撤回的消息内容。
@@ -94,8 +98,9 @@ public sealed class MiraiMsgRecall<E : MessageRecallEvent>(event: E) : AbstractM
         /** 撤回的操作人，也应该是消息的原作者。是好友。 */
         override val accountInfo: AccountInfo = MiraiFriendAccountInfo(event.operatorId, event.operator)
 
-        private val cacheMsg: PrivateMsg?
-            get() = cache.getPrivateMsg("${event.operator}.${event.messageIds.joinToString(",")}.${event.messageInternalIds.joinToString(",")}")
+        private val cacheMsg: PrivateMsg? by lazy(LazyThreadSafetyMode.PUBLICATION) {
+            cache.getPrivateMsg(event.cacheId)
+        }
 
         /**
          * 操作者。代表撤回这条消息的人。

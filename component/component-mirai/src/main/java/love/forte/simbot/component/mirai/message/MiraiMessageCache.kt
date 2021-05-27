@@ -18,6 +18,7 @@ package love.forte.simbot.component.mirai.message
 import love.forte.common.collections.LRULinkedHashMap
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.PrivateMsg
+import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.event.events.MessageRecallEvent
 import java.util.concurrent.locks.StampedLock
 
@@ -150,3 +151,13 @@ public class LRUMiraiMessageCache(priCapacity: Int, priInitialCapacity: Int, pri
 
 
 
+public fun cacheId(authorId: Long, messageIds: IntArray, messageInternalIds: IntArray): String {
+    return "$authorId.${messageIds.joinToString(",")}.${messageInternalIds.joinToString(",")}"
+}
+
+
+public inline val MessageEvent.cacheId: String
+    get() = cacheId(this.sender.id, this.source.ids, this.source.internalIds)
+
+public inline val MessageRecallEvent.cacheId: String
+    get() = cacheId(this.authorId, this.messageIds, this.messageInternalIds)

@@ -17,8 +17,8 @@
 package love.forte.simbot.component.mirai.utils
 
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
+import love.forte.simbot.component.mirai.message.cacheId
 import love.forte.simbot.component.mirai.message.event.*
-import love.forte.simbot.component.mirai.message.flagId
 import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.listener.MsgGetProcessor
 import love.forte.simbot.listener.onMsg
@@ -60,7 +60,7 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         registerListenerAlways<FriendMessageEvent> {
             msgProcessor.onMsg {
                 MiraiPrivateMsg(this).also {
-                    cache.cachePrivateMsg(it.flag.flagId, it)
+                    cache.cachePrivateMsg(this@registerListenerAlways.cacheId, it)
                 }
             }
         }
@@ -68,7 +68,7 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         registerListenerAlways<GroupTempMessageEvent> {
             msgProcessor.onMsg {
                 MiraiTempMsg(this).also {
-                    cache.cachePrivateMsg(it.flag.flagId, it)
+                    cache.cachePrivateMsg(this@registerListenerAlways.cacheId, it)
                 }
             }
         }
@@ -76,7 +76,7 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         registerListenerAlways<GroupMessageEvent> {
             msgProcessor.onMsg {
                 MiraiGroupMsg(this).also {
-                    cache.cacheGroupMsg(it.flag.flagId, it)
+                    cache.cacheGroupMsg(this@registerListenerAlways.cacheId, it)
                 }
             }
         }
