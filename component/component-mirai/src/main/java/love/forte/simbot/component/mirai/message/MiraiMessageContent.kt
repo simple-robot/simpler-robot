@@ -17,8 +17,6 @@ package love.forte.simbot.component.mirai.message
 
 import catcode.CatCodeUtil
 import catcode.Neko
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import love.forte.simbot.api.message.MessageContent
@@ -83,9 +81,10 @@ public data class MiraiListMessageContent(val list: List<MiraiMessageContent>) :
             list.isEmpty() -> EmptyMessageChain
             list.size == 1 -> list[0].getMessage(contact)
             list.size == 2 -> list.first().getMessage(contact) + list.last().getMessage(contact)
-            else -> list.map { contact.async { it.getMessage(contact) } }.asSequence().map {
-                runBlocking { it.await() }
-            }.filter { it.isNotEmptyMsg() }.reduceOrNull { m1, m2 -> m1 + m2 } ?: EmptyMessageChain
+            else -> list.map { it.getMessage(contact) }
+                .asSequence()
+                .filter { it.isNotEmptyMsg() }
+                .reduceOrNull { m1, m2 -> m1 + m2 } ?: EmptyMessageChain
         }
 
     }

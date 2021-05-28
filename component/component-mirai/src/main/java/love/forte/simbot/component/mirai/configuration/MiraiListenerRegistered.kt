@@ -14,8 +14,6 @@
 
 package love.forte.simbot.component.mirai.configuration
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.Depend
@@ -72,7 +70,7 @@ public class MiraiListenerRegistered : ListenerRegistered, SimbotContextClosedHa
         // val waiting = mutableListOf<Pair<Long, Deferred<*>>>()
         // close all bot.
         val waiting = Bot.instances.map {
-            it.id to GlobalScope.async {
+            it.id to runBlocking {
                 logger.debug("try to close bot(${it.id})...")
                 it.closeAndJoin()
             }
@@ -84,7 +82,7 @@ public class MiraiListenerRegistered : ListenerRegistered, SimbotContextClosedHa
         runBlocking {
             waiting.forEach {
                 logger.debug("Waiting bot(${it.first}) close...")
-                it.second.await()
+                it.second
                 logger.debug("bot(${it.first}) closed.")
             }
 
