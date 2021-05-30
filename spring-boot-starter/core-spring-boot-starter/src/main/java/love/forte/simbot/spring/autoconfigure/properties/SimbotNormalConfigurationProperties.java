@@ -29,16 +29,19 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "simbot")
 @lombok.Getter
 @lombok.Setter
+@Deprecated
 public class SimbotNormalConfigurationProperties {
 
     /**
-     * 展示simbot的logo。
+     * 无效配置
      */
+    @Deprecated
     private Boolean showLogo = true;
 
     /**
-     * 展示simbot的随机tips。
+     * 无效配置
      */
+    @Deprecated
     private Boolean showTips = true;
 
 }
