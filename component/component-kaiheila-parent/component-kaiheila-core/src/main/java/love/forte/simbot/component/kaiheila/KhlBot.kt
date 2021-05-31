@@ -32,7 +32,7 @@ import kotlin.contracts.contract
  *
  * @author ForteScarlet
  */
-public interface KaiheilaBot {
+public interface KhlBot {
 
     /**
      * 此bot所使用的api配置信息。
@@ -69,7 +69,7 @@ public interface KaiheilaBot {
 /**
  * 使用Websocket协议通讯的bot。
  */
-public interface WebsocketBot : KaiheilaBot {
+public interface WebsocketBot : KhlBot {
     override val connectionMode: ConnectionMode
         get() = ConnectionMode.WEBSOCKET
 }
@@ -77,7 +77,7 @@ public interface WebsocketBot : KaiheilaBot {
 /**
  * 使用Webhook方式的bot。
  */
-public interface WebhookBot : KaiheilaBot {
+public interface WebhookBot : KhlBot {
     override val connectionMode: ConnectionMode
         get() = ConnectionMode.WEBHOOK
     // 他还需要一些额外的参数。
@@ -103,26 +103,26 @@ public enum class ConnectionMode {
 
 
 
-public inline fun KaiheilaBot.requireMode(mode: ConnectionMode, msg: () -> String = { "KaiheilaBot's connection mode require $mode, but not." }) {
+public inline fun KhlBot.requireMode(mode: ConnectionMode, msg: () -> String = { "KaiheilaBot's connection mode require $mode, but not." }) {
     if (this.connectionMode != mode) {
         throw IllegalStateException(msg())
     }
 }
 
-public inline fun KaiheilaBot.requireWebsocketMode(msg: () -> String = { "KaiheilaBot's connection mode require Websocket, but not." }): WebsocketBot {
+public inline fun KhlBot.requireWebsocketMode(msg: () -> String = { "KaiheilaBot's connection mode require Websocket, but not." }): WebsocketBot {
     if (this.isWebsocketBot()) return this else throw IllegalStateException(msg())
 }
 
-public inline fun KaiheilaBot.requireWebhookMode(msg: () -> String = { "KaiheilaBot's connection mode require Webhook, but not." }): WebhookBot {
+public inline fun KhlBot.requireWebhookMode(msg: () -> String = { "KaiheilaBot's connection mode require Webhook, but not." }): WebhookBot {
     if (this.isWebhookBot()) return this else throw IllegalStateException(msg())
 }
 
 
-public fun KaiheilaBot.checkMode(mode: ConnectionMode): Boolean = connectionMode == mode
+public fun KhlBot.checkMode(mode: ConnectionMode): Boolean = connectionMode == mode
 
 
 @OptIn(ExperimentalContracts::class)
-public fun KaiheilaBot.isWebsocketBot(): Boolean {
+public fun KhlBot.isWebsocketBot(): Boolean {
     contract {
         returns(true) implies (this@isWebsocketBot is WebsocketBot)
     }
@@ -131,7 +131,7 @@ public fun KaiheilaBot.isWebsocketBot(): Boolean {
 
 
 @OptIn(ExperimentalContracts::class)
-public fun KaiheilaBot.isWebhookBot(): Boolean {
+public fun KhlBot.isWebhookBot(): Boolean {
     contract {
         returns(true) implies (this@isWebhookBot is WebhookBot)
     }

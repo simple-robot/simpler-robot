@@ -53,7 +53,7 @@ import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
  *
  * @author ForteScarlet
  */
-public interface User : KaiheilaObjects, AccountInfo {
+public interface User : KhlObjects, AccountInfo {
 
     /** 用户的id */
     val id: String

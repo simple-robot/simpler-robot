@@ -71,7 +71,7 @@ import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
  *
  * @author ForteScarlet
  */
-public interface Guild : KaiheilaObjects, GroupInfo {
+public interface Guild : KhlObjects, GroupInfo {
 
     /** 服务器id */
     val id: String

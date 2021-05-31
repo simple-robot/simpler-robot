@@ -27,4 +27,4 @@ import love.forte.simbot.api.message.results.Result
  *
  * see https://developer.kaiheila.cn/doc/objects
  */
-public interface KaiheilaObjects : Result, OriginalDataContainer
+public interface KhlObjects : Result, OriginalDataContainer

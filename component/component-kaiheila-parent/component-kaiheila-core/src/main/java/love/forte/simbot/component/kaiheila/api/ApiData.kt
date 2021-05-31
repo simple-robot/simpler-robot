@@ -73,23 +73,49 @@ public sealed interface ApiData {
 
 
 /**
- * 返回值 [data] 为一个json实例对象的结果。
+ * 此接口定义一个 开黑啦 http请求的响应值标准。 参考 [常规 http 接口规范](https://developer.kaiheila.cn/doc/reference#%E5%B8%B8%E8%A7%84%20http%20%E6%8E%A5%E5%8F%A3%E8%A7%84%E8%8C%83)
+ *
+ *
+ * @see ObjectResp
+ * @see ListResp
  */
-@Serializable
-public data class ObjectResp<RESP : Resp>(
+public interface KhlHttpResp<D> {
     /**
      * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
      */
-    val code: Int,
+    val code: Int
+
     /**
      * string, 错误消息，具体的返回消息会根据Accept-Language来返回。
      */
-    val message: String,
+    val message: String
+
+    /**
+     * 响应值。
+     */
+    val data: D
+
+}
+
+
+/**
+ * 返回值 [data] 为一个json实例对象的结果。
+ */
+@Serializable
+public data class ObjectResp<RESP : Resp> (
+    /**
+     * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
+     */
+    override val code: Int,
+    /**
+     * string, 错误消息，具体的返回消息会根据Accept-Language来返回。
+     */
+    override val message: String,
     /**
      * mixed, 具体的数据。
      */
-    val data: RESP?
-)
+    override val data: RESP?
+) : KhlHttpResp<RESP?>
 
 /**
  * 返回值为一个列表（数组）实例对象的结果。
@@ -107,16 +133,16 @@ public data class ListResp<RESP : Resp, SORT>(
     /**
      * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
      */
-    val code: Int,
+    override val code: Int,
     /**
      * string, 错误消息，具体的返回消息会根据Accept-Language来返回。
      */
-    val message: String,
+    override val message: String,
     /**
      * mixed, 具体的数据。
      */
-    val data: ListRespData<RESP, SORT>
-)
+    override val data: ListRespData<RESP, SORT>
+) : KhlHttpResp<ListRespData<RESP, SORT>>
 
 /**
  * 返回值为一个列表（数组）实例对象的结果。

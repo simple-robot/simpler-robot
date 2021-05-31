@@ -56,7 +56,7 @@ import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
  *
  * @author ForteScarlet
  */
-public interface Channel : KaiheilaObjects, GroupInfo {
+public interface Channel : KhlObjects, GroupInfo {
 
     /** 频道id */
     val id: String

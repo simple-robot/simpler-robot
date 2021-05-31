@@ -19,8 +19,8 @@ package love.forte.simbot.component.kaiheila.event
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
-import love.forte.simbot.component.kaiheila.KaiheilaRuntimeException
-import love.forte.simbot.component.kaiheila.event.KaiheilaSignalReconnectException.Companion.reconnectException
+import love.forte.simbot.component.kaiheila.KhlRuntimeException
+import love.forte.simbot.component.kaiheila.event.KhlSignalReconnectException.Companion.reconnectException
 
 typealias Signal_0 = Signal.Event
 typealias Signal_1 = Signal.Hello
@@ -277,7 +277,7 @@ public sealed class Signal<T> {
 /**
  * 开黑啦信令异常。
  */
-public open class KaiheilaSignalException : KaiheilaRuntimeException {
+public open class KhlSignalException : KhlRuntimeException {
     constructor() : super()
     constructor(message: String?) : super(message)
     constructor(message: String?, cause: Throwable?) : super(message, cause)
@@ -296,7 +296,7 @@ public open class KaiheilaSignalException : KaiheilaRuntimeException {
  * @see Signal.Reconnect
  * @see reconnectException
  */
-public open class KaiheilaSignalReconnectException : KaiheilaSignalException {
+public open class KhlSignalReconnectException : KhlSignalException {
     constructor() : super()
     constructor(message: String?) : super(message)
     constructor(message: String?, cause: Throwable?) : super(message, cause)
@@ -309,10 +309,10 @@ public open class KaiheilaSignalReconnectException : KaiheilaSignalException {
 
     companion object {
         @JvmStatic
-        fun reconnectException(resp: Signal.ReconnectPack): KaiheilaSignalReconnectException {
+        fun reconnectException(resp: Signal.ReconnectPack): KhlSignalReconnectException {
             val code = resp.code
             val err = resp.err ?: Signal.ReconnectCode.byCode(code).err
-            return KaiheilaSignalReconnectException("code: $code, err: $err")
+            return KhlSignalReconnectException("code: $code, err: $err")
         }
     }
 }
