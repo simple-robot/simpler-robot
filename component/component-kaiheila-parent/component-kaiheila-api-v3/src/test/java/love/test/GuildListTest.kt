@@ -65,6 +65,18 @@ class GuildListTest {
         // println(data.data.sort?.javaClass)
         assert(data.data.sort?.id == sortId) { "sort's id != $sortId." }
     }
+
+
+
+    @Test
+    fun instanceEncode() {
+
+
+
+
+
+    }
+
 }
 
 

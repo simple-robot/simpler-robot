@@ -20,7 +20,7 @@ import love.forte.simbot.component.kaiheila.api.ApiConfigurationBuilder
 import love.forte.simbot.component.kaiheila.api.apiConfiguration as api_apiConfiguration
 
 
-public interface KaiheilaBotBuilder<B : KaiheilaBot> : Builder<B> {
+public interface KaiheilaBotBuilder<B : KhlBot> : Builder<B> {
     var apiConfiguration: ApiConfiguration?
     var clientId: String?
     var token: String? // null able
@@ -127,7 +127,7 @@ public inline fun webhookBot(block: WebhookBotBuilder.() -> Unit): WebhookBot {
 }
 
 @KaiheilaBotBuilderDsl
-public inline fun <B : KaiheilaBot> KaiheilaBotBuilder<B>.apiConfiguration(block: ApiConfigurationBuilder.() -> Unit) {
+public inline fun <B : KhlBot> KaiheilaBotBuilder<B>.apiConfiguration(block: ApiConfigurationBuilder.() -> Unit) {
     this.apiConfiguration = api_apiConfiguration(block)
 }
 

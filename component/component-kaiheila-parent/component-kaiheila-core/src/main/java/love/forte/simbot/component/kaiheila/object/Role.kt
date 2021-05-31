@@ -42,7 +42,7 @@ import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
  *
  * @author ForteScarlet
  */
-public interface Role : KaiheilaObjects {
+public interface Role : KhlObjects {
 
     /** 角色id */
     val roleId: Int
