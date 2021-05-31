@@ -15,7 +15,7 @@
 package love.forte.simbot.listener
 
 /**
- * 上下文映射表。提供[当前表][instant] 和 [全局表][global]。
+ * 上下文映射表。不同作用域的上下文。
  * 其中，当前表应当仅存在于一次监听函数流程，而全局表则应当全局唯一。
  */
 public interface ContextMap {
@@ -80,10 +80,6 @@ public interface ContextMapFactory {
      */
     val contextMap: ContextMap
 }
-
-
-
-
 
 
 /**
