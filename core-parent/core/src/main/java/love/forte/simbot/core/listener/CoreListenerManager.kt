@@ -200,7 +200,7 @@ public class CoreListenerManager(
 
 
             // 如果被拦截, 返回默认值
-            if (msgChain.intercept().isPrevent) {
+            if (msgChain.intercept().prevent) {
                 return ListenResult
             }
 

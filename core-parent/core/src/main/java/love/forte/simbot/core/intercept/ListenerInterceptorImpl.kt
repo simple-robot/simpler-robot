@@ -63,7 +63,7 @@ public class ListenerInterceptorChainImpl(
     override fun intercept(): InterceptionType {
         // 只要一个要拦截，则为拦截，否则代表为放行。
         return InterceptionType.getTypeByPrevent(
-            interceptorList.any { it.intercept(context).isPrevent }
+            interceptorList.any { it.intercept(context).prevent }
         )
     }
 }

@@ -360,7 +360,7 @@ public class MethodListenerFunction(
     override fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> {
         // do filter
         val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
-        if (!filter || data.listenerInterceptorChain.intercept().isPrevent) {
+        if (!filter || data.listenerInterceptorChain.intercept().prevent) {
             // 没有通过检测, 返回ListenResult默认的无效化实现。
             return ListenResult
         }

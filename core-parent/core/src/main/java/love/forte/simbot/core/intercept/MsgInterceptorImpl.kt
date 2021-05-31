@@ -51,7 +51,7 @@ public class MsgInterceptChainImpl(
     override fun intercept(): InterceptionType {
         return InterceptionType.getTypeByPrevent(
             interceptorList.any {
-                it.intercept(context).isPrevent
+                it.intercept(context).prevent
             }
         )
     }
