@@ -18,6 +18,7 @@ package love.forte.simbot.listener
  * 上下文映射表。不同作用域的上下文。
  * 其中，当前表应当仅存在于一次监听函数流程，而全局表则应当全局唯一。
  */
+@Deprecated("不再使用")
 public interface ContextMap {
 
     /**

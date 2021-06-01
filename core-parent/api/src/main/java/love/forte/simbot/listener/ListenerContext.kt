@@ -32,6 +32,7 @@ public interface ListenerContext : Context<ContextMap> {
      */
     val contextMap: ContextMap
 
+
     /**
      * 主体为一个 [ContextMap], 以提供监听函数间的信息传递。
      */
