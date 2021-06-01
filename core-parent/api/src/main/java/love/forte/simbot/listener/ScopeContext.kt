@@ -24,7 +24,7 @@ import love.forte.simbot.Context
 /**
  * 监听事件流程中某作用域下的上下文。
  *
- * 监听事件流程中的作用域实现标准的 [上下文规范][Context], 并定义 [mainValue] 为当前上下文的 [作用域][scope]。
+ * 监听事件流程中的 [作用域上下文][ScopeContext] 实现标准的 [上下文规范][Context], 并定义 [mainValue] 为当前上下文的 [作用域][scope]。
  *
  * 但是请优先使用 [scope], 因为 [mainValue] 的指向未来 **有可能** 会发生变更。
  *
