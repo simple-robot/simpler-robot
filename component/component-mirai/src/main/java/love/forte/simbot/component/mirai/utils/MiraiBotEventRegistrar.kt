@@ -16,6 +16,10 @@
 
 package love.forte.simbot.component.mirai.utils
 
+import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.launch
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
 import love.forte.simbot.component.mirai.message.cacheId
 import love.forte.simbot.component.mirai.message.event.*
@@ -32,6 +36,11 @@ import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.concurrent.Executor
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
 
 //region 处理监听消息
 // private fun <M : MsgGet> M.onMsg(msgProcessor: MsgGetProcessor) = msgProcessor.onMsg(this)
@@ -120,7 +129,7 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         registerListenerAlways<NudgeEvent> {
             // if (this.from.id != this.bot.id) {
             if (this.from.id != this.bot.id) {
-                when(val sub = this.from) {
+                when (val sub = this.from) {
                     is Friend -> msgProcessor.onMsg { MiraiNudgedEvent.ByFriend(this, sub) }
                     is Member -> msgProcessor.onMsg { MiraiNudgedEvent.ByMember(this, sub) }
                     is Stranger -> msgProcessor.onMsg { MiraiNudgedEvent.ByStranger(this, sub) }
@@ -379,5 +388,53 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
 /**
  * register event.
  */
-private inline fun <reified E : BotEvent> Bot.registerListenerAlways(crossinline handler: suspend E.(E) -> Unit):
-        Listener<E> = this.eventChannel.subscribeAlways { handler(this) }
+@OptIn(SimbotMiraiCrossApi::class)
+private inline fun <reified E : BotEvent> Bot.registerListenerAlways(crossinline handler: suspend E.(E) -> Unit): Listener<E> =
+    this.eventChannel.subscribeAlways {
+        launch(MiraiOnMsgDispatcher) {
+            handler(this@subscribeAlways)
+        }
+    }
+
+
+/**
+ * simbot-mirai整合时所使用的部分内部性质的API。
+ */
+@Retention(AnnotationRetention.BINARY)
+@RequiresOptIn(message = "整合性质的内部API随时有改动或删除的可能", level = RequiresOptIn.Level.WARNING)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.TYPEALIAS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.CONSTRUCTOR
+)
+@MustBeDocumented
+public annotation class SimbotMiraiCrossApi
+
+
+
+@SimbotMiraiCrossApi
+private object MiraiOnMsgDispatcher : CoroutineDispatcher() {
+    private val threadGroup: ThreadGroup = ThreadGroup("MiraiOnMsgDispatcher")
+    private val threadIndex = atomic(0)
+
+    private val executor: Executor = ThreadPoolExecutor(
+        Runtime.getRuntime().availableProcessors() + 1,
+        Runtime.getRuntime().availableProcessors() * 2,
+        0L, TimeUnit.MILLISECONDS,
+        LinkedBlockingQueue(),
+    ) { runnable ->
+        Thread(
+            threadGroup,
+            runnable,
+            "${threadGroup.name}-worker-${threadIndex.getAndIncrement()}"
+        ).apply { isDaemon = true }
+    }
+
+
+    override fun dispatch(context: CoroutineContext, block: Runnable) {
+        executor.execute(block)
+    }
+}
