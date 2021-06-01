@@ -14,6 +14,8 @@
  *
  */
 
+@file:JvmName("ScopeContexts")
+
 package love.forte.simbot.listener
 
 import love.forte.simbot.Context
@@ -30,7 +32,8 @@ import love.forte.simbot.Context
 public interface ScopeContext : Context<String> {
 
     @Deprecated("mainValue的指向未来可能会变更，请使用 'scope'", ReplaceWith("scope"))
-    override val mainValue: String get() = scope
+    override val mainValue: String
+        get() = scope
 
     /**
      * 当前上下文所属的作用域。
@@ -68,30 +71,32 @@ public interface ScopeContext : Context<String> {
     val keys: Set<String>
 }
 
+/** kt习惯用法 */
+public inline val ScopeContext.size: Int get() = this.size()
+
 
 /**
  *
  * 基于 [MutableMap] 的 [ScopeContext] 默认实现。
  *
  */
-public class MapScopeContext(override val scope: String, private val delegate: MutableMap<String, Any> = mutableMapOf()) : ScopeContext {
+public class MapScopeContext(
+    override val scope: String,
+    private val delegate: MutableMap<String, Any> = mutableMapOf(),
+) : ScopeContext {
 
-    override fun get(key: String): Any? {
-        TODO("Not yet implemented")
-    }
+    override fun get(key: String): Any? = delegate[key]
 
     override fun set(key: String, value: Any) {
-        TODO("Not yet implemented")
+        delegate[key] = value
     }
 
-    override fun remove(key: String): Any? {
-        TODO("Not yet implemented")
-    }
+    override fun remove(key: String): Any? = delegate.remove(key)
 
-    override fun size(): Int {
-        TODO("Not yet implemented")
-    }
+    override fun size(): Int = delegate.size
 
     override val keys: Set<String>
-        get() = TODO("Not yet implemented")
+        get() = delegate.keys
 }
+
+
