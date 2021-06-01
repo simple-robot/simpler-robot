@@ -183,7 +183,16 @@ public interface BeOperatorAvatarContainer : Container {
  * 操作者信息容器
  */
 @ContainerType("操作者信息容器")
-public interface OperatorInfo : Container, OperatorCodeContainer, OperatorNameContainer, OperatorAvatarContainer
+public interface OperatorInfo : Container, OperatorCodeContainer, OperatorNameContainer, OperatorAvatarContainer, AccountInfo {
+    override val accountCode: String
+        get() = operatorCode
+    override val accountNickname: String?
+        get() = operatorNickname
+    override val accountRemark: String?
+        get() = operatorRemark
+    override val accountAvatar: String?
+        get() = operatorAvatar
+}
 
 /**
  * 可以得到操作者信息的容器
@@ -219,7 +228,16 @@ private object EmptyOperatorContainer : OperatorContainer {
  * 被操作者信息容器
  */
 @ContainerType("被操作者信息")
-public interface BeOperatorInfo : Container, BeOperatorCodeContainer, BeOperatorNameContainer, BeOperatorAvatarContainer
+public interface BeOperatorInfo : Container, BeOperatorCodeContainer, BeOperatorNameContainer, BeOperatorAvatarContainer, AccountInfo {
+    override val accountCode: String
+        get() = beOperatorCode
+    override val accountNickname: String?
+        get() = beOperatorNickname
+    override val accountRemark: String?
+        get() = beOperatorRemark
+    override val accountAvatar: String?
+        get() = beOperatorAvatar
+}
 
 
 /**
@@ -293,7 +311,8 @@ public fun AccountInfo.asOperator(): OperatorInfo = AccountAsOperator(this)
 /**
  * 将操作者作账户。
  */
-public fun OperatorInfo.asAccount(): AccountInfo = OperatorAsAccount(this)
+@Deprecated("Just use itself.", ReplaceWith("this"))
+public fun OperatorInfo.asAccount(): AccountInfo = this
 
 
 /**
@@ -352,34 +371,6 @@ private data class AccountAsOperator(private val account: AccountInfo) : Contain
 }
 
 
-/**
- * 将账户作操作者。一般用于那些可以将当前事件的
- * [账户信息][AccountInfo] 作为 [操作者][OperatorInfo] 而使用的地方
- */
-private data class OperatorAsAccount(private val operator: OperatorInfo) : Container, AccountInfo {
-
-    override val accountCode: String
-        get() = operator.operatorCode
-
-    override val accountCodeNumber: Long
-        get() = operator.operatorCodeNumber
-
-    override val accountNickname: String?
-        get() = operator.operatorNickname
-
-    override val accountRemark: String?
-        get() = operator.operatorRemark
-
-    override val accountRemarkOrNickname: String?
-        get() = operator.operatorRemarkOrNickname
-
-    override val accountNicknameAndRemark: String
-        get() = operator.operatorNicknameAndRemark
-
-    override val accountAvatar: String?
-        get() = operator.operatorAvatar
-}
-
 
 /**
  * 将账户作为被操作者。
@@ -388,7 +379,8 @@ public fun AccountInfo.asBeOperator(): BeOperatorInfo = AccountAsBeOperator(this
 /**
  * 将被操作者作为账户。
  */
-public fun BeOperatorInfo.asAccount(): AccountInfo = BeOperatorAsAccount(this)
+@Deprecated("Just use itself.", ReplaceWith("this"))
+public fun BeOperatorInfo.asAccount(): AccountInfo = this
 
 
 /**
@@ -444,31 +436,5 @@ private data class AccountAsBeOperator(private val account: AccountInfo) : Conta
         get() = account.accountNicknameAndRemark
 }
 
-/**
- * 将账户作为被操作者。一般用于那些可以将当前事件的
- * [账户信息][AccountInfo] 作为 [被操作者][BeOperatorInfo] 而使用的地方
- */
-private data class BeOperatorAsAccount(private val beOperator: BeOperatorInfo) : Container, AccountInfo {
 
-    override val accountCode: String
-        get() = beOperator.beOperatorCode
-
-    override val accountCodeNumber: Long
-        get() = beOperator.beOperatorCodeNumber
-
-    override val accountNickname: String?
-        get() = beOperator.beOperatorNickname
-
-    override val accountRemark: String?
-        get() = beOperator.beOperatorRemark
-
-    override val accountRemarkOrNickname: String?
-        get() = beOperator.beOperatorNickname
-
-    override val accountNicknameAndRemark: String
-        get() = beOperator.beOperatorNicknameAndRemark
-
-    override val accountAvatar: String?
-        get() = beOperator.beOperatorAvatar
-}
 
