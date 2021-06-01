@@ -180,7 +180,9 @@ public interface BeOperatorAvatarContainer : Container {
 }
 
 /**
- * 操作者信息容器
+ * 操作者信息容器。
+ *
+ * 同时，[操作者][OperatorInfo] 也属于一个 [账号信息][AccountInfo].
  */
 @ContainerType("操作者信息容器")
 public interface OperatorInfo : Container, OperatorCodeContainer, OperatorNameContainer, OperatorAvatarContainer, AccountInfo {
@@ -225,7 +227,8 @@ private object EmptyOperatorContainer : OperatorContainer {
 
 
 /**
- * 被操作者信息容器
+ * 被操作者信息容器。
+ * 同时，[被操作者][BeOperatorInfo] 也属于一个 [账号信息][AccountInfo].
  */
 @ContainerType("被操作者信息")
 public interface BeOperatorInfo : Container, BeOperatorCodeContainer, BeOperatorNameContainer, BeOperatorAvatarContainer, AccountInfo {
