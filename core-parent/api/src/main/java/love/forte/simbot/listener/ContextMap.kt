@@ -21,12 +21,6 @@ package love.forte.simbot.listener
 public interface ContextMap {
 
     /**
-     * 获取当前上下文映射中的所有作用域内容。
-     * @see ListenerContext.Scope
-     */
-    val scopes: Array<ListenerContext.Scope>
-
-    /**
      * 根据某个作用域获取到对应的上下文实例。
      */
     fun getContext(scope: ListenerContext.Scope): ScopeContext
@@ -37,6 +31,7 @@ public interface ContextMap {
 /**
  * [ContextMap] 工厂。获取一个contextMap。
  */
+@Deprecated("Unused")
 public interface ContextMapFactory {
 
     /**
@@ -56,51 +51,12 @@ public interface ContextMapFactory {
  *
  */
 @Suppress("UNCHECKED_CAST", "MemberVisibilityCanBePrivate")
-public class ContextMapImpl
-constructor(
-    // override val instant: MutableMap<String, Any>,
-    // override val global: MutableMap<String, Any>,
-) : ContextMap {
-    override val scopes: Array<ListenerContext.Scope>
-        get() = TODO("Not yet implemented")
+public class ContextMapImpl : ContextMap {
 
+    /**
+     * 根据作用域获取对应的上下文
+     */
     override fun getContext(scope: ListenerContext.Scope): ScopeContext {
         TODO("Not yet implemented")
     }
-
-    // /**
-    //  * 优先从当前instant中获取，否则从全局global中获取。
-    //  */
-    // override fun instantOrGlobal(key: String): Any? = instant[key] ?: global[key]
-    //
-    // /**
-    //  * 优先从全局global中获取，否则从当前instant中获取。
-    //  */
-    // override fun globalOrInstant(key: String): Any? = global[key] ?: instant[key]
-    //
-    // /**
-    //  * 优先从当前instant中获取，否则从全局global中获取，如果还没有则使用默认值。
-    //  * @param def 都没有的时候使用的默认值。不可为null。
-    //  */
-    // override fun <V> instantOrGlobalOrDefault(key: String, def: V): V = (instant[key] ?: global[key] ?: def) as V
-    //
-    // /**
-    //  * 优先从全局global中获取，否则从当前instant中获取。
-    //  * @param def 都没有的时候使用的默认值。不可为null。
-    //  */
-    // override fun <V> globalOrInstantOrDefault(key: String, def: V): V = (global[key] ?: instant[key] ?: def) as V
-//
-//     /**
-//      * 优先从当前instant中获取，否则从全局global中获取，如果还没有则使用默认值。
-//      * @param compute 都没有的时候使用key计算得到一个value。得到的值不可为null。
-//      */
-//     override fun <V> instantOrGlobalOrCompute(key: String, compute: (String) -> V): V =
-//         (instant[key] ?: global[key] ?: compute(key)) as V
-//
-//     /**
-//      * 优先从全局global中获取，否则从当前instant中获取。
-//      * @param compute 都没有的时候使用key计算得到一个value。得到的值不可为null。
-//      */
-//     override fun <V> globalOrInstantOrCompute(key: String, compute: (String) -> V): V =
-//         (global[key] ?: instant[key] ?: compute(key)) as V
 }
