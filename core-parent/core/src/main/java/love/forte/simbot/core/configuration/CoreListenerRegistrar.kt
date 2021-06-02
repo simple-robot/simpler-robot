@@ -18,7 +18,6 @@ import love.forte.common.ioc.DependBeanFactory
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.PostPass
-import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.infof
@@ -75,8 +74,7 @@ public class CoreListenerRegistrar {
         if (bots.isEmpty()) {
             logger.warn("Registration Bots is empty.")
         } else {
-            bots.forEach { bot ->
-                val info: BotInfo = bot.botInfo
+            bots.map { bot -> bot.botInfo }.forEach { info ->
                 logger.debug("Try get botInfo for ${info.botName}(${info.botCode})")
                 if (info.botLevel >= 0) {
                     logger.infof("Registration Bot: code={}, name={}, level={}", info.botCode, info.botName, info.botLevel)

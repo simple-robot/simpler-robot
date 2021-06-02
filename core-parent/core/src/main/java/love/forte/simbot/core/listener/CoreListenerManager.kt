@@ -18,6 +18,7 @@ package love.forte.simbot.core.listener
 import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.simbot.LogAble
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSender
@@ -67,12 +68,9 @@ private data class ListenerFunctionGroups(
  * @property atDetectionFactory at检测器工厂
  * @property exceptionManager 异常处理器
  *
- * @property msgInterceptData 消息拦截相关所需内容。
- * @property listenerInterceptData 函数拦截相关所需内容。
- * @property listenerContextData 监听上下文所需内容。
  */
 @SpareBeans("coreListenerManager")
-public class CoreListenerManager(
+public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructor(
     private val atDetectionFactory: AtDetectionFactory,
     private val exceptionManager: ExceptionProcessor,
 
@@ -144,6 +142,7 @@ public class CoreListenerManager(
     /**
      * 接收到消息监听并进行处理。
      */
+    @OptIn(SimbotExperimentalApi::class)
     override fun onMsg(msgGet: MsgGet): ListenResult<*> {
         try {
             // not empty, intercept.
@@ -191,6 +190,7 @@ public class CoreListenerManager(
     /**
      * 筛选监听函数
      */
+    @OptIn(SimbotExperimentalApi::class)
     private fun onMsg0(msgGet: MsgGet, context: ListenerContext): ListenResult<*> {
         val funcs = getListenerFunctions(msgGet.javaClass, true)
         var invokeData: ListenerFunctionInvokeData? = null
@@ -292,8 +292,6 @@ public class CoreListenerManager(
             }
 
             // do processor
-
-
 
 
             return finalResult

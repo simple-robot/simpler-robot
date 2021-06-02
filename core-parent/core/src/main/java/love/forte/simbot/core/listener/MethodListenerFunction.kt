@@ -62,8 +62,7 @@ public class MethodListenerFunction(
     private val filterManager: FilterManager,
     private val converterManager: ConverterManager,
     private val listenerResultFactory: ListenerResultFactory,
-
-    ) : ListenerFunction, LogAble {
+) : ListenerFunction, LogAble {
     override val log: Logger = LoggerFactory.getLogger(method.declaringClass.typeName + "." + method.name)
 
     private val isStatic: Boolean = Modifier.isStatic(method.modifiers)
@@ -151,6 +150,9 @@ public class MethodListenerFunction(
         }
 
 
+    override val groups: Array<String>
+
+
     /**
      * 此监听函数的实例获取函数。
      */
@@ -201,6 +203,22 @@ public class MethodListenerFunction(
 
         id = method.toListenerId(listensAnnotation)
         name = method.toListenerName(listensAnnotation)
+
+        // 分组
+        val parentGroupAnnotation =
+            AnnotationUtil.getAnnotation(declClass, ListenGroup::class.java)?.takeIf { a -> a.value.isNotEmpty() }
+        val methodGroupAnnotation =
+            AnnotationUtil.getAnnotation(method, ListenGroup::class.java)?.takeIf { a -> a.value.isNotEmpty() }
+
+        groups = when {
+            parentGroupAnnotation != null && methodGroupAnnotation != null ->
+                if (methodGroupAnnotation.append) parentGroupAnnotation.value + methodGroupAnnotation.value
+                else methodGroupAnnotation.value
+            methodGroupAnnotation != null -> methodGroupAnnotation.value
+            parentGroupAnnotation != null -> parentGroupAnnotation.value
+            else -> emptyArray()
+        }
+
 
 
         listenerInstanceGetter = if (isStatic) {
@@ -333,7 +351,11 @@ public class MethodListenerFunction(
                                     }
                                     if (orNull) return@let null
 
-                                    throw ContextValueNotFoundException("Cannot found '$findKey' from ${scopes.joinToString(",", "[", "]")}")
+                                    throw ContextValueNotFoundException("Cannot found '$findKey' from ${
+                                        scopes.joinToString(",",
+                                            "[",
+                                            "]")
+                                    }")
                                 }
                             }
                         }

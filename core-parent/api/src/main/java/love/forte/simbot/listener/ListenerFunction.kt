@@ -99,6 +99,12 @@ public interface ListenerFunction {
 
 
     /**
+     * 一个监听函数可能会被分为一个或多个组。
+     */
+    val groups: Array<String>
+
+
+    /**
      * 执行监听函数并返回一个执行后的响应结果。
      *
      * @throws Throwable 执行可能会存在任何可能发生的以外异常。而 [ListenResult] 中包含的一般仅仅是方法执行时候出现的异常。
@@ -126,6 +132,7 @@ public interface ListenerFunctionInvokeData {
      *  监听函数拦截器。
      *  如果是空的可以使用 [love.forte.simbot.core.intercept.EmptyListenerInterceptorChain].
      */
+    @Suppress("KDocUnresolvedReference")
     val listenerInterceptorChain: ListenerInterceptorChain
     /**
      * 根据类型获取一个实例。
