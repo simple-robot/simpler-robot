@@ -45,18 +45,3 @@ public interface ContextMapFactory {
 
 
 }
-
-
-/**
- *
- */
-@Suppress("UNCHECKED_CAST", "MemberVisibilityCanBePrivate")
-public class ContextMapImpl : ContextMap {
-
-    /**
-     * 根据作用域获取对应的上下文
-     */
-    override fun getContext(scope: ListenerContext.Scope): ScopeContext {
-        TODO("Not yet implemented")
-    }
-}
