@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
+@Deprecated("Unused")
 public object CoreContextMapFactory : ContextMapFactory {
 
     /**

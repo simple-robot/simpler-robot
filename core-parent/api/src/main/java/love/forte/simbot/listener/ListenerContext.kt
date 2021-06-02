@@ -12,8 +12,11 @@
  *
  */
 
+@file:JvmName("ListenerContexts")
 package love.forte.simbot.listener
 
+import love.forte.simbot.SimbotRuntimeException
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.mark.Since
 
@@ -25,43 +28,38 @@ import love.forte.simbot.mark.Since
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 @Since("2.1.0", desc = ["上下文整体结构重构"])
+@SimbotExperimentalApi
 @Suppress("MemberVisibilityCanBePrivate")
 public interface ListenerContext : ContextMap {
 
+    /**
+     * 获取指定作用域的上下文
+     */
+    override fun getContext(scope: Scope): ScopeContext
 
     /**
      * 从 `global` 中获取信息。
      */
-    fun global(key: String): Any? {
-        TODO()
-        // return contextMap.global[key]
-    }
+    fun global(key: String): Any? = getContext(Scope.GLOBAL)[key]
 
     /**
      * 从 `instant` 中获取信息。
      */
-    fun instant(key: String): Any? {
-        TODO()
-        // return contextMap.instant[key]
-    }
+    fun instant(key: String): Any? = getContext(Scope.EVENT_INSTANT)[key]
 
     /**
      * 向 `global` 中设置信息。
      */
-    fun global(key: String, value: Any): Any? {
-        TODO()
-        // return contextMap.global.put(key, value)
+    fun global(key: String, value: Any) {
+        getContext(Scope.GLOBAL)[key] = value
     }
 
     /**
      * 向 `instant` 中设置信息。
      */
-    fun instant(key: String, value: Any): Any? {
-        TODO()
-        // return contextMap.instant.put(key, value)
+    fun instant(key: String, value: Any) {
+        getContext(Scope.EVENT_INSTANT)[key] = value
     }
-
-
 
 
     /**
@@ -75,10 +73,24 @@ public interface ListenerContext : ContextMap {
         GLOBAL("global")
         ;
     }
-
 }
 
+@SimbotExperimentalApi
+public fun ListenerContext.instantOrGlobal(key: String): Any? = instant(key) ?: global(key)
 
+@SimbotExperimentalApi
+public fun ListenerContext.globalOrInstant(key: String): Any? = global(key) ?: instant(key)
+
+
+
+
+
+
+@SimbotExperimentalApi
+public operator fun ListenerContext.get(scope: ListenerContext.Scope): ScopeContext = this.getContext(scope)
+
+
+@SimbotExperimentalApi
 public inline fun findScope(block: () -> String): ListenerContext.Scope? {
     return ListenerContext.Scope.values().find { it.key == block() }
 }
@@ -87,15 +99,24 @@ public inline fun findScope(block: () -> String): ListenerContext.Scope? {
 /**
  * 监听函数上下文构建工厂。
  */
+@SimbotExperimentalApi
 public interface ListenerContextFactory {
     /**
-     * 通过 [当前监听事件实例][msgGet] 和 [上下文映射表][contextMap] 构建一个本次监听所需的上下文实例。
+     * 通过 [当前监听事件实例][msgGet] 构建一个本次监听所需的上下文实例。
      */
-    fun getListenerContext(
-        msgGet: MsgGet,
-        contextMap: ContextMap,
-    ): ListenerContext
+    fun getListenerContext(msgGet: MsgGet): ListenerContext
 }
 
 
 
+public open class ContextValueNotFoundException : SimbotRuntimeException {
+    constructor() : super()
+    constructor(message: String?) : super(message)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    constructor(cause: Throwable?) : super(cause)
+    constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(
+        message,
+        cause,
+        enableSuppression,
+        writableStackTrace)
+}

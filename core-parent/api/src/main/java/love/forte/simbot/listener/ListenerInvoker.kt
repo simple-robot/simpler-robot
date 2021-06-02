@@ -15,8 +15,7 @@
  */
 
 
-@file:JvmName("ListenerInvoker")
-
+@file:JvmName("ListenerInvokers")
 package love.forte.simbot.listener
 
 import love.forte.simbot.filter.ListenerFilter
@@ -49,7 +48,7 @@ public interface ListenerInvoker {
      * 当前监听函数所前置的监听拦截器。
      */
     // Need ListenerInterceptContext
-    val interceptor: ListenerInterceptor
+    // val interceptor: ListenerInterceptor
 
 
 
@@ -60,8 +59,8 @@ public interface ListenerInvoker {
 
 
 
-public val ListenerInvoker.listenerId: String get() = function.id
-public val ListenerInvoker.priority: Int get() = function.priority
-public val ListenerInvoker.spare: Boolean get() = function.spare
+// public val ListenerInvoker.listenerId: String get() = function.id
+// public val ListenerInvoker.priority: Int get() = function.priority
+// public val ListenerInvoker.spare: Boolean get() = function.spare
 
 

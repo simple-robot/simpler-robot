@@ -14,10 +14,13 @@
 
 package love.forte.simbot.listener
 
+import love.forte.simbot.api.SimbotExperimentalApi
+
 /**
  * 作为一个上下文映射表。
  * 其中包含了多个不同作用域的上下文。
  */
+@SimbotExperimentalApi
 public interface ContextMap {
 
     /**
@@ -32,6 +35,7 @@ public interface ContextMap {
  * [ContextMap] 工厂。获取一个contextMap。
  */
 @Deprecated("Unused")
+@SimbotExperimentalApi
 public interface ContextMapFactory {
 
     /**

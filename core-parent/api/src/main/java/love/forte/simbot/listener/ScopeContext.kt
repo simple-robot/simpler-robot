@@ -20,7 +20,6 @@ package love.forte.simbot.listener
 
 import love.forte.simbot.Context
 import love.forte.simbot.api.SimbotExperimentalApi
-import love.forte.simbot.api.message.events.MsgGet
 
 
 /**
@@ -31,6 +30,7 @@ import love.forte.simbot.api.message.events.MsgGet
  * 但是请优先使用 [scope], 因为 [mainValue] 的指向未来 **有可能** 会发生变更。
  *
  */
+@SimbotExperimentalApi
 public interface ScopeContext : Context<ListenerContext.Scope> {
 
     @Deprecated("mainValue的指向未来可能会变更，请使用 'scope'", ReplaceWith("scope"))
@@ -74,6 +74,7 @@ public interface ScopeContext : Context<ListenerContext.Scope> {
 }
 
 /** 习惯用法 */
+@SimbotExperimentalApi
 public inline val ScopeContext.size: Int get() = this.size()
 
 
@@ -82,6 +83,7 @@ public inline val ScopeContext.size: Int get() = this.size()
  * 基于 [MutableMap] 的 [ScopeContext] 默认实现。
  *
  */
+@SimbotExperimentalApi
 public class MapScopeContext(
     override val scope: ListenerContext.Scope,
     private val delegate: MutableMap<String, Any> = mutableMapOf(),
@@ -101,22 +103,3 @@ public class MapScopeContext(
         get() = delegate.keys
 }
 
-
-/**
- * [ScopeContext] 工厂。
- */
-public interface ScopeContextFactory {
-
-    /**
-     * 得到此工厂能够得到的作用域列表。
-     */
-    val handleableScope: Array<ListenerContext.Scope>
-
-
-    /**
-     * 根据指定的作用域以及触发的事件来得到一个对应的ScopeContext实例。
-     */
-    @SimbotExperimentalApi("未来会追加额外参数而导致接口变动。")
-    fun getScopeContext(scope: ListenerContext.Scope, event: MsgGet) : ScopeContext
-
-}

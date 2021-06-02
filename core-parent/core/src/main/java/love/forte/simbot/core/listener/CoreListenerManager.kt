@@ -46,38 +46,6 @@ private fun listenerFunctionQueue(vararg func: ListenerFunction): Queue<Listener
     concurrentSortedQueueOf(ListenerFunctionComparable, *func)
 
 
-/**
- * 消息拦截相关所需内容。
- */
-public data class MsgInterceptData(
-    val contextFactory: MsgInterceptContextFactory,
-    val chainFactory: MsgInterceptChainFactory,
-)
-
-/**
- * 函数拦截相关所需内容。
- */
-public data class ListenerInterceptData(
-    val contextFactory: ListenerInterceptContextFactory,
-    val chainFactory: ListenerInterceptChainFactory,
-)
-
-
-/**
- * 监听上下文所需内容。
- */
-public data class ListenerContextData(
-    val contextFactory: ListenerContextFactory,
-    val contextMapFactory: ContextMapFactory,
-) {
-    fun getContext(msgGet: MsgGet): ListenerContext {
-        return contextMapFactory.contextMap.let {
-            contextFactory.getListenerContext(msgGet, it)
-        }
-    }
-}
-
-
 private data class ListenerFunctionGroups(
     val normal: Collection<ListenerFunction>,
     val spare: Collection<ListenerFunction>,
@@ -116,9 +84,8 @@ public class CoreListenerManager(
     private val listenerInterceptContextFactory: ListenerInterceptContextFactory,
     private val listenerInterceptChainFactory: ListenerInterceptChainFactory,
 
-    // private val listenerContextData: ListenerContextData,
     private val listenerContextFactory: ListenerContextFactory,
-    private val contextMapFactory: ContextMapFactory,
+    // private val contextMapFactory: ContextMapFactory,
 
     private val msgSenderFactories: MsgSenderFactories,
     private val defMsgSenderFactories: DefaultMsgSenderFactories,
@@ -181,7 +148,7 @@ public class CoreListenerManager(
         try {
             // not empty, intercept.
             // val context: ListenerContext = getContext(msgGet)
-            val context: ListenerContext = listenerContextFactory.getListenerContext(msgGet, contextMapFactory.contextMap)
+            val context: ListenerContext = listenerContextFactory.getListenerContext(msgGet)
             //
             // // val context: ListenerContext = getContext(msgGet)
             //
@@ -247,24 +214,15 @@ public class CoreListenerManager(
 
                 // invoke with try.
                 return try {
-                    invokeData = ListenerFunctionInvokeDataLazyImpl(
-                        LazyThreadSafetyMode.NONE,
-                        { msgGet },
-                        { context },
-                        { atDetectionFactory.getAtDetection(msgGet) },
-                        { botManager.getBot(msgGet.botInfo) },
-                        { MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories) },
-                        { interceptorChain }
+                    invokeData = ListenerFunctionInvokeDataImpl(
+                        // LazyThreadSafetyMode.NONE,
+                        msgGet,
+                        context,
+                        atDetectionFactory.getAtDetection(msgGet),
+                        botManager.getBot(msgGet.botInfo),
+                        MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories),
+                        interceptorChain
                     )
-
-                    // invokeData = ListenerFunctionInvokeDataImpl(
-                    //     msgGet,
-                    //     context,
-                    //     atDetectionFactory.getAtDetection(msgGet),
-                    //     botManager.getBot(msgGet.botInfo),
-                    //     MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories),
-                    //     interceptorChain
-                    // )
 
                     func(invokeData!!)
                 } catch (funcRunEx: Throwable) {

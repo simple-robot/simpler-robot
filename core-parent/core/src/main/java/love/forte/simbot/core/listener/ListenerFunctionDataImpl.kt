@@ -53,6 +53,7 @@ public data class ListenerFunctionInvokeDataImpl(
 
 
 
+@Deprecated("会存在类型匹配错误的问题")
 public class ListenerFunctionInvokeDataLazyImpl(
     mode: LazyThreadSafetyMode,
     _msgGet: () -> MsgGet,

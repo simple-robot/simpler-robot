@@ -14,6 +14,7 @@
 @file:JvmName("ListenerFunctions")
 package love.forte.simbot.listener
 
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.MsgSender
 import love.forte.simbot.bot.Bot
@@ -113,6 +114,7 @@ public interface ListenerFunctionInvokeData {
     /** 监听到的消息。 */
     val msgGet: MsgGet
     /** 监听函数上下文。 */
+    @OptIn(SimbotExperimentalApi::class)
     val context: ListenerContext
     /** at检测器。 */
     val atDetection: AtDetection
@@ -131,6 +133,9 @@ public interface ListenerFunctionInvokeData {
      */
     operator fun get(type: Class<*>): Any?
 }
+
+
+
 
 
 /**
