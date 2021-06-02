@@ -19,6 +19,7 @@ import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.simbot.LogAble
 import love.forte.simbot.api.SimbotExperimentalApi
+import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSender
@@ -35,6 +36,7 @@ import love.forte.simbot.filter.AtDetectionFactory
 import love.forte.simbot.listener.*
 import love.forte.simbot.processor.ListenResultProcessorManager
 import love.forte.simbot.processor.context
+import love.forte.simbot.utils.isEmpty
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -69,6 +71,7 @@ private data class ListenerFunctionGroups(
  * @property exceptionManager 异常处理器
  *
  */
+@OptIn(SimbotInternalApi::class)
 @SpareBeans("coreListenerManager")
 public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructor(
     private val atDetectionFactory: AtDetectionFactory,
@@ -110,6 +113,16 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, ListenerFunctionGroups> = ConcurrentHashMap()
     // private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, Queue<ListenerFunction>> = ConcurrentHashMap()
 
+    /**
+     * 监听函数分组数据。
+     */
+    private val listenerGroups = ConcurrentHashMap<String, MutableListenerGroup>()
+
+    /**
+     * 没有分组的分组。
+     */
+    private val noGroupListenerGroup = MutableListenerGroup("NON-GROUP")
+
 
     /**
      * 注册一个 [监听函数][ListenerFunction]。
@@ -117,6 +130,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      * 每次注册一个新的监听函数的时候，会刷新内置的 **全部** 缓存，会一定程度上影响到其他应用。
      *
      */
+    @Synchronized
     override fun register(listenerFunction: ListenerFunction) {
         // 获取其监听类型，并作为key存入map
         val listenTypes = listenerFunction.listenTypes
@@ -125,6 +139,18 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             // merge into map.
             mainListenerFunctionMap.merge(listenType, listenerFunctionQueue(listenerFunction)) { oldValue, value ->
                 oldValue.apply { addAll(value) }
+            }
+
+            // groups.
+            val groups = listenerFunction.groups
+            if (groups.isEmpty()) {
+                noGroupListenerGroup.add(listenerFunction)
+            } else {
+                groups.forEach { g ->
+                    listenerGroups.compute(g) { g0, v ->
+                        v?.apply { add(listenerFunction) } ?: MutableListenerGroup(g0, mutableListOf(listenerFunction))
+                    }
+                }
             }
 
             // clear cache map.

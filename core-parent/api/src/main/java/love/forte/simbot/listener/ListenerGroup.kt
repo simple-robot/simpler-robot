@@ -14,6 +14,8 @@
 
 package love.forte.simbot.listener
 
+import love.forte.simbot.api.SimbotInternalApi
+
 
 /**
  *
@@ -21,6 +23,7 @@ package love.forte.simbot.listener
  *
  * 一个组管理多个监听函数, 并且有一个(在监听函数管理器中)唯一的名称。
  */
+@SimbotInternalApi
 public interface ListenerGroup {
 
     /**
@@ -46,11 +49,17 @@ public interface ListenerGroup {
  *
  * 其内部隔离出了视图列表，因此保证添加的时候不会影响到视图获取，但是会造成一定的更新滞后问题。
  *
+ *
+ *
  * 这或许看上去类似于Copy On Write.
  *
  *
  */
-public class MutableListenerGroup(override val name: String, private val mutableListeners: MutableList<ListenerFunction>) : ListenerGroup {
+@SimbotInternalApi
+public class MutableListenerGroup(
+    override val name: String,
+    private val mutableListeners: MutableList<ListenerFunction> = mutableListOf(),
+) : ListenerGroup {
 
     @Synchronized
     fun add(listenerFunction: ListenerFunction) {
@@ -90,19 +99,28 @@ public class MutableListenerGroup(override val name: String, private val mutable
     }
 
     private fun resetView() {
-        _listenersView = mutableListeners.toList()
+        _listenersView = null
     }
+
     private fun cleanView() {
         _listenersView = emptyList()
     }
 
 
     @Volatile
-    private var _listenersView: List<ListenerFunction> = mutableListeners.toList()
+    private var _listenersView: List<ListenerFunction>? = null
 
 
     override val listeners: List<ListenerFunction>
-        get() = _listenersView
+        get() {
+            val nowView = _listenersView
+            return nowView ?: synchronized(this) {
+                val view0 = _listenersView
+                view0 ?: mutableListeners.toList().apply {
+                    _listenersView = this
+                }
+            }
+        }
 }
 
 

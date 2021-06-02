@@ -29,6 +29,8 @@ import love.forte.simbot.filter.FilterData
 import love.forte.simbot.filter.FilterManager
 import love.forte.simbot.filter.ListenerFilter
 import love.forte.simbot.listener.*
+import love.forte.simbot.utils.StoneArray
+import love.forte.simbot.utils.asStoneArray
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationTargetException
@@ -150,7 +152,7 @@ public class MethodListenerFunction(
         }
 
 
-    override val groups: Array<String>
+    override val groups: StoneArray<String>
 
 
     /**
@@ -217,7 +219,7 @@ public class MethodListenerFunction(
             methodGroupAnnotation != null -> methodGroupAnnotation.value
             parentGroupAnnotation != null -> parentGroupAnnotation.value
             else -> emptyArray()
-        }
+        }.asStoneArray()
 
 
 

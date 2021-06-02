@@ -20,6 +20,7 @@ import love.forte.simbot.api.sender.MsgSender
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.filter.AtDetection
 import love.forte.simbot.filter.ListenerFilter
+import love.forte.simbot.utils.StoneArray
 import java.lang.reflect.Type
 
 
@@ -101,7 +102,7 @@ public interface ListenerFunction {
     /**
      * 一个监听函数可能会被分为一个或多个组。
      */
-    val groups: Array<String>
+    val groups: StoneArray<String>
 
 
     /**
