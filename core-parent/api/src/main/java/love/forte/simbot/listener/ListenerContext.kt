@@ -14,8 +14,8 @@
 
 package love.forte.simbot.listener
 
-import love.forte.simbot.Context
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.mark.Since
 
 
 /**
@@ -24,49 +24,61 @@ import love.forte.simbot.api.message.events.MsgGet
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
+@Since("2.1.0", desc = ["上下文整体结构重构"])
 @Suppress("MemberVisibilityCanBePrivate")
-public interface ListenerContext : Context<ContextMap> {
+public interface ListenerContext : ContextMap {
 
-    /**
-     * context map.
-     */
-    val contextMap: ContextMap
-
-
-    /**
-     * 主体为一个 [ContextMap], 以提供监听函数间的信息传递。
-     */
-    override val mainValue: ContextMap
-        get() = contextMap
 
     /**
      * 从 `global` 中获取信息。
      */
     fun global(key: String): Any? {
-        return contextMap.global[key]
+        TODO()
+        // return contextMap.global[key]
     }
 
     /**
      * 从 `instant` 中获取信息。
      */
     fun instant(key: String): Any? {
-        return contextMap.instant[key]
+        TODO()
+        // return contextMap.instant[key]
     }
 
     /**
      * 向 `global` 中设置信息。
      */
     fun global(key: String, value: Any): Any? {
-        return contextMap.global.put(key, value)
+        TODO()
+        // return contextMap.global.put(key, value)
     }
 
     /**
      * 向 `instant` 中设置信息。
      */
     fun instant(key: String, value: Any): Any? {
-        return contextMap.instant.put(key, value)
+        TODO()
+        // return contextMap.instant.put(key, value)
     }
 
+
+    /**
+     * api中提供了定义的作用域。
+     */
+    public enum class Scope(val key: String) {
+        /** 瞬时的，即每次监听事件触发 */
+        EVENT_INSTANT("instant"),
+
+        /** 全局的 */
+        GLOBAL("global")
+        ;
+    }
+
+}
+
+
+public inline fun findScope(block: () -> String): ListenerContext.Scope? {
+    return ListenerContext.Scope.values().find { it.key == block() }
 }
 
 
