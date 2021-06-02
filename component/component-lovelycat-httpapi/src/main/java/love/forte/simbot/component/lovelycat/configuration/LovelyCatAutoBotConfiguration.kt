@@ -21,7 +21,7 @@ import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.PrePass
 import love.forte.simbot.bot.BotManager
-import love.forte.simbot.bot.BotRegisterInfo
+import love.forte.simbot.bot.botVerifyInfo
 import love.forte.simbot.component.lovelycat.LovelyCatApiManager
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplateImpl
 import love.forte.simbot.component.lovelycat.message.LovelyCatApiCache
@@ -88,7 +88,7 @@ public class LovelyCatAutoBotConfiguration {
                         val botCode = botInfo.botCode
                         if (botManager.getBotOrNull(botCode) == null) {
                             apiManager[botCode] = api
-                            botManager.registerBot(BotRegisterInfo(botCode, path))
+                            botManager.registerBot(botVerifyInfo(botCode, path))
                         }
                     }
 

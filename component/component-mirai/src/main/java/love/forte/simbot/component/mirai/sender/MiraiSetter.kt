@@ -79,8 +79,8 @@ public class MiraiSetter(
     ): Carrier<Boolean> {
         val f = flag.flag
         return if (f is MiraiFriendRequestFlagContent) {
-            val event = f.event
             runBlocking {
+                val event = f.event
                 if (agree) {
                     event.accept()
                 } else {
@@ -103,33 +103,32 @@ public class MiraiSetter(
         blackList: Boolean,
         why: String?,
     ): Carrier<Boolean> {
-        return when (val f = flag.flag) {
-            // member join.
-            is MiraiGroupMemberJoinRequestFlagContent -> {
-                val event = f.event
-                runBlocking {
+
+        return runBlocking {
+            when (val f = flag.flag) {
+                // member join.
+                is MiraiGroupMemberJoinRequestFlagContent -> {
+                    val event = f.event
                     if (agree) {
                         event.accept()
                     } else {
                         event.reject(blackList, why ?: "")
                     }
+                    true.toCarrier()
                 }
-                true.toCarrier()
-            }
-            // bot invited.
-            is MiraiBotInvitedJoinRequestFlagContent -> {
-                val event = f.event
-                runBlocking {
+                // bot invited.
+                is MiraiBotInvitedJoinRequestFlagContent -> {
+                    val event = f.event
                     if (agree) {
                         event.accept()
                     } else {
                         // only ignore, no reject.
                         event.ignore()
                     }
+                    true.toCarrier()
                 }
-                true.toCarrier()
+                else -> throw IllegalArgumentException("flag content $f is not Mirai's flag content and cannot be used by mirai component.")
             }
-            else -> throw IllegalArgumentException("flag content $f is not Mirai's flag content and cannot be used by mirai component.")
         }
     }
 
@@ -215,10 +214,7 @@ public class MiraiSetter(
      */
     private fun setGroupRemark0(groupCode: Long, memberCode: Long, remark: String?): Carrier<String> {
         return bot.member(groupCode, memberCode).run {
-            remark?.let {
-                nameCard = it
-                remark
-            }
+            remark?.also { nameCard = it }
         }.toCarrier()
     }
 
@@ -320,16 +316,6 @@ public class MiraiSetter(
      */
     override fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
         val source: MessageSource = flag.messageSource(bot.id)
-        // val source: MessageSource = if (flag is MiraiMessageFlag<*>) {
-        //     flag.flagSource.source ?: throw IllegalStateException("MessageFlag's messageSource is empty.")
-        // } else {
-        //     val cacheId = flag.flag.id
-        //     val data = kotlin.runCatching { cacheIdToMessageSourceBuilder(cacheId) }.getOrElse { e ->
-        //         throw IllegalArgumentException("Failed to parse flag id.", e)
-        //     }
-        //     // build source.
-        //     data.build(bot.id)
-        // }
 
         return runBlocking {
             try {
@@ -410,9 +396,12 @@ public class MiraiSetter(
         if (msgFlag !is MiraiMessageFlag<*>) {
             throw IllegalArgumentException("Mirai only supports setting the essence message through the group Msg.flag under mirai, but type(${msgFlag::class.java})")
         }
-        msgFlag.flagSource.source?.let { s ->
-            runBlocking { bot.getGroupOrFail(group).setEssenceMessage(s).toCarrier() }
-        } ?: throw IllegalArgumentException("Mirai message source is empty.")
+        runBlocking {
+            msgFlag.flagSource.source?.let { s ->
+                bot.getGroupOrFail(group).setEssenceMessage(s).toCarrier()
+            } ?: throw IllegalArgumentException("Mirai message source is empty.")
+        }
+
 
         return true.toCarrier()
     }
