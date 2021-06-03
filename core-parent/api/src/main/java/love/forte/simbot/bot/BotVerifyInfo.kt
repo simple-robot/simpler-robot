@@ -2,7 +2,7 @@
  *
  *  * Copyright (c) 2020. ForteScarlet All rights reserved.
  *  * Project  component-onebot
- *  * File     BotRegisterInfo.kt
+ *  * File     BotVerifyInfo.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
