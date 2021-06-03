@@ -147,3 +147,5 @@ simpler-robot所使用的特殊码CatCode：
 
 
 
+## 贡献你的星星！
+[![Stargazers over time](https://starchart.cc/ForteScarlet/simpler-robot.svg)](https://starchart.cc/ForteScarlet/simpler-robot)
