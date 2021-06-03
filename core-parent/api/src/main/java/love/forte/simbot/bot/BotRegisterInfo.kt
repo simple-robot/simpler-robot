@@ -28,12 +28,19 @@ import java.util.*
  * 除了提供了 [code]、[verification] 的参数之外，也提供了一个 [get] 方法支持获取额外的参数。
  *
  * 账号配置时类似于 `properties` 等键值对格式的配置方式，并解析为 [BotVerifyInfo] 实例。
+ *
+ *
+ * [BotVerifyInfo] 主要通过读取对应的bot配置资源文件得到，例如 `*.properties` 或 `*.yml`文件。
+ * 通常情况下，一个bot配置文件则对应一个 [BotVerifyInfo] 实例。
+ *
+ *
+ * @since 2.1.0
  */
 public interface BotVerifyInfo {
     /**
      * 一般可代表为一个 `账号` 信息。
      *
-     * 一个账号信息必须存在， 因此 [code] 将会作为一个bot的唯一ID。
+     * 一个账号信息必须存在， 因为 [code] 将会作为一个bot的唯一ID。
      *
      */
     val code: String
