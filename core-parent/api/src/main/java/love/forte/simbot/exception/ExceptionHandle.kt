@@ -15,6 +15,7 @@
 package love.forte.simbot.exception
 
 import love.forte.simbot.BaseContext
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.listener.ListenResult
 import love.forte.simbot.listener.ListenerContext
@@ -48,7 +49,7 @@ fun interface ExceptionHandle<E : Throwable> {
  * @property listenerContext
  */
 @Suppress("MemberVisibilityCanBePrivate")
-public class ExceptionHandleContext<E : Throwable>(
+public class ExceptionHandleContext<E : Throwable> @OptIn(SimbotExperimentalApi::class) constructor(
     mainValue: E,
     val msgGet: MsgGet,
     val listenerFunction: ListenerFunction,
