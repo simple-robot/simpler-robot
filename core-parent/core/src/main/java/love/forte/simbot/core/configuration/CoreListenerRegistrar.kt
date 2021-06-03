@@ -74,12 +74,15 @@ public class CoreListenerRegistrar {
         if (bots.isEmpty()) {
             logger.warn("Registration Bots is empty.")
         } else {
-            bots.map { bot -> bot.botInfo }.forEach { info ->
-                logger.debug("Try get botInfo for ${info.botName}(${info.botCode})")
-                if (info.botLevel >= 0) {
-                    logger.infof("Registration Bot: code={}, name={}, level={}", info.botCode, info.botName, info.botLevel)
+            bots.map { bot ->
+                val i = bot.botInfo
+                NameCodeLevel(i.botName, i.botCode, i.botLevel)
+            }.forEach { info ->
+                logger.debug("Try get botInfo for ${info.name}(${info.code})")
+                if (info.level >= 0) {
+                    logger.infof("Registration Bot: code={}, name={}, level={}", info.code, info.name, info.level)
                 } else {
-                    logger.infof("Registration Bot: code={}, name={}", info.botCode, info.botName)
+                    logger.infof("Registration Bot: code={}, name={}", info.code, info.name)
                 }
             }
         }
@@ -87,3 +90,6 @@ public class CoreListenerRegistrar {
 
     }
 }
+
+
+private data class NameCodeLevel(val name: String, val code: String, val level: Long = -1)

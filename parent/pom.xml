@@ -61,7 +61,7 @@
         <!-- plugins -->
 
         <!-- dokka version -->
-        <dokka.version>1.4.0-rc</dokka.version>
+        <dokka.version>1.4.32</dokka.version>
         <!-- sb maven version -->
         <spring.version>2.3.5.RELEASE</spring.version>
 
