@@ -14,6 +14,7 @@
 
 package love.forte.simbot.core.listener
 
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.listener.ContextMap
 import love.forte.simbot.listener.ContextMapFactory
 import java.util.concurrent.ConcurrentHashMap
@@ -23,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
+@OptIn(SimbotExperimentalApi::class)
 @Deprecated("Unused")
 public object CoreContextMapFactory : ContextMapFactory {
 
