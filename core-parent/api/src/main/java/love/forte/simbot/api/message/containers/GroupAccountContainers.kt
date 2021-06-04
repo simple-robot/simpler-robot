@@ -127,7 +127,6 @@ public fun GroupAccountContainer(accountInfo: GroupAccountInfo): GroupAccountCon
  * 获取一个 [GroupAccountContainer] 数据实例。
  * java直接使用上面那个。
  */
-@JvmName("__getGroupAccountContainer")
 @Suppress("FunctionName")
 public inline fun GroupAccountContainer(accountInfo: () -> GroupAccountInfo): GroupAccountContainer =
     GroupAccountContainer(accountInfo())

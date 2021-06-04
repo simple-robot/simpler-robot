@@ -76,7 +76,6 @@ public fun FriendAccountContainer(accountInfo: FriendAccountInfo): FriendAccount
  * 获取一个 [FriendAccountContainer] 数据实例。
  * java直接使用上面那个。
  */
-@JvmName("__getFriendAccountContainer")
 @Suppress("FunctionName")
 public inline fun FriendAccountContainer(accountInfo: () -> FriendAccountInfo): FriendAccountContainer =
     FriendAccountContainer(accountInfo())

@@ -15,9 +15,8 @@
 package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.annotation.ConfigBeans
-import love.forte.simbot.core.listener.CoreContextMapFactory
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.core.listener.ListenerContextFactoryImpl
-import love.forte.simbot.listener.ContextMapFactory
 import love.forte.simbot.listener.ListenerContextFactory
 
 
@@ -30,16 +29,17 @@ import love.forte.simbot.listener.ListenerContextFactory
 @ConfigBeans("coreListenerContextConfiguration")
 public class CoreListenerContextConfiguration {
 
-    /**
-     * 使用单例对象 [CoreContextMapFactory]。
-     */
-    @CoreBeans("coreContextMapFactory")
-    fun coreContextMapFactory(): ContextMapFactory = CoreContextMapFactory
+    // /**
+    //  * 使用单例对象 [CoreContextMapFactory]。
+    //  */
+    // @CoreBeans("coreContextMapFactory")
+    // fun coreContextMapFactory(): ContextMapFactory = CoreContextMapFactory
 
 
     /**
      * 配置 [ListenerContextFactoryImpl]
      */
+    @OptIn(SimbotExperimentalApi::class)
     @CoreBeans("coreListenerContextFactory")
     fun coreListenerContextFactory(): ListenerContextFactory = ListenerContextFactoryImpl
 

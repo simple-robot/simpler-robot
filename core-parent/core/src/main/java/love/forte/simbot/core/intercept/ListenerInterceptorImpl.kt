@@ -15,6 +15,7 @@
 package love.forte.simbot.core.intercept
 
 import love.forte.common.ioc.DependBeanFactory
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.intercept.InterceptionType
 import love.forte.simbot.listener.*
@@ -23,7 +24,7 @@ import love.forte.simbot.listener.*
 /**
  * 监听函数拦截器上下文内容。
  */
-public data class ListenerInterceptContextImpl(
+public data class ListenerInterceptContextImpl @OptIn(SimbotExperimentalApi::class) constructor(
     override val listenerFunction: ListenerFunction,
     override val msgGet: MsgGet,
     override val listenerContext: ListenerContext
@@ -34,6 +35,7 @@ public data class ListenerInterceptContextImpl(
  * [ListenerInterceptContextFactory] 实现，以 [ListenerInterceptContextImpl] 作为返回类型。
  */
 public object CoreListenerInterceptContextFactory : ListenerInterceptContextFactory {
+    @OptIn(SimbotExperimentalApi::class)
     override fun getListenerInterceptContext(
         listenerFunction: ListenerFunction,
         msgGet: MsgGet,
@@ -63,7 +65,7 @@ public class ListenerInterceptorChainImpl(
     override fun intercept(): InterceptionType {
         // 只要一个要拦截，则为拦截，否则代表为放行。
         return InterceptionType.getTypeByPrevent(
-            interceptorList.any { it.intercept(context).isPrevent }
+            interceptorList.any { it.intercept(context).prevent }
         )
     }
 }

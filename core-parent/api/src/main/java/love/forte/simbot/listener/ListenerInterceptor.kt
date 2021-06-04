@@ -15,6 +15,7 @@
 package love.forte.simbot.listener
 
 import love.forte.simbot.Context
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.intercept.InterceptionType
 import love.forte.simbot.intercept.Interceptor
@@ -60,6 +61,7 @@ public interface ListenerInterceptContext : Context<ListenerFunction> {
     val msgGet: MsgGet
 
     /** 当前监听上下文 */
+    @OptIn(SimbotExperimentalApi::class)
     val listenerContext: ListenerContext
 
     // @JvmDefault
@@ -76,6 +78,7 @@ public interface ListenerInterceptContextFactory {
     /**
      * 通过提供的参数构建一个 [ListenerInterceptContext] 实例。
      */
+    @OptIn(SimbotExperimentalApi::class)
     fun getListenerInterceptContext(
         listenerFunction: ListenerFunction,
         msgGet: MsgGet,

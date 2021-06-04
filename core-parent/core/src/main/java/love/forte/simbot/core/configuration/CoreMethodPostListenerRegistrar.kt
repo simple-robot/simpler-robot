@@ -89,10 +89,11 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
         }.forEach {
             registrar.register(it)
             logger.debug(
-                "Register listener: [{}] for {}, id={}",
+                "Register listener: [{}] for {}, id={}, groups={}",
                 it.name,
                 it.listenTypes.joinToString(", ", "[", "]") { t -> t.simpleName },
-                it.id
+                it.id,
+                it.groups.toSet()
             )
         }
 
