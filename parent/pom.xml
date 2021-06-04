@@ -55,7 +55,7 @@
         <hutool.version>5.5.1</hutool.version>
         <quartz.version>2.3.2</quartz.version>
 
-        <commons.version>1.0.0-BETA.1</commons.version>
+        <commons.version>1.0.0-BETA.2</commons.version>
         <catCode.version>1.0.0-BETA.1</catCode.version>
 
         <!-- plugins -->

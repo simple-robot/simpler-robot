@@ -14,6 +14,7 @@
 
 package love.forte.simbot.annotation;
 
+import love.forte.common.utils.annotation.MixRepeatableAnnotations;
 import love.forte.simbot.constant.PriorityConstant;
 
 import java.lang.annotation.*;
@@ -30,6 +31,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Documented
+@MixRepeatableAnnotations
 public @interface Listens {
 
     /**

@@ -14,6 +14,7 @@
 
 package love.forte.simbot.annotation;
 
+import love.forte.common.utils.annotation.MixRepeatableAnnotations;
 import love.forte.simbot.api.message.events.MessageGet;
 import love.forte.simbot.api.message.events.MsgGet;
 import love.forte.simbot.filter.FilterTargetManager;
@@ -34,6 +35,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Documented
 @Repeatable(Filters.class)
+@MixRepeatableAnnotations
 public @interface Filter {
     /**
      * 匹配关键词内容。比如一个正则，或者一个equals字符串。
