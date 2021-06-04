@@ -79,6 +79,12 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
         }
     }
 
+    override fun clear(): MiraiMessageContentBuilder {
+        texts.clear()
+        contentList.clear()
+        return this
+    }
+
     override fun text(text: CharSequence): MiraiMessageContentBuilder {
         texts.append(text)
         return this
@@ -165,37 +171,8 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
         return this
     }
 
-    // @OptIn(SimbotExperimentalApi::class)
-    // override fun image(
-    //     inputStreamMotionActuator: InputStreamMotionActuator<InputStream>,
-    //     flash: Boolean,
-    // ): MessageContentBuilder {
-    //     val imageNeko: Neko = CatCodeUtil
-    //         .getNekoBuilder("image", true)
-    //         .key("type").value("stream")
-    //         .apply {
-    //             if (flash) {
-    //                 key("flash").value(true)
-    //             }
-    //         }.build()
-    //
-    //     image1(inputStreamMotionActuator, imageNeko, flash).apply {
-    //         checkText()
-    //         contentList.add(this)
-    //     }
-    //
-    //     return this
-    // }
-
     @InstantInit
     abstract fun image0(input: InputStream, imageNeko: Neko, flash: Boolean): MiraiMessageContent
-
-    // @LazyInit
-    // abstract fun image1(
-    //     inputStreamMotionActuator: InputStreamMotionActuator<InputStream>,
-    //     imageNeko: Neko,
-    //     flash: Boolean,
-    // ): MiraiMessageContent
 
 
     override fun image(imgData: ByteArray, flash: Boolean): MiraiMessageContentBuilder {
