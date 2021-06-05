@@ -14,12 +14,12 @@
 
 package love.forte.simbot.annotation;
 
+import love.forte.common.utils.annotation.MixRepeatableAnnotations;
 import love.forte.simbot.api.message.events.MessageGet;
 import love.forte.simbot.api.message.events.MsgGet;
 import love.forte.simbot.filter.FilterTargetManager;
 import love.forte.simbot.filter.FilterTargets;
 import love.forte.simbot.filter.MatchType;
-import love.forte.simbot.listener.ContextMap;
 import love.forte.simbot.listener.ListenerContext;
 
 import java.lang.annotation.*;
@@ -35,6 +35,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Documented
 @Repeatable(Filters.class)
+@MixRepeatableAnnotations
 public @interface Filter {
     /**
      * 匹配关键词内容。比如一个正则，或者一个equals字符串。
@@ -52,14 +53,14 @@ public @interface Filter {
      *     <li>{@code text} - 为空或者为{@code 'text'}都指的是使用{@link MsgGet#getText()} 进行过滤。</li>
      *     <li>{@code msg} - {@code 'msg'}使用{@link MessageGet#getMsg()} 进行过滤。</li>
      *     <li>
-     *         {@code context.global.[nonnull,nullable].xxx} - {@code 'context.global.xxx'} 使用 {@link ListenerContext#getContextMap()} 中的 {@link ContextMap#getGlobal()}(即全局变量) 进行过滤。
+     *         {@code context.global.[nonnull,nullable].xxx} - {@code 'context.global.xxx'} 使用 {@link ListenerContext#getContext(ListenerContext.Scope)} 中的 {@link love.forte.simbot.listener.ListenerContext.Scope#GLOBAL}(即全局变量) 进行过滤。
      *         其中的 {@code 'nonnull' 或 'nullable' } 代表其是否可以为null。如果是 {@code nonnull}, 那么当获取到的元素为null的时候，<b>不会</b>通过过滤匹配，反之，如果为 {@code nullable}, 那么如果获取到的元素为null，则<b>会</b>通过匹配 。
-     *         {@code 'xxx'} 为 {@link ContextMap#getGlobal()} 中的一个任意的元素值。
+     *         {@code 'xxx'} 为 {@link love.forte.simbot.listener.ListenerContext.Scope#GLOBAL} 中的一个任意的元素值。
      * <p>
      *          例如：{@code @Filter(value = "hello", target = "context.global.nullable.myTarget")}
      *     </li>
      *     <li>
-     *         {@code context.instant.[nonnull,nullable].xxx} - 含义与上述的 {@code context.global.[nonnull,nullable].xxx} 基本一致，唯一不同的就是此处是通过 {@link ContextMap#getInstant()} 进行匹配的。
+     *         {@code context.instant.[nonnull,nullable].xxx} - 含义与上述的 {@code context.global.[nonnull,nullable].xxx} 基本一致，唯一不同的就是此处是通过 {@link love.forte.simbot.listener.ListenerContext.Scope#EVENT_INSTANT} 进行匹配的。
      * <p>
      *         例如：{@code @Filter(value = "hi", target = "context.instant.nullable.myTarget")}
      *     </li>

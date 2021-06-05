@@ -14,6 +14,7 @@
 
 package love.forte.simbot.annotation;
 
+import love.forte.common.utils.annotation.MixRepeatableAnnotations;
 import love.forte.simbot.filter.ListenerFilter;
 import love.forte.simbot.filter.MostMatchType;
 
@@ -27,6 +28,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)    //注解会在class字节码文件中存在，在运行时可以通过反射获取到
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE}) //接口、类、枚举、注解、方法
 @Documented
+@MixRepeatableAnnotations
 public @interface Filters {
 
     /**

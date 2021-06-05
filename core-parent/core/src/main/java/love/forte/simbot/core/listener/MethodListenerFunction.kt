@@ -22,12 +22,15 @@ import love.forte.common.utils.convert.ConverterManager
 import love.forte.simbot.LogAble
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.annotation.*
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.filter.AtDetection
 import love.forte.simbot.filter.FilterData
 import love.forte.simbot.filter.FilterManager
 import love.forte.simbot.filter.ListenerFilter
 import love.forte.simbot.listener.*
+import love.forte.simbot.utils.StoneArray
+import love.forte.simbot.utils.asStoneArray
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationTargetException
@@ -51,6 +54,7 @@ import kotlin.reflect.jvm.kotlinFunction
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
+@OptIn(SimbotExperimentalApi::class)
 @Suppress("JoinDeclarationAndAssignment")
 public class MethodListenerFunction(
     private val method: Method,
@@ -60,8 +64,7 @@ public class MethodListenerFunction(
     private val filterManager: FilterManager,
     private val converterManager: ConverterManager,
     private val listenerResultFactory: ListenerResultFactory,
-
-    ) : ListenerFunction, LogAble {
+) : ListenerFunction, LogAble {
     override val log: Logger = LoggerFactory.getLogger(method.declaringClass.typeName + "." + method.name)
 
     private val isStatic: Boolean = Modifier.isStatic(method.modifiers)
@@ -149,6 +152,9 @@ public class MethodListenerFunction(
         }
 
 
+    override val groups: StoneArray<String>
+
+
     /**
      * 此监听函数的实例获取函数。
      */
@@ -200,6 +206,22 @@ public class MethodListenerFunction(
         id = method.toListenerId(listensAnnotation)
         name = method.toListenerName(listensAnnotation)
 
+        // 分组
+        val parentGroupAnnotation =
+            AnnotationUtil.getAnnotation(declClass, ListenGroup::class.java)?.takeIf { a -> a.value.isNotEmpty() }
+        val methodGroupAnnotation =
+            AnnotationUtil.getAnnotation(method, ListenGroup::class.java)?.takeIf { a -> a.value.isNotEmpty() }
+
+        groups = when {
+            parentGroupAnnotation != null && methodGroupAnnotation != null ->
+                if (methodGroupAnnotation.append) parentGroupAnnotation.value + methodGroupAnnotation.value
+                else methodGroupAnnotation.value
+            methodGroupAnnotation != null -> methodGroupAnnotation.value
+            parentGroupAnnotation != null -> parentGroupAnnotation.value
+            else -> emptyArray()
+        }.asStoneArray()
+
+
 
         listenerInstanceGetter = if (isStatic) {
             ::nullInstanceGetter
@@ -222,9 +244,12 @@ public class MethodListenerFunction(
 
         // init method args getter.
         val parameterGetters: List<(ListenerFunctionInvokeData) -> Any?> =
-            method.parameters.mapIndexed { i, it ->
-                val filterValue: FilterValue? = AnnotationUtil.getAnnotation(it, FilterValue::class.java)
-                val dependAnnotation: Depend? = AnnotationUtil.getAnnotation(it, Depend::class.java)
+            method.parameters.mapIndexed { i, methodParameter ->
+                val contextValue: ContextValue? =
+                    AnnotationUtil.getAnnotation(methodParameter, ContextValue::class.java)
+                val filterValue: FilterValue? = AnnotationUtil.getAnnotation(methodParameter, FilterValue::class.java)
+                val dependAnnotation: Depend? = AnnotationUtil.getAnnotation(methodParameter, Depend::class.java)
+
 
                 val orIgnore: Boolean = dependAnnotation?.orIgnore ?: kotlin.runCatching {
                     // try as kt param
@@ -233,7 +258,7 @@ public class MethodListenerFunction(
                     parameter?.type?.isMarkedNullable ?: false
                 }.getOrDefault(false)
 
-                val parameterType = it.type
+                val parameterType = methodParameter.type
 
                 // if this parameter type is MsgGet, check and warn if need.
                 if (!orIgnore && MsgGet::class.java.isAssignableFrom(parameterType)) {
@@ -263,74 +288,118 @@ public class MethodListenerFunction(
                 }
 
 
-                if (filterValue == null) {
-                    // not filterValue
-                    val dependName: String? = dependAnnotation?.value?.ifBlank { null }
-                    if (orIgnore) {
-                        if (dependName != null) {
-                            { dependBeanFactory.getOrNull(dependName) }
-                        } else {
-                            val type =
-                                dependAnnotation?.type?.takeIf { dt -> dt.java != Void::class.java }?.java
-                                    ?: parameterType
-                            { d ->
-                                // 如果当前的动态参数msgGet的类型正好是此参数的类型的子类，直接使用
-                                val msgGet: MsgGet = d.msgGet
-                                if (type.isAssignableFrom(msgGet.javaClass)) msgGet
-                                else d[type] ?: dependBeanFactory.getOrNull(type)
+                when {
+                    // 从过滤值中拿参数
+                    filterValue != null -> {
+                        val filterValueName = kotlin.runCatching {
+                            filterValue.value.ifBlank {
+                                method.kotlinFunction?.parameters?.get(i)?.name ?: methodParameter.name
                             }
+                        }.getOrElse { e ->
+                            throw IllegalStateException(
+                                "Unable to determine the name of the filter value in method $method($i).",
+                                e
+                            )
                         }
-                    } else {
-                        if (dependName != null) {
-                            { dependBeanFactory[dependName] }
+
+                        // val parameterType = parameterType
+
+                        if (orIgnore) {
+                            f@{ d ->
+                                val text: String = d.msgGet.text ?: return@f null
+                                val findValue: String? = listenAnnotationFilter?.getFilterValue(filterValueName, text)
+                                if (findValue == null) {
+                                    null
+                                } else {
+                                    converterManager.convert(parameterType, findValue)
+                                }
+                            }
                         } else {
-                            val type =
-                                dependAnnotation?.type?.java?.takeIf { dt -> dt != Void::class.java }
-                                    ?: parameterType
-                            { d ->
-                                // 如果获取到的msgGet的类型正好是此参数的类型的子类，直接使用
-                                val msgGet: MsgGet = d.msgGet
-                                if (type.isAssignableFrom(msgGet.javaClass)) msgGet
-                                else d[type] ?: dependBeanFactory[type]
+                            f@{ d ->
+                                val text: String = d.msgGet.text
+                                    ?: throw IllegalStateException("Msg ${d.msgGet} unable to get msg.")
+                                val findValue = listenAnnotationFilter?.getFilterValue(filterValueName, text)
+                                if (findValue == null) {
+                                    throw IllegalStateException("Unable to extract filter value '$filterValueName' in method $method.")
+                                } else {
+                                    converterManager.convert(parameterType, findValue)
+                                }
                             }
                         }
                     }
 
-                } else {
-                    val filterValueName = kotlin.runCatching {
-                        filterValue.value.ifBlank {
-                            method.kotlinFunction?.parameters?.get(i)?.name ?: it.name
+                    // 从上下文中获取
+                    contextValue != null -> {
+                        val findKey = contextValue.value
+                        val scopes = contextValue.scopes
+                        val orNull = contextValue.orNull
+
+                        if (scopes.isEmpty()) {
+                            if (!orNull) {
+                                // empty and non-null, throw.
+                                throw IllegalStateException("Your")
+                            }
+
+                            // empty.
+                            f@{ null }
+
+                        } else {
+
+                            f@{ d ->
+                                d.context.let { context ->
+                                    for (scope in scopes) {
+                                        val v = context[scope][findKey]
+                                        if (v != null) return@let v
+                                    }
+                                    if (orNull) return@let null
+
+                                    throw ContextValueNotFoundException("Cannot found '$findKey' from ${
+                                        scopes.joinToString(",",
+                                            "[",
+                                            "]")
+                                    }")
+                                }
+                            }
                         }
-                    }.getOrElse { e ->
-                        throw IllegalStateException(
-                            "Unable to determine the name of the filter value in method $method($i).",
-                            e
-                        )
+
+
                     }
 
-                    // val parameterType = parameterType
 
-                    if (orIgnore) {
-                        f@{ d ->
-                            val text: String = d.msgGet.text ?: return@f null
-                            val findValue: String? = listenAnnotationFilter?.getFilterValue(filterValueName, text)
-                            if (findValue == null) {
-                                null
+                    // 什么注解也没有
+                    else -> {
+                        // not filterValue
+                        val dependName: String? = dependAnnotation?.value?.ifBlank { null }
+                        if (orIgnore) {
+                            if (dependName != null) {
+                                { dependBeanFactory.getOrNull(dependName) }
                             } else {
-                                converterManager.convert(parameterType, findValue)
+                                val type =
+                                    dependAnnotation?.type?.takeIf { dt -> dt.java != Void::class.java }?.java
+                                        ?: parameterType
+                                { d ->
+                                    // 如果当前的动态参数msgGet的类型正好是此参数的类型的子类，直接使用
+                                    val msgGet: MsgGet = d.msgGet
+                                    if (type.isAssignableFrom(msgGet.javaClass)) msgGet
+                                    else d[type] ?: dependBeanFactory.getOrNull(type)
+                                }
+                            }
+                        } else {
+                            if (dependName != null) {
+                                { dependBeanFactory[dependName] }
+                            } else {
+                                val type =
+                                    dependAnnotation?.type?.java?.takeIf { dt -> dt != Void::class.java }
+                                        ?: parameterType
+                                { d ->
+                                    // 如果获取到的msgGet的类型正好是此参数的类型的子类，直接使用
+                                    val msgGet: MsgGet = d.msgGet
+                                    if (type.isAssignableFrom(msgGet.javaClass)) msgGet
+                                    else d[type] ?: dependBeanFactory[type]
+                                }
                             }
                         }
-                    } else {
-                        f@{ d ->
-                            val text: String = d.msgGet.text
-                                ?: throw IllegalStateException("Msg ${d.msgGet} unable to get msg.")
-                            val findValue = listenAnnotationFilter?.getFilterValue(filterValueName, text)
-                            if (findValue == null) {
-                                throw IllegalStateException("Unable to extract filter value '$filterValueName' in method $method.")
-                            } else {
-                                converterManager.convert(parameterType, findValue)
-                            }
-                        }
+
                     }
 
                 }
@@ -360,7 +429,7 @@ public class MethodListenerFunction(
     override fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> {
         // do filter
         val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
-        if (!filter || data.listenerInterceptorChain.intercept().isPrevent) {
+        if (!filter || data.listenerInterceptorChain.intercept().prevent) {
             // 没有通过检测, 返回ListenResult默认的无效化实现。
             return ListenResult
         }

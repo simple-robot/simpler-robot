@@ -124,50 +124,6 @@ public interface MessageContentBuilder {
     @InstantInit
     fun image(input: InputStream, flash: Boolean): MessageContentBuilder
 
-    //
-    // /**
-    //  * 向当前构建的消息中追加一个图片流。
-    //  *
-    //  * 图片流实例需要在 [inputStreamMotionActuator] 函数中进行获取、执行并手动关闭.
-    //  *
-    //  * 建议：
-    //  * - 获取图片流的逻辑置于函数内部，以防止当此函数未调用时造成的输入流溢出；
-    //  * - 在函数体内部添加try-catch-finally以保证输入流会正确关闭。
-    //  *
-    //  * ```java
-    //  * MessageContentBuilder c = //... ;
-    //         c.image(action -> {
-    //         // 简易获取输入流的逻辑.
-    //         try (InputStream in = new ByteArrayInputStream(new byte[0])) {
-    //         // 使用这个输入流执行逻辑.
-    //         action.invoke(in);
-    //         }
-    //
-    //         });
-    //  *
-    //  * ```
-    //  *
-    //  */
-    // @LazyInit
-    // @SimbotExperimentalApi
-    // fun image(inputStreamMotionActuator: InputStreamMotionActuator<InputStream>, flash: Boolean): MessageContentBuilder
-    //
-    // /**
-    //  * 向当前构建的消息中追加一个图片流。
-    //  *
-    //  * 图片流实例需要在 [inputStreamMotionActuator] 函数中进行获取、执行并手动关闭.
-    //  *
-    //  *
-    //  * 建议：
-    //  * - 获取图片流的逻辑置于函数内部，以防止当此函数未调用时造成的输入流溢出；
-    //  * - 在函数体内部添加try-catch-finally以保证输入流会正确关闭。
-    //  *
-    //  */
-    // @LazyInit
-    // @SimbotExperimentalApi
-    // fun image(inputStreamMotionActuator: InputStreamMotionActuator<InputStream>): MessageContentBuilder = image(inputStreamMotionActuator, false)
-
-
     /** 向当前构建的消息中追加一个图片字节数组。 */
     fun image(imgData: ByteArray, flash: Boolean): MessageContentBuilder
 
@@ -188,13 +144,11 @@ public interface MessageContentBuilder {
 
     /** 得到当前构建的消息。 */
     fun build(): MessageContent
+
+    /**
+     * 清除当前构建器中的内容。
+     */
+    fun clear(): MessageContentBuilder
+
 }
 
-
-// /**
-//  * 动作执行器。
-//  */
-// public fun interface InputStreamMotionActuator<T> {
-//     @Throws(IOException::class)
-//     fun invoke(action: (T) -> Unit)
-// }

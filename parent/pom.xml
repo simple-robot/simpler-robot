@@ -6,7 +6,7 @@
 
     <groupId>love.forte.simple-robot</groupId>
     <artifactId>parent</artifactId>
-    <version>2.0.9-dev.1</version><!--v-->
+    <version>2.1.0-BETA.1</version><!--v-->
     <packaging>pom</packaging>
 
     <modules>
@@ -23,7 +23,7 @@
     <description>simple-robot是一个通用bot开发框架，以同一种灵活的标准来编写不同平台的bot应用。而simpler-robot便是simple-robot 2.x版本命名。</description>
 
     <properties>
-        <simbot.version>2.0.9-dev.1</simbot.version><!--v-->
+        <simbot.version>2.1.0-BETA.1</simbot.version><!--v-->
 
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
@@ -55,15 +55,15 @@
         <hutool.version>5.5.1</hutool.version>
         <quartz.version>2.3.2</quartz.version>
 
-        <commons.version>1.0.0-BETA.1</commons.version>
+        <commons.version>1.0.0-BETA.2</commons.version>
         <catCode.version>1.0.0-BETA.1</catCode.version>
 
         <!-- plugins -->
 
         <!-- dokka version -->
-        <dokka.version>1.4.0-rc</dokka.version>
+        <dokka.version>1.4.32</dokka.version>
         <!-- sb maven version -->
-        <spring.version>2.3.5.RELEASE</spring.version>
+        <spring.version>2.5.0</spring.version>
 
     </properties>
 
@@ -785,6 +785,7 @@
             <id>snapshots-oss</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </snapshotRepository>
+
         <repository>
             <id>oss</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
@@ -812,7 +813,7 @@
             <id>snapshot</id>
             <repositories>
                 <repository>
-                    <id>snapshots-repo</id>
+                    <id>snapshots-oss</id>
                     <url>https://oss.sonatype.org/content/repositories/snapshots</url>
                     <releases>
                         <enabled>false</enabled>

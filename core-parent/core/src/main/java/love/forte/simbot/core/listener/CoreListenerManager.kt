@@ -18,6 +18,8 @@ package love.forte.simbot.core.listener
 import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.simbot.LogAble
+import love.forte.simbot.api.SimbotExperimentalApi
+import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSender
@@ -34,6 +36,7 @@ import love.forte.simbot.filter.AtDetectionFactory
 import love.forte.simbot.listener.*
 import love.forte.simbot.processor.ListenResultProcessorManager
 import love.forte.simbot.processor.context
+import love.forte.simbot.utils.isEmpty
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -44,38 +47,6 @@ import java.util.concurrent.ConcurrentHashMap
  */
 private fun listenerFunctionQueue(vararg func: ListenerFunction): Queue<ListenerFunction> =
     concurrentSortedQueueOf(ListenerFunctionComparable, *func)
-
-
-/**
- * 消息拦截相关所需内容。
- */
-public data class MsgInterceptData(
-    val contextFactory: MsgInterceptContextFactory,
-    val chainFactory: MsgInterceptChainFactory,
-)
-
-/**
- * 函数拦截相关所需内容。
- */
-public data class ListenerInterceptData(
-    val contextFactory: ListenerInterceptContextFactory,
-    val chainFactory: ListenerInterceptChainFactory,
-)
-
-
-/**
- * 监听上下文所需内容。
- */
-public data class ListenerContextData(
-    val contextFactory: ListenerContextFactory,
-    val contextMapFactory: ContextMapFactory,
-) {
-    fun getContext(msgGet: MsgGet): ListenerContext {
-        return contextMapFactory.contextMap.let {
-            contextFactory.getListenerContext(msgGet, it)
-        }
-    }
-}
 
 
 private data class ListenerFunctionGroups(
@@ -99,12 +70,10 @@ private data class ListenerFunctionGroups(
  * @property atDetectionFactory at检测器工厂
  * @property exceptionManager 异常处理器
  *
- * @property msgInterceptData 消息拦截相关所需内容。
- * @property listenerInterceptData 函数拦截相关所需内容。
- * @property listenerContextData 监听上下文所需内容。
  */
+@OptIn(SimbotInternalApi::class)
 @SpareBeans("coreListenerManager")
-public class CoreListenerManager(
+public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructor(
     private val atDetectionFactory: AtDetectionFactory,
     private val exceptionManager: ExceptionProcessor,
 
@@ -116,9 +85,8 @@ public class CoreListenerManager(
     private val listenerInterceptContextFactory: ListenerInterceptContextFactory,
     private val listenerInterceptChainFactory: ListenerInterceptChainFactory,
 
-    // private val listenerContextData: ListenerContextData,
     private val listenerContextFactory: ListenerContextFactory,
-    private val contextMapFactory: ContextMapFactory,
+    // private val contextMapFactory: ContextMapFactory,
 
     private val msgSenderFactories: MsgSenderFactories,
     private val defMsgSenderFactories: DefaultMsgSenderFactories,
@@ -145,6 +113,16 @@ public class CoreListenerManager(
     private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, ListenerFunctionGroups> = ConcurrentHashMap()
     // private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, Queue<ListenerFunction>> = ConcurrentHashMap()
 
+    /**
+     * 监听函数分组数据。
+     */
+    private val listenerGroups = ConcurrentHashMap<String, MutableListenerGroup>()
+
+    /**
+     * 没有分组的分组。
+     */
+    private val noGroupListenerGroup = MutableListenerGroup("NON-GROUP")
+
 
     /**
      * 注册一个 [监听函数][ListenerFunction]。
@@ -152,6 +130,7 @@ public class CoreListenerManager(
      * 每次注册一个新的监听函数的时候，会刷新内置的 **全部** 缓存，会一定程度上影响到其他应用。
      *
      */
+    @Synchronized
     override fun register(listenerFunction: ListenerFunction) {
         // 获取其监听类型，并作为key存入map
         val listenTypes = listenerFunction.listenTypes
@@ -160,6 +139,18 @@ public class CoreListenerManager(
             // merge into map.
             mainListenerFunctionMap.merge(listenType, listenerFunctionQueue(listenerFunction)) { oldValue, value ->
                 oldValue.apply { addAll(value) }
+            }
+
+            // groups.
+            val groups = listenerFunction.groups
+            if (groups.isEmpty()) {
+                noGroupListenerGroup.add(listenerFunction)
+            } else {
+                groups.forEach { g ->
+                    listenerGroups.compute(g) { g0, v ->
+                        v?.apply { add(listenerFunction) } ?: MutableListenerGroup(g0, mutableListOf(listenerFunction))
+                    }
+                }
             }
 
             // clear cache map.
@@ -177,11 +168,12 @@ public class CoreListenerManager(
     /**
      * 接收到消息监听并进行处理。
      */
+    @OptIn(SimbotExperimentalApi::class)
     override fun onMsg(msgGet: MsgGet): ListenResult<*> {
         try {
             // not empty, intercept.
             // val context: ListenerContext = getContext(msgGet)
-            val context: ListenerContext = listenerContextFactory.getListenerContext(msgGet, contextMapFactory.contextMap)
+            val context: ListenerContext = listenerContextFactory.getListenerContext(msgGet)
             //
             // // val context: ListenerContext = getContext(msgGet)
             //
@@ -200,7 +192,7 @@ public class CoreListenerManager(
 
 
             // 如果被拦截, 返回默认值
-            if (msgChain.intercept().isPrevent) {
+            if (msgChain.intercept().prevent) {
                 return ListenResult
             }
 
@@ -224,6 +216,7 @@ public class CoreListenerManager(
     /**
      * 筛选监听函数
      */
+    @OptIn(SimbotExperimentalApi::class)
     private fun onMsg0(msgGet: MsgGet, context: ListenerContext): ListenResult<*> {
         val funcs = getListenerFunctions(msgGet.javaClass, true)
         var invokeData: ListenerFunctionInvokeData? = null
@@ -247,24 +240,15 @@ public class CoreListenerManager(
 
                 // invoke with try.
                 return try {
-                    invokeData = ListenerFunctionInvokeDataLazyImpl(
-                        LazyThreadSafetyMode.NONE,
-                        { msgGet },
-                        { context },
-                        { atDetectionFactory.getAtDetection(msgGet) },
-                        { botManager.getBot(msgGet.botInfo) },
-                        { MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories) },
-                        { interceptorChain }
+                    invokeData = ListenerFunctionInvokeDataImpl(
+                        // LazyThreadSafetyMode.NONE,
+                        msgGet,
+                        context,
+                        atDetectionFactory.getAtDetection(msgGet),
+                        botManager.getBot(msgGet.botInfo),
+                        MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories),
+                        interceptorChain
                     )
-
-                    // invokeData = ListenerFunctionInvokeDataImpl(
-                    //     msgGet,
-                    //     context,
-                    //     atDetectionFactory.getAtDetection(msgGet),
-                    //     botManager.getBot(msgGet.botInfo),
-                    //     MsgSender(msgGet, msgSenderFactories, defMsgSenderFactories),
-                    //     interceptorChain
-                    // )
 
                     func(invokeData!!)
                 } catch (funcRunEx: Throwable) {
@@ -334,8 +318,6 @@ public class CoreListenerManager(
             }
 
             // do processor
-
-
 
 
             return finalResult

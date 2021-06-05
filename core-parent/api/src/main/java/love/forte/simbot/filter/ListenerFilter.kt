@@ -14,6 +14,7 @@
 
 package love.forte.simbot.filter
 
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.constant.PriorityConstant
 import love.forte.simbot.listener.ListenerContext
@@ -23,7 +24,7 @@ import love.forte.simbot.listener.ListenerFunction
 /**
  * [ListenerFilter] 中可提供的参数。
  */
-public class FilterData(
+public class FilterData @OptIn(SimbotExperimentalApi::class) constructor(
     val msgGet: MsgGet,
     val atDetection: AtDetection,
     val listenerContext: ListenerContext,

@@ -14,11 +14,13 @@
 @file:JvmName("ListenerFunctions")
 package love.forte.simbot.listener
 
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.MsgSender
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.filter.AtDetection
 import love.forte.simbot.filter.ListenerFilter
+import love.forte.simbot.utils.StoneArray
 import java.lang.reflect.Type
 
 
@@ -98,6 +100,12 @@ public interface ListenerFunction {
 
 
     /**
+     * 一个监听函数可能会被分为一个或多个组。
+     */
+    val groups: StoneArray<String>
+
+
+    /**
      * 执行监听函数并返回一个执行后的响应结果。
      *
      * @throws Throwable 执行可能会存在任何可能发生的以外异常。而 [ListenResult] 中包含的一般仅仅是方法执行时候出现的异常。
@@ -113,6 +121,7 @@ public interface ListenerFunctionInvokeData {
     /** 监听到的消息。 */
     val msgGet: MsgGet
     /** 监听函数上下文。 */
+    @OptIn(SimbotExperimentalApi::class)
     val context: ListenerContext
     /** at检测器。 */
     val atDetection: AtDetection
@@ -122,7 +131,7 @@ public interface ListenerFunctionInvokeData {
     val msgSender: MsgSender
     /**
      *  监听函数拦截器。
-     *  如果是空的可以使用 [love.forte.simbot.core.intercept.EmptyListenerInterceptorChain].
+     *  如果是空的可以使用 `love.forte.simbot.core.intercept.EmptyListenerInterceptorChain`
      */
     val listenerInterceptorChain: ListenerInterceptorChain
     /**
@@ -131,6 +140,9 @@ public interface ListenerFunctionInvokeData {
      */
     operator fun get(type: Class<*>): Any?
 }
+
+
+
 
 
 /**

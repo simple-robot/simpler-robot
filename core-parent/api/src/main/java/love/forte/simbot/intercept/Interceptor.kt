@@ -21,7 +21,7 @@ import love.forte.simbot.intercept.InterceptionType.INTERCEPT
 
 
 /**
- * 布尔拦截器，提供一个拦截方法，方法的返回值代表是否进行 **拦截**，
+ * 基础的拦截器，提供一个拦截方法，方法的返回值代表是否进行 **拦截**，
  * 即如果为true，则拦截，否则放行。
  */
 public interface Interceptor<T, C: Context<T>> : Comparable<Interceptor<T, C>> {
@@ -59,12 +59,12 @@ public interface Interceptor<T, C: Context<T>> : Comparable<Interceptor<T, C>> {
 /**
  * 拦截器的拦截结果类型。
  *
- * 其中，参数 [isPrevent] 相同的值含义一致，只不过提供了几个比较好理解的类型以供个人习惯使用。
+ * 其中，参数 [prevent] 相同的值含义一致，只不过提供了几个比较好理解的类型以供个人习惯使用。
  *
  * 例如 [INTERCEPT] 与 [BLOCK] 含义相同，都代表拦截接下来的行动。
  *
  */
-public enum class InterceptionType(val isPrevent: Boolean) {
+public enum class InterceptionType(val prevent: Boolean) {
     /** 拦截。 */
     INTERCEPT(true),
     /** 拦截。 */
@@ -91,17 +91,26 @@ public enum class InterceptionType(val isPrevent: Boolean) {
 
     // Easter eggs
     @Suppress("EnumEntryName")
-    `(x)`(INTERCEPT.isPrevent),
+    `(x)`(INTERCEPT.prevent),
     @Suppress("EnumEntryName")
-    `(v)`(ALLOW.isPrevent),
+    `(v)`(ALLOW.prevent),
+
+    @Suppress("EnumEntryName", "NonAsciiCharacters")
+    拦截(INTERCEPT.prevent),
+
+    @Suppress("EnumEntryName", "NonAsciiCharacters")
+    放行(ALLOW.prevent),
     ;
+
+    @Deprecated("Use property 'prevent'", ReplaceWith("prevent"))
+    val isPrevent get() = prevent
 
     companion object {
         /**
          * 根据是否拦截获取一个实例。
          */
         @JvmStatic
-        fun getTypeByPrevent(isPrevent: Boolean): InterceptionType = if (isPrevent) INTERCEPT else PASS
+        fun getTypeByPrevent(prevent: Boolean): InterceptionType = if (prevent) INTERCEPT else PASS
     }
 
 

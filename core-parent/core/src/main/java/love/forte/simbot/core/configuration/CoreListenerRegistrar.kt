@@ -18,7 +18,6 @@ import love.forte.common.ioc.DependBeanFactory
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.PostPass
-import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.infof
@@ -75,13 +74,15 @@ public class CoreListenerRegistrar {
         if (bots.isEmpty()) {
             logger.warn("Registration Bots is empty.")
         } else {
-            bots.forEach { bot ->
-                val info: BotInfo = bot.botInfo
-                logger.debug("Try get botInfo for ${info.botName}(${info.botCode})")
-                if (info.botLevel >= 0) {
-                    logger.infof("Registration Bot: code={}, name={}, level={}", info.botCode, info.botName, info.botLevel)
+            bots.map { bot ->
+                val i = bot.botInfo
+                NameCodeLevel(i.botName, i.botCode, i.botLevel)
+            }.forEach { info ->
+                logger.debug("Try get botInfo for ${info.name}(${info.code})")
+                if (info.level >= 0) {
+                    logger.infof("Registration Bot: code={}, name={}, level={}", info.code, info.name, info.level)
                 } else {
-                    logger.infof("Registration Bot: code={}, name={}", info.botCode, info.botName)
+                    logger.infof("Registration Bot: code={}, name={}", info.code, info.name)
                 }
             }
         }
@@ -89,3 +90,6 @@ public class CoreListenerRegistrar {
 
     }
 }
+
+
+private data class NameCodeLevel(val name: String, val code: String, val level: Long = -1)

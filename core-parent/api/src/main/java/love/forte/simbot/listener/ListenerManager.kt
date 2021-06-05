@@ -85,7 +85,7 @@ public inline fun <T : MsgGet> MsgGetProcessor.onMsg(type: Class<out T>, block: 
 /**
  * 监听函数管理器。
  */
-interface ListenerManager : MsgGetProcessor, ListenerRegistrar {
+public interface ListenerManager : MsgGetProcessor, ListenerRegistrar {
 
     /**
      * 根据监听类型获取所有对应的监听函数。
@@ -106,15 +106,4 @@ interface ListenerRegistrar {
     fun register(listenerFunction: ListenerFunction)
 }
 
-
-/**
- * 监听函数构建器。
- */
-public interface ListenerManagerBuilder {
-
-    /**
-     * 得到一个 [ListenerManager] 实例。
-     */
-    fun build(): ListenerManager
-}
 

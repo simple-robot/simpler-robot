@@ -14,7 +14,9 @@
 
 package love.forte.simbot.filter
 
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MessageGet
+import love.forte.simbot.listener.instantOrGlobal
 
 
 /**
@@ -140,7 +142,7 @@ public sealed class ListenContextFilterTargetProcessor(
 
 
     /**
-     * 使用 [love.forte.simbot.listener.ContextMap.global] 进行过滤的处理器。
+     * 使用 [love.forte.simbot.listener.ListenerContext] 进行过滤的处理器。
      */
     private sealed class GlobalListenContextFilterTargetProcessor(nullable: Boolean, targetName: String) :
         ListenContextFilterTargetProcessor(nullable, targetName) {
@@ -161,8 +163,9 @@ public sealed class ListenContextFilterTargetProcessor(
         /**
          * 获取实际使用的监听上下文值。
          */
+        @SimbotExperimentalApi
         override fun getContextValue(filterData: FilterData, targetName: String): Any? {
-            return filterData.listenerContext.contextMap.global[targetName]
+            return filterData.listenerContext.global(targetName)
         }
 
 
@@ -181,7 +184,7 @@ public sealed class ListenContextFilterTargetProcessor(
 
 
     /**
-     * 使用 [love.forte.simbot.listener.ContextMap.instant] 进行过滤的处理器。
+     * 使用 [love.forte.simbot.listener.ListenerContext] 进行过滤的处理器。
      */
     private sealed class InstantListenContextFilterTargetProcessor(nullable: Boolean, targetName: String) :
         ListenContextFilterTargetProcessor(nullable, targetName) {
@@ -202,8 +205,9 @@ public sealed class ListenContextFilterTargetProcessor(
         /**
          * 获取实际使用的监听上下文值。
          */
+        @SimbotExperimentalApi
         override fun getContextValue(filterData: FilterData, targetName: String): Any? {
-            return filterData.listenerContext.contextMap.instant[targetName]
+            return filterData.listenerContext.instant(targetName)
         }
 
         /**
@@ -239,8 +243,9 @@ public sealed class ListenContextFilterTargetProcessor(
         /**
          * 获取实际使用的监听上下文值。
          */
+        @SimbotExperimentalApi
         override fun getContextValue(filterData: FilterData, targetName: String): Any? {
-            return filterData.listenerContext.contextMap.instantOrGlobal(targetName)
+            return filterData.listenerContext.instantOrGlobal(targetName)
         }
 
         /**

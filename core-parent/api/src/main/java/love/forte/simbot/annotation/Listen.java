@@ -15,6 +15,7 @@
 package love.forte.simbot.annotation;
 
 
+import love.forte.common.utils.annotation.MixRepeatableAnnotations;
 import love.forte.simbot.api.message.containers.*;
 import love.forte.simbot.api.message.events.*;
 
@@ -144,6 +145,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Documented
 @Repeatable(Listens.class)
+@MixRepeatableAnnotations
 public @interface Listen {
 
     /**

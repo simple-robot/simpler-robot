@@ -14,6 +14,7 @@
 
 package love.forte.simbot.core.listener
 
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.api.sender.MsgSender
@@ -29,7 +30,7 @@ import love.forte.simbot.listener.ListenerInterceptorChain
  * 监听函数触发所携带的参数接口默认数据实现。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public data class ListenerFunctionInvokeDataImpl(
+public data class ListenerFunctionInvokeDataImpl @OptIn(SimbotExperimentalApi::class) constructor(
     override val msgGet: MsgGet,
     override val context: ListenerContext,
     override val atDetection: AtDetection,
@@ -53,7 +54,8 @@ public data class ListenerFunctionInvokeDataImpl(
 
 
 
-public class ListenerFunctionInvokeDataLazyImpl(
+@Deprecated("会存在类型匹配错误的问题")
+public class ListenerFunctionInvokeDataLazyImpl @OptIn(SimbotExperimentalApi::class) constructor(
     mode: LazyThreadSafetyMode,
     _msgGet: () -> MsgGet,
     _context: () -> ListenerContext,
@@ -63,12 +65,14 @@ public class ListenerFunctionInvokeDataLazyImpl(
     _listenerInterceptorChain: () -> ListenerInterceptorChain
 ): ListenerFunctionInvokeData {
     override val msgGet: MsgGet by lazy(mode, _msgGet)
+    @OptIn(SimbotExperimentalApi::class)
     override val context: ListenerContext by lazy(mode, _context)
     override val atDetection: AtDetection by lazy(mode, _atDetection)
     override val bot: Bot by lazy(mode, _bot)
     override val msgSender: MsgSender by lazy(mode, _msgSender)
     override val listenerInterceptorChain: ListenerInterceptorChain by lazy(mode, _listenerInterceptorChain)
 
+    @OptIn(SimbotExperimentalApi::class)
     override fun get(type: Class<*>): Any? = when {
         MsgSender::class.java.isAssignableFrom(type) -> msgSender.takeTypeIf(type)
         Sender::class.java.isAssignableFrom(type) -> msgSender.SENDER.takeTypeIf(type)
