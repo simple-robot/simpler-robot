@@ -39,3 +39,53 @@ public object ResourcePathExpressionUtil {
 
 
 }
+
+
+/**
+ *
+ * 针对于资源路径表达式的封装。
+ *
+ */
+public sealed class ResourcePathExpression(val expression: String) {
+
+    /**
+     * 资源类型。一般为 `file` 、`classpath`或者 `both`
+     */
+    abstract val type: String
+
+
+    /**
+     * 此表达式在一个根目录下所能够得到的所有资源路径。  如果为null，则目录即为当前工作目录。
+     */
+    abstract fun getResourcePaths(root: String? = null)
+
+
+    // internal class FileResourcePathExpression(expression: String) : ResourcePathExpression(expression)
+    // internal class ClasspathResourcePathExpression(expression: String) : ResourcePathExpression(expression)
+    // internal class BothResourcePathExpression(expression: String) : ResourcePathExpression(expression)
+
+
+    companion object {
+        fun getInstance(expression: String): ResourcePathExpression {
+            return when {
+                // classpath
+                expression.startsWith("classpath:") -> {
+                    TODO()
+                }
+                // file
+                expression.startsWith("file:") -> {
+                    TODO()
+                }
+                // BOTH
+                else -> {
+                    TODO()
+                }
+            }
+        }
+
+
+    }
+}
+
+
+
