@@ -45,8 +45,12 @@ public object ResourcePathExpressionUtil {
  *
  * 针对于资源路径表达式的封装。
  *
+ * 资源路径表达式的结果可能会得到两种：一个是多个结果，一个是不存在通配符、只能得到一个结果的。
+ *
  */
-public sealed class ResourcePathExpression(val expression: String) {
+public interface ResourcePathExpression {
+
+    val expression: String
 
     /**
      * 资源类型。一般为 `file` 、`classpath`或者 `both`
@@ -56,8 +60,13 @@ public sealed class ResourcePathExpression(val expression: String) {
 
     /**
      * 此表达式在一个根目录下所能够得到的所有资源路径。  如果为null，则目录即为当前工作目录。
+     *
+     * @return 能够找到的资源目录列表。
      */
-    abstract fun getResourcePaths(root: String? = null)
+    abstract fun getResourcePaths(root: String? = null): List<String>
+
+
+
 
 
     // internal class FileResourcePathExpression(expression: String) : ResourcePathExpression(expression)
@@ -82,10 +91,41 @@ public sealed class ResourcePathExpression(val expression: String) {
                 }
             }
         }
-
-
     }
 }
+
+
+/**
+ * Base abstract class for [ResourcePathExpression].
+ */
+internal abstract class BaseResourcePathExpression(override val expression: String): ResourcePathExpression {
+
+    // TODO
+
+}
+
+
+
+/**
+ * 只可能命中一个结果的（即不包含通配符的）资源表达式。
+ */
+internal sealed class SingletonResourcePathExpression(expression: String) : BaseResourcePathExpression(expression) {
+    /**
+     * 此表达式在一个根目录下所能够得到的资源路径。  如果为null，则目录即为当前工作目录。
+     *
+     * @return 能够找到的资源目录。
+     */
+    abstract fun getResourcePath(root: String? = null): String
+    override fun getResourcePaths(root: String?): List<String> = listOf(getResourcePath(root))
+}
+
+
+
+
+/**
+ * 可能命中多个结果的（即不包含通配符的）资源表达式。
+ */
+internal sealed class MutableResourcePathExpression(expression: String) : BaseResourcePathExpression(expression)
 
 
 
