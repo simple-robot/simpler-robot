@@ -14,6 +14,9 @@
 
 package love.forte.test
 
+import org.jetbrains.annotations.TestOnly
+import kotlin.test.Test
+
 
 /**
  *
@@ -21,6 +24,13 @@ package love.forte.test
  */
 class ResourcePathExpressionUtilTest {
 
-    fun run() {}
+    @Test
+    @TestOnly
+    fun classpathExpression1() {
+        val expression = "classpath:*.bot"
+
+
+    }
+
 
 }
