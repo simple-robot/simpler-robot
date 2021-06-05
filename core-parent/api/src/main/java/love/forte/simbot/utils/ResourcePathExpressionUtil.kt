@@ -50,12 +50,15 @@ public object ResourcePathExpressionUtil {
  */
 public interface ResourcePathExpression {
 
+    /**
+     * 具体的表达式本体.
+     */
     val expression: String
 
     /**
      * 资源类型。一般为 `file` 、`classpath`或者 `both`
      */
-    abstract val type: String
+    val type: String
 
 
     /**
@@ -63,7 +66,7 @@ public interface ResourcePathExpression {
      *
      * @return 能够找到的资源目录列表。
      */
-    abstract fun getResourcePaths(root: String? = null): List<String>
+    fun getResourcePaths(root: String? = null): List<String>
 
 
 
@@ -101,6 +104,8 @@ public interface ResourcePathExpression {
 internal abstract class BaseResourcePathExpression(override val expression: String): ResourcePathExpression {
 
     // TODO
+
+    override fun toString(): String = "ResourcePathExpression(expression=$expression)"
 
 }
 
