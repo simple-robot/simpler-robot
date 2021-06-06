@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
 import love.forte.simbot.component.mirai.message.cacheId
 import love.forte.simbot.component.mirai.message.event.*
+import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.listener.MsgGetProcessor
 import love.forte.simbot.listener.onMsg
@@ -34,8 +35,6 @@ import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.util.concurrent.Executor
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
@@ -58,7 +57,7 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         started = true
     }
 
-    private val logger: Logger = LoggerFactory.getLogger(MiraiBotEventRegistrar::class.java)
+    private companion object : TypedCompLogger(MiraiBotEventRegistrar::class.java)
 
 
     @OptIn(MiraiExperimentalApi::class)
@@ -414,15 +413,14 @@ private inline fun <reified E : BotEvent> Bot.registerListenerAlways(crossinline
 public annotation class SimbotMiraiCrossApi
 
 
-
 @SimbotMiraiCrossApi
 private object MiraiOnMsgDispatcher : CoroutineDispatcher() {
     private val threadGroup: ThreadGroup = ThreadGroup("MiraiOnMsgDispatcher")
     private val threadIndex = atomic(0)
 
     private val executor: Executor = ThreadPoolExecutor(
-        Runtime.getRuntime().availableProcessors() + 1,
-        Runtime.getRuntime().availableProcessors() * 2,
+        Runtime.getRuntime().availableProcessors() * 2 + 1,
+        Runtime.getRuntime().availableProcessors() * 4 + 1,
         0L, TimeUnit.MILLISECONDS,
         LinkedBlockingQueue(),
     ) { runnable ->
