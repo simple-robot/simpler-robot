@@ -62,10 +62,10 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
 
 
     @ConfigInject("dispatcher.corePoolSize")
-    private var corePoolSize: Int = Runtime.getRuntime().availableProcessors() + 1
+    private var corePoolSize: Int = Runtime.getRuntime().availableProcessors() * 2
 
     @ConfigInject("dispatcher.maximumPoolSize")
-    private var maximumPoolSize: Int = Runtime.getRuntime().availableProcessors() * 2
+    private var maximumPoolSize: Int = Runtime.getRuntime().availableProcessors() * 4
 
     @ConfigInject("dispatcher.keepAliveTime")
     private var keepAliveTime: Long = 1000L
