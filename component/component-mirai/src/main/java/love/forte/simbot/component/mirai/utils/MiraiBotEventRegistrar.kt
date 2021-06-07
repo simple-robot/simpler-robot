@@ -20,9 +20,12 @@ import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.launch
+import love.forte.common.configuration.annotation.AsConfig
+import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
 import love.forte.simbot.component.mirai.message.cacheId
 import love.forte.simbot.component.mirai.message.event.*
+import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.listener.MsgGetProcessor
 import love.forte.simbot.listener.onMsg
@@ -34,8 +37,6 @@ import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.util.concurrent.Executor
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
@@ -48,6 +49,7 @@ import kotlin.coroutines.CoroutineContext
 
 
 @ComponentBeans
+@AsConfig(prefix = "simbot.component.mirai")
 public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
 
     @Volatile
@@ -58,7 +60,27 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         started = true
     }
 
-    private val logger: Logger = LoggerFactory.getLogger(MiraiBotEventRegistrar::class.java)
+
+    @ConfigInject("dispatcher.corePoolSize")
+    private var corePoolSize: Int = Runtime.getRuntime().availableProcessors() + 1
+
+    @ConfigInject("dispatcher.maximumPoolSize")
+    private var maximumPoolSize: Int = Runtime.getRuntime().availableProcessors() * 2
+
+    @ConfigInject("dispatcher.keepAliveTime")
+    private var keepAliveTime: Long = 1000L
+
+    @OptIn(SimbotMiraiCrossApi::class)
+    private val dispatcher: CoroutineContext by lazy {
+        logger.debug("Init simbot mirai event dispatcher (corePoolSize={}, maximumPoolSize={}, keepAliveTime={}(ms))",
+            corePoolSize,
+            maximumPoolSize,
+            keepAliveTime)
+        MiraiOnMsgDispatcher(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS)
+    }
+
+
+    private companion object : TypedCompLogger(MiraiBotEventRegistrar::class.java)
 
 
     @OptIn(MiraiExperimentalApi::class)
@@ -382,19 +404,19 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         // enable mirai log.
         logger.let { if (it is MiraiLoggerWithSwitch) it else null }?.enable()
     }
-}
 
 
-/**
- * register event.
- */
-@OptIn(SimbotMiraiCrossApi::class)
-private inline fun <reified E : BotEvent> Bot.registerListenerAlways(crossinline handler: suspend E.(E) -> Unit): Listener<E> =
-    this.eventChannel.subscribeAlways {
-        launch(MiraiOnMsgDispatcher) {
-            handler(this@subscribeAlways)
+    /**
+     * register event.
+     */
+    @OptIn(SimbotMiraiCrossApi::class)
+    private inline fun <reified E : BotEvent> Bot.registerListenerAlways(crossinline handler: suspend E.(E) -> Unit): Listener<E> =
+        this.eventChannel.subscribeAlways {
+            launch(dispatcher) {
+                handler(this@subscribeAlways)
+            }
         }
-    }
+}
 
 
 /**
@@ -414,16 +436,21 @@ private inline fun <reified E : BotEvent> Bot.registerListenerAlways(crossinline
 public annotation class SimbotMiraiCrossApi
 
 
-
 @SimbotMiraiCrossApi
-private object MiraiOnMsgDispatcher : CoroutineDispatcher() {
-    private val threadGroup: ThreadGroup = ThreadGroup("MiraiOnMsgDispatcher")
+private class MiraiOnMsgDispatcher(
+    corePoolSize: Int,
+    maximumPoolSize: Int,
+    keepAliveTime: Long,
+    timeUnit: TimeUnit,
+) : CoroutineDispatcher() {
+    private val threadGroup: ThreadGroup = ThreadGroup("mirai-simbot")
     private val threadIndex = atomic(0)
 
     private val executor: Executor = ThreadPoolExecutor(
-        Runtime.getRuntime().availableProcessors() + 1,
-        Runtime.getRuntime().availableProcessors() * 2,
-        0L, TimeUnit.MILLISECONDS,
+        corePoolSize,
+        maximumPoolSize,
+        keepAliveTime,
+        timeUnit,
         LinkedBlockingQueue(),
     ) { runnable ->
         Thread(
