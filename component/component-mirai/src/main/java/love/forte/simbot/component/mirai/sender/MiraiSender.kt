@@ -13,6 +13,7 @@
  */
 package love.forte.simbot.component.mirai.sender
 
+import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.Carrier
 import love.forte.common.utils.toCarrier
@@ -33,6 +34,7 @@ import love.forte.simbot.component.mirai.message.event.MiraiGroupFlagContent
 import love.forte.simbot.component.mirai.message.event.MiraiMessageMsgGet
 import love.forte.simbot.component.mirai.message.event.MiraiPrivateFlagContent
 import love.forte.simbot.component.mirai.utils.toMiraiMessageContent
+import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.processor.RemoteResourceInProcessor
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
@@ -93,15 +95,28 @@ public class MiraiSender(
     private val remoteResourceInProcessor: RemoteResourceInProcessor,
 ) : Sender {
 
+    private companion object : TypedCompLogger(MiraiSender::class.java)
 
-    private val senderInfo = SenderInfo(bot, contact, message, cache)
+    private lateinit var _senderInfo: SenderInfo
+    private val senderInfo: SenderInfo get() {
+        if (!::_senderInfo.isInitialized) {
+            synchronized(this) {
+                if (!::_senderInfo.isInitialized) {
+                    _senderInfo = SenderInfo(bot, contact, message, cache)
+                }
+            }
+        }
+        return _senderInfo
+    }
 
 
     /**
      * 发送群聊消息。
      */
     private fun sendGroupMsg0(group: Long, msg: MessageContent): Carrier<MiraiGroupMsgFlag> {
+        logger.debug("Group 1 -> {} in {}", Thread.currentThread().name, group)
         return runBlocking {
+            logger.debug("Group 2 -> {} in {}", Thread.currentThread().name, group)
             val miraiMsg = msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor)
             // get group.
             val g: Group = bot.group(group)
@@ -138,7 +153,9 @@ public class MiraiSender(
      * 发送私聊消息。
      */
     private fun sendPrivateMsg0(code: Long, group: Long?, msg: MessageContent): Carrier<MiraiPrivateMsgFlag> {
+        logger.debug("Private 1 -> {} in {}", Thread.currentThread().name, code)
         return runBlocking {
+            logger.debug("Private 2 -> {} in {}", Thread.currentThread().name, code)
             val miraiMsg = msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor)
             val messageReceipt: MessageReceipt<Contact>? = if (group != null) {
                 bot.member(group, code).run {
