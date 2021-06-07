@@ -14,7 +14,8 @@
 
 package love.forte.test
 
-import org.jetbrains.annotations.TestOnly
+import love.forte.simbot.utils.ResourcePathExpression
+import love.forte.simbot.utils.readToProperties
 import kotlin.test.Test
 
 
@@ -25,10 +26,51 @@ import kotlin.test.Test
 class ResourcePathExpressionUtilTest {
 
     @Test
-    @TestOnly
     fun classpathExpression1() {
-        val expression = "classpath:*.bot"
+        val e = "classpath:bots/this.bot"
 
+        val expression = ResourcePathExpression.getInstance(e)
+
+        println(expression)
+        println(expression.expression)
+
+        val resource = expression.getResources()[0]
+
+        println(resource.readToProperties())
+
+
+    }
+
+    @Test
+    fun classpathExpression2() {
+        val e = "resource:bots/this2.bot"
+
+        val expression = ResourcePathExpression.getInstance(e)
+
+        println(expression)
+        println(expression.expression)
+
+        val resource = expression.getResources()[0]
+
+        println(resource.readToProperties())
+
+    }
+
+    @Test
+    fun fileExpression1() {
+        val file = "file:test.bot"
+
+        val expression = ResourcePathExpression.getInstance(file)
+
+        println(expression)
+        println(expression.expression)
+        println(expression.type)
+
+        val resource = expression.getResources()[0]
+
+        println(resource.name)
+
+        val prop = resource.readToProperties()
 
     }
 
