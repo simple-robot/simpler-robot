@@ -65,7 +65,18 @@ public class MiraiSetter(
         }
     }
 
-    private val setterInfo = SetterInfo(bot)
+    private lateinit var _setterInfo: SetterInfo
+    private val setterInfo: SetterInfo
+        get() {
+        if (!::_setterInfo.isInitialized) {
+            kotlinx.atomicfu.locks.synchronized(this) {
+                if (!::_setterInfo.isInitialized) {
+                    _setterInfo = SetterInfo(bot)
+                }
+            }
+        }
+        return _setterInfo
+    }
 
 
     /**
