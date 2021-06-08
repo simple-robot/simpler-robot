@@ -101,7 +101,7 @@ class ResourcePathExpressionUtilTest {
         var allMatch = false
 
         val splitList = e.split('\\', '/')
-        val matchList = splitList.forEachIndexed { index, it ->
+        splitList.forEachIndexed { index, it ->
             when {
                 it == "**" -> {
                     pre = false
