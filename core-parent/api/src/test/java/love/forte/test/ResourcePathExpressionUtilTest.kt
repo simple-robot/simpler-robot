@@ -17,10 +17,7 @@ package love.forte.test
 import love.forte.simbot.utils.ResourcePathExpression
 import love.forte.simbot.utils.readToProperties
 import java.io.IOException
-import java.nio.file.FileVisitResult
-import java.nio.file.LinkOption
-import java.nio.file.Path
-import java.nio.file.SimpleFileVisitor
+import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
 import kotlin.io.path.Path
 import kotlin.io.path.name
@@ -91,10 +88,25 @@ class ResourcePathExpressionUtilTest {
 
         // val ep = Path(e)
 
+
+        val matchList = e.split('\\', '/').map {
+            when {
+                it == "**" -> "((?![\\.;]).)+"
+                it.contains("**") -> throw IllegalArgumentException("**Can not match other characters.")
+                it.contains("*") -> it.replace("*", "((?![/\\\\\\.;]).)+")
+                it.contains("?") -> it.replace("?", "((?![/\\\\\\.;]).)")
+                else -> it
+            }
+        }
+
         val regex = Regex(e.replace(".", "\\.")
             .replace("*", "((?![/\\\\\\.;]).)+")
             .replace("**", "((?![\\.;]).)+")
         )
+
+        // ** -> 任意路径，不能有其他
+        // *  -> 任意内容，可以有其他字符
+        // ?  -> 任意字符
 
         println(regex)
 
@@ -112,7 +124,7 @@ class ResourcePathExpressionUtilTest {
         println(p.toRealPath().name)
         println(p.toRealPath().getName(0))
 
-        // Files.walkFileTree(p.normalize(), MyFileVisitor(p))
+        Files.walkFileTree(p.normalize(), MyFileVisitor(p))
 
         // val l = Files.find(p, 3, { pp, attr ->
         //     println(pp)
