@@ -148,7 +148,7 @@ internal class SingletonFileResourcePathExpression(expression: String) :
  * 本地文件的路径查询表达式
  */
 internal class SingletonClasspathResourcePathExpression(expression: String, private val classLoader: ClassLoader) :
-    SingletonResourcePathExpression(expression, ResourcePathExpression.TYPE_FILE) {
+    SingletonResourcePathExpression(expression, ResourcePathExpression.TYPE_CLASSPATH) {
 
     // file:xxx.xxx -> xxx.xxx
     /**
@@ -169,7 +169,7 @@ internal class SingletonClasspathResourcePathExpression(expression: String, priv
  * 一般为开头没有指定的时候使用。
  */
 internal class SingletonFileFirstResourcePathExpression(expression: String, private val classLoader: ClassLoader) :
-    SingletonResourcePathExpression(expression, ResourcePathExpression.TYPE_FILE) {
+    SingletonResourcePathExpression(expression, ResourcePathExpression.TYPE_FILE_FIRST) {
     override fun getResource(root: String?): Resource {
         val path = root?.let { r -> Path(r) } ?: Path(".") / expression
         if (path.exists()) {
@@ -185,6 +185,7 @@ internal class SingletonFileFirstResourcePathExpression(expression: String, priv
  * 可能命中多个结果的（即不包含通配符的）资源表达式。
  */
 internal sealed class MutableResourcePathExpression(expression: String) : BaseResourcePathExpression(expression)
+
 
 
 /**
