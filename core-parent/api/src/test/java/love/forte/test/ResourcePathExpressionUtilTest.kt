@@ -149,6 +149,10 @@ class ResourcePathExpressionUtilTest {
 
 internal class MyFileVisitor(root: Path) : SimpleFileVisitor<Path>() {
 
+    // 如果没有 ** ，则file通过正数索引来判断目录规范并匹配，然后判断文件本身
+    // 如果有 **，则从 ** 位向后由整数转为倒数
+    // 如果有多个 ** TODO
+
     /** root path */
     private val rootPath = root.toRealPath(LinkOption.NOFOLLOW_LINKS).normalize()
 
