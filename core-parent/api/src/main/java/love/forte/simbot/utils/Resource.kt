@@ -72,3 +72,10 @@ public fun URL.asResource(): Resource = URLResource(this)
 public fun Resource.readToProperties(charset: Charset = Charsets.UTF_8): Properties = Properties().also { p ->
     inputStream.bufferedReader(charset).use { p.load(it) }
 }
+
+
+
+public open class NoSuchResourceException : NoSuchElementException {
+    constructor() : super()
+    constructor(s: String?) : super(s)
+}

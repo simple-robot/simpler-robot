@@ -16,6 +16,10 @@ package love.forte.test
 
 import love.forte.simbot.utils.ResourcePathExpression
 import love.forte.simbot.utils.readToProperties
+import java.nio.file.Files
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.streams.toList
 import kotlin.test.Test
 
 
@@ -74,5 +78,65 @@ class ResourcePathExpressionUtilTest {
 
     }
 
+
+    @Test
+    fun expression2FindTest() {
+        val e = "bots/*.bot"
+
+        val p = Path(".")
+
+        // val ep = Path(e)
+
+        val regex = Regex(e.replace(".", "\\.")
+            .replace("*", "((?![/\\\\\\.;]).)+")
+            .replace("**", "((?![\\.;]).)+")
+        )
+
+        println(regex)
+
+        println(regex.matches("bots/forte.bot"))
+        println(regex.matches("bots/and/forte.bot"))
+        println(regex.matches("bots/forli.bot"))
+
+        val l = Files.find(p, 3, { p, _ ->
+            println(p)
+            println(p.toRealPath())
+            println()
+            true
+        }).toList()
+
+        println("----")
+
+        l.forEach { println(it) }
+
+    }
+
+
+
+
+
+
+}
+
+
+private interface PathMatcher
+
+
+
+public class PathFinder(expression: String) {
+
+    private val expressionSplitList: List<String> = expression.split(Regex("[/\\\\]"))
+
+    init {
+        if (expressionSplitList.isEmpty()) {
+            error("Expression has no path.")
+        }
+    }
+
+
+    fun find(rootPath: Path): List<Path> {
+
+        TODO()
+    }
 
 }
