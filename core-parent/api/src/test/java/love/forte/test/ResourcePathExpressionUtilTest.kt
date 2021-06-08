@@ -16,10 +16,14 @@ package love.forte.test
 
 import love.forte.simbot.utils.ResourcePathExpression
 import love.forte.simbot.utils.readToProperties
-import java.nio.file.Files
+import java.io.IOException
+import java.nio.file.FileVisitResult
+import java.nio.file.LinkOption
 import java.nio.file.Path
+import java.nio.file.SimpleFileVisitor
+import java.nio.file.attribute.BasicFileAttributes
 import kotlin.io.path.Path
-import kotlin.streams.toList
+import kotlin.io.path.name
 import kotlin.test.Test
 
 
@@ -98,16 +102,29 @@ class ResourcePathExpressionUtilTest {
         println(regex.matches("bots/and/forte.bot"))
         println(regex.matches("bots/forli.bot"))
 
-        val l = Files.find(p, 3, { p, _ ->
-            println(p)
-            println(p.toRealPath())
-            println()
-            true
-        }).toList()
+        println(p)
+        println(p.toRealPath())
 
-        println("----")
+        println(p.nameCount)
+        println(p.toRealPath().nameCount)
 
-        l.forEach { println(it) }
+
+        println(p.toRealPath().name)
+        println(p.toRealPath().getName(0))
+
+        // Files.walkFileTree(p.normalize(), MyFileVisitor(p))
+
+        // val l = Files.find(p, 3, { pp, attr ->
+        //     println(pp)
+        //     println(pp.toRealPath())
+        //
+        //     println(attr.fileKey())
+        //     true
+        // }).toList()
+        //
+        // println("----")
+        //
+        // l.forEach { println(it) }
 
     }
 
@@ -118,25 +135,38 @@ class ResourcePathExpressionUtilTest {
 
 }
 
+internal class MyFileVisitor(root: Path) : SimpleFileVisitor<Path>() {
 
-private interface PathMatcher
+    /** root path */
+    private val rootPath = root.toRealPath(LinkOption.NOFOLLOW_LINKS).normalize()
+
+    /** root的起始name索引 */
+    private val rootNameIndex = rootPath.nameCount
+
+    // **/*.bot
+
+    override fun preVisitDirectory(dir: Path?, attrs: BasicFileAttributes?): FileVisitResult {
+        requireNotNull(dir)
+        requireNotNull(attrs)
 
 
+        println(" --- ")
+        println(dir)
+        println(dir.normalize())
+        println()
 
-public class PathFinder(expression: String) {
-
-    private val expressionSplitList: List<String> = expression.split(Regex("[/\\\\]"))
-
-    init {
-        if (expressionSplitList.isEmpty()) {
-            error("Expression has no path.")
-        }
+        return FileVisitResult.CONTINUE
     }
 
-
-    fun find(rootPath: Path): List<Path> {
-
-        TODO()
+    override fun visitFile(file: Path?, attrs: BasicFileAttributes?): FileVisitResult {
+        return super.visitFile(file, attrs)
     }
 
+    override fun visitFileFailed(file: Path?, exc: IOException?): FileVisitResult {
+        return super.visitFileFailed(file, exc)
+    }
+
+    override fun postVisitDirectory(dir: Path?, exc: IOException?): FileVisitResult {
+        return super.postVisitDirectory(dir, exc)
+    }
 }
