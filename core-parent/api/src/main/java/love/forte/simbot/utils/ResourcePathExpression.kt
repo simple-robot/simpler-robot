@@ -75,15 +75,19 @@ public interface ResourcePathExpression {
         fun getInstance(expression: String): ResourcePathExpression {
             return when {
                 // classpath
-                expression.startsWith("classpath:") || expression.startsWith("resource:") ->
+                expression.startsWith("classpath:") ->
                     if (expression.contains("*")) {
                         TODO()
-                    } else SingletonClasspathResourcePathExpression(expression, this::class.java.classLoader)
+                    } else SingletonClasspathResourcePathExpression(expression.substring(10), this::class.java.classLoader)
+                expression.startsWith("resource:") ->
+                    if (expression.contains("*")) {
+                        TODO()
+                    } else SingletonClasspathResourcePathExpression(expression.substring(9), this::class.java.classLoader)
                 // file
                 expression.startsWith("file:") ->
                     if (expression.contains("*")) {
                         TODO()
-                    } else SingletonFileResourcePathExpression(expression)
+                    } else SingletonFileResourcePathExpression(expression.substring(5))
                 // BOTH?
                 else ->
                     if (expression.contains("*")) {
@@ -128,8 +132,7 @@ internal class SingletonFileResourcePathExpression(expression: String) :
      * 真正的表达式，即 `file:` 之后的内容。
      * 由于是单值表达式，因此表达式中不会存在 `*`, 而就是指代一个具体的文件。
      */
-    private val realExpression =
-        if (expression.startsWith("file:")) expression.substring(5) else throw IllegalStateException("Expression not starts with 'file:' : $expression")
+    private val realExpression = expression
 
     override fun getResource(root: String?): Resource {
         val path = root?.let { r -> Path(r) } ?: Path(".") / realExpression
@@ -152,11 +155,7 @@ internal class SingletonClasspathResourcePathExpression(expression: String, priv
      * 真正的表达式，即 `classpath:` 或 `resource:` 之后的内容。
      * 由于是单值表达式，因此表达式中不会存在 `*`, 而就是指代一个具体的文件。
      */
-    private val realExpression = when {
-        expression.startsWith("classpath:") -> expression.substring(10)
-        expression.startsWith("resource:") -> expression.substring(9)
-        else -> throw IllegalArgumentException("Expression not starts with 'classpath:' or 'resource:' : $expression")
-    }
+    private val realExpression = expression
 
     override fun getResource(root: String?): Resource {
         return classLoader.getResource(realExpression)?.asResource()
@@ -196,9 +195,7 @@ internal class MutableFileResourcePathExpression(expression: String) : MutableRe
     /**
      * 真正的表达式。
      */
-    private val realExpression =
-        if (expression.startsWith("file:")) expression.substring(5) else throw IllegalStateException("Expression not starts with 'file:' : $expression")
-
+    private val realExpression = expression
 
     override val type: String
         get() = TODO("Not yet implemented")
