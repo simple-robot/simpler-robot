@@ -16,11 +16,13 @@
 package love.forte.simbot.utils
 
 import java.io.InputStream
+import java.io.Reader
 import java.net.URL
 import java.nio.charset.Charset
 import java.nio.file.Path
 import java.util.*
 import kotlin.io.path.inputStream
+import kotlin.io.path.name
 
 /**
  * 资源。
@@ -55,7 +57,7 @@ public data class URLResource(private val url: URL) : Resource {
  * 基于 [Path] 的 [Resource] 实现。
  */
 public data class PathResource(private val path: Path) : Resource {
-    override val name: String = path.toRealPath().toString()
+    override val name: String = path.toRealPath().name
 
     override val inputStream: InputStream
         get() = path.inputStream()
@@ -72,6 +74,11 @@ public fun URL.asResource(): Resource = URLResource(this)
 public fun Resource.readToProperties(charset: Charset = Charsets.UTF_8): Properties = Properties().also { p ->
     inputStream.bufferedReader(charset).use { p.load(it) }
 }
+
+/**
+ * [Reader] by [Charsets.UTF_8].
+ */
+public val Resource.utf8Reader: Reader get() = inputStream.reader(Charsets.UTF_8)
 
 
 
