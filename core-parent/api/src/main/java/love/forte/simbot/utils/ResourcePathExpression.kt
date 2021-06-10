@@ -82,12 +82,14 @@ public interface ResourcePathExpression {
                 expression.startsWith("classpath:") ->
                     if (expression.contains("*")) {
                         TODO()
-                    } else SingletonClasspathResourcePathExpression(expression.substring(10),
+                    }
+                    else SingletonClasspathResourcePathExpression(expression.substring(10),
                         this::class.java.classLoader)
                 expression.startsWith("resource:") ->
                     if (expression.contains("*")) {
                         TODO()
-                    } else SingletonClasspathResourcePathExpression(expression.substring(9),
+                    }
+                    else SingletonClasspathResourcePathExpression(expression.substring(9),
                         this::class.java.classLoader)
                 // file
                 expression.startsWith("file:") ->
@@ -97,7 +99,8 @@ public interface ResourcePathExpression {
                 else ->
                     if (expression.contains("*")) {
                         TODO()
-                    } else SingletonFileFirstResourcePathExpression(expression, this::class.java.classLoader)
+                    }
+                    else SingletonFileFirstResourcePathExpression(expression, this::class.java.classLoader)
             }
         }
     }
@@ -121,6 +124,8 @@ internal sealed class SingletonResourcePathExpression(expression: String, overri
      * 此表达式在一个根目录下所能够得到的资源路径。  如果为null，则目录即为当前工作目录。
      *
      * @return 能够找到的资源目录。
+     *
+     * @throws NoSuchResourceException No such resource.
      */
     abstract fun getResource(root: String? = null): Resource
     override fun getResources(root: String?): List<Resource> = listOf(getResource(root))
@@ -388,25 +393,6 @@ internal class ExpressionFileVisitor(
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-public class CrossSingletonResourcePathExpression(private val expressions: List<ResourcePathExpression>) {
-    // TODO()
-}
 
 
 
