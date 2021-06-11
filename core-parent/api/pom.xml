@@ -45,12 +45,6 @@
             <groupId>love.forte</groupId>
             <artifactId>catcode</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
-            <scope>test</scope>
-        </dependency>
         <!--</editor-fold>-->
 
         <!-- slf4j api, 不强制使用 -->

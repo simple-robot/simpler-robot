@@ -68,13 +68,18 @@
         </plugins>
     </build>
 
-    <!--<pluginRepositories>-->
-    <!--    <pluginRepository>-->
-    <!--        <id>jcenter</id>-->
-    <!--        <name>JCenter</name>-->
-    <!--        <url>https://jcenter.bintray.com/</url>-->
-    <!--    </pluginRepository>-->
-    <!--</pluginRepositories>-->
+    <dependencies>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 
 
