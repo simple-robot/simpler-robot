@@ -57,7 +57,7 @@ jobs:
         run: mvn --batch-mode test
         
       - name: Publish package
-        run: mvn --batch-mode deploy -P snapshots-oss,snapshot,!oss,!release
+        run: mvn --batch-mode deploy -P snapshot,!release
         env:
           MAVEN_USERNAME: ${{ secrets.OSS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSS_PASSWORD }}        
