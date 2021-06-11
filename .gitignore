@@ -39,7 +39,7 @@ hs_err_pid*
 .idea/**/contentModel.xml
 
 # Sensitive or high-churn files
-.idea/**
+#.idea/**
 .idea/**/dataSources/
 .idea/**/dataSources.ids
 .idea/**/dataSources.local.xml
