@@ -14,14 +14,11 @@
 
 package love.test
 
-import kotlin.test.Test
-
 class OnlyTestMain {
 
-    @Test
+    @org.junit.jupiter.api.Test
     fun test() {
-        println("Test success~")
-        println("Test success again~")
-
+        println("test1")
+        error("No way.")
     }
 }
