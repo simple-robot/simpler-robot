@@ -21,6 +21,7 @@ class OnlyTestMain {
     @Test
     fun test() {
         println("Test success~")
+        println("Test success again~")
 
     }
 }
