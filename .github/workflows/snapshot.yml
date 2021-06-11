@@ -50,11 +50,6 @@ jobs:
 #           echo Add other actions to build,
 #           echo test, and deploy your project.
     
-      - name: Clean & compile project
-        run: mvn --batch-mode --update-snapshots clean compile
-       
-      - name: Test project
-        run: mvn --batch-mode test
         
       # 设置Maven中央仓库配置
       - name: Set up Apache Maven Central
@@ -72,7 +67,7 @@ jobs:
           gpg-private-key: ${{ secrets.OSS_GPG_SECRET }}  
         
       - name: Publish package
-        run: mvn --batch-mode deploy -P snapshot,!release
+        run: mvn -DskipTests -B -e -U clean deploy -P snapshot,!release
         env:
           MAVEN_USERNAME: ${{ secrets.SNAPSHOTS_OSS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.SNAPSHOTS_OSS_PASSWORD }}
