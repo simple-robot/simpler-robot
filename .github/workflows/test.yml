@@ -21,7 +21,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+          
 #       # Runs a single command using the runners shell
 #       - name: Run a one-line script
 #         run: echo Hello, world!
@@ -33,7 +37,7 @@ jobs:
 #           echo test, and deploy your project.
     
       - name: Clean & compile project
-        run: mvn clean compile
+        run: mvn --batch-mode --update-snapshots clean compile
         
       - name: Test project
-        run: mvn test
+        run: mvn --batch-mode test
