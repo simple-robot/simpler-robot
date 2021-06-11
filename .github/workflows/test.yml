@@ -32,8 +32,5 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
     
-      - name: Clean & complie project
-        run: mvn clean complie
-
       - name: Test project
         run: mvn test
