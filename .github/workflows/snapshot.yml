@@ -13,7 +13,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  publish:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -21,13 +21,20 @@ jobs:
     steps:  
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Set up JDK 1.8
+      - name: Set up Apache Maven Central
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
           server-id: snapshots-oss
+          # Nexus用户名环境变量
           server-username: MAVEN_USERNAME
+          # Nexus密码环境变量
           server-password: MAVEN_PASSWORD
+          # gpg短密码环境变量
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          # gpg私钥
+          gpg-private-key: ${{ secrets.OSS_GPG_SECRET }}  
+          
       - name: Cache
         uses: actions/cache@v2.1.6
         with:
@@ -50,21 +57,7 @@ jobs:
 #           echo Add other actions to build,
 #           echo test, and deploy your project.
     
-        
-      # 设置Maven中央仓库配置
-      - name: Set up Apache Maven Central
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-          server-id: snapshot
-          # Nexus用户名环境变量
-          server-username: MAVEN_USERNAME
-          # Nexus密码环境变量
-          server-password: MAVEN_PASSWORD
-          # gpg短密码环境变量
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-          # gpg私钥
-          gpg-private-key: ${{ secrets.OSS_GPG_SECRET }}  
+
         
       - name: Publish package
         run: mvn -DskipTests -B -e -U clean deploy -P snapshot,!release
