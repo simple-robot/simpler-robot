@@ -24,7 +24,9 @@ jobs:
       - name: Set up Apache Maven Central
         uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+#           java-version: 1.8
+          java-version: '11'
+          distribution: 'adopt'
           server-id: snapshots-oss
           # Nexus用户名环境变量
           server-username: MAVEN_USERNAME
