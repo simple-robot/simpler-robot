@@ -70,7 +70,7 @@ class ResourcePathExpressionUtilTest {
 
         println(resource.name)
 
-        val prop = resource.readToProperties()
+        // val prop = resource.readToProperties()
 
     }
 
@@ -86,9 +86,9 @@ class ResourcePathExpressionUtilTest {
             println(it.inputStream.use { inp -> inp.reader().readText() })
             println("==============================================")
         }
-
-
     }
+
+
 
 
 
