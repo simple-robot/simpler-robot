@@ -1,16 +1,14 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  component-onebot
- *  * File     BotVerifyInfo.kt
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
@@ -30,7 +28,7 @@ import java.util.*
  * 账号配置时类似于 `properties` 等键值对格式的配置方式，并解析为 [BotVerifyInfo] 实例。
  *
  *
- * [BotVerifyInfo] 主要通过读取对应的bot配置资源文件得到，例如 `*.properties` 或 `*.yml`文件。
+ * [BotVerifyInfo] 主要通过读取对应的bot配置资源文件得到，格式为 `.bot`, 其规则等同于properties。
  * 通常情况下，一个bot配置文件则对应一个 [BotVerifyInfo] 实例。
  *
  *
@@ -58,7 +56,7 @@ public interface BotVerifyInfo {
 
 
 internal val CODE_ALIAS = arrayOf("code")
-internal val VERIFICATION_ALIAS = arrayOf("verification")
+internal val VERIFICATION_ALIAS = arrayOf("verification", "password")
 
 /**
  * 获取一个基于[Map]的键值对实例。
@@ -124,6 +122,8 @@ fun botVerifyInfoBySplit(configTextPair: String): BotVerifyInfo {
 
 /**
  * 基于键值对的 [BotVerifyInfo] 基础实现，通过 [Map] 或者 [Properties] 进行实现。
+ *
+ *
  */
 public sealed class PairBotVerifyInfo(
     /** 获取账号的别名。用于 [code] 从 [get] 函数中的获取。 */

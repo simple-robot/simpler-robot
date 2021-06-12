@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -46,6 +46,6 @@ public abstract class BaseBot(override val sender: BotSender, override val botIn
 /**
  * [BaseBot] 的基础实现，屏蔽了 [close]。
  */
-public class NoNeedToCloseBot(sender: BotSender, botInfo: BotInfo): BaseBot(sender, botInfo) {
+public open class NoNeedToCloseBot(sender: BotSender, botInfo: BotInfo): BaseBot(sender, botInfo) {
     override fun close() { }
 }
