@@ -21,6 +21,10 @@ import love.forte.simbot.utils.StoneArray.Companion.EMPTY
 
 /**
  * 一个数组的视图，但是不允许对数组进行任何修改。
+ *
+ * @see stoneArrayOf
+ * @see asStoneArray
+ *
  * @author ForteScarlet
  */
 public class StoneArray<out T> internal constructor(private val view: Array<T>) : Iterable<T> {

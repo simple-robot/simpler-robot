@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -19,7 +19,7 @@ import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.PostPass
 import love.forte.simbot.bot.BotManager
-import love.forte.simbot.bot.botVerifyInfoBySplit
+import love.forte.simbot.bot.BotVerifyInfoConfiguration
 import love.forte.simbot.core.TypedCompLogger
 
 
@@ -38,6 +38,8 @@ public class CoreBotRegistrar {
     @ConfigInject("bots", orDefault = [""])
     lateinit var bots: List<String>
 
+    @Depend
+    lateinit var botVerifyConfiguration: BotVerifyInfoConfiguration
 
 
     /**
@@ -45,12 +47,24 @@ public class CoreBotRegistrar {
      */
     @PostPass
     public fun registerBots(){
+        val bots = botVerifyConfiguration.configuredBotVerifyInfos
+
         if(bots.isEmpty() && botManager.bots.isEmpty()) {
             logger.warn("No bot information is configured.")
         } else {
-            bots.asSequence().distinct().forEach {
-                val info = botVerifyInfoBySplit(it)
-                logger.debug("Try to verify the bot(${info.code}) information.")
+
+            // show logs.
+            bots.forEach { info ->
+                val showName = info["name"]
+                val show = showName?.takeIf { it.isNotBlank() }?.let { "$it-${info.code}" } ?: info.code
+                logger.debug("Configured bot: {}", show)
+            }
+
+            bots.asSequence().distinct().forEach { info ->
+                // val info = botVerifyInfoBySplit(it)
+                val showName = info["name"]
+                val show = showName?.takeIf { it.isNotBlank() }?.let { "$it-${info.code}" } ?: info.code
+                logger.debug("Try to verify the bot({}) information.", show)
                 botManager.registerBot(info)
             }
         }
