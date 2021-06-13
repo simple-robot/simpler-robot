@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -69,7 +69,7 @@ public class MiraiSetter(
     private val setterInfo: SetterInfo
         get() {
         if (!::_setterInfo.isInitialized) {
-            kotlinx.atomicfu.locks.synchronized(this) {
+            synchronized(this) {
                 if (!::_setterInfo.isInitialized) {
                     _setterInfo = SetterInfo(bot)
                 }
