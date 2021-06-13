@@ -17,7 +17,7 @@
     <br>
    <a href="https://github.com/ForteScarlet/simpler-robot/releases/latest"><img alt="release" src="https://img.shields.io/github/v/release/ForteScarlet/simpler-robot" /></a>
 <a href="https://repo1.maven.org/maven2/love/forte/simple-robot/core/" target="_blank">
-  <img alt="release" src="https://img.shields.io/nexus/r/love.forte.simple-robot/core?label=simbot-release&server=https%3A%2F%2Foss.sonatype.org" /></a>
+  <img alt="release" src="https://img.shields.io/nexus/r/love.forte.simple-robot/core?label=simbot-lastVersion&server=https%3A%2F%2Foss.sonatype.org" /></a>
 <a href="https://oss.sonatype.org/content/repositories/snapshots/love/forte/simple-robot/core/" target="_blank">
   <img alt="snapshot" src="https://img.shields.io/nexus/s/love.forte.simple-robot/core?label=simbot-snapshot&server=https%3A%2F%2Foss.sonatype.org" /></a>
 <a href="https://www.yuque.com/simpler-robot/simpler-robot-doc" target="_blank">
