@@ -15,10 +15,10 @@
     <br>
     <small> &gt; 走过路过，不要忘记点亮一颗⭐喔~ &lt; </small> 
     <br>
-<a href="https://repo1.maven.org/maven2/love/forte/simple-robot/parent/" target="_blank">
-  <img alt="release" src="https://img.shields.io/nexus/r/love.forte.simple-robot/parent?label=simbot-releases&server=https%3A%2F%2Foss.sonatype.org" /></a>
-<a href="https://oss.sonatype.org/content/repositories/snapshots/love/forte/simple-robot/parent/" target="_blank">
-  <img alt="snapshot" src="https://img.shields.io/nexus/s/love.forte.simple-robot/parent?label=simbot-snapshot&server=https%3A%2F%2Foss.sonatype.org" /></a>
+<a href="https://repo1.maven.org/maven2/love/forte/simple-robot/core/" target="_blank">
+  <img alt="release" src="https://img.shields.io/nexus/r/love.forte.simple-robot/core?label=simbot-releases&server=https%3A%2F%2Foss.sonatype.org" /></a>
+<a href="https://oss.sonatype.org/content/repositories/snapshots/love/forte/simple-robot/core/" target="_blank">
+  <img alt="snapshot" src="https://img.shields.io/nexus/s/love.forte.simple-robot/core?label=simbot-snapshot&server=https%3A%2F%2Foss.sonatype.org" /></a>
 <a href="https://www.yuque.com/simpler-robot/simpler-robot-doc" target="_blank">
   <img alt="doc" src="https://img.shields.io/badge/doc-yuque-brightgreen" /></a>
    <hr>
