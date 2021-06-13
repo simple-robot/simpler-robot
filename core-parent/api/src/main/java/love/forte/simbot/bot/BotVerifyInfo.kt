@@ -13,6 +13,7 @@
  */
 
 @file:JvmName("BotVerifyInfos")
+@file:Suppress("unused")
 
 package love.forte.simbot.bot
 
@@ -47,6 +48,12 @@ public interface BotVerifyInfo {
      * 一般指一个用于验证的信息，常见含义为 **密码**。
      */
     val verification: String?
+
+    /**
+     * 此bot所对应的组件。
+     * 为未来版本预留的属性。
+     */
+    val component: String? get() = this["component"]
 
     /**
      * 一个获取额外扩展参数的方法，可以得到一些其他参数。

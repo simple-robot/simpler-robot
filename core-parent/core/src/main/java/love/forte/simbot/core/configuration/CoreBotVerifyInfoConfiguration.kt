@@ -30,7 +30,7 @@ import love.forte.simbot.bot.botVerifyInfoBySplit
 @AsCoreConfig
 class CoreBotVerifyInfoConfiguration {
 
-    @ConfigInject
+    @ConfigInject("botResourceType")
     private var botResourceType: BotResourceType = BotResourceType.FILE_FIRST
 
     @ConfigInject("bots", orDefault = [""])

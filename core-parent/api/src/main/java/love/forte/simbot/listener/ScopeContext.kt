@@ -1,20 +1,18 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  simpler-robot
- *  * File     ScopeContext.kt
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
-@file:JvmName("ScopeContexts")
+@file:JvmName("ScopeContextUtil")
 
 package love.forte.simbot.listener
 
@@ -74,8 +72,24 @@ public interface ScopeContext : Context<ListenerContext.Scope> {
 }
 
 /** 习惯用法 */
-@SimbotExperimentalApi
-public inline val ScopeContext.size: Int get() = this.size()
+@OptIn(SimbotExperimentalApi::class)
+public inline val ScopeContext.size: Int
+    get() = this.size()
+
+
+@OptIn(SimbotExperimentalApi::class)
+public fun ScopeContext.toMap(): Map<String, Any> {
+    return if (this is MapScopeContext) this.delegate.toMap() else {
+        mutableMapOf<String, Any>().also { map ->
+            for (key in this.keys) {
+                val got = this[key]
+                if (got != null) {
+                    map[key] = got
+                }
+            }
+        }
+    }
+}
 
 
 /**
@@ -86,7 +100,7 @@ public inline val ScopeContext.size: Int get() = this.size()
 @SimbotExperimentalApi
 public class MapScopeContext(
     override val scope: ListenerContext.Scope,
-    private val delegate: MutableMap<String, Any> = mutableMapOf(),
+    internal val delegate: MutableMap<String, Any> = mutableMapOf(),
 ) : ScopeContext {
 
     override fun get(key: String): Any? = delegate[key]

@@ -116,6 +116,7 @@ public class SimpleBotVerifyInfoConfiguration(
 
 
         val propertiesList = when (botResourceType) {
+            BotResourceType.NONE -> emptyList()
             BotResourceType.FILE -> fromFile()
             BotResourceType.RESOURCE -> fromResource()
             BotResourceType.BOTH -> fromFile() + fromResource()
@@ -125,7 +126,9 @@ public class SimpleBotVerifyInfoConfiguration(
 
 
         configuredBotVerifyInfos =
-            propertiesList.map { p -> pairBotVerifyInfo(p, codeAlias, verificationAlias) } + other
+            (propertiesList.map { p -> pairBotVerifyInfo(p, codeAlias, verificationAlias) } + other).distinctBy { info ->
+                info.code
+            }
     }
 
 
@@ -178,5 +181,10 @@ public enum class BotResourceType {
     /**
      * 优先资源目录，如果没有任何结果则查询文件目录。
      */
-    RESOURCE_FIRST
+    RESOURCE_FIRST,
+
+    /**
+     * 不去获取bot配置信息。
+     */
+    NONE
 }
