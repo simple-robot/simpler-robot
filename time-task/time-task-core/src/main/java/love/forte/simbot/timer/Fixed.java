@@ -1,16 +1,14 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  component-onebot
- *  * File     Fixed.java
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
@@ -44,7 +42,7 @@ public @interface Fixed {
     long delay() default 0;
 
     /**
-     * 最大重复次数。如果 <= 0则视为无限次数。
+     * 最大重复次数。如果 < 0则视为无限次数, 如果 = 0则不重复执行。
      */
-    long repeat() default 0;
+    long repeat() default -1;
 }
