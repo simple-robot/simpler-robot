@@ -111,7 +111,7 @@ class WaitImpl<T>(
             when(val nowState = state) {
                 is WaitState.Ready<*> -> {
                     println("wait ready!")
-                    nowState as WaitState.Ready<T>
+                    // nowState as WaitState.Ready<T>
                     println("wait get: ${nowState.value}")
                 }
                 is WaitState.Init -> {

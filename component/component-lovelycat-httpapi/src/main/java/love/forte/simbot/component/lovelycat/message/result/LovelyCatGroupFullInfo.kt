@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.lovelycat.message.result
 
+import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.results.GroupAdmin
@@ -79,6 +80,8 @@ private object NonGroupOwnerAccountInfo : GroupAccountInfo {
         get() = null
     override val accountTitle: String?
         get() = null
+    override val permission: Permissions
+        get() = Permissions.MEMBER
 
     override fun toString(): String {
         return "NonGroupOwnerAccountInfo(Unable to determine the group owner information.)"

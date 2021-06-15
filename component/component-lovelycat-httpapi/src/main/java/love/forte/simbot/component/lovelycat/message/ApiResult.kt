@@ -16,6 +16,7 @@
 
 package love.forte.simbot.component.lovelycat.message
 
+import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.*
 import love.forte.simbot.api.message.results.FriendInfo
 import love.forte.simbot.api.message.results.SimpleGroupInfo
@@ -213,6 +214,10 @@ public data class CatGroupMemberInfo(
     val city: String?,
     val robotWxid: String
 ) : GroupAccountInfo, BotCodeContainer {
+
+    override val permission: Permissions
+        get() = Permissions.MEMBER
+
     /**
      * 昵称。
      */
@@ -268,6 +273,10 @@ public data class CatSimpleGroupMemberInfo(
     val robotWxid: String
 
 ): GroupAccountInfo, BotCodeContainer {
+
+    override val permission: Permissions
+        get() = Permissions.MEMBER
+
     /**
      * 昵称。
      * 可能会出现为null的情况，但是一般情况下不会。

@@ -48,7 +48,7 @@ public class MiraiBotManager(
         get() {
             val b = _bots.values.firstOrNull() ?: synchronized(MiraiBotManager) {
                 MBot.instancesSequence.firstOrNull()?.let { b ->
-                    val botContainer = MiraiBotVerifier.run { b.toContainer(httpTemplate) }
+                    val botContainer = MiraiBotVerifier.run { b.toContainer() }
                     val botSender = MiraiBotVerifier.run { msgSenderFactories.getBotSender(botContainer, defSenderFactories) }
                     val botInfo = botContainer.botInfo
                     val mb = MiraiBot(b, botSender, botInfo)

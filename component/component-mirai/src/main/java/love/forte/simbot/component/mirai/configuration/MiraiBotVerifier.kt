@@ -52,7 +52,7 @@ public class MiraiBotVerifier(
     private val dependCenter: DependCenter,
 ) : BotVerifier {
     internal companion object : TypedCompLogger(MiraiBotVerifier::class.java) {
-        fun MBot.toContainer(httpTemplate: HttpTemplate?): BotContainer = botContainer { MiraiBotInfo.getInstance(this) }
+        fun MBot.toContainer(): BotContainer = botContainer { MiraiBotInfo.getInstance(this) }
         fun MsgSenderFactories.getBotSender(botContainer: BotContainer,  defFactories: DefaultMsgSenderFactories): BotSender = this.toBotSender(botContainer, defFactories)
     }
 
@@ -97,7 +97,7 @@ public class MiraiBotVerifier(
             }
 
 
-            val botContainer = mBot!!.toContainer(httpTemplate)
+            val botContainer = mBot!!.toContainer()
 
             // val botContainer = botContainer { MiraiBotInfo.getInstance(mBot!!, httpTemplate) }
 
