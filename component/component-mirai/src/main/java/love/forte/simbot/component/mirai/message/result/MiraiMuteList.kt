@@ -16,7 +16,7 @@ package love.forte.simbot.component.mirai.message.result
 
 import love.forte.common.utils.timeBy
 import love.forte.simbot.api.message.assists.Permissions
-import love.forte.simbot.api.message.containers.AccountDetailInfo
+import love.forte.simbot.api.message.containers.DetailAccountInfo
 import love.forte.simbot.api.message.containers.Gender
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.results.MuteInfo
@@ -36,11 +36,11 @@ public class MiraiMuteList(group: Group, limit: Int = -1) : MuteList {
     override val results: List<MuteInfo> by lazy(LazyThreadSafetyMode.PUBLICATION) {
         if (limit > 0) {
             group.members.asSequence().take(limit).mapNotNull {
-                it.takeIf { m -> m.isMuted }?.let { m -> MiraiMuteInfo(m) }
+                it.takeIf { m -> m.isMuted }?.let { m -> MiraiMuteAccountInfo(m) }
             }.toList()
         } else {
             group.members.mapNotNull {
-                it.takeIf { m -> m.isMuted }?.let { m -> MiraiMuteInfo(m) }
+                it.takeIf { m -> m.isMuted }?.let { m -> MiraiMuteAccountInfo(m) }
             }
         }
     }
@@ -51,9 +51,9 @@ public class MiraiMuteList(group: Group, limit: Int = -1) : MuteList {
 /**
  * ban info.
  */
-public class MiraiMuteInfo(member: NormalMember) :
+public class MiraiMuteAccountInfo(member: NormalMember) :
     MuteInfo,
-    GroupAccountInfo, AccountDetailInfo {
+    GroupAccountInfo, DetailAccountInfo {
 
     private val info = MiraiMemberAccountInfo(member)
 

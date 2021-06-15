@@ -16,8 +16,8 @@ package love.forte.simbot.component.mirai
 
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.api.message.assists.Permissions
-import love.forte.simbot.api.message.containers.AccountDetailInfo
 import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.containers.DetailAccountInfo
 import love.forte.simbot.api.message.containers.Gender
 import love.forte.simbot.api.message.containers.GroupBotInfo
 import love.forte.simbot.component.mirai.message.toSimbotPermissions
@@ -31,12 +31,12 @@ import net.mamoe.mirai.contact.Group
  * 此实例属性动态委托于 [bot].
  *
  */
-public data class MiraiGroupBotInfo internal constructor(private val bot: Bot, private val group: Group) :
-    GroupBotInfo, AccountDetailInfo {
+public data class MiraiGroupBotAccountInfo internal constructor(private val bot: Bot, private val group: Group) :
+    GroupBotInfo, DetailAccountInfo {
 
     companion object INS {
-        fun getInstance(bot: Bot, group: Group): MiraiGroupBotInfo {
-            return MiraiGroupBotInfo(bot, group)
+        fun getInstance(bot: Bot, group: Group): MiraiGroupBotAccountInfo {
+            return MiraiGroupBotAccountInfo(bot, group)
         }
     }
 
@@ -74,7 +74,7 @@ public data class MiraiGroupBotInfo internal constructor(private val bot: Bot, p
         get() = profile.age
 
     override val email: String
-        get() = profile.email
+        get() = profile.email.ifBlank { "${bot.id}@qq.com" }
 
     /** 无法获取手机号 */
     override val phone: String?

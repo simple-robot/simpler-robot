@@ -16,9 +16,6 @@
 
 package love.forte.simbot.api.message.containers
 
-import java.time.LocalDate
-import java.time.OffsetDateTime
-
 
 /**
  * 各种细节性质的容器，例如用户详情中的年龄、邮箱等。
@@ -46,16 +43,6 @@ public interface LevelContainer : DetailContainers {
 public interface AgeContainer : DetailContainers {
     /** 用户的年龄。获取不到的时候得到 `-1` */
     val age: Int
-
-    /** 用户的生日。获取不到的时候得到 `-1` */
-    val birthday: Long
-        get() =
-            if (age == -1) -1
-            else LocalDate.now()
-                .plusYears(age.toLong())
-                .atStartOfDay()
-                .toInstant(OffsetDateTime.now().plusYears(age.toLong()).offset)
-                .toEpochMilli()
 }
 
 /**
@@ -95,4 +82,4 @@ public interface SignatureContainer : DetailContainers {
 /**
  * 一个账号的详细信息。
  */
-public interface AccountDetailInfo : LevelContainer, GenderContainer, AgeContainer, ContactDetailsContainer, SignatureContainer
+public interface DetailAccountInfo : LevelContainer, GenderContainer, AgeContainer, ContactDetailsContainer, SignatureContainer

@@ -31,7 +31,7 @@ public fun Friend.asAccountInfo(): AccountInfo = MiraiFriendAccountInfo(this)
  * 基于 mirai [Friend] 的 [AccountInfo] 实现。
  */
 public data class MiraiFriendAccountInfo(private val friendId: Long, private val friend: Friend?) :
-    FriendAccountInfo, AccountDetailInfo {
+    FriendAccountInfo, DetailAccountInfo {
 
     constructor(friend: Friend) : this(friend.id, friend)
 
@@ -57,7 +57,7 @@ public data class MiraiFriendAccountInfo(private val friendId: Long, private val
         get() = profile.age
 
     override val email: String
-        get() = profile.email
+        get() = profile.email.ifBlank { "${_friend.id}@qq.com" }
 
     /** 无法获取手机号 */
     override val phone: String?
@@ -143,7 +143,7 @@ public fun Member.asAccountInfo(): AccountInfo = MiraiMemberAccountInfo(this)
 public data class MiraiMemberAccountInfo constructor(private val memberId: Long, private val member: Member?) :
     GroupAccountInfo,
     GroupInfo,
-    AccountDetailInfo {
+    DetailAccountInfo {
 
     constructor(member: Member) : this(member.id, member)
 
@@ -170,7 +170,7 @@ public data class MiraiMemberAccountInfo constructor(private val memberId: Long,
         get() = profile.age
 
     override val email: String
-        get() = profile.email
+        get() = profile.email.ifBlank { "${_member.id}@qq.com" }
 
     /** 无法获取手机号 */
     override val phone: String?
@@ -251,7 +251,7 @@ public fun Bot.asAccountInfo(): AccountInfo = MiraiBotAccountInfo(this)
  * mirai的bot对应的 [AccountInfo] 实现。
  * 内容为信息快照，不保存 [Bot] 实例。
  */
-public class MiraiBotAccountInfo(bot: Bot) : AccountInfo, AccountDetailInfo {
+public class MiraiBotAccountInfo(bot: Bot) : AccountInfo, DetailAccountInfo {
     override val accountCode: String = bot.id.toString()
     override val accountCodeNumber: Long = bot.id
     override val accountNickname: String = bot.nick
@@ -269,7 +269,7 @@ public class MiraiBotAccountInfo(bot: Bot) : AccountInfo, AccountDetailInfo {
         get() = profile.age
 
     override val email: String
-        get() = profile.email
+        get() = profile.email.ifBlank { "$accountCodeNumber@qq.com" }
 
     /** 无法获取手机号 */
     override val phone: String?

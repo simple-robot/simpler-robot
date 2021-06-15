@@ -15,8 +15,8 @@
 package love.forte.simbot.component.mirai
 
 import kotlinx.coroutines.runBlocking
-import love.forte.simbot.api.message.containers.AccountDetailInfo
 import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.containers.DetailAccountInfo
 import love.forte.simbot.api.message.containers.Gender
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.data.UserProfile
@@ -29,24 +29,24 @@ import java.util.concurrent.ConcurrentHashMap
  * 此实例属性动态委托于 [bot].
  *
  */
-public data class MiraiBotInfo internal constructor(private val bot: Bot) :
-    BotInfo, AccountDetailInfo {
+public data class MiraiBotAccountInfo internal constructor(private val bot: Bot) :
+    BotInfo, DetailAccountInfo {
 
     /**
      * 缓存部分bot信息
      */
     companion object INS {
         /** MiraiBotInfo实例缓存 */
-        private val instances: MutableMap<Long, MiraiBotInfo> = ConcurrentHashMap<Long, MiraiBotInfo>()
+        private val instances: MutableMap<Long, MiraiBotAccountInfo> = ConcurrentHashMap<Long, MiraiBotAccountInfo>()
 
-        internal fun destroyBotInfo(id: Long): MiraiBotInfo? = instances.remove(id)
+        internal fun destroyBotInfo(id: Long): MiraiBotAccountInfo? = instances.remove(id)
 
-        fun getInstance(bot: Bot): MiraiBotInfo {
+        fun getInstance(bot: Bot): MiraiBotAccountInfo {
             val instance = instances[bot.id]
             if (instance != null) {
                 return instance
             }
-            return instances.computeIfAbsent(bot.id) { MiraiBotInfo(bot) }
+            return instances.computeIfAbsent(bot.id) { MiraiBotAccountInfo(bot) }
         }
     }
 
@@ -78,7 +78,7 @@ public data class MiraiBotInfo internal constructor(private val bot: Bot) :
         get() = profile.age
 
     override val email: String
-        get() = profile.email
+        get() = profile.email.ifBlank { "${bot.id}@qq.com" }
 
     /** 无法获取手机号 */
     override val phone: String?

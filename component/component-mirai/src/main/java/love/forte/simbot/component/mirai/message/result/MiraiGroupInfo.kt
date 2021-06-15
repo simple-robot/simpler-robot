@@ -68,7 +68,7 @@ public class MiraiGroupFullInfo(group: Group) : GroupInfo by MiraiGroupInfo(grou
     override val admins: List<GroupAdmin> by lazy(LazyThreadSafetyMode.PUBLICATION) {
         group.members.asSequence()
             .filter { it.isOperator() }
-            .map { MiraiGroupAdminInfo(it) }.toList()
+            .map { MiraiGroupAdminAccountInfo(it) }.toList()
     }
 
 

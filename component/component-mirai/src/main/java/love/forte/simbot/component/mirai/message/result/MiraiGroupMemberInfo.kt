@@ -16,7 +16,7 @@ package love.forte.simbot.component.mirai.message.result
 
 import love.forte.common.utils.secondToMill
 import love.forte.simbot.api.message.assists.Permissions
-import love.forte.simbot.api.message.containers.AccountDetailInfo
+import love.forte.simbot.api.message.containers.DetailAccountInfo
 import love.forte.simbot.api.message.containers.Gender
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.results.GroupAdmin
@@ -65,9 +65,9 @@ public class MiraiGroupMemberInfo(member: Member) :
 /**
  * 将一个 member 作为 管理员。
  */
-public class MiraiGroupAdminInfo(member: Member) :
+public class MiraiGroupAdminAccountInfo(member: Member) :
     GroupAdmin,
-    GroupAccountInfo, AccountDetailInfo {
+    GroupAccountInfo, DetailAccountInfo {
 
     private val info = MiraiMemberAccountInfo(member)
 
@@ -93,4 +93,5 @@ public class MiraiGroupAdminInfo(member: Member) :
 public class MiraiGroupOwnerInfo(member: Member) : GroupOwner, GroupAccountInfo by MiraiMemberAccountInfo(member) {
     private val str = "GroupOwner(group=${member.group}, owner=$member)"
     override fun toString(): String = str
+    override val permission: Permissions = if (member is NormalMember) member.toSimbotPermissions() else Permissions.MEMBER
 }

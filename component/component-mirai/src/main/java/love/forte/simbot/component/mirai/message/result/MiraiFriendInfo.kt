@@ -14,7 +14,7 @@
 
 package love.forte.simbot.component.mirai.message.result
 
-import love.forte.simbot.api.message.containers.AccountDetailInfo
+import love.forte.simbot.api.message.containers.DetailAccountInfo
 import love.forte.simbot.api.message.containers.FriendAccountInfo
 import love.forte.simbot.api.message.containers.Gender
 import love.forte.simbot.api.message.results.FriendInfo
@@ -30,7 +30,7 @@ import net.mamoe.mirai.contact.Stranger
  */
 public class MiraiFriendInfo(friend: Friend) :
     FriendInfo,
-    FriendAccountInfo, AccountDetailInfo {
+    FriendAccountInfo, DetailAccountInfo {
 
     private val friendAccountInfo = MiraiFriendAccountInfo(friend)
 

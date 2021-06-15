@@ -21,7 +21,7 @@ import love.forte.simbot.api.message.containers.GroupBotInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.MessageGet
-import love.forte.simbot.component.mirai.MiraiGroupBotInfo
+import love.forte.simbot.component.mirai.MiraiGroupBotAccountInfo
 import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.MessageSource
@@ -50,7 +50,7 @@ public class MiraiGroupMsg(event: GroupMessageEvent) :
 
     override val msgContent: MessageContent = MiraiMessageChainContent(message)
 
-    override val botInfo: GroupBotInfo = MiraiGroupBotInfo(event.bot, event.group)
+    override val botInfo: GroupBotInfo = MiraiGroupBotAccountInfo(event.bot, event.group)
 
     // override val msg: String?
     //     get() = msgContent.msg

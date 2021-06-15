@@ -25,8 +25,8 @@ import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.api.sender.toBotSender
 import love.forte.simbot.bot.*
+import love.forte.simbot.component.mirai.MiraiBotAccountInfo
 import love.forte.simbot.component.mirai.MiraiBotConfigurationFactory
-import love.forte.simbot.component.mirai.MiraiBotInfo
 import love.forte.simbot.component.mirai.utils.MiraiBotEventRegistrar
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.http.template.HttpTemplate
@@ -37,8 +37,6 @@ import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
 import org.slf4j.Logger
 import net.mamoe.mirai.Bot as MBot
 import net.mamoe.mirai.Bot.Companion as MiraiBot
-
-
 
 
 /**
@@ -52,7 +50,7 @@ public class MiraiBotVerifier(
     private val dependCenter: DependCenter,
 ) : BotVerifier {
     internal companion object : TypedCompLogger(MiraiBotVerifier::class.java) {
-        fun MBot.toContainer(): BotContainer = botContainer { MiraiBotInfo.getInstance(this) }
+        fun MBot.toContainer(): BotContainer = botContainer { MiraiBotAccountInfo.getInstance(this) }
         fun MsgSenderFactories.getBotSender(botContainer: BotContainer,  defFactories: DefaultMsgSenderFactories): BotSender = this.toBotSender(botContainer, defFactories)
     }
 
@@ -136,7 +134,7 @@ internal class MiraiBot(
             val id = bot.id
             bot.close()
             // Destroy bot self cache.
-            MiraiBotInfo.destroyBotInfo(id)
+            MiraiBotAccountInfo.destroyBotInfo(id)
         }.getOrElse {  }
     }
 

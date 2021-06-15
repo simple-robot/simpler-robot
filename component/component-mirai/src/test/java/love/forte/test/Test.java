@@ -30,13 +30,6 @@ import org.jetbrains.annotations.NotNull;
 public class Test implements SimbotProcess {
     public static void main(String[] args) {
         SimbotContext context = SimbotApp.run(Test.class, args);
-
-
-        // post(context);
-
-        // context.close();
-
-        // System.out.println("context.close.");
     }
 
     @Override
