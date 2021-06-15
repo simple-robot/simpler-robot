@@ -16,10 +16,7 @@
 package love.forte.simbot.api.message.events
 
 import love.forte.simbot.api.message.assists.Permissions
-import love.forte.simbot.api.message.containers.FriendAccountInfo
-import love.forte.simbot.api.message.containers.GroupAccountContainer
-import love.forte.simbot.api.message.containers.GroupContainer
-import love.forte.simbot.api.message.containers.PermissionContainer
+import love.forte.simbot.api.message.containers.*
 
 /*
  *
@@ -133,6 +130,11 @@ public interface GroupMsg : MessageGet, GroupContainer, GroupAccountContainer, P
 
     /** 发消息的人在群里的权限。 */
     override val permission: Permissions
+
+    /**
+     * bot在群里的信息。
+     */
+    override val botInfo: GroupBotInfo
 
     /**
      * 获取群消息类型

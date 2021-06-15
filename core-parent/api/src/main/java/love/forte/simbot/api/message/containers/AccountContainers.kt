@@ -18,6 +18,7 @@
 package love.forte.simbot.api.message.containers
 
 import love.forte.simbot.annotation.ContainerType
+import love.forte.simbot.api.message.assists.Permissions
 
 
 /**
@@ -128,6 +129,8 @@ private object EmptyAccountInfo : AccountInfo, GroupAccountInfo, FriendAccountIn
         get() = null
     override val accountTitle: String?
         get() = null
+    override val permission: Permissions
+        get() = Permissions.MEMBER
 
     override fun toString(): String {
         return "EmptyAccountInfo()"

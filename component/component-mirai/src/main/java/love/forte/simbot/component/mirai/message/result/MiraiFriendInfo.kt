@@ -14,7 +14,9 @@
 
 package love.forte.simbot.component.mirai.message.result
 
+import love.forte.simbot.api.message.containers.AccountDetailInfo
 import love.forte.simbot.api.message.containers.FriendAccountInfo
+import love.forte.simbot.api.message.containers.Gender
 import love.forte.simbot.api.message.results.FriendInfo
 import love.forte.simbot.component.mirai.message.MiraiFriendAccountInfo
 import net.mamoe.mirai.contact.Friend
@@ -28,7 +30,20 @@ import net.mamoe.mirai.contact.Stranger
  */
 public class MiraiFriendInfo(friend: Friend) :
     FriendInfo,
-    FriendAccountInfo by MiraiFriendAccountInfo(friend) {
+    FriendAccountInfo, AccountDetailInfo {
+
+    private val friendAccountInfo = MiraiFriendAccountInfo(friend)
+
+    override val accountCode: String get() = friendAccountInfo.accountCode
+    override val accountNickname: String get() = friendAccountInfo.accountNickname
+    override val accountRemark: String get() = friendAccountInfo.accountRemark
+    override val accountAvatar: String get() = friendAccountInfo.accountAvatar
+    override val level: Long get() = friendAccountInfo.level
+    override val age: Int get() = friendAccountInfo.age
+    override val email: String get() = friendAccountInfo.email
+    override val phone: String? get() = friendAccountInfo.phone
+    override val gender: Gender get() = friendAccountInfo.gender
+    override val signature: String get() = friendAccountInfo.signature
 
     /** mirai不支持获取好友分组。(mirai 2.6) */
     override val grouping: String? get() = null

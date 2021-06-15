@@ -16,6 +16,8 @@ package love.forte.simbot.component.mirai.message.result
 
 import love.forte.common.utils.secondToMill
 import love.forte.simbot.api.message.assists.Permissions
+import love.forte.simbot.api.message.containers.AccountDetailInfo
+import love.forte.simbot.api.message.containers.Gender
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.results.GroupAdmin
 import love.forte.simbot.api.message.results.GroupMemberInfo
@@ -63,7 +65,23 @@ public class MiraiGroupMemberInfo(member: Member) :
 /**
  * 将一个 member 作为 管理员。
  */
-public class MiraiGroupAdminInfo(member: Member) : GroupAdmin, GroupAccountInfo by MiraiMemberAccountInfo(member) {
+public class MiraiGroupAdminInfo(member: Member) :
+    GroupAdmin,
+    GroupAccountInfo, AccountDetailInfo {
+
+    private val info = MiraiMemberAccountInfo(member)
+
+    override val accountCode: String get() = info.accountCode
+    override val accountNickname: String get() = info.accountNickname
+    override val accountRemark: String? get() = info.accountRemark
+    override val accountAvatar: String get() = info.accountAvatar
+    override val level: Long get() = info.level
+    override val age: Int get() = info.age
+    override val email: String get() = info.email
+    override val phone: String? get() = info.phone
+    override val gender: Gender get() = info.gender
+    override val signature: String get() = info.signature
+    override val accountTitle: String get() = info.accountTitle
     private val str = "GroupAdmin(group=${member.group}, admin=$member)"
     override fun toString(): String = str
 }

@@ -14,8 +14,10 @@
  *
  */
 @file:JvmName("BaseLovelyCatEvents")
+
 package love.forte.simbot.component.lovelycat.message.event
 
+import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.*
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
@@ -88,7 +90,7 @@ public abstract class BaseLovelyCatMsg(override val event: String, override val 
         abstract fun mapTo(
             originalData: String,
             api: LovelyCatApiTemplate?,
-            jsonSerializerFactory: JsonSerializerFactory
+            jsonSerializerFactory: JsonSerializerFactory,
         ): T
     }
 
@@ -108,7 +110,7 @@ public fun lovelyCatAccountInfo(
     accountCode: String,
     accountNickname: String? = null,
     accountRemark: String? = null,
-    accountAvatar: String? = null
+    accountAvatar: String? = null,
 ): AccountInfo = LovelyCatAccountInfo(accountCode, accountNickname, accountRemark, accountAvatar)
 
 
@@ -125,7 +127,7 @@ public fun lovelyCatFriendAccountInfo(
     accountCode: String,
     accountNickname: String? = null,
     accountRemark: String? = null,
-    accountAvatar: String? = null
+    accountAvatar: String? = null,
 ): FriendAccountInfo = LovelyCatFriendAccountInfo(accountCode, accountNickname, accountRemark, accountAvatar)
 
 
@@ -143,7 +145,7 @@ public fun lovelyCatGroupAccountInfo(
     accountNickname: String? = null,
     accountRemark: String? = null,
     accountAvatar: String? = null,
-    accountTitle: String? = null
+    accountTitle: String? = null,
 ): GroupAccountInfo =
     LovelyCatGroupAccountInfo(accountCode, accountNickname, accountRemark, accountAvatar, accountTitle)
 
@@ -161,7 +163,7 @@ private data class LovelyCatAccountInfo(
     override val accountCode: String,
     override val accountNickname: String?,
     override val accountRemark: String?,
-    override val accountAvatar: String?
+    override val accountAvatar: String?,
 ) : AccountInfo
 
 
@@ -178,7 +180,7 @@ private data class LovelyCatFriendAccountInfo(
     override val accountCode: String,
     override val accountNickname: String?,
     override val accountRemark: String?,
-    override val accountAvatar: String?
+    override val accountAvatar: String?,
 ) : FriendAccountInfo
 
 
@@ -196,7 +198,8 @@ private data class LovelyCatGroupAccountInfo(
     override val accountNickname: String?,
     override val accountRemark: String?,
     override val accountAvatar: String?,
-    override val accountTitle: String?
+    override val accountTitle: String?,
+    override val permission: Permissions = Permissions.MEMBER,
 ) : GroupAccountInfo
 
 
@@ -207,9 +210,8 @@ private data class LovelyCatGroupAccountInfo(
 public fun lovelyCatGroupInfo(
     groupCode: String,
     groupName: String? = null,
-    groupAvatar: String? = null
+    groupAvatar: String? = null,
 ): GroupInfo = LovelyCatGroupInfo(groupCode, groupName, groupAvatar)
-
 
 
 public const val GROUP_SUFFIX = "@chatroom"
@@ -221,10 +223,10 @@ public const val GROUP_SUFFIX = "@chatroom"
 private data class LovelyCatGroupInfo(
     override val groupCode: String,
     override val groupName: String?,
-    override val groupAvatar: String?
+    override val groupAvatar: String?,
 ) : GroupInfo {
     override val groupCodeNumber: Long
-    // xxxxxxx@chatroom
+        // xxxxxxx@chatroom
         get() = groupCode.substring(0, groupCode.length - GROUP_SUFFIX.length).toLong()
 }
 
@@ -240,16 +242,21 @@ private data class LovelyCatGroupInfo(
 public fun lovelyCatBotInfo(
     botCode: String,
     botName: String,
-    botAvatar: String? = null
-): BotInfo = LovelyCatBotInfo(botCode, botName, botAvatar)
+    botAvatar: String? = null,
+    permission: Permissions = Permissions.MEMBER,
+    accountTitle: String? = null,
+): BotInfo = LovelyCatBotInfo(botCode, botName, botAvatar,
+    permission, accountTitle)
 
 
 public fun lovelyCatBotInfo(
-    botCode: String, api: LovelyCatApiTemplate?
-): BotInfo = LovelyCatBotInfo(
+    botCode: String, api: LovelyCatApiTemplate?,
+): GroupBotInfo = LovelyCatBotInfo(
     botCode,
     api?.getRobotName(botCode)?.botName ?: "",
-    api?.getRobotHeadImgUrl(botCode)?.botAvatar
+    api?.getRobotHeadImgUrl(botCode)?.botAvatar,
+    Permissions.MEMBER,
+    null
 )
 
 /**
@@ -262,9 +269,10 @@ public fun lovelyCatBotInfo(
 private data class LovelyCatBotInfo(
     override val botCode: String,
     override val botName: String,
-    override val botAvatar: String?
-) : BotInfo
-
+    override val botAvatar: String?,
+    override val permission: Permissions,
+    override val accountTitle: String?,
+) : GroupBotInfo
 
 
 @Suppress("NOTHING_TO_INLINE")

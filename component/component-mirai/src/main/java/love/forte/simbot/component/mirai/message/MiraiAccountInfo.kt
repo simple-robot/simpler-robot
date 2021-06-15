@@ -14,13 +14,15 @@
 
 package love.forte.simbot.component.mirai.message
 
+import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.secondToMill
-import love.forte.simbot.api.message.containers.AccountInfo
-import love.forte.simbot.api.message.containers.FriendAccountInfo
-import love.forte.simbot.api.message.containers.GroupAccountInfo
-import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.assists.Permissions
+import love.forte.simbot.api.message.containers.*
+import love.forte.simbot.component.mirai.toGender
+import love.forte.simbot.mark.ThreadUnsafe
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.*
+import net.mamoe.mirai.data.UserProfile
 
 
 public fun Friend.asAccountInfo(): AccountInfo = MiraiFriendAccountInfo(this)
@@ -28,12 +30,44 @@ public fun Friend.asAccountInfo(): AccountInfo = MiraiFriendAccountInfo(this)
 /**
  * 基于 mirai [Friend] 的 [AccountInfo] 实现。
  */
-public data class MiraiFriendAccountInfo(private val friendId: Long, private val friend: Friend?) : FriendAccountInfo {
+public data class MiraiFriendAccountInfo(private val friendId: Long, private val friend: Friend?) :
+    FriendAccountInfo, AccountDetailInfo {
 
     constructor(friend: Friend) : this(friend.id, friend)
 
     private val _friend: Friend
-    get() = friend ?: throw NullPointerException("Friend($friendId)")
+        get() = friend ?: throw NullPointerException("Friend($friendId)")
+
+
+    private lateinit var _profile: UserProfile
+
+    @get:ThreadUnsafe
+    private val profile: UserProfile
+        get() {
+            if (!::_profile.isInitialized) {
+                _profile = runBlocking { _friend.queryProfile() }
+            }
+            return _profile
+        }
+
+    override val level: Long
+        get() = profile.qLevel.toLong()
+
+    override val age: Int
+        get() = profile.age
+
+    override val email: String
+        get() = profile.email
+
+    /** 无法获取手机号 */
+    override val phone: String?
+        get() = null
+    override val signature: String
+        get() = profile.sign
+
+    override val gender: Gender
+        get() = profile.sex.toGender()
+
 
     /**
      * 账号
@@ -69,7 +103,8 @@ public data class MiraiFriendAccountInfo(private val friendId: Long, private val
 public fun Stranger.asAccountInfo(): AccountInfo = MiraiStrangerAccountInfo(this)
 
 
-public data class MiraiStrangerAccountInfo(private val strangerId: Long, private val stranger: Stranger?) : FriendAccountInfo {
+public data class MiraiStrangerAccountInfo(private val strangerId: Long, private val stranger: Stranger?) :
+    FriendAccountInfo {
     constructor(stranger: Stranger) : this(stranger.id, stranger)
 
     private val _stranger: Stranger
@@ -100,13 +135,15 @@ public data class MiraiStrangerAccountInfo(private val strangerId: Long, private
 }
 
 
-
 public fun Member.asAccountInfo(): AccountInfo = MiraiMemberAccountInfo(this)
 
 /**
  * 基于 mirai [Member] 的 [AccountInfo] 实现。
  */
-public data class MiraiMemberAccountInfo constructor(private val memberId: Long, private val member: Member?) : GroupAccountInfo, GroupInfo {
+public data class MiraiMemberAccountInfo constructor(private val memberId: Long, private val member: Member?) :
+    GroupAccountInfo,
+    GroupInfo,
+    AccountDetailInfo {
 
     constructor(member: Member) : this(member.id, member)
 
@@ -114,10 +151,35 @@ public data class MiraiMemberAccountInfo constructor(private val memberId: Long,
         get() = member ?: throw NullPointerException("Member($memberId)")
 
     private val _normalMember: NormalMember?
-        get() = with(_member) { if (this is NormalMember) this else null }
+        get() = if(_member is NormalMember) _member as NormalMember else null
 
-    override val joinTime: Long
-        get() = _normalMember?.joinTimestamp?.secondToMill() ?: -1
+    private lateinit var _profile: UserProfile
+    @get:ThreadUnsafe
+    private val profile: UserProfile
+        get() {
+            if (!::_profile.isInitialized) {
+                _profile = runBlocking { _member.queryProfile() }
+            }
+            return _profile
+        }
+
+    override val level: Long
+        get() = profile.qLevel.toLong()
+
+    override val age: Int
+        get() = profile.age
+
+    override val email: String
+        get() = profile.email
+
+    /** 无法获取手机号 */
+    override val phone: String?
+        get() = null
+    override val signature: String
+        get() = profile.sign
+
+    override val gender: Gender
+        get() = profile.sex.toGender()
 
     override val lastSpeakTime: Long
         get() = _normalMember?.lastSpeakTimestamp?.secondToMill() ?: -1
@@ -157,6 +219,8 @@ public data class MiraiMemberAccountInfo constructor(private val memberId: Long,
     override val anonymous: Boolean
         get() = _member is AnonymousMember
 
+    override val permission: Permissions = _member.toSimbotPermissions()
+
     /**
      * 得到账号的头像地址.
      */
@@ -187,15 +251,39 @@ public fun Bot.asAccountInfo(): AccountInfo = MiraiBotAccountInfo(this)
  * mirai的bot对应的 [AccountInfo] 实现。
  * 内容为信息快照，不保存 [Bot] 实例。
  */
-public class MiraiBotAccountInfo(bot: Bot) : AccountInfo {
+public class MiraiBotAccountInfo(bot: Bot) : AccountInfo, AccountDetailInfo {
     override val accountCode: String = bot.id.toString()
     override val accountCodeNumber: Long = bot.id
     override val accountNickname: String = bot.nick
     override val accountRemark: String? = null
     override val accountAvatar: String = bot.avatarUrl
+
+    private val profile by lazy {
+        runBlocking { bot.asStranger.queryProfile() }
+    }
+
+    override val level: Long
+        get() = profile.qLevel.toLong()
+
+    override val age: Int
+        get() = profile.age
+
+    override val email: String
+        get() = profile.email
+
+    /** 无法获取手机号 */
+    override val phone: String?
+        get() = null
+    override val signature: String
+        get() = profile.sign
+
+    override val gender: Gender
+        get() = profile.sex.toGender()
+
     override fun toString(): String {
         return "MiraiBotAccountInfo(accountCode='$accountCode', accountCodeNumber=$accountCodeNumber, accountNickname='$accountNickname', accountRemark=$accountRemark, accountAvatar='$accountAvatar')"
     }
+
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

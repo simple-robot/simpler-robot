@@ -17,10 +17,12 @@ package love.forte.simbot.component.mirai.message.event
 import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.FriendAccountInfo
+import love.forte.simbot.api.message.containers.GroupBotInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.PrivateMsg
+import love.forte.simbot.component.mirai.MiraiGroupBotInfo
 import love.forte.simbot.component.mirai.message.*
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Friend
@@ -67,6 +69,8 @@ public sealed class MiraiNudgedEvent<C : Contact> constructor(
          */
         override val accountInfo: MiraiMemberAccountInfo = MiraiMemberAccountInfo(member)
         override val groupInfo: GroupInfo get() = accountInfo
+
+        override val botInfo: GroupBotInfo = MiraiGroupBotInfo(event.bot, member.group)
 
         /** 发消息的人在群里的权限。 */
         override val permission: Permissions

@@ -109,7 +109,10 @@ public interface GroupAdmin : GroupAccountInfo, PermissionContainer {
 /**
  * 通过一个 [AccountContainer] 来构建 [GroupAdmin] 实例
  */
-public data class GroupAdminImpl(private val account: GroupAccountInfo) : GroupAdmin, GroupAccountInfo by account
+public data class GroupAdminImpl(private val account: GroupAccountInfo) : GroupAdmin, GroupAccountInfo by account {
+    override val permission: Permissions
+        get() = account.permission
+}
 
 
 /**
@@ -128,13 +131,19 @@ public interface GroupOwner : GroupAdmin, GroupAccountInfo, PermissionContainer 
 /**
  * 通过一个 [AccountContainer] 来构建 [GroupOwner] 实例
  */
-public data class GroupOwnerImpl(private val account: GroupAccountInfo) : GroupOwner, GroupAccountInfo by account
+public data class GroupOwnerImpl(private val account: GroupAccountInfo) : GroupOwner, GroupAccountInfo by account {
+    override val permission: Permissions
+        get() = account.permission
+}
 
 
 private object EmptyGroupOwner : GroupOwner, GroupAccountInfo by emptyGroupAccountInfo() {
     override fun toString(): String {
         return "EmptyGroupOwner"
     }
+
+    override val permission: Permissions
+        get() = Permissions.MEMBER
 }
 
 

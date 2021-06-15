@@ -16,6 +16,8 @@ package love.forte.simbot.component.mirai.message.result
 
 import love.forte.common.utils.timeBy
 import love.forte.simbot.api.message.assists.Permissions
+import love.forte.simbot.api.message.containers.AccountDetailInfo
+import love.forte.simbot.api.message.containers.Gender
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.results.MuteInfo
 import love.forte.simbot.api.message.results.MuteList
@@ -49,7 +51,24 @@ public class MiraiMuteList(group: Group, limit: Int = -1) : MuteList {
 /**
  * ban info.
  */
-public class MiraiMuteInfo(member: NormalMember) : MuteInfo, GroupAccountInfo by MiraiMemberAccountInfo(member) {
+public class MiraiMuteInfo(member: NormalMember) :
+    MuteInfo,
+    GroupAccountInfo, AccountDetailInfo {
+
+    private val info = MiraiMemberAccountInfo(member)
+
+    override val accountCode: String get() = info.accountCode
+    override val accountNickname: String get() = info.accountNickname
+    override val accountRemark: String? get() = info.accountRemark
+    override val accountAvatar: String get() = info.accountAvatar
+    override val level: Long get() = info.level
+    override val age: Int get() = info.age
+    override val email: String get() = info.email
+    override val phone: String? get() = info.phone
+    override val gender: Gender get() = info.gender
+    override val signature: String get() = info.signature
+    override val accountTitle: String get() = info.accountTitle
+
     override val lastTime: Long = (member.muteTimeRemaining timeBy TimeUnit.SECONDS).toMillis()
     override val originalData: String = "MiraiMuteInfo(member=$member)"
     override val permission: Permissions = member.toSimbotPermissions()

@@ -15,12 +15,14 @@
 package love.forte.simbot.component.mirai
 
 import kotlinx.coroutines.runBlocking
+import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.AccountDetailInfo
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.containers.Gender
+import love.forte.simbot.api.message.containers.GroupBotInfo
+import love.forte.simbot.component.mirai.message.toSimbotPermissions
 import net.mamoe.mirai.Bot
-import net.mamoe.mirai.data.UserProfile
-import java.util.concurrent.ConcurrentHashMap
+import net.mamoe.mirai.contact.Group
 
 
 /**
@@ -29,27 +31,21 @@ import java.util.concurrent.ConcurrentHashMap
  * 此实例属性动态委托于 [bot].
  *
  */
-public data class MiraiBotInfo internal constructor(private val bot: Bot) :
-    BotInfo, AccountDetailInfo {
+public data class MiraiGroupBotInfo internal constructor(private val bot: Bot, private val group: Group) :
+    GroupBotInfo, AccountDetailInfo {
 
-    /**
-     * 缓存部分bot信息
-     */
     companion object INS {
-        /** MiraiBotInfo实例缓存 */
-        private val instances: MutableMap<Long, MiraiBotInfo> = ConcurrentHashMap<Long, MiraiBotInfo>()
-
-        internal fun destroyBotInfo(id: Long): MiraiBotInfo? = instances.remove(id)
-
-        fun getInstance(bot: Bot): MiraiBotInfo {
-            val instance = instances[bot.id]
-            if (instance != null) {
-                return instance
-            }
-            return instances.computeIfAbsent(bot.id) { MiraiBotInfo(bot) }
+        fun getInstance(bot: Bot, group: Group): MiraiGroupBotInfo {
+            return MiraiGroupBotInfo(bot, group)
         }
     }
 
+    private val botAsMember = group.botAsMember
+
+
+    override val permission: Permissions = botAsMember.toSimbotPermissions()
+
+    override val accountTitle: String get() = botAsMember.specialTitle
 
     /** 当前的bot的账号 */
     override val botCode: String
@@ -108,11 +104,5 @@ public data class MiraiBotInfo internal constructor(private val bot: Bot) :
 
 }
 
-
-public fun UserProfile.Sex.toGender(): Gender = when (this) {
-    UserProfile.Sex.MALE -> Gender.MALE
-    UserProfile.Sex.FEMALE -> Gender.FEMALE
-    UserProfile.Sex.UNKNOWN -> Gender.UNKNOWN
-}
 
 

@@ -59,10 +59,14 @@ public interface BotAvatarContainer : Container {
  * 等级不是必然存在的，如果无法获取，则可能返回 `-1`。
  */
 @ContainerType("机器人等级容器")
-public interface BotLevelContainer : Container {
+public interface BotLevelContainer : Container, LevelContainer {
     /** 机器人等级。 */
     // @JvmDefault
     val botLevel: Long get() = -1
+
+    override val level: Long
+        get() = botLevel
+
 }
 
 
@@ -80,20 +84,25 @@ public interface BotLevelContainer : Container {
 public interface BotInfo : Container,
     BotCodeContainer, BotNameContainer, BotAvatarContainer, BotLevelContainer,
     AccountInfo {
-    // @JvmDefault
+
     override val accountCode: String
         get() = botCode
-    // @JvmDefault
     override val accountNickname: String
         get() = botName
+
     /** bot对于自己没有昵称。 */
-    // @JvmDefault
     override val accountRemark: String?
         get() = null
-    // @JvmDefault
     override val accountAvatar: String?
         get() = botAvatar
 }
+
+
+/**
+ * 在群中，一个Bot的信息。其相当于一个 [GroupAccountInfo].
+ */
+public interface GroupBotInfo : BotInfo, GroupAccountInfo
+
 
 
 /**

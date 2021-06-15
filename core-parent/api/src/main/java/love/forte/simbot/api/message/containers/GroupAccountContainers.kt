@@ -19,6 +19,7 @@
 package love.forte.simbot.api.message.containers
 
 import love.forte.simbot.annotation.ContainerType
+import love.forte.simbot.api.message.assists.Permissions
 
 
 /**
@@ -64,7 +65,12 @@ public interface GroupAccountTitleContainer : Container {
 public interface GroupAccountInfo : Container, AccountInfo,
     GroupAccountNameContainer, GroupAccountAvatarContainer,
     GroupAccountCodeContainer, GroupAccountTitleContainer,
-    AnonymousContainer, MuteTimeContainer {
+    AnonymousContainer, MuteTimeContainer, PermissionContainer {
+
+    /**
+     * 权限信息
+     */
+    override val permission: Permissions
 
     /**
      * 群用户的头衔。在不支持的情况下将会得到 `null`。
