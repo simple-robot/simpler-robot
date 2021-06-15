@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -15,12 +15,12 @@
 package love.forte.simbot.listener
 
 import love.forte.simbot.api.SimbotExperimentalApi
+import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.MsgSender
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.filter.AtDetection
 import love.forte.simbot.filter.ListenerFilter
-import love.forte.simbot.utils.StoneArray
 import java.lang.reflect.Type
 
 
@@ -101,8 +101,10 @@ public interface ListenerFunction {
 
     /**
      * 一个监听函数可能会被分为一个或多个组。
+     *
      */
-    val groups: StoneArray<String>
+    @SimbotInternalApi
+    val groups: List<ListenerGroup>
 
 
     /**

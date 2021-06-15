@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -23,14 +23,13 @@ import love.forte.simbot.LogAble
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.annotation.*
 import love.forte.simbot.api.SimbotExperimentalApi
+import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.filter.AtDetection
 import love.forte.simbot.filter.FilterData
 import love.forte.simbot.filter.FilterManager
 import love.forte.simbot.filter.ListenerFilter
 import love.forte.simbot.listener.*
-import love.forte.simbot.utils.StoneArray
-import love.forte.simbot.utils.asStoneArray
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationTargetException
@@ -54,9 +53,9 @@ import kotlin.reflect.jvm.kotlinFunction
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-@OptIn(SimbotExperimentalApi::class)
+@OptIn(SimbotExperimentalApi::class, SimbotInternalApi::class)
 @Suppress("JoinDeclarationAndAssignment")
-public class MethodListenerFunction(
+public class MethodListenerFunction  constructor(
     private val method: Method,
     private val instanceName: String?,
     declClass: Class<*>,
@@ -64,6 +63,7 @@ public class MethodListenerFunction(
     private val filterManager: FilterManager,
     private val converterManager: ConverterManager,
     private val listenerResultFactory: ListenerResultFactory,
+    listenerGroupManager: ListenerGroupManager,
 ) : ListenerFunction, LogAble {
     override val log: Logger = LoggerFactory.getLogger(method.declaringClass.typeName + "." + method.name)
 
@@ -152,7 +152,10 @@ public class MethodListenerFunction(
         }
 
 
-    override val groups: StoneArray<String>
+    /**
+     * [groups] 应当是一个不可变列表。
+     */
+    override val groups: List<ListenerGroup>
 
 
     /**
@@ -212,15 +215,16 @@ public class MethodListenerFunction(
         val methodGroupAnnotation =
             AnnotationUtil.getAnnotation(method, ListenGroup::class.java)?.takeIf { a -> a.value.isNotEmpty() }
 
-        groups = when {
+        val groupNames = when {
             parentGroupAnnotation != null && methodGroupAnnotation != null ->
                 if (methodGroupAnnotation.append) parentGroupAnnotation.value + methodGroupAnnotation.value
                 else methodGroupAnnotation.value
             methodGroupAnnotation != null -> methodGroupAnnotation.value
             parentGroupAnnotation != null -> parentGroupAnnotation.value
             else -> emptyArray()
-        }.asStoneArray()
+        }
 
+        groups = listenerGroupManager.assignGroup(this, *groupNames)
 
 
         listenerInstanceGetter = if (isStatic) {
@@ -380,8 +384,11 @@ public class MethodListenerFunction(
                                 { d ->
                                     // 如果当前的动态参数msgGet的类型正好是此参数的类型的子类，直接使用
                                     val msgGet: MsgGet = d.msgGet
-                                    if (type.isAssignableFrom(msgGet.javaClass)) msgGet
-                                    else d[type] ?: dependBeanFactory.getOrNull(type)
+                                    when {
+                                        type.isAssignableFrom(msgGet.javaClass) -> msgGet
+                                        type.isAssignableFrom(this::class.java) -> this
+                                        else -> d[type] ?: dependBeanFactory.getOrNull(type)
+                                    }
                                 }
                             }
                         } else {
@@ -394,8 +401,11 @@ public class MethodListenerFunction(
                                 { d ->
                                     // 如果获取到的msgGet的类型正好是此参数的类型的子类，直接使用
                                     val msgGet: MsgGet = d.msgGet
-                                    if (type.isAssignableFrom(msgGet.javaClass)) msgGet
-                                    else d[type] ?: dependBeanFactory[type]
+                                    when {
+                                        type.isAssignableFrom(msgGet.javaClass) -> msgGet
+                                        type.isAssignableFrom(this::class.java) -> this
+                                        else -> d[type] ?: dependBeanFactory[type]
+                                    }
                                 }
                             }
                         }

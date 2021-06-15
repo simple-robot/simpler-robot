@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -21,16 +21,17 @@ import love.forte.common.ioc.annotation.Depend
 import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.convert.ConverterManager
 import love.forte.simbot.annotation.Listens
+import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.listener.MethodListenerFunction
 import love.forte.simbot.filter.FilterManager
+import love.forte.simbot.listener.ListenerGroupManager
 import love.forte.simbot.listener.ListenerRegistrar
 import love.forte.simbot.listener.ListenerResultFactory
 import love.forte.simbot.listener.PostListenerRegistrar
 
 
 private data class BeanNameType<T>(val name: String, val type: Class<T>)
-
 
 
 @Beans("coreMethodPostListenerRegistrar")
@@ -51,6 +52,10 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
 
     @Depend
     private lateinit var listenerResultFactory: ListenerResultFactory
+
+    @OptIn(SimbotInternalApi::class)
+    @Depend
+    private lateinit var listenerGroupManager: ListenerGroupManager
 
     /**
      * 扫描并注册监听函数。
@@ -84,7 +89,16 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                         (!AnnotationUtil.containsAnnotation(m, Ignore::class.java) &&
                                 AnnotationUtil.containsAnnotation(m, Listens::class.java))
             }.map {
-                MethodListenerFunction(it, name, type, dependBeanFactory, filterManager, converterManager, listenerResultFactory)
+                MethodListenerFunction(
+                    method = it,
+                    instanceName = name,
+                    declClass = type,
+                    dependBeanFactory = dependBeanFactory,
+                    filterManager = filterManager,
+                    converterManager = converterManager,
+                    listenerResultFactory = listenerResultFactory,
+                    listenerGroupManager = listenerGroupManager
+                )
             }
         }.forEach {
             registrar.register(it)

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -36,7 +36,6 @@ import love.forte.simbot.filter.AtDetectionFactory
 import love.forte.simbot.listener.*
 import love.forte.simbot.processor.ListenResultProcessorManager
 import love.forte.simbot.processor.context
-import love.forte.simbot.utils.isEmpty
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -74,6 +73,8 @@ private data class ListenerFunctionGroups(
 @OptIn(SimbotInternalApi::class)
 @SpareBeans("coreListenerManager")
 public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructor(
+    private val listenerGroupManager: ListenerGroupManager,
+
     private val atDetectionFactory: AtDetectionFactory,
     private val exceptionManager: ExceptionProcessor,
 
@@ -111,7 +112,6 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      * 当 [register] 了新的监听函数后对应相关类型将会被清理。
      */
     private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, ListenerFunctionGroups> = ConcurrentHashMap()
-    // private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, Queue<ListenerFunction>> = ConcurrentHashMap()
 
     /**
      * 监听函数分组数据。
@@ -141,17 +141,17 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                 oldValue.apply { addAll(value) }
             }
 
-            // groups.
-            val groups = listenerFunction.groups
-            if (groups.isEmpty()) {
-                noGroupListenerGroup.add(listenerFunction)
-            } else {
-                groups.forEach { g ->
-                    listenerGroups.compute(g) { g0, v ->
-                        v?.apply { add(listenerFunction) } ?: MutableListenerGroup(g0, mutableListOf(listenerFunction))
-                    }
-                }
-            }
+            // // groups.
+            // val groups = listenerFunction.groups
+            // if (groups.isEmpty()) {
+            //     noGroupListenerGroup.add(listenerFunction)
+            // } else {
+            //     groups.forEach { g ->
+            //         listenerGroups.compute(g) { g0, v ->
+            //             v?.apply { add(listenerFunction) } ?: MutableListenerGroup(g0, mutableListOf(listenerFunction))
+            //         }
+            //     }
+            // }
 
             // clear cache map.
             // 清除缓存

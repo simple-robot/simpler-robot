@@ -14,10 +14,10 @@
 
 package love.forte.simbot.core.intercept
 
+import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.intercept.InterceptionType
 import love.forte.simbot.listener.ListenerInterceptContext
 import love.forte.simbot.listener.ListenerInterceptor
-import love.forte.simbot.utils.isEmpty
 import java.util.concurrent.ConcurrentHashMap
 
 
@@ -81,6 +81,7 @@ public abstract class GroupedListenerInterceptor : ListenerInterceptor {
     private val listenerCache: MutableMap<String, String> = ConcurrentHashMap()
 
 
+    @OptIn(SimbotInternalApi::class)
     final override fun intercept(context: ListenerInterceptContext): InterceptionType {
         val listener = context.listenerFunction
         val id = listener.id
@@ -96,12 +97,13 @@ public abstract class GroupedListenerInterceptor : ListenerInterceptor {
             else nonGroupInterceptionType
         }
 
+        // todo 尚待优化
         for (group in functionGroups) {
-            if (groupCheck(group)) {
+            if (groupCheck(group.name)) {
                 if (listenerCacheable) {
-                    listenerCache[id] = group
+                    listenerCache[id] = group.name
                 }
-                return doIntercept(context, group)
+                return doIntercept(context, group.name)
             }
         }
 

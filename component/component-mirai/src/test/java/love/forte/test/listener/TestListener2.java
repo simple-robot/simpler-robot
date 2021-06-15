@@ -1,16 +1,14 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  component-onebot
- *  * File     TestListener2.java
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
@@ -24,6 +22,8 @@ import love.forte.simbot.api.message.containers.DetailAccountInfo;
 import love.forte.simbot.api.message.containers.GroupAccountInfo;
 import love.forte.simbot.api.message.containers.GroupBotInfo;
 import love.forte.simbot.api.message.events.GroupMsg;
+import love.forte.simbot.listener.ListenerFunction;
+import love.forte.simbot.listener.ListenerGroup;
 
 /**
  *
@@ -32,7 +32,7 @@ import love.forte.simbot.api.message.events.GroupMsg;
 @Beans
 public class TestListener2 {
 
-    @ListenGroup({"group1", "group2"})
+    @ListenGroup({"group3", "group4"})
     @OnGroup
     public void l3(GroupMsg msg){
         System.out.println(msg);
@@ -57,6 +57,17 @@ public class TestListener2 {
 
     @ListenGroup({"group3", "group4"})
     @OnPrivate
-    public void l4(){}
+    public void l4(ListenerFunction function){
+
+        System.out.println(function.getGroups());
+
+        System.out.println();
+
+        ListenerGroup group = function.getGroups().get(0);
+        for (ListenerFunction listener : group.getListeners()) {
+            System.out.println("listener " + listener.getId() + " In Group " + group.getName());
+        }
+
+    }
 
 }
