@@ -16,6 +16,7 @@ package love.forte.simbot.bot
 
 import love.forte.common.utils.scanner.ResourcesScanner
 import org.slf4j.LoggerFactory
+import java.io.FileNotFoundException
 import java.nio.file.FileVisitResult
 import java.nio.file.Files
 import java.nio.file.Path
@@ -85,7 +86,8 @@ public class SimpleBotVerifyInfoConfiguration(
             val collection = mutableListOf<Properties>()
 
             if (!root.exists()) {
-                LOGGER.warn("Cannot read bots configure by file: The directory '${BotVerifyInfoConfiguration.PATH_DIR}' does not exist.")
+                LOGGER.warn("Cannot read bots configure by file: The directory '${BotVerifyInfoConfiguration.PATH_DIR}' does not exist, skip.")
+                LOGGER.debug("Details: {}", FileNotFoundException(root.toString()))
                 return emptyList()
             }
 
@@ -108,7 +110,7 @@ public class SimpleBotVerifyInfoConfiguration(
                     }
                 }
             }.getOrElse { e ->
-                LOGGER.warn("Cannot read bots configure by resource: {}", e.localizedMessage)
+                LOGGER.warn("Cannot read bots configure by resource: {}, skip.", e.localizedMessage)
                 LOGGER.debug("Details: $e", e)
                 emptyList()
             }
