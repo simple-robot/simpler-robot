@@ -15,8 +15,8 @@
     <artifactId>project</artifactId>
 
     <modules>
-        <!--<module>core-parent</module>-->
         <module>core-parent/api</module>
+        <module>core-parent/api-qq</module>
         <module>core-parent/core</module>
         <module>component</module>
         <module>spring-boot-starter</module>

@@ -78,6 +78,11 @@
             </dependency>
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
+                <artifactId>api-qq</artifactId>
+                <version>${simbot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>love.forte.simple-robot</groupId>
                 <artifactId>core</artifactId>
                 <version>${simbot.version}</version>
             </dependency>
