@@ -36,6 +36,9 @@ class CoreBotVerifyInfoConfiguration {
     @ConfigInject("bots", orDefault = [""])
     lateinit var bots: List<String>
 
+    @ConfigInject("actionBots", orDefault = ["*"])
+    lateinit var actionBots: List<String>
+
 
     @SpareBeans
     fun botVerifyInfoConfiguration(): SimpleBotVerifyInfoConfiguration {
@@ -43,7 +46,7 @@ class CoreBotVerifyInfoConfiguration {
             bots.asSequence().distinct().map { botVerifyInfoBySplit(it) }.toList()
         } else emptyList()
 
-        return SimpleBotVerifyInfoConfiguration(botResourceType, other = otherBots)
+        return SimpleBotVerifyInfoConfiguration(botResourceType, actionBots = actionBots, other = otherBots)
     }
 
 }

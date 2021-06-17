@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -534,7 +534,7 @@ private object Logo {
 / __| | '_ ` _ \| '_ \ / _ \| __|
 \__ \ | | | | | | |_) | (_) | |_ 
 |___/_|_| |_| |_|_.__/ \___/ \__|
-                    @ForteScarlet
+                 @ForteScarlet  D
     """
     internal const val ENABLE_KEY = "simbot.core.logo.enable"
     private val LOGO_PATH: String =

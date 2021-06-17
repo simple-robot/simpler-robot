@@ -15,18 +15,15 @@
 package love.forte.simbot.bot
 
 import love.forte.common.utils.scanner.ResourcesScanner
+import love.forte.simbot.bot.BotVerifyInfoConfiguration.Companion.ACTION_NAME_KEY
 import org.slf4j.LoggerFactory
-import java.io.FileNotFoundException
 import java.nio.file.FileVisitResult
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
 import java.util.*
-import kotlin.io.path.Path
-import kotlin.io.path.exists
-import kotlin.io.path.extension
-import kotlin.io.path.reader
+import kotlin.io.path.*
 
 
 /**
@@ -49,6 +46,7 @@ public interface BotVerifyInfoConfiguration {
 
     companion object {
         const val PATH_DIR = "simbot-bots"
+        const val ACTION_NAME_KEY = "action_name"
     }
 
     /**
@@ -66,9 +64,13 @@ public interface BotVerifyInfoConfiguration {
 
 /**
  * 基础的 [BotVerifyInfoConfiguration] 配置类实现。
+ *
+ * 通过 action_name 来决定是否被加载。
+ *
  */
 public class SimpleBotVerifyInfoConfiguration(
     override val botResourceType: BotResourceType,
+    actionBots: List<String> = listOf(ALL_ACTION_KEY),
     codeAlias: Array<String> = CODE_ALIAS,
     verificationAlias: Array<String> = VERIFICATION_ALIAS,
     other: List<BotVerifyInfo> = emptyList(),
@@ -76,6 +78,7 @@ public class SimpleBotVerifyInfoConfiguration(
 
     private companion object {
         private val LOGGER = LoggerFactory.getLogger(BotVerifyInfoConfiguration::class.java)
+        private const val ALL_ACTION_KEY = "*"
     }
 
     override val configuredBotVerifyInfos: List<BotVerifyInfo>
@@ -87,11 +90,11 @@ public class SimpleBotVerifyInfoConfiguration(
 
             if (!root.exists()) {
                 LOGGER.warn("Cannot read bots configure by file: The directory '${BotVerifyInfoConfiguration.PATH_DIR}' does not exist, skip.")
-                LOGGER.debug("Details: {}", FileNotFoundException(root.toString()))
                 return emptyList()
             }
 
             Files.walkFileTree(root, FileVisitorByExtension("bot", collection) { p ->
+                LOGGER.debug("Bot verify info by {}", p.name)
                 Properties().apply {
                     p.reader(Charsets.UTF_8).use(::load)
                 }
@@ -102,11 +105,15 @@ public class SimpleBotVerifyInfoConfiguration(
 
         fun fromResource(): List<Properties> {
             return runCatching {
-                ResourcesScanner().scan(BotVerifyInfoConfiguration.PATH_DIR) { uri ->
+                val loader = Thread.currentThread().contextClassLoader
+                ResourcesScanner(loader).scan(BotVerifyInfoConfiguration.PATH_DIR) { uri ->
                     uri.toASCIIString().endsWith("bot")
                 }.collection.map { uri ->
+                    LOGGER.debug("Bot verify info by {}", uri.toASCIIString())
                     Properties().apply {
-                        uri.toURL().openStream().reader(Charsets.UTF_8).use(::load)
+                        val asciiString = uri.toASCIIString()
+                        loader.getResourceAsStream(asciiString)?.reader(Charsets.UTF_8)?.use(::load)
+                            ?: throw NullPointerException("Uri stream null: $asciiString")
                     }
                 }
             }.getOrElse { e ->
@@ -117,6 +124,8 @@ public class SimpleBotVerifyInfoConfiguration(
         }
 
 
+        LOGGER.debug("Bot resource Type: {}", botResourceType)
+
         val propertiesList = when (botResourceType) {
             BotResourceType.NONE -> emptyList()
             BotResourceType.FILE -> fromFile()
@@ -126,11 +135,26 @@ public class SimpleBotVerifyInfoConfiguration(
             BotResourceType.RESOURCE_FIRST -> fromResource().ifEmpty { fromFile() }
         }
 
+        val infos: List<BotVerifyInfo> = propertiesList.map { p ->
+            pairBotVerifyInfo(p,
+                codeAlias,
+                verificationAlias)
+        }
 
-        configuredBotVerifyInfos =
-            (propertiesList.map { p -> pairBotVerifyInfo(p, codeAlias, verificationAlias) } + other).distinctBy { info ->
-                info.code
-            }
+        val actionBotsSet = actionBots.toSet()
+
+        configuredBotVerifyInfos = ((
+            if (ALL_ACTION_KEY in actionBotsSet) infos
+            else infos.filter { i ->
+                i[ACTION_NAME_KEY]?.let { actionName -> actionName in actionBotsSet } ?: kotlin.run {
+                    LOGGER.warn("Bot(code=${i.code})'s config property '$ACTION_NAME_KEY' is null, but your action bots config properties is not ignore or '$ALL_ACTION_KEY', so this bot will always be loaded.")
+                    true
+                }
+            }) + other).distinctBy { info ->
+            info.code
+        }
+
+
     }
 
 

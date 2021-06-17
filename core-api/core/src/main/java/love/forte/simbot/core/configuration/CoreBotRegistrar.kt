@@ -14,7 +14,6 @@
 
 package love.forte.simbot.core.configuration
 
-import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.PostPass
@@ -34,9 +33,6 @@ public class CoreBotRegistrar {
     @Depend
     lateinit var botManager: BotManager
 
-
-    @ConfigInject("bots", orDefault = [""])
-    lateinit var bots: List<String>
 
     @Depend
     lateinit var botVerifyConfiguration: BotVerifyInfoConfiguration

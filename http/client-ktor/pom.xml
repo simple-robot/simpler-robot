@@ -5,7 +5,7 @@
     <parent>
         <artifactId>http-parent</artifactId>
         <groupId>love.forte.simple-robot.http</groupId>
-        <version>2.1.0-DEV.5</version><!--v-->
+        <version>2.1.0-DEV.6</version><!--v-->
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -54,13 +54,6 @@
             <artifactId>ktor-client-cio-jvm</artifactId>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com</url>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
