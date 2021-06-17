@@ -19,7 +19,7 @@
     <parent>
         <artifactId>component-parent</artifactId>
         <groupId>love.forte.simple-robot</groupId>
-        <version>2.1.0-RC.3</version><!--v-->
+        <version>2.1.0-DEV.5</version><!--v-->
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
