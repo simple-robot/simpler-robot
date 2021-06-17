@@ -31,7 +31,10 @@ import net.mamoe.mirai.message.data.source
  * 此事件会被处理为一个 [私聊消息][PrivateMsg]。
  * @author ForteScarlet
  */
-public interface MiraiOtherClientMessage : PrivateMsg, MiraiOtherClientContainer
+public interface MiraiOtherClientMessage :
+    PrivateMsg,
+    MiraiOtherClientContainer,
+    MiraiSpecialEvent<OtherClientMessageEvent>
 
 
 

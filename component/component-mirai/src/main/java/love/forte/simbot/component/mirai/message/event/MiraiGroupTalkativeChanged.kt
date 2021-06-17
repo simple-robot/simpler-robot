@@ -28,7 +28,9 @@ import net.mamoe.mirai.event.events.GroupTalkativeChangeEvent
  *
  * @author ForteScarlet
  */
-public interface MiraiGroupTalkativeChanged : ChangedGet<GroupMemberInfo>
+public interface MiraiGroupTalkativeChanged :
+    ChangedGet<GroupMemberInfo>,
+    MiraiSpecialEvent<GroupTalkativeChangeEvent>
 
 
 

@@ -32,7 +32,7 @@ import net.mamoe.mirai.utils.MiraiExperimentalApi
  *
  */
 @OptIn(MiraiExperimentalApi::class)
-public interface MiraiGroupHonorChanged: ChangedGet<GroupHonorType>
+public interface MiraiGroupHonorChanged: ChangedGet<GroupHonorType>, MiraiSpecialEvent<MemberHonorChangeEvent>
 
 
 

@@ -34,8 +34,8 @@ import net.mamoe.mirai.message.data.PlainText
  */
 @Suppress("MemberVisibilityCanBePrivate")
 public abstract class AbstractMiraiMsgGet<out ME : BotEvent>(
-    val event: ME
-) : MsgGet {
+    final override val event: ME
+) : MsgGet, MiraiSpecialEvent<ME> {
 
     /** 当前监听事件消息的ID。一般情况下应当是一个唯一ID。 */
     abstract override val id: String
