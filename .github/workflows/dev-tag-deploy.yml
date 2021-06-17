@@ -37,7 +37,9 @@ jobs:
           
         
       - name: Publish package
-        run: mvn -B -e -U clean deploy -P release
+        run: | 
+          cd parent
+          mvn -B -e -U clean deploy -P release
         env:
           MAVEN_USERNAME: ${{ secrets.OSS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSS_PASSWORD }}
