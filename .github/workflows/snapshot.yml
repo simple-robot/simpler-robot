@@ -62,7 +62,9 @@ jobs:
 
         
       - name: Publish package
-        run: mvn -DskipTests -B -e -U clean deploy -P snapshot,!release
+        run:  | 
+          cd parent
+          mvn -DskipTests -B -e -U clean deploy -P snapshot,!release
         env:
           MAVEN_USERNAME: ${{ secrets.SNAPSHOTS_OSS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.SNAPSHOTS_OSS_PASSWORD }}

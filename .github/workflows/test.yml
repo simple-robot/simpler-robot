@@ -48,7 +48,9 @@ jobs:
 #           echo test, and deploy your project.
     
       - name: Clean & compile project
-        run: mvn --batch-mode --update-snapshots clean compile
+        run:  | 
+          cd parent
+          mvn --batch-mode --update-snapshots clean compile
         
       - name: Test project
         run: mvn --batch-mode test
