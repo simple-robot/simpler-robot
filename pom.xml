@@ -15,9 +15,9 @@
     <artifactId>project</artifactId>
 
     <modules>
-        <module>core-parent/api</module>
-        <module>core-parent/api-qq</module>
-        <module>core-parent/core</module>
+        <module>core-api/api</module>
+        <module>core-api/api-qq</module>
+        <module>core-api/core</module>
         <module>component</module>
         <module>spring-boot-starter</module>
         <module>serialization</module>
