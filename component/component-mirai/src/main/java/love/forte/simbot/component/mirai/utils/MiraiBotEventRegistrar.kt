@@ -16,9 +16,16 @@
 
 package love.forte.simbot.component.mirai.utils
 
+import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.launch
+import love.forte.common.configuration.annotation.AsConfig
+import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
 import love.forte.simbot.component.mirai.message.cacheId
 import love.forte.simbot.component.mirai.message.event.*
+import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.listener.MsgGetProcessor
 import love.forte.simbot.listener.onMsg
@@ -30,8 +37,11 @@ import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import java.util.concurrent.Executor
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
 
 //region 处理监听消息
 // private fun <M : MsgGet> M.onMsg(msgProcessor: MsgGetProcessor) = msgProcessor.onMsg(this)
@@ -39,6 +49,7 @@ import org.slf4j.LoggerFactory
 
 
 @ComponentBeans
+@AsConfig(prefix = "simbot.component.mirai")
 public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
 
     @Volatile
@@ -49,7 +60,27 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         started = true
     }
 
-    private val logger: Logger = LoggerFactory.getLogger(MiraiBotEventRegistrar::class.java)
+
+    @ConfigInject("dispatcher.corePoolSize")
+    private var corePoolSize: Int = Runtime.getRuntime().availableProcessors() * 2
+
+    @ConfigInject("dispatcher.maximumPoolSize")
+    private var maximumPoolSize: Int = Runtime.getRuntime().availableProcessors() * 4
+
+    @ConfigInject("dispatcher.keepAliveTime")
+    private var keepAliveTime: Long = 1000L
+
+    @OptIn(SimbotMiraiCrossApi::class)
+    private val dispatcher: CoroutineContext by lazy {
+        logger.debug("Init simbot mirai event dispatcher (corePoolSize={}, maximumPoolSize={}, keepAliveTime={}(ms))",
+            corePoolSize,
+            maximumPoolSize,
+            keepAliveTime)
+        MiraiOnMsgDispatcher(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS)
+    }
+
+
+    private companion object : TypedCompLogger(MiraiBotEventRegistrar::class.java)
 
 
     @OptIn(MiraiExperimentalApi::class)
@@ -120,7 +151,7 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         registerListenerAlways<NudgeEvent> {
             // if (this.from.id != this.bot.id) {
             if (this.from.id != this.bot.id) {
-                when(val sub = this.from) {
+                when (val sub = this.from) {
                     is Friend -> msgProcessor.onMsg { MiraiNudgedEvent.ByFriend(this, sub) }
                     is Member -> msgProcessor.onMsg { MiraiNudgedEvent.ByMember(this, sub) }
                     is Stranger -> msgProcessor.onMsg { MiraiNudgedEvent.ByStranger(this, sub) }
@@ -373,11 +404,64 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         // enable mirai log.
         logger.let { if (it is MiraiLoggerWithSwitch) it else null }?.enable()
     }
+
+
+    /**
+     * register event.
+     */
+    @OptIn(SimbotMiraiCrossApi::class)
+    private inline fun <reified E : BotEvent> Bot.registerListenerAlways(crossinline handler: suspend E.(E) -> Unit): Listener<E> =
+        this.eventChannel.subscribeAlways {
+            launch(dispatcher) {
+                handler(this@subscribeAlways)
+            }
+        }
 }
 
 
 /**
- * register event.
+ * simbot-mirai整合时所使用的部分内部性质的API。
  */
-private inline fun <reified E : BotEvent> Bot.registerListenerAlways(crossinline handler: suspend E.(E) -> Unit):
-        Listener<E> = this.eventChannel.subscribeAlways { handler(this) }
+@Retention(AnnotationRetention.BINARY)
+@RequiresOptIn(message = "整合性质的内部API随时有改动或删除的可能", level = RequiresOptIn.Level.WARNING)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.TYPEALIAS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.CONSTRUCTOR
+)
+@MustBeDocumented
+public annotation class SimbotMiraiCrossApi
+
+
+@SimbotMiraiCrossApi
+private class MiraiOnMsgDispatcher(
+    corePoolSize: Int,
+    maximumPoolSize: Int,
+    keepAliveTime: Long,
+    timeUnit: TimeUnit,
+) : CoroutineDispatcher() {
+    private val threadGroup: ThreadGroup = ThreadGroup("mirai-simbot")
+    private val threadIndex = atomic(0)
+
+    private val executor: Executor = ThreadPoolExecutor(
+        corePoolSize,
+        maximumPoolSize,
+        keepAliveTime,
+        timeUnit,
+        LinkedBlockingQueue(),
+    ) { runnable ->
+        Thread(
+            threadGroup,
+            runnable,
+            "${threadGroup.name}-worker-${threadIndex.getAndIncrement()}"
+        ).apply { isDaemon = true }
+    }
+
+
+    override fun dispatch(context: CoroutineContext, block: Runnable) {
+        executor.execute(block)
+    }
+}

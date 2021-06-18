@@ -5,7 +5,7 @@
     <parent>
         <groupId>love.forte.simple-robot</groupId>
         <artifactId>component-parent</artifactId>
-        <version>2.0.8</version><!--v-->
+        <version>2.1.0-DEV.6</version><!--v-->
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -22,9 +22,7 @@
     <url>https://github.com/ForteScarlet/simpler-robot/tree/dev/component/component-mirai</url>
 
     <properties>
-        <mirai.version>2.6.4</mirai.version>
-        <mirai-login-solver-selenium.version>1.0-dev-16</mirai-login-solver-selenium.version>
-        <!--<kotlin.version>1.4.32</kotlin.version>-->
+        <mirai.version>2.6.6</mirai.version>
     </properties>
 
 
@@ -68,13 +66,6 @@
             <version>${mirai.version}</version>
         </dependency>
 
-        <!--<dependency>-->
-        <!--    <groupId>net.mamoe</groupId>-->
-        <!--    <artifactId>mirai-login-solver-selenium</artifactId>-->
-        <!--    <version>${mirai-login-solver-selenium.version}</version>-->
-        <!--    <optional>true</optional>-->
-        <!--</dependency>-->
-
         <!-- kt -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -117,20 +108,5 @@
         </plugins>
     </build>
 
-
-    <!-- 额外的仓库 -->
-    <repositories>
-        <repository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com/</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jcenter</id>
-            <url>https://jcenter.bintray.com/</url>
-        </pluginRepository>
-    </pluginRepositories>
 
 </project>

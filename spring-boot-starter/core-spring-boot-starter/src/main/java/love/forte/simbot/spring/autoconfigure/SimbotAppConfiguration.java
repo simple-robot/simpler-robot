@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -35,9 +35,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
         SimbotAppProperties.class,
         SpringDependBeanFactory.class
 })
-@SimbotApplication({
-        // @SimbotResource(value = "def-empty.properties", orIgnore = true)
-})
+@SimbotApplication
 public class SimbotAppConfiguration {
 
     private final SimbotAppProperties simbotAppProperties;
@@ -71,7 +69,6 @@ public class SimbotAppConfiguration {
         }
 
         final String[] sourceArgs = applicationArguments.getSourceArgs();
-        // ClassLoader loader = ClassLoader.getSystemClassLoader();
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = getClass().getClassLoader();

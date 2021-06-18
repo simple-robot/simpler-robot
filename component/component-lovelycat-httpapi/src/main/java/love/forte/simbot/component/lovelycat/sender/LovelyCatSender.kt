@@ -339,7 +339,7 @@ public class LovelyCatSender(
             text?.let { sb.append(it) }
 
             val result = api.modifyGroupNotice(botId, group, sb.toString())
-            Carrier.get(result.result?.toLowerCase() == "ok")
+            Carrier.get(result.result?.lowercase() == "ok")
 
         } ?: Carrier.get(false)
     }

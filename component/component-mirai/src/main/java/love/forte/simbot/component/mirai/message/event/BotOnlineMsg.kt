@@ -14,9 +14,7 @@
 
 package love.forte.simbot.component.mirai.message.event
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.events.EventGet
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
@@ -42,7 +40,10 @@ public interface LoginAble {
  *
  * @see BotOfflineEvent
  */
-public sealed class MiraiBotOffline<E : BotOfflineEvent>(event: E) : AbstractMiraiMsgGet<E>(event), EventGet,
+public sealed class MiraiBotOffline<E : BotOfflineEvent>(event: E) :
+    AbstractMiraiMsgGet<E>(event),
+    EventGet,
+    MiraiSpecialEvent<E>,
     LoginAble {
     public override val id: String = "MBOffline-${event.hashCode()}"
     public override val accountInfo: AccountInfo = MiraiBotAccountInfo(event.bot)
@@ -55,7 +56,10 @@ public sealed class MiraiBotOffline<E : BotOfflineEvent>(event: E) : AbstractMir
 
     /** 异步登录。 */
     public override fun loginAsync() {
-        GlobalScope.launch { event.bot.login() }
+        CoroutineScope(Dispatchers.Default).launch {
+            event.bot.login()
+        }
+        // GlobalScope.launch { event.bot.login() }
     }
 
     /**
@@ -101,7 +105,7 @@ public sealed class MiraiBotOffline<E : BotOfflineEvent>(event: E) : AbstractMir
      * 其他掉线原因。
      */
     public class Other(event: BotOfflineEvent) : MiraiBotOffline<BotOfflineEvent>(event) {
-        
+
         @OptIn(MiraiExperimentalApi::class)
         override val cause: Throwable? = if (event is BotOfflineEvent.CauseAware) event.cause else null
         override val message: String?
@@ -113,7 +117,8 @@ public sealed class MiraiBotOffline<E : BotOfflineEvent>(event: E) : AbstractMir
 /**
  * bot重新登录事件。
  */
-public class MiraiBotReLogin(event: BotReloginEvent) : AbstractMiraiMsgGet<BotReloginEvent>(event), EventGet, LoginAble {
+public class MiraiBotReLogin(event: BotReloginEvent) : AbstractMiraiMsgGet<BotReloginEvent>(event), EventGet,
+    LoginAble {
     override val id: String = "MBRLogin-${event.hashCode()}"
     override val accountInfo: AccountInfo = MiraiBotAccountInfo(event.bot)
     val cause: Throwable? get() = event.cause

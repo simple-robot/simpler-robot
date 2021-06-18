@@ -43,9 +43,9 @@
 public class TestListener {
   /** 发送一句“我收到了”，并再复读收到的所有消息 */
   @OnPrivate
-  public void listen(PrivateMsg msg, MsgSender sender) {
-    sender.SENDER.sendPrivateMsg(msg, "我收到了");
-    sender.SENDER.sendPrivateMsg(msg, msg.getMsgContent());
+  public void listen(PrivateMsg msg, Sender sender) {
+    sender.sendPrivateMsg(msg, "我收到了");
+    sender.sendPrivateMsg(msg, msg.getMsgContent());
   }
 }
 ```
@@ -55,7 +55,11 @@ public class TestListener {
 ```java
 @Beans
 public class TestListener {
-  /** 监听群里的 'hi! simbot' 消息并作出回应 */
+  /** 
+   * 监听群里的 'hi! simbot' 消息并作出回应 
+   * 这里使用 MsgSender 来获取一个送信器。
+   * MsgSender中包含 SENDER、SETTER、GETTER三个送信器。
+   * */
   @OnGroup
   @Filter("hi! simbot")
   public void listenGroup(GroupMsg msg, MsgSender sender) {
@@ -81,7 +85,7 @@ public class TestListener {
   /** 监听群里的 'hi! simbot' 消息并作出回应 */
   @OnGroup
   @Filter("hi! simbot")
-  public void listenGroup(GroupMsg msg, MsgSender sender){
+  public void listenGroup(GroupMsg msg, Sender sender){
     // 获取发消息的人的账号
     String accountCode = msg.getAccountInfo().getAccountCode();
     // 获取消息构建器
@@ -89,7 +93,7 @@ public class TestListener {
     // 构建消息实例
     MessageContent msgContent = builder.at(accountCode).text(" 我在哦").build();
     // 发送消息
-    sender.SENDER.sendGroupMsg(msg, msgContent);
+    sender.sendGroupMsg(msg, msgContent);
   }
 }
 ```

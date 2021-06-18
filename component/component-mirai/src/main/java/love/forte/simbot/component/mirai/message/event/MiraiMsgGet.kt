@@ -19,7 +19,7 @@ import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.component.mirai.MiraiBotInfo
+import love.forte.simbot.component.mirai.MiraiBotAccountInfo
 import love.forte.simbot.component.mirai.message.cacheId
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.event.events.BotEvent
@@ -34,8 +34,8 @@ import net.mamoe.mirai.message.data.PlainText
  */
 @Suppress("MemberVisibilityCanBePrivate")
 public abstract class AbstractMiraiMsgGet<out ME : BotEvent>(
-    val event: ME
-) : MsgGet {
+    final override val event: ME
+) : MsgGet, MiraiSpecialEvent<ME> {
 
     /** 当前监听事件消息的ID。一般情况下应当是一个唯一ID。 */
     abstract override val id: String
@@ -62,7 +62,7 @@ public abstract class AbstractMiraiMsgGet<out ME : BotEvent>(
     /**
      * bot信息。此处的信息将无法获取到level。
      */
-    override val botInfo: BotInfo = MiraiBotInfo.getInstance(event.bot)
+    override val botInfo: BotInfo = MiraiBotAccountInfo.getInstance(event.bot)
 }
 
 

@@ -36,20 +36,10 @@ public object LovelyCatMessageContentBuilderFactory : MessageContentBuilderFacto
  */
 public class LovelyCatMessageContentBuilder : MessageContentBuilder {
 
-    private lateinit var _sb: StringBuilder
-    private val sb: StringBuilder
-    get() {
-        if (!::_sb.isInitialized) {
-            _sb = StringBuilder()
-        }
-        return _sb
-    }
+    private val sb: StringBuilder = StringBuilder()
+
     private val sbOrSpace: String
-    get() = if (!::_sb.isInitialized) {
-        " "
-    } else {
-        _sb.toString()
-    }
+    get() = if (sb.isEmpty()) " " else sb.toString()
 
     private lateinit var _img: MutableList<String>
     private val img: MutableList<String>
@@ -82,6 +72,21 @@ public class LovelyCatMessageContentBuilder : MessageContentBuilder {
         }
 
     private var atAll = false
+
+
+    override fun clear(): LovelyCatMessageContentBuilder {
+        sb.clear()
+        if (::_img.isInitialized) {
+            _img.clear()
+        }
+        if (::_at.isInitialized) {
+            _at.clear()
+        }
+
+        atAll = false
+        return this
+    }
+
 
     /** 最基础的消息类型。向当前构建的消息中追加一个 文本消息。 */
     override fun text(text: CharSequence): LovelyCatMessageContentBuilder = apply {

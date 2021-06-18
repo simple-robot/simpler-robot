@@ -145,7 +145,7 @@ public class MiraiConfiguration {
                 val devInfo = simbotMiraiDeviceInfo(it.id, deviceInfoSeed)
 
                 if (deviceInfoOutput) {
-                    runCatching {
+                    runCatching<Unit> {
                         val devInfoJson = Json {
                             isLenient = true
                             ignoreUnknownKeys = true
@@ -184,31 +184,6 @@ public class MiraiConfiguration {
         conf.reconnectionRetryTimes = this.reconnectionRetryTimes
         conf.protocol = this.protocol
 
-        // // 验证码处理器
-        // conf.loginSolver = this.loginSolverType.getter(null)
-
-        // conf.fileCacheStrategy = when (this.cacheType) {
-        //     // 内存缓存
-        //     MiraiCacheType.MEMORY -> FileCacheStrategy.MemoryCache
-        //     // 文件缓存
-        //     MiraiCacheType.FILE -> {
-        //         val cacheDir = this.cacheDirectory
-        //         if (cacheDir?.isNotBlank() == true) {
-        //             val directory = File(cacheDir)
-        //             if (!directory.exists()) {
-        //                 // 不存在，创建
-        //                 directory.mkdirs()
-        //             }
-        //             if (!directory.isDirectory) {
-        //                 throw IllegalArgumentException("'$cacheDir' is not a directory.")
-        //             }
-        //             FileCacheStrategy.TempCache(directory)
-        //         } else {
-        //             FileCacheStrategy.MemoryCache
-        //         }
-        //     }
-        // }
-
 
         if (noBotLog) {
             conf.noBotLog()
@@ -233,7 +208,6 @@ public class MiraiConfiguration {
         }
         if (useSimbotNetworkLog) {
             conf.networkLoggerSupplier = {
-                // val logger: Logger = LoggerFactory.getLogger("$MIRAI_LOG_NAME_PREFIX.net.${it.id}")
                 val logger: Logger = miraiBotLogger(it.id, "net")
                 SimbotMiraiLogger(logger).withSwitch(true)
             }

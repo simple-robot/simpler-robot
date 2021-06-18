@@ -16,6 +16,7 @@ package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.Container
+import love.forte.simbot.api.message.events.EventGet
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
 import net.mamoe.mirai.contact.ClientKind
 import net.mamoe.mirai.contact.OtherClient
@@ -35,14 +36,16 @@ public interface MiraiOtherClientContainer : Container {
 }
 
 
-
 /**
  *
  * mirai的其他客户端上线事件。
  *
  * @author ForteScarlet
  */
-public interface MiraiOtherClientOnline : MiraiOtherClientContainer {
+public interface MiraiOtherClientOnline :
+    EventGet,
+    MiraiSpecialEvent<OtherClientOnlineEvent>,
+    MiraiOtherClientContainer {
 
     /**
      * 上线的设备。
@@ -61,15 +64,16 @@ public interface MiraiOtherClientOnline : MiraiOtherClientContainer {
  * mirai的其他客户端下线事件。
  * @author ForteScarlet
  */
-public interface MiraiOtherClientOffline : MiraiOtherClientContainer {
+public interface MiraiOtherClientOffline :
+    EventGet,
+    MiraiSpecialEvent<OtherClientOfflineEvent>,
+    MiraiOtherClientContainer {
     /**
      * 下线的设备。
      * @see OtherClient
      */
     override val client: OtherClient
 }
-
-
 
 
 public class MiraiOtherClientOnlineImpl(event: OtherClientOnlineEvent) :
@@ -107,7 +111,6 @@ public class MiraiOtherClientOnlineImpl(event: OtherClientOnlineEvent) :
         get() = null
 
 }
-
 
 
 public class MiraiOtherClientOfflineImpl(event: OtherClientOfflineEvent) :

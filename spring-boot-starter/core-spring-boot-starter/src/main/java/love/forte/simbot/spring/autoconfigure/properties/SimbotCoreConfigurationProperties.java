@@ -27,6 +27,7 @@ import java.util.List;
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
+@SuppressWarnings("ConfigurationProperties")
 @Component
 @ConfigurationProperties(prefix = "simbot.core")
 @lombok.Getter

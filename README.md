@@ -15,10 +15,11 @@
     <br>
     <small> &gt; 走过路过，不要忘记点亮一颗⭐喔~ &lt; </small> 
     <br>
-<a href="https://repo1.maven.org/maven2/love/forte/simple-robot/parent/" target="_blank">
-  <img alt="release" src="https://img.shields.io/nexus/r/love.forte.simple-robot/parent?label=simbot-releases&server=https%3A%2F%2Foss.sonatype.org" /></a>
-<a href="https://oss.sonatype.org/content/repositories/snapshots/love/forte/simple-robot/parent/" target="_blank">
-  <img alt="snapshot" src="https://img.shields.io/nexus/s/love.forte.simple-robot/parent?label=simbot-snapshot&server=https%3A%2F%2Foss.sonatype.org" /></a>
+   <a href="https://github.com/ForteScarlet/simpler-robot/releases/latest"><img alt="release" src="https://img.shields.io/github/v/release/ForteScarlet/simpler-robot" /></a>
+<a href="https://repo1.maven.org/maven2/love/forte/simple-robot/core/" target="_blank">
+  <img alt="release" src="https://img.shields.io/nexus/r/love.forte.simple-robot/core?label=simbot-lastVersion&server=https%3A%2F%2Foss.sonatype.org" /></a>
+<a href="https://oss.sonatype.org/content/repositories/snapshots/love/forte/simple-robot/core/" target="_blank">
+  <img alt="snapshot" src="https://img.shields.io/nexus/s/love.forte.simple-robot/core?label=simbot-snapshot&server=https%3A%2F%2Foss.sonatype.org" /></a>
 <a href="https://www.yuque.com/simpler-robot/simpler-robot-doc" target="_blank">
   <img alt="doc" src="https://img.shields.io/badge/doc-yuque-brightgreen" /></a>
    <hr>
@@ -27,7 +28,6 @@
    <img alt="watchers" src="https://img.shields.io/github/watchers/ForteScarlet/simpler-robot" />
    <img alt="repo size" src="https://img.shields.io/github/repo-size/ForteScarlet/simpler-robot" />
    <img alt="lines" src="https://img.shields.io/tokei/lines/github/ForteScarlet/simpler-robot" />
-   <a href="https://github.com/ForteScarlet/simpler-robot/releases/latest"><img alt="release" src="https://img.shields.io/github/v/release/ForteScarlet/simpler-robot" /></a>
    <img alt="issues" src="https://img.shields.io/github/issues-closed/ForteScarlet/simpler-robot?color=green" />
    <img alt="last commit" src="https://img.shields.io/github/last-commit/ForteScarlet/simpler-robot" />
    <a href="./LICENSE"><img alt="license" src="https://img.shields.io/github/license/ForteScarlet/simpler-robot" /></a>
@@ -53,6 +53,10 @@
 `simbot` 提供了丰富的api接口与各种模块以支持机器人开发者与组件开发者使用，对于机器人开发者，你可以通过功能丰富的注解来实现各种较为复杂的事件匹配逻辑。对于组件开发者，你拥有很高的可选择性与灵活性来针对一个平台进行对接。
 
 以及更多高级特性等待你的发现...
+
+<br>
+
+[QQ交流群](https://jq.qq.com/?_wv=1027&k=1Lopqryf)
 
 <br>
 
@@ -126,7 +130,7 @@ simpler-robot所使用的特殊码CatCode：
 - 你可以通过 [pr](https://github.com/ForteScarlet/simpler-robot/pulls "pull request") 为项目代码作出贡献。
 - 你可以通过 [issue](https://github.com/ForteScarlet/simpler-robot/issues "issues") 提出一个建议或者反馈一个问题。
 - 你可以通过 [讨论区](https://github.com/ForteScarlet/simpler-robot/discussions "discussions") 与其他人或者simbot开发团队相互友好交流。
-- 如果你通过此项目创建了一个很酷的项目，欢迎通过 [issue](https://github.com/ForteScarlet/simpler-robot/issues) 、[讨论区](https://github.com/ForteScarlet/simpler-robot/discussions) 、[QQ群寻找群主](https://jq.qq.com/?_wv=1027&k=1Lopqryf) 
+- 如果你通过此项目创建了一个很酷的项目，欢迎通过 [issue](https://github.com/ForteScarlet/simpler-robot/issues) 、[讨论区](https://github.com/ForteScarlet/simpler-robot/discussions)
   等方式联系团队开发人员，并将你酷酷的项目展示在作品展示区。
 
 
@@ -147,3 +151,5 @@ simpler-robot所使用的特殊码CatCode：
 
 
 
+## 贡献你的星星！
+[![Stargazers over time](https://starchart.cc/ForteScarlet/simpler-robot.svg)](https://starchart.cc/ForteScarlet/simpler-robot)

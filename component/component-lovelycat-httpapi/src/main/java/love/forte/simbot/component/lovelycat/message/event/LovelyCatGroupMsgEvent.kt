@@ -18,10 +18,7 @@ package love.forte.simbot.component.lovelycat.message.event
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.assists.Permissions
-import love.forte.simbot.api.message.containers.AccountInfo
-import love.forte.simbot.api.message.containers.BotInfo
-import love.forte.simbot.api.message.containers.GroupAccountInfo
-import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.containers.*
 import love.forte.simbot.api.message.events.*
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.component.lovelycat.message.*
@@ -92,7 +89,7 @@ public class LovelyCatTextAbleGroupMsgEvent(
     /**
      * bot信息。
      */
-    override val botInfo: BotInfo = lovelyCatBotInfo(robotWxid, api)
+    override val botInfo: GroupBotInfo = lovelyCatBotInfo(robotWxid, api)
 }
 
 
