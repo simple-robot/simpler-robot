@@ -1,13 +1,15 @@
 /*
- * Copyright (c) 2020. ForteScarlet All rights reserved.
- * Project  component-ding
- * File     DingSender.kt
- * Date  2020/8/8 下午6:27
- * You can contact the author through the following channels:
- * github https://github.com/ForteScarlet
- * gitee  https://gitee.com/ForteScarlet
- * email  ForteScarlet@163.com
- * QQ     1149159218
+ *
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
+ *  *
+ *  * You can contact the author through the following channels:
+ *  * github https://github.com/ForteScarlet
+ *  * gitee  https://gitee.com/ForteScarlet
+ *  * email  ForteScarlet@163.com
+ *  * QQ     1149159218
+ *
  */
 @file:JvmName("DingSenders")
 package love.forte.simbot.component.ding.sender
@@ -28,7 +30,6 @@ import love.forte.simbot.serialization.json.JsonSerializerFactory
 interface DingSender {
     fun sendMsg(msg: String): String
     fun sendMsg(msg: DingSpecialMessageChain): String
-    // @JvmDefault
     fun sendMsg(msg: DingSpecialMessage): String = sendMsg(msg.toDingChain())
 }
 

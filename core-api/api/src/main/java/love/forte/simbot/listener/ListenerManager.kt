@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -37,7 +37,6 @@ interface MsgGetProcessor {
      * @param type [MsgGet]类型
      * @param msgGet 需要触发的实例。
      */
-    // @JvmDefault
     fun <T : MsgGet> onMsgIfExist(type: Class<out T>, msgGet: MsgGet): ListenResult<*>? {
         return if (contains(type)) {
             onMsg(msgGet)
@@ -50,7 +49,6 @@ interface MsgGetProcessor {
      * @param msgGetBlock MsgGet实例获取函数。
      *
      */
-    // @JvmDefault
     fun <T : MsgGet> onMsgIfExist(type: Class<out T>, msgGetBlock: () -> MsgGet): ListenResult<*>? {
         return if (contains(type)) {
             onMsg(msgGetBlock())

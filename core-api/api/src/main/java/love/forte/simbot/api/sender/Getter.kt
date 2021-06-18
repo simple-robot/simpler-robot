@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -58,13 +58,10 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getFriendInfo(code: String): FriendInfo
 
-    // @JvmDefault
     fun getFriendInfo(code: Long): FriendInfo = getFriendInfo(code.toString())
 
-    // @JvmDefault
     fun getFriendInfo(code: AccountCodeContainer): FriendInfo = getFriendInfo(code.accountCode)
 
-    // @JvmDefault
     fun getFriendInfo(code: AccountContainer): FriendInfo = getFriendInfo(code.accountInfo)
 
     /**
@@ -72,24 +69,19 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getMemberInfo(group: String, code: String): GroupMemberInfo
 
-    // @JvmDefault
     fun getMemberInfo(group: Long, code: Long): GroupMemberInfo = getMemberInfo(group.toString(), code.toString())
 
-    // @JvmDefault
     fun getMemberInfo(group: GroupCodeContainer, code: AccountCodeContainer): GroupMemberInfo =
         getMemberInfo(group.groupCode, code.accountCode)
 
-    // @JvmDefault
     fun getMemberInfo(group: GroupContainer, code: AccountContainer): GroupMemberInfo =
         getMemberInfo(group, code)
 
-    // @JvmDefault
     fun <T> getMemberInfo(groupAndAccount: T): GroupMemberInfo
             where T : GroupCodeContainer,
                   T : AccountCodeContainer =
         getMemberInfo(groupAndAccount, groupAndAccount)
 
-    // @JvmDefault
     fun <T> getMemberInfo(groupAndAccount: T): GroupMemberInfo
             where T : GroupContainer,
                   T : AccountContainer =
@@ -101,11 +93,8 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getGroupInfo(group: String): GroupFullInfo
 
-    // @JvmDefault
     fun getGroupInfo(group: Long): GroupFullInfo = getGroupInfo(group.toString())
-    // @JvmDefault
     fun getGroupInfo(group: GroupCodeContainer): GroupFullInfo = getGroupInfo(group.groupCode)
-    // @JvmDefault
     fun getGroupInfo(group: GroupContainer): GroupFullInfo = getGroupInfo(group.groupInfo)
 
 
@@ -115,10 +104,8 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getFriendList(cache: Boolean, limit: Int): FriendList
 
-    // @JvmDefault
     fun getFriendList(limit: Int): FriendList = getFriendList(false, limit)
 
-    // @JvmDefault
     fun getFriendList(): FriendList = getFriendList(false, -1)
 
 
@@ -128,10 +115,8 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getGroupList(cache: Boolean, limit: Int): GroupList
 
-    // @JvmDefault
     fun getGroupList(limit: Int): GroupList = getGroupList(false, limit)
 
-    // @JvmDefault
     fun getGroupList(): GroupList = getGroupList(false, -1)
 
     /**
@@ -139,48 +124,37 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getGroupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList
 
-    // @JvmDefault
     fun getGroupMemberList(group: String, limit: Int): GroupMemberList =
         getGroupMemberList(group, false, limit)
 
-    // @JvmDefault
     fun getGroupMemberList(group: String): GroupMemberList =
         getGroupMemberList(group, false, -1)
 
 
-    // @JvmDefault
     fun getGroupMemberList(group: Long, cache: Boolean, limit: Int): GroupMemberList =
         getGroupMemberList(group.toString(), cache, limit)
 
-    // @JvmDefault
     fun getGroupMemberList(group: Long, limit: Int): GroupMemberList =
         getGroupMemberList(group.toString(), false, limit)
 
-    // @JvmDefault
     fun getGroupMemberList(group: Long): GroupMemberList =
         getGroupMemberList(group.toString(), false, -1)
 
-    // @JvmDefault
     fun getGroupMemberList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupMemberList =
         getGroupMemberList(group.groupCode, cache, limit)
 
-    // @JvmDefault
     fun getGroupMemberList(group: GroupCodeContainer, limit: Int): GroupMemberList =
         getGroupMemberList(group, false, limit)
 
-    // @JvmDefault
     fun getGroupMemberList(group: GroupCodeContainer): GroupMemberList =
         getGroupMemberList(group, false, -1)
 
-    // @JvmDefault
     fun getGroupMemberList(group: GroupContainer, cache: Boolean, limit: Int): GroupMemberList =
         getGroupMemberList(group.groupInfo, cache, limit)
 
-    // @JvmDefault
     fun getGroupMemberList(group: GroupContainer, limit: Int): GroupMemberList =
         getGroupMemberList(group.groupInfo, false, limit)
 
-    // @JvmDefault
     fun getGroupMemberList(group: GroupContainer): GroupMemberList =
         getGroupMemberList(group.groupInfo, false, -1)
 
@@ -191,42 +165,31 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getBanList(group: String, cache: Boolean, limit: Int): MuteList
 
-    // @JvmDefault
     fun getBanList(group: String, limit: Int): MuteList = getBanList(group, false, limit)
 
-    // @JvmDefault
     fun getBanList(group: String): MuteList = getBanList(group, false, -1)
 
-    // @JvmDefault
     fun getBanList(group: Long, cache: Boolean, limit: Int): MuteList = getBanList(group.toString(), cache, limit)
 
-    // @JvmDefault
     fun getBanList(group: Long, limit: Int): MuteList = getBanList(group.toString(), false, limit)
 
-    // @JvmDefault
     fun getBanList(group: Long): MuteList = getBanList(group.toString(), false, -1)
 
-    // @JvmDefault
     fun getBanList(group: GroupCodeContainer, cache: Boolean, limit: Int): MuteList =
         getBanList(group.groupCode, cache, limit)
 
-    // @JvmDefault
     fun getBanList(group: GroupCodeContainer, limit: Int): MuteList =
         getBanList(group, false, limit)
 
-    // @JvmDefault
     fun getBanList(group: GroupCodeContainer): MuteList =
         getBanList(group, false, -1)
 
-    // @JvmDefault
     fun getBanList(group: GroupContainer, cache: Boolean, limit: Int): MuteList =
         getBanList(group.groupInfo, cache, limit)
 
-    // @JvmDefault
     fun getBanList(group: GroupContainer, limit: Int): MuteList =
         getBanList(group.groupInfo, false, limit)
 
-    // @JvmDefault
     fun getBanList(group: GroupContainer): MuteList =
         getBanList(group.groupInfo, false, -1)
 
@@ -236,42 +199,31 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList
 
-    // @JvmDefault
     fun getGroupNoteList(group: String, limit: Int): GroupNoteList = getGroupNoteList(group, false, limit)
 
-    // @JvmDefault
     fun getGroupNoteList(group: String): GroupNoteList = getGroupNoteList(group, false, -1)
 
-    // @JvmDefault
     fun getGroupNoteList(group: Long, cache: Boolean, limit: Int) = getGroupNoteList(group.toString(), cache, limit)
 
-    // @JvmDefault
     fun getGroupNoteList(group: Long, limit: Int): GroupNoteList = getGroupNoteList(group.toString(), false, limit)
 
-    // @JvmDefault
     fun getGroupNoteList(group: Long): GroupNoteList = getGroupNoteList(group.toString(), false, -1)
 
-    // @JvmDefault
     fun getGroupNoteList(group: GroupCodeContainer, cache: Boolean, limit: Int) =
         getGroupNoteList(group.groupCode, cache, limit)
 
-    // @JvmDefault
     fun getGroupNoteList(group: GroupCodeContainer, limit: Int): GroupNoteList =
         getGroupNoteList(group.groupCode, false, limit)
 
-    // @JvmDefault
     fun getGroupNoteList(group: GroupCodeContainer): GroupNoteList =
         getGroupNoteList(group.groupCode, false, -1)
 
-    // @JvmDefault
     fun getGroupNoteList(group: GroupContainer, cache: Boolean, limit: Int) =
         getGroupNoteList(group.groupInfo, cache, limit)
 
-    // @JvmDefault
     fun getGroupNoteList(group: GroupContainer, limit: Int): GroupNoteList =
         getGroupNoteList(group.groupInfo, false, limit)
 
-    // @JvmDefault
     fun getGroupNoteList(group: GroupContainer): GroupNoteList =
         getGroupNoteList(group.groupInfo, false, -1)
 

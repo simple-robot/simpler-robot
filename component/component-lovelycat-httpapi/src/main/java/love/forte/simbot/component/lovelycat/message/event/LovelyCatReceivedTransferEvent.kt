@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -44,7 +44,6 @@ public interface LovelyCatReceivedTransfer: LovelyCatMsg, BotContainer, AccountC
     /**
      * 文本消息即为 [transferInfo] 中的备注信息。
      */
-    // @JvmDefault
     override val text: String
         get() = transferInfo.remark
 

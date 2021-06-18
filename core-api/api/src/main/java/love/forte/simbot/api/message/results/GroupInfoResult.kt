@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -100,7 +100,6 @@ public interface GroupList : MultipleResults<SimpleGroupInfo>
 public interface GroupAdmin : GroupAccountInfo, PermissionContainer {
 
 
-    // @JvmDefault
     override val permission: Permissions
         get() = Permissions.ADMINISTRATOR
 }
@@ -122,7 +121,6 @@ public data class GroupAdminImpl(private val account: GroupAccountInfo) : GroupA
 public interface GroupOwner : GroupAdmin, GroupAccountInfo, PermissionContainer {
 
 
-    // @JvmDefault
     override val permission: Permissions
         get() = Permissions.OWNER
 }

@@ -267,6 +267,26 @@
             </dependency>
             <dependency>
                 <groupId>io.ktor</groupId>
+                <artifactId>ktor-client-json</artifactId>
+                <version>${ktor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-client-json-jvm</artifactId>
+                <version>${ktor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-client-serialization</artifactId>
+                <version>${ktor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
+                <artifactId>ktor-client-serialization-jvm</artifactId>
+                <version>${ktor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.ktor</groupId>
                 <artifactId>ktor-server-core</artifactId>
                 <version>${ktor.version}</version>
             </dependency>
@@ -592,15 +612,6 @@
                             </goals>
                         </execution>
                     </executions>
-                    <!--<executions>-->
-                    <!--    <execution>-->
-                    <!--        <id>compile</id>-->
-                    <!--        <phase>process-sources</phase>-->
-                    <!--        <goals>-->
-                    <!--            <goal>compile</goal>-->
-                    <!--        </goals>-->
-                    <!--    </execution>-->
-                    <!--</executions>-->
                     <configuration>
                         <!-- kotlinOptions.freeCompilerArgs = ['-Xjvm-default=enable'] -->
                         <args>

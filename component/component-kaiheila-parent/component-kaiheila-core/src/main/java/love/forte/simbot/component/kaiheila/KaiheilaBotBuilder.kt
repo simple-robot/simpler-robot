@@ -14,13 +14,12 @@
 
 package love.forte.simbot.component.kaiheila
 
-import love.forte.simbot.builder.Builder
 import love.forte.simbot.component.kaiheila.api.ApiConfiguration
 import love.forte.simbot.component.kaiheila.api.ApiConfigurationBuilder
 import love.forte.simbot.component.kaiheila.api.apiConfiguration as api_apiConfiguration
 
 
-public interface KaiheilaBotBuilder<B : KhlBot> : Builder<B> {
+public interface KaiheilaBotBuilder<B : KhlBot>{
     var apiConfiguration: ApiConfiguration?
     var clientId: String?
     var token: String? // null able
@@ -61,7 +60,7 @@ public class WebsocketBotBuilder : KaiheilaBotBuilder<WebsocketBot> {
     @KaiheilaBotBuilderDsl override var clientSecret: String? = null // null able
 
 
-    override fun build(): WebsocketBot {
+    fun build(): WebsocketBot {
         return WebsocketBotImpl(
             apiConfiguration = requireNotNull(apiConfiguration) { "Require value 'apiConfiguration' was null." },
             clientId = requireNotNull(clientId) { "Require value 'clientId' was null." },
@@ -100,7 +99,7 @@ public class WebhookBotBuilder : KaiheilaBotBuilder<WebhookBot> {
     @KaiheilaBotBuilderDsl override var clientSecret: String? = null // null able
     @KaiheilaBotBuilderDsl var verifyToken: String? = null
     @KaiheilaBotBuilderDsl var encryptKey: String? = null // null able
-    override fun build(): WebhookBot {
+    fun build(): WebhookBot {
         return WebhookBotImpl(
             apiConfiguration = requireNotNull(apiConfiguration) { "Require value 'apiConfiguration' was null." },
             clientId = requireNotNull(clientId) { "Require value 'clientId' was null." },

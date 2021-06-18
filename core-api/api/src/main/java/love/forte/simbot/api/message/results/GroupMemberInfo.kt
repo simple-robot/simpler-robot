@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -32,7 +32,6 @@ public interface GroupMemberInfo : Result, GroupAccountInfo, GroupContainer, Per
     /**
      * 群成员对应的群信息。
      */
-    // @JvmDefault
     override val groupInfo: SimpleGroupInfo
 }
 

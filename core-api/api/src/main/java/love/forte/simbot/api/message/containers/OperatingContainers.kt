@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -31,7 +31,6 @@ public interface OperatorCodeContainer : Container {
     /**
      * 操作者的code number
      */
-    // @JvmDefault
     val operatorCodeNumber: Long
         get() = operatorCode.toLong()
 }
@@ -108,7 +107,6 @@ public interface OperatorNameContainer : Container, OperatorNicknameContainer, O
      *
      * 如果有备注则得到备注，否则得到昵称
      */
-    // @JvmDefault
     val operatorRemarkOrNickname: String?
         get() = operatorRemark ?: operatorNickname
 
@@ -120,7 +118,6 @@ public interface OperatorNameContainer : Container, OperatorNicknameContainer, O
      * - `张三(张三的备注)`
      * - `李四` (没有备注)
      */
-    // @JvmDefault
     val operatorNicknameAndRemark: String
         get() = "$operatorNickname${operatorRemark?.let { "($it)" } ?: ""}"
 }
@@ -136,7 +133,6 @@ public interface BeOperatorNameContainer : Container, BeOperatorNicknameContaine
      *
      * 如果有备注则得到备注，否则得到昵称
      */
-    // @JvmDefault
     val beOperatorRemarkOrNickname: String?
         get() = beOperatorRemark ?: beOperatorNickname
 
@@ -148,7 +144,6 @@ public interface BeOperatorNameContainer : Container, BeOperatorNicknameContaine
      * - `张三(张三的备注)`
      * - `李四` (没有备注)
      */
-    // @JvmDefault
     val beOperatorNicknameAndRemark: String
         get() = "$beOperatorNickname${beOperatorRemark?.let { "($it)" } ?: ""}"
 }

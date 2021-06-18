@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -56,7 +56,6 @@ public interface GroupMemberIncrease: IncreaseEventGet, GroupContainer, Operatin
     /**
      * [被操作者][beOperatorInfo] 默认实现为 [当前主体账户][accountInfo]
      */
-    // @JvmDefault
     override val beOperatorInfo: BeOperatorInfo
         get() = accountInfo.asBeOperator()
 

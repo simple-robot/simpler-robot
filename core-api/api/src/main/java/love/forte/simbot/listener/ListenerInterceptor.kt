@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -64,7 +64,6 @@ public interface ListenerInterceptContext : Context<ListenerFunction> {
     @OptIn(SimbotExperimentalApi::class)
     val listenerContext: ListenerContext
 
-    // @JvmDefault
     override val mainValue: ListenerFunction
         get() = listenerFunction
 }

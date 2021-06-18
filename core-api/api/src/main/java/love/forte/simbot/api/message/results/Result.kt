@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -55,26 +55,22 @@ public interface MultipleResults<T : Result> : Result, Iterable<T> {
     /**
      * 习惯用法, 得到 [results] 的长度。
      */
-    // @JvmDefault
     fun size(): Int = results.size
 
     /**
      * 获取一个迭代器
      */
-    // @JvmDefault
     override operator fun iterator(): Iterator<T> = results.iterator()
 
     /**
      * 结果集是否为空
      */
-    // @JvmDefault
     fun isEmpty(): Boolean = results.isEmpty()
 
 
     /**
      * 将 [results] 转化为 [java.util.stream.Stream]
      */
-    // @JvmDefault
     fun stream(): java.util.stream.Stream<T> = results.stream()
 
 

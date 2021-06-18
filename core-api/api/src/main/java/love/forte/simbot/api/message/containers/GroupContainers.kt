@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -29,7 +29,6 @@ public interface GroupCodeContainer : Container {
     val groupCode: String
 
     /** 群号的[Long]类型。如果可以作为数字的话。 */
-    // @JvmDefault
     val groupCodeNumber: Long
         get() = groupCode.toLong()
 }

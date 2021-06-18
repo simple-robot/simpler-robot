@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -51,31 +51,24 @@ public interface Sender : Communicator {
     fun sendGroupMsg(group: String, msg: String): Carrier<out Flag<GroupMsg.FlagContent>>
 
     /* 下面都是重载。 */
-    // @JvmDefault
     fun sendGroupMsg(group: Long, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.toString(), msg)
 
-    // @JvmDefault
     fun sendGroupMsg(group: String, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group, msg.msg)
 
-    // @JvmDefault
     fun sendGroupMsg(group: Long, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.toString(), msg)
 
-    // @JvmDefault
     fun sendGroupMsg(group: GroupCodeContainer, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.groupCode, msg)
 
-    // @JvmDefault
     fun sendGroupMsg(group: GroupContainer, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.groupInfo, msg)
 
-    // @JvmDefault
     fun sendGroupMsg(group: GroupCodeContainer, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.groupCode, msg)
 
-    // @JvmDefault
     fun sendGroupMsg(group: GroupContainer, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.groupInfo, msg)
 
@@ -90,19 +83,15 @@ public interface Sender : Communicator {
     fun sendPrivateMsg(code: String, group: String?, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>>
 
     /* 下面都是重载。 */
-    // @JvmDefault
     fun sendPrivateMsg(code: Long, group: Long?, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.toString(), group?.toString(), msg)
 
-    // @JvmDefault
     fun sendPrivateMsg(code: String, group: String?, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code, group, msg.msg)
 
-    // @JvmDefault
     fun sendPrivateMsg(code: Long, group: Long?, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.toString(), group?.toString(), msg)
 
-    // @JvmDefault
     fun sendPrivateMsg(
         code: AccountCodeContainer,
         group: GroupCodeContainer?,
@@ -110,7 +99,6 @@ public interface Sender : Communicator {
     ): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountCode, group?.groupCode, msg)
 
-    // @JvmDefault
     fun sendPrivateMsg(
         code: AccountContainer,
         group: GroupContainer?,
@@ -118,7 +106,6 @@ public interface Sender : Communicator {
     ): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountInfo, group?.groupInfo, msg)
 
-    // @JvmDefault
     fun sendPrivateMsg(
         code: AccountCodeContainer,
         group: GroupCodeContainer?,
@@ -126,7 +113,6 @@ public interface Sender : Communicator {
     ): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountCode, group?.groupCode, msg)
 
-    // @JvmDefault
     fun sendPrivateMsg(
         code: AccountContainer,
         group: GroupContainer?,
@@ -135,35 +121,27 @@ public interface Sender : Communicator {
         sendPrivateMsg(code.accountInfo, group?.groupInfo, msg)
 
     /* group 为null的重载。 */
-    // @JvmDefault
     fun sendPrivateMsg(code: String, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code, null, msg)
 
-    // @JvmDefault
     fun sendPrivateMsg(code: Long, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.toString(), null, msg)
 
-    // @JvmDefault
     fun sendPrivateMsg(code: String, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code, null, msg.msg)
 
-    // @JvmDefault
     fun sendPrivateMsg(code: Long, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.toString(), null, msg)
 
-    // @JvmDefault
     fun sendPrivateMsg(code: AccountCodeContainer, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountCode, null, msg)
 
-    // @JvmDefault
     fun sendPrivateMsg(code: AccountContainer, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountInfo, null, msg)
 
-    // @JvmDefault
     fun sendPrivateMsg(code: AccountCodeContainer, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountCode, null, msg)
 
-    // @JvmDefault
     fun sendPrivateMsg(code: AccountContainer, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountInfo, null, msg)
 
@@ -188,7 +166,6 @@ public interface Sender : Communicator {
         confirm: Boolean
     ): Carrier<Boolean>
 
-    // @JvmDefault
     fun sendGroupNotice(
         group: Long,
         title: String?,
@@ -198,7 +175,6 @@ public interface Sender : Communicator {
         toNewMember: Boolean,
         confirm: Boolean
     ): Carrier<Boolean> = sendGroupNotice(group.toString(), title, text, popUp, top, toNewMember, confirm)
-    // @JvmDefault
     fun sendGroupNotice(
         group: GroupCodeContainer,
         title: String?,
@@ -208,7 +184,6 @@ public interface Sender : Communicator {
         toNewMember: Boolean,
         confirm: Boolean
     ): Carrier<Boolean> = sendGroupNotice(group.groupCode, title, text, popUp, top, toNewMember, confirm)
-    // @JvmDefault
     fun sendGroupNotice(
         group: GroupContainer,
         title: String?,
@@ -228,13 +203,10 @@ public interface Sender : Communicator {
      * @param message   签到内容文本
      */
     fun sendGroupSign(group: String, title: String, message: String): Carrier<Boolean>
-    // @JvmDefault
     fun sendGroupSign(group: Long, title: String, message: String): Carrier<Boolean> =
         sendGroupSign(group.toString(), title, message)
-    // @JvmDefault
     fun sendGroupSign(group: GroupCodeContainer, title: String, message: String): Carrier<Boolean> =
         sendGroupSign(group.groupCode, title, message)
-    // @JvmDefault
     fun sendGroupSign(group: GroupContainer, title: String, message: String): Carrier<Boolean> =
         sendGroupSign(group.groupInfo, title, message)
 

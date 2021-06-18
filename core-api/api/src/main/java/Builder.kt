@@ -12,15 +12,13 @@
  *
  */
 
-package love.test
 
-import kotlin.test.Test
+/**
+ * 一个构建器接口
+ * @author ForteScarlet
+ */
+interface Builder<V> {
 
-class OnlyTestMain {
+    fun build(): V
 
-    @Test
-    fun test() {
-        println("test1")
-        // error("No way.")
-    }
 }

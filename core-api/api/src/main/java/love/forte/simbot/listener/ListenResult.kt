@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -45,7 +45,6 @@ public interface ListenResult<T> {
      */
     val cause: Throwable?
 
-    // @JvmDefault
     @Deprecated("Renamed to 'cause'", ReplaceWith("cause"))
     val throwable: Throwable? get() = cause
 

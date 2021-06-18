@@ -113,7 +113,6 @@ public interface SimbotContextClosedHandle {
     /**
      * 一个名称，可重写并用于日志提示。
      */
-    // @JvmDefault
     val handleName: String get() = "SimbotContextClosedHandle-Default"
 
     /**

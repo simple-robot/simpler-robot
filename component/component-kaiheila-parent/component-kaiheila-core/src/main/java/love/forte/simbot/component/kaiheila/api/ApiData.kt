@@ -16,12 +16,13 @@
 
 package love.forte.simbot.component.kaiheila.api
 
+import io.ktor.client.*
+import io.ktor.client.request.*
+import io.ktor.http.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.builder.Builder
 import love.forte.simbot.component.kaiheila.api.ApiData.Req
 import love.forte.simbot.component.kaiheila.api.ApiData.Resp
-import kotlin.reflect.KClass
 
 
 /**
@@ -37,9 +38,11 @@ public sealed interface ApiData {
      * [Request][Req]. 请求相关的数据类。
      * 一次请求，都会有一个对应的 [响应][RESP].
      */
-    public interface Req<RESP : Resp> : ApiData {
-        /** 获取响应的数据类型。 */
-        val respType: KClass<out RESP>
+    public interface Req<RESP : Resp, HTTP_RESP : KhlHttpResp<*>> : ApiData {
+        // /** 获取响应的数据类型。 */
+        // val respType: KClass<out RESP>
+
+        suspend fun request(client: HttpClient, block: HttpRequestBuilder.() -> Unit): HTTP_RESP // = client.request(block)
 
         /**
          * 此请求对应的api路由路径。
@@ -50,7 +53,7 @@ public sealed interface ApiData {
         /**
          * 此次请求所发送的数据。为null则代表没有参数。
          */
-        val parameters: Any?
+        val body: Any?
 
         /**
          * 获取请求的鉴权token。
@@ -64,11 +67,33 @@ public sealed interface ApiData {
     /**
      * [Response][Resp]. 请求响应相关的数据类。
      *
-     * @see BaseResp
+     * @see KhlHttpResp
      *
      */
     public interface Resp : ApiData
 
+}
+
+
+public suspend inline fun <reified RESP : Resp, HTTP_RESP : KhlHttpResp<RESP>> Req<RESP, HTTP_RESP>.doRequest(
+    apiVersion: ApiVersion,
+    client: HttpClient,
+): HTTP_RESP {
+    return request(client) {
+        // body
+        this@doRequest.body?.let { b ->
+            this.body = b
+        }
+        contentType(ContentType.Application.Json)
+        this@doRequest.authorization?.let { authorization ->
+            header("Authorization", "Bot $authorization")
+        }
+
+        // path
+        url {
+            this.toKhlBuild(apiVersion, this@doRequest.route)
+        }
+    }
 }
 
 
@@ -102,7 +127,7 @@ public interface KhlHttpResp<D> {
  * 返回值 [data] 为一个json实例对象的结果。
  */
 @Serializable
-public data class ObjectResp<RESP : Resp> (
+public data class ObjectResp<RESP : Resp>(
     /**
      * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
      */
@@ -114,7 +139,7 @@ public data class ObjectResp<RESP : Resp> (
     /**
      * mixed, 具体的数据。
      */
-    override val data: RESP?
+    override val data: RESP?,
 ) : KhlHttpResp<RESP?>
 
 /**
@@ -141,7 +166,7 @@ public data class ListResp<RESP : Resp, SORT>(
     /**
      * mixed, 具体的数据。
      */
-    override val data: ListRespData<RESP, SORT>
+    override val data: ListRespData<RESP, SORT>,
 ) : KhlHttpResp<ListRespData<RESP, SORT>>
 
 /**
@@ -168,7 +193,7 @@ public data class ListRespForMapSort<RESP : Resp>(
     /**
      * mixed, 具体的数据。
      */
-    val data: ListRespDataForMapSort<RESP>
+    val data: ListRespDataForMapSort<RESP>,
 )
 
 
@@ -176,14 +201,14 @@ public data class ListRespForMapSort<RESP : Resp>(
 public data class ListRespData<RESP : Resp, SORT>(
     val items: List<RESP> = emptyList(),
     val meta: RespMeta,
-    val sort: SORT? = null
+    val sort: SORT? = null,
 )
 
 @Serializable
 public data class ListRespDataForMapSort<RESP : Resp>(
     val items: List<RESP> = emptyList(),
     val meta: RespMeta,
-    val sort: Map<String, Int> = emptyMap()
+    val sort: Map<String, Int> = emptyMap(),
 )
 
 @Serializable
@@ -193,39 +218,21 @@ public data class RespMeta(
     val pageTotal: Int,
     @SerialName("page_size")
     val pageSize: Int,
-    val total: Int
+    val total: Int,
 )
 
 
-
-/**
- * [Req] 基础抽象类。
- */
-public abstract class BaseReq<RESP : Resp>(
-    override val respType: KClass<out RESP>,
-) : Req<RESP> {
-    /**
-     * api请求路径。
-     */
-    abstract override val route: String
-
-}
-
-
-
-
-
-
-
-
-public data class ReqData<RESP : Resp>
+public data class ReqData<RESP : Resp, HTTP_RESP : KhlHttpResp<RESP>>
 @JvmOverloads
 constructor(
-    override val respType: KClass<out RESP>,
     override val route: String,
     override val authorization: String? = null,
-    override val parameters: Any? = null,
-) : Req<RESP>
+    override val body: Any? = null,
+    private val doClient: suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP,
+) : Req<RESP, HTTP_RESP> {
+    override suspend fun request(client: HttpClient, block: HttpRequestBuilder.() -> Unit): HTTP_RESP =
+        doClient(client, block)
+}
 
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
@@ -233,10 +240,12 @@ constructor(
 public annotation class ReqBuilderDsl
 
 
-public class ReqBuilder<RESP : Resp>
+public class ReqBuilder<RESP : Resp, HTTP_RESP : KhlHttpResp<RESP>>
 @JvmOverloads
-constructor(var respType: KClass<out RESP>? = null, var route: String? = null) :
-    Builder<Req<RESP>> {
+constructor(
+    var route: String? = null,
+    var doClient: (suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP)? = null,
+) {
     @ReqBuilderDsl
     var authorization: String? = null
 
@@ -244,19 +253,20 @@ constructor(var respType: KClass<out RESP>? = null, var route: String? = null) :
     var parameters: Any? = null
 
     /** Build instance. */
-    override fun build(): Req<RESP> = ReqData(
-        requireNotNull(respType) { "Require respType was null." },
-        requireNotNull(route) { "Require route was null." },
-        authorization,
-        parameters
+    fun build(): Req<RESP, HTTP_RESP> = ReqData(
+        route = requireNotNull(route) { "Require route was null." },
+        authorization = authorization,
+        body = parameters,
+        doClient = requireNotNull(doClient) { "Require doClient function was null." },
     )
 
 }
 
 
-public inline fun <reified RESP : Resp> req(
+public inline fun <reified RESP : Resp, HTTP_RESP : KhlHttpResp<RESP>> req(
     route: String? = null,
-    block: ReqBuilder<RESP>.() -> Unit,
-): Req<RESP> {
-    return ReqBuilder(RESP::class, route).apply(block).build()
+    noinline doClient: suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP,
+    block: ReqBuilder<RESP, HTTP_RESP>.() -> Unit,
+): Req<RESP, HTTP_RESP> {
+    return ReqBuilder(route, doClient).apply(block).build()
 }

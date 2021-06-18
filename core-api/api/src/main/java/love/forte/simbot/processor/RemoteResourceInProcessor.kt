@@ -67,7 +67,6 @@ public interface SuspendRemoteResourceInProcessor : RemoteResourceInProcessor, S
      * 通过远程资源信息得到一个输入流。
      * 默认的实现是通过阻塞 [suspendableProcessor] 实现的。
      */
-    // @JvmDefault
     override fun processor(processContext: RemoteResourceContext): InputStream = runBlocking { suspendableProcessor(processContext) }
 
 

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -57,12 +57,10 @@ public interface LovelyCatScanCashMoney: LovelyCatMsg, BotContainer, AccountCont
      * 可能为null。
      *
      * */
-    // @JvmDefault
     override val text: String?
         get() = payInfo.remark
 
     /** 账号信息等同于 [paySourceInfo]. */
-    // @JvmDefault
     override val accountInfo: AccountInfo
         get() = paySourceInfo
 

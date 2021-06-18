@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -48,13 +48,11 @@ public interface BotManager : BotRegistrar, BotDestroyer {
     /**
      * override for [getBot].
      */
-    // @JvmDefault
     fun getBot(bot: BotCodeContainer): Bot = getBot(bot.botCode)
 
     /**
      * override for [getBot].
      */
-    // @JvmDefault
     fun getBot(bot: BotContainer): Bot = getBot(bot.botInfo)
 
     /**
@@ -67,13 +65,11 @@ public interface BotManager : BotRegistrar, BotDestroyer {
     /**
      * override for [getBot].
      */
-    // @JvmDefault
     fun getBotOrNull(bot: BotCodeContainer): Bot? = getBotOrNull(bot.botCode)
 
     /**
      * override for [getBot].
      */
-    // @JvmDefault
     fun getBotOrNull(bot: BotContainer): Bot? = getBotOrNull(bot.botInfo)
 
 
