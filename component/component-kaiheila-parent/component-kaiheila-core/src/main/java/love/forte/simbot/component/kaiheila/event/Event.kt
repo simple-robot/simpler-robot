@@ -25,9 +25,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import love.forte.simbot.mark.TimeType
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -161,7 +159,7 @@ public interface Event<E : Event.Extra<T>, T> {
      * 消息发送时间的**毫秒**时间戳.
      */
     @SerialName("msg_timestamp")
-    @TimeType(TimeUnit.MILLISECONDS)
+    // @TimeType(TimeUnit.MILLISECONDS)
     val msgTimestamp: Long
 
     /**

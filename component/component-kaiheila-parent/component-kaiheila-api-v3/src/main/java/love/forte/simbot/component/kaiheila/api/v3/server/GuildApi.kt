@@ -15,8 +15,6 @@
 package love.forte.simbot.component.kaiheila.api.v3.server
 
 import love.forte.simbot.component.kaiheila.api.ApiData
-import love.forte.simbot.component.kaiheila.api.BaseReq
-import kotlin.reflect.KClass
 
 
 /**
@@ -24,16 +22,7 @@ import kotlin.reflect.KClass
  *
  *
  */
-public interface GuildApiReq<RESP : GuildApiResp> : ApiData.Req<RESP>
-
-
-/**
- * [GuildApiReq] 基础抽象类。
- *
- */
-public abstract class BaseGuildApiReq<RESP : GuildApiResp>(
-    respType: KClass<out RESP>,
-) : BaseReq<RESP>(respType), GuildApiReq<RESP>
+// public interface GuildApiReq<RESP : GuildApiResp> : ApiData.Req<RESP,>
 
 
 /**

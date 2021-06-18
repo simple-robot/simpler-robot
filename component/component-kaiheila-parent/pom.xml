@@ -5,7 +5,7 @@
     <parent>
         <artifactId>component-parent</artifactId>
         <groupId>love.forte.simple-robot</groupId>
-        <version>2.0.8</version><!--v-->
+        <version>2.1.0-DEV.6</version><!--v-->
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -38,7 +38,6 @@
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-serialization-json</artifactId>
-            <!--<version>${serialization.version}</version>-->
         </dependency>
 
     </dependencies>
@@ -50,6 +49,15 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <configuration>
+                    <!-- kotlinOptions.freeCompilerArgs = ['-Xjvm-default=enable'] -->
+                    <args>
+                        <!--<arg>-Xjvm-default=enable</arg>-->
+                        <arg>-Xjvm-default=all</arg>
+                        <arg>-Xinline-classes</arg>
+                        <arg>-Xopt-in=kotlin.RequiresOptIn</arg>
+                    </args>
+                    <jvmTarget>1.8</jvmTarget>
+                    <javaParameters>true</javaParameters>
                     <jvmTarget>1.8</jvmTarget>
                     <compilerPlugins>
                         <plugin>kotlinx-serialization</plugin>

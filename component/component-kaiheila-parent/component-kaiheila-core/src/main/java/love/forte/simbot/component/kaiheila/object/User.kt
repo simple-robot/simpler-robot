@@ -58,13 +58,11 @@ public interface User : KhlObjects, AccountInfo {
     /** 用户的id */
     val id: String
 
-    @JvmDefault
     override val accountCode: String get() = id
 
     /** 用户名称 */
     val username: String
 
-    @JvmDefault
     override val accountNickname: String get() = username
 
     /**
@@ -87,7 +85,6 @@ public interface User : KhlObjects, AccountInfo {
      */
     val avatar: String
 
-    @JvmDefault
     override val accountAvatar: String get() = avatar
 
     /**
@@ -125,7 +122,6 @@ public interface User : KhlObjects, AccountInfo {
      */
     val nickname: String
 
-    @JvmDefault
     override val accountRemark: String get() = nickname
 
     /**

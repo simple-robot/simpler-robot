@@ -1,22 +1,22 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  component-onebot
- *  * File     ApiManager.kt
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 @file:JvmName("KaiheilaApis")
 @file:Suppress("unused")
 
 package love.forte.simbot.component.kaiheila.api
+
+import io.ktor.http.*
 
 
 /**
@@ -40,7 +40,6 @@ public interface ApiVersion {
     /**
      * 版本号。以 `v3` 为例，得到的就是 `v3`。
      */
-    @JvmDefault
     val version: String
         get() = "v$versionNumber"
 
@@ -48,16 +47,29 @@ public interface ApiVersion {
      * 得到当前版本的API请求路径。
      * 默认情况下即为 `${BASE_URL}/${version}` 的形式。
      */
-    @JvmDefault
     val apiUrl: String
         get() = "$BASE_URL/$version"
 
 
     companion object Base {
+
+        const val HOST = "www.kaiheila.cn"
+
         /**
          * 开黑啦API的[基础url][https://developer.kaiheila.cn/doc/reference]。
          */
         const val BASE_URL = "https://www.kaiheila.cn/api"
+    }
+}
+// https://www.kaiheila.cn/api
+
+fun URLBuilder.toKhlBuild(apiVersion: ApiVersion, apiPath: String) {
+    protocol = URLProtocol.HTTPS
+    host = ApiVersion.HOST
+    encodedPath = if (apiPath.startsWith("/")) {
+        "/api/${apiVersion.version}$apiPath"
+    } else {
+        "/api/${apiVersion.version}/$apiPath"
     }
 }
 
@@ -92,11 +104,11 @@ public class ApiVersionData(versionNumber: Int) : BaseApiVersion(versionNumber)
 /**
  * get instance for [ApiVersion] by [ApiVersion.versionNumber] value.
  */
-public fun apiVersion(versionNumber: Int) : ApiVersion = ApiVersionData(versionNumber)
+public fun apiVersion(versionNumber: Int): ApiVersion = ApiVersionData(versionNumber)
 
 
 /**
  * get instance for [ApiVersion] by [ApiVersion.versionNumber] value.
  */
-public inline fun apiVersion(versionNumber: () -> Int) : ApiVersion = apiVersion(versionNumber())
+public inline fun apiVersion(versionNumber: () -> Int): ApiVersion = apiVersion(versionNumber())
 
