@@ -95,12 +95,12 @@ public class LRUMiraiMessageCache(priCapacity: Int, priInitialCapacity: Int, pri
     /**
      * 群消息缓存器。
      */
-    private val privateCacheMap: LRULinkedHashMap<String, PrivateMsg> = LRULinkedHashMap(priCapacity, priInitialCapacity, priLoadFactor)
+    private val privateCacheMap: LRULinkedHashMap<String, PrivateMsg> = LRULinkedHashMap(priInitialCapacity, priLoadFactor, priCapacity)
 
     /**
      * 私聊消息缓存器。
      */
-    private val groupCacheMap: LRULinkedHashMap<String, GroupMsg> = LRULinkedHashMap(groCapacity, groInitialCapacity, groLoadFactor)
+    private val groupCacheMap: LRULinkedHashMap<String, GroupMsg> = LRULinkedHashMap(groInitialCapacity, groLoadFactor, groCapacity)
 
 
     private val privateLock: StampedLock = StampedLock()
