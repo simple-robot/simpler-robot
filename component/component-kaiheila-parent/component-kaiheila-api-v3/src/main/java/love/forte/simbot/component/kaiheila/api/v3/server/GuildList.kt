@@ -32,7 +32,7 @@ public class GuildListReq
  *
  */
 @Serializable
-public data class GuildListResp(
+public data class GuildListRespData(
     /**
      * 服务器id
      */
@@ -90,7 +90,7 @@ public data class GuildListResp(
      */
     @SerialName("welcome_channel_id")
     val welcomeChannelId: String,
-) : GuildApiResp
+) : GuildApiRespData
 
 
 @Serializable

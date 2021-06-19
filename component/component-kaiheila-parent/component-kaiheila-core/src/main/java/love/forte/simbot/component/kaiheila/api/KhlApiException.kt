@@ -54,7 +54,7 @@ public open class KhlApiHttpResponseException : KhlApiException {
 
 
 
-public inline fun <D, R : KhlHttpResp<D>> checkResponse(apiName: String? = null, resp: R, msg: (apiName: String?, resp: R) -> String = ::throwMsg): D {
+public inline fun <D, R : ApiData.Resp<D>> checkResponse(apiName: String? = null, resp: R, msg: (apiName: String?, resp: R) -> String = ::throwMsg): D {
     if (resp.code != 0) {
         throw KhlApiHttpResponseException(msg(apiName, resp))
     }
@@ -62,5 +62,8 @@ public inline fun <D, R : KhlHttpResp<D>> checkResponse(apiName: String? = null,
 }
 
 
-public fun <R : KhlHttpResp<*>> throwMsg(apiName: String?, resp: R): String = "code: ${resp.code}, message: ${resp.message}"
-
+public fun <R : ApiData.Resp<*>> throwMsg(apiName: String?, resp: R): String = buildString {
+    apiName?.let { append("api: '").append(it).append("'").appendLine() }
+    append("code: ").append(resp.code).appendLine()
+    append("code: ").append(resp.message).appendLine()
+}

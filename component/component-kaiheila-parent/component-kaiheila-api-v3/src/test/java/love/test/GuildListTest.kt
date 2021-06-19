@@ -17,7 +17,7 @@ package love.test
 import kotlinx.serialization.decodeFromString
 import love.forte.simbot.component.kaiheila.api.ListResp
 import love.forte.simbot.component.kaiheila.api.v3.server.GuildApiRespSort
-import love.forte.simbot.component.kaiheila.api.v3.server.GuildListResp
+import love.forte.simbot.component.kaiheila.api.v3.server.GuildListRespData
 import love.forte.simbot.component.kaiheila.kaiheilaJson
 import org.jetbrains.annotations.TestOnly
 import kotlin.test.Test
@@ -27,7 +27,7 @@ class GuildListTest {
     @TestOnly
     fun decode() {
         val sortId = 1
-        val data = kaiheilaJson.decodeFromString<ListResp<GuildListResp, GuildApiRespSort>>("""
+        val data = kaiheilaJson.decodeFromString<ListResp<GuildListRespData, GuildApiRespSort>>("""
         {
             "code": 0,
             "message": "操作成功",
