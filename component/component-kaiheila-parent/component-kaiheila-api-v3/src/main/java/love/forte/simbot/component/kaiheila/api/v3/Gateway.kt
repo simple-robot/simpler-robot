@@ -28,7 +28,7 @@ import love.forte.simbot.component.kaiheila.api.ObjectResp
  * @author ForteScarlet
  */
 public data class GatewayReq(val compress: Int = 1, override val authorization: String) :
-    ApiData.Req<Gateway, ObjectResp<Gateway>> {
+    ApiData.Req<ObjectResp<Gateway>> {
 
     override suspend fun request(client: HttpClient, block: HttpRequestBuilder.() -> Unit): ObjectResp<Gateway> {
         return client.get(block = block)

@@ -20,8 +20,10 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
+import love.forte.simbot.component.kaiheila.api.ObjectResp
 import love.forte.simbot.component.kaiheila.api.doRequest
 import love.forte.simbot.component.kaiheila.api.toKhlBuild
+import love.forte.simbot.component.kaiheila.api.v3.Gateway
 import love.forte.simbot.component.kaiheila.api.v3.GatewayReq
 import love.forte.simbot.component.kaiheila.api.v3.V3
 import kotlin.test.Test
@@ -56,7 +58,7 @@ class GatewayApiTest {
             //
             // }
 
-            val gateway = gatewayReq.doRequest(V3, client)
+            val gateway: ObjectResp<Gateway> = gatewayReq.doRequest(V3, client)
 
             println(gateway)
             println(gateway.code)
