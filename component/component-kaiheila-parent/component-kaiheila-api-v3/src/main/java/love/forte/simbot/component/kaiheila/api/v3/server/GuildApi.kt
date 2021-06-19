@@ -30,6 +30,6 @@ import love.forte.simbot.component.kaiheila.api.ApiData
  *
  *
  */
-public interface GuildApiResp : ApiData.Resp
+public interface GuildApiRespData : ApiData.Resp.Data
 
 

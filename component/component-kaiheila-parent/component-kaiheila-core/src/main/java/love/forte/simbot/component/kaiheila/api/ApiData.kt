@@ -22,13 +22,12 @@ import io.ktor.http.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.component.kaiheila.api.ApiData.Req
-import love.forte.simbot.component.kaiheila.api.ApiData.Resp
 
 
 /**
  * 此接口定义一个与Api相关的数据类。
  *
- * 定义两个类型一个来回，分别为 [Request][Req] 和 [Response][Resp].
+ * 定义两个类型一个来回，分别为 [Request][Req] 和 [Response][RespData].
  *
  * @author ForteScarlet
  */
@@ -38,7 +37,7 @@ public sealed interface ApiData {
      * [Request][Req]. 请求相关的数据类。
      * 一次请求，都会有一个对应的 [响应][RESP].
      */
-    public interface Req<HTTP_RESP : KhlHttpResp<*>> : ApiData {
+    public interface Req<HTTP_RESP : Resp<*>> : ApiData {
         // /** 获取响应的数据类型。 */
         // val respType: KClass<out RESP>
 
@@ -64,70 +63,55 @@ public sealed interface ApiData {
         val authorization: String?
     }
 
+
+    // public interface RespData : ApiData
+
+
+
     /**
-     * [Response][Resp]. 请求响应相关的数据类。
+     * 此接口定义一个 开黑啦 http请求的响应值标准。 参考 [常规 http 接口规范](https://developer.kaiheila.cn/doc/reference#%E5%B8%B8%E8%A7%84%20http%20%E6%8E%A5%E5%8F%A3%E8%A7%84%E8%8C%83)
      *
-     * @see KhlHttpResp
      *
+     * @see ObjectResp
+     * @see ListResp
      */
-    public interface Resp : ApiData
+    public sealed interface Resp<D> {
+        /**
+         * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
+         */
+        val code: Int
 
-}
+        /**
+         * string, 错误消息，具体的返回消息会根据Accept-Language来返回。
+         */
+        val message: String
+
+        /**
+         * 响应值。
+         */
+        val data: D
 
 
-public suspend inline fun <reified HTTP_RESP : KhlHttpResp<*>> Req<HTTP_RESP>.doRequest(
-    apiVersion: ApiVersion,
-    client: HttpClient,
-): HTTP_RESP {
-    return request(client) {
-        // body
-        this@doRequest.body?.let { b ->
-            this.body = b
-        }
-        contentType(ContentType.Application.Json)
-        this@doRequest.authorization?.let { authorization ->
-            header("Authorization", "Bot $authorization")
-        }
-
-        // path
-        url {
-            this.toKhlBuild(apiVersion, this@doRequest.route)
-        }
+        /**
+         * [Response][RespData]. 请求响应相关的数据类。
+         *
+         * @see Resp
+         *
+         */
+        interface Data : ApiData
     }
+    
 }
 
 
-/**
- * 此接口定义一个 开黑啦 http请求的响应值标准。 参考 [常规 http 接口规范](https://developer.kaiheila.cn/doc/reference#%E5%B8%B8%E8%A7%84%20http%20%E6%8E%A5%E5%8F%A3%E8%A7%84%E8%8C%83)
- *
- *
- * @see ObjectResp
- * @see ListResp
- */
-public interface KhlHttpResp<D> {
-    /**
-     * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
-     */
-    val code: Int
 
-    /**
-     * string, 错误消息，具体的返回消息会根据Accept-Language来返回。
-     */
-    val message: String
-
-    /**
-     * 响应值。
-     */
-    val data: D
-
-}
 
 
 /**
  * 返回值 [data] 为一个json实例对象的结果。
  */
 @Serializable
-public data class ObjectResp<RESP : Resp>(
+public data class ObjectResp<RESP : ApiData.Resp.Data>(
     /**
      * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
      */
@@ -140,7 +124,7 @@ public data class ObjectResp<RESP : Resp>(
      * mixed, 具体的数据。
      */
     override val data: RESP?,
-) : KhlHttpResp<RESP?>
+) : ApiData.Resp<RESP?>
 
 /**
  * 返回值为一个列表（数组）实例对象的结果。
@@ -154,7 +138,7 @@ public data class ObjectResp<RESP : Resp>(
  *
  */
 @Serializable
-public data class ListResp<RESP : Resp, SORT>(
+public data class ListResp<RESP : ApiData.Resp.Data, SORT>(
     /**
      * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
      */
@@ -167,7 +151,7 @@ public data class ListResp<RESP : Resp, SORT>(
      * mixed, 具体的数据。
      */
     override val data: ListRespData<RESP, SORT>,
-) : KhlHttpResp<ListRespData<RESP, SORT>>
+) : ApiData.Resp<ListRespData<RESP, SORT>>
 
 /**
  * 返回值为一个列表（数组）实例对象的结果。
@@ -181,7 +165,7 @@ public data class ListResp<RESP : Resp, SORT>(
  *
  */
 @Serializable
-public data class ListRespForMapSort<RESP : Resp>(
+public data class ListRespForMapSort<RESP : ApiData.Resp.Data>(
     /**
      * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
      */
@@ -198,14 +182,14 @@ public data class ListRespForMapSort<RESP : Resp>(
 
 
 @Serializable
-public data class ListRespData<RESP : Resp, SORT>(
+public data class ListRespData<RESP : ApiData.Resp.Data, SORT>(
     val items: List<RESP> = emptyList(),
     val meta: RespPageMeta,
     val sort: SORT? = null,
 )
 
 @Serializable
-public data class ListRespDataForMapSort<RESP : Resp>(
+public data class ListRespDataForMapSort<RESP : ApiData.Resp.Data>(
     val items: List<RESP> = emptyList(),
     val meta: RespPageMeta,
     val sort: Map<String, Int> = emptyMap(),
@@ -222,7 +206,7 @@ public data class RespPageMeta(
 )
 
 
-// public data class ReqData<HTTP_RESP : KhlHttpResp<*>>
+// public data class ReqData<HTTP_RESP : ApiData.HttpResp<*>>
 // @JvmOverloads
 // constructor(
 //     override val route: String,
@@ -240,7 +224,7 @@ public data class RespPageMeta(
 // public annotation class ReqBuilderDsl
 //
 //
-// public class ReqBuilder<HTTP_RESP : KhlHttpResp<*>>
+// public class ReqBuilder<HTTP_RESP : ApiData.HttpResp<*>>
 // @JvmOverloads
 // constructor(
 //     var route: String? = null,
@@ -263,7 +247,7 @@ public data class RespPageMeta(
 // }
 //
 //
-// public inline fun <reified HTTP_RESP : KhlHttpResp<*>> req(
+// public inline fun <reified HTTP_RESP : ApiData.HttpResp<*>> req(
 //     route: String? = null,
 //     noinline doClient: suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP,
 //     block: ReqBuilder<HTTP_RESP>.() -> Unit,
