@@ -38,7 +38,7 @@ public sealed interface ApiData {
      * [Request][Req]. 请求相关的数据类。
      * 一次请求，都会有一个对应的 [响应][RESP].
      */
-    public interface Req<RESP : Resp, HTTP_RESP : KhlHttpResp<*>> : ApiData {
+    public interface Req<HTTP_RESP : KhlHttpResp<*>> : ApiData {
         // /** 获取响应的数据类型。 */
         // val respType: KClass<out RESP>
 
@@ -75,7 +75,7 @@ public sealed interface ApiData {
 }
 
 
-public suspend inline fun <reified RESP : Resp, HTTP_RESP : KhlHttpResp<RESP>> Req<RESP, HTTP_RESP>.doRequest(
+public suspend inline fun <reified HTTP_RESP : KhlHttpResp<*>> Req<HTTP_RESP>.doRequest(
     apiVersion: ApiVersion,
     client: HttpClient,
 ): HTTP_RESP {
@@ -200,19 +200,19 @@ public data class ListRespForMapSort<RESP : Resp>(
 @Serializable
 public data class ListRespData<RESP : Resp, SORT>(
     val items: List<RESP> = emptyList(),
-    val meta: RespMeta,
+    val meta: RespPageMeta,
     val sort: SORT? = null,
 )
 
 @Serializable
 public data class ListRespDataForMapSort<RESP : Resp>(
     val items: List<RESP> = emptyList(),
-    val meta: RespMeta,
+    val meta: RespPageMeta,
     val sort: Map<String, Int> = emptyMap(),
 )
 
 @Serializable
-public data class RespMeta(
+public data class RespPageMeta(
     val page: Int,
     @SerialName("page_total")
     val pageTotal: Int,
@@ -222,51 +222,51 @@ public data class RespMeta(
 )
 
 
-public data class ReqData<RESP : Resp, HTTP_RESP : KhlHttpResp<RESP>>
-@JvmOverloads
-constructor(
-    override val route: String,
-    override val authorization: String? = null,
-    override val body: Any? = null,
-    private val doClient: suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP,
-) : Req<RESP, HTTP_RESP> {
-    override suspend fun request(client: HttpClient, block: HttpRequestBuilder.() -> Unit): HTTP_RESP =
-        doClient(client, block)
-}
-
-
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
-@DslMarker
-public annotation class ReqBuilderDsl
-
-
-public class ReqBuilder<RESP : Resp, HTTP_RESP : KhlHttpResp<RESP>>
-@JvmOverloads
-constructor(
-    var route: String? = null,
-    var doClient: (suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP)? = null,
-) {
-    @ReqBuilderDsl
-    var authorization: String? = null
-
-    @ReqBuilderDsl
-    var parameters: Any? = null
-
-    /** Build instance. */
-    fun build(): Req<RESP, HTTP_RESP> = ReqData(
-        route = requireNotNull(route) { "Require route was null." },
-        authorization = authorization,
-        body = parameters,
-        doClient = requireNotNull(doClient) { "Require doClient function was null." },
-    )
-
-}
-
-
-public inline fun <reified RESP : Resp, HTTP_RESP : KhlHttpResp<RESP>> req(
-    route: String? = null,
-    noinline doClient: suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP,
-    block: ReqBuilder<RESP, HTTP_RESP>.() -> Unit,
-): Req<RESP, HTTP_RESP> {
-    return ReqBuilder(route, doClient).apply(block).build()
-}
+// public data class ReqData<HTTP_RESP : KhlHttpResp<*>>
+// @JvmOverloads
+// constructor(
+//     override val route: String,
+//     override val authorization: String? = null,
+//     override val body: Any? = null,
+//     private val doClient: suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP,
+// ) : Req<HTTP_RESP> {
+//     override suspend fun request(client: HttpClient, block: HttpRequestBuilder.() -> Unit): HTTP_RESP =
+//         doClient(client, block)
+// }
+//
+//
+// @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
+// @DslMarker
+// public annotation class ReqBuilderDsl
+//
+//
+// public class ReqBuilder<HTTP_RESP : KhlHttpResp<*>>
+// @JvmOverloads
+// constructor(
+//     var route: String? = null,
+//     var doClient: (suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP)? = null,
+// ) {
+//     @ReqBuilderDsl
+//     var authorization: String? = null
+//
+//     @ReqBuilderDsl
+//     var parameters: Any? = null
+//
+//     /** Build instance. */
+//     fun build(): Req<HTTP_RESP> = ReqData(
+//         route = requireNotNull(route) { "Require route was null." },
+//         authorization = authorization,
+//         body = parameters,
+//         doClient = requireNotNull(doClient) { "Require doClient function was null." },
+//     )
+//
+// }
+//
+//
+// public inline fun <reified HTTP_RESP : KhlHttpResp<*>> req(
+//     route: String? = null,
+//     noinline doClient: suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP,
+//     block: ReqBuilder<HTTP_RESP>.() -> Unit,
+// ): Req<HTTP_RESP> {
+//     return ReqBuilder(route, doClient).apply(block).build()
+// }
