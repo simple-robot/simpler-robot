@@ -34,9 +34,9 @@ import kotlin.test.Test
 class GatewayApiTest {
 
     companion object {
-        const val clientId = "jqdlyHK85xe1i5Bo"
-        const val token = "1/MTAyNTA=/246ZJ1bTE3tq5kd0vHaLZg=="
-        const val clientSecret = "teYfprPTddOe6deh"
+        const val clientId = GatewayApiConstant.clientId
+        const val token = GatewayApiConstant.token
+        const val clientSecret = GatewayApiConstant.clientSecret
         // const val verifyToken = "UtuLQVwfvpxU2LDz"
         // const val token = "1/MTAyNTA=/246ZJ1bTE3tq5kd0vHaLZg=="
     }
