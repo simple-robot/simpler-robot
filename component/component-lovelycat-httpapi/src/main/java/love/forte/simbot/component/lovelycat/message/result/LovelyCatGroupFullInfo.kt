@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -68,6 +68,9 @@ private object NonGroupOwner : GroupOwner, GroupAccountInfo by NonGroupOwnerAcco
     override fun toString(): String {
         return "NonGroupOwner(Unable to determine the group owner information.)"
     }
+
+    override val permission: Permissions
+        get() = NonGroupOwnerAccountInfo.permission
 }
 private object NonGroupOwnerAccountInfo : GroupAccountInfo {
     override val accountCode: String

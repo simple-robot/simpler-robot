@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -147,6 +147,7 @@ public data class LovelyCatLocationMessageContent(
 public data class LovelyCatRedEnvelopeMessageContent(override val msg: String) : MessageContent {
     companion object : Neko by CatCodeUtil.toNeko("red-envelope") {
         private val nekoList = listOf(this)
+        override fun isEmpty(): Boolean = false
     }
 
     override val cats: List<Neko> get() = nekoList
