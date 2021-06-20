@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -89,18 +89,18 @@ private object EmptyMiraiMessageCache : MiraiMessageCache {
  * 基于 `LRUHashMap` 的简易缓存器。需要提供 [最大容量][category] 和 初始化 [Map] 用的初始化容量 `initialCapacity`。
  * 会存在整体性读写锁竞争，效率一般。
  */
-public class LRUMiraiMessageCache(priCapacity: Int, priInitialCapacity: Int, priLoadFactor: Float,
-                                  groCapacity: Int, groInitialCapacity: Int, groLoadFactor: Float) : MiraiMessageCache {
+public class LRUMiraiMessageCache(priInitialCapacity: Int, priLoadFactor: Float, priCapacity: Int,
+                                  groInitialCapacity: Int, groLoadFactor: Float, groCapacity: Int, ) : MiraiMessageCache {
 
     /**
      * 群消息缓存器。
      */
-    private val privateCacheMap: LRULinkedHashMap<String, PrivateMsg> = LRULinkedHashMap(priCapacity, priInitialCapacity, priLoadFactor)
+    private val privateCacheMap: LRULinkedHashMap<String, PrivateMsg> = LRULinkedHashMap(priInitialCapacity, priLoadFactor, priCapacity)
 
     /**
      * 私聊消息缓存器。
      */
-    private val groupCacheMap: LRULinkedHashMap<String, GroupMsg> = LRULinkedHashMap(groCapacity, groInitialCapacity, groLoadFactor)
+    private val groupCacheMap: LRULinkedHashMap<String, GroupMsg> = LRULinkedHashMap(groInitialCapacity, groLoadFactor, groCapacity)
 
 
     private val privateLock: StampedLock = StampedLock()
