@@ -1,16 +1,14 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  simpler-robot
- *  * File     KhlApiException.kt
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
@@ -53,17 +51,18 @@ public open class KhlApiHttpResponseException : KhlApiException {
 }
 
 
-
-public inline fun <D, R : ApiData.Resp<D>> checkResponse(apiName: String? = null, resp: R, msg: (apiName: String?, resp: R) -> String = ::throwMsg): D {
+public inline fun <R : ApiData.Resp<*>> checkResponse(resp: R, api: (resp: R) -> String): R {
     if (resp.code != 0) {
-        throw KhlApiHttpResponseException(msg(apiName, resp))
+        throw KhlApiHttpResponseException(throwMsg(api(resp), resp))
     }
-    return resp.data
+    return resp
 }
 
 
-public fun <R : ApiData.Resp<*>> throwMsg(apiName: String?, resp: R): String = buildString {
-    apiName?.let { append("api: '").append(it).append("'").appendLine() }
+public inline fun <R : ApiData.Resp<*>> R.check(msg: (resp: R) -> String) = checkResponse(this, msg)
+
+
+public fun <R : ApiData.Resp<*>> throwMsg(api: String, resp: R): String = buildString {
     append("code: ").append(resp.code).appendLine()
-    append("code: ").append(resp.message).appendLine()
+    append("message: ").append(resp.message).appendLine()
 }

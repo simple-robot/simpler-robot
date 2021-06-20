@@ -63,13 +63,16 @@ public interface ApiVersion {
 }
 // https://www.kaiheila.cn/api
 
-fun URLBuilder.toKhlBuild(apiVersion: ApiVersion, apiPath: String) {
+fun URLBuilder.toKhlBuild(apiVersion: ApiVersion, apiPath: List<String>) {
     protocol = URLProtocol.HTTPS
     host = ApiVersion.HOST
-    encodedPath = if (apiPath.startsWith("/")) {
-        "/api/${apiVersion.version}$apiPath"
+    if (apiPath.isEmpty()) {
+        path("api", apiVersion.version)
     } else {
-        "/api/${apiVersion.version}/$apiPath"
+        val list = mutableListOf("api", apiVersion.version).also {
+            it.addAll(apiPath)
+        }
+        path(list)
     }
 }
 

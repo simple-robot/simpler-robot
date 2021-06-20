@@ -53,7 +53,7 @@ public data class KaiheilaJson(val json: Json)
 
 
 @get:TestOnly
-public val kaiheilaJson: Json by lazy {
+public val khlJson: Json by lazy {
     Json {
         init()
         serializersModule = SerializersModule {

@@ -19,8 +19,8 @@ package love.forte.simbot.component.kaiheila.api
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
+import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.component.kaiheila.api.ApiData.Req
 
 
@@ -38,16 +38,24 @@ public sealed interface ApiData {
      * 一次请求，都会有一个对应的 [响应][RESP].
      */
     public interface Req<HTTP_RESP : Resp<*>> : ApiData {
-        // /** 获取响应的数据类型。 */
-        // val respType: KClass<out RESP>
-
-        suspend fun request(client: HttpClient, block: HttpRequestBuilder.() -> Unit): HTTP_RESP // = client.request(block)
 
         /**
-         * 此请求对应的api路由路径。
+         * 拿到响应数据类型。
+         *
+         * @see objectResp
+         * @see listResp
+         *
+         */
+        val dataSerializer: DeserializationStrategy<HTTP_RESP>
+
+
+
+        /**
+         * 此请求对应的api路由路径以及路径参数。
          * 例如：`/guild/list`
-         * */
-        val route: String
+         */
+        fun route(builder: RouteInfoBuilder)
+
 
         /**
          * 此次请求所发送的数据。为null则代表没有参数。
@@ -62,10 +70,6 @@ public sealed interface ApiData {
          */
         val authorization: String?
     }
-
-
-    // public interface RespData : ApiData
-
 
 
     /**
@@ -93,18 +97,69 @@ public sealed interface ApiData {
 
 
         /**
-         * [Response][RespData]. 请求响应相关的数据类。
+         * ResponseData. 请求响应相关的数据类。
          *
          * @see Resp
          *
          */
         interface Data : ApiData
+
+
     }
-    
+
 }
 
 
+public interface RouteInfoBuilder {
+    /**
+     * 可以设置api路径
+     */
+    var apiPath: List<String>
 
+    /**
+     * 获取parameter的构建器
+     */
+    val parametersBuilder: ParametersBuilder
+
+
+    var body: Any?
+
+    companion object {
+        @JvmStatic
+        fun getInstance(parametersBuilder: ParametersBuilder): RouteInfoBuilder = RouteInfoBuilderImpl(parametersBuilder = parametersBuilder)
+    }
+}
+
+private data class RouteInfoBuilderImpl(
+    override var body: Any? = null,
+    override var apiPath: List<String> = emptyList(),
+    override val parametersBuilder: ParametersBuilder,
+): RouteInfoBuilder
+
+
+
+
+
+/**
+ * 返回值是一个非列表值. 指定一个响应元素类型 [RESP].
+ */
+public fun <RESP : ApiData.Resp.Data> objectResp(subSerializer: KSerializer<RESP>): KSerializer<ObjectResp<RESP>> =
+    ObjectResp.serializer(subSerializer)
+
+/**
+ * 返回值是一个列表类型. 指定列表元素类型 [RESP] 和 排序参数类型 [SORT].
+ */
+public fun <RESP : ApiData.Resp.Data, SORT> listResp(
+    subSerializer: KSerializer<RESP>,
+    sorterSerializer: KSerializer<SORT>,
+): KSerializer<ListResp<RESP, SORT>> = ListResp.serializer(subSerializer, sorterSerializer)
+
+/**
+ * 返回值是一个列表类型. 排序类型是 [String] 类型。
+ */
+public fun <RESP : ApiData.Resp.Data> listResp(
+    subSerializer: KSerializer<RESP>
+): KSerializer<ListResp<RESP, String>> = ListResp.serializer(subSerializer, String.serializer())
 
 
 /**
