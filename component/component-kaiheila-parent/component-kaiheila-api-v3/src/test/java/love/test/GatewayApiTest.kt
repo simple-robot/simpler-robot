@@ -16,13 +16,15 @@ package love.test
 
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
+import io.ktor.client.features.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
-import io.ktor.http.*
+import io.ktor.client.features.websocket.*
+import io.ktor.http.cio.websocket.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.component.kaiheila.api.ObjectResp
 import love.forte.simbot.component.kaiheila.api.doRequest
-import love.forte.simbot.component.kaiheila.api.toKhlBuild
 import love.forte.simbot.component.kaiheila.api.v3.Gateway
 import love.forte.simbot.component.kaiheila.api.v3.GatewayReq
 import love.forte.simbot.component.kaiheila.api.v3.V3
@@ -39,57 +41,55 @@ class GatewayApiTest {
         const val clientId = GatewayApiConstant.clientId
         const val token = GatewayApiConstant.token
         const val clientSecret = GatewayApiConstant.clientSecret
-        // const val verifyToken = "UtuLQVwfvpxU2LDz"
-        // const val token = "1/MTAyNTA=/246ZJ1bTE3tq5kd0vHaLZg=="
     }
 
     private val client: HttpClient = HttpClient(CIO) {
         install(JsonFeature) {
             this.serializer = KotlinxSerializer()
         }
+        install(HttpTimeout) {
+            this.connectTimeoutMillis = 30_000
+            this.requestTimeoutMillis = 30_000
+            this.socketTimeoutMillis = 30_000
+        }
+        install(WebSockets) {
+        }
     }
 
+
+
     @Test
-    fun apiTest() {
-        runBlocking {
-            val gatewayReq = GatewayReq(authorization = token)
+    fun apiTest() = runBlocking {
+        val gatewayReq = GatewayReq(authorization = token, compress = 0)
 
-            // client.get<Gateway> {
-            //
-            // }
+        // client.get<Gateway> {
+        //
+        // }
 
-            val gateway: ObjectResp<Gateway> = gatewayReq.doRequest(V3, client)
+        val gateway: ObjectResp<Gateway> = gatewayReq.doRequest(V3, client)
 
-            println(gateway)
-            println(gateway.code)
-            println(gateway.message)
-            println(gateway.data)
+        println(gateway)
+        println(gateway.code)
+        println(gateway.message)
+        println(gateway.data)
 
+        var session: DefaultClientWebSocketSession? = null
+
+        client.ws(gateway.data!!.url) {
+            session = this
+            val frame: Frame = incoming.receive()
+            when (frame) {
+                is Frame.Text ->   println("[Text  ]: " + frame.readText())
+                is Frame.Binary -> println("[Binary]: " + frame.readBytes().decodeToString())
+                is Frame.Close ->  println("[Close ]: " + frame.readBytes().decodeToString())
+                is Frame.Ping ->   println("[Ping  ]: " + frame.readBytes().decodeToString())
+                is Frame.Pong ->   println("[Pong: ]: " + frame.readBytes().decodeToString())
+            }
         }
 
+        delay(30000)
 
-
-    }
-
-
-    @Test
-    fun urlBuilderTest() {
-        val build = URLBuilder().apply {
-            this.toKhlBuild(V3, "/gateway/index")
-        }.build()
-
-        println(build)
-        println(build.encodedPath)
-
-        println("=================")
-
-        val build2 = URLBuilder().apply {
-            this.toKhlBuild(V3, "gateway/index")
-        }.build()
-
-        println(build2)
-        println(build2.encodedPath)
-
+        println(session)
 
     }
 

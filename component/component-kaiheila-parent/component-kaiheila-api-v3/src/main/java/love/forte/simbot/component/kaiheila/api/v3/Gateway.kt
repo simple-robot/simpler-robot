@@ -14,11 +14,11 @@
 
 package love.forte.simbot.component.kaiheila.api.v3
 
-import io.ktor.client.*
-import io.ktor.client.request.*
 import kotlinx.serialization.Serializable
 import love.forte.simbot.component.kaiheila.api.ApiData
 import love.forte.simbot.component.kaiheila.api.ObjectResp
+import love.forte.simbot.component.kaiheila.api.RouteInfoBuilder
+import love.forte.simbot.component.kaiheila.api.objectResp
 
 
 /**
@@ -29,17 +29,18 @@ import love.forte.simbot.component.kaiheila.api.ObjectResp
  */
 public data class GatewayReq(val compress: Int = 1, override val authorization: String) :
     ApiData.Req<ObjectResp<Gateway>> {
+    override val dataSerializer = objectResp(Gateway.serializer())
 
-    override suspend fun request(client: HttpClient, block: HttpRequestBuilder.() -> Unit): ObjectResp<Gateway> {
-        return client.get(block = block)
+    override fun route(builder: RouteInfoBuilder) {
+        builder.apiPath = ROUTE
+        builder.parametersBuilder.append("compress", compress.toString())
     }
-
-    override val route: String
-        get() = "/gateway/index?compress=$compress"
-
 
     override val body: Any? = null
 
+    private companion object {
+        val ROUTE = listOf("gateway", "index")
+    }
 
 }
 
