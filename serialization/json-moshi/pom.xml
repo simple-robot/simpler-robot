@@ -5,7 +5,7 @@
     <parent>
         <artifactId>serialization-parent</artifactId>
         <groupId>love.forte.simple-robot.serialization</groupId>
-        <version>2.1.0-DEV.6</version><!--v-->
+        <version>2.1.0-DEV.7<!--v--></version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
