@@ -85,11 +85,16 @@ class GatewayApiTest {
                 is Frame.Ping ->   println("[Ping  ]: " + frame.readBytes().decodeToString())
                 is Frame.Pong ->   println("[Pong: ]: " + frame.readBytes().decodeToString())
             }
+
+            delay(5000)
+
+         this.close()
+
         }
 
-        delay(30000)
+        // delay(30000)
 
-        println(session)
+        // println(session)
 
     }
 
