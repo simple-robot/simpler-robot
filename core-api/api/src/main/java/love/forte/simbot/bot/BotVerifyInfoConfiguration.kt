@@ -89,7 +89,7 @@ public class SimpleBotVerifyInfoConfiguration(
             val collection = mutableListOf<Properties>()
 
             if (!root.exists()) {
-                LOGGER.warn("Cannot read bots configure by file: The directory '${BotVerifyInfoConfiguration.PATH_DIR}' does not exist, skip.")
+                LOGGER.debug("Cannot read bots configure by file: The directory '${BotVerifyInfoConfiguration.PATH_DIR}' does not exist, skip.")
                 return emptyList()
             }
 
@@ -113,11 +113,18 @@ public class SimpleBotVerifyInfoConfiguration(
                     Properties().apply {
                         val asciiString = uri.toASCIIString()
                         loader.getResourceAsStream(asciiString)?.reader(Charsets.UTF_8)?.use(::load)
-                            ?: throw NullPointerException("Uri stream null: $asciiString")
+                            ?: kotlin.runCatching {
+                                LOGGER.debug("Uri stream null: {}, try use url", asciiString)
+                            uri.toURL().openStream().reader(Charsets.UTF_8).use(::load)
+                        }.getOrElse { e1 ->
+                            throw IllegalStateException("Uri stream read failed: $uri", e1)
+                        }
+
+
                     }
                 }
             }.getOrElse { e ->
-                LOGGER.warn("Cannot read bots configure by resource: {}, skip.", e.localizedMessage)
+                LOGGER.debug("Cannot read bots configure by resource, skip. info : {}", e.localizedMessage)
                 LOGGER.debug("Details: $e", e)
                 emptyList()
             }
