@@ -14,7 +14,6 @@
 
 package love.forte.test
 
-import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.channelFlow
@@ -48,12 +47,12 @@ class Test2 {
 
         val scope1 = CoroutineScope(Dispatchers.Default)
 
-        val num = atomic(1)
+        var num = 1
 
         var f = channelFlow<Int> {
             scope1.launch {
                 while (isActive) {
-                    val n = num.getAndIncrement()
+                    val n = num++
                     delay(20)
                     println("send: $n")
                     send(n)
