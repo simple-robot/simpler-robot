@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 @SimbotApplication
 public class Test implements SimbotProcess {
     public static void main(String[] args) {
-        SimbotContext context = SimbotApp.run(Test.class, args);
+        SimbotApp.run(Test.class, args);
     }
 
     @Override
@@ -44,15 +44,5 @@ public class Test implements SimbotProcess {
         for (Bot bot : manager.getBots()) {
             bot.getSender().SENDER.sendPrivateMsg(1149159218, "我好了");
         }
-
-        //
-        // String cat = "[CAT:image,file=http://forte.love:15520/img/r]";
-        //
-        // Sender sender = defaultBot.getSender().SENDER;
-        //
-        // // System.out.println(sender.sendGroupMsg(1043409458L, cat + cat + cat + cat));
-        // // System.out.println(sender.sendGroupMsg(1043409458L, cat + cat));
-        // System.out.println(sender.sendGroupMsg(1043409458L, cat));
-
     }
 }

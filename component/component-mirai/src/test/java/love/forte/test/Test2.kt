@@ -14,9 +14,70 @@
 
 package love.forte.test
 
+import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import love.forte.simbot.annotation.SimbotApplication
+import love.forte.simbot.bot.onSender
+import love.forte.simbot.core.runSimbot
+import kotlin.test.Test
 
 
-fun main() {
+@SimbotApplication
+class Test2 {
 
+    @Test
+    fun testBotRunWithoutBotInfo() {
+        runSimbot<Test2>().also {
+            it.botManager.bots.forEach { bot ->
+                bot.onSender {
+                    sendPrivateMsg(1149159218, "我好了")
+                }
+            }
+            it.close()
+        }
+    }
+
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun callbackFlowTest() {
+
+        val scope1 = CoroutineScope(Dispatchers.Default)
+
+        val num = atomic(1)
+
+        var f = channelFlow<Int> {
+            scope1.launch {
+                while (isActive) {
+                    val n = num.getAndIncrement()
+                    delay(20)
+                    println("send: $n")
+                    send(n)
+                    if (n > 10) {
+                        println("$n > 10, close.")
+                        close()
+                    }
+                }
+            }
+            awaitClose {
+                println("Flow closed! by await")
+            }
+
+
+        }
+
+        f = f.filter { it % 2 == 0 }
+
+        runBlocking {
+            f.collect {
+                println("collect: $it")
+            }
+        }
+
+    }
 
 }

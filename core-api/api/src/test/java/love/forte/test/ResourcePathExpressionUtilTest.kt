@@ -23,7 +23,6 @@ import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
 import kotlin.io.path.Path
 import kotlin.io.path.extension
-import kotlin.test.Test
 
 
 /**
@@ -32,7 +31,7 @@ import kotlin.test.Test
  */
 class ResourcePathExpressionUtilTest {
 
-    @Test
+    // @Test
     fun classpathExpression1() {
         val e = "classpath:bots/this.bot"
 
@@ -48,7 +47,7 @@ class ResourcePathExpressionUtilTest {
 
     }
 
-    @Test
+    // @Test
     fun classpathExpression2() {
         val e = "resource:bots/this2.bot"
 
@@ -63,7 +62,7 @@ class ResourcePathExpressionUtilTest {
 
     }
 
-    @Test
+    // @Test
     fun fileExpression1() {
         val file = "file:test.bot"
 
@@ -81,7 +80,7 @@ class ResourcePathExpressionUtilTest {
 
     }
 
-    @Test
+    // @Test
     fun mutableFileExpression1() {
         val ex = "file:bot*/**/*.bot"
 
@@ -96,7 +95,7 @@ class ResourcePathExpressionUtilTest {
     }
 
 
-    @Test
+    // @Test
     fun paths() {
         val root = "bots1"
 
