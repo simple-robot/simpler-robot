@@ -33,7 +33,7 @@ class Test2 {
         runSimbot<Test2>().also {
             it.botManager.bots.forEach { bot ->
                 bot.onSender {
-                    sendPrivateMsg(1149159218, "我好了")
+                    sendPrivateMsg(1149159218, "我测试好了")
                 }
             }
             it.close()
@@ -41,7 +41,7 @@ class Test2 {
     }
 
 
-    @ExperimentalCoroutinesApi
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun callbackFlowTest() {
 

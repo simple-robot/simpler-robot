@@ -42,7 +42,7 @@ public class Test implements SimbotProcess {
         BotManager manager = context.getBotManager();
 
         for (Bot bot : manager.getBots()) {
-            bot.getSender().SENDER.sendPrivateMsg(1149159218, "我好了");
+            bot.getSender().SENDER.sendPrivateMsg(1149159218, "我测试好了");
         }
     }
 }

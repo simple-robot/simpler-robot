@@ -50,6 +50,8 @@ public interface ListenerGroup {
  * 其内部隔离出了视图列表，因此保证添加的时候不会影响到视图获取，但是会造成一定的更新滞后问题。
  *
  *
+ * [hashCode] 与 [equals] 基于 [name] 进行判断。
+ *
  *
  * 这或许看上去类似于Copy On Write.
  *
@@ -61,6 +63,13 @@ public class MutableListenerGroup(
     private val mutableListeners: MutableList<ListenerFunction> = mutableListOf(),
 ) : ListenerGroup {
 
+    override fun hashCode(): Int = name.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        if (other !is ListenerGroup) return false
+        return name == other.name
+    }
+
     @Synchronized
     fun add(listenerFunction: ListenerFunction) {
         mutableListeners.add(listenerFunction)
@@ -70,6 +79,7 @@ public class MutableListenerGroup(
     @Synchronized
     fun add(index: Int, listenerFunction: ListenerFunction) {
         mutableListeners.add(index, listenerFunction)
+        resetView()
     }
 
     @Synchronized
