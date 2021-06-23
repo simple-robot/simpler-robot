@@ -19,6 +19,7 @@ import love.forte.simbot.api.message.events.MsgGet
 
 /**
  * 消息处理器。
+ * TODO 重构
  */
 interface MsgGetProcessor {
     /**

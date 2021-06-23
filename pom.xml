@@ -7,7 +7,7 @@
     <parent>
         <groupId>love.forte.simple-robot</groupId>
         <artifactId>parent</artifactId>
-        <version>2.1.0-DEV.6</version><!--v-->
+        <version>2.1.0<!--v--></version>
         <relativePath>./parent/pom.xml</relativePath>
     </parent>
 
@@ -44,6 +44,11 @@
     <build>
         <plugins>
             <!-- compiler plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <!-- JUnit 5 requires Surefire version 2.22.0 or higher -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

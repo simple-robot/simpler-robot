@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -41,18 +41,21 @@ public class MiraiEventCacheConfiguration {
 
     /** 私聊消息Map最大容量 */
     var priCapacity: Int = 16
+
     /** 私聊消息Map初始容量 */
     var priInitialCapacity: Int = 16
+
     /** 群消息Map最大容量 */
     var groCapacity: Int = 128
+
     /** 群消息Map初始容量 */
     var groInitialCapacity: Int = 128
 
     /** 私聊缓存Map负载因子。默认为 0.75。 */
     var priLoadFactor: Float = 0.75F
+
     /** 群消息缓存Map负载因子。默认为 0.75。 */
     var groLoadFactor: Float = 0.75F
-
 
 
     /**
@@ -66,7 +69,8 @@ public class MiraiEventCacheConfiguration {
         } else {
             logger.info("Enable default mirai message cache.")
             LRUMiraiMessageCache(
-                priCapacity, priInitialCapacity, priLoadFactor, groCapacity, groInitialCapacity, groLoadFactor
+                priInitialCapacity = priInitialCapacity, priLoadFactor = priLoadFactor, priCapacity = priCapacity,
+                groInitialCapacity = groInitialCapacity, groLoadFactor = groLoadFactor, groCapacity = groCapacity
             )
         }
     }

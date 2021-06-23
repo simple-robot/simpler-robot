@@ -14,10 +14,6 @@
 
 package love.forte.test.listener;
 
-import love.forte.common.ioc.annotation.Beans;
-import love.forte.simbot.annotation.ListenGroup;
-import love.forte.simbot.annotation.OnGroup;
-import love.forte.simbot.annotation.OnPrivate;
 import love.forte.simbot.api.message.containers.DetailAccountInfo;
 import love.forte.simbot.api.message.containers.GroupAccountInfo;
 import love.forte.simbot.api.message.containers.GroupBotInfo;
@@ -29,11 +25,11 @@ import love.forte.simbot.listener.ListenerGroup;
  *
  * @author ForteScarlet
  */
-@Beans
+// @Beans
 public class TestListener2 {
 
-    @ListenGroup({"group3", "group4"})
-    @OnGroup
+    // @ListenGroup({"group3", "group4"})
+    // @OnGroup
     public void l3(GroupMsg msg){
         System.out.println(msg);
         GroupBotInfo botInfo = msg.getBotInfo();
@@ -55,8 +51,8 @@ public class TestListener2 {
 
     }
 
-    @ListenGroup({"group3", "group4"})
-    @OnPrivate
+    // @ListenGroup({"group3", "group4"})
+    // @OnPrivate
     public void l4(ListenerFunction function){
 
         System.out.println(function.getGroups());

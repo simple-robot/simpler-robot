@@ -12,11 +12,15 @@
  *
  */
 
+@file:JvmName("Bots")
 package love.forte.simbot.bot
 
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.sender.BotSender
+import love.forte.simbot.api.sender.Getter
+import love.forte.simbot.api.sender.Sender
+import love.forte.simbot.api.sender.Setter
 import java.io.Closeable
 
 
@@ -49,3 +53,11 @@ public abstract class BaseBot(override val sender: BotSender, override val botIn
 public open class NoNeedToCloseBot(sender: BotSender, botInfo: BotInfo): BaseBot(sender, botInfo) {
     override fun close() { }
 }
+
+
+public inline fun Bot.onSender(block: Sender.() -> Unit) = sender.SENDER.block()
+public inline fun Bot.onSetter(block: Setter.() -> Unit) = sender.SETTER.block()
+public inline fun Bot.onGetter(block: Getter.() -> Unit) = sender.GETTER.block()
+
+
+
