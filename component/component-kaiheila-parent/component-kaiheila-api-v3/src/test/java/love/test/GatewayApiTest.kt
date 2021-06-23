@@ -14,11 +14,6 @@
 
 package love.test
 
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.delay
@@ -43,30 +38,22 @@ class GatewayApiTest {
         const val clientSecret = GatewayApiConstant.clientSecret
     }
 
-    private val client: HttpClient = HttpClient(CIO) {
-        install(JsonFeature) {
-            this.serializer = KotlinxSerializer()
-        }
-        install(HttpTimeout) {
-            this.connectTimeoutMillis = 30_000
-            this.requestTimeoutMillis = 30_000
-            this.socketTimeoutMillis = 30_000
-        }
-        install(WebSockets) {
-        }
-    }
-
-
 
     @Test
     fun apiTest() = runBlocking {
-        val gatewayReq = GatewayReq(authorization = token, compress = 0)
+        val gatewayReq = GatewayReq(1)
 
         // client.get<Gateway> {
         //
         // }
 
-        val gateway: ObjectResp<Gateway> = gatewayReq.doRequest(V3, client)
+
+        val gateway: ObjectResp<Gateway> =
+            gatewayReq.doRequest(
+                V3,
+                client,
+                token)
+
 
         println(gateway)
         println(gateway.code)
@@ -77,25 +64,19 @@ class GatewayApiTest {
 
         client.ws(gateway.data!!.url) {
             session = this
-            val frame: Frame = incoming.receive()
-            when (frame) {
-                is Frame.Text ->   println("[Text  ]: " + frame.readText())
+            when (val frame: Frame = incoming.receive()) {
+                is Frame.Text -> println("[Text  ]: " + frame.readText())
                 is Frame.Binary -> println("[Binary]: " + frame.readBytes().decodeToString())
-                is Frame.Close ->  println("[Close ]: " + frame.readBytes().decodeToString())
-                is Frame.Ping ->   println("[Ping  ]: " + frame.readBytes().decodeToString())
-                is Frame.Pong ->   println("[Pong: ]: " + frame.readBytes().decodeToString())
+                is Frame.Close -> println("[Close ]: " + frame.readBytes().decodeToString())
+                is Frame.Ping -> println("[Ping  ]: " + frame.readBytes().decodeToString())
+                is Frame.Pong -> println("[Pong: ]: " + frame.readBytes().decodeToString())
             }
 
             delay(5000)
 
-         this.close()
+            this.close()
 
         }
-
-        // delay(30000)
-
-        // println(session)
-
     }
 
 

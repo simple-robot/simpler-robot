@@ -12,7 +12,7 @@
  *
  */
 
-package love.forte.simbot.component.kaiheila.api.v3.server
+package love.forte.simbot.component.kaiheila.api.v3.guild
 
 import love.forte.simbot.component.kaiheila.api.ApiData
 
@@ -22,13 +22,11 @@ import love.forte.simbot.component.kaiheila.api.ApiData
  *
  *
  */
-// public interface GuildApiReq<RESP : GuildApiResp> : ApiData.Req<RESP,>
+public interface GuildApiReq<RESP : ApiData.Resp<*>> : ApiData.Req<RESP>
 
 
 /**
  * [服务器相关接口](https://developer.kaiheila.cn/doc/http/guild) 响应实例接口。
- *
- *
  */
 public interface GuildApiRespData : ApiData.Resp.Data
 

@@ -57,7 +57,7 @@ public interface ApiConfiguration {
  */
 public enum class AuthorizationType(private val authorizationFunction: (token: String) -> String) {
     /** BOT鉴权类型 */
-    BOT("BOT"),
+    BOT("Bot"),
     /** Oauth2鉴权类型 */
     OAUTH2("Bearer");
 

@@ -20,22 +20,33 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import love.forte.simbot.component.kaiheila.khlJson
+import kotlin.contracts.ExperimentalContracts
 
 
 /**
  * 请求一个 [ApiData.Req] 并得到一个对应的 [响应体][ApiData.Resp].
+ * [authorization] 存在的时候，[authorizationType] 必须存在.
  */
+@OptIn(ExperimentalContracts::class)
 public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP_RESP>.doRequest(
     apiVersion: ApiVersion,
     client: HttpClient,
+    authorization: String? = null,
+    authorizationType: AuthorizationType = AuthorizationType.BOT,
 ): HTTP_RESP {
+    // contract {
+    //     returns() implies (authorization == null)
+    // }
+    // require(authorization == null || authorizationType != null) {
+    //     "Require authorizationType when authorization is not null."
+    // }
 
     var apiPath: List<String> = emptyList()
 
     val responseContent = client.request<String> {
         contentType(ContentType.Application.Json)
-        this@doRequest.authorization?.let { authorization ->
-            header("Authorization", "Bot $authorization")
+        authorization?.let { auth ->
+            header("Authorization", authorizationType.getAuthorization(auth))
         }
         url {
             val routeInfoBuilder = RouteInfoBuilder.getInstance(parameters)
@@ -54,6 +65,7 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
     //     }
     // }
 
+    println(responseContent)
 
     // val contentText = resp.readText(Charsets.UTF_8)
 
@@ -66,5 +78,7 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
 public suspend inline fun <D, reified HTTP_RESP : ApiData.Resp<out D>> ApiData.Req<HTTP_RESP>.doRequestForData(
     apiVersion: ApiVersion,
     client: HttpClient,
-): D = doRequest(apiVersion, client).data
+    authorization: String? = null,
+    authorizationType: AuthorizationType = AuthorizationType.BOT,
+): D = doRequest(apiVersion, client, authorization, authorizationType).data
 
