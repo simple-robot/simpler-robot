@@ -62,13 +62,30 @@ public sealed interface ApiData {
          */
         val body: Any?
 
-        /**
+        /*
          * 获取请求的鉴权token。
          *
          * - 机器人。TOKEN_TYPE = Bot。 `Authorization: Bot BHsTZ4232tLatgV5AFyjoqZGAHHmpl9mTxYQ/u4/80=`
          * - Oauth2。TOKEN_TYPE = Bearer。 `Authorization: Bearer BHsTZ4232tLatgV5AFyjoqZGAHHmpl9mTxYQ/u4/80=`
          */
-        val authorization: String?
+        // val authorization: String?
+
+
+        /**
+         * 得到一个 [Key]. 这个Key用于区分api。
+         * 有时候，有可能对于同一个api的请求会提供多个不同的实现方案。
+         */
+        val key: Key
+
+
+        /**
+         * 这是一个 Key，
+         */
+        interface Key {
+            val id: String
+        }
+
+
     }
 
 
@@ -108,6 +125,12 @@ public sealed interface ApiData {
     }
 
 }
+
+
+public fun key(api: String): Req.Key = object : Req.Key {
+    override val id: String = api
+}
+
 
 
 public interface RouteInfoBuilder {

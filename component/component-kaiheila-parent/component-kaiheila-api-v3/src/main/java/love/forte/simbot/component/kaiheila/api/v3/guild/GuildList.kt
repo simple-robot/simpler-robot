@@ -12,15 +12,49 @@
  *
  */
 
-package love.forte.simbot.component.kaiheila.api.v3.server
+package love.forte.simbot.component.kaiheila.api.v3.guild
 
+import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.BooleanAsIntSerializer
+import love.forte.simbot.component.kaiheila.api.*
 
 
-@Serializable
-public class GuildListReq
+/**
+ * [获取当前用户加入的服务器列表](https://developer.kaiheila.cn/doc/http/guild#%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%94%A8%E6%88%B7%E5%8A%A0%E5%85%A5%E7%9A%84%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%88%97%E8%A1%A8).
+ *
+ * request method: `GET`
+ *
+ * parameter or body: Empty.
+ *
+ */
+public object GuildListReq :
+    GuildApiReq<ListResp<GuildListRespData, GuildApiRespSort>>,
+    ApiData.Req.Key by key("/api/v3/guild/list")
+{
+    private val ROUTE = listOf("guild", "list")
+
+    /**
+     * data serializer.
+     */
+    override val dataSerializer: DeserializationStrategy<ListResp<GuildListRespData, GuildApiRespSort>> =
+        listResp(GuildListRespData.serializer(), GuildApiRespSort.serializer())
+
+    /**
+     * route build.
+     */
+    override fun route(builder: RouteInfoBuilder) {
+        builder.apiPath = ROUTE
+        builder.parametersBuilder.append("sort", "id")
+    }
+
+    override val body: Any?
+        get() = null
+
+
+    override val key: ApiData.Req.Key
+        get() = this
+}
 
 
 /**
@@ -73,7 +107,7 @@ public data class GuildListRespData(
      * 是否为公开服务器
      */
     @SerialName("enable_open")
-    @Serializable(BooleanAsIntSerializer::class)
+    // @Serializable(BooleanAsIntSerializer::class)
     val enableOpen: Boolean,
     /**
      * 公开服务器id

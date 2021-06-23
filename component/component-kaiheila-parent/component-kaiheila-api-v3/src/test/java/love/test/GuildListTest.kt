@@ -16,8 +16,8 @@ package love.test
 
 import kotlinx.serialization.decodeFromString
 import love.forte.simbot.component.kaiheila.api.ListResp
-import love.forte.simbot.component.kaiheila.api.v3.server.GuildApiRespSort
-import love.forte.simbot.component.kaiheila.api.v3.server.GuildListRespData
+import love.forte.simbot.component.kaiheila.api.v3.guild.GuildApiRespSort
+import love.forte.simbot.component.kaiheila.api.v3.guild.GuildListRespData
 import love.forte.simbot.component.kaiheila.khlJson
 import org.jetbrains.annotations.TestOnly
 import kotlin.test.Test
