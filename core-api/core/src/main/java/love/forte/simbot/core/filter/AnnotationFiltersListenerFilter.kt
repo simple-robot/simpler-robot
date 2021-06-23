@@ -472,9 +472,7 @@ public class AnnotationFilterListenerFilterImpl(
      */
     override val bots: Array<String> = with(filter.bots) {
         if (isEmpty() && filter.botsByParent)
-            filters.bots.also {
-                println("filters.bots: ${filters.bots.joinToString(", ")}")
-            }
+            filters.bots
         else this
     }
 

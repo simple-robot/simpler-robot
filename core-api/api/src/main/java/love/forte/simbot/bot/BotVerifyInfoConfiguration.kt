@@ -115,10 +115,10 @@ public class SimpleBotVerifyInfoConfiguration(
                         loader.getResourceAsStream(asciiString)?.reader(Charsets.UTF_8)?.use(::load)
                             ?: kotlin.runCatching {
                                 LOGGER.debug("Uri stream null: {}, try use url", asciiString)
-                            uri.toURL().openStream().reader(Charsets.UTF_8).use(::load)
-                        }.getOrElse { e1 ->
-                            throw IllegalStateException("Uri stream read failed: $uri", e1)
-                        }
+                                uri.toURL().openStream().reader(Charsets.UTF_8).use(::load)
+                            }.getOrElse { e1 ->
+                                throw IllegalStateException("Uri stream read failed: $uri", e1)
+                            }
 
 
                     }
@@ -138,8 +138,14 @@ public class SimpleBotVerifyInfoConfiguration(
             BotResourceType.FILE -> fromFile()
             BotResourceType.RESOURCE -> fromResource()
             BotResourceType.BOTH -> fromFile() + fromResource()
-            BotResourceType.FILE_FIRST -> fromFile().ifEmpty { fromResource() }
-            BotResourceType.RESOURCE_FIRST -> fromResource().ifEmpty { fromFile() }
+            BotResourceType.FILE_FIRST -> fromFile().ifEmpty {
+                LOGGER.debug("Bot verify info read file first but not found, try resource.")
+                fromResource()
+            }
+            BotResourceType.RESOURCE_FIRST -> fromResource().ifEmpty {
+                LOGGER.debug("Bot verify info read resource first but not found, try file.")
+                fromFile()
+            }
         }
 
         val infos: List<BotVerifyInfo> = propertiesList.map { p ->
@@ -151,13 +157,13 @@ public class SimpleBotVerifyInfoConfiguration(
         val actionBotsSet = actionBots.toSet()
 
         configuredBotVerifyInfos = ((
-            if (ALL_ACTION_KEY in actionBotsSet) infos
-            else infos.filter { i ->
-                i[ACTION_NAME_KEY]?.let { actionName -> actionName in actionBotsSet } ?: kotlin.run {
-                    LOGGER.warn("Bot(code=${i.code})'s config property '$ACTION_NAME_KEY' is null, but your action bots config properties is not ignore or '$ALL_ACTION_KEY', so this bot will always be loaded.")
-                    true
-                }
-            }) + other).distinctBy { info ->
+                if (ALL_ACTION_KEY in actionBotsSet) infos
+                else infos.filter { i ->
+                    i[ACTION_NAME_KEY]?.let { actionName -> actionName in actionBotsSet } ?: kotlin.run {
+                        LOGGER.warn("Bot(code=${i.code})'s config property '$ACTION_NAME_KEY' is null, but your action bots config properties is not ignore or '$ALL_ACTION_KEY', so this bot will always be loaded.")
+                        true
+                    }
+                }) + other).distinctBy { info ->
             info.code
         }
 
