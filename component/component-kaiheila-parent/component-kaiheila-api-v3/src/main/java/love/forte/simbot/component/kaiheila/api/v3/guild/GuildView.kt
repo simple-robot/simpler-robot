@@ -138,7 +138,7 @@ public data class GuildView(
     val welcomeChannelId: String,
     val roles: List<Role>,
     val channels: List<Channel>
-) : ApiData.Resp.Data
+) : GuildApiRespData
 
 
 
