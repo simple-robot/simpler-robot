@@ -31,7 +31,7 @@ import love.forte.simbot.component.kaiheila.api.*
  *
  */
 public class GuildViewReq(private val guildId: String) : GuildApiReq<ObjectResp<GuildView>> {
-    private companion object Key : ApiData.Req.Key by key("/guild/view") {
+    companion object Key : ApiData.Req.Key by key("/guild/view") {
         private val ROUTE = listOf("guild", "view")
     }
     override val key: ApiData.Req.Key

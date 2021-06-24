@@ -35,9 +35,9 @@ public data class GatewayReq(val compress: Int = 1) :
 
     override val body: Any? get() = null
 
-    private companion object Key : ApiData.Req.Key by key("/gateway/index") {
+    companion object Key : ApiData.Req.Key by key("/gateway/index") {
         private val dataSerializer = objectResp(Gateway.serializer())
-        val ROUTE = listOf("gateway", "index")
+        private val ROUTE = listOf("gateway", "index")
     }
 
     override val key: ApiData.Req.Key get() = Key

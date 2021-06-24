@@ -45,7 +45,7 @@ import love.forte.simbot.component.kaiheila.api.*
  */
 public sealed class GuildListReq<SORT> :
     GuildApiReq<ListResp<GuildListRespData, SORT>> {
-    private companion object Key : ApiData.Req.Key by key("/guild/list") {
+    companion object Key : ApiData.Req.Key by key("/guild/list") {
         private val ROUTE = listOf("guild", "list")
     }
 

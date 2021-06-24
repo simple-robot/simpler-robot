@@ -54,7 +54,8 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
 
             apiPath = routeInfoBuilder.apiPath
 
-            routeInfoBuilder.body?.let { b -> body = b }
+            this@doRequest.body?.let { b -> body = b }
+
             this.toKhlBuild(api, apiPath)
         }
     }
