@@ -110,12 +110,12 @@
             </dependency>
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
-                <artifactId>component-kaiheila-core</artifactId>
+                <artifactId>kaiheila-core</artifactId>
                 <version>${simbot.version}</version>
             </dependency>
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
-                <artifactId>component-kaiheila-api-v3</artifactId>
+                <artifactId>kaiheila-api-v3</artifactId>
                 <version>${simbot.version}</version>
             </dependency>
             <!--</editor-fold>-->
