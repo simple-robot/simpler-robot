@@ -38,10 +38,6 @@
 
 
 
-
-
-
-
 ## 简介
 
 这是一个通用机器人开发框架，是simple-robot(下文简称`simbot`)的2.x版本。
@@ -56,7 +52,18 @@
 
 <br>
 
-[QQ交流群](https://jq.qq.com/?_wv=1027&k=1Lopqryf)
+问题提问与BUG反馈：[issue](https://github.com/ForteScarlqianwet/simpler-robot/issues)
+
+QQ交流群: [782930037](https://jq.qq.com/?_wv=1027&k=1Lopqryf)
+
+> 入群前请仔细阅读 [群规](https://www.yuque.com/simpler-robot/simpler-robot-doc/xklly8), 入群即视为认可本群规，因违反群规而导致的一切后果自负。
+> 
+> 注意, ‘交流群’ 并非 ‘反馈群’，请务必想清楚这个问题。如果你只是提问或者反馈simbot相关问题，请前往 [issue](https://github.com/ForteScarlet/simpler-robot/issues). 
+
+简易视频教程：
+- [如何用JAVA写QQ机器人 入门篇 v2.0](https://www.bilibili.com/video/BV1bZ4y1w7jz) 
+- [如何用Java写QQ机器人 V2.1.0 贴心女友级教程](https://www.bilibili.com/video/BV1Y54y1G7T8)
+- [v2.1.0 常见问题补充说明](https://www.bilibili.com/video/BV1Xf4y187q6)
 
 <br>
 
