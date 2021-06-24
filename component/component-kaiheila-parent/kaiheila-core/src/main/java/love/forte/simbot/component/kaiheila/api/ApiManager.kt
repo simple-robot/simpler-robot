@@ -105,13 +105,13 @@ public class ApiVersionData(versionNumber: Int) : BaseApi(versionNumber)
 
 
 /**
- * get instance for [Api] by [Api.versionNumber] value.
+ * get simple instance for [Api] by [Api.versionNumber] value.
  */
 public fun apiVersion(versionNumber: Int): Api = ApiVersionData(versionNumber)
 
 
 /**
- * get instance for [Api] by [Api.versionNumber] value.
+ * get simple instance for [Api] by [Api.versionNumber] value.
  */
 public inline fun apiVersion(versionNumber: () -> Int): Api = apiVersion(versionNumber())
 
