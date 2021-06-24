@@ -31,7 +31,7 @@ package love.forte.simbot.component.kaiheila.api
 public interface ApiConfiguration {
 
     /** api版本信息。 */
-    val apiVersion: ApiVersion
+    val api: Api
 
 
     /** 鉴权Token获取方式。 */
@@ -76,7 +76,7 @@ public enum class AuthorizationType(private val authorizationFunction: (token: S
  */
 public class ApiConfigurationBuilder {
     @ApiConfigurationBuildDsl
-    var apiVersion: ApiVersion? = null
+    var api: Api? = null
     @ApiConfigurationBuildDsl
     var authorizationType: AuthorizationType? = null
     @ApiConfigurationBuildDsl
@@ -85,7 +85,7 @@ public class ApiConfigurationBuilder {
     @Synchronized
     fun build(): ApiConfiguration {
         return ApiConfigurationImpl(
-            requireNotNull(apiVersion) { "Required apiVersion was null." },
+            requireNotNull(api) { "Required apiVersion was null." },
             requireNotNull(authorizationType) { "Required authorizationType was null." },
             language
         )
@@ -94,7 +94,7 @@ public class ApiConfigurationBuilder {
 
 
 private data class ApiConfigurationImpl(
-    override val apiVersion: ApiVersion,
+    override val api: Api,
     override val authorizationType: AuthorizationType,
     override val language: String?
 ) : ApiConfiguration
@@ -114,9 +114,9 @@ public inline fun apiConfiguration(configBlock: ApiConfigurationBuilder.() -> Un
 
 @ApiConfigurationBuildDsl
 public inline var ApiConfigurationBuilder.apiVersionNumber: Int?
-get() = apiVersion?.versionNumber
+get() = api?.versionNumber
 set(value) {
-    apiVersion = value?.let { apiVersion { it } }
+    api = value?.let { apiVersion { it } }
 }
 
 @ApiConfigurationBuildDsl

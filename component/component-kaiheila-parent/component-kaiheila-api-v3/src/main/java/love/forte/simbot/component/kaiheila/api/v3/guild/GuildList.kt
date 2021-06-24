@@ -27,33 +27,74 @@ import love.forte.simbot.component.kaiheila.api.*
  *
  * parameter or body: Empty.
  *
+ * [GuildListReq] 几乎没有什么会变化的参数，请求方式：
+ * ```
+ * GuildListReq.NoSort.doRequest(V3, client, token)
+ *
+ * // or sort by id
+ * // asc
+ * GuildListReq.SortById.Asc.doRequest(...)
+ * // desc
+ * GuildListReq.SortById.Desc.doRequest(...)
+ *
+ * ```
+ *
+ *
+ *
+ *
  */
-public object GuildListReq :
-    GuildApiReq<ListResp<GuildListRespData, GuildApiRespSort>>,
-    ApiData.Req.Key by key("/api/v3/guild/list")
-{
-    private val ROUTE = listOf("guild", "list")
+public sealed class GuildListReq<SORT> :
+    GuildApiReq<ListResp<GuildListRespData, SORT>> {
+    private companion object Key : ApiData.Req.Key by key("/guild/list") {
+        private val ROUTE = listOf("guild", "list")
+    }
 
-    /**
-     * data serializer.
-     */
-    override val dataSerializer: DeserializationStrategy<ListResp<GuildListRespData, GuildApiRespSort>> =
-        listResp(GuildListRespData.serializer(), GuildApiRespSort.serializer())
+    override val key: ApiData.Req.Key get() = Key
+
 
     /**
      * route build.
      */
     override fun route(builder: RouteInfoBuilder) {
         builder.apiPath = ROUTE
-        builder.parametersBuilder.append("sort", "id")
     }
 
     override val body: Any?
         get() = null
 
+    /**
+     * 无排序的 [Guild List请求实例][GuildListReq]
+     */
+    object NoSort : GuildListReq<ApiData.Resp.EmptySort>() {
+        /**
+         * data serializer.
+         */
+        override val dataSerializer: DeserializationStrategy<ListResp<GuildListRespData, ApiData.Resp.EmptySort>> =
+            listResp(GuildListRespData.serializer(), ApiData.Resp.EmptySort.serializer())
+    }
 
-    override val key: ApiData.Req.Key
-        get() = this
+    /**
+     * 根据ID排序
+     */
+    sealed class SortById(asc: Boolean = true) : GuildListReq<GuildApiRespSort>() {
+        private val sortValue = if(asc) "id" else "-id"
+        override fun route(builder: RouteInfoBuilder) {
+            super.route(builder)
+            builder.parametersBuilder.append("sort", sortValue)
+        }
+
+        /**
+         * data serializer.
+         */
+        override val dataSerializer: DeserializationStrategy<ListResp<GuildListRespData, GuildApiRespSort>> =
+            listResp(GuildListRespData.serializer(), GuildApiRespSort.serializer())
+
+        object Asc : SortById()
+        object Desc : SortById(false)
+    }
+
+
+
 }
 
 
@@ -129,6 +170,9 @@ public data class GuildListRespData(
 
 @Serializable
 public data class GuildApiRespSort(val id: Int)
+
+public inline val GuildApiRespSort.isAsc: Boolean get() = id == 1
+public inline val GuildApiRespSort.isDesc: Boolean get() = !isAsc
 
 
 

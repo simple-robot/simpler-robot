@@ -49,7 +49,6 @@ public sealed interface ApiData {
         val dataSerializer: DeserializationStrategy<HTTP_RESP>
 
 
-
         /**
          * 此请求对应的api路由路径以及路径参数。
          * 例如：`/guild/list`
@@ -122,6 +121,9 @@ public sealed interface ApiData {
         interface Data : ApiData
 
 
+        @Serializable
+        object EmptySort
+
     }
 
 }
@@ -130,7 +132,6 @@ public sealed interface ApiData {
 public fun key(api: String): Req.Key = object : Req.Key {
     override val id: String = api
 }
-
 
 
 public interface RouteInfoBuilder {
@@ -149,18 +150,21 @@ public interface RouteInfoBuilder {
 
     companion object {
         @JvmStatic
-        fun getInstance(parametersBuilder: ParametersBuilder): RouteInfoBuilder = RouteInfoBuilderImpl(parametersBuilder = parametersBuilder)
+        fun getInstance(parametersBuilder: ParametersBuilder): RouteInfoBuilder =
+            RouteInfoBuilderImpl(parametersBuilder = parametersBuilder)
     }
+}
+
+
+public inline fun RouteInfoBuilder.parameters(block: ParametersBuilder.() -> Unit) {
+    parametersBuilder.block()
 }
 
 private data class RouteInfoBuilderImpl(
     override var body: Any? = null,
     override var apiPath: List<String> = emptyList(),
     override val parametersBuilder: ParametersBuilder,
-): RouteInfoBuilder
-
-
-
+) : RouteInfoBuilder
 
 
 /**
@@ -177,11 +181,16 @@ public fun <RESP : ApiData.Resp.Data, SORT> listResp(
     sorterSerializer: KSerializer<SORT>,
 ): KSerializer<ListResp<RESP, SORT>> = ListResp.serializer(subSerializer, sorterSerializer)
 
+
+
+
+
+
 /**
  * 返回值是一个列表类型. 排序类型是 [String] 类型。
  */
 public fun <RESP : ApiData.Resp.Data> listResp(
-    subSerializer: KSerializer<RESP>
+    subSerializer: KSerializer<RESP>,
 ): KSerializer<ListResp<RESP, String>> = ListResp.serializer(subSerializer, String.serializer())
 
 
@@ -263,7 +272,7 @@ public data class ListRespForMapSort<RESP : ApiData.Resp.Data>(
 public data class ListRespData<RESP : ApiData.Resp.Data, SORT>(
     val items: List<RESP> = emptyList(),
     val meta: RespPageMeta,
-    val sort: SORT? = null,
+    val sort: SORT,
 )
 
 @Serializable
