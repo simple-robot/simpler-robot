@@ -146,8 +146,6 @@ public interface RouteInfoBuilder {
     val parametersBuilder: ParametersBuilder
 
 
-    var body: Any?
-
     companion object {
         @JvmStatic
         fun getInstance(parametersBuilder: ParametersBuilder): RouteInfoBuilder =
@@ -161,7 +159,6 @@ public inline fun RouteInfoBuilder.parameters(block: ParametersBuilder.() -> Uni
 }
 
 private data class RouteInfoBuilderImpl(
-    override var body: Any? = null,
     override var apiPath: List<String> = emptyList(),
     override val parametersBuilder: ParametersBuilder,
 ) : RouteInfoBuilder
