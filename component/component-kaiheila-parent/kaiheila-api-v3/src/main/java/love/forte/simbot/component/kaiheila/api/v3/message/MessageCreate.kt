@@ -21,13 +21,14 @@ import love.forte.simbot.component.kaiheila.api.*
 
 
 /**
+ * [发送频道聊天消息](https://developer.kaiheila.cn/doc/http/message#%E5%8F%91%E9%80%81%E9%A2%91%E9%81%93%E8%81%8A%E5%A4%A9%E6%B6%88%E6%81%AF)
  *
- *
- * @property type 消息属性, 默认为 [MessageType.TEXT].
  */
 public class MessageCreateReq(
     /**
      * 消息类型, 不传默认为 1, 代表文本类型。2 图片消息，3 视频消息，4 文件消息，9 代表 kmarkdown 消息, 10 代表卡片消息。
+     * 默认为 [MessageType.TEXT]
+     * @see MessageType
      */
     type: Int = MessageType.TEXT.type,
 
