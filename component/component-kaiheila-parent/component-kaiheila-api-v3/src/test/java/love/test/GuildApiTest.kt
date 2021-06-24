@@ -20,6 +20,7 @@ import kotlinx.coroutines.runBlocking
 import love.forte.simbot.component.kaiheila.api.doRequestForData
 import love.forte.simbot.component.kaiheila.api.v3.V3
 import love.forte.simbot.component.kaiheila.api.v3.guild.GuildListReq
+import love.forte.simbot.component.kaiheila.api.v3.guild.isAsc
 import org.junit.jupiter.api.Test
 
 
@@ -31,10 +32,10 @@ class GuildApiTest {
 
     @Test
     fun guildListTest() = runBlocking {
-        val guildList = GuildListReq.doRequestForData(
-            V3,
-            client,
-            GatewayApiConstant.token
+        val guildList = GuildListReq.SortById.Asc.doRequestForData(
+            api = V3,
+            client = client,
+            token = GatewayApiConstant.token
         )
 
         println(guildList)
@@ -44,8 +45,8 @@ class GuildApiTest {
         }
         println(guildList.meta)
         println(guildList.sort)
-
-
+        println(guildList.sort.id)
+        println(guildList.sort.isAsc)
     }
 
 

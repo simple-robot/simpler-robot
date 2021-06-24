@@ -14,7 +14,7 @@
 
 package love.forte.simbot.component.kaiheila.api.v3
 
-import love.forte.simbot.component.kaiheila.api.ApiVersion
+import love.forte.simbot.component.kaiheila.api.Api
 import love.forte.simbot.component.kaiheila.api.apiVersion
 
 
@@ -22,4 +22,4 @@ import love.forte.simbot.component.kaiheila.api.apiVersion
  * 占位文件。
  * @author ForteScarlet
  */
-public object V3 : ApiVersion by apiVersion(3)
+public object V3 : Api by apiVersion(3)

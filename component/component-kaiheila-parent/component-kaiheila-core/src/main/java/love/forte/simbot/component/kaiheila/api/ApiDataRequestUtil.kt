@@ -25,13 +25,13 @@ import kotlin.contracts.ExperimentalContracts
 
 /**
  * 请求一个 [ApiData.Req] 并得到一个对应的 [响应体][ApiData.Resp].
- * [authorization] 存在的时候，[authorizationType] 必须存在.
+ * [token] 存在的时候，[authorizationType] 必须存在.
  */
 @OptIn(ExperimentalContracts::class)
 public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP_RESP>.doRequest(
-    apiVersion: ApiVersion,
+    api: Api,
     client: HttpClient,
-    authorization: String? = null,
+    token: String? = null,
     authorizationType: AuthorizationType = AuthorizationType.BOT,
 ): HTTP_RESP {
     // contract {
@@ -45,7 +45,7 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
 
     val responseContent = client.request<String> {
         contentType(ContentType.Application.Json)
-        authorization?.let { auth ->
+        token?.let { auth ->
             header("Authorization", authorizationType.getAuthorization(auth))
         }
         url {
@@ -55,7 +55,7 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
             apiPath = routeInfoBuilder.apiPath
 
             routeInfoBuilder.body?.let { b -> body = b }
-            this.toKhlBuild(apiVersion, apiPath)
+            this.toKhlBuild(api, apiPath)
         }
     }
 
@@ -76,9 +76,9 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
 
 
 public suspend inline fun <D, reified HTTP_RESP : ApiData.Resp<out D>> ApiData.Req<HTTP_RESP>.doRequestForData(
-    apiVersion: ApiVersion,
+    api: Api,
     client: HttpClient,
-    authorization: String? = null,
+    token: String? = null,
     authorizationType: AuthorizationType = AuthorizationType.BOT,
-): D = doRequest(apiVersion, client, authorization, authorizationType).data
+): D = doRequest(api, client, token, authorizationType).data
 

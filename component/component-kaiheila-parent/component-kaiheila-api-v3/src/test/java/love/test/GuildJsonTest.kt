@@ -22,7 +22,7 @@ import love.forte.simbot.component.kaiheila.khlJson
 import org.jetbrains.annotations.TestOnly
 import kotlin.test.Test
 
-class GuildListTest {
+class GuildJsonTest {
     @Test
     @TestOnly
     fun decode() {

@@ -24,14 +24,14 @@ import io.ktor.http.*
  *
  * 其主要记录一个API的版本信息。
  *
- * [version] 属性将会作为 [ApiVersion] 的唯一标识。
+ * [version] 属性将会作为 [Api] 的唯一标识。
  *
  *
- * @see BaseApiVersion
+ * @see BaseApi
  * @see ApiVersionData
  *
  */
-public interface ApiVersion {
+public interface Api {
     /**
      * api的版本编号。以 `v3` 为例，版本号则为 `3`。
      */
@@ -63,13 +63,13 @@ public interface ApiVersion {
 }
 // https://www.kaiheila.cn/api
 
-fun URLBuilder.toKhlBuild(apiVersion: ApiVersion, apiPath: List<String>) {
+fun URLBuilder.toKhlBuild(api: Api, apiPath: List<String>) {
     protocol = URLProtocol.HTTPS
-    host = ApiVersion.HOST
+    host = Api.HOST
     if (apiPath.isEmpty()) {
-        path("api", apiVersion.version)
+        path("api", api.version)
     } else {
-        val list = mutableListOf("api", apiVersion.version).also {
+        val list = mutableListOf("api", api.version).also {
             it.addAll(apiPath)
         }
         path(list)
@@ -78,14 +78,14 @@ fun URLBuilder.toKhlBuild(apiVersion: ApiVersion, apiPath: List<String>) {
 
 
 /**
- * [ApiVersion] 基础抽象类。
+ * [Api] 基础抽象类。
  */
-public abstract class BaseApiVersion(override val versionNumber: Int) : ApiVersion {
+public abstract class BaseApi(override val versionNumber: Int) : Api {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as BaseApiVersion
+        other as BaseApi
 
         if (version != other.version) return false
 
@@ -99,19 +99,19 @@ public abstract class BaseApiVersion(override val versionNumber: Int) : ApiVersi
 
 
 /**
- * [ApiVersion]基础实现。
+ * [Api]基础实现。
  */
-public class ApiVersionData(versionNumber: Int) : BaseApiVersion(versionNumber)
+public class ApiVersionData(versionNumber: Int) : BaseApi(versionNumber)
 
 
 /**
- * get instance for [ApiVersion] by [ApiVersion.versionNumber] value.
+ * get instance for [Api] by [Api.versionNumber] value.
  */
-public fun apiVersion(versionNumber: Int): ApiVersion = ApiVersionData(versionNumber)
+public fun apiVersion(versionNumber: Int): Api = ApiVersionData(versionNumber)
 
 
 /**
- * get instance for [ApiVersion] by [ApiVersion.versionNumber] value.
+ * get instance for [Api] by [Api.versionNumber] value.
  */
-public inline fun apiVersion(versionNumber: () -> Int): ApiVersion = apiVersion(versionNumber())
+public inline fun apiVersion(versionNumber: () -> Int): Api = apiVersion(versionNumber())
 
