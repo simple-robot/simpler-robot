@@ -12,7 +12,7 @@
  *  
  */
 
-@file:JvmName("ApiDataReuestUtil")
+@file:JvmName("ApiDataRequestUtil")
 
 package love.forte.simbot.component.kaiheila.api
 
@@ -20,7 +20,12 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import love.forte.simbot.component.kaiheila.khlJson
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import kotlin.contracts.ExperimentalContracts
+
+
+public val logger: Logger = LoggerFactory.getLogger(ApiData::class.java)
 
 
 /**
@@ -34,17 +39,13 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
     token: String? = null,
     authorizationType: AuthorizationType = AuthorizationType.BOT,
 ): HTTP_RESP {
-    // contract {
-    //     returns() implies (authorization == null)
-    // }
-    // require(authorization == null || authorizationType != null) {
-    //     "Require authorizationType when authorization is not null."
-    // }
-
     var apiPath: List<String> = emptyList()
 
     val responseContent = client.request<String> {
+
         contentType(ContentType.Application.Json)
+        method = this@doRequest.method
+
         token?.let { auth ->
             header("Authorization", authorizationType.getAuthorization(auth))
         }
@@ -64,6 +65,11 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
     //     if (!status.isSuccess()) {
     //         throw ClientRequestException(resp, "$status ")
     //     }
+    // }
+
+    // val log = when (val key = this.key) {
+    //     is LogAble -> key.log
+    //     else -> logger
     // }
 
     println(responseContent)

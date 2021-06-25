@@ -50,6 +50,11 @@ public sealed interface ApiData {
 
 
         /**
+         * 此api请求方式
+         */
+        val method: HttpMethod
+
+        /**
          * 此请求对应的api路由路径以及路径参数。
          * 例如：`/guild/list`
          */
@@ -157,6 +162,11 @@ public interface RouteInfoBuilder {
 public inline fun RouteInfoBuilder.parameters(block: ParametersBuilder.() -> Unit) {
     parametersBuilder.block()
 }
+
+public inline fun <reified T> ParametersBuilder.appendIfNotnull(name: String, value: T?, toStringBlock: (T) -> String = { it.toString() }) {
+    value?.let { v -> append(name, toStringBlock(v)) }
+}
+
 
 private data class RouteInfoBuilderImpl(
     override var apiPath: List<String> = emptyList(),

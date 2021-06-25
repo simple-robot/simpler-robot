@@ -105,12 +105,12 @@ public interface User : KhlObjects, AccountInfo {
     /**
      * 手机区号,如中国为86
      */
-    val mobilePrefix: String
+    val mobilePrefix: String?
 
     /**
      * 用户手机号，带掩码
      */
-    val mobile: String
+    val mobile: String?
 
     /**
      * 当前邀请注册的人数
@@ -160,8 +160,8 @@ public data class UserImpl(
     override val mobileVerified: Boolean,
     override val system: Boolean,
     @SerialName("mobile_prefix")
-    override val mobilePrefix: String,
-    override val mobile: String,
+    override val mobilePrefix: String? = null,
+    override val mobile: String?  =null,
     @SerialName("invited_count")
     override val invitedCount: Int,
     override val nickname: String,

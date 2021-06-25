@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.message
 
+import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -75,6 +76,8 @@ public class MessageCreateReq(
         tempTargetId: String? = null,
     ) : this(MessageType.TEXT.type, targetId, content, quote, nonce, tempTargetId)
 
+    override val method: HttpMethod
+        get() = HttpMethod.Post
 
     private val _body = Body(type, targetId, content, quote, nonce, tempTargetId)
 
