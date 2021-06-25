@@ -82,7 +82,7 @@ public interface Channel : KhlObjects, GroupInfo {
     val topic: String
 
     /** 是否为分组 */
-    val isCategory: Boolean
+    val category: Boolean
 
     /** 上级分组的id */
     val parentId: String
@@ -121,6 +121,7 @@ public interface Channel : KhlObjects, GroupInfo {
 }
 
 
+
 @Serializable
 @SerialName(ChannelImpl.SERIAL_NAME)
 public data class ChannelImpl(
@@ -132,7 +133,7 @@ public data class ChannelImpl(
     override val guildId: String,
     override val topic: String,
     @SerialName("is_category")
-    override val isCategory: Boolean,
+    override val category: Boolean,
     @SerialName("parent_id")
     override val parentId: String,
     override val level: Int,

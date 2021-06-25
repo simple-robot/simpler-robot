@@ -19,6 +19,9 @@ package love.forte.simbot.component.kaiheila.api
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import love.forte.simbot.component.kaiheila.khlJson
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -60,17 +63,6 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
             this.toKhlBuild(api, apiPath)
         }
     }
-
-    // resp.status.let { status ->
-    //     if (!status.isSuccess()) {
-    //         throw ClientRequestException(resp, "$status ")
-    //     }
-    // }
-
-    // val log = when (val key = this.key) {
-    //     is LogAble -> key.log
-    //     else -> logger
-    // }
 
     println(responseContent)
 

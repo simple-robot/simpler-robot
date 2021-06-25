@@ -12,7 +12,7 @@
  *
  */
 
-package love.test.listen;
+package love.test.guild.listen;
 
 
 import love.forte.simbot.annotation.OnGroup;

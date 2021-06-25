@@ -12,7 +12,7 @@
  *
  */
 
-package love.test
+package love.test.guild
 
 import io.ktor.client.*
 import io.ktor.client.features.*

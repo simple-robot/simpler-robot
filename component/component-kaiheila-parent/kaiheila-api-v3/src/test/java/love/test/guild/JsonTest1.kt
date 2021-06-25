@@ -12,7 +12,7 @@
  *
  */
 
-package love.test
+package love.test.guild
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString

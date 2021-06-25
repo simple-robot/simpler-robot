@@ -20,7 +20,6 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.*
-import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.component.kaiheila.api.ApiData.Req
 
 
@@ -65,6 +64,12 @@ public sealed interface ApiData {
          * 此次请求所发送的数据。为null则代表没有参数。
          */
         val body: Any?
+
+
+        /**
+         * Do something after resp.
+         */
+        fun post(resp: HTTP_RESP) { }
 
         /*
          * 获取请求的鉴权token。
@@ -194,11 +199,11 @@ public fun <RESP : ApiData.Resp.Data, SORT> listResp(
 
 
 /**
- * 返回值是一个列表类型. 排序类型是 [String] 类型。
+ * 返回值是一个列表类型. 排序类型是 [ApiData.Resp.EmptySort] 类型。
  */
 public fun <RESP : ApiData.Resp.Data> listResp(
     subSerializer: KSerializer<RESP>,
-): KSerializer<ListResp<RESP, String>> = ListResp.serializer(subSerializer, String.serializer())
+): KSerializer<ListResp<RESP, ApiData.Resp.EmptySort>> = ListResp.serializer(subSerializer, ApiData.Resp.EmptySort.serializer())
 
 
 /**
@@ -245,7 +250,7 @@ public data class ListResp<RESP : ApiData.Resp.Data, SORT>(
      * mixed, 具体的数据。
      */
     override val data: ListRespData<RESP, SORT>,
-) : ApiData.Resp<ListRespData<RESP, SORT>>
+) : ApiData.Resp<ListRespData<RESP, SORT>>, Iterable<RESP> by data
 
 /**
  * 返回值为一个列表（数组）实例对象的结果。
@@ -280,7 +285,7 @@ public data class ListRespData<RESP : ApiData.Resp.Data, SORT>(
     val items: List<RESP> = emptyList(),
     val meta: RespPageMeta,
     val sort: SORT,
-)
+) : Iterable<RESP> by items
 
 @Serializable
 public data class ListRespDataForMapSort<RESP : ApiData.Resp.Data>(

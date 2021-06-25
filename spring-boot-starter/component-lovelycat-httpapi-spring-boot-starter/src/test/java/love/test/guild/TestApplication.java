@@ -12,7 +12,7 @@
  *
  */
 
-package love.test;
+package love.test.guild;
 
 import love.forte.simbot.api.sender.BotSender;
 import love.forte.simbot.bot.BotManager;
