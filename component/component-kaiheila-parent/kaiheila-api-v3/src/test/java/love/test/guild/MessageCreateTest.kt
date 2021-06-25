@@ -12,12 +12,14 @@
  *
  */
 
-package love.test
+package love.test.guild
 
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.component.kaiheila.api.doRequest
 import love.forte.simbot.component.kaiheila.api.v3.V3
 import love.forte.simbot.component.kaiheila.api.v3.message.MessageCreateReq
+import love.test.GatewayApiConstant
+import love.test.client
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId

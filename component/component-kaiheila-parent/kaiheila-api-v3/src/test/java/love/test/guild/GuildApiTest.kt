@@ -12,13 +12,15 @@
  *
  */
 
-package love.test
+package love.test.guild
 
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.component.kaiheila.api.doRequest
 import love.forte.simbot.component.kaiheila.api.v3.V3
 import love.forte.simbot.component.kaiheila.api.v3.guild.GuildListReq
 import love.forte.simbot.component.kaiheila.api.v3.guild.isAsc
+import love.test.GatewayApiConstant
+import love.test.client
 import org.junit.jupiter.api.Test
 
 

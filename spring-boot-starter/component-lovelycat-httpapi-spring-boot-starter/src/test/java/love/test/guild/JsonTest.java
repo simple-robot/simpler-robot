@@ -12,7 +12,7 @@
  *
  */
 
-package love.test;
+package love.test.guild;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

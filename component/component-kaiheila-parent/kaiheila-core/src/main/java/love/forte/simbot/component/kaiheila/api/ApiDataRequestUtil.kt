@@ -64,17 +64,6 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
         }
     }
 
-    // resp.status.let { status ->
-    //     if (!status.isSuccess()) {
-    //         throw ClientRequestException(resp, "$status ")
-    //     }
-    // }
-
-    // val log = when (val key = this.key) {
-    //     is LogAble -> key.log
-    //     else -> logger
-    // }
-
     println(responseContent)
 
     val jsonElement = khlJson.parseToJsonElement(responseContent)
@@ -95,7 +84,9 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
 
     // val contentText = resp.readText(Charsets.UTF_8)
 
-    return khlJson.decodeFromJsonElement(deserializer = this.dataSerializer, jsonElement)
+    return khlJson.decodeFromJsonElement(deserializer = this.dataSerializer, jsonElement).also { resp ->
+        post(resp)
+    }
 
     // return data.check { apiPath.joinToString("/") }
 }

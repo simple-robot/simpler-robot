@@ -12,15 +12,40 @@
  *
  */
 
-package love.test
+package love.test.guild
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import love.forte.simbot.component.kaiheila.khlJson
 import kotlin.test.Test
 
-class OnlyTestMain {
+
+@Serializable
+object Bean {
+    val code = 10
+}
+
+
+/**
+ *
+ * @author ForteScarlet
+ */
+class JsonTest1 {
 
     @Test
-    fun test() {
-        println("test1")
-        // error("No way.")
+    fun test1() {
+
+        println(khlJson.encodeToString(Bean))
+
+
     }
+
+
+
+
+
+
+
+
+
 }
