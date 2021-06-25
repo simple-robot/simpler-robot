@@ -17,6 +17,9 @@
 package love.test
 
 import kotlinx.coroutines.runBlocking
+import love.forte.simbot.component.kaiheila.api.doRequest
+import love.forte.simbot.component.kaiheila.api.v3.V3
+import love.forte.simbot.component.kaiheila.api.v3.guild.GuildNicknameReq
 import kotlin.test.Test
 
 
@@ -29,8 +32,15 @@ class GuildNicknameTest {
 
     @Test
     fun nicknameTest() = runBlocking {
-        val guildList = GuildApiTest().guildList()
+        val guild = GuildApiTest().guildList().items[0]
 
+        val result = GuildNicknameReq(
+            guildId = guild.id,
+            nickname = "天下第一可爱法欧莉"
+        )
+            .doRequest(V3, client, GatewayApiConstant.token)
+
+        println(result)
 
     }
 
