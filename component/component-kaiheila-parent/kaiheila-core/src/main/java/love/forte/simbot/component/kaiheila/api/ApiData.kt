@@ -69,8 +69,8 @@ public sealed interface ApiData {
         /*
          * 获取请求的鉴权token。
          *
-         * - 机器人。TOKEN_TYPE = Bot。 `Authorization: Bot BHsTZ4232tLatgV5AFyjoqZGAHHmpl9mTxYQ/u4/80=`
-         * - Oauth2。TOKEN_TYPE = Bearer。 `Authorization: Bearer BHsTZ4232tLatgV5AFyjoqZGAHHmpl9mTxYQ/u4/80=`
+         * - 机器人。TOKEN_TYPE = Bot。 `Authorization: Bot BHsTZ4232tLatgV5AFyasgraefpl9mTxYQ/1380=`
+         * - Oauth2。TOKEN_TYPE = Bearer。 `Authorization: Bearer BHsTZ4232tLatgVdvrfdboqZGAHHmasTxYQ/u41f0=`
          */
         // val authorization: String?
 

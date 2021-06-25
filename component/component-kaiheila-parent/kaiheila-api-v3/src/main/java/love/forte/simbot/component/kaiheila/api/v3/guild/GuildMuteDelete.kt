@@ -22,12 +22,13 @@ import love.forte.simbot.component.kaiheila.api.*
 
 
 /**
- * [添加服务器静音或闭麦](https://developer.kaiheila.cn/doc/http/guild#%E6%B7%BB%E5%8A%A0%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%9D%99%E9%9F%B3%E6%88%96%E9%97%AD%E9%BA%A6)
+ *
+ * [删除服务器静音或闭麦](https://developer.kaiheila.cn/doc/http/guild#%E5%88%A0%E9%99%A4%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%9D%99%E9%9F%B3%E6%88%96%E9%97%AD%E9%BA%A6)
  *
  * request method: POST
  *
  */
-public class GuildMuteCreateReq(
+public class GuildMuteDeleteReq(
     /** 服务器id */
     guildId: String,
     /** 用户id */
@@ -35,8 +36,8 @@ public class GuildMuteCreateReq(
     /** 1代表麦克风闭麦，2代表耳机静音 */
     type: Int
 ) : GuildApiReq<EmptyResp> {
-    private companion object Key : ApiData.Req.Key by key("/guild-mute/create") {
-        private val ROUTE = listOf("guild-mute", "create")
+    private companion object Key : ApiData.Req.Key by key("/guild-mute/delete") {
+        private val ROUTE = listOf("guild-mute", "delete")
     }
 
     override val key: ApiData.Req.Key get() = Key

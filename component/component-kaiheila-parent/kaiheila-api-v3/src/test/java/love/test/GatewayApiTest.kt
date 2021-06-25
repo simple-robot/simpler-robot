@@ -23,6 +23,7 @@ import love.forte.simbot.component.kaiheila.api.doRequest
 import love.forte.simbot.component.kaiheila.api.v3.Gateway
 import love.forte.simbot.component.kaiheila.api.v3.GatewayReq
 import love.forte.simbot.component.kaiheila.api.v3.V3
+import java.util.zip.InflaterInputStream
 import kotlin.test.Test
 
 
@@ -43,10 +44,6 @@ class GatewayApiTest {
     fun apiTest() = runBlocking {
         val gatewayReq = GatewayReq(1)
 
-        // client.get<Gateway> {
-        //
-        // }
-
 
         val gateway: ObjectResp<Gateway> =
             gatewayReq.doRequest(
@@ -60,20 +57,25 @@ class GatewayApiTest {
         println(gateway.message)
         println(gateway.data)
 
-        var session: DefaultClientWebSocketSession? = null
+        // var session: DefaultClientWebSocketSession? = null
 
         client.ws(gateway.data!!.url) {
-            session = this
+            // session = this
             when (val frame: Frame = incoming.receive()) {
                 is Frame.Text -> println("[Text  ]: " + frame.readText())
-                is Frame.Binary -> println("[Binary]: " + frame.readBytes().decodeToString())
+                is Frame.Binary -> {
+                    val text = InflaterInputStream(frame.readBytes().inputStream()).reader(Charsets.UTF_8).use {
+                        it.readText()
+                    }
+
+                    println("[Binary-text]: $text")
+                }
                 is Frame.Close -> println("[Close ]: " + frame.readBytes().decodeToString())
                 is Frame.Ping -> println("[Ping  ]: " + frame.readBytes().decodeToString())
                 is Frame.Pong -> println("[Pong: ]: " + frame.readBytes().decodeToString())
             }
 
-            delay(5000)
-
+            delay(3000)
             this.close()
 
         }
