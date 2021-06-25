@@ -16,6 +16,7 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.guild
 
+import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -40,6 +41,8 @@ public class GuildNicknameReq(
         @JvmStatic
         public fun builder(): GuildNicknameReqBuilder = GuildNicknameReqBuilder()
     }
+    override val method: HttpMethod
+        get() = HttpMethod.Post
 
     override val key: ApiData.Req.Key
         get() = Key

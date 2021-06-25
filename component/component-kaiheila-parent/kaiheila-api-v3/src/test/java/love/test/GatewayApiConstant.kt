@@ -38,3 +38,5 @@ val client = HttpClient(CIO) {
     }
     install(WebSockets)
 }
+
+const val guildId = "6865507942900765"

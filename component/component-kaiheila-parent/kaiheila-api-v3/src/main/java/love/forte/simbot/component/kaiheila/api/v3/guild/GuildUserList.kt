@@ -16,6 +16,7 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.guild
 
+import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -34,29 +35,22 @@ import love.forte.simbot.component.kaiheila.api.*
  */
 public class GuildUserListReq(
     /**	是 服务器的 ID */
-    @SerialName("guild_id")
     val guildId: String,
     /**	否 服务器中频道的 ID */
-    @SerialName("channel_id")
     val channelId: String? = null,
     /**	否 搜索关键字，在用户名或昵称中搜索 */
     val search: String? = null,
     /**	否 角色 ID，获取特定角色的用户列表 */
-    @SerialName("role_id")
     val roleId: Int? = null,
     /**	否 只能为0或1，0是未认证，1是已认证 */
-    @SerialName("mobile_verified")
     val mobileVerified: Int? = null,
     /**	否 根据活跃时间排序，0是顺序排列，1是倒序排列 */
-    @SerialName("active_time")
     val activeTime: Int? = null,
     /**	否 根据加入时间排序，0是顺序排列，1是倒序排列 */
-    @SerialName("joined_at")
     val joinedAt: Int? = null,
     /**	否 目标页 */
     val page: Int? = null,
     /**	否 每页数据数量 */
-    @SerialName("page_size")
     val pageSize: Int? = null,
 ) : GuildApiReq<ObjectResp<GuildUserList>> {
 
@@ -69,6 +63,9 @@ public class GuildUserListReq(
         fun builder(): GuildUserListReqBuilder = GuildUserListReqBuilder()
     }
 
+    override val method: HttpMethod
+        get() = HttpMethod.Get
+
     override val key: ApiData.Req.Key
         get() = Key
 
@@ -77,6 +74,17 @@ public class GuildUserListReq(
 
     override fun route(builder: RouteInfoBuilder) {
         builder.apiPath = ROUTE
+        builder.parameters {
+            append("guild_id", guildId)
+            appendIfNotnull("channelId", channelId) { it }
+            appendIfNotnull("search", search) { it }
+            appendIfNotnull("roleId", roleId)
+            appendIfNotnull("mobileVerified", mobileVerified)
+            appendIfNotnull("activeTime", activeTime)
+            appendIfNotnull("joinedAt", joinedAt)
+            appendIfNotnull("page", page)
+            appendIfNotnull("pageSize", pageSize)
+        }
     }
 
     override val body: Any?
@@ -84,30 +92,36 @@ public class GuildUserListReq(
 }
 
 
-
-public inline fun guildUserListReq(block: GuildUserListReqBuilder.() -> Unit) : GuildUserListReq {
+public inline fun guildUserListReq(block: GuildUserListReqBuilder.() -> Unit): GuildUserListReq {
     return GuildUserListReqBuilder().also(block).build()
 }
-
 
 
 public class GuildUserListReqBuilder {
     /**	是 服务器的 ID */
     var guildId: String? = null
+
     /**	否 服务器中频道的 ID */
     var channelId: String? = null
+
     /**	否 搜索关键字，在用户名或昵称中搜索 */
     var search: String? = null
+
     /**	否 角色 ID，获取特定角色的用户列表 */
     var roleId: Int? = null
+
     /**	否 只能为0或1，0是未认证，1是已认证 */
     var mobileVerified: Int? = null
+
     /**	否 根据活跃时间排序，0是顺序排列，1是倒序排列 */
     var activeTime: Int? = null
+
     /**	否 根据加入时间排序，0是顺序排列，1是倒序排列 */
     var joinedAt: Int? = null
+
     /**	否 目标页 */
     var page: Int? = null
+
     /**	否 每页数据数量 */
     var pageSize: Int? = null
 
@@ -141,5 +155,55 @@ public data class GuildUserList(
     /**
      * 用户列表
      */
-    val items: List<User>,
+    val items: List<GuildUser>,
 ) : GuildApiRespData
+
+
+/**
+ * Guild User from [GuildUserListReq]
+ *
+ * ```json
+ *  {
+ *  "id": "444",
+ *  "username": "***",
+ *  "avatar": "https:// **.jpg",
+ *  "online": true,
+ *  "nickname": "***",
+ *  "joined_at": 1611743334000,
+ *  "active_time": 1612691445583,
+ *  "roles": [],
+ *  "is_master": true,
+ *  "abbr": "***",
+ *  }
+ * ```
+ */
+@Serializable
+public data class GuildUser(
+    override val id: String,
+    override val username: String,
+    override val nickname: String,
+    override val online: Boolean,
+    override val status: Int = 0,
+    override val avatar: String,
+    override val bot: Boolean = false,
+    @SerialName("joined_at")
+    val joinedAt: Long,
+    @SerialName("active_time")
+    val activeTime: Long,
+    @SerialName("is_master")
+    val master: Boolean,
+    @SerialName("mobile_verified")
+    override val mobileVerified: Boolean = false,
+    override val system: Boolean = false,
+    @SerialName("invited_count")
+    override val invitedCount: Int = 0,
+    @SerialName("identify_num")
+    override val identifyNum: String = username.split("#", limit = 2).let { if (it.size < 2) it[1] else "" },
+    override val roles: List<Int> = emptyList(),
+) : User {
+
+    override val mobilePrefix: String? get() = null
+    override val mobile: String? get() = null
+    override val originalData: String
+        get() = this.toString()
+}
