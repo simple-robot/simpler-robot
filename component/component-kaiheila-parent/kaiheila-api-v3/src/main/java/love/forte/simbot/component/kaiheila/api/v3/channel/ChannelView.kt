@@ -18,23 +18,24 @@ import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import love.forte.simbot.component.kaiheila.`object`.Channel
 import love.forte.simbot.component.kaiheila.`object`.ChannelPermissionOverwrites
 import love.forte.simbot.component.kaiheila.api.*
 
 
 /**
- * [获取频道列表](https://developer.kaiheila.cn/doc/http/channel#%E8%8E%B7%E5%8F%96%E9%A2%91%E9%81%93%E5%88%97%E8%A1%A8)
+ *
+ * [获取频道详情](https://developer.kaiheila.cn/doc/http/channel#%E8%8E%B7%E5%8F%96%E9%A2%91%E9%81%93%E8%AF%A6%E6%83%85)
  *
  * request method: GET
  *
+ * @author ForteScarlet
  */
-public class ChannelListReq(private val guildId: String) : ChannelApiReq<ListResp<ChannelInfo, ApiData.Resp.EmptySort>> {
-    companion object Key : ApiData.Req.Key by key("/channel/list") {
-        private val ROUTE = listOf("channel", "list")
-        private val DATA_SERIALIZER: DeserializationStrategy<ListResp<ChannelInfo, ApiData.Resp.EmptySort>> =
-            listResp(ChannelInfo.serializer())
+public class ChannelViewReq(private val targetId: String) : ChannelApiReq<ObjectResp<ChannelView>> {
+    companion object Key : ApiData.Req.Key by key("/channel/view") {
+        private val ROUTE = listOf("channel", "view")
+        private val DATA_SERIALIZER: DeserializationStrategy<ObjectResp<ChannelView>> =
+            objectResp(ChannelView.serializer())
     }
 
     override val method: HttpMethod
@@ -42,84 +43,71 @@ public class ChannelListReq(private val guildId: String) : ChannelApiReq<ListRes
 
     override val key: ApiData.Req.Key get() = Key
 
-    override val dataSerializer: DeserializationStrategy<ListResp<ChannelInfo, ApiData.Resp.EmptySort>>
+    override val dataSerializer: DeserializationStrategy<ObjectResp<ChannelView>>
         get() = DATA_SERIALIZER
-
-    override fun route(builder: RouteInfoBuilder) {
-        builder.apiPath = ROUTE
-        builder.parameters {
-            append("guild_id", guildId)
-        }
-    }
 
     override val body: Any?
         get() = null
 
-    override fun post(resp: ListResp<ChannelInfo, ApiData.Resp.EmptySort>) {
-        resp.data.items.forEach { it.guildIdLate = guildId }
+    override fun route(builder: RouteInfoBuilder) {
+        builder.apiPath = ROUTE
+        builder.parameters {
+            append("target_id", targetId)
+        }
     }
 }
 
 
 
-@Serializable()
-public data class ChannelInfo(
-    /**
-     * 频道id
-     */
+
+
+
+
+/**
+ * [频道详情](https://developer.kaiheila.cn/doc/http/channel#%E8%8E%B7%E5%8F%96%E9%A2%91%E9%81%93%E8%AF%A6%E6%83%85)
+ */
+@Serializable
+data class ChannelView(
+    /** 频道id */
     override val id: String,
-    /**
-     *	频道名称
-     */
-    override val name: String,
-    /**
-     * 是否为分组类型
-     */
-    @SerialName("is_category")
-    override val category: Boolean,
-    /**
-     *	频道创建者id
-     */
+    /** 服务器id */
+    @SerialName("guild_id")
+    override val guildId: String,
+    /** 频道创建者id */
     @SerialName("master_id")
     override val masterId: String,
-    /**
-     *	父分组频道id
-     */
+    /** 父分组频道id */
     @SerialName("parent_id")
     override val parentId: String,
-    /**
-     * 频道排序
-     */
-    override val level: Int,
-    /**
-     * 频道类型
-     */
+    /** 频道名称 */
+    override val name: String,
+    /** 频道简介 */
+    override val topic: String,
+    /** 频道类型，1 文字，2 语音 */
     override val type: Int,
-
+    /** 频道排序 */
+    override val level: Int,
+    /** 慢速限制，单位秒。用户发送消息之后再次发送消息的等待时间。 */
+    @SerialName("slow_mode")
+    override val slowMode: Int,
+    /** 人数限制 */
     @SerialName("limit_amount")
     val limitAmount: Int,
-
-
-    override val topic: String = "",
-    @SerialName("slow_mode")
-    override val slowMode: Int = 0,
+    /** 是否为分组类型 */
+    @SerialName("is_category")
+    override val category: Boolean,
+    /** 语音服务器地址，HOST:PORT的格式 */
+    @SerialName("server_url")
+    val serverUrl: String,
+    // maybe miss
     @SerialName("permission_overwrites")
     override val permissionOverwrites: List<ChannelPermissionOverwrites> = emptyList(),
     @SerialName("permission_users")
     override val permissionUsers: List<String> = emptyList(),
     @SerialName("permission_sync")
     override val permissionSync: Int = 0,
-) : Channel {
 
-    @Transient
-    internal lateinit var guildIdLate: String
-    override val guildId: String get() = guildIdLate
+    ) : ChannelApiRespData, Channel {
     override val originalData: String
         get() = toString()
-
 }
-
-
-
-
-

@@ -73,7 +73,7 @@ public interface Channel : KhlObjects, GroupInfo {
     override val groupAvatar: String? get() = null
 
     /** 创建者id */
-    val userId: String
+    val masterId: String
 
     /** 服务器id */
     val guildId: String
@@ -127,8 +127,8 @@ public interface Channel : KhlObjects, GroupInfo {
 public data class ChannelImpl(
     override val id: String,
     override val name: String,
-    @SerialName("user_id")
-    override val userId: String,
+    @SerialName("master_id")
+    override val masterId: String,
     @SerialName("guild_id")
     override val guildId: String,
     override val topic: String,
