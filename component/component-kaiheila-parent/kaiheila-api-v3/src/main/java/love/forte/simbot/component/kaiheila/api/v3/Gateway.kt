@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.kaiheila.api.v3
 
+import io.ktor.http.*
 import kotlinx.serialization.Serializable
 import love.forte.simbot.component.kaiheila.api.*
 
@@ -27,6 +28,9 @@ import love.forte.simbot.component.kaiheila.api.*
 public data class GatewayReq(val compress: Int = 1) :
     ApiData.Req<ObjectResp<Gateway>> {
     override val dataSerializer = Key.dataSerializer
+
+    override val method: HttpMethod
+        get() = HttpMethod.Get
 
     override fun route(builder: RouteInfoBuilder) {
         builder.apiPath = ROUTE

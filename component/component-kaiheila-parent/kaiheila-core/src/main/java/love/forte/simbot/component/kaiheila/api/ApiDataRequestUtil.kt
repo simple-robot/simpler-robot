@@ -12,15 +12,23 @@
  *  
  */
 
-@file:JvmName("ApiDataReuestUtil")
+@file:JvmName("ApiDataRequestUtil")
 
 package love.forte.simbot.component.kaiheila.api
 
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import love.forte.simbot.component.kaiheila.khlJson
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import kotlin.contracts.ExperimentalContracts
+
+
+public val logger: Logger = LoggerFactory.getLogger(ApiData::class.java)
 
 
 /**
@@ -34,17 +42,13 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
     token: String? = null,
     authorizationType: AuthorizationType = AuthorizationType.BOT,
 ): HTTP_RESP {
-    // contract {
-    //     returns() implies (authorization == null)
-    // }
-    // require(authorization == null || authorizationType != null) {
-    //     "Require authorizationType when authorization is not null."
-    // }
-
     var apiPath: List<String> = emptyList()
 
     val responseContent = client.request<String> {
+
         contentType(ContentType.Application.Json)
+        method = this@doRequest.method
+
         token?.let { auth ->
             header("Authorization", authorizationType.getAuthorization(auth))
         }
@@ -66,13 +70,34 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
     //     }
     // }
 
+    // val log = when (val key = this.key) {
+    //     is LogAble -> key.log
+    //     else -> logger
+    // }
+
     println(responseContent)
+
+    val jsonElement = khlJson.parseToJsonElement(responseContent)
+
+    val jsonObject = jsonElement.jsonObject
+
+    val code = jsonObject["code"]?.jsonPrimitive?.intOrNull ?: 0
+
+    if (code != 0) {
+        val message = jsonObject["message"]?.jsonPrimitive?.toString()
+        throw KhlApiHttpResponseException(buildString {
+            append("api: ").append("'").append(this@doRequest.key.id).append("', ")
+            append("code: ").append(code)
+            append(", msg: ").append(message ?: "<EMPTY MESSAGE>")
+            append(", data: ").append(jsonObject["data"])
+        })
+    }
 
     // val contentText = resp.readText(Charsets.UTF_8)
 
-    val data = khlJson.decodeFromString(deserializer = this.dataSerializer, responseContent)
+    return khlJson.decodeFromJsonElement(deserializer = this.dataSerializer, jsonElement)
 
-    return data.check { apiPath.joinToString("/") }
+    // return data.check { apiPath.joinToString("/") }
 }
 
 

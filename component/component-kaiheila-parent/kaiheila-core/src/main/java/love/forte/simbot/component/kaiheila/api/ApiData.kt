@@ -50,6 +50,11 @@ public sealed interface ApiData {
 
 
         /**
+         * 此api请求方式
+         */
+        val method: HttpMethod
+
+        /**
          * 此请求对应的api路由路径以及路径参数。
          * 例如：`/guild/list`
          */
@@ -129,6 +134,20 @@ public sealed interface ApiData {
 }
 
 
+/**
+ * 没有data元素的响应体。
+ */
+@Serializable
+public data class EmptyResp(
+    override val code: Int,
+    override val message: String,
+) : ApiData.Resp<Any?> {
+    override val data: Any?
+        get() = null
+}
+
+
+
 public fun key(api: String): Req.Key = object : Req.Key {
     override val id: String = api
 }
@@ -158,6 +177,11 @@ public inline fun RouteInfoBuilder.parameters(block: ParametersBuilder.() -> Uni
     parametersBuilder.block()
 }
 
+public inline fun <reified T> ParametersBuilder.appendIfNotnull(name: String, value: T?, toStringBlock: (T) -> String = { it.toString() }) {
+    value?.let { v -> append(name, toStringBlock(v)) }
+}
+
+
 private data class RouteInfoBuilderImpl(
     override var apiPath: List<String> = emptyList(),
     override val parametersBuilder: ParametersBuilder,
@@ -179,6 +203,7 @@ public fun <RESP : ApiData.Resp.Data, SORT> listResp(
 ): KSerializer<ListResp<RESP, SORT>> = ListResp.serializer(subSerializer, sorterSerializer)
 
 
+public fun emptyResp(): KSerializer<EmptyResp> = EmptyResp.serializer()
 
 
 
@@ -289,52 +314,3 @@ public data class RespPageMeta(
     val total: Int,
 )
 
-
-// public data class ReqData<HTTP_RESP : ApiData.HttpResp<*>>
-// @JvmOverloads
-// constructor(
-//     override val route: String,
-//     override val authorization: String? = null,
-//     override val body: Any? = null,
-//     private val doClient: suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP,
-// ) : Req<HTTP_RESP> {
-//     override suspend fun request(client: HttpClient, block: HttpRequestBuilder.() -> Unit): HTTP_RESP =
-//         doClient(client, block)
-// }
-//
-//
-// @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
-// @DslMarker
-// public annotation class ReqBuilderDsl
-//
-//
-// public class ReqBuilder<HTTP_RESP : ApiData.HttpResp<*>>
-// @JvmOverloads
-// constructor(
-//     var route: String? = null,
-//     var doClient: (suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP)? = null,
-// ) {
-//     @ReqBuilderDsl
-//     var authorization: String? = null
-//
-//     @ReqBuilderDsl
-//     var parameters: Any? = null
-//
-//     /** Build instance. */
-//     fun build(): Req<HTTP_RESP> = ReqData(
-//         route = requireNotNull(route) { "Require route was null." },
-//         authorization = authorization,
-//         body = parameters,
-//         doClient = requireNotNull(doClient) { "Require doClient function was null." },
-//     )
-//
-// }
-//
-//
-// public inline fun <reified HTTP_RESP : ApiData.HttpResp<*>> req(
-//     route: String? = null,
-//     noinline doClient: suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP,
-//     block: ReqBuilder<HTTP_RESP>.() -> Unit,
-// ): Req<HTTP_RESP> {
-//     return ReqBuilder(route, doClient).apply(block).build()
-// }
