@@ -35,7 +35,7 @@ public class GuildMuteCreateReq(
     /** 1代表麦克风闭麦，2代表耳机静音 */
     type: Int
 ) : GuildApiReq<EmptyResp> {
-    private companion object Key : ApiData.Req.Key by key("/guild-mute/create") {
+    companion object Key : ApiData.Req.Key by key("/guild-mute/create") {
         private val ROUTE = listOf("guild-mute", "create")
     }
 

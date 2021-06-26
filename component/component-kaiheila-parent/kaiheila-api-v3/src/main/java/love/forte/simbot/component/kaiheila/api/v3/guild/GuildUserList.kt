@@ -1,16 +1,14 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  simpler-robot
- *  * File     GuildUserList.kt
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
@@ -54,7 +52,7 @@ public class GuildUserListReq(
     val pageSize: Int? = null,
 ) : GuildApiReq<ObjectResp<GuildUserList>> {
 
-    private companion object Key : ApiData.Req.Key by key("/guild/user-list") {
+    companion object Key : ApiData.Req.Key by key("/guild/user-list") {
         private val ROUTE = listOf("guild", "user-list")
         private val DATA_SERIALIZER: DeserializationStrategy<ObjectResp<GuildUserList>> =
             objectResp(GuildUserList.serializer())

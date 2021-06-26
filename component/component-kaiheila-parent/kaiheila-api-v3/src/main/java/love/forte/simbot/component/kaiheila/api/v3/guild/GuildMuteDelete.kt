@@ -36,7 +36,7 @@ public class GuildMuteDeleteReq(
     /** 1代表麦克风闭麦，2代表耳机静音 */
     type: Int
 ) : GuildApiReq<EmptyResp> {
-    private companion object Key : ApiData.Req.Key by key("/guild-mute/delete") {
+    companion object Key : ApiData.Req.Key by key("/guild-mute/delete") {
         private val ROUTE = listOf("guild-mute", "delete")
     }
 

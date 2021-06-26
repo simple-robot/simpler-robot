@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory
 import kotlin.contracts.ExperimentalContracts
 
 
-public val logger: Logger = LoggerFactory.getLogger(ApiData::class.java)
+internal val logger: Logger = LoggerFactory.getLogger(ApiData::class.java)
 
 
 /**

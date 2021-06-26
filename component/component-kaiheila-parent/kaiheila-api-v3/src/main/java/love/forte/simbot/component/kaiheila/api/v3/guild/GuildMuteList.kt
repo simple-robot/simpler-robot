@@ -1,16 +1,14 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  simpler-robot
- *  * File     GuildMuteList.kt
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
@@ -34,7 +32,7 @@ public sealed class GuildMuteListReq<T : GuildMuteListResult>(
     private val guildId: String,
     detailResultType: Boolean
 ) : GuildApiReq<ObjectResp<T>> {
-    private companion object Key : ApiData.Req.Key by key("/guild-mute/list") {
+    companion object Key : ApiData.Req.Key by key("/guild-mute/list") {
         private val ROUTE = listOf("guild-mute", "list")
         private val DETAIL_SERIALIZER: DeserializationStrategy<ObjectResp<GuildMuteListByDetail>> = objectResp(GuildMuteListByDetail.serializer())
         private val SIMPLE_SERIALIZER: DeserializationStrategy<ObjectResp<GuildMuteListBySimple>> = objectResp(GuildMuteListBySimple.serializer())

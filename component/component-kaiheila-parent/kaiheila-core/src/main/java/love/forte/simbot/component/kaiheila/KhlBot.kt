@@ -16,7 +16,10 @@
 @file:JvmName("KaiheilaBots")
 package love.forte.simbot.component.kaiheila
 
+import love.forte.simbot.LogAble
+import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.component.kaiheila.api.ApiConfiguration
+import org.slf4j.Logger
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -32,7 +35,12 @@ import kotlin.contracts.contract
  *
  * @author ForteScarlet
  */
-public interface KhlBot {
+public interface KhlBot : LogAble, BotInfo {
+
+    /**
+     * bot所属的logger
+     */
+    override val log: Logger
 
     /**
      * 此bot所使用的api配置信息。
@@ -43,6 +51,12 @@ public interface KhlBot {
      * Client id.
      */
     val clientId: String
+
+    override val botCode: String
+        get() = clientId
+
+    override val botCodeNumber: Long
+        get() = error("KHL Bot's client does not support numbers.")
 
     /**
      * token info. 可以重新生成，因此也允许运行时更新。
@@ -61,6 +75,17 @@ public interface KhlBot {
      */
     val connectionMode: ConnectionMode
 
+
+    /**
+     * 启用这个bot
+     */
+    suspend fun start()
+
+
+    /**
+     * 终止这个bot.
+     */
+    suspend fun close(cause: Throwable? = null)
 
 }
 
