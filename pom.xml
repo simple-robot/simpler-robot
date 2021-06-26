@@ -16,7 +16,6 @@
 
     <modules>
         <module>core-api/api</module>
-        <module>core-api/api-qq</module>
         <module>core-api/core</module>
         <module>component</module>
         <module>spring-boot-starter</module>
