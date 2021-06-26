@@ -19,7 +19,7 @@ import love.forte.simbot.component.kaiheila.api.apiVersion
 
 
 /**
- * 占位文件。
+ * V3版本的api
  * @author ForteScarlet
  */
 public object V3 : Api by apiVersion(3)

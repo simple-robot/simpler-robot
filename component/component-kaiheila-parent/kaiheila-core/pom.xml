@@ -34,6 +34,12 @@
             <groupId>io.ktor</groupId>
             <artifactId>ktor-client-serialization-jvm</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>love.forte.common</groupId>
+            <artifactId>log</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

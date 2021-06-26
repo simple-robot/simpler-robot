@@ -39,6 +39,7 @@ public interface ApiConfiguration {
     /** 是否指定语言。 */
     val language: String?
 
+
     companion object {
         @JvmStatic
         fun builder(): ApiConfigurationBuilder = ApiConfigurationBuilder()
@@ -76,7 +77,7 @@ public class ApiConfigurationBuilder {
     @ApiConfigurationBuildDsl
     var api: Api? = null
     @ApiConfigurationBuildDsl
-    var authorizationType: AuthorizationType? = null
+    var authorizationType: AuthorizationType = AuthorizationType.BOT
     @ApiConfigurationBuildDsl
     var language: String? = null
 
@@ -84,7 +85,7 @@ public class ApiConfigurationBuilder {
     fun build(): ApiConfiguration {
         return ApiConfigurationImpl(
             requireNotNull(api) { "Required apiVersion was null." },
-            requireNotNull(authorizationType) { "Required authorizationType was null." },
+            authorizationType,
             language
         )
     }
