@@ -57,6 +57,7 @@ public data class FilterTargetProcessorContext(override val mainValue: FilterDat
  */
 public interface FilterTargetProcessor : Processor<FilterData, FilterTargetProcessorContext, String?> {
 
+    
     override fun processor(processContext: FilterTargetProcessorContext): String? = getTargetText(processContext.mainValue)
 
     /**

@@ -48,11 +48,13 @@ public interface BotManager : BotRegistrar, BotDestroyer {
     /**
      * override for [getBot].
      */
+    
     fun getBot(bot: BotCodeContainer): Bot = getBot(bot.botCode)
 
     /**
      * override for [getBot].
      */
+    
     fun getBot(bot: BotContainer): Bot = getBot(bot.botInfo)
 
     /**
@@ -65,11 +67,13 @@ public interface BotManager : BotRegistrar, BotDestroyer {
     /**
      * override for [getBot].
      */
+    
     fun getBotOrNull(bot: BotCodeContainer): Bot? = getBotOrNull(bot.botCode)
 
     /**
      * override for [getBot].
      */
+    
     fun getBotOrNull(bot: BotContainer): Bot? = getBotOrNull(bot.botInfo)
 
 

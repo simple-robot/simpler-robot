@@ -71,17 +71,21 @@ public interface MessageContentBuilder {
     fun at(code: String): MessageContentBuilder
 
     /** 向当前构建的消息中追加一个 'at某人'的消息。 */
+    
     fun at(code: Long): MessageContentBuilder = at(code.toString())
 
     /** 向当前构建的消息中追加一个 'at某人'的消息。 */
+    
     fun at(code: AccountCodeContainer): MessageContentBuilder = at(code.accountCode)
 
     /** 向当前构建的消息中追加一个 'at某人'的消息。 */
+    
     fun at(code: AccountContainer): MessageContentBuilder = at(code.accountInfo)
 
     /** 向当前构建的消息中追加一个 '表情'消息。 */
     fun face(id: String): MessageContentBuilder
 
+    
     fun face(id: Int): MessageContentBuilder = face(id.toString())
 
     /**
@@ -93,17 +97,21 @@ public interface MessageContentBuilder {
     fun imageUrl(url: String, flash: Boolean): MessageContentBuilder
 
     /** 向当前构建的消息中追加一个本地图片。 */
+    
     fun imageLocal(path: String): MessageContentBuilder = imageLocal(path, false)
 
     /** 向当前构建的消息中追加一个网络图片。 */
+    
     fun imageUrl(url: String): MessageContentBuilder = imageUrl(url, false)
 
     /** 向当前构建的消息中追加一个本地图片或网络图片。 */
+    
     fun image(path: String, flash: Boolean): MessageContentBuilder =
         if (path.startsWith("http")) imageUrl(path, flash)
         else imageLocal(path, flash)
 
     /** 向当前构建的消息中追加一个本地图片或网络图片。 */
+    
     fun image(path: String): MessageContentBuilder =
         if (path.startsWith("http")) imageUrl(path)
         else imageLocal(path)
@@ -123,10 +131,12 @@ public interface MessageContentBuilder {
      * 向当前构建的消息中追加一个图片流。
      * 此输入流会立即被使用，需要手动关闭 [输入流][input].
      */
+    
     @InstantInit
     fun image(input: InputStream): MessageContentBuilder = image(input, false)
 
     /** 向当前构建的消息中追加一个图片字节数组。 */
+    
     fun image(imgData: ByteArray): MessageContentBuilder = image(imgData, false)
 
     // TODO 支持与其他 [MessageContent] 进行合并/拼接。

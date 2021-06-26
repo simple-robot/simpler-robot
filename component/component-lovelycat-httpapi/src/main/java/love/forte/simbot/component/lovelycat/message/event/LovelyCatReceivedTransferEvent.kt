@@ -44,6 +44,7 @@ public interface LovelyCatReceivedTransfer: LovelyCatMsg, BotContainer, AccountC
     /**
      * 文本消息即为 [transferInfo] 中的备注信息。
      */
+    
     override val text: String
         get() = transferInfo.remark
 

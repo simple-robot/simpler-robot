@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -131,7 +131,7 @@ public class MiraiSender(
         }
     }
 
-    override fun sendGroupMsg(group: String, msg: String) =
+    override fun sendGroupMsg(parent: String?, group: String, msg: String) =
         sendGroupMsg0(group.toLong(), msg.toMiraiMessageContent(message, cache, remoteResourceInProcessor))
 
     override fun sendGroupMsg(group: String, msg: MessageContent) =

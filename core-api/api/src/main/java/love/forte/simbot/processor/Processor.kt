@@ -44,6 +44,7 @@ public interface SuspendableProcessor<T, C : Context<T>, R> : Processor<T, C, R>
     /**
      * 阻塞的 [suspendableProcessor].
      */
+    
     override fun processor(processContext: C): R = runBlocking { suspendableProcessor(processContext) }
 
     /**

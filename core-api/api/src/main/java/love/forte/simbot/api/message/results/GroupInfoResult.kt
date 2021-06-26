@@ -100,6 +100,7 @@ public interface GroupList : MultipleResults<SimpleGroupInfo>
 public interface GroupAdmin : GroupAccountInfo, PermissionContainer {
 
 
+    
     override val permission: Permissions
         get() = Permissions.ADMINISTRATOR
 }
@@ -121,6 +122,7 @@ public data class GroupAdminImpl(private val account: GroupAccountInfo) : GroupA
 public interface GroupOwner : GroupAdmin, GroupAccountInfo, PermissionContainer {
 
 
+    
     override val permission: Permissions
         get() = Permissions.OWNER
 }

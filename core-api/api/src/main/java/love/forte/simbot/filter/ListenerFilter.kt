@@ -49,17 +49,20 @@ public interface ListenerFilter : (FilterData) -> Boolean {
      */
     fun test(data: FilterData): Boolean
 
+    
     override fun invoke(p1: FilterData): Boolean = test(p1)
 
     /**
      * 尝试从文本中提取动态过滤参数。
      * 自定义实现下可以直接返回一个 `null`。
      */
+    
     fun getFilterValue(name: String, text: String): String? = null
 
     /**
      * 优先级，默认为最低级。
      */
+    
     val priority: Int get() = PriorityConstant.LAST
 }
 

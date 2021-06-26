@@ -41,11 +41,13 @@ public interface Interceptor<T, C: Context<T>> : Comparable<Interceptor<T, C>> {
     /**
      * 排序值，默认即为最低值。一般情况下可以不用重写此方法。
      */
+    
     val priority: Int get() = PriorityConstant.LAST
 
     /**
      * 排序。
      */
+    
     override fun compareTo(other: Interceptor<T, C>): Int = priority.compareTo(other.priority)
 
 

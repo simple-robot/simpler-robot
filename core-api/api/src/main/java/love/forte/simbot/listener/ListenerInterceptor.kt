@@ -64,6 +64,7 @@ public interface ListenerInterceptContext : Context<ListenerFunction> {
     @OptIn(SimbotExperimentalApi::class)
     val listenerContext: ListenerContext
 
+    
     override val mainValue: ListenerFunction
         get() = listenerFunction
 }

@@ -35,7 +35,7 @@ public object WarnSender : LogAble, Sender.Def {
         log.warn("Sender api {} is not supported. Will return to the default value {}", name, def())
     }
 
-    override fun sendGroupMsg(group: String, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
+    override fun sendGroupMsg(parent: String?, group: String, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
         apiWarn("sendGroupMsg") { null }.let { Carrier.empty() }
 
 

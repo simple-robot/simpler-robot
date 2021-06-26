@@ -98,6 +98,7 @@ public interface FriendMsg : PrivateMsg {
     /**
      * 类型，固定为[PrivateMsg.Type.FRIEND]。
      */
+    
     override val privateMsgType: PrivateMsg.Type
         get() = PrivateMsg.Type.FRIEND
 

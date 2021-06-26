@@ -55,22 +55,26 @@ public interface MultipleResults<T : Result> : Result, Iterable<T> {
     /**
      * 习惯用法, 得到 [results] 的长度。
      */
+    
     fun size(): Int = results.size
 
     /**
      * 获取一个迭代器
      */
+    
     override operator fun iterator(): Iterator<T> = results.iterator()
 
     /**
      * 结果集是否为空
      */
+    
     fun isEmpty(): Boolean = results.isEmpty()
 
 
     /**
      * 将 [results] 转化为 [java.util.stream.Stream]
      */
+    
     fun stream(): java.util.stream.Stream<T> = results.stream()
 
 

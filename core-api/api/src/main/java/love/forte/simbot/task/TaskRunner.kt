@@ -27,6 +27,7 @@ public fun interface Runner : Runnable {
     /**
      * override from [Runnable.run].
      */
+    
     override fun run() {
         this()
     }

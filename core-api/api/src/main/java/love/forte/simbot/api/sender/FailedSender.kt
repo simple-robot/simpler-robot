@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -27,7 +27,7 @@ import love.forte.simbot.api.message.events.PrivateMsg
  */
 public object FailedSender : Sender.Def {
 
-    override fun sendGroupMsg(group: String, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> = Carrier.empty()
+    override fun sendGroupMsg(parent: String?, group: String, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> = Carrier.empty()
 
     override fun sendPrivateMsg(code: String, group: String?, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> = Carrier.empty()
 

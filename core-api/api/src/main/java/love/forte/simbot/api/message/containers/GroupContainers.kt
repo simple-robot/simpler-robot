@@ -28,9 +28,20 @@ public interface GroupCodeContainer : Container {
     /** 群号 */
     val groupCode: String
 
+    /**
+     * 这个群(可能)拥有的一个父节点，或者null。
+     *
+     * @since 2.1.1
+     */
+    val parentCode: String? get() = null
+
     /** 群号的[Long]类型。如果可以作为数字的话。 */
+
     val groupCodeNumber: Long
         get() = groupCode.toLong()
+
+    
+    val parentCodeNumber: Long? get() = parentCode?.toLong()
 }
 
 /**

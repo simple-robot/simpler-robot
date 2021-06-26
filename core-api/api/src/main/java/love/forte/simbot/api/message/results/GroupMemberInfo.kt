@@ -32,6 +32,7 @@ public interface GroupMemberInfo : Result, GroupAccountInfo, GroupContainer, Per
     /**
      * 群成员对应的群信息。
      */
+    
     override val groupInfo: SimpleGroupInfo
 }
 

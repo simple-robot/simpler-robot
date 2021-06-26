@@ -44,31 +44,47 @@ public interface Sender : Communicator {
 
     /**
      * 发送一条群消息。
+     * @param parent String? 如果这个群有“父节点”，那么parent代表其父节点。如果你不知道它的含义，请直接使用null。
      * @param group String 群号
      * @param msg String   消息正文
      * @return Carrier<Flag<GroupMsg.FlagContent>>. Flag为发出的消息的标识，可用于消息撤回。但是有可能为null（例如发送的消息无法撤回，比如戳一戳之类的，或者压根不支持撤回的）。
      */
-    fun sendGroupMsg(group: String, msg: String): Carrier<out Flag<GroupMsg.FlagContent>>
+    fun sendGroupMsg(parent: String?, group: String, msg: String): Carrier<out Flag<GroupMsg.FlagContent>>
 
     /* 下面都是重载。 */
+    // B2 B
+    fun sendGroupMsg(group: String, msg: String) = sendGroupMsg(null, group, msg)
+    // L3 B
+    fun sendGroupMsg(parent: Long?, group: Long, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
+        sendGroupMsg(parent?.toString(), group.toString(), msg)
+    // L2 B
     fun sendGroupMsg(group: Long, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
-        sendGroupMsg(group.toString(), msg)
-
+        sendGroupMsg(null, group.toString(), msg)
+    // MC3 B
+    fun sendGroupMsg(parent: String?, group: String, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
+        sendGroupMsg(parent, group, msg.msg)
+    // MC2 B2
     fun sendGroupMsg(group: String, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group, msg.msg)
-
+    // MCL3 MC3 B
+    fun sendGroupMsg(parent: Long?, group: Long, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
+        sendGroupMsg(parent?.toString(), group.toString(), msg)
+    // MCL2 MC2 B
     fun sendGroupMsg(group: Long, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.toString(), msg)
-
+    // GC B
     fun sendGroupMsg(group: GroupCodeContainer, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
-        sendGroupMsg(group.groupCode, msg)
+        sendGroupMsg(group.parentCode, group.groupCode, msg)
 
+    // G GC
     fun sendGroupMsg(group: GroupContainer, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.groupInfo, msg)
 
+    // GCM MC2
     fun sendGroupMsg(group: GroupCodeContainer, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.groupCode, msg)
 
+    // GM GCM
     fun sendGroupMsg(group: GroupContainer, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg(group.groupInfo, msg)
 
@@ -83,15 +99,19 @@ public interface Sender : Communicator {
     fun sendPrivateMsg(code: String, group: String?, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>>
 
     /* 下面都是重载。 */
+    
     fun sendPrivateMsg(code: Long, group: Long?, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.toString(), group?.toString(), msg)
 
+    
     fun sendPrivateMsg(code: String, group: String?, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code, group, msg.msg)
 
+    
     fun sendPrivateMsg(code: Long, group: Long?, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.toString(), group?.toString(), msg)
 
+    
     fun sendPrivateMsg(
         code: AccountCodeContainer,
         group: GroupCodeContainer?,
@@ -99,6 +119,7 @@ public interface Sender : Communicator {
     ): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountCode, group?.groupCode, msg)
 
+    
     fun sendPrivateMsg(
         code: AccountContainer,
         group: GroupContainer?,
@@ -106,6 +127,7 @@ public interface Sender : Communicator {
     ): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountInfo, group?.groupInfo, msg)
 
+    
     fun sendPrivateMsg(
         code: AccountCodeContainer,
         group: GroupCodeContainer?,
@@ -113,6 +135,7 @@ public interface Sender : Communicator {
     ): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountCode, group?.groupCode, msg)
 
+    
     fun sendPrivateMsg(
         code: AccountContainer,
         group: GroupContainer?,
@@ -121,27 +144,35 @@ public interface Sender : Communicator {
         sendPrivateMsg(code.accountInfo, group?.groupInfo, msg)
 
     /* group 为null的重载。 */
+    
     fun sendPrivateMsg(code: String, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code, null, msg)
 
+    
     fun sendPrivateMsg(code: Long, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.toString(), null, msg)
 
+    
     fun sendPrivateMsg(code: String, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code, null, msg.msg)
 
+    
     fun sendPrivateMsg(code: Long, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.toString(), null, msg)
 
+    
     fun sendPrivateMsg(code: AccountCodeContainer, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountCode, null, msg)
 
+    
     fun sendPrivateMsg(code: AccountContainer, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountInfo, null, msg)
 
+    
     fun sendPrivateMsg(code: AccountCodeContainer, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountCode, null, msg)
 
+    
     fun sendPrivateMsg(code: AccountContainer, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         sendPrivateMsg(code.accountInfo, null, msg)
 
@@ -166,6 +197,7 @@ public interface Sender : Communicator {
         confirm: Boolean
     ): Carrier<Boolean>
 
+    
     fun sendGroupNotice(
         group: Long,
         title: String?,
@@ -175,6 +207,7 @@ public interface Sender : Communicator {
         toNewMember: Boolean,
         confirm: Boolean
     ): Carrier<Boolean> = sendGroupNotice(group.toString(), title, text, popUp, top, toNewMember, confirm)
+    
     fun sendGroupNotice(
         group: GroupCodeContainer,
         title: String?,
@@ -184,6 +217,7 @@ public interface Sender : Communicator {
         toNewMember: Boolean,
         confirm: Boolean
     ): Carrier<Boolean> = sendGroupNotice(group.groupCode, title, text, popUp, top, toNewMember, confirm)
+    
     fun sendGroupNotice(
         group: GroupContainer,
         title: String?,
@@ -203,10 +237,13 @@ public interface Sender : Communicator {
      * @param message   签到内容文本
      */
     fun sendGroupSign(group: String, title: String, message: String): Carrier<Boolean>
+    
     fun sendGroupSign(group: Long, title: String, message: String): Carrier<Boolean> =
         sendGroupSign(group.toString(), title, message)
+    
     fun sendGroupSign(group: GroupCodeContainer, title: String, message: String): Carrier<Boolean> =
         sendGroupSign(group.groupCode, title, message)
+    
     fun sendGroupSign(group: GroupContainer, title: String, message: String): Carrier<Boolean> =
         sendGroupSign(group.groupInfo, title, message)
 

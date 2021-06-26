@@ -31,6 +31,7 @@ public interface OperatorCodeContainer : Container {
     /**
      * 操作者的code number
      */
+    
     val operatorCodeNumber: Long
         get() = operatorCode.toLong()
 }
@@ -107,6 +108,7 @@ public interface OperatorNameContainer : Container, OperatorNicknameContainer, O
      *
      * 如果有备注则得到备注，否则得到昵称
      */
+    
     val operatorRemarkOrNickname: String?
         get() = operatorRemark ?: operatorNickname
 
@@ -118,6 +120,7 @@ public interface OperatorNameContainer : Container, OperatorNicknameContainer, O
      * - `张三(张三的备注)`
      * - `李四` (没有备注)
      */
+    
     val operatorNicknameAndRemark: String
         get() = "$operatorNickname${operatorRemark?.let { "($it)" } ?: ""}"
 }
@@ -133,6 +136,7 @@ public interface BeOperatorNameContainer : Container, BeOperatorNicknameContaine
      *
      * 如果有备注则得到备注，否则得到昵称
      */
+    
     val beOperatorRemarkOrNickname: String?
         get() = beOperatorRemark ?: beOperatorNickname
 
@@ -144,6 +148,7 @@ public interface BeOperatorNameContainer : Container, BeOperatorNicknameContaine
      * - `张三(张三的备注)`
      * - `李四` (没有备注)
      */
+    
     val beOperatorNicknameAndRemark: String
         get() = "$beOperatorNickname${beOperatorRemark?.let { "($it)" } ?: ""}"
 }

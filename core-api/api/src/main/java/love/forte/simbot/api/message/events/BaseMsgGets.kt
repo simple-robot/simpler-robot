@@ -123,6 +123,7 @@ public interface MsgGet : OriginalDataContainer, BotContainer, AccountContainer,
      *
      * @see text
      */
+    
     fun isEmptyMsg(): Boolean = text == null
 
 
@@ -224,6 +225,7 @@ public infix fun <T : Class<out MsgGet>, V> MsgGet.findValuesIn(typeCollections:
  * 此父接口与 [MsgGet] 的唯一区别就是此接口为 [text] 提供了无效化的默认实现。
  */
 public interface EventGet : MsgGet {
+    
     override val text: String? get() = null
 }
 
@@ -267,6 +269,7 @@ public interface MessageGet : MsgGet, MessageContentContainer,
      * 默认获取的即为 [msgContent.msg][MessageContent.msg].
      *
      */
+    
     val msg: String get() = msgContent.msg
 
     /**
@@ -290,6 +293,7 @@ public interface MessageGet : MsgGet, MessageContentContainer,
      *
      *
      */
+    
     override val text: String get() = msg.let { CatCodeUtil.remove(it, trim = false) }
 
 
@@ -297,6 +301,7 @@ public interface MessageGet : MsgGet, MessageContentContainer,
      * 判断当前消息中是否为空消息。
      * 空消息指的是不存在msg，即msg == null，而不是msg为空字符。
      */
+    
     override fun isEmptyMsg(): Boolean = false
 
 
@@ -351,6 +356,7 @@ public interface MessageRecallEventGet : MsgGet, MessageContentContainer, Operat
     /**
      * 由于 [msgContent] 可能为`null`，因此 [msg] 也可能为`null`。
      */
+    
     val msg: String? get() = msgContent?.msg
 
     /**

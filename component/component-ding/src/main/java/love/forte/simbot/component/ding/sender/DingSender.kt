@@ -30,6 +30,7 @@ import love.forte.simbot.serialization.json.JsonSerializerFactory
 interface DingSender {
     fun sendMsg(msg: String): String
     fun sendMsg(msg: DingSpecialMessageChain): String
+    
     fun sendMsg(msg: DingSpecialMessage): String = sendMsg(msg.toDingChain())
 }
 

@@ -176,6 +176,7 @@ public interface LovelyCatApiTemplate {
      */
     fun getFriendList(robotWxid: String, isRefresh: Boolean): List<CatFriendInfo>
 
+    
     fun getFriendList(robotWxid: String) =
         getFriendList(robotWxid, false)
 
@@ -188,6 +189,7 @@ public interface LovelyCatApiTemplate {
      */
     fun getGroupList(robotWxid: String, isRefresh: Boolean): List<CatGroupInfo>
 
+    
     fun getGroupList(robotWxid: String) =
         getGroupList(robotWxid, false)
 
@@ -207,6 +209,7 @@ public interface LovelyCatApiTemplate {
         isRefresh: Boolean,
     ): CatGroupMemberInfo
 
+    
     fun getGroupMemberDetailInfo(robotWxid: String, groupWxid: String, memberWxid: String) =
         getGroupMemberDetailInfo(robotWxid, groupWxid, memberWxid, false)
 
@@ -220,6 +223,7 @@ public interface LovelyCatApiTemplate {
      */
     fun getGroupMemberList(robotWxid: String, groupWxid: String, isRefresh: Boolean): List<CatSimpleGroupMemberInfo>
 
+    
     fun getGroupMemberList(robotWxid: String, groupWxid: String) = getGroupMemberList(robotWxid, groupWxid, false)
 
     //**************** 请求相关 ****************//

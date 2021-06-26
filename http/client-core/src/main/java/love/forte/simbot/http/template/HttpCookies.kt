@@ -25,6 +25,7 @@ public interface HttpCookie {
     val domain: String?
     val path: String?
 
+    
     val maxAge: Int
         get() = 0
 

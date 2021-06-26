@@ -58,10 +58,13 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getFriendInfo(code: String): FriendInfo
 
+    
     fun getFriendInfo(code: Long): FriendInfo = getFriendInfo(code.toString())
 
+    
     fun getFriendInfo(code: AccountCodeContainer): FriendInfo = getFriendInfo(code.accountCode)
 
+    
     fun getFriendInfo(code: AccountContainer): FriendInfo = getFriendInfo(code.accountInfo)
 
     /**
@@ -69,19 +72,24 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getMemberInfo(group: String, code: String): GroupMemberInfo
 
+    
     fun getMemberInfo(group: Long, code: Long): GroupMemberInfo = getMemberInfo(group.toString(), code.toString())
 
+    
     fun getMemberInfo(group: GroupCodeContainer, code: AccountCodeContainer): GroupMemberInfo =
         getMemberInfo(group.groupCode, code.accountCode)
 
+    
     fun getMemberInfo(group: GroupContainer, code: AccountContainer): GroupMemberInfo =
         getMemberInfo(group, code)
 
+    
     fun <T> getMemberInfo(groupAndAccount: T): GroupMemberInfo
             where T : GroupCodeContainer,
                   T : AccountCodeContainer =
         getMemberInfo(groupAndAccount, groupAndAccount)
 
+    
     fun <T> getMemberInfo(groupAndAccount: T): GroupMemberInfo
             where T : GroupContainer,
                   T : AccountContainer =
@@ -93,8 +101,11 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getGroupInfo(group: String): GroupFullInfo
 
+    
     fun getGroupInfo(group: Long): GroupFullInfo = getGroupInfo(group.toString())
+    
     fun getGroupInfo(group: GroupCodeContainer): GroupFullInfo = getGroupInfo(group.groupCode)
+    
     fun getGroupInfo(group: GroupContainer): GroupFullInfo = getGroupInfo(group.groupInfo)
 
 
@@ -104,8 +115,10 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getFriendList(cache: Boolean, limit: Int): FriendList
 
+    
     fun getFriendList(limit: Int): FriendList = getFriendList(false, limit)
 
+    
     fun getFriendList(): FriendList = getFriendList(false, -1)
 
 
@@ -115,8 +128,10 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getGroupList(cache: Boolean, limit: Int): GroupList
 
+    
     fun getGroupList(limit: Int): GroupList = getGroupList(false, limit)
 
+    
     fun getGroupList(): GroupList = getGroupList(false, -1)
 
     /**
@@ -124,37 +139,48 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getGroupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList
 
+    
     fun getGroupMemberList(group: String, limit: Int): GroupMemberList =
         getGroupMemberList(group, false, limit)
 
+    
     fun getGroupMemberList(group: String): GroupMemberList =
         getGroupMemberList(group, false, -1)
 
 
+    
     fun getGroupMemberList(group: Long, cache: Boolean, limit: Int): GroupMemberList =
         getGroupMemberList(group.toString(), cache, limit)
 
+    
     fun getGroupMemberList(group: Long, limit: Int): GroupMemberList =
         getGroupMemberList(group.toString(), false, limit)
 
+    
     fun getGroupMemberList(group: Long): GroupMemberList =
         getGroupMemberList(group.toString(), false, -1)
 
+    
     fun getGroupMemberList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupMemberList =
         getGroupMemberList(group.groupCode, cache, limit)
 
+    
     fun getGroupMemberList(group: GroupCodeContainer, limit: Int): GroupMemberList =
         getGroupMemberList(group, false, limit)
 
+    
     fun getGroupMemberList(group: GroupCodeContainer): GroupMemberList =
         getGroupMemberList(group, false, -1)
 
+    
     fun getGroupMemberList(group: GroupContainer, cache: Boolean, limit: Int): GroupMemberList =
         getGroupMemberList(group.groupInfo, cache, limit)
 
+    
     fun getGroupMemberList(group: GroupContainer, limit: Int): GroupMemberList =
         getGroupMemberList(group.groupInfo, false, limit)
 
+    
     fun getGroupMemberList(group: GroupContainer): GroupMemberList =
         getGroupMemberList(group.groupInfo, false, -1)
 
@@ -165,31 +191,42 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getBanList(group: String, cache: Boolean, limit: Int): MuteList
 
+    
     fun getBanList(group: String, limit: Int): MuteList = getBanList(group, false, limit)
 
+    
     fun getBanList(group: String): MuteList = getBanList(group, false, -1)
 
+    
     fun getBanList(group: Long, cache: Boolean, limit: Int): MuteList = getBanList(group.toString(), cache, limit)
 
+    
     fun getBanList(group: Long, limit: Int): MuteList = getBanList(group.toString(), false, limit)
 
+    
     fun getBanList(group: Long): MuteList = getBanList(group.toString(), false, -1)
 
+    
     fun getBanList(group: GroupCodeContainer, cache: Boolean, limit: Int): MuteList =
         getBanList(group.groupCode, cache, limit)
 
+    
     fun getBanList(group: GroupCodeContainer, limit: Int): MuteList =
         getBanList(group, false, limit)
 
+    
     fun getBanList(group: GroupCodeContainer): MuteList =
         getBanList(group, false, -1)
 
+    
     fun getBanList(group: GroupContainer, cache: Boolean, limit: Int): MuteList =
         getBanList(group.groupInfo, cache, limit)
 
+    
     fun getBanList(group: GroupContainer, limit: Int): MuteList =
         getBanList(group.groupInfo, false, limit)
 
+    
     fun getBanList(group: GroupContainer): MuteList =
         getBanList(group.groupInfo, false, -1)
 
@@ -199,31 +236,42 @@ public interface Getter : Communicator, BotContainer {
      */
     fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList
 
+    
     fun getGroupNoteList(group: String, limit: Int): GroupNoteList = getGroupNoteList(group, false, limit)
 
+    
     fun getGroupNoteList(group: String): GroupNoteList = getGroupNoteList(group, false, -1)
 
+    
     fun getGroupNoteList(group: Long, cache: Boolean, limit: Int) = getGroupNoteList(group.toString(), cache, limit)
 
+    
     fun getGroupNoteList(group: Long, limit: Int): GroupNoteList = getGroupNoteList(group.toString(), false, limit)
 
+    
     fun getGroupNoteList(group: Long): GroupNoteList = getGroupNoteList(group.toString(), false, -1)
 
+    
     fun getGroupNoteList(group: GroupCodeContainer, cache: Boolean, limit: Int) =
         getGroupNoteList(group.groupCode, cache, limit)
 
+    
     fun getGroupNoteList(group: GroupCodeContainer, limit: Int): GroupNoteList =
         getGroupNoteList(group.groupCode, false, limit)
 
+    
     fun getGroupNoteList(group: GroupCodeContainer): GroupNoteList =
         getGroupNoteList(group.groupCode, false, -1)
 
+    
     fun getGroupNoteList(group: GroupContainer, cache: Boolean, limit: Int) =
         getGroupNoteList(group.groupInfo, cache, limit)
 
+    
     fun getGroupNoteList(group: GroupContainer, limit: Int): GroupNoteList =
         getGroupNoteList(group.groupInfo, false, limit)
 
+    
     fun getGroupNoteList(group: GroupContainer): GroupNoteList =
         getGroupNoteList(group.groupInfo, false, -1)
 
