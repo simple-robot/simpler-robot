@@ -18,9 +18,9 @@ import kotlinx.coroutines.runBlocking
 import love.forte.simbot.component.kaiheila.api.doRequest
 import love.forte.simbot.component.kaiheila.api.v3.V3
 import love.forte.simbot.component.kaiheila.api.v3.guild.GuildMuteListReq
+import love.test.GUILD_ID
 import love.test.GatewayApiConstant
 import love.test.client
-import love.test.guildId
 import kotlin.test.Test
 
 
@@ -32,7 +32,7 @@ class GuildMuteListTest {
 
     @Test
     fun guildMuteListTestByDetail() = runBlocking {
-        val muteList = GuildMuteListReq.Detail(guildId)
+        val muteList = GuildMuteListReq.Detail(GUILD_ID)
             .doRequest(V3, client, GatewayApiConstant.token).data!!
 
         println(muteList)
@@ -41,7 +41,7 @@ class GuildMuteListTest {
     @Test
     @Suppress("DEPRECATION")
     fun guildMuteListTestBySimple() = runBlocking {
-        val muteList = GuildMuteListReq.Simple(guildId)
+        val muteList = GuildMuteListReq.Simple(GUILD_ID)
             .doRequest(V3, client, GatewayApiConstant.token).data!!
 
         println(muteList)

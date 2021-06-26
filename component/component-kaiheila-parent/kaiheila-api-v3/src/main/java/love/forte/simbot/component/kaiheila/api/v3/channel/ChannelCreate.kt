@@ -114,6 +114,13 @@ public class ChannelCreateBuilder {
     /** 否 语音音质，默认为2。1流畅，2正常，3高质量 */
     var voiceQuality: Int = 2
 
+    fun textType() {
+        type = 1
+    }
+    fun voiceType() {
+        type = 2
+    }
+
     fun build(): ChannelCreateReq = ChannelCreateReq(
         requireNotNull(guildId) { "Required guildId was null." },
         requireNotNull(name) { "Required name was null." },
