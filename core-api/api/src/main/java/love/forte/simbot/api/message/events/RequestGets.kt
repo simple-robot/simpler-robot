@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -138,7 +138,7 @@ public interface GroupAddRequestInvitor: OriginalDataContainer {
     /** 邀请者账号。一般情况下，当前实例存在此参数便不可为null */
     val invitorCode: String
     /** 邀请者账号。 */
-    // @JvmDefault
+    
     val invitorCodeNumber: Long get() = invitorCode.toLong()
     /** 邀请者昵称。可能无法获取 */
     val invitorNickname: String?

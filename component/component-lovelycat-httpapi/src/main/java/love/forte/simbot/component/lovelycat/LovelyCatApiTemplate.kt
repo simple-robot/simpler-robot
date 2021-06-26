@@ -1,16 +1,14 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  simple-robot-S
- *  * File     LovelyCat.kt
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 @file:JvmName("LovelyCatApiTemplates")
@@ -178,7 +176,7 @@ public interface LovelyCatApiTemplate {
      */
     fun getFriendList(robotWxid: String, isRefresh: Boolean): List<CatFriendInfo>
 
-    // @JvmDefault
+    
     fun getFriendList(robotWxid: String) =
         getFriendList(robotWxid, false)
 
@@ -191,7 +189,7 @@ public interface LovelyCatApiTemplate {
      */
     fun getGroupList(robotWxid: String, isRefresh: Boolean): List<CatGroupInfo>
 
-    // @JvmDefault
+    
     fun getGroupList(robotWxid: String) =
         getGroupList(robotWxid, false)
 
@@ -211,7 +209,7 @@ public interface LovelyCatApiTemplate {
         isRefresh: Boolean,
     ): CatGroupMemberInfo
 
-    // @JvmDefault
+    
     fun getGroupMemberDetailInfo(robotWxid: String, groupWxid: String, memberWxid: String) =
         getGroupMemberDetailInfo(robotWxid, groupWxid, memberWxid, false)
 
@@ -225,7 +223,7 @@ public interface LovelyCatApiTemplate {
      */
     fun getGroupMemberList(robotWxid: String, groupWxid: String, isRefresh: Boolean): List<CatSimpleGroupMemberInfo>
 
-    // @JvmDefault
+    
     fun getGroupMemberList(robotWxid: String, groupWxid: String) = getGroupMemberList(robotWxid, groupWxid, false)
 
     //**************** 请求相关 ****************//

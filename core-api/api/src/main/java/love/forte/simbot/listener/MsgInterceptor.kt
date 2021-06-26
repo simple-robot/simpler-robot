@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -59,7 +59,7 @@ public interface MsgInterceptContext : Context<MsgGet> {
     val listenerContext: ListenerContext
 
     /** same as [msgGet] */
-    // @JvmDefault
+    
     override var mainValue: MsgGet
         get() = msgGet
         set(value) {

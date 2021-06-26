@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -49,7 +49,7 @@ public abstract class MiraiMessageContent : MessageContent {
      * 那么他们会作为 **Cat码** 字符串存在于消息中。
      * 如果类型为text，不会以cat码的格式被展示。
      */
-    // // @JvmDefault
+    // 
     override val msg: String by lazy(LazyThreadSafetyMode.PUBLICATION) {
         when {
             cats.isEmpty() -> ""

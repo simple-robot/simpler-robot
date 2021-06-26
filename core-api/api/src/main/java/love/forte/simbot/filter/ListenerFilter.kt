@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -49,20 +49,20 @@ public interface ListenerFilter : (FilterData) -> Boolean {
      */
     fun test(data: FilterData): Boolean
 
-    // @JvmDefault
+    
     override fun invoke(p1: FilterData): Boolean = test(p1)
 
     /**
      * 尝试从文本中提取动态过滤参数。
      * 自定义实现下可以直接返回一个 `null`。
      */
-    // @JvmDefault
+    
     fun getFilterValue(name: String, text: String): String? = null
 
     /**
      * 优先级，默认为最低级。
      */
-    // @JvmDefault
+    
     val priority: Int get() = PriorityConstant.LAST
 }
 

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -24,7 +24,7 @@ import love.forte.simbot.api.message.results.Result
  * [Sender] 的 无效化实现，所有的方法均会抛出异常。
  */
 object ErrorSender : Sender.Def {
-    override fun sendGroupMsg(group: String, msg: String): Nothing =
+    override fun sendGroupMsg(parent: String?, group: String, msg: String): Nothing =
         NO("Sender.sendGroupMsg")
 
     override fun sendPrivateMsg(code: String, group: String?, msg: String): Nothing =
