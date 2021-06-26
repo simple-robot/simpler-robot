@@ -14,8 +14,6 @@
 
 package love.test
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import love.forte.simbot.component.kaiheila.api.v3.*
 import org.slf4j.LoggerFactory
@@ -56,14 +54,18 @@ class GatewayApiTest {
                 apiConfiguration {
                     api = V3
                 }
-            }
+            },
         )
 
-        val scope = CoroutineScope(Dispatchers.Default)
-        scope.launch {
+        // val scope = CoroutineScope(Dispatchers.Default)
+        b.launch {
             b.start()
         }
+        // scope.launch {
+        //     b.start()
+        // }
 
+        @Suppress("ControlFlowWithEmptyBody")
         while (true) {}
 
     }

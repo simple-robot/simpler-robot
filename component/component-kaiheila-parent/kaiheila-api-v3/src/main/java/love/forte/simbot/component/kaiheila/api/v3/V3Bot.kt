@@ -24,6 +24,7 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import love.forte.simbot.component.kaiheila.CoroutineLogger
 import love.forte.simbot.component.kaiheila.WebsocketBot
 import love.forte.simbot.component.kaiheila.api.ApiConfiguration
 import love.forte.simbot.component.kaiheila.api.doRequestForData
@@ -55,16 +56,19 @@ public class V3WsBot(
     parentContext: CoroutineContext = EmptyCoroutineContext,
     compress: Int = 1,
 ) : WebsocketBot, CoroutineScope {
-
     override val apiConfiguration: ApiConfiguration = configuration.apiConfiguration
-
+    /** 获取 [Gateway] 的请求体。 */
     private val gatewayReq = GatewayReq(compress)
-    override val log: Logger = LoggerFactory.getLogger("love.forte.simbot.component.kaiheila.bot.v3.$clientId")
+    /** 普通的logger */
+    override val log: Logger = LoggerFactory.getLogger("love.forte.simbot.component.kaiheila.v3.bot.$clientId")
+    /** 网络日志相关的logger */
+    override val networkLog: Logger =
+        LoggerFactory.getLogger("love.forte.simbot.component.kaiheila.v3.network.$clientId")
 
-    private val supervisor = SupervisorJob(parentContext[Job])
+    private val supervisorJob = SupervisorJob(parentContext[Job])
 
     override val coroutineContext: CoroutineContext =
-        parentContext + supervisor + CoroutineName("simbot.khl.bot.$clientId")
+        parentContext + supervisorJob + CoroutineName("simbot.khl.bot.$clientId") + CoroutineLogger(log)
 
     override val botAvatar: String?
         get() = null
@@ -77,17 +81,7 @@ public class V3WsBot(
     private lateinit var session: DefaultWebSocketSession
     private lateinit var sessionJob: Job
 
-    // private suspend fun getSession() = sessionLock.withLock { session }
-    //
-    // private suspend fun setSession(session: DefaultWebSocketSession): Unit = sessionLock.withLock {
-    //     this.session = session
-    // }
-    //
-    // private suspend fun setSessionToNull(): Unit = sessionLock.withLock {
-    //     this.session = null
-    // }
-
-    // private val sessionLock = Mutex(false)
+    private val sn = 0 // TODO
 
     /**
      * 启动bot
@@ -134,132 +128,141 @@ public class V3WsBot(
 
         log.debug("Gateway url {}", url)
 
+        val nowCoroutineContext = coroutineContext
+
         try {
-            session = client.webSocketSession {
+            session = wsClient.webSocketSession {
                 this.url.takeFrom(url)
             }.apply {
-                sessionJob = launch(this@V3WsBot.coroutineContext) {
-                    var firstWaitForHello: Job? = launch {
-                        println("start firstWaitForHello Job")
-                        delay(6000)
-                        this@apply.close(CloseReason(CloseReason.Codes.NOT_CONSISTENT, "No Hello!"))
-                    }
-                    while (this@apply.isActive) {
-                        try {
-                            when (val frame: Frame = incoming.receive()) {
-                                is Frame.Text -> println("[Text  ]: " + frame.readText())
-                                is Frame.Binary -> {
-                                    val text =
-                                        InflaterInputStream(frame.readBytes().inputStream()).reader(Charsets.UTF_8)
-                                            .use {
-                                                it.readText()
-                                            }
-                                    println("[Binary-text]: $text")
+                val newCoroutineName = nowCoroutineContext[CoroutineName]?.let {
+                    CoroutineName("simbot.khl.bot.ws.$clientId." + it.name)
+                } ?: CoroutineName("simbot.khl.bot.ws.$clientId")
 
-                                    val element = khlJson.parseToJsonElement(text)
-                                    val s = element.jsonObject["s"]?.jsonPrimitive?.int
-                                    val signal = when (s) {
-                                        0 -> khlJson.decodeFromJsonElement<Signal_0>(element)
-                                        1 -> khlJson.decodeFromJsonElement<Signal_1>(element)
-                                        // 2 -> khlJson.decodeFromJsonElement<Signal_2>(element) // Ping
-                                        3 -> khlJson.decodeFromJsonElement<Signal_3>(element)
-                                        5 -> khlJson.decodeFromJsonElement<Signal_5>(element)
-                                        6 -> khlJson.decodeFromJsonElement<Signal_6>(element)
-                                        else -> error(element)
-                                    }
+                val newCoroutineLogger = nowCoroutineContext[CoroutineLogger] ?: CoroutineLogger(networkLog)
 
-                                    println("[Signal_$s]: $signal")
+                withContext(nowCoroutineContext + newCoroutineName + newCoroutineLogger) {
+                    sessionJob = launch {
+                        var firstWaitForHello: Job? = launch {
+                            println("start firstWaitForHello Job")
+                            delay(6000)
+                            this@apply.close(CloseReason(CloseReason.Codes.NOT_CONSISTENT, "No Hello!"))
+                        }
 
-                                    var pingSendJob: Job? = null
-                                    var waitForPong: Job? = null
+                        var pingSendJob: Job? = null
+                        var waitForPong: Job? = null
 
-                                    when (signal) {
-                                        // Hello
-                                        is Signal.Hello -> {
-                                            println("Signal.Hello: $signal")
-                                            firstWaitForHello?.cancel()
-                                            firstWaitForHello = null
+                        /**
+                         * Do when get text
+                         */
+                        suspend fun doText(text: String) {
+                            println("[Binary-text]: $text")
 
-                                            pingSendJob?.cancelAndJoin()
-
-                                            pingSendJob = launch {
-                                                while (this@apply.isActive) {
-                                                    val r = ThreadLocalRandom.current()
-                                                    val wait: Duration =
-                                                        if (r.nextBoolean()) Duration.ofSeconds(30) + Duration.ofSeconds(
-                                                            r.nextLong(5))
-                                                        else Duration.ofSeconds(30) - Duration.ofSeconds(r.nextLong(5))
-                                                    log.debug("Wait {} for next ping", wait.toString())
-                                                    delay(wait.toMillis())
-                                                    log.debug("Send ping.")
-                                                    send(Frame.Text(Signal.Ping.jsonValue(0)))
-                                                    waitForPong = launch {
-                                                        delay(6000)
-                                                        // 进入超时状态
-                                                    }
-                                                }
-                                            }
-
-                                        }
-                                        is Signal.Event -> {
-                                            // TODO event
-
-                                        }
-                                        is Signal.Reconnect -> {
-                                            // reconnect
-                                            close(CloseReason(CloseReason.Codes.TRY_AGAIN_LATER, "reconnect"))
-                                        }
-                                        // is Signal.Ping -> {
-                                        //
-                                        // }
-                                        is Signal.Pong -> {
-                                            // cancel job
-                                            waitForPong?.cancelAndJoin()
-                                        }
-                                        is Signal.ResumeAck -> {
-
-                                        }
-                                        is Signal.Ping -> {
-
-                                        }
-                                        else -> {
-                                            println("other $signal")
-                                        }
-                                    }
-
-
-                                    if (signal is Signal_0) {
-                                        println(signal.d)
-                                    }
-
-                                }
-                                is Frame.Close -> {
-                                    println("[Close ]: " + frame.readBytes().decodeToString())
-                                    this@apply.close()
-                                }
-                                // is Frame.Ping -> {
-                                //     val str = frame.readBytes().decodeToString()
-                                //     val ping = khlJson.decodeFromString<Signal.Ping>(str)
-                                //
-                                //     println(ping)
-                                //
-                                //     println("[Ping  ]: $str")
-                                // }
-                                is Frame.Pong -> {
-                                    println("[Pong: ]: " + frame.readBytes().decodeToString())
-                                }
-
-
+                            val element = khlJson.parseToJsonElement(text)
+                            val s = element.jsonObject["s"]?.jsonPrimitive?.int
+                            val signal = when (s) {
+                                0 -> khlJson.decodeFromJsonElement<Signal_0>(element)
+                                1 -> khlJson.decodeFromJsonElement<Signal_1>(element)
+                                // 2 -> khlJson.decodeFromJsonElement<Signal_2>(element) // Ping
+                                3 -> khlJson.decodeFromJsonElement<Signal_3>(element)
+                                5 -> khlJson.decodeFromJsonElement<Signal_5>(element)
+                                6 -> khlJson.decodeFromJsonElement<Signal_6>(element)
+                                else -> error(element)
                             }
-                        } catch (e: ClosedReceiveChannelException) {
-                            // closed
-                            throw e
-                        } catch (e: Throwable) {
-                            throw e
+
+                            println("[Signal_$s]: $signal")
+
+                            when (signal) {
+                                // Hello
+                                is Signal.Hello -> {
+                                    println("Signal.Hello: $signal")
+                                    firstWaitForHello?.cancel()
+                                    firstWaitForHello = null
+
+                                    pingSendJob?.cancelAndJoin()
+
+                                    pingSendJob = launch(coroutineContext) {
+                                        while (this@apply.isActive) {
+                                            val r = ThreadLocalRandom.current()
+                                            val wait: Duration =
+                                                if (r.nextBoolean()) Duration.ofSeconds(30) + Duration.ofSeconds(
+                                                    r.nextLong(5))
+                                                else Duration.ofSeconds(30) - Duration.ofSeconds(r.nextLong(
+                                                    5))
+                                            log.debug("Wait {} for next ping", wait.toString())
+                                            delay(wait.toMillis())
+                                            log.debug("Send ping.")
+                                            send(Frame.Text(Signal.Ping.jsonValue(0)))
+                                            waitForPong = launch(coroutineContext) {
+                                                delay(6000)
+                                                // 进入超时状态
+                                            }
+                                        }
+                                    }
+
+                                }
+                                is Signal.Event -> {
+                                    // TODO event
+
+                                }
+                                is Signal.Reconnect -> {
+                                    // reconnect
+                                    close(CloseReason(CloseReason.Codes.TRY_AGAIN_LATER, "reconnect"))
+                                }
+                                // is Signal.Ping -> {
+                                //
+                                // }
+                                is Signal.Pong -> {
+                                    // cancel job
+                                    waitForPong?.cancelAndJoin()
+                                }
+                                is Signal.ResumeAck -> {
+
+                                }
+                                is Signal.Ping -> {
+
+                                }
+                                else -> {
+                                    println("other $signal")
+                                }
+                            }
+
+
+                            if (signal is Signal_0) {
+                                println(signal.d)
+                            }
+                        }
+
+                        while (this@apply.isActive) {
+                            try {
+                                when (val frame: Frame = incoming.receive()) {
+                                    is Frame.Text -> {
+                                        val text = frame.readText()
+                                        println("[Text  ]: $text")
+                                        doText(text)
+                                    }
+                                    is Frame.Binary -> {
+                                        val text =
+                                            InflaterInputStream(frame.readBytes().inputStream()).reader(Charsets.UTF_8)
+                                                .use { it.readText() }
+                                        doText(text)
+                                    }
+                                    is Frame.Close -> {
+                                        println("[Close ]: " + frame.readBytes().decodeToString())
+                                        this@apply.close()
+                                    }
+                                    is Frame.Pong -> {
+                                        println("[Pong: ]: " + frame.readBytes().decodeToString())
+                                    }
+                                }
+                            } catch (e: ClosedReceiveChannelException) {
+                                // closed
+                                throw e
+                            } catch (e: Throwable) {
+                                throw e
+                            }
                         }
                     }
                 }
-
 
             }
         } catch (e: Throwable) {
@@ -277,7 +280,7 @@ public class V3WsBot(
     override suspend fun close(cause: Throwable?) {
         // TODO
         session.close()
-        supervisor.cancel(cause?.let { CancellationException(it.localizedMessage, it) })
+        supervisorJob.cancel(cause?.let { CancellationException(it.localizedMessage, it) })
     }
 
 
