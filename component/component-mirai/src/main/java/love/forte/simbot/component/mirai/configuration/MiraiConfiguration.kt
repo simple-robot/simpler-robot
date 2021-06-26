@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -124,6 +124,12 @@ public class MiraiConfiguration {
     @field:ConfigInject
     var highwayUploadCoroutineCount: Int = BotConfiguration.Default.highwayUploadCoroutineCount
 
+    private val json = Json {
+        isLenient = true
+        ignoreUnknownKeys = true
+        prettyPrint = true
+    }
+
     /**
      * mirai官方配置类获取函数，默认为其默认值
      * */
@@ -146,11 +152,7 @@ public class MiraiConfiguration {
 
                 if (deviceInfoOutput) {
                     runCatching<Unit> {
-                        val devInfoJson = Json {
-                            isLenient = true
-                            ignoreUnknownKeys = true
-                            prettyPrint = true
-                        }.encodeToString(devInfo)
+                        val devInfoJson = json.encodeToString(devInfo)
                         val outFile = File("simbot-devInfo.json")
                         if (!outFile.exists()) {
                             outFile.apply {
