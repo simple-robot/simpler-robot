@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -14,6 +14,7 @@
 
 package love.forte.simbot.spring.autoconfigure.properties;
 
+import love.forte.simbot.bot.BotResourceType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -35,11 +36,27 @@ import java.util.List;
 public class SimbotCoreConfigurationProperties {
 
     /**
+     *
+     * 建议使用 simbot-bots/*.bot 进行bot注册
+     *
      * 注册的bot列表信息。
      * 其格式为 xxxx:yyyy,xxxx:yyyy 。
      * 其中，xxxx一般代表为账号信息，yyyy一般代表为权限信息，例如密码，或者上报地址, 可以有多个参数。
      */
+    @Deprecated
     private List<String> bots = null;
+
+    /**
+     * bot资源扫描时所使用的加载类型。
+     *
+     */
+    private BotResourceType botResourceType;
+
+
+    /**
+     * 指定要启动的bots。在 .bots中通过 "action_name" 属性进行配置。
+     */
+    private String actionBots;
 
 
     /**

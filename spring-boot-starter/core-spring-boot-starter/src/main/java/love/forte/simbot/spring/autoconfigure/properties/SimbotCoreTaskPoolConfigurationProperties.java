@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -33,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 @ConfigurationProperties(prefix = "simbot.core.task.pool")
 @lombok.Getter
 @lombok.Setter
+@Deprecated
 public class SimbotCoreTaskPoolConfigurationProperties {
 
     /**

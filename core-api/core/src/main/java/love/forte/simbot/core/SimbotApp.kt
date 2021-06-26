@@ -44,7 +44,11 @@ import org.slf4j.LoggerFactory
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
+import java.nio.file.Path
 import kotlin.concurrent.thread
+import kotlin.io.path.*
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 
 private const val RESOURCE_FILE = "file:"
@@ -204,14 +208,16 @@ protected constructor(
             Logo.show()
         }
 
+        val tips = Tips()
+
         runCatching {
             defaultConfiguration?.getConfig(Tips.RESOURCE_CONF_KEY)?.getObject(TipOnline::class.java)?.let {
-                Tips.TIP_ONLINE_PATH = it
+                tips.TIP_ONLINE_PATH = it
             }
         }
 
         if (showTips) {
-            Tips.show()
+            tips.show()
         }
 
 
@@ -558,15 +564,20 @@ private class DisableTips : NullPointerException("Disable online tips.")
 
 
 // tips! Do you know?
-private object Tips {
+@Suppress("PropertyName")
+private class Tips {
 
     private val logger: Logger = LoggerFactory.getLogger("love.forte.simbot.tips")
 
-    internal const val RESOURCE_CONF_KEY = "simbot.core.tips.resource"
-    internal const val ENABLE_KEY = "simbot.core.tips.enable"
+    companion object {
+        internal const val RESOURCE_CONF_KEY = "simbot.core.tips.resource"
+        internal const val ENABLE_KEY = "simbot.core.tips.enable"
+        // internal val TEMP_PATH = F
+    }
 
-    private val TIP_PATH: String =
-        "META-INF" + File.separator + "simbot" + File.separator + "simbTip.tips"
+
+    private inline val TIP_PATH: String
+        get() = "META-INF" + File.separator + "simbot" + File.separator + "simbTip.tips"
 
     internal var TIP_ONLINE_PATH: TipOnline? = null
         get() {
@@ -583,20 +594,59 @@ private object Tips {
             }
         }
 
+    @OptIn(ExperimentalTime::class)
+    private inline val localPath: Pair<Boolean, Path> get() {
+        val local = Path(System.getProperty("user.home")) / ".simbot" / "tips"
 
-    val randomTip: String? = runCatching {
-        val url = TIP_ONLINE_PATH?.url ?: throw DisableTips()
-        logger.trace("Tips online resource {}, url: {}", TIP_ONLINE_PATH, url)
-        URL(url).connection { "Online tips connection failed. $it" }
-    }.getOrElse { e ->
-        if (e !is DisableTips) {
-            logger.debugEf("Read online tips failed: {}", e, e.localizedMessage)
+        val exists = local.exists()
+
+        if (!exists) {
+            local.parent.createDirectories()
+            local.createFile()
         }
-        runCatching {
-            ResourceUtil.getResourceUtf8Reader(TIP_PATH)
-        }.getOrNull()
-    }?.useLines {
-        it.filter { s -> s.isNotBlank() }.toList().randomOrNull()
+
+        val lastMod = local.getLastModifiedTime().toMillis()
+        if (Duration.milliseconds(System.currentTimeMillis() - lastMod) > Duration.days(7)) {
+            local.deleteIfExists()
+        }
+
+        return exists to local
+    }
+
+
+    val randomTip: String? get() {
+        val (exist, local) = kotlin.runCatching { localPath }.getOrDefault(false to null)
+        return runCatching {
+            fun readOnline(): Reader {
+                val url = TIP_ONLINE_PATH?.url ?: throw DisableTips()
+                logger.trace("Tips online resource {}, url: {}", TIP_ONLINE_PATH, url)
+                return URL(url).connection { "Online tips connection failed. $it" }
+            }
+            if (exist) {
+                kotlin.runCatching {
+                    local?.reader(Charsets.UTF_8)
+                }.getOrNull() ?: run {
+                    readOnline()
+                }
+            } else {
+                readOnline()
+            }
+            // find local cache
+
+        }.getOrElse { e ->
+            if (e !is DisableTips) {
+                logger.debugEf("Read online tips failed: {}", e, e.localizedMessage)
+            }
+            runCatching {
+                ResourceUtil.getResourceUtf8Reader(TIP_PATH)
+            }.getOrNull()
+        }?.useLines {
+            val list = it.filter { s -> s.isNotBlank() }.toList()
+            kotlin.runCatching {
+                local?.writeLines(list)
+            }
+            return list.randomOrNull()
+        }
     }
 
 
@@ -628,7 +678,7 @@ private inline fun URL.connection(
         connect()
         takeIf { responseCode < 300 }
             ?: throw IOException(onError(errorStream.reader().use { it.readText() }))
-    }.inputStream.reader()
+    }.inputStream.reader(Charsets.UTF_8)
 }
 
 
