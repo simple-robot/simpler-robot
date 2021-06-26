@@ -43,6 +43,11 @@ public interface KhlBot : LogAble, BotInfo {
     override val log: Logger
 
     /**
+     * 与网络日志相关的logger
+     */
+    val networkLog: Logger
+
+    /**
      * 此bot所使用的api配置信息。
      */
     val apiConfiguration: ApiConfiguration
