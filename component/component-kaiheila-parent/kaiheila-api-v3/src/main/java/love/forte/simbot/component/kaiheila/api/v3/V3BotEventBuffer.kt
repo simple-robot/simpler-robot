@@ -22,4 +22,11 @@ package love.forte.simbot.component.kaiheila.api.v3
  * @author ForteScarlet
  */
 class V3BotEventBuffer {
+
+    // Max sn
+    val sn: Int = 0
+
+
+
+
 }
