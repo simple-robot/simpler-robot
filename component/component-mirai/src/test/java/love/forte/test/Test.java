@@ -16,11 +16,10 @@ package love.forte.test;
 
 import love.forte.common.configuration.Configuration;
 import love.forte.simbot.annotation.SimbotApplication;
-import love.forte.simbot.bot.Bot;
-import love.forte.simbot.bot.BotManager;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.core.SimbotProcess;
+import love.forte.simbot.core.dispatcher.CoreEventDispatcherFactory;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -39,10 +38,16 @@ public class Test implements SimbotProcess {
 
     @Override
     public void post(SimbotContext context) {
-        BotManager manager = context.getBotManager();
+        // BotManager manager = context.getBotManager();
+        //
+        // for (Bot bot : manager.getBots()) {
+        //     bot.getSender().SENDER.sendPrivateMsg(1149159218, "我测试好了");
+       // }
 
-        for (Bot bot : manager.getBots()) {
-            bot.getSender().SENDER.sendPrivateMsg(1149159218, "我测试好了");
-        }
+        CoreEventDispatcherFactory coreEventDispatcherFactory = context.get(CoreEventDispatcherFactory.class);
+
+        System.out.println(coreEventDispatcherFactory);
+
+
     }
 }
