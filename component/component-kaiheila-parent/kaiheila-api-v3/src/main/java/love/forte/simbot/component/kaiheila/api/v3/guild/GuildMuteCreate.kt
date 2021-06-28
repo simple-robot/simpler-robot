@@ -52,12 +52,15 @@ public class GuildMuteCreateReq(
 
     @Serializable
     private data class Body(
+
         /** 服务器id */
         @SerialName("guild_id")
         val guildId: String,
+
         /** 用户id */
         @SerialName("user_id")
         val userId: String,
+
         /** 1代表麦克风闭麦，2代表耳机静音 */
         val type: Int
     )
