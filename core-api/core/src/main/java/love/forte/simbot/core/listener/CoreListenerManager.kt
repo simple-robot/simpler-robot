@@ -133,7 +133,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             .dropWhile { !contains(it::class.java) }
             .also {
             eventCoroutineScope.launch {
-                it.collect(::onMsg)
+                it.collect(::onMsg1)
             }
         }
 
@@ -160,16 +160,6 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      * 当 [register] 了新的监听函数后对应相关类型将会被清理。
      */
     private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, ListenerFunctionGroups> = ConcurrentHashMap()
-
-    /**
-     * 监听函数分组数据。
-     */
-    private val listenerGroups = ConcurrentHashMap<String, MutableListenerGroup>()
-
-    /**
-     * 没有分组的分组。
-     */
-    private val noGroupListenerGroup = MutableListenerGroup("NON-GROUP")
 
 
     /**
@@ -212,12 +202,19 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
         }
     }
 
+    /**
+     * 通过内部的事件调度器触发事件。
+     */
+    override suspend fun onMsg(msgGet: MsgGet) {
+        producerScope.send(msgGet)
+    }
+
 
     /**
      * 接收到消息监听并进行处理。
      */
     @OptIn(SimbotExperimentalApi::class)
-    override suspend fun onMsg(msgGet: MsgGet): ListenResult<*> {
+    private suspend fun onMsg1(msgGet: MsgGet) {
         try {
             // not empty, intercept.
             // val context: ListenerContext = getContext(msgGet)
@@ -241,14 +238,15 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
             // 如果被拦截, 返回默认值
             if (msgChain.intercept().prevent) {
-                return ListenResult
+                return
+                // ListenResult
             }
 
             // 筛选并执行监听函数
-            return onMsg0(msgInterceptContext?.msgGet ?: msgGet, context)
+            onMsg0(msgInterceptContext?.msgGet ?: msgGet, context)
         } catch (e: Throwable) {
             logger.error("Some unexpected errors occurred in the execution of the listener: ${e.localizedMessage}", e)
-            return ListenResult
+            // ListenResult
         }
     }
 
@@ -265,11 +263,11 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      * 筛选监听函数
      */
     @OptIn(SimbotExperimentalApi::class)
-    private suspend fun onMsg0(msgGet: MsgGet, context: ListenerContext): ListenResult<*> {
+    private suspend fun onMsg0(msgGet: MsgGet, context: ListenerContext) {
         val funcs = getListenerFunctions(msgGet.javaClass, true)
         var invokeData: ListenerFunctionInvokeData? = null
-        return if (funcs.isEmpty()) {
-            ListenResult
+        if (funcs.isEmpty()) {
+            return
         } else {
             var finalResult: ListenResult<*> = ListenResult
 
@@ -368,7 +366,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             // do processor
 
 
-            return finalResult
+            // return finalResult
         }
     }
 

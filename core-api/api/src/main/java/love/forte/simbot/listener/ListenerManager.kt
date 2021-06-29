@@ -19,29 +19,36 @@ import love.forte.simbot.api.message.events.MsgGet
 
 /**
  * 消息处理器。
+ *
  */
 public interface MsgGetProcessor {
+
     /**
      * 接收到消息监听并进行处理。
+     *
+     * 实现中，其应当内置一个事件处理调度器。
+     *
      * Java中，更建议使用 [onMsgIfExist]。
      * kt中，更建议使用 `MsgGetProcessor.onMsg<T> { ... }`。
      */
-    suspend fun onMsg(msgGet: MsgGet): ListenResult<*>
+    suspend fun onMsg(msgGet: MsgGet)
+
 
     /**
      * 判断是否存在某个类型的监听函数。
      */
     fun <T : MsgGet> contains(type: Class<out T>): Boolean
 
+
     /**
      * 如果存在则触发，否则得到null。
      * @param type [MsgGet]类型
      * @param msgGet 需要触发的实例。
      */
-    suspend fun <T : MsgGet> onMsgIfExist(type: Class<out T>, msgGet: MsgGet): ListenResult<*>? {
-        return if (contains(type)) {
+    suspend fun <T : MsgGet> onMsgIfExist(type: Class<out T>, msgGet: MsgGet) {
+        if (contains(type)) {
             onMsg(msgGet)
-        } else null
+        }
     }
 
     /**
@@ -50,34 +57,31 @@ public interface MsgGetProcessor {
      * @param msgGetBlock MsgGet实例获取函数。
      *
      */
-    suspend fun <T : MsgGet> onMsgIfExist(type: Class<out T>, msgGetBlock: () -> MsgGet): ListenResult<*>? {
-        return if (contains(type)) {
+    suspend fun <T : MsgGet> onMsgIfExist(type: Class<out T>, msgGetBlock: () -> MsgGet) {
+        if (contains(type)) {
             onMsg(msgGetBlock())
-        } else null
+        }
     }
-
-
-
 }
 
 
 /**
  * 检测，如果存在则触发监听流程，否则得到null。
  */
-public suspend inline fun <reified T : MsgGet> MsgGetProcessor.onMsg(block: () -> T?): ListenResult<*>? {
-    return if (contains(T::class.java)) {
+public suspend inline fun <reified T : MsgGet> MsgGetProcessor.onMsg(block: () -> T?) {
+    if (contains(T::class.java)) {
         block()?.let { onMsg(it) }
-    } else null
+    }
 }
 
 
 /**
  * 检测，如果存在则触发监听流程，否则得到null。
  */
-public suspend inline fun <T : MsgGet> MsgGetProcessor.onMsg(type: Class<out T>, block: () -> T?): ListenResult<*>? {
-    return if (contains(type)) {
+public suspend inline fun <T : MsgGet> MsgGetProcessor.onMsg(type: Class<out T>, block: () -> T?) {
+    if (contains(type)) {
         block()?.let { onMsg(it) }
-    } else null
+    }
 }
 
 

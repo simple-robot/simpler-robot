@@ -25,6 +25,7 @@ import love.forte.simbot.annotation.*
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.core.util.MD5
 import love.forte.simbot.filter.AtDetection
 import love.forte.simbot.filter.FilterData
 import love.forte.simbot.filter.FilterManager
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
-import java.security.MessageDigest
+import kotlin.coroutines.Continuation
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.callSuspend
@@ -137,8 +138,8 @@ public class MethodListenerFunction  constructor(
     /**
      * 此监听函数对应的监听器列表。
      */
-    override val filters: List<ListenerFilter>
-        get() = (listenAnnotationFilter?.let { listOf(it) } ?: emptyList())
+    override val filter: ListenerFilter?
+        get() = listenAnnotationFilter
 
 
     /**
@@ -262,7 +263,12 @@ public class MethodListenerFunction  constructor(
 
         // init method args getter.
         val parameterGetters: List<(ListenerFunctionInvokeData) -> Any?> =
-            method.parameters.mapIndexed { i, methodParameter ->
+            method.parameters.mapIndexedNotNull { i, methodParameter ->
+                // 临时解决
+                if (Continuation::class.java.isAssignableFrom(methodParameter.type)) {
+                    return@mapIndexedNotNull null
+                }
+
                 val contextValue: ContextValue? =
                     AnnotationUtil.getAnnotation(methodParameter, ContextValue::class.java)
                 val filterValue: FilterValue? = AnnotationUtil.getAnnotation(methodParameter, FilterValue::class.java)
@@ -452,8 +458,9 @@ public class MethodListenerFunction  constructor(
      */
     override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> {
         // do filter
+        // TODO no!
         val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
-        if (!filter || data.listenerInterceptorChain.intercept().prevent) {
+        if (data.listenerInterceptorChain.intercept().prevent || !filter) {
             // 没有通过检测, 返回ListenResult默认的无效化实现。
             return ListenResult
         }
@@ -502,7 +509,7 @@ public class MethodListenerFunction  constructor(
  */
 internal fun Method.toListenerId(listens: Listens): String {
     return with(listens.name) {
-        if (isBlank()) {
+        ifBlank {
             val methodIn = this@toListenerId.declaringClass
             val methodName = this@toListenerId.name
             val methodParameters = this@toListenerId.parameters
@@ -511,10 +518,10 @@ internal fun Method.toListenerId(listens: Listens): String {
             val wholeName =
                 "${methodIn.name} ${methodReturnType.name} $methodName(${methodParameters.joinToString(", ") { "${it.type.name} ${it.name}" }})"
 
-            val wholeNameMD5: String = wholeName.toMD5()
+            val wholeNameMD5: String = MD5[wholeName]
 
             "${methodIn.typeName}.$methodName#$wholeNameMD5"
-        } else this
+        }
     }
 }
 
@@ -522,35 +529,11 @@ internal fun Method.toListenerId(listens: Listens): String {
  * method 取得展示name
  */
 internal fun Method.toListenerName(listens: Listens): String = with(listens.name) {
-    if (isBlank()) this@toListenerName.name else this
+    ifBlank { this@toListenerName.name }
 }
 
 
-/**
- * 取MD5。
- */
-internal fun String.toMD5(): String {
-    return runCatching {
-        //获取md5加密对象
-        val instance: MessageDigest = MessageDigest.getInstance("MD5")
-        //对字符串加密，返回字节数组
-        val digest: ByteArray = instance.digest(toByteArray())
-        val sb = StringBuffer()
-        for (b in digest) {
-            //获取低八位有效值
-            val i: Int = b.toInt() and 0xff
-            //将整数转化为16进制
-            val hexString = Integer.toHexString(i)
-            if (hexString.length < 2) {
-                //如果是一位的话，补0
-                sb.append('0')
-                // hexString = "0" + hexString
-            }
-            sb.append(hexString)
-        }
-        sb.toString()
-    }.getOrDefault("")
-}
+
 
 
 internal data class ListenerParameterTypeMismatchWarn(val log: String, val exLog: String)
@@ -569,6 +552,5 @@ public class ListenerParameterTypeMismatchException : SimbotIllegalArgumentExcep
 
 
 internal fun nullInstanceGetter(): Any? = null
-
 
 

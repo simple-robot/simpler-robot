@@ -34,6 +34,8 @@ public val ListenerFunctionComparable: Comparator<ListenerFunction> = Comparator
 /**
  * 监听函数。
  *
+ * 监听函数不应再去关系过滤逻辑与拦截逻辑，仅需通过 [love.forte.simbot.filter.FilterManager] 或其他渠道得到于其对应的一个 [filter] 即可。
+ *
  * @see love.forte.simbot.annotation.Listen
  *
  * @author ForteScarlet -> https://github.com/ForteScarlet
@@ -78,9 +80,9 @@ public interface ListenerFunction {
 
 
     /**
-     * 此监听函数对应的监听器列表。
+     * 此监听函数对应的监听过滤器。
      */
-    val filters: List<ListenerFilter>
+    val filter: ListenerFilter?
 
 
     /**
@@ -117,7 +119,7 @@ public interface ListenerFunction {
 
 
 /**
- * 监听函数执行所需要的数据。
+r * 监听函数执行所需要的数据。
  */
 public interface ListenerFunctionInvokeData {
     /** 监听到的消息。 */

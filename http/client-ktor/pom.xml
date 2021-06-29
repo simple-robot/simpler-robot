@@ -41,11 +41,6 @@
 
         <dependency>
             <groupId>io.ktor</groupId>
-            <artifactId>ktor-client-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.ktor</groupId>
             <artifactId>ktor-client-core-jvm</artifactId>
         </dependency>
 

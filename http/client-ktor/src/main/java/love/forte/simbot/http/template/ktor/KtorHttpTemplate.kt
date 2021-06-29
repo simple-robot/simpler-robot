@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -199,7 +199,9 @@ constructor(
         logger.debug("Form -> {}", url)
         val response: KtorHttpResponse = client.submitForm(url) {
             headers?.forEach { (k, vs) ->
-                headers { appendAll(k, vs) }
+                headers {
+                    appendAll(k, vs)
+                }
             }
             if (contentType() == null) {
                 contentType(APPLICATION_FORM_URLENCODED)

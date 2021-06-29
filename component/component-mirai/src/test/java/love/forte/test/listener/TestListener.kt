@@ -14,14 +14,14 @@
 
 package love.forte.test.listener
 
+import kotlinx.coroutines.CoroutineDispatcher
 import love.forte.common.ioc.annotation.Beans
-import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.simbot.annotation.Filter
 import love.forte.simbot.annotation.Filters
 import love.forte.simbot.annotation.OnGroup
+import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.events.GroupMsg
-import kotlin.reflect.full.functions
-import kotlin.reflect.jvm.javaMethod
+import kotlin.coroutines.coroutineContext
 
 
 /**
@@ -31,30 +31,19 @@ import kotlin.reflect.jvm.javaMethod
 @Beans
 class TestListener {
 
+    @OptIn(ExperimentalStdlibApi::class)
     @Filters(value = [
         Filter(".h1", trim = true),
         Filter(".h2", trim = true),
         Filter(".h3", trim = true)],
-        bots = ["2370606773"]
+        bots = ["2370606773"],
+        groups = ["703454734"]
     )
     @OnGroup
-    fun GroupMsg.listen() {
+    suspend fun GroupMsg.listen(): MessageContent {
+        println(coroutineContext[CoroutineDispatcher])
         println("${this.botInfo}: $this")
+        return this.msgContent
     }
-
-}
-
-fun main() {
-    val f = TestListener::class.functions.find { it.name == "listen" }!!
-    val method = f.javaMethod!!
-
-    println(method)
-    val f1 = method.getAnnotation(Filters::class.java)
-    println(f1)
-    println("f1 bots: " + f1.bots.joinToString(", "))
-    val f2 = AnnotationUtil.getAnnotation(method, Filters::class.java)
-    println(f2)
-    println("f2 bots: " + f2.bots.joinToString(", "))
-
 
 }

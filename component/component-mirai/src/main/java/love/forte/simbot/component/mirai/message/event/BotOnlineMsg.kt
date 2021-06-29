@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -14,7 +14,10 @@
 
 package love.forte.simbot.component.mirai.message.event
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.events.EventGet
 import love.forte.simbot.component.mirai.message.MiraiBotAccountInfo
@@ -131,6 +134,8 @@ public class MiraiBotReLogin(event: BotReloginEvent) : AbstractMiraiMsgGet<BotRe
 
     /** 异步登录。 */
     public override fun loginAsync() {
-        GlobalScope.launch { event.bot.login() }
+        event.bot.launch {
+            event.bot.login()
+        }
     }
 }

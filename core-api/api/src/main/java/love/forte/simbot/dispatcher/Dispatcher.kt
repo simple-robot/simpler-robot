@@ -70,7 +70,7 @@ public abstract class AbstractDispatcherFactory(threadGroupName: String) : Dispa
     var corePoolSize: Int = Runtime.getRuntime().availableProcessors() * 2 + 2
 
     @Depend(value = "maximumPoolSize", orIgnore = true)
-    var maximumPoolSize: Int = Runtime.getRuntime().availableProcessors() * 4
+    var maximumPoolSize: Int = Runtime.getRuntime().availableProcessors() * 8
 
     @Depend(value = "keepAliveTime", orIgnore = true)
     var keepAliveTime: Long = 0L
@@ -98,6 +98,8 @@ internal class ExecutorDispatcher(executorFactory: () -> ExecutorService) : Exec
     }
 
     override val executor: ExecutorService by lazy(executorFactory)
+
+    override fun toString(): String = "Dispatcher(executor=$executor, @${hashCode()})"
 
     override fun close() {
         executor.shutdown()
