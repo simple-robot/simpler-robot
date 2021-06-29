@@ -19,7 +19,6 @@ package love.forte.simbot.component.mirai.utils
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Runnable
-import kotlinx.coroutines.launch
 import love.forte.common.configuration.annotation.AsConfig
 import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
@@ -412,9 +411,9 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
     @OptIn(SimbotMiraiCrossApi::class)
     private inline fun <reified E : BotEvent> Bot.registerListenerAlways(crossinline handler: suspend E.(E) -> Unit): Listener<E> =
         this.eventChannel.subscribeAlways {
-            launch(dispatcher) {
+            // launch(dispatcher) {
                 handler(this@subscribeAlways)
-            }
+            // }
         }
 }
 
