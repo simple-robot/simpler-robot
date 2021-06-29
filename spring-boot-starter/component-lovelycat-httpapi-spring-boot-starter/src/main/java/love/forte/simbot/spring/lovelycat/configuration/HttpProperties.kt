@@ -13,17 +13,15 @@
  *  *
  *
  */
+package love.forte.simbot.spring.lovelycat.configuration
 
-package love.forte.simbot.spring.lovelycat.configuration;
-
-
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import love.forte.simbot.http.configuration.HttpProperties
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Configuration
 
 /**
  * @author ForteScarlet
  */
 @Configuration
 @ConfigurationProperties(prefix = "simbot.http")
-public class HttpProperties extends love.forte.simbot.http.configuration.HttpProperties  {
-}
+public open class HttpProperties : HttpProperties()

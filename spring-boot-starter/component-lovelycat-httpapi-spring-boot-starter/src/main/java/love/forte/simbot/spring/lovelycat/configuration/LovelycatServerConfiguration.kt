@@ -13,46 +13,32 @@
  *  *
  *
  */
+package love.forte.simbot.spring.lovelycat.configuration
 
-package love.forte.simbot.spring.lovelycat.configuration;
-
-import love.forte.simbot.component.lovelycat.configuration.LovelyCatServerProperties;
-import love.forte.simbot.core.SimbotContext;
-import love.forte.simbot.spring.autoconfigure.properties.SimbotCompLovelycatServerProperties;
-import love.forte.simbot.spring.lovelycat.server.LovelyCatServer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import love.forte.simbot.component.lovelycat.configuration.LovelyCatServerProperties
+import love.forte.simbot.core.SimbotContext
+import love.forte.simbot.spring.autoconfigure.properties.SimbotCompLovelycatServerProperties
+import love.forte.simbot.spring.lovelycat.server.LovelyCatServer
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 
 /**
  * @author ForteScarlet
  */
 @Configuration
-@Import(value = {
-        RestTemplateConfiguration.class,
-        SimbotCompLovelycatServerProperties.class,
-        LovelyCatServer.class,
-})
-@ConditionalOnBean(SimbotContext.class)
-public class LovelycatServerConfiguration {
-
-    private final SimbotCompLovelycatServerProperties simbotCompLovelycatServerProperties;
-
-    @Autowired
-    public LovelycatServerConfiguration(SimbotCompLovelycatServerProperties simbotCompLovelycatServerProperties) {
-        this.simbotCompLovelycatServerProperties = simbotCompLovelycatServerProperties;
-    }
-
+@Import(value = [RestTemplateConfiguration::class, SimbotCompLovelycatServerProperties::class, LovelyCatServer::class])
+@ConditionalOnBean(SimbotContext::class)
+public open class LovelycatServerConfiguration @Autowired constructor(private val simbotCompLovelycatServerProperties: SimbotCompLovelycatServerProperties) {
     @Bean
-    public LovelyCatServerProperties lovelyCatServerProperties(){
-        LovelyCatServerProperties properties = new LovelyCatServerProperties();
-        properties.setCors(true);
-        properties.setEnable(simbotCompLovelycatServerProperties.isEnable());
-        properties.setPort(simbotCompLovelycatServerProperties.getPort());
-        properties.setPath(simbotCompLovelycatServerProperties.getPath());
-        return properties;
+    open fun lovelyCatServerProperties(): LovelyCatServerProperties {
+        val properties = LovelyCatServerProperties()
+        properties.cors = true
+        properties.enable = simbotCompLovelycatServerProperties.isEnable
+        properties.port = simbotCompLovelycatServerProperties.port
+        properties.path = simbotCompLovelycatServerProperties.path
+        return properties
     }
-
 }
