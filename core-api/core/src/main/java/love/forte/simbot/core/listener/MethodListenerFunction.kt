@@ -38,6 +38,7 @@ import java.lang.reflect.Modifier
 import java.security.MessageDigest
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
+import kotlin.reflect.full.callSuspend
 import kotlin.reflect.jvm.kotlinFunction
 
 /**
@@ -68,6 +69,19 @@ public class MethodListenerFunction  constructor(
     override val log: Logger = LoggerFactory.getLogger(method.declaringClass.typeName + "." + method.name)
 
     private val isStatic: Boolean = Modifier.isStatic(method.modifiers)
+
+    private val function: KFunction<*>? = method.kotlinFunction
+
+    private val functionCaller: suspend (instance: Any?, params: Array<*>) -> Any? =
+        when {
+            function == null || !function.isSuspend -> { instance, params ->
+                method(instance, *params)
+            }
+            // function.isSuspend
+            else -> { instance, params ->
+                function.callSuspend(instance, *params)
+            }
+        }
 
     /**
      * 此监听函数上的 [Listens] 注解。
@@ -436,7 +450,7 @@ public class MethodListenerFunction  constructor(
     /**
      * 执行监听函数并返回一个执行后的响应结果。
      */
-    override fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> {
+    override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> {
         // do filter
         val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
         if (!filter || data.listenerInterceptorChain.intercept().prevent) {
@@ -465,7 +479,8 @@ public class MethodListenerFunction  constructor(
 
         // 执行方法
         val invokeResult: Any? = runCatching {
-            method(instance, *params)
+            functionCaller(instance, params)
+            // method(instance, *params)
         }.getOrElse {
             val cause = if (it is InvocationTargetException) {
                 it.targetException

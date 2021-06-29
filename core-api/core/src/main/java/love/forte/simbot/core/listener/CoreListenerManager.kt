@@ -15,6 +15,16 @@
 
 package love.forte.simbot.core.listener
 
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.ProducerScope
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.dropWhile
+import kotlinx.coroutines.launch
 import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.simbot.LogAble
@@ -25,11 +35,14 @@ import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSender
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.BotManager
+import love.forte.simbot.core.SimbotContext
+import love.forte.simbot.core.SimbotContextClosedHandle
 import love.forte.simbot.core.intercept.EmptyListenerInterceptorChain
 import love.forte.simbot.core.intercept.EmptyMsgInterceptChain
 import love.forte.simbot.core.listener.ListenerFunctionGroups.Companion.isEmpty
 import love.forte.simbot.core.listener.ListenerFunctionGroups.Companion.isNotEmpty
 import love.forte.simbot.core.listener.ListenerFunctionGroups.Companion.marge
+import love.forte.simbot.dispatcher.EventDispatcherFactory
 import love.forte.simbot.exception.ExceptionHandleContext
 import love.forte.simbot.exception.ExceptionProcessor
 import love.forte.simbot.filter.AtDetectionFactory
@@ -70,9 +83,10 @@ private data class ListenerFunctionGroups(
  * @property exceptionManager 异常处理器
  *
  */
-@OptIn(SimbotInternalApi::class)
+@OptIn(SimbotInternalApi::class, ExperimentalCoroutinesApi::class)
 @SpareBeans("coreListenerManager")
 public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructor(
+    eventDispatcherFactory: EventDispatcherFactory,
     private val listenerGroupManager: ListenerGroupManager,
 
     private val atDetectionFactory: AtDetectionFactory,
@@ -96,7 +110,41 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
     private val resultProcessorManager: ListenResultProcessorManager,
 
-    ) : ListenerManager, ListenerRegistrar {
+    ) : ListenerManager, ListenerRegistrar, SimbotContextClosedHandle {
+
+    private val eventDispatcher = eventDispatcherFactory.dispatcher
+    private val eventCoroutineScope = CoroutineScope(
+        eventDispatcher +
+                CoroutineName("CoreMsgProcessor-Event")
+    )
+
+    private lateinit var producerScope: ProducerScope<MsgGet>
+
+    init {
+        val flow = channelFlow<MsgGet> {
+            producerScope = this
+            awaitClose {
+                // close.
+                logger.info("Core msgGet processor closed.")
+            }
+        }
+
+        flow.buffer(1024)
+            .dropWhile { !contains(it::class.java) }
+            .also {
+            eventCoroutineScope.launch {
+                it.collect(::onMsg)
+            }
+        }
+
+
+    }
+
+
+    override fun simbotClose(context: SimbotContext) {
+        producerScope.close()
+    }
+
 
     private val logger: Logger = LoggerFactory.getLogger(CoreListenerManager::class.java)
 
@@ -169,7 +217,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      * 接收到消息监听并进行处理。
      */
     @OptIn(SimbotExperimentalApi::class)
-    override fun onMsg(msgGet: MsgGet): ListenResult<*> {
+    override suspend fun onMsg(msgGet: MsgGet): ListenResult<*> {
         try {
             // not empty, intercept.
             // val context: ListenerContext = getContext(msgGet)
@@ -217,7 +265,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      * 筛选监听函数
      */
     @OptIn(SimbotExperimentalApi::class)
-    private fun onMsg0(msgGet: MsgGet, context: ListenerContext): ListenResult<*> {
+    private suspend fun onMsg0(msgGet: MsgGet, context: ListenerContext): ListenResult<*> {
         val funcs = getListenerFunctions(msgGet.javaClass, true)
         var invokeData: ListenerFunctionInvokeData? = null
         return if (funcs.isEmpty()) {
@@ -229,7 +277,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             var doBreak = false
 
             // do listen function
-            fun doListen(func: ListenerFunction): ListenResult<*> {
+            suspend fun doListen(func: ListenerFunction): ListenResult<*> {
 
                 // val listenerInterceptContext =
                 // val interceptorChain = listenerInterceptChainFactory.getInterceptorChain(listenerInterceptContext)

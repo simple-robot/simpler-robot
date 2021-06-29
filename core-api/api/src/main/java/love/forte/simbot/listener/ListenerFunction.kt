@@ -112,7 +112,7 @@ public interface ListenerFunction {
      *
      * @throws Throwable 执行可能会存在任何可能发生的以外异常。而 [ListenResult] 中包含的一般仅仅是方法执行时候出现的异常。
      */
-    operator fun invoke(data: ListenerFunctionInvokeData): ListenResult<*>
+    suspend operator fun invoke(data: ListenerFunctionInvokeData): ListenResult<*>
 }
 
 
