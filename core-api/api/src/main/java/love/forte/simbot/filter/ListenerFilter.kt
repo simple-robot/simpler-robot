@@ -41,6 +41,11 @@ public class FilterData @OptIn(SimbotExperimentalApi::class) constructor(
  * 过滤器属于 [监听函数][ListenerFunction] 的一种属性，
  * 因此何时何地进行过滤匹配 应当由 [监听函数][ListenerFunction] 进行实现。
  *
+ *
+ * since 2.2.0: 基于函数构建一个 [ListenerFilter] 可以参考：
+ * - Kotlin: [listenerFilter { data -> ... }][listenerFilter]、[buildListenerFilter { ... }][buildListenerFilter]
+ * - Java: [ListenerFilterBuilder]、[ListenerFilterUtil.listenerFilter(data -> ...)][listenerFilter]
+ *
  */
 public interface ListenerFilter : (FilterData) -> Boolean {
 

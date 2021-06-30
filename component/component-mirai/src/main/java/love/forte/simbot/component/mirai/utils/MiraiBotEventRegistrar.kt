@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -19,8 +19,6 @@ package love.forte.simbot.component.mirai.utils
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Runnable
-import love.forte.common.configuration.annotation.AsConfig
-import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.simbot.component.mirai.message.MiraiMessageCache
 import love.forte.simbot.component.mirai.message.cacheId
 import love.forte.simbot.component.mirai.message.event.*
@@ -48,7 +46,7 @@ import kotlin.coroutines.CoroutineContext
 
 
 @ComponentBeans
-@AsConfig(prefix = "simbot.component.mirai")
+// @AsConfig(prefix = "simbot.component.mirai")
 public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
 
     @Volatile
@@ -60,23 +58,23 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
     }
 
 
-    @ConfigInject("dispatcher.corePoolSize")
-    private var corePoolSize: Int = Runtime.getRuntime().availableProcessors() * 2
-
-    @ConfigInject("dispatcher.maximumPoolSize")
-    private var maximumPoolSize: Int = Runtime.getRuntime().availableProcessors() * 4
-
-    @ConfigInject("dispatcher.keepAliveTime")
-    private var keepAliveTime: Long = 1000L
-
-    @OptIn(SimbotMiraiCrossApi::class)
-    private val dispatcher: CoroutineContext by lazy {
-        logger.debug("Init simbot mirai event dispatcher (corePoolSize={}, maximumPoolSize={}, keepAliveTime={}(ms))",
-            corePoolSize,
-            maximumPoolSize,
-            keepAliveTime)
-        MiraiOnMsgDispatcher(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS)
-    }
+    // @ConfigInject("dispatcher.corePoolSize")
+    // private var corePoolSize: Int = Runtime.getRuntime().availableProcessors() * 2
+    //
+    // @ConfigInject("dispatcher.maximumPoolSize")
+    // private var maximumPoolSize: Int = Runtime.getRuntime().availableProcessors() * 4
+    //
+    // @ConfigInject("dispatcher.keepAliveTime")
+    // private var keepAliveTime: Long = 1000L
+    //
+    // @OptIn(SimbotMiraiCrossApi::class)
+    // private val dispatcher: CoroutineContext by lazy {
+    //     logger.debug("Init simbot mirai event dispatcher (corePoolSize={}, maximumPoolSize={}, keepAliveTime={}(ms))",
+    //         corePoolSize,
+    //         maximumPoolSize,
+    //         keepAliveTime)
+    //     MiraiOnMsgDispatcher(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.MILLISECONDS)
+    // }
 
 
     private companion object : TypedCompLogger(MiraiBotEventRegistrar::class.java)

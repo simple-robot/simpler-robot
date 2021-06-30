@@ -14,53 +14,45 @@
 
 package love.forte.simbot.spring.autoconfigure.properties;
 
-import love.forte.simbot.bot.BotResourceType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
  * 不被实际使用的配置类，主要用于生成metadata并使得Springboot提供配置文件的快速提示。
- *
+ * <p>
  * 对照了core的具体配置内容进行的配置。
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
-@SuppressWarnings("ConfigurationProperties")
 @Component
-@ConfigurationProperties(prefix = "simbot.core")
+@ConfigurationProperties(prefix = "simbot.core.dispatcher.event")
 @lombok.Getter
 @lombok.Setter
-public class SimbotCoreConfigurationProperties {
+public class SimbotCoreEventDispatcherConfigurationProperties {
 
     /**
-     * 建议使用 simbot-bots/*.bot 下文件进行bot注册。
-     * 参考文档：https://www.yuque.com/simpler-robot/simpler-robot-doc/fk6o3e
+     * 核心线程数
      */
-    @Deprecated
-    private List<String> bots = null;
+    private int corePoolSize = Runtime.getRuntime().availableProcessors() * 2 + 2;
 
     /**
-     * bot资源扫描时所使用的加载类型。
-     *
+     * 最大线程数
      */
-    private BotResourceType botResourceType;
+    private int maximumPoolSize = Runtime.getRuntime().availableProcessors() * 8;
 
 
     /**
-     * 指定要启动的bots。在 .bots中通过 "action_name" 属性进行配置。
+     * 存活时间
      */
-    private String actionBots;
+    private long keepAliveTime = 0L;
 
 
     /**
-     * 可进行指定的包扫描路径。如果不指定则为启动器所在路径。
+     * 时间类型
      */
-    private List<String> scanPackage;
-
-
-
+    private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
 
 }

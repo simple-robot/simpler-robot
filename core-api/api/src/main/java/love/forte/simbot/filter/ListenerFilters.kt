@@ -12,7 +12,7 @@
  *
  */
 
-@file:JvmName("ListenerFilters")
+@file:JvmName("ListenerFilterUtil")
 
 package love.forte.simbot.filter
 
@@ -35,20 +35,122 @@ public fun merge(filter1: ListenerFilter, filter2: ListenerFilter): ListenerFilt
  */
 @JvmSynthetic
 public operator fun ListenerFilter.plus(otherFilter: ListenerFilter): ListenerFilter {
-
     TODO()
 }
 
 
 /**
  * 得到一个简易的 [ListenerFilter] 实例。
+ *
+ * 忽略 [ListenerFilter.getFilterValue] 的实现:
+ *
+ * ```kotlin
+ *     val filter = listenerFilter(priority = 2) { data ->
+ *          // do?
+ *          true
+ *     }
+ * ```
+ *
+ * 也忽略优先级的实现：
+ * ```kotlin
+ *     val filter = listenerFilter { data ->
+ *          // do?
+ *          true
+ *     }
+ * ```
+ *
+ * 所有参数都有的实现：
+ * ```kotlin
+ *
+ *     val filter = listenerFilter(
+ *          priority = 2,
+ *          filterValueGetter = { name, text -> "value?" }
+ *          ) { data ->
+ *          // do?
+ *          true
+ *     }
+ *
+ * ```
+ *
  */
-public inline fun listenerFilter(
+public fun listenerFilter(
     priority: Int = PriorityConstant.LAST,
     filterValueGetter: (name: String, text: String) -> String? = { _, _ -> null },
     block: (data: FilterData) -> Boolean,
-): ListenerFilter {
+): ListenerFilter = SimpleListenerFilter(priority, filterValueGetter, block)
 
-    TODO()
+
+/**
+ * [ListenerFilter]的基础实现.
+ */
+internal class SimpleListenerFilter(
+    override val priority: Int,
+    private val filterValueGetter: (name: String, text: String) -> String?,
+    private val block: (data: FilterData) -> Boolean,
+) : ListenerFilter {
+    override fun test(data: FilterData): Boolean = block(data)
 }
 
+
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.PROPERTY)
+@DslMarker
+public annotation class ListenerFilterBuilderDSL
+
+
+/**
+ * 构建一个基于函数的 [ListenerFilter] 实例。
+ *
+ * Kotlin for example:
+ *
+ * ```kotlin
+ *     val filter = buildListenerFilter {
+ *          // or ignore
+ *          priority = 2
+ *
+ *          // or ignore
+ *          filterValueGetter { name, text -> null }
+ *
+ *          // must
+ *          filter { data -> data.atDetection.atAll() }
+ *      }
+ *
+ * ```
+ *
+ */
+public fun buildListenerFilter(builder: ListenerFilterBuilder.() -> Unit): ListenerFilter {
+    return ListenerFilterBuilder().also(builder).build()
+}
+
+
+/**
+ *
+ * [ListenerFilter] 基于函数的构建器。
+ *
+ */
+@ListenerFilterBuilderDSL
+public class ListenerFilterBuilder {
+
+    @ListenerFilterBuilderDSL
+    var priority: Int = PriorityConstant.LAST
+
+    private var filterValueGetter: (name: String, text: String) -> String? = { _, _ -> null }
+
+    @ListenerFilterBuilderDSL
+    fun filterValueGetter(getter: (name: String, text: String) -> String?) {
+        filterValueGetter = getter
+    }
+
+    private var block: ((data: FilterData) -> Boolean)? = null
+
+    @ListenerFilterBuilderDSL
+    fun filter(block: (data: FilterData) -> Boolean) {
+        this.block = block
+    }
+
+    fun build(): ListenerFilter = listenerFilter(
+        priority = priority,
+        filterValueGetter = filterValueGetter,
+        block = requireNotNull(block) { "Required filter function was null. Maybe you need to use ListenerFilterBuilder.filter { data -> Boolean } for this builder. " }
+    )
+
+}
