@@ -88,7 +88,14 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
         }.distinct().flatMap { (name, type) ->
             val kType = type.kotlin
 
-            kType.functions.mapNotNull { f ->
+            kotlin.runCatching { kType.functions }.getOrElse { e1 ->
+                if (logger.isDebugEnabled) {
+                    logger.warn("Cannot get type $kType functions, skip.", e1)
+                } else {
+                    logger.warn("Cannot get type {} functions because {}. skip.", kType, e1.toString())
+                }
+                emptyList()
+            }.mapNotNull { f ->
                 val isListener = kType.containsAnnotation<Listens>() ||
                         (!f.containsAnnotation<Ignore>() && f.containsAnnotation<Listens>())
 
@@ -110,25 +117,6 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                     }
                 } else null
             }
-
-            // 只获取public方法
-            // type.methods.asSequence().filter { m ->
-            //     AnnotationUtil.containsAnnotation(m.declaringClass, Listens::class.java) ||
-            //             (!AnnotationUtil.containsAnnotation(m, Ignore::class.java) &&
-            //                     AnnotationUtil.containsAnnotation(m, Listens::class.java))
-            // }.map {
-            //     MethodListenerFunction(
-            //         method = it,
-            //         instanceName = name,
-            //         declClass = type,
-            //         dependBeanFactory = dependBeanFactory,
-            //         filterManager = filterManager,
-            //         converterManager = converterManager,
-            //         listenerResultFactory = listenerResultFactory,
-            //         listenerGroupManager = listenerGroupManager
-            //     )
-            // }
-
         }.forEach {
             registrar.register(it)
             logger.debug(
