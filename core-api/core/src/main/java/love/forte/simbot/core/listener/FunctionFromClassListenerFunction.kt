@@ -23,11 +23,11 @@ import love.forte.simbot.annotation.*
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.core.util.MD5
-import love.forte.simbot.core.util.getAnnotation
 import love.forte.simbot.filter.FilterManager
 import love.forte.simbot.filter.ListenerFilter
 import love.forte.simbot.listener.*
+import love.forte.simbot.utils.MD5
+import love.forte.simbot.utils.getAnnotation
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationTargetException
@@ -45,7 +45,7 @@ import kotlin.reflect.jvm.javaMethod
  *
  * 基于反射获取的 [KFunction] 实现的 [ListenerFunction].
  *
- * 需要注意 [function] 要能够表达为[JavaMethod][KFunction.javaMethod].
+ * 需要注意 [function] 要能够表达为[JavaMethod][KFunction.javaMethod]. 否则你可以参考 [FunctionListenerFunction].
  *
  * @author ForteScarlet
  */

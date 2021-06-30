@@ -36,7 +36,9 @@ public fun interface AnnotationGetter {
  *
  * 基于函数的 [ListenerFunction] 实现，提供一个原始的执行函数 [func] 来实现一个监听函数流程。
  *
- * [FunctionListenerFunction] 趋近于较为原始的监听函数实现，TODO 提供更加便捷的构建器。
+ * [FunctionListenerFunction] 趋近于较为原始的监听函数实现，
+ *
+ * TODO 提供更加便捷的构建器。
  *
  *
  * @author ForteScarlet

@@ -12,7 +12,7 @@
  *
  */
 
-package love.forte.simbot.core.util
+package love.forte.simbot.utils
 
 import java.security.MessageDigest
 

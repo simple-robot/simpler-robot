@@ -13,13 +13,13 @@
  */
 
 @file:JvmName("AnnotationUtilForKt")
-package love.forte.simbot.core.util
+package love.forte.simbot.utils
 
 import love.forte.common.utils.annotation.AnnotationUtil
-import kotlin.reflect.KParameter
+import kotlin.reflect.KAnnotatedElement
 
 
-public inline fun <reified T : Annotation> KParameter.getAnnotation(): T? {
+public inline fun <reified T : Annotation> KAnnotatedElement.getAnnotation(): T? {
     for (annotation in annotations) {
         val jAnnotation = annotation.annotationClass.java
         if (jAnnotation is T) {
@@ -33,3 +33,6 @@ public inline fun <reified T : Annotation> KParameter.getAnnotation(): T? {
     }
     return null
 }
+
+
+public inline fun <reified T : Annotation> KAnnotatedElement.containsAnnotation(): Boolean = this.getAnnotation<T>() != null

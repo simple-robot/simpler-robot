@@ -23,12 +23,15 @@ import love.forte.common.utils.convert.ConverterManager
 import love.forte.simbot.annotation.Listens
 import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.core.TypedCompLogger
-import love.forte.simbot.core.listener.MethodListenerFunction
+import love.forte.simbot.core.listener.FunctionFromClassListenerFunction
 import love.forte.simbot.filter.FilterManager
 import love.forte.simbot.listener.ListenerGroupManager
 import love.forte.simbot.listener.ListenerRegistrar
 import love.forte.simbot.listener.ListenerResultFactory
 import love.forte.simbot.listener.PostListenerRegistrar
+import love.forte.simbot.utils.containsAnnotation
+import kotlin.reflect.KVisibility
+import kotlin.reflect.full.functions
 
 
 private data class BeanNameType<T>(val name: String, val type: Class<T>)
@@ -68,7 +71,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
         }
 
         // 获取所有已经加载的依赖信息并扫描
-        val allBeans = dependBeanFactory.allBeans
+        val allBeans: Set<String> = dependBeanFactory.allBeans
 
         logger.debug("Number of beans to be scanned: {}", allBeans.size)
 
@@ -83,23 +86,49 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                 null
             }
         }.distinct().flatMap { (name, type) ->
-            // 只获取public方法
-            type.methods.asSequence().filter { m ->
-                AnnotationUtil.containsAnnotation(m.declaringClass, Listens::class.java) ||
-                        (!AnnotationUtil.containsAnnotation(m, Ignore::class.java) &&
-                                AnnotationUtil.containsAnnotation(m, Listens::class.java))
-            }.map {
-                MethodListenerFunction(
-                    method = it,
-                    instanceName = name,
-                    declClass = type,
-                    dependBeanFactory = dependBeanFactory,
-                    filterManager = filterManager,
-                    converterManager = converterManager,
-                    listenerResultFactory = listenerResultFactory,
-                    listenerGroupManager = listenerGroupManager
-                )
+            val kType = type.kotlin
+
+            kType.functions.mapNotNull { f ->
+                val isListener = kType.containsAnnotation<Listens>() ||
+                        (!f.containsAnnotation<Ignore>() && f.containsAnnotation<Listens>())
+
+                if (isListener) {
+                    if (f.visibility != KVisibility.PUBLIC) {
+                        logger.warn("Function $f is marked as a Listener, but it is not a public function, ignored.")
+                        null
+                    } else {
+                        FunctionFromClassListenerFunction(
+                            function = f,
+                            instanceName = name,
+                            type = type,
+                            dependBeanFactory = dependBeanFactory,
+                            filterManager = filterManager,
+                            converterManager = converterManager,
+                            listenerResultFactory = listenerResultFactory,
+                            listenerGroupManager = listenerGroupManager
+                        )
+                    }
+                } else null
             }
+
+            // 只获取public方法
+            // type.methods.asSequence().filter { m ->
+            //     AnnotationUtil.containsAnnotation(m.declaringClass, Listens::class.java) ||
+            //             (!AnnotationUtil.containsAnnotation(m, Ignore::class.java) &&
+            //                     AnnotationUtil.containsAnnotation(m, Listens::class.java))
+            // }.map {
+            //     MethodListenerFunction(
+            //         method = it,
+            //         instanceName = name,
+            //         declClass = type,
+            //         dependBeanFactory = dependBeanFactory,
+            //         filterManager = filterManager,
+            //         converterManager = converterManager,
+            //         listenerResultFactory = listenerResultFactory,
+            //         listenerGroupManager = listenerGroupManager
+            //     )
+            // }
+
         }.forEach {
             registrar.register(it)
             logger.debug(
