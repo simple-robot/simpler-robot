@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -15,8 +15,11 @@
 package love.forte.simbot.component.mirai.message.event
 
 import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.GroupContainer
+import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.ChangedGet
 import love.forte.simbot.component.mirai.message.MiraiMemberAccountInfo
+import love.forte.simbot.component.mirai.message.result.MiraiGroupFullInfo
 import net.mamoe.mirai.data.GroupHonorType
 import net.mamoe.mirai.event.events.MemberHonorChangeEvent
 import net.mamoe.mirai.utils.MiraiExperimentalApi
@@ -32,7 +35,10 @@ import net.mamoe.mirai.utils.MiraiExperimentalApi
  *
  */
 @OptIn(MiraiExperimentalApi::class)
-public interface MiraiGroupHonorChanged: ChangedGet<GroupHonorType>, MiraiSpecialEvent<MemberHonorChangeEvent>
+public interface MiraiGroupHonorChanged:
+    ChangedGet<GroupHonorType>,
+    GroupContainer,
+    MiraiSpecialEvent<MemberHonorChangeEvent>
 
 
 
@@ -59,4 +65,5 @@ public class MiraiGroupHonorChangedImpl(event: MemberHonorChangeEvent) : Abstrac
      */
     override val afterChange: GroupHonorType? = if (event is MemberHonorChangeEvent.Achieve) event.honorType else null
 
+    override val groupInfo: GroupInfo = MiraiGroupFullInfo(event.group)
 }
