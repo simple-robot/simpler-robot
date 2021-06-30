@@ -236,12 +236,12 @@ public class LovelyCatKtorHttpServer(
                                             api,
                                             jsonSerializerFactory,
                                             params)
-                                        msg?.let { m -> msgGetProcessor.onMsg(m::class.java) { m } ?: ListenResult }
+                                        msg?.let { m -> msgGetProcessor.onMsg(m::class.java) { m } }
                                     }
 
                                 }?.let {
                                     // ok
-                                    call.respond(HttpStatusCode.OK, message = it.result ?: "{}")
+                                    call.respond(HttpStatusCode.OK, message = ListenResult)
                                 } ?: kotlin.run {
                                     val respMsg = "Cannot found any event type for event '$eventType'."
                                     call.respond(HttpStatusCode.NotFound, message = respMsg)
