@@ -19,8 +19,8 @@ import love.forte.common.ioc.annotation.Beans
 import love.forte.simbot.annotation.Filter
 import love.forte.simbot.annotation.Filters
 import love.forte.simbot.annotation.OnGroup
-import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.events.GroupMsg
+import love.forte.simbot.api.sender.Sender
 import kotlin.coroutines.coroutineContext
 
 
@@ -40,10 +40,10 @@ class TestListener {
         groups = ["703454734"]
     )
     @OnGroup
-    suspend fun GroupMsg.listen(): MessageContent {
+    suspend fun GroupMsg.listen(sender: Sender) {
         println(coroutineContext[CoroutineDispatcher])
         println("${this.botInfo}: $this")
-        return this.msgContent
+        sender.sendGroupMsg(this, "Yes!")
     }
 
 }

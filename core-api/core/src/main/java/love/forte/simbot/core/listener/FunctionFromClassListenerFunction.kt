@@ -23,6 +23,8 @@ import love.forte.simbot.annotation.*
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.filter.AtDetection
+import love.forte.simbot.filter.FilterData
 import love.forte.simbot.filter.FilterManager
 import love.forte.simbot.filter.ListenerFilter
 import love.forte.simbot.listener.*
@@ -37,7 +39,6 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.KTypeParameter
 import kotlin.reflect.full.callSuspend
 import kotlin.reflect.full.isSuperclassOf
-import kotlin.reflect.full.valueParameters
 import kotlin.reflect.jvm.javaMethod
 
 
@@ -211,11 +212,11 @@ public class FunctionFromClassListenerFunction constructor(
     }
 
     private fun KFunction<*>.getParameterGetters(): List<(ListenerFunctionInvokeData) -> Any?> =
-        valueParameters.mapIndexed { i, p -> p.toParameterGetter(this, i) }
+        parameters.mapIndexedNotNull { i, p -> if (p.kind == KParameter.Kind.INSTANCE) null else p.toParameterGetter(i) }
 
 
     @OptIn(SimbotExperimentalApi::class)
-    private fun KParameter.toParameterGetter(function: KFunction<*>, i: Int): (ListenerFunctionInvokeData) -> Any? {
+    private fun KParameter.toParameterGetter(i: Int): (ListenerFunctionInvokeData) -> Any? {
 
 
         val contextValue: ContextValue? = this.getAnnotation()
@@ -398,14 +399,28 @@ public class FunctionFromClassListenerFunction constructor(
     }
 
 
+    /**
+     * 执行过滤。
+     * // TODO NO NO NO
+     */
+    @OptIn(SimbotExperimentalApi::class)
+    private fun doFilter(
+        msgGet: MsgGet,
+        atDetection: AtDetection,
+        listenerContext: ListenerContext,
+    ): Boolean = filter?.let { annotationFilter ->
+        val data = FilterData(msgGet, atDetection, listenerContext, this)
+        return annotationFilter.test(data)
+    } ?: true
+
     override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> {
         // do filter
         // TODO no!
-        // val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
-        // if (data.listenerInterceptorChain.intercept().prevent || !filter) {
-        //     //没有通过检测, 返回ListenResult默认的无效化实现。
-        // return ListenResult
-        // }
+        val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
+        if (data.listenerInterceptorChain.intercept().prevent || !filter) {
+            //没有通过检测, 返回ListenResult默认的无效化实现。
+        return ListenResult
+        }
 
         // 获取实例
         val instance: Any? = runCatching {
