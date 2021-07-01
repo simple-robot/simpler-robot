@@ -27,6 +27,10 @@ import net.mamoe.mirai.event.events.MessageEvent
 import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.message.data.MessageSource
 import net.mamoe.mirai.message.data.PlainText
+import org.slf4j.LoggerFactory
+
+
+private val defaultLogger = LoggerFactory.getLogger("love.forte.simbot.component.mirai.message.event.def")
 
 
 /**

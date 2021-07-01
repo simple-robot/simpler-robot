@@ -419,7 +419,7 @@ public class FunctionFromClassListenerFunction constructor(
         val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
         if (data.listenerInterceptorChain.intercept().prevent || !filter) {
             //没有通过检测, 返回ListenResult默认的无效化实现。
-        return ListenResult
+            return ListenResult
         }
 
         // 获取实例

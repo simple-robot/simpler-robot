@@ -15,16 +15,13 @@
 
 package love.forte.simbot.core.listener
 
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.dropWhile
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.filter
 import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.simbot.LogAble
@@ -113,6 +110,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     ) : ListenerManager, ListenerRegistrar, SimbotContextClosedHandle {
 
     private val eventDispatcher = eventDispatcherFactory.dispatcher
+    private val collectScope = CoroutineScope(Dispatchers.Default)
     private val eventCoroutineScope = CoroutineScope(
         eventDispatcher +
                 CoroutineName("CoreMsgProcessor-Event")
@@ -130,12 +128,14 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
         }
 
         flow.buffer(1024)
-            .dropWhile { !contains(it::class.java) }
+            .filter { contains(it::class.java) }
             .also {
-            eventCoroutineScope.launch {
-                it.collect(::onMsg1)
+                collectScope.launch {
+                    it.collect {
+                        eventCoroutineScope.launch { onMsg1(it) }
+                    }
+                }
             }
-        }
 
 
     }
@@ -143,6 +143,8 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
     override fun simbotClose(context: SimbotContext) {
         producerScope.close()
+        collectScope.cancel()
+        eventCoroutineScope.cancel()
     }
 
 
@@ -264,6 +266,9 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      */
     @OptIn(SimbotExperimentalApi::class)
     private suspend fun onMsg0(msgGet: MsgGet, context: ListenerContext) {
+        // val botCode = msgGet.botInfo.botCode
+        val eventLogger = if (msgGet is LogAble) msgGet.log else logger
+
         val funcs = getListenerFunctions(msgGet.javaClass, true)
         var invokeData: ListenerFunctionInvokeData? = null
         if (funcs.isEmpty()) {
@@ -331,11 +336,19 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             }
 
 
-            for (func: ListenerFunction in funcs.normal) {
+            // for (func: ListenerFunction in funcs.normal) {
+
+            val normals = funcs.normal
+
+            val iter = normals.iterator()
+            var i = 0
+
+            for (func in iter) {
 
                 finalResult = doListen(func)
 
                 if (finalResult.isSuccess()) {
+                    eventLogger.debug("Normal listener chain[{}] success on {}({})", i, func.name, func.id)
                     anySuccess = true
                 }
 
@@ -345,22 +358,28 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                 // if break, break.
                 if (finalResult.isBreak()) {
                     doBreak = true
-                    logger.debug("Normal Listener chain break on ${func.name} ( ${func.id} )")
+                    eventLogger.debug("Normal Listener chain[{}] break on {}({})", i, func.name, func.id)
                     break
                 }
+                i++
             }
+            eventLogger.debug("Normal listener invoked {}.", i + 1)
 
 
             // 如果没有break，也没有任何函数成功，执行spare函数
             if (!anySuccess && !doBreak) {
+                eventLogger.debug("No normal success or break, to spares.")
+                var si = 0
                 for (func: ListenerFunction in funcs.spare) {
                     finalResult = doListen(func)
                     finalResult = doResultIfFail(func, finalResult)
                     if (finalResult.isBreak()) {
-                        logger.debug("Spare Listener chain break on ${func.name} ( ${func.id} )")
+                        eventLogger.debug("Spare Listener chain[{}] break on {}({})", si, func.name, func.id)
                         break
                     }
+                    si++
                 }
+                eventLogger.debug("Spare Listener invoked {}.", si)
             }
 
             // do processor

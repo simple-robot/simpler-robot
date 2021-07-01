@@ -21,7 +21,7 @@ import org.slf4j.Logger
  * 默认使用的普通日志实现，不会区分bot
  */
 public class SimbotMiraiLogger(
-    private val logger: Logger
+    val logger: Logger
 ) : MiraiLoggerPlatformBase() {
     override val identity: String = "simbot-mirai"
 
@@ -45,3 +45,6 @@ public class SimbotMiraiLogger(
         e?.let { logger.warn(message, it) } ?: logger.warn("{}", message)
     }
 }
+
+
+
