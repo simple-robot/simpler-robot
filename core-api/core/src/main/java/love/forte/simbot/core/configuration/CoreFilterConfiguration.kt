@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -64,17 +64,37 @@ public class CoreFilterConfiguration {
     fun coreFilterManager(builder: FilterManagerBuilder): FilterManager {
         val allNames = dependBeanFactory.allBeans
 
-        val filterType = ListenerFilter::class.java
-
         allNames.forEach { name ->
             val type = dependBeanFactory.getType(name)
-            if(filterType.isAssignableFrom(type)) {
+            if(ListenerFilter::class.java.isAssignableFrom(type)) {
                 // is filter, register it.
                 builder.register(name, dependBeanFactory[name] as ListenerFilter)
+            }
+            if (ListenerFilterRegistry::class.java.isAssignableFrom(type)) {
+                (dependBeanFactory[name] as ListenerFilterRegistry).registerFilter(builder)
             }
         }
 
         return builder.build()
     }
 
+}
+
+
+
+
+
+/**
+ * 用于注册代码生成的 [ListenerFilter] 实例的注册接口。实现此接口并注入到容器中，
+ * 由 [CoreFilterConfiguration] 进行扫描与注册。
+ *
+ * 注意！不要与 [ListenerFilterRegistrar] 搞混，可以实现多个的是当前的 [ListenerFilterRegistry] 接口。
+ *
+ */
+public interface ListenerFilterRegistry {
+
+    /**
+     * 可以进行过滤器注册。
+     */
+    fun registerFilter(builder: FilterManagerBuilder)
 }

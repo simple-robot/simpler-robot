@@ -21,9 +21,23 @@ import love.forte.simbot.constant.PriorityConstant
 
 /**
  * 合并两个filter，并得到一个新的实例。
- * @see plus
+ *
+ * 进行过滤匹配的时候，提供一个 [MostMatchType], 默认情况下需要合并后的两个过滤器都为 `true` 才会得到true，即默认为 [MostMatchType.ALL][MostMatchType.ALL] [.filterMatcher][MostMatchType.filterMatcher]
+ *
+ *  @see plus
  */
-public fun merge(filter1: ListenerFilter, filter2: ListenerFilter): ListenerFilter = filter1 + filter2
+@JvmOverloads
+public fun merge(
+    filter1: ListenerFilter,
+    filter2: ListenerFilter,
+    filterMatcher: MostMatcher<FilterData> = MostMatchType.ALL.filterMatcher,
+): ListenerFilter = filter1.plus(filter2, filterMatcher)
+
+public fun merge(
+    filter1: ListenerFilter,
+    filter2: ListenerFilter,
+    filterMatcher: MostMatchType = MostMatchType.ALL,
+): ListenerFilter = merge(filter1, filter2, filterMatcher.filterMatcher)
 
 
 /**
@@ -32,10 +46,61 @@ public fun merge(filter1: ListenerFilter, filter2: ListenerFilter): ListenerFilt
  * 得到的新实例中的优先级以 **最左侧** 为准。 即当 `filter1 + filter2`, 则以 `filter1` 为准,
  * [ListenerFilter.getFilterValue] 也是优先以左侧的为准.
  *
+ * ```kotlin
+ *  val filter1 = listenerFilter { ... }
+ *  val filter2 = buildListenerFilter { ... }
+ *
+ *  val merged1 = filter1 + filter2
+ *
+ *  val merged2 = filter1 + filter2 with MostMatchType.ANY
+ *
+ * ```
+ *
+ * 进行过滤匹配的时候，提供一个 [MostMatchType], 默认情况下需要合并后的两个过滤器都为 `true` 才会得到true，即默认为 [MostMatchType.ALL][MostMatchType.ALL] [.filterMatcher][MostMatchType.filterMatcher]
+ *
  */
 @JvmSynthetic
-public operator fun ListenerFilter.plus(otherFilter: ListenerFilter): ListenerFilter {
-    TODO()
+public operator fun ListenerFilter.plus(otherFilter: ListenerFilter): MergedListenerFilter =
+    MergedListenerFilter(this, otherFilter)
+
+/**
+ * 合并两个filter，并得到一个新的实例，且提供一个过滤器匹配方式。
+ */
+@JvmSynthetic
+public fun ListenerFilter.plus(
+    otherFilter: ListenerFilter,
+    filterMatcher: MostMatcher<FilterData>,
+): MergedListenerFilter = MergedListenerFilter(this, otherFilter, filterMatcher)
+
+
+@JvmSynthetic
+public infix fun MergedListenerFilter.with(filterMatcher: MostMatcher<FilterData>): MergedListenerFilter =
+    MergedListenerFilter(this.mainFilter, this.subFilter, filterMatcher)
+
+@JvmSynthetic
+public infix fun MergedListenerFilter.with(mostMatchType: MostMatchType): MergedListenerFilter =
+    this with mostMatchType.filterMatcher
+
+
+public class MergedListenerFilter(
+    internal val mainFilter: ListenerFilter,
+    internal val subFilter: ListenerFilter,
+    private val filterMatcher: MostMatcher<FilterData> = MostMatchType.ALL.filterMatcher,
+) :
+    ListenerFilter {
+
+    override fun getFilterValue(name: String, text: String): String? {
+        return mainFilter.getFilterValue(name, text) ?: subFilter.getFilterValue(name, text)
+    }
+
+    override val priority: Int
+        get() = mainFilter.priority
+
+    private val filterIter = listOf(mainFilter, subFilter)
+
+    override fun test(data: FilterData): Boolean {
+        return filterMatcher.mostMatch(data, filterIter)
+    }
 }
 
 
@@ -89,6 +154,7 @@ internal class SimpleListenerFilter(
     private val block: (data: FilterData) -> Boolean,
 ) : ListenerFilter {
     override fun test(data: FilterData): Boolean = block(data)
+    override fun getFilterValue(name: String, text: String): String? = filterValueGetter(name, text)
 }
 
 
@@ -113,7 +179,6 @@ public annotation class ListenerFilterBuilderDSL
  *          // must
  *          filter { data -> data.atDetection.atAll() }
  *      }
- *
  * ```
  *
  */
@@ -125,6 +190,8 @@ public fun buildListenerFilter(builder: ListenerFilterBuilder.() -> Unit): Liste
 /**
  *
  * [ListenerFilter] 基于函数的构建器。
+ *
+ * @see buildListenerFilter
  *
  */
 @ListenerFilterBuilderDSL

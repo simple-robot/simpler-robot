@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -19,6 +19,7 @@ import love.forte.simbot.api.message.events.MessageGet;
 import love.forte.simbot.api.message.events.MsgGet;
 import love.forte.simbot.filter.FilterTargetManager;
 import love.forte.simbot.filter.FilterTargets;
+import love.forte.simbot.filter.ListenerFilterProcessor;
 import love.forte.simbot.filter.MatchType;
 import love.forte.simbot.listener.ListenerContext;
 
@@ -187,6 +188,18 @@ public @interface Filter {
      * 匹配前是否去除前后空格。
      */
     boolean trim() default false;
+
+
+    /**
+     * 为当前 Filter 指定一个专属的处理器过滤器。
+     * 当此参数不为空的时候，其他参数全部失效，
+     *
+     * TODO
+     *
+     * @see love.forte.simbot.filter.ListenerFilterProcessor
+     *
+     */
+    Class<ListenerFilterProcessor> processor() default ListenerFilterProcessor.class;
 
 
 }

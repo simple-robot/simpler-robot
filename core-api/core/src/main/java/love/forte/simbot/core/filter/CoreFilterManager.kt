@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -216,12 +216,18 @@ public class CoreFilterManagerBuilder(private val filterTargetManager: FilterTar
 
     data class Filter(val name: String, val filter: ListenerFilter)
 
+    private var filterNameSet = mutableSetOf<String>()
     private var filters = mutableListOf<Filter>()
 
     /**
      * 注册一个或多个过滤器。
      */
     override fun register(name: String, filter: ListenerFilter): FilterManagerBuilder {
+        if (name in filterNameSet) {
+            throw IllegalArgumentException("Filter named $name already exists.")
+        } else {
+            filterNameSet.add(name)
+        }
         this.filters.add(Filter(name, filter))
         return this
     }
@@ -233,6 +239,7 @@ public class CoreFilterManagerBuilder(private val filterTargetManager: FilterTar
         val filterManager = CoreFilterManager(filterTargetManager)
         val filters = this.filters
         this.filters = mutableListOf()
+        this.filterNameSet = mutableSetOf()
 
         filters.forEach { (name, filter) ->
             filterManager.registerFilter(name, filter)
