@@ -32,6 +32,7 @@ import love.forte.simbot.listener.PostListenerRegistrar
 import love.forte.simbot.utils.containsAnnotation
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.functions
+import kotlin.reflect.full.valueParameters
 
 
 private data class BeanNameType<T>(val name: String, val type: Class<T>)
@@ -96,8 +97,19 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                 }
                 emptyList()
             }.mapNotNull { f ->
-                val isListener = kType.containsAnnotation<Listens>() ||
-                        (!f.containsAnnotation<Ignore>() && f.containsAnnotation<Listens>())
+                // 类上是否有
+                val typeListen = kType.containsAnnotation<Listens>()
+                // 函数上是否有
+                val funcListen = (!f.containsAnnotation<Ignore>() && f.containsAnnotation<Listens>())
+
+                // 如果函数上没有，类上有，函数叫toString或者hashcode，跳过
+                if (typeListen && !funcListen) {
+                    if((f.name == "toString" && f.valueParameters.isEmpty()) || (f.name == "hashCode" && f.valueParameters.isEmpty())) {
+                        return@mapNotNull null
+                    }
+                }
+
+                val isListener = typeListen || funcListen
 
                 if (isListener) {
                     if (f.visibility != KVisibility.PUBLIC) {

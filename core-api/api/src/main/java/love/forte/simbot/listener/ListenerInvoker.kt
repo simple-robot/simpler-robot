@@ -1,16 +1,14 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  simpler-robot
- *  * File     ListenerInvoker.kt
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
@@ -39,28 +37,19 @@ public interface ListenerInvoker {
 
     /**
      * 当前监听函数所对应的监听过滤器。
+     * 正常情况下，就是 [ListenerFunction.filter].
      */
-    // Need FilterData
-    val filter: ListenerFilter
+    val filter: ListenerFilter? get() = function.filter
 
 
     /**
-     * 当前监听函数所前置的监听拦截器。
+     * 进行过滤匹配，然后执行监听函数。
      */
-    // Need ListenerInterceptContext
-    // val interceptor: ListenerInterceptor
-
-
-
-
-
+    suspend operator fun invoke(data: ListenerFunctionInvokeData): ListenResult<*>
 
 }
 
 
 
-// public val ListenerInvoker.listenerId: String get() = function.id
-// public val ListenerInvoker.priority: Int get() = function.priority
-// public val ListenerInvoker.spare: Boolean get() = function.spare
 
 

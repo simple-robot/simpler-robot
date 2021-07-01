@@ -16,7 +16,6 @@ package love.forte.test.listener
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
-import love.forte.common.ioc.annotation.Beans
 import love.forte.simbot.annotation.*
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.PrivateMsg
@@ -29,7 +28,7 @@ import kotlin.coroutines.coroutineContext
  *
  * @author ForteScarlet
  */
-@Beans
+// @Beans
 class TestListener {
 
     @OptIn(ExperimentalStdlibApi::class)

@@ -415,12 +415,11 @@ public class FunctionFromClassListenerFunction constructor(
 
     override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> {
         // do filter
-        // TODO no!
-        val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
-        if (data.listenerInterceptorChain.intercept().prevent || !filter) {
-            //没有通过检测, 返回ListenResult默认的无效化实现。
-            return ListenResult
-        }
+        // val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
+        // if (data.listenerInterceptorChain.intercept().prevent || !filter) {
+        //     //没有通过检测, 返回ListenResult默认的无效化实现。
+        //     return ListenResult
+        // }
 
         // 获取实例
         val instance: Any? = runCatching {
