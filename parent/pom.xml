@@ -6,7 +6,7 @@
 
     <groupId>love.forte.simple-robot</groupId>
     <artifactId>parent</artifactId>
-    <version>2.2.0-DEV.3<!--v--></version>
+    <version>2.2.0-DEV.4<!--v--></version>
     <packaging>pom</packaging>
 
     <modules>
@@ -23,7 +23,7 @@
     <description>simple-robot是一个通用bot开发框架，以同一种灵活的标准来编写不同平台的bot应用。而simpler-robot便是simple-robot 2.x版本命名。</description>
 
     <properties>
-        <simbot.version>2.2.0-DEV.3<!--v--></simbot.version>
+        <simbot.version>2.2.0-DEV.4<!--v--></simbot.version>
 
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>

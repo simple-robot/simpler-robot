@@ -21,9 +21,10 @@ import kotlin.reflect.KAnnotatedElement
 
 public inline fun <reified T : Annotation> KAnnotatedElement.getAnnotation(): T? {
     for (annotation in annotations) {
-        val jAnnotation = annotation.annotationClass.java
-        if (jAnnotation is T) {
-            return jAnnotation
+        val kAnnotation = annotation.annotationClass
+        val jAnnotation = kAnnotation.java
+        if (annotation is T) {
+            return annotation
         }
 
         val found = AnnotationUtil.getAnnotation(jAnnotation, T::class.java)

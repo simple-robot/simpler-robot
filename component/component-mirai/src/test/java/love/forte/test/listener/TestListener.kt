@@ -15,12 +15,13 @@
 package love.forte.test.listener
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineName
 import love.forte.common.ioc.annotation.Beans
-import love.forte.simbot.annotation.Filter
-import love.forte.simbot.annotation.Filters
-import love.forte.simbot.annotation.OnGroup
+import love.forte.simbot.annotation.*
 import love.forte.simbot.api.message.events.GroupMsg
+import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.api.sender.Sender
+import love.forte.simbot.filter.MatchType
 import kotlin.coroutines.coroutineContext
 
 
@@ -46,4 +47,14 @@ class TestListener {
         sender.sendGroupMsg(this, "Yes!")
     }
 
+
+
+    @Filters(value = [Filter(".h{{n,\\d+}}", matchType = MatchType.REGEX_MATCHES, codes = ["1149159218"])])
+    @OnPrivate
+    suspend fun PrivateMsg.listen2(sender: Sender, @FilterValue("n") n: Int) {
+        println(coroutineContext[CoroutineName])
+        sender.sendPrivateMsg(this, n.toString())
+    }
+
 }
+
