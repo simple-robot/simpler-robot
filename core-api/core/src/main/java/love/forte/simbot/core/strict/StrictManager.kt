@@ -32,17 +32,20 @@ package love.forte.simbot.core.strict
  * **但是过高的容错率带来的只会是更加底下的效率与愈发不严谨的规范**，因此核心与官方组件实现在默认情况下严格模式均为 **开启(true)** 状态，
  * 并且建议所有的组件实现如果存在严格模式区分，也全部默认为开启状态，并在关闭时对相关内容提供详细的警告日志。
  *
+ *
+ *
  * ## core
  * 通过 `simbot.core.strict=true/false` 开启/关闭严格模式。
  *
  * ### since v2.2.0
  * 严格模式 会影响到的内容为 [love.forte.simbot.listener.ListenerFunction] 下的
- * [love.forte.simbot.core.listener.FunctionFromClassListenerFunction] 和
- * [love.forte.simbot.core.listener.MethodListenerFunction] 中，对于参数的注入是否需要标注明确的注解（例如 [@FilterValue][love.forte.simbot.annotation.FilterValue] 或 [@ContextValue][love.forte.simbot.annotation.ContextValue]）
+ * [love.forte.simbot.core.listener.FunctionFromClassListenerFunction] ，对于参数的注入是否需要标注明确的注解（例如 [@FilterValue][love.forte.simbot.annotation.FilterValue] 或 [@ContextValue][love.forte.simbot.annotation.ContextValue]）
+ *
+ *
  *
  *
  * ## component
- * 组件中严格模式会影响到的内容由组件自身实现。
+ * 组件中严格模式会影响到的内容由组件自身实现，如果不需要与核心严格模式同步，则建议提供独立配置。
  *
  *
  * @author ForteScarlet

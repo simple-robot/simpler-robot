@@ -57,6 +57,7 @@ import kotlin.reflect.jvm.kotlinFunction
  */
 @OptIn(SimbotExperimentalApi::class, SimbotInternalApi::class)
 @Suppress("JoinDeclarationAndAssignment")
+@Deprecated("Kt下优先使用FunctionFromClassListenerFunction, 当前类尚未实现严格模式。")
 public class MethodListenerFunction  constructor(
     private val method: Method,
     private val instanceName: String?,
@@ -66,6 +67,7 @@ public class MethodListenerFunction  constructor(
     private val converterManager: ConverterManager,
     private val listenerResultFactory: ListenerResultFactory,
     listenerGroupManager: ListenerGroupManager,
+    strict: Boolean,
 ) : ListenerFunction, LogAble {
     override val log: Logger = LoggerFactory.getLogger(method.declaringClass.typeName + "." + method.name)
 
