@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -27,13 +27,24 @@ public fun interface Matcher {
 
 
 /**
- * 多值匹配规则.
+ * 有指定目标的多值匹配规则.
  */
 public fun interface MostMatcher<T> {
     /**
      * 提供一个 [当前匹配目标][value]和[元素匹配器列表][matchers], 返回最终的匹配结果。
      */
     fun mostMatch(value: T, matchers: Iterable<(T) -> Boolean>): Boolean
+}
+
+
+/**
+ * 对多个测试器进行测试的测试器。
+ */
+public fun interface MostTester {
+    /**
+     * 提供多个 [测试器][testers] 并得到一个最终结果。
+     */
+    fun mostTest(testers: Iterable<() -> Boolean>): Boolean
 }
 
 
