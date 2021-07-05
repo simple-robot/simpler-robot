@@ -39,4 +39,5 @@ simbot.autoconfigure.configs=\
   love.forte.simbot.core.configuration.ListenResultProcessorConfiguration,\
   love.forte.simbot.core.configuration.CoreBotVerifyInfoConfiguration,\
   love.forte.simbot.core.processor.CoreListenResultProcessorManager,\
-  love.forte.simbot.core.dispatcher.CoreEventDispatcherFactory
+  love.forte.simbot.core.dispatcher.CoreEventDispatcherFactory,\
+  love.forte.simbot.core.configuration.CoreStrictConfiguration

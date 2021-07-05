@@ -24,6 +24,7 @@ import love.forte.simbot.annotation.Listens
 import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.listener.FunctionFromClassListenerFunction
+import love.forte.simbot.core.strict.StrictManager
 import love.forte.simbot.filter.FilterManager
 import love.forte.simbot.listener.ListenerGroupManager
 import love.forte.simbot.listener.ListenerRegistrar
@@ -61,6 +62,8 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
     @Depend
     private lateinit var listenerGroupManager: ListenerGroupManager
 
+    @Depend
+    private lateinit var strictManager: StrictManager
     /**
      * 扫描并注册监听函数。
      */
@@ -124,7 +127,8 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                             filterManager = filterManager,
                             converterManager = converterManager,
                             listenerResultFactory = listenerResultFactory,
-                            listenerGroupManager = listenerGroupManager
+                            listenerGroupManager = listenerGroupManager,
+                            strictManager.coreStrict()
                         )
                     }
                 } else null

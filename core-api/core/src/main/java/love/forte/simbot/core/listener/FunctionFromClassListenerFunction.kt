@@ -30,6 +30,7 @@ import love.forte.simbot.filter.ListenerFilter
 import love.forte.simbot.listener.*
 import love.forte.simbot.utils.MD5
 import love.forte.simbot.utils.getAnnotation
+import love.forte.simbot.utils.isStringOrPrimitive
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.reflect.InvocationTargetException
@@ -60,6 +61,7 @@ public class FunctionFromClassListenerFunction constructor(
     private val converterManager: ConverterManager,
     private val listenerResultFactory: ListenerResultFactory,
     listenerGroupManager: ListenerGroupManager,
+    strict: Boolean,
 ) : ListenerFunction, LogAble {
     override val log: Logger = LoggerFactory.getLogger(function.toString() + "." + function.name)
 
@@ -148,6 +150,12 @@ public class FunctionFromClassListenerFunction constructor(
         private inline val FiltersType get() = Filters::class.java
         private inline val ListenBreakType get() = ListenBreak::class.java
         private inline val SpareListenType get() = SpareListen::class.java
+        private val LOG = LoggerFactory.getLogger(FunctionFromClassListenerFunction::class.java)
+        private val NO_STRICT_WARN: Int by lazy(LazyThreadSafetyMode.NONE) {
+            LOG.warn("Strict mode was disabled for core function listener. ")
+            0
+        }
+
     }
 
 
@@ -204,19 +212,22 @@ public class FunctionFromClassListenerFunction constructor(
             filterManager.getFilter(it)
         }
 
-        val parameterGetters: List<(ListenerFunctionInvokeData) -> Any?> = function.getParameterGetters()
+        val parameterGetters: List<(ListenerFunctionInvokeData) -> Any?> = function.getParameterGetters(strict)
 
         // 方法参数获取函数
         methodParamsGetter = { d -> Array(parameterGetters.size) { i -> parameterGetters[i](d) } }
 
     }
 
-    private fun KFunction<*>.getParameterGetters(): List<(ListenerFunctionInvokeData) -> Any?> =
-        parameters.mapIndexedNotNull { i, p -> if (p.kind == KParameter.Kind.INSTANCE) null else p.toParameterGetter(i) }
+    private fun KFunction<*>.getParameterGetters(strict: Boolean): List<(ListenerFunctionInvokeData) -> Any?> =
+        parameters.mapIndexedNotNull { i, p ->
+            if (p.kind == KParameter.Kind.INSTANCE) null else p.toParameterGetter(i,
+                strict)
+        }
 
 
     @OptIn(SimbotExperimentalApi::class)
-    private fun KParameter.toParameterGetter(i: Int): (ListenerFunctionInvokeData) -> Any? {
+    private fun KParameter.toParameterGetter(i: Int, strict: Boolean): (ListenerFunctionInvokeData) -> Any? {
 
 
         val contextValue: ContextValue? = this.getAnnotation()
@@ -269,7 +280,9 @@ public class FunctionFromClassListenerFunction constructor(
                     val def = "arg$i"
                     // Unable to determine the name of the filter value in parameter($i) $this.
                     // log.warn("Cannot get parameter({})'s name, use default: {}", this.toString(), def)
-                    log.warn("Unable to determine the name of the filter value name in parameter({}) {}", i, this.toString())
+                    log.warn("Unable to determine the name of the filter value name in parameter({}) {}",
+                        i,
+                        this.toString())
                     def
                 }
 
@@ -278,8 +291,13 @@ public class FunctionFromClassListenerFunction constructor(
                 if (orNull) {
                     // null able
                     f@{ d ->
-                        val text: String = d.msgGet.text ?: return@f null
-                        val findValue: String? = filter?.getFilterValue(filterValueName, text)
+                        val findValue: String? = filter?.let { f ->
+                            d.msgGet.text?.let { text ->
+                                f.getFilterValue(filterValueName, text)
+                            }
+                        }
+                        // val text: String = d.msgGet.text ?: return@f null
+                        // val findValue: String? = filter?.getFilterValue(filterValueName, text)
                         if (findValue == null) {
                             null
                         } else {
@@ -310,11 +328,12 @@ public class FunctionFromClassListenerFunction constructor(
                 if (scopes.isEmpty()) {
                     if (!orNull) {
                         // empty and non-null, throw.
-                        throw IllegalStateException("Your")
+                        throw IllegalStateException("$this ContextValue's scope is empty, but non-null.")
+                    } else {
+                        // empty.
+                        log.warn("{} ContextValue's scope is empty, and nullable, always null.", this)
+                        return f@{ null }
                     }
-
-                    // empty.
-                    f@{ null }
 
                 } else {
 
@@ -338,50 +357,176 @@ public class FunctionFromClassListenerFunction constructor(
 
             }
 
-
-            // 什么注解也没有
-            else -> {
-                // not filterValue
-                val dependName: String? = dependAnnotation?.value?.ifBlank { this.name }
+            // 有@Depend
+            dependAnnotation != null -> {
+                val dependName: String? = dependAnnotation.value.ifBlank { this.name }
 
                 if (orNull) {
                     // or null
                     if (dependName != null) {
-                    // by name
+                        // by name
                         { dependBeanFactory.getOrNull(dependName) }
                     } else {
                         // by type
-                        val type = dependAnnotation?.type?.takeIf { dt -> dt != Void::class } ?: parameterType
+                        val type = dependAnnotation.type.takeIf { dt -> dt != Void::class } ?: parameterType
                         { d ->
                             // 如果当前的动态参数msgGet的类型正好是此参数的类型的子类，直接使用
                             val msgGet: MsgGet = d.msgGet
                             when {
                                 type.isSuperclassOf(msgGet::class) -> msgGet
-                                type.isSuperclassOf(this@FunctionFromClassListenerFunction::class) -> this
+                                type.isSuperclassOf(this@FunctionFromClassListenerFunction::class) -> this@FunctionFromClassListenerFunction
                                 else -> d[type.java] ?: dependBeanFactory.getOrNull(type.java)
                             }
                         }
                     }
                 } else {
                     // non null
-                    if (dependName != null) {
-                    // by name
-                        { dependBeanFactory[dependName] }
-                    } else {
-                        // by type
-                        val type = dependAnnotation?.type?.takeIf { dt -> dt != Void::class } ?: parameterType
+                    // by type
+                    val type = dependAnnotation.type.takeIf { dt -> dt != Void::class } ?: parameterType
+                    { d ->
+                        // 如果获取到的msgGet的类型正好是此参数的类型的子类，直接使用
+                        val msgGet: MsgGet = d.msgGet
+                        when {
+                            type.isSuperclassOf(msgGet::class) -> msgGet
+                            type.isSuperclassOf(this@FunctionFromClassListenerFunction::class) -> this@FunctionFromClassListenerFunction
+                            else -> d[type.java] ?: dependBeanFactory[type.java]
+                        }
+                    }
+                }
+            }
+
+            // 什么注解也没有, by type.
+            else -> {
+                if (strict) {
+                    // strict
+                    // by type
+                    val type = dependAnnotation?.type?.takeIf { dt -> dt != Void::class } ?: parameterType
+                    if (type.isStringOrPrimitive()) {
+                        log.warn("{} Parameter(name={}, index={})'s type is String or primitive types. In strict mode, String or primitive types do not support injection by depend manager. This has a high probability of causing an exception, and you may need to mark it as @FilterValue or @ContextValue, or turn off strict mode.",
+                            this@FunctionFromClassListenerFunction.name,
+                            this.name,
+                            this.index)
+                        return if (orNull) {
+                            { d -> d[type.java] ?: dependBeanFactory.getOrNull(type.java) }
+                        } else {
+                            { d -> d[type.java] ?: dependBeanFactory[type.java] }
+                        }
+                    }
+
+                    if (orNull) {
                         { d ->
-                            // 如果获取到的msgGet的类型正好是此参数的类型的子类，直接使用
+                            // 如果当前的动态参数msgGet的类型正好是此参数的类型的子类，直接使用
                             val msgGet: MsgGet = d.msgGet
                             when {
                                 type.isSuperclassOf(msgGet::class) -> msgGet
-                                type.isSuperclassOf(this@FunctionFromClassListenerFunction::class) -> this
+                                type.isSuperclassOf(this@FunctionFromClassListenerFunction::class) -> this@FunctionFromClassListenerFunction
+                                else -> d[type.java] ?: dependBeanFactory.getOrNull(type.java)
+                            }
+                        }
+                    } else {
+                        // not null
+                        { d ->
+                            // 如果当前的动态参数msgGet的类型正好是此参数的类型的子类，直接使用
+                            val msgGet: MsgGet = d.msgGet
+                            when {
+                                type.isSuperclassOf(msgGet::class) -> msgGet
+                                type.isSuperclassOf(this@FunctionFromClassListenerFunction::class) -> this@FunctionFromClassListenerFunction
                                 else -> d[type.java] ?: dependBeanFactory[type.java]
                             }
                         }
                     }
+
+                } else {
+                    // not strict
+                    NO_STRICT_WARN
+                    val type = dependAnnotation?.type?.takeIf { dt -> dt != Void::class } ?: parameterType
+                    val name = this.name ?: kotlin.run {
+                        val def = "arg$i"
+                        // Unable to determine the name of the filter value in parameter($i) $this.
+                        // log.warn("Cannot get parameter({})'s name, use default: {}", this.toString(), def)
+                        log.warn("Unable to determine the name of the filter value name in parameter({}) {}",
+                            i,
+                            this.toString())
+                        def
+                    }
+
+                    fun findInAll(d: ListenerFunctionInvokeData): Any? {
+                        return filter?.let { f ->
+                            d.msgGet.text?.let { text ->
+                                f.getFilterValue(name, text)
+                            }
+                        }?.let { fv -> converterManager.convert(type.java, fv) }
+                            ?: run {
+                                for (scope in ListenerContext.Scope.values()) {
+                                    d.context.let { context ->
+                                        val v = context[scope][name]
+                                        if (v != null) return@run v
+                                    }
+                                }
+                                null
+                            } ?: d[type.java] ?: dependBeanFactory.getOrNull(type.java)
+                    }
+
+                    fun findInAllOrGet(d: ListenerFunctionInvokeData): Any? {
+                        val msgGet: MsgGet = d.msgGet
+                        return when {
+                            type.isSuperclassOf(msgGet::class) -> msgGet
+                            type.isSuperclassOf(this@FunctionFromClassListenerFunction::class) -> this@FunctionFromClassListenerFunction
+                            else -> findInAll(d)
+                        }
+                    }
+
+
+
+
+                    if (type.isStringOrPrimitive()) {
+                        log.warn("{} Parameter(name={}, index={})'s type is String or primitive types. In non-strict mode, the filter value will be tried first, followed by the context value, and finally by the dependency.",
+                            this@FunctionFromClassListenerFunction.name, name, this.index)
+
+                        return if (orNull) {
+                            ::findInAll
+                        } else {
+                            { d ->
+                                findInAll(d)
+                                    ?: throw IllegalArgumentException("The value of $name cannot be found in all places including FilterValue、ContextValue with all scopes and Dependencies.")
+                            }
+                        }
+                    }
+
+                    if (orNull) {
+                        ::findInAllOrGet
+                    } else {
+                        { d ->
+                            findInAllOrGet(d)
+                                ?: throw IllegalArgumentException("The value of $name cannot be found in all places including FilterValue、ContextValue with all scopes and Dependencies.")
+                        }
+                    }
                 }
 
+
+                // // not filterValue
+                // val dependName: String? = dependAnnotation?.value?.ifBlank { this.name }
+                //
+                // if (orNull) {
+                // } else {
+                //     // non null
+                //     if (dependName != null) {
+                //         // by name
+                //         { dependBeanFactory[dependName] }
+                //     } else {
+                //         // by type
+                //         val type = dependAnnotation?.type?.takeIf { dt -> dt != Void::class } ?: parameterType
+                //         { d ->
+                //             // 如果获取到的msgGet的类型正好是此参数的类型的子类，直接使用
+                //             val msgGet: MsgGet = d.msgGet
+                //             when {
+                //                 type.isSuperclassOf(msgGet::class) -> msgGet
+                //                 type.isSuperclassOf(this@FunctionFromClassListenerFunction::class) -> this
+                //                 else -> d[type.java] ?: dependBeanFactory[type.java]
+                //             }
+                //         }
+                //     }
+                // }
             }
 
         }
