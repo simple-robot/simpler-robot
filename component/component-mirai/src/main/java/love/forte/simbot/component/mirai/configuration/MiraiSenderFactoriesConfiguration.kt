@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -15,6 +15,7 @@
 package love.forte.simbot.component.mirai.configuration
 
 import io.ktor.client.*
+import io.ktor.client.engine.okhttp.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -77,10 +78,17 @@ public object MiraiRemoteResourceInProcessor : TypedCompLogger(MiraiRemoteResour
      * ktor http client
      */
     private val httpClient: HttpClient by lazy {
-        HttpClient() {
+        HttpClient(OkHttp) {
             install(HttpTimeout) {
                 requestTimeoutMillis = 30_000
                 connectTimeoutMillis = 20_000
+            }
+            engine {
+                config {
+                    // try fix 'java.io.EOFException: \n not found: limit=0 content=…'
+                    // see https://youtrack.jetbrains.com/issue/KTOR-449
+                    retryOnConnectionFailure(true)
+                }
             }
         }.also {
             onShutdown("MiraiRemoteResourceInProcessor", logger = logger) { it.close() }
