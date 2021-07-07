@@ -18,6 +18,8 @@ import love.forte.common.ioc.annotation.Beans
 import love.forte.simbot.annotation.Filter
 import love.forte.simbot.annotation.Filters
 import love.forte.simbot.annotation.OnPrivate
+import love.forte.simbot.filter.BaseListenerFilterProcessor
+import love.forte.simbot.filter.FilterData
 import love.forte.simbot.filter.MatchType
 
 
@@ -29,11 +31,35 @@ import love.forte.simbot.filter.MatchType
 class TestListener {
 
     @OnPrivate
-    @Filters(value = [Filter("name{{name}}", matchType = MatchType.REGEX_MATCHES)])
-    suspend fun myFilter(name: String) {
+    @Filters(
+        value = [
+            Filter(
+                value = "name{{name}}",
+                matchType = MatchType.REGEX_MATCHES,
+                processor = MyProcessorFilter::class
+            )
+        ]
+    )
+    fun myFilter(name: String) {
         println("Name is: $name")
     }
 
 
+
+
 }
 
+
+class MyProcessorFilter : BaseListenerFilterProcessor() {
+    override fun test(data: FilterData): Boolean {
+        println("filter : -> $filter")
+        println("filters: -> $filters")
+        println("data   : -> $data")
+        println()
+        return true
+    }
+
+    override fun getFilterValue(name: String, text: String): String? {
+        return if (name == "name") "Name!" else null
+    }
+}

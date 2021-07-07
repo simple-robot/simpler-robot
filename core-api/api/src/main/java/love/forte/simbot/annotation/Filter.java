@@ -202,7 +202,7 @@ public @interface Filter {
      * @see love.forte.simbot.filter.BaseListenerFilterProcessor
      *
      */
-    Class<AnnotatedListenerFilterProcessor> processor() default AnnotatedListenerFilterProcessor.class;
+    Class<? extends AnnotatedListenerFilterProcessor> processor() default AnnotatedListenerFilterProcessor.class;
 
     /**
      * 通过名称在 {@link love.forte.simbot.filter.FilterManager} 中寻找 {@link AnnotatedListenerFilterProcessor 注解处理器} 类型的 {@link love.forte.simbot.filter.ListenerFilter 过滤器}.
