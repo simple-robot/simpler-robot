@@ -14,17 +14,12 @@
 
 package love.forte.simbot.filter
 
-import love.forte.common.ioc.DependCenter
-import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.annotation.Filter
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.constant.PriorityConstant
 import love.forte.simbot.listener.ListenerContext
 import love.forte.simbot.listener.ListenerFunction
-import love.forte.simbot.utils.getAnnotation
-import kotlin.reflect.KClass
-import kotlin.reflect.full.valueParameters
 
 
 /**
@@ -79,15 +74,20 @@ public interface ListenerFilter : (FilterData) -> Boolean {
 
 
 /**
- * 一个 [Filter] 的处理器，同样也是一个过滤器。此过滤器能够得到其对应的 [Filter] 注解实例。
- *
- * TODO
+ * 一个 [Filter] 的注解过滤器的处理器，同样也是一个过滤器。此过滤器能够得到其对应的 [Filter] 注解实例。
  */
-public sealed interface AnnotatedListenerFilterProcessor : ListenerFilter {
+public interface AnnotatedListenerFilterProcessor : ListenerFilter {
+
     /**
      * 此过滤器所对应的 [Filter] 注解实例。
      */
     val filter: Filter
+
+    /**
+     * 注解初始化函数。
+     * 在构建完 [AnnotatedListenerFilterProcessor] 实例后，会执行 [init] 函数提供 [Filter] 进行数据初始化。
+     */
+    fun init(filter: Filter)
 
     /**
      * 过滤匹配。
@@ -96,50 +96,8 @@ public sealed interface AnnotatedListenerFilterProcessor : ListenerFilter {
 }
 
 
-/**
- *
- *
- * TODO
- *
- */
-public abstract class ListenerFilterProcessor(override val filter: Filter) : AnnotatedListenerFilterProcessor
 
 
-/**
- * TODO
- */
-public inline fun <reified T : ListenerFilterProcessor> T.newInstance(center: DependCenter, filter: Filter) : T {
-    val constructors = T::class.constructors
-    if (constructors.size > 1) {
-        throw IllegalStateException("ListenerFilterProcessor ${T::class}'s constructor is too many. Just need one.")
-    }
-
-
-    val constructor = constructors.first()
-    val parameters = constructor.valueParameters.map { p ->
-        if (p.type.classifier == Filter::annotationClass) {
-            filter
-        } else {
-            val depend = p.getAnnotation<Depend>()
-            if (depend != null) {
-                if (depend.type != Void::class) {
-                    center[depend.type.java]
-                } else {
-                    center[depend.value]
-                }
-            } else {
-                val classifier = p.type.classifier
-                if (classifier is KClass<*>) {
-                    center[classifier.java]
-                } else {
-                    throw IllegalStateException("Cannot get type of Parameter $p")
-                }
-            }
-        }
-    }.toTypedArray()
-
-    return constructor.call(*parameters)
-}
 
 
 
