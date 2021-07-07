@@ -12,7 +12,7 @@
  *
  */
 
-package love.forte.simbot.filter
+package love.forte.simbot.core.filter
 
 import catcode.CatCodeUtil
 import love.forte.simbot.annotation.Filters
@@ -21,6 +21,7 @@ import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.filter.*
 
 public interface AnnotationFiltersListenerFilter : ListenerFilter {
 
@@ -81,8 +82,6 @@ public interface AnnotationFiltersListenerFilter : ListenerFilter {
 }
 
 
-
-
 /**
  * [AnnotationFiltersListenerFilter] 实现。
  */
@@ -90,18 +89,64 @@ public class AnnotationFiltersListenerFilterImpl(
     filters: Filters,
     filterManager: FilterManager,
     filterTargetManager: FilterTargetManager,
+    strict: Boolean,
 ) : AnnotationFiltersListenerFilter {
 
     /**
      * 全部的子过滤器。
      */
-    private val _childrenFilter: List<AnnotationFilterListenerFilter> =
+    private val _childrenFilter: List<ListenerFilter> = run {
         filters.value.run {
             if (isEmpty()) emptyList()
-            else map {
-                AnnotationFilterListenerFilterImpl(it, filters, filterTargetManager)
+            else map { filter ->
+                val processor = filter.processor
+                val processorName = filter.processorName
+                val processorKClass = AnnotatedListenerFilterProcessor::class
+                if (processorName.isBlank() && processor == processorKClass) {
+                    // no filter.
+                    AnnotationFilterListenerFilterImpl(filter, filters, filterTargetManager)
+                } else {
+
+                    // 通过类型获取实例
+                    fun byType(): AnnotatedListenerFilterProcessor {
+                        val processorInstance: AnnotatedListenerFilterProcessor = kotlin.runCatching {
+                            processor.constructors.find { c -> c.parameters.isEmpty() }?.call()
+                                ?: throw IllegalStateException("The processor must provide a parameterless constructor, but it does not.")
+                        }.getOrElse { e ->
+                            throw IllegalStateException("Cannot create processor($processor)'s new instance.", e)
+                        }
+
+                        return processorInstance.also { p -> p.init(filter, filters) }
+                    }
+
+
+                    when {
+                        processorName.isNotBlank() && processor != processorKClass -> {
+                            if (strict) {
+                                throw IllegalStateException("In strict mode, processor and processorName cannot exist at the same time, but processor=$processor, processorName=$processorName.")
+                            }
+
+                            byType()
+                        }
+                        processorName.isNotBlank() -> {
+                            // by name
+                            val filterFound = filterManager.getFilter(processorName)
+                                ?: throw NullPointerException("Cannot found processor named $processorName")
+
+                            if (filterFound !is AnnotatedListenerFilterProcessor) {
+                                throw IllegalStateException("Filter named $processorName is not An AnnotatedListenerFilterProcessor instance: ${filterFound::class.java}")
+                            }
+
+                            filterFound
+                        }
+                        // by type
+                        else -> byType()
+                    }
+                }
             }
         }
+    }
+
 
     /**
      * 全部的自定义过滤器。

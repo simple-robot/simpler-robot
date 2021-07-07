@@ -15,6 +15,7 @@
 package love.forte.simbot.filter
 
 import love.forte.simbot.annotation.Filter
+import love.forte.simbot.annotation.Filters
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.constant.PriorityConstant
@@ -75,6 +76,8 @@ public interface ListenerFilter : (FilterData) -> Boolean {
 
 /**
  * 一个 [Filter] 的注解过滤器的处理器，同样也是一个过滤器。此过滤器能够得到其对应的 [Filter] 注解实例。
+ *
+ * @see BaseListenerFilterProcessor 基础抽象类
  */
 public interface AnnotatedListenerFilterProcessor : ListenerFilter {
 
@@ -84,10 +87,17 @@ public interface AnnotatedListenerFilterProcessor : ListenerFilter {
     val filter: Filter
 
     /**
+     * [filter] 所处的 [Filters] 实例。
+     */
+    val filters: Filters
+
+    /**
      * 注解初始化函数。
      * 在构建完 [AnnotatedListenerFilterProcessor] 实例后，会执行 [init] 函数提供 [Filter] 进行数据初始化。
+     *
+     * [init] 只能被执行一次。
      */
-    fun init(filter: Filter)
+    fun init(filter: Filter, filters: Filters)
 
     /**
      * 过滤匹配。
@@ -95,6 +105,36 @@ public interface AnnotatedListenerFilterProcessor : ListenerFilter {
     override fun test(data: FilterData): Boolean
 }
 
+
+/**
+ * [AnnotatedListenerFilterProcessor] 实现的基础抽象类。
+ */
+public abstract class BaseListenerFilterProcessor : AnnotatedListenerFilterProcessor {
+
+    private lateinit var _filter: Filter
+    private lateinit var _filters: Filters
+
+    override val filter: Filter get() {
+        if(!::_filter.isInitialized) {
+            throw IllegalStateException("Filter not init yet.")
+        }
+        return _filter
+    }
+    override val filters: Filters get() {
+        if(!::_filters.isInitialized) {
+            throw IllegalStateException("Filters not init yet.")
+        }
+        return _filters
+    }
+
+    override fun init(filter: Filter, filters: Filters) {
+        this._filter = filter
+        this._filters = filters
+    }
+
+    abstract override fun test(data: FilterData): Boolean
+
+}
 
 
 

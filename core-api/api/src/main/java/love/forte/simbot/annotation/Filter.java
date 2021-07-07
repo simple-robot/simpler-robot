@@ -17,9 +17,9 @@ package love.forte.simbot.annotation;
 import love.forte.common.utils.annotation.MixRepeatableAnnotations;
 import love.forte.simbot.api.message.events.MessageGet;
 import love.forte.simbot.api.message.events.MsgGet;
+import love.forte.simbot.filter.AnnotatedListenerFilterProcessor;
 import love.forte.simbot.filter.FilterTargetManager;
 import love.forte.simbot.filter.FilterTargets;
-import love.forte.simbot.filter.ListenerFilterProcessor;
 import love.forte.simbot.filter.MatchType;
 import love.forte.simbot.listener.ListenerContext;
 
@@ -194,12 +194,27 @@ public @interface Filter {
      * 为当前 Filter 指定一个专属的处理器过滤器。
      * 当此参数不为空的时候，其他参数全部失效，
      *
-     * TODO
+     * 通过此参数指定的处理器不会被 {@link love.forte.simbot.filter.FilterManager} 所管理，必须提供一个无参构造。
      *
-     * @see love.forte.simbot.filter.ListenerFilterProcessor
+     * <code>processor()</code> 与 {@link #processorName()} 同时存在时，在 <b>严格模式</b> 下将会抛出异常，否则优先使用 <code>processor()</code> 所指定的处理器。
+     *
+     * @see love.forte.simbot.filter.AnnotatedListenerFilterProcessor
+     * @see love.forte.simbot.filter.BaseListenerFilterProcessor
      *
      */
-    Class<ListenerFilterProcessor> processor() default ListenerFilterProcessor.class;
+    Class<AnnotatedListenerFilterProcessor> processor() default AnnotatedListenerFilterProcessor.class;
 
+    /**
+     * 通过名称在 {@link love.forte.simbot.filter.FilterManager} 中寻找 {@link AnnotatedListenerFilterProcessor 注解处理器} 类型的 {@link love.forte.simbot.filter.ListenerFilter 过滤器}.
+     *
+     * 获取到的 {@link love.forte.simbot.filter.ListenerFilter 过滤器} 必须是 {@link AnnotatedListenerFilterProcessor} 类型的。
+     *
+     *
+     * {@link #processor()} 与 {@code processorName()} 同时存在时，在 <b>严格模式</b> 下将会抛出异常，否则优先使用 {@link #processor()} 所指定的处理器。
+     * @see #processor
+     * @see love.forte.simbot.filter.AnnotatedListenerFilterProcessor
+     * @see love.forte.simbot.filter.BaseListenerFilterProcessor
+     */
+    String processorName() default "";
 
 }

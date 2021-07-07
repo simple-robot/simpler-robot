@@ -19,6 +19,7 @@ import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.simbot.core.filter.CoreFilterManagerBuilder
 import love.forte.simbot.core.filter.CoreFilterTargetManager
+import love.forte.simbot.core.strict.StrictManager
 import love.forte.simbot.filter.*
 
 /**
@@ -36,11 +37,15 @@ public class CoreFilterConfiguration {
     @Depend
     private lateinit var dependBeanFactory: DependBeanFactory
 
+    @Depend
+    private lateinit var strictManager: StrictManager
+
     /**
      * filter manager 构建器。
      */
     @CoreBeans("coreFilterManagerBuilder")
-    fun coreFilterManagerBuilder(filterTargetManager: FilterTargetManager): FilterManagerBuilder = CoreFilterManagerBuilder(filterTargetManager)
+    fun coreFilterManagerBuilder(filterTargetManager: FilterTargetManager): FilterManagerBuilder =
+        CoreFilterManagerBuilder(filterTargetManager, strictManager)
 
     /**
      * [FilterTargetManager] 实例。

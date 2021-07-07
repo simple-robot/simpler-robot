@@ -17,6 +17,7 @@ package love.forte.simbot.core.filter
 
 import love.forte.simbot.annotation.Filters
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.core.strict.StrictManager
 import love.forte.simbot.filter.*
 import love.forte.simbot.mark.ThreadUnsafe
 import love.forte.simbot.read
@@ -41,6 +42,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
  */
 public class CoreFilterManager(
     private val filterTargetManager: FilterTargetManager,
+    private val strictManager: StrictManager
 ) : FilterManager {
 
 
@@ -79,7 +81,12 @@ public class CoreFilterManager(
      * 通过注解构建一个 [过滤器][ListenerFilter]
      */
     override fun getFilter(filters: Filters): ListenerFilter {
-        return AnnotationFiltersListenerFilterImpl(filters, this, filterTargetManager)
+        return AnnotationFiltersListenerFilterImpl(
+            filters,
+            this,
+            filterTargetManager,
+            strictManager.coreStrict()
+        )
     }
 
 
@@ -212,7 +219,10 @@ internal operator fun AtDetectionFactory.invoke(msg: MsgGet): AtDetection = this
 /**
  * [FilterManagerBuilder] 默认实现。
  */
-public class CoreFilterManagerBuilder(private val filterTargetManager: FilterTargetManager) : FilterManagerBuilder {
+public class CoreFilterManagerBuilder(
+    private val filterTargetManager: FilterTargetManager,
+    private val strictManager: StrictManager
+    ) : FilterManagerBuilder {
 
     data class Filter(val name: String, val filter: ListenerFilter)
 
@@ -236,7 +246,7 @@ public class CoreFilterManagerBuilder(private val filterTargetManager: FilterTar
      * 构建一个manager
      */
     override fun build(): FilterManager {
-        val filterManager = CoreFilterManager(filterTargetManager)
+        val filterManager = CoreFilterManager(filterTargetManager, strictManager)
         val filters = this.filters
         this.filters = mutableListOf()
         this.filterNameSet = mutableSetOf()

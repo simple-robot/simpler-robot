@@ -11,7 +11,7 @@
  *  * QQ     1149159218
  *
  */
-package love.forte.simbot.filter
+package love.forte.simbot.core.filter
 
 import love.forte.simbot.annotation.Filter
 import love.forte.simbot.annotation.Filters
@@ -20,7 +20,7 @@ import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.core.filter.TextKeyword
+import love.forte.simbot.filter.*
 
 /**
  * 针对 [Filter] 注解的 单个 filter 实现实例。
@@ -292,3 +292,7 @@ public class AnnotationFilterListenerFilterImpl(
     }
 
 }
+
+
+
+
