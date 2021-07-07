@@ -25,8 +25,6 @@ import love.forte.simbot.annotation.*
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.filter.AtDetection
-import love.forte.simbot.filter.FilterData
 import love.forte.simbot.filter.FilterManager
 import love.forte.simbot.filter.ListenerFilter
 import love.forte.simbot.listener.*
@@ -67,7 +65,7 @@ public class MethodListenerFunction  constructor(
     private val converterManager: ConverterManager,
     private val listenerResultFactory: ListenerResultFactory,
     listenerGroupManager: ListenerGroupManager,
-    strict: Boolean,
+    strict: Boolean, // todo
 ) : ListenerFunction, LogAble {
     override val log: Logger = LoggerFactory.getLogger(method.declaringClass.typeName + "." + method.name)
 
@@ -142,19 +140,6 @@ public class MethodListenerFunction  constructor(
      */
     override val filter: ListenerFilter?
         get() = listenAnnotationFilter
-
-
-    /**
-     * 执行过滤。
-     */
-    private fun doFilter(
-        msgGet: MsgGet,
-        atDetection: AtDetection,
-        listenerContext: ListenerContext,
-    ): Boolean = listenAnnotationFilter?.let { annotationFilter ->
-        val data = FilterData(msgGet, atDetection, listenerContext, this)
-        return annotationFilter.test(data)
-    } ?: true
 
 
     /**

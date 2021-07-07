@@ -14,7 +14,7 @@
 
 package love.forte.simbot.listener
 
-import love.forte.simbot.api.SimbotInternalApi
+import love.forte.simbot.api.SimbotExperimentalApi
 
 
 /**
@@ -23,7 +23,7 @@ import love.forte.simbot.api.SimbotInternalApi
  *
  * 一个组管理多个监听函数, 并且有一个(在监听函数管理器中)唯一的名称。
  */
-@SimbotInternalApi
+@SimbotExperimentalApi
 public interface ListenerGroup {
 
     /**
@@ -57,7 +57,7 @@ public interface ListenerGroup {
  *
  *
  */
-@SimbotInternalApi
+@SimbotExperimentalApi
 public class MutableListenerGroup(
     override val name: String,
     private val mutableListeners: MutableList<ListenerFunction> = mutableListOf(),

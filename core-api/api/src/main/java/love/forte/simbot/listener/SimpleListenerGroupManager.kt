@@ -14,7 +14,7 @@
 
 package love.forte.simbot.listener
 
-import love.forte.simbot.api.SimbotInternalApi
+import love.forte.simbot.api.SimbotExperimentalApi
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * [ListenerGroup] 的简易实现。
  */
-@OptIn(SimbotInternalApi::class)
+@OptIn(SimbotExperimentalApi::class)
 internal data class SimpleListenerGroup(
     override val name: String,
     private val listenerSet: MutableSet<ListenerFunction> = mutableSetOf(),
@@ -38,7 +38,7 @@ internal data class SimpleListenerGroup(
 /**
  * [ListenerGroupManager] 的简易实现。 其中， [assignGroup] 所得到的所有列表均 **不可修改**。
  */
-@OptIn(SimbotInternalApi::class)
+@OptIn(SimbotExperimentalApi::class)
 public class SimpleListenerGroupManager : ListenerGroupManager {
 
     private val groups: MutableMap<String, ListenerGroup> = ConcurrentHashMap<String, ListenerGroup>()

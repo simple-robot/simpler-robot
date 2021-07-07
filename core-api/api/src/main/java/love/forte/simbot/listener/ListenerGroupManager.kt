@@ -14,7 +14,7 @@
 
 package love.forte.simbot.listener
 
-import love.forte.simbot.api.SimbotInternalApi
+import love.forte.simbot.api.SimbotExperimentalApi
 
 
 /**
@@ -23,7 +23,7 @@ import love.forte.simbot.api.SimbotInternalApi
  *
  * @author ForteScarlet
  */
-@SimbotInternalApi
+@SimbotExperimentalApi
 public interface ListenerGroupManager {
 
     /**

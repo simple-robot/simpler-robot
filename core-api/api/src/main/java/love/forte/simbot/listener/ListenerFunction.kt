@@ -15,7 +15,6 @@
 package love.forte.simbot.listener
 
 import love.forte.simbot.api.SimbotExperimentalApi
-import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.MsgSender
 import love.forte.simbot.bot.Bot
@@ -27,6 +26,7 @@ import java.lang.reflect.Type
 /**
  * [ListenerFunction] 的 [排序规则][Comparator] 实例。
  */
+@get:JvmName("listenerFunctionComparable")
 public val ListenerFunctionComparable: Comparator<ListenerFunction> = Comparator { f1, f2 -> f1.priority.compareTo(f2.priority) }
 
 
@@ -34,7 +34,7 @@ public val ListenerFunctionComparable: Comparator<ListenerFunction> = Comparator
 /**
  * 监听函数。
  *
- * 监听函数不应再去关系过滤逻辑与拦截逻辑，仅需通过 [love.forte.simbot.filter.FilterManager] 或其他渠道得到于其对应的一个 [filter] 即可。
+ * 监听函数不应去关心过滤逻辑与拦截逻辑，仅需通过 [love.forte.simbot.filter.FilterManager] 或其他渠道得到于其对应的一个 [filter] 即可。
  *
  * @see love.forte.simbot.annotation.Listen
  *
@@ -103,9 +103,9 @@ public interface ListenerFunction {
 
     /**
      * 一个监听函数可能会被分为一个或多个组。
-     *
+     * @since 2.1.0
      */
-    @SimbotInternalApi
+    @SimbotExperimentalApi
     val groups: List<ListenerGroup>
 
 
@@ -115,6 +115,67 @@ public interface ListenerFunction {
      * @throws Throwable 执行可能会存在任何可能发生的以外异常。而 [ListenResult] 中包含的一般仅仅是方法执行时候出现的异常。
      */
     suspend operator fun invoke(data: ListenerFunctionInvokeData): ListenResult<*>
+
+
+    /**
+     * 得到当前监听函数的 [开关][Switch].
+     */
+    @SimbotExperimentalApi
+    val switch: Switch get() = TODO()
+
+
+    /**
+     * 监听函数所对应的 [开关][Switch]. 此开关可以操作其对应的监听函数的开关状态。
+     *
+     * 如果希望开关支持注册 **监听器**，用于监听执行了 [enable] 或 [disable] 后的操作，则参考 [onSwitch].
+     *
+     */
+    @SimbotExperimentalApi
+    public interface Switch {
+
+        /**
+         * 启用当前监听函数。正常来讲，监听函数在默认情况下总是启动的。
+         * 当监听函数被启用后，此监听函数便会开始收到并处理监听事件。
+         *
+         * @since 2.2.0
+         */
+        @SimbotExperimentalApi
+        fun enable() {
+            TODO()
+        }
+
+        /**
+         * 停用当前监听函数。
+         * 当监听函数被停用后，在启用前将不会再接收新的监听函数事件。
+         *
+         * @since 2.2.0
+         */
+        @SimbotExperimentalApi
+        fun disable() {
+            TODO()
+        }
+
+
+        /**
+         * 判断当前监听函数是否已经启用。
+         *
+         * @since 2.2.0
+         */
+        val isEnable: Boolean get() = TODO()
+
+
+        /**
+         * 开关的监听器。当执行了 [enable] 或者 [disable] （之后）便会触发 [onSwitch], 其代表执行的动作所代表的开关状态。enable即true,disable即false。
+         */
+        @SimbotExperimentalApi
+        public fun interface Listener {
+
+            @SimbotExperimentalApi
+            fun onSwitch(switch: Boolean)
+        }
+
+    }
+
 }
 
 
@@ -193,4 +254,6 @@ public class ListenerFunctionDistinction(private val func: ListenerFunction) {
         return func.hashCode()
     }
 }
+
+
 
