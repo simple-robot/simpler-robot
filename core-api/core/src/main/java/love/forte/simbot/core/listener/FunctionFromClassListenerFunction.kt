@@ -450,11 +450,12 @@ public class FunctionFromClassListenerFunction constructor(
                         def
                     }
 
+                    // 在全局寻找, type最后
                     fun findInAll(d: ListenerFunctionInvokeData): Any? {
                         return filter?.let { f ->
-                            d.msgGet.text?.let { text ->
-                                f.getFilterValue(name, text)
-                            }
+                            d.msgGet.text?.runCatching {
+                                f.getFilterValue(name, this)
+                            }?.getOrNull()
                         }?.let { fv -> converterManager.convert(type.java, fv) }
                             ?: run {
                                 for (scope in ListenerContext.Scope.values()) {
@@ -467,12 +468,32 @@ public class FunctionFromClassListenerFunction constructor(
                             } ?: d[type.java] ?: dependBeanFactory.getOrNull(type.java)
                     }
 
-                    fun findInAllOrGet(d: ListenerFunctionInvokeData): Any? {
+                    // 在全局寻找, type最后
+                    fun findInAllTypeFirst(d: ListenerFunctionInvokeData): Any? {
+                        return d[type.java]
+                            ?: dependBeanFactory.getOrNull(type.java)
+                            ?: filter?.let { f ->
+                                d.msgGet.text?.runCatching {
+                                    f.getFilterValue(name, this)
+                                }?.getOrNull()
+                            }?.let { fv -> converterManager.convert(type.java, fv) }
+                            ?: run {
+                                for (scope in ListenerContext.Scope.values()) {
+                                    d.context.let { context ->
+                                        val v = context[scope][name]
+                                        if (v != null) return@run v
+                                    }
+                                }
+                                null
+                            }
+                    }
+
+                    fun findInAllTypeFirstOrGet(d: ListenerFunctionInvokeData): Any? {
                         val msgGet: MsgGet = d.msgGet
                         return when {
                             type.isSuperclassOf(msgGet::class) -> msgGet
                             type.isSuperclassOf(this@FunctionFromClassListenerFunction::class) -> this@FunctionFromClassListenerFunction
-                            else -> findInAll(d)
+                            else -> findInAllTypeFirst(d)
                         }
                     }
 
@@ -494,10 +515,10 @@ public class FunctionFromClassListenerFunction constructor(
                     }
 
                     if (orNull) {
-                        ::findInAllOrGet
+                        ::findInAllTypeFirstOrGet
                     } else {
                         { d ->
-                            findInAllOrGet(d)
+                            findInAllTypeFirstOrGet(d)
                                 ?: throw IllegalArgumentException("The value of $name cannot be found in all places including FilterValue、ContextValue with all scopes and Dependencies.")
                         }
                     }
