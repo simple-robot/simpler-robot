@@ -29,10 +29,10 @@ import org.jetbrains.annotations.Contract
 @Contract(pure = true)
 @JvmSynthetic
 public operator fun ListenerFunction.Switch.plus(otherSwitch: ListenerFunction.Switch) : ListenerFunction.Switch {
-    val a = "a"
-    val b = "c"
     TODO()
 }
+
+
 
 // for Java
 @SimbotExperimentalApi

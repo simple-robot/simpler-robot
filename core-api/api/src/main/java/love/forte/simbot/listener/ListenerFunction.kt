@@ -129,9 +129,16 @@ public interface ListenerFunction {
      *
      * 如果希望开关支持注册 **监听器**，用于监听执行了 [enable] 或 [disable] 后的操作，则参考 [onSwitch].
      *
+     *
+     * 监听函数的[开关][Switch] 将会直接作用于 [监听函数][ListenerFunction] 自身，当监听函数被关闭，则 [ListenerFunction.invoke] 将会永远得到 [ListenResult.Default].
+     *
      */
     @SimbotExperimentalApi
     public interface Switch {
+        public companion object {
+            val DISABLE_FUNCTION_INVOKER: (ListenerFunctionInvokeData) -> ListenResult<*> = { ListenResult }
+        }
+
 
         /**
          * 启用当前监听函数。正常来讲，监听函数在默认情况下总是启动的。
@@ -140,9 +147,7 @@ public interface ListenerFunction {
          * @since 2.2.0
          */
         @SimbotExperimentalApi
-        fun enable() {
-            TODO()
-        }
+        fun enable()
 
         /**
          * 停用当前监听函数。
@@ -151,9 +156,7 @@ public interface ListenerFunction {
          * @since 2.2.0
          */
         @SimbotExperimentalApi
-        fun disable() {
-            TODO()
-        }
+        fun disable()
 
 
         /**
@@ -180,7 +183,7 @@ public interface ListenerFunction {
 
 
 /**
-r * 监听函数执行所需要的数据。
+ * 监听函数执行所需要的数据。
  */
 public interface ListenerFunctionInvokeData {
     /** 监听到的消息。 */
