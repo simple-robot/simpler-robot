@@ -16,7 +16,6 @@ package love.forte.test.listener
 
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import love.forte.common.ioc.annotation.Beans
 import love.forte.simbot.annotation.Filter
 import love.forte.simbot.annotation.FilterValue
 import love.forte.simbot.annotation.Filters
@@ -37,7 +36,7 @@ import kotlin.time.ExperimentalTime
  * 挂起对话示例
  * @author ForteScarlet
  */
-@Beans
+// @Beans
 class SuspendFunctionListener {
 
     /**

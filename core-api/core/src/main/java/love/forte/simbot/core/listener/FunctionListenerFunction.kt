@@ -64,7 +64,30 @@ public class FunctionListenerFunction
     @Suppress("UNCHECKED_CAST")
     override fun <A : Annotation> getAnnotation(type: Class<out A>): A? = annotationGetter(type) as? A
 
+    @Volatile
+    private var realInvoker: suspend (data: ListenerFunctionInvokeData) -> ListenResult<*> = func
+
+
     override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> {
-        return func.invoke(data)
+        return realInvoker.invoke(data)
     }
+
+    @OptIn(SimbotExperimentalApi::class)
+    override val switch: ListenerFunction.Switch = Switch()
+
+
+    @OptIn(SimbotExperimentalApi::class)
+    private inner class Switch : ListenerFunction.Switch {
+        override fun enable() {
+            realInvoker = func
+        }
+
+        override fun disable() {
+            realInvoker = ListenerFunction.Switch.DISABLE_FUNCTION_INVOKER
+        }
+
+        override val isEnable: Boolean
+            get() = realInvoker === func
+    }
+
 }

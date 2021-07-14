@@ -13,6 +13,7 @@
  */
 
 @file:JvmName("ListenerFunctionSwitchUtil")
+
 package love.forte.simbot.listener
 
 import love.forte.simbot.api.SimbotExperimentalApi
@@ -28,16 +29,38 @@ import org.jetbrains.annotations.Contract
 @SimbotExperimentalApi
 @Contract(pure = true)
 @JvmSynthetic
-public operator fun ListenerFunction.Switch.plus(otherSwitch: ListenerFunction.Switch) : ListenerFunction.Switch {
-    TODO()
-}
+public operator fun ListenerFunction.Switch.plus(otherSwitch: ListenerFunction.Switch): ListenerFunction.Switch =
+    CombinedSwitch(this, otherSwitch)
 
+
+/**
+ * 合并两个 [ListenerFunction.Switch].
+ *
+ */
+@OptIn(SimbotExperimentalApi::class)
+private class CombinedSwitch(private val left: ListenerFunction.Switch, private val right: ListenerFunction.Switch) :
+    ListenerFunction.Switch {
+    @SimbotExperimentalApi
+    override fun enable() {
+        left.enable()
+        right.enable()
+    }
+
+    @SimbotExperimentalApi
+    override fun disable() {
+        left.disable()
+        right.disable()
+    }
+
+    override val isEnable: Boolean
+        get() = left.isEnable && right.isEnable
+}
 
 
 // for Java
 @SimbotExperimentalApi
 @Contract(pure = true)
-public fun merge(s1: ListenerFunction.Switch, s2: ListenerFunction.Switch) : ListenerFunction.Switch = s1 + s2
+public fun merge(s1: ListenerFunction.Switch, s2: ListenerFunction.Switch): ListenerFunction.Switch = s1 + s2
 
 
 /**
@@ -50,13 +73,35 @@ public fun merge(s1: ListenerFunction.Switch, s2: ListenerFunction.Switch) : Lis
 @SimbotExperimentalApi
 @Contract(pure = true)
 @JvmSynthetic
-fun ListenerFunction.Switch.onSwitch(listener: ListenerFunction.Switch.Listener): ListenerFunction.Switch {
+fun ListenerFunction.Switch.onSwitch(listener: ListenerFunction.Switch.Listener): ListenerFunction.Switch = ListenedAbleSwitch(this, listener)
 
-    TODO()
+
+@SimbotExperimentalApi
+private class ListenedAbleSwitch(
+    private val delegate: ListenerFunction.Switch,
+    private val listener: ListenerFunction.Switch.Listener,
+) : ListenerFunction.Switch {
+    @SimbotExperimentalApi
+    override fun enable() {
+        listener.onSwitch(true)
+        delegate.enable()
+    }
+
+    @SimbotExperimentalApi
+    override fun disable() {
+        listener.onSwitch(false)
+        delegate.disable()
+    }
+
+    override val isEnable: Boolean
+        get() = delegate.isEnable
 }
 
 
 // for Java
 @SimbotExperimentalApi
 @Contract(pure = true)
-public fun registerListener(s: ListenerFunction.Switch, listener: ListenerFunction.Switch.Listener): ListenerFunction.Switch = s.onSwitch(listener)
+public fun registerListener(
+    s: ListenerFunction.Switch,
+    listener: ListenerFunction.Switch.Listener,
+): ListenerFunction.Switch = s.onSwitch(listener)

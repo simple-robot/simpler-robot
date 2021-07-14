@@ -23,8 +23,6 @@ import love.forte.simbot.annotation.*
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.filter.AtDetection
-import love.forte.simbot.filter.FilterData
 import love.forte.simbot.filter.FilterManager
 import love.forte.simbot.filter.ListenerFilter
 import love.forte.simbot.listener.*
@@ -51,7 +49,7 @@ import kotlin.reflect.jvm.javaMethod
  *
  * @author ForteScarlet
  */
-@OptIn(SimbotInternalApi::class)
+@OptIn(SimbotInternalApi::class, SimbotExperimentalApi::class)
 public class FunctionFromClassListenerFunction constructor(
     private val function: KFunction<*>,
     private val instanceName: String?,
@@ -116,17 +114,10 @@ public class FunctionFromClassListenerFunction constructor(
      */
     override val listenTypes: Set<Class<out MsgGet>>
 
-    //
-    // /**
-    //  * [Filters] 注解对应的监听函数。
-    //  */
-    // private val listenAnnotationFilter: ListenerFilter?
-
     /**
      * 此监听函数对应的监听过滤器。
      */
     override val filter: ListenerFilter?
-    // get() = (listenAnnotationFilter?.let { listOf(it) } ?: emptyList())
 
     /**
      * [groups] 应当是一个不可变列表。
@@ -564,61 +555,98 @@ public class FunctionFromClassListenerFunction constructor(
         else -> AnnotationUtil.getAnnotation(fAnnotationElement, type)
     }
 
+    private val invoker: suspend (data: ListenerFunctionInvokeData) -> ListenResult<*> = {
+        it.let { data ->
+            // 获取实例
+            val instance: Any? = runCatching {
+                listenerInstanceGetter()
+            }.getOrElse { e ->
+                return@let listenerResultFactory.getResult(null, this, e)
+            }
 
-    /**
-     * 执行过滤。
-     * // TODO NO NO NO
-     */
-    @OptIn(SimbotExperimentalApi::class)
-    private fun doFilter(
-        msgGet: MsgGet,
-        atDetection: AtDetection,
-        listenerContext: ListenerContext,
-    ): Boolean = filter?.let { annotationFilter ->
-        val data = FilterData(msgGet, atDetection, listenerContext, this)
-        return annotationFilter.test(data)
-    } ?: true
+            // 获取方法参数
+            val params: Array<*> = runCatching {
+                methodParamsGetter(data)
+            }.getOrElse { e ->
+                return@let listenerResultFactory.getResult(null, this, e)
+            }
 
-    override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> {
-        // do filter
-        // val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
-        // if (data.listenerInterceptorChain.intercept().prevent || !filter) {
-        //     //没有通过检测, 返回ListenResult默认的无效化实现。
-        //     return ListenResult
-        // }
+            // 执行方法
+            val invokeResult: Any? = runCatching {
+                functionCaller(instance, params)
+                // method(instance, *params)
+            }.getOrElse { e ->
+                val cause = if (e is InvocationTargetException) {
+                    e.targetException
+                } else e
+                return@let listenerResultFactory.getResult(null, this, cause)
+            }
 
-        // 获取实例
-        val instance: Any? = runCatching {
-            listenerInstanceGetter()
-        }.getOrElse {
-            return listenerResultFactory.getResult(null, this, it)
+            // set result
+            // resultBuilder.result = invokeResult
+
+            // build listen result.
+            return@let listenerResultFactory.getResult(invokeResult, this)
         }
-
-        // 获取方法参数
-        val params: Array<*> = runCatching {
-            methodParamsGetter(data)
-        }.getOrElse {
-            return listenerResultFactory.getResult(null, this, it)
-        }
-
-        // 执行方法
-        val invokeResult: Any? = runCatching {
-            functionCaller(instance, params)
-            // method(instance, *params)
-        }.getOrElse {
-            val cause = if (it is InvocationTargetException) {
-                it.targetException
-            } else it
-            return listenerResultFactory.getResult(null, this, cause)
-        }
-
-        // set result
-        // resultBuilder.result = invokeResult
-
-        // build listen result.
-        return listenerResultFactory.getResult(invokeResult, this)
-
     }
+
+
+    @Volatile
+    private var realInvoker: suspend (data: ListenerFunctionInvokeData) -> ListenResult<*> = invoker
+
+
+    override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> = realInvoker(data)
+
+    //     // 获取实例
+    //     val instance: Any? = runCatching {
+    //         listenerInstanceGetter()
+    //     }.getOrElse {
+    //         return listenerResultFactory.getResult(null, this, it)
+    //     }
+    //
+    //     // 获取方法参数
+    //     val params: Array<*> = runCatching {
+    //         methodParamsGetter(data)
+    //     }.getOrElse {
+    //         return listenerResultFactory.getResult(null, this, it)
+    //     }
+    //
+    //     // 执行方法
+    //     val invokeResult: Any? = runCatching {
+    //         functionCaller(instance, params)
+    //         // method(instance, *params)
+    //     }.getOrElse {
+    //         val cause = if (it is InvocationTargetException) {
+    //             it.targetException
+    //         } else it
+    //         return listenerResultFactory.getResult(null, this, cause)
+    //     }
+    //
+    //     // set result
+    //     // resultBuilder.result = invokeResult
+    //
+    //     // build listen result.
+    //     return listenerResultFactory.getResult(invokeResult, this)
+    // }
+
+    @OptIn(SimbotExperimentalApi::class)
+    override val switch: ListenerFunction.Switch = Switch()
+
+
+    @OptIn(SimbotExperimentalApi::class)
+    private inner class Switch : ListenerFunction.Switch {
+        override fun enable() {
+            realInvoker = invoker
+        }
+
+        override fun disable() {
+            realInvoker = ListenerFunction.Switch.DISABLE_FUNCTION_INVOKER
+        }
+
+        override val isEnable: Boolean
+            get() = realInvoker === invoker
+    }
+
 }
 
 
@@ -626,20 +654,19 @@ public class FunctionFromClassListenerFunction constructor(
  * method 取得唯一ID。直接获取完整路径。
  */
 internal fun KFunction<*>.toListenerId(declaringClass: Class<*>, listens: Listens): String {
-    return with(listens.name) {
-        ifBlank {
-            val methodName = this@toListenerId.name
-            val methodParameters = this@toListenerId.parameters
-            val methodReturnType = this@toListenerId.returnType
+    return listens.name.ifBlank {
+        val methodName = this@toListenerId.name
+        val methodParameters = this@toListenerId.parameters
+        val methodReturnType = this@toListenerId.returnType
 
-            val wholeName =
-                "${declaringClass.name} $methodReturnType $methodName(${methodParameters.joinToString(", ") { "${it.type} ${it.name}" }})"
+        val wholeName =
+            "${declaringClass.name} $methodReturnType $methodName(${methodParameters.joinToString(", ") { "${it.type} ${it.name}" }})"
 
-            val wholeNameMD5: String = MD5[wholeName]
+        val wholeNameMD5: String = MD5[wholeName]
 
-            "${declaringClass.typeName}.$methodName#$wholeNameMD5"
-        }
+        "${declaringClass.typeName}.$methodName#$wholeNameMD5"
     }
+
 }
 
 /**

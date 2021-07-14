@@ -56,7 +56,7 @@ import kotlin.reflect.jvm.kotlinFunction
 @OptIn(SimbotExperimentalApi::class, SimbotInternalApi::class)
 @Suppress("JoinDeclarationAndAssignment")
 @Deprecated("Kt下优先使用FunctionFromClassListenerFunction, 当前类尚未实现严格模式。")
-public class MethodListenerFunction  constructor(
+public class MethodListenerFunction constructor(
     private val method: Method,
     private val instanceName: String?,
     declClass: Class<*>,
@@ -440,53 +440,97 @@ public class MethodListenerFunction  constructor(
     }
 
 
+    private val invoker: suspend (data: ListenerFunctionInvokeData) -> ListenResult<*> = { it ->
+        it.let { data ->
+            // 获取实例
+            val instance: Any? = runCatching {
+                listenerInstanceGetter()
+            }.getOrElse {
+                return@let listenerResultFactory.getResult(null, this, it)
+            }
+
+            // 获取方法参数
+            val params: Array<*> = runCatching {
+                methodParamsGetter(data)
+            }.getOrElse {
+                return@let listenerResultFactory.getResult(null, this, it)
+            }
+
+            // 执行方法
+            val invokeResult: Any? = runCatching {
+                functionCaller(instance, params)
+            }.getOrElse {
+                val cause = if (it is InvocationTargetException) it.targetException else it
+
+                return@let listenerResultFactory.getResult(null, this, cause)
+            }
+
+            // set result
+            // resultBuilder.result = invokeResult
+
+            // build listen result.
+            listenerResultFactory.getResult(invokeResult, this)
+        }
+    }
+
+
+    @Volatile
+    private var realInvoker: suspend (data: ListenerFunctionInvokeData) -> ListenResult<*> = invoker
+
+
     /**
      * 执行监听函数并返回一个执行后的响应结果。
      */
-    override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> {
-        // do filter
-        // val filter: Boolean = doFilter(data.msgGet, data.atDetection, data.context)
-        // if (data.listenerInterceptorChain.intercept().prevent || !filter) {
-        //     // 没有通过检测, 返回ListenResult默认的无效化实现。
-        //     return ListenResult
+    override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> = realInvoker(data)
+
+        // // 获取实例
+        // val instance: Any? = runCatching {
+        //     listenerInstanceGetter()
+        // }.getOrElse {
+        //     return listenerResultFactory.getResult(null, this, it)
         // }
-        // // 如果被拦截
-        // if (data.listenerInterceptorChain.intercept().isPrevent) {
-        //     return EmptyFailedNoBreakResult
+        //
+        // // 获取方法参数
+        // val params: Array<*> = runCatching {
+        //     methodParamsGetter(data)
+        // }.getOrElse {
+        //     return listenerResultFactory.getResult(null, this, it)
         // }
+        //
+        // // 执行方法
+        // val invokeResult: Any? = runCatching {
+        //     functionCaller(instance, params)
+        // }.getOrElse {
+        //     val cause = if (it is InvocationTargetException) {
+        //         it.targetException
+        //     } else it
+        //     return listenerResultFactory.getResult(null, this, cause)
+        // }
+        //
+        // // set result
+        // // resultBuilder.result = invokeResult
+        //
+        // // build listen result.
+        // return listenerResultFactory.getResult(invokeResult, this)
+    // }
 
-        // val resultBuilder = ListenResultBuilder()
-        // 获取实例
-        val instance: Any? = runCatching {
-            listenerInstanceGetter()
-        }.getOrElse {
-            return listenerResultFactory.getResult(null, this, it)
+    override val switch: ListenerFunction.Switch = Switch()
+
+
+    @OptIn(SimbotExperimentalApi::class)
+    private inner class Switch : ListenerFunction.Switch {
+        override fun enable() {
+            realInvoker = invoker
         }
 
-        // 获取方法参数
-        val params: Array<*> = runCatching {
-            methodParamsGetter(data)
-        }.getOrElse {
-            return listenerResultFactory.getResult(null, this, it)
+        override fun disable() {
+            realInvoker = ListenerFunction.Switch.DISABLE_FUNCTION_INVOKER
         }
 
-        // 执行方法
-        val invokeResult: Any? = runCatching {
-            functionCaller(instance, params)
-            // method(instance, *params)
-        }.getOrElse {
-            val cause = if (it is InvocationTargetException) {
-                it.targetException
-            } else it
-            return listenerResultFactory.getResult(null, this, cause)
-        }
-
-        // set result
-        // resultBuilder.result = invokeResult
-
-        // build listen result.
-        return listenerResultFactory.getResult(invokeResult, this)
+        override val isEnable: Boolean
+            get() = realInvoker === invoker
     }
+
 }
 
 
@@ -517,9 +561,6 @@ internal fun Method.toListenerId(listens: Listens): String {
 internal fun Method.toListenerName(listens: Listens): String = with(listens.name) {
     ifBlank { this@toListenerName.name }
 }
-
-
-
 
 
 internal data class ListenerParameterTypeMismatchWarn(val log: String, val exLog: String)

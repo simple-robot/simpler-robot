@@ -66,6 +66,12 @@ private val ListenerInvokerComparable: Comparator<ListenerInvoker> = Comparator 
 private fun listenerInvokerQueue(vararg func: ListenerFunction): Queue<ListenerInvoker> =
     concurrentSortedQueueOf(ListenerInvokerComparable, *func.map(::ListenerInvokerImpl).toTypedArray())
 
+/**
+ * 监听函数自排序队列。
+ */
+private fun listenerInvokerQueue(vararg invoker: ListenerInvoker): Queue<ListenerInvoker> =
+    concurrentSortedQueueOf(ListenerInvokerComparable, *invoker)
+
 
 private data class ListenerFunctionGroups(
     val normal: Collection<ListenerInvoker>,
@@ -167,6 +173,9 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     private val mainListenerFunctionMap: MutableMap<Class<out MsgGet>, Queue<ListenerInvoker>> = ConcurrentHashMap()
     // private val mainListenerFunctionMap: MutableMap<Class<out MsgGet>, Queue<ListenerFunction>> = ConcurrentHashMap()
 
+
+    private val listenerFunctionIdMap: MutableMap<String, ListenerInvoker> = ConcurrentHashMap()
+
     /**
      * 监听函数缓冲区，对后续出现的消息类型进行记录并缓存。
      * 当 [register] 了新的监听函数后对应相关类型将会被清理。
@@ -186,9 +195,17 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
         // 获取其监听类型，并作为key存入map
         val listenTypes = listenerFunction.listenTypes
 
+        val id = listenerFunction.id
+
+        val invoker = ListenerInvokerImpl(listenerFunction)
+
+        listenerFunctionIdMap.merge(id, invoker) { _, _ ->
+            throw IllegalStateException("Listener id $id was already exists.")
+        }
+
         listenTypes.forEach { listenType ->
             // merge into map.
-            mainListenerFunctionMap.merge(listenType, listenerInvokerQueue(listenerFunction)) { oldValue, value ->
+            mainListenerFunctionMap.merge(listenType, listenerInvokerQueue(invoker)) { oldValue, value ->
                 oldValue.apply { addAll(value) }
             }
 
@@ -414,6 +431,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
         }
     }
 
+    override fun getListenerFunctionById(id: String): ListenerFunction? = listenerFunctionIdMap[id]?.function
 
     /**
      * 根据一个监听器类型获取对应监听函数。

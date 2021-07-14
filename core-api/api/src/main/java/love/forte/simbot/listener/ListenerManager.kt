@@ -95,6 +95,10 @@ public interface ListenerManager : MsgGetProcessor, ListenerRegistrar {
      */
     fun <T : MsgGet> getListenerFunctions(type: Class<out T>? = null) : Collection<ListenerFunction>
 
+    /**
+     * 根据ID获取监听函数。
+     */
+    fun getListenerFunctionById(id: String) : ListenerFunction?
 
 }
 

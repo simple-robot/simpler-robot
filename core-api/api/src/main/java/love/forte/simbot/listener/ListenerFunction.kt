@@ -121,7 +121,7 @@ public interface ListenerFunction {
      * 得到当前监听函数的 [开关][Switch].
      */
     @SimbotExperimentalApi
-    val switch: Switch get() = TODO()
+    val switch: Switch
 
 
     /**
@@ -136,7 +136,7 @@ public interface ListenerFunction {
     @SimbotExperimentalApi
     public interface Switch {
         public companion object {
-            val DISABLE_FUNCTION_INVOKER: (ListenerFunctionInvokeData) -> ListenResult<*> = { ListenResult }
+            val DISABLE_FUNCTION_INVOKER: suspend (ListenerFunctionInvokeData) -> ListenResult<*> = { ListenResult }
         }
 
 
@@ -164,7 +164,7 @@ public interface ListenerFunction {
          *
          * @since 2.2.0
          */
-        val isEnable: Boolean get() = TODO()
+        val isEnable: Boolean
 
 
         /**
