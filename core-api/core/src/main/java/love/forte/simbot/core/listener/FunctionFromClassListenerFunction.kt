@@ -654,7 +654,7 @@ public class FunctionFromClassListenerFunction constructor(
  * method 取得唯一ID。直接获取完整路径。
  */
 internal fun KFunction<*>.toListenerId(declaringClass: Class<*>, listens: Listens): String {
-    return listens.name.ifBlank {
+    return listens.id.ifBlank {
         val methodName = this@toListenerId.name
         val methodParameters = this@toListenerId.parameters
         val methodReturnType = this@toListenerId.returnType
