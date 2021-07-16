@@ -483,35 +483,35 @@ public class MethodListenerFunction constructor(
      */
     override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> = realInvoker(data)
 
-        // // 获取实例
-        // val instance: Any? = runCatching {
-        //     listenerInstanceGetter()
-        // }.getOrElse {
-        //     return listenerResultFactory.getResult(null, this, it)
-        // }
-        //
-        // // 获取方法参数
-        // val params: Array<*> = runCatching {
-        //     methodParamsGetter(data)
-        // }.getOrElse {
-        //     return listenerResultFactory.getResult(null, this, it)
-        // }
-        //
-        // // 执行方法
-        // val invokeResult: Any? = runCatching {
-        //     functionCaller(instance, params)
-        // }.getOrElse {
-        //     val cause = if (it is InvocationTargetException) {
-        //         it.targetException
-        //     } else it
-        //     return listenerResultFactory.getResult(null, this, cause)
-        // }
-        //
-        // // set result
-        // // resultBuilder.result = invokeResult
-        //
-        // // build listen result.
-        // return listenerResultFactory.getResult(invokeResult, this)
+    // // 获取实例
+    // val instance: Any? = runCatching {
+    //     listenerInstanceGetter()
+    // }.getOrElse {
+    //     return listenerResultFactory.getResult(null, this, it)
+    // }
+    //
+    // // 获取方法参数
+    // val params: Array<*> = runCatching {
+    //     methodParamsGetter(data)
+    // }.getOrElse {
+    //     return listenerResultFactory.getResult(null, this, it)
+    // }
+    //
+    // // 执行方法
+    // val invokeResult: Any? = runCatching {
+    //     functionCaller(instance, params)
+    // }.getOrElse {
+    //     val cause = if (it is InvocationTargetException) {
+    //         it.targetException
+    //     } else it
+    //     return listenerResultFactory.getResult(null, this, cause)
+    // }
+    //
+    // // set result
+    // // resultBuilder.result = invokeResult
+    //
+    // // build listen result.
+    // return listenerResultFactory.getResult(invokeResult, this)
     // }
 
     override val switch: ListenerFunction.Switch = Switch()
@@ -538,21 +538,20 @@ public class MethodListenerFunction constructor(
  * method 取得唯一ID。直接获取完整路径。
  */
 internal fun Method.toListenerId(listens: Listens): String {
-    return with(listens.name) {
-        ifBlank {
-            val methodIn = this@toListenerId.declaringClass
-            val methodName = this@toListenerId.name
-            val methodParameters = this@toListenerId.parameters
-            val methodReturnType = this@toListenerId.returnType
+    return listens.id.ifBlank {
+        val methodIn = this@toListenerId.declaringClass
+        val methodName = this@toListenerId.name
+        val methodParameters = this@toListenerId.parameters
+        val methodReturnType = this@toListenerId.returnType
 
-            val wholeName =
-                "${methodIn.name} ${methodReturnType.name} $methodName(${methodParameters.joinToString(", ") { "${it.type.name} ${it.name}" }})"
+        val wholeName =
+            "${methodIn.name} ${methodReturnType.name} $methodName(${methodParameters.joinToString(", ") { "${it.type.name} ${it.name}" }})"
 
-            val wholeNameMD5: String = MD5[wholeName]
+        val wholeNameMD5: String = MD5[wholeName]
 
-            "${methodIn.typeName}.$methodName#$wholeNameMD5"
-        }
+        "${methodIn.typeName}.$methodName#$wholeNameMD5"
     }
+
 }
 
 /**

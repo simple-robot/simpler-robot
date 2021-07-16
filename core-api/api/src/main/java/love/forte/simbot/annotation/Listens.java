@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -52,7 +52,12 @@ public @interface Listens {
     int priority() default PriorityConstant.TENTH;
 
     /**
-     * 当前监听函数的id。不可重复。
+     * 当前监听函数的ID。不可重复。
+     */
+    String id() default "";
+
+    /**
+     * 当前监听函数的名称（简称）。
      */
     String name() default "";
 }
