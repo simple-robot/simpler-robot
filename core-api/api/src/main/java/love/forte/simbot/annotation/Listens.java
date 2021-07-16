@@ -37,7 +37,7 @@ public @interface Listens {
     /**
      * 监听的消息类型。可以监听多个
      */
-    Listen[] value();
+    Listen[] value() default {};
 
     /**
      * 优先级。
