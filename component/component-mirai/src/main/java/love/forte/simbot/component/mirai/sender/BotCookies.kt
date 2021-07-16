@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -12,6 +12,7 @@
  *
  */
 @file:JvmName("MiraiBotCookies")
+
 package love.forte.simbot.component.mirai.sender
 
 import love.forte.simbot.api.SimbotExperimentalApi
@@ -20,6 +21,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 import java.nio.charset.Charset
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.javaType
 
 /*
     通过一个bot得到cookie信息
@@ -42,11 +46,22 @@ object UnsafeViolenceAndroidBotCookieUtils {
     private const val MIRAI_PACKAGE = "net.mamoe.mirai.internal"
     private var success: Boolean = false
     private lateinit var botClientGetter: Method
+
     // private lateinit var clientClazz: Class<*>
     private lateinit var getWLoginSigInfoMethod: Method
     // private lateinit var wLoginSigInfoClazz: Class<*>
 
-    // getter
+    /**
+     * @see net.mamoe.mirai.internal.network.WLoginSigInfo
+     */
+    private lateinit var wLoginSigInfoClazz: Class<*>
+    private lateinit var wLoginSigInfoProperties: Collection<KProperty1<*, *>>
+    // ByteArray
+    // KeyWithCreationTime
+    // KeyWithExpiry
+    // PSKeyMap
+
+    // getter from wLoginSigInfo
     private lateinit var getSKeyMethod: Method // SKey -> data -> ByteArray
     private lateinit var getAccessTokenMethod: Method // AccessToken -> data -> ByteArray
     private lateinit var getSuperKeyMethod: Method // ByteArray
@@ -57,13 +72,23 @@ object UnsafeViolenceAndroidBotCookieUtils {
     /**
      * @see net.mamoe.mirai.internal.network.WLoginSimpleInfo
      */
-    private lateinit var getWLoginSimpleInfoMethod: Method // WLoginSimpleInfo
+    // private lateinit var wLoginSimpleInfoClass: Class<*>
+    // private lateinit var getWLoginSimpleInfoMethod: Method // WLoginSimpleInfo
 
-    // private lateinit var keyWithCreationTimeClazz: Class<*>
-    private lateinit var getDataMethod: Method
+    private lateinit var keyWithCreationTimeClazz: Class<*>
+    private lateinit var getKeyWithCreationTimeDataMethod: Method
+
+    private lateinit var keyWithExpiryClazz: Class<*>
+    private lateinit var getKeyWithExpiryDataMethod: Method
+
     private var cause: Throwable? = null
 
-
+    @JvmStatic
+    fun main(args: Array<String>) {
+        for (memberProperty in wLoginSigInfoClazz.kotlin.memberProperties) {
+            println("${memberProperty.name} -> $memberProperty")
+        }
+    }
 
     init {
         try {
@@ -78,7 +103,9 @@ object UnsafeViolenceAndroidBotCookieUtils {
             getWLoginSigInfoMethod = clientClazz.getDeclaredMethod("getWLoginSigInfo").also { it.isAccessible = true }
 
             // WLoginSigInfo class
-            val wLoginSigInfoClazz = Class.forName("$MIRAI_PACKAGE.network.WLoginSigInfo")
+            wLoginSigInfoClazz = Class.forName("$MIRAI_PACKAGE.network.WLoginSigInfo")
+            wLoginSigInfoProperties = wLoginSigInfoClazz.kotlin.memberProperties
+
 
             // info getter
             getSKeyMethod = wLoginSigInfoClazz.getDeclaredMethod("getSKey").also { it.isAccessible = true }
@@ -89,11 +116,15 @@ object UnsafeViolenceAndroidBotCookieUtils {
             getPt4TokenMapMethod =
                 wLoginSigInfoClazz.getDeclaredMethod("getPt4TokenMap").also { it.isAccessible = true }
             getPayTokenMethod = wLoginSigInfoClazz.getDeclaredMethod("getPayToken").also { it.isAccessible = true }
-            getWLoginSimpleInfoMethod = wLoginSigInfoClazz.getDeclaredMethod("getSimpleInfo").also { it.isAccessible = true }
+            // getWLoginSimpleInfoMethod = wLoginSigInfoClazz.getDeclaredMethod("getSimpleInfo").also { it.isAccessible = true }
 
             // data getter
-            val keyWithCreationTimeClazz = Class.forName("$MIRAI_PACKAGE.network.KeyWithCreationTime")
-            getDataMethod = keyWithCreationTimeClazz.getDeclaredMethod("getData").also { it.isAccessible = true }
+            keyWithCreationTimeClazz = Class.forName("$MIRAI_PACKAGE.network.KeyWithCreationTime")
+            getKeyWithCreationTimeDataMethod =
+                keyWithCreationTimeClazz.getDeclaredMethod("getData").also { it.isAccessible = true }
+
+            keyWithExpiryClazz = Class.forName("$MIRAI_PACKAGE.network.KeyWithExpiry")
+            getKeyWithExpiryDataMethod = keyWithExpiryClazz.getDeclaredMethod("getData").also { it.isAccessible = true }
 
             success = true
         } catch (e: Throwable) {
@@ -101,8 +132,67 @@ object UnsafeViolenceAndroidBotCookieUtils {
         }
     }
 
+
+    private fun injectData(prop: KProperty1<*, *>, instance: Any, map: MutableMap<String, String>) {
+        val jType = prop.returnType.javaType
+        when {
+            // is PsKeyMap
+            prop.name == "psKeyMap" -> {
+                val psKeyMap = prop.call(instance) as Map<*, *>
+                psKeyMap.forEach { (k, v) ->
+                    v?.let { value ->
+                        (getKeyWithExpiryDataMethod(value) as ByteArray).encodeToString().takeIf { it.isNotBlank() }
+                            ?.let { bv ->
+                                map["psKey:$k"] = bv
+                            }
+
+                    }
+                }
+            }
+            // is pt4TokenMap
+            prop.name == "pt4TokenMap" -> {
+                val pt4TokenMap = prop.call(instance) as Map<*, *>
+                pt4TokenMap.forEach { (k, v) ->
+                    v?.let { value ->
+                        (getKeyWithExpiryDataMethod(value) as ByteArray).encodeToString().takeIf { it.isNotBlank() }
+                            ?.let { bv ->
+                                map["pt4Token:$k"] = bv
+                            }
+                    }
+                }
+            }
+            // is ByteArray
+            jType == ByteArray::class.java -> (prop.call(instance) as ByteArray).encodeToString()
+                .takeIf { it.isNotBlank() }?.let { v ->
+                    map[prop.name] = v
+                }
+            // is long
+            jType == Long::class.javaPrimitiveType -> map[prop.name] = (prop.call(instance) as Long).toString()
+            // is Long
+            jType == Long::class.java -> map[prop.name] = (prop.call(instance) as Long).toString()
+            // is KeyWithCreationTime
+            jType == keyWithCreationTimeClazz -> {
+                // get keyWithCreationTime first
+                val keyWithCreationTime = prop.call(instance)
+                (getKeyWithCreationTimeDataMethod(keyWithCreationTime) as ByteArray).encodeToString()
+                    .takeIf { it.isNotBlank() }?.let { v ->
+                        map[prop.name] = v
+                    }
+            }
+            // is KeyWithExpiry
+            jType == keyWithExpiryClazz -> {
+                val keyWithExpiry = prop.call(instance)
+                (getKeyWithExpiryDataMethod(keyWithExpiry) as ByteArray).encodeToString().takeIf { it.isNotBlank() }
+                    ?.let { v ->
+                        map[prop.name] = v
+                    }
+            }
+        }
+    }
+
+
     /**
-     * 得到cookies
+     * 得到 cookies
      * @throws IllegalStateException 如果[UnsafeViolenceAndroidBotCookieUtils]不可用，则会抛出此异常。
      * 如果[UnsafeViolenceAndroidBotCookieUtils.cause]不为null，则会同时输出其信息。
      * @throws Exception 可能会出现任何不可预测的异常。
@@ -113,16 +203,41 @@ object UnsafeViolenceAndroidBotCookieUtils {
             cause?.run { throw IllegalStateException("Can not use.", this) }
                 ?: throw IllegalStateException("Can not use.")
         }
+
         // get bot client
         val client = botClientGetter(bot)
         // get wLoginSigInfo
         val wLoginSigInfo = getWLoginSigInfoMethod(client)
 
+        val map = mutableMapOf<String, String>()
+
         val uin = "o${bot.id}"
-        val pUin: String = uin
-        val skey: ByteArray = getDataMethod(getSKeyMethod(wLoginSigInfo)) as ByteArray
+        map["uin"] = uin
+        map["p_uin"] = uin
+        // val skey: ByteArray = getKeyWithCreationTimeDataMethod(getSKeyMethod(wLoginSigInfo)) as ByteArray
+        // map["skey"] = skey.encodeToString()
+        // val psKeyMap = getPsKeyMapMethod(wLoginSigInfo) as Map<*, *>
+        // val psKey = psKeyMap["qun.qq.com"]?.let { getKeyWithCreationTimeDataMethod(it) } as ByteArray?
+
+        wLoginSigInfoProperties.forEach { p ->
+            injectData(p, wLoginSigInfo, map)
+        }
+
+        val sKey = map.entries.find { it.key.startsWith("sKey") }?.value ?: ""
+        val psKey = map.entries.find { it.key.startsWith("psKey") }?.value ?: ""
+
+        return Cookies(
+            map,
+            uin,
+            uin,
+            sKey,
+            psKey
+
+        )
+
 //        val accessToken = getDataMethod(getAccessTokenMethod(wLoginSigInfo)) as ByteArray
 //        val superKey = getSuperKeyMethod(wLoginSigInfo) as ByteArray
+
         // psKeyMap
         /*
         maybe
@@ -141,17 +256,15 @@ object UnsafeViolenceAndroidBotCookieUtils {
         qzone.com
         mma.qq.com
          */
-        val psKeyMap = getPsKeyMapMethod(wLoginSigInfo) as Map<*, *>
-        val psKey = psKeyMap["qun.qq.com"]?.let { getDataMethod(it) } as ByteArray?
 
 
         // cookies info
-        return Cookies(
-            uin,
-            skey.encodeToString(),
-            pUin,
-            psKey?.encodeToString() ?: ""
-        )
+        // return Cookies(
+        //     uin,
+        //     skey.encodeToString(),
+        //     pUin,
+        //     psKey?.encodeToString() ?: ""
+        // )
     }
 }
 
@@ -160,12 +273,13 @@ object UnsafeViolenceAndroidBotCookieUtils {
  * 通过bot得到[Cookies]信息。
  */
 @OptIn(SimbotExperimentalApi::class)
-val Bot.cookies: Cookies? get() = try {
-    UnsafeViolenceAndroidBotCookieUtils.cookies(this)
-} catch (e: Throwable) {
-    logger.error("Cannot get bot cookies.", e)
-    null
-}
+val Bot.cookies: Cookies?
+    get() = try {
+        UnsafeViolenceAndroidBotCookieUtils.cookies(this)
+    } catch (e: Throwable) {
+        logger.error("Cannot get bot cookies.", e)
+        null
+    }
 
 
 /*
@@ -179,31 +293,22 @@ val Bot.cookies: Cookies? get() = try {
  * bot的部分cookie信息
  */
 data class Cookies(
+    val cookiesMap: Map<String, String>,
     val uin: String,
-    val skey: String,
     val pUin: String,
-    val psKey: String // p_skey
+    val skey: String,
+    val psKey: String, // p_skey
 ) {
 
     @Deprecated("Use 'pUin'.", ReplaceWith("pUin"))
-    val p_uin: String get() = pUin
+    val p_uin: String
+        get() = pUin
 
     /** bkn */
     val bkn: Int get() = toBkn(skey)
 
     /** 计算g_tk */
     val gTk: Long get() = toGtk(psKey)
-
-    /** cookie maps */
-    val cookiesMap: MutableMap<String, String>
-        get() {
-            return mutableMapOf(
-                "uin" to uin,
-                "p_uin" to pUin,
-                "skey" to skey,
-                "p_skey" to psKey
-            )
-        }
 
     /** cookie string */
     override fun toString(): String {

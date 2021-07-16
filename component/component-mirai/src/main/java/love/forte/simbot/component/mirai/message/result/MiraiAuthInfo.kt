@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -15,6 +15,7 @@
 package love.forte.simbot.component.mirai.message.result
 
 import love.forte.simbot.api.message.results.AuthInfo
+import love.forte.simbot.api.message.results.asCookies
 import love.forte.simbot.component.mirai.sender.Cookies
 
 /**
@@ -25,13 +26,15 @@ open class MiraiAuthInfo(private val _cookies: Cookies): AuthInfo {
     private val _cookiesMap: Map<String, String> by lazy(LazyThreadSafetyMode.PUBLICATION) { _cookies.cookiesMap }
 
     /** cookies信息。 */
-    override val cookies: AuthInfo.Cookies by lazy(LazyThreadSafetyMode.PUBLICATION) { MiraiAuthInfoCookies() }
+    override val cookies: AuthInfo.Cookies get() = auths.asCookies()
+
+    override val auths: AuthInfo.Auths by lazy(LazyThreadSafetyMode.PUBLICATION) { MiraiAuthInfoCookies() }
 
     /** 这里的token是bkn */
     override val token: String = _cookies.bkn.toString()
     override val originalData: String = _cookies.toString()
 
-    internal inner class MiraiAuthInfoCookies : AuthInfo.Cookies {
+    internal inner class MiraiAuthInfoCookies : AuthInfo.Cookies, AuthInfo.Auths {
         override fun get(key: String): String? =
             when(key) {
                 "bkn" -> _cookies.bkn.toString()
