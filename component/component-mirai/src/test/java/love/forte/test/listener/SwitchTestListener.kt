@@ -14,7 +14,6 @@
 
 package love.forte.test.listener
 
-import love.forte.common.ioc.annotation.Beans
 import love.forte.simbot.annotation.*
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.Reply
@@ -28,7 +27,7 @@ import love.forte.simbot.listener.onSwitch
  *
  * @author ForteScarlet
  */
-@Beans
+// @Beans
 @OptIn(SimbotExperimentalApi::class)
 class SwitchTestListener(private val listenerManager: ListenerManager) {
 
