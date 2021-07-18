@@ -311,7 +311,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             suspend fun doListen(invoker: ListenerInvoker): ListenResult<*> {
                 val func = invoker.function
                 // val listenerInterceptContext =
-                // val interceptorChain = listenerInterceptChainFactory.getInterceptorChain(listenerInterceptContext)
+                // val interceptorChain1 = listenerInterceptChainFactory.getInterceptorChain(listenerInterceptContext)
 
                 val interceptorChain = listenerInterceptChainFactory.getInterceptorChainOnNonEmpty {
                     listenerInterceptContextFactory.getListenerInterceptContext(invoker.function, msgGet, context)
@@ -371,12 +371,10 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             val iter = normals.iterator()
             var i = 0
 
+
             for (invoker in iter) {
-
                 val func = invoker.function
-
                 finalResult = doListen(invoker)
-
                 if (finalResult.isSuccess()) {
                     eventLogger.trace("{} -> Normal listener chain[{}] success on {}({})", botCode, i, func.name, func.id)
                     anySuccess = true

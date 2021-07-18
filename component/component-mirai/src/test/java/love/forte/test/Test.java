@@ -21,7 +21,6 @@ import love.forte.simbot.bot.BotManager;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.core.SimbotProcess;
-import love.forte.simbot.core.dispatcher.CoreEventDispatcherFactory;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -44,17 +43,14 @@ public class Test implements SimbotProcess {
 
         for (Bot bot : manager.getBots()) {
             bot.getSender().SENDER.sendPrivateMsg(1149159218, "我测试好了");
-            System.out.println("==================");
-            System.out.println(bot.getBotInfo().getAccountNicknameAndRemark());
-            bot.getSender().GETTER.getAuthInfo().getAuths().toMap().forEach((k, v) -> {
-                System.out.println(k + "\t=\t" + v);
-            });
-            System.out.println("==================");
+            // System.out.println("==================");
+            // System.out.println(bot.getBotInfo().getAccountNicknameAndRemark());
+            // bot.getSender().GETTER.getAuthInfo().getAuths().toMap().forEach((k, v) -> {
+            //     System.out.println(k + "\t=\t" + v);
+            // });
+            // System.out.println("==================");
        }
 
-        CoreEventDispatcherFactory coreEventDispatcherFactory = context.get(CoreEventDispatcherFactory.class);
-
-        System.out.println(coreEventDispatcherFactory);
 
 
     }

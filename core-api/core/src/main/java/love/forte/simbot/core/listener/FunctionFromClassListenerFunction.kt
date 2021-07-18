@@ -155,11 +155,47 @@ public class FunctionFromClassListenerFunction constructor(
 
 
     init {
+        val methodAnnotation = AnnotationUtil.getAnnotation(fAnnotationElement, ListensType)
+        val typeAnnotation = AnnotationUtil.getAnnotation(type, ListensType)
+
+        // 只有函数上有
+        when {
+            methodAnnotation != null && typeAnnotation == null -> {
+                listensAnnotation = methodAnnotation
+                listenTypes = listensAnnotation.value.mapTo(mutableSetOf()) { it.value.java }
+            }
+            typeAnnotation != null && methodAnnotation == null -> {
+                // 只有类上有
+                listensAnnotation = typeAnnotation
+                listenTypes = listensAnnotation.value.mapTo(mutableSetOf()) { it.value.java }
+
+            }
+            typeAnnotation == null && methodAnnotation == null -> {
+                // 都没有
+                throw IllegalStateException("cannot found annotation '@Listens' in function $function")
+            }
+            else -> {
+                // 都有, 注解优先为方法上的
+                listensAnnotation = methodAnnotation
+                // 但是如果方法上没有监听的类型，则监听类型为类上的
+                val typeValues = typeAnnotation.value
+                val methodValues = methodAnnotation.value
+                listenTypes = if (methodValues.isNotEmpty()) {
+                    // 只要方法上的有类型，就使用方法上的
+                    methodAnnotation.value.mapTo(mutableSetOf()) { it.value.java }
+
+                } else {
+                    // 方法上没有类型，使用类上的
+                    typeValues.mapTo(mutableSetOf()) { it.value.java }
+                }
+            }
+        }
+
         // 监听注解
-        listensAnnotation = AnnotationUtil.getAnnotation(fAnnotationElement, ListensType)
-            ?: type.let { declaringClass ->
-                AnnotationUtil.getAnnotation(declaringClass, ListensType)
-            } ?: throw IllegalStateException("cannot found annotation '@Listens' in function $function")
+        // listensAnnotation = AnnotationUtil.getAnnotation(fAnnotationElement, ListensType)
+        //     ?: type.let { declaringClass ->
+        //         AnnotationUtil.getAnnotation(declaringClass, ListensType)
+        //     } ?: throw IllegalStateException("cannot found annotation '@Listens' in function $function")
 
         // 优先级值
         priority = AnnotationUtil.getAnnotation(fAnnotationElement, priorityType)?.value ?: listensAnnotation.priority
@@ -195,8 +231,6 @@ public class FunctionFromClassListenerFunction constructor(
 
         listenerInstanceGetter = { dependBeanFactory[instanceName] }
 
-        // 监听类型列表
-        listenTypes = listensAnnotation.value.mapTo(mutableSetOf()) { it.value.java }
 
         // filter
         filter = filtersAnnotation?.let {

@@ -103,11 +103,15 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                 // 类上是否有
                 val typeListen = kType.containsAnnotation<Listens>()
                 // 函数上是否有
-                val funcListen = (!f.containsAnnotation<Ignore>() && f.containsAnnotation<Listens>())
+                val funcListen = (f.containsAnnotation<Listens>() && !f.containsAnnotation<Ignore>())
 
                 // 如果函数上没有，类上有，函数叫toString或者hashcode，跳过
                 if (typeListen && !funcListen) {
-                    if((f.name == "toString" && f.valueParameters.isEmpty()) || (f.name == "hashCode" && f.valueParameters.isEmpty())) {
+                    if(
+                        (f.name == "toString" && f.valueParameters.isEmpty()) ||
+                        (f.name == "hashCode" && f.valueParameters.isEmpty()) ||
+                        (f.name == "equals" && with(f.valueParameters) { this.size == 1 })
+                    ) {
                         return@mapNotNull null
                     }
                 }
