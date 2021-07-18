@@ -29,7 +29,7 @@ public class ListenerInvokerImpl(override val function: ListenerFunction) : List
     override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> {
         // do Intercept and filter
 
-        if (data.listenerInterceptorChain.intercept().prevent || !doFilter(data)) {
+        if (!doFilter(data) || data.listenerInterceptorChain.intercept().prevent) {
             return ListenResult
         }
 
