@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -218,7 +218,15 @@ public fun Neko.toMiraiMessageContent(
                         }
                     }
 
-                    MiraiSingleMessageContent(Image(id))
+                    try {
+                        return MiraiSingleMessageContent(Image(id))
+                    // } catch(e: IllegalArgumentException) {
+                    } catch(e: Exception) {
+                        logger.warn("Cannot create Image by id {}, {}", id, e.localizedMessage)
+                        if (logger.isDebugEnabled) {
+                            logger.debug("Cannot create Image by id $id", e)
+                        }
+                    }
                 }
 
 
