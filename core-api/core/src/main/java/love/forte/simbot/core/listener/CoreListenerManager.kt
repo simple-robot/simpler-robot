@@ -18,10 +18,7 @@ package love.forte.simbot.core.listener
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.*
 import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.simbot.LogAble
@@ -144,11 +141,13 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
         flow.buffer(1024)
             .filter { contains(it::class.java) }
+            .flowOn(collectScope.coroutineContext)
             .also {
-                collectScope.launch {
-                    it.collect {
-                        eventCoroutineScope.launch { onMsg1(it) }
-                    }
+                eventCoroutineScope.launch {
+                    it.collect(::onMsg1)
+                    // {
+                        // eventCoroutineScope.launch { onMsg1(it) }
+                    // }
                 }
             }
 
