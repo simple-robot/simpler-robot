@@ -16,9 +16,6 @@
 package love.forte.simbot.core.listener
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.ProducerScope
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.*
 import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.simbot.LogAble
@@ -128,35 +125,35 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                 CoroutineName("CoreMsgProcessor-Event")
     )
 
-    private lateinit var producerScope: ProducerScope<MsgGet>
+    // private lateinit var producerScope: ProducerScope<MsgGet>
 
-    init {
-        val flow = channelFlow<MsgGet> {
-            producerScope = this
-            awaitClose {
-                // close.
-                logger.info("Core msgGet processor closed.")
-            }
-        }
-
-        flow.buffer(1024)
-            .filter { contains(it::class.java) }
-            .flowOn(collectScope.coroutineContext)
-            .also {
-                eventCoroutineScope.launch {
-                    it.collect(::onMsg1)
-                    // {
-                        // eventCoroutineScope.launch { onMsg1(it) }
-                    // }
-                }
-            }
-
-
-    }
+    // init {
+    //     val flow = channelFlow<MsgGet> {
+    //         producerScope = this
+    //         awaitClose {
+    //             // close.
+    //             logger.info("Core msgGet processor closed.")
+    //         }
+    //     }
+    //
+    //     flow.buffer(1024)
+    //         .filter { contains(it::class.java) }
+    //         .flowOn(collectScope.coroutineContext)
+    //         .also {
+    //             eventCoroutineScope.launch {
+    //                 it.collect(::onMsg1)
+    //                 // {
+    //                     // eventCoroutineScope.launch { onMsg1(it) }
+    //                 // }
+    //             }
+    //         }
+    //
+    //
+    // }
 
 
     override fun simbotClose(context: SimbotContext) {
-        producerScope.close()
+        // producerScope.close()
         collectScope.cancel()
         eventCoroutineScope.cancel()
     }
@@ -235,7 +232,8 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      * 通过内部的事件调度器触发事件。
      */
     override suspend fun onMsg(msgGet: MsgGet) {
-        producerScope.send(msgGet)
+        eventCoroutineScope.launch { onMsg1(msgGet) }
+        // producerScope.send(msgGet)
     }
 
 
