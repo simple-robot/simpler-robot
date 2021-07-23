@@ -20,6 +20,9 @@ import love.forte.common.configuration.Configuration
 import love.forte.common.ioc.DependBeanFactory
 
 
+/**
+ * @since 2.2.0
+ */
 public inline fun <reified T> runSimbot(
     loader: ClassLoader = Thread.currentThread().contextClassLoader ?: ClassLoader.getSystemClassLoader(),
     parentDependBeanFactory: DependBeanFactory? = null,
@@ -34,6 +37,9 @@ public inline fun <reified T> runSimbot(
 )
 
 
+/**
+ * @since 2.2.0
+ */
 @Suppress("NOTHING_TO_INLINE")
 public inline fun runSimbot(
     app: Any,
