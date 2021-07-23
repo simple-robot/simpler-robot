@@ -45,7 +45,8 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-private val ListenerInvokerComparable: Comparator<ListenerInvoker> = Comparator { f1, f2 -> f1.function.priority.compareTo(f2.function.priority) }
+private val ListenerInvokerComparable: Comparator<ListenerInvoker> =
+    Comparator { f1, f2 -> f1.function.priority.compareTo(f2.function.priority) }
 
 
 /**
@@ -286,6 +287,26 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     }
 
 
+    private val doListenerFunctionInvoker: suspend (invoker: ListenerInvoker, data: ListenerFunctionInvokeData) -> ListenResult<*> =
+        if (logger.isTraceEnabled) {
+            { invoker, data ->
+                val startTime = System.currentTimeMillis()
+                val result = invoker(data)
+                val endTime = System.currentTimeMillis()
+                val timeDifference = endTime - startTime
+                logger.trace(
+                    "ListenerFunction {} execution time: {} ms: from {} to {}",
+                    invoker.function.id,
+                    timeDifference,
+                    startTime.toString(), endTime.toString()
+                )
+                result
+            }
+        } else {
+            { invoker, data -> invoker(data) }
+        }
+
+
     /**
      * 筛选监听函数
      */
@@ -326,7 +347,8 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                         interceptorChain
                     )
 
-                    invoker(invokeData!!)
+                    // invoker(invokeData!!)
+                    doListenerFunctionInvoker(invoker, invokeData!!)
                 } catch (funcRunEx: Throwable) {
                     (if (func is LogAble) func.log else logger).error("Listener '${func.name}' execution exception: $funcRunEx",
                         funcRunEx)
@@ -373,7 +395,11 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                 val func = invoker.function
                 finalResult = doListen(invoker)
                 if (finalResult.isSuccess()) {
-                    eventLogger.trace("{} -> Normal listener chain[{}] success on {}({})", botCode, i, func.name, func.id)
+                    eventLogger.trace("{} -> Normal listener chain[{}] success on {}({})",
+                        botCode,
+                        i,
+                        func.name,
+                        func.id)
                     anySuccess = true
                 }
 
@@ -400,7 +426,11 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                     finalResult = doListen(invoker)
                     finalResult = doResultIfFail(func, finalResult)
                     if (finalResult.isBreak()) {
-                        eventLogger.trace("{} -> Spare Listener chain[{}] break on {}({})", botCode, si, func.name, func.id)
+                        eventLogger.trace("{} -> Spare Listener chain[{}] break on {}({})",
+                            botCode,
+                            si,
+                            func.name,
+                            func.id)
                         break
                     }
                     si++
@@ -420,7 +450,8 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      */
     override fun <T : MsgGet> getListenerFunctions(type: Class<out T>?): Collection<ListenerFunction> {
         return if (type == null) {
-            mainListenerFunctionMap.values.asSequence().flatMap { it.asSequence().map { invoker -> invoker.function } }.toList()
+            mainListenerFunctionMap.values.asSequence().flatMap { it.asSequence().map { invoker -> invoker.function } }
+                .toList()
         } else {
             getListenerFunctions(type, false).marge().map { it.function }
         }
