@@ -16,6 +16,7 @@
 package love.forte.simbot.component.mirai.sender
 
 import love.forte.simbot.api.SimbotExperimentalApi
+import love.forte.simbot.thing.NamedThingsTree
 import net.mamoe.mirai.Bot
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -227,7 +228,7 @@ object UnsafeViolenceAndroidBotCookieUtils {
         val psKey = map.entries.find { it.key.startsWith("psKey") }?.value ?: ""
 
         return Cookies(
-            map,
+            TODO(), //map,
             uin,
             uin,
             sKey,
@@ -293,12 +294,16 @@ val Bot.cookies: Cookies?
  * bot的部分cookie信息
  */
 data class Cookies(
-    val cookiesMap: Map<String, String>,
+    val cookieTreeNodes: List<NamedThingsTree.Node<String>>,
     val uin: String,
     val pUin: String,
     val skey: String,
     val psKey: String, // p_skey
 ) {
+
+    fun toCookiesMap(): Map<String, String> {
+        TODO()
+    }
 
     @Deprecated("Use 'pUin'.", ReplaceWith("pUin"))
     val p_uin: String
@@ -323,25 +328,18 @@ data class Cookies(
 internal fun toBkn(skey: String): Int {
     var hash = 5381
     for (element in skey) {
-        hash += (hash shl 5/* << 5*/) + element.code
+        hash += (hash shl 5) + element.code
     }
-    return hash and 2147483647 /*& 2147483647*/
+    return hash and 2147483647
 }
-
-//　window.g_qzonetoken = (function(){ try{return
-// "1cf5c9fa0001be9c6d7fb32819d6cc533f4a037101040b5740621bb048ecba0555e7aa2722f02a9778";}　catch\(e\)
-
 
 /**
  * to g_tk by pskey
  */
 internal fun toGtk(pskey: String): Long {
-    val p_skey = pskey
     var hash: Long = 5381
-    for (element in p_skey) {
+    for (element in pskey) {
         hash += (hash shl 5) + element.code
-        // hash += (hash shl 5 and 0x7fffffff) + element.toInt() and 0x7fffffff
-        // hash = hash and 0x7fffffff
     }
     return hash and 0x7fffffff
 }

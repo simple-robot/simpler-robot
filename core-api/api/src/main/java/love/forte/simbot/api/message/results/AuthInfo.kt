@@ -13,7 +13,11 @@
  */
 @file:JvmMultifileClass
 @file:JvmName("Results")
+
 package love.forte.simbot.api.message.results
+
+import love.forte.simbot.thing.NamedThingsTree
+import love.forte.simbot.thing.resolveValue
 
 /**
  * bot的权限信息
@@ -36,7 +40,6 @@ public interface AuthInfo : Result {
 
     /**
      * Cookies信息封装接口
-     * @see CookieValuesImpl [Cookies]的默认实现。
      */
     public interface Cookies {
         operator fun get(key: String): String?
@@ -63,11 +66,14 @@ public interface AuthInfo : Result {
      * 至于Key的规则，以实现的组件说明为准。
      *
      */
-    public interface Auths {
+    public interface Auths : NamedThingsTree<String, String> {
         /**
          * 根据[key]得到一个对应的value。
+         * 这个[key]允许多层级，例如 `aaa.bbb.ccc`
+         * @see NamedThingsTree.resolveValue
          */
         operator fun get(key: String): String?
+        = this.resolveValue(key.split('.').toTypedArray())
 
         /**
          * 转化为一个Map。
@@ -79,46 +85,14 @@ public interface AuthInfo : Result {
 }
 
 
-public fun AuthInfo.Cookies.asAuths(): AuthInfo.Auths = CookiesAsAuths(this)
-private class CookiesAsAuths(private val cookies: AuthInfo.Cookies): AuthInfo.Auths {
-    override fun get(key: String): String? = cookies[key]
-    override fun toMap(): Map<String, String> = cookies.toMap()
-    override fun toString(): String = cookies.toString()
-}
-
 public fun AuthInfo.Auths.asCookies(): AuthInfo.Cookies = AuthsAsCookies(this)
-private class AuthsAsCookies(private val auths: AuthInfo.Auths): AuthInfo.Cookies {
+private class AuthsAsCookies(private val auths: AuthInfo.Auths) : AuthInfo.Cookies {
     override fun get(key: String): String? = auths[key]
     override fun toMap(): MutableMap<String, String> = auths.toMap().toMutableMap()
     override fun toString(): String = auths.toString()
 }
 
 
-private val COOKIE_SPLIT_REGEX = Regex("; *")
-
-/**
- * 根据 cookies 字符串的实例。
- */
-public data class CookieValuesImpl(private val cookieValue: String) : AuthInfo.Cookies {
-
-    private val cookieMap: MutableMap<String, String> by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        cookieValue.split(COOKIE_SPLIT_REGEX).asSequence().filter {
-            it.isNotBlank()
-        }.map {
-            val sp: List<String> = it.split("=", limit = 2)
-            if(sp.size == 1){
-                sp[0] to ""
-            }else{
-                sp[0] to sp[1]
-            }
-        }.toMap().toMutableMap()
-    }
-
-    override fun get(key: String): String? = cookieMap[key]
-    override fun toMap(): MutableMap<String, String> = cookieMap
-
-    override fun toString(): String = cookieMap.toString()
-}
 
 /**
  * 获取一个 [AuthInfo] 的空值实现。
@@ -147,8 +121,12 @@ private object EmptyAuthInfo : AuthInfo {
         override fun toMap(): MutableMap<String, String> = mutableMapOf()
         override fun toString(): String = "{}"
     }
+
+
     private object EmptyAuth : AuthInfo.Auths {
-        override fun get(key: String): String? = null
+        override val name: String get() = "<empty-auth>"
+        override val value: String get() = ""
+        override val nodes: List<NamedThingsTree.Node<String>> get() = emptyList()
         override fun toMap(): Map<String, String> = emptyMap()
         override fun toString(): String = "{}"
     }
