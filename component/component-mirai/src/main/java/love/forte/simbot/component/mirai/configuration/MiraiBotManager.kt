@@ -15,6 +15,7 @@
 @file:JvmName("MiraiBotManagers")
 package love.forte.simbot.component.mirai.configuration
 
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.bot.*
@@ -78,7 +79,8 @@ public class MiraiBotManager(
 
 
     override fun registerBot(botRegisterInfo: BotVerifyInfo): Bot {
-        // 如果账号本身就存在，直接返回
+        // 如果账号本身就存在，直接返回(x)
+        // ，尝试再次执行login
         val botCode = botRegisterInfo.code
         val foundBot: Bot? = _bots[botCode]
         if (foundBot != null) {
@@ -90,7 +92,8 @@ public class MiraiBotManager(
                 _bots.remove(botCode)
             } else {
                 // mirai中同样存在，直接返回
-                logger.debug("Bot $botCode existed, just return")
+                logger.debug("Bot $botCode existed, try reLogin.")
+                runBlocking { foundMBot.login() }
                 return foundBot
             }
         }

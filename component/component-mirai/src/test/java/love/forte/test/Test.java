@@ -17,8 +17,10 @@ package love.forte.test;
 import love.forte.common.configuration.Configuration;
 import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.api.message.results.AuthInfo;
+import love.forte.simbot.api.sender.Getter;
 import love.forte.simbot.bot.Bot;
 import love.forte.simbot.bot.BotManager;
+import love.forte.simbot.bot.BotVerifyInfos;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.core.SimbotProcess;
@@ -47,16 +49,33 @@ public class Test implements SimbotProcess {
             bot.getSender().SENDER.sendPrivateMsg(1149159218, "我测试好了");
             System.out.println("==================");
             System.out.println(bot.getBotInfo().getAccountNicknameAndRemark());
-            AuthInfo.Auths auths = bot.getSender().GETTER.getAuthInfo().getAuths();
+            Getter getter = bot.getSender().GETTER;
+            AuthInfo.Auths auths = getter.getAuthInfo().getAuths();
             Somethings.forEachNamed(auths, (p, t) -> {
                 System.out.println(t.getName() + "\t=\t" + t.getValue());
             });
-            System.out.println("==================");
-            System.out.println("==================");
-            System.out.println("==================");
-            auths.toMap().forEach((k, v) -> {
-                System.out.println(k + "\t=\t" + v);
-            });
+            String data = Somethings.resolveValue(getter.getAuthInfo().getAuths(), new String[]{"COOKIES", "sKey", "data"}, 0);
+            System.out.println(data);
+            String t = Somethings.resolveValue(getter.getAuthInfo().getAuths(), new String[]{"COOKIES", "sKey", "creationTime"}, 0);
+            System.out.println(t);
+            String data2 = Somethings.resolveValue(getter.getAuthInfo().getAuths(), new String[]{"COOKIES", "sKey", "data"}, 0);
+            System.out.println(data2);
+            String t2 = Somethings.resolveValue(getter.getAuthInfo().getAuths(), new String[]{"COOKIES", "sKey", "creationTime"}, 0);
+            System.out.println(t2);
+            System.out.println("=========================");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+            }
+            manager.registerBot(BotVerifyInfos.getInstance(bot.getBotInfo().getAccountCode(), ""));
+            String data3 = Somethings.resolveValue(getter.getAuthInfo().getAuths(), new String[]{"COOKIES", "sKey", "data"}, 0);
+            System.out.println(data3);
+            String t3 = Somethings.resolveValue(getter.getAuthInfo().getAuths(), new String[]{"COOKIES", "sKey", "creationTime"}, 0);
+            System.out.println(t3);
+            String data4 = Somethings.resolveValue(getter.getAuthInfo().getAuths(), new String[]{"COOKIES", "sKey", "data"}, 0);
+            System.out.println(data4);
+            String t4 = Somethings.resolveValue(getter.getAuthInfo().getAuths(), new String[]{"COOKIES", "sKey", "creationTime"}, 0);
+            System.out.println(t4);
 
         }
 
