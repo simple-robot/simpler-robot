@@ -1,16 +1,14 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  simpler-robot
- *  * File     Thing.kt
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
@@ -23,7 +21,7 @@ package love.forte.simbot.thing
  * 一个 **东西**。
  * @author ForteScarlet
  */
-interface Thing<out T> {
+interface Thing<T> {
 
     /**
      * 被描述的对象。
@@ -31,10 +29,30 @@ interface Thing<out T> {
     val value: T
 }
 
+
+/**
+ * 一个有结构的 [东西][Thing]. 除了自己，可能还会有很多.
+ *
+ * 结构应当是稳固的，因此 [children] 不应是可变动的。
+ *
+ */
+interface StructuralThing<T> : Thing<T> {
+    /**
+     * 被描述的对象。
+     */
+    override val value: T
+
+    /**
+     * 结构化的东西中，会有很多小东西。
+     */
+    val children: List<StructuralThing<T>>
+}
+
+
 /**
  * 一个有 [名字][name] 的 [东西][Thing]。
  */
-interface NamedThing<out T> : Thing<T> {
+interface NamedThing<T> : Thing<T> {
     /**
      * 这个东西的名字。
      */
@@ -47,122 +65,103 @@ interface NamedThing<out T> : Thing<T> {
 }
 
 /**
- * 一颗树。这棵树同样是一个 [东西][Thing],
- * 同时他包含很多小树，也就是树的 [节点][ThingsTree.Node]。
- *
- * 树的[类型][T]不一定要与节点的[类型][NT]一致，但是所有节点的类型都应一致。
+ * 有名字的结构化事物。
  */
-interface ThingsTree<out T, out NT> : Thing<T> {
-    /**
-     * 这棵树也可能存在一个描述对象.
-     */
+interface StructuralThingWithName<T> : StructuralThing<T>, NamedThing<T> {
     override val value: T
-
-
-    /**
-     * 这棵树的所有子节点。当然，它可能是空的。
-     */
-    val nodes: List<Node<NT>>
-
-
-    /**
-     * 这棵树的节点，节点也可以是一棵 [树][ThingsTree].
-     * 节点下，所有枝丫的类型都应一致。
-     */
-    interface Node<out T> : ThingsTree<T, T>
-}
-
-
-/**
- * 一棵有名字的树。这棵树是一个 [有名字的东西][NamedThing],
- * 同时他包含很多小树，也就是树的 [节点][NamedThingsTree.Node]。
- *
- * 树的[类型][T]不一定要与节点的[类型][NT]一致，但是所有节点的类型都应一致。
- */
-interface NamedThingsTree<out T, out NT> : NamedThing<T> {
-
-    /**
-     * 这棵树的名称。
-     */
     override val name: String
-
-    /**
-     * 这棵树也可能存在一个描述对象.
-     */
-    override val value: T
-
-    /**
-     * 这棵树的所有子节点。当然，它可能是空的。
-     */
-    val nodes: List<Node<NT>>
-
-
-    /**
-     * 这棵树的节点，节点也可以是一棵 [树][NamedThingsTree].
-     * 节点下，所有枝丫的类型都应一致。
-     */
-    interface Node<out T> : NamedThingsTree<T, T>
-}
-
-
-public fun <T> NamedThingsTree<T, T>.asNode(): NamedThingsTree.Node<T> =
-    if (this is NamedThingsTree.Node<T>) this else NamedThingsTreeNodeDelegate(this)
-
-private class NamedThingsTreeNodeDelegate<T>(private val delegate: NamedThingsTree<T, T>) : NamedThingsTree.Node<T> {
-    override val name: String
-        get() = delegate.name
-    override val value: T
-        get() = delegate.value
-    override val nodes: List<NamedThingsTree.Node<T>>
-        get() = delegate.nodes
+    override val children: List<StructuralThingWithName<T>>
 }
 
 
 /**
- * 根据名称路径尝试寻找这棵树下对应名称的内容。
- * 从当前tree节点开始查询。由于`0`索引是从当前tree节点开始的，因此需要保证当前tree节点类型与子节点类型一致。
+ * 根据层级name寻找指定结果。
+ *
+ * [index]代表的是 [valuePath] 开始的索引位。
  */
-public tailrec fun <NT> NamedThingsTree<NT, NT>.resolveValue(
-    namePath: Array<String>,
-    startIndex: Int = 0,
-): NT? {
-    if (namePath.isEmpty()) {
+public fun <T> StructuralThingWithName<T>.resolveValue(valuePath: Array<String>, index: Int = 0): T? {
+    if (valuePath.isEmpty()) return null
+    if (index > valuePath.lastIndex) return null
+    if (name != valuePath[index]) {
         return null
     }
-    if (startIndex > namePath.lastIndex) {
-        return null
+    if (index == valuePath.lastIndex && name == valuePath[index]) {
+        return value
     }
 
-    if (namePath[startIndex] == this.name) {
-        return this.value
-    }
-
-    return resolveValue(namePath, startIndex + 1)
-}
-
-
-/**
- * 根据名称路径尝试寻找这棵树下对应名称的内容。
- * 从子节点开始查询，当前节点不计入内。
- */
-public fun <T, NT> NamedThingsTree<T, NT>.resolveSubValue(
-    startIndex: Int = 0,
-    namePath: Array<String>,
-): NT? {
-    if (namePath.isEmpty()) {
-        return null
-    }
-    if (startIndex > namePath.lastIndex) {
-        return null
-    }
-
-    for (node in this.nodes) {
-        val resolve = node.resolveValue(namePath, startIndex)
-        if (resolve != null) return resolve
+    for (child in this.children) {
+        val resolved = child.resolveValue(valuePath, index = (index + 1))
+        if (resolved != null) {
+            return resolved
+        }
     }
 
     return null
 }
+
+/**
+ * 将 [StructuralThingWithName] 解析为 [Map].
+ * 如果 [resolveRoot] 为 false，则不解析当前节点。
+ */
+public fun <T> StructuralThingWithName<T>.resolveToMap(
+    delimiter: String,
+    resolveRoot: Boolean = true,
+    filter: (T) -> Boolean = { it != null },
+): Map<String, T> {
+    val map = mutableMapOf<String, T>()
+
+    fun deep(parent: String? = null, t: StructuralThingWithName<T>) {
+        val name = parent?.let { p -> p + delimiter + t.name } ?: t.name
+        if (filter(t.value)) {
+            map[name] = t.value
+        }
+        for (child in t.children) {
+            deep(name, child)
+        }
+
+    }
+
+    if (resolveRoot) {
+        if (filter(value)) {
+            map[name] = value
+            return map
+        }
+        for (child in children) {
+            deep(name, child)
+        }
+
+    } else {
+        if (children.isNotEmpty()) {
+            for (child in children) {
+                deep(null, child)
+            }
+        }
+    }
+
+
+    return map
+}
+
+
+/**
+ * 根据name过滤条件查找一个值。
+ */
+public fun <T> StructuralThingWithName<T>.findValue(filter: (name: String) -> Boolean): T? {
+    if (filter(name)) {
+        return value
+    }
+    if (children.isEmpty()) {
+        return null
+    }
+    children.forEach { c ->
+        val found = c.findValue(filter)
+        if (found != null) {
+            return found
+        }
+    }
+    return null
+}
+
 
 // Thing 基础实现
 
@@ -180,6 +179,7 @@ public fun nothing(): Thing<Nothing?> = EmptyThing
 
 private object EmptyThing : Thing<Nothing?> {
     override val value: Nothing? get() = null
+    override fun toString(): String = "EmptyThing(value=null)"
 }
 
 /**
@@ -188,15 +188,70 @@ private object EmptyThing : Thing<Nothing?> {
 public fun <T> thing(name: String, value: T): NamedThing<T> = SimpleNamedThing(name, value)
 public data class SimpleNamedThing<T>(override val name: String, override val value: T) : NamedThing<T>
 
+/**
+ * 对 [结构化事物][StructuralThing] 的基础实现。
+ */
+public fun <T> thing(value: T, children: List<StructuralThing<T>>): StructuralThing<T> =
+    SimpleStructuralThing(value, children)
 
-public fun <T> NamedThingsTree<T, T>.forEach(block: (node: NamedThing<T>) -> Unit) {
-    block(this)
-    this.nodes.forEach {
-        it.forEach(block)
+public data class SimpleStructuralThing<T>(
+    override val value: T,
+    override val children: List<StructuralThing<T>>,
+) : StructuralThing<T>
+
+/**
+ * 对 [有名字的结构化事物][StructuralThingWithName] 的基础实现。
+ */
+public fun <T> thing(name: String, value: T, children: List<StructuralThingWithName<T>>): StructuralThingWithName<T> =
+    SimpleStructuralThingWithName(name, value, children)
+
+public data class SimpleStructuralThingWithName<T>(
+    override val name: String, override val value: T,
+    override val children: List<StructuralThingWithName<T>>,
+) : StructuralThingWithName<T>
+
+
+public fun <T> StructuralThing<T>.forEach(block: StructuralThingForEach<T>) {
+    block(null, this)
+    this.children.forEach {
+        it.forEach(this, block)
     }
 }
 
-public fun <T> NamedThing<T>?.toGeneralString(): String =
-    if (this == null) "null" else "NamedThing(name=$name, value=$value)"
+private fun <T> StructuralThing<T>.forEach(
+    parentThing: Thing<T>,
+    block: StructuralThingForEach<T>,
+) {
+    block(parentThing, this)
+    this.children.forEach {
+        it.forEach(this, block)
+    }
+}
 
-public fun <T> Thing<T>?.toGeneralString(): String = if (this == null) "null" else "Thing(value=$value)"
+@JvmName("forEachNamed")
+public fun <T> StructuralThingWithName<T>.forEach(block: StructuralThingWithNameForEach<T>) {
+    block(null, this)
+    this.children.forEach {
+        it.forEach(this, block)
+    }
+}
+
+@JvmName("forEachNamed")
+private fun <T> StructuralThingWithName<T>.forEach(
+    parentThing: NamedThing<T>,
+    block: StructuralThingWithNameForEach<T>,
+) {
+    block(parentThing, this)
+    this.children.forEach {
+        it.forEach(this, block)
+    }
+}
+
+
+public fun interface StructuralThingForEach<T> {
+    operator fun invoke(parentThing: Thing<T>?, thing: Thing<T>)
+}
+
+public fun interface StructuralThingWithNameForEach<T> {
+    operator fun invoke(parentThing: NamedThing<T>?, thing: NamedThing<T>)
+}

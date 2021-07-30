@@ -16,11 +16,13 @@ package love.forte.test;
 
 import love.forte.common.configuration.Configuration;
 import love.forte.simbot.annotation.SimbotApplication;
+import love.forte.simbot.api.message.results.AuthInfo;
 import love.forte.simbot.bot.Bot;
 import love.forte.simbot.bot.BotManager;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.core.SimbotProcess;
+import love.forte.simbot.thing.Somethings;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -43,14 +45,20 @@ public class Test implements SimbotProcess {
 
         for (Bot bot : manager.getBots()) {
             bot.getSender().SENDER.sendPrivateMsg(1149159218, "我测试好了");
-            // System.out.println("==================");
-            // System.out.println(bot.getBotInfo().getAccountNicknameAndRemark());
-            // bot.getSender().GETTER.getAuthInfo().getAuths().toMap().forEach((k, v) -> {
-            //     System.out.println(k + "\t=\t" + v);
-            // });
-            // System.out.println("==================");
-       }
+            System.out.println("==================");
+            System.out.println(bot.getBotInfo().getAccountNicknameAndRemark());
+            AuthInfo.Auths auths = bot.getSender().GETTER.getAuthInfo().getAuths();
+            Somethings.forEachNamed(auths, (p, t) -> {
+                System.out.println(t.getName() + "\t=\t" + t.getValue());
+            });
+            System.out.println("==================");
+            System.out.println("==================");
+            System.out.println("==================");
+            auths.toMap().forEach((k, v) -> {
+                System.out.println(k + "\t=\t" + v);
+            });
 
+        }
 
 
     }

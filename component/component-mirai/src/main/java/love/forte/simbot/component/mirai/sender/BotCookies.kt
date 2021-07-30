@@ -16,7 +16,10 @@
 package love.forte.simbot.component.mirai.sender
 
 import love.forte.simbot.api.SimbotExperimentalApi
-import love.forte.simbot.thing.NamedThingsTree
+import love.forte.simbot.thing.StructuralThingWithName
+import love.forte.simbot.thing.StructuralThingWithNameBuilder
+import love.forte.simbot.thing.findValue
+import love.forte.simbot.thing.resolveToMap
 import net.mamoe.mirai.Bot
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -78,9 +81,11 @@ object UnsafeViolenceAndroidBotCookieUtils {
 
     private lateinit var keyWithCreationTimeClazz: Class<*>
     private lateinit var getKeyWithCreationTimeDataMethod: Method
+    private lateinit var getKeyWithCreationTimeCreationTimeMethod: Method
 
     private lateinit var keyWithExpiryClazz: Class<*>
     private lateinit var getKeyWithExpiryDataMethod: Method
+    private lateinit var getKeyWithExpiryCreationTimeMethod: Method
 
     private var cause: Throwable? = null
 
@@ -123,9 +128,13 @@ object UnsafeViolenceAndroidBotCookieUtils {
             keyWithCreationTimeClazz = Class.forName("$MIRAI_PACKAGE.network.KeyWithCreationTime")
             getKeyWithCreationTimeDataMethod =
                 keyWithCreationTimeClazz.getDeclaredMethod("getData").also { it.isAccessible = true }
+            getKeyWithCreationTimeCreationTimeMethod =
+                keyWithCreationTimeClazz.getDeclaredMethod("getCreationTime").also { it.isAccessible = true }
 
             keyWithExpiryClazz = Class.forName("$MIRAI_PACKAGE.network.KeyWithExpiry")
             getKeyWithExpiryDataMethod = keyWithExpiryClazz.getDeclaredMethod("getData").also { it.isAccessible = true }
+            getKeyWithExpiryCreationTimeMethod =
+                keyWithExpiryClazz.getDeclaredMethod("getCreationTime").also { it.isAccessible = true }
 
             success = true
         } catch (e: Throwable) {
@@ -134,61 +143,157 @@ object UnsafeViolenceAndroidBotCookieUtils {
     }
 
 
-    private fun injectData(prop: KProperty1<*, *>, instance: Any, map: MutableMap<String, String>) {
+    // private fun injectData(prop: KProperty1<*, *>, instance: Any, map: MutableMap<String, String>) {
+    //     val jType = prop.returnType.javaType
+    //     when {
+    //         // is PsKeyMap
+    //         prop.name == "psKeyMap" -> {
+    //             val psKeyMap = prop.call(instance) as Map<*, *>
+    //             psKeyMap.forEach { (k, v) ->
+    //                 v?.let { value ->
+    //                     (getKeyWithExpiryDataMethod(value) as ByteArray).encodeToBasicString().takeIf { it.isNotBlank() }
+    //                         ?.let { bv ->
+    //                             map["psKey:$k"] = bv
+    //                         }
+    //
+    //                 }
+    //             }
+    //         }
+    //         // is pt4TokenMap
+    //         prop.name == "pt4TokenMap" -> {
+    //             val pt4TokenMap = prop.call(instance) as Map<*, *>
+    //             pt4TokenMap.forEach { (k, v) ->
+    //                 v?.let { value ->
+    //                     (getKeyWithExpiryDataMethod(value) as ByteArray).encodeToBasicString().takeIf { it.isNotBlank() }
+    //                         ?.let { bv ->
+    //                             map["pt4Token:$k"] = bv
+    //                         }
+    //                 }
+    //             }
+    //         }
+    //         // is ByteArray
+    //         jType == ByteArray::class.java -> (prop.call(instance) as ByteArray).encodeToBasicString()
+    //             .takeIf { it.isNotBlank() }?.let { v ->
+    //                 map[prop.name] = v
+    //             }
+    //         // is long
+    //         jType == Long::class.javaPrimitiveType -> map[prop.name] = (prop.call(instance) as Long).toString()
+    //         // is Long
+    //         jType == Long::class.java -> map[prop.name] = (prop.call(instance) as Long).toString()
+    //         // is KeyWithCreationTime
+    //         jType == keyWithCreationTimeClazz -> {
+    //             // get keyWithCreationTime first
+    //             val keyWithCreationTime = prop.call(instance)
+    //             (getKeyWithCreationTimeDataMethod(keyWithCreationTime) as ByteArray).encodeToBasicString()
+    //                 .takeIf { it.isNotBlank() }?.let { v ->
+    //                     map[prop.name] = v
+    //                 }
+    //         }
+    //         // is KeyWithExpiry
+    //         jType == keyWithExpiryClazz -> {
+    //             val keyWithExpiry = prop.call(instance)
+    //             (getKeyWithExpiryDataMethod(keyWithExpiry) as ByteArray).encodeToBasicString().takeIf { it.isNotBlank() }
+    //                 ?.let { v ->
+    //                     map[prop.name] = v
+    //                 }
+    //         }
+    //     }
+    // }
+
+    private fun injectData(prop: KProperty1<*, *>, instance: Any): StructuralThingWithName<String>? {
+        val builder = StructuralThingWithNameBuilder<String>()
         val jType = prop.returnType.javaType
         when {
             // is PsKeyMap
             prop.name == "psKeyMap" -> {
+                builder.name = "psKey"
+                builder.value("")
                 val psKeyMap = prop.call(instance) as Map<*, *>
                 psKeyMap.forEach { (k, v) ->
                     v?.let { value ->
-                        (getKeyWithExpiryDataMethod(value) as ByteArray).encodeToString().takeIf { it.isNotBlank() }
-                            ?.let { bv ->
-                                map["psKey:$k"] = bv
-                            }
 
+                        builder.child(name = k.toString(), "") {
+
+                            (getKeyWithExpiryDataMethod(value) as ByteArray).encodeToGeneralString().takeIf { it.isNotBlank() }
+                                ?.let { bv -> child(name = "data", bv) }
+                            // builder.child(name = k.toString(), bv)
+                            // map["psKey:$k"] = bv
+                            child(name = "creationTime", (getKeyWithExpiryCreationTimeMethod(value) as Long).toString())
+                        }
                     }
                 }
             }
             // is pt4TokenMap
             prop.name == "pt4TokenMap" -> {
+                builder.name = "pt4Token"
+                builder.value("")
                 val pt4TokenMap = prop.call(instance) as Map<*, *>
                 pt4TokenMap.forEach { (k, v) ->
                     v?.let { value ->
-                        (getKeyWithExpiryDataMethod(value) as ByteArray).encodeToString().takeIf { it.isNotBlank() }
-                            ?.let { bv ->
-                                map["pt4Token:$k"] = bv
-                            }
+
+                        builder.child(name = k.toString(), "") {
+
+                            (getKeyWithExpiryDataMethod(value) as ByteArray).encodeToGeneralString().takeIf { it.isNotBlank() }
+                                ?.let { bv -> child(name = "data", bv) }
+                            child(name = "creationTime", (getKeyWithExpiryCreationTimeMethod(value) as Long).toString())
+                        }
                     }
                 }
             }
             // is ByteArray
-            jType == ByteArray::class.java -> (prop.call(instance) as ByteArray).encodeToString()
-                .takeIf { it.isNotBlank() }?.let { v ->
-                    map[prop.name] = v
-                }
+            jType == ByteArray::class.java -> {
+                builder.name = prop.name
+                (prop.call(instance) as ByteArray).encodeToGeneralString()
+                    .takeIf { it.isNotBlank() }?.let { v ->
+                        builder.value(v)
+                    } ?: builder.value("")
+            }
+
             // is long
-            jType == Long::class.javaPrimitiveType -> map[prop.name] = (prop.call(instance) as Long).toString()
+            jType == Long::class.javaPrimitiveType -> {
+                // map[prop.name] = (prop.call(instance) as Long).toString()
+                builder.name = prop.name
+                builder.value((prop.call(instance) as Long).toString())
+            }
+
             // is Long
-            jType == Long::class.java -> map[prop.name] = (prop.call(instance) as Long).toString()
+            jType == Long::class.java -> {
+                // map[prop.name] = (prop.call(instance) as Long).toString()
+                builder.name = prop.name
+                builder.value((prop.call(instance) as Long).toString())
+            }
             // is KeyWithCreationTime
             jType == keyWithCreationTimeClazz -> {
+                builder.name = prop.name
+                builder.value("")
                 // get keyWithCreationTime first
                 val keyWithCreationTime = prop.call(instance)
-                (getKeyWithCreationTimeDataMethod(keyWithCreationTime) as ByteArray).encodeToString()
-                    .takeIf { it.isNotBlank() }?.let { v ->
-                        map[prop.name] = v
-                    }
+
+                (getKeyWithCreationTimeDataMethod(keyWithCreationTime) as ByteArray).encodeToGeneralString()
+                    .takeIf { it.isNotBlank() }
+                    ?.let { v -> builder.child(name = "data", value = v) }
+
+                builder.child("creationTime",
+                    (getKeyWithCreationTimeCreationTimeMethod(keyWithCreationTime) as Long).toString())
             }
             // is KeyWithExpiry
             jType == keyWithExpiryClazz -> {
+                builder.name = prop.name
+                builder.value("")
                 val keyWithExpiry = prop.call(instance)
-                (getKeyWithExpiryDataMethod(keyWithExpiry) as ByteArray).encodeToString().takeIf { it.isNotBlank() }
-                    ?.let { v ->
-                        map[prop.name] = v
-                    }
+
+                (getKeyWithExpiryDataMethod(keyWithExpiry) as ByteArray).encodeToGeneralString()
+                    .takeIf { it.isNotBlank() }
+                    ?.let { v -> builder.child(name = "data", value = v) }
+
+                builder.child("creationTime",
+                    (getKeyWithExpiryCreationTimeMethod(keyWithExpiry) as Long).toString())
             }
         }
+        if (builder.name == null) {
+            return null
+        }
+        return builder.build()
     }
 
 
@@ -201,7 +306,7 @@ object UnsafeViolenceAndroidBotCookieUtils {
     @Throws(Exception::class)
     fun cookies(bot: Bot): Cookies {
         if (!success) {
-            cause?.run { throw IllegalStateException("Can not use.", this) }
+            cause?.run { throw IllegalStateException("Can not use: " + this.localizedMessage, this) }
                 ?: throw IllegalStateException("Can not use.")
         }
 
@@ -210,25 +315,33 @@ object UnsafeViolenceAndroidBotCookieUtils {
         // get wLoginSigInfo
         val wLoginSigInfo = getWLoginSigInfoMethod(client)
 
-        val map = mutableMapOf<String, String>()
+        // val map = mutableMapOf<String, String>()
+
+        val builder = StructuralThingWithNameBuilder("", "")
 
         val uin = "o${bot.id}"
-        map["uin"] = uin
-        map["p_uin"] = uin
+        // map["uin"] = uin
+        // map["p_uin"] = uin
+        builder.child("uin", uin)
+        builder.child("p_uin", uin)
+
         // val skey: ByteArray = getKeyWithCreationTimeDataMethod(getSKeyMethod(wLoginSigInfo)) as ByteArray
-        // map["skey"] = skey.encodeToString()
+        // map["skey"] = skey.encodeToBasicString()
         // val psKeyMap = getPsKeyMapMethod(wLoginSigInfo) as Map<*, *>
         // val psKey = psKeyMap["qun.qq.com"]?.let { getKeyWithCreationTimeDataMethod(it) } as ByteArray?
 
         wLoginSigInfoProperties.forEach { p ->
-            injectData(p, wLoginSigInfo, map)
+            injectData(p, wLoginSigInfo)?.let(builder::child)
         }
 
-        val sKey = map.entries.find { it.key.startsWith("sKey") }?.value ?: ""
-        val psKey = map.entries.find { it.key.startsWith("psKey") }?.value ?: ""
+        val things = builder.build()
+
+
+        val sKey = things.findValue { it.startsWith("sKey") } ?: ""
+        val psKey = things.findValue { it.startsWith("psKey") } ?: ""
 
         return Cookies(
-            TODO(), //map,
+            things,
             uin,
             uin,
             sKey,
@@ -262,9 +375,9 @@ object UnsafeViolenceAndroidBotCookieUtils {
         // cookies info
         // return Cookies(
         //     uin,
-        //     skey.encodeToString(),
+        //     skey.encodeToBasicString(),
         //     pUin,
-        //     psKey?.encodeToString() ?: ""
+        //     psKey?.encodeToBasicString() ?: ""
         // )
     }
 }
@@ -285,29 +398,25 @@ val Bot.cookies: Cookies?
 
 /*
 "uin=o${id};" +
-" skey=${client.wLoginSigInfo.sKey.data.encodeToString()};" +
+" skey=${client.wLoginSigInfo.sKey.data.encodeToBasicString()};" +
 " p_uin=o${id};" +
-" p_skey=${client.wLoginSigInfo.psKeyMap["qun.qq.com"]?.data?.encodeToString()}; "
+" p_skey=${client.wLoginSigInfo.psKeyMap["qun.qq.com"]?.data?.encodeToBasicString()}; "
  */
 
 /**
  * bot的部分cookie信息
  */
 data class Cookies(
-    val cookieTreeNodes: List<NamedThingsTree.Node<String>>,
+    val cookiesRoot: StructuralThingWithName<String>,
     val uin: String,
     val pUin: String,
     val skey: String,
     val psKey: String, // p_skey
 ) {
 
-    fun toCookiesMap(): Map<String, String> {
-        TODO()
-    }
+    val cookies: List<StructuralThingWithName<String>> get() = cookiesRoot.children
 
-    @Deprecated("Use 'pUin'.", ReplaceWith("pUin"))
-    val p_uin: String
-        get() = pUin
+    fun toCookiesMap(): Map<String, String> = cookiesRoot.resolveToMap(":", false) { it.isNotBlank() }
 
     /** bkn */
     val bkn: Int get() = toBkn(skey)
@@ -317,7 +426,7 @@ data class Cookies(
 
     /** cookie string */
     override fun toString(): String {
-        return "uin=$uin; skey=$skey; p_skey=$psKey"
+        return "Cookies(cookies=$cookies)"
     }
 }
 
@@ -346,4 +455,5 @@ internal fun toGtk(pskey: String): Long {
 
 @Suppress("NOTHING_TO_INLINE")
 internal inline fun ByteArray.encodeToString(charset: Charset = Charsets.UTF_8): String = String(this, charset)
+internal fun ByteArray.encodeToGeneralString(): String = joinToString(",")
 

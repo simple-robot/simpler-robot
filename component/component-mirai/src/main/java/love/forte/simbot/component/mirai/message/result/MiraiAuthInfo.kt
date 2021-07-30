@@ -17,7 +17,7 @@ package love.forte.simbot.component.mirai.message.result
 import love.forte.simbot.api.message.results.AuthInfo
 import love.forte.simbot.api.message.results.asCookies
 import love.forte.simbot.component.mirai.sender.Cookies
-import love.forte.simbot.thing.NamedThingsTree
+import love.forte.simbot.thing.StructuralThingWithName
 
 /**
  * mirai权限信息
@@ -45,8 +45,8 @@ open class MiraiAuthInfo(private val _cookies: Cookies) : AuthInfo {
             get() = "COOKIES"
         override val value: String
             get() = ""
-        override val nodes: List<NamedThingsTree.Node<String>>
-            get() = _cookies.cookieTreeNodes
+        override val children: List<StructuralThingWithName<String>>
+            get() = _cookies.cookies
 
         override fun get(key: String): String? =
             when (key) {

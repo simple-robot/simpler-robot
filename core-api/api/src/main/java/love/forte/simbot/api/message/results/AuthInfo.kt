@@ -16,8 +16,9 @@
 
 package love.forte.simbot.api.message.results
 
-import love.forte.simbot.thing.NamedThingsTree
+import love.forte.simbot.thing.StructuralThingWithName
 import love.forte.simbot.thing.resolveValue
+
 
 /**
  * bot的权限信息
@@ -66,18 +67,14 @@ public interface AuthInfo : Result {
      * 至于Key的规则，以实现的组件说明为准。
      *
      */
-    public interface Auths : NamedThingsTree<String, String> {
+    public interface Auths : StructuralThingWithName<String> {
         /**
          * 根据[key]得到一个对应的value。
          * 这个[key]允许多层级，例如 `aaa.bbb.ccc`
-         * @see NamedThingsTree.resolveValue
+         * @see StructuralThingWithName.resolveValue
          */
-        operator fun get(key: String): String?
-        = this.resolveValue(key.split('.').toTypedArray())
+        operator fun get(key: String): String? = this.resolveValue(key.split('.').toTypedArray())
 
-        /**
-         * 转化为一个Map。
-         */
         fun toMap(): Map<String, String>
         override fun toString(): String
     }
@@ -91,7 +88,6 @@ private class AuthsAsCookies(private val auths: AuthInfo.Auths) : AuthInfo.Cooki
     override fun toMap(): MutableMap<String, String> = auths.toMap().toMutableMap()
     override fun toString(): String = auths.toString()
 }
-
 
 
 /**
@@ -126,7 +122,9 @@ private object EmptyAuthInfo : AuthInfo {
     private object EmptyAuth : AuthInfo.Auths {
         override val name: String get() = "<empty-auth>"
         override val value: String get() = ""
-        override val nodes: List<NamedThingsTree.Node<String>> get() = emptyList()
+        override val children: List<StructuralThingWithName<String>>
+            get() = emptyList()
+
         override fun toMap(): Map<String, String> = emptyMap()
         override fun toString(): String = "{}"
     }
