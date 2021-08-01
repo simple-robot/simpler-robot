@@ -139,6 +139,20 @@ public sealed interface ApiData {
 }
 
 
+/**
+ * 没有data元素的响应体。
+ */
+@Serializable
+public data class EmptyResp(
+    override val code: Int,
+    override val message: String,
+) : ApiData.Resp<Any?> {
+    override val data: Any?
+        get() = null
+}
+
+
+
 public fun key(api: String): Req.Key = object : Req.Key {
     override val id: String = api
 }
@@ -194,6 +208,7 @@ public fun <RESP : ApiData.Resp.Data, SORT> listResp(
 ): KSerializer<ListResp<RESP, SORT>> = ListResp.serializer(subSerializer, sorterSerializer)
 
 
+public fun emptyResp(): KSerializer<EmptyResp> = EmptyResp.serializer()
 
 
 

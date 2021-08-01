@@ -66,11 +66,29 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
 
     println(responseContent)
 
+    val jsonElement = khlJson.parseToJsonElement(responseContent)
+
+    val jsonObject = jsonElement.jsonObject
+
+    val code = jsonObject["code"]?.jsonPrimitive?.intOrNull ?: 0
+
+    if (code != 0) {
+        val message = jsonObject["message"]?.jsonPrimitive?.toString()
+        throw KhlApiHttpResponseException(buildString {
+            append("api: ").append("'").append(this@doRequest.key.id).append("', ")
+            append("code: ").append(code)
+            append(", msg: ").append(message ?: "<EMPTY MESSAGE>")
+            append(", data: ").append(jsonObject["data"])
+        })
+    }
+
     // val contentText = resp.readText(Charsets.UTF_8)
 
-    val data = khlJson.decodeFromString(deserializer = this.dataSerializer, responseContent)
+    return khlJson.decodeFromJsonElement(deserializer = this.dataSerializer, jsonElement).also { resp ->
+        post(resp)
+    }
 
-    return data.check { apiPath.joinToString("/") }
+    // return data.check { apiPath.joinToString("/") }
 }
 
 

@@ -102,4 +102,14 @@ class JsonSerTest {
 
     }
 
+
+    @Test
+    fun jsonTest1() {
+        val json = "{\"code\":0,\"message\":\"操作成功\",\"data\":{\"items\":[{\"id\":\"6865507942900765\",\"name\":\"空羽龙月的方舟课堂\",\"topic\":\"\",\"master_id\":\"886154643\",\"is_master\":false,\"icon\":\"https://img.kaiheila.cn/icons/2021-06/0oDNdfaNqK06j06j.png/icon\",\"notify_type\":2,\"region\":\"beijing\",\"enable_open\":false,\"open_id\":\"0\",\"default_channel_id\":\"7566099004366572\",\"welcome_channel_id\":\"0\"}],\"meta\":{\"page\":1,\"page_total\":1,\"page_size\":100,\"total\":1},\"sort\":{\"id\":1}}}\n"
+
+        val element = khlJson.parseToJsonElement(json)
+        println(element)
+
+    }
+
 }
