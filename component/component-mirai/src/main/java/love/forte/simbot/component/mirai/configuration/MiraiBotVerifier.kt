@@ -129,13 +129,14 @@ internal class MiraiBot(
 ) : Bot, LogAble {
     override val log: Logger = miraiBotLogger(bot.id)
 
+    @Synchronized
     override fun close() {
         runCatching {
             val id = bot.id
-            bot.close()
+            runBlocking { bot.closeAndJoin() }
             // Destroy bot self cache.
             MiraiBotAccountInfo.destroyBotInfo(id)
-        }.getOrElse {  }
+        }
     }
 
     override fun toString(): String = bot.toString()

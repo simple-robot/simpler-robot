@@ -21,12 +21,28 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import love.forte.simbot.annotation.SimbotApplication
 import love.forte.simbot.bot.onSender
+import love.forte.simbot.component.mirai.utils.registerEventSolver
 import love.forte.simbot.core.runSimbot
+import love.forte.test.event.TestPostEvent
+import net.mamoe.mirai.event.events.MessagePostSendEvent
 import kotlin.test.Test
 
 
 @SimbotApplication
 class Test2 {
+
+    fun fun1() {
+        // inline fun
+        registerEventSolver<MessagePostSendEvent<*>, TestPostEvent<*>> {
+            TestPostEvent(it)
+        }
+
+        // no inline fun
+        registerEventSolver(MessagePostSendEvent::class, TestPostEvent::class) {
+            TestPostEvent(it)
+        }
+
+    }
 
     @Test
     fun testBotRunWithoutBotInfo() {

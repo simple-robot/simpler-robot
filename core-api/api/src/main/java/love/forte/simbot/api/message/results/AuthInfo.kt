@@ -73,7 +73,7 @@ public interface AuthInfo : Result {
          * 这个[key]允许多层级，例如 `aaa.bbb.ccc`
          * @see StructuralThingWithName.resolveValue
          */
-        operator fun get(key: String): String? = this.resolveValue(key.split('.').toTypedArray())
+        operator fun get(key: String): String? = this.resolveValue(*key.split('.').toTypedArray())
 
         fun toMap(): Map<String, String>
         override fun toString(): String

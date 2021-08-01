@@ -11,6 +11,7 @@
  *  * QQ     1149159218
  *
  */
+@file:JvmName("StructuralThingBuilders")
 
 package love.forte.simbot.thing
 
@@ -48,7 +49,8 @@ public fun <T> buildStructuralThing(
 @DSL
 public class StructuralThingBuilder<T>(
     private var valueSupplier: (() -> T)? = null,
-) {
+) : ThingBuilder<T, StructuralThing<T>> {
+    constructor(value: T) : this({ value })
 
     private val children = mutableListOf<StructuralThing<T>>()
 
@@ -87,7 +89,7 @@ public class StructuralThingBuilder<T>(
     }
 
 
-    fun build(): StructuralThing<T> = thing(
+    override fun build(): StructuralThing<T> = thing(
         value = requireNotNull(valueSupplier) { "Required 'value' was not init." }(),
         children = children.ifEmpty { emptyList() }
     )
@@ -121,7 +123,7 @@ public class StructuralThingWithNameBuilder<T>(
     @DSL_WN
     var name: String? = null,
     private var valueSupplier: (() -> T)? = null,
-) {
+) : ThingBuilder<T, StructuralThingWithName<T>> {
 
     constructor(name: String?, value: T) : this(name, { value })
     constructor(value: T) : this(valueSupplier = { value })
@@ -168,7 +170,7 @@ public class StructuralThingWithNameBuilder<T>(
     }
 
 
-    fun build(): StructuralThingWithName<T> = thing(
+    override fun build(): StructuralThingWithName<T> = thing(
         name = requireNotNull(name) { "Required 'name' was null." },
         value = requireNotNull(valueSupplier) { "Required 'value' was not init." }(),
         children = children.ifEmpty { emptyList() }

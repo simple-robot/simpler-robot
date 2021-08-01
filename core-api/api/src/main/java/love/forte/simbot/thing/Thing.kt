@@ -75,11 +75,23 @@ interface StructuralThingWithName<T> : StructuralThing<T>, NamedThing<T> {
 
 
 /**
- * 根据层级name寻找指定结果。
- *
- * [index]代表的是 [valuePath] 开始的索引位。
+ * 某种[东西][Thing]的构建器。
  */
-public fun <T> StructuralThingWithName<T>.resolveValue(valuePath: Array<String>, index: Int = 0): T? {
+public interface ThingBuilder<T, B : Thing<T>> {
+    fun build(): B
+}
+
+
+////////
+
+/**
+ * 根据层级name寻找指定结果。
+ */
+public fun <T>StructuralThingWithName<T>.resolveValue(vararg paths: String): T? = this.resolveValue(paths, 0)
+
+
+
+private fun <T> StructuralThingWithName<T>.resolveValue(valuePath: Array<out String>, index: Int): T? {
     if (valuePath.isEmpty()) return null
     if (index > valuePath.lastIndex) return null
     if (name != valuePath[index]) {
@@ -103,6 +115,7 @@ public fun <T> StructuralThingWithName<T>.resolveValue(valuePath: Array<String>,
  * 将 [StructuralThingWithName] 解析为 [Map].
  * 如果 [resolveRoot] 为 false，则不解析当前节点。
  */
+@JvmOverloads
 public fun <T> StructuralThingWithName<T>.resolveToMap(
     delimiter: String,
     resolveRoot: Boolean = true,
@@ -193,6 +206,8 @@ public data class SimpleNamedThing<T>(override val name: String, override val va
  */
 public fun <T> thing(value: T, children: List<StructuralThing<T>>): StructuralThing<T> =
     SimpleStructuralThing(value, children)
+public fun <T> emptyStructuralThing(value: T): StructuralThing<T> = thing(value, emptyList())
+
 
 public data class SimpleStructuralThing<T>(
     override val value: T,
@@ -204,6 +219,7 @@ public data class SimpleStructuralThing<T>(
  */
 public fun <T> thing(name: String, value: T, children: List<StructuralThingWithName<T>>): StructuralThingWithName<T> =
     SimpleStructuralThingWithName(name, value, children)
+public fun <T> emptyStructuralThing(name: String, value: T): StructuralThingWithName<T> = thing(name, value, emptyList())
 
 public data class SimpleStructuralThingWithName<T>(
     override val name: String, override val value: T,

@@ -37,7 +37,7 @@ public data class MiraiBotAccountInfo internal constructor(private val bot: Bot)
      */
     companion object INS {
         /** MiraiBotInfo实例缓存 */
-        private val instances: MutableMap<Long, MiraiBotAccountInfo> = ConcurrentHashMap<Long, MiraiBotAccountInfo>()
+        private val instances = ConcurrentHashMap<Long, MiraiBotAccountInfo>()
 
         internal fun destroyBotInfo(id: Long): MiraiBotAccountInfo? = instances.remove(id)
 
