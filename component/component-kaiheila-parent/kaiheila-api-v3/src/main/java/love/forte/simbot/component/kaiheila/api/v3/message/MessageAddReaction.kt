@@ -21,18 +21,24 @@ import love.forte.simbot.component.kaiheila.api.BaseApiDataReq
 
 
 /**
- * [删除频道聊天消息](https://developer.kaiheila.cn/doc/http/message#%E5%88%A0%E9%99%A4%E9%A2%91%E9%81%93%E8%81%8A%E5%A4%A9%E6%B6%88%E6%81%AF)
  *
- * *无返回参数*
+ * [给某个消息添加回应](https://developer.kaiheila.cn/doc/http/message#%E7%BB%99%E6%9F%90%E4%B8%AA%E6%B6%88%E6%81%AF%E6%B7%BB%E5%8A%A0%E5%9B%9E%E5%BA%94)
  *
- * @param msgId    消息 id
  */
-public class MessageDeleteReq(private val msgId: String) : EmptyRespPostMessageApiReq, BaseApiDataReq.Empty(Key) {
+public class MessageAddReactionReq(
+    /**
+     * 	频道消息的id
+     */
+    private val msgId: String,
+    /**
+     *	emoji的id, 可以为 `GuilEmoji` 或者 `Emoji`
+     */
+    private val emoji: String,
+) : EmptyRespPostMessageApiReq, BaseApiDataReq.Empty(Key) {
+    companion object Key : BaseApiDataKey("message", "add-reaction")
 
-    companion object Key : BaseApiDataKey("message", "delete")
-
-    override fun createBody(): Any = Body(msgId)
+    override fun createBody(): Any = Body(msgId, emoji)
 
     @Serializable
-    private data class Body(@SerialName("msg_id") val msgId: String)
+    private data class Body(@SerialName("msg_id") val msgId: String, val emoji: String)
 }

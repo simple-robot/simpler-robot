@@ -1,16 +1,14 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  simpler-robot
- *  * File     MessageReactionList.kt
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
@@ -29,26 +27,19 @@ import love.forte.simbot.component.kaiheila.api.*
  */
 public class MessageReactionListReq(
     /** 频道消息的id */
-    msgId: String,
+    private val msgId: String,
     /** emoji的id, 可以为GuilEmoji或者Emoji, 注意：在get中，应该进行urlencode */
-    emoji: String,
-) : GetMessageApiReq<ObjectResp<MessageReactionListResp>> {
+    private val emoji: String,
+) : GetMessageApiReq<ObjectResp<MessageReactionListResp>>, BaseApiDataReq<ObjectResp<MessageReactionListResp>>(Key) {
 
-    companion object Key : ApiData.Req.Key by key("/message/reaction-list") {
-        private val ROUTE = listOf("message", "reaction-list")
+    companion object Key : BaseApiDataKey("message", "reaction-list") {
+        private val DATA_SERIALIZER: DeserializationStrategy<ObjectResp<MessageReactionListResp>> =
+            objectResp(MessageReactionListResp.serializer())
     }
 
-    override val dataSerializer: DeserializationStrategy<ObjectResp<MessageReactionListResp>> =
-        objectResp(MessageReactionListResp.serializer())
+    override val dataSerializer: DeserializationStrategy<ObjectResp<MessageReactionListResp>> get() = DATA_SERIALIZER
 
-    override fun route(builder: RouteInfoBuilder) {
-        builder.apiPath = ROUTE
-    }
-
-    override val key: ApiData.Req.Key
-        get() = Key
-
-    override val body: Any = Body(msgId, emoji)
+    override fun createBody(): Any = Body(msgId, emoji)
 
     @Serializable
     private data class Body(@SerialName("msg_id") val msgId: String, val emoji: String)
@@ -107,7 +98,6 @@ public class MessageReactionListResp(
         const val STATUS_NORMAL = 0
         const val STATUS_BAN = 10
     }
-
 
 }
 

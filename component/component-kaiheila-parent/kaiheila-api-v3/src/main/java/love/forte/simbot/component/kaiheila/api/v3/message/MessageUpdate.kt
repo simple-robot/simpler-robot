@@ -1,16 +1,14 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  simpler-robot
- *  * File     MessageUpdate.kt
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
@@ -18,9 +16,8 @@ package love.forte.simbot.component.kaiheila.api.v3.message
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.api.ApiData
-import love.forte.simbot.component.kaiheila.api.RouteInfoBuilder
-import love.forte.simbot.component.kaiheila.api.key
+import love.forte.simbot.component.kaiheila.api.BaseApiDataKey
+import love.forte.simbot.component.kaiheila.api.BaseApiDataReq
 
 
 /**
@@ -32,36 +29,28 @@ public class MessageUpdateReq(
     /**
      * 消息 id
      */
-    msgId: String,
+    private val msgId: String,
 
     /**
      * 消息内容
      */
-    content: String,
+    private val content: String,
 
     /**
      * 回复某条消息的 msgId。如果为空，则代表删除回复，不传则无影响。
      */
-    quote: String? = null,
+    private val quote: String? = null,
 
     /**
      * 用户 id，针对特定用户临时更新消息，必须是正常消息才能更新。与发送临时消息概念不同，但同样不保存数据库。
      */
-    tempTargetId: String? = null,
-) : EmptyRespPostMessageApiReq {
+    private val tempTargetId: String? = null,
+) : EmptyRespPostMessageApiReq, BaseApiDataReq.Empty(Key) {
 
-    companion object Key : ApiData.Req.Key by key("/message/update") {
-        val ROUTE = listOf("message", "update")
-    }
+    companion object Key : BaseApiDataKey("message", "update")
 
-    override val body: Any = Body(msgId, content, quote, tempTargetId)
+    override fun createBody(): Any = Body(msgId, content, quote, tempTargetId)
 
-    override fun route(builder: RouteInfoBuilder) {
-        builder.apiPath = ROUTE
-    }
-
-    override val key: ApiData.Req.Key
-        get() = Key
 
     @Serializable
     private data class Body(

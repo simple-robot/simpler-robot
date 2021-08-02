@@ -14,11 +14,13 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.message
 
-import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.api.*
+import love.forte.simbot.component.kaiheila.api.BaseApiDataKey
+import love.forte.simbot.component.kaiheila.api.BaseApiDataReq
+import love.forte.simbot.component.kaiheila.api.ObjectResp
+import love.forte.simbot.component.kaiheila.api.objectResp
 
 
 /**
@@ -31,33 +33,33 @@ public class MessageCreateReq(
      * 默认为 [MessageType.TEXT]
      * @see MessageType
      */
-    type: Int = MessageType.TEXT.type,
+    private val type: Int = MessageType.TEXT.type,
 
     /**
      * 	目标频道 id
      */
-    targetId: String,
+    private val targetId: String,
 
     /**
      * 	消息内容
      */
-    content: String,
+    private val content: String,
 
     /**
      * 回复某条消息的 msgId
      */
-    quote: String? = null,
+    private val quote: String? = null,
 
     /**
      * nonce, 服务端不做处理, 原样返回
      */
-    nonce: String? = null,
+    private val nonce: String? = null,
 
     /**
      * 用户id,如果传了，代表该消息是临时消息，该消息不会存数据库，但是会在频道内只给该用户推送临时消息。用于在频道内针对用户的操作进行单独的回应通知等。
      */
-    tempTargetId: String? = null,
-) : MessageApiReq<ObjectResp<MessageCreateRespData>> {
+    private val tempTargetId: String? = null,
+) : PostMessageApiReq<ObjectResp<MessageCreateRespData>>, BaseApiDataReq<ObjectResp<MessageCreateRespData>>(Key) {
 
     constructor(
         type: MessageType = MessageType.TEXT,
@@ -68,26 +70,13 @@ public class MessageCreateReq(
         tempTargetId: String? = null,
     ) : this(type.type, targetId, content, quote, nonce, tempTargetId)
 
-    override val method: HttpMethod
-        get() = HttpMethod.Post
-
-    private val _body = Body(type, targetId, content, quote, nonce, tempTargetId)
-
-    override val body: Any
-        get() = _body
+    override fun createBody(): Any = Body(type, targetId, content, quote, nonce, tempTargetId)
 
     override val dataSerializer: DeserializationStrategy<ObjectResp<MessageCreateRespData>>
         get() = DATA_SERIALIZER
 
-    override fun route(builder: RouteInfoBuilder) {
-        builder.apiPath = ROUTE
-    }
 
-    override val key: ApiData.Req.Key
-        get() = Key
-
-    companion object Key : ApiData.Req.Key by key("/message/create") {
-        private val ROUTE = listOf("message", "create")
+    companion object Key : BaseApiDataKey("message", "create") {
         private val DATA_SERIALIZER: DeserializationStrategy<ObjectResp<MessageCreateRespData>> =
             objectResp(MessageCreateRespData.serializer())
     }

@@ -16,8 +16,6 @@
 
 package love.forte.simbot.component.kaiheila.api
 
-import io.ktor.client.*
-import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.*
 import love.forte.simbot.component.kaiheila.api.ApiData.Req
@@ -26,7 +24,7 @@ import love.forte.simbot.component.kaiheila.api.ApiData.Req
 /**
  * 此接口定义一个与Api相关的数据类。
  *
- * 定义两个类型一个来回，分别为 [Request][Req] 和 [Response][RespData].
+ * 定义两个类型一个来回，分别为 [Request][Req] 和 [Response][ApiData.Resp.Data].
  *
  * @author ForteScarlet
  */
@@ -34,7 +32,7 @@ public sealed interface ApiData {
 
     /**
      * [Request][Req]. 请求相关的数据类。
-     * 一次请求，都会有一个对应的 [响应][RESP].
+     * 一次请求，都会有一个对应的 [响应][HTTP_RESP].
      */
     public interface Req<HTTP_RESP : Resp<*>> : ApiData {
 
@@ -76,7 +74,7 @@ public sealed interface ApiData {
         /**
          * Do something after resp.
          */
-        fun post(resp: HTTP_RESP) { }
+        fun post(resp: HTTP_RESP) {}
 
 
         /**
@@ -115,7 +113,6 @@ public sealed interface ApiData {
             override val dataSerializer: DeserializationStrategy<EmptyResp>
                 get() = emptyRespSerializer()
         }
-
 
 
     }
@@ -162,6 +159,85 @@ public sealed interface ApiData {
 }
 
 
+/**
+ *
+ * 基础的 [Req] 抽象类实现。
+ * 一般可配合其他抽象接口使用。
+ *
+ * @see Req
+ * @see Req.Post
+ * @see Req.Get
+ * @see Req.Empty
+ * @see Req.Post.Empty
+ * @see Req.Get.Empty
+ *
+ */
+public abstract class BaseApiDataReq<HTTP_RESP : ApiData.Resp<*>>(
+    override val key: Req.Key,
+    /**
+     * 是否缓存Body实例。
+     * 此缓存不保证线程安全，因此多线程环境下不保证 [body] 最终实例永远一致。
+     */
+    private val cacheBody: Boolean = true,
+) : Req<HTTP_RESP> {
+    public abstract class Empty(key: Req.Key, cacheBody: Boolean = true) : BaseApiDataReq<EmptyResp>(key, cacheBody)
+
+
+    private lateinit var _body: Any
+
+    override val body: Any?
+        get() {
+            return if (cacheBody) {
+                // initialized.
+                if (_body is Initialized) {
+                    null
+                } else {
+                    val b = createBody()
+                    if (b == null) {
+                        _body = Initialized
+                        null
+                    } else {
+                        _body = b
+                        b
+                    }
+                }
+            } else createBody()
+        }
+
+    /**
+     * 进行路由信息注册。
+     * 如果 [key] 是 [BaseApiDataKey] 类型的，则会自动将 [BaseApiDataKey.route] 设置为 [RouteInfoBuilder.apiPath].
+     * 你可以通过重写 [doRoute] 来后置的影响此行为或追加一些行为。
+     */
+
+    override fun route(builder: RouteInfoBuilder) {
+        val k = key
+        if (k is BaseApiDataKey) {
+            builder.apiPath = k.route
+        }
+        builder.doRoute()
+    }
+
+    protected open fun RouteInfoBuilder.doRoute() {
+    }
+
+
+    /**
+     * 得到一个新的 Body 对象。
+     */
+    abstract fun createBody(): Any?
+
+}
+
+private object Initialized
+
+
+public abstract class BaseApiDataKey(val route: List<String>) :
+    Req.Key by key(route.joinToString(prefix = "/", separator = "/")) {
+    constructor(vararg route: String) : this(route.asList())
+}
+
+
 // /**
 //  * [method] 为 [Post][HttpMethod.Post] 方式的 [Req].
 //  */
@@ -195,7 +271,6 @@ public sealed interface ApiData {
 // public interface GetEmptyRespApiDataReq : EmptyRespApiDataReq, GetApiDataReq<EmptyResp>
 
 
-
 /**
  * 没有data元素的响应体。
  */
@@ -207,7 +282,6 @@ public data class EmptyResp(
     override val data: Any?
         get() = null
 }
-
 
 
 public fun key(api: String): Req.Key = object : Req.Key {
@@ -239,7 +313,11 @@ public inline fun RouteInfoBuilder.parameters(block: ParametersBuilder.() -> Uni
     parametersBuilder.block()
 }
 
-public inline fun <reified T> ParametersBuilder.appendIfNotnull(name: String, value: T?, toStringBlock: (T) -> String = { it.toString() }) {
+public inline fun <reified T> ParametersBuilder.appendIfNotnull(
+    name: String,
+    value: T?,
+    toStringBlock: (T) -> String = { it.toString() },
+) {
     value?.let { v -> append(name, toStringBlock(v)) }
 }
 
@@ -257,6 +335,12 @@ public fun <RESP : ApiData.Resp.Data> objectResp(subSerializer: KSerializer<RESP
     ObjectResp.serializer(subSerializer)
 
 /**
+ * 返回值是一个非列表值. 指定一个响应元素类型 [RESP].
+ */
+public inline fun <reified RESP : ApiData.Resp.Data> objectResp(): KSerializer<ObjectResp<RESP>> =
+    ObjectResp.serializer(serializer())
+
+/**
  * 返回值是一个列表类型. 指定列表元素类型 [RESP] 和 排序参数类型 [SORT].
  */
 public fun <RESP : ApiData.Resp.Data, SORT> listResp(
@@ -265,9 +349,11 @@ public fun <RESP : ApiData.Resp.Data, SORT> listResp(
 ): KSerializer<ListResp<RESP, SORT>> = ListResp.serializer(subSerializer, sorterSerializer)
 
 
+public inline fun <reified RESP : ApiData.Resp.Data, reified SORT> listResp(): KSerializer<ListResp<RESP, SORT>> =
+    ListResp.serializer(serializer(), serializer())
+
+
 public fun emptyRespSerializer(): KSerializer<EmptyResp> = EmptyResp.serializer()
-
-
 
 
 /**
@@ -275,7 +361,12 @@ public fun emptyRespSerializer(): KSerializer<EmptyResp> = EmptyResp.serializer(
  */
 public fun <RESP : ApiData.Resp.Data> listResp(
     subSerializer: KSerializer<RESP>,
-): KSerializer<ListResp<RESP, ApiData.Resp.EmptySort>> = ListResp.serializer(subSerializer, ApiData.Resp.EmptySort.serializer())
+): KSerializer<ListResp<RESP, ApiData.Resp.EmptySort>> =
+    ListResp.serializer(subSerializer, ApiData.Resp.EmptySort.serializer())
+
+
+public inline fun <reified RESP : ApiData.Resp.Data> emptySortListResp(): KSerializer<ListResp<RESP, ApiData.Resp.EmptySort>> =
+    ListResp.serializer(serializer(), ApiData.Resp.EmptySort.serializer())
 
 
 /**

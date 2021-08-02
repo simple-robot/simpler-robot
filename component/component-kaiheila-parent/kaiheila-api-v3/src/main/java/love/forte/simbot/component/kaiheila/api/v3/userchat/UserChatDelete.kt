@@ -12,7 +12,7 @@
  *
  */
 
-package love.forte.simbot.component.kaiheila.api.v3.message
+package love.forte.simbot.component.kaiheila.api.v3.userchat
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -21,18 +21,14 @@ import love.forte.simbot.component.kaiheila.api.BaseApiDataReq
 
 
 /**
- * [删除频道聊天消息](https://developer.kaiheila.cn/doc/http/message#%E5%88%A0%E9%99%A4%E9%A2%91%E9%81%93%E8%81%8A%E5%A4%A9%E6%B6%88%E6%81%AF)
+ * [删除私信聊天会话](https://developer.kaiheila.cn/doc/http/user-chat#%E5%88%A0%E9%99%A4%E7%A7%81%E4%BF%A1%E8%81%8A%E5%A4%A9%E4%BC%9A%E8%AF%9D)
  *
- * *无返回参数*
- *
- * @param msgId    消息 id
  */
-public class MessageDeleteReq(private val msgId: String) : EmptyRespPostMessageApiReq, BaseApiDataReq.Empty(Key) {
+public class UserChatDeleteReq(private val chatCode: String) : EmptyRespPostUserChatApiReq, BaseApiDataReq.Empty(Key) {
+    companion object Key : BaseApiDataKey("user-chat", "delete")
 
-    companion object Key : BaseApiDataKey("message", "delete")
-
-    override fun createBody(): Any = Body(msgId)
+    override fun createBody(): Any = Body(chatCode)
 
     @Serializable
-    private data class Body(@SerialName("msg_id") val msgId: String)
+    private data class Body(@SerialName("chat_code") val chatCode: String)
 }
