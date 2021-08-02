@@ -14,7 +14,6 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.channel
 
-import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -31,15 +30,12 @@ import love.forte.simbot.component.kaiheila.api.*
  *
  * @author ForteScarlet
  */
-public class ChannelViewReq(private val targetId: String) : ChannelApiReq<ObjectResp<ChannelView>> {
+public class ChannelViewReq(private val targetId: String) : GetChannelApiReq<ObjectResp<ChannelView>> {
     companion object Key : ApiData.Req.Key by key("/channel/view") {
         private val ROUTE = listOf("channel", "view")
         private val DATA_SERIALIZER: DeserializationStrategy<ObjectResp<ChannelView>> =
             objectResp(ChannelView.serializer())
     }
-
-    override val method: HttpMethod
-        get() = HttpMethod.Get
 
     override val key: ApiData.Req.Key get() = Key
 

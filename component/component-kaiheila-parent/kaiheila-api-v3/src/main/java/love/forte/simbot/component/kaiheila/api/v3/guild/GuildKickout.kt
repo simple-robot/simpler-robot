@@ -14,14 +14,10 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.guild
 
-import io.ktor.http.*
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.component.kaiheila.api.ApiData
-import love.forte.simbot.component.kaiheila.api.EmptyResp
 import love.forte.simbot.component.kaiheila.api.RouteInfoBuilder
-import love.forte.simbot.component.kaiheila.api.emptyResp
 import love.forte.simbot.component.kaiheila.logger.NamedKeyLogger
 
 
@@ -34,17 +30,13 @@ import love.forte.simbot.component.kaiheila.logger.NamedKeyLogger
 public class GuildKickoutReq(
     guildId: String,
     targetId: String,
-) : GuildApiReq<EmptyResp> {
+) : EmptyRespPostGuildApiReq {
     companion object Key : NamedKeyLogger("/guild/kickout", "api.guild.kickout") {
         private val ROUTE = listOf("guild", "kickout")
     }
 
     override val key: ApiData.Req.Key
         get() = Key
-
-    override val dataSerializer: DeserializationStrategy<EmptyResp> = emptyResp()
-
-    override val method: HttpMethod get() = HttpMethod.Post
 
     override fun route(builder: RouteInfoBuilder) {
         builder.apiPath = ROUTE

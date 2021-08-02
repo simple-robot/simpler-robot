@@ -71,14 +71,6 @@ public sealed interface ApiData {
          */
         fun post(resp: HTTP_RESP) { }
 
-        /*
-         * 获取请求的鉴权token。
-         *
-         * - 机器人。TOKEN_TYPE = Bot。 `Authorization: Bot BHsTZ4232tLatgV5AFyasgraefpl9mTxYQ/1380=`
-         * - Oauth2。TOKEN_TYPE = Bearer。 `Authorization: Bearer BHsTZ4232tLatgVdvrfdboqZGAHHmasTxYQ/u41f0=`
-         */
-        // val authorization: String?
-
 
         /**
          * 得到一个 [Key]. 这个Key用于区分api。
@@ -93,6 +85,37 @@ public sealed interface ApiData {
         interface Key {
             val id: String
         }
+
+
+        /**
+         * [method] 为 [Post][HttpMethod.Post].
+         *
+         */
+        interface Post<HTTP_RESP : Resp<*>> : Req<HTTP_RESP> {
+            override val method: HttpMethod
+                get() = HttpMethod.Post
+
+            /** 没有预期的相应体 */
+            interface Empty : Post<EmptyResp>, Req.Empty
+        }
+
+        /**
+         * [method] 为 [Post][HttpMethod.Get].
+         *
+         */
+        interface Get<HTTP_RESP : Resp<*>> : Req<HTTP_RESP> {
+            override val method: HttpMethod
+                get() = HttpMethod.Get
+
+            /** 没有预期的相应体 */
+            interface Empty : Get<EmptyResp>, Req.Empty
+        }
+
+        interface Empty : Req<EmptyResp> {
+            override val dataSerializer: DeserializationStrategy<EmptyResp>
+                get() = emptyRespSerializer()
+        }
+
 
 
     }
@@ -137,6 +160,40 @@ public sealed interface ApiData {
     }
 
 }
+
+
+// /**
+//  * [method] 为 [Post][HttpMethod.Post] 方式的 [Req].
+//  */
+// public interface PostApiDataReq<RESP : ApiData.Resp<*>> : Req<RESP> {
+//     override val method: HttpMethod
+//         get() = HttpMethod.Post
+// }
+// /**
+//  * [method] 为 [Post][HttpMethod.Get] 方式的 [Req].
+//  */
+// public interface GetApiDataReq<RESP : ApiData.Resp<*>> : Req<RESP> {
+//     override val method: HttpMethod
+//         get() = HttpMethod.Get
+// }
+//
+// /**
+//  * 没有响应值的 [Req].
+//  */
+// public interface EmptyRespApiDataReq : Req<EmptyResp> {
+//     override val dataSerializer: DeserializationStrategy<EmptyResp> get() = emptyRespSerializer()
+// }
+//
+// /**
+//  * [method] 为 [Post][HttpMethod.Post] 方式且没有响应值的 [Req].
+//  */
+// public interface PostEmptyRespApiDataReq : EmptyRespApiDataReq, PostApiDataReq<EmptyResp>
+//
+// /**
+//  * [method] 为 [Post][HttpMethod.Get] 方式且没有响应值的 [Req].
+//  */
+// public interface GetEmptyRespApiDataReq : EmptyRespApiDataReq, GetApiDataReq<EmptyResp>
+
 
 
 /**
@@ -208,7 +265,7 @@ public fun <RESP : ApiData.Resp.Data, SORT> listResp(
 ): KSerializer<ListResp<RESP, SORT>> = ListResp.serializer(subSerializer, sorterSerializer)
 
 
-public fun emptyResp(): KSerializer<EmptyResp> = EmptyResp.serializer()
+public fun emptyRespSerializer(): KSerializer<EmptyResp> = EmptyResp.serializer()
 
 
 

@@ -15,6 +15,7 @@
 package love.forte.simbot.component.kaiheila.api.v3.guild
 
 import love.forte.simbot.component.kaiheila.api.ApiData
+import love.forte.simbot.component.kaiheila.api.EmptyResp
 
 
 /**
@@ -23,6 +24,12 @@ import love.forte.simbot.component.kaiheila.api.ApiData
  *
  */
 public interface GuildApiReq<RESP : ApiData.Resp<*>> : ApiData.Req<RESP>
+public interface GetGuildApiReq<RESP : ApiData.Resp<*>> : GuildApiReq<RESP>, ApiData.Req.Get<RESP>
+public interface PostGuildApiReq<RESP : ApiData.Resp<*>> : GuildApiReq<RESP>, ApiData.Req.Post<RESP>
+
+public interface EmptyRespGuildApiReq : GuildApiReq<EmptyResp>, ApiData.Req.Empty
+public interface EmptyRespGetGuildApiReq : EmptyRespGuildApiReq, GetGuildApiReq<EmptyResp>
+public interface EmptyRespPostGuildApiReq : EmptyRespGuildApiReq, PostGuildApiReq<EmptyResp>
 
 
 /**

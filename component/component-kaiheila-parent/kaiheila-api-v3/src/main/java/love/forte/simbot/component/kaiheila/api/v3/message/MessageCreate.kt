@@ -68,14 +68,6 @@ public class MessageCreateReq(
         tempTargetId: String? = null,
     ) : this(type.type, targetId, content, quote, nonce, tempTargetId)
 
-    constructor(
-        targetId: String,
-        content: String,
-        quote: String? = null,
-        nonce: String? = null,
-        tempTargetId: String? = null,
-    ) : this(MessageType.TEXT.type, targetId, content, quote, nonce, tempTargetId)
-
     override val method: HttpMethod
         get() = HttpMethod.Post
 

@@ -14,11 +14,11 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.guild
 
-import io.ktor.http.*
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.api.*
+import love.forte.simbot.component.kaiheila.api.ApiData
+import love.forte.simbot.component.kaiheila.api.RouteInfoBuilder
+import love.forte.simbot.component.kaiheila.api.key
 
 
 /**
@@ -27,18 +27,14 @@ import love.forte.simbot.component.kaiheila.api.*
  * request method: POST
  *
  */
-public class GuildLeaveReq(guildId: String) : GuildApiReq<EmptyResp> {
+public class GuildLeaveReq(guildId: String) : EmptyRespPostGuildApiReq {
     companion object Key : ApiData.Req.Key by key("/guild/leave") {
         private val ROUTE = listOf("guild", "leave")
     }
 
     override val key: ApiData.Req.Key get() = Key
 
-    override val dataSerializer: DeserializationStrategy<EmptyResp> = emptyResp()
-
     override val body: Any = Body(guildId)
-
-    override val method: HttpMethod get() = HttpMethod.Post
 
     override fun route(builder: RouteInfoBuilder) {
         builder.apiPath = ROUTE

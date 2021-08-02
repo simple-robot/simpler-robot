@@ -14,7 +14,6 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.guild
 
-import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -50,7 +49,7 @@ public class GuildUserListReq(
     val page: Int? = null,
     /**	否 每页数据数量 */
     val pageSize: Int? = null,
-) : GuildApiReq<ObjectResp<GuildUserList>> {
+) : GetGuildApiReq<ObjectResp<GuildUserList>> {
 
     companion object Key : ApiData.Req.Key by key("/guild/user-list") {
         private val ROUTE = listOf("guild", "user-list")
@@ -61,8 +60,6 @@ public class GuildUserListReq(
         fun builder(): GuildUserListReqBuilder = GuildUserListReqBuilder()
     }
 
-    override val method: HttpMethod
-        get() = HttpMethod.Get
 
     override val key: ApiData.Req.Key
         get() = Key

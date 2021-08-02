@@ -14,7 +14,6 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.guild
 
-import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -31,7 +30,7 @@ import love.forte.simbot.component.kaiheila.api.*
 public sealed class GuildMuteListReq<T : GuildMuteListResult>(
     private val guildId: String,
     detailResultType: Boolean
-) : GuildApiReq<ObjectResp<T>> {
+) : GetGuildApiReq<ObjectResp<T>> {
     companion object Key : ApiData.Req.Key by key("/guild-mute/list") {
         private val ROUTE = listOf("guild-mute", "list")
         private val DETAIL_SERIALIZER: DeserializationStrategy<ObjectResp<GuildMuteListByDetail>> = objectResp(GuildMuteListByDetail.serializer())
@@ -40,7 +39,6 @@ public sealed class GuildMuteListReq<T : GuildMuteListResult>(
     private val resultType: String? = if (detailResultType) "detail" else null
     override val key: ApiData.Req.Key get() = Key
     override val body: Any? get() = null
-    override val method: HttpMethod get() = HttpMethod.Get
 
     override fun route(builder: RouteInfoBuilder) {
         builder.apiPath = ROUTE
@@ -60,11 +58,6 @@ public sealed class GuildMuteListReq<T : GuildMuteListResult>(
         override val dataSerializer: DeserializationStrategy<ObjectResp<GuildMuteListBySimple>>
             get() = SIMPLE_SERIALIZER
     }
-
-
-    // override val dataSerializer: DeserializationStrategy<ObjectResp<out GuildMuteListResult>>
-    //     = if(detailResultType) DETAIL_SERIALIZER else SIMPLE_SERIALIZER
-
 
 
 }

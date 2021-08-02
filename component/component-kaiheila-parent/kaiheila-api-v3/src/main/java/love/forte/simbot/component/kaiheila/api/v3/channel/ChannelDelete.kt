@@ -14,11 +14,11 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.channel
 
-import io.ktor.http.*
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.api.*
+import love.forte.simbot.component.kaiheila.api.ApiData
+import love.forte.simbot.component.kaiheila.api.RouteInfoBuilder
+import love.forte.simbot.component.kaiheila.api.key
 
 
 /**
@@ -28,17 +28,12 @@ import love.forte.simbot.component.kaiheila.api.*
  *
  * @author ForteScarlet
  */
-public class ChannelDeleteReq(channelId: String) : ChannelApiReq<EmptyResp> {
+public class ChannelDeleteReq(channelId: String) : EmptyRespPostChannelApiReq {
     companion object Key : ApiData.Req.Key by key("/channel/delete") {
         private val ROUTE = listOf("channel", "delete")
     }
 
-    override val method: HttpMethod
-        get() = HttpMethod.Post
-
     override val key: ApiData.Req.Key get() = Key
-
-    override val dataSerializer: DeserializationStrategy<EmptyResp> = emptyResp()
 
     override fun route(builder: RouteInfoBuilder) {
         builder.apiPath = ROUTE

@@ -14,7 +14,6 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.channel
 
-import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -42,15 +41,13 @@ public class ChannelCreateReq(
     limitAmount: Int = 99,
     /** 否 语音音质，默认为2。1流畅，2正常，3高质量 */
     voiceQuality: Int = 2,
-) : ChannelApiReq<ObjectResp<ChannelView>> {
+) : PostChannelApiReq<ObjectResp<ChannelView>> {
     companion object Key : ApiData.Req.Key by key("/channel/create") {
         private val ROUTE = listOf("channel", "create")
         private val DATA_SERIALIZER: DeserializationStrategy<ObjectResp<ChannelView>> =
             objectResp(ChannelView.serializer())
     }
 
-    override val method: HttpMethod
-        get() = HttpMethod.Post
 
     override val key: ApiData.Req.Key get() = Key
 

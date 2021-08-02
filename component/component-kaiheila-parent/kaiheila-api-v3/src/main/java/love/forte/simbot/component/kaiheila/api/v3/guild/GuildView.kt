@@ -14,7 +14,6 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.guild
 
-import io.ktor.http.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -31,12 +30,10 @@ import love.forte.simbot.component.kaiheila.api.*
  * request method: GET
  *
  */
-public class GuildViewReq(private val guildId: String) : GuildApiReq<ObjectResp<GuildView>> {
+public class GuildViewReq(private val guildId: String) : GetGuildApiReq<ObjectResp<GuildView>> {
     companion object Key : ApiData.Req.Key by key("/guild/view") {
         private val ROUTE = listOf("guild", "view")
     }
-    override val method: HttpMethod
-        get() = HttpMethod.Get
 
     override val key: ApiData.Req.Key
         get() = Key

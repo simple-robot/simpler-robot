@@ -15,6 +15,7 @@
 package love.forte.simbot.component.kaiheila.api.v3.message
 
 import love.forte.simbot.component.kaiheila.api.ApiData
+import love.forte.simbot.component.kaiheila.api.EmptyResp
 
 
 /**
@@ -23,6 +24,12 @@ import love.forte.simbot.component.kaiheila.api.ApiData
  *
  */
 public interface MessageApiReq<RESP : ApiData.Resp<*>> : ApiData.Req<RESP>
+public interface PostMessageApiReq<RESP : ApiData.Resp<*>> : MessageApiReq<RESP>, ApiData.Req.Post<RESP>
+public interface GetMessageApiReq<RESP : ApiData.Resp<*>> : MessageApiReq<RESP>, ApiData.Req.Get<RESP>
+
+public interface EmptyRespMessageApiReq : ApiData.Req.Empty
+public interface PostEmptyRespMessageApiReq : EmptyRespMessageApiReq, PostMessageApiReq<EmptyResp>
+public interface GetEmptyRespMessageApiReq : EmptyRespMessageApiReq, GetMessageApiReq<EmptyResp>
 
 
 /**
