@@ -28,8 +28,8 @@ public interface PostMessageApiReq<RESP : ApiData.Resp<*>> : MessageApiReq<RESP>
 public interface GetMessageApiReq<RESP : ApiData.Resp<*>> : MessageApiReq<RESP>, ApiData.Req.Get<RESP>
 
 public interface EmptyRespMessageApiReq : ApiData.Req.Empty
-public interface PostEmptyRespMessageApiReq : EmptyRespMessageApiReq, PostMessageApiReq<EmptyResp>
-public interface GetEmptyRespMessageApiReq : EmptyRespMessageApiReq, GetMessageApiReq<EmptyResp>
+public interface EmptyRespPostMessageApiReq : EmptyRespMessageApiReq, PostMessageApiReq<EmptyResp>
+public interface EmptyRespGetMessageApiReq : EmptyRespMessageApiReq, GetMessageApiReq<EmptyResp>
 
 
 /**

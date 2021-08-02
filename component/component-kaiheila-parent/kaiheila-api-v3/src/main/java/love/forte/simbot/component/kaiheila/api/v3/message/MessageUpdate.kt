@@ -48,7 +48,7 @@ public class MessageUpdateReq(
      * 用户 id，针对特定用户临时更新消息，必须是正常消息才能更新。与发送临时消息概念不同，但同样不保存数据库。
      */
     tempTargetId: String? = null,
-) : PostEmptyRespMessageApiReq {
+) : EmptyRespPostMessageApiReq {
 
     companion object Key : ApiData.Req.Key by key("/message/update") {
         val ROUTE = listOf("message", "update")

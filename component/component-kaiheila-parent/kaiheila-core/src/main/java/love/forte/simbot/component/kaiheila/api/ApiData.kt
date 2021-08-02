@@ -39,6 +39,13 @@ public sealed interface ApiData {
     public interface Req<HTTP_RESP : Resp<*>> : ApiData {
 
         /**
+         * 得到一个 [Key]. 这个Key用于区分api。
+         * 有时候，有可能对于同一个api的请求会提供多个不同的实现方案。
+         */
+        val key: Key
+
+
+        /**
          * 拿到响应数据类型。
          *
          * @see objectResp
@@ -47,11 +54,11 @@ public sealed interface ApiData {
          */
         val dataSerializer: DeserializationStrategy<HTTP_RESP>
 
-
         /**
          * 此api请求方式
          */
         val method: HttpMethod
+
 
         /**
          * 此请求对应的api路由路径以及路径参数。
@@ -70,13 +77,6 @@ public sealed interface ApiData {
          * Do something after resp.
          */
         fun post(resp: HTTP_RESP) { }
-
-
-        /**
-         * 得到一个 [Key]. 这个Key用于区分api。
-         * 有时候，有可能对于同一个api的请求会提供多个不同的实现方案。
-         */
-        val key: Key
 
 
         /**
