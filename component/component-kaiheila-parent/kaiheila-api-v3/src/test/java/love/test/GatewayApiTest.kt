@@ -14,8 +14,11 @@
 
 package love.test
 
+import io.ktor.client.*
+import io.ktor.client.engine.cio.*
 import kotlinx.coroutines.launch
 import love.forte.simbot.component.kaiheila.api.v3.*
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.test.Test
 
@@ -27,12 +30,14 @@ import kotlin.test.Test
 class GatewayApiTest {
 
     companion object {
-        const val clientId = GatewayApiConstant.clientId
-        const val token = GatewayApiConstant.token
-        const val clientSecret = GatewayApiConstant.clientSecret
+        const val clientId = "" // GatewayApiConstant.clientId
+        const val token = "" // GatewayApiConstant.token
+        const val clientSecret ="" // GatewayApiConstant.clientSecret
     }
 
-    val logger = LoggerFactory.getLogger(GatewayApiTest::class.java)
+    val client = HttpClient(CIO)
+
+    val logger: Logger = LoggerFactory.getLogger(GatewayApiTest::class.java)
 
     @Test
     fun logTest() {

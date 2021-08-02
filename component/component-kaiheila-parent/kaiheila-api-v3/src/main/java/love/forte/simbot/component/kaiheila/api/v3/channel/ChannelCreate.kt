@@ -117,6 +117,7 @@ public class ChannelCreateBuilder {
     fun textType() {
         type = 1
     }
+
     fun voiceType() {
         type = 2
     }
@@ -128,6 +129,6 @@ public class ChannelCreateBuilder {
     )
 }
 
-public inline fun channelCreateReq(block: ChannelCreateBuilder.() -> Unit) : ChannelCreateReq {
+public inline fun channelCreateReq(block: ChannelCreateBuilder.() -> Unit): ChannelCreateReq {
     return ChannelCreateBuilder().also(block).build()
 }
