@@ -297,11 +297,16 @@ public interface RouteInfoBuilder {
      */
     val parametersBuilder: ParametersBuilder
 
+    /**
+     * 请求头中的 [ContentType], 绝大多数情况下，此参数默认为 [ContentType.Application.Json].
+     */
+    var contentType: ContentType?
+
 
     companion object {
         @JvmStatic
-        fun getInstance(parametersBuilder: ParametersBuilder): RouteInfoBuilder =
-            RouteInfoBuilderImpl(parametersBuilder = parametersBuilder)
+        fun getInstance(parametersBuilder: ParametersBuilder, contentType: ContentType?): RouteInfoBuilder =
+            RouteInfoBuilderImpl(parametersBuilder = parametersBuilder, contentType = contentType)
     }
 }
 
@@ -322,6 +327,7 @@ public inline fun <reified T> ParametersBuilder.appendIfNotnull(
 private data class RouteInfoBuilderImpl(
     override var apiPath: List<String> = emptyList(),
     override val parametersBuilder: ParametersBuilder,
+    override var contentType: ContentType?
 ) : RouteInfoBuilder
 
 
@@ -379,6 +385,10 @@ public interface ListRespData<D : ApiData.Resp.Data, SORT> {
 
 
 
+public inline val ApiData.Resp<*>.isSuccess: Boolean get() = code == 0
+
+
+
 
 /**
  * 返回值 [data] 为一个json实例对象的结果。
@@ -388,13 +398,14 @@ public data class ObjectResp<RESP : ApiData.Resp.Data>(
     /**
      * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
      */
-    override val code: Int,
+    override val code: Int = -2100000000,
     /**
      * string, 错误消息，具体的返回消息会根据Accept-Language来返回。
      */
-    override val message: String,
+    override val message: String = "<UNKNOWN-MESSAGE>",
     /**
      * mixed, 具体的数据。
+     * 有可能是null，即当 [code] != 0, 也就是失败的时候。
      */
     override val data: RESP?,
 ) : ApiData.Resp<RESP?>
@@ -415,11 +426,11 @@ public data class ListResp<RESP : ApiData.Resp.Data, SORT>(
     /**
      * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
      */
-    override val code: Int,
+    override val code: Int = -2100000000,
     /**
      * string, 错误消息，具体的返回消息会根据Accept-Language来返回。
      */
-    override val message: String,
+    override val message: String = "<UNKNOWN-MESSAGE>",
     /**
      * mixed, 具体的数据。
      */
