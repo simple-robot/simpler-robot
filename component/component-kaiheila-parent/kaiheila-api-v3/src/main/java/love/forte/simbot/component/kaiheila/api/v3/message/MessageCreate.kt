@@ -20,7 +20,6 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.component.kaiheila.api.BaseApiDataKey
 import love.forte.simbot.component.kaiheila.api.BaseApiDataReq
 import love.forte.simbot.component.kaiheila.api.ObjectResp
-import love.forte.simbot.component.kaiheila.api.objectResp
 
 
 /**
@@ -59,7 +58,7 @@ public class MessageCreateReq(
      * 用户id,如果传了，代表该消息是临时消息，该消息不会存数据库，但是会在频道内只给该用户推送临时消息。用于在频道内针对用户的操作进行单独的回应通知等。
      */
     private val tempTargetId: String? = null,
-) : PostMessageApiReq<ObjectResp<MessageCreateRespData>>, BaseApiDataReq<ObjectResp<MessageCreateRespData>>(Key) {
+) : PostMessageApiReq<ObjectResp<MessageCreateResp>>, BaseApiDataReq<ObjectResp<MessageCreateResp>>(Key) {
 
     constructor(
         type: MessageType = MessageType.TEXT,
@@ -70,16 +69,13 @@ public class MessageCreateReq(
         tempTargetId: String? = null,
     ) : this(type.type, targetId, content, quote, nonce, tempTargetId)
 
+    companion object Key : BaseApiDataKey("message", "create")
+
     override fun createBody(): Any = Body(type, targetId, content, quote, nonce, tempTargetId)
 
-    override val dataSerializer: DeserializationStrategy<ObjectResp<MessageCreateRespData>>
-        get() = DATA_SERIALIZER
 
-
-    companion object Key : BaseApiDataKey("message", "create") {
-        private val DATA_SERIALIZER: DeserializationStrategy<ObjectResp<MessageCreateRespData>> =
-            objectResp(MessageCreateRespData.serializer())
-    }
+    override val dataSerializer: DeserializationStrategy<ObjectResp<MessageCreateResp>>
+        get() = MessageCreateResp.objectResp
 
     @Serializable
     private data class Body(
@@ -93,34 +89,6 @@ public class MessageCreateReq(
         val tempTargetId: String? = null,
     )
 }
-
-
-/**
- * [发送频道聊天消息](https://developer.kaiheila.cn/doc/http/message#%E5%8F%91%E9%80%81%E9%A2%91%E9%81%93%E8%81%8A%E5%A4%A9%E6%B6%88%E6%81%AF)
- *
- * request method: post
- *
- * @author ForteScarlet
- */
-@Serializable
-public data class MessageCreateRespData(
-    /**
-     * 服务端生成的消息 id
-     */
-    @SerialName("msg_id")
-    val msgId: String,
-
-    /**
-     * 消息发送时间(服务器时间戳)
-     */
-    @SerialName("msg_timestamp")
-    val msgTimestamp: Long,
-
-    /**
-     * 随机字符串，见参数列表
-     */
-    val nonce: String? = null,
-) : MessageApiRespData
 
 
 

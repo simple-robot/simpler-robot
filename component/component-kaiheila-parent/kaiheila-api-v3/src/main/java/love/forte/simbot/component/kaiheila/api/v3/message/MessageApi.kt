@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.message
 
+import kotlinx.serialization.Serializable
 import love.forte.simbot.component.kaiheila.api.ApiData
 import love.forte.simbot.component.kaiheila.api.EmptyResp
 
@@ -27,7 +28,7 @@ public interface MessageApiReq<RESP : ApiData.Resp<*>> : ApiData.Req<RESP>
 public interface PostMessageApiReq<RESP : ApiData.Resp<*>> : MessageApiReq<RESP>, ApiData.Req.Post<RESP>
 public interface GetMessageApiReq<RESP : ApiData.Resp<*>> : MessageApiReq<RESP>, ApiData.Req.Get<RESP>
 
-public interface EmptyRespMessageApiReq : ApiData.Req.Empty
+public interface EmptyRespMessageApiReq : MessageApiReq<EmptyResp>, ApiData.Req.Empty
 public interface EmptyRespPostMessageApiReq : EmptyRespMessageApiReq, PostMessageApiReq<EmptyResp>
 public interface EmptyRespGetMessageApiReq : EmptyRespMessageApiReq, GetMessageApiReq<EmptyResp>
 
@@ -36,6 +37,19 @@ public interface EmptyRespGetMessageApiReq : EmptyRespMessageApiReq, GetMessageA
  * [频道消息相关接口](https://developer.kaiheila.cn/doc/http/message) 响应实例接口。
  */
 public interface MessageApiRespData : ApiData.Resp.Data
+
+
+/**
+ * 消息体内容。
+ *
+ *
+ */
+@Serializable
+public class Message(
+    val id: String,
+    val type: Int,
+    val author: Map<String, String>,
+) : ApiData.Resp.Data
 
 
 

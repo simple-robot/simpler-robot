@@ -28,7 +28,7 @@ public interface UserChatApiReq<RESP : ApiData.Resp<*>> : ApiData.Req<RESP>
 public interface PostUserChatApiReq<RESP : ApiData.Resp<*>> : UserChatApiReq<RESP>, ApiData.Req.Post<RESP>
 public interface GetUserChatApiReq<RESP : ApiData.Resp<*>> : UserChatApiReq<RESP>, ApiData.Req.Get<RESP>
 
-public interface EmptyRespUserChatApiReq : ApiData.Req.Empty
+public interface EmptyRespUserChatApiReq : UserChatApiReq<EmptyResp>, ApiData.Req.Empty
 public interface EmptyRespPostUserChatApiReq : EmptyRespUserChatApiReq, PostUserChatApiReq<EmptyResp>
 public interface EmptyRespGetUserChatApiReq : EmptyRespUserChatApiReq, GetUserChatApiReq<EmptyResp>
 

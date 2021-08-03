@@ -188,19 +188,16 @@ public abstract class BaseApiDataReq<HTTP_RESP : ApiData.Resp<*>>(
     override val body: Any?
         get() {
             return if (cacheBody) {
-                // initialized.
-                if (_body is Initialized) {
-                    null
+                if (::_body.isInitialized) {
+                    // initialized.
+                    val b = _body
+                    if (b is NullInstance) null else b
                 } else {
-                    val b = createBody()
-                    if (b == null) {
-                        _body = Initialized
-                        null
-                    } else {
-                        _body = b
-                        b
+                    createBody().also {
+                        _body = it ?: NullInstance
                     }
                 }
+
             } else createBody()
         }
 
@@ -229,7 +226,7 @@ public abstract class BaseApiDataReq<HTTP_RESP : ApiData.Resp<*>>(
 
 }
 
-private object Initialized
+private object NullInstance
 
 
 public abstract class BaseApiDataKey(val route: List<String>) :
@@ -328,6 +325,7 @@ private data class RouteInfoBuilderImpl(
 ) : RouteInfoBuilder
 
 
+
 /**
  * 返回值是一个非列表值. 指定一个响应元素类型 [RESP].
  */
@@ -367,6 +365,19 @@ public fun <RESP : ApiData.Resp.Data> listResp(
 
 public inline fun <reified RESP : ApiData.Resp.Data> emptySortListResp(): KSerializer<ListResp<RESP, ApiData.Resp.EmptySort>> =
     ListResp.serializer(serializer(), ApiData.Resp.EmptySort.serializer())
+
+
+
+/**
+ * 列表数据响应值接口
+ */
+public interface ListRespData<D : ApiData.Resp.Data, SORT> {
+    val items: List<D>
+    val meta: RespPageMeta?
+    val sort: SORT
+}
+
+
 
 
 /**
@@ -412,8 +423,8 @@ public data class ListResp<RESP : ApiData.Resp.Data, SORT>(
     /**
      * mixed, 具体的数据。
      */
-    override val data: ListRespData<RESP, SORT>,
-) : ApiData.Resp<ListRespData<RESP, SORT>>, Iterable<RESP> by data
+    override val data: SimpleListRespData<RESP, SORT>,
+) : ApiData.Resp<SimpleListRespData<RESP, SORT>>, Iterable<RESP> by data
 
 /**
  * 返回值为一个列表（数组）实例对象的结果。
@@ -444,18 +455,20 @@ public data class ListRespForMapSort<RESP : ApiData.Resp.Data>(
 
 
 @Serializable
-public data class ListRespData<RESP : ApiData.Resp.Data, SORT>(
-    val items: List<RESP> = emptyList(),
-    val meta: RespPageMeta,
-    val sort: SORT,
-) : Iterable<RESP> by items
+public data class SimpleListRespData<RESP : ApiData.Resp.Data, SORT>(
+    override val items: List<RESP> = emptyList(),
+    override val meta: RespPageMeta,
+    override val sort: SORT,
+) : Iterable<RESP> by items, ListRespData<RESP, SORT>
+
 
 @Serializable
 public data class ListRespDataForMapSort<RESP : ApiData.Resp.Data>(
-    val items: List<RESP> = emptyList(),
-    val meta: RespPageMeta,
-    val sort: Map<String, Int> = emptyMap(),
-)
+    override val items: List<RESP> = emptyList(),
+    override val meta: RespPageMeta,
+    override val sort: Map<String, Int> = emptyMap(),
+) : ListRespData<RESP, Map<String, Int>>
+
 
 @Serializable
 public data class RespPageMeta(
@@ -466,53 +479,3 @@ public data class RespPageMeta(
     val pageSize: Int,
     val total: Int,
 )
-
-
-// public data class ReqData<HTTP_RESP : ApiData.HttpResp<*>>
-// @JvmOverloads
-// constructor(
-//     override val route: String,
-//     override val authorization: String? = null,
-//     override val body: Any? = null,
-//     private val doClient: suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP,
-// ) : Req<HTTP_RESP> {
-//     override suspend fun request(client: HttpClient, block: HttpRequestBuilder.() -> Unit): HTTP_RESP =
-//         doClient(client, block)
-// }
-//
-//
-// @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
-// @DslMarker
-// public annotation class ReqBuilderDsl
-//
-//
-// public class ReqBuilder<HTTP_RESP : ApiData.HttpResp<*>>
-// @JvmOverloads
-// constructor(
-//     var route: String? = null,
-//     var doClient: (suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP)? = null,
-// ) {
-//     @ReqBuilderDsl
-//     var authorization: String? = null
-//
-//     @ReqBuilderDsl
-//     var parameters: Any? = null
-//
-//     /** Build instance. */
-//     fun build(): Req<HTTP_RESP> = ReqData(
-//         route = requireNotNull(route) { "Require route was null." },
-//         authorization = authorization,
-//         body = parameters,
-//         doClient = requireNotNull(doClient) { "Require doClient function was null." },
-//     )
-//
-// }
-//
-//
-// public inline fun <reified HTTP_RESP : ApiData.HttpResp<*>> req(
-//     route: String? = null,
-//     noinline doClient: suspend (client: HttpClient, block: HttpRequestBuilder.() -> Unit) -> HTTP_RESP,
-//     block: ReqBuilder<HTTP_RESP>.() -> Unit,
-// ): Req<HTTP_RESP> {
-//     return ReqBuilder(route, doClient).apply(block).build()
-// }
