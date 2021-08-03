@@ -19,13 +19,15 @@ package love.forte.simbot.component.kaiheila.api
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import kotlinx.serialization.json.*
 import love.forte.simbot.component.kaiheila.khlJson
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.contracts.ExperimentalContracts
 
 
-internal val logger: Logger = LoggerFactory.getLogger(ApiData::class.java)
+@JvmSynthetic
+public val logger: Logger = LoggerFactory.getLogger(ApiData::class.java)
 
 
 /**
@@ -65,10 +67,23 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
         }
     }
 
-    // logger.debug("")
-    println(responseContent)
+    logger.debug("Request api '{}' response content: {}", key.id, responseContent)
+    // println(responseContent)
 
     val jsonElement = khlJson.parseToJsonElement(responseContent)
+    val jsonObject = jsonElement.jsonObject
+    val forDecodeElement = if (jsonObject["code"]?.jsonPrimitive?.intOrNull != 0) {
+        buildJsonObject {
+            for ((k, v) in jsonElement.jsonObject) {
+                if (k != "data") {
+                    put(k, v)
+                } else {
+                    put("data", JsonNull)
+                }
+            }
+        }
+
+    } else jsonElement
 
     // val jsonObject = jsonElement.jsonObject
 
@@ -85,7 +100,7 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
     // }
     // val contentText = resp.readText(Charsets.UTF_8)
 
-    return khlJson.decodeFromJsonElement(deserializer = this.dataSerializer, jsonElement).also { resp ->
+    return khlJson.decodeFromJsonElement(deserializer = this.dataSerializer, forDecodeElement).also { resp ->
         post(resp)
     }
 
