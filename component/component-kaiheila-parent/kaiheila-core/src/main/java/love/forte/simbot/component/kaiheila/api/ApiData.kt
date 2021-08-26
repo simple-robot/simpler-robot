@@ -320,7 +320,10 @@ public inline fun <reified T> ParametersBuilder.appendIfNotnull(
     value: T?,
     toStringBlock: (T) -> String = { it.toString() },
 ) {
-    value?.let { v -> append(name, toStringBlock(v)) }
+
+    value?.let { v ->
+        this.append(name, toStringBlock(v))
+    }
 }
 
 

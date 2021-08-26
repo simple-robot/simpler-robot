@@ -5,7 +5,7 @@
     <parent>
         <artifactId>component-parent</artifactId>
         <groupId>love.forte.simple-robot</groupId>
-        <version>2.2.0-BETA.4<!--v--></version>
+        <version>2.2.0<!--v--></version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -34,7 +34,6 @@
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-serialization-json</artifactId>

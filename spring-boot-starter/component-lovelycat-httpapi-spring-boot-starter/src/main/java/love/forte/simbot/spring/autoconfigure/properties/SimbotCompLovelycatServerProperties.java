@@ -29,8 +29,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ConfigurationProperties(prefix = "simbot.component.lovelycat.server")
-@lombok.Setter
-@lombok.Getter
 @ConditionalOnBean(SimbotContext.class)
 public class SimbotCompLovelycatServerProperties {
 
@@ -50,4 +48,28 @@ public class SimbotCompLovelycatServerProperties {
      * http服务器的监听地址。
      */
     private String path = "/lovelycat";
+
+    public boolean isEnable() {
+        return enable;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 }
