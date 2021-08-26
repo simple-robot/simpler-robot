@@ -69,6 +69,14 @@ QQ交流群: [782930037](https://jq.qq.com/?_wv=1027&k=1Lopqryf)
 
 旧版本考古 -> [simple-robot 1.x](https://github.com/ForteScarlet/simple-robot-core)
 
+## 作品展示区
+作品展示区是官方组件和大家作品的展示区。
+
+https://fortescarlet.github.io/simpler-robot-exhibition/
+
+如果你有想要进行公示，欢迎通过 issue 中提交申请~
+
+
 ## 支持平台
 
 目前支持的机器人平台：
