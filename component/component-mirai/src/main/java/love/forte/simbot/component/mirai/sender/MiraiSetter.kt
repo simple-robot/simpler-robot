@@ -144,11 +144,16 @@ public class MiraiSetter(
     }
 
 
-    override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> =
-        defSetter.setGroupAdmin(groupCode, memberCode, promotion)
+    override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> {
+        runBlocking { bot.group(groupCode.toLong()).member(memberCode.toLong()).modifyAdmin(promotion) }
+        return true.toCarrier()
+    }
+        // defSetter.setGroupAdmin(groupCode, memberCode, promotion)
 
-    override fun setGroupAdmin(groupCode: Long, memberCode: Long, promotion: Boolean): Carrier<Boolean> =
-        defSetter.setGroupAdmin(groupCode, memberCode, promotion)
+    override fun setGroupAdmin(groupCode: Long, memberCode: Long, promotion: Boolean): Carrier<Boolean> {
+        runBlocking { bot.group(groupCode).member(memberCode).modifyAdmin(promotion) }
+        return true.toCarrier()
+    }
 
 
     /**

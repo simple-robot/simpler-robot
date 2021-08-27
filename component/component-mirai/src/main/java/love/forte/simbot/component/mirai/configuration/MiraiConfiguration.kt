@@ -16,15 +16,16 @@
 package love.forte.simbot.component.mirai.configuration
 
 import cn.hutool.crypto.SecureUtil
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.Beans
 import love.forte.common.utils.ResourceUtil
-import love.forte.simbot.component.mirai.SimbotMiraiLogger
 import love.forte.simbot.core.TypedCompLogger
 import net.mamoe.mirai.utils.BotConfiguration
 import net.mamoe.mirai.utils.DeviceInfo
+import net.mamoe.mirai.utils.LoggerAdapters.asMiraiLogger
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
 import net.mamoe.mirai.utils.withSwitch
 import org.slf4j.Logger
@@ -70,10 +71,12 @@ public class MiraiConfiguration {
 
     /** 心跳失败后的第一次重连前的等待时间. */
     @field:ConfigInject
+    @Deprecated("Useless since mirai new network. Please just remove this.")
     var firstReconnectDelayMillis: Long = BotConfiguration.Default.firstReconnectDelayMillis
 
     /** 重连失败后, 继续尝试的每次等待时间 */
     @field:ConfigInject
+    @Deprecated("Useless since mirai new network. Please just remove this.")
     var reconnectPeriodMillis: Long = BotConfiguration.Default.reconnectPeriodMillis
 
     /** 最多尝试多少次重连 */
@@ -135,6 +138,7 @@ public class MiraiConfiguration {
      * */
     // @set:Deprecated("use setPostBotConfigurationProcessor((code, conf) -> {...})")
 
+    @OptIn(ExperimentalSerializationApi::class)
     val botConfiguration: (String) -> BotConfiguration = {
         val conf = BotConfiguration()
 
@@ -160,8 +164,8 @@ public class MiraiConfiguration {
                                 createNewFile()
                             }
                         }
-                        FileWriter(outFile).use {
-                                w -> w.write(devInfoJson)
+                        FileWriter(outFile).use { w ->
+                            w.write(devInfoJson)
                             logger.info("DevInfo write to ${outFile.canonicalPath}")
                         }
                     }.getOrElse { e ->
@@ -181,10 +185,11 @@ public class MiraiConfiguration {
 
         conf.heartbeatPeriodMillis = this.heartbeatPeriodMillis
         conf.heartbeatTimeoutMillis = this.heartbeatTimeoutMillis
-        conf.firstReconnectDelayMillis = this.firstReconnectDelayMillis
-        conf.reconnectPeriodMillis = this.reconnectPeriodMillis
+        // conf.firstReconnectDelayMillis = this.firstReconnectDelayMillis
+        // conf.reconnectPeriodMillis = this.reconnectPeriodMillis
         conf.reconnectionRetryTimes = this.reconnectionRetryTimes
         conf.protocol = this.protocol
+        conf.highwayUploadCoroutineCount = highwayUploadCoroutineCount
 
 
         if (noBotLog) {
@@ -194,12 +199,12 @@ public class MiraiConfiguration {
             conf.noNetworkLog()
         }
         // MiraiLoggerWithSwitch
-        // 默认情况下都是关闭状态的log
         if (useSimbotBotLog) {
             conf.botLoggerSupplier = {
                 // val logger: Logger = LoggerFactory.getLogger("$MIRAI_LOG_NAME_PREFIX.bot.${it.id}")
                 val logger: Logger = miraiBotLogger(it.id, "bot")
-                SimbotMiraiLogger(logger).withSwitch(true)
+                logger.asMiraiLogger().withSwitch(true)
+                // SimbotMiraiLogger(logger).withSwitch(true)
             }
         } else {
             val oldBotLoggerSup = conf.botLoggerSupplier
@@ -211,7 +216,7 @@ public class MiraiConfiguration {
         if (useSimbotNetworkLog) {
             conf.networkLoggerSupplier = {
                 val logger: Logger = miraiBotLogger(it.id, "net")
-                SimbotMiraiLogger(logger).withSwitch(true)
+                logger.asMiraiLogger().withSwitch(true)
             }
         } else {
             val oldNetworkLoggerSup = conf.networkLoggerSupplier
@@ -226,7 +231,6 @@ public class MiraiConfiguration {
 }
 
 
-
 internal fun simbotMiraiDeviceInfo(c: Long, s: Long): DeviceInfo {
     val r = Random(c * s)
     return DeviceInfo(
@@ -237,8 +241,12 @@ internal fun simbotMiraiDeviceInfo(c: Long, s: Long): DeviceInfo {
         brand = "forte".toByteArray(),
         model = "mirai-simbot".toByteArray(),
         bootloader = "unknown".toByteArray(),
-                    // mamoe/mirai/mirai:10/MIRAI.200122.001/
-        fingerprint = "mamoe/mirai/mirai:10/MIRAI.200122.001/${getRandomString(7, '0'..'9', r)}:user/release-keys".toByteArray(),
+        // mamoe/mirai/mirai:10/MIRAI.200122.001/
+        fingerprint = "mamoe/mirai/mirai:10/MIRAI.200122.001/${
+            getRandomString(7,
+                '0'..'9',
+                r)
+        }:user/release-keys".toByteArray(),
         bootId = generateUUID(SecureUtil.md5().digest(getRandomByteArray(16, r))).toByteArray(),
         procVersion = "Linux version 3.0.31-${getRandomString(8, r)} (android-build@xxx.xxx.xxx.xxx.com)".toByteArray(),
         baseBand = byteArrayOf(),
@@ -254,7 +262,6 @@ internal fun simbotMiraiDeviceInfo(c: Long, s: Long): DeviceInfo {
 
     )
 }
-
 
 
 /*

@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.mirai
 
+import net.mamoe.mirai.utils.LoggerAdapters
 import net.mamoe.mirai.utils.MiraiLoggerPlatformBase
 import org.slf4j.Logger
 
@@ -23,6 +24,11 @@ import org.slf4j.Logger
 public class SimbotMiraiLogger(
     val logger: Logger
 ) : MiraiLoggerPlatformBase() {
+
+    init {
+        LoggerAdapters
+    }
+
     override val identity: String = "simbot-mirai"
 
     override fun debug0(message: String?, e: Throwable?) {

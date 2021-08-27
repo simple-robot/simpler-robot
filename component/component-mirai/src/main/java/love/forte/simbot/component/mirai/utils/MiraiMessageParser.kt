@@ -221,8 +221,8 @@ public fun Neko.toMiraiMessageContent(
 
                     try {
                         return MiraiSingleMessageContent(Image(id))
-                    // } catch(e: IllegalArgumentException) {
-                    } catch(e: Exception) {
+                        // } catch(e: IllegalArgumentException) {
+                    } catch (e: Exception) {
                         logger.warn("Cannot create Image by id {}, {}", id, e.localizedMessage)
                         if (logger.isDebugEnabled) {
                             logger.debug("Cannot create Image by id $id", e)
@@ -274,7 +274,7 @@ public fun Neko.toMiraiMessageContent(
             }
 
             // voice or record
-            "voice", "record" -> {
+            "voice", "audio", "record" -> {
                 val id = this["id"]
 
                 if (message != null) {
@@ -627,6 +627,18 @@ public fun Neko.toMiraiMessageContent(
                             "https://cdnmusic.migu.cn/tycms_picture/20/10/294/201020171104983_90x26_2640.png"
                         musicJumpUrl = "https://music.migu.cn/"
                     }
+                    "kugou", "Kugou", KugouMusic.name -> KugouMusic.also {
+                        musicKindDisplay = "酷狗音乐"
+                        musicPictureUrl =
+                            "https://staticssl.kugou.com/public/root/images/logo.png"
+                        musicJumpUrl = "https://www.kugou.com/"
+                    }
+                    "kuwo", "Kuwo", KuwoMusic.name -> KuwoMusic.also {
+                        musicKindDisplay = "酷我音乐"
+                        musicPictureUrl =
+                            "https://h5static.kuwo.cn/www/kw-www/img/logo.dac7499.png"
+                        musicJumpUrl = "http://www.kuwo.cn/"
+                    }
                     else -> throw NoSuchElementException("Music kind: $kindString")
                 }
 
@@ -668,17 +680,6 @@ public fun Neko.toMiraiMessageContent(
                         else -> MiraiSingleMessageContent
                     }
 
-                    // if (cacheMsg is MessageChain) {
-                    //     return@let MiraiSingleMessageContent(QuoteReply(cacheMsg))
-                    // }
-                    // if (cacheMsg is MessageSource) {
-                    //     return@let MiraiSingleMessageContent(QuoteReply(cacheMsg))
-                    // }
-                    // if (cacheMsg !is MiraiMessageMsgGet<*>) {
-                    //     return@let MiraiSingleMessageContent
-                    // }
-                    //
-                    // MiraiSingleMessageContent(QuoteReply(cacheMsg.message))
                 } ?: run {
                     // 不存在ID，尝试通过messageChain
                     message?.quote()?.let { MiraiSingleMessageContent(it) }

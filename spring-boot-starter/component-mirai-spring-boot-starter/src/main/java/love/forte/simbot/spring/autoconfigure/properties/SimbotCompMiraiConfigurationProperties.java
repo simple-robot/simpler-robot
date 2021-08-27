@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -52,13 +52,15 @@ public class SimbotCompMiraiConfigurationProperties {
     private long heartbeatTimeoutMillis = getDef().getHeartbeatTimeoutMillis();
 
     /**
-     * 心跳失败后的第一次重连前的等待时间。
+     * Useless since mirai new network. Please just remove this.
      */
+    @Deprecated
     private long firstReconnectDelayMillis = getDef().getFirstReconnectDelayMillis();
 
     /**
-     * 重连失败后, 继续尝试的每次等待时间。
+     * Useless since mirai new network. Please just remove this.
      */
+    @Deprecated
     private long reconnectPeriodMillis = getDef().getReconnectPeriodMillis();
 
     /** 最多尝试多少次重连。 */
