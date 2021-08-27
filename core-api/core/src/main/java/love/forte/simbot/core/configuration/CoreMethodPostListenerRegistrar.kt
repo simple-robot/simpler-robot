@@ -58,7 +58,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
     @Depend
     private lateinit var listenerResultFactory: ListenerResultFactory
 
-    @OptIn(SimbotInternalApi::class)
+    @OptIn(SimbotInternalApi::class, love.forte.simbot.api.SimbotExperimentalApi::class)
     @Depend
     private lateinit var listenerGroupManager: ListenerGroupManager
 

@@ -81,7 +81,7 @@ public abstract class GroupedListenerInterceptor : ListenerInterceptor {
     private val listenerCache: MutableMap<String, String> = ConcurrentHashMap()
 
 
-    @OptIn(SimbotInternalApi::class)
+    @OptIn(SimbotInternalApi::class, love.forte.simbot.api.SimbotExperimentalApi::class)
     final override fun intercept(context: ListenerInterceptContext): InterceptionType {
         val listener = context.listenerFunction
         val id = listener.id
