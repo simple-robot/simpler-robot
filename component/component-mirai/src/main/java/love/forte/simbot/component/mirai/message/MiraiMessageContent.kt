@@ -389,11 +389,13 @@ constructor(
  * mirai 的 voice content.
  * 此实现类似于 [MiraiImageMessageContent]，Voice的实例化会被缓存，且存在锁来保证唯一性。
  */
+@Deprecated("Use MiraiAudioMessageContent", replaceWith = ReplaceWith("MiraiAudioMessageContent"))
 public class MiraiVoiceMessageContent(
     override val neko: Neko,
-    private val voiceFunction: suspend (Contact) -> Voice,
+    @Suppress("DEPRECATION") private val voiceFunction: suspend (Contact) -> Voice,
 ) : MiraiMessageContent(), NekoAble {
 
+    @Suppress("DEPRECATION")
     @Volatile
     private lateinit var voice: Voice
 
@@ -422,13 +424,71 @@ public class MiraiVoiceMessageContent(
     override fun hashCode(): Int {
         return hash
     }
-
+    @Suppress("DEPRECATION")
     override fun equals(other: Any?): Boolean {
         if (other == null) {
             return false
         }
         if (other is NekoAble) {
             val otherNeko = if (other is MiraiVoiceMessageContent) other.neko else other.neko ?: return false
+            return with(otherNeko.type) { this == "voice" || this == "record" }
+                    && (
+                    neko["id"]?.equals(otherNeko["id"]) == true
+                            || neko["file"]?.equals(otherNeko["file"]) == true
+                            || neko["url"]?.equals(otherNeko["url"]) == true
+                    )
+        }
+
+
+        return false
+    }
+
+}
+
+/**
+ * mirai 的 voice content.
+ * 此实现类似于 [MiraiImageMessageContent]，Voice的实例化会被缓存，且存在锁来保证唯一性。
+ */
+public class MiraiAudioMessageContent(
+    override val neko: Neko,
+    private val audioFunction: suspend (Contact) -> Audio,
+) : MiraiMessageContent(), NekoAble {
+
+    @Volatile
+    private lateinit var audio: Audio
+
+    /** lock */
+    private val lock = Mutex()
+
+    private val hash = neko.hashCode()
+    override val cats: List<Neko> = listOf(neko)
+
+    override suspend fun getMessage(contact: Contact): Message {
+        return if (::audio.isInitialized) {
+            audio
+        } else {
+            if (!::audio.isInitialized) {
+                lock.withLock {
+                    if (!::audio.isInitialized) {
+                        audio = audioFunction(contact)
+                    }
+                }
+
+            }
+            audio
+        }
+    }
+
+    override fun hashCode(): Int {
+        return hash
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) {
+            return false
+        }
+        if (other is NekoAble) {
+            val otherNeko = if (other is MiraiAudioMessageContent) other.neko else other.neko ?: return false
             return with(otherNeko.type) { this == "voice" || this == "record" }
                     && (
                     neko["id"]?.equals(otherNeko["id"]) == true
