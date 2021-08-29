@@ -54,8 +54,14 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
         token?.let { auth ->
             header("Authorization", authorizationType.getAuthorization(auth))
         }
+
+        val httpRequestBuilder = this
         url {
-            val routeInfoBuilder = RouteInfoBuilder.getInstance(parameters, ContentType.Application.Json)
+            val routeInfoBuilder = RouteInfoBuilder.getInstance(object : ParametersAppender {
+                override fun append(key: String, value: Any) {
+                    httpRequestBuilder.parameter(key, value)
+                }
+            }, ContentType.Application.Json)
             this@doRequest.route(routeInfoBuilder)
 
             apiPath = routeInfoBuilder.apiPath

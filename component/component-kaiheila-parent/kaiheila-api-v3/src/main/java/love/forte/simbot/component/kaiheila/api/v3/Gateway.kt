@@ -34,7 +34,7 @@ public data class GatewayReq(val compress: Int = 1) :
 
     override fun route(builder: RouteInfoBuilder) {
         builder.apiPath = ROUTE
-        builder.parametersBuilder.append("compress", compress.toString())
+        builder.parametersAppender.append("compress", compress.toString())
     }
 
     override val body: Any? get() = null

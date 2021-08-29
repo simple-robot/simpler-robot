@@ -80,7 +80,7 @@ public sealed class GuildListReq<SORT> :
         private val sortValue = if(asc) "id" else "-id"
         override fun route(builder: RouteInfoBuilder) {
             super.route(builder)
-            builder.parametersBuilder.append("sort", sortValue)
+            builder.parametersAppender.append("sort", sortValue)
         }
 
         /**

@@ -286,6 +286,12 @@ public fun key(api: String): Req.Key = object : Req.Key {
 }
 
 
+public interface ParametersAppender {
+    fun append(key: String, value: Any)
+}
+
+
+
 public interface RouteInfoBuilder {
     /**
      * 可以设置api路径
@@ -295,7 +301,7 @@ public interface RouteInfoBuilder {
     /**
      * 获取parameter的构建器
      */
-    val parametersBuilder: ParametersBuilder
+    val parametersAppender: ParametersAppender
 
     /**
      * 请求头中的 [ContentType], 绝大多数情况下，此参数默认为 [ContentType.Application.Json].
@@ -305,34 +311,32 @@ public interface RouteInfoBuilder {
 
     companion object {
         @JvmStatic
-        fun getInstance(parametersBuilder: ParametersBuilder, contentType: ContentType?): RouteInfoBuilder =
-            RouteInfoBuilderImpl(parametersBuilder = parametersBuilder, contentType = contentType)
+        fun getInstance(parametersBuilder: ParametersAppender, contentType: ContentType?): RouteInfoBuilder =
+            RouteInfoBuilderImpl(parametersAppender = parametersBuilder, contentType = contentType)
     }
 }
 
 
-public inline fun RouteInfoBuilder.parameters(block: ParametersBuilder.() -> Unit) {
-    parametersBuilder.block()
+public inline fun RouteInfoBuilder.parameters(block: ParametersAppender.() -> Unit) {
+    parametersAppender.block()
 }
 
-public inline fun <reified T> ParametersBuilder.appendIfNotnull(
+public inline fun <reified T> ParametersAppender.appendIfNotnull(
     name: String,
     value: T?,
     toStringBlock: (T) -> String = { it.toString() },
 ) {
-
     value?.let { v ->
-        this.append(name, toStringBlock(v))
+        append(name, toStringBlock(v))
     }
 }
 
 
 private data class RouteInfoBuilderImpl(
     override var apiPath: List<String> = emptyList(),
-    override val parametersBuilder: ParametersBuilder,
-    override var contentType: ContentType?
+    override val parametersAppender: ParametersAppender,
+    override var contentType: ContentType?,
 ) : RouteInfoBuilder
-
 
 
 /**
@@ -376,7 +380,6 @@ public inline fun <reified RESP : ApiData.Resp.Data> emptySortListResp(): KSeria
     ListResp.serializer(serializer(), ApiData.Resp.EmptySort.serializer())
 
 
-
 /**
  * 列表数据响应值接口
  */
@@ -387,10 +390,7 @@ public interface ListRespData<D : ApiData.Resp.Data, SORT> {
 }
 
 
-
 public inline val ApiData.Resp<*>.isSuccess: Boolean get() = code == 0
-
-
 
 
 /**
