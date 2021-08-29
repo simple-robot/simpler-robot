@@ -1,6 +1,6 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
-    <img src=".github/logo/logo-4@0,1x.png" alt="logo"/>
+    <img src=".github/logo/logo.png" alt="logo"/>
     <h3>
         - simpler-robot -
     </h3>
