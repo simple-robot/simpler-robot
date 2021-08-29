@@ -1,16 +1,14 @@
 /*
  *
- * Copyright (c) 2020. ForteScarlet All rights reserved.
- * Project  simple-robot-S
- * File     LovelyCatHttpServer.kt
- *
- * You can contact the author through the following channels:
- * github https://github.com/ForteScarlet
- * gitee  https://gitee.com/ForteScarlet
- * email  ForteScarlet@163.com
- * QQ     1149159218
- *
- *
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
+ *  *
+ *  * You can contact the author through the following channels:
+ *  * github https://github.com/ForteScarlet
+ *  * gitee  https://gitee.com/ForteScarlet
+ *  * email  ForteScarlet@163.com
+ *  * QQ     1149159218
  *
  */
 @file:JvmName("lovelycatHttpServers")
@@ -119,7 +117,7 @@ public class LovelyCatKtorHttpServer(
                     <html lang="zh-CN">
                     <head>
                     <title>Simbot Lovely Cat Server</title>
-                    <link rel="icon" type="image/png" sizes="144x144" href="https://gitee.com/ForteScarlet/simpler-robot/raw/dev/logo/logo-4@0,1x.png"/>
+                    <link rel="icon" type="image/png" sizes="144x144" href="https://gitee.com/ForteScarlet/simpler-robot/raw/dev/logo/logo.png"/>
                     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
                     </head>
                     <body>
@@ -149,7 +147,7 @@ public class LovelyCatKtorHttpServer(
                     <html lang="zh-CN">
                     <head>
                     <title>Simbot Lovely Cat Server</title>
-                    <link rel="icon" type="image/png" sizes="144x144" href="https://gitee.com/ForteScarlet/simpler-robot/raw/dev/logo/logo-4@0,1x.png"/>
+                    <link rel="icon" type="image/png" sizes="144x144" href="https://gitee.com/ForteScarlet/simpler-robot/raw/dev/logo/logo.png"/>
                     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
                     </head>
                     <body>
