@@ -37,11 +37,12 @@ import love.forte.simbot.processor.RemoteResourceContext
 import love.forte.simbot.processor.RemoteResourceInProcessor
 import love.forte.simbot.processor.doProcess
 import love.forte.simbot.utils.onShutdown
+import net.mamoe.mirai.contact.AudioSupported
 import net.mamoe.mirai.contact.FileSupported
-import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import net.mamoe.mirai.message.data.MessageSource.Key.quote
+import net.mamoe.mirai.message.data.MusicKind.*
 import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
@@ -220,8 +221,8 @@ public fun Neko.toMiraiMessageContent(
 
                     try {
                         return MiraiSingleMessageContent(Image(id))
-                    // } catch(e: IllegalArgumentException) {
-                    } catch(e: Exception) {
+                        // } catch(e: IllegalArgumentException) {
+                    } catch (e: Exception) {
                         logger.warn("Cannot create Image by id {}, {}", id, e.localizedMessage)
                         if (logger.isDebugEnabled) {
                             logger.debug("Cannot create Image by id $id", e)
@@ -273,12 +274,12 @@ public fun Neko.toMiraiMessageContent(
             }
 
             // voice or record
-            "voice", "record" -> {
+            "voice", "audio", "record" -> {
                 val id = this["id"]
 
                 if (message != null) {
                     if (id != null) {
-                        val findVoice = message.find { it is Voice && it.id == id }
+                        val findVoice = message.find { it is Audio && it.id == id }
                         if (findVoice != null) {
                             return MiraiSingleMessageContent(findVoice)
                         }
@@ -295,10 +296,10 @@ public fun Neko.toMiraiMessageContent(
                     val classPathUrl: URL? = ResourceUtil.getResource(filePath0)
                     val recordNeko = CatCodeUtil.nekoTemplate.record(filePath)
                     if (classPathUrl != null) {
-                        return MiraiVoiceMessageContent(recordNeko) { c ->
-                            if (c is Group) {
-                                classPathUrl.externalResource().use { c.uploadVoice(it) }
-                            } else throw IllegalStateException("Mirai only support sending group voice.")
+                        return MiraiAudioMessageContent(recordNeko) { c ->
+                            if (c is AudioSupported) {
+                                classPathUrl.externalResource().use { c.uploadAudio(it) }
+                            } else throw IllegalStateException("Mirai only support sending audio by AudioSupported 's instance, But ${c::class.java}")
                         }
                     }
                 }
@@ -308,10 +309,10 @@ public fun Neko.toMiraiMessageContent(
                 if (file != null) {
                     // 存在文件
                     val recordNeko = CatCodeUtil.nekoTemplate.record(filePath)
-                    MiraiVoiceMessageContent(recordNeko) { c ->
-                        if (c is Group) {
-                            file.toExternalResource().use { c.uploadVoice(it) }
-                        } else throw IllegalStateException("Mirai only support sending group voice.")
+                    MiraiAudioMessageContent(recordNeko) { c ->
+                        if (c is AudioSupported) {
+                            file.toExternalResource().use { c.uploadAudio(it) }
+                        } else throw IllegalStateException("Mirai only support sending audio by AudioSupported 's instance, But ${c::class.java}")
                     }
                 } else {
                     // 没有文件，看看有没有url。
@@ -324,16 +325,16 @@ public fun Neko.toMiraiMessageContent(
 
                     // val urlId = url.encodedPath
                     val recordNeko = CatCodeUtil.nekoTemplate.record(urlString)
-                    MiraiVoiceMessageContent(recordNeko) { c ->
-                        if (c is Group) {
+                    MiraiAudioMessageContent(recordNeko) { c ->
+                        if (c is AudioSupported) {
                             val context = RemoteResourceContext(urlString, id)
                             remoteResourceInProcessor.getStream(context).toExternalResource()
-                                .use { resource -> c.uploadVoice(resource) }
+                                .use { resource -> c.uploadAudio(resource) }
 
                             // url.toStream().use { s ->
                             //     s.toExternalResource().use { c.uploadVoice(it) }
                             // }
-                        } else throw IllegalStateException("Mirai only support sending group voice.")
+                        } else throw IllegalStateException("Mirai only support sending audio by AudioSupported 's instance, But ${c::class.java}")
                     }
                 }
             }
@@ -610,21 +611,33 @@ public fun Neko.toMiraiMessageContent(
 
                 @Suppress("SpellCheckingInspection")
                 val musicKind = when (kindString) {
-                    "neteaseCloud", "NeteaseCloud", "neteaseCloudMusic", "NeteaseCloudMusic", "163", MusicKind.NeteaseCloudMusic.name -> MusicKind.NeteaseCloudMusic.also {
+                    "neteaseCloud", "NeteaseCloud", "neteaseCloudMusic", "NeteaseCloudMusic", "163", NeteaseCloudMusic.name -> NeteaseCloudMusic.also {
                         musicKindDisplay = "网易云音乐"
                         musicPictureUrl = "https://s4.music.126.net/style/web2/img/default/default_album.jpg"
                         musicJumpUrl = "https://music.163.com/"
                     }
-                    "QQ", "qq", "qqMusic", "QQMusic", MusicKind.QQMusic.name -> MusicKind.QQMusic.also {
+                    "QQ", "qq", "qqMusic", "QQMusic", QQMusic.name -> QQMusic.also {
                         musicKindDisplay = "QQ音乐"
                         musicPictureUrl = "https://y.gtimg.cn/mediastyle/app/download/img/logo.png?max_age=2592000"
                         musicJumpUrl = "https://y.qq.com/"
                     }
-                    "migu", "Migu", "miguMusic", "MiguMusic", MusicKind.MiguMusic.name -> MusicKind.MiguMusic.also {
+                    "migu", "Migu", "miguMusic", "MiguMusic", MiguMusic.name -> MiguMusic.also {
                         musicKindDisplay = "咪咕音乐"
                         musicPictureUrl =
                             "https://cdnmusic.migu.cn/tycms_picture/20/10/294/201020171104983_90x26_2640.png"
                         musicJumpUrl = "https://music.migu.cn/"
+                    }
+                    "kugou", "Kugou", KugouMusic.name -> KugouMusic.also {
+                        musicKindDisplay = "酷狗音乐"
+                        musicPictureUrl =
+                            "https://staticssl.kugou.com/public/root/images/logo.png"
+                        musicJumpUrl = "https://www.kugou.com/"
+                    }
+                    "kuwo", "Kuwo", KuwoMusic.name -> KuwoMusic.also {
+                        musicKindDisplay = "酷我音乐"
+                        musicPictureUrl =
+                            "https://h5static.kuwo.cn/www/kw-www/img/logo.dac7499.png"
+                        musicJumpUrl = "http://www.kuwo.cn/"
                     }
                     else -> throw NoSuchElementException("Music kind: $kindString")
                 }
@@ -667,17 +680,6 @@ public fun Neko.toMiraiMessageContent(
                         else -> MiraiSingleMessageContent
                     }
 
-                    // if (cacheMsg is MessageChain) {
-                    //     return@let MiraiSingleMessageContent(QuoteReply(cacheMsg))
-                    // }
-                    // if (cacheMsg is MessageSource) {
-                    //     return@let MiraiSingleMessageContent(QuoteReply(cacheMsg))
-                    // }
-                    // if (cacheMsg !is MiraiMessageMsgGet<*>) {
-                    //     return@let MiraiSingleMessageContent
-                    // }
-                    //
-                    // MiraiSingleMessageContent(QuoteReply(cacheMsg.message))
                 } ?: run {
                     // 不存在ID，尝试通过messageChain
                     message?.quote()?.let { MiraiSingleMessageContent(it) }
@@ -778,14 +780,16 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
                 .key("flash").value(true)
                 .build()
         }
-        is Voice -> {
+        is Audio -> {
             CatCodeUtil.getLazyNekoBuilder("voice", true)
                 .key("id").value { id }
-                .key("name").value(fileName)
+                .key("name").value(filename)
                 .key("size").value(fileSize).apply {
-                    url?.let { key("url").value(it) }
+                    if (this is OnlineAudio) {
+                        key("url").value { this.urlForDownload }
+                    }
                 }
-                .key("md5").value { this.md5.byteArrayToHexString() }
+                .key("md5").value { this.fileMd5.byteArrayToHexString() }
                 .build()
 
         }
@@ -893,6 +897,7 @@ public suspend fun RemoteResourceInProcessor.getStream(context: RemoteResourceCo
  * 通过http网络链接得到一个输入流。
  * 通常认为是一个http-get请求
  */
+@Suppress("unused")
 public suspend fun Url.toStream(): InputStream {
     val urlString = this.toString()
     // bot?.logger?.debug("mirai.http.connection.try", urlString)
@@ -909,8 +914,8 @@ public suspend fun Url.toStream(): InputStream {
 
 
 @OptIn(MiraiExperimentalApi::class)
-private val Voice.id: String
-    get() = md5.byteArrayToHexString()
+private val Audio.id: String
+    get() = fileMd5.byteArrayToHexString()
 
 
 private val hexArray = charArrayOf(
@@ -964,10 +969,12 @@ private fun <T> CodeBuilder<T>.value(key: String, value: Any?): CodeBuilder<T> =
 
 private val MusicKind.showKind: String
     get() = when (this) {
-        MusicKind.NeteaseCloudMusic -> "neteaseCloud"
-        MusicKind.QQMusic -> "QQ"
-        MusicKind.MiguMusic -> "migu"
+        NeteaseCloudMusic -> "neteaseCloud"
+        QQMusic -> "QQ"
+        MiguMusic -> "migu"
         // else -> "Unknown"
+        KugouMusic -> "kugou"
+        KuwoMusic -> "kuwo"
     }
 
 

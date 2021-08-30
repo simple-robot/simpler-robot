@@ -40,6 +40,7 @@ import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.User
+import net.mamoe.mirai.contact.announcement.OfflineAnnouncement
 import net.mamoe.mirai.message.MessageReceipt
 import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.MessageChain
@@ -225,24 +226,6 @@ public class MiraiSender(
             msg.toMiraiMessageContent(message, remoteResourceInProcessor = remoteResourceInProcessor))
 
 
-    /**
-     * mirai 仅支持设置新成员入群公告。
-     * 且除 [group]、[title]、[text] 以外的其他参数基本无效。
-     * (mirai)
-     */
-    private fun setGroupNewMemberNotice0(
-        group: Long,
-        title: String?,
-        text: String?,
-    ): Carrier<Boolean> {
-        val builder = StringBuilder()
-        title?.let { builder.append(it).appendLine().appendLine() }
-        text?.let { builder.append(it).appendLine() }
-        val noticeText: String = builder.toString()
-        bot.group(group).settings.entranceAnnouncement = noticeText
-        return true.toCarrier()
-    }
-
     override fun sendGroupNotice(
         group: Long,
         title: String?,
@@ -251,9 +234,26 @@ public class MiraiSender(
         top: Boolean,
         toNewMember: Boolean,
         confirm: Boolean,
-    ): Carrier<Boolean> =
-        if (toNewMember) setGroupNewMemberNotice0(group, title, text)
-        else defSender.sendGroupNotice(group, title, text, popUp, top, toNewMember, confirm)
+    ): Carrier<Boolean> {
+        val content: String = when {
+            title == null && text != null -> text
+            text == null && title != null -> title
+            text != null && title != null -> "$title\n\n$text"
+            else -> throw IllegalArgumentException("Title and text cannot be empty in same time.")
+        }
+        val announcement = OfflineAnnouncement(content) {
+            this.sendToNewMember = toNewMember
+            this.isPinned = top
+            this.requireConfirmation = confirm
+            this.showPopup = popUp
+        }
+
+        runBlocking { announcement.publishTo(bot.group(group)) }
+
+        return true.toCarrier()
+    }
+        // if (toNewMember) setGroupNewMemberNotice0(group, title, text)
+        // else defSender.sendGroupNotice(group, title, text, popUp, top, toNewMember, confirm)
     // false.toCarrier()
 
     override fun sendGroupNotice(

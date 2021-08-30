@@ -18,12 +18,9 @@ import love.forte.common.configuration.Configuration;
 import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.bot.Bot;
 import love.forte.simbot.bot.BotManager;
-import love.forte.simbot.component.mirai.utils.MiraiBotEventRegistrars;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import love.forte.simbot.core.SimbotProcess;
-import love.forte.test.event.TestPostEvent;
-import net.mamoe.mirai.event.events.MessagePostSendEvent;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -37,12 +34,12 @@ public class Test implements SimbotProcess {
     }
 
     private static void init() {
-        MiraiBotEventRegistrars.registerEventSolver(
-                MessagePostSendEvent.class,
-                TestPostEvent.class,
-                bot -> true,
-                (bot, e) -> new TestPostEvent(e)
-        );
+        // MiraiBotEventRegistrars.registerEventSolver(
+        //         MessagePostSendEvent.class,
+        //         TestPostEvent.class,
+        //         bot -> true,
+        //         (bot, e) -> new TestPostEvent(e)
+        // );
     }
 
 
