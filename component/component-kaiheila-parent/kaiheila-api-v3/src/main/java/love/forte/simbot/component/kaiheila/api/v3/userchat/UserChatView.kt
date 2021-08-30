@@ -29,7 +29,7 @@ public class UserChatViewReq(private val chatCode: String) : GetUserChatApiReq<O
     override val dataSerializer: DeserializationStrategy<ObjectResp<UserChatView>>
         get() = UserChatView.objectSerializer
 
-    override fun createBody(): Any? = null
+    protected override fun createBody(): Any? = null
 
     override fun RouteInfoBuilder.doRoute() {
         parameters {

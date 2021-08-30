@@ -14,12 +14,17 @@
 
 package love.forte.simbot.component.kaiheila.`object`
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
+import love.forte.simbot.component.kaiheila.api.ApiData
+import love.forte.simbot.component.kaiheila.api.ListResp
+import love.forte.simbot.component.kaiheila.api.listResp
+import love.forte.simbot.component.kaiheila.api.objectResp
 
 
 /**
@@ -39,10 +44,10 @@ import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
  * }
  *
  * ```
- *
+ * @see RoleImpl
  * @author ForteScarlet
  */
-public interface Role : KhlObjects {
+public interface Role : KhlObjects, Comparable<Role> {
 
     /** 角色id */
     val roleId: Int
@@ -63,7 +68,14 @@ public interface Role : KhlObjects {
     val mentionable: Int
 
     /** 权限码 */
-    val permissions: Int
+    val permissions: Permissions
+
+    /**
+     * 权限码的数字值
+     */
+    val permissionsValue: Int get() = permissions.perm.toInt()
+
+    override fun compareTo(other: Role): Int = position.compareTo(other.position)
 
     companion object : SerializerModuleRegistrar {
         override fun SerializersModuleBuilder.serializerModule() {
@@ -72,6 +84,15 @@ public interface Role : KhlObjects {
                 default { RoleImpl.serializer() }
             }
         }
+
+        @JvmStatic
+        val objectSerializer
+            get() = RoleImpl.objectSerializer
+
+        @JvmStatic
+        val emptySortSerializer: KSerializer<ListResp<Role, ApiData.Resp.EmptySort>>
+            get() = RoleImpl.emptySortSerializer
+
     }
 
 }
@@ -87,10 +108,15 @@ public data class RoleImpl(
     override val position: Int,
     override val hoist: Int,
     override val mentionable: Int,
-    override val permissions: Int
+    override val permissions: Permissions,
 ) : Role {
     override val originalData: String get() = toString()
+
     internal companion object {
         const val SERIAL_NAME = "ROLE_I"
+        val objectSerializer = objectResp<Role>()
+        val emptySortSerializer: KSerializer<ListResp<Role, ApiData.Resp.EmptySort>> =
+            listResp()
+
     }
 }

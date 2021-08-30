@@ -49,7 +49,7 @@ public class MessageUpdateReq(
 
     companion object Key : BaseApiDataKey("message", "update")
 
-    override fun createBody(): Any = Body(msgId, content, quote, tempTargetId)
+    protected override fun createBody(): Any = Body(msgId, content, quote, tempTargetId)
 
 
     @Serializable

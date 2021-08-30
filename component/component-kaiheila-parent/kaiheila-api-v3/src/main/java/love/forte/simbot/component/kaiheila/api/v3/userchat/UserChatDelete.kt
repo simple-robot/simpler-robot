@@ -27,7 +27,7 @@ import love.forte.simbot.component.kaiheila.api.BaseApiDataReq
 public class UserChatDeleteReq(private val chatCode: String) : EmptyRespPostUserChatApiReq, BaseApiDataReq.Empty(Key) {
     companion object Key : BaseApiDataKey("user-chat", "delete")
 
-    override fun createBody(): Any = Body(chatCode)
+    protected override fun createBody(): Any = Body(chatCode)
 
     @Serializable
     private data class Body(@SerialName("chat_code") val chatCode: String)

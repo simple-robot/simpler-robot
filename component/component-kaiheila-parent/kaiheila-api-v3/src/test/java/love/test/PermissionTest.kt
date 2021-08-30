@@ -1,7 +1,8 @@
 package love.test
 
-import love.forte.simbot.component.kaiheila.api.v3.guild.role.PermissionType
-import love.forte.simbot.component.kaiheila.api.v3.guild.role.combine
+import love.forte.simbot.component.kaiheila.`object`.PermissionType
+import love.forte.simbot.component.kaiheila.`object`.combine
+
 
 /**
  *

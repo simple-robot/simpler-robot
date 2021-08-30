@@ -39,7 +39,7 @@ public class MessageReactionListReq(
 
     override val dataSerializer: DeserializationStrategy<ObjectResp<MessageReactionListResp>> get() = DATA_SERIALIZER
 
-    override fun createBody(): Any = Body(msgId, emoji)
+    protected override fun createBody(): Any = Body(msgId, emoji)
 
     @Serializable
     private data class Body(@SerialName("msg_id") val msgId: String, val emoji: String)

@@ -112,7 +112,7 @@ public class DirectMessageCreateReq internal constructor(
     override val dataSerializer: DeserializationStrategy<ObjectResp<MessageCreateResp>>
         get() = MessageCreateResp.objectResp
 
-    override fun createBody(): Any = Body(type, targetId, chatCode, content, quote, nonce)
+    protected override fun createBody(): Any = Body(type, targetId, chatCode, content, quote, nonce)
 
     @Serializable
     private data class Body(

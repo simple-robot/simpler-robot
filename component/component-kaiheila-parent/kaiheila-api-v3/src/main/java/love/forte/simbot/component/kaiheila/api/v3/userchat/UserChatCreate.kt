@@ -34,7 +34,7 @@ public class UserChatCreateReq(private val targetId: String) : PostUserChatApiRe
     override val dataSerializer: DeserializationStrategy<ObjectResp<UserChatView>>
         get() = UserChatView.objectSerializer
 
-    override fun createBody(): Any = Body(targetId)
+    protected override fun createBody(): Any = Body(targetId)
 
     @Serializable
     private data class Body(@SerialName("target_id") val targetId: String)

@@ -31,7 +31,7 @@ public class MessageDeleteReq(private val msgId: String) : EmptyRespPostMessageA
 
     companion object Key : BaseApiDataKey("message", "delete")
 
-    override fun createBody(): Any = Body(msgId)
+    protected override fun createBody(): Any = Body(msgId)
 
     @Serializable
     private data class Body(@SerialName("msg_id") val msgId: String)

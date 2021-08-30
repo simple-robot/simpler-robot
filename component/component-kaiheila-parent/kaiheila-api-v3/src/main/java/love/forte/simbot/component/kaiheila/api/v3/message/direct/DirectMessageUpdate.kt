@@ -49,7 +49,7 @@ public class DirectMessageUpdateReq(
     BaseApiDataReq.Empty(Key) {
     companion object Key : BaseApiDataKey("direct-message", "update")
 
-    override fun createBody(): Any = Body(msgId, content, quote)
+    protected override fun createBody(): Any = Body(msgId, content, quote)
 
     @Serializable
     private data class Body(

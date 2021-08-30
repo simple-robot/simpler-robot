@@ -94,7 +94,7 @@ public class DirectMessageListReq internal constructor(
     override val dataSerializer: DeserializationStrategy<ListResp<DirectMessageDetails, ApiData.Resp.EmptySort>>
         get() = DATA_SERIALIZER
 
-    override fun createBody(): Any? = null
+    protected override fun createBody(): Any? = null
 
     override fun RouteInfoBuilder.doRoute() {
         parameters {

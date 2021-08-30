@@ -37,7 +37,7 @@ public class MessageAddReactionReq(
 ) : EmptyRespPostMessageApiReq, BaseApiDataReq.Empty(Key) {
     companion object Key : BaseApiDataKey("message", "add-reaction")
 
-    override fun createBody(): Any = Body(msgId, emoji)
+    protected override fun createBody(): Any = Body(msgId, emoji)
 
     @Serializable
     private data class Body(@SerialName("msg_id") val msgId: String, val emoji: String)

@@ -1,7 +1,7 @@
 @file:Suppress("unused")
 @file:JvmName("PermissionTypes")
 
-package love.forte.simbot.component.kaiheila.api.v3.guild.role
+package love.forte.simbot.component.kaiheila.`object`
 
 /**
  *

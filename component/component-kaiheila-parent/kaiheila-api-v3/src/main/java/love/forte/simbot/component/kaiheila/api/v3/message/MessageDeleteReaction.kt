@@ -31,7 +31,7 @@ public class MessageDeleteReactionReq(
 ) : EmptyRespPostMessageApiReq, BaseApiDataReq.Empty(Key) {
     companion object Key : BaseApiDataKey("message", "delete-reaction")
 
-    override fun createBody(): Any = Body(msgId, emoji, userId)
+    protected override fun createBody(): Any = Body(msgId, emoji, userId)
 
     @Serializable
     private data class Body(

@@ -222,7 +222,7 @@ public abstract class BaseApiDataReq<HTTP_RESP : ApiData.Resp<*>>(
     /**
      * 得到一个新的 Body 对象。
      */
-    abstract fun createBody(): Any?
+    protected abstract fun createBody(): Any?
 
 }
 

@@ -28,6 +28,6 @@ public class DirectMessageDeleteReq(private val msgId: String) : EmptyRespPostDi
     BaseApiDataReq.Empty(Key) {
     companion object Key : BaseApiDataKey("direct-message", "delete")
 
-    override fun createBody(): Any = Body(msgId)
+    protected override fun createBody(): Any = Body(msgId)
     private data class Body(@SerialName("msg_id") val msgId: String)
 }

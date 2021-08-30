@@ -3,6 +3,7 @@ package love.forte.simbot.component.kaiheila.api.v3.guild.role
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.component.kaiheila.`object`.Permissions
 import love.forte.simbot.component.kaiheila.api.*
 import love.forte.simbot.component.kaiheila.api.v3.guild.GuildApiRespData
 
@@ -20,17 +21,18 @@ class GuildRoleCreateReq(
 ) : BaseApiDataReq<ObjectResp<GuildRoleCreateResp>>(Key),
     PostGuildRoleApiReq<ObjectResp<GuildRoleCreateResp>>  {
     companion object Key : BaseApiDataKey("guild-role", "create")
-    // by key("/guild-role/create") {
-    //     private val ROUTE = listOf("guild-role", "create")
-    //     private val DATA_SERIALIZER = objectResp<GuildRoleCreateResp>()
-    // }
 
     override val dataSerializer: DeserializationStrategy<ObjectResp<GuildRoleCreateResp>>
         get() = GuildRoleCreateResp.objectResp
 
-    override fun createBody(): Any? {
-        TODO("Not yet implemented")
-    }
+    override fun createBody(): Any = Body(name, guildId)
+
+    @Serializable
+    private data class Body(
+        val name: String?,
+        @SerialName("guild_id")
+        val guildId: String
+    )
 }
 
 

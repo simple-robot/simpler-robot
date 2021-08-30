@@ -71,7 +71,7 @@ public class MessageCreateReq(
 
     companion object Key : BaseApiDataKey("message", "create")
 
-    override fun createBody(): Any = Body(type, targetId, content, quote, nonce, tempTargetId)
+    protected override fun createBody(): Any = Body(type, targetId, content, quote, nonce, tempTargetId)
 
 
     override val dataSerializer: DeserializationStrategy<ObjectResp<MessageCreateResp>>
