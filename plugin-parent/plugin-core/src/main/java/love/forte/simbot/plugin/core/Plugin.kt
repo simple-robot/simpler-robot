@@ -38,7 +38,23 @@ import love.forte.simbot.listener.ListenerFunction
  *
  * @author ForteScarlet
  */
-public sealed interface Plugin : PluginInfoContainer
+public sealed interface Plugin : PluginInfoContainer {
+
+    /**
+     * 在插件范围内，需要进行扫描的顶级包路径。
+     * 在追加支持插件环境的依赖中心后，此扫描后的内容将会被置于此插件的依赖中心中进行管理。
+     *
+     * 插件的依赖注入的标识（id）会在字段名称或默认名称之前追加当前插件的 [id][PluginInfo.id].
+     * 例如, 假设 [plugin id][PluginInfo.id] 为 `simbot.example.plugin1`,
+     * 注入的某个类的依赖标识叫做 `MyDemoBean`, 则如果你想要在插件中通过ID获取他，那么你应该写 `simbot.example.plugin1.MyDemoBean`
+     *
+     * 也同时因此，建议你使用常量类来记录这些几乎不会变更的常量字符串，例如 [plugin id][PluginInfo.id]、[plugin name][PluginInfo.name] 等。
+     *
+     */
+    val scanPackages: List<String>
+
+
+}
 
 
 /**
