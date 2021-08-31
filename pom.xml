@@ -22,6 +22,7 @@
         <module>serialization</module>
         <module>http</module>
         <module>time-task</module>
+        <module>plugin-parent</module>
     </modules>
 
     <dependencies>
