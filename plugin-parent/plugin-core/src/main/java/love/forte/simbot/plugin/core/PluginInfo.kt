@@ -54,6 +54,10 @@ public data class PluginInfo(
      */
     val name: String,
 
+    /**
+     * 对此插件进行一个描述
+     */
+    val description: String,
 
     /**
      * 此插件的版本号

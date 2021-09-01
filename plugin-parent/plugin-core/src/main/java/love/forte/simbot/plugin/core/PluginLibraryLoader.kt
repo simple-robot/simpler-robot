@@ -17,10 +17,9 @@ package love.forte.simbot.plugin.core
 
 /**
  *
- * 针对于一个 [JarFile] 的类加载器，此类加载器会监听此jar文件的变化并在发生对应变化的时候进行回调。
- *
+ * 插件的lib加载器。
  *
  * @author ForteScarlet
  */
-public open class JarFileClassLoader {
+class PluginLibraryLoader : ClassLoader() {
 }

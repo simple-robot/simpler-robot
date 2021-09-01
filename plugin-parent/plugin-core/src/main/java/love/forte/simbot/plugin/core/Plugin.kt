@@ -14,6 +14,8 @@
 
 @file:JvmName("Plugins")
 @file:JvmMultifileClass
+@file:Suppress("unused")
+
 package love.forte.simbot.plugin.core
 
 import love.forte.simbot.listener.ListenerFunction
@@ -35,10 +37,26 @@ import love.forte.simbot.listener.ListenerFunction
  *
  * TODO 会考虑为每一个插件环境提供一个独立的依赖中心来实现当前插件范围内的局部管理。
  *
+ * ## 目录结构
+ * 在插件根目录中的结构为：
+ * ```
+ * <plugin-root>
+ *       └ plugins  (默认)
+ *            ├ libraries  (默认目录，所有的插件共享的额外依赖库。)
+ *            │      └ Lib jars  (各依赖Jar文件)
+ *            └ plugin-id  (目录，例如 forte.example-plugin.demo1)
+ *                  ├ Plugin Jar File  (与plugin-id **同名** 的jar,
+ *                  │         例如 forte.example-plugin.demo1.jar)
+ *                  └ libraries  (目录，如果这个Jar有独立的依赖库，放在这里)
+ *                        └ Lib jars  (各依赖Jar文件)
+ *
+ *```
+ *
+ * @see ListenerPlugin
  *
  * @author ForteScarlet
  */
-public sealed interface Plugin : PluginInfoContainer {
+public interface Plugin : PluginInfoContainer {
 
     /**
      * 在插件范围内，需要进行扫描的顶级包路径。
@@ -53,21 +71,36 @@ public sealed interface Plugin : PluginInfoContainer {
      */
     val scanPackages: List<String>
 
+    /**
+     * 此插件所对应的类加载器。
+     * 为了避免内存泄漏，请不要长时间强引用此类加载器，更不要进行对其缓存等操作。
+     */
+    val pluginLoader: PluginLoader
 
 }
+
+
+/**
+ * 插件的定义，交由用户实现。
+ */
+public sealed interface PluginDetails
+
 
 
 /**
  * 一个 [监听函数][ListenerFunction] 插件。此插件代表其允许插入监听函数。
  *
  */
-public interface ListenerPlugin : Plugin {
+public interface ListenerPlugin : PluginDetails {
 
     /**
      * 得到监听函数列表。初始载入以及每次Plugin的对应文件变化的时候都会获取一次。
      */
     fun getListeners(): List<ListenerFunction>
 }
+
+
+
 
 @get:JvmSynthetic
 public val ListenerPlugin.listeners: List<ListenerFunction>

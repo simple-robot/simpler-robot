@@ -48,6 +48,11 @@ annotation class SimbotPlugin(
 
 
     /**
+     * 对此插件进行一个描述
+     */
+    val description: String,
+
+    /**
      * 此插件的版本号
      */
     val version: String,
@@ -102,6 +107,7 @@ public fun SimbotPlugin.toPluginInfo(): PluginInfo {
         id = id,
         name = name,
         version = version,
+        description = description,
         developers = developers.map { it.toDeveloper() }
     )
 }
