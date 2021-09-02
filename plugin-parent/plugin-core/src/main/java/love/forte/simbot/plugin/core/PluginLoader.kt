@@ -14,7 +14,6 @@
 
 package love.forte.simbot.plugin.core
 
-import java.net.URL
 import java.nio.file.Path
 
 
@@ -44,6 +43,6 @@ public class PluginLoader(parent: ClassLoader = getSystemClassLoader(), vararg j
 
 
 
-fun Path.toURL(): URL {
-    return this.toUri().toURL()
-}
+// fun Path.toURL(): URL {
+//     return this.toUri().toURL()
+// }
