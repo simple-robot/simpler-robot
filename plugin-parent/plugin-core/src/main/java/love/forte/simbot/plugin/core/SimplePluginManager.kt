@@ -14,13 +14,20 @@
 
 package love.forte.simbot.plugin.core
 
+import java.nio.file.Path
+
 
 /**
  * [PluginManager] 基础实现类。
  *
  * @author ForteScarlet
  */
-public class SimplePluginManager : PluginManager {
+public class SimplePluginManager(
+    /** 插件所处的目录 */
+    private val pluginRoot: Path,
+
+
+) : PluginManager {
 
 
 

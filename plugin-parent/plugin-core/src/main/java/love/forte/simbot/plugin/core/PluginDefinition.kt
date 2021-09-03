@@ -15,6 +15,11 @@
 package love.forte.simbot.plugin.core
 
 import java.nio.file.Path
+import java.nio.file.WatchEvent
+import java.nio.file.WatchKey
+import java.nio.file.WatchService
+import kotlin.io.path.Path
+import kotlin.io.path.div
 import kotlin.io.path.name
 
 
@@ -53,11 +58,31 @@ public interface PluginDefinition {
  * [PluginDefinition] 基于 [FileWithTemporarySubstitute] 的实现。
  *
  */
-public class PluginDefinitionWithTemporarySubstitute : PluginDefinition {
-    override val main: Path
-        get() = TODO("Not yet implemented")
-    override val mainFile: Path
-        get() = TODO("Not yet implemented")
-    override val libraries: Path
-        get() = TODO("Not yet implemented")
+public class PluginDefinitionWithTemporarySubstitute(root: Path, mainPath: Path, mainFilePath: Path, librariesPath: Path) : PluginDefinition {
+    override val main: Path = mainPath
+    private val _mainFile: PathWithTemporarySubstitute
+    override val mainFile: Path get() = _mainFile.realPath
+    private val _libraries: PathWithTemporarySubstitute
+    override val libraries: Path get() = _libraries.realPath
+
+    init {
+        val tempRoot = root.parent / Path(".${root.name}")
+        _mainFile = mainFilePath.withTemporarySubstitute(root, tempRoot)
+        _libraries = librariesPath.withTemporarySubstitute(root, tempRoot)
+    }
+
+    /**
+     * 注册一个针对于 [mainFile] 的文件监听
+     */
+    fun watchMainFile(watchService: WatchService, vararg events: WatchEvent.Kind<*>): WatchKey {
+        return mainFile.register(watchService, *events)
+    }
+
+
+    /**
+     * 注册一个针对于 [libraries] 的文件目录变动监听
+     */
+    fun watchLibraries(watchService: WatchService, vararg events: WatchEvent.Kind<*>): WatchKey {
+        return libraries.register(watchService, *events)
+    }
 }

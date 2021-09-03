@@ -14,7 +14,11 @@
 
 package love.forte.simbot.plugin.core
 
+import java.net.URLClassLoader
+import java.nio.file.FileSystems
 import java.nio.file.Path
+import java.nio.file.WatchService
+import kotlin.io.path.useDirectoryEntries
 
 
 /**
@@ -31,18 +35,28 @@ import java.nio.file.Path
  *
  * @author ForteScarlet
  */
-public class PluginLoader(parent: ClassLoader = getSystemClassLoader(), vararg jarFile: Path) : ClassLoader() {
-    // TODO
+public class PluginLoader(
+    parent: ClassLoader = getSystemClassLoader(),
+    private val plugin: PluginDefinitionWithTemporarySubstitute,
+    private val fileWatcher: WatchService = FileSystems.getDefault().newWatchService()
+) : ClassLoader() {
+    @Volatile
+    private var realLoader: URLClassLoader
+
+    init {
+        val paths = mutableListOf<Path>()
+        paths.add(plugin.mainFile)
+        paths.addAll(plugin.libraries.useDirectoryEntries("*.jar") { it.toList() })
+
+        realLoader = URLClassLoader(paths.map { it.toUri().toURL() }.toTypedArray(), parent)
+
+
+
+    }
+
+
 
 
 }
 
 
-
-
-
-
-
-// fun Path.toURL(): URL {
-//     return this.toUri().toURL()
-// }
