@@ -36,8 +36,10 @@ import kotlin.io.path.*
  * @author ForteScarlet
  */
 @Suppress("MemberVisibilityCanBePrivate")
-public class DirectoryWithTemporarySubstitute(override val realPath: Path, private val temporarySubstitute: Path) :
+public class DirectoryWithTemporarySubstitute(override val realPath: Path, override val temporarySubstitute: Path) :
     Path by temporarySubstitute, PathWithTemporarySubstitute {
+
+    override fun toString(): String = "$realPath (temp in $temporarySubstitute)"
 
     /**
      * 执行文件同步，即将 [真实文件][realPath] 同步至 [临时文件][temporarySubstitute].
@@ -47,6 +49,10 @@ public class DirectoryWithTemporarySubstitute(override val realPath: Path, priva
     @Synchronized
     override fun sync() {
         if (realPath.exists()) {
+            val existNameMap: MutableMap<String, Path>? = temporarySubstitute.takeIf { it.exists() }?.useDirectoryEntries {
+                it.map { p -> p.name to p }.toList().toMap(
+                    mutableMapOf())
+            }
             realPath.useDirectoryEntries {
                 it.forEach { entry ->
                     val copyToPath = temporarySubstitute / entry.relativeTo(realPath)
@@ -54,13 +60,25 @@ public class DirectoryWithTemporarySubstitute(override val realPath: Path, priva
                         StandardCopyOption.COPY_ATTRIBUTES,
                         StandardCopyOption.REPLACE_EXISTING
                     )
+                    existNameMap?.remove(entry.name)
                 }
             }
+            if (existNameMap != null && existNameMap.isNotEmpty()) {
+                existNameMap.values.forEach {
+                    it.deleteIfExists()
+                }
+            }
+
         } else {
             // 不存在, 删除
             temporarySubstitute.deleteDeep() // .deleteIfExists()
         }
     }
+
+    override fun cleanTemp() {
+        temporarySubstitute.deleteDeep()
+    }
+
 }
 
 

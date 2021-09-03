@@ -60,22 +60,39 @@ public interface PluginDefinition {
  */
 public class PluginDefinitionWithTemporarySubstitute(root: Path, mainPath: Path, mainFilePath: Path, librariesPath: Path) : PluginDefinition {
     override val main: Path = mainPath
-    private val _mainFile: PathWithTemporarySubstitute
-    override val mainFile: Path get() = _mainFile.realPath
-    private val _libraries: PathWithTemporarySubstitute
-    override val libraries: Path get() = _libraries.realPath
+    internal val tempMainFile: PathWithTemporarySubstitute
+    override val mainFile: Path get() = tempMainFile.temporarySubstitute
+    internal val tempLibraries: PathWithTemporarySubstitute
+    override val libraries: Path get() = tempLibraries.temporarySubstitute
 
     init {
         val tempRoot = root.parent / Path(".${root.name}")
-        _mainFile = mainFilePath.withTemporarySubstitute(root, tempRoot)
-        _libraries = librariesPath.withTemporarySubstitute(root, tempRoot)
+        tempMainFile = mainFilePath.withTemporarySubstitute(root, tempRoot)
+        tempLibraries = librariesPath.withTemporarySubstitute(root, tempRoot)
+        tempMainFile.cleanTemp()
+        tempLibraries.cleanTemp()
+        tempMainFile.sync()
+        tempLibraries.sync()
+    }
+
+    @Synchronized
+    fun sync(main: Boolean, lib: Boolean) {
+        if (main) {
+            tempMainFile.sync()
+            println("Main file sync")
+        }
+        if (lib) {
+            tempLibraries.sync()
+            println("Lib sync")
+        }
     }
 
     /**
      * 注册一个针对于 [mainFile] 的文件监听
+     * 这里实际上注册的是 `mainFile.parent` 的文件夹监听，需要判断变更文件是否为 [mainFile] 本身
      */
     fun watchMainFile(watchService: WatchService, vararg events: WatchEvent.Kind<*>): WatchKey {
-        return mainFile.register(watchService, *events)
+        return tempMainFile.realPath.parent.register(watchService, *events)
     }
 
 
@@ -83,6 +100,6 @@ public class PluginDefinitionWithTemporarySubstitute(root: Path, mainPath: Path,
      * 注册一个针对于 [libraries] 的文件目录变动监听
      */
     fun watchLibraries(watchService: WatchService, vararg events: WatchEvent.Kind<*>): WatchKey {
-        return libraries.register(watchService, *events)
+        return tempLibraries.realPath.register(watchService, *events)
     }
 }

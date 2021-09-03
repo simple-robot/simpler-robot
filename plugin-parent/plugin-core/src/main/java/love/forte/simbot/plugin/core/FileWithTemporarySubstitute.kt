@@ -33,9 +33,10 @@ import kotlin.io.path.*
  * @author ForteScarlet
  */
 @Suppress("MemberVisibilityCanBePrivate")
-public class FileWithTemporarySubstitute(override val realPath: Path, private val temporarySubstitute: Path) :
+public class FileWithTemporarySubstitute(override val realPath: Path, override val temporarySubstitute: Path) :
     Path by temporarySubstitute, PathWithTemporarySubstitute {
 
+    override fun toString(): String = "$realPath (temp in $temporarySubstitute)"
     /**
      * 执行文件同步，即将 [真实文件][realPath] 同步至 [临时文件][temporarySubstitute].
      * @throws IOException 对文件的操作可能会存在I/O异常, like [createDirectories]、[copyTo]、[deleteIfExists]
@@ -58,5 +59,9 @@ public class FileWithTemporarySubstitute(override val realPath: Path, private va
             // 不存在, 删除
             temporarySubstitute.deleteIfExists()
         }
+    }
+
+    override fun cleanTemp() {
+        temporarySubstitute.deleteIfExists()
     }
 }

@@ -38,10 +38,17 @@ public sealed interface PathWithTemporarySubstitute : Path {
 
     val realPath: Path
 
+    val temporarySubstitute: Path
+
     /**
      * 执行替身同步。
      */
     fun sync()
+
+    /**
+     * 清理替补文件
+     */
+    fun cleanTemp()
 
 }
 

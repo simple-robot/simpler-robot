@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>plugin-parent</artifactId>
-        <groupId>love.forte.simple-robot</groupId>
+    <!--<parent>-->
+    <!--    <artifactId>plugin-parent</artifactId>-->
+        <groupId>love.forte.simple-robotx</groupId>
         <version>2.2.2<!--v--></version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+        <!--<relativePath>../pom.xml</relativePath>-->
+    <!--</parent>-->
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>plugin-core</artifactId>
@@ -15,12 +15,16 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <kotlin.version>1.5.30</kotlin.version>
+        <dokka.version>1.4.32</dokka.version>
     </properties>
+
 
     <dependencies>
         <dependency>
             <groupId>love.forte.simple-robot</groupId>
             <artifactId>core</artifactId>
+            <version>2.2.2</version>
         </dependency>
     </dependencies>
 
@@ -29,26 +33,112 @@
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <args>
+                        <arg>-Xjvm-default=all</arg>
+                        <arg>-Xinline-classes</arg>
+                        <arg>-Xopt-in=kotlin.RequiresOptIn</arg>
+                    </args>
+                    <jvmTarget>1.8</jvmTarget>
+                    <javaParameters>true</javaParameters>
+                </configuration>
             </plugin>
 
             <!-- dokka -->
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
+                <version>${dokka.version}</version>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <!--<goal>dokka</goal>-->
+                            <!--<goal>javadoc</goal>-->
+                            <goal>javadocJar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+
+                    <!--<skip>true</skip>-->
+
+
+                    <!-- Set to true to skip dokka task, default: false -->
+                    <!--                        <skip>true</skip>-->
+                    <!-- Used for linking to JDK, default: 6 -->
+                    <jdkVersion>8</jdkVersion>
+                    <!-- Do not create index pages for empty packages -->
+                    <skipEmptyPackages>true</skipEmptyPackages>
+                    <!-- Emit warnings about not documented members, applies globally, also can be overridden by packageOptions -->
+                    <reportUndocumented>false</reportUndocumented>
+
+                    <skipDeprecated>true</skipDeprecated>
+                    <!--<outputDir>../simple-robot-2.0-doc/docs/${project.name}/doc</outputDir>-->
+
+                    <!-- Use default or set to custom path to cache directory to enable package-list caching. -->
+                    <!-- When set to default, caches stored in $USER_HOME/.cache/dokka -->
+                    <cacheRoot>default</cacheRoot>
+
+                    <offlineMode>true</offlineMode>
+
+                </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
                 <executions>
+                    <!-- 替换会被 maven 特别处理的 default-compile -->
                     <execution>
                         <id>default-compile</id>
                         <phase>none</phase>
                     </execution>
+                    <!-- 替换会被 maven 特别处理的 default-testCompile -->
                     <execution>
                         <id>default-testCompile</id>
                         <phase>none</phase>
                     </execution>
+                    <execution>
+                        <id>java-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>java-test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
                 </executions>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>
