@@ -14,6 +14,7 @@
 @file:JvmName("ListenerManagers")
 package love.forte.simbot.listener
 
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 
 
@@ -104,6 +105,20 @@ public interface ListenerManager : MsgGetProcessor, ListenerRegistrar {
      * 根据ID清除掉一个监听函数。
      */
     fun removeListenerById(id: String): ListenerFunction?
+
+    /**
+     * 根据组别清除掉相关的监听函数.
+     * 如果
+     * @return 清理掉的数量。
+     */
+    fun removeListenerByGroup(group: String): Int
+
+    /**
+     * 根据组别清除掉相关的监听函数.
+     * @return 清理掉的数量。
+     */
+    @OptIn(SimbotExperimentalApi::class)
+    fun removeListenerByGroup(group: ListenerGroup): Int
 }
 
 

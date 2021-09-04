@@ -103,7 +103,7 @@ private data class ListenerFunctionGroups(
 @SpareBeans("coreListenerManager")
 public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructor(
     eventDispatcherFactory: EventDispatcherFactory,
-    private val listenerGroupManager: ListenerGroupManager,
+    // private val listenerGroupManager: ListenerGroupManager,
 
     private val atDetectionFactory: AtDetectionFactory,
     private val exceptionManager: ExceptionProcessor,
@@ -296,9 +296,11 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     /**
      * 根据ID移除某个指定的监听函数
      */
+    @OptIn(SimbotExperimentalApi::class)
     override fun removeListenerById(id: String): ListenerFunction? {
         return lock.write {
             val removed = listenerFunctionIdMap.remove(id) ?: return null
+            val removedFunc = removed.function
             // Not null
             val needReset = mutableMapOf<Class<out MsgGet>, List<ListenerInvoker>>()
             mainListenerFunctionMap.forEach { (type, queue) ->
@@ -310,10 +312,24 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             needReset.forEach { (type, resetList) ->
                 mainListenerFunctionMap[type] = listenerInvokerQueue(*resetList.toTypedArray())
             }
-
-            removed.function
+            removedFunc
         }
     }
+
+    @OptIn(SimbotExperimentalApi::class)
+    override fun removeListenerByGroup(group: String): Int {
+        TODO()
+    }
+
+    /**
+     * 根据组别清除掉相关的监听函数.
+     * @return 清理掉的数量。
+     */
+    @OptIn(SimbotExperimentalApi::class)
+    override fun removeListenerByGroup(group: ListenerGroup): Int {
+        TODO("Not yet implemented")
+    }
+
 
 
     private fun cleanCache() {

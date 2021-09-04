@@ -38,7 +38,6 @@ public class SimplePluginManager(
      */
     private val listenerManager: ListenerManager,
 
-
     /**
      * 依赖获取器
      */
@@ -111,7 +110,8 @@ public class SimplePluginManager(
 
                         }
                         onMainDeleted {
-
+                            // main deleted, remove listeners
+                            // listenerManager.removeListenerById()
                         }
 
                         onLibCreated { }

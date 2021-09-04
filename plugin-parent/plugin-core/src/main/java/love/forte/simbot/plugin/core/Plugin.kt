@@ -69,7 +69,8 @@ public interface Plugin : PluginInfoContainer {
      * 也同时因此，建议你使用常量类来记录这些几乎不会变更的常量字符串，例如 [plugin id][PluginInfo.id]、[plugin name][PluginInfo.name] 等。
      *
      */
-    val scanPackages: List<String>
+    @Deprecated("Not support yet.", ReplaceWith("emptyList()"))
+    val scanPackages: List<String> get() = emptyList()
 
     /**
      * 此插件所对应的类加载器。
