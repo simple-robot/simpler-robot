@@ -17,6 +17,9 @@ package love.forte.simbot.plugin.core
 
 /**
  * 动态插件的管理器类。
+ *
+ * @see Plugin
+ *
  * @author ForteScarlet
  */
 public interface PluginManager {

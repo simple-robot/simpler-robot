@@ -24,8 +24,6 @@ import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.configuration.ComponentBeans
 import love.forte.simbot.listener.MsgGetProcessor
 import love.forte.simbot.listener.onMsg
-import love.forte.simbot.read
-import love.forte.simbot.write
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Friend
 import net.mamoe.mirai.contact.Member
@@ -35,8 +33,9 @@ import net.mamoe.mirai.event.Listener
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 import net.mamoe.mirai.utils.MiraiLoggerWithSwitch
-import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 import kotlin.reflect.KClass
 
 
@@ -371,7 +370,7 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         // enable mirai log.
         logger.let { if (it is MiraiLoggerWithSwitch) it else null }?.enable()
 
-        // region anyElse custom event
+        // region any else custom event
         lock.read {
             var t = 0
             customEventsInvokers.forEach { solver ->
@@ -382,6 +381,7 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
                         }
                         // msgProcessor.onMsg { MiraiGroupMessageSyncImpl(this) }
                     }
+                    t++
                 }
             }
             if (t > 0) {
@@ -415,7 +415,7 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
         }
 }
 
-private val lock: ReadWriteLock = ReentrantReadWriteLock()
+private val lock: ReentrantReadWriteLock = ReentrantReadWriteLock()
 
 private val customEventsInvokers: MutableList<EventsSolver<Event>> = mutableListOf()
 

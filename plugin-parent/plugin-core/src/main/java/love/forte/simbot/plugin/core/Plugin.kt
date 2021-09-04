@@ -42,12 +42,12 @@ import love.forte.simbot.listener.ListenerFunction
  * ```
  * <plugin-root>
  *       └ plugins  (默认)
- *            ├ libraries  (默认目录，所有的插件共享的额外依赖库。)
+ *            ├ lib  (默认目录，所有的插件共享的额外依赖库，一次性加载，不支持动态变更)
  *            │      └ Lib jars  (各依赖Jar文件)
  *            └ plugin-id  (目录，例如 forte.example-plugin.demo1)
  *                  ├ Plugin Jar File  (与plugin-id **同名** 的jar,
  *                  │         例如 forte.example-plugin.demo1.jar)
- *                  └ libraries  (目录，如果这个Jar有独立的依赖库，放在这里)
+ *                  └ lib  (目录，如果这个Jar有独立的依赖库，放在这里)
  *                        └ Lib jars  (各依赖Jar文件)
  *
  *```

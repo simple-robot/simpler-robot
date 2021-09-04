@@ -44,6 +44,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 private val ListenerInvokerComparable: Comparator<ListenerInvoker> =
     Comparator { f1, f2 -> f1.function.priority.compareTo(f2.function.priority) }
@@ -75,7 +78,13 @@ private data class ListenerFunctionGroups(
     companion object {
         val empty = ListenerFunctionGroups(emptyList(), emptyList())
         fun ListenerFunctionGroups.marge(): Collection<ListenerInvoker> =
-            if (isEmpty()) emptyList() else normal + spare
+            when {
+                isEmpty() -> emptyList()
+                spare.isEmpty() -> normal
+                normal.isEmpty() -> spare
+                spare.isNotEmpty() && normal.isNotEmpty() -> normal + spare
+                else -> emptyList()
+            }
 
         fun ListenerFunctionGroups.isEmpty(): Boolean = normal.isEmpty() && spare.isEmpty()
         fun ListenerFunctionGroups.isNotEmpty(): Boolean = !isEmpty()
@@ -167,65 +176,152 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      *
      * 此为主集合，所有的监听函数均存在于此。
      */
-    private val mainListenerFunctionMap: MutableMap<Class<out MsgGet>, Queue<ListenerInvoker>> = ConcurrentHashMap()
+    private val mainListenerFunctionMap: ConcurrentHashMap<Class<out MsgGet>, Queue<ListenerInvoker>> =
+        ConcurrentHashMap()
     // private val mainListenerFunctionMap: MutableMap<Class<out MsgGet>, Queue<ListenerFunction>> = ConcurrentHashMap()
 
-
-    private val listenerFunctionIdMap: MutableMap<String, ListenerInvoker> = ConcurrentHashMap()
+    /**
+     * 根据ID记录的函数列表。
+     */
+    private val listenerFunctionIdMap: ConcurrentHashMap<String, ListenerInvoker> = ConcurrentHashMap()
 
     /**
      * 监听函数缓冲区，对后续出现的消息类型进行记录并缓存。
      * 当 [register] 了新的监听函数后对应相关类型将会被清理。
      */
-    private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, ListenerFunctionGroups> = ConcurrentHashMap()
+    private val cacheListenerFunctionMap: ConcurrentHashMap<Class<out MsgGet>, ListenerFunctionGroups> =
+        ConcurrentHashMap()
     // private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, ListenerFunctionGroups> = ConcurrentHashMap()
 
+    private val lock = ReentrantReadWriteLock()
 
     /**
      * 注册一个 [监听函数][ListenerFunction]。
      *
-     * 每次注册一个新的监听函数的时候，会刷新内置的 **全部** 缓存，会一定程度上影响到其他应用。
+     * 每次注册一个新的监听函数的时候，会刷新内置的 **全部** 缓存，会一定程度上影响到其他应用的性能。
+     *
+     * 虽然 [register] 标记为同步，但是进行读取的其他函数不会进行同步。
      *
      */
     @Synchronized
-    override fun register(listenerFunction: ListenerFunction) {
-        // 获取其监听类型，并作为key存入map
-        val listenTypes = listenerFunction.listenTypes
+    override fun register(vararg listenerFunctions: ListenerFunction) {
+        lock.write {
+            val funcInvokers: Map<Class<out MsgGet>, List<ListenerInvoker>> = listenerFunctions.asSequence()
+                .map(::ListenerInvokerImpl)
+                .flatMap { invoker ->
+                    invoker.function.listenTypes.map { t -> t to invoker }
+                }
+                .groupBy(keySelector = { typeInvokerPair -> typeInvokerPair.first }) { typeInvokerPair -> typeInvokerPair.second }
 
-        val id = listenerFunction.id
+            // 获取其监听类型，并作为key存入map
+//             val listenTypes = listenerFunction.listenTypes
+//
+//             val id = listenerFunction.id
+//             listenerFunctionIdMap.merge(id, invoker) { _, _ ->
+//                 throw IllegalStateException("Listener id $id was already exists.")
+//             }
 
-        val invoker = ListenerInvokerImpl(listenerFunction)
+            funcInvokers.forEach { (type, invokers) ->
+                // Merge to id
+                invokers.forEach { invoker ->
+                    val id = invoker.function.id
+                    listenerFunctionIdMap.merge(id, invoker) { _, _ ->
+                        throw IllegalStateException("Listener id $id was already exists.")
+                    }
+                }
 
-        listenerFunctionIdMap.merge(id, invoker) { _, _ ->
-            throw IllegalStateException("Listener id $id was already exists.")
-        }
-
-        listenTypes.forEach { listenType ->
-            // merge into map.
-            mainListenerFunctionMap.merge(listenType, listenerInvokerQueue(invoker)) { oldValue, value ->
-                oldValue.apply { addAll(value) }
+                // To mainList
+                mainListenerFunctionMap.merge(type, listenerInvokerQueue(*invokers.toTypedArray())) { oldValue, value ->
+                    oldValue.apply { addAll(value) }
+                }
             }
 
-            // // groups.
-            // val groups = listenerFunction.groups
-            // if (groups.isEmpty()) {
-            //     noGroupListenerGroup.add(listenerFunction)
-            // } else {
-            //     groups.forEach { g ->
-            //         listenerGroups.compute(g) { g0, v ->
-            //             v?.apply { add(listenerFunction) } ?: MutableListenerGroup(g0, mutableListOf(listenerFunction))
-            //         }
+            cleanCache()
+
+            // listenTypes.forEach { listenType ->
+            //     // merge into map.
+            //     mainListenerFunctionMap.merge(listenType, listenerInvokerQueue(invoker)) { oldValue, value ->
+            //         oldValue.apply { addAll(value) }
             //     }
+            //
+            //     // clear cache map.
+            //     // 清除缓存
+            //     if (cacheListenerFunctionMap.isNotEmpty()) {
+            //         cacheListenerFunctionMap.clear()
+            //         logger.debug("Listener cache cleaned.")
+            //     }
+            //
+            //
             // }
+        }
+    }
+//     override fun register(vararg listenerFunctions: ListenerFunction) {
+//         lock.write {
+//             val funcInvokers = listenerFunctions.asSequence().map { listenerFunction ->
+//
+//
+//                 val invoker = ListenerInvokerImpl(listenerFunction)
+//
+//                 invoker
+//             }
+// // 获取其监听类型，并作为key存入map
+//             val listenTypes = listenerFunction.listenTypes
+//
+//             val id = listenerFunction.id
+//             listenerFunctionIdMap.merge(id, invoker) { _, _ ->
+//                 throw IllegalStateException("Listener id $id was already exists.")
+//             }
+//
+//             invoker
+//
+//
+//             listenTypes.forEach { listenType ->
+//                 // merge into map.
+//                 mainListenerFunctionMap.merge(listenType, listenerInvokerQueue(invoker)) { oldValue, value ->
+//                     oldValue.apply { addAll(value) }
+//                 }
+//
+//                 // clear cache map.
+//                 // 清除缓存
+//                 if (cacheListenerFunctionMap.isNotEmpty()) {
+//                     cacheListenerFunctionMap.clear()
+//                     logger.debug("Listener cache cleaned.")
+//                 }
+//
+//
+//             }
+//         }
+//     }
 
-            // clear cache map.
-            // 清除缓存
-            if (cacheListenerFunctionMap.isNotEmpty()) {
-                cacheListenerFunctionMap.clear()
-                logger.debug("Listener cache cleaned.")
+    /**
+     * 根据ID移除某个指定的监听函数
+     */
+    override fun removeListenerById(id: String): ListenerFunction? {
+        return lock.write {
+            val removed = listenerFunctionIdMap.remove(id) ?: return null
+            // Not null
+            val needReset = mutableMapOf<Class<out MsgGet>, List<ListenerInvoker>>()
+            mainListenerFunctionMap.forEach { (type, queue) ->
+                if (queue.any { it.function.id == id }) {
+                    needReset[type] = queue.filter { it.function.id != "id" }
+                }
             }
 
+            needReset.forEach { (type, resetList) ->
+                mainListenerFunctionMap[type] = listenerInvokerQueue(*resetList.toTypedArray())
+            }
 
+            removed.function
+        }
+    }
+
+
+    private fun cleanCache() {
+        // clear cache map.
+        // 清除缓存
+        if (cacheListenerFunctionMap.isNotEmpty()) {
+            cacheListenerFunctionMap.clear()
+            logger.debug("Listener cache cleaned.")
         }
     }
 
@@ -406,7 +502,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                 // if ex
                 finalResult = doResultIfFail(func, finalResult)
 
-                // if break, break.
+                // if is break, break.
                 if (finalResult.isBreak()) {
                     doBreak = true
                     eventLogger.trace("{} -> Normal Listener chain[{}] break on {}({})", botCode, i, func.name, func.id)
@@ -449,15 +545,19 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      * 根据监听类型获取所有对应的监听函数。
      */
     override fun <T : MsgGet> getListenerFunctions(type: Class<out T>?): Collection<ListenerFunction> {
-        return if (type == null) {
-            mainListenerFunctionMap.values.asSequence().flatMap { it.asSequence().map { invoker -> invoker.function } }
-                .toList()
-        } else {
-            getListenerFunctions(type, false).marge().map { it.function }
+        return lock.read {
+            if (type == null) {
+                mainListenerFunctionMap.values.asSequence()
+                    .flatMap { it.asSequence().map { invoker -> invoker.function } }
+                    .toList()
+            } else {
+                getListenerFunctions(type, false).marge().map { it.function }
+            }
         }
     }
 
-    override fun getListenerFunctionById(id: String): ListenerFunction? = listenerFunctionIdMap[id]?.function
+    override fun getListenerFunctionById(id: String): ListenerFunction? =
+        lock.read { listenerFunctionIdMap[id]?.function }
 
     /**
      * 根据一个监听器类型获取对应监听函数。
@@ -465,22 +565,46 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      * 寻找 main funcs 中为 [type] 的父类的类型。
      *
      */
+    @Suppress("DuplicatedCode")
     private fun <T : MsgGet> getListenerFunctions(type: Class<out T>, cache: Boolean): ListenerFunctionGroups {
-        // 尝试直接获取
-        // fastball n. 直球
-        // 只取缓存，main listener中的内容用于遍历检测。
-        val fastball: ListenerFunctionGroups? = cacheListenerFunctionMap[type]
+        lock.read {
+            // 尝试直接获取
+            // fastball n. 直球
+            // 只取缓存，main listener中的内容用于遍历检测。
+            val fastball: ListenerFunctionGroups? = cacheListenerFunctionMap[type]
 
-        return if (fastball != null) {
-            // 有缓存，return
-            fastball
-        } else {
-            if (mainListenerFunctionMap.isEmpty()) {
-                return ListenerFunctionGroups.empty
-            }
+            return if (fastball != null) {
+                // 有缓存，return
+                fastball
+            } else {
+                if (mainListenerFunctionMap.isEmpty()) {
+                    return ListenerFunctionGroups.empty
+                }
 
-            if (cache) {
-                cacheListenerFunctionMap.computeIfAbsent(type) {
+                if (cache) {
+                    // Update read lock
+                    lock.write {
+                        cacheListenerFunctionMap.computeIfAbsent(type) {
+                            val typeNormalList = LinkedList<ListenerInvoker>()
+                            val typeSpareList = LinkedList<ListenerInvoker>()
+                            mainListenerFunctionMap.forEach { (k, v) ->
+                                if (k.isAssignableFrom(type)) {
+                                    v.forEach { lis ->
+                                        if (lis.function.spare) typeSpareList.add(lis)
+                                        else typeNormalList.add(lis)
+                                    }
+                                }
+                            }
+
+                            ListenerFunctionGroups(
+                                typeNormalList.also { normalLs -> normalLs.sortBy { it.function.priority } },
+                                typeSpareList.also { spareLs -> spareLs.sortBy { it.function.priority } },
+                            ).also {
+                                logger.debug("Init Listener function caches for event type '${type.name}'. normal listeners ${typeNormalList.size}, spare listeners ${typeSpareList.size}.")
+                            }
+                        }
+                    }
+                } else {
                     val typeNormalList = LinkedList<ListenerInvoker>()
                     val typeSpareList = LinkedList<ListenerInvoker>()
                     mainListenerFunctionMap.forEach { (k, v) ->
@@ -491,35 +615,17 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                             }
                         }
                     }
-
+                    // typeList.also { listener -> listener.sortBy { it.priority } }
                     ListenerFunctionGroups(
                         typeNormalList.also { normalLs -> normalLs.sortBy { it.function.priority } },
                         typeSpareList.also { spareLs -> spareLs.sortBy { it.function.priority } },
-                    ).also {
-                        logger.debug("Init Listener function caches for event type '${type.name}'. normal listeners ${typeNormalList.size}, spare listeners ${typeSpareList.size}.")
-                    }
+                    )
                 }
-            } else {
-                // val typeList = LinkedList<ListenerFunction>()
-                val typeNormalList = LinkedList<ListenerInvoker>()
-                val typeSpareList = LinkedList<ListenerInvoker>()
-                mainListenerFunctionMap.forEach { (k, v) ->
-                    if (k.isAssignableFrom(type)) {
-                        v.forEach { lis ->
-                            if (lis.function.spare) typeSpareList.add(lis)
-                            else typeNormalList.add(lis)
-                        }
-                    }
-                }
-                // typeList.also { listener -> listener.sortBy { it.priority } }
-                ListenerFunctionGroups(
-                    typeNormalList.also { normalLs -> normalLs.sortBy { it.function.priority } },
-                    typeSpareList.also { spareLs -> spareLs.sortBy { it.function.priority } },
-                )
             }
+
+
         }
-
-
     }
+
 }
 

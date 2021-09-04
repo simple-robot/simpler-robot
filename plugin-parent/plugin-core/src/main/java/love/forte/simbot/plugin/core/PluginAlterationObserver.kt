@@ -203,14 +203,14 @@ public class PluginAlterationObserverBuilder(
     private val events: Array<WatchEvent.Kind<Path>>,
 ) {
 
-    private lateinit var onMainCreated: (main: Path) -> Unit
-    private lateinit var onMainEdited: (main: Path) -> Unit
-    private lateinit var onMainDeleted: (main: Path) -> Unit
-    private lateinit var onLibCreated: (lib: Path) -> Unit
-    private lateinit var onLibReduce: (lib: Path, reduced: Path) -> Unit
-    private lateinit var onLibEdited: (lib: Path, edited: Path) -> Unit
-    private lateinit var onLibIncrease: (lib: Path, increased: Path) -> Unit
-    private lateinit var onLibDeleted: (lib: Path) -> Unit
+    private var onMainCreated: (main: Path) -> Unit = {}
+    private var onMainEdited: (main: Path) -> Unit = {}
+    private var onMainDeleted: (main: Path) -> Unit = {}
+    private var onLibCreated: (lib: Path) -> Unit = {}
+    private var onLibReduce: (lib: Path, reduced: Path) -> Unit = { _, _ -> }
+    private var onLibEdited: (lib: Path, edited: Path) -> Unit = { _, _ -> }
+    private var onLibIncrease: (lib: Path, increased: Path) -> Unit = { _, _ -> }
+    private var onLibDeleted: (lib: Path) -> Unit = {}
 
     @PluginAlterationObserverBuilderDSL
     fun onMainCreated(onMainCreated: (main: Path) -> Unit) {

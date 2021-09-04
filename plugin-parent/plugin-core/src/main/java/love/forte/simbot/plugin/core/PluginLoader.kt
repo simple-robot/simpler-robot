@@ -65,6 +65,7 @@ public class PluginLoader(
 
     init {
         val paths = mutableListOf<Path>()
+        check(plugin.mainFile.exists()) { "Plugin main file ${plugin.tempMainFile.realPath} not exists." }
         paths.add(plugin.mainFile)
         if (plugin.libraries.exists()) {
             paths.addAll(plugin.libraries.useDirectoryEntries("*.jar") { it.toList() })
@@ -96,11 +97,23 @@ public class PluginLoader(
             plugin.sync(main, lib)
 
             val paths = mutableListOf<Path>()
-            paths.add(plugin.mainFile)
-            paths.addAll(plugin.libraries.useDirectoryEntries("*.jar") { it.toList() })
+            if (plugin.mainFile.exists()) {
+                paths.add(plugin.mainFile)
+            }
+            if (plugin.libraries.exists()) {
+                paths.addAll(plugin.libraries.useDirectoryEntries("*.jar") { it.toList() })
+            }
             _realLoader = URLClassLoader(paths.asSequence().filter { it.exists() }.map { it.toUri().toURL() }.toList()
                 .toTypedArray(), parent)
         }
+    }
+
+    /**
+     * 仅仅只是关闭 [_realLoader] 以使得释放URL。
+     * 使用后需要通过 [resetLoader] 来重新加载。
+     */
+    fun closeLoader() {
+        _realLoader?.close().also { _realLoader = null }
     }
 
 

@@ -58,7 +58,15 @@ public interface PluginDefinition {
  * [PluginDefinition] 基于 [FileWithTemporarySubstitute] 的实现。
  *
  */
-public class PluginDefinitionWithTemporarySubstitute(root: Path, mainPath: Path, mainFilePath: Path, librariesPath: Path) : PluginDefinition {
+public class PluginDefinitionWithTemporarySubstitute(
+    /**
+     * 插件的根目录，例如 `xxx/plugin`
+     */
+    root: Path,
+    mainPath: Path,
+    mainFilePath: Path,
+    librariesPath: Path,
+) : PluginDefinition {
     override val main: Path = mainPath
     internal val tempMainFile: PathWithTemporarySubstitute
     override val mainFile: Path get() = tempMainFile.temporarySubstitute

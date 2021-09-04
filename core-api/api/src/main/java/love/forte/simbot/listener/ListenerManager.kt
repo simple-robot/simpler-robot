@@ -100,6 +100,10 @@ public interface ListenerManager : MsgGetProcessor, ListenerRegistrar {
      */
     fun getListenerFunctionById(id: String) : ListenerFunction?
 
+    /**
+     * 根据ID清除掉一个监听函数。
+     */
+    fun removeListenerById(id: String): ListenerFunction?
 }
 
 
@@ -110,7 +114,7 @@ interface ListenerRegistrar {
     /**
      * 注册一个 [监听函数][ListenerFunction]。
      */
-    fun register(listenerFunction: ListenerFunction)
+    fun register(vararg listenerFunctions: ListenerFunction)
 }
 
 
