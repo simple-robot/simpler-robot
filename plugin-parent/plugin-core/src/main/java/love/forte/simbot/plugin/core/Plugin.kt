@@ -81,6 +81,9 @@ public interface Plugin : PluginInfoContainer {
 }
 
 
+val Plugin.id: String get() = pluginInfo.id
+
+
 /**
  * 插件的定义，交由用户实现。
  */
@@ -92,7 +95,7 @@ public sealed interface PluginDetails
  * 一个 [监听函数][ListenerFunction] 插件。此插件代表其允许插入监听函数。
  *
  */
-public interface ListenerPlugin : PluginDetails {
+public interface ListenerPluginDetails : PluginDetails {
 
     /**
      * 得到监听函数列表。初始载入以及每次Plugin的对应文件变化的时候都会获取一次。
@@ -104,5 +107,5 @@ public interface ListenerPlugin : PluginDetails {
 
 
 @get:JvmSynthetic
-public val ListenerPlugin.listeners: List<ListenerFunction>
+public val ListenerPluginDetails.listeners: List<ListenerFunction>
     get() = getListeners()

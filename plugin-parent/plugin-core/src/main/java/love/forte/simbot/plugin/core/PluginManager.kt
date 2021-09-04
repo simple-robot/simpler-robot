@@ -39,5 +39,5 @@ public interface PluginManager {
     /**
      * 根据ID得到一个对应的插件。
      */
-    fun getPlugin(id: String): Plugin
+    fun getPlugin(id: String): Plugin?
 }

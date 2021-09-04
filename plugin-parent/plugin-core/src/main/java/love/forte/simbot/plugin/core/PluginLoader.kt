@@ -12,14 +12,19 @@
  *
  */
 
+@file:JvmName("PluginLoaders")
+@file:JvmMultifileClass
 package love.forte.simbot.plugin.core
 
 import java.io.Closeable
+import java.io.InputStream
+import java.net.URL
 import java.net.URLClassLoader
 import java.nio.file.FileSystems
 import java.nio.file.Path
 import java.nio.file.StandardWatchEventKinds
 import java.nio.file.WatchService
+import java.util.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
@@ -53,7 +58,7 @@ public class PluginLoader(
     @Volatile
     private var _realLoader: URLClassLoader?
 
-    private val observer: PluginAlterationObserver
+    private lateinit var observer: PluginAlterationObserver
 
     private val lock = ReentrantReadWriteLock()
 
@@ -62,6 +67,8 @@ public class PluginLoader(
             _realLoader?.let(block) ?: throw IllegalStateException("Loader was closed.")
         }
     }
+
+    private var startBlock: (() -> Unit)?
 
     init {
         val paths = mutableListOf<Path>()
@@ -73,13 +80,16 @@ public class PluginLoader(
 
         _realLoader = URLClassLoader(paths.map { it.toUri().toURL() }.toTypedArray(), parent)
 
-        observer = PluginAlterationObserverBuilder(plugin, coroutineContext, fileWatcher,
-            arrayOf(
-                StandardWatchEventKinds.ENTRY_CREATE,
-                StandardWatchEventKinds.ENTRY_DELETE,
-                StandardWatchEventKinds.ENTRY_MODIFY,
-            )
-        ).also { builder -> observerBuilderBlock(builder, this) }.build()
+        startBlock = {
+            observer = PluginAlterationObserverBuilder(plugin, coroutineContext, fileWatcher,
+                arrayOf(
+                    StandardWatchEventKinds.ENTRY_CREATE,
+                    StandardWatchEventKinds.ENTRY_DELETE,
+                    StandardWatchEventKinds.ENTRY_MODIFY,
+                )
+            ).also { builder -> observerBuilderBlock(builder, this) }.build()
+        }
+
 
         // edit:
         // 1 close loader
@@ -89,7 +99,24 @@ public class PluginLoader(
 
     }
 
+    /**
+     * 启用文件监听
+     */
+    fun start() {
+        startBlock?.invoke()?.also {
+            startBlock = null
+        }
+    }
+
     override fun loadClass(name: String?): Class<*> = realLoader { it.loadClass(name) }
+    override fun getResource(name: String?): URL? = realLoader { it.getResource(name) }
+    override fun getResources(name: String?): Enumeration<URL> = realLoader { it.getResources(name) }
+    override fun getResourceAsStream(name: String?): InputStream? = realLoader { it.getResourceAsStream(name) }
+    override fun setDefaultAssertionStatus(enabled: Boolean) = realLoader { it.setDefaultAssertionStatus(enabled) }
+    override fun setPackageAssertionStatus(packageName: String?, enabled: Boolean) = realLoader { it.setPackageAssertionStatus(packageName, enabled) }
+    override fun setClassAssertionStatus(className: String?, enabled: Boolean) = realLoader { it.setClassAssertionStatus(className, enabled) }
+    override fun clearAssertionStatus() = realLoader { it.clearAssertionStatus() }
+
 
     fun resetLoader(main: Boolean, lib: Boolean) {
         lock.write {
@@ -115,7 +142,6 @@ public class PluginLoader(
     fun closeLoader() {
         _realLoader?.close().also { _realLoader = null }
     }
-
 
 
     override fun close() {
