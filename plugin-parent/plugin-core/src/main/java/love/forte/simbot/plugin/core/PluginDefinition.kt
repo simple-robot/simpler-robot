@@ -21,7 +21,6 @@ import java.nio.file.WatchEvent
 import java.nio.file.WatchKey
 import java.nio.file.WatchService
 import kotlin.io.path.Path
-import kotlin.io.path.div
 import kotlin.io.path.name
 
 
@@ -78,7 +77,7 @@ public class PluginDefinitionWithTemporarySubstitute(
     override val libraries: Path get() = tempLibraries.temporarySubstitute
 
     init {
-        val tempRoot = root.parent / Path(".${root.name}")
+        val tempRoot = root.resolveSibling(".${root.name}") //.parent / Path()
         tempMainFile = mainFilePath.withTemporarySubstitute(root, tempRoot)
         tempLibraries = librariesPath.withTemporarySubstitute(root, tempRoot)
         tempMainFile.cleanTemp()

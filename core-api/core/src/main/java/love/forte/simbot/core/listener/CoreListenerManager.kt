@@ -17,6 +17,8 @@ package love.forte.simbot.core.listener
 
 import kotlinx.coroutines.*
 import love.forte.common.collections.concurrentSortedQueueOf
+import love.forte.common.ioc.DependCenter
+import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.simbot.LogAble
 import love.forte.simbot.api.SimbotExperimentalApi
@@ -127,6 +129,9 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     private val resultProcessorManager: ListenResultProcessorManager,
 
     ) : ListenerManager, ListenerRegistrar, SimbotContextClosedHandle {
+
+    @Depend
+    lateinit var dependCenter: DependCenter
 
     private val eventDispatcher = eventDispatcherFactory.dispatcher
     private val collectScope = CoroutineScope(Dispatchers.Default)
@@ -305,7 +310,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             val needReset = mutableMapOf<Class<out MsgGet>, List<ListenerInvoker>>()
             mainListenerFunctionMap.forEach { (type, queue) ->
                 if (queue.any { it.function.id == id }) {
-                    needReset[type] = queue.filter { it.function.id != "id" }
+                    needReset[type] = queue.filter { it.function.id != id }
                 }
             }
 
@@ -316,9 +321,69 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
         }
     }
 
+    override fun removeListener(listenerFunction: ListenerFunction): ListenerFunction? {
+        return lock.write {
+            val iter = listenerFunctionIdMap.iterator()
+            var removed: ListenerFunction? = null
+            while (iter.hasNext()) {
+                val entry = iter.next()
+                if (entry.value.function == listenerFunction) {
+                    removed = entry.value.function
+                    iter.remove()
+                }
+            }
+
+            // val needRemoved = listenerFunctionIdMap.values.find { it === listenerFunction } ?: return null
+            // val removed = listenerFunctionIdMap.remove(needRemoved)
+            // val removedFunc = removed.function
+            // Not null
+            val needReset = mutableMapOf<Class<out MsgGet>, List<ListenerInvoker>>()
+            mainListenerFunctionMap.forEach { (type, queue) ->
+                if (queue.any { it.function == listenerFunction }) {
+                    needReset[type] = queue.filter { it.function != listenerFunction }
+                }
+            }
+
+            needReset.forEach { (type, resetList) ->
+                mainListenerFunctionMap[type] = listenerInvokerQueue(*resetList.toTypedArray())
+            }
+
+            removed
+        }
+    }
+
     @OptIn(SimbotExperimentalApi::class)
     override fun removeListenerByGroup(group: String): Int {
-        TODO()
+        var num = 0
+        lock.write {
+
+            fun ListenerFunction.needRemove(): Boolean = this.groups.any { g -> g.name == group }
+
+            val iter = listenerFunctionIdMap.iterator()
+            while (iter.hasNext()) {
+                val entry = iter.next()
+                if (entry.value.function.needRemove()) {
+                    iter.remove().also { num++ }
+                }
+            }
+
+            if (num == 0) {
+                return 0
+            }
+
+            val needReset = mutableMapOf<Class<out MsgGet>, List<ListenerInvoker>>()
+            mainListenerFunctionMap.forEach { (type, queue) ->
+                if (queue.any { it.function.needRemove() }) {
+                    needReset[type] = queue.filter { it.function.groups.none { g -> g.name == group } }
+                }
+            }
+
+            needReset.forEach { (type, resetList) ->
+                mainListenerFunctionMap[type] = listenerInvokerQueue(*resetList.toTypedArray())
+            }
+
+        }
+        return num
     }
 
     /**
@@ -450,6 +515,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                 // invoke with try.
                 return try {
                     invokeData = ListenerFunctionInvokeDataImpl(
+                        dependCenter,
                         // LazyThreadSafetyMode.NONE,
                         msgGet,
                         context,

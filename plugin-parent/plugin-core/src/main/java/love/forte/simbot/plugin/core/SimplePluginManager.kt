@@ -20,7 +20,6 @@ import love.forte.simbot.core.SimbotContextClosedHandle
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.listener.ListenerFunction
 import love.forte.simbot.listener.ListenerManager
-import java.net.URLClassLoader
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.*
@@ -72,13 +71,18 @@ public class SimplePluginManager(
      */
     override lateinit var globalLoader: ClassLoader
 
-    init {
-
-    }
 
     override fun start() {
-        val libJars = pluginGlobalLib.useDirectoryEntries("*.jar") { it.map { p -> p.toUri().toURL() }.toList() }
-        globalLoader = URLClassLoader(libJars.toTypedArray(), parentLoader)
+        // clean old
+
+
+        // val libJars = pluginGlobalLib
+        //     .takeIf { it.exists() && it.isDirectory() }
+        //     ?.useDirectoryEntries("*.jar") { it.map { p -> p.toUri().toURL() }.toList() } ?: emptyList()
+
+        // globalLoader = URLClassLoader(libJars.toTypedArray(), parentLoader)
+        globalLoader = parentLoader //ThisFirstURLClassLoader(libJars.toTypedArray(), parentLoader)
+
         scanPlugins()
             .asSequence()
             .distinctBy { p -> p.id }
@@ -122,45 +126,92 @@ public class SimplePluginManager(
             librariesPath = pluginLib,
         )
 
+        pluginDefinition.tempMainFile.temporarySubstitute.deleteIfExists()
+        pluginDefinition.tempLibraries.temporarySubstitute.deleteDeep()
+        pluginDefinition.sync(main = true, lib = true)
+
         val loader = PluginLoader(
             parent = globalLoader,
             plugin = pluginDefinition
         ) { thisLoader ->
             onMainCreated {
                 // 当Main Jar被创建
-                reloadPlugin(pluginId)
+                logger.debug("Plugin {} onMainCreated: {}", pluginId, it.name)
+                try {
+                    reloadPlugin(pluginId, main = true, lib = false)
+                } catch (e: Exception) {
+                    logger.error("onMainCreated error", e)
+                }
+                logger.debug("Plugin {} onMainCreated event finished.", pluginId)
             }
             onMainEdited {
                 // 当Main Jar被修改
-                thisLoader.resetLoaderByMain()
+                logger.debug("Plugin {} onMainEdited: {}", pluginId, it.name)
+                try {
+                    reloadPlugin(pluginId, main = true, lib = false)
+                } catch (e: Exception) {
+                    logger.error("onMainEdited error", e)
+                }
                 // reloadPlugin(pluginId)
+                logger.debug("Plugin {} onMainEdited event finished.", pluginId)
             }
             onMainDeleted {
                 // main deleted, remove listeners
                 // listenerManager.removeListenerById()
-                unloadPlugin(pluginId)
-                thisLoader.close()
+                logger.debug("Plugin {} onMainDeleted: {}", pluginId, it.name)
+                try {
+                    unloadPlugin(pluginId)
+                } catch (e: Exception) {
+                    logger.error("onMainDeleted error", e)
+                }
+                logger.debug("Plugin {} onMainDeleted event finished.", pluginId)
             }
 
             onLibCreated {
                 logger.debug("Plugin {} lib created: {}", pluginId, it.name)
-                thisLoader.resetLoaderByLib()
+                try {
+                    thisLoader.resetLoaderByLib()
+                } catch (e: Exception) {
+                    logger.error("onLibCreated error", e)
+                }
+                logger.debug("Plugin {} lib created event finished.", pluginId)
+
             }
             onLibEdited { _, edited ->
                 logger.debug("Plugin {} lib edited: {}", pluginId, edited.name)
-                thisLoader.resetLoaderByLib()
+                try {
+                    thisLoader.resetLoaderByLib()
+                } catch (e: Exception) {
+                    logger.error("onLibEdited error", e)
+                }
+                logger.debug("Plugin {} lib edited event finished.", pluginId)
             }
             onLibIncrease { _, increased ->
                 logger.debug("Plugin {} lib increase: {}", pluginId, increased.name)
-                thisLoader.resetLoaderByLib()
+                try {
+                    thisLoader.resetLoaderByLib()
+                } catch (e: Exception) {
+                    logger.error("onLibIncrease error", e)
+                }
+                logger.debug("Plugin {} lib increase event finished.", pluginId)
             }
             onLibReduce { _, reduced ->
                 logger.debug("Plugin {} lib reduced: {}", pluginId, reduced.name)
-                thisLoader.resetLoaderByLib()
+                try {
+                    thisLoader.resetLoaderByLib()
+                } catch (e: Exception) {
+                    logger.error("onLibReduce error", e)
+                }
+                logger.debug("Plugin {} lib reduced event finished.", pluginId)
             }
             onLibDeleted {
                 logger.debug("Plugin {} lib deleted: {}", pluginId, it.name)
-                thisLoader.resetLoaderByLib()
+                try {
+                    thisLoader.resetLoaderByLib()
+                } catch (e: Exception) {
+                    logger.error("onLibDeleted error", e)
+                }
+                logger.debug("Plugin {} lib deleted event finished.", pluginId)
             }
 
         }
@@ -194,16 +245,32 @@ public class SimplePluginManager(
 
 
     @Synchronized
-    private fun unloadPlugin(id: String) {
-        pluginMap.remove(id)?.also {
+    private fun unloadPlugin(id: String): Plugin? {
+        return pluginMap.remove(id)?.also {
             it.pluginLoader.close()
+            val details = it.pluginDetails
+            if (details is ListenerPluginDetails) {
+                for (listener in details.listeners) {
+                    listenerManager.removeListenerById(listener.id)
+                }
+            }
         }
     }
 
 
     @Synchronized
-    private fun reloadPlugin(id: String) {
-        pluginMap[id]?.pluginLoader?.resetLoader(main = true, lib = true)
+    private fun reloadPlugin(id: String, main: Boolean, lib: Boolean) {
+        val needReload = pluginMap[id] ?: return
+        val details = needReload.pluginDetails
+        if (details is ListenerPluginDetails) {
+            for (listener in details.listeners) {
+                val removedById = listenerManager.removeListenerById(listener.id)
+                println("Removed func ${listener.id} -> $removedById")
+            }
+        }
+        needReload.pluginLoader.resetLoader(main = main, lib = lib)
+        pluginMap.remove(id)
+        loadPlugin(needReload)
     }
 
 

@@ -61,6 +61,7 @@ public sealed interface PathWithTemporarySubstitute : Path {
  */
 fun Path.withTemporarySubstitute(relative: Path, tempRootDir: Path): PathWithTemporarySubstitute {
     val tempPath = tempRootDir / this.relativeTo(relative)
-    return if (this.isDirectory()) DirectoryWithTemporarySubstitute(this, tempPath) else FileWithTemporarySubstitute(this, tempPath)
+    return if (this.isDirectory()) DirectoryWithTemporarySubstitute(this, tempPath)
+    else FileWithTemporarySubstitute(this, tempPath)
 
 }

@@ -60,7 +60,7 @@ public abstract class PluginAlterationObserver(
             launch {
                 val frequency = coroutineContext[WatchFrequency]?.frequency ?: 100
                 while (isActive) {
-                    val mainEvents = mainFileWatchKey.pollEvents()
+                    val mainEvents: List<WatchEvent<*>> = mainFileWatchKey.pollEvents().also { mainFileWatchKey.reset() }
                     mainEvents.forEach { e ->
                         val context = e.context() as Path
                         if (context.name == plugin.mainFile.name) {
@@ -88,10 +88,7 @@ public abstract class PluginAlterationObserver(
             launch {
                 val frequency = coroutineContext[WatchFrequency]?.frequency ?: 100
                 while (isActive) {
-                    val libEvents = libWatchKey.pollEvents()
-                    if (libEvents.size > 0) {
-                        println(libEvents.size)
-                    }
+                    val libEvents = libWatchKey.pollEvents().also { libWatchKey.reset() }
                     libEvents.forEach { e ->
                         val context = e.context() as Path
                         // println("kind: ${e.kind()}")

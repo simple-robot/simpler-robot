@@ -107,6 +107,11 @@ public interface ListenerManager : MsgGetProcessor, ListenerRegistrar {
     fun removeListenerById(id: String): ListenerFunction?
 
     /**
+     * 移除监听函数。
+     */
+    fun removeListener(listenerFunction: ListenerFunction): ListenerFunction?
+
+    /**
      * 根据组别清除掉相关的监听函数.
      * 如果
      * @return 清理掉的数量。

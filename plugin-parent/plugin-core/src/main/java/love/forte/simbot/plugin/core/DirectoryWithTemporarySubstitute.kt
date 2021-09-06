@@ -57,7 +57,6 @@ public class DirectoryWithTemporarySubstitute(override val realPath: Path, overr
                 it.forEach { entry ->
                     val copyToPath = temporarySubstitute / entry.relativeTo(realPath)
                     entry.copyTo(copyToPath.apply { parent?.createDirectories() },
-                        StandardCopyOption.COPY_ATTRIBUTES,
                         StandardCopyOption.REPLACE_EXISTING
                     )
                     existNameMap?.remove(entry.name)

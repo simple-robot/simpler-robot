@@ -51,8 +51,8 @@ public class FileWithTemporarySubstitute(override val realPath: Path, override v
             // } else if (realPath.isRegularFile()) {
             //
             // }
+            temporarySubstitute.deleteIfExists()
             realPath.copyTo(temporarySubstitute.apply { parent?.createDirectories() },
-                StandardCopyOption.COPY_ATTRIBUTES,
                 StandardCopyOption.REPLACE_EXISTING
                 )
         } else {

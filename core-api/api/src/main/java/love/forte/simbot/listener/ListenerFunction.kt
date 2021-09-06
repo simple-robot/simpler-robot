@@ -192,6 +192,17 @@ public interface ListenerFunction {
 }
 
 
+
+public abstract class BlockingListenerFunction : ListenerFunction {
+    abstract fun invokeBlocking(data: ListenerFunctionInvokeData): ListenResult<*>
+    final override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> = invokeBlocking(data)
+}
+
+
+
+
+
+
 /**
  * 监听函数执行所需要的数据。
  */

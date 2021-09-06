@@ -16,6 +16,7 @@
 @file:JvmMultifileClass
 package love.forte.simbot.plugin.core
 
+import kotlinx.coroutines.CoroutineScope
 import java.io.Closeable
 import java.io.InputStream
 import java.net.URL
@@ -50,11 +51,11 @@ import kotlin.io.path.useDirectoryEntries
  */
 public class PluginLoader(
     parent: ClassLoader = getSystemClassLoader(),
-    coroutineContext: CoroutineContext = EmptyCoroutineContext,
+    override val coroutineContext: CoroutineContext = EmptyCoroutineContext,
     private val plugin: PluginDefinitionWithTemporarySubstitute,
     fileWatcher: WatchService = FileSystems.getDefault().newWatchService(),
     observerBuilderBlock: PluginAlterationObserverBuilder.(loader: PluginLoader) -> Unit,
-) : ClassLoader(), Closeable {
+) : CoroutineScope, ClassLoader(), Closeable {
     @Volatile
     private var _realLoader: URLClassLoader?
 
@@ -78,7 +79,8 @@ public class PluginLoader(
             paths.addAll(plugin.libraries.useDirectoryEntries("*.jar") { it.toList() })
         }
 
-        _realLoader = URLClassLoader(paths.map { it.toUri().toURL() }.toTypedArray(), parent)
+        _realLoader = ThisFirstURLClassLoader(paths.map { it.toUri().toURL() }.toTypedArray(), parent)
+        // _realLoader = URLClassLoader(paths.map { it.toUri().toURL() }.toTypedArray(), parent)
 
         startBlock = {
             observer = PluginAlterationObserverBuilder(plugin, coroutineContext, fileWatcher,
@@ -120,7 +122,9 @@ public class PluginLoader(
 
     fun resetLoader(main: Boolean, lib: Boolean) {
         lock.write {
-            _realLoader?.close()
+            _realLoader?.close().also {
+                _realLoader = null
+            }
             plugin.sync(main, lib)
 
             val paths = mutableListOf<Path>()
@@ -130,7 +134,7 @@ public class PluginLoader(
             if (plugin.libraries.exists()) {
                 paths.addAll(plugin.libraries.useDirectoryEntries("*.jar") { it.toList() })
             }
-            _realLoader = URLClassLoader(paths.asSequence().filter { it.exists() }.map { it.toUri().toURL() }.toList()
+            _realLoader = ThisFirstURLClassLoader(paths.asSequence().filter { it.exists() }.map { it.toUri().toURL() }.toList()
                 .toTypedArray(), parent)
         }
     }

@@ -137,7 +137,12 @@ public class MergedListenerFilter(
  *
  * ```
  *
+ * Kotlin see [buildListenerFilter]
+ *
+ * @see buildListenerFilter
+ *
  */
+@JvmOverloads
 public fun listenerFilter(
     priority: Int = PriorityConstant.LAST,
     filterValueGetter: (name: String, text: String) -> String? = { _, _ -> null },
@@ -181,7 +186,11 @@ public annotation class ListenerFilterBuilderDSL
  *      }
  * ```
  *
+ * Java see [listenerFilter]
+ *
+ * @see listenerFilter
  */
+@JvmSynthetic
 public fun buildListenerFilter(builder: ListenerFilterBuilder.() -> Unit): ListenerFilter {
     return ListenerFilterBuilder().also(builder).build()
 }
