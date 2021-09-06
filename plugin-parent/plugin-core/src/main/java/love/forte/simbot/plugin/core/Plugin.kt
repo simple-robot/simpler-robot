@@ -18,12 +18,13 @@
 
 package love.forte.simbot.plugin.core
 
+import love.forte.common.ioc.DependBeanFactory
 import love.forte.simbot.listener.ListenerFunction
 
 
 /**
  *
- * 一个插件。[Plugin] 是所有插件的统一父类接口。
+ * 一个[插件][Plugin]。
  *
  * **插件** 是允许动态拔插的额外内容（例如监听函数），他们普遍以Jar文件、脚本文件等外部文件的形式存在，
  * 且可能会随时被修改、删除。
@@ -35,15 +36,17 @@ import love.forte.simbot.listener.ListenerFunction
  * 但是允许在依赖中心中进行 **读取**。
  *
  *
- * TODO 会考虑为每一个插件环境提供一个独立的依赖中心来实现当前插件范围内的局部管理。
+ * *to-do: 会考虑为每一个插件环境提供一个独立的依赖中心来实现当前插件范围内的局部管理。*
  *
  * ## 目录结构
- * 在插件根目录中的结构为：
+ * 在插件根目录中的结构(默认)为：
  * ```
  * <plugin-root>
- *       └ plugins  (默认)
- *            ├ lib  (默认目录，所有的插件共享的额外依赖库，一次性加载，不支持动态变更)
- *            │      └ Lib jars  (各依赖Jar文件)
+ *       ├ lib  (默认目录，所有的插件共享的额外依赖库。
+ *       │       一次性加载，不支持动态变更)
+ *       │       尚未实现支持.
+ *       │  └ Lib jars  (各依赖Jar文件)
+ *       └ plugins
  *            └ plugin-id  (目录，例如 forte.example-plugin.demo1)
  *                  ├ Plugin Jar File  (与plugin-id **同名** 的jar,
  *                  │         例如 forte.example-plugin.demo1.jar)
@@ -51,8 +54,6 @@ import love.forte.simbot.listener.ListenerFunction
  *                        └ Lib jars  (各依赖Jar文件)
  *
  *```
- *
- * @see ListenerPlugin
  *
  * @author ForteScarlet
  */
@@ -78,6 +79,10 @@ public interface Plugin : PluginInfoContainer {
      */
     val pluginLoader: PluginLoader
 
+    /**
+     * 此插件所对应的插件入口。
+     */
+    val pluginDetails: PluginDetails
 }
 
 
@@ -86,8 +91,23 @@ val Plugin.id: String get() = pluginInfo.id
 
 /**
  * 插件的定义，交由用户实现。
+ *
+ * 每一个 “插件” Jar中，有且应当仅有一个 [PluginDetails] 实现, 并需要在此实现上标记一个 [SimbotPlugin] 注解以提供必要信息。
+ *
+ * 关于此 [PluginDetails] 实现的定义，需要在 `META-INF/simbot.factories` 中的 `simbot.plugin.details` 中进行配置.
+ *
+ * 对于 [PluginDetails] 的实现类，其 **必须** 存在一个 **无参构造** 以允许进行实例化。
+ *
  */
-public sealed interface PluginDetails
+public sealed interface PluginDetails {
+
+    /**
+     * 当 [Plugin] 被加载的时候会执行此函数，且仅加载执行的时候执行一次。
+     * 此处指的加载有可能是首次加载，也可能是出现变更后的重新加载。
+     */
+    fun init(dependBeanFactory: DependBeanFactory)
+
+}
 
 
 

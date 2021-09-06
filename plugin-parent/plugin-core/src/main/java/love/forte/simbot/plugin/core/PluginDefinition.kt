@@ -14,6 +14,8 @@
 
 package love.forte.simbot.plugin.core
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.nio.file.Path
 import java.nio.file.WatchEvent
 import java.nio.file.WatchKey
@@ -68,6 +70,8 @@ public class PluginDefinitionWithTemporarySubstitute(
     librariesPath: Path,
 ) : PluginDefinition {
     override val main: Path = mainPath
+
+    private val logger: Logger = LoggerFactory.getLogger("plugin:${main.name}")
     internal val tempMainFile: PathWithTemporarySubstitute
     override val mainFile: Path get() = tempMainFile.temporarySubstitute
     internal val tempLibraries: PathWithTemporarySubstitute
@@ -87,11 +91,11 @@ public class PluginDefinitionWithTemporarySubstitute(
     fun sync(main: Boolean, lib: Boolean) {
         if (main) {
             tempMainFile.sync()
-            println("Main file sync")
+            logger.debug("Main file sync.")
         }
         if (lib) {
             tempLibraries.sync()
-            println("Lib sync")
+            logger.debug("Lib sync.")
         }
     }
 

@@ -21,8 +21,10 @@ package love.forte.simbot.plugin.core
  */
 public class SimplePlugin(
     override val pluginLoader: PluginLoader,
-    override val pluginInfo: PluginInfo
+    override val pluginInfo: PluginInfo,
+    override val pluginDetails: PluginDetails
 ) : Plugin {
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

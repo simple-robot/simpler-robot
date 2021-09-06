@@ -14,7 +14,6 @@
 
 package love.forte.simbot.plugin.core
 
-import kotlinx.serialization.Serializable
 import love.forte.simbot.api.message.containers.Container
 
 
@@ -35,7 +34,6 @@ public interface PluginInfoContainer : Container {
  *
  * @author ForteScarlet
  */
-@Serializable
 public data class PluginInfo(
     /**
      * 这个插件的唯一ID，你不应令其出现重名。
@@ -70,14 +68,6 @@ public data class PluginInfo(
      * 此插件的开发者信息
      */
     val developers: List<Developer>,
-
-
-    /**
-     * [PluginDetails] 的用户实现类所在位置。
-     *
-     */
-    val pluginDetails: String
-
     )
 
 
@@ -86,7 +76,6 @@ public data class PluginInfo(
  * 开发者信息。
  *
  */
-@Serializable
 public data class Developer
 @JvmOverloads
 constructor(

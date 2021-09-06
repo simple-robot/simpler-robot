@@ -14,6 +14,8 @@
 
 package love.forte.simbot.plugin.core
 
+import java.io.Closeable
+
 
 /**
  * 动态插件的管理器类。
@@ -22,7 +24,7 @@ package love.forte.simbot.plugin.core
  *
  * @author ForteScarlet
  */
-public interface PluginManager {
+public interface PluginManager : Closeable {
 
     /**
      * 得到当前已加载的插件列表。
@@ -40,4 +42,17 @@ public interface PluginManager {
      * 根据ID得到一个对应的插件。
      */
     fun getPlugin(id: String): Plugin?
+
+    /**
+     * 启动这个 PluginManager
+     */
+    fun start()
+
+
+    /**
+     * 关闭当前manager。
+     */
+    override fun close()
+
+
 }

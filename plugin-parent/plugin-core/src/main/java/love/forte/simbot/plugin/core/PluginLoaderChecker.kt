@@ -17,29 +17,43 @@
 
 package love.forte.simbot.plugin.core
 
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
+import love.forte.common.exception.ResourceException
+import love.forte.simbot.utils.getAnnotation
+import java.util.*
 
 
-const val PLUGIN_INFO_RESOURCE = "META-INF/simbot-plugin.json"
+private const val PLUGIN_INFO_RESOURCE = "META-INF/simbot.factories"
+private const val PLUGIN_INFO_KEY = "simbot.plugin.details"
 
 
 /**
  * 从当前loader中提取 [PluginInfo] 信息。
  */
-@OptIn(ExperimentalSerializationApi::class)
-public fun PluginLoader.extractInformation(pluginDefinition: PluginDefinition): PluginInfo {
+public fun PluginLoader.extractDetails(): PluginDetails {
     val infoResource = this.getResource(PLUGIN_INFO_RESOURCE) ?: this.getResource("/$PLUGIN_INFO_RESOURCE")
-    return if (infoResource == null) {
-        val id = pluginDefinition.id
-        val name = id.split('.').last()
-        val description = null
-        val version = "unknown"
-        val developers: List<Developer> = listOf(UnknownDeveloper)
+    ?: throw ResourceException("Cannot found plugin factories resource $PLUGIN_INFO_RESOURCE")
 
-        PluginInfo(id, name, description, version, developers)
-    } else Json.decodeFromString(infoResource.readText())
+    val infoProperties = Properties().also { p ->
+        infoResource.openStream().bufferedReader().use { r -> p.load(r) }
+    }
+
+    val detailsClassPath = infoProperties.getProperty(PLUGIN_INFO_KEY)
+        ?: throw ResourceException("Cannot found required property '$PLUGIN_INFO_KEY' in plugin factories resource $PLUGIN_INFO_RESOURCE")
+
+    return loadClass(detailsClassPath).newInstance() as PluginDetails
+    // return if (infoResource == null) {
+    //     val id = pluginDefinition.id
+    //     val name = id.split('.').last()
+    //     val description = null
+    //     val version = "unknown"
+    //     val developers: List<Developer> = listOf(UnknownDeveloper)
+    //
+    //     PluginInfo(id, name, description, version, developers)
+    // } else Json.decodeFromString(infoResource.readText())
 }
 
 
+public fun PluginDetails.extractInformation(): PluginInfo {
+    return this::class.getAnnotation<SimbotPlugin>()?.toPluginInfo()
+        ?: throw IllegalStateException("Cannot found @SimbotPlugin annotation from plugin details: $this (${this::class.java})")
+}
