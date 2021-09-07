@@ -31,13 +31,7 @@ import java.nio.charset.Charset
  */
 public fun <T> URL.useJarStream(block: (InputStream) -> T): T {
     val connection: URLConnection = openConnection().also { c -> c.useCaches = false }
-    val result = connection.getInputStream().use(block)
-
-    if (connection is JarURLConnection) {
-        connection.jarFile.close()
-    }
-
-    return result
+    return connection.getInputStream().use(block)
 }
 
 
