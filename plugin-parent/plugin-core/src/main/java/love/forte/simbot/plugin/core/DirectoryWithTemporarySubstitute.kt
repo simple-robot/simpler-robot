@@ -49,24 +49,46 @@ public class DirectoryWithTemporarySubstitute(override val realPath: Path, overr
     @Synchronized
     override fun sync() {
         if (realPath.exists()) {
-            val existNameMap: MutableMap<String, Path>? = temporarySubstitute.takeIf { it.exists() }?.useDirectoryEntries {
-                it.map { p -> p.name to p }.toList().toMap(
-                    mutableMapOf())
-            }
-            realPath.useDirectoryEntries {
-                it.forEach { entry ->
-                    val copyToPath = temporarySubstitute / entry.relativeTo(realPath)
-                    entry.copyTo(copyToPath.apply { parent?.createDirectories() },
-                        StandardCopyOption.REPLACE_EXISTING
-                    )
-                    existNameMap?.remove(entry.name)
+            // val existNameMap: MutableMap<String, Path>? =
+            //     temporarySubstitute.takeIf { it.exists() }?.useDirectoryEntries {
+            //         it.map { p -> p.name to p }.toList().toMap(
+            //             mutableMapOf())
+            //     }
+            val realPathList = realPath.listDirectoryEntries()
+            val realPathNameSet = realPathList.mapTo(mutableSetOf()) { it.name }
+
+            if (temporarySubstitute.exists()) {
+                temporarySubstitute.useDirectoryEntries { ps ->
+                    ps.forEach { p ->
+                        if (p.name !in realPathNameSet) {
+                            p.deleteIfExists()
+                        }
+                    }
                 }
             }
-            if (existNameMap != null && existNameMap.isNotEmpty()) {
-                existNameMap.values.forEach {
-                    it.deleteIfExists()
-                }
+            temporarySubstitute.createDirectories()
+            realPathList.forEach { p ->
+                p.copyTo(temporarySubstitute / p.relativeTo(realPath),
+                    StandardCopyOption.COPY_ATTRIBUTES,
+                    StandardCopyOption.REPLACE_EXISTING)
             }
+
+
+            // realPath.toFile().copyRecursively(temporarySubstitute.toFile())
+            // realPath.useDirectoryEntries {
+            //     it.forEach { entry ->
+            //         val copyToPath = temporarySubstitute / entry.relativeTo(realPath)
+            //         entry.copyTo(copyToPath.apply { parent?.createDirectories() },
+            //             StandardCopyOption.REPLACE_EXISTING
+            //         )
+            //         existNameMap?.remove(entry.name)
+            //     }
+            // }
+            // if (existNameMap != null && existNameMap.isNotEmpty()) {
+            //     existNameMap.values.forEach {
+            //         it.deleteIfExists()
+            //     }
+            // }
 
         } else {
             // 不存在, 删除

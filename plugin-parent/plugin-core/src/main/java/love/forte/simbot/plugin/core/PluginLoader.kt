@@ -122,9 +122,8 @@ public class PluginLoader(
 
     fun resetLoader(main: Boolean, lib: Boolean) {
         lock.write {
-            _realLoader?.close().also {
-                _realLoader = null
-            }
+            closeLoader()
+
             plugin.sync(main, lib)
 
             val paths = mutableListOf<Path>()
