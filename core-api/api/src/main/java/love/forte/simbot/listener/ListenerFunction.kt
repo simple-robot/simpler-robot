@@ -135,8 +135,18 @@ public interface ListenerFunction {
      */
     @SimbotExperimentalApi
     public interface Switch {
-        public companion object {
+        public companion object : Switch {
             val DISABLE_FUNCTION_INVOKER: suspend (ListenerFunctionInvokeData) -> ListenResult<*> = { ListenResult }
+
+            @SimbotExperimentalApi
+            override fun enable() {
+            }
+
+            @SimbotExperimentalApi
+            override fun disable() {
+            }
+            override val isEnable: Boolean
+                get() = false
         }
 
 
@@ -180,6 +190,17 @@ public interface ListenerFunction {
     }
 
 }
+
+
+
+public abstract class BlockingListenerFunction : ListenerFunction {
+    abstract fun invokeBlocking(data: ListenerFunctionInvokeData): ListenResult<*>
+    final override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> = invokeBlocking(data)
+}
+
+
+
+
 
 
 /**

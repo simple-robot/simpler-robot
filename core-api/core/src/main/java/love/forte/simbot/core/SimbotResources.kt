@@ -19,6 +19,8 @@ import cn.hutool.core.lang.JarClassLoader
 import love.forte.common.collections.emptyIterator
 import love.forte.common.collections.plus
 import love.forte.common.utils.scanner.ResourcesScanner
+import love.forte.simbot.utils.newInputStream
+import love.forte.simbot.utils.toProperties
 import org.slf4j.Logger
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -76,9 +78,10 @@ internal fun autoConfigures(loader: ClassLoader, logger: Logger = simbotAppLogge
 
     (jarResources + resources).forEach { url ->
         logger.debugf("load auto configure resource: {}", url)
-        Properties().apply {
-            load(BufferedReader(InputStreamReader(url.openStream(), StandardCharsets.UTF_8)))
-        }.apply {
+        // Properties().apply {
+        //     load(BufferedReader(InputStreamReader(url.newInputStream(), StandardCharsets.UTF_8)))
+        // }
+            url.toProperties().apply {
             getProperty(AUTO_CONFIG_KEY)?.split(",")
                 ?.filter { it.isNotBlank() }
                 ?.map { Class.forName(it) }

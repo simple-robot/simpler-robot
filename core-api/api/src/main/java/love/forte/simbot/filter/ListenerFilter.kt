@@ -57,7 +57,7 @@ public interface ListenerFilter : (FilterData) -> Boolean {
     fun test(data: FilterData): Boolean
 
     
-    override fun invoke(p1: FilterData): Boolean = test(p1)
+    override operator fun invoke(p1: FilterData): Boolean = test(p1)
 
     /**
      * 尝试从文本中提取动态过滤参数。

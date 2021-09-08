@@ -1,22 +1,18 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  component-onebot
- *  * File     Priority.java
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
 package love.forte.simbot.annotation;
-
-import love.forte.simbot.constant.PriorityConstant;
 
 import java.lang.annotation.*;
 
@@ -32,5 +28,5 @@ public @interface Priority {
     /**
      * 优先级值。
      */
-    int value() default PriorityConstant.TENTH;
+    int value() default Listens.DEFAULT_PRIORITY;
 }

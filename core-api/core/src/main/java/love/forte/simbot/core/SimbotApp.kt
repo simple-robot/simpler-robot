@@ -32,19 +32,20 @@ import love.forte.common.listAs
 import love.forte.common.utils.ResourceUtil
 import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.scanner.HutoolClassesScanner
-import love.forte.common.utils.scanner.ResourcesScanner
 import love.forte.common.utils.scanner.Scanner
 import love.forte.simbot.*
 import love.forte.simbot.annotation.SimbotApplication
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.constant.PriorityConstant
 import love.forte.simbot.listener.MsgGetProcessor
+import love.forte.simbot.utils.newInputStream
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 import java.nio.file.Path
+import java.util.*
 import kotlin.concurrent.thread
 import kotlin.io.path.*
 import kotlin.time.Duration
@@ -117,7 +118,7 @@ public interface SimbotContextClosedHandle {
     /**
      * 一个名称，可重写并用于日志提示。
      */
-    
+
     val handleName: String get() = "SimbotContextClosedHandle-Default"
 
     /**
@@ -131,6 +132,21 @@ public interface SimbotContextClosedHandle {
 
 
 internal val simbotAppLogger: Logger = LoggerFactory.getLogger(SimbotApp::class.java)
+
+
+internal fun coreVersion(simbotAppLoader: ClassLoader): String? {
+    return runCatching {
+        val path = "META-INF/maven/love.forte.simple-robot/core/pom.properties"
+        val pomProperties: Properties =
+            (simbotAppLoader.getResource("/$path")
+                ?: simbotAppLoader.getResource(path))?.newInputStream()
+                .use { input ->
+                    Properties().apply { load(input) }
+                }
+
+        pomProperties.getProperty("version")
+    }.getOrNull()
+}
 
 
 /**
@@ -205,7 +221,7 @@ protected constructor(
     internal fun run(): SimbotContext {
         // show logo.
         if (showLogo) {
-            Logo.show()
+            Logo.show(coreVersion(javaClass.classLoader))
         }
 
         val tips = Tips()
@@ -413,7 +429,8 @@ protected constructor(
         val msgGetProcessor = dependCenter[MsgGetProcessor::class.java]
 
         // 获取所有的异常处理器。
-        val handles: List<SimbotContextClosedHandle> = dependCenter.getListByType(SimbotContextClosedHandle::class.java).toList()
+        val handles: List<SimbotContextClosedHandle> =
+            dependCenter.getListByType(SimbotContextClosedHandle::class.java).toList()
 
         return SimbotContext(dependCenter, botManager, environment, msgGetProcessor, configuration, handles)
     }
@@ -540,23 +557,41 @@ private object Logo {
 / __| | '_ ` _ \| '_ \ / _ \| __|
 \__ \ | | | | | | |_) | (_) | |_ 
 |___/_|_| |_| |_|_.__/ \___/ \__|
-                 @ForteScarlet  D
-    """
+                  @ForteScarlet |"""
     internal const val ENABLE_KEY = "simbot.core.logo.enable"
-    private val LOGO_PATH: String =
-        "META-INF" + File.separator + "simbot" + File.separator + "logo"
+    private const val LOGO_PATH: String = "META-INF/simbot/logo"
     val logo: String = runCatching {
-        ResourcesScanner().scan(LOGO_PATH) { it.toASCIIString().endsWith("simbLogo") }
-            .collection.randomOrNull()
-            ?.toURL()?.readText(Charsets.UTF_8)
-            ?: return@runCatching DEF_LOGO
-    }.getOrDefault(DEF_LOGO)
+        val randomNum = (1..30).random()
+
+        (
+                javaClass.classLoader.getResource("$LOGO_PATH/$randomNum.simbLogo")
+                    ?: javaClass.classLoader.getResource("$LOGO_PATH/def.simbLogo")
+                ).readText(Charsets.UTF_8)
+        // ResourcesScanner(javaClass.classLoader).scan(LOGO_PATH) { it.toASCIIString().endsWith("simbLogo") }
+        //     .collection.randomOrNull()
+        //     ?.toURL()?.readText(Charsets.UTF_8)
+        //     ?: return@runCatching DEF_LOGO
+    }.getOrElse { e ->
+        simbotAppLogger.info("Logo file load failed: ${e.localizedMessage}", e)
+        // simbotAppLogger.trace("Logo load failed: ${e.localizedMessage}", e)
+        DEF_LOGO
+    }
 
 
 }
 
-private fun Logo.show(print: PrintStream = System.out) {
-    print.println(logo)
+private fun Logo.show(version: String?, print: PrintStream = System.out) {
+    print.println(logo.trimEnd())
+    version?.let { v ->
+        val lastLength = logo.lines().last().length
+        val versionShow = "v$v"
+        val versionShowLength = versionShow.length
+        val spaceLength = (lastLength - versionShowLength).takeIf { it > 0 } ?: 0
+        repeat(spaceLength) {
+            print.print(' ')
+        }
+        print.println(versionShow)
+    }
     print.println()
 }
 
@@ -595,59 +630,61 @@ private class Tips {
         }
 
     @OptIn(ExperimentalTime::class)
-    private inline val localPath: Pair<Boolean, Path> get() {
-        val local = Path(System.getProperty("user.home")) / ".simbot" / "tips"
+    private inline val localPath: Pair<Boolean, Path>
+        get() {
+            val local = Path(System.getProperty("user.home")) / ".simbot" / "tips"
 
-        val exists = local.exists()
+            val exists = local.exists()
 
-        if (!exists) {
-            local.parent.createDirectories()
-            local.createFile()
-        }
-
-        val lastMod = local.getLastModifiedTime().toMillis()
-        if (Duration.milliseconds(System.currentTimeMillis() - lastMod) > Duration.days(7)) {
-            local.deleteIfExists()
-        }
-
-        return exists to local
-    }
-
-
-    val randomTip: String? get() {
-        val (exist, local) = kotlin.runCatching { localPath }.getOrDefault(false to null)
-        return runCatching {
-            fun readOnline(): Reader {
-                val url = TIP_ONLINE_PATH?.url ?: throw DisableTips()
-                logger.trace("Tips online resource {}, url: {}", TIP_ONLINE_PATH, url)
-                return URL(url).connection { "Online tips connection failed. $it" }
+            if (!exists) {
+                local.parent.createDirectories()
+                local.createFile()
             }
-            if (exist) {
-                kotlin.runCatching {
-                    local?.reader(Charsets.UTF_8)
-                }.getOrNull() ?: run {
+
+            val lastMod = local.getLastModifiedTime().toMillis()
+            if (Duration.milliseconds(System.currentTimeMillis() - lastMod) > Duration.days(7)) {
+                local.deleteIfExists()
+            }
+
+            return exists to local
+        }
+
+
+    val randomTip: String?
+        get() {
+            val (exist, local) = kotlin.runCatching { localPath }.getOrDefault(false to null)
+            return runCatching {
+                fun readOnline(): Reader {
+                    val url = TIP_ONLINE_PATH?.url ?: throw DisableTips()
+                    logger.trace("Tips online resource {}, url: {}", TIP_ONLINE_PATH, url)
+                    return URL(url).connection { "Online tips connection failed. $it" }
+                }
+                if (exist) {
+                    kotlin.runCatching {
+                        local?.reader(Charsets.UTF_8)
+                    }.getOrNull() ?: run {
+                        readOnline()
+                    }
+                } else {
                     readOnline()
                 }
-            } else {
-                readOnline()
-            }
-            // find local cache
+                // find local cache
 
-        }.getOrElse { e ->
-            if (e !is DisableTips) {
-                logger.debugEf("Read online tips failed: {}", e, e.localizedMessage)
+            }.getOrElse { e ->
+                if (e !is DisableTips) {
+                    logger.debugEf("Read online tips failed: {}", e, e.localizedMessage)
+                }
+                runCatching {
+                    ResourceUtil.getResourceUtf8Reader(TIP_PATH)
+                }.getOrNull()
+            }?.useLines {
+                val list = it.filter { s -> s.isNotBlank() }.toList()
+                kotlin.runCatching {
+                    local?.writeLines(list)
+                }
+                return list.randomOrNull()
             }
-            runCatching {
-                ResourceUtil.getResourceUtf8Reader(TIP_PATH)
-            }.getOrNull()
-        }?.useLines {
-            val list = it.filter { s -> s.isNotBlank() }.toList()
-            kotlin.runCatching {
-                local?.writeLines(list)
-            }
-            return list.randomOrNull()
         }
-    }
 
 
 }

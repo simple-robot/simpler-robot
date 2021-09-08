@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -14,6 +14,7 @@
 
 package love.forte.simbot.core.listener
 
+import love.forte.common.ioc.DependCenter
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.Getter
@@ -31,6 +32,7 @@ import love.forte.simbot.listener.ListenerInterceptorChain
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public data class ListenerFunctionInvokeDataImpl @OptIn(SimbotExperimentalApi::class) constructor(
+    private val dependCenter: DependCenter,
     override val msgGet: MsgGet,
     override val context: ListenerContext,
     override val atDetection: AtDetection,
@@ -38,6 +40,7 @@ public data class ListenerFunctionInvokeDataImpl @OptIn(SimbotExperimentalApi::c
     override val msgSender: MsgSender,
     override val listenerInterceptorChain: ListenerInterceptorChain
 ) : ListenerFunctionInvokeData {
+    @OptIn(SimbotExperimentalApi::class)
     override fun get(type: Class<*>): Any? = when {
         type.isAssignableFrom(msgSender::class.java) -> msgSender
         type.isAssignableFrom(msgSender.SENDER::class.java) -> msgSender.SENDER
@@ -47,7 +50,7 @@ public data class ListenerFunctionInvokeDataImpl @OptIn(SimbotExperimentalApi::c
         type.isAssignableFrom(atDetection::class.java) -> atDetection
         type.isAssignableFrom(context::class.java) -> context
         type.isAssignableFrom(msgGet::class.java) -> msgGet
-        else -> null
+        else -> dependCenter[type]
     }
 }
 
