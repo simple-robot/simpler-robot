@@ -19,6 +19,7 @@ package love.forte.simbot.plugin.core
 
 import love.forte.common.exception.ResourceException
 import love.forte.simbot.utils.getAnnotation
+import love.forte.simbot.utils.toProperties
 import java.util.*
 
 
@@ -33,9 +34,11 @@ public fun PluginLoader.extractDetails(): PluginDetails {
     val infoResource = this.getResource(PLUGIN_INFO_RESOURCE) ?: this.getResource("/$PLUGIN_INFO_RESOURCE")
     ?: throw ResourceException("Cannot found plugin factories resource $PLUGIN_INFO_RESOURCE")
 
-    val infoProperties = Properties().also { p ->
-        infoResource.openStream().bufferedReader().use { r -> p.load(r) }
-    }
+
+    val infoProperties = infoResource.toProperties()
+    // Properties().also { p ->
+    //     infoResource.openStream().bufferedReader().use { r -> p.load(r) }
+    // }
 
     val detailsClassPath = infoProperties.getProperty(PLUGIN_INFO_KEY)
         ?: throw ResourceException("Cannot found required property '$PLUGIN_INFO_KEY' in plugin factories resource $PLUGIN_INFO_RESOURCE")

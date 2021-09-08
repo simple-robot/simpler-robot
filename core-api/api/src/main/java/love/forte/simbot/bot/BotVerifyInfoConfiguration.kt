@@ -16,6 +16,8 @@ package love.forte.simbot.bot
 
 import love.forte.common.utils.scanner.ResourcesScanner
 import love.forte.simbot.bot.BotVerifyInfoConfiguration.Companion.ACTION_NAME_KEY
+import love.forte.simbot.utils.newInputStream
+import love.forte.simbot.utils.useJarBufferedReader
 import org.slf4j.LoggerFactory
 import java.nio.file.FileVisitResult
 import java.nio.file.Files
@@ -112,10 +114,11 @@ public class SimpleBotVerifyInfoConfiguration(
                     LOGGER.debug("Bot verify info by {}", uri.toASCIIString())
                     Properties().apply {
                         val asciiString = uri.toASCIIString()
-                        loader.getResourceAsStream(asciiString)?.reader(Charsets.UTF_8)?.use(::load)
+                        loader.getResource(asciiString)?.newInputStream()?.reader(Charsets.UTF_8)?.use(::load)
                             ?: kotlin.runCatching {
                                 LOGGER.debug("Uri stream null: {}, try use url", asciiString)
-                                uri.toURL().openStream().reader(Charsets.UTF_8).use(::load)
+                                uri.toURL().useJarBufferedReader(Charsets.UTF_8, ::load)
+                                // uri.toURL().openStream().reader(Charsets.UTF_8).use(::load)
                             }.getOrElse { e1 ->
                                 throw IllegalStateException("Uri stream read failed: $uri", e1)
                             }

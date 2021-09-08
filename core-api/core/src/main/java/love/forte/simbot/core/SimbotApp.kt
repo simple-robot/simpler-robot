@@ -38,6 +38,7 @@ import love.forte.simbot.annotation.SimbotApplication
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.constant.PriorityConstant
 import love.forte.simbot.listener.MsgGetProcessor
+import love.forte.simbot.utils.newInputStream
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.*
@@ -138,7 +139,7 @@ internal fun coreVersion(simbotAppLoader: ClassLoader): String? {
         val path = "META-INF/maven/love.forte.simple-robot/core/pom.properties"
         val pomProperties: Properties =
             (simbotAppLoader.getResource("/$path")
-                ?: simbotAppLoader.getResource(path))?.openStream()
+                ?: simbotAppLoader.getResource(path))?.newInputStream()
                 .use { input ->
                     Properties().apply { load(input) }
                 }

@@ -22,6 +22,7 @@ import java.net.JarURLConnection
 import java.net.URL
 import java.net.URLConnection
 import java.nio.charset.Charset
+import java.util.*
 
 
 /**
@@ -33,6 +34,12 @@ public fun <T> URL.useJarStream(block: (InputStream) -> T): T {
     val connection: URLConnection = openConnection().also { c -> c.useCaches = false }
     return connection.getInputStream().use(block)
 }
+
+
+/**
+ * 通过 [URL.openConnection] 得到一个 [InputStream] 实例。
+ */
+public fun URL.newInputStream(): InputStream = openConnection().also { it.useCaches = false }.getInputStream()
 
 
 /**
@@ -55,5 +62,13 @@ public fun <T> URL.useJarBufferedReader(charset: Charset = Charsets.UTF_8, block
     useJarStream { input -> input.bufferedReader(charset).use(block) }
 
 
+/**
+ * 讲一个 [URL] 读取并转化为一个 [Properties] 实例。
+ */
+public fun URL.toProperties(): Properties {
+    return Properties().also { p ->
+        useJarBufferedReader { reader -> p.load(reader) }
+    }
+}
 
 
