@@ -103,6 +103,12 @@ public class MutableListenerGroup(
     }
 
     @Synchronized
+    fun removeById(id: String) {
+        mutableListeners.removeIf { it.id == id }
+        resetView()
+    }
+
+    @Synchronized
     fun clean() {
         mutableListeners.clear()
         cleanView()

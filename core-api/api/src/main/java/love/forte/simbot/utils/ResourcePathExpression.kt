@@ -138,7 +138,7 @@ internal class SingletonFileResourcePathExpression(expression: String) :
     SingletonResourcePathExpression(expression, ResourcePathExpression.TYPE_FILE) {
 
     override fun getResource(root: String?): Resource {
-        val path = root?.let { r -> Path(r) } ?: Path(".") / expression
+        val path = root?.let { r -> Path(r) } ?: (Path(".") / expression)
         if (!path.exists()) {
             throw NoSuchResourceException("file: ${path.toRealPath()}")
         }
@@ -167,7 +167,7 @@ internal class SingletonClasspathResourcePathExpression(expression: String, priv
 internal class SingletonFileFirstResourcePathExpression(expression: String, private val classLoader: ClassLoader) :
     SingletonResourcePathExpression(expression, ResourcePathExpression.TYPE_FILE_FIRST) {
     override fun getResource(root: String?): Resource {
-        val path = root?.let { r -> Path(r) } ?: Path(".") / expression
+        val path = root?.let { r -> Path(r) } ?: (Path(".") / expression)
         if (path.exists()) {
             return path.asResource()
         }

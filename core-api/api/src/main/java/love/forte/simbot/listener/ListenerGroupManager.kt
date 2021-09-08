@@ -35,6 +35,5 @@ public interface ListenerGroupManager {
      * 根据名称尝试得到一个分组。
      */
     fun getGroup(groupName: String): ListenerGroup?
-
 }
 

@@ -50,7 +50,7 @@ public data class URLResource(private val url: URL) : Resource {
     override val name: String = url.toString()
 
     override val inputStream: InputStream
-        get() = url.openStream()
+        get() = url.openConnection().also { it.useCaches = false }.getInputStream()
 }
 
 /**
