@@ -99,11 +99,11 @@ public class MiraiConfiguration {
     @field:ConfigInject
     var noNetworkLog: Boolean = false
 
-    /** mirai bot log切换使用simbot的log */
+    /** mirai bot log切换使用simbot的log（slf4j-api） */
     @field:ConfigInject
     var useSimbotBotLog: Boolean = true
 
-    /** mirai 网络log 切换使用simbot的log */
+    /** mirai 网络log 切换使用simbot的log（slf4j-api） */
     @field:ConfigInject
     var useSimbotNetworkLog: Boolean = true
 
