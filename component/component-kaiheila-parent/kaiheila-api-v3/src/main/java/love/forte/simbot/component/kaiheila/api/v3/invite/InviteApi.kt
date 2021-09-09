@@ -25,3 +25,7 @@ public interface EmptyRespGetInviteApiReq : EmptyRespInviteApiReq, GetInviteApiR
  * [邀请相关接口](https://developer.kaiheila.cn/doc/http/invite) 响应实例接口。
  */
 public interface InviteApiRespData : ApiData.Resp.Data
+
+
+
+
