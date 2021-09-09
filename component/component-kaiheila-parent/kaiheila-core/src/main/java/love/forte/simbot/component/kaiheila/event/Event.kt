@@ -25,6 +25,8 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import love.forte.simbot.component.kaiheila.`object`.Role
+import love.forte.simbot.component.kaiheila.`object`.User
 import java.util.*
 
 
@@ -37,7 +39,7 @@ import java.util.*
  *
  * @author ForteScarlet
  */
-public interface Event<E : Event.Extra<T>, T> {
+public interface Event<E : Event.Extra> {
 
     /**
      * 消息频道类型, `GROUP` 为频道消息
@@ -82,7 +84,7 @@ public interface Event<E : Event.Extra<T>, T> {
         SYS(EventTypeConstant.T_SYS),
         ;
 
-        companion object : KSerializer<Type> by EventTypeSerializer {
+        companion object {
             @JvmStatic
             fun byType(type: Int): Type {
                 if (type == UNKNOWN.type) {
@@ -176,20 +178,80 @@ public interface Event<E : Event.Extra<T>, T> {
     /**
      * 事件中的额外消息结构。
      *
-     * 分为两种情况：[Event.type] == `255` 的时候于相反的时候。
+     * 分为两种情况：[Event.type] == `255` 的时候与相反的时候。
      *
      *
      * 等于 `255` 的时候即代表为 *系统事件消息*，否则是 *文字频道消息*
      *
-     * @param TT [type]'s Type.
      * @see Event.extra
      */
-    public interface Extra<TT> {
+    public sealed interface Extra {
         /**
          * Type.
          */
-        val type: TT
+        val type: Any
+
+
+        /**
+         * 当 [Event.type] == `255` 时的 [结构](https://developer.kaiheila.cn/doc/event/event-introduction#)
+         */
+        public interface Sys<B> : Extra {
+            override val type: String
+            val body: B
+        }
+
+        /**
+         * 当 [Event.type] != `255` 时的 [结构](https://developer.kaiheila.cn/doc/event/event-introduction#)
+         */
+        public interface Text : Extra {
+            override val type: Int
+
+            /**
+             * 服务器 id
+             */
+            @SerialName("guild_id")
+            val guildId: String
+
+            /**
+             * 频道名
+             */
+            @SerialName("channel_name")
+            val channelName: String
+
+            /**
+             * 提及到的用户 id 的列表
+             */
+            val mention: List<String>
+
+            /**
+             * 是否 mention 所有用户
+             */
+            @SerialName("mention_all")
+            val mentionAll: Boolean
+
+            /**
+             * mention 用户角色的数组
+             */
+            @SerialName("mention_roles")
+            val mentionRoles: List<Role>
+
+            /**
+             * 是否 mention 在线用户
+             */
+            @SerialName("mention_here")
+            val mentionHere: Boolean
+
+            /**
+             * 用户信息, 见 [对象-用户User](https://developer.kaiheila.cn/doc/objects#%E7%94%A8%E6%88%B7User) ([User])
+             */
+            val author: User
+        }
+
+
+
     }
+
+
 
 }
 
@@ -201,7 +263,7 @@ public interface Event<E : Event.Extra<T>, T> {
 /**
  * 判断 [Event.authorId] 是否等于 `"1"`
  */
-public fun Event<*, *>.isFromSys(): Boolean = authorId == "1"
+public fun Event<*>.isFromSys(): Boolean = authorId == "1"
 
 
 

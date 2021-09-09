@@ -26,7 +26,7 @@ import love.forte.simbot.component.kaiheila.`object`.User
  * @see Event.Extra
  *
  */
-public interface TextExtra : Event.Extra<Int> {
+public interface TextExtra : Event.Extra {
     override val type: Int
 
     /**
@@ -72,25 +72,3 @@ public interface TextExtra : Event.Extra<Int> {
 }
 
 
-
-/**
- * 系统事件消息extra.
- *
- * *当type为系统消息(255)时*
- *
- */
-public interface SystemExtra<T : SystemExtra.Body?> : Event.Extra<String> {
-    override val type: String
-
-    /**
-     * body.
-     *
-     * 该事件关联的具体数据, 详见各系统消息事件示例
-     */
-    val body: T
-
-    /**
-     * 此类型标记为一个 [系统Extra][SystemExtra] 的 [body]
-     */
-    public interface Body
-}

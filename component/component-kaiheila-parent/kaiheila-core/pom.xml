@@ -22,11 +22,6 @@
             <artifactId>ktor-client-core-jvm</artifactId>
         </dependency>
 
-        <!--<dependency>-->
-        <!--    <groupId>io.ktor</groupId>-->
-        <!--    <artifactId>ktor-client-core</artifactId>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>io.ktor</groupId>
             <artifactId>ktor-client-cio-jvm</artifactId>
