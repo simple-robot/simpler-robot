@@ -200,6 +200,9 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
     private val lock = ReentrantReadWriteLock()
 
+
+    override val listenerEditLock: ReentrantReadWriteLock get() = lock
+
     /**
      * 注册一个 [监听函数][ListenerFunction]。
      *
@@ -317,7 +320,9 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             needReset.forEach { (type, resetList) ->
                 mainListenerFunctionMap[type] = listenerInvokerQueue(*resetList.toTypedArray())
             }
-            removedFunc
+            removedFunc.also {
+                cleanCache()
+            }
         }
     }
 
@@ -348,7 +353,9 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                 mainListenerFunctionMap[type] = listenerInvokerQueue(*resetList.toTypedArray())
             }
 
-            removed
+            removed.also {
+                cleanCache()
+            }
         }
     }
 
@@ -382,6 +389,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                 mainListenerFunctionMap[type] = listenerInvokerQueue(*resetList.toTypedArray())
             }
 
+            cleanCache()
         }
         return num
     }
@@ -394,7 +402,6 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     override fun removeListenerByGroup(group: ListenerGroup): Int {
         TODO("Not yet implemented")
     }
-
 
 
     private fun cleanCache() {

@@ -22,6 +22,7 @@ import love.forte.simbot.listener.ListenerFunction
 import love.forte.simbot.listener.ListenerManager
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.locks.ReadWriteLock
 import kotlin.io.path.*
 
 
@@ -224,6 +225,9 @@ public class SimplePluginManager(
 
     @Synchronized
     private fun loadPlugin(plugin: Plugin) {
+        val pId = plugin.pluginInfo.id
+        val pName = plugin.pluginInfo.name
+        logger.debug("Load plugin {}(ID={})", pName, pId)
         // val detailsClass = plugin.pluginInfo.pluginDetails
         val details = plugin.pluginDetails  // pluginLoader.loadClass(detailsClass).newInstance() as PluginDetails
         if (details is ListenerPluginDetails) {
@@ -232,6 +236,9 @@ public class SimplePluginManager(
 
             // Register listeners
             val listeners: Array<ListenerFunction> = details.getListeners().toTypedArray()
+            if (logger.isDebugEnabled) {
+                logger.debug("Plugin({}) listeners: {}", pId, listeners.joinToString(", ", "[", "]") { l -> l.name })
+            }
             listenerManager.register(*listeners)
         }
         pluginMap.merge(plugin.id, plugin) { _, _ ->
@@ -239,36 +246,56 @@ public class SimplePluginManager(
         }
 
         // do init
+        logger.debug("Init plugin({}) details.", pId)
         plugin.pluginDetails.init(dependBeanFactory)
+        logger.debug("Init plugin({}) details finished.", pId)
+
+        logger.debug("Start plugin({}) loader.", pId)
         plugin.pluginLoader.start()
+        logger.debug("Plugin({}) loader started.", pId)
+
     }
 
 
     @Synchronized
     private fun unloadPlugin(id: String): Plugin? {
+        logger.debug("Unload plugin {}", id)
         return pluginMap.remove(id)?.also {
             it.pluginLoader.close()
+            logger.debug("Plugin's loader closed.")
             val details = it.pluginDetails
             if (details is ListenerPluginDetails) {
-                for (listener in details.listeners) {
-                    listenerManager.removeListenerById(listener.id)
+                listenerManager.listenerEditLock.write {
+                    for (listener in details.listeners) {
+                        val lisId = listener.id
+                        listenerManager.removeListenerById(lisId)
+                        logger.debug("Removed listener {}", lisId)
+                    }
                 }
             }
         }
     }
 
 
+    @Suppress("SameParameterValue")
     @Synchronized
     private fun reloadPlugin(id: String, main: Boolean, lib: Boolean) {
+        logger.debug("Reload plugin {} with main({}) | lib({})", id, main, lib)
         val needReload = pluginMap[id] ?: return
         val details = needReload.pluginDetails
         if (details is ListenerPluginDetails) {
-            for (listener in details.listeners) {
-                val removedById = listenerManager.removeListenerById(listener.id)
-                println("Removed func ${listener.id} -> $removedById")
+            listenerManager.listenerEditLock.write {
+                for (listener in details.listeners) {
+                    val lisId = listener.id
+                    listenerManager.removeListenerById(listener.id)
+                    logger.debug("Removed listener {}", lisId)
+                }
             }
         }
+        logger.debug("Reset plugin({})'s loader ", needReload.id)
         needReload.pluginLoader.resetLoader(main = main, lib = lib)
+        logger.debug("Reset plugin({})'s loader finished.", needReload.id)
+
         pluginMap.remove(id)
         loadPlugin(needReload)
     }
@@ -290,4 +317,15 @@ public class SimplePluginManager(
 
     @Synchronized
     override fun simbotClose(context: SimbotContext) = close()
+}
+
+
+private inline fun <T> ReadWriteLock.write(block: () -> T): T {
+    val lock = writeLock()
+    lock.lock()
+    try {
+        return block()
+    } finally {
+        lock.unlock()
+    }
 }
