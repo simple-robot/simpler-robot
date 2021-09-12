@@ -18,18 +18,13 @@ import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.filter.ListenerFilter
-import love.forte.simbot.listener.ListenResult
-import love.forte.simbot.listener.ListenerFunction
-import love.forte.simbot.listener.ListenerFunctionInvokeData
-import love.forte.simbot.listener.ListenerGroup
+import love.forte.simbot.listener.*
 import java.lang.reflect.Type
 
 
 public fun interface AnnotationGetter {
     fun getAnnotation(type: Class<out Annotation>): Annotation?
 }
-
-
 
 
 /**
@@ -43,8 +38,7 @@ public fun interface AnnotationGetter {
  *
  * @author ForteScarlet
  */
-
-@OptIn(SimbotInternalApi::class)
+@OptIn(SimbotInternalApi::class, SimbotExperimentalApi::class)
 public class FunctionListenerFunction
 @SimbotExperimentalApi constructor(
     override val id: String,
@@ -54,12 +48,26 @@ public class FunctionListenerFunction
     /** 所属载体。 */
     override val type: Type,
     override val listenTypes: Set<Class<out MsgGet>>,
-    override val groups: List<ListenerGroup>,
-    /** 注解获取器。需要注意，得到的返回值的 [Annotation] 类型需要与提供的 [type] 注解类型一致。 */
+    groupNames: List<String> = emptyList(),
+    /**
+     * 当 [groupNames] 不为空时，[groupManager] 不可为 null.
+     */
+    groupManager: ListenerGroupManager? = null,
+    /**
+     * 注解获取器。
+     * */
     private val annotationGetter: (type: Class<out Annotation>) -> Annotation?,
     private val func: suspend (data: ListenerFunctionInvokeData) -> ListenResult<*>,
     override val filter: ListenerFilter?,
-): ListenerFunction {
+) : ListenerFunction {
+
+
+    override val groups: List<ListenerGroup> = if (groupNames.isEmpty()) emptyList() else {
+        val manager = checkNotNull(groupManager){ "Group manager cannot be null when groups name was not empty." }
+        manager.assignGroup(this, *groupNames.toTypedArray())
+    }
+
+
 
     @Suppress("UNCHECKED_CAST")
     override fun <A : Annotation> getAnnotation(type: Class<out A>): A? = annotationGetter(type) as? A

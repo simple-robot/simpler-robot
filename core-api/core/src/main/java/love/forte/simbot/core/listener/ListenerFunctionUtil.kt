@@ -26,7 +26,7 @@ import love.forte.simbot.filter.ListenerFilter
 import love.forte.simbot.listener.ListenResult
 import love.forte.simbot.listener.ListenerFunction
 import love.forte.simbot.listener.ListenerFunctionInvokeData
-import love.forte.simbot.listener.ListenerGroup
+import love.forte.simbot.listener.ListenerGroupManager
 import java.lang.reflect.Method
 import java.lang.reflect.Type
 
@@ -42,6 +42,7 @@ import java.lang.reflect.Type
  *
  */
 @JvmSynthetic
+@Deprecated("Not implemented yet.")
 public fun Method.toListenerFunction(listens: Listens? = null, filters: Filters? = null): ListenerFunction {
     val realListens = listens ?: AnnotationUtil.getAnnotation(this, Listens::class.java)
     ?: throw IllegalStateException("Cannot found annotation Listens from method $this")
@@ -60,6 +61,7 @@ public fun Method.toListenerFunction(listens: Listens? = null, filters: Filters?
  *
  * @param listenTypes 监听事件的类型。不可为空
  */
+@Deprecated("Not implemented yet.")
 public fun Method.toListenerFunction(
     listenTypes: Array<Class<out MsgGet>>,
     id: String? = null,
@@ -79,6 +81,8 @@ public fun Method.toListenerFunction(
  * @see toListenerFunction
  */
 // for Java
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("Not implemented yet.")
 public fun methodToListenerFunction(
     method: Method,
     listens: Listens? = null,
@@ -94,13 +98,17 @@ public class LambdaListenerFunction @OptIn(SimbotExperimentalApi::class) constru
     /** 所属载体。 */
     type: Type,
     listenTypes: Set<Class<out MsgGet>>,
-    groups: List<ListenerGroup>,
+    groupNames: List<String> = emptyList(),
+    /**
+     * 当 [groupNames] 不为空时，[groupManager] 不可为 null.
+     */
+    groupManager: ListenerGroupManager? = null,
     /** 注解获取器。需要注意，得到的返回值的 [Annotation] 类型需要与提供的 [type] 注解类型一致。 */
     annotationGetter: (type: Class<out Annotation>) -> Annotation?,
     invoker: ListenerFunctionInvoker,
     filter: ListenerFilter?,
 ) : ListenerFunction by @OptIn(SimbotExperimentalApi::class) FunctionListenerFunction(
-    id, name, spare, priority, type, listenTypes, groups, annotationGetter,
+    id, name, spare, priority, type, listenTypes, groupNames, groupManager, annotationGetter,
     invoker.asSuspendFunction(),
     filter
 )
