@@ -12,7 +12,7 @@
 
     <groupId>love.forte.simple-robotx</groupId>
     <artifactId>plugin-core</artifactId>
-    <version>2.3.0-ALPHA.1<!--v--></version>
+    <!--<version>2.3.0-ALPHA.1&lt;!&ndash;v&ndash;&gt;</version>-->
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

@@ -45,7 +45,7 @@ public class FunctionListenerFunction
     override val name: String,
     override val spare: Boolean,
     override val priority: Int,
-    override val async: Boolean,
+    override val isAsync: Boolean,
     /** 所属载体。 */
     override val type: Type,
     override val listenTypes: Set<Class<out MsgGet>>,

@@ -123,7 +123,7 @@ public interface ListenerFunction {
      *
      * @since 2.3.0
      */
-    val async: Boolean
+    val isAsync: Boolean
 
 
 

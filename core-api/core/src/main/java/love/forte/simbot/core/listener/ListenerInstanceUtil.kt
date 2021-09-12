@@ -150,6 +150,12 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
     var spare = false
 
     /**
+     * 是否为 [异步函数][love.forte.simbot.annotation.Async]
+     */
+    @ListenerFunctionBuilderDSL
+    var isAsync = false
+
+    /**
      * 监听函数的优先级。
      */
     @ListenerFunctionBuilderDSL
@@ -319,6 +325,7 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
         name = name,
         spare = spare,
         priority = priority,
+        isAsync = isAsync,
         type = type,
         listenTypes = listenTypesSet,
         groupNames = groups,

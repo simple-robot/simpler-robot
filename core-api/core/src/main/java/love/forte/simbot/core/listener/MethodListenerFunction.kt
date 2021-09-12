@@ -59,7 +59,7 @@ import kotlin.reflect.jvm.kotlinFunction
 public class MethodListenerFunction constructor(
     private val method: Method,
     private val instanceName: String?,
-    override val async: Boolean,
+    override val isAsync: Boolean,
     declClass: Class<*>,
     private val dependBeanFactory: DependBeanFactory,
     private val filterManager: FilterManager,

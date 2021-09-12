@@ -136,7 +136,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                             filterManager = filterManager,
                             converterManager = converterManager,
                             listenerResultFactory = listenerResultFactory,
-                            async = async,
+                            isAsync = async,
                             listenerGroupManager = listenerGroupManager,
                             strictManager.coreStrict()
                         )

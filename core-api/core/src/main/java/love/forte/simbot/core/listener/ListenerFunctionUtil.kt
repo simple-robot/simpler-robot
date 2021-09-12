@@ -82,7 +82,7 @@ public fun Method.toListenerFunction(
  * @see toListenerFunction
  */
 // for Java
-@Suppress("DeprecatedCallableAddReplaceWith")
+@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
 @Deprecated("Not implemented yet.")
 public fun methodToListenerFunction(
     method: Method,
@@ -114,7 +114,7 @@ public class LambdaListenerFunction @OptIn(SimbotExperimentalApi::class) constru
     name = name,
     spare = spare,
     priority = priority,
-    async = async,
+    isAsync = async,
     type = type,
     listenTypes = listenTypes,
     groupNames = groupNames,

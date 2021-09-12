@@ -58,7 +58,7 @@ public class FunctionFromClassListenerFunction constructor(
     private val filterManager: FilterManager,
     private val converterManager: ConverterManager,
     private val listenerResultFactory: ListenerResultFactory,
-    override val async: Boolean,
+    override val isAsync: Boolean,
     listenerGroupManager: ListenerGroupManager,
     strict: Boolean,
 ) : ListenerFunction, LogAble {

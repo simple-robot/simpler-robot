@@ -134,7 +134,8 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     lateinit var dependCenter: DependCenter
 
     private val eventDispatcher = eventDispatcherFactory.dispatcher
-    private val collectScope = CoroutineScope(Dispatchers.Default)
+
+    // private val collectScope = CoroutineScope(Dispatchers.Default)
     private val eventCoroutineScope = CoroutineScope(
         eventDispatcher +
                 CoroutineName("CoreMsgProcessor-Event")
@@ -169,7 +170,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
     override fun simbotClose(context: SimbotContext) {
         // producerScope.close()
-        collectScope.cancel()
+        // collectScope.cancel()
         eventCoroutineScope.cancel()
     }
 
@@ -499,9 +500,9 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
         val botCode = msgGet.botInfo.botCode
         val eventLogger = if (msgGet is LogAble) msgGet.log else logger
 
-        val funcs = getListenerFunctions(msgGet.javaClass, true)
+        val funcList = getListenerFunctions(msgGet.javaClass, true)
         var invokeData: ListenerFunctionInvokeData? = null
-        if (funcs.isEmpty()) {
+        if (funcList.isEmpty()) {
             return
         } else {
             var finalResult: ListenResult<*>
@@ -570,7 +571,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
             // for (func: ListenerFunction in funcs.normal) {
 
-            val normals = funcs.normal
+            val normals = funcList.normal
 
             val iter = normals.iterator()
             var i = 0
@@ -578,26 +579,50 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
             for (invoker in iter) {
                 val func = invoker.function
-                finalResult = doListen(invoker)
-                if (finalResult.isSuccess()) {
-                    eventLogger.trace("{} -> Normal listener chain[{}] success on {}({})",
-                        botCode,
-                        i,
-                        func.name,
-                        func.id)
-                    anySuccess = true
-                }
 
-                // if ex
-                finalResult = doResultIfFail(func, finalResult)
+                if (func.isAsync) {
+                    // If is async, invoke by launch.
+                    eventCoroutineScope.launch {
+                        val asyncResult = doListen(invoker)
+                        if (asyncResult.isSuccess()) {
+                            eventLogger.trace("{} -> Normal async listener chain[{}] success on {}({})",
+                                botCode,
+                                i,
+                                func.name,
+                                func.id)
+                        }
 
-                // if is break, break.
-                if (finalResult.isBreak()) {
-                    doBreak = true
-                    eventLogger.trace("{} -> Normal Listener chain[{}] break on {}({})", botCode, i, func.name, func.id)
-                    break
+                        // if ex
+                        doResultIfFail(func, asyncResult)
+                    }
+
+
+                } else {
+                    finalResult = doListen(invoker)
+                    if (finalResult.isSuccess()) {
+                        eventLogger.trace("{} -> Normal listener chain[{}] success on {}({})",
+                            botCode,
+                            i,
+                            func.name,
+                            func.id)
+                        anySuccess = true
+                    }
+
+                    // if ex
+                    finalResult = doResultIfFail(func, finalResult)
+
+                    // if is break, break.
+                    if (finalResult.isBreak()) {
+                        doBreak = true
+                        eventLogger.trace("{} -> Normal Listener chain[{}] break on {}({})",
+                            botCode,
+                            i,
+                            func.name,
+                            func.id)
+                        break
+                    }
+                    i++
                 }
-                i++
             }
             eventLogger.trace("{} -> Normal listener invoked {}.", botCode, i + 1)
 
@@ -606,7 +631,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             if (!anySuccess && !doBreak) {
                 eventLogger.trace("{} -> No normal success or break, to spares.", botCode)
                 var si = 0
-                for (invoker: ListenerInvoker in funcs.spare) {
+                for (invoker: ListenerInvoker in funcList.spare) {
                     val func = invoker.function
                     finalResult = doListen(invoker)
                     finalResult = doResultIfFail(func, finalResult)

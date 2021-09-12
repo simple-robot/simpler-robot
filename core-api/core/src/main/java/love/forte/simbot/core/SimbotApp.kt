@@ -331,7 +331,7 @@ protected constructor(
 
                 when {
                     resourceName.startsWith(RESOURCE_FILE) -> {
-                        // starts with 'file', try get Reader by file
+                        // starts with 'file', try to get Reader by file
                         FileUtil.getUtf8Reader(resourceName.substring(RESOURCE_FILE.length))
                     }
                     resourceName.startsWith(RESOURCE_CLASSPATH) -> {
