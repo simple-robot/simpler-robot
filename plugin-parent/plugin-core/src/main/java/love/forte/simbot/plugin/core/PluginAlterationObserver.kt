@@ -60,7 +60,8 @@ public abstract class PluginAlterationObserver(
             launch {
                 val frequency = coroutineContext[WatchFrequency]?.frequency ?: 100
                 while (isActive) {
-                    val mainEvents: List<WatchEvent<*>> = mainFileWatchKey.pollEvents().also { mainFileWatchKey.reset() }
+                    val mainEvents: List<WatchEvent<*>> =
+                        mainFileWatchKey.pollEvents().also { mainFileWatchKey.reset() }
                     mainEvents.forEach { e ->
                         val context = e.context() as Path
                         if (context.name == plugin.mainFile.name) {
@@ -89,69 +90,80 @@ public abstract class PluginAlterationObserver(
                 val frequency = coroutineContext[WatchFrequency]?.frequency ?: 100
                 while (isActive) {
                     val libEvents = libWatchKey.pollEvents().also { libWatchKey.reset() }
-                    libEvents.forEach { e ->
-                        val context = e.context() as Path
-                        // println("kind: ${e.kind()}")
-                        // println("context.name: ${context.name}")
-                        // println("plugin.libraries.name: ${plugin.libraries.name}")
-                        // println("context.isDirectory(): ${context.isDirectory()}")
-                        // println("context.isRegularFile(): ${context.isRegularFile()}")
-                        when (e.kind()) {
-                            StandardWatchEventKinds.ENTRY_CREATE -> {
-                                val realFile = plugin.tempLibraries.realPath / context
-                                // dir
-                                if (realFile.isDirectory()) {
-                                    // Is dir, do nothing.
-                                    // lib created.
-                                    // onLibCreated(context)
-                                } else {
-                                    // New file created.
-                                    onLibIncrease(plugin.tempLibraries.realPath, realFile)
-                                }
-                            }
-                            StandardWatchEventKinds.ENTRY_MODIFY -> {
-                                // 直接删目录
-                                /*
-                                    kind: ENTRY_MODIFY
-                                    context.name: plugins-core-0.1-SNAPSHOT.jar
-                                    plugin.libraries.name: libs
-                                    context.isDirectory(): false
-                                    context.isRegularFile(): false
+
+                    // // 如果先是 reduce 然后是　increase, 那么就是lib内某文件的文件名修改
+                    // if (libEvents.size == 2) {
+                    //     val event1 = libEvents[0]
+                    //     val context1 = plugin.tempLibraries.realPath / event1.context() as Path
+                    //     val event2 = libEvents[1]
+                    //     val context2 = plugin.tempLibraries.realPath / event2.context() as Path
+                    //
+                    // }
 
 
-                                    kind: ENTRY_MODIFY
-                                    context.name: plugins-core-0.1-SNAPSHOT.jar
-                                    plugin.libraries.name: libs
-                                    context.isDirectory(): false
-                                    context.isRegularFile(): false
-                                 */
-                                if (plugin.tempLibraries.realPath.exists()) {
-                                    onLibCreated(plugin.tempLibraries.realPath)
-                                } else {
-                                    // onLibEdited(plugin.tempLibraries.realPath, plugin.tempLibraries.realPath)
-                                    onLibDeleted(plugin.tempLibraries.realPath)
+                        libEvents.forEach { e ->
+                            val context = e.context() as Path
+                            // println("kind: ${e.kind()}")
+                            // println("context.name: ${context.name}")
+                            // println("plugin.libraries.name: ${plugin.libraries.name}")
+                            // println("context.isDirectory(): ${context.isDirectory()}")
+                            // println("context.isRegularFile(): ${context.isRegularFile()}")
+                            when (e.kind()) {
+                                StandardWatchEventKinds.ENTRY_CREATE -> {
+                                    val realFile = plugin.tempLibraries.realPath / context
+                                    // dir
+                                    if (realFile.isDirectory()) {
+                                        // Is dir, do nothing.
+                                        // lib created.
+                                        // onLibCreated(context)
+                                    } else {
+                                        // New file created.
+                                        onLibIncrease(plugin.tempLibraries.realPath, realFile)
+                                    }
                                 }
-                                // modify
-                                // if (context.isDirectory() && context.isSameFileAs(plugin.libraries)) {
-                                //     // lib created.
-                                //     // onLibCreated(context)
-                                // } else
-                                // if (context.isRegularFile()) {
-                                //     // new file created.
-                                //     onLibEdited(plugin.tempLibraries.realPath, context)
-                                // }
-                            }
-                            StandardWatchEventKinds.ENTRY_DELETE -> {
-                                val realFile = plugin.tempLibraries.realPath / context
-                                if (realFile.isDirectory()) {
-                                    // Is dir, do nothing.
-                                } else {
-                                    // new file created.
-                                    onLibReduce(plugin.tempLibraries.realPath, realFile)
+                                StandardWatchEventKinds.ENTRY_MODIFY -> {
+                                    // 直接删目录
+                                    /*
+                                        kind: ENTRY_MODIFY
+                                        context.name: plugins-core-0.1-SNAPSHOT.jar
+                                        plugin.libraries.name: libs
+                                        context.isDirectory(): false
+                                        context.isRegularFile(): false
+
+
+                                        kind: ENTRY_MODIFY
+                                        context.name: plugins-core-0.1-SNAPSHOT.jar
+                                        plugin.libraries.name: libs
+                                        context.isDirectory(): false
+                                        context.isRegularFile(): false
+                                     */
+                                    if (plugin.tempLibraries.realPath.exists()) {
+                                        onLibCreated(plugin.tempLibraries.realPath)
+                                    } else {
+                                        // onLibEdited(plugin.tempLibraries.realPath, plugin.tempLibraries.realPath)
+                                        onLibDeleted(plugin.tempLibraries.realPath)
+                                    }
+                                    // modify
+                                    // if (context.isDirectory() && context.isSameFileAs(plugin.libraries)) {
+                                    //     // lib created.
+                                    //     // onLibCreated(context)
+                                    // } else
+                                    // if (context.isRegularFile()) {
+                                    //     // new file created.
+                                    //     onLibEdited(plugin.tempLibraries.realPath, context)
+                                    // }
+                                }
+                                StandardWatchEventKinds.ENTRY_DELETE -> {
+                                    val realFile = plugin.tempLibraries.realPath / context
+                                    if (realFile.isDirectory()) {
+                                        // Is dir, do nothing.
+                                    } else {
+                                        // new file created.
+                                        onLibReduce(plugin.tempLibraries.realPath, realFile)
+                                    }
                                 }
                             }
                         }
-                    }
                     delay(frequency)
                 }
             }

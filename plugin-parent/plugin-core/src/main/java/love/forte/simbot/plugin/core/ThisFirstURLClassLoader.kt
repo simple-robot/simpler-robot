@@ -30,10 +30,6 @@ class ThisFirstURLClassLoader : URLClassLoader {
         parent,
         factory)
 
-    init {
-        println("This First Class Loader!")
-    }
-
     override fun loadClass(name: String?, resolve: Boolean): Class<*> {
         synchronized(getClassLoadingLock(name)) {
             val loaded = findLoadedClass(name)
