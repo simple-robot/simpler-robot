@@ -20,7 +20,9 @@ import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.convert.ConverterManager
+import love.forte.simbot.annotation.Async
 import love.forte.simbot.annotation.Listens
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.listener.FunctionFromClassListenerFunction
@@ -58,7 +60,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
     @Depend
     private lateinit var listenerResultFactory: ListenerResultFactory
 
-    @OptIn(SimbotInternalApi::class, love.forte.simbot.api.SimbotExperimentalApi::class)
+    @OptIn(SimbotInternalApi::class, SimbotExperimentalApi::class)
     @Depend
     private lateinit var listenerGroupManager: ListenerGroupManager
 
@@ -67,6 +69,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
     /**
      * 扫描并注册监听函数。
      */
+    @OptIn(SimbotExperimentalApi::class)
     override fun registerListenerFunctions(registrar: ListenerRegistrar) {
 
         logger.info("Ready to register method listeners.")
@@ -118,6 +121,8 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
 
                 val isListener = typeListen || funcListen
 
+                val async = f.containsAnnotation<Async>()
+
                 if (isListener) {
                     if (f.visibility != KVisibility.PUBLIC) {
                         logger.warn("Function $f is marked as a Listener, but it is not a public function, ignored.")
@@ -131,6 +136,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                             filterManager = filterManager,
                             converterManager = converterManager,
                             listenerResultFactory = listenerResultFactory,
+                            async = async,
                             listenerGroupManager = listenerGroupManager,
                             strictManager.coreStrict()
                         )

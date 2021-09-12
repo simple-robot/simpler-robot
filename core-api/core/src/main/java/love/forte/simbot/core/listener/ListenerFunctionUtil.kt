@@ -13,6 +13,7 @@
  */
 
 @file:JvmName("ListenerFunctionUtil")
+@file:Suppress("UNUSED_VARIABLE", "unused")
 
 package love.forte.simbot.core.listener
 
@@ -97,6 +98,7 @@ public class LambdaListenerFunction @OptIn(SimbotExperimentalApi::class) constru
     priority: Int,
     /** 所属载体。 */
     type: Type,
+    async: Boolean,
     listenTypes: Set<Class<out MsgGet>>,
     groupNames: List<String> = emptyList(),
     /**
@@ -108,9 +110,18 @@ public class LambdaListenerFunction @OptIn(SimbotExperimentalApi::class) constru
     invoker: ListenerFunctionInvoker,
     filter: ListenerFilter?,
 ) : ListenerFunction by @OptIn(SimbotExperimentalApi::class) FunctionListenerFunction(
-    id, name, spare, priority, type, listenTypes, groupNames, groupManager, annotationGetter,
-    invoker.asSuspendFunction(),
-    filter
+    id = id,
+    name = name,
+    spare = spare,
+    priority = priority,
+    async = async,
+    type = type,
+    listenTypes = listenTypes,
+    groupNames = groupNames,
+    groupManager = groupManager,
+    annotationGetter = annotationGetter,
+    func = invoker.asSuspendFunction(),
+    filter = filter
 )
 
 /**
