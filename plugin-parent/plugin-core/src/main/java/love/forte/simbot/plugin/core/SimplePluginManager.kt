@@ -22,6 +22,7 @@ import love.forte.simbot.listener.ListenerFunction
 import love.forte.simbot.listener.ListenerManager
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.locks.ReadWriteLock
 import kotlin.io.path.*
 
 
@@ -76,12 +77,13 @@ public class SimplePluginManager(
         // clean old
 
 
-        // val libJars = pluginGlobalLib
-        //     .takeIf { it.exists() && it.isDirectory() }
-        //     ?.useDirectoryEntries("*.jar") { it.map { p -> p.toUri().toURL() }.toList() } ?: emptyList()
+        val libJars = pluginGlobalLib
+            .takeIf { it.exists() && it.isDirectory() }
+            ?.useDirectoryEntries("*.jar") { it.map { p -> p.toUri().toURL() }.toList() } ?: emptyList()
 
         // globalLoader = URLClassLoader(libJars.toTypedArray(), parentLoader)
-        globalLoader = parentLoader //ThisFirstURLClassLoader(libJars.toTypedArray(), parentLoader)
+        // globalLoader = parentLoader //ThisFirstURLClassLoader(libJars.toTypedArray(), parentLoader)
+        globalLoader = ThisFirstURLClassLoader(libJars.toTypedArray(), parentLoader)
 
         scanPlugins()
             .asSequence()
@@ -133,12 +135,18 @@ public class SimplePluginManager(
         val loader = PluginLoader(
             parent = globalLoader,
             plugin = pluginDefinition
-        ) { thisLoader ->
+        ) { _ ->
+            var deleted: Plugin? = null
             onMainCreated {
                 // 当Main Jar被创建
                 logger.debug("Plugin {} onMainCreated: {}", pluginId, it.name)
                 try {
-                    reloadPlugin(pluginId, main = true, lib = false)
+                    deleted?.also { deletedPlugin ->
+                        deletedPlugin.pluginLoader.resetLoaderBoth()
+                        deletedPlugin.reset()
+                    }?.let(::loadPlugin)
+
+                    // reloadPlugin(pluginId, main = true, lib = false)
                 } catch (e: Exception) {
                     logger.error("onMainCreated error", e)
                 }
@@ -160,7 +168,7 @@ public class SimplePluginManager(
                 // listenerManager.removeListenerById()
                 logger.debug("Plugin {} onMainDeleted: {}", pluginId, it.name)
                 try {
-                    unloadPlugin(pluginId)
+                    deleted = unloadPlugin(pluginId)
                 } catch (e: Exception) {
                     logger.error("onMainDeleted error", e)
                 }
@@ -170,7 +178,11 @@ public class SimplePluginManager(
             onLibCreated {
                 logger.debug("Plugin {} lib created: {}", pluginId, it.name)
                 try {
-                    thisLoader.resetLoaderByLib()
+                    // 如果是 lib, 那说明是内部有东西变更了，可以不在这个事件中处理
+                    // if (it.name == pluginLibName) {
+                    // ignore.
+                    // }
+                    reloadPlugin(pluginId, main = false, lib = true)
                 } catch (e: Exception) {
                     logger.error("onLibCreated error", e)
                 }
@@ -178,9 +190,11 @@ public class SimplePluginManager(
 
             }
             onLibEdited { _, edited ->
+                // Unknown event.
                 logger.debug("Plugin {} lib edited: {}", pluginId, edited.name)
                 try {
-                    thisLoader.resetLoaderByLib()
+                    reloadPlugin(pluginId, main = false, lib = true)
+                    // thisLoader.resetLoaderByLib()
                 } catch (e: Exception) {
                     logger.error("onLibEdited error", e)
                 }
@@ -189,7 +203,8 @@ public class SimplePluginManager(
             onLibIncrease { _, increased ->
                 logger.debug("Plugin {} lib increase: {}", pluginId, increased.name)
                 try {
-                    thisLoader.resetLoaderByLib()
+                    reloadPlugin(pluginId, main = false, lib = true)
+                    // thisLoader.resetLoaderByLib()
                 } catch (e: Exception) {
                     logger.error("onLibIncrease error", e)
                 }
@@ -198,7 +213,8 @@ public class SimplePluginManager(
             onLibReduce { _, reduced ->
                 logger.debug("Plugin {} lib reduced: {}", pluginId, reduced.name)
                 try {
-                    thisLoader.resetLoaderByLib()
+                    reloadPlugin(pluginId, main = false, lib = true)
+                    // thisLoader.resetLoaderByLib()
                 } catch (e: Exception) {
                     logger.error("onLibReduce error", e)
                 }
@@ -207,7 +223,8 @@ public class SimplePluginManager(
             onLibDeleted {
                 logger.debug("Plugin {} lib deleted: {}", pluginId, it.name)
                 try {
-                    thisLoader.resetLoaderByLib()
+                    reloadPlugin(pluginId, main = false, lib = true)
+                    // thisLoader.resetLoaderByLib()
                 } catch (e: Exception) {
                     logger.error("onLibDeleted error", e)
                 }
@@ -216,14 +233,19 @@ public class SimplePluginManager(
 
         }
 
-        val pluginDetails = loader.extractDetails()
-        val pluginInfo = pluginDetails.extractInformation()
+        // val pluginDetails = loader.extractDetails()
+        // val pluginInfo = pluginDetails.extractInformation()
 
-        return SimplePlugin(loader, pluginInfo, pluginDetails)
+        // Default do reset first
+        return SimplePlugin(loader)
     }
 
     @Synchronized
     private fun loadPlugin(plugin: Plugin) {
+        val pId = plugin.pluginInfo.id
+        val pName = plugin.pluginInfo.name
+        logger.info("Load plugin {}(ID={})", pName, pId)
+        logger.debug("Plugin info: {}", plugin.pluginInfo)
         // val detailsClass = plugin.pluginInfo.pluginDetails
         val details = plugin.pluginDetails  // pluginLoader.loadClass(detailsClass).newInstance() as PluginDetails
         if (details is ListenerPluginDetails) {
@@ -232,6 +254,9 @@ public class SimplePluginManager(
 
             // Register listeners
             val listeners: Array<ListenerFunction> = details.getListeners().toTypedArray()
+            if (logger.isDebugEnabled) {
+                logger.debug("Plugin({}) listeners: {}", pId, listeners.joinToString(", ", "[", "]") { l -> l.name })
+            }
             listenerManager.register(*listeners)
         }
         pluginMap.merge(plugin.id, plugin) { _, _ ->
@@ -239,38 +264,61 @@ public class SimplePluginManager(
         }
 
         // do init
+        logger.debug("Init plugin({}) details.", pId)
         plugin.pluginDetails.init(dependBeanFactory)
+        logger.debug("Init plugin({}) details finished.", pId)
+
+        logger.debug("Start plugin({}) loader.", pId)
         plugin.pluginLoader.start()
+        logger.debug("Plugin({}) loader started.", pId)
+
     }
 
 
     @Synchronized
     private fun unloadPlugin(id: String): Plugin? {
+        logger.debug("Unload plugin {}", id)
         return pluginMap.remove(id)?.also {
-            it.pluginLoader.close()
+            it.pluginLoader.closeLoader()
+            logger.debug("Plugin's loader closed.")
             val details = it.pluginDetails
             if (details is ListenerPluginDetails) {
-                for (listener in details.listeners) {
-                    listenerManager.removeListenerById(listener.id)
+                listenerManager.listenerEditLock.write {
+                    for (listener in details.listeners) {
+                        val lisId = listener.id
+                        listenerManager.removeListenerById(lisId)
+                        logger.debug("Removed listener {}", lisId)
+                    }
                 }
             }
         }
     }
 
 
+    @Suppress("SameParameterValue")
     @Synchronized
     private fun reloadPlugin(id: String, main: Boolean, lib: Boolean) {
-        val needReload = pluginMap[id] ?: return
+        val needReload = pluginMap[id] ?: run {
+            logger.debug("Reload plugin failed. Cannot found loaded plugin id called {}, skip", id)
+            return
+        }
+        logger.debug("Reload plugin {} with main({}) | lib({})", id, main, lib)
         val details = needReload.pluginDetails
         if (details is ListenerPluginDetails) {
-            for (listener in details.listeners) {
-                val removedById = listenerManager.removeListenerById(listener.id)
-                println("Removed func ${listener.id} -> $removedById")
+            listenerManager.listenerEditLock.write {
+                for (listener in details.listeners) {
+                    val lisId = listener.id
+                    listenerManager.removeListenerById(listener.id)
+                    logger.debug("Removed listener {}", lisId)
+                }
             }
         }
+        logger.debug("Reset plugin({})'s loader ", needReload.id)
         needReload.pluginLoader.resetLoader(main = main, lib = lib)
+        logger.debug("Reset plugin({})'s loader finished.", needReload.id)
+
         pluginMap.remove(id)
-        loadPlugin(needReload)
+        loadPlugin(needReload.also { it.reset() })
     }
 
 
@@ -290,4 +338,15 @@ public class SimplePluginManager(
 
     @Synchronized
     override fun simbotClose(context: SimbotContext) = close()
+}
+
+
+private inline fun <T> ReadWriteLock.write(block: () -> T): T {
+    val lock = writeLock()
+    lock.lock()
+    try {
+        return block()
+    } finally {
+        lock.unlock()
+    }
 }

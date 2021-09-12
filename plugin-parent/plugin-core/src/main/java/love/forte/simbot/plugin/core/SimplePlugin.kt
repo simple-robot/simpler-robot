@@ -21,9 +21,24 @@ package love.forte.simbot.plugin.core
  */
 public class SimplePlugin(
     override val pluginLoader: PluginLoader,
-    override val pluginInfo: PluginInfo,
-    override val pluginDetails: PluginDetails
+    resetFirst: Boolean = true,
 ) : Plugin {
+
+    @Volatile
+    private lateinit var _pluginDetails: PluginDetails
+
+    @Volatile
+    private lateinit var _pluginInfo: PluginInfo
+
+    init {
+        if (resetFirst) {
+            reset()
+        }
+    }
+
+
+    override val pluginInfo: PluginInfo get() = _pluginInfo
+    override val pluginDetails: PluginDetails get() = _pluginDetails
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -37,5 +52,13 @@ public class SimplePlugin(
     override fun hashCode(): Int {
         return pluginInfo.hashCode()
     }
+
+    @Synchronized
+    override fun reset() {
+        _pluginDetails = pluginLoader.extractDetails()
+        _pluginInfo = _pluginDetails.extractInformation()
+    }
+
+
 }
 
