@@ -45,7 +45,7 @@ import kotlin.reflect.KClass
 public inline fun <T : MsgGet> buildListenerFunction(
     id: String,
     vararg listenTypes: KClass<out T>,
-    block: ListenerBuilder<T>.() -> Unit,
+    block: ListenerFunctionBuilder<T>.() -> Unit,
 ): ListenerFunction = buildListenerFunction(id = id, name = id, *listenTypes, block = block)
 
 
@@ -57,8 +57,8 @@ public inline fun <T : MsgGet> buildListenerFunction(
 public inline fun <T : MsgGet> buildListenerFunction(
     id: String,
     name: String,
-    vararg listenTypes: KClass<out T>, block: ListenerBuilder<T>.() -> Unit,
-): ListenerFunction = ListenerBuilder(id, name, *listenTypes.map { kc -> kc.java }.toTypedArray()).apply(block).build()
+    vararg listenTypes: KClass<out T>, block: ListenerFunctionBuilder<T>.() -> Unit,
+): ListenerFunction = ListenerFunctionBuilder(id, name, *listenTypes.map { kc -> kc.java }.toTypedArray()).apply(block).build()
 
 /**
  * 构建一个 [ListenerFunction].
@@ -127,15 +127,25 @@ annotation class ListenerFunctionBuilderDSL
  *
  *
  */
-public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
+public class ListenerFunctionBuilder<T : MsgGet> @JvmOverloads constructor(
     val id: String,
     val name: String = id,
-    vararg listenTypes: Class<out T>,
+    listenTypes: Collection<Class<out T>>,
 ) {
 
     init {
         check(listenTypes.isNotEmpty()) { "Listen types cannot be empty." }
     }
+
+    @JvmOverloads
+    constructor(id: String,
+                name: String = id,
+                vararg listenTypes: Class<out T>): this(id, name, listenTypes.toSet())
+    @JvmOverloads
+    constructor(id: String,
+                name: String = id,
+                listenType: Class<out T>): this(id, name, setOf(listenType))
+
 
     private val listenTypesSet = listenTypes.toSet()
 
@@ -147,7 +157,7 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
      * 是否为 [备用函数][ListenerFunction.spare]
      */
     @ListenerFunctionBuilderDSL
-    var spare = false
+    var isSpare = false
 
     /**
      * 是否为 [异步函数][love.forte.simbot.annotation.Async]
@@ -181,7 +191,7 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
      *
      */
     @OptIn(SimbotExperimentalApi::class)
-    fun listenerGroup(groupManager: ListenerGroupManager, vararg groups: String): ListenerBuilder<T> {
+    fun listenerGroup(groupManager: ListenerGroupManager, vararg groups: String): ListenerFunctionBuilder<T> {
         this.groupManager = groupManager
         this.groups = groups.toList()
         return this
@@ -199,7 +209,7 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
      * 设置一个注解获取器。
      */
     @ListenerFunctionBuilderDSL
-    fun annotationGetter(block: (type: Class<out Annotation>) -> Annotation?): ListenerBuilder<T> {
+    fun annotationGetter(block: (type: Class<out Annotation>) -> Annotation?): ListenerFunctionBuilder<T> {
         this.annotationGetter = block
         return this
     }
@@ -209,7 +219,7 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
      *
      */
     @ListenerFunctionBuilderDSL
-    fun annotations(vararg annotations: Annotation): ListenerBuilder<T> {
+    fun annotations(vararg annotations: Annotation): ListenerFunctionBuilder<T> {
         when {
             annotations.isEmpty() -> {
                 annotationGetter = { null }
@@ -242,7 +252,7 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
 
     @JvmOverloads
     @ListenerFunctionBuilderDSL
-    fun filter(priority: Int = PriorityConstant.LAST, block: (data: FilterData) -> Boolean): ListenerBuilder<T> {
+    fun filter(priority: Int = PriorityConstant.LAST, block: (data: FilterData) -> Boolean): ListenerFunctionBuilder<T> {
         this.filter = buildListenerFilter {
             this.priority = priority
             filter(block)
@@ -255,7 +265,7 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
 
     @JvmSynthetic
     @ListenerFunctionBuilderDSL
-    fun buildFilter(filter: ListenerFilterBuilder.() -> Unit): ListenerBuilder<T> {
+    fun buildFilter(filter: ListenerFilterBuilder.() -> Unit): ListenerFunctionBuilder<T> {
         this.filter = buildListenerFilter(filter)
         return this
     }
@@ -267,7 +277,7 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
      */
     @ListenerFunctionBuilderDSL
     @JvmSynthetic
-    fun invoker(block: suspend (data: ListenerFunctionInvokeData) -> ListenResult<*>): ListenerBuilder<T> {
+    fun invoker(block: suspend (data: ListenerFunctionInvokeData) -> ListenResult<*>): ListenerFunctionBuilder<T> {
         invokeFunction = block
         return this
     }
@@ -279,7 +289,7 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
     @ListenerFunctionBuilderDSL
     @Suppress("UNCHECKED_CAST")
     @JvmSynthetic
-    fun invoker(block: suspend (msg: T, sender: MsgSender, atDetection: AtDetection) -> ListenResult<*>): ListenerBuilder<T> {
+    fun invoker(block: suspend (msg: T, sender: MsgSender, atDetection: AtDetection) -> ListenResult<*>): ListenerFunctionBuilder<T> {
         invokeFunction = { data ->
             val msg = data.msgGet as T
             val sender = data.msgSender
@@ -295,7 +305,7 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
     @Suppress("FunctionName")
     @ListenerFunctionBuilderDSL
     @JvmName("listenerFilter")
-    fun _listenerFilter(filter: BuildListenerFilter): ListenerBuilder<T> {
+    fun _listenerFilter(filter: BuildListenerFilter): ListenerFunctionBuilder<T> {
         this.filter = buildListenerFilter(filter)
         return this
     }
@@ -305,7 +315,7 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
      */
     @Suppress("FunctionName")
     @JvmName("listenerFunction")
-    fun _listenerFunction4j(block: (data: ListenerFunctionInvokeData) -> ListenResult<*>): ListenerBuilder<T> {
+    fun _listenerFunction4j(block: (data: ListenerFunctionInvokeData) -> ListenResult<*>): ListenerFunctionBuilder<T> {
         return invoker { d -> block(d) }
     }
 
@@ -314,7 +324,7 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
      */
     @Suppress("FunctionName")
     @JvmName("listenerFunction")
-    fun _listenerFunction4j(block: (msg: T, sender: MsgSender, atDetection: AtDetection) -> ListenResult<*>): ListenerBuilder<T> {
+    fun _listenerFunction4j(block: (msg: T, sender: MsgSender, atDetection: AtDetection) -> ListenResult<*>): ListenerFunctionBuilder<T> {
         return invoker { msg, sender, atDetection -> block(msg, sender, atDetection) }
     }
 
@@ -323,7 +333,7 @@ public class ListenerBuilder<T : MsgGet> @JvmOverloads constructor(
     fun build(): ListenerFunction = FunctionListenerFunction(
         id = id,
         name = name,
-        spare = spare,
+        spare = isSpare,
         priority = priority,
         isAsync = isAsync,
         type = type,
