@@ -633,15 +633,21 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                 var si = 0
                 for (invoker: ListenerInvoker in funcList.spare) {
                     val func = invoker.function
-                    finalResult = doListen(invoker)
-                    finalResult = doResultIfFail(func, finalResult)
-                    if (finalResult.isBreak()) {
-                        eventLogger.trace("{} -> Spare Listener chain[{}] break on {}({})",
-                            botCode,
-                            si,
-                            func.name,
-                            func.id)
-                        break
+                    if (func.isAsync) {
+                        eventCoroutineScope.launch {
+                            doResultIfFail(func, doListen(invoker))
+                        }
+                    } else {
+                        finalResult = doListen(invoker)
+                        finalResult = doResultIfFail(func, finalResult)
+                        if (finalResult.isBreak()) {
+                            eventLogger.trace("{} -> Spare Listener chain[{}] break on {}({})",
+                                botCode,
+                                si,
+                                func.name,
+                                func.id)
+                            break
+                        }
                     }
                     si++
                 }
