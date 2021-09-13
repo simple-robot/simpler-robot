@@ -15,7 +15,7 @@
     <modules>
         <module>component-mirai</module>
         <module>component-lovelycat-httpapi</module>
-        <module>component-kaiheila-parent</module>
+        <!--<module>component-kaiheila-parent</module>-->
 
     </modules>
 

@@ -15,7 +15,6 @@
 package love.test.guild
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.serializer
 import love.forte.simbot.component.kaiheila.api.ApiData
 import love.forte.simbot.component.kaiheila.api.ListResp
 import love.forte.simbot.component.kaiheila.api.ObjectResp
@@ -80,7 +79,8 @@ class JsonSerTest {
                       "page_total": 10,
                       "page_size": 10,
                       "total": 100
-                    }
+                    },
+                    "sort": {}
                 }
             }
         """.trimIndent()
@@ -91,7 +91,7 @@ class JsonSerTest {
 
 
 
-        val resp = khlJson.decodeFromString(ListResp.serializer(User.serializer(), Int.serializer()), json)
+        val resp = khlJson.decodeFromString(ListResp.serializer(User.serializer(), ApiData.Resp.EmptySort.serializer()), json)
 
         println(resp::class)
         println(resp)
