@@ -135,6 +135,12 @@
                 <artifactId>client-restTemplate</artifactId>
                 <version>${simbot.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>love.forte.simple-robotx</groupId>
+                <artifactId>plugin-core</artifactId>
+                <version>${simbot.version}</version>
+            </dependency>
             <!--</editor-fold>-->
             <!--<editor-fold desc="serialization">-->
             <dependency>
