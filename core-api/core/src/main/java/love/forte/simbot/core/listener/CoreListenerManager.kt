@@ -51,7 +51,17 @@ import kotlin.concurrent.read
 import kotlin.concurrent.write
 
 private val ListenerInvokerComparable: Comparator<ListenerInvoker> =
-    Comparator { f1, f2 -> f1.function.priority.compareTo(f2.function.priority) }
+    Comparator { f1, f2 ->
+        val comparedByPriority = f1.function.priority.compareTo(f2.function.priority)
+        if (comparedByPriority != 0) {
+            return@Comparator comparedByPriority
+        }
+        val f1Async = f1.function.isAsync
+        val f2Async = f2.function.isAsync
+        if (f1Async == f2Async) return@Comparator 0
+        if (f1Async) return@Comparator -1
+        1 // f2Async is true
+    }
 
 
 /**
