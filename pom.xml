@@ -22,7 +22,7 @@
         <module>serialization</module>
         <module>http</module>
         <module>time-task</module>
-        <module>plugin-parent/plugin-core</module>
+        <module>simbot-x/plugin-core</module>
     </modules>
 
     <dependencies>
