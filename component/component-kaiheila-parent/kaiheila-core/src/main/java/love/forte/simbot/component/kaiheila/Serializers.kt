@@ -45,6 +45,7 @@ internal fun MutableCollection<SerializerModuleRegistrar>.init() {
     add(Guild)
     add(Quote)
     add(Attachments)
+    add(KMarkdown)
 }
 
 

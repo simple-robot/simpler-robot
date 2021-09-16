@@ -18,23 +18,33 @@
 package love.forte.simbot.component.kaiheila.objects
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
+import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
 import love.forte.simbot.component.kaiheila.objects.AtTarget.*
 import love.forte.simbot.component.kaiheila.objects.AtTarget.User
+import java.util.*
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
 @DslMarker
-public annotation class KhlMarkdownBuilderFunc
+public annotation class KhlMarkdownBuilderDsl
+
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
+@DslMarker
+public annotation class KhlMarkdownBuilderTopDsl
 
 
 /**
  * 开黑啦的 [KMarkdown](https://developer.kaiheila.cn/doc/kmarkdown).
  * 此接口中定义的三个属性主要用于 **接收消息** 用。
  *
- * @see RawValueKhlMarkdown
- * @see KhlMarkdownBuilder
+ * @see RawValueKMarkdown
+ * @see KMarkdownBuilder
  * @see KhlMarkdownGrammar
  */
-public interface KhlMarkdown {
+public interface KMarkdown {
 
     /**
      * 此 markdown 的最终字符串。
@@ -54,27 +64,48 @@ public interface KhlMarkdown {
     @SerialName("mention_role_part")
     val mentionRolePart: List<String>
 
+    companion object : SerializerModuleRegistrar {
+        override fun SerializersModuleBuilder.serializerModule() {
+            polymorphic(KMarkdown::class) {
+                subclass(RawValueKMarkdown::class)
+                default { RawValueKMarkdown.serializer() }
+            }
+        }
+    }
 }
 
 /**
- * 原始信息 [KhlMarkdown].
+ * 原始信息 [KMarkdown].
  */
-public data class RawValueKhlMarkdown(override val rawContent: String) : KhlMarkdown {
-    override var mentionPart: List<String> = emptyList()
-    override val mentionRolePart: List<String> = emptyList()
+@Serializable
+@SerialName(RawValueKMarkdown.SERIAL_NAME)
+public data class RawValueKMarkdown(
+    @SerialName("raw_content")
+    override val rawContent: String,
+    @SerialName("mention_part")
+    override val mentionPart: List<String> = emptyList(),
+    @SerialName("mention_role_part")
+    override val mentionRolePart: List<String> = emptyList(),
+) : KMarkdown {
+    internal companion object {
+        const val SERIAL_NAME = "RAW_V_KHL_MD"
+    }
 }
 
 
 /**
- * [KhlMarkdown] 的构建器。
+ * [KMarkdown] 的构建器。
  * 可以通过自定义 [appender] 来提供自定义的字符串拼接器，默认使用 [StringBuilder].
  */
 @Suppress("MemberVisibilityCanBePrivate")
-public class KhlMarkdownBuilder(private val appender: Appendable = StringBuilder()) {
+public class KMarkdownBuilder(private val appender: Appendable = StringBuilder()) {
     constructor(capacity: Int) : this(StringBuilder(capacity))
 
     private fun ap(c: Char): Appendable = appender.also { it.append(c) }
     private fun ap(c: CharSequence): Appendable = appender.also { it.append(c) }
+
+    var mentionPart: MutableList<String> = LinkedList()
+    var mentionRolePart: MutableList<String> = LinkedList()
 
 
     //********************************//
@@ -82,119 +113,142 @@ public class KhlMarkdownBuilder(private val appender: Appendable = StringBuilder
     /**
      * 拼接一个文本
      */
-    fun text(text: CharSequence): KhlMarkdownBuilder = also { KhlMarkdownGrammar.RawText.appendTo(text, appender) }
+    @KhlMarkdownBuilderDsl
+    fun text(text: CharSequence): KMarkdownBuilder = also { KhlMarkdownGrammar.RawText.appendTo(text, appender) }
 
     /**
      * 拼接一个加粗文本
      */
-    fun bold(value: CharSequence): KhlMarkdownBuilder = also { KhlMarkdownGrammar.Bold.appendTo(value, appender) }
+    @KhlMarkdownBuilderDsl
+    fun bold(value: CharSequence): KMarkdownBuilder = also { KhlMarkdownGrammar.Bold.appendTo(value, appender) }
 
     /**
      * 拼接一个倾斜文本
      */
-    fun italic(value: CharSequence): KhlMarkdownBuilder = also { KhlMarkdownGrammar.Italic.appendTo(value, appender) }
+    @KhlMarkdownBuilderDsl
+    fun italic(value: CharSequence): KMarkdownBuilder = also { KhlMarkdownGrammar.Italic.appendTo(value, appender) }
 
     /**
      * 拼接一个加粗倾斜文本
      */
-    fun boldItalic(value: CharSequence): KhlMarkdownBuilder =
+    @KhlMarkdownBuilderDsl
+    fun boldItalic(value: CharSequence): KMarkdownBuilder =
         also { KhlMarkdownGrammar.BoldItalic.appendTo(value, appender) }
 
     /**
      * 拼接一个删除线
      */
-    fun strikethrough(value: CharSequence): KhlMarkdownBuilder =
+    @KhlMarkdownBuilderDsl
+    fun strikethrough(value: CharSequence): KMarkdownBuilder =
         also { KhlMarkdownGrammar.Strikethrough.appendTo(value, appender) }
 
     /**
      * 拼接一个链接。
      */
-    fun link(link: MdLink): KhlMarkdownBuilder = also { KhlMarkdownGrammar.Link.appendTo(link, appender) }
+    @KhlMarkdownBuilderDsl
+    fun link(link: MdLink): KMarkdownBuilder = also { KhlMarkdownGrammar.Link.appendTo(link, appender) }
 
     /**
      * 拼接一个链接。
      * @param name 可以为null.
      */
     @JvmOverloads
-    fun link(name: String? = null, url: String): KhlMarkdownBuilder =
+    @KhlMarkdownBuilderDsl
+    fun link(name: String? = null, url: String): KMarkdownBuilder =
         also { KhlMarkdownGrammar.Link.appendTo(name, url, appender) }
 
 
     /**
      * 追加一个分割线。不会自动在开头换行，但是会在结尾换行，也就是：`---\n`
      */
-    fun divider(): KhlMarkdownBuilder = also { KhlMarkdownGrammar.Divider.appendTo(appender) }
+    @KhlMarkdownBuilderDsl
+    fun divider(): KMarkdownBuilder = also { KhlMarkdownGrammar.Divider.appendTo(appender) }
 
     /**
      * 引用。如果想要结束引用内容，需要连续换行两次。
      */
-    fun quote(value: CharSequence): KhlMarkdownBuilder = also { KhlMarkdownGrammar.Quote.appendTo(value, appender) }
+    @KhlMarkdownBuilderDsl
+    fun quote(value: CharSequence): KMarkdownBuilder = also { KhlMarkdownGrammar.Quote.appendTo(value, appender) }
 
     /**
      * 引用，并在结束后自动换行2次。
      */
-    fun quoteAndEnd(value: CharSequence): KhlMarkdownBuilder =
+    @KhlMarkdownBuilderDsl
+    fun quoteAndEnd(value: CharSequence): KMarkdownBuilder =
         also { KhlMarkdownGrammar.Quote.appendToEnd(value, appender) }
 
     /**
      * 追加下划线内容。
      */
-    fun underscore(value: CharSequence): KhlMarkdownBuilder =
+    @KhlMarkdownBuilderDsl
+    fun underscore(value: CharSequence): KMarkdownBuilder =
         also { KhlMarkdownGrammar.Underscore.appendTo(value, appender) }
 
     /**
      * 追加隐藏内容。
      */
-    fun hide(value: CharSequence): KhlMarkdownBuilder = also { KhlMarkdownGrammar.Hide.appendTo(value, appender) }
+    @KhlMarkdownBuilderDsl
+    fun hide(value: CharSequence): KMarkdownBuilder = also { KhlMarkdownGrammar.Hide.appendTo(value, appender) }
 
     /**
      * 根据id追加一个emoji
      */
-    fun emoji(id: String): KhlMarkdownBuilder = also { KhlMarkdownGrammar.Emoji.appendTo(id, appender) }
+    @KhlMarkdownBuilderDsl
+    fun emoji(id: String): KMarkdownBuilder = also { KhlMarkdownGrammar.Emoji.appendTo(id, appender) }
 
     /**
      * 服务器表情。
      */
-    fun serverEmoticons(value: MdServerEmoticons): KhlMarkdownBuilder =
+    @KhlMarkdownBuilderDsl
+    fun serverEmoticons(value: MdServerEmoticons): KMarkdownBuilder =
         also { KhlMarkdownGrammar.ServerEmoticons.appendTo(value, appender) }
 
     /**
      * 服务器表情。
      */
-    fun serverEmoticons(name: CharSequence, id: CharSequence): KhlMarkdownBuilder =
+    @KhlMarkdownBuilderDsl
+    fun serverEmoticons(name: CharSequence, id: CharSequence): KMarkdownBuilder =
         also { KhlMarkdownGrammar.ServerEmoticons.appendTo(name, id, appender) }
 
     /**
      * 提及频道
      */
-    fun channel(id: CharSequence): KhlMarkdownBuilder = also { KhlMarkdownGrammar.Channel.appendTo(id, appender) }
+    @KhlMarkdownBuilderDsl
+    fun channel(id: CharSequence): KMarkdownBuilder = also { KhlMarkdownGrammar.Channel.appendTo(id, appender) }
 
     /**
      * at
      */
-    fun at(target: AtTarget): KhlMarkdownBuilder = also { KhlMarkdownGrammar.At.appendTo(target, appender) }
+    @KhlMarkdownBuilderDsl
+    fun at(target: AtTarget): KMarkdownBuilder = also { KhlMarkdownGrammar.At.appendTo(target, appender) }
 
     /**
      * at
      */
-    fun at(target: CharSequence): KhlMarkdownBuilder = also { KhlMarkdownGrammar.At.appendTo(target, appender) }
+    @KhlMarkdownBuilderDsl
+    fun at(target: CharSequence): KMarkdownBuilder = also { KhlMarkdownGrammar.At.appendTo(target, appender) }
 
     /**
      * role
      */
-    fun role(roleId: CharSequence): KhlMarkdownBuilder = also { KhlMarkdownGrammar.Role.appendTo(roleId, appender) }
+    @KhlMarkdownBuilderDsl
+    fun role(roleId: CharSequence): KMarkdownBuilder = also { KhlMarkdownGrammar.Role.appendTo(roleId, appender) }
 
     /**
      * 行内代码
      */
-    fun inlineCode(code: CharSequence): KhlMarkdownBuilder = also { KhlMarkdownGrammar.InlineCode.appendTo(code, appender) }
+    @KhlMarkdownBuilderDsl
+    fun inlineCode(code: CharSequence): KMarkdownBuilder =
+        also { KhlMarkdownGrammar.InlineCode.appendTo(code, appender) }
 
     /**
      * 代码块
      *
      * 结尾处会自动换行。
      */
-    fun codeBlock(code: MdCodeBlock): KhlMarkdownBuilder = also { KhlMarkdownGrammar.CodeBlock.appendTo(code, appender) }
+    @KhlMarkdownBuilderDsl
+    fun codeBlock(code: MdCodeBlock): KMarkdownBuilder =
+        also { KhlMarkdownGrammar.CodeBlock.appendTo(code, appender) }
 
     /**
      * 代码块
@@ -202,7 +256,8 @@ public class KhlMarkdownBuilder(private val appender: Appendable = StringBuilder
      * 结尾处会自动换行。
      */
     @JvmOverloads
-    fun codeBlock(language: CharSequence? = null, code: CharSequence): KhlMarkdownBuilder =
+    @KhlMarkdownBuilderDsl
+    fun codeBlock(language: CharSequence? = null, code: CharSequence): KMarkdownBuilder =
         also { KhlMarkdownGrammar.CodeBlock.appendTo(language, code, appender) }
 
 
@@ -211,26 +266,28 @@ public class KhlMarkdownBuilder(private val appender: Appendable = StringBuilder
     /**
      * 一个空格。
      */
-    fun space(): KhlMarkdownBuilder = also { appender.append(' ') }
+    @KhlMarkdownBuilderDsl
+    fun space(): KMarkdownBuilder = also { appender.append(' ') }
 
     /**
      * 新的一行。
      */
-    fun newLine(): KhlMarkdownBuilder = also { appender.appendLine() }
+    @KhlMarkdownBuilderDsl
+    fun newLine(): KMarkdownBuilder = also { appender.appendLine() }
 
     /**
      * 追加一个原始信息到md缓冲器中。
      * 会直接进行拼接，不做处理。
      */
-    @KhlMarkdownBuilderFunc
-    fun appendRawMd(raw: String): KhlMarkdownBuilder = also { ap(raw) }
+    @KhlMarkdownBuilderDsl
+    fun appendRawMd(raw: String): KMarkdownBuilder = also { ap(raw) }
 
 
     /**
      * 通过一个 [KhlMarkdownGrammar] 来实现自定义拼接。
      */
-    @KhlMarkdownBuilderFunc
-    fun <P> append(grammar: KhlMarkdownGrammar<P>, params: P): KhlMarkdownBuilder = also {
+    @KhlMarkdownBuilderDsl
+    fun <P> append(grammar: KhlMarkdownGrammar<P>, params: P): KMarkdownBuilder = also {
         grammar.appendTo(params, appender)
     }
 
@@ -241,15 +298,22 @@ public class KhlMarkdownBuilder(private val appender: Appendable = StringBuilder
 
 
     /**
-     * 构建一个 [KhlMarkdown] 实例。
+     * 构建一个 [KMarkdown] 实例。
      */
-    fun build(): KhlMarkdown = RawValueKhlMarkdown(buildRaw())
+    fun build(): KMarkdown = RawValueKMarkdown(
+        buildRaw(),
+        mentionPart.takeIf { it.isNotEmpty() } ?: emptyList(),
+        mentionRolePart.takeIf { it.isNotEmpty() } ?: emptyList(),
+    )
 
 
 }
 
-@KhlMarkdownBuilderFunc
-public inline fun KhlMarkdownBuilder.aroundLine(times: Int = 1, block: KhlMarkdownBuilder.() -> Unit): KhlMarkdownBuilder {
+@KhlMarkdownBuilderTopDsl
+public inline fun KMarkdownBuilder.aroundLine(
+    times: Int = 1,
+    block: KMarkdownBuilder.() -> Unit,
+): KMarkdownBuilder {
     return apply {
         for (i in 1..times) {
             newLine()
@@ -261,8 +325,8 @@ public inline fun KhlMarkdownBuilder.aroundLine(times: Int = 1, block: KhlMarkdo
     }
 }
 
-@KhlMarkdownBuilderFunc
-public inline fun KhlMarkdownBuilder.preLine(times: Int = 1, block: KhlMarkdownBuilder.() -> Unit): KhlMarkdownBuilder {
+@KhlMarkdownBuilderTopDsl
+public inline fun KMarkdownBuilder.preLine(times: Int = 1, block: KMarkdownBuilder.() -> Unit): KMarkdownBuilder {
     return apply {
         for (i in 1..times) {
             newLine()
@@ -271,8 +335,11 @@ public inline fun KhlMarkdownBuilder.preLine(times: Int = 1, block: KhlMarkdownB
     }
 }
 
-@KhlMarkdownBuilderFunc
-public inline fun KhlMarkdownBuilder.postLine(times: Int = 1, block: KhlMarkdownBuilder.() -> Unit): KhlMarkdownBuilder {
+@KhlMarkdownBuilderTopDsl
+public inline fun KMarkdownBuilder.postLine(
+    times: Int = 1,
+    block: KMarkdownBuilder.() -> Unit,
+): KMarkdownBuilder {
     return apply {
         apply(block)
         for (i in 1..times) {
@@ -285,15 +352,17 @@ public inline fun KhlMarkdownBuilder.postLine(times: Int = 1, block: KhlMarkdown
 /**
  * Build kmarkdown for raw string.
  */
-public inline fun buildRawKMarkdown(block: KhlMarkdownBuilder.() -> Unit): String {
-    return KhlMarkdownBuilder().apply(block).buildRaw()
+@KhlMarkdownBuilderDsl
+public inline fun buildRawKMarkdown(block: KMarkdownBuilder.() -> Unit): String {
+    return KMarkdownBuilder().apply(block).buildRaw()
 }
 
 /**
- * Build [KhlMarkdown] instance.
+ * Build [KMarkdown] instance.
  */
-public inline fun buildKMarkdown(block: KhlMarkdownBuilder.() -> Unit): KhlMarkdown {
-    return KhlMarkdownBuilder().apply(block).build()
+@KhlMarkdownBuilderDsl
+public inline fun buildKMarkdown(block: KMarkdownBuilder.() -> Unit): KMarkdown {
+    return KMarkdownBuilder().apply(block).build()
 }
 
 
@@ -389,12 +458,10 @@ public interface KhlMarkdownGrammar<P> {
 
         @JvmOverloads
         fun appendTo(name: CharSequence? = null, url: CharSequence, appendable: Appendable) {
-            var n = name
-            if (n == null) {
-                n = url
-            }
-
-            appendable.append('[').append(n).append(']').append('(').append(url).append(')')
+            appendable
+                .append('[').append(name ?: url)
+                .append(']').append('(')
+                .append(url).append(')')
         }
     }
 
@@ -559,7 +626,8 @@ public fun <P> KhlMarkdownGrammar<P>.build(param: P): String =
  * @see BaseKaiheilaEmojiKhlMarkdownGrammar
  * @see BaseCustomKhlMarkdownGrammar
  */
-public abstract class BaseKhlMarkdownGrammar<P>(override val grammarSource: KhlMarkdownGrammar.Source) : KhlMarkdownGrammar<P>
+public abstract class BaseKhlMarkdownGrammar<P>(override val grammarSource: KhlMarkdownGrammar.Source) :
+    KhlMarkdownGrammar<P>
 
 //**************** 基于 source 的部分整合 ****************//
 
@@ -604,7 +672,10 @@ public abstract class SymmetricalKaiheilaCustomKhlMarkdownGrammar(wing: CharSequ
 public abstract class SymmetricalKaiheilaEmojiKhlMarkdownGrammar(wing: CharSequence) :
     SymmetricalKhlMarkdownGrammar(wing, KhlMarkdownGrammar.Source.Kaiheila.Emoji)
 
-public abstract class SymmetricalCustomKhlMarkdownGrammar(wing: CharSequence, source: KhlMarkdownGrammar.Source.Custom) :
+public abstract class SymmetricalCustomKhlMarkdownGrammar(
+    wing: CharSequence,
+    source: KhlMarkdownGrammar.Source.Custom,
+) :
     SymmetricalKhlMarkdownGrammar(wing, source) {
     constructor(wing: CharSequence, name: String) : this(wing, KhlMarkdownGrammar.Source.Custom(name))
 }
