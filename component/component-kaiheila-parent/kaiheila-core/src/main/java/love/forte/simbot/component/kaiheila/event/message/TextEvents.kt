@@ -25,4 +25,4 @@ import love.forte.simbot.component.kaiheila.event.Event
  *
  * TODO: [#75](https://github.com/kaiheila/api-docs/issues/75)
  */
-public interface TextEventExtra : Event.Extra.Text
+public interface MessageEventExtra : Event.Extra.Text

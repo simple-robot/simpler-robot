@@ -15,38 +15,33 @@
 package love.forte.simbot.component.kaiheila.event.message
 
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.objects.Attachments
+import love.forte.simbot.component.kaiheila.objects.KMarkdown
 import love.forte.simbot.component.kaiheila.objects.Role
 import love.forte.simbot.component.kaiheila.objects.User
 
-
 /**
- * [文件消息](https://developer.kaiheila.cn/doc/event/message#%E6%96%87%E4%BB%B6%E6%B6%88%E6%81%AF)
+ * [KMarkdown消息事件](https://developer.kaiheila.cn/doc/event/message#KMarkdown%E6%B6%88%E6%81%AF)
+ *
  * @author ForteScarlet
  */
-@Serializable
-public data class FileEventExtra(
+public data class KMarkdownEventExtra(
     override val type: Int,
     @SerialName("guild_id")
     override val guildId: String,
     @SerialName("channel_name")
-    override val channelName: String = "",
+    override val channelName: String,
+    override val mention: List<String>,
+    @SerialName("mention_all")
+    override val mentionAll: Boolean,
+    @SerialName("mention_roles")
+    override val mentionRoles: List<Role>,
+    @SerialName("mention_here")
+    override val mentionHere: Boolean,
+
+    // nav_channels: Array
+
+    val code: String = "",
+
     override val author: User,
-
-    /**
-     * unknown field.
-     */
-    val code: String,
-
-    /**
-     * 附件
-     */
-    val attachments: Attachments,
-
-    ) : MessageEventExtra {
-    override val mention: List<String> get() = emptyList()
-    override val mentionAll: Boolean get() = false
-    override val mentionRoles: List<Role> get() = emptyList()
-    override val mentionHere: Boolean get() = false
-}
+    val kmarkdown: KMarkdown,
+) : MessageEventExtra
