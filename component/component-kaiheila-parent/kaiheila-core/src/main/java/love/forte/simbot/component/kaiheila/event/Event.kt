@@ -202,6 +202,8 @@ public interface Event<E : Event.Extra> {
 
         /**
          * 当 [Event.type] != `255` 时的 [结构](https://developer.kaiheila.cn/doc/event/event-introduction#)
+         *
+         * @see SimpleText
          */
         public interface Text : Extra {
             override val type: Int
@@ -209,13 +211,11 @@ public interface Event<E : Event.Extra> {
             /**
              * 服务器 id
              */
-            @SerialName("guild_id")
             val guildId: String
 
             /**
              * 频道名
              */
-            @SerialName("channel_name")
             val channelName: String
 
             /**
@@ -226,37 +226,70 @@ public interface Event<E : Event.Extra> {
             /**
              * 是否 mention 所有用户
              */
-            @SerialName("mention_all")
             val mentionAll: Boolean
 
             /**
              * mention 用户角色的数组
              */
-            @SerialName("mention_roles")
             val mentionRoles: List<Role>
 
             /**
              * 是否 mention 在线用户
              */
-            @SerialName("mention_here")
             val mentionHere: Boolean
 
             /**
              * 用户信息, 见 [对象-用户User](https://developer.kaiheila.cn/doc/objects#%E7%94%A8%E6%88%B7User) ([User])
              */
             val author: User
+
         }
 
-
-
     }
-
-
 
 }
 
 
 
+@Serializable
+public data class SimpleEvent<E : Event.Extra>(
+    @SerialName("channel_type")
+    override val channelType: String,
+    override val type: Event.Type,
+    @SerialName("target_id")
+    override val targetId: String,
+    @SerialName("author_id")
+    override val authorId: String,
+    override val content: String,
+    @SerialName("msg_id")
+    override val msgId: String,
+    @SerialName("msg_timestamp")
+    override val msgTimestamp: Long,
+    override val nonce: String,
+    override val extra: E,
+) : Event<E>
+
+
+
+
+
+
+@Serializable
+public data class SimpleText(
+    override val type: Int,
+    @SerialName("guild_id")
+    override val guildId: String,
+    @SerialName("channel_name")
+    override val channelName: String,
+    override val mention: List<String>,
+    @SerialName("mention_all")
+    override val mentionAll: Boolean,
+    @SerialName("mention_roles")
+    override val mentionRoles: List<Role>,
+    @SerialName("mention_here")
+    override val mentionHere: Boolean,
+    override val author: User
+) : Event.Extra.Text
 
 
 
@@ -264,8 +297,6 @@ public interface Event<E : Event.Extra> {
  * 判断 [Event.authorId] 是否等于 `"1"`
  */
 public fun Event<*>.isFromSys(): Boolean = authorId == "1"
-
-
 
 
 /**

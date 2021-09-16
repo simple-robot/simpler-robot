@@ -180,6 +180,8 @@ public data class GuildUser(
     override val online: Boolean,
     override val status: Int = 0,
     override val avatar: String,
+    @SerialName("vip_avatar")
+    override val vipAvatar: String? = null,
     override val bot: Boolean = false,
     @SerialName("joined_at")
     val joinedAt: Long,
@@ -189,16 +191,11 @@ public data class GuildUser(
     val master: Boolean,
     @SerialName("mobile_verified")
     override val mobileVerified: Boolean = false,
-    override val system: Boolean = false,
-    @SerialName("invited_count")
-    override val invitedCount: Int = 0,
     @SerialName("identify_num")
     override val identifyNum: String = username.split("#", limit = 2).let { if (it.size < 2) it[1] else "" },
     override val roles: List<Int> = emptyList(),
 ) : User {
 
-    override val mobilePrefix: String? get() = null
-    override val mobile: String? get() = null
     override val originalData: String
         get() = this.toString()
 }

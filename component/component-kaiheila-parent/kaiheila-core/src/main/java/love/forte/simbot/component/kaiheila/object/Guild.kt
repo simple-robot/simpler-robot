@@ -83,7 +83,6 @@ public interface Guild : KhlObjects, GroupInfo {
 
     override val groupName: String? get() = name
 
-    override val groupAvatar: String? get() = null
 
     /** 服务器主题 */
     val topic: String
@@ -93,6 +92,8 @@ public interface Guild : KhlObjects, GroupInfo {
 
     /** 服务器icon的地址 */
     val icon: String
+
+    override val groupAvatar: String? get() = icon
 
     /** 通知类型, 0代表默认使用服务器通知设置，1代表接收所有通知, 2代表仅@被提及，3代表不接收通知 */
     val notifyType: Int

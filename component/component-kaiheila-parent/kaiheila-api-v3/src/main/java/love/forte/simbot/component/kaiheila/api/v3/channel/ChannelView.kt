@@ -70,8 +70,8 @@ data class ChannelView(
     @SerialName("guild_id")
     override val guildId: String,
     /** 频道创建者id */
-    @SerialName("master_id")
-    override val masterId: String,
+    @SerialName("user_id")
+    override val userId: String,
     /** 父分组频道id */
     @SerialName("parent_id")
     override val parentId: String,
@@ -91,7 +91,7 @@ data class ChannelView(
     val limitAmount: Int,
     /** 是否为分组类型 */
     @SerialName("is_category")
-    override val category: Boolean,
+    override val isCategory: Boolean,
     /** 语音服务器地址，HOST:PORT的格式 */
     @SerialName("server_url")
     val serverUrl: String,

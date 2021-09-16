@@ -15,7 +15,6 @@
     <modules>
         <module>kaiheila-core</module>
         <module>kaiheila-api-v3</module>
-        <module>kaiheila-event</module>
     </modules>
 
     <properties>

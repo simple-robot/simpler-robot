@@ -12,6 +12,8 @@
  *
  */
 
+@file:Suppress("unused")
+
 package love.forte.simbot.component.kaiheila.`object`
 
 import kotlinx.serialization.KSerializer

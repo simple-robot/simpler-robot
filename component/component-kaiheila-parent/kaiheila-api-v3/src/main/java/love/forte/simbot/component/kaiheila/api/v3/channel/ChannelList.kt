@@ -72,12 +72,12 @@ public data class ChannelInfo(
      * 是否为分组类型
      */
     @SerialName("is_category")
-    override val category: Boolean,
+    override val isCategory: Boolean,
     /**
      *	频道创建者id
      */
-    @SerialName("master_id")
-    override val masterId: String,
+    @SerialName("user_id")
+    override val userId: String,
     /**
      *	父分组频道id
      */

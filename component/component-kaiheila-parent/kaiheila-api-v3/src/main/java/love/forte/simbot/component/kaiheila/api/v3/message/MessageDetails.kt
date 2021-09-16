@@ -1,16 +1,14 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
- *  * Project  simpler-robot
- *  * File     MessageDetails.kt
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
  *  *
  *  * You can contact the author through the following channels:
  *  * github https://github.com/ForteScarlet
  *  * gitee  https://gitee.com/ForteScarlet
  *  * email  ForteScarlet@163.com
  *  * QQ     1149159218
- *  *
- *  *
  *
  */
 
@@ -159,17 +157,15 @@ public data class Author(
     override val username: String,
     override val online: Boolean,
     override val avatar: String,
-
+    @SerialName("vip_avatar")
+    override val vipAvatar: String? = null,
     // maybe miss
-
+    @SerialName("identify_num")
     override val identifyNum: String = "",
     override val status: Int = 0,
     override val bot: Boolean = false,
+    @SerialName("mobile_verified")
     override val mobileVerified: Boolean = false,
-    override val system: Boolean = false,
-    override val mobilePrefix: String? = null,
-    override val mobile: String? = null,
-    override val invitedCount: Int = 0,
     override val nickname: String = "",
     override val roles: List<Int> = emptyList(),
 ) : User {

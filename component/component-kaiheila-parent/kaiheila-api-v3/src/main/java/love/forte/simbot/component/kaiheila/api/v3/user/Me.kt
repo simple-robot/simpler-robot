@@ -51,15 +51,10 @@ public data class Me(
     override val online: Boolean,
     override val status: Int,
     override val avatar: String,
+    override val vipAvatar: String? = null,
     override val bot: Boolean,
     @SerialName("mobile_verified")
     override val mobileVerified: Boolean,
-    override val system: Boolean = false,
-    @SerialName("mobile_prefix")
-    override val mobilePrefix: String? = null,
-    override val mobile: String? = null,
-    @SerialName("invited_count")
-    override val invitedCount: Int,
     override val nickname: String = username,
     override val roles: List<Int> = emptyList(),
 ) : User {

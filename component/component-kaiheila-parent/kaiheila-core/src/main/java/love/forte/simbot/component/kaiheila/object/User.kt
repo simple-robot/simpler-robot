@@ -19,7 +19,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
-import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.assists.Permissions
+import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
 
 
@@ -53,7 +54,7 @@ import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
  *
  * @author ForteScarlet
  */
-public interface User : KhlObjects, AccountInfo {
+public interface User : KhlObjects, GroupAccountInfo {
 
     /** 用户的id */
     val id: String
@@ -66,6 +67,13 @@ public interface User : KhlObjects, AccountInfo {
     override val accountNickname: String get() = username
 
     /**
+     * 用户在当前服务器的昵称
+     */
+    val nickname: String
+
+    override val accountRemark: String get() = nickname
+
+    /**
      * 用户名的认证数字，用户名正常为：user_name#identify_num
      */
     val identifyNum: String
@@ -74,6 +82,11 @@ public interface User : KhlObjects, AccountInfo {
      * 当前是否在线
      */
     val online: Boolean
+
+    /**
+     * 用户是否为机器人
+     */
+    val bot: Boolean
 
     /**
      * 用户的状态, 0代表正常，10代表被封禁
@@ -85,50 +98,35 @@ public interface User : KhlObjects, AccountInfo {
      */
     val avatar: String
 
+
     override val accountAvatar: String get() = avatar
 
     /**
-     * 用户是否为机器人
+     * vip用户的头像的url地址，可能为gif动图
      */
-    val bot: Boolean
+    val vipAvatar: String?
 
     /**
      * 是否手机号已验证
      */
     val mobileVerified: Boolean
 
-    /**
-     * 是否为官方账号
-     */
-    val system: Boolean
-
-    /**
-     * 手机区号,如中国为86
-     */
-    val mobilePrefix: String?
-
-    /**
-     * 用户手机号，带掩码
-     */
-    val mobile: String?
-
-    /**
-     * 当前邀请注册的人数
-     */
-    val invitedCount: Int
-
-    /**
-     * 用户在当前服务器的昵称
-     */
-    val nickname: String
-
-    override val accountRemark: String get() = nickname
 
     /**
      * 用户在当前服务器中的角色 id 组成的列表。
      */
     val roles: List<Int>
 
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated("Not support.")
+    override val permission: Permissions
+        get() = Permissions.MEMBER
+
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated("Not support.")
+    override val accountTitle: String?
+        get() = null
 
     companion object : SerializerModuleRegistrar {
         override fun SerializersModuleBuilder.serializerModule() {
@@ -150,22 +148,18 @@ public interface User : KhlObjects, AccountInfo {
 public data class UserImpl(
     override val id: String,
     override val username: String,
+    override val nickname: String,
     @SerialName("identify_num")
     override val identifyNum: String,
     override val online: Boolean,
     override val status: Int,
     override val avatar: String,
-    override val bot: Boolean,
+    @SerialName("vip_avatar")
+    override val vipAvatar: String? = null,
+    override val bot: Boolean = false,
     @SerialName("mobile_verified")
     override val mobileVerified: Boolean,
-    override val system: Boolean,
-    @SerialName("mobile_prefix")
-    override val mobilePrefix: String? = null,
-    override val mobile: String?  =null,
-    @SerialName("invited_count")
-    override val invitedCount: Int,
-    override val nickname: String,
-    override val roles: List<Int>
+    override val roles: List<Int>,
 ) : User {
     override val originalData: String get() = toString()
     internal companion object {
