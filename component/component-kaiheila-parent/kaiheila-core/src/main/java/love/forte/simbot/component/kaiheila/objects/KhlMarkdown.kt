@@ -15,11 +15,11 @@
 @file:JvmName("KMarkdowns")
 @file:Suppress("unused")
 
-package love.forte.simbot.component.kaiheila.`object`
+package love.forte.simbot.component.kaiheila.objects
 
 import kotlinx.serialization.SerialName
-import love.forte.simbot.component.kaiheila.`object`.AtTarget.*
-import love.forte.simbot.component.kaiheila.`object`.AtTarget.User
+import love.forte.simbot.component.kaiheila.objects.AtTarget.*
+import love.forte.simbot.component.kaiheila.objects.AtTarget.User
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
 @DslMarker

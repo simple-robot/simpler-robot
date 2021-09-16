@@ -12,7 +12,7 @@
  *
  */
 
-package love.forte.simbot.component.kaiheila.`object`
+package love.forte.simbot.component.kaiheila.objects
 
 import love.forte.simbot.api.message.containers.OriginalDataContainer
 import love.forte.simbot.api.message.results.Result

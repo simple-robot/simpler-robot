@@ -17,9 +17,9 @@ package love.forte.simbot.component.kaiheila.api.v3.guild
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.`object`.Channel
-import love.forte.simbot.component.kaiheila.`object`.Role
 import love.forte.simbot.component.kaiheila.api.*
+import love.forte.simbot.component.kaiheila.objects.Channel
+import love.forte.simbot.component.kaiheila.objects.Role
 
 
 /**

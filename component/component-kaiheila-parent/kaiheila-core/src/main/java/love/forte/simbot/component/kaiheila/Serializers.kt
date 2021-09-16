@@ -25,10 +25,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.SerializersModuleBuilder
-import love.forte.simbot.component.kaiheila.`object`.Channel
-import love.forte.simbot.component.kaiheila.`object`.Guild
-import love.forte.simbot.component.kaiheila.`object`.Role
-import love.forte.simbot.component.kaiheila.`object`.User
+import love.forte.simbot.component.kaiheila.objects.*
 import org.jetbrains.annotations.TestOnly
 import java.util.concurrent.CopyOnWriteArraySet
 
@@ -38,14 +35,16 @@ public interface SerializerModuleRegistrar {
 }
 
 
-private val serializerModuleRegistrars = CopyOnWriteArraySet<SerializerModuleRegistrar>()
+internal val serializerModuleRegistrars = CopyOnWriteArraySet<SerializerModuleRegistrar>()
 
 
-public fun init() {
-    serializerModuleRegistrars.add(Role)
-    serializerModuleRegistrars.add(Channel)
-    serializerModuleRegistrars.add(User)
-    serializerModuleRegistrars.add(Guild)
+internal fun MutableCollection<SerializerModuleRegistrar>.init() {
+    add(Role)
+    add(Channel)
+    add(User)
+    add(Guild)
+    add(Quote)
+    add(Attachments)
 }
 
 
@@ -55,7 +54,7 @@ public data class KaiheilaJson(val json: Json)
 @get:TestOnly
 public val khlJson: Json by lazy {
     Json {
-        init()
+        serializerModuleRegistrars.init()
         serializersModule = SerializersModule {
             serializerModuleRegistrars.forEach {
                 it.apply {
@@ -70,7 +69,7 @@ public val khlJson: Json by lazy {
     }
 }
 
-public object BooleanAsIntSerializer : KSerializer<Boolean> {
+internal object BooleanAsIntSerializer : KSerializer<Boolean> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BooleanAsInt", PrimitiveKind.INT)
     override fun deserialize(decoder: Decoder): Boolean = decoder.decodeInt() == 0
     override fun serialize(encoder: Encoder, value: Boolean) {

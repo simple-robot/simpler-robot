@@ -16,8 +16,8 @@
 package love.forte.simbot.component.kaiheila.event
 
 import kotlinx.serialization.SerialName
-import love.forte.simbot.component.kaiheila.`object`.Role
-import love.forte.simbot.component.kaiheila.`object`.User
+import love.forte.simbot.component.kaiheila.objects.Role
+import love.forte.simbot.component.kaiheila.objects.User
 
 
 /**

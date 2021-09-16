@@ -1,11 +1,25 @@
+/*
+ *
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
+ *  *
+ *  * You can contact the author through the following channels:
+ *  * github https://github.com/ForteScarlet
+ *  * gitee  https://gitee.com/ForteScarlet
+ *  * email  ForteScarlet@163.com
+ *  * QQ     1149159218
+ *
+ */
+
 package love.test.guild.role
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
-import love.forte.simbot.component.kaiheila.`object`.Permissions
 import love.forte.simbot.component.kaiheila.khlJson
+import love.forte.simbot.component.kaiheila.objects.Permissions
 import kotlin.test.Test
 
 /**

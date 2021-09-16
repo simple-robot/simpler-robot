@@ -14,7 +14,7 @@
 
 @file:Suppress("unused")
 
-package love.forte.simbot.component.kaiheila.`object`
+package love.forte.simbot.component.kaiheila.objects
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName

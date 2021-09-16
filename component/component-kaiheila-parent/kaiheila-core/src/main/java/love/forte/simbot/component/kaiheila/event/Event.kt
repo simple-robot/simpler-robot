@@ -25,8 +25,8 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import love.forte.simbot.component.kaiheila.`object`.Role
-import love.forte.simbot.component.kaiheila.`object`.User
+import love.forte.simbot.component.kaiheila.objects.Role
+import love.forte.simbot.component.kaiheila.objects.User
 import java.util.*
 
 

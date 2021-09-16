@@ -12,7 +12,7 @@
  *
  */
 
-package love.forte.simbot.component.kaiheila.`object`
+package love.forte.simbot.component.kaiheila.objects
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

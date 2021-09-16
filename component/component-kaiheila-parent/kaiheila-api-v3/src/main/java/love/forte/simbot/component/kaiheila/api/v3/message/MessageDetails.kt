@@ -16,9 +16,9 @@ package love.forte.simbot.component.kaiheila.api.v3.message
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.`object`.Role
-import love.forte.simbot.component.kaiheila.`object`.User
 import love.forte.simbot.component.kaiheila.api.ApiData
+import love.forte.simbot.component.kaiheila.objects.Role
+import love.forte.simbot.component.kaiheila.objects.User
 
 
 /**

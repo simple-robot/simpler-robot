@@ -16,8 +16,9 @@ package love.forte.simbot.component.kaiheila.event.message
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.`object`.Role
-import love.forte.simbot.component.kaiheila.`object`.User
+import love.forte.simbot.component.kaiheila.objects.Attachments
+import love.forte.simbot.component.kaiheila.objects.Role
+import love.forte.simbot.component.kaiheila.objects.User
 
 
 /**
@@ -43,30 +44,9 @@ public data class FileEventExtra(
      */
     val attachments: Attachments,
 
-) : TextEventExtra {
+    ) : TextEventExtra {
     override val mention: List<String> get() = emptyList()
     override val mentionAll: Boolean get() = false
     override val mentionRoles: List<Role> get() = emptyList()
     override val mentionHere: Boolean get() = false
 }
-
-
-/**
- * Attachments 附件
- *
- * @see FileEventExtra.attachments
- * @property type
- * @property url
- * @property name
- * @property fileType
- * @property size
- */
-@Serializable
-public data class Attachments(
-    val type: String,
-    val url: String,
-    val name: String,
-    @SerialName("file_type")
-    val fileType: String,
-    val size: Long
-)
