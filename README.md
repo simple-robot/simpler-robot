@@ -1,6 +1,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
+
 <div align="center">
-    <img src=".github/logo/logo.png" alt="logo"/>
+    <img src=".github/logo/logo.png" alt="logo" style="width:230px; height:230px; border-radius:100%; " />
     <h3>
         - simpler-robot -
     </h3>
@@ -32,6 +33,7 @@
    <img alt="last commit" src="https://img.shields.io/github/last-commit/ForteScarlet/simpler-robot" />
    <a href="./LICENSE"><img alt="license" src="https://img.shields.io/github/license/ForteScarlet/simpler-robot" /></a>
     </div>
+
 
 
 
