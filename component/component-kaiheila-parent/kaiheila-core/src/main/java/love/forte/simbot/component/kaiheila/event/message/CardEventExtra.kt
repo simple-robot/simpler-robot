@@ -22,6 +22,8 @@ import love.forte.simbot.component.kaiheila.objects.User
 /**
  * [Card消息事件](https://developer.kaiheila.cn/doc/event/message#Card%E6%B6%88%E6%81%AF)
  *
+ * Maybe it looks like [KMarkdownEventExtra].
+ *
  * @author ForteScarlet
  */
 public data class CardEventExtra(

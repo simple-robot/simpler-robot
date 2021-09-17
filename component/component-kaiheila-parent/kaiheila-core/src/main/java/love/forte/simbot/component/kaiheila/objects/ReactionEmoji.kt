@@ -12,11 +12,15 @@
  *
  */
 
-package love.forte.simbot.component.kaiheila.event.message.direct
+package love.forte.simbot.component.kaiheila.objects
+
+import kotlinx.serialization.Serializable
 
 /**
- *
- * @author ForteScarlet
+ * 用于标识用户 `reaction` 时候的Emoji信息。
  */
-class A {
-}
+@Serializable
+public data class ReactionEmoji(
+    val id: String,
+    val name: String,
+)
