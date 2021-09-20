@@ -20,6 +20,7 @@ import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.common.ioc.DependCenter
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.SpareBeans
+import love.forte.common.sequences.distinctByMerger
 import love.forte.simbot.LogAble
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.SimbotInternalApi
@@ -225,12 +226,17 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     @Synchronized
     override fun register(vararg listenerFunctions: ListenerFunction) {
         lock.write {
-            val funcInvokers: Map<Class<out MsgGet>, List<ListenerInvoker>> = listenerFunctions.asSequence()
-                .map(::ListenerInvokerImpl)
-                .flatMap { invoker ->
-                    invoker.function.listenTypes.map { t -> t to invoker }
-                }
-                .groupBy(keySelector = { typeInvokerPair -> typeInvokerPair.first }) { typeInvokerPair -> typeInvokerPair.second }
+            val funcInvokers: List<ListenerInvoker> = listenerFunctions.asSequence()
+                .distinctByMerger(selector = ListenerFunction::id) { id, listener ->
+                    throw IllegalStateException("Listener id $id was already exists: $listener")
+                }.map(::ListenerInvokerImpl).toList()
+
+
+            val groupedFuncInvokers: Map<Class<out MsgGet>, List<ListenerInvoker>> = funcInvokers.flatMap { invoker ->
+                invoker.function.listenTypes.map { t -> t to invoker }
+            }.groupBy(
+                keySelector = { typeInvokerPair -> typeInvokerPair.first }
+            ) { typeInvokerPair -> typeInvokerPair.second }
 
             // 获取其监听类型，并作为key存入map
 //             val listenTypes = listenerFunction.listenTypes
@@ -240,15 +246,15 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 //                 throw IllegalStateException("Listener id $id was already exists.")
 //             }
 
-            funcInvokers.forEach { (type, invokers) ->
+            funcInvokers.forEach { invoker ->
                 // Merge to id
-                invokers.forEach { invoker ->
-                    val id = invoker.function.id
-                    listenerFunctionIdMap.merge(id, invoker) { _, _ ->
-                        throw IllegalStateException("Listener id $id was already exists.")
-                    }
+                val id = invoker.function.id
+                listenerFunctionIdMap.merge(id, invoker) { a, b ->
+                    throw IllegalStateException("Listener id $id was already exists: $a, $b")
                 }
+            }
 
+            groupedFuncInvokers.forEach { (type, invokers) ->
                 // To mainList
                 mainListenerFunctionMap.merge(type, listenerInvokerQueue(*invokers.toTypedArray())) { oldValue, value ->
                     oldValue.apply { addAll(value) }
