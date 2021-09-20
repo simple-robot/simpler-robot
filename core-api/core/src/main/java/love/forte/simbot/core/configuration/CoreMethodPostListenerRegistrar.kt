@@ -37,7 +37,6 @@ import kotlin.reflect.KVisibility
 import kotlin.reflect.full.functions
 import kotlin.reflect.full.valueParameters
 
-
 private data class BeanNameType<T>(val name: String, val type: Class<T>)
 
 
@@ -93,27 +92,29 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                 null
             }
         }.distinct().flatMap { (name, type) ->
+            if (type == Void.TYPE) {
+                return@flatMap emptyList()
+            }
             val kType = type.kotlin
+            if (kType == Any::class) {
+                return@flatMap emptyList()
+            }
 
             kotlin.runCatching { kType.functions }.getOrElse { e1 ->
-                if (logger.isDebugEnabled) {
-                    logger.warn("Cannot get type $kType functions, skip.", e1)
-                } else {
-                    logger.warn("Cannot get type {} functions because {}. skip.", kType, e1.toString())
-                }
-                emptyList()
+                logger.debug("Cannot get type $kType functions, skip.", e1)
+                return@flatMap emptyList()
             }.mapNotNull { f ->
                 // 类上是否有
                 val typeListen = kType.containsAnnotation<Listens>()
                 // 函数上是否有
                 val funcListen = (f.containsAnnotation<Listens>() && !f.containsAnnotation<Ignore>())
 
-                // 如果函数上没有，类上有，函数叫toString或者hashcode，跳过
+                // 如果函数上没有，类上有，函数叫toString或hashcode或equals，跳过
                 if (typeListen && !funcListen) {
                     if(
-                        (f.name == "toString" && f.valueParameters.isEmpty()) ||
-                        (f.name == "hashCode" && f.valueParameters.isEmpty()) ||
-                        (f.name == "equals" && with(f.valueParameters) { this.size == 1 })
+                        (f.name == "toString" && f.valueParameters.isEmpty() && f.returnType.classifier == String::class) ||
+                        (f.name == "hashCode" && f.valueParameters.isEmpty() && f.returnType.classifier == Int::class) ||
+                        (f.name == "equals" && with(f.valueParameters) { this.size == 1 } && f.returnType.classifier == Boolean::class)
                     ) {
                         return@mapNotNull null
                     }
