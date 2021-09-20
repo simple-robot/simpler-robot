@@ -18,6 +18,8 @@ import kotlinx.coroutines.delay
 import love.forte.common.ioc.annotation.Beans
 import love.forte.simbot.annotation.Async
 import love.forte.simbot.annotation.OnPrivate
+import love.forte.simbot.api.message.events.PrivateMsg
+import love.forte.simbot.api.sender.Sender
 
 
 /**
@@ -62,9 +64,10 @@ class SuspendFunctionListener {
     }
 
     @Async
-    suspend fun test7() {
-        delay(100)
+    suspend fun PrivateMsg.test7(sender: Sender) {
         println("Test7!")
+        sender.privateMsg(this, this.msgContent)
+        sender.privateMsg(this, "By Suspend function!")
     }
 
 }

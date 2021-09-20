@@ -163,7 +163,7 @@ public sealed class ListenContextFilterTargetProcessor(
         /**
          * 获取实际使用的监听上下文值。
          */
-        @SimbotExperimentalApi
+        @OptIn(SimbotExperimentalApi::class)
         override fun getContextValue(filterData: FilterData, targetName: String): Any? {
             return filterData.listenerContext.global(targetName)
         }
@@ -205,7 +205,7 @@ public sealed class ListenContextFilterTargetProcessor(
         /**
          * 获取实际使用的监听上下文值。
          */
-        @SimbotExperimentalApi
+        @OptIn(SimbotExperimentalApi::class)
         override fun getContextValue(filterData: FilterData, targetName: String): Any? {
             return filterData.listenerContext.instant(targetName)
         }
@@ -243,7 +243,7 @@ public sealed class ListenContextFilterTargetProcessor(
         /**
          * 获取实际使用的监听上下文值。
          */
-        @SimbotExperimentalApi
+        @OptIn(SimbotExperimentalApi::class)
         override fun getContextValue(filterData: FilterData, targetName: String): Any? {
             return filterData.listenerContext.instantOrGlobal(targetName)
         }

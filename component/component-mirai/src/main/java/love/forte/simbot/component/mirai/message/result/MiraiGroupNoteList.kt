@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -14,6 +14,11 @@
 
 package love.forte.simbot.component.mirai.message.result
 
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
+import love.forte.common.utils.secondToMill
 import love.forte.simbot.api.message.results.GroupNote
 import love.forte.simbot.api.message.results.GroupNoteList
 import net.mamoe.mirai.contact.Group
@@ -23,26 +28,46 @@ import net.mamoe.mirai.contact.Group
  * 注：mirai目前只支持获取入群公告的文本。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class MiraiGroupNoteList(group: Group) : GroupNoteList {
-    /** 入群公告。 */
-    private val entranceAnnouncement: String = group.settings.entranceAnnouncement
+public class MiraiGroupNoteList(group: Group, limit: Int) : GroupNoteList {
+    override val results: List<GroupNote>
 
-    override val results: List<GroupNote> = listOf(MiraiGroupNote())
+
+    init {
+        results = runBlocking {
+            group.announcements.asFlow().let { f ->
+                if (limit > 0) f.take(limit) else f
+            }.map { an ->
+                val content = an.content
+                val time = an.publicationTime.secondToMill()
+                val p = an.parameters
+                val confirm = p.requireConfirmation
+                val top = p.isPinned
+                val forNew = p.sendToNewMember
+
+                MiraiGroupNote(
+                    text = content,
+                    issuingTime = time,
+                    top = top,
+                    confirm = confirm,
+                    forNew = forNew
+                )
+            }.toList()
+        }
+    }
+
 
     override val originalData: String = "MiraiGroupNoteList(group=$group)"
 
     /** mirai入群公告实例。 */
-    inner class MiraiGroupNote : GroupNote {
-        override val title: String = "入群公告"
-        override val text: String = entranceAnnouncement
-        /** 无法确认，默认为false。 */
-        override val top: Boolean = false
-        /** 入群公告总是会发送给新成员。 */
-        override val forNew: Boolean = true
-        /** 无法确认，默认为false。 */
-        override val confirm: Boolean = false
-        /** 无法确认，默认为false。 */
-        override val issuingTime: Long = -1
-        override val originalData: String = "MiraiGroupNote(text=$text)"
+    data class MiraiGroupNote(
+        override val text: String,
+        override val issuingTime: Long,
+        override val top: Boolean,
+        override val confirm: Boolean,
+        override val forNew: Boolean,
+    ) : GroupNote {
+        override val title: String = "公告"
+
+        override val originalData: String get() = toString()
     }
 }
