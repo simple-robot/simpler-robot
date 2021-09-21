@@ -20,12 +20,6 @@ import catcode.*
 import catcode.codes.Nyanko
 import cn.hutool.core.io.FileUtil
 import cn.hutool.core.io.resource.ResourceUtil
-import io.ktor.client.*
-import io.ktor.client.features.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.utils.io.jvm.javaio.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -36,7 +30,6 @@ import love.forte.simbot.component.mirai.sender.logger
 import love.forte.simbot.processor.RemoteResourceContext
 import love.forte.simbot.processor.RemoteResourceInProcessor
 import love.forte.simbot.processor.doProcess
-import love.forte.simbot.utils.onShutdown
 import net.mamoe.mirai.contact.AudioSupported
 import net.mamoe.mirai.contact.FileSupported
 import net.mamoe.mirai.message.data.*
@@ -876,41 +869,8 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
 }
 
 
-/**
- * ktor http client
- */
-private val httpClient: HttpClient = HttpClient() {
-    install(HttpTimeout) {
-        requestTimeoutMillis = 30_000
-        connectTimeoutMillis = 20_000
-    }
-}.also {
-    onShutdown("MiraiParser-httpClient") { it.close() }
-}
-
-
 public suspend fun RemoteResourceInProcessor.getStream(context: RemoteResourceContext): InputStream =
     this.doProcess(context)
-
-
-/**
- * 通过http网络链接得到一个输入流。
- * 通常认为是一个http-get请求
- */
-@Suppress("unused")
-public suspend fun Url.toStream(): InputStream {
-    val urlString = this.toString()
-    // bot?.logger?.debug("mirai.http.connection.try", urlString)
-    val response = httpClient.get<HttpResponse>(this)
-    val status = response.status
-    if (status.value < 300) {
-        // debug("mirai.http.connection.success", urlString)
-        // success
-        return response.content.toInputStream()
-    } else {
-        throw IllegalStateException("Connection to '$urlString' failed. ${status.value}: ${status.description}")
-    }
-}
 
 
 @OptIn(MiraiExperimentalApi::class)

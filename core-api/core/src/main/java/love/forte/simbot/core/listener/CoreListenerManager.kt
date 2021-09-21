@@ -20,6 +20,7 @@ import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.common.ioc.DependCenter
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.SpareBeans
+import love.forte.common.sequences.distinctByMerger
 import love.forte.simbot.LogAble
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.SimbotInternalApi
@@ -51,7 +52,17 @@ import kotlin.concurrent.read
 import kotlin.concurrent.write
 
 private val ListenerInvokerComparable: Comparator<ListenerInvoker> =
-    Comparator { f1, f2 -> f1.function.priority.compareTo(f2.function.priority) }
+    Comparator { f1, f2 ->
+        val comparedByPriority = f1.function.priority.compareTo(f2.function.priority)
+        if (comparedByPriority != 0) {
+            return@Comparator comparedByPriority
+        }
+        val f1Async = f1.function.isAsync
+        val f2Async = f2.function.isAsync
+        if (f1Async == f2Async) return@Comparator 0
+        if (f1Async) return@Comparator -1
+        1 // f2Async is true
+    }
 
 
 /**
@@ -134,7 +145,8 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     lateinit var dependCenter: DependCenter
 
     private val eventDispatcher = eventDispatcherFactory.dispatcher
-    private val collectScope = CoroutineScope(Dispatchers.Default)
+
+    // private val collectScope = CoroutineScope(Dispatchers.Default)
     private val eventCoroutineScope = CoroutineScope(
         eventDispatcher +
                 CoroutineName("CoreMsgProcessor-Event")
@@ -169,7 +181,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
     override fun simbotClose(context: SimbotContext) {
         // producerScope.close()
-        collectScope.cancel()
+        // collectScope.cancel()
         eventCoroutineScope.cancel()
     }
 
@@ -200,6 +212,9 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
     private val lock = ReentrantReadWriteLock()
 
+
+    override val listenerEditLock: ReentrantReadWriteLock get() = lock
+
     /**
      * 注册一个 [监听函数][ListenerFunction]。
      *
@@ -211,12 +226,17 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     @Synchronized
     override fun register(vararg listenerFunctions: ListenerFunction) {
         lock.write {
-            val funcInvokers: Map<Class<out MsgGet>, List<ListenerInvoker>> = listenerFunctions.asSequence()
-                .map(::ListenerInvokerImpl)
-                .flatMap { invoker ->
-                    invoker.function.listenTypes.map { t -> t to invoker }
-                }
-                .groupBy(keySelector = { typeInvokerPair -> typeInvokerPair.first }) { typeInvokerPair -> typeInvokerPair.second }
+            val funcInvokers: List<ListenerInvoker> = listenerFunctions.asSequence()
+                .distinctByMerger(selector = ListenerFunction::id) { id, listener ->
+                    throw IllegalStateException("Listener id $id was already exists: $listener")
+                }.map(::ListenerInvokerImpl).toList()
+
+
+            val groupedFuncInvokers: Map<Class<out MsgGet>, List<ListenerInvoker>> = funcInvokers.flatMap { invoker ->
+                invoker.function.listenTypes.map { t -> t to invoker }
+            }.groupBy(
+                keySelector = { typeInvokerPair -> typeInvokerPair.first }
+            ) { typeInvokerPair -> typeInvokerPair.second }
 
             // 获取其监听类型，并作为key存入map
 //             val listenTypes = listenerFunction.listenTypes
@@ -226,15 +246,15 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 //                 throw IllegalStateException("Listener id $id was already exists.")
 //             }
 
-            funcInvokers.forEach { (type, invokers) ->
+            funcInvokers.forEach { invoker ->
                 // Merge to id
-                invokers.forEach { invoker ->
-                    val id = invoker.function.id
-                    listenerFunctionIdMap.merge(id, invoker) { _, _ ->
-                        throw IllegalStateException("Listener id $id was already exists.")
-                    }
+                val id = invoker.function.id
+                listenerFunctionIdMap.merge(id, invoker) { a, b ->
+                    throw IllegalStateException("Listener id $id was already exists: $a, $b")
                 }
+            }
 
+            groupedFuncInvokers.forEach { (type, invokers) ->
                 // To mainList
                 mainListenerFunctionMap.merge(type, listenerInvokerQueue(*invokers.toTypedArray())) { oldValue, value ->
                     oldValue.apply { addAll(value) }
@@ -317,7 +337,9 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             needReset.forEach { (type, resetList) ->
                 mainListenerFunctionMap[type] = listenerInvokerQueue(*resetList.toTypedArray())
             }
-            removedFunc
+            removedFunc.also {
+                cleanCache()
+            }
         }
     }
 
@@ -348,7 +370,9 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                 mainListenerFunctionMap[type] = listenerInvokerQueue(*resetList.toTypedArray())
             }
 
-            removed
+            removed.also {
+                cleanCache()
+            }
         }
     }
 
@@ -382,6 +406,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                 mainListenerFunctionMap[type] = listenerInvokerQueue(*resetList.toTypedArray())
             }
 
+            cleanCache()
         }
         return num
     }
@@ -394,7 +419,6 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     override fun removeListenerByGroup(group: ListenerGroup): Int {
         TODO("Not yet implemented")
     }
-
 
 
     private fun cleanCache() {
@@ -492,9 +516,9 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
         val botCode = msgGet.botInfo.botCode
         val eventLogger = if (msgGet is LogAble) msgGet.log else logger
 
-        val funcs = getListenerFunctions(msgGet.javaClass, true)
+        val funcList = getListenerFunctions(msgGet.javaClass, true)
         var invokeData: ListenerFunctionInvokeData? = null
-        if (funcs.isEmpty()) {
+        if (funcList.isEmpty()) {
             return
         } else {
             var finalResult: ListenResult<*>
@@ -563,7 +587,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
             // for (func: ListenerFunction in funcs.normal) {
 
-            val normals = funcs.normal
+            val normals = funcList.normal
 
             val iter = normals.iterator()
             var i = 0
@@ -571,26 +595,50 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
             for (invoker in iter) {
                 val func = invoker.function
-                finalResult = doListen(invoker)
-                if (finalResult.isSuccess()) {
-                    eventLogger.trace("{} -> Normal listener chain[{}] success on {}({})",
-                        botCode,
-                        i,
-                        func.name,
-                        func.id)
-                    anySuccess = true
-                }
 
-                // if ex
-                finalResult = doResultIfFail(func, finalResult)
+                if (func.isAsync) {
+                    // If is async, invoke by launch.
+                    eventCoroutineScope.launch {
+                        val asyncResult = doListen(invoker)
+                        if (asyncResult.isSuccess()) {
+                            eventLogger.trace("{} -> Normal async listener chain[{}] success on {}({})",
+                                botCode,
+                                i,
+                                func.name,
+                                func.id)
+                        }
 
-                // if is break, break.
-                if (finalResult.isBreak()) {
-                    doBreak = true
-                    eventLogger.trace("{} -> Normal Listener chain[{}] break on {}({})", botCode, i, func.name, func.id)
-                    break
+                        // if ex
+                        doResultIfFail(func, asyncResult)
+                    }
+
+
+                } else {
+                    finalResult = doListen(invoker)
+                    if (finalResult.isSuccess()) {
+                        eventLogger.trace("{} -> Normal listener chain[{}] success on {}({})",
+                            botCode,
+                            i,
+                            func.name,
+                            func.id)
+                        anySuccess = true
+                    }
+
+                    // if ex
+                    finalResult = doResultIfFail(func, finalResult)
+
+                    // if is break, break.
+                    if (finalResult.isBreak()) {
+                        doBreak = true
+                        eventLogger.trace("{} -> Normal Listener chain[{}] break on {}({})",
+                            botCode,
+                            i,
+                            func.name,
+                            func.id)
+                        break
+                    }
+                    i++
                 }
-                i++
             }
             eventLogger.trace("{} -> Normal listener invoked {}.", botCode, i + 1)
 
@@ -599,17 +647,23 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             if (!anySuccess && !doBreak) {
                 eventLogger.trace("{} -> No normal success or break, to spares.", botCode)
                 var si = 0
-                for (invoker: ListenerInvoker in funcs.spare) {
+                for (invoker: ListenerInvoker in funcList.spare) {
                     val func = invoker.function
-                    finalResult = doListen(invoker)
-                    finalResult = doResultIfFail(func, finalResult)
-                    if (finalResult.isBreak()) {
-                        eventLogger.trace("{} -> Spare Listener chain[{}] break on {}({})",
-                            botCode,
-                            si,
-                            func.name,
-                            func.id)
-                        break
+                    if (func.isAsync) {
+                        eventCoroutineScope.launch {
+                            doResultIfFail(func, doListen(invoker))
+                        }
+                    } else {
+                        finalResult = doListen(invoker)
+                        finalResult = doResultIfFail(func, finalResult)
+                        if (finalResult.isBreak()) {
+                            eventLogger.trace("{} -> Spare Listener chain[{}] break on {}({})",
+                                botCode,
+                                si,
+                                func.name,
+                                func.id)
+                            break
+                        }
                     }
                     si++
                 }

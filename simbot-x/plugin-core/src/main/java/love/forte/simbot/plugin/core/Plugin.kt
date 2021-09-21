@@ -83,6 +83,13 @@ public interface Plugin : PluginInfoContainer {
      * 此插件所对应的插件入口。
      */
     val pluginDetails: PluginDetails
+
+    /**
+     * 重置 / 刷新 / 初始化当前插件信息。
+     *
+     */
+    fun reset()
+
 }
 
 

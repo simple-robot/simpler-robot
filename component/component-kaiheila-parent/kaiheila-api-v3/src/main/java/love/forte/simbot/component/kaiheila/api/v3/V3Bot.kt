@@ -57,10 +57,13 @@ public class V3WsBot(
     compress: Int = 1,
 ) : WebsocketBot, CoroutineScope {
     override val apiConfiguration: ApiConfiguration = configuration.apiConfiguration
+
     /** 获取 [Gateway] 的请求体。 */
     private val gatewayReq = GatewayReq(compress)
+
     /** 普通的logger */
     override val log: Logger = LoggerFactory.getLogger("love.forte.simbot.component.kaiheila.v3.bot.$clientId")
+
     /** 网络日志相关的logger */
     override val networkLog: Logger =
         LoggerFactory.getLogger("love.forte.simbot.component.kaiheila.v3.network.$clientId")
@@ -112,17 +115,23 @@ public class V3WsBot(
     }
 
 
-    private suspend fun getGateway(): Gateway? =
-        kotlin.runCatching { gatewayReq.doRequestForData(apiConfiguration.api, client, token) }.getOrNull()
+    private suspend fun getGateway(): Result<Gateway> =
+        kotlin.runCatching { gatewayReq.doRequestForData(apiConfiguration.api, client, token)!! }
 
 
     private suspend fun linkWs(): Boolean {
         // for gateway
-        var gateway: Gateway?
-        do {
-            gateway = getGateway()
-            log.debug("Try get gateway by {}", GatewayReq.id)
-        } while (gateway == null)
+
+        val gateway: Gateway = getGateway().getOrElse { e ->
+            log.error("Gateway failed.", e)
+            null
+        } ?: return false
+
+        // do {
+        //     log.debug("Try get gateway by {}", GatewayReq.id)
+        //     val result = getGateway()
+        //     gateway = result.getOrNull()
+        // } while (gateway == null)
 
         val url = gateway.url
 

@@ -54,36 +54,6 @@ public class Test implements SimbotProcess {
         //
         for (Bot bot : manager.getBots()) {
             bot.getSender().SENDER.sendPrivateMsg(1149159218, "我测试好了");
-            //     System.out.println("==================");
-            //     System.out.println(bot.getBotInfo().getAccountNicknameAndRemark());
-            //     Getter getter = bot.getSender().GETTER;
-            //     AuthInfo.Auths auths = getter.getAuthInfo().getAuths();
-            //     Somethings.forEachNamed(auths, (p, t) -> {
-            //         System.out.println(t.getName() + "\t=\t" + t.getValue());
-            //     });
-            //     String data = Somethings.resolveValue(getter.getAuthInfo().getAuths(), "COOKIES", "sKey", "data");
-            //     System.out.println(data);
-            //     String t = Somethings.resolveValue(getter.getAuthInfo().getAuths(), "COOKIES", "sKey", "creationTime");
-            //     System.out.println(t);
-            //     String data2 = Somethings.resolveValue(getter.getAuthInfo().getAuths(), "COOKIES", "sKey", "data");
-            //     System.out.println(data2);
-            //     String t2 = Somethings.resolveValue(getter.getAuthInfo().getAuths(), "COOKIES", "sKey", "creationTime");
-            //     System.out.println(t2);
-            //     System.out.println("=========================");
-            //     try {
-            //         Thread.sleep(5000);
-            //     } catch (InterruptedException ignore) {
-            //     }
-            //     manager.registerBot(BotVerifyInfos.getInstance(bot.getBotInfo().getAccountCode(), ""));
-            //     String data3 = Somethings.resolveValue(getter.getAuthInfo().getAuths(), "COOKIES", "sKey", "data");
-            //     System.out.println(data3);
-            //     String t3 = Somethings.resolveValue(getter.getAuthInfo().getAuths(), "COOKIES", "sKey", "creationTime");
-            //     System.out.println(t3);
-            //     String data4 = Somethings.resolveValue(getter.getAuthInfo().getAuths(), "COOKIES", "sKey", "data");
-            //     System.out.println(data4);
-            //     String t4 = Somethings.resolveValue(getter.getAuthInfo().getAuths(), "COOKIES", "sKey", "creationTime");
-            //     System.out.println(t4);
-
         }
 
 

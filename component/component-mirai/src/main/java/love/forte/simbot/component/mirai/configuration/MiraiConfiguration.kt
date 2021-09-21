@@ -48,6 +48,7 @@ public fun miraiBotLogger(botCode: Long, type: String? = null): Logger {
  *
  *
  */
+@Suppress("unused")
 @Beans("miraiConfiguration")
 @AsMiraiConfig
 public class MiraiConfiguration {
@@ -72,11 +73,13 @@ public class MiraiConfiguration {
     /** 心跳失败后的第一次重连前的等待时间. */
     @field:ConfigInject
     @Deprecated("Useless since mirai new network. Please just remove this.")
+    @Suppress("DEPRECATION")
     var firstReconnectDelayMillis: Long = BotConfiguration.Default.firstReconnectDelayMillis
 
     /** 重连失败后, 继续尝试的每次等待时间 */
     @field:ConfigInject
     @Deprecated("Useless since mirai new network. Please just remove this.")
+    @Suppress("DEPRECATION")
     var reconnectPeriodMillis: Long = BotConfiguration.Default.reconnectPeriodMillis
 
     /** 最多尝试多少次重连 */

@@ -25,13 +25,19 @@ import love.forte.simbot.api.message.events.PrivateMsg
 /**
  * 永远失效的送信器。不会抛出异常，但是也不会生效。
  */
+@Suppress("DEPRECATION", "OverridingDeprecatedMember")
 public object FailedSender : Sender.Def {
 
-    override fun sendGroupMsg(parent: String?, group: String, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> = Carrier.empty()
+    override suspend fun groupMsg(
+        parent: String?,
+        group: String,
+        msg: String,
+    ): Carrier<out Flag<GroupMsg.FlagContent>> = Carrier.empty()
 
-    override fun sendPrivateMsg(code: String, group: String?, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> = Carrier.empty()
+    override suspend fun privateMsg(code: String, group: String?, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
+        Carrier.empty()
 
-    override fun sendGroupNotice(
+    override suspend fun groupNotice(
         group: String,
         title: String?,
         text: String?,

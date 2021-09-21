@@ -59,13 +59,13 @@ import kotlin.reflect.jvm.kotlinFunction
 public class MethodListenerFunction constructor(
     private val method: Method,
     private val instanceName: String?,
+    override val isAsync: Boolean,
     declClass: Class<*>,
     private val dependBeanFactory: DependBeanFactory,
     private val filterManager: FilterManager,
     private val converterManager: ConverterManager,
     private val listenerResultFactory: ListenerResultFactory,
     listenerGroupManager: ListenerGroupManager,
-    strict: Boolean, // todo
 ) : ListenerFunction, LogAble {
     override val log: Logger = LoggerFactory.getLogger(method.declaringClass.typeName + "." + method.name)
 

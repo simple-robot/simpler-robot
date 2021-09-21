@@ -26,7 +26,7 @@ import love.forte.simbot.listener.ListenerFunction
 /**
  * [ListenerFilter] 中可提供的参数。
  */
-public class FilterData @OptIn(SimbotExperimentalApi::class) constructor(
+public data class FilterData @OptIn(SimbotExperimentalApi::class) constructor(
     val msgGet: MsgGet,
     val atDetection: AtDetection,
     val listenerContext: ListenerContext,

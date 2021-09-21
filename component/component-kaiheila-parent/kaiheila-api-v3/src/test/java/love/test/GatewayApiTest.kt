@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 import love.forte.simbot.component.kaiheila.api.v3.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import kotlin.test.Test
 
 
 /**
@@ -39,12 +38,12 @@ class GatewayApiTest {
 
     val logger: Logger = LoggerFactory.getLogger(GatewayApiTest::class.java)
 
-    @Test
+    // @Test
     fun logTest() {
         logger.debug("Debug!")
     }
 
-    @Test
+    // @Test
     fun apiTest() {
         val gatewayReq = GatewayReq(1)
 

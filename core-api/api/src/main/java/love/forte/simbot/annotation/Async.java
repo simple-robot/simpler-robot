@@ -14,19 +14,21 @@
 
 package love.forte.simbot.annotation;
 
-import love.forte.simbot.listener.ListenResult;
-
 import java.lang.annotation.*;
 
 /**
- * 当标注此注解在一个监听函数上的时候，此函数如果 **执行成功** ，则会阻断后续其他监听函数的执行。
+ * 标记一个监听函数为 <b>异步</b> 函数。
+ * <p>
+ * 当一个监听函数被标记为异步，则此函数的执行不会被用作对于 {@link SpareListen 备用监听} 的计数判断，
+ * 也无法通过 {@link ListenBreak 监听阻断} 来阻断其他监听函数。
  *
- * @see ListenResult#isBreak()
+ * @author ForteScarlet
+ * @see love.forte.simbot.listener.ListenerFunction
  *
- * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
+ * @since 2.3.0
  */
 @Retention(RetentionPolicy.RUNTIME)    //注解会在class字节码文件中存在，在运行时可以通过反射获取到
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE}) //接口、类、枚举、注解、方法
 @Documented
-public @interface ListenBreak {
+public @interface Async {
 }

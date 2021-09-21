@@ -16,6 +16,7 @@ package love.forte.simbot.listener
 
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
+import java.util.concurrent.locks.ReadWriteLock
 
 
 /**
@@ -124,6 +125,11 @@ public interface ListenerManager : MsgGetProcessor, ListenerRegistrar {
      */
     @OptIn(SimbotExperimentalApi::class)
     fun removeListenerByGroup(group: ListenerGroup): Int
+
+    /**
+     * 从外部得到一个当前 [ListenerManager] 所应使用的读写锁，以便于在进行外部的多任务执行时的锁。
+     */
+    val listenerEditLock: ReadWriteLock
 }
 
 

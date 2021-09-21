@@ -58,6 +58,7 @@ public class FunctionFromClassListenerFunction constructor(
     private val filterManager: FilterManager,
     private val converterManager: ConverterManager,
     private val listenerResultFactory: ListenerResultFactory,
+    override val isAsync: Boolean,
     listenerGroupManager: ListenerGroupManager,
     strict: Boolean,
 ) : ListenerFunction, LogAble {
@@ -348,10 +349,10 @@ public class FunctionFromClassListenerFunction constructor(
             contextValue != null -> {
                 val findKey = contextValue.value
                 val scopes = contextValue.scopes
-                val orNull = contextValue.orNull
+                val contextValueOrNull = contextValue.orNull
 
                 if (scopes.isEmpty()) {
-                    if (!orNull) {
+                    if (!contextValueOrNull) {
                         // empty and non-null, throw.
                         throw IllegalStateException("$this ContextValue's scope is empty, but non-null.")
                     } else {
@@ -368,7 +369,7 @@ public class FunctionFromClassListenerFunction constructor(
                                 val v = context[scope][findKey]
                                 if (v != null) return@let v
                             }
-                            if (orNull) return@let null
+                            if (contextValueOrNull) return@let null
 
                             throw ContextValueNotFoundException("Cannot found '$findKey' from ${
                                 scopes.joinToString(",",

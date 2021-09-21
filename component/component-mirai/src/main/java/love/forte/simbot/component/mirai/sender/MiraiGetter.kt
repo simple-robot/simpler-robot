@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -139,14 +139,14 @@ public class MiraiGetter(
      * mirai - group note list.
      * 注：mirai仅支持获取入群公告。(mirai 1.3.2)
      */
-    private fun getGroupNoteList0(group: Long): GroupNoteList =
-        MiraiGroupNoteList(bot.group(group))
+    private fun getGroupNoteList0(group: Long, limit: Int = -1): GroupNoteList =
+        MiraiGroupNoteList(bot.group(group), limit)
 
     override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList =
-        getGroupNoteList0(group.toLong())
+        getGroupNoteList0(group.toLong(), limit)
 
     override fun getGroupNoteList(group: Long, cache: Boolean, limit: Int): GroupNoteList =
-        getGroupNoteList0(group)
+        getGroupNoteList0(group, limit)
 
     override fun getGroupNoteList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupNoteList =
         getGroupNoteList(group.groupCodeNumber, cache, limit)

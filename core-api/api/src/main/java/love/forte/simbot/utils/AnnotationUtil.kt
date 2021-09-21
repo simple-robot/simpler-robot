@@ -27,16 +27,20 @@ import kotlin.reflect.jvm.javaMethod
 
 
 public inline fun <reified T : Annotation> KAnnotatedElement.getAnnotation(): T? {
-    val got: Annotation? = when (this) {
-        is KClass<*> -> AnnotationUtil.getAnnotation(this.java, T::class.java)
-        is KFunction<*> -> this.javaMethod?.let { m -> AnnotationUtil.getAnnotation(m, T::class.java) }
-        is KProperty<*> -> {
-            this.javaGetter?.let { getter -> AnnotationUtil.getAnnotation(getter, T::class.java) }
-                ?: this.javaField?.let { field -> AnnotationUtil.getAnnotation(field, T::class.java) }
-        }
+    val got: Annotation? = kotlin.runCatching {
+        when (this) {
+            is KClass<*> -> AnnotationUtil.getAnnotation(this.java, T::class.java)
+            is KFunction<*> -> {
+                this.javaMethod?.let { m -> AnnotationUtil.getAnnotation(m, T::class.java) }
+            }
+            is KProperty<*> -> {
+                this.javaGetter?.let { getter -> AnnotationUtil.getAnnotation(getter, T::class.java) }
+                    ?: this.javaField?.let { field -> AnnotationUtil.getAnnotation(field, T::class.java) }
+            }
 
-        else -> null
-    }
+            else -> null
+        }
+    }.getOrNull()
 
     return (got as? T) ?: run {
         for (annotation in annotations) {
@@ -51,7 +55,7 @@ public inline fun <reified T : Annotation> KAnnotatedElement.getAnnotation(): T?
                 return@run found
             }
         }
-        return@run null
+        null
     }
 
 }

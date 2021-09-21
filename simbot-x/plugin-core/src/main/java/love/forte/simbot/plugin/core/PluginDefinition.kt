@@ -90,11 +90,11 @@ public class PluginDefinitionWithTemporarySubstitute(
     fun sync(main: Boolean, lib: Boolean) {
         if (main) {
             tempMainFile.sync()
-            logger.debug("Main file sync.")
+            logger.debug("Main file {} sync.", mainFile)
         }
         if (lib) {
             tempLibraries.sync()
-            logger.debug("Lib sync.")
+            logger.debug("Lib {} sync.", libraries)
         }
     }
 

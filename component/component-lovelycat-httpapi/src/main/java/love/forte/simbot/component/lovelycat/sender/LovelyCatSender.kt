@@ -37,107 +37,110 @@ private object Empty
 public class LovelyCatSender(
     private val botId: String,
     private val api: LovelyCatApiTemplate,
-    private val def: Sender
+    private val def: Sender,
 ) : Sender {
 
     /**
      * 通过携带 catCode 的文本消息进行发送消息发送。
      */
     private fun sendMsg(target: String, msg: String) {
-            val needAtCode: MutableList<String> = mutableListOf()
-            var atAll = false
+        val needAtCode: MutableList<String> = mutableListOf()
+        var atAll = false
 
-            // msgList
-            CatCodeUtil.split(msg) {
-                if (startsWith(CAT_HEAD)) {
-                    // is cat
-                    val neko = Nyanko.byCode(this)
-                    when (neko.type) {
-                        // at.
-                        "at" -> {
-                            neko["all"]?.takeIf { it == "true" }?.let {
-                                atAll = true
-                            }
-
-                            neko["code"]?.let {
-                                if (it == "all") atAll = true
-                                else needAtCode.add(it)
-                            }
-
-                        }
-                        // send img
-                        "image" -> {
-                            // maybe... local file to base64
-                            val path = neko["file"] ?: neko["url"] ?: throw IllegalArgumentException("cannot found param 'path' or 'url' in $neko.")
-                            api.sendImageMsg(botId, target, path)
+        // msgList
+        CatCodeUtil.split(msg) {
+            if (startsWith(CAT_HEAD)) {
+                // is cat
+                val neko = Nyanko.byCode(this)
+                when (neko.type) {
+                    // at.
+                    "at" -> {
+                        neko["all"]?.takeIf { it == "true" }?.let {
+                            atAll = true
                         }
 
-                        // send video
-                        "video" -> {
-                            // 只支持本地文件。
-                            val path = neko["file"] ?: throw IllegalArgumentException("cannot found param 'path' in $neko.")
-                            api.sendVideoMsg(botId, target, path)
-                        }
-
-                        // send file video
-                        "file" -> {
-                            val path = neko["file"] ?: throw IllegalArgumentException("cannot found param 'path' in $neko.")
-                            api.sendFileMsg(botId, target, path)
-                        }
-
-                        // send card
-                        "card" -> {
-                            val content = neko["content"] ?: throw IllegalArgumentException("cannot found param 'content' in $neko.")
-                            api.sendCardMsg(botId, target, content)
-                        }
-
-                        "link", "share" -> {
-                            /*
-                            title, 文本型, , 链接标题
-                            text, 文本型, , 链接内容
-                            target_url, 文本型, 可空, 跳转链接
-                            pic_url, 文本型, 可空, 图片的链接
-                            icon_url, 文本型, 可空, 图标的链接
-                             */
-
-                            val title = neko["title"] ?: throw IllegalArgumentException("cannot found param 'title' in $neko.")
-                            val text = neko["text"] ?: throw IllegalArgumentException("cannot found param 'text' in $neko.")
-                            val targetUrl = neko["target"]
-                            val pic = neko["pic"]
-                            val icon = neko["icon"]
-
-                            api.sendLinkMsg(botId, target, title, text, targetUrl, pic, icon)
-                        }
-                        else -> {
-                            // ignore?
+                        neko["code"]?.let {
+                            if (it == "all") atAll = true
+                            else needAtCode.add(it)
                         }
 
                     }
-
-                    Empty
-                } else {
-                    needAtCode.takeIf { it.isNotEmpty() }?.let {
-                        val ats = needAtCode.joinToString(",")
-                        needAtCode.clear()
-                        api.sendGroupMsgAndAt(botId, target, ats, null, this)
-                    } ?: run {
-                        if (atAll) {
-                            api.modifyGroupNotice(botId, target, this.takeIf { it.isNotBlank() } ?: "@全体成员")
-                            atAll = false
-                        } else {
-                            api.sendTextMsg(botId, target, this)
-                        }
+                    // send img
+                    "image" -> {
+                        // maybe... local file to base64
+                        val path = neko["file"] ?: neko["url"]
+                        ?: throw IllegalArgumentException("cannot found param 'path' or 'url' in $neko.")
+                        api.sendImageMsg(botId, target, path)
                     }
 
-                    Empty
+                    // send video
+                    "video" -> {
+                        // 只支持本地文件。
+                        val path = neko["file"] ?: throw IllegalArgumentException("cannot found param 'path' in $neko.")
+                        api.sendVideoMsg(botId, target, path)
+                    }
+
+                    // send file video
+                    "file" -> {
+                        val path = neko["file"] ?: throw IllegalArgumentException("cannot found param 'path' in $neko.")
+                        api.sendFileMsg(botId, target, path)
+                    }
+
+                    // send card
+                    "card" -> {
+                        val content =
+                            neko["content"] ?: throw IllegalArgumentException("cannot found param 'content' in $neko.")
+                        api.sendCardMsg(botId, target, content)
+                    }
+
+                    "link", "share" -> {
+                        /*
+                        title, 文本型, , 链接标题
+                        text, 文本型, , 链接内容
+                        target_url, 文本型, 可空, 跳转链接
+                        pic_url, 文本型, 可空, 图片的链接
+                        icon_url, 文本型, 可空, 图标的链接
+                         */
+
+                        val title =
+                            neko["title"] ?: throw IllegalArgumentException("cannot found param 'title' in $neko.")
+                        val text = neko["text"] ?: throw IllegalArgumentException("cannot found param 'text' in $neko.")
+                        val targetUrl = neko["target"]
+                        val pic = neko["pic"]
+                        val icon = neko["icon"]
+
+                        api.sendLinkMsg(botId, target, title, text, targetUrl, pic, icon)
+                    }
+                    else -> {
+                        // ignore?
+                    }
+
                 }
+
+                Empty
+            } else {
+                needAtCode.takeIf { it.isNotEmpty() }?.let {
+                    val ats = needAtCode.joinToString(",")
+                    needAtCode.clear()
+                    api.sendGroupMsgAndAt(botId, target, ats, null, this)
+                } ?: run {
+                    if (atAll) {
+                        api.modifyGroupNotice(botId, target, this.takeIf { it.isNotBlank() } ?: "@全体成员")
+                        atAll = false
+                    } else {
+                        api.sendTextMsg(botId, target, this)
+                    }
+                }
+
+                Empty
             }
+        }
 
 
-            // need at.
-            needAtCode.takeIf { it.isNotEmpty() }?.let {
-                api.sendGroupMsgAndAt(botId, target, it.joinToString(","), null, " ")
-            }
+        // need at.
+        needAtCode.takeIf { it.isNotEmpty() }?.let {
+            api.sendGroupMsgAndAt(botId, target, it.joinToString(","), null, " ")
+        }
         // }
     }
 
@@ -177,7 +180,7 @@ public class LovelyCatSender(
         var atAll = false
 
         msg.cats.forEach { neko ->
-            when(neko.type) {
+            when (neko.type) {
                 "at" -> {
                     neko["all"]?.takeIf { it == "true" }?.let {
                         atAll = true
@@ -191,7 +194,8 @@ public class LovelyCatSender(
                 // send img
                 "image" -> {
                     // maybe... local file to base64
-                    val path = neko["file"] ?: neko["url"] ?: throw IllegalArgumentException("cannot found param 'file' or 'url' in $neko.")
+                    val path = neko["file"] ?: neko["url"]
+                    ?: throw IllegalArgumentException("cannot found param 'file' or 'url' in $neko.")
                     api.sendImageMsg(botId, target, path)
                 }
 
@@ -210,7 +214,8 @@ public class LovelyCatSender(
 
                 // send card
                 "card" -> {
-                    val content = neko["content"] ?: throw IllegalArgumentException("cannot found param 'content' in $neko.")
+                    val content =
+                        neko["content"] ?: throw IllegalArgumentException("cannot found param 'content' in $neko.")
                     api.sendCardMsg(botId, target, content)
                 }
 
@@ -255,19 +260,20 @@ public class LovelyCatSender(
     }
 
 
-
-
-
     /**
      * 发送一条群消息。 回执必然为空。
      *
      */
-    override fun sendGroupMsg(parent: String?, group: String, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> {
+    override suspend fun groupMsg(
+        parent: String?,
+        group: String,
+        msg: String,
+    ): Carrier<out Flag<GroupMsg.FlagContent>> {
         sendMsg(group, msg)
         return Carrier.empty()
     }
 
-    override fun sendGroupMsg(group: Long, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
+    override suspend fun groupMsg(group: Long, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg("$group$GROUP_SUFFIX", msg)
 
 
@@ -275,31 +281,31 @@ public class LovelyCatSender(
      * 发送一条群消息。回执必然为空。
      *
      */
-    override fun sendGroupMsg(group: String, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> {
+    override suspend fun groupMsg(group: String, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> {
         sendMsg(group, msg)
         return Carrier.empty()
     }
 
-    override fun sendGroupMsg(group: Long, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
+    override suspend fun groupMsg(group: Long, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         sendGroupMsg("$group$GROUP_SUFFIX", msg)
-
-
-
-
 
 
     /**
      * 发送一条私聊消息。 回执必然为空。
      *
      */
-    override fun sendPrivateMsg(code: String, group: String?, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> {
+    override suspend fun privateMsg(
+        code: String,
+        group: String?,
+        msg: String,
+    ): Carrier<out Flag<PrivateMsg.FlagContent>> {
         sendMsg(code, msg)
         return Carrier.empty()
     }
 
-    override fun sendPrivateMsg(
+    override suspend fun privateMsg(
         code: String,
-        msg: MessageContent
+        msg: MessageContent,
     ): Carrier<out Flag<PrivateMsg.FlagContent>> {
         sendMsg(code, msg)
         return Carrier.empty()
@@ -317,14 +323,14 @@ public class LovelyCatSender(
      * @param confirm 不支持
      * @return 是否发布成功
      */
-    override fun sendGroupNotice(
+    override suspend fun groupNotice(
         group: String,
         title: String?,
         text: String?,
         popUp: Boolean,
         top: Boolean,
         toNewMember: Boolean,
-        confirm: Boolean
+        confirm: Boolean,
     ): Carrier<Boolean> {
         // compute total length.
         val length = (title?.length ?: 0) + (text?.length ?: 0)
@@ -342,28 +348,29 @@ public class LovelyCatSender(
         } ?: Carrier.get(false)
     }
 
-    override fun sendGroupNotice(
+    override suspend fun groupNotice(
         group: Long,
         title: String?,
         text: String?,
         popUp: Boolean,
         top: Boolean,
         toNewMember: Boolean,
-        confirm: Boolean
+        confirm: Boolean,
     ): Carrier<Boolean> =
         sendGroupNotice("$group$GROUP_SUFFIX", title, text, popUp, top, toNewMember, confirm)
-
 
 
     /**
      * 不支持群签到。
      */
     @Deprecated("Not support")
+    @Suppress("DEPRECATION")
     override fun sendGroupSign(group: String, title: String, message: String): Carrier<Boolean> {
         return def.sendGroupSign(group, title, message)
     }
 
-    @Suppress("DEPRECATION")
+    @Deprecated("Not support")
+    @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
     override fun sendGroupSign(group: Long, title: String, message: String): Carrier<Boolean> =
         sendGroupSign("$group$GROUP_SUFFIX", title, message)
 

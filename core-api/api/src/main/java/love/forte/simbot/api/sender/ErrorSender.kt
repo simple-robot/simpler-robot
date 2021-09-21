@@ -23,21 +23,25 @@ import love.forte.simbot.api.message.results.Result
 /**
  * [Sender] 的 无效化实现，所有的方法均会抛出异常。
  */
+@Suppress("DEPRECATION", "OverridingDeprecatedMember")
 object ErrorSender : Sender.Def {
-    override fun sendGroupMsg(parent: String?, group: String, msg: String): Nothing =
-        NO("Sender.sendGroupMsg")
+    override suspend fun groupMsg(
+        parent: String?,
+        group: String,
+        msg: String,
+    ): Nothing = NO("Sender.sendGroupMsg")
 
-    override fun sendPrivateMsg(code: String, group: String?, msg: String): Nothing =
+    override suspend fun privateMsg(code: String, group: String?, msg: String): Nothing =
         NO("Sender.sendPrivateMsg")
 
-    override fun sendGroupNotice(
+    override suspend fun groupNotice(
         group: String,
         title: String?,
         text: String?,
         popUp: Boolean,
         top: Boolean,
         toNewMember: Boolean,
-        confirm: Boolean
+        confirm: Boolean,
     ): Nothing =
         NO("Sender.sendGroupNotice")
 
@@ -49,12 +53,11 @@ object ErrorSender : Sender.Def {
 }
 
 
-
 /**
  * [ErrorGetter] 的构建工厂，得到的 [Getter] 实例的所有方法均会抛出异常。
  */
 @get:JvmName("getErrorSenderFactory")
-public val ErrorSenderFactory : DefaultSenderFactory = object : DefaultSenderFactory {
+public val ErrorSenderFactory: DefaultSenderFactory = object : DefaultSenderFactory {
     override fun getOnMsgSender(msg: MsgGet): Sender.Def = ErrorSender
     override fun getOnBotSender(bot: BotContainer): Sender.Def = ErrorSender
 }

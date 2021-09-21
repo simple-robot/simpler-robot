@@ -38,6 +38,7 @@ public class WeakListenerFunction(function: ListenerFunction): ListenerFunction 
     override val name: String = function.name
     override val spare: Boolean = function.spare
     override val priority: Int = function.priority
+    override val isAsync: Boolean = function.isAsync
 
     override fun <A : Annotation> getAnnotation(type: Class<out A>): A? = delegate?.getAnnotation(type)
 

@@ -20,6 +20,7 @@ import love.forte.common.ioc.DependBeanFactory
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.SpareBeans
+import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.listener.ListenerManager
 import love.forte.simbot.listener.ListenerRegistered
 import love.forte.simbot.plugin.core.SimplePluginManager
@@ -34,6 +35,7 @@ import kotlin.io.path.Path
 @AsConfig(prefix = "simbot.plugin")
 public class PluginManagerConfiguration : ListenerRegistered {
 
+    private companion object LOG : TypedCompLogger(PluginManagerConfiguration::class.java)
 
     /**
      * 监听函数管理器
@@ -75,6 +77,10 @@ public class PluginManagerConfiguration : ListenerRegistered {
 
 
     override fun onRegistered(manager: ListenerManager) {
+        logger.warn("")
+        logger.warn("你正在使用 'simple-robot-plugins' 模块。此模块尚处于试验阶段，如果发现任何问题，请反馈至issue: https://github.com/ForteScarlet/simpler-robot/issues/new/choose")
+        logger.warn("")
+
         dependBeanFactory[SimplePluginManager::class.java].start()
     }
 }
