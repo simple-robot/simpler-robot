@@ -17,6 +17,8 @@
 
 package love.forte.simbot.bot
 
+import love.forte.simbot.SimbotIllegalStateException
+import love.forte.simbot.mark.Since
 import java.util.*
 
 /**
@@ -24,42 +26,108 @@ import java.util.*
  *
  * 为了支持更灵活的bot验证机制，提供此接口以代替曾经的 code-verification 验证方式。
  *
- * 除了提供了 [code]、[verification] 的参数之外，也提供了一个 [get] 方法支持获取额外的参数。
- *
  * 账号配置时类似于 `properties` 等键值对格式的配置方式，并解析为 [BotVerifyInfo] 实例。
- *
  *
  * [BotVerifyInfo] 主要通过读取对应的bot配置资源文件得到，格式为 `.bot`, 其规则等同于properties。
  * 通常情况下，一个bot配置文件则对应一个 [BotVerifyInfo] 实例。
  *
+ * Java 可以通过 `BotVerifyInfos` 工具类下相关方法来获取 [BotVerifyInfo] 实例，或者直接实现接口。
+ * 也可以通过 [withCode] [withCodeVerification] [withToken] 获取。
+ *
+ *
+ * @see StandardBotVerifyInfo
+ *
+ *
  *
  * @since 2.1.0
  */
+@Since.SinceList(
+    Since("2.1.0"),
+    Since(value = "2.3.0", desc = ["不再提供code, 需要有组件自行取用唯一标识。"])
+)
 public interface BotVerifyInfo {
-    /**
-     * 一般可代表为一个 `账号` 信息。
-     *
-     * 一个账号信息必须存在， 因为 [code] 将会作为一个bot的唯一ID。
-     *
-     */
-    val code: String
-
-    /**
-     * 一般指一个用于验证的信息，常见含义为 **密码**。
-     */
-    val verification: String?
-
-    /**
-     * 此bot所对应的组件。
-     * 为未来版本预留的属性。
-     */
-    val component: String? get() = this["component"]
-
     /**
      * 一个获取额外扩展参数的方法，可以得到一些其他参数。
      */
     operator fun get(key: String): String?
+
+    companion object {
+        @JvmStatic
+        fun withCodeVerification(code: String, verification: String): CodeVerificationBotVerifyInfo =
+            SimpleCodeVerificationBotVerifyInfo(code, verification)
+
+        @JvmStatic
+        fun withCode(code: String): CodeBotVerifyInfo = SimpleCodeBotVerifyInfo(code)
+
+        @JvmStatic
+        fun withToken(token: String): TokenBotVerifyInfo = SimpleTokenBotVerifyInfo(token)
+
+        @JvmStatic
+        fun withProperties(prop: Properties): PropertiesBotVerifyInfo = PropertiesBotVerifyInfo(prop)
+    }
+
+
 }
+
+
+/**
+ * 根据[多个key][keys]寻找一个符合结果的值。
+ */
+public fun BotVerifyInfo.findOrNull(vararg keys: String): String? {
+    for (key in keys) {
+        val found = this[key]
+        if (found != null) return found
+    }
+    return null
+}
+
+/**
+ *
+ * @throws SimbotIllegalStateException 如果找不到任何的值
+ */
+public fun BotVerifyInfo.find(vararg keys: String): String {
+    return findOrNull(*keys) ?: throw SimbotIllegalStateException("Cannot found value of keys: ${
+        keys.joinToString(", ",
+            "[",
+            "]")
+    }")
+}
+
+
+/**
+ * 一般可代表为一个 `账号` 信息。
+ *
+ * 一个账号信息必须存在， 因为 [code] 将会作为一个bot的唯一ID。
+ *
+ */
+public val BotVerifyInfo.code: String
+    get() =
+        if (this is CodeBotVerifyInfo) this.code
+        else find("code")
+
+/**
+ * 一般指一个用于验证的信息，常见含义为 **密码**。
+ */
+public val BotVerifyInfo.verification: String?
+    get() =
+        if (this is CodeVerificationBotVerifyInfo) this.verification
+        else findOrNull("verification", "password")
+
+
+/**
+ * 一般指一个用于验证的信息Token。
+ */
+public val BotVerifyInfo.token: String?
+    get() =
+        if (this is TokenBotVerifyInfo) this.token
+        else get("token")
+
+
+/**
+ * 此bot所对应的组件。
+ * 为未来版本预留的属性。
+ */
+public val BotVerifyInfo.component: String? get() = findOrNull("component")
 
 
 internal val CODE_ALIAS = arrayOf("code")
@@ -137,25 +205,14 @@ public sealed class PairBotVerifyInfo(
     private val codeAlias: Array<String>,
     /** 获取验证信息的别名。用于 [verification] 从 [get] 函数中的获取。 */
     private val verificationAlias: Array<String>,
-) : BotVerifyInfo {
+) : CodeVerificationBotVerifyInfo {
 
     override val code: String
-        get() {
-            for (c in codeAlias) {
-                val got = this[c]
-                if (got != null) return got
-            }
-            throw IllegalStateException("The code value was not found in the ${codeAlias.joinToString(", ")}.")
-        }
+        get() = find(*codeAlias)
 
-    override val verification: String?
-        get() {
-            for (v in verificationAlias) {
-                val got = this[v]
-                if (got != null) return got
-            }
-            return null
-        }
+
+    override val verification: String
+        get() = find(*verificationAlias)
 
     /**
      * 基于 [Properties] 的 [PairBotVerifyInfo] 实现。
@@ -183,7 +240,7 @@ public sealed class PairBotVerifyInfo(
     /**
      * 基础的 [PairBotVerifyInfo] 实现。
      */
-    internal class BasicBotVerifyInfo(override val code: String, override val verification: String?) :
+    internal class BasicBotVerifyInfo(override val code: String, override val verification: String) :
         PairBotVerifyInfo(emptyArray(), emptyArray()) {
         override fun get(key: String): String? = null
     }
@@ -194,8 +251,7 @@ public sealed class PairBotVerifyInfo(
 /**
  * 没有任何信息的 [BotVerifyInfo] 实现。
  */
-internal data class CodeOnlyBotVerifyInfo(override val code: String) : BotVerifyInfo {
-    override val verification: String? get() = null
+internal data class CodeOnlyBotVerifyInfo(override val code: String) : CodeBotVerifyInfo {
     override fun get(key: String): String? = null
 }
 
@@ -214,7 +270,8 @@ internal data class CodeOnlyBotVerifyInfo(override val code: String) : BotVerify
  *
  */
 @Deprecated("2.1.0开始建议使用新的方式")
-public data class BotRegisterInfo(override val code: String, override val verification: String) : BotVerifyInfo {
+public data class BotRegisterInfo(override val code: String, override val verification: String) :
+    CodeVerificationBotVerifyInfo {
     override fun get(key: String): String? = null
 
 
