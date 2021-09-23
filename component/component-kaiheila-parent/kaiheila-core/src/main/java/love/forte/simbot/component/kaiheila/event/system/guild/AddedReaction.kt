@@ -24,31 +24,27 @@ import love.forte.simbot.component.kaiheila.objects.ReactionEmoji
  * @author ForteScarlet
  */
 @Serializable
-public data class AddedReactionExtra(
-    override val type: String,
-    override val body: Body
-) : GuildEventExtra<AddedReactionExtra.Body> {
+public data class AddedReactionExtraBody(
+    /**
+     * 用户点击的消息id
+     */
+    @SerialName("msg_id")
+    val msgId: String,
 
-    @Serializable
-    public data class Body(
-        /**
-         * 用户点击的消息id
-         */
-        @SerialName("msg_id")
-        val msgId: String,
-        /**
-         * 点击的用户
-         */
-        @SerialName("user_id")
-        val userId: String,
-        /**
-         * 频道id
-         */
-        @SerialName("channel_id")
-        val channelId: String,
-        /**
-         * emoji	Map	消息对象, 包含 id 表情id, name 表情名称
-         */
-        val emoji: ReactionEmoji
-    ) : GuildEventExtraBody
-}
+    /**
+     * 点击的用户
+     */
+    @SerialName("user_id")
+    val userId: String,
+
+    /**
+     * 频道id
+     */
+    @SerialName("channel_id")
+    val channelId: String,
+
+    /**
+     * emoji	Map	消息对象, 包含 id 表情id, name 表情名称
+     */
+    val emoji: ReactionEmoji,
+) : GuildEventExtraBody

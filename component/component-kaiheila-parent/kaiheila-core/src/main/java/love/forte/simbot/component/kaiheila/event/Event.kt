@@ -195,9 +195,10 @@ public interface Event<E : Event.Extra> {
         /**
          * 当 [Event.type] == `255` 时的 [结构](https://developer.kaiheila.cn/doc/event/event-introduction#)
          */
-        public interface Sys<B> : Extra {
+        public interface Sys<B : Sys.Body> : Extra {
             override val type: String
             val body: B
+            interface Body
         }
 
         /**

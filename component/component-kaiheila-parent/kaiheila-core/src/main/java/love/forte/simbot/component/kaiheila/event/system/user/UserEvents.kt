@@ -12,23 +12,22 @@
  *
  */
 
-@file:JvmName("GuildEvents")
-package love.forte.simbot.component.kaiheila.event.system.guild
+@file:JvmName("UserEvents")
+
+package love.forte.simbot.component.kaiheila.event.system.user
 
 import love.forte.simbot.component.kaiheila.event.Event
 
 
 /**
- *
+ * [用户相关事件列表](https://developer.kaiheila.cn/doc/event/user) 中事件体的 `body`
  *
  */
-// public interface GuildEventExtra<B : GuildEventExtraBody> : Event.Extra.Sys<B>
+public interface UserEventExtraBody : Event.Extra.Sys.Body
 
 
 /**
+ * [用户相关事件列表](https://developer.kaiheila.cn/doc/event/user) 的事件体 `extra`
  *
- * [频道相关事件列表](https://developer.kaiheila.cn/doc/event/channel)
- *
- * @see Event.Extra.Sys.body
  */
-public interface GuildEventExtraBody : Event.Extra.Sys.Body
+public interface UserEventExtra<B : UserEventExtraBody> : Event.Extra.Sys<B>
