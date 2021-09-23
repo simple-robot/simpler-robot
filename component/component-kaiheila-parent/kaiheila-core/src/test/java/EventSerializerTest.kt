@@ -35,10 +35,12 @@ class EventSerializerTest {
         // val fileEvent = khlJson.decodeFromString<SimpleEvent<FileEventExtra>>(fileJson)
         val signal0 = khlJson.decodeFromString(Signal_0.serializer(), fileJson)
         val element = signal0.d
+
         println(element)
         val event = khlJson.decodeFromJsonElement(serializer, element)
 
         println(event)
+
 
 
     }

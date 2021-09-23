@@ -14,6 +14,9 @@
 
 package love.forte.simbot.component.kaiheila.event.message
 
+import love.forte.simbot.api.message.containers.AccountInfo
+import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.component.kaiheila.event.Event
 
 
@@ -26,3 +29,23 @@ import love.forte.simbot.component.kaiheila.event.Event
  * TODO: [#75](https://github.com/kaiheila/api-docs/issues/75)
  */
 public interface MessageEventExtra : Event.Extra.Text
+
+
+/**
+ * 消息相关事件接口
+ *
+ */
+public interface MessageEvent<E : MessageEventExtra> : Event<E>, MessageGet {
+    override val accountInfo: AccountInfo
+        get() = extra.author
+
+    override val botInfo: BotInfo
+        get() = TODO("Not yet implemented")
+
+    override val id: String
+        get() = msgId
+
+    override val time: Long
+        get() = msgTimestamp
+
+}

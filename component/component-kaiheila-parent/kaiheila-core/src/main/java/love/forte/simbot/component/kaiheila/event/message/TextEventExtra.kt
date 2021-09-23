@@ -14,8 +14,13 @@
 
 package love.forte.simbot.component.kaiheila.event.message
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.api.message.MessageContent
+import love.forte.simbot.api.message.events.MessageGet
+import love.forte.simbot.component.kaiheila.event.Event
+import love.forte.simbot.component.kaiheila.event.EventLocatorRegistrarCoordinate
 import love.forte.simbot.component.kaiheila.objects.Role
 import love.forte.simbot.component.kaiheila.objects.User
 
@@ -26,7 +31,6 @@ import love.forte.simbot.component.kaiheila.objects.User
  */
 @Serializable
 public data class TextEventExtra(
-    override val type: Int,
     @SerialName("guild_id")
     override val guildId: String,
     @SerialName("channel_name")
@@ -39,7 +43,47 @@ public data class TextEventExtra(
     @SerialName("mention_here")
     override val mentionHere: Boolean,
     override val author: User,
-) : MessageEventExtra
+) : MessageEventExtra {
+    override val type: Int get() = Event.Type.TEXT.type
+}
+
+
+@Serializable
+public data class TextEvent(
+    @SerialName("channel_type")
+    override val channelType: String,
+    @SerialName("target_id")
+    override val targetId: String,
+    @SerialName("author_id")
+    override val authorId: String,
+    override val content: String,
+    @SerialName("msg_id")
+    override val msgId: String,
+    @SerialName("msg_timestamp")
+    override val msgTimestamp: Long,
+    override val nonce: String,
+    override val extra: TextEventExtra,
+) : MessageEvent<TextEventExtra> {
+    override val type: Event.Type get() = Event.Type.TEXT
+
+    override val originalData: String
+        get() = toString()
+
+    override val msgContent: MessageContent
+        get() = TODO("Not yet implemented")
+    override val flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>
+        get() = TODO("Not yet implemented")
+
+
+    companion object : EventLocatorRegistrarCoordinate<TextEvent> {
+        override val type: Event.Type get() = Event.Type.TEXT
+
+        override val extraType: String
+            get() = type.type.toString()
+
+        override fun coordinateSerializer(): KSerializer<TextEvent> = serializer()
+    }
+}
 
 /*
 {

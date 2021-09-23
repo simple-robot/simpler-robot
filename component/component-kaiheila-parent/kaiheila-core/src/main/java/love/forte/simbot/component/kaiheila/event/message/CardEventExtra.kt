@@ -15,6 +15,7 @@
 package love.forte.simbot.component.kaiheila.event.message
 
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import love.forte.simbot.component.kaiheila.objects.KMarkdown
 import love.forte.simbot.component.kaiheila.objects.Role
 import love.forte.simbot.component.kaiheila.objects.User
@@ -26,6 +27,7 @@ import love.forte.simbot.component.kaiheila.objects.User
  *
  * @author ForteScarlet
  */
+@Serializable
 public data class CardEventExtra(
     override val type: Int,
     @SerialName("guild_id")
@@ -46,4 +48,16 @@ public data class CardEventExtra(
 
     override val author: User,
     val kmarkdown: KMarkdown,
-) : MessageEventExtra
+) : MessageEventExtra {
+
+    // companion object : EventLocatorRegistrarCoordinate {
+    //     override val type: Event.Type
+    //         get() = TODO("Not yet implemented")
+    //     override val extraType: String
+    //         get() = TODO("Not yet implemented")
+    //
+    //     override fun <T> coordinateSerializer(): KSerializer<T> where T : Event<*>, T : MsgGet {
+    //         TODO("Not yet implemented")
+    //     }
+    // }
+}
