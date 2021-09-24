@@ -19,6 +19,7 @@ package love.forte.simbot.filter
 import love.forte.simbot.annotation.OnlySession
 import love.forte.simbot.constant.PriorityConstant
 import love.forte.simbot.listener.ListenerContext
+import love.forte.simbot.listener.ScopeContext
 import love.forte.simbot.listener.get
 
 /**
@@ -26,20 +27,25 @@ import love.forte.simbot.listener.get
  *
  */
 public fun ListenerFilter.asOnlySession(onlySession: OnlySession): ListenerFilter =
-    asOnlySession(onlySession.value, onlySession.mostMatchType)
+    asOnlySession(onlySession.value, onlySession.matchType, onlySession.mostMatchType)
 
 
 /**
  * 将一个 [ListenerFilter] 转化为仅会话状态有效。
  *
  */
-public fun ListenerFilter.asOnlySession(values: Array<String>, mostMatchType: MostMatchType): ListenerFilter {
-    return OnlySessionDelegateFilter(values, mostMatchType, this)
+public fun ListenerFilter.asOnlySession(
+    values: Array<String>,
+    matchType: MatchType,
+    mostMatchType: MostMatchType,
+): ListenerFilter {
+    return OnlySessionDelegateFilter(values, matchType, mostMatchType, this)
 }
 
 
 private class OnlySessionDelegateFilter(
     private val values: Array<String>,
+    private val matchType: MatchType,
     private val mostMatchType: MostMatchType,
     private val realFilter: ListenerFilter,
 ) : ListenerFilter {
@@ -60,7 +66,7 @@ private class OnlySessionDelegateFilter(
  *
  */
 public fun onlySession(onlySession: OnlySession): ListenerFilter =
-    onlySession(onlySession.value, onlySession.mostMatchType)
+    onlySession(onlySession.value, onlySession.matchType, onlySession.mostMatchType)
 
 
 /**
@@ -71,20 +77,32 @@ public fun onlySession(onlySession: OnlySession): ListenerFilter =
  */
 public fun onlySession(
     values: Array<String>,
+    matchType: MatchType,
     mostMatchType: MostMatchType,
     priority: Int = PriorityConstant.CORE_FIRST,
 ): ListenerFilter {
-    return OnlySessionFilter(values, mostMatchType, priority)
+    return OnlySessionFilter(values, matchType, mostMatchType, priority)
 }
 
 
 private class OnlySessionFilter(
     private val values: Array<String>,
+    private val matchType: MatchType,
     private val mostMatchType: MostMatchType,
     override val priority: Int,
 ) : ListenerFilter {
+    private val tester: (ScopeContext, String) -> Boolean = if (matchType == MatchType.EQUALS) {
+        { session, keyName -> session[keyName] != null }
+    } else {
+        { session, keyName ->
+            val keys = session.keys
+            keys.any { key -> matchType.match(key, keyName) }
+        }
+    }
+
     override fun test(data: FilterData): Boolean {
-        val session = data.listenerContext[ListenerContext.Scope.CONTINUOUS_SESSION] ?: return false
+        val session: ScopeContext = data.listenerContext[ListenerContext.Scope.CONTINUOUS_SESSION] ?: return false
+
         return mostMatchType.mostTest(values.asIterable()) { keyName -> session[keyName] != null }
     }
 }
@@ -102,5 +120,5 @@ public fun ListenerFilter?.asOnlySessionOrDefault(onlySession: OnlySession): Lis
  * 将一个可能存在的 [ListenerFilter] 转化为仅会话状态有效。
  *
  */
-public fun ListenerFilter?.asOnlySessionOrDefault(values: Array<String>, mostMatchType: MostMatchType): ListenerFilter =
-    this?.asOnlySession(values, mostMatchType) ?: onlySession(values, mostMatchType)
+public fun ListenerFilter?.asOnlySessionOrDefault(values: Array<String>, matchType: MatchType, mostMatchType: MostMatchType): ListenerFilter =
+    this?.asOnlySession(values, matchType, mostMatchType) ?: onlySession(values, matchType, mostMatchType)

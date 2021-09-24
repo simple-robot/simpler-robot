@@ -14,6 +14,7 @@
 
 package love.forte.simbot.annotation;
 
+import love.forte.simbot.filter.MatchType;
 import love.forte.simbot.filter.MostMatchType;
 
 import java.lang.annotation.*;
@@ -35,6 +36,11 @@ public @interface OnlySession {
      * @throws IllegalArgumentException 如果为空
      */
     String[] value();
+
+    /**
+     * 匹配方式。默认为全等匹配。
+     */
+    MatchType matchType() default MatchType.EQUALS;
 
     /**
      * 多值匹配方式，默认为any。
