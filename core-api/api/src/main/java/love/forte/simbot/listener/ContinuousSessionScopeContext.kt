@@ -77,6 +77,7 @@ public class ContinuousSessionScopeContext(
         private val logger = LoggerFactory.getLogger(ContinuousSessionScopeContext::class.java)
     }
 
+    // TODO 双层Map
     private val continuationMap = ConcurrentHashMap<String, ContinuousSessionContinuation<*>>()
 
     /**
@@ -89,6 +90,7 @@ public class ContinuousSessionScopeContext(
      * 推送得到的值.
      * @throws ClassCastException 当类型与实际所需不匹配的时候.
      */
+    // TODO push(group, key, value)
     fun <T> push(key: String, value: T) {
         @Suppress("UNCHECKED_CAST")
         (take(key) as? ContinuousSessionContinuation<T>)?.push(value)
@@ -97,6 +99,7 @@ public class ContinuousSessionScopeContext(
     /**
      * 推送一个错误
      */
+    // TODO push(group, key, value)
     fun pushException(key: String, value: Throwable) {
         take(key)?.pushException(value)
     }

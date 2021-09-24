@@ -30,6 +30,13 @@ import java.lang.annotation.*;
 @Documented
 public @interface OnlySession {
 
+    // TODO group, key
+
+    String group() default ""; //TODO
+
+
+    String key() default ""; // TODO
+
     /**
      * 当且仅当下述的 keys 存在的时候，才会触发对应监听函数.
      *
