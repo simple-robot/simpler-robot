@@ -74,15 +74,15 @@ public class SessionCallbackBuilder<T> {
 
 
     public fun interface OnResume<T>  {
-        operator fun invoke(p1: T)
+        operator fun invoke(value: T)
     }
 
     public fun interface OnError {
-        operator fun invoke(p1: Throwable)
+        operator fun invoke(exception: Throwable)
     }
 
     public fun interface OnCancel {
-        operator fun invoke(p1: Throwable?)
+        operator fun invoke(cause: Throwable?)
     }
 
 }

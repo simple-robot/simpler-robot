@@ -14,6 +14,7 @@
 
 package love.forte.simbot.core.listener
 
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.dispatcher.EventDispatcherFactory
@@ -26,7 +27,7 @@ import love.forte.simbot.listener.*
 public data class ListenerContextImpl(
     private val eventInstantContext: ScopeContext,
     private val globalContext: ScopeContext,
-    private val continuousSessionScopeContext: ContinuousSessionScopeContext
+    private val continuousSessionScopeContext: ContinuousSessionScopeContext,
 ) : ListenerContext {
 
     override fun getContext(scope: ListenerContext.Scope): ScopeContext {
@@ -43,7 +44,8 @@ public data class ListenerContextImpl(
  * [ListenerContextFactory] 实现。
  * 单例。
  */
-public class CoreListenerContextFactory(eventDispatcherFactory: EventDispatcherFactory, defaultTimeout: Long) : ListenerContextFactory {
+public class CoreListenerContextFactory(eventDispatcherFactory: EventDispatcherFactory, defaultTimeout: Long) :
+    ListenerContextFactory {
 
     /** 每次获取得到一个新的 [MapScopeContext] 实例。 */
     private val eventInstantContext: ScopeContext get() = MapScopeContext(ListenerContext.Scope.EVENT_INSTANT)
@@ -52,12 +54,12 @@ public class CoreListenerContextFactory(eventDispatcherFactory: EventDispatcherF
     private val globalContext: ScopeContext = MapScopeContext(ListenerContext.Scope.GLOBAL)
 
     /**
-     * 作用域
+     * 持续会话作用域，用于支持消息的持续会话。
+     *
      */
-    private val coroutineScope = CoroutineScope(eventDispatcherFactory.dispatcher)
-
     private val continuousSessionScopeContext: ContinuousSessionScopeContext = ContinuousSessionScopeContext(
-        coroutineScope, defaultTimeout
+        CoroutineScope(eventDispatcherFactory.dispatcher + CoroutineName("CoreListenerContextFactory")),
+        defaultTimeout
     )
 
 

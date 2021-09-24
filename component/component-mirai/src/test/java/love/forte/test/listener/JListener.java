@@ -32,6 +32,9 @@ import love.forte.simbot.listener.SessionCallback;
 @OnGroup
 public class JListener {
 
+    private static final String key1 = "==tellMeYourNameAndPhone==PHONE==";
+    private static final String key2 = "==tellMeYourNameAndPhone==NAME==";
+
     @Filter(value = "tellme", groups = "1043409458")
     public void tellme(GroupMsg m, ListenerContext context, Sender sender) {
         final ContinuousSessionScopeContext session = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
@@ -47,7 +50,7 @@ public class JListener {
             sender.sendGroupMsg(msg, "[CAT:quote,id=" + m.getId() + "] 请输入姓名");
 
             // wait.
-            session.waiting(SuspendFunctionListener.key2, name -> {
+            session.waiting(key2, name -> {
                 sender.sendGroupMsg(msg, "姓名为 " + name);
 
                 sender.sendGroupMsg(msg, name + "的手机号为" + phone);
@@ -57,24 +60,24 @@ public class JListener {
         }).build();
 
         // Do waiting
-        session.waiting(SuspendFunctionListener.key1, callback);
+        session.waiting(key1, callback);
     }
 
-    @OnlySession(SuspendFunctionListener.key1)
+    @OnlySession(key1)
     @Filter(value = "\\d+", matchType = MatchType.REGEX_MATCHES)
     public void phone(GroupMsg m, ListenerContext context) {
         final ContinuousSessionScopeContext session = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
         assert session != null;
 
-        session.push(SuspendFunctionListener.key1, m);
+        session.push(key1, m);
     }
 
-    @OnlySession(SuspendFunctionListener.key2)
+    @OnlySession(key2)
     public void onName(GroupMsg m, ListenerContext context) {
         final ContinuousSessionScopeContext session = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
         assert session != null;
 
-        session.push(SuspendFunctionListener.key2, m.getText());
+        session.push(key2, m.getText());
     }
 
 }
