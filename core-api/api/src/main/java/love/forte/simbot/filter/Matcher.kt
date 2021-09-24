@@ -40,12 +40,58 @@ public fun interface MostMatcher<T> {
 /**
  * 对多个测试器进行测试的测试器。
  */
-public fun interface MostTester {
+public interface MostTester {
     /**
      * 提供多个 [测试器][testers] 并得到一个最终结果。
      */
     fun mostTest(testers: Iterable<() -> Boolean>): Boolean
+
+    /**
+     * 提供多个值，和一个匹配方案.
+     */
+    fun <T> mostTest(values: Iterable<T>, tester: (T) -> Boolean): Boolean
+
+
+    object Any : MostTester {
+        override fun mostTest(testers: Iterable<() -> Boolean>): Boolean = any(testers)
+        override fun <T> mostTest(values: Iterable<T>, tester: (T) -> Boolean): Boolean = any(values, tester)
+
+    }
+
+    object All : MostTester {
+        override fun mostTest(testers: Iterable<() -> Boolean>): Boolean = all(testers)
+        override fun <T> mostTest(values: Iterable<T>, tester: (T) -> Boolean): Boolean = all(values, tester)
+    }
+
+    object AnyNo : MostTester {
+        override fun mostTest(testers: Iterable<() -> Boolean>): Boolean = anyNo(testers)
+        override fun <T> mostTest(values: Iterable<T>, tester: (T) -> Boolean): Boolean = anyNo(values, tester)
+
+    }
+
+    object None : MostTester {
+        override fun mostTest(testers: Iterable<() -> Boolean>): Boolean = none(testers)
+        override fun <T> mostTest(values: Iterable<T>, tester: (T) -> Boolean): Boolean = none(values, tester)
+
+    }
+
 }
+
+
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun any(testers: Iterable<() -> Boolean>): Boolean = testers.any { it() }
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun all(testers: Iterable<() -> Boolean>): Boolean = testers.all { it() }
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun anyNo(testers: Iterable<() -> Boolean>): Boolean = testers.any { !it() }
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun none(testers: Iterable<() -> Boolean>): Boolean = testers.all { !it() }
+
+internal inline fun <T> any(values: Iterable<T>, test: (T) -> Boolean): Boolean = values.any(test)
+internal inline fun <T> all(values: Iterable<T>, test: (T) -> Boolean): Boolean = values.all(test)
+internal inline fun <T> anyNo(values: Iterable<T>, test: (T) -> Boolean): Boolean = values.any(test)
+internal inline fun <T> none(values: Iterable<T>, test: (T) -> Boolean): Boolean = values.all(test)
+
 
 
 /**

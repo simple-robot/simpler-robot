@@ -25,6 +25,7 @@ import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.filter.FilterManager
 import love.forte.simbot.filter.ListenerFilter
+import love.forte.simbot.filter.asOnlySessionOrDefault
 import love.forte.simbot.listener.*
 import love.forte.simbot.utils.MD5
 import love.forte.simbot.utils.getAnnotation
@@ -236,12 +237,16 @@ public class FunctionFromClassListenerFunction constructor(
         // filter
         filter = filtersAnnotation?.let {
             filterManager.getFilter(it)
+        }.let { f ->
+            val onlySession = AnnotationUtil.getAnnotation(fAnnotationElement, OnlySession::class.java)
+            if (onlySession != null) f.asOnlySessionOrDefault(onlySession) else f
         }
 
         val parameterGetters: List<(ListenerFunctionInvokeData) -> Any?> = function.getParameterGetters(strict)
 
         // 方法参数获取函数
-        methodParamsGetter = { d -> Array(parameterGetters.size) { i -> parameterGetters[i](d) } }
+        methodParamsGetter =
+            { d -> Array(parameterGetters.size) { i -> parameterGetters[i](d) } }
 
     }
 
@@ -366,7 +371,7 @@ public class FunctionFromClassListenerFunction constructor(
                     f@{ d ->
                         d.context.let { context ->
                             for (scope in scopes) {
-                                val v = context[scope][findKey]
+                                val v = context[scope]?.get(findKey)
                                 if (v != null) return@let v
                             }
                             if (contextValueOrNull) return@let null
@@ -486,7 +491,7 @@ public class FunctionFromClassListenerFunction constructor(
                             ?: run {
                                 for (scope in ListenerContext.Scope.values()) {
                                     d.context.let { context ->
-                                        val v = context[scope][name]
+                                        val v = context[scope]?.get(name)
                                         if (v != null) return@run v
                                     }
                                 }
@@ -506,7 +511,7 @@ public class FunctionFromClassListenerFunction constructor(
                             ?: run {
                                 for (scope in ListenerContext.Scope.values()) {
                                     d.context.let { context ->
-                                        val v = context[scope][name]
+                                        val v = context[scope]?.get(name)
                                         if (v != null) return@run v
                                     }
                                 }
@@ -632,37 +637,37 @@ public class FunctionFromClassListenerFunction constructor(
 
     override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> = realInvoker(data)
 
-    //     // 获取实例
-    //     val instance: Any? = runCatching {
-    //         listenerInstanceGetter()
-    //     }.getOrElse {
-    //         return listenerResultFactory.getResult(null, this, it)
-    //     }
-    //
-    //     // 获取方法参数
-    //     val params: Array<*> = runCatching {
-    //         methodParamsGetter(data)
-    //     }.getOrElse {
-    //         return listenerResultFactory.getResult(null, this, it)
-    //     }
-    //
-    //     // 执行方法
-    //     val invokeResult: Any? = runCatching {
-    //         functionCaller(instance, params)
-    //         // method(instance, *params)
-    //     }.getOrElse {
-    //         val cause = if (it is InvocationTargetException) {
-    //             it.targetException
-    //         } else it
-    //         return listenerResultFactory.getResult(null, this, cause)
-    //     }
-    //
-    //     // set result
-    //     // resultBuilder.result = invokeResult
-    //
-    //     // build listen result.
-    //     return listenerResultFactory.getResult(invokeResult, this)
-    // }
+//     // 获取实例
+//     val instance: Any? = runCatching {
+//         listenerInstanceGetter()
+//     }.getOrElse {
+//         return listenerResultFactory.getResult(null, this, it)
+//     }
+//
+//     // 获取方法参数
+//     val params: Array<*> = runCatching {
+//         methodParamsGetter(data)
+//     }.getOrElse {
+//         return listenerResultFactory.getResult(null, this, it)
+//     }
+//
+//     // 执行方法
+//     val invokeResult: Any? = runCatching {
+//         functionCaller(instance, params)
+//         // method(instance, *params)
+//     }.getOrElse {
+//         val cause = if (it is InvocationTargetException) {
+//             it.targetException
+//         } else it
+//         return listenerResultFactory.getResult(null, this, cause)
+//     }
+//
+//     // set result
+//     // resultBuilder.result = invokeResult
+//
+//     // build listen result.
+//     return listenerResultFactory.getResult(invokeResult, this)
+// }
 
     @OptIn(SimbotExperimentalApi::class)
     override val switch: ListenerFunction.Switch = Switch()

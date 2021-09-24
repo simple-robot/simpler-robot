@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -13,10 +13,11 @@
  */
 
 @file:JvmName("ListenerContexts")
+@file:Suppress("unused")
+
 package love.forte.simbot.listener
 
 import love.forte.simbot.SimbotRuntimeException
-import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.mark.Since
 
@@ -28,37 +29,36 @@ import love.forte.simbot.mark.Since
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 @Since("2.1.0", desc = ["上下文整体结构重构"])
-@SimbotExperimentalApi
 @Suppress("MemberVisibilityCanBePrivate")
 public interface ListenerContext : ContextMap {
 
     /**
      * 获取指定作用域的上下文
      */
-    override fun getContext(scope: Scope): ScopeContext
+    override fun getContext(scope: Scope): ScopeContext?
 
     /**
      * 从 `global` 中获取信息。
      */
-    fun global(key: String): Any? = getContext(Scope.GLOBAL)[key]
+    fun global(key: String): Any? = getContext(Scope.GLOBAL)?.get(key)
 
     /**
      * 从 `instant` 中获取信息。
      */
-    fun instant(key: String): Any? = getContext(Scope.EVENT_INSTANT)[key]
+    fun instant(key: String): Any? = getContext(Scope.EVENT_INSTANT)?.get(key)
 
     /**
      * 向 `global` 中设置信息。
      */
     fun global(key: String, value: Any) {
-        getContext(Scope.GLOBAL)[key] = value
+        getContext(Scope.GLOBAL)?.set(key, value) //[key] = value
     }
 
     /**
      * 向 `instant` 中设置信息。
      */
     fun instant(key: String, value: Any) {
-        getContext(Scope.EVENT_INSTANT)[key] = value
+        getContext(Scope.EVENT_INSTANT)?.set(key, value) //[key] = value
     }
 
 
@@ -70,27 +70,32 @@ public interface ListenerContext : ContextMap {
         EVENT_INSTANT("instant"),
 
         /** 全局的 */
-        GLOBAL("global")
+        GLOBAL("global"),
+
+        /**
+         * 持续会话
+         */
+        CONTINUOUS_SESSION("continuous-session")
         ;
     }
 }
 
-@SimbotExperimentalApi
 public fun ListenerContext.instantOrGlobal(key: String): Any? = instant(key) ?: global(key)
 
-@SimbotExperimentalApi
 public fun ListenerContext.globalOrInstant(key: String): Any? = global(key) ?: instant(key)
 
 
+public operator fun ListenerContext.get(scope: ListenerContext.Scope): ScopeContext? = this.getContext(scope)
+
+/**
+ *
+ * 通过 [ListenerContext.Scope.CONTINUOUS_SESSION] 作用域得到 [持续会话上下文][ContinuousSessionScopeContext] 实例。
+ *
+ * @throws ClassCastException 如果具体的实现中, [ListenerContext.Scope.CONTINUOUS_SESSION] 的类型并不是 [ContinuousSessionScopeContext]
+ */
+public val ListenerContext.continuousSessionContext: ContinuousSessionScopeContext? get() = this[ListenerContext.Scope.CONTINUOUS_SESSION] as? ContinuousSessionScopeContext
 
 
-
-
-@SimbotExperimentalApi
-public operator fun ListenerContext.get(scope: ListenerContext.Scope): ScopeContext = this.getContext(scope)
-
-
-@SimbotExperimentalApi
 public inline fun findScope(block: () -> String): ListenerContext.Scope? {
     return ListenerContext.Scope.values().find { it.key == block() }
 }
@@ -99,14 +104,18 @@ public inline fun findScope(block: () -> String): ListenerContext.Scope? {
 /**
  * 监听函数上下文构建工厂。
  */
-@SimbotExperimentalApi
 public interface ListenerContextFactory {
     /**
      * 通过 [当前监听事件实例][msgGet] 构建一个本次监听所需的上下文实例。
      */
     fun getListenerContext(msgGet: MsgGet): ListenerContext
-}
 
+    /**
+     * 直接获取某个作用域下的上下文。
+     * @since 2.3.0
+     */
+    fun getScopeContext(msgGet: MsgGet, scope: ListenerContext.Scope): ScopeContext
+}
 
 
 public open class ContextValueNotFoundException : SimbotRuntimeException {

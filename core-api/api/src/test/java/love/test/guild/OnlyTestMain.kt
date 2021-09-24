@@ -14,13 +14,44 @@
 
 package love.test.guild
 
-import kotlin.test.Test
+import kotlinx.coroutines.*
+import love.forte.simbot.listener.ContinuousSessionScopeContext
+import kotlin.coroutines.Continuation
 
-class OnlyTestMain {
 
-    @Test
-    fun test() {
-        println("test1")
-        // error("No way.")
+var continuation: Continuation<Int>? = null
+
+suspend fun waitInt(): Int = suspendCancellableCoroutine {
+    continuation = it
+}
+
+suspend fun main() {
+    val scope = CoroutineScope(Dispatchers.Default)
+    val context = ContinuousSessionScopeContext(scope)
+
+    scope.launch {
+        delay(2000)
+        context.push("KEY", 2)
     }
+
+
+    val value = context.waiting<Int>("KEY")
+
+    println("value: $value")
+
+    scope.launch {
+        delay(200)
+        context.remove("KEY2")
+    }
+
+    try {
+        val value2 = context.waiting<Int>("KEY2", 2000)
+
+    } catch (c: CancellationException) {
+        c.printStackTrace()
+    }
+
+
+    // context.cancel()
+    println("over.")
 }

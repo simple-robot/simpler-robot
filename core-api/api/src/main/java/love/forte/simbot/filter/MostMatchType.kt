@@ -31,16 +31,16 @@ enum class MostMatchType(
     private val mostTester: MostTester
 ) : MostMatcher<String> by stringMatcher, MostTester by mostTester {
     /** 任意匹配。 */
-    ANY(::any, ::any, ::any),
+    ANY(::any, ::any, MostTester.Any),
 
     /** 全部匹配。 */
-    ALL(::all, ::all, ::all),
+    ALL(::all, ::all, MostTester.All),
 
     /** 任意不匹配。 */
-    ANY_NO(::anyNo, ::anyNo, ::anyNo),
+    ANY_NO(::anyNo, ::anyNo, MostTester.AnyNo),
 
     /** 没有任何匹配。 */
-    NONE(::none, ::none, ::none);
+    NONE(::none, ::none, MostTester.None);
 
 
     /**
@@ -56,7 +56,3 @@ internal fun <T> all(value: T, matchers: Iterable<(T) -> Boolean>): Boolean = ma
 internal fun <T> anyNo(value: T, matchers: Iterable<(T) -> Boolean>): Boolean = matchers.any { t -> !t(value) }
 internal fun <T> none(value: T, matchers: Iterable<(T) -> Boolean>): Boolean = matchers.all { t -> !t(value) }
 
-internal fun any(testers: Iterable<() -> Boolean>): Boolean = testers.any { it() }
-internal fun all(testers: Iterable<() -> Boolean>): Boolean = testers.all { it() }
-internal fun anyNo(testers: Iterable<() -> Boolean>): Boolean = testers.any { !it() }
-internal fun none(testers: Iterable<() -> Boolean>): Boolean = testers.all { !it() }

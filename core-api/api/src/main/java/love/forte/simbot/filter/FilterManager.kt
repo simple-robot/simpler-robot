@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -67,6 +67,9 @@ public interface ListenerFilterAnnotationFactory {
      */
     fun getFilter(filters: Filters) : ListenerFilter
 }
+
+
+
 
 
 

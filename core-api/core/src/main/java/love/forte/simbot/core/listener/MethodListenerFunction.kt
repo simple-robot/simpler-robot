@@ -27,6 +27,7 @@ import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.filter.FilterManager
 import love.forte.simbot.filter.ListenerFilter
+import love.forte.simbot.filter.asOnlySessionOrDefault
 import love.forte.simbot.listener.*
 import love.forte.simbot.utils.MD5
 import org.slf4j.Logger
@@ -240,6 +241,9 @@ public class MethodListenerFunction constructor(
 
         listenAnnotationFilter = filtersAnnotation?.let {
             filterManager.getFilter(it)
+        }.let { f ->
+            val onlySession = AnnotationUtil.getAnnotation(method, OnlySession::class.java)
+            if (onlySession != null) f.asOnlySessionOrDefault(onlySession) else f
         }
 
         val kFunction: KFunction<*>? = method.kotlinFunction
@@ -359,7 +363,7 @@ public class MethodListenerFunction constructor(
                             f@{ d ->
                                 d.context.let { context ->
                                     for (scope in scopes) {
-                                        val v = context[scope][findKey]
+                                        val v = context[scope]?.get(findKey)
                                         if (v != null) return@let v
                                     }
                                     if (orNull) return@let null
