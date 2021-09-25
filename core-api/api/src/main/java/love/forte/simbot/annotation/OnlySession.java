@@ -14,9 +14,6 @@
 
 package love.forte.simbot.annotation;
 
-import love.forte.simbot.filter.MatchType;
-import love.forte.simbot.filter.MostMatchType;
-
 import java.lang.annotation.*;
 
 /**
@@ -30,28 +27,15 @@ import java.lang.annotation.*;
 @Documented
 public @interface OnlySession {
 
-    // TODO group, key
+    /**
+     * 持续会话容器的分组。
+     */
+    String group();
 
-    String group() default ""; //TODO
-
-
-    String key() default ""; // TODO
 
     /**
-     * 当且仅当下述的 keys 存在的时候，才会触发对应监听函数.
-     *
-     * @throws IllegalArgumentException 如果为空
+     * 此分组下持续会话的key。如果未指定，则只要存在指定分组的会话容器就通过。
+     * 否则，根据key精准匹配。
      */
-    String[] value();
-
-    /**
-     * 匹配方式。默认为全等匹配。
-     */
-    MatchType matchType() default MatchType.EQUALS;
-
-    /**
-     * 多值匹配方式，默认为any。
-     */
-    MostMatchType mostMatchType() default MostMatchType.ANY;
-
+    String key() default "";
 }

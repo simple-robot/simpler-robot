@@ -40,6 +40,11 @@ public class JListener {
         final ContinuousSessionScopeContext session = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
         assert session != null;
 
+        final String groupCode = m.getGroupInfo().getGroupCode();
+        final String code = m.getAccountInfo().getAccountCode();
+
+        String key = groupCode + ":" + code;
+
         sender.sendGroupMsg(m, "[CAT:quote,id=" + m.getId() + "] 请输入手机号");
 
 
@@ -50,34 +55,48 @@ public class JListener {
             sender.sendGroupMsg(msg, "[CAT:quote,id=" + m.getId() + "] 请输入姓名");
 
             // wait.
-            session.waiting(key2, name -> {
+            session.waiting(key2, key, name -> {
                 sender.sendGroupMsg(msg, "姓名为 " + name);
-
                 sender.sendGroupMsg(msg, name + "的手机号为" + phone);
-
             });
 
+        }).onError(e -> {
+            System.out.println("onError: 出错啦: " + e);
+        }).onCancel(e -> {
+            System.out.println("onCancel 关闭啦: " + e);
         }).build();
 
         // Do waiting
-        session.waiting(key1, callback);
+        session.waiting(key1, key, callback);
     }
 
-    @OnlySession(key1)
-    @Filter(value = "\\d+", matchType = MatchType.REGEX_MATCHES)
+    @OnlySession(group = key1)
+    @Filter(value = "\\d+", matchType = MatchType.REGEX_MATCHES, groups = "1043409458")
     public void phone(GroupMsg m, ListenerContext context) {
+        System.out.println("phone >> " + m);
         final ContinuousSessionScopeContext session = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
         assert session != null;
 
-        session.push(key1, m);
+        final String groupCode = m.getGroupInfo().getGroupCode();
+        final String code = m.getAccountInfo().getAccountCode();
+
+        String key = groupCode + ":" + code;
+
+        session.push(key1, key, m);
     }
 
-    @OnlySession(key2)
+    @OnlySession(group = key2)
+    @Filter(groups = "1043409458")
     public void onName(GroupMsg m, ListenerContext context) {
+        System.out.println("name >> " + m);
+
         final ContinuousSessionScopeContext session = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
         assert session != null;
+        final String groupCode = m.getGroupInfo().getGroupCode();
+        final String code = m.getAccountInfo().getAccountCode();
 
-        session.push(key2, m.getText());
+        String key = groupCode + ":" + code;
+        session.push(key2, key, m.getText());
     }
 
 }

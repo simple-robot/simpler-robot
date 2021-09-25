@@ -18,16 +18,14 @@ package love.forte.simbot.filter
 
 import love.forte.simbot.annotation.OnlySession
 import love.forte.simbot.constant.PriorityConstant
-import love.forte.simbot.listener.ListenerContext
-import love.forte.simbot.listener.ScopeContext
-import love.forte.simbot.listener.get
+import love.forte.simbot.listener.continuousSessionContext
 
 /**
  * 将一个 [ListenerFilter] 转化为仅会话状态有效。
  *
  */
 public fun ListenerFilter.asOnlySession(onlySession: OnlySession): ListenerFilter =
-    asOnlySession(onlySession.value, onlySession.matchType, onlySession.mostMatchType)
+    asOnlySession(onlySession.group, onlySession.key)
 
 
 /**
@@ -35,18 +33,14 @@ public fun ListenerFilter.asOnlySession(onlySession: OnlySession): ListenerFilte
  *
  */
 public fun ListenerFilter.asOnlySession(
-    values: Array<String>,
-    matchType: MatchType,
-    mostMatchType: MostMatchType,
-): ListenerFilter {
-    return OnlySessionDelegateFilter(values, matchType, mostMatchType, this)
-}
+    group: String,
+    key: String,
+): ListenerFilter = OnlySessionDelegateFilter(group, key.takeIf { it.isNotEmpty() }, this)
 
 
 private class OnlySessionDelegateFilter(
-    private val values: Array<String>,
-    private val matchType: MatchType,
-    private val mostMatchType: MostMatchType,
+    private val group: String,
+    private val key: String?,
     private val realFilter: ListenerFilter,
 ) : ListenerFilter {
     override fun getFilterValue(name: String, text: String): String? = realFilter.getFilterValue(name, text)
@@ -54,9 +48,9 @@ private class OnlySessionDelegateFilter(
     override val priority: Int by realFilter::priority
 
     override fun test(data: FilterData): Boolean {
-        val session = data.listenerContext[ListenerContext.Scope.CONTINUOUS_SESSION] ?: return false
-        val sessionMatch = mostMatchType.mostTest(values.asIterable()) { keyName -> session[keyName] != null }
-        return if (sessionMatch) realFilter.test(data) else false
+        val session = data.listenerContext.continuousSessionContext ?: return false
+        val check = if (key == null) session[group] != null else session[group, key] != null
+        return if (check) realFilter.test(data) else false
     }
 }
 
@@ -66,7 +60,7 @@ private class OnlySessionDelegateFilter(
  *
  */
 public fun onlySession(onlySession: OnlySession): ListenerFilter =
-    onlySession(onlySession.value, onlySession.matchType, onlySession.mostMatchType)
+    onlySession(onlySession.group, onlySession.key)
 
 
 /**
@@ -76,34 +70,22 @@ public fun onlySession(onlySession: OnlySession): ListenerFilter =
  *
  */
 public fun onlySession(
-    values: Array<String>,
-    matchType: MatchType,
-    mostMatchType: MostMatchType,
+    group: String,
+    key: String,
     priority: Int = PriorityConstant.CORE_FIRST,
 ): ListenerFilter {
-    return OnlySessionFilter(values, matchType, mostMatchType, priority)
+    return OnlySessionFilter(group, key.takeIf { it.isNotEmpty() }, priority)
 }
 
 
 private class OnlySessionFilter(
-    private val values: Array<String>,
-    private val matchType: MatchType,
-    private val mostMatchType: MostMatchType,
+    private val group: String,
+    private val key: String?,
     override val priority: Int,
 ) : ListenerFilter {
-    private val tester: (ScopeContext, String) -> Boolean = if (matchType == MatchType.EQUALS) {
-        { session, keyName -> session[keyName] != null }
-    } else {
-        { session, keyName ->
-            val keys = session.keys
-            keys.any { key -> matchType.match(key, keyName) }
-        }
-    }
-
     override fun test(data: FilterData): Boolean {
-        val session: ScopeContext = data.listenerContext[ListenerContext.Scope.CONTINUOUS_SESSION] ?: return false
-
-        return mostMatchType.mostTest(values.asIterable()) { keyName -> session[keyName] != null }
+        val session = data.listenerContext.continuousSessionContext ?: return false
+        return if (key == null) session[group] != null else session[group, key] != null
     }
 }
 
@@ -120,5 +102,5 @@ public fun ListenerFilter?.asOnlySessionOrDefault(onlySession: OnlySession): Lis
  * 将一个可能存在的 [ListenerFilter] 转化为仅会话状态有效。
  *
  */
-public fun ListenerFilter?.asOnlySessionOrDefault(values: Array<String>, matchType: MatchType, mostMatchType: MostMatchType): ListenerFilter =
-    this?.asOnlySession(values, matchType, mostMatchType) ?: onlySession(values, matchType, mostMatchType)
+public fun ListenerFilter?.asOnlySessionOrDefault(group: String, key: String): ListenerFilter =
+    this?.asOnlySession(group, key) ?: onlySession(group, key)

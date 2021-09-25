@@ -16,6 +16,7 @@ package love.test.guild
 
 import kotlinx.coroutines.*
 import love.forte.simbot.listener.ContinuousSessionScopeContext
+import java.util.concurrent.TimeoutException
 import kotlin.coroutines.Continuation
 
 
@@ -31,24 +32,25 @@ suspend fun main() {
 
     scope.launch {
         delay(2000)
-        context.push("KEY", 2)
+        context.push("KEY", "1", 2)
     }
 
 
-    val value = context.waiting<Int>("KEY")
+    val value = context.waiting<Int>("KEY", "1")
 
     println("value: $value")
 
-    scope.launch {
-        delay(200)
-        context.remove("KEY2")
-    }
+    // scope.launch {
+    //     delay(200)
+    //     context.remove("KEY", "2")
+    // }
 
     try {
-        val value2 = context.waiting<Int>("KEY2", 2000)
-
+        val value2 = context.waiting<Int>("KEY", "2", 200)
     } catch (c: CancellationException) {
-        c.printStackTrace()
+        println("cancellation e: $c")
+    } catch (c: TimeoutException) {
+        println("timeout e:      $c")
     }
 
 

@@ -42,17 +42,18 @@ class SuspendFunctionListener {
 
     @Filters(Filter("tellMe"))
     suspend fun PrivateMsg.tellMeYourNameAndPhone(context: ListenerContext, sender: Sender) {
+        val k = accountInfo.accountCode
         val session = context[ListenerContext.Scope.CONTINUOUS_SESSION]!! as ContinuousSessionScopeContext
         sender.privateMsg(this, "请输入手机号")
-        val phone = session.waiting<Long>(key1) {
-            println("$key1 被关闭了")
+        val phone = session.waiting<Long>(key1, k) {
+            println("$key1 : $k 被关闭了")
             it?.printStackTrace()
         }
 
         sender.privateMsg(this, "手机号为 $phone")
         sender.privateMsg(this, "请输入姓名")
-        val name = session.waiting<String>(key2) {
-            println("$key2 被关闭了")
+        val name = session.waiting<String>(key2, k) {
+            println("$key2 : $k 被关闭了")
             it?.printStackTrace()
         }
 
@@ -60,19 +61,21 @@ class SuspendFunctionListener {
 
     }
 
-    @OnlySession(key1)
+    @OnlySession(group = key1)
     @Filters(Filter("\\d+", matchType = MatchType.REGEX_MATCHES))
     fun PrivateMsg.onPhone(context: ListenerContext) {
+        val k = accountInfo.accountCode
         val session = context[ListenerContext.Scope.CONTINUOUS_SESSION]!! as ContinuousSessionScopeContext
         println("On phone: $text")
-        session.push(key1, text.toLong())
+        session.push(key1, k, text.toLong())
     }
 
-    @OnlySession(key2)
+    @OnlySession(group = key2)
     fun PrivateMsg.onName(context: ListenerContext) {
+        val k = accountInfo.accountCode
         val session = context[ListenerContext.Scope.CONTINUOUS_SESSION]!! as ContinuousSessionScopeContext
         println("On name: $text")
-        session.push(key2, text)
+        session.push(key2, k, text)
     }
 
 
