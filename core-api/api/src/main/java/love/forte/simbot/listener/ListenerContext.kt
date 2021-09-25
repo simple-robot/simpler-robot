@@ -77,6 +77,8 @@ public interface ListenerContext : ContextMap {
          * [ContextMap] 的实现者应当保证在 [CONTINUOUS_SESSION] 作用域下获取到的对象应该是 [ContinuousSessionScopeContext] 类型实例。
          *
          * @see ContinuousSessionScopeContext
+         *
+         * @since 2.3.0
          */
         CONTINUOUS_SESSION("continuous-session")
         ;

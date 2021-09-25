@@ -23,6 +23,7 @@ import love.forte.simbot.api.sender.Sender
 import love.forte.simbot.filter.MatchType
 import love.forte.simbot.listener.ContinuousSessionScopeContext
 import love.forte.simbot.listener.ListenerContext
+import love.forte.simbot.listener.continuousSessionContext
 import love.forte.simbot.listener.get
 
 
@@ -43,7 +44,7 @@ class SuspendFunctionListener {
     @Filters(Filter("tellMe"))
     suspend fun PrivateMsg.tellMeYourNameAndPhone(context: ListenerContext, sender: Sender) {
         val k = accountInfo.accountCode
-        val session = context[ListenerContext.Scope.CONTINUOUS_SESSION]!! as ContinuousSessionScopeContext
+        val session = context.continuousSessionContext ?: return
         sender.privateMsg(this, "请输入手机号")
         val phone = session.waiting<Long>(key1, k) {
             println("$key1 : $k 被关闭了")

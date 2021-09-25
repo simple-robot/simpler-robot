@@ -37,8 +37,9 @@ public class JListener {
 
     @Filter(value = "tellme", groups = "1043409458")
     public void tellme(GroupMsg m, ListenerContext context, Sender sender) {
-        final ContinuousSessionScopeContext session = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
-        assert session != null;
+        final ContinuousSessionScopeContext sessionContext = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
+        assert sessionContext != null;
+
 
         final String groupCode = m.getGroupInfo().getGroupCode();
         final String code = m.getAccountInfo().getAccountCode();
@@ -55,7 +56,7 @@ public class JListener {
             sender.sendGroupMsg(msg, "[CAT:quote,id=" + m.getId() + "] 请输入姓名");
 
             // wait.
-            session.waiting(key2, key, name -> {
+            sessionContext.waiting(key2, key, name -> {
                 sender.sendGroupMsg(msg, "姓名为 " + name);
                 sender.sendGroupMsg(msg, name + "的手机号为" + phone);
             });
@@ -67,7 +68,7 @@ public class JListener {
         }).build();
 
         // Do waiting
-        session.waiting(key1, key, callback);
+        sessionContext.waiting(key1, key, callback);
     }
 
     @OnlySession(group = key1)

@@ -173,7 +173,7 @@ public class ContinuousSessionScopeContext(
     /**
      * 设置一个 [session] 到当前作用域。如果发生了覆盖，则会执行被覆盖者的 [cancel][ContinuousSessionContinuation.cancel]
      */
-    fun set(group: String, key: String, session: ContinuousSessionContinuation<*>): Unit = lock.write {
+    private fun set(group: String, key: String, session: ContinuousSessionContinuation<*>): Unit = lock.write {
         val container = continuationMap.computeIfAbsent(group, ::MapContinuousSessionContinuationContainer)
         container.merge(key, session) { old, now ->
             now.also { old.cancel() }
