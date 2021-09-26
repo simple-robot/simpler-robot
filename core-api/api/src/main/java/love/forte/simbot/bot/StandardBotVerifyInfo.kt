@@ -4,6 +4,8 @@ import java.util.*
 
 /**
  * 一些标准的，或者说常见的 [BotVerifyInfo] 实例类型。
+ *
+ * @see PropertiesBotVerifyInfo
  * @see CodeBotVerifyInfo
  * @see CodeVerificationBotVerifyInfo
  * @see TokenBotVerifyInfo
@@ -46,7 +48,7 @@ public data class SimpleCodeVerificationBotVerifyInfo(
 ) :
     CodeVerificationBotVerifyInfo {
     override fun get(key: String): String? =
-        when(key) {
+        when (key) {
             "code" -> code
             "verification", "password" -> verification
             else -> null
@@ -63,7 +65,7 @@ public interface TokenBotVerifyInfo : StandardBotVerifyInfo {
 
 public data class SimpleTokenBotVerifyInfo(override val token: String) : TokenBotVerifyInfo {
     override fun get(key: String): String? =
-        if(key == "token") token else null
+        if (key == "token") token else null
 }
 
 
