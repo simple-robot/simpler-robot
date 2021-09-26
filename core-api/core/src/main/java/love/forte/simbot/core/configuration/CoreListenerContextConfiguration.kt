@@ -18,7 +18,7 @@ import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.core.listener.CoreListenerContextFactory
-import love.forte.simbot.dispatcher.EventDispatcherFactory
+import love.forte.simbot.dispatcher.ContinuousSessionDispatcherFactory
 import java.util.concurrent.TimeUnit
 
 
@@ -41,7 +41,7 @@ public class CoreListenerContextConfiguration {
      */
     @OptIn(SimbotExperimentalApi::class)
     @CoreBeans("coreListenerContextFactory")
-    fun coreListenerContextFactory(eventDispatcherFactory: EventDispatcherFactory) =
-        CoreListenerContextFactory(eventDispatcherFactory, defaultTimeout)
+    fun coreListenerContextFactory(continuousSessionDispatcherFactory: ContinuousSessionDispatcherFactory) =
+        CoreListenerContextFactory(continuousSessionDispatcherFactory, defaultTimeout)
 
 }
