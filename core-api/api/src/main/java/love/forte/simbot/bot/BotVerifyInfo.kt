@@ -43,7 +43,7 @@ import java.util.*
  */
 @Since.SinceList(
     Since("2.1.0"),
-    Since(value = "2.3.0", desc = ["不再提供code, 需要有组件自行取用唯一标识。"])
+    Since(value = "2.3.0", desc = ["不再提供code, 需要由组件自行取用并验证唯一标识。"])
 )
 public interface BotVerifyInfo {
     /**

@@ -14,61 +14,72 @@
 
 package love.forte.test.listener
 
-import kotlinx.coroutines.delay
-import love.forte.common.ioc.annotation.Beans
-import love.forte.simbot.annotation.Async
+import love.forte.simbot.annotation.Filter
+import love.forte.simbot.annotation.Filters
 import love.forte.simbot.annotation.OnPrivate
+import love.forte.simbot.annotation.OnlySession
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.api.sender.Sender
+import love.forte.simbot.filter.MatchType
+import love.forte.simbot.listener.ContinuousSessionScopeContext
+import love.forte.simbot.listener.ListenerContext
+import love.forte.simbot.listener.continuousSessionContext
+import love.forte.simbot.listener.get
 
 
 /**
  * 挂起对话示例
  * @author ForteScarlet
  */
-@Beans
+// @Beans
 @OnPrivate
 class SuspendFunctionListener {
 
-    @Async
-    suspend fun test1() {
-        delay(100)
-        println("Test1!")
+    companion object {
+        const val key1 = "==tellMeYourNameAndPhone==PHONE=="
+        const val key2 = "==tellMeYourNameAndPhone==NAME=="
     }
 
-    @Async
-    suspend fun test2() {
-        delay(100)
-        println("Test2!")
+
+    @Filters(Filter("tellMe"))
+    suspend fun PrivateMsg.tellMeYourNameAndPhone(context: ListenerContext, sender: Sender) {
+        val k = accountInfo.accountCode
+        val session = context.continuousSessionContext ?: return
+        sender.privateMsg(this, "请输入手机号")
+        val phone = session.waiting<Long>(key1, k) {
+            println("$key1 : $k 被关闭了")
+            it?.printStackTrace()
+        }
+
+        sender.privateMsg(this, "手机号为 $phone")
+        sender.privateMsg(this, "请输入姓名")
+        val name = session.waiting<String>(key2, k) {
+            println("$key2 : $k 被关闭了")
+            it?.printStackTrace()
+        }
+
+        sender.privateMsg(this, "姓名为 $name")
+
     }
 
-    suspend fun test3() {
-        delay(100)
-        println("Test3!")
+    @OnlySession(group = key1)
+    @Filters(Filter("\\d+", matchType = MatchType.REGEX_MATCHES))
+    fun PrivateMsg.onPhone(context: ListenerContext) {
+        val k = accountInfo.accountCode
+        val session = context[ListenerContext.Scope.CONTINUOUS_SESSION]!! as ContinuousSessionScopeContext
+        println("On phone: $text")
+        session.push(key1, k, text.toLong())
     }
 
-    suspend fun test4() {
-        delay(100)
-        println("Test4!")
+    @OnlySession(group = key2)
+    fun PrivateMsg.onName(context: ListenerContext) {
+        val k = accountInfo.accountCode
+        val session = context[ListenerContext.Scope.CONTINUOUS_SESSION]!! as ContinuousSessionScopeContext
+        println("On name: $text")
+        session.push(key2, k, text)
     }
 
-    suspend fun test5() {
-        delay(100)
-        println("Test5!")
-    }
 
-    @Async
-    suspend fun test6() {
-        delay(100)
-        println("Test6!")
-    }
-
-    @Async
-    suspend fun PrivateMsg.test7(sender: Sender) {
-        println("Test7!")
-        sender.privateMsg(this, this.msgContent)
-        sender.privateMsg(this, "By Suspend function!")
-    }
 
 }
 

@@ -18,6 +18,7 @@ package love.forte.simbot.listener
 
 import love.forte.simbot.Context
 import love.forte.simbot.api.SimbotExperimentalApi
+import java.util.concurrent.ConcurrentHashMap
 
 
 /**
@@ -28,7 +29,6 @@ import love.forte.simbot.api.SimbotExperimentalApi
  * 但是请优先使用 [scope], 因为 [mainValue] 的指向未来 **有可能** 会发生变更。
  *
  */
-@SimbotExperimentalApi
 public interface ScopeContext : Context<ListenerContext.Scope> {
 
     @Deprecated("mainValue的指向未来可能会变更，请使用 'scope'", ReplaceWith("scope"))
@@ -97,10 +97,9 @@ public fun ScopeContext.toMap(): Map<String, Any> {
  * 基于 [MutableMap] 的 [ScopeContext] 默认实现。
  *
  */
-@SimbotExperimentalApi
 public class MapScopeContext(
     override val scope: ListenerContext.Scope,
-    internal val delegate: MutableMap<String, Any> = mutableMapOf(),
+    internal val delegate: MutableMap<String, Any> = ConcurrentHashMap(),
 ) : ScopeContext {
 
     override fun get(key: String): Any? = delegate[key]
@@ -116,4 +115,7 @@ public class MapScopeContext(
     override val keys: Set<String>
         get() = delegate.keys
 }
+
+
+
 

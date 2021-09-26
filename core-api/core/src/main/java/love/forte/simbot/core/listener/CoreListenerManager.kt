@@ -152,31 +152,6 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                 CoroutineName("CoreMsgProcessor-Event")
     )
 
-    // private lateinit var producerScope: ProducerScope<MsgGet>
-
-    // init {
-    //     val flow = channelFlow<MsgGet> {
-    //         producerScope = this
-    //         awaitClose {
-    //             // close.
-    //             logger.info("Core msgGet processor closed.")
-    //         }
-    //     }
-    //
-    //     flow.buffer(1024)
-    //         .filter { contains(it::class.java) }
-    //         .flowOn(collectScope.coroutineContext)
-    //         .also {
-    //             eventCoroutineScope.launch {
-    //                 it.collect(::onMsg1)
-    //                 // {
-    //                     // eventCoroutineScope.launch { onMsg1(it) }
-    //                 // }
-    //             }
-    //         }
-    //
-    //
-    // }
 
 
     override fun simbotClose(context: SimbotContext) {
@@ -417,7 +392,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      */
     @OptIn(SimbotExperimentalApi::class)
     override fun removeListenerByGroup(group: ListenerGroup): Int {
-        TODO("Not yet implemented")
+        return removeListenerByGroup(group.name)
     }
 
 
@@ -445,15 +420,8 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     @OptIn(SimbotExperimentalApi::class)
     private suspend fun onMsg1(msgGet: MsgGet) {
         try {
-            // not empty, intercept.
-            // val context: ListenerContext = getContext(msgGet)
+
             val context: ListenerContext = listenerContextFactory.getListenerContext(msgGet)
-            //
-            // // val context: ListenerContext = getContext(msgGet)
-            //
-            // // 构建一个消息拦截器context
-            // val msgContext = msgInterceptContextFactory.getMsgInterceptContext(msgGet, context)
-            // val msgChain = msgInterceptChainFactory.getInterceptorChain(msgContext)
 
             var msgInterceptContext: MsgInterceptContext? = null
 
