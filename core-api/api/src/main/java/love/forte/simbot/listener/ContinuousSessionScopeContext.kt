@@ -254,7 +254,10 @@ public class ContinuousSessionScopeContext(
     }
 
     /**
-     * 阻塞的等待事件回调。
+     * 阻塞的会话等待。
+     *
+     * **需要注意，阻塞会话等待又概率会导致一些问题，例如资源不足或死锁，请斟酌使用。**
+     *
      * @see [waiting][_waiting4J]
      * @throws TimeoutException 当超时的时候
      * @throws CancellationException 当被普通的主动关闭时
