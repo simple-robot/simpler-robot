@@ -17,6 +17,7 @@
 package love.forte.simbot.listener
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.actor
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
@@ -196,22 +197,15 @@ public class ContinuousSessionScopeContext(
     ): T = suspendCancellableCoroutine { cancellableContinuation ->
         val cancelJob: Job? = if (timeout > 0) {
             coroutineScope.launch(start = CoroutineStart.LAZY) {
-
                 delay(timeout)
                 take(group, key)?.cancel(TimeoutException())
-                // take(group, key)?.cancel()
             }
         } else {
-            logger.debug("Your waiting task '{}' does not set timeout period or less then or equals 0.")
+            logger.debug("Your waiting task(group={}, key={}) does not set timeout period or less then or equals 0.", group, key)
             null
         }
         invokeOnCancellation?.also { invokeOnCancellation ->
-            try {
-                cancellableContinuation.invokeOnCancellation { e -> invokeOnCancellation(e) }
-            } catch (ee: Exception) {
-                println("这儿有错")
-                ee.printStackTrace()
-            }
+            cancellableContinuation.invokeOnCancellation(invokeOnCancellation)
         }
 
         val session = cancellableContinuation.asContinuousSessionContinuation(cancelJob)
@@ -313,7 +307,7 @@ public class ContinuousSessionScopeContext(
 
 /**
  *
- * 基于 [Map][M] 的 [ContinuousSessionContinuationContainer] 实现。
+ * 基于 [ConcurrentMap] 的 [ContinuousSessionContinuationContainer] 实现。
  *
  */
 internal class MapContinuousSessionContinuationContainer(
