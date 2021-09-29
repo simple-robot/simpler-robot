@@ -431,7 +431,7 @@ public class MiraiVoiceMessageContent(
         }
         if (other is NekoAble) {
             val otherNeko = if (other is MiraiVoiceMessageContent) other.neko else other.neko ?: return false
-            return with(otherNeko.type) { this == "voice" || this == "record" }
+            return with(otherNeko.type) { this == "voice" || this == "record" || this == "audio" }
                     && (
                     neko["id"]?.equals(otherNeko["id"]) == true
                             || neko["file"]?.equals(otherNeko["file"]) == true
@@ -489,7 +489,7 @@ public class MiraiAudioMessageContent(
         }
         if (other is NekoAble) {
             val otherNeko = if (other is MiraiAudioMessageContent) other.neko else other.neko ?: return false
-            return with(otherNeko.type) { this == "voice" || this == "record" }
+            return with(otherNeko.type) { this == "voice" || this == "record" || this == "audio" }
                     && (
                     neko["id"]?.equals(otherNeko["id"]) == true
                             || neko["file"]?.equals(otherNeko["file"]) == true

@@ -20,6 +20,7 @@ import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.utils.annotation.AnnotationUtil
 import love.forte.common.utils.convert.ConverterManager
+import love.forte.simbot.annotation.Async
 import love.forte.simbot.annotation.Listens
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.SimbotInternalApi
@@ -121,6 +122,8 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
 
                 val isListener = typeListen || funcListen
 
+                val async = f.containsAnnotation<Async>()
+
                 if (isListener) {
                     if (f.visibility != KVisibility.PUBLIC) {
                         logger.warn("Function $f is marked as a Listener, but it is not a public function, ignored.")
@@ -134,6 +137,7 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
                             filterManager = filterManager,
                             converterManager = converterManager,
                             listenerResultFactory = listenerResultFactory,
+                            isAsync = async,
                             listenerGroupManager = listenerGroupManager,
                             strictManager.coreStrict()
                         )

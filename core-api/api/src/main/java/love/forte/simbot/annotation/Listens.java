@@ -35,6 +35,13 @@ import java.lang.annotation.*;
 public @interface Listens {
 
     /**
+     * {@link Listens} 的默认优先级。
+     */
+    int DEFAULT_PRIORITY = PriorityConstant.TENTH;
+
+    //// ////
+
+    /**
      * 监听的消息类型。可以监听多个
      */
     Listen[] value() default {};
@@ -49,7 +56,7 @@ public @interface Listens {
      * @see Priority
      *
      */
-    int priority() default PriorityConstant.TENTH;
+    int priority() default DEFAULT_PRIORITY;
 
     /**
      * 当前监听函数的ID。不可重复。
@@ -60,4 +67,6 @@ public @interface Listens {
      * 当前监听函数的名称（简称）。
      */
     String name() default "";
+
+
 }

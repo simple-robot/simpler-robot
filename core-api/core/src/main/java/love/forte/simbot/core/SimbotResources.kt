@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -13,18 +13,16 @@
  */
 
 @file:JvmName("SimbotResources")
+
 package love.forte.simbot.core
 
 import cn.hutool.core.lang.JarClassLoader
 import love.forte.common.collections.emptyIterator
 import love.forte.common.collections.plus
 import love.forte.common.utils.scanner.ResourcesScanner
+import love.forte.simbot.utils.toProperties
 import org.slf4j.Logger
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.net.URL
-import java.nio.charset.StandardCharsets
-import java.util.*
 
 
 /**
@@ -74,11 +72,14 @@ internal fun autoConfigures(loader: ClassLoader, logger: Logger = simbotAppLogge
     val classSet = mutableSetOf<Class<*>>()
     val packageSet = mutableSetOf<String>()
 
-    (jarResources + resources).forEach { url ->
+
+    (jarResources + resources).asSequence().distinct().forEach { url ->
         logger.debugf("load auto configure resource: {}", url)
-        Properties().apply {
-            load(BufferedReader(InputStreamReader(url.openStream(), StandardCharsets.UTF_8)))
-        }.apply {
+        // val prop = Properties().apply {
+        //     load(BufferedReader(InputStreamReader(url.newInputStream(), StandardCharsets.UTF_8)))
+        // }
+        val prop = url.toProperties()
+        prop.apply {
             getProperty(AUTO_CONFIG_KEY)?.split(",")
                 ?.filter { it.isNotBlank() }
                 ?.map { Class.forName(it) }

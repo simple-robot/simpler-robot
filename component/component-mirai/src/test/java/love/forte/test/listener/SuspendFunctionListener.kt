@@ -14,22 +14,17 @@
 
 package love.forte.test.listener
 
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 import love.forte.simbot.annotation.Filter
-import love.forte.simbot.annotation.FilterValue
 import love.forte.simbot.annotation.Filters
 import love.forte.simbot.annotation.OnPrivate
+import love.forte.simbot.annotation.OnlySession
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.api.sender.Sender
 import love.forte.simbot.filter.MatchType
-import java.util.concurrent.ConcurrentHashMap
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.coroutineContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import love.forte.simbot.listener.ContinuousSessionScopeContext
+import love.forte.simbot.listener.ListenerContext
+import love.forte.simbot.listener.continuousSessionContext
+import love.forte.simbot.listener.get
 
 
 /**
@@ -37,65 +32,53 @@ import kotlin.time.ExperimentalTime
  * @author ForteScarlet
  */
 // @Beans
+// @OnPrivate
 class SuspendFunctionListener {
 
-    /**
-     * 记录等待状态。
-     * 需要注意，如果你是多Bot环境，需要多考虑区分BOT的问题（如果需要的话）
-     */
-    private val userPhoneWaitingMap: MutableMap<String, Continuation<Long>> = ConcurrentHashMap()
+    companion object {
+        const val key1 = "==tellMeYourNameAndPhone==PHONE=="
+        const val key2 = "==tellMeYourNameAndPhone==NAME=="
+    }
 
-    /**
-     * 等待账号。
-     */
-    private suspend fun waitForPhone(accountCode: String) = suspendCoroutine<Long> { continuation ->
-        userPhoneWaitingMap.merge(accountCode, continuation) { _, _ ->
-            throw IllegalStateException("Account $accountCode was still waiting.")
+
+    @Filters(Filter("tellMe"))
+    suspend fun PrivateMsg.tellMeYourNameAndPhone(context: ListenerContext, sender: Sender) {
+        val k = accountInfo.accountCode
+        val session = context.continuousSessionContext ?: return
+        sender.privateMsg(this, "请输入手机号")
+        val phone = session.waiting<Long>(key1, k) {
+            println("$key1 : $k 被关闭了")
+            it?.printStackTrace()
         }
-    }
 
-    /**
-     * 开启 “绑定手机号” 对话.
-     */
-    @OptIn(ExperimentalTime::class)
-    @OnPrivate
-    @Filters(Filter("绑定手机号")) // kotlin中，必须使用 @Filters包裹@Filter
-    suspend fun PrivateMsg.bindMobilePhoneNumber(sender: Sender) {
-        // 当前作用域的上下文。
-        val coroutineContext = coroutineContext
-        // val scope = CoroutineScope(coroutineContext)
+        sender.privateMsg(this, "手机号为 $phone")
+        sender.privateMsg(this, "请输入姓名")
+        val name = session.waiting<String>(key2, k) {
+            println("$key2 : $k 被关闭了")
+            it?.printStackTrace()
+        }
 
-        // 账号
-        val code = this.accountInfo.accountCode
-        sender.sendPrivateMsg(this@bindMobilePhoneNumber, "请在30s内提供手机号")
-        // wait for phone
-        // 30s内提供手机号，否则超时。
-        withTimeoutOrNull(Duration.seconds(30)) {
-
-            // 这里要使用外部的coroutineContext
-            val phone = withContext(coroutineContext) { waitForPhone(code) }
-            sender.sendPrivateMsg(this@bindMobilePhoneNumber, "手机号 $phone 绑定成功")
-
-        } ?: run {
-                // 超时了
-                userPhoneWaitingMap.remove(code)
-                sender.sendPrivateMsg(this, "超时了哦！")
-                return
-            }
-
+        sender.privateMsg(this, "姓名为 $name")
 
     }
 
-
-    /**
-     * 监听一个纯数字的私聊，当 [userPhoneWaitingMap] 中有对应的账号所对应的挂起点，会提供此值。
-     */
-    @OnPrivate
-    @Filters(Filter("{{phone,\\d+}}", matchType = MatchType.REGEX_MATCHES)) // 使用正则匹配截取手机号信息.
-    fun PrivateMsg.getPhone(@FilterValue("phone") phone: Long) {
-        // 如果能够remove，则说明存在挂起，提供此值。
-        userPhoneWaitingMap.remove(this.accountInfo.accountCode)?.resume(phone)
+    @OnlySession(group = key1)
+    @Filters(Filter("\\d+", matchType = MatchType.REGEX_MATCHES))
+    fun PrivateMsg.onPhone(context: ListenerContext) {
+        val k = accountInfo.accountCode
+        val session = context[ListenerContext.Scope.CONTINUOUS_SESSION]!! as ContinuousSessionScopeContext
+        println("On phone: $text")
+        session.push(key1, k, text.toLong())
     }
+
+    @OnlySession(group = key2)
+    fun PrivateMsg.onName(context: ListenerContext) {
+        val k = accountInfo.accountCode
+        val session = context[ListenerContext.Scope.CONTINUOUS_SESSION]!! as ContinuousSessionScopeContext
+        println("On name: $text")
+        session.push(key2, k, text)
+    }
+
 
 
 }

@@ -83,7 +83,8 @@ public interface SuspendRemoteResourceInProcessor : RemoteResourceInProcessor, S
  */
 private object BlockingProcessor : RemoteResourceInProcessor {
     @Throws(IOException::class)
-    override fun processor(processContext: RemoteResourceContext): InputStream = URL(processContext.link).openStream()
+    override fun processor(processContext: RemoteResourceContext): InputStream =
+        URL(processContext.link).openConnection().also { it.useCaches = false }.getInputStream()
 }
 
 

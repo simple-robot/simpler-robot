@@ -20,12 +20,11 @@ import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.core.strict.StrictManager
 import love.forte.simbot.filter.*
 import love.forte.simbot.mark.ThreadUnsafe
-import love.forte.simbot.read
-import love.forte.simbot.write
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.locks.ReadWriteLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 
 // /**
@@ -52,7 +51,7 @@ public class CoreFilterManager(
     private val _filters: MutableMap<String, ListenerFilter> = ConcurrentHashMap()
 
     /** [AtDetectionFactory] 相关读写锁 */
-    private val atDetectionUpdateLock: ReadWriteLock = ReentrantReadWriteLock()
+    private val atDetectionUpdateLock = ReentrantReadWriteLock()
 
     /**
      * 全部的 [AtDetectionFactory] 构建工厂。

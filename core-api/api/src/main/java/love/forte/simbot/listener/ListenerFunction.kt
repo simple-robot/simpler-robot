@@ -118,6 +118,16 @@ public interface ListenerFunction {
 
 
     /**
+     * 是否异步执行。如果是，则当前监听函数的任务将会为异步执行。
+     * 对于“异步”的具体行为，由 [ListenerManager] 进行具体实现。一般来讲是通过线程或线程池进行异步执行。
+     *
+     * @since 2.3.0
+     */
+    val isAsync: Boolean
+
+
+
+    /**
      * 得到当前监听函数的 [开关][Switch].
      */
     @SimbotExperimentalApi
@@ -135,8 +145,18 @@ public interface ListenerFunction {
      */
     @SimbotExperimentalApi
     public interface Switch {
-        public companion object {
+        public companion object : Switch {
             val DISABLE_FUNCTION_INVOKER: suspend (ListenerFunctionInvokeData) -> ListenResult<*> = { ListenResult }
+
+            @SimbotExperimentalApi
+            override fun enable() {
+            }
+
+            @SimbotExperimentalApi
+            override fun disable() {
+            }
+            override val isEnable: Boolean
+                get() = false
         }
 
 
@@ -180,6 +200,17 @@ public interface ListenerFunction {
     }
 
 }
+
+
+
+public abstract class BlockingListenerFunction : ListenerFunction {
+    abstract fun invokeBlocking(data: ListenerFunctionInvokeData): ListenResult<*>
+    final override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> = invokeBlocking(data)
+}
+
+
+
+
 
 
 /**

@@ -14,7 +14,9 @@
 @file:JvmName("ListenerManagers")
 package love.forte.simbot.listener
 
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.events.MsgGet
+import java.util.concurrent.locks.ReadWriteLock
 
 
 /**
@@ -100,6 +102,34 @@ public interface ListenerManager : MsgGetProcessor, ListenerRegistrar {
      */
     fun getListenerFunctionById(id: String) : ListenerFunction?
 
+    /**
+     * 根据ID清除掉一个监听函数。
+     */
+    fun removeListenerById(id: String): ListenerFunction?
+
+    /**
+     * 移除监听函数。
+     */
+    fun removeListener(listenerFunction: ListenerFunction): ListenerFunction?
+
+    /**
+     * 根据组别清除掉相关的监听函数.
+     * 如果
+     * @return 清理掉的数量。
+     */
+    fun removeListenerByGroup(group: String): Int
+
+    /**
+     * 根据组别清除掉相关的监听函数.
+     * @return 清理掉的数量。
+     */
+    @OptIn(SimbotExperimentalApi::class)
+    fun removeListenerByGroup(group: ListenerGroup): Int
+
+    /**
+     * 从外部得到一个当前 [ListenerManager] 所应使用的读写锁，以便于在进行外部的多任务执行时的锁。
+     */
+    val listenerEditLock: ReadWriteLock
 }
 
 
@@ -110,7 +140,7 @@ interface ListenerRegistrar {
     /**
      * 注册一个 [监听函数][ListenerFunction]。
      */
-    fun register(listenerFunction: ListenerFunction)
+    fun register(vararg listenerFunctions: ListenerFunction)
 }
 
 

@@ -16,6 +16,8 @@ package love.forte.simbot.core.configuration
 
 import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.ConfigBeans
+import love.forte.common.ioc.annotation.Depend
+import love.forte.simbot.listener.ListenerManager
 import love.forte.simbot.listener.SimpleListenerGroupManager
 
 
@@ -26,7 +28,10 @@ import love.forte.simbot.listener.SimpleListenerGroupManager
 @ConfigBeans("coreListenerGroupManagerConfiguration")
 public class CoreListenerGroupManagerConfiguration {
 
+    @Depend
+    lateinit var listenerManager: ListenerManager
+
     @Beans
-    fun listenerGroupManager() = SimpleListenerGroupManager()
+    fun listenerGroupManager() = SimpleListenerGroupManager(listenerManager)
 
 }

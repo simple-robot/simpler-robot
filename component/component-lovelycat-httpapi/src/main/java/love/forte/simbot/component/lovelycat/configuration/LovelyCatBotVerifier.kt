@@ -21,9 +21,7 @@ import love.forte.simbot.api.message.containers.botContainer
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSenderFactories
 import love.forte.simbot.api.sender.toBotSender
-import love.forte.simbot.bot.Bot
-import love.forte.simbot.bot.BotVerifier
-import love.forte.simbot.bot.BotVerifyInfo
+import love.forte.simbot.bot.*
 import love.forte.simbot.component.lovelycat.LovelyCatApiManager
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplateImpl
 import love.forte.simbot.component.lovelycat.LovelyCatBot

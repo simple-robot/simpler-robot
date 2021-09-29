@@ -15,6 +15,7 @@
 package love.forte.simbot.component.mirai
 
 import love.forte.simbot.bot.BotVerifyInfo
+import love.forte.simbot.bot.code
 import love.forte.simbot.component.mirai.configuration.MiraiConfiguration
 import net.mamoe.mirai.utils.BotConfiguration
 

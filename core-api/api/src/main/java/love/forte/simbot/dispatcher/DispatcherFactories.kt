@@ -14,9 +14,17 @@
 
 package love.forte.simbot.dispatcher
 
+import love.forte.simbot.listener.ListenerContext
+
 
 /**
- * 用于事件调度的调度器。
+ * 用于事件调度的调度器工厂。
  */
 public interface EventDispatcherFactory : DispatcherFactory
+
+
+/**
+ * 用于 [ListenerContext.Scope.CONTINUOUS_SESSION] 作用域下会话调度的调度器工厂。
+ */
+public interface ContinuousSessionDispatcherFactory : DispatcherFactory
 

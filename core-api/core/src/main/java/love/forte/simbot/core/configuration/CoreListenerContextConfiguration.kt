@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (c) 2020. ForteScarlet All rights reserved.
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
  *  * Project  simple-robot
  *  * File     MiraiAvatar.kt
  *  *
@@ -14,10 +14,12 @@
 
 package love.forte.simbot.core.configuration
 
+import love.forte.common.configuration.annotation.ConfigInject
 import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.simbot.api.SimbotExperimentalApi
-import love.forte.simbot.core.listener.ListenerContextFactoryImpl
-import love.forte.simbot.listener.ListenerContextFactory
+import love.forte.simbot.core.listener.CoreListenerContextFactory
+import love.forte.simbot.dispatcher.ContinuousSessionDispatcherFactory
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -27,20 +29,19 @@ import love.forte.simbot.listener.ListenerContextFactory
  * @author ForteScarlet
  */
 @ConfigBeans("coreListenerContextConfiguration")
+@AsCoreConfig
 public class CoreListenerContextConfiguration {
 
-    // /**
-    //  * 使用单例对象 [CoreContextMapFactory]。
-    //  */
-    // @CoreBeans("coreContextMapFactory")
-    // fun coreContextMapFactory(): ContextMapFactory = CoreContextMapFactory
 
+    @ConfigInject("continuousSession.defaultTimeout", orIgnore = true)
+    var defaultTimeout: Long = TimeUnit.MINUTES.toMillis(1)
 
     /**
-     * 配置 [ListenerContextFactoryImpl]
+     * 配置 [CoreListenerContextFactory]
      */
     @OptIn(SimbotExperimentalApi::class)
     @CoreBeans("coreListenerContextFactory")
-    fun coreListenerContextFactory(): ListenerContextFactory = ListenerContextFactoryImpl
+    fun coreListenerContextFactory(continuousSessionDispatcherFactory: ContinuousSessionDispatcherFactory) =
+        CoreListenerContextFactory(continuousSessionDispatcherFactory, defaultTimeout)
 
 }

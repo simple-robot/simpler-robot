@@ -13,6 +13,7 @@
  */
 package love.forte.simbot.core.listener
 
+import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.filter.FilterData
 import love.forte.simbot.listener.ListenResult
 import love.forte.simbot.listener.ListenerFunction
@@ -22,6 +23,7 @@ import love.forte.simbot.listener.ListenerInvoker
 
 public class ListenerInvokerImpl(override val function: ListenerFunction) : ListenerInvoker {
 
+    @OptIn(SimbotExperimentalApi::class)
     private fun doFilter(data: ListenerFunctionInvokeData): Boolean {
         return filter?.test(FilterData(data.msgGet, data.atDetection, data.context, function)) ?: true
     }
@@ -31,6 +33,11 @@ public class ListenerInvokerImpl(override val function: ListenerFunction) : List
             return ListenResult
         }
 
-        return function.invoke(data)
+        return function(data)
     }
 }
+
+
+
+
+

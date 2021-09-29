@@ -17,7 +17,10 @@ package love.forte.simbot.core.listener
 
 import kotlinx.coroutines.*
 import love.forte.common.collections.concurrentSortedQueueOf
+import love.forte.common.ioc.DependCenter
+import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.SpareBeans
+import love.forte.common.sequences.distinctByMerger
 import love.forte.simbot.LogAble
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.SimbotInternalApi
@@ -44,9 +47,22 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 private val ListenerInvokerComparable: Comparator<ListenerInvoker> =
-    Comparator { f1, f2 -> f1.function.priority.compareTo(f2.function.priority) }
+    Comparator { f1, f2 ->
+        val comparedByPriority = f1.function.priority.compareTo(f2.function.priority)
+        if (comparedByPriority != 0) {
+            return@Comparator comparedByPriority
+        }
+        val f1Async = f1.function.isAsync
+        val f2Async = f2.function.isAsync
+        if (f1Async == f2Async) return@Comparator 0
+        if (f1Async) return@Comparator -1
+        1 // f2Async is true
+    }
 
 
 /**
@@ -75,7 +91,13 @@ private data class ListenerFunctionGroups(
     companion object {
         val empty = ListenerFunctionGroups(emptyList(), emptyList())
         fun ListenerFunctionGroups.marge(): Collection<ListenerInvoker> =
-            if (isEmpty()) emptyList() else normal + spare
+            when {
+                isEmpty() -> emptyList()
+                spare.isEmpty() -> normal
+                normal.isEmpty() -> spare
+                spare.isNotEmpty() && normal.isNotEmpty() -> normal + spare
+                else -> emptyList()
+            }
 
         fun ListenerFunctionGroups.isEmpty(): Boolean = normal.isEmpty() && spare.isEmpty()
         fun ListenerFunctionGroups.isNotEmpty(): Boolean = !isEmpty()
@@ -94,7 +116,7 @@ private data class ListenerFunctionGroups(
 @SpareBeans("coreListenerManager")
 public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructor(
     eventDispatcherFactory: EventDispatcherFactory,
-    private val listenerGroupManager: ListenerGroupManager,
+    // private val listenerGroupManager: ListenerGroupManager,
 
     private val atDetectionFactory: AtDetectionFactory,
     private val exceptionManager: ExceptionProcessor,
@@ -119,43 +141,22 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
     ) : ListenerManager, ListenerRegistrar, SimbotContextClosedHandle {
 
+    @Depend
+    lateinit var dependCenter: DependCenter
+
     private val eventDispatcher = eventDispatcherFactory.dispatcher
-    private val collectScope = CoroutineScope(Dispatchers.Default)
+
+    // private val collectScope = CoroutineScope(Dispatchers.Default)
     private val eventCoroutineScope = CoroutineScope(
         eventDispatcher +
                 CoroutineName("CoreMsgProcessor-Event")
     )
 
-    // private lateinit var producerScope: ProducerScope<MsgGet>
-
-    // init {
-    //     val flow = channelFlow<MsgGet> {
-    //         producerScope = this
-    //         awaitClose {
-    //             // close.
-    //             logger.info("Core msgGet processor closed.")
-    //         }
-    //     }
-    //
-    //     flow.buffer(1024)
-    //         .filter { contains(it::class.java) }
-    //         .flowOn(collectScope.coroutineContext)
-    //         .also {
-    //             eventCoroutineScope.launch {
-    //                 it.collect(::onMsg1)
-    //                 // {
-    //                     // eventCoroutineScope.launch { onMsg1(it) }
-    //                 // }
-    //             }
-    //         }
-    //
-    //
-    // }
 
 
     override fun simbotClose(context: SimbotContext) {
         // producerScope.close()
-        collectScope.cancel()
+        // collectScope.cancel()
         eventCoroutineScope.cancel()
     }
 
@@ -167,65 +168,240 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      *
      * 此为主集合，所有的监听函数均存在于此。
      */
-    private val mainListenerFunctionMap: MutableMap<Class<out MsgGet>, Queue<ListenerInvoker>> = ConcurrentHashMap()
+    private val mainListenerFunctionMap: ConcurrentHashMap<Class<out MsgGet>, Queue<ListenerInvoker>> =
+        ConcurrentHashMap()
     // private val mainListenerFunctionMap: MutableMap<Class<out MsgGet>, Queue<ListenerFunction>> = ConcurrentHashMap()
 
-
-    private val listenerFunctionIdMap: MutableMap<String, ListenerInvoker> = ConcurrentHashMap()
+    /**
+     * 根据ID记录的函数列表。
+     */
+    private val listenerFunctionIdMap: ConcurrentHashMap<String, ListenerInvoker> = ConcurrentHashMap()
 
     /**
      * 监听函数缓冲区，对后续出现的消息类型进行记录并缓存。
      * 当 [register] 了新的监听函数后对应相关类型将会被清理。
      */
-    private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, ListenerFunctionGroups> = ConcurrentHashMap()
+    private val cacheListenerFunctionMap: ConcurrentHashMap<Class<out MsgGet>, ListenerFunctionGroups> =
+        ConcurrentHashMap()
     // private val cacheListenerFunctionMap: MutableMap<Class<out MsgGet>, ListenerFunctionGroups> = ConcurrentHashMap()
 
+    private val lock = ReentrantReadWriteLock()
+
+
+    override val listenerEditLock: ReentrantReadWriteLock get() = lock
 
     /**
      * 注册一个 [监听函数][ListenerFunction]。
      *
-     * 每次注册一个新的监听函数的时候，会刷新内置的 **全部** 缓存，会一定程度上影响到其他应用。
+     * 每次注册一个新的监听函数的时候，会刷新内置的 **全部** 缓存，会一定程度上影响到其他应用的性能。
+     *
+     * 虽然 [register] 标记为同步，但是进行读取的其他函数不会进行同步。
      *
      */
     @Synchronized
-    override fun register(listenerFunction: ListenerFunction) {
-        // 获取其监听类型，并作为key存入map
-        val listenTypes = listenerFunction.listenTypes
+    override fun register(vararg listenerFunctions: ListenerFunction) {
+        lock.write {
+            val funcInvokers: List<ListenerInvoker> = listenerFunctions.asSequence()
+                .distinctByMerger(selector = ListenerFunction::id) { id, listener ->
+                    throw IllegalStateException("Listener id $id was already exists: $listener")
+                }.map(::ListenerInvokerImpl).toList()
 
-        val id = listenerFunction.id
 
-        val invoker = ListenerInvokerImpl(listenerFunction)
+            val groupedFuncInvokers: Map<Class<out MsgGet>, List<ListenerInvoker>> = funcInvokers.flatMap { invoker ->
+                invoker.function.listenTypes.map { t -> t to invoker }
+            }.groupBy(
+                keySelector = { typeInvokerPair -> typeInvokerPair.first }
+            ) { typeInvokerPair -> typeInvokerPair.second }
 
-        listenerFunctionIdMap.merge(id, invoker) { _, _ ->
-            throw IllegalStateException("Listener id $id was already exists.")
-        }
+            // 获取其监听类型，并作为key存入map
+//             val listenTypes = listenerFunction.listenTypes
+//
+//             val id = listenerFunction.id
+//             listenerFunctionIdMap.merge(id, invoker) { _, _ ->
+//                 throw IllegalStateException("Listener id $id was already exists.")
+//             }
 
-        listenTypes.forEach { listenType ->
-            // merge into map.
-            mainListenerFunctionMap.merge(listenType, listenerInvokerQueue(invoker)) { oldValue, value ->
-                oldValue.apply { addAll(value) }
+            funcInvokers.forEach { invoker ->
+                // Merge to id
+                val id = invoker.function.id
+                listenerFunctionIdMap.merge(id, invoker) { a, b ->
+                    throw IllegalStateException("Listener id $id was already exists: $a, $b")
+                }
             }
 
-            // // groups.
-            // val groups = listenerFunction.groups
-            // if (groups.isEmpty()) {
-            //     noGroupListenerGroup.add(listenerFunction)
-            // } else {
-            //     groups.forEach { g ->
-            //         listenerGroups.compute(g) { g0, v ->
-            //             v?.apply { add(listenerFunction) } ?: MutableListenerGroup(g0, mutableListOf(listenerFunction))
-            //         }
+            groupedFuncInvokers.forEach { (type, invokers) ->
+                // To mainList
+                mainListenerFunctionMap.merge(type, listenerInvokerQueue(*invokers.toTypedArray())) { oldValue, value ->
+                    oldValue.apply { addAll(value) }
+                }
+            }
+
+            cleanCache()
+
+            // listenTypes.forEach { listenType ->
+            //     // merge into map.
+            //     mainListenerFunctionMap.merge(listenType, listenerInvokerQueue(invoker)) { oldValue, value ->
+            //         oldValue.apply { addAll(value) }
             //     }
+            //
+            //     // clear cache map.
+            //     // 清除缓存
+            //     if (cacheListenerFunctionMap.isNotEmpty()) {
+            //         cacheListenerFunctionMap.clear()
+            //         logger.debug("Listener cache cleaned.")
+            //     }
+            //
+            //
             // }
+        }
+    }
+//     override fun register(vararg listenerFunctions: ListenerFunction) {
+//         lock.write {
+//             val funcInvokers = listenerFunctions.asSequence().map { listenerFunction ->
+//
+//
+//                 val invoker = ListenerInvokerImpl(listenerFunction)
+//
+//                 invoker
+//             }
+// // 获取其监听类型，并作为key存入map
+//             val listenTypes = listenerFunction.listenTypes
+//
+//             val id = listenerFunction.id
+//             listenerFunctionIdMap.merge(id, invoker) { _, _ ->
+//                 throw IllegalStateException("Listener id $id was already exists.")
+//             }
+//
+//             invoker
+//
+//
+//             listenTypes.forEach { listenType ->
+//                 // merge into map.
+//                 mainListenerFunctionMap.merge(listenType, listenerInvokerQueue(invoker)) { oldValue, value ->
+//                     oldValue.apply { addAll(value) }
+//                 }
+//
+//                 // clear cache map.
+//                 // 清除缓存
+//                 if (cacheListenerFunctionMap.isNotEmpty()) {
+//                     cacheListenerFunctionMap.clear()
+//                     logger.debug("Listener cache cleaned.")
+//                 }
+//
+//
+//             }
+//         }
+//     }
 
-            // clear cache map.
-            // 清除缓存
-            if (cacheListenerFunctionMap.isNotEmpty()) {
-                cacheListenerFunctionMap.clear()
-                logger.debug("Listener cache cleaned.")
+    /**
+     * 根据ID移除某个指定的监听函数
+     */
+    @OptIn(SimbotExperimentalApi::class)
+    override fun removeListenerById(id: String): ListenerFunction? {
+        return lock.write {
+            val removed = listenerFunctionIdMap.remove(id) ?: return null
+            val removedFunc = removed.function
+            // Not null
+            val needReset = mutableMapOf<Class<out MsgGet>, List<ListenerInvoker>>()
+            mainListenerFunctionMap.forEach { (type, queue) ->
+                if (queue.any { it.function.id == id }) {
+                    needReset[type] = queue.filter { it.function.id != id }
+                }
             }
 
+            needReset.forEach { (type, resetList) ->
+                mainListenerFunctionMap[type] = listenerInvokerQueue(*resetList.toTypedArray())
+            }
+            removedFunc.also {
+                cleanCache()
+            }
+        }
+    }
 
+    override fun removeListener(listenerFunction: ListenerFunction): ListenerFunction? {
+        return lock.write {
+            val iter = listenerFunctionIdMap.iterator()
+            var removed: ListenerFunction? = null
+            while (iter.hasNext()) {
+                val entry = iter.next()
+                if (entry.value.function == listenerFunction) {
+                    removed = entry.value.function
+                    iter.remove()
+                }
+            }
+
+            // val needRemoved = listenerFunctionIdMap.values.find { it === listenerFunction } ?: return null
+            // val removed = listenerFunctionIdMap.remove(needRemoved)
+            // val removedFunc = removed.function
+            // Not null
+            val needReset = mutableMapOf<Class<out MsgGet>, List<ListenerInvoker>>()
+            mainListenerFunctionMap.forEach { (type, queue) ->
+                if (queue.any { it.function == listenerFunction }) {
+                    needReset[type] = queue.filter { it.function != listenerFunction }
+                }
+            }
+
+            needReset.forEach { (type, resetList) ->
+                mainListenerFunctionMap[type] = listenerInvokerQueue(*resetList.toTypedArray())
+            }
+
+            removed.also {
+                cleanCache()
+            }
+        }
+    }
+
+    @OptIn(SimbotExperimentalApi::class)
+    override fun removeListenerByGroup(group: String): Int {
+        var num = 0
+        lock.write {
+
+            fun ListenerFunction.needRemove(): Boolean = this.groups.any { g -> g.name == group }
+
+            val iter = listenerFunctionIdMap.iterator()
+            while (iter.hasNext()) {
+                val entry = iter.next()
+                if (entry.value.function.needRemove()) {
+                    iter.remove().also { num++ }
+                }
+            }
+
+            if (num == 0) {
+                return 0
+            }
+
+            val needReset = mutableMapOf<Class<out MsgGet>, List<ListenerInvoker>>()
+            mainListenerFunctionMap.forEach { (type, queue) ->
+                if (queue.any { it.function.needRemove() }) {
+                    needReset[type] = queue.filter { it.function.groups.none { g -> g.name == group } }
+                }
+            }
+
+            needReset.forEach { (type, resetList) ->
+                mainListenerFunctionMap[type] = listenerInvokerQueue(*resetList.toTypedArray())
+            }
+
+            cleanCache()
+        }
+        return num
+    }
+
+    /**
+     * 根据组别清除掉相关的监听函数.
+     * @return 清理掉的数量。
+     */
+    @OptIn(SimbotExperimentalApi::class)
+    override fun removeListenerByGroup(group: ListenerGroup): Int {
+        return removeListenerByGroup(group.name)
+    }
+
+
+    private fun cleanCache() {
+        // clear cache map.
+        // 清除缓存
+        if (cacheListenerFunctionMap.isNotEmpty()) {
+            cacheListenerFunctionMap.clear()
+            logger.debug("Listener cache cleaned.")
         }
     }
 
@@ -244,15 +420,8 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
     @OptIn(SimbotExperimentalApi::class)
     private suspend fun onMsg1(msgGet: MsgGet) {
         try {
-            // not empty, intercept.
-            // val context: ListenerContext = getContext(msgGet)
+
             val context: ListenerContext = listenerContextFactory.getListenerContext(msgGet)
-            //
-            // // val context: ListenerContext = getContext(msgGet)
-            //
-            // // 构建一个消息拦截器context
-            // val msgContext = msgInterceptContextFactory.getMsgInterceptContext(msgGet, context)
-            // val msgChain = msgInterceptChainFactory.getInterceptorChain(msgContext)
 
             var msgInterceptContext: MsgInterceptContext? = null
 
@@ -315,9 +484,9 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
         val botCode = msgGet.botInfo.botCode
         val eventLogger = if (msgGet is LogAble) msgGet.log else logger
 
-        val funcs = getListenerFunctions(msgGet.javaClass, true)
+        val funcList = getListenerFunctions(msgGet.javaClass, true)
         var invokeData: ListenerFunctionInvokeData? = null
-        if (funcs.isEmpty()) {
+        if (funcList.isEmpty()) {
             return
         } else {
             var finalResult: ListenResult<*>
@@ -338,6 +507,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                 // invoke with try.
                 return try {
                     invokeData = ListenerFunctionInvokeDataImpl(
+                        dependCenter,
                         // LazyThreadSafetyMode.NONE,
                         msgGet,
                         context,
@@ -385,7 +555,7 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
             // for (func: ListenerFunction in funcs.normal) {
 
-            val normals = funcs.normal
+            val normals = funcList.normal
 
             val iter = normals.iterator()
             var i = 0
@@ -393,26 +563,50 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
 
             for (invoker in iter) {
                 val func = invoker.function
-                finalResult = doListen(invoker)
-                if (finalResult.isSuccess()) {
-                    eventLogger.trace("{} -> Normal listener chain[{}] success on {}({})",
-                        botCode,
-                        i,
-                        func.name,
-                        func.id)
-                    anySuccess = true
-                }
 
-                // if ex
-                finalResult = doResultIfFail(func, finalResult)
+                if (func.isAsync) {
+                    // If is async, invoke by launch.
+                    eventCoroutineScope.launch {
+                        val asyncResult = doListen(invoker)
+                        if (asyncResult.isSuccess()) {
+                            eventLogger.trace("{} -> Normal async listener chain[{}] success on {}({})",
+                                botCode,
+                                i,
+                                func.name,
+                                func.id)
+                        }
 
-                // if break, break.
-                if (finalResult.isBreak()) {
-                    doBreak = true
-                    eventLogger.trace("{} -> Normal Listener chain[{}] break on {}({})", botCode, i, func.name, func.id)
-                    break
+                        // if ex
+                        doResultIfFail(func, asyncResult)
+                    }
+
+
+                } else {
+                    finalResult = doListen(invoker)
+                    if (finalResult.isSuccess()) {
+                        eventLogger.trace("{} -> Normal listener chain[{}] success on {}({})",
+                            botCode,
+                            i,
+                            func.name,
+                            func.id)
+                        anySuccess = true
+                    }
+
+                    // if ex
+                    finalResult = doResultIfFail(func, finalResult)
+
+                    // if is break, break.
+                    if (finalResult.isBreak()) {
+                        doBreak = true
+                        eventLogger.trace("{} -> Normal Listener chain[{}] break on {}({})",
+                            botCode,
+                            i,
+                            func.name,
+                            func.id)
+                        break
+                    }
+                    i++
                 }
-                i++
             }
             eventLogger.trace("{} -> Normal listener invoked {}.", botCode, i + 1)
 
@@ -421,17 +615,23 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
             if (!anySuccess && !doBreak) {
                 eventLogger.trace("{} -> No normal success or break, to spares.", botCode)
                 var si = 0
-                for (invoker: ListenerInvoker in funcs.spare) {
+                for (invoker: ListenerInvoker in funcList.spare) {
                     val func = invoker.function
-                    finalResult = doListen(invoker)
-                    finalResult = doResultIfFail(func, finalResult)
-                    if (finalResult.isBreak()) {
-                        eventLogger.trace("{} -> Spare Listener chain[{}] break on {}({})",
-                            botCode,
-                            si,
-                            func.name,
-                            func.id)
-                        break
+                    if (func.isAsync) {
+                        eventCoroutineScope.launch {
+                            doResultIfFail(func, doListen(invoker))
+                        }
+                    } else {
+                        finalResult = doListen(invoker)
+                        finalResult = doResultIfFail(func, finalResult)
+                        if (finalResult.isBreak()) {
+                            eventLogger.trace("{} -> Spare Listener chain[{}] break on {}({})",
+                                botCode,
+                                si,
+                                func.name,
+                                func.id)
+                            break
+                        }
                     }
                     si++
                 }
@@ -449,15 +649,19 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      * 根据监听类型获取所有对应的监听函数。
      */
     override fun <T : MsgGet> getListenerFunctions(type: Class<out T>?): Collection<ListenerFunction> {
-        return if (type == null) {
-            mainListenerFunctionMap.values.asSequence().flatMap { it.asSequence().map { invoker -> invoker.function } }
-                .toList()
-        } else {
-            getListenerFunctions(type, false).marge().map { it.function }
+        return lock.read {
+            if (type == null) {
+                mainListenerFunctionMap.values.asSequence()
+                    .flatMap { it.asSequence().map { invoker -> invoker.function } }
+                    .toList()
+            } else {
+                getListenerFunctions(type, false).marge().map { it.function }
+            }
         }
     }
 
-    override fun getListenerFunctionById(id: String): ListenerFunction? = listenerFunctionIdMap[id]?.function
+    override fun getListenerFunctionById(id: String): ListenerFunction? =
+        lock.read { listenerFunctionIdMap[id]?.function }
 
     /**
      * 根据一个监听器类型获取对应监听函数。
@@ -465,22 +669,46 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
      * 寻找 main funcs 中为 [type] 的父类的类型。
      *
      */
+    @Suppress("DuplicatedCode")
     private fun <T : MsgGet> getListenerFunctions(type: Class<out T>, cache: Boolean): ListenerFunctionGroups {
-        // 尝试直接获取
-        // fastball n. 直球
-        // 只取缓存，main listener中的内容用于遍历检测。
-        val fastball: ListenerFunctionGroups? = cacheListenerFunctionMap[type]
+        lock.read {
+            // 尝试直接获取
+            // fastball n. 直球
+            // 只取缓存，main listener中的内容用于遍历检测。
+            val fastball: ListenerFunctionGroups? = cacheListenerFunctionMap[type]
 
-        return if (fastball != null) {
-            // 有缓存，return
-            fastball
-        } else {
-            if (mainListenerFunctionMap.isEmpty()) {
-                return ListenerFunctionGroups.empty
-            }
+            return if (fastball != null) {
+                // 有缓存，return
+                fastball
+            } else {
+                if (mainListenerFunctionMap.isEmpty()) {
+                    return ListenerFunctionGroups.empty
+                }
 
-            if (cache) {
-                cacheListenerFunctionMap.computeIfAbsent(type) {
+                if (cache) {
+                    // Update read lock
+                    lock.write {
+                        cacheListenerFunctionMap.computeIfAbsent(type) {
+                            val typeNormalList = LinkedList<ListenerInvoker>()
+                            val typeSpareList = LinkedList<ListenerInvoker>()
+                            mainListenerFunctionMap.forEach { (k, v) ->
+                                if (k.isAssignableFrom(type)) {
+                                    v.forEach { lis ->
+                                        if (lis.function.spare) typeSpareList.add(lis)
+                                        else typeNormalList.add(lis)
+                                    }
+                                }
+                            }
+
+                            ListenerFunctionGroups(
+                                typeNormalList.also { normalLs -> normalLs.sortBy { it.function.priority } },
+                                typeSpareList.also { spareLs -> spareLs.sortBy { it.function.priority } },
+                            ).also {
+                                logger.debug("Init Listener function caches for event type '${type.name}'. normal listeners ${typeNormalList.size}, spare listeners ${typeSpareList.size}.")
+                            }
+                        }
+                    }
+                } else {
                     val typeNormalList = LinkedList<ListenerInvoker>()
                     val typeSpareList = LinkedList<ListenerInvoker>()
                     mainListenerFunctionMap.forEach { (k, v) ->
@@ -491,35 +719,17 @@ public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructo
                             }
                         }
                     }
-
+                    // typeList.also { listener -> listener.sortBy { it.priority } }
                     ListenerFunctionGroups(
                         typeNormalList.also { normalLs -> normalLs.sortBy { it.function.priority } },
                         typeSpareList.also { spareLs -> spareLs.sortBy { it.function.priority } },
-                    ).also {
-                        logger.debug("Init Listener function caches for event type '${type.name}'. normal listeners ${typeNormalList.size}, spare listeners ${typeSpareList.size}.")
-                    }
+                    )
                 }
-            } else {
-                // val typeList = LinkedList<ListenerFunction>()
-                val typeNormalList = LinkedList<ListenerInvoker>()
-                val typeSpareList = LinkedList<ListenerInvoker>()
-                mainListenerFunctionMap.forEach { (k, v) ->
-                    if (k.isAssignableFrom(type)) {
-                        v.forEach { lis ->
-                            if (lis.function.spare) typeSpareList.add(lis)
-                            else typeNormalList.add(lis)
-                        }
-                    }
-                }
-                // typeList.also { listener -> listener.sortBy { it.priority } }
-                ListenerFunctionGroups(
-                    typeNormalList.also { normalLs -> normalLs.sortBy { it.function.priority } },
-                    typeSpareList.also { spareLs -> spareLs.sortBy { it.function.priority } },
-                )
             }
+
+
         }
-
-
     }
+
 }
 

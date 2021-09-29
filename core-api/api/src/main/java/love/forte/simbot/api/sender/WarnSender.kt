@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory
  * @author ForteScarlet
  * @since 2.0.0-BETA.9
  */
+@Suppress("DEPRECATION", "OverridingDeprecatedMember")
 public object WarnSender : LogAble, Sender.Def {
     override val log: Logger = LoggerFactory.getLogger(WarnGetter::class.java)
 
@@ -35,14 +36,20 @@ public object WarnSender : LogAble, Sender.Def {
         log.warn("Sender api {} is not supported. Will return to the default value {}", name, def())
     }
 
-    override fun sendGroupMsg(parent: String?, group: String, msg: String): Carrier<out Flag<GroupMsg.FlagContent>> =
-        apiWarn("sendGroupMsg") { null }.let { Carrier.empty() }
+    override suspend fun groupMsg(
+        parent: String?,
+        group: String,
+        msg: String,
+    ): Carrier<out Flag<GroupMsg.FlagContent>> = apiWarn("sendGroupMsg") { null }.let { Carrier.empty() }
 
-
-    override fun sendPrivateMsg(code: String, group: String?, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
+    override suspend fun privateMsg(
+        code: String,
+        group: String?,
+        msg: String,
+    ): Carrier<out Flag<PrivateMsg.FlagContent>> =
         apiWarn("sendPrivateMsg") { null }.let { Carrier.empty() }
 
-    override fun sendGroupNotice(
+    override suspend fun groupNotice(
         group: String,
         title: String?,
         text: String?,

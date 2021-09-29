@@ -1,0 +1,8 @@
+# [用户私聊消息接口列表](https://developer.kaiheila.cn/doc/http/direct-message)
+- [ ] [/api/v3/direct-message/list](https://developer.kaiheila.cn/doc/http/direct-message#%E8%8E%B7%E5%8F%96%E7%A7%81%E4%BF%A1%E8%81%8A%E5%A4%A9%E6%B6%88%E6%81%AF%E5%88%97%E8%A1%A8 "获取私信聊天消息列表")
+- [ ] [/api/v3/direct-message/create](https://developer.kaiheila.cn/doc/http/direct-message#%E5%8F%91%E9%80%81%E7%A7%81%E4%BF%A1%E8%81%8A%E5%A4%A9%E6%B6%88%E6%81%AF "发送私信聊天消息")
+- [ ] [/api/v3/direct-message/update](https://developer.kaiheila.cn/doc/http/direct-message#%E6%9B%B4%E6%96%B0%E7%A7%81%E4%BF%A1%E8%81%8A%E5%A4%A9%E6%B6%88%E6%81%AF "更新私信聊天消息")
+- [ ] [/api/v3/direct-message/delete](https://developer.kaiheila.cn/doc/http/direct-message#%E5%88%A0%E9%99%A4%E7%A7%81%E4%BF%A1%E8%81%8A%E5%A4%A9%E6%B6%88%E6%81%AF "删除私信聊天消息")
+- [ ] [/api/v3/direct-message/reaction-list](https://developer.kaiheila.cn/doc/http/direct-message#%E8%8E%B7%E5%8F%96%E9%A2%91%E9%81%93%E6%B6%88%E6%81%AF%E6%9F%90%E5%9B%9E%E5%BA%94%E7%9A%84%E7%94%A8%E6%88%B7%E5%88%97%E8%A1%A8 "获取频道消息某个回应的用户列表")
+- [ ] [/api/v3/direct-message/add-reaction](https://developer.kaiheila.cn/doc/http/direct-message#%E7%BB%99%E6%9F%90%E4%B8%AA%E6%B6%88%E6%81%AF%E6%B7%BB%E5%8A%A0%E5%9B%9E%E5%BA%94 "给某个消息添加回应")
+- [ ] [/api/v3/direct-message/delete-reaction](https://developer.kaiheila.cn/doc/http/direct-message#%E5%88%A0%E9%99%A4%E6%B6%88%E6%81%AF%E7%9A%84%E6%9F%90%E4%B8%AA%E5%9B%9E%E5%BA%94 "删除消息的某个回应")
