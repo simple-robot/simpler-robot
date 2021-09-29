@@ -32,7 +32,7 @@ import love.forte.simbot.listener.get
  * @author ForteScarlet
  */
 // @Beans
-@OnPrivate
+// @OnPrivate
 class SuspendFunctionListener {
 
     companion object {

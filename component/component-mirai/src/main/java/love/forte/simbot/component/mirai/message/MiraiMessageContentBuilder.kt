@@ -43,21 +43,35 @@ public sealed class MiraiMessageContentBuilderFactory : MessageContentBuilderFac
     abstract override fun getMessageContentBuilder(): MiraiMessageContentBuilder
 
     /** 普通的图片上传策略。 */
-    internal class MiraiMessageContentBuilderFactoryImgNormal(private val remoteResourceInProcessor: RemoteResourceInProcessor) : MiraiMessageContentBuilderFactory() {
-        override fun getMessageContentBuilder(): MiraiMessageContentBuilder = MiraiMessageContentBuilderImgNormal(remoteResourceInProcessor)
+    internal class MiraiMessageContentBuilderFactoryImgNormal(
+        private val cache: MiraiMessageCache?,
+        private val remoteResourceInProcessor: RemoteResourceInProcessor,
+    ) :
+        MiraiMessageContentBuilderFactory() {
+        override fun getMessageContentBuilder(): MiraiMessageContentBuilder =
+            MiraiMessageContentBuilderImgNormal(cache, remoteResourceInProcessor)
     }
 
     /** 优先尝试通过一个任意的群进行上传的图片上传策略。 */
-    internal class MiraiMessageContentBuilderFactoryImgGroupFirst(private val remoteResourceInProcessor: RemoteResourceInProcessor) : MiraiMessageContentBuilderFactory() {
-        override fun getMessageContentBuilder(): MiraiMessageContentBuilder = MiraiMessageContentBuilderImgGroupFirst(remoteResourceInProcessor)
+    internal class MiraiMessageContentBuilderFactoryImgGroupFirst(
+        private val cache: MiraiMessageCache?,
+        private val remoteResourceInProcessor: RemoteResourceInProcessor,
+    ) :
+        MiraiMessageContentBuilderFactory() {
+        override fun getMessageContentBuilder(): MiraiMessageContentBuilder =
+            MiraiMessageContentBuilderImgGroupFirst(cache, remoteResourceInProcessor)
     }
 
     companion object {
-        fun instance(imgGroupFirst: Boolean = false, remoteResourceInProcessor: RemoteResourceInProcessor): MiraiMessageContentBuilderFactory {
+        fun instance(
+            imgGroupFirst: Boolean = false,
+            cache: MiraiMessageCache?,
+            remoteResourceInProcessor: RemoteResourceInProcessor,
+        ): MiraiMessageContentBuilderFactory {
             return if (imgGroupFirst) {
-                MiraiMessageContentBuilderFactoryImgGroupFirst(remoteResourceInProcessor)
+                MiraiMessageContentBuilderFactoryImgGroupFirst(cache, remoteResourceInProcessor)
             } else {
-                MiraiMessageContentBuilderFactoryImgNormal(remoteResourceInProcessor)
+                MiraiMessageContentBuilderFactoryImgNormal(cache, remoteResourceInProcessor)
             }
         }
     }
@@ -69,7 +83,10 @@ public sealed class MiraiMessageContentBuilderFactory : MessageContentBuilderFac
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 @Suppress("unused")
-public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
+public sealed class MiraiMessageContentBuilder(
+    protected val cache: MiraiMessageCache?,
+    protected val remoteResourceInProcessor: RemoteResourceInProcessor,
+) : MessageContentBuilder {
     private val texts = StringBuilder()
     private val contentList = mutableListOf<MiraiMessageContent>()
     private fun checkText() {
@@ -241,10 +258,36 @@ public sealed class MiraiMessageContentBuilder : MessageContentBuilder {
     }
 
 
+    @JvmSynthetic
+    suspend fun forwardMessage(block: suspend (MiraiForwardMessageBuilder.() -> Unit)): MiraiMessageContentBuilder {
+        val forwardMessageContent = MiraiForwardMessageBuilder(cache, remoteResourceInProcessor).also {
+            block(it)
+        }.build()
+        contentList.add(forwardMessageContent)
+        return this
+    }
+
+
+    @Suppress("FunctionName")
+    @JvmName("forwardMessage")
+    fun __forwardMessageBlocking(block: ForwardMessageBuilderFunction): MiraiMessageContentBuilder {
+        val forwardMessageContent = MiraiForwardMessageBuilder(cache, remoteResourceInProcessor).also {
+            block.accept(it)
+        }.build()
+        contentList.add(forwardMessageContent)
+        return this
+    }
+
+
     override fun build(): MiraiMessageContent {
         checkText()
         return MiraiListMessageContent(contentList.toList())
     }
+}
+
+
+public fun interface ForwardMessageBuilderFunction : java.util.function.Consumer<MiraiForwardMessageBuilder> {
+    override fun accept(builder: MiraiForwardMessageBuilder)
 }
 
 
@@ -258,7 +301,10 @@ internal inline fun Contact.findAnyGroup(): Group? {
  * [MiraiMessageContentBuilder] 实现。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-internal class MiraiMessageContentBuilderImgGroupFirst(private val remoteResourceInProcessor: RemoteResourceInProcessor) : MiraiMessageContentBuilder() {
+internal class MiraiMessageContentBuilderImgGroupFirst(
+    cache: MiraiMessageCache?,
+    remoteResourceInProcessor: RemoteResourceInProcessor,
+) : MiraiMessageContentBuilder(cache, remoteResourceInProcessor) {
 
     override fun imageLocal0(file: File, imageNeko: Neko, flash: Boolean): MiraiImageMessageContent {
         return MiraiImageMessageContent(flash, imageNeko) { contact ->
@@ -277,7 +323,8 @@ internal class MiraiMessageContentBuilderImgGroupFirst(private val remoteResourc
         }
 
         return MiraiImageMessageContent(flash, imageNeko) { contact ->
-            val i = input ?: (remoteResourceInProcessor as SuspendRemoteResourceInProcessor).suspendableProcessor(urlContext)
+            val i = input ?: (remoteResourceInProcessor as SuspendRemoteResourceInProcessor).suspendableProcessor(
+                urlContext)
             i.use { stream ->
                 contact.findAnyGroup()?.let { group ->
                     stream.uploadAsImage(group)
@@ -304,7 +351,10 @@ internal class MiraiMessageContentBuilderImgGroupFirst(private val remoteResourc
  * [MiraiMessageContentBuilder] 实现。其中，对于图片的上传为正常的上传模式，即当前为好友就使用好友上传，是群就使用群上传。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-internal class MiraiMessageContentBuilderImgNormal(private val remoteResourceInProcessor: RemoteResourceInProcessor) : MiraiMessageContentBuilder() {
+internal class MiraiMessageContentBuilderImgNormal(
+    cache: MiraiMessageCache?,
+    remoteResourceInProcessor: RemoteResourceInProcessor,
+) : MiraiMessageContentBuilder(cache, remoteResourceInProcessor) {
     override fun imageLocal0(file: File, imageNeko: Neko, flash: Boolean): MiraiImageMessageContent {
         return MiraiImageMessageContent(flash, imageNeko) { file.uploadAsImage(it) }
     }
@@ -318,7 +368,8 @@ internal class MiraiMessageContentBuilderImgNormal(private val remoteResourceInP
         }
 
         return MiraiImageMessageContent(flash, imageNeko) { contact ->
-            val i = input ?: (remoteResourceInProcessor as SuspendRemoteResourceInProcessor).suspendableProcessor(urlContext)
+            val i = input ?: (remoteResourceInProcessor as SuspendRemoteResourceInProcessor).suspendableProcessor(
+                urlContext)
             i.use { stream -> stream.uploadAsImage(contact) }
         }
     }
@@ -331,33 +382,5 @@ internal class MiraiMessageContentBuilderImgNormal(private val remoteResourceInP
         }
     }
 
-    // @LazyInit
-    // @Suppress("BlockingMethodInNonBlockingContext")
-    // override fun image1(
-    //     inputStreamMotionActuator: InputStreamMotionActuator<InputStream>,
-    //     imageNeko: Neko,
-    //     flash: Boolean,
-    // ): MiraiMessageContent {
-    //
-    //     return MiraiImageMessageContent(flash, imageNeko) { contact ->
-    //         var resource: ExternalResource? = null
-    //
-    //         // // upload action.
-    //         // val action: (InputStream) -> Unit =
-    //
-    //         try {
-    //             inputStreamMotionActuator.invoke { inp ->
-    //                 resource = inp.toExternalResource()
-    //             }
-    //         } catch (ioe: IOException) {
-    //             throw IllegalStateException("Image resource init failed", ioe)
-    //         }
-    //
-    //         resource?.use { contact.uploadImage(it) } ?: throw IllegalStateException("Image resource not init.")
-    //
-    //     }
-    //
-    //
-    // }
 
 }

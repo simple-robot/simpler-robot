@@ -28,8 +28,8 @@ import love.forte.simbot.listener.SessionCallback;
 /**
  * @author ForteScarlet
  */
-@Beans
-@OnGroup
+// @Beans
+// @OnGroup
 public class JListener {
 
     private static final String key1 = "==tellMeYourNameAndPhone==PHONE==";
