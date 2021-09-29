@@ -1,3 +1,17 @@
+/*
+ *
+ *  * Copyright (c) 2021. ForteScarlet All rights reserved.
+ *  * Project  simple-robot
+ *  * File     MiraiAvatar.kt
+ *  *
+ *  * You can contact the author through the following channels:
+ *  * github https://github.com/ForteScarlet
+ *  * gitee  https://gitee.com/ForteScarlet
+ *  * email  ForteScarlet@163.com
+ *  * QQ     1149159218
+ *
+ */
+
 @file:JvmName("MiraiForwardMessageUtil")
 
 package love.forte.simbot.component.mirai.message
@@ -158,6 +172,21 @@ public class MiraiForwardMessageBuilder(
         messageGetter: (Contact) -> Message,
     ): MiraiForwardMessageBuilder =
         add(senderId, senderName, time, messageGetter::invoke)
+
+
+
+    /**
+     * 添加一条消息。
+     */
+    @JvmOverloads
+    public fun add(
+        senderId: Long,
+        senderName: String,
+        time: Int = nowSecond,
+        message: String,
+    ) =
+        add(senderId, senderName, time, message.toMiraiMessageContent(null, cache, remoteResourceInProcessor))
+
 
 
     /**
