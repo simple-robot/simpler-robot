@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "love.forte"
-version = "1.0-SNAPSHOT"
+version = "3.0.0-preview"
 
 repositories {
     mavenCentral()
