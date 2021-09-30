@@ -32,3 +32,6 @@ import love.forte.simbot.component.kaiheila.event.Event
  * @see Event.Extra.Sys.body
  */
 public interface GuildEventExtraBody : Event.Extra.Sys.Body
+
+
+public interface GuildEventExtra<B : GuildEventExtraBody> : Event.Extra.Sys<B>
