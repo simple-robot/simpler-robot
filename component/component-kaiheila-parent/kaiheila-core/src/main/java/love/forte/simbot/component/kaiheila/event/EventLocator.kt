@@ -71,6 +71,9 @@ public fun <T> EventLocator.registerCoordinate(coordinate: EventLocatorRegistrar
     registerCoordinate(coordinate.type, coordinate.extraType, coordinate.coordinateSerializer())
 
 
+/**
+ * 事件坐标注册器。
+ */
 public interface EventLocatorRegistrarCoordinate<T> where T : Event<*>, T : MsgGet {
     val type: Event.Type
     val extraType: String
