@@ -10,6 +10,10 @@ repositories {
 }
 
 kotlin {
+    // 严格
+    explicitApi()
+
+
     jvm("jvm") {
         attributes {
             attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
@@ -36,6 +40,7 @@ kotlin {
             val (target, source) = name.toTargetAndSource()
             kotlin.setSrcDirs(project.srcList(source, target))
         }
+
         @Suppress("UNUSED_VARIABLE")
         val jvmMain by getting
         @Suppress("UNUSED_VARIABLE")

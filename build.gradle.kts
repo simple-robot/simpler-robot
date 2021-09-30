@@ -17,7 +17,7 @@ dependencies {
 }
 
 allprojects {
-
+    println("Project: $this")
 }
 
 fun Project.src(base: String) = File(projectDir, "src/$base")

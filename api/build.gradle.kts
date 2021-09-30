@@ -10,6 +10,7 @@ repositories {
 }
 
 kotlin {
+    // 严格模式
     explicitApi()
 
     // Jvm
