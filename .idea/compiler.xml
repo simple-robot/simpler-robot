@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="component-mirai" />
+        <module name="time-task-core" />
+        <module name="kaiheila-api-v3" />
+        <module name="json-core" />
+        <module name="plugin-core" />
+        <module name="client-ktor" />
+        <module name="time-task-quartz" />
+        <module name="json-jackson" />
+        <module name="core" />
+        <module name="client-restTemplate" />
+        <module name="component-lovelycat-httpapi" />
+        <module name="component-mirai-spring-boot-starter" />
+        <module name="json-moshi" />
+        <module name="json-fastjson" />
+        <module name="api" />
+        <module name="client-core" />
+        <module name="core-spring-boot-starter" />
+        <module name="component-lovelycat-httpapi-spring-boot-starter" />
+        <module name="kaiheila-core" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="api" target="8" />
+      <module name="client-core" target="8" />
+      <module name="client-ktor" target="8" />
+      <module name="client-restTemplate" target="8" />
+      <module name="component-kaiheila-parent" target="8" />
+      <module name="component-lovelycat-httpapi" target="8" />
+      <module name="component-lovelycat-httpapi-spring-boot-starter" target="8" />
+      <module name="component-mirai" target="8" />
+      <module name="component-mirai-spring-boot-starter" target="8" />
+      <module name="component-parent" target="8" />
+      <module name="core" target="8" />
+      <module name="core-spring-boot-starter" target="8" />
+      <module name="http-parent" target="8" />
+      <module name="json-core" target="8" />
+      <module name="json-fastjson" target="8" />
+      <module name="json-jackson" target="8" />
+      <module name="json-moshi" target="8" />
+      <module name="kaiheila-api-v3" target="8" />
+      <module name="kaiheila-core" target="8" />
+      <module name="kaiheila-event" target="8" />
+      <module name="plugin-core" target="8" />
+      <module name="project" target="8" />
+      <module name="serialization-parent" target="8" />
+      <module name="spring-boot-starter" target="8" />
+      <module name="time-task-core" target="8" />
+      <module name="time-task-parent" target="8" />
+      <module name="time-task-quartz" target="8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="api" options="-parameters" />
+      <module name="client-core" options="-parameters" />
+      <module name="client-ktor" options="-parameters" />
+      <module name="client-restTemplate" options="-parameters" />
+      <module name="component-kaiheila-parent" options="" />
+      <module name="component-lovelycat-httpapi" options="-parameters" />
+      <module name="component-lovelycat-httpapi-spring-boot-starter" options="-parameters" />
+      <module name="component-mirai" options="-parameters" />
+      <module name="component-mirai-spring-boot-starter" options="-parameters" />
+      <module name="component-parent" options="" />
+      <module name="core" options="-parameters" />
+      <module name="core-spring-boot-starter" options="-parameters" />
+      <module name="http-parent" options="" />
+      <module name="json-core" options="-parameters" />
+      <module name="json-fastjson" options="-parameters" />
+      <module name="json-jackson" options="-parameters" />
+      <module name="json-moshi" options="-parameters" />
+      <module name="kaiheila-api-v3" options="-parameters" />
+      <module name="kaiheila-core" options="-parameters" />
+      <module name="kaiheila-event" options="-parameters" />
+      <module name="plugin-core" options="-parameters" />
+      <module name="serialization-parent" options="" />
+      <module name="time-task-core" options="-parameters" />
+      <module name="time-task-quartz" options="-parameters" />
+    </option>
+  </component>
+</project>
