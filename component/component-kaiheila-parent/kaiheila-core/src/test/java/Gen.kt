@@ -46,7 +46,7 @@ fun genFromJson(json: JsonElement, p: String, bodyParent: String, extraParent: S
     out.createFile()
     out.bufferedWriter().use { writer ->
         writer.writeBody(type, p, fields, bodyParent)
-        writer.writeExtra(type, p, extraParent)
+        writer.writeExtra(type, extraParent)
     }
 
 
@@ -102,7 +102,7 @@ fun Writer.writeBody(type: String, p: String, fields: Map<String, String>, bodyP
 }
 
 
-fun Writer.writeExtra(type: String, p: String, extraParent: String) {
+fun Writer.writeExtra(type: String, extraParent: String) {
     write("""
         /**
          *
