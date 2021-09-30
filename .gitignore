@@ -9,6 +9,12 @@ gradle-app.setting
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
 
+.idea/
+.idea/*
+/.idea/
+/.idea/*
+*.iml
+
 # Cache of project
 .gradletasknamecache
 

@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="utils-jvm-3.0.0-preview">
-    <output-path>$PROJECT_DIR$/commons/utils/build/libs</output-path>
-    <root id="archive" name="utils-jvm-3.0.0-preview.jar">
-      <element id="module-output" name="simply-robot.commons.utils.jvmMain" />
-    </root>
-  </artifact>
-</component>
