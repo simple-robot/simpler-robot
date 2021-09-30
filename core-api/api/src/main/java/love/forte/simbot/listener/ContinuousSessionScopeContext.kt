@@ -17,7 +17,6 @@
 package love.forte.simbot.listener
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.actor
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
@@ -112,6 +111,7 @@ public class ContinuousSessionScopeContext(
     /** 默认的超时时间。默认超时1分钟. */
     private val defaultTimeout: Long = TimeUnit.MINUTES.toMillis(1),
 ) : ScopeContext {
+
     override val scope: ListenerContext.Scope
         get() = ListenerContext.Scope.CONTINUOUS_SESSION
 
@@ -196,12 +196,19 @@ public class ContinuousSessionScopeContext(
         invokeOnCancellation: ((Throwable?) -> Unit)? = null,
     ): T = suspendCancellableCoroutine { cancellableContinuation ->
         val cancelJob: Job? = if (timeout > 0) {
+            // Exception stack for external
+            val timeoutException = if (logger.isDebugEnabled) {
+                TimeoutException("group=$group, key=$key, timeout=$timeout ")
+            } else TimeoutException(timeout.toString())
+
             coroutineScope.launch(start = CoroutineStart.LAZY) {
                 delay(timeout)
-                take(group, key)?.cancel(TimeoutException())
+                take(group, key)?.cancel(timeoutException)
             }
         } else {
-            logger.debug("Your waiting task(group={}, key={}) does not set timeout period or less then or equals 0.", group, key)
+            logger.debug("Your waiting task(group={}, key={}) does not set timeout period or less then or equals 0.",
+                group,
+                key)
             null
         }
         invokeOnCancellation?.also { invokeOnCancellation ->
@@ -246,6 +253,21 @@ public class ContinuousSessionScopeContext(
         }
     }
 
+    /**
+     * 阻塞的会话等待。
+     *
+     * **需要注意，阻塞会话等待有概率会导致一些问题，例如资源不足或死锁，请斟酌使用。**
+     *
+     * @see [waiting][_waiting4J]
+     * @throws TimeoutException 当超时的时候
+     * @throws CancellationException 当被普通的主动关闭时
+     */
+    @JvmOverloads
+    @Suppress("FunctionName")
+    @JvmName("waitBlocking")
+    @Throws(TimeoutException::class, CancellationException::class)
+    fun <T> _waiting4JBlocking(group: String, key: String, timeout: Long = defaultTimeout): T =
+        runBlocking { waiting(group, key, timeout) }
 
     /**
      * 移除某个指定分组下的 [ContinuousSessionContinuationContainer], 并关闭.

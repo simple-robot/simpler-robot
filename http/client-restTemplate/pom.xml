@@ -6,7 +6,7 @@
     <parent>
         <artifactId>http-parent</artifactId>
         <groupId>love.forte.simple-robot.http</groupId>
-        <version>2.3.0-ALPHA.4<!--v--></version>
+        <version>2.3.0-ALPHA.6<!--v--></version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -17,33 +17,6 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-
-    <!--<dependencyManagement>-->
-    <!--    <dependencies>-->
-    <!--        <dependency>-->
-    <!--            <groupId>org.springframework.boot</groupId>-->
-    <!--            <artifactId>spring-boot-starter-parent</artifactId>-->
-    <!--            <version>2.3.5.RELEASE</version>-->
-    <!--            <scope>import</scope>-->
-    <!--            <type>pom</type>-->
-    <!--            <optional>true</optional>-->
-    <!--            <exclusions>-->
-    <!--                <exclusion>-->
-    <!--                    <groupId>org.jetbrains.kotlin</groupId>-->
-    <!--                    <artifactId>kotlin-stdlib-jdk8</artifactId>-->
-    <!--                </exclusion>-->
-    <!--                <exclusion>-->
-    <!--                    <groupId>org.jetbrains.kotlin</groupId>-->
-    <!--                    <artifactId>kotlin-stdlib-jdk7</artifactId>-->
-    <!--                </exclusion>-->
-    <!--                <exclusion>-->
-    <!--                    <groupId>org.jetbrains.kotlin</groupId>-->
-    <!--                    <artifactId>kotlin-stdlib-common</artifactId>-->
-    <!--                </exclusion>-->
-    <!--            </exclusions>-->
-    <!--        </dependency>-->
-    <!--    </dependencies>-->
-    <!--</dependencyManagement>-->
 
     <dependencies>
         <dependency>

@@ -18,12 +18,10 @@
 package love.forte.simbot.dispatcher
 
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.ExecutorCoroutineDispatcher
-import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.asCoroutineDispatcher
 import love.forte.common.ioc.annotation.Depend
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -64,7 +62,9 @@ public abstract class AbstractDispatcherFactory(threadGroupName: String) : Dispa
     protected val threadGroup = ThreadGroup(threadGroupName).also {
         it.isDaemon = true
     }
-    private val threadNo = AtomicInteger(1)
+
+    private val dispatcherNo = AtomicInteger(1)
+
 
     @Depend(value = "corePoolSize", orIgnore = true)
     var corePoolSize: Int = Runtime.getRuntime().availableProcessors() * 2 + 2
@@ -80,46 +80,39 @@ public abstract class AbstractDispatcherFactory(threadGroupName: String) : Dispa
 
     override val dispatcher: CoroutineDispatcher by lazy(::newDispatcher)
 
-    override fun newDispatcher(): CoroutineDispatcher = executorDispatcher(
-        corePoolSize, maximumPoolSize, keepAliveTime, timeUnit
-    ) { r ->
-        Thread(threadGroup, r, "${threadGroup.name}-${threadNo.getAndIncrement()}").also {
-            it.isDaemon = true
+    override fun newDispatcher(): CoroutineDispatcher {
+        val dn: String = dispatcherNo.getAndIncrement().takeIf { it != 1 }?.toString() ?: "M"
+
+        val threadLocalNo = AtomicInteger(1)
+
+        return executorDispatcher(
+            corePoolSize, maximumPoolSize, keepAliveTime, timeUnit
+        ) { r ->
+            Thread(threadGroup, r, "${threadGroup.name}-$dn-${threadLocalNo.getAndIncrement()}").also {
+                it.isDaemon = true
+            }
         }
     }
 
-    override fun toString(): String = "DispatcherFactory(group=${threadGroup.name}, core=$corePoolSize, maximum=$maximumPoolSize, keepAliveTime=$keepAliveTime, timeUnit=$timeUnit)"
+    override fun toString(): String =
+        "DispatcherFactory(group=${threadGroup.name}, core=$corePoolSize, maximum=$maximumPoolSize, keepAliveTime=$keepAliveTime, timeUnit=$timeUnit)"
 }
 
 
-internal class ExecutorDispatcher(executorFactory: () -> ExecutorService) : ExecutorCoroutineDispatcher() {
-    override fun dispatch(context: CoroutineContext, block: Runnable) {
-        executor.execute(block)
-    }
-
-    override val executor: ExecutorService by lazy(executorFactory)
-
-    override fun toString(): String = "Dispatcher(executor=$executor, @${hashCode()})"
-
-    override fun close() {
-        executor.shutdown()
-    }
-}
-
-
-internal fun executorDispatcher(
+fun executorDispatcher(
     corePoolSize: Int,
     maximumPoolSize: Int,
     keepAliveTime: Long,
     timeUnit: TimeUnit,
     threadFactory: ThreadFactory,
-): ExecutorDispatcher = ExecutorDispatcher {
-    ThreadPoolExecutor(
-        corePoolSize,
-        maximumPoolSize,
-        keepAliveTime,
-        timeUnit,
-        LinkedBlockingQueue(),
-        threadFactory,
-    )
-}
+): CoroutineDispatcher = ThreadPoolExecutor(
+    corePoolSize,
+    maximumPoolSize,
+    keepAliveTime,
+    timeUnit,
+    LinkedBlockingQueue(),
+    threadFactory,
+).asCoroutineDispatcher()
+
+
+fun executorDispatcher(executor: ExecutorService): CoroutineDispatcher = executor.asCoroutineDispatcher()

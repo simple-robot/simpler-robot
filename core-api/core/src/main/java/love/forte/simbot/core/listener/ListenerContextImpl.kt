@@ -17,7 +17,7 @@ package love.forte.simbot.core.listener
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.dispatcher.EventDispatcherFactory
+import love.forte.simbot.dispatcher.ContinuousSessionDispatcherFactory
 import love.forte.simbot.listener.*
 
 
@@ -44,7 +44,10 @@ public data class ListenerContextImpl(
  * [ListenerContextFactory] 实现。
  * 单例。
  */
-public class CoreListenerContextFactory(eventDispatcherFactory: EventDispatcherFactory, defaultTimeout: Long) :
+public class CoreListenerContextFactory(
+    continuousSessionDispatcherFactory: ContinuousSessionDispatcherFactory,
+    defaultTimeout: Long,
+) :
     ListenerContextFactory {
 
     /** 每次获取得到一个新的 [MapScopeContext] 实例。 */
@@ -58,7 +61,7 @@ public class CoreListenerContextFactory(eventDispatcherFactory: EventDispatcherF
      *
      */
     private val continuousSessionScopeContext: ContinuousSessionScopeContext = ContinuousSessionScopeContext(
-        CoroutineScope(eventDispatcherFactory.dispatcher + CoroutineName("CoreListenerContextFactory")),
+        CoroutineScope(continuousSessionDispatcherFactory.dispatcher + CoroutineName("CoreListenerContextFactory")),
         defaultTimeout
     )
 
