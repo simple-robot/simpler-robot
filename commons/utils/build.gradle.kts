@@ -32,18 +32,22 @@ kotlin {
             languageSettings {
                 optIn("kotlin.RequiresOptIn")
             }
+            // Set src dir like xxx/main/kotlin, xxx/test/kotlin
             val (target, source) = name.toTargetAndSource()
             kotlin.setSrcDirs(project.srcList(source, target))
-            println(kotlin.srcDirs)
         }
+        @Suppress("UNUSED_VARIABLE")
         val jvmMain by getting
+        @Suppress("UNUSED_VARIABLE")
         val jvmTest by getting
 
+        @Suppress("UNUSED_VARIABLE")
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
             }
         }
+        @Suppress("UNUSED_VARIABLE")
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test-common"))

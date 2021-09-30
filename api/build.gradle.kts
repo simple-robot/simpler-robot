@@ -33,6 +33,7 @@ kotlin {
             languageSettings {
                 optIn("kotlin.RequiresOptIn")
             }
+            // Set src dir like xxx/main/kotlin, xxx/test/kotlin
             val (target, source) = name.toTargetAndSource()
             kotlin.setSrcDirs(project.srcList(source, target))
         }
