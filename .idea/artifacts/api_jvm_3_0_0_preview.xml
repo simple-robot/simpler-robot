@@ -1,8 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="api-jvm-3.0.0-preview">
     <output-path>$PROJECT_DIR$/api/build/libs</output-path>
-    <root id="archive" name="api-jvm-3.0.0-preview.jar">
-      <element id="module-output" name="simply-robot.api.jvmMain" />
-    </root>
+    <root id="archive" name="api-jvm-3.0.0-preview.jar" />
   </artifact>
 </component>
