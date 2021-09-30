@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/core-api/api/api.iml" filepath="$PROJECT_DIR$/core-api/api/api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/http/client-core/client-core.iml" filepath="$PROJECT_DIR$/http/client-core/client-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/http/client-ktor/client-ktor.iml" filepath="$PROJECT_DIR$/http/client-ktor/client-ktor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/http/client-restTemplate/client-restTemplate.iml" filepath="$PROJECT_DIR$/http/client-restTemplate/client-restTemplate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/component/component-lovelycat-httpapi/component-lovelycat-httpapi.iml" filepath="$PROJECT_DIR$/component/component-lovelycat-httpapi/component-lovelycat-httpapi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spring-boot-starter/component-lovelycat-httpapi-spring-boot-starter/component-lovelycat-httpapi-spring-boot-starter.iml" filepath="$PROJECT_DIR$/spring-boot-starter/component-lovelycat-httpapi-spring-boot-starter/component-lovelycat-httpapi-spring-boot-starter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/component/component-mirai/component-mirai.iml" filepath="$PROJECT_DIR$/component/component-mirai/component-mirai.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spring-boot-starter/component-mirai-spring-boot-starter/component-mirai-spring-boot-starter.iml" filepath="$PROJECT_DIR$/spring-boot-starter/component-mirai-spring-boot-starter/component-mirai-spring-boot-starter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/component/component-parent.iml" filepath="$PROJECT_DIR$/component/component-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core-api/core/core.iml" filepath="$PROJECT_DIR$/core-api/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spring-boot-starter/core-spring-boot-starter/core-spring-boot-starter.iml" filepath="$PROJECT_DIR$/spring-boot-starter/core-spring-boot-starter/core-spring-boot-starter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/http/http-parent.iml" filepath="$PROJECT_DIR$/http/http-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/serialization/json-core/json-core.iml" filepath="$PROJECT_DIR$/serialization/json-core/json-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/serialization/json-fastjson/json-fastjson.iml" filepath="$PROJECT_DIR$/serialization/json-fastjson/json-fastjson.iml" />
+      <module fileurl="file://$PROJECT_DIR$/serialization/json-jackson/json-jackson.iml" filepath="$PROJECT_DIR$/serialization/json-jackson/json-jackson.iml" />
+      <module fileurl="file://$PROJECT_DIR$/serialization/json-moshi/json-moshi.iml" filepath="$PROJECT_DIR$/serialization/json-moshi/json-moshi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/simbot-x/plugin-core/plugin-core.iml" filepath="$PROJECT_DIR$/simbot-x/plugin-core/plugin-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/project.iml" filepath="$PROJECT_DIR$/project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/serialization/serialization-parent.iml" filepath="$PROJECT_DIR$/serialization/serialization-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/spring-boot-starter/spring-boot-starter.iml" filepath="$PROJECT_DIR$/spring-boot-starter/spring-boot-starter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/time-task/time-task-core/time-task-core.iml" filepath="$PROJECT_DIR$/time-task/time-task-core/time-task-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/time-task/time-task-parent.iml" filepath="$PROJECT_DIR$/time-task/time-task-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/time-task/time-task-quartz/time-task-quartz.iml" filepath="$PROJECT_DIR$/time-task/time-task-quartz/time-task-quartz.iml" />
+    </modules>
+  </component>
+</project>
