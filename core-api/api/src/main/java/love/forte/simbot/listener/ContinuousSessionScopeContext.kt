@@ -189,35 +189,44 @@ public class ContinuousSessionScopeContext(
      * @throws Exception 其他可能由于 [ContinuousSessionContinuation.pushException] 而推送的异常
      */
     @JvmSynthetic
+    private suspend fun <T> waitForResume(
+        group: String,
+        key: String,
+        invokeOnCancellation: ((Throwable?) -> Unit)? = null,
+    ): T = suspendCancellableCoroutine { cancellableContinuation ->
+        invokeOnCancellation?.also { invokeOnCancellation ->
+            cancellableContinuation.invokeOnCancellation(invokeOnCancellation)
+        }
+
+        val session = cancellableContinuation.asContinuousSessionContinuation()
+        set(group, key, session)
+    }
+
+    /**
+     * 等待下一次的事件唤醒。
+     *
+     * @throws CancellationException 如果被手动关闭
+     * @throws TimeoutException 如果设置了超时时间且超时
+     * @throws Exception 其他可能由于 [ContinuousSessionContinuation.pushException] 而推送的异常
+     */
+    @JvmSynthetic
     suspend fun <T> waiting(
         group: String,
         key: String,
         timeout: Long = defaultTimeout,
         invokeOnCancellation: ((Throwable?) -> Unit)? = null,
-    ): T = suspendCancellableCoroutine { cancellableContinuation ->
-        val cancelJob: Job? = if (timeout > 0) {
-            // Exception stack for external
-            val timeoutException = if (logger.isDebugEnabled) {
-                TimeoutException("group=$group, key=$key, timeout=$timeout ")
-            } else TimeoutException(timeout.toString())
-
-            coroutineScope.launch(start = CoroutineStart.LAZY) {
-                delay(timeout)
-                take(group, key)?.cancel(timeoutException)
-            }
-        } else {
+    ): T {
+        return if (timeout <= 0) {
             logger.debug("Your waiting task(group={}, key={}) does not set timeout period or less then or equals 0.",
                 group,
                 key)
-            null
-        }
-        invokeOnCancellation?.also { invokeOnCancellation ->
-            cancellableContinuation.invokeOnCancellation(invokeOnCancellation)
+            waitForResume(group, key, invokeOnCancellation)
+        } else {
+            withTimeout(timeout) {
+                waitForResume(group, key, invokeOnCancellation)
+            }
         }
 
-        val session = cancellableContinuation.asContinuousSessionContinuation(cancelJob)
-        set(group, key, session)
-        cancelJob?.start()
     }
 
     /**
@@ -341,28 +350,25 @@ internal class MapContinuousSessionContinuationContainer(
 /**
  * @since 2.3.0
  */
-internal fun <T> CancellableContinuation<T>.asContinuousSessionContinuation(cancelJob: Job? = null): ContinuousSessionContinuation<T> =
-    ContinuousSessionContinuationImpl(this, cancelJob)
+internal fun <T> CancellableContinuation<T>.asContinuousSessionContinuation(): ContinuousSessionContinuation<T> =
+    ContinuousSessionContinuationImpl(this)
 
 
 private class ContinuousSessionContinuationImpl<T>(
     private val continuation: CancellableContinuation<T>,
-    private val cancelJob: Job? = null,
 ) :
     ContinuousSessionContinuation<T> {
     @OptIn(InternalCoroutinesApi::class)
     override fun push(value: T) {
-        continuation.resume(value).also { cancelJob?.cancel() }
-        println("pushed.")
+        continuation.resume(value)
     }
 
     override fun pushException(e: Throwable) {
-        continuation.resumeWithException(e).also { cancelJob?.cancel() }
-        println("pushException.")
+        continuation.resumeWithException(e)
     }
 
     override fun cancel(e: Throwable?) {
-        continuation.cancel(e).also { cancelJob?.cancel() }
+        continuation.cancel(e)
     }
 }
 
