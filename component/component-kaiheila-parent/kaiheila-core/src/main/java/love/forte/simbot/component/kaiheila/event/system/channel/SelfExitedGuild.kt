@@ -1,4 +1,4 @@
-package love.forte.simbot.component.kaiheila.event.system.guild
+package love.forte.simbot.component.kaiheila.event.system.channel
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -15,4 +15,4 @@ import kotlinx.serialization.Serializable
 public data class SelfExitedGuildExtraBody(
     @SerialName("guild_id")
     val guildId: String
-) : GuildEventExtraBody
+) : ChannelEventExtraBody

@@ -1,4 +1,4 @@
-package love.forte.simbot.component.kaiheila.event.system.guild
+package love.forte.simbot.component.kaiheila.event.system.channel
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -29,4 +29,4 @@ public data class PinnedMessageExtraBody(
      */
     @SerialName("msg_id")
     val msgId: String
-) : GuildEventExtraBody
+) : ChannelEventExtraBody

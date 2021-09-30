@@ -1,4 +1,4 @@
-package love.forte.simbot.component.kaiheila.event.system.guild
+package love.forte.simbot.component.kaiheila.event.system.channel
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -48,4 +48,4 @@ public data class UpdatedMessageExtraBody(
      */
     @SerialName("updated_at")
     val updatedAt: Long
-) : GuildEventExtraBody
+) : ChannelEventExtraBody

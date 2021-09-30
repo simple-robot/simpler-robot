@@ -1,4 +1,4 @@
-package love.forte.simbot.component.kaiheila.event.system.guild
+package love.forte.simbot.component.kaiheila.event.system.channel
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -17,4 +17,4 @@ class DeletedReactionExtraBody(
     @SerialName("channel_id")
     val channelId: String,
     val emoji: ReactionEmoji,
-) : GuildEventExtraBody
+) : ChannelEventExtraBody

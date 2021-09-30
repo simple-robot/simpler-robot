@@ -1,19 +1,17 @@
-package love.forte.simbot.component.kaiheila.event.system.guild
+package love.forte.simbot.component.kaiheila.event.system.channel
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
 /**
+ * 用户退出语音频道
  *
- * 用户加入语音频道
- *
- * `joined_channel`
+ * `exited_channel`
  *
  * @author ForteScarlet
  */
 @Serializable
-public data class JoinedChannelExtraBody(
+public data class ExitedChannelExtraBody(
     /**
      * 用户id
      */
@@ -25,8 +23,8 @@ public data class JoinedChannelExtraBody(
     @SerialName("channel_id")
     val channelId: String,
     /**
-     * 加入的时间（ms)
+     * 退出的时间（ms)
      */
-    @SerialName("joined_at")
-    val joinedAt: Long,
-) : GuildEventExtraBody
+    @SerialName("exited_at")
+    val exitedAt: Long,
+) : ChannelEventExtraBody

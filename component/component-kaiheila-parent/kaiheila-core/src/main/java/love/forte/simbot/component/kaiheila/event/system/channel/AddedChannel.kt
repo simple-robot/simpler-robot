@@ -1,4 +1,4 @@
-package love.forte.simbot.component.kaiheila.event.system.guild
+package love.forte.simbot.component.kaiheila.event.system.channel
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -74,7 +74,7 @@ public data class AddedChannelExtraBody(
      */
     @SerialName("server_url")
     val serverUrl: String
-) : GuildEventExtraBody, Comparable<AddedChannelExtraBody> {
+) : ChannelEventExtraBody, Comparable<AddedChannelExtraBody> {
     init {
         check(type in 1..2) { "Parameter type must be 1 or 2, but $type" }
     }

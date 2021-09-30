@@ -1,4 +1,4 @@
-package love.forte.simbot.component.kaiheila.event.system.guild
+package love.forte.simbot.component.kaiheila.event.system.channel
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -16,4 +16,4 @@ public data class DeletedMessageExtraBody(
     val msgId: String,
     @SerialName("channel_id")
     val channelId: String,
-) : GuildEventExtraBody
+) : ChannelEventExtraBody

@@ -13,7 +13,7 @@
  */
 
 @file:JvmName("GuildEvents")
-package love.forte.simbot.component.kaiheila.event.system.guild
+package love.forte.simbot.component.kaiheila.event.system.channel
 
 import love.forte.simbot.component.kaiheila.event.Event
 
@@ -27,8 +27,8 @@ import love.forte.simbot.component.kaiheila.event.Event
 
 /**
  *
- * [服务器相关事件列表](https://developer.kaiheila.cn/doc/event/guild)
+ * [频道相关事件列表](https://developer.kaiheila.cn/doc/event/channel)
  *
  * @see Event.Extra.Sys.body
  */
-public interface GuildEventExtraBody : Event.Extra.Sys.Body
+public interface ChannelEventExtraBody : Event.Extra.Sys.Body

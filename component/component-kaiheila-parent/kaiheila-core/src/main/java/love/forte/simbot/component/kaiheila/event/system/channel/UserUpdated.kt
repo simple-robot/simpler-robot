@@ -1,4 +1,4 @@
-package love.forte.simbot.component.kaiheila.event.system.guild
+package love.forte.simbot.component.kaiheila.event.system.channel
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -18,7 +18,7 @@ public data class UserUpdatedExtraBody(
     val userId: String,
     val username: String,
     val avatar: String,
-) : GuildEventExtraBody
+) : ChannelEventExtraBody
 
 /*
 user_id
