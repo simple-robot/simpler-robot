@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    id("org.jetbrains.dokka")
 }
 
 group = "love.forte.simply-robot"
@@ -29,7 +30,6 @@ kotlin {
     }
 
     sourceSets {
-
         all {
             languageSettings {
                 optIn("kotlin.RequiresOptIn")
@@ -60,6 +60,11 @@ kotlin {
                 implementation(kotlin("test-annotations-common"))
             }
         }
+    }
+
+    tasks.dokkaHtml {
+        val root = rootProject.rootDir
+        outputDirectory.set(File(root, "dokkaOutput/${project.name}"))
     }
 }
 

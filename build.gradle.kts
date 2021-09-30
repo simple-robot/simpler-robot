@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.dokka") version "1.5.30"
 }
 
+
 group = "love.forte"
 version = "3.0.0-preview"
 
