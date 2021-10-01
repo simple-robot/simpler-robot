@@ -1,4 +1,4 @@
-package love.forte.simbot.api.event
+package love.forte.simbot.api
 
 /**
  * 事件。
