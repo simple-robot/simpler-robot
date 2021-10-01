@@ -41,7 +41,12 @@ kotlin {
 
 
         @Suppress("UNUSED_VARIABLE")
-        val jvmMain by getting
+        val jvmMain by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2")
+
+            }
+        }
 
         @Suppress("UNUSED_VARIABLE")
         val jvmTest by getting
@@ -50,6 +55,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
             }
         }
 
