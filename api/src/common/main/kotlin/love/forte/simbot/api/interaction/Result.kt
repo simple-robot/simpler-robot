@@ -2,7 +2,15 @@
 
 package love.forte.simbot.api.interaction
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
 
@@ -46,12 +54,19 @@ public object EmptyResult : Result<Any?> {
     override val exception: Throwable? get() = null
 }
 
-public data class ErrorResult(override val exception: Throwable) : Result<Nothing> {
+/**
+ * 一次失败的结果，始终会得到一个 [异常][exception]。
+ */
+public data class ErrorResult(override val exception: Throwable) :
+    Result<Nothing> {
     override val value: Nothing
         get() = throw exception
 }
 
-
+/**
+ * 一个成功的结果，不存在 [异常][exception].
+ */
+@Serializable
 public data class SuccessResult<T>(override val value: T) : Result<T> {
     override val exception: Throwable?
         get() = null
@@ -59,11 +74,11 @@ public data class SuccessResult<T>(override val value: T) : Result<T> {
 
 
 /**
- * "未来"结果，即当前结果并非瞬时，而是具有延期性的，比如一个异步任务的结果。
+ * "未来"的结果，即当前结果并非瞬时，而是具有延期性的，比如一个异步任务的结果。
  *
  */
 public interface FutureResult<T> : Result<T> {
-    // Callbacks
+    // Callbacks ?
 }
 
 

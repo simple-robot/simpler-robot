@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") //version "1.5.31"
     id("org.jetbrains.dokka") version "1.5.30"
+    kotlin("plugin.serialization") version "1.5.31" apply false
 }
 
 
@@ -21,9 +22,14 @@ allprojects {
     println("Project: $this")
 }
 
-fun Project.src(base: String) = File(projectDir, "src/$base")
-inline val File.main get() = File(this, "main/kotlin")
-inline val File.test get() = File(this, "test/kotlin")
-
+// buildscript {
+//     repositories { mavenCentral() }
+//
+//     dependencies {
+//         val kotlinVersion = "1.5.31"
+//         classpath(kotlin("gradle-plugin", version = kotlinVersion))
+//         classpath(kotlin("serialization", version = kotlinVersion))
+//     }
+// }
 
 

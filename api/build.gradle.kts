@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization") // version "1.5.31"
     id("org.jetbrains.dokka")
 }
 
@@ -9,6 +10,7 @@ version = "3.0.0-preview"
 repositories {
     mavenCentral()
 }
+
 
 kotlin {
     // 严格模式
@@ -25,6 +27,7 @@ kotlin {
         testRuns.all {
             executionTask.configure {
                 useJUnit()
+                // useJUnitPlatform()
             }
         }
     }
@@ -34,6 +37,8 @@ kotlin {
             languageSettings {
                 optIn("kotlin.RequiresOptIn")
             }
+
+
             // Set src dir like xxx/main/kotlin, xxx/test/kotlin
             val (target, source) = name.toTargetAndSource()
             kotlin.setSrcDirs(project.srcList(source, target))
@@ -49,13 +54,18 @@ kotlin {
         }
 
         @Suppress("UNUSED_VARIABLE")
-        val jvmTest by getting
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit"))
+            }
+        }
 
         @Suppress("UNUSED_VARIABLE")
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.0")
             }
         }
 
@@ -64,6 +74,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
             }
         }
     }

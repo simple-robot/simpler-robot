@@ -1,5 +1,6 @@
 plugins {
-    kotlin("multiplatform") // version "1.5.31"
+    kotlin("multiplatform")
+    id("org.jetbrains.dokka")
 }
 
 group = "love.forte.commons"
@@ -59,5 +60,9 @@ kotlin {
                 implementation(kotlin("test-annotations-common"))
             }
         }
+    }
+    tasks.dokkaHtml {
+        val root = rootProject.rootDir
+        outputDirectory.set(File(root, "dokkaOutput/${project.name}"))
     }
 }
