@@ -118,7 +118,20 @@ public interface Channel : KhlObjects, GroupInfo {
             }
         }
     }
+
+    /**
+     * [Channel] 的类型，一般出现在事件中。
+     */
+    @Serializable
+    public enum class Type {
+        GROUP, PERSON,
+    }
 }
+
+
+public inline val Channel.Type.isPrivate: Boolean get() = this == Channel.Type.PERSON
+public inline val Channel.Type.isPerson: Boolean get() = isPrivate
+public inline val Channel.Type.isGroup: Boolean get() = this == Channel.Type.GROUP
 
 
 

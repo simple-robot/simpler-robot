@@ -25,6 +25,8 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import love.forte.simbot.component.kaiheila.KhlBot
+import love.forte.simbot.component.kaiheila.objects.Channel
 import love.forte.simbot.component.kaiheila.objects.Role
 import love.forte.simbot.component.kaiheila.objects.User
 import java.util.*
@@ -42,10 +44,16 @@ import java.util.*
 public interface Event<E : Event.Extra> {
 
     /**
-     * 消息频道类型, `GROUP` 为频道消息
+     * 每个事件的出现，都会是对应的某个BOT所触发的。
+     *
+     */
+    val bot: KhlBot
+
+    /**
+     * 消息频道类型.
      */
     @SerialName("channel_type")
-    val channelType: String
+    val channelType: Channel.Type
 
     /**
      * 事件的类型。
@@ -251,11 +259,18 @@ public interface Event<E : Event.Extra> {
 }
 
 
+public interface BotInitialized {
+    /**
+     * bot应当只能初始化一次。
+     */
+    var bot: KhlBot
+}
+
 
 @Serializable
 public data class SimpleEvent<E : Event.Extra>(
     @SerialName("channel_type")
-    override val channelType: String,
+    override val channelType: Channel.Type,
     override val type: Event.Type,
     @SerialName("target_id")
     override val targetId: String,
@@ -268,7 +283,9 @@ public data class SimpleEvent<E : Event.Extra>(
     override val msgTimestamp: Long,
     override val nonce: String,
     override val extra: E,
-) : Event<E>
+) : Event<E>, BotInitialized {
+    override lateinit var bot: KhlBot
+}
 
 
 

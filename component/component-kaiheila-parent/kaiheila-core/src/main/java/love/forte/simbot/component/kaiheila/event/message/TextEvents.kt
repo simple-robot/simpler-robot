@@ -17,6 +17,8 @@ package love.forte.simbot.component.kaiheila.event.message
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.events.MessageGet
+import love.forte.simbot.component.kaiheila.KhlBot
+import love.forte.simbot.component.kaiheila.event.BotInitialized
 import love.forte.simbot.component.kaiheila.event.Event
 
 
@@ -35,17 +37,23 @@ public interface MessageEventExtra : Event.Extra.Text
  * 消息相关事件接口
  *
  */
-public interface MessageEvent<E : MessageEventExtra> : Event<E>, MessageGet {
+public interface MessageEvent<E : MessageEventExtra> : Event<E>, MessageGet, BotInitialized {
     override val accountInfo: AccountInfo
         get() = extra.author
 
     override val botInfo: BotInfo
-        get() = TODO("Not yet implemented")
+        get() = bot
 
     override val id: String
         get() = msgId
 
     override val time: Long
         get() = msgTimestamp
+
+}
+
+
+public abstract class AbstractMessageEvent<E : MessageEventExtra> : MessageEvent<E> {
+    override lateinit var bot: KhlBot
 
 }

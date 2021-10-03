@@ -19,11 +19,11 @@ import kotlin.coroutines.CoroutineContext
 
 
 /**
+ * Key.
  * @author ForteScarlet
  */
-public class CoroutineLogger(val logger: Logger) : CoroutineContext.Element {
-    override val key: CoroutineContext.Key<*>
-        get() = Key
+public class CoroutineLogger(logger: Logger) : CoroutineContext.Element, Logger by logger {
+    override val key: CoroutineContext.Key<*> get() = Key
 
     companion object Key : CoroutineContext.Key<CoroutineLogger>
 }

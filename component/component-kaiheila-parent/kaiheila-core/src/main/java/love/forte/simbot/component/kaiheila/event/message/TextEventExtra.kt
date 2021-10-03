@@ -14,13 +14,22 @@
 
 package love.forte.simbot.component.kaiheila.event.message
 
+import catcode.Neko
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.api.message.MessageContent
-import love.forte.simbot.api.message.events.MessageGet
+import love.forte.simbot.api.message.assists.Flag
+import love.forte.simbot.api.message.assists.FlagContent
+import love.forte.simbot.api.message.assists.Permissions
+import love.forte.simbot.api.message.assists.flag
+import love.forte.simbot.api.message.containers.GroupAccountInfo
+import love.forte.simbot.api.message.containers.GroupBotInfo
+import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.events.*
 import love.forte.simbot.component.kaiheila.event.Event
 import love.forte.simbot.component.kaiheila.event.EventLocatorRegistrarCoordinate
+import love.forte.simbot.component.kaiheila.objects.Channel
 import love.forte.simbot.component.kaiheila.objects.Role
 import love.forte.simbot.component.kaiheila.objects.User
 
@@ -49,21 +58,94 @@ public data class TextEventExtra(
 
 
 @Serializable
-public data class TextEvent(
-    @SerialName("channel_type")
-    override val channelType: String,
-    @SerialName("target_id")
-    override val targetId: String,
-    @SerialName("author_id")
-    override val authorId: String,
-    override val content: String,
-    @SerialName("msg_id")
-    override val msgId: String,
-    @SerialName("msg_timestamp")
-    override val msgTimestamp: Long,
-    override val nonce: String,
-    override val extra: TextEventExtra,
-) : MessageEvent<TextEventExtra> {
+public sealed class TextEvent : AbstractMessageEvent<TextEventExtra>() {
+
+    /**
+     * 群消息.
+     */
+    @Serializable
+    public data class Group(
+        @SerialName("target_id")
+        override val targetId: String,
+        @SerialName("author_id")
+        override val authorId: String,
+        override val content: String,
+        @SerialName("msg_id")
+        override val msgId: String,
+        @SerialName("msg_timestamp")
+        override val msgTimestamp: Long,
+        override val nonce: String,
+        override val extra: TextEventExtra,
+    ) : TextEvent(), GroupMsg {
+
+        override val channelType: Channel.Type
+            get() = Channel.Type.GROUP
+
+
+        override val accountInfo: GroupAccountInfo
+            get() = TODO("Not yet implemented")
+        override val groupInfo: GroupInfo
+            get() = TODO("Not yet implemented")
+        override val permission: Permissions
+            get() = TODO("Not yet implemented")
+        override val botInfo: GroupBotInfo
+            get() = TODO("Not yet implemented")
+
+        override val groupMsgType: GroupMsg.Type
+            get() = GroupMsg.Type.NORMAL
+
+        override val flag: MessageGet.MessageFlag<GroupMsg.FlagContent> =
+            MessageFlag(GroupMsgIdFlagContent(msgId))
+
+        companion object : EventLocatorRegistrarCoordinate<Group> {
+            override val type: Event.Type get() = Event.Type.TEXT
+
+            override val extraType: String
+                get() = type.type.toString()
+
+            override fun coordinateSerializer(): KSerializer<Group> = serializer()
+        }
+    }
+
+
+    /**
+     * 私聊消息.
+     */
+    @Serializable
+    public data class Private(
+        @SerialName("target_id")
+        override val targetId: String,
+        @SerialName("author_id")
+        override val authorId: String,
+        override val content: String,
+        @SerialName("msg_id")
+        override val msgId: String,
+        @SerialName("msg_timestamp")
+        override val msgTimestamp: Long,
+        override val nonce: String,
+        override val extra: TextEventExtra,
+    ) : TextEvent(), PrivateMsg {
+
+        override val channelType: Channel.Type
+            get() = Channel.Type.PERSON
+
+        override val privateMsgType: PrivateMsg.Type
+            get() = PrivateMsg.Type.FRIEND
+
+        override val flag: MessageGet.MessageFlag<PrivateMsg.FlagContent> =
+            MessageFlag(PrivateMsgIdFlagContent(msgId))
+
+        companion object : EventLocatorRegistrarCoordinate<Private> {
+            override val type: Event.Type get() = Event.Type.TEXT
+
+            override val extraType: String
+                get() = type.type.toString()
+
+            override fun coordinateSerializer(): KSerializer<Private> = serializer()
+        }
+    }
+
+
     override val type: Event.Type get() = Event.Type.TEXT
 
     override val originalData: String
@@ -71,51 +153,27 @@ public data class TextEvent(
 
     override val msgContent: MessageContent
         get() = TODO("Not yet implemented")
-    override val flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>
+
+    // override val flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent> =
+
+}
+
+internal class MessageFlag<F : MessageGet.MessageFlagContent>(override val flag: F) : MessageGet.MessageFlag<F>
+
+
+// TODO
+class TextEventMessageContent() : MessageContent {
+    override val msg: String
         get() = TODO("Not yet implemented")
 
-
-    companion object : EventLocatorRegistrarCoordinate<TextEvent> {
-        override val type: Event.Type get() = Event.Type.TEXT
-
-        override val extraType: String
-            get() = type.type.toString()
-
-        override fun coordinateSerializer(): KSerializer<TextEvent> = serializer()
+    override fun equals(other: Any?): Boolean {
+        TODO("Not yet implemented")
     }
+
+    override val cats: List<Neko>
+        get() = TODO("Not yet implemented")
 }
 
-/*
-{
-    "s": 0,
-    "d": {
-        "channel_type": "GROUP",
-        "type": 1,
-        "target_id": "xxxxxx",
-        "author_id": "xxxxx",
-        "content": "dddd",
-        "msg_id": "67637d4c-xxxx-xxxx-xxxx-xxxxx",
-        "msg_timestamp": 1607674740160,
-        "nonce": "",
-        "extra": {
-            "type": 1,
-            "guild_id": "xxxxx",
-            "channel_name": "文字频道",
-            "mention": [],
-            "mention_all": false,
-            "mention_roles": [],
-            "mention_here": false,
-            "code": "",
-            "author": {
-                "identify_num": "xxxxx",
-                "avatar": "https://img.kaiheila.cn/avatars/2020-11/r0j9.jpg/icon",
-                "username": "xxxxx",
-                "id": "xxxxx",
-                "nickname": "xxxxx",
-                "roles": []
-            }
-        }
-    },
-    "sn": 2199
-}
- */
+
+
+
