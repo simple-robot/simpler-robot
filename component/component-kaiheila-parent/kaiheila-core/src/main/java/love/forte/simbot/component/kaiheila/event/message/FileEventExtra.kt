@@ -40,31 +40,11 @@ public data class FileEventExtra(
     /**
      * 附件
      */
-    override val attachments: FileAttachments,
+    override val attachments: Attachments,
     override val author: User,
-    ) : AttachmentsMessageEventExtra {
+    ) : AttachmentsMessageEventExtra<Attachments> {
 
 }
 
 
-/**
- *
- * 视频消息的资源信息。
- *
- */
-@Serializable
-public data class FileAttachments(
-    override val type: String,
-    override val name: String,
-    override val url: String,
-    /** 文件格式 */
-    @SerialName("file_type")
-    val fileType: String,
-    override val size: Long,
-    /** 视频时长（s） */
-    val duration: Int,
-    /** 视频宽度 */
-    val width: Int,
-    /** 视频高度 */
-    val height: Int,
-) : Attachments
+

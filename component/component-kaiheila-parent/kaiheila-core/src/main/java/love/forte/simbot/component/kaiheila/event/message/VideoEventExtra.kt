@@ -14,8 +14,22 @@
 
 package love.forte.simbot.component.kaiheila.event.message
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+import love.forte.simbot.api.message.MessageContent
+import love.forte.simbot.api.message.assists.Permissions
+import love.forte.simbot.api.message.containers.GroupAccountInfo
+import love.forte.simbot.api.message.containers.GroupBotInfo
+import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.events.*
+import love.forte.simbot.component.kaiheila.event.Event
+import love.forte.simbot.component.kaiheila.event.EventLocator
+import love.forte.simbot.component.kaiheila.event.EventLocatorRegistrarCoordinate
+import love.forte.simbot.component.kaiheila.event.registerCoordinate
 import love.forte.simbot.component.kaiheila.objects.Attachments
+import love.forte.simbot.component.kaiheila.objects.Channel
 import love.forte.simbot.component.kaiheila.objects.Role
 import love.forte.simbot.component.kaiheila.objects.User
 
@@ -25,64 +39,182 @@ import love.forte.simbot.component.kaiheila.objects.User
  *
  * @author ForteScarlet
  */
+@Serializable
 public data class VideoEventExtra(
-    override val type: Int,
-
-    /**
-     * Unknown field.
-     */
-    val code: String,
     @SerialName("guild_id")
     override val guildId: String,
-    /**
-     * 附件
-     */
-    val attachments: Attachments,
+    @SerialName("channel_name")
+    override val channelName: String,
+    override val mention: List<String>,
+    @SerialName("mention_all")
+    override val mentionAll: Boolean,
+    @SerialName("mention_roles")
+    override val mentionRoles: List<Role>,
+    @SerialName("mention_here")
+    override val mentionHere: Boolean,
+    /** 附件信息 */
+    override val attachments: VideoAttachments,
     override val author: User,
-) : MessageEventExtra {
-    override val channelName: String get() = ""
-    override val mention: List<String> get() = emptyList()
-    override val mentionAll: Boolean get() = false
-    override val mentionRoles: List<Role> get() = emptyList()
-    override val mentionHere: Boolean get() = false
+) : MessageEventExtra, AttachmentsMessageEventExtra<VideoAttachments> {
+    override val type: Int get() = Event.Type.VIDEO.type
+
 }
 
-/*
-{
-    "s": 0,
-    "d": {
-        "channel_type": "GROUP",
-        "type": 3,
-        "target_id": "xxxxx",
-        "author_id": "xxxxx",
-        "content": "https://img.kaiheila.cn/attachments/2020-12/11/asd.mp4",
-        "msg_id": "67637d4c-xxxx-xxxx-xxxx-xxxxx",
-        "msg_timestamp": 1607679613599,
-        "nonce": "",
-        "extra": {
-            "type": 3,
-            "guild_id": "xxxx",
-            "code": "",
-            "attachments": {
-                "type": "video",
-                "url": "https://img.kaiheila.cn/attachments/2020-12/11/asd.mp4",
-                "name": "002iQMhagx07Fx0S41200323o0E010.mp4",
-                "file_type": "video/mp4",
-                "size": 722882,
-                "duration": 15.673,
-                "width": 360,
-                "height": 635
-            },
-            "author": {
-                "identify_num": "xxxxx",
-                "avatar": "https://img.kaiheila.cn/avatars/2020-11/r20f20j9.jpg/icon",
-                "username": "xxxxx",
-                "id": "xxxxx",
-                "nickname": "xxxxx",
-                "roles": []
-            }
-        }
-    },
-    "sn": 2582
-}
+/**
+ * 视频消息的资源信息。
  */
+@Serializable
+public data class VideoAttachments(
+    override val type: String,
+    override val name: String,
+    override val url: String,
+    /** 文件格式 */
+    @SerialName("file_type")
+    val fileType: String,
+    override val size: Long,
+    /** 视频时长（s） */
+    val duration: Int,
+    /** 视频宽度 */
+    val width: Int,
+    /** 视频高度 */
+    val height: Int,
+) : Attachments
+
+
+/**
+ * 视频消息事件.
+ */
+@Serializable
+public sealed class VideoEventImpl :  AbstractMessageEvent<VideoEventExtra>(), VideoEvent {
+
+    override val type: Event.Type
+        get() = Event.Type.VIDEO
+
+
+    /**
+     * 群消息.
+     */
+    @Serializable
+    public data class Group(
+        @SerialName("target_id")
+        override val targetId: String,
+        @SerialName("author_id")
+        override val authorId: String,
+        override val content: String,
+        @SerialName("msg_id")
+        override val msgId: String,
+        @SerialName("msg_timestamp")
+        override val msgTimestamp: Long,
+        override val nonce: String,
+        override val extra: VideoEventExtra,
+    ) : VideoEventImpl(), GroupMsg {
+
+
+        override val channelType: Channel.Type get() = Channel.Type.GROUP
+        override val groupMsgType: GroupMsg.Type = if (authorId == "1") GroupMsg.Type.SYS else GroupMsg.Type.NORMAL
+
+        @Transient
+        override val flag: MessageGet.MessageFlag<GroupMsg.FlagContent> =
+            MessageFlag(GroupMsgIdFlagContent(msgId))
+
+        //region GroupAccountInfo Ins
+        private inner class ImageEventGroupAccountInfo : GroupAccountInfo, GroupInfo, GroupBotInfo {
+            override val accountCode: String get() = extra.author.accountCode
+            override val accountNickname: String get() = extra.author.accountNickname
+            override val accountRemark: String get() = extra.author.accountRemark
+            override val accountAvatar: String get() = extra.author.accountAvatar
+
+            @Suppress("DEPRECATION")
+            override val accountTitle: String?
+                get() = extra.author.accountTitle
+
+            override val botCode: String get() = bot.botCode
+            override val botName: String get() = bot.botName
+            override val botAvatar: String? get() = bot.botAvatar
+
+            @Suppress("DEPRECATION")
+            override val permission: Permissions
+                get() = extra.author.permission
+
+            override val groupAvatar: String?
+                get() = null // TODO("Not yet implemented")
+
+            override val parentCode: String get() = extra.guildId
+            override val groupCode: String get() = targetId
+            override val groupName: String get() = extra.channelName
+        }
+
+        @Transient
+        private val textEventGroupAccountInfo = ImageEventGroupAccountInfo()
+
+        override val permission: Permissions get() = textEventGroupAccountInfo.permission
+        override val accountInfo: GroupAccountInfo get() = textEventGroupAccountInfo
+        override val groupInfo: GroupInfo get() = textEventGroupAccountInfo
+        override val botInfo: GroupBotInfo get() = textEventGroupAccountInfo
+        //endregion
+
+        /**
+         * Event coordinate.
+         */
+        companion object Coordinate : EventLocatorRegistrarCoordinate<Group> {
+            override val type: Event.Type get() = Event.Type.TEXT
+
+            override val channelType: Channel.Type get() = Channel.Type.GROUP
+
+            override val extraType: String
+                get() = type.type.toString()
+
+            override fun coordinateSerializer(): KSerializer<Group> = serializer()
+        }
+    }
+
+    /**
+     * 私聊消息.
+     */
+    @Serializable
+    public data class Person(
+        @SerialName("target_id")
+        override val targetId: String,
+        @SerialName("author_id")
+        override val authorId: String,
+        override val content: String,
+        @SerialName("msg_id")
+        override val msgId: String,
+        @SerialName("msg_timestamp")
+        override val msgTimestamp: Long,
+        override val nonce: String,
+        override val extra: VideoEventExtra,
+    ) : VideoEventImpl(), PrivateMsg {
+        override val channelType: Channel.Type
+            get() = Channel.Type.PERSON
+
+        override val privateMsgType: PrivateMsg.Type
+            get() = PrivateMsg.Type.FRIEND
+
+        override val flag: MessageGet.MessageFlag<PrivateMsg.FlagContent> = MessageFlag(PrivateMsgIdFlagContent(msgId))
+
+        companion object : EventLocatorRegistrarCoordinate<Person> {
+            override val type: Event.Type get() = Event.Type.TEXT
+
+            override val channelType: Channel.Type get() = Channel.Type.PERSON
+
+            override val extraType: String
+                get() = type.type.toString()
+
+            override fun coordinateSerializer(): KSerializer<Person> = serializer()
+        }
+    }
+
+
+    protected override fun initMessageContent(): MessageContent = attachmentsEventMessageContent("video", extra)
+
+    internal companion object {
+        internal fun EventLocator.registerCoordinates() {
+            registerCoordinate(Group)
+            registerCoordinate(Person)
+        }
+    }
+
+
+
+}

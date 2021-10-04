@@ -26,7 +26,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import love.forte.simbot.component.kaiheila.objects.*
-import org.jetbrains.annotations.TestOnly
 import java.util.concurrent.CopyOnWriteArraySet
 
 
@@ -53,7 +52,7 @@ internal fun MutableCollection<SerializerModuleRegistrar>.init() {
 public data class KaiheilaJson(val json: Json)
 
 
-@get:TestOnly
+// @get:TestOnly
 public val khlJson: Json by lazy {
     Json {
         serializerModuleRegistrars.init()

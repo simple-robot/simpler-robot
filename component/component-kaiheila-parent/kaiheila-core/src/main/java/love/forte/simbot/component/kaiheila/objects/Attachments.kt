@@ -18,7 +18,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
 import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
 
 
@@ -53,16 +52,17 @@ public interface Attachments {
     companion object : SerializerModuleRegistrar {
         override fun SerializersModuleBuilder.serializerModule() {
             polymorphic(Attachments::class) {
-                subclass(AttachmentsImpl::class)
-                default { AttachmentsImpl.serializer() }
+                val implSer = SimpleAttachments.serializer()
+                subclass(SimpleAttachments::class, implSer)
+                default { implSer }
             }
         }
     }
 }
 
 @Serializable
-@SerialName(AttachmentsImpl.SERIAL_NAME)
-public data class AttachmentsImpl(
+@SerialName(SimpleAttachments.SERIAL_NAME)
+public data class SimpleAttachments(
     override val type: String,
     override val url: String,
     override val name: String,

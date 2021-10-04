@@ -22,7 +22,9 @@ import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.component.kaiheila.KhlBot
 import love.forte.simbot.component.kaiheila.event.BotInitialized
 import love.forte.simbot.component.kaiheila.event.Event
+import love.forte.simbot.component.kaiheila.event.EventLocator
 import love.forte.simbot.component.kaiheila.objects.Attachments
+import love.forte.simbot.component.kaiheila.objects.Channel
 
 
 /**
@@ -37,8 +39,8 @@ public interface MessageEventExtra : Event.Extra.Text
  * 与资源相关的extra.
  *
  */
-public interface AttachmentsMessageEventExtra : MessageEventExtra {
-    val attachments: Attachments
+public interface AttachmentsMessageEventExtra<A : Attachments> : MessageEventExtra {
+    val attachments: A
 }
 
 
@@ -47,8 +49,21 @@ public interface AttachmentsMessageEventExtra : MessageEventExtra {
  *
  */
 public interface MessageEvent<E : MessageEventExtra> : Event<E>, MessageGet, BotInitialized {
+    override var bot: KhlBot
+    override val channelType: Channel.Type
+    override val type: Event.Type
+    override val targetId: String
+    override val authorId: String
+    override val content: String
+    override val msgId: String
+    override val msgTimestamp: Long
+    override val nonce: String
+    override val extra: E
+    override val originalData: String
+    override val msgContent: MessageContent
+    override val flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>
     override val accountInfo: AccountInfo
-        get() = extra.author
+
 
     override val botInfo: BotInfo
         get() = bot
@@ -75,9 +90,73 @@ public abstract class AbstractMessageEvent<E : MessageEventExtra> : MessageEvent
             return _msgContent
         }
 
+    override val accountInfo: AccountInfo
+        get() = extra.author
+
     protected abstract fun initMessageContent(): MessageContent
     override val originalData: String get() = toString()
 }
 
 
 internal class MessageFlag<F : MessageGet.MessageFlagContent>(override val flag: F) : MessageGet.MessageFlag<F>
+
+
+public fun EventLocator.registerCoordinates() {
+    TextEventImpl.run {
+        registerCoordinates()
+    }
+
+    ImageEventImpl.run {
+        registerCoordinates()
+    }
+
+    VideoEventImpl.run {
+        registerCoordinates()
+    }
+
+
+
+    TODO("Register message event coordinates")
+
+}
+
+
+//region External interface
+//
+
+public interface MessageEventExternal
+
+/**
+ * 纯文本消息事件。
+ */
+public interface TextEvent : MessageEvent<TextEventExtra>, MessageEventExternal
+
+/**
+ * 图片消息事件。
+ */
+public interface ImageEvent : MessageEvent<ImageEventExtra>, MessageEventExternal
+
+/**
+ * 文件消息事件。
+ */
+public interface FileEvent : MessageEvent<FileEventExtra>, MessageEventExternal
+
+/**
+ * 视频消息事件。
+ */
+public interface VideoEvent : MessageEvent<VideoEventExtra>, MessageEventExternal
+
+/**
+ * 卡片消息事件。
+ */
+public interface CardEvent : MessageEvent<CardEventExtra>, MessageEventExternal
+
+/**
+ * `KMarkdown` 消息事件。
+ */
+public interface KMarkdownEvent : MessageEvent<KMarkdownEventExtra>, MessageEventExternal
+
+//endregion
+
+
+

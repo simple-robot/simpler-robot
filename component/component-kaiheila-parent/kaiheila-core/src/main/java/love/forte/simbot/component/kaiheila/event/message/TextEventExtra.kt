@@ -25,7 +25,9 @@ import love.forte.simbot.api.message.containers.GroupBotInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.*
 import love.forte.simbot.component.kaiheila.event.Event
+import love.forte.simbot.component.kaiheila.event.EventLocator
 import love.forte.simbot.component.kaiheila.event.EventLocatorRegistrarCoordinate
+import love.forte.simbot.component.kaiheila.event.registerCoordinate
 import love.forte.simbot.component.kaiheila.objects.Channel
 import love.forte.simbot.component.kaiheila.objects.Role
 import love.forte.simbot.component.kaiheila.objects.User
@@ -57,7 +59,7 @@ public data class TextEventExtra(
  * 文本事件。
  */
 @Serializable
-public sealed class TextEvent : AbstractMessageEvent<TextEventExtra>() {
+public sealed class TextEventImpl : AbstractMessageEvent<TextEventExtra>(), TextEvent {
 
     /**
      * 群消息.
@@ -75,7 +77,7 @@ public sealed class TextEvent : AbstractMessageEvent<TextEventExtra>() {
         override val msgTimestamp: Long,
         override val nonce: String,
         override val extra: TextEventExtra,
-    ) : TextEvent(), GroupMsg {
+    ) : TextEventImpl(), GroupMsg {
 
         override val channelType: Channel.Type get() = Channel.Type.GROUP
         override val groupMsgType: GroupMsg.Type = if (authorId == "1") GroupMsg.Type.SYS else GroupMsg.Type.NORMAL
@@ -155,7 +157,7 @@ public sealed class TextEvent : AbstractMessageEvent<TextEventExtra>() {
         override val msgTimestamp: Long,
         override val nonce: String,
         override val extra: TextEventExtra,
-    ) : TextEvent(), PrivateMsg {
+    ) : TextEventImpl(), PrivateMsg {
 
         override val channelType: Channel.Type
             get() = Channel.Type.PERSON
@@ -184,6 +186,13 @@ public sealed class TextEvent : AbstractMessageEvent<TextEventExtra>() {
     override val text: String get() = content
 
     protected override fun initMessageContent(): MessageContent = textEventMessageContent(content, extra)
+
+    internal companion object {
+        internal fun EventLocator.registerCoordinates() {
+            registerCoordinate(Group)
+            registerCoordinate(Person)
+        }
+    }
 }
 
 

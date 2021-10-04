@@ -25,7 +25,9 @@ import love.forte.simbot.api.message.containers.GroupBotInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.*
 import love.forte.simbot.component.kaiheila.event.Event
+import love.forte.simbot.component.kaiheila.event.EventLocator
 import love.forte.simbot.component.kaiheila.event.EventLocatorRegistrarCoordinate
+import love.forte.simbot.component.kaiheila.event.registerCoordinate
 import love.forte.simbot.component.kaiheila.objects.Attachments
 import love.forte.simbot.component.kaiheila.objects.Channel
 import love.forte.simbot.component.kaiheila.objects.Role
@@ -36,13 +38,8 @@ import love.forte.simbot.component.kaiheila.objects.User
  *
  * @author ForteScarlet
  */
+@Serializable
 public data class ImageEventExtra(
-
-    /**
-     * Unknown field.
-     */
-    val code: String,
-
     @SerialName("guild_id")
     override val guildId: String,
     @SerialName("channel_name")
@@ -57,9 +54,9 @@ public data class ImageEventExtra(
     /**
      * 附件
      */
-    val attachments: Attachments,
+    override val attachments: Attachments,
     override val author: User,
-) : MessageEventExtra {
+) : MessageEventExtra, AttachmentsMessageEventExtra<Attachments> {
     override val type: Int get() = Event.Type.IMAGE.type
 
 }
@@ -69,7 +66,9 @@ public data class ImageEventExtra(
  * 图片事件。
  */
 @Serializable
-public sealed class ImageEvent : AbstractMessageEvent<ImageEventExtra>() {
+public sealed class ImageEventImpl : AbstractMessageEvent<ImageEventExtra>(), ImageEvent {
+    override val type: Event.Type
+        get() = Event.Type.IMAGE
 
     /**
      * 群消息.
@@ -86,8 +85,10 @@ public sealed class ImageEvent : AbstractMessageEvent<ImageEventExtra>() {
         @SerialName("msg_timestamp")
         override val msgTimestamp: Long,
         override val nonce: String,
-        override val extra: TextEventExtra,
-    ) : TextEvent(), GroupMsg {
+        override val extra: ImageEventExtra,
+    ) : ImageEventImpl(), GroupMsg {
+
+
         override val channelType: Channel.Type get() = Channel.Type.GROUP
         override val groupMsgType: GroupMsg.Type = if (authorId == "1") GroupMsg.Type.SYS else GroupMsg.Type.NORMAL
 
@@ -134,7 +135,7 @@ public sealed class ImageEvent : AbstractMessageEvent<ImageEventExtra>() {
         /**
          * Event coordinate.
          */
-        companion object Coordinate : EventLocatorRegistrarCoordinate<ImageEvent.Group> {
+        companion object Coordinate : EventLocatorRegistrarCoordinate<Group> {
             override val type: Event.Type get() = Event.Type.TEXT
 
             override val channelType: Channel.Type get() = Channel.Type.GROUP
@@ -142,7 +143,7 @@ public sealed class ImageEvent : AbstractMessageEvent<ImageEventExtra>() {
             override val extraType: String
                 get() = type.type.toString()
 
-            override fun coordinateSerializer(): KSerializer<ImageEvent.Group> = serializer()
+            override fun coordinateSerializer(): KSerializer<Group> = serializer()
         }
     }
 
@@ -161,8 +162,8 @@ public sealed class ImageEvent : AbstractMessageEvent<ImageEventExtra>() {
         @SerialName("msg_timestamp")
         override val msgTimestamp: Long,
         override val nonce: String,
-        override val extra: TextEventExtra,
-    ) : TextEvent(), PrivateMsg {
+        override val extra: ImageEventExtra,
+    ) : ImageEventImpl(), PrivateMsg {
         override val channelType: Channel.Type
             get() = Channel.Type.PERSON
 
@@ -171,7 +172,7 @@ public sealed class ImageEvent : AbstractMessageEvent<ImageEventExtra>() {
 
         override val flag: MessageGet.MessageFlag<PrivateMsg.FlagContent> = MessageFlag(PrivateMsgIdFlagContent(msgId))
 
-        companion object : EventLocatorRegistrarCoordinate<ImageEvent.Person> {
+        companion object : EventLocatorRegistrarCoordinate<Person> {
             override val type: Event.Type get() = Event.Type.TEXT
 
             override val channelType: Channel.Type get() = Channel.Type.PERSON
@@ -179,13 +180,18 @@ public sealed class ImageEvent : AbstractMessageEvent<ImageEventExtra>() {
             override val extraType: String
                 get() = type.type.toString()
 
-            override fun coordinateSerializer(): KSerializer<ImageEvent.Person> = serializer()
+            override fun coordinateSerializer(): KSerializer<Person> = serializer()
         }
     }
 
 
-    protected override fun initMessageContent(): MessageContent {
-        TODO("Not yet implemented")
+    protected override fun initMessageContent(): MessageContent = attachmentsEventMessageContent("image", extra)
+
+    internal companion object {
+        internal fun EventLocator.registerCoordinates() {
+            registerCoordinate(Group)
+            registerCoordinate(Person)
+        }
     }
 
 }

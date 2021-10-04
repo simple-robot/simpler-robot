@@ -1,20 +1,29 @@
+@file:JvmName("MessageEventMessageContentUtil")
+
 package love.forte.simbot.component.kaiheila.event.message
 
-import catcode.CatCodeUtil
-import catcode.CatEncoder
-import catcode.Neko
-import catcode.cTo
+import catcode.*
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerializationStrategy
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.SerialKind
+import kotlinx.serialization.encoding.AbstractEncoder
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.serializer
 import love.forte.simbot.api.message.MessageContent
+import love.forte.simbot.component.kaiheila.khlJson
+import love.forte.simbot.component.kaiheila.objects.Attachments
 import love.forte.simbot.component.kaiheila.objects.Role
 import love.forte.simbot.component.kaiheila.utils.TextNeko
 import java.util.*
 
 /**
- * [TextEvent]'s MessageContent. 纯文本与mention的消息正文。
+ * [TextEventImpl]'s MessageContent. 纯文本与mention的消息正文。
  *
  */
-internal fun textEventMessageContent(content: String, extra: TextEventExtra): MessageContent {
-    val mentioned: Boolean = extra.mentionHere || extra.mentionAll || extra.mention.isNotEmpty() || extra.mentionRoles.isNotEmpty()
+public fun textEventMessageContent(content: String, extra: TextEventExtra): MessageContent {
+    val mentioned: Boolean =
+        extra.mentionHere || extra.mentionAll || extra.mention.isNotEmpty() || extra.mentionRoles.isNotEmpty()
     return if (mentioned) {
         TextEventMessageContentWithMention(content, extra)
     } else {
@@ -42,6 +51,10 @@ internal class TextEventMessageContentWithMention(private val content: String, p
     override val msg: String = mentionList.joinToString("") + CatEncoder.encodeText(content)
 
     override fun equals(other: Any?): Boolean {
+        if (other === this) {
+            return true
+        }
+
         if (other is TextEventMessageContent) {
             return if (mentionList.isEmpty()) content == other.content else false
         }
@@ -97,34 +110,101 @@ private fun TextEventExtra.toNekoList(): List<Neko> {
 }
 
 
+public inline fun <reified A : Attachments> attachmentsEventMessageContent(
+    attachmentType: String,
+    extra: AttachmentsMessageEventExtra<A>,
+): MessageContent {
+    return attachmentsEventMessageContent(attachmentType, extra, khlJson.serializersModule.serializer())
+
+}
 
 
-internal class AttachmentsEventMessageContent(private val extra: AttachmentsMessageEventExtra): MessageContent {
-
-    override val msg: String
-        get() = TODO("Not yet implemented")
-
-
-    override val cats: List<Neko>
-        get() = TODO("Not yet implemented")
-
-    override fun equals(other: Any?): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override fun hashCode(): Int {
-        return super.hashCode()
-    }
+public fun <A : Attachments> attachmentsEventMessageContent(
+    attachmentType: String,
+    extra: AttachmentsMessageEventExtra<A>,
+    serializationStrategy: SerializationStrategy<A>,
+): MessageContent {
+    return AttachmentsEventMessageContent(attachmentType, extra, serializationStrategy)
 }
 
 
 
+internal class AttachmentsEventMessageContent<A : Attachments>(
+    private val type: String,
+    private val extra: AttachmentsMessageEventExtra<A>,
+    serializationStrategy: SerializationStrategy<A>,
+) : MessageContent {
+
+    override val msg: String
+    override val cats: List<Neko>
+
+    init {
+        val neko = extra.attachments.toNeko(type, serializationStrategy)
+        msg = neko.toString()
+        cats = listOf(neko)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) {
+            return true
+        }
+
+        if (other is AttachmentsEventMessageContent<*>) {
+            return type == other.type
+                    && extra.attachments == other.extra.attachments
+        }
+
+        if (other is MessageContent) {
+            return msg == other.msg
+        }
+
+        return false
+    }
+
+    override fun hashCode(): Int = Objects.hash(type, extra)
+}
 
 
+@OptIn(ExperimentalSerializationApi::class)
+private fun <T : Attachments> T.toNeko(type: String, serializationStrategy: SerializationStrategy<T>): Neko {
+    val builder = CatCodeUtil.getNekoBuilder(type, true)
+    serializationStrategy.serialize(AttEncoder(builder), this)
+    return builder.build()
+}
 
 
+@OptIn(ExperimentalSerializationApi::class)
+private class AttEncoder(
+    private val nekoBuilder: CodeBuilder<Neko>,
+    override val serializersModule: SerializersModule = khlJson.serializersModule,
+) : AbstractEncoder() {
 
+    private var i = 0
+    private lateinit var name: String
+    private lateinit var kind: SerialKind
 
+    override fun encodeElement(descriptor: SerialDescriptor, index: Int): Boolean {
+        i = index
+        name = descriptor.getElementName(index)
+        kind = descriptor.kind
+        return true
+    }
+
+    override fun encodeValue(value: Any) {
+        val key = when (kind) {
+            // 暂时不序列化这些东西.
+            // PolymorphicKind.OPEN -> "SER_O_$name"
+            // PolymorphicKind.SEALED -> "SER_S_$name"
+            else -> name
+        }
+        nekoBuilder.key(key).value(value.toString())
+    }
+
+    override fun encodeNull() {
+        // Encode null, ignore.
+    }
+
+}
 
 
 private fun Role.toMentionNeko(): Neko {
