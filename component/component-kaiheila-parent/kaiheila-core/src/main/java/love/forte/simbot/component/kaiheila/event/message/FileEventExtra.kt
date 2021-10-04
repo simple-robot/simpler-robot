@@ -32,21 +32,39 @@ public data class FileEventExtra(
     override val guildId: String,
     @SerialName("channel_name")
     override val channelName: String = "",
-    override val author: User,
 
-    /**
-     * unknown field.
-     */
-    val code: String,
-
+    override val mention: List<String>,
+    override val mentionAll: Boolean,
+    override val mentionRoles: List<Role>,
+    override val mentionHere: Boolean,
     /**
      * 附件
      */
-    val attachments: Attachments,
+    override val attachments: FileAttachments,
+    override val author: User,
+    ) : AttachmentsMessageEventExtra {
 
-    ) : MessageEventExtra {
-    override val mention: List<String> get() = emptyList()
-    override val mentionAll: Boolean get() = false
-    override val mentionRoles: List<Role> get() = emptyList()
-    override val mentionHere: Boolean get() = false
 }
+
+
+/**
+ *
+ * 视频消息的资源信息。
+ *
+ */
+@Serializable
+public data class FileAttachments(
+    override val type: String,
+    override val name: String,
+    override val url: String,
+    /** 文件格式 */
+    @SerialName("file_type")
+    val fileType: String,
+    override val size: Long,
+    /** 视频时长（s） */
+    val duration: Int,
+    /** 视频宽度 */
+    val width: Int,
+    /** 视频高度 */
+    val height: Int,
+) : Attachments

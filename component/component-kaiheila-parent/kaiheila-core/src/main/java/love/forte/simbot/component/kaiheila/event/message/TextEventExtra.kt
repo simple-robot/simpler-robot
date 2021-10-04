@@ -14,15 +14,12 @@
 
 package love.forte.simbot.component.kaiheila.event.message
 
-import catcode.Neko
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import love.forte.simbot.api.message.MessageContent
-import love.forte.simbot.api.message.assists.Flag
-import love.forte.simbot.api.message.assists.FlagContent
 import love.forte.simbot.api.message.assists.Permissions
-import love.forte.simbot.api.message.assists.flag
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupBotInfo
 import love.forte.simbot.api.message.containers.GroupInfo
@@ -56,7 +53,9 @@ public data class TextEventExtra(
     override val type: Int get() = Event.Type.TEXT.type
 }
 
-
+/**
+ * 文本事件。
+ */
 @Serializable
 public sealed class TextEvent : AbstractMessageEvent<TextEventExtra>() {
 
@@ -78,41 +77,73 @@ public sealed class TextEvent : AbstractMessageEvent<TextEventExtra>() {
         override val extra: TextEventExtra,
     ) : TextEvent(), GroupMsg {
 
-        override val channelType: Channel.Type
-            get() = Channel.Type.GROUP
+        override val channelType: Channel.Type get() = Channel.Type.GROUP
+        override val groupMsgType: GroupMsg.Type = if (authorId == "1") GroupMsg.Type.SYS else GroupMsg.Type.NORMAL
 
-
-        override val accountInfo: GroupAccountInfo
-            get() = TODO("Not yet implemented")
-        override val groupInfo: GroupInfo
-            get() = TODO("Not yet implemented")
-        override val permission: Permissions
-            get() = TODO("Not yet implemented")
-        override val botInfo: GroupBotInfo
-            get() = TODO("Not yet implemented")
-
-        override val groupMsgType: GroupMsg.Type
-            get() = GroupMsg.Type.NORMAL
-
+        @Transient
         override val flag: MessageGet.MessageFlag<GroupMsg.FlagContent> =
             MessageFlag(GroupMsgIdFlagContent(msgId))
 
-        companion object : EventLocatorRegistrarCoordinate<Group> {
+
+        //region GroupAccountInfo Ins
+        private inner class TextEventGroupAccountInfo : GroupAccountInfo, GroupInfo, GroupBotInfo {
+            override val accountCode: String get() = extra.author.accountCode
+            override val accountNickname: String get() = extra.author.accountNickname
+            override val accountRemark: String get() = extra.author.accountRemark
+            override val accountAvatar: String get() = extra.author.accountAvatar
+
+            @Suppress("DEPRECATION")
+            override val accountTitle: String?
+                get() = extra.author.accountTitle
+
+            override val botCode: String get() = bot.botCode
+            override val botName: String get() = bot.botName
+            override val botAvatar: String? get() = bot.botAvatar
+
+            @Suppress("DEPRECATION")
+            override val permission: Permissions
+                get() = extra.author.permission
+
+            override val groupAvatar: String?
+                get() = null // TODO("Not yet implemented")
+
+            override val parentCode: String get() = extra.guildId
+            override val groupCode: String get() = targetId
+            override val groupName: String get() = extra.channelName
+        }
+
+
+        @Transient
+        private val textEventGroupAccountInfo = TextEventGroupAccountInfo()
+
+        override val permission: Permissions get() = textEventGroupAccountInfo.permission
+        override val accountInfo: GroupAccountInfo get() = textEventGroupAccountInfo
+        override val groupInfo: GroupInfo get() = textEventGroupAccountInfo
+        override val botInfo: GroupBotInfo get() = textEventGroupAccountInfo
+        //endregion
+
+
+        /**
+         * Event coordinate.
+         */
+        companion object Coordinate : EventLocatorRegistrarCoordinate<Group> {
             override val type: Event.Type get() = Event.Type.TEXT
+
+            override val channelType: Channel.Type get() = Channel.Type.GROUP
 
             override val extraType: String
                 get() = type.type.toString()
 
             override fun coordinateSerializer(): KSerializer<Group> = serializer()
         }
-    }
 
+    }
 
     /**
      * 私聊消息.
      */
     @Serializable
-    public data class Private(
+    public data class Person(
         @SerialName("target_id")
         override val targetId: String,
         @SerialName("author_id")
@@ -135,44 +166,28 @@ public sealed class TextEvent : AbstractMessageEvent<TextEventExtra>() {
         override val flag: MessageGet.MessageFlag<PrivateMsg.FlagContent> =
             MessageFlag(PrivateMsgIdFlagContent(msgId))
 
-        companion object : EventLocatorRegistrarCoordinate<Private> {
+        companion object : EventLocatorRegistrarCoordinate<Person> {
             override val type: Event.Type get() = Event.Type.TEXT
+
+            override val channelType: Channel.Type get() = Channel.Type.PERSON
 
             override val extraType: String
                 get() = type.type.toString()
 
-            override fun coordinateSerializer(): KSerializer<Private> = serializer()
+            override fun coordinateSerializer(): KSerializer<Person> = serializer()
         }
     }
 
 
     override val type: Event.Type get() = Event.Type.TEXT
 
-    override val originalData: String
-        get() = toString()
+    override val text: String get() = content
 
-    override val msgContent: MessageContent
-        get() = TODO("Not yet implemented")
-
-    // override val flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent> =
-
+    protected override fun initMessageContent(): MessageContent = textEventMessageContent(content, extra)
 }
 
-internal class MessageFlag<F : MessageGet.MessageFlagContent>(override val flag: F) : MessageGet.MessageFlag<F>
 
 
-// TODO
-class TextEventMessageContent() : MessageContent {
-    override val msg: String
-        get() = TODO("Not yet implemented")
-
-    override fun equals(other: Any?): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override val cats: List<Neko>
-        get() = TODO("Not yet implemented")
-}
 
 
 

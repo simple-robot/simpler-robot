@@ -100,6 +100,9 @@ public interface Role : KhlObjects, Comparable<Role> {
 }
 
 
+
+
+
 @Serializable
 @SerialName(RoleImpl.SERIAL_NAME)
 public data class RoleImpl(

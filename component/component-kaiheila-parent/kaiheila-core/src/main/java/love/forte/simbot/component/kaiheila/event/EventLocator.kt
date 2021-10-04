@@ -16,6 +16,7 @@ package love.forte.simbot.component.kaiheila.event
 
 import kotlinx.serialization.KSerializer
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.component.kaiheila.objects.Channel
 
 
 /**
@@ -35,7 +36,7 @@ public interface EventLocator {
      *
      * @throws TypeCastException 在[注册定位][registerCoordinate] 时不规范导致的类型转化异常
      */
-    fun locateAsEvent(type: Event.Type, extraType: String): KSerializer<out Event<*>>?
+    fun locateAsEvent(type: Event.Type, channelType: Channel.Type? = null, extraType: String): KSerializer<out Event<*>>?
 
     /**
      * 根据事件json中的部分数据来定位一个序列化器。
@@ -45,7 +46,7 @@ public interface EventLocator {
      *
      * @throws TypeCastException 在[注册定位][registerCoordinate] 时不规范导致的类型转化异常
      */
-    fun locateAsMsgGet(type: Event.Type, extraType: String): KSerializer<out MsgGet>?
+    fun locateAsMsgGet(type: Event.Type, channelType: Channel.Type? = null, extraType: String): KSerializer<out MsgGet>?
 
 
     /**
@@ -53,22 +54,28 @@ public interface EventLocator {
      *
      * @return 如果此定位已经存在，返回被替代的那个元素。
      */
-    fun <T> registerCoordinate(type: Event.Type, extraType: String, serializer: KSerializer<out T>): KSerializer<*>?
+    fun <T> registerCoordinate(type: Event.Type, channelType: Channel.Type? = null, extraType: String, serializer: KSerializer<out T>): KSerializer<*>?
             where T : Event<*>, T : MsgGet
 
 
 }
 
 
-public fun EventLocator.locateAsEvent(type: Int, extraType: String): KSerializer<out Event<*>>? =
-    locateAsEvent(Event.Type.byType(type), extraType)
+public fun EventLocator.locateAsEvent(coordinate: EventLocatorRegistrarCoordinate<*>): KSerializer<out Event<*>>? =
+    locateAsEvent(coordinate.type, coordinate.channelType, coordinate.extraType)
 
-public fun EventLocator.locateAsMsgGet(type: Int, extraType: String): KSerializer<out MsgGet>? =
-    locateAsMsgGet(Event.Type.byType(type), extraType)
+public fun EventLocator.locateAsMsgGet(coordinate: EventLocatorRegistrarCoordinate<*>): KSerializer<out MsgGet>? =
+    locateAsMsgGet(coordinate.type, coordinate.channelType, coordinate.extraType)
+
+public fun EventLocator.locateAsEvent(type: Int, channelType: Channel.Type? = null, extraType: String): KSerializer<out Event<*>>? =
+    locateAsEvent(Event.Type.byType(type), channelType, extraType)
+
+public fun EventLocator.locateAsMsgGet(type: Int, channelType: Channel.Type? = null, extraType: String): KSerializer<out MsgGet>? =
+    locateAsMsgGet(Event.Type.byType(type), channelType, extraType)
 
 
 public fun <T> EventLocator.registerCoordinate(coordinate: EventLocatorRegistrarCoordinate<T>): KSerializer<*>? where T : Event<*>, T : MsgGet =
-    registerCoordinate(coordinate.type, coordinate.extraType, coordinate.coordinateSerializer())
+    registerCoordinate(coordinate.type, coordinate.channelType, coordinate.extraType, coordinate.coordinateSerializer())
 
 
 /**
@@ -77,6 +84,7 @@ public fun <T> EventLocator.registerCoordinate(coordinate: EventLocatorRegistrar
 public interface EventLocatorRegistrarCoordinate<T> where T : Event<*>, T : MsgGet {
     val type: Event.Type
     val extraType: String
+    val channelType: Channel.Type? get() = null
     fun coordinateSerializer(): KSerializer<out T>
 }
 

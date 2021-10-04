@@ -46,6 +46,7 @@ public interface Attachments {
 
     /**
      * Size 大小 单位（B）
+     * 假如无法获取，得到-1.
      */
     val size: Long
 
@@ -65,7 +66,7 @@ public data class AttachmentsImpl(
     override val type: String,
     override val url: String,
     override val name: String,
-    override val size: Long
+    override val size: Long = -1
 ) : Attachments {
     internal companion object {
         const val SERIAL_NAME = "ATTACHMENTS_I"
