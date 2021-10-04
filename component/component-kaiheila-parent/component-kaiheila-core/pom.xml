@@ -5,11 +5,12 @@
     <parent>
         <groupId>love.forte.simple-robot</groupId>
         <artifactId>component-kaiheila-parent</artifactId>
-        <version>2.3.0-ALPHA.6<!--v--></version>
+        <version>0.0.1-ALPHA.1<!--khlv--></version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kaiheila-core</artifactId>
+    <version>0.0.1-ALPHA.1<!--khlv--></version>
+    <artifactId>component-kaiheila-core</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -24,7 +25,7 @@
 
         <dependency>
             <groupId>io.ktor</groupId>
-            <artifactId>ktor-client-cio-jvm</artifactId>
+            <artifactId>ktor-client-okhttp</artifactId>
         </dependency>
 
         <dependency>
@@ -43,28 +44,6 @@
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
-                <configuration>
-                    <!-- kotlinOptions.freeCompilerArgs = ['-Xjvm-default=enable'] -->
-                    <args>
-                        <!--<arg>-Xjvm-default=enable</arg>-->
-                        <arg>-Xjvm-default=all</arg>
-                        <arg>-Xinline-classes</arg>
-                        <arg>-Xopt-in=kotlin.RequiresOptIn</arg>
-                    </args>
-                    <jvmTarget>1.8</jvmTarget>
-                    <javaParameters>true</javaParameters>
-                    <jvmTarget>1.8</jvmTarget>
-                    <compilerPlugins>
-                        <plugin>kotlinx-serialization</plugin>
-                    </compilerPlugins>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.jetbrains.kotlin</groupId>
-                        <artifactId>kotlin-maven-serialization</artifactId>
-                        <version>${kotlin.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
 
             <!-- dokka -->
@@ -72,10 +51,19 @@
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

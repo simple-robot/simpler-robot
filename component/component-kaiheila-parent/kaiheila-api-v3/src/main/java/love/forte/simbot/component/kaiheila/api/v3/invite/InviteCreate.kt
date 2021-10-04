@@ -39,7 +39,7 @@ public class InviteCreateReq(
 
 
 @Serializable
-public data class InviteCreateResp(val url: String) : InviteApiRespData {
+public data class InviteCreateResp(val url: String) : InviteApiRespData() {
     companion object Serializer {
         val objectSerializer = objectResp<InviteCreateResp>()
     }

@@ -87,7 +87,7 @@ public data class GuildRoleCreateResp(
     val mentionable: Int,
     @SerialName("permissions")
     val permissions: Permissions,
-) : GuildApiRespData {
+) : GuildApiRespData() {
     companion object {
         val objectResp = objectResp<GuildRoleCreateResp>()
     }

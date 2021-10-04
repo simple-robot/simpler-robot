@@ -151,7 +151,7 @@ public data class GuildUserList(
      * 用户列表
      */
     val items: List<GuildUser>,
-) : GuildApiRespData
+) : GuildApiRespData()
 
 
 /**
@@ -177,12 +177,14 @@ public data class GuildUser(
     override val id: String,
     override val username: String,
     override val nickname: String,
-    override val online: Boolean,
+    @SerialName("online")
+    override val isOnline: Boolean,
     override val status: Int = 0,
     override val avatar: String,
     @SerialName("vip_avatar")
     override val vipAvatar: String? = null,
-    override val bot: Boolean = false,
+    @SerialName("bot")
+    override val isBot: Boolean = false,
     @SerialName("joined_at")
     val joinedAt: Long,
     @SerialName("active_time")
@@ -194,8 +196,7 @@ public data class GuildUser(
     @SerialName("identify_num")
     override val identifyNum: String = username.split("#", limit = 2).let { if (it.size < 2) it[1] else "" },
     override val roles: List<Int> = emptyList(),
-) : User {
-
+) : User, BaseRespData() {
     override val originalData: String
         get() = this.toString()
 }

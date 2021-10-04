@@ -53,5 +53,5 @@ public data class GatewayReq(val compress: Int = 1) :
 
 
 @Serializable
-public data class Gateway(val url: String) : ApiData.Resp.Data
+public data class Gateway(val url: String) : BaseV3RespData()
 

@@ -54,11 +54,6 @@ public class ChannelViewReq(private val targetId: String) : GetChannelApiReq<Obj
 }
 
 
-
-
-
-
-
 /**
  * [频道详情](https://developer.kaiheila.cn/doc/http/channel#%E8%8E%B7%E5%8F%96%E9%A2%91%E9%81%93%E8%AF%A6%E6%83%85)
  */
@@ -103,7 +98,7 @@ data class ChannelView(
     @SerialName("permission_sync")
     override val permissionSync: Int = 0,
 
-    ) : ChannelApiRespData, Channel {
+    ) : ChannelApiRespData(), Channel {
     override val originalData: String
         get() = toString()
 }

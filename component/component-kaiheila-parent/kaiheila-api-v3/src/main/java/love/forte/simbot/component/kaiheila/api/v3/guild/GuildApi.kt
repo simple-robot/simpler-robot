@@ -16,6 +16,7 @@ package love.forte.simbot.component.kaiheila.api.v3.guild
 
 import love.forte.simbot.component.kaiheila.api.ApiData
 import love.forte.simbot.component.kaiheila.api.EmptyResp
+import love.forte.simbot.component.kaiheila.api.v3.BaseV3RespData
 
 
 /**
@@ -35,7 +36,7 @@ public interface EmptyRespPostGuildApiReq : EmptyRespGuildApiReq, PostGuildApiRe
 /**
  * [服务器相关接口](https://developer.kaiheila.cn/doc/http/guild) 响应实例接口。
  */
-public interface GuildApiRespData : ApiData.Resp.Data
+public abstract class GuildApiRespData : BaseV3RespData()
 
 
 

@@ -16,7 +16,6 @@ package love.forte.simbot.component.kaiheila.api.v3.asset
 
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
-import io.ktor.util.*
 import io.ktor.utils.io.streams.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
@@ -104,19 +103,25 @@ public class AssetCreateReq(
         builder.contentType = null // [Content-Type] are controlled by the engine and cannot be set explicitly
     }
 
-    @OptIn(KtorExperimentalAPI::class)
     override val body: Any
         get() = MultiPartFormDataContent(
             formData {
-                val headersBuilder = HeadersBuilder()
-                headersBuilder[HttpHeaders.ContentType] = fileContentType.toString()
-                fileName?.let { fn ->
-                    headersBuilder[HttpHeaders.ContentDisposition] = "filename=$fn"
+
+                val headers = if (fileName != null) {
+                    headersOf(
+                        // HttpHeaders.ContentType to listOf(fileContentType.toString()),
+                        HttpHeaders.ContentDisposition to listOf("filename=$fileName")
+                    )
+                } else {
+                    headersOf(
+                        // HttpHeaders.ContentType to listOf(fileContentType.toString()),
+                    )
                 }
+
 
                 append("file",
                     InputProvider { fileInputSupplier().asInput() },
-                    headersBuilder.build()
+                    headers
                 )
             }
         )
@@ -124,7 +129,7 @@ public class AssetCreateReq(
 
 
 @Serializable
-public data class AssetCreateResp(val url: String) : AssetApiRespData {
+public data class AssetCreateResp(val url: String) : AssetApiRespData() {
     companion object {
         val objectResp = objectResp<AssetCreateResp>()
     }

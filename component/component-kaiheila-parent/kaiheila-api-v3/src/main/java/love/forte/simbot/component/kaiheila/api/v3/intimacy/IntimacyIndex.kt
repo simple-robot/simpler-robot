@@ -63,7 +63,7 @@ public data class IntimacyIndex(
      */
     @SerialName("img_list")
     val imgList: List<Img>
-) : IntimacyApiRespData {
+) : IntimacyApiRespData() {
 
     /**
      * 好感度形象图片实例

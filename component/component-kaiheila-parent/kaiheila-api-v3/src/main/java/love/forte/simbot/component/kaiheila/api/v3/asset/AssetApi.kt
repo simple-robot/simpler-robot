@@ -16,6 +16,7 @@ package love.forte.simbot.component.kaiheila.api.v3.asset
 
 import love.forte.simbot.component.kaiheila.api.ApiData
 import love.forte.simbot.component.kaiheila.api.EmptyResp
+import love.forte.simbot.component.kaiheila.api.v3.BaseV3RespData
 
 
 /**
@@ -35,4 +36,4 @@ public interface EmptyRespGetAssetApiReq : EmptyRespAssetApiReq, GetAssetApiReq<
 /**
  * [媒体模块相关接口](https://developer.kaiheila.cn/doc/http/asset) 响应实例接口。
  */
-public interface AssetApiRespData : ApiData.Resp.Data
+public abstract class AssetApiRespData : BaseV3RespData()

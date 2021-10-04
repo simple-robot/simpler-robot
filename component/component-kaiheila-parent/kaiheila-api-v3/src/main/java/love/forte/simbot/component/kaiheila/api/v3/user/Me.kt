@@ -48,15 +48,18 @@ public data class Me(
     override val username: String,
     @SerialName("identify_num")
     override val identifyNum: String,
-    override val online: Boolean,
+    @SerialName("online")
+    override val isOnline: Boolean,
     override val status: Int,
     override val avatar: String,
     override val vipAvatar: String? = null,
-    override val bot: Boolean,
+    @SerialName("bot")
+    override val isBot: Boolean,
     @SerialName("mobile_verified")
     override val mobileVerified: Boolean,
     override val nickname: String = username,
     override val roles: List<Int> = emptyList(),
-) : User {
+) : User, BaseRespData() {
+
     override val originalData: String get() = toString()
 }

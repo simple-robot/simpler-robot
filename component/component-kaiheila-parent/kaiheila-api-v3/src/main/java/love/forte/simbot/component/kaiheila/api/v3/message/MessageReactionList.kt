@@ -89,13 +89,14 @@ public class MessageReactionListResp(
     /**
      * 	用户是否为机器人
      */
-    val bot: Boolean,
+    @SerialName("bot")
+    val isBot: Boolean,
     /**
      * 用户点击reaction的毫秒时间戳
      */
     @SerialName("reaction_time")
     val reactionTime: Long,
-) : ApiData.Resp.Data {
+) : BaseRespData() {
     companion object {
         const val STATUS_NORMAL = 0
         const val STATUS_BAN = 10

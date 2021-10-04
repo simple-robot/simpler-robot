@@ -17,6 +17,7 @@ package love.forte.simbot.component.kaiheila.api.v3.userchat
 import kotlinx.serialization.Serializable
 import love.forte.simbot.component.kaiheila.api.ApiData
 import love.forte.simbot.component.kaiheila.api.EmptyResp
+import love.forte.simbot.component.kaiheila.api.v3.BaseV3RespData
 
 
 /**
@@ -36,7 +37,7 @@ public interface EmptyRespGetUserChatApiReq : EmptyRespUserChatApiReq, GetUserCh
 /**
  * [私信聊天会话相关接口](https://developer.kaiheila.cn/doc/http/user-chat) 响应实例接口。
  */
-public interface UserChatApiRespData : ApiData.Resp.Data
+public abstract class UserChatApiRespData : BaseV3RespData()
 
 
 

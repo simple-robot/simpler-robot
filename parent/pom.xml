@@ -24,6 +24,7 @@
 
     <properties>
         <simbot.version>2.3.0-ALPHA.6<!--v--></simbot.version>
+        <simbot.khl.version>0.0.1-ALPHA.1<!--khlv--></simbot.khl.version>
 
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
@@ -106,17 +107,17 @@
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
                 <artifactId>component-kaiheila-parent</artifactId>
-                <version>${simbot.version}</version>
+                <version>${simbot.khl.version}</version>
             </dependency>
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
                 <artifactId>kaiheila-core</artifactId>
-                <version>${simbot.version}</version>
+                <version>${simbot.khl.version}</version>
             </dependency>
             <dependency>
                 <groupId>love.forte.simple-robot</groupId>
                 <artifactId>kaiheila-api-v3</artifactId>
-                <version>${simbot.version}</version>
+                <version>${simbot.khl.version}</version>
             </dependency>
             <!--</editor-fold>-->
             <!--<editor-fold desc="http-client">-->

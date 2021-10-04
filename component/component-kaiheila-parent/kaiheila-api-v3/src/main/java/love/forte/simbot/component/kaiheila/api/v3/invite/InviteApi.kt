@@ -2,6 +2,7 @@ package love.forte.simbot.component.kaiheila.api.v3.invite
 
 import love.forte.simbot.component.kaiheila.api.ApiData
 import love.forte.simbot.component.kaiheila.api.EmptyResp
+import love.forte.simbot.component.kaiheila.api.v3.BaseV3RespData
 
 // 邀请相关的API
 
@@ -24,7 +25,7 @@ public interface EmptyRespGetInviteApiReq : EmptyRespInviteApiReq, GetInviteApiR
 /**
  * [邀请相关接口](https://developer.kaiheila.cn/doc/http/invite) 响应实例接口。
  */
-public interface InviteApiRespData : ApiData.Resp.Data
+public abstract class InviteApiRespData : BaseV3RespData()
 
 
 

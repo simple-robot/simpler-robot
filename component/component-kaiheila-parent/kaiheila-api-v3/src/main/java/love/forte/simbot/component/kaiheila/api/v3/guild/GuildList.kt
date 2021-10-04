@@ -14,10 +14,15 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.guild
 
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.component.kaiheila.api.*
+import love.forte.simbot.component.kaiheila.api.v3.channel.ChannelListReq
+import love.forte.simbot.component.kaiheila.objects.Channel
+import love.forte.simbot.component.kaiheila.objects.Guild
+import love.forte.simbot.component.kaiheila.objects.Role
 
 
 /**
@@ -77,7 +82,7 @@ public sealed class GuildListReq<SORT> :
      * 根据ID排序
      */
     sealed class SortById(asc: Boolean = true) : GuildListReq<GuildApiRespSort>() {
-        private val sortValue = if(asc) "id" else "-id"
+        private val sortValue = if (asc) "id" else "-id"
         override fun route(builder: RouteInfoBuilder) {
             super.route(builder)
             builder.parameters {
@@ -96,7 +101,6 @@ public sealed class GuildListReq<SORT> :
     }
 
 
-
 }
 
 
@@ -113,24 +117,24 @@ public data class GuildListRespData(
     /**
      * 服务器id
      */
-    val id: String,
+    override val id: String,
     /**
      * 服务器名称
      */
-    val name: String,
+    override val name: String,
     /**
      * 服务器主题
      */
-    val topic: String,
+    override val topic: String,
     /**
      * 服务器主的id
      */
     @SerialName("master_id")
-    val masterId: String,
+    override val masterId: String,
     /**
      * 	服务器icon的地址
      */
-    val icon: String,
+    override val icon: String,
 
     /**
      * 通知类型,
@@ -140,34 +144,45 @@ public data class GuildListRespData(
      * - `3` 代表不接收通知
      */
     @SerialName("notify_type")
-    val notifyType: Int,
+    override val notifyType: Int,
 
     /**
      * 服务器默认使用语音区域
      */
-    val region: String,
+    override val region: String,
     /**
      * 是否为公开服务器
      */
     @SerialName("enable_open")
-    // @Serializable(BooleanAsIntSerializer::class)
-    val enableOpen: Boolean,
+    override val enableOpen: Boolean,
     /**
      * 公开服务器id
      */
     @SerialName("open_id")
-    val openId: String,
+    override val openId: String,
     /**
      * 	默认频道id
      */
     @SerialName("default_channel_id")
-    val defaultChannelId: String,
+    override val defaultChannelId: String,
     /**
      * 欢迎频道id
      */
     @SerialName("welcome_channel_id")
-    val welcomeChannelId: String,
-) : GuildApiRespData
+    override val welcomeChannelId: String,
+) : GuildApiRespData(), Guild {
+    override val roles: List<Role>
+        get() = emptyList() // TODO
+
+    override val channels: List<Channel> by lazy { runBlocking { channels() } }
+
+    override suspend fun channels(): List<Channel> {
+        return ChannelListReq(id).doRequestForData(bot).items
+    }
+
+    override val originalData: String
+        get() = toString()
+}
 
 
 @Serializable

@@ -19,6 +19,7 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.component.kaiheila.api.ApiData
 import love.forte.simbot.component.kaiheila.api.EmptyResp
 import love.forte.simbot.component.kaiheila.api.objectResp
+import love.forte.simbot.component.kaiheila.api.v3.BaseV3RespData
 
 
 /**
@@ -38,7 +39,7 @@ public interface EmptyRespPostGuildRoleApiReq : EmptyRespGuildRoleApiReq, PostGu
 /**
  * [服务器角色权限相关接口](https://developer.kaiheila.cn/doc/http/guild-role) 响应实例接口。
  */
-public interface GuildRoleApiRespData : ApiData.Resp.Data
+public abstract class GuildRoleApiRespData : BaseV3RespData()
 
 
 /**
@@ -55,7 +56,7 @@ public data class UserRoleOperationResult(
     @SerialName("user_id") val userId: String,
     @SerialName("guild_id") val guildId: String,
     val roles: List<Int>,
-) : ApiData.Resp.Data {
+) : BaseV3RespData() {
     companion object {
         val objectSerializer = objectResp<UserRoleOperationResult>()
     }

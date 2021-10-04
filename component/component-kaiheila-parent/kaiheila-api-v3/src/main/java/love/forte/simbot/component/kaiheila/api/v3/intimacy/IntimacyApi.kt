@@ -2,6 +2,7 @@ package love.forte.simbot.component.kaiheila.api.v3.intimacy
 
 import love.forte.simbot.component.kaiheila.api.ApiData
 import love.forte.simbot.component.kaiheila.api.EmptyResp
+import love.forte.simbot.component.kaiheila.api.v3.BaseV3RespData
 
 // intimacy
 // 亲密度相关接口 https://developer.kaiheila.cn/doc/http/intimacy
@@ -26,6 +27,6 @@ public interface EmptyRespGetIntimacyApiReq : EmptyRespIntimacyApiReq, GetIntima
 /**
  * [亲密度相关接口](https://developer.kaiheila.cn/doc/http/intimacy) 响应实例接口。
  */
-public interface IntimacyApiRespData : ApiData.Resp.Data
+public abstract class IntimacyApiRespData : BaseV3RespData()
 
 

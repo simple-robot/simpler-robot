@@ -81,7 +81,7 @@ public data class InviteListResp(
      *
      */
     val user: User,
-) : InviteApiRespData {
+) : InviteApiRespData() {
     companion object Serializer {
         val listSerializer = listResp<InviteListResp, ApiData.Resp.EmptySort>()
     }

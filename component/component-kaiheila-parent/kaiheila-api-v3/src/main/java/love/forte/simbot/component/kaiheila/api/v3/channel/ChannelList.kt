@@ -19,6 +19,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import love.forte.simbot.component.kaiheila.api.*
+import love.forte.simbot.component.kaiheila.api.v3.BaseV3RespData
 import love.forte.simbot.component.kaiheila.objects.Channel
 import love.forte.simbot.component.kaiheila.objects.ChannelPermissionOverwrites
 
@@ -58,7 +59,7 @@ public class ChannelListReq(private val guildId: String) :
 }
 
 
-@Serializable()
+@Serializable
 public data class ChannelInfo(
     /**
      * 频道id
@@ -105,7 +106,7 @@ public data class ChannelInfo(
     override val permissionUsers: List<String> = emptyList(),
     @SerialName("permission_sync")
     override val permissionSync: Int = 0,
-) : Channel {
+) : Channel, BaseV3RespData() {
 
     @Transient
     internal lateinit var guildIdLate: String

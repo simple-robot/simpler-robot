@@ -71,7 +71,7 @@ public class UserChatView(
      */
     @SerialName("target_info")
     val targetInfo: UserChatTargetInfo,
-) : UserChatApiRespData {
+) : UserChatApiRespData() {
     companion object {
         val objectSerializer = objectResp<UserChatView>()
         val emptySortListSerializer = emptySortListResp<UserChatView>()

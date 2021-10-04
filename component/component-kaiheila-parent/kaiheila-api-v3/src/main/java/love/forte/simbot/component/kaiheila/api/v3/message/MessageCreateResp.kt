@@ -44,7 +44,7 @@ public data class MessageCreateResp(
      * 随机字符串，见参数列表
      */
     val nonce: String? = null,
-) : MessageApiRespData {
+) : MessageApiRespData() {
     companion object {
         val objectResp = objectResp<MessageCreateResp>()
     }

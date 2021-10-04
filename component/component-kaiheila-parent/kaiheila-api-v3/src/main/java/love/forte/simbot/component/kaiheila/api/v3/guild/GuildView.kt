@@ -19,6 +19,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.component.kaiheila.api.*
 import love.forte.simbot.component.kaiheila.objects.Channel
+import love.forte.simbot.component.kaiheila.objects.Guild
 import love.forte.simbot.component.kaiheila.objects.Role
 
 
@@ -118,26 +119,29 @@ public class GuildViewReq(private val guildId: String) : GetGuildApiReq<ObjectRe
 
 @Serializable
 public data class GuildView(
-    val id: String,
-    val name: String,
-    val topic: String,
+    override val id: String,
+    override val name: String,
+    override val topic: String,
     @SerialName("master_id")
-    val masterId: String,
-    val icon: String,
+    override val masterId: String,
+    override val icon: String,
     @SerialName("notify_type")
-    val notifyType: Int,
-    val region: String,
+    override val notifyType: Int,
+    override val region: String,
     @SerialName("enable_open")
-    val enableOpen: Boolean,
+    override val enableOpen: Boolean,
     @SerialName("open_id")
-    val openId: String,
+    override val openId: String,
     @SerialName("default_channel_id")
-    val defaultChannelId: String,
+    override val defaultChannelId: String,
     @SerialName("welcome_channel_id")
-    val welcomeChannelId: String,
-    val roles: List<Role>,
-    val channels: List<Channel>
-) : GuildApiRespData
+    override val welcomeChannelId: String,
+    override val roles: List<Role>,
+    override val channels: List<Channel>
+) : GuildApiRespData(), Guild {
+    override suspend fun channels(): List<Channel> = channels
+    override val originalData: String get() = toString()
+}
 
 
 

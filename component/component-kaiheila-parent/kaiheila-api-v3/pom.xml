@@ -6,10 +6,11 @@
     <parent>
         <artifactId>component-kaiheila-parent</artifactId>
         <groupId>love.forte.simple-robot</groupId>
-        <version>2.3.0-ALPHA.6<!--v--></version>
+        <version>0.0.1-ALPHA.1<!--khlv--></version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <version>0.0.1-ALPHA.1<!--khlv--></version>
     <artifactId>kaiheila-api-v3</artifactId>
 
     <properties>
@@ -20,7 +21,8 @@
     <dependencies>
         <dependency>
             <groupId>love.forte.simple-robot</groupId>
-            <artifactId>kaiheila-core</artifactId>
+            <artifactId>component-kaiheila-core</artifactId>
+            <version>${simbot.khl.version}</version>
         </dependency>
     </dependencies>
 
@@ -29,6 +31,26 @@
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- dokka -->
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

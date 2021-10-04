@@ -84,7 +84,7 @@ public sealed interface GuildMuteListResult : ApiData.Resp.Data {
 public data class GuildMuteListByDetail(
     val mic: Mic,
     val headset: Headset,
-) : GuildApiRespData, GuildMuteListResult {
+) : GuildApiRespData(), GuildMuteListResult {
     @Serializable
     data class Mic(
         override val type: Int = 1,
@@ -113,7 +113,7 @@ public data class GuildMuteListByDetail(
 public data class GuildMuteListBySimple(
     @SerialName("1") val mic: List<String>,
     @SerialName("2") val headset: List<String>,
-) : GuildApiRespData, GuildMuteListResult {
+) : GuildApiRespData(), GuildMuteListResult {
     override fun getUserIds(type: Int): List<String> = when (type) {
         1 -> mic
         2 -> headset

@@ -17,6 +17,7 @@ package love.forte.simbot.component.kaiheila.api.v3.message
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.component.kaiheila.api.ApiData
+import love.forte.simbot.component.kaiheila.api.BaseRespData
 import love.forte.simbot.component.kaiheila.objects.MentionPart
 import love.forte.simbot.component.kaiheila.objects.Role
 import love.forte.simbot.component.kaiheila.objects.User
@@ -143,7 +144,8 @@ public data class ChannelMessageDetails(
     val mentionInfo: MentionInfo,
 
 
-    ) : MessageDetails {
+    ) : MessageDetails, BaseRespData() {
+
     override val authorId: String
         get() = author.id
 }
@@ -156,7 +158,8 @@ public data class ChannelMessageDetails(
 public data class Author(
     override val id: String,
     override val username: String,
-    override val online: Boolean,
+    @SerialName("online")
+    override val isOnline: Boolean,
     override val avatar: String,
 
     @SerialName("vip_avatar")
@@ -165,12 +168,13 @@ public data class Author(
     @SerialName("identify_num")
     override val identifyNum: String = "",
     override val status: Int = 0,
-    override val bot: Boolean = false,
+    @SerialName("bot")
+    override val isBot: Boolean = false,
     @SerialName("mobile_verified")
     override val mobileVerified: Boolean = false,
     override val nickname: String = "",
     override val roles: List<Int> = emptyList(),
-) : User {
+) : User, BaseRespData() {
     override val originalData: String
         get() = toString()
 }
@@ -191,9 +195,8 @@ public data class DirectMessageDetails(
     override val reactions: List<Reaction>,
     override val quote: Map<String, String>?,
     @SerialName("read_status")
-    val readStatus: Boolean
-    ) : MessageDetails
-
+    val readStatus: Boolean,
+) : MessageDetails, BaseRespData()
 
 
 /**
