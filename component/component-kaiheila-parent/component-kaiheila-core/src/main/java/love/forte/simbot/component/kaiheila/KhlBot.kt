@@ -14,14 +14,54 @@
 
 @file:Suppress("unused")
 @file:JvmName("KaiheilaBots")
+
 package love.forte.simbot.component.kaiheila
 
+import io.ktor.client.*
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.LogAble
 import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.component.kaiheila.api.Api
 import love.forte.simbot.component.kaiheila.api.ApiConfiguration
+import love.forte.simbot.component.kaiheila.objects.Guild
+import love.forte.simbot.component.kaiheila.objects.User
 import org.slf4j.Logger
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
+
+
+/**
+ * 一个 khlBot所应有的基础API接口。
+ *
+ * @see KhlBot
+ */
+public interface KhlBotApi {
+
+    /**
+     * 得到此BOT下所有的[服务器][Guild]
+     */
+    @JvmSynthetic
+    suspend fun guilds(): List<Guild>
+    fun getGuilds() = runBlocking { guilds() }
+
+    /**
+     * 根据 [guildId] 寻找一个加入 [服务器][Guild]。
+     * @throws love.forte.simbot.component.kaiheila.api.KhlApiException Api返回错误的时候。
+     */
+    @JvmSynthetic
+    suspend fun guild(guildId: String): Guild
+    fun getGuild(guildId: String) = runBlocking { guild(guildId) }
+
+    /**
+     * 根据 [服务器][guildId] 和 [用户ID][userId] 查询一个人的信息。
+     * @throws love.forte.simbot.component.kaiheila.api.KhlApiException Api返回错误的时候。
+     */
+    @JvmSynthetic
+    suspend fun viewUser(guildId: String, userId: String): User
+    fun getUserView(guildId: String, userId: String) = runBlocking { viewUser(guildId, userId) }
+
+
+}
 
 
 /**
@@ -35,7 +75,9 @@ import kotlin.contracts.contract
  *
  * @author ForteScarlet
  */
-public interface KhlBot : LogAble, BotInfo {
+public interface KhlBot : LogAble, BotInfo, KhlBotApi {
+
+    val api: Api
 
     /**
      * bot所属的logger
@@ -56,6 +98,9 @@ public interface KhlBot : LogAble, BotInfo {
      * Client id.
      */
     val clientId: String
+
+
+    val client: HttpClient
 
     override val botCode: String
         get() = clientId
@@ -84,16 +129,24 @@ public interface KhlBot : LogAble, BotInfo {
     /**
      * 启用这个bot
      */
+    @JvmSynthetic
     suspend fun start()
+    fun startBot() = runBlocking { start() }
+
 
 
     /**
      * 终止这个bot.
      */
+    @JvmSynthetic
     suspend fun close(cause: Throwable? = null)
+    fun closeBot(cause: Throwable) = runBlocking { close(cause) }
+    fun closeBot() = runBlocking { close() }
 
+    @JvmSynthetic
+    suspend fun join()
+    fun joinBot() = runBlocking { join() }
 }
-
 
 
 /**
@@ -125,15 +178,15 @@ public interface WebhookBot : KhlBot {
 }
 
 
-
-
 public enum class ConnectionMode {
     WEBSOCKET, WEBHOOK
 }
 
 
-
-public inline fun KhlBot.requireMode(mode: ConnectionMode, msg: () -> String = { "KaiheilaBot's connection mode require $mode, but not." }) {
+public inline fun KhlBot.requireMode(
+    mode: ConnectionMode,
+    msg: () -> String = { "KaiheilaBot's connection mode require $mode, but not." },
+) {
     if (this.connectionMode != mode) {
         throw IllegalStateException(msg())
     }

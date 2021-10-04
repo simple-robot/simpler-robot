@@ -26,6 +26,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.component.kaiheila.KhlBot
+import love.forte.simbot.component.kaiheila.api.BaseRespData
 import love.forte.simbot.component.kaiheila.objects.Channel
 import love.forte.simbot.component.kaiheila.objects.Role
 import love.forte.simbot.component.kaiheila.objects.User
@@ -283,9 +284,7 @@ public data class SimpleEvent<E : Event.Extra>(
     override val msgTimestamp: Long,
     override val nonce: String,
     override val extra: E,
-) : Event<E>, BotInitialized {
-    override lateinit var bot: KhlBot
-}
+) : Event<E>, BotInitialized, BaseRespData()
 
 
 

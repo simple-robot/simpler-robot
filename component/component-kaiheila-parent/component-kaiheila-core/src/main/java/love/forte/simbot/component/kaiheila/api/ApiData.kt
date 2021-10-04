@@ -18,7 +18,9 @@ package love.forte.simbot.component.kaiheila.api
 
 import io.ktor.http.*
 import kotlinx.serialization.*
+import love.forte.simbot.component.kaiheila.KhlBot
 import love.forte.simbot.component.kaiheila.api.ApiData.Req
+import love.forte.simbot.component.kaiheila.event.BotInitialized
 
 
 /**
@@ -141,6 +143,10 @@ public sealed interface ApiData {
          */
         val data: D
 
+        /**
+         * Bot
+         */
+        val bot: KhlBot
 
         /**
          * ResponseData. 请求响应相关的数据类。
@@ -148,7 +154,7 @@ public sealed interface ApiData {
          * @see Resp
          *
          */
-        interface Data : ApiData
+        interface Data : ApiData, BotInitialized
 
 
         @Serializable
@@ -156,6 +162,11 @@ public sealed interface ApiData {
 
     }
 
+}
+
+public abstract class BaseRespData : ApiData.Resp.Data {
+    @Transient
+    override lateinit var bot: KhlBot
 }
 
 
@@ -276,6 +287,8 @@ public data class EmptyResp(
     override val code: Int,
     override val message: String,
 ) : ApiData.Resp<Any?> {
+    @Transient
+    override lateinit var bot: KhlBot
     override val data: Any?
         get() = null
 }
@@ -411,7 +424,19 @@ public data class ObjectResp<RESP : ApiData.Resp.Data>(
      * 有可能是null，即当 [code] != 0, 也就是失败的时候。
      */
     override val data: RESP?,
-) : ApiData.Resp<RESP?>
+) : ApiData.Resp<RESP?> {
+    @Transient
+    override lateinit var bot: KhlBot
+
+    @Suppress("unused", "FunctionName")
+    @JvmSynthetic
+    fun _bot(bot: KhlBot) {
+        this.bot = bot
+        if (data is BotInitialized) {
+            data.bot = this.bot
+        }
+    }
+}
 
 /**
  * 返回值为一个列表（数组）实例对象的结果。
@@ -438,7 +463,18 @@ public data class ListResp<RESP : ApiData.Resp.Data, SORT>(
      * mixed, 具体的数据。
      */
     override val data: SimpleListRespData<RESP, SORT>,
-) : ApiData.Resp<SimpleListRespData<RESP, SORT>>, Iterable<RESP> by data
+) : ApiData.Resp<SimpleListRespData<RESP, SORT>>, Iterable<RESP> by data {
+    @Transient
+    override lateinit var bot: KhlBot
+    @Suppress("unused", "FunctionName")
+    @JvmSynthetic
+    fun _bot(bot: KhlBot) {
+        this.bot = bot
+        if (data is BotInitialized) {
+            data.bot = this.bot
+        }
+    }
+}
 
 /**
  * 返回值为一个列表（数组）实例对象的结果。

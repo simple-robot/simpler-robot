@@ -20,6 +20,7 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.json.*
+import love.forte.simbot.component.kaiheila.KhlBot
 import love.forte.simbot.component.kaiheila.khlJson
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -28,6 +29,30 @@ import kotlin.contracts.ExperimentalContracts
 
 @JvmSynthetic
 public val logger: Logger = LoggerFactory.getLogger(ApiData::class.java)
+
+
+/**
+ *
+ * 通过Bot进行请求，同时也会为需要Bot数据的地方提供Bot信息。
+ *
+ */
+public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP_RESP>.doRequest(
+    bot: KhlBot, client: HttpClient = bot.client,
+): HTTP_RESP {
+    val response = doRequest(bot.api, client, bot.token, AuthorizationType.BOT)
+    when (response) {
+        is EmptyResp -> {
+            response.bot = bot
+        }
+        is ListResp<*, *> -> {
+            response._bot(bot)
+        }
+        is ObjectResp<*> -> {
+            response._bot(bot)
+        }
+    }
+    return response
+}
 
 
 /**
@@ -61,11 +86,12 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
                 override fun append(key: String, value: Any) {
                     httpRequestBuilder.parameter(key, value)
                 }
-            }, ContentType.Application.Json)
+            }, null) // ContentType.Application.Json)
             this@doRequest.route(routeInfoBuilder)
 
             apiPath = routeInfoBuilder.apiPath
             routeInfoBuilder.contentType?.let { contentType(it) }
+
 
             this@doRequest.body?.let { b -> body = b }
 
@@ -73,7 +99,7 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
         }
     }
 
-    logger.debug("Request api '{}' response content: {}", key.id, responseContent)
+    logger.debug("Request api `{}` response content: {}", key.id, responseContent)
     // println(responseContent)
 
     val jsonElement = khlJson.parseToJsonElement(responseContent)
@@ -106,11 +132,7 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
     // }
     // val contentText = resp.readText(Charsets.UTF_8)
 
-    return khlJson.decodeFromJsonElement(deserializer = this.dataSerializer, forDecodeElement).also { resp ->
-        post(resp)
-    }
-
-    // return data.check { apiPath.joinToString("/") }
+    return khlJson.decodeFromJsonElement(deserializer = this.dataSerializer, forDecodeElement).also(::post)
 }
 
 /**
@@ -123,6 +145,25 @@ public suspend inline fun <D, reified HTTP_RESP : ApiData.Resp<out D>> ApiData.R
     token: String? = null,
     authorizationType: AuthorizationType = AuthorizationType.BOT,
 ): D = doRequest(api, client, token, authorizationType).also { resp ->
+    val code = resp.code
+    if (code != 0) {
+        val message = resp.message
+        throw KhlApiHttpResponseException(buildString {
+            append("api: ").append("'").append(this@doRequestForData.key.id).append("'")
+            append(", code: ").append(code)
+            append(", msg: ").append(message)
+        })
+    }
+}.data
+
+/**
+ * 执行这个 [请求][ApiData.Req] 并在 **成功** 的情况下得到其对应的响应值 [D].
+ *
+ */
+public suspend inline fun <D, reified HTTP_RESP : ApiData.Resp<out D>> ApiData.Req<HTTP_RESP>.doRequestForData(
+    bot: KhlBot,
+    client: HttpClient = bot.client,
+): D = doRequest(bot, client).also { resp ->
     val code = resp.code
     if (code != 0) {
         val message = resp.message

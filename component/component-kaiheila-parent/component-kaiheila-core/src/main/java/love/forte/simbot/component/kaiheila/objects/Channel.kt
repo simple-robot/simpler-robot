@@ -21,6 +21,7 @@ import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
+import love.forte.simbot.component.kaiheila.api.BaseRespData
 
 
 /**
@@ -159,7 +160,8 @@ public data class ChannelImpl(
     override val permissionUsers: List<String>,
     @SerialName("permission_sync")
     override val permissionSync: Int,
-) : Channel {
+) : Channel, BaseRespData() {
+
     override val originalData: String
         get() = toString()
 

@@ -14,7 +14,6 @@
 
 package love.forte.simbot.component.kaiheila.event.message
 
-import kotlinx.serialization.Transient
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
@@ -23,6 +22,7 @@ import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.component.kaiheila.KhlBot
+import love.forte.simbot.component.kaiheila.api.BaseRespData
 import love.forte.simbot.component.kaiheila.event.BotInitialized
 import love.forte.simbot.component.kaiheila.event.Event
 import love.forte.simbot.component.kaiheila.event.EventLocator
@@ -80,9 +80,7 @@ public interface MessageEvent<E : MessageEventExtra> : Event<E>, MessageGet, Bot
 }
 
 
-public abstract class AbstractMessageEvent<E : MessageEventExtra> : MessageEvent<E> {
-    @Transient
-    override lateinit var bot: KhlBot
+public abstract class AbstractMessageEvent<E : MessageEventExtra> : MessageEvent<E>, BaseRespData() {
 
     private lateinit var _msgContent: MessageContent
     override val msgContent: MessageContent

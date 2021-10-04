@@ -23,10 +23,7 @@ import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
-import love.forte.simbot.component.kaiheila.api.ApiData
-import love.forte.simbot.component.kaiheila.api.ListResp
-import love.forte.simbot.component.kaiheila.api.listResp
-import love.forte.simbot.component.kaiheila.api.objectResp
+import love.forte.simbot.component.kaiheila.api.*
 
 
 /**
@@ -114,7 +111,7 @@ public data class RoleImpl(
     override val hoist: Int,
     override val mentionable: Int,
     override val permissions: Permissions,
-) : Role {
+) : Role, BaseRespData() {
     override val originalData: String get() = toString()
 
     internal companion object {

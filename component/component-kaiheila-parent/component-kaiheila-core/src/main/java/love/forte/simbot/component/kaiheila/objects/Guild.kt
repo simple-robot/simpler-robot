@@ -21,6 +21,7 @@ import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
+import love.forte.simbot.component.kaiheila.api.BaseRespData
 
 
 /**
@@ -119,11 +120,14 @@ public interface Guild : KhlObjects, GroupInfo {
     /** 频道列表 */
     val channels: List<Channel>
 
+    @JvmSynthetic
+    suspend fun channels(): List<Channel>
+
     companion object : SerializerModuleRegistrar {
         override fun SerializersModuleBuilder.serializerModule() {
             polymorphic(Guild::class) {
-                subclass(GuildImpl::class)
-                default { GuildImpl.serializer() }
+                subclass(SimpleGuild::class)
+                default { SimpleGuild.serializer() }
             }
         }
     }
@@ -134,8 +138,8 @@ public interface Guild : KhlObjects, GroupInfo {
 
 
 @Serializable
-@SerialName(GuildImpl.SERIAL_NAME)
-public data class GuildImpl(
+@SerialName(SimpleGuild.SERIAL_NAME)
+public data class SimpleGuild(
     override val id: String,
     override val name: String,
     override val topic: String,
@@ -155,9 +159,11 @@ public data class GuildImpl(
     override val welcomeChannelId: String,
     override val roles: List<Role>,
     override val channels: List<Channel>
-) : Guild {
+) : Guild, BaseRespData() {
     override val originalData: String
         get() = toString()
+
+    override suspend fun channels(): List<Channel> = channels
 
     internal companion object {
         const val SERIAL_NAME = "GUILD_I"

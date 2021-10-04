@@ -23,6 +23,7 @@ import kotlinx.serialization.modules.subclass
 import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
+import love.forte.simbot.component.kaiheila.api.BaseRespData
 
 
 /**
@@ -82,12 +83,12 @@ public interface User : KhlObjects, GroupAccountInfo {
     /**
      * 当前是否在线
      */
-    val online: Boolean
+    val isOnline: Boolean
 
     /**
      * 用户是否为机器人
      */
-    val bot: Boolean
+    val isBot: Boolean
 
     /**
      * 用户的状态, 0代表正常，10代表被封禁
@@ -154,13 +155,15 @@ public data class SimpleUser(
      */
     @SerialName("identify_num")
     override val identifyNum: String,
-    override val online: Boolean,
+    @SerialName("online")
+    override val isOnline: Boolean,
     /**
      * 用户的状态, 0代表正常，10代表被封禁
      * Allowed: 0┃10
      */
     override val status: Int,
-    override val bot: Boolean,
+    @SerialName("bot")
+    override val isBot: Boolean,
     override val avatar: String,
 
     // Maybe not exists.
@@ -170,7 +173,7 @@ public data class SimpleUser(
     override val nickname: String = "",
     override val mobileVerified: Boolean = false,
     override val roles: List<Int> = emptyList(),
-) : User {
+) : User, BaseRespData() {
     init {
         check(status == 0 || status == 10) { "Parameter status must be 0(normal) or 10(banned), but $status" }
     }
@@ -214,8 +217,7 @@ internal data class MentionPartUser(
     override val id: String,
     override val username: String,
     override val avatar: String,
-) : User {
-
+) : User, BaseRespData() {
     @Transient
     override lateinit var originalData: String
         internal set
@@ -224,9 +226,9 @@ internal data class MentionPartUser(
         get() = null
     override val identifyNum: String
         get() = ""
-    override val online: Boolean
+    override val isOnline: Boolean
         get() = false
-    override val bot: Boolean
+    override val isBot: Boolean
         get() = false
     override val status: Int
         get() = 0
