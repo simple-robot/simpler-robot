@@ -11,6 +11,7 @@ import kotlinx.serialization.encoding.AbstractEncoder
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.serializer
 import love.forte.simbot.api.message.MessageContent
+import love.forte.simbot.component.kaiheila.KhlMessageContent
 import love.forte.simbot.component.kaiheila.khlJson
 import love.forte.simbot.component.kaiheila.objects.Attachments
 import love.forte.simbot.component.kaiheila.objects.Role
@@ -18,10 +19,10 @@ import love.forte.simbot.component.kaiheila.utils.TextNeko
 import java.util.*
 
 /**
- * [TextEventImpl]'s MessageContent. 纯文本与mention的消息正文。
+ * [TextEvent]'s MessageContent. 纯文本与mention的消息正文。
  *
  */
-public fun textEventMessageContent(content: String, extra: TextEventExtra): MessageContent {
+public fun textEventMessageContent(content: String, extra: TextEventExtra): KhlMessageContent {
     val mentioned: Boolean =
         extra.mentionHere || extra.mentionAll || extra.mention.isNotEmpty() || extra.mentionRoles.isNotEmpty()
     return if (mentioned) {
@@ -34,7 +35,7 @@ public fun textEventMessageContent(content: String, extra: TextEventExtra): Mess
 /**
  * 仅有纯文本的消息正文。
  */
-internal data class TextEventMessageContent(internal val content: String) : MessageContent {
+public data class TextEventMessageContent(internal val content: String) : KhlMessageContent {
     override val msg: String = CatEncoder.encodeText(content)
     override val cats: List<Neko> = listOf(TextNeko(content))
     override fun isEmpty(): Boolean = content.isEmpty()
@@ -43,8 +44,8 @@ internal data class TextEventMessageContent(internal val content: String) : Mess
 /**
  * 纯文本与mention的消息正文。
  */
-internal class TextEventMessageContentWithMention(private val content: String, private val extra: TextEventExtra) :
-    MessageContent {
+public class TextEventMessageContentWithMention(private val content: String, private val extra: TextEventExtra) :
+    KhlMessageContent {
 
     private val mentionList: List<Neko> = extra.toNekoList()
     override val cats: List<Neko> = mentionList + TextNeko(content)
@@ -113,7 +114,7 @@ private fun TextEventExtra.toNekoList(): List<Neko> {
 public inline fun <reified A : Attachments> attachmentsEventMessageContent(
     attachmentType: String,
     extra: AttachmentsMessageEventExtra<A>,
-): MessageContent {
+): KhlMessageContent {
     return attachmentsEventMessageContent(attachmentType, extra, khlJson.serializersModule.serializer())
 
 }
@@ -123,17 +124,17 @@ public fun <A : Attachments> attachmentsEventMessageContent(
     attachmentType: String,
     extra: AttachmentsMessageEventExtra<A>,
     serializationStrategy: SerializationStrategy<A>,
-): MessageContent {
+): KhlMessageContent {
     return AttachmentsEventMessageContent(attachmentType, extra, serializationStrategy)
 }
 
 
 
-internal class AttachmentsEventMessageContent<A : Attachments>(
+public class AttachmentsEventMessageContent<A : Attachments>(
     private val type: String,
     private val extra: AttachmentsMessageEventExtra<A>,
     serializationStrategy: SerializationStrategy<A>,
-) : MessageContent {
+) : KhlMessageContent {
 
     override val msg: String
     override val cats: List<Neko>
@@ -218,3 +219,37 @@ private fun Role.toMentionNeko(): Neko {
         .key("permissions").value(permissionsValue)
         .build()
 }
+
+
+/**
+ *
+ * [CardEvent]'s message content.
+ *
+ */
+public class CardMessageContent(private val content: String) : KhlMessageContent {
+    override val msg: String
+    override val cats: List<Neko>
+
+    init {
+        val neko = CatCodeUtil.toNeko("card", "content" cTo CatEncoder.encodeParams(content))
+        msg = neko.toString()
+        cats = listOf(neko)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other is CardMessageContent) {
+            return content == other.content
+        }
+
+        if (other is MessageContent) {
+            return msg == other.msg
+        }
+
+        return false
+    }
+
+    override fun hashCode(): Int = content.hashCode()
+}
+
+

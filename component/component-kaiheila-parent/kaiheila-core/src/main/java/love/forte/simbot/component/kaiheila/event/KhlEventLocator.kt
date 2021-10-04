@@ -16,7 +16,9 @@ package love.forte.simbot.component.kaiheila.event
 
 import kotlinx.serialization.KSerializer
 import love.forte.simbot.api.message.events.MsgGet
+import love.forte.simbot.component.kaiheila.event.message.registerMessageEventCoordinates
 import love.forte.simbot.component.kaiheila.objects.Channel
+import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 
 
@@ -28,12 +30,17 @@ import java.util.concurrent.ConcurrentHashMap
  */
 public object KhlEventLocator : EventLocator {
 
+    private val logger = LoggerFactory.getLogger(KhlEventLocator::class.java)
+
     // Event.Type -> ChannelType -> extraType
-    private val eventCoordinateMap =
-        ConcurrentHashMap<Event.Type, ConcurrentHashMap<Any, ConcurrentHashMap<String, KSerializer<*>>>>()
+    // private val eventCoordinateMap =
+    //     ConcurrentHashMap<Event.Type, ConcurrentHashMap<Any, ConcurrentHashMap<String, KSerializer<*>>>>()
 
-    // private val eventCoordinateMap = ConcurrentHashMap<EventSerializerCoordinate, KSerializer<*>>()
+    private val eventCoordinateMap = ConcurrentHashMap<Coordinate, KSerializer<*>>()
 
+    init {
+        init()
+    }
 
     override fun locateAsEvent(
         type: Event.Type,
@@ -54,7 +61,7 @@ public object KhlEventLocator : EventLocator {
     }
 
     private operator fun get(type: Event.Type, channelType: Channel.Type?, extraType: String): KSerializer<*>? =
-        eventCoordinateMap[type]?.get(channelType ?: NullType)?.get(extraType)
+        eventCoordinateMap[Coordinate(type, channelType, extraType)]
 
 
     override fun <T> registerCoordinate(
@@ -63,23 +70,25 @@ public object KhlEventLocator : EventLocator {
         extraType: String,
         serializer: KSerializer<out T>,
     ): KSerializer<*> where T : Event<*>, T : MsgGet {
-        // val coordinate = EventSerializerCoordinate(type, extraType, channelType)
-        //return eventCoordinateMap.computeIfAbsent(coordinate) { serializer }
-
-
-        val channelType0 = channelType ?: NullType
-
-
-        return eventCoordinateMap
-            .computeIfAbsent(type, ::newConcurrentHashMap)
-            .computeIfAbsent(channelType0, ::newConcurrentHashMap)
-            .put(extraType, serializer) ?: serializer
+        val key = Coordinate(type, channelType, extraType)
+        logger.debug("Registration event coordinate {}", key)
+        val put = eventCoordinateMap.put(key, serializer)
+        if (put != null) {
+            logger.debug("The old coordinate was overwritten during registration: {}", put)
+        }
+        return put ?: serializer
     }
 
-    private object NullType
+    private data class Coordinate(val type: Event.Type, val channelType: Channel.Type?, val extraType: String)
 }
-
 
 
 @Suppress("NOTHING_TO_INLINE", "UNUSED_PARAMETER")
 private inline fun <K, V> newConcurrentHashMap(key: Any): ConcurrentHashMap<K, V> = ConcurrentHashMap()
+
+
+internal fun EventLocator.init() {
+    // Message Events.
+    registerMessageEventCoordinates()
+    // TODO
+}

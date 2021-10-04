@@ -17,15 +17,17 @@
 
 package love.forte.simbot.component.kaiheila.objects
 
+import catcode.CatCodeUtil
+import catcode.Neko
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
+import love.forte.simbot.component.kaiheila.KhlMessageContent
 import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
 import love.forte.simbot.component.kaiheila.objects.AtTarget.*
 import love.forte.simbot.component.kaiheila.objects.AtTarget.User
-import java.util.*
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
 @DslMarker
@@ -44,7 +46,7 @@ public annotation class KhlMarkdownBuilderTopDsl
  * @see KMarkdownBuilder
  * @see KhlMarkdownGrammar
  */
-public interface KMarkdown {
+public interface KMarkdown : KhlMessageContent {
 
     /**
      * 此 markdown 的最终字符串。
@@ -56,13 +58,13 @@ public interface KMarkdown {
      * 提及部分，参考自 [KMarkdown消息](https://developer.kaiheila.cn/doc/event/message#KMarkdown%E6%B6%88%E6%81%AF) 字段
      */
     @SerialName("mention_part")
-    val mentionPart: List<String>
+    val mentionPart: List<MentionPart>
 
     /**
      *
      */
     @SerialName("mention_role_part")
-    val mentionRolePart: List<String>
+    val mentionRolePart: List<Role>
 
     companion object : SerializerModuleRegistrar {
         override fun SerializersModuleBuilder.serializerModule() {
@@ -83,12 +85,30 @@ public data class RawValueKMarkdown(
     @SerialName("raw_content")
     override val rawContent: String,
     @SerialName("mention_part")
-    override val mentionPart: List<String> = emptyList(),
+    override val mentionPart: List<MentionPart> = emptyList(),
     @SerialName("mention_role_part")
-    override val mentionRolePart: List<String> = emptyList(),
+    override val mentionRolePart: List<Role> = emptyList(),
 ) : KMarkdown {
     internal companion object {
-        const val SERIAL_NAME = "RAW_V_KHL_MD"
+        const val SERIAL_NAME = "RAW_V_K_MD"
+    }
+
+    override val msg: String
+    override val cats: List<Neko>
+
+    init {
+        val nekoBuilder = CatCodeUtil.getNekoBuilder("kMarkdown", true)
+            .key("rawContent").value(rawContent)
+        if (mentionPart.isNotEmpty()) {
+            nekoBuilder.key("mentionPartIds").value(mentionPart.map(MentionPart::id).joinToString(","))
+        }
+        if (mentionRolePart.isNotEmpty()) {
+            nekoBuilder.key("mentionRolePartIds").value(mentionRolePart.map(Role::roleId).joinToString(","))
+        }
+
+        val neko = nekoBuilder.build()
+        msg = neko.toString()
+        cats = listOf(neko)
     }
 }
 
@@ -104,8 +124,8 @@ public class KMarkdownBuilder(private val appender: Appendable = StringBuilder()
     private fun ap(c: Char): Appendable = appender.also { it.append(c) }
     private fun ap(c: CharSequence): Appendable = appender.also { it.append(c) }
 
-    var mentionPart: MutableList<String> = LinkedList()
-    var mentionRolePart: MutableList<String> = LinkedList()
+    // var mentionPart: MutableList<MentionPart> = LinkedList()
+    // var mentionRolePart: MutableList<Role> = LinkedList()
 
 
     //********************************//
@@ -300,11 +320,7 @@ public class KMarkdownBuilder(private val appender: Appendable = StringBuilder()
     /**
      * 构建一个 [KMarkdown] 实例。
      */
-    fun build(): KMarkdown = RawValueKMarkdown(
-        buildRaw(),
-        mentionPart.takeIf { it.isNotEmpty() } ?: emptyList(),
-        mentionRolePart.takeIf { it.isNotEmpty() } ?: emptyList(),
-    )
+    fun build(): KMarkdown = RawValueKMarkdown(buildRaw())
 
 
 }

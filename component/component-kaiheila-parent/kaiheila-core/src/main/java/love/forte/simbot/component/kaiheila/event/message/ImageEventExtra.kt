@@ -66,7 +66,7 @@ public data class ImageEventExtra(
  * 图片事件。
  */
 @Serializable
-public sealed class ImageEventImpl : AbstractMessageEvent<ImageEventExtra>(), ImageEvent {
+internal sealed class ImageEventImpl : AbstractMessageEvent<ImageEventExtra>(), ImageEvent {
     override val type: Event.Type
         get() = Event.Type.IMAGE
 
@@ -86,7 +86,7 @@ public sealed class ImageEventImpl : AbstractMessageEvent<ImageEventExtra>(), Im
         override val msgTimestamp: Long,
         override val nonce: String,
         override val extra: ImageEventExtra,
-    ) : ImageEventImpl(), GroupMsg {
+    ) : ImageEventImpl(), GroupMsg, ImageEvent.Group {
 
 
         override val channelType: Channel.Type get() = Channel.Type.GROUP
@@ -100,7 +100,7 @@ public sealed class ImageEventImpl : AbstractMessageEvent<ImageEventExtra>(), Im
         private inner class ImageEventGroupAccountInfo : GroupAccountInfo, GroupInfo, GroupBotInfo {
             override val accountCode: String get() = extra.author.accountCode
             override val accountNickname: String get() = extra.author.accountNickname
-            override val accountRemark: String get() = extra.author.accountRemark
+            override val accountRemark: String? get() = extra.author.accountRemark
             override val accountAvatar: String get() = extra.author.accountAvatar
 
             @Suppress("DEPRECATION")
@@ -136,7 +136,7 @@ public sealed class ImageEventImpl : AbstractMessageEvent<ImageEventExtra>(), Im
          * Event coordinate.
          */
         companion object Coordinate : EventLocatorRegistrarCoordinate<Group> {
-            override val type: Event.Type get() = Event.Type.TEXT
+            override val type: Event.Type get() = Event.Type.IMAGE
 
             override val channelType: Channel.Type get() = Channel.Type.GROUP
 
@@ -163,7 +163,7 @@ public sealed class ImageEventImpl : AbstractMessageEvent<ImageEventExtra>(), Im
         override val msgTimestamp: Long,
         override val nonce: String,
         override val extra: ImageEventExtra,
-    ) : ImageEventImpl(), PrivateMsg {
+    ) : ImageEventImpl(), PrivateMsg, ImageEvent.Person {
         override val channelType: Channel.Type
             get() = Channel.Type.PERSON
 
@@ -173,7 +173,7 @@ public sealed class ImageEventImpl : AbstractMessageEvent<ImageEventExtra>(), Im
         override val flag: MessageGet.MessageFlag<PrivateMsg.FlagContent> = MessageFlag(PrivateMsgIdFlagContent(msgId))
 
         companion object : EventLocatorRegistrarCoordinate<Person> {
-            override val type: Event.Type get() = Event.Type.TEXT
+            override val type: Event.Type get() = Event.Type.IMAGE
 
             override val channelType: Channel.Type get() = Channel.Type.PERSON
 

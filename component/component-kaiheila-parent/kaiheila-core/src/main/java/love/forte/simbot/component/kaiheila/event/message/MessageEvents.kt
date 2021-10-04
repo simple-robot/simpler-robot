@@ -18,7 +18,10 @@ import kotlinx.serialization.Transient
 import love.forte.simbot.api.message.MessageContent
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.containers.GroupBotInfo
+import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.MessageGet
+import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.component.kaiheila.KhlBot
 import love.forte.simbot.component.kaiheila.event.BotInitialized
 import love.forte.simbot.component.kaiheila.event.Event
@@ -93,6 +96,11 @@ public abstract class AbstractMessageEvent<E : MessageEventExtra> : MessageEvent
     override val accountInfo: AccountInfo
         get() = extra.author
 
+    /**
+     * Text. empty in default.
+     */
+    override val text: String get() = ""
+
     protected abstract fun initMessageContent(): MessageContent
     override val originalData: String get() = toString()
 }
@@ -101,7 +109,7 @@ public abstract class AbstractMessageEvent<E : MessageEventExtra> : MessageEvent
 internal class MessageFlag<F : MessageGet.MessageFlagContent>(override val flag: F) : MessageGet.MessageFlag<F>
 
 
-public fun EventLocator.registerCoordinates() {
+public fun EventLocator.registerMessageEventCoordinates() {
     TextEventImpl.run {
         registerCoordinates()
     }
@@ -114,47 +122,87 @@ public fun EventLocator.registerCoordinates() {
         registerCoordinates()
     }
 
+    FileEventImpl.run {
+        registerCoordinates()
+    }
 
+    CardEventImpl.run {
+        registerCoordinates()
+    }
 
-    TODO("Register message event coordinates")
-
+    KMarkdownEventImpl.run {
+        registerCoordinates()
+    }
 }
 
 
 //region External interface
 //
 
-public interface MessageEventExternal
+public interface MessageEventExternal : MessageGet {
+    public interface Group  : MessageEventExternal, GroupMsg
+    public interface Person : MessageEventExternal, PrivateMsg
+}
 
 /**
  * 纯文本消息事件。
  */
-public interface TextEvent : MessageEvent<TextEventExtra>, MessageEventExternal
+public interface TextEvent : MessageEvent<TextEventExtra>, MessageEventExternal {
+    public interface Group : TextEvent, MessageEventExternal.Group {
+        override val botInfo: GroupBotInfo
+    }
+    public interface Person : TextEvent, MessageEventExternal.Person
+}
 
 /**
  * 图片消息事件。
  */
-public interface ImageEvent : MessageEvent<ImageEventExtra>, MessageEventExternal
+public interface ImageEvent : MessageEvent<ImageEventExtra>, MessageEventExternal {
+    public interface Group : ImageEvent, MessageEventExternal.Group {
+        override val botInfo: GroupBotInfo
+    }
+    public interface Person : ImageEvent, MessageEventExternal.Person
+}
 
 /**
  * 文件消息事件。
  */
-public interface FileEvent : MessageEvent<FileEventExtra>, MessageEventExternal
+public interface FileEvent : MessageEvent<FileEventExtra>, MessageEventExternal {
+    public interface Group : FileEvent, MessageEventExternal.Group {
+        override val botInfo: GroupBotInfo
+    }
+    public interface Person : FileEvent, MessageEventExternal.Person
+}
 
 /**
  * 视频消息事件。
  */
-public interface VideoEvent : MessageEvent<VideoEventExtra>, MessageEventExternal
+public interface VideoEvent : MessageEvent<VideoEventExtra>, MessageEventExternal {
+    public interface Group : VideoEvent, MessageEventExternal.Group {
+        override val botInfo: GroupBotInfo
+    }
+    public interface Person : VideoEvent, MessageEventExternal.Person
+}
 
 /**
  * 卡片消息事件。
  */
-public interface CardEvent : MessageEvent<CardEventExtra>, MessageEventExternal
+public interface CardEvent : MessageEvent<CardEventExtra>, MessageEventExternal {
+    public interface Group : CardEvent, MessageEventExternal.Group {
+        override val botInfo: GroupBotInfo
+    }
+    public interface Person : CardEvent, MessageEventExternal.Person
+}
 
 /**
  * `KMarkdown` 消息事件。
  */
-public interface KMarkdownEvent : MessageEvent<KMarkdownEventExtra>, MessageEventExternal
+public interface KMarkdownEvent : MessageEvent<KMarkdownEventExtra>, MessageEventExternal {
+    public interface Group : KMarkdownEvent, MessageEventExternal.Group {
+        override val botInfo: GroupBotInfo
+    }
+    public interface Person : KMarkdownEvent, MessageEventExternal.Person
+}
 
 //endregion
 

@@ -16,6 +16,7 @@ package love.forte.simbot.component.kaiheila.objects
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
@@ -69,9 +70,9 @@ public interface User : KhlObjects, GroupAccountInfo {
     /**
      * 用户在当前服务器的昵称
      */
-    val nickname: String
+    val nickname: String?
 
-    override val accountRemark: String get() = nickname
+    override val accountRemark: String? get() = nickname
 
     /**
      * 用户名的认证数字，用户名正常为：user_name#identify_num
@@ -131,8 +132,8 @@ public interface User : KhlObjects, GroupAccountInfo {
     companion object : SerializerModuleRegistrar {
         override fun SerializersModuleBuilder.serializerModule() {
             polymorphic(User::class) {
-                subclass(UserImpl::class)
-                default { UserImpl.serializer() }
+                subclass(SimpleUser::class)
+                default { SimpleUser.serializer() }
             }
         }
     }
@@ -144,34 +145,98 @@ public interface User : KhlObjects, GroupAccountInfo {
  * [User] 数据类实现。
  */
 @Serializable
-@SerialName(UserImpl.SERIAL_NAME)
-public data class UserImpl(
+@SerialName(SimpleUser.SERIAL_NAME)
+public data class SimpleUser(
     override val id: String,
     override val username: String,
-    override val nickname: String,
+    /**
+     * 用户名的认证数字，用户名正常为：user_name#identify_num
+     */
     @SerialName("identify_num")
     override val identifyNum: String,
     override val online: Boolean,
+    /**
+     * 用户的状态, 0代表正常，10代表被封禁
+     * Allowed: 0┃10
+     */
     override val status: Int,
+    override val bot: Boolean,
     override val avatar: String,
+
+    // Maybe not exists.
+
     @SerialName("vip_avatar")
     override val vipAvatar: String? = null,
-    override val bot: Boolean = false,
-    @SerialName("mobile_verified")
-    override val mobileVerified: Boolean,
-    override val roles: List<Int>,
+    override val nickname: String = "",
+    override val mobileVerified: Boolean = false,
+    override val roles: List<Int> = emptyList(),
 ) : User {
+    init {
+        check(status == 0 || status == 10) { "Parameter status must be 0(normal) or 10(banned), but $status" }
+    }
+
     override val originalData: String get() = toString()
+
     internal companion object {
         const val SERIAL_NAME = "USER_I"
     }
 }
 
+/**
+ *
+ * Mention part info.
+ *
+ * @see toUser
+ */
+@Suppress("MemberVisibilityCanBePrivate")
+@Serializable
+public data class MentionPart(
+    val id: String,
+    val username: String,
+    @SerialName("full_name")
+    val fullName: String,
+    val avatar: String,
+) {
+
+    /**
+     * 将这个 mention part 转化为 [User] 实例。
+     */
+    fun toUser(): User = MentionPartUser(
+        id = id,
+        username = username,
+        avatar = avatar,
+    ).also { it.originalData = this.toString() }
+}
 
 
+@Serializable
+internal data class MentionPartUser(
+    override val id: String,
+    override val username: String,
+    override val avatar: String,
+) : User {
 
+    @Transient
+    override lateinit var originalData: String
+        internal set
 
-
+    override val nickname: String?
+        get() = null
+    override val identifyNum: String
+        get() = ""
+    override val online: Boolean
+        get() = false
+    override val bot: Boolean
+        get() = false
+    override val status: Int
+        get() = 0
+    override val vipAvatar: String?
+        get() = null
+    override val mobileVerified: Boolean
+        get() = false
+    override val roles: List<Int>
+        get() = emptyList()
+}
 
 
 

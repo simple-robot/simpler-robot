@@ -59,7 +59,7 @@ public data class TextEventExtra(
  * 文本事件。
  */
 @Serializable
-public sealed class TextEventImpl : AbstractMessageEvent<TextEventExtra>(), TextEvent {
+internal sealed class TextEventImpl : AbstractMessageEvent<TextEventExtra>(), TextEvent {
 
     /**
      * 群消息.
@@ -91,7 +91,7 @@ public sealed class TextEventImpl : AbstractMessageEvent<TextEventExtra>(), Text
         private inner class TextEventGroupAccountInfo : GroupAccountInfo, GroupInfo, GroupBotInfo {
             override val accountCode: String get() = extra.author.accountCode
             override val accountNickname: String get() = extra.author.accountNickname
-            override val accountRemark: String get() = extra.author.accountRemark
+            override val accountRemark: String? get() = extra.author.accountRemark
             override val accountAvatar: String get() = extra.author.accountAvatar
 
             @Suppress("DEPRECATION")

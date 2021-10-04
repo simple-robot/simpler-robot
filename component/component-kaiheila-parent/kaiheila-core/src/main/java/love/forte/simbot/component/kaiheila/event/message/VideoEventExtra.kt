@@ -85,7 +85,7 @@ public data class VideoAttachments(
  * 视频消息事件.
  */
 @Serializable
-public sealed class VideoEventImpl :  AbstractMessageEvent<VideoEventExtra>(), VideoEvent {
+internal sealed class VideoEventImpl : AbstractMessageEvent<VideoEventExtra>(), VideoEvent {
 
     override val type: Event.Type
         get() = Event.Type.VIDEO
@@ -95,7 +95,7 @@ public sealed class VideoEventImpl :  AbstractMessageEvent<VideoEventExtra>(), V
      * 群消息.
      */
     @Serializable
-    public data class Group(
+    internal data class Group(
         @SerialName("target_id")
         override val targetId: String,
         @SerialName("author_id")
@@ -107,7 +107,7 @@ public sealed class VideoEventImpl :  AbstractMessageEvent<VideoEventExtra>(), V
         override val msgTimestamp: Long,
         override val nonce: String,
         override val extra: VideoEventExtra,
-    ) : VideoEventImpl(), GroupMsg {
+    ) : VideoEventImpl(), GroupMsg, VideoEvent.Group {
 
 
         override val channelType: Channel.Type get() = Channel.Type.GROUP
@@ -121,7 +121,7 @@ public sealed class VideoEventImpl :  AbstractMessageEvent<VideoEventExtra>(), V
         private inner class ImageEventGroupAccountInfo : GroupAccountInfo, GroupInfo, GroupBotInfo {
             override val accountCode: String get() = extra.author.accountCode
             override val accountNickname: String get() = extra.author.accountNickname
-            override val accountRemark: String get() = extra.author.accountRemark
+            override val accountRemark: String? get() = extra.author.accountRemark
             override val accountAvatar: String get() = extra.author.accountAvatar
 
             @Suppress("DEPRECATION")
@@ -157,7 +157,7 @@ public sealed class VideoEventImpl :  AbstractMessageEvent<VideoEventExtra>(), V
          * Event coordinate.
          */
         companion object Coordinate : EventLocatorRegistrarCoordinate<Group> {
-            override val type: Event.Type get() = Event.Type.TEXT
+            override val type: Event.Type get() = Event.Type.VIDEO
 
             override val channelType: Channel.Type get() = Channel.Type.GROUP
 
@@ -184,7 +184,7 @@ public sealed class VideoEventImpl :  AbstractMessageEvent<VideoEventExtra>(), V
         override val msgTimestamp: Long,
         override val nonce: String,
         override val extra: VideoEventExtra,
-    ) : VideoEventImpl(), PrivateMsg {
+    ) : VideoEventImpl(), PrivateMsg, VideoEvent.Person {
         override val channelType: Channel.Type
             get() = Channel.Type.PERSON
 
@@ -194,7 +194,7 @@ public sealed class VideoEventImpl :  AbstractMessageEvent<VideoEventExtra>(), V
         override val flag: MessageGet.MessageFlag<PrivateMsg.FlagContent> = MessageFlag(PrivateMsgIdFlagContent(msgId))
 
         companion object : EventLocatorRegistrarCoordinate<Person> {
-            override val type: Event.Type get() = Event.Type.TEXT
+            override val type: Event.Type get() = Event.Type.VIDEO
 
             override val channelType: Channel.Type get() = Channel.Type.PERSON
 
@@ -214,7 +214,6 @@ public sealed class VideoEventImpl :  AbstractMessageEvent<VideoEventExtra>(), V
             registerCoordinate(Person)
         }
     }
-
 
 
 }

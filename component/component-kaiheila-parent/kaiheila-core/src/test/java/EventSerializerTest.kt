@@ -18,7 +18,7 @@ import love.forte.simbot.component.kaiheila.event.Signal_0
 import love.forte.simbot.component.kaiheila.event.SimpleEvent
 import love.forte.simbot.component.kaiheila.event.message.FileEventExtra
 import love.forte.simbot.component.kaiheila.khlJson
-import love.forte.simbot.component.kaiheila.objects.UserImpl
+import love.forte.simbot.component.kaiheila.objects.SimpleUser
 import org.junit.jupiter.api.Test
 
 /**
@@ -48,7 +48,7 @@ class EventSerializerTest {
 
     @Test
     fun test2() {
-        val user = khlJson.decodeFromString(UserImpl.serializer(), userJson)
+        val user = khlJson.decodeFromString(SimpleUser.serializer(), userJson)
 
         println(user)
 

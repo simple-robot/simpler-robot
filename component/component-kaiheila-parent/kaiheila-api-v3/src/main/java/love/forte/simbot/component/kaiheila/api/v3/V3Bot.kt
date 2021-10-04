@@ -48,7 +48,9 @@ import kotlin.coroutines.EmptyCoroutineContext
 @Suppress("MemberVisibilityCanBePrivate")
 public class V3WsBot(
     override val clientId: String,
-    @Volatile override var token: String,
+    @Volatile
+    override var token: String,
+    @Volatile
     override var clientSecret: String,
     val client: HttpClient,
     val configuration: V3BotConfiguration,
