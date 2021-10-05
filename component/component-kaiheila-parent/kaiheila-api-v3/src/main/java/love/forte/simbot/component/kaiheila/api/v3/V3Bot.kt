@@ -23,6 +23,7 @@ import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.flow.*
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonObject
@@ -52,13 +53,14 @@ import kotlin.concurrent.thread
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-internal val DefaultClient: HttpClient get() {
-    val client = HttpClient(block = Block)
-    Runtime.getRuntime().addShutdownHook(thread(start = false, isDaemon = true) {
-        client.close()
-    })
-    return client
-}
+internal val DefaultClient: HttpClient
+    get() {
+        val client = HttpClient(block = Block)
+        Runtime.getRuntime().addShutdownHook(thread(start = false, isDaemon = true) {
+            client.close()
+        })
+        return client
+    }
 
 private val Block: HttpClientConfig<*>.() -> Unit = {
     install(WebSockets)
@@ -117,6 +119,7 @@ public class V3WsBot(
 
     /** 获取 [Gateway] 的请求体。 */
     private val gatewayReq = GatewayReq(compress)
+
     /** 网络日志相关的logger */
     override val networkLog: Logger =
         LoggerFactory.getLogger("love.forte.simbot.component.kaiheila.v3.network.$clientId")
@@ -129,7 +132,8 @@ public class V3WsBot(
     override val botName: String get() = me.username
 
     /** 普通的logger */
-    override val log: Logger = LoggerFactory.getLogger("love.forte.simbot.component.kaiheila.v3.bot.$clientId[$botName]")
+    override val log: Logger =
+        LoggerFactory.getLogger("love.forte.simbot.component.kaiheila.v3.bot.$clientId[$botName]")
 
     override val coroutineContext: CoroutineContext =
         parentContext + supervisorJob +
@@ -205,138 +209,184 @@ public class V3WsBot(
                 val newCoroutineLogger = nowCoroutineContext[CoroutineLogger] ?: CoroutineLogger(networkLog)
 
                 val newScope = CoroutineScope(nowCoroutineContext + newCoroutineName + newCoroutineLogger)
-                sessionJob = newScope.launch {
-                    var firstWaitForHello: Job? = launch {
-                        println("start firstWaitForHello Job")
-                        delay(6000)
-                        this@apply.close(CloseReason(CloseReason.Codes.NOT_CONSISTENT, "No Hello!"))
+                // sessionJob = newScope.launch {
+                var firstWaitForHello: Job? = launch(start = CoroutineStart.LAZY) {
+                    println("Start firstWaitForHello Job")
+                    delay(6000)
+                    this@apply.close(CloseReason(CloseReason.Codes.NOT_CONSISTENT, "No Hello!"))
+                }
+
+                var pingSendJob: Job? = null
+                var waitForPong: Job? = null
+
+                /**
+                 * Do when get text
+                 */
+                suspend fun doText(text: String): Event<*>? {
+                    println("[Binary-text]: $text")
+
+                    val element = khlJson.parseToJsonElement(text)
+                    val s = element.jsonObject["s"]?.jsonPrimitive?.int
+                    val signal = when (s) {
+                        0 -> khlJson.decodeFromJsonElement<Signal_0>(element)
+                        1 -> khlJson.decodeFromJsonElement<Signal_1>(element)
+                        // 2 -> khlJson.decodeFromJsonElement<Signal_2>(element) // Ping
+                        3 -> khlJson.decodeFromJsonElement<Signal_3>(element)
+                        5 -> khlJson.decodeFromJsonElement<Signal_5>(element)
+                        6 -> khlJson.decodeFromJsonElement<Signal_6>(element)
+                        else -> error(element)
                     }
 
-                    var pingSendJob: Job? = null
-                    var waitForPong: Job? = null
+                    println("[Signal_$s]: $signal")
 
-                    /**
-                     * Do when get text
-                     */
-                    suspend fun doText(text: String) {
-                        println("[Binary-text]: $text")
+                    when (signal) {
+                        // Hello
+                        is Signal.Hello -> {
+                            println("Signal.Hello: $signal")
+                            firstWaitForHello?.cancel()
+                            firstWaitForHello = null
 
-                        val element = khlJson.parseToJsonElement(text)
-                        val s = element.jsonObject["s"]?.jsonPrimitive?.int
-                        val signal = when (s) {
-                            0 -> khlJson.decodeFromJsonElement<Signal_0>(element)
-                            1 -> khlJson.decodeFromJsonElement<Signal_1>(element)
-                            // 2 -> khlJson.decodeFromJsonElement<Signal_2>(element) // Ping
-                            3 -> khlJson.decodeFromJsonElement<Signal_3>(element)
-                            5 -> khlJson.decodeFromJsonElement<Signal_5>(element)
-                            6 -> khlJson.decodeFromJsonElement<Signal_6>(element)
-                            else -> error(element)
-                        }
+                            pingSendJob?.cancelAndJoin()
 
-                        println("[Signal_$s]: $signal")
-
-                        when (signal) {
-                            // Hello
-                            is Signal.Hello -> {
-                                println("Signal.Hello: $signal")
-                                firstWaitForHello?.cancel()
-                                firstWaitForHello = null
-
-                                pingSendJob?.cancelAndJoin()
-
-                                pingSendJob = launch(coroutineContext) {
-                                    while (this@apply.isActive) {
-                                        val r = ThreadLocalRandom.current()
-                                        val wait: Duration =
-                                            if (r.nextBoolean()) Duration.ofSeconds(30) + Duration.ofSeconds(
-                                                r.nextLong(5))
-                                            else Duration.ofSeconds(30) - Duration.ofSeconds(r.nextLong(
-                                                5))
-                                        log.debug("Wait {} for next ping", wait.toString())
-                                        delay(wait.toMillis())
-                                        log.debug("Send ping.")
-                                        send(Frame.Text(Signal.Ping.jsonValue(0)))
-                                        waitForPong = launch(coroutineContext) {
-                                            delay(6000)
-                                            // 进入超时状态
-                                        }
+                            pingSendJob = launch(coroutineContext) {
+                                while (this@apply.isActive) {
+                                    val r = ThreadLocalRandom.current()
+                                    val wait: Duration =
+                                        if (r.nextBoolean()) Duration.ofSeconds(30) + Duration.ofSeconds(
+                                            r.nextLong(5))
+                                        else Duration.ofSeconds(30) - Duration.ofSeconds(r.nextLong(
+                                            5))
+                                    log.debug("Wait {} for next ping", wait.toString())
+                                    delay(wait.toMillis())
+                                    log.debug("Send ping.")
+                                    send(Frame.Text(Signal.Ping.jsonValue(0)))
+                                    waitForPong = launch(coroutineContext) {
+                                        delay(6000)
+                                        // 进入超时状态
                                     }
                                 }
+                            }
 
-                            }
-                            is Signal.Event -> {
-                                /*
-                                    注意： 该消息会有 `sn`, 代表消息序号,
-                                    针对当前 `session` 的消息的序号,
-                                    客户端需记录该数字,
-                                    并按顺序接收消息，
-                                    `resume` 时需传入该参数才能完成。
-                                 */
-                                val lastSn = this@V3WsBot.sn.get()
-                                this@V3WsBot.sn.set(signal.sn)
-
-                                // TODO event
-
-                            }
-                            is Signal.Reconnect -> {
-                                // reconnect
-                                close(CloseReason(CloseReason.Codes.TRY_AGAIN_LATER, "reconnect"))
-                            }
-                            // is Signal.Ping -> {
-                            //
-                            // }
-                            is Signal.Pong -> {
-                                // cancel job
-                                waitForPong?.cancelAndJoin()
-                            }
-                            is Signal.ResumeAck -> {
-
-                            }
-                            is Signal.Ping -> {
-
-                            }
-                            else -> {
-                                println("other $signal")
-                            }
                         }
+                        is Signal.Event -> {
+                            /*
+                                注意： 该消息会有 `sn`, 代表消息序号,
+                                针对当前 `session` 的消息的序号,
+                                客户端需记录该数字,
+                                并按顺序接收消息，
+                                `resume` 时需传入该参数才能完成。
+                             */
+                            val lastSn = this@V3WsBot.sn.get()
+                            this@V3WsBot.sn.set(signal.sn)
 
+                            // TODO event
 
-                        if (signal is Signal_0) {
-                            println(signal.d)
+                        }
+                        is Signal.Reconnect -> {
+                            // reconnect
+                            close(CloseReason(CloseReason.Codes.TRY_AGAIN_LATER, "reconnect"))
+                        }
+                        // is Signal.Ping -> {
+                        //
+                        // }
+                        is Signal.Pong -> {
+                            // cancel job
+                            waitForPong?.cancelAndJoin()
+                        }
+                        is Signal.ResumeAck -> {
+
+                        }
+                        is Signal.Ping -> {
+
+                        }
+                        else -> {
+                            println("other $signal")
                         }
                     }
 
-                    while (this@apply.isActive) {
-                        try {
-                            when (val frame: Frame = incoming.receive()) {
-                                is Frame.Text -> {
-                                    val text = frame.readText()
-                                    println("[Text  ]: $text")
-                                    doText(text)
-                                }
-                                is Frame.Binary -> {
-                                    val text =
-                                        InflaterInputStream(frame.readBytes().inputStream()).reader(Charsets.UTF_8)
-                                            .use { it.readText() }
-                                    doText(text)
-                                }
-                                is Frame.Close -> {
-                                    println("[Close ]: " + frame.readBytes().decodeToString())
-                                    this@apply.close()
-                                }
-                                is Frame.Pong -> {
-                                    println("[Pong: ]: " + frame.readBytes().decodeToString())
-                                }
-                            }
-                        } catch (e: ClosedReceiveChannelException) {
-                            // closed
-                            throw e
-                        } catch (e: Throwable) {
-                            throw e
-                        }
+
+                    if (signal is Signal_0) {
+                        println(signal.d)
                     }
+
+                    return null // TODO
                 }
+
+
+                sessionJob = incoming.receiveAsFlow().mapNotNull { frame ->
+                    try {
+                        when (frame) {
+                            is Frame.Text -> {
+                                val text = frame.readText()
+                                println("[Text  ]: $text")
+                                doText(text)
+                            }
+                            is Frame.Binary -> {
+                                val text =
+                                    InflaterInputStream(frame.readBytes().inputStream()).reader(Charsets.UTF_8)
+                                        .use { it.readText() }
+                                doText(text)
+                            }
+                            is Frame.Close -> {
+                                println("[Close ]: " + frame.readBytes().decodeToString())
+                                this@apply.close()
+                                null
+                            }
+                            is Frame.Pong -> {
+                                println("[Pong: ]: " + frame.readBytes().decodeToString())
+                                null
+                            }
+                            is Frame.Ping -> {
+                                println("[Ping: ]: $frame")
+                                null
+                            }
+                        }
+                    } catch (e: ClosedReceiveChannelException) {
+                        // closed
+                        throw e
+                    } catch (e: Throwable) {
+                        throw e
+                    }
+                }.onStart {
+                    firstWaitForHello?.start()
+                }.onEach {
+                    println("Event: $it")
+                }.launchIn(newScope)
+                //.collect {
+                //         println("Event: $it")
+                //     }
+
+                // while (this@apply.isActive) {
+                //     try {
+                //         when (val frame: Frame = incoming.receive()) {
+                //             is Frame.Text -> {
+                //                 val text = frame.readText()
+                //                 println("[Text  ]: $text")
+                //                 doText(text)
+                //             }
+                //             is Frame.Binary -> {
+                //                 val text =
+                //                     InflaterInputStream(frame.readBytes().inputStream()).reader(Charsets.UTF_8)
+                //                         .use { it.readText() }
+                //                 doText(text)
+                //             }
+                //             is Frame.Close -> {
+                //                 println("[Close ]: " + frame.readBytes().decodeToString())
+                //                 this@apply.close()
+                //             }
+                //             is Frame.Pong -> {
+                //                 println("[Pong: ]: " + frame.readBytes().decodeToString())
+                //             }
+                //         }
+                //     } catch (e: ClosedReceiveChannelException) {
+                //         // closed
+                //         throw e
+                //     } catch (e: Throwable) {
+                //         throw e
+                //     }
+                // }
             }
+            //         }
 
         } catch (e: Throwable) {
             log.error("Ws link fail.", e)
@@ -363,6 +413,8 @@ public class V3WsBot(
 
 
     override suspend fun guilds(): List<Guild> {
+
+
         return GuildListReq.SortById.Asc.doRequestForData(this, client).items
     }
 
