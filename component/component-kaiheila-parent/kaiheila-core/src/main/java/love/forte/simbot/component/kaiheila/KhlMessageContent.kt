@@ -10,4 +10,5 @@ import love.forte.simbot.api.message.MessageContent
  * @author ForteScarlet
  */
 public interface KhlMessageContent : MessageContent {
+    val messageType: MessageType get() = TODO()
 }

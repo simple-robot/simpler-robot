@@ -17,6 +17,7 @@ package love.forte.simbot.component.kaiheila.api.v3.message
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.component.kaiheila.MessageType
 import love.forte.simbot.component.kaiheila.api.BaseApiDataKey
 import love.forte.simbot.component.kaiheila.api.BaseApiDataReq
 import love.forte.simbot.component.kaiheila.api.ObjectResp

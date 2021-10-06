@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <version>0.0.1-ALPHA.1<!--khlv--></version>
-    <artifactId>component-kaiheila-core</artifactId>
+    <artifactId>kaiheila-core</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

@@ -21,7 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>love.forte.simple-robot</groupId>
-            <artifactId>component-kaiheila-core</artifactId>
+            <artifactId>kaiheila-core</artifactId>
             <version>${simbot.khl.version}</version>
         </dependency>
     </dependencies>

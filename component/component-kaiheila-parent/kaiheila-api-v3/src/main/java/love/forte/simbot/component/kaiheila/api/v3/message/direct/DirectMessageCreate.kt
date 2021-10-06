@@ -23,7 +23,7 @@ import love.forte.simbot.component.kaiheila.api.BaseApiDataKey
 import love.forte.simbot.component.kaiheila.api.BaseApiDataReq
 import love.forte.simbot.component.kaiheila.api.ObjectResp
 import love.forte.simbot.component.kaiheila.api.v3.message.MessageCreateResp
-import love.forte.simbot.component.kaiheila.api.v3.message.MessageType
+import love.forte.simbot.component.kaiheila.MessageType
 
 
 /**
