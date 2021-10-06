@@ -3,19 +3,20 @@ package love.forte.simbot.component.kaiheila.api.v3.sender
 import kotlinx.coroutines.*
 import love.forte.common.utils.Carrier
 import love.forte.common.utils.toCarrier
+import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.api.message.assists.Flag
-import love.forte.simbot.api.message.events.FriendAddRequest
-import love.forte.simbot.api.message.events.GroupAddRequest
-import love.forte.simbot.api.message.events.MessageGet
+import love.forte.simbot.api.message.events.*
 import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.component.kaiheila.KhlBot
 import love.forte.simbot.component.kaiheila.api.KhlSender
 import love.forte.simbot.component.kaiheila.api.doRequest
 import love.forte.simbot.component.kaiheila.api.isSuccess
-import love.forte.simbot.component.kaiheila.api.v3.guild.GuildLeaveReq
-import love.forte.simbot.component.kaiheila.api.v3.guild.GuildMuteCreateReq
-import love.forte.simbot.component.kaiheila.api.v3.guild.GuildMuteDeleteReq
-import love.forte.simbot.component.kaiheila.api.v3.guild.GuildNicknameReq
+import love.forte.simbot.component.kaiheila.api.v3.guild.*
+import love.forte.simbot.component.kaiheila.api.v3.message.MessageDeleteReq
+import love.forte.simbot.component.kaiheila.api.v3.message.direct.DirectMessageDeleteReq
+import love.forte.simbot.component.kaiheila.api.v3.userchat.UserChatDeleteReq
+import love.forte.simbot.component.kaiheila.api.v3.userchat.UserChatListReq
+import love.forte.simbot.component.kaiheila.api.v3.userchat.UserChatViewReq
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
@@ -112,22 +113,35 @@ public class KhlV3Setter(
         why: String?,
         blackList: Boolean,
     ): Carrier<Boolean> {
-        TODO("Not yet implemented")
+
+        val req = GuildKickoutReq(guildId = groupCode, targetId = memberCode)
+
+        val resp = runBlocking { req.doRequest(bot) }
+
+        return resp.isSuccess.toCarrier()
     }
 
-    override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String> {
-        TODO("Not yet implemented")
-    }
+    override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?) =
+        def.setGroupMemberSpecialTitle(groupCode, memberCode, title)
 
     override fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
-        TODO("Not yet implemented")
+        val f = flag.flag
+        val id = f.id
+
+        val req = when (f) {
+            is PrivateMsg.FlagContent -> DirectMessageDeleteReq(id)
+            is GroupMsg.FlagContent -> MessageDeleteReq(id)
+            else -> throw SimbotIllegalArgumentException("Flag is not channel message or direct message.")
+        }
+
+
+        val resp = runBlocking { req.doRequest(bot) }
+
+        return resp.isSuccess.toCarrier()
     }
 
-    override fun setGroupName(groupCode: String, name: String): Carrier<String> {
-        TODO("Not yet implemented")
-    }
+    override fun setGroupName(groupCode: String, name: String) =
+        def.setGroupName(groupCode, name)
 
-    override fun setFriendDelete(friend: String): Carrier<Boolean> {
-        TODO("Not yet implemented")
-    }
+    override fun setFriendDelete(friend: String) = def.setFriendDelete(friend)
 }

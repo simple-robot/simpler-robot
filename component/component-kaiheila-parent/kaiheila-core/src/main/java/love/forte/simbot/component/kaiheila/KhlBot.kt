@@ -21,6 +21,7 @@ import io.ktor.client.*
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.LogAble
 import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.bot.Bot
 import love.forte.simbot.component.kaiheila.api.Api
 import love.forte.simbot.component.kaiheila.api.ApiConfiguration
 import love.forte.simbot.component.kaiheila.objects.Guild
@@ -77,7 +78,7 @@ public interface KhlBotApi {
  *
  * @author ForteScarlet
  */
-public interface KhlBot : LogAble, BotInfo, KhlBotApi {
+public interface KhlBot : LogAble, Bot, KhlBotApi {
 
     val api: Api
 
@@ -103,12 +104,6 @@ public interface KhlBot : LogAble, BotInfo, KhlBotApi {
 
 
     val client: HttpClient
-
-    override val botCode: String
-        get() = clientId
-
-    override val botCodeNumber: Long
-        get() = error("KHL Bot's client does not support numbers.")
 
     /**
      * token info. 可以重新生成，因此也允许运行时更新。

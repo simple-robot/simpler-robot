@@ -28,6 +28,10 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.sender.BotSender
+import love.forte.simbot.api.sender.DefaultMsgSenderFactories
+import love.forte.simbot.api.sender.ErrorFactories
 import love.forte.simbot.component.kaiheila.CoroutineLogger
 import love.forte.simbot.component.kaiheila.KhlBot
 import love.forte.simbot.component.kaiheila.WebsocketBot
@@ -37,6 +41,9 @@ import love.forte.simbot.component.kaiheila.api.doRequestForData
 import love.forte.simbot.component.kaiheila.api.v3.guild.GuildListReq
 import love.forte.simbot.component.kaiheila.api.v3.guild.GuildUser
 import love.forte.simbot.component.kaiheila.api.v3.guild.GuildViewReq
+import love.forte.simbot.component.kaiheila.api.v3.sender.KhlV3Getter
+import love.forte.simbot.component.kaiheila.api.v3.sender.KhlV3Sender
+import love.forte.simbot.component.kaiheila.api.v3.sender.KhlV3Setter
 import love.forte.simbot.component.kaiheila.api.v3.user.Me
 import love.forte.simbot.component.kaiheila.api.v3.user.MeReq
 import love.forte.simbot.component.kaiheila.event.*
@@ -103,6 +110,7 @@ public class V3WsBot(
     val wsClient: HttpClient = client,
     parentContext: CoroutineContext = EmptyCoroutineContext,
     compress: Int = 1,
+    senderFactories: DefaultMsgSenderFactories = ErrorFactories,
 ) : WebsocketBot, CoroutineScope {
 
     init {
@@ -128,8 +136,36 @@ public class V3WsBot(
 
     private val me: Me = runBlocking { MeReq.doRequestForData(this@V3WsBot)!! }
 
-    override val botAvatar: String get() = me.avatar
-    override val botName: String get() = me.username
+    private val info = KhlBotInfo()
+
+    override val botInfo: BotInfo
+        get() = info
+
+    val botCode: String get() = botInfo.botCode
+    val botName: String get() = botInfo.botName
+
+    private inner class KhlBotInfo : BotInfo {
+        override val botCode: String get() = me.id
+        override val botName: String get() = me.username
+        override val botAvatar: String get() = me.avatar
+    }
+
+    override val sender: BotSender = BotSender(
+        KhlV3Sender(
+            this,
+            senderFactories.defaultSenderFactory.getOnBotSender(this)
+        ),
+        KhlV3Setter(
+            this,
+            senderFactories.defaultSetterFactory.getOnBotSetter(this),
+            this
+        ),
+        KhlV3Getter(
+            this,
+            senderFactories.defaultGetterFactory.getOnBotGetter(this)
+        ),
+        botInfo
+    )
 
     /** 普通的logger */
     override val log: Logger =
@@ -411,6 +447,10 @@ public class V3WsBot(
         supervisorJob.join()
     }
 
+
+    override fun close() {
+        closeBot()
+    }
 
     override suspend fun guilds(): List<Guild> {
 
