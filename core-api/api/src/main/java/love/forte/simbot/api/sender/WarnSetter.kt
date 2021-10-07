@@ -38,54 +38,58 @@ public object WarnSetter : LogAble, Setter.Def {
         log.warn("Setter api {} is not supported. Will return to the default value {}", name, def())
     }
 
-    override fun setFriendAddRequest(
+    override suspend fun friendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,
         agree: Boolean,
         blackList: Boolean,
     ) = apiWarn("setFriendAddRequest") { false }.let { false.toCarrier() }
 
-    override fun setGroupAddRequest(
+    override suspend fun groupAddRequest(
         flag: Flag<GroupAddRequest.FlagContent>,
         agree: Boolean,
         blackList: Boolean,
         why: String?,
     ) = apiWarn("setGroupAddRequest") { false }.let { false.toCarrier() }
 
-    override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean) =
+    override suspend fun groupAdmin(groupCode: String, memberCode: String, promotion: Boolean) =
         apiWarn("setGroupAdmin") { false }.let { false.toCarrier() }
 
-    override fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean> =
+    override suspend fun groupAnonymous(group: String, agree: Boolean): Carrier<Boolean> =
         apiWarn("setGroupAnonymous") { false }.let { false.toCarrier() }
 
-    override fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit) =
+    override suspend fun groupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit) =
         apiWarn("setGroupBan") { false }.let { false.toCarrier() }
 
-    override fun setGroupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> =
+    override suspend fun groupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> =
         apiWarn("setGroupWholeBan") { false }.let { false.toCarrier() }
 
-    override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> =
+    override suspend fun groupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> =
         apiWarn("setGroupRemark") { null }.let { Carrier.empty() }
 
-    override fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> =
+    override suspend fun groupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> =
         apiWarn("setGroupQuit") { false }.let { false.toCarrier() }
 
-    override fun setGroupMemberKick(
+    override suspend fun groupMemberKick(
         groupCode: String,
         memberCode: String,
         why: String?,
         blackList: Boolean,
     ): Carrier<Boolean> = apiWarn("setGroupMemberKick") { false }.let { false.toCarrier() }
 
-    override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String> =
+    override suspend fun groupMemberSpecialTitle(
+        groupCode: String,
+        memberCode: String,
+        title: String?,
+    ): Carrier<String> =
         apiWarn("setGroupMemberSpecialTitle") { null }.let { Carrier.empty() }
 
-    override fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> =
+    override suspend fun msgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> =
         apiWarn("setMsgRecall") { false }.let { false.toCarrier() }
 
-    override fun setGroupName(groupCode: String, name: String): Carrier<String> =
+    override suspend fun groupName(groupCode: String, name: String): Carrier<String> =
         apiWarn("setGroupName") { null }.let { Carrier.empty() }
 
-    override fun setFriendDelete(friend: String): Carrier<Boolean> =
+    override suspend fun friendDelete(friend: String): Carrier<Boolean> =
         apiWarn("setFriendDelete") { false }.let { false.toCarrier() }
 }

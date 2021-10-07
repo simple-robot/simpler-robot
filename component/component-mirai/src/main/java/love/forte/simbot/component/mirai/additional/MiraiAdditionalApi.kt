@@ -48,7 +48,7 @@ public interface MiraiGetterAdditionalApi<R : Result?> : MiraiAdditionalApi<R> {
     /**
      * 通过当前Getter中可提供的元素执行当前API.
      */
-    fun execute(getterInfo: GetterInfo): R
+    suspend fun execute(getterInfo: GetterInfo): R
 }
 
 /**
@@ -63,7 +63,7 @@ public interface MiraiSetterAdditionalApi<R : Result?> : MiraiAdditionalApi<R> {
     /**
      * 通过当前Getter中可提供的元素执行当前API.
      */
-    fun execute(setterInfo: SetterInfo): R
+    suspend fun execute(setterInfo: SetterInfo): R
 }
 
 /**
@@ -78,7 +78,7 @@ public interface MiraiSenderAdditionalApi<R : Result?> : MiraiAdditionalApi<R> {
     /**
      * 通过当前Getter中可提供的元素执行当前API.
      */
-    fun execute(senderInfo: SenderInfo): R
+    suspend fun execute(senderInfo: SenderInfo): R
 }
 
 /**

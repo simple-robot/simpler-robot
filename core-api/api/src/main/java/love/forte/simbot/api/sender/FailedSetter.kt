@@ -27,53 +27,53 @@ import java.util.concurrent.TimeUnit
  * [Setter] 的无效化实现，返回失败或空的默认值。
  */
 public object FailedSetter : Setter.Def {
-    override fun setFriendAddRequest(
+    override suspend fun friendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,
         agree: Boolean,
         blackList: Boolean,
     ): Carrier<Boolean> = FalseCarrier
 
-    override fun setGroupAddRequest(
+    override suspend fun groupAddRequest(
         flag: Flag<GroupAddRequest.FlagContent>,
         agree: Boolean,
         blackList: Boolean,
         why: String?,
     ): Carrier<Boolean> = FalseCarrier
 
-    override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> =
+    override suspend fun groupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> =
         FalseCarrier
 
-    override fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean> = FalseCarrier
+    override suspend fun groupAnonymous(group: String, agree: Boolean): Carrier<Boolean> = FalseCarrier
 
-    override fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean> =
+    override suspend fun groupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean> =
         FalseCarrier
 
-    override fun setGroupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> = FalseCarrier
+    override suspend fun groupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> = FalseCarrier
 
-    override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> =
+    override suspend fun groupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> =
         Carrier.empty()
 
-    override fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> = FalseCarrier
+    override suspend fun groupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> = FalseCarrier
 
-    override fun setGroupMemberKick(
+    override suspend fun groupMemberKick(
         groupCode: String,
         memberCode: String,
         why: String?,
         blackList: Boolean,
     ): Carrier<Boolean> = FalseCarrier
 
-    override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String> =
+    override suspend fun groupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String> =
         Carrier.empty()
 
-    override fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> = FalseCarrier
+    override suspend fun msgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> = FalseCarrier
 
-    override fun setGroupName(groupCode: String, name: String): Carrier<String> = Carrier.empty()
+    override suspend fun groupName(groupCode: String, name: String): Carrier<String> = Carrier.empty()
 
     /**
      * 删除好友
      */
-    override fun setFriendDelete(friend: String): Carrier<Boolean> = FalseCarrier
+    override suspend fun friendDelete(friend: String): Carrier<Boolean> = FalseCarrier
 }
 
 

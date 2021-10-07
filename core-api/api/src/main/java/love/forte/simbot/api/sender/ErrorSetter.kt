@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit
  * [Setter] 的 无效化实现，所有的方法均会抛出异常。
  */
 object ErrorSetter : Setter.Def {
-    override fun setFriendAddRequest(
+    override suspend fun friendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,
         agree: Boolean,
@@ -39,7 +39,7 @@ object ErrorSetter : Setter.Def {
     ): Carrier<Boolean> =
         NO("Setter.setFriendAddRequest")
 
-    override fun setGroupAddRequest(
+    override suspend fun groupAddRequest(
         flag: Flag<GroupAddRequest.FlagContent>,
         agree: Boolean,
         blackList: Boolean,
@@ -47,25 +47,25 @@ object ErrorSetter : Setter.Def {
     ): Nothing =
         NO("Setter.setGroupAddRequest")
 
-    override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Nothing =
+    override suspend fun groupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Nothing =
         NO("Setter.setGroupAdmin")
 
-    override fun setGroupAnonymous(group: String, agree: Boolean): Nothing =
+    override suspend fun groupAnonymous(group: String, agree: Boolean): Nothing =
         NO("Setter.setGroupAnonymous")
 
-    override fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Nothing =
+    override suspend fun groupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Nothing =
         NO("Setter.setGroupBan")
 
-    override fun setGroupWholeBan(groupCode: String, mute: Boolean): Nothing =
+    override suspend fun groupWholeBan(groupCode: String, mute: Boolean): Nothing =
         NO("Setter.setGroupWholeBan")
 
-    override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Nothing =
+    override suspend fun groupRemark(groupCode: String, memberCode: String, remark: String?): Nothing =
         NO("Setter.setGroupRemark")
 
-    override fun setGroupQuit(groupCode: String, forcibly: Boolean): Nothing =
+    override suspend fun groupQuit(groupCode: String, forcibly: Boolean): Nothing =
         NO("Setter.setGroupLeave")
 
-    override fun setGroupMemberKick(
+    override suspend fun groupMemberKick(
         groupCode: String,
         memberCode: String,
         why: String?,
@@ -73,22 +73,22 @@ object ErrorSetter : Setter.Def {
     ): Nothing = NO("Setter.setGroupMemberKick")
 
 
-    override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Nothing =
+    override suspend fun groupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Nothing =
         NO("Setter.setGroupMemberSpecialTitle")
 
-    override fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Nothing =
+    override suspend fun msgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Nothing =
         NO("Setter.setMsgRecall")
 
-    override fun setGroupName(groupCode: String, name: String): Nothing =
+    override suspend fun groupName(groupCode: String, name: String): Nothing =
         NO("Setter.setGroupName")
 
     /**
      * 删除好友
      */
-    override fun setFriendDelete(friend: String): Nothing =
+    override suspend fun friendDelete(friend: String): Nothing =
         NO("Setter.setFriendDelete")
 
-    override fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): Nothing =
+    override suspend fun <R : Result> execute(additionalApi: AdditionalApi<R>): Nothing =
         NO("Setter.additionalApi.${additionalApi.additionalApiName}")
 }
 

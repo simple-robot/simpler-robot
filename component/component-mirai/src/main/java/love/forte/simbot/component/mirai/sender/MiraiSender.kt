@@ -295,7 +295,7 @@ public class MiraiSender(
         return defSender.sendGroupSign(group, title, message)
     }
 
-    override fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): R {
+    override suspend fun <R : Result> execute(additionalApi: AdditionalApi<R>): R {
         if (additionalApi is MiraiSenderAdditionalApi) {
             return additionalApi.execute(senderInfo)
         }

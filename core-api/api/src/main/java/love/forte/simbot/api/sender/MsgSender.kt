@@ -34,7 +34,7 @@ public open class MsgSender(
     @JvmField val GETTER: Getter,
 ) {
     /** 撤回消息。 */
-    public open fun recall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> = SETTER.setMsgRecall(flag)
+    public open fun recall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> = SETTER.msgRecall(flag)
 
 
 }

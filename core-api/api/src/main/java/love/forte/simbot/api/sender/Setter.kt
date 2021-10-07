@@ -14,6 +14,7 @@
 
 package love.forte.simbot.api.sender
 
+import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.Carrier
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountCodeContainer
@@ -52,50 +53,77 @@ public interface Setter : Communicator {
      *
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      */
-    fun setFriendAddRequest(
+    @JvmSynthetic
+    suspend fun friendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,
         agree: Boolean,
         blackList: Boolean,
     ): Carrier<Boolean>
 
-    /** 同意请求。 */
-    
+    @JvmSynthetic
+    suspend fun friendAddRequestAccept(
+        flag: Flag<FriendAddRequest.FlagContent>,
+        friendRemark: String?,
+        blackList: Boolean,
+    ): Carrier<Boolean> =
+        friendAddRequest(flag, friendRemark, true, blackList)
+
+    @JvmSynthetic
+    suspend fun friendAddRequestAccept(flag: Flag<FriendAddRequest.FlagContent>, blackList: Boolean): Carrier<Boolean> =
+        friendAddRequestAccept(flag, friendRemark = null, blackList = blackList)
+
+    @JvmSynthetic
+    suspend fun friendAddRequestAccept(flag: Flag<FriendAddRequest.FlagContent>): Carrier<Boolean> =
+        friendAddRequestAccept(flag, friendRemark = null, blackList = false)
+
+    @JvmSynthetic
+    suspend fun friendAddRequestReject(
+        flag: Flag<FriendAddRequest.FlagContent>,
+        friendRemark: String?,
+        blackList: Boolean,
+    ): Carrier<Boolean> =
+        friendAddRequest(flag, friendRemark, false, blackList)
+
+    @JvmSynthetic
+    suspend fun friendAddRequestReject(flag: Flag<FriendAddRequest.FlagContent>, blackList: Boolean): Carrier<Boolean> =
+        friendAddRequestReject(flag, friendRemark = null, blackList = blackList)
+
+    @JvmSynthetic
+    suspend fun friendAddRequestReject(flag: Flag<FriendAddRequest.FlagContent>): Carrier<Boolean> =
+        friendAddRequestReject(flag, friendRemark = null, blackList = false)
+
+    /////////////// blocking //////////////////
+    fun setFriendAddRequest(
+        flag: Flag<FriendAddRequest.FlagContent>,
+        friendRemark: String?,
+        agree: Boolean,
+        blackList: Boolean,
+    ): Carrier<Boolean> = runBlocking { friendAddRequest(flag, friendRemark, agree, blackList) }
+
     fun acceptFriendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,
         blackList: Boolean,
-    ): Carrier<Boolean> =
-        setFriendAddRequest(flag, friendRemark, true, blackList)
+    ): Carrier<Boolean> = runBlocking { friendAddRequestAccept(flag, friendRemark, blackList) }
 
-    /** 同意请求。 */
-    
     fun acceptFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>, blackList: Boolean): Carrier<Boolean> =
-        acceptFriendAddRequest(flag, friendRemark = null, blackList = blackList)
+        runBlocking { friendAddRequestAccept(flag, blackList) }
 
-    /** 同意请求。默认blackList = false. */
-    
     fun acceptFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>): Carrier<Boolean> =
-        acceptFriendAddRequest(flag, friendRemark = null, blackList = false)
+        runBlocking { friendAddRequestAccept(flag) }
 
-    /** 拒绝请求。 */
-    
     fun rejectFriendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,
         blackList: Boolean,
-    ): Carrier<Boolean> =
-        setFriendAddRequest(flag, friendRemark, false, blackList)
+    ): Carrier<Boolean> = runBlocking { friendAddRequestReject(flag, friendRemark, blackList) }
 
-    /** 拒绝请求。 */
-    
     fun rejectFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>, blackList: Boolean): Carrier<Boolean> =
-        rejectFriendAddRequest(flag, friendRemark = null, blackList = blackList)
+        runBlocking { friendAddRequestReject(flag, blackList) }
 
-    /** 拒绝请求。默认blackList = false. */
-    
     fun rejectFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>): Carrier<Boolean> =
-        rejectFriendAddRequest(flag, friendRemark = null, blackList = false)
+        runBlocking { friendAddRequestReject(flag) }
 
 
     /**
@@ -108,50 +136,79 @@ public interface Setter : Communicator {
      *
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      */
-    fun setGroupAddRequest(
+    @JvmSynthetic
+    suspend fun groupAddRequest(
         flag: Flag<GroupAddRequest.FlagContent>,
         agree: Boolean,
         blackList: Boolean,
         why: String?,
     ): Carrier<Boolean>
 
-    /** 同意请求。 */
-    
+    @JvmSynthetic
+    suspend fun groupAddRequestAccept(
+        flag: Flag<GroupAddRequest.FlagContent>,
+        blackList: Boolean,
+        why: String?,
+    ): Carrier<Boolean> = groupAddRequest(flag, true, blackList, why)
+
+    @JvmSynthetic
+    suspend fun groupAddRequestAccept(flag: Flag<GroupAddRequest.FlagContent>, why: String?): Carrier<Boolean> =
+        groupAddRequestAccept(flag, false, why)
+
+    @JvmSynthetic
+    suspend fun groupAddRequestAccept(flag: Flag<GroupAddRequest.FlagContent>): Carrier<Boolean> =
+        groupAddRequestAccept(flag, false, null)
+
+    @JvmSynthetic
+    suspend fun groupAddRequestReject(
+        flag: Flag<GroupAddRequest.FlagContent>,
+        blackList: Boolean,
+        why: String?,
+    ): Carrier<Boolean> =
+        groupAddRequest(flag, false, blackList, why)
+
+    @JvmSynthetic
+    suspend fun groupAddRequestReject(flag: Flag<GroupAddRequest.FlagContent>, why: String?): Carrier<Boolean> =
+        groupAddRequestReject(flag, false, why)
+
+    @JvmSynthetic
+    suspend fun groupAddRequestReject(flag: Flag<GroupAddRequest.FlagContent>): Carrier<Boolean> =
+        groupAddRequestReject(flag, false, null)
+
+
+    //////////////// blocking //////////////////
+
+
+    fun setGroupAddRequest(
+        flag: Flag<GroupAddRequest.FlagContent>,
+        agree: Boolean,
+        blackList: Boolean,
+        why: String?,
+    ): Carrier<Boolean> = runBlocking { groupAddRequest(flag, agree, blackList, why) }
+
     fun acceptGroupAddRequest(
         flag: Flag<GroupAddRequest.FlagContent>,
         blackList: Boolean,
         why: String?,
-    ): Carrier<Boolean> =
-        setGroupAddRequest(flag, true, blackList, why)
+    ): Carrier<Boolean> = runBlocking { groupAddRequestAccept(flag, blackList, why) }
 
-    /** 同意请求。 */
-    
     fun acceptGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, why: String?): Carrier<Boolean> =
-        acceptGroupAddRequest(flag, false, why)
+        runBlocking { groupAddRequestAccept(flag, why) }
 
-    /** 同意请求。blackList默认为false。 */
-    
     fun acceptGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>): Carrier<Boolean> =
-        acceptGroupAddRequest(flag, false, null)
+        runBlocking { groupAddRequestAccept(flag) }
 
-    /** 拒绝请求。 */
-    
     fun rejectGroupAddRequest(
         flag: Flag<GroupAddRequest.FlagContent>,
         blackList: Boolean,
         why: String?,
-    ): Carrier<Boolean> =
-        setGroupAddRequest(flag, false, blackList, why)
+    ): Carrier<Boolean> = runBlocking { groupAddRequestReject(flag, blackList, why) }
 
-    /** 拒绝请求。 */
-    
     fun rejectGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>, why: String?): Carrier<Boolean> =
-        rejectGroupAddRequest(flag, false, why)
+        runBlocking { groupAddRequestReject(flag, why) }
 
-    /** 拒绝请求。blackList默认为false。 */
-    
     fun rejectGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>): Carrier<Boolean> =
-        rejectGroupAddRequest(flag, false, null)
+        runBlocking { groupAddRequestReject(flag) }
 
 
     /**
@@ -163,31 +220,70 @@ public interface Setter : Communicator {
      *
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      */
-    fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean>
+    @JvmSynthetic
+    suspend fun groupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean>
 
-    
+
+    @JvmSynthetic
+    suspend fun groupAdmin(groupCode: Long, memberCode: Long, promotion: Boolean): Carrier<Boolean> =
+        groupAdmin(groupCode.toString(), memberCode.toString(), promotion)
+
+
+    @JvmSynthetic
+    suspend fun groupAdmin(
+        group: GroupCodeContainer,
+        member: AccountCodeContainer,
+        promotion: Boolean,
+    ): Carrier<Boolean> =
+        groupAdmin(group.groupCode, member.accountCode, promotion)
+
+
+    @JvmSynthetic
+    suspend fun groupAdmin(group: GroupContainer, member: AccountContainer, promotion: Boolean): Carrier<Boolean> =
+        groupAdmin(group.groupInfo, member.accountInfo, promotion)
+
+
+    @JvmSynthetic
+    suspend fun <T> groupAdmin(groupAccountMsg: T, promotion: Boolean): Carrier<Boolean>
+            where T : GroupCodeContainer,
+                  T : AccountCodeContainer =
+        groupAdmin(groupAccountMsg, groupAccountMsg, promotion)
+
+
+    @JvmSynthetic
+    suspend fun <T> groupAdmin(groupAccountMsg: T, promotion: Boolean): Carrier<Boolean>
+            where T : GroupContainer,
+                  T : AccountContainer =
+        groupAdmin(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, promotion)
+
+    //////////////// blocking ///////////////////
+
+    fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> =
+        runBlocking { groupAdmin(groupCode, memberCode, promotion) }
+
+
     fun setGroupAdmin(groupCode: Long, memberCode: Long, promotion: Boolean): Carrier<Boolean> =
-        setGroupAdmin(groupCode.toString(), memberCode.toString(), promotion)
+        runBlocking { groupAdmin(groupCode, memberCode, promotion) }
 
-    
+
     fun setGroupAdmin(group: GroupCodeContainer, member: AccountCodeContainer, promotion: Boolean): Carrier<Boolean> =
-        setGroupAdmin(group.groupCode, member.accountCode, promotion)
+        runBlocking { groupAdmin(group, member, promotion) }
 
-    
+
     fun setGroupAdmin(group: GroupContainer, member: AccountContainer, promotion: Boolean): Carrier<Boolean> =
-        setGroupAdmin(group.groupInfo, member.accountInfo, promotion)
+        runBlocking { groupAdmin(group, member, promotion) }
 
-    
+
     fun <T> setGroupAdmin(groupAccountMsg: T, promotion: Boolean): Carrier<Boolean>
             where T : GroupCodeContainer,
                   T : AccountCodeContainer =
-        setGroupAdmin(groupAccountMsg, groupAccountMsg, promotion)
+        runBlocking { groupAdmin(groupAccountMsg, groupAccountMsg, promotion) }
 
-    
+
     fun <T> setGroupAdmin(groupAccountMsg: T, promotion: Boolean): Carrier<Boolean>
             where T : GroupContainer,
                   T : AccountContainer =
-        setGroupAdmin(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, promotion)
+        runBlocking { groupAdmin(groupAccountMsg, promotion) }
 
 
     /**
@@ -198,18 +294,37 @@ public interface Setter : Communicator {
      *
      * @return 设置操作的回执，一般代表最终设置后的开启状态。如果不支持设置的话返回值则代表当前状态。
      */
-    fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean>
+    @JvmSynthetic
+    suspend fun groupAnonymous(group: String, agree: Boolean): Carrier<Boolean>
 
-    
-    fun setGroupAnonymous(group: Long, agree: Boolean): Carrier<Boolean> = setGroupAnonymous(group.toString(), agree)
 
+    @JvmSynthetic
+    suspend fun groupAnonymous(group: Long, agree: Boolean): Carrier<Boolean> = groupAnonymous(group.toString(), agree)
+
+
+    @JvmSynthetic
+    suspend fun groupAnonymous(group: GroupCodeContainer, agree: Boolean): Carrier<Boolean> =
+        groupAnonymous(group.groupCode, agree)
+
+
+    @JvmSynthetic
+    suspend fun groupAnonymous(group: GroupContainer, agree: Boolean): Carrier<Boolean> =
+        groupAnonymous(group.groupInfo, agree)
     
+    ////////////// blocking ///////////////
+    
+    fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean> = runBlocking { groupAnonymous(group, agree) }
+
+
+    fun setGroupAnonymous(group: Long, agree: Boolean): Carrier<Boolean> = runBlocking { groupAnonymous(group, agree) }
+
+
     fun setGroupAnonymous(group: GroupCodeContainer, agree: Boolean): Carrier<Boolean> =
-        setGroupAnonymous(group.groupCode, agree)
+        runBlocking { groupAnonymous(group, agree) }
 
-    
+
     fun setGroupAnonymous(group: GroupContainer, agree: Boolean): Carrier<Boolean> =
-        setGroupAnonymous(group.groupInfo, agree)
+        runBlocking { groupAnonymous(group, agree) }
 
 
     /**
@@ -222,67 +337,133 @@ public interface Setter : Communicator {
      *
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      */
-    fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean>
+    @JvmSynthetic
+    suspend fun groupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean>
 
-    
+
+    @JvmSynthetic
+    suspend fun groupBan(groupCode: Long, memberCode: Long, time: Long, timeUnit: TimeUnit): Carrier<Boolean> =
+        groupBan(groupCode.toString(), memberCode.toString(), time, timeUnit)
+
+
+    @JvmSynthetic
+    suspend fun groupBan(
+        group: GroupCodeContainer,
+        member: AccountCodeContainer,
+        time: Long,
+        timeUnit: TimeUnit,
+    ): Carrier<Boolean> =
+        groupBan(group.groupCode, member.accountCode, time, timeUnit)
+
+
+    @JvmSynthetic
+    suspend fun groupBan(
+        group: GroupContainer,
+        member: AccountContainer,
+        time: Long,
+        timeUnit: TimeUnit,
+    ): Carrier<Boolean> =
+        groupBan(group.groupInfo, member.accountInfo, time, timeUnit)
+
+
+    @JvmSynthetic
+    suspend fun <T> groupBan(groupAccountMsg: T, time: Long, timeUnit: TimeUnit): Carrier<Boolean>
+            where T : GroupCodeContainer,
+                  T : AccountCodeContainer =
+        groupBan(groupAccountMsg, groupAccountMsg, time, timeUnit)
+
+
+    @JvmSynthetic
+    suspend fun <T> groupBan(groupAccountMsg: T, time: Long, timeUnit: TimeUnit): Carrier<Boolean>
+            where T : GroupContainer,
+                  T : AccountContainer =
+        groupBan(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, time, timeUnit)
+
+
+    @JvmSynthetic
+    suspend fun groupBan(groupCode: String, memberCode: String, time: Long): Carrier<Boolean> =
+        groupBan(groupCode, memberCode, time, TimeUnit.SECONDS)
+
+
+    @JvmSynthetic
+    suspend fun groupBan(groupCode: Long, memberCode: Long, time: Long): Carrier<Boolean> =
+        groupBan(groupCode.toString(), memberCode.toString(), time, TimeUnit.SECONDS)
+
+
+    @JvmSynthetic
+    suspend fun groupBan(group: GroupCodeContainer, member: AccountCodeContainer, time: Long): Carrier<Boolean> =
+        groupBan(group.groupCode, member.accountCode, time)
+
+
+    @JvmSynthetic
+    suspend fun groupBan(group: GroupContainer, member: AccountContainer, time: Long): Carrier<Boolean> =
+        groupBan(group.groupInfo, member.accountInfo, time)
+
+
+    @JvmSynthetic
+    suspend fun <T> groupBan(groupAccountMsg: T, time: Long): Carrier<Boolean>
+            where T : GroupCodeContainer,
+                  T : AccountCodeContainer =
+        groupBan(groupAccountMsg, groupAccountMsg, time)
+
+
+    @JvmSynthetic
+    suspend fun <T> groupBan(groupAccountMsg: T, time: Long): Carrier<Boolean>
+            where T : GroupContainer,
+                  T : AccountContainer =
+        groupBan(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, time)
+
+    ///////////// blocking /////////////////
+
+    fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean> =
+        runBlocking { groupBan(groupCode, memberCode, time, timeUnit) }
+
+
     fun setGroupBan(groupCode: Long, memberCode: Long, time: Long, timeUnit: TimeUnit): Carrier<Boolean> =
-        setGroupBan(groupCode.toString(), memberCode.toString(), time, timeUnit)
+        runBlocking { groupBan(groupCode, memberCode, time, timeUnit) }
 
-    
     fun setGroupBan(
         group: GroupCodeContainer,
         member: AccountCodeContainer,
         time: Long,
         timeUnit: TimeUnit,
     ): Carrier<Boolean> =
-        setGroupBan(group.groupCode, member.accountCode, time, timeUnit)
+        runBlocking { groupBan(group, member, time, timeUnit) }
 
-    
     fun setGroupBan(group: GroupContainer, member: AccountContainer, time: Long, timeUnit: TimeUnit): Carrier<Boolean> =
-        setGroupBan(group.groupInfo, member.accountInfo, time, timeUnit)
+        runBlocking { groupBan(group, member, time, timeUnit) }
 
-    
     fun <T> setGroupBan(groupAccountMsg: T, time: Long, timeUnit: TimeUnit): Carrier<Boolean>
             where T : GroupCodeContainer,
                   T : AccountCodeContainer =
-        setGroupBan(groupAccountMsg, groupAccountMsg, time, timeUnit)
+        runBlocking { groupBan(groupAccountMsg, time, timeUnit) }
 
-    
     fun <T> setGroupBan(groupAccountMsg: T, time: Long, timeUnit: TimeUnit): Carrier<Boolean>
             where T : GroupContainer,
                   T : AccountContainer =
-        setGroupBan(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, time, timeUnit)
+        runBlocking { groupBan(groupAccountMsg, time, timeUnit) }
 
-    ////
-
-    
     fun setGroupBan(groupCode: String, memberCode: String, time: Long): Carrier<Boolean> =
-        setGroupBan(groupCode, memberCode, time, TimeUnit.SECONDS)
+        runBlocking { groupBan(groupCode, memberCode, time) }
 
-    
     fun setGroupBan(groupCode: Long, memberCode: Long, time: Long): Carrier<Boolean> =
-        setGroupBan(groupCode.toString(), memberCode.toString(), time, TimeUnit.SECONDS)
+        runBlocking { groupBan(groupCode, memberCode, time) }
 
-    
     fun setGroupBan(group: GroupCodeContainer, member: AccountCodeContainer, time: Long): Carrier<Boolean> =
-        setGroupBan(group.groupCode, member.accountCode, time)
+        runBlocking { groupBan(group, member, time) }
 
-    
     fun setGroupBan(group: GroupContainer, member: AccountContainer, time: Long): Carrier<Boolean> =
-        setGroupBan(group.groupInfo, member.accountInfo, time)
+        runBlocking { groupBan(group, member, time) }
 
-    
     fun <T> setGroupBan(groupAccountMsg: T, time: Long): Carrier<Boolean>
             where T : GroupCodeContainer,
                   T : AccountCodeContainer =
-        setGroupBan(groupAccountMsg, groupAccountMsg, time)
+        runBlocking { groupBan(groupAccountMsg, time) }
 
-    
     fun <T> setGroupBan(groupAccountMsg: T, time: Long): Carrier<Boolean>
             where T : GroupContainer,
                   T : AccountContainer =
-        setGroupBan(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, time)
-
+        runBlocking { groupBan(groupAccountMsg, time) }
 
     /**
      * 开启全群禁言。一般需要当前账号拥有对应权限。
@@ -292,19 +473,40 @@ public interface Setter : Communicator {
      *
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      */
-    fun setGroupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean>
+    @JvmSynthetic
+    suspend fun groupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean>
 
-    
+
+    @JvmSynthetic
+    suspend fun groupWholeBan(groupCode: Long, mute: Boolean): Carrier<Boolean> =
+        groupWholeBan(groupCode.toString(), mute)
+
+
+    @JvmSynthetic
+    suspend fun groupWholeBan(groupCode: GroupCodeContainer, mute: Boolean): Carrier<Boolean> =
+        groupWholeBan(groupCode.groupCode, mute)
+
+
+    @JvmSynthetic
+    suspend fun groupWholeBan(groupCode: GroupContainer, mute: Boolean): Carrier<Boolean> =
+        groupWholeBan(groupCode.groupInfo, mute)
+
+    //////////////// blocking ///////////////////
+
+    fun setGroupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> =
+        runBlocking { groupWholeBan(groupCode, mute) }
+
+
     fun setGroupWholeBan(groupCode: Long, mute: Boolean): Carrier<Boolean> =
-        setGroupWholeBan(groupCode.toString(), mute)
+        runBlocking { groupWholeBan(groupCode, mute) }
 
-    
+
     fun setGroupWholeBan(groupCode: GroupCodeContainer, mute: Boolean): Carrier<Boolean> =
-        setGroupWholeBan(groupCode.groupCode, mute)
+        runBlocking { groupWholeBan(groupCode, mute) }
 
-    
+
     fun setGroupWholeBan(groupCode: GroupContainer, mute: Boolean): Carrier<Boolean> =
-        setGroupWholeBan(groupCode.groupInfo, mute)
+        runBlocking { groupWholeBan(groupCode, mute) }
 
 
     /**
@@ -317,31 +519,66 @@ public interface Setter : Communicator {
      * @return 设置操作的回执，一般代表设置后的值。**不会捕获异常**。
      *
      */
-    fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String>
+    @JvmSynthetic
+    suspend fun groupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String>
 
-    
+
+    @JvmSynthetic
+    suspend fun groupRemark(groupCode: Long, memberCode: Long, remark: String?): Carrier<String> =
+        groupRemark(groupCode.toString(), memberCode.toString(), remark)
+
+
+    @JvmSynthetic
+    suspend fun groupRemark(group: GroupCodeContainer, member: AccountCodeContainer, remark: String?): Carrier<String> =
+        groupRemark(group.groupCode, member.accountCode, remark)
+
+
+    @JvmSynthetic
+    suspend fun groupRemark(group: GroupContainer, member: AccountContainer, remark: String?): Carrier<String> =
+        groupRemark(group.groupInfo, member.accountInfo, remark)
+
+
+    @JvmSynthetic
+    suspend fun <T> groupRemark(groupAccountMsg: T, remark: String?): Carrier<String>
+            where T : GroupCodeContainer,
+                  T : AccountCodeContainer =
+        groupRemark(groupAccountMsg, groupAccountMsg, remark)
+
+
+    @JvmSynthetic
+    suspend fun <T> groupRemark(groupAccountMsg: T, remark: String?): Carrier<String>
+            where T : GroupContainer,
+                  T : AccountContainer =
+        groupRemark(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, remark)
+
+    ////////////// blocking //////////////////
+
+    fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> =
+        runBlocking { groupRemark(groupCode, memberCode, remark) }
+
+
     fun setGroupRemark(groupCode: Long, memberCode: Long, remark: String?): Carrier<String> =
-        setGroupRemark(groupCode.toString(), memberCode.toString(), remark)
+        runBlocking { groupRemark(groupCode, memberCode, remark) }
 
-    
+
     fun setGroupRemark(group: GroupCodeContainer, member: AccountCodeContainer, remark: String?): Carrier<String> =
-        setGroupRemark(group.groupCode, member.accountCode, remark)
+        runBlocking { groupRemark(group, member, remark) }
 
-    
+
     fun setGroupRemark(group: GroupContainer, member: AccountContainer, remark: String?): Carrier<String> =
-        setGroupRemark(group.groupInfo, member.accountInfo, remark)
+        runBlocking { groupRemark(group, member, remark) }
 
-    
+
     fun <T> setGroupRemark(groupAccountMsg: T, remark: String?): Carrier<String>
             where T : GroupCodeContainer,
                   T : AccountCodeContainer =
-        setGroupRemark(groupAccountMsg, groupAccountMsg, remark)
+        runBlocking { groupRemark(groupAccountMsg, remark) }
 
-    
+
     fun <T> setGroupRemark(groupAccountMsg: T, remark: String?): Carrier<String>
             where T : GroupContainer,
                   T : AccountContainer =
-        setGroupRemark(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, remark)
+        runBlocking { groupRemark(groupAccountMsg, remark) }
 
 
     /**
@@ -352,19 +589,41 @@ public interface Setter : Communicator {
      * @return 设置操作的回执，一般代表是否成功。**不会捕获异常**。
      *
      */
-    fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean>
+    @JvmSynthetic
+    suspend fun groupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean>
 
-    
+
+    @JvmSynthetic
+    suspend fun groupQuit(groupCode: Long, forcibly: Boolean): Carrier<Boolean> =
+        groupQuit(groupCode.toString(), forcibly)
+
+
+    @JvmSynthetic
+    suspend fun groupQuit(group: GroupCodeContainer, forcibly: Boolean): Carrier<Boolean> =
+        groupQuit(group.groupCode, forcibly)
+
+
+    @JvmSynthetic
+    suspend fun groupQuit(group: GroupContainer, forcibly: Boolean): Carrier<Boolean> =
+        groupQuit(group.groupInfo, forcibly)
+
+    //////////////// blocking /////////////////
+
+    fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> =
+        runBlocking { groupQuit(groupCode, forcibly) }
+
+
     fun setGroupQuit(groupCode: Long, forcibly: Boolean): Carrier<Boolean> =
-        setGroupQuit(groupCode.toString(), forcibly)
+        runBlocking { groupQuit(groupCode, forcibly) }
 
-    
+
     fun setGroupQuit(group: GroupCodeContainer, forcibly: Boolean): Carrier<Boolean> =
-        setGroupQuit(group.groupCode, forcibly)
+        runBlocking { groupQuit(group, forcibly) }
 
-    
+
     fun setGroupQuit(group: GroupContainer, forcibly: Boolean): Carrier<Boolean> =
-        setGroupQuit(group.groupInfo, forcibly)
+        runBlocking { groupQuit(group, forcibly) }
+
 
     /**
      * 踢出某群员。需要拥有对应权限。
@@ -374,41 +633,92 @@ public interface Setter : Communicator {
      * @param why 踢出理由。可以为null。
      * @param blackList 踢出后加入黑名单
      */
-    fun setGroupMemberKick(groupCode: String, memberCode: String, why: String?, blackList: Boolean): Carrier<Boolean>
+    @JvmSynthetic
+    suspend fun groupMemberKick(
+        groupCode: String,
+        memberCode: String,
+        why: String?,
+        blackList: Boolean,
+    ): Carrier<Boolean>
 
-    
+
+    @JvmSynthetic
+    suspend fun groupMemberKick(groupCode: Long, memberCode: Long, why: String?, blackList: Boolean): Carrier<Boolean> =
+        groupMemberKick(groupCode.toString(), memberCode.toString(), why, blackList)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberKick(
+        group: GroupCodeContainer,
+        member: AccountCodeContainer,
+        why: String?,
+        blackList: Boolean,
+    ): Carrier<Boolean> =
+        groupMemberKick(group.groupCode, member.accountCode, why, blackList)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberKick(
+        group: GroupContainer,
+        member: AccountContainer,
+        why: String?,
+        blackList: Boolean,
+    ): Carrier<Boolean> =
+        groupMemberKick(group.groupInfo, member.accountInfo, why, blackList)
+
+
+    @JvmSynthetic
+    suspend fun <T> groupMemberKick(groupAccountMsg: T, why: String?, blackList: Boolean): Carrier<Boolean>
+            where T : GroupCodeContainer,
+                  T : AccountCodeContainer =
+        groupMemberKick(groupAccountMsg, groupAccountMsg, why, blackList)
+
+
+    @JvmSynthetic
+    suspend fun <T> groupMemberKick(groupAccountMsg: T, why: String?, blackList: Boolean): Carrier<Boolean>
+            where T : GroupContainer,
+                  T : AccountContainer =
+        groupMemberKick(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, why, blackList)
+
+    /////////////// blocking //////////////////
+
+    fun setGroupMemberKick(groupCode: String, memberCode: String, why: String?, blackList: Boolean): Carrier<Boolean> =
+        runBlocking { groupMemberKick(groupCode, memberCode, why, blackList) }
+
+
     fun setGroupMemberKick(groupCode: Long, memberCode: Long, why: String?, blackList: Boolean): Carrier<Boolean> =
-        setGroupMemberKick(groupCode.toString(), memberCode.toString(), why, blackList)
+        runBlocking { groupMemberKick(groupCode, memberCode, why, blackList) }
 
-    
+
     fun setGroupMemberKick(
         group: GroupCodeContainer,
         member: AccountCodeContainer,
         why: String?,
         blackList: Boolean,
     ): Carrier<Boolean> =
-        setGroupMemberKick(group.groupCode, member.accountCode, why, blackList)
+        runBlocking { groupMemberKick(group, member, why, blackList) }
 
-    
+
     fun setGroupMemberKick(
         group: GroupContainer,
         member: AccountContainer,
         why: String?,
         blackList: Boolean,
     ): Carrier<Boolean> =
-        setGroupMemberKick(group.groupInfo, member.accountInfo, why, blackList)
+        runBlocking { groupMemberKick(group, member, why, blackList) }
 
-    
+
     fun <T> setGroupMemberKick(groupAccountMsg: T, why: String?, blackList: Boolean): Carrier<Boolean>
             where T : GroupCodeContainer,
                   T : AccountCodeContainer =
-        setGroupMemberKick(groupAccountMsg, groupAccountMsg, why, blackList)
+        runBlocking { groupMemberKick(groupAccountMsg, why, blackList) }
 
-    
+
     fun <T> setGroupMemberKick(groupAccountMsg: T, why: String?, blackList: Boolean): Carrier<Boolean>
             where T : GroupContainer,
                   T : AccountContainer =
-        setGroupMemberKick(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, why, blackList)
+        runBlocking { groupMemberKick(groupAccountMsg, why, blackList) }
+
 
     /**
      * 设置群成员专属头衔。需要拥有对应权限。
@@ -419,35 +729,79 @@ public interface Setter : Communicator {
      *
      * @return 设置操作的回执，一般代表设置后的值。**不会捕获异常**。
      */
-    fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String>
+    @JvmSynthetic
+    suspend fun groupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String>
 
-    
+
+    @JvmSynthetic
+    suspend fun groupMemberSpecialTitle(groupCode: Long, memberCode: Long, title: String?): Carrier<String> =
+        groupMemberSpecialTitle(groupCode.toString(), memberCode.toString(), title)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberSpecialTitle(
+        group: GroupCodeContainer,
+        member: AccountCodeContainer,
+        title: String?,
+    ): Carrier<String> =
+        groupMemberSpecialTitle(group.groupCode, member.accountCode, title)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberSpecialTitle(
+        group: GroupContainer,
+        member: AccountContainer,
+        title: String?,
+    ): Carrier<String> =
+        groupMemberSpecialTitle(group.groupInfo, member.accountInfo, title)
+
+
+    @JvmSynthetic
+    suspend fun <T> groupMemberSpecialTitle(groupAccountMsg: T, title: String?): Carrier<String>
+            where T : GroupCodeContainer,
+                  T : AccountCodeContainer =
+        groupMemberSpecialTitle(groupAccountMsg, groupAccountMsg, title)
+
+
+    @JvmSynthetic
+    suspend fun <T> groupMemberSpecialTitle(groupAccountMsg: T, title: String?): Carrier<String>
+            where T : GroupContainer,
+                  T : AccountContainer =
+        groupMemberSpecialTitle(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, title)
+
+    /////////////// blocking ///////////////
+
+    fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String> =
+        runBlocking { groupMemberSpecialTitle(groupCode, memberCode, title) }
+
+
     fun setGroupMemberSpecialTitle(groupCode: Long, memberCode: Long, title: String?): Carrier<String> =
-        setGroupMemberSpecialTitle(groupCode.toString(), memberCode.toString(), title)
+        runBlocking { groupMemberSpecialTitle(groupCode, memberCode, title) }
 
-    
+
     fun setGroupMemberSpecialTitle(
         group: GroupCodeContainer,
         member: AccountCodeContainer,
         title: String?,
     ): Carrier<String> =
-        setGroupMemberSpecialTitle(group.groupCode, member.accountCode, title)
+        runBlocking { groupMemberSpecialTitle(group, member, title) }
 
-    
+
     fun setGroupMemberSpecialTitle(group: GroupContainer, member: AccountContainer, title: String?): Carrier<String> =
-        setGroupMemberSpecialTitle(group.groupInfo, member.accountInfo, title)
+        runBlocking { groupMemberSpecialTitle(group, member, title) }
 
-    
+
     fun <T> setGroupMemberSpecialTitle(groupAccountMsg: T, title: String?): Carrier<String>
             where T : GroupCodeContainer,
                   T : AccountCodeContainer =
-        setGroupMemberSpecialTitle(groupAccountMsg, groupAccountMsg, title)
+        runBlocking { groupMemberSpecialTitle(groupAccountMsg, title) }
 
-    
+
     fun <T> setGroupMemberSpecialTitle(groupAccountMsg: T, title: String?): Carrier<String>
             where T : GroupContainer,
                   T : AccountContainer =
-        setGroupMemberSpecialTitle(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, title)
+        runBlocking { groupMemberSpecialTitle(groupAccountMsg, title) }
+
 
     /**
      * 设置消息撤回
@@ -456,7 +810,11 @@ public interface Setter : Communicator {
      *
      * @return 设置操作的回执，一般代表是否成功。**不会捕获意料外的异常**。
      */
-    fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean>
+    @JvmSynthetic
+    suspend fun msgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean>
+
+    fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> =
+        runBlocking { msgRecall(flag) }
 
 
     /**
@@ -465,32 +823,55 @@ public interface Setter : Communicator {
      * @param groupCode 群号
      * @param name 群名称，不可为null。
      */
-    fun setGroupName(groupCode: String, name: String): Carrier<String>
+    @JvmSynthetic
+    suspend fun groupName(groupCode: String, name: String): Carrier<String>
 
-    
+    @JvmSynthetic
+    suspend fun groupName(groupCode: Long, name: String): Carrier<String> =
+        groupName(groupCode.toString(), name)
+
+    @JvmSynthetic
+    suspend fun groupName(group: GroupCodeContainer, name: String): Carrier<String> = groupName(group.groupCode, name)
+
+    @JvmSynthetic
+    suspend fun groupName(group: GroupContainer, name: String): Carrier<String> = groupName(group.groupInfo, name)
+
+    ///////// blocking ///////////
+
+    fun setGroupName(groupCode: String, name: String): Carrier<String> = runBlocking { groupName(groupCode, name) }
+
     fun setGroupName(groupCode: Long, name: String): Carrier<String> =
-        setGroupName(groupCode.toString(), name)
+        runBlocking { groupName(groupCode, name) }
 
-    
-    fun setGroupName(group: GroupCodeContainer, name: String): Carrier<String> = setGroupName(group.groupCode, name)
+    fun setGroupName(group: GroupCodeContainer, name: String): Carrier<String> = runBlocking { groupName(group, name) }
 
-    
-    fun setGroupName(group: GroupContainer, name: String): Carrier<String> = setGroupName(group.groupInfo, name)
+    fun setGroupName(group: GroupContainer, name: String): Carrier<String> = runBlocking { groupName(group, name) }
 
 
     /**
      * 删除好友
      */
-    fun setFriendDelete(friend: String): Carrier<Boolean>
+    @JvmSynthetic
+    suspend fun friendDelete(friend: String): Carrier<Boolean>
 
-    
-    fun setFriendDelete(friend: Long): Carrier<Boolean> = setFriendDelete(friend.toString())
+    @JvmSynthetic
+    suspend fun friendDelete(friend: Long): Carrier<Boolean> = friendDelete(friend.toString())
 
-    
-    fun setFriendDelete(friend: AccountContainer): Carrier<Boolean> = setFriendDelete(friend.accountInfo)
+    @JvmSynthetic
+    suspend fun friendDelete(friend: AccountContainer): Carrier<Boolean> = friendDelete(friend.accountInfo)
 
-    
-    fun setFriendDelete(friend: AccountCodeContainer): Carrier<Boolean> = setFriendDelete(friend.accountCode)
+    @JvmSynthetic
+    suspend fun friendDelete(friend: AccountCodeContainer): Carrier<Boolean> = friendDelete(friend.accountCode)
 
+    //////////// blocking //////////////
+
+    fun setFriendDelete(friend: String): Carrier<Boolean> =
+        runBlocking { friendDelete(friend) }
+
+    fun setFriendDelete(friend: Long): Carrier<Boolean> = runBlocking { friendDelete(friend) }
+
+    fun setFriendDelete(friend: AccountContainer): Carrier<Boolean> = runBlocking { friendDelete(friend) }
+
+    fun setFriendDelete(friend: AccountCodeContainer): Carrier<Boolean> = runBlocking { friendDelete(friend) }
 
 }
