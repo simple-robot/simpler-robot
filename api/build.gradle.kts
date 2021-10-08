@@ -20,6 +20,7 @@ kotlin {
     jvm("jvm") {
         attributes {
             attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
+            attribute(SimbotAttributes.MODULE_NAME, "api")
         }
         compilations.all {
             kotlinOptions.jvmTarget = "1.8"
