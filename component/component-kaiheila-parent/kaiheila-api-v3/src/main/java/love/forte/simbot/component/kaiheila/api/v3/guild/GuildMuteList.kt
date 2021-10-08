@@ -14,10 +14,15 @@
 
 package love.forte.simbot.component.kaiheila.api.v3.guild
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.api.message.results.MuteInfo
+import love.forte.simbot.api.message.results.MuteList
 import love.forte.simbot.component.kaiheila.api.*
+import love.forte.simbot.component.kaiheila.api.v3.user.UserViewReq
 
 
 /**
@@ -66,11 +71,16 @@ public sealed class GuildMuteListReq<T : GuildMuteListResult>(
 /**
  * mute list result.
  */
-public sealed interface GuildMuteListResult : ApiData.Resp.Data {
+public sealed class GuildMuteListResult : GuildApiRespData(), ApiData.Resp.Data, MuteList {
     /**
      * 根据类型获取用户列表。
      */
-    fun getUserIds(type: Int): List<String>
+    abstract fun getUserIds(type: Int): List<String>
+
+    override val originalData: String
+        get() = toString()
+
+    override lateinit var results: List<MuteInfo>
 }
 
 
@@ -84,7 +94,8 @@ public sealed interface GuildMuteListResult : ApiData.Resp.Data {
 public data class GuildMuteListByDetail(
     val mic: Mic,
     val headset: Headset,
-) : GuildApiRespData(), GuildMuteListResult {
+) : GuildMuteListResult() {
+
     @Serializable
     data class Mic(
         override val type: Int = 1,
@@ -113,7 +124,7 @@ public data class GuildMuteListByDetail(
 public data class GuildMuteListBySimple(
     @SerialName("1") val mic: List<String>,
     @SerialName("2") val headset: List<String>,
-) : GuildApiRespData(), GuildMuteListResult {
+) : GuildMuteListResult() {
     override fun getUserIds(type: Int): List<String> = when (type) {
         1 -> mic
         2 -> headset

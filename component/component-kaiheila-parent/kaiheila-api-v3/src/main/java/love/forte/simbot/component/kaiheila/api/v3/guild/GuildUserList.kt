@@ -17,7 +17,13 @@ package love.forte.simbot.component.kaiheila.api.v3.guild
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.api.message.containers.GroupInfo
+import love.forte.simbot.api.message.results.GroupMemberInfo
+import love.forte.simbot.api.message.results.GroupMemberList
+import love.forte.simbot.api.message.results.SimpleGroupInfo
 import love.forte.simbot.component.kaiheila.api.*
+import love.forte.simbot.component.kaiheila.api.v3.utils.asGroupMemberInfo
+import love.forte.simbot.component.kaiheila.objects.Guild
 import love.forte.simbot.component.kaiheila.objects.User
 
 
@@ -152,7 +158,13 @@ public data class GuildUserList(
      */
     val items: List<GuildUser>,
     val meta: RespPageMeta
-) : GuildApiRespData()
+) : GuildApiRespData(), GroupMemberList {
+    override val originalData: String get() = toString()
+    override lateinit var groupInfo: Guild
+    override val results: List<GroupMemberInfo> by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        items.map { u -> u.asGroupMemberInfo(groupInfo) }
+    }
+}
 
 
 /**

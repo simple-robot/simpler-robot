@@ -1,24 +1,19 @@
 package love.forte.simbot.component.kaiheila.api.v3.sender
 
+import kotlinx.coroutines.async
 import love.forte.simbot.api.message.containers.*
 import love.forte.simbot.api.message.results.*
 import love.forte.simbot.api.sender.Getter
 import love.forte.simbot.component.kaiheila.KhlBot
 import love.forte.simbot.component.kaiheila.api.KhlSender
-import love.forte.simbot.component.kaiheila.api.RespPageMeta
 import love.forte.simbot.component.kaiheila.api.doRequestForData
-import love.forte.simbot.component.kaiheila.api.v3.guild.GuildListReq
-import love.forte.simbot.component.kaiheila.api.v3.guild.GuildView
-import love.forte.simbot.component.kaiheila.api.v3.guild.GuildViewReq
-import love.forte.simbot.component.kaiheila.api.v3.guild.guildUserListReq
+import love.forte.simbot.component.kaiheila.api.v3.channel.ChannelView
+import love.forte.simbot.component.kaiheila.api.v3.channel.ChannelViewReq
+import love.forte.simbot.component.kaiheila.api.v3.guild.*
 import love.forte.simbot.component.kaiheila.api.v3.user.UserViewReq
-import love.forte.simbot.component.kaiheila.api.v3.utils.asAdmin
-import love.forte.simbot.component.kaiheila.api.v3.utils.asFriendInfo
-import love.forte.simbot.component.kaiheila.api.v3.utils.asGroupMemberInfo
-import love.forte.simbot.component.kaiheila.api.v3.utils.asOwner
+import love.forte.simbot.component.kaiheila.api.v3.utils.*
 import love.forte.simbot.component.kaiheila.objects.PermissionType
 import love.forte.simbot.component.kaiheila.objects.User
-import sun.jvm.hotspot.debugger.Page
 
 /**
  *
@@ -59,12 +54,43 @@ public class KhlV3Getter(
 
     override suspend fun memberInfo(group: String, code: String): GroupMemberInfo {
         val view = UserViewReq(code, group).doRequestForData(bot)!!
-        val groupInfo = groupInfo(group)
+        val groupInfo = guildInfo(group)
 
         return view.asGroupMemberInfo(groupInfo)
     }
 
-    override suspend fun groupInfo(group: String): GuildView {
+
+    override suspend fun groupInfo(group: String): GroupFullInfo {
+        return when {
+            group.startsWith("guild:") -> guildInfo(group.substring(6))
+            group.startsWith("channel:") -> channelInfo(group.substring(8))
+            else -> guildInfo(group)
+        }
+    }
+
+
+    private suspend fun channelInfo(channelId: String): ChannelView {
+        val channelView = ChannelViewReq(channelId).doRequestForData(bot)!!
+        val owner = UserViewReq(channelView.userId, channelView.guildId).doRequestForData(bot)!!
+        channelView.owner = owner.asOwner()
+
+        val meta = guildUserListReq {
+            this.guildId = channelView.guildId
+            mobileVerified = 1
+            pageSize = 1
+        }.doRequestForData(bot)?.meta
+
+        channelView.admins = emptyList()
+        val total = meta?.total ?: -1
+
+
+        channelView.total = total
+
+        return channelView
+    }
+
+
+    private suspend fun guildInfo(group: String): GuildView {
         val guildView: GuildView = GuildViewReq(group).doRequestForData(bot)!!
         // Init owner
         val owner = UserViewReq(guildView.masterId, guildView.id).doRequestForData(bot)!!
@@ -108,20 +134,41 @@ public class KhlV3Getter(
         emptyFriendList()
 
     override suspend fun groupList(cache: Boolean, limit: Int): GroupList {
-        val groups = GuildListReq.NoSort.doRequestForData(bot).items
-
-        TODO("Not yet implemented")
+        val groups: List<GuildListRespData> = GuildListReq.NoSort.doRequestForData(bot).items
+        return groups.asGroupList(limit)
     }
 
     override suspend fun groupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList {
-        TODO("Not yet implemented")
+        val userList = guildUserListReq {
+            guildId = group
+        }.doRequestForData(bot)!!
+
+        val groupInfo = guildInfo(group)
+        userList.groupInfo = groupInfo
+
+        return userList
     }
 
     override suspend fun banList(group: String, cache: Boolean, limit: Int): MuteList {
-        TODO("Not yet implemented")
+        val muteList = GuildMuteListReq.Detail(group).doRequestForData(bot)!!
+
+        // init results.
+        var allIds = muteList.mic.userIds.asSequence() + muteList.headset.userIds.asSequence()
+        if (limit > 0) {
+            allIds = allIds.take(limit)
+        }
+
+        val results = allIds.map { id ->
+            bot.async {
+                UserViewReq(id, group).doRequestForData(bot)!!.asMuteInfo()
+            }
+        }.toList().map { job -> job.await() }
+        muteList.results = results
+
+        return muteList
     }
 
-    override suspend fun groupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList {
-        TODO("Not yet implemented")
-    }
+
+    override suspend fun groupNoteList(group: String, cache: Boolean, limit: Int) =
+        def.groupNoteList(group, cache, limit)
 }

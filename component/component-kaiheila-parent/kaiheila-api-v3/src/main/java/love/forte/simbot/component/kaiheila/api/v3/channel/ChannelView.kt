@@ -17,6 +17,9 @@ package love.forte.simbot.component.kaiheila.api.v3.channel
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.api.message.results.GroupAdmin
+import love.forte.simbot.api.message.results.GroupFullInfo
+import love.forte.simbot.api.message.results.GroupOwner
 import love.forte.simbot.component.kaiheila.api.*
 import love.forte.simbot.component.kaiheila.objects.Channel
 import love.forte.simbot.component.kaiheila.objects.ChannelPermissionOverwrites
@@ -98,7 +101,21 @@ data class ChannelView(
     @SerialName("permission_sync")
     override val permissionSync: Int = 0,
 
-    ) : ChannelApiRespData(), Channel {
+    ) : ChannelApiRespData(), Channel, GroupFullInfo {
     override val originalData: String
         get() = toString()
+
+    override val maximum: Int
+        get() = limitAmount
+
+    override var total: Int = -1
+
+    override val createTime: Long
+        get() = -1
+    override val simpleIntroduction: String?
+        get() = null
+    override val fullIntroduction: String?
+        get() = null
+    override lateinit var owner: GroupOwner
+    override lateinit var admins: List<GroupAdmin>
 }

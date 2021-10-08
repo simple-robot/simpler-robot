@@ -5,10 +5,7 @@ package love.forte.simbot.component.kaiheila.api.v3.utils
 import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.GroupAccountInfo
-import love.forte.simbot.api.message.results.FriendInfo
-import love.forte.simbot.api.message.results.GroupAdmin
-import love.forte.simbot.api.message.results.GroupMemberInfo
-import love.forte.simbot.api.message.results.GroupOwner
+import love.forte.simbot.api.message.results.*
 import love.forte.simbot.component.kaiheila.objects.Guild
 import love.forte.simbot.component.kaiheila.objects.PermissionType
 import love.forte.simbot.component.kaiheila.objects.User
@@ -68,3 +65,11 @@ private class UserAsAdmin(private val user: User) : GroupAdmin, GroupAccountInfo
         get() = Permissions.ADMINISTRATOR
 }
 
+
+
+public fun User.asMuteInfo(lastTime: Long = -1): MuteInfo = UserAsMuteInfo(this, lastTime)
+
+private class UserAsMuteInfo(private val user: User, override val lastTime: Long) : MuteInfo, GroupAccountInfo by user {
+    override val originalData: String
+        get() = toString()
+}

@@ -18,6 +18,7 @@
 package love.forte.simbot.component.kaiheila
 
 import io.ktor.client.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.LogAble
 import love.forte.simbot.api.message.containers.BotInfo
@@ -78,7 +79,7 @@ public interface KhlBotApi {
  *
  * @author ForteScarlet
  */
-public interface KhlBot : LogAble, Bot, KhlBotApi {
+public interface KhlBot : LogAble, Bot, KhlBotApi, CoroutineScope {
 
     val api: Api
 
