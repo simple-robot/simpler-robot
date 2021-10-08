@@ -8,11 +8,11 @@ import love.forte.simbot.api.definition.container.AccountInfoContainer
 import kotlin.jvm.JvmName
 
 /**
- * 一个**账号**。
+ * 一个 **用户**。
  *
  * @author ForteScarlet
  */
-public interface Account : People, AccountInfoContainer {
+public interface User : People, AccountInfoContainer {
 
     /**
      * 这个账号的唯一ID。
@@ -35,7 +35,7 @@ public interface Account : People, AccountInfoContainer {
 /**
  * 一个 **可操作** 的账号。
  */
-public interface OperableAccount : Account {
+public interface OperableAccount : User {
     /** 这个账号可操作的账号信息。 */
     override var accountInfo: OperableAccountInfo
 }
