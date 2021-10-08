@@ -17,10 +17,15 @@ package love.forte.simbot.component.kaiheila.api.v3.guild
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import love.forte.simbot.api.message.results.GroupAdmin
+import love.forte.simbot.api.message.results.GroupFullInfo
+import love.forte.simbot.api.message.results.GroupOwner
+import love.forte.simbot.api.message.results.SimpleGroupInfo
 import love.forte.simbot.component.kaiheila.api.*
 import love.forte.simbot.component.kaiheila.objects.Channel
 import love.forte.simbot.component.kaiheila.objects.Guild
 import love.forte.simbot.component.kaiheila.objects.Role
+import kotlin.properties.Delegates
 
 
 /**
@@ -136,11 +141,32 @@ public data class GuildView(
     override val defaultChannelId: String,
     @SerialName("welcome_channel_id")
     override val welcomeChannelId: String,
+    /**
+     * 服务器助力数量
+     */
+    @SerialName("boost_num")
+    val boostNum: Int,
+    /**
+     * 服务器等级
+     */
+    val level: Int,
     override val roles: List<Role>,
     override val channels: List<Channel>
-) : GuildApiRespData(), Guild {
+) : GuildApiRespData(), Guild, GroupFullInfo {
     override suspend fun channels(): List<Channel> = channels
     override val originalData: String get() = toString()
+
+    override val maximum: Int get() = -1
+    override var total  = -1 // late init
+
+    override val createTime: Long
+        get() = -1
+    override val simpleIntroduction: String
+        get() = topic
+    override val fullIntroduction: String
+        get() = topic
+    override lateinit var owner: GroupOwner
+    override lateinit var admins: List<GroupAdmin>
 }
 
 

@@ -151,6 +151,7 @@ public data class GuildUserList(
      * 用户列表
      */
     val items: List<GuildUser>,
+    val meta: RespPageMeta
 ) : GuildApiRespData()
 
 

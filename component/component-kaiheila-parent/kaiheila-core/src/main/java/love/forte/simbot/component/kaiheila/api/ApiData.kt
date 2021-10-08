@@ -414,7 +414,7 @@ public data class ObjectResp<RESP : ApiData.Resp.Data>(
     /**
      * integer, 错误码，0代表成功，非0代表失败，具体的错误码参见错误码一览
      */
-    override val code: Int = -2100000000,
+    override val code: Int = -999999999,
     /**
      * string, 错误消息，具体的返回消息会根据Accept-Language来返回。
      */

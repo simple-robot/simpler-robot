@@ -1,6 +1,9 @@
 package love.forte.simbot.component.kaiheila.api.v3.sender
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import love.forte.common.utils.Carrier
 import love.forte.common.utils.toCarrier
 import love.forte.simbot.SimbotIllegalArgumentException
@@ -14,9 +17,6 @@ import love.forte.simbot.component.kaiheila.api.isSuccess
 import love.forte.simbot.component.kaiheila.api.v3.guild.*
 import love.forte.simbot.component.kaiheila.api.v3.message.MessageDeleteReq
 import love.forte.simbot.component.kaiheila.api.v3.message.direct.DirectMessageDeleteReq
-import love.forte.simbot.component.kaiheila.api.v3.userchat.UserChatDeleteReq
-import love.forte.simbot.component.kaiheila.api.v3.userchat.UserChatListReq
-import love.forte.simbot.component.kaiheila.api.v3.userchat.UserChatViewReq
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
@@ -29,14 +29,14 @@ public class KhlV3Setter(
     private val def: Setter.Def,
     private val scope: CoroutineScope,
 ) : KhlSender.Setter {
-    override fun setFriendAddRequest(
+    override suspend fun friendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,
         agree: Boolean,
         blackList: Boolean,
     ) = def.setFriendAddRequest(flag, friendRemark, agree, blackList)
 
-    override fun setGroupAddRequest(
+    override suspend fun groupAddRequest(
         flag: Flag<GroupAddRequest.FlagContent>,
         agree: Boolean,
         blackList: Boolean,
@@ -44,16 +44,21 @@ public class KhlV3Setter(
     ) = def.setGroupAddRequest(flag, agree, blackList, why)
 
 
-    override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> {
+    override suspend fun groupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean> =
+    override suspend fun groupAnonymous(group: String, agree: Boolean): Carrier<Boolean> =
         def.setGroupAnonymous(group, agree)
 
     private val muteDeleteJobs = ConcurrentHashMap<String, Job>()
 
-    override fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean> {
+    override suspend fun groupBan(
+        groupCode: String,
+        memberCode: String,
+        time: Long,
+        timeUnit: TimeUnit,
+    ): Carrier<Boolean> {
         var deleteJob: Job? = null
         val req = when {
             time > 0 -> {
@@ -79,35 +84,33 @@ public class KhlV3Setter(
             }
         }
 
-        val resp = runBlocking {
-            req.doRequest(bot).also { deleteJob?.start() }
-        }
-
+        val resp = req.doRequest(bot).also { deleteJob?.start() }
         return resp.isSuccess.toCarrier()
     }
 
-    override fun setGroupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun groupWholeBan(groupCode: String, mute: Boolean) = def.groupWholeBan(groupCode, mute)
 
-    override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> {
+    override suspend fun groupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> {
         val req = GuildNicknameReq(groupCode, nickname = remark, userId = memberCode)
 
-        runBlocking { req.doRequest(bot) }
+        return if (req.doRequest(bot).isSuccess) {
+            remark?.toCarrier() ?: Carrier.empty()
+        } else {
+            Carrier.empty()
+        }
 
-        return remark?.toCarrier() ?: Carrier.empty()
     }
 
-    override fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> {
+    override suspend fun groupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> {
 
         val req = GuildLeaveReq(groupCode)
 
-        val resp = runBlocking { req.doRequest(bot) }
+        val resp = req.doRequest(bot)
 
         return resp.isSuccess.toCarrier()
     }
 
-    override fun setGroupMemberKick(
+    override suspend fun groupMemberKick(
         groupCode: String,
         memberCode: String,
         why: String?,
@@ -116,15 +119,15 @@ public class KhlV3Setter(
 
         val req = GuildKickoutReq(guildId = groupCode, targetId = memberCode)
 
-        val resp = runBlocking { req.doRequest(bot) }
+        val resp = req.doRequest(bot)
 
         return resp.isSuccess.toCarrier()
     }
 
-    override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?) =
-        def.setGroupMemberSpecialTitle(groupCode, memberCode, title)
+    override suspend fun groupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?) =
+        def.groupMemberSpecialTitle(groupCode, memberCode, title)
 
-    override fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
+    override suspend fun msgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
         val f = flag.flag
         val id = f.id
 
@@ -135,13 +138,14 @@ public class KhlV3Setter(
         }
 
 
-        val resp = runBlocking { req.doRequest(bot) }
+        val resp = req.doRequest(bot)
 
         return resp.isSuccess.toCarrier()
     }
 
-    override fun setGroupName(groupCode: String, name: String) =
-        def.setGroupName(groupCode, name)
+    override suspend fun groupName(groupCode: String, name: String) =
+        def.groupName(groupCode, name)
 
-    override fun setFriendDelete(friend: String) = def.setFriendDelete(friend)
+    override suspend fun friendDelete(friend: String) =
+        def.setFriendDelete(friend)
 }
