@@ -16,6 +16,7 @@
 
 package love.forte.simbot.api.sender
 
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.api.message.results.Result
 
 
@@ -32,6 +33,11 @@ import love.forte.simbot.api.message.results.Result
  */
 public interface Communicator {
 
+    fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): R {
+        return runBlocking { execute(additionalApi) }
+        // return additionalApi.defaultValue ?: throw SimbotAdditionalApiException("Additional api '${additionalApi.additionalApiName}' not support.")
+    }
+
     /**
      * 执行一个额外的API。
      *
@@ -40,7 +46,8 @@ public interface Communicator {
      * @throws love.forte.simbot.SimbotRuntimeException 可能存在任何错误，例如不支持的额外api、api执行异常等。
      * @throws SimbotAdditionalApiException 可能存在任何错误，例如不支持的额外api、api执行异常等。
      */
-    fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): R {
+    @JvmSynthetic
+    suspend fun <R : Result> execute(additionalApi: AdditionalApi<R>): R {
         return additionalApi.defaultValue ?: throw SimbotAdditionalApiException("Additional api '${additionalApi.additionalApiName}' not support.")
     }
 

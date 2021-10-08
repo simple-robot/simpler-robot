@@ -14,13 +14,15 @@
 
 package love.forte.simbot.component.mirai.sender
 
-import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.*
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.GroupCodeContainer
-import love.forte.simbot.api.message.events.*
+import love.forte.simbot.api.message.events.FriendAddRequest
+import love.forte.simbot.api.message.events.GroupAddRequest
+import love.forte.simbot.api.message.events.MessageGet
+import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.message.results.Result
 import love.forte.simbot.api.sender.AdditionalApi
 import love.forte.simbot.api.sender.Setter
@@ -68,21 +70,21 @@ public class MiraiSetter(
     private lateinit var _setterInfo: SetterInfo
     private val setterInfo: SetterInfo
         get() {
-        if (!::_setterInfo.isInitialized) {
-            synchronized(this) {
-                if (!::_setterInfo.isInitialized) {
-                    _setterInfo = SetterInfo(bot)
+            if (!::_setterInfo.isInitialized) {
+                synchronized(this) {
+                    if (!::_setterInfo.isInitialized) {
+                        _setterInfo = SetterInfo(bot)
+                    }
                 }
             }
+            return _setterInfo
         }
-        return _setterInfo
-    }
 
 
     /**
      * 设置好友申请。
      */
-    override fun setFriendAddRequest(
+    override suspend fun friendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,
         agree: Boolean,
@@ -90,13 +92,11 @@ public class MiraiSetter(
     ): Carrier<Boolean> {
         val f = flag.flag
         return if (f is MiraiFriendRequestFlagContent) {
-            runBlocking {
-                val event = f.event
-                if (agree) {
-                    event.accept()
-                } else {
-                    event.reject(blackList)
-                }
+            val event = f.event
+            if (agree) {
+                event.accept()
+            } else {
+                event.reject(blackList)
             }
             true.toCarrier()
         } else {
@@ -108,50 +108,48 @@ public class MiraiSetter(
     /**
      * 通过群申请。
      */
-    override fun setGroupAddRequest(
+    override suspend fun groupAddRequest(
         flag: Flag<GroupAddRequest.FlagContent>,
         agree: Boolean,
         blackList: Boolean,
         why: String?,
     ): Carrier<Boolean> {
 
-        return runBlocking {
-            when (val f = flag.flag) {
-                // member join.
-                is MiraiGroupMemberJoinRequestFlagContent -> {
-                    val event = f.event
-                    if (agree) {
-                        event.accept()
-                    } else {
-                        event.reject(blackList, why ?: "")
-                    }
-                    true.toCarrier()
+        return when (val f = flag.flag) {
+            // member join.
+            is MiraiGroupMemberJoinRequestFlagContent -> {
+                val event = f.event
+                if (agree) {
+                    event.accept()
+                } else {
+                    event.reject(blackList, why ?: "")
                 }
-                // bot invited.
-                is MiraiBotInvitedJoinRequestFlagContent -> {
-                    val event = f.event
-                    if (agree) {
-                        event.accept()
-                    } else {
-                        // only ignore, no reject.
-                        event.ignore()
-                    }
-                    true.toCarrier()
-                }
-                else -> throw IllegalArgumentException("flag content $f is not Mirai's flag content and cannot be used by mirai component.")
+                true.toCarrier()
             }
+            // bot invited.
+            is MiraiBotInvitedJoinRequestFlagContent -> {
+                val event = f.event
+                if (agree) {
+                    event.accept()
+                } else {
+                    // only ignore, no reject.
+                    event.ignore()
+                }
+                true.toCarrier()
+            }
+            else -> throw IllegalArgumentException("flag content $f is not Mirai's flag content and cannot be used by mirai component.")
         }
     }
 
 
-    override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> {
-        runBlocking { bot.group(groupCode.toLong()).member(memberCode.toLong()).modifyAdmin(promotion) }
+    override suspend fun groupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> {
+        bot.group(groupCode.toLong()).member(memberCode.toLong()).modifyAdmin(promotion)
         return true.toCarrier()
     }
-        // defSetter.setGroupAdmin(groupCode, memberCode, promotion)
+    // defSetter.setGroupAdmin(groupCode, memberCode, promotion)
 
-    override fun setGroupAdmin(groupCode: Long, memberCode: Long, promotion: Boolean): Carrier<Boolean> {
-        runBlocking { bot.group(groupCode).member(memberCode).modifyAdmin(promotion) }
+    override suspend fun groupAdmin(groupCode: Long, memberCode: Long, promotion: Boolean): Carrier<Boolean> {
+        bot.group(groupCode).member(memberCode).modifyAdmin(promotion)
         return true.toCarrier()
     }
 
@@ -166,81 +164,93 @@ public class MiraiSetter(
         return bot.group(group).settings.isAnonymousChatEnabled.toCarrier()
     }
 
-    override fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean> =
+    override suspend fun groupAnonymous(group: String, agree: Boolean): Carrier<Boolean> =
         setGroupAnonymous0(group.toLong())
 
-    override fun setGroupAnonymous(group: Long, agree: Boolean): Carrier<Boolean> =
+    override suspend fun groupAnonymous(group: Long, agree: Boolean): Carrier<Boolean> =
         setGroupAnonymous0(group)
 
-    override fun setGroupAnonymous(group: GroupCodeContainer, agree: Boolean): Carrier<Boolean> =
+    override suspend fun groupAnonymous(group: GroupCodeContainer, agree: Boolean): Carrier<Boolean> =
         setGroupAnonymous0(group.groupCodeNumber)
 
     /**
      * 禁言/解除禁言
      */
-    private fun setGroupBan0(groupCode: Long, memberCode: Long, time: Long, timeUnit: TimeUnit): Carrier<Boolean> {
+    private suspend fun groupBan0(
+        groupCode: Long,
+        memberCode: Long,
+        time: Long,
+        timeUnit: TimeUnit,
+    ): Carrier<Boolean> {
         bot.member(groupCode, memberCode).apply {
-            runBlocking {
-                time.takeIf { time > 0 }?.let { t ->
-                    val muteTime: Long = t timeBy timeUnit timeAs Seconds
-                    this@apply.mute(muteTime.toInt())
-                } ?: this@apply.unmute()
-            }
+            time.takeIf { time > 0 }?.let { t ->
+                val muteTime: Long = t timeBy timeUnit timeAs Seconds
+                this@apply.mute(muteTime.toInt())
+            } ?: this@apply.unmute()
         }
         return true.toCarrier()
     }
 
-    override fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean> =
-        setGroupBan0(groupCode.toLong(), memberCode.toLong(), time, timeUnit)
+    override suspend fun groupBan(
+        groupCode: String,
+        memberCode: String,
+        time: Long,
+        timeUnit: TimeUnit,
+    ): Carrier<Boolean> =
+        groupBan0(groupCode.toLong(), memberCode.toLong(), time, timeUnit)
 
-    override fun setGroupBan(groupCode: Long, memberCode: Long, time: Long, timeUnit: TimeUnit): Carrier<Boolean> =
-        setGroupBan0(groupCode, memberCode, time, timeUnit)
+    override suspend fun groupBan(groupCode: Long, memberCode: Long, time: Long, timeUnit: TimeUnit): Carrier<Boolean> =
+        groupBan0(groupCode, memberCode, time, timeUnit)
 
-    override fun setGroupBan(group: GroupCodeContainer, member: AccountCodeContainer, time: Long): Carrier<Boolean> =
-        setGroupBan(group.groupCodeNumber, member.accountCodeNumber, time)
+    override suspend fun groupBan(
+        group: GroupCodeContainer,
+        member: AccountCodeContainer,
+        time: Long,
+    ): Carrier<Boolean> =
+        groupBan(group.groupCodeNumber, member.accountCodeNumber, time)
 
-    override fun setGroupBan(
+    override suspend fun groupBan(
         group: GroupCodeContainer,
         member: AccountCodeContainer,
         time: Long,
         timeUnit: TimeUnit,
-    ): Carrier<Boolean> = setGroupBan(group.groupCodeNumber, member.accountCodeNumber, time, timeUnit)
+    ): Carrier<Boolean> = groupBan(group.groupCodeNumber, member.accountCodeNumber, time, timeUnit)
 
 
     /**
      * 设置全体禁言。
      */
-    private fun setGroupWholeBan0(groupCode: Long, ban: Boolean): Carrier<Boolean> {
+    private fun groupWholeBan0(groupCode: Long, ban: Boolean): Carrier<Boolean> {
         return bot.group(groupCode).settings.apply {
             isMuteAll = ban
         }.isMuteAll.toCarrier()
     }
 
-    override fun setGroupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> =
-        setGroupWholeBan0(groupCode.toLong(), mute)
+    override suspend fun groupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> =
+        groupWholeBan0(groupCode.toLong(), mute)
 
-    override fun setGroupWholeBan(groupCode: Long, mute: Boolean): Carrier<Boolean> =
-        setGroupWholeBan0(groupCode, mute)
+    override suspend fun groupWholeBan(groupCode: Long, mute: Boolean): Carrier<Boolean> =
+        groupWholeBan0(groupCode, mute)
 
-    override fun setGroupWholeBan(groupCode: GroupCodeContainer, mute: Boolean): Carrier<Boolean> =
-        setGroupWholeBan0(groupCode.groupCodeNumber, mute)
+    override suspend fun groupWholeBan(groupCode: GroupCodeContainer, mute: Boolean): Carrier<Boolean> =
+        groupWholeBan0(groupCode.groupCodeNumber, mute)
 
     /**
      * 设置群员的群名片。需要有对应权限。
      */
-    private fun setGroupRemark0(groupCode: Long, memberCode: Long, remark: String?): Carrier<String> {
+    private fun groupRemark0(groupCode: Long, memberCode: Long, remark: String?): Carrier<String> {
         return bot.member(groupCode, memberCode).run {
             remark?.also { nameCard = it }
         }.toCarrier()
     }
 
-    override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> =
-        setGroupRemark0(groupCode.toLong(), memberCode.toLong(), remark)
+    override suspend fun groupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> =
+        groupRemark0(groupCode.toLong(), memberCode.toLong(), remark)
 
-    override fun setGroupRemark(groupCode: Long, memberCode: Long, remark: String?): Carrier<String> =
-        setGroupRemark0(groupCode, memberCode, remark)
+    override suspend fun groupRemark(groupCode: Long, memberCode: Long, remark: String?): Carrier<String> =
+        groupRemark0(groupCode, memberCode, remark)
 
-    override fun setGroupRemark(
+    override suspend fun groupRemark(
         group: GroupCodeContainer,
         member: AccountCodeContainer,
         remark: String?,
@@ -251,77 +261,79 @@ public class MiraiSetter(
      *
      * ※ mirai尚不支持解散群。（mirai 2.4.0）
      */
-    private fun setGroupQuit0(groupCode: Long): Carrier<Boolean> {
-        return runBlocking { bot.group(groupCode).quit() }.toCarrier()
+    private suspend fun setGroupQuit0(groupCode: Long): Carrier<Boolean> {
+        return bot.group(groupCode).quit().toCarrier()
     }
 
-    override fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> =
+    override suspend fun groupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> =
         setGroupQuit0(groupCode.toLong())
 
-    override fun setGroupQuit(groupCode: Long, forcibly: Boolean): Carrier<Boolean> =
+    override suspend fun groupQuit(groupCode: Long, forcibly: Boolean): Carrier<Boolean> =
         setGroupQuit0(groupCode)
 
-    override fun setGroupQuit(group: GroupCodeContainer, forcibly: Boolean): Carrier<Boolean> =
-        setGroupQuit(group.groupCodeNumber, forcibly)
+    override suspend fun groupQuit(group: GroupCodeContainer, forcibly: Boolean): Carrier<Boolean> =
+        groupQuit(group.groupCodeNumber, forcibly)
 
     /**
      * 踢出群员。
      */
-    private fun setGroupMemberKick0(
+    private suspend fun groupMemberKick0(
         groupCode: Long,
         memberCode: Long,
         why: String?,
     ): Carrier<Boolean> {
-        runBlocking {
-            bot.member(groupCode, memberCode).kick(why ?: "")
-        }
+        bot.member(groupCode, memberCode).kick(why ?: "")
         return true.toCarrier()
     }
 
-    override fun setGroupMemberKick(
+    override suspend fun groupMemberKick(
         groupCode: String,
         memberCode: String,
         why: String?,
         blackList: Boolean,
     ): Carrier<Boolean> =
-        setGroupMemberKick0(groupCode.toLong(), memberCode.toLong(), why)
+        groupMemberKick0(groupCode.toLong(), memberCode.toLong(), why)
 
-    override fun setGroupMemberKick(
+    override suspend fun groupMemberKick(
         groupCode: Long,
         memberCode: Long,
         why: String?,
         blackList: Boolean,
     ): Carrier<Boolean> =
-        setGroupMemberKick0(groupCode, memberCode, why)
+        groupMemberKick0(groupCode, memberCode, why)
 
-    override fun setGroupMemberKick(
+    override suspend fun groupMemberKick(
         group: GroupCodeContainer,
         member: AccountCodeContainer,
         why: String?,
         blackList: Boolean,
-    ): Carrier<Boolean> = setGroupMemberKick(group.groupCodeNumber, member.accountCodeNumber, why, blackList)
+    ): Carrier<Boolean> = groupMemberKick(group.groupCodeNumber, member.accountCodeNumber, why, blackList)
 
     /**
      * 设置群员专属头衔。
      */
-    private fun setGroupMemberSpecialTitle0(groupCode: Long, memberCode: Long, title: String?): Carrier<String> {
+    private fun groupMemberSpecialTitle0(groupCode: Long, memberCode: Long, title: String?): Carrier<String> {
         return bot.member(groupCode, memberCode).run {
             title?.also { specialTitle = it }
             specialTitle
         }.toCarrier()
     }
 
-    override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String> =
-        setGroupMemberSpecialTitle0(groupCode.toLong(), memberCode.toLong(), title)
+    override suspend fun groupMemberSpecialTitle(
+        groupCode: String,
+        memberCode: String,
+        title: String?,
+    ): Carrier<String> =
+        groupMemberSpecialTitle0(groupCode.toLong(), memberCode.toLong(), title)
 
-    override fun setGroupMemberSpecialTitle(groupCode: Long, memberCode: Long, title: String?): Carrier<String> =
-        setGroupMemberSpecialTitle0(groupCode, memberCode, title)
+    override suspend fun groupMemberSpecialTitle(groupCode: Long, memberCode: Long, title: String?): Carrier<String> =
+        groupMemberSpecialTitle0(groupCode, memberCode, title)
 
-    override fun setGroupMemberSpecialTitle(
+    override suspend fun groupMemberSpecialTitle(
         group: GroupCodeContainer,
         member: AccountCodeContainer,
         title: String?,
-    ): Carrier<String> = setGroupMemberSpecialTitle(group.groupCodeNumber, member.accountCodeNumber, title)
+    ): Carrier<String> = groupMemberSpecialTitle(group.groupCodeNumber, member.accountCodeNumber, title)
 
     /**
      * 撤回消息。需要填入一个 [Flag] 实例，
@@ -330,38 +342,36 @@ public class MiraiSetter(
      * @throws IllegalArgumentException 当 [flag] 不是 [MiraiMessageFlag] 类型实例的时候。
      * @throws PermissionDeniedException 无权操作的时候
      */
-    override fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
+    override suspend fun msgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
         val source: MessageSource = flag.messageSource(bot.id)
 
-        return runBlocking {
-            try {
-                source.recall()
-                true
-            } catch (e: PermissionDeniedException) {
-                logger.warn("Recall msg failed: Permission denied.", e)
-                false
-            } catch (e: IllegalStateException) {
-                // MiraiImpl.recallMessage: end-check
-                // // 1001: No message meets the requirements (实际上是没权限, 管理员在尝试撤回群主的消息)
-                // // 154: timeout
-                // // 3: <no message>
+        return try {
+            source.recall()
+            true
+        } catch (e: PermissionDeniedException) {
+            logger.warn("Recall msg failed: Permission denied.", e)
+            false
+        } catch (e: IllegalStateException) {
+            // MiraiImpl.recallMessage: end-check
+            // // 1001: No message meets the requirements (实际上是没权限, 管理员在尝试撤回群主的消息)
+            // // 154: timeout
+            // // 3: <no message>
 
-                // if IllegalStateException, recall false.
-                val localizedMessage = e.localizedMessage
+            // if IllegalStateException, recall false.
+            val localizedMessage = e.localizedMessage
 
-                val warnMsgAlso = when {
-                    localizedMessage.contains("result=1001") -> "没有权限或权限不足"
-                    localizedMessage.contains("result=154") -> "timeout"
-                    else -> null
-                }
-
-                warnMsgAlso?.let { w ->
-                    logger.warn("Recall msg failed: $w", e)
-                } ?: run {
-                    logger.warn("Recall msg failed.", e)
-                }
-                false
+            val warnMsgAlso = when {
+                localizedMessage.contains("result=1001") -> "没有权限或权限不足"
+                localizedMessage.contains("result=154") -> "timeout"
+                else -> null
             }
+
+            warnMsgAlso?.let { w ->
+                logger.warn("Recall msg failed: $w", e)
+            } ?: run {
+                logger.warn("Recall msg failed.", e)
+            }
+            false
         }.toCarrier()
 
     }
@@ -371,59 +381,38 @@ public class MiraiSetter(
      * 设置群名称。
      * 群名称是移步上传并设置的，这里直接返回的 [name] 的值，但是不保证 [name] 被成功的设置。
      */
-    private fun setGroupName0(groupCode: Long, name: String): Carrier<String> {
+    private fun groupName0(groupCode: Long, name: String): Carrier<String> {
         return name.apply { bot.group(groupCode).name = this }.toCarrier()
     }
 
-    override fun setGroupName(groupCode: String, name: String): Carrier<String> =
-        setGroupName0(groupCode.toLong(), name)
+    override suspend fun groupName(groupCode: String, name: String): Carrier<String> =
+        groupName0(groupCode.toLong(), name)
 
-    override fun setGroupName(groupCode: Long, name: String): Carrier<String> =
-        setGroupName0(groupCode, name)
+    override suspend fun groupName(groupCode: Long, name: String): Carrier<String> =
+        groupName0(groupCode, name)
 
-    override fun setGroupName(group: GroupCodeContainer, name: String): Carrier<String> =
-        setGroupName(group.groupCodeNumber, name)
+    override suspend fun groupName(group: GroupCodeContainer, name: String): Carrier<String> =
+        groupName(group.groupCodeNumber, name)
 
     /**
      * 删除好友。
      */
-    private fun setFriendDelete0(code: Long): Carrier<Boolean> {
-        runBlocking { bot.friend(code).delete() }
+    private suspend fun friendDelete0(code: Long): Carrier<Boolean> {
+        bot.friend(code).delete()
         return true.toCarrier()
     }
 
-    override fun setFriendDelete(friend: String): Carrier<Boolean> =
-        setFriendDelete0(friend.toLong())
+    override suspend fun friendDelete(friend: String): Carrier<Boolean> =
+        friendDelete0(friend.toLong())
 
-    override fun setFriendDelete(friend: Long): Carrier<Boolean> =
-        setFriendDelete0(friend)
+    override suspend fun friendDelete(friend: Long): Carrier<Boolean> =
+        friendDelete0(friend)
 
-    override fun setFriendDelete(friend: AccountCodeContainer): Carrier<Boolean> =
-        setFriendDelete0(friend.accountCodeNumber)
-
-
-    /**
-     * 设置群精华消息。
-     *
-     * 请通过 [additionalExecute] 配合 [love.forte.simbot.component.mirai.additional.MiraiEssenceMessageApi] 使用。
-     */
-    @Deprecated("Use additionalExecute by MiraiEssenceMessageApi")
-    fun setGroupEssenceMessage(group: Long, msgFlag: Flag<GroupMsg.FlagContent>): Carrier<Boolean> {
-        if (msgFlag !is MiraiMessageFlag<*>) {
-            throw IllegalArgumentException("Mirai only supports setting the essence message through the group Msg.flag under mirai, but type(${msgFlag::class.java})")
-        }
-        runBlocking {
-            msgFlag.flagSource.source?.let { s ->
-                bot.getGroupOrFail(group).setEssenceMessage(s).toCarrier()
-            } ?: throw IllegalArgumentException("Mirai message source is empty.")
-        }
+    override suspend fun friendDelete(friend: AccountCodeContainer): Carrier<Boolean> =
+        friendDelete0(friend.accountCodeNumber)
 
 
-        return true.toCarrier()
-    }
-
-
-    override fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): R {
+    override suspend fun <R : Result> execute(additionalApi: AdditionalApi<R>): R {
         if (additionalApi is MiraiSetterAdditionalApi) {
             return additionalApi.execute(setterInfo)
         }

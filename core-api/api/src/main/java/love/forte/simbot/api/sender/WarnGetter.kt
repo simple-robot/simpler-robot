@@ -41,27 +41,27 @@ public object WarnGetter : LogAble, Getter.Def {
     override val botInfo: BotInfo
         get() = apiWarn("botInfo") { "EmptyBotInfo" }.let { emptyBotInfo() }
 
-    override fun getFriendInfo(code: String): FriendInfo =
+    override suspend fun friendInfo(code: String): FriendInfo =
         apiWarn("getFriendInfo") { "EmptyFriendInfo" }.let { emptyFriendInfo() }
 
-    override fun getMemberInfo(group: String, code: String): GroupMemberInfo =
+    override suspend fun memberInfo(group: String, code: String): GroupMemberInfo =
         apiWarn("getMemberInfo") { "EmptyMemberInfo" }.let { emptyGroupMemberInfo() }
 
-    override fun getGroupInfo(group: String): GroupFullInfo =
+    override suspend fun groupInfo(group: String): GroupFullInfo =
         apiWarn("getGroupInfo") { "EmptyGroupInfo" }.let { emptyGroupInfo() }
 
-    override fun getFriendList(cache: Boolean, limit: Int): FriendList =
+    override suspend fun friendList(cache: Boolean, limit: Int): FriendList =
         apiWarn("getFriendList") { "EmptyFriendList" }.let { emptyFriendList() }
 
-    override fun getGroupList(cache: Boolean, limit: Int): GroupList =
+    override suspend fun groupList(cache: Boolean, limit: Int): GroupList =
         apiWarn("getGroupList") { "EmptyGroupList" }.let { emptyGroupList() }
 
-    override fun getGroupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList =
+    override suspend fun groupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList =
         apiWarn("getGroupMemberList") { "EmptyGroupMemberList" }.let { emptyGroupMemberList() }
 
-    override fun getBanList(group: String, cache: Boolean, limit: Int): MuteList =
+    override suspend fun banList(group: String, cache: Boolean, limit: Int): MuteList =
         apiWarn("getBanList") { "EmptyBanList" }.let { emptyMuteList() }
 
-    override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList =
+    override suspend fun groupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList =
         apiWarn("getGroupNoteList") { "EmptyGroupNoteList" }.let { emptyGroupNoteList() }
 }

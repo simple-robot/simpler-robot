@@ -35,14 +35,14 @@ public object FailedGetter : Getter.Def {
         get() = emptyAuthInfo()
     override val botInfo: BotInfo
         get() = emptyBotInfo()
-    override fun getFriendInfo(code: String): FriendInfo = emptyFriendInfo()
-    override fun getMemberInfo(group: String, code: String): GroupMemberInfo = emptyGroupMemberInfo()
-    override fun getGroupInfo(group: String): GroupFullInfo = emptyGroupInfo()
-    override fun getFriendList(cache: Boolean, limit: Int): FriendList = emptyFriendList()
-    override fun getGroupList(cache: Boolean, limit: Int): GroupList = emptyGroupList()
-    override fun getGroupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList = emptyGroupMemberList()
-    override fun getBanList(group: String, cache: Boolean, limit: Int): MuteList = emptyMuteList()
-    override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList = emptyGroupNoteList()
+    override suspend fun friendInfo(code: String): FriendInfo = emptyFriendInfo()
+    override suspend fun memberInfo(group: String, code: String): GroupMemberInfo = emptyGroupMemberInfo()
+    override suspend fun groupInfo(group: String): GroupFullInfo = emptyGroupInfo()
+    override suspend fun friendList(cache: Boolean, limit: Int): FriendList = emptyFriendList()
+    override suspend fun groupList(cache: Boolean, limit: Int): GroupList = emptyGroupList()
+    override suspend fun groupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList = emptyGroupMemberList()
+    override suspend fun banList(group: String, cache: Boolean, limit: Int): MuteList = emptyMuteList()
+    override suspend fun groupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList = emptyGroupNoteList()
 }
 
 
