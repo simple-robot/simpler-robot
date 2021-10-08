@@ -16,6 +16,12 @@ public interface Bot : User {
      */
     public val manager: BotManager<Bot>
 
+    /**
+     * 每个Bot都有一个所属组件。
+     *
+     */
+    public val component: Component
+
     // other..?
-    
+
 }

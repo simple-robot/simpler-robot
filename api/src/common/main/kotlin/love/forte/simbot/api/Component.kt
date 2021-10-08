@@ -9,6 +9,7 @@ import love.forte.simbot.api.exception.SimbotRuntimeException
  *
  * 向 [Components] 中注册一个组件, 其[ID][id]必须唯一，且仅能够从 [Components.create] 处进行创建。
  *
+ * [Component] 的 [equals] 将会直接进行 `===` 匹配, 因此需要保证组件实例唯一性，开发者在 [Components] 中注册的时候，需要保证组件标识的ID唯一不变。
  *
  * @see Components
  */
@@ -20,7 +21,11 @@ public sealed class Component(public val id: String) {
      */
     public abstract operator fun <T> get(propertyKey: String): T?
 
+    override fun equals(other: Any?): Boolean = this === other
 
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 }
 
 
