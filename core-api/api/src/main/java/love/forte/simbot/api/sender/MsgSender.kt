@@ -16,11 +16,13 @@
 
 package love.forte.simbot.api.sender
 
+import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.Carrier
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
+
 
 /**
  *
@@ -34,8 +36,13 @@ public open class MsgSender(
     @JvmField val GETTER: Getter,
 ) {
     /** 撤回消息。 */
-    public open fun recall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> = SETTER.msgRecall(flag)
+    @JvmSynthetic
+    public suspend fun recall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> =
+        SETTER.msgRecall(flag)
 
+    @JvmName("recall")
+    public fun recallBlocking(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> =
+        SETTER.setMsgRecall(flag)
 
 }
 

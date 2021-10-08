@@ -17,42 +17,41 @@ package love.forte.simbot.component.mirai.message.result
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.secondToMill
 import love.forte.simbot.api.message.results.GroupNote
 import love.forte.simbot.api.message.results.GroupNoteList
 import net.mamoe.mirai.contact.Group
 
+
+public suspend fun MiraiGroupNoteList(group: Group, limit: Int): MiraiGroupNoteList {
+    val results = group.announcements.asFlow().let { f ->
+        if (limit > 0) f.take(limit) else f
+    }.map { an ->
+        val content = an.content
+        val time = an.publicationTime.secondToMill()
+        val p = an.parameters
+        val confirm = p.requireConfirmation
+        val top = p.isPinned
+        val forNew = p.sendToNewMember
+
+        MiraiGroupNoteList.MiraiGroupNote(
+            text = content,
+            issuingTime = time,
+            top = top,
+            confirm = confirm,
+            forNew = forNew
+        )
+    }.toList()
+
+    return MiraiGroupNoteList(results, group)
+}
+
+
 /**
  * mirai公告列表。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class MiraiGroupNoteList(group: Group, limit: Int) : GroupNoteList {
-    override val results: List<GroupNote>
-
-
-    init {
-        results = runBlocking {
-            group.announcements.asFlow().let { f ->
-                if (limit > 0) f.take(limit) else f
-            }.map { an ->
-                val content = an.content
-                val time = an.publicationTime.secondToMill()
-                val p = an.parameters
-                val confirm = p.requireConfirmation
-                val top = p.isPinned
-                val forNew = p.sendToNewMember
-
-                MiraiGroupNote(
-                    text = content,
-                    issuingTime = time,
-                    top = top,
-                    confirm = confirm,
-                    forNew = forNew
-                )
-            }.toList()
-        }
-    }
+public class MiraiGroupNoteList internal constructor(override val results: List<GroupNote>, group: Group) : GroupNoteList {
 
 
     override val originalData: String = "MiraiGroupNoteList(group=$group)"

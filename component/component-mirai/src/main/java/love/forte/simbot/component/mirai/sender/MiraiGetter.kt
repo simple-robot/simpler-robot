@@ -138,7 +138,7 @@ public class MiraiGetter(
     /**
      * mirai - group note list.
      */
-    private fun getGroupNoteList0(group: Long, limit: Int = -1): GroupNoteList =
+    private suspend fun getGroupNoteList0(group: Long, limit: Int = -1): GroupNoteList =
         MiraiGroupNoteList(bot.group(group), limit)
 
     override suspend fun groupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList =
