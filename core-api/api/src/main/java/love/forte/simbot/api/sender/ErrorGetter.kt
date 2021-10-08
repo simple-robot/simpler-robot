@@ -32,31 +32,31 @@ public object ErrorGetter : Getter.Def {
     override val botInfo: Nothing
         get() = NO("Getter.botInfo")
 
-    override fun getFriendInfo(code: String): Nothing =
+    override suspend fun friendInfo(code: String): Nothing =
         NO("Getter.getFriendInfo")
 
-    override fun getMemberInfo(group: String, code: String): Nothing =
+    override suspend fun memberInfo(group: String, code: String): Nothing =
         NO("Getter.getMemberInfo")
 
-    override fun getGroupInfo(group: String): Nothing =
+    override suspend fun groupInfo(group: String): Nothing =
         NO("Getter.getGroupInfo")
 
-    override fun getFriendList(cache: Boolean, limit: Int): Nothing =
+    override suspend fun friendList(cache: Boolean, limit: Int): Nothing =
         NO("Getter.getFriendList")
 
-    override fun getGroupList(cache: Boolean, limit: Int): Nothing =
+    override suspend fun groupList(cache: Boolean, limit: Int): Nothing =
         NO("Getter.getGroupList")
 
-    override fun getGroupMemberList(group: String, cache: Boolean, limit: Int): Nothing =
+    override suspend fun groupMemberList(group: String, cache: Boolean, limit: Int): Nothing =
         NO("Getter.getGroupMemberList")
 
-    override fun getBanList(group: String, cache: Boolean, limit: Int): Nothing =
+    override suspend fun banList(group: String, cache: Boolean, limit: Int): Nothing =
         NO("Getter.getBanList")
 
-    override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): Nothing =
+    override suspend fun groupNoteList(group: String, cache: Boolean, limit: Int): Nothing =
         NO("Getter.getGroupNoteList")
 
-    override fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): Nothing = NO("Getter.additionalApi.${additionalApi.additionalApiName}")
+    override suspend fun <R : Result> execute(additionalApi: AdditionalApi<R>): Nothing = NO("Getter.additionalApi.${additionalApi.additionalApiName}")
 }
 
 

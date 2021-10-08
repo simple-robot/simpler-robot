@@ -75,9 +75,9 @@ public class MiraiGetter(
             ?: throw NoSuchElementException("No such friend or stranger $code from bot ${bot.id}")
     }
 
-    override fun getFriendInfo(code: String): FriendInfo = getFriendInfo0(code.toLong())
-    override fun getFriendInfo(code: Long): FriendInfo = getFriendInfo0(code)
-    override fun getFriendInfo(code: AccountCodeContainer): FriendInfo = getFriendInfo(code.accountCodeNumber)
+    override suspend fun friendInfo(code: String): FriendInfo = getFriendInfo0(code.toLong())
+    override suspend fun friendInfo(code: Long): FriendInfo = getFriendInfo0(code)
+    override suspend fun friendInfo(code: AccountCodeContainer): FriendInfo = friendInfo(code.accountCodeNumber)
 
 
     /**
@@ -87,26 +87,26 @@ public class MiraiGetter(
         return MiraiGroupMemberInfo(bot.member(group, code))
     }
 
-    override fun getMemberInfo(group: String, code: String): GroupMemberInfo =
+    override suspend fun memberInfo(group: String, code: String): GroupMemberInfo =
         getMemberInfo0(group.toLong(), code.toLong())
 
-    override fun getMemberInfo(group: Long, code: Long): GroupMemberInfo = getMemberInfo0(group, code)
-    override fun getMemberInfo(group: GroupCodeContainer, code: AccountCodeContainer): GroupMemberInfo =
-        getMemberInfo(group.groupCodeNumber, code.accountCodeNumber)
+    override suspend fun memberInfo(group: Long, code: Long): GroupMemberInfo = getMemberInfo0(group, code)
+    override suspend fun memberInfo(group: GroupCodeContainer, code: AccountCodeContainer): GroupMemberInfo =
+        memberInfo(group.groupCodeNumber, code.accountCodeNumber)
 
     /**
      * mirai - 群信息
      */
     private fun getGroupInfo0(group: Long): GroupFullInfo = MiraiGroupFullInfo(bot.group(group))
-    override fun getGroupInfo(group: String): GroupFullInfo = getGroupInfo0(group.toLong())
-    override fun getGroupInfo(group: Long): GroupFullInfo = getGroupInfo0(group)
-    override fun getGroupInfo(group: GroupCodeContainer): GroupFullInfo = getGroupInfo(group.groupCodeNumber)
+    override suspend fun groupInfo(group: String): GroupFullInfo = getGroupInfo0(group.toLong())
+    override suspend fun groupInfo(group: Long): GroupFullInfo = getGroupInfo0(group)
+    override suspend fun groupInfo(group: GroupCodeContainer): GroupFullInfo = groupInfo(group.groupCodeNumber)
 
 
-    override fun getFriendList(cache: Boolean, limit: Int): FriendList = MiraiFriendList(bot, limit)
+    override suspend fun friendList(cache: Boolean, limit: Int): FriendList = MiraiFriendList(bot, limit)
 
 
-    override fun getGroupList(cache: Boolean, limit: Int): GroupList = MiraiGroupList(bot, limit)
+    override suspend fun groupList(cache: Boolean, limit: Int): GroupList = MiraiGroupList(bot, limit)
 
 
     /**
@@ -115,47 +115,46 @@ public class MiraiGetter(
     private fun getGroupMemberList0(group: Long, limit: Int): GroupMemberList =
         MiraiGroupMemberList(bot.group(group), limit)
 
-    override fun getGroupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList =
+    override suspend fun groupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList =
         getGroupMemberList0(group.toLong(), limit)
 
-    override fun getGroupMemberList(group: Long, cache: Boolean, limit: Int): GroupMemberList =
+    override suspend fun groupMemberList(group: Long, cache: Boolean, limit: Int): GroupMemberList =
         getGroupMemberList0(group, limit)
 
-    override fun getGroupMemberList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupMemberList =
-        getGroupMemberList(group.groupCodeNumber, cache, limit)
+    override suspend fun groupMemberList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupMemberList =
+        groupMemberList(group.groupCodeNumber, cache, limit)
 
 
     /**
      * mirai - ban list.
      */
     private fun getBanList0(group: Long, limit: Int): MuteList = MiraiMuteList(bot.group(group), limit)
-    override fun getBanList(group: String, cache: Boolean, limit: Int): MuteList = getBanList0(group.toLong(), limit)
-    override fun getBanList(group: Long, cache: Boolean, limit: Int): MuteList = getBanList0(group, limit)
-    override fun getBanList(group: GroupCodeContainer, cache: Boolean, limit: Int): MuteList =
-        getBanList(group.groupCodeNumber, cache, limit)
+    override suspend fun banList(group: String, cache: Boolean, limit: Int): MuteList = getBanList0(group.toLong(), limit)
+    override suspend fun banList(group: Long, cache: Boolean, limit: Int): MuteList = getBanList0(group, limit)
+    override suspend fun banList(group: GroupCodeContainer, cache: Boolean, limit: Int): MuteList =
+        banList(group.groupCodeNumber, cache, limit)
 
 
     /**
      * mirai - group note list.
-     * 注：mirai仅支持获取入群公告。(mirai 1.3.2)
      */
     private fun getGroupNoteList0(group: Long, limit: Int = -1): GroupNoteList =
         MiraiGroupNoteList(bot.group(group), limit)
 
-    override fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList =
+    override suspend fun groupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList =
         getGroupNoteList0(group.toLong(), limit)
 
-    override fun getGroupNoteList(group: Long, cache: Boolean, limit: Int): GroupNoteList =
+    override suspend fun groupNoteList(group: Long, cache: Boolean, limit: Int): GroupNoteList =
         getGroupNoteList0(group, limit)
 
-    override fun getGroupNoteList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupNoteList =
-        getGroupNoteList(group.groupCodeNumber, cache, limit)
+    override suspend fun groupNoteList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupNoteList =
+        groupNoteList(group.groupCodeNumber, cache, limit)
 
 
     /**
      * 额外API
      */
-    override fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): R {
+    override suspend fun <R : Result> execute(additionalApi: AdditionalApi<R>): R {
         if (additionalApi is MiraiGetterAdditionalApi) {
             return additionalApi.execute(getterInfo)
         }

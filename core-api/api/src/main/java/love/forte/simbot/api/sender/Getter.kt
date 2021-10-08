@@ -14,6 +14,7 @@
 
 package love.forte.simbot.api.sender
 
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.api.message.containers.*
 import love.forte.simbot.api.message.results.*
 
@@ -56,223 +57,505 @@ public interface Getter : Communicator, BotContainer {
     /**
      * 获取一个好友的信息。
      */
-    fun getFriendInfo(code: String): FriendInfo
+    @JvmSynthetic
+    suspend fun friendInfo(code: String): FriendInfo
 
-    
-    fun getFriendInfo(code: Long): FriendInfo = getFriendInfo(code.toString())
+    @JvmSynthetic
+    suspend fun friendInfo(code: Long): FriendInfo = friendInfo(code.toString())
 
-    
-    fun getFriendInfo(code: AccountCodeContainer): FriendInfo = getFriendInfo(code.accountCode)
+    @JvmSynthetic
+    suspend fun friendInfo(code: AccountCodeContainer): FriendInfo = friendInfo(code.accountCode)
 
-    
-    fun getFriendInfo(code: AccountContainer): FriendInfo = getFriendInfo(code.accountInfo)
+    @JvmSynthetic
+    suspend fun friendInfo(code: AccountContainer): FriendInfo = friendInfo(code.accountInfo)
+
+    ////////// blocking ///////////
+    fun getFriendInfo(code: String): FriendInfo = runBlocking { friendInfo(code) }
+
+    fun getFriendInfo(code: Long): FriendInfo = runBlocking { friendInfo(code) }
+
+    fun getFriendInfo(code: AccountCodeContainer): FriendInfo = runBlocking { friendInfo(code) }
+
+    fun getFriendInfo(code: AccountContainer): FriendInfo = runBlocking { friendInfo(code) }
+
 
     /**
      * 获取一个群友信息。
      */
-    fun getMemberInfo(group: String, code: String): GroupMemberInfo
+    @JvmSynthetic
+    suspend fun memberInfo(group: String, code: String): GroupMemberInfo
 
-    
-    fun getMemberInfo(group: Long, code: Long): GroupMemberInfo = getMemberInfo(group.toString(), code.toString())
 
-    
+    @JvmSynthetic
+    suspend fun memberInfo(group: Long, code: Long): GroupMemberInfo = memberInfo(group.toString(), code.toString())
+
+
+    @JvmSynthetic
+    suspend fun memberInfo(group: GroupCodeContainer, code: AccountCodeContainer): GroupMemberInfo =
+        memberInfo(group.groupCode, code.accountCode)
+
+
+    @JvmSynthetic
+    suspend fun memberInfo(group: GroupContainer, code: AccountContainer): GroupMemberInfo =
+        memberInfo(group.groupInfo, code.accountInfo)
+
+
+    @JvmSynthetic
+    suspend fun <T> memberInfo(groupAndAccount: T): GroupMemberInfo
+            where T : GroupCodeContainer,
+                  T : AccountCodeContainer =
+        memberInfo(groupAndAccount, groupAndAccount)
+
+
+    @JvmSynthetic
+    suspend fun <T> memberInfo(groupAndAccount: T): GroupMemberInfo
+            where T : GroupContainer,
+                  T : AccountContainer =
+        memberInfo(groupAndAccount, groupAndAccount)
+
+
+    ////////////// blocking /////////////////
+
+    fun getMemberInfo(group: String, code: String): GroupMemberInfo =
+        runBlocking { memberInfo(group, code) }
+
+
+    fun getMemberInfo(group: Long, code: Long): GroupMemberInfo = runBlocking { memberInfo(group, code) }
+
+
     fun getMemberInfo(group: GroupCodeContainer, code: AccountCodeContainer): GroupMemberInfo =
-        getMemberInfo(group.groupCode, code.accountCode)
+        runBlocking { memberInfo(group, code) }
 
-    
+
     fun getMemberInfo(group: GroupContainer, code: AccountContainer): GroupMemberInfo =
-        getMemberInfo(group, code)
+        runBlocking { memberInfo(group, code) }
 
-    
+
     fun <T> getMemberInfo(groupAndAccount: T): GroupMemberInfo
             where T : GroupCodeContainer,
                   T : AccountCodeContainer =
-        getMemberInfo(groupAndAccount, groupAndAccount)
+        runBlocking { memberInfo(groupAndAccount) }
 
-    
+
     fun <T> getMemberInfo(groupAndAccount: T): GroupMemberInfo
             where T : GroupContainer,
                   T : AccountContainer =
-        getMemberInfo(groupAndAccount, groupAndAccount)
+        runBlocking { memberInfo(groupAndAccount) }
 
 
     /**
      * 获取一个群详细信息
      */
-    fun getGroupInfo(group: String): GroupFullInfo
+    @JvmSynthetic
+    suspend fun groupInfo(group: String): GroupFullInfo
 
-    
-    fun getGroupInfo(group: Long): GroupFullInfo = getGroupInfo(group.toString())
-    
-    fun getGroupInfo(group: GroupCodeContainer): GroupFullInfo = getGroupInfo(group.groupCode)
-    
-    fun getGroupInfo(group: GroupContainer): GroupFullInfo = getGroupInfo(group.groupInfo)
+    @JvmSynthetic
+    suspend fun groupInfo(group: Long): GroupFullInfo = groupInfo(group.toString())
+
+    @JvmSynthetic
+    suspend fun groupInfo(group: GroupCodeContainer): GroupFullInfo = groupInfo(group.groupCode)
+
+    @JvmSynthetic
+    suspend fun groupInfo(group: GroupContainer): GroupFullInfo = groupInfo(group.groupInfo)
+
+    ////////////// blocking /////////////
+
+    fun getGroupInfo(group: String): GroupFullInfo = runBlocking { groupInfo(group) }
+
+    fun getGroupInfo(group: Long): GroupFullInfo = runBlocking { groupInfo(group) }
+
+    fun getGroupInfo(group: GroupCodeContainer): GroupFullInfo = runBlocking { groupInfo(group) }
+
+    fun getGroupInfo(group: GroupContainer): GroupFullInfo = runBlocking { groupInfo(group) }
 
 
     /**
      * 获取好友列表
      * @param cache 是否使用缓存。
      */
-    fun getFriendList(cache: Boolean, limit: Int): FriendList
+    @JvmSynthetic
+    suspend fun friendList(cache: Boolean, limit: Int): FriendList
 
-    
-    fun getFriendList(limit: Int): FriendList = getFriendList(false, limit)
 
-    
-    fun getFriendList(): FriendList = getFriendList(false, -1)
+    @JvmSynthetic
+    suspend fun friendList(limit: Int): FriendList = friendList(false, limit)
+
+
+    @JvmSynthetic
+    suspend fun friendList(): FriendList = friendList(false, -1)
+
+
+    /////////////// Blocking /////////////////
+
+    fun getFriendList(cache: Boolean, limit: Int): FriendList =
+        runBlocking { friendList(cache, limit) }
+
+
+    fun getFriendList(limit: Int): FriendList =
+        runBlocking { friendList(limit) }
+
+
+    fun getFriendList(): FriendList =
+        runBlocking { friendList() }
 
 
     /**
      * 获取群列表
      * @param cache 是否使用缓存。
      */
-    fun getGroupList(cache: Boolean, limit: Int): GroupList
+    @JvmSynthetic
+    suspend fun groupList(cache: Boolean, limit: Int): GroupList
 
-    
-    fun getGroupList(limit: Int): GroupList = getGroupList(false, limit)
 
-    
-    fun getGroupList(): GroupList = getGroupList(false, -1)
+    @JvmSynthetic
+    suspend fun groupList(limit: Int): GroupList = groupList(false, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupList(): GroupList = groupList(false, -1)
+
+    ///////////// blocking /////////////
+
+    fun getGroupList(cache: Boolean, limit: Int): GroupList = runBlocking { groupList(cache, limit) }
+
+    fun getGroupList(limit: Int): GroupList = runBlocking { groupList(limit) }
+
+    fun getGroupList(): GroupList = runBlocking { groupList() }
+
 
     /**
      * 获取群成员列表
      */
-    fun getGroupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList
+    @JvmSynthetic
+    suspend fun groupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList
 
-    
+
+    @JvmSynthetic
+    suspend fun groupMemberList(group: String, limit: Int): GroupMemberList =
+        groupMemberList(group, false, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberList(group: String): GroupMemberList =
+        groupMemberList(group, false, -1)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberList(group: Long, cache: Boolean, limit: Int): GroupMemberList =
+        groupMemberList(group.toString(), cache, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberList(group: Long, limit: Int): GroupMemberList =
+        groupMemberList(group.toString(), false, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberList(group: Long): GroupMemberList =
+        groupMemberList(group.toString(), false, -1)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupMemberList =
+        groupMemberList(group.groupCode, cache, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberList(group: GroupCodeContainer, limit: Int): GroupMemberList =
+        groupMemberList(group, false, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberList(group: GroupCodeContainer): GroupMemberList =
+        groupMemberList(group, false, -1)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberList(group: GroupContainer, cache: Boolean, limit: Int): GroupMemberList =
+        groupMemberList(group.groupInfo, cache, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberList(group: GroupContainer, limit: Int): GroupMemberList =
+        groupMemberList(group.groupInfo, false, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupMemberList(group: GroupContainer): GroupMemberList =
+        groupMemberList(group.groupInfo, false, -1)
+
+    //////////// blocking /////////////
+
+
+    fun getGroupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList =
+        runBlocking { groupMemberList(group, cache, limit) }
+
+
     fun getGroupMemberList(group: String, limit: Int): GroupMemberList =
-        getGroupMemberList(group, false, limit)
+        runBlocking { groupMemberList(group, limit) }
 
-    
+
     fun getGroupMemberList(group: String): GroupMemberList =
-        getGroupMemberList(group, false, -1)
+        runBlocking { groupMemberList(group) }
 
 
-    
     fun getGroupMemberList(group: Long, cache: Boolean, limit: Int): GroupMemberList =
-        getGroupMemberList(group.toString(), cache, limit)
+        runBlocking { groupMemberList(group, cache, limit) }
 
-    
+
     fun getGroupMemberList(group: Long, limit: Int): GroupMemberList =
-        getGroupMemberList(group.toString(), false, limit)
+        runBlocking { groupMemberList(group, limit) }
 
-    
+
     fun getGroupMemberList(group: Long): GroupMemberList =
-        getGroupMemberList(group.toString(), false, -1)
+        runBlocking { groupMemberList(group) }
 
-    
+
     fun getGroupMemberList(group: GroupCodeContainer, cache: Boolean, limit: Int): GroupMemberList =
-        getGroupMemberList(group.groupCode, cache, limit)
+        runBlocking { groupMemberList(group, cache, limit) }
 
-    
+
     fun getGroupMemberList(group: GroupCodeContainer, limit: Int): GroupMemberList =
-        getGroupMemberList(group, false, limit)
+        runBlocking { groupMemberList(group, limit) }
 
-    
+
     fun getGroupMemberList(group: GroupCodeContainer): GroupMemberList =
-        getGroupMemberList(group, false, -1)
+        runBlocking { groupMemberList(group) }
 
-    
+
     fun getGroupMemberList(group: GroupContainer, cache: Boolean, limit: Int): GroupMemberList =
-        getGroupMemberList(group.groupInfo, cache, limit)
+        runBlocking { groupMemberList(group, cache, limit) }
 
-    
+
     fun getGroupMemberList(group: GroupContainer, limit: Int): GroupMemberList =
-        getGroupMemberList(group.groupInfo, false, limit)
+        runBlocking { groupMemberList(group, limit) }
 
-    
+
     fun getGroupMemberList(group: GroupContainer): GroupMemberList =
-        getGroupMemberList(group.groupInfo, false, -1)
+        runBlocking { groupMemberList(group) }
+
+
+
+
+
+
+
 
     /**
      * 获取某群的被禁言人列表。
      * @param group 群号
      * @param cache 是否使用缓存
      */
-    fun getBanList(group: String, cache: Boolean, limit: Int): MuteList
+    @JvmSynthetic
+    suspend fun banList(group: String, cache: Boolean, limit: Int): MuteList
 
-    
-    fun getBanList(group: String, limit: Int): MuteList = getBanList(group, false, limit)
 
-    
-    fun getBanList(group: String): MuteList = getBanList(group, false, -1)
+    @JvmSynthetic
+    suspend fun banList(group: String, limit: Int): MuteList = banList(group, false, limit)
 
-    
-    fun getBanList(group: Long, cache: Boolean, limit: Int): MuteList = getBanList(group.toString(), cache, limit)
 
-    
-    fun getBanList(group: Long, limit: Int): MuteList = getBanList(group.toString(), false, limit)
+    @JvmSynthetic
+    suspend fun banList(group: String): MuteList = banList(group, false, -1)
 
-    
-    fun getBanList(group: Long): MuteList = getBanList(group.toString(), false, -1)
 
-    
+    @JvmSynthetic
+    suspend fun banList(group: Long, cache: Boolean, limit: Int): MuteList = banList(group.toString(), cache, limit)
+
+
+    @JvmSynthetic
+    suspend fun banList(group: Long, limit: Int): MuteList = banList(group.toString(), false, limit)
+
+
+    @JvmSynthetic
+    suspend fun banList(group: Long): MuteList = banList(group.toString(), false, -1)
+
+
+    @JvmSynthetic
+    suspend fun banList(group: GroupCodeContainer, cache: Boolean, limit: Int): MuteList =
+        banList(group.groupCode, cache, limit)
+
+
+    @JvmSynthetic
+    suspend fun banList(group: GroupCodeContainer, limit: Int): MuteList =
+        banList(group, false, limit)
+
+
+    @JvmSynthetic
+    suspend fun banList(group: GroupCodeContainer): MuteList =
+        banList(group, false, -1)
+
+
+    @JvmSynthetic
+    suspend fun banList(group: GroupContainer, cache: Boolean, limit: Int): MuteList =
+        banList(group.groupInfo, cache, limit)
+
+
+    @JvmSynthetic
+    suspend fun banList(group: GroupContainer, limit: Int): MuteList =
+        banList(group.groupInfo, false, limit)
+
+
+    @JvmSynthetic
+    suspend fun banList(group: GroupContainer): MuteList =
+        banList(group.groupInfo, false, -1)
+
+
+    //////////// blocking /////////////
+
+
+    fun getBanList(group: String, cache: Boolean, limit: Int): MuteList =
+        runBlocking { banList(group, cache, limit) }
+
+
+    fun getBanList(group: String, limit: Int): MuteList =
+        runBlocking { banList(group, limit) }
+
+
+    fun getBanList(group: String): MuteList =
+        runBlocking { banList(group) }
+
+
+    fun getBanList(group: Long, cache: Boolean, limit: Int): MuteList =
+        runBlocking { banList(group, cache, limit) }
+
+
+    fun getBanList(group: Long, limit: Int): MuteList =
+        runBlocking { banList(group, limit) }
+
+
+    fun getBanList(group: Long): MuteList =
+        runBlocking { banList(group) }
+
+
     fun getBanList(group: GroupCodeContainer, cache: Boolean, limit: Int): MuteList =
-        getBanList(group.groupCode, cache, limit)
+        runBlocking { banList(group, cache, limit) }
 
-    
+
     fun getBanList(group: GroupCodeContainer, limit: Int): MuteList =
-        getBanList(group, false, limit)
+        runBlocking { banList(group, limit) }
 
-    
+
     fun getBanList(group: GroupCodeContainer): MuteList =
-        getBanList(group, false, -1)
+        runBlocking { banList(group) }
 
-    
+
     fun getBanList(group: GroupContainer, cache: Boolean, limit: Int): MuteList =
-        getBanList(group.groupInfo, cache, limit)
+        runBlocking { banList(group, cache, limit) }
 
-    
+
     fun getBanList(group: GroupContainer, limit: Int): MuteList =
-        getBanList(group.groupInfo, false, limit)
+        runBlocking { banList(group, limit) }
 
-    
+
     fun getBanList(group: GroupContainer): MuteList =
-        getBanList(group.groupInfo, false, -1)
+        runBlocking { banList(group) }
+
 
 
     /**
      * 获取群公告列表
      */
-    fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList
+    @JvmSynthetic
+    suspend fun groupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList
 
-    
-    fun getGroupNoteList(group: String, limit: Int): GroupNoteList = getGroupNoteList(group, false, limit)
 
-    
-    fun getGroupNoteList(group: String): GroupNoteList = getGroupNoteList(group, false, -1)
+    @JvmSynthetic
+    suspend fun groupNoteList(group: String, limit: Int): GroupNoteList = groupNoteList(group, false, limit)
 
-    
-    fun getGroupNoteList(group: Long, cache: Boolean, limit: Int) = getGroupNoteList(group.toString(), cache, limit)
 
-    
-    fun getGroupNoteList(group: Long, limit: Int): GroupNoteList = getGroupNoteList(group.toString(), false, limit)
+    @JvmSynthetic
+    suspend fun groupNoteList(group: String): GroupNoteList = groupNoteList(group, false, -1)
 
-    
-    fun getGroupNoteList(group: Long): GroupNoteList = getGroupNoteList(group.toString(), false, -1)
 
-    
+    @JvmSynthetic
+    suspend fun groupNoteList(group: Long, cache: Boolean, limit: Int) = groupNoteList(group.toString(), cache, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupNoteList(group: Long, limit: Int): GroupNoteList = groupNoteList(group.toString(), false, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupNoteList(group: Long): GroupNoteList = groupNoteList(group.toString(), false, -1)
+
+
+    @JvmSynthetic
+    suspend fun groupNoteList(group: GroupCodeContainer, cache: Boolean, limit: Int) =
+        groupNoteList(group.groupCode, cache, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupNoteList(group: GroupCodeContainer, limit: Int): GroupNoteList =
+        groupNoteList(group.groupCode, false, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupNoteList(group: GroupCodeContainer): GroupNoteList =
+        groupNoteList(group.groupCode, false, -1)
+
+
+    @JvmSynthetic
+    suspend fun groupNoteList(group: GroupContainer, cache: Boolean, limit: Int) =
+        groupNoteList(group.groupInfo, cache, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupNoteList(group: GroupContainer, limit: Int): GroupNoteList =
+        groupNoteList(group.groupInfo, false, limit)
+
+
+    @JvmSynthetic
+    suspend fun groupNoteList(group: GroupContainer): GroupNoteList =
+        groupNoteList(group.groupInfo, false, -1)
+
+    ///////////// blocking ///////////////
+
+    fun getGroupNoteList(group: String, cache: Boolean, limit: Int): GroupNoteList =
+        runBlocking { groupNoteList(group, cache, limit) }
+
+
+    fun getGroupNoteList(group: String, limit: Int): GroupNoteList =
+        runBlocking { groupNoteList(group, limit) }
+
+
+    fun getGroupNoteList(group: String): GroupNoteList =
+        runBlocking { groupNoteList(group) }
+
+
+    fun getGroupNoteList(group: Long, cache: Boolean, limit: Int) =
+        runBlocking { groupNoteList(group, cache, limit) }
+
+
+    fun getGroupNoteList(group: Long, limit: Int): GroupNoteList =
+        runBlocking { groupNoteList(group, limit) }
+
+
+    fun getGroupNoteList(group: Long): GroupNoteList =
+        runBlocking { groupNoteList(group) }
+
+
     fun getGroupNoteList(group: GroupCodeContainer, cache: Boolean, limit: Int) =
-        getGroupNoteList(group.groupCode, cache, limit)
+        runBlocking { groupNoteList(group, cache, limit) }
 
-    
+
     fun getGroupNoteList(group: GroupCodeContainer, limit: Int): GroupNoteList =
-        getGroupNoteList(group.groupCode, false, limit)
+        runBlocking { groupNoteList(group, limit) }
 
-    
+
     fun getGroupNoteList(group: GroupCodeContainer): GroupNoteList =
-        getGroupNoteList(group.groupCode, false, -1)
+        runBlocking { groupNoteList(group) }
 
-    
+
     fun getGroupNoteList(group: GroupContainer, cache: Boolean, limit: Int) =
-        getGroupNoteList(group.groupInfo, cache, limit)
+        runBlocking { groupNoteList(group, cache, limit) }
 
-    
+
     fun getGroupNoteList(group: GroupContainer, limit: Int): GroupNoteList =
-        getGroupNoteList(group.groupInfo, false, limit)
+        runBlocking { groupNoteList(group, limit) }
 
-    
+
     fun getGroupNoteList(group: GroupContainer): GroupNoteList =
-        getGroupNoteList(group.groupInfo, false, -1)
+        runBlocking { groupNoteList(group) }
+
 
 }

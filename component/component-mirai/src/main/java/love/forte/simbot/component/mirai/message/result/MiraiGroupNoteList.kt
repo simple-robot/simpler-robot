@@ -25,7 +25,6 @@ import net.mamoe.mirai.contact.Group
 
 /**
  * mirai公告列表。
- * 注：mirai目前只支持获取入群公告的文本。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
 public class MiraiGroupNoteList(group: Group, limit: Int) : GroupNoteList {
