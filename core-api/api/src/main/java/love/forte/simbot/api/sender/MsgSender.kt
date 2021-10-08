@@ -16,7 +16,6 @@
 
 package love.forte.simbot.api.sender
 
-import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.Carrier
 import love.forte.simbot.api.message.containers.BotContainer
 import love.forte.simbot.api.message.containers.BotInfo
