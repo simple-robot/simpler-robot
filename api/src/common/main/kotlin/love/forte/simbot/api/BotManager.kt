@@ -1,5 +1,7 @@
 package love.forte.simbot.api
 
+import kotlin.jvm.JvmOverloads
+
 
 /**
  *
@@ -18,28 +20,13 @@ public sealed class BotManager<B : Bot> {
      */
     public abstract operator fun get(id: String): B?
 
-    /**
-     * 必须有个唯一Key。
-     */
-    public abstract val key: Key
 
-    /**
-     * [BotManager]'s [Key] for [OriginBotManager].
-     *
-     */
-    public interface Key {
-        public val id: String
-    }
 }
 
-
-
-
-public abstract class BaseBotManager<B: Bot>(
+/**
+ * 基础的 [BotManager] 抽象类。
+ *
+ */
+public abstract class BaseBotManager<B : Bot> @JvmOverloads constructor(
     override val parentManager: BotManager<*> = OriginBotManager,
-    final override val key: Key
-) : BotManager<B>() {
-    init {
-        OriginBotManager.register(key, this)
-    }
-}
+) : BotManager<B>(), ComponentContainer

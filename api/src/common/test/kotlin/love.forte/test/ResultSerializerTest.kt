@@ -1,8 +1,6 @@
 package love.forte.test
 
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import love.forte.simbot.api.interaction.SuccessResult
+import love.forte.simbot.api.*
 import kotlin.test.Test
 
 /**
@@ -11,11 +9,23 @@ import kotlin.test.Test
  */
 class ResultSerializerTest {
 
+    class MyBotManager : BaseBotManager<Bot>() {
+        override val component: Component
+            get() = Components.resolve("myBotManager")
+
+        override fun get(id: String): Bot? = null
+    }
+
     @Test
     fun test() {
-        val result = SuccessResult(20)
+        val b1 = MyBotManager()
+        val b2 = MyBotManager()
 
-        println(Json.encodeToString(result))
+        println(b1 == b2)
+        println(b1 === b2)
+        println(b1.component == b2.component)
+        println(b1.component === b2.component)
+
 
     }
 

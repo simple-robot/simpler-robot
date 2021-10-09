@@ -2,6 +2,10 @@
 
 package love.forte.simbot.api.utils
 
+/**
+ * Create a concurrent set.
+ */
+public expect fun <T> concurrentSet(): MutableSet<T>
 
 /**
  * Create a concurrent collection.

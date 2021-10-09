@@ -22,7 +22,7 @@ public actual fun <K, V : Any> MutableMap<K, V>.compute(key: K, reMapping: (K, V
 /**
  * Map compute if absent.
  */
-public actual fun <K, V : Any> MutableMap<K, V>.computeIfAbsent(key: K, mapping: (K) -> V): V? {
+public actual fun <K, V : Any> MutableMap<K, V>.computeIfAbsent(key: K, mapping: (K) -> V): V {
     return this.computeIfAbsent(key, mapping)
 }
 

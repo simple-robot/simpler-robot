@@ -1,6 +1,8 @@
 package love.forte.simbot.api
 
+import love.forte.simbot.api.definition.Container
 import love.forte.simbot.api.exception.SimbotRuntimeException
+import love.forte.simbot.api.utils.*
 
 
 /**
@@ -21,6 +23,19 @@ public sealed class Component(public val id: String) {
      */
     public abstract operator fun <T> get(propertyKey: String): T?
 
+    /**
+     * 获得属性列表。
+     */
+    public abstract fun properties(): Map<String, Any>
+}
+
+
+/**
+ * 由内部实现的顶层组件，一部分可能由simbot自身提供的通用内容会使用此组件。
+ */
+public object SimbotComponent : Component("simbot") {
+    override fun <T> get(propertyKey: String): T? = null
+    override fun properties(): Map<String, Any> = emptyMap()
 }
 
 
@@ -39,15 +54,29 @@ public object Components {
         override fun hashCode(): Int {
             return id.hashCode()
         }
+
+        override fun properties(): Map<String, Any> = properties.toMap()
     }
+
+    private val comps: MutableMap<String, Component> = concurrentMap()
+    init {
+        comps[SimbotComponent.id] = SimbotComponent
+    }
+
 
     /**
      *
      * @throws ComponentAlreadyException 如果组件已经存在
      */
     public fun create(id: String, properties: Map<String, Any> = emptyMap()): Component {
+        return comps.compute(id) { k, old ->
+            if (old != null) {
+                throw ComponentAlreadyException("$k: $old")
+            }
+            Comp(k, properties)
+        }!!
 
-        return TODO()
+
     }
 
     /**
@@ -61,7 +90,7 @@ public object Components {
      *
      *
      */
-    public fun find(id: String): Component? = TODO()
+    public fun find(id: String): Component? = comps[id]
 
 }
 
@@ -69,6 +98,28 @@ public object Components {
 public inline fun Components.resolve(id: String, propertiesBlock: () -> Map<String, Any> = { emptyMap() }): Component {
     return find(id) ?: create(id, propertiesBlock())
 }
+
+
+/**
+ * 一个组件的容器, 标记其实现需要存在一个 [组件][component] 实例。
+ *
+ */
+public interface ComponentContainer : Container {
+    public val component: Component
+}
+
+/**
+ * 判断两个组件容器之间的组件是否相同。
+ *
+ */
+public infix fun ComponentContainer.sameComponentWith(other: ComponentContainer): Boolean = component === other.component
+
+
+
+
+
+
+//////////////////////// Exceptions ////////////////////////////
 
 
 public class NoSuchComponentException : SimbotRuntimeException {

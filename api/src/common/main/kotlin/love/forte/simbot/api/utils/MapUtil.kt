@@ -18,7 +18,7 @@ public expect fun <K, V : Any> MutableMap<K, V>.compute(key: K, reMapping: (K, V
 /**
  * Map compute if absent.
  */
-public expect fun <K, V : Any> MutableMap<K, V>.computeIfAbsent(key: K, mapping: (K) -> V): V?
+public expect fun <K, V : Any> MutableMap<K, V>.computeIfAbsent(key: K, mapping: (K) -> V): V
 
 
 /**
