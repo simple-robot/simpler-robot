@@ -21,11 +21,6 @@ public sealed class Component(public val id: String) {
      */
     public abstract operator fun <T> get(propertyKey: String): T?
 
-    override fun equals(other: Any?): Boolean = this === other
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
 }
 
 
@@ -38,6 +33,12 @@ public object Components {
     internal class Comp(id: String, private val properties: Map<String, Any>) : Component(id) {
         @Suppress("UNCHECKED_CAST")
         override fun <T> get(propertyKey: String): T? = properties[propertyKey] as? T
+
+        override fun equals(other: Any?): Boolean = this === other
+
+        override fun hashCode(): Int {
+            return id.hashCode()
+        }
     }
 
     /**
