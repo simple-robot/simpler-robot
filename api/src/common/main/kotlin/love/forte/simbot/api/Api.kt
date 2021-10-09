@@ -1,6 +1,11 @@
 package love.forte.simbot.api
 
+
 /**
- * 占位
+ * Simbot api 中的一些内容.
+ *
  */
-public object Api
+public object Api {
+
+
+}

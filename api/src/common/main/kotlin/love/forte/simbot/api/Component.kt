@@ -1,7 +1,7 @@
 package love.forte.simbot.api
 
 import love.forte.simbot.api.definition.Container
-import love.forte.simbot.api.exception.SimbotRuntimeException
+import love.forte.simbot.exception.SimbotRuntimeException
 import love.forte.simbot.api.utils.*
 
 
@@ -16,7 +16,7 @@ import love.forte.simbot.api.utils.*
  * @see Components
  */
 @Suppress("MemberVisibilityCanBePrivate")
-public sealed class Component(public val id: String) {
+public sealed class Component(public open val id: String) {
 
     /**
      * 获取一个属性。
@@ -36,6 +36,7 @@ public sealed class Component(public val id: String) {
 public object SimbotComponent : Component("simbot") {
     override fun <T> get(propertyKey: String): T? = null
     override fun properties(): Map<String, Any> = emptyMap()
+    override fun toString(): String = "SimbotComponent(id=simbot)"
 }
 
 
@@ -45,7 +46,7 @@ public object SimbotComponent : Component("simbot") {
  *
  */
 public object Components {
-    internal class Comp(id: String, private val properties: Map<String, Any>) : Component(id) {
+    internal data class Comp(override val id: String, private val properties: Map<String, Any>) : Component(id) {
         @Suppress("UNCHECKED_CAST")
         override fun <T> get(propertyKey: String): T? = properties[propertyKey] as? T
 
@@ -59,6 +60,7 @@ public object Components {
     }
 
     private val comps: MutableMap<String, Component> = concurrentMap()
+
     init {
         comps[SimbotComponent.id] = SimbotComponent
     }
@@ -69,12 +71,12 @@ public object Components {
      * @throws ComponentAlreadyException 如果组件已经存在
      */
     public fun create(id: String, properties: Map<String, Any> = emptyMap()): Component {
-        return comps.compute(id) { k, old ->
+        return comps.doCompute(id) { k, old ->
             if (old != null) {
                 throw ComponentAlreadyException("$k: $old")
             }
             Comp(k, properties)
-        }!!
+        }
 
 
     }

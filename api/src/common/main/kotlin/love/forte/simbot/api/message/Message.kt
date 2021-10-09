@@ -1,6 +1,7 @@
 package love.forte.simbot.api.message
 
 import love.forte.simbot.api.Component
+import love.forte.simbot.api.ComponentContainer
 import love.forte.simbot.api.SimbotComponent
 
 
@@ -20,10 +21,15 @@ import love.forte.simbot.api.SimbotComponent
  *
  *
  *
- * @see MessageList
+ * @see Messages
  * @see AbsoluteMessage
  */
-public sealed interface Message {
+public sealed interface Message : ComponentContainer {
+
+    /**
+     * 每个消息，都有一个所属的组件。组件之间不应出现消息交叉。
+     */
+    override val component: Component
 
     /**
      * 消息类型的唯一表示标识。
@@ -31,12 +37,12 @@ public sealed interface Message {
      * 一般由伴生对象或对象实现。
      *
      */
-    public interface Key<M : AbsoluteMessage> {
+    public interface Key<M : AbsoluteMessage> : ComponentContainer {
         /**
          * 任何消息都应由某个组件所提供。
          * 在检测冲突的前提是组件应当一致。
          */
-        public val component: Component
+        override val component: Component
 
 
         /**
@@ -44,7 +50,7 @@ public sealed interface Message {
          * 此函数不检测 [component], 通过顶层函数 [checkConflict] 来在冲突检测之前检测组件。
          *
          */
-        public fun conflict(key: Key<*>): Boolean
+        public infix fun conflict(key: Key<*>): Boolean // TODO
     }
 
 }
@@ -91,7 +97,7 @@ public abstract class BaseMessageKey<M : AbsoluteMessage> : Message.Key<M> {
  *
  */
 public abstract class TargetConflictMessageKey<M : AbsoluteMessage>(
-    internal val conflictTargets: Set<Message.Key<*>>,
+    private val conflictTargets: Set<Message.Key<*>>,
 ) : Message.Key<M> {
     public constructor(vararg conflictTargets: Message.Key<*>) : this(conflictTargets.toSet())
 
@@ -102,19 +108,14 @@ public abstract class TargetConflictMessageKey<M : AbsoluteMessage>(
 
 
 /**
- * 一个独立的消息。此接口代表一个消息单元，可用于拼接至 [MessageList] 中。
- *
- * 独立的消息在消息列表中，相同的 [key] 应当只存在一个。
+ * 一个独立的消息。此接口代表一个消息单元，可用于拼接至 [Messages] 中。
  *
  * 消息是否需要自排序（固定顺序与无序消息）
  *
  */
 public sealed interface AbsoluteMessage : Message {
+    public val key: Message.Key<*>
 }
-
-
-
-
 
 
 

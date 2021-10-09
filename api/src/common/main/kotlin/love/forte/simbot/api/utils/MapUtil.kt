@@ -13,9 +13,8 @@ public expect fun <K, V : Any> MutableMap<K, V>.merge(key: K, value: V, reMappin
  * Map compute.
  * 通过 [reMapping] 提供 key 和 旧值（可能为null）来计算一个新值。
  *
- * // TODO
  */
-public expect fun <K, V : Any> MutableMap<K, V>.compute(key: K, reMapping: (K, V?) -> V): V
+public expect fun <K, V : Any> MutableMap<K, V>.doCompute(key: K, reMapping: (K, V?) -> V): V
 
 
 /**

@@ -34,7 +34,6 @@ kotlin {
         testRuns.all {
             executionTask.configure {
                 useJUnit()
-                useJUnitPlatform()
             }
         }
     }
@@ -81,7 +80,10 @@ kotlin {
                 implementation(kotlin("test-junit"))
             }
         }
+        @Suppress("UNUSED_VARIABLE")
         val jsMain by getting
+
+        @Suppress("UNUSED_VARIABLE")
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))

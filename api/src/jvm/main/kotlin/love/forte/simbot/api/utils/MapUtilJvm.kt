@@ -15,7 +15,7 @@ public actual fun <K, V : Any> MutableMap<K, V>.merge(key: K, value: V, reMappin
  * Map compute.
  *
  */
-public actual fun <K, V : Any> MutableMap<K, V>.compute(key: K, reMapping: (K, V?) -> V): V {
+public actual fun <K, V : Any> MutableMap<K, V>.doCompute(key: K, reMapping: (K, V?) -> V): V {
     return this.compute(key, reMapping)!!
 }
 
