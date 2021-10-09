@@ -69,7 +69,7 @@ public class MessagesBuilder(
                 if (m.key conflict message.key) {
                     when (m) {
                         is UniqueMessage<*> -> {
-                            addable = m.solve(message).option(list, i, message)
+                            addable = m.key.solve(m, message).option(list, i, message)
                             break
                         }
                         is PluralMessage -> TODO("可重复消息的冲突处理")

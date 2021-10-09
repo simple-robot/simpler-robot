@@ -24,7 +24,7 @@ public interface UniqueMessage<out K : AbsoluteMessage> : AbsoluteMessage {
      *
      * @return 解决冲突的策略。
      */
-    public fun solve(other: @UnsafeVariance K) : SolveStatus = SolveStatus.Overwrite
+    // public fun solve(other: @UnsafeVariance K) : SolveStatus = SolveStatus.Overwrite
 }
 
 
@@ -104,9 +104,16 @@ internal fun SolveStatus.option(list: MutableList<AbsoluteMessage>, i: Int, new:
  * 合并有多种可能，一是真正的合并，其他的则有可能为直接替换为后来者等等。
  *
  */
-public interface MergeableMessage<K : AbsoluteMessage> : UniqueMessage<K> {
-    override val key: Message.Key<K>
-    override fun solve(other: K): SolveStatus = SolveStatus.UseThis(merge(other))
+public interface MergeableMessage<K : MergeableMessage<K>> : UniqueMessage<K> {
+    override val key: Key<K>
+
+    public interface Key<K : MergeableMessage<K>> : Message.Key<K> {
+        override fun solve(current: K, other: K): SolveStatus {
+            return SolveStatus.UseThis(current.merge(other))
+        }
+    }
+
+    // override fun solve(other: K): SolveStatus = SolveStatus.UseThis(merge(other))
 
     /**
      * 合并 当前消息与 [other].

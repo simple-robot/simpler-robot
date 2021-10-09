@@ -50,7 +50,15 @@ public sealed interface Message : ComponentContainer {
          * 此函数不检测 [component], 通过顶层函数 [checkConflict] 来在冲突检测之前检测组件。
          *
          */
-        public infix fun conflict(key: Key<*>): Boolean // TODO
+        public infix fun conflict(key: Key<*>): Boolean
+
+
+        /**
+         * 解决冲突的函数。
+         *
+         */
+        public fun solve(current: @UnsafeVariance M, other: @UnsafeVariance M) : SolveStatus = SolveStatus.Overwrite
+
     }
 
 }
@@ -66,7 +74,7 @@ public fun Message.Key<*>.checkConflict(target: Message.Key<*>, allowSimbotCompo
         if (component === SimbotComponent || otherComponent === SimbotComponent) {
             true
         } else {
-            component === otherComponent
+            component == otherComponent
         }
     } else {
         component == otherComponent
