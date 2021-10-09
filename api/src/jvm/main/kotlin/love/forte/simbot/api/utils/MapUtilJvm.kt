@@ -15,8 +15,8 @@ public actual fun <K, V : Any> MutableMap<K, V>.merge(key: K, value: V, reMappin
  * Map compute.
  *
  */
-public actual fun <K, V : Any> MutableMap<K, V>.compute(key: K, reMapping: (K, V?) -> V): V? {
-    return this.compute(key, reMapping)
+public actual fun <K, V : Any> MutableMap<K, V>.compute(key: K, reMapping: (K, V?) -> V): V {
+    return this.compute(key, reMapping)!!
 }
 
 /**
@@ -31,7 +31,7 @@ public actual fun <K, V : Any> MutableMap<K, V>.computeIfAbsent(key: K, mapping:
  */
 public actual fun <K, V : Any> MutableMap<K, V>.computeIfPresent(
     key: K,
-    reMapping: (K, V) -> V,
+    reMapping: (K, V) -> V?,
 ): V? {
     return this.computeIfPresent(key, reMapping)
 }

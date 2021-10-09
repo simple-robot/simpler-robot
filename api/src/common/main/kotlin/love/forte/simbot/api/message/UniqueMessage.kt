@@ -5,11 +5,22 @@ package love.forte.simbot.api.message
 // UniqueMessage
 
 /**
- * 唯一的 [Message], 代表在 [MessageList] 中, 如果
+ * 唯一的 [Message], 代表在 [MessageList] 中, 如果出现了冲突内容（一般即相同的key），
+ * 则根据策略进行元素替换、舍弃、合并等操作。
  *
+ * 冲突可能有多种可能：
+ * - 向消息中追加 [UniqueMessage], 并发现了同类或冲突元素
+ * - 向消息中追加 [PluralMessage], 原消息列表中存在 [UniqueMessage].
+ * - 仅允许单元素存在的 [UniqueMessage].
  */
 public interface UniqueMessage : AbsoluteMessage {
     public val key: Message.Key<*>
+
+    /**
+     * 解决冲突。
+     *
+     */
+    public fun solve() {}
 
 }
 

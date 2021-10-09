@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.psi.packageDirectiveVisitor
+
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization") // version "1.5.31"
@@ -22,13 +24,32 @@ kotlin {
             attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
             attribute(SimbotAttributes.MODULE_NAME, "api")
         }
+
         compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
+            kotlinOptions {
+                jvmTarget = "1.8"
+                javaParameters = true
+            }
         }
         testRuns.all {
             executionTask.configure {
                 useJUnit()
-                // useJUnitPlatform()
+                useJUnitPlatform()
+            }
+        }
+    }
+
+    js("js", IR) {
+        nodejs()
+        browser()
+        useCommonJs()
+        compilations.all {
+            kotlinOptions {
+                metaInfo = true
+            }
+        }
+        testRuns.all {
+            executionTask.configure {
             }
         }
     }
@@ -58,6 +79,12 @@ kotlin {
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
+            }
+        }
+        val jsMain by getting
+        val jsTest by getting {
+            dependencies {
+                implementation(kotlin("test-js"))
             }
         }
 
