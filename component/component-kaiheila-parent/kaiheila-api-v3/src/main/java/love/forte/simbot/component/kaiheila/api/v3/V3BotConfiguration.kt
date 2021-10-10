@@ -14,14 +14,17 @@
 
 package love.forte.simbot.component.kaiheila.api.v3
 
+import love.forte.simbot.api.sender.DefaultMsgSenderFactories
+import love.forte.simbot.api.sender.ErrorFactories
 import love.forte.simbot.component.kaiheila.api.ApiConfiguration
 import love.forte.simbot.component.kaiheila.api.ApiConfigurationBuilder
+import love.forte.simbot.component.kaiheila.event.EventLocator
+import love.forte.simbot.component.kaiheila.event.KhlEventLocator
 
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
 @DslMarker
 public annotation class V3BotConfigurationDSL
-
 
 
 /**
@@ -34,6 +37,16 @@ public class V3BotConfiguration {
 
     @V3BotConfigurationDSL
     lateinit var apiConfiguration: ApiConfiguration
+
+
+    @V3BotConfigurationDSL
+    var compress: Int = 1
+
+    @V3BotConfigurationDSL
+    var senderFactories: DefaultMsgSenderFactories = ErrorFactories
+
+    @V3BotConfigurationDSL
+    var eventLocator: EventLocator = KhlEventLocator
 
     @V3BotConfigurationDSL
     @JvmSynthetic

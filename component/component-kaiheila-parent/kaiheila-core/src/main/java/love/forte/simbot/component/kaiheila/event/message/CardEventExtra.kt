@@ -24,6 +24,9 @@ import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupBotInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.*
+import love.forte.simbot.component.kaiheila.botAvatar
+import love.forte.simbot.component.kaiheila.botCode
+import love.forte.simbot.component.kaiheila.botName
 import love.forte.simbot.component.kaiheila.event.Event
 import love.forte.simbot.component.kaiheila.event.EventLocator
 import love.forte.simbot.component.kaiheila.event.EventLocatorRegistrarCoordinate
@@ -42,16 +45,16 @@ import love.forte.simbot.component.kaiheila.objects.User
 @Serializable
 public data class CardEventExtra(
     @SerialName("guild_id")
-    override val guildId: String,
+    override val guildId: String = "",
     @SerialName("channel_name")
-    override val channelName: String,
-    override val mention: List<String>,
+    override val channelName: String = "",
+    override val mention: List<String> = emptyList(),
     @SerialName("mention_all")
-    override val mentionAll: Boolean,
+    override val mentionAll: Boolean = false,
     @SerialName("mention_roles")
-    override val mentionRoles: List<Role>,
+    override val mentionRoles: List<Role> = emptyList(),
     @SerialName("mention_here")
-    override val mentionHere: Boolean,
+    override val mentionHere: Boolean = false,
     override val author: User,
 ) : MessageEventExtra {
     override val type: Int

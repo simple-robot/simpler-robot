@@ -29,12 +29,9 @@ import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import love.forte.simbot.api.message.containers.BotInfo
+import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.BotSender
-import love.forte.simbot.api.sender.DefaultMsgSenderFactories
-import love.forte.simbot.api.sender.ErrorFactories
-import love.forte.simbot.component.kaiheila.CoroutineLogger
-import love.forte.simbot.component.kaiheila.KhlBot
-import love.forte.simbot.component.kaiheila.WebsocketBot
+import love.forte.simbot.component.kaiheila.*
 import love.forte.simbot.component.kaiheila.api.Api
 import love.forte.simbot.component.kaiheila.api.ApiConfiguration
 import love.forte.simbot.component.kaiheila.api.doRequestForData
@@ -47,7 +44,7 @@ import love.forte.simbot.component.kaiheila.api.v3.sender.KhlV3Setter
 import love.forte.simbot.component.kaiheila.api.v3.user.Me
 import love.forte.simbot.component.kaiheila.api.v3.user.MeReq
 import love.forte.simbot.component.kaiheila.event.*
-import love.forte.simbot.component.kaiheila.khlJson
+import love.forte.simbot.component.kaiheila.objects.Channel
 import love.forte.simbot.component.kaiheila.objects.Guild
 import love.forte.simbot.component.kaiheila.objects.User
 import org.slf4j.Logger
@@ -109,8 +106,6 @@ public class V3WsBot(
     val configuration: V3BotConfiguration,
     val wsClient: HttpClient = client,
     parentContext: CoroutineContext = EmptyCoroutineContext,
-    compress: Int = 1,
-    senderFactories: DefaultMsgSenderFactories = ErrorFactories,
 ) : WebsocketBot, CoroutineScope {
 
     init {
@@ -121,12 +116,13 @@ public class V3WsBot(
         }
     }
 
-    override val api: Api get() = apiConfiguration.api
+    private val eventLocator = configuration.eventLocator
 
+    override val api: Api get() = apiConfiguration.api
     override val apiConfiguration: ApiConfiguration = configuration.apiConfiguration
 
     /** 获取 [Gateway] 的请求体。 */
-    private val gatewayReq = GatewayReq(compress)
+    private val gatewayReq = GatewayReq(configuration.compress)
 
     /** 网络日志相关的logger */
     override val networkLog: Logger =
@@ -141,9 +137,6 @@ public class V3WsBot(
     override val botInfo: BotInfo
         get() = info
 
-    val botCode: String get() = botInfo.botCode
-    val botName: String get() = botInfo.botName
-
     private inner class KhlBotInfo : BotInfo {
         override val botCode: String get() = me.id
         override val botName: String get() = me.username
@@ -153,16 +146,16 @@ public class V3WsBot(
     override val sender: BotSender = BotSender(
         KhlV3Sender(
             this,
-            senderFactories.defaultSenderFactory.getOnBotSender(this)
+            configuration.senderFactories.defaultSenderFactory.getOnBotSender(this)
         ),
         KhlV3Setter(
             this,
-            senderFactories.defaultSetterFactory.getOnBotSetter(this),
+            configuration.senderFactories.defaultSetterFactory.getOnBotSetter(this),
             this
         ),
         KhlV3Getter(
             this,
-            senderFactories.defaultGetterFactory.getOnBotGetter(this)
+            configuration.senderFactories.defaultGetterFactory.getOnBotGetter(this)
         ),
         botInfo
     )
@@ -242,15 +235,16 @@ public class V3WsBot(
                     CoroutineName("simbot.khl.bot.ws.$clientId." + it.name)
                 } ?: CoroutineName("simbot.khl.bot.ws.$clientId")
 
-                val newCoroutineLogger = nowCoroutineContext[CoroutineLogger] ?: CoroutineLogger(networkLog)
+                val nowLogger = nowCoroutineContext[CoroutineLogger] ?: CoroutineLogger(networkLog)
 
-                val newScope = CoroutineScope(nowCoroutineContext + newCoroutineName + newCoroutineLogger)
+                val newScope = CoroutineScope(nowCoroutineContext + newCoroutineName + nowLogger)
                 // sessionJob = newScope.launch {
                 var firstWaitForHello: Job? = launch(start = CoroutineStart.LAZY) {
-                    println("Start firstWaitForHello Job")
+                    nowLogger.debug("Start firstWaitForHello Job")
                     delay(6000)
                     this@apply.close(CloseReason(CloseReason.Codes.NOT_CONSISTENT, "No Hello!"))
                 }
+
 
                 var pingSendJob: Job? = null
                 var waitForPong: Job? = null
@@ -259,7 +253,7 @@ public class V3WsBot(
                  * Do when get text
                  */
                 suspend fun doText(text: String): Event<*>? {
-                    println("[Binary-text]: $text")
+                    nowLogger.debug("[Do-Text]: {}", text)
 
                     val element = khlJson.parseToJsonElement(text)
                     val s = element.jsonObject["s"]?.jsonPrimitive?.int
@@ -273,12 +267,12 @@ public class V3WsBot(
                         else -> error(element)
                     }
 
-                    println("[Signal_$s]: $signal")
+                    nowLogger.debug("[Signal_{}]: {}", s, signal)
 
                     when (signal) {
                         // Hello
                         is Signal.Hello -> {
-                            println("Signal.Hello: $signal")
+                            nowLogger.debug("Signal.Hello: {}", signal)
                             firstWaitForHello?.cancel()
                             firstWaitForHello = null
 
@@ -292,10 +286,10 @@ public class V3WsBot(
                                             r.nextLong(5))
                                         else Duration.ofSeconds(30) - Duration.ofSeconds(r.nextLong(
                                             5))
-                                    log.debug("Wait {} for next ping", wait.toString())
+                                    nowLogger.debug("Wait {} for next ping", wait.toString())
                                     delay(wait.toMillis())
-                                    log.debug("Send ping.")
-                                    send(Frame.Text(Signal.Ping.jsonValue(0)))
+                                    nowLogger.debug("Send ping.")
+                                    send(Frame.Text(Signal.Ping.jsonValue(sn.get())))
                                     waitForPong = launch(coroutineContext) {
                                         delay(6000)
                                         // 进入超时状态
@@ -313,10 +307,41 @@ public class V3WsBot(
                                 `resume` 时需传入该参数才能完成。
                              */
                             val lastSn = this@V3WsBot.sn.get()
+                            if (lastSn > signal.sn) {
+                                nowLogger.debug("LastSn({}) > signal.sn({}), return null.", lastSn, signal.sn)
+                                return null
+                            }
                             this@V3WsBot.sn.set(signal.sn)
 
-                            // TODO event
+                            val eventData = signal.d.jsonObject
+                            val eventType = eventData["type"]?.jsonPrimitive?.int ?: kotlin.run {
+                                nowLogger.debug("EventData[type] was null. {}", eventData)
+                                return null
+                            }
+                            nowLogger.debug("Event type: {}", eventType)
 
+                            val channelType = eventData["channel_type"]?.jsonPrimitive?.content?.let {
+                                nowLogger.debug("Channel type primitive: {}", it)
+                                when {
+                                    it.equals("group", true) -> Channel.Type.GROUP
+                                    it.equals("person", true) -> Channel.Type.PERSON
+                                    else -> null
+                                }
+                            }
+                            nowLogger.debug("Channel type: {}", channelType)
+
+
+                            val extraType = eventData["extra"]?.jsonObject?.get("type")?.jsonPrimitive?.content ?: kotlin.run {
+                                nowLogger.debug("EventData[extra][type] was null. {}", eventData)
+                                return null
+                            }
+
+                            val serializer = eventLocator.locateAsEvent(eventType, channelType, extraType) ?: kotlin.run {
+                                nowLogger.debug("eventLocator.locateAsEvent({}, {}, {}) was null. {}", eventType, channelType, extraType, eventData)
+                                return null
+                            }
+
+                            return khlJson.decodeFromJsonElement(serializer, eventData)
                         }
                         is Signal.Reconnect -> {
                             // reconnect
@@ -350,11 +375,12 @@ public class V3WsBot(
 
 
                 sessionJob = incoming.receiveAsFlow().mapNotNull { frame ->
+                    nowLogger.debug("[Frame  ]: {}", frame)
                     try {
                         when (frame) {
                             is Frame.Text -> {
                                 val text = frame.readText()
-                                println("[Text  ]: $text")
+                                nowLogger.debug("[Text  ]: {}", text)
                                 doText(text)
                             }
                             is Frame.Binary -> {
@@ -387,7 +413,13 @@ public class V3WsBot(
                     firstWaitForHello?.start()
                 }.onEach {
                     println("Event: $it")
+
+                    if (it is MsgGet) {
+                        println("Is MsgGet! text: ${it.text}")
+                    }
+
                 }.launchIn(newScope)
+
                 //.collect {
                 //         println("Event: $it")
                 //     }

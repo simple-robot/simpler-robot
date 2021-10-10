@@ -21,7 +21,6 @@ import io.ktor.client.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.LogAble
-import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.component.kaiheila.api.Api
 import love.forte.simbot.component.kaiheila.api.ApiConfiguration
@@ -145,6 +144,11 @@ public interface KhlBot : LogAble, Bot, KhlBotApi, CoroutineScope {
     suspend fun join()
     fun joinBot() = runBlocking { join() }
 }
+
+
+public val KhlBot.botCode: String get() = botInfo.botCode
+public val KhlBot.botName: String get() = botInfo.botName
+public val KhlBot.botAvatar: String? get() = botInfo.botAvatar
 
 
 /**

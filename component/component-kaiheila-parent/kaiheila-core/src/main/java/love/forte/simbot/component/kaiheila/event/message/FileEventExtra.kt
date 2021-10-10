@@ -24,6 +24,9 @@ import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupBotInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.*
+import love.forte.simbot.component.kaiheila.botAvatar
+import love.forte.simbot.component.kaiheila.botCode
+import love.forte.simbot.component.kaiheila.botName
 import love.forte.simbot.component.kaiheila.event.Event
 import love.forte.simbot.component.kaiheila.event.EventLocator
 import love.forte.simbot.component.kaiheila.event.EventLocatorRegistrarCoordinate
@@ -41,14 +44,14 @@ import love.forte.simbot.component.kaiheila.objects.User
 @Serializable
 public data class FileEventExtra(
     @SerialName("guild_id")
-    override val guildId: String,
+    override val guildId: String = "",
     @SerialName("channel_name")
     override val channelName: String = "",
 
-    override val mention: List<String>,
-    override val mentionAll: Boolean,
-    override val mentionRoles: List<Role>,
-    override val mentionHere: Boolean,
+    override val mention: List<String> = emptyList(),
+    override val mentionAll: Boolean = false,
+    override val mentionRoles: List<Role> = emptyList(),
+    override val mentionHere: Boolean = false,
     /**
      * 附件
      */

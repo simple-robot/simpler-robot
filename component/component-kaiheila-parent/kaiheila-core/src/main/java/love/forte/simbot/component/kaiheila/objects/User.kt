@@ -24,6 +24,7 @@ import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
 import love.forte.simbot.component.kaiheila.api.BaseRespData
+import love.forte.simbot.component.kaiheila.api.logger
 
 
 /**
@@ -175,7 +176,10 @@ public data class SimpleUser(
     override val roles: List<Int> = emptyList(),
 ) : User, BaseRespData() {
     init {
-        check(status == 0 || status == 10) { "Parameter status must be 0(normal) or 10(banned), but $status" }
+        if (!(status == 0 || status == 10)) {
+            logger.warn("Parameter status must be 0(normal) or 10(banned), but {}", status)
+        }
+        // check(status == 0 || status == 10) { "Parameter status must be 0(normal) or 10(banned), but $status" }
     }
 
     override val originalData: String get() = toString()

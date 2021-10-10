@@ -212,8 +212,6 @@ public interface Event<E : Event.Extra> {
 
         /**
          * 当 [Event.type] != `255` 时的 [结构](https://developer.kaiheila.cn/doc/event/event-introduction#)
-         *
-         * @see SimpleText
          */
         public interface Text : Extra {
             override val type: Int
@@ -295,16 +293,16 @@ public data class SimpleEvent<E : Event.Extra>(
 public data class SimpleText(
     override val type: Int,
     @SerialName("guild_id")
-    override val guildId: String,
+    override val guildId: String = "",
     @SerialName("channel_name")
-    override val channelName: String,
-    override val mention: List<String>,
+    override val channelName: String = "",
+    override val mention: List<String> = emptyList(),
     @SerialName("mention_all")
-    override val mentionAll: Boolean,
+    override val mentionAll: Boolean = false,
     @SerialName("mention_roles")
-    override val mentionRoles: List<Role>,
+    override val mentionRoles: List<Role> = emptyList(),
     @SerialName("mention_here")
-    override val mentionHere: Boolean,
+    override val mentionHere: Boolean = false,
     override val author: User
 ) : Event.Extra.Text
 

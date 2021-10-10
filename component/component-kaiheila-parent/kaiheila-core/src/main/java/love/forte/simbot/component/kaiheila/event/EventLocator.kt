@@ -32,6 +32,7 @@ public interface EventLocator {
      * 根据事件json中的部分数据来定位一个序列化器。
      *
      * @param type 外层类型，即[事件信令][Signal.Event] 中的 [d][Signal.Event.d] 数据中的 `type` 字段。
+     * @param channelType
      * @param extraType extra中的类型，即 [Event.Extra.type]。
      *
      * @throws TypeCastException 在[注册定位][registerCoordinate] 时不规范导致的类型转化异常

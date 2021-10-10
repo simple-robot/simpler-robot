@@ -69,7 +69,7 @@ public interface MessageEvent<E : MessageEventExtra> : Event<E>, MessageGet, Bot
 
 
     override val botInfo: BotInfo
-        get() = bot
+        get() = bot.botInfo
 
     override val id: String
         get() = msgId
