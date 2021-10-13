@@ -9,7 +9,7 @@ fun main() {
     val json = resource.use { r -> Json.parseToJsonElement(r.bufferedReader().readText()) }
     json.jsonArray.forEach {
         genFromJson(it,
-            "love.forte.simbot.component.kaiheila.event.system.guild.role",
+            "love.forte.simbot.kaiheila.event.system.guild.role",
             "GuildRoleEventExtraBody",
             "GuildRoleEventExtra")
     }

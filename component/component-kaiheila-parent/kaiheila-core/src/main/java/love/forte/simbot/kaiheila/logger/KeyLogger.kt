@@ -17,7 +17,7 @@
 package love.forte.simbot.kaiheila.logger
 
 import love.forte.simbot.LogAble
-import love.forte.simbot.component.kaiheila.api.ApiData
+import love.forte.simbot.kaiheila.api.ApiData
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

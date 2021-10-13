@@ -18,11 +18,11 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.api.*
-import love.forte.simbot.component.kaiheila.api.v3.channel.ChannelListReq
-import love.forte.simbot.component.kaiheila.objects.Channel
-import love.forte.simbot.component.kaiheila.objects.Guild
-import love.forte.simbot.component.kaiheila.objects.Role
+import love.forte.simbot.kaiheila.api.*
+import love.forte.simbot.kaiheila.api.v3.channel.ChannelListReq
+import love.forte.simbot.kaiheila.objects.Channel
+import love.forte.simbot.kaiheila.objects.Guild
+import love.forte.simbot.kaiheila.objects.Role
 
 
 /**

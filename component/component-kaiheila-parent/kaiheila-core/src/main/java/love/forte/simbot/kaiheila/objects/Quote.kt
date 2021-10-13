@@ -19,7 +19,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
-import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
+import love.forte.simbot.kaiheila.SerializerModuleRegistrar
 
 
 /**

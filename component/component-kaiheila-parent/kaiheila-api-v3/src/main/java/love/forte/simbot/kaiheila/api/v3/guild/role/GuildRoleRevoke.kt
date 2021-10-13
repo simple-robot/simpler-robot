@@ -3,9 +3,9 @@ package love.forte.simbot.kaiheila.api.v3.guild.role
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.api.BaseApiDataKey
-import love.forte.simbot.component.kaiheila.api.BaseApiDataReq
-import love.forte.simbot.component.kaiheila.api.ObjectResp
+import love.forte.simbot.kaiheila.api.BaseApiDataKey
+import love.forte.simbot.kaiheila.api.BaseApiDataReq
+import love.forte.simbot.kaiheila.api.ObjectResp
 
 
 /**

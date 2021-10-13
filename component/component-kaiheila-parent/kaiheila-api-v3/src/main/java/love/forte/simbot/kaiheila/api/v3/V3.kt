@@ -14,8 +14,8 @@
 
 package love.forte.simbot.kaiheila.api.v3
 
-import love.forte.simbot.component.kaiheila.api.Api
-import love.forte.simbot.component.kaiheila.api.apiVersion
+import love.forte.simbot.kaiheila.api.Api
+import love.forte.simbot.kaiheila.api.apiVersion
 
 
 /**

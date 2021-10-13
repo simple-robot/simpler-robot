@@ -16,7 +16,7 @@ package love.forte.simbot.kaiheila.event
 
 import kotlinx.serialization.KSerializer
 import love.forte.simbot.api.message.events.MsgGet
-import love.forte.simbot.component.kaiheila.objects.Channel
+import love.forte.simbot.kaiheila.objects.Channel
 
 
 /**

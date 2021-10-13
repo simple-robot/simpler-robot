@@ -24,9 +24,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
-import love.forte.simbot.component.kaiheila.KhlMessageContent
-import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
-import love.forte.simbot.component.kaiheila.objects.AtTarget.*
+import love.forte.simbot.kaiheila.KhlMessageContent
+import love.forte.simbot.kaiheila.SerializerModuleRegistrar
 import love.forte.simbot.kaiheila.objects.AtTarget.*
 import love.forte.simbot.kaiheila.objects.AtTarget.User
 

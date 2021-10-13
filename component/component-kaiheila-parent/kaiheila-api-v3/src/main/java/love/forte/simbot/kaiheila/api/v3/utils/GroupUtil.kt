@@ -4,7 +4,7 @@ package love.forte.simbot.kaiheila.api.v3.utils
 
 import love.forte.simbot.api.message.results.GroupList
 import love.forte.simbot.api.message.results.SimpleGroupInfo
-import love.forte.simbot.component.kaiheila.api.v3.guild.GuildListRespData
+import love.forte.simbot.kaiheila.api.v3.guild.GuildListRespData
 
 
 public fun List<GuildListRespData>.asGroupList(limit: Int = -1): GroupList {

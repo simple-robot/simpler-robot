@@ -25,10 +25,10 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import love.forte.simbot.component.kaiheila.KhlBot
-import love.forte.simbot.component.kaiheila.api.BaseRespData
-import love.forte.simbot.component.kaiheila.objects.Channel
-import love.forte.simbot.component.kaiheila.objects.User
+import love.forte.simbot.kaiheila.KhlBot
+import love.forte.simbot.kaiheila.api.BaseRespData
+import love.forte.simbot.kaiheila.objects.Channel
+import love.forte.simbot.kaiheila.objects.User
 import java.util.*
 
 

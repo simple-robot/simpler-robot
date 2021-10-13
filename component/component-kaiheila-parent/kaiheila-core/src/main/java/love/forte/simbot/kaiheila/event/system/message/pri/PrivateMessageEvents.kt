@@ -1,7 +1,7 @@
 package love.forte.simbot.kaiheila.event.system.message.pri
 
-import love.forte.simbot.component.kaiheila.event.system.message.MessageEventExtra
-import love.forte.simbot.component.kaiheila.event.system.message.MessageEventExtraBody
+import love.forte.simbot.kaiheila.event.system.message.MessageEventExtra
+import love.forte.simbot.kaiheila.event.system.message.MessageEventExtraBody
 
 
 /**

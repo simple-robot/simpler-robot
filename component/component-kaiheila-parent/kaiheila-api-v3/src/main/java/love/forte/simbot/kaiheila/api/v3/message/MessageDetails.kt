@@ -16,11 +16,11 @@ package love.forte.simbot.kaiheila.api.v3.message
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.api.ApiData
-import love.forte.simbot.component.kaiheila.api.BaseRespData
-import love.forte.simbot.component.kaiheila.objects.MentionPart
-import love.forte.simbot.component.kaiheila.objects.Role
-import love.forte.simbot.component.kaiheila.objects.User
+import love.forte.simbot.kaiheila.api.ApiData
+import love.forte.simbot.kaiheila.api.BaseRespData
+import love.forte.simbot.kaiheila.objects.MentionPart
+import love.forte.simbot.kaiheila.objects.Role
+import love.forte.simbot.kaiheila.objects.User
 
 
 /**

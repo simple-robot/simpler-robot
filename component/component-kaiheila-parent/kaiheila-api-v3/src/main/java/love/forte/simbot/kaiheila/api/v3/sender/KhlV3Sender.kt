@@ -12,14 +12,14 @@ import love.forte.simbot.api.message.events.GroupMsgIdFlagContent
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.api.message.events.PrivateMsgIdFlagContent
 import love.forte.simbot.api.sender.Sender
-import love.forte.simbot.component.kaiheila.KhlBot
-import love.forte.simbot.component.kaiheila.KhlMessageContent
-import love.forte.simbot.component.kaiheila.MessageType
-import love.forte.simbot.component.kaiheila.api.ApiData
-import love.forte.simbot.component.kaiheila.api.KhlSender
-import love.forte.simbot.component.kaiheila.api.doRequestForData
-import love.forte.simbot.component.kaiheila.api.v3.message.MessageCreateReq
-import love.forte.simbot.component.kaiheila.api.v3.message.direct.DirectMessageCreateReq
+import love.forte.simbot.kaiheila.KhlBot
+import love.forte.simbot.kaiheila.KhlMessageContent
+import love.forte.simbot.kaiheila.MessageType
+import love.forte.simbot.kaiheila.api.ApiData
+import love.forte.simbot.kaiheila.api.KhlSender
+import love.forte.simbot.kaiheila.api.doRequestForData
+import love.forte.simbot.kaiheila.api.v3.message.MessageCreateReq
+import love.forte.simbot.kaiheila.api.v3.message.direct.DirectMessageCreateReq
 
 
 private fun String.toGroupReqs(targetId: String): List<ApiData.Req<*>> {

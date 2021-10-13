@@ -17,7 +17,9 @@ package love.test
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import kotlinx.coroutines.launch
-import love.forte.simbot.component.kaiheila.api.v3.*
+import love.forte.simbot.kaiheila.api.v3.V3WsBot
+import love.forte.simbot.kaiheila.api.v3.apiConfiguration
+import love.forte.simbot.kaiheila.api.v3.v3BotConfiguration
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

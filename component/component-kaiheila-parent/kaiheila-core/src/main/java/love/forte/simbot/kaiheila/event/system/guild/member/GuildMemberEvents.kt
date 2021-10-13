@@ -1,7 +1,7 @@
 package love.forte.simbot.kaiheila.event.system.guild.member
 
-import love.forte.simbot.component.kaiheila.event.system.guild.GuildEventExtra
-import love.forte.simbot.component.kaiheila.event.system.guild.GuildEventExtraBody
+import love.forte.simbot.kaiheila.event.system.guild.GuildEventExtra
+import love.forte.simbot.kaiheila.event.system.guild.GuildEventExtraBody
 
 
 /**

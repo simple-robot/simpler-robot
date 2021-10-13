@@ -1,7 +1,7 @@
 package love.forte.simbot.kaiheila.api.v3.invite
 
-import love.forte.simbot.component.kaiheila.api.ApiData
-import love.forte.simbot.component.kaiheila.api.EmptyResp
+import love.forte.simbot.kaiheila.api.ApiData
+import love.forte.simbot.kaiheila.api.EmptyResp
 
 // 邀请相关的API
 

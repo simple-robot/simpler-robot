@@ -2,7 +2,7 @@ package love.forte.simbot.kaiheila.event.system.channel
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.objects.ReactionEmoji
+import love.forte.simbot.kaiheila.objects.ReactionEmoji
 
 /**
  *

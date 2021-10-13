@@ -11,11 +11,11 @@ import kotlinx.serialization.encoding.AbstractEncoder
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.serializer
 import love.forte.simbot.api.message.MessageContent
-import love.forte.simbot.component.kaiheila.KhlMessageContent
-import love.forte.simbot.component.kaiheila.khlJson
-import love.forte.simbot.component.kaiheila.objects.Attachments
-import love.forte.simbot.component.kaiheila.objects.Role
-import love.forte.simbot.component.kaiheila.utils.TextNeko
+import love.forte.simbot.kaiheila.KhlMessageContent
+import love.forte.simbot.kaiheila.khlJson
+import love.forte.simbot.kaiheila.objects.Attachments
+import love.forte.simbot.kaiheila.objects.Role
+import love.forte.simbot.kaiheila.utils.TextNeko
 import java.util.*
 
 /**

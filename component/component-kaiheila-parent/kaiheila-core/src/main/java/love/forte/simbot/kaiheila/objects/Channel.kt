@@ -20,8 +20,8 @@ import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import love.forte.simbot.api.message.containers.GroupInfo
-import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
-import love.forte.simbot.component.kaiheila.api.BaseRespData
+import love.forte.simbot.kaiheila.SerializerModuleRegistrar
+import love.forte.simbot.kaiheila.api.BaseRespData
 
 
 /**

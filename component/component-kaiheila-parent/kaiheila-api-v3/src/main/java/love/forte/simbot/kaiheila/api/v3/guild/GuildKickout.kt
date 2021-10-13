@@ -16,9 +16,9 @@ package love.forte.simbot.kaiheila.api.v3.guild
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.api.ApiData
-import love.forte.simbot.component.kaiheila.api.RouteInfoBuilder
-import love.forte.simbot.component.kaiheila.logger.NamedKeyLogger
+import love.forte.simbot.kaiheila.api.ApiData
+import love.forte.simbot.kaiheila.api.RouteInfoBuilder
+import love.forte.simbot.kaiheila.logger.NamedKeyLogger
 
 
 /**

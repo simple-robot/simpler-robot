@@ -1,7 +1,7 @@
 package love.forte.simbot.kaiheila.api.v3.intimacy
 
-import love.forte.simbot.component.kaiheila.api.ApiData
-import love.forte.simbot.component.kaiheila.api.EmptyResp
+import love.forte.simbot.kaiheila.api.ApiData
+import love.forte.simbot.kaiheila.api.EmptyResp
 
 // intimacy
 // 亲密度相关接口 https://developer.kaiheila.cn/doc/http/intimacy

@@ -1,8 +1,8 @@
 package love.forte.simbot.kaiheila.api.v3.user
 
 import kotlinx.serialization.DeserializationStrategy
-import love.forte.simbot.component.kaiheila.api.*
-import love.forte.simbot.component.kaiheila.objects.User
+import love.forte.simbot.kaiheila.api.*
+import love.forte.simbot.kaiheila.objects.User
 
 
 /**

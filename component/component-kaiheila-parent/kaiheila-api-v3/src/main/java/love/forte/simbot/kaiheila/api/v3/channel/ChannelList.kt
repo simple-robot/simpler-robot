@@ -18,9 +18,9 @@ import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import love.forte.simbot.component.kaiheila.api.*
-import love.forte.simbot.component.kaiheila.objects.Channel
-import love.forte.simbot.component.kaiheila.objects.ChannelPermissionOverwrites
+import love.forte.simbot.kaiheila.api.*
+import love.forte.simbot.kaiheila.objects.Channel
+import love.forte.simbot.kaiheila.objects.ChannelPermissionOverwrites
 
 
 /**

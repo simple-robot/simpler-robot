@@ -1,6 +1,5 @@
 package love.forte.simbot.kaiheila.api.v3.sender
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -10,13 +9,13 @@ import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.events.*
 import love.forte.simbot.api.sender.Setter
-import love.forte.simbot.component.kaiheila.KhlBot
-import love.forte.simbot.component.kaiheila.api.KhlSender
-import love.forte.simbot.component.kaiheila.api.doRequest
-import love.forte.simbot.component.kaiheila.api.isSuccess
-import love.forte.simbot.component.kaiheila.api.v3.guild.*
-import love.forte.simbot.component.kaiheila.api.v3.message.MessageDeleteReq
-import love.forte.simbot.component.kaiheila.api.v3.message.direct.DirectMessageDeleteReq
+import love.forte.simbot.kaiheila.KhlBot
+import love.forte.simbot.kaiheila.api.KhlSender
+import love.forte.simbot.kaiheila.api.doRequest
+import love.forte.simbot.kaiheila.api.isSuccess
+import love.forte.simbot.kaiheila.api.v3.guild.*
+import love.forte.simbot.kaiheila.api.v3.message.MessageDeleteReq
+import love.forte.simbot.kaiheila.api.v3.message.direct.DirectMessageDeleteReq
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
@@ -27,7 +26,6 @@ import java.util.concurrent.TimeUnit
 public class KhlV3Setter(
     private val bot: KhlBot,
     private val def: Setter.Def,
-    private val scope: CoroutineScope,
 ) : KhlSender.Setter {
     override suspend fun friendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
@@ -66,7 +64,7 @@ public class KhlV3Setter(
                 GuildMuteCreateReq(guildId = groupCode, userId = memberCode, 1).also {
                     muteDeleteJobs.compute("${bot.clientId}:$groupCode:$memberCode") { _, old ->
                         old?.cancel()
-                        deleteJob = scope.launch(start = CoroutineStart.LAZY) {
+                        deleteJob = bot.launch(start = CoroutineStart.LAZY) {
                             GuildMuteDeleteReq(guildId = groupCode, userId = memberCode, 1).doRequest(bot)
                         }
                         deleteJob

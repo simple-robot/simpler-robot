@@ -21,13 +21,13 @@ import love.forte.simbot.api.message.containers.GroupBotInfo
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.PrivateMsg
-import love.forte.simbot.component.kaiheila.KhlBot
-import love.forte.simbot.component.kaiheila.api.BaseRespData
-import love.forte.simbot.component.kaiheila.event.BotInitialized
-import love.forte.simbot.component.kaiheila.event.Event
-import love.forte.simbot.component.kaiheila.event.EventLocator
-import love.forte.simbot.component.kaiheila.objects.Attachments
-import love.forte.simbot.component.kaiheila.objects.Channel
+import love.forte.simbot.kaiheila.KhlBot
+import love.forte.simbot.kaiheila.api.BaseRespData
+import love.forte.simbot.kaiheila.event.BotInitialized
+import love.forte.simbot.kaiheila.event.Event
+import love.forte.simbot.kaiheila.event.EventLocator
+import love.forte.simbot.kaiheila.objects.Attachments
+import love.forte.simbot.kaiheila.objects.Channel
 
 
 /**

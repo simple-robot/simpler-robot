@@ -22,9 +22,9 @@ import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.GroupAccountInfo
-import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
-import love.forte.simbot.component.kaiheila.api.BaseRespData
-import love.forte.simbot.component.kaiheila.api.logger
+import love.forte.simbot.kaiheila.SerializerModuleRegistrar
+import love.forte.simbot.kaiheila.api.BaseRespData
+import love.forte.simbot.kaiheila.api.logger
 
 
 /**

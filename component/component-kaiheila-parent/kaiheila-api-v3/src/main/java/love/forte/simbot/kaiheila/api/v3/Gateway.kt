@@ -16,7 +16,7 @@ package love.forte.simbot.kaiheila.api.v3
 
 import io.ktor.http.*
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.api.*
+import love.forte.simbot.kaiheila.api.*
 
 
 /**

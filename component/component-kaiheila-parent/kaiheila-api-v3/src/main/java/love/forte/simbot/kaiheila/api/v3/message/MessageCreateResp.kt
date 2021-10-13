@@ -18,11 +18,11 @@ package love.forte.simbot.kaiheila.api.v3.message
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.api.objectResp
+import love.forte.simbot.kaiheila.api.objectResp
 
 
 /**
- * [发送频道消息][MessageCreateReq] 和 [发送私聊消息][love.forte.simbot.component.kaiheila.api.v3.message.direct.DirectMessageCreateReq]
+ * [发送频道消息][MessageCreateReq] 和 [发送私聊消息][love.forte.simbot.kaiheila.api.v3.message.direct.DirectMessageCreateReq]
  * 的响应值。
  * @author ForteScarlet
  */

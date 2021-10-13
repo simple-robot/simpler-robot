@@ -20,9 +20,9 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.api.message.results.GroupAdmin
 import love.forte.simbot.api.message.results.GroupFullInfo
 import love.forte.simbot.api.message.results.GroupOwner
-import love.forte.simbot.component.kaiheila.api.*
-import love.forte.simbot.component.kaiheila.objects.Channel
-import love.forte.simbot.component.kaiheila.objects.ChannelPermissionOverwrites
+import love.forte.simbot.kaiheila.api.*
+import love.forte.simbot.kaiheila.objects.Channel
+import love.forte.simbot.kaiheila.objects.ChannelPermissionOverwrites
 
 
 /**

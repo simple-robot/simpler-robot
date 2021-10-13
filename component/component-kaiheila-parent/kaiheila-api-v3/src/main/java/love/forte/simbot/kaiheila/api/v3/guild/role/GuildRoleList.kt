@@ -15,9 +15,9 @@
 package love.forte.simbot.kaiheila.api.v3.guild.role
 
 import kotlinx.serialization.DeserializationStrategy
-import love.forte.simbot.component.kaiheila.api.*
-import love.forte.simbot.component.kaiheila.api.v3.guild.GetGuildApiReq
-import love.forte.simbot.component.kaiheila.objects.Role
+import love.forte.simbot.kaiheila.api.*
+import love.forte.simbot.kaiheila.api.v3.guild.GetGuildApiReq
+import love.forte.simbot.kaiheila.objects.Role
 
 
 /**

@@ -22,12 +22,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.LogAble
 import love.forte.simbot.bot.Bot
-import love.forte.simbot.component.kaiheila.api.Api
-import love.forte.simbot.component.kaiheila.api.ApiConfiguration
-import love.forte.simbot.component.kaiheila.event.Event
-import love.forte.simbot.component.kaiheila.objects.Guild
-import love.forte.simbot.component.kaiheila.objects.User
 import love.forte.simbot.constant.PriorityConstant
+import love.forte.simbot.kaiheila.api.Api
+import love.forte.simbot.kaiheila.api.ApiConfiguration
+import love.forte.simbot.kaiheila.event.Event
+import love.forte.simbot.kaiheila.objects.Guild
+import love.forte.simbot.kaiheila.objects.User
 import org.slf4j.Logger
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -49,7 +49,7 @@ public interface KhlBotApi {
 
     /**
      * 根据 [guildId] 寻找一个加入 [服务器][Guild]。
-     * @throws love.forte.simbot.component.kaiheila.api.KhlApiException Api返回错误的时候。
+     * @throws love.forte.simbot.kaiheila.api.KhlApiException Api返回错误的时候。
      */
     @JvmSynthetic
     suspend fun guild(guildId: String): Guild
@@ -57,7 +57,7 @@ public interface KhlBotApi {
 
     /**
      * 根据 [服务器][guildId] 和 [用户ID][userId] 查询一个人的信息。
-     * @throws love.forte.simbot.component.kaiheila.api.KhlApiException Api返回错误的时候。
+     * @throws love.forte.simbot.kaiheila.api.KhlApiException Api返回错误的时候。
      */
     @JvmSynthetic
     suspend fun viewUser(guildId: String, userId: String): User

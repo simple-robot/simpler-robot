@@ -4,16 +4,16 @@ import kotlinx.coroutines.async
 import love.forte.simbot.api.message.containers.*
 import love.forte.simbot.api.message.results.*
 import love.forte.simbot.api.sender.Getter
-import love.forte.simbot.component.kaiheila.KhlBot
-import love.forte.simbot.component.kaiheila.api.KhlSender
-import love.forte.simbot.component.kaiheila.api.doRequestForData
-import love.forte.simbot.component.kaiheila.api.v3.channel.ChannelView
-import love.forte.simbot.component.kaiheila.api.v3.channel.ChannelViewReq
-import love.forte.simbot.component.kaiheila.api.v3.guild.*
-import love.forte.simbot.component.kaiheila.api.v3.user.UserViewReq
-import love.forte.simbot.component.kaiheila.api.v3.utils.*
-import love.forte.simbot.component.kaiheila.objects.PermissionType
-import love.forte.simbot.component.kaiheila.objects.User
+import love.forte.simbot.kaiheila.KhlBot
+import love.forte.simbot.kaiheila.api.KhlSender
+import love.forte.simbot.kaiheila.api.doRequestForData
+import love.forte.simbot.kaiheila.api.v3.channel.ChannelView
+import love.forte.simbot.kaiheila.api.v3.channel.ChannelViewReq
+import love.forte.simbot.kaiheila.api.v3.guild.*
+import love.forte.simbot.kaiheila.api.v3.user.UserViewReq
+import love.forte.simbot.kaiheila.api.v3.utils.*
+import love.forte.simbot.kaiheila.objects.PermissionType
+import love.forte.simbot.kaiheila.objects.User
 
 /**
  *

@@ -33,22 +33,22 @@ import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.simbot.AtomicRef
 import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.sender.BotSender
-import love.forte.simbot.component.kaiheila.*
-import love.forte.simbot.component.kaiheila.api.Api
-import love.forte.simbot.component.kaiheila.api.ApiConfiguration
-import love.forte.simbot.component.kaiheila.api.doRequestForData
-import love.forte.simbot.component.kaiheila.api.v3.guild.GuildListReq
-import love.forte.simbot.component.kaiheila.api.v3.guild.GuildUser
-import love.forte.simbot.component.kaiheila.api.v3.guild.GuildViewReq
-import love.forte.simbot.component.kaiheila.api.v3.sender.KhlV3Getter
-import love.forte.simbot.component.kaiheila.api.v3.sender.KhlV3Sender
-import love.forte.simbot.component.kaiheila.api.v3.sender.KhlV3Setter
-import love.forte.simbot.component.kaiheila.api.v3.user.Me
-import love.forte.simbot.component.kaiheila.api.v3.user.MeReq
-import love.forte.simbot.component.kaiheila.event.*
-import love.forte.simbot.component.kaiheila.objects.Channel
-import love.forte.simbot.component.kaiheila.objects.Guild
-import love.forte.simbot.component.kaiheila.objects.User
+import love.forte.simbot.kaiheila.*
+import love.forte.simbot.kaiheila.api.Api
+import love.forte.simbot.kaiheila.api.ApiConfiguration
+import love.forte.simbot.kaiheila.api.doRequestForData
+import love.forte.simbot.kaiheila.api.v3.guild.GuildListReq
+import love.forte.simbot.kaiheila.api.v3.guild.GuildUser
+import love.forte.simbot.kaiheila.api.v3.guild.GuildViewReq
+import love.forte.simbot.kaiheila.api.v3.sender.KhlV3Getter
+import love.forte.simbot.kaiheila.api.v3.sender.KhlV3Sender
+import love.forte.simbot.kaiheila.api.v3.sender.KhlV3Setter
+import love.forte.simbot.kaiheila.api.v3.user.Me
+import love.forte.simbot.kaiheila.api.v3.user.MeReq
+import love.forte.simbot.kaiheila.event.*
+import love.forte.simbot.kaiheila.objects.Channel
+import love.forte.simbot.kaiheila.objects.Guild
+import love.forte.simbot.kaiheila.objects.User
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.Duration
@@ -139,7 +139,7 @@ public class V3WsBot(
 
     /** 网络日志相关的logger */
     override val networkLog: Logger =
-        LoggerFactory.getLogger("love.forte.simbot.component.kaiheila.v3.network.$clientId")
+        LoggerFactory.getLogger("love.forte.simbot.kaiheila.v3.network.$clientId")
 
     private val supervisorJob = SupervisorJob(parentContext[Job])
 
@@ -175,7 +175,7 @@ public class V3WsBot(
 
     /** 普通的logger */
     override val log: Logger =
-        LoggerFactory.getLogger("love.forte.simbot.component.kaiheila.v3.bot.$clientId[$botName#$botCode]")
+        LoggerFactory.getLogger("love.forte.simbot.kaiheila.v3.bot.$clientId[$botName#$botCode]")
 
     override val coroutineContext: CoroutineContext =
         parentContext + supervisorJob +
@@ -276,7 +276,7 @@ public class V3WsBot(
                     CoroutineName("simbot.khl.bot.ws.$clientId." + it.name)
                 } ?: CoroutineName("simbot.khl.bot.ws.$clientId")
 
-                val nowLogger = nowCoroutineContext[love.forte.simbot.kaiheila.CoroutineLogger] ?: love.forte.simbot.kaiheila.CoroutineLogger(
+                val nowLogger = nowCoroutineContext[CoroutineLogger] ?: CoroutineLogger(
                     networkLog)
 
                 val newScope = CoroutineScope(nowCoroutineContext + newCoroutineName + nowLogger)

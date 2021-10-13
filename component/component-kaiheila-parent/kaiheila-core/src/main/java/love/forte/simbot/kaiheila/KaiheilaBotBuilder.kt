@@ -14,9 +14,9 @@
 
 package love.forte.simbot.kaiheila
 
-import love.forte.simbot.component.kaiheila.api.ApiConfiguration
-import love.forte.simbot.component.kaiheila.api.ApiConfigurationBuilder
-import love.forte.simbot.component.kaiheila.api.apiConfiguration as api_apiConfiguration
+import love.forte.simbot.kaiheila.api.ApiConfiguration
+import love.forte.simbot.kaiheila.api.ApiConfigurationBuilder
+import love.forte.simbot.kaiheila.api.apiConfiguration as api_apiConfiguration
 
 
 public interface KaiheilaBotBuilder<B : KhlBot>{

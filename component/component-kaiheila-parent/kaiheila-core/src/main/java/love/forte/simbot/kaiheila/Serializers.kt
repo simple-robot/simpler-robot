@@ -25,7 +25,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.SerializersModuleBuilder
-import love.forte.simbot.component.kaiheila.objects.*
+import love.forte.simbot.kaiheila.objects.*
 import java.util.concurrent.CopyOnWriteArraySet
 
 

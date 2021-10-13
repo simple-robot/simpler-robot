@@ -14,8 +14,8 @@
 
 package love.forte.simbot.kaiheila.api.v3.user
 
-import love.forte.simbot.component.kaiheila.api.ApiData
-import love.forte.simbot.component.kaiheila.api.EmptyResp
+import love.forte.simbot.kaiheila.api.ApiData
+import love.forte.simbot.kaiheila.api.EmptyResp
 
 
 /**

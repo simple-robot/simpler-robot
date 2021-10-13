@@ -22,7 +22,7 @@ import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
-import love.forte.simbot.component.kaiheila.SerializerModuleRegistrar
+import love.forte.simbot.kaiheila.SerializerModuleRegistrar
 
 
 /**
@@ -157,7 +157,7 @@ public sealed class Card {
                 serializerModule()
             }
 
-            polymorphic(love.forte.simbot.component.kaiheila.objects.Card::class) {
+            polymorphic(love.forte.simbot.kaiheila.objects.Card::class) {
                 subclass(Card::class)
                 subclass(Module::class)
                 subclass(Element::class)
@@ -196,7 +196,7 @@ public sealed class Card {
          * - color代表卡片边框具体颜色，如果填了，则使用该color，如果未填，则使用theme来渲染卡片颜色。
          */
         val modules: List<@Contextual Module>,
-    ) : love.forte.simbot.component.kaiheila.objects.Card() {
+    ) : love.forte.simbot.kaiheila.objects.Card() {
         override val type: String
             get() = "card"
 
@@ -208,7 +208,7 @@ public sealed class Card {
      *
      */
     @Serializable
-    public abstract class Element(override val type: String) : love.forte.simbot.component.kaiheila.objects.Card() {
+    public abstract class Element(override val type: String) : love.forte.simbot.kaiheila.objects.Card() {
         companion object : SerializerModuleRegistrar {
             override fun SerializersModuleBuilder.serializerModule() {
                 polymorphic(Module::class) {
@@ -246,7 +246,7 @@ public sealed class Card {
      * @param type
      */
     @Serializable
-    public abstract class Module(override val type: String) : love.forte.simbot.component.kaiheila.objects.Card() {
+    public abstract class Module(override val type: String) : love.forte.simbot.kaiheila.objects.Card() {
         companion object : SerializerModuleRegistrar {
             override fun SerializersModuleBuilder.serializerModule() {
                 polymorphic(Module::class) {

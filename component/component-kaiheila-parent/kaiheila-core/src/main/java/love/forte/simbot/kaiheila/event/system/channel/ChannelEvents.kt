@@ -15,7 +15,7 @@
 @file:JvmName("GuildEvents")
 package love.forte.simbot.kaiheila.event.system.channel
 
-import love.forte.simbot.component.kaiheila.event.Event
+import love.forte.simbot.kaiheila.event.Event
 
 
 /**

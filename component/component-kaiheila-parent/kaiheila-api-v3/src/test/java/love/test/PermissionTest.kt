@@ -14,8 +14,8 @@
 
 package love.test
 
-import love.forte.simbot.component.kaiheila.objects.PermissionType
-import love.forte.simbot.component.kaiheila.objects.combine
+import love.forte.simbot.kaiheila.objects.PermissionType
+import love.forte.simbot.kaiheila.objects.combine
 
 
 /**

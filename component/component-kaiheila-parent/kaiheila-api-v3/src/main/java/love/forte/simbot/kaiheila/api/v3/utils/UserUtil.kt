@@ -6,9 +6,9 @@ import love.forte.simbot.api.message.assists.Permissions
 import love.forte.simbot.api.message.containers.AccountInfo
 import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.results.*
-import love.forte.simbot.component.kaiheila.objects.Guild
-import love.forte.simbot.component.kaiheila.objects.PermissionType
-import love.forte.simbot.component.kaiheila.objects.User
+import love.forte.simbot.kaiheila.objects.Guild
+import love.forte.simbot.kaiheila.objects.PermissionType
+import love.forte.simbot.kaiheila.objects.User
 
 
 /** [User] as [FriendInfo] */

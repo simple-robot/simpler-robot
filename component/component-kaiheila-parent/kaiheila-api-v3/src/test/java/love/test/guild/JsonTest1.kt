@@ -16,7 +16,7 @@ package love.test.guild
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
-import love.forte.simbot.component.kaiheila.khlJson
+import love.forte.simbot.kaiheila.khlJson
 import kotlin.test.Test
 
 

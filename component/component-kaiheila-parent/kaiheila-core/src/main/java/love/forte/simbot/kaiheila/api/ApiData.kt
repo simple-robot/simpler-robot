@@ -18,10 +18,9 @@ package love.forte.simbot.kaiheila.api
 
 import io.ktor.http.*
 import kotlinx.serialization.*
-import love.forte.simbot.component.kaiheila.KhlBot
-import love.forte.simbot.component.kaiheila.api.ApiData.Req
-import love.forte.simbot.component.kaiheila.event.BotInitialized
+import love.forte.simbot.kaiheila.KhlBot
 import love.forte.simbot.kaiheila.api.ApiData.Req
+import love.forte.simbot.kaiheila.event.BotInitialized
 
 
 /**

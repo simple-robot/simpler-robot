@@ -15,10 +15,10 @@
 // package love.test.guild
 //
 // import kotlinx.coroutines.runBlocking
-// import love.forte.simbot.component.kaiheila.api.doRequest
-// import love.forte.simbot.component.kaiheila.api.v3.V3
-// import love.forte.simbot.component.kaiheila.api.v3.guild.GuildUserList
-// import love.forte.simbot.component.kaiheila.api.v3.guild.guildUserListReq
+// import love.forte.simbot.kaiheila.api.doRequest
+// import love.forte.simbot.kaiheila.api.v3.V3
+// import love.forte.simbot.kaiheila.api.v3.guild.GuildUserList
+// import love.forte.simbot.kaiheila.api.v3.guild.guildUserListReq
 // import love.test.GatewayApiConstant
 // import love.test.client
 // import kotlin.test.Test

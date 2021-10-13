@@ -24,16 +24,16 @@ import love.forte.simbot.api.message.containers.GroupAccountInfo
 import love.forte.simbot.api.message.containers.GroupBotInfo
 import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.*
-import love.forte.simbot.component.kaiheila.botAvatar
-import love.forte.simbot.component.kaiheila.botCode
-import love.forte.simbot.component.kaiheila.botName
-import love.forte.simbot.component.kaiheila.event.Event
-import love.forte.simbot.component.kaiheila.event.EventLocator
-import love.forte.simbot.component.kaiheila.event.EventLocatorRegistrarCoordinate
-import love.forte.simbot.component.kaiheila.event.registerCoordinate
-import love.forte.simbot.component.kaiheila.objects.Attachments
-import love.forte.simbot.component.kaiheila.objects.Channel
-import love.forte.simbot.component.kaiheila.objects.User
+import love.forte.simbot.kaiheila.botAvatar
+import love.forte.simbot.kaiheila.botCode
+import love.forte.simbot.kaiheila.botName
+import love.forte.simbot.kaiheila.event.Event
+import love.forte.simbot.kaiheila.event.EventLocator
+import love.forte.simbot.kaiheila.event.EventLocatorRegistrarCoordinate
+import love.forte.simbot.kaiheila.event.registerCoordinate
+import love.forte.simbot.kaiheila.objects.Attachments
+import love.forte.simbot.kaiheila.objects.Channel
+import love.forte.simbot.kaiheila.objects.User
 
 /**
  *

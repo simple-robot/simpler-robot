@@ -18,8 +18,8 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
-import love.forte.simbot.component.kaiheila.khlJson
-import love.forte.simbot.component.kaiheila.objects.Permissions
+import love.forte.simbot.kaiheila.khlJson
+import love.forte.simbot.kaiheila.objects.Permissions
 import kotlin.test.Test
 
 /**

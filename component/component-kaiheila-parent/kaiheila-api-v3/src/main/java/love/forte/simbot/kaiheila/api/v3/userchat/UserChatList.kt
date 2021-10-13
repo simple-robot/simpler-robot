@@ -14,10 +14,10 @@
 
 package love.forte.simbot.kaiheila.api.v3.userchat
 
-import love.forte.simbot.component.kaiheila.api.ApiData
-import love.forte.simbot.component.kaiheila.api.BaseApiDataKey
-import love.forte.simbot.component.kaiheila.api.ListResp
-import love.forte.simbot.component.kaiheila.api.RouteInfoBuilder
+import love.forte.simbot.kaiheila.api.ApiData
+import love.forte.simbot.kaiheila.api.BaseApiDataKey
+import love.forte.simbot.kaiheila.api.ListResp
+import love.forte.simbot.kaiheila.api.RouteInfoBuilder
 
 
 /**

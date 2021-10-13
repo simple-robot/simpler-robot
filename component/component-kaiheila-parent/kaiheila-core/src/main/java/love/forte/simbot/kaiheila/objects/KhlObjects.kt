@@ -16,7 +16,7 @@ package love.forte.simbot.kaiheila.objects
 
 import love.forte.simbot.api.message.containers.OriginalDataContainer
 import love.forte.simbot.api.message.results.Result
-import love.forte.simbot.component.kaiheila.api.ApiData
+import love.forte.simbot.kaiheila.api.ApiData
 
 /*
     see https://developer.kaiheila.cn/doc/objects

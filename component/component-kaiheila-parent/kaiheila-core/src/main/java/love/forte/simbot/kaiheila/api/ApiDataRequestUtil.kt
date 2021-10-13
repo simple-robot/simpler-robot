@@ -20,8 +20,8 @@ import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.json.*
-import love.forte.simbot.component.kaiheila.KhlBot
-import love.forte.simbot.component.kaiheila.khlJson
+import love.forte.simbot.kaiheila.KhlBot
+import love.forte.simbot.kaiheila.khlJson
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.contracts.ExperimentalContracts

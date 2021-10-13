@@ -2,7 +2,7 @@ package love.forte.simbot.kaiheila.event.system.guild.role
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.objects.Permissions
+import love.forte.simbot.kaiheila.objects.Permissions
 
 /**
  * 服务器角色删除

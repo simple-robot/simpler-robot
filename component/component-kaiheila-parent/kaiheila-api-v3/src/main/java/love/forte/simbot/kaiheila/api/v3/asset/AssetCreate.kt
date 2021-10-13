@@ -19,7 +19,7 @@ import io.ktor.http.*
 import io.ktor.utils.io.streams.*
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.api.*
+import love.forte.simbot.kaiheila.api.*
 import love.forte.simbot.kaiheila.api.v3.asset.AssetCreateReq.Key.byBytes
 import love.forte.simbot.kaiheila.api.v3.asset.AssetCreateReq.Key.byPath
 import java.io.InputStream

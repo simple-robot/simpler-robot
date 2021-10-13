@@ -16,7 +16,7 @@
 
 package love.forte.simbot.kaiheila.event.system.user
 
-import love.forte.simbot.component.kaiheila.event.Event
+import love.forte.simbot.kaiheila.event.Event
 
 
 /**

@@ -17,9 +17,9 @@
 package love.forte.simbot.kaiheila.api.v3.message.direct
 
 import kotlinx.serialization.DeserializationStrategy
-import love.forte.simbot.component.kaiheila.api.*
-import love.forte.simbot.component.kaiheila.api.v3.message.DirectMessageDetails
-import love.forte.simbot.component.kaiheila.api.v3.message.MessageReqFlag
+import love.forte.simbot.kaiheila.api.*
+import love.forte.simbot.kaiheila.api.v3.message.DirectMessageDetails
+import love.forte.simbot.kaiheila.api.v3.message.MessageReqFlag
 
 
 /**

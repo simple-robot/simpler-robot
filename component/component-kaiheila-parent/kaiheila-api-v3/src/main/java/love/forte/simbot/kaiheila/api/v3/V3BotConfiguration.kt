@@ -16,10 +16,10 @@ package love.forte.simbot.kaiheila.api.v3
 
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.ErrorFactories
-import love.forte.simbot.component.kaiheila.api.ApiConfiguration
-import love.forte.simbot.component.kaiheila.api.ApiConfigurationBuilder
-import love.forte.simbot.component.kaiheila.event.EventLocator
-import love.forte.simbot.component.kaiheila.event.KhlEventLocator
+import love.forte.simbot.kaiheila.api.ApiConfiguration
+import love.forte.simbot.kaiheila.api.ApiConfigurationBuilder
+import love.forte.simbot.kaiheila.event.EventLocator
+import love.forte.simbot.kaiheila.event.KhlEventLocator
 
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
