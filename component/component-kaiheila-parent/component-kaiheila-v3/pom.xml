@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>component-kaiheila-parent</artifactId>
         <groupId>love.forte.simple-robot</groupId>
+        <artifactId>component-kaiheila-parent</artifactId>
         <version>0.0.1-PREVIEW<!--khlv--></version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>0.0.1-PREVIEW<!--khlv--></version>
-    <artifactId>kaiheila-api-v3</artifactId>
+    <artifactId>component-kaiheila-v3</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -21,8 +19,26 @@
     <dependencies>
         <dependency>
             <groupId>love.forte.simple-robot</groupId>
-            <artifactId>kaiheila-core</artifactId>
+            <artifactId>kaiheila-api-v3</artifactId>
             <version>${simbot.khl.version}</version>
+        </dependency>
+
+        <!-- kt -->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+        </dependency>
+
+        <!-- ktx coroutines core -->
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core</artifactId>
+        </dependency>
+
+        <!-- ktx coroutines core -->
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core-jvm</artifactId>
         </dependency>
     </dependencies>
 
@@ -54,5 +70,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

@@ -45,7 +45,7 @@ class GatewayApiTest {
 
     // @Test
     fun apiTest() {
-        val gatewayReq = GatewayReq(1)
+        val gatewayReq = love.forte.simbot.kaiheila.api.v3.GatewayReq(1)
 
         logger.debug("gatewayReq: {}", gatewayReq)
 
@@ -56,7 +56,7 @@ class GatewayApiTest {
             client = client,
             configuration = v3BotConfiguration {
                 apiConfiguration {
-                    api = V3
+                    api = love.forte.simbot.kaiheila.api.v3.V3
                 }
             },
         )

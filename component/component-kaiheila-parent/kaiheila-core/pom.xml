@@ -5,11 +5,11 @@
     <parent>
         <groupId>love.forte.simple-robot</groupId>
         <artifactId>component-kaiheila-parent</artifactId>
-        <version>0.0.1-ALPHA.1<!--khlv--></version>
+        <version>0.0.1-PREVIEW<!--khlv--></version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <version>0.0.1-ALPHA.1<!--khlv--></version>
+    <version>0.0.1-PREVIEW<!--khlv--></version>
     <artifactId>kaiheila-core</artifactId>
 
     <properties>
@@ -33,9 +33,16 @@
             <artifactId>ktor-client-serialization-jvm</artifactId>
         </dependency>
 
+        <!-- lsf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>love.forte.common</groupId>
             <artifactId>log</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 
