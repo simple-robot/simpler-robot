@@ -24,12 +24,12 @@ import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.flow.*
-import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import love.forte.common.collections.concurrentSortedQueueOf
+import love.forte.simbot.AtomicRef
 import love.forte.simbot.api.message.containers.BotInfo
-import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.BotSender
 import love.forte.simbot.component.kaiheila.*
 import love.forte.simbot.component.kaiheila.api.Api
@@ -56,6 +56,7 @@ import java.util.zip.InflaterInputStream
 import kotlin.concurrent.thread
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.resume
 
 internal val DefaultClient: HttpClient
     get() {
@@ -116,6 +117,13 @@ public class V3WsBot(
         }
     }
 
+    private class Listener(val priority: Int, private val f: suspend (Event<*>) -> Unit) {
+        suspend operator fun invoke(event: Event<*>) = f(event)
+    }
+
+    private val listeners = concurrentSortedQueueOf<Listener>(Comparator.comparingInt(Listener::priority))
+    private var listenersCached: List<Listener>? = null
+
     private val eventLocator = configuration.eventLocator
 
     override val api: Api get() = apiConfiguration.api
@@ -174,15 +182,24 @@ public class V3WsBot(
     private lateinit var session: DefaultWebSocketSession
     private lateinit var sessionJob: Job
 
-    private val sn = AtomicInteger(0) // TODO
+    private val sn = AtomicInteger(0)
+
+    @Synchronized
+    private suspend fun resetAll() {
+        if (::session.isInitialized) {
+            session.close()
+        }
+        if (::sessionJob.isInitialized) {
+            sessionJob.cancelAndJoin()
+        }
+        sn.set(0)
+    }
 
     /**
      * 启动bot
      */
     override suspend fun start() {
-        if (::session.isInitialized) {
-            session.close()
-        }
+        resetAll()
         val maxRetry = configuration.connectRetryTimes
         var times = 0u
         var waitTime = 1000u
@@ -199,7 +216,7 @@ public class V3WsBot(
             if (times >= maxRetry) {
                 error("Cannot start bot, retry $times times, give up.")
             }
-            val thisTimeWait = waitTime
+            // val thisTimeWait = waitTime
 
             log.debug("Retry wait {} in {}", waitTime, times)
             delay(waitTime.toLong())
@@ -208,6 +225,25 @@ public class V3WsBot(
 
     }
 
+    override fun listen(priority: Int, listener: suspend (Event<*>) -> Unit) {
+        listeners.add(Listener(priority, listener)).also {
+            resetListenersCache()
+        }
+    }
+
+    private fun resetListenersCache() {
+        synchronized(listeners) {
+            listenersCached = null
+        }
+    }
+
+    private fun listenersCache(): List<Listener> {
+        return listenersCached ?: synchronized(listeners) {
+            listenersCached ?: listeners.toList().also {
+                listenersCached = it
+            }
+        }
+    }
 
     private suspend fun getGateway(): Result<Gateway> =
         kotlin.runCatching { gatewayReq.doRequestForData(this)!! }
@@ -248,6 +284,37 @@ public class V3WsBot(
 
                 var pingSendJob: Job? = null
                 var waitForPong: Job? = null
+                val resumeContinuation = AtomicRef<CancellableContinuation<String>?>(null)
+
+                suspend fun sendPing() {
+                    send(Frame.Text(Signal.Ping.jsonValue(sn.get())))
+                    waitForPong?.cancelAndJoin()
+                    waitForPong = launch(coroutineContext) {
+                        delay(6000)
+                        // TODO 进入超时状态
+                    }
+                }
+
+                suspend fun waitForResumeSession(): String = suspendCancellableCoroutine { continuation ->
+                    resumeContinuation.updateAndGet { pre ->
+                        pre?.cancel()
+                        continuation
+                    }
+                }
+
+                // send resume
+                suspend fun resume() {
+                    // Send resume, and wait for resumeAsk.
+                    send(Frame.Text(Signal.Resume.jsonValue(sn.get())))
+
+                    try {
+                        val session = waitForResumeSession()
+                        nowLogger.debug("ResumeAsk session: {}", session)
+                    } catch (cancelled: CancellationException) {
+                        nowLogger.debug("ResumeAsk waiting reset.")
+                    }
+                }
+
 
                 /**
                  * Do when get text
@@ -258,13 +325,16 @@ public class V3WsBot(
                     val element = khlJson.parseToJsonElement(text)
                     val s = element.jsonObject["s"]?.jsonPrimitive?.int
                     val signal = when (s) {
-                        0 -> khlJson.decodeFromJsonElement<Signal_0>(element)
-                        1 -> khlJson.decodeFromJsonElement<Signal_1>(element)
-                        // 2 -> khlJson.decodeFromJsonElement<Signal_2>(element) // Ping
-                        3 -> khlJson.decodeFromJsonElement<Signal_3>(element)
-                        5 -> khlJson.decodeFromJsonElement<Signal_5>(element)
-                        6 -> khlJson.decodeFromJsonElement<Signal_6>(element)
-                        else -> error(element)
+                        0 -> khlJson.decodeFromJsonElement(Signal_0.serializer(), element)
+                        1 -> khlJson.decodeFromJsonElement(Signal_1.serializer(), element)
+                        // 2 -> khlJson.decodeFromJsonElement(Signal_2.serializer(), element) // Ping
+                        3 -> khlJson.decodeFromJsonElement(Signal_3.serializer(), element)
+                        4 -> khlJson.decodeFromJsonElement(Signal_4.serializer(), element)
+                        5 -> khlJson.decodeFromJsonElement(Signal_5.serializer(), element)
+                        6 -> khlJson.decodeFromJsonElement(Signal_6.serializer(), element)
+                        else -> {
+                            throw KhlSignalException("Unknown signal number: $s")
+                        } // error(element)
                     }
 
                     nowLogger.debug("[Signal_{}]: {}", s, signal)
@@ -289,11 +359,9 @@ public class V3WsBot(
                                     nowLogger.debug("Wait {} for next ping", wait.toString())
                                     delay(wait.toMillis())
                                     nowLogger.debug("Send ping.")
-                                    send(Frame.Text(Signal.Ping.jsonValue(sn.get())))
-                                    waitForPong = launch(coroutineContext) {
-                                        delay(6000)
-                                        // 进入超时状态
-                                    }
+                                    sendPing()
+                                    // send(Frame.Text(Signal.Ping.jsonValue(sn.get())))
+
                                 }
                             }
 
@@ -307,10 +375,20 @@ public class V3WsBot(
                                 `resume` 时需传入该参数才能完成。
                              */
                             val lastSn = this@V3WsBot.sn.get()
-                            if (lastSn > signal.sn) {
+                            if (lastSn >= signal.sn) {
+                                // 如果当前事件是已经处理过的事件，直接抛弃
                                 nowLogger.debug("LastSn({}) > signal.sn({}), return null.", lastSn, signal.sn)
                                 return null
                             }
+
+                            if (lastSn - signal.sn > 1) {
+                                // 如果事件差距超过1, 说明事件超前了
+                                // 也直接抛弃，并发送一个resume.
+                                nowLogger.debug("LastSn({}) - signal.sn({}) > 1, drop and resume.", lastSn, signal.sn)
+                                resume()
+                                return null
+                            }
+
                             this@V3WsBot.sn.set(signal.sn)
 
                             val eventData = signal.d.jsonObject
@@ -331,46 +409,59 @@ public class V3WsBot(
                             nowLogger.debug("Channel type: {}", channelType)
 
 
-                            val extraType = eventData["extra"]?.jsonObject?.get("type")?.jsonPrimitive?.content ?: kotlin.run {
-                                nowLogger.debug("EventData[extra][type] was null. {}", eventData)
-                                return null
-                            }
+                            val extraType =
+                                eventData["extra"]?.jsonObject?.get("type")?.jsonPrimitive?.content ?: kotlin.run {
+                                    nowLogger.debug("EventData[extra][type] was null. {}", eventData)
+                                    return null
+                                }
 
-                            val serializer = eventLocator.locateAsEvent(eventType, channelType, extraType) ?: kotlin.run {
-                                nowLogger.debug("eventLocator.locateAsEvent({}, {}, {}) was null. {}", eventType, channelType, extraType, eventData)
-                                return null
-                            }
+                            val serializer =
+                                eventLocator.locateAsEvent(eventType, channelType, extraType) ?: kotlin.run {
+                                    nowLogger.debug("eventLocator.locateAsEvent({}, {}, {}) was null. {}",
+                                        eventType,
+                                        channelType,
+                                        extraType,
+                                        eventData)
+                                    return null
+                                }
 
                             return khlJson.decodeFromJsonElement(serializer, eventData)
                         }
                         is Signal.Reconnect -> {
+                            nowLogger.debug("Received the reconnect signal. data: {}", signal.d)
                             // reconnect
-                            close(CloseReason(CloseReason.Codes.TRY_AGAIN_LATER, "reconnect"))
+                            close(CloseReason(CloseReason.Codes.TRY_AGAIN_LATER, "reconnect: ${signal.d.err}"))
+                            this@V3WsBot.start()
+                            // TODO reconnect
+
                         }
-                        // is Signal.Ping -> {
-                        //
-                        // }
+
                         is Signal.Pong -> {
                             // cancel job
                             waitForPong?.cancelAndJoin()
                         }
+
                         is Signal.ResumeAck -> {
-
+                            val sessionId = signal.d.sessionId
+                            resumeContinuation.updateAndGet { pre ->
+                                kotlin.runCatching { pre?.resume(sessionId) }
+                                null
+                            }
                         }
-                        is Signal.Ping -> {
-
-                        }
+                        // is Signal.Ping -> {
+                        // No way. maybe.
+                        // }
                         else -> {
-                            println("other $signal")
+                            nowLogger.warn("Other unknown or client to server signal numbered {}: {}", signal.s, signal)
                         }
                     }
 
 
                     if (signal is Signal_0) {
-                        println(signal.d)
+                        nowLogger.debug("Signal_0: {}", signal.d)
                     }
 
-                    return null // TODO
+                    return null
                 }
 
 
@@ -412,49 +503,14 @@ public class V3WsBot(
                 }.onStart {
                     firstWaitForHello?.start()
                 }.onEach {
-                    println("Event: $it")
+                    nowLogger.debug("Event: $it")
 
-                    if (it is MsgGet) {
-                        println("Is MsgGet! text: ${it.text}")
+                    listenersCache().forEach { l ->
+                        l.invoke(it)
                     }
 
                 }.launchIn(newScope)
-
-                //.collect {
-                //         println("Event: $it")
-                //     }
-
-                // while (this@apply.isActive) {
-                //     try {
-                //         when (val frame: Frame = incoming.receive()) {
-                //             is Frame.Text -> {
-                //                 val text = frame.readText()
-                //                 println("[Text  ]: $text")
-                //                 doText(text)
-                //             }
-                //             is Frame.Binary -> {
-                //                 val text =
-                //                     InflaterInputStream(frame.readBytes().inputStream()).reader(Charsets.UTF_8)
-                //                         .use { it.readText() }
-                //                 doText(text)
-                //             }
-                //             is Frame.Close -> {
-                //                 println("[Close ]: " + frame.readBytes().decodeToString())
-                //                 this@apply.close()
-                //             }
-                //             is Frame.Pong -> {
-                //                 println("[Pong: ]: " + frame.readBytes().decodeToString())
-                //             }
-                //         }
-                //     } catch (e: ClosedReceiveChannelException) {
-                //         // closed
-                //         throw e
-                //     } catch (e: Throwable) {
-                //         throw e
-                //     }
-                // }
             }
-            //         }
 
         } catch (e: Throwable) {
             log.error("Ws link fail.", e)

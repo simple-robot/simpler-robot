@@ -24,8 +24,11 @@ import love.forte.simbot.LogAble
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.component.kaiheila.api.Api
 import love.forte.simbot.component.kaiheila.api.ApiConfiguration
+import love.forte.simbot.component.kaiheila.event.Event
+import love.forte.simbot.component.kaiheila.event.Signal
 import love.forte.simbot.component.kaiheila.objects.Guild
 import love.forte.simbot.component.kaiheila.objects.User
+import love.forte.simbot.constant.PriorityConstant
 import org.slf4j.Logger
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -143,6 +146,10 @@ public interface KhlBot : LogAble, Bot, KhlBotApi, CoroutineScope {
     @JvmSynthetic
     suspend fun join()
     fun joinBot() = runBlocking { join() }
+
+
+    fun listen(priority: Int = PriorityConstant.LAST, listener: suspend (Event<*>) -> Unit)
+
 }
 
 

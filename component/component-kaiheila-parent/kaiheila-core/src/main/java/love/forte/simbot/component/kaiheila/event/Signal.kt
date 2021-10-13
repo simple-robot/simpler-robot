@@ -26,6 +26,7 @@ typealias Signal_0 = Signal.Event
 typealias Signal_1 = Signal.Hello
 typealias Signal_2 = Signal.Ping
 typealias Signal_3 = Signal.Pong
+typealias Signal_4 = Signal.Resume
 typealias Signal_5 = Signal.Reconnect
 typealias Signal_6 = Signal.ResumeAck
 
@@ -116,7 +117,8 @@ public sealed class Signal<T> {
      *
      */
     @Serializable
-    public data class Hello(override val s: Int, override val d: HelloPack) : Signal<HelloPack>() {
+    public data class Hello(override val d: HelloPack) : Signal<HelloPack>() {
+        override val s: Int get() = 1
         override val sn: Int? get() = null
     }
 
@@ -134,7 +136,8 @@ public sealed class Signal<T> {
      *
      */
     @Serializable
-    public data class Ping(override val s: Int = 2, override val sn: Int) : Signal<String>() {
+    public data class Ping(override val sn: Int) : Signal<String>() {
+        override val s: Int get() = 2
         override val d: String? get() = null
 
         companion object : JsonValueFactory<Int> {
@@ -157,15 +160,42 @@ public sealed class Signal<T> {
      * 示例：
      *
      * ```json
-     *  {
-     *      "s": 3
-     *  }
+     *  { "s": 3 }
      * ```
      */
     @Serializable
-    public data class Pong(override val s: Int) : Signal<String>() {
+    public object Pong : Signal<String>() {
+        override val s: Int get() = 3
         override val d: String? get() = null
         override val sn: Int get() = -1
+    }
+    //endregion
+
+
+    //region 信令[4] - Resume
+    /**
+     *
+     * ## 信令\[4] RESUME
+     *
+     * 当链接未断开时，客户端需传入当前收到的最后一个 sn 序号 例:
+     *
+     * ```json
+     * {
+     *   "s": 4,
+     *   "sn": 100
+     * }
+     * ```
+     */
+    @Serializable
+    public data class Resume(override val sn: Int?) : Signal<String>() {
+        override val s: Int get() = 4
+        override val d: String? get() = null
+
+        companion object : JsonValueFactory<Int> {
+            @JvmStatic
+            override fun jsonValue(p: Int): String = """{"s":4,"sn":$p}"""
+
+        }
     }
     //endregion
 
@@ -203,7 +233,8 @@ public sealed class Signal<T> {
      *
      */
     @Serializable
-    public data class Reconnect(override val s: Int, override val d: ReconnectPack) : Signal<ReconnectPack>() {
+    public data class Reconnect(override val d: ReconnectPack) : Signal<ReconnectPack>() {
+        override val s: Int get() = 5
         override val sn: Int get() = -1
     }
 
