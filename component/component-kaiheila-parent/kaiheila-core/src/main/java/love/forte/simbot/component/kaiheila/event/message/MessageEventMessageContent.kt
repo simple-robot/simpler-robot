@@ -65,12 +65,12 @@ public class TextEventMessageContentWithMention(private val content: String, pri
                 val oMention = extra.mention.toSet()
                 val oMentionAll = extra.mentionAll
                 val oMentionHere = extra.mentionHere
-                val oMentionRoles = extra.mentionRoles.mapTo(mutableSetOf(), Role::roleId)
+                val oMentionRoles = extra.mentionRoles //.mapTo(mutableSetOf(), Role::roleId)
 
                 return oMentionAll == extra.mentionAll
                         && oMentionHere == extra.mentionHere
                         && oMention == extra.mention.toSet()
-                        && oMentionRoles == extra.mentionRoles.mapTo(mutableSetOf(), Role::roleId)
+                        && oMentionRoles == extra.mentionRoles //.mapTo(mutableSetOf(), Role::roleId)
             }
 
             return false
@@ -218,6 +218,10 @@ private fun Role.toMentionNeko(): Neko {
         .key("mentionable").value(mentionable)
         .key("permissions").value(permissionsValue)
         .build()
+}
+
+private fun Long.toMentionNeko(): Neko {
+    return CatCodeUtil.nekoTemplate.at(this)
 }
 
 

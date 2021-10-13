@@ -50,7 +50,7 @@ public data class FileEventExtra(
 
     override val mention: List<String> = emptyList(),
     override val mentionAll: Boolean = false,
-    override val mentionRoles: List<Role> = emptyList(),
+    override val mentionRoles: List<Long> = emptyList(),
     override val mentionHere: Boolean = false,
     /**
      * 附件

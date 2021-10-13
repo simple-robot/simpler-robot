@@ -73,6 +73,7 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
 
     val responseContent = client.request<String> {
 
+
         // contentType(ContentType.Application.Json)
         method = this@doRequest.method
 
@@ -86,7 +87,7 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
                 override fun append(key: String, value: Any) {
                     httpRequestBuilder.parameter(key, value)
                 }
-            }, null) // ContentType.Application.Json)
+            }, ContentType.Application.Json) // ContentType.Application.Json)
             this@doRequest.route(routeInfoBuilder)
 
             apiPath = routeInfoBuilder.apiPath

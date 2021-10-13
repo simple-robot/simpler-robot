@@ -38,7 +38,6 @@ public class V3BotConfiguration {
     @V3BotConfigurationDSL
     lateinit var apiConfiguration: ApiConfiguration
 
-
     @V3BotConfigurationDSL
     var compress: Int = 1
 

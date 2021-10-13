@@ -18,12 +18,15 @@ package love.forte.simbot.component.kaiheila.api.v3
 
 import io.ktor.client.*
 import io.ktor.client.features.*
+import io.ktor.client.features.json.*
+import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.flow.*
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -60,15 +63,18 @@ import kotlin.coroutines.resume
 
 internal val DefaultClient: HttpClient
     get() {
-        val client = HttpClient(block = Block)
+        val client = HttpClient(HttpClientConfig)
         Runtime.getRuntime().addShutdownHook(thread(start = false, isDaemon = true) {
             client.close()
         })
         return client
     }
 
-private val Block: HttpClientConfig<*>.() -> Unit = {
+private val HttpClientConfig: HttpClientConfig<*>.() -> Unit = {
     install(WebSockets)
+    install(JsonFeature) {
+        serializer = KotlinxSerializer(khlJson)
+    }
     install(HttpTimeout) {
         this.connectTimeoutMillis = 6000
     }
@@ -170,7 +176,7 @@ public class V3WsBot(
 
     /** 普通的logger */
     override val log: Logger =
-        LoggerFactory.getLogger("love.forte.simbot.component.kaiheila.v3.bot.$clientId[$botName]")
+        LoggerFactory.getLogger("love.forte.simbot.component.kaiheila.v3.bot.$clientId[$botName#$botCode]")
 
     override val coroutineContext: CoroutineContext =
         parentContext + supervisorJob +
@@ -356,7 +362,7 @@ public class V3WsBot(
                                             r.nextLong(5))
                                         else Duration.ofSeconds(30) - Duration.ofSeconds(r.nextLong(
                                             5))
-                                    nowLogger.debug("Wait {} for next ping", wait.toString())
+                                    nowLogger.debug("Wait {} for next ping", wait)
                                     delay(wait.toMillis())
                                     nowLogger.debug("Send ping.")
                                     sendPing()

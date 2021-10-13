@@ -25,7 +25,6 @@ import love.forte.simbot.bot.Bot
 import love.forte.simbot.component.kaiheila.api.Api
 import love.forte.simbot.component.kaiheila.api.ApiConfiguration
 import love.forte.simbot.component.kaiheila.event.Event
-import love.forte.simbot.component.kaiheila.event.Signal
 import love.forte.simbot.component.kaiheila.objects.Guild
 import love.forte.simbot.component.kaiheila.objects.User
 import love.forte.simbot.constant.PriorityConstant
@@ -63,8 +62,6 @@ public interface KhlBotApi {
     @JvmSynthetic
     suspend fun viewUser(guildId: String, userId: String): User
     fun getUserView(guildId: String, userId: String) = runBlocking { viewUser(guildId, userId) }
-
-
 
 
 }
@@ -134,7 +131,6 @@ public interface KhlBot : LogAble, Bot, KhlBotApi, CoroutineScope {
     fun startBot() = runBlocking { start() }
 
 
-
     /**
      * 终止这个bot.
      */
@@ -156,6 +152,14 @@ public interface KhlBot : LogAble, Bot, KhlBotApi, CoroutineScope {
 public val KhlBot.botCode: String get() = botInfo.botCode
 public val KhlBot.botName: String get() = botInfo.botName
 public val KhlBot.botAvatar: String? get() = botInfo.botAvatar
+
+
+public inline fun <reified E> KhlBot.listenPrecise(
+    priority: Int = PriorityConstant.LAST,
+    crossinline listener: suspend (E) -> Unit,
+) = listen(priority) {
+    if (it is E) listener(it)
+}
 
 
 /**

@@ -239,7 +239,7 @@ public interface Event<E : Event.Extra> {
             /**
              * mention 用户角色的数组
              */
-            val mentionRoles: List<Role>
+            val mentionRoles: List<Long>
 
             /**
              * 是否 mention 在线用户
@@ -300,7 +300,7 @@ public data class SimpleText(
     @SerialName("mention_all")
     override val mentionAll: Boolean = false,
     @SerialName("mention_roles")
-    override val mentionRoles: List<Role> = emptyList(),
+    override val mentionRoles: List<Long> = emptyList(),
     @SerialName("mention_here")
     override val mentionHere: Boolean = false,
     override val author: User

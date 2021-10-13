@@ -51,7 +51,7 @@ public data class ImageEventExtra(
     @SerialName("mention_all")
     override val mentionAll: Boolean = false,
     @SerialName("mention_roles")
-    override val mentionRoles: List<Role> = emptyList(),
+    override val mentionRoles: List<Long> = emptyList(),
     @SerialName("mention_here")
     override val mentionHere: Boolean = false,
     /**
