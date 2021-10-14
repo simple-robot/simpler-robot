@@ -23,7 +23,7 @@ import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.PrivateMsg
 import love.forte.simbot.kaiheila.KhlBot
 import love.forte.simbot.kaiheila.api.BaseRespData
-import love.forte.simbot.kaiheila.event.BotInitialized
+import love.forte.simbot.kaiheila.event.BotInitializeSupport
 import love.forte.simbot.kaiheila.event.Event
 import love.forte.simbot.kaiheila.event.EventLocator
 import love.forte.simbot.kaiheila.objects.Attachments
@@ -51,7 +51,7 @@ public interface AttachmentsMessageEventExtra<A : Attachments> : MessageEventExt
  * 消息相关事件接口
  *
  */
-public interface MessageEvent<E : MessageEventExtra> : Event<E>, MessageGet, BotInitialized {
+public interface MessageEvent<E : MessageEventExtra> : Event<E>, MessageGet, BotInitializeSupport {
     override var bot: KhlBot
     override val channelType: Channel.Type
     override val type: Event.Type

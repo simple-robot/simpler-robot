@@ -20,7 +20,7 @@ import io.ktor.http.*
 import kotlinx.serialization.*
 import love.forte.simbot.kaiheila.KhlBot
 import love.forte.simbot.kaiheila.api.ApiData.Req
-import love.forte.simbot.kaiheila.event.BotInitialized
+import love.forte.simbot.kaiheila.event.BotInitializeSupport
 
 
 /**
@@ -154,7 +154,7 @@ public sealed interface ApiData {
          * @see Resp
          *
          */
-        interface Data : ApiData, BotInitialized
+        interface Data : ApiData, BotInitializeSupport
 
 
         @Serializable
@@ -432,7 +432,7 @@ public data class ObjectResp<RESP : ApiData.Resp.Data>(
     @JvmSynthetic
     fun _bot(bot: KhlBot) {
         this.bot = bot
-        if (data is BotInitialized) {
+        if (data is BotInitializeSupport) {
             data.bot = this.bot
         }
     }
@@ -470,7 +470,7 @@ public data class ListResp<RESP : ApiData.Resp.Data, SORT>(
     @JvmSynthetic
     fun _bot(bot: KhlBot) {
         this.bot = bot
-        if (data is BotInitialized) {
+        if (data is BotInitializeSupport) {
             data.bot = this.bot
         }
     }

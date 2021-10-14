@@ -1,4 +1,4 @@
-package love.forte.simbot.kaiheila.v3.comfiguration
+package love.forte.simbot.component.kaiheila.v3.configuration
 
 import love.forte.common.ioc.annotation.Beans
 import love.forte.common.ioc.annotation.ConfigBeans
@@ -10,7 +10,7 @@ import love.forte.simbot.kaiheila.KhlBot
 import love.forte.simbot.kaiheila.api.v3.sender.KhlV3Getter
 import love.forte.simbot.kaiheila.api.v3.sender.KhlV3Sender
 import love.forte.simbot.kaiheila.api.v3.sender.KhlV3Setter
-import love.forte.simbot.kaiheila.event.BotInitialized
+import love.forte.simbot.kaiheila.event.BotInitializeSupport
 
 
 /**
@@ -37,7 +37,7 @@ public object KhlV3MsgSenderFactories : MsgSenderFactories {
 
 private object KhlV3SenderFactory : SenderFactory {
     override fun getOnMsgSender(msg: MsgGet, def: Sender.Def): Sender {
-        if (msg !is BotInitialized) {
+        if (msg !is BotInitializeSupport) {
             throw SimbotIllegalArgumentException("msg $msg  was not a khl event.")
         }
         // TODO find bot?
@@ -56,7 +56,7 @@ private object KhlV3SenderFactory : SenderFactory {
 
 private object KhlV3SetterFactory : SetterFactory {
     override fun getOnMsgSetter(msg: MsgGet, def: Setter.Def): Setter {
-        if (msg !is BotInitialized) {
+        if (msg !is BotInitializeSupport) {
             throw SimbotIllegalArgumentException("msg $msg  was not a khl event.")
         }
         // TODO find bot?
@@ -73,7 +73,7 @@ private object KhlV3SetterFactory : SetterFactory {
 
 private object KhlV3GetterFactory : GetterFactory {
     override fun getOnMsgGetter(msg: MsgGet, def: Getter.Def): Getter {
-        if (msg !is BotInitialized) {
+        if (msg !is BotInitializeSupport) {
             throw SimbotIllegalArgumentException("msg $msg  was not a khl event.")
         }
         // TODO find bot?

@@ -18,7 +18,6 @@ package love.forte.simbot.kaiheila.api.v3
 
 import io.ktor.client.*
 import io.ktor.client.features.*
-import io.ktor.client.features.cookies.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.websocket.*
@@ -39,13 +38,13 @@ import love.forte.simbot.kaiheila.api.Api
 import love.forte.simbot.kaiheila.api.ApiConfiguration
 import love.forte.simbot.kaiheila.api.doRequestForData
 import love.forte.simbot.kaiheila.api.v3.guild.GuildListReq
-import love.forte.simbot.kaiheila.api.v3.guild.GuildUser
 import love.forte.simbot.kaiheila.api.v3.guild.GuildViewReq
 import love.forte.simbot.kaiheila.api.v3.sender.KhlV3Getter
 import love.forte.simbot.kaiheila.api.v3.sender.KhlV3Sender
 import love.forte.simbot.kaiheila.api.v3.sender.KhlV3Setter
 import love.forte.simbot.kaiheila.api.v3.user.Me
 import love.forte.simbot.kaiheila.api.v3.user.MeReq
+import love.forte.simbot.kaiheila.api.v3.user.UserViewReq
 import love.forte.simbot.kaiheila.event.*
 import love.forte.simbot.kaiheila.objects.Channel
 import love.forte.simbot.kaiheila.objects.Guild
@@ -87,9 +86,7 @@ public fun v3WsBot(
     token: String,
     clientSecret: String,
     configuration: V3BotConfiguration = v3BotConfiguration {
-        apiConfiguration {
-            api = love.forte.simbot.kaiheila.api.v3.V3
-        }
+        apiConfiguration { api = V3 }
     },
     client: HttpClient = DefaultClient,
     wsClient: HttpClient = DefaultClient,
@@ -144,7 +141,7 @@ public class V3WsBot(
     override val apiConfiguration: ApiConfiguration = configuration.apiConfiguration
 
     /** 获取 [Gateway] 的请求体。 */
-    private val gatewayReq = love.forte.simbot.kaiheila.api.v3.GatewayReq(configuration.compress)
+    private val gatewayReq = GatewayReq(configuration.compress)
 
     /** 网络日志相关的logger */
     override val networkLog: Logger =
@@ -160,7 +157,8 @@ public class V3WsBot(
         get() = info
 
     private inner class KhlBotInfo : BotInfo {
-        override val botCode: String get() = me.id
+        override val botCode: String get() = clientId
+        override val botCodeNumber: Long get() = me.id.toLong()
         override val botName: String get() = me.username
         override val botAvatar: String get() = me.avatar
     }
@@ -173,7 +171,6 @@ public class V3WsBot(
         KhlV3Setter(
             this,
             configuration.senderFactories.defaultSetterFactory.getOnBotSetter(this),
-            this
         ),
         KhlV3Getter(
             this,
@@ -189,7 +186,7 @@ public class V3WsBot(
     override val coroutineContext: CoroutineContext =
         parentContext + supervisorJob +
                 CoroutineName("simbot.khl.bot.$clientId") +
-                love.forte.simbot.kaiheila.CoroutineLogger(log)
+                CoroutineLogger(log)
 
 
     // ws session
@@ -259,14 +256,14 @@ public class V3WsBot(
         }
     }
 
-    private suspend fun getGateway(): Result<love.forte.simbot.kaiheila.api.v3.Gateway> =
+    private suspend fun getGateway(): Result<Gateway> =
         kotlin.runCatching { gatewayReq.doRequestForData(this)!! }
 
 
     private suspend fun linkWs(): Boolean {
         // for gateway
 
-        val gateway: love.forte.simbot.kaiheila.api.v3.Gateway = getGateway().getOrElse { e ->
+        val gateway: Gateway = getGateway().getOrElse { e ->
             log.error("Gateway failed.", e)
             null
         } ?: return false
@@ -440,7 +437,12 @@ public class V3WsBot(
                                     return null
                                 }
 
-                            return khlJson.decodeFromJsonElement(serializer, eventData)
+                            return khlJson.decodeFromJsonElement(serializer, eventData).also { e ->
+                                if (e is BotInitializeSupport) {
+                                    e.bot = this@V3WsBot
+                                }
+
+                            }
                         }
                         is Signal.Reconnect -> {
                             nowLogger.debug("Received the reconnect signal. data: {}", signal.d)
@@ -535,6 +537,8 @@ public class V3WsBot(
     }
 
 
+    override fun toString(): String = "KhlBot(protocol=websocket, bot=$botName#$botCode, _sn=${sn.get()})"
+
     /**
      * 终止bot
      */
@@ -556,8 +560,6 @@ public class V3WsBot(
     }
 
     override suspend fun guilds(): List<Guild> {
-
-
         return GuildListReq.SortById.Asc.doRequestForData(this, client).items
     }
 
@@ -566,8 +568,7 @@ public class V3WsBot(
     }
 
     override suspend fun viewUser(guildId: String, userId: String): User {
-        GuildUser
-        TODO("Not yet implemented")
+        return UserViewReq(userId, guildId).doRequestForData(this)!!
     }
 }
 

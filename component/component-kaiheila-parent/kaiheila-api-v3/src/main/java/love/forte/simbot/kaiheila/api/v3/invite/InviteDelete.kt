@@ -29,4 +29,5 @@ public class InviteDeleteReq(
                             @SerialName("url_code") val urlCode: String)
 }
 
+@Serializable
 data class User(val age: Int)

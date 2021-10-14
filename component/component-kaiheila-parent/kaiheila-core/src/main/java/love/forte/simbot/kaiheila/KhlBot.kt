@@ -150,6 +150,7 @@ public interface KhlBot : LogAble, Bot, KhlBotApi, CoroutineScope {
 
 
 public val KhlBot.botCode: String get() = botInfo.botCode
+public val KhlBot.botCodeNumber: Long get() = botInfo.botCodeNumber
 public val KhlBot.botName: String get() = botInfo.botName
 public val KhlBot.botAvatar: String? get() = botInfo.botAvatar
 

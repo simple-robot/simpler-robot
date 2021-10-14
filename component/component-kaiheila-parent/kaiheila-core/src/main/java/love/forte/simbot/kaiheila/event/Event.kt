@@ -257,7 +257,7 @@ public interface Event<E : Event.Extra> {
 }
 
 
-public interface BotInitialized {
+public interface BotInitializeSupport {
     /**
      * bot应当只能初始化一次。
      */
@@ -281,7 +281,7 @@ public data class SimpleEvent<E : Event.Extra>(
     override val msgTimestamp: Long,
     override val nonce: String,
     override val extra: E,
-) : Event<E>, BotInitialized, BaseRespData()
+) : Event<E>, BotInitializeSupport, BaseRespData()
 
 
 

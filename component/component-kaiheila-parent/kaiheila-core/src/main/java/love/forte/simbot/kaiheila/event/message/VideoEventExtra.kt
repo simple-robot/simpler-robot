@@ -26,6 +26,7 @@ import love.forte.simbot.api.message.containers.GroupInfo
 import love.forte.simbot.api.message.events.*
 import love.forte.simbot.kaiheila.botAvatar
 import love.forte.simbot.kaiheila.botCode
+import love.forte.simbot.kaiheila.botCodeNumber
 import love.forte.simbot.kaiheila.botName
 import love.forte.simbot.kaiheila.event.Event
 import love.forte.simbot.kaiheila.event.EventLocator
@@ -131,6 +132,7 @@ internal sealed class VideoEventImpl : AbstractMessageEvent<VideoEventExtra>(), 
                 get() = extra.author.accountTitle
 
             override val botCode: String get() = bot.botCode
+            override val botCodeNumber: Long get() = bot.botCodeNumber
             override val botName: String get() = bot.botName
             override val botAvatar: String? get() = bot.botAvatar
 

@@ -26,16 +26,16 @@ public fun textEventMessageContent(content: String, extra: TextEventExtra): KhlM
     val mentioned: Boolean =
         extra.mentionHere || extra.mentionAll || extra.mention.isNotEmpty() || extra.mentionRoles.isNotEmpty()
     return if (mentioned) {
-        TextEventMessageContentWithMention(content, extra)
+        TextMessageContentWithMention(content, extra)
     } else {
-        TextEventMessageContent(content)
+        TextOnlyMessageContent(content)
     }
 }
 
 /**
  * 仅有纯文本的消息正文。
  */
-public data class TextEventMessageContent(internal val content: String) : KhlMessageContent {
+public data class TextOnlyMessageContent(internal val content: String) : KhlMessageContent {
     override val msg: String = CatEncoder.encodeText(content)
     override val cats: List<Neko> = listOf(TextNeko(content))
     override fun isEmpty(): Boolean = content.isEmpty()
@@ -44,7 +44,7 @@ public data class TextEventMessageContent(internal val content: String) : KhlMes
 /**
  * 纯文本与mention的消息正文。
  */
-public class TextEventMessageContentWithMention(private val content: String, private val extra: TextEventExtra) :
+public class TextMessageContentWithMention(private val content: String, private val extra: TextEventExtra) :
     KhlMessageContent {
 
     private val mentionList: List<Neko> = extra.toNekoList()
@@ -56,11 +56,11 @@ public class TextEventMessageContentWithMention(private val content: String, pri
             return true
         }
 
-        if (other is TextEventMessageContent) {
+        if (other is TextOnlyMessageContent) {
             return if (mentionList.isEmpty()) content == other.content else false
         }
 
-        if (other is TextEventMessageContentWithMention) {
+        if (other is TextMessageContentWithMention) {
             if (content == other.content) {
                 val oMention = extra.mention.toSet()
                 val oMentionAll = extra.mentionAll
