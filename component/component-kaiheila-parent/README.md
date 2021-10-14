@@ -79,6 +79,18 @@
 
 <br>
 
+## 使用
+```xml
+<!-- 开黑啦 V3 API组件 -->
+<dependency>
+    <groupId>love.forte.simple-robot</groupId>
+    <artifactId>component-kaiheila-v3</artifactId>
+    <version>0.0.1-PREVIEW</version>
+</dependency>
+```
+
+
+
 ## 文档
 
 TODO
