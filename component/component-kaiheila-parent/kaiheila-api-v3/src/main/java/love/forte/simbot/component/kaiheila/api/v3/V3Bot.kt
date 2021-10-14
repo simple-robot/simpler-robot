@@ -18,6 +18,7 @@ package love.forte.simbot.component.kaiheila.api.v3
 
 import io.ktor.client.*
 import io.ktor.client.features.*
+import io.ktor.client.features.cookies.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.websocket.*
@@ -120,6 +121,14 @@ public class V3WsBot(
             wsClient.config {
                 install(WebSockets)
             }
+        }
+        if (client.feature(JsonFeature) == null) {
+            client.config {
+                install(JsonFeature) {
+                    serializer = KotlinxSerializer(khlJson)
+                }
+            }
+
         }
     }
 
@@ -530,9 +539,9 @@ public class V3WsBot(
      * 终止bot
      */
     override suspend fun close(cause: Throwable?) {
+        supervisorJob.cancel(cause?.let { CancellationException(it.localizedMessage, it) })
         sessionJob.cancel(cause?.let { CancellationException(it.localizedMessage, it) })
         session.close()
-        supervisorJob.cancel(cause?.let { CancellationException(it.localizedMessage, it) })
         wsClient.close()
         client.close()
     }

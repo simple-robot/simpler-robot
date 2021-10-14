@@ -137,7 +137,7 @@ public interface KhlBot : LogAble, Bot, KhlBotApi, CoroutineScope {
     @JvmSynthetic
     suspend fun close(cause: Throwable? = null)
     fun closeBot(cause: Throwable) = runBlocking { close(cause) }
-    fun closeBot() = runBlocking { close() }
+    fun closeBot() = runBlocking { close(null) }
 
     @JvmSynthetic
     suspend fun join()

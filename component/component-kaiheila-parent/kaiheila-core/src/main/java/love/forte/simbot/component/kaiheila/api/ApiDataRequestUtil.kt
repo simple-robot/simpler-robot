@@ -78,7 +78,8 @@ public suspend inline fun <reified HTTP_RESP : ApiData.Resp<*>> ApiData.Req<HTTP
         method = this@doRequest.method
 
         token?.let { auth ->
-            header("Authorization", authorizationType.getAuthorization(auth))
+            // header("Authorization", authorizationType.getAuthorization(auth))
+            header(HttpHeaders.Authorization, authorizationType.getAuthorization(auth))
         }
 
         val httpRequestBuilder = this
