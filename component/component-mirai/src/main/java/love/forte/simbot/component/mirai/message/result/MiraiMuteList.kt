@@ -27,24 +27,29 @@ import net.mamoe.mirai.contact.Group
 import net.mamoe.mirai.contact.NormalMember
 import java.util.concurrent.TimeUnit
 
+
+public fun MiraiMuteList(group: Group, limit: Int = -1): MiraiMuteList {
+    val results = if (limit > 0) {
+        group.members.asSequence().take(limit).mapNotNull {
+            it.takeIf { m -> m.isMuted }?.let { m -> MiraiMuteAccountInfo(m) }
+        }.toList()
+    } else {
+        group.members.mapNotNull {
+            it.takeIf { m -> m.isMuted }?.let { m -> MiraiMuteAccountInfo(m) }
+        }
+    }
+
+    return MiraiMuteList(results, group)
+}
+
+
+
+
 /**
  * mirai [MuteList] 实现。
  * @author ForteScarlet -> https://github.com/ForteScarlet
  */
-public class MiraiMuteList(group: Group, limit: Int = -1) : MuteList {
-
-    override val results: List<MuteInfo> by lazy(LazyThreadSafetyMode.PUBLICATION) {
-        if (limit > 0) {
-            group.members.asSequence().take(limit).mapNotNull {
-                it.takeIf { m -> m.isMuted }?.let { m -> MiraiMuteAccountInfo(m) }
-            }.toList()
-        } else {
-            group.members.mapNotNull {
-                it.takeIf { m -> m.isMuted }?.let { m -> MiraiMuteAccountInfo(m) }
-            }
-        }
-    }
-
+public class MiraiMuteList internal constructor(override val results: List<MuteInfo>, group: Group) : MuteList {
     override val originalData: String = "MiraiBanList(group=$group)"
 }
 

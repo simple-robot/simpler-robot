@@ -1,0 +1,9 @@
+simbot.autoconfigure.configs=love.forte.simbot.component.kaiheila.v3.configuration.KhlAtDetectionRegistrar,\
+    love.forte.simbot.component.kaiheila.v3.configuration.KhlV3MsgSenderConfiguration,\
+    love.forte.simbot.component.kaiheila.v3.configuration.KhlBotVerifier,\
+    love.forte.simbot.component.kaiheila.v3.configuration.KhlMessageContentBuilderConfiguration
+
+
+
+
+

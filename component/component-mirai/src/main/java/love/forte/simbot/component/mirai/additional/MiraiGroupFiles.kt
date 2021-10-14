@@ -14,7 +14,6 @@
 
 package love.forte.simbot.component.mirai.additional
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.SimbotRuntimeException
 import love.forte.simbot.api.message.results.FileResult
 import love.forte.simbot.api.message.results.FileResults
@@ -36,7 +35,7 @@ public data class MiraiGroupFilesApi(val group: Long) : MiraiGetterAdditionalApi
     /**
      * 获取群文件列表。
      */
-    override fun execute(getterInfo: GetterInfo): FileResults {
+    override suspend fun execute(getterInfo: GetterInfo): FileResults {
         val rootFile = getterInfo.bot.getGroupOrFail(group).filesRoot
         return MiraiFileResults(rootFile)
     }
@@ -58,10 +57,10 @@ public data class MiraiGroupFileByIdApi(val group: Long, val id: String, val dee
         get() = "GroupFileById"
 
 
-    override fun execute(getterInfo: GetterInfo): FileResult = runBlocking {
+    override suspend fun execute(getterInfo: GetterInfo): FileResult {
         val root = getterInfo.bot.getGroupOrFail(group).filesRoot
         val resolveById = root.resolveById(id, deep) ?: throw NoSuchRemoteFileException("Id '$id' from group $group")
-        MiraiFileResult(resolveById)
+        return MiraiFileResult(resolveById)
     }
 }
 
@@ -76,9 +75,9 @@ public data class MiraiGroupFileByPathApi(val group: Long, val path: String) : M
         get() = "GroupFileByPath"
 
 
-    override fun execute(getterInfo: GetterInfo): FileResult = runBlocking {
+    override suspend fun execute(getterInfo: GetterInfo): FileResult {
         val root = getterInfo.bot.getGroupOrFail(group).filesRoot
-        MiraiFileResult(root.resolve(path))
+        return MiraiFileResult(root.resolve(path))
     }
 }
 

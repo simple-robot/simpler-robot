@@ -14,7 +14,6 @@
 
 package love.forte.simbot.component.mirai.additional
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.results.CarrierResult
@@ -38,11 +37,8 @@ public class MiraiEssenceMessageApi(val group: Long, private val source: (Long) 
     /**
      * 执行设置某个消息为精华消息。
      */
-    override fun execute(setterInfo: SetterInfo): CarrierResult<Boolean> {
-        // if (flag !is MiraiMessageFlag<*>) {
-        //     throw IllegalArgumentException("Mirai only supports setting the essence message through the group Msg.flag under mirai, but type(${flag::class.java})")
-        // }
+    override suspend fun execute(setterInfo: SetterInfo): CarrierResult<Boolean> {
         val bot = setterInfo.bot
-        return runBlocking { bot.getGroupOrFail(group).setEssenceMessage(source(bot.id)) }.toCarrierResult()
+        return bot.getGroupOrFail(group).setEssenceMessage(source(bot.id)).toCarrierResult()
     }
 }

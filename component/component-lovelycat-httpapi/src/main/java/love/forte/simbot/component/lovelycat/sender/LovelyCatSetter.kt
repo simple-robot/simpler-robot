@@ -37,7 +37,7 @@ public class LovelyCatSetter(
     private val api: LovelyCatApiTemplate,
     private val def: Setter
 ) : Setter {
-    override fun setFriendAddRequest(
+    override suspend fun friendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,
         agree: Boolean,
@@ -47,7 +47,7 @@ public class LovelyCatSetter(
         return true.toCarrier()
     }
 
-    override fun setGroupAddRequest(
+    override suspend fun groupAddRequest(
         flag: Flag<GroupAddRequest.FlagContent>,
         agree: Boolean,
         blackList: Boolean,
@@ -57,45 +57,45 @@ public class LovelyCatSetter(
         return true.toCarrier()
     }
 
-    override fun setGroupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> {
+    override suspend fun groupAdmin(groupCode: String, memberCode: String, promotion: Boolean): Carrier<Boolean> {
         return def.setGroupAdmin(groupCode, memberCode, promotion)
     }
 
-    override fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean> {
+    override suspend fun groupAnonymous(group: String, agree: Boolean): Carrier<Boolean> {
         return def.setGroupAnonymous(group, agree)
     }
 
-    override fun setGroupAnonymous(group: Long, agree: Boolean): Carrier<Boolean> =
+    override suspend fun groupAnonymous(group: Long, agree: Boolean): Carrier<Boolean> =
         setGroupAnonymous("$group$GROUP_SUFFIX", agree)
 
-    override fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean> {
+    override suspend fun groupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean> {
         return def.setGroupBan(groupCode, memberCode, time, timeUnit)
     }
 
 
-    override fun setGroupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> {
+    override suspend fun groupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> {
         return def.setGroupWholeBan(groupCode, mute)
     }
 
-    override fun setGroupWholeBan(groupCode: Long, mute: Boolean): Carrier<Boolean> =
+    override suspend fun groupWholeBan(groupCode: Long, mute: Boolean): Carrier<Boolean> =
         setGroupWholeBan("$groupCode$GROUP_SUFFIX", mute)
 
 
-    override fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> {
+    override suspend fun groupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> {
         return def.setGroupRemark(groupCode, memberCode, remark)
     }
 
-    override fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> {
+    override suspend fun groupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> {
         api.quitGroup(botId, groupCode)
         // check success?
         return true.toCarrier()
     }
 
-    override fun setGroupQuit(group: GroupCodeContainer, forcibly: Boolean): Carrier<Boolean> =
+    override suspend fun groupQuit(group: GroupCodeContainer, forcibly: Boolean): Carrier<Boolean> =
         setGroupQuit("$group$GROUP_SUFFIX", forcibly)
 
 
-    override fun setGroupMemberKick(
+    override suspend fun groupMemberKick(
         groupCode: String,
         memberCode: String,
         why: String?,
@@ -106,27 +106,27 @@ public class LovelyCatSetter(
         return true.toCarrier()
     }
 
-    override fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String> {
+    override suspend fun groupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String> {
         return def.setGroupMemberSpecialTitle(groupCode, memberCode, title)
     }
 
-    override fun setMsgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
-        return def.setMsgRecall(flag)
+    override suspend fun msgRecall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> {
+        return def.msgRecall(flag)
     }
 
-    override fun setGroupName(groupCode: String, name: String): Carrier<String> {
+    override suspend fun groupName(groupCode: String, name: String): Carrier<String> {
         api.modifyGroupName(botId, groupCode, name)
         return name.toCarrier()
     }
 
-    override fun setGroupName(groupCode: Long, name: String): Carrier<String> =
+    override suspend fun groupName(groupCode: Long, name: String): Carrier<String> =
         setGroupName("$groupCode$GROUP_SUFFIX", name)
 
 
     /**
      * 删除好友
      */
-    override fun setFriendDelete(friend: String): Carrier<Boolean> {
+    override suspend fun friendDelete(friend: String): Carrier<Boolean> {
         api.deleteFriend(botId, friend)
         return true.toCarrier()
     }

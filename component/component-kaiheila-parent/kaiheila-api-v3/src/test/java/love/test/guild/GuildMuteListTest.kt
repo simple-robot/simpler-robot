@@ -15,9 +15,9 @@
 // package love.test.guild
 //
 // import kotlinx.coroutines.runBlocking
-// import love.forte.simbot.component.kaiheila.api.doRequest
-// import love.forte.simbot.component.kaiheila.api.v3.V3
-// import love.forte.simbot.component.kaiheila.api.v3.guild.GuildMuteListReq
+// import love.forte.simbot.kaiheila.api.doRequest
+// import love.forte.simbot.kaiheila.api.v3.V3
+// import love.forte.simbot.kaiheila.api.v3.guild.GuildMuteListReq
 // import love.test.GUILD_ID
 // import love.test.GatewayApiConstant
 // import love.test.client

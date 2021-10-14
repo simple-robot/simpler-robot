@@ -22,6 +22,7 @@ import love.forte.simbot.api.message.containers.BotInfo
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.api.message.events.MsgGet
 
+
 /**
  *
  * 我们的老朋友，送信器。
@@ -34,8 +35,13 @@ public open class MsgSender(
     @JvmField val GETTER: Getter,
 ) {
     /** 撤回消息。 */
-    public open fun recall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> = SETTER.setMsgRecall(flag)
+    @JvmSynthetic
+    public suspend fun recall(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> =
+        SETTER.msgRecall(flag)
 
+    @JvmName("recall")
+    public fun recallBlocking(flag: MessageGet.MessageFlag<MessageGet.MessageFlagContent>): Carrier<Boolean> =
+        SETTER.setMsgRecall(flag)
 
 }
 

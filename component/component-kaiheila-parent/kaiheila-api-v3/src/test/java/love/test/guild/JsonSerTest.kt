@@ -15,15 +15,16 @@
 package love.test.guild
 
 import kotlinx.serialization.Serializable
-import love.forte.simbot.component.kaiheila.api.ApiData
-import love.forte.simbot.component.kaiheila.api.ListResp
-import love.forte.simbot.component.kaiheila.api.ObjectResp
-import love.forte.simbot.component.kaiheila.khlJson
+import love.forte.simbot.kaiheila.api.ApiData
+import love.forte.simbot.kaiheila.api.BaseRespData
+import love.forte.simbot.kaiheila.api.ListResp
+import love.forte.simbot.kaiheila.api.ObjectResp
+import love.forte.simbot.kaiheila.khlJson
 import kotlin.test.Test
 
 
 @Serializable
-data class User(val name: String, val age: Int) : ApiData.Resp.Data
+data class User(val name: String, val age: Int) : BaseRespData()
 
 
 /**

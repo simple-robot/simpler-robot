@@ -16,12 +16,12 @@
 //
 // import kotlinx.coroutines.runBlocking
 // import kotlinx.serialization.decodeFromString
-// import love.forte.simbot.component.kaiheila.api.doRequest
-// import love.forte.simbot.component.kaiheila.api.v3.V3
-// import love.forte.simbot.component.kaiheila.api.v3.channel.ChannelDeleteReq
-// import love.forte.simbot.component.kaiheila.api.v3.channel.ChannelView
-// import love.forte.simbot.component.kaiheila.api.v3.channel.channelCreateReq
-// import love.forte.simbot.component.kaiheila.khlJson
+// import love.forte.simbot.kaiheila.api.doRequest
+// import love.forte.simbot.kaiheila.api.v3.V3
+// import love.forte.simbot.kaiheila.api.v3.channel.ChannelDeleteReq
+// import love.forte.simbot.kaiheila.api.v3.channel.ChannelView
+// import love.forte.simbot.kaiheila.api.v3.channel.channelCreateReq
+// import love.forte.simbot.kaiheila.khlJson
 // import kotlin.test.Test
 //
 //

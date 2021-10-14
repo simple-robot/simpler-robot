@@ -17,6 +17,8 @@
 package love.forte.simbot.core
 
 import cn.hutool.core.io.FileUtil
+import kotlinx.coroutines.runBlocking
+import love.forte.common.collections.concurrentQueueOf
 import love.forte.common.configuration.Configuration
 import love.forte.common.configuration.ConfigurationManagerRegistry
 import love.forte.common.configuration.ConfigurationParserManager
@@ -87,6 +89,20 @@ internal constructor(
     private val closeHandleList: List<SimbotContextClosedHandle> = emptyList(),
 ) : DependBeanFactory by dependBeanFactory, Closeable {
     private companion object : TypedCompLogger(SimbotContext::class.java)
+
+    /**
+     * Join wait for all tasks.
+     */
+    @JvmSynthetic
+    suspend fun join() {
+        SimbotApp.joinedTasks.toList().forEach { it() }
+    }
+
+    @JvmName("join")
+    fun joinBlocking() = runBlocking {
+        join()
+    }
+
 
     override fun close() {
         // run doClosed list
@@ -442,7 +458,12 @@ protected constructor(
     companion object Run {
 
         internal const val SCAN_PACKAGES_KEY = "simbot.core.scan-package"
+        internal val joinedTasks = concurrentQueueOf<suspend () -> Unit>()
 
+        @JvmSynthetic
+        fun onJoined(task: suspend () -> Unit) {
+            joinedTasks.add(task)
+        }
         /**
          * 启动，使用一个class启动。
          */
@@ -534,8 +555,6 @@ protected constructor(
                 LoggerFactory.getLogger(app::class.java)
             ).run()
         }
-
-
     }
 }
 

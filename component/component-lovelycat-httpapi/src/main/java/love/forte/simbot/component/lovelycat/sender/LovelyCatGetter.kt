@@ -50,7 +50,7 @@ public class LovelyCatGetter(
     /**
      * 获取一个好友的信息。
      */
-    override fun getFriendInfo(code: String): FriendInfo {
+    override suspend fun friendInfo(code: String): FriendInfo {
         val friendList = api.getFriendList(botId, true)
         return friendList.find { it.wxid == code } ?: throw NoSuchElementException("friend: $code")
     }
@@ -59,7 +59,7 @@ public class LovelyCatGetter(
     /**
      * 获取一个群友信息。
      */
-    override fun getMemberInfo(group: String, code: String): GroupMemberInfo {
+    override suspend fun memberInfo(group: String, code: String): GroupMemberInfo {
         val groupMemberDetailInfo = api.getGroupMemberDetailInfo(botId, group, code, true)
         val groupInfo = findGroupInfo(group)
         return LovelyCatGroupMemberInfo(groupMemberDetailInfo, groupInfo)
@@ -68,20 +68,20 @@ public class LovelyCatGetter(
     /**
      * 获取一个群详细信息
      */
-    override fun getGroupInfo(group: String): GroupFullInfo {
+    override suspend fun groupInfo(group: String): GroupFullInfo {
         val groupInfo = findGroupInfo(group)
         val memberSize = api.getGroupMemberList(botId, group, true).size
         return LovelyCatGroupFullInfo(groupInfo.toString(), groupInfo, memberSize)
     }
 
-    override fun getGroupInfo(group: Long): GroupFullInfo = getGroupInfo("$group$GROUP_SUFFIX")
+    override suspend fun groupInfo(group: Long): GroupFullInfo = groupInfo("$group$GROUP_SUFFIX")
 
 
     /**
      * 获取好友列表
      * @param cache 是否使用缓存。
      */
-    override fun getFriendList(cache: Boolean, limit: Int): FriendList {
+    override suspend fun friendList(cache: Boolean, limit: Int): FriendList {
         val friendList = api.getFriendList(botId, !cache)
 
         return if (limit > 0 && limit < friendList.size) {
@@ -93,7 +93,7 @@ public class LovelyCatGetter(
      * 获取群列表
      * @param cache 是否使用缓存。
      */
-    override fun getGroupList(cache: Boolean, limit: Int): GroupList {
+    override suspend fun groupList(cache: Boolean, limit: Int): GroupList {
         val groupList = api.getGroupList(botId, !cache)
 
         return if (limit > 0 && limit < groupList.size) {
@@ -105,7 +105,7 @@ public class LovelyCatGetter(
     /**
      * 获取群成员列表
      */
-    override fun getGroupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList {
+    override suspend fun groupMemberList(group: String, cache: Boolean, limit: Int): GroupMemberList {
         val groupInfo = findGroupInfo(group)
 
         val memberList = api.getGroupMemberList(botId, group, !cache)
@@ -113,31 +113,31 @@ public class LovelyCatGetter(
         return LovelyCatGroupMemberList(groupInfo, memberList)
     }
 
-    override fun getGroupMemberList(group: Long, cache: Boolean, limit: Int): GroupMemberList =
-        getGroupMemberList("$group$GROUP_SUFFIX", cache, limit)
+    override suspend fun groupMemberList(group: Long, cache: Boolean, limit: Int): GroupMemberList =
+        groupMemberList("$group$GROUP_SUFFIX", cache, limit)
 
     /**
      * 无法获取禁言列表。
      */
     @Deprecated("Unable to get banned list.")
-    override fun getBanList(group: String, cache: Boolean, limit: Int) = def.getBanList(group, cache, limit)
+    override suspend fun banList(group: String, cache: Boolean, limit: Int) = def.banList(group, cache, limit)
 
     @Suppress("DEPRECATION", "DeprecatedCallableAddReplaceWith")
     @Deprecated("Unable to get banned list.")
-    override fun getBanList(group: Long, cache: Boolean, limit: Int): MuteList =
-        getBanList("$group$GROUP_SUFFIX", cache, limit)
+    override suspend fun banList(group: Long, cache: Boolean, limit: Int): MuteList =
+        banList("$group$GROUP_SUFFIX", cache, limit)
 
 
     /**
      * 无法获取群公告。
      */
     @Deprecated("Unable to get the group note list.")
-    override fun getGroupNoteList(group: String, cache: Boolean, limit: Int) = def.getGroupNoteList(group, cache, limit)
+    override suspend fun groupNoteList(group: String, cache: Boolean, limit: Int) = def.groupNoteList(group, cache, limit)
 
     @Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
     @Deprecated("Unable to get the group note list.")
-    override fun getGroupNoteList(group: Long, cache: Boolean, limit: Int): GroupNoteList =
-        getGroupNoteList("$group$GROUP_SUFFIX", cache, limit)
+    override suspend fun groupNoteList(group: Long, cache: Boolean, limit: Int): GroupNoteList =
+        groupNoteList("$group$GROUP_SUFFIX", cache, limit)
 
 
 

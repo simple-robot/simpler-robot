@@ -15,9 +15,11 @@
 package love.test
 
 import io.ktor.client.*
-import io.ktor.client.engine.cio.*
+import io.ktor.client.engine.okhttp.*
 import kotlinx.coroutines.launch
-import love.forte.simbot.component.kaiheila.api.v3.*
+import love.forte.simbot.kaiheila.api.v3.V3WsBot
+import love.forte.simbot.kaiheila.api.v3.apiConfiguration
+import love.forte.simbot.kaiheila.api.v3.v3BotConfiguration
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -34,7 +36,7 @@ class GatewayApiTest {
         const val clientSecret ="" // GatewayApiConstant.clientSecret
     }
 
-    val client = HttpClient(CIO)
+    val client = HttpClient(OkHttp)
 
     val logger: Logger = LoggerFactory.getLogger(GatewayApiTest::class.java)
 
@@ -45,7 +47,7 @@ class GatewayApiTest {
 
     // @Test
     fun apiTest() {
-        val gatewayReq = GatewayReq(1)
+        val gatewayReq = love.forte.simbot.kaiheila.api.v3.GatewayReq(1)
 
         logger.debug("gatewayReq: {}", gatewayReq)
 
@@ -56,7 +58,7 @@ class GatewayApiTest {
             client = client,
             configuration = v3BotConfiguration {
                 apiConfiguration {
-                    api = V3
+                    api = love.forte.simbot.kaiheila.api.v3.V3
                 }
             },
         )
