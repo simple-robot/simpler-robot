@@ -12,8 +12,8 @@
  *
  */
 
-import love.forte.simbot.component.kaiheila.objects.buildKMarkdown
-import love.forte.simbot.component.kaiheila.objects.preLine
+import love.forte.simbot.kaiheila.objects.buildKMarkdown
+import love.forte.simbot.kaiheila.objects.preLine
 import kotlin.test.Test
 
 /*

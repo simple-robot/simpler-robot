@@ -9,7 +9,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <version>0.0.1-ALPHA.1<!--khlv--></version>
+    <version>0.0.1-PREVIEW<!--khlv--></version>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <artifactId>component-kaiheila-parent</artifactId>
@@ -17,12 +17,13 @@
     <modules>
         <module>kaiheila-core</module>
         <module>kaiheila-api-v3</module>
+        <module>component-kaiheila-v3</module>
     </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <simbot.khl.version>0.0.1-ALPHA.1<!--khlv--></simbot.khl.version>
+        <simbot.khl.version>0.0.1-PREVIEW<!--khlv--></simbot.khl.version>
     </properties>
 
     <dependencies>

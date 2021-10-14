@@ -14,11 +14,11 @@
 
 
 import kotlinx.serialization.ExperimentalSerializationApi
-import love.forte.simbot.component.kaiheila.event.Signal_0
-import love.forte.simbot.component.kaiheila.event.SimpleEvent
-import love.forte.simbot.component.kaiheila.event.message.FileEventExtra
-import love.forte.simbot.component.kaiheila.khlJson
-import love.forte.simbot.component.kaiheila.objects.SimpleUser
+import love.forte.simbot.kaiheila.event.Signal_0
+import love.forte.simbot.kaiheila.event.SimpleEvent
+import love.forte.simbot.kaiheila.event.message.FileEventExtra
+import love.forte.simbot.kaiheila.khlJson
+import love.forte.simbot.kaiheila.objects.SimpleUser
 import org.junit.jupiter.api.Test
 
 /**
