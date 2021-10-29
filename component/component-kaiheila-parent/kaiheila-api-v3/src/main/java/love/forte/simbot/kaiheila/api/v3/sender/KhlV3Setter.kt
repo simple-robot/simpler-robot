@@ -1,5 +1,6 @@
 package love.forte.simbot.kaiheila.api.v3.sender
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit
 public class KhlV3Setter(
     private val bot: KhlBot,
     private val def: Setter.Def,
-) : KhlSender.Setter {
+) : KhlSender.Setter, CoroutineScope by bot {
     override suspend fun friendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,

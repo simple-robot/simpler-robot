@@ -26,6 +26,8 @@ import love.forte.simbot.api.sender.Sender
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.component.lovelycat.message.LovelyCatForSendMessageContent
 import love.forte.simbot.component.lovelycat.message.event.GROUP_SUFFIX
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 
 private object Empty
@@ -39,6 +41,8 @@ public class LovelyCatSender(
     private val api: LovelyCatApiTemplate,
     private val def: Sender,
 ) : Sender {
+    override val coroutineContext: CoroutineContext
+        get() = EmptyCoroutineContext
 
     /**
      * 通过携带 catCode 的文本消息进行发送消息发送。

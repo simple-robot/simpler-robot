@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.mirai.sender
 
+import kotlinx.coroutines.CoroutineScope
 import love.forte.simbot.api.SimbotExperimentalApi
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.BotContainer
@@ -44,7 +45,7 @@ public class MiraiGetter(
     private val bot: Bot,
     private val http: HttpTemplate,
     private val defGetter: Getter,
-) : Getter {
+) : Getter, CoroutineScope by bot {
 
     private lateinit var _getterInfo: GetterInfo
     private val getterInfo: GetterInfo

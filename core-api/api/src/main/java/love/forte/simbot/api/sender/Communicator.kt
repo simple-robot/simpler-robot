@@ -16,8 +16,10 @@
 
 package love.forte.simbot.api.sender
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.api.message.results.Result
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -31,7 +33,8 @@ import love.forte.simbot.api.message.results.Result
  * @see Getter
  * @see Sender
  */
-public interface Communicator {
+public interface Communicator : CoroutineScope {
+    override val coroutineContext: CoroutineContext
 
     fun <R : Result> additionalExecute(additionalApi: AdditionalApi<R>): R {
         return runBlocking { execute(additionalApi) }
