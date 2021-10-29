@@ -71,11 +71,12 @@ public class MiraiSetter(
     private val setterInfo: SetterInfo
         get() {
             if (!::_setterInfo.isInitialized) {
-                synchronized(this) {
-                    if (!::_setterInfo.isInitialized) {
-                        _setterInfo = SetterInfo(bot)
-                    }
-                }
+                _setterInfo = SetterInfo(bot)
+                // synchronized(this) {
+                //     if (!::_setterInfo.isInitialized) {
+                //         _setterInfo = SetterInfo(bot)
+                //     }
+                // }
             }
             return _setterInfo
         }

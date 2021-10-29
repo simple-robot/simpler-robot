@@ -50,11 +50,12 @@ public class MiraiGetter(
     private val getterInfo: GetterInfo
     get() {
         if (!::_getterInfo.isInitialized) {
-            synchronized(this) {
-                if (!::_getterInfo.isInitialized) {
-                    _getterInfo = GetterInfo(bot, http)
-                }
-            }
+            _getterInfo = GetterInfo(bot, http)
+            // synchronized(this) {
+            //     if (!::_getterInfo.isInitialized) {
+            //         _getterInfo = GetterInfo(bot, http)
+            //     }
+            // }
         }
         return _getterInfo
     }
