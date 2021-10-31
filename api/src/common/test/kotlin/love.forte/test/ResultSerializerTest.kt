@@ -1,6 +1,6 @@
 package love.forte.test
 
-import love.forte.simbot.api.*
+import love.forte.simbot.*
 import kotlin.test.Test
 
 /**

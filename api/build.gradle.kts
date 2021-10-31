@@ -1,3 +1,4 @@
+import groovy.xml.dom.DOMCategory.attributes
 import org.jetbrains.kotlin.psi.packageDirectiveVisitor
 
 plugins {
@@ -38,7 +39,7 @@ kotlin {
         }
     }
 
-    js("js", IR) {
+    js("js", org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType.IR) {
         nodejs()
         browser()
         useCommonJs()
@@ -69,8 +70,8 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val jvmMain by getting {
             dependencies {
+                implementation(kotlin("reflect")) // "org.jetbrains.kotlin:kotlin-reflect:1.5.31"
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2")
-
             }
         }
 

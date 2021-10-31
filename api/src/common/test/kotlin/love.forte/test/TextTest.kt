@@ -1,8 +1,9 @@
 package love.forte.test
 
-import love.forte.simbot.api.message.MessagesBuilder
-import love.forte.simbot.api.message.Text
-import love.forte.simbot.api.message.toText
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import love.forte.simbot.message.*
 import kotlin.test.Test
 
 /**
@@ -11,7 +12,8 @@ import kotlin.test.Test
  */
 class TextTest {
 
-    // @Test TODO
+    @OptIn(ExperimentalSerializationApi::class)
+    @Test
     fun textTest() {
         val t1 = Text()
         val t2 = Text { "Abc" }
@@ -21,14 +23,24 @@ class TextTest {
         println(t2 + t3)
         println(t1 + t2 + t3 + ", Hello World")
 
-        val messages = MessagesBuilder().append(t2).append(t2).append(t3)
-            .build()
 
-        println(messages.size)
+        println(Json.encodeToString(t3 + ", Mua~"))
 
-        for (m in messages) {
-            println(m)
-        }
+        val messages = listOf(t3, t3, t3, t3).toMessages()
+
+
+        println(messages)
+
+        val list: List<Message.Element<Text>> = listOf(t3, t3, t3, t3)
+
+        val json = Json { serializersModule = Messages.serializersModule }
+
+        // ListSerializer()
+
+        println(json.encodeToString(list))
+        println(json.encodeToString(Messages.Companion.serializer, messages))
+
+        // println(Json.encodeToString(ListSerializer(ContextualSerializer(Message.Element::class)), messages))
 
     }
 
