@@ -5,7 +5,7 @@ package love.forte.simbot.utils
  * Map merge.
  *
  */
-public actual fun <K, V : Any> MutableMap<K, V>.merge(key: K, value: V, reMapping: (V, V) -> V): V? {
+public actual fun <K, V : Any> MutableMap<K, V>.doMerge(key: K, value: V, reMapping: (V, V) -> V): V? {
     val old = get(key)
     if (old == null) {
         put(key, value)
@@ -41,7 +41,7 @@ public actual fun <K, V : Any> MutableMap<K, V>.computeIfAbsent(key: K, mapping:
 /**
  * Map compute if present.
  */
-public actual fun <K, V : Any> MutableMap<K, V>.computeIfPresent(
+public actual fun <K, V : Any> MutableMap<K, V>.doComputeIfPresent(
     key: K,
     reMapping: (K, V) -> V?,
 ): V? {

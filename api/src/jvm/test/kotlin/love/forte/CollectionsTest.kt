@@ -1,7 +1,6 @@
 package love.forte
 
 import love.forte.simbot.message.StandardMessage
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 
