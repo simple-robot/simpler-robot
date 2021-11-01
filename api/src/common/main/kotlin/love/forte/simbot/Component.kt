@@ -48,6 +48,12 @@ public object SimbotComponent : Component("simbot") {
     override fun hashCode(): Int = 0
 }
 
+/**
+ * 两个 [Component] 是否相似。
+ * 即其中一方为 [SimbotComponent], 或者二者相等。
+ */
+public infix fun Component.like(other: Component): Boolean = this === SimbotComponent || other === SimbotComponent || this === other
+
 
 /**
  *

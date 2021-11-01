@@ -1,12 +1,6 @@
 package love.forte.simbot.message
 
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.StringFormat
-import kotlinx.serialization.Transient
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentContainer
 import love.forte.simbot.SimbotComponent
@@ -44,8 +38,10 @@ public sealed interface Message : ComponentContainer {
      * 一个 [消息][Message] 的 [元素][Element], 元素本身也是一种消息。
      *
      * 需尽量保证实现类是可序列化的。
+     *
+     * @see SingleOnlyMessage 约束一个消息列表中仅只能存在此一种消息元素的消息。
      */
-    public sealed interface Element<E : Element<E>> : Message, ComponentContainer {
+    public interface Element<E : Element<E>> : Message, ComponentContainer {
         public val key: Key<E>
         override val component: Component get() = key.component
         override fun toString(): String
@@ -72,19 +68,24 @@ public sealed interface Message : ComponentContainer {
 
         /**
          * 将一个实例转化为 [E] 实例。 无法转化得到null。
+         *
+         * *Just like JVM KClass::safeCast.*
          */
-        public fun case(instance: Any): E?
+        public fun safeCast(instance: Any?): E?
 
-        /**
-         * 检测是否对某一类型相互排斥。
-         *
-         * 当被拼接到消息列中的时候，会与其他以存元素的key进行比较。如果存在冲突，则抛弃原有消息链。
-         *
-         */
-        public fun isReject(otherKeys: Set<Key<*>>): Boolean
 
     }
 
+}
+
+
+
+
+@Suppress("unused")
+public inline fun <reified E : Element<E>> Message.Key<E>.cast(value: Any?): E {
+    if (value == null) throw NullPointerException("cast value")
+    if (value !is E) throw ClassCastException("Value cannot be cast to ${E::class.qualifiedName ?: E::class.simpleName}")
+    return value
 }
 
 
@@ -93,16 +94,18 @@ public sealed interface Message : ComponentContainer {
  */
 public abstract class AbstractKey<E : Element<E>>(
     override val component: Component,
-    private val rejects: Set<Message.Key<*>> = emptySet(),
-    private val caseFunc: (Any) -> E?,
+    private val castFunc: (Any?) -> E?,
 ) : Message.Key<E> {
-    override fun isReject(otherKeys: Set<Message.Key<*>>): Boolean = otherKeys.any { k -> k in rejects }
-    override fun case(instance: Any): E? = caseFunc(instance)
-
+    override fun safeCast(instance: Any?): E? = castFunc(instance)
 }
 
 
+internal inline fun <reified E: Element<E>> doSafeCast(value: Any?): E? = if (value is E) value else null
 
+
+
+@Serializable
+public abstract class AbstractMessageElement<E : Element<E>>(override val key: Message.Key<E>) : Element<E>
 
 
 

@@ -3,7 +3,9 @@
 
 package love.forte.simbot.message
 
-import kotlinx.serialization.*
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.PolymorphicSerializer
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -12,9 +14,9 @@ import kotlinx.serialization.modules.*
 import love.forte.simbot.Component
 import love.forte.simbot.Simbot
 import love.forte.simbot.SimbotComponent
+import love.forte.simbot.like
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
-import kotlin.reflect.safeCast
 import love.forte.simbot.message.Message.Element as MsgElement
 
 
@@ -35,7 +37,19 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
     /**
      * 拼接元素。
      */
-    // public fun plus(element: MsgElement<*>): Messages
+    public operator fun plus(element: MsgElement<*>): Messages
+
+
+    /**
+     * 拼接元素。
+     */
+    public operator fun plus(messages: List<MsgElement<*>>): Messages
+
+
+    /**
+     * plus [SingleOnlyMessage].
+     */
+    public operator fun plus(singleOnlyMessage: SingleOnlyMessage<*>): Messages = singleOnlyMessage
 
     /**
      */
@@ -100,10 +114,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
 }
 
 
-
-
-
-        /**
+/**
  * 得到一个空的消息列表。
  */
 public fun emptyMessages(): Messages = EmptyMessages
@@ -115,6 +126,8 @@ public fun emptyMessages(): Messages = EmptyMessages
 @Serializable
 public object EmptyMessages : Messages, List<MsgElement<*>> by emptyList() {
     override val component: Component = SimbotComponent
+    override fun plus(element: Message.Element<*>): Messages = element.toMessages()
+    override fun plus(messages: List<Message.Element<*>>): Messages = messages.toMessages()
 }
 
 
@@ -123,28 +136,39 @@ public object EmptyMessages : Messages, List<MsgElement<*>> by emptyList() {
  * 在追加其他任何元素的时候，会直接替换为后者。
  *
  */
-@Serializable
-public abstract class SingleOnlyMessage : Messages {
-    /**
-     * 对应的唯一消息。
-     */
-    public abstract val singleMessage: MsgElement<*>
+public abstract class SingleOnlyMessage<E : Message.Element<E>> : Messages, AbstractList<MsgElement<*>>() {
+    abstract override val component: Component
+    // abstract override val key: Message.Key<E>
+
+    protected abstract fun singleMessage(): E
 
     // List
     final override val size: Int get() = 1
-    final override fun contains(element: MsgElement<*>): Boolean = element == singleMessage
-    final override fun containsAll(elements: Collection<MsgElement<*>>): Boolean = elements.any { contains(it) }
-    final override fun isEmpty(): Boolean = false
-    final override fun iterator(): Iterator<MsgElement<*>> = iterator { singleMessage }
+    override fun get(index: Int): Message.Element<*> =
+        if (index == 0) singleMessage() else throw IndexOutOfBoundsException("Index in $index")
+
+    /**
+     * 拼接元素。
+     */
+    override fun plus(element: Message.Element<*>): Messages = element.toMessages()
+
+    /**
+     * 拼接元素。
+     */
+    override fun plus(messages: List<Message.Element<*>>): Messages =
+        if (messages.isEmpty()) this else messages.toMessages()
 }
 
 
 public fun messages(): Messages = EmptyMessages
-public fun MsgElement<*>.toMessages(): Messages = MessagesImpl(component, listOf(this))
+public fun MsgElement<*>.toMessages(): Messages =
+    if (this is SingleOnlyMessage<*>) this else MessagesImpl(component, listOf(this))
+
 public fun messages(vararg messages: MsgElement<*>): Messages = messages.asList().toMessages()
 
 public fun Iterable<MsgElement<*>>.toMessages(): Messages {
     when (this) {
+        is Messages -> return this
         is Collection -> when {
             isEmpty() -> return emptyMessages()
             size == 1 -> return first().toMessages()
@@ -157,27 +181,30 @@ public fun Iterable<MsgElement<*>>.toMessages(): Messages {
         }
     }
 
-    var list = toMutableList()
-    val keySet = mutableSetOf<Message.Key<*>>()
     val component: Component = first().component
 
-    forEachIndexed { i, message ->
-        Simbot.check(message.component == component) { "All components in Messages must be consistent. The first was $component, but the element in $i was ${message.component} ." }
-        if (i == 0) {
-            list.add(message)
-        } else {
-            if (message.key.isReject(keySet)) {
-                list = mutableListOf(message)
-            } else {
-                list.add(message)
+    val iter = iterator()
+    val list = mutableListOf<Message.Element<*>>()
+    while (iter.hasNext()) {
+        val next = iter.next()
+        if (iter.hasNext()) {
+            if (next is SingleOnlyMessage<*>) {
+                list.clear()
+                continue
             }
-
+            list.add(next)
+        } else {
+            if (next is SingleOnlyMessage<*>) return next else list.add(next)
         }
-
     }
 
     return MessagesImpl(component, list)
 }
+
+
+public operator fun Message.Element<*>.plus(other: Message.Element<*>): Messages = messages(this, other)
+public operator fun Message.Element<*>.plus(other: Messages): Messages = this.toMessages() + other
+public operator fun Message.Element<*>.plus(other: SingleOnlyMessage<*>): Messages = other
 
 
 /**
@@ -199,5 +226,37 @@ internal constructor(override val component: Component, private val delegate: Li
     override fun iterator(): Iterator<MsgElement<*>> = delegate.iterator()
     override fun get(index: Int): Message.Element<*> = delegate[index]
 
+    /**
+     * 拼接元素。
+     */
+    override fun plus(element: Message.Element<*>): Messages {
+        Simbot.check(element.component like component) { "Message's component is $component, cannot append with message element with component ${element.component}" }
 
+        if (element is SingleOnlyMessage<*>) return element
+
+        return MessagesImpl(component, delegate + element)
+    }
+
+    /**
+     * 拼接元素。
+     */
+    override fun plus(messages: List<Message.Element<*>>): Messages {
+        if (messages.isEmpty()) return this
+        if (messages.first() is SingleOnlyMessage<*>) return messages.first().toMessages()
+
+        val newList = delegate.toMutableList()
+        if (messages is Messages) {
+            Simbot.check(messages.component like component) { "Message's component is $component, cannot append with message element with component ${messages.component}" }
+            newList.addAll(messages)
+        } else {
+            for (message in messages) {
+                Simbot.check(message.component like component) { "Message's component is $component, cannot append with message element with component ${message.component}" }
+                newList.add(message)
+            }
+
+        }
+
+
+        return MessagesImpl(component, newList)
+    }
 }

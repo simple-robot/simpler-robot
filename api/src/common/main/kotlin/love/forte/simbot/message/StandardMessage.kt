@@ -14,8 +14,10 @@ import kotlin.reflect.KClass
  * [StandardMessage] 目前仅作为标记用，无实际作用。
  *
  */
+@Suppress("CanBeParameter")
 @Serializable
-public sealed class StandardMessage<E : Message.Element<E>> : Message.Element<E>
+public sealed class StandardMessage<E : Message.Element<E>>(private val _key: Message.Key<E>) : AbstractMessageElement<E>(_key)
+
 
 
 public fun String.toText(): Text = Text.getText(this)
@@ -27,12 +29,7 @@ public inline fun Text(block: () -> String): Text = block().toText()
  */
 @Serializable
 @SerialName("std.text")
-public data class Text internal constructor(public val text: String) : StandardMessage<Text>() {
-
-
-
-    override val key: Message.Key<Text>
-        get() = Key
+public data class Text internal constructor(public val text: String) : StandardMessage<Text>(Key) {
 
     public operator fun plus(other: Text): Text = when {
         text.isEmpty() -> other
@@ -46,9 +43,9 @@ public data class Text internal constructor(public val text: String) : StandardM
     public companion object Key : Message.Key<Text> {
         private val empty = Text("")
         override val component: Component get() = SimbotComponent
-        override fun isReject(otherKeys: Set<Message.Key<*>>): Boolean = false
-        override fun case(instance: Any): Text? = if (instance is Text) instance else null
         override val elementType: KClass<Text> get() = Text::class
+
+        override fun safeCast(instance: Any?): Text? = if (instance is Text) instance else null
 
         @JvmStatic
         public fun getText(text: String): Text {
