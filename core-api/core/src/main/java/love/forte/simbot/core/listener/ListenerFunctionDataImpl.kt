@@ -50,7 +50,7 @@ public data class ListenerFunctionInvokeDataImpl @OptIn(SimbotExperimentalApi::c
         type.isAssignableFrom(atDetection::class.java) -> atDetection
         type.isAssignableFrom(context::class.java) -> context
         type.isAssignableFrom(msgGet::class.java) -> msgGet
-        else -> dependCenter[type]
+        else -> dependCenter.getOrNull(type)
     }
 }
 
