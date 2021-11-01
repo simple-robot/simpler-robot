@@ -1,6 +1,9 @@
 package love.forte.test
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import love.forte.simbot.Component
 import love.forte.simbot.SimbotComponent
 import love.forte.simbot.message.*
@@ -8,7 +11,7 @@ import kotlin.reflect.KClass
 import kotlin.test.Test
 
 @Serializable
-object AtAll : SingleOnlyMessage<AtAll>(), Message.Element<AtAll>, Message.Key<AtAll> {
+object AtAll : SingleOnlyMessage<AtAll>(), Message.Key<AtAll> {
     override val key: Message.Key<AtAll>
         get() = this
 
@@ -26,11 +29,12 @@ object AtAll : SingleOnlyMessage<AtAll>(), Message.Element<AtAll>, Message.Key<A
     override val elementType: KClass<AtAll>
         get() = AtAll::class
 
-    override fun singleMessage(): AtAll = this
 }
 
 @Serializable
-class At(val code: Long) : AbstractMessageElement<At>(Key) {
+@SerialName("test.at")
+class At(val code: Long) : Message.Element<At> {
+    override val key: Message.Key<At> get() = Key
     companion object Key : AbstractKey<At>(SimbotComponent, castFunc = { doSafeCast<At>(it) }) {
         override val elementType: KClass<At> get() = At::class
     }
@@ -60,24 +64,13 @@ class MessageTest {
 
     @Test
     fun emptyMessageTest() {
-        val t1 = "t1".toText()
-        val t2 = "t2".toText()
-        println(t1 === t2)
 
-        val a1 = At(114514)
-        val a2 = At(1919810)
-        println(a1)
-        println(a2)
-        println(AtAll)
+        val a1 = At(2)
 
-        val messages = listOf(t1, t2, a1, AtAll, a2, AtAll, t1, t2, AtAll).toMessages()
+        val a2 = Text { "hi" }
 
-
-        println(t1 + t2 + a1 + AtAll + a2 + AtAll + t1 + t2 + AtAll)
-
-        println(messages)
-        println(messages == AtAll)
-        println(messages === AtAll)
+        println(Json.encodeToString(a1))
+        println(Json.encodeToString(a2))
 
 
     }

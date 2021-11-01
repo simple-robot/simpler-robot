@@ -35,13 +35,13 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
     override val component: Component get() = firstOrNull()?.component ?: SimbotComponent
 
     /**
-     * 拼接元素。
+     * plus single [MsgElement].
      */
     public operator fun plus(element: MsgElement<*>): Messages
 
 
     /**
-     * 拼接元素。
+     * plus [MsgElement] List.
      */
     public operator fun plus(messages: List<MsgElement<*>>): Messages
 
@@ -132,20 +132,20 @@ public object EmptyMessages : Messages, List<MsgElement<*>> by emptyList() {
 
 
 /**
- * **仅** 允许一个单个元素的 [Messages]. 一般由其他的 [Message.Element] 实现，代表此消息只能独自存在。
+ * **仅** 允许一个单个元素的 [Messages]. 一般配合 [Message.Element] 进行实现，代表此消息只能独自存在。
  * 在追加其他任何元素的时候，会直接替换为后者。
  *
  */
-public abstract class SingleOnlyMessage<E : Message.Element<E>> : Messages, AbstractList<MsgElement<*>>() {
+public abstract class SingleOnlyMessage<E : Message.Element<E>> : MsgElement<E>, Messages, AbstractList<MsgElement<*>>() {
     abstract override val component: Component
-    // abstract override val key: Message.Key<E>
+    abstract override val key: Message.Key<E>
 
-    protected abstract fun singleMessage(): E
 
     // List
     final override val size: Int get() = 1
     override fun get(index: Int): Message.Element<*> =
-        if (index == 0) singleMessage() else throw IndexOutOfBoundsException("Index in $index")
+        if (index == 0) this else throw IndexOutOfBoundsException("Index in $index")
+
 
     /**
      * 拼接元素。

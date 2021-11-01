@@ -15,9 +15,7 @@ import kotlin.reflect.KClass
  *
  */
 @Suppress("CanBeParameter")
-@Serializable
-public sealed class StandardMessage<E : Message.Element<E>>(private val _key: Message.Key<E>) : AbstractMessageElement<E>(_key)
-
+public sealed class StandardMessage<E : Message.Element<E>> : Message.Element<E>
 
 
 public fun String.toText(): Text = Text.getText(this)
@@ -29,7 +27,8 @@ public inline fun Text(block: () -> String): Text = block().toText()
  */
 @Serializable
 @SerialName("std.text")
-public data class Text internal constructor(public val text: String) : StandardMessage<Text>(Key) {
+public data class Text internal constructor(public val text: String) : StandardMessage<Text>() {
+    override val key: Message.Key<Text> get() = Key
 
     public operator fun plus(other: Text): Text = when {
         text.isEmpty() -> other

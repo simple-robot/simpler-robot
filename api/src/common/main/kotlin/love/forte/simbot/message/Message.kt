@@ -1,6 +1,5 @@
 package love.forte.simbot.message
 
-import kotlinx.serialization.Serializable
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentContainer
 import love.forte.simbot.SimbotComponent
@@ -79,8 +78,6 @@ public sealed interface Message : ComponentContainer {
 }
 
 
-
-
 @Suppress("unused")
 public inline fun <reified E : Element<E>> Message.Key<E>.cast(value: Any?): E {
     if (value == null) throw NullPointerException("cast value")
@@ -100,12 +97,8 @@ public abstract class AbstractKey<E : Element<E>>(
 }
 
 
-internal inline fun <reified E: Element<E>> doSafeCast(value: Any?): E? = if (value is E) value else null
+internal inline fun <reified E : Element<E>> doSafeCast(value: Any?): E? = if (value is E) value else null
 
-
-
-@Serializable
-public abstract class AbstractMessageElement<E : Element<E>>(override val key: Message.Key<E>) : Element<E>
 
 
 
