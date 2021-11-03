@@ -26,4 +26,7 @@ import java.lang.annotation.*;
 @Documented
 @Import({SimbotAppInfoConfiguration.class})
 public @interface EnableSimbot {
+
+    Class<?> appClass() default SimbotSpringApp.class;
+
 }
