@@ -1,6 +1,6 @@
-package love.forte.simbot.definition.account
+package love.forte.simbot.definition
 
-import love.forte.simbot.definition.People
+import love.forte.simbot.ID
 
 /**
  * 一个账号的 **信息**。
@@ -12,7 +12,7 @@ public interface AccountInfo : People {
      * 这个账号的唯一ID.
      * 作为账号的信息，也可以作为账号这个[人][People]。
      */
-    override val id: String
+    override val id: ID
 
     /**
      * 这个账号的用户名。
@@ -23,10 +23,3 @@ public interface AccountInfo : People {
 
 }
 
-
-/**
- * 一个 **可操作** 的账号。代表这个账号中的部分信息可以进行修改或操作。
- */
-public interface OperableAccountInfo: AccountInfo {
-    override var username: String
-}

@@ -1,5 +1,7 @@
 package love.forte.simbot.definition
 
+import love.forte.simbot.ID
+
 /**
  * 一个 **组织** 结构（中的一员）。
  *
@@ -57,7 +59,7 @@ public interface Organization : Structured<Organization?, List<Organization>> {
      * 一个组织下的成员。
      */
     public interface Member : People {
-        override val id: String
+        override val id: ID
         // 职责？权限？阶级？
     }
 

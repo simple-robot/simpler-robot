@@ -1,7 +1,4 @@
-package love.forte.simbot.definition.container
-
-import love.forte.simbot.definition.Container
-import love.forte.simbot.definition.account.AccountInfo
+package love.forte.simbot.definition
 
 /**
  * 对 [AccountInfo] 的容器。

@@ -2,9 +2,7 @@
 
 package love.forte.simbot.definition
 
-import love.forte.simbot.definition.account.AccountInfo
-import love.forte.simbot.definition.account.OperableAccountInfo
-import love.forte.simbot.definition.container.AccountInfoContainer
+import love.forte.simbot.ID
 import kotlin.jvm.JvmName
 
 /**
@@ -17,7 +15,7 @@ public interface User : People, AccountInfoContainer {
     /**
      * 这个账号的唯一ID。
      */
-    override val id: String
+    override val id: ID
         get() = accountInfo.id
 
     /**
@@ -31,19 +29,3 @@ public interface User : People, AccountInfoContainer {
 
 }
 
-
-/**
- * 一个 **可操作** 的账号。
- */
-public interface OperableAccount : User {
-    /** 这个账号可操作的账号信息。 */
-    override var accountInfo: OperableAccountInfo
-}
-
-
-//
-public inline var OperableAccount.username: String
-    get() = accountInfo.username
-    set(value) {
-        accountInfo.username = value
-    }

@@ -1,5 +1,7 @@
 package love.forte.simbot.definition
 
+import love.forte.simbot.ID
+
 /**
  *
  * 一个 **人**。所有与人有关或者说类似于人的，都是 [人][People].
@@ -12,6 +14,7 @@ public interface People {
     /**
      * 这个人所对应的唯一ID。
      *
+     * @see ID
      */
-    public val id: String
+    public val id: ID
 }
