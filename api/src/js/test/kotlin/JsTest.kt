@@ -1,6 +1,6 @@
-import love.forte.simbot.message.StandardMessage
+import love.forte.simbot.message.BaseStandardMessage
 
 fun main() {
 
-    val c = StandardMessage::class
+    val c = BaseStandardMessage::class
 }

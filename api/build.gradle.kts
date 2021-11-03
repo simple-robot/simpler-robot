@@ -106,6 +106,8 @@ kotlin {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.3.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.0")
             }
         }
     }

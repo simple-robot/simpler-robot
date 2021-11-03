@@ -21,12 +21,25 @@ import love.forte.simbot.message.Message.Element as MsgElement
 
 
 /**
+ * 针对于 [Message.Element] 的多态序列化的注册器。
+ *
+ * @see Messages
+ */
+public interface MessageElementPolymorphicRegistrar {
+    public fun registrar(builderAction: PolymorphicModuleBuilder<MsgElement<*>>.() -> Unit)
+}
+
+
+/**
  * 消息列表，即 [MsgElement] 的列表，连接多条消息的链表。
  *
  * [Messages] 是不可变的，但是 [Messages] 中的元素并不一定。每次进行 [plus] 都应视为得到了一个新的 [Messages] 实例。
  *
  */
 public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
+
+
+
     /**
      * 这串消息所属组件。在消息链中，所有的消息都应属于同一个组件。
      *
@@ -53,26 +66,38 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
 
     /**
      */
-    public companion object {
+    public companion object : MessageElementPolymorphicRegistrar {
         @JvmSynthetic
         @Suppress("ObjectPropertyName")
         private var _serializersModule = SerializersModule {
             polymorphic(MsgElement::class) {
-                val c = StandardMessage::class
-                c.qualifiedName
                 subclass(Text.serializer())
-
             }
+
         }
+
         public val serializersModule: SerializersModule get() = _serializersModule
 
-        public fun addPolymorphic(builderAction: PolymorphicModuleBuilder<MsgElement<*>>.() -> Unit = {}) {
-            _serializersModule += SerializersModule {
-                polymorphic(baseClass = MsgElement::class, builderAction = builderAction)
+
+        public fun mergeSerializersModule(serializersModule: SerializersModule) {
+            _serializersModule += serializersModule
+        }
+
+        public fun mergeSerializersModule(builderAction: SerializersModuleBuilder.() -> Unit) {
+            mergeSerializersModule(SerializersModule(builderAction))
+        }
+
+        public override fun registrar(builderAction: PolymorphicModuleBuilder<MsgElement<*>>.() -> Unit) {
+            registrarPolymorphic(builderAction)
+        }
+
+        public inline fun <reified M : MsgElement<*>> registrarPolymorphic(crossinline builderAction: PolymorphicModuleBuilder<M>.() -> Unit) {
+            mergeSerializersModule {
+                polymorphic(baseClass = M::class, builderAction = builderAction)
             }
         }
 
-        private object MessagesSerializer : KSerializer<Messages> {
+        internal object MessagesSerializer : KSerializer<Messages> {
             private val delegate = ListSerializer(PolymorphicSerializer(MsgElement::class))
             override fun deserialize(decoder: Decoder): Messages = delegate.deserialize(decoder).toMessages()
             override val descriptor: SerialDescriptor get() = delegate.descriptor
@@ -136,7 +161,8 @@ public object EmptyMessages : Messages, List<MsgElement<*>> by emptyList() {
  * 在追加其他任何元素的时候，会直接替换为后者。
  *
  */
-public abstract class SingleOnlyMessage<E : Message.Element<E>> : MsgElement<E>, Messages, AbstractList<MsgElement<*>>() {
+public abstract class SingleOnlyMessage<E : Message.Element<E>> : MsgElement<E>, Messages,
+    AbstractList<MsgElement<*>>() {
     abstract override val component: Component
     abstract override val key: Message.Key<E>
 
@@ -213,6 +239,7 @@ public operator fun Message.Element<*>.plus(other: SingleOnlyMessage<*>): Messag
  */
 // @Serializable
 internal class MessagesImpl
+
 /*
  * delegate 的内容不进行验证，通过顶层函数进行solve. 原则上delegate 不允许为空。
  */

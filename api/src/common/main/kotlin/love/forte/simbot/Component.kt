@@ -1,5 +1,9 @@
 package love.forte.simbot
 
+import kotlinx.serialization.*
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.definition.Container
 import love.forte.simbot.exception.SimbotRuntimeException
 import love.forte.simbot.utils.*
@@ -15,23 +19,25 @@ import love.forte.simbot.utils.*
  *
  * @see Components
  */
+@Serializable
 @Suppress("MemberVisibilityCanBePrivate")
 public sealed class Component(public open val id: String) {
 
     /**
      * 获取一个属性。
      */
-    public abstract operator fun <T> get(propertyKey: String): T?
+    public abstract operator fun <T> get(propertyKey: String): String?
 
     /**
      * 获得属性列表。
      */
-    public abstract fun properties(): Map<String, Any>
+    public abstract fun properties(): Map<String, String>
 
     /**
      * 直接使用 === 进行比较。
      */
     override fun equals(other: Any?): Boolean = this === other
+
 
     override fun hashCode(): Int = id.hashCode()
 }
@@ -41,9 +47,11 @@ public sealed class Component(public open val id: String) {
  * 由simbot实现的唯一顶层组件，一部分可能由simbot自身提供的通用内容会使用此组件。
  * simbot的顶层组件一般代表可以通用的组件，也应当是唯一一个允许组件交叉的组件。
  */
+@Serializable
+@SerialName("simbotComponent")
 public object SimbotComponent : Component("simbot") {
-    override fun <T> get(propertyKey: String): T? = null
-    override fun properties(): Map<String, Any> = emptyMap()
+    override fun <T> get(propertyKey: String): String? = null
+    override fun properties(): Map<String, String> = emptyMap()
     override fun toString(): String = "Component(id=simbot)"
     override fun hashCode(): Int = 0
 }
@@ -81,7 +89,7 @@ public object Components {
      *
      * @throws ComponentAlreadyExistsException 如果组件已经存在
      */
-    public fun create(id: String, properties: Map<String, Any> = emptyMap()): Component {
+    public fun create(id: String, properties: Map<String, String> = emptyMap()): Component {
         return comps.doCompute(id) { k, old ->
             if (old != null) {
                 throw ComponentAlreadyExistsException("$k: $old")
@@ -107,22 +115,25 @@ public object Components {
     public fun find(id: String): Component? = comps[id]
 
 
-    internal data class Comp(override val id: String, private val properties: Map<String, Any>) : Component(id) {
+    @SerialName("component")
+    @Serializable
+    internal data class Comp(@SerialName("comp_id") override val id: String, private val properties: Map<String, String>) : Component(id) {
         @Suppress("UNCHECKED_CAST")
-        override fun <T> get(propertyKey: String): T? = properties[propertyKey] as? T
+        override fun <T> get(propertyKey: String): String? = properties[propertyKey]
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int {
             return id.hashCode()
         }
-        override fun properties(): Map<String, Any> = properties.toMap()
+        override fun properties(): Map<String, String> = properties.toMap()
     }
 }
+
 
 /**
  * 寻找对应的 [Component], 如果不存在，创建一个。
  *
  */
-public inline fun Components.resolve(id: String, properties: () -> Map<String, Any> = { emptyMap() }): Component {
+public inline fun Components.resolve(id: String, properties: () -> Map<String, String> = { emptyMap() }): Component {
     return find(id) ?: create(id, properties())
 }
 
