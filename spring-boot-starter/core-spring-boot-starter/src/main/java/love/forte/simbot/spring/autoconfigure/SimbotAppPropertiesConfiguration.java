@@ -29,7 +29,6 @@ import java.util.Map;
 /**
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
-@Configuration
 public class SimbotAppPropertiesConfiguration implements ImportBeanDefinitionRegistrar {
     @Override
     public void registerBeanDefinitions(
@@ -38,6 +37,7 @@ public class SimbotAppPropertiesConfiguration implements ImportBeanDefinitionReg
             @NotNull BeanNameGenerator importBeanNameGenerator) {
 
         Map<String, Object> annotationAttributes = annotationMetadata.getAnnotationAttributes(EnableSimbot.class.getName());
+
         if (annotationAttributes == null) {
             annotationAttributes = Collections.emptyMap();
         }
