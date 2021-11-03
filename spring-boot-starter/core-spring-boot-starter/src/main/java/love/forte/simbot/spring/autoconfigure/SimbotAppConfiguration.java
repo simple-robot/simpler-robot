@@ -55,7 +55,6 @@ public class SimbotAppConfiguration {
 
     @Bean("simbotContext")
     public SimbotContext simbotApp(ConfigurableEnvironment environment, ConverterManager converterManager) {
-        System.out.println("Simbot context run!");
         Class<?> applicationClass = simbotAppProperties.getAppClass();
         if (applicationClass == null) {
             applicationClass = SimbotAppConfiguration.class;

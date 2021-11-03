@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author ForteScarlet
  */
 @SimbotApplication
-@EnableSimbot(appClass = TestApplication.class)
+@EnableSimbot//(appClass = TestApplication.class)
 @SpringBootApplication
 public class TestApplication {
     public static void main(String[] args) {
