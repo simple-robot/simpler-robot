@@ -17,10 +17,8 @@ package love.forte.simbot.spring.autoconfigure;
 import cn.hutool.core.convert.ConverterRegistry;
 import love.forte.common.utils.convert.ConverterManager;
 import love.forte.common.utils.convert.HutoolConverterManagerImpl;
-import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
-import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,27 +28,21 @@ import org.springframework.core.env.ConfigurableEnvironment;
 /**
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
-@Configuration(proxyBeanMethods = false)
-@Import({
-        SimbotAppProperties.class,
-        SpringDependBeanFactory.class
-})
-@SimbotApplication
+@Import(SpringDependBeanFactory.class)
+@Configuration
 public class SimbotAppConfiguration {
 
     private final SimbotAppProperties simbotAppProperties;
     private final SpringDependBeanFactory springDependBeanFactory;
-    private final ApplicationArguments applicationArguments;
 
-
-    public SimbotAppConfiguration(SimbotAppProperties simbotAppProperties,
-                                  SpringDependBeanFactory springDependBeanFactory,
-                                  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-                                          ApplicationArguments applicationArguments) {
+    public SimbotAppConfiguration(@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+                                          SimbotAppProperties simbotAppProperties,
+                                  SpringDependBeanFactory springDependBeanFactory) {
         this.simbotAppProperties = simbotAppProperties;
         this.springDependBeanFactory = springDependBeanFactory;
-        this.applicationArguments = applicationArguments;
+        // this.environment = environment;
     }
+
 
     /**
      * simbot configuration 类型转化器。
@@ -68,7 +60,8 @@ public class SimbotAppConfiguration {
             applicationClass = SimbotAppConfiguration.class;
         }
 
-        final String[] sourceArgs = applicationArguments.getSourceArgs();
+        // final String[] sourceArgs = applicationArguments.getSourceArgs();
+        final String[] sourceArgs = new String[0]; //applicationArguments.getSourceArgs();
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         if (loader == null) {
             loader = getClass().getClassLoader();
@@ -85,4 +78,8 @@ public class SimbotAppConfiguration {
     }
 
 
+    // @Override
+    // public void run(ApplicationArguments args) {
+    //     applicationArguments = args;
+    // }
 }

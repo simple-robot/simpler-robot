@@ -31,7 +31,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- *
  * spring的 {@link DependBeanFactory} 实现。
  *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
@@ -137,11 +136,10 @@ public class SpringDependBeanFactory implements DependBeanFactory {
     /**
      * 获取类型。如果获取的类型为一个动态代理类型，则会尝试获取他的真正类型。
      *
-     * @see SpringProxy
-     * @see AopUtils
-     *
      * @param name bean name
      * @return real type.
+     * @see SpringProxy
+     * @see AopUtils
      */
     @Override
     public Class<?> getType(String name) {
@@ -153,17 +151,16 @@ public class SpringDependBeanFactory implements DependBeanFactory {
 
             // see AopUtils#isAopProxy
             boolean isProxy = (SpringProxy.class.isAssignableFrom(type) && Proxy.isProxyClass(type)) ||
-                        (type.getName().contains(ClassUtils.CGLIB_CLASS_SEPARATOR));
-                if (isProxy) {
-                    // is proxy.
-                    type = AopUtils.getTargetClass(beanFactory.getBean(name));
-                }
-
+                    (type.getName().contains(ClassUtils.CGLIB_CLASS_SEPARATOR));
+            if (isProxy) {
+                // is proxy.
+                type = AopUtils.getTargetClass(beanFactory.getBean(name));
+            }
 
 
             return type;
         } catch (NoSuchBeanDefinitionException e) {
-             return null;
+            return null;
         }
     }
 }

@@ -24,6 +24,8 @@ import love.forte.simbot.component.lovelycat.message.CatGroupInfo
 import love.forte.simbot.component.lovelycat.message.event.GROUP_SUFFIX
 import love.forte.simbot.component.lovelycat.message.event.lovelyCatBotInfo
 import love.forte.simbot.component.lovelycat.message.result.*
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 
 /**
@@ -34,6 +36,8 @@ public class LovelyCatGetter(
     private val api: LovelyCatApiTemplate,
     private val def: Getter
 ) : Getter {
+    override val coroutineContext: CoroutineContext
+        get() = EmptyCoroutineContext
     /**
      * 得到当前bot的权限信息。
      */

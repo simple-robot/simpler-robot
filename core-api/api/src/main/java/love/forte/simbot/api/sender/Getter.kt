@@ -17,6 +17,8 @@ package love.forte.simbot.api.sender
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.api.message.containers.*
 import love.forte.simbot.api.message.results.*
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  *
@@ -41,7 +43,9 @@ public interface Getter : Communicator, BotContainer {
     /**
      * 一个标识用的接口，用于标记一个 [Getter] 接口的实现为 **默认** 送信器。
      */
-    interface Def : Getter
+    interface Def : Getter {
+        override val coroutineContext: CoroutineContext get() = EmptyCoroutineContext
+    }
 
     /**
      * 得到当前bot的权限信息。

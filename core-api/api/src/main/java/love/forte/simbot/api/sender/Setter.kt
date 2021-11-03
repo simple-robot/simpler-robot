@@ -14,6 +14,7 @@
 
 package love.forte.simbot.api.sender
 
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.Carrier
 import love.forte.simbot.api.message.assists.Flag
@@ -25,6 +26,8 @@ import love.forte.simbot.api.message.events.FriendAddRequest
 import love.forte.simbot.api.message.events.GroupAddRequest
 import love.forte.simbot.api.message.events.MessageGet
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  *
@@ -41,7 +44,9 @@ public interface Setter : Communicator {
     /**
      * 一个标识用的接口，用于标记一个 [Setter] 接口的实现为 **默认** 送信器。
      */
-    interface Def : Setter
+    interface Def : Setter {
+        override val coroutineContext: CoroutineContext get() = EmptyCoroutineContext
+    }
 
     /**
      * 处理好友添加申请。
@@ -93,6 +98,7 @@ public interface Setter : Communicator {
     suspend fun friendAddRequestReject(flag: Flag<FriendAddRequest.FlagContent>): Carrier<Boolean> =
         friendAddRequestReject(flag, friendRemark = null, blackList = false)
 
+    //region set friend add request blocking
     /////////////// blocking //////////////////
     fun setFriendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
@@ -124,6 +130,51 @@ public interface Setter : Communicator {
 
     fun rejectFriendAddRequest(flag: Flag<FriendAddRequest.FlagContent>): Carrier<Boolean> =
         runBlocking { friendAddRequestReject(flag) }
+    //endregion
+
+    //region set friend add request async
+    /////////////// async //////////////////
+    fun setFriendAddRequestAsync(
+        flag: Flag<FriendAddRequest.FlagContent>,
+        friendRemark: String?,
+        agree: Boolean,
+        blackList: Boolean,
+    ) {
+        launch { friendAddRequest(flag, friendRemark, agree, blackList) }
+    }
+
+    fun acceptFriendAddRequestAsync(
+        flag: Flag<FriendAddRequest.FlagContent>,
+        friendRemark: String?,
+        blackList: Boolean,
+    ) {
+        launch { friendAddRequestAccept(flag, friendRemark, blackList) }
+    }
+
+    fun acceptFriendAddRequestAsync(flag: Flag<FriendAddRequest.FlagContent>, blackList: Boolean) {
+        launch { friendAddRequestAccept(flag, blackList) }
+    }
+
+    fun acceptFriendAddRequestAsync(flag: Flag<FriendAddRequest.FlagContent>) {
+        launch { friendAddRequestAccept(flag) }
+    }
+
+    fun rejectFriendAddRequestAsync(
+        flag: Flag<FriendAddRequest.FlagContent>,
+        friendRemark: String?,
+        blackList: Boolean,
+    ) {
+        launch { friendAddRequestReject(flag, friendRemark, blackList) }
+    }
+
+    fun rejectFriendAddRequestAsync(flag: Flag<FriendAddRequest.FlagContent>, blackList: Boolean) {
+        launch { friendAddRequestReject(flag, blackList) }
+    }
+
+    fun rejectFriendAddRequestAsync(flag: Flag<FriendAddRequest.FlagContent>) {
+        launch { friendAddRequestReject(flag) }
+    }
+    //endregion
 
 
     /**
@@ -176,8 +227,8 @@ public interface Setter : Communicator {
         groupAddRequestReject(flag, false, null)
 
 
+    //region set group add request blocking
     //////////////// blocking //////////////////
-
 
     fun setGroupAddRequest(
         flag: Flag<GroupAddRequest.FlagContent>,
@@ -209,7 +260,52 @@ public interface Setter : Communicator {
 
     fun rejectGroupAddRequest(flag: Flag<GroupAddRequest.FlagContent>): Carrier<Boolean> =
         runBlocking { groupAddRequestReject(flag) }
+    //endregion
 
+    //region set group add request async
+    //////////////// async //////////////////
+
+    fun setGroupAddRequestAsync(
+        flag: Flag<GroupAddRequest.FlagContent>,
+        agree: Boolean,
+        blackList: Boolean,
+        why: String?,
+    ) {
+        launch { groupAddRequest(flag, agree, blackList, why) }
+    }
+
+    fun acceptGroupAddRequestAsync(
+        flag: Flag<GroupAddRequest.FlagContent>,
+        blackList: Boolean,
+        why: String?,
+    ) {
+        launch { groupAddRequestAccept(flag, blackList, why) }
+    }
+
+    fun acceptGroupAddRequestAsync(flag: Flag<GroupAddRequest.FlagContent>, why: String?) {
+        launch { groupAddRequestAccept(flag, why) }
+    }
+
+    fun acceptGroupAddRequestAsync(flag: Flag<GroupAddRequest.FlagContent>) {
+        launch { groupAddRequestAccept(flag) }
+    }
+
+    fun rejectGroupAddRequestAsync(
+        flag: Flag<GroupAddRequest.FlagContent>,
+        blackList: Boolean,
+        why: String?,
+    ) {
+        launch { groupAddRequestReject(flag, blackList, why) }
+    }
+
+    fun rejectGroupAddRequestAsync(flag: Flag<GroupAddRequest.FlagContent>, why: String?) {
+        launch { groupAddRequestReject(flag, why) }
+    }
+
+    fun rejectGroupAddRequestAsync(flag: Flag<GroupAddRequest.FlagContent>) {
+        launch { groupAddRequestReject(flag) }
+    }
+    //endregion
 
     /**
      * 设置群管理。 一般来讲需要账号权限为群主才能操作。
@@ -310,7 +406,8 @@ public interface Setter : Communicator {
     @JvmSynthetic
     suspend fun groupAnonymous(group: GroupContainer, agree: Boolean): Carrier<Boolean> =
         groupAnonymous(group.groupInfo, agree)
-    
+
+    //region set group anonymous blocking
     ////////////// blocking ///////////////
     
     fun setGroupAnonymous(group: String, agree: Boolean): Carrier<Boolean> = runBlocking { groupAnonymous(group, agree) }
@@ -325,6 +422,30 @@ public interface Setter : Communicator {
 
     fun setGroupAnonymous(group: GroupContainer, agree: Boolean): Carrier<Boolean> =
         runBlocking { groupAnonymous(group, agree) }
+    //endregion
+
+    //region set group anonymous async
+    ////////////// async ///////////////
+
+    fun setGroupAnonymousAsync(group: String, agree: Boolean) {
+        launch { groupAnonymous(group, agree) }
+    }
+
+
+    fun setGroupAnonymousAsync(group: Long, agree: Boolean) {
+        launch { groupAnonymous(group, agree) }
+    }
+
+
+    fun setGroupAnonymousAsync(group: GroupCodeContainer, agree: Boolean) {
+        launch { groupAnonymous(group, agree) }
+    }
+
+
+    fun setGroupAnonymousAsync(group: GroupContainer, agree: Boolean) {
+        launch { groupAnonymous(group, agree) }
+    }
+    //endregion
 
 
     /**
@@ -413,6 +534,7 @@ public interface Setter : Communicator {
                   T : AccountContainer =
         groupBan(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, time)
 
+    //region set group ban blocking
     ///////////// blocking /////////////////
 
     fun setGroupBan(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit): Carrier<Boolean> =
@@ -464,6 +586,70 @@ public interface Setter : Communicator {
             where T : GroupContainer,
                   T : AccountContainer =
         runBlocking { groupBan(groupAccountMsg, time) }
+    //endregion
+
+    //region set group ban async
+    ///////////// async /////////////////
+
+    fun setGroupBanAsync(groupCode: String, memberCode: String, time: Long, timeUnit: TimeUnit) {
+        launch { groupBan(groupCode, memberCode, time, timeUnit) }
+    }
+
+
+    fun setGroupBanAsync(groupCode: Long, memberCode: Long, time: Long, timeUnit: TimeUnit) {
+        launch { groupBan(groupCode, memberCode, time, timeUnit) }
+    }
+
+    fun setGroupBanAsync(
+        group: GroupCodeContainer,
+        member: AccountCodeContainer,
+        time: Long,
+        timeUnit: TimeUnit,
+    ) {
+        launch { groupBan(group, member, time, timeUnit) }
+    }
+
+    fun setGroupBanAsync(group: GroupContainer, member: AccountContainer, time: Long, timeUnit: TimeUnit) {
+        launch { groupBan(group, member, time, timeUnit) }
+    }
+
+    fun <T> setGroupBanAsync(groupAccountMsg: T, time: Long, timeUnit: TimeUnit) where T : GroupCodeContainer,
+                                                                                      T : AccountCodeContainer {
+        launch { groupBan(groupAccountMsg, time, timeUnit) }
+    }
+
+    fun <T> setGroupBanAsync(groupAccountMsg: T, time: Long, timeUnit: TimeUnit) where T : GroupContainer,
+                                                                                      T : AccountContainer {
+        launch { groupBan(groupAccountMsg, time, timeUnit) }
+    }
+
+    fun setGroupBanAsync(groupCode: String, memberCode: String, time: Long) {
+        launch { groupBan(groupCode, memberCode, time) }
+    }
+
+    fun setGroupBanAsync(groupCode: Long, memberCode: Long, time: Long) {
+        launch { groupBan(groupCode, memberCode, time) }
+    }
+
+    fun setGroupBanAsync(group: GroupCodeContainer, member: AccountCodeContainer, time: Long) {
+        launch { groupBan(group, member, time) }
+    }
+
+    fun setGroupBanAsync(group: GroupContainer, member: AccountContainer, time: Long) {
+        launch { groupBan(group, member, time) }
+    }
+
+    fun <T> setGroupBanAsync(groupAccountMsg: T, time: Long) where T : GroupCodeContainer,
+                                                                  T : AccountCodeContainer {
+        launch { groupBan(groupAccountMsg, time) }
+    }
+
+    fun <T> setGroupBanAsync(groupAccountMsg: T, time: Long) where T : GroupContainer,
+                                                                  T : AccountContainer {
+        launch { groupBan(groupAccountMsg, time) }
+    }
+    //endregion
+
 
     /**
      * 开启全群禁言。一般需要当前账号拥有对应权限。
@@ -491,6 +677,7 @@ public interface Setter : Communicator {
     suspend fun groupWholeBan(groupCode: GroupContainer, mute: Boolean): Carrier<Boolean> =
         groupWholeBan(groupCode.groupInfo, mute)
 
+    //region set group whole ban blocking
     //////////////// blocking ///////////////////
 
     fun setGroupWholeBan(groupCode: String, mute: Boolean): Carrier<Boolean> =
@@ -507,6 +694,30 @@ public interface Setter : Communicator {
 
     fun setGroupWholeBan(groupCode: GroupContainer, mute: Boolean): Carrier<Boolean> =
         runBlocking { groupWholeBan(groupCode, mute) }
+    //endregion
+
+    //region set group whole ban async
+    //////////////// async ///////////////////
+
+    fun setGroupWholeBanAsync(groupCode: String, mute: Boolean) {
+        launch { groupWholeBan(groupCode, mute) }
+    }
+
+
+    fun setGroupWholeBanAsync(groupCode: Long, mute: Boolean) {
+        launch { groupWholeBan(groupCode, mute) }
+    }
+
+
+    fun setGroupWholeBanAsync(groupCode: GroupCodeContainer, mute: Boolean) {
+        launch { groupWholeBan(groupCode, mute) }
+    }
+
+
+    fun setGroupWholeBanAsync(groupCode: GroupContainer, mute: Boolean) {
+        launch { groupWholeBan(groupCode, mute) }
+    }
+    //endregion
 
 
     /**
@@ -551,6 +762,7 @@ public interface Setter : Communicator {
                   T : AccountContainer =
         groupRemark(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, remark)
 
+    //region set group remark blocking
     ////////////// blocking //////////////////
 
     fun setGroupRemark(groupCode: String, memberCode: String, remark: String?): Carrier<String> =
@@ -579,6 +791,37 @@ public interface Setter : Communicator {
             where T : GroupContainer,
                   T : AccountContainer =
         runBlocking { groupRemark(groupAccountMsg, remark) }
+    //endregion
+
+    //region set group remark async
+    ////////////// async //////////////////
+
+    fun setGroupRemarkAsync(groupCode: String, memberCode: String, remark: String?) {
+        launch { groupRemark(groupCode, memberCode, remark) }
+    }
+
+    fun setGroupRemarkAsync(groupCode: Long, memberCode: Long, remark: String?) {
+        launch { groupRemark(groupCode, memberCode, remark) }
+    }
+
+    fun setGroupRemarkAsync(group: GroupCodeContainer, member: AccountCodeContainer, remark: String?) {
+        launch { groupRemark(group, member, remark) }
+    }
+
+    fun setGroupRemarkAsync(group: GroupContainer, member: AccountContainer, remark: String?) {
+        launch { groupRemark(group, member, remark) }
+    }
+
+    fun <T> setGroupRemarkAsync(groupAccountMsg: T, remark: String?) where T : GroupCodeContainer,
+                                                                          T : AccountCodeContainer {
+        launch { groupRemark(groupAccountMsg, remark) }
+    }
+
+    fun <T> setGroupRemarkAsync(groupAccountMsg: T, remark: String?) where T : GroupContainer,
+                                                                          T : AccountContainer {
+        launch { groupRemark(groupAccountMsg, remark) }
+    }
+    //endregion
 
 
     /**
@@ -607,6 +850,7 @@ public interface Setter : Communicator {
     suspend fun groupQuit(group: GroupContainer, forcibly: Boolean): Carrier<Boolean> =
         groupQuit(group.groupInfo, forcibly)
 
+    //region ste group quit blocking
     //////////////// blocking /////////////////
 
     fun setGroupQuit(groupCode: String, forcibly: Boolean): Carrier<Boolean> =
@@ -623,8 +867,28 @@ public interface Setter : Communicator {
 
     fun setGroupQuit(group: GroupContainer, forcibly: Boolean): Carrier<Boolean> =
         runBlocking { groupQuit(group, forcibly) }
+    //endregion
 
+    //region ste group quit async
+    //////////////// async /////////////////
 
+    fun setGroupQuitAsync(groupCode: String, forcibly: Boolean) {
+        launch { groupQuit(groupCode, forcibly) }
+    }
+
+    fun setGroupQuitAsync(groupCode: Long, forcibly: Boolean) {
+        launch { groupQuit(groupCode, forcibly) }
+    }
+
+    fun setGroupQuitAsync(group: GroupCodeContainer, forcibly: Boolean) {
+        launch { groupQuit(group, forcibly) }
+    }
+
+    fun setGroupQuitAsync(group: GroupContainer, forcibly: Boolean) {
+        launch { groupQuit(group, forcibly) }
+    }
+
+//endregion
     /**
      * 踢出某群员。需要拥有对应权限。
      *
@@ -680,6 +944,7 @@ public interface Setter : Communicator {
                   T : AccountContainer =
         groupMemberKick(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, why, blackList)
 
+    //region set group member kick blocking
     /////////////// blocking //////////////////
 
     fun setGroupMemberKick(groupCode: String, memberCode: String, why: String?, blackList: Boolean): Carrier<Boolean> =
@@ -718,6 +983,52 @@ public interface Setter : Communicator {
             where T : GroupContainer,
                   T : AccountContainer =
         runBlocking { groupMemberKick(groupAccountMsg, why, blackList) }
+    //endregion
+
+    //region set group member kick async
+    /////////////// async //////////////////
+
+    fun setGroupMemberKickAsync(groupCode: String, memberCode: String, why: String?, blackList: Boolean) {
+        launch { groupMemberKick(groupCode, memberCode, why, blackList) }
+    }
+
+
+    fun setGroupMemberKickAsync(groupCode: Long, memberCode: Long, why: String?, blackList: Boolean) {
+        launch { groupMemberKick(groupCode, memberCode, why, blackList) }
+    }
+
+
+    fun setGroupMemberKickAsync(
+        group: GroupCodeContainer,
+        member: AccountCodeContainer,
+        why: String?,
+        blackList: Boolean,
+    ) {
+        launch { groupMemberKick(group, member, why, blackList) }
+    }
+
+
+    fun setGroupMemberKickAsync(
+        group: GroupContainer,
+        member: AccountContainer,
+        why: String?,
+        blackList: Boolean,
+    ) {
+        launch { groupMemberKick(group, member, why, blackList) }
+    }
+
+
+    fun <T> setGroupMemberKickAsync(groupAccountMsg: T, why: String?, blackList: Boolean)
+            where T : GroupCodeContainer,
+                  T : AccountCodeContainer {
+                        launch { groupMemberKick(groupAccountMsg, why, blackList) }
+                  }
+
+
+    fun <T> setGroupMemberKickAsync(groupAccountMsg: T, why: String?, blackList: Boolean) where T : GroupContainer, T : AccountContainer {
+                    launch { groupMemberKick(groupAccountMsg, why, blackList) }
+                  }
+    //endregion
 
 
     /**
@@ -769,6 +1080,7 @@ public interface Setter : Communicator {
                   T : AccountContainer =
         groupMemberSpecialTitle(groupAccountMsg.groupInfo, groupAccountMsg.accountInfo, title)
 
+    //region set group member special title blocking
     /////////////// blocking ///////////////
 
     fun setGroupMemberSpecialTitle(groupCode: String, memberCode: String, title: String?): Carrier<String> =
@@ -801,6 +1113,48 @@ public interface Setter : Communicator {
             where T : GroupContainer,
                   T : AccountContainer =
         runBlocking { groupMemberSpecialTitle(groupAccountMsg, title) }
+    //endregion
+
+    //region set group member special title async
+    /////////////// async ///////////////
+
+    fun setGroupMemberSpecialTitleAsync(groupCode: String, memberCode: String, title: String?) {
+        launch { groupMemberSpecialTitle(groupCode, memberCode, title) }
+    }
+
+
+    fun setGroupMemberSpecialTitleAsync(groupCode: Long, memberCode: Long, title: String?) {
+        launch { groupMemberSpecialTitle(groupCode, memberCode, title) }
+    }
+
+
+    fun setGroupMemberSpecialTitleAsync(
+        group: GroupCodeContainer,
+        member: AccountCodeContainer,
+        title: String?,
+    ) {
+        launch { groupMemberSpecialTitle(group, member, title) }
+    }
+
+
+    fun setGroupMemberSpecialTitleAsync(group: GroupContainer, member: AccountContainer, title: String?) {
+        launch { groupMemberSpecialTitle(group, member, title) }
+    }
+
+
+    fun <T> setGroupMemberSpecialTitleAsync(groupAccountMsg: T, title: String?)
+            where T : GroupCodeContainer,
+                  T : AccountCodeContainer {
+                    launch { groupMemberSpecialTitle(groupAccountMsg, title) }
+                  }
+
+
+    fun <T> setGroupMemberSpecialTitleAsync(groupAccountMsg: T, title: String?)
+            where T : GroupContainer,
+                  T : AccountContainer {
+                    launch { groupMemberSpecialTitle(groupAccountMsg, title) }
+                  }
+    //endregion
 
 
     /**
@@ -836,6 +1190,7 @@ public interface Setter : Communicator {
     @JvmSynthetic
     suspend fun groupName(group: GroupContainer, name: String): Carrier<String> = groupName(group.groupInfo, name)
 
+    //region set group name blocking
     ///////// blocking ///////////
 
     fun setGroupName(groupCode: String, name: String): Carrier<String> = runBlocking { groupName(groupCode, name) }
@@ -846,6 +1201,27 @@ public interface Setter : Communicator {
     fun setGroupName(group: GroupCodeContainer, name: String): Carrier<String> = runBlocking { groupName(group, name) }
 
     fun setGroupName(group: GroupContainer, name: String): Carrier<String> = runBlocking { groupName(group, name) }
+    //endregion
+
+    //region set group name async
+    ///////// async ///////////
+
+    fun setGroupNameAsync(groupCode: String, name: String) {
+        launch { groupName(groupCode, name) }
+    }
+
+    fun setGroupNameAsync(groupCode: Long, name: String) {
+        launch { groupName(groupCode, name) }
+    }
+
+    fun setGroupNameAsync(group: GroupCodeContainer, name: String) {
+        launch { groupName(group, name) }
+    }
+
+    fun setGroupNameAsync(group: GroupContainer, name: String) {
+        launch { groupName(group, name) }
+    }
+    //endregion
 
 
     /**
@@ -863,6 +1239,7 @@ public interface Setter : Communicator {
     @JvmSynthetic
     suspend fun friendDelete(friend: AccountCodeContainer): Carrier<Boolean> = friendDelete(friend.accountCode)
 
+    //region set friend delete blocking
     //////////// blocking //////////////
 
     fun setFriendDelete(friend: String): Carrier<Boolean> =
@@ -873,5 +1250,27 @@ public interface Setter : Communicator {
     fun setFriendDelete(friend: AccountContainer): Carrier<Boolean> = runBlocking { friendDelete(friend) }
 
     fun setFriendDelete(friend: AccountCodeContainer): Carrier<Boolean> = runBlocking { friendDelete(friend) }
+    //endregion
+
+    //region set friend delete async
+    //////////// async //////////////
+
+    fun setFriendDeleteAsync(friend: String){
+        launch { friendDelete(friend) }
+    }
+
+    fun setFriendDeleteAsync(friend: Long){
+        launch { friendDelete(friend) }
+    }
+
+    fun setFriendDeleteAsync(friend: AccountContainer){
+        launch { friendDelete(friend) }
+    }
+
+    fun setFriendDeleteAsync(friend: AccountCodeContainer) {
+        launch { friendDelete(friend) }
+    }
+    //endregion
+
 
 }

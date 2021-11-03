@@ -27,6 +27,8 @@ import love.forte.simbot.api.sender.Setter
 import love.forte.simbot.component.lovelycat.LovelyCatApiTemplate
 import love.forte.simbot.component.lovelycat.message.event.GROUP_SUFFIX
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 
 /**
@@ -37,6 +39,9 @@ public class LovelyCatSetter(
     private val api: LovelyCatApiTemplate,
     private val def: Setter
 ) : Setter {
+    override val coroutineContext: CoroutineContext
+        get() = EmptyCoroutineContext
+
     override suspend fun friendAddRequest(
         flag: Flag<FriendAddRequest.FlagContent>,
         friendRemark: String?,

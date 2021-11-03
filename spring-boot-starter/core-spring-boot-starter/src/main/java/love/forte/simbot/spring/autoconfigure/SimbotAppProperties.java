@@ -14,21 +14,14 @@
 
 package love.forte.simbot.spring.autoconfigure;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
- *
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
-@Component
-@ConfigurationProperties(prefix = "simbot.core")
-@lombok.Getter
-@lombok.Setter
+@RequiredArgsConstructor
 public class SimbotAppProperties {
-    /**
-     * 启动类路径。
-     * 此参数仅存在于Springboot-starter中。
-     */
-    private Class<?> appClass;
+    @Getter
+    private final Class<?> appClass;
 }

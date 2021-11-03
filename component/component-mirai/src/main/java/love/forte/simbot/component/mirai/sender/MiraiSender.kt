@@ -13,7 +13,7 @@
  */
 package love.forte.simbot.component.mirai.sender
 
-import kotlinx.atomicfu.locks.synchronized
+import kotlinx.coroutines.CoroutineScope
 import love.forte.common.utils.Carrier
 import love.forte.common.utils.toCarrier
 import love.forte.simbot.api.message.MessageContent
@@ -93,7 +93,7 @@ public class MiraiSender(
     private val cache: MiraiMessageCache,
 
     private val remoteResourceInProcessor: RemoteResourceInProcessor,
-) : Sender {
+) : Sender, CoroutineScope by bot {
 
     private companion object : TypedCompLogger(MiraiSender::class.java)
 
@@ -101,11 +101,12 @@ public class MiraiSender(
     private val senderInfo: SenderInfo
         get() {
             if (!::_senderInfo.isInitialized) {
-                synchronized(this) {
-                    if (!::_senderInfo.isInitialized) {
-                        _senderInfo = SenderInfo(bot, contact, message, cache)
-                    }
-                }
+                _senderInfo = SenderInfo(bot, contact, message, cache)
+                // synchronized(this) {
+                //     if (!::_senderInfo.isInitialized) {
+                //         _senderInfo = SenderInfo(bot, contact, message, cache)
+                //     }
+                // }
             }
             return _senderInfo
         }

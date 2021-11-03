@@ -14,6 +14,7 @@
 
 package love.forte.simbot.component.mirai.sender
 
+import kotlinx.coroutines.CoroutineScope
 import love.forte.common.utils.*
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountCodeContainer
@@ -59,7 +60,7 @@ public object MiraiSetterFactory : SetterFactory {
 public class MiraiSetter(
     private val bot: Bot,
     private val defSetter: Setter,
-) : Setter {
+) : Setter, CoroutineScope by bot {
     private companion object : TypedCompLogger(MiraiSetter::class.java) {
         private val setGroupAnonymous0Logger: Int by lazy(LazyThreadSafetyMode.NONE) {
             logger.warn("It is not supported to modify the anonymous chat status, only to return to the current status. This warning will only appear once.")
@@ -71,11 +72,12 @@ public class MiraiSetter(
     private val setterInfo: SetterInfo
         get() {
             if (!::_setterInfo.isInitialized) {
-                synchronized(this) {
-                    if (!::_setterInfo.isInitialized) {
-                        _setterInfo = SetterInfo(bot)
-                    }
-                }
+                _setterInfo = SetterInfo(bot)
+                // synchronized(this) {
+                //     if (!::_setterInfo.isInitialized) {
+                //         _setterInfo = SetterInfo(bot)
+                //     }
+                // }
             }
             return _setterInfo
         }

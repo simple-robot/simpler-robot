@@ -2,6 +2,7 @@
 
 package love.forte.simbot.kaiheila.api.v3.sender
 
+import kotlinx.coroutines.CoroutineScope
 import love.forte.common.utils.Carrier
 import love.forte.common.utils.toCarrier
 import love.forte.simbot.api.message.MessageContent
@@ -44,7 +45,7 @@ private fun MessageContent.toGroupReqs(targetId: String): List<ApiData.Req<*>> {
 public class KhlV3Sender(
     private val bot: KhlBot,
     private val def: Sender.Def
-) : KhlSender.Sender {
+) : KhlSender.Sender, CoroutineScope by bot {
 
 
     override suspend fun groupMsg(

@@ -14,6 +14,7 @@
 
 package love.forte.simbot.api.sender
 
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import love.forte.common.utils.Carrier
 import love.forte.simbot.api.message.MessageContent
@@ -24,6 +25,8 @@ import love.forte.simbot.api.message.containers.GroupCodeContainer
 import love.forte.simbot.api.message.containers.GroupContainer
 import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.PrivateMsg
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  *
@@ -39,7 +42,9 @@ public interface Sender : Communicator {
     /**
      * 一个标识用的接口，用于标记一个 [Sender] 接口的实现为 **默认** 送信器。
      */
-    interface Def : Sender
+    interface Def : Sender {
+        override val coroutineContext: CoroutineContext get() = EmptyCoroutineContext
+    }
 
     /**
      * 发送一条群消息。
@@ -156,6 +161,56 @@ public interface Sender : Communicator {
 
     fun sendGroupMsg(group: GroupContainer, msg: MessageContent): Carrier<out Flag<GroupMsg.FlagContent>> =
         runBlocking { groupMsg(group, msg) }
+
+    /*  —————————— async ——————————  */
+
+    fun sendGroupMsgAsync(parent: String?, group: String, msg: String) {
+        launch { groupMsg(parent, group, msg) }
+    }
+
+    fun sendGroupMsgAsync(group: String, msg: String) {
+        launch { groupMsg(group, msg) }
+    }
+
+    fun sendGroupMsgAsync(parent: Long?, group: Long, msg: String) {
+        launch { groupMsg(parent, group, msg) }
+    }
+
+    fun sendGroupMsgAsync(group: Long, msg: String) {
+        launch { groupMsg(group, msg) }
+    }
+
+    fun sendGroupMsgAsync(parent: String?, group: String, msg: MessageContent) {
+        launch { groupMsg(parent, group, msg) }
+    }
+
+    fun sendGroupMsgAsync(group: String, msg: MessageContent) {
+        launch { groupMsg(group, msg) }
+    }
+
+    fun sendGroupMsgAsync(parent: Long?, group: Long, msg: MessageContent) {
+        launch { groupMsg(parent, group, msg) }
+    }
+
+    fun sendGroupMsgAsync(group: Long, msg: MessageContent) {
+        launch { groupMsg(group.toString(), msg) }
+    }
+
+    fun sendGroupMsgAsync(group: GroupCodeContainer, msg: String) {
+        launch { groupMsg(group, msg) }
+    }
+
+    fun sendGroupMsgAsync(group: GroupContainer, msg: String) {
+        launch { groupMsg(group, msg) }
+    }
+
+    fun sendGroupMsgAsync(group: GroupCodeContainer, msg: MessageContent) {
+        launch { groupMsg(group, msg) }
+    }
+
+    fun sendGroupMsgAsync(group: GroupContainer, msg: MessageContent) {
+        launch { groupMsg(group, msg) }
+    }
 
 
     /**
@@ -276,6 +331,7 @@ public interface Sender : Communicator {
         privateMsg(code.accountInfo, null, msg)
 
 
+    //region send private msg blocking
     /* ———————————— blocking ———————————— */
 
     fun sendPrivateMsg(code: String, group: String?, msg: String): Carrier<out Flag<PrivateMsg.FlagContent>> =
@@ -355,6 +411,113 @@ public interface Sender : Communicator {
 
     fun sendPrivateMsg(code: AccountContainer, msg: MessageContent): Carrier<out Flag<PrivateMsg.FlagContent>> =
         runBlocking { privateMsg(code, msg) }
+    //endregion
+
+
+    //region private msg async
+    /* ———————————— async ———————————— */
+
+    fun sendPrivateMsgAsync(code: String, group: String?, msg: String) {
+        launch { privateMsg(code, group, msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(code: Long, group: Long?, msg: String) {
+        launch { privateMsg(code, group, msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(
+        code: String,
+        group: String?,
+        msg: MessageContent,
+    ) {
+        launch { privateMsg(code, group, msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(code: Long, group: Long?, msg: MessageContent) {
+        launch { privateMsg(code, group, msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(
+        code: AccountCodeContainer,
+        group: GroupCodeContainer?,
+        msg: String,
+    ) {
+        launch { privateMsg(code, group, msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(
+        code: AccountContainer,
+        group: GroupContainer?,
+        msg: String,
+    ) {
+        launch { privateMsg(code, group, msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(
+        code: AccountCodeContainer,
+        group: GroupCodeContainer?,
+        msg: MessageContent,
+    ) {
+        launch { privateMsg(code, group, msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(
+        code: AccountContainer,
+        group: GroupContainer?,
+        msg: MessageContent,
+    ) {
+        launch { privateMsg(code, group, msg) }
+    }
+
+    fun sendPrivateMsgAsync(code: String, msg: String) {
+        launch { privateMsg(code, msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(code: Long, msg: String) {
+        launch { privateMsg(code.toString(), msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(code: String, msg: MessageContent) {
+        launch { privateMsg(code, msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(code: Long, msg: MessageContent) {
+        launch { privateMsg(code, msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(code: AccountCodeContainer, msg: String) {
+        launch { privateMsg(code, msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(code: AccountContainer, msg: String) {
+        launch { privateMsg(code, msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(
+        code: AccountCodeContainer,
+        msg: MessageContent,
+    ) {
+        launch { privateMsg(code, msg) }
+    }
+
+
+    fun sendPrivateMsgAsync(code: AccountContainer, msg: MessageContent) {
+        launch { privateMsg(code, msg) }
+    }
+    //endregion
 
 
     /**
@@ -413,6 +576,7 @@ public interface Sender : Communicator {
         confirm: Boolean,
     ): Carrier<Boolean> = groupNotice(group.groupInfo, title, text, popUp, top, toNewMember, confirm)
 
+    //region send group notice blocking
     /* ———————————— blocking ———————————— */
 
     fun sendGroupNotice(
@@ -461,6 +625,66 @@ public interface Sender : Communicator {
     ): Carrier<Boolean> = runBlocking {
         groupNotice(group, title, text, popUp, top, toNewMember, confirm)
     }
+    //endregion
+
+    //region send group notice async
+    /* ———————————— async ———————————— */
+
+    fun sendGroupNoticeAsync(
+        group: String,
+        title: String?,
+        text: String?,
+        popUp: Boolean,
+        top: Boolean,
+        toNewMember: Boolean,
+        confirm: Boolean,
+    ) {
+        launch { groupNotice(group, title, text, popUp, top, toNewMember, confirm) }
+    }
+
+
+    fun sendGroupNoticeAsync(
+        group: Long,
+        title: String?,
+        text: String?,
+        popUp: Boolean,
+        top: Boolean,
+        toNewMember: Boolean,
+        confirm: Boolean,
+    ) {
+        launch {
+            groupNotice(group, title, text, popUp, top, toNewMember, confirm)
+        }
+    }
+
+    fun sendGroupNoticeAsync(
+        group: GroupCodeContainer,
+        title: String?,
+        text: String?,
+        popUp: Boolean,
+        top: Boolean,
+        toNewMember: Boolean,
+        confirm: Boolean,
+    ) {
+        launch {
+            groupNotice(group, title, text, popUp, top, toNewMember, confirm)
+        }
+    }
+
+    fun sendGroupNoticeAsync(
+        group: GroupContainer,
+        title: String?,
+        text: String?,
+        popUp: Boolean,
+        top: Boolean,
+        toNewMember: Boolean,
+        confirm: Boolean,
+    ) {
+        launch {
+            groupNotice(group, title, text, popUp, top, toNewMember, confirm)
+        }
+    }
+    //endregion
 
 
     /**

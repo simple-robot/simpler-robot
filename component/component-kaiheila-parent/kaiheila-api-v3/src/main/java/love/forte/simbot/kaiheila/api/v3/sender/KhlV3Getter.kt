@@ -1,5 +1,6 @@
 package love.forte.simbot.kaiheila.api.v3.sender
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import love.forte.simbot.api.message.containers.*
 import love.forte.simbot.api.message.results.*
@@ -22,7 +23,7 @@ import love.forte.simbot.kaiheila.objects.User
 public class KhlV3Getter(
     private val bot: KhlBot,
     private val def: Getter.Def,
-) : KhlSender.Getter {
+) : KhlSender.Getter, CoroutineScope by bot {
     override val authInfo: AuthInfo get() = emptyAuthInfo()
     override val botInfo: BotInfo get() = bot.botInfo
 
