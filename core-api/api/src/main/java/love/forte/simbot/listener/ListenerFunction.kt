@@ -12,6 +12,7 @@
  *
  */
 @file:JvmName("ListenerFunctions")
+
 package love.forte.simbot.listener
 
 import love.forte.simbot.api.SimbotExperimentalApi
@@ -27,8 +28,8 @@ import java.lang.reflect.Type
  * [ListenerFunction] 的 [排序规则][Comparator] 实例。
  */
 @get:JvmName("listenerFunctionComparable")
-public val ListenerFunctionComparable: Comparator<ListenerFunction> = Comparator { f1, f2 -> f1.priority.compareTo(f2.priority) }
-
+public val ListenerFunctionComparable: Comparator<ListenerFunction> =
+    Comparator { f1, f2 -> f1.priority.compareTo(f2.priority) }
 
 
 /**
@@ -70,7 +71,7 @@ public interface ListenerFunction {
     /**
      * 获取此监听函数上可以得到的注解。
      */
-    fun <A : Annotation> getAnnotation(type: Class<out A>) : A?
+    fun <A : Annotation> getAnnotation(type: Class<out A>): A?
 
 
     /**
@@ -88,8 +89,8 @@ public interface ListenerFunction {
     /**
      * 判断当前监听函数是否可以触发当前类型的监听.
      */
-    
-    fun <T: MsgGet> canListen(onType: Class<T>): Boolean {
+
+    fun <T : MsgGet> canListen(onType: Class<T>): Boolean {
         return listenTypes.contains(onType) || listenTypes.any { it.isAssignableFrom(onType) }
     }
 
@@ -126,7 +127,6 @@ public interface ListenerFunction {
     val isAsync: Boolean
 
 
-
     /**
      * 得到当前监听函数的 [开关][Switch].
      */
@@ -155,6 +155,7 @@ public interface ListenerFunction {
             @SimbotExperimentalApi
             override fun disable() {
             }
+
             override val isEnable: Boolean
                 get() = false
         }
@@ -202,15 +203,10 @@ public interface ListenerFunction {
 }
 
 
-
 public abstract class BlockingListenerFunction : ListenerFunction {
     abstract fun invokeBlocking(data: ListenerFunctionInvokeData): ListenResult<*>
     final override suspend fun invoke(data: ListenerFunctionInvokeData): ListenResult<*> = invokeBlocking(data)
 }
-
-
-
-
 
 
 /**
@@ -219,29 +215,32 @@ public abstract class BlockingListenerFunction : ListenerFunction {
 public interface ListenerFunctionInvokeData {
     /** 监听到的消息。 */
     val msgGet: MsgGet
+
     /** 监听函数上下文。 */
     @OptIn(SimbotExperimentalApi::class)
     val context: ListenerContext
+
     /** at检测器。 */
     val atDetection: AtDetection
+
     /** 当前监听到消息的bot。 */
     val bot: Bot
+
     /** 当前动态送信器。 */
     val msgSender: MsgSender
+
     /**
      *  监听函数拦截器。
      *  如果是空的可以使用 `love.forte.simbot.core.intercept.EmptyListenerInterceptorChain`
      */
     val listenerInterceptorChain: ListenerInterceptorChain
+
     /**
      * 根据类型获取一个实例。
      * 有可能存在一些额外参数。
      */
     operator fun get(type: Class<*>): Any?
 }
-
-
-
 
 
 /**
@@ -266,16 +265,15 @@ public class ListenerNotExistsException : IllegalStateException {
 }
 
 
-
 /**
  * 判断监听函数是否相等。
  */
 internal fun ListenerFunction.funcEquals(other: Any?): Boolean {
-    if(this === other) return true
+    if (this === other) return true
 
-    if(other !is ListenerFunction) return false
+    if (other !is ListenerFunction) return false
 
-    if(this.id == other.id) return true
+    if (this.id == other.id) return true
     return this == other
 }
 

@@ -30,7 +30,6 @@ import java.util.regex.Pattern
 public class RegexFilterParameterMatcher(private val originalValue: String) : FilterParameterMatcher {
 
 
-
     internal val regex: Regex by lazy {
         val regexValue = originalValue.toDynamicParametersRegexValue()
         Regex(regexValue)
@@ -128,62 +127,55 @@ private fun String.toDynamicParametersRegexValue(): String {
     var on = false
     val iter = this.iterator()
 
-    var startNum = 0
 
     while (iter.hasNext()) {
         val c = iter.nextChar()
-        if (on) {
-            // if ignore
-            if (ignoreThis) {
-                ignoreThis = false
-                temp.append(c)
-                continue
-            }
-            // if is end.
-            if (c == '{') {
-                startNum++
-                temp.append(c)
+        if (!on) {
+            // NOT ON
 
-            } else if (c == '}') {
-                if (startNum == 0) {
-                    // if next also
-                    if (iter.hasNext() && iter.nextChar() == '}') {
+            if (c == '{') {
+                // maybe first
+                // if next also
+                if (iter.hasNext()) {
+                    val next = iter.nextChar()
+                    if (next == '{') {
+                        on = true
+                    } else {
+                        builder.append(c).append(next)
+                    }
+                } else {
+                    // not first, is the end. just append
+                    builder.append(c)
+                }
+            } else {
+                builder.append(c)
+            }
+        } else {
+            // ON
+
+            // if is end.
+            if (c == '}') {
+                // if next also
+                if (iter.hasNext()) {
+                    val next = iter.nextChar()
+                    if (next == '}') {
                         builder.append(temp.toString().dynamicParameters())
                         temp.clear()
                         on = false
+                    } else {
+                        temp.append(c).append(next)
                     }
                 } else {
-                    startNum--
+                    // no next, the end. just append
                     temp.append(c)
                 }
             } else {
                 temp.append(c)
             }
 
-        } else {
-            if (ignoreThis) {
-                ignoreThis = false
-                builder.append(c)
-                continue
-            }
-            if (c == '}') {
-                startNum--
-                builder.append(c)
-            } else if (c == '{') {
-                if (startNum == 0) {
-                    // if next also
-                    if (iter.hasNext() && iter.nextChar() == '{') {
-                        on = true
-                    }
-                } else {
-                    startNum++
-                    builder.append(c)
-                }
-            } else {
-                builder.append(c)
-            }
         }
     }
+
 
     if (on) {
         throw IllegalStateException("There is no end flag for dynamic parameters.")

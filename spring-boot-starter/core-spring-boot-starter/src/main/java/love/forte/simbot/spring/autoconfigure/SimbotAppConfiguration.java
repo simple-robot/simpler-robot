@@ -21,6 +21,7 @@ import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,21 +37,23 @@ import org.springframework.core.env.ConfigurableEnvironment;
         SpringDependBeanFactory.class
 })
 @SimbotApplication
-public class SimbotAppConfiguration {
+public class SimbotAppConfiguration implements ApplicationRunner {
 
     private final SimbotAppProperties simbotAppProperties;
     private final SpringDependBeanFactory springDependBeanFactory;
-    private final ApplicationArguments applicationArguments;
+    private ApplicationArguments applicationArguments;
 
 
     public SimbotAppConfiguration(SimbotAppProperties simbotAppProperties,
-                                  SpringDependBeanFactory springDependBeanFactory,
-                                  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-                                          ApplicationArguments applicationArguments) {
+                                  SpringDependBeanFactory springDependBeanFactory
+                                  // @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+                                  // ApplicationArguments applicationArguments
+    ) {
         this.simbotAppProperties = simbotAppProperties;
         this.springDependBeanFactory = springDependBeanFactory;
-        this.applicationArguments = applicationArguments;
+        // this.applicationArguments = applicationArguments;
     }
+
 
     /**
      * simbot configuration 类型转化器。
@@ -85,4 +88,8 @@ public class SimbotAppConfiguration {
     }
 
 
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        applicationArguments = args;
+    }
 }
