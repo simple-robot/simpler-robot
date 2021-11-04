@@ -33,7 +33,7 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
 @SimbotExperimentalApi
 public @interface ContextValue {
 

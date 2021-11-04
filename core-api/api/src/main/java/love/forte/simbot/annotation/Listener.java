@@ -29,7 +29,7 @@ import java.lang.annotation.*;
  * @author <a href="https://github.com/ForteScarlet"> ForteScarlet </a>
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Documented
 @Beans
 @AnnotateMapping(Beans.class)
