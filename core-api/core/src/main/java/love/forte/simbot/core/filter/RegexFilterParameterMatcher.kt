@@ -122,11 +122,12 @@ private fun String.toDynamicParametersRegexValue(): String {
     val builder = StringBuilder(length)
     val temp = StringBuilder(16)
     // 忽略本次（上次为转义符
-    var ignoreThis = false
+    // var ignoreThis = false
     // 正在获取
     var on = false
     val iter = this.iterator()
 
+    var flag = 0
 
     while (iter.hasNext()) {
         val c = iter.nextChar()
@@ -152,11 +153,12 @@ private fun String.toDynamicParametersRegexValue(): String {
             }
         } else {
             // ON
-
-            // if is end.
-            if (c == '}') {
+            if (c == '{') {
+                flag++
+                temp.append(c)
+            } else if (c == '}') {
                 // if next also
-                if (iter.hasNext()) {
+                if (flag == 0 && iter.hasNext()) {
                     val next = iter.nextChar()
                     if (next == '}') {
                         builder.append(temp.toString().dynamicParameters())
@@ -166,6 +168,7 @@ private fun String.toDynamicParametersRegexValue(): String {
                         temp.append(c).append(next)
                     }
                 } else {
+                    flag--
                     // no next, the end. just append
                     temp.append(c)
                 }
