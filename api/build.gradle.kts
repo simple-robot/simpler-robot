@@ -97,6 +97,7 @@ kotlin {
                 implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.0")
+                implementation("com.squareup.okio:okio:3.0.0")
             }
         }
 
