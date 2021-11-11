@@ -77,6 +77,13 @@
   标准的开黑啦-simbot组件模块，基于上述其他模块以外，整合 [simbot-core](../../UPDATE.MD) 并实现完整的simbot功能，面向bot应用开发者。
 
 
+## ⚠️ 注意
+目前的v3-api模块较为完整可用，其他模块在 `simbot-3.x` 问世之前将不会大幅度更新。
+且在 `simbot-3.x` 问世前，开黑啦组件下的各模块不会发布**正式版本**。
+
+不过对于例如 `v3-api` 这种与simbot无关的api模块，你依然可以使用，并欢迎提供反馈与建议。
+
+
 <br>
 
 ## 使用
@@ -95,100 +102,32 @@
 
 TODO
 
-## Demo
+## 简单示例
 
-TODO
+### API-V3
+API组件中，提供了针对于官方的大部分客户端请求API的基础封装，比如：
+```kotlin
+ @Test
+    fun listTest() = runBlocking {
+        val guildId = "6865507942900765" // GuildApiTest().guildList().items[0].id
 
+        val client = HttpClient() // ktor client
+        val token = "token"
 
+        val data: ListResp<ChannelInfo, ApiData.Resp.EmptySort> = ChannelListReq(guildId).doRequest(V3, client, token)
 
+        println(data)
 
-## 极简示例
+        println("-0-")
 
-文档-快速开始：https://www.yuque.com/simpler-robot/simpler-robot-doc/qeyorq
-
-
-### 监听消息
-
-```java
-@Beans
-public class TestListener {
-  /** 发送一句“我收到了”，并再复读收到的所有消息 */
-  @OnPrivate
-  public void listen(PrivateMsg msg, MsgSender sender) {
-    sender.SENDER.sendPrivateMsg(msg, "我收到了");
-    sender.SENDER.sendPrivateMsg(msg, msg.getMsgContent());
-  }
-}
+        data.forEach { it: ChannelInfo -> 
+            println(it)
+        }
+    }
 ```
+其中，`ChannelListReq` 即为对于 `/channel/list` 接口的封装。
+所有的api请求实例均为此类的命名方式。
 
-### 监听并筛选消息
-
-```java
-@Beans
-public class TestListener {
-  /** 监听群里的 'hi! simbot' 消息并作出回应 */
-  @OnGroup
-  @Filter("hi! simbot")
-  public void listenGroup(GroupMsg msg, MsgSender sender) {
-    // 获取发消息的人的账号
-    String accountCode = m.getAccountInfo().getAccountCode();
-    // 准备at这个人的CatCode
-    String at = CatCodeUtil.INSTANCE.getStringTemplate().at(accountCode);
-    // 发送消息
-    sender.SENDER.sendGroupMsg(m, at + " 我在哦");
-  }
-}
-```
-
-或
-
-```java
-@Beans
-public class TestListener {
-  /** 通过依赖注入得到消息构建器工厂。 */
-  @Depend
-  private MessageContentBuilderFactory builderFactory;
-
-  /** 监听群里的 'hi! simbot' 消息并作出回应 */
-  @OnGroup
-  @Filter("hi! simbot")
-  public void listenGroup(GroupMsg msg, MsgSender sender){
-    // 获取发消息的人的账号
-    String accountCode = msg.getAccountInfo().getAccountCode();
-    // 获取消息构建器
-    MessageContentBuilder builder = builderFactory.getMessageContentBuilder();
-    // 构建消息实例
-    MessageContent msgContent = builder.at(accountCode).text(" 我在哦").build();
-    // 发送消息
-    sender.SENDER.sendGroupMsg(msg, msgContent);
-  }
-}
-```
-
-
-## 协助我
-- 你可以通过 [pr](https://github.com/ForteScarlet/simpler-robot/pulls "pull request") 为项目代码作出贡献。
-- 你可以通过 [issue](https://github.com/ForteScarlet/simpler-robot/issues "issues") 提出一个建议或者反馈一个问题。
-- 你可以通过 [讨论区](https://github.com/ForteScarlet/simpler-robot/discussions "discussions") 与其他人或者simbot开发团队相互友好交流。
-- 如果你通过此项目创建了一个很酷的项目，欢迎通过 [issue](https://github.com/ForteScarlet/simpler-robot/issues) 、[讨论区](https://github.com/ForteScarlet/simpler-robot/discussions) 、[QQ群寻找群主](https://jq.qq.com/?_wv=1027&k=1Lopqryf)
-  等方式联系团队开发人员，并将你酷酷的项目展示在作品展示区。
-
-
-## 捐助我
-如果你喜欢这个项目，不妨试着 [捐助](https://www.yuque.com/docs/share/43264d27-99a7-4287-97c0-b387f5b0947e) 一下我们，十分感谢。
-
-
-## 特别鸣谢
-
-[![](https://logonoid.com/images/thumbs/intellij-idea-logo.png "IntelliJ IDEA")](https://www.jetbrains.com/idea/)
-
-感谢 [jetbrains](https://www.jetbrains.com/ "jetbrains") 为团队提供的免费 [IntelliJ IDEA](https://www.jetbrains.com/idea/ "IntelliJ IDEA") 授权，也希望大家能够支持IDEA，支持正版。
-
-*****
-
-[![](../../logo/CatCodeLogo@0,1x.png "CatCode")](https://github.com/ForteScarlet/CatCode)
-
-感谢 [猫猫码](https://github.com/ForteScarlet/CatCode "CatCode") 为本项目提供支持并绘制项目LOGO。
-
-
+在得到 `xxxReq` 实例后，可以通过顶层函数 `xxxReq.doRequest(client, token)` 发送api请求，并得到响应值。
+列表类型的响应值类型如上面所示，是一个 `ListResp<DATA, SORT>` 实例。其中，`DATA` 便是每个元素的实例，`SORT` 则为排序参数的响应（如果有的话）。
 
