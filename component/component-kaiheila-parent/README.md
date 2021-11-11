@@ -113,7 +113,7 @@ API组件中，提供了针对于官方的大部分客户端请求API的基础�
 ```kotlin
  @Test
     fun listTest() = runBlocking {
-        val guildId = "6865507942900765" // GuildApiTest().guildList().items[0].id
+        val guildId = "1145141919810" // GuildApiTest().guildList().items[0].id
 
         val client = HttpClient() // ktor client
         val token = "token"
