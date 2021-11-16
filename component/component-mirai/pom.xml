@@ -22,7 +22,7 @@
     <url>https://github.com/ForteScarlet/simpler-robot/tree/dev/component/component-mirai</url>
 
     <properties>
-        <mirai.version>2.7.1</mirai.version>
+        <mirai.version>2.8.0</mirai.version>
     </properties>
 
 

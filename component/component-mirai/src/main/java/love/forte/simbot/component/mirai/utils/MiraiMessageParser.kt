@@ -760,6 +760,11 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
         is Image -> {
             CatCodeUtil.getLazyNekoBuilder("image", true)
                 .key("id").value(imageId)
+                .key("height").value(height)
+                .key("width").value(width)
+                .key("size").value(size)
+                .key("imageType").value(imageType)
+                .key("isEmoji").value(isEmoji)
                 .key("url").value { runBlocking { this@toNeko.queryUrl() } }
                 .build()
         }
@@ -769,6 +774,11 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
             // CatCodeUtil.stringTemplate.image()
             CatCodeUtil.getLazyNekoBuilder("image", true)
                 .key("id").value(img.imageId)
+                .key("height").value(img.height)
+                .key("width").value(img.width)
+                .key("size").value(img.size)
+                .key("imageType").value(img.imageType)
+                .key("isEmoji").value(img.isEmoji)
                 .key("url").value { runBlocking { img.queryUrl() } }
                 .key("flash").value(true)
                 .build()

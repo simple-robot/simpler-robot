@@ -13,6 +13,7 @@
  */
 
 @file:JvmName("MiraiMessages")
+
 package love.forte.simbot.component.mirai.message
 
 import love.forte.simbot.api.message.assists.Permissions
@@ -26,7 +27,7 @@ import net.mamoe.mirai.contact.MemberPermission
 public fun Member.toSimbotPermissions(): Permissions = this.permission.toSimbotPermissions()
 
 
-public fun MemberPermission.toSimbotPermissions(): Permissions = when(this) {
+public fun MemberPermission.toSimbotPermissions(): Permissions = when (this) {
     MemberPermission.MEMBER -> Permissions.MEMBER
     MemberPermission.OWNER -> Permissions.OWNER
     MemberPermission.ADMINISTRATOR -> Permissions.ADMINISTRATOR
