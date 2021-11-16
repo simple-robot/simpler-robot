@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 @SimbotApplication
 public class Test implements SimbotProcess {
     public static void main(String[] args) {
-        init();
+        // init();
         SimbotApp.run(Test.class, args);
     }
 
