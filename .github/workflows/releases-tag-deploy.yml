@@ -5,8 +5,8 @@ name: releases-tag-deploy
 on:
   push:
     tags: 
-      - v*.*.*
-      - v*.*.*
+      - v[0-9].[0-9].[0-9]
+      - v[0-9].[0-9].[0-9]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
