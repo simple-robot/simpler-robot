@@ -22,75 +22,72 @@ import love.forte.simbot.api.message.results.FileInfo
 import love.forte.simbot.component.mirai.message.asAccountInfo
 import love.forte.simbot.component.mirai.sender.memberOrNull
 import net.mamoe.mirai.contact.Group
-import net.mamoe.mirai.utils.RemoteFile
-import java.io.FileNotFoundException
+import net.mamoe.mirai.contact.file.AbsoluteFile
+import net.mamoe.mirai.contact.file.AbsoluteFileFolder
 
+
+internal fun AbsoluteFileFolder.toFileInfo(): MiraiRemoteFile {
+    if (this is AbsoluteFile) {
+        return MiraiRemoteFile.File(this)
+    }
+    return MiraiRemoteFile.Floder(this)
+}
 
 /**
  * 一个 Mirai file。
  *
- * mirai file中的信息特性与 mirai的 [RemoteFile] 一致，部分信息为实时获取的。
- *
  */
-public class MiraiRemoteFile(private val file: RemoteFile) : FileInfo {
+public sealed class MiraiRemoteFile(protected val file: AbsoluteFileFolder) : FileInfo {
 
-    private val fileInfo get() = runBlocking { file.getInfo() }
+    internal class File(private val _file: AbsoluteFile): MiraiRemoteFile(_file) {
+        override val md5: ByteArray get() = _file.md5
+        override val sha1: ByteArray get() = _file.sha1
+        override val url: String? get() = runBlocking { _file.getUrl() }
+        override val expireTime: Long get() = _file.expiryTime.secondToMill()
+        /**
+         * 文件的大小。一般来讲，单位为字节。
+         */
+        override fun size(): Long = _file.size
+        override val originalData: String get() = "RemoteFile(id=$id, name=$name, path=$path)"
+    }
 
-    override val originalData: String
-        get() = "RemoteFile(file=$file)"
+    internal class Floder(file: AbsoluteFileFolder): MiraiRemoteFile(file) {
+        override val md5: ByteArray? get() = null
+        override val sha1: ByteArray? get() = null
+        override val url: String? get() = null
+        override val expireTime: Long get() = -1
+        override val originalData: String get() = "RemoteFolder(id=$id, name=$name, path=$path)"
+    }
+
 
     override fun toString(): String = originalData
 
     /**
      * 文件ID。
      */
-    override val id: String
-        get() = name.let { n ->
-            file.id.let { i ->
-                if (i == null) n else "$n:$i"
-            }
-        }
-    override val name: String
-        get() = file.name
-
+    override val id: String get() = file.id
+    override val name: String get() = file.name
     /**
      * 文件的路径。
      */
-    override val path: String
-        get() = file.path
+    override val path: String get() = file.absolutePath
 
     /**
      * 文件上传时间。
      * 获取不到则可能得到 `-1`.
      */
-    override val time: Long
-        get() = fileInfo?.uploadTime?.secondToMill() ?: -1
-
-    /**
-     * 到期时间。null，
-     */
-    override val expireTime: Long?
-        get() = null
-
-
+    override val time: Long get() = file.uploadTime.secondToMill()
     override fun exists(): Boolean = runBlocking { file.exists() }
 
 
-    override val md5: ByteArray?
-        get() = runBlocking { file.getDownloadInfo()?.md5 }
 
-    override val sha1: ByteArray?
-        get() = runBlocking { file.getDownloadInfo()?.sha1 }
-
-    override val url: String?
-        get() = runBlocking { file.getDownloadInfo()?.url }
 
     /**
      * 上传者信息。
      */
     override val accountInfo: AccountInfo
         get() {
-            return fileInfo?.let { info ->
+            return file.let { info ->
                 val uploaderId = info.uploaderId
                 when (val contact = file.contact) {
                     is Group -> {
@@ -104,21 +101,21 @@ public class MiraiRemoteFile(private val file: RemoteFile) : FileInfo {
                     else -> throw SimbotExpectedException("This is an expected exception. Feedback this issue from the https://github.com/ForteScarlet/simpler-robot/issues .\n" +
                             "Undefined file contact. File contact type: ${file.contact::class.java}")
                 }
-            } ?: throw FileNotFoundException("Cannot get file info (id=$id, name=$name, path=$path): result null.")
+            }
         }
 
     /**
      * 是否为一个文件.
      */
-    override fun isFile(): Boolean = runBlocking { file.isFile() }
+    override fun isFile(): Boolean = file.isFile
 
     /**
      * 是否为一个文件夹。
      */
-    override fun isDirectory(): Boolean = runBlocking { file.isDirectory() }
+    override fun isDirectory(): Boolean = file.isFolder
 
     /**
      * 文件的大小。一般来讲，单位为字节。
      */
-    override fun size(): Long = fileInfo?.length ?: -1
+    override fun size(): Long = -1
 }

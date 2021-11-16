@@ -17,12 +17,11 @@ package love.forte.simbot.component.mirai.additional
 import love.forte.simbot.SimbotRuntimeException
 import love.forte.simbot.api.message.results.FileResult
 import love.forte.simbot.api.message.results.FileResults
+import net.mamoe.mirai.contact.file.AbsoluteFile
 
 
 /**
  * 用于获取群文件列表的额外API，属于一个 [mirai getter额外API][MiraiGetterAdditionalApi].
- *
- * @see groupFiles
  *
  */
 public data class MiraiGroupFilesApi(val group: Long) : MiraiGetterAdditionalApi<FileResults> {
@@ -36,7 +35,7 @@ public data class MiraiGroupFilesApi(val group: Long) : MiraiGetterAdditionalApi
      * 获取群文件列表。
      */
     override suspend fun execute(getterInfo: GetterInfo): FileResults {
-        val rootFile = getterInfo.bot.getGroupOrFail(group).filesRoot
+        val rootFile = getterInfo.bot.getGroupOrFail(group).files.root
         return MiraiFileResults(rootFile)
     }
 }
@@ -48,8 +47,6 @@ public data class MiraiGroupFilesApi(val group: Long) : MiraiGetterAdditionalApi
  *
  * 可通过 [deep] 决定是否深入子文件夹获取。
  *
- * @see groupFileById
- *
  */
 public data class MiraiGroupFileByIdApi(val group: Long, val id: String, val deep: Boolean = true) :
     MiraiGetterAdditionalApi<FileResult> {
@@ -58,16 +55,15 @@ public data class MiraiGroupFileByIdApi(val group: Long, val id: String, val dee
 
 
     override suspend fun execute(getterInfo: GetterInfo): FileResult {
-        val root = getterInfo.bot.getGroupOrFail(group).filesRoot
-        val resolveById = root.resolveById(id, deep) ?: throw NoSuchRemoteFileException("Id '$id' from group $group")
+        val remoteFile = getterInfo.bot.getGroupOrFail(group).files
+        val resolveById: AbsoluteFile =
+            remoteFile.root.resolveFileById(id, deep) ?: throw NoSuchRemoteFileException("Id '$id' in group $group")
         return MiraiFileResult(resolveById)
     }
 }
 
 /**
  * 用于通过某文件的 [路径][path] 获取 [指定群][group] 文件的额外API。
- *
- * @see groupFileByPath
  *
  */
 public data class MiraiGroupFileByPathApi(val group: Long, val path: String) : MiraiGetterAdditionalApi<FileResult> {
@@ -76,12 +72,14 @@ public data class MiraiGroupFileByPathApi(val group: Long, val path: String) : M
 
 
     override suspend fun execute(getterInfo: GetterInfo): FileResult {
-        val root = getterInfo.bot.getGroupOrFail(group).filesRoot
-        return MiraiFileResult(root.resolve(path))
+        val root = getterInfo.bot.getGroupOrFail(group).files.root
+        val file = root.resolveFolder(path) ?: throw NoSuchRemoteFileException("Folder path '$path' in group $group")
+        return MiraiFileResult(file)
     }
 }
 
 
+@Suppress("unused")
 public open class NoSuchRemoteFileException : SimbotRuntimeException {
     constructor() : super()
     constructor(message: String?) : super(message)

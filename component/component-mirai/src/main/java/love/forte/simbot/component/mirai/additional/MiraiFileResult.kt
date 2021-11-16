@@ -22,14 +22,15 @@ import love.forte.simbot.api.message.results.FileInfo
 import love.forte.simbot.api.message.results.FileResult
 import love.forte.simbot.api.message.results.FileResults
 import love.forte.simbot.api.message.results.NodeResult
-import net.mamoe.mirai.utils.RemoteFile
+import net.mamoe.mirai.contact.file.AbsoluteFileFolder
+import net.mamoe.mirai.contact.file.AbsoluteFolder
 import java.util.stream.Stream
 
 
 /**
  * mirai文件返回值
  */
-public class MiraiFileResult(private val file: RemoteFile) : FileResult {
+public class MiraiFileResult(private val file: AbsoluteFileFolder) : FileResult {
     override val originalData: String
         get() = "Result(file=$file)"
 
@@ -38,24 +39,24 @@ public class MiraiFileResult(private val file: RemoteFile) : FileResult {
     /**
      * 当前文件。
      */
-    override val value: FileInfo = MiraiRemoteFile(file)
+    override val value: FileInfo = file.toFileInfo()
 
     /**
      * 此文件夹下的文件列表。可能为空。
      */
     override val results: List<FileResult>
         get() = runBlocking {
-            if (file.exists()) {
-                // 存在文件
-                file.listFiles().map { f -> MiraiFileResult(f) }.toList()
+            if (file is AbsoluteFolder) {
+                file.children().map(::MiraiFileResult).toList()
             } else emptyList()
+
         }
 
 
     override fun stream(): Stream<NodeResult<FileInfo>> = runBlocking {
-        if (file.exists()) {
+        if (file is AbsoluteFolder) {
             // 存在文件
-            file.listFiles().map { f -> MiraiFileResult(f) }.asStream()
+            file.children().map(::MiraiFileResult).asStream()
         } else Stream.empty()
     }
 }
@@ -64,7 +65,7 @@ public class MiraiFileResult(private val file: RemoteFile) : FileResult {
 /**
  * mirai文件列表返回值，取参数file的子文件列表。
  */
-public class MiraiFileResults(private val file: RemoteFile) : FileResults {
+public class MiraiFileResults(private val file: AbsoluteFileFolder) : FileResults {
     override val originalData: String
         get() = "Results(root=$file)"
 
@@ -75,8 +76,8 @@ public class MiraiFileResults(private val file: RemoteFile) : FileResults {
      */
     override val results: List<FileResult>
         get() = runBlocking {
-            if (file.exists()) {
-                file.listFiles().map { f -> MiraiFileResult(f) }.toList()
+            if (file is AbsoluteFolder) {
+                file.children().map(::MiraiFileResult).toList()
             } else emptyList()
         }
 }
