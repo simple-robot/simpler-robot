@@ -204,6 +204,7 @@ public class MiraiBotEventRegistrar(private val cache: MiraiMessageCache) {
             when (this) {
                 is BotLeaveEvent.Kick -> msgProcessor.onMsg { MiraiBotLeaveEvent.Kick(this) }
                 is BotLeaveEvent.Active -> msgProcessor.onMsg { MiraiBotLeaveEvent.Active(this) }
+                is BotLeaveEvent.Disband -> msgProcessor.onMsg { MiraiBotLeaveEvent.Disband(this) }
             }
         }
         //endregion

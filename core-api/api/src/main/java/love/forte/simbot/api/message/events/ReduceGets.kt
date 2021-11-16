@@ -64,7 +64,7 @@ public interface GroupMemberReduce: ReduceEventGet, GroupContainer, OperatingCon
     val reduceType: Type
 
     /**
-     * 群友减少事件类型，主要分为 **主动离开** 与 **被踢出**
+     * 群成员减少事件类型，主要分为 **主动离开** 与 **被踢出**
      * @property actionMotivations ActionMotivations
      * @constructor
      */

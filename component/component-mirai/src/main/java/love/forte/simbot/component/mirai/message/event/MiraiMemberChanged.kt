@@ -164,16 +164,26 @@ public sealed class MiraiBotLeaveEvent<E : BotLeaveEvent>(event: E) :
     override val groupInfo: GroupInfo = MiraiGroupInfo(event.group)
 
     /** bot被踢出。 */
-    @OptIn(MiraiExperimentalApi::class)
+    @MiraiExperimentalApi
     public class Kick(event: BotLeaveEvent.Kick) : MiraiBotLeaveEvent<BotLeaveEvent.Kick>(event) {
         override val reduceType: GroupMemberReduce.Type = GroupMemberReduce.Type.KICK
         override val operatorInfo: OperatorInfo = MiraiMemberAccountInfo(event.operatorOrBot).asOperator()
     }
+
+
     /** bot主动退出。 */
-    @OptIn(MiraiExperimentalApi::class)
+    @MiraiExperimentalApi
     public class Active(event: BotLeaveEvent.Active) : MiraiBotLeaveEvent<BotLeaveEvent.Active>(event) {
         override val reduceType: GroupMemberReduce.Type = GroupMemberReduce.Type.LEAVE
         override val operatorInfo: OperatorInfo? = null
+    }
+
+    /** 群被解散 */
+    @MiraiExperimentalApi
+    public class Disband(event: BotLeaveEvent.Disband) : MiraiBotLeaveEvent<BotLeaveEvent.Disband>(event) {
+        // 群解散也算被踢出
+        override val reduceType: GroupMemberReduce.Type = GroupMemberReduce.Type.KICK
+        override val operatorInfo: OperatorInfo = MiraiMemberAccountInfo(event.operator).asOperator()
     }
 }
 
