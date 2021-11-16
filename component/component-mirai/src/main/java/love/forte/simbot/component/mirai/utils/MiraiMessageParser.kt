@@ -40,8 +40,6 @@ import net.mamoe.mirai.utils.ExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import net.mamoe.mirai.utils.ExternalResource.Companion.uploadAsImage
 import net.mamoe.mirai.utils.MiraiExperimentalApi
-import net.mamoe.mirai.utils.RemoteFile
-import net.mamoe.mirai.utils.RemoteFile.Companion.uploadFile
 import java.io.File
 import java.io.InputStream
 import java.net.URL
@@ -337,12 +335,14 @@ public fun Neko.toMiraiMessageContent(
             "file" -> {
                 // 上传文件路径
                 val filePath = this["file"] ?: this["url"]
-
                 val formatName = this["formatName"]
+                val fileName = this["fileName"]
 
                 // 上传到的路径
                 val path: String? = this["path"]?.let { p ->
                     if (p.endsWith('/')) p.substringBeforeLast('/') else p
+                }?.let { p ->
+                    if (p.startsWith("/")) p else "/$p"
                 }
 
                 if (filePath == null) {
@@ -355,13 +355,9 @@ public fun Neko.toMiraiMessageContent(
                             .build()
                         return MiraiSingleMessageContent(singleMessage = { c ->
                             if (c is FileSupported) {
-                                val resolve = c.filesRoot.resolve(path)
-                                if (!resolve.exists()) {
-                                    val mkdir = resolve.mkdir()
-                                    if (!mkdir) {
-                                        logger.warn("Path {} mkdir in {} failed: return false.", path, c.id)
-                                    }
-                                }
+                                val root = c.files.root
+                                // root.resolveFolder(path) ?:
+                                root.createFolder(path)
                                 EmptySingleMessage
                             } else throw IllegalStateException("Classpath file only support upload to 'FileSupported' instance, but '${c::class.java}'")
                         }, fileNeko)
@@ -376,12 +372,8 @@ public fun Neko.toMiraiMessageContent(
                 // if classpath
                 if (filePath.startsWith(CLASSPATH_HEAD)) {
                     val filePath0 = filePath.substring(CLASSPATH_HEAD.length)
-                    val path0 = path ?: run {
-                        val fileName =
-                            filePath0.split(FILE_PATH_SPLIT).lastOrNull { it.isNotBlank() } ?: UUID.idString()
-                        if (formatName != null) RemoteFile.ROOT_PATH + fileName + "." + formatName
-                        else RemoteFile.ROOT_PATH + fileName
-                    }
+                    val fileName0 = fileName ?: filePath0.split(FILE_PATH_SPLIT).lastOrNull { it.isNotBlank() }
+                    val path0 = "$path/${fileName0 ?: "FILE"}"
 
 
                     val classPathUrl: URL? = ResourceUtil.getResource(filePath0)
@@ -393,23 +385,27 @@ public fun Neko.toMiraiMessageContent(
                                 if (formatName != null) {
                                     key("formatName").value(formatName)
                                 }
+                                if (fileName != null) {
+                                    key("fileName").value(fileName)
+                                }
                             }
                             .build()
 
                         // return Mirai
                         return MiraiFileMessageContent(fileNeko, path0) { c ->
                             if (c is FileSupported) {
-                                val resolve = c.filesRoot.resolve(path0.substringBeforeLast("/"))
-                                if (!resolve.exists()) {
-                                    val mkdir = resolve.mkdir()
-                                    if (!mkdir) {
-                                        logger.warn("Path {} mkdir in {} failed: return false.", path, c.id)
-                                    }
-                                }
+                                val folder = c.files.root.createFolder(path0.substringBeforeLast("/"))
+                                // if (resolve?.exists() == true) {
+                                //     val mkdir = resolve.createFolder()
+                                //     if (!mkdir) {
+                                //         logger.warn("Path {} mkdir in {} failed: return false.", path, c.id)
+                                //     }
+                                // }
                                 classPathUrl.externalResource(formatName).use { res ->
-                                    c.uploadFile(path0, res)
+                                    folder.uploadNewFile(path0, res).toMessage()
+                                    // c.uploadFile(path0, res)
                                 }
-                            } else throw IllegalStateException("Classpath file only support upload to 'FileSupported' instance, but '${c::class.java}'")
+                            } else throw IllegalStateException("Classpath file only support upload to 'FileSupported' instance, but not '${c::class.java}'")
                         }
                     } else throw IllegalArgumentException("Cannot resolve classpath file: $filePath0")
                 }
@@ -417,15 +413,17 @@ public fun Neko.toMiraiMessageContent(
                 val file: File? = filePath.let { FileUtil.file(it) }?.takeIf { it.exists() }
                 if (file != null) {
                     // 存在文件
-
-                    val path0 = path ?: run {
-                        if (formatName != null) RemoteFile.ROOT_PATH + file.nameWithoutExtension + "." + formatName
-                        else RemoteFile.ROOT_PATH + file.name
-                    }
+                    val fileName0 = fileName ?: file.name
+                    val path0 = "$path/$fileName0"
+                    // val path0 = path ?: run {
+                    //     if (formatName != null) RemoteFile.ROOT_PATH + file.nameWithoutExtension + "." + formatName
+                    //     else RemoteFile.ROOT_PATH + file.name
+                    // }
 
                     val fileNeko = CatCodeUtil.getNekoBuilder("file", true)
                         .key("file").value(filePath)
                         .key("path").value(path0)
+                        .key("fileName").value(fileName0)
                         .apply {
                             if (formatName != null) {
                                 key("formatName").value(formatName)
@@ -434,17 +432,17 @@ public fun Neko.toMiraiMessageContent(
                         .build()
                     MiraiFileMessageContent(fileNeko, path0) { c ->
                         if (c is FileSupported) {
-                            val resolve = c.filesRoot.resolve(path0.substringBeforeLast("/"))
-                            if (!resolve.exists()) {
-                                val mkdir = resolve.mkdir()
-                                if (!mkdir) {
-                                    logger.warn("Path {} mkdir in {} failed: return false.", path, c.id)
-                                }
-                            }
+                            val folder = c.files.root.createFolder(path0.substringBeforeLast("/"))
+                            // if (!resolve.exists()) {
+                            //     val mkdir = resolve.mkdir()
+                            //     if (!mkdir) {
+                            //         logger.warn("Path {} mkdir in {} failed: return false.", path, c.id)
+                            //     }
+                            // }
                             file.toExternalResource(formatName).use { res ->
-                                c.uploadFile(path0, res)
+                                folder.uploadNewFile(path0, res).toMessage()
                             }
-                        } else throw IllegalStateException("File only support upload to 'FileSupported' instance. but ${c::class.java}")
+                        } else throw IllegalStateException("File only support upload to 'FileSupported' instance. but not ${c::class.java}")
                     }
                 } else {
                     // 没有文件，看看有没有url
@@ -453,9 +451,7 @@ public fun Neko.toMiraiMessageContent(
                     val urlString = filePath.takeIf { it.startsWith("http") }
                         ?: throw IllegalArgumentException("There is no 'file' or 'url' starts with 'http' in $this")
 
-                    val path0 = path
-                        ?: if (formatName != null) RemoteFile.ROOT_PATH + UUID.idString() + "." + formatName
-                        else RemoteFile.ROOT_PATH + UUID.idString()
+                    val path0 = "$path/${fileName ?: "FILE"}"
 
                     // val urlId = id
                     val fileNeko = CatCodeUtil.getNekoBuilder("file", true)
@@ -464,6 +460,9 @@ public fun Neko.toMiraiMessageContent(
                         .key("url").value(urlString).apply {
                             if (formatName != null) {
                                 key("formatName").value(formatName)
+                            }
+                            if (fileName != null) {
+                                key("fileName").value(fileName)
                             }
                         }
                         .build()
@@ -475,7 +474,7 @@ public fun Neko.toMiraiMessageContent(
                             val context = RemoteResourceContext(urlString)
                             remoteResourceInProcessor.getStream(context).use { s ->
                                 s.toExternalResource(formatName).use {
-                                    c.uploadFile(path0, it)
+                                    c.files.root.createFolder(path0).uploadNewFile(path0, it).toMessage()
                                 }
                             }
                             // url.toStream().use { s ->

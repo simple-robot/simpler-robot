@@ -62,10 +62,6 @@ public class MiraiSetter(
     private val defSetter: Setter,
 ) : Setter, CoroutineScope by bot {
     private companion object : TypedCompLogger(MiraiSetter::class.java) {
-        private val setGroupAnonymous0Logger: Int by lazy(LazyThreadSafetyMode.NONE) {
-            logger.warn("It is not supported to modify the anonymous chat status, only to return to the current status. This warning will only appear once.")
-            0
-        }
     }
 
     private lateinit var _setterInfo: SetterInfo
@@ -161,19 +157,19 @@ public class MiraiSetter(
      * 不支持修改匿名聊天状态，仅支持返回当前状态。
      * @return 设置操作的回执，代表当前状态。
      */
-    private fun setGroupAnonymous0(group: Long): Carrier<Boolean> {
-        setGroupAnonymous0Logger
-        return bot.group(group).settings.isAnonymousChatEnabled.toCarrier()
+    private fun setGroupAnonymous0(group: Long, agree: Boolean): Carrier<Boolean> {
+        bot.group(group).settings.isAnonymousChatEnabled = agree
+        return agree.toCarrier()
     }
 
     override suspend fun groupAnonymous(group: String, agree: Boolean): Carrier<Boolean> =
-        setGroupAnonymous0(group.toLong())
+        setGroupAnonymous0(group.toLong(), agree)
 
     override suspend fun groupAnonymous(group: Long, agree: Boolean): Carrier<Boolean> =
-        setGroupAnonymous0(group)
+        setGroupAnonymous0(group, agree)
 
     override suspend fun groupAnonymous(group: GroupCodeContainer, agree: Boolean): Carrier<Boolean> =
-        setGroupAnonymous0(group.groupCodeNumber)
+        setGroupAnonymous0(group.groupCodeNumber, agree)
 
     /**
      * 禁言/解除禁言
