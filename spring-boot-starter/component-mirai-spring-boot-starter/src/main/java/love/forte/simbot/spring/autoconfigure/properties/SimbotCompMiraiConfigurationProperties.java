@@ -54,14 +54,14 @@ public class SimbotCompMiraiConfigurationProperties {
     /**
      * Useless since mirai new network. Please just remove this.
      */
-    @Deprecated
-    private long firstReconnectDelayMillis = getDef().getFirstReconnectDelayMillis();
+    // @Deprecated
+    // private long firstReconnectDelayMillis = getDef().getFirstReconnectDelayMillis();
 
     /**
      * Useless since mirai new network. Please just remove this.
      */
-    @Deprecated
-    private long reconnectPeriodMillis = getDef().getReconnectPeriodMillis();
+    // @Deprecated
+    // private long reconnectPeriodMillis = getDef().getReconnectPeriodMillis();
 
     /** 最多尝试多少次重连。 */
     private int reconnectionRetryTimes = getDef().getReconnectionRetryTimes();
