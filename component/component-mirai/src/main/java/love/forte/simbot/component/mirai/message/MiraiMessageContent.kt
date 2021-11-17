@@ -538,11 +538,7 @@ constructor(
 
     override fun hashCode(): Int = hash
 
-    @Volatile
     private lateinit var file: FileMessage
-
-    /** lock */
-    private val lock = Mutex()
 
     override val cats: List<Neko> = listOf(neko)
 
@@ -554,20 +550,10 @@ constructor(
      * @return Message
      */
     override suspend fun getMessage(contact: Contact): Message {
-        return if (::file.isInitialized) {
-            file
-        } else {
-            if (!::file.isInitialized) {
-                lock.withLock {
-                    if (!::file.isInitialized) {
-                        file = fileFunction(contact)
-                    }
-                }
-            }
-            file
-        }
+        fileFunction(contact)
+        // Sending FileMessage is not in support
+        return EmptySingleMessage
     }
-
 
 }
 
