@@ -1,11 +1,11 @@
 plugins {
-    kotlin("jvm") //version "1.5.31"
+    // kotlin("jvm") //version "1.5.31"
     id("org.jetbrains.dokka") version "1.5.30"
     kotlin("plugin.serialization") version "1.5.31" apply false
 }
 
 
-group = "love.forte"
+group = "love.forte.simple-robot"
 version = "3.0.0-preview"
 
 repositories {
@@ -14,12 +14,13 @@ repositories {
     gradlePluginPortal()
 }
 
-dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.31")
-}
+
 
 allprojects {
     println("Project: $this")
+    // dependencies {
+    //     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
+    // }
 }
 
 // buildscript {

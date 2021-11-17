@@ -7,7 +7,7 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
-group = "love.forte.simply-robot"
+group = "love.forte.simple-robot"
 version = "3.0.0-preview"
 
 repositories {
@@ -64,6 +64,7 @@ kotlin {
             // Set src dir like xxx/main/kotlin, xxx/test/kotlin
             val (target, source) = name.toTargetAndSource()
             kotlin.setSrcDirs(project.srcList(source, target))
+            resources.setSrcDirs(project.resourcesList(source, target))
         }
 
 
@@ -71,6 +72,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("reflect")) // "org.jetbrains.kotlin:kotlin-reflect:1.5.31"
+                implementation("org.slf4j:slf4j-api:1.7.9")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2")
             }
         }

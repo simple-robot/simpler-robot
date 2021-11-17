@@ -7,7 +7,7 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
-group = "love.forte.simply-robot"
+group = "love.forte.simple-robot"
 version = "3.0.0-preview"
 
 repositories {
