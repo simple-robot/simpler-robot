@@ -114,7 +114,7 @@ private class JsPrintLogger(
         }
     }
     @Suppress("NOTHING_TO_INLINE")
-    private inline fun String.toMsg(name: String): String = "${Date().toDateString()} - $name - [$name]: $this"
+    private inline fun String.toMsg(name: String): String = "${Date().toDateString()} - ${this@JsPrintLogger.name}: $this"
 
     override fun isTraceEnabled(): Boolean = true
 

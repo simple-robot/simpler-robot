@@ -5,7 +5,7 @@ import kotlin.test.Test
  *
  * @author ForteScarlet
  */
-class ResourceTest {
+class LoggerTest {
 
     @Test
     fun test() {

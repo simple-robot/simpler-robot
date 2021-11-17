@@ -39,9 +39,9 @@ kotlin {
         }
     }
 
-    js("js", org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType.IR) {
+    js("js"/*, IR*/) {
         nodejs()
-        browser()
+        // browser()
         useCommonJs()
         compilations.all {
             kotlinOptions {

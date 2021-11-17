@@ -18,6 +18,7 @@ import kotlin.reflect.KClass
  * JVM实现中使用 @PropertyKey 进行约束。
  */
 @Suppress("NOTHING_TO_INLINE")
+@get:JsName("toI18n")
 public expect val String.i18n: String
 
 
@@ -39,6 +40,7 @@ public expect object I18n {
  */
 public expect object LoggerFactory {
     @JvmStatic
+    @JsName("getLoggerByName")
     public fun getLogger(name: String): Logger
 
     @JvmStatic
