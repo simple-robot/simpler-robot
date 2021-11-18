@@ -110,6 +110,7 @@ kotlin {
                 implementation(V.Kotlinx.Serialization.Json.notation)
                 implementation(V.Kotlinx.Serialization.Protobuf.notation)
                 implementation(V.Kotlinx.Serialization.Properties.notation)
+                implementation(V.Okio.notation)
             }
         }
     }

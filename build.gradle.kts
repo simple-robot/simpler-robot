@@ -1,11 +1,10 @@
 val kotlinVersion = "1.6.0"
 
 plugins {
-    `kotlin-dsl`
     // kotlin("gradle-plugin") version "1.5.31"
     // kotlin version "1.6.0"
-    // kotlin("jvm") version "1.6.0" apply false
-    // kotlin("multiplatform") version "1.6.0" apply false
+    kotlin("jvm") version "1.6.0" apply false
+    kotlin("multiplatform") version "1.6.0" apply false
     // kotlin("jvm") version "1.6.0" apply false
     id("org.jetbrains.dokka") version "1.5.30" apply false
     kotlin("plugin.serialization") version "1.6.0" apply false
@@ -27,7 +26,7 @@ repositories {
 }
 
 subprojects {
-
+    // apply(plugin = "kotlin")
 }
 
 
