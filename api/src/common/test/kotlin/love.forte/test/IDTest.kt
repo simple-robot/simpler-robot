@@ -1,6 +1,5 @@
 package love.forte.test
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -9,9 +8,7 @@ import kotlin.test.Test
 
 @Serializable
 data class User(
-    // @Serializable(with = ID.LongID.PrimitiveSerialSerializer::class)
-    @Contextual
-    val id: ID,
+    val id: LongID,
     val age: Int,
 )
 

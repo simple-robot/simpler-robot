@@ -1,4 +1,5 @@
 @file:JvmName("Identifies")
+
 package love.forte.simbot
 
 import kotlinx.serialization.KSerializer
@@ -23,7 +24,7 @@ import kotlin.jvm.JvmStatic
  *
  * 假若一个 [ID] 中实际存储的值仅有一个，则它的 [toString] 应当就是它的字面值。
  *
- * [ID] 应当支持序列化。
+ * [ID] 应当支持序列化, 在使用 [ID] 的时候，你应该主动
  *
  * [ID] 是可以进行排序的。
  *
@@ -98,6 +99,8 @@ public val Float.ID: FloatID get() = FloatID(this)
  *
  */
 @Suppress("MemberVisibilityCanBePrivate")
+@SerialName("ID.N")
+@Serializable
 public sealed class NumericalID<N : Number>(public val value: N) : ID() {
     override fun compareTo(other: ID): Int {
         if (other === this) return 0
@@ -124,10 +127,12 @@ public sealed class NumericalID<N : Number>(public val value: N) : ID() {
 /** 使用 [Int] 或 [Char] 字面值的 [NumericalID] 实现。 */
 @SerialName("ID.N.I")
 @Serializable(with = IntID.Serializer::class)
-public data class IntID(public val number: Int): NumericalID<Int>(number) {
-    public constructor(char: Char): this(char.code)
+public data class IntID(public val number: Int) : NumericalID<Int>(number) {
+    public constructor(char: Char) : this(char.code)
+
     override fun toInt(): Int = number
     override fun toChar(): Char = number.toChar()
+
     internal object Serializer : KSerializer<IntID> {
         override fun deserialize(decoder: Decoder): IntID = IntID(decoder.decodeInt())
         override val descriptor: SerialDescriptor = Int.serializer().descriptor
@@ -140,9 +145,10 @@ public data class IntID(public val number: Int): NumericalID<Int>(number) {
 /** 使用 [Long] 字面值的 [NumericalID] 实现。 */
 @SerialName("ID.N.L")
 @Serializable(with = LongID.Serializer::class)
-public data class LongID(public val number: Long): NumericalID<Long>(number) {
+public data class LongID(public val number: Long) : NumericalID<Long>(number) {
     override fun toLong(): Long = number
     override fun toInt(): Int = number.toInt()
+
     internal object Serializer : KSerializer<LongID> {
         override fun deserialize(decoder: Decoder): LongID = LongID(decoder.decodeLong())
         override val descriptor: SerialDescriptor = Long.serializer().descriptor
@@ -155,11 +161,14 @@ public data class LongID(public val number: Long): NumericalID<Long>(number) {
 /** 使用 [Double] 字面值的 [NumericalID] 实现。 */
 @SerialName("ID.N.D")
 @Serializable(with = DoubleID.Serializer::class)
-public data class DoubleID(public val number: Double): NumericalID<Double>(number) {
+public data class DoubleID(public val number: Double) : NumericalID<Double>(number) {
     override fun toDouble(): Double = number
+
     internal object Serializer : KSerializer<DoubleID> {
         override fun deserialize(decoder: Decoder): DoubleID = DoubleID(decoder.decodeDouble())
-        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ID.NUMBER.DOUBLE", kotlinx.serialization.descriptors.PrimitiveKind.DOUBLE)
+        override val descriptor: SerialDescriptor =
+            PrimitiveSerialDescriptor("ID.NUMBER.DOUBLE", kotlinx.serialization.descriptors.PrimitiveKind.DOUBLE)
+
         override fun serialize(encoder: Encoder, value: DoubleID) {
             encoder.encodeDouble(value.number)
         }
@@ -169,8 +178,9 @@ public data class DoubleID(public val number: Double): NumericalID<Double>(numbe
 /** 使用 [Float] 字面值的 [NumericalID] 实现。 */
 @SerialName("ID.N.F")
 @Serializable(with = FloatID.Serializer::class)
-public data class FloatID(public val number: Float): NumericalID<Float>(number) {
+public data class FloatID(public val number: Float) : NumericalID<Float>(number) {
     override fun toFloat(): Float = number
+
     internal object Serializer : KSerializer<FloatID> {
         override fun deserialize(decoder: Decoder): FloatID = FloatID(decoder.decodeFloat())
         override val descriptor: SerialDescriptor = Float.serializer().descriptor
@@ -185,6 +195,8 @@ public data class FloatID(public val number: Float): NumericalID<Float>(number) 
 // @SerialName("ID.N.A")
 // @Serializable
 // internal expect sealed class ArbitraryNumericalID<N : Number> : NumericalID<N>
+
+// The feature "multi platform projects" is experimental and should be enabled explicitly
 
 /**
  * [NumericalID] as [Number].
