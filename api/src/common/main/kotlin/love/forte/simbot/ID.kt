@@ -36,9 +36,13 @@ import kotlin.jvm.JvmStatic
  *
  * 假若一个 [ID] 中实际存储的值仅有一个，则它的 [toString] 应当就是它的字面值。
  *
- * [ID] 应当支持序列化, 在使用 [ID] 的时候，你应该主动
+ * [ID] 应当支持序列化, 且 [ID] 的序列化器应当都是一个 `primitive` 序列化器。
+ * 所有的 [ID] 序列化后都应是结构体, 而应该是一个原始类型值。
  *
- * [ID] 是可以进行排序的。
+ *
+ *
+ *
+ * [ID] 是[可排序的][Comparable]。
  *
  * @see CharSequenceID
  * @see NumericalID
