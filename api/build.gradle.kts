@@ -19,10 +19,6 @@ plugins {
 group = "love.forte.simple-robot"
 version = "3.0.0-preview"
 
-repositories {
-    mavenCentral()
-}
-
 
 kotlin {
     // 严格模式
@@ -32,7 +28,7 @@ kotlin {
     jvm("jvm") {
         attributes {
             attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
-            attribute(SimbotAttributes.MODULE_NAME, "api")
+            // attribute(SimbotAttributes.MODULE_NAME, "api")
         }
 
         compilations.all {
@@ -48,9 +44,9 @@ kotlin {
         }
     }
 
-    js("js"/*, IR*/) {
+    js {
         nodejs()
-        // browser()
+        browser()
         useCommonJs()
         compilations.all {
             kotlinOptions {
@@ -80,7 +76,7 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val jvmMain by getting {
             dependencies {
-                implementation(V.Kotlin.Reflect.notation) // "org.jetbrains.kotlin:kotlin-reflect:1.5.31"
+                implementation(V.Kotlin.Reflect.notation)
                 implementation(V.Kotlinx.Coroutines.Core.Jvm.notation)
                 implementation(V.Slf4j.Api.notation)
             }
@@ -125,9 +121,5 @@ kotlin {
         }
     }
 
-    tasks.dokkaHtml {
-        val root = rootProject.rootDir
-        outputDirectory.set(File(root, "dokkaOutput/${project.name}"))
-    }
 
 }

@@ -42,11 +42,3 @@ public actual fun <N: Number> N.resolveToID(): ArbitraryNumericalID<N> {
 
     TODO()
 }
-
-/*
-Conflicting overloads:
-public expect fun <N : Number> N.ID(): NumericalID<N>
-defined in love.forte.simbot in file ID.kt,
-public expect fun <N : Number> N.ID(): NumericalID<N>
-defined in love.forte.simbot in file ID.kt
- */

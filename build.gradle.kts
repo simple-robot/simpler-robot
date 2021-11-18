@@ -10,23 +10,14 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-val kotlinVersion = "1.6.0"
 
 plugins {
     kotlin("jvm") version "1.6.0" apply false
     kotlin("multiplatform") version "1.6.0" apply false
     kotlin("plugin.serialization") version "1.6.0" apply false
-
     id("org.jetbrains.dokka") version "1.5.30" apply false
 }
 
-println()
-
-extra.properties.forEach { (t, u) ->
-    println("ext.$t\t=\t$u")
-}
-
-println()
 
 
 group = P.Simbot.GROUP
@@ -40,6 +31,10 @@ subprojects {
     group = P.Simbot.GROUP
     version = P.Simbot.VERSION
 
+    repositories {
+        mavenCentral()
+    }
+
     plugins.findPlugin("org.jetbrains.dokka")?.let {
         configDokka()
     }
@@ -52,7 +47,7 @@ subprojects {
 /**
  * config dokka output.
  */
-fun Project.configDokka() {
+inline fun Project.configDokka() {
     tasks.named<org.jetbrains.dokka.gradle.DokkaTask>("dokkaHtml") {
         val root = rootProject.rootDir
         outputDirectory.set(File(root, "dokkaOutput/${project.name}"))

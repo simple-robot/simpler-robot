@@ -70,7 +70,7 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val jvmMain by getting {
             dependencies {
-                implementation(kotlin("reflect")) // "org.jetbrains.kotlin:kotlin-reflect:1.5.31"
+                implementation(kotlin("reflect"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2")
             }
         }
