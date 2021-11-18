@@ -68,16 +68,14 @@ public val Double.ID: DoubleID get() = DoubleID(this)
 public val Float.ID: FloatID get() = FloatID(this)
 
 
-// public expect fun <N: Number> N.ID(): NumericalID<N>
-
-// public val Number.ID: NumberID get() = NumberID(this.toLong())
-// public val String.ID: StringID get() = StringID(this)
 
 
 /**
  * 以一个 [数字][Number] 作为字面值的 [ID].
  *
- * 这个数字可能是 [Int], [Long], 又或许是
+ * 这个数字可能是 [Int][IntID], [Long][LongID], [Float][FloatID], [Double][DoubleID],
+ *
+ * 或者一个平台下相关的 [其他 Number][ArbitraryNumericalID] 实现。
  *
  * ```kt
  * // Kotlin
@@ -191,12 +189,20 @@ public data class FloatID(public val number: Float) : NumericalID<Float>(number)
 }
 //endregion
 
+/**
+ *
+ */
+public expect fun <N: Number> N.resolveToID(): ArbitraryNumericalID<N>
 
-// @SerialName("ID.N.A")
-// @Serializable
-// internal expect sealed class ArbitraryNumericalID<N : Number> : NumericalID<N>
 
-// The feature "multi platform projects" is experimental and should be enabled explicitly
+
+
+
+@kotlin.Suppress("CanBeParameter")
+@SerialName("ID.N.A")
+@Serializable
+public abstract class ArbitraryNumericalID<N : Number>(private val number: N) : NumericalID<N>(number)
+
 
 /**
  * [NumericalID] as [Number].

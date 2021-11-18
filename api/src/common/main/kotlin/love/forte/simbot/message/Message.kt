@@ -7,7 +7,7 @@ import love.forte.simbot.Component
 import love.forte.simbot.ComponentContainer
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotComponent
-import love.forte.simbot.event.Event
+import love.forte.simbot.Event
 import love.forte.simbot.message.Message.Element
 import kotlin.reflect.KClass
 
