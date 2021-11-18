@@ -28,18 +28,21 @@ extra.properties.forEach { (t, u) ->
 
 println()
 
-group = "love.forte.simple-robot"
-version = "3.0.0-preview"
+
+group = P.Simbot.GROUP
+version = P.Simbot.VERSION
 
 repositories {
     mavenCentral()
 }
 
 subprojects {
-    this.plugins.findPlugin("org.jetbrains.dokka")?.let {
+    group = P.Simbot.GROUP
+    version = P.Simbot.VERSION
+
+    plugins.findPlugin("org.jetbrains.dokka")?.let {
         configDokka()
     }
-
 
 
 }

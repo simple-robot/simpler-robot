@@ -10,16 +10,28 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-val kotlinVersion = "1.6.0"
 
-plugins {
-    `kotlin-dsl`
-    // kotlin("gradle-plugin") version "1.6.0"
-    // kotlin("gradle-plugin")
+abstract class SimbotProject {
+    // 是否需要推送
+    abstract val isPublishNeed: Boolean
+
+    abstract val group: String
+    abstract val version: String
 }
 
-repositories {
-    mavenCentral()
-    google()
-    gradlePluginPortal()
+
+/**
+ * Project versions.
+ */
+sealed class P : SimbotProject() {
+    object Simbot {
+        const val GROUP = "love.forte.simple-robot"
+        const val VERSION = "3.0.0-PREVIEW"
+    }
+
+
+
 }
+
+
+
