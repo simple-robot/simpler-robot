@@ -1,9 +1,5 @@
-import groovy.xml.dom.DOMCategory.attributes
-import org.jetbrains.kotlin.psi.packageDirectiveVisitor
-
 plugins {
     kotlin("multiplatform")
-    // kotlin("plugin.serialization") // version "1.5.31"
     id("org.jetbrains.dokka")
 }
 
@@ -39,7 +35,7 @@ kotlin {
         }
     }
 
-    js("js", org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType.IR) {
+    js("js") {
         nodejs()
         browser()
         useCommonJs()
@@ -60,10 +56,14 @@ kotlin {
                 optIn("kotlin.RequiresOptIn")
             }
 
+            // dependencies {
+            //     compileOnly(project(":api"))
+            // }
 
             // Set src dir like xxx/main/kotlin, xxx/test/kotlin
-            val (target, source) = name.toTargetAndSource()
-            kotlin.setSrcDirs(project.srcList(source, target))
+            // val (target, source) = name.toTargetAndSource()
+            // kotlin.setSrcDirs(project.srcList(source, target))
+
         }
 
 

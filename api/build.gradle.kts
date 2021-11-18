@@ -1,9 +1,6 @@
-import groovy.xml.dom.DOMCategory.attributes
-import org.jetbrains.kotlin.psi.packageDirectiveVisitor
-
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") // version "1.5.31"
+    kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
 }
 
@@ -16,6 +13,8 @@ repositories {
 
 
 kotlin {
+    coreLibrariesVersion = "1.6.0"
+
     // 严格模式
     explicitApi()
 
@@ -60,57 +59,57 @@ kotlin {
                 optIn("kotlin.RequiresOptIn")
             }
 
-
             // Set src dir like xxx/main/kotlin, xxx/test/kotlin
             val (target, source) = name.toTargetAndSource()
-            kotlin.setSrcDirs(project.srcList(source, target))
-            resources.setSrcDirs(project.resourcesList(source, target))
+            kotlin.srcDir(project.src(source, target))
+            resources.srcDir(project.resources(source, target))
+
         }
 
 
         @Suppress("UNUSED_VARIABLE")
         val jvmMain by getting {
             dependencies {
-                implementation(kotlin("reflect")) // "org.jetbrains.kotlin:kotlin-reflect:1.5.31"
-                implementation("org.slf4j:slf4j-api:1.7.9")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2")
+                implementation(V.Kotlin.Reflect.notation) // "org.jetbrains.kotlin:kotlin-reflect:1.5.31"
+                implementation(V.Kotlinx.Coroutines.Core.Jvm.notation)
+                implementation(V.Slf4j.Api.notation)
             }
         }
 
         @Suppress("UNUSED_VARIABLE")
         val jvmTest by getting {
             dependencies {
-                implementation(kotlin("test-junit"))
+                implementation(V.Kotlin.Test.Junit.notation)
             }
         }
-        @Suppress("UNUSED_VARIABLE")
-        val jsMain by getting
+        // @Suppress("UNUSED_VARIABLE")
+        // val jsMain by getting
 
         @Suppress("UNUSED_VARIABLE")
         val jsTest by getting {
             dependencies {
-                implementation(kotlin("test-js"))
+                implementation(V.Kotlin.Test.Js.notation)
             }
         }
 
         @Suppress("UNUSED_VARIABLE")
         val commonMain by getting {
             dependencies {
-                implementation(kotlin("stdlib-common"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.0")
-                implementation("com.squareup.okio:okio:3.0.0")
+                // implementation(kotlin("stdlib-common"))
+                implementation(V.Kotlin.Stdlib.Common.notation)
+                implementation(V.Kotlinx.Coroutines.Core.notation)
+                implementation(V.Kotlinx.Serialization.Core.notation)
             }
         }
 
         @Suppress("UNUSED_VARIABLE")
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.3.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.0")
+                implementation(V.Kotlin.Test.Common.notation)
+                implementation(V.Kotlin.Test.AnnotatoinsCommon.notation)
+                implementation(V.Kotlinx.Serialization.Json.notation)
+                implementation(V.Kotlinx.Serialization.Protobuf.notation)
+                implementation(V.Kotlinx.Serialization.Properties.notation)
             }
         }
     }
@@ -119,5 +118,5 @@ kotlin {
         val root = rootProject.rootDir
         outputDirectory.set(File(root, "dokkaOutput/${project.name}"))
     }
-}
 
+}

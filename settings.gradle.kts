@@ -1,4 +1,11 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+        maven { setUrl("https://plugins.gradle.org/m2/") }
+    }
+}
 rootProject.name = "simply-robot"
-include("annotation")
-include("api")
-include("commons:utils")
+
+include(":api")
+include(":annotation")
+include(":commons:utils")
