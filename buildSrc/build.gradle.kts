@@ -14,6 +14,7 @@ val kotlinVersion = "1.6.0"
 
 plugins {
     `kotlin-dsl`
+    // kotlin("gradle-plugin") version "1.6.0"
     // kotlin("gradle-plugin")
 }
 
@@ -22,6 +23,7 @@ repositories {
     google()
     gradlePluginPortal()
 }
+
 
 // kotlin {
 //     sourceSets.all {
@@ -36,8 +38,10 @@ repositories {
 dependencies {
     // implementation(V.Kotlin.GradlePlugin.notation)
     // implementation(V.Kotlin.CompilerEmbeddable.notation)
-    // api("org.jetbrains.kotlin", "kotlin-gradle-plugin", "1.6.0")
     // api("org.jetbrains.kotlin", "kotlin-compiler-embeddable", "1.6.0")
     // implementation("com.android.tools.build", "gradle",  "4.1.1")
+
+    // "org.jetbrains.kotlin", "kotlin-gradle-plugin", "1.6.0"
+    // api(kotlin("gradle-plugin", "1.6.0"))
     // api(gradleApi())
 }

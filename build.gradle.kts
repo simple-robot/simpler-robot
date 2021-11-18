@@ -13,13 +13,11 @@
 val kotlinVersion = "1.6.0"
 
 plugins {
-    // kotlin("gradle-plugin") version "1.5.31"
-    // kotlin version "1.6.0"
     kotlin("jvm") version "1.6.0" apply false
     kotlin("multiplatform") version "1.6.0" apply false
-    // kotlin("jvm") version "1.6.0" apply false
-    id("org.jetbrains.dokka") version "1.5.30" apply false
     kotlin("plugin.serialization") version "1.6.0" apply false
+
+    id("org.jetbrains.dokka") version "1.5.30" apply false
 }
 
 println()
@@ -38,11 +36,24 @@ repositories {
 }
 
 subprojects {
+    this.plugins.findPlugin("org.jetbrains.dokka")?.let {
+        configDokka()
+    }
+
     // apply(plugin = "kotlin")
 }
 
 
 
+/**
+ * config dokka output.
+ */
+fun Project.configDokka() {
+    tasks.named<org.jetbrains.dokka.gradle.DokkaTask>("dokkaHtml") {
+        val root = rootProject.rootDir
+        outputDirectory.set(File(root, "dokkaOutput/${project.name}"))
+    }
+}
 
 
 

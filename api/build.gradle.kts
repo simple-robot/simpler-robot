@@ -25,8 +25,6 @@ repositories {
 
 
 kotlin {
-    coreLibrariesVersion = "1.6.0"
-
     // 严格模式
     explicitApi()
 
