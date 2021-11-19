@@ -15,7 +15,10 @@ package love.forte.test
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import love.forte.simbot.*
+import love.forte.simbot.ArbitraryNumericalID
+import love.forte.simbot.DoubleID
+import love.forte.simbot.ID
+import love.forte.simbot.LongID
 import kotlin.test.Test
 
 @Serializable
@@ -24,11 +27,29 @@ data class User(
     val age: Int,
 )
 
+@Serializable
+data class User2(val id: LongID, val name: String)
+
+
+expect fun testID(): List<ArbitraryNumericalID<*>>
+
+
+
 /**
  *
  * @author ForteScarlet
  */
 class IDTest {
+
+    @Test
+    fun test() {
+
+        val list: List<ID> = testID()
+        println(list)
+
+        Json.encodeToString(list)
+
+    }
 
     @Test
     fun idSerializerTest() {

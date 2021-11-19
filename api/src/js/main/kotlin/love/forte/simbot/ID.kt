@@ -12,12 +12,19 @@
 
 package love.forte.simbot
 
+/**
+ * JS平台下的无效实现。
+ * 将会直接抛出 [NoSuchIDTypeException].
+ */
+@Suppress("FunctionName")
+public actual fun <N: Number> N.ID(): ArbitraryNumericalID<N>  = throw NoSuchIDTypeException(this::class.toString())
 
 
-public actual fun <N: Number> N.resolveToID(): ArbitraryNumericalID<N> {
-    TODO()
-}
-
-public fun a() {
-
-}
+//
+// /**
+//  * JS平台下无 [ArbitraryNumericalID] 实例。
+//  */
+// @Suppress("CanBeParameter")
+// @SerialName("ID.N.A")
+// @Serializable
+// public actual sealed class ArbitraryNumericalID<N : Number> : NumericalID<N>()

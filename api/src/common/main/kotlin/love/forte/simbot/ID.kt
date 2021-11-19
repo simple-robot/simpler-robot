@@ -22,10 +22,12 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import love.forte.simbot.NumericalID.*
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
+
+@Serializable
+public data class User(val id: LongID, val name: String)
 
 /**
  * 唯一标识 [ID].
@@ -40,13 +42,38 @@ import kotlin.jvm.JvmStatic
  * 所有的 [ID] 序列化后都应是结构体, 而应该是一个原始类型值。
  *
  *
+ * 例如：
+ * ```kotlin
+ *
+ * @Serializable
+ * data class User(val id: LongID, val name: String)
+ *
+ * val json = Json.encodeToString(User(213L.ID, "ForteScarlet"))
+ * // json: {"id": 213, "name": "ForteScarlet"}
+ *
+ * ```
+ *
+ * 鉴于 [ID] 的最终序列化结果为原始类型，并且是非封闭性的，
+ * 因此在使用 [ID] 的时候，必须实现 [序列化][Serializable], 且使用一个具体的最终类型。
+ *
+ * ```
+ * // 直接使用具体的ID类型，比如LongID
+ * @Serializable
+ * data class User(val id: LongID)
+ *
+ * // 一个具体的类型，不要使用模糊化的ID
+ *
+ * ```
+ *
+ *
  *
  *
  * [ID] 是[可排序的][Comparable]。
  *
  * @see CharSequenceID
  * @see NumericalID
- * @see ComplexID
+ * @see ComplexID 其他自定义ID
+ * @see DelegateID 委托ID
  *
  *
  * @author ForteScarlet
@@ -54,7 +81,7 @@ import kotlin.jvm.JvmStatic
 @Serializable
 public sealed class ID : Comparable<ID> {
     /**
-     * 必须实现 [toString].
+     * [ID] 的 [toString] 结果必须是当前ID所对应的字面值。
      */
     abstract override fun toString(): String
 
@@ -68,12 +95,27 @@ public sealed class ID : Comparable<ID> {
     public companion object {
         @JvmStatic
         @JsName("byNumber")
-        public fun by(n: Number): NumericalID<*> = TODO() // NumericalID(n)
+        public fun <N: Number> by(n: N): NumericalID<N> = n.ID()
 
+        @JvmStatic
+        @JsName("byInt")
+        public fun by(n: Int): IntID = n.ID
+        @JvmStatic
+        @JsName("byChar")
+        public fun by(n: Char): IntID = n.ID
+        @JvmStatic
+        @JsName("byLong")
+        public fun by(n: Long): LongID = n.ID
+        @JvmStatic
+        @JsName("byDouble")
+        public fun by(n: Double): DoubleID = n.ID
+        @JvmStatic
+        @JsName("byFloat")
+        public fun by(n: Float): FloatID = n.ID
 
         @JvmStatic
         @JsName("byString")
-        public fun by(s: String): CharSequenceID = TODO() // s.ID
+        public fun by(s: String): CharSequenceID = s.ID
     }
 }
 
@@ -82,9 +124,19 @@ public val Char.ID: IntID get() = IntID(this)
 public val Long.ID: LongID get() = LongID(this)
 public val Double.ID: DoubleID get() = DoubleID(this)
 public val Float.ID: FloatID get() = FloatID(this)
+public val CharSequence.ID: CharSequenceID get() = CharSequenceID(this)
 
 
-
+/**
+ * 由平台实现的, 通过一个 [数字][Number] 实例而得到的 [数字ID][NumericalID]。
+ *
+ * 在 `JVM` 平台下，支持 BigDecimal 等常见 [Number] 实现，
+ * 在 `JS` 平台下无额外实现，将会直接抛出 [NoSuchIDTypeException].
+ *
+ * @throws NoSuchIDTypeException 如果所使用的 [Number] 不被支持。
+ */
+@Suppress("FunctionName")
+public expect fun <N : Number> N.ID(): ArbitraryNumericalID<N>
 
 /**
  * 以一个 [数字][Number] 作为字面值的 [ID].
@@ -115,7 +167,9 @@ public val Float.ID: FloatID get() = FloatID(this)
 @Suppress("MemberVisibilityCanBePrivate")
 @SerialName("ID.N")
 @Serializable
-public sealed class NumericalID<N : Number>(public val value: N) : ID() {
+public sealed class NumericalID<N : Number> : ID() {
+    public abstract val value: N
+
     override fun compareTo(other: ID): Int {
         if (other === this) return 0
         if (other is NumericalID<*>) {
@@ -141,7 +195,10 @@ public sealed class NumericalID<N : Number>(public val value: N) : ID() {
 /** 使用 [Int] 或 [Char] 字面值的 [NumericalID] 实现。 */
 @SerialName("ID.N.I")
 @Serializable(with = IntID.Serializer::class)
-public data class IntID(public val number: Int) : NumericalID<Int>(number) {
+public data class IntID(public val number: Int) : NumericalID<Int>() {
+    override val value: Int
+        get() = number
+
     public constructor(char: Char) : this(char.code)
 
     override fun toInt(): Int = number
@@ -159,7 +216,10 @@ public data class IntID(public val number: Int) : NumericalID<Int>(number) {
 /** 使用 [Long] 字面值的 [NumericalID] 实现。 */
 @SerialName("ID.N.L")
 @Serializable(with = LongID.Serializer::class)
-public data class LongID(public val number: Long) : NumericalID<Long>(number) {
+public data class LongID(public val number: Long) : NumericalID<Long>() {
+    override val value: Long
+        get() = number
+
     override fun toLong(): Long = number
     override fun toInt(): Int = number.toInt()
 
@@ -175,7 +235,10 @@ public data class LongID(public val number: Long) : NumericalID<Long>(number) {
 /** 使用 [Double] 字面值的 [NumericalID] 实现。 */
 @SerialName("ID.N.D")
 @Serializable(with = DoubleID.Serializer::class)
-public data class DoubleID(public val number: Double) : NumericalID<Double>(number) {
+public data class DoubleID(public val number: Double) : NumericalID<Double>() {
+    override val value: Double
+        get() = number
+
     override fun toDouble(): Double = number
 
     internal object Serializer : KSerializer<DoubleID> {
@@ -192,7 +255,10 @@ public data class DoubleID(public val number: Double) : NumericalID<Double>(numb
 /** 使用 [Float] 字面值的 [NumericalID] 实现。 */
 @SerialName("ID.N.F")
 @Serializable(with = FloatID.Serializer::class)
-public data class FloatID(public val number: Float) : NumericalID<Float>(number) {
+public data class FloatID(public val number: Float) : NumericalID<Float>() {
+    override val value: Float
+        get() = number
+
     override fun toFloat(): Float = number
 
     internal object Serializer : KSerializer<FloatID> {
@@ -205,19 +271,18 @@ public data class FloatID(public val number: Float) : NumericalID<Float>(number)
 }
 //endregion
 
+
+
 /**
+ * 一个任意的 [数字ID][NumericalID] 实例, 由平台进行实现。
+ * 作为一个任意的 [数字][Number] ID，实现的内部字面量需要是不可变的。
  *
+ * 在 `JVM` 平台下，支持 BigDecimal 等常见 [Number] 实现。
  */
-public expect fun <N: Number> N.resolveToID(): ArbitraryNumericalID<N>
-
-
-
-
-
 @kotlin.Suppress("CanBeParameter")
 @SerialName("ID.N.A")
 @Serializable
-public abstract class ArbitraryNumericalID<N : Number>(private val number: N) : NumericalID<N>(number)
+public abstract class ArbitraryNumericalID<N : Number> internal constructor(): NumericalID<N>()
 
 
 /**
@@ -235,21 +300,6 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
     override fun toFloat(): Float = id.toFloat()
 }
 
-
-//
-// /**
-//  * [NumericalID] 的字面值序列化器。
-//  */
-// public class NumberIDSerializer : KSerializer<NumericalID> {
-//     override fun deserialize(decoder: Decoder): NumericalID = NumericalID(decoder.decodeLong())
-//     override val descriptor: SerialDescriptor =
-//         PrimitiveSerialDescriptor("simbot.LongIDAsLong", PrimitiveKind.LONG)
-//
-//     override fun serialize(encoder: Encoder, value: NumericalID) {
-//
-//         // encoder.encodeLong(value)
-//     }
-// }
 
 /**
  * 以 [String] 作为字面值的 [ID].
@@ -269,7 +319,7 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
  * @see ID.by
  * @see String.ID
  */
-@SerialName("ID.C")
+@SerialName("ID.CS")
 @Serializable
 public data class CharSequenceID internal constructor(val value: CharSequence) : ID() {
     override fun toString(): String = value.toString()
@@ -296,6 +346,51 @@ public data class CharSequenceID internal constructor(val value: CharSequence) :
  * 如果是一个复杂ID, 即无法通过 [NumericalID] 或 [CharSequenceID] 进行表示的，
  * 则实现此抽象类。
  */
+@SerialName("ID.CX")
 @Serializable
 public abstract class ComplexID : ID()
 
+
+/**
+ * 一个内部委托的ID实现。
+ * 在某些情况下，也许对于一个 [ID] 你可能所需要的最终表现与目前已存的其他类型的 [ID] 一致，
+ * 但是出于对某些原因的考虑（例如需要额外的计算、远程网络调用或者懒加载），
+ * 你需要通过一些方法的实现来计算这个 [ID] 而无法在初始化的时候得到此 [ID] 实例，
+ * 那么你则可以通过实现 [DelegateID] 来在委托一个目标的 [ID][T], 并在适当的时候对其进行计算。
+ *
+ * 需要注意，如果你实现了此ID，那么你需要保证最终得到的真实ID的实例是始终唯一的。
+ *
+ * [DelegateID] 中的 [hashCode] [equals] [compareTo] [toString] 都会直接使用委托对象实现。
+ *
+ */
+@SerialName("ID.D")
+public abstract class DelegateID<T : ID> : ID() {
+    public abstract val delegate: T
+    final override fun toString(): String = delegate.toString()
+    final override fun hashCode(): Int = delegate.hashCode()
+    final override fun equals(other: Any?): Boolean = delegate == other
+    final override fun compareTo(other: ID): Int = delegate.compareTo(other)
+}
+
+
+
+
+/**
+ * 与 [ID] 相关的异常。
+ */
+public open class IDException : RuntimeException {
+    public constructor() : super()
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(cause: Throwable?) : super(cause)
+}
+
+/**
+ * ID类型不存在异常。
+ */
+public open class NoSuchIDTypeException : IDException {
+    public constructor() : super()
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(cause: Throwable?) : super(cause)
+}

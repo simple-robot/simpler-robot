@@ -21,14 +21,18 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.math.BigDecimal
+import java.math.BigInteger
 
 
 // public fun <N: Number> N.ID(): NumericalID<N> {
 // }
 
+/**
+ * 由 [BigDecimal] 作为字面量值的 [NumericalID] 实现。
+ */
 @SerialName("ID.N.A.BD")
 @Serializable(with = BigDecimalID.BigDecimalIDSerializer::class)
-public class BigDecimalID(value: BigDecimal) : ArbitraryNumericalID<BigDecimal>(value) {
+public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID<BigDecimal>() {
     internal object BigDecimalIDSerializer : KSerializer<BigDecimalID> {
         override fun deserialize(decoder: Decoder): BigDecimalID = BigDecimalID(BigDecimal(decoder.decodeString()))
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("bigDecimal", PrimitiveKind.STRING)
@@ -38,7 +42,47 @@ public class BigDecimalID(value: BigDecimal) : ArbitraryNumericalID<BigDecimal>(
     }
 }
 
-public actual fun <N: Number> N.resolveToID(): ArbitraryNumericalID<N> {
 
-    TODO()
+/**
+ * 由 [BigInteger] 作为字面量值的 [NumericalID] 实现。
+ */
+@SerialName("ID.N.A.BI")
+@Serializable(with = BigIntegerID.BigIntegerIDSerializer::class)
+public class BigIntegerID(override val value: BigInteger) : ArbitraryNumericalID<BigInteger>() {
+    internal object BigIntegerIDSerializer : KSerializer<BigIntegerID> {
+        override fun deserialize(decoder: Decoder): BigIntegerID = BigIntegerID(BigInteger(decoder.decodeString()))
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("bigInteger", PrimitiveKind.STRING)
+        override fun serialize(encoder: Encoder, value: BigIntegerID) {
+            encoder.encodeString(value.value.toString())
+        }
+    }
 }
+
+
+
+
+/**
+ * 得到平台实现的额外 [ArbitraryNumericalID] 实现。
+ */
+@Suppress("FunctionName", "UNCHECKED_CAST")
+public actual fun <N : Number> N.ID(): ArbitraryNumericalID<N> {
+    return when (this) {
+        is BigDecimal -> BigDecimalID(this) as ArbitraryNumericalID<N>
+        is BigInteger -> BigIntegerID(this) as ArbitraryNumericalID<N>
+        // is
+
+        else -> throw NoSuchIDTypeException(this::class.toString())
+    }
+}
+
+//
+// /**
+//  * 一个任意的 [数字ID][NumericalID] 实例, 由平台进行实现。
+//  * 作为一个任意的 [数字][Number] ID，实现的内部字面量需要是不可变的，因此实现不应是 [java.util.concurrent.atomic.AtomicInteger] 等可变类。
+//
+//  * 在 `JVM` 平台下，支持 BigDecimal 等常见 [Number] 实现。
+//  */
+// @Suppress("CanBeParameter")
+// @SerialName("ID.N.A")
+// @Serializable
+// public abstract class ArbitraryNumericalID<N : Number> internal constructor(): NumericalID<N>()
