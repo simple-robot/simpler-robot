@@ -13,10 +13,10 @@
 package love.forte.simbot
 
 /**
- * 处理器，针对于 **一个目标** 进行处理的函数。
+ * 处理器，针对于一个目标进行处理的函数。
  *
  * @author ForteScarlet
  */
-public interface Processor<T> {
+public interface Processor {
 
 }

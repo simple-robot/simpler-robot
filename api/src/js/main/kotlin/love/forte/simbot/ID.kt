@@ -12,12 +12,6 @@
 
 package love.forte.simbot
 
-/**
- * JS平台下的无效实现。
- * 将会直接抛出 [NoSuchIDTypeException].
- */
-@Suppress("FunctionName")
-public actual fun <N: Number> N.ID(): ArbitraryNumericalID<N>  = throw NoSuchIDTypeException(this::class.toString())
 
 
 //

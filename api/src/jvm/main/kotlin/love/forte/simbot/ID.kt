@@ -10,8 +10,6 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-@file:JvmName("Identifies")
-@file:JvmMultifileClass
 package love.forte.simbot
 
 import kotlinx.serialization.KSerializer
@@ -25,9 +23,6 @@ import kotlinx.serialization.encoding.Encoder
 import java.math.BigDecimal
 import java.math.BigInteger
 
-
-// public fun <N: Number> N.ID(): NumericalID<N> {
-// }
 
 /**
  * 由 [BigDecimal] 作为字面量值的 [NumericalID] 实现。
@@ -60,31 +55,16 @@ public class BigIntegerID(override val value: BigInteger) : ArbitraryNumericalID
     }
 }
 
-
-
+/**
+ * 得到一个字面值为 [BigDecimal] 的 [NumericalID].
+ */
+@Suppress("FunctionName")
+public fun BigDecimal.ID(): BigDecimalID = BigDecimalID(this)
 
 /**
- * 得到平台实现的额外 [ArbitraryNumericalID] 实现。
+ * 得到一个字面值为 [BigInteger] 的 [NumericalID].
  */
-@Suppress("FunctionName", "UNCHECKED_CAST")
-public actual fun <N : Number> N.ID(): ArbitraryNumericalID<N> {
-    return when (this) {
-        is BigDecimal -> BigDecimalID(this) as ArbitraryNumericalID<N>
-        is BigInteger -> BigIntegerID(this) as ArbitraryNumericalID<N>
-        // is
+@Suppress("FunctionName")
+public fun BigInteger.ID(): BigIntegerID = BigIntegerID(this)
 
-        else -> throw NoSuchIDTypeException(this::class.toString())
-    }
-}
 
-//
-// /**
-//  * 一个任意的 [数字ID][NumericalID] 实例, 由平台进行实现。
-//  * 作为一个任意的 [数字][Number] ID，实现的内部字面量需要是不可变的，因此实现不应是 [java.util.concurrent.atomic.AtomicInteger] 等可变类。
-//
-//  * 在 `JVM` 平台下，支持 BigDecimal 等常见 [Number] 实现。
-//  */
-// @Suppress("CanBeParameter")
-// @SerialName("ID.N.A")
-// @Serializable
-// public abstract class ArbitraryNumericalID<N : Number> internal constructor(): NumericalID<N>()

@@ -10,15 +10,16 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-pluginManagement {
-    repositories {
-        mavenCentral()
-        maven { setUrl("https://plugins.gradle.org/m2/") }
-    }
-}
-rootProject.name = "simply-robot"
+package love.forte.simbot.event
 
-include(":api")
-include(":annotation")
-include(":core")
-include(":commons:utils")
+/**
+ *  一个内部存有 [Event] 的事件体。
+ *
+ *
+ *
+ * @see Event
+ * @author ForteScarlet
+ */
+// public expect abstract class EventObject {
+//     public abstract val source: Event
+// }

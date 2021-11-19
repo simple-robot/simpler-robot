@@ -10,15 +10,15 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-pluginManagement {
-    repositories {
-        mavenCentral()
-        maven { setUrl("https://plugins.gradle.org/m2/") }
-    }
-}
-rootProject.name = "simply-robot"
+package love.forte.simbot.event
 
-include(":api")
-include(":annotation")
-include(":core")
-include(":commons:utils")
+
+/**
+ * 一个事件相关的拦截器.
+ */
+public sealed interface EventInterceptor {
+
+
+}
+
+

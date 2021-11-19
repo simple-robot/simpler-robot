@@ -10,15 +10,14 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-pluginManagement {
-    repositories {
-        mavenCentral()
-        maven { setUrl("https://plugins.gradle.org/m2/") }
-    }
-}
-rootProject.name = "simply-robot"
+package love.forte.test
 
-include(":api")
-include(":annotation")
-include(":core")
-include(":commons:utils")
+import java.util.*
+
+actual interface MyEvent : EventListener {
+    actual val name: String
+}
+
+class Ev : EventObject("") {
+
+}

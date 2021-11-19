@@ -10,9 +10,11 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-package love.forte.simbot
+package love.forte.simbot.event
 
 import kotlinx.serialization.Serializable
+import love.forte.simbot.Bot
+import love.forte.simbot.ID
 
 /**
  *

@@ -18,11 +18,21 @@ package love.forte.simbot
  *
  * @author ForteScarlet
  */
-public sealed interface Interceptor
+public sealed interface Interceptor<C: Interceptor.Content> {
+
+    /**
+     * 对当前指定的拦截内容进行处理。
+     *
+     * 想要继续流程则使用 [Content.proceed] 进入到下一个拦截器，或者进入正常流程。
+     */
+    public suspend fun intercept(context: C)
+
+
+    // 一个
+    public interface Content {
+        public suspend fun proceed()
+    }
+}
 
 
 
-public interface EventInterceptor : Interceptor
-
-
-public interface ListenerInterceptor : Interceptor

@@ -25,7 +25,7 @@ kotlin {
     jvm("jvm") {
         attributes {
             attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
-            // attribute(SimbotAttributes.MODULE_NAME, "api")
+            // attribute(SimbotAttributes.MODULE_NAME, "core")
         }
 
         compilations.all {
@@ -98,7 +98,7 @@ kotlin {
         @Suppress("UNUSED_VARIABLE")
         val commonMain by getting {
             dependencies {
-                // implementation(kotlin("stdlib-common"))
+                implementation(project(":api"))
                 implementation(V.Kotlin.Stdlib.Common.notation)
                 implementation(V.Kotlinx.Coroutines.Core.notation)
                 implementation(V.Kotlinx.Serialization.Core.notation)
@@ -120,3 +120,4 @@ kotlin {
 
 
 }
+
