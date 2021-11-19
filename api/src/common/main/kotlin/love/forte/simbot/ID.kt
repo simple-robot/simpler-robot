@@ -11,7 +11,7 @@
  */
 
 @file:JvmName("Identifies")
-
+@file:JvmMultifileClass
 package love.forte.simbot
 
 import kotlinx.serialization.KSerializer
@@ -22,9 +22,8 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlin.js.JsName
+import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
-import kotlin.jvm.JvmStatic
 
 @Serializable
 public data class User(val id: LongID, val name: String)
@@ -93,38 +92,43 @@ public sealed class ID : Comparable<ID> {
 
     @Suppress("FunctionName")
     public companion object {
-        @JvmStatic
-        @JsName("byNumber")
-        public fun <N: Number> by(n: N): NumericalID<N> = n.ID()
-
-        @JvmStatic
-        @JsName("byInt")
-        public fun by(n: Int): IntID = n.ID
-        @JvmStatic
-        @JsName("byChar")
-        public fun by(n: Char): IntID = n.ID
-        @JvmStatic
-        @JsName("byLong")
-        public fun by(n: Long): LongID = n.ID
-        @JvmStatic
-        @JsName("byDouble")
-        public fun by(n: Double): DoubleID = n.ID
-        @JvmStatic
-        @JsName("byFloat")
-        public fun by(n: Float): FloatID = n.ID
-
-        @JvmStatic
-        @JsName("byString")
-        public fun by(s: String): CharSequenceID = s.ID
+        // @JvmStatic
+        // @JsName("byNumber")
+        // public fun <N: Number> by(n: N): NumericalID<N> = n.ID()
+        // @JvmStatic
+        // @JsName("byInt")
+        // public fun by(n: Int): IntID = n.ID
+        // @JvmStatic
+        // @JsName("byChar")
+        // public fun by(n: Char): IntID = n.ID
+        // @JvmStatic
+        // @JsName("byLong")
+        // public fun by(n: Long): LongID = n.ID
+        // @JvmStatic
+        // @JsName("byDouble")
+        // public fun by(n: Double): DoubleID = n.ID
+        // @JvmStatic
+        // @JsName("byFloat")
+        // public fun by(n: Float): FloatID = n.ID
+        //
+        // @JvmStatic
+        // @JsName("byString")
+        // public fun by(s: String): CharSequenceID = s.ID
     }
 }
 
-public val Int.ID: IntID get() = IntID(this)
-public val Char.ID: IntID get() = IntID(this)
-public val Long.ID: LongID get() = LongID(this)
-public val Double.ID: DoubleID get() = DoubleID(this)
-public val Float.ID: FloatID get() = FloatID(this)
-public val CharSequence.ID: CharSequenceID get() = CharSequenceID(this)
+@get:JvmName("ID")
+public val @ParameterName("value") Int.ID: IntID get() = IntID(this)
+@get:JvmName("ID")
+public val @ParameterName("value") Char.ID: IntID get() = IntID(this)
+@get:JvmName("ID")
+public val @ParameterName("value") Long.ID: LongID get() = LongID(this)
+@get:JvmName("ID")
+public val @ParameterName("value") Double.ID: DoubleID get() = DoubleID(this)
+@get:JvmName("ID")
+public val @ParameterName("value") Float.ID: FloatID get() = FloatID(this)
+@get:JvmName("ID")
+public val @ParameterName("value") CharSequence.ID: CharSequenceID get() = CharSequenceID(this)
 
 
 /**
@@ -163,6 +167,11 @@ public expect fun <N : Number> N.ID(): ArbitraryNumericalID<N>
  * @see FloatID
  * @see ArbitraryNumericalID
  *
+ * @see Int.ID
+ * @see Long.ID
+ * @see Double.ID
+ * @see Float.ID
+ * @see Number.ID
  */
 @Suppress("MemberVisibilityCanBePrivate")
 @SerialName("ID.N")
@@ -278,6 +287,9 @@ public data class FloatID(public val number: Float) : NumericalID<Float>() {
  * 作为一个任意的 [数字][Number] ID，实现的内部字面量需要是不可变的。
  *
  * 在 `JVM` 平台下，支持 BigDecimal 等常见 [Number] 实现。
+ *
+ * @see Number.ID
+ *
  */
 @kotlin.Suppress("CanBeParameter")
 @SerialName("ID.N.A")
@@ -316,7 +328,6 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
  *
  * 序列化的时候，如果需要将 [CharSequenceID] 字段作为字符串字面量序列化，可以使用 [CharSequenceID.PrimitiveSerialSerializer].
  *
- * @see ID.by
  * @see String.ID
  */
 @SerialName("ID.CS")

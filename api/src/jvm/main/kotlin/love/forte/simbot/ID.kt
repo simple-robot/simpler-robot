@@ -10,6 +10,8 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
+@file:JvmName("Identifies")
+@file:JvmMultifileClass
 package love.forte.simbot
 
 import kotlinx.serialization.KSerializer

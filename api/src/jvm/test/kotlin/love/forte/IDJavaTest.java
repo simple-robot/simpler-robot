@@ -10,20 +10,19 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-package love.forte
+package love.forte;
 
-import org.junit.Test
+import love.forte.simbot.Identifies;
+import love.forte.simbot.IntID;
+import love.forte.simbot.LongID;
 
 /**
- *
  * @author ForteScarlet
  */
-class JTest {
-    @Test
-    fun a() {
-        var i1 = 10
-        var i = i1++
-        i = ++i1
-        println(i)
+public class IDJavaTest {
+    public static void main(String[] args) {
+        final IntID intId = Identifies.ID(1);
+        final LongID longId = Identifies.ID(1L);
+
     }
 }
