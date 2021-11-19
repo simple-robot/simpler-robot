@@ -146,7 +146,6 @@ public val CharSequence.ID: CharSequenceID
  * @see Long.ID
  * @see Double.ID
  * @see Float.ID
- * @see Number.ID
  */
 @Suppress("MemberVisibilityCanBePrivate")
 @SerialName("ID.N")
@@ -260,17 +259,13 @@ public data class FloatID(public val number: Float) : NumericalID<Float>() {
  * 一个任意的 [数字ID][NumericalID] 实例, 由平台进行实现。
  * 作为一个任意的 [数字][Number] ID，实现的内部字面量需要是不可变的。
  *
- * 在 `JVM` 平台下，支持 BigDecimal 等常见 [Number] 实现。
- *
- * @see Number.ID
+ * 在 `JVM` 平台下，支持 BigDecimal、BigInteger 等常见 [Number] 实现。
  *
  */
 @kotlin.Suppress("CanBeParameter")
 @SerialName("ID.N.A")
 @Serializable
 public abstract class ArbitraryNumericalID<N : Number> internal constructor() : NumericalID<N>()
-
-
 
 
 /**
@@ -302,24 +297,24 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
  * StringID id = ID.by("ID");
  * ```
  *
- * 序列化的时候，如果需要将 [CharSequenceID] 字段作为字符串字面量序列化，可以使用 [CharSequenceID.PrimitiveSerialSerializer].
+ * 序列化的时候，如果需要将 [CharSequenceID] 字段作为字符串字面量序列化，可以使用 [CharSequenceID.CharSequenceIDSerializer].
  *
  * @see String.ID
  */
 @SerialName("ID.CS")
-@Serializable
+@Serializable(with = CharSequenceID.CharSequenceIDSerializer::class)
 public data class CharSequenceID internal constructor(val value: CharSequence) : ID() {
     override fun toString(): String = value.toString()
     override fun compareTo(other: ID): Int = if (other === this) 0 else toString().compareTo(other.toString())
 
     public companion object {
-        public fun primitiveSerialSerializer(): KSerializer<CharSequenceID> = PrimitiveSerialSerializer
+        public fun primitiveSerialSerializer(): KSerializer<CharSequenceID> = CharSequenceIDSerializer
     }
 
     /**
      * [CharSequenceID] 的字面值序列化器。
      */
-    public object PrimitiveSerialSerializer : KSerializer<CharSequenceID> {
+    public object CharSequenceIDSerializer : KSerializer<CharSequenceID> {
         override fun deserialize(decoder: Decoder): CharSequenceID = CharSequenceID(decoder.decodeString())
         override val descriptor: SerialDescriptor = String.serializer().descriptor
         override fun serialize(encoder: Encoder, value: CharSequenceID) {
@@ -379,3 +374,4 @@ public open class NoSuchIDTypeException : IDException {
     public constructor(message: String?, cause: Throwable?) : super(message, cause)
     public constructor(cause: Throwable?) : super(cause)
 }
+

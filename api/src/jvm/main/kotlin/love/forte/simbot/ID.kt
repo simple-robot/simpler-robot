@@ -22,6 +22,10 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.atomic.LongAccumulator
+import java.util.concurrent.atomic.LongAdder
 
 
 /**
@@ -67,4 +71,19 @@ public fun BigDecimal.ID(): BigDecimalID = BigDecimalID(this)
 @Suppress("FunctionName")
 public fun BigInteger.ID(): BigIntegerID = BigIntegerID(this)
 
+@Suppress("FunctionName")
+public fun AtomicLong.ID(): LongID = this.toLong().ID
 
+@Suppress("FunctionName")
+public fun AtomicInteger.ID(): IntID = this.get().ID
+
+@Suppress("FunctionName")
+public fun LongAdder.ID(): LongID = this.sum().ID
+
+@Suppress("FunctionName")
+public fun LongAccumulator.ID(): LongID = this.get().ID
+
+/**
+ * 根据当前时间作为 [LongID].
+ */
+public fun currentTimeMillisID(): LongID = System.currentTimeMillis().ID
