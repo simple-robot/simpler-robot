@@ -21,4 +21,6 @@ rootProject.name = "simply-robot"
 include(":api")
 include(":annotation")
 include(":core")
-include(":commons:utils")
+// include(":commons:utils")
+
+// include(":DI")

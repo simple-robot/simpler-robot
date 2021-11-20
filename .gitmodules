@@ -1,0 +1,3 @@
+[submodule "DI"]
+	path = DI
+	url = git@github.com:forte-projects/forte-DI.git
