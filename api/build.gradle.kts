@@ -19,7 +19,7 @@ plugins {
 
 kotlin {
     // 严格模式
-    explicitApi()
+    explicitApiWarning()
 
     // Jvm
     jvm("jvm") {
