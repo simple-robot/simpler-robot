@@ -17,6 +17,17 @@ package love.forte.simbot
  *
  * @author ForteScarlet
  */
-public interface Processor {
+public interface Processor<T, R> {
+
+    /**
+     * 对目标进行处理。
+      */
+    public suspend fun process(target: T): R
 
 }
+
+
+/**
+ * 一个 [异常][Throwable] [处理器][Processor].
+ */
+public interface ExceptionProcessor<T : Throwable, R> : Processor<T, R>

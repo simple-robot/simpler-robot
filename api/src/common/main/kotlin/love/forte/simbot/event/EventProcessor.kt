@@ -25,6 +25,8 @@ public interface EventProcessor {
 
 /**
  * 事件处理器对整个事件流程执行完毕后得到的最终响应。
+ *
+ * 提供一个特殊的空内容伴生实现 [Empty] 来得到一个结果为空的实现。
  */
 public interface EventProcessingResult {
 
@@ -34,7 +36,14 @@ public interface EventProcessingResult {
     public val results: List<EventResult>
 
 
+    /**
+     * [EventProcessingResult] 的特殊无效实现，一般使用在例如全局拦截器进行拦截的时候。
+     *
+     * [Empty] 的 [results][Empty.results] 永远返回空列表。
+     */
+    public companion object Empty : EventProcessingResult {
+        override val results: List<EventResult> get() = emptyList()
 
-
+    }
 }
 
