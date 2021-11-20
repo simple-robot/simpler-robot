@@ -14,6 +14,7 @@
 
 package love.forte.simbot.spring.autoconfigure.properties;
 
+import love.forte.common.configuration.annotation.ConfigInject;
 import net.mamoe.mirai.utils.BotConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -50,6 +51,11 @@ public class SimbotCompMiraiConfigurationProperties {
      * @see BotConfiguration#heartbeatTimeoutMillis
      */
     private long heartbeatTimeoutMillis = getDef().getHeartbeatTimeoutMillis();
+
+    /**
+     * mirai 心跳策略.
+     */
+    private BotConfiguration.HeartbeatStrategy heartbeatStrategy  = getDef().getHeartbeatStrategy();
 
     /** 最多尝试多少次重连。 */
     private int reconnectionRetryTimes = getDef().getReconnectionRetryTimes();
