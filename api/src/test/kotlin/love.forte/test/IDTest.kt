@@ -18,6 +18,7 @@ import kotlinx.serialization.json.Json
 import love.forte.simbot.DoubleID
 import love.forte.simbot.ID
 import love.forte.simbot.LongID
+import java.util.*
 import kotlin.test.Test
 
 @Serializable
@@ -54,5 +55,24 @@ class IDTest {
 
     }
 
+    @Test
+    fun idEqualsTest() {
+        val id: ID = 123.ID
+        val id1: ID = "123".ID
+        assert(id == id1)
+    }
+
+    @Test
+    fun bitMapTest() {
+        val set = BitSet()
+        set.set(4)
+        set.set(44)
+        set.set(444)
+        set.set(4444)
+        set.set(44444)
+        println(set)
+        println(set.cardinality())
+        println(set.size())
+    }
 
 }

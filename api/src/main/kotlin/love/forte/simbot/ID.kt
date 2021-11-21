@@ -17,7 +17,6 @@ package love.forte.simbot
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -88,6 +87,14 @@ public sealed class ID : Comparable<ID> {
      */
     abstract override fun compareTo(other: ID): Int
 
+    final override fun equals(other: Any?): Boolean {
+        if (other !is ID) return false
+        if (doEquals(other)) return true
+        return toString() == other.toString()
+    }
+
+    protected open fun doEquals(other: ID): Boolean = false
+    abstract override fun hashCode(): Int
 
     public companion object {}
 }
@@ -140,9 +147,9 @@ public fun currentTimeMillisID(): LongID = System.currentTimeMillis().ID
  * 或者一个平台下相关的 [其他 Number][ArbitraryNumericalID] 实现。
  *
  * e.g.:
- * ```kt
+ * ```
  * // Kotlin
- * val id = 123L.ID
+ * val id: LongID = 123L.ID
  * ```
  *
  * ```java
@@ -157,13 +164,15 @@ public fun currentTimeMillisID(): LongID = System.currentTimeMillis().ID
  * @see DoubleID
  * @see FloatID
  * @see ArbitraryNumericalID
+ * @see BigDecimalID
+ * @see BigIntegerID
  *
  * @see Int.ID
  * @see Long.ID
  * @see Double.ID
  * @see Float.ID
  */
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "EqualsOrHashCode")
 @SerialName("ID.N")
 @Serializable
 public sealed class NumericalID<N : Number> : ID() {
@@ -172,7 +181,28 @@ public sealed class NumericalID<N : Number> : ID() {
     override fun compareTo(other: ID): Int {
         if (other === this) return 0
         if (other is NumericalID<*>) {
-            return toLong().compareTo(other.toLong())
+            return when (other) {
+                is IntID -> toInt().compareTo(other.value)
+                is LongID -> toLong().compareTo(other.value)
+                is DoubleID -> toDouble().compareTo(other.value)
+                is FloatID -> toFloat().compareTo(other.value)
+                is BigIntegerID -> when (this) {
+                    is BigIntegerID -> this.value.compareTo(other.value)
+                    is BigDecimalID -> this.value.compareTo(other.value.toBigDecimal())
+                    is IntID -> toInt().compareTo(other.value.toInt())
+                    is LongID -> toLong().compareTo(other.value.toLong())
+                    is DoubleID -> toDouble().compareTo(other.value.toDouble())
+                    is FloatID -> toFloat().compareTo(other.value.toFloat())
+                }
+                is BigDecimalID -> when (this) {
+                    is BigDecimalID -> this.value.compareTo(other.value)
+                    is BigIntegerID -> this.value.compareTo(other.value.toBigInteger())
+                    is IntID -> toInt().compareTo(other.value.toInt())
+                    is LongID -> toLong().compareTo(other.value.toLong())
+                    is DoubleID -> toDouble().compareTo(other.value.toDouble())
+                    is FloatID -> toFloat().compareTo(other.value.toFloat())
+                }
+            }
         }
         return toString().compareTo(other.toString())
     }
@@ -186,7 +216,21 @@ public sealed class NumericalID<N : Number> : ID() {
     public open fun toShort(): Short = value.toShort()
     public open fun toByte(): Byte = value.toByte()
     //endregion
+    override fun doEquals(other: ID): Boolean {
+        if (other is NumericalID<*>) {
+            return when (other) {
+                is IntID -> toInt() == other.value
+                is LongID -> toLong() == other.value
+                is DoubleID -> toDouble() == other.value
+                is FloatID -> toFloat() == other.value
+                is BigIntegerID -> if (this is BigIntegerID) this == other else toString() == other.toString()
+                is BigDecimalID -> if (this is BigDecimalID) this == other else toString() == other.toString()
+            }
+        }
 
+        return false
+    }
+    override fun hashCode(): Int = value.hashCode()
     final override fun toString(): String = value.toString()
 }
 
@@ -205,7 +249,7 @@ public data class IntID(public val number: Int) : NumericalID<Int>() {
 
     internal object Serializer : KSerializer<IntID> {
         override fun deserialize(decoder: Decoder): IntID = IntID(decoder.decodeInt())
-        override val descriptor: SerialDescriptor = Int.serializer().descriptor
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("IntID", PrimitiveKind.INT)
         override fun serialize(encoder: Encoder, value: IntID) {
             encoder.encodeInt(value.number)
         }
@@ -224,7 +268,7 @@ public data class LongID(public val number: Long) : NumericalID<Long>() {
 
     internal object Serializer : KSerializer<LongID> {
         override fun deserialize(decoder: Decoder): LongID = LongID(decoder.decodeLong())
-        override val descriptor: SerialDescriptor = Long.serializer().descriptor
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("LongID", PrimitiveKind.LONG)
         override fun serialize(encoder: Encoder, value: LongID) {
             encoder.encodeLong(value.number)
         }
@@ -242,9 +286,7 @@ public data class DoubleID(public val number: Double) : NumericalID<Double>() {
 
     internal object Serializer : KSerializer<DoubleID> {
         override fun deserialize(decoder: Decoder): DoubleID = DoubleID(decoder.decodeDouble())
-        override val descriptor: SerialDescriptor =
-            PrimitiveSerialDescriptor("ID.NUMBER.DOUBLE", PrimitiveKind.DOUBLE)
-
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("DoubleID", PrimitiveKind.DOUBLE)
         override fun serialize(encoder: Encoder, value: DoubleID) {
             encoder.encodeDouble(value.number)
         }
@@ -262,7 +304,7 @@ public data class FloatID(public val number: Float) : NumericalID<Float>() {
 
     internal object Serializer : KSerializer<FloatID> {
         override fun deserialize(decoder: Decoder): FloatID = FloatID(decoder.decodeFloat())
-        override val descriptor: SerialDescriptor = Float.serializer().descriptor
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("FloatID", PrimitiveKind.FLOAT)
         override fun serialize(encoder: Encoder, value: FloatID) {
             encoder.encodeFloat(value.number)
         }
@@ -295,7 +337,7 @@ public sealed class ArbitraryNumericalID<N : Number> private constructor() : Num
 public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID<BigDecimal>() {
     internal object BigDecimalIDSerializer : KSerializer<BigDecimalID> {
         override fun deserialize(decoder: Decoder): BigDecimalID = BigDecimalID(BigDecimal(decoder.decodeString()))
-        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("bigDecimal", PrimitiveKind.STRING)
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BigDecimalID", PrimitiveKind.STRING)
         override fun serialize(encoder: Encoder, value: BigDecimalID) {
             encoder.encodeString(value.value.toString())
         }
@@ -311,7 +353,7 @@ public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID
 public class BigIntegerID(override val value: BigInteger) : ArbitraryNumericalID<BigInteger>() {
     internal object BigIntegerIDSerializer : KSerializer<BigIntegerID> {
         override fun deserialize(decoder: Decoder): BigIntegerID = BigIntegerID(BigInteger(decoder.decodeString()))
-        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("bigInteger", PrimitiveKind.STRING)
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BigIntegerID", PrimitiveKind.STRING)
         override fun serialize(encoder: Encoder, value: BigIntegerID) {
             encoder.encodeString(value.value.toString())
         }
@@ -372,19 +414,21 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
 @SerialName("ID.CS")
 @Serializable(with = CharSequenceID.CharSequenceIDSerializer::class)
 public data class CharSequenceID internal constructor(val value: CharSequence) : ID() {
+    /**
+     * 直接通过 [ID.equals] 的最后逻辑进行toString判断。
+     */
+    override fun doEquals(other: ID): Boolean = false
+
+
     override fun toString(): String = value.toString()
     override fun compareTo(other: ID): Int = if (other === this) 0 else toString().compareTo(other.toString())
-
-    public companion object {
-        public fun primitiveSerialSerializer(): KSerializer<CharSequenceID> = CharSequenceIDSerializer
-    }
 
     /**
      * [CharSequenceID] 的字面值序列化器。
      */
     public object CharSequenceIDSerializer : KSerializer<CharSequenceID> {
         override fun deserialize(decoder: Decoder): CharSequenceID = CharSequenceID(decoder.decodeString())
-        override val descriptor: SerialDescriptor = String.serializer().descriptor
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("CharSequenceID", PrimitiveKind.STRING)
         override fun serialize(encoder: Encoder, value: CharSequenceID) {
             encoder.encodeString(value.toString())
         }

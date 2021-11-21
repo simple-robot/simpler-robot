@@ -16,6 +16,7 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.Bot
 import love.forte.simbot.CharSequenceID
 import love.forte.simbot.ID
+import love.forte.simbot.definition.BotContainer
 import love.forte.simbot.message.doSafeCast
 
 /**
@@ -27,11 +28,11 @@ import love.forte.simbot.message.doSafeCast
  *
  * @author ForteScarlet
  */
-public interface Event {
+public interface Event : BotContainer {
     /**
      * 与这个事件有关系的 [Bot].
      */
-    public val bot: Bot
+    override val bot: Bot
 
     /**
      * 这个事件的[元数据][Metadata]。

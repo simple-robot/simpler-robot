@@ -25,8 +25,8 @@ import kotlin.coroutines.CoroutineContext
  * 事件流程中进行流转的上下文也是一个协程上下文.
  * @author ForteScarlet
  */
-public interface EventProcessContext : CoroutineContext.Element {
-    public companion object Key : CoroutineContext.Key<EventProcessContext>
+public interface EventProcessingContext : CoroutineContext.Element {
+    public companion object Key : CoroutineContext.Key<EventProcessingContext>
     override val key: CoroutineContext.Key<*> get() = Key
 
     // 实现 CoroutineContext.Element?

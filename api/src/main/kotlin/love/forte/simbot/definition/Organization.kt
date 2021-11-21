@@ -12,6 +12,7 @@
 
 package love.forte.simbot.definition
 
+import love.forte.simbot.Bot
 import love.forte.simbot.ID
 import java.lang.reflect.Member
 
@@ -50,7 +51,12 @@ import java.lang.reflect.Member
  *
  * @author ForteScarlet
  */
-public interface Organization : Something, Structured<Organization?, List<Organization>> {
+public interface Organization : Something, Structured<Organization?, List<Organization>>, BotContainer {
+
+    /**
+     * 这个组织一定是属于某一个Bot之下的。
+     */
+    override val bot: Bot
 
     /**
      * 对于这个组织, 有一个唯一ID。

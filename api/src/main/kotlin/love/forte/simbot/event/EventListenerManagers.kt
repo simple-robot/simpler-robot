@@ -12,13 +12,32 @@
 
 package love.forte.simbot.event
 
+import love.forte.simbot.ID
+
 
 /**
- * 一个事件相关的拦截器.
+ *
+ * 监听函数管理器。
+ *
+ * @author ForteScarlet
  */
-public sealed interface EventInterceptor {
+public interface EventListenerManager {
+    // TODO
 
+    public operator fun get(id: ID): EventListener
 
 }
 
 
+/**
+ * 监听函数注册器
+ */
+public interface EventListenerRegistrar {
+
+    /**
+     * 注册一个监听函数。
+     *
+     */
+    public fun register(listener: EventListener)
+
+}

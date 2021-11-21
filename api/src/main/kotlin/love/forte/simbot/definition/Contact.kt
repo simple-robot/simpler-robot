@@ -26,12 +26,12 @@ import love.forte.simbot.message.MessageReceipt
  *
  * @author ForteScarlet
  */
-public interface Contact : MessageSendSupport {
+public interface Contact : MessageSendSupport, BotContainer {
 
     /**
      * 联系人所属的 [Bot].
      */
-    public val bot: Bot
+    override val bot: Bot
 
 
     /**

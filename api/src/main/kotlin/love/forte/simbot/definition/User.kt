@@ -14,6 +14,7 @@
 
 package love.forte.simbot.definition
 
+import love.forte.simbot.Bot
 import love.forte.simbot.ID
 
 /**
@@ -33,8 +34,14 @@ public interface User : Something, UserInfo {
     override val id: ID
 
 
-    // 可交流的? Communicable
-    // send to other account
 
 }
 
+/**
+ * 一个 **Bot容器**.
+ * 一般代表可以得到 [Bot] 的对象，例如非 [Bot] 的 [User]，比如 [Friend].
+ *
+ */
+public interface BotContainer : Container {
+    public val bot: Bot
+}
