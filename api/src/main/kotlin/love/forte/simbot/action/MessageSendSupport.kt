@@ -10,17 +10,19 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-package love.forte.simbot.message
+package love.forte.simbot.action
+
+import love.forte.simbot.message.Message
 
 
 /**
  *
- * 一个允许发送消息的实例。
+ * 一个允许发送消息的实例的行为。
  *
  * @author ForteScarlet
  */
-public interface MessageSendSupport {
+public interface MessageSendSupport : Action {
 
-    public suspend fun send(message: Message) // 回执
+    public suspend fun send(message: Message) // 回执?
 
 }

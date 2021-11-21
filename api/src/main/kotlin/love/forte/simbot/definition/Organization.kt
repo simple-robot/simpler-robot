@@ -50,12 +50,12 @@ import java.lang.reflect.Member
  *
  * @author ForteScarlet
  */
-public interface Organization : Structured<Organization?, List<Organization>> {
+public interface Organization : Something, Structured<Organization?, List<Organization>> {
 
     /**
      * 对于这个组织, 有一个唯一ID。
      */
-    public val id: ID
+    override val id: ID
 
     /**
      * 一个组织会有一个名称。
@@ -81,7 +81,6 @@ public interface Organization : Structured<Organization?, List<Organization>> {
     /**
      * 一个组织中，可能存在[成员][members].
      */
-    // 成员? 用户? 人?
     public val members: List<Member>
 
     // 资产？

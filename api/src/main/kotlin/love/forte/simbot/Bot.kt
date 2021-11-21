@@ -17,7 +17,7 @@ import love.forte.simbot.definition.User
 
 /**
  *
- * 一个 [Bot]. 同时, [Bot] 也属于一个账户 [User]。
+ * 一个 [Bot]. 同时, [Bot] 也属于一个用户 [User]。
  *
  * @author ForteScarlet
  */

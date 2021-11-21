@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -12,10 +12,14 @@
 
 package love.forte.simbot.event
 
+import love.forte.simbot.event.EventProcessingResult.Empty
+import org.jetbrains.annotations.NonBlocking
+
 
 /**
- *
  * 事件处理器，代表一个事件被触发的入口。
+ *
+ * 建议事件处理器对事件进行处理的时候，通过内置的调度器进行处理。
  *
  * @author ForteScarlet
  */
@@ -30,6 +34,7 @@ public interface EventProcessor {
      * TODO 返回值应该是什么？ Flow<EventResult>?
      *
      */
+    @NonBlocking
     public suspend fun push(event: Event) : EventProcessingResult
 
 }

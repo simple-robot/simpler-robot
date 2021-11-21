@@ -37,10 +37,10 @@ public interface Structured<P, N> {
 
 
 /**
- * 一个非瞬时的结构体 [Structured], 也就是一个异步结构体。其提供针对 [previous] 和 [next] 的异步调用函数,
+ * 一个响应式结构体 [Structured]。其提供针对 [previous] 和 [next] 的suspend函数,
  * 并为这两个属性提供一个默认的阻塞实现。
  */
-public interface AsyncStructured<P, N> : Structured<P, N> {
+public interface ReactiveStructured<P, N> : Structured<P, N> {
     override val previous: P get() = runBlocking { previous() }
     override val next: N get() = runBlocking { next() }
 

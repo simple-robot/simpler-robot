@@ -10,23 +10,26 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-package love.forte.simbot.definition
+package love.forte.simbot.action
 
-import love.forte.simbot.ID
+
 
 /**
+ * 允许一种删除行为。
+ * 标记一个消息为可删除的，通常可理解为是可撤回的。
  *
- * 一个 **人**？所有与人有关或者说类似于人的，都是 [人][Someone].
- *
- * 比如说，一个账号，他可能会对应一个人，一个机器人，也类似于一个人——一个虚拟的人。
- *
+ * 一般用于消息回执或者从远端接收到的消息事件上。
  * @author ForteScarlet
  */
-public interface Someone {
+public interface DeleteSupport : Action {
+
     /**
-     * 这个人所对应的唯一ID。
+     * 删除当前目标。
      *
-     * @see ID
+     * @return 是否删除成功
      */
-    public val id: ID
+    public suspend fun delete(): Boolean
+
 }
+
+// 提供者

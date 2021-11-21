@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -12,6 +12,7 @@
 
 package love.forte.simbot.event
 
+import org.jetbrains.annotations.UnmodifiableView
 import kotlin.coroutines.CoroutineContext
 
 
@@ -40,8 +41,7 @@ public interface EventProcessContext : CoroutineContext.Element {
      *
      * 此列表仅由事件处理器内部操作，是一个对外不可变视图。
      */
-
-    public val results: List<EventResult>
+    public val results: @UnmodifiableView List<EventResult>
 
 
     // 其他参数
