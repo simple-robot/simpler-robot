@@ -1,5 +1,18 @@
+/*
+ *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *
+ *  根据 Apache License 2.0 获得许可；
+ *  除非遵守许可，否则您不得使用此文件。
+ *  您可以在以下网址获取许可证副本：
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ */
+
 plugins {
-    kotlin("multiplatform")
+    kotlin("jvm")
+    kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
 }
 
@@ -10,111 +23,40 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    compileOnly(project(":api"))
+
+    compileOnly("javax.annotation:javax.annotation-api:1.3.2")
+
+    // implementation(V.Kotlinx.Coroutines.Core.Jvm.notation)
+    // implementation(V.Kotlinx.Serialization.Core.notation)
+
+    // testImplementation(V.Kotlin.Test.Junit.notation)
+    // testImplementation(V.Kotlinx.Serialization.Json.notation)
+    // testImplementation(V.Kotlinx.Serialization.Properties.notation)
+    // testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
+}
+
+tasks.getByName<Test>("test") {
+    useJUnit()
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        javaParameters = true
+        jvmTarget = "1.8"
+    }
+}
 
 kotlin {
     // 严格模式
-    explicitApi()
+    explicitApiWarning()
 
-    // Jvm
-    jvm("jvm") {
-        attributes {
-            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
-            attribute(SimbotAttributes.MODULE_NAME, "annotation")
+
+    sourceSets.all {
+        languageSettings {
+            optIn("kotlin.RequiresOptIn")
         }
-
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-                javaParameters = true
-            }
-        }
-        testRuns.all {
-            executionTask.configure {
-                useJUnit()
-            }
-        }
-    }
-
-    js("js") {
-        nodejs()
-        browser()
-        useCommonJs()
-        compilations.all {
-            kotlinOptions {
-                metaInfo = true
-            }
-        }
-        testRuns.all {
-            executionTask.configure {
-            }
-        }
-    }
-
-    sourceSets {
-        all {
-            languageSettings {
-                optIn("kotlin.RequiresOptIn")
-            }
-
-            // dependencies {
-            //     compileOnly(project(":api"))
-            // }
-
-            // Set src dir like xxx/main/kotlin, xxx/test/kotlin
-            // val (target, source) = name.toTargetAndSource()
-            // kotlin.setSrcDirs(project.srcList(source, target))
-
-        }
-
-
-        @Suppress("UNUSED_VARIABLE")
-        val jvmMain by getting {
-            dependencies {
-                implementation(kotlin("reflect"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2")
-            }
-        }
-
-        @Suppress("UNUSED_VARIABLE")
-        val jvmTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit"))
-            }
-        }
-        @Suppress("UNUSED_VARIABLE")
-        val jsMain by getting
-
-        @Suppress("UNUSED_VARIABLE")
-        val jsTest by getting {
-            dependencies {
-                implementation(kotlin("test-js"))
-            }
-        }
-
-        @Suppress("UNUSED_VARIABLE")
-        val commonMain by getting {
-            dependencies {
-                implementation(kotlin("stdlib-common"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.0")
-            }
-        }
-
-        @Suppress("UNUSED_VARIABLE")
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-properties:1.3.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:1.3.0")
-            }
-        }
-    }
-
-    tasks.dokkaHtml {
-        val root = rootProject.rootDir
-        outputDirectory.set(File(root, "dokkaOutput/${project.name}"))
     }
 }
 

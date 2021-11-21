@@ -41,6 +41,12 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
         }
     }
 
+    // org.jetbrains:annotations:23.0.0
+    sealed class Jetbrains(group: String = "org.jetbrains", id: String, version: String): V(group, id, version) {
+        object Annotations: Jetbrains(id = "annotations", version = "23.0.0")
+
+    }
+
     /**
      * Kotlin相关依赖项
      */
@@ -60,7 +66,7 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
             object Common : Test("common")
             object Junit : Test("junit")
             object Js : Test("js")
-            object AnnotatoinsCommon : Test("annotations-common")
+            object AnnotationsCommon : Test("annotations-common")
         }
     }
 
@@ -74,7 +80,7 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
         // https://github.com/Kotlin/kotlinx.coroutines
         sealed class Coroutines(id: String) : Kotlinx(id = "coroutines-$id", VERSION, true) {
             companion object {
-                const val VERSION = "1.5.2"
+                const val VERSION = "1.5.2-native-mt"
             }
 
             // https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/README.md
