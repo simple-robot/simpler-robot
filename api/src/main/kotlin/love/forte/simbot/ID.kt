@@ -30,9 +30,6 @@ import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.LongAccumulator
 import java.util.concurrent.atomic.LongAdder
 
-@Serializable
-public data class User(val id: LongID, val name: String)
-
 /**
  * 唯一标识 [ID].
  * ID一般存在与各个元数据中，作为元数据的唯一标识。

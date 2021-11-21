@@ -12,6 +12,8 @@
 
 package love.forte.simbot.action
 
+import love.forte.simbot.SimbotRuntimeException
+
 
 /**
  * 一个 **行为动作**。
@@ -30,4 +32,12 @@ package love.forte.simbot.action
 public interface Action
 
 
-
+/**
+ * 一个行为异常。
+ */
+public open class ActionException : SimbotRuntimeException {
+    public constructor() : super()
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(cause: Throwable?) : super(cause)
+}

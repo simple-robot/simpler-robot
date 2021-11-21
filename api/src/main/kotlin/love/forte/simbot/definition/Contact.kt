@@ -15,11 +15,12 @@ package love.forte.simbot.definition
 import love.forte.simbot.Bot
 import love.forte.simbot.action.MessageSendSupport
 import love.forte.simbot.message.Message
+import love.forte.simbot.message.MessageReceipt
 
 
 /**
  *
- * 一个联系人。联系人是除 [Bot] 以外的可以进行信息交流的 [User], 例如好友, 或者一个群成员。
+ * 一个联系目标。联系人是除 [Bot] 以外的可以进行信息交流的 [User], 例如好友, 一个群成员, 或者一个文字频道。
  *
  * 但是并不是 [Bot] 以外的所有人都可以进行信息交流，比如对于一个群成员，可能会受限于权限，或者受限于组织类型（例如一个订阅型组织，参考tg的频道）.
  *
@@ -36,6 +37,8 @@ public interface Contact : MessageSendSupport {
     /**
      * 向此联系人发送消息。
      */
-    override suspend fun send(message: Message)
+    override suspend fun send(message: Message): MessageReceipt
 
 }
+
+

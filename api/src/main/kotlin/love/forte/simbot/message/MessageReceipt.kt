@@ -13,6 +13,7 @@
 package love.forte.simbot.message
 
 import love.forte.simbot.ID
+import love.forte.simbot.action.DeleteSupport
 
 
 /**
@@ -28,4 +29,9 @@ public interface MessageReceipt {
 }
 
 
-
+/**
+ * 如果此回执单是可删除的, 执行删除。
+ *
+ * @return 删除成功为true，失败或不可删除均为null。
+ */
+public suspend fun MessageReceipt.deleteIfSupport(): Boolean = if (this is DeleteSupport) delete() else false

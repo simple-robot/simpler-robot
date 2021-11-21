@@ -14,14 +14,18 @@ package love.forte.simbot.definition
 
 
 /**
- *
+ * 一个群。
  * @author ForteScarlet
  */
 public interface Group : Organization {
 
 }
 
+
+/**
+ * 一个频道。
+ *  @author ForteScarlet
+ */
 public interface Channel : Organization {
-    override val next: List<Group>
-        get() = TODO("Not yet implemented")
+
 }

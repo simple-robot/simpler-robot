@@ -14,10 +14,10 @@ package love.forte.simbot.definition
 
 
 /**
- *
  * 一个 **聊天室**。 聊天室是组织的一个子集，代表其是一个存在多人且允许相互交流“发送消息”的组织。
+ *
+ * 聊天室作为一个联系对象，允许发送消息.
  *
  * @author ForteScarlet
  */
-public interface ChatRoom : Organization {
-}
+public interface ChatRoom : Organization, Contact
