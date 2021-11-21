@@ -15,6 +15,8 @@ package love.forte.simbot.message
 /**
  * 一个消息内容，其中存在一个 [消息元数据][Message.Metadata] 和一个[消息链][Messages]。
  *
+ * 对于一个事件，使用 [接收的消息内容][ReceivedMessageContent].
+ *
  */
 public sealed class MessageContent {
 
@@ -28,6 +30,12 @@ public sealed class MessageContent {
      */
     public abstract val messages: Messages
 
+    /**
+     * 得到这串消息中的所有 [纯文本][PlainText] 消息的拼接字符串。
+     */
+    public open val plainText: String by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        messages.filterIsInstance<PlainText<*>>().joinToString(separator = "", transform = PlainText<*>::text)
+    }
 }
 
 

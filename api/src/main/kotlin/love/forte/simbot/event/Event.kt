@@ -55,14 +55,19 @@ public interface Event {
      * 所有事件的根类型。
      */
     public companion object Root : Key<Event> {
+
         /**
-         * 当前事件的唯一ID。
-         *
+         * Event根节点的唯一ID。
          */
-        override val id: CharSequenceID = "api-root-event".ID
-        /** Event是所有事件的根，不可能是其他事件的子项. */
-        override fun isSubFrom(parentMaybe: Key<*>): Boolean = false
-        override fun safeCast(value: Any?): Event? = doSafeCast<Event>(value)
+        override val id: CharSequenceID = "api-root".ID
+
+        /**
+         * Event是所有事件的根，不可能是其他事件的子项.
+         */
+        override val parents: Set<Key<*>> get() = emptySet()
+
+
+        override fun safeCast(value: Any): Event? = doSafeCast<Event>(value)
     }
 
     /**
@@ -80,9 +85,21 @@ public interface Event {
      *
      */
     public interface Key<E : Event> {
+        /**
+         * 此事件的ID，需要是唯一的。假若在事件注册时出现了ID相同但不是同一个Key的情况将会导致异常。
+         */
         public val id: CharSequenceID
-        public infix fun isSubFrom(parentMaybe: Key<*>): Boolean
-        public fun safeCast(value: Any?): E?
+
+        /**
+         * 此事件所继承的所有父事件。
+         */
+        public val parents: Set<Key<*>>
+
+        /**
+         * 将一个提供的类型转化为当前的目标事件。
+         * 如果得到null，则说明无法被转化。
+         */
+        public fun safeCast(value: Any): E?
     }
 
 
@@ -94,10 +111,10 @@ public interface Event {
      * 元数据中存在什么，完全由事件实现者决定。
      * 但是无论如何，元消息应当存在一个能够决定当前事件唯一性的 [id].
      *
-     * 对于两个事件之间是否相同，即使用 [component] 和 [Metadata.id] 进行决定, 当同一个组件下的事件之间的 [Metadata.id] 的 [equals] 相同，
+     * 对于两个事件之间是否相同，即使用 [component] 和 [Metadata.id] 进行决定, 当同一个组件下的事件之间的 [Metadata.id] 的 [equals] 得到 `true`，
      * 则认为两个事件相同。
      *
-     * 元消息应能够支持 [序列化][Serializable].
+     * [元数据][Metadata]应能够支持[序列化][Serializable].
      */
     public interface Metadata {
         /** 元数据唯一标识。 */
@@ -146,4 +163,26 @@ public interface Event {
 }
 
 
+/**
+ * 判断当前类型是否为提供类型的子类型。
+ *
+ */
+public infix fun Event.Key<*>.isSubFrom(parentMaybe: Event.Key<*>): Boolean {
+    if (parentMaybe === Event) return true
+    if (parentMaybe in parents) return true
+    if (parents.isEmpty()) return false
+    return parents.any {
+        it isSubFrom parentMaybe
+    }
+}
+
+/**
+ * [Event.Key] 的基础抽象类，当一个事件仅来自于一个父级事件的时候可以使用此抽象类。
+ */
+public abstract class BaseEventKey<E : Event>(
+    idValue: String,
+    override val parents: Set<Event.Key<*>> = emptySet(),
+) : Event.Key<E> {
+    override val id: CharSequenceID= idValue.ID
+}
 

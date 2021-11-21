@@ -14,6 +14,7 @@ package love.forte.simbot.event
 
 import love.forte.simbot.Bot
 import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.doSafeCast
 
 
 /**
@@ -27,5 +28,26 @@ public interface MessageEvent : Event {
      * 当前消息事件的消息正文。
      */
     public val messageContent: MessageContent
+
+
+    public companion object Key : BaseEventKey<MessageEvent>("api-message") {
+        override fun safeCast(value: Any): MessageEvent? = doSafeCast(value)
+    }
 }
+
+
+/**
+ * 一个私聊消息事件。
+ */
+public interface PrivateMessageEvent : MessageEvent {
+    public companion object Key : BaseEventKey<PrivateMessageEvent>(
+        "api-private-message",
+        setOf(MessageEvent.Key)
+    ) {
+        override fun safeCast(value: Any): PrivateMessageEvent? = doSafeCast(value)
+    }
+}
+
+
+
 
