@@ -75,50 +75,5 @@ public data class SuccessResult<T>(override val value: T) : Result<T> {
 }
 
 
-/**
- * "未来"的结果，即当前结果并非瞬时，而是具有延期性的，比如一个异步任务的结果。
- *
- */
-public interface FutureResult<T> : Result<T> {
-    // Callbacks ?
-}
-
-
-/**
- * 可挂起的 [Result]. 当结果不一定能够即时得到反馈，而得到此结果的函数也并非挂起函数的时候，
- * 可以返回一个可挂起的Result来在提供一个可挂起的 [getValue] 来等待结果。
- *
- * 此时，[value] 的使用效果即等同于阻塞的 [getValue].
- * 当然，[exception] 和 [getException] 同理。
- *
- */
-public interface SuspendableResult<T> : FutureResult<T> {
-    override val value: T
-    public suspend fun getValue(): T
-
-    override val exception: Throwable?
-    public suspend fun getException(): Throwable?
-
-    override fun getValueOrNull(): T?
-    public suspend fun valueOrNull(): T?
-}
-
-//
-// /**
-//  * 根据结果函数得到 [SuspendableResult] 实例。
-//  */
-// @JvmSynthetic
-// @Suppress("FunctionName")
-// public fun <T> CoroutineScope.SuspendableResult(
-//     start: CoroutineStart = CoroutineStart.DEFAULT,
-//     block: suspend CoroutineScope.() -> T,
-// ): SuspendableResult<T> = SuspendableResult(async(start = start, block = block))
-//
-// /**
-//  * 根据结果函数得到 [SuspendableResult] 实例。
-//  */
-// @JvmSynthetic
-// @Suppress("FunctionName")
-// public fun <T> CoroutineScope.SuspendableResult(deferred: Deferred<T>): SuspendableResult<T>
 
 
