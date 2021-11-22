@@ -15,6 +15,7 @@ package love.forte.simbot.event
 import kotlinx.serialization.Serializable
 import love.forte.simbot.Bot
 import love.forte.simbot.CharSequenceID
+import love.forte.simbot.Component
 import love.forte.simbot.ID
 import love.forte.simbot.definition.BotContainer
 import love.forte.simbot.message.doSafeCast
@@ -187,3 +188,15 @@ public abstract class BaseEventKey<E : Event>(
     override val id: CharSequenceID= idValue.ID
 }
 
+
+/////
+
+/**
+ * 事件的所属组件。
+ */
+public inline val Event.component: Component get() = bot.component
+
+/**
+ * 事件的唯一ID。
+ */
+public inline val Event.id: ID get() = metadata.id

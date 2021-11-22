@@ -12,16 +12,3 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.Component
-import love.forte.simbot.ID
-
-
-/**
- * 事件的所属组件。
- */
-public inline val Event.component: Component get() = bot.component
-
-/**
- * 事件的唯一ID。
- */
-public inline val Event.id: ID get() = metadata.id
