@@ -13,7 +13,7 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.ID
-import kotlin.reflect.KClass
+import love.forte.simbot.PriorityConstant
 
 
 /**
@@ -36,15 +36,13 @@ public interface EventListener : java.util.EventListener {
     /**
      * 优先级。
      */
-    public val priority: Int get() = Int.MAX_VALUE
+    public val priority: Int get() = PriorityConstant.NORMAL
 
     /**
      * 判断当前监听函数是否对可以对指定的事件进行监听。
      *
-     * TODO eventType 是否用 [KClass] ? 或者最好用全限定名或者其他方式？
-     *
      */
-    public fun isTarget(eventType: KClass<out Event>): Boolean
+    public fun isTarget(eventType: Event.Key<*>): Boolean
 
 
     /**

@@ -28,7 +28,7 @@ public sealed class EventInterceptEntrance<C : EventInterceptor.Context<R>, R> {
         /**
          * 得到事件流程拦截器入口。
          */
-        public fun eventProcessingInterceptEntrance(interceptors: List<EventProcessingInterceptor>): EventInterceptEntrance<EventProcessingInterceptor.Context, EventProcessingResult> {
+        public fun eventProcessingInterceptEntrance(interceptors: Collection<EventProcessingInterceptor>): EventInterceptEntrance<EventProcessingInterceptor.Context, EventProcessingResult> {
             return if (interceptors.isEmpty()) EventProcessingDirectInterceptEntrance
             else EventProcessingIteratorInterceptEntrance(interceptors.toList())
         }
@@ -36,7 +36,7 @@ public sealed class EventInterceptEntrance<C : EventInterceptor.Context<R>, R> {
         /**
          * 得到监听函数拦截器入口。
          */
-        public fun eventListenerInterceptEntrance(interceptors: List<EventListenerInterceptor>): EventInterceptEntrance<EventListenerInterceptor.Context, EventResult> {
+        public fun eventListenerInterceptEntrance(interceptors: Collection<EventListenerInterceptor>): EventInterceptEntrance<EventListenerInterceptor.Context, EventResult> {
             return if (interceptors.isEmpty()) EventListenerDirectInterceptEntrance
             else EventListenerIteratorInterceptEntrance(interceptors.toList())
         }

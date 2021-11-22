@@ -14,6 +14,7 @@ package love.forte.simbot.event
 
 import love.forte.simbot.Filter
 import love.forte.simbot.ID
+import love.forte.simbot.PriorityConstant
 
 /**
  * 事件过滤器。
@@ -41,7 +42,7 @@ public interface EventFilter : Filter<EventProcessingContext> {
     /**
      * 优先级。
      */
-    public val priority: Int get() = Int.MAX_VALUE
+    public val priority: Int get() = PriorityConstant.NORMAL
 
     /**
      * 过滤器的检测函数。通过 [EventProcessingContext] 来验证是否需要处理当前事件。

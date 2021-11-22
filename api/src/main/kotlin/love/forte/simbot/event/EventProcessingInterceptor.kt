@@ -12,7 +12,9 @@
 
 package love.forte.simbot.event
 
+import love.forte.simbot.ID
 import love.forte.simbot.Interceptor
+import love.forte.simbot.PriorityConstant
 
 /**
  * 与事件有关的拦截器。
@@ -20,6 +22,17 @@ import love.forte.simbot.Interceptor
  * @see EventListenerInterceptor
  */
 public sealed interface EventInterceptor<C : EventInterceptor.Context<R>, R> : Interceptor<C, R> {
+    /**
+     * 拦截器应该存在一个唯一ID。
+     * 对于过程拦截器和监听函数拦截器，它们可以分别独立。
+     */
+    public val id: ID
+
+    /**
+     * 优先级。
+     */
+    public val priority: Int get() = PriorityConstant.NORMAL
+
     public sealed interface Context<R> : Interceptor.Context<R> {
         public val eventContext: EventProcessingContext
     }
