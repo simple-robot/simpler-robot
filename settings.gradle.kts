@@ -18,9 +18,15 @@ pluginManagement {
 }
 rootProject.name = "simply-robot"
 
-include(":api")
-include(":annotation")
-include(":core")
+includePro(":api")
+includePro(":annotation")
+includePro(":cores:core")
 // include(":commons:utils")
 
-// include(":DI")
+
+fun includePro(proName: String, dir: String? = null) {
+    include(proName)
+    if (dir != null) {
+        project(proName).projectDir = file(dir)
+    }
+}

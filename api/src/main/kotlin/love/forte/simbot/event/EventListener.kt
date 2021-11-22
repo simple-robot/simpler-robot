@@ -18,19 +18,25 @@ import kotlin.reflect.KClass
 
 /**
  *
- * 一个事件监听器。
+ * 一个监听事件的事件监听器。
  *
  * 事件监听器监听到实现并进行逻辑处理。此处不包含诸如过滤器等内容。
  *
+ * 事件监听器存在 [优先级][priority]，默认优先级为 [Int.MAX_VALUE].
+ *
  * @author ForteScarlet
  */
-public interface EventListener {
+public interface EventListener : java.util.EventListener {
 
     /**
      * 监听器必须是唯一的. 通过 [id] 进行唯一性确认。
      */
     public val id: ID
 
+    /**
+     * 优先级。
+     */
+    public val priority: Int get() = Int.MAX_VALUE
 
     /**
      * 判断当前监听函数是否对可以对指定的事件进行监听。
