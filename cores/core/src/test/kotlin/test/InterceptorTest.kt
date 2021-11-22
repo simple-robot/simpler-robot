@@ -13,7 +13,9 @@
 package test
 
 import kotlinx.coroutines.runBlocking
+import love.forte.simbot.ID
 import love.forte.simbot.event.*
+import java.util.*
 
 /**
  *
@@ -57,6 +59,7 @@ class InterceptorTest {
 
 class TestInterceptor(private val run: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult) :
     EventProcessingInterceptor {
+    override val id = UUID.randomUUID().toString().ID
     override suspend fun intercept(context: EventProcessingInterceptor.Context): EventProcessingResult {
         return run(context)
     }

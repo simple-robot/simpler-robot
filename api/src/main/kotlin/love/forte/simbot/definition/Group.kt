@@ -23,9 +23,18 @@ public interface Group : Organization {
 
 
 /**
+ * 一个频道服务器，或者说一个集会。
+ */
+public interface Guild : Organization {
+
+}
+
+
+/**
  * 一个频道。
  *  @author ForteScarlet
  */
 public interface Channel : Organization {
+
 
 }

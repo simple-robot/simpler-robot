@@ -13,13 +13,15 @@
 package love.forte.test
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import love.forte.simbot.DoubleID
+import love.forte.simbot.Grouping
 import love.forte.simbot.ID
 import love.forte.simbot.LongID
+import org.junit.Test
 import java.util.*
-import kotlin.test.Test
 
 @Serializable
 data class User(
@@ -73,6 +75,21 @@ class IDTest {
         println(set)
         println(set.cardinality())
         println(set.size())
+    }
+
+
+    @Test
+    fun groupingTest() {
+        val group1 = Grouping("abc".ID, "好友")
+
+        val j1 = Json.encodeToString(group1)
+
+        println(j1)
+
+        println(Json.decodeFromString<Grouping>(j1))
+
+
+
     }
 
 }

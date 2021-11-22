@@ -12,11 +12,14 @@
 
 package love.forte.simbot.definition
 
-import kotlinx.coroutines.runBlocking
+import love.forte.simbot.Grouping
 
 /**
- * 一个 **结构化** 的定义。
+ * 一个非阻塞的 **结构化** 定义。
+ *
  * 结构化的东西，他可以有一个 [上级][previous]，以及一个 [下级][next]。
+ *
+ * 一个结构化的内容，它可能存在一个上级，以及多个下级。
  *
  * @author ForteScarlet
  */
@@ -25,25 +28,14 @@ public interface Structured<P, N> {
     /**
      * 上一级的内容。
      */
-    public val previous: P
+    public suspend fun previous(): P
 
 
     /**
      * 下一级的内容。
+     *
+     * 结构化的东西下，其下层可能需要一个分组信息来得到特定的内容。
+     *
      */
-    public val next: N
-}
-
-
-
-/**
- * 一个响应式结构体 [Structured]。其提供针对 [previous] 和 [next] 的suspend函数,
- * 并为这两个属性提供一个默认的阻塞实现。
- */
-public interface ReactiveStructured<P, N> : Structured<P, N> {
-    override val previous: P get() = runBlocking { previous() }
-    override val next: N get() = runBlocking { next() }
-
-    public suspend fun previous(): P
-    public suspend fun next(): N
+    public suspend fun next(grouping: Grouping): N
 }

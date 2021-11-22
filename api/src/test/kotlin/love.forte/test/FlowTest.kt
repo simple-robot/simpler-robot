@@ -12,11 +12,8 @@
 
 package love.forte.test
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
@@ -61,7 +58,18 @@ class FlowTest {
             }
             println("End.")
         }.join()
+    }
 
+
+    @Test
+    fun test2() {
+        val flow = flow {
+            var i = 0
+            while (true) {
+                delay(100)
+                emit(i++)
+            }
+        }
 
 
     }

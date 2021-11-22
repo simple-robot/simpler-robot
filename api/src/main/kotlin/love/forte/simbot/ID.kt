@@ -119,6 +119,10 @@ public val Double.ID: DoubleID
 public val Float.ID: FloatID
     get() = FloatID(this)
 
+/**
+ * 注意，尽可能避免将 [StringBuilder] 等可变序列作为参数提供, 除非你明确的知道你在做什么。
+ * [CharSequenceID] 的 [value][CharSequenceID.value] 目前将会直接使用其引用作为参数。
+ */
 @get:JvmName("ID")
 public val CharSequence.ID: CharSequenceID
     get() = CharSequenceID(this)
@@ -395,7 +399,7 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
 
 
 /**
- * 以 [String] 作为字面值的 [ID].
+ * 以 [字符][CharSequence] 作为字面值的 [ID].
  *
  * ```kt
  * // Kotlin
@@ -409,7 +413,14 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
  *
  * 序列化的时候，如果需要将 [CharSequenceID] 字段作为字符串字面量序列化，可以使用 [CharSequenceID.CharSequenceIDSerializer].
  *
- * @see String.ID
+ * 注意，尽可能避免将 [StringBuilder] 等可变序列作为参数提供, 除非你明确的知道你在做什么。
+ * [CharSequenceID] 的 [value][CharSequenceID.value] 目前将会直接使用其引用作为参数。
+ *
+ * 所有的ID都拥有转化为字符序列ID的能力。
+ *
+ *
+ * @sample CharSequence.ID
+ * @sample ID.toCharSequenceID
  */
 @SerialName("ID.CS")
 @Serializable(with = CharSequenceID.CharSequenceIDSerializer::class)
@@ -434,6 +445,11 @@ public data class CharSequenceID internal constructor(val value: CharSequence) :
         }
     }
 }
+
+/**
+ * 所有的ID都拥有转化为字符序列ID的能力。
+ */
+public fun ID.toCharSequenceID(): CharSequenceID = if (this is CharSequenceID) this else CharSequenceID(this.toString())
 
 
 /**

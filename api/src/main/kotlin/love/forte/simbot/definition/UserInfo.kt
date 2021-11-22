@@ -23,10 +23,15 @@ public interface UserInfo {
 
     /**
      * 这个账号的用户名。
-     * 在极端情况下，也许用户不存在用户名。那时，以 [id] 替之。
      */
     public val username: String
 
+    /**
+     * 这个账户的头像。
+     * 这年头了，应该不会有什么聊天平台的用户没有头像信息了吧。
+     *
+     */
+    public val avatar: String
 
 }
 

@@ -20,6 +20,8 @@ import love.forte.simbot.ID
 /**
  * 一个 **用户**。
  *
+ * [Bot] 也是 [用户][User].
+ *
  * 对于Bot来讲，一个用户可能是一个陌生的人，一个[群成员][Member], 或者一个好友。
  *
  * 当然，[User] 也有可能代表了 [love.forte.simbot.Bot] 自身.
@@ -39,7 +41,7 @@ public interface User : Something, UserInfo {
 
 /**
  * 一个 **Bot容器**.
- * 一般代表可以得到 [Bot] 的对象，例如非 [Bot] 的 [User]，比如 [Friend].
+ * 一般代表可以得到 [Bot] 的对象，例如非 [Bot] 的 [User]，比如 [Friend]，一个Bot所提供的事件，或者一个BOT所在的组织集会。
  *
  */
 public interface BotContainer : Container {

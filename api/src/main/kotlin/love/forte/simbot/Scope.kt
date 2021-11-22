@@ -12,6 +12,8 @@
 
 package love.forte.simbot
 
+import kotlinx.serialization.Serializable
+
 
 /**
  *
@@ -37,5 +39,42 @@ public interface Scope {
      * 判断提供的 [作用域][scope] 是否囊括在当前作用域范围内。
      */
     public operator fun contains(scope: Scope): Boolean
+
+}
+
+
+/**
+ * 这是一个最基本的 [作用域][Scope], 其代表了一个没有任何嵌套关系的**分组**。
+ * 例如一个组织的分组，好友列表的分组，权限的分组（无嵌套关系的）等。
+ *
+ * 默认情况下，[Grouping.equals] 只进行 [id] 的匹配.
+ *
+ */
+@Serializable
+public open class Grouping(
+    override val id: CharSequenceID,
+    override val name: String
+) : Scope {
+    override fun contains(scope: Scope): Boolean {
+        return if (scope is Grouping) id == scope.id
+        else false
+    }
+
+    /**
+     * [Grouping.equals] 只进行 [id] 的匹配.
+     */
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Grouping
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int = id.hashCode()
+    override fun toString(): String = "Grouping(id=$id, name=$name)"
 
 }

@@ -12,9 +12,11 @@
 
 package love.forte.simbot.definition
 
+import kotlinx.coroutines.flow.Flow
 import love.forte.simbot.Bot
+import love.forte.simbot.Grouping
 import love.forte.simbot.ID
-import java.lang.reflect.Member
+import love.forte.simbot.Limiter
 
 /**
  * 一个 **组织** 结构（中的一员）。
@@ -37,21 +39,23 @@ import java.lang.reflect.Member
  * ## 职能 (?
  * 一个组织可能存在各种职能，例如一个“文字频道”，其职能允许成员们在其中进行文字交流，而一个“语音频道”则可能允许其成员们在其中进行语音聊天。
  *
- * TODO 有关职能的约定仍需考虑。
+ * 对于能够交流的组织（下的成员），将其定义为一个 [聊天室][ChatRoom]。 聊天室应当实现于 [Organization] 下的接口并为其提供消息发送的能力。
+ *
+ *
+ * _有关职能的约定仍需考虑。_
  *
  *
  *
  * 在一些常见场景下，组织可以表示为一个群聊，或者一个频道。群聊是没有上下级的，但是频道会有。
  * 需要考虑的是，不同类型的组织可能所拥有的权能不同。有可能能够发送消息，有可能不能。
  *
- * 比如在khl中，一个服务器本身不能发送消息或者语音，必须在进入了文字频道后才可以发言，并且这个"频道"就是一个“群聊”，或者一个 “文字聊天室”
- * 而在YY中，
+ * 你可以参考 [组织概述](https://www.yuque.com/simpler-robot/simpler-robot-doc/dt3ukr) 中的相关对比图。
  *
  *
  *
  * @author ForteScarlet
  */
-public interface Organization : Something, Structured<Organization?, List<Organization>>, BotContainer {
+public interface Organization : Something, Structured<Organization?, Flow<Organization>>, BotContainer {
 
     /**
      * 这个组织一定是属于某一个Bot之下的。
@@ -73,21 +77,24 @@ public interface Organization : Something, Structured<Organization?, List<Organi
      * 组织有可能是层级的，因此一个组织结构可能会有上一层的组织。
      * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
      */
-    override val previous: Organization?
+    override suspend fun previous(): Organization?
 
 
     /**
-     * 下一级，即这个组织下属的其他组织。
-     * 组织有可能是存在层级关系的，因此一个组织结构可能会存在下一层的次级组织。
-     * 如果不存在，得到空列表。
+     * 得到下一级的数据内容。
+     *
+     * 提供 grouping 查询分组信息。
+     *
+     * 实现者应当考虑处理 [Grouping] 允许实现 [Limiter] 的情况。
+     *
      */
-    override val next: List<Organization>
-
+    override suspend fun next(grouping: Grouping): Flow<Organization>
 
     /**
      * 一个组织中，可能存在[成员][members].
+     * @param limiter 对于多条数据的限流器。
      */
-    public val members: List<Member>
+    public suspend fun members(limiter: Limiter = Limiter): Flow<Member>
 
     // 资产？
 
