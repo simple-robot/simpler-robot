@@ -13,6 +13,7 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.Filter
+import love.forte.simbot.ID
 
 /**
  * 事件过滤器。
@@ -32,8 +33,25 @@ import love.forte.simbot.Filter
  * @author ForteScarlet
  */
 public interface EventFilter : Filter<EventProcessingContext> {
+    /**
+     * 过滤器拥有ID。在允许存在过滤器的情况下，不允许出现重复ID。
+     */
+    public val id: ID
+
+    /**
+     * 优先级。
+     */
+    public val priority: Int get() = Int.MAX_VALUE
+
+    /**
+     * 过滤器的检测函数。通过 [EventProcessingContext] 来验证是否需要处理当前事件。
+     */
     @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override suspend fun test(context: EventProcessingContext): Boolean
+
+    /**
+     * 如果过滤器匹配失败，可以通过此函数得到一个默认的返回值。
+     * 默认情况下返回 [EventResult.Invalid].
+     */
     public suspend fun defaultResult(context: EventProcessingContext): EventResult = EventResult
-    public val priority: Int get() = Int.MAX_VALUE
 }

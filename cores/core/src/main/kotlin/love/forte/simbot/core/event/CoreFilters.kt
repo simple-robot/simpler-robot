@@ -12,4 +12,3 @@
 
 package love.forte.simbot.core.event
 
-
