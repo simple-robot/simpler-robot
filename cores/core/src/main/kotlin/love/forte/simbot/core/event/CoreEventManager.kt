@@ -15,77 +15,23 @@ package love.forte.simbot.core.event
 import kotlinx.coroutines.withContext
 import love.forte.simbot.CharSequenceID
 import love.forte.simbot.event.*
-import love.forte.simbot.event.EventListener
-import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
-/**
- * [CoreEventManager] 的配置文件.
- */
-public class CoreEventMangerConfiguration {
-    @Volatile
-    internal var processingInterceptors =
-        TreeSet<EventProcessingInterceptor>(Comparator.comparing { i -> i.id.toString() })
-
-    @Volatile
-    internal var listenerInterceptors = TreeSet<EventListenerInterceptor>(Comparator.comparing { i -> i.id.toString() })
-
-
-    /**
-     * 添加一个流程拦截器，ID需要唯一。
-     * 如果出现重复ID，会抛出 [IllegalStateException] 并且不会真正的向当前配置中追加数据。
-     *
-     * @throws IllegalStateException 如果出现重复ID
-     */
-    @Synchronized
-    public fun addProcessingInterceptor(vararg interceptors: EventProcessingInterceptor) {
-        val processingInterceptorsCopy =
-            TreeSet<EventProcessingInterceptor>(Comparator.comparing { i -> i.id.toString() })
-        processingInterceptorsCopy.addAll(processingInterceptors)
-        for (interceptor in interceptors) {
-            if (!processingInterceptorsCopy.add(interceptor)) {
-                throw IllegalStateException("Duplicate ID: ${interceptor.id}")
-            }
-        }
-        processingInterceptors = processingInterceptorsCopy
-    }
-
-    /**
-     * 添加一个流程拦截器，ID需要唯一。
-     * 如果出现重复ID，会抛出 [IllegalStateException] 并且不会真正的向当前配置中追加数据。
-     *
-     * @throws IllegalStateException 如果出现重复ID
-     */
-    @Synchronized
-    public fun addListenerInterceptor(vararg interceptors: EventListenerInterceptor) {
-        val listenerInterceptorsCopy = TreeSet<EventListenerInterceptor>(Comparator.comparing { i -> i.id.toString() })
-        listenerInterceptorsCopy.addAll(listenerInterceptors)
-        for (interceptor in interceptors) {
-            if (!listenerInterceptorsCopy.add(interceptor)) {
-                throw IllegalStateException("Duplicate ID: ${interceptor.id}")
-            }
-        }
-        listenerInterceptors = listenerInterceptorsCopy
-    }
-
-
-    /**
-     * 事件流程上下文的处理器。
-     */
-    public var eventProcessingContextResolver: EventProcessingContextResolver<*> = TODO()
-
-
-}
 
 
 /**
  * 核心监听函数管理器。
  */
-public class CoreEventManager(
+public class CoreEventManager private constructor(
     configuration: CoreEventMangerConfiguration
 ) : EventProcessor,
     EventListenerRegistrar {
+
+    public companion object {
+        @JvmStatic // For java
+        public fun newInstance(configuration: CoreEventMangerConfiguration): CoreEventManager = CoreEventManager(configuration)
+    }
 
     /**
      * 事件过程拦截器入口。

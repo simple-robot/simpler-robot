@@ -10,134 +10,94 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
+@file:JvmName("CoreFunctionalEventInterceptors")
+
 package love.forte.simbot.core.event
 
+import love.forte.simbot.ID
+import love.forte.simbot.Interceptor
+import love.forte.simbot.PriorityConstant
 import love.forte.simbot.event.*
 
+@DslMarker
+internal annotation class CoreFunctionalProcessingInterceptorDSL
+
+@DslMarker
+internal annotation class CoreFunctionalListenerInterceptorDSL
 
 /**
- * 事件相关拦截器入口。通过解析拦截器列表提供一个最终的入口。
- */
-public sealed class EventInterceptEntrance<C : EventInterceptor.Context<R>, R> {
-    public abstract suspend fun doIntercept(
-        context: EventProcessingContext,
-        processing: suspend (EventProcessingContext) -> R
-    ): R
-
-    public companion object {
-        /**
-         * 得到事件流程拦截器入口。
-         */
-        public fun eventProcessingInterceptEntrance(interceptors: Collection<EventProcessingInterceptor>): EventInterceptEntrance<EventProcessingInterceptor.Context, EventProcessingResult> {
-            return if (interceptors.isEmpty()) EventProcessingDirectInterceptEntrance
-            else EventProcessingIteratorInterceptEntrance(interceptors.toList())
-        }
-
-        /**
-         * 得到监听函数拦截器入口。
-         */
-        public fun eventListenerInterceptEntrance(interceptors: Collection<EventListenerInterceptor>): EventInterceptEntrance<EventListenerInterceptor.Context, EventResult> {
-            return if (interceptors.isEmpty()) EventListenerDirectInterceptEntrance
-            else EventListenerIteratorInterceptEntrance(interceptors.toList())
-        }
-    }
-
-    public sealed class IteratorInterceptorContext<C : EventInterceptor.Context<R>, I : EventInterceptor<C, R>, R>(
-        private val interceptorsIterator: Iterator<I>,
-        private val processing: suspend (EventProcessingContext) -> R
-    ) {
-        public abstract val eventContext: EventProcessingContext
-        protected abstract val context: C
-
-        protected suspend fun doProceed(): R {
-            return if (interceptorsIterator.hasNext()) {
-                interceptorsIterator.next().intercept(context)
-            } else processing(eventContext)
-        }
-
-
-    }
-}
-
-//region Event processing intercept entrance
-/**
- * 核心所实现的事件拦截器入口。提供拦截器迭代器列表，通过 doIntercept 提供真实逻辑。
+ * 核心提供的事件拦截器实现, 基于函数提供外部事件逻辑。
+ *
+ * @see CoreFunctionalEventProcessingInterceptor
  *
  */
-private class EventProcessingIteratorInterceptEntrance(
-    private val interceptorsIterable: Iterable<EventProcessingInterceptor>,
-) : EventInterceptEntrance<EventProcessingInterceptor.Context, EventProcessingResult>() {
-
-    override suspend fun doIntercept(
-        context: EventProcessingContext,
-        processing: suspend (EventProcessingContext) -> EventProcessingResult
-    ): EventProcessingResult {
-        return IteratorInterceptorContext(context, processing).proceed()
-    }
-
-    private inner class IteratorInterceptorContext(
-        override val eventContext: EventProcessingContext,
-        processing: suspend (EventProcessingContext) -> EventProcessingResult
-    ) : EventInterceptEntrance.IteratorInterceptorContext<
-            EventProcessingInterceptor.Context,
-            EventProcessingInterceptor,
-            EventProcessingResult
-            >(interceptorsIterable.iterator(), processing),
-        EventProcessingInterceptor.Context {
-        override val context: EventProcessingInterceptor.Context
-            get() = this
-
-        override suspend fun proceed(): EventProcessingResult = doProceed()
-    }
+public sealed class CoreFunctionalEventInterceptor<C : EventInterceptor.Context<R>, R> : Interceptor<C, R> {
+    public abstract val interceptFunction: suspend (C) -> R
+    override suspend fun intercept(context: C): R = interceptFunction(context)
 }
 
-private object EventProcessingDirectInterceptEntrance
-    : EventInterceptEntrance<EventProcessingInterceptor.Context, EventProcessingResult>() {
-    override suspend fun doIntercept(
-        context: EventProcessingContext,
-        processing: suspend (EventProcessingContext) -> EventProcessingResult
-    ): EventProcessingResult = processing(context)
-}
-//endregion
 
-//region Event Listener intercept entrance
+public class CoreFunctionalEventProcessingInterceptor(
+    override val id: ID,
+    override val priority: Int = PriorityConstant.NORMAL,
+    override val interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
+) : EventProcessingInterceptor,
+    CoreFunctionalEventInterceptor<EventProcessingInterceptor.Context, EventProcessingResult>()
+
+
+public class CoreFunctionalEventListenerInterceptor(
+    override val id: ID,
+    override val priority: Int,
+    override val interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
+) : EventListenerInterceptor, CoreFunctionalEventInterceptor<EventListenerInterceptor.Context, EventResult>()
+
+
 /**
- * 核心所实现的事件拦截器入口。提供拦截器迭代器列表，通过 doIntercept 提供真实逻辑。
- *
+ * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
+ * 得到一个流程拦截器 [EventProcessingInterceptor].
  */
-private class EventListenerIteratorInterceptEntrance(
-    private val interceptorsIterable: Iterable<EventListenerInterceptor>,
-) : EventInterceptEntrance<EventListenerInterceptor.Context, EventResult>() {
+@JvmOverloads
+@CoreFunctionalProcessingInterceptorDSL
+public fun processingInterceptor(
+    id: ID,
+    priority: Int = PriorityConstant.NORMAL,
+    interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
+): EventProcessingInterceptor =
+    CoreFunctionalEventProcessingInterceptor(id = id, priority = priority, interceptFunction = interceptFunction)
 
-    override suspend fun doIntercept(
-        context: EventProcessingContext,
-        processing: suspend (EventProcessingContext) -> EventResult
-    ): EventResult {
-        return IteratorInterceptorContext(context, processing).proceed()
-    }
+@JvmOverloads
+@CoreFunctionalProcessingInterceptorDSL
+public fun processingInterceptor(
+    id: String,
+    priority: Int = PriorityConstant.NORMAL,
+    interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
+): EventProcessingInterceptor = processingInterceptor(id.ID, priority, interceptFunction)
 
-    private inner class IteratorInterceptorContext(
-        override val eventContext: EventProcessingContext,
-        private val processing: suspend (EventProcessingContext) -> EventResult
-    ) : EventInterceptEntrance.IteratorInterceptorContext<
-            EventListenerInterceptor.Context,
-            EventListenerInterceptor,
-            EventResult
-            >(interceptorsIterable.iterator(), processing),
-        EventListenerInterceptor.Context {
-        override val context: EventListenerInterceptor.Context
-            get() = this
 
-        override suspend fun proceed(): EventResult = doProceed()
-    }
-}
+/**
+ * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
+ * 得到一个流程拦截器 [EventListenerInterceptor].
+ */
+@JvmOverloads
+@CoreFunctionalListenerInterceptorDSL
+public fun listenerInterceptor(
+    id: ID,
+    priority: Int = PriorityConstant.NORMAL,
+    interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
+): EventListenerInterceptor =
+    CoreFunctionalEventListenerInterceptor(id = id, priority = priority, interceptFunction = interceptFunction)
 
-private object EventListenerDirectInterceptEntrance
-    : EventInterceptEntrance<EventListenerInterceptor.Context, EventResult>() {
-    override suspend fun doIntercept(
-        context: EventProcessingContext,
-        processing: suspend (EventProcessingContext) -> EventResult
-    ): EventResult = processing(context)
-}
-//endregion
+
+/**
+ * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
+ * 得到一个流程拦截器 [EventListenerInterceptor].
+ */
+@JvmOverloads
+@CoreFunctionalListenerInterceptorDSL
+public fun listenerInterceptor(
+    id: String,
+    priority: Int = PriorityConstant.NORMAL,
+    interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
+): EventListenerInterceptor =
+    listenerInterceptor(id.ID, priority, interceptFunction)
 
