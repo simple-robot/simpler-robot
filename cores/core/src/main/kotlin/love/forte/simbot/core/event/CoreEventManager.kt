@@ -15,9 +15,9 @@ package love.forte.simbot.core.event
 import kotlinx.coroutines.withContext
 import love.forte.simbot.CharSequenceID
 import love.forte.simbot.event.*
+import love.forte.simbot.utils.view
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantReadWriteLock
-
 
 
 /**
@@ -30,7 +30,8 @@ public class CoreEventManager private constructor(
 
     public companion object {
         @JvmStatic // For java
-        public fun newInstance(configuration: CoreEventMangerConfiguration): CoreEventManager = CoreEventManager(configuration)
+        public fun newInstance(configuration: CoreEventMangerConfiguration): CoreEventManager =
+            CoreEventManager(configuration)
     }
 
     /**
@@ -102,7 +103,10 @@ public class CoreEventManager private constructor(
     /**
      * 切换到当前管理器中的调度器并触发对应事件的内容。
      */
-    private suspend fun doInvoke(context: EventProcessingContext, invokers: List<ListenerInvoker>): EventProcessingResult {
+    private suspend fun doInvoke(
+        context: EventProcessingContext,
+        invokers: List<ListenerInvoker>
+    ): EventProcessingResult {
         return withContext(context) {
             processingInterceptEntrance.doIntercept(context) {
                 // do invoke with intercept
@@ -141,6 +145,10 @@ public class CoreEventManager private constructor(
 
 /**
  * 事件流程上下文的管理器，[CoreEventManager] 通过此接口实例完成对 [EventProcessingContext] 的统一管理。
+ *
+ *  在 [CoreEventManager] 中仅会使用同一个 [EventProcessingContextResolver] 实例。
+ *
+ * @sample CoreEventProcessingContextResolver
  */
 public interface EventProcessingContextResolver<C : EventProcessingContext> {
 
@@ -155,19 +163,45 @@ public interface EventProcessingContextResolver<C : EventProcessingContext> {
      *
      * [CoreEventManager] 会对所有得到的结果进行尝试推送，包括 [EventResult.Invalid],
      * 但是建议不会真正的添加 [EventResult.Invalid].
+     *
      */
     public suspend fun appendResultIntoContext(context: C, result: EventResult)
 }
 
-private object CoreEventProcessingContextResolver
+
+/**
+ * 核心默认的事件上下文处理器。
+ */
+private object CoreEventProcessingContextResolver : EventProcessingContextResolver<CoreEventProcessingContext> {
+    /**
+     * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
+     */
+    override suspend fun resolveEventToContext(event: Event, listenerSize: Int): CoreEventProcessingContext {
+        return CoreEventProcessingContext(event) { ArrayList(listenerSize) }
+    }
+
+
+    /**
+     * 将一次事件结果拼接到当前上下文结果集中。
+     */
+    override suspend fun appendResultIntoContext(context: CoreEventProcessingContext, result: EventResult) {
+        if (result != EventResult.Invalid) {
+            context._results.add(result)
+        }
+    }
+
+}
 
 
 private class CoreEventProcessingContext(
     override val event: Event,
     resultInit: () -> MutableList<EventResult>
 ) : EventProcessingContext {
-    private val _results = resultInit()
 
-    override val results: List<EventResult> = TODO()
+    @Suppress("PropertyName")
+    @JvmSynthetic
+    internal val _results = resultInit()
+
+    override val results: List<EventResult> = _results.view()
 
 }

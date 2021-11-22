@@ -18,7 +18,7 @@ package love.forte.simbot
  *
  * @author ForteScarlet
  */
-public interface Interceptor<C: Interceptor.Context<R>, R> {
+public interface Interceptor<C : Interceptor.Context<R>, R> {
 
     /**
      * 对当前指定的拦截内容进行处理。
