@@ -12,6 +12,8 @@
 
 package love.forte.simbot.definition
 
+import love.forte.simbot.ID
+
 /**
  * 一个账号的 **信息**。
  *
@@ -20,6 +22,11 @@ package love.forte.simbot.definition
  * @author ForteScarlet
  */
 public interface UserInfo {
+
+    /**
+     * 此用户的ID。
+     */
+    public val id: ID
 
     /**
      * 这个账号的用户名。
@@ -32,6 +39,8 @@ public interface UserInfo {
      *
      */
     public val avatar: String
+
+
 
 }
 

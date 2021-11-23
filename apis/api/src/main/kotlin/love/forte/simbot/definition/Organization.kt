@@ -90,7 +90,7 @@ public interface Organization : Something, Structured<Organization?, Flow<Organi
      * 实现者应当考虑处理 [Grouping] 允许实现 [Limiter] 的情况。
      *
      */
-    override suspend fun next(grouping: Grouping): Flow<Organization>
+    override suspend fun after(grouping: Grouping): Flow<Organization>
 
     /**
      * 一个组织中，可能存在[成员][members].

@@ -13,12 +13,19 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.action.Action
+import love.forte.simbot.action.ActionType
 
 /**
  * 此接口标记为一个api提供的常见 [RequestEvent.Action] 场景事件。
  * 情景下的
  */
-public sealed interface StandardRequestAction : Action
+public sealed interface StandardRequestAction : Action {
+    /**
+     * 对于 [请求事件][RequestEvent] 所需的 [行为][RequestEvent.Action],
+     * 一般来讲都应该是被动的。
+     */
+    override val actionType: ActionType get() = ActionType.PASSIVE
+}
 
 /**
  * 为本次行为提供一个 [备注][remark]。
@@ -42,7 +49,6 @@ public interface ReasonSupportAction : StandardRequestAction {
  * 为本次行为提供一个 [封锁][blocking] 选项。
  */
 public interface BlockingSupportAction : StandardRequestAction {
-
     public val blocking: Boolean
 }
 

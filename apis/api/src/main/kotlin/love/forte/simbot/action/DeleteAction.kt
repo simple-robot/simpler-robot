@@ -21,7 +21,13 @@ package love.forte.simbot.action
  * 一般用于消息回执或者从远端接收到的消息事件上。
  * @author ForteScarlet
  */
-public interface DeleteSupport : Action {
+public interface DeleteAction : Action {
+
+    /**
+     * 通常情况下，删除行为是一种主动行为。
+     */
+    override val actionType: ActionType
+        get() = ActionType.PROACTIVE
 
     /**
      * 删除当前目标。

@@ -60,9 +60,7 @@ public sealed class Component : Scope {
     override fun hashCode(): Int = id.hashCode()
 
 
-    public interface Attribute<V> { // TODO
-        public val name: String
-    }
+
 }
 
 
@@ -116,7 +114,7 @@ public object Components {
      *
      * @throws ComponentAlreadyExistsException 如果组件已经存在
      */
-    public fun create(
+    internal fun create(
         id: CharSequenceID,
         name: String = id.toString(),
         properties: Map<String, String> = emptyMap()
@@ -129,7 +127,7 @@ public object Components {
         }!!
     }
 
-    public fun create(id: String, name: String = id, properties: Map<String, String> = emptyMap()): Component {
+    internal fun create(id: String, name: String = id, properties: Map<String, String> = emptyMap()): Component {
         return create(id.ID, name, properties)
     }
 
@@ -172,30 +170,54 @@ public object Components {
     }
 }
 
-
 /**
- * 寻找对应的 [Component], 如果不存在，创建一个。
- *
+ * 通过 Java SPI 注册一个组件。
  */
-public inline fun Components.resolve(
-    id: CharSequenceID,
-    name: String = id.toString(),
-    properties: () -> Map<String, String> = { emptyMap() }
-): Component {
-    return find(id) ?: create(id, name, properties())
+public interface ComponentRegistrar {
+    public fun registerComponent(register: ComponentRegister)
 }
 
+
 /**
- * 寻找对应的 [Component], 如果不存在，创建一个。
- *
+ * 组件注册器，通过 [ComponentRegister] 向此注册器提供信息并最终注册为一个组件信息。
  */
-public inline fun Components.resolve(
-    id: String,
-    name: String = id,
-    properties: () -> Map<String, String> = { emptyMap() }
-): Component {
-    return find(id) ?: create(id, name, properties())
+public interface ComponentRegister {
+
+    public var id: CharSequenceID
+    public fun setId(id: String) {
+        this.id = id.ID
+    }
+
+    public var name: String
+
+
 }
+
+
+//
+// /**
+//  * 寻找对应的 [Component], 如果不存在，创建一个。
+//  *
+//  */
+// public inline fun Components.resolve(
+//     id: CharSequenceID,
+//     name: String = id.toString(),
+//     properties: () -> Map<String, String> = { emptyMap() }
+// ): Component {
+//     return find(id) ?: create(id, name, properties())
+// }
+//
+// /**
+//  * 寻找对应的 [Component], 如果不存在，创建一个。
+//  *
+//  */
+// public inline fun Components.resolve(
+//     id: String,
+//     name: String = id,
+//     properties: () -> Map<String, String> = { emptyMap() }
+// ): Component {
+//     return find(id) ?: create(id, name, properties())
+// }
 
 
 /**

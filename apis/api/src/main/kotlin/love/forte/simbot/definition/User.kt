@@ -28,22 +28,16 @@ import love.forte.simbot.ID
  *
  * @author ForteScarlet
  */
-public interface User : Something, UserInfo {
+public interface User : Something {
 
     /**
      * 这个账号的唯一ID。
      */
     override val id: ID
 
+    /**
+     * 这个用户的信息。
+     */
+    public val info: UserInfo
 
-
-}
-
-/**
- * 一个 **Bot容器**.
- * 一般代表可以得到 [Bot] 的对象，例如非 [Bot] 的 [User]，比如 [Friend]，一个Bot所提供的事件，或者一个BOT所在的组织集会。
- *
- */
-public interface BotContainer : Container {
-    public val bot: Bot
 }

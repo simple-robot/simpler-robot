@@ -13,6 +13,8 @@
 package love.forte.simbot.action
 
 import love.forte.simbot.SimbotRuntimeException
+import love.forte.simbot.action.ActionType.PASSIVE
+import love.forte.simbot.action.ActionType.PROACTIVE
 
 
 /**
@@ -31,7 +33,14 @@ import love.forte.simbot.SimbotRuntimeException
  *
  * @author ForteScarlet
  */
-public interface Action
+public interface Action {
+
+    /**
+     * 行为不论形式，其总是有一个客观的行为类型。
+     */
+    public val actionType: ActionType
+
+}
 
 
 /**
@@ -57,13 +66,19 @@ public interface ActionReceipt {
 }
 
 
-
-
-
-
-
+/**
+ * 一个行为的类型。行为不论形式，都分为主动行为与被动行为。
+ *
+ * 判定主动与被动一般可以通过这个行为能否随时随地进行主动发起来判断。
+ *
+ * 例如主动向好友发送一个消息的行为就是 [主动的][PROACTIVE]行为，而只有通过一次事件才能进行 *回复* 的行为是 [被动的][PASSIVE].
+ *
+ */
 public enum class ActionType {
-
+    /** 主动的 */
+    PROACTIVE,
+    /** 被动的 */
+    PASSIVE
 }
 
 

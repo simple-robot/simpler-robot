@@ -14,6 +14,7 @@ package love.forte.simbot.event
 
 import love.forte.simbot.Bot
 import love.forte.simbot.action.ActionReceipt
+import love.forte.simbot.action.ActionType
 import love.forte.simbot.message.doSafeCast
 import love.forte.simbot.event.RequestEvent.AcceptAction.Default as AccDefault
 import love.forte.simbot.event.RequestEvent.RejectAction.Default as RejDefault
@@ -73,7 +74,9 @@ public interface RequestEvent : Event {
      *
      */
     public interface AcceptAction : Action {
-        public companion object Default : AcceptAction
+        public companion object Default : AcceptAction {
+            override val actionType: ActionType = ActionType.PROACTIVE
+        }
     }
 
 
@@ -91,7 +94,9 @@ public interface RequestEvent : Event {
      * - 拒绝时将目标标记为 **黑名单**。
      */
     public interface RejectAction : Action {
-        public companion object Default : RejectAction
+        public companion object Default : RejectAction {
+            override val actionType: ActionType = ActionType.PROACTIVE
+        }
     }
 
 

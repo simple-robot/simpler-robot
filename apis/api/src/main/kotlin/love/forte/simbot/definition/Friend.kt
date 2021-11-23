@@ -13,23 +13,43 @@
 package love.forte.simbot.definition
 
 import love.forte.simbot.Bot
+import love.forte.simbot.Grouping
 import love.forte.simbot.ID
 
 
 /**
- * 一个 **朋友**。
+ * 一个 **好友**。
  */
 public interface Friend : User, BotContainer {
     override val id: ID
     override val bot: Bot
-    override val username: String
 
     /**
-     * 在Bot眼中，一个朋友可能存在一个备注。
-     * TODO 备注修改？
+     * 好友信息。
+     */
+    override val info: FriendInfo
+
+
+
+
+
+
+}
+
+
+public interface FriendInfo : UserInfo {
+    override val id: ID
+    override val username: String
+    override val avatar: String
+
+    /**
+     * 在Bot眼中，一个好友可能存在一个备注。
      */
     public val remark: String?
 
-
+    /**
+     * 对于Bot，好友可能存在于一个指定的分组中。
+     */
+    public val grouping: Grouping
 
 }

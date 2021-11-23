@@ -19,6 +19,20 @@ import love.forte.simbot.definition.User
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageReceipt
 
+/**
+ * 一个 **可交流的** 行为。
+ *
+ * 交流分为两种交流：主动交流，被动交流。
+ *
+ */
+public interface CommunicableAction : Action
+
+
+
+
+public enum class CommunicationType
+
+
 
 /**
  *

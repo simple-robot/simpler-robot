@@ -12,7 +12,10 @@
 
 package love.forte.simbot
 
+import kotlinx.coroutines.flow.Flow
+import love.forte.simbot.definition.Friend
 import love.forte.simbot.definition.User
+import love.forte.simbot.definition.UserInfo
 
 
 /**
@@ -34,6 +37,37 @@ public interface Bot : User {
      */
     public val component: Component
 
+    // info
+    /**
+     * 得到此Bot的一些基础信息。
+     */
+    override val info: BotInfo
+
+
+    // friends
+    /**
+     * 根据分组和限流信息得到此bot下的好友列表。
+     *
+     * 分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。
+     *
+     */
+    public suspend fun friends(grouping: Grouping, limiter: Limiter): Flow<Friend>
+
+
+    // organizations
+
+
+
+
     // other..?
 
+}
+
+/**
+ * 一个Bot的信息。同时其也属于一个 [UserInfo].
+ */
+public interface BotInfo : UserInfo {
+    override val id: ID
+    override val avatar: String
+    override val username: String
 }

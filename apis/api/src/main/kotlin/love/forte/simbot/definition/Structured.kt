@@ -17,7 +17,7 @@ import love.forte.simbot.Grouping
 /**
  * 一个非阻塞的 **结构化** 定义。
  *
- * 结构化的东西，他可以有一个 [上级][previous]，以及一个 [下级][next]。
+ * 结构化的东西，他可以有一个 [上级][previous]，以及一个 [下级][after]。
  *
  * 一个结构化的内容，它可能存在一个上级，以及多个下级。
  *
@@ -37,5 +37,5 @@ public interface Structured<P, N> {
      * 结构化的东西下，其下层可能需要一个分组信息来得到特定的内容。
      *
      */
-    public suspend fun next(grouping: Grouping): N
+    public suspend fun after(grouping: Grouping): N
 }
