@@ -33,7 +33,9 @@ import kotlin.collections.set
  */
 @Serializable
 @Suppress("MemberVisibilityCanBePrivate")
-public sealed class Component(public open val id: String) {
+public sealed class Component : Scope {
+    abstract override val id: CharSequenceID
+    abstract override val name: String
 
     /**
      * 获取一个属性。
@@ -50,6 +52,10 @@ public sealed class Component(public open val id: String) {
      */
     override fun equals(other: Any?): Boolean = this === other
 
+    /**
+     * 目前组件没有潜逃关系。唯一的嵌套关系为 [SimbotComponent] 包含所有的组件。
+     */
+    override fun contains(scope: Scope): Boolean = false
 
     override fun hashCode(): Int = id.hashCode()
 
@@ -66,18 +72,22 @@ public sealed class Component(public open val id: String) {
  */
 @Serializable
 @SerialName("simbotComponent")
-public object SimbotComponent : Component("simbot") {
+public object SimbotComponent : Component() {
+    override val id: CharSequenceID = "simbot".ID
+    override val name: String get() = "simbot"
     override fun get(propertyKey: String): String? = null
     override fun properties(): Map<String, String> = emptyMap()
     override fun toString(): String = "Component(id=simbot)"
     override fun hashCode(): Int = 0
+    override fun contains(scope: Scope): Boolean = true
 }
 
 /**
  * 两个 [Component] 是否相似。
  * 即其中一方为 [SimbotComponent], 或者二者相等。
  */
-public infix fun Component.like(other: Component): Boolean = this === SimbotComponent || other === SimbotComponent || this === other
+public infix fun Component.like(other: Component): Boolean =
+    this === SimbotComponent || other === SimbotComponent || this === other
 
 
 /**
@@ -90,31 +100,37 @@ public infix fun Component.like(other: Component): Boolean = this === SimbotComp
  * @see Component
  */
 public object Components {
-    private val comps: MutableMap<String, Component> = ConcurrentHashMap()
-
-    init {
-        comps[SimbotComponent.id] = SimbotComponent
+    private val comps: MutableMap<ID, Component> = ConcurrentHashMap<ID, Component>().also {
+        it[SimbotComponent.id] = SimbotComponent
     }
 
 
     /**
      * 创建一个对应 [id] 的 [Component] 并记录。如果 [Component] 已经存在，则抛出 [ComponentAlreadyExistsException].
      *
+     *
+     * TODO
      * 可以提供一个 [properties] 参数集作为当前组件的参数列表。[properties] 将会被直接被使用，不会进行任何装饰。
      * 因此如果你不希望他后续能够被修改，请自行进行处理，比如在JVM平台下使用 `Collections.unmodifiableMap` 等。当然，如果你希望它日后能够被修改，同理。
      *
      *
      * @throws ComponentAlreadyExistsException 如果组件已经存在
      */
-    public fun create(id: String, properties: Map<String, String> = emptyMap()): Component {
+    public fun create(
+        id: CharSequenceID,
+        name: String = id.toString(),
+        properties: Map<String, String> = emptyMap()
+    ): Component {
         return comps.compute(id) { k, old ->
             if (old != null) {
                 throw ComponentAlreadyExistsException("$k: $old")
             }
-            Comp(k, properties)
+            Comp(k.toCharSequenceID(), name, properties)
         }!!
+    }
 
-
+    public fun create(id: String, name: String = id, properties: Map<String, String> = emptyMap()): Component {
+        return create(id.ID, name, properties)
     }
 
     /**
@@ -129,18 +145,29 @@ public object Components {
      * 寻找对应 [id] 的 [Component] 实例，如果不存在则返回null。
      *
      */
-    public fun find(id: String): Component? = comps[id]
+    public fun find(id: String): Component? = find(id.ID)
+
+    /**
+     * 寻找对应 [id] 的 [Component] 实例，如果不存在则返回null。
+     *
+     */
+    public fun find(id: ID): Component? = comps[id.toCharSequenceID()]
 
 
     @SerialName("component")
     @Serializable
-    internal data class Comp(@SerialName("comp_id") override val id: String, private val properties: Map<String, String>) : Component(id) {
+    internal data class Comp(
+        override val id: CharSequenceID,
+        override val name: String,
+        private val properties: Map<String, String>
+    ) : Component() {
         @Suppress("UNCHECKED_CAST")
         override fun get(propertyKey: String): String? = properties[propertyKey]
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int {
             return id.hashCode()
         }
+
         override fun properties(): Map<String, String> = properties.toMap()
     }
 }
@@ -150,8 +177,24 @@ public object Components {
  * 寻找对应的 [Component], 如果不存在，创建一个。
  *
  */
-public inline fun Components.resolve(id: String, properties: () -> Map<String, String> = { emptyMap() }): Component {
-    return find(id) ?: create(id, properties())
+public inline fun Components.resolve(
+    id: CharSequenceID,
+    name: String = id.toString(),
+    properties: () -> Map<String, String> = { emptyMap() }
+): Component {
+    return find(id) ?: create(id, name, properties())
+}
+
+/**
+ * 寻找对应的 [Component], 如果不存在，创建一个。
+ *
+ */
+public inline fun Components.resolve(
+    id: String,
+    name: String = id,
+    properties: () -> Map<String, String> = { emptyMap() }
+): Component {
+    return find(id) ?: create(id, name, properties())
 }
 
 
@@ -167,11 +210,8 @@ public interface ComponentContainer : Container {
  * 判断两个组件容器之间的组件是否相同。
  *
  */
-public infix fun ComponentContainer.sameComponentWith(other: ComponentContainer): Boolean = component === other.component
-
-
-
-
+public infix fun ComponentContainer.sameComponentWith(other: ComponentContainer): Boolean =
+    component === other.component
 
 
 //////////////////////// Exceptions ////////////////////////////

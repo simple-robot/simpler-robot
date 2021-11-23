@@ -27,6 +27,8 @@ import love.forte.simbot.SimbotRuntimeException
  *
  * [Action] 所规定的全部行为动作都应是异步的。
  *
+ * @see ActionReceipt
+ *
  * @author ForteScarlet
  */
 public interface Action
@@ -53,6 +55,18 @@ public interface ActionReceipt {
      */
     public val isSuccess: Boolean
 }
+
+
+
+
+
+
+
+public enum class ActionType {
+
+}
+
+
 
 
 /**

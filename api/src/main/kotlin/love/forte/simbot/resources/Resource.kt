@@ -12,15 +12,19 @@
 
 package love.forte.simbot.resources
 
+import java.nio.channels.ByteChannel
+
 /**
  *
  * 一个[资源][Resource].
+ *
+ * 此资源通常指文件或者数据流资源。
  *
  * 资源可能是配置文件，亦或是一个[多媒体资源][MultimediaResource]。
  *
  *
  * @author ForteScarlet
- */ // external
+ */
 public interface Resource {
 
     /**
@@ -31,7 +35,7 @@ public interface Resource {
     /**
      * 得到资源的byte数据。
      */
-    public val bytes: ByteArray
-
+    public suspend fun data(): ByteChannel
 
 }
+

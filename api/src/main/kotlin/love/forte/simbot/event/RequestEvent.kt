@@ -23,7 +23,7 @@ import love.forte.simbot.event.RequestEvent.RejectAction.Default as RejDefault
  *
  * 与 **请求** 有关的事件。
  *
- * 对于一个请求，如果要对其响应，必然
+ * **请求** 相关的内容，与 [行为][love.forte.simbot.action.Action] 这个概念会存在较多关联。
  *
  * @author ForteScarlet
  */
@@ -32,6 +32,7 @@ public interface RequestEvent : Event {
     override val bot: Bot
 
     /**
+     * 请求事件的可见范围。
      * 对于请求事件，可见范围普遍为 [Event.VisibleScope.INTERNAL] 或 [Event.VisibleScope.PRIVATE].
      */
     override val visibleScope: Event.VisibleScope
