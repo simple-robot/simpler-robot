@@ -11,13 +11,13 @@
  */
 
 plugins {
+    `java-library`
+    `maven-publish`
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
 }
 
-group = "love.forte.simple-robot"
-version = "3.0.0-preview"
 
 repositories {
     mavenCentral()
@@ -25,7 +25,6 @@ repositories {
 
 dependencies {
     compileOnly(project(":apis:api"))
-
     compileOnly("javax.annotation:javax.annotation-api:1.3.2")
 
     // implementation(V.Kotlinx.Coroutines.Core.Jvm.notation)

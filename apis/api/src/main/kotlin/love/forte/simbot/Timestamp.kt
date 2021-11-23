@@ -55,7 +55,7 @@ public sealed class Timestamp {
     public abstract fun isSupport(): Boolean
 
 
-    public companion object NotSupport : Timestamp() {
+    public object NotSupport : Timestamp() {
         override val second: Long get() = -1
         override val millisecond: Long get() = -1
         override fun isSupport(): Boolean = false

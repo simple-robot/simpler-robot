@@ -15,6 +15,11 @@
 import org.gradle.api.artifacts.DependencyConstraint
 import kotlin.reflect.KClass
 
+
+val publishNeed = setOf("annotation", "core", "api")
+
+
+
 abstract class Dep(val group: String?, val id: String, val version: String?) {
     abstract val isAbsolute: Boolean
     override fun toString(): String = "Dep($notation)"

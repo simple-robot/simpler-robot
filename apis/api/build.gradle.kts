@@ -11,17 +11,20 @@
  */
 
 plugins {
+    `java-library`
+    `maven-publish`
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
+
 }
 
 dependencies {
     // compileOnly(project(":core"))
     // implementation(V.Kotlin.Reflect.notation)
-    implementation(V.Kotlinx.Coroutines.Core.Jvm.notation)
-    implementation(V.Slf4j.Api.notation)
-    implementation(V.Kotlinx.Serialization.Core.notation)
+    api(V.Kotlinx.Coroutines.Core.Jvm.notation)
+    api(V.Slf4j.Api.notation)
+    api(V.Kotlinx.Serialization.Core.notation)
     compileOnly(V.Jetbrains.Annotations.notation)
 
     testImplementation(V.Kotlin.Reflect.notation)

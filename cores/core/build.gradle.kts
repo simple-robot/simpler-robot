@@ -11,9 +11,12 @@
  */
 
 plugins {
+    `java-library`
+    `maven-publish`
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
+
 }
 
 tasks.getByName<Test>("test") {
@@ -30,10 +33,10 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 dependencies {
     // compileOnly(project(":core"))
     // implementation(V.Kotlin.Reflect.notation)
-    implementation(project(":apis:api"))
-    implementation(V.Slf4j.Api.notation)
-    implementation(V.Kotlinx.Coroutines.Core.Jvm.notation)
-    implementation(V.Kotlinx.Serialization.Core.notation)
+    api(project(":apis:api"))
+    api(V.Slf4j.Api.notation)
+    api(V.Kotlinx.Coroutines.Core.Jvm.notation)
+    api(V.Kotlinx.Serialization.Core.notation)
 
     testImplementation(V.Kotlin.Test.Junit.notation)
     testImplementation(V.Kotlinx.Serialization.Json.notation)
