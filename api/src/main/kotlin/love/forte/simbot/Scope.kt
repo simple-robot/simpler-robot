@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -52,7 +52,8 @@ public interface Scope {
  */
 @Serializable
 public open class Grouping(
-    override val id: CharSequenceID,
+    @Serializable(ID.AsCharSequenceIDSerializer::class)
+    override val id: ID,
     override val name: String
 ) : Scope {
     override fun contains(scope: Scope): Boolean {

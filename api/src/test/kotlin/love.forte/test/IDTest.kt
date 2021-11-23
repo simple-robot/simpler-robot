@@ -21,6 +21,8 @@ import love.forte.simbot.Grouping
 import love.forte.simbot.ID
 import love.forte.simbot.LongID
 import org.junit.Test
+import java.math.BigDecimal
+import java.math.BigInteger
 import java.util.*
 
 @Serializable
@@ -41,6 +43,12 @@ class IDTest {
 
     @Test
     fun test() {
+        val intId = 123.ID
+        val longId = 123456L.ID
+        val doubleId = 123.456.ID
+        val floatId = 123.456F.ID
+        val bdId = BigDecimal("123,456").ID
+        val biId = BigInteger.valueOf(123456).ID
 
     }
 
@@ -89,7 +97,43 @@ class IDTest {
         println(Json.decodeFromString<Grouping>(j1))
 
 
+    }
 
+    @Test
+    fun idSerializerTest2() {
+        val id1 = 10.ID
+        val id2 = 1.2.ID
+
+        val role1 = Role(id1, "admin")
+        val role2 = Role(id2, "user")
+
+        println(role1)
+        println(role2)
+        println()
+
+        val json = Json
+
+        val j1 = json.encodeToString(role1)
+        val j2 = json.encodeToString(role2)
+
+        println(j1)
+        println(j2)
+
+        val r1 = json.decodeFromString<Role>(j1)
+        val r2 = json.decodeFromString<Role>(j2)
+
+        println()
+        println(r1)
+        println(r2)
+
+        println(r1 == role1)
+        println(r2 == role2)
     }
 
 }
+@Serializable
+data class Role(
+    @Serializable(ID.AsCharSequenceIDSerializer::class)
+    val id: ID,
+    val name: String
+)

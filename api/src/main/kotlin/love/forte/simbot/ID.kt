@@ -24,6 +24,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.LongAccumulator
@@ -37,6 +38,11 @@ import java.util.concurrent.atomic.LongAdder
  * [ID] 的类型即为其自身，不同类型的ID无论如何也不应相同。而 [ID] 中具体的值千变万化，且不一定仅存一个，由实现者自行决定。
  *
  * 假若一个 [ID] 中实际存储的值仅有一个，则它的 [toString] 应当就是它的字面值。
+ *
+ * [ID] 是[可排序的][Comparable]。
+ *
+ *
+ * ## 序列化
  *
  * [ID] 应当支持序列化, 且 [ID] 的序列化器应当都是一个 `primitive` 序列化器。
  * 所有的 [ID] 序列化后都应是结构体, 而应该是一个原始类型值。
@@ -65,8 +71,21 @@ import java.util.concurrent.atomic.LongAdder
  *
  * 对于一个可序列化类型，作为属性的 [ID] 必须是一个具体的可字面量序列化类型，而不能是一个抽象类型。
  *
+ * 如果对于一个ID字段，你希望能够保证它能够完全的正反序列化，并且你不只关系它的字面量而不关系其他方面，
+ * 那么你可以考虑将此字段的序列化器标记为 [ID.AsCharSequenceIDSerializer].
  *
- * [ID] 是[可排序的][Comparable]。
+ * ```kotlin
+ *  class {
+ *  // ....
+ *  @Serializable(ID.AsCharSequenceIDSerializer::class)
+ *  val id: ID,
+ *  // ...
+ * }
+ * ```
+ *
+ * 此序列化其会永远将ID视为其字面值字符串作为序列化目标。
+ *
+ * @sample love.forte.simbot.Grouping
  *
  * @see CharSequenceID
  * @see NumericalID
@@ -97,6 +116,20 @@ public sealed class ID : Comparable<ID> {
     abstract override fun hashCode(): Int
 
     public companion object {}
+
+    /**
+     * 将一个 [ID] 永远视为一个 [CharSequenceID] 进行序列化。
+     */
+    public object AsCharSequenceIDSerializer : KSerializer<ID> {
+        override fun deserialize(decoder: Decoder): ID = decoder.decodeString().ID
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("AsCharSequenceId", PrimitiveKind.STRING)
+
+        override fun serialize(encoder: Encoder, value: ID) {
+            encoder.encodeString(value.toString())
+        }
+
+
+    }
 }
 
 @get:JvmName("ID")
@@ -128,14 +161,21 @@ public val CharSequence.ID: CharSequenceID
     get() = CharSequenceID(this)
 
 
-@Suppress("FunctionName")
-public fun AtomicInteger.ID(): IntID = this.get().ID
+public val UUID.ID: CharSequenceID
+    get() = CharSequenceID(this.toString())
+
 
 @Suppress("FunctionName")
-public fun LongAdder.ID(): LongID = this.sum().ID
+@get:JvmName("ID")
+public val AtomicInteger.ID: IntID get() = this.get().ID
 
 @Suppress("FunctionName")
-public fun LongAccumulator.ID(): LongID = this.get().ID
+@get:JvmName("ID")
+public val LongAdder.ID: LongID get() = this.sum().ID
+
+@Suppress("FunctionName")
+@get:JvmName("ID")
+public val LongAccumulator.ID: LongID get() = this.get().ID
 
 
 /**
@@ -337,9 +377,9 @@ public sealed class ArbitraryNumericalID<N : Number> private constructor() : Num
  * 由 [BigDecimal] 作为字面量值的 [NumericalID] 实现。
  */
 @SerialName("ID.N.A.BD")
-@Serializable(with = BigDecimalID.BigDecimalIDSerializer::class)
+@Serializable(with = BigDecimalID.Serializer::class)
 public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID<BigDecimal>() {
-    internal object BigDecimalIDSerializer : KSerializer<BigDecimalID> {
+    internal object Serializer : KSerializer<BigDecimalID> {
         override fun deserialize(decoder: Decoder): BigDecimalID = BigDecimalID(BigDecimal(decoder.decodeString()))
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BigDecimalID", PrimitiveKind.STRING)
         override fun serialize(encoder: Encoder, value: BigDecimalID) {
@@ -353,9 +393,9 @@ public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID
  * 由 [BigInteger] 作为字面量值的 [NumericalID] 实现。
  */
 @SerialName("ID.N.A.BI")
-@Serializable(with = BigIntegerID.BigIntegerIDSerializer::class)
+@Serializable(with = BigIntegerID.Serializer::class)
 public class BigIntegerID(override val value: BigInteger) : ArbitraryNumericalID<BigInteger>() {
-    internal object BigIntegerIDSerializer : KSerializer<BigIntegerID> {
+    internal object Serializer : KSerializer<BigIntegerID> {
         override fun deserialize(decoder: Decoder): BigIntegerID = BigIntegerID(BigInteger(decoder.decodeString()))
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BigIntegerID", PrimitiveKind.STRING)
         override fun serialize(encoder: Encoder, value: BigIntegerID) {
@@ -368,16 +408,19 @@ public class BigIntegerID(override val value: BigInteger) : ArbitraryNumericalID
  * 得到一个字面值为 [BigDecimal] 的 [NumericalID].
  */
 @Suppress("FunctionName")
-public fun BigDecimal.ID(): BigDecimalID = BigDecimalID(this)
+@get:JvmName("ID")
+public val BigDecimal.ID: BigDecimalID get() = BigDecimalID(this)
 
 /**
  * 得到一个字面值为 [BigInteger] 的 [NumericalID].
  */
 @Suppress("FunctionName")
-public fun BigInteger.ID(): BigIntegerID = BigIntegerID(this)
+@get:JvmName("ID")
+public val BigInteger.ID: BigIntegerID get()  = BigIntegerID(this)
 
 @Suppress("FunctionName")
-public fun AtomicLong.ID(): LongID = this.toLong().ID
+@get:JvmName("ID")
+public val AtomicLong.ID: LongID get()  = this.toLong().ID
 
 
 
@@ -411,7 +454,7 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
  * StringID id = ID.by("ID");
  * ```
  *
- * 序列化的时候，如果需要将 [CharSequenceID] 字段作为字符串字面量序列化，可以使用 [CharSequenceID.CharSequenceIDSerializer].
+ * 序列化的时候，如果需要将 [CharSequenceID] 字段作为字符串字面量序列化，可以使用 [CharSequenceID.Serializer].
  *
  * 注意，尽可能避免将 [StringBuilder] 等可变序列作为参数提供, 除非你明确的知道你在做什么。
  * [CharSequenceID] 的 [value][CharSequenceID.value] 目前将会直接使用其引用作为参数。
@@ -423,7 +466,7 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
  * @sample ID.toCharSequenceID
  */
 @SerialName("ID.CS")
-@Serializable(with = CharSequenceID.CharSequenceIDSerializer::class)
+@Serializable(with = CharSequenceID.Serializer::class)
 public data class CharSequenceID internal constructor(val value: CharSequence) : ID() {
     /**
      * 直接通过 [ID.equals] 的最后逻辑进行toString判断。
@@ -437,7 +480,7 @@ public data class CharSequenceID internal constructor(val value: CharSequence) :
     /**
      * [CharSequenceID] 的字面值序列化器。
      */
-    public object CharSequenceIDSerializer : KSerializer<CharSequenceID> {
+    public object Serializer : KSerializer<CharSequenceID> {
         override fun deserialize(decoder: Decoder): CharSequenceID = CharSequenceID(decoder.decodeString())
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("CharSequenceID", PrimitiveKind.STRING)
         override fun serialize(encoder: Encoder, value: CharSequenceID) {
@@ -457,35 +500,13 @@ public fun ID.toCharSequenceID(): CharSequenceID = if (this is CharSequenceID) t
  * 则实现此抽象类。
  *
  * 需要保证实现类能够完全的序列化。
+ *
+ * 如果需要自定义 `equals` 的行为，重写 [doEquals].
  */
 @SerialName("ID.CX")
 @Serializable
 public abstract class ComplexID : ID()
 
-//
-// /**
-//  * 一个内部委托的ID实现。
-//  * 在某些情况下，也许对于一个 [ID] 你可能所需要的最终表现与目前已存的其他类型的 [ID] 一致，
-//  * 但是出于对某些原因的考虑（例如需要额外的计算、远程网络调用或者懒加载），
-//  * 你需要通过一些方法的实现来计算这个 [ID] 而无法在初始化的时候得到此 [ID] 实例，
-//  * 那么你则可以通过实现 [DelegateID] 来在委托一个目标的 [ID][T], 并在适当的时候对其进行计算。
-//  *
-//  * 需要注意，如果你实现了此ID，那么你需要保证最终得到的真实ID的实例是始终唯一的。
-//  *
-//  * 并且你需要好好考虑考虑怎么实现序列化
-//  *
-//  * [DelegateID] 中的 [hashCode] [equals] [compareTo] [toString] 都会直接使用委托对象实现。
-//  *
-//  */
-// @SerialName("ID.D")
-// @Serializable
-// public abstract class DelegateID<T : ID> : ID() {
-//     public abstract val delegate: T
-//     final override fun toString(): String = delegate.toString()
-//     final override fun hashCode(): Int = delegate.hashCode()
-//     final override fun equals(other: Any?): Boolean = delegate == other
-//     final override fun compareTo(other: ID): Int = delegate.compareTo(other)
-// }
 
 
 
@@ -500,13 +521,4 @@ public open class IDException : RuntimeException {
     public constructor(cause: Throwable?) : super(cause)
 }
 
-/**
- * ID类型不存在异常。
- */
-public open class NoSuchIDTypeException : IDException {
-    public constructor() : super()
-    public constructor(message: String?) : super(message)
-    public constructor(message: String?, cause: Throwable?) : super(message, cause)
-    public constructor(cause: Throwable?) : super(cause)
-}
 

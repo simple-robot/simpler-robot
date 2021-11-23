@@ -24,6 +24,7 @@ dependencies {
     implementation(V.Kotlinx.Serialization.Core.notation)
     compileOnly(V.Jetbrains.Annotations.notation)
 
+    testImplementation(V.Kotlin.Reflect.notation)
     testImplementation(V.Kotlin.Test.Junit.notation)
     testImplementation(V.Kotlinx.Serialization.Json.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)
