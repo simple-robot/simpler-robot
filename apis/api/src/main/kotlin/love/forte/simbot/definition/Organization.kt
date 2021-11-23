@@ -13,10 +13,7 @@
 package love.forte.simbot.definition
 
 import kotlinx.coroutines.flow.Flow
-import love.forte.simbot.Bot
-import love.forte.simbot.Grouping
-import love.forte.simbot.ID
-import love.forte.simbot.Limiter
+import love.forte.simbot.*
 
 /**
  * 一个 **组织** 结构（中的一员）。
@@ -73,6 +70,11 @@ public interface Organization : Something, Structured<Organization?, Flow<Organi
     public val name: String
 
     /**
+     * 得到这个组织的信息。
+     */
+    public val info: OrganizationInfo
+
+    /**
      * 上一级，或者说这个组织的上层。
      * 组织有可能是层级的，因此一个组织结构可能会有上一层的组织。
      * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
@@ -97,6 +99,61 @@ public interface Organization : Something, Structured<Organization?, Flow<Organi
     public suspend fun members(limiter: Limiter = Limiter): Flow<Member>
 
     // 资产？
+
+}
+
+/**
+ *
+ * 一个组织的部分最基础的信息。
+ *
+ */
+public interface OrganizationInfo {
+
+    /**
+     * 组织的名称。
+     */
+    public val name: String
+
+    /**
+     * 组织的图标/头像。
+     */
+    public val icon: String
+
+    /**
+     * 组织的对外描述信息。
+     */
+    public val description: String
+
+    /**
+     * 组织的创建时间。
+     */
+    public val createTime: Timestamp
+
+    /**
+     * 组织的拥有者的ID。
+     */
+    public val ownerId: ID
+
+    /**
+     * 组织的拥有者信息。
+     */
+    public val owner: Member
+
+    //// 上面的信息，大概率是可以得到的。
+    //// 下面的信息均存在无法获取的可能。
+
+    /**
+     * 当前组织内成员最大承载量。
+     * 如果无法获取，得到-1.
+     */
+    public val maximumSize: Int
+
+    /**
+     * 当前组织内已存在成员数量。
+     * 如果无法获取，得到-1.
+     */
+    public val currentSize: Int
+
 
 }
 
