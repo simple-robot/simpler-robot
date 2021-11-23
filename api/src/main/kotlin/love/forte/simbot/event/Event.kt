@@ -51,7 +51,7 @@ public interface Event : BotContainer {
     /**
      * 得到当前事件所对应的类型key。
      */
-    public val key: Key<Event>
+    public val key: Key<out Event>
 
     /**
      * 所有事件的根类型。
@@ -94,6 +94,7 @@ public interface Event : BotContainer {
 
         /**
          * 此事件所继承的所有父事件。
+         * 此属性应当是不可变的，且不应在运行期内发生变更。
          */
         public val parents: Set<Key<*>>
 
@@ -186,6 +187,7 @@ public abstract class BaseEventKey<E : Event>(
     override val parents: Set<Event.Key<*>> = emptySet(),
 ) : Event.Key<E> {
     override val id: CharSequenceID= idValue.ID
+    override fun toString(): String = "EventKey(id=$id)"
 }
 
 
