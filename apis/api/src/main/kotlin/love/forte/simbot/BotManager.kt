@@ -12,8 +12,6 @@
 
 package love.forte.simbot
 
-import kotlin.jvm.JvmOverloads
-
 
 /**
  *

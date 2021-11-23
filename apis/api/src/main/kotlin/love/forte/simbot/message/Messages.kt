@@ -27,8 +27,6 @@ import love.forte.simbot.Component
 import love.forte.simbot.Simbot
 import love.forte.simbot.SimbotComponent
 import love.forte.simbot.like
-import kotlin.jvm.JvmStatic
-import kotlin.jvm.JvmSynthetic
 import love.forte.simbot.message.Message.Element as MsgElement
 
 

@@ -18,7 +18,7 @@ pluginManagement {
 }
 rootProject.name = "simply-robot"
 
-includePro(":api")
+includePro(":apis:api")
 includePro(":annotation")
 includePro(":cores:core")
 // include(":commons:utils")

@@ -30,7 +30,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 dependencies {
     // compileOnly(project(":core"))
     // implementation(V.Kotlin.Reflect.notation)
-    implementation(project(":api"))
+    implementation(project(":apis:api"))
     implementation(V.Slf4j.Api.notation)
     implementation(V.Kotlinx.Coroutines.Core.Jvm.notation)
     implementation(V.Kotlinx.Serialization.Core.notation)

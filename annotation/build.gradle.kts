@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly(project(":api"))
+    compileOnly(project(":apis:api"))
 
     compileOnly("javax.annotation:javax.annotation-api:1.3.2")
 
