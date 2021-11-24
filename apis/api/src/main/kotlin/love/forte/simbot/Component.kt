@@ -14,6 +14,7 @@ package love.forte.simbot
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import love.forte.simbot.Components.find
 import love.forte.simbot.Components.get
 import love.forte.simbot.definition.Container
@@ -30,6 +31,8 @@ import kotlin.collections.set
  *
  * [Component] 的 [equals] 将会直接进行 `===` 匹配, 因此需要保证组件实例唯一性，开发者在 [Components] 中注册的时候，需要保证组件标识的ID唯一不变。
  *
+ * [Component] 的序列化不会对 [properties] 进行序列化.
+ *
  * @see Components
  */
 @Serializable
@@ -41,12 +44,12 @@ public sealed class Component : Scope {
     /**
      * 获取一个属性。
      */
-    public abstract operator fun get(propertyKey: String): String?
+    public abstract operator fun <T : Any> get(attribute: Attribute<T>): T?
 
     /**
      * 获得属性列表。
      */
-    public abstract fun properties(): Map<String, String>
+    public abstract fun properties(): AttributeMap
 
     /**
      * 直接使用 === 进行比较。
@@ -61,7 +64,6 @@ public sealed class Component : Scope {
     override fun hashCode(): Int = id.hashCode()
 
 
-
 }
 
 
@@ -74,8 +76,8 @@ public sealed class Component : Scope {
 public object SimbotComponent : Component() {
     override val id: CharSequenceID = "simbot".ID
     override val name: String get() = "simbot"
-    override fun get(propertyKey: String): String? = null
-    override fun properties(): Map<String, String> = emptyMap()
+    override fun <T : Any> get(attribute: Attribute<T>): T? = null
+    override fun properties(): AttributeMap = AttributeMap.Empty // TODO include metadata
     override fun toString(): String = "Component(id=simbot)"
     override fun hashCode(): Int = 0
     override fun contains(scope: Scope): Boolean = true
@@ -117,29 +119,22 @@ public object Components {
     /**
      * 创建一个对应 [id] 的 [Component] 并记录。如果 [Component] 已经存在，则抛出 [ComponentAlreadyExistsException].
      *
-     *
-     * TODO
-     * 可以提供一个 [properties] 参数集作为当前组件的参数列表。[properties] 将会被直接被使用，不会进行任何装饰。
-     * 因此如果你不希望他后续能够被修改，请自行进行处理，比如在JVM平台下使用 `Collections.unmodifiableMap` 等。当然，如果你希望它日后能够被修改，同理。
-     *
-     *
      * @throws ComponentAlreadyExistsException 如果组件已经存在
      */
     internal fun create(
         id: CharSequenceID,
         name: String = id.toString(),
-        properties: Map<String, String> = emptyMap()
     ): Component {
         return comps.compute(id) { k, old ->
             if (old != null) {
                 throw ComponentAlreadyExistsException("$k: $old")
             }
-            Comp(k.toCharSequenceID(), name, properties)
+            Comp(k.toCharSequenceID(), name)
         }!!
     }
 
-    internal fun create(id: String, name: String = id, properties: Map<String, String> = emptyMap()): Component {
-        return create(id.ID, name, properties)
+    internal fun create(id: String, name: String = id): Component {
+        return create(id.ID, name)
     }
 
     /**
@@ -169,16 +164,19 @@ public object Components {
     internal data class Comp(
         override val id: CharSequenceID,
         override val name: String,
-        private val properties: Map<String, String>
     ) : Component() {
+
+        @Transient
+        private val properties = AttributeHashMap()
+
         @Suppress("UNCHECKED_CAST")
-        override fun get(propertyKey: String): String? = properties[propertyKey]
+        override fun <T : Any> get(attribute: Attribute<T>): T? = properties[attribute]
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int {
             return id.hashCode()
         }
 
-        override fun properties(): Map<String, String> = properties.toMap()
+        override fun properties(): AttributeHashMap = properties
     }
 }
 
@@ -215,9 +213,6 @@ public class ComponentConfiguration {
      */
     public lateinit var name: String
 }
-
-
-
 
 
 //
