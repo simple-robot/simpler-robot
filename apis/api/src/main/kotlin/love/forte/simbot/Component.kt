@@ -17,6 +17,7 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.Components.find
 import love.forte.simbot.Components.get
 import love.forte.simbot.definition.Container
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.set
 
@@ -102,6 +103,16 @@ public object Components {
         it[SimbotComponent.id] = SimbotComponent
     }
 
+    init {
+        ServiceLoader.load(ComponentRegistrar::class.java).forEach { r ->
+            val conf = ComponentConfiguration()
+            r.registerComponent(conf)
+            val comp = create(conf.id, conf.name) // properties todo
+            r.setComponent(comp)
+        }
+
+
+    }
 
     /**
      * 创建一个对应 [id] 的 [Component] 并记录。如果 [Component] 已经存在，则抛出 [ComponentAlreadyExistsException].
@@ -136,7 +147,8 @@ public object Components {
      *
      * @throws NoSuchComponentException 如果没有对应的 component
      */
-    public operator fun get(id: String): Component = find(id) ?: throw NoSuchComponentException(id)
+    public operator fun get(id: ID): Component = find(id) ?: throw NoSuchComponentException(id.toString())
+    public operator fun get(id: String): Component = this[id.ID]
 
 
     /**
@@ -174,24 +186,38 @@ public object Components {
  * 通过 Java SPI 注册一个组件。
  */
 public interface ComponentRegistrar {
-    public fun registerComponent(register: ComponentRegister)
+    /**
+     * 提供组件注册信息。
+     */
+    public fun registerComponent(configuration: ComponentConfiguration)
+
+    /**
+     * 得到注册后的组件实例。
+     */
+    public fun setComponent(component: Component)
 }
 
 
 /**
- * 组件注册器，通过 [ComponentRegister] 向此注册器提供信息并最终注册为一个组件信息。
+ * 组件注册器，通过 [ComponentConfiguration] 向此注册器提供信息并最终注册为一个组件信息。
  */
-public interface ComponentRegister {
-
-    public var id: CharSequenceID
+public class ComponentConfiguration {
+    /**
+     * 组件ID
+     */
+    public lateinit var id: CharSequenceID
     public fun setId(id: String) {
         this.id = id.ID
     }
 
-    public var name: String
-
-
+    /**
+     * 组件名称
+     */
+    public lateinit var name: String
 }
+
+
+
 
 
 //
