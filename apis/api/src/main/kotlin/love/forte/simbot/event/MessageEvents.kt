@@ -13,7 +13,7 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.Bot
-import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.ReceivedMessageContent
 import love.forte.simbot.message.doSafeCast
 
 
@@ -27,7 +27,7 @@ public interface MessageEvent : Event {
     /**
      * 当前消息事件的消息正文。
      */
-    public val messageContent: MessageContent
+    public val messageContent: ReceivedMessageContent
 
 
     public companion object Key : BaseEventKey<MessageEvent>("api-message") {
