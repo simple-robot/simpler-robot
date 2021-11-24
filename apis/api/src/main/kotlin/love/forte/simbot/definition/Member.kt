@@ -12,6 +12,10 @@
 
 package love.forte.simbot.definition
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
+import love.forte.simbot.Bot
 import love.forte.simbot.ID
 
 
@@ -19,6 +23,12 @@ import love.forte.simbot.ID
  * 一个组织下的成员,
  */
 public interface Member : User {
-    public override val id: ID
-    // 职责？权限？阶级？
+
+    override val id: ID
+    override val bot: Bot
+
+    @JvmSynthetic
+    public suspend fun roles(): Flow<Role>
+    public val roles: List<Role> get() = runBlocking { roles().toList() }
+
 }

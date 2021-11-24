@@ -12,10 +12,13 @@
 
 package love.forte.simbot.definition
 
+import love.forte.simbot.Bot
 import love.forte.simbot.ID
 
 /**
  * [Something] 是对人们的 [组织][Organization] 或一个具体的 [用户][User] 的统称。
+ *
+ * 不论 [组织][Organization] 还是 [用户][User]，它们均来自一个 [Bot].
  *
  * @author ForteScarlet
  */
@@ -28,5 +31,9 @@ public sealed interface Something {
      */
     public val id: ID
 
+    /**
+     * 当前 [Something] 来自的bot。
+     */
+    public val bot: Bot
 
 }

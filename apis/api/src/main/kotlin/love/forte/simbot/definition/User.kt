@@ -34,10 +34,16 @@ public interface User : Something {
      * 这个账号的唯一ID。
      */
     override val id: ID
+    override val bot: Bot
 
     /**
      * 这个用户的信息。
      */
     public val info: UserInfo
+
+    /**
+     * 这个用户的状态属性。
+     */
+    public val status: UserStatus
 
 }

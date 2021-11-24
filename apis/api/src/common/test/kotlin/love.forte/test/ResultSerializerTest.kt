@@ -21,7 +21,7 @@ import kotlin.test.Test
  */
 class ResultSerializerTest {
 
-    class MyBotManager : BaseBotManager<Bot>() {
+    class MyBotManager : BotManager<Bot>() {
         override val component: Component
             get() = Components.resolve("myBotManager")
 

@@ -13,6 +13,7 @@
 package love.forte.simbot.definition
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.*
 
 /**
@@ -72,7 +73,8 @@ public interface Organization : Something, Structured<Organization?, Flow<Organi
     /**
      * 得到这个组织的信息。
      */
-    public val info: OrganizationInfo
+    public suspend fun info(): OrganizationInfo
+    public val info: OrganizationInfo get() = runBlocking { info() }
 
     /**
      * 上一级，或者说这个组织的上层。
@@ -90,7 +92,7 @@ public interface Organization : Something, Structured<Organization?, Flow<Organi
      * 实现者应当考虑处理 [Grouping] 允许实现 [Limiter] 的情况。
      *
      */
-    override suspend fun after(grouping: Grouping): Flow<Organization>
+    override suspend fun children(grouping: Grouping): Flow<Organization>
 
     /**
      * 一个组织中，可能存在[成员][members].
@@ -134,10 +136,14 @@ public interface OrganizationInfo {
      */
     public val ownerId: ID
 
+
+
     /**
      * 组织的拥有者信息。
      */
-    public val owner: Member
+    public suspend fun owner(): Member
+    @Api4J
+    public val owner: Member get() = runBlocking { owner() }
 
     //// 上面的信息，大概率是可以得到的。
     //// 下面的信息均存在无法获取的可能。
@@ -146,15 +152,15 @@ public interface OrganizationInfo {
      * 当前组织内成员最大承载量。
      * 如果无法获取，得到-1.
      */
-    public val maximumSize: Int
+    public val maximumMember: Int
 
     /**
      * 当前组织内已存在成员数量。
      * 如果无法获取，得到-1.
      */
-    public val currentSize: Int
-
+    public val currentMember: Int
 
 }
 
 
+////
