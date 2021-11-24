@@ -39,7 +39,7 @@ public abstract class InternalEvent : Event {
     override val visibleScope: Event.VisibleScope get() = Event.VisibleScope.PRIVATE
 
     public companion object Root : Key<InternalEvent> {
-        override val id: CharSequenceID = "api-internal".ID
+        override val id: CharSequenceID = "api.internal".ID
         override fun safeCast(value: Any): InternalEvent? = doSafeCast(value)
         override val parents: Set<Event.Key<*>>
             get() = emptySet()

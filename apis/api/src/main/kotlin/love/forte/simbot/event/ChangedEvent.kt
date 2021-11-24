@@ -52,7 +52,7 @@ public interface ChangeEvent<S, F, T> : Event {
      */
     public val after: T
 
-    public companion object Key : BaseEventKey<ChangeEvent<*, *, *>>("api-change") {
+    public companion object Key : BaseEventKey<ChangeEvent<*, *, *>>("api.change") {
         override fun safeCast(value: Any): ChangeEvent<*, *, *>? = doSafeCast(value)
     }
 }
@@ -80,7 +80,7 @@ public interface ChangedEvent<S, F, T> : ChangeEvent<S, F, T> {
     public val changedTime: Timestamp
 
 
-    public companion object Key : BaseEventKey<ChangedEvent<*, *, *>>("api-changed", setOf(ChangeEvent)) {
+    public companion object Key : BaseEventKey<ChangedEvent<*, *, *>>("api.changed", setOf(ChangeEvent)) {
         override fun safeCast(value: Any): ChangedEvent<*, *, *>? =
             doSafeCast(value)
 

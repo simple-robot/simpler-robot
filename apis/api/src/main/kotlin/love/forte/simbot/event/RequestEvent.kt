@@ -95,7 +95,7 @@ public interface RequestEvent : Event {
     }
 
 
-    public companion object Key : BaseEventKey<RequestEvent>("api-request") {
+    public companion object Key : BaseEventKey<RequestEvent>("api.request") {
         override fun safeCast(value: Any): RequestEvent? = doSafeCast(value)
     }
 }
