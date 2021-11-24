@@ -70,7 +70,7 @@ public sealed class Component : Scope {
  * simbot的顶层组件一般代表可以通用的组件，也应当是唯一一个允许组件交叉的组件。
  */
 @Serializable
-@SerialName("simbotComponent")
+@SerialName("root")
 public object SimbotComponent : Component() {
     override val id: CharSequenceID = "simbot".ID
     override val name: String get() = "simbot"
@@ -164,7 +164,7 @@ public object Components {
     public fun find(id: ID): Component? = comps[id.toCharSequenceID()]
 
 
-    @SerialName("component")
+    @SerialName("c")
     @Serializable
     internal data class Comp(
         override val id: CharSequenceID,
