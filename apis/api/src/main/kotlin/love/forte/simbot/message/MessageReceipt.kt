@@ -26,6 +26,15 @@ public interface MessageReceipt {
      * 一个消息回执中存在一个ID.
      */
     public val id: ID
+
+    /**
+     * 消息是否发送成功。此属性的 `false` 一般代表在排除其他所有的 **异常情况** 下，在正常流程中依然发送失败（例如发送的消息是空的）。
+     * 不代表发送中出现了异常，仅代表在过程完全正常的情况下的发送结果。
+     *
+     * 假若 [isSuccess] 为 `false`, 那么 [id] 可能会是一个空值。
+     */
+    public val isSuccess: Boolean
+
 }
 
 

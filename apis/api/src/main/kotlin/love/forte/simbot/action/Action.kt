@@ -35,11 +35,6 @@ import love.forte.simbot.action.ActionType.PROACTIVE
  */
 public interface Action {
 
-    /**
-     * 行为不论形式，其总是有一个客观的行为类型。
-     */
-    public val actionType: ActionType
-
 }
 
 
