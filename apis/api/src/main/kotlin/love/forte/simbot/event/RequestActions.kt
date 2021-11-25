@@ -12,39 +12,38 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.action.Action
-
-/**
- * 此接口标记为一个api提供的常见 [RequestEvent.Action] 场景事件。
- * 情景下的
- */
-public sealed interface StandardRequestAction : Action
-
-/**
- * 为本次行为提供一个 [备注][remark]。
- */
-public interface RemarkSupportAction : StandardRequestAction {
-    public val remark: String
-}
-
-/**
- * 为本次行为提供一个 [原因][reason]。
- */
-public interface ReasonSupportAction : StandardRequestAction {
-
-    /**
-     * 本次行为的原因。
-     */
-    public val reason: String
-}
-
-/**
- * 为本次行为提供一个 [封锁][blocking] 选项。
- */
-public interface BlockingSupportAction : StandardRequestAction {
-    public val blocking: Boolean
-}
-
-
-
+//
+// /**
+//  * 此接口标记为一个api提供的常见 [RequestEvent.Action] 场景事件。
+//  * 情景下的
+//  */
+// public sealed interface StandardRequestAction : Action
+//
+// /**
+//  * 为本次行为提供一个 [备注][remark]。
+//  */
+// public interface RemarkSupportAction : StandardRequestAction {
+//     public val remark: String
+// }
+//
+// /**
+//  * 为本次行为提供一个 [原因][reason]。
+//  */
+// public interface ReasonSupportAction : StandardRequestAction {
+//
+//     /**
+//      * 本次行为的原因。
+//      */
+//     public val reason: String
+// }
+//
+// /**
+//  * 为本次行为提供一个 [封锁][blocking] 选项。
+//  */
+// public interface BlockingSupportAction : StandardRequestAction {
+//     public val blocking: Boolean
+// }
+//
+//
+//
 

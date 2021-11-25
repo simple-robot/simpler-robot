@@ -21,15 +21,13 @@ package love.forte.simbot.action
  * 一般用于消息回执或者从远端接收到的消息事件上。
  * @author ForteScarlet
  */
-public interface DeleteAction : Action {
+public interface DeleteSupport {
 
     /**
      * 删除当前目标。
      *
-     * @return 是否删除成功
+     * @return 是否删除成功，不代表会捕获异常。
      */
     public suspend fun delete(): Boolean
 
 }
-
-// 提供者

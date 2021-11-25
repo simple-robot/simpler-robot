@@ -12,6 +12,7 @@
 
 package love.forte.simbot.action
 
+import love.forte.simbot.Api4J
 import love.forte.simbot.SimbotRuntimeException
 import love.forte.simbot.action.ActionType.PASSIVE
 import love.forte.simbot.action.ActionType.PROACTIVE
@@ -27,13 +28,33 @@ import love.forte.simbot.action.ActionType.PROACTIVE
  *
  * [Action] 对这些常见的行为进行描述，假若组件存在支持的相似功能，优先考虑实现相关接口。
  *
- * [Action] 所规定的全部行为动作都应是异步的。
+ * [Action] 应当完全有组件实现者实现，并提供所有对应类型的预先定义。
  *
  * @see ActionReceipt
  *
  * @author ForteScarlet
  */
-public interface Action {
+public interface Action<S, T> {
+
+
+}
+
+
+public interface ActionSupport {
+
+    /**
+     * 执行一个行为。
+     */
+    @JvmSynthetic
+    public fun <S, T>
+            action(actionType: Action<S, T>, action: suspend (S) -> T): ActionReceipt
+
+
+    @Api4J
+    public fun <S, T> doActionBlocking(
+        actionType: Action<S, T>, actionBlock: (S) -> T
+    ): ActionReceipt =
+        action(actionType) { s -> actionBlock(s) }
 
 }
 
@@ -72,11 +93,10 @@ public interface ActionReceipt {
 public enum class ActionType {
     /** 主动的 */
     PROACTIVE,
+
     /** 被动的 */
     PASSIVE
 }
-
-
 
 
 /**
