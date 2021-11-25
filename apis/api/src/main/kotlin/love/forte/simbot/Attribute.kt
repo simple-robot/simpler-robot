@@ -1,3 +1,15 @@
+/*
+ *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *
+ *  根据 Apache License 2.0 获得许可；
+ *  除非遵守许可，否则您不得使用此文件。
+ *  您可以在以下网址获取许可证副本：
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ */
+
 @file:JvmName("Attributes")
 
 package love.forte.simbot
@@ -128,7 +140,6 @@ public interface MutableAttributeMap : AttributeMap {
     public fun <T : Any> put(attribute: Attribute<T>, value: T): T?
 
 
-
     /**
      * 移除对应键名的值
      */
@@ -144,17 +155,17 @@ public interface MutableAttributeMap : AttributeMap {
 }
 
 
-public operator fun <T: Any> MutableAttributeMap.set(attribute: Attribute<T>, value: T) {
+public operator fun <T : Any> MutableAttributeMap.set(attribute: Attribute<T>, value: T) {
     put(attribute, value)
 }
-
-
-
 
 
 public class AttributeHashMap : MutableAttributeMap {
     private val names = mutableMapOf<String, Attribute<*>>()
     private val values = mutableMapOf<Attribute<*>, Any>()
+
+    public val entries: MutableSet<MutableMap.MutableEntry<Attribute<*>, Any>>
+        get() = values.entries
 
     override fun size(): Int = values.size
 
@@ -170,7 +181,8 @@ public class AttributeHashMap : MutableAttributeMap {
         if (key != null && key != attribute) {
             val nowValue = values[key]
             if (nowValue != null) {
-                attribute.type.safeCast(nowValue) ?: throw IllegalStateException("Type conflict: expected to be ${key.type}, but is ${attribute.type}")
+                attribute.type.safeCast(nowValue)
+                    ?: throw IllegalStateException("Type conflict: expected to be ${key.type}, but is ${attribute.type}")
             } else {
                 names[attribute.name] = attribute
             }

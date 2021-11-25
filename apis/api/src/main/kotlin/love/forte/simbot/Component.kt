@@ -77,7 +77,7 @@ public object SimbotComponent : Component() {
     override val id: CharSequenceID = "simbot".ID
     override val name: String get() = "simbot"
     override fun <T : Any> get(attribute: Attribute<T>): T? = null
-    override fun properties(): AttributeMap = AttributeMap.Empty // TODO include metadata
+    override fun properties(): AttributeMap = AttributeMap.Empty // TODO include metadata?
     override fun toString(): String = "Component(id=simbot)"
     override fun hashCode(): Int = 0
     override fun contains(scope: Scope): Boolean = true
@@ -106,14 +106,17 @@ public object Components {
     }
 
     init {
-        ServiceLoader.load(ComponentRegistrar::class.java).forEach { r ->
-            val conf = ComponentConfiguration()
-            r.registerComponent(conf)
-            val comp = create(conf.id, conf.name) // properties todo
+        ServiceLoader.load(ComponentInformation::class.java).forEach { r ->
+            val id = r.id.toCharSequenceID()
+            val name = r.name
+
+            val attribute = AttributeHashMap()
+
+            val comp = create(id, name) as Comp
+
+
             r.setComponent(comp)
         }
-
-
     }
 
     /**
@@ -167,7 +170,7 @@ public object Components {
     ) : Component() {
 
         @Transient
-        private val properties = AttributeHashMap()
+        internal val properties = AttributeHashMap()
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : Any> get(attribute: Attribute<T>): T? = properties[attribute]
@@ -183,11 +186,24 @@ public object Components {
 /**
  * 通过 Java SPI 注册一个组件。
  */
-public interface ComponentRegistrar {
+public interface ComponentInformation {
+
     /**
-     * 提供组件注册信息。
+     * 组件ID。一般建议用类似全限定名称来定义。
+     *
      */
-    public fun registerComponent(configuration: ComponentConfiguration)
+    public val id: ID
+
+    /**
+     * 组件名称。
+     */
+    public val name: String
+
+    /**
+     * 提供一个 attributs, 并对其进行配置。
+     */
+    public fun configAttributes(attributes: MutableAttributeMap)
+
 
     /**
      * 得到注册后的组件实例。
@@ -195,50 +211,6 @@ public interface ComponentRegistrar {
     public fun setComponent(component: Component)
 }
 
-
-/**
- * 组件注册器，通过 [ComponentConfiguration] 向此注册器提供信息并最终注册为一个组件信息。
- */
-public class ComponentConfiguration {
-    /**
-     * 组件ID
-     */
-    public lateinit var id: CharSequenceID
-    public fun setId(id: String) {
-        this.id = id.ID
-    }
-
-    /**
-     * 组件名称
-     */
-    public lateinit var name: String
-}
-
-
-//
-// /**
-//  * 寻找对应的 [Component], 如果不存在，创建一个。
-//  *
-//  */
-// public inline fun Components.resolve(
-//     id: CharSequenceID,
-//     name: String = id.toString(),
-//     properties: () -> Map<String, String> = { emptyMap() }
-// ): Component {
-//     return find(id) ?: create(id, name, properties())
-// }
-//
-// /**
-//  * 寻找对应的 [Component], 如果不存在，创建一个。
-//  *
-//  */
-// public inline fun Components.resolve(
-//     id: String,
-//     name: String = id,
-//     properties: () -> Map<String, String> = { emptyMap() }
-// ): Component {
-//     return find(id) ?: create(id, name, properties())
-// }
 
 
 /**
@@ -274,3 +246,9 @@ public class ComponentAlreadyExistsException : SimbotRuntimeException {
     public constructor(message: String?, cause: Throwable?) : super(message, cause)
     public constructor(cause: Throwable?) : super(cause)
 }
+
+
+
+
+
+
