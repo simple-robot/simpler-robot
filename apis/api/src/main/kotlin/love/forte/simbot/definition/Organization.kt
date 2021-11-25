@@ -97,13 +97,13 @@ public interface Organization : Target, Structured<Organization?, Flow<Organizat
      * 一个组织中，可能存在[成员][members].
      * @param limiter 对于多条数据的限流器。
      */
-    public suspend fun members(grouping: Grouping = Grouping, limiter: Limiter = Limiter): Flow<Member>
+    public suspend fun members(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Member>
 
 
     /**
      * 根据分组和
      */
-    public suspend fun roles(grouping: Grouping = Grouping, limiter: Limiter = Limiter): Flow<Role>
+    public suspend fun roles(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Role>
 
 
 }

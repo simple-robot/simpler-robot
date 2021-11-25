@@ -43,12 +43,12 @@ public interface RequestEvent : Event {
      *
      * @see AcceptAction
      */
-    public suspend fun accept(action: AcceptAction = AccDefault): RequestActionReceipt
+    public suspend fun accept(/*action: AcceptAction = AccDefault*/): RequestActionReceipt
 
     /**
      * 是否拒绝/回绝此次请求。
      */
-    public suspend fun <R> reject(action: RejectAction = RejDefault): RequestActionReceipt
+    public suspend fun <R> reject(/*action: RejectAction = RejDefault*/): RequestActionReceipt
 
 
     /**

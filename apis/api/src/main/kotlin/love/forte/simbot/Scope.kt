@@ -77,11 +77,8 @@ public open class Grouping(
     /**
      * 代表一个全部内容都是空字符的 [Grouping].
      */
-    public companion object Empty : Grouping("".ID, "") {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is Grouping) return false
-            return other.id.toCharSequenceID().length == 0
-        }
+    public companion object {
+        @JvmField
+        public val EMPTY: Grouping = Grouping("".ID, "")
     }
 }

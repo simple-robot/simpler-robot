@@ -24,12 +24,6 @@ package love.forte.simbot.action
 public interface DeleteAction : Action {
 
     /**
-     * 通常情况下，删除行为是一种主动行为。
-     */
-    override val actionType: ActionType
-        get() = ActionType.PROACTIVE
-
-    /**
      * 删除当前目标。
      *
      * @return 是否删除成功

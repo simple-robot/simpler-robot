@@ -37,5 +37,5 @@ public interface Structured<P, N> {
      * 结构化的东西下，其下层可能需要一个分组信息来得到特定的内容。
      *
      */
-    public suspend fun children(grouping: Grouping = Grouping): N
+    public suspend fun children(grouping: Grouping = Grouping.EMPTY): N
 }
