@@ -13,10 +13,7 @@
 package love.forte.simbot.event
 
 import kotlinx.serialization.Serializable
-import love.forte.simbot.Bot
-import love.forte.simbot.CharSequenceID
-import love.forte.simbot.Component
-import love.forte.simbot.ID
+import love.forte.simbot.*
 import love.forte.simbot.definition.BotContainer
 import love.forte.simbot.message.doSafeCast
 
@@ -30,6 +27,9 @@ import love.forte.simbot.message.doSafeCast
  * @author ForteScarlet
  */
 public interface Event : BotContainer {
+
+    public val id: ID get() = metadata.id
+
     /**
      * 与这个事件有关系的 [Bot].
      */
@@ -39,6 +39,14 @@ public interface Event : BotContainer {
      * 这个事件的[元数据][Metadata]。
      */
     public val metadata: Metadata
+
+
+    /**
+     * 此时间发生的时间戳。
+     *
+     * 如果平台API支持，则为对应时间，如果不支持则考虑使用实例构建时的时间戳。
+     */
+    public val timestamp: Timestamp
 
     /**
      * 这个事件客观上的 [可见范围][VisibleScope]。
@@ -61,7 +69,7 @@ public interface Event : BotContainer {
         /**
          * Event根节点的唯一ID。
          */
-        override val id: CharSequenceID = "api-root".ID
+        override val id: CharSequenceID = "api.root".ID
 
         /**
          * Event是所有事件的根，不可能是其他事件的子项.
@@ -138,7 +146,7 @@ public interface Event : BotContainer {
          * 公共的可见范围, 代表这个事件是可能在当前环境下（例如一个组织中）所有人都可见的事件，
          * 不仅是当前bot，可能同样会被其他任何人看到。
          *
-         * 此类型的表现形式可以参考例如QQ群。
+         * 此类型的表现形式可以参考例如群聊、公开频道等。
          *
          */
         PUBLIC,

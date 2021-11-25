@@ -13,6 +13,8 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.Bot
+import love.forte.simbot.action.MessageSendSupport
+import love.forte.simbot.definition.Target
 import love.forte.simbot.message.ReceivedMessageContent
 import love.forte.simbot.message.RemoteMessageContainer
 import love.forte.simbot.message.doSafeCast
@@ -24,6 +26,14 @@ import love.forte.simbot.message.doSafeCast
 public interface MessageEvent : Event, RemoteMessageContainer {
     override val bot: Bot
     override val metadata: Event.Metadata
+
+    /**
+     * 当前消息事件所对应的事件源头.
+     *
+     * 通常情况下，[source] 都是可以 [发送消息][MessageSendSupport] 的。
+     *
+     */
+    public val source: Target
 
     /**
      * 当前消息事件的消息正文。
@@ -39,9 +49,18 @@ public interface MessageEvent : Event, RemoteMessageContainer {
 
 
 /**
- * 一个私聊消息事件。
+ * 一个私有消息消息事件。
+ *
+ * 私有消息代表此事件只能由当前bot与聊天对象可见。
+ *
  */
 public interface PrivateMessageEvent : MessageEvent {
+    /**
+     * 通常情况下，私有消息的可见性是私人的。
+     */
+    override val visibleScope: Event.VisibleScope
+        get() = Event.VisibleScope.PRIVATE
+
     public companion object Key : BaseEventKey<PrivateMessageEvent>(
         "api.privateMessage",
         setOf(MessageEvent.Key)
@@ -49,6 +68,20 @@ public interface PrivateMessageEvent : MessageEvent {
         override fun safeCast(value: Any): PrivateMessageEvent? = doSafeCast(value)
     }
 }
+
+
+/**
+ * 一个组织消息事件
+ *
+ */
+public interface OrgMessageEvent : MessageEvent {
+
+
+}
+
+
+
+
 
 
 

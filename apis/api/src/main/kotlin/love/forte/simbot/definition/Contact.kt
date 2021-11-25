@@ -35,7 +35,7 @@ public interface Contact : MessageSendSupport, BotContainer {
 
 
     /**
-     * 向此联系人发送消息。
+     * 向此联系目标发送消息。
      */
     override suspend fun send(message: Message): MessageReceipt
 

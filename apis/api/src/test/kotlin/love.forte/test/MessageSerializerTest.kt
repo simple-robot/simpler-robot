@@ -13,41 +13,17 @@
 package love.forte.test
 
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.properties.Properties
 import kotlinx.serialization.protobuf.ProtoBuf
-import love.forte.simbot.SimbotComponent
-import love.forte.simbot.message.*
-import kotlin.reflect.KClass
+import love.forte.simbot.ID
+import love.forte.simbot.message.At
+import love.forte.simbot.message.Messages
+import love.forte.simbot.message.Text
+import love.forte.simbot.message.messages
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-
-
-@Serializable
-@SerialName("test.at")
-class At(override val target: Long) : love.forte.simbot.message.At<Long, At> {
-    override val key: Message.Key<At> get() = Key
-
-    companion object Key : AbstractKey<At>(SimbotComponent, castFunc = { doSafeCast<At>(it) }) {
-        override val elementType: KClass<At> get() = At::class
-    }
-
-    override fun toString(): String = "At(target=$target)"
-
-
-    override fun equals(other: Any?): Boolean {
-        return when (other) {
-            other === this -> true
-            is At -> target == other.target
-            else -> false
-        }
-    }
-
-    override fun hashCode(): Int = target.hashCode()
-}
 
 
 /**
@@ -55,8 +31,8 @@ class At(override val target: Long) : love.forte.simbot.message.At<Long, At> {
  * @author ForteScarlet
  */
 class MessageSerializerTest {
-    private val a1 = At(1145141919810)
-    private val a2 = At(1149159218)
+    private val a1 = At(1145141919810.ID)
+    private val a2 = At(1149159218.ID)
     private val t1 = Text { "hi" }
     private val messages = messages(a1, t1, a2)
 

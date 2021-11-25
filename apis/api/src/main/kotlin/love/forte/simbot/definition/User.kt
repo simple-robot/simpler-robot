@@ -28,7 +28,7 @@ import love.forte.simbot.ID
  *
  * @author ForteScarlet
  */
-public interface User : Something {
+public interface User : Target {
 
     /**
      * 这个账号的唯一ID。

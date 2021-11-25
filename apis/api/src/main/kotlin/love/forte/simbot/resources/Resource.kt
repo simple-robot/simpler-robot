@@ -35,7 +35,15 @@ public interface Resource {
     /**
      * 得到资源的byte数据。
      */
-    public suspend fun data(): ByteChannel
+    public fun data(): ByteChannel
+
+
+
 
 }
+
+
+
+
+
 

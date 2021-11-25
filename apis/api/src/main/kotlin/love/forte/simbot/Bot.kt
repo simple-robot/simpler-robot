@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.definition.*
+import love.forte.simbot.message.Image
+import love.forte.simbot.resources.Resource
 
 
 /**
@@ -93,8 +95,19 @@ public interface Bot : User, CoroutineScope {
         return runBlocking { guilds(grouping, limiter).toList() }
     }
 
+    // resources
 
-    // other
+    /**
+     * 上传一个资源作为资源，并在预期内得到一个 [Image] 结果。
+     */
+    public suspend fun uploadImage(resource: Resource): Image
+
+
+    // public suspend fun uploadFile(resource: Resource): File
+
+
+
+    // self
     /**
      * 让当前bot挂起当前协程直至其被 [cancel]
      */

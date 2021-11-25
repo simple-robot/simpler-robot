@@ -22,6 +22,7 @@ import love.forte.simbot.SimbotComponent
 import love.forte.simbot.event.Event
 import love.forte.simbot.message.Message.Element
 import kotlin.reflect.KClass
+import kotlin.reflect.safeCast
 
 
 /**
@@ -89,7 +90,7 @@ public sealed interface Message : ComponentContainer {
          *
          * *Just like JVM KClass::safeCast.*
          */
-        public fun safeCast(instance: Any?): E?
+        public fun safeCast(instance: Any?): E? = elementType.safeCast(instance)
 
     }
 
@@ -129,17 +130,6 @@ public inline fun <reified E : Element<E>> Message.Key<E>.cast(value: Any?): E {
     if (value == null) throw NullPointerException("cast value")
     if (value !is E) throw ClassCastException("Value cannot be cast to ${E::class.simpleName}")
     return value
-}
-
-
-/**
- * [Message.Key] 基础抽象类。
- */
-public abstract class AbstractKey<E : Element<E>>(
-    override val component: Component,
-    private val castFunc: (Any?) -> E?,
-) : Message.Key<E> {
-    override fun safeCast(instance: Any?): E? = castFunc(instance)
 }
 
 

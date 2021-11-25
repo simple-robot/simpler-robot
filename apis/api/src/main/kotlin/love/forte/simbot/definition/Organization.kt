@@ -53,7 +53,7 @@ import love.forte.simbot.*
  *
  * @author ForteScarlet
  */
-public interface Organization : Something, Structured<Organization?, Flow<Organization>>, BotContainer {
+public interface Organization : Target, Structured<Organization?, Flow<Organization>>, BotContainer {
 
     /**
      * 这个组织一定是属于某一个Bot之下的。

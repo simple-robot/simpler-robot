@@ -17,7 +17,7 @@ package love.forte.simbot.provide
  *
  * 一个 **提供者**.
  *
- * 对于各种[对象][love.forte.simbot.definition.Something]，例如 [love.forte.simbot.Bot] 或者 [love.forte.simbot.definition.Organization],
+ * 对于各种[对象][love.forte.simbot.definition.Target]，例如 [love.forte.simbot.Bot] 或者 [love.forte.simbot.definition.Organization],
  *
  * 除了它们自身约束的属性内容以外 （例如一个 [组织][love.forte.simbot.definition.Organization] 肯定含有 [组织成员][love.forte.simbot.definition.Organization.members]），
  * 它们在不同平台组件上很有可能存在更多其他的额外信息，并且这些额外信息虽然不是人人都有，但是十分常见。比如对于一个群成员，他有可能存在一些 “标签” 或 “头衔”.

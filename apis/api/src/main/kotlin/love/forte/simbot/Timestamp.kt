@@ -12,8 +12,16 @@
 
 package love.forte.simbot
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import java.time.Instant
+import java.time.temporal.Temporal
 
 /**
  * 一个 **时间戳** 。
@@ -34,8 +42,6 @@ import kotlinx.serialization.Serializable
 @SerialName("TP")
 @Serializable
 public sealed class Timestamp {
-
-    // TOTO
 
     /**
      * 此时间戳对应的秒。
@@ -61,5 +67,51 @@ public sealed class Timestamp {
         override fun isSupport(): Boolean = false
     }
 
+    public companion object {
+        @JvmStatic
+        public fun byInstant(instant: Instant): Timestamp = InstantTimestamp(instant)
 
+        @JvmStatic
+        public fun now(): Timestamp = byInstant(Instant.now())
+
+        @JvmStatic
+        public fun bySecond(epochSecond: Long): Timestamp = byInstant(Instant.ofEpochSecond(epochSecond))
+
+        @JvmStatic
+        public fun bySecond(epochSecond: Long, nanoAdjustment: Long): Timestamp =
+            byInstant(Instant.ofEpochSecond(epochSecond, nanoAdjustment))
+
+        @JvmStatic
+        public fun byMillisecond(epochMilli: Long): Timestamp = byInstant(Instant.ofEpochMilli(epochMilli))
+    }
+}
+
+
+@JvmSynthetic
+public fun Instant.toTimestamp(): Timestamp = Timestamp.byInstant(this)
+
+
+
+@SerialName("TPI")
+@Serializable
+public data class InstantTimestamp(
+    @Serializable(with = InstantSerializer::class)
+    private val instant: Instant
+) : Timestamp(), Temporal by instant {
+    override val second: Long get() = instant.epochSecond
+    override val millisecond: Long get() = instant.toEpochMilli()
+    override fun isSupport(): Boolean = true
+}
+
+
+public object InstantSerializer : KSerializer<Instant> {
+    override fun deserialize(decoder: Decoder): Instant {
+        return Instant.ofEpochMilli(decoder.decodeLong())
+    }
+
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Instant", PrimitiveKind.LONG)
+
+    override fun serialize(encoder: Encoder, value: Instant) {
+        encoder.encodeLong(value.toEpochMilli())
+    }
 }

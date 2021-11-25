@@ -496,6 +496,21 @@ public fun ID.toCharSequenceID(): CharSequenceID = if (this is CharSequenceID) t
 
 
 /**
+ * 尝试将当前ID转为一个 [NumericalID].
+ */
+public fun ID.tryToNumericalID(): NumericalID<*> = if (this is NumericalID<*>) this else BigDecimalID(BigDecimal(this.toString()))
+
+/**
+ * 尝试将当前ID转为一个 [LongID].
+ *
+ * 最终会尝试通过 [BigDecimal] 进行转化。
+ *
+ */
+public fun ID.tryToLongID(): LongID = if (this is LongID) this else if (this is NumericalID<*>) this.toLong().ID else BigDecimal(this.toString()).toLong().ID
+
+
+
+/**
  * 如果是一个复杂ID, 即无法通过 [NumericalID] 或 [CharSequenceID] 进行表示的，
  * 则实现此抽象类。
  *
