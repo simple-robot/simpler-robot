@@ -472,10 +472,10 @@ public data class CharSequenceID internal constructor(val value: CharSequence) :
      * 直接通过 [ID.equals] 的最后逻辑进行toString判断。
      */
     override fun doEquals(other: ID): Boolean = false
-
-
     override fun toString(): String = value.toString()
     override fun compareTo(other: ID): Int = if (other === this) 0 else toString().compareTo(other.toString())
+
+    public val length: Int get() = value.length
 
     /**
      * [CharSequenceID] 的字面值序列化器。

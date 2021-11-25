@@ -89,18 +89,22 @@ public interface Organization : Target, Structured<Organization?, Flow<Organizat
      *
      * 提供 grouping 查询分组信息。
      *
-     * 实现者应当考虑处理 [Grouping] 允许实现 [Limiter] 的情况。
-     *
      */
     override suspend fun children(grouping: Grouping): Flow<Organization>
+
 
     /**
      * 一个组织中，可能存在[成员][members].
      * @param limiter 对于多条数据的限流器。
      */
-    public suspend fun members(limiter: Limiter = Limiter): Flow<Member>
+    public suspend fun members(grouping: Grouping = Grouping, limiter: Limiter = Limiter): Flow<Member>
 
-    // 资产？
+
+    /**
+     * 根据分组和
+     */
+    public suspend fun roles(grouping: Grouping = Grouping, limiter: Limiter = Limiter): Flow<Role>
+
 
 }
 

@@ -66,16 +66,22 @@ public open class Grouping(
      */
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+        if (other !is Grouping) return false
 
-        other as Grouping
-
-        if (id != other.id) return false
-
-        return true
+        return id == other.id
     }
 
     override fun hashCode(): Int = id.hashCode()
     override fun toString(): String = "Grouping(id=$id, name=$name)"
 
+    /**
+     * 代表一个全部内容都是空字符的 [Grouping].
+     */
+    public companion object Empty : Grouping("".ID, "") {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Grouping) return false
+            return other.id.toCharSequenceID().length == 0
+        }
+    }
 }
