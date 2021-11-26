@@ -96,6 +96,7 @@ public class CoreEventManager private constructor(
             return EventProcessingResult
         }
 
+
         return doInvoke(resolveToContext(event, invokers.size), invokers)
     }
 
@@ -107,11 +108,21 @@ public class CoreEventManager private constructor(
         context: EventProcessingContext,
         invokers: List<ListenerInvoker>
     ): EventProcessingResult {
-        return withContext(context) {
+        val botContext = context.event.bot.coroutineContext
+
+        return withContext(botContext + context) {
             processingInterceptEntrance.doIntercept(context) {
                 // do invoke with intercept
+                invokers.forEach { inv ->
+                    val result = listenerInterceptEntrance.doIntercept(context) {
+                        inv(context)
+                    }
+                    // append result
+                    appendResult(context, result)
+                }
 
-                TODO()
+                // resolve to processing result
+                CoreEventProcessingResult(context.results)
             }
         }
     }
@@ -205,3 +216,6 @@ private class CoreEventProcessingContext(
     override val results: List<EventResult> = _results.view()
 
 }
+
+
+private data class CoreEventProcessingResult(override val results: List<EventResult>) : EventProcessingResult
