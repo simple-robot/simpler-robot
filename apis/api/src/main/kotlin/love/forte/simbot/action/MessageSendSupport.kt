@@ -12,6 +12,8 @@
 
 package love.forte.simbot.action
 
+import kotlinx.coroutines.runBlocking
+import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.SimbotIllegalStateException
@@ -19,18 +21,6 @@ import love.forte.simbot.definition.Objectives
 import love.forte.simbot.event.Event
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageReceipt
-
-//
-// /**
-//  * 一个 **可交流的** 行为。
-//  *
-//  * 交流分为两种交流：主动交流，被动交流。
-//  *
-//  */
-// public interface CommunicableAction : Action
-//
-//
-// public enum class CommunicationType
 
 
 /**
@@ -51,6 +41,10 @@ public interface MessageSendSupport {
      */
     public suspend fun send(message: Message): MessageReceipt
 
+
+    @Api4J
+    public fun sendBlocking(message: Message): MessageReceipt = runBlocking { send(message) }
+
 }
 
 /**
@@ -65,6 +59,8 @@ public interface MessageReplySupport {
      */
     public suspend fun reply(message: Message): MessageReplyReceipt
 
+    @Api4J
+    public fun replyBlocking(message: Message): MessageReplyReceipt = runBlocking { reply(message) }
 }
 
 
@@ -101,6 +97,9 @@ public interface MessageReplyReceipt : MessageReceipt {
 public interface MessageMarkSupport {
 
     public suspend fun mark(message: Message): MessageMarkReceipt
+
+    @Api4J
+    public fun markBlocking(message: Message): MessageMarkReceipt = runBlocking { mark(message) }
 
 }
 

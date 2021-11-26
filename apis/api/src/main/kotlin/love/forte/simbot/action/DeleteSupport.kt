@@ -12,6 +12,8 @@
 
 package love.forte.simbot.action
 
+import kotlinx.coroutines.runBlocking
+import love.forte.simbot.Api4J
 
 
 /**
@@ -30,4 +32,6 @@ public interface DeleteSupport {
      */
     public suspend fun delete(): Boolean
 
+    @Api4J
+    public fun deleteBlocking(): Boolean = runBlocking { delete() }
 }
