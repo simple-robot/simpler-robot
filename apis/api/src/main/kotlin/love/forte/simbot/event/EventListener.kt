@@ -12,6 +12,7 @@
 
 package love.forte.simbot.event
 
+import kotlinx.coroutines.Deferred
 import love.forte.simbot.ID
 import love.forte.simbot.PriorityConstant
 
@@ -39,6 +40,22 @@ public interface EventListener : java.util.EventListener {
     public val priority: Int get() = PriorityConstant.NORMAL
 
     /**
+     * 是否需要异步执行。
+     *
+     * 异步执行的监听函数会被异步执行并立即返回一个 [Deferred], 并将其作为 [AsyncEventResult] 提供给当前的事件处理上下文中。
+     *
+     * 默认情况下，异步函数无法通过 [EventResult.isTruncated] 截断后续函数。
+     *
+     * 当 [isAsync] == true时，当前监听函数在 [EventProcessor] 中被调度的实际顺序会高于 [isAsync] == false 的函数，
+     * 也就是说当一次事件被推送的时候，会优先启动所有的异步监听函数。
+     *
+     * 理所当然的, 当监听函数被标记为 [isAsync] 时，其对应的所有 [监听函数拦截器][EventListenerInterceptor] 也应当相同的被异步化，并会拦截真正的监听函数结果。
+     * 而 [监听事件拦截器][EventProcessingInterceptor] 不会受到影响。
+     *
+     */
+    public val isAsync: Boolean get() = false
+
+    /**
      * 判断当前监听函数是否对可以对指定的事件进行监听。
      *
      */
@@ -52,6 +69,4 @@ public interface EventListener : java.util.EventListener {
      *
      */
     public suspend operator fun invoke(context: EventProcessingContext): EventResult
-
-
 }

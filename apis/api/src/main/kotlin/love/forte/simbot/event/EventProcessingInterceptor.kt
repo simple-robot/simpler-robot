@@ -65,6 +65,10 @@ public interface EventListenerInterceptor : EventInterceptor<EventListenerInterc
      * [EventListenerInterceptor] 的传递上下文。
      */
     public interface Context : EventInterceptor.Context<EventResult> {
+        /**
+         * 当前被拦截的监听函数实例。
+         */
+        public val listener: EventListener
         override val eventContext: EventProcessingContext
         override suspend fun proceed(): EventResult
     }

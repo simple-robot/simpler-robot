@@ -12,12 +12,15 @@
 
 package love.forte.simbot.core.event
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import love.forte.simbot.CharSequenceID
+import love.forte.simbot.ID
 import love.forte.simbot.event.*
+import love.forte.simbot.toCharSequenceID
 import love.forte.simbot.utils.view
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.locks.ReentrantReadWriteLock
 
 
 /**
@@ -25,8 +28,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock
  */
 public class CoreEventManager private constructor(
     configuration: CoreEventMangerConfiguration
-) : EventProcessor,
-    EventListenerRegistrar {
+) : EventListenerManager {
 
     public companion object {
         @JvmStatic // For java
@@ -41,15 +43,9 @@ public class CoreEventManager private constructor(
         EventInterceptEntrance.eventProcessingInterceptEntrance(configuration.processingInterceptors.sortedBy { it.priority })
 
     /**
-     * 监听函数拦截器入口。
+     * 监听函数拦截器集。
      */
-    private val listenerInterceptEntrance =
-        EventInterceptEntrance.eventListenerInterceptEntrance(configuration.listenerInterceptors.sortedBy { it.priority })
-
-    /**
-     * 缓存转化的读写锁。
-     */
-    private val lock = ReentrantReadWriteLock()
+    private val listenerIntercepts = configuration.listenerInterceptors.sortedBy { it.priority }
 
     /**
      * 监听函数列表。ID唯一
@@ -68,8 +64,13 @@ public class CoreEventManager private constructor(
             listeners.values
                 .filter { it.isTarget(key) }
                 .map(::ListenerInvoker)
-                .sortedBy { it.listener.priority }
-                .ifEmpty { emptyList() }
+                .sortedWith { o1, o2 ->
+                    if (o1.isAsync == o2.isAsync) {
+                        o1.listener.priority.compareTo(o2.listener.priority)
+                    } else {
+                        if (o1.isAsync) 1 else 0
+                    }
+                }.ifEmpty { emptyList() }
         }
     }
 
@@ -77,8 +78,16 @@ public class CoreEventManager private constructor(
      * 注册一个监听函数。
      */
     override fun register(listener: EventListener) {
-        TODO("Not yet implemented")
+        val id = listener.id.toCharSequenceID()
+        listeners.merge(id, listener) { _, _ ->
+            throw IllegalStateException("The event listener with ID $id already exists")
+        }
     }
+
+    /**
+     * 获取一个监听函数。
+     */
+    override fun get(id: ID): EventListener? = listeners[id.toCharSequenceID()]
 
     /**
      * 判断指定事件类型在当前事件管理器中是否能够被执行（存在任意对应的监听函数）。
@@ -92,10 +101,7 @@ public class CoreEventManager private constructor(
      */
     override suspend fun push(event: Event): EventProcessingResult {
         val invokers = getInvokers(event.key)
-        if (invokers.isEmpty()) {
-            return EventProcessingResult
-        }
-
+        if (invokers.isEmpty()) return EventProcessingResult
 
         return doInvoke(resolveToContext(event, invokers.size), invokers)
     }
@@ -108,15 +114,14 @@ public class CoreEventManager private constructor(
         context: EventProcessingContext,
         invokers: List<ListenerInvoker>
     ): EventProcessingResult {
+        val bot = context.event.bot
         val botContext = context.event.bot.coroutineContext
 
         return withContext(botContext + context) {
             processingInterceptEntrance.doIntercept(context) {
                 // do invoke with intercept
                 invokers.forEach { inv ->
-                    val result = listenerInterceptEntrance.doIntercept(context) {
-                        inv(context)
-                    }
+                    val result = inv(bot, context)
                     // append result
                     appendResult(context, result)
                 }
@@ -145,10 +150,22 @@ public class CoreEventManager private constructor(
 
 
     private inner class ListenerInvoker(
-        internal val listener: EventListener,
-    ) : suspend (EventProcessingContext) -> EventResult {
-        override suspend fun invoke(context: EventProcessingContext): EventResult =
-            listenerInterceptEntrance.doIntercept(context, listener::invoke)
+        val listener: EventListener,
+    ) : suspend (CoroutineScope, EventProcessingContext) -> EventResult {
+        val isAsync = listener.isAsync
+        private val listenerInterceptEntrance =
+            EventInterceptEntrance.eventListenerInterceptEntrance(listener, listenerIntercepts)
+
+        private val function: suspend (CoroutineScope, EventProcessingContext) -> EventResult =
+            if (listener.isAsync) { scope, context ->
+                EventResult.async(scope.async { listenerInterceptEntrance.doIntercept(context, listener::invoke) })
+            }
+            else { _, context -> listenerInterceptEntrance.doIntercept(context, listener::invoke) }
+
+        override suspend fun invoke(scope: CoroutineScope, context: EventProcessingContext): EventResult {
+            return function(scope, context)
+        }
+
     }
 
 }
@@ -211,7 +228,7 @@ private class CoreEventProcessingContext(
 
     @Suppress("PropertyName")
     @JvmSynthetic
-    internal val _results = resultInit()
+    val _results = resultInit()
 
     override val results: List<EventResult> = _results.view()
 

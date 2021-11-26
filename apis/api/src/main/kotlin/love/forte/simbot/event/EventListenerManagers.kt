@@ -17,14 +17,16 @@ import love.forte.simbot.ID
 
 /**
  *
- * 监听函数管理器。
+ * 监听函数容器。
  *
  * @author ForteScarlet
  */
-public interface EventListenerManager {
-    // TODO
+public interface EventListenerContainer {
 
-    public operator fun get(id: ID): EventListener
+    /**
+     * 通过一个ID得到一个当前监听函数下的对应函数。
+     */
+    public operator fun get(id: ID): EventListener?
 
 }
 
@@ -37,7 +39,15 @@ public interface EventListenerRegistrar {
     /**
      * 注册一个监听函数。
      *
+     * @throws IllegalStateException 如果出现ID重复
      */
     public fun register(listener: EventListener)
 
 }
+
+
+/**
+ * 事件监听器管理器标准接口。
+ */
+public interface EventListenerManager :
+    EventProcessor, EventListenerContainer, EventListenerRegistrar

@@ -33,8 +33,15 @@ import kotlin.coroutines.CoroutineContext
 internal class TencentGuildBotImpl(
     configuration: TencentGuildBotConfiguration,
     override val coroutineContext: CoroutineContext,
-    override val status: UserStatus
+    override val status: UserStatus,
+    override val username: String,
+    override val avatar: String,
+    override val isStarted: Boolean,
+    override val isActive: Boolean,
+    override val isCancelled: Boolean,
 ) : TencentGuildBot() {
+
+
 
     override val client: HttpClient = configuration.client
 
@@ -42,8 +49,6 @@ internal class TencentGuildBotImpl(
         get() = TencentGuildComponent.component
 
     override val id: TencentGuildBotID = TencentGuildBotID(configuration.ticket!!)
-    override val info: BotInfo
-        get() = TODO("Not yet implemented")
 
     override val manager: BotManager<Bot>
         get() = TODO("Not yet implemented")
@@ -65,7 +70,11 @@ internal class TencentGuildBotImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun cancel() {
+    override suspend fun start(): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun cancel(): Boolean {
         TODO("Not yet implemented")
     }
 

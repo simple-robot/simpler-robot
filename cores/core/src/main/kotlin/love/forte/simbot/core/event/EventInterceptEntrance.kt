@@ -36,9 +36,9 @@ public sealed class EventInterceptEntrance<C : EventInterceptor.Context<R>, R> {
         /**
          * 得到监听函数拦截器入口。
          */
-        public fun eventListenerInterceptEntrance(interceptors: Collection<EventListenerInterceptor>): EventInterceptEntrance<EventListenerInterceptor.Context, EventResult> {
+        public fun eventListenerInterceptEntrance(listener: EventListener, interceptors: Collection<EventListenerInterceptor>): EventInterceptEntrance<EventListenerInterceptor.Context, EventResult> {
             return if (interceptors.isEmpty()) EventListenerDirectInterceptEntrance
-            else EventListenerIteratorInterceptEntrance(interceptors.toList())
+            else EventListenerIteratorInterceptEntrance(listener, interceptors.toList())
         }
     }
 
@@ -106,6 +106,7 @@ private object EventProcessingDirectInterceptEntrance
  *
  */
 private class EventListenerIteratorInterceptEntrance(
+    val listener: EventListener,
     private val interceptorsIterable: Iterable<EventListenerInterceptor>,
 ) : EventInterceptEntrance<EventListenerInterceptor.Context, EventResult>() {
 
@@ -113,18 +114,20 @@ private class EventListenerIteratorInterceptEntrance(
         context: EventProcessingContext,
         processing: suspend (EventProcessingContext) -> EventResult
     ): EventResult {
-        return IteratorInterceptorContext(context, processing).proceed()
+        return IteratorInterceptorContext(listener, context, processing).proceed()
     }
 
     private inner class IteratorInterceptorContext(
+        override val listener: EventListener,
         override val eventContext: EventProcessingContext,
-        private val processing: suspend (EventProcessingContext) -> EventResult
+        processing: suspend (EventProcessingContext) -> EventResult
     ) : EventInterceptEntrance.IteratorInterceptorContext<
             EventListenerInterceptor.Context,
             EventListenerInterceptor,
             EventResult
             >(interceptorsIterable.iterator(), processing),
         EventListenerInterceptor.Context {
+
         override val context: EventListenerInterceptor.Context
             get() = this
 

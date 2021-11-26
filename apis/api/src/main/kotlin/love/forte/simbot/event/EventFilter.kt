@@ -54,5 +54,5 @@ public interface EventFilter : Filter<EventProcessingContext> {
      * 如果过滤器匹配失败，可以通过此函数得到一个默认的返回值。
      * 默认情况下返回 [EventResult.Invalid].
      */
-    public suspend fun defaultResult(context: EventProcessingContext): EventResult = EventResult
+    public suspend fun defaultResult(context: EventProcessingContext): EventResult = EventResult.Invalid
 }
