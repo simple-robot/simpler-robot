@@ -14,7 +14,7 @@ package love.forte.simbot.event
 
 import love.forte.simbot.Bot
 import love.forte.simbot.action.MessageSendSupport
-import love.forte.simbot.definition.Target
+import love.forte.simbot.definition.Objectives
 import love.forte.simbot.message.ReceivedMessageContent
 import love.forte.simbot.message.RemoteMessageContainer
 import love.forte.simbot.message.doSafeCast
@@ -33,7 +33,7 @@ public interface MessageEvent : Event, RemoteMessageContainer {
      * 通常情况下，[source] 都是可以 [发送消息][MessageSendSupport] 的。
      *
      */
-    public val source: Target
+    public val source: Objectives
 
     /**
      * 当前消息事件的消息正文。

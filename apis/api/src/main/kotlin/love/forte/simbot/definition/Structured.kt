@@ -12,7 +12,7 @@
 
 package love.forte.simbot.definition
 
-import love.forte.simbot.Grouping
+import love.forte.simbot.ID
 
 /**
  * 一个非阻塞的 **结构化** 定义。
@@ -34,8 +34,8 @@ public interface Structured<P, N> {
     /**
      * 下一级的内容。
      *
-     * 结构化的东西下，其下层可能需要一个分组信息来得到特定的内容。
+     * 结构化的东西下，其下层可能需要一个分组信息(分组ID)来得到特定的内容。
      *
      */
-    public suspend fun children(grouping: Grouping = Grouping.EMPTY): N
+    public suspend fun children(groupingId: ID? = null): N
 }

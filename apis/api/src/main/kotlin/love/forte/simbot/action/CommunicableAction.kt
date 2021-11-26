@@ -15,7 +15,7 @@ package love.forte.simbot.action
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.SimbotIllegalStateException
-import love.forte.simbot.definition.Target
+import love.forte.simbot.definition.Objectives
 import love.forte.simbot.event.Event
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageReceipt
@@ -119,7 +119,7 @@ public interface MessageMarkReceipt : MessageReceipt {
 /**
  * 如果此目标允许发送消息，发送，否则得到null。
  */
-public suspend fun Target.trySend(message: Message): MessageReceipt? =
+public suspend fun Objectives.trySend(message: Message): MessageReceipt? =
     if (this is MessageSendSupport) send(message) else null
 
 /**
@@ -132,7 +132,7 @@ public suspend fun Event.trySend(message: Message): MessageReceipt? =
 /**
  * 如果此目标允许回复消息，发送，否则得到null。
  */
-public suspend fun Target.tryReply(message: Message): MessageReplyReceipt? =
+public suspend fun Objectives.tryReply(message: Message): MessageReplyReceipt? =
     if (this is MessageReplySupport) reply(message) else null
 
 
@@ -146,7 +146,7 @@ public suspend fun Event.tryReply(message: Message): MessageReplyReceipt? =
 /**
  * 如果此目标允许回复标记消息，发送，否则得到null。
  */
-public suspend fun Target.tryMark(message: Message): MessageMarkReceipt? =
+public suspend fun Objectives.tryMark(message: Message): MessageMarkReceipt? =
     if (this is MessageMarkSupport) mark(message) else null
 
 /**

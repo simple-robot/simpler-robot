@@ -12,6 +12,12 @@
 
 package love.forte.simbot.definition
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import love.forte.simbot.ID
+import love.forte.simbot.Limiter
+import love.forte.simbot.action.MessageSendSupport
+
 
 /**
  * 一个 **聊天室**。 聊天室是组织的一个子集，代表其是一个存在多人且允许相互交流“发送消息”的组织。
@@ -20,4 +26,12 @@ package love.forte.simbot.definition
  *
  * @author ForteScarlet
  */
-public interface ChatRoom : Organization, Contact
+public interface ChatRoom : Organization, MessageSendSupport {
+
+    /**
+     * 一般来讲，能够作为聊天室的组织不存在子集。
+     */
+    override suspend fun children(groupingId: ID?, limiter: Limiter): Flow<Organization> {
+        return emptyFlow()
+    }
+}

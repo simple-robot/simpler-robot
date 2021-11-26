@@ -53,7 +53,7 @@ import love.forte.simbot.*
  *
  * @author ForteScarlet
  */
-public interface Organization : Target, Structured<Organization?, Flow<Organization>>, BotContainer {
+public interface Organization : Objectives, OrganizationInfo, Structured<Organization?, Flow<Organization>>, BotContainer {
 
     /**
      * 这个组织一定是属于某一个Bot之下的。
@@ -65,16 +65,22 @@ public interface Organization : Target, Structured<Organization?, Flow<Organizat
      */
     override val id: ID
 
-    /**
-     * 一个组织会有一个名称。
-     */
-    public val name: String
+    //region from organization info
+    override val name: String
+    override val icon: String
+    override val description: String
+    override val createTime: Timestamp
+    override val ownerId: ID
+    //endregion
 
-    /**
-     * 得到这个组织的信息。
-     */
-    public suspend fun info(): OrganizationInfo
-    public val info: OrganizationInfo get() = runBlocking { info() }
+    override suspend fun owner(): Member {
+        TODO("Not yet implemented")
+    }
+
+    override val maximumMember: Int
+        get() = TODO("Not yet implemented")
+    override val currentMember: Int
+        get() = TODO("Not yet implemented")
 
     /**
      * 上一级，或者说这个组织的上层。
@@ -90,20 +96,25 @@ public interface Organization : Target, Structured<Organization?, Flow<Organizat
      * 提供 grouping 查询分组信息。
      *
      */
-    override suspend fun children(grouping: Grouping): Flow<Organization>
+    override suspend fun children(groupingId: ID?): Flow<Organization> = children(groupingId, Limiter)
 
+
+    /**
+     * 根据分组ID和限流器尝试获取此组织下的子集。
+     */
+    public suspend fun children(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Organization>
 
     /**
      * 一个组织中，可能存在[成员][members].
      * @param limiter 对于多条数据的限流器。
      */
-    public suspend fun members(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Member>
+    public suspend fun members(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Member>
 
 
     /**
-     * 根据分组和
+     * 根据分组ID和限流器尝试获取当前组织下的所有角色。
      */
-    public suspend fun roles(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Role>
+    public suspend fun roles(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Role>
 
 
 }
@@ -141,13 +152,14 @@ public interface OrganizationInfo {
     public val ownerId: ID
 
 
-
     /**
      * 组织的拥有者信息。
      */
     public suspend fun owner(): Member
+
     @Api4J
-    public val owner: Member get() = runBlocking { owner() }
+    public val owner: Member
+        get() = runBlocking { owner() }
 
     //// 上面的信息，大概率是可以得到的。
     //// 下面的信息均存在无法获取的可能。

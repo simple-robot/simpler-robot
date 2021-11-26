@@ -16,9 +16,9 @@ import love.forte.simbot.event.Event
 import love.forte.simbot.event.MessageEvent
 import love.forte.simbot.event.RequestEvent
 import love.forte.simbot.event.isSubFrom
-import org.junit.Test
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
+import kotlin.test.Test
 
 /**
  *

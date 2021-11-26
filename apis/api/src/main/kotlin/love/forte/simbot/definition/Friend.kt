@@ -20,20 +20,17 @@ import love.forte.simbot.ID
 /**
  * 一个 **好友**。
  */
-public interface Friend : User, BotContainer {
+public interface Friend : Contact, BotContainer, FriendInfo {
     override val id: ID
     override val bot: Bot
 
-    /**
-     * 好友信息。
-     */
-    override val info: FriendInfo
-
-
-
-
-
-
+    //region from friend info
+    override val remark: String?
+    override val grouping: Grouping
+    override val username: String
+    override val avatar: String
+    override val status: UserStatus
+    //endregion
 }
 
 

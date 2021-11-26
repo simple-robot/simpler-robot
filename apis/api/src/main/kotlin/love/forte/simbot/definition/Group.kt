@@ -15,26 +15,30 @@ package love.forte.simbot.definition
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.runBlocking
-import love.forte.simbot.Api4J
-import love.forte.simbot.Grouping
-import love.forte.simbot.ID
+import love.forte.simbot.*
 
 
 /**
  * 一个群。
  * @author ForteScarlet
  */
-public interface Group : Organization {
+public interface Group : ChatRoom {
 
-    /**
-     * 得到服务器信息.
-     */
-    override val info: GroupInfo
+    override val bot: Bot
+    override val id: ID
+    override val name: String
+    override val icon: String
+    override val description: String
+    override val createTime: Timestamp
+    override val ownerId: ID
+    override suspend fun owner(): Member
+    override val maximumMember: Int
+    override val currentMember: Int
 
     /**
      * 一般来讲，群不存在子集。
      */
-    override suspend fun children(grouping: Grouping): Flow<Organization> {
+    override suspend fun children(groupingId: ID?, limiter: Limiter): Flow<Organization> {
         return emptyFlow()
     }
 }
@@ -48,20 +52,26 @@ public interface GroupInfo : OrganizationInfo
 
 /**
  * 一个频道服务器，或者说一个集会。
+ *
+ * 目前来看，大部分 guild 其本身是无法发送消息进行交流的。
  */
-public interface Guild : Organization {
-
-    /**
-     * 获取频道服务器信息
-     */
-    override suspend fun info(): GuildInfo
-    override val info: GuildInfo get() = runBlocking { info() }
+public interface Guild : Organization, GuildInfo {
+    override val bot: Bot
+    override val id: ID
+    override val name: String
+    override val icon: String
+    override val description: String
+    override val createTime: Timestamp
+    override val ownerId: ID
+    override suspend fun owner(): Member
+    override val maximumMember: Int
+    override val currentMember: Int
 
 
     /**
      * 一个 Guild 的子集应当是一些频道.
      */
-    override suspend fun children(grouping: Grouping): Flow<Channel>
+    override suspend fun children(groupingId: ID?, limiter: Limiter): Flow<Channel>
 
 }
 
@@ -90,20 +100,19 @@ public interface GuildInfo : OrganizationInfo {
  * 一个频道。
  *  @author ForteScarlet
  */
-public interface Channel : Organization {
-
-    /**
-     * 频道信息。
-     */
-    override suspend fun info(): ChannelInfo
-    override val info: ChannelInfo get() = runBlocking { info() }
-
-    /**
-     * 一般来讲，频道不存在子集。
-     */
-    override suspend fun children(grouping: Grouping): Flow<Organization> {
-        return emptyFlow()
-    }
+public interface Channel : ChatRoom, ChannelInfo {
+    override val guildId: ID
+    override suspend fun guild(): Guild
+    override val bot: Bot
+    override val id: ID
+    override val name: String
+    override val icon: String
+    override val description: String
+    override val createTime: Timestamp
+    override val ownerId: ID
+    override suspend fun owner(): Member
+    override val maximumMember: Int
+    override val currentMember: Int
 
 }
 
@@ -122,7 +131,5 @@ public interface ChannelInfo : OrganizationInfo {
     public suspend fun guild(): Guild
     @Api4J
     public val guild: Guild get() = runBlocking { guild() }
-
-
 
 }

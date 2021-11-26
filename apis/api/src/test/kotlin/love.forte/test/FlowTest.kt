@@ -14,10 +14,10 @@ package love.forte.test
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import org.junit.Test
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
+import kotlin.test.Test
 
 
 /**
@@ -30,12 +30,24 @@ class FlowTest {
     private val n2 = AtomicInteger(1)
 
     private val scope1 = CoroutineScope(
-        Executors.newFixedThreadPool(4) { r -> thread(isDaemon = true, start = false, name = "A-${n1.getAndIncrement()}") { r.run() } }
+        Executors.newFixedThreadPool(4) { r ->
+            thread(
+                isDaemon = true,
+                start = false,
+                name = "A-${n1.getAndIncrement()}"
+            ) { r.run() }
+        }
             .asCoroutineDispatcher()
     )
 
     private val scope2 = CoroutineScope(
-        Executors.newFixedThreadPool(4) { r -> thread(isDaemon = true, start = false, name = "B-${n2.getAndIncrement()}") { r.run() } }
+        Executors.newFixedThreadPool(4) { r ->
+            thread(
+                isDaemon = true,
+                start = false,
+                name = "B-${n2.getAndIncrement()}"
+            ) { r.run() }
+        }
             .asCoroutineDispatcher()
     )
 

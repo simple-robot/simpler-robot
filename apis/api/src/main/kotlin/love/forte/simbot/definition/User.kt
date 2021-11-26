@@ -28,7 +28,7 @@ import love.forte.simbot.ID
  *
  * @author ForteScarlet
  */
-public interface User : Target {
+public interface User : Objectives, UserInfo {
 
     /**
      * 这个账号的唯一ID。
@@ -36,10 +36,10 @@ public interface User : Target {
     override val id: ID
     override val bot: Bot
 
-    /**
-     * 这个用户的信息。
-     */
-    public val info: UserInfo
+    //region from user info
+    override val username: String
+    override val avatar: String
+    //endregion
 
     /**
      * 这个用户的状态属性。

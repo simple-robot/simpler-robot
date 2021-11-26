@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -65,6 +65,13 @@ public interface Limiter {
      */
     public val limit: Int
 
+    /**
+     * 对于部分平台的实现中，很有可能是分批次查询来获取结果的。
+     * 当平台支持的时候，可以通过 [batchSize] 来指定一个批次大小来限制其内部每次对于API的请求数量。
+     *
+     * 正常情况下，此值只有在 >0 的时候生效。
+     */
+    public val batchSize: Int
 
     /**
      * [Limiter] 的默认值实现，[offset][ZERO.offset] 与 [limit][ZERO.limit] 均恒等于 `0`。
@@ -73,21 +80,26 @@ public interface Limiter {
     public companion object ZERO : Limiter {
         override val offset: Int get() = 0
         override val limit: Int get() = 0
+        override val batchSize: Int get() = 0
 
         @Api4J
         @JvmStatic
-        public fun of(offset: Int, limit: Int): Limiter = if (offset == 0 && limit == 0) ZERO else LimiterImpl(offset, limit)
+        @JvmOverloads
+        public fun of(offset: Int = ZERO.offset, limit: Int = ZERO.limit, batchSize: Int = ZERO.batchSize): Limiter =
+            if (offset <= 0 && limit <= 0 && batchSize <= 0) ZERO else LimiterImpl(offset, limit, batchSize)
     }
 }
 
 /**
  * 得到一个 [Limiter] 的默认实现。
  */
-public fun limiter(offset: Int, limit: Int): Limiter = if (offset == 0 && limit == 0) Limiter else LimiterImpl(offset, limit)
+public fun limiter(offset: Int, limit: Int, batchSize: Int): Limiter =
+    if (offset <= 0 && limit <= 0 && batchSize <= 0) Limiter else LimiterImpl(offset, limit, batchSize)
 
 
-private data class LimiterImpl(override val offset: Int, override val limit: Int) : Limiter {
-    override fun toString(): String = "Limiter(offset=$offset, limit=$limit)"
+private data class LimiterImpl(override val offset: Int, override val limit: Int, override val batchSize: Int) :
+    Limiter {
+    override fun toString(): String = "Limiter(offset=$offset, limit=$limit, batchSize=$batchSize)"
 }
 
 

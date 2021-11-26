@@ -17,8 +17,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.properties.Properties
 import kotlinx.serialization.properties.encodeToStringMap
-import org.junit.Test
 import java.io.StringReader
+import kotlin.test.Test
 
 /**
  *
@@ -28,8 +28,8 @@ class PropSerializerTest {
 
     @OptIn(ExperimentalSerializationApi::class)
     @Test
-    fun test(){
-        val p = Properties(SerializersModule {  })
+    fun test() {
+        val p = Properties(SerializersModule { })
 
         val jp = java.util.Properties().also {
             it.load(StringReader(properties))
@@ -46,8 +46,9 @@ class PropSerializerTest {
         val map = p.encodeToStringMap(i)
         println(map)
 
-        val info = p.decodeFromStringMap(VerifyInfo.serializer(),
-             strMap
+        val info = p.decodeFromStringMap(
+            VerifyInfo.serializer(),
+            strMap
             // jp.mapKeys { it.toString().trim() }.mapValues { it.toString().trim() }
         )
 

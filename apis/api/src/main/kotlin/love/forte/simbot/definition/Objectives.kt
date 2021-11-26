@@ -21,17 +21,17 @@ import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageReceipt
 
 /**
- * [Target] 是对与 [Bot] 相关联的对象 （[组织][Organization] 或一个具体的 [用户][User]） 的统称。
+ * [Objectives] 是对与 [Bot] 相关联的对象 （[组织][Organization] 或一个具体的 [用户][User]） 的统称。
  *
  * 不论 [组织][Organization] 还是 [用户][User]，它们均来自一个 [Bot].
  *
- * [Target] 本身仅代表这个对象的概念，不能保证其本身拥有 [发送消息][MessageSendSupport] 的能力。
+ * [Objectives] 本身仅代表这个对象的概念，不能保证其本身拥有 [发送消息][MessageSendSupport] 的能力。
  *
  *
  *
  * @author ForteScarlet
  */
-public sealed interface Target : BotContainer {
+public sealed interface Objectives : BotContainer {
 
     /**
      * 当前对象对应的唯一ID。
@@ -41,7 +41,7 @@ public sealed interface Target : BotContainer {
     public val id: ID
 
     /**
-     * 当前 [Target] 来自的bot。
+     * 当前 [Objectives] 来自的bot。
      */
     override val bot: Bot
 

@@ -20,10 +20,10 @@ import love.forte.simbot.DoubleID
 import love.forte.simbot.Grouping
 import love.forte.simbot.ID
 import love.forte.simbot.LongID
-import org.junit.Test
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.*
+import kotlin.test.Test
 
 @Serializable
 data class User(
@@ -131,6 +131,7 @@ class IDTest {
     }
 
 }
+
 @Serializable
 data class Role(
     @Serializable(ID.AsCharSequenceIDSerializer::class)
