@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -31,12 +31,12 @@ dependencies {
     api(V.Ktor.Client.Serialization.notation)
     api(V.Kotlinx.Serialization.Json.notation)
 
-    testImplementation(V.Kotlin.Test.Junit.notation)
+    testImplementation(V.Kotlin.Test.Junit5.notation)
     // implementation("love.forte.simple-robot:api:3.0.0-PREVIEW")
 }
 
 tasks.getByName<Test>("test") {
-    useJUnit()
+    useJUnitPlatform()
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

@@ -35,7 +35,7 @@ dependencies {
 }
 
 tasks.getByName<Test>("test") {
-    useJUnit()
+    useJUnitPlatform()
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

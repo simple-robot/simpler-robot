@@ -73,14 +73,17 @@ public interface Organization : Objectives, OrganizationInfo, Structured<Organiz
     override val ownerId: ID
     //endregion
 
-    override suspend fun owner(): Member {
-        TODO("Not yet implemented")
-    }
+    /**
+     * 组织的拥有者信息。
+     */
+    public suspend fun owner(): Member
+
+    @Api4J
+    public val owner: Member
+        get() = runBlocking { owner() }
 
     override val maximumMember: Int
-        get() = TODO("Not yet implemented")
     override val currentMember: Int
-        get() = TODO("Not yet implemented")
 
     /**
      * 上一级，或者说这个组织的上层。
@@ -151,15 +154,6 @@ public interface OrganizationInfo {
      */
     public val ownerId: ID
 
-
-    /**
-     * 组织的拥有者信息。
-     */
-    public suspend fun owner(): Member
-
-    @Api4J
-    public val owner: Member
-        get() = runBlocking { owner() }
 
     //// 上面的信息，大概率是可以得到的。
     //// 下面的信息均存在无法获取的可能。

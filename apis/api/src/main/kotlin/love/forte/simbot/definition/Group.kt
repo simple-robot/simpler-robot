@@ -102,7 +102,6 @@ public interface GuildInfo : OrganizationInfo {
  */
 public interface Channel : ChatRoom, ChannelInfo {
     override val guildId: ID
-    override suspend fun guild(): Guild
     override val bot: Bot
     override val id: ID
     override val name: String
@@ -114,6 +113,13 @@ public interface Channel : ChatRoom, ChannelInfo {
     override val maximumMember: Int
     override val currentMember: Int
 
+
+    /**
+     * 得到这个频道对应的guild。
+     */
+    public suspend fun guild(): Guild
+    @Api4J
+    public val guild: Guild get() = runBlocking { guild() }
 }
 
 /**
@@ -125,11 +131,5 @@ public interface ChannelInfo : OrganizationInfo {
      */
     public val guildId: ID
 
-    /**
-     * 得到这个频道对应的guild。
-     */
-    public suspend fun guild(): Guild
-    @Api4J
-    public val guild: Guild get() = runBlocking { guild() }
 
 }
