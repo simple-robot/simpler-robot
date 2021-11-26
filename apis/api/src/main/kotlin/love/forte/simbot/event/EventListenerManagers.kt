@@ -39,6 +39,13 @@ public interface EventListenerRegistrar {
     /**
      * 注册一个监听函数。
      *
+     * 注册监听函数并不一定是原子的，可能会存在注册结果的滞后性（注册不一定会立即生效）。
+     *
+     * ## 滞后性
+     * 例如你在时间点A注册了一个监听函数，而时间点B（=时间点A + 10ms）时推送了一个事件，
+     *
+     * 这时候无法保证在时间点A之后的这个事件能够触发此监听函数。
+     *
      * @throws IllegalStateException 如果出现ID重复
      */
     public fun register(listener: EventListener)
@@ -48,6 +55,8 @@ public interface EventListenerRegistrar {
 
 /**
  * 事件监听器管理器标准接口。
+ *
+ *
  */
 public interface EventListenerManager :
     EventProcessor, EventListenerContainer, EventListenerRegistrar

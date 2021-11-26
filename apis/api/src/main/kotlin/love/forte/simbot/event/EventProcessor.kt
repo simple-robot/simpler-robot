@@ -13,13 +13,13 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.event.EventProcessingResult.Empty
-import org.jetbrains.annotations.NonBlocking
+import org.jetbrains.annotations.UnmodifiableView
 
 
 /**
  * 事件处理器，代表一个事件被触发的入口。
  *
- * 建议事件处理器对事件进行处理的时候，通过内置的调度器进行处理。
+ * [EventProcessor] 会通过当前事件中的 [bot][Event.bot] 所提供的作用域进行事件调度。
  *
  * @author ForteScarlet
  */
@@ -28,13 +28,9 @@ public interface EventProcessor {
     /**
      * 推送一个事件到当前事件处理器。
      *
-     * 事件处理器会按照流程触发所有应被触发的事件，并将所有 [EventListener]
-     *
-     *
-     * TODO 返回值应该是什么？ Flow<EventResult>?
+     * 事件处理器会按照流程触发所有应被触发的事件，并将所有 [EventListener] 的执行结果汇总为 [EventProcessingResult] 并返回。
      *
      */
-    @NonBlocking
     public suspend fun push(event: Event) : EventProcessingResult
 
 }
@@ -50,7 +46,7 @@ public interface EventProcessingResult {
     /**
      * 本次流程下执行后得到的所有响应结果。按照顺序计入。
      */
-    public val results: List<EventResult>
+    public val results: @UnmodifiableView List<EventResult>
 
 
     /**
