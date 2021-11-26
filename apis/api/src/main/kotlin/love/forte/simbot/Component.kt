@@ -15,6 +15,7 @@ package love.forte.simbot
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.Components.find
 import love.forte.simbot.Components.get
 import love.forte.simbot.definition.Container
@@ -200,6 +201,12 @@ public interface ComponentInformation {
     public val name: String
 
     /**
+     * 可以向simbot提供一个 [serializersModule],
+     * 会将此内容整合到 [SimbotComponent] 属性中。
+     */
+    public val serializersModule: SerializersModule? get() = null
+
+    /**
      * 提供一个 attributs, 并对其进行配置。
      */
     public fun configAttributes(attributes: MutableAttributeMap)
@@ -210,7 +217,6 @@ public interface ComponentInformation {
      */
     public fun setComponent(component: Component)
 }
-
 
 
 /**

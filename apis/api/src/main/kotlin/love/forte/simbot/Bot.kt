@@ -19,6 +19,7 @@ import kotlinx.coroutines.runBlocking
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.Image
 import love.forte.simbot.resources.Resource
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -31,8 +32,12 @@ import love.forte.simbot.resources.Resource
  * @author ForteScarlet
  */
 public interface Bot : User, CoroutineScope {
+    override val coroutineContext: CoroutineContext
+
     override val id: ID
     override val bot: Bot get() = this
+    override val username: String
+    override val avatar: String
 
     /**
      * 每个bot都肯定会由一个 [BotManager] 进行管理。
@@ -45,12 +50,6 @@ public interface Bot : User, CoroutineScope {
      *
      */
     public val component: Component
-
-    // info
-    /**
-     * 得到此Bot的一些基础信息。
-     */
-    override val info: BotInfo
 
     /**
      * 当前Bot的用户状态。
@@ -106,8 +105,16 @@ public interface Bot : User, CoroutineScope {
     // public suspend fun uploadFile(resource: Resource): File
 
 
-
     // self
+    /**
+     * 真正的启动这个BOT。
+     * 但是已经关闭的 [Bot] 无法再次 [start].
+     *
+     * @return 尚未启动且本次启动成功后得到 `true`。
+     */
+    public suspend fun start(): Boolean
+
+
     /**
      * 让当前bot挂起当前协程直至其被 [cancel]
      */
@@ -118,8 +125,26 @@ public interface Bot : User, CoroutineScope {
      *
      * 当此 [Bot] 关闭后，应当同时从对应的 [manager] 中移除。
      *
+     *
+     * @return 已经启动、尚未关闭且本次关闭成功则得到 `true`。
+     *
      */
-    public suspend fun cancel()
+    public suspend fun cancel(): Boolean
+
+    /**
+     * 是否已经启动过了。
+     */
+    public val isStarted: Boolean
+
+    /**
+     * 是否正在运行，即启动后尚未关闭。
+     */
+    public val isActive: Boolean
+
+    /**
+     * 是否已经被取消。
+     */
+    public val isCancelled: Boolean
 
 }
 
