@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.*
+import java.util.stream.Stream
 
 
 /**
@@ -41,6 +42,12 @@ public interface Group : ChatRoom {
     override suspend fun children(groupingId: ID?, limiter: Limiter): Flow<Organization> {
         return emptyFlow()
     }
+
+    @Api4J
+    override fun getChildren(groupingId: ID?, limiter: Limiter): Stream<Organization> {
+        return Stream.empty()
+    }
+
 }
 
 /**
@@ -73,6 +80,8 @@ public interface Guild : Organization, GuildInfo {
      */
     override suspend fun children(groupingId: ID?, limiter: Limiter): Flow<Channel>
 
+    @Api4J
+    override fun getChildren(groupingId: ID?, limiter: Limiter): Stream<Channel>
 }
 
 /**
@@ -117,6 +126,7 @@ public interface Channel : ChatRoom, ChannelInfo {
     /**
      * 得到这个频道对应的guild。
      */
+    @JvmSynthetic
     public suspend fun guild(): Guild
     @Api4J
     public val guild: Guild get() = runBlocking { guild() }

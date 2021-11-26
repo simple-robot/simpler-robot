@@ -31,6 +31,7 @@ public interface EventProcessor {
      * 事件处理器会按照流程触发所有应被触发的事件，并将所有 [EventListener] 的执行结果汇总为 [EventProcessingResult] 并返回。
      *
      */
+    @JvmSynthetic
     public suspend fun push(event: Event) : EventProcessingResult
 
 }

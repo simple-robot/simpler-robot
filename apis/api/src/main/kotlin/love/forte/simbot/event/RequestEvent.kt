@@ -12,6 +12,8 @@
 
 package love.forte.simbot.event
 
+import kotlinx.coroutines.runBlocking
+import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.Experimental
 import love.forte.simbot.message.doSafeCast
@@ -37,18 +39,25 @@ public interface RequestEvent : Event {
 
     /**
      * 是否同意/接受此次请求。
-     * 提供一个 [接受行为][AcceptAction] 并得到一个请求行为回执。
-     *
-     * @see AcceptAction
      */
+    @JvmSynthetic
     @Experimental
     public suspend fun accept(/*action: AcceptAction = AccDefault*/): Boolean
+
+    @Api4J
+    @Experimental
+    public fun acceptBlocking(): Boolean = runBlocking { accept() }
 
     /**
      * 是否拒绝/回绝此次请求。
      */
+    @JvmSynthetic
     @Experimental
-    public suspend fun <R> reject(/*action: RejectAction = RejDefault*/): Boolean
+    public suspend fun reject(/*action: RejectAction = RejDefault*/): Boolean
+
+    @Api4J
+    @Experimental
+    public fun rejectBlocking(): Boolean = runBlocking { reject() }
 
     //
     // /**

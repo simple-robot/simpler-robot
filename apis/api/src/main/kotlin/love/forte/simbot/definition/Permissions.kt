@@ -15,6 +15,7 @@ package love.forte.simbot.definition
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
+import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import java.util.*
 
@@ -127,7 +128,7 @@ public class PermissionStatusBuilder {
 
 
 @Suppress("MemberVisibilityCanBePrivate")
-private class PermissionStatusImpl(internal val status: BitSet) : PermissionStatus {
+private class PermissionStatusImpl(val status: BitSet) : PermissionStatus {
     companion object {
         internal const val IS_OWNER = 1
         internal const val IS_ADMIN = 2
@@ -150,7 +151,7 @@ private class PermissionStatusImpl(internal val status: BitSet) : PermissionStat
     override val isChannelAdmin: Boolean
         get() = status[IS_CHANNEL_ADMIN]
 
-    public operator fun contains(status: PermissionStatus): Boolean {
+    operator fun contains(status: PermissionStatus): Boolean {
         fun check(tar: PermissionStatusImpl): Boolean = this.status.intersects(tar.status)
         if (status is PermissionStatusImpl) {
             return check(status)
@@ -205,11 +206,15 @@ public interface Role {
      */
     @JvmSynthetic
     public suspend fun permissions(): Flow<Permission>
+
+
+    @Api4J
     public val permissions: List<Permission> get() = runBlocking { permissions().toList() }
 
     /**
      * 判断当前角色是否存在某个指定权限。
      */
+    @OptIn(Api4J::class)
     public operator fun contains(permission: Permission): Boolean =
         permissions.any { it == permission }
 
@@ -217,12 +222,14 @@ public interface Role {
     /**
      * 此角色中是否包含管理员权限。
      */
+    @Api4J
     public val isAdmin: Boolean get() = permissions.any { it.status.isAdmin }
 
 
     /**
      * 此角色中是否包含所有者权限。
      */
+    @Api4J
     public val isOwner: Boolean get() = permissions.any { it.status.isOwner }
 
 }

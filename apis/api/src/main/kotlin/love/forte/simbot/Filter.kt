@@ -27,6 +27,7 @@ public interface Filter<T> {
      * 通过匹配目标进行检测，得到匹配结果。
      *
      */
+    @JvmSynthetic
     public suspend fun test(t: T): Boolean
 
 }

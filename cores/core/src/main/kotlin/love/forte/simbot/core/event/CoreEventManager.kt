@@ -218,6 +218,7 @@ public interface EventProcessingContextResolver<C : EventProcessingContext> {
      * 根据一个事件得到对应的流程上下文。
      * 只有在对应事件存在至少一个对应的监听函数的时候才会被触发。
      */
+    @JvmSynthetic
     public suspend fun resolveEventToContext(event: Event, listenerSize: Int): C
 
     /**
@@ -227,6 +228,7 @@ public interface EventProcessingContextResolver<C : EventProcessingContext> {
      * 但是建议不会真正的添加 [EventResult.Invalid].
      *
      */
+    @JvmSynthetic
     public suspend fun appendResultIntoContext(context: C, result: EventResult)
 }
 

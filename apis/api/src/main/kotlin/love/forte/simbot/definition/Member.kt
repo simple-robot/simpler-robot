@@ -15,6 +15,7 @@ package love.forte.simbot.definition
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
+import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
 
@@ -29,6 +30,7 @@ public interface Member : User {
 
     @JvmSynthetic
     public suspend fun roles(): Flow<Role>
+    @Api4J
     public val roles: List<Role> get() = runBlocking { roles().toList() }
 
 }

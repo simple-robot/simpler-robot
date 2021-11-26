@@ -30,6 +30,7 @@ public interface DeleteSupport {
      *
      * @return 是否删除成功，不代表会捕获异常。
      */
+    @JvmSynthetic
     public suspend fun delete(): Boolean
 
     @Api4J

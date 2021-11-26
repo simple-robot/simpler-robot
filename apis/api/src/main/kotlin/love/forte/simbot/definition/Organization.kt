@@ -15,6 +15,7 @@ package love.forte.simbot.definition
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.*
+import java.util.stream.Stream
 
 /**
  * 一个 **组织** 结构（中的一员）。
@@ -76,11 +77,11 @@ public interface Organization : Objectives, OrganizationInfo, Structured<Organiz
     /**
      * 组织的拥有者信息。
      */
+    @JvmSynthetic
     public suspend fun owner(): Member
 
     @Api4J
-    public val owner: Member
-        get() = runBlocking { owner() }
+    public val owner: Member get() = runBlocking { owner() }
 
     override val maximumMember: Int
     override val currentMember: Int
@@ -90,6 +91,7 @@ public interface Organization : Objectives, OrganizationInfo, Structured<Organiz
      * 组织有可能是层级的，因此一个组织结构可能会有上一层的组织。
      * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
      */
+    @JvmSynthetic
     override suspend fun previous(): Organization?
 
 
@@ -99,25 +101,39 @@ public interface Organization : Objectives, OrganizationInfo, Structured<Organiz
      * 提供 grouping 查询分组信息。
      *
      */
+    @JvmSynthetic
     override suspend fun children(groupingId: ID?): Flow<Organization> = children(groupingId, Limiter)
 
 
     /**
      * 根据分组ID和限流器尝试获取此组织下的子集。
      */
+    @JvmSynthetic
     public suspend fun children(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Organization>
+
+
+    @Api4J
+    public fun getChildren(groupingId: ID? = null, limiter: Limiter = Limiter): Stream<out Organization>
 
     /**
      * 一个组织中，可能存在[成员][members].
      * @param limiter 对于多条数据的限流器。
      */
+    @JvmSynthetic
     public suspend fun members(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Member>
+
+    @Api4J
+    public fun getMembers(groupingId: ID? = null, limiter: Limiter = Limiter): Stream<out Member>
 
 
     /**
      * 根据分组ID和限流器尝试获取当前组织下的所有角色。
      */
+    @JvmSynthetic
     public suspend fun roles(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Role>
+
+    @Api4J
+    public suspend fun getRoles(groupingId: ID? = null, limiter: Limiter = Limiter): Stream<out Role>
 
 
 }

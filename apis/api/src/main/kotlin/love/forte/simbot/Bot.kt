@@ -64,6 +64,7 @@ public interface Bot : User, CoroutineScope {
      * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
      *
      */
+    @JvmSynthetic
     public suspend fun friends(grouping: Grouping, limiter: Limiter): Flow<Friend>
 
     public fun getFriends(grouping: Grouping, limiter: Limiter): List<Friend> {
@@ -77,6 +78,7 @@ public interface Bot : User, CoroutineScope {
      *
      * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
      */
+    @JvmSynthetic
     public suspend fun groups(grouping: Grouping, limiter: Limiter): Flow<Group>
 
     public fun getGroups(grouping: Grouping, limiter: Limiter): List<Group> {
@@ -88,6 +90,7 @@ public interface Bot : User, CoroutineScope {
      *
      * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
      */
+    @JvmSynthetic
     public suspend fun guilds(grouping: Grouping, limiter: Limiter): Flow<Group>
 
     public fun getGuilds(grouping: Grouping, limiter: Limiter): List<Group> {
@@ -99,6 +102,7 @@ public interface Bot : User, CoroutineScope {
     /**
      * 上传一个资源作为资源，并在预期内得到一个 [Image] 结果。
      */
+    @JvmSynthetic
     public suspend fun uploadImage(resource: Resource): Image
 
 
@@ -112,12 +116,14 @@ public interface Bot : User, CoroutineScope {
      *
      * @return 尚未启动且本次启动成功后得到 `true`。
      */
+    @JvmSynthetic
     public suspend fun start(): Boolean
 
 
     /**
      * 让当前bot挂起当前协程直至其被 [cancel]
      */
+    @JvmSynthetic
     public suspend fun join()
 
     /**
@@ -129,6 +135,7 @@ public interface Bot : User, CoroutineScope {
      * @return 已经启动、尚未关闭且本次关闭成功则得到 `true`。
      *
      */
+    @JvmSynthetic
     public suspend fun cancel(): Boolean
 
     /**

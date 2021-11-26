@@ -12,6 +12,8 @@
 
 package love.forte.simbot.definition
 
+import kotlinx.coroutines.runBlocking
+import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 
 /**
@@ -28,14 +30,18 @@ public interface Structured<P, N> {
     /**
      * 上一级的内容。
      */
+    @JvmSynthetic
     public suspend fun previous(): P
 
+    @Api4J
+    public fun getPrevious(): P = runBlocking { previous() }
 
     /**
      * 下一级的内容。
      *
-     * 结构化的东西下，其下层可能需要一个分组信息(分组ID)来得到特定的内容。
+     * 结构化的东西下，其下层**可能**需要一个分组信息(分组ID)来得到特定的内容。
      *
      */
+    @JvmSynthetic
     public suspend fun children(groupingId: ID? = null): N
 }

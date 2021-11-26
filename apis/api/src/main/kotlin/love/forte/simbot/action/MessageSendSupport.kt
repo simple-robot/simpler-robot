@@ -39,6 +39,7 @@ public interface MessageSendSupport {
      * @throws SimbotIllegalStateException 如果当前状态存在异常
      *
      */
+    @JvmSynthetic
     public suspend fun send(message: Message): MessageReceipt
 
 
@@ -57,6 +58,7 @@ public interface MessageReplySupport {
     /**
      * 回复当前目标，并得到一个 [回复回执][MessageReplyReceipt]
      */
+    @JvmSynthetic
     public suspend fun reply(message: Message): MessageReplyReceipt
 
     @Api4J
@@ -96,6 +98,7 @@ public interface MessageReplyReceipt : MessageReceipt {
  */
 public interface MessageMarkSupport {
 
+    @JvmSynthetic
     public suspend fun mark(message: Message): MessageMarkReceipt
 
     @Api4J
@@ -118,12 +121,14 @@ public interface MessageMarkReceipt : MessageReceipt {
 /**
  * 如果此目标允许发送消息，发送，否则得到null。
  */
+@JvmSynthetic
 public suspend fun Objectives.trySend(message: Message): MessageReceipt? =
     if (this is MessageSendSupport) send(message) else null
 
 /**
  * 如果此事件允许发送消息，发送，否则得到null。
  */
+@JvmSynthetic
 public suspend fun Event.trySend(message: Message): MessageReceipt? =
     if (this is MessageSendSupport) send(message) else null
 
@@ -131,6 +136,7 @@ public suspend fun Event.trySend(message: Message): MessageReceipt? =
 /**
  * 如果此目标允许回复消息，发送，否则得到null。
  */
+@JvmSynthetic
 public suspend fun Objectives.tryReply(message: Message): MessageReplyReceipt? =
     if (this is MessageReplySupport) reply(message) else null
 
@@ -138,6 +144,7 @@ public suspend fun Objectives.tryReply(message: Message): MessageReplyReceipt? =
 /**
  * 如果此组织允许回复消息，发送，否则得到null。
  */
+@JvmSynthetic
 public suspend fun Event.tryReply(message: Message): MessageReplyReceipt? =
     if (this is MessageReplySupport) reply(message) else null
 
@@ -145,12 +152,14 @@ public suspend fun Event.tryReply(message: Message): MessageReplyReceipt? =
 /**
  * 如果此目标允许回复标记消息，发送，否则得到null。
  */
+@JvmSynthetic
 public suspend fun Objectives.tryMark(message: Message): MessageMarkReceipt? =
     if (this is MessageMarkSupport) mark(message) else null
 
 /**
  * 如果此事件允许回复标记消息，发送，否则得到null。
  */
+@JvmSynthetic
 public suspend fun Event.tryMark(message: Message): MessageMarkReceipt? =
     if (this is MessageMarkSupport) mark(message) else null
 

@@ -43,4 +43,5 @@ public interface MessageReceipt {
  *
  * @return 删除成功为true，失败或不可删除均为null。
  */
+@JvmSynthetic
 public suspend fun MessageReceipt.deleteIfSupport(): Boolean = if (this is DeleteSupport) delete() else false

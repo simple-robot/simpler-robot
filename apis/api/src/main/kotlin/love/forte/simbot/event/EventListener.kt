@@ -68,5 +68,6 @@ public interface EventListener : java.util.EventListener {
      * 通过 [EventProcessingContext] 处理事件，完成处理后返回 [处理结果][EventResult].
      *
      */
+    @JvmSynthetic
     public suspend operator fun invoke(context: EventProcessingContext): EventResult
 }

@@ -32,9 +32,11 @@ public abstract class BotManager<B : Bot> : ComponentContainer {
      * 执行关闭操作。
      * [doCancel] 为当前manager的自定义管理，当前manager关闭后，将会从 [OriginBotManager] 剔除自己。
      */
+    @JvmSynthetic
     public suspend fun cancel() {
-        doCancel()
+        // remove first.
         OriginBotManager.remove(this)
+        doCancel()
     }
 
     /**
