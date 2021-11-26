@@ -1,6 +1,6 @@
 [submodule "DI"]
 	path = DI
 	url = git@github.com:forte-projects/forte-DI.git
-[submodule "components/tencent-guild"]
-	path = components/tencent-guild
+[submodule "components/tencent-guild-api"]
+	path = components/tencent-guild-api
 	url = git@github.com:simple-robot/simple-robot-tencent-guild.git

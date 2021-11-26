@@ -21,8 +21,10 @@ rootProject.name = "simply-robot"
 includePro(":apis:api")
 includePro(":annotation")
 includePro(":cores:core")
-// include(":commons:utils")
-
+includePro(":components:component-tencent-guild")
+// if (File(rootProject.projectDir, "components/tencent-guild-api/build.gradle.kts").exists()) {
+//     includePro(":components:tencent-guild-api")
+// }
 
 fun includePro(proName: String, dir: String? = null) {
     include(proName)

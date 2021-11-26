@@ -154,12 +154,26 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
 
         // server
         sealed class Server(id: String) : Ktor(id = "server-$id") {
-
+            object Core : Server("core")
+            object Netty : Server("netty")
+            object Jetty : Server("jetty")
+            object Tomcat : Server("tomcat")
+            object CIO : Server("cio")
         }
 
         // client
         sealed class Client(id: String): Ktor(id = "client-$id") {
-
+            object Serialization : Client("serialization")
+            object Auth : Client("auth")
+            object Websockets : Client("websockets")
+            sealed class Jvm(id: String): Client(id) {
+                object Core : Jvm("core")
+                object Apache : Jvm("apache")
+                object Java : Jvm("java")
+                object Jetty : Jvm("jetty")
+                object CIO : Jvm("cio")
+                object OkHttp : Jvm("okhttp")
+            }
         }
 
 
