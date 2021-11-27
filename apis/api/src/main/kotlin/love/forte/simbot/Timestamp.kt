@@ -61,10 +61,12 @@ public sealed class Timestamp {
     public abstract fun isSupport(): Boolean
 
 
+    @Serializable
     public object NotSupport : Timestamp() {
         override val second: Long get() = -1
         override val millisecond: Long get() = -1
         override fun isSupport(): Boolean = false
+        override fun toString(): String = "0000-01-01T00:00:00Z"
     }
 
     public companion object {
@@ -101,6 +103,9 @@ public data class InstantTimestamp(
     override val second: Long get() = instant.epochSecond
     override val millisecond: Long get() = instant.toEpochMilli()
     override fun isSupport(): Boolean = true
+    override fun toString(): String {
+        return instant.toString()
+    }
 }
 
 
