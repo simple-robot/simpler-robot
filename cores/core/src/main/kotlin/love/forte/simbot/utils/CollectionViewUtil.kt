@@ -16,4 +16,12 @@ package love.forte.simbot.utils
 
 
 public fun <T> List<T>.view(): List<T> = ListView(this)
-private class ListView<T>(private val delegate: List<T>) : List<T> by delegate
+private class ListView<T>(private val delegate: List<T>) : List<T> by delegate {
+    override fun toString(): String = delegate.toString()
+    override fun hashCode(): Int = delegate.hashCode()
+    override fun equals(other: Any?): Boolean {
+        return if (other is ListView<*>) delegate == other.delegate
+        else delegate == other
+    }
+
+}
