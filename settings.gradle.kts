@@ -21,6 +21,7 @@ rootProject.name = "simply-robot"
 includePro(":apis:api")
 includePro(":annotation")
 includePro(":cores:core")
+includePro(":cores:boot")
 includePro(":components:component-tencent-guild")
 // if (File(rootProject.projectDir, "components/tencent-guild-api/build.gradle.kts").exists()) {
 //     includePro(":components:tencent-guild-api")

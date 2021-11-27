@@ -181,10 +181,19 @@ public interface Event : BotContainer {
 public infix fun Event.Key<*>.isSubFrom(parentMaybe: Event.Key<*>): Boolean {
     if (parentMaybe === Event) return true
     if (parentMaybe in parents) return true
-    if (parents.isEmpty()) return false
     return parents.any {
         it isSubFrom parentMaybe
     }
+}
+
+/**
+ * 判断当前类型是否为提供类型的子类型。
+ *
+ */
+public operator fun Event.Key<*>.contains(parentIdMaybe: String): Boolean {
+    val idValue = id.toString()
+    if (parentIdMaybe === idValue) return true
+    return parents.any { parents -> parentIdMaybe in parents }
 }
 
 /**
@@ -205,8 +214,3 @@ public abstract class BaseEventKey<E : Event>(
  * 事件的所属组件。
  */
 public inline val Event.component: Component get() = bot.component
-
-/**
- * 事件的唯一ID。
- */
-public inline val Event.id: ID get() = metadata.id

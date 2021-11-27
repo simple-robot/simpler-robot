@@ -48,24 +48,26 @@ subprojects {
     }
 
 
-    val sourcesJar by tasks.registering(Jar::class) {
-        archiveClassifier.set("sources")
-        from(sourceSets["main"].allSource)
-    }
-    // val sourcesJar = tasks["sourcesJar"]
-    val javadocJar = tasks.register("javadocJar", Jar::class) {
-        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-        archiveClassifier.set("javadoc")
-    }
+
 
     if (name in publishNeed) {
+
+        val sourcesJar by tasks.registering(Jar::class) {
+            archiveClassifier.set("sources")
+            from(sourceSets["main"].allSource)
+        }
+        // val sourcesJar = tasks["sourcesJar"]
+        val javadocJar = tasks.register("javadocJar", Jar::class) {
+            @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+            archiveClassifier.set("javadoc")
+        }
+
         publishing {
             publications {
                 register("mavenJava", MavenPublication::class) {
                     from(components["java"])
 
                     groupId = rootProject.group.toString()
-                    artifactId = artifactId
                     version = project.version.toString()
 
                     setupPom(project = project)

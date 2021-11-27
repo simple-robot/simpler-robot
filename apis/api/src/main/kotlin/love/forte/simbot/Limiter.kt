@@ -93,7 +93,7 @@ public interface Limiter {
 /**
  * 得到一个 [Limiter] 的默认实现。
  */
-public fun limiter(offset: Int, limit: Int, batchSize: Int): Limiter =
+public fun limiter(offset: Int = ZERO.offset, limit: Int = ZERO.limit, batchSize: Int = ZERO.batchSize): Limiter =
     if (offset <= 0 && limit <= 0 && batchSize <= 0) Limiter else LimiterImpl(offset, limit, batchSize)
 
 
