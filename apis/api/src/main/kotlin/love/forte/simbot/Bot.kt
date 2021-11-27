@@ -43,7 +43,7 @@ public interface Bot : User, CoroutineScope {
      * 每个bot都肯定会由一个 [BotManager] 进行管理。
      *
      */
-    public val manager: BotManager<Bot>
+    public val manager: BotManager<out Bot>
 
     /**
      * 每个Bot都有一个所属组件。

@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.Flow
 import love.forte.simbot.*
 import love.forte.simbot.component.tencentguild.TencentGuildBot
 import love.forte.simbot.component.tencentguild.TencentGuildBotConfiguration
-import love.forte.simbot.component.tencentguild.TencentGuildBotID
 import love.forte.simbot.component.tencentguild.TencentGuildComponent
 import love.forte.simbot.definition.Friend
 import love.forte.simbot.definition.Group
@@ -48,9 +47,9 @@ internal class TencentGuildBotImpl(
     override val component: Component
         get() = TencentGuildComponent.component
 
-    override val id: TencentGuildBotID = TencentGuildBotID(configuration.ticket!!)
+    override val id: CharSequenceID = configuration.ticket!!.appId.ID
 
-    override val manager: BotManager<Bot>
+    override val manager: BotManager<TencentGuildBot>
         get() = TODO("Not yet implemented")
 
 

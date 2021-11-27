@@ -13,8 +13,9 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.Bot
+import love.forte.simbot.action.DeleteSupport
 import love.forte.simbot.action.MessageSendSupport
-import love.forte.simbot.definition.Objectives
+import love.forte.simbot.definition.*
 import love.forte.simbot.message.ReceivedMessageContent
 import love.forte.simbot.message.RemoteMessageContainer
 import love.forte.simbot.message.doSafeCast
@@ -22,6 +23,10 @@ import love.forte.simbot.message.doSafeCast
 
 /**
  * 一个存在消息内容的[事件][Event]。
+ *
+ * @see ContactMessageEvent
+ * @see ChatroomMessageEvent
+ *
  */
 public interface MessageEvent : Event, RemoteMessageContainer {
     override val bot: Bot
@@ -49,40 +54,108 @@ public interface MessageEvent : Event, RemoteMessageContainer {
 
 
 /**
- * 一个私有消息消息事件。
- *
- * 私有消息代表此事件只能由当前bot与聊天对象可见。
+ * 来自一个[联系人][Contact]消息消息事件。 这通常代表一个私聊消息事件。
  *
  */
-public interface PrivateMessageEvent : MessageEvent {
+public interface ContactMessageEvent : MessageEvent {
     /**
-     * 通常情况下，私有消息的可见性是私人的。
+     * 私有消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
+     */
+    override val source: Contact
+
+    /**
+     * 通常情况下，联系人消息的可见性是私人的。
      */
     override val visibleScope: Event.VisibleScope
         get() = Event.VisibleScope.PRIVATE
 
-    public companion object Key : BaseEventKey<PrivateMessageEvent>(
+    public companion object Key : BaseEventKey<ContactMessageEvent>(
         "api.privateMessage",
         setOf(MessageEvent.Key)
     ) {
-        override fun safeCast(value: Any): PrivateMessageEvent? = doSafeCast(value)
+        override fun safeCast(value: Any): ContactMessageEvent? = doSafeCast(value)
     }
 }
 
 
 /**
- * 一个组织消息事件
+ * 一个来自聊天室的消息事件。
+ *
+ *
+ * @see GroupMessageEvent
+ * @see ChannelMessageEvent
  *
  */
-public interface OrgMessageEvent : MessageEvent {
+public interface ChatroomMessageEvent : MessageEvent, DeleteSupport, RemoteMessageContainer {
+    /**
+     * 来自的聊天室，通常是一个群或者一个频道。
+     */
+    override val source: ChatRoom
 
+    /**
+     * 这个消息的发送者.
+     */
+    public val author: Member
+
+
+    /**
+     * 预期内，假若当前bot拥有足够的权限则可以对消息进行删除（撤回）操作。
+     *
+     */
+    override suspend fun delete(): Boolean
+
+
+
+    public companion object Key : BaseEventKey<ChatroomMessageEvent>(
+        "api.privateMessage",
+        setOf(MessageEvent.Key)
+    ) {
+        override fun safeCast(value: Any): ChatroomMessageEvent? = doSafeCast(value)
+    }
 
 }
 
 
+/**
+ *  代表一个来自[群][Group]的消息事件。
+ *
+ */
+public interface GroupMessageEvent : ChatroomMessageEvent {
+
+    /**
+     * 消息来自的群。
+     */
+    override val source: Group
+    override val author: Member
 
 
+    public companion object Key : BaseEventKey<GroupMessageEvent>(
+        "api.groupMessage",
+        setOf(ChatroomMessageEvent.Key)
+    ) {
+        override fun safeCast(value: Any): GroupMessageEvent? = doSafeCast(value)
+    }
 
+}
 
+/**
+ *
+ * 代表一个来自[频道][Channel]的消息事件。
+ *
+ */
+public interface ChannelMessageEvent : ChatroomMessageEvent {
+    /**
+     * 消息来自的频道
+     */
+    override val source: Channel
+    override val author: Member
+
+    public companion object Key : BaseEventKey<ChannelMessageEvent>(
+        "api.channelMessage",
+        setOf(ChatroomMessageEvent.Key)
+    ) {
+        override fun safeCast(value: Any): ChannelMessageEvent? = doSafeCast(value)
+    }
+}
 
 

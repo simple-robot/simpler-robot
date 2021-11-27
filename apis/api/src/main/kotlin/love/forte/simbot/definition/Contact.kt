@@ -18,7 +18,6 @@ import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageReceipt
 
 
-// 联系人
 /**
  *
  * 一个联系目标。联系人是除 [Bot] 以外的可以进行信息交流的 [User], 例如好友, 一个群成员, 或者一个文字频道。

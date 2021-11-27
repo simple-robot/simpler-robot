@@ -21,7 +21,7 @@ import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageReceipt
 
 /**
- * [Objectives] 是对与 [Bot] 相关联的对象 （[组织][Organization] 或一个具体的 [用户][User]） 的统称。
+ * [Objectives] 是对与 [Bot] 相关联的对象 （一个[组织][Organization] 或一个具体的[用户][User]） 的统称。
  *
  * 不论 [组织][Organization] 还是 [用户][User]，它们均来自一个 [Bot].
  *
@@ -49,9 +49,11 @@ public sealed interface Objectives : BotContainer {
     /**
      * 如果当前支持发送消息，则发送.
      * 否则得到null。
+     *
+     * kotlin see `Objectives.trySend`
      */
     @Api4J
-    public fun trySendBlocking(message: Message): MessageReceipt? =
+    public fun sendIfSupportBlocking(message: Message): MessageReceipt? =
         if (this is MessageSendSupport) runBlocking { send(message) } else null
 
 

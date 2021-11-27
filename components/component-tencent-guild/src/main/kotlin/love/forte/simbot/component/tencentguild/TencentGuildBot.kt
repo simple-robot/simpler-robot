@@ -17,26 +17,19 @@ import io.ktor.client.features.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.websocket.*
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.Bot
-import love.forte.simbot.ComplexID
-import love.forte.simbot.ID
-import java.security.MessageDigest
+import love.forte.simbot.CharSequenceID
 
 /**
  * 一个tencent频道BOT的接口实例。
  * @author ForteScarlet
  */
 public abstract class TencentGuildBot : Bot {
-
-    abstract override val id: TencentGuildBotID
+    /**
+     * Bot的appID
+     */
+    abstract override val id: CharSequenceID
 
     public abstract val client: HttpClient
 
@@ -44,7 +37,7 @@ public abstract class TencentGuildBot : Bot {
     /**
      * Bot的 [票据](https://bot.q.qq.com/wiki/develop/api/#%E7%A5%A8%E6%8D%AE%E8%AF%B4%E6%98%8E)。
      */
-    @Serializable(with = Ticket.Serializer::class)
+    @Serializable
     public data class Ticket(
         /**
          * app_id	用于识别一个机器人的 id
@@ -61,38 +54,8 @@ public abstract class TencentGuildBot : Bot {
          */
         public var token: String,
     ) {
-        internal val authorizationBotToken: String = "Bot $appId"
-        internal val authorizationBearerToken: String = ""
+        public val authorizationBotToken: String = "Bot $appId"
 
-        public object Serializer : KSerializer<Ticket> {
-            override fun deserialize(decoder: Decoder): Ticket {
-                val split = decoder.decodeString().split('.', limit = 3)
-                require(split.size == 3) {
-                    "Cannot resolve to ticket: pair size less than 3: " + split.size
-                }
-
-                return Ticket(
-                    split[0], // appId
-                    split[1], // appKey
-                    split[0] + '.' + split[2]
-                )
-            }
-
-            override val descriptor: SerialDescriptor =
-                PrimitiveSerialDescriptor("TencentGuildBotTicket", PrimitiveKind.STRING)
-
-            override fun serialize(encoder: Encoder, value: Ticket) {
-                val str = buildString {
-                    append(value.appId).append('.')
-                    append(value.appKey).append('.')
-                    val tokenRandomStr = value.token.split('.', limit = 2)
-                    require(tokenRandomStr.size == 2) { "Token has no random str part." }
-                    append(tokenRandomStr.last())
-                }
-                encoder.encodeString(str)
-            }
-
-        }
     }
 }
 
@@ -162,42 +125,30 @@ public inline fun tencentGuildBotConfiguration(block: TencentGuildBotConfigurati
 
 
 // TODO in api module
-internal inline fun digest(algorithm: String, block: MessageDigest.() -> Unit): ByteArray =
-    MessageDigest.getInstance(algorithm).also(block).digest()
-
-internal fun ByteArray.toHex(): String {
-    return buildString {
-        this@toHex.forEach { b ->
-            val str = (b.toInt() and 0xff).toString(16)
-            if (str.length == 1) {
-                append('0')
-            }
-            append(str)
-        }
-    }
-}
 
 
-@Suppress("EqualsOrHashCode")
-@SerialName("TCG.BOT.ID")
-@Serializable // TODO
-public class TencentGuildBotID constructor(
-    public val ticket: TencentGuildBot.Ticket
-) : ComplexID() {
 
-    private val ticketMD5: ByteArray by lazy(LazyThreadSafetyMode.NONE) {
-        digest("md5") {
-            update(ticket.appId.encodeToByteArray())
-            update(ticket.appKey.encodeToByteArray())
-            //update(ticket.token.encodeToByteArray())
-        }
-    }
 
-    override fun compareTo(other: ID): Int {
-        return if (other is TencentGuildBotID) ticketMD5.sum().compareTo(other.ticketMD5.sum())
-        else -1
-    }
-
-    override fun hashCode(): Int = ticketMD5.hashCode()
-    override fun toString(): String = ticketMD5.toHex()
-}
+// @Suppress("EqualsOrHashCode")
+// @SerialName("TCG.BOT.ID")
+// @Serializable // TODO
+// public class TencentGuildBotID constructor(
+//     public val ticket: TencentGuildBot.Ticket
+// ) : ComplexID() {
+//
+//     private val ticketMD5: ByteArray by lazy(LazyThreadSafetyMode.NONE) {
+//         digest("md5") {
+//             update(ticket.appId.encodeToByteArray())
+//             update(ticket.appKey.encodeToByteArray())
+//             //update(ticket.token.encodeToByteArray())
+//         }
+//     }
+//
+//     override fun compareTo(other: ID): Int {
+//         return if (other is TencentGuildBotID) ticketMD5.sum().compareTo(other.ticketMD5.sum())
+//         else -1
+//     }
+//
+//     override fun hashCode(): Int = ticketMD5.hashCode()
+//     override fun toString(): String = ticketMD5.toHex()
+// }

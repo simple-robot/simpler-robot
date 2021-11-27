@@ -12,6 +12,8 @@
 
 package love.forte.simbot.message
 
+import kotlinx.coroutines.runBlocking
+import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.action.DeleteSupport
 
@@ -35,6 +37,16 @@ public interface MessageReceipt {
      */
     public val isSuccess: Boolean
 
+
+    /**
+     * 如果此回执单是可删除的, 执行删除。
+     *
+     * 不会也不应捕获异常。
+     *
+     * @return 删除成功为true，失败或不可删除均为null。
+     */
+    @Api4J
+    public fun deleteIfSupportBlocking(): Boolean = runBlocking { if (this is DeleteSupport) delete() else false }
 }
 
 
