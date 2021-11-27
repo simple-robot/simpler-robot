@@ -53,6 +53,14 @@
 以及更多高级特性等待你的发现...
 
 <br>
+<br>
+<br>
+
+3.x版本正在孵化中，有兴趣可参考分支 [v3.0.0-preview](https://github.com/ForteScarlet/simpler-robot/tree/dev-v3.0.0-preview)
+
+<br>
+<br>
+<br>
 
 问题提问与BUG反馈：[issue](https://github.com/ForteScarlqianwet/simpler-robot/issues)
 
