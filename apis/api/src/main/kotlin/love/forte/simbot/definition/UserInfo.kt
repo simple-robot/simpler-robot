@@ -16,7 +16,7 @@ import love.forte.simbot.ID
 import java.util.*
 
 /**
- * 一个账号的 **信息**。
+ * 一个用户的 **信息**。
  *
  * 此处仅代表普通的通用信息。
  *

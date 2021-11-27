@@ -15,6 +15,7 @@ package love.forte.simbot.definition
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.*
+import love.forte.simbot.action.MuteAction
 import java.util.stream.Stream
 
 /**
@@ -54,7 +55,7 @@ import java.util.stream.Stream
  *
  * @author ForteScarlet
  */
-public interface Organization : Objectives, OrganizationInfo, Structured<Organization?, Flow<Organization>>, BotContainer {
+public interface Organization : Objectives, OrganizationInfo, MuteAction, Structured<Organization?, Flow<Organization>>, BotContainer {
 
     /**
      * 这个组织一定是属于某一个Bot之下的。
@@ -79,6 +80,13 @@ public interface Organization : Objectives, OrganizationInfo, Structured<Organiz
      */
     @JvmSynthetic
     public suspend fun owner(): Member
+
+    /**
+     * 对整个群进行禁言。
+     *
+     */
+    @JvmSynthetic
+    override suspend fun mute(): Boolean
 
     @Api4J
     public val owner: Member get() = runBlocking { owner() }

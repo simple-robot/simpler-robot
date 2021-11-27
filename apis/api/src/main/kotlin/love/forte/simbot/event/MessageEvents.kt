@@ -13,8 +13,8 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.Bot
-import love.forte.simbot.action.DeleteSupport
-import love.forte.simbot.action.MessageSendSupport
+import love.forte.simbot.action.DeleteAction
+import love.forte.simbot.action.MessageSendAction
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.ReceivedMessageContent
 import love.forte.simbot.message.RemoteMessageContainer
@@ -35,7 +35,7 @@ public interface MessageEvent : Event, RemoteMessageContainer {
     /**
      * 当前消息事件所对应的事件源头.
      *
-     * 通常情况下，[source] 都是可以 [发送消息][MessageSendSupport] 的。
+     * 通常情况下，[source] 都是可以 [发送消息][MessageSendAction] 的。
      *
      */
     public val source: Objectives
@@ -86,7 +86,7 @@ public interface ContactMessageEvent : MessageEvent {
  * @see ChannelMessageEvent
  *
  */
-public interface ChatroomMessageEvent : MessageEvent, DeleteSupport, RemoteMessageContainer {
+public interface ChatroomMessageEvent : MessageEvent, DeleteAction, RemoteMessageContainer {
     /**
      * 来自的聊天室，通常是一个群或者一个频道。
      */

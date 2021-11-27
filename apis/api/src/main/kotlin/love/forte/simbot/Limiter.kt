@@ -19,7 +19,7 @@ import love.forte.simbot.Limiter.ZERO
 
 /**
  *
- * 一个限流器定义。
+ * 一个**限流器**。
  *
  * 通俗一点的理解，限流器可以理解为一个用于需要进行 **分页** 的地方，常见于一些返回值为 [kotlinx.coroutines.flow.Flow] 或者 [List] 之类的地方。
  *
@@ -87,6 +87,17 @@ public interface Limiter {
         @JvmOverloads
         public fun of(offset: Int = ZERO.offset, limit: Int = ZERO.limit, batchSize: Int = ZERO.batchSize): Limiter =
             if (offset <= 0 && limit <= 0 && batchSize <= 0) ZERO else LimiterImpl(offset, limit, batchSize)
+
+        /**
+         * 根据分页信息计算得到limiter。
+         * 分页以 `0` 作为起始页码
+         *
+         * 如果参数为无效参数（`pageSize <= 0 && pageNum < 0`）则返回 [ZERO].
+         */
+        public fun ofPage(pageSize: Int, pageNum: Int): Limiter {
+            if (pageSize <= 0 && pageNum < 0) return ZERO
+            return LimiterImpl(pageSize * pageNum, pageSize, 0)
+        }
     }
 }
 

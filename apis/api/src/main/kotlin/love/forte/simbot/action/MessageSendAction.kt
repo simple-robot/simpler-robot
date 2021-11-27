@@ -29,7 +29,7 @@ import love.forte.simbot.message.MessageReceipt
  *
  * @author ForteScarlet
  */
-public interface MessageSendSupport {
+public interface MessageSendAction {
 
     /**
      * 发送消息，并得到一个回执单。
@@ -76,10 +76,11 @@ public interface MessageReplyReceipt : MessageReceipt {
     /**
      * 是否作为 **回复** 发送成功。
      * 很多时候对于可回复事件来说，其只能 **回复一次**，因而在次数已经消耗的前提下，
-     * 假若平台允许，**或许** 会继续尝试使用普通消息进行发送（需要当前目标实现 [MessageSendSupport]）。
+     * 假若平台允许，**或许** 会继续尝试使用普通消息进行发送（需要当前目标实现 [MessageSendAction]）。
      *
      * 并不代表所有平台都会这么做，或者说大多数情况下，在回复次数耗尽后会抛出异常。
      *
+     * @throws NotSupportActionException 当此行为不被支持时
      */
     public val isReplySuccess: Boolean
 }
@@ -123,14 +124,14 @@ public interface MessageMarkReceipt : MessageReceipt {
  */
 @JvmSynthetic
 public suspend fun Objectives.sendIfSupport(message: Message): MessageReceipt? =
-    if (this is MessageSendSupport) send(message) else null
+    if (this is MessageSendAction) send(message) else null
 
 /**
  * 如果此事件允许发送消息，发送，否则得到null。
  */
 @JvmSynthetic
 public suspend fun MessageContainer.sendIfSupport(message: Message): MessageReceipt? =
-    if (this is MessageSendSupport) send(message) else null
+    if (this is MessageSendAction) send(message) else null
 
 
 /**

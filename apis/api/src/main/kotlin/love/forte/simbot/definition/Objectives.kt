@@ -16,7 +16,7 @@ import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
-import love.forte.simbot.action.MessageSendSupport
+import love.forte.simbot.action.MessageSendAction
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageReceipt
 
@@ -25,7 +25,7 @@ import love.forte.simbot.message.MessageReceipt
  *
  * 不论 [组织][Organization] 还是 [用户][User]，它们均来自一个 [Bot].
  *
- * [Objectives] 本身仅代表这个对象的概念，不能保证其本身拥有 [发送消息][MessageSendSupport] 的能力。
+ * [Objectives] 本身仅代表这个对象的概念，不能保证其本身拥有 [发送消息][MessageSendAction] 的能力。
  *
  *
  *
@@ -54,7 +54,7 @@ public sealed interface Objectives : BotContainer {
      */
     @Api4J
     public fun sendIfSupportBlocking(message: Message): MessageReceipt? =
-        if (this is MessageSendSupport) runBlocking { send(message) } else null
+        if (this is MessageSendAction) runBlocking { send(message) } else null
 
 
 }

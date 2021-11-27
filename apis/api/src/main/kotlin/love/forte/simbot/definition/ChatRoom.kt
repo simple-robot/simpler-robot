@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.Limiter
-import love.forte.simbot.action.MessageSendSupport
+import love.forte.simbot.action.MessageSendAction
 import java.util.stream.Stream
 
 
@@ -28,7 +28,7 @@ import java.util.stream.Stream
  *
  * @author ForteScarlet
  */
-public interface ChatRoom : Organization, MessageSendSupport {
+public interface ChatRoom : Organization, MessageSendAction {
 
     /**
      * 一般来讲，能够作为聊天室的组织不存在子集。

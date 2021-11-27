@@ -36,10 +36,12 @@ import love.forte.simbot.action.ActionType.PROACTIVE
  */
 public interface Action<S, T> {
 
+    // delete?
 
 }
 
 
+// delete?
 public interface ActionSupport {
 
     /**

@@ -15,7 +15,7 @@ package love.forte.simbot.message
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
-import love.forte.simbot.action.DeleteSupport
+import love.forte.simbot.action.DeleteAction
 
 
 /**
@@ -46,7 +46,7 @@ public interface MessageReceipt {
      * @return 删除成功为true，失败或不可删除均为null。
      */
     @Api4J
-    public fun deleteIfSupportBlocking(): Boolean = runBlocking { if (this is DeleteSupport) delete() else false }
+    public fun deleteIfSupportBlocking(): Boolean = runBlocking { if (this is DeleteAction) delete() else false }
 }
 
 
@@ -56,4 +56,4 @@ public interface MessageReceipt {
  * @return 删除成功为true，失败或不可删除均为null。
  */
 @JvmSynthetic
-public suspend fun MessageReceipt.deleteIfSupport(): Boolean = if (this is DeleteSupport) delete() else false
+public suspend fun MessageReceipt.deleteIfSupport(): Boolean = if (this is DeleteAction) delete() else false
