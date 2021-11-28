@@ -90,6 +90,7 @@ public interface Limiter {
 
         /**
          * 根据分页信息计算得到limiter。
+         *
          * 分页以 `0` 作为起始页码
          *
          * 如果参数为无效参数（`pageSize <= 0 && pageNum < 0`）则返回 [ZERO].
@@ -106,6 +107,10 @@ public interface Limiter {
  */
 public fun limiter(offset: Int = ZERO.offset, limit: Int = ZERO.limit, batchSize: Int = ZERO.batchSize): Limiter =
     if (offset <= 0 && limit <= 0 && batchSize <= 0) Limiter else LimiterImpl(offset, limit, batchSize)
+
+
+public inline val Limiter.pageSize: Int get() = limit
+public inline val Limiter.pageNum: Int get() = if (offset <= 0 || pageSize <= 0) 0 else offset / pageSize  // offset = ps * pn, pn = offset / ps
 
 
 private data class LimiterImpl(override val offset: Int, override val limit: Int, override val batchSize: Int) :
