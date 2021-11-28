@@ -164,7 +164,7 @@ private class PermissionStatusImpl(val status: BitSet) : PermissionStatus {
 
 
 /**
- * 一个**权限**信息，通常使用在 [Organization] 与 [Member] 中，为组织和其成员限定权限。
+ * 一个**权限**信息，通常 存在于 [Role] 并使用在 [Organization] 与 [Member] 中，为组织和其成员限定权限。
  */
 public interface Permission {
 
