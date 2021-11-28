@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    api(project(":apis:api"))
+    api(project(":cores:core"))
     api(V.Ktor.Client.Jvm.Core.notation)
     api(V.Ktor.Client.Jvm.CIO.notation)
     api(V.Ktor.Client.Auth.notation)
