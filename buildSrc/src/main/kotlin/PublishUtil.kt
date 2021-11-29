@@ -50,6 +50,7 @@ inline fun Project.configurePublishing(artifactId: String) {
         }
 
         repositories {
+            mavenLocal()
             maven {
                 if (version.toString().endsWith("SNAPSHOTS", true)) {
                     // snapshot
@@ -59,11 +60,15 @@ inline fun Project.configurePublishing(artifactId: String) {
                     name = Sonatype.oss.NAME
                     url = uri(Sonatype.oss.URL)
                 }
+
+                val username0 = local().getProperty("sonatype.username")
+                    ?: throw NullPointerException("snapshots-sonatype-username")
+                val password0 = local().getProperty("sonatype.password")
+                    ?: throw NullPointerException("snapshots-sonatype-password")
+
                 credentials {
-                    username = project.extra.properties["sonatype.username"]?.toString()
-                        ?: throw NullPointerException("snapshots-sonatype-username")
-                    password = project.extra.properties["sonatype.password"]?.toString()
-                        ?: throw NullPointerException("snapshots-sonatype-password")
+                    username = username0
+                    password = password0
                 }
             }
         }
@@ -72,9 +77,44 @@ inline fun Project.configurePublishing(artifactId: String) {
 
 }
 
+fun Project.configurePublishingLocal(artifactId: String) {
+// val sourcesJar by tasks.registering(Jar::class) {
+    //     archiveClassifier.set("sources")
+    //     from(sourceSets["main"].allSource)
+    // }
+    // // val sourcesJar = tasks["sourcesJar"]
+    // val javadocJar = tasks.register("javadocJar", Jar::class) {
+    //     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+    //     archiveClassifier.set("javadoc")
+    // }
+    //
+    // publishing {
+    //     publications {
+    //         register("mavenJava", MavenPublication::class) {
+    //             from(components["java"])
+    //
+    //             groupId = rootProject.group.toString()
+    //             version = project.version.toString()
+    //
+    //             setupPom(project = project)
+    //
+    //             artifact(sourcesJar)
+    //             artifact(javadocJar.get())
+    //         }
+    //     }
+    //
+    //     repositories {
+    //         mavenLocal().also {
+    //             println(it.name)
+    //             println(it.url)
+    //         }
+    //     }
+    // }
+}
+
 
 fun MavenPublication.setupPom(project: Project) {
-    val vcs = "https://github.com/ForteScarlet/annotation-tool"
+    val vcs = "https://github.com/ForteScarlet/simpler-robot"
     pom {
         scm {
             url.set(vcs)
@@ -90,7 +130,7 @@ fun MavenPublication.setupPom(project: Project) {
         licenses {
             license {
                 name.set("The Apache License, Version 2.0")
-                url.set("https://github.com/ForteScarlet/kron/blob/master/LICENSE")
+                url.set("https://github.com/ForteScarlet/simpler-robot/blob/master/LICENSE")
             }
         }
 
@@ -129,6 +169,7 @@ object Sonatype {
         const val NAME = "oss"
         const val URL = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
     }
+
     object `snapshot-oss` {
         const val NAME = "snapshot-oss"
         const val URL = "https://oss.sonatype.org/content/repositories/snapshots/"

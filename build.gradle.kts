@@ -16,10 +16,10 @@ plugins {
     kotlin("multiplatform") version "1.6.0" apply false
     kotlin("plugin.serialization") version "1.6.0" apply false
     id("org.jetbrains.dokka") version "1.5.30" apply false
-    // `maven-publish` apply false
-    // signing
+    `maven-publish`
+    signing
     // see https://github.com/gradle-nexus/publish-plugin
-    // id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
 
@@ -32,11 +32,14 @@ repositories {
     mavenCentral()
 }
 
+val secretKeyRingFileKey = "signing.secretKeyRingFile"
+
 subprojects {
     group = P.Simbot.GROUP
     version = P.Simbot.VERSION
     apply(plugin = "maven-publish")
     apply(plugin = "java")
+    apply(plugin = "signing")
 
     repositories {
         mavenLocal()
@@ -52,38 +55,22 @@ subprojects {
 
     if (name in publishNeed) {
 
-        val sourcesJar by tasks.registering(Jar::class) {
-            archiveClassifier.set("sources")
-            from(sourceSets["main"].allSource)
+        configurePublishing(name)
+
+        println("[publishing-configure] - [$name] configured.")
+        // set gpg file path to root
+        val secretKeyRingFile = local().getProperty(secretKeyRingFileKey) ?: throw kotlin.NullPointerException(secretKeyRingFileKey)
+        val secretRingFile = File(project.rootDir, secretKeyRingFile)
+        extra[secretKeyRingFileKey] = secretRingFile
+        setProperty(secretKeyRingFileKey, secretRingFile)
+
+        signing {
+            // val key = local().getProperty("signing.keyId")
+            // val password = local().getProperty("signing.password")
+            // this.useInMemoryPgpKeys(key, password)
+            sign(publishing.publications)
         }
-        // val sourcesJar = tasks["sourcesJar"]
-        val javadocJar = tasks.register("javadocJar", Jar::class) {
-            @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-            archiveClassifier.set("javadoc")
-        }
 
-        publishing {
-            publications {
-                register("mavenJava", MavenPublication::class) {
-                    from(components["java"])
-
-                    groupId = rootProject.group.toString()
-                    version = project.version.toString()
-
-                    setupPom(project = project)
-
-                    artifact(sourcesJar)
-                    artifact(javadocJar.get())
-                }
-            }
-
-            repositories {
-                mavenLocal().also {
-                    println(it.name)
-                    println(it.url)
-                }
-            }
-        }
     }
 
 
@@ -104,3 +91,23 @@ fun Project.configDokka() {
 
 
 
+// nexus staging
+
+
+
+
+val credentialsUsername: String = local().getProperty("credentials.username")!!
+val credentialsPassword: String = local().getProperty("credentials.password")!!
+
+
+nexusPublishing {
+    packageGroup.set(P.Simbot.GROUP)
+
+    repositories {
+        sonatype {
+            username.set(credentialsUsername)
+            password.set(credentialsPassword)
+        }
+
+    }
+}
