@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.definition.*
+import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.message.Image
 import love.forte.simbot.resources.Resource
 import kotlin.coroutines.CoroutineContext
@@ -44,6 +45,11 @@ public interface Bot : User, CoroutineScope {
      *
      */
     public val manager: BotManager<out Bot>
+
+    /**
+     * 对于一个Bot，其应当存在一个事件处理器。
+     */
+    public val eventProcessor: EventProcessor
 
     /**
      * 每个Bot都有一个所属组件。
