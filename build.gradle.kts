@@ -59,8 +59,8 @@ subprojects {
 
         println("[publishing-configure] - [$name] configured.")
         // set gpg file path to root
-        val secretKeyRingFile = local().getProperty(secretKeyRingFileKey) ?: throw kotlin.NullPointerException(secretKeyRingFileKey)
-        val secretRingFile = File(project.rootDir, secretKeyRingFile)
+        // val secretKeyRingFile = local().getProperty(secretKeyRingFileKey) ?: throw kotlin.NullPointerException(secretKeyRingFileKey)
+        val secretRingFile = File(project.rootDir, "ForteScarlet.gpg")
         extra[secretKeyRingFileKey] = secretRingFile
         setProperty(secretKeyRingFileKey, secretRingFile)
 
@@ -96,8 +96,8 @@ fun Project.configDokka() {
 
 
 
-val credentialsUsername: String = local().getProperty("credentials.username")!!
-val credentialsPassword: String = local().getProperty("credentials.password")!!
+val credentialsUsername: String = extra.get("credentials.username")!!.toString()
+val credentialsPassword: String = extra.get("credentials.password")!!.toString()
 
 
 nexusPublishing {
