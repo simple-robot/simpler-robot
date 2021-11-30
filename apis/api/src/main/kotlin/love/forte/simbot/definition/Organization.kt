@@ -141,7 +141,7 @@ public interface Organization : Objectives, OrganizationInfo, MuteAction, Struct
     public suspend fun roles(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Role>
 
     @Api4J
-    public suspend fun getRoles(groupingId: ID? = null, limiter: Limiter = Limiter): Stream<out Role>
+    public fun getRoles(groupingId: ID? = null, limiter: Limiter = Limiter): Stream<out Role>
 
 
 }

@@ -81,7 +81,7 @@ public interface Guild : Organization, GuildInfo {
     override suspend fun children(groupingId: ID?, limiter: Limiter): Flow<Channel>
 
     @Api4J
-    override fun getChildren(groupingId: ID?, limiter: Limiter): Stream<Channel>
+    override fun getChildren(groupingId: ID?, limiter: Limiter): Stream<out Channel>
 }
 
 /**
