@@ -24,6 +24,7 @@ repositories {
 
 dependencies {
     api(project(":cores:core"))
+    api("love.forte.simple-robot:tencent-guild-core:0.0.1")
     api(V.Ktor.Client.Jvm.Core.notation)
     api(V.Ktor.Client.Jvm.CIO.notation)
     api(V.Ktor.Client.Auth.notation)

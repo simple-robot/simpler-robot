@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -56,39 +56,6 @@ public fun tencentGuildBotManager(block: TencentGuildBotManagerConfiguration.() 
  */
 @Suppress("MemberVisibilityCanBePrivate")
 public class TencentGuildBotManagerConfiguration {
-
-    /**
-     * 为Manager提供一个可选的父级[Job].
-     */
-    @TencentGuildBMDsl
-    public var parentJob: Job?
-        get() = coroutineContext[Job]
-        set(value) {
-            if (value != null) {
-                coroutineContext += value
-            } else {
-                coroutineContext.minusKey(Job)
-            }
-        }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    public var dispatcher: CoroutineDispatcher
-        get() = coroutineContext[CoroutineDispatcher] ?: Dispatchers.Main.also {
-            dispatcher = it
-        }
-        set(value) {
-            coroutineContext += value
-        }
-
-    /**
-     * 提供一个上下文. 其中的 [Job] 会作为manager的父级Job。
-     */
-    @TencentGuildBMDsl
-    public var coroutineContext: CoroutineContext = EmptyCoroutineContext
-
-
-    // 得到bot票据信息，提供bot的构建config
-    public var botConfigurationFactory: (TencentGuildBot.Ticket) -> TencentGuildBotConfiguration = TODO()
 
 
 }

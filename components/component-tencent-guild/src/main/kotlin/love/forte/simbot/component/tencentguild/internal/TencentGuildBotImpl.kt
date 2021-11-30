@@ -12,76 +12,37 @@
 
 package love.forte.simbot.component.tencentguild.internal
 
-import io.ktor.client.*
-import kotlinx.coroutines.flow.Flow
-import love.forte.simbot.*
+import kotlinx.coroutines.isActive
 import love.forte.simbot.component.tencentguild.TencentGuildBot
-import love.forte.simbot.component.tencentguild.TencentGuildBotConfiguration
-import love.forte.simbot.component.tencentguild.TencentGuildComponent
-import love.forte.simbot.definition.Friend
-import love.forte.simbot.definition.Group
-import love.forte.simbot.definition.UserStatus
-import love.forte.simbot.event.EventProcessor
-import love.forte.simbot.message.Image
-import love.forte.simbot.resources.Resource
-import kotlin.coroutines.CoroutineContext
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  *
  * @author ForteScarlet
  */
 internal class TencentGuildBotImpl(
-    configuration: TencentGuildBotConfiguration,
-    override val coroutineContext: CoroutineContext,
-    override val status: UserStatus,
-    override val username: String,
-    override val avatar: String,
-    override val isStarted: Boolean,
-    override val isActive: Boolean,
-    override val isCancelled: Boolean,
+
 ) : TencentGuildBot() {
+    // 0 init
+    // 1 start
+    // 2 cancel
+    private val activeStatus = AtomicInteger(0)
 
-
-
-    override val client: HttpClient = configuration.client
-
-    override val component: Component
-        get() = TencentGuildComponent.component
-
-    override val id: CharSequenceID = configuration.ticket!!.appId.ID
-
-    override val manager: BotManager<TencentGuildBot>
-        get() = TODO("Not yet implemented")
-
-    override val eventProcessor: EventProcessor
-        get() = TODO("Not yet implemented")
-
-    override suspend fun friends(grouping: Grouping, limiter: Limiter): Flow<Friend> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun groups(grouping: Grouping, limiter: Limiter): Flow<Group> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun guilds(grouping: Grouping, limiter: Limiter): Flow<Group> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun uploadImage(resource: Resource): Image {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun start(): Boolean {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun cancel(): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun start(): Boolean = sourceBot.start().also {
+        activeStatus.compareAndSet(0, 1)
     }
 
     override suspend fun join() {
-        TODO("Not yet implemented")
+        sourceBot.join()
     }
 
+    override suspend fun cancel(): Boolean = sourceBot.cancel().also {
+        activeStatus.set(2)
+    }
+
+    override val isStarted: Boolean
+        get() = activeStatus.get() >= 1
+
+    override val isCancelled: Boolean
+        get() = activeStatus.get() == 2
 }

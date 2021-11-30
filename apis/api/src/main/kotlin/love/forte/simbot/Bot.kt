@@ -97,9 +97,9 @@ public interface Bot : User, CoroutineScope {
      * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
      */
     @JvmSynthetic
-    public suspend fun guilds(grouping: Grouping, limiter: Limiter): Flow<Group>
+    public suspend fun guilds(grouping: Grouping, limiter: Limiter): Flow<Guild>
 
-    public fun getGuilds(grouping: Grouping, limiter: Limiter): List<Group> {
+    public fun getGuilds(grouping: Grouping, limiter: Limiter): List<Guild> {
         return runBlocking { guilds(grouping, limiter).toList() }
     }
 

@@ -47,7 +47,7 @@ class IDTest {
         val longId = 123456L.ID
         val doubleId = 123.456.ID
         val floatId = 123.456F.ID
-        val bdId = BigDecimal("123,456").ID
+        val bdId = BigDecimal("123.456").ID
         val biId = BigInteger.valueOf(123456).ID
 
     }

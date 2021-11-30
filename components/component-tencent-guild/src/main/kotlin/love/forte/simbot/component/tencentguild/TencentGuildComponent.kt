@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -20,7 +20,9 @@ import love.forte.simbot.*
  */
 public object TencentGuildComponent {
     public val COMPONENT_ID: CharSequenceID = "simbot.tencent.guild".ID
-    public val component: Component get() = Components[COMPONENT_ID]
+    @Suppress("ObjectPropertyName")
+    internal lateinit var _component: Component
+    public val component: Component get() = if (::_component.isInitialized) _component else Components[COMPONENT_ID]
 }
 
 
@@ -35,7 +37,7 @@ public class TencentGuildComponentInformation : ComponentInformation {
     }
 
     override fun setComponent(component: Component) {
-
+        TencentGuildComponent._component = component
     }
 
 }
