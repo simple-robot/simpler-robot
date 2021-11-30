@@ -82,6 +82,11 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
         private var _serializersModule = SerializersModule {
             polymorphic(MsgElement::class) {
                 subclass(Text.serializer())
+                subclass(At.serializer())
+                subclass(AtRole.serializer())
+                subclass(AtAll.serializer())
+                subclass(Emoji.serializer())
+                subclass(Face.serializer())
             }
 
         }
