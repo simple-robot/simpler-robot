@@ -18,6 +18,7 @@ import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
 import kotlin.concurrent.thread
 import kotlin.concurrent.write
 
@@ -61,12 +62,17 @@ public object OriginBotManager : Set<BotManager<*>> {
         }
     }
 
-    public fun getManagers(component: Component): Flow<BotManager<*>> = flow {
-        val iter = managers.keys.iterator()
-        while (iter.hasNext()) {
-            val next: BotManager<*> = iter.next()
-            if (next.component == component) emit(next)
-            else continue
+    public fun getManagers(component: Component): Flow<BotManager<*>> {
+        lock.read {
+            checkShutdown()
+            return flow {
+                val iter = managers.keys.iterator()
+                while (iter.hasNext()) {
+                    val next: BotManager<*> = iter.next()
+                    if (next.component == component) emit(next)
+                    else continue
+                }
+            }
         }
     }
 
