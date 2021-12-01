@@ -61,10 +61,10 @@ inline fun Project.configurePublishing(artifactId: String) {
                     url = uri(Sonatype.oss.URL)
                 }
 
-                val username0 = local().getProperty("sonatype.username")
-                    ?: throw NullPointerException("snapshots-sonatype-username")
-                val password0 = local().getProperty("sonatype.password")
-                    ?: throw NullPointerException("snapshots-sonatype-password")
+                val username0 = extra.get("sonatype.username")?.toString()
+                    ?: throw NullPointerException("sonatype-username")
+                val password0 = extra.get("sonatype.password")?.toString()
+                    ?: throw NullPointerException("sonatype-password")
 
                 credentials {
                     username = username0
