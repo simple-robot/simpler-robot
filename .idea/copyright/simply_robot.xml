@@ -1,6 +1,0 @@
-<component name="CopyrightManager">
-  <copyright>
-    <option name="notice" value=" Copyright (c) &amp;#36;originalComment.match(&quot;Copyright \(c\) (\d+)&quot;, 1, &quot;-&quot;)&amp;#36;today.year ForteScarlet &lt;https://github.com/ForteScarlet&gt;&#10; &#10; 根据 Apache License 2.0 获得许可；&#10; 除非遵守许可，否则您不得使用此文件。&#10; 您可以在以下网址获取许可证副本：&#10; &#10;      https://www.apache.org/licenses/LICENSE-2.0&#10; &#10;  有关许可证下的权限和限制的具体语言，请参见许可证。" />
-    <option name="myName" value="simply-robot" />
-  </copyright>
-</component>
