@@ -236,7 +236,7 @@ public interface EventProcessingContextResolver<C : EventProcessingContext> {
 /**
  * 核心默认的事件上下文处理器。
  */
-private object CoreEventProcessingContextResolver : EventProcessingContextResolver<CoreEventProcessingContext> {
+internal object CoreEventProcessingContextResolver : EventProcessingContextResolver<CoreEventProcessingContext> {
     /**
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
      */
@@ -257,7 +257,7 @@ private object CoreEventProcessingContextResolver : EventProcessingContextResolv
 }
 
 
-private class CoreEventProcessingContext(
+internal class CoreEventProcessingContext(
     override val event: Event,
     resultInit: () -> MutableList<EventResult>
 ) : EventProcessingContext {

@@ -90,7 +90,7 @@ public class CoreEventManagerConfiguration {
     /**
      * 事件流程上下文的处理器。
      */
-    public var eventProcessingContextResolver: EventProcessingContextResolver<*> = TODO()
+    public var eventProcessingContextResolver: EventProcessingContextResolver<*> = CoreEventProcessingContextResolver
 
 
 }
