@@ -76,10 +76,13 @@ public object OriginBotManager : Set<BotManager<*>> {
         }
     }
 
-    public fun getFirstManager(component: Component): BotManager<*>? =
+    public fun getFirstManager(component: Component): BotManager<*>? = lock.read {
+        checkShutdown()
         managers.keys.firstOrNull { it.component == component }
+    }
 
     public fun getBot(id: ID, component: Component): Bot? {
+        // TODO check shutdown?
         return managers.keys.firstOrNull {
             it.component == component
         }?.get(id)
