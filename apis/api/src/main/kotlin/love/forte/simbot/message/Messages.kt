@@ -23,10 +23,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.modules.*
-import love.forte.simbot.Component
-import love.forte.simbot.Simbot
-import love.forte.simbot.SimbotComponent
-import love.forte.simbot.like
+import love.forte.simbot.*
 import love.forte.simbot.message.Message.Element as MsgElement
 
 
@@ -77,6 +74,9 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
     /**
      */
     public companion object : MessageElementPolymorphicRegistrar {
+        init {
+            Components // init component for register components
+        }
         @JvmSynthetic
         @Suppress("ObjectPropertyName")
         private var _serializersModule = SerializersModule {
