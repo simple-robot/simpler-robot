@@ -62,14 +62,5 @@ public data class Author(
 )
 
 
-public fun a() {
-    val a = Author(
-        "".ID,
-        "Forte",
-        "forteScarlet@163.com",
-        timezone = 100
-    )
-}
-
 
 
