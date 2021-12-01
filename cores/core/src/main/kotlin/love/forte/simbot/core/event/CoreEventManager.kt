@@ -47,12 +47,12 @@ import love.forte.simbot.utils.view
  *
  */
 public class CoreEventManager private constructor(
-    configuration: CoreEventMangerConfiguration
+    configuration: CoreEventManagerConfiguration
 ) : EventListenerManager {
 
     public companion object {
         @JvmStatic // For java
-        public fun newInstance(configuration: CoreEventMangerConfiguration): CoreEventManager =
+        public fun newInstance(configuration: CoreEventManagerConfiguration): CoreEventManager =
             CoreEventManager(configuration)
     }
 
