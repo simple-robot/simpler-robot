@@ -22,14 +22,27 @@ includePro(":apis:api")
 includePro(":annotation")
 includePro(":cores:core")
 includePro(":cores:boot")
-// includePro(":components:component-tencent-guild")
-// if (File(rootProject.projectDir, "components/tencent-guild-api/build.gradle.kts").exists()) {
-//     includePro(":components:tencent-guild-api")
-// }
 
-fun includePro(proName: String, dir: String? = null) {
+// includePro(":tencent-guild:api", "components/tencent-guild/api", "tencent-guild-api")
+// includePro(":tencent-guild:core", "components/tencent-guild/core", "tencent-guild-core")
+// includePro(":tencent-guild:component", "components/tencent-guild/component", "component-tencent-guild")
+
+fun includePro(proName: String, dir: String? = null, name: String? = null): String {
     include(proName)
     if (dir != null) {
-        project(proName).projectDir = file(dir)
+        if (File(rootDir, "$dir/build.gradle.kts").exists()) {
+            project(proName).projectDir = file(dir)
+        } else {
+            println("$rootDir/$dir/build.gradle.kts 不存在")
+        }
     }
+    if (name != null) {
+        project(proName).name = name
+        return name
+    }
+    return proName
+}
+
+rootProject.children.forEach {
+    println(it)
 }

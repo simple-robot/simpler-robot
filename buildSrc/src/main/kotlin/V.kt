@@ -46,6 +46,16 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
         }
     }
 
+    sealed class Simbot(group: String = P.Simbot.GROUP, id: String, version: String = VERSION) : V(group, id, version) {
+        companion object {
+            const val VERSION = P.Simbot.VERSION
+        }
+
+        object Api : Simbot(id = "api")
+        object Core : Simbot(id = "core")
+
+    }
+
     // org.jetbrains:annotations:23.0.0
     sealed class Jetbrains(group: String = "org.jetbrains", id: String, version: String): V(group, id, version) {
         object Annotations: Jetbrains(id = "annotations", version = "23.0.0")
@@ -143,6 +153,8 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
             object Protobuf : Serialization("protobuf")
             object Cbor : Serialization("cbor")
             object Properties : Serialization("properties")
+            object Yaml : V("com.charleskorn.kaml", "kaml", "0.37.0")
+
         }
 
     }
@@ -150,7 +162,9 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
     // Ktor相关
     sealed class Ktor(id: String) : V(group = "io.ktor", id = "ktor-$id", VERSION) {
         companion object {
-            const val VERSION = "1.6.5"
+            // NoSuchMethodError: java.nio.ByteBuffer.limit(I)Ljava/nio/ByteBuffer;
+            // https://youtrack.jetbrains.com/issue/KTOR-3358
+            const val VERSION = "1.6.4" // 1.6.6
         }
 
         // server
@@ -193,6 +207,14 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
         object Api : Slf4j("api")
     }
 
+    sealed class Log4j(id: String) : V("org.apache.logging.log4j", id = "log4j-$id", version = VERSION) {
+        companion object {
+            const val VERSION = "2.14.1"
+        }
+        object Api : Log4j("api")
+        object Core : Log4j("core")
+        object Slf4jImpl : Log4j("slf4j-impl")
+    }
 
     /**
      * Okio https://square.github.io/okio/#releases
