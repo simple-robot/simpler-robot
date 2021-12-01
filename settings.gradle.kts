@@ -21,7 +21,7 @@ rootProject.name = "simply-robot"
 includePro(":apis:api")
 includePro(":annotation")
 includePro(":cores:core")
-includePro(":cores:boot")
+includePro(":boots:boot-core")
 
 
 
