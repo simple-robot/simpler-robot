@@ -12,13 +12,11 @@
 
 package love.forte.simbot
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.Components.find
 import love.forte.simbot.Components.get
 import love.forte.simbot.definition.Container
+import love.forte.simbot.message.Messages
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.set
@@ -32,11 +30,9 @@ import kotlin.collections.set
  *
  * [Component] 的 [equals] 将会直接进行 `===` 匹配, 因此需要保证组件实例唯一性，开发者在 [Components] 中注册的时候，需要保证组件标识的ID唯一不变。
  *
- * [Component] 的序列化不会对 [properties] 进行序列化.
  *
  * @see Components
  */
-@Serializable
 @Suppress("MemberVisibilityCanBePrivate")
 public sealed class Component : Scope {
     abstract override val id: CharSequenceID
@@ -72,8 +68,6 @@ public sealed class Component : Scope {
  * 由simbot实现的唯一顶层组件，一部分可能由simbot自身提供的通用内容会使用此组件。
  * simbot的顶层组件一般代表可以通用的组件，也应当是唯一一个允许组件交叉的组件。
  */
-@Serializable
-@SerialName("root")
 public object SimbotComponent : Component() {
     override val id: CharSequenceID = "simbot".ID
     override val name: String get() = "simbot"
@@ -107,16 +101,66 @@ public object Components {
     }
 
     init {
-        ServiceLoader.load(ComponentInformation::class.java).forEach { r ->
-            val id = r.id.toCharSequenceID()
-            val name = r.name
+        fun toComponent(information: ComponentInformation): Comp {
+            val id = information.id.toCharSequenceID()
+            val name = information.name
 
             val attribute = AttributeHashMap()
+            information.configAttributes(attribute)
 
-            val comp = create(id, name) as Comp
+            val serializerModule = information.messageSerializersModule
+            if (serializerModule != null) {
+                Messages.mergeSerializersModule(serializerModule)
+            }
 
+            return create(id, name, attribute) as Comp
+        }
 
-            r.setComponent(comp)
+        val registrarList = ServiceLoader.load(ComponentInformationRegistrar::class.java)
+        // val waitingQueue = LinkedList<ComponentInformationRegistrar>()
+
+        val waitingQueue = registrarList.toMutableList()
+        var lastSize: Int = waitingQueue.size
+        while (waitingQueue.isNotEmpty()) {
+            val iter = waitingQueue.iterator()
+            while (iter.hasNext()) {
+                val next = iter.next()
+                when (val result = next.informations()) {
+                    is ComponentInformationRegistrar.Result.Skip -> {
+                        iter.remove()
+                    }
+                    is ComponentInformationRegistrar.Result.Wait -> continue
+                    is ComponentInformationRegistrar.Result.OK -> {
+                        for (componentInformation in result.infoList) {
+                            val comp = toComponent(componentInformation)
+                            componentInformation.setComponent(comp)
+                        }
+                        iter.remove()
+                    }
+                }
+            }
+            val nowSize = waitingQueue.size
+            if (nowSize != 0) {
+                if (nowSize == lastSize) {
+                    // lastTime
+                    for (registrar in waitingQueue) {
+                        when (val result = registrar.lastTimeInformations()) {
+                            is ComponentInformationRegistrar.Result.Skip -> continue
+                            is ComponentInformationRegistrar.Result.Wait -> {
+                                throw IllegalStateException("The last time register cannot wait.")
+                            }
+                            is ComponentInformationRegistrar.Result.OK -> {
+                                for (componentInformation in result.infoList) {
+                                    val comp = toComponent(componentInformation)
+                                    componentInformation.setComponent(comp)
+                                }
+                            }
+                        }
+                    }
+                    break
+                }
+                lastSize = nowSize
+            }
         }
     }
 
@@ -128,18 +172,16 @@ public object Components {
     internal fun create(
         id: CharSequenceID,
         name: String = id.toString(),
+        attributes: AttributeHashMap
     ): Component {
         return comps.compute(id) { k, old ->
             if (old != null) {
                 throw ComponentAlreadyExistsException("$k: $old")
             }
-            Comp(k.toCharSequenceID(), name)
+            Comp(k.toCharSequenceID(), name, attributes)
         }!!
     }
 
-    internal fun create(id: String, name: String = id): Component {
-        return create(id.ID, name)
-    }
 
     /**
      * 得到一个对应 [id] 的 [Component] 实例，如果不存在则抛出 [NoSuchComponentException].
@@ -163,15 +205,11 @@ public object Components {
     public fun find(id: ID): Component? = comps[id.toCharSequenceID()]
 
 
-    @SerialName("c")
-    @Serializable
     internal data class Comp(
         override val id: CharSequenceID,
         override val name: String,
+        internal val properties: AttributeHashMap
     ) : Component() {
-
-        @Transient
-        internal val properties = AttributeHashMap()
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : Any> get(attribute: Attribute<T>): T? = properties[attribute]
@@ -180,7 +218,58 @@ public object Components {
             return id.hashCode()
         }
 
-        override fun properties(): AttributeHashMap = properties
+        override fun properties(): AttributeMap = properties
+    }
+}
+
+/**
+ * 向 Component 提供一个或多个组件信息。
+ */
+public interface ComponentInformationRegistrar {
+
+    /**
+     *
+     * 返回本次需要注册的组件信息，或者选择跳过/等待。
+     *
+     * @see Result.ok
+     * @see Result.waiting
+     * @see Result.skip
+     */
+    public fun informations(): Result
+
+    /**
+     * 如果出现了所有组件注册器在一轮注册时一直在等待的情况，会通过 [lastTimeInformations] 进行最后一轮注册。
+     * 如果本轮也返回了 [Result.waiting], 则会抛出异常。
+     */
+    public fun lastTimeInformations(): Result = informations()
+
+
+    public sealed class Result {
+        public companion object {
+            /**
+             * 跳过，不再注册。
+             */
+            @get:JvmName("skip")
+            public val skip: Result
+                get() = Skip
+
+            /**
+             * 需要等待下一轮注册。
+             */
+            @get:JvmName("waiting")
+            public val waiting: Result
+                get() = Wait
+
+            /**
+             * 完成本次注册。
+             */
+            public fun ok(infoList: List<ComponentInformation>): Result = OK(infoList)
+        }
+
+        internal class OK(val infoList: List<ComponentInformation>) : Result()
+        internal object Skip : Result()
+        internal object Wait : Result()
+
     }
 }
 
@@ -201,13 +290,13 @@ public interface ComponentInformation {
     public val name: String
 
     /**
-     * 可以向simbot提供一个 [serializersModule],
-     * 会将此内容整合到 [SimbotComponent] 属性中。
+     * 可以向 [Messages] 提供一个 [SerializersModule],
+     * 会将此内容整合到 [Messages.serializersModule] 属性中。
      */
-    public val serializersModule: SerializersModule? get() = null
+    public val messageSerializersModule: SerializersModule? get() = null
 
     /**
-     * 提供一个 attributs, 并对其进行配置。
+     * 得到一个 attributs, 并对其进行配置。
      */
     public fun configAttributes(attributes: MutableAttributeMap)
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -158,7 +158,6 @@ public interface MutableAttributeMap : AttributeMap {
 public operator fun <T : Any> MutableAttributeMap.set(attribute: Attribute<T>, value: T) {
     put(attribute, value)
 }
-
 
 public class AttributeHashMap : MutableAttributeMap {
     private val names = mutableMapOf<String, Attribute<*>>()
