@@ -134,7 +134,7 @@ public class EventInterceptorsGenerator {
      */
     @JvmOverloads
     @EventInterceptorsGeneratorDSL
-    public fun processing(
+    public fun processingIntercept(
         id: ID,
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
@@ -142,11 +142,11 @@ public class EventInterceptorsGenerator {
 
     @JvmOverloads
     @EventInterceptorsGeneratorDSL
-    public fun processing(
+    public fun processingIntercept(
         id: String,
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
-    ): EventProcessingInterceptor = processing(id.ID, priority, interceptFunction)
+    ): EventProcessingInterceptor = processingIntercept(id.ID, priority, interceptFunction)
 
 
     /**
@@ -155,7 +155,7 @@ public class EventInterceptorsGenerator {
      */
     @JvmOverloads
     @EventInterceptorsGeneratorDSL
-    public fun listener(
+    public fun listenerIntercept(
         id: ID,
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
@@ -168,12 +168,12 @@ public class EventInterceptorsGenerator {
      */
     @JvmOverloads
     @EventInterceptorsGeneratorDSL
-    public fun listener(
+    public fun listenerIntercept(
         id: String,
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
     ): EventListenerInterceptor =
-        listener(id.ID, priority, interceptFunction)
+        listenerIntercept(id.ID, priority, interceptFunction)
 
 
 }
