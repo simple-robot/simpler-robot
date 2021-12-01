@@ -17,19 +17,9 @@ package love.forte.simbot
 import kotlinx.serialization.Serializable
 import love.forte.simbot.SimbotComponent.name
 import kotlin.reflect.KClass
-import kotlin.reflect.cast
-import kotlin.reflect.safeCast
+import kotlin.reflect.full.cast
+import kotlin.reflect.full.safeCast
 
-
-/**
- * 一个属性。
- *
- * 此类型通常使用在 [Component.properties].
- *
- * 是api模块下为数不多使用了反射的地方。
- *
- *
- */
 
 /*
  * 参考自 gradle-7.1 代码 org.gradle.api.attributes.Attribute, 下述原文LICENSE
@@ -48,21 +38,34 @@ import kotlin.reflect.safeCast
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/**
+ * 一个属性。
+ *
+ * 此类型通常使用在 [Component.attributes], 或者作为事件处理中的上下文使用。
+ *
+ * [Attribute] 拥有一个 [属性名][name] 和此属性对应的 [类型][type], 其中，
+ *
+ * 对于一个 [Attribute], 它的 [Attribute.hashcode] 将会直接与 [name] 一致，因此可以直接将 [Attribute] 作为一个 [Map] 的 Key.
+ *
+ * 但是在进行 [Attribute.equals] 比较的时候，会同时对 [name] 和 [type] 进行比较。
+ *
+ * @see AttributeMap
+ *
+ */
 @Serializable
 public class Attribute<T : Any> private constructor(
     public val name: String,
     public val type: KClass<T>
 ) {
-    private val hashcode: Int = (name.hashCode() * 31) + type.hashCode()
+    private val hashcode: Int get() = name.hashCode()
 
     override fun hashCode(): Int = hashcode
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Attribute<*>) return false
 
-        return if (name != other.name) return false
-        else type == other.type
+        if (name != other.name) return false
+        return type == other.type
     }
 
     override fun toString(): String = name
@@ -94,8 +97,32 @@ public inline fun <reified T : Any> attribute(): Attribute<T> =
  *
  * [AttributeMap]与名称字符串为键的映射表相比，其没有明确的值类型，取而代之的是通过 [Attribute] 来规定元素类型的。
  *
- * TODO 是否允许同名不同类型？
  *
+ * [AttributeMap] 中的Key即为 [Attribute], 并且以类型作为 [equals] 条件之一，
+ * 因此在使用 [AttributeMap] 的时候，应当避免出现相同 [Attribute.name] 但是 [Attribute.type] 不同的情况。
+ *
+ *
+ * [AttributeMap] 不允许存入null值。
+ *
+ *
+ * example:
+ * ```kotlin
+ * class Foo
+ *
+ * fun test() {
+ *      val fooAttr = attribute<Foo>("foo")
+ *
+ *      val map = AttributeHashMap()
+ *      val foo = Foo()
+ *      map[fooAttr] = foo
+ *      val foo1 = map[fooAttr]!!
+ *      val foo2 = map[attribute<Foo>("foo")]!! // by a new instance
+ *
+ *      println(foo1 === foo2) // true
+ *  }
+ * ```
+ *
+ * @see AttributeHashMap
  */
 public interface AttributeMap {
 
@@ -105,11 +132,6 @@ public interface AttributeMap {
      * @throws ClassCastException 如果存在对应名称但是类型不匹配的键与值。
      */
     public operator fun <T : Any> get(attribute: Attribute<T>): T?
-
-    /**
-     * 判断是否存在对应的键名
-     */
-    public fun contains(attributeName: String): Boolean
 
 
     /**
@@ -124,12 +146,15 @@ public interface AttributeMap {
 
     public object Empty : AttributeMap {
         override fun <T : Any> get(attribute: Attribute<T>): T? = null
-        override fun contains(attributeName: String): Boolean = false
         override fun <T : Any> contains(attribute: Attribute<T>): Boolean = false
         override fun size(): Int = 0
     }
 }
 
+
+/**
+ * [MutableAttributeMap] 是 [AttributeMap] 的子类型，代表一个允许变化的 [AttributeMap], 类似于 [Map] 与 [MutableMap] 之间的关系。
+ */
 public interface MutableAttributeMap : AttributeMap {
 
     /**
@@ -141,12 +166,6 @@ public interface MutableAttributeMap : AttributeMap {
 
 
     /**
-     * 移除对应键名的值
-     */
-    public fun remove(attributeName: String): Any?
-
-
-    /**
      * 移除对应键名的值。
      *
      * @throws ClassCastException 如果类型不匹配
@@ -155,12 +174,19 @@ public interface MutableAttributeMap : AttributeMap {
 }
 
 
+
+
+
 public operator fun <T : Any> MutableAttributeMap.set(attribute: Attribute<T>, value: T) {
     put(attribute, value)
 }
 
+
+
+
+
+
 public class AttributeHashMap : MutableAttributeMap {
-    private val names = mutableMapOf<String, Attribute<*>>()
     private val values = mutableMapOf<Attribute<*>, Any>()
 
     public val entries: MutableSet<MutableMap.MutableEntry<Attribute<*>, Any>>
@@ -174,44 +200,19 @@ public class AttributeHashMap : MutableAttributeMap {
     }
 
     override fun <T : Any> put(attribute: Attribute<T>, value: T): T? {
-        val key = names[attribute.name]
-        println("key = $key")
-        println("$key == $attribute : ${key == attribute}")
-        if (key != null && key != attribute) {
-            val nowValue = values[key]
-            if (nowValue != null) {
-                attribute.type.safeCast(nowValue)
-                    ?: throw IllegalStateException("Type conflict: expected to be ${key.type}, but is ${attribute.type}")
-            } else {
-                names[attribute.name] = attribute
-            }
-
-            values[attribute] = value
-            return null
-        }
-
-        return values.put(attribute, value).let {
-            names[attribute.name] = attribute
-            if (it != null) {
-                attribute.type.cast(it)
-            } else null
-        }
+        val type = attribute.type
+        val result = values.put(attribute, type.cast(value))
+        return type.safeCast(result)
     }
-
-    override fun contains(attributeName: String): Boolean = attributeName in names
 
     override fun <T : Any> contains(attribute: Attribute<T>): Boolean {
-        return names[attribute.name]?.equals(attribute) ?: false
+        return attribute in values
     }
 
-    override fun remove(attributeName: String): Any? {
-        val removedKey = names.remove(attributeName) ?: return null
-        return values.remove(removedKey)
-    }
 
     override fun <T : Any> remove(attribute: Attribute<T>): T? {
-        val removedKey = names.remove(attribute.name) ?: return null
-        return values.remove(removedKey)?.let { attribute.type.cast(it) }
+        val removedValue = values.remove(attribute) ?: return null
+        return removedValue.let { attribute.type.safeCast(it) }
     }
 
     override fun toString(): String = values.toString()

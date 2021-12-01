@@ -25,6 +25,7 @@ dependencies {
     api(V.Kotlinx.Coroutines.Core.Jvm.notation)
     api(V.Slf4j.Api.notation)
     api(V.Kotlinx.Serialization.Core.notation)
+    api(V.Kotlin.Reflect.notation)
     compileOnly(V.Jetbrains.Annotations.notation)
 
     testImplementation(V.Kotlin.Reflect.notation)

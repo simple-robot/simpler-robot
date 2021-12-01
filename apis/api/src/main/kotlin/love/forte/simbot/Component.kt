@@ -46,7 +46,7 @@ public sealed class Component : Scope {
     /**
      * 获得属性列表。
      */
-    public abstract fun properties(): AttributeMap
+    public abstract fun attributes(): AttributeMap
 
     /**
      * 直接使用 === 进行比较。
@@ -72,7 +72,7 @@ public object SimbotComponent : Component() {
     override val id: CharSequenceID = "simbot".ID
     override val name: String get() = "simbot"
     override fun <T : Any> get(attribute: Attribute<T>): T? = null
-    override fun properties(): AttributeMap = AttributeMap.Empty // TODO include metadata?
+    override fun attributes(): AttributeMap = AttributeMap.Empty // TODO include metadata?
     override fun toString(): String = "Component(id=simbot)"
     override fun hashCode(): Int = 0
     override fun contains(scope: Scope): Boolean = true
@@ -208,17 +208,17 @@ public object Components {
     internal data class Comp(
         override val id: CharSequenceID,
         override val name: String,
-        internal val properties: AttributeHashMap
+        internal val attributes: AttributeHashMap
     ) : Component() {
 
         @Suppress("UNCHECKED_CAST")
-        override fun <T : Any> get(attribute: Attribute<T>): T? = properties[attribute]
+        override fun <T : Any> get(attribute: Attribute<T>): T? = attributes[attribute]
         override fun equals(other: Any?): Boolean = this === other
         override fun hashCode(): Int {
             return id.hashCode()
         }
 
-        override fun properties(): AttributeMap = properties
+        override fun attributes(): AttributeMap = attributes
     }
 }
 

@@ -24,22 +24,22 @@ import kotlin.test.Test
  */
 class AttributeTest {
 
-    private val map = AttributeHashMap()
 
     @Test
     fun test() {
-        val attr1 = attribute<User1>("user")
-        val attr2 = attribute<Foo>("foo")
+        val fooAttr = attribute<Foo>("foo")
 
-        map[attr1] = User1("Forte")
-        map[attr2] = Foo(2)
+        val map = AttributeHashMap()
+        val foo = Foo()
+        map[fooAttr] = foo
+        val foo1 = map[fooAttr]!!
+        val foo2 = map[attribute<Foo>("foo")]!! // by a new instance
 
-        println(map)
+        println(foo1 === foo2)
     }
 
 
 }
 
 
-data class User1(val name: String)
-data class Foo(val age: Int)
+class Foo
