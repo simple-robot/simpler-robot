@@ -56,7 +56,7 @@ public object OriginBotManager : Set<BotManager<*>> {
 
     internal fun remove(manager: BotManager<*>) {
         lock.write {
-            checkShutdown()
+            // checkShutdown()
             managers.remove(manager)
         }
     }
