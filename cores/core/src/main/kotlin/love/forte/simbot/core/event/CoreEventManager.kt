@@ -131,7 +131,7 @@ public class CoreEventManager private constructor(
     }
 
     override fun isProcessable(eventKey: Event.Key<*>): Boolean {
-        return getInvokers(eventKey).isEmpty()
+        return getInvokers(eventKey).isNotEmpty()
     }
 
     /**
