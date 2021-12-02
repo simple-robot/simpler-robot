@@ -133,7 +133,8 @@ public inline fun <reified E : Element<E>> Message.Key<E>.cast(value: Any?): E {
 }
 
 
-internal inline fun <reified E> doSafeCast(value: Any?): E? = if (value is E) value else null
+public inline fun <reified E> doSafeCast(value: Any): E? = if (value is E) value else null
+public inline fun <reified E> doCast(value: Any): E = doSafeCast<E>(value) ?: throw ClassCastException("${value::class} cannot cast to type ${E::class}")
 
 
 

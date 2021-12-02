@@ -107,7 +107,9 @@ public open class Text protected constructor(override val text: String) : PlainT
 }
 
 
+@Suppress("RemoveRedundantQualifierName")
 public fun String.toText(): Text = Text.getText(this)
+@Suppress("RemoveRedundantQualifierName")
 public fun Text(): Text = Text.getEmptyText()
 public inline fun Text(block: () -> String): Text = block().toText()
 //endregion
@@ -123,34 +125,29 @@ public inline fun Text(block: () -> String): Text = block().toText()
  */
 @SerialName("m.std.at")
 @Serializable
-public data class At(
+public data class At @JvmOverloads constructor(
     @Serializable(with = ID.AsCharSequenceIDSerializer::class)
     public val target: ID,
+    /**
+     * at的类型，默认情况下是针对一个 "用户"(`user`) 的 at。
+     *
+     * 其他情况，则可能有例如以一个 "角色"(`role`) 等。
+     */
+    @SerialName("at_type")
+    public val atType: String = "user",
+
+    /**
+     * 这个at在原始数据中或者原始事件中的样子。默认情况下，是字符串 '@[target]'
+     */
+    @SerialName("origin_content")
+    public val originContent: String = "@$target"
+
 ) : BaseStandardMessage<At>() {
     override val key: Message.Key<At> get() = Key
 
     public companion object Key : Message.Key<At> {
         override val component: Component get() = SimbotComponent
         override val elementType: KClass<At> get() = At::class
-    }
-}
-
-
-/**
- * 一个与 [At] 类似但是不太相同的消息，其代表通知一个权限组下的所有人。
- *
- */
-@SerialName("m.std.atRole")
-@Serializable
-public data class AtRole(
-    @Serializable(with = ID.AsCharSequenceIDSerializer::class)
-    public val target: ID,
-) : BaseStandardMessage<AtRole>() {
-    override val key: Message.Key<AtRole> get() = Key
-
-    public companion object Key : Message.Key<AtRole> {
-        override val component: Component get() = SimbotComponent
-        override val elementType: KClass<AtRole> get() = AtRole::class
     }
 }
 
@@ -251,6 +248,26 @@ public data class Face(
 }
 //endregion
 
+
+//region 远程资源
+/**
+ * [RemoteResource] 代表一个携带 [url] 信息的远程资源。常见为文件或图片等形式。
+ */
+public interface RemoteResource<E : RemoteResource<E>> : StandardMessage<E> {
+
+    /**
+     * 对于一个资源，应当又一个对应的唯一ID。
+     *
+     * 在一些没有的场景下，id可能是 [url] 本身，或是一个固定值。
+     */
+    public val id: ID
+
+    /**
+     * 此资源的URL地址。
+     */
+    public val url: String
+}
+//endregion
 
 
 //region 多媒体
