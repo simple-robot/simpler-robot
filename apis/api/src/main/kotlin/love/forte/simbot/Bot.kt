@@ -71,11 +71,14 @@ public interface Bot : User, CoroutineScope {
      *
      */
     @JvmSynthetic
-    public suspend fun friends(grouping: Grouping, limiter: Limiter): Flow<Friend>
+    public suspend fun friends(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Friend>
 
+    @Api4J
     public fun getFriends(grouping: Grouping, limiter: Limiter): List<Friend> {
         return runBlocking { friends(grouping, limiter).toList() }
     }
+    @Api4J
+    public fun getFriends(): List<Friend> = getFriends(Grouping.EMPTY, Limiter)
 
 
     // organizations
@@ -85,11 +88,14 @@ public interface Bot : User, CoroutineScope {
      * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
      */
     @JvmSynthetic
-    public suspend fun groups(grouping: Grouping, limiter: Limiter): Flow<Group>
+    public suspend fun groups(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Group>
 
+    @Api4J
     public fun getGroups(grouping: Grouping, limiter: Limiter): List<Group> {
         return runBlocking { groups(grouping, limiter).toList() }
     }
+    @Api4J
+    public fun getGroups(): List<Group> = getGroups(Grouping.EMPTY, Limiter)
 
     /**
      * 获取当前的所有频道服务器列表
@@ -97,11 +103,14 @@ public interface Bot : User, CoroutineScope {
      * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
      */
     @JvmSynthetic
-    public suspend fun guilds(grouping: Grouping, limiter: Limiter): Flow<Guild>
+    public suspend fun guilds(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Guild>
 
+    @Api4J
     public fun getGuilds(grouping: Grouping, limiter: Limiter): List<Guild> {
         return runBlocking { guilds(grouping, limiter).toList() }
     }
+    @Api4J
+    public fun getGuilds(): List<Guild> = getGuilds(Grouping.EMPTY, Limiter)
 
     // resources
 
