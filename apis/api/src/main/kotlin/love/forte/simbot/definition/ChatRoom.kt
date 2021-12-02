@@ -33,6 +33,13 @@ public interface ChatRoom : Organization, MessageSendAction {
     /**
      * 一般来讲，能够作为聊天室的组织不存在子集。
      */
+    override suspend fun children(groupingId: ID?): Flow<Organization> {
+        return emptyFlow()
+    }
+
+    /**
+     * 一般来讲，能够作为聊天室的组织不存在子集。
+     */
     override suspend fun children(groupingId: ID?, limiter: Limiter): Flow<Organization> {
         return emptyFlow()
     }
