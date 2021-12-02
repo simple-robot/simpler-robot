@@ -35,9 +35,10 @@ public object OriginBotManager : Set<BotManager<*>> {
         Runtime.getRuntime().addShutdownHook(thread(start = false) {
             lock.write {
                 shutdown.set(true)
-                for (key in managers.keys) {
-                    runBlocking { key.cancel() }
+                for (manager in managers.keys.toList()) {
+                    runBlocking { manager.cancel() }
                 }
+
             }
         })
     }
