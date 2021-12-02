@@ -12,6 +12,8 @@
 
 package love.forte.simbot
 
+import kotlinx.coroutines.runBlocking
+
 
 /**
  *
@@ -24,20 +26,31 @@ package love.forte.simbot
 
 public abstract class BotManager<B : Bot> : ComponentContainer {
     init {
-        @Suppress("LeakingThis")
-        OriginBotManager.register(this)
+        if (isBeManaged()) {
+            @Suppress("LeakingThis")
+            OriginBotManager.register(this)
+        }
     }
+
+    // kill warn
+    private fun isBeManaged() = beManaged()
+    protected open fun beManaged(): Boolean = true
 
     /**
      * 执行关闭操作。
      * [doCancel] 为当前manager的自定义管理，当前manager关闭后，将会从 [OriginBotManager] 剔除自己。
      */
+    @JvmName("_cancel")
     @JvmSynthetic
     public suspend fun cancel() {
         // remove first.
         OriginBotManager.remove(this)
         doCancel()
     }
+
+    @Api4J
+    @JvmName("cancel")
+    public fun cancel4J(): Unit = runBlocking { cancel() }
 
     /**
      * botManager实现者自定义的close函数，
@@ -54,9 +67,10 @@ public abstract class BotManager<B : Bot> : ComponentContainer {
      * 对于任意一个组件，其注册方式可能存在其他任何可能的方式，
      * 但是 [BotManager] 要求实现 [register] 来为 `boot` 模块的自动注册服务。
      *
+     * [register] 应当是同步的，直到其真正的验证完毕。
      *
      */
-    public abstract suspend fun register(properties: Map<String, String>): Bot
+    public abstract fun register(properties: Map<String, String>): Bot
 
     /**
      * 根据Bot的ID获取一个已经注册过的 [Bot]。

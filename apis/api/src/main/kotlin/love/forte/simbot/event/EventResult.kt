@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -52,14 +52,19 @@ public interface EventResult {
     public companion object {
 
         /**
+         * 得到一个无效的特殊默认值。
+         */
+        @JvmStatic
+        public fun invalid(): EventResult = Invalid
+
+        /**
          * 提供一个 [content] 得到一个 [EventResult] 的简易实例。
          *
          */
         @JvmOverloads
         @JvmStatic
         public fun of(content: Any? = null, blockNext: Boolean = false): EventResult =
-            if (content == null && !blockNext) Invalid
-            else EventResultImpl(content, blockNext)
+            EventResultImpl(content, blockNext)
 
 
         @JvmSynthetic
