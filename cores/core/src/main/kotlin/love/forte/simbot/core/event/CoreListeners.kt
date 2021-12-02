@@ -12,10 +12,10 @@
 
 package love.forte.simbot.core.event
 
-import love.forte.simbot.event.EventFilter
+import love.forte.simbot.ID
+import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
-import love.forte.simbot.event.EventProcessingContext
-import love.forte.simbot.event.EventResult
+import java.util.*
 
 
 /**
@@ -61,5 +61,38 @@ internal class EventListenerWithFilter(
     }
 }
 
+/**
+ * 向 [EventListenerManager] 中注册一个监听器。
+ */
+public fun <E : Event> EventListenerManager.listen(
+    id: ID = UUID.randomUUID().ID,
+    eventKey: Event.Key<E>,
+    blockNext: Boolean = false,
+    func: suspend (EventProcessingContext, E) -> Any?
+): EventListener = coreListener(id, eventKey, blockNext, func).also(::register)
 
 
+/**
+ * 构建一个监听函数。
+ */
+public fun <E : Event> coreListener(
+    id: ID = UUID.randomUUID().ID,
+    eventKey: Event.Key<E>,
+    blockNext: Boolean = false,
+    func: suspend (EventProcessingContext, E) -> Any?
+): EventListener = CoreListener(id, eventKey, blockNext, func)
+
+
+internal class CoreListener<E : Event>(
+    override val id: ID,
+    private val key: Event.Key<E>,
+    private val blockNext: Boolean,
+    private val func: suspend (EventProcessingContext, E) -> Any?
+) : EventListener {
+    override fun isTarget(eventType: Event.Key<*>): Boolean = eventType.isSubFrom(key)
+
+    override suspend fun invoke(context: EventProcessingContext): EventResult {
+        return EventResult.of(func(context, key.safeCast(context.event)!!), blockNext)
+    }
+
+}
