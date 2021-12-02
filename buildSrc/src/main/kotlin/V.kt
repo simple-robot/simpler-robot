@@ -99,6 +99,8 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
                 const val VERSION = "1.5.2-native-mt"
             }
 
+            object J8 : Coroutines("jdk8")
+
             // https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/README.md
             object Core : Coroutines("core") {
                 object Jvm : Coroutines("core-jvm")

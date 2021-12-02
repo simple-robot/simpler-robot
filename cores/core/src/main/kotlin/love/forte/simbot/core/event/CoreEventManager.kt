@@ -12,14 +12,16 @@
 
 package love.forte.simbot.core.event
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.future.asCompletableFuture
+import kotlinx.coroutines.withContext
 import love.forte.simbot.CharSequenceID
 import love.forte.simbot.ID
 import love.forte.simbot.event.*
 import love.forte.simbot.toCharSequenceID
 import love.forte.simbot.utils.view
-import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.CompletableFuture
 
 
 /**
@@ -144,38 +146,16 @@ public class CoreEventManager private constructor(
         return doInvoke(resolveToContext(event, invokers.size), invokers)
     }
 
-    override fun pushAsync(event: Event): Future<EventProcessingResult> {
+    override fun pushAsync(event: Event): CompletableFuture<EventProcessingResult> {
         val invokers = getInvokers(event.key)
-        if (invokers.isEmpty()) return object : Future<EventProcessingResult> {
-            override fun cancel(mayInterruptIfRunning: Boolean): Boolean = false
-            override fun isCancelled(): Boolean = true
-            override fun isDone(): Boolean = true
-            override fun get(): EventProcessingResult = EventProcessingResult
-            override fun get(timeout: Long, unit: TimeUnit): EventProcessingResult = get()
+        if (invokers.isEmpty()) return  CompletableFuture<EventProcessingResult>().also {
+            it.complete(EventProcessingResult)
         }
 
 
         val scope: CoroutineScope = event.bot
         val deferred = scope.async { doInvoke(resolveToContext(event, invokers.size), invokers) }
-        return object : Future<EventProcessingResult> {
-            override fun cancel(mayInterruptIfRunning: Boolean): Boolean {
-                if (deferred.isCancelled) return false
-                runBlocking { deferred.cancelAndJoin() }
-                return true
-            }
-
-            override fun isCancelled(): Boolean = deferred.isCancelled
-            override fun isDone(): Boolean = deferred.isCompleted
-            override fun get(): EventProcessingResult = runBlocking { deferred.await() }
-
-            override fun get(timeout: Long, unit: TimeUnit): EventProcessingResult {
-                return runBlocking {
-                    withTimeout(unit.toMillis(timeout)) {
-                        deferred.await()
-                    }
-                }
-            }
-        }
+        return deferred.asCompletableFuture()
     }
 
 
