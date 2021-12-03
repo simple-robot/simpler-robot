@@ -10,12 +10,15 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
+@file:JvmName("CoreListenerUtil")
 package love.forte.simbot.core.event
 
+import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
 import java.util.*
+import java.util.function.BiFunction
 
 
 /**
@@ -64,20 +67,22 @@ internal class EventListenerWithFilter(
 /**
  * 向 [EventListenerManager] 中注册一个监听器。
  */
+@JvmSynthetic
 public fun <E : Event> EventListenerManager.listen(
-    id: ID = UUID.randomUUID().ID,
     eventKey: Event.Key<E>,
+    id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
     func: suspend (EventProcessingContext, E) -> Any?
-): EventListener = coreListener(id, eventKey, blockNext, func).also(::register)
+): EventListener = coreListener(eventKey, id, blockNext, func).also(::register)
 
 
 /**
  * 构建一个监听函数。
  */
+@JvmSynthetic
 public fun <E : Event> coreListener(
-    id: ID = UUID.randomUUID().ID,
     eventKey: Event.Key<E>,
+    id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
     func: suspend (EventProcessingContext, E) -> Any?
 ): EventListener = CoreListener(id, eventKey, blockNext, func)
@@ -96,3 +101,16 @@ internal class CoreListener<E : Event>(
     }
 
 }
+
+
+/**
+ * 创建一个监听函数。
+ */
+@Api4J
+@JvmName("newCoreListener")
+public fun <E : Event> blockingCoreListener(
+    eventKey: Event.Key<E>,
+    id: ID = UUID.randomUUID().ID,
+    blockNext: Boolean = false,
+    func: BiFunction<EventProcessingContext, E, Any?>
+): EventListener = coreListener(eventKey, id, blockNext, func::apply)

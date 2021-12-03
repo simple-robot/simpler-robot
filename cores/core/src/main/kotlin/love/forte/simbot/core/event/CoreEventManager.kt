@@ -53,7 +53,7 @@ public class CoreEventManager private constructor(
 ) : EventListenerManager {
 
     public companion object {
-        @JvmStatic // For java
+        @JvmStatic
         public fun newInstance(configuration: CoreEventManagerConfiguration): CoreEventManager =
             CoreEventManager(configuration)
     }
