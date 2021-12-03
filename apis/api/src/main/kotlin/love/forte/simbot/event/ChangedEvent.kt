@@ -73,12 +73,16 @@ public interface ChangedEvent<S, F, T> : ChangeEvent<S, F, T> {
     override val before: F
     override val after: T
 
+
     /**
-     * // 时间点 timePoint
-     *
+     * 此事件所代表的变更发生的时间。
      */
     public val changedTime: Timestamp
 
+    /**
+     * 通常情况下，事件时间就相当于其[变更时][changedTime]的时间。
+     */
+    override val timestamp: Timestamp get() = changedTime
 
     public companion object Key : BaseEventKey<ChangedEvent<*, *, *>>("api.changed", setOf(ChangeEvent)) {
         override fun safeCast(value: Any): ChangedEvent<*, *, *>? =

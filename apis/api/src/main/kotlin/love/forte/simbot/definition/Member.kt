@@ -23,7 +23,10 @@ import love.forte.simbot.action.MuteAction
 
 
 /**
- * 一个组织下的成员,
+ * 一个组织下的成员.
+ *
+ * @see GuildMember
+ * @see GroupMember
  */
 public interface Member : User, MemberInfo, MuteAction {
 
@@ -31,8 +34,16 @@ public interface Member : User, MemberInfo, MuteAction {
     override val bot: Bot
 
     /**
+     * 这个成员所属的组织。一般来讲，一个 [Member] 实例不会同时存在于 [Group] 和 [Channel].
+     */
+    @JvmSynthetic
+    public suspend fun organization(): Organization
+
+    @Api4J
+    public val organization: Organization get() = runBlocking { organization() }
+
+    /**
      * 在客观条件允许的情况下，对其进行禁言。
-     *
      * 此行为不会捕获异常。
      *
      */
@@ -42,8 +53,46 @@ public interface Member : User, MemberInfo, MuteAction {
     public suspend fun roles(): Flow<Role>
     @Api4J
     public val roles: List<Role> get() = runBlocking { roles().toList() }
-
 }
+
+
+/**
+ * 一个频道服务器下的成员。
+ */
+public interface GuildMember : Member {
+    /**
+     * 这个成员所属的频道服务器。
+     */
+    @JvmSynthetic
+    public suspend fun guild(): Guild
+    @Api4J
+    public val guild: Guild get() = runBlocking { guild() }
+
+
+    @JvmSynthetic
+    override suspend fun organization(): Guild = guild()
+    @Api4J
+    override val organization: Guild get() = guild
+}
+
+
+public interface GroupMember : Member {
+    /**
+     * 这个成员所属的群。
+     */
+    @JvmSynthetic
+    public suspend fun group(): Group
+    @Api4J
+    public val group: Group get() = runBlocking { group() }
+
+
+    @JvmSynthetic
+    override suspend fun organization(): Group = group()
+    @Api4J
+    override val organization: Group get() = group
+}
+
+
 
 
 /**

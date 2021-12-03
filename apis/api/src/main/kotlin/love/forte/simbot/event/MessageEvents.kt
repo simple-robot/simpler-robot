@@ -28,7 +28,7 @@ import love.forte.simbot.message.doSafeCast
  * @see ChatroomMessageEvent
  *
  */
-public interface MessageEvent : Event, RemoteMessageContainer {
+public interface MessageEvent : ObjectiveEvent, RemoteMessageContainer {
     override val bot: Bot
     override val metadata: Event.Metadata
 
@@ -39,6 +39,9 @@ public interface MessageEvent : Event, RemoteMessageContainer {
      *
      */
     public val source: Objectives
+
+    override val objective: Objectives
+        get() = source
 
     /**
      * 当前消息事件的消息正文。
@@ -57,11 +60,17 @@ public interface MessageEvent : Event, RemoteMessageContainer {
  * 来自一个[联系人][Contact]消息消息事件。 这通常代表一个私聊消息事件。
  *
  */
-public interface ContactMessageEvent : MessageEvent {
+public interface ContactMessageEvent : MessageEvent, UserEvent {
     /**
      * 私有消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
      */
     override val source: Contact
+
+    override val objective: Objectives
+        get() = source
+
+    override val user: User
+        get() = source
 
     /**
      * 通常情况下，联系人消息的可见性是私人的。
@@ -70,8 +79,8 @@ public interface ContactMessageEvent : MessageEvent {
         get() = Event.VisibleScope.PRIVATE
 
     public companion object Key : BaseEventKey<ContactMessageEvent>(
-        "api.privateMessage",
-        setOf(MessageEvent.Key)
+        "api.private_message",
+        setOf(MessageEvent, UserEvent)
     ) {
         override fun safeCast(value: Any): ContactMessageEvent? = doSafeCast(value)
     }
@@ -86,11 +95,14 @@ public interface ContactMessageEvent : MessageEvent {
  * @see ChannelMessageEvent
  *
  */
-public interface ChatroomMessageEvent : MessageEvent, DeleteAction, RemoteMessageContainer {
+public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteAction, RemoteMessageContainer {
     /**
      * 来自的聊天室，通常是一个群或者一个频道。
      */
     override val source: ChatRoom
+
+    override val objective: Objectives
+        get() = source
 
     /**
      * 这个消息的发送者.
@@ -103,7 +115,6 @@ public interface ChatroomMessageEvent : MessageEvent, DeleteAction, RemoteMessag
      *
      */
     override suspend fun delete(): Boolean
-
 
 
     public companion object Key : BaseEventKey<ChatroomMessageEvent>(
@@ -120,7 +131,7 @@ public interface ChatroomMessageEvent : MessageEvent, DeleteAction, RemoteMessag
  *  代表一个来自[群][Group]的消息事件。
  *
  */
-public interface GroupMessageEvent : ChatroomMessageEvent {
+public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
 
     /**
      * 消息来自的群。
@@ -128,10 +139,15 @@ public interface GroupMessageEvent : ChatroomMessageEvent {
     override val source: Group
     override val author: Member
 
+    override val objective: Objectives
+        get() = source
+
+    override val group: Group
+        get() = source
 
     public companion object Key : BaseEventKey<GroupMessageEvent>(
-        "api.groupMessage",
-        setOf(ChatroomMessageEvent.Key)
+        "api.group_message",
+        setOf(ChatroomMessageEvent, GroupEvent)
     ) {
         override fun safeCast(value: Any): GroupMessageEvent? = doSafeCast(value)
     }
@@ -143,16 +159,22 @@ public interface GroupMessageEvent : ChatroomMessageEvent {
  * 代表一个来自[频道][Channel]的消息事件。
  *
  */
-public interface ChannelMessageEvent : ChatroomMessageEvent {
+public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
     /**
      * 消息来自的频道
      */
     override val source: Channel
     override val author: Member
 
+    override val objective: Objectives
+        get() = source
+
+    override val channel: Channel
+        get() = source
+
     public companion object Key : BaseEventKey<ChannelMessageEvent>(
-        "api.channelMessage",
-        setOf(ChatroomMessageEvent.Key)
+        "api.channel_message",
+        setOf(ChatroomMessageEvent, ChannelEvent)
     ) {
         override fun safeCast(value: Any): ChannelMessageEvent? = doSafeCast(value)
     }
