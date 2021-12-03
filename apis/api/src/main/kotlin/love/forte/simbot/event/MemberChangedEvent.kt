@@ -12,6 +12,7 @@
 
 package love.forte.simbot.event
 
+import love.forte.simbot.Api4J
 import love.forte.simbot.action.ActionType
 import love.forte.simbot.definition.MemberInfo
 import love.forte.simbot.definition.Objectives
@@ -42,6 +43,7 @@ public interface MemberIncreaseEvent : IncreaseEvent<Organization, MemberInfo>, 
     /**
      * [objective] 代表为成员减少时的发生组织。
      */
+    @Api4J
     override val objective: Objectives get() = source
 
     /**
@@ -72,6 +74,7 @@ public interface MemberDecreaseEvent : DecreaseEvent<Organization, MemberInfo>, 
     /**
      * [objective] 代表为成员减少时的发生组织。
      */
+    @Api4J
     override val objective: Objectives get() = source
 
     /**

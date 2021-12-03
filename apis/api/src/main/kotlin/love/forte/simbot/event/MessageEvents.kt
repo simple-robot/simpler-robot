@@ -12,6 +12,7 @@
 
 package love.forte.simbot.event
 
+import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.action.DeleteAction
 import love.forte.simbot.action.MessageSendAction
@@ -40,6 +41,7 @@ public interface MessageEvent : ObjectiveEvent, RemoteMessageContainer {
      */
     public val source: Objectives
 
+    @Api4J
     override val objective: Objectives
         get() = source
 
@@ -66,9 +68,11 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
      */
     override val source: Contact
 
+    @Api4J
     override val objective: Objectives
         get() = source
 
+    @Api4J
     override val user: User
         get() = source
 
@@ -101,6 +105,7 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteA
      */
     override val source: ChatRoom
 
+    @Api4J
     override val objective: Objectives
         get() = source
 
@@ -139,9 +144,11 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
     override val source: Group
     override val author: Member
 
+    @Api4J
     override val objective: Objectives
         get() = source
 
+    @Api4J
     override val group: Group
         get() = source
 
@@ -165,10 +172,15 @@ public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
      */
     override val source: Channel
     override val author: Member
+    override suspend fun channel(): Channel
 
+
+    @Api4J
     override val objective: Objectives
         get() = source
 
+
+    @Api4J
     override val channel: Channel
         get() = source
 
