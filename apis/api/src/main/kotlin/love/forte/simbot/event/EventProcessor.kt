@@ -39,15 +39,18 @@ public interface EventProcessor {
 
 
     /**
-     * 阻塞的推送一个事件。
+     * 推送一个事件，并阻塞的等待结果。
+     *
+     * *不被推荐的使用方法。*
      */
     @Api4J
     public fun pushBlocking(event: Event): EventProcessingResult = runBlocking { push(event) }
 
 
     /**
-     * 推送，并异步的执行，并返回一个 [Future].
+     * 推送一个事件，并异步的执行。返回一个 [Future].
      */
+    @Api4J
     public fun pushAsync(event: Event): Future<EventProcessingResult>
 
     /**
@@ -83,7 +86,7 @@ public interface EventProcessingResult {
     /**
      * [EventProcessingResult] 的特殊无效实现，一般使用在例如全局拦截器进行拦截的时候。
      *
-     * [Empty] 的 [results][Empty.results] 永远返回空列表。
+     * [Empty] 的 [results][Empty.results] 永远得到空列表。
      */
     public companion object Empty : EventProcessingResult {
         override val results: List<EventResult> get() = emptyList()
