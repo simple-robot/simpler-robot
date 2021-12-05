@@ -65,10 +65,6 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
     override val source: Contact
 
     @Api4J
-    override val objective: Objectives
-        get() = source
-
-    @Api4J
     override val user: User
         get() = source
 
@@ -100,10 +96,6 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteA
      * 来自的聊天室，通常是一个群或者一个频道。
      */
     override val source: ChatRoom
-
-    @Api4J
-    override val objective: Objectives
-        get() = source
 
     /**
      * 这个消息的发送者.
@@ -141,10 +133,6 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
     override val author: Member
 
     @Api4J
-    override val objective: Objectives
-        get() = source
-
-    @Api4J
     override val group: Group
         get() = source
 
@@ -169,12 +157,6 @@ public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
     override val source: Channel
     override val author: Member
     override suspend fun channel(): Channel
-
-
-    @Api4J
-    override val objective: Objectives
-        get() = source
-
 
     @Api4J
     override val channel: Channel

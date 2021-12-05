@@ -109,7 +109,6 @@ public interface FriendEvent : UserEvent {
 //  * 一个主要与 [Bot] 相关的事件。
 //  */
 // public interface BotEvent : UserEvent {
-//     override val objective: Bot get() = bot
 //
 //     public companion object Key : BaseEventKey<FriendEvent>("api.bot", setOf(UserEvent)) {
 //         override fun safeCast(value: Any): FriendEvent? = doSafeCast(value)
