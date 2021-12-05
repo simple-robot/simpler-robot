@@ -29,7 +29,7 @@ import love.forte.simbot.message.doSafeCast
  * @see ChatroomMessageEvent
  *
  */
-public interface MessageEvent : ObjectiveEvent, RemoteMessageContainer {
+public interface MessageEvent : Event, RemoteMessageContainer {
     override val bot: Bot
     override val metadata: Event.Metadata
 
@@ -40,10 +40,6 @@ public interface MessageEvent : ObjectiveEvent, RemoteMessageContainer {
      *
      */
     public val source: Objectives
-
-    @Api4J
-    override val objective: Objectives
-        get() = source
 
     /**
      * 当前消息事件的消息正文。

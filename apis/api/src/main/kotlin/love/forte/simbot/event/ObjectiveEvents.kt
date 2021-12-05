@@ -23,28 +23,10 @@ import love.forte.simbot.message.doSafeCast
  * 一个与 [Objectives] 相关的事件。
  * 可能是与联系人（好友、成员等）或者与组织（群、频道等）相关的事件。
  *
- * [ObjectiveEvent] 不存在 Key, 不允许被直接监听。
+ * [ObjectiveEvent] 是一个标记用事件类型，不存在 Key, 不允许被直接监听。
  */
-public interface ObjectiveEvent : Event {
+public sealed interface ObjectiveEvent : Event {
     override val bot: Bot
-
-    /**
-     * 与此事件相关的 [Objectives] 目标对象。
-     *
-     * 如果一个事件中存在多种 [ObjectiveEvent] 实现，则尽量避免直接使用 [objective] --- [objective] 的最终指向目标将会不确定。
-     *
-     */
-    @JvmSynthetic
-    public suspend fun objective(): Objectives
-
-    @Api4J
-    public val objective: Objectives
-        get() = runBlocking { objective() }
-
-    // public companion object Key : BaseEventKey<ObjectiveEvent>("api.objective", setOf(Event)) {
-    //     override fun safeCast(value: Any): ObjectiveEvent? = doSafeCast(value)
-    // }
-
 }
 
 
@@ -57,13 +39,6 @@ public interface UserEvent : ObjectiveEvent {
      * 这个[用户][User]。
      */
     public suspend fun user(): User
-
-
-    @Api4J
-    override val objective: Objectives
-        get() = user
-
-    override suspend fun objective(): Objectives = user()
 
     @Api4J
     public val user: User
@@ -88,13 +63,6 @@ public interface MemberEvent : UserEvent {
     @Api4J
     public val member: Member
         get() = runBlocking { member() }
-
-    @Api4J
-    override val objective: Objectives
-        get() = member
-
-    @JvmSynthetic
-    override suspend fun objective(): Objectives = member()
 
     @Api4J
     override val user: User
@@ -123,13 +91,6 @@ public interface FriendEvent : UserEvent {
     @Api4J
     public val friend: Friend
         get() = runBlocking { friend() }
-
-    @Api4J
-    override val objective: Objectives
-        get() = friend
-
-    @JvmSynthetic
-    override suspend fun objective(): Objectives = friend()
 
     @Api4J
     override val user: User
@@ -173,13 +134,6 @@ public interface OrganizationEvent : ObjectiveEvent {
     public val organization: Organization
         get() = runBlocking { organization() }
 
-    @Api4J
-    override val objective: Objectives
-        get() = organization
-
-    @JvmSynthetic
-    override suspend fun objective(): Objectives = organization()
-
     public companion object Key : BaseEventKey<OrganizationEvent>("api.organization", setOf()) {
         override fun safeCast(value: Any): OrganizationEvent? = doSafeCast(value)
     }
@@ -199,13 +153,6 @@ public interface GroupEvent : OrganizationEvent {
     @Api4J
     public val group: Group
         get() = runBlocking { group() }
-
-    @Api4J
-    override val objective: Objectives
-        get() = group
-
-    @JvmSynthetic
-    override suspend fun objective(): Objectives = group()
 
     public companion object Key : BaseEventKey<GroupEvent>("api.group", setOf(OrganizationEvent)) {
         override fun safeCast(value: Any): GroupEvent? = doSafeCast(value)
@@ -228,13 +175,6 @@ public interface GuildEvent : OrganizationEvent {
     public val guild: Guild
         get() = runBlocking { guild() }
 
-    @Api4J
-    override val objective: Objectives
-        get() = guild
-
-    @JvmSynthetic
-    override suspend fun objective(): Objectives = guild()
-
     public companion object Key : BaseEventKey<GuildEvent>("api.guild", setOf(OrganizationEvent)) {
         override fun safeCast(value: Any): GuildEvent? = doSafeCast(value)
     }
@@ -254,14 +194,6 @@ public interface ChannelEvent : OrganizationEvent {
     @Api4J
     public val channel: Channel
         get() = runBlocking { channel() }
-
-    @Api4J
-    override val objective: Objectives
-        get() = channel
-
-    @JvmSynthetic
-    override suspend fun objective(): Objectives = channel()
-
 
     public companion object Key : BaseEventKey<ChannelEvent>("api.channel", setOf(OrganizationEvent)) {
         override fun safeCast(value: Any): ChannelEvent? = doSafeCast(value)
