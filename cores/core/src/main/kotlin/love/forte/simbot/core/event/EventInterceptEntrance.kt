@@ -19,6 +19,7 @@ import love.forte.simbot.event.*
  * 事件相关拦截器入口。通过解析拦截器列表提供一个最终的入口。
  */
 public sealed class EventInterceptEntrance<C : EventInterceptor.Context<R>, R> {
+    @JvmSynthetic
     public abstract suspend fun doIntercept(
         context: EventProcessingContext,
         processing: suspend (EventProcessingContext) -> R
@@ -36,7 +37,10 @@ public sealed class EventInterceptEntrance<C : EventInterceptor.Context<R>, R> {
         /**
          * 得到监听函数拦截器入口。
          */
-        public fun eventListenerInterceptEntrance(listener: EventListener, interceptors: Collection<EventListenerInterceptor>): EventInterceptEntrance<EventListenerInterceptor.Context, EventResult> {
+        public fun eventListenerInterceptEntrance(
+            listener: EventListener,
+            interceptors: Collection<EventListenerInterceptor>
+        ): EventInterceptEntrance<EventListenerInterceptor.Context, EventResult> {
             return if (interceptors.isEmpty()) EventListenerDirectInterceptEntrance
             else EventListenerIteratorInterceptEntrance(listener, interceptors.toList())
         }
@@ -93,6 +97,7 @@ private class EventProcessingIteratorInterceptEntrance(
 
 private object EventProcessingDirectInterceptEntrance
     : EventInterceptEntrance<EventProcessingInterceptor.Context, EventProcessingResult>() {
+
     override suspend fun doIntercept(
         context: EventProcessingContext,
         processing: suspend (EventProcessingContext) -> EventProcessingResult
@@ -137,6 +142,7 @@ private class EventListenerIteratorInterceptEntrance(
 
 private object EventListenerDirectInterceptEntrance
     : EventInterceptEntrance<EventListenerInterceptor.Context, EventResult>() {
+
     override suspend fun doIntercept(
         context: EventProcessingContext,
         processing: suspend (EventProcessingContext) -> EventResult

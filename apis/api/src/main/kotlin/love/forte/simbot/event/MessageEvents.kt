@@ -156,6 +156,7 @@ public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
      */
     override val source: Channel
     override val author: Member
+    @JvmSynthetic
     override suspend fun channel(): Channel
 
     @Api4J

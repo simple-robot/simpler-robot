@@ -107,6 +107,7 @@ internal class CoreListener<E : Event>(
  * 创建一个监听函数。
  */
 @Api4J
+@JvmOverloads
 @JvmName("newCoreListener")
 public fun <E : Event> blockingCoreListener(
     eventKey: Event.Key<E>,

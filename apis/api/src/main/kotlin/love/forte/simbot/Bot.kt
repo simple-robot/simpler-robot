@@ -14,12 +14,12 @@ package love.forte.simbot
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.definition.*
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.message.Image
 import love.forte.simbot.resources.Resource
+import java.util.stream.Stream
 import kotlin.coroutines.CoroutineContext
 
 
@@ -74,11 +74,10 @@ public interface Bot : User, CoroutineScope {
     public suspend fun friends(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Friend>
 
     @Api4J
-    public fun getFriends(grouping: Grouping, limiter: Limiter): List<Friend> {
-        return runBlocking { friends(grouping, limiter).toList() }
-    }
+    public fun getFriends(grouping: Grouping, limiter: Limiter): Stream<out Friend>
+
     @Api4J
-    public fun getFriends(): List<Friend> = getFriends(Grouping.EMPTY, Limiter)
+    public fun getFriends(): Stream<out Friend> = getFriends(Grouping.EMPTY, Limiter)
 
 
     // organizations
@@ -91,11 +90,10 @@ public interface Bot : User, CoroutineScope {
     public suspend fun groups(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Group>
 
     @Api4J
-    public fun getGroups(grouping: Grouping, limiter: Limiter): List<Group> {
-        return runBlocking { groups(grouping, limiter).toList() }
-    }
+    public fun getGroups(grouping: Grouping, limiter: Limiter): Stream<out Group>
+
     @Api4J
-    public fun getGroups(): List<Group> = getGroups(Grouping.EMPTY, Limiter)
+    public fun getGroups(): Stream<out Group> = getGroups(Grouping.EMPTY, Limiter)
 
     /**
      * 获取当前的所有频道服务器列表
@@ -106,11 +104,10 @@ public interface Bot : User, CoroutineScope {
     public suspend fun guilds(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Guild>
 
     @Api4J
-    public fun getGuilds(grouping: Grouping, limiter: Limiter): List<Guild> {
-        return runBlocking { guilds(grouping, limiter).toList() }
-    }
+    public fun getGuilds(grouping: Grouping, limiter: Limiter): Stream<out Guild>
+
     @Api4J
-    public fun getGuilds(): List<Guild> = getGuilds(Grouping.EMPTY, Limiter)
+    public fun getGuilds(): Stream<out Guild> = getGuilds(Grouping.EMPTY, Limiter)
 
     // resources
 
@@ -134,12 +131,17 @@ public interface Bot : User, CoroutineScope {
     @JvmSynthetic
     public suspend fun start(): Boolean
 
+    @Api4J
+    public fun startBlocking(): Boolean = runBlocking { start() }
 
     /**
      * 让当前bot挂起当前协程直至其被 [cancel]
      */
     @JvmSynthetic
     public suspend fun join()
+
+    @Api4J
+    public fun joinBlocking(): Unit = runBlocking { join() }
 
     /**
      * 关闭此Bot。
@@ -152,6 +154,9 @@ public interface Bot : User, CoroutineScope {
      */
     @JvmSynthetic
     public suspend fun cancel(): Boolean
+
+    @Api4J
+    public fun cancelBlocking(): Boolean = runBlocking { cancel() }
 
     /**
      * 是否已经启动过了。

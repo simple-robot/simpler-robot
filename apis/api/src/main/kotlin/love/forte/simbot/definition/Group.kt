@@ -32,13 +32,16 @@ public interface Group : ChatRoom {
     override val description: String
     override val createTime: Timestamp
     override val ownerId: ID
+    @JvmSynthetic
     override suspend fun owner(): Member
+    @Api4J override val owner: Member
     override val maximumMember: Int
     override val currentMember: Int
 
     /**
      * 一般来讲，群不存在子集。
      */
+    @JvmSynthetic
     override suspend fun children(groupingId: ID?, limiter: Limiter): Flow<Organization> {
         return emptyFlow()
     }
@@ -70,7 +73,9 @@ public interface Guild : Organization, GuildInfo {
     override val description: String
     override val createTime: Timestamp
     override val ownerId: ID
+    @JvmSynthetic
     override suspend fun owner(): Member
+    @Api4J override val owner: Member
     override val maximumMember: Int
     override val currentMember: Int
 
@@ -78,9 +83,11 @@ public interface Guild : Organization, GuildInfo {
     /**
      * 一个 Guild 的子集应当是一些频道.
      */
+    @JvmSynthetic
     override suspend fun children(groupingId: ID?, limiter: Limiter): Flow<Channel>
 
 
+    @JvmSynthetic
     override suspend fun children(groupingId: ID?): Flow<Channel> = children(groupingId, Limiter)
 
     @Api4J
@@ -121,7 +128,9 @@ public interface Channel : ChatRoom, ChannelInfo {
     override val description: String
     override val createTime: Timestamp
     override val ownerId: ID
+    @JvmSynthetic
     override suspend fun owner(): Member
+    @Api4J override val owner: Member
     override val maximumMember: Int
     override val currentMember: Int
 

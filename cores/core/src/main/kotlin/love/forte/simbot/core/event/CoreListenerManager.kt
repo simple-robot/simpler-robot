@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.withContext
+import love.forte.simbot.Api4J
 import love.forte.simbot.CharSequenceID
 import love.forte.simbot.ID
 import love.forte.simbot.event.*
@@ -150,6 +151,7 @@ public class CoreListenerManager private constructor(
         return doInvoke(resolveToContext(event, invokers.size), invokers)
     }
 
+    @Api4J
     override fun pushAsync(event: Event): CompletableFuture<EventProcessingResult> {
         val invokers = getInvokers(event.key)
         if (invokers.isEmpty()) return  CompletableFuture<EventProcessingResult>().also {
