@@ -16,9 +16,9 @@ import love.forte.simbot.event.EventListenerManager
 
 
 @Deprecated("User 'coreListenerManager'", ReplaceWith("coreListenerManager(block)"))
-public inline fun coreEventManager(block: CoreEventManagerConfiguration.() -> Unit): EventListenerManager {
+public inline fun coreEventManager(block: CoreListenerManagerConfiguration.() -> Unit): EventListenerManager {
     return coreListenerManager(block)
 }
-public inline fun coreListenerManager(block: CoreEventManagerConfiguration.() -> Unit): EventListenerManager {
-    return CoreListenerManager.newInstance(CoreEventManagerConfiguration().also(block))
+public inline fun coreListenerManager(block: CoreListenerManagerConfiguration.() -> Unit): EventListenerManager {
+    return CoreListenerManager.newInstance(CoreListenerManagerConfiguration().also(block))
 }

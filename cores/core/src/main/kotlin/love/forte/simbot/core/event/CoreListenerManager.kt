@@ -29,6 +29,9 @@ import java.util.concurrent.CompletableFuture
 public typealias CoreEventManager = CoreListenerManager
 
 
+@Deprecated("Just use CoreListenerManagerConfiguration", ReplaceWith("love.forte.simbot.core.event.CoreListenerManagerConfiguration"))
+public typealias CoreEventManagerConfiguration = CoreListenerManagerConfiguration
+
 /**
  * 核心监听函数管理器。
  *
@@ -54,12 +57,12 @@ public typealias CoreEventManager = CoreListenerManager
  *
  */
 public class CoreListenerManager private constructor(
-    configuration: CoreEventManagerConfiguration
+    configuration: CoreListenerManagerConfiguration
 ) : EventListenerManager {
 
     public companion object {
         @JvmStatic
-        public fun newInstance(configuration: CoreEventManagerConfiguration): CoreListenerManager =
+        public fun newInstance(configuration: CoreListenerManagerConfiguration): CoreListenerManager =
             CoreListenerManager(configuration)
     }
 

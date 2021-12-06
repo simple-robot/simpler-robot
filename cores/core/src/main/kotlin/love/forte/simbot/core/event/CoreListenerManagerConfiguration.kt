@@ -31,7 +31,7 @@ internal annotation class CoreEventManagerConfigDSL
  *
  */
 @CoreEventManagerConfigDSL
-public class CoreEventManagerConfiguration {
+public class CoreListenerManagerConfiguration {
     @Volatile
     @JvmSynthetic
     internal var processingInterceptors =
