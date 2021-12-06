@@ -24,23 +24,27 @@ import love.forte.simbot.utils.view
 import java.util.concurrent.CompletableFuture
 
 
+@Deprecated("Just use CoreListenerManager", ReplaceWith("love.forte.simbot.core.event.CoreListenerManager"))
+public typealias CoreEventManager = CoreListenerManager
+
+
 /**
  * 核心监听函数管理器。
  *
  * ## 调度
- * [CoreEventManager] 遵守 [EventProcessor] 接口描述，通过当前事件中的 [bot][Event.bot] 所提供的作用域进行事件调度。
+ * [CoreListenerManager] 遵守 [EventProcessor] 接口描述，通过当前事件中的 [bot][Event.bot] 所提供的作用域进行事件调度。
  *
  *
  * ## 异步函数
- * [CoreEventManager] 中，对于一个异步函数 ([EventListener.isAsync] == true 的函数) 的处理方式与其接口定义的描述相同，
+ * [CoreListenerManager] 中，对于一个异步函数 ([EventListener.isAsync] == true 的函数) 的处理方式与其接口定义的描述相同，
  * 对于这个异步函数的拦截器会与当前异步函数共同进入一个由 [事件bot][Event.bot] 所提供的异步任务中，并对当前的 [EventProcessingContext] 立即返回一个 [AsyncEventResult].
  *
  *
  *
  * ## 监听函数的解析、缓存与获取
- * 在 [CoreEventManager] 中，真正被执行的监听函数是经过缓存与转化的，它们只会在遇到一个目前缓存中未知的事件类型的时候进行同步转化缓存。
+ * 在 [CoreListenerManager] 中，真正被执行的监听函数是经过缓存与转化的，它们只会在遇到一个目前缓存中未知的事件类型的时候进行同步转化缓存。
  *
- * 对于 [CoreEventManager] 内部的监听事件 [注册][register]、[获取][get]，其二者是使用相同锁对象（**当前对象自身**）的同步代码，但是对于内部的监听函数缓存，
+ * 对于 [CoreListenerManager] 内部的监听事件 [注册][register]、[获取][get]，其二者是使用相同锁对象（**当前对象自身**）的同步代码，但是对于内部的监听函数缓存，
  * 其只有在缓存被清空的时候才会去通过上述锁对象进行同步锁定，然后对目前已知的监听函数进行解析。
  *
  * 因此，对于使用 [get] 的时候，尽管它是同步的，但是这并不一定会影响到内部事件调度，因为缓存在存在的情况下是不受锁的影响的。
@@ -48,14 +52,14 @@ import java.util.concurrent.CompletableFuture
  * 而对于 [register], 由于它在注册的时候同样会使用当前对象进行锁定，因此如果存在多个需要注册的监听函数，最好在循环体外部锁住当前对象以防止监听函数缓存频繁争夺同步锁。
  *
  */
-public class CoreEventManager private constructor(
+public class CoreListenerManager private constructor(
     configuration: CoreEventManagerConfiguration
 ) : EventListenerManager {
 
     public companion object {
         @JvmStatic
-        public fun newInstance(configuration: CoreEventManagerConfiguration): CoreEventManager =
-            CoreEventManager(configuration)
+        public fun newInstance(configuration: CoreEventManagerConfiguration): CoreListenerManager =
+            CoreListenerManager(configuration)
     }
 
     /**
@@ -224,9 +228,9 @@ public class CoreEventManager private constructor(
 
 
 /**
- * 事件流程上下文的管理器，[CoreEventManager] 通过此接口实例完成对 [EventProcessingContext] 的统一管理。
+ * 事件流程上下文的管理器，[CoreListenerManager] 通过此接口实例完成对 [EventProcessingContext] 的统一管理。
  *
- *  在 [CoreEventManager] 中仅会使用同一个 [EventProcessingContextResolver] 实例。
+ *  在 [CoreListenerManager] 中仅会使用同一个 [EventProcessingContextResolver] 实例。
  *
  * @sample CoreEventProcessingContextResolver
  */
@@ -242,7 +246,7 @@ public interface EventProcessingContextResolver<C : EventProcessingContext> {
     /**
      * 向提供的上下文 [C] 的 [EventProcessingContext.results] 中追加一个 [EventResult].
      *
-     * [CoreEventManager] 会对所有得到的结果进行尝试推送，包括 [EventResult.Invalid],
+     * [CoreListenerManager] 会对所有得到的结果进行尝试推送，包括 [EventResult.Invalid],
      * 但是建议不会真正的添加 [EventResult.Invalid].
      *
      */

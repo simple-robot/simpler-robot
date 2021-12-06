@@ -25,7 +25,7 @@ import java.util.*
 internal annotation class CoreEventManagerConfigDSL
 
 /**
- * [CoreEventManager] 的配置文件.
+ * [CoreListenerManager] 的配置文件.
  *
  * 当配置文件作为构建参数的时候，他会被立即使用。
  *
