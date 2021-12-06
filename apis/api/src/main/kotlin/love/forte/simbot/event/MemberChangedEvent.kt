@@ -12,10 +12,8 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.Api4J
 import love.forte.simbot.action.ActionType
 import love.forte.simbot.definition.MemberInfo
-import love.forte.simbot.definition.Objectives
 import love.forte.simbot.definition.Organization
 import love.forte.simbot.message.doSafeCast
 
@@ -40,11 +38,6 @@ import love.forte.simbot.message.doSafeCast
  * 其代表一个组织中增加了某个成员。
  */
 public interface MemberIncreaseEvent : IncreaseEvent<Organization, MemberInfo>, OrganizationEvent {
-    /**
-     * [objective] 代表为成员减少时的发生组织。
-     */
-    @Api4J
-    override val objective: Objectives get() = source
 
     /**
      * 发生增加事件的组织。
@@ -71,11 +64,6 @@ public interface MemberIncreaseEvent : IncreaseEvent<Organization, MemberInfo>, 
  * 其代表一个组织中减少了某个成员。
  */
 public interface MemberDecreaseEvent : DecreaseEvent<Organization, MemberInfo>, OrganizationEvent {
-    /**
-     * [objective] 代表为成员减少时的发生组织。
-     */
-    @Api4J
-    override val objective: Objectives get() = source
 
     /**
      * 发生增加事件的组织。

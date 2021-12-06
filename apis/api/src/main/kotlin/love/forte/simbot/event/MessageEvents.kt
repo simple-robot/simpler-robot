@@ -29,7 +29,7 @@ import love.forte.simbot.message.doSafeCast
  * @see ChatroomMessageEvent
  *
  */
-public interface MessageEvent : ObjectiveEvent, RemoteMessageContainer {
+public interface MessageEvent : Event, RemoteMessageContainer {
     override val bot: Bot
     override val metadata: Event.Metadata
 
@@ -40,10 +40,6 @@ public interface MessageEvent : ObjectiveEvent, RemoteMessageContainer {
      *
      */
     public val source: Objectives
-
-    @Api4J
-    override val objective: Objectives
-        get() = source
 
     /**
      * 当前消息事件的消息正文。
@@ -67,10 +63,6 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
      * 私有消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
      */
     override val source: Contact
-
-    @Api4J
-    override val objective: Objectives
-        get() = source
 
     @Api4J
     override val user: User
@@ -104,10 +96,6 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteA
      * 来自的聊天室，通常是一个群或者一个频道。
      */
     override val source: ChatRoom
-
-    @Api4J
-    override val objective: Objectives
-        get() = source
 
     /**
      * 这个消息的发送者.
@@ -145,10 +133,6 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
     override val author: Member
 
     @Api4J
-    override val objective: Objectives
-        get() = source
-
-    @Api4J
     override val group: Group
         get() = source
 
@@ -173,12 +157,6 @@ public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
     override val source: Channel
     override val author: Member
     override suspend fun channel(): Channel
-
-
-    @Api4J
-    override val objective: Objectives
-        get() = source
-
 
     @Api4J
     override val channel: Channel
