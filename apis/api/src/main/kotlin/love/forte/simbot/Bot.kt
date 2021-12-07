@@ -12,9 +12,10 @@
 
 package love.forte.simbot
 
+import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.definition.*
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.message.Image
@@ -32,7 +33,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * @author ForteScarlet
  */
-public interface Bot : User, CoroutineScope {
+public interface Bot : User, CoroutineScope, Survivable {
     override val coroutineContext: CoroutineContext
 
     override val id: ID
@@ -129,19 +130,13 @@ public interface Bot : User, CoroutineScope {
      * @return 尚未启动且本次启动成功后得到 `true`。
      */
     @JvmSynthetic
-    public suspend fun start(): Boolean
-
-    @Api4J
-    public fun startBlocking(): Boolean = runBlocking { start() }
+    override suspend fun start(): Boolean
 
     /**
      * 让当前bot挂起当前协程直至其被 [cancel]
      */
     @JvmSynthetic
-    public suspend fun join()
-
-    @Api4J
-    public fun joinBlocking(): Unit = runBlocking { join() }
+    override suspend fun join()
 
     /**
      * 关闭此Bot。
@@ -153,25 +148,26 @@ public interface Bot : User, CoroutineScope {
      *
      */
     @JvmSynthetic
-    public suspend fun cancel(): Boolean
+    override suspend fun cancel(reason: Throwable?): Boolean
 
-    @Api4J
-    public fun cancelBlocking(): Boolean = runBlocking { cancel() }
+    override fun invokeOnCompletion(handler: CompletionHandler) {
+        coroutineContext[Job]?.invokeOnCompletion(handler) ?: throw IllegalStateException("No Job in here.")
+    }
 
     /**
      * 是否已经启动过了。
      */
-    public val isStarted: Boolean
+    override val isStarted: Boolean
 
     /**
      * 是否正在运行，即启动后尚未关闭。
      */
-    public val isActive: Boolean
+    override val isActive: Boolean
 
     /**
      * 是否已经被取消。
      */
-    public val isCancelled: Boolean
+    override val isCancelled: Boolean
 
 }
 

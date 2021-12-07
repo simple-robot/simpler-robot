@@ -12,8 +12,6 @@
 
 package love.forte.simbot
 
-import kotlinx.coroutines.runBlocking
-
 
 /**
  *
@@ -21,10 +19,11 @@ import kotlinx.coroutines.runBlocking
  * [BotManager] 应当是 获取、注册 [Bot] 的唯一公开途径，
  * 所有 [BotManager] 均由 [OriginBotManager] 进行管理。
  *
+ * [BotManager] 实现 [Survivable], 其存活周期与 [Bot] 无关。
+ *
  * @author ForteScarlet
  */
-
-public abstract class BotManager<B : Bot> : ComponentContainer {
+public abstract class BotManager<B : Bot> : ComponentContainer, Survivable {
     init {
         if (isBeManaged()) {
             @Suppress("LeakingThis")
@@ -40,23 +39,18 @@ public abstract class BotManager<B : Bot> : ComponentContainer {
      * 执行关闭操作。
      * [doCancel] 为当前manager的自定义管理，当前manager关闭后，将会从 [OriginBotManager] 剔除自己。
      */
-    @JvmName("_cancel")
     @JvmSynthetic
-    public suspend fun cancel() {
+    override suspend fun cancel(reason: Throwable?): Boolean {
         // remove first.
         OriginBotManager.remove(this)
-        doCancel()
+        return doCancel(reason)
     }
-
-    @Api4J
-    @JvmName("cancel")
-    public fun cancel4J(): Unit = runBlocking { cancel() }
 
     /**
      * botManager实现者自定义的close函数，
      * 例如关闭所有的BOT。
      */
-    protected abstract suspend fun doCancel()
+    protected abstract suspend fun doCancel(reason: Throwable?): Boolean
 
     /**
      * 根据通用配置信息注册一个BOT。

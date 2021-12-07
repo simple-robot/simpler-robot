@@ -20,7 +20,7 @@ package love.forte.simbot
 public interface Processor<T, R> {
 
     /**
-     * 对目标进行处理。
+     * 对目标进行处理, 并得到一个结果。
       */
     public suspend fun process(target: T): R
 
@@ -30,4 +30,4 @@ public interface Processor<T, R> {
 /**
  * 一个 [异常][Throwable] [处理器][Processor].
  */
-public interface ExceptionProcessor<T : Throwable, R> : Processor<T, R>
+public interface ExceptionProcessor<R> : Processor<Throwable, R>
