@@ -10,10 +10,7 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-package love.forte.common
+package love.forte.simboot
 
-/**
- * 占位
- */
-public object Common {
+public object BootApi {
 }

@@ -20,7 +20,8 @@ import java.util.*
 /**
  * 构建一个 [EventFilter].
  */
-public fun coreListener(id: ID = UUID.randomUUID().ID, tester: suspend (context: EventProcessingContext) -> Boolean): EventFilter =
+@JvmSynthetic
+public fun coreFilter(id: ID = UUID.randomUUID().ID, tester: suspend (context: EventProcessingContext) -> Boolean): EventFilter =
     CoreFilter(id, tester)
 
 
