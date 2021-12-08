@@ -68,12 +68,13 @@ internal class EventListenerWithFilter(
  * 向 [EventListenerManager] 中注册一个监听器。
  */
 @JvmSynthetic
-public fun <E : Event> EventListenerManager.listen(
+public fun <E : Event> EventListenerRegistrar.listen(
     eventKey: Event.Key<E>,
     id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
+    isAsync: Boolean = false,
     func: suspend (EventProcessingContext, E) -> Any?
-): EventListener = coreListener(eventKey, id, blockNext, func).also(::register)
+): EventListener = coreListener(eventKey, id, blockNext, isAsync, func).also(::register)
 
 
 /**
@@ -84,16 +85,19 @@ public fun <E : Event> coreListener(
     eventKey: Event.Key<E>,
     id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
+    isAsync: Boolean = false,
     func: suspend (EventProcessingContext, E) -> Any?
-): EventListener = CoreListener(id, eventKey, blockNext, func)
+): EventListener = CoreListener(id, eventKey, blockNext, isAsync, func)
 
 
 internal class CoreListener<E : Event>(
     override val id: ID,
     private val key: Event.Key<E>,
     private val blockNext: Boolean,
+    override val isAsync: Boolean,
     private val func: suspend (EventProcessingContext, E) -> Any?
 ) : EventListener {
+
     override fun isTarget(eventType: Event.Key<*>): Boolean = eventType.isSubFrom(key)
 
     override suspend fun invoke(context: EventProcessingContext): EventResult {
@@ -113,5 +117,6 @@ public fun <E : Event> blockingCoreListener(
     eventKey: Event.Key<E>,
     id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
+    isAsync: Boolean = false,
     func: BiFunction<EventProcessingContext, E, Any?>
-): EventListener = coreListener(eventKey, id, blockNext, func::apply)
+): EventListener = coreListener(eventKey, id, blockNext, isAsync, func::apply)
