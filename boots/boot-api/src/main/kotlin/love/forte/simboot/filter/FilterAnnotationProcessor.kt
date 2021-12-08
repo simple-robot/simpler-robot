@@ -32,6 +32,20 @@ public fun filterAnnotationProcessContext(
     filter, filterProcessorFactory, filtersProcessorFactory
 )
 
+public fun filterAnnotationProcessContext(
+    filter: Filter,
+    context: FilterAnnotationProcessContext
+): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
+    filter, context.filterProcessorFactory, context.filtersProcessorFactory
+)
+
+public fun filterAnnotationProcessContext(
+    filter: Filter,
+    context: FiltersAnnotationProcessContext
+): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
+    filter, context.filterProcessorFactory, context.filtersProcessorFactory
+)
+
 
 private class FilterAnnotationProcessContextImpl(
     override val filter: Filter,
@@ -52,7 +66,7 @@ public interface FilterAnnotationProcessor {
 
 
 public interface FiltersAnnotationProcessContext {
-    public val filter: Filters
+    public val filters: Filters
     public val filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?
     public val filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
 }
@@ -66,9 +80,25 @@ public fun filtersAnnotationProcessContext(
     filter, filterProcessorFactory, filtersProcessorFactory
 )
 
+public fun filtersAnnotationProcessContext(
+    filter: Filters,
+    context: FilterAnnotationProcessContext
+
+): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
+    filter, context.filterProcessorFactory, context.filtersProcessorFactory
+)
+
+public fun filtersAnnotationProcessContext(
+    filter: Filters,
+    context: FiltersAnnotationProcessContext
+
+): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
+    filter, context.filterProcessorFactory, context.filtersProcessorFactory
+)
+
 
 private class FiltersAnnotationProcessContextImpl(
-    override val filter: Filters,
+    override val filters: Filters,
     override val filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?,
     override val filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
 ) : FiltersAnnotationProcessContext
@@ -81,8 +111,11 @@ public interface FiltersAnnotationProcessor {
 
     /**
      * 处理得到一个最终的汇总 [EventFilter] 实例。
+     *
+     * @return 如果 [Filters.value] 为空或者因为其他原因导致没有有效的过滤器，则返回null.
+     *
      */
-    public fun process(context: FiltersAnnotationProcessContext): EventFilter
+    public fun process(context: FiltersAnnotationProcessContext): EventFilter?
 
 
 }

@@ -176,7 +176,7 @@ public annotation class Filters(
     /**
      * 多个过滤器之间的匹配策略。
      */
-    val mostMatchType: MostMatchType = MostMatchType.ALL,
+    val multiMatchType: MultiFilterMatchType = MultiFilterMatchType.ALL,
 
     /**
      * 当前注解应使用的注解处理器。

@@ -12,7 +12,7 @@
 
 package love.forte.simboot.filter
 
-import love.forte.simboot.Matcher
+import love.forte.simbot.event.EventProcessingContext
 
 
 /**
@@ -21,8 +21,7 @@ import love.forte.simboot.Matcher
  *
  * @author ForteScarlet
  */
-public enum class MostMatchType(private val matcher: Matcher<String, Collection<(target: String) -> Boolean>>) :
-    Matcher<String, Collection<(target: String) -> Boolean>> by matcher {
+public enum class MultiFilterMatchType(private val matcher: suspend (EventProcessingContext, Collection<suspend (target: EventProcessingContext) -> Boolean>) -> Boolean) {
 
     /**
      * 任意匹配成功即可
@@ -37,7 +36,13 @@ public enum class MostMatchType(private val matcher: Matcher<String, Collection<
     /**
      * 需要无成功
      */
-    NONE({ t, r -> r.none { it(t) } })
+    NONE({ t, r -> r.none { it(t) } }),
 
+    ;
+
+    public suspend fun match(
+        target: EventProcessingContext,
+        rule: Collection<suspend (target: EventProcessingContext) -> Boolean>
+    ): Boolean = matcher(target, rule)
 
 }

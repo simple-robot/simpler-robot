@@ -16,13 +16,14 @@ import love.forte.simboot.annotation.Filters
 import love.forte.simboot.annotation.TargetFilter
 import love.forte.simbot.CharSequenceID
 import love.forte.simbot.ID
+import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.core.event.coreFilter
 import love.forte.simbot.event.*
 import java.util.*
 
 /**
  * Boot所提供的默认的 [FilterAnnotationProcessor] 实现，按照注解邀请的预期规范进行处理。
- * 对于嵌套的
+ *
  */
 public object BootFilterAnnotationProcessor : FilterAnnotationProcessor {
     override fun process(context: FilterAnnotationProcessContext): EventFilter {
@@ -37,14 +38,16 @@ public object BootFilterAnnotationProcessor : FilterAnnotationProcessor {
 
         val and = filter.and
         val or = filter.or
-        if (and.value.isEmpty() && or.value.isEmpty()) {
-            return currentFilter
-        }
 
         val andFilter = and.process(context)
         val orFilter = or.process(context)
 
+        // 预解析，不在逻辑中做判断。
         when {
+            andFilter == null && orFilter == null -> {
+                return currentFilter
+            }
+
             // both
             andFilter != null && orFilter != null -> {
                 return coreFilter(currentFilter.id) { filterContext ->
@@ -76,15 +79,9 @@ private fun Filters.process(context: FilterAnnotationProcessContext): EventFilte
     return takeIf { it.value.isNotEmpty() }
         ?.let {
             val processor = context.filtersProcessorFactory(it.processor)
-                ?: throw IllegalStateException("Cannot found processor: ${it.processor}")
+                ?: throw SimbotIllegalStateException("Cannot found processor: ${it.processor}")
 
-            processor.process(
-                filtersAnnotationProcessContext(
-                    it,
-                    context.filterProcessorFactory,
-                    context.filtersProcessorFactory
-                )
-            )
+            processor.process(filtersAnnotationProcessContext(it, context))
         }
 
 }
@@ -131,6 +128,7 @@ private class FilterViaAnnotation(
     val value: String,
     val matchType: MatchType
 ) : EventFilter {
+    private val keyword = if (value.isEmpty()) EmptyKeyword else KeywordImpl(value)
     private val targetMatch: suspend (Event) -> Boolean = target?.toMatcher() ?: { true }
 
     override suspend fun test(context: EventProcessingContext): Boolean {
@@ -142,9 +140,15 @@ private class FilterViaAnnotation(
         }
 
         // match
+        if (event is MessageEvent) {
+            val targetText = event.messageContent.plainText
+            if (!matchType.match(targetText, keyword)) {
+                return false
+            }
+        }
 
 
-        TODO()
+        return true
     }
 }
 
@@ -194,7 +198,6 @@ private fun FilterTarget.toMatcher(): suspend (Event) -> Boolean {
             }
         }
 
-
         true
     }
 
@@ -202,8 +205,37 @@ private fun FilterTarget.toMatcher(): suspend (Event) -> Boolean {
 
 
 public object BootFiltersAnnotationProcessor : FiltersAnnotationProcessor {
-    override fun process(context: FiltersAnnotationProcessContext): EventFilter {
-        TODO("Not yet implemented")
+    override fun process(context: FiltersAnnotationProcessContext): EventFilter? {
+        val filters = context.filters
+
+        val filtersValue = filters.value
+        if (filtersValue.isEmpty()) {
+            return null
+        }
+
+        val filterList = filtersValue.map { f ->
+            val processor = context.filterProcessorFactory(f.processor)
+                ?: throw SimbotIllegalStateException("Cannot found processor: ${f.processor}")
+
+            processor.process(filterAnnotationProcessContext(f, context))
+        }
+
+        // only 1
+        if (filterList.size == 1) {
+            return filterList[0]
+        }
+
+        // multi
+
+        val multiMatchType = filters.multiMatchType
+
+        @Suppress("SuspiciousCallableReferenceInLambda")
+        val matcherList: List<suspend (EventProcessingContext) -> Boolean> = filterList.map { it::test }
+
+
+        return coreFilter(UUID.randomUUID().ID) {
+            multiMatchType.match(it, matcherList)
+        }
     }
 
 
