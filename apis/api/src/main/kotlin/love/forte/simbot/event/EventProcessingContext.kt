@@ -12,6 +12,7 @@
 
 package love.forte.simbot.event
 
+import love.forte.simbot.Attribute
 import org.jetbrains.annotations.UnmodifiableView
 import kotlin.coroutines.CoroutineContext
 
@@ -27,6 +28,7 @@ import kotlin.coroutines.CoroutineContext
  */
 public interface EventProcessingContext : CoroutineContext.Element {
     public companion object Key : CoroutineContext.Key<EventProcessingContext>
+
     override val key: CoroutineContext.Key<*> get() = Key
 
     // 实现 CoroutineContext.Element?
@@ -43,6 +45,11 @@ public interface EventProcessingContext : CoroutineContext.Element {
      */
     public val results: @UnmodifiableView List<EventResult>
 
+    /**
+     * 根据一个 [Attribute] 得到一个属性。
+     *
+     */
+    public fun <T : Any> getAttribute(attribute: Attribute<T>): T?
 
     // 其他参数
 

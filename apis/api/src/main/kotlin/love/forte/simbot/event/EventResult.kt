@@ -43,9 +43,6 @@ public interface EventResult {
     public val isTruncated: Boolean
 
 
-
-
-
     /**
      * 代表着 **无效** 的 [EventResult] 实例。事件处理器不应对此结果进行保留或处理。
      */
@@ -67,8 +64,12 @@ public interface EventResult {
             EventResultImpl(content, blockNext)
 
 
+        /**
+         * 得到一个异步执行函数的 [AsyncEventResult],
+         * 其 [AsyncEventResult.content] 为一个预期返回 [EventResult] 的 [Deferred].
+         */
         @JvmSynthetic
-        public fun async(content: Deferred<Any?>): AsyncEventResult = AsyncEventResult(content)
+        public fun async(content: Deferred<EventResult>): AsyncEventResult = AsyncEventResult(content)
 
     }
 
@@ -89,10 +90,9 @@ public interface EventResult {
  * [content] 作为 [Deferred] 的异步函数返回值。
  *
  */
-public open class AsyncEventResult(override val content: Deferred<Any?>) : EventResult {
+public open class AsyncEventResult(override val content: Deferred<EventResult>) : EventResult {
     override val isTruncated: Boolean get() = false
 }
-
 
 
 private data class EventResultImpl(override val content: Any?, override val isTruncated: Boolean) : EventResult

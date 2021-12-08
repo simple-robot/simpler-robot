@@ -1,0 +1,73 @@
+/*
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *
+ *  根据 Apache License 2.0 获得许可；
+ *  除非遵守许可，否则您不得使用此文件。
+ *  您可以在以下网址获取许可证副本：
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ */
+
+@file:JvmName("CoreInterceptUtil")
+
+package love.forte.simbot.core.event
+
+import love.forte.simbot.ID
+import love.forte.simbot.PriorityConstant
+import love.forte.simbot.event.EventListener
+import love.forte.simbot.event.EventListenerInterceptor
+import love.forte.simbot.event.EventProcessingContext
+import love.forte.simbot.event.EventResult
+import java.util.*
+
+
+/**
+ * 构建一个独立的监听函数拦截器。
+ *
+ */
+@JvmSynthetic
+public fun coreListenerIntercept(
+    id: ID = UUID.randomUUID().ID,
+    priority: Int = PriorityConstant.NORMAL,
+    interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
+): EventListenerInterceptor {
+    return CoreFunctionalEventListenerInterceptor(
+        id, priority, interceptFunction
+    )
+}
+
+/**
+ * @see coreListenerIntercept
+ */
+@JvmOverloads
+@JvmName("coreListenerIntercept")
+public fun coreListenerIntercept4J(
+    id: ID = UUID.randomUUID().ID,
+    priority: Int = PriorityConstant.NORMAL,
+    interceptFunction: (EventListenerInterceptor.Context) -> EventResult
+): EventListenerInterceptor = coreListenerIntercept(id, priority, interceptFunction)
+
+/**
+ * 为当前监听函数组合一套拦截器。
+ *
+ * 假如当前监听函数已经被组合过拦截器，那么本次拦截组合将会直接在原来的基础上进行组合，而不会重新计算优先级。
+ *
+ */
+public operator fun EventListener.plus(interceptors: Collection<EventListenerInterceptor>): EventListener {
+    return if (interceptors.isEmpty()) return this
+    else EventListenerWithInterceptor(this, interceptors.toList())
+}
+
+
+private class EventListenerWithInterceptor(
+    listener: EventListener,
+    interceptors: Collection<EventListenerInterceptor>
+) : EventListener by listener {
+    private val entrance = EventListenerIteratorInterceptEntrance(listener, interceptors)
+    override suspend fun invoke(context: EventProcessingContext): EventResult {
+        return entrance.doIntercept(context)
+    }
+}
+

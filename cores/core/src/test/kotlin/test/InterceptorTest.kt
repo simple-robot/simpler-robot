@@ -14,7 +14,8 @@ package test
 
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.ID
-import love.forte.simbot.event.*
+import love.forte.simbot.event.EventProcessingInterceptor
+import love.forte.simbot.event.EventProcessingResult
 import java.util.*
 
 /**
@@ -67,10 +68,3 @@ class TestInterceptor(private val run: suspend (EventProcessingInterceptor.Conte
 }
 
 
-class TestProcessingContext : EventProcessingContext {
-    override val event: Event
-        get() = TODO("Not yet implemented")
-    override val results: List<EventResult>
-        get() = TODO("Not yet implemented")
-
-}

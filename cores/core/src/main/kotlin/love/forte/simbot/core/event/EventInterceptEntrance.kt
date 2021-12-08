@@ -68,8 +68,8 @@ public sealed class EventInterceptEntrance<C : EventInterceptor.Context<R>, R> {
  * 核心所实现的事件拦截器入口。提供拦截器迭代器列表，通过 doIntercept 提供真实逻辑。
  *
  */
-private class EventProcessingIteratorInterceptEntrance(
-    private val interceptorsIterable: Iterable<EventProcessingInterceptor>,
+internal class EventProcessingIteratorInterceptEntrance(
+    internal val interceptorsIterable: Iterable<EventProcessingInterceptor>,
 ) : EventInterceptEntrance<EventProcessingInterceptor.Context, EventProcessingResult>() {
 
     override suspend fun doIntercept(
@@ -79,7 +79,7 @@ private class EventProcessingIteratorInterceptEntrance(
         return IteratorInterceptorContext(context, processing).proceed()
     }
 
-    private inner class IteratorInterceptorContext(
+    internal inner class IteratorInterceptorContext(
         override val eventContext: EventProcessingContext,
         processing: suspend (EventProcessingContext) -> EventProcessingResult
     ) : EventInterceptEntrance.IteratorInterceptorContext<
@@ -95,7 +95,7 @@ private class EventProcessingIteratorInterceptEntrance(
     }
 }
 
-private object EventProcessingDirectInterceptEntrance
+internal object EventProcessingDirectInterceptEntrance
     : EventInterceptEntrance<EventProcessingInterceptor.Context, EventProcessingResult>() {
 
     override suspend fun doIntercept(
@@ -110,9 +110,9 @@ private object EventProcessingDirectInterceptEntrance
  * 核心所实现的事件拦截器入口。提供拦截器迭代器列表，通过 doIntercept 提供真实逻辑。
  *
  */
-private class EventListenerIteratorInterceptEntrance(
-    val listener: EventListener,
-    private val interceptorsIterable: Iterable<EventListenerInterceptor>,
+internal class EventListenerIteratorInterceptEntrance(
+    internal val listener: EventListener,
+    internal val interceptorsIterable: Iterable<EventListenerInterceptor>,
 ) : EventInterceptEntrance<EventListenerInterceptor.Context, EventResult>() {
 
     override suspend fun doIntercept(
@@ -122,7 +122,12 @@ private class EventListenerIteratorInterceptEntrance(
         return IteratorInterceptorContext(listener, context, processing).proceed()
     }
 
-    private inner class IteratorInterceptorContext(
+    suspend fun doIntercept(context: EventProcessingContext): EventResult {
+        return doIntercept(context, listener::invoke)
+    }
+
+
+    internal inner class IteratorInterceptorContext(
         override val listener: EventListener,
         override val eventContext: EventProcessingContext,
         processing: suspend (EventProcessingContext) -> EventResult
@@ -140,7 +145,7 @@ private class EventListenerIteratorInterceptEntrance(
     }
 }
 
-private object EventListenerDirectInterceptEntrance
+internal object EventListenerDirectInterceptEntrance
     : EventInterceptEntrance<EventListenerInterceptor.Context, EventResult>() {
 
     override suspend fun doIntercept(
