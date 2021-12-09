@@ -18,6 +18,7 @@ import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.PostPass
 import love.forte.simbot.bot.BotManager
+import love.forte.simbot.bot.BotVerifyException
 import love.forte.simbot.bot.BotVerifyInfoConfiguration
 import love.forte.simbot.bot.code
 import love.forte.simbot.core.TypedCompLogger
@@ -43,10 +44,10 @@ public class CoreBotRegistrar {
      * 注册bot。
      */
     @PostPass
-    public fun registerBots(){
+    public fun registerBots() {
         val bots = botVerifyConfiguration.configuredBotVerifyInfos
 
-        if(bots.isEmpty() && botManager.bots.isEmpty()) {
+        if (bots.isEmpty() && botManager.bots.isEmpty()) {
             logger.warn("No bot information is configured.")
         } else {
 
@@ -57,7 +58,7 @@ public class CoreBotRegistrar {
                 logger.debug("Configured bot: {}", show)
             }
 
-            bots.asSequence().distinct().forEach { info ->
+            bots.distinct().forEach { info ->
                 // val info = botVerifyInfoBySplit(it)
                 val showName = info["name"]
                 val show = showName?.takeIf { it.isNotBlank() }?.let { "$it-${info.code}" } ?: info.code
