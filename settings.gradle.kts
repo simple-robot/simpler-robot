@@ -22,6 +22,7 @@ includePro(":apis:api")
 includePro(":annotation")
 includePro(":cores:core")
 includePro(":boots:boot-api")
+includePro(":boots:boot-core-annotation")
 includePro(":boots:boot-core")
 
 

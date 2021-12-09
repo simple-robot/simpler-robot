@@ -34,6 +34,7 @@ dependencies {
     api(project(":cores:core"))
     api(V.Slf4j.Api.notation)
     api(V.Kotlinx.Coroutines.Core.Jvm.notation)
+    api(V.Kotlinx.Coroutines.J8.notation)
     api(V.Kotlinx.Serialization.Core.notation)
     compileOnly("javax.annotation:javax.annotation-api:1.3.2")
 

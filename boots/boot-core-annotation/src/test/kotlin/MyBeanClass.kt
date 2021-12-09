@@ -10,9 +10,7 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-import love.forte.simboot.annotation.Filter
-import love.forte.simboot.annotation.Filters
-import love.forte.simbot.event.Event
+import javax.inject.Named
 
 /*
  *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
@@ -26,11 +24,10 @@ import love.forte.simbot.event.Event
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-
-
-@Filter("Foo1")
-@Filter("Foo2", and = Filters(
-    Filter("Foo3"),
-    Filter("Foo4"),
-))
-suspend fun Event.test(){}
+/**
+ *
+ * @author ForteScarlet
+ */
+@Named
+class MyBeanClass {
+}

@@ -12,20 +12,52 @@
 
 package love.forte.simboot.filter
 
-import love.forte.simboot.annotation.Filter
-import love.forte.simboot.annotation.Filters
 import love.forte.simbot.event.EventFilter
 import kotlin.reflect.KClass
 
 
+/**
+ * Annotation data for `@Filter`
+ */
+public data class FilterData(
+    val value: String,
+    val matchType: MatchType = MatchType.REGEX_MATCHES,
+    val target: TargetFilterData = TargetFilterData(),
+    val and: FiltersData = FiltersData(),
+    val or: FiltersData = FiltersData(),
+    val processor: KClass<out FilterAnnotationProcessor> = FilterAnnotationProcessor::class
+)
+
+/**
+ * Annotation data for `@TargetFilter`
+ */
+public data class TargetFilterData(
+    val components: List<String> = emptyList(),
+    val bots: List<String> = emptyList(),
+    val authors: List<String> = emptyList(),
+    val groups: List<String> = emptyList(),
+    val channels: List<String> = emptyList(),
+    val guilds: List<String> = emptyList()
+)
+
+/**
+ * Annotation data for `@Filters`
+ */
+public data class FiltersData(
+    val value: List<FilterData> = emptyList(),
+    val multiMatchType: MultiFilterMatchType = MultiFilterMatchType.ALL,
+    val processor: KClass<out FiltersAnnotationProcessor> = FiltersAnnotationProcessor::class
+)
+
+
 public interface FilterAnnotationProcessContext {
-    public val filter: Filter
+    public val filter: FilterData
     public val filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?
     public val filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
 }
 
 public fun filterAnnotationProcessContext(
-    filter: Filter,
+    filter: FilterData,
     filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?,
     filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
 ): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
@@ -33,14 +65,14 @@ public fun filterAnnotationProcessContext(
 )
 
 public fun filterAnnotationProcessContext(
-    filter: Filter,
+    filter: FilterData,
     context: FilterAnnotationProcessContext
 ): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
     filter, context.filterProcessorFactory, context.filtersProcessorFactory
 )
 
 public fun filterAnnotationProcessContext(
-    filter: Filter,
+    filter: FilterData,
     context: FiltersAnnotationProcessContext
 ): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
     filter, context.filterProcessorFactory, context.filtersProcessorFactory
@@ -48,7 +80,7 @@ public fun filterAnnotationProcessContext(
 
 
 private class FilterAnnotationProcessContextImpl(
-    override val filter: Filter,
+    override val filter: FilterData,
     override val filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?,
     override val filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
 ) : FilterAnnotationProcessContext
@@ -56,7 +88,7 @@ private class FilterAnnotationProcessContextImpl(
 
 /**
  *
- * 对 [Filter] 注解进行解析的处理加工器接口。
+ * 对 [FilterData] 进行解析的处理加工器接口。
  *
  * @author ForteScarlet
  */
@@ -66,13 +98,13 @@ public interface FilterAnnotationProcessor {
 
 
 public interface FiltersAnnotationProcessContext {
-    public val filters: Filters
+    public val filters: FiltersData
     public val filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?
     public val filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
 }
 
 public fun filtersAnnotationProcessContext(
-    filter: Filters,
+    filter: FiltersData,
     filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?,
     filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
 
@@ -81,7 +113,7 @@ public fun filtersAnnotationProcessContext(
 )
 
 public fun filtersAnnotationProcessContext(
-    filter: Filters,
+    filter: FiltersData,
     context: FilterAnnotationProcessContext
 
 ): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
@@ -89,7 +121,7 @@ public fun filtersAnnotationProcessContext(
 )
 
 public fun filtersAnnotationProcessContext(
-    filter: Filters,
+    filter: FiltersData,
     context: FiltersAnnotationProcessContext
 
 ): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
@@ -98,13 +130,13 @@ public fun filtersAnnotationProcessContext(
 
 
 private class FiltersAnnotationProcessContextImpl(
-    override val filters: Filters,
+    override val filters: FiltersData,
     override val filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?,
     override val filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
 ) : FiltersAnnotationProcessContext
 
 /**
- * 对 [Filters] 注解进行解析的处理加工器接口。
+ * 对 [FiltersData] 进行解析的处理加工器接口。
  *
  */
 public interface FiltersAnnotationProcessor {
@@ -112,7 +144,7 @@ public interface FiltersAnnotationProcessor {
     /**
      * 处理得到一个最终的汇总 [EventFilter] 实例。
      *
-     * @return 如果 [Filters.value] 为空或者因为其他原因导致没有有效的过滤器，则返回null.
+     * @return 如果 [FiltersData.value] 为空或者因为其他原因导致没有有效的过滤器，则返回null.
      *
      */
     public fun process(context: FiltersAnnotationProcessContext): EventFilter?

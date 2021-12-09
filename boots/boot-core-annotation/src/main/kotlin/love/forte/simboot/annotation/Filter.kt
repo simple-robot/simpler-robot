@@ -12,7 +12,10 @@
 
 package love.forte.simboot.annotation
 
-import love.forte.simboot.filter.*
+import love.forte.simboot.filter.FilterAnnotationProcessor
+import love.forte.simboot.filter.FiltersAnnotationProcessor
+import love.forte.simboot.filter.MatchType
+import love.forte.simboot.filter.MultiFilterMatchType
 import love.forte.simbot.event.ChannelEvent
 import love.forte.simbot.event.GroupEvent
 import love.forte.simbot.event.GuildEvent
@@ -25,6 +28,7 @@ import kotlin.reflect.KClass
 @Repeatable
 @JvmRepeatable(Filters::class)
 @Target(AnnotationTarget.FUNCTION)
+@MustBeDocumented
 public annotation class Filter(
     /**
      * 匹配规则值。
@@ -122,7 +126,7 @@ public annotation class Filter(
      * 当 [Filters.processor] 被重新指定后，无法保证对于当前 [processor] 的处理方式。
      *
      */
-    val processor: KClass<out FilterAnnotationProcessor> = BootFilterAnnotationProcessor::class,
+    val processor: KClass<out FilterAnnotationProcessor> = FilterAnnotationProcessor::class,
 
 
     )
@@ -136,7 +140,7 @@ public annotation class Filter(
  */
 public annotation class TargetFilter(
     /**
-     *
+     * 对接收事件的组件匹配
      */
     val components: Array<String> = [],
     /**
@@ -167,6 +171,7 @@ public annotation class TargetFilter(
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
+@MustBeDocumented
 public annotation class Filters(
     /**
      * 所有过滤器
@@ -189,5 +194,5 @@ public annotation class Filters(
      * 上述所有字段的最终表现形式均无法得到保证，其最终结果由指定的处理器全权负责。
      *
      */
-    val processor: KClass<out FiltersAnnotationProcessor> = BootFiltersAnnotationProcessor::class
+    val processor: KClass<out FiltersAnnotationProcessor> = FiltersAnnotationProcessor::class
 )

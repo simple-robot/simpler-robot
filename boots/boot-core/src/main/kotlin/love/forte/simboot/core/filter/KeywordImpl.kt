@@ -11,7 +11,11 @@
  */
 @file:JvmName("CoreKeywords")
 
-package love.forte.simboot.filter
+package love.forte.simboot.core.filter
+
+import love.forte.simboot.filter.Keyword
+import love.forte.simboot.filter.MatcherValue
+import love.forte.simboot.filter.RegexMatcherValue
 
 
 /**
@@ -29,27 +33,4 @@ internal class KeywordImpl(override val text: String) : Keyword {
 }
 
 
-internal object EmptyFilterParameterMatcher : MatcherValue {
-    override val original: String get() = ""
-    override val regex: Regex = Regex("")
-    override fun matches(text: String): Boolean = false
-    override fun getParam(name: String, text: String): String? = null
-    override fun getParameters(text: String?): MatchParameters = EmptyFilterParameters
-}
 
-
-public object EmptyKeyword : Keyword {
-    override val regex: Regex
-        get() = EmptyFilterParameterMatcher.regex
-
-    override val text: String
-        get() = ""
-
-    override val matcherValue: MatcherValue
-        get() = EmptyFilterParameterMatcher
-}
-
-
-public object EmptyFilterParameters : MatchParameters {
-    override fun get(key: String): String? = null
-}

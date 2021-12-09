@@ -10,10 +10,9 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-package love.forte.simboot.filter
+package love.forte.simboot.core.filter
 
-import love.forte.simboot.annotation.Filters
-import love.forte.simboot.annotation.TargetFilter
+import love.forte.simboot.filter.*
 import love.forte.simbot.CharSequenceID
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalStateException
@@ -75,7 +74,7 @@ public object BootFilterAnnotationProcessor : FilterAnnotationProcessor {
 
 }
 
-private fun Filters.process(context: FilterAnnotationProcessContext): EventFilter? {
+private fun FiltersData.process(context: FilterAnnotationProcessContext): EventFilter? {
     return takeIf { it.value.isNotEmpty() }
         ?.let {
             val processor = context.filtersProcessorFactory(it.processor)
@@ -88,7 +87,7 @@ private fun Filters.process(context: FilterAnnotationProcessContext): EventFilte
 
 
 /**
- * @see TargetFilter
+ * @see TargetFilterData
  */
 private data class FilterTarget(
     val components: Set<CharSequenceID>,
@@ -99,7 +98,7 @@ private data class FilterTarget(
     val guilds: Set<String>,
 )
 
-private fun TargetFilter.box(): FilterTarget? {
+private fun TargetFilterData.box(): FilterTarget? {
     if (
         components.isEmpty() &&
         bots.isEmpty() &&

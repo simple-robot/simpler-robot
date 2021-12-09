@@ -29,6 +29,7 @@ internal abstract class NoSupportMarkEvent : Event
 @Repeatable
 @JvmRepeatable(Listens::class)
 @Target(AnnotationTarget.FUNCTION)
+@MustBeDocumented
 public annotation class Listen(
     /**
      * 事件类型。指定的事件必须存在一个实现了 [Event.Key] 的伴生对象，
@@ -47,4 +48,5 @@ public annotation class Listen(
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
+@MustBeDocumented
 public annotation class Listens(vararg val value: Listen)

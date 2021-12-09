@@ -24,8 +24,10 @@ package love.forte.simboot.annotation
  *
  * ```
  * 默认情况下，此函数的ID为其全限定名，你可以通过 [Listener.id] 指定一个ID。
+ * 当不指定的时候默认为当前标记对象的全限定二进制名称。
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@MustBeDocumented
 public annotation class Listener(val id: String = "")

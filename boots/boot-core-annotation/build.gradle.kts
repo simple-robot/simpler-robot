@@ -31,14 +31,11 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 }
 
 dependencies {
-    // compileOnly(project(":core"))
-    // implementation(V.Kotlin.Reflect.notation)
     api(project(":boots:boot-api"))
-    api(project(":boots:boot-core-annotation"))
-
-    api(V.Slf4j.Api.notation)
-    api(V.Kotlinx.Coroutines.Core.Jvm.notation)
-    api(V.Kotlinx.Serialization.Core.notation)
+    compileOnly("javax.annotation:javax.annotation-api:1.3.2")
+    api("javax.inject:javax.inject:1")
+    compileOnly("org.springframework.boot:spring-boot-autoconfigure:2.5.7")
+    compileOnly("love.forte.annotation-tool:core:0.5.0")
 
     testImplementation(V.Kotlin.Test.Junit.notation)
     testImplementation(V.Kotlinx.Serialization.Json.notation)
@@ -52,9 +49,9 @@ kotlin {
 
 
     sourceSets.all {
-        languageSettings {
-            optIn("kotlin.RequiresOptIn")
+            languageSettings {
+                optIn("kotlin.RequiresOptIn")
+            }
         }
-    }
 }
 
