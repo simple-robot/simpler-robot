@@ -96,7 +96,7 @@ public infix fun Component.like(other: Component): Boolean =
  * @see Component
  */
 public object Components {
-    private val comps: MutableMap<ID, Component> = ConcurrentHashMap<ID, Component>().also {
+    private val comps: ConcurrentHashMap<ID, Component> = ConcurrentHashMap<ID, Component>().also {
         it[SimbotComponent.id] = SimbotComponent
     }
 
@@ -164,6 +164,8 @@ public object Components {
         }
     }
 
+
+
     /**
      * 创建一个对应 [id] 的 [Component] 并记录。如果 [Component] 已经存在，则抛出 [ComponentAlreadyExistsException].
      *
@@ -203,6 +205,12 @@ public object Components {
      *
      */
     public fun find(id: ID): Component? = comps[id.toCharSequenceID()]
+
+
+    public fun getAll(): Sequence<Component> = sequence {
+        yield(SimbotComponent)
+        yieldAll(comps.values)
+    }
 
 
     internal data class Comp(
