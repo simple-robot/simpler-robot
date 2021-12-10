@@ -210,10 +210,7 @@ public object Components {
 
 
     @Suppress("MemberVisibilityCanBePrivate")
-    public val all: Sequence<Component> get() = sequence {
-        yield(SimbotComponent)
-        yieldAll(comps.values)
-    }
+    public val all: Sequence<Component> get() = comps.values.asSequence()
 
     @Api4J
     public fun all(): Stream<Component> = all.asStream()
