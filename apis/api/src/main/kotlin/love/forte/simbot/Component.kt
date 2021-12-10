@@ -75,7 +75,7 @@ public object SimbotComponent : Component() {
     override val name: String get() = "simbot"
     override fun <T : Any> get(attribute: Attribute<T>): T? = null
     override fun attributes(): AttributeMap = AttributeMap.Empty // TODO include metadata?
-    override fun toString(): String = "Component(id=simbot)"
+    override fun toString(): String = "SimbotComponent"
     override fun hashCode(): Int = 0
     override fun contains(scope: Scope): Boolean = true
 }
