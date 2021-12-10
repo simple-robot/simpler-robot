@@ -179,7 +179,7 @@ public interface Event : BotContainer {
  *
  */
 public infix fun Event.Key<*>.isSubFrom(parentMaybe: Event.Key<*>): Boolean {
-    if (parentMaybe === Event) return true
+    if (parentMaybe === Event || parentMaybe === this) return true
     if (parentMaybe in parents) return true
     return parents.any {
         it isSubFrom parentMaybe
