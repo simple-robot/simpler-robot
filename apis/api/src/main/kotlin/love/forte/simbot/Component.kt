@@ -19,7 +19,9 @@ import love.forte.simbot.definition.Container
 import love.forte.simbot.message.Messages
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.stream.Stream
 import kotlin.collections.set
+import kotlin.streams.asStream
 
 
 /**
@@ -207,10 +209,14 @@ public object Components {
     public fun find(id: ID): Component? = comps[id.toCharSequenceID()]
 
 
-    public fun getAll(): Sequence<Component> = sequence {
+    @Suppress("MemberVisibilityCanBePrivate")
+    public val all: Sequence<Component> get() = sequence {
         yield(SimbotComponent)
         yieldAll(comps.values)
     }
+
+    @Api4J
+    public fun all(): Stream<Component> = all.asStream()
 
 
     internal data class Comp(
