@@ -1,7 +1,7 @@
 <!--suppress HtmlDeprecatedAttribute -->
 
 <div align="center">
-    <img src="../../.github/logo/logo.png" alt="logo" style="width:230px; height:230px; border-radius:100%; " />
+    <img src="../../.github/logo/logo.png" alt="logo" style="width:230px; height:230px; border-radius:50%; " />
     <h3>
         - simpler-robot -
     </h3>
