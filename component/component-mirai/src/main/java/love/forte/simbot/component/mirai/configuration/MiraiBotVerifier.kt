@@ -112,7 +112,8 @@ public class MiraiBotVerifier(
         }.getOrElse {
             logger.error("Verifier bot(${botInfo.code}) failed.")
             runBlocking { mBot?.closeAndJoin(it) }
-            throw BotVerifyException("Cannot verifier bot code: ${botInfo.code}. reason: $it")
+            it.initCause(null) // 丢弃 cause, 仅保留 Suppressed.
+            throw BotVerifyException("Cannot verifier bot code: ${botInfo.code}. reason: ${it.localizedMessage}", it)
         }
     }
 
