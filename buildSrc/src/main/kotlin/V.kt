@@ -204,7 +204,7 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
         override val isAbsolute: Boolean get() = true
 
         companion object {
-            const val VERSION = "1.7.9"
+            const val VERSION = "1.7.32"
         }
 
         object Api : Slf4j("api")
