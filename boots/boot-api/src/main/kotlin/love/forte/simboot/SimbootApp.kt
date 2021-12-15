@@ -66,7 +66,9 @@ public object SimbootApp {
     public fun run(application: Any?, vararg args: String): SimbootContext {
         return runCatching {
             loadEntranceInstance().run(Context(application, Array(args.size) { args[it] }, bootLogger))
-        }.getOrElse { failure -> throw SimBootApplicationException(failure) }
+        }.getOrElse { failure ->
+            throw SimBootApplicationException(failure)
+        }
     }
 
 

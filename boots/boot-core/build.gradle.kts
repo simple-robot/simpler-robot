@@ -40,6 +40,8 @@ dependencies {
     api(V.Kotlinx.Coroutines.Core.Jvm.notation)
     api(V.Kotlinx.Serialization.Core.notation)
 
+    // implementation(V.AutoService.AutoService.notation)
+    // annotationProcessor(V.AutoService.AutoService.notation)
     testImplementation(V.Kotlin.Test.Junit.notation)
     testImplementation(V.Kotlinx.Serialization.Json.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)

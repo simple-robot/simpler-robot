@@ -16,6 +16,9 @@ import love.forte.simbot.PriorityConstant
 import love.forte.simbot.event.EventProcessingContext
 import love.forte.simbot.event.EventResult
 import kotlin.reflect.KCallable
+import kotlin.reflect.KFunction
+import kotlin.reflect.KParameter
+import kotlin.reflect.full.callSuspend
 
 
 /**
@@ -28,11 +31,18 @@ public abstract class InvokerCallableBindableEventListener<R> : GenericBootEvent
     /**
      * 当前监听函数所对应的执行器。
      */
-    protected abstract val caller: KCallable<R>
+    protected abstract val caller: KFunction<R>
 
+    /**
+     * binder数组，其索引下标与 [KCallable.parameters] 的 [KParameter.index] 相对应。
+     */
+    protected abstract val binder: Array<ParameterBinder>
 
-    override suspend fun invoke(context: EventProcessingContext): EventResult {
-        TODO("Not yet implemented")
+    final override suspend fun invoke(context: EventProcessingContext): EventResult {
+        val result = caller.callSuspend(binder.map { it.getArg(context) })
+        caller.callSuspend()
+        return if (result is EventResult) result
+        else EventResult.of(result)
     }
 
 }
@@ -41,11 +51,16 @@ public abstract class InvokerCallableBindableEventListener<R> : GenericBootEvent
 /**
  * 参数绑定器。通过所需的执行参数而得到的参数绑定器。
  *
- * 对于一个可执行函数的参数列表 [KParameter]
+ * 对于一个可执行函数的参数 [KParameter] 所需的结果获取器。
  *
  *
  */
 public interface ParameterBinder {
+
+    /**
+     * 根据当前事件处理上下文得到参数值。
+     */
+    public suspend fun getArg(context: EventProcessingContext): Any?
 
 }
 

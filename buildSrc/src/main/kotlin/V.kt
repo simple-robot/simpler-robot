@@ -225,6 +225,17 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
     object Okio : V("com.squareup.okio", "okio", "3.0.0")
 
 
+    // com.google.auto.service:auto-service
+
+    sealed class AutoService(id: String) : V("com.google.auto.service", id, VERSION) {
+        companion object {
+            const val VERSION = "1.0-rc6"
+        }
+
+        object AutoService : V.AutoService("auto-service")
+        object Annotations : V.AutoService("auto-service-annotations")
+
+    }
 
 
 

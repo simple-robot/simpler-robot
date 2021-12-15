@@ -20,7 +20,7 @@ import love.forte.simboot.SimbootContext
  *
  * 由 `boot-core` 提供的基础boot入口。
  *
- * [CoreBootEntrance] 提供Java包路径扫描，并解析加载一切内容，提供依赖注入功能并
+ * [CoreBootEntrance] 提供Java包路径扫描，并解析加载一切内容，提供依赖注入功能.
  *
  * @author ForteScarlet
  */
