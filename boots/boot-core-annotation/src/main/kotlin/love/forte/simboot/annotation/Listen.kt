@@ -21,7 +21,8 @@ internal abstract class NoSupportMarkEvent : Event
 /**
  * 标记于一个函数上，代表它们所表示的监听函数应当要监听的事件类型集。
  *
- * 与 [Listener] 同时存在时，通过 [Listen] 来判定监听类型而不是自动判断。
+ * 需要在标记 [Listener] 的情况下使用 [Listen]. 当标记 [Listen] 后，
+ * 不会再自动判定类型。
  *
  * @see love.forte.simbot.event.Event
  */

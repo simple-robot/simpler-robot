@@ -14,7 +14,7 @@ package love.forte.simboot.annotation
 
 
 /**
- * 标记一个函数为监听器/监听函数，并自动检测其监听类型。
+ * 标记一个函数为监听器/监听函数，并尝试自动检测其监听类型。
  *
  * 当标记在一个kotlin扩展函数上的时候，此函数的 receiver 应当是你想要监听的事件类型，eg：
  * ```kotlin
