@@ -20,6 +20,7 @@ import love.forte.simbot.*
 import love.forte.simbot.event.*
 import love.forte.simbot.utils.view
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ConcurrentHashMap
 
 
 @Deprecated("Just use CoreListenerManager", ReplaceWith("love.forte.simbot.core.event.CoreListenerManager"))
@@ -285,16 +286,28 @@ public enum class ListenerInvokeType {
  * 核心默认的事件上下文处理器。
  */
 internal object CoreEventProcessingContextResolver : EventProcessingContextResolver<CoreEventProcessingContext> {
+
+    // 考虑支持对attributeMap内容生成的自定义支持.
+
+    /**
+     * 每一次的事件处理都应存在的属性内容。
+     */
+    private val constMaps = mutableMapOf<Attribute<*>, Any>(
+        EventProcessingContext.Scope.Global to GlobalScopeContext()
+    )
+
+    private class GlobalScopeContext : ScopeContext, MutableAttributeMap by AttributeHashMap(ConcurrentHashMap())
+
     /**
      * attribute map.
      */
-    private val attributeMap = AttributeHashMap()
+    // private val attributeMap = AttributeHashMap(ConcurrentHashMap())
 
     /**
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
      */
     override suspend fun resolveEventToContext(event: Event, listenerSize: Int): CoreEventProcessingContext {
-        return CoreEventProcessingContext(event, attributeMap) { ArrayList(listenerSize) }
+        return CoreEventProcessingContext(event, AttributeHashMap(ConcurrentHashMap(constMaps))) { ArrayList(listenerSize) }
     }
 
 

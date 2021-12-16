@@ -13,6 +13,8 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.Attribute
+import love.forte.simbot.MutableAttributeMap
+import love.forte.simbot.attribute
 import org.jetbrains.annotations.UnmodifiableView
 import kotlin.coroutines.CoroutineContext
 
@@ -28,10 +30,36 @@ import kotlin.coroutines.CoroutineContext
  */
 public interface EventProcessingContext : CoroutineContext.Element {
     public companion object Key : CoroutineContext.Key<EventProcessingContext>
-
     override val key: CoroutineContext.Key<*> get() = Key
 
-    // 实现 CoroutineContext.Element?
+
+    /**
+     * 事件流程上下文的部分作用域。 [Scope] 中的所有作用域应该按照约定由 [EventProcessingContext] 的产生者进行实现与提供。
+     *
+     * 通过 [getAttribute] 获取对应作用域结果。
+     *
+     */
+    @Suppress("NO_EXPLICIT_RETURN_TYPE_IN_API_MODE_WARNING")
+    public object Scope {
+        /**
+         * 全局作用域。 一个 [ScopeContext], 此作用域下的内容应当保持.
+         *
+         */
+        @JvmStatic
+        public val Global = attribute<ScopeContext>("context.scope.global")
+
+        /**
+         * 瞬时作用域，每一次的事件处理流程都是一个新的 [ScopeContext].
+         */
+        @JvmStatic
+        public val Instant = attribute<ScopeContext>("context.scope.instant")
+
+
+        // 持续会话作用域
+
+
+    }
+
 
     /**
      * 本次监听流程中的事件主题。
@@ -58,7 +86,7 @@ public interface EventProcessingContext : CoroutineContext.Element {
 }
 
 
-// TODO 也许需要一个 context 的工厂?
-public interface EventProcessContextFactory {
-
-}
+/**
+ * 作用域上下文，提供部分贯穿事件的作用域参数信息。
+ */
+public interface ScopeContext : MutableAttributeMap

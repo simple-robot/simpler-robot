@@ -161,8 +161,18 @@ public interface MutableAttributeMap : AttributeMap {
      * 存入一个值。
      *
      * @throws IllegalStateException 如果已经存在重名但是类型不同的键
+     * @throws ClassCastException 如果类型不匹配
+     *
+     * @return 返回被顶替的结果. 如果没有被顶替内容, 得到null。
      */
     public fun <T : Any> put(attribute: Attribute<T>, value: T): T?
+
+
+    /**
+     * 存入值，当值已经存在的时候进行合并处理。
+     *
+     */
+    public fun <T : Any> merge(attribute: Attribute<T>, value: T, remapping: (T, T) -> T): T
 
 
     /**
@@ -186,8 +196,8 @@ public operator fun <T : Any> MutableAttributeMap.set(attribute: Attribute<T>, v
 
 
 
-public class AttributeHashMap : MutableAttributeMap {
-    private val values = mutableMapOf<Attribute<*>, Any>()
+public class AttributeHashMap(private val values: MutableMap<Attribute<*>, Any> = mutableMapOf()) : MutableAttributeMap {
+
 
     public val entries: MutableSet<MutableMap.MutableEntry<Attribute<*>, Any>>
         get() = values.entries
@@ -201,8 +211,17 @@ public class AttributeHashMap : MutableAttributeMap {
 
     override fun <T : Any> put(attribute: Attribute<T>, value: T): T? {
         val type = attribute.type
-        val result = values.put(attribute, type.cast(value))
-        return type.safeCast(result)
+        return values.put(attribute, type.cast(value))?.let { type.safeCast(it) }
+    }
+
+    override fun <T : Any> merge(attribute: Attribute<T>, value: T, remapping: (T, T) -> T): T {
+        val type = attribute.type
+        val newValue = values.merge(attribute, value) { old, now ->
+            val oldValue = type.cast(old)
+            val nowValue = type.cast(now)
+            remapping(oldValue, nowValue)
+        }
+        return type.cast(newValue)
     }
 
     override fun <T : Any> contains(attribute: Attribute<T>): Boolean {
