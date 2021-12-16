@@ -12,24 +12,26 @@
 
 package love.forte.simboot.core.filter
 
+import love.forte.di.BeanContainer
 import love.forte.simboot.filter.*
 import love.forte.simbot.CharSequenceID
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.core.event.coreFilter
 import love.forte.simbot.event.*
-import java.util.*
+import kotlin.reflect.KClass
+import kotlin.reflect.full.createInstance
 
 /**
- * Boot所提供的默认的 [FilterAnnotationProcessor] 实现，按照注解邀请的预期规范进行处理。
+ * Boot所提供的默认的 [FilterAnnotationProcessor] 实现，按照注解要求的预期规范进行处理。
  *
  */
 public object BootFilterAnnotationProcessor : FilterAnnotationProcessor {
     override fun process(context: FilterAnnotationProcessContext): EventFilter {
         val filter = context.filter
+
         // 当前的普通过滤器
         val currentFilter = FilterViaAnnotation(
-            UUID.randomUUID().ID,
             filter.target.box(),
             filter.value,
             filter.matchType
@@ -49,7 +51,7 @@ public object BootFilterAnnotationProcessor : FilterAnnotationProcessor {
 
             // both
             andFilter != null && orFilter != null -> {
-                return coreFilter(currentFilter.id) { filterContext ->
+                return coreFilter { filterContext ->
                     currentFilter.test(filterContext)
                             && andFilter.test(filterContext)
                             || orFilter.test(filterContext)
@@ -57,14 +59,14 @@ public object BootFilterAnnotationProcessor : FilterAnnotationProcessor {
             }
             // only and
             andFilter != null -> {
-                return coreFilter(currentFilter.id) { filterContext ->
+                return coreFilter { filterContext ->
                     currentFilter.test(filterContext) && andFilter.test(filterContext)
                 }
             }
             // only or
             else -> {
                 val orFilter0 = orFilter!!
-                return coreFilter(currentFilter.id) { filterContext ->
+                return coreFilter { filterContext ->
                     currentFilter.test(filterContext) || orFilter0.test(filterContext)
                 }
             }
@@ -74,13 +76,34 @@ public object BootFilterAnnotationProcessor : FilterAnnotationProcessor {
 
 }
 
+private class ListFilterRegistrar(val list: MutableList<EventFilter>) : EventFilterRegistrar {
+    override fun register(filter: EventFilter) {
+        list.add(filter)
+    }
+}
+
 private fun FiltersData.process(context: FilterAnnotationProcessContext): EventFilter? {
     return takeIf { it.value.isNotEmpty() }
         ?.let {
-            val processor = context.filtersProcessorFactory(it.processor)
-                ?: throw SimbotIllegalStateException("Cannot found processor: ${it.processor}")
+            val processor = context.beanContainer.getOrTryInstance { it.processor }
 
-            processor.process(filtersAnnotationProcessContext(it, context))
+            val list = mutableListOf<EventFilter>()
+            val registrar = ListFilterRegistrar(list)
+
+            processor.process(filtersAnnotationProcessContext(it, registrar, context))
+
+            when {
+                list.isEmpty() -> null
+                list.size == 1 -> list.first()
+                else -> {
+                    val matcherList: List<suspend (EventProcessingContext) -> Boolean> = list.apply {
+                        sortBy { f -> f.priority }
+                    }.map { f -> f::test }
+                    coreFilter { c ->
+                        MultiFilterMatchType.ALL.match(c, matcherList)
+                    }
+                }
+            }
         }
 
 }
@@ -122,7 +145,6 @@ private fun TargetFilterData.box(): FilterTarget? {
 }
 
 private class FilterViaAnnotation(
-    override val id: ID,
     target: FilterTarget?,
     val value: String,
     val matchType: MatchType
@@ -204,24 +226,23 @@ private fun FilterTarget.toMatcher(): suspend (Event) -> Boolean {
 
 
 public object BootFiltersAnnotationProcessor : FiltersAnnotationProcessor {
-    override fun process(context: FiltersAnnotationProcessContext): EventFilter? {
+    override fun process(context: FiltersAnnotationProcessContext) {
         val filters = context.filters
 
         val filtersValue = filters.value
         if (filtersValue.isEmpty()) {
-            return null
+            return
         }
 
-        val filterList = filtersValue.map { f ->
-            val processor = context.filterProcessorFactory(f.processor)
-                ?: throw SimbotIllegalStateException("Cannot found processor: ${f.processor}")
+        val filterList = filtersValue.mapNotNull { f ->
+            val processor = context.beanContainer.getOrTryInstance { f.processor }
 
             processor.process(filterAnnotationProcessContext(f, context))
         }
 
         // only 1
         if (filterList.size == 1) {
-            return filterList[0]
+            context.registrar.register(filterList[0])
         }
 
         // multi
@@ -229,14 +250,45 @@ public object BootFiltersAnnotationProcessor : FiltersAnnotationProcessor {
         val multiMatchType = filters.multiMatchType
 
         @Suppress("SuspiciousCallableReferenceInLambda")
-        val matcherList: List<suspend (EventProcessingContext) -> Boolean> = filterList.map { it::test }
+        val matcherList: List<suspend (EventProcessingContext) -> Boolean> = filterList.map { f -> f::test }
 
 
-        return coreFilter(UUID.randomUUID().ID) {
+        val filter = coreFilter {
             multiMatchType.match(it, matcherList)
         }
+
+        context.registrar.register(filter)
     }
 
 
 }
 
+
+private inline fun <T : Any> BeanContainer.getOrTryInstance(type: () -> KClass<T>): T {
+    val t = type()
+    return t.objectInstance ?: run {
+        val allName = getAll(type())
+        when {
+            allName.isEmpty() -> runCatching {
+                t.createInstance()
+            }.getOrElse { e ->
+                throw SimbotIllegalStateException(
+                    "Cannot get processor instance of [$t], Does not exist in the bean container and cannot be instantiated",
+                    e
+                )
+            }
+
+            allName.size > 1 -> runCatching {
+                // try get
+                get(t)
+            }.getOrElse { e ->
+                throw SimbotIllegalStateException(
+                    "Too many instance typed of [$t] be found in bean container: $allName, But there is no preferred target",
+                    e
+                )
+            }
+            else -> get(allName.first(), t)
+        }
+    }
+
+}

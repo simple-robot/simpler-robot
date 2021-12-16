@@ -10,11 +10,16 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
+@file:JvmName("AnnotationParseUtil")
+
 package love.forte.simboot.annotation
 
 import love.forte.simboot.filter.FilterData
 import love.forte.simboot.filter.FiltersData
 import love.forte.simboot.filter.TargetFilterData
+import love.forte.simboot.listener.ListenData
+import love.forte.simboot.listener.ListenerData
+import love.forte.simboot.listener.ListensData
 
 
 public fun Filter.toData(): FilterData {
@@ -47,3 +52,31 @@ public fun Filters.toData(): FiltersData {
         processor = processor,
     )
 }
+
+
+/**
+ * 将 [Listen] 转化为 [ListenData].
+ *
+ */
+public fun Listen.toData(): ListenData {
+    return ListenData(value)
+}
+
+public fun Listens.toData(): ListensData {
+    return ListensData(value.map(Listen::toData))
+}
+
+@JvmOverloads
+public fun Listener.toData(listens: ListensData? = null): ListenerData {
+    return ListenerData(
+        id = id,
+        priority = priority,
+        listens = listens
+    )
+}
+
+
+public fun Listener.toData(listens: Listens): ListenerData {
+    return toData(listens.toData())
+}
+

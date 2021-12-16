@@ -33,19 +33,10 @@ public enum class StringMatchers(private val matcher: StringMatcher) :
     EQUALS({ t, r -> t == r }),
 
     /**
-     * trim后的全等匹配
-     */
-    TRIM_EQUALS({ t, r -> t.trim() == r }),
-
-    /**
      * 忽略大小写的全等匹配
      */
     EQUALS_IGNORE_CASE({ t, r -> t.equals(r, true) }),
 
-    /**
-     * trim后忽略大小写的全等匹配
-     */
-    TRIM_EQUALS_IGNORE_CASE({ t, r -> t.trim().equals(r, true) }),
 
     /**
      * 首部匹配

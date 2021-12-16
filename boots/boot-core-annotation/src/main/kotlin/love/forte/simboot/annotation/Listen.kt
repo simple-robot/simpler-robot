@@ -12,17 +12,16 @@
 
 package love.forte.simboot.annotation
 
-import love.forte.simbot.PriorityConstant
 import love.forte.simbot.event.Event
 import kotlin.reflect.KClass
-
-internal abstract class NoSupportMarkEvent : Event
 
 /**
  * 标记于一个函数上，代表它们所表示的监听函数应当要监听的事件类型集。
  *
  * 需要在标记 [Listener] 的情况下使用 [Listen]. 当标记 [Listen] 后，
  * 不会再自动判定类型。
+ *
+ * @property value 事件类型。指定的事件必须存在一个实现了 [Event.Key] 的伴生对象，否则此事件将会被视为不可监听并抛出异常。
  *
  * @see love.forte.simbot.event.Event
  */
@@ -31,20 +30,7 @@ internal abstract class NoSupportMarkEvent : Event
 @JvmRepeatable(Listens::class)
 @Target(AnnotationTarget.FUNCTION)
 @MustBeDocumented
-public annotation class Listen(
-    /**
-     * 事件类型。指定的事件必须存在一个实现了 [Event.Key] 的伴生对象，
-     * 否则此事件将会被视为不可监听并抛出异常。
-     *
-     */
-    val value: KClass<out Event> = NoSupportMarkEvent::class,
-
-    /**
-     * 此事件的优先级。
-     *
-     */
-    val priority: Int = PriorityConstant.NORMAL
-)
+public annotation class Listen(val value: KClass<out Event>)
 
 
 @Retention(AnnotationRetention.RUNTIME)

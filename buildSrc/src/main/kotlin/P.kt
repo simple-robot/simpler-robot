@@ -12,8 +12,6 @@
 
 
 abstract class SimbotProject {
-    // 是否需要推送
-    abstract val isPublishNeed: Boolean
 
     abstract val group: String
     abstract val version: String
@@ -27,6 +25,29 @@ sealed class P : SimbotProject() {
     object Simbot {
         const val GROUP = "love.forte.simple-robot"
         const val VERSION = "3.0.0.preview.0.5"
+    }
+
+    sealed class ForteDI(id: String) : Dep(GROUP, "di-$id", VERSION) {
+        companion object {
+            const val GROUP = "love.forte.di"
+            const val VERSION = "0.0.1"
+        }
+        object Api : ForteDI("api")
+        object Core : ForteDI("core")
+        object Spring : ForteDI("spring")
+
+    }
+
+    // "love.forte.annotation-tool:api:0.6.1"
+    sealed class AnnotationTool(id: String) : Dep(GROUP, id, VERSION) {
+        companion object {
+            const val GROUP = "love.forte.annotation-tool"
+            const val VERSION = "0.6.1"
+        }
+        object Api : AnnotationTool("api")
+        object Core : AnnotationTool("core")
+        object KCore : AnnotationTool("kcore")
+
     }
 
     // object TencentGuild {

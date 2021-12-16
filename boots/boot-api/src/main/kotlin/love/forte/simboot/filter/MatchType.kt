@@ -27,25 +27,12 @@ public enum class MatchType(
     TEXT_EQUALS(StringMatchers.EQUALS),
 
     /**
-     * trim后的全等匹配
-     *
-     * @sample StringMatchers.TRIM_EQUALS
-     */
-    TEXT_TRIM_EQUALS(StringMatchers.TRIM_EQUALS),
-
-    /**
      * 忽略大小写的全等匹配
      *
      * @sample StringMatchers.EQUALS_IGNORE_CASE
      */
     TEXT_EQUALS_IGNORE_CASE(StringMatchers.EQUALS_IGNORE_CASE),
 
-    /**
-     * trim后忽略大小写的全等匹配
-     *
-     * @sample StringMatchers.TRIM_EQUALS_IGNORE_CASE
-     */
-    TEXT_TRIM_EQUALS_IGNORE_CASE(StringMatchers.TRIM_EQUALS_IGNORE_CASE),
 
     /**
      * 首部匹配

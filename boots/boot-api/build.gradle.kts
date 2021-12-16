@@ -32,6 +32,8 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 
 dependencies {
     api(project(":cores:core"))
+    api(P.ForteDI.Api.notation)
+
     api(V.Slf4j.Api.notation)
     api(V.Kotlinx.Coroutines.Core.Jvm.notation)
     api(V.Kotlinx.Coroutines.J8.notation)

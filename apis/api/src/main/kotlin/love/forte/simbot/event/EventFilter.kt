@@ -13,7 +13,6 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.Filter
-import love.forte.simbot.ID
 import love.forte.simbot.PriorityConstant
 
 /**
@@ -34,10 +33,6 @@ import love.forte.simbot.PriorityConstant
  * @author ForteScarlet
  */
 public interface EventFilter : Filter<EventProcessingContext> {
-    /**
-     * 过滤器拥有ID。在允许存在过滤器的情况下，不允许出现重复ID。
-     */
-    public val id: ID
 
     /**
      * 优先级。

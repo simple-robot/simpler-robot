@@ -12,23 +12,21 @@
 @file:JvmName("CoreFilterUtil")
 package love.forte.simbot.core.event
 
-import love.forte.simbot.ID
 import love.forte.simbot.event.EventFilter
 import love.forte.simbot.event.EventProcessingContext
-import java.util.*
 
 /**
  * 构建一个 [EventFilter].
  */
 @JvmSynthetic
-public fun coreFilter(id: ID = UUID.randomUUID().ID, tester: suspend (context: EventProcessingContext) -> Boolean): EventFilter =
-    CoreFilter(id, tester)
+public fun coreFilter(tester: suspend (context: EventProcessingContext) -> Boolean): EventFilter =
+    CoreFilter(tester)
 
 
 private class CoreFilter(
-    override val id: ID,
     private val func: suspend (EventProcessingContext) -> Boolean
     ) : EventFilter {
 
     override suspend fun test(context: EventProcessingContext): Boolean = func(context)
 }
+

@@ -10,7 +10,7 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-package love.forte.simboot.core.listener
+package love.forte.simboot.listener
 
 import love.forte.simbot.ID
 import love.forte.simbot.event.Event
@@ -27,6 +27,7 @@ import love.forte.simbot.event.EventResult
  */
 public interface GenericBootEventListener : EventListener {
     override val id: ID
+    override val isAsync: Boolean
     override fun isTarget(eventType: Event.Key<*>): Boolean
     override suspend fun invoke(context: EventProcessingContext): EventResult
 }

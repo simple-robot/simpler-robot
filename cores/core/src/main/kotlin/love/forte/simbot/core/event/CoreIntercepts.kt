@@ -16,10 +16,8 @@ package love.forte.simbot.core.event
 
 import love.forte.simbot.ID
 import love.forte.simbot.PriorityConstant
+import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
-import love.forte.simbot.event.EventListenerInterceptor
-import love.forte.simbot.event.EventProcessingContext
-import love.forte.simbot.event.EventResult
 import java.util.*
 
 
@@ -54,6 +52,10 @@ public fun coreListenerIntercept4J(
  *
  * 假如当前监听函数已经被组合过拦截器，那么本次拦截组合将会直接在原来的基础上进行组合，而不会重新计算优先级。
  *
+ * 需要注意，监听函数拼接 [EventListenerInterceptor] 将会直接拼接至 [EventListener.invoke] 函数中，
+ * 因此如果你同样需要拼接 [EventFilter], 请在 [拦截器][EventListenerInterceptor] 拼接 **之前** ，否则拦截逻辑将会在过滤器之后执行，
+ * 除非你很清楚自己在做什么。
+ *
  */
 public operator fun EventListener.plus(interceptors: Collection<EventListenerInterceptor>): EventListener {
     return if (interceptors.isEmpty()) return this
@@ -61,7 +63,7 @@ public operator fun EventListener.plus(interceptors: Collection<EventListenerInt
 }
 
 
-private class EventListenerWithInterceptor(
+internal class EventListenerWithInterceptor(
     listener: EventListener,
     interceptors: Collection<EventListenerInterceptor>
 ) : EventListener by listener {

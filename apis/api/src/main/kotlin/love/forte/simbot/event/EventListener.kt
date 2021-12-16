@@ -35,7 +35,8 @@ public interface EventListener : java.util.EventListener {
     public val id: ID
 
     /**
-     * 优先级。
+     * 优先级。对于一次事件处理流程，所有监听函数会根据此优先级进行顺序处理。
+     * 整个流程下的所有监听函数中，[isAsync] == true 的监听函数会比普通函数有更高的优先级。
      */
     public val priority: Int get() = PriorityConstant.NORMAL
 
@@ -46,14 +47,14 @@ public interface EventListener : java.util.EventListener {
      *
      * 默认情况下，异步函数无法通过 [EventResult.isTruncated] 截断后续函数。
      *
-     * 当 [isAsync] == true时，当前监听函数在 [EventProcessor] 中被调度的实际顺序会高于 [isAsync] == false 的函数，
+     * 当 `isAsync == true` 时，当前监听函数在 [EventProcessor] 中被调度的实际顺序会高于 `isAsync == false` 的函数，
      * 也就是说当一次事件被推送的时候，会优先启动所有的异步监听函数。
      *
      * 理所当然的, 当监听函数被标记为 [isAsync] 时，其对应的所有 [监听函数拦截器][EventListenerInterceptor] 也应当相同的被异步化，并会拦截真正的监听函数结果。
      * 而 [监听事件拦截器][EventProcessingInterceptor] 不会受到影响。
      *
      */
-    public val isAsync: Boolean get() = false
+    public val isAsync: Boolean
 
     /**
      * 判断当前监听函数是否对可以对指定的事件进行监听。

@@ -32,11 +32,11 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 
 dependencies {
     api(project(":boots:boot-api"))
-    compileOnly("javax.annotation:javax.annotation-api:1.3.2")
     api("javax.inject:javax.inject:1")
-    compileOnly("org.springframework.boot:spring-boot-autoconfigure:2.5.7")
-    compileOnly("love.forte.annotation-tool:core:0.5.0")
 
+    compileOnly("javax.annotation:javax.annotation-api:1.3.2")
+    compileOnly(P.AnnotationTool.Api.notation)
+    compileOnly("org.springframework.boot:spring-boot-autoconfigure:2.5.7")
     testImplementation(V.Kotlin.Test.Junit.notation)
     testImplementation(V.Kotlinx.Serialization.Json.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)

@@ -12,9 +12,33 @@
 
 package love.forte.simboot.core
 
-import love.forte.simboot.SimBootEntrance
-import love.forte.simboot.SimBootEntranceContext
-import love.forte.simboot.SimbootContext
+import love.forte.annotationtool.core.KAnnotationTool
+import love.forte.di.BeanContainer
+import love.forte.simboot.*
+import love.forte.simboot.core.internal.CoreBootEntranceContextImpl
+import org.slf4j.Logger
+import kotlin.reflect.KClass
+
+
+public interface CoreBootEntranceContext {
+
+    /**
+     * [BeanContainer] 工厂.
+     */
+    public val beanContainerFactory: BeanContainerFactory
+
+
+    /**
+     * 启动命令参数。
+     */
+    public val args: Array<String>
+
+    /**
+     * 由boot所提供的日志。
+     */
+    public val logger: Logger
+}
+
 
 /**
  *
@@ -25,7 +49,69 @@ import love.forte.simboot.SimbootContext
  * @author ForteScarlet
  */
 public class CoreBootEntrance : SimBootEntrance {
+    public companion object {
+        public val annotationTool: KAnnotationTool = KAnnotationTool()
+    }
+
     override fun run(context: SimBootEntranceContext): SimbootContext {
+        val context = context.toCoreBootEntranceContext()
+
+
+
         TODO("Not yet implemented")
     }
 }
+
+
+private fun SimBootEntranceContext.toCoreBootEntranceContext(): CoreBootEntranceContext {
+    return when (val app = application) {
+        null -> throw SimBootApplicationException("CoreBootEntrance does not allow application to be null.")
+        is CoreBootEntranceContext -> app
+        is KClass<*> -> app.classToCoreBootEntranceContext(this)
+        is Class<*> -> app.kotlin.classToCoreBootEntranceContext(this)
+        else -> throw SimBootApplicationException(
+            """
+            CoreBootEntrance application only supports the following possible types:
+            - An instance of [love.forte.simboot.core.CoreBootEntranceContext].
+            - A (K)Class instance annotated @SimBootApplication(...).
+            But not $app (${app::class}) you provided.
+        """.trimIndent()
+        )
+    }
+}
+
+
+private fun KClass<*>.classToCoreBootEntranceContext(context: SimBootEntranceContext): CoreBootEntranceContext {
+    // get annotation
+    val tool = CoreBootEntrance.annotationTool
+    val applicationAnnotation = tool.getAnnotation(this, SimbootApplication::class)
+        ?: throw SimBootApplicationException("Application [$this] is not annotated @SimBootApplication.")
+
+    return CoreBootEntranceContextImpl(applicationAnnotation, this, context)
+
+
+}
+
+
+/*
+
+    初始化 bean container
+
+    初始化 listener manager -> listener manager factory
+
+    初始化所有的 bot manager -> bot manager factory
+
+    所有的拦截器
+
+    所有的binder
+
+    所有的 listener function
+        listener解析,
+        listener binder组装,
+        filter解析，
+        listener filter 组合
+
+
+
+
+ */

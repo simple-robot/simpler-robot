@@ -12,7 +12,9 @@
 
 package love.forte.simboot.filter
 
+import love.forte.di.BeanContainer
 import love.forte.simbot.event.EventFilter
+import love.forte.simbot.event.EventListener
 import kotlin.reflect.KClass
 
 
@@ -52,37 +54,40 @@ public data class FiltersData(
 
 public interface FilterAnnotationProcessContext {
     public val filter: FilterData
-    public val filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?
-    public val filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
+    public val listener: EventListener
+    public val registrar: EventFilterRegistrar
+    public val beanContainer: BeanContainer
 }
 
 public fun filterAnnotationProcessContext(
     filter: FilterData,
-    filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?,
-    filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
+    listener: EventListener,
+    registrar: EventFilterRegistrar,
+    beanContainer: BeanContainer
 ): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
-    filter, filterProcessorFactory, filtersProcessorFactory
+    filter, listener, registrar, beanContainer
 )
 
 public fun filterAnnotationProcessContext(
     filter: FilterData,
     context: FilterAnnotationProcessContext
 ): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
-    filter, context.filterProcessorFactory, context.filtersProcessorFactory
+    filter, context.listener, context.registrar, context.beanContainer
 )
 
 public fun filterAnnotationProcessContext(
     filter: FilterData,
     context: FiltersAnnotationProcessContext
 ): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
-    filter, context.filterProcessorFactory, context.filtersProcessorFactory
+    filter, context.listener, context.registrar, context.beanContainer
 )
 
 
 private class FilterAnnotationProcessContextImpl(
     override val filter: FilterData,
-    override val filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?,
-    override val filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
+    override val listener: EventListener,
+    override val registrar: EventFilterRegistrar,
+    override val beanContainer: BeanContainer
 ) : FilterAnnotationProcessContext
 
 
@@ -93,46 +98,52 @@ private class FilterAnnotationProcessContextImpl(
  * @author ForteScarlet
  */
 public interface FilterAnnotationProcessor {
-    public fun process(context: FilterAnnotationProcessContext): EventFilter
+    /**
+     * 尝试解析处理并得到 [EventFilter].
+     *
+     * 正常来讲应该由 [FiltersAnnotationProcessor] 进行注册，而不需要通过此函数注册过滤器。
+     */
+    public fun process(context: FilterAnnotationProcessContext): EventFilter?
 }
 
 
 public interface FiltersAnnotationProcessContext {
     public val filters: FiltersData
-    public val filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?
-    public val filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
+    public val listener: EventListener
+    public val registrar: EventFilterRegistrar
+    public val beanContainer: BeanContainer
 }
 
 public fun filtersAnnotationProcessContext(
     filter: FiltersData,
-    filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?,
-    filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
-
+    listener: EventListener,
+    registrar: EventFilterRegistrar,
+    beanContainer: BeanContainer
 ): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
-    filter, filterProcessorFactory, filtersProcessorFactory
+    filter, listener, registrar, beanContainer
 )
 
 public fun filtersAnnotationProcessContext(
     filter: FiltersData,
+    registrar: EventFilterRegistrar,
     context: FilterAnnotationProcessContext
-
 ): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
-    filter, context.filterProcessorFactory, context.filtersProcessorFactory
+    filter, context.listener, registrar, context.beanContainer
 )
 
 public fun filtersAnnotationProcessContext(
     filter: FiltersData,
     context: FiltersAnnotationProcessContext
-
 ): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
-    filter, context.filterProcessorFactory, context.filtersProcessorFactory
+    filter, context.listener, context.registrar, context.beanContainer
 )
 
 
 private class FiltersAnnotationProcessContextImpl(
     override val filters: FiltersData,
-    override val filterProcessorFactory: (type: KClass<out FilterAnnotationProcessor>) -> FilterAnnotationProcessor?,
-    override val filtersProcessorFactory: (type: KClass<out FiltersAnnotationProcessor>) -> FiltersAnnotationProcessor?
+    override val listener: EventListener,
+    override val registrar: EventFilterRegistrar,
+    override val beanContainer: BeanContainer
 ) : FiltersAnnotationProcessContext
 
 /**
@@ -142,12 +153,12 @@ private class FiltersAnnotationProcessContextImpl(
 public interface FiltersAnnotationProcessor {
 
     /**
-     * 处理得到一个最终的汇总 [EventFilter] 实例。
+     * 处理并注册多个最终的 [EventFilter] 实例。所有实例最终会注入到当前的目标监听函数中。
      *
      * @return 如果 [FiltersData.value] 为空或者因为其他原因导致没有有效的过滤器，则返回null.
      *
      */
-    public fun process(context: FiltersAnnotationProcessContext): EventFilter?
+    public fun process(context: FiltersAnnotationProcessContext)
 
 
 }

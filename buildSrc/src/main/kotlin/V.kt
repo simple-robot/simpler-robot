@@ -21,7 +21,7 @@ val publishNeed = setOf("annotation", "core", "api")
 
 
 abstract class Dep(val group: String?, val id: String, val version: String?) {
-    abstract val isAbsolute: Boolean
+    open val isAbsolute: Boolean get() = true
     override fun toString(): String = "Dep($notation)"
     open fun constraints(constraints: DependencyConstraint): DependencyConstraint {
         return constraints
