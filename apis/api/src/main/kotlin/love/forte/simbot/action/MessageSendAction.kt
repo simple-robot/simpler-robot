@@ -87,33 +87,37 @@ public interface MessageReplyReceipt : MessageReceipt {
 
 
 /**
- * 消息标记支持。
+ * 消息回应支持。
  *
  * 此接口通常标记在一个 [消息事件][love.forte.simbot.event.MessageEvent] 上，代表这个消息能够被 *标记*。
  *
  * 很多允许频道的平台都会有这个功能，能够标记的内容也应当属于一个 [Message], 不过它们大多数的时候支持的类型有限，
  * 例如 emoji 或者一些自定义表情。
  *
- * [MessageMarkSupport.mark] 将不会对参数 `message` 进行类型限制，相对的，实现者需要对参数消息进行校验，并在存在不匹配的情况时抛出异常。
+ * [MessageReactSupport.react] 将不会对参数 `message` 进行类型限制，相对的，实现者需要对参数消息进行校验，并在存在不匹配的情况时抛出异常。
+ *
+ * [回应][MessageReactSupport.react] 与 [回复][MessageReplySupport.reply] 不同，
+ * 回复常常类似于针对某个消息而回复一条消息，会产生一条新的消息；
+ * 而回应则更多的是对于一个消息"作出回应"，通产情况下不会产生新的消息，一般会表现为标记一个表情。
  *
  */
-public interface MessageMarkSupport {
+public interface MessageReactSupport {
 
     @JvmSynthetic
-    public suspend fun mark(message: Message): MessageMarkReceipt
+    public suspend fun react(message: Message): MessageReactReceipt
 
     @Api4J
-    public fun markBlocking(message: Message): MessageMarkReceipt = runBlocking { mark(message) }
+    public fun reactBlocking(message: Message): MessageReactReceipt = runBlocking { react(message) }
 
 }
 
 /**
  * 标记回执。
  *
- * 对于标记回执的 [id][MessageMarkReceipt.id]，有可能是这个回执所属ID，也有可能是被标记消息的ID。
+ * 对于标记回执的 [id][MessageReactReceipt.id]，有可能是这个回执所属ID，也有可能是被标记消息的ID。
  *
  */
-public interface MessageMarkReceipt : MessageReceipt {
+public interface MessageReactReceipt : MessageReceipt {
     override val id: ID
     override val isSuccess: Boolean
 }
@@ -154,15 +158,15 @@ public suspend fun MessageContainer.replyIfSupport(message: Message): MessageRep
  * 如果此目标允许回复标记消息，发送，否则得到null。
  */
 @JvmSynthetic
-public suspend fun Objectives.markIfSupport(message: Message): MessageMarkReceipt? =
-    if (this is MessageMarkSupport) mark(message) else null
+public suspend fun Objectives.reactIfSupport(message: Message): MessageReactReceipt? =
+    if (this is MessageReactSupport) react(message) else null
 
 /**
  * 如果此事件允许回复标记消息，发送，否则得到null。
  */
 @JvmSynthetic
-public suspend fun MessageContainer.markIfSupport(message: Message): MessageMarkReceipt? =
-    if (this is MessageMarkSupport) mark(message) else null
+public suspend fun MessageContainer.reactIfSupport(message: Message): MessageReactReceipt? =
+    if (this is MessageReactSupport) react(message) else null
 
 
 /**

@@ -14,6 +14,7 @@ package love.forte.simbot.event
 
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
+import love.forte.simbot.ID
 import love.forte.simbot.action.DeleteAction
 import love.forte.simbot.action.MessageSendAction
 import love.forte.simbot.definition.*
@@ -156,6 +157,7 @@ public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
      */
     override val source: Channel
     override val author: Member
+
     @JvmSynthetic
     override suspend fun channel(): Channel
 
@@ -171,4 +173,24 @@ public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
     }
 }
 
+/**
+ * 消息被回应事件。
+ *
+ * 消息被回应事件的内容十分不稳定，因此标准接口中仅提供最低限度的ID相关内容。
+ *
+ */
+public interface MessageReactedEvent : MessageEvent {
+    /**
+     * 被回应的消息的ID。
+     *
+     * 事件定义无法保证被回应的 [消息][love.forte.simbot.message.MessageContent] 能够支持被获取，
+     * 但是对于此事件，应当至少存在一个 被回应消息的ID
+     */
+    public val reactedId: ID
 
+    /**
+     * 回应这条消息的用户ID。
+     */
+    public val reactorId: ID
+
+}
