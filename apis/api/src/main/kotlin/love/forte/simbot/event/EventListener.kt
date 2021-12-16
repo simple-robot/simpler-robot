@@ -13,6 +13,8 @@
 package love.forte.simbot.event
 
 import kotlinx.coroutines.Deferred
+import love.forte.simbot.Attribute
+import love.forte.simbot.AttributeContainer
 import love.forte.simbot.ID
 import love.forte.simbot.PriorityConstant
 
@@ -27,7 +29,7 @@ import love.forte.simbot.PriorityConstant
  *
  * @author ForteScarlet
  */
-public interface EventListener : java.util.EventListener {
+public interface EventListener : java.util.EventListener, AttributeContainer {
 
     /**
      * 监听器必须是唯一的. 通过 [id] 进行唯一性确认。
@@ -61,6 +63,12 @@ public interface EventListener : java.util.EventListener {
      *
      */
     public fun isTarget(eventType: Event.Key<*>): Boolean
+
+
+    /**
+     * 监听函数可以允许存在其独特的属性。
+     */
+    override fun <T : Any> getAttribute(attribute: Attribute<T>): T? = null
 
 
     /**

@@ -20,6 +20,9 @@ import love.forte.simbot.event.EventListenerRegistrar
  *
  * [ListenerAnnotationProcessor] 基础实现类, 用于通过 [ListenerData] 解析并注册 [love.forte.simbot.event.EventListener].
  *
+ * TODO 合并 过滤器处理器和监听函数拦截器处理器到当前处理器中：
+ *  过滤器与拦截器都应该深度服务监听函数。
+ *
  * @author ForteScarlet
  */
 internal class ListenerAnnotationProcessorImpl : ListenerAnnotationProcessor {

@@ -124,7 +124,7 @@ public inline fun <reified T : Any> attribute(): Attribute<T> =
  *
  * @see AttributeHashMap
  */
-public interface AttributeMap {
+public interface AttributeMap : AttributeContainer {
 
     /**
      * 通过 [attribute] 得到对应的数据。
@@ -133,6 +133,8 @@ public interface AttributeMap {
      */
     public operator fun <T : Any> get(attribute: Attribute<T>): T?
 
+
+    override fun <T : Any> getAttribute(attribute: Attribute<T>): T? = get(attribute)
 
     /**
      * 判断是否存在对应键名与类型的键。
@@ -235,4 +237,17 @@ public class AttributeHashMap(private val values: MutableMap<Attribute<*>, Any> 
     }
 
     override fun toString(): String = values.toString()
+}
+
+
+/**
+ * 一个 [Attribute] 容器，标记其允许获取属性。
+ */
+public interface AttributeContainer {
+
+    /**
+     * 通过 [attribute] 尝试获取指定属性。
+     */
+    public fun <T : Any> getAttribute(attribute: Attribute<T>): T?
+
 }

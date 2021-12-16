@@ -106,11 +106,8 @@ private fun KClass<*>.classToCoreBootEntranceContext(context: SimBootEntranceCon
     所有的binder
 
     所有的 listener function
-        listener解析,
+        listener解析, 同时解析 filter, 以及部分拦截器等.
         listener binder组装,
-        filter解析，
-        listener filter 组合
-
 
 
 

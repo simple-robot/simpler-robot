@@ -13,6 +13,7 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.Attribute
+import love.forte.simbot.AttributeContainer
 import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.attribute
 import org.jetbrains.annotations.UnmodifiableView
@@ -28,7 +29,7 @@ import kotlin.coroutines.CoroutineContext
  * 事件流程中进行流转的上下文也是一个协程上下文.
  * @author ForteScarlet
  */
-public interface EventProcessingContext : CoroutineContext.Element {
+public interface EventProcessingContext : CoroutineContext.Element, AttributeContainer {
     public companion object Key : CoroutineContext.Key<EventProcessingContext>
     override val key: CoroutineContext.Key<*> get() = Key
 
@@ -77,7 +78,7 @@ public interface EventProcessingContext : CoroutineContext.Element {
      * 根据一个 [Attribute] 得到一个属性。
      *
      */
-    public fun <T : Any> getAttribute(attribute: Attribute<T>): T?
+    override fun <T : Any> getAttribute(attribute: Attribute<T>): T?
 
     // 其他参数
 
