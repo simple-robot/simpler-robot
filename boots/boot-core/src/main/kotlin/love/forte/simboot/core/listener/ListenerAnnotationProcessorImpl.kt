@@ -13,13 +13,22 @@
 package love.forte.simboot.core.listener
 
 import love.forte.annotationtool.core.KAnnotationTool
+import love.forte.annotationtool.core.nonConverters
 import love.forte.di.BeanContainer
+import love.forte.di.BeansException
 import love.forte.simboot.annotation.Binder
+import love.forte.simboot.annotation.Filter
+import love.forte.simboot.annotation.Filters
+import love.forte.simboot.annotation.toData
+import love.forte.simboot.core.filter.BootFiltersAnnotationProcessor
+import love.forte.simboot.filter.EventFilterRegistrar
+import love.forte.simboot.filter.FiltersAnnotationProcessor
+import love.forte.simboot.filter.FiltersData
+import love.forte.simboot.filter.filtersAnnotationProcessContext
 import love.forte.simboot.listener.*
 import love.forte.simbot.*
-import love.forte.simbot.event.Event
-import love.forte.simbot.event.EventListenerProcessingContext
-import love.forte.simbot.event.isSubFrom
+import love.forte.simbot.core.event.plus
+import love.forte.simbot.event.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -31,9 +40,6 @@ import kotlin.reflect.jvm.kotlinFunction
 /**
  *
  * [ListenerAnnotationProcessor] 基础实现类, 用于通过 [ListenerData] 解析并注册 [love.forte.simbot.event.EventListener].
- *
- * TODO 合并 过滤器处理器和监听函数拦截器处理器到当前处理器中：
- *  过滤器与拦截器都应该深度服务监听函数。
  *
  * @author ForteScarlet
  */
@@ -61,13 +67,73 @@ internal class ListenerAnnotationProcessorImpl : ListenerAnnotationProcessor {
             binders = binders.toTypedArray(),
             attributeMap = listenerAttributeMap
         )
-
         // filters
+        val filters = function.resolveFilters(listener, listenerAttributeMap, context)
 
+        // 合并filter
+        val filterMergedListener = listener + filters
 
-        context.listenerRegistrar.register(listener)
+        // 注册listener
+        context.listenerRegistrar.register(filterMergedListener)
 
         return true
+    }
+
+    /**
+     * 解析获取注所有的解过滤器。
+     */
+    private fun KFunction<*>.resolveFilters(
+        listener: EventListener,
+        listenerAttributeMap: MutableAttributeMap,
+        context: ListenerAnnotationProcessorContext
+    ): List<EventFilter> {
+        val filters = tool.getAnnotation(this, Filters::class)
+        val filterList = tool.getAnnotations(this, Filter::class)
+
+        if (filters == null && filterList.isEmpty()) return emptyList()
+
+        val filterDataList = filterList.map { it.toData() }
+        val filtersData = filters?.toData(filterDataList) ?: FiltersData(value = filterDataList)
+
+        val filterRegistrar = ListFilterRegistrar(mutableListOf())
+
+        val filterProcessContext = filtersAnnotationProcessContext(
+            filtersData,
+            listener,
+            listenerAttributeMap,
+            filterRegistrar,
+            context.beanContainer
+        )
+        val filtersDataProcessorType = filtersData.processor
+
+        val filterProcessor: FiltersAnnotationProcessor =
+            if (filtersDataProcessorType == FiltersAnnotationProcessor::class) {
+                BootFiltersAnnotationProcessor
+            } else {
+                // is object?
+                filtersDataProcessorType.objectInstance
+                    ?: kotlin.run {
+                        // get from container?
+                        try {
+                            context.beanContainer[filtersDataProcessorType]
+                        } catch (beansException: BeansException) {
+                            kotlin.runCatching {
+                                filtersDataProcessorType.createInstance()
+                            }.getOrElse { e ->
+                                e.addSuppressed(beansException)
+                                val failure = SimbotIllegalStateException("Unable to get filter processor's instance.")
+                                failure.addSuppressed(e)
+                                throw failure
+                            }
+                        }
+                    }
+            }
+
+
+        // process
+        filterProcessor.process(filterProcessContext)
+
+        return filterRegistrar.list.apply { sortBy { it.priority } }
     }
 
     /**
@@ -269,6 +335,13 @@ internal class ListenerAnnotationProcessorImpl : ListenerAnnotationProcessor {
 }
 
 
+private class ListFilterRegistrar(val list: MutableList<EventFilter>) : EventFilterRegistrar {
+    override fun register(filter: EventFilter) {
+        list.add(filter)
+    }
+}
+
+
 private class ParameterBinderFactoryContextImpl(
     override val source: KFunction<*>,
     override val parameter: KParameter,
@@ -370,6 +443,14 @@ private class AnnotationFunctionalEventListener<R>(
             notTargetCaches.add(eventType)
             return false
         }
+    }
+
+    override fun convertValue(value: Any?, parameter: KParameter): Any? {
+        if (value == null) return null
+        return nonConverters().convert(
+            instance = value,
+            to = parameter.type.classifier as KClass<*>
+        )
     }
 
 

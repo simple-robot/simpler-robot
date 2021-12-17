@@ -10,21 +10,13 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-package love.forte.simboot
+package love.forte.simboot.factory
 
-import love.forte.di.BeanContainer
-import love.forte.simbot.Bot
-import love.forte.simbot.BotManager
+import love.forte.simboot.Configuration
+import love.forte.simboot.SimBootEntranceContext
 
 /**
- *
- * [BeanContainer] 的工厂。
  *
  * @author ForteScarlet
  */
-public interface BeanContainerFactory : () -> BeanContainer
-
-/**
- * [BotManager] 的工厂。
- */
-public interface BotManagerFactory<B : Bot> : () -> BotManager<B>
+public interface ConfigurationFactory : (SimBootEntranceContext) -> Configuration

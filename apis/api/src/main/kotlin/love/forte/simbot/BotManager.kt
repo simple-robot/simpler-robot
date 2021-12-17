@@ -14,6 +14,28 @@ package love.forte.simbot
 
 
 /**
+ * Bot注册器。
+ */
+public interface BotRegistrar : ComponentContainer {
+
+    /**
+     * 根据通用配置信息注册一个BOT。
+     * 此信息是从 `.bot` 配置文件中读取而来的 Properties格式文件。
+     *
+     * 可以考虑直接通过properties序列化进行。
+     *
+     * 对于任意一个组件，其注册方式可能存在其他任何可能的方式，
+     * 但是 [BotManager] 要求实现 [register] 来为 `boot` 模块的自动注册服务。
+     *
+     * [register] 应当是同步的，直到其真正的验证完毕。
+     *
+     */
+    public fun register(properties: Map<String, String>): Bot
+
+}
+
+
+/**
  *
  * [Bot] 管理器。
  * [BotManager] 应当是 获取、注册 [Bot] 的唯一公开途径，
@@ -23,7 +45,7 @@ package love.forte.simbot
  *
  * @author ForteScarlet
  */
-public abstract class BotManager<B : Bot> : ComponentContainer, Survivable {
+public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Survivable {
     init {
         if (isBeManaged()) {
             @Suppress("LeakingThis")
@@ -34,6 +56,8 @@ public abstract class BotManager<B : Bot> : ComponentContainer, Survivable {
     // kill warn
     private fun isBeManaged() = beManaged()
     protected open fun beManaged(): Boolean = true
+
+    abstract override fun register(properties: Map<String, String>): Bot
 
     /**
      * 执行关闭操作。
@@ -51,20 +75,6 @@ public abstract class BotManager<B : Bot> : ComponentContainer, Survivable {
      * 例如关闭所有的BOT。
      */
     protected abstract suspend fun doCancel(reason: Throwable?): Boolean
-
-    /**
-     * 根据通用配置信息注册一个BOT。
-     * 此信息是从 `.bot` 配置文件中读取而来的 Properties格式文件。
-     *
-     * 可以考虑直接通过properties序列化进行。
-     *
-     * 对于任意一个组件，其注册方式可能存在其他任何可能的方式，
-     * 但是 [BotManager] 要求实现 [register] 来为 `boot` 模块的自动注册服务。
-     *
-     * [register] 应当是同步的，直到其真正的验证完毕。
-     *
-     */
-    public abstract fun register(properties: Map<String, String>): Bot
 
     /**
      * 根据Bot的ID获取一个已经注册过的 [Bot]。

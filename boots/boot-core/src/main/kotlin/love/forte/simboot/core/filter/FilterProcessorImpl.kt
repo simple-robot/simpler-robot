@@ -19,6 +19,7 @@ import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.core.event.coreFilter
 import love.forte.simbot.event.*
+import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
@@ -37,13 +38,17 @@ public object BootFilterAnnotationProcessor : FilterAnnotationProcessor {
             filter.matchType
         )
 
+        // put keyword.
+        context.listenerAttributes.computeIfAbsent(KeywordsAttribute) { CopyOnWriteArrayList() }
+            .add(currentFilter.keyword)
+
         val and = filter.and
         val or = filter.or
 
         val andFilter = and.process(context)
         val orFilter = or.process(context)
 
-        // 预解析，不在逻辑中做判断。
+        // 预解析
         when {
             andFilter == null && orFilter == null -> {
                 return currentFilter
@@ -149,8 +154,8 @@ private class FilterViaAnnotation(
     val value: String,
     val matchType: MatchType
 ) : EventFilter {
-    private val keyword = if (value.isEmpty()) EmptyKeyword else KeywordImpl(value)
-    private val targetMatch: suspend (Event) -> Boolean = target?.toMatcher() ?: { true }
+    val keyword = if (value.isEmpty()) EmptyKeyword else KeywordImpl(value)
+    val targetMatch: suspend (Event) -> Boolean = target?.toMatcher() ?: { true }
 
     override suspend fun test(context: EventListenerProcessingContext): Boolean {
         val event = context.event
@@ -160,10 +165,11 @@ private class FilterViaAnnotation(
             return false
         }
 
+        val textContent = context.textContent
+
         // match
-        if (event is MessageEvent) {
-            val targetText = event.messageContent.plainText
-            if (!matchType.match(targetText, keyword)) {
+        if (textContent != null) {
+            if (!matchType.match(textContent, keyword)) {
                 return false
             }
         }

@@ -16,6 +16,13 @@ package love.forte.simboot.core.filter
 import love.forte.simboot.filter.Keyword
 import love.forte.simboot.filter.MatcherValue
 import love.forte.simboot.filter.RegexMatcherValue
+import love.forte.simbot.Attribute
+import love.forte.simbot.attribute
+
+/**
+ * 装载 [Keyword] 列表的属性key。
+ */
+public val KeywordsAttribute: Attribute<MutableList<Keyword>> = attribute("\$listener.keywords")
 
 
 /**

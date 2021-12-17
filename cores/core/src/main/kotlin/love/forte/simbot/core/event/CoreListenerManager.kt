@@ -365,4 +365,8 @@ public fun EventProcessingContext.withListener(listener: EventListener): EventLi
 private class CoreEventListenerProcessingContext(
     processingContext: EventProcessingContext,
     override val listener: EventListener
-) : EventListenerProcessingContext, EventProcessingContext by processingContext
+) : EventListenerProcessingContext, EventProcessingContext by processingContext {
+    override var textContent: String? = with(processingContext.event) {
+        if(this is MessageEvent) messageContent.plainText else null
+    }
+}

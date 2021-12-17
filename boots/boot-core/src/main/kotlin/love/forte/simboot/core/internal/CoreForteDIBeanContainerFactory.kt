@@ -16,7 +16,8 @@ import love.forte.di.BeanContainer
 import love.forte.di.core.coreBeanClassRegistrar
 import love.forte.di.core.coreBeanManager
 import love.forte.di.core.internal.AnnotationGetter
-import love.forte.simboot.BeanContainerFactory
+import love.forte.simboot.Configuration
+import love.forte.simboot.factory.BeanContainerFactory
 import kotlin.reflect.KClass
 
 /**
@@ -27,11 +28,17 @@ import kotlin.reflect.KClass
  */
 internal class CoreForteDIBeanContainerFactory(
     private val annotationGetter: AnnotationGetter,
-    private val classGetter: () -> Collection<KClass<*>>
+    private val classGetter: () -> Collection<KClass<*>>,
+    private val includeClasses: Set<String>
 ) : BeanContainerFactory {
-    override fun invoke(): BeanContainer {
+    override fun invoke(configuration: Configuration): BeanContainer {
+        val loader = CoreForteDIBeanContainerFactory::class.java.classLoader
+
         val registrar = coreBeanClassRegistrar(annotationGetter)
         val manager = coreBeanManager { }
+        if (includeClasses.isNotEmpty()) {
+            registrar.register(*includeClasses.map { loader.loadClass(it).kotlin }.toTypedArray())
+        }
         registrar.register(*classGetter().toTypedArray()).inject(manager)
         return manager
     }

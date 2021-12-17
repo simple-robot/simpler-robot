@@ -12,6 +12,7 @@
 
 package love.forte.simbot.event
 
+import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.Interceptor
 import love.forte.simbot.PriorityConstant
@@ -41,8 +42,11 @@ public sealed interface EventInterceptor<C : EventInterceptor.Context<R>, R> : I
 
 /**
  * 一个事件处理过程的拦截器. 是一个最外层的拦截器。
+ *
+ * @see BlockingEventProcessingInterceptor
  */
 public interface EventProcessingInterceptor : EventInterceptor<EventProcessingInterceptor.Context, EventProcessingResult> {
+    @JvmSynthetic
     override suspend fun intercept(context: Context): EventProcessingResult
 
     /**
@@ -50,15 +54,31 @@ public interface EventProcessingInterceptor : EventInterceptor<EventProcessingIn
      */
     public interface Context : EventInterceptor.Context<EventProcessingResult> {
         override val eventContext: EventProcessingContext
+        @JvmSynthetic
         override suspend fun proceed(): EventProcessingResult
     }
 }
 
+/**
+ * 为Java提供的阻塞调用的 [EventProcessingInterceptor] 接口方案。
+ */
+@Api4J
+public interface BlockingEventProcessingInterceptor : EventProcessingInterceptor {
+    public fun doIntercept(context: EventProcessingInterceptor.Context): EventProcessingResult
+
+    @JvmSynthetic
+    override suspend fun intercept(context: EventProcessingInterceptor.Context): EventProcessingResult = doIntercept(context)
+}
+
 
 /**
- * 事件监听函数拦截器，
+ * 事件监听函数拦截器.
+ *
+ *
+ * @see BlockingEventListenerInterceptor
  */
 public interface EventListenerInterceptor : EventInterceptor<EventListenerInterceptor.Context, EventResult> {
+    @JvmSynthetic
     override suspend fun intercept(context: Context): EventResult
 
     /**
@@ -70,8 +90,21 @@ public interface EventListenerInterceptor : EventInterceptor<EventListenerInterc
          */
         override val eventContext: EventListenerProcessingContext
         public val listener: EventListener get() = eventContext.listener
+        @JvmSynthetic
         override suspend fun proceed(): EventResult
     }
 }
 
+/**
+ * 为Java提供的阻塞调用的 [EventListenerInterceptor] 接口方案。
+ *
+ */
+@Api4J
+public interface BlockingEventListenerInterceptor : EventListenerInterceptor {
+
+    public fun doIntercept(context: EventListenerInterceptor.Context): EventResult
+
+    @JvmSynthetic
+    override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult = doIntercept(context)
+}
 

@@ -13,6 +13,7 @@
 package love.forte.simboot.filter
 
 import love.forte.di.BeanContainer
+import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.event.EventFilter
 import love.forte.simbot.event.EventListener
 import kotlin.reflect.KClass
@@ -55,6 +56,7 @@ public data class FiltersData(
 public interface FilterAnnotationProcessContext {
     public val filter: FilterData
     public val listener: EventListener
+    public val listenerAttributes: MutableAttributeMap
     public val registrar: EventFilterRegistrar
     public val beanContainer: BeanContainer
 }
@@ -62,30 +64,32 @@ public interface FilterAnnotationProcessContext {
 public fun filterAnnotationProcessContext(
     filter: FilterData,
     listener: EventListener,
+    listenerAttributes: MutableAttributeMap,
     registrar: EventFilterRegistrar,
     beanContainer: BeanContainer
 ): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
-    filter, listener, registrar, beanContainer
+    filter, listener, listenerAttributes, registrar, beanContainer
 )
 
 public fun filterAnnotationProcessContext(
     filter: FilterData,
     context: FilterAnnotationProcessContext
 ): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
-    filter, context.listener, context.registrar, context.beanContainer
+    filter, context.listener, context.listenerAttributes, context.registrar, context.beanContainer
 )
 
 public fun filterAnnotationProcessContext(
     filter: FilterData,
     context: FiltersAnnotationProcessContext
 ): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
-    filter, context.listener, context.registrar, context.beanContainer
+    filter, context.listener, context.listenerAttributes, context.registrar, context.beanContainer
 )
 
 
 private class FilterAnnotationProcessContextImpl(
     override val filter: FilterData,
     override val listener: EventListener,
+    override val listenerAttributes: MutableAttributeMap,
     override val registrar: EventFilterRegistrar,
     override val beanContainer: BeanContainer
 ) : FilterAnnotationProcessContext
@@ -110,17 +114,20 @@ public interface FilterAnnotationProcessor {
 public interface FiltersAnnotationProcessContext {
     public val filters: FiltersData
     public val listener: EventListener
+    public val listenerAttributes: MutableAttributeMap
     public val registrar: EventFilterRegistrar
     public val beanContainer: BeanContainer
+
 }
 
 public fun filtersAnnotationProcessContext(
     filter: FiltersData,
     listener: EventListener,
+    attributeMap: MutableAttributeMap,
     registrar: EventFilterRegistrar,
     beanContainer: BeanContainer
 ): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
-    filter, listener, registrar, beanContainer
+    filter, listener, attributeMap, registrar, beanContainer
 )
 
 public fun filtersAnnotationProcessContext(
@@ -128,20 +135,21 @@ public fun filtersAnnotationProcessContext(
     registrar: EventFilterRegistrar,
     context: FilterAnnotationProcessContext
 ): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
-    filter, context.listener, registrar, context.beanContainer
+    filter, context.listener, context.listenerAttributes, registrar, context.beanContainer
 )
 
 public fun filtersAnnotationProcessContext(
     filter: FiltersData,
     context: FiltersAnnotationProcessContext
 ): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
-    filter, context.listener, context.registrar, context.beanContainer
+    filter, context.listener, context.listenerAttributes, context.registrar, context.beanContainer
 )
 
 
 private class FiltersAnnotationProcessContextImpl(
     override val filters: FiltersData,
     override val listener: EventListener,
+    override val listenerAttributes: MutableAttributeMap,
     override val registrar: EventFilterRegistrar,
     override val beanContainer: BeanContainer
 ) : FiltersAnnotationProcessContext

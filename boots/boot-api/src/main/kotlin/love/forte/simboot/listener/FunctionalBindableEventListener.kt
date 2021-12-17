@@ -46,6 +46,13 @@ public abstract class FunctionalBindableEventListener<R> : FunctionalEventListen
 
 
     /**
+     * 对结果的数据类型进行转化。
+     */
+    protected open fun convertValue(value: Any?, parameter: KParameter): Any? {
+        return value
+    }
+
+    /**
      * 对 [caller] 执行后的返回值进行处理并转化为 [EventResult]. 可覆盖并自定义结果逻辑。
      *
      * 默认情况下，如果结果是 [EventResult] 类型，则会直接返回, 否则通过 [EventResult.of] 转化为 [EventResult].
@@ -56,12 +63,14 @@ public abstract class FunctionalBindableEventListener<R> : FunctionalEventListen
         else EventResult.of(result)
     }
 
+
     /**
      * 函数执行。
      */
     final override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
-        val result = caller.callSuspend(binders.map {
-            it.arg(context).getOrThrow()
+        val parameters = caller.parameters
+        val result = caller.callSuspend(binders.mapIndexed { i, b ->
+            b.arg(context).getOrThrow().let { value -> convertValue(value, parameters[i]) }
         })
         return resultProcess(result)
     }

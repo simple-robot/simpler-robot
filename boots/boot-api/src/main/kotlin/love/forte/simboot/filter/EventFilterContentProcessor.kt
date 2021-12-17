@@ -12,7 +12,7 @@
 
 package love.forte.simboot.filter
 
-import love.forte.simbot.event.EventProcessingContext
+import love.forte.simbot.event.EventListenerProcessingContext
 
 /**
  *
@@ -28,6 +28,6 @@ public interface EventFilterContentProcessor {
      * 则为 [MessageEvent.messageContent.plainText][love.forte.simbot.message.MessageContent.plainText],
      * 否则为null。
      */
-    public suspend fun process(preContent: String?, context: EventProcessingContext): String?
+    public suspend fun process(preContent: String?, context: EventListenerProcessingContext): String?
 
 }

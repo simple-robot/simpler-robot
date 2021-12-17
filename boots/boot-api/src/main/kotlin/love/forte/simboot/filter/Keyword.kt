@@ -12,7 +12,8 @@
 
 package love.forte.simboot.filter
 /**
- * 匹配关键词，
+ * 匹配关键词.
+ *
  */
 public interface Keyword {
     /** 匹配关键字对应的正则实例。 */

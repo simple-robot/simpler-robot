@@ -16,16 +16,41 @@ import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.di.BeanContainer
 import love.forte.simboot.*
 import love.forte.simboot.core.internal.CoreBootEntranceContextImpl
+import love.forte.simboot.factory.BeanContainerFactory
+import love.forte.simboot.factory.BotRegistrarFactory
+import love.forte.simboot.factory.ConfigurationFactory
+import love.forte.simbot.event.EventListenerManager
 import org.slf4j.Logger
 import kotlin.reflect.KClass
 
 
 public interface CoreBootEntranceContext {
 
+
+    /**
+     * [Configuration] 工厂.
+     */
+    public fun getConfigurationFactory(): ConfigurationFactory
+
     /**
      * [BeanContainer] 工厂.
      */
-    public val beanContainerFactory: BeanContainerFactory
+    public fun getBeanContainerFactory(): BeanContainerFactory
+
+
+    /**
+     * 读取所有的bot配置文件信息。
+     */
+    public fun getAllBotInfos(
+        configuration: Configuration,
+        beanContainer: BeanContainer
+    ): Map<String, List<Map<String, String>>>
+
+
+    /**
+     * 通过 [BeanContainer] 最终得到一个 [EventListenerManager].
+     */
+    public fun getListenerManager(beanContainer: BeanContainer): EventListenerManager
 
 
     /**
@@ -50,12 +75,35 @@ public interface CoreBootEntranceContext {
  */
 public class CoreBootEntrance : SimBootEntrance {
     public companion object {
-        public val annotationTool: KAnnotationTool = KAnnotationTool()
+        internal val annotationTool: KAnnotationTool = KAnnotationTool()
     }
 
     override fun run(context: SimBootEntranceContext): SimbootContext {
-        val context = context.toCoreBootEntranceContext()
+        val bootContext: CoreBootEntranceContext = context.toCoreBootEntranceContext()
+        // 获取所有配置
+        val configuration = bootContext.getConfigurationFactory()(context)
 
+        // 初始化 bean container
+        val beanContainer = bootContext.getBeanContainerFactory()(configuration)
+
+        // 初始化 listener manager -> listener manager factory
+        val manager = bootContext.getListenerManager(beanContainer)
+
+        // 获取所有的 BotRegistrar -> BotRegistrarFactory
+        val allBotRegistrarFactoryName = beanContainer.getAll(BotRegistrarFactory::class)
+        // all registrars and group by component name.
+        val allRegistrars = allBotRegistrarFactoryName
+            .map { name -> beanContainer[name, BotRegistrarFactory::class] }
+            .map { it() }
+
+        // 所有的binder
+
+        // 所有的 listener function
+        //     listener解析, 同时解析 filter, 以及部分拦截器等.
+        //     listener binder组装,
+
+
+        // 注册bot
 
 
         TODO("Not yet implemented")
@@ -92,23 +140,3 @@ private fun KClass<*>.classToCoreBootEntranceContext(context: SimBootEntranceCon
 
 }
 
-
-/*
-
-    初始化 bean container
-
-    初始化 listener manager -> listener manager factory
-
-    初始化所有的 bot manager -> bot manager factory
-
-    所有的拦截器
-
-    所有的binder
-
-    所有的 listener function
-        listener解析, 同时解析 filter, 以及部分拦截器等.
-        listener binder组装,
-
-
-
- */

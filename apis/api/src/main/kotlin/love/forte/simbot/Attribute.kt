@@ -178,6 +178,16 @@ public interface MutableAttributeMap : AttributeMap {
 
 
     /**
+     * 如果不存在，则计算并存入。
+     */
+    public fun <T : Any> computeIfAbsent(attribute: Attribute<T>, mappingFunction: (Attribute<T>) -> T): T
+
+    /**
+     * 如果存在，则计算。如果计算函数中返回null，则为移除对应结果。
+     */
+    public fun <T : Any> computeIfPresent(attribute: Attribute<T>, remappingFunction: (Attribute<T>, T) -> T?): T?
+
+    /**
      * 移除对应键名的值。
      *
      * @throws ClassCastException 如果类型不匹配
@@ -186,19 +196,13 @@ public interface MutableAttributeMap : AttributeMap {
 }
 
 
-
-
-
 public operator fun <T : Any> MutableAttributeMap.set(attribute: Attribute<T>, value: T) {
     put(attribute, value)
 }
 
 
-
-
-
-
-public class AttributeMutableMap(private val values: MutableMap<Attribute<*>, Any> = mutableMapOf()) : MutableAttributeMap {
+public class AttributeMutableMap(private val values: MutableMap<Attribute<*>, Any> = mutableMapOf()) :
+    MutableAttributeMap {
 
 
     public val entries: MutableSet<MutableMap.MutableEntry<Attribute<*>, Any>>
@@ -224,6 +228,25 @@ public class AttributeMutableMap(private val values: MutableMap<Attribute<*>, An
             remapping(oldValue, nowValue)
         }
         return type.cast(newValue)
+    }
+
+    override fun <T : Any> computeIfAbsent(attribute: Attribute<T>, mappingFunction: (Attribute<T>) -> T): T {
+        val type = attribute.type
+        val value = values.computeIfAbsent(attribute) { k ->
+            @Suppress("UNCHECKED_CAST")
+            mappingFunction(k as Attribute<T>)
+        }
+        return type.cast(value)
+    }
+
+    override fun <T : Any> computeIfPresent(attribute: Attribute<T>, remappingFunction: (Attribute<T>, T) -> T?): T? {
+        val type = attribute.type
+        val value = values.computeIfPresent(attribute) { k, old ->
+            @Suppress("UNCHECKED_CAST")
+            k as Attribute<T>
+            remappingFunction(k , k.type.cast(old))
+        }
+        return value?.let { type.cast(it) }
     }
 
     override fun <T : Any> contains(attribute: Attribute<T>): Boolean {

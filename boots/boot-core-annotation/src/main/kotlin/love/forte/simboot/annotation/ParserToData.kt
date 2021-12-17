@@ -45,9 +45,9 @@ public fun TargetFilter.toData(): TargetFilterData {
     )
 }
 
-public fun Filters.toData(): FiltersData {
+public fun Filters.toData(valueList: List<FilterData>? = null): FiltersData {
     return FiltersData(
-        value = value.map(Filter::toData),
+        value = valueList ?: value.map(Filter::toData),
         multiMatchType = multiMatchType,
         processor = processor,
     )
