@@ -107,7 +107,7 @@ public object Components {
             val id = information.id.toCharSequenceID()
             val name = information.name
 
-            val attribute = AttributeHashMap()
+            val attribute = AttributeMutableMap()
             information.configAttributes(attribute)
 
             val serializerModule = information.messageSerializersModule
@@ -176,7 +176,7 @@ public object Components {
     internal fun create(
         id: CharSequenceID,
         name: String = id.toString(),
-        attributes: AttributeHashMap
+        attributes: AttributeMutableMap
     ): Component {
         return comps.compute(id) { k, old ->
             if (old != null) {
@@ -219,7 +219,7 @@ public object Components {
     internal data class Comp(
         override val id: CharSequenceID,
         override val name: String,
-        internal val attributes: AttributeHashMap
+        internal val attributes: AttributeMutableMap
     ) : Component() {
 
         @Suppress("UNCHECKED_CAST")

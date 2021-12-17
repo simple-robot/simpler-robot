@@ -51,7 +51,7 @@ internal class EventListenerWithFilter(
     internal val filters: List<EventFilter>,
     internal val delegate: EventListener
 ) : EventListener by delegate {
-    override suspend fun invoke(context: EventProcessingContext): EventResult {
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         for (filter in filters) {
             if (!filter.test(context)) return filter.defaultResult(context)
         }
@@ -73,7 +73,7 @@ public fun <E : Event> EventListenerRegistrar.listen(
     id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
     isAsync: Boolean = false,
-    func: suspend (EventProcessingContext, E) -> Any?
+    func: suspend (EventListenerProcessingContext, E) -> Any?
 ): EventListener = coreListener(eventKey, id, blockNext, isAsync, func).also(::register)
 
 
@@ -86,7 +86,7 @@ public fun <E : Event> coreListener(
     id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
     isAsync: Boolean = false,
-    func: suspend (EventProcessingContext, E) -> Any?
+    func: suspend (EventListenerProcessingContext, E) -> Any?
 ): EventListener = CoreListener(id, eventKey, blockNext, isAsync, func)
 
 
@@ -95,12 +95,12 @@ internal class CoreListener<E : Event>(
     private val key: Event.Key<E>,
     private val blockNext: Boolean,
     override val isAsync: Boolean,
-    private val func: suspend (EventProcessingContext, E) -> Any?
+    private val func: suspend (EventListenerProcessingContext, E) -> Any?
 ) : EventListener {
 
     override fun isTarget(eventType: Event.Key<*>): Boolean = eventType.isSubFrom(key)
 
-    override suspend fun invoke(context: EventProcessingContext): EventResult {
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         return EventResult.of(func(context, key.safeCast(context.event)!!), blockNext)
     }
 

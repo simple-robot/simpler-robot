@@ -23,8 +23,9 @@ import love.forte.simbot.event.EventProcessingContext
 public interface EventFilterContentProcessor {
 
     /**
-     * 对事件进行处理，得到需要被匹配的值。[preContent] 为上个处理器提供的结果。如果是第一个处理器，
-     * 如果事件是 [love.forte.simbot.event.MessageEvent],  则为 [MessageEvent.messageContent.plainText][love.forte.simbot.message.MessageContent.plainText],
+     * 对事件进行处理，得到需要被匹配的值。[preContent] 为上个处理器提供的结果。
+     * 如果是第一个处理器，且事件是 [love.forte.simbot.event.MessageEvent] 类型,
+     * 则为 [MessageEvent.messageContent.plainText][love.forte.simbot.message.MessageContent.plainText],
      * 否则为null。
      */
     public suspend fun process(preContent: String?, context: EventProcessingContext): String?

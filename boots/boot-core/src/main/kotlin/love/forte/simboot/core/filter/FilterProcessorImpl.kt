@@ -96,7 +96,7 @@ private fun FiltersData.process(context: FilterAnnotationProcessContext): EventF
                 list.isEmpty() -> null
                 list.size == 1 -> list.first()
                 else -> {
-                    val matcherList: List<suspend (EventProcessingContext) -> Boolean> = list.apply {
+                    val matcherList: List<suspend (EventListenerProcessingContext) -> Boolean> = list.apply {
                         sortBy { f -> f.priority }
                     }.map { f -> f::test }
                     coreFilter { c ->
@@ -152,7 +152,7 @@ private class FilterViaAnnotation(
     private val keyword = if (value.isEmpty()) EmptyKeyword else KeywordImpl(value)
     private val targetMatch: suspend (Event) -> Boolean = target?.toMatcher() ?: { true }
 
-    override suspend fun test(context: EventProcessingContext): Boolean {
+    override suspend fun test(context: EventListenerProcessingContext): Boolean {
         val event = context.event
 
         // target
@@ -250,7 +250,7 @@ public object BootFiltersAnnotationProcessor : FiltersAnnotationProcessor {
         val multiMatchType = filters.multiMatchType
 
         @Suppress("SuspiciousCallableReferenceInLambda")
-        val matcherList: List<suspend (EventProcessingContext) -> Boolean> = filterList.map { f -> f::test }
+        val matcherList: List<suspend (EventListenerProcessingContext) -> Boolean> = filterList.map { f -> f::test }
 
 
         val filter = coreFilter {

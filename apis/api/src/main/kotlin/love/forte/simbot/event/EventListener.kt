@@ -74,9 +74,9 @@ public interface EventListener : java.util.EventListener, AttributeContainer {
     /**
      * 监听函数的事件执行逻辑。
      *
-     * 通过 [EventProcessingContext] 处理事件，完成处理后返回 [处理结果][EventResult].
+     * 通过 [EventListenerProcessingContext] 处理事件，完成处理后返回 [处理结果][EventResult].
      *
      */
     @JvmSynthetic
-    public suspend operator fun invoke(context: EventProcessingContext): EventResult
+    public suspend operator fun invoke(context: EventListenerProcessingContext): EventResult
 }

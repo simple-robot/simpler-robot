@@ -28,13 +28,15 @@ import love.forte.simbot.PriorityConstant
  * 默认情况下，此函数的ID为其全限定名，你可以通过 [Listener.id] 指定一个ID。
  * 当不指定的时候默认为当前标记对象的全限定二进制名称。
  *
- * @param id 监听函数ID。
- * @param priority 此事件的优先级。
+ * @property id 监听函数ID。
+ * @property priority 此事件的优先级。
+ * @property async 此函数是否为异步函数。
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 public annotation class Listener(
     val id: String = "",
-    val priority: Int = PriorityConstant.NORMAL
+    val priority: Int = PriorityConstant.NORMAL,
+    val async: Boolean = false
 )

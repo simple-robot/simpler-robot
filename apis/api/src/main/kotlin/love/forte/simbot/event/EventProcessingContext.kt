@@ -91,3 +91,24 @@ public interface EventProcessingContext : CoroutineContext.Element, AttributeCon
  * 作用域上下文，提供部分贯穿事件的作用域参数信息。
  */
 public interface ScopeContext : MutableAttributeMap
+
+
+/**
+ *
+ * 每一个 [EventListener] 在事件处理流程中所对应的上下文类型。
+ * 相比较于 [EventProcessingContext],
+ * [EventListenerProcessingContext] 允许监听函数在执行流程中获取当前（将要）被执行的监听函数自身 [listener]。
+ *
+ *
+ */
+public interface EventListenerProcessingContext : EventProcessingContext {
+    override val event: Event
+    override val results: List<EventResult>
+    override fun <T : Any> getAttribute(attribute: Attribute<T>): T?
+
+    /**
+     * 当前（将要）被执行的监听函数。
+     */
+    public val listener: EventListener
+
+}

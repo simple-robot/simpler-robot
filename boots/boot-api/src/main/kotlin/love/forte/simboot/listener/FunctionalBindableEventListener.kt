@@ -16,6 +16,7 @@ import love.forte.di.BeanContainer
 import love.forte.simbot.Api4J
 import love.forte.simbot.PriorityConstant
 import love.forte.simbot.SimbotIllegalStateException
+import love.forte.simbot.event.EventListenerProcessingContext
 import love.forte.simbot.event.EventProcessingContext
 import love.forte.simbot.event.EventResult
 import kotlin.reflect.KCallable
@@ -27,8 +28,7 @@ import kotlin.reflect.full.callSuspend
 /**
  *
  * 可以进行动态参数绑定的 [FunctionalEventListener],
- * 可以通过 [binder] 对 [caller] 进行参数绑定。
- *
+ * 可以通过 [binders] 对 [caller] 进行参数绑定。
  *
  */
 public abstract class FunctionalBindableEventListener<R> : FunctionalEventListener<R>(), GenericBootEventListener {
@@ -39,9 +39,11 @@ public abstract class FunctionalBindableEventListener<R> : FunctionalEventListen
     protected abstract override val caller: KFunction<R>
 
     /**
-     * binder数组，其索引下标与 [KCallable.parameters] 的 [KParameter.index] 相对应。
+     * binder数组，其索引下标应当与 [KCallable.parameters] 的 [KParameter.index] 相对应。
+     * 在使用 [binders] 时，会直接按照其顺序转化为对应的值。
      */
-    protected abstract val binder: Array<ParameterBinder>
+    protected abstract val binders: Array<ParameterBinder>
+
 
     /**
      * 对 [caller] 执行后的返回值进行处理并转化为 [EventResult]. 可覆盖并自定义结果逻辑。
@@ -57,8 +59,10 @@ public abstract class FunctionalBindableEventListener<R> : FunctionalEventListen
     /**
      * 函数执行。
      */
-    final override suspend fun invoke(context: EventProcessingContext): EventResult {
-        val result = caller.callSuspend(binder.map { it.arg(context) })
+    final override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
+        val result = caller.callSuspend(binders.map {
+            it.arg(context).getOrThrow()
+        })
         return resultProcess(result)
     }
 
@@ -83,7 +87,7 @@ public interface ParameterBinder {
      * @throws Throwable 其他预期外的异常。
      */
     @JvmSynthetic
-    public suspend fun arg(context: EventProcessingContext): Result<Any?>
+    public suspend fun arg(context: EventListenerProcessingContext): Result<Any?>
 
 }
 
@@ -99,7 +103,7 @@ public interface ParameterBlockingBinder : ParameterBinder {
     public fun getArg(context: EventProcessingContext): Any?
 
     @JvmSynthetic
-    override suspend fun arg(context: EventProcessingContext): Result<Any?> {
+    override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
         return kotlin.runCatching { getArg(context) }
     }
 }
@@ -109,6 +113,11 @@ public interface ParameterBlockingBinder : ParameterBinder {
  * [ParameterBinder] 的解析工厂，通过提供部分预处理参数来解析得到 [ParameterBinder] 实例。
  */
 public interface ParameterBinderFactory {
+
+    /**
+     * 工厂优先级.
+     */
+    public val priority: Int get() = PriorityConstant.NORMAL
 
     /**
      * 根据 [Context] 提供的各项参数进行解析与预变异，并得到一个最终的 [ParameterBinder] 到对应的parameter中。
@@ -227,6 +236,36 @@ public sealed class ParameterBinderResult {
 
 
 }
+
+
+/**
+ * [ParameterBinderFactory] 的容器，允许通过 ID 获取对应Binder。
+ */
+public interface ParameterBinderFactoryContainer {
+
+    /**
+     * 通过ID尝试获取对应 [ParameterBinderFactory] 实例。
+     */
+    public operator fun get(id: String): ParameterBinderFactory?
+
+    /**
+     * 获取所有的全局binder。
+     */
+    public fun getGlobals(): List<ParameterBinderFactory>
+
+
+    /**
+     * 讲一个 [function] 解析为 [ParameterBinderFactory].
+     *
+     * 此 function必须遵循规则：
+     * - 返回值类型必须是 [ParameterBinder] 或 [ParameterBinderResult] 类型。
+     * - 参数或则receiver有且只能有一个，且类型必须是 [ParameterBinderFactory.Context]
+     *
+     */
+    public fun resolveFunctionToBinderFactory(function: KFunction<*>): ParameterBinderFactory
+
+}
+
 
 /**
  * 当 [ParameterBinder.arg] 中出现了异常。

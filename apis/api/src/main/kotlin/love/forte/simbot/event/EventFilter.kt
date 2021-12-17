@@ -32,7 +32,7 @@ import love.forte.simbot.PriorityConstant
  *
  * @author ForteScarlet
  */
-public interface EventFilter : Filter<EventProcessingContext> {
+public interface EventFilter : Filter<EventListenerProcessingContext> {
 
     /**
      * 优先级。
@@ -44,7 +44,7 @@ public interface EventFilter : Filter<EventProcessingContext> {
      */
     @JvmSynthetic
     @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
-    override suspend fun test(context: EventProcessingContext): Boolean
+    override suspend fun test(context: EventListenerProcessingContext): Boolean
 
     /**
      * 如果过滤器匹配失败，可以通过此函数得到一个默认的返回值。

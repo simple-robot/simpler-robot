@@ -68,7 +68,7 @@ internal class EventListenerWithInterceptor(
     interceptors: Collection<EventListenerInterceptor>
 ) : EventListener by listener {
     private val entrance = EventListenerIteratorInterceptEntrance(listener, interceptors)
-    override suspend fun invoke(context: EventProcessingContext): EventResult {
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         return entrance.doIntercept(context)
     }
 }

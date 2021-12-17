@@ -27,7 +27,10 @@ import java.util.concurrent.ConcurrentHashMap
 public typealias CoreEventManager = CoreListenerManager
 
 
-@Deprecated("Just use CoreListenerManagerConfiguration", ReplaceWith("love.forte.simbot.core.event.CoreListenerManagerConfiguration"))
+@Deprecated(
+    "Just use CoreListenerManagerConfiguration",
+    ReplaceWith("love.forte.simbot.core.event.CoreListenerManagerConfiguration")
+)
 public typealias CoreEventManagerConfiguration = CoreListenerManagerConfiguration
 
 /**
@@ -155,7 +158,7 @@ public class CoreListenerManager private constructor(
     @Api4J
     override fun pushAsync(event: Event): CompletableFuture<EventProcessingResult> {
         val invokers = getInvokers(event.key)
-        if (invokers.isEmpty()) return  CompletableFuture<EventProcessingResult>().also {
+        if (invokers.isEmpty()) return CompletableFuture<EventProcessingResult>().also {
             it.complete(EventProcessingResult)
         }
 
@@ -180,7 +183,8 @@ public class CoreListenerManager private constructor(
             processingInterceptEntrance.doIntercept(context) {
                 // do invoke with intercept
                 for (invoker in invokers) {
-                    val result = invoker(bot, context)
+                    val listenerContext = context.withListener(invoker.listener)
+                    val result = invoker(bot, listenerContext)
                     // append result
                     val type = appendResult(context, result)
                     if (type == ListenerInvokeType.TRUNCATED) {
@@ -213,18 +217,20 @@ public class CoreListenerManager private constructor(
 
     internal inner class ListenerInvoker(
         val listener: EventListener,
-    ) : suspend (CoroutineScope, EventProcessingContext) -> EventResult {
+    ) : suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult {
         val isAsync = listener.isAsync
         private val listenerInterceptEntrance =
             EventInterceptEntrance.eventListenerInterceptEntrance(listener, listenerIntercepts)
 
-        private val function: suspend (CoroutineScope, EventProcessingContext) -> EventResult =
+        private val function: suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult =
             if (isAsync) { scope, context ->
-                EventResult.async(scope.async { listenerInterceptEntrance.doIntercept(context, listener::invoke) })
+                EventResult.async(scope.async {
+                    listenerInterceptEntrance.doIntercept(context, listener::invoke)
+                })
             }
             else { _, context -> listenerInterceptEntrance.doIntercept(context, listener::invoke) }
 
-        override suspend fun invoke(scope: CoroutineScope, context: EventProcessingContext): EventResult {
+        override suspend fun invoke(scope: CoroutineScope, context: EventListenerProcessingContext): EventResult {
             return function(scope, context)
         }
 
@@ -281,7 +287,6 @@ public enum class ListenerInvokeType {
 }
 
 
-
 /**
  * 核心默认的事件上下文处理器。
  */
@@ -296,7 +301,7 @@ internal object CoreEventProcessingContextResolver : EventProcessingContextResol
         EventProcessingContext.Scope.Global to GlobalScopeContext()
     )
 
-    private class GlobalScopeContext : ScopeContext, MutableAttributeMap by AttributeHashMap(ConcurrentHashMap())
+    private class GlobalScopeContext : ScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
 
     /**
      * attribute map.
@@ -307,14 +312,21 @@ internal object CoreEventProcessingContextResolver : EventProcessingContextResol
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
      */
     override suspend fun resolveEventToContext(event: Event, listenerSize: Int): CoreEventProcessingContext {
-        return CoreEventProcessingContext(event, AttributeHashMap(ConcurrentHashMap(constMaps))) { ArrayList(listenerSize) }
+        return CoreEventProcessingContext(event, AttributeMutableMap(ConcurrentHashMap(constMaps))) {
+            ArrayList(
+                listenerSize
+            )
+        }
     }
 
 
     /**
      * 将一次事件结果拼接到当前上下文结果集中。
      */
-    override suspend fun appendResultIntoContext(context: CoreEventProcessingContext, result: EventResult): ListenerInvokeType {
+    override suspend fun appendResultIntoContext(
+        context: CoreEventProcessingContext,
+        result: EventResult
+    ): ListenerInvokeType {
         if (result != EventResult.Invalid) {
             context._results.add(result)
         }
@@ -344,3 +356,13 @@ internal class CoreEventProcessingContext(
 
 
 private data class CoreEventProcessingResult(override val results: List<EventResult>) : EventProcessingResult
+
+
+public fun EventProcessingContext.withListener(listener: EventListener): EventListenerProcessingContext =
+    CoreEventListenerProcessingContext(this, listener)
+
+
+private class CoreEventListenerProcessingContext(
+    processingContext: EventProcessingContext,
+    override val listener: EventListener
+) : EventListenerProcessingContext, EventProcessingContext by processingContext

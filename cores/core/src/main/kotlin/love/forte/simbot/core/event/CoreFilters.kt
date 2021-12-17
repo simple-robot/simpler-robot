@@ -13,20 +13,20 @@
 package love.forte.simbot.core.event
 
 import love.forte.simbot.event.EventFilter
-import love.forte.simbot.event.EventProcessingContext
+import love.forte.simbot.event.EventListenerProcessingContext
 
 /**
  * 构建一个 [EventFilter].
  */
 @JvmSynthetic
-public fun coreFilter(tester: suspend (context: EventProcessingContext) -> Boolean): EventFilter =
+public fun coreFilter(tester: suspend (context: EventListenerProcessingContext) -> Boolean): EventFilter =
     CoreFilter(tester)
 
 
 private class CoreFilter(
-    private val func: suspend (EventProcessingContext) -> Boolean
+    private val func: suspend (EventListenerProcessingContext) -> Boolean
     ) : EventFilter {
 
-    override suspend fun test(context: EventProcessingContext): Boolean = func(context)
+    override suspend fun test(context: EventListenerProcessingContext): Boolean = func(context)
 }
 

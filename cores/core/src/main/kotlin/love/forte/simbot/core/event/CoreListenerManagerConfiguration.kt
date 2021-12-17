@@ -43,6 +43,15 @@ public class CoreListenerManagerConfiguration {
 
 
     /**
+     * 自定义的异常处理器。
+     */
+    @Volatile
+    @JvmSynthetic
+    internal var exceptionHandler: ((Throwable) -> Unit)? = null
+
+    // public fun exceptionHandler(handler: )
+
+    /**
      * 添加一个流程拦截器，ID需要唯一。
      * 如果出现重复ID，会抛出 [IllegalStateException] 并且不会真正的向当前配置中追加数据。
      *

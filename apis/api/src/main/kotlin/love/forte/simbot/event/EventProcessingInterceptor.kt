@@ -68,8 +68,8 @@ public interface EventListenerInterceptor : EventInterceptor<EventListenerInterc
         /**
          * 当前被拦截的监听函数实例。
          */
-        public val listener: EventListener
-        override val eventContext: EventProcessingContext
+        override val eventContext: EventListenerProcessingContext
+        public val listener: EventListener get() = eventContext.listener
         override suspend fun proceed(): EventResult
     }
 }

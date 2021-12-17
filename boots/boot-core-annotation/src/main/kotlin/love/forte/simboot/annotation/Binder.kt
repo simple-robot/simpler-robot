@@ -22,9 +22,9 @@ import org.springframework.core.annotation.AliasFor
  * 此时函数有且只能有一个参数 [love.forte.simboot.listener.ParameterBinderFactory.Context],
  * 且返回值必须为 [love.forte.simboot.listener.ParameterBinderResult].
  *
- * 如果标记的函数上同样存在 [Listener], 则代表将指定ID的binder应用于当前监听函数。此时作用域只能为 [Binder.Scope.SPECIFY] 且必须指定id。
+ * 如果标记的函数上同样存在 [Listener], 则代表将指定ID的binder应用于当前监听函数。此时作用域只能为 [Binder.Scope.SPECIFY] 且必须指定所需id。
  *
- * @property id 当 [scope] 为 [Scope.SPECIFY] 时，指定对应ID。
+ * @property id 当 [scope] 为 [Scope.SPECIFY] 时，指定对应ID. 指定id时，如果不是在 [Listener] 上，则值应当有且只有一个。
  * @property scope binder作用域。
  *
  * @see SpecifyBinder
@@ -33,7 +33,7 @@ import org.springframework.core.annotation.AliasFor
  */
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 public annotation class Binder(
-    val id: String = "",
+    val id: Array<String> = [],
     val scope: Scope = Scope.SPECIFY
 ) {
 
@@ -76,23 +76,23 @@ public annotation class Binder(
  * [Binder.scope] 为 [Binder.Scope.SPECIFY] 的 [Binder].
  */
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
-@Binder(scope = Binder.Scope.SPECIFY)
+@Binder(scope = Scope.SPECIFY)
 public annotation class SpecifyBinder(
     @get:AliasFor(annotation = Binder::class, attribute = "id")
     @get:AnnotationMapper.Property(target = Binder::class, value = "id")
-    val value: String
+    val value: Array<String>
 )
 
 /**
  * [Binder.scope] 为 [Binder.Scope.CURRENT] 的 [Binder].
  */
 @Target(AnnotationTarget.FUNCTION)
-@Binder(scope = Binder.Scope.CURRENT)
+@Binder(scope = Scope.CURRENT)
 public annotation class CurrentBinder
 
 /**
  * [Binder.scope] 为 [Binder.Scope.GLOBAL] 的 [Binder].
  */
 @Target(AnnotationTarget.CLASS)
-@Binder(scope = Binder.Scope.GLOBAL)
+@Binder(scope = Scope.GLOBAL)
 public annotation class GlobalBinder

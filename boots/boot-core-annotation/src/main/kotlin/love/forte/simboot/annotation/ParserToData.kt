@@ -71,6 +71,7 @@ public fun Listener.toData(listens: ListensData? = null): ListenerData {
     return ListenerData(
         id = id,
         priority = priority,
+        async = async,
         listens = listens
     )
 }

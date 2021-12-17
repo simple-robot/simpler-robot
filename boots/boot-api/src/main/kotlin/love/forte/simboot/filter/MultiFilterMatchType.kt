@@ -12,7 +12,7 @@
 
 package love.forte.simboot.filter
 
-import love.forte.simbot.event.EventProcessingContext
+import love.forte.simbot.event.EventListenerProcessingContext
 
 
 /**
@@ -21,7 +21,7 @@ import love.forte.simbot.event.EventProcessingContext
  *
  * @author ForteScarlet
  */
-public enum class MultiFilterMatchType(private val matcher: suspend (EventProcessingContext, Collection<suspend (target: EventProcessingContext) -> Boolean>) -> Boolean) {
+public enum class MultiFilterMatchType(private val matcher: suspend (EventListenerProcessingContext, Collection<suspend (target: EventListenerProcessingContext) -> Boolean>) -> Boolean) {
 
     /**
      * 任意匹配成功即可
@@ -41,8 +41,8 @@ public enum class MultiFilterMatchType(private val matcher: suspend (EventProces
     ;
 
     public suspend fun match(
-        target: EventProcessingContext,
-        rule: Collection<suspend (target: EventProcessingContext) -> Boolean>
+        target: EventListenerProcessingContext,
+        rule: Collection<suspend (target: EventListenerProcessingContext) -> Boolean>
     ): Boolean = matcher(target, rule)
 
 }

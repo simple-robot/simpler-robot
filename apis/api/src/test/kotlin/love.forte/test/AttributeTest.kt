@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -12,7 +12,7 @@
 
 package love.forte.test
 
-import love.forte.simbot.AttributeHashMap
+import love.forte.simbot.AttributeMutableMap
 import love.forte.simbot.attribute
 import love.forte.simbot.set
 import kotlin.test.Test
@@ -29,7 +29,7 @@ class AttributeTest {
     fun test() {
         val fooAttr = attribute<Foo>("foo")
 
-        val map = AttributeHashMap()
+        val map = AttributeMutableMap()
         val foo = Foo()
         map[fooAttr] = foo
         val foo1 = map[fooAttr]!!

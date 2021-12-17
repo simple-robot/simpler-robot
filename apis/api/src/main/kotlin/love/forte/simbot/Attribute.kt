@@ -122,7 +122,7 @@ public inline fun <reified T : Any> attribute(): Attribute<T> =
  *  }
  * ```
  *
- * @see AttributeHashMap
+ * @see AttributeMutableMap
  */
 public interface AttributeMap : AttributeContainer {
 
@@ -198,7 +198,7 @@ public operator fun <T : Any> MutableAttributeMap.set(attribute: Attribute<T>, v
 
 
 
-public class AttributeHashMap(private val values: MutableMap<Attribute<*>, Any> = mutableMapOf()) : MutableAttributeMap {
+public class AttributeMutableMap(private val values: MutableMap<Attribute<*>, Any> = mutableMapOf()) : MutableAttributeMap {
 
 
     public val entries: MutableSet<MutableMap.MutableEntry<Attribute<*>, Any>>
