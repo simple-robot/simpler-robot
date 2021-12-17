@@ -49,16 +49,6 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
         }
     }
 
-    sealed class Simbot(group: String = P.Simbot.GROUP, id: String, version: String = VERSION) : V(group, id, version) {
-        companion object {
-            const val VERSION = P.Simbot.VERSION
-        }
-
-        object Api : Simbot(id = "api")
-        object Core : Simbot(id = "core")
-
-    }
-
     // org.jetbrains:annotations:23.0.0
     sealed class Jetbrains(group: String = "org.jetbrains", id: String, version: String): V(group, id, version) {
         object Annotations: Jetbrains(id = "annotations", version = "23.0.0")
