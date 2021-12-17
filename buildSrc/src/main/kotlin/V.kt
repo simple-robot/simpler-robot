@@ -44,8 +44,8 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
 
     companion object {
         @Suppress("ObjectPropertyName")
-        val dependencies: Set<Dep> by lazy {
-            V::class.all().toSet()
+        val dependencies: Set<Dep> get() {
+            return V::class.all().toSet()
         }
     }
 
