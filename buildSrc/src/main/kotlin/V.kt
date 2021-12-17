@@ -16,7 +16,10 @@ import org.gradle.api.artifacts.DependencyConstraint
 import kotlin.reflect.KClass
 
 
-val publishNeed = setOf("annotation", "core", "api")
+val publishNeed = setOf(
+    "simbot-annotation", "simbot-core", "simbot-api",
+    "simboot-api", "simboot-core", "simboot-core-annotation"
+)
 
 
 

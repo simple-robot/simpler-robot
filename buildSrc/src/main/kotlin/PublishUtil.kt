@@ -43,6 +43,7 @@ inline fun Project.configurePublishing(artifactId: String) {
                 version = project.version.toString()
 
                 setupPom(project = project)
+                showPom()
 
                 artifact(sourcesJar)
                 artifact(javadocJar.get())
@@ -78,44 +79,61 @@ inline fun Project.configurePublishing(artifactId: String) {
 }
 
 fun Project.configurePublishingLocal(artifactId: String) {
-// val sourcesJar by tasks.registering(Jar::class) {
-    //     archiveClassifier.set("sources")
-    //     from(sourceSets["main"].allSource)
-    // }
-    // // val sourcesJar = tasks["sourcesJar"]
-    // val javadocJar = tasks.register("javadocJar", Jar::class) {
-    //     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    //     archiveClassifier.set("javadoc")
-    // }
-    //
-    // publishing {
-    //     publications {
-    //         register("mavenJava", MavenPublication::class) {
-    //             from(components["java"])
-    //
-    //             groupId = rootProject.group.toString()
-    //             version = project.version.toString()
-    //
-    //             setupPom(project = project)
-    //
-    //             artifact(sourcesJar)
-    //             artifact(javadocJar.get())
-    //         }
-    //     }
-    //
-    //     repositories {
-    //         mavenLocal().also {
-    //             println(it.name)
-    //             println(it.url)
-    //         }
-    //     }
-    // }
+
+    val sourcesJar by tasks.registering(Jar::class) {
+        archiveClassifier.set("sources")
+        from(sourceSets["main"].allSource)
+    }
+    // val sourcesJar = tasks["sourcesJar"]
+    val javadocJar = tasks.register("javadocJar", Jar::class) {
+        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+        archiveClassifier.set("javadoc")
+    }
+
+    publishing {
+        publications {
+            register("mavenJava", MavenPublication::class) {
+                from(components["java"])
+
+                groupId = rootProject.group.toString()
+                setArtifactId(artifactId)
+                version = project.version.toString()
+
+                setupPom(project = project)
+                showPom()
+
+                artifact(sourcesJar)
+                artifact(javadocJar.get())
+            }
+        }
+
+        repositories {
+            mavenLocal()
+        }
+
+    }
+
+}
+
+fun MavenPublication.showPom() {
+    println("======= pom $artifactId =======")
+    println("groupId:    $groupId")
+    println("artifactId: $artifactId")
+    println("version:    $version")
+    println("complete:   $groupId:$artifactId:$version")
+    println()
 }
 
 
 fun MavenPublication.setupPom(project: Project) {
     val vcs = "https://github.com/ForteScarlet/simpler-robot"
     pom {
+        distributionManagement {
+            relocation {
+                setArtifactId(project.name)
+                setGroupId(project.group.toString())
+            }
+        }
         scm {
             url.set(vcs)
             connection.set("scm:$vcs.git")
@@ -148,6 +166,8 @@ fun MavenPublication.setupPom(project: Project) {
             root.appendNode("name", project.name)
             root.appendNode("url", vcs)
         }
+
+
 
     }
 

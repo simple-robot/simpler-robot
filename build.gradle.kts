@@ -36,7 +36,8 @@ repositories {
 val secretKeyRingFileKey = "signing.secretKeyRingFile"
 
 subprojects {
-    group = P.Simbot.GROUP
+    println("ROOT SUB: $this")
+    // group = P.Simbot.GROUP
     version = P.Simbot.VERSION
     apply(plugin = "maven-publish")
     apply(plugin = "java")
@@ -51,28 +52,32 @@ subprojects {
         configDokka()
     }
 
+    afterEvaluate {
+        if (name in publishNeed) {
 
+            configurePublishing(name)
+            println("[publishing-configure] - [$name] configured.")
+            // set gpg file path to root
+            // val secretKeyRingFile = local().getProperty(secretKeyRingFileKey) ?: throw kotlin.NullPointerException(secretKeyRingFileKey)
+            val secretRingFile = File(project.rootDir, "ForteScarlet.gpg")
+            extra[secretKeyRingFileKey] = secretRingFile
+            setProperty(secretKeyRingFileKey, secretRingFile)
 
+            signing {
+                // val key = local().getProperty("signing.keyId")
+                // val password = local().getProperty("signing.password")
+                // this.useInMemoryPgpKeys(key, password)
+                sign(publishing.publications)
+            }
 
-    if (name in publishNeed) {
-
-        configurePublishing(name)
-
-        println("[publishing-configure] - [$name] configured.")
-        // set gpg file path to root
-        // val secretKeyRingFile = local().getProperty(secretKeyRingFileKey) ?: throw kotlin.NullPointerException(secretKeyRingFileKey)
-        val secretRingFile = File(project.rootDir, "ForteScarlet.gpg")
-        extra[secretKeyRingFileKey] = secretRingFile
-        setProperty(secretKeyRingFileKey, secretRingFile)
-
-        signing {
-            // val key = local().getProperty("signing.keyId")
-            // val password = local().getProperty("signing.password")
-            // this.useInMemoryPgpKeys(key, password)
-            sign(publishing.publications)
+        } else {
+            // only local
+            configurePublishingLocal(name)
+            println("[publishing-local-configure] - [$name] configured.")
         }
-
     }
+
+
 
 
 }
