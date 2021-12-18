@@ -14,6 +14,7 @@ package love.forte.simboot.core.internal
 
 import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.di.BeanContainer
+import love.forte.di.allInstance
 import love.forte.di.core.internal.AnnotationGetter
 import love.forte.simboot.Configuration
 import love.forte.simboot.SimbootEntranceContext
@@ -87,17 +88,14 @@ internal class CoreBootEntranceContextImpl(
 
     override fun getListenerManager(beanContainer: BeanContainer): EventListenerManager {
 
-        // 所有的拦截器
-        val allListenerInterceptor = beanContainer.getAll(EventListenerInterceptor::class)
-            .map { name -> beanContainer[name, EventListenerInterceptor::class] }
-        val allProcessingInterceptor = beanContainer.getAll(EventProcessingInterceptor::class)
-            .map { name -> beanContainer[name, EventProcessingInterceptor::class] }
-
-
-
         return beanContainer.getOrNull(EventListenerManagerFactory::class)
             ?.getEventListenerManager()
             ?: coreListenerManager {
+                
+                // 所有的拦截器
+                val allListenerInterceptor = beanContainer.allInstance<EventListenerInterceptor>()
+                val allProcessingInterceptor = beanContainer.allInstance<EventProcessingInterceptor>()
+
                 interceptors {
                     if (allListenerInterceptor.isNotEmpty()) {
                         addListenerInterceptors(allListenerInterceptor)

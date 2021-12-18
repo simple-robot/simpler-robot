@@ -14,6 +14,7 @@ package love.forte.simboot.core
 
 import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.di.BeanContainer
+import love.forte.di.allInstance
 import love.forte.simboot.*
 import love.forte.simboot.core.internal.CoreBootEntranceContextImpl
 import love.forte.simboot.factory.BeanContainerFactory
@@ -90,11 +91,10 @@ public class CoreBootEntrance : SimbootEntrance {
         val manager = bootContext.getListenerManager(beanContainer)
 
         // 获取所有的 BotRegistrar -> BotRegistrarFactory
-        val allBotRegistrarFactoryName = beanContainer.getAll(BotRegistrarFactory::class)
+        val allBotRegistrarFactories = beanContainer.allInstance<BotRegistrarFactory>()
+
         // all registrars and group by component name.
-        val allRegistrars = allBotRegistrarFactoryName
-            .map { name -> beanContainer[name, BotRegistrarFactory::class] }
-            .map { it() }
+        val allRegistrars = allBotRegistrarFactories.map { it() }
 
         // 所有的binder
 

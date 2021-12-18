@@ -30,9 +30,38 @@ public interface BotRegistrar : ComponentContainer {
      * [register] 应当是同步的，直到其真正的验证完毕。
      *
      */
+    @Deprecated("TODO delete")
     public fun register(properties: Map<String, String>): Bot
 
+
+    /**
+     * 根据通用配置信息注册一个BOT。
+     * 此信息是从 `.bot` 配置文件中读取而来的 Properties格式文件。
+     *
+     * 可以考虑直接通过properties序列化进行。
+     *
+     * 对于任意一个组件，其注册方式可能存在其他任何可能的方式，
+     * 但是 [BotManager] 要求实现 [register] 来为 `boot` 模块的自动注册服务。
+     *
+     * [register] 应当是同步的，直到其真正的验证完毕。
+     *
+     */
+    public fun register(verifyInfo: BotVerifyInfo): Bot = TODO()
 }
+
+
+/**
+ * BOT用于验证身份的信息，通过读取 `.bot` 文件解析而来.
+ */
+public interface BotVerifyInfo : Map<String, String> {
+    /**
+     * 这个Bot信息中所包含的组件信息。
+     */
+    public val component: String
+}
+
+
+
 
 
 /**
@@ -86,3 +115,6 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
     public abstract fun get(id: ID): B?
 
 }
+
+
+////
