@@ -18,6 +18,7 @@ import love.forte.di.allInstance
 import love.forte.simboot.*
 import love.forte.simboot.core.filter.KeywordBinderFactory
 import love.forte.simboot.core.internal.CoreBootEntranceContextImpl
+import love.forte.simboot.core.listener.EventParameterBinderFactory
 import love.forte.simboot.factory.BeanContainerFactory
 import love.forte.simboot.factory.BotRegistrarFactory
 import love.forte.simboot.factory.ConfigurationFactory
@@ -113,8 +114,8 @@ public class CoreBootEntrance : SimbootEntrance {
         // 所有的binder factory
         val baseBinderFactoryList = mutableListOf<ParameterBinderFactory>(
             KeywordBinderFactory,
-            // beanContainer binder
-            // event binder
+            //EventParameterBinderFactory, // beanContainer binder
+            EventParameterBinderFactory, // event binder
         )
 
         // 所有的 listener function
