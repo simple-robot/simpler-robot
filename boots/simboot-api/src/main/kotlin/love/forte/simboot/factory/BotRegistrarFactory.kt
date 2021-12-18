@@ -13,6 +13,7 @@
 package love.forte.simboot.factory
 
 import love.forte.simbot.BotRegistrar
+import love.forte.simbot.event.EventProcessor
 
 /**
  *
@@ -20,4 +21,4 @@ import love.forte.simbot.BotRegistrar
  *
  * @author ForteScarlet
  */
-public fun interface BotRegistrarFactory : () -> BotRegistrar
+public fun interface BotRegistrarFactory : (EventProcessor) -> BotRegistrar

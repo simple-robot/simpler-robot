@@ -18,20 +18,8 @@ package love.forte.simbot
  */
 public interface BotRegistrar : ComponentContainer {
 
-    /**
-     * 根据通用配置信息注册一个BOT。
-     * 此信息是从 `.bot` 配置文件中读取而来的 Properties格式文件。
-     *
-     * 可以考虑直接通过properties序列化进行。
-     *
-     * 对于任意一个组件，其注册方式可能存在其他任何可能的方式，
-     * 但是 [BotManager] 要求实现 [register] 来为 `boot` 模块的自动注册服务。
-     *
-     * [register] 应当是同步的，直到其真正的验证完毕。
-     *
-     */
-    @Deprecated("TODO delete")
-    public fun register(properties: Map<String, String>): Bot
+    @Deprecated("TODO delete", ReplaceWith("register(properties.asBotVerifyInfo())"))
+    public fun register(properties: Map<String, String>): Bot = register(properties.asBotVerifyInfo())
 
 
     /**
@@ -46,7 +34,7 @@ public interface BotRegistrar : ComponentContainer {
      * [register] 应当是同步的，直到其真正的验证完毕。
      *
      */
-    public fun register(verifyInfo: BotVerifyInfo): Bot = TODO()
+    public fun register(verifyInfo: BotVerifyInfo): Bot
 }
 
 
@@ -86,7 +74,7 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
     private fun isBeManaged() = beManaged()
     protected open fun beManaged(): Boolean = true
 
-    abstract override fun register(properties: Map<String, String>): Bot
+    abstract override fun register(verifyInfo: BotVerifyInfo): Bot
 
     /**
      * 执行关闭操作。
