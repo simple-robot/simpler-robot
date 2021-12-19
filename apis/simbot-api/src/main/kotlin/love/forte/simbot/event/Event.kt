@@ -135,7 +135,7 @@ public interface Event : BotContainer {
             private val eventKeyCache = ConcurrentHashMap<KClass<*>, Key<*>>()
 
             /**
-             * 尝试通过一个 [Event] 的 [KClass] 来得到一个
+             * 尝试通过一个 [Event] 的 [KClass] 来得到一个其对应的 [Key].
              */
             @JvmSynthetic
             @OptIn(Api4J::class)
@@ -157,6 +157,11 @@ public interface Event : BotContainer {
                 } as Key<T>
             }
 
+            @Api4J
+            public fun <T : Event> getKey(type: Class<T>): Key<T> = getKey(type.kotlin)
+
+
+            @JvmSynthetic
             public inline fun <reified T : Event> getKey(): Key<T> = getKey(T::class)
 
         }
@@ -227,6 +232,13 @@ public interface Event : BotContainer {
  *
  * 用于在无法实现伴生对象的情况下（例如Java）提供 [Event.Key] 信息.
  *
+ * 使用方式如：
+ * ```java
+ *  @EventKey(id = "example.test_event", type = MyTestEvent4J.class, parents = { MessageEvent.class, MessageEvent.class })
+ *  public interface MyTestEvent4J extends MessageEvent, ChannelEvent {
+ *  }
+ * ```
+ *
  * @property id 此事件的 [Event.Key.id]
  * @property type 被标记事件的类型
  * @property parents 此事件的 [Event.Key.parents]
@@ -237,7 +249,7 @@ public interface Event : BotContainer {
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 public annotation class EventKey(
-    val id: String, // id
+    val id: String,
     val type: KClass<out Event>,
     val parents: Array<KClass<out Event>>
 )
@@ -249,7 +261,8 @@ public annotation class EventKey(
 @Suppress("UNCHECKED_CAST")
 @OptIn(Api4J::class)
 private fun <T : Event> EventKey.toKey(): Event.Key<T> =
-    AnnotationEventKey(id,
+    AnnotationEventKey(
+        id,
         type as KClass<T>, //
         parents.mapNotNull { it.takeIf { t -> t != type }?.let { t -> Event.Key.getKey(t) } }.toSet()
     )
@@ -263,6 +276,14 @@ private class AnnotationEventKey<T : Event>(
     override val id: CharSequenceID = idValue.ID
     override fun safeCast(value: Any): T? = type.safeCast(value)
 }
+
+
+/**
+ * 通过 [KClass] 获取其对应的 [Event.Key].
+ */
+@JvmSynthetic
+@Suppress("RemoveRedundantQualifierName")
+public fun <T : Event> KClass<T>.getKey(): Event.Key<T> = Event.Key.getKey(this)
 
 
 /**
