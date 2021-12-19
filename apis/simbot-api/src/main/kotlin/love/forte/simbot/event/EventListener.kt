@@ -13,10 +13,38 @@
 package love.forte.simbot.event
 
 import kotlinx.coroutines.Deferred
-import love.forte.simbot.Attribute
-import love.forte.simbot.AttributeContainer
-import love.forte.simbot.ID
-import love.forte.simbot.PriorityConstant
+import kotlinx.coroutines.runBlocking
+import love.forte.simbot.*
+
+
+/**
+ * 一个监听函数。其代表对于一个监听器上下文的处理流程。
+ */
+public fun interface EventListenerFunction : suspend (EventListenerProcessingContext) -> EventResult {
+
+    /**
+     * 执行监听处理流程。
+     */
+    @JvmSynthetic
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult
+
+    @Api4J
+    public fun invokeBlocking(context: EventListenerProcessingContext): EventResult = runBlocking { invoke(context) }
+}
+
+
+/**
+ * 阻塞实现的 [EventListenerFunction], 更适合 Java开发者进行实现。
+ */
+@Api4J
+public fun interface BlockingEventListenerFunction : EventListenerFunction {
+    override fun invokeBlocking(context: EventListenerProcessingContext): EventResult
+
+    @JvmSynthetic
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult = invokeBlocking(context)
+}
+
+
 
 
 /**
@@ -29,7 +57,7 @@ import love.forte.simbot.PriorityConstant
  *
  * @author ForteScarlet
  */
-public interface EventListener : java.util.EventListener, AttributeContainer {
+public interface EventListener : java.util.EventListener, AttributeContainer, EventListenerFunction {
 
     /**
      * 监听器必须是唯一的. 通过 [id] 进行唯一性确认。
@@ -78,5 +106,5 @@ public interface EventListener : java.util.EventListener, AttributeContainer {
      *
      */
     @JvmSynthetic
-    public suspend operator fun invoke(context: EventListenerProcessingContext): EventResult
+    override suspend operator fun invoke(context: EventListenerProcessingContext): EventResult
 }
