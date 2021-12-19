@@ -15,7 +15,12 @@ package love.forte.simbot.event
 import kotlinx.serialization.Serializable
 import love.forte.simbot.*
 import love.forte.simbot.definition.BotContainer
+import love.forte.simbot.event.Event.Key.Companion.getKey
 import love.forte.simbot.message.doSafeCast
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.safeCast
 
 /**
  *
@@ -93,6 +98,19 @@ public interface Event : BotContainer {
      *
      * ```
      *
+     * 当一个事件提供伴生Key的时候，[E] 应当且建议与当前事件类型一致, 因为在 [Key.getKey] 等通过类型获取Key的场景下，均默认为 [Key] 的类型与当前事件类型一致。
+     * 如下所示：
+     * ```kotlin
+     * interface MyEvent : Event {
+     *      companion object Key: Key<MyEvent> {
+     *          // ...
+     *      }
+     * }
+     * ```
+     *
+     *
+     * @see getKey
+     * @see EventKey
      */
     public interface Key<E : Event> {
         /**
@@ -111,6 +129,38 @@ public interface Event : BotContainer {
          * 如果得到null，则说明无法被转化。
          */
         public fun safeCast(value: Any): E?
+
+
+        public companion object {
+            private val eventKeyCache = ConcurrentHashMap<KClass<*>, Key<*>>()
+
+            /**
+             * 尝试通过一个 [Event] 的 [KClass] 来得到一个
+             */
+            @JvmSynthetic
+            @OptIn(Api4J::class)
+            public fun <T : Event> getKey(type: KClass<T>): Key<T> {
+                val cached = eventKeyCache[type]
+                @Suppress("UNCHECKED_CAST")
+                if (cached != null) return cached as Key<T>
+
+                // companion try
+                val companionObject = type.objectInstance
+                @Suppress("UNCHECKED_CAST")
+                if (companionObject != null && companionObject is Key<*>) return companionObject as Key<T>
+
+                @Suppress("UNCHECKED_CAST")
+                return eventKeyCache.computeIfAbsent(type) { k ->
+                    // find EventKey annotation
+                    k.findAnnotation<EventKey>()?.toKey<T>()
+                        ?: throw SimbotIllegalStateException("Unable to find event key in [$type] by companion object or @EventKey annotation")
+                } as Key<T>
+            }
+
+            public inline fun <reified T : Event> getKey(): Key<T> = getKey(T::class)
+
+        }
+
     }
 
 
@@ -131,9 +181,6 @@ public interface Event : BotContainer {
         /** 元数据唯一标识。 */
         public val id: ID
     }
-
-
-
 
 
     /**
@@ -175,6 +222,50 @@ public interface Event : BotContainer {
 
 
 /**
+ *
+ * 通过注解标记一个 [Event] 类型所对应的 [Event.Key] 数据.
+ *
+ * 用于在无法实现伴生对象的情况下（例如Java）提供 [Event.Key] 信息.
+ *
+ * @property id 此事件的 [Event.Key.id]
+ * @property type 被标记事件的类型
+ * @property parents 此事件的 [Event.Key.parents]
+ *
+ * @see Event.Key
+ */
+@Api4J
+@Target(AnnotationTarget.CLASS)
+@MustBeDocumented
+public annotation class EventKey(
+    val id: String, // id
+    val type: KClass<out Event>,
+    val parents: Array<KClass<out Event>>
+)
+
+/**
+ * [EventKey] to [Event.Key].
+ *
+ */
+@Suppress("UNCHECKED_CAST")
+@OptIn(Api4J::class)
+private fun <T : Event> EventKey.toKey(): Event.Key<T> =
+    AnnotationEventKey(id,
+        type as KClass<T>, //
+        parents.mapNotNull { it.takeIf { t -> t != type }?.let { t -> Event.Key.getKey(t) } }.toSet()
+    )
+
+
+private class AnnotationEventKey<T : Event>(
+    idValue: String,
+    private val type: KClass<T>,
+    override val parents: Set<Event.Key<*>>
+) : Event.Key<T> {
+    override val id: CharSequenceID = idValue.ID
+    override fun safeCast(value: Any): T? = type.safeCast(value)
+}
+
+
+/**
  * 判断当前类型是否为提供类型的子类型。
  *
  */
@@ -203,7 +294,7 @@ public abstract class BaseEventKey<E : Event>(
     idValue: String,
     override val parents: Set<Event.Key<*>> = emptySet(),
 ) : Event.Key<E> {
-    override val id: CharSequenceID= idValue.ID
+    override val id: CharSequenceID = idValue.ID
     override fun toString(): String = "EventKey(id=$id)"
 }
 
