@@ -18,6 +18,7 @@ import love.forte.simbot.ID
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
 import java.util.*
+import java.util.function.BiConsumer
 import java.util.function.BiFunction
 
 
@@ -76,6 +77,17 @@ public fun <E : Event> EventListenerRegistrar.listen(
     func: suspend (EventListenerProcessingContext, E) -> Any?
 ): EventListener = coreListener(eventKey, id, blockNext, isAsync, func).also(::register)
 
+/**
+ * 向 [EventListenerManager] 中注册一个监听器。
+ */
+@JvmSynthetic
+public inline fun <reified E : Event> EventListenerRegistrar.listen(
+    id: ID = UUID.randomUUID().ID,
+    blockNext: Boolean = false,
+    isAsync: Boolean = false,
+    noinline func: suspend (EventListenerProcessingContext, E) -> Any?
+): EventListener = listen(E::class.getKey(), id, blockNext, isAsync, func).also(::register)
+
 
 /**
  * 构建一个监听函数。
@@ -88,6 +100,17 @@ public fun <E : Event> coreListener(
     isAsync: Boolean = false,
     func: suspend (EventListenerProcessingContext, E) -> Any?
 ): EventListener = CoreListener(id, eventKey, blockNext, isAsync, func)
+
+/**
+ * 构建一个监听函数。
+ */
+@JvmSynthetic
+public inline fun <reified E : Event> coreListener(
+    id: ID = UUID.randomUUID().ID,
+    blockNext: Boolean = false,
+    isAsync: Boolean = false,
+    noinline func: suspend (EventListenerProcessingContext, E) -> Any?
+): EventListener = coreListener(E::class.getKey(), id, blockNext, isAsync, func)
 
 
 internal class CoreListener<E : Event>(
@@ -107,6 +130,8 @@ internal class CoreListener<E : Event>(
 }
 
 
+////// create for java
+
 /**
  * 创建一个监听函数。
  */
@@ -120,3 +145,48 @@ public fun <E : Event> blockingCoreListener(
     isAsync: Boolean = false,
     func: BiFunction<EventProcessingContext, E, Any?>
 ): EventListener = coreListener(eventKey, id, blockNext, isAsync, func::apply)
+
+
+/**
+ * 创建一个监听函数。
+ */
+@Api4J
+@JvmOverloads
+@JvmName("newCoreListener")
+public fun <E : Event> blockingCoreListener(
+    eventKey: Event.Key<E>,
+    id: ID = UUID.randomUUID().ID,
+    blockNext: Boolean = false,
+    isAsync: Boolean = false,
+    func: BiConsumer<EventProcessingContext, E>
+): EventListener = coreListener(eventKey, id, blockNext, isAsync) { c, e -> func.accept(c, e) }
+
+
+
+/**
+ * 创建一个监听函数。
+ */
+@Api4J
+@JvmOverloads
+@JvmName("newCoreListener")
+public fun <E : Event> blockingCoreListener(
+    eventType: Class<E>,
+    id: ID = UUID.randomUUID().ID,
+    blockNext: Boolean = false,
+    isAsync: Boolean = false,
+    func: BiFunction<EventProcessingContext, E, Any?>
+): EventListener = blockingCoreListener(Event.Key.getKey(eventType), id, blockNext, isAsync, func)
+
+/**
+ * 创建一个监听函数。
+ */
+@Api4J
+@JvmOverloads
+@JvmName("newCoreListener")
+public fun <E : Event> blockingCoreListener(
+    eventType: Class<E>,
+    id: ID = UUID.randomUUID().ID,
+    blockNext: Boolean = false,
+    isAsync: Boolean = false,
+    func: BiConsumer<EventProcessingContext, E>
+): EventListener = blockingCoreListener(Event.Key.getKey(eventType), id, blockNext, isAsync, func)
