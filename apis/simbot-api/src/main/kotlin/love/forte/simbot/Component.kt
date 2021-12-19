@@ -32,8 +32,11 @@ import kotlin.streams.asStream
  *
  * [Component] 的 [equals] 将会直接进行 `===` 匹配, 因此需要保证组件实例唯一性，开发者在 [Components] 中注册的时候，需要保证组件标识的ID唯一不变。
  *
+ * 如果你想在对比两个 [Component] 的时候，允许其中任意一方为 [SimbotComponent], 那么你需要使用 [Component.like] 而不是 `equals`.
  *
  * @see Components
+ * @see Component.like
+ * @see ComponentAttributes
  */
 @Suppress("MemberVisibilityCanBePrivate")
 public sealed class Component : Scope {
@@ -51,15 +54,23 @@ public sealed class Component : Scope {
     public abstract fun attributes(): AttributeMap
 
     /**
+     * 根据 [attribute] 获取对应结果。
+     */
+    public open fun <T : Any> getAttribute(attribute: Attribute<T>): T? = attributes()[attribute]
+
+    /**
      * 直接使用 === 进行比较。
      */
     override fun equals(other: Any?): Boolean = this === other
 
     /**
-     * 目前组件没有潜逃关系。唯一的嵌套关系为 [SimbotComponent] 包含所有的组件。
+     * 目前组件没有嵌套关系。唯一的嵌套关系为 [SimbotComponent] 包含所有的组件。
      */
     override fun contains(scope: Scope): Boolean = false
 
+    /**
+     * hashcode. 等同于 [id] 的 hashcode.
+     */
     override fun hashCode(): Int = id.hashCode()
 
 
@@ -74,10 +85,17 @@ public object SimbotComponent : Component() {
     override val id: CharSequenceID = "simbot".ID
     override val name: String get() = "simbot"
     override fun <T : Any> get(attribute: Attribute<T>): T? = null
-    override fun attributes(): AttributeMap = AttributeMap.Empty // TODO include metadata?
+    override fun attributes(): AttributeMap = SimbotAttributes
     override fun toString(): String = "SimbotComponent"
     override fun hashCode(): Int = 0
-    override fun contains(scope: Scope): Boolean = true
+    override fun contains(scope: Scope): Boolean = scope is Component
+
+    private object SimbotAttributes : AttributeMap by AttributeMutableMap(mutableMapOf(
+        ComponentAttributes.authors to Authors(Author(
+            id = "ForteScarlet".ID, name = "ForteScarlet", email = "ForteScarlet@163.com", url = "forte.love", roles = listOf("developer"), timezone = 8
+        ))
+    ))
+
 }
 
 /**
@@ -96,6 +114,9 @@ public infix fun Component.like(other: Component): Boolean =
  *
  *
  * @see Component
+ * @see SimbotComponent
+ * @see ComponentAttributes
+ *
  */
 public object Components {
     private val comps: ConcurrentHashMap<ID, Component> = ConcurrentHashMap<ID, Component>().also {

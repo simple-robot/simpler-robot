@@ -10,23 +10,36 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-@file:JvmName("ComponentAttributes")
+@file:JvmName("ComponentAttributeUtil")
 package love.forte.simbot
 
 import kotlinx.serialization.Serializable
 import org.jetbrains.annotations.Range
 import java.util.*
 
-/**
- * 此组件的开发者信息.
- */
-public val authors: Attribute<Authors> = attribute<Authors>("authors")
+public object ComponentAttributes {
 
+    /**
+     * 此组件的开发者信息.
+     */
+    @JvmField
+    public val authors: Attribute<Authors> = attribute("component.authors")
+
+    /**
+     * 此组件的展示性名称。
+     */
+    @JvmField
+    public val display: Attribute<Display> = attribute("component.display")
+}
+
+
+//region Authors
 /**
  * 作者列表。
  */
 @Serializable
 public class Authors internal constructor(private val delegate: List<Author>) : List<Author> by delegate {
+    internal constructor(author: Author): this(listOf(author))
     public companion object {
 
         @Api4J
@@ -61,6 +74,37 @@ public data class Author(
     val timezone: @Range(from = -11L, to = 12L) Int
 )
 
+/**
+ * 尝试获取组件中的作者信息。
+ */
+public val Component.authors: Authors? get() = get(ComponentAttributes.authors)
+
+//endregion
+
+
+//region Display
+/**
+ * （针对于[Component]）的展示用名称。与 [Component.id] 不同，[Display] 用作友好型的信息展示。
+ */
+public interface Display {
+
+    /**
+     * 根据地区信息得到当前组件的本地化展示信息
+     */
+    public fun getValue(locale: Locale = Locale.getDefault()): String
+
+}
+
+/**
+ * 尝试获取组件中的展示信息。
+ */
+public fun Component.getDisplay(locale: Locale = Locale.getDefault()): String? = get(ComponentAttributes.display)?.getValue(locale)
+
+/**
+ * 尝试获取组件中的展示信息。
+ */
+public val Component.display: String? get() = getDisplay()
+//endregion
 
 
 
