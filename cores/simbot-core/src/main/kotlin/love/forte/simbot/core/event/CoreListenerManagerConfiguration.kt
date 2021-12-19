@@ -44,6 +44,7 @@ public class CoreListenerManagerConfiguration {
 
     /**
      * 自定义的异常处理器。
+     * TODO
      */
     @Volatile
     @JvmSynthetic
@@ -147,7 +148,7 @@ public class EventInterceptorsGenerator {
         id: ID,
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
-    ): EventProcessingInterceptor = processingInterceptor(id, priority, interceptFunction).also(::addPro)
+    ): EventProcessingInterceptor = coreProcessingInterceptor(id, priority, interceptFunction).also(::addPro)
 
     @JvmOverloads
     @EventInterceptorsGeneratorDSL
@@ -169,7 +170,7 @@ public class EventInterceptorsGenerator {
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
     ): EventListenerInterceptor =
-        listenerInterceptor(id, priority, interceptFunction).also(::addLis)
+        coreListenerInterceptor(id, priority, interceptFunction).also(::addLis)
 
     /**
      * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],

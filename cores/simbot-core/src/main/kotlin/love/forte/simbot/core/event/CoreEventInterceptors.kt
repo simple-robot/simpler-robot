@@ -10,19 +10,24 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-@file:JvmName("CoreFunctionalEventInterceptors")
+@file:JvmName("CoreInterceptUtil")
+@file:JvmMultifileClass
 
 package love.forte.simbot.core.event
 
+import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.Interceptor
 import love.forte.simbot.PriorityConstant
 import love.forte.simbot.event.*
+import java.util.*
 
 @DslMarker
+@Retention(AnnotationRetention.BINARY)
 internal annotation class CoreFunctionalProcessingInterceptorDSL
 
 @DslMarker
+@Retention(AnnotationRetention.BINARY)
 internal annotation class CoreFunctionalListenerInterceptorDSL
 
 /**
@@ -47,7 +52,7 @@ public class CoreFunctionalEventProcessingInterceptor(
 
 public class CoreFunctionalEventListenerInterceptor(
     override val id: ID,
-    override val priority: Int,
+    override val priority: Int = PriorityConstant.NORMAL,
     override val interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
 ) : EventListenerInterceptor, CoreFunctionalEventInterceptor<EventListenerInterceptor.Context, EventResult>()
 
@@ -56,31 +61,31 @@ public class CoreFunctionalEventListenerInterceptor(
  * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
  * 得到一个流程拦截器 [EventProcessingInterceptor].
  */
-@JvmOverloads
+@JvmSynthetic
 @CoreFunctionalProcessingInterceptorDSL
-public fun processingInterceptor(
+public fun coreProcessingInterceptor(
     id: ID,
     priority: Int = PriorityConstant.NORMAL,
     interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
 ): EventProcessingInterceptor =
     CoreFunctionalEventProcessingInterceptor(id = id, priority = priority, interceptFunction = interceptFunction)
 
-@JvmOverloads
+@JvmSynthetic
 @CoreFunctionalProcessingInterceptorDSL
-public fun processingInterceptor(
-    id: String,
+public fun coreProcessingInterceptor(
+    id: String = UUID.randomUUID().toString(),
     priority: Int = PriorityConstant.NORMAL,
     interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
-): EventProcessingInterceptor = processingInterceptor(id.ID, priority, interceptFunction)
+): EventProcessingInterceptor = coreProcessingInterceptor(id.ID, priority, interceptFunction)
 
 
 /**
  * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
  * 得到一个流程拦截器 [EventListenerInterceptor].
  */
-@JvmOverloads
+@JvmSynthetic
 @CoreFunctionalListenerInterceptorDSL
-public fun listenerInterceptor(
+public fun coreListenerInterceptor(
     id: ID,
     priority: Int = PriorityConstant.NORMAL,
     interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
@@ -92,12 +97,68 @@ public fun listenerInterceptor(
  * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
  * 得到一个流程拦截器 [EventListenerInterceptor].
  */
-@JvmOverloads
+@JvmSynthetic
 @CoreFunctionalListenerInterceptorDSL
-public fun listenerInterceptor(
-    id: String,
+public fun coreListenerInterceptor(
+    id: String = UUID.randomUUID().toString(),
     priority: Int = PriorityConstant.NORMAL,
     interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
 ): EventListenerInterceptor =
-    listenerInterceptor(id.ID, priority, interceptFunction)
+    coreListenerInterceptor(id.ID, priority, interceptFunction)
+
+
+////// 4j
+
+/**
+ * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
+ * 得到一个流程拦截器 [EventProcessingInterceptor].
+ */
+@Api4J
+@JvmOverloads
+@JvmName("coreProcessingInterceptor")
+public fun processingInterceptor4J(
+    id: ID,
+    priority: Int = PriorityConstant.NORMAL,
+    interceptFunction: java.util.function.Function<EventProcessingInterceptor.Context, EventProcessingResult>
+): EventProcessingInterceptor =
+    coreProcessingInterceptor(id = id, priority = priority, interceptFunction = interceptFunction::apply)
+
+@Api4J
+@JvmOverloads
+@JvmName("coreProcessingInterceptor")
+public fun processingInterceptor4J(
+    id: String = UUID.randomUUID().toString(),
+    priority: Int = PriorityConstant.NORMAL,
+    interceptFunction: java.util.function.Function<EventProcessingInterceptor.Context, EventProcessingResult>
+): EventProcessingInterceptor = coreProcessingInterceptor(id.ID, priority, interceptFunction::apply)
+
+
+/**
+ * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
+ * 得到一个流程拦截器 [EventListenerInterceptor].
+ */
+@Api4J
+@JvmOverloads
+@JvmName("coreListenerInterceptor")
+public fun listenerInterceptor4J(
+    id: ID,
+    priority: Int = PriorityConstant.NORMAL,
+    interceptFunction: java.util.function.Function<EventListenerInterceptor.Context, EventResult>
+): EventListenerInterceptor =
+    coreListenerInterceptor(id = id, priority = priority, interceptFunction = interceptFunction::apply)
+
+
+/**
+ * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
+ * 得到一个流程拦截器 [EventListenerInterceptor].
+ */
+@Api4J
+@JvmOverloads
+@JvmName("coreListenerInterceptor")
+public fun listenerInterceptor4J(
+    id: String = UUID.randomUUID().toString(),
+    priority: Int = PriorityConstant.NORMAL,
+    interceptFunction: java.util.function.Function<EventListenerInterceptor.Context, EventResult>
+): EventListenerInterceptor =
+    coreListenerInterceptor(id.ID, priority, interceptFunction::apply)
 
