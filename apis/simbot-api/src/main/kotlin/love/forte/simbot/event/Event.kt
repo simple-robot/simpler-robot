@@ -153,7 +153,7 @@ public interface Event : BotContainer {
                 return eventKeyCache.computeIfAbsent(type) { k ->
                     // find EventKey annotation
                     k.findAnnotation<EventKey>()?.toKey<T>()
-                        ?: throw SimbotIllegalStateException("Unable to find event key in [$type] by companion object or @EventKey annotation")
+                        ?: throw NoSuchEventKeyDefineException("Unable to find event key in [$type] by companion object or @EventKey annotation")
                 } as Key<T>
             }
 
@@ -258,7 +258,7 @@ public annotation class EventKey(
  * [EventKey] to [Event.Key].
  *
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "RemoveRedundantQualifierName")
 @OptIn(Api4J::class)
 private fun <T : Event> EventKey.toKey(): Event.Key<T> =
     AnnotationEventKey(
@@ -326,3 +326,9 @@ public abstract class BaseEventKey<E : Event>(
  * 事件的所属组件。
  */
 public inline val Event.component: Component get() = bot.component
+
+
+/**
+ * 没有定义 [Event.Key] 异常。
+ */
+public class NoSuchEventKeyDefineException internal constructor(message: String?) : SimbotIllegalStateException(message)

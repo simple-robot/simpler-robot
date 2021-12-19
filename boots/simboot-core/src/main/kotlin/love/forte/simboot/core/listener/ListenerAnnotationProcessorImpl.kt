@@ -153,8 +153,9 @@ internal class ListenerAnnotationProcessorImpl : ListenerAnnotationProcessor {
             if (receiver != null) {
                 val classifier = receiver.type.classifier
                 if ((classifier as? KClass<*>)?.isSubclassOf(Event::class) == true) {
+                    @Suppress("UNCHECKED_CAST")
                     return setOf(
-                        classifier.getEventKeyOr { v ->
+                        (classifier as KClass<out Event>).getEventKeyOr { v ->
                             throw SimbotIllegalStateException("Listener function's event receiver type [$v] cannot be listen: there is no companion object of type Event.Key<T>")
                         }
                     )
@@ -165,7 +166,8 @@ internal class ListenerAnnotationProcessorImpl : ListenerAnnotationProcessor {
             return valueParameters.mapNotNull { parameter ->
                 val classifier = parameter.type.classifier
                 if ((classifier as? KClass<*>)?.isSubclassOf(Event::class) == true) {
-                    classifier.getEventKeyOrElse { v ->
+                    @Suppress("UNCHECKED_CAST")
+                    (classifier as KClass<out Event>).getEventKeyOrElse { v ->
                         logger.warn(
                             "Listener function's event parameter type [{}] cannot be listen: there is no companion object of type Event.Key<T>. it may always be null.",
                             v
@@ -181,13 +183,25 @@ internal class ListenerAnnotationProcessorImpl : ListenerAnnotationProcessor {
 
     }
 
-    private inline fun KClass<*>.getEventKeyOr(or: (KClass<*>) -> Nothing): Event.Key<*> {
-        return companionObjectInstance?.takeIf { it is Event.Key<*> } as? Event.Key<*> ?: or(this)
+    private inline fun KClass<out Event>.getEventKeyOr(or: (KClass<out Event>) -> Nothing): Event.Key<*> {
+        return try {
+            getKey()
+        } catch (noDefine: NoSuchEventKeyDefineException) {
+            // only cache NoSuchEventKeyDefineException.
+            or(this)
+        }
+        // return companionObjectInstance?.takeIf { it is Event.Key<*> } as? Event.Key<*> ?: or(this)
 
     }
 
-    private inline fun KClass<*>.getEventKeyOrElse(or: (KClass<*>) -> Event.Key<*>?): Event.Key<*>? {
-        return companionObjectInstance?.takeIf { it is Event.Key<*> } as? Event.Key<*> ?: or(this)
+    private inline fun KClass<out Event>.getEventKeyOrElse(or: (KClass<*>) -> Event.Key<*>?): Event.Key<*>? {
+        return try {
+            getKey()
+        } catch (noDefine: NoSuchEventKeyDefineException) {
+            // only cache NoSuchEventKeyDefineException.
+            or(this)
+        }
+        // return companionObjectInstance?.takeIf { it is Event.Key<*> } as? Event.Key<*> ?: or(this)
     }
 
     /**
