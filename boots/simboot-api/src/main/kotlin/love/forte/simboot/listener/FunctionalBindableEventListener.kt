@@ -264,14 +264,13 @@ public interface ParameterBinderFactoryContainer {
 
 
     /**
-     * 讲一个 [function] 解析为 [ParameterBinderFactory].
+     * 将一个 [function] 解析为 [ParameterBinderFactory].
      *
      * 此 function必须遵循规则：
      * - 返回值类型必须是 [ParameterBinder] 或 [ParameterBinderResult] 类型。
      * - 参数或则receiver有且只能有一个，且类型必须是 [ParameterBinderFactory.Context]
-     *
      */
-    public fun resolveFunctionToBinderFactory(function: KFunction<*>): ParameterBinderFactory
+    public fun resolveFunctionToBinderFactory(beanId: String? = null, function: KFunction<*>): ParameterBinderFactory
 
 }
 

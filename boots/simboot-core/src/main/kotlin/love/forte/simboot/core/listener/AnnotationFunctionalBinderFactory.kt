@@ -44,6 +44,7 @@ internal class AnnotationFunctionalBinderFactory(
  *
  * 此函数的返回值必须为 [ParameterBinderResult] 或者 [ParameterBinder].
  *
+ * @param beanId 这个binder存在的实例的bean id.
  *
  */
 internal fun KFunction<*>.toBinderFactory(beanId: String?): AnnotationFunctionalBinderFactory {

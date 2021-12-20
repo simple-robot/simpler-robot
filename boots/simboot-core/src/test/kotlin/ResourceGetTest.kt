@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -36,19 +36,19 @@ fun main() {
     val classes = ResourcesScanner<Class<*>>().use { scanner ->
         scanner.scan("love")
             .glob("love/forte**.class")
-            .visitPath {
-                println("path: $it")
-                emptySequence()
+            .visitPath { (_, r) ->
+                val classname = r.replace(pathReplace, ".").substringBefore(".class")
+                sequenceOf(scanner.classLoader.loadClass(classname))
             }
             .visitJarEntry { entry, _ ->
                 val classname = entry.name.replace(pathReplace, ".").substringBefore(".class")
                 sequenceOf(scanner.classLoader.loadClass(classname))
             }
             .collect(true, mutableListOf())
-
-
-
     }
 
+    for (c in classes) {
+        println(c)
+    }
 
 }

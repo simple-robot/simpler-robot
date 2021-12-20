@@ -11,12 +11,15 @@
  */
 
 @file:JvmName("CoreListenerUtil")
+
 package love.forte.simbot.core.event
 
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
+import love.forte.simbot.LoggerFactory
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
+import org.slf4j.Logger
 import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.BiFunction
@@ -74,8 +77,9 @@ public fun <E : Event> EventListenerRegistrar.listen(
     id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
     isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: suspend (EventListenerProcessingContext, E) -> Any?
-): EventListener = coreListener(eventKey, id, blockNext, isAsync, func).also(::register)
+): EventListener = coreListener(eventKey, id, blockNext, isAsync, logger, func).also(::register)
 
 /**
  * 向 [EventListenerManager] 中注册一个监听器。
@@ -85,8 +89,9 @@ public inline fun <reified E : Event> EventListenerRegistrar.listen(
     id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
     isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     noinline func: suspend (EventListenerProcessingContext, E) -> Any?
-): EventListener = listen(E::class.getKey(), id, blockNext, isAsync, func).also(::register)
+): EventListener = listen(E::class.getKey(), id, blockNext, isAsync, logger, func).also(::register)
 
 
 /**
@@ -98,8 +103,9 @@ public fun <E : Event> coreListener(
     id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
     isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: suspend (EventListenerProcessingContext, E) -> Any?
-): EventListener = CoreListener(id, eventKey, blockNext, isAsync, func)
+): EventListener = CoreListener(id, eventKey, blockNext, isAsync, logger, func)
 
 /**
  * 构建一个监听函数。
@@ -109,8 +115,9 @@ public inline fun <reified E : Event> coreListener(
     id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
     isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     noinline func: suspend (EventListenerProcessingContext, E) -> Any?
-): EventListener = coreListener(E::class.getKey(), id, blockNext, isAsync, func)
+): EventListener = coreListener(E::class.getKey(), id, blockNext, isAsync, logger, func)
 
 
 internal class CoreListener<E : Event>(
@@ -118,6 +125,7 @@ internal class CoreListener<E : Event>(
     private val key: Event.Key<E>,
     private val blockNext: Boolean,
     override val isAsync: Boolean,
+    override val logger: Logger,
     private val func: suspend (EventListenerProcessingContext, E) -> Any?
 ) : EventListener {
 
@@ -143,8 +151,9 @@ public fun <E : Event> blockingCoreListener(
     id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
     isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: BiFunction<EventProcessingContext, E, Any?>
-): EventListener = coreListener(eventKey, id, blockNext, isAsync, func::apply)
+): EventListener = coreListener(eventKey, id, blockNext, isAsync, logger, func::apply)
 
 
 /**
@@ -162,7 +171,6 @@ public fun <E : Event> blockingCoreListener(
 ): EventListener = coreListener(eventKey, id, blockNext, isAsync) { c, e -> func.accept(c, e) }
 
 
-
 /**
  * 创建一个监听函数。
  */
@@ -174,8 +182,9 @@ public fun <E : Event> blockingCoreListener(
     id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
     isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: BiFunction<EventProcessingContext, E, Any?>
-): EventListener = blockingCoreListener(Event.Key.getKey(eventType), id, blockNext, isAsync, func)
+): EventListener = blockingCoreListener(Event.Key.getKey(eventType), id, blockNext, isAsync, logger, func)
 
 /**
  * 创建一个监听函数。

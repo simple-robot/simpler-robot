@@ -62,8 +62,8 @@ public fun Listen.toData(): ListenData {
     return ListenData(value)
 }
 
-public fun Listens.toData(): ListensData {
-    return ListensData(value.map(Listen::toData))
+public fun Listens.toData(values: List<ListenData> = value.map(Listen::toData)): ListensData {
+    return ListensData(values)
 }
 
 @JvmOverloads

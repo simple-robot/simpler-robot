@@ -12,6 +12,7 @@
 
 package love.forte.simbot.core.event
 
+import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.PriorityConstant
 import love.forte.simbot.event.EventListenerInterceptor
@@ -43,14 +44,24 @@ public class CoreListenerManagerConfiguration {
 
 
     /**
-     * 自定义的异常处理器。
-     * TODO
+     * 自定义的监听函数异常处理器。
+     *
      */
     @Volatile
     @JvmSynthetic
-    internal var exceptionHandler: ((Throwable) -> Unit)? = null
+    internal var listenerExceptionHandler: ((Throwable) -> EventResult)? = null
 
-    // public fun exceptionHandler(handler: )
+
+    @JvmSynthetic
+    public fun listenerExceptionHandler(handler: (Throwable) -> EventResult) {
+        listenerExceptionHandler = handler
+    }
+
+    @Api4J
+    public fun listenerExceptionHandler(handler: java.util.function.Function<Throwable, EventResult>) {
+        listenerExceptionHandler = handler::apply
+    }
+
 
     /**
      * 添加一个流程拦截器，ID需要唯一。

@@ -43,7 +43,7 @@ public object PriorityConstant {
     /**
      * 最后的优先级。其优先级比 [Int.MAX_VALUE] 优先级会高。
      */
-    public const val LAST: Int = Int.MAX_VALUE - 10
+    public const val LAST: Int = Int.MAX_VALUE - 100
 
     // 后九个 "较为次后"级别。
 

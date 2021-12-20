@@ -29,7 +29,9 @@ import love.forte.simboot.listener.*
 import love.forte.simbot.*
 import love.forte.simbot.core.event.plus
 import love.forte.simbot.event.*
+import org.slf4j.Logger
 import java.util.concurrent.ConcurrentHashMap
+import javax.inject.Named
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
@@ -48,6 +50,7 @@ internal class ListenerAnnotationProcessorImpl : ListenerAnnotationProcessor {
     private val logger = LoggerFactory.getLogger(ListenerAnnotationProcessorImpl::class)
 
     override fun process(context: ListenerAnnotationProcessorContext): Boolean {
+        val listenerLogger = LoggerFactory.getLogger(context.from)
         val function = context.function
 
 
@@ -64,6 +67,7 @@ internal class ListenerAnnotationProcessorImpl : ListenerAnnotationProcessor {
             isAsync = context.listenerData.async,
             targets = targets,
             caller = function,
+            logger = listenerLogger,
             binders = binders.toTypedArray(),
             attributeMap = listenerAttributeMap
         )
@@ -229,6 +233,7 @@ internal class ListenerAnnotationProcessorImpl : ListenerAnnotationProcessor {
     private fun KFunction<*>.resolveBinders(context: ListenerAnnotationProcessorContext): List<ParameterBinder> {
         val binders = mutableSetOf<ParameterBinderFactory>()
         val binderFactoryContainer = context.binderFactoryContainer
+        val fromId = tool.getAnnotation(context.from, Named::class)?.value
 
         binders.addAll(binderFactoryContainer.getGlobals())
 
@@ -275,7 +280,7 @@ internal class ListenerAnnotationProcessorImpl : ListenerAnnotationProcessor {
 
         if (memberFunctions.isNotEmpty()) {
             // to binder
-            val currentScopeBinders = memberFunctions.map(binderFactoryContainer::resolveFunctionToBinderFactory)
+            val currentScopeBinders = memberFunctions.map { f -> binderFactoryContainer.resolveFunctionToBinderFactory(fromId, f) }
             binders.addAll(currentScopeBinders)
         }
 
@@ -434,6 +439,7 @@ private class AnnotationFunctionalEventListener<R>(
     override val isAsync: Boolean,
     private val targets: Set<Event.Key<*>>,
     override val caller: KFunction<R>,
+    override val logger: Logger,
     override val binders: Array<ParameterBinder>,
     private val attributeMap: AttributeMutableMap
 ) : FunctionalBindableEventListener<R>() {

@@ -19,6 +19,7 @@ import kotlinx.coroutines.withContext
 import love.forte.simbot.*
 import love.forte.simbot.event.*
 import love.forte.simbot.utils.view
+import java.lang.reflect.InvocationTargetException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 
@@ -66,6 +67,11 @@ public class CoreListenerManager private constructor(
         public fun newInstance(configuration: CoreListenerManagerConfiguration): CoreListenerManager =
             CoreListenerManager(configuration)
     }
+
+    /**
+     * 异常处理器。
+     */
+    private val listenerExceptionHandler = configuration.listenerExceptionHandler
 
     /**
      * 事件过程拦截器入口。
@@ -180,22 +186,54 @@ public class CoreListenerManager private constructor(
         val botContext = context.event.bot.coroutineContext
 
         return withContext(botContext + context) {
-            processingInterceptEntrance.doIntercept(context) {
-                // do invoke with intercept
-                for (invoker in invokers) {
-                    val listenerContext = context.withListener(invoker.listener)
-                    val result = invoker(bot, listenerContext)
-                    // append result
-                    val type = appendResult(context, result)
-                    if (type == ListenerInvokeType.TRUNCATED) {
-                        break
-                    }
-                }
+            kotlin.runCatching {
+                processingInterceptEntrance.doIntercept(context) {
+                    // do invoke with intercept
+                    for (invoker in invokers) {
+                        val listenerContext = context.withListener(invoker.listener)
+                        val handleResult = runForEventResultWithHandler {
+                            invoker(bot, listenerContext)
+                        }
+                        val result = if (handleResult.isFailure) {
+                            invoker.listener.logger.error(
+                                "Listener process failed.",
+                                handleResult.exceptionOrNull()!!
+                            )
+                            EventResult.invalid()
+                        } else {
+                            handleResult.getOrNull()!!
+                        }
 
-                // resolve to processing result
-                CoreEventProcessingResult(context.results)
+                        // append result
+                        val type = appendResult(context, result)
+                        if (type == ListenerInvokeType.TRUNCATED) {
+                            break
+                        }
+                    }
+
+                    // resolve to processing result
+                    CoreEventProcessingResult(context.results)
+                }
+            }.getOrElse {
+                bot.logger.error("Event process failed.", it)
+                EventProcessingResult
             }
         }
+    }
+
+    private inline fun runForEventResultWithHandler(block: () -> EventResult): Result<EventResult> {
+        val result = runCatching(block)
+        if (result.isSuccess || listenerExceptionHandler == null) return result
+
+        val exception = result.exceptionOrNull()!!
+
+        val result0 = runCatching {
+            listenerExceptionHandler!!.invoke(exception)
+        }
+        if (result0.isSuccess) return result0
+        val ex2 = result0.exceptionOrNull()!!
+        ex2.addSuppressed(exception)
+        return Result.failure(ex2)
     }
 
 
@@ -231,7 +269,15 @@ public class CoreListenerManager private constructor(
             else { _, context -> listenerInterceptEntrance.doIntercept(context, listener::invoke) }
 
         override suspend fun invoke(scope: CoroutineScope, context: EventListenerProcessingContext): EventResult {
-            return function(scope, context)
+            return try {
+                function(scope, context)
+            } catch (listenerEx: EventListenerProcessingException) {
+                throw listenerEx
+            } catch (invocationEx: InvocationTargetException) {
+                throw EventListenerProcessingException(invocationEx.targetException)
+            } catch (anyEx: Throwable) {
+                throw EventListenerProcessingException(anyEx)
+            }
         }
 
     }
@@ -367,6 +413,6 @@ private class CoreEventListenerProcessingContext(
     override val listener: EventListener
 ) : EventListenerProcessingContext, EventProcessingContext by processingContext {
     override var textContent: String? = with(processingContext.event) {
-        if(this is MessageEvent) messageContent.plainText else null
+        if (this is MessageEvent) messageContent.plainText else null
     }
 }

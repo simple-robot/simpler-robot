@@ -10,29 +10,21 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-package love.forte.test
+package love.forte.simbot
+
+import org.slf4j.Logger
 
 /**
  *
+ * 日志容器，代表当前目标内存在一个可用的 [Logger] 日志对象。
+ *
  * @author ForteScarlet
  */
-class ByteChannelTest {
+public interface LoggerContainer {
 
-
-    // public suspend fun a() {
-    //     val p = Path("")
-    //
-    //     val channel = Files.newByteChannel(p, StandardOpenOption.READ)
-    //
-    //     val inp = FileInputStream("")
-    //
-    //     inp.channel
-    //
-    //     val in2: InputStream = FileInputStream("")
-    //
-    //
-    // }
-
-    // public suspend fun value(): Byte =
+    /**
+     * 当前目标内存在的日志对象。
+     */
+    public val logger: Logger
 
 }

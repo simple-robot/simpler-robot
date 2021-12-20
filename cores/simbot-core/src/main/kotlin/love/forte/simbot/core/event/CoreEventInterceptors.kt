@@ -121,7 +121,7 @@ public fun processingInterceptor4J(
     priority: Int = PriorityConstant.NORMAL,
     interceptFunction: java.util.function.Function<EventProcessingInterceptor.Context, EventProcessingResult>
 ): EventProcessingInterceptor =
-    coreProcessingInterceptor(id = id, priority = priority, interceptFunction = interceptFunction::apply)
+    coreProcessingInterceptor(id = id, priority = priority) { interceptFunction.apply(it) }
 
 @Api4J
 @JvmOverloads
@@ -130,7 +130,7 @@ public fun processingInterceptor4J(
     id: String = UUID.randomUUID().toString(),
     priority: Int = PriorityConstant.NORMAL,
     interceptFunction: java.util.function.Function<EventProcessingInterceptor.Context, EventProcessingResult>
-): EventProcessingInterceptor = coreProcessingInterceptor(id.ID, priority, interceptFunction::apply)
+): EventProcessingInterceptor = coreProcessingInterceptor(id.ID, priority) { interceptFunction.apply(it) }
 
 
 /**
@@ -145,7 +145,7 @@ public fun listenerInterceptor4J(
     priority: Int = PriorityConstant.NORMAL,
     interceptFunction: java.util.function.Function<EventListenerInterceptor.Context, EventResult>
 ): EventListenerInterceptor =
-    coreListenerInterceptor(id = id, priority = priority, interceptFunction = interceptFunction::apply)
+    coreListenerInterceptor(id = id, priority = priority) { interceptFunction.apply(it) }
 
 
 /**
@@ -160,5 +160,5 @@ public fun listenerInterceptor4J(
     priority: Int = PriorityConstant.NORMAL,
     interceptFunction: java.util.function.Function<EventListenerInterceptor.Context, EventResult>
 ): EventListenerInterceptor =
-    coreListenerInterceptor(id.ID, priority, interceptFunction::apply)
+    coreListenerInterceptor(id.ID, priority) { interceptFunction.apply(it) }
 

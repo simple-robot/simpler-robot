@@ -18,15 +18,11 @@ import love.forte.simboot.utils.Globs
 import java.io.Closeable
 import java.net.JarURLConnection
 import java.net.URL
-import java.nio.file.FileVisitResult
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.SimpleFileVisitor
-import java.nio.file.attribute.BasicFileAttributes
 import java.util.jar.JarEntry
-import kotlin.io.path.Path
-import kotlin.io.path.relativeTo
-import kotlin.io.path.toPath
+import kotlin.io.path.*
+import kotlin.streams.asSequence
 
 /**
  *
@@ -41,7 +37,8 @@ public class ResourcesScanner<T>(
 ) : Closeable {
     private val globs = mutableSetOf<Regex>()
     private val scans = mutableSetOf<String>()
-    private val lookups = mutableListOf<(URL) -> Sequence<T>>()
+    private val lookups =
+        mutableListOf<(model: ResourceModel, resource: String, loader: ClassLoader, url: URL) -> Sequence<T>>()
     private val visitors = mutableListOf<(ResourceVisitValue<*>) -> Sequence<T>>()
 
     override fun close() {
@@ -54,48 +51,89 @@ public class ResourcesScanner<T>(
         scans.clear()
     }
 
+    private fun lookup(model: ResourceModel, resource: String, loader: ClassLoader, url: URL): Sequence<T> {
+        return when (val protocol = url.protocol) {
+            "file" -> sequence {
+                // val base = loader.getResource("")?.toURI()?.toPath()!!
+                // file, relative to ROOT
+                // val startPath = url.toURI().toPath()
+                val startPath = url.toURI().toPath() //.relativeTo(base)
 
-    public fun glob(glob: String): ResourcesScanner<T> = also {
-        if (globs.add(Regex(Globs.toRegex(glob), setOf(RegexOption.IGNORE_CASE)))) {
-            lookups.add { url ->
-                when (val protocol = url.protocol) {
-                    "file" -> sequence {
-                        // file, relative to ROOT
-                        val startPath = url.toURI().toPath().relativeTo(PROJECT_ROOT)
-                        val seqList = mutableListOf<Sequence<T>>()
-                        Files.walkFileTree(startPath, object : SimpleFileVisitor<Path>() {
-                            override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
-
-                                if (globs.any { r ->
-                                        // println("[$r].matches($file) = ${r.matches(file.toString())}")
-                                        r.matches(file.toString())
-                                    }) {
-                                    visitors.forEach { v ->
-                                        seqList.add(v(PathValue(file)))
-                                    }
+                if (startPath.isDirectory()) {
+                    val deep = Files.list(startPath).asSequence().flatMap { path ->
+                        if (path.isRegularFile()) {
+                            val resourceFileName = "$resource/${path.name}"
+                            // real file
+                            if (globs.any { r -> r.matches(resourceFileName) }) {
+                                visitors.asSequence().flatMap { v ->
+                                    v(PathValue(startPath, resourceFileName))
                                 }
-                                return FileVisitResult.CONTINUE
+                            } else {
+                                emptySequence()
                             }
-                        })
-                        seqList.forEach { seq -> yieldAll(seq) }
-                    }
-                    "jar" -> sequence {
-                        val connection = url.openConnection() as? JarURLConnection
-                            ?: throw IllegalStateException("Resource URL $url open failure: protocol is 'jar' but cannot open as JarURLConnection.")
-                        val jarFile = connection.jarFile
-                        jarFile.entries().asSequence().forEach { entry ->
-                            if (globs.any { r ->
-                                    r.matches(entry.name) || r.matches(entry.name.replace("/", "\\"))
-                                }) {
-                                visitors.forEach { v ->
-                                    yieldAll(v(JarEntryValue(entry, url)))
-                                }
+                        } else {
+                            val newResource = "$resource/${path.name}"
+                            doResourcesLookup(model, loader, newResource).flatMap { url ->
+                                lookup(model, newResource, loader, url)
                             }
                         }
                     }
-                    else -> throw UnsupportedOperationException("Not support url protocol: $protocol")
+                    yieldAll(deep)
+                } else {
+                    println("is file. $resource, $startPath")
+                    // is File.
+                    if (globs.any { r -> r.matches(resource) }) {
+                        visitors.forEach { v ->
+                            yieldAll(v(PathValue(startPath, resource)))
+                        }
+                    }
+                }
+
+
+                val seqList = mutableListOf<Sequence<T>>()
+                // Files.walkFileTree(startPath, object : SimpleFileVisitor<Path>() {
+                //     override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
+                //
+                //         val relativeFile = file.relativeTo(base)
+                //         println("file : $file")
+                //         println("relative file : $relativeFile")
+                //         println()
+                //
+                //         if (globs.any { r ->
+                //                 // println("[$r].matches($file) = ${r.matches(file.toString())}")
+                //                 r.matches(relativeFile.toString())
+                //             }) {
+                //             visitors.forEach { v ->
+                //                 seqList.add(v(PathValue(relativeFile)))
+                //             }
+                //         }
+                //         return FileVisitResult.CONTINUE
+                //     }
+                // })
+                seqList.forEach { seq -> yieldAll(seq) }
+            }
+            "jar" -> sequence {
+                val connection = url.openConnection() as? JarURLConnection
+                    ?: throw IllegalStateException("Resource URL $url open failure: protocol is 'jar' but cannot open as JarURLConnection.")
+                val jarFile = connection.jarFile
+                jarFile.entries().asSequence().forEach { entry ->
+                    if (globs.any { r ->
+                            r.matches(entry.name) || r.matches(entry.name.replace("/", "\\"))
+                        }) {
+                        visitors.forEach { v ->
+                            yieldAll(v(JarEntryValue(entry, url)))
+                        }
+                    }
                 }
             }
+            else -> throw UnsupportedOperationException("Not support url protocol: $protocol")
+        }
+    }
+
+
+    public fun glob(glob: String): ResourcesScanner<T> = also {
+        if (globs.add(Regex(Globs.toRegex(glob), setOf(RegexOption.IGNORE_CASE)))) {
+            lookups.add(::lookup) // { loader, url -> lookup(loader, url) }
         }
     }
 
@@ -113,10 +151,14 @@ public class ResourcesScanner<T>(
 
     private fun doCollect(model: ResourceModel, classLoader: ClassLoader): Sequence<T> {
         return scans.asSequence().flatMap { resource ->
-            model.getResources(classLoader, resource).flatMap { url ->
-                lookups.asSequence().flatMap { lookup -> lookup(url) }
+            doResourcesLookup(model, classLoader, resource).flatMap { url ->
+                lookups.asSequence().flatMap { lookup -> lookup(model, resource, classLoader, url) }
             }
         }
+    }
+
+    private fun doResourcesLookup(model: ResourceModel, classLoader: ClassLoader, resource: String): Sequence<URL> {
+        return model.getResources(classLoader, resource)
     }
 
 
@@ -145,7 +187,6 @@ public class ResourcesScanner<T>(
 
 
     public companion object {
-        private val PROJECT_ROOT = Path("").toAbsolutePath() // project resources root
     }
 
     private sealed class ResourceModel {
@@ -176,15 +217,18 @@ public class ResourcesScanner<T>(
     public sealed class ResourceVisitValue<T> {
         public abstract val value: T
 
-        public class PathValue internal constructor(override val value: Path) : ResourceVisitValue<Path>()
-        public class JarEntryValue internal constructor(override val value: JarEntry, public val url: URL) : ResourceVisitValue<JarEntry>()
+        public data class PathValue internal constructor(override val value: Path, public val resource: String) :
+            ResourceVisitValue<Path>()
+
+        public data class JarEntryValue internal constructor(override val value: JarEntry, public val url: URL) :
+            ResourceVisitValue<JarEntry>()
     }
 
 }
 
 
-public fun <T> ResourcesScanner<T>.visitPath(visitor: (Path) -> Sequence<T>): ResourcesScanner<T> = visit {
-    if (it is PathValue) visitor(it.value)
+public fun <T> ResourcesScanner<T>.visitPath(visitor: (PathValue) -> Sequence<T>): ResourcesScanner<T> = visit {
+    if (it is PathValue) visitor(it)
     else emptySequence()
 }
 

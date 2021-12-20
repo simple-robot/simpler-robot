@@ -14,6 +14,7 @@ package love.forte.simbot.event
 
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
+import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.EventProcessingResult.Empty
 import org.jetbrains.annotations.UnmodifiableView
 import java.util.concurrent.Future
@@ -94,3 +95,24 @@ public interface EventProcessingResult {
     }
 }
 
+
+/**
+ * 在事件处理的流程中可能出现的异常。
+ */
+public open class EventProcessingException : SimbotIllegalStateException {
+    public constructor() : super()
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(cause: Throwable?) : super(cause)
+}
+
+
+/**
+ * 在监听函数执行过程中出现的异常。
+ */
+public class EventListenerProcessingException : EventProcessingException {
+    public constructor() : super()
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(cause: Throwable?) : super(cause)
+}

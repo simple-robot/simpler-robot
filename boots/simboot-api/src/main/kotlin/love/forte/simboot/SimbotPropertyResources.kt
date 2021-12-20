@@ -12,8 +12,7 @@
 
 package love.forte.simboot
 
-import java.lang.ref.WeakReference
-import kotlin.reflect.KProperty
+import love.forte.simboot.utils.WeakVal
 
 
 /**
@@ -66,15 +65,3 @@ private data class SimbotPropertyResourcesImpl(override val key: String, overrid
     SimbotPropertyResources
 
 
-private class WeakVal<T>(init: Boolean, private val getFunc: () -> T) {
-
-    private var weak = WeakReference<T>(if (init) getFunc() else null)
-
-    public operator fun getValue(instance: Any, property: KProperty<*>): T {
-        return weak.get() ?: synchronized(this) {
-            weak.get() ?: getFunc().also { weak = WeakReference(it) }
-        }
-    }
-
-
-}

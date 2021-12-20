@@ -39,6 +39,7 @@ import kotlin.io.path.extension
 import kotlin.io.path.isRegularFile
 import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KClass
+import kotlin.reflect.KVisibility
 import kotlin.reflect.cast
 
 /**
@@ -64,13 +65,17 @@ internal class CoreBootEntranceContextImpl(
 
     }
 
+    override val topFunctionScanPackages: Set<String> =
+        simbootApplicationAnnotationInstance.topListenerScanPackages.toSet()
 
     /**
      * bean container factory
      */
     override fun getBeanContainerFactory(): BeanContainerFactory {
         val packages =
-            simbootApplicationAnnotationInstance.scanPackages.ifEmpty { arrayOf(applicationClass.java.`package`.name) }
+            simbootApplicationAnnotationInstance.scanPackages.ifEmpty {
+                arrayOf(applicationClass.java.`package`?.name ?: "")
+            }
 
         val includes = SimbotPropertyResources.findKey(INCLUDES_KEY).values.toSet()
 
@@ -91,7 +96,7 @@ internal class CoreBootEntranceContextImpl(
         return beanContainer.getOrNull(EventListenerManagerFactory::class)
             ?.getEventListenerManager()
             ?: coreListenerManager {
-                
+
                 // 所有的拦截器
                 val allListenerInterceptor = beanContainer.allInstance<EventListenerInterceptor>()
                 val allProcessingInterceptor = beanContainer.allInstance<EventProcessingInterceptor>()
@@ -133,7 +138,7 @@ internal class CoreBootEntranceContextImpl(
         // from resources
         return ResourcesScanner<Map<String, String>>(CoreBootEntranceContextImpl::class.java.classLoader).use { scanner ->
             scanner.scan("").glob(configGlob)
-                .visitPath { p ->
+                .visitPath { (p, _) ->
                     if (p.isRegularFile()) {
                         if (p.extension == "bot") {
                             return@visitPath sequenceOf(p.readProperties().stringMap)
@@ -191,9 +196,32 @@ private fun packagesToClassesGetter(vararg scannerPackages: String): () -> Colle
     // scanner.
 
     return {
+        val pathReplace = Regex("[/\\\\]")
+        ResourcesScanner<KClass<*>>().use { scanner ->
+            scanner.scan("")
+                .also {
+                    for (scanPkg in scannerPackages) {
+                        it.glob(scanPkg.replace(".", "/") + "**.class")
+                    }
+                }
+                .visitJarEntry { entry, _ ->
+                    val classname = entry.name.replace(pathReplace, ".").substringBefore(".class")
+                    sequenceOf(scanner.classLoader.loadClass(classname).kotlin)
+                }
+                .visitPath { (_, r) ->
+                    // '/Xxx.class'
+                    val classname = r.replace(pathReplace, ".").substringBefore(".class").let {
+                        if (it.startsWith(".")) it.substring(1) else it
+                    }
+                    sequenceOf(scanner.classLoader.loadClass(classname).kotlin)
+                }
+                .collectSequence(true)
+                .filter { k -> runCatching { k.visibility == KVisibility.PUBLIC }.getOrDefault(false) /* Packages and file facades are not yet supported in Kotlin reflection. Meanwhile please use Java reflection to inspect this class: class ResourceGetTestKt */ }
+                .toList()
+        }
 
 
-        TODO()
+
     }
 }
 
@@ -260,7 +288,6 @@ private val Properties.stringMap: Map<String, String>
             stringPropertyNames().forEach { name -> map[name] = getProperty(name) }
         }
     }
-
 
 
 private object EmptyConfiguration : Configuration {

@@ -34,5 +34,6 @@ import love.forte.simboot.SimbootEntrance
 @Target(AnnotationTarget.CLASS)
 public annotation class SimbootApplication(
     val scanPackages: Array<String> = [],
+    val topListenerScanPackages: Array<String> = [],
     val configFilePrefix: String = "simbot"
 )

@@ -20,6 +20,7 @@ import love.forte.simbot.definition.*
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.message.Image
 import love.forte.simbot.resources.Resource
+import org.slf4j.Logger
 import java.util.stream.Stream
 import kotlin.coroutines.CoroutineContext
 
@@ -33,13 +34,14 @@ import kotlin.coroutines.CoroutineContext
  *
  * @author ForteScarlet
  */
-public interface Bot : User, CoroutineScope, Survivable {
+public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
     override val coroutineContext: CoroutineContext
 
     override val id: ID
     override val bot: Bot get() = this
     override val username: String
     override val avatar: String
+    override val logger: Logger
 
     /**
      * 每个bot都肯定会由一个 [BotManager] 进行管理。

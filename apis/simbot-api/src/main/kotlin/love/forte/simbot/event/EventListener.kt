@@ -15,6 +15,7 @@ package love.forte.simbot.event
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.*
+import org.slf4j.Logger
 
 
 /**
@@ -57,12 +58,17 @@ public fun interface BlockingEventListenerFunction : EventListenerFunction {
  *
  * @author ForteScarlet
  */
-public interface EventListener : java.util.EventListener, AttributeContainer, EventListenerFunction {
+public interface EventListener : java.util.EventListener, AttributeContainer, LoggerContainer, EventListenerFunction {
 
     /**
      * 监听器必须是唯一的. 通过 [id] 进行唯一性确认。
      */
     public val id: ID
+
+    /**
+     * 当前监听函数内部存在的日志对象。
+     */
+    override val logger: Logger
 
     /**
      * 优先级。对于一次事件处理流程，所有监听函数会根据此优先级进行顺序处理。
