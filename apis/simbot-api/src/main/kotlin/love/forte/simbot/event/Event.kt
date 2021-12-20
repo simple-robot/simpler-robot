@@ -19,6 +19,7 @@ import love.forte.simbot.event.Event.Key.Companion.getKey
 import love.forte.simbot.message.doSafeCast
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
+import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.safeCast
 
@@ -145,9 +146,12 @@ public interface Event : BotContainer {
                 if (cached != null) return cached as Key<T>
 
                 // companion try
-                val companionObject = type.objectInstance
+                val companionObject = type.companionObjectInstance
+
                 @Suppress("UNCHECKED_CAST")
                 if (companionObject != null && companionObject is Key<*>) return companionObject as Key<T>
+
+
 
                 @Suppress("UNCHECKED_CAST")
                 return eventKeyCache.computeIfAbsent(type) { k ->

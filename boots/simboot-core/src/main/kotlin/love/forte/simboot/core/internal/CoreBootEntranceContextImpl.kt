@@ -43,7 +43,7 @@ import kotlin.reflect.KVisibility
 import kotlin.reflect.cast
 
 /**
- * 扫描并加载所有在 `META-INF/simbot.properties` 中 key为 `simbot.includes` 的元素。
+ * 扫描并加载所有在 `META-INF/simbot.factories` 中 key为 `simbot.includes` 的元素。
  *
  *
  */
@@ -216,12 +216,10 @@ private fun packagesToClassesGetter(vararg scannerPackages: String): () -> Colle
                     sequenceOf(scanner.classLoader.loadClass(classname).kotlin)
                 }
                 .collectSequence(true)
-                .filter { k -> runCatching { k.visibility == KVisibility.PUBLIC }.getOrDefault(false) /* Packages and file facades are not yet supported in Kotlin reflection. Meanwhile please use Java reflection to inspect this class: class ResourceGetTestKt */ }
+                /* Packages and file facades are not yet supported in Kotlin reflection. Meanwhile please use Java reflection to inspect this class: class ResourceGetTestKt */
+                .filter { k -> runCatching { k.visibility == KVisibility.PUBLIC }.getOrDefault(false)  }
                 .toList()
         }
-
-
-
     }
 }
 

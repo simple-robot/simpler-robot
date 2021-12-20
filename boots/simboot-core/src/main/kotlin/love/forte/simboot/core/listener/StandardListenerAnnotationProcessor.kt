@@ -16,6 +16,7 @@ import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.annotationtool.core.nonConverters
 import love.forte.di.BeanContainer
 import love.forte.di.BeansException
+import love.forte.di.annotation.Beans
 import love.forte.simboot.annotation.Binder
 import love.forte.simboot.annotation.Filter
 import love.forte.simboot.annotation.Filters
@@ -35,6 +36,7 @@ import javax.inject.Named
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
+import kotlin.reflect.KVisibility
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.jvmName
 import kotlin.reflect.jvm.kotlinFunction
@@ -43,19 +45,31 @@ import kotlin.reflect.jvm.kotlinFunction
  *
  * [ListenerAnnotationProcessor] 基础实现类, 用于通过 [ListenerData] 解析并注册 [love.forte.simbot.event.EventListener].
  *
+ * [StandardListenerAnnotationProcessor] 只会处理 非抽象类下的 **公共** 函数。
+ *
  * @author ForteScarlet
  */
-internal class ListenerAnnotationProcessorImpl : ListenerAnnotationProcessor {
+@Beans
+public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
     private val tool = KAnnotationTool()
-    private val logger = LoggerFactory.getLogger(ListenerAnnotationProcessorImpl::class)
+    private val logger = LoggerFactory.getLogger(StandardListenerAnnotationProcessor::class)
 
     override fun process(context: ListenerAnnotationProcessorContext): Boolean {
-        val listenerLogger = LoggerFactory.getLogger(context.from)
         val function = context.function
+        val from = context.from
+        if (from.isAbstract || function.visibility != KVisibility.PUBLIC) {
+            return true
+        }
+
+        val listenerLogger = LoggerFactory.getLogger(context.from)
 
 
         val id = function.resolveId(context)
         val targets = function.resolveTargets(context)
+
+        if (targets.isEmpty()) {
+            throw SimbotIllegalStateException("Listener(id=$id) process target missing. Maybe you need to provide some @Listen(...) or a parameter type of [Event].")
+        }
 
         // all binders.
         val binders: List<ParameterBinder> = function.resolveBinders(context)
@@ -71,6 +85,9 @@ internal class ListenerAnnotationProcessorImpl : ListenerAnnotationProcessor {
             binders = binders.toTypedArray(),
             attributeMap = listenerAttributeMap
         )
+
+        logger.debug("Resolve listener: id={}, targets={}", listener.id, targets)
+
         // filters
         val filters = function.resolveFilters(listener, listenerAttributeMap, context)
 

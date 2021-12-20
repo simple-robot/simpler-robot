@@ -16,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import love.forte.simboot.SimbootApp
 import love.forte.simboot.core.SimbootApplication
+import love.forte.simbot.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
 
 /*
@@ -34,13 +35,21 @@ import kotlin.time.Duration.Companion.seconds
 class JobTest
 
 suspend fun main() {
+    val logger = LoggerFactory.getLogger(JobTest::class)
+
     val context = SimbootApp.run(JobTest::class)
+
+    context.invokeOnCompletion { logger.info("Done.") }
+
+    logger.info("Started: {}", context)
 
     val scope = CoroutineScope(Dispatchers.Default)
     scope.launch {
-        delay(30.seconds.inWholeMilliseconds)
+        delay(5.seconds.inWholeMilliseconds)
+        logger.info("Shutdown!")
         context.cancel()
     }
+
 
 
     context.join()

@@ -147,7 +147,7 @@ public class CoreBootEntrance : SimbootEntrance {
             baseBinderFactories
         )
 
-        bootContext.allBinders(binderManager, beanContainer, annotationTool)
+        allBinders(binderManager, beanContainer, annotationTool)
 
 
         // 所有的type，尝试解析为listener
@@ -267,7 +267,7 @@ private class BalancedBotRegistrar(
 }
 
 
-private fun CoreBootEntranceContext.allBinders(
+private fun allBinders(
     manager: BinderManager,
     beanContainer: BeanContainer,
     annotationTool: KAnnotationTool
