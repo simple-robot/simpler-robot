@@ -158,7 +158,7 @@ public class CoreBootEntrance : SimbootEntrance {
 
         listeners.forEach(listenerManager::register)
 
-        val bots = bootContext.allBots(configuration)
+        val bots = allBots(configuration)
 
         // all init bots
         bots.mapNotNull { b ->
@@ -247,7 +247,7 @@ private fun KClass<*>.classToCoreBootEntranceContext(context: SimbootEntranceCon
 
 private class BalancedBotRegistrar(
     override val component: Component,
-    private val registrars: List<BotRegistrar>
+    registrars: List<BotRegistrar>
 ) : BotRegistrar {
     init {
         if (registrars.isEmpty()) {
@@ -325,13 +325,13 @@ private class BinderManager(
     private val globalBinders: MutableSet<ParameterBinderFactory> = mutableSetOf()
 ) : ParameterBinderFactoryContainer {
 
-    internal fun addIdBinder(id: String, factory: ParameterBinderFactory) {
+    fun addIdBinder(id: String, factory: ParameterBinderFactory) {
         idBinders.merge(id, factory) { old, now ->
             throw SimbotIllegalStateException("Duplicate binder factory ID. id: $id, $old vs $now")
         }
     }
 
-    internal fun addGlobalBinder(factory: ParameterBinderFactory) {
+    fun addGlobalBinder(factory: ParameterBinderFactory) {
         if (!globalBinders.add(factory)) {
             throw SimbotIllegalStateException("Duplicate binder factory $factory")
         }
@@ -379,9 +379,9 @@ private fun findAllListener(
         for (func in (type.memberFunctions + type.memberExtensionFunctions)) {
             val listener = tool.getAnnotation(func, Listener::class) ?: continue
             val listens = tool.getAnnotation(func, Listens::class)
-            val listenDatas = tool.getAnnotations(func, Listen::class)
+            val listenDataList = tool.getAnnotations(func, Listen::class)
             val listenerData = listener.toData(listens?.toData(
-                listenDatas.map { it.toData() }
+                listenDataList.map { it.toData() }
             ))
 
             val context = ListenerAnnotationProcessorContextImpl(
@@ -425,7 +425,7 @@ private class ListListenerRegistrar(private val handler: (EventListener) -> Unit
 }
 
 
-private fun CoreBootEntranceContext.allBots(
+private fun allBots(
     configuration: Configuration
 ): List<BotVerifyInfo> {
     val botResourceGlob = configuration.getString("simbot.core.bots.path")?.let { p ->
