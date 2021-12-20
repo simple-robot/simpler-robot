@@ -37,7 +37,7 @@ val secretKeyRingFileKey = "signing.secretKeyRingFile"
 
 subprojects {
     println("ROOT SUB: $this")
-    // group = P.Simbot.GROUP
+    group = P.Simbot.GROUP
     version = P.Simbot.VERSION
     apply(plugin = "maven-publish")
     apply(plugin = "java")
@@ -70,11 +70,12 @@ subprojects {
                 sign(publishing.publications)
             }
 
-        } else {
-            // only local
-            configurePublishingLocal(name)
-            println("[publishing-local-configure] - [$name] configured.")
         }
+        // else {
+        //     // only local
+        //     configurePublishingLocal(name)
+        //     println("[publishing-local-configure] - [$name] configured.")
+        // }
     }
 
 

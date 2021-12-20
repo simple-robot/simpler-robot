@@ -38,7 +38,7 @@ inline fun Project.configurePublishing(artifactId: String) {
             register("mavenJava", MavenPublication::class) {
                 from(components["java"])
 
-                groupId = rootProject.group.toString()
+                groupId = project.group.toString()
                 setArtifactId(artifactId)
                 version = project.version.toString()
 
@@ -95,7 +95,7 @@ fun Project.configurePublishingLocal(artifactId: String) {
             register("mavenJava", MavenPublication::class) {
                 from(components["java"])
 
-                groupId = rootProject.group.toString()
+                groupId = project.group.toString()
                 setArtifactId(artifactId)
                 version = project.version.toString()
 
@@ -128,12 +128,6 @@ fun MavenPublication.showPom() {
 fun MavenPublication.setupPom(project: Project) {
     val vcs = "https://github.com/ForteScarlet/simpler-robot"
     pom {
-        distributionManagement {
-            relocation {
-                setArtifactId(project.name)
-                setGroupId(project.group.toString())
-            }
-        }
         scm {
             url.set(vcs)
             connection.set("scm:$vcs.git")
