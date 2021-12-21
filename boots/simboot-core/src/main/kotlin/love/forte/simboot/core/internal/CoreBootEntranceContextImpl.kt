@@ -24,6 +24,7 @@ import love.forte.simboot.core.SimbootApplication
 import love.forte.simboot.factory.BeanContainerFactory
 import love.forte.simboot.factory.ConfigurationFactory
 import love.forte.simboot.factory.EventListenerManagerFactory
+import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.core.event.coreListenerManager
 import love.forte.simbot.event.EventListenerInterceptor
 import love.forte.simbot.event.EventListenerManager
@@ -205,15 +206,21 @@ private fun packagesToClassesGetter(vararg scannerPackages: String): () -> Colle
                     }
                 }
                 .visitJarEntry { entry, _ ->
-                    val classname = entry.name.replace(pathReplace, ".").substringBefore(".class")
-                    sequenceOf(scanner.classLoader.loadClass(classname).kotlin)
+                    val classname = entry.name.replace(pathReplace, ".").substringBeforeLast(".class")
+                    val loadClass = runCatching {
+                        scanner.classLoader.loadClass(classname)
+                    }.getOrElse { e -> throw SimbotIllegalStateException("Class load filed: $classname", e) }
+                    sequenceOf(loadClass.kotlin)
                 }
                 .visitPath { (_, r) ->
                     // '/Xxx.class'
-                    val classname = r.replace(pathReplace, ".").substringBefore(".class").let {
+                    val classname = r.replace(pathReplace, ".").substringBeforeLast(".class").let {
                         if (it.startsWith(".")) it.substring(1) else it
                     }
-                    sequenceOf(scanner.classLoader.loadClass(classname).kotlin)
+                    val loadClass = runCatching {
+                        scanner.classLoader.loadClass(classname)
+                    }.getOrElse { e -> throw SimbotIllegalStateException("Class load filed: $classname", e) }
+                    sequenceOf(loadClass.kotlin)
                 }
                 .collectSequence(true)
                 /* Packages and file facades are not yet supported in Kotlin reflection. Meanwhile please use Java reflection to inspect this class: class ResourceGetTestKt */

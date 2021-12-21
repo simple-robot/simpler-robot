@@ -11,6 +11,7 @@
  */
 
 import love.forte.simboot.core.internal.ResourcesScanner
+import love.forte.simboot.core.internal.toList
 import love.forte.simboot.core.internal.visitJarEntry
 import love.forte.simboot.core.internal.visitPath
 
@@ -34,21 +35,21 @@ fun main() {
 
 
     val classes = ResourcesScanner<Class<*>>().use { scanner ->
-        scanner.scan("love")
-            .glob("love/forte**.class")
+        scanner.scan("")
+            .glob("simbot-bots/**.bot")
             .visitPath { (_, r) ->
-                val classname = r.replace(pathReplace, ".").substringBefore(".class")
-                sequenceOf(scanner.classLoader.loadClass(classname))
+                println("resource: $r")
+                emptySequence()
             }
             .visitJarEntry { entry, _ ->
-                val classname = entry.name.replace(pathReplace, ".").substringBefore(".class")
-                sequenceOf(scanner.classLoader.loadClass(classname))
+                println("entry: $entry")
+                emptySequence()
             }
-            .collect(true, mutableListOf())
+            .toList(true)
     }
 
-    for (c in classes) {
-        println(c)
-    }
+    // for (c in classes) {
+    //     println(c)
+    // }
 
 }

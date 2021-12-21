@@ -160,6 +160,8 @@ public class CoreBootEntrance : SimbootEntrance {
 
         val bots = allBots(configuration)
 
+        println("bots: $bots")
+
         // all init bots
         bots.mapNotNull { b ->
             val registrar = allGroupedBotRegistrars[b.component]
@@ -438,13 +440,15 @@ private fun allBots(
         .scan("")
         .glob(botResourceGlob)
         .visitJarEntry { _, url ->
+            println("Jar : $url")
             sequenceOf(
                 url.openStream().bufferedReader().use { reader ->
                     Properties().also { p -> p.load(reader) }
                 }.asBotVerifyInfo()
             )
         }
-        .visitPath { (path, _) ->
+        .visitPath { (path, resource) ->
+            println("path: $path, $resource")
             sequenceOf(
                 path.bufferedReader().use { reader ->
                     Properties().also { p -> p.load(reader) }

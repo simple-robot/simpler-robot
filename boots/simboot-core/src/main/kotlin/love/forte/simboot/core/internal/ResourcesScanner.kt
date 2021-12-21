@@ -54,11 +54,7 @@ public class ResourcesScanner<T>(
     private fun lookup(model: ResourceModel, resource: String, loader: ClassLoader, url: URL): Sequence<T> {
         return when (val protocol = url.protocol) {
             "file" -> sequence {
-                // val base = loader.getResource("")?.toURI()?.toPath()!!
-                // file, relative to ROOT
-                // val startPath = url.toURI().toPath()
                 val startPath = url.toURI().toPath() //.relativeTo(base)
-
                 if (startPath.isDirectory()) {
                     val deep = Files.list(startPath).asSequence().flatMap { path ->
                         if (path.isRegularFile()) {
@@ -66,13 +62,15 @@ public class ResourcesScanner<T>(
                             // real file
                             if (globs.any { r -> r.matches(resourceFileName) }) {
                                 visitors.asSequence().flatMap { v ->
-                                    v(PathValue(startPath, resourceFileName))
+                                    v(PathValue(path, resourceFileName))
                                 }
                             } else {
                                 emptySequence()
                             }
                         } else {
-                            val newResource = "$resource/${path.name}"
+                            val newResource = "$resource/${path.name}".let {
+                                if (it.startsWith("/")) it.substringAfter('/') else it
+                            }
                             doResourcesLookup(model, loader, newResource).flatMap { url ->
                                 lookup(model, newResource, loader, url)
                             }
@@ -80,7 +78,7 @@ public class ResourcesScanner<T>(
                     }
                     yieldAll(deep)
                 } else {
-                    println("is file. $resource, $startPath")
+                    // println("is file. $resource, $startPath")
                     // is File.
                     if (globs.any { r -> r.matches(resource) }) {
                         visitors.forEach { v ->
@@ -89,28 +87,6 @@ public class ResourcesScanner<T>(
                     }
                 }
 
-
-                val seqList = mutableListOf<Sequence<T>>()
-                // Files.walkFileTree(startPath, object : SimpleFileVisitor<Path>() {
-                //     override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
-                //
-                //         val relativeFile = file.relativeTo(base)
-                //         println("file : $file")
-                //         println("relative file : $relativeFile")
-                //         println()
-                //
-                //         if (globs.any { r ->
-                //                 // println("[$r].matches($file) = ${r.matches(file.toString())}")
-                //                 r.matches(relativeFile.toString())
-                //             }) {
-                //             visitors.forEach { v ->
-                //                 seqList.add(v(PathValue(relativeFile)))
-                //             }
-                //         }
-                //         return FileVisitResult.CONTINUE
-                //     }
-                // })
-                seqList.forEach { seq -> yieldAll(seq) }
             }
             "jar" -> sequence {
                 val connection = url.openConnection() as? JarURLConnection
@@ -241,7 +217,7 @@ public fun <T> ResourcesScanner<T>.toMutableList(allResources: Boolean): Mutable
     collect(allResources, mutableListOf())
 
 public fun <T> ResourcesScanner<T>.toList(allResources: Boolean): List<T> =
-    collect(allResources, mutableListOf()).let { list ->
+    toMutableList(allResources).let { list ->
         when {
             list.isEmpty() -> emptyList()
             list.size == 1 -> listOf(list[0])
