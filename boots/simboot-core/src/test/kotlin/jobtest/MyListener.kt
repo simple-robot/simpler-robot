@@ -33,7 +33,7 @@ class MyListener {
 
 }
 
-@Beans
+// @Beans
 class MyRegistrar : BotRegistrarFactory {
     override fun invoke(p1: EventProcessor): BotRegistrar {
         println("Processor: $p1")

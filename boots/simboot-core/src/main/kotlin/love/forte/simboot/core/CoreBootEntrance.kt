@@ -158,9 +158,9 @@ public class CoreBootEntrance : SimbootEntrance {
 
         listeners.forEach(listenerManager::register)
 
-        val bots = allBots(configuration)
+        val bots = bootContext.allBots(configuration)
 
-        println("bots: $bots")
+        //println("bots: $bots")
 
         // all init bots
         bots.mapNotNull { b ->
@@ -427,28 +427,29 @@ private class ListListenerRegistrar(private val handler: (EventListener) -> Unit
 }
 
 
-private fun allBots(
+private fun CoreBootEntranceContext.allBots(
     configuration: Configuration
 ): List<BotVerifyInfo> {
-    val botResourceGlob = configuration.getString("simbot.core.bots.path")?.let { p ->
-        if (p.endsWith(".bot")) p else "$p.bot"
-    } ?: "simbot-bots/**.bot"
 
+    val baseResource: String = configuration.getString("simbot.core.bots.resource") ?: "simbot-bots"
+    // val botResourceGlob = configuration.getString("simbot.core.bots.path") ?: "simbot-bots/**.bot"
+
+    val glob = if (baseResource.endsWith("/")) "$baseResource**.bot" else "$baseResource/**.bot"
+
+    logger.debug("Scan bots base resource path: {}, glob: {}", baseResource, glob)
 
     // all bots verify info
     return ResourcesScanner<BotVerifyInfo>()
-        .scan("")
-        .glob(botResourceGlob)
+        .scan(baseResource)
+        .glob(glob)
         .visitJarEntry { _, url ->
-            println("Jar : $url")
             sequenceOf(
                 url.openStream().bufferedReader().use { reader ->
                     Properties().also { p -> p.load(reader) }
                 }.asBotVerifyInfo()
             )
         }
-        .visitPath { (path, resource) ->
-            println("path: $path, $resource")
+        .visitPath { (path, _) ->
             sequenceOf(
                 path.bufferedReader().use { reader ->
                     Properties().also { p -> p.load(reader) }

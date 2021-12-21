@@ -18,18 +18,26 @@ import love.forte.simboot.core.internal.visitJarEntry
 import love.forte.simboot.core.internal.visitPath
 import love.forte.simbot.BotVerifyInfo
 import love.forte.simbot.asBotVerifyInfo
+import java.nio.file.Files
 import java.util.*
 import kotlin.io.path.bufferedReader
+import kotlin.io.path.toPath
 
 
 fun main() {
 
     val loader = Thread.currentThread().contextClassLoader
 
-    println("C.bot: " + loader.getResource("simbot-bots/C.bot"))
-    println("C.bot: " + loader.getResource("simbot-bots"))
-    println("C.bot: " + loader.getResource("simbot-bots\\C.bot"))
-    println("C.bot: " + loader.getResource("simbot-bots\\c.bot"))
+    val path0 = loader.getResource("").toURI().toPath()
+    println(path0)
+    Files.list(path0).forEach { p -> println("p = [${p}]")
+    }
+    val path = loader.getResource("simbot-bots")!!.toURI().toPath()
+
+    println(path)
+    Files.list(path).forEach { p -> println("p = [${p}]")
+    }
+
 
     ResourcesScanner<BotVerifyInfo>()
         .scan("")
