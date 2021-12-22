@@ -67,9 +67,9 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
         val id = function.resolveId(context)
         val targets = function.resolveTargets(context)
 
-        if (targets.isEmpty()) {
-            throw SimbotIllegalStateException("Listener(id=$id) process target missing. Maybe you need to provide some @Listen(...) or a parameter type of [Event].")
-        }
+        // if (targets.isEmpty()) {
+        //     throw SimbotIllegalStateException("Listener(id=$id) process target missing. Maybe you need to provide some @Listen(...) or a parameter type of [Event].")
+        // }
 
         // all binders.
         val binders: List<ParameterBinder> = function.resolveBinders(context)
@@ -79,14 +79,14 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
         val listener = AnnotationFunctionalEventListener(
             id = id,
             isAsync = context.listenerData.async,
-            targets = targets,
+            targets = targets, // If empty, listen all event.
             caller = function,
             logger = listenerLogger,
             binders = binders.toTypedArray(),
             attributeMap = listenerAttributeMap
         )
 
-        logger.debug("Resolve listener: id={}, targets={}", listener.id, targets)
+        logger.debug("Resolve listener: id={}, targets={}", listener.id, targets.ifEmpty { "ALL" })
 
         // filters
         val filters = function.resolveFilters(listener, listenerAttributeMap, context)
@@ -476,10 +476,21 @@ private class AnnotationFunctionalEventListener<R>(
     private val attributeMap: AttributeMutableMap
 ) : FunctionalBindableEventListener<R>() {
 
-    private val targetCaches = mutableSetOf<Event.Key<*>>()
-    private val notTargetCaches = mutableSetOf<Event.Key<*>>()
+    private lateinit var targetCaches: MutableSet<Event.Key<*>> // = mutableSetOf<>()
+    private lateinit var notTargetCaches: MutableSet<Event.Key<*>> //= mutableSetOf<Event.Key<*>>()
+
+    init {
+        // not empty, init it.
+        if (targets.isNotEmpty()) {
+            targetCaches = mutableSetOf()
+            notTargetCaches = mutableSetOf()
+        }
+    }
 
     override fun isTarget(eventType: Event.Key<*>): Boolean {
+        // 如果为空，视为监听全部
+        if (targets.isEmpty()) return true
+
         if (eventType in notTargetCaches) return false
         if (eventType in targets) return true
         if (eventType in targetCaches) return true
