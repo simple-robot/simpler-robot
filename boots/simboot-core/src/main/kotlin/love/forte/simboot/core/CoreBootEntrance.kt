@@ -24,6 +24,7 @@ import love.forte.simboot.core.filter.KeywordBinderFactory
 import love.forte.simboot.core.internal.*
 import love.forte.simboot.core.listener.AutoInjectBinderFactory
 import love.forte.simboot.core.listener.EventParameterBinderFactory
+import love.forte.simboot.core.listener.InstanceInjectBinderFactory
 import love.forte.simboot.core.listener.toBinderFactory
 import love.forte.simboot.factory.BeanContainerFactory
 import love.forte.simboot.factory.BotRegistrarFactory
@@ -140,6 +141,7 @@ public class CoreBootEntrance : SimbootEntrance {
             KeywordBinderFactory,
             EventParameterBinderFactory, // event binder
             AutoInjectBinderFactory,
+            InstanceInjectBinderFactory
         )
 
         val binderManager = BinderManager(

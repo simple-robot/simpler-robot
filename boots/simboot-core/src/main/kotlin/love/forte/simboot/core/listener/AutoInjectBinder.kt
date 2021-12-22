@@ -26,7 +26,7 @@ import kotlin.reflect.KClass
 
 
 /**
- * 如果参数上存在 [Inject] 注解，尝试为其提供一个
+ * 尝试为参数其提供一个对应的实例。
  */
 public object AutoInjectBinderFactory : ParameterBinderFactory {
     private val annotationTool: KAnnotationTool by WeakVal(true, ::KAnnotationTool)
@@ -36,7 +36,7 @@ public object AutoInjectBinderFactory : ParameterBinderFactory {
         val injectNeed = annotationTool.getAnnotation(parameter, Inject::class) != null
         if (!injectNeed) return ParameterBinderResult.empty()
 
-        val container = context.beanContainer
+        val container = context.annotationProcessContext.beanContainer
 
         val name = annotationTool.getAnnotation(parameter, Named::class)?.value
         return ParameterBinderResult.normal(

@@ -33,7 +33,7 @@ internal class AnnotationFunctionalBinderFactory(
 ) : ParameterBinderFactory {
 
     override fun resolveToBinder(context: ParameterBinderFactory.Context): ParameterBinderResult {
-        val instance = instanceGetter.invoke(context.beanContainer)
+        val instance = instanceGetter.invoke(context.annotationProcessContext.beanContainer)
         return caller(instance, context)
     }
 }

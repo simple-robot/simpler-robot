@@ -90,7 +90,9 @@ private class ListFilterRegistrar(val list: MutableList<EventFilter>) : EventFil
 private fun FiltersData.process(context: FilterAnnotationProcessContext): EventFilter? {
     return takeIf { it.value.isNotEmpty() }
         ?.let {
-            val processor = context.beanContainer.getOrTryInstance { it.processor }
+
+            val processor = if (it.processor == FiltersAnnotationProcessor::class) BootFiltersAnnotationProcessor
+            else context.beanContainer.getOrTryCreateProcessInstance { it.processor }
 
             val list = mutableListOf<EventFilter>()
             val registrar = ListFilterRegistrar(list)
@@ -241,7 +243,9 @@ public object BootFiltersAnnotationProcessor : FiltersAnnotationProcessor {
         }
 
         val filterList = filtersValue.mapNotNull { f ->
-            val processor = context.beanContainer.getOrTryInstance { f.processor }
+            val processor =
+                if (f.processor == FilterAnnotationProcessor::class) BootFilterAnnotationProcessor
+                else context.beanContainer.getOrTryCreateProcessInstance { f.processor }
 
             processor.process(filterAnnotationProcessContext(f, context))
         }
@@ -270,7 +274,7 @@ public object BootFiltersAnnotationProcessor : FiltersAnnotationProcessor {
 }
 
 
-private inline fun <T : Any> BeanContainer.getOrTryInstance(type: () -> KClass<T>): T {
+private inline fun <T : Any> BeanContainer.getOrTryCreateProcessInstance(type: () -> KClass<T>): T {
     val t = type()
     return t.objectInstance ?: run {
         val allName = getAll(type())

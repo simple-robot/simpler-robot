@@ -14,7 +14,6 @@ package love.forte.simboot.core.listener
 
 import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.annotationtool.core.nonConverters
-import love.forte.di.BeanContainer
 import love.forte.di.BeansException
 import love.forte.di.annotation.Beans
 import love.forte.simboot.annotation.Binder
@@ -57,11 +56,12 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
     override fun process(context: ListenerAnnotationProcessorContext): Boolean {
         val function = context.function
         val from = context.from
-        if (from.isAbstract || function.visibility != KVisibility.PUBLIC) {
+        if (from != null && (from.isAbstract || function.visibility != KVisibility.PUBLIC)) {
             return true
         }
 
-        val listenerLogger = LoggerFactory.getLogger(context.from)
+        val listenerLogger = context.from?.let { f -> LoggerFactory.getLogger(f) }
+            ?: LoggerFactory.getLogger(function.toString())
 
 
         val id = function.resolveId(context)
@@ -250,7 +250,7 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
     private fun KFunction<*>.resolveBinders(context: ListenerAnnotationProcessorContext): List<ParameterBinder> {
         val binders = mutableSetOf<ParameterBinderFactory>()
         val binderFactoryContainer = context.binderFactoryContainer
-        val fromId = tool.getAnnotation(context.from, Named::class)?.value
+        val fromId = context.from?.let { f -> tool.getAnnotation(f, Named::class) }?.value
 
         binders.addAll(binderFactoryContainer.getGlobals())
 
@@ -275,11 +275,11 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
         val from = context.from
         var err: Throwable? = null
         val memberFunctions: Set<KFunction<*>> = kotlin.runCatching {
-            from.memberFunctions + from.memberExtensionFunctions
+            from?.memberFunctions?.plus(from.memberExtensionFunctions) ?: emptyList()
         }.getOrElse { e1 ->
             err = e1
             kotlin.runCatching {
-                from.java.methods.mapNotNull { m -> m.kotlinFunction }.also {
+                from!!.java.methods.mapNotNull { m -> m.kotlinFunction }.also {
                     err = null
                 }
             }.getOrElse { e2 ->
@@ -297,7 +297,8 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
 
         if (memberFunctions.isNotEmpty()) {
             // to binder
-            val currentScopeBinders = memberFunctions.map { f -> binderFactoryContainer.resolveFunctionToBinderFactory(fromId, f) }
+            val currentScopeBinders =
+                memberFunctions.map { f -> binderFactoryContainer.resolveFunctionToBinderFactory(fromId, f) }
             binders.addAll(currentScopeBinders)
         }
 
@@ -314,7 +315,11 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
         factories: List<ParameterBinderFactory>
     ): List<ParameterBinder> {
         val binders = parameters.map { parameter ->
-            val bindContext = ParameterBinderFactoryContextImpl(this, parameter, context.beanContainer)
+            val bindContext = ParameterBinderFactoryContextImpl(
+                context,
+                this,
+                parameter,
+            )
             val bindList = mutableListOf<ParameterBinderResult.NotEmpty>()
             val bindSpareList = mutableListOf<ParameterBinderResult.NotEmpty>()
             for (factory in factories) {
@@ -344,6 +349,7 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
                     }
                 }
             }
+
             bindList.sortBy { it.priority }
             bindSpareList.sortBy { it.priority }
             when {
@@ -379,9 +385,9 @@ private class ListFilterRegistrar(val list: MutableList<EventFilter>) : EventFil
 
 
 private class ParameterBinderFactoryContextImpl(
+    override val annotationProcessContext: ListenerAnnotationProcessorContext,
     override val source: KFunction<*>,
-    override val parameter: KParameter,
-    override val beanContainer: BeanContainer
+    override val parameter: KParameter
 ) : ParameterBinderFactory.Context
 
 
@@ -445,8 +451,17 @@ private class MergedBinder(
 private class EmptyBinder(
     private val parameter: KParameter
 ) : ParameterBinder {
+    private val resultProvider: () -> Result<Any?> = if (parameter.type.isMarkedNullable) {
+        val nullResult: Result<Any?> = Result.success(null)
+        ({ nullResult })
+    } else {
+        {
+            Result.failure(BindException("Parameter(#${parameter.index}) [$parameter] has no binder."))
+        }
+    }
+
     override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
-        return Result.failure(BindException("Parameter $parameter has no binder."))
+        return resultProvider()
     }
 }
 

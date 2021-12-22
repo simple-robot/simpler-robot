@@ -12,7 +12,6 @@
 
 package love.forte.simboot.listener
 
-import love.forte.di.BeanContainer
 import love.forte.simbot.Api4J
 import love.forte.simbot.PriorityConstant
 import love.forte.simbot.SimbotIllegalStateException
@@ -69,9 +68,10 @@ public abstract class FunctionalBindableEventListener<R> : FunctionalEventListen
      */
     final override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         val parameters = caller.parameters
-        val result = caller.callSuspend(binders.mapIndexed { i, b ->
+        val binderParameters = binders.mapIndexed { i, b ->
             b.arg(context).getOrThrow().let { value -> convertValue(value, parameters[i]) }
-        })
+        }
+        val result = caller.callSuspend(*binderParameters.toTypedArray())
         return resultProcess(result)
     }
 
@@ -145,6 +145,12 @@ public interface ParameterBinderFactory {
      * [ParameterBinderFactory] 进行参数处理时的可用参数内容. 由解析注解监听函数的解析器进行提供。
      */
     public interface Context {
+
+        /**
+         * 监听函数注解处理器的上下文。
+         */
+        public val annotationProcessContext: ListenerAnnotationProcessorContext
+
         /**
          * 目标监听函数所对应的函数体。
          */
@@ -154,11 +160,6 @@ public interface ParameterBinderFactory {
          * 当前的处理参数目标。
          */
         public val parameter: KParameter
-
-        /**
-         * Bean容器，代表在当前环境下所能够提供的Bean获取器。
-         */
-        public val beanContainer: BeanContainer
 
 
     }

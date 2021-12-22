@@ -69,7 +69,7 @@ public interface ListenerAnnotationProcessorContext {
     /**
      * 此监听函数被获取到的所属类实例。
      */
-    public val from: KClass<*>
+    public val from: KClass<*>?
 
     /**
      * 可以寻找所有的binder factory的容器。
