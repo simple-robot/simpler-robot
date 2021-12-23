@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=love.forte.simboot.autoconfigure.AutowiredConfig

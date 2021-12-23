@@ -12,6 +12,7 @@
 
 package love.forte.simboot.core
 
+import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import love.forte.annotationtool.core.KAnnotationTool
@@ -223,8 +224,8 @@ private class CoreSimbootContext(
         }
     }
 
-    override fun invokeOnCompletion(block: (reason: Throwable?) -> Unit) {
-        job.invokeOnCompletion(block)
+    override fun invokeOnCompletion(handler: CompletionHandler) {
+        job.invokeOnCompletion(handler)
     }
 }
 
