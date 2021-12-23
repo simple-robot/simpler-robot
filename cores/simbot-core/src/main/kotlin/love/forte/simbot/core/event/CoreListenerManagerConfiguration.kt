@@ -20,6 +20,8 @@ import love.forte.simbot.event.EventProcessingInterceptor
 import love.forte.simbot.event.EventProcessingResult
 import love.forte.simbot.event.EventResult
 import java.util.*
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 
 @DslMarker
@@ -33,6 +35,14 @@ internal annotation class CoreEventManagerConfigDSL
  */
 @CoreEventManagerConfigDSL
 public class CoreListenerManagerConfiguration {
+
+    /**
+     * 事件管理器的上下文. 可以基于此提供调度器。
+     * 但是 [CoreListenerManager] 并不是一个作用域，因此不可以提供 `Job`.
+     */
+    @CoreEventManagerConfigDSL
+    public var coroutineContext: CoroutineContext = EmptyCoroutineContext
+
     @Volatile
     @JvmSynthetic
     internal var processingInterceptors =
@@ -53,11 +63,13 @@ public class CoreListenerManagerConfiguration {
 
 
     @JvmSynthetic
+    @CoreEventManagerConfigDSL
     public fun listenerExceptionHandler(handler: (Throwable) -> EventResult) {
         listenerExceptionHandler = handler
     }
 
     @Api4J
+    @CoreEventManagerConfigDSL
     public fun listenerExceptionHandler(handler: java.util.function.Function<Throwable, EventResult>) {
         listenerExceptionHandler = handler::apply
     }
@@ -70,6 +82,7 @@ public class CoreListenerManagerConfiguration {
      * @throws IllegalStateException 如果出现重复ID
      */
     @Synchronized
+    @CoreEventManagerConfigDSL
     public fun addProcessingInterceptors(interceptors: Collection<EventProcessingInterceptor>) {
         val processingInterceptorsCopy =
             TreeSet<EventProcessingInterceptor>(Comparator.comparing { i -> i.id.toString() })
@@ -89,6 +102,7 @@ public class CoreListenerManagerConfiguration {
      * @throws IllegalStateException 如果出现重复ID
      */
     @Synchronized
+    @CoreEventManagerConfigDSL
     public fun addListenerInterceptors(interceptors: Collection<EventListenerInterceptor>) {
         val listenerInterceptorsCopy = TreeSet<EventListenerInterceptor>(Comparator.comparing { i -> i.id.toString() })
         listenerInterceptorsCopy.addAll(listenerInterceptors)
@@ -111,6 +125,7 @@ public class CoreListenerManagerConfiguration {
     /**
      * 事件流程上下文的处理器。
      */
+    @CoreEventManagerConfigDSL
     public var eventProcessingContextResolver: EventProcessingContextResolver<*> = CoreEventProcessingContextResolver
 
 

@@ -12,15 +12,13 @@
 
 package love.forte.simbot
 
+import java.io.InputStream
+
 
 /**
  * Bot注册器。
  */
 public interface BotRegistrar : ComponentContainer {
-
-    @Deprecated("TODO delete", ReplaceWith("register(properties.asBotVerifyInfo())"))
-    public fun register(properties: Map<String, String>): Bot = register(properties.asBotVerifyInfo())
-
 
     /**
      * 根据通用配置信息注册一个BOT。
@@ -33,19 +31,51 @@ public interface BotRegistrar : ComponentContainer {
      *
      * [register] 应当是同步的，直到其真正的验证完毕。
      *
+     * @throws NoSuchComponentException 当找不到对应组件信息时.
+     * @throws ComponentMismatchException 提供的组件不是当前管理器的组件时.
+     * @throws VerifyFailureException 验证出现异常时
      */
     public fun register(verifyInfo: BotVerifyInfo): Bot
 }
 
 
+
+public open class ComponentMismatchException : SimbotIllegalArgumentException {
+    public constructor() : super()
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(cause: Throwable?) : super(cause)
+}
+
+public open class VerifyFailureException : SimbotIllegalStateException {
+    public constructor() : super()
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(cause: Throwable?) : super(cause)
+}
+
+
+
+
 /**
  * BOT用于验证身份的信息，通过读取 `.bot` 文件解析而来.
+ *
+ * [BotVerifyInfo] 可能是 properties格式、json格式或yaml格式。
+ *
+ * 此处仅提供获取其输入流的方法.
+ *
  */
-public interface BotVerifyInfo : Map<String, String> {
+public interface BotVerifyInfo {
+
     /**
-     * 这个Bot信息中所包含的组件信息。
+     * 获取此资源的名称，一般代表其文件名。
      */
-    public val component: String
+    public val infoName: String
+
+    /**
+     * 读取其输入流.
+     */
+    public fun inputStream(): InputStream
 }
 
 
@@ -85,6 +115,13 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
         // remove first.
         OriginBotManager.remove(this)
         return doCancel(reason)
+    }
+
+    /**
+     * 使当前 manager 脱离 [OriginBotManager] 的管理。
+     */
+    public fun breakAway(): Boolean {
+        return OriginBotManager.remove(this)
     }
 
     /**

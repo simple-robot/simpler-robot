@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+  ~
+  ~  根据 Apache License 2.0 获得许可；
+  ~  除非遵守许可，否则您不得使用此文件。
+  ~  您可以在以下网址获取许可证副本：
+  ~
+  ~       https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   有关许可证下的权限和限制的具体语言，请参见许可证。
+  -->
+
+<!--日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!--status="WARN" :用于设置log4j2自身内部日志的信息输出级别，默认是OFF-->
+<!--monitorInterval="30"  :间隔秒数,自动检测配置文件的变更和重新配置本身-->
+<configuration status="INFO" monitorInterval="30">
+    <!--appenders:定义输出内容,输出格式,输出方式,日志保存策略等,常用其下三种标签[console,File,RollingFile]-->
+
+    <appenders>
+        <!--console :控制台输出的配置-->
+        <console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%-5level} [%t] %highlight{%c{1.}.%M(%L)}: %msg%n" />
+        </console>
+    </appenders>
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
+    <loggers>
+        <logger path="" />
+        <!-- Root节点用来指定项目的根日志，如果没有单独指定Logger，那么就会默认使用该Root日志输出 -->
+        <root level="INFO">
+            <appender-ref ref="Console"/>
+        </root>
+    </loggers>
+</configuration>

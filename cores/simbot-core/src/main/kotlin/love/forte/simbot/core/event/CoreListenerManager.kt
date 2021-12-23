@@ -12,16 +12,16 @@
 
 package love.forte.simbot.core.event
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
-import kotlinx.coroutines.withContext
 import love.forte.simbot.*
 import love.forte.simbot.event.*
 import love.forte.simbot.utils.view
 import java.lang.reflect.InvocationTargetException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.CoroutineContext
 
 
 @Deprecated("Just use CoreListenerManager", ReplaceWith("love.forte.simbot.core.event.CoreListenerManager"))
@@ -66,7 +66,11 @@ public class CoreListenerManager private constructor(
         @JvmStatic
         public fun newInstance(configuration: CoreListenerManagerConfiguration): CoreListenerManager =
             CoreListenerManager(configuration)
+
+        private val counter: AtomicInteger = AtomicInteger(0)
     }
+
+    private val managerCoroutineContext: CoroutineContext = configuration.coroutineContext.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
 
     /**
      * 异常处理器。
@@ -183,9 +187,9 @@ public class CoreListenerManager private constructor(
         invokers: List<ListenerInvoker>
     ): EventProcessingResult {
         val bot = context.event.bot
-        val botContext = context.event.bot.coroutineContext
+        val dispatchContext = context.event.bot.coroutineContext + managerCoroutineContext
 
-        return withContext(botContext + context) {
+        return withContext(dispatchContext + context) {
             kotlin.runCatching {
                 processingInterceptEntrance.doIntercept(context) {
                     // do invoke with intercept

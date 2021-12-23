@@ -22,7 +22,6 @@ val publishNeed = setOf(
 )
 
 
-
 abstract class Dep(val group: String?, val id: String, val version: String?) {
     open val isAbsolute: Boolean get() = true
     override fun toString(): String = "Dep($notation)"
@@ -44,14 +43,15 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
 
     companion object {
         @Suppress("ObjectPropertyName")
-        val dependencies: Set<Dep> get() {
-            return V::class.all().toSet()
-        }
+        val dependencies: Set<Dep>
+            get() {
+                return V::class.all().toSet()
+            }
     }
 
     // org.jetbrains:annotations:23.0.0
-    sealed class Jetbrains(group: String = "org.jetbrains", id: String, version: String): V(group, id, version) {
-        object Annotations: Jetbrains(id = "annotations", version = "23.0.0")
+    sealed class Jetbrains(group: String = "org.jetbrains", id: String, version: String) : V(group, id, version) {
+        object Annotations : Jetbrains(id = "annotations", version = "23.0.0")
 
     }
 
@@ -68,6 +68,7 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
         sealed class Stdlib(id: String) : Kotlin(id = "stdlib-$id") {
             object Common : Stdlib("common")
         }
+
         object GradlePlugin : Kotlin("gradle-plugin")
         object CompilerEmbeddable : Kotlin("compiler-embeddable")
         object Reflect : Kotlin("reflect")
@@ -100,8 +101,10 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
                 object Jvm : Coroutines("core-jvm")
                 object Js : Coroutines("core-js")
             }
+
             object Debug : Coroutines("debug")
             object Test : Coroutines("test")
+
             // =======
             //   https://github.com/Kotlin/kotlinx.coroutines/blob/master/reactive/README.md
             object Reactive : Coroutines("reactive")
@@ -132,7 +135,6 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
                 object Slf4j : Integration("slf4j")
                 object PlayServices : Integration("play-services")
             }
-
 
 
         }
@@ -173,11 +175,11 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
         }
 
         // client
-        sealed class Client(id: String): Ktor(id = "client-$id") {
+        sealed class Client(id: String) : Ktor(id = "client-$id") {
             object Serialization : Client("serialization")
             object Auth : Client("auth")
             object Websockets : Client("websockets")
-            sealed class Jvm(id: String): Client(id) {
+            sealed class Jvm(id: String) : Client(id) {
                 object Core : Jvm("core")
                 object Apache : Jvm("apache")
                 object Java : Jvm("java")
@@ -205,8 +207,9 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
 
     sealed class Log4j(id: String) : V("org.apache.logging.log4j", id = "log4j-$id", version = VERSION) {
         companion object {
-            const val VERSION = "2.14.1"
+            const val VERSION = "2.17.0"
         }
+
         object Api : Log4j("api")
         object Core : Log4j("core")
         object Slf4jImpl : Log4j("slf4j-impl")
@@ -222,7 +225,7 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
 
     sealed class AutoService(id: String) : V("com.google.auto.service", id, VERSION) {
         companion object {
-            const val VERSION = "1.0-rc6"
+            const val VERSION = "1.0.1"
         }
 
         object AutoService : V.AutoService("auto-service")
@@ -230,6 +233,34 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
 
     }
 
+
+    /**
+     * Javax
+     */
+    sealed class Javax(group: String, id: String, version: String) : V(group, id, version) {
+        //javax.inject:javax.inject:1
+        object Inject : Javax("javax.inject", "javax.inject", "1")
+
+        // "javax.annotation:javax.annotation-api:1.3.2"
+        object AnnotationApi : Javax("javax.annotation", "javax.annotation-api", "1.3.2")
+    }
+
+
+    // api("org.springframework.boot:spring-boot-autoconfigure:2.6.1")
+    // api("org.springframework.boot:spring-boot-configuration-processor:2.6.1")
+
+    sealed class Spring(group: String = "org.springframework", id: String, version: String) : V(group, id, version) {
+        sealed class Boot(group: String = "org.springframework.boot", id: String, version: String = VERSION) :
+            Spring(group, id, version) {
+            companion object {
+                const val VERSION = "2.6.1"
+            }
+            object Autoconfigure : Boot(id = "spring-boot-autoconfigure")
+            object ConfigurationProcessor : Boot(id = "spring-boot-configuration-processor")
+
+        }
+
+    }
 
 
 }

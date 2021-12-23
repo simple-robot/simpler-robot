@@ -26,6 +26,10 @@ dependencies {
     api(V.Slf4j.Api.notation)
     compileOnly(V.Jetbrains.Annotations.notation)
 
+    compileOnly(V.Kotlinx.Serialization.Json.notation)
+    compileOnly(V.Kotlinx.Serialization.Properties.notation)
+    compileOnly(V.Kotlinx.Serialization.Yaml.notation)
+
     testImplementation(V.Kotlin.Reflect.notation)
     testImplementation(V.Kotlin.Test.Junit5.notation)
     testImplementation(V.Kotlinx.Serialization.Json.notation)

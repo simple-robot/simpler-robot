@@ -10,7 +10,16 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-package love.forte.simbot.core
+package love.forte.simboot.core.configuration
 
-public object CoreCommon {
+import kotlin.coroutines.CoroutineContext
+
+/**
+ *
+ * 用于为 [love.forte.simbot.core.event.CoreListenerManager] 提供 context 实例。
+ *
+ * @author ForteScarlet
+ */
+public interface CoreEventListenerManagerContextFactory {
+    public val managerCoroutineContext: CoroutineContext
 }

@@ -21,23 +21,27 @@ import love.forte.simboot.SimbootEntranceContext
 import love.forte.simboot.SimbotPropertyResources
 import love.forte.simboot.core.CoreBootEntranceContext
 import love.forte.simboot.core.SimbootApplication
+import love.forte.simboot.core.configuration.CoreEventListenerManagerContextFactory
 import love.forte.simboot.factory.BeanContainerFactory
 import love.forte.simboot.factory.ConfigurationFactory
 import love.forte.simboot.factory.EventListenerManagerFactory
+import love.forte.simbot.BotVerifyInfo
 import love.forte.simbot.SimbotIllegalStateException
+import love.forte.simbot.asBotVerifyInfo
 import love.forte.simbot.core.event.coreListenerManager
 import love.forte.simbot.event.EventListenerInterceptor
 import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.event.EventProcessingInterceptor
 import org.slf4j.Logger
 import java.net.URL
-import java.nio.file.*
+import java.nio.file.FileVisitResult
+import java.nio.file.Path
+import java.nio.file.PathMatcher
+import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
 import java.util.*
-import kotlin.io.path.Path
 import kotlin.io.path.bufferedReader
 import kotlin.io.path.extension
-import kotlin.io.path.isRegularFile
 import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KClass
 import kotlin.reflect.KVisibility
@@ -101,6 +105,8 @@ internal class CoreBootEntranceContextImpl(
                 // 所有的拦截器
                 val allListenerInterceptor = beanContainer.allInstance<EventListenerInterceptor>()
                 val allProcessingInterceptor = beanContainer.allInstance<EventProcessingInterceptor>()
+                // CoreEventListenerManagerContextFactory
+                val context = beanContainer.getOrNull(CoreEventListenerManagerContextFactory::class)?.managerCoroutineContext
 
                 interceptors {
                     if (allListenerInterceptor.isNotEmpty()) {
@@ -108,6 +114,9 @@ internal class CoreBootEntranceContextImpl(
                     }
                     if (allProcessingInterceptor.isNotEmpty()) {
                         addProcessingInterceptors(allProcessingInterceptor)
+                    }
+                    if (context != null) {
+                        coroutineContext = context
                     }
                 }
 
@@ -117,41 +126,31 @@ internal class CoreBootEntranceContextImpl(
     override fun getAllBotInfos(
         configuration: Configuration,
         beanContainer: BeanContainer
-    ): Map<String, List<Map<String, String>>> {
-        val configGlob =
-            (configuration.getString("simbot.bot.configPath") ?: configuration.getString("simbot.bot.config-path"))
-                ?.removePrefix("classpath:")
-                ?.removePrefix("/")
-                ?.let { s -> if (s.endsWith(".bot")) s else "$s.bot" }
-                ?: "simbot-bots/**.bot"
+    ): List<BotVerifyInfo> {
 
-        // from file
-        // matcher
-        val pathMatcher = FileSystems.getDefault().getPathMatcher(configGlob)
+        val baseResource: String = configuration.getString("simbot.core.bots.resource") ?: "simbot-bots"
+        // val botResourceGlob = configuration.getString("simbot.core.bots.path") ?: "simbot-bots/**.bot"
 
-        // find file first
-        val rootPath = configGlob.substringBefore("*")
-        val path = Path(rootPath)
-        val list = mutableSetOf<Path>()
-        Files.walkFileTree(path, SimpleVisiter(allowExtensions, pathMatcher, list))
+        val glob = if (baseResource.endsWith("/")) "$baseResource**.bot" else "$baseResource/**.bot"
 
+        logger.debug("Scan bots base resource path: {}, glob: {}", baseResource, glob)
 
-        // from resources
-        return ResourcesScanner<Map<String, String>>(CoreBootEntranceContextImpl::class.java.classLoader).use { scanner ->
-            scanner.scan("").glob(configGlob)
-                .visitPath { (p, _) ->
-                    if (p.isRegularFile()) {
-                        if (p.extension == "bot") {
-                            return@visitPath sequenceOf(p.readProperties().stringMap)
-                        }
-                    }
-                    emptySequence()
-                }.visitJarEntry { _, url ->
-                    sequenceOf(url.readProperties().stringMap)
-                }
-        }.collectSequence(false).groupBy {
-            it["component"] ?: ""
-        }
+        // all bots verify info
+        return ResourcesScanner<BotVerifyInfo>()
+            .scan(baseResource)
+            .glob(glob)
+            .visitJarEntry { _, url ->
+                sequenceOf(
+                    url.asBotVerifyInfo()
+                )
+            }
+            .visitPath { (path, _) ->
+                sequenceOf(
+                    path.asBotVerifyInfo()
+                )
+            }
+            .toList(false)
+
 
     }
 
@@ -161,34 +160,6 @@ internal class CoreBootEntranceContextImpl(
     override val logger: Logger get() = context.logger
 }
 
-
-// fun fromResource(): List<Properties> {
-//     return runCatching {
-//         val loader = Thread.currentThread().contextClassLoader
-//         ResourcesScanner(loader).scan(BotVerifyInfoConfiguration.PATH_DIR) { uri ->
-//             uri.toASCIIString().endsWith("bot")
-//         }.collection.map { uri ->
-//             LOGGER.debug("Bot verify info by {}", uri.toASCIIString())
-//             Properties().apply {
-//                 val asciiString = uri.toASCIIString()
-//                 loader.getResource(asciiString)?.newInputStream()?.reader(Charsets.UTF_8)?.use(::load)
-//                     ?: kotlin.runCatching {
-//                         LOGGER.debug("Uri stream null: {}, try use url", asciiString)
-//                         uri.toURL().useJarBufferedReader(Charsets.UTF_8, ::load)
-//                         // uri.toURL().openStream().reader(Charsets.UTF_8).use(::load)
-//                     }.getOrElse { e1 ->
-//                         throw IllegalStateException("Uri stream read failed: $uri", e1)
-//                     }
-//
-//
-//             }
-//         }
-//     }.getOrElse { e ->
-//         LOGGER.debug("Cannot read bots configure by resource, skip. info : {}", e.localizedMessage)
-//         LOGGER.debug("Details: $e", e)
-//         emptyList()
-//     }
-// }
 
 
 private fun packagesToClassesGetter(vararg scannerPackages: String): () -> Collection<KClass<*>> {

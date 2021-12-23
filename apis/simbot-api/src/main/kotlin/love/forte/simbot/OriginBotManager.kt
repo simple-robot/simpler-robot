@@ -19,7 +19,6 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
-import kotlin.concurrent.thread
 import kotlin.concurrent.write
 
 
@@ -27,20 +26,49 @@ import kotlin.concurrent.write
  * [OriginBotManager] 是所有[BotManager]的管理器 .
  */
 public object OriginBotManager : Set<BotManager<*>> {
+    private val logger = LoggerFactory.getLogger(OriginBotManager::class)
     private val lock = ReentrantReadWriteLock()
     private val managers: MutableMap<BotManager<*>, Unit> = WeakHashMap()
     private val shutdown = AtomicBoolean(false)
 
-    init {
-        Runtime.getRuntime().addShutdownHook(thread(start = false) {
-            lock.write {
-                shutdown.set(true)
-                for (manager in managers.keys.toList()) {
-                    runBlocking { manager.cancel() }
+    @Synchronized
+    public fun cancel(reason: Throwable? = null) {
+        lock.write {
+            shutdown.set(true)
+            logger.debug("OriginBotManager shutdown...")
+            var err: Throwable? = null
+            for (manager in managers.keys.toList()) {
+                kotlin.runCatching {
+                    runBlocking { manager.cancel(reason) }
+                }.getOrElse { e ->
+                    kotlin.runCatching {
+                        val err0 = err
+                        if (err0 == null) {
+                            err = SimbotIllegalStateException("BotManager shutdown failed.")
+                            err!!.addSuppressed(
+                                SimbotIllegalStateException(
+                                    "Manager $manager of component ${manager.component.name}",
+                                    e
+                                )
+                            )
+                        } else {
+                            err0.addSuppressed(
+                                SimbotIllegalStateException(
+                                    "Manager $manager of component ${manager.component.name}",
+                                    e
+                                )
+                            )
+                        }
+                    }.onFailure {
+                        logger.error("Bot manager shutdown failed! ", it)
+                    }
                 }
-
             }
-        })
+            logger.debug("All managed bot manager shutdown finished.")
+            if (err != null) {
+                logger.error("Some bot manager shutdown failed.", err)
+            }
+        }
     }
 
     private inline fun checkShutdown(message: () -> String = { "OriginBotManager has already shutdown!" }) {
@@ -56,10 +84,9 @@ public object OriginBotManager : Set<BotManager<*>> {
         }
     }
 
-    internal fun remove(manager: BotManager<*>) {
+    internal fun remove(manager: BotManager<*>): Boolean {
         lock.write {
-            // checkShutdown()
-            managers.remove(manager)
+            return managers.remove(manager) != null
         }
     }
 
@@ -83,7 +110,6 @@ public object OriginBotManager : Set<BotManager<*>> {
     }
 
     public fun getBot(id: ID, component: Component): Bot? {
-        // TODO check shutdown?
         return managers.keys.firstOrNull {
             it.component == component
         }?.get(id)

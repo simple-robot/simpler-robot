@@ -1,32 +1,69 @@
+/*
+ *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *
+ *  根据 Apache License 2.0 获得许可；
+ *  除非遵守许可，否则您不得使用此文件。
+ *  您可以在以下网址获取许可证副本：
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ */
+
 @file:JvmName("BotVerifyInfoUtil")
+
 package love.forte.simbot
 
-import java.util.*
+import java.io.InputStream
+import java.net.URL
+import java.nio.file.Path
+import kotlin.io.path.inputStream
 
 
-public fun Map<String, String>.asBotVerifyInfo(component: String? = null): BotVerifyInfo {
-    return if (component == null) MapBotVerifyInfo(this) else MapBotVerifyInfo(this, component)
-}
-
-public fun Properties.asBotVerifyInfo(component: String? = null): BotVerifyInfo {
-    val map: MutableMap<String, String> = mutableMapOf()
-    for (name in stringPropertyNames()) {
-        map[name] = getProperty(name)
-    }
-    return map.toMap().asBotVerifyInfo(component)
+public fun URL.asBotVerifyInfo(): BotVerifyInfo {
+    return URLBotVerifyInfo(this)
 }
 
 
-private class MapBotVerifyInfo(
-    map: Map<String, String>,
-    override val component: String = map.find("component", "component_name", "component_id") ?: throw SimbotIllegalArgumentException("Cannot found component.")
-) : BotVerifyInfo, Map<String, String> by map
+private class URLBotVerifyInfo(
+    private val url: URL,
+) : BotVerifyInfo {
+    override val infoName: String get() = url.toString()
+
+    override fun inputStream(): InputStream = url.openStream()
+}
 
 
-private fun <K, V> Map<K, V>.find(vararg keys: K): V? {
-    for (key in keys) {
-        val v = get(key)
-        if (v != null) return v
+public fun Path.asBotVerifyInfo(): BotVerifyInfo {
+    return PathBotVerifyInfo(this)
+}
+
+private class PathBotVerifyInfo(private val path: Path) : BotVerifyInfo {
+    override val infoName: String get() = path.toString()
+    override fun inputStream(): InputStream = path.inputStream()
+}
+
+
+public inline fun <T> BotVerifyInfo.tryResolveVerifyInfo(
+    initErr: () -> Throwable,
+    vararg decoders: (InputStream) -> T
+): Result<T> {
+    lateinit var err: Throwable
+
+    decoders.forEachIndexed { index, decoder ->
+        val inp = inputStream()
+        try {
+            val result = decoder(inp)
+            return Result.success(result)
+        } catch (e: Throwable) {
+            if (index == 0) {
+                err = initErr()
+            }
+            err.addSuppressed(e)
+        } finally {
+            inp.close()
+        }
     }
-    return null
+
+    return Result.failure(err)
 }

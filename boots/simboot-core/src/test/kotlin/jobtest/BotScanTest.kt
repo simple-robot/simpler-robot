@@ -19,8 +19,6 @@ import love.forte.simboot.core.internal.visitPath
 import love.forte.simbot.BotVerifyInfo
 import love.forte.simbot.asBotVerifyInfo
 import java.nio.file.Files
-import java.util.*
-import kotlin.io.path.bufferedReader
 import kotlin.io.path.toPath
 
 
@@ -45,17 +43,13 @@ fun main() {
         .visitJarEntry { _, url ->
             println("Jar : $url")
             sequenceOf(
-                url.openStream().bufferedReader().use { reader ->
-                    Properties().also { p -> p.load(reader) }
-                }.asBotVerifyInfo()
+                url.asBotVerifyInfo()
             )
         }
         .visitPath { (path, resource) ->
             println("path: $path, $resource")
             sequenceOf(
-                path.bufferedReader().use { reader ->
-                    Properties().also { p -> p.load(reader) }
-                }.asBotVerifyInfo()
+                path.asBotVerifyInfo()
             )
         }
         .toList(false)

@@ -21,7 +21,7 @@ import love.forte.di.allInstance
 import love.forte.simboot.*
 import love.forte.simboot.annotation.*
 import love.forte.simboot.core.filter.KeywordBinderFactory
-import love.forte.simboot.core.internal.*
+import love.forte.simboot.core.internal.CoreBootEntranceContextImpl
 import love.forte.simboot.core.listener.AutoInjectBinderFactory
 import love.forte.simboot.core.listener.EventParameterBinderFactory
 import love.forte.simboot.core.listener.InstanceInjectBinderFactory
@@ -36,9 +36,7 @@ import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.event.EventListenerRegistrar
 import love.forte.simbot.utils.asCycleIterator
 import org.slf4j.Logger
-import java.util.*
 import kotlin.concurrent.thread
-import kotlin.io.path.bufferedReader
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.isSubclassOf
@@ -66,7 +64,7 @@ public interface CoreBootEntranceContext {
     public fun getAllBotInfos(
         configuration: Configuration,
         beanContainer: BeanContainer
-    ): Map<String, List<Map<String, String>>>
+    ): List<BotVerifyInfo>
 
 
     /**
@@ -122,10 +120,7 @@ public class CoreBootEntrance : SimbootEntrance {
 
         // all registrars and group by component name.
         val allBotRegistrars = allBotRegistrarFactories.map { it(listenerManager) }
-
-        // group by component.
-        val allGroupedBotRegistrars: Map<String, BotRegistrar> =
-            allBotRegistrars.groupBy { r -> r.component.id.toString() }.mapValues { (key, values) ->
+            .groupBy { r -> r.component.id.toString() }.mapValues { (key, values) ->
                 if (values.size != 1) {
                     context.logger.warn(
                         "There are multiple registrars under the component [{}], and they will be registered sequentially in a balanced manner.",
@@ -134,7 +129,8 @@ public class CoreBootEntrance : SimbootEntrance {
                     val component = values[0].component
                     BalancedBotRegistrar(component, values.toList())
                 } else values[0]
-            }
+            }.values
+
 
         // 所有的base binder factory
         val baseBinderFactories = mutableSetOf(
@@ -149,7 +145,7 @@ public class CoreBootEntrance : SimbootEntrance {
             baseBinderFactories
         )
 
-        allBinders(binderManager, beanContainer, annotationTool)
+        bootContext.allBinders(binderManager, beanContainer, annotationTool)
 
 
         // 所有的type，尝试解析为listener
@@ -160,19 +156,32 @@ public class CoreBootEntrance : SimbootEntrance {
 
         listeners.forEach(listenerManager::register)
 
-        val bots = bootContext.allBots(configuration)
+        val botInfoList = bootContext.getAllBotInfos(configuration, beanContainer)
 
         //println("bots: $bots")
 
         // all init bots
-        bots.mapNotNull { b ->
-            val registrar = allGroupedBotRegistrars[b.component]
-            if (registrar == null) {
-                bootContext.logger.warn("Unknown bot component: {}, skip this bot.", b.component)
-                null
-            } else {
-                registrar.register(b)
+        botInfoList.flatMap { b ->
+            val registrars = allBotRegistrars.mapNotNull { botRegistrar ->
+                try {
+                    botRegistrar.register(b).also {
+                        bootContext.logger.debug(
+                            "Bot [{}] registered by registrar of component {}",
+                            b.infoName,
+                            botRegistrar.component.name
+                        )
+                    }
+                } catch (mismatch: ComponentMismatchException) {
+                    null
+                }
             }
+
+
+            registrars.ifEmpty {
+                bootContext.logger.warn("Bot info [{}] is not registered by any component", b.infoName)
+                emptyList()
+            }
+
         }.forEach { b ->
             bootContext.logger.debug("Starting bot {} of component {}", b.id, b.component)
             runBlocking { b.start() }
@@ -185,37 +194,37 @@ public class CoreBootEntrance : SimbootEntrance {
             job.cancel()
         })
 
-        return CoreSimbootContext(
-            job::join,
-
-            { reason ->
-                // close all bot manager
-                OriginBotManager.forEach {
-                    it.cancel(reason)
-                }
-                job.cancel()
-            },
-
-            job::invokeOnCompletion
-        )
+        return CoreSimbootContext(job)
     }
 }
 
 private class CoreSimbootContext(
-    private val doJoin: suspend () -> Unit,
-    private val doCancel: suspend (Throwable?) -> Unit,
-    private val doInvokeOnCompletion: ((reason: Throwable?) -> Unit) -> Unit,
+    private val job: Job
 ) : SimbootContext {
+
+    override suspend fun start(): Boolean = false
+    override val isStarted: Boolean get() = job.isActive || job.isCompleted
+    override val isActive: Boolean get() = job.isActive
+    override val isCancelled: Boolean get() = job.isCancelled
+
     override suspend fun join() {
-        doJoin()
+        job.join()
     }
 
-    override suspend fun cancel(reason: Throwable?) {
-        doCancel(reason)
+    override suspend fun cancel(reason: Throwable?): Boolean {
+        // close all bot manager
+        OriginBotManager.cancel(reason)
+
+        return if (job.isCancelled) {
+            false
+        } else {
+            job.cancel()
+            true
+        }
     }
 
     override fun invokeOnCompletion(block: (reason: Throwable?) -> Unit) {
-        doInvokeOnCompletion(block)
+        job.invokeOnCompletion(block)
     }
 }
 
@@ -271,7 +280,7 @@ private class BalancedBotRegistrar(
 }
 
 
-private fun allBinders(
+private fun CoreBootEntranceContext.allBinders(
     manager: BinderManager,
     beanContainer: BeanContainer,
     annotationTool: KAnnotationTool
@@ -280,7 +289,22 @@ private fun allBinders(
     beanContainer.all.forEach { name ->
         val type = beanContainer.getType(name)
 
-        if (type.isSubclassOf(ParameterBinderFactory::class)) {
+        val isSub = kotlin.runCatching {
+            type.isSubclassOf(ParameterBinderFactory::class)
+        }.getOrElse { e ->
+            if (e.toString()
+                    .startsWith("kotlin.reflect.jvm.internal.KotlinReflectionInternalError: Unresolved class:")
+            ) {
+                kotlin.runCatching {
+                    ParameterBinderFactory::class.java.isAssignableFrom(type.java)
+                }.getOrElse {
+                    logger.debug("cannot resolve type: $type")
+                    false
+                }
+            } else throw e
+        }
+
+        if (isSub) {
             val binder = annotationTool.getAnnotation(type, Binder::class)
             if (binder != null) {
                 when (binder.scope) {
@@ -299,7 +323,7 @@ private fun allBinders(
                 manager.addIdBinder(name, beanContainer[name, ParameterBinderFactory::class])
             }
         } else {
-            (type.memberFunctions + type.memberExtensionFunctions).filter { f ->
+            type.allFunctions.filter { f ->
                 annotationTool.getAnnotation(f, Binder::class) != null
             }.forEach { f ->
                 val binder = annotationTool.getAnnotation(f, Binder::class)!!
@@ -380,7 +404,7 @@ private fun findAllListener(
 
     beanContainer.all.forEach { name ->
         val type = beanContainer.getType(name)
-        for (func in (type.memberFunctions + type.memberExtensionFunctions)) {
+        for (func in type.allFunctions) {
             val listener = tool.getAnnotation(func, Listener::class) ?: continue
             val listens = tool.getAnnotation(func, Listens::class)
             val listenDataList = tool.getAnnotations(func, Listen::class)
@@ -429,36 +453,7 @@ private class ListListenerRegistrar(private val handler: (EventListener) -> Unit
 }
 
 
-private fun CoreBootEntranceContext.allBots(
-    configuration: Configuration
-): List<BotVerifyInfo> {
-
-    val baseResource: String = configuration.getString("simbot.core.bots.resource") ?: "simbot-bots"
-    // val botResourceGlob = configuration.getString("simbot.core.bots.path") ?: "simbot-bots/**.bot"
-
-    val glob = if (baseResource.endsWith("/")) "$baseResource**.bot" else "$baseResource/**.bot"
-
-    logger.debug("Scan bots base resource path: {}, glob: {}", baseResource, glob)
-
-    // all bots verify info
-    return ResourcesScanner<BotVerifyInfo>()
-        .scan(baseResource)
-        .glob(glob)
-        .visitJarEntry { _, url ->
-            sequenceOf(
-                url.openStream().bufferedReader().use { reader ->
-                    Properties().also { p -> p.load(reader) }
-                }.asBotVerifyInfo()
-            )
-        }
-        .visitPath { (path, _) ->
-            sequenceOf(
-                path.bufferedReader().use { reader ->
-                    Properties().also { p -> p.load(reader) }
-                }.asBotVerifyInfo()
-            )
-        }
-        .toList(false)
-
-
-}
+private val KClass<*>.allFunctions: List<KFunction<*>>
+    get() = kotlin.runCatching {
+        memberFunctions + memberExtensionFunctions
+    }.getOrDefault(emptyList())

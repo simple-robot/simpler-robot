@@ -12,7 +12,9 @@
 
 package love.forte.simboot
 
+import kotlinx.coroutines.CompletionHandler
 import love.forte.simbot.Api4J
+import love.forte.simbot.Survivable
 import org.slf4j.Logger
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
@@ -63,32 +65,32 @@ public interface SimbootEntranceContext {
 /**
  * Boot启动流程结束后得到的最终结果。
  */
-public interface SimbootContext {
+public interface SimbootContext : Survivable {
 
     /**
      * 挂起context直至其被彻底终止。
      */
     @JvmSynthetic
-    public suspend fun join()
+    override suspend fun join()
 
     /**
      * 终止simbot程序。
      */
     @JvmSynthetic
-    public suspend fun cancel(reason: Throwable? = null)
+    override suspend fun cancel(reason: Throwable?): Boolean
 
 
     /**
      * 注册一个在simbot程序结束后执行逻辑.
      */
-    public fun invokeOnCompletion(block: (reason: Throwable?) -> Unit)
+    override fun invokeOnCompletion(handler: CompletionHandler)
 
 
     /**
      * 通过 [toAsync] 得到一个 [Future] 并阻塞直到程序结束。
      */
     @Api4J
-    public fun joining() {
+    public fun joinBlocking() {
         toAsync().get()
     }
 
@@ -100,7 +102,7 @@ public interface SimbootContext {
      *
      */
     @Api4J
-    public fun toAsync(): Future<Int> {
+    override fun toAsync(): Future<Int> {
         val future = CompletableFuture<Int>()
         invokeOnCompletion { reason ->
             if (reason == null) {
