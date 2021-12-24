@@ -12,6 +12,7 @@
 
 package love.forte.simbot.core.event
 
+import kotlinx.coroutines.CoroutineScope
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.PriorityConstant
@@ -126,7 +127,8 @@ public class CoreListenerManagerConfiguration {
      * 事件流程上下文的处理器。
      */
     @CoreEventManagerConfigDSL
-    public var eventProcessingContextResolver: EventProcessingContextResolver<*> = CoreEventProcessingContextResolver
+    public var eventProcessingContextResolver: (manager: CoreListenerManager, scope: CoroutineScope) -> EventProcessingContextResolver<*> =
+        { _, scope -> CoreEventProcessingContextResolver(scope) }
 
 
 }

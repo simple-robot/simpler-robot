@@ -18,6 +18,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
  *
  * @author ForteScarlet
  */
+@Suppress("ConfigurationProperties")
 @ConfigurationProperties(prefix = "simbot.core")
 public open class SimbootContextStarterProperties {
 

@@ -16,7 +16,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
-
+    kotlin("kapt")
 }
 
 tasks.getByName<Test>("test") {
@@ -38,6 +38,7 @@ dependencies {
     implementation(V.Spring.Boot.Autoconfigure.notation)
     implementation(V.Spring.Boot.ConfigurationProcessor.notation)
     annotationProcessor(V.Spring.Boot.ConfigurationProcessor.notation)
+    kapt(V.Spring.Boot.ConfigurationProcessor.notation)
 
     compileOnly(V.Javax.AnnotationApi.notation)
     compileOnly(P.AnnotationTool.Api.notation)

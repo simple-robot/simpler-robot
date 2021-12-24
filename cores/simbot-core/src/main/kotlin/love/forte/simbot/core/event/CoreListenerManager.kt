@@ -243,7 +243,7 @@ public class CoreListenerManager private constructor(
 
     @Suppress("UNCHECKED_CAST")
     private val resolver: EventProcessingContextResolver<EventProcessingContext> =
-        configuration.eventProcessingContextResolver as EventProcessingContextResolver<EventProcessingContext>
+        configuration.eventProcessingContextResolver(this, CoroutineScope(managerCoroutineContext)) as EventProcessingContextResolver<EventProcessingContext>
 
     /**
      * 通过 [Event] 得到一个 [EventProcessingContext].
@@ -340,7 +340,9 @@ public enum class ListenerInvokeType {
 /**
  * 核心默认的事件上下文处理器。
  */
-internal object CoreEventProcessingContextResolver : EventProcessingContextResolver<CoreEventProcessingContext> {
+internal class CoreEventProcessingContextResolver(
+    coroutineScope: CoroutineScope
+) : EventProcessingContextResolver<CoreEventProcessingContext> {
 
     // 考虑支持对attributeMap内容生成的自定义支持.
 
@@ -348,7 +350,8 @@ internal object CoreEventProcessingContextResolver : EventProcessingContextResol
      * 每一次的事件处理都应存在的属性内容。
      */
     private val constMaps = mutableMapOf<Attribute<*>, Any>(
-        EventProcessingContext.Scope.Global to GlobalScopeContext()
+        EventProcessingContext.Scope.Global to GlobalScopeContext(),
+        EventProcessingContext.Scope.ContinuousSession to CoreContinuousSessionScopeContext(coroutineScope)
     )
 
     private class GlobalScopeContext : ScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
@@ -362,7 +365,10 @@ internal object CoreEventProcessingContextResolver : EventProcessingContextResol
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
      */
     override suspend fun resolveEventToContext(event: Event, listenerSize: Int): CoreEventProcessingContext {
-        return CoreEventProcessingContext(event, AttributeMutableMap(ConcurrentHashMap(constMaps))) {
+        return CoreEventProcessingContext(event, AttributeMutableMap(ConcurrentHashMap(
+            constMaps,
+
+        ))) {
             ArrayList(
                 listenerSize
             )
