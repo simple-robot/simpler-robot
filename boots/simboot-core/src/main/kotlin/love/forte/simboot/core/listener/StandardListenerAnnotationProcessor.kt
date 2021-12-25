@@ -113,8 +113,8 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
 
         if (filters == null && filterList.isEmpty()) return emptyList()
 
-        val filterDataList = filterList.map { it.toData() }
-        val filtersData = filters?.toData(filterDataList) ?: FiltersData(value = filterDataList)
+        val filterDataList = filterList.map { it.toData(source = this) }
+        val filtersData = filters?.toData(source = this, filterDataList) ?: FiltersData(source = this, value = filterDataList)
 
         val filterRegistrar = ListFilterRegistrar(mutableListOf())
 

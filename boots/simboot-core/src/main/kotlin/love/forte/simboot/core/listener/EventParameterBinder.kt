@@ -4,6 +4,7 @@ import love.forte.simboot.listener.BindException
 import love.forte.simboot.listener.ParameterBinder
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.listener.ParameterBinderResult
+import love.forte.simbot.Attribute
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerProcessingContext
@@ -18,8 +19,11 @@ import kotlin.reflect.full.isSubclassOf
  */
 public object EventParameterBinderFactory : ParameterBinderFactory {
     override fun resolveToBinder(context: ParameterBinderFactory.Context): ParameterBinderResult {
-        val classifier = context.parameter.type.classifier
-        if (classifier !is KClass<*>) return ParameterBinderResult.empty()
+        val type = context.parameter.type
+        val classifier = type.classifier as? KClass<*> ?: return ParameterBinderResult.empty()
+        //if (classifier !is KClass<*>)
+
+        val nullable = type.isMarkedNullable
 
         return when {
             // 是不是 Event子类型
@@ -39,6 +43,19 @@ public object EventParameterBinderFactory : ParameterBinderFactory {
                 @Suppress("UNCHECKED_CAST")
                 return ParameterBinderResult.normal(EventListenerProcessingContextInstanceBinder(classifier as KClass<EventProcessingContext>))
             }
+
+            // Scope 相关类型
+
+            classifier.isSubclassOf(EventProcessingContext.Scope.Instant.type) -> {
+                return ParameterBinderResult.normal(attributeBinder(nullable, EventProcessingContext.Scope.Instant) { "Scope [Instant] in current context is null." } )
+            }
+            classifier.isSubclassOf(EventProcessingContext.Scope.Global.type) -> {
+                return ParameterBinderResult.normal(attributeBinder(nullable, EventProcessingContext.Scope.Global) { "Scope [Global] in current context is null." } )
+            }
+            classifier.isSubclassOf(EventProcessingContext.Scope.ContinuousSession.type) -> {
+                return ParameterBinderResult.normal(attributeBinder(nullable, EventProcessingContext.Scope.ContinuousSession) { "Scope [ContinuousSession] in current context is null." } )
+            }
+
 
             else -> ParameterBinderResult.empty()
         }
@@ -79,5 +96,28 @@ private class EventListenerInstanceBinder(private val targetType: KClass<EventLi
         val listener = context.listener
         return if (targetType.isInstance(listener)) Result.success(listener)
         else Result.failure(BindException("The type of listener is inconsistent with the target type $targetType"))
+    }
+}
+
+private inline fun attributeBinder(nullable: Boolean, attribute: Attribute<*>, nullMessageBlock: () -> String): AttributeBinder {
+    return if (nullable) AttributeBinder.Nullable(attribute)
+    else AttributeBinder.Notnull(attribute, nullMessageBlock())
+}
+
+private sealed class AttributeBinder : ParameterBinder {
+
+    protected abstract val attribute: Attribute<*>
+
+    class Nullable(override val attribute: Attribute<*>) : AttributeBinder() {
+        override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
+            return context.getAttribute(attribute).let { Result.success(it) }
+        }
+    }
+
+    class Notnull(override val attribute: Attribute<*>, private val nullMessage: String) : AttributeBinder() {
+        override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
+            return context.getAttribute(EventProcessingContext.Scope.Instant)?.let { Result.success(it) }
+                ?: Result.failure(NullPointerException(nullMessage))
+        }
     }
 }

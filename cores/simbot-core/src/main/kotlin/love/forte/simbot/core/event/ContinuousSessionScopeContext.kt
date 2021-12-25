@@ -6,7 +6,7 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.event.ContinuousSession
 import love.forte.simbot.event.ContinuousSessionContainer
-import love.forte.simbot.event.ContinuousSessionScopeContext
+import love.forte.simbot.event.ContinuousSessionContext
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 import java.util.concurrent.Future
@@ -24,15 +24,15 @@ import kotlin.coroutines.resumeWithException
  *
  * @author ForteScarCore * @since 2.3.0
  */
-public class CoreContinuousSessionScopeContext(
+public class CoreContinuousSessionContext(
     override val coroutineScope: CoroutineScope,
     /** 默认的超时时间。默认没有超时限制。 */
     override val defaultTimeoutMills: Long = 0 // 1.minutes.inWholeMilliseconds
-) : ContinuousSessionScopeContext() {
+) : ContinuousSessionContext() {
 
 
     private companion object {
-        private val logger = LoggerFactory.getLogger(CoreContinuousSessionScopeContext::class.java)
+        private val logger = LoggerFactory.getLogger(CoreContinuousSessionContext::class.java)
     }
 
     private val lock = ReentrantReadWriteLock()

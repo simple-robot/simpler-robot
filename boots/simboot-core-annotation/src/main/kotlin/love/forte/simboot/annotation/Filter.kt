@@ -104,7 +104,7 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
 @JvmRepeatable(Filters::class)
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 public annotation class Filter(
     val value: String,
@@ -129,6 +129,7 @@ public annotation class Filter(
  * @property guilds 如果是个[频道服务器相关事件][GuildEvent], 则对频道服务器ID匹配。
  *
  */
+@Retention(AnnotationRetention.SOURCE)
 public annotation class TargetFilter(
     val components: Array<String> = [],
     val bots: Array<String> = [],

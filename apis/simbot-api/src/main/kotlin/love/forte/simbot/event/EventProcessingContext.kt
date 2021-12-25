@@ -60,7 +60,7 @@ public interface EventProcessingContext : CoroutineContext.Element, AttributeCon
          * 持续会话作用域. 可以通过持续会话作用域来达成监听函数之间的信息通讯的目的。
          */
         @JvmStatic
-        public val ContinuousSession = attribute<ContinuousSessionScopeContext>("context.scope.continuous.session")
+        public val ContinuousSession = attribute<ContinuousSessionContext>("context.scope.continuous.session")
 
 
     }

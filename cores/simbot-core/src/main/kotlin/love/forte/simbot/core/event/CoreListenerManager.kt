@@ -357,7 +357,7 @@ internal class CoreEventProcessingContextResolver(
      */
     private val constMaps = mutableMapOf<Attribute<*>, Any>(
         EventProcessingContext.Scope.Global to GlobalScopeContext(),
-        EventProcessingContext.Scope.ContinuousSession to CoreContinuousSessionScopeContext(coroutineScope)
+        EventProcessingContext.Scope.ContinuousSession to CoreContinuousSessionContext(coroutineScope)
     )
 
     private class GlobalScopeContext : ScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())

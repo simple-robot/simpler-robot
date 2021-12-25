@@ -22,7 +22,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 
 /**
- * 如果参数类型为 instance，尝试通过beanContainer获取其实例。
+ * 如果参数类型为 [KParameter.Kind.INSTANCE]，尝试通过beanContainer获取其实例。
  */
 public object InstanceInjectBinderFactory : ParameterBinderFactory {
     override val priority: Int get() = PriorityConstant.LAST

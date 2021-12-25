@@ -69,7 +69,10 @@ public abstract class FunctionalBindableEventListener<R> : FunctionalEventListen
     final override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         val parameters = caller.parameters
         val binderParameters = binders.mapIndexed { i, b ->
-            b.arg(context).getOrThrow().let { value -> convertValue(value, parameters[i]) }
+            b.arg(context).getOrElse { e ->
+                if (e is BindException) throw e
+                else throw BindException(e)
+            }.let { value -> convertValue(value, parameters[i]) }
         }
         val result = caller.callSuspend(*binderParameters.toTypedArray())
         return resultProcess(result)

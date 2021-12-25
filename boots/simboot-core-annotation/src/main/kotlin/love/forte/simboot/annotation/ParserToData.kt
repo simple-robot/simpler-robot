@@ -22,20 +22,22 @@ import love.forte.simboot.listener.ListenerData
 import love.forte.simboot.listener.ListensData
 
 
-public fun Filter.toData(): FilterData {
+public fun Filter.toData(source: Any? = null): FilterData {
     return FilterData(
+        source = source,
         value = value,
         matchType = matchType,
-        target = target.toData(),
-        and = and.toData(),
-        or = or.toData(),
+        target = target.toData(source = source),
+        and = and.toData(source = source),
+        or = or.toData(source = source),
         processor = processor
 
     )
 }
 
-public fun TargetFilter.toData(): TargetFilterData {
+public fun TargetFilter.toData(source: Any? = null): TargetFilterData {
     return TargetFilterData(
+        source = source,
         components = components.toList(),
         bots = bots.toList(),
         authors = authors.toList(),
@@ -45,8 +47,9 @@ public fun TargetFilter.toData(): TargetFilterData {
     )
 }
 
-public fun Filters.toData(valueList: List<FilterData>? = null): FiltersData {
+public fun Filters.toData(source: Any? = null, valueList: List<FilterData>? = null): FiltersData {
     return FiltersData(
+        source = source,
         value = valueList ?: value.map(Filter::toData),
         multiMatchType = multiMatchType,
         processor = processor,

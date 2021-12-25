@@ -99,7 +99,7 @@ public fun ContinuousSessionContainer.cancel(cause: Throwable? = null) {
  * @author ForteScarlet
  * @since 2.3.0
  */
-public abstract class ContinuousSessionScopeContext {
+public abstract class ContinuousSessionContext {
 
 
     public abstract val coroutineScope: CoroutineScope
