@@ -20,6 +20,7 @@ import kotlinx.coroutines.*
 import love.forte.simbot.Api4J
 import java.util.concurrent.Future
 import java.util.concurrent.TimeoutException
+import java.util.function.Consumer
 import kotlin.coroutines.Continuation
 
 
@@ -127,7 +128,13 @@ public abstract class ContinuousSessionContext {
     public abstract operator fun get(group: String, key: String): ContinuousSession<*>?
 
     /**
-     * 推送得到的值.
+     * 推送得到的值给指定的会话并使其恢复。
+     *
+     * 当推送并恢复指定会话的时候，当前的 [push] 节点会被暂停挂起，直到恢复会话处结束整个逻辑或者进入到下一个挂起等待点。
+     *
+     * @see resume
+     * @see resumeAsync
+     * @see tryPush
      *
      * @throws ClassCastException 当类型与实际所需不匹配的时候.
      * @throws IllegalStateException 如果被推送目标已经被推送过了（这一般发生在通过 [get] 得到 [ContinuousSession] 但是没有去移除它而导致的）
@@ -136,6 +143,22 @@ public abstract class ContinuousSessionContext {
     public open fun <T> push(group: String, key: String, value: T): Boolean {
         @Suppress("UNCHECKED_CAST")
         return (take(group, key) as? ContinuousSession<T>)?.push(value)?.let { true } ?: false
+    }
+
+    /**
+     * 推送得到的值给指定的会话并使其恢复。[tryPush] 只会进行尝试推送, 不提供任何方法返回值。
+     * 假若 [tryPush] 推送成功，不同于 [push], 当前节点将不会被挂起。
+     *
+     * [tryPush] 仅为 Java 提供，Kotlin可以有更多更优方法，例如 [resumeAsync].
+     *
+     * @param failedHandler 当出现异常时或者推送失败（返回值为false）时使用的handler。如果推送失败但是没有异常，则 [failedHandler] 的参数为null。
+     *
+     * @see push
+     * @see resumeAsync
+     */
+    @Api4J
+    public open fun <T> tryPush(group: String, key: String, value: T, failedHandler: Consumer<Throwable?> = Consumer {}) {
+        coroutineScope.launch { kotlin.runCatching { push(group, key, value) }.onFailure { failedHandler.accept(it) }.onSuccess { if (!it) { failedHandler.accept(null) } } }
     }
 
     /**
@@ -311,3 +334,18 @@ public abstract class ContinuousSessionContext {
 }
 
 
+/**
+ * 推送一个结果值并恢复正在等待此结果的事件。
+ *
+ * @see ContinuousSessionContext.push
+ *
+ */
+public fun <T> ContinuousSessionContext.resume(group: String, key: String, value: T): Boolean = push(group, key, value)
+
+/**
+ * 推送一个结果值并恢复正在等待此结果的事件, 但是是通过异步进行推送，会立即返回 [Deferred] 并执行后续逻辑。
+ *
+ * @see ContinuousSessionContext.push
+ *
+ */
+public fun <T> ContinuousSessionContext.resumeAsync(group: String, key: String, value: T): Deferred<Boolean> = coroutineScope.async { push(group, key, value) }

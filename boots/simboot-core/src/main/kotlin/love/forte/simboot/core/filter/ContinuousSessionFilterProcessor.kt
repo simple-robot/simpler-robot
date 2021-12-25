@@ -21,8 +21,9 @@ public annotation class OnContinuousSession(
      * example1:
      * ```kotlin
      * @OnContinuousSession("MY_GROUP:MY_KEY")
-     * @Listener suspend fun EventProcessingContext.sessionListenerA() {
-     *
+     * @Listener suspend fun EventProcessingContext.sessionListenerA(event: Event) {
+     *      val value = getMyValueA(event) // 根据事件尝试获取一个想要进行推送的值。
+     *      push("MY_GROUP", "MY_KEY", value)
      * }
      *
      * ```
@@ -30,8 +31,9 @@ public annotation class OnContinuousSession(
      * example2:
      * ```kotlin
      * @OnContinuousSession("MY_GROUP")
-     * @Listener suspend fun EventProcessingContext.sessionListenerB() {
-     *
+     * @Listener suspend fun EventProcessingContext.sessionListenerB(event: Event) {
+     *      val value = getMyValueB(event) // 根据事件尝试获取一个想要进行推送的值。
+     *      push("MY_GROUP", "MY_KEY", value)
      * }
      * ```
      *
