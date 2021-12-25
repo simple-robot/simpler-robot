@@ -24,15 +24,21 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
 
-@Deprecated("Just use CoreListenerManager", ReplaceWith("love.forte.simbot.core.event.CoreListenerManager"))
-public typealias CoreEventManager = CoreListenerManager
+/**
+ *
+ * 监听函数执行的异常处理器。
+ * 当 [CoreListenerManager] 中的某一个 [EventListener] 执行过程中出现了异常（包括其过程中所经过的拦截器或过滤器），
+ * 则本次执行内容与对应异常将会交由一个 **唯一** 的一场管理器进行处理，并得到一个应得的结果。
+ *
+ * 原则上异常处理器内部应当尽可能避免再次出现异常。
+ *
+ * TODO
+ */
+public typealias EventListenerExceptionHandler = suspend (EventListenerProcessingContext, Throwable) -> EventResult
 
 
-@Deprecated(
-    "Just use CoreListenerManagerConfiguration",
-    ReplaceWith("love.forte.simbot.core.event.CoreListenerManagerConfiguration")
-)
-public typealias CoreEventManagerConfiguration = CoreListenerManagerConfiguration
+
+
 
 /**
  * 核心监听函数管理器。

@@ -19,6 +19,8 @@ package love.forte.simbot
  *
  * 此过滤器也同样是一个可挂起的。
  *
+ * @see BlockingFilter
+ *
  * @author ForteScarlet
  */
 public interface Filter<T> {
@@ -37,7 +39,7 @@ public interface Filter<T> {
  * 使用非挂起函数的 [testBlocking] 来实现 [Filter] 的 [test].
  */
 @Api4J
-public interface FilterBlocking<T> : Filter<T> {
+public interface BlockingFilter<T> : Filter<T> {
 
     @JvmSynthetic
     override suspend fun test(t: T): Boolean {

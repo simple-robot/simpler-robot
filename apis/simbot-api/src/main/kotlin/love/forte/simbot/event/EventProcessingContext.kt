@@ -84,9 +84,7 @@ public interface EventProcessingContext : CoroutineContext.Element, AttributeCon
      */
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T?
 
-    // 其他参数
-
-    // 事件 processor
+    // other..?
 
 }
 

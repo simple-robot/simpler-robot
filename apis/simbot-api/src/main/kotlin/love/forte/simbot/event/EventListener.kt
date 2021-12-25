@@ -19,7 +19,10 @@ import org.slf4j.Logger
 
 
 /**
- * 一个监听函数。其代表对于一个监听器上下文的处理流程。
+ * 一个监听函数。其代表对于一个 [监听器上下文][EventListenerProcessingContext] 的处理逻辑。
+ *
+ * @see EventListener
+ * @see BlockingEventListenerFunction
  */
 public fun interface EventListenerFunction : suspend (EventListenerProcessingContext) -> EventResult {
 
@@ -36,6 +39,9 @@ public fun interface EventListenerFunction : suspend (EventListenerProcessingCon
 
 /**
  * 阻塞实现的 [EventListenerFunction], 更适合 Java开发者进行实现。
+ *
+ *
+ * @see BlockingEventListener
  */
 @Api4J
 public fun interface BlockingEventListenerFunction : EventListenerFunction {
@@ -46,15 +52,15 @@ public fun interface BlockingEventListenerFunction : EventListenerFunction {
 }
 
 
-
-
 /**
  *
- * 一个监听事件的事件监听器。
+ * 一个事件的事件监听器。
  *
  * 事件监听器监听到实现并进行逻辑处理。此处不包含诸如过滤器等内容。
  *
  * 事件监听器存在 [优先级][priority]，默认优先级为 [Int.MAX_VALUE].
+ *
+ * @see BlockingEventListener
  *
  * @author ForteScarlet
  */
@@ -113,4 +119,29 @@ public interface EventListener : java.util.EventListener, AttributeContainer, Lo
      */
     @JvmSynthetic
     override suspend operator fun invoke(context: EventListenerProcessingContext): EventResult
+}
+
+
+/**
+ * 一个事件的事件监听器。
+ *
+ * 提供非挂起的抽象执行函数 [invokeBlocking] 来便于 Java 等不支持挂起函数的语言以阻塞代码实现.
+ *
+ * @see EventListener
+ */
+@Api4J
+public interface BlockingEventListener : EventListener, BlockingEventListenerFunction {
+    override val id: ID
+    override val logger: Logger
+    override val isAsync: Boolean
+    override fun isTarget(eventType: Event.Key<*>): Boolean
+
+    @JvmSynthetic
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult = invokeBlocking(context)
+
+    /**
+     * 非挂起的执行事件监听逻辑。
+     */
+    override fun invokeBlocking(context: EventListenerProcessingContext): EventResult
+
 }

@@ -12,5 +12,6 @@
 
 package love.forte.simbot.core
 
-public object Core {
+@Suppress("unused")
+private object Core {
 }

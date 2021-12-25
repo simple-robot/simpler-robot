@@ -18,7 +18,12 @@ import love.forte.simbot.Interceptor
 import love.forte.simbot.PriorityConstant
 
 /**
- * 与事件有关的拦截器。
+ * 与事件有关的拦截器。拦截器是一个包裹在目标前后的一道 “关卡”,  通过拦截器可以自由定义对目标逻辑前后以及异常的处理。
+ *
+ * 比较常见与相似的概念，比如动态代理. 动态代理在逻辑上基本与拦截器一致。
+ *
+ *
+ *
  * @see EventProcessingInterceptor
  * @see EventListenerInterceptor
  */
@@ -34,18 +39,27 @@ public sealed interface EventInterceptor<C : EventInterceptor.Context<R>, R> : I
      */
     public val priority: Int get() = PriorityConstant.NORMAL
 
+    /**
+     * 事件拦截器所拦截的目标内容。
+     */
     public sealed interface Context<R> : Interceptor.Context<R> {
+
+        /**
+         * 事件处理流程的context。
+         */
         public val eventContext: EventProcessingContext
     }
 }
 
 
 /**
- * 一个事件处理过程的拦截器. 是一个最外层的拦截器。
+ * 事件处理过程的拦截器。[EventProcessingInterceptor] 是针对 **整个** 事件流程的整体拦截，他不关系处理流程中的某个单独的监听函数，
+ * 而是对所有被触发的事件流程的整体进行一次拦截。
  *
  * @see BlockingEventProcessingInterceptor
  */
-public interface EventProcessingInterceptor : EventInterceptor<EventProcessingInterceptor.Context, EventProcessingResult> {
+public interface EventProcessingInterceptor :
+    EventInterceptor<EventProcessingInterceptor.Context, EventProcessingResult> {
     @JvmSynthetic
     override suspend fun intercept(context: Context): EventProcessingResult
 
@@ -54,25 +68,26 @@ public interface EventProcessingInterceptor : EventInterceptor<EventProcessingIn
      */
     public interface Context : EventInterceptor.Context<EventProcessingResult> {
         override val eventContext: EventProcessingContext
-        @JvmSynthetic
-        override suspend fun proceed(): EventProcessingResult
     }
 }
 
 /**
  * 为Java提供的阻塞调用的 [EventProcessingInterceptor] 接口方案。
+ *
+ * @see EventProcessingInterceptor
  */
 @Api4J
 public interface BlockingEventProcessingInterceptor : EventProcessingInterceptor {
     public fun doIntercept(context: EventProcessingInterceptor.Context): EventProcessingResult
 
     @JvmSynthetic
-    override suspend fun intercept(context: EventProcessingInterceptor.Context): EventProcessingResult = doIntercept(context)
+    override suspend fun intercept(context: EventProcessingInterceptor.Context): EventProcessingResult =
+        doIntercept(context)
 }
 
 
 /**
- * 事件监听函数拦截器.
+ * 事件监听函数拦截器。与 [EventProcessingInterceptor] 不同，[EventListenerInterceptor] 则针对一次事件处理流程中的 **每一个** [监听函数][EventListener] 进行独立拦截。
  *
  *
  * @see BlockingEventListenerInterceptor
@@ -82,22 +97,26 @@ public interface EventListenerInterceptor : EventInterceptor<EventListenerInterc
     override suspend fun intercept(context: Context): EventResult
 
     /**
-     * [EventListenerInterceptor] 的传递上下文。
+     * [EventListenerInterceptor] 的context。
      */
     public interface Context : EventInterceptor.Context<EventResult> {
         /**
          * 当前被拦截的监听函数实例。
          */
         override val eventContext: EventListenerProcessingContext
+
+
+        /**
+         * 被拦截的监听函数本身。
+         */
         public val listener: EventListener get() = eventContext.listener
-        @JvmSynthetic
-        override suspend fun proceed(): EventResult
     }
 }
 
 /**
  * 为Java提供的阻塞调用的 [EventListenerInterceptor] 接口方案。
  *
+ * @see EventListenerInterceptor
  */
 @Api4J
 public interface BlockingEventListenerInterceptor : EventListenerInterceptor {
