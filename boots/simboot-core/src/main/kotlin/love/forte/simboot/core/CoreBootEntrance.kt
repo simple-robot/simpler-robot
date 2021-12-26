@@ -477,10 +477,10 @@ private fun CoreBootEntranceContext.includeAllTopListeners(
             }
             .collectSequence(true)
             .flatMap { c -> c.methods.mapNotNull { m -> kotlin.runCatching { m.kotlinFunction }.getOrDefault(null) } }
-            /* Packages and file facades are not yet supported in Kotlin reflection. Meanwhile please use Java reflection to inspect this class: class ResourceGetTestKt */
             .filter { f -> runCatching { f.visibility == KVisibility.PUBLIC || f.visibility == null }.getOrDefault(false) }
+            .filter { f -> tool.getAnnotation(f, Listener::class) != null }
             .forEach { func ->
-                val listener = tool.getAnnotation(func, Listener::class) ?: return@forEach
+                val listener = tool.getAnnotation(func, Listener::class)!!
                 val listens = tool.getAnnotation(func, Listens::class)
                 val listenDataList = tool.getAnnotations(func, Listen::class)
                 val listenerData = listener.toData(listens?.toData(

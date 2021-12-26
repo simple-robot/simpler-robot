@@ -108,6 +108,7 @@ import kotlin.reflect.KClass
 @MustBeDocumented
 public annotation class Filter(
     val value: String,
+    // val valueSelector: TODO value 目标选择器。
     val matchType: MatchType = MatchType.REGEX_MATCHES,
     val target: TargetFilter = TargetFilter(),
     val and: Filters = Filters(),
