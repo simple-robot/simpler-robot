@@ -66,12 +66,14 @@ internal class CoreBootEntranceContextImpl(
     private val context: SimbootEntranceContext
 ) : CoreBootEntranceContext {
     companion object {
-        internal val allowExtensions = setOf("bot", "properties")
-
     }
 
     override val topFunctionScanPackages: Set<String> =
-        simbootApplicationAnnotationInstance.topListenerScanPackages.toSet()
+        simbootApplicationAnnotationInstance.topListenerScanPackages.toSet().ifEmpty {
+            simbootApplicationAnnotationInstance.scanPackages.ifEmpty {
+                arrayOf(applicationClass.java.`package`?.name ?: "")
+            }.toSet()
+        }
 
     /**
      * bean container factory

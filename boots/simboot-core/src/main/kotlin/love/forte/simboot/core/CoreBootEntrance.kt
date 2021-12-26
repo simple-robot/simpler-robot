@@ -23,6 +23,9 @@ import love.forte.simboot.*
 import love.forte.simboot.annotation.*
 import love.forte.simboot.core.filter.KeywordBinderFactory
 import love.forte.simboot.core.internal.CoreBootEntranceContextImpl
+import love.forte.simboot.core.internal.ResourcesScanner
+import love.forte.simboot.core.internal.visitJarEntry
+import love.forte.simboot.core.internal.visitPath
 import love.forte.simboot.core.listener.AutoInjectBinderFactory
 import love.forte.simboot.core.listener.EventParameterBinderFactory
 import love.forte.simboot.core.listener.InstanceInjectBinderFactory
@@ -40,9 +43,11 @@ import org.slf4j.Logger
 import kotlin.concurrent.thread
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
+import kotlin.reflect.KVisibility
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.memberExtensionFunctions
 import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.jvm.kotlinFunction
 
 
 public interface CoreBootEntranceContext {
@@ -150,7 +155,7 @@ public class CoreBootEntrance : SimbootEntrance {
 
 
         // 所有的type，尝试解析为listener
-        val listeners = findAllListener(
+        val listeners = bootContext.findAllListener(
             beanContainer,
             binderManager
         )
@@ -383,7 +388,7 @@ private class BinderManager(
 /**
  * 寻找并尝试加载所有的监听函数。
  */
-private fun findAllListener(
+private fun CoreBootEntranceContext.findAllListener(
     beanContainer: BeanContainer,
     baseBinderContainer: ParameterBinderFactoryContainer
 ): List<EventListener> {
@@ -431,7 +436,72 @@ private fun findAllListener(
 
     }
 
+    includeAllTopListeners(processors, tool, beanContainer, baseBinderContainer, registrar)
+
     return listeners.values.toList()
+}
+
+private object TopFuncFrom
+
+private fun CoreBootEntranceContext.includeAllTopListeners(
+    processors: Collection<ListenerAnnotationProcessor>,
+    tool: KAnnotationTool,
+    beanContainer: BeanContainer,
+    baseBinderContainer: ParameterBinderFactoryContainer,
+    registrar: ListListenerRegistrar
+) {
+    val pathReplace = Regex("[/\\\\]")
+    ResourcesScanner<Class<*>>().use { scanner ->
+        scanner.scan("")
+            .also {
+                for (scanPkg in topFunctionScanPackages) {
+                    it.glob(scanPkg.replace(".", "/") + "**.class")
+                }
+            }
+            .visitJarEntry { entry, _ ->
+                val classname = entry.name.replace(pathReplace, ".").substringBeforeLast(".class")
+                val loadClass = runCatching {
+                    scanner.classLoader.loadClass(classname)
+                }.getOrElse { e -> throw SimbotIllegalStateException("Class load filed: $classname", e) }
+                sequenceOf(loadClass)
+            }
+            .visitPath { (_, r) ->
+                // '/Xxx.class'
+                val classname = r.replace(pathReplace, ".").substringBeforeLast(".class").let {
+                    if (it.startsWith(".")) it.substring(1) else it
+                }
+                val loadClass = runCatching {
+                    scanner.classLoader.loadClass(classname)
+                }.getOrElse { e -> throw SimbotIllegalStateException("Class load filed: $classname", e) }
+                sequenceOf(loadClass)
+            }
+            .collectSequence(true)
+            .flatMap { c -> c.methods.mapNotNull { m -> kotlin.runCatching { m.kotlinFunction }.getOrDefault(null) } }
+            /* Packages and file facades are not yet supported in Kotlin reflection. Meanwhile please use Java reflection to inspect this class: class ResourceGetTestKt */
+            .filter { f -> runCatching { f.visibility == KVisibility.PUBLIC || f.visibility == null }.getOrDefault(false) }
+            .forEach { func ->
+                val listener = tool.getAnnotation(func, Listener::class) ?: return@forEach
+                val listens = tool.getAnnotation(func, Listens::class)
+                val listenDataList = tool.getAnnotations(func, Listen::class)
+                val listenerData = listener.toData(listens?.toData(
+                    listenDataList.map { it.toData() }
+                ))
+
+                val context = ListenerAnnotationProcessorContextImpl(
+                    listenerData = listenerData,
+                    beanId = null,
+                    from = TopFuncFrom::class,
+                    binderFactoryContainer = baseBinderContainer,
+                    function = func,
+                    beanContainer = beanContainer,
+                    listenerRegistrar = registrar
+                )
+
+                processors.forEach { processor ->
+                    processor.process(context)
+                }
+            }
+    }
 }
 
 
