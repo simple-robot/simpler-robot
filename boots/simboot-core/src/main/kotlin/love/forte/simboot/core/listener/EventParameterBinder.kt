@@ -1,3 +1,15 @@
+/*
+ *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *
+ *  根据 Apache License 2.0 获得许可；
+ *  除非遵守许可，否则您不得使用此文件。
+ *  您可以在以下网址获取许可证副本：
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ */
+
 package love.forte.simboot.core.listener
 
 import love.forte.simboot.listener.BindException
@@ -116,7 +128,7 @@ private sealed class AttributeBinder : ParameterBinder {
 
     class Notnull(override val attribute: Attribute<*>, private val nullMessage: String) : AttributeBinder() {
         override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
-            return context.getAttribute(EventProcessingContext.Scope.Instant)?.let { Result.success(it) }
+            return context.getAttribute(attribute)?.let { Result.success(it) }
                 ?: Result.failure(NullPointerException(nullMessage))
         }
     }
