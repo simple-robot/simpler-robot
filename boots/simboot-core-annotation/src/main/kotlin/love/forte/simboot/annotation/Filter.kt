@@ -26,10 +26,8 @@ import kotlin.reflect.KClass
  * [Filter] 是一种根据常见属性提供标准过滤规则的注解，
  *
  * @property value 匹配规则值，会对 [EventListenerProcessingContext.textContent][love.forte.simbot.event.EventListenerProcessingContext.textContent] 进行匹配。
- * 通常情况下，如果 `textContent` 为null，则会直接视为 **通过**.
- *
  * @property ifNullPass 当 [value] 匹配的目标（[EventListenerProcessingContext.textContent][love.forte.simbot.event.EventListenerProcessingContext.textContent]）的值为 null 的时候，
- * 是否直接放行。如果为 `true`, 则代表匹配值为null的时候视为匹配通过，反之则为匹配失败。默认为 `true`。
+ * 是否直接放行。如果为 `true`, 则代表匹配值为null的时候视为匹配通过，反之则为匹配失败。默认为 `false`。
  * @property matchType 针对匹配目标所使用的匹配规则。
  * 默认情况下使用 [正则完全匹配][MatchType.REGEX_MATCHES].
  *
@@ -113,7 +111,7 @@ import kotlin.reflect.KClass
 @MustBeDocumented
 public annotation class Filter(
     val value: String,
-    val ifNullPass: Boolean = true,
+    val ifNullPass: Boolean = false,
     // val valueSelector: TODO value 目标选择器。
     val matchType: MatchType = MatchType.REGEX_MATCHES,
     val target: TargetFilter = TargetFilter(),
