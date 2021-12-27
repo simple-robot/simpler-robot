@@ -22,6 +22,7 @@ import love.forte.simboot.factory.BeanContainerFactory
 import love.forte.simbot.LoggerFactory
 import javax.inject.Named
 import kotlin.reflect.KClass
+import kotlin.reflect.jvm.jvmName
 
 /**
  *
@@ -46,7 +47,7 @@ internal class CoreForteDIBeanContainerFactory(
             registrar.register(*includeClasses.mapNotNull {
                 val kClass = loader.loadClass(it).kotlin
                 if (annotationTool.getAnnotation(kClass, Named::class) != null) kClass.also {
-                    logger.debug("Include class {}", kClass)
+                    logger.debug("Include class [{}]", kClass.qualifiedName ?: kClass.jvmName)
                 }
                 else null
             }.toTypedArray())

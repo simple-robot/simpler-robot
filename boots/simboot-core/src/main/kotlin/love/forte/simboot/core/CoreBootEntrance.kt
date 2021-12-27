@@ -146,7 +146,7 @@ public class CoreBootEntrance : SimbootEntrance {
         // 获取所有的 BotRegistrar -> BotRegistrarFactory
         logger.info("Resolving all bot registrar factories")
         val allBotRegistrarFactories = beanContainer.allInstance<BotRegistrarFactory>()
-        logger.info("All bot registrar factories size: {}", allBotRegistrarFactories.size)
+        logger.info("Size of all bot registrar factories: {}", allBotRegistrarFactories.size)
         if (logger.isDebugEnabled) {
             allBotRegistrarFactories.forEach { f ->
                 logger.debug("Bot registrar factory: {} ({})", f, f.javaClass)
@@ -176,7 +176,7 @@ public class CoreBootEntrance : SimbootEntrance {
             KeywordBinderFactory, EventParameterBinderFactory, // event binder
             AutoInjectBinderFactory, InstanceInjectBinderFactory
         )
-        logger.info("All base binder factories size: {}", baseBinderFactories.size)
+        logger.info("Size of all base binder factories: {}", baseBinderFactories.size)
         if (logger.isDebugEnabled) {
             baseBinderFactories.forEach { f ->
                 logger.debug("Base binder factory: {} ({})", f, f.javaClass)
@@ -189,8 +189,8 @@ public class CoreBootEntrance : SimbootEntrance {
 
         logger.info("Resolving all binders.")
         bootContext.allBinders(binderManager, beanContainer, annotationTool)
-        logger.info("Normal binder size: {}", binderManager.normalSize)
-        logger.info("Global binder size: {}", binderManager.globalSize)
+        logger.info("Size of normal binder: {}", binderManager.normalSize)
+        logger.info("Size of global binder: {}", binderManager.globalSize)
         if (logger.isDebugEnabled) {
             binderManager.getGlobals().forEach { b ->
                 logger.debug("Global binder: {} ({})", b, b.javaClass)
@@ -202,13 +202,13 @@ public class CoreBootEntrance : SimbootEntrance {
         val listeners = bootContext.findAllListener(
             beanContainer, binderManager
         )
-        logger.info("All listener size: {}", listeners.size)
+        logger.info("Size of all listener: {}", listeners.size)
 
         listeners.forEach(listenerManager::register)
 
         logger.info("Resolving all bot info.")
         val botInfoList = bootContext.getAllBotInfos(configuration, beanContainer)
-        logger.info("All bot info size: {}", botInfoList.size)
+        logger.info("Size of all bot info: {}", botInfoList.size)
 
         logger.info("Register all bots.")
         // all init bots
@@ -232,7 +232,7 @@ public class CoreBootEntrance : SimbootEntrance {
             }
 
         }
-        logger.info("All bots register finished. all bot size: {}", allBots.size)
+        logger.info("All bots register finished. Size of all bots: {}", allBots.size)
         logger.info("Starting all bots")
         allBots.forEach { b ->
             logger.debug("Starting bot {} of component {}", b.id, b.component)
