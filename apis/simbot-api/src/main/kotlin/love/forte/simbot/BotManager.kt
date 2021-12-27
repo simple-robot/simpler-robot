@@ -32,8 +32,8 @@ public interface BotRegistrar : ComponentContainer {
      * [register] 应当是同步的，直到其真正的验证完毕。
      *
      * @throws NoSuchComponentException 当找不到对应组件信息时.
-     * @throws ComponentMismatchException 提供的组件不是当前管理器的组件时.
-     * @throws VerifyFailureException 验证出现异常时
+     * @throws ComponentMismatchException 提供的组件不是当前管理器的组件时. 当且仅当抛出此异常的时候，core boot将不会抛出异常，而是直接忽略。
+     * @throws VerifyFailureException 验证出现异常时.
      */
     public fun register(verifyInfo: BotVerifyInfo): Bot
 }

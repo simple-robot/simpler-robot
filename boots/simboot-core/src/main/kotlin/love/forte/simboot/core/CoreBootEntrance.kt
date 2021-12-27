@@ -49,6 +49,8 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.memberExtensionFunctions
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.kotlinFunction
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 
 public interface CoreBootEntranceContext {
@@ -69,8 +71,7 @@ public interface CoreBootEntranceContext {
      * 读取所有的bot配置文件信息。
      */
     public fun getAllBotInfos(
-        configuration: Configuration,
-        beanContainer: BeanContainer
+        configuration: Configuration, beanContainer: BeanContainer
     ): List<BotVerifyInfo>
 
 
@@ -111,71 +112,112 @@ public class CoreBootEntrance : SimbootEntrance {
         internal val annotationTool: KAnnotationTool = KAnnotationTool()
     }
 
+    @OptIn(ExperimentalTime::class)
     override fun run(context: SimbootEntranceContext): SimbootContext {
+        // banner
+
+        val contextTimedValue = measureTimedValue {
+            run0(context)
+        }
+
+        val time = contextTimedValue.duration
+        context.logger.info("Simboot core entrance start finished. duration time {}", time.toString())
+
+        return contextTimedValue.value
+    }
+
+
+    private fun run0(context: SimbootEntranceContext): SimbootContext {
         val bootContext: CoreBootEntranceContext = context.toCoreBootEntranceContext()
+        val logger = bootContext.logger
         // 获取所有配置
         val configuration = bootContext.getConfigurationFactory()(context)
 
+        logger.info("Resolving bean container")
         // 初始化 bean container
         val beanContainer = bootContext.getBeanContainerFactory()(configuration)
+        logger.debug("Using bean container: {} ({})", beanContainer, beanContainer.javaClass)
 
         // 初始化 listener manager -> listener manager factory
+        logger.info("Resolving listener manager")
         val listenerManager = bootContext.getListenerManager(beanContainer)
+        logger.debug("Using listener manager: {} ({})", listenerManager, listenerManager.javaClass)
 
         // 获取所有的 BotRegistrar -> BotRegistrarFactory
+        logger.info("Resolving all bot registrar factories")
         val allBotRegistrarFactories = beanContainer.allInstance<BotRegistrarFactory>()
+        logger.info("All bot registrar factories size: {}", allBotRegistrarFactories.size)
+        if (logger.isDebugEnabled) {
+            allBotRegistrarFactories.forEach { f ->
+                logger.debug("Bot registrar factory: {} ({})", f, f.javaClass)
+            }
+        }
 
         // all registrars and group by component name.
-        val allBotRegistrars = allBotRegistrarFactories.map { it(listenerManager) }
-            .groupBy { r -> r.component.id.toString() }.mapValues { (key, values) ->
-                if (values.size != 1) {
-                    context.logger.warn(
-                        "There are multiple registrars under the component [{}], and they will be registered sequentially in a balanced manner.",
-                        key
-                    )
-                    val component = values[0].component
-                    BalancedBotRegistrar(component, values.toList())
-                } else values[0]
-            }.values
+        val allBotRegistrars = allBotRegistrarFactories.map {
+            it(listenerManager).also {
+                logger.debug("Bot registrar: {} ({})", it, it.javaClass)
+            }
+        }.groupBy { r -> r.component.id.toString() }.mapValues { (key, values) ->
+            if (values.size != 1) {
+                logger.warn(
+                    "There are multiple registrars under the component [{}], and they will be registered sequentially in a balanced manner.",
+                    key
+                )
+                val component = values[0].component
+                BalancedBotRegistrar(component, values.toList())
+            } else values[0]
+        }.values
 
 
         // 所有的base binder factory
+        logger.info("Resolving all base binder factories")
         val baseBinderFactories = mutableSetOf(
-            KeywordBinderFactory,
-            EventParameterBinderFactory, // event binder
-            AutoInjectBinderFactory,
-            InstanceInjectBinderFactory
+            KeywordBinderFactory, EventParameterBinderFactory, // event binder
+            AutoInjectBinderFactory, InstanceInjectBinderFactory
         )
+        logger.info("All base binder factories size: {}", baseBinderFactories.size)
+        if (logger.isDebugEnabled) {
+            baseBinderFactories.forEach { f ->
+                logger.debug("Base binder factory: {} ({})", f, f.javaClass)
+            }
+        }
 
         val binderManager = BinderManager(
-            mutableMapOf(),
-            baseBinderFactories
+            mutableMapOf(), baseBinderFactories
         )
 
+        logger.info("Resolving all binders.")
         bootContext.allBinders(binderManager, beanContainer, annotationTool)
-
+        logger.info("Normal binder size: {}", binderManager.normalSize)
+        logger.info("Global binder size: {}", binderManager.globalSize)
+        if (logger.isDebugEnabled) {
+            binderManager.getGlobals().forEach { b ->
+                logger.debug("Global binder: {} ({})", b, b.javaClass)
+            }
+        }
 
         // 所有的type，尝试解析为listener
+        logger.info("Resolve all listeners.")
         val listeners = bootContext.findAllListener(
-            beanContainer,
-            binderManager
+            beanContainer, binderManager
         )
+        logger.info("All listener size: {}", listeners.size)
 
         listeners.forEach(listenerManager::register)
 
+        logger.info("Resolving all bot info.")
         val botInfoList = bootContext.getAllBotInfos(configuration, beanContainer)
+        logger.info("All bot info size: {}", botInfoList.size)
 
-        //println("bots: $bots")
-
+        logger.info("Register all bots.")
         // all init bots
-        botInfoList.flatMap { b ->
+        val allBots = botInfoList.flatMap { b ->
             val registrars = allBotRegistrars.mapNotNull { botRegistrar ->
                 try {
                     botRegistrar.register(b).also {
-                        bootContext.logger.debug(
-                            "Bot [{}] registered by registrar of component {}",
-                            b.infoName,
-                            botRegistrar.component.name
+                        logger.debug(
+                            "Bot [{}] registered by registrar of component {}", b.infoName, botRegistrar.component.name
                         )
                     }
                 } catch (mismatch: ComponentMismatchException) {
@@ -185,15 +227,20 @@ public class CoreBootEntrance : SimbootEntrance {
 
 
             registrars.ifEmpty {
-                bootContext.logger.warn("Bot info [{}] is not registered by any component", b.infoName)
+                logger.warn("Bot info [{}] is not registered by any component", b.infoName)
                 emptyList()
             }
 
-        }.forEach { b ->
-            bootContext.logger.debug("Starting bot {} of component {}", b.id, b.component)
-            runBlocking { b.start() }
-            bootContext.logger.debug("Bot {} of component {} started.", b.id, b.component)
         }
+        logger.info("All bots register finished. all bot size: {}", allBots.size)
+        logger.info("Starting all bots")
+        allBots.forEach { b ->
+            logger.debug("Starting bot {} of component {}", b.id, b.component)
+            runBlocking { b.start() }
+            logger.debug("Bot {} of component {} started. username: {}", b.id, b.component, b.username)
+        }
+        logger.info("All bots start finished.")
+
 
 
         val job = Job() // alive for join.
@@ -203,7 +250,9 @@ public class CoreBootEntrance : SimbootEntrance {
 
         return CoreSimbootContext(job)
     }
+
 }
+
 
 private class CoreSimbootContext(
     private val job: Job
@@ -266,8 +315,7 @@ private fun KClass<*>.classToCoreBootEntranceContext(context: SimbootEntranceCon
 }
 
 private class BalancedBotRegistrar(
-    override val component: Component,
-    registrars: List<BotRegistrar>
+    override val component: Component, registrars: List<BotRegistrar>
 ) : BotRegistrar {
     init {
         if (registrars.isEmpty()) {
@@ -288,9 +336,7 @@ private class BalancedBotRegistrar(
 
 
 private fun CoreBootEntranceContext.allBinders(
-    manager: BinderManager,
-    beanContainer: BeanContainer,
-    annotationTool: KAnnotationTool
+    manager: BinderManager, beanContainer: BeanContainer, annotationTool: KAnnotationTool
 ) {
 
     beanContainer.all.forEach { name ->
@@ -360,6 +406,9 @@ private class BinderManager(
     private val globalBinders: MutableSet<ParameterBinderFactory> = mutableSetOf()
 ) : ParameterBinderFactoryContainer {
 
+    val normalSize: Int get() = idBinders.size
+    val globalSize: Int get() = globalBinders.size
+
     fun addIdBinder(id: String, factory: ParameterBinderFactory) {
         idBinders.merge(id, factory) { old, now ->
             throw SimbotIllegalStateException("Duplicate binder factory ID. id: $id, $old vs $now")
@@ -390,8 +439,7 @@ private class BinderManager(
  * 寻找并尝试加载所有的监听函数。
  */
 private fun CoreBootEntranceContext.findAllListener(
-    beanContainer: BeanContainer,
-    baseBinderContainer: ParameterBinderFactoryContainer
+    beanContainer: BeanContainer, baseBinderContainer: ParameterBinderFactoryContainer
 ): List<EventListener> {
 
     val processors = beanContainer.allInstance<ListenerAnnotationProcessor>().sortedBy { it.priority }
@@ -415,9 +463,7 @@ private fun CoreBootEntranceContext.findAllListener(
             val listener = tool.getAnnotation(func, Listener::class) ?: continue
             val listens = tool.getAnnotation(func, Listens::class)
             val listenDataList = tool.getAnnotations(func, Listen::class)
-            val listenerData = listener.toData(listens?.toData(
-                listenDataList.map { it.toData() }
-            ))
+            val listenerData = listener.toData(listens?.toData(listenDataList.map { it.toData() }))
 
             val context = ListenerAnnotationProcessorContextImpl(
                 listenerData = listenerData,
@@ -437,9 +483,12 @@ private fun CoreBootEntranceContext.findAllListener(
 
     }
 
+    logger.debug("Scan and include all top-level function listeners.")
     includeAllTopListeners(processors, tool, beanContainer, baseBinderContainer, registrar)
 
-    return listeners.values.toList()
+    return listeners.values.toList().also {
+        logger.debug("All functional listeners resolved, size: {}", it.size)
+    }
 }
 
 private object TopFuncFrom
@@ -453,45 +502,36 @@ private fun CoreBootEntranceContext.includeAllTopListeners(
 ) {
     val pathReplace = Regex("[/\\\\]")
     ResourcesScanner<Class<*>>().use { scanner ->
-        scanner.scan("")
-            .also {
-                for (scanPkg in topFunctionScanPackages) {
-                    it.glob(scanPkg.replace(".", "/") + "**.class")
-                }
+        scanner.scan("").also {
+            for (scanPkg in topFunctionScanPackages) {
+                it.glob(scanPkg.replace(".", "/") + "**.class")
             }
-            .visitJarEntry { entry, _ ->
-                val classname = entry.name.replace(pathReplace, ".").substringBeforeLast(".class")
-                val loadClass = runCatching {
-                    scanner.classLoader.loadClass(classname)
-                }.getOrElse { e -> throw SimbotIllegalStateException("Class load filed: $classname", e) }
-                sequenceOf(loadClass)
+        }.visitJarEntry { entry, _ ->
+            val classname = entry.name.replace(pathReplace, ".").substringBeforeLast(".class")
+            val loadClass = runCatching {
+                scanner.classLoader.loadClass(classname)
+            }.getOrElse { e -> throw SimbotIllegalStateException("Class load filed: $classname", e) }
+            sequenceOf(loadClass)
+        }.visitPath { (_, r) ->
+            // '/Xxx.class'
+            val classname = r.replace(pathReplace, ".").substringBeforeLast(".class").let {
+                if (it.startsWith(".")) it.substring(1) else it
             }
-            .visitPath { (_, r) ->
-                // '/Xxx.class'
-                val classname = r.replace(pathReplace, ".").substringBeforeLast(".class").let {
-                    if (it.startsWith(".")) it.substring(1) else it
-                }
-                val loadClass = runCatching {
-                    scanner.classLoader.loadClass(classname)
-                }.getOrElse { e -> throw SimbotIllegalStateException("Class load filed: $classname", e) }
-                sequenceOf(loadClass)
+            val loadClass = runCatching {
+                scanner.classLoader.loadClass(classname)
+            }.getOrElse { e -> throw SimbotIllegalStateException("Class load filed: $classname", e) }
+            sequenceOf(loadClass)
+        }.collectSequence(true).flatMap { c ->
+            c.methods.mapNotNull { m ->
+                kotlin.runCatching { m.kotlinFunction?.takeIf { f -> with(f.visibility) { this == null || this == KVisibility.PUBLIC } } }
+                    .getOrDefault(null)
             }
-            .collectSequence(true)
-            .flatMap { c ->
-                c.methods.mapNotNull { m ->
-                    kotlin.runCatching { m.kotlinFunction?.takeIf { f -> with(f.visibility) { this == null || this == KVisibility.PUBLIC } } }
-                        .getOrDefault(null)
-                }
-            }
-            .filter { f -> f.instanceParameter == null } // instance is null -> top function
-            .filter { f -> tool.getAnnotation(f, Listener::class) != null }
-            .forEach { func ->
+        }.filter { f -> f.instanceParameter == null } // instance is null -> top function
+            .filter { f -> tool.getAnnotation(f, Listener::class) != null }.forEach { func ->
                 val listener = tool.getAnnotation(func, Listener::class)!!
                 val listens = tool.getAnnotation(func, Listens::class)
                 val listenDataList = tool.getAnnotations(func, Listen::class)
-                val listenerData = listener.toData(listens?.toData(
-                    listenDataList.map { it.toData() }
-                ))
+                val listenerData = listener.toData(listens?.toData(listenDataList.map { it.toData() }))
 
                 val context = ListenerAnnotationProcessorContextImpl(
                     listenerData = listenerData,
