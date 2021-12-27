@@ -76,7 +76,8 @@ public fun Listener.toData(listens: ListensData? = null): ListenerData {
         id = id,
         priority = priority,
         async = async,
-        listens = listens
+        listens = listens,
+        textContentProcessors = textContentProcessors.toList()
     )
 }
 

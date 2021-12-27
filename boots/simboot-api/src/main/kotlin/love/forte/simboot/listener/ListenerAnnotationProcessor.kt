@@ -135,4 +135,5 @@ public data class ListenerData(
     val priority: Int,
     val async: Boolean,
     val listens: ListensData?,
+    val textContentProcessors: List<KClass<out EventListenerTextContentProcessor>>
 )

@@ -21,15 +21,22 @@ import love.forte.simbot.event.EventListenerProcessingContext
  *
  * 本质上与拦截器类似, 通过 [process] 来对 context 中的 `textContent` 进行处理, 原则上应当属于最外层的拦截器。
  *
+ * [EventListenerTextContentProcessor] 是处于普通拦截器与过滤器之间的拦截处理器，
+ * 其递进顺序为：普通拦截器 [love.forte.simbot.event.EventListenerInterceptor] -> [EventListenerTextContentProcessor] -> EventFilters -> Listener
+ *
+ * 因此，普通的拦截器将无法感知到处理器对 `textContent` 的处理。
+ * 同样的，假如你在拦截器中已经有了对 `textContent` 的操作，那么我不再建议你通过当前处理器进行再次加工。
+ *
+ *
  * @see StandardTextContentProcessor
  * @author ForteScarlet
  */
-public interface EventListenerTextContentProcessor {
+public abstract class EventListenerTextContentProcessor internal constructor() {
 
     /**
      * 通过 [context] 实例，解析并最终对 [EventListenerProcessingContext.textContent] 进行设置处理.
      */
-    public suspend fun process(context: EventListenerProcessingContext)
+    public abstract suspend fun process(context: EventListenerProcessingContext)
 
 }
 
@@ -39,7 +46,7 @@ public interface EventListenerTextContentProcessor {
  * 标准的前置处理器。
  *
  */
-public sealed class StandardTextContentProcessor : EventListenerTextContentProcessor {
+public sealed class StandardTextContentProcessor : EventListenerTextContentProcessor() {
 
     /**
      * 当 [EventListenerProcessingContext.textContent] 不为 null 的时候，对其进行 trim 并重新设置。

@@ -89,8 +89,10 @@ public interface BlockingEventProcessingInterceptor : EventProcessingInterceptor
 /**
  * 事件监听函数拦截器。与 [EventProcessingInterceptor] 不同，[EventListenerInterceptor] 则针对一次事件处理流程中的 **每一个** [监听函数][EventListener] 进行独立拦截。
  *
+ * 事件监听器不建议对 [EventListenerProcessingContext.textContent] 进行操作，尤其是在(boot下)同时使用了 [love.forte.simboot.listener.EventListenerTextContentProcessor] 的情况下。
  *
  * @see BlockingEventListenerInterceptor
+ * @see love.forte.simboot.listener.EventListenerTextContentProcessor
  */
 public interface EventListenerInterceptor : EventInterceptor<EventListenerInterceptor.Context, EventResult> {
     @JvmSynthetic

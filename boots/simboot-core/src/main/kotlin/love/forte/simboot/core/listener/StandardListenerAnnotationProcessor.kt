@@ -92,10 +92,21 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
         val filters = function.resolveFilters(listener, listenerAttributeMap, context)
 
         // 合并filter
-        val filterMergedListener = listener + filters
+        var finalListener = listener + filters
+
+        // 追加 textContent 处理器 - 作为拦截器追加.
+        val textContentProcessors = context.listenerData.textContentProcessors.map {
+            it.objectInstance ?: context.beanContainer[it]
+        }
+
+        if (textContentProcessors.isNotEmpty()) {
+            finalListener += textContentProcessors.mapIndexed { index, p ->
+                TextContentInterceptor("textContentProcessor-${finalListener.id}#$index".ID, p)
+            }
+        }
 
         // 注册listener
-        context.listenerRegistrar.register(filterMergedListener)
+        context.listenerRegistrar.register(finalListener)
 
         return true
     }
@@ -114,7 +125,8 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
         if (filters == null && filterList.isEmpty()) return emptyList()
 
         val filterDataList = filterList.map { it.toData(source = this) }
-        val filtersData = filters?.toData(source = this, filterDataList) ?: FiltersData(source = this, value = filterDataList)
+        val filtersData =
+            filters?.toData(source = this, filterDataList) ?: FiltersData(source = this, value = filterDataList)
 
         val filterRegistrar = ListFilterRegistrar(mutableListOf())
 
@@ -518,4 +530,13 @@ private class AnnotationFunctionalEventListener<R>(
 
 
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T? = attributeMap[attribute]
+}
+
+
+
+private class TextContentInterceptor(override val id: ID, private val processor: EventListenerTextContentProcessor) : EventListenerInterceptor {
+    override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult {
+        processor.process(context.eventContext)
+        return context.proceed()
+    }
 }
