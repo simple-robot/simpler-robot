@@ -26,6 +26,7 @@ public fun Filter.toData(source: Any? = null): FilterData {
     return FilterData(
         source = source,
         value = value,
+        ifNullPass = ifNullPass,
         matchType = matchType,
         target = target.toData(source = source),
         and = and.toData(source = source),

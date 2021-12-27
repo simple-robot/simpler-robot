@@ -35,8 +35,9 @@ public object BootFilterAnnotationProcessor : FilterAnnotationProcessor {
         val currentFilter = FilterViaAnnotation(
             filter.target.box(),
             filter.value,
+            filter.ifNullPass,
             filter.matchType
-        )
+        ) { it.textContent } // selector
 
         // put keyword.
         context.listenerAttributes.computeIfAbsent(KeywordsAttribute) { CopyOnWriteArrayList() }
@@ -154,7 +155,9 @@ private fun TargetFilterData.box(): FilterTarget? {
 private class FilterViaAnnotation(
     target: FilterTarget?,
     val value: String,
-    val matchType: MatchType
+    val ifNullPass: Boolean,
+    val matchType: MatchType,
+    val contentSelector: (EventListenerProcessingContext) -> String?
 ) : EventFilter {
     val keyword = if (value.isEmpty()) EmptyKeyword else KeywordImpl(value)
     val targetMatch: suspend (Event) -> Boolean = target?.toMatcher() ?: { true }
@@ -167,15 +170,16 @@ private class FilterViaAnnotation(
             return false
         }
 
-        val textContent = context.textContent
+        val textContent = contentSelector(context) //.textContent
 
         // match
         if (textContent != null) {
             if (!matchType.match(textContent, keyword)) {
                 return false
             }
-        }
+        } else return ifNullPass
 
+        // maybe other match
 
         return true
     }

@@ -36,6 +36,7 @@ import kotlin.reflect.KClass
 public data class FilterData(
     val source: Any?,
     val value: String,
+    val ifNullPass: Boolean,
     val matchType: MatchType = MatchType.REGEX_MATCHES,
     val target: TargetFilterData = TargetFilterData(source = source),
     val and: FiltersData = FiltersData(source = source),
