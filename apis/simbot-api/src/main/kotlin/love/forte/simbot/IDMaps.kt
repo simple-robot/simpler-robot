@@ -160,6 +160,21 @@ private class CharSequenceIDMap<V>(private val delegate: MutableMap<ID, V>) : Mu
     override fun replaceAll(function: BiFunction<in ID, in V, out V>) {
         delegate.replaceAll(function)
     }
+
+    override fun toString(): String {
+        return delegate.toString()
+    }
+
+    override fun hashCode(): Int {
+        return delegate.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is CharSequenceIDMap<*>) {
+            return delegate == other.delegate
+        }
+        return delegate == other
+    }
 }
 
 private class CharSequenceConcurrentIDMap<V : Any>(private val delegate: ConcurrentMap<ID, V>) : ConcurrentIDMaps<V> {
@@ -251,4 +266,19 @@ private class CharSequenceConcurrentIDMap<V : Any>(private val delegate: Concurr
         delegate.replaceAll(function)
     }
 
+
+    override fun toString(): String {
+        return delegate.toString()
+    }
+
+    override fun hashCode(): Int {
+        return delegate.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is CharSequenceConcurrentIDMap<*>) {
+            return delegate == other.delegate
+        }
+        return delegate == other
+    }
 }

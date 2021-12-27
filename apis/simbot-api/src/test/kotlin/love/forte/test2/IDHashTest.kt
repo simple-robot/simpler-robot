@@ -1,10 +1,11 @@
 package love.forte.test2
 
 import love.forte.simbot.ID
+import love.forte.simbot.mutableIDMapOf
 
 
 fun main() {
-    val map = mutableMapOf<ID, Int>()
+    val map = mutableIDMapOf<Int>()
 
 
     map[1.ID] = 1

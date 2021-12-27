@@ -10,7 +10,7 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-@file:JvmName("ContinuousSessionScopeContextUtil")
+@file:JvmName("ContinuousSessionScopeContextUtil2")
 
 package love.forte.simbot.event
 
