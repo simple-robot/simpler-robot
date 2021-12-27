@@ -2,6 +2,9 @@ package love.forte.simbot
 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
+import java.util.function.BiConsumer
+import java.util.function.BiFunction
+import java.util.function.Function
 
 
 /**
@@ -33,9 +36,15 @@ public fun <V> mutableIDMapOf(): MutableIDMaps<V> = CharSequenceIDMap(mutableMap
 
 public fun <V> mutableIDMapOf(vararg pairs: Pair<ID, V>): MutableIDMaps<V> = CharSequenceIDMap(mutableMapOf(*pairs))
 
-public fun <V> concurrentIDMapOf(): ConcurrentIDMaps<V> = CharSequenceConcurrentIDMap(ConcurrentHashMap())
+/**
+ * [V] 不可为null
+ */
+public fun <V : Any> concurrentIDMapOf(): ConcurrentIDMaps<V> = CharSequenceConcurrentIDMap(ConcurrentHashMap())
 
-public fun <V> concurrentIDMapOf(vararg pairs: Pair<ID, V>): ConcurrentIDMaps<V> =
+/**
+ * [V] 不可为null
+ */
+public fun <V : Any> concurrentIDMapOf(vararg pairs: Pair<ID, V>): ConcurrentIDMaps<V> =
     CharSequenceConcurrentIDMap(ConcurrentHashMap<ID, V>(pairs.size).apply { putAll(pairs) })
 
 private object EmptyIDMap : IDMaps<Any?> {
@@ -111,9 +120,49 @@ private class CharSequenceIDMap<V>(private val delegate: MutableMap<ID, V>) : Mu
     override fun remove(key: ID): V? {
         return delegate.remove(key.toCharSequenceID())
     }
+
+    override fun getOrDefault(key: ID, defaultValue: V): V {
+        return delegate.getOrDefault(key, defaultValue)
+    }
+
+    override fun remove(key: ID, value: V): Boolean {
+        return delegate.remove(key, value)
+    }
+
+    override fun forEach(action: BiConsumer<in ID, in V>) {
+        delegate.forEach(action)
+    }
+
+    override fun compute(key: ID, remappingFunction: BiFunction<in ID, in V?, out V?>): V? {
+        return delegate.compute(key, remappingFunction)
+    }
+
+    override fun computeIfAbsent(key: ID, mappingFunction: Function<in ID, out V>): V {
+        return delegate.computeIfAbsent(key, mappingFunction)
+    }
+
+    override fun computeIfPresent(key: ID, remappingFunction: BiFunction<in ID, in V, out V?>): V? {
+        return delegate.computeIfPresent(key, remappingFunction)
+    }
+
+    override fun putIfAbsent(key: ID, value: V): V? {
+        return delegate.putIfAbsent(key, value)
+    }
+
+    override fun replace(key: ID, oldValue: V, newValue: V): Boolean {
+        return delegate.replace(key, oldValue, newValue)
+    }
+
+    override fun replace(key: ID, value: V): V? {
+        return delegate.replace(key, value)
+    }
+
+    override fun replaceAll(function: BiFunction<in ID, in V, out V>) {
+        delegate.replaceAll(function)
+    }
 }
 
-private class CharSequenceConcurrentIDMap<V>(private val delegate: ConcurrentMap<ID, V>) : ConcurrentIDMaps<V> {
+private class CharSequenceConcurrentIDMap<V : Any>(private val delegate: ConcurrentMap<ID, V>) : ConcurrentIDMaps<V> {
     override val entries: MutableSet<MutableMap.MutableEntry<ID, V>>
         get() = delegate.entries.toMutableSet()
 
@@ -173,4 +222,33 @@ private class CharSequenceConcurrentIDMap<V>(private val delegate: ConcurrentMap
     override fun replace(key: ID, value: V): V? {
         return delegate.replace(key.toCharSequenceID(), value)
     }
+
+    override fun merge(key: ID, value: V, remappingFunction: BiFunction<in V, in V, out V?>): V? {
+        return delegate.merge(key.toCharSequenceID(), value, remappingFunction)
+    }
+
+    override fun compute(key: ID, remappingFunction: BiFunction<in ID, in V?, out V?>): V? {
+        return delegate.compute(key, remappingFunction)
+    }
+
+    override fun forEach(action: BiConsumer<in ID, in V>) {
+        delegate.forEach(action)
+    }
+
+    override fun getOrDefault(key: ID, defaultValue: V): V {
+        return delegate.getOrDefault(key, defaultValue)
+    }
+
+    override fun computeIfAbsent(key: ID, mappingFunction: Function<in ID, out V>): V {
+        return delegate.computeIfAbsent(key, mappingFunction)
+    }
+
+    override fun computeIfPresent(key: ID, remappingFunction: BiFunction<in ID, in V, out V?>): V? {
+        return delegate.computeIfPresent(key, remappingFunction)
+    }
+
+    override fun replaceAll(function: BiFunction<in ID, in V, out V>) {
+        delegate.replaceAll(function)
+    }
+
 }
