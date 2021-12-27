@@ -12,28 +12,21 @@
 
 package love.forte.simboot.annotation
 
-import love.forte.simbot.event.Event
-import kotlin.reflect.KClass
-
 /**
- * 标记于一个函数上，代表它们所表示的监听函数应当要监听的事件类型集。
+ * 配合 [Listener] 使用，为一个监听函数指定一个或多个专属的监听函数拦截器.
  *
- * 需要在标记 [Listener] 的情况下使用 [Listen]. 当标记 [Listen] 后，
- * 不会再自动判定类型。
+ * TODO
  *
- * @property value 事件类型。指定的事件必须存在一个实现了 [Event.Key] 的伴生对象，否则此事件将会被视为不可监听并抛出异常。
- *
- * @see love.forte.simbot.event.Event
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
-@JvmRepeatable(Listens::class)
+@JvmRepeatable(Interceptors::class)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
-public annotation class Listen(val value: KClass<out Event>)
+public annotation class Interceptor()
 
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
-public annotation class Listens(vararg val value: Listen)
+public annotation class Interceptors(vararg val value: Interceptor)

@@ -164,7 +164,7 @@ public annotation class TargetFilter(
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 public annotation class Filters(
     vararg val value: Filter,
