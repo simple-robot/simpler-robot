@@ -20,6 +20,7 @@ import java.util.concurrent.Future
 import java.util.concurrent.TimeoutException
 import java.util.function.Consumer
 import kotlin.coroutines.Continuation
+import kotlin.time.Duration
 
 
 /**
@@ -330,6 +331,12 @@ public abstract class ContinuousSessionContext {
      */
     public abstract val keys: Set<String>
 }
+
+
+public suspend fun <T> ContinuousSessionContext.waiting(group: String, key: String, timeout: Duration, invokeOnCancellation: CompletionHandler? = null): T {
+    return waiting(group, key, timeout.inWholeMilliseconds, invokeOnCancellation)
+}
+
 
 
 /**
