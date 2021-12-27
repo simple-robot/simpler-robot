@@ -59,5 +59,5 @@ public annotation class Listener(
     val priority: Int = PriorityConstant.NORMAL,
     val async: Boolean = false,
     // TODO
-    val textContentProcessors: Array<KClass<out EventListenerTextContentProcessor>>
+    val textContentProcessors: Array<KClass<out EventListenerTextContentProcessor>> = []
 )
