@@ -1,3 +1,15 @@
+/*
+ *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *
+ *  根据 Apache License 2.0 获得许可；
+ *  除非遵守许可，否则您不得使用此文件。
+ *  您可以在以下网址获取许可证副本：
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ */
+
 package love.forte.simbot.core.event
 
 import kotlinx.coroutines.*
@@ -54,7 +66,7 @@ public class CoreContinuousSessionContext(
      * [get] 更多的用于判断 [group]中[key] 的存在与否，如果需要推送内容，使用 [push] 或者通过 [take] 获取后使用。
      *
      */
-    override operator fun get(group: String, key: String): ContinuousSession<*>? =
+    override operator fun <T> get(group: String, key: String): ContinuousSession<T>? =
         continuationMap[group]?.get(key)
 
 
@@ -104,7 +116,11 @@ public class CoreContinuousSessionContext(
         invokeOnCancellation: CompletionHandler?,
     ): T {
         return if (timeout <= 0) {
-            logger.debug("Your waiting task(group={}, key={}) does not set timeout period or less then or equals 0.", group, key)
+            logger.debug(
+                "Your waiting task(group={}, key={}) does not set timeout period or less then or equals 0.",
+                group,
+                key
+            )
             waitForResume(group, key, invokeOnCancellation)
         } else {
             withTimeout(timeout) {
@@ -167,8 +183,6 @@ public class CoreContinuousSessionContext(
 }
 
 
-
-
 /**
  * 基于 [ConcurrentMap] 的 [ContinuousSessionContainer] 实现。
  *
@@ -176,8 +190,31 @@ public class CoreContinuousSessionContext(
 internal class MapContinuousSessionContainer(
     override val group: String,
     private val map: ConcurrentMap<String, ContinuousSession<*>> = ConcurrentHashMap(),
-) : ContinuousSessionContainer, ConcurrentMap<String, ContinuousSession<*>> by map {
+) : ContinuousSessionContainer {
     override fun contains(id: String): Boolean = id in map
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T> get(key: String): ContinuousSession<T>? = map[key] as? ContinuousSession<T>
+
+    override val keys: Set<String>
+        get() = map.keys
+
+    override val size: Int
+        get() = map.size
+
+    fun remove(key: String): ContinuousSession<*>? = map.remove(key)
+
+    fun isEmpty(): Boolean = map.isEmpty()
+
+    fun merge(
+        key: String,
+        value: ContinuousSession<*>,
+        mergeFunction: (old: ContinuousSession<*>, now: ContinuousSession<*>) -> ContinuousSession<*>
+    ) {
+        map.merge(key, value) { old, now ->
+            mergeFunction(old, now)
+        }
+    }
 }
 
 

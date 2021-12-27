@@ -1,15 +1,13 @@
 /*
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
- *  * Copyright (c) 2021. ForteScarlet All rights reserved.
- *  * Project  simple-robot
- *  * File     MiraiAvatar.kt
- *  *
- *  * You can contact the author through the following channels:
- *  * github https://github.com/ForteScarlet
- *  * gitee  https://gitee.com/ForteScarlet
- *  * email  ForteScarlet@163.com
- *  * QQ     1149159218
+ *  根据 Apache License 2.0 获得许可；
+ *  除非遵守许可，否则您不得使用此文件。
+ *  您可以在以下网址获取许可证副本：
  *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
 @file:JvmName("ContinuousSessionScopeContextUtil")
@@ -59,7 +57,7 @@ public interface ContinuousSession<T> {
  * [ContinuousSession] 的容器, 面向外部的接口。
  *
  */
-public interface ContinuousSessionContainer : Map<String, ContinuousSession<*>> {
+public interface ContinuousSessionContainer {
     /**
      * 分组名称
      */
@@ -68,7 +66,7 @@ public interface ContinuousSessionContainer : Map<String, ContinuousSession<*>> 
     /**
      * 根据key获取一个 [ContinuousSession].
      */
-    public override operator fun get(key: String): ContinuousSession<*>?
+    public operator fun <T> get(key: String): ContinuousSession<T>?
 
     /**
      * 判断当前容器中是否存在对应的会话
@@ -78,17 +76,17 @@ public interface ContinuousSessionContainer : Map<String, ContinuousSession<*>> 
     /**
      * 获取所有的key
      */
-    public override val keys: Set<String>
+    public val keys: Set<String>
 
     /**
      * 得到其中的元素数量
      */
-    public override val size: Int
+    public val size: Int
 }
 
 
 public fun ContinuousSessionContainer.cancel(cause: Throwable? = null) {
-    this.keys.forEach { key -> this[key]?.cancel(cause) }
+    this.keys.forEach { key -> get<Any?>(key)?.cancel(cause) }
 }
 
 
@@ -116,7 +114,7 @@ public abstract class ContinuousSessionContext {
      * [get] 更多的用于判断 [group] 的存在与否，如果需要推送内容，使用 [push] 或者通过 [take] 获取后使用。
      *
      */
-    public abstract fun get(@Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE") group: String): ContinuousSessionContainer?
+    public abstract operator fun get(@Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE") group: String): ContinuousSessionContainer?
 
 
     /**
@@ -125,7 +123,7 @@ public abstract class ContinuousSessionContext {
      * [get] 更多的用于判断 [group]中[key] 的存在与否，如果需要推送内容，使用 [push] 或者通过 [take] 获取后使用。
      *
      */
-    public abstract operator fun get(group: String, key: String): ContinuousSession<*>?
+    public abstract operator fun <T> get(group: String, key: String): ContinuousSession<T>?
 
     /**
      * 推送得到的值给指定的会话并使其恢复。
