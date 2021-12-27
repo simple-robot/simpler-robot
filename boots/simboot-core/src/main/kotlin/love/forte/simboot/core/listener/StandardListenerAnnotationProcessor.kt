@@ -86,7 +86,7 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
             attributeMap = listenerAttributeMap
         )
 
-        logger.debug("Resolve listener: id={}, targets={}", listener.id, targets.ifEmpty { "ALL" })
+        logger.debug("Resolve listener: id={}, targets={}", listener.id, targets.map { t -> t.id }.ifEmpty { "ALL" })
 
         // filters
         val filters = function.resolveFilters(listener, listenerAttributeMap, context)

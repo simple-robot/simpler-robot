@@ -72,10 +72,12 @@ public interface Event : BotContainer {
      */
     public companion object Root : Key<Event> {
 
+        public const val ID_VALUE: String = "api.root"
+
         /**
          * Event根节点的唯一ID。
          */
-        override val id: CharSequenceID = "api.root".ID
+        override val id: CharSequenceID = ID_VALUE.ID
 
         /**
          * Event是所有事件的根，不可能是其他事件的子项.
@@ -84,6 +86,10 @@ public interface Event : BotContainer {
 
 
         override fun safeCast(value: Any): Event? = doSafeCast<Event>(value)
+
+        override fun toString(): String {
+            return "RootEvent(id=$ID_VALUE)"
+        }
     }
 
     /**

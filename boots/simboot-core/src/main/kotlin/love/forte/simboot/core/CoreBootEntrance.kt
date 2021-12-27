@@ -44,6 +44,7 @@ import kotlin.concurrent.thread
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KVisibility
+import kotlin.reflect.full.instanceParameter
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.memberExtensionFunctions
 import kotlin.reflect.full.memberFunctions
@@ -476,8 +477,13 @@ private fun CoreBootEntranceContext.includeAllTopListeners(
                 sequenceOf(loadClass)
             }
             .collectSequence(true)
-            .flatMap { c -> c.methods.mapNotNull { m -> kotlin.runCatching { m.kotlinFunction }.getOrDefault(null) } }
-            .filter { f -> runCatching { f.visibility == KVisibility.PUBLIC || f.visibility == null }.getOrDefault(false) }
+            .flatMap { c ->
+                c.methods.mapNotNull { m ->
+                    kotlin.runCatching { m.kotlinFunction?.takeIf { f -> with(f.visibility) { this == null || this == KVisibility.PUBLIC } } }
+                        .getOrDefault(null)
+                }
+            }
+            .filter { f -> f.instanceParameter == null } // instance is null -> top function
             .filter { f -> tool.getAnnotation(f, Listener::class) != null }
             .forEach { func ->
                 val listener = tool.getAnnotation(func, Listener::class)!!

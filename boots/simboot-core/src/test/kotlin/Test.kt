@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -11,48 +11,19 @@
  */
 
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.EmptySerializersModule
-import kotlinx.serialization.properties.Properties
+import kotlin.reflect.full.instanceParameter
+import kotlin.reflect.jvm.kotlinFunction
+
 
 @OptIn(ExperimentalSerializationApi::class)
 fun main() {
-
-    val json = Json {
-        isLenient = true
+    val c = Thread.currentThread().contextClassLoader.loadClass("TestKt")
+    println(c)
+    println(c.kotlin)
+    for (method in c.methods) {
+        print(method.kotlinFunction)
+        println("\t" + method.kotlinFunction?.instanceParameter?.type?.classifier)
     }
 
-    val jsonResource = Thread.currentThread().contextClassLoader.getResourceAsStream("config-test.json")
-    val jsonStr = jsonResource!!.reader().use { it.readText() }
-
-    val jsonElement = json.parseToJsonElement(jsonStr)
-
-    println(jsonElement)
-
-
-    val properties = Properties(EmptySerializersModule)
-
-
-    // val manager = coreBeanManager {
-    //     this.plusProcessor { bean, manager ->
-    //         bean.postValue { _, any ->
-    //
-    //             any
-    //         }
-    //     }
-    // }
-
-
 }
 
-
-annotation class Config(val prefix: String = "")
-
-
-@Serializable
-@Config("simbot.core")
-public class A {
-    lateinit var name: String
-    var size: Int = -1
-}
