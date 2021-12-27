@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.LongAccumulator
 import java.util.concurrent.atomic.LongAdder
+import kotlin.random.Random
 
 /**
  * 唯一标识 [ID].
@@ -164,6 +165,10 @@ public val CharSequence.ID: CharSequenceID
 public val UUID.ID: CharSequenceID
     get() = CharSequenceID(this.toString())
 
+/**
+ * 取得一个随机ID。
+ */
+public fun randomID(): ID = Random.nextLong().ID
 
 @Suppress("FunctionName")
 @get:JvmName("ID")
@@ -365,7 +370,7 @@ public data class FloatID(public val number: Float) : NumericalID<Float>() {
  * @see BigIntegerID
  *
  */
-@kotlin.Suppress("CanBeParameter")
+@Suppress("CanBeParameter")
 @SerialName("ID.N.A")
 @Serializable
 public sealed class ArbitraryNumericalID<N : Number> private constructor() : NumericalID<N>()

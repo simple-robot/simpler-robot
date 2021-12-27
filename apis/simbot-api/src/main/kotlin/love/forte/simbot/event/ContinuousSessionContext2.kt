@@ -110,8 +110,15 @@ public interface ContinuousSession2<T> {
     @JvmSynthetic
     public suspend fun await(): T
 
-
+    /**
+     * 终止此会话。如果此会话已经结束则会出现异常。
+     */
     public fun cancel(reason: Throwable? = null)
+
+    /**
+     * 终止此会话。如果此会话已经结束则会返回false。
+     */
+    public fun tryCancel(reason: Throwable? = null): Boolean
 
     /**
      * 将当前这个 session 转化为 [Future].
