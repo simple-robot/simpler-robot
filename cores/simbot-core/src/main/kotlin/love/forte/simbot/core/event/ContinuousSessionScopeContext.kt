@@ -14,230 +14,188 @@ package love.forte.simbot.core.event
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
-import love.forte.simbot.Api4J
+import love.forte.simbot.ID
 import love.forte.simbot.LoggerFactory
-import love.forte.simbot.event.ContinuousSession
-import love.forte.simbot.event.ContinuousSessionContainer
-import love.forte.simbot.event.ContinuousSessionContext3
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentMap
+import love.forte.simbot.concurrentIDMapOf
+import love.forte.simbot.event.*
+import love.forte.simbot.toCharSequenceID
 import java.util.concurrent.Future
-import java.util.concurrent.TimeoutException
-import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.concurrent.read
-import kotlin.concurrent.write
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-/**
- *
- * 持续会话的作用域.
- *
- *
- * @author ForteScarCore * @since 2.3.0
- */
-public class CoreContinuousSessionContext33(
+
+internal class CoreContinuousSessionContext(
     override val coroutineScope: CoroutineScope,
-    /** 默认的超时时间。默认没有超时限制。 */
-    override val defaultTimeoutMills: Long = 0 // 1.minutes.inWholeMilliseconds
-) : ContinuousSessionContext3() {
+    private val manager: ResumedListenerManager
+) : ContinuousSessionContext() {
 
+    override suspend fun <T> waitingFor(id: ID, timeout: Long, listener: ResumedListener<T>): T =
+        suspendCancellableCoroutine { c ->
+            val deferred = CompletableDeferred<T>()
+            val receiver = deferred.asSession()
+            c.invokeOnCancellation(receiver::cancel) // invokeOnCancellation must only here
+            val provider = c.asSession(deferred)
 
-    private companion object {
-        private val logger = LoggerFactory.getLogger(CoreContinuousSessionContext33::class.java)
-    }
+            manager.set(id, listener, provider, receiver)
 
-    private val lock = ReentrantReadWriteLock()
-    private val continuationMap = ConcurrentHashMap<String, MapContinuousSessionContainer>()
+            if (timeout > 0) {
+                val timeoutJob = coroutineScope.launch(start = CoroutineStart.LAZY) {
+                    try {
+                        withTimeout(timeout) {
+                            delay(timeout + 1000)
+                        }
+                    } catch (timeoutException: TimeoutCancellationException) {
+                        // timeout
+                        provider.cancel(timeoutException)
+                    }
+                }
+                timeoutJob.start().also {
+                    provider.invokeOnCompletion { timeoutJob.cancel() }
+                }
+            }
 
-    /**
-     * 获取一个[group]下对应的[ContinuousSessionContainer].
-     *
-     * [get] 更多的用于判断 [group] 的存在与否，如果需要推送内容，使用 [push] 或者通过 [take] 获取后使用。
-     *
-     */
-    override fun get(@Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE") group: String): ContinuousSessionContainer? =
-        continuationMap[group]
-
-
-    /**
-     * 获取一个[group]和[key]下对应的[ContinuousSession].
-     *
-     * [get] 更多的用于判断 [group]中[key] 的存在与否，如果需要推送内容，使用 [push] 或者通过 [take] 获取后使用。
-     *
-     */
-    override operator fun <T> get(group: String, key: String): ContinuousSession<T>? =
-        continuationMap[group]?.get(key)
-
-
-    /**
-     * 设置一个 [session] 到当前作用域。如果发生了覆盖，则会执行被覆盖者的 [cancel][ContinuousSession.cancel]
-     */
-    private fun set(group: String, key: String, session: ContinuousSession<*>) {
-        val container = continuationMap.computeIfAbsent(group, ::MapContinuousSessionContainer)
-        container.merge(key, session) { old, now ->
-            now.also { old.cancel() }
-        }
-    }
-
-    /**
-     * 等待下一次的事件唤醒。
-     *
-     * @throws CancellationException 如果被手动关闭
-     * @throws TimeoutException 如果设置了超时时间且超时
-     * @throws Exception 其他可能由于 [ContinuousSession.pushException] 而推送的异常
-     */
-    @JvmSynthetic
-    private suspend fun <T> waitForResume(
-        group: String,
-        key: String,
-        invokeOnCancellation: CompletionHandler? = null,
-    ): T = suspendCancellableCoroutine { cancellableContinuation ->
-        invokeOnCancellation?.also { invokeOnCancellation ->
-            cancellableContinuation.invokeOnCancellation(invokeOnCancellation)
         }
 
-        val session = cancellableContinuation.asContinuousSessionContinuation()
-        set(group, key, session)
-    }
-
-    /**
-     * 等待下一次的事件唤醒。
-     *
-     * @throws CancellationException 如果被手动关闭
-     * @throws TimeoutException 如果设置了超时时间且超时
-     * @throws Exception 其他可能由于 [ContinuousSession.pushException] 而推送的异常
-     */
-    @JvmSynthetic
-    override suspend fun <T> waiting(
-        group: String,
-        key: String,
+    override suspend fun <E : Event, T> waitingFor(
+        id: ID,
         timeout: Long,
-        invokeOnCancellation: CompletionHandler?,
-    ): T {
-        return if (timeout <= 0) {
-            logger.debug(
-                "Your waiting task(group={}, key={}) does not set timeout period or less then or equals 0.",
-                group,
-                key
-            )
-            waitForResume(group, key, invokeOnCancellation)
-        } else {
-            withTimeout(timeout) {
-                waitForResume(group, key, invokeOnCancellation)
-            }
-        }
+        eventKey: Event.Key<E>,
+        listener: ClearTargetResumedListener<E, T>
+    ): T = waitingFor(id, timeout, listener)
 
+
+    override fun <T> waiting(id: ID, timeout: Long, listener: ResumedListener<T>): ContinuousSessionReceiver<T> {
+        return coroutineScope.async { waitingFor(id, timeout, listener) }.asSession()
     }
 
-    @Api4J
-    @Throws(TimeoutException::class)
-    override fun <T> waitBlocking(group: String, key: String, timeout: Long): T {
-        return waitFuture<T>(group, key, timeout).get()
+    override fun <E : Event, T> waiting(
+        id: ID,
+        timeout: Long,
+        eventKey: Event.Key<E>,
+        listener: ClearTargetResumedListener<E, T>
+    ): ContinuousSessionReceiver<T> {
+        return coroutineScope.async { waitingFor(id, timeout, eventKey, listener) }.asSession()
     }
 
-
-    @Api4J
-    override fun <T> waitFuture(group: String, key: String, timeout: Long): Future<T> {
-        return coroutineScope.async<T> {
-            waiting(group, key, timeout)
-        }.asCompletableFuture()
+    override fun <T> getProvider(id: ID): ContinuousSessionProvider<T>? {
+        return manager.getProvider(id)
     }
 
-    /**
-     * 移除某个指定的 [ContinuousSession].
-     * 被移除的对象（如果有的话）不会进行推送操作，因此直到超时（如果有的话）之前，你或许需要主动进行推送。
-     *
-     */
-    override fun take(group: String, key: String): ContinuousSession<*>? = lock.write {
-        val container = continuationMap[group]
-        if (container != null) {
-            val removed = container.remove(key)
-            if (container.isEmpty()) {
-                continuationMap.remove(group)
-            }
-            return@write removed
-        }
-        null
-    }
-
-    /**
-     * 直接获取并移除某指定的 [ContinuousSessionContainer].
-     * 被移除的对象（如果有的话）不会进行任何操作
-     */
-    override fun take(group: String): ContinuousSessionContainer? = lock.write { continuationMap.remove(group) }
-
-
-    /**
-     * 获取所有元素的数量，此处的数量指的是 [ContinuousSessionContainer] 的数量。
-     */
-    override fun size(): Int = continuationMap.size
-
-
-    /**
-     * 获取所有的 `groups`
-     *
-     */
-    override val keys: Set<String>
-        get() = lock.read { continuationMap.keys }
-}
-
-
-
-/**
- * 基于 [ConcurrentMap] 的 [ContinuousSessionContainer] 实现。
- *
- */
-internal class MapContinuousSessionContainer(
-    override val group: String,
-    private val map: ConcurrentMap<String, ContinuousSession<*>> = ConcurrentHashMap(),
-) : ContinuousSessionContainer {
-    override fun contains(id: String): Boolean = id in map
-
-    @Suppress("UNCHECKED_CAST")
-    override fun <T> get(key: String): ContinuousSession<T>? = map[key] as? ContinuousSession<T>
-
-    override val keys: Set<String>
-        get() = map.keys
-
-    override val size: Int
-        get() = map.size
-
-    fun remove(key: String): ContinuousSession<*>? = map.remove(key)
-
-    fun isEmpty(): Boolean = map.isEmpty()
-
-    fun merge(
-        key: String,
-        value: ContinuousSession<*>,
-        mergeFunction: (old: ContinuousSession<*>, now: ContinuousSession<*>) -> ContinuousSession<*>
-    ) {
-        map.merge(key, value) { old, now ->
-            mergeFunction(old, now)
-        }
+    override fun <T> getReceiver(id: ID): ContinuousSessionReceiver<T>? {
+        return manager.getReceiver(id)
     }
 }
 
-
-internal fun <T> CancellableContinuation<T>.asContinuousSessionContinuation(): ContinuousSession<T> =
-    ContinuousSessionImpl(this)
+internal fun <T> Deferred<T>.asSession(): CoreContinuousSessionReceiver<T> = CoreContinuousSessionReceiver(this)
 
 
-private class ContinuousSessionImpl<T>(
-    private val continuation: CancellableContinuation<T>,
-) :
-    ContinuousSession<T> {
-    @OptIn(InternalCoroutinesApi::class)
+internal class CoreContinuousSessionReceiver<T>(private val deferred: Deferred<T>) : ContinuousSessionReceiver<T> {
+    override suspend fun await(): T = deferred.await()
+
+    override fun cancel(reason: Throwable?) {
+        deferred.cancel(reason?.let { CancellationException(it.localizedMessage, it) })
+    }
+
+    override fun tryCancel(reason: Throwable?): Boolean {
+        if (deferred.isCompleted || deferred.isCancelled) return false
+        cancel(reason)
+        return true
+    }
+
+    override fun asFuture(): Future<T> = deferred.asCompletableFuture()
+}
+
+
+internal fun <T> CancellableContinuation<T>.asSession(deferred: CompletableDeferred<T>): CoreContinuousSessionProvider<T> =
+    CoreContinuousSessionProvider(this, deferred)
+
+internal class CoreContinuousSessionProvider<T>(
+    internal val continuation: CancellableContinuation<T>,
+    private val deferred: CompletableDeferred<T>
+) : ContinuousSessionProvider<T> {
     override fun push(value: T) {
         continuation.resume(value)
+        deferred.complete(value)
     }
 
     override fun pushException(e: Throwable) {
         continuation.resumeWithException(e)
+        deferred.completeExceptionally(e)
     }
 
-    override fun cancel(e: Throwable?) {
-        continuation.cancel(e)
+    override fun cancel(reason: Throwable?) {
+        continuation.cancel(reason)
+        deferred.cancel(reason?.let { CancellationException(reason.localizedMessage, reason) })
+    }
+
+    override fun invokeOnCompletion(handler: CompletionHandler) {
+        deferred.invokeOnCompletion(handler)
+    }
+
+    override val isCompleted: Boolean
+        get() = continuation.isCompleted
+}
+
+
+internal data class WaitingListener<T>(
+    val listener: ResumedListener<T>,
+    val provider: CoreContinuousSessionProvider<T>,
+    val receiver: CoreContinuousSessionReceiver<T>
+) {
+    suspend operator fun invoke(context: EventProcessingContext) {
+        listener(context, provider)
+    }
+}
+
+internal class ResumedListenerManager {
+    companion object {
+        private val logger = LoggerFactory.getLogger(ResumedListenerManager::class)
+    }
+
+    private val listeners = concurrentIDMapOf<WaitingListener<*>>()
+
+    /**
+     * 会 cancel 被顶替的旧值。
+     */
+    fun <T> set(
+        id: ID,
+        listener: ResumedListener<T>,
+        provider: CoreContinuousSessionProvider<T>,
+        receiver: CoreContinuousSessionReceiver<T>
+    ) {
+        val cid = id.toCharSequenceID()
+        val current = WaitingListener(listener, provider, receiver)
+        listeners.merge(cid, current) { old, now ->
+            old.provider.cancel(CancellationException("Replaced by the same ID listener"))
+            now
+        }
+        provider.invokeOnCompletion {
+            listeners.remove(cid)
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getProvider(id: ID): ContinuousSessionProvider<T>? {
+        return listeners[id]?.provider as? ContinuousSessionProvider<T>
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getReceiver(id: ID): ContinuousSessionReceiver<T>? {
+        return listeners[id]?.receiver as? ContinuousSessionReceiver<T>
+    }
+
+    fun isEmpty(): Boolean = listeners.isEmpty()
+
+    suspend fun process(context: CoreEventProcessingContext, scope: CoroutineScope) {
+        listeners.forEach { id, listener ->
+            scope.launch {
+                try {
+                    listener(context)
+                } catch (e: Throwable) {
+                    logger.error("ResumedListener(id=$id) invoke failed: ${e.localizedMessage}", e)
+                }
+            }
+        }
     }
 }
 

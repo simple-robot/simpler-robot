@@ -165,7 +165,12 @@ public class CoreListenerManager private constructor(
      */
     override suspend fun push(event: Event): EventProcessingResult {
         val invokers = getInvokers(event.key)
-        if (invokers.isEmpty()) return EventProcessingResult
+        if (invokers.isEmpty()) {
+            if (resolver.isProcessable(event.key)) {
+                resolver.resolveEventToContext(event, 0)
+            }
+            return EventProcessingResult
+        }
 
         return doInvoke(resolveToContext(event, invokers.size), invokers)
     }

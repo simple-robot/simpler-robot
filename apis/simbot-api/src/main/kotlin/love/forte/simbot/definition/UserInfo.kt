@@ -50,7 +50,7 @@ public interface UserStatus {
 
     /**
      * 是否是一个普通用户。
-     * 一般来讲，[isNormal] 与 [isFakeUser] 是相互冲突的。
+     * 一般来讲，[isNormal] 与 [isFake] 是相互冲突的。
      */
     public val isNormal: Boolean
 
@@ -66,7 +66,7 @@ public interface UserStatus {
     /**
      * 是否为一个 "虚假用户"，一般用来描述其是否为一个匿名用户，或者一个BOT用户。
      */
-    public val isFakeUser: Boolean
+    public val isFake: Boolean
 
     /**
      * 当前成员是否为匿名。
@@ -126,7 +126,7 @@ private class UserStatusImpl(private val status: BitSet) : UserStatus {
         get() = status[IS_NORMAL]
     override val isOfficial: Boolean
         get() = status[IS_OFFICIAL]
-    override val isFakeUser: Boolean
+    override val isFake: Boolean
         get() = status[IS_FAKE]
     override val isAnonymous: Boolean
         get() = status[IS_ANONYMOUS]

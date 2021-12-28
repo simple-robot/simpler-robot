@@ -45,7 +45,6 @@ internal class CoreEventProcessingContextResolver(
     private class GlobalScopeContext : ScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
     private class InstantScopeContext : ScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
 
-
     /**
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
      */

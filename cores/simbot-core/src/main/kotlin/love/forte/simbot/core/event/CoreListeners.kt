@@ -19,6 +19,7 @@ import love.forte.simbot.ID
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
+import love.forte.simbot.randomID
 import org.slf4j.Logger
 import java.util.*
 import java.util.function.BiConsumer
@@ -86,12 +87,12 @@ public fun <E : Event> EventListenerRegistrar.listen(
  */
 @JvmSynthetic
 public inline fun <reified E : Event> EventListenerRegistrar.listen(
-    id: ID = UUID.randomUUID().ID,
+    id: ID = randomID(),
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     noinline func: suspend (EventListenerProcessingContext, E) -> Any?
-): EventListener = listen(E::class.getKey(), id, blockNext, isAsync, logger, func).also(::register)
+): EventListener = listen(E::class.getKey(), id, blockNext, isAsync, logger, func)
 
 
 /**
