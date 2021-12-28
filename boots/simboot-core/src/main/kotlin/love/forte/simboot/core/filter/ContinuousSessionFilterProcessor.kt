@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -16,7 +16,10 @@ import love.forte.annotationtool.AnnotationMapper
 import love.forte.simboot.annotation.Filter
 import love.forte.simboot.filter.FilterAnnotationProcessContext
 import love.forte.simboot.filter.FilterAnnotationProcessor
-import love.forte.simbot.event.*
+import love.forte.simbot.event.ContinuousSession
+import love.forte.simbot.event.ContinuousSessionContext3
+import love.forte.simbot.event.EventFilter
+import love.forte.simbot.event.EventListenerProcessingContext
 
 /**
  *
@@ -25,9 +28,10 @@ import love.forte.simbot.event.*
  */
 @Target(AnnotationTarget.FUNCTION)
 @Filter(value = "", processor = ContinuousSessionFilterProcessor::class)
+@Deprecated("Not in used")
 public annotation class OnContinuousSession(
     /**
-     * 在 [ContinuousSessionContext] 中需要进行过滤的 group 与 key。
+     * 在 [ContinuousSessionContext3] 中需要进行过滤的 group 与 key。
      * 格式：`${group}:${key}`, 其中，`:${key}` 的部分可以省略。
      *
      * example1:
@@ -73,8 +77,9 @@ public object ContinuousSessionFilterProcessor : FilterAnnotationProcessor {
 
 private class ContinuousSessionFilter(private val group: String, private val key: String?) : EventFilter {
     override suspend fun test(context: EventListenerProcessingContext): Boolean {
-        val scope = context.getAttribute(EventProcessingContext.Scope.ContinuousSession) ?: return false
-        val container = scope[group]
-        return if (key == null) container != null else container?.contains(key) == true
+        // val scope = context.getAttribute(EventProcessingContext.Scope.ContinuousSession) ?: return false
+        // val container = scope[group]
+        // return if (key == null) container != null else container?.contains(key) == true
+        return false
     }
 }

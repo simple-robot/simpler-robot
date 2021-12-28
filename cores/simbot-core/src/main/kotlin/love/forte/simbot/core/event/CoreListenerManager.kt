@@ -19,7 +19,6 @@ import love.forte.simbot.event.*
 import love.forte.simbot.utils.view
 import java.lang.reflect.InvocationTargetException
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
@@ -158,7 +157,7 @@ public class CoreListenerManager private constructor(
     }
 
     override fun isProcessable(eventKey: Event.Key<*>): Boolean {
-        return getInvokers(eventKey).isNotEmpty()
+        return resolver.isProcessable(eventKey) || getInvokers(eventKey).isNotEmpty()
     }
 
     /**
@@ -305,6 +304,13 @@ public class CoreListenerManager private constructor(
 public interface EventProcessingContextResolver<C : EventProcessingContext> {
 
     /**
+     * 检测当前事件是否允许监听。
+     * 会在监听函数管理器检测前进行检测， [isProcessable] 与 [EventListenerManager.isProcessable] 任意结果为true均会触发事件监听。
+     *
+     */
+    public fun isProcessable(eventKey: Event.Key<*>): Boolean
+
+    /**
      * 根据一个事件得到对应的流程上下文。
      * 只有在对应事件存在至少一个对应的监听函数的时候才会被触发。
      */
@@ -340,62 +346,6 @@ public enum class ListenerInvokeType {
     //  * 直接跳转到备用函数。
     //  */
     // TO_SPARE,
-}
-
-
-/**
- * 核心默认的事件上下文处理器。
- */
-internal class CoreEventProcessingContextResolver(
-    coroutineScope: CoroutineScope
-) : EventProcessingContextResolver<CoreEventProcessingContext> {
-
-    // 考虑支持对attributeMap内容生成的自定义支持.
-
-    /**
-     * 每一次的事件处理都应存在的属性内容。
-     */
-    private val constMaps = mutableMapOf<Attribute<*>, Any>(
-        EventProcessingContext.Scope.Global to GlobalScopeContext(),
-        EventProcessingContext.Scope.ContinuousSession to CoreContinuousSessionContext(coroutineScope)
-    )
-
-    private class GlobalScopeContext : ScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
-
-    /**
-     * attribute map.
-     */
-    // private val attributeMap = AttributeHashMap(ConcurrentHashMap())
-
-    /**
-     * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
-     */
-    override suspend fun resolveEventToContext(event: Event, listenerSize: Int): CoreEventProcessingContext {
-        return CoreEventProcessingContext(event, AttributeMutableMap(ConcurrentHashMap(
-            constMaps,
-
-        ))) {
-            ArrayList(
-                listenerSize
-            )
-        }
-    }
-
-
-    /**
-     * 将一次事件结果拼接到当前上下文结果集中。
-     */
-    override suspend fun appendResultIntoContext(
-        context: CoreEventProcessingContext,
-        result: EventResult
-    ): ListenerInvokeType {
-        if (result != EventResult.Invalid) {
-            context._results.add(result)
-        }
-        return if (result.isTruncated) ListenerInvokeType.TRUNCATED
-        else ListenerInvokeType.CONTINUE
-    }
-
 }
 
 

@@ -1,37 +1,49 @@
+/*
+ *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *
+ *  根据 Apache License 2.0 获得许可；
+ *  除非遵守许可，否则您不得使用此文件。
+ *  您可以在以下网址获取许可证副本：
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ */
+
 package test
 
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
+import kotlin.coroutines.resume
 
 
-suspend fun runA(n: Int) : Int {
-    delay(1)
-    if (n == 2) error("2")
-    println("N: $n")
-    return n
-}
-
-
-
-suspend fun runB(): Int = coroutineScope {
-    val c1 = coroutineScope {
-        val v1 = async { runA(1) }
-        val v2 = async { runA(3) }
-        val v3 = async { runA(5) }
-        val v4 = async { runA(2) }
-        val v5 = async { runA(4) }
-        v1.await() + v2.await() + v3.await() + v4.await() + v5.await()
-    }
-    val c2 = coroutineScope {
-        val v1 = runA(1)
-        val v2 = runA(3)
-        v1 + v2
+suspend fun main() = coroutineScope {
+    val deferred = async {
+        delay(1000)
+        5
     }
 
-    c1 + c2
+    val v1 = withTimeoutOrNull(200) { deferred.await() }
+
+    val v2 = withTimeoutOrNull(200) { deferred.await() }
+
+    println(v1)
+    println(v2)
+    println(deferred.isCompleted)
+    println(deferred.isActive)
+    println(deferred.isCancelled)
+    println(deferred.await())
+
 }
 
-suspend fun main() {
-    println(runB())
+lateinit var c: CancellableContinuation<Int>
+
+suspend fun num(): Int = suspendCancellableCoroutine {
+    it.invokeOnCancellation { e ->
+        println("Cancel! $e")
+    }
+    c = it
+}
+
+fun setNum(value: Int) {
+    c.resume(value)
 }

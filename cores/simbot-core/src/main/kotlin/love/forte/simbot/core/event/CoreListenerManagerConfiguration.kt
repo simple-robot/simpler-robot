@@ -126,9 +126,12 @@ public class CoreListenerManagerConfiguration {
     /**
      * 事件流程上下文的处理器。
      */
-    @CoreEventManagerConfigDSL
+    // 暂时不公开
+    // @CoreEventManagerConfigDSL
     public var eventProcessingContextResolver: (manager: CoreListenerManager, scope: CoroutineScope) -> EventProcessingContextResolver<*> =
         { _, scope -> CoreEventProcessingContextResolver(scope) }
+    internal set
+
 
 
 }
