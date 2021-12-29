@@ -11,6 +11,8 @@ import love.forte.simbot.event.EventListenerProcessingContext
 /**
  * 对 [EventListenerProcessingContext.textContent] 进行前置处理, 清除前后空格（如果不为null的话）。
  *
+ * TODO 补充注释
+ *
  * @see Interceptor
  * @see EventListenerTextContentProcessor
  * @see StandardTextContentProcessor.Trim
@@ -28,6 +30,8 @@ public annotation class ContentTrim(
 /**
  *
  * 对 [EventListenerProcessingContext.textContent] 进行前置处理, 使 `textContent` 结果始终为null。
+ *
+ * TODO 补充注释
  *
  * @see Interceptor
  * @see EventListenerTextContentProcessor
