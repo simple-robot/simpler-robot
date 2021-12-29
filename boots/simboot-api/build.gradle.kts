@@ -38,6 +38,8 @@ dependencies {
     api(V.Kotlinx.Coroutines.Core.Jvm.notation)
     api(V.Kotlinx.Coroutines.J8.notation)
     api(V.Kotlinx.Serialization.Core.notation)
+
+    compileOnly(project(":simbot-annotation"))
     compileOnly("javax.annotation:javax.annotation-api:1.3.2")
 
     testImplementation(V.Kotlin.Test.Junit.notation)

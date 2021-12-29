@@ -14,7 +14,6 @@ package love.forte.simboot.core.listener
 
 import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.annotationtool.core.nonConverters
-import love.forte.di.BeansException
 import love.forte.di.annotation.Beans
 import love.forte.simboot.annotation.Binder
 import love.forte.simboot.annotation.Filter
@@ -25,6 +24,7 @@ import love.forte.simboot.filter.EventFilterRegistrar
 import love.forte.simboot.filter.FiltersAnnotationProcessor
 import love.forte.simboot.filter.FiltersData
 import love.forte.simboot.filter.filtersAnnotationProcessContext
+import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
 import love.forte.simboot.listener.*
 import love.forte.simbot.*
 import love.forte.simbot.core.event.plus
@@ -39,6 +39,7 @@ import kotlin.reflect.KVisibility
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.jvmName
 import kotlin.reflect.jvm.kotlinFunction
+import love.forte.simboot.annotation.Interceptor as InterceptorAnnotation
 
 /**
  *
@@ -52,6 +53,8 @@ import kotlin.reflect.jvm.kotlinFunction
 public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
     private val tool = KAnnotationTool()
     private val logger = LoggerFactory.getLogger(StandardListenerAnnotationProcessor::class)
+    private val instanceCache = ConcurrentHashMap<KClass<*>, Any>()
+
 
     override fun process(context: ListenerAnnotationProcessorContext): Boolean {
         val function = context.function
@@ -91,22 +94,58 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
         // filters
         val filters = function.resolveFilters(listener, listenerAttributeMap, context)
 
-        // 合并filter
-        var finalListener = listener + filters
+        // 所有拦截器
+        val interceptors = function.resolveInterceptors(context)
 
-        // 追加 textContent 处理器 - 作为拦截器追加.
-        val textContentProcessors = context.listenerData.textContentProcessors.map {
-            it.objectInstance ?: context.beanContainer[it]
-        }
+        // 合并
+        val finalListener = listener + filters + interceptors
 
-        if (textContentProcessors.isNotEmpty()) {
-            finalListener += textContentProcessors.map(::TextContentInterceptor)
-        }
 
         // 注册listener
         context.listenerRegistrar.register(finalListener)
 
         return true
+    }
+
+    /**
+     * 解析获取所有的专属拦截器。
+     */
+    private fun KFunction<*>.resolveInterceptors(context: ListenerAnnotationProcessorContext): List<EventListenerInterceptor> {
+        val annotations = tool.getAnnotations(this, InterceptorAnnotation::class)
+        if (annotations.isEmpty()) return emptyList()
+
+        // map to interceptors
+        return annotations.map { it.toInterceptor(context) }.sortedBy { it.priority }
+    }
+
+    private fun InterceptorAnnotation.toInterceptor(context: ListenerAnnotationProcessorContext): EventListenerInterceptor {
+        return when {
+            value.isNotEmpty() -> {
+                context.beanContainer[value, AnnotatedEventListenerInterceptor::class]
+            }
+            type != AnnotatedEventListenerInterceptor::class -> {
+                val obj = type.objectInstance
+                if (obj != null) return obj
+
+                val beanContainer = context.beanContainer
+                val allNamed = beanContainer.getAll(type)
+                if (allNamed.isNotEmpty()) {
+                    beanContainer[type]
+                } else {
+                    // try instance.
+                    kotlin.runCatching {
+                        instanceCache.computeIfAbsent(type) { type.createInstance() } as AnnotatedEventListenerInterceptor
+                    }.getOrElse {
+                        throw SimbotIllegalStateException(
+                            "Cannot get an interceptor instance of type [$type]: does not exist in the bean container and cannot be instantiated directly: ${it.localizedMessage}",
+                            it
+                        )
+                    }
+                }
+            }
+            else ->
+                throw SimbotIllegalStateException("@Interceptor needs to specify [value] or [type], and [value] cannot be empty or type cannot be equal to [AnnotatedEventListenerInterceptor.class] type self. But now the value is empty and the type is [AnnotatedEventListenerInterceptor.class].")
+        }
     }
 
     /**
@@ -144,19 +183,21 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
                 // is object?
                 filtersDataProcessorType.objectInstance
                     ?: kotlin.run {
-                        // get from container?
-                        try {
-                            context.beanContainer[filtersDataProcessorType]
-                        } catch (beansException: BeansException) {
-                            kotlin.runCatching {
-                                filtersDataProcessorType.createInstance()
-                            }.getOrElse { e ->
-                                e.addSuppressed(beansException)
-                                val failure = SimbotIllegalStateException("Unable to get filter processor's instance.")
-                                failure.addSuppressed(e)
-                                throw failure
-                            }
+                        kotlin.runCatching { context.beanContainer.getOrNull(filtersDataProcessorType) }.getOrElse {
+                            throw SimbotIllegalStateException(
+                                "Unable to get filter processor's instance by bean container: ${it.localizedMessage}",
+                                it
+                            )
                         }
+                            ?: kotlin.runCatching {
+                                instanceCache.computeIfAbsent(filtersDataProcessorType) { filtersDataProcessorType.createInstance() } as FiltersAnnotationProcessor
+                            }.getOrElse { e ->
+                                throw SimbotIllegalStateException(
+                                    "Filter processor cannot be instantiated directly: ${e.localizedMessage}",
+                                    e
+                                )
+                            }
+
                     }
             }
 
@@ -531,10 +572,3 @@ private class AnnotationFunctionalEventListener<R>(
 }
 
 
-
-private class TextContentInterceptor(private val processor: EventListenerTextContentProcessor) : EventListenerInterceptor {
-    override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult {
-        processor.process(context.eventContext)
-        return context.proceed()
-    }
-}

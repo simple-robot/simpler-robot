@@ -62,7 +62,7 @@ import kotlin.reflect.KClass
  * @property type 通过**类型**获取所需拦截器。
  * 对于类型的获取，流程如下：
  * 1. 如果对应类型为 kotlin object 类型，则会直接获取实例；
- * 2. 如果当前环境下的bean容器能且仅能获取到此类型的 **唯一实例**，那么将会使用bean容器中的结果；
+ * 2. 如果当前环境下的bean容器能且仅能获取到此类型的 **唯一实例**，那么将会使用bean容器中的结果；（如果存在多个实例，不会捕获异常）
  * 3. 如果上述两种方法不可行，则会 _尝试_ 直接通过类型的 **公开无参构造** 构建一个实例并使用。
  *
  * 只有当 [value] 为空时此参数生效，且不可以直接等于 [AnnotatedEventListenerInterceptor] 类型自身。
@@ -79,7 +79,7 @@ import kotlin.reflect.KClass
 @MustBeDocumented
 public annotation class Interceptor(
     val value: String = "",
-    val type: KClass<AnnotatedEventListenerInterceptor> = AnnotatedEventListenerInterceptor::class,
+    val type: KClass<out AnnotatedEventListenerInterceptor> = AnnotatedEventListenerInterceptor::class,
     val priority: Int = PriorityConstant.NORMAL
 )
 

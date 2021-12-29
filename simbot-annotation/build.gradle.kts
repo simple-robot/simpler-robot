@@ -23,14 +23,6 @@ plugins {
 dependencies {
     compileOnly(project(":apis:simbot-api"))
     compileOnly("javax.annotation:javax.annotation-api:1.3.2")
-
-    // implementation(V.Kotlinx.Coroutines.Core.Jvm.notation)
-    // implementation(V.Kotlinx.Serialization.Core.notation)
-
-    // testImplementation(V.Kotlin.Test.Junit.notation)
-    // testImplementation(V.Kotlinx.Serialization.Json.notation)
-    // testImplementation(V.Kotlinx.Serialization.Properties.notation)
-    // testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
 }
 
 tasks.getByName<Test>("test") {

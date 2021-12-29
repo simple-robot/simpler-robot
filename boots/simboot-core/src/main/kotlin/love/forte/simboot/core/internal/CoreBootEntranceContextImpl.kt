@@ -25,6 +25,7 @@ import love.forte.simboot.core.configuration.CoreEventListenerManagerContextFact
 import love.forte.simboot.factory.BeanContainerFactory
 import love.forte.simboot.factory.ConfigurationFactory
 import love.forte.simboot.factory.EventListenerManagerFactory
+import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
 import love.forte.simbot.BotVerifyInfo
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalStateException
@@ -35,14 +36,9 @@ import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.event.EventProcessingInterceptor
 import org.slf4j.Logger
 import java.net.URL
-import java.nio.file.FileVisitResult
 import java.nio.file.Path
-import java.nio.file.PathMatcher
-import java.nio.file.SimpleFileVisitor
-import java.nio.file.attribute.BasicFileAttributes
 import java.util.*
 import kotlin.io.path.bufferedReader
-import kotlin.io.path.extension
 import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KClass
 import kotlin.reflect.KVisibility
@@ -109,7 +105,7 @@ internal class CoreBootEntranceContextImpl(
 
                 val allListenerInterceptor: Map<ID, EventListenerInterceptor> =
                     beanContainer.all<EventListenerInterceptor>()
-                        .associate { it.ID to beanContainer[it, EventListenerInterceptor::class] } // TODO not all.
+                        .associate { it.ID to beanContainer[it, EventListenerInterceptor::class] }
 
                 val allProcessingInterceptor: Map<ID, EventProcessingInterceptor> =
                     beanContainer.all<EventProcessingInterceptor>()
@@ -124,7 +120,7 @@ internal class CoreBootEntranceContextImpl(
 
                 interceptors {
                     if (allListenerInterceptor.isNotEmpty()) {
-                        addListenerInterceptors(allListenerInterceptor)
+                        addListenerInterceptors(allListenerInterceptor.filterValues { it !is AnnotatedEventListenerInterceptor }) // 不追加注解拦截器
                     }
                     if (allProcessingInterceptor.isNotEmpty()) {
                         addProcessingInterceptors(allProcessingInterceptor)
@@ -211,21 +207,6 @@ private fun packagesToClassesGetter(vararg scannerPackages: String): () -> Colle
                 .filter { k -> runCatching { k.visibility == KVisibility.PUBLIC }.getOrDefault(false) }
                 .toList()
         }
-    }
-}
-
-private class SimpleVisitor(
-    private val exSet: Set<String>,
-    private val matcher: PathMatcher,
-    private val list: MutableCollection<Path>
-) :
-    SimpleFileVisitor<Path>() {
-    override fun visitFile(file: Path, attrs: BasicFileAttributes?): FileVisitResult {
-        if (matcher.matches(file) && file.extension in exSet) {
-            list.add(file)
-        }
-
-        return FileVisitResult.CONTINUE
     }
 }
 

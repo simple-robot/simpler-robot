@@ -34,13 +34,18 @@ dependencies {
     api(project(":boots:simboot-api"))
     api("javax.inject:javax.inject:1")
 
-    compileOnly("javax.annotation:javax.annotation-api:1.3.2")
+    compileOnly(project(":simbot-annotation"))
+
+    compileOnly(V.Javax.AnnotationApi.notation)
     compileOnly(P.AnnotationTool.Api.notation)
-    compileOnly("org.springframework.boot:spring-boot-autoconfigure:2.5.7")
+    compileOnly(V.Spring.Boot.Autoconfigure.notation)
     testImplementation(V.Kotlin.Test.Junit.notation)
     testImplementation(V.Kotlinx.Serialization.Json.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)
     testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
+}
+repositories {
+    mavenCentral()
 }
 
 kotlin {

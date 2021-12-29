@@ -97,6 +97,7 @@ public interface ListenerAnnotationProcessorContext {
  * 监听函数注册后置处理器。当 [ListenerAnnotationProcessor] 进行监听函数处理并且通过其参数 [EventListenerRegistrar] 进行注册时，
  * 对这个被注册的监听函数进行后置处理.
  *
+ * TODO
  */
 public interface ListenerAnnotationPostRegisteredProcessor {
 
@@ -135,5 +136,4 @@ public data class ListenerData(
     val priority: Int,
     val async: Boolean,
     val listens: ListensData?,
-    val textContentProcessors: List<KClass<out EventListenerTextContentProcessor>>
 )

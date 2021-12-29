@@ -14,6 +14,7 @@ package love.forte.simboot.autoconfigure
 
 import kotlinx.coroutines.asCoroutineDispatcher
 import love.forte.simboot.core.configuration.CoreEventListenerManagerContextFactory
+import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
 import love.forte.simbot.ID
 import love.forte.simbot.core.event.coreListenerManager
 import love.forte.simbot.event.EventListenerInterceptor
@@ -48,7 +49,7 @@ public open class SpringEventListenerManagerConfiguration {
         val listenerInterceptorClass = EventListenerInterceptor::class.java
         val listenerInterceptors = beanFactory.getBeanNamesForType(listenerInterceptorClass).associate { name ->
             name.ID as ID to beanFactory.getBean(name, listenerInterceptorClass)
-        } // TODO not all.
+        }
 
         val eventInterceptorClass = EventProcessingInterceptor::class.java
         val processingInterceptors = beanFactory.getBeanNamesForType(eventInterceptorClass).associate { name ->
@@ -62,7 +63,7 @@ public open class SpringEventListenerManagerConfiguration {
                 addProcessingInterceptors(processingInterceptors)
             }
             if (listenerInterceptors.isNotEmpty()) {
-                addListenerInterceptors(listenerInterceptors)
+                addListenerInterceptors(listenerInterceptors.filterValues { it !is AnnotatedEventListenerInterceptor }) // 不追加注解拦截器
             }
 
             coroutineContext = context
