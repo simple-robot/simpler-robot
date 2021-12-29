@@ -22,6 +22,7 @@ plugins {
 dependencies {
     api(V.Kotlin.Reflect.notation)
     api(V.Kotlinx.Coroutines.Core.Jvm.notation)
+    api(V.Kotlinx.Coroutines.J8.notation)
     api(V.Kotlinx.Serialization.Core.notation)
     api(V.Slf4j.Api.notation)
     compileOnly(V.Jetbrains.Annotations.notation)

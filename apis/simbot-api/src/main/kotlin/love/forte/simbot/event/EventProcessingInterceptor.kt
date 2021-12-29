@@ -13,7 +13,6 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.Api4J
-import love.forte.simbot.ID
 import love.forte.simbot.Interceptor
 import love.forte.simbot.PriorityConstant
 
@@ -32,7 +31,7 @@ public sealed interface EventInterceptor<C : EventInterceptor.Context<R>, R> : I
      * 拦截器应该存在一个唯一ID。
      * 对于过程拦截器和监听函数拦截器，它们可以分别独立。
      */
-    public val id: ID
+    //public val id: ID
 
     /**
      * 优先级。

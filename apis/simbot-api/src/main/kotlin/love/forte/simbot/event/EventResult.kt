@@ -13,7 +13,10 @@
 package love.forte.simbot.event
 
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.future.asCompletableFuture
+import love.forte.simbot.event.EventResult.Default.Truncated
 import love.forte.simbot.event.EventResult.Invalid
+import java.util.concurrent.Future
 
 
 /**
@@ -23,6 +26,8 @@ import love.forte.simbot.event.EventResult.Invalid
  * [EventResult] 的特殊伴生对象 [Invalid] 可用于拦截器、过滤器中。事件处理器如果遇到了 [Invalid], 则应该直接忽略此值。
  *
  * 事件管理器 [EventListenerContainer]
+ *
+ * @see Invalid
  *
  * @author ForteScarlet
  */
@@ -57,24 +62,38 @@ public interface EventResult {
         /**
          * 提供一个 [content] 得到一个 [EventResult] 的简易实例。
          *
+         * @param content 结果内容。
+         * @param
          */
         @JvmOverloads
         @JvmStatic
-        public fun of(content: Any? = null, blockNext: Boolean = false): EventResult =
-            EventResultImpl(content, blockNext)
+        public fun of(content: Any? = null, isTruncated: Boolean = false): EventResult =
+            if (content == null) {
+                if (isTruncated) Default.Truncated else Default.NormalEmpty
+            } else {
+                EventResultImpl(content, isTruncated)
+            }
 
 
         /**
          * 得到一个异步执行函数的 [AsyncEventResult],
          * 其 [AsyncEventResult.content] 为一个预期返回 [EventResult] 的 [Deferred].
+         *
+         * @see AsyncEventResult
          */
         @JvmSynthetic
         public fun async(content: Deferred<EventResult>): AsyncEventResult = AsyncEventResult(content)
 
+        /**
+         * 根据是否需要阻断后续监听 [isTruncated] 来得到一个默认的 [EventResult] 实例。
+         */
+        @JvmOverloads
+        @JvmStatic
+        public fun default(isTruncated: Boolean = false): EventResult = of(null, isTruncated)
     }
 
     /**
-     * 代表着 **无效** 的 [EventResult] 实例。事件处理器不应对此结果进行保留或处理。
+     * 代表着 **无效** 的 [EventResult] 实例，是一个具有特殊意义的类型。事件处理器不应对此结果进行保留或处理。
      */
     public object Invalid : EventResult {
         override val content: Any?
@@ -82,6 +101,24 @@ public interface EventResult {
 
         override val isTruncated: Boolean
             get() = false
+    }
+
+    /**
+     * 默认的 [EventResult] 实现，也是部分常见策略下的结果内容。
+     * 
+     * @see Truncated
+     */
+    private sealed class Default : EventResult {
+        object Truncated : Default() {
+            override val content: Any? get() = null
+            override val isTruncated: Boolean get() = true
+        }
+
+        object NormalEmpty : Default() {
+            override val content: Any? get() = null
+            override val isTruncated: Boolean get() = false
+        }
+
     }
 
 }
@@ -92,6 +129,7 @@ public interface EventResult {
  */
 public open class AsyncEventResult(override val content: Deferred<EventResult>) : EventResult {
     override val isTruncated: Boolean get() = false
+    public fun contentAsFuture(): Future<EventResult> = content.asCompletableFuture()
 }
 
 

@@ -14,6 +14,7 @@ package love.forte.simboot.autoconfigure
 
 import kotlinx.coroutines.asCoroutineDispatcher
 import love.forte.simboot.core.configuration.CoreEventListenerManagerContextFactory
+import love.forte.simbot.ID
 import love.forte.simbot.core.event.coreListenerManager
 import love.forte.simbot.event.EventListenerInterceptor
 import love.forte.simbot.event.EventListenerManager
@@ -44,15 +45,14 @@ public open class SpringEventListenerManagerConfiguration {
         beanFactory: ListableBeanFactory,
         contextFactory: CoreEventListenerManagerContextFactory
     ): EventListenerManager {
-        println(contextFactory)
         val listenerInterceptorClass = EventListenerInterceptor::class.java
-        val listenerInterceptors = beanFactory.getBeanNamesForType(listenerInterceptorClass).map { name ->
-            beanFactory.getBean(name, listenerInterceptorClass)
-        }
+        val listenerInterceptors = beanFactory.getBeanNamesForType(listenerInterceptorClass).associate { name ->
+            name.ID as ID to beanFactory.getBean(name, listenerInterceptorClass)
+        } // TODO not all.
 
         val eventInterceptorClass = EventProcessingInterceptor::class.java
-        val processingInterceptors = beanFactory.getBeanNamesForType(eventInterceptorClass).map { name ->
-            beanFactory.getBean(name, eventInterceptorClass)
+        val processingInterceptors = beanFactory.getBeanNamesForType(eventInterceptorClass).associate { name ->
+            name.ID as ID to beanFactory.getBean(name, eventInterceptorClass)
         }
 
         val context = contextFactory.managerCoroutineContext

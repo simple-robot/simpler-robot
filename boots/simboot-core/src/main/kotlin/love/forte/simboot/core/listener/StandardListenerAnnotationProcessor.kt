@@ -100,9 +100,7 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
         }
 
         if (textContentProcessors.isNotEmpty()) {
-            finalListener += textContentProcessors.mapIndexed { index, p ->
-                TextContentInterceptor("textContentProcessor-${finalListener.id}#$index".ID, p)
-            }
+            finalListener += textContentProcessors.map(::TextContentInterceptor)
         }
 
         // 注册listener
@@ -534,7 +532,7 @@ private class AnnotationFunctionalEventListener<R>(
 
 
 
-private class TextContentInterceptor(override val id: ID, private val processor: EventListenerTextContentProcessor) : EventListenerInterceptor {
+private class TextContentInterceptor(private val processor: EventListenerTextContentProcessor) : EventListenerInterceptor {
     override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult {
         processor.process(context.eventContext)
         return context.proceed()

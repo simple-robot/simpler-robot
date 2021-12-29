@@ -12,7 +12,9 @@
 
 package love.forte.simboot.listener
 
+import love.forte.simbot.event.EventListenerInterceptor
 import love.forte.simbot.event.EventListenerProcessingContext
+import love.forte.simbot.event.EventResult
 
 /**
  *
@@ -31,7 +33,10 @@ import love.forte.simbot.event.EventListenerProcessingContext
  * @see StandardTextContentProcessor
  * @author ForteScarlet
  */
-public abstract class EventListenerTextContentProcessor internal constructor() {
+public abstract class EventListenerTextContentProcessor internal constructor() : EventListenerInterceptor {
+
+
+    override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult = EventResult.of()
 
     /**
      * 通过 [context] 实例，解析并最终对 [EventListenerProcessingContext.textContent] 进行设置处理.

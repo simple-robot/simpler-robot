@@ -86,12 +86,12 @@ public class CoreListenerManager private constructor(
      * 事件过程拦截器入口。
      */
     private val processingInterceptEntrance =
-        EventInterceptEntrance.eventProcessingInterceptEntrance(configuration.processingInterceptors.sortedBy { it.priority })
+        EventInterceptEntrance.eventProcessingInterceptEntrance(configuration.processingInterceptors.values.sortedBy { it.priority })
 
     /**
      * 监听函数拦截器集。
      */
-    private val listenerIntercepts = configuration.listenerInterceptors.sortedBy { it.priority }
+    private val listenerIntercepts = configuration.listenerInterceptors.values.sortedBy { it.priority }
 
     /**
      * 监听函数列表。ID唯一

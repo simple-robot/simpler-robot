@@ -14,7 +14,7 @@ package love.forte.simboot.core.internal
 
 import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.di.BeanContainer
-import love.forte.di.allInstance
+import love.forte.di.all
 import love.forte.di.core.internal.AnnotationGetter
 import love.forte.simboot.Configuration
 import love.forte.simboot.SimbootEntranceContext
@@ -26,6 +26,7 @@ import love.forte.simboot.factory.BeanContainerFactory
 import love.forte.simboot.factory.ConfigurationFactory
 import love.forte.simboot.factory.EventListenerManagerFactory
 import love.forte.simbot.BotVerifyInfo
+import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.asBotVerifyInfo
 import love.forte.simbot.core.event.coreListenerManager
@@ -105,10 +106,21 @@ internal class CoreBootEntranceContextImpl(
             ?: coreListenerManager {
 
                 // 所有的拦截器
-                val allListenerInterceptor = beanContainer.allInstance<EventListenerInterceptor>()
-                val allProcessingInterceptor = beanContainer.allInstance<EventProcessingInterceptor>()
+
+                val allListenerInterceptor: Map<ID, EventListenerInterceptor> =
+                    beanContainer.all<EventListenerInterceptor>()
+                        .associate { it.ID to beanContainer[it, EventListenerInterceptor::class] } // TODO not all.
+
+                val allProcessingInterceptor: Map<ID, EventProcessingInterceptor> =
+                    beanContainer.all<EventProcessingInterceptor>()
+                        .associate { it.ID to beanContainer[it, EventProcessingInterceptor::class] }
+
+
+                // val allListenerInterceptor = beanContainer.allInstance<EventListenerInterceptor>()
+                // val allProcessingInterceptor = beanContainer.allInstance<EventProcessingInterceptor>()
                 // CoreEventListenerManagerContextFactory
-                val context = beanContainer.getOrNull(CoreEventListenerManagerContextFactory::class)?.managerCoroutineContext
+                val context =
+                    beanContainer.getOrNull(CoreEventListenerManagerContextFactory::class)?.managerCoroutineContext
 
                 interceptors {
                     if (allListenerInterceptor.isNotEmpty()) {
@@ -163,7 +175,6 @@ internal class CoreBootEntranceContextImpl(
 }
 
 
-
 private fun packagesToClassesGetter(vararg scannerPackages: String): () -> Collection<KClass<*>> {
     if (scannerPackages.isEmpty()) return { emptyList() }
 
@@ -197,13 +208,13 @@ private fun packagesToClassesGetter(vararg scannerPackages: String): () -> Colle
                 }
                 .collectSequence(true)
                 /* Packages and file facades are not yet supported in Kotlin reflection. Meanwhile please use Java reflection to inspect this class: class ResourceGetTestKt */
-                .filter { k -> runCatching { k.visibility == KVisibility.PUBLIC }.getOrDefault(false)  }
+                .filter { k -> runCatching { k.visibility == KVisibility.PUBLIC }.getOrDefault(false) }
                 .toList()
         }
     }
 }
 
-private class SimpleVisiter(
+private class SimpleVisitor(
     private val exSet: Set<String>,
     private val matcher: PathMatcher,
     private val list: MutableCollection<Path>

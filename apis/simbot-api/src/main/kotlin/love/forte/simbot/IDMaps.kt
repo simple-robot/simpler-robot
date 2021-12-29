@@ -29,12 +29,26 @@ public fun <V> emptyIDMap(): IDMaps<V> = EmptyIDMap as IDMaps<V>
 public fun <V> idMapOf(): IDMaps<V> = emptyIDMap()
 
 public fun <V> idMapOf(vararg pairs: Pair<ID, V>): IDMaps<V> =
-    if (pairs.size == 1) SignalPairIDMap(pairs[0].first, pairs[0].second)
-    else CharSequenceIDMap(mutableMapOf(*pairs))
+    when {
+        pairs.isEmpty() -> emptyIDMap()
+        pairs.size == 1 -> SignalPairIDMap(pairs[0].first, pairs[0].second)
+        else -> CharSequenceIDMap(mutableMapOf(*pairs))
+    }
+
+public fun <V> idMapOf(map: Map<ID, V>): IDMaps<V> =
+    when {
+        map.isEmpty() -> emptyIDMap()
+        map.size == 1 -> map.entries.first().let { SignalPairIDMap(it.key, it.value) }
+        else -> CharSequenceIDMap(map.toMutableMap())
+    }
+
 
 public fun <V> mutableIDMapOf(): MutableIDMaps<V> = CharSequenceIDMap(mutableMapOf())
 
 public fun <V> mutableIDMapOf(vararg pairs: Pair<ID, V>): MutableIDMaps<V> = CharSequenceIDMap(mutableMapOf(*pairs))
+
+public fun <V> mutableIDMapOf(map: Map<ID, V>): MutableIDMaps<V> = CharSequenceIDMap(map.toMutableMap())
+
 
 /**
  * [V] 不可为null
@@ -46,6 +60,12 @@ public fun <V : Any> concurrentIDMapOf(): ConcurrentIDMaps<V> = CharSequenceConc
  */
 public fun <V : Any> concurrentIDMapOf(vararg pairs: Pair<ID, V>): ConcurrentIDMaps<V> =
     CharSequenceConcurrentIDMap(ConcurrentHashMap<ID, V>(pairs.size).apply { putAll(pairs) })
+/**
+ * [V] 不可为null
+ */
+public fun <V : Any> concurrentIDMapOf(map: Map<ID, V>): ConcurrentIDMaps<V> =
+    CharSequenceConcurrentIDMap(ConcurrentHashMap<ID, V>(map.size).apply { putAll(map) })
+
 
 private object EmptyIDMap : IDMaps<Any?> {
     override val entries: Set<Map.Entry<ID, Any?>> get() = emptySet()

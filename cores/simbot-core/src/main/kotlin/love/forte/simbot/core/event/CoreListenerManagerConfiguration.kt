@@ -20,7 +20,7 @@ import love.forte.simbot.event.EventListenerInterceptor
 import love.forte.simbot.event.EventProcessingInterceptor
 import love.forte.simbot.event.EventProcessingResult
 import love.forte.simbot.event.EventResult
-import java.util.*
+import love.forte.simbot.mutableIDMapOf
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -46,12 +46,11 @@ public class CoreListenerManagerConfiguration {
 
     @Volatile
     @JvmSynthetic
-    internal var processingInterceptors =
-        TreeSet<EventProcessingInterceptor>(Comparator.comparing { i -> i.id.toString() })
+    internal var processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
 
     @Volatile
     @JvmSynthetic
-    internal var listenerInterceptors = TreeSet<EventListenerInterceptor>(Comparator.comparing { i -> i.id.toString() })
+    internal var listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
 
 
     /**
@@ -84,16 +83,15 @@ public class CoreListenerManagerConfiguration {
      */
     @Synchronized
     @CoreEventManagerConfigDSL
-    public fun addProcessingInterceptors(interceptors: Collection<EventProcessingInterceptor>) {
-        val processingInterceptorsCopy =
-            TreeSet<EventProcessingInterceptor>(Comparator.comparing { i -> i.id.toString() })
-        processingInterceptorsCopy.addAll(processingInterceptors)
-        for (interceptor in interceptors) {
-            if (!processingInterceptorsCopy.add(interceptor)) {
-                throw IllegalStateException("Duplicate ID: ${interceptor.id}")
+    public fun addProcessingInterceptors(interceptors: Map<ID, EventProcessingInterceptor>) {
+        val processingInterceptorsCopy = processingInterceptors.toMutableMap()
+
+        for ((id, interceptor) in interceptors) {
+            processingInterceptorsCopy.merge(id, interceptor) { _, _ ->
+                throw IllegalStateException("Duplicate ID: $id")
             }
         }
-        processingInterceptors = processingInterceptorsCopy
+        processingInterceptors = mutableIDMapOf(processingInterceptorsCopy)
     }
 
     /**
@@ -104,15 +102,16 @@ public class CoreListenerManagerConfiguration {
      */
     @Synchronized
     @CoreEventManagerConfigDSL
-    public fun addListenerInterceptors(interceptors: Collection<EventListenerInterceptor>) {
-        val listenerInterceptorsCopy = TreeSet<EventListenerInterceptor>(Comparator.comparing { i -> i.id.toString() })
-        listenerInterceptorsCopy.addAll(listenerInterceptors)
-        for (interceptor in interceptors) {
-            if (!listenerInterceptorsCopy.add(interceptor)) {
-                throw IllegalStateException("Duplicate ID: ${interceptor.id}")
+    public fun addListenerInterceptors(interceptors: Map<ID, EventListenerInterceptor>) {
+        val listenerInterceptorsCopy = listenerInterceptors.toMutableMap()
+
+        for ((id, interceptor) in interceptors) {
+            listenerInterceptorsCopy.merge(id, interceptor) { _, _ ->
+                throw IllegalStateException("Duplicate ID: $id")
             }
         }
-        listenerInterceptors = listenerInterceptorsCopy
+
+        listenerInterceptors = mutableIDMapOf(listenerInterceptorsCopy)
     }
 
     @CoreEventManagerConfigDSL
@@ -130,8 +129,7 @@ public class CoreListenerManagerConfiguration {
     // @CoreEventManagerConfigDSL
     public var eventProcessingContextResolver: (manager: CoreListenerManager, scope: CoroutineScope) -> EventProcessingContextResolver<*> =
         { _, scope -> CoreEventProcessingContextResolver(scope) }
-    internal set
-
+        internal set
 
 
 }
@@ -142,30 +140,28 @@ internal annotation class EventInterceptorsGeneratorDSL
 @EventInterceptorsGeneratorDSL
 public class EventInterceptorsGenerator {
     @Volatile
-    private var _processingInterceptors: MutableSet<EventProcessingInterceptor> =
-        TreeSet(Comparator.comparing { i -> i.id.toString() })
+    private var _processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
 
-    public val processingInterceptors: Set<EventProcessingInterceptor>
+    public val processingInterceptors: Map<ID, EventProcessingInterceptor>
         get() = _processingInterceptors
 
     @Volatile
-    private var _listenerInterceptors: MutableSet<EventListenerInterceptor> =
-        TreeSet(Comparator.comparing { i -> i.id.toString() })
+    private var _listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
 
-    public val listenerInterceptors: Set<EventListenerInterceptor>
+    public val listenerInterceptors: Map<ID, EventListenerInterceptor>
         get() = _listenerInterceptors
 
 
     @Synchronized
-    private fun addLis(interceptor: EventListenerInterceptor) {
-        if (!_listenerInterceptors.add(interceptor)) {
-            throw IllegalStateException("Duplicate ID: ${interceptor.id}")
+    private fun addLis(id: ID, interceptor: EventListenerInterceptor) {
+        _listenerInterceptors.merge(id, interceptor) { _, _ ->
+            throw IllegalStateException("Duplicate ID: $id")
         }
     }
 
-    private fun addPro(interceptor: EventProcessingInterceptor) {
-        if (!_processingInterceptors.add(interceptor)) {
-            throw IllegalStateException("Duplicate ID: ${interceptor.id}")
+    private fun addPro(id: ID, interceptor: EventProcessingInterceptor) {
+        _processingInterceptors.merge(id, interceptor) { _, _ ->
+            throw IllegalStateException("Duplicate ID: $id")
         }
     }
 
@@ -179,7 +175,9 @@ public class EventInterceptorsGenerator {
         id: ID,
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
-    ): EventProcessingInterceptor = coreProcessingInterceptor(id, priority, interceptFunction).also(::addPro)
+    ): EventProcessingInterceptor = coreProcessingInterceptor(priority, interceptFunction).also {
+        addPro(id, it)
+    }
 
     @JvmOverloads
     @EventInterceptorsGeneratorDSL
@@ -201,7 +199,9 @@ public class EventInterceptorsGenerator {
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
     ): EventListenerInterceptor =
-        coreListenerInterceptor(id, priority, interceptFunction).also(::addLis)
+        coreListenerInterceptor(priority, interceptFunction).also {
+            addLis(id, it)
+        }
 
     /**
      * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
