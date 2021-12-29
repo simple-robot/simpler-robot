@@ -14,6 +14,7 @@ package love.forte.simbot.event
 
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.future.asCompletableFuture
+import love.forte.simbot.event.EventResult.Default.NormalEmpty
 import love.forte.simbot.event.EventResult.Default.Truncated
 import love.forte.simbot.event.EventResult.Invalid
 import java.util.concurrent.Future
@@ -69,8 +70,7 @@ public interface EventResult {
         @JvmStatic
         public fun of(content: Any? = null, isTruncated: Boolean = false): EventResult =
             if (content == null) {
-                @Suppress("RemoveRedundantQualifierName")
-                if (isTruncated) Default.Truncated else Default.NormalEmpty
+                if (isTruncated) Truncated else NormalEmpty
             } else {
                 EventResultImpl(content, isTruncated)
             }
