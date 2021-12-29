@@ -69,6 +69,7 @@ public interface EventResult {
         @JvmStatic
         public fun of(content: Any? = null, isTruncated: Boolean = false): EventResult =
             if (content == null) {
+                @Suppress("RemoveRedundantQualifierName")
                 if (isTruncated) Default.Truncated else Default.NormalEmpty
             } else {
                 EventResultImpl(content, isTruncated)
