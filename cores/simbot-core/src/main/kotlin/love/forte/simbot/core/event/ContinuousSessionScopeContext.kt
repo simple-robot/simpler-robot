@@ -29,10 +29,13 @@ internal class CoreContinuousSessionContext(
     private val manager: ResumedListenerManager
 ) : ContinuousSessionContext() {
 
+    companion object {
+        private val logger = LoggerFactory.getLogger(CoreContinuousSessionContext::class)
+    }
+
     private fun <T> waitingAsReceiver(
         continuation: CancellableContinuation<T>,
         id: ID,
-        timeout: Long,
         listener: ResumedListener<T>
     ) {
         val deferred = CompletableDeferred<T>()
@@ -41,28 +44,22 @@ internal class CoreContinuousSessionContext(
         val provider = continuation.asSession(deferred)
 
         manager.set(id, listener, provider, receiver)
+    }
 
-        if (timeout > 0) {
-            val timeoutJob = coroutineScope.launch(start = CoroutineStart.LAZY) {
-                try {
-                    withTimeout(timeout) {
-                        delay(timeout + 1000)
-                    }
-                } catch (timeoutException: TimeoutCancellationException) {
-                    // timeout
-                    provider.cancel(timeoutException)
-                }
+    override suspend fun <T> waitingFor(id: ID, timeout: Long, listener: ResumedListener<T>): T = if (timeout > 0) {
+        withTimeout(timeout) {
+            suspendCancellableCoroutine { c ->
+                waitingAsReceiver(c, id, listener)
             }
-            timeoutJob.start().also {
-                provider.invokeOnCompletion { timeoutJob.cancel() }
-            }
+        }
+    } else {
+        suspendCancellableCoroutine { c ->
+            waitingAsReceiver(c, id, listener)
         }
     }
 
-    override suspend fun <T> waitingFor(id: ID, timeout: Long, listener: ResumedListener<T>): T =
-        suspendCancellableCoroutine { c ->
-            waitingAsReceiver(c, id, timeout, listener)
-        }
+
+
 
     override suspend fun <E : Event, T> waitingFor(
         id: ID,
@@ -196,6 +193,7 @@ internal class ResumedListenerManager {
         }
         provider.invokeOnCompletion {
             listeners.remove(cid)
+            logger.debug("Remove resumed listener: {}", cid)
         }
     }
 
@@ -215,6 +213,7 @@ internal class ResumedListenerManager {
         listeners.forEach { id, listener ->
             scope.launch {
                 try {
+                    logger.debug("Launch resumed listener: {} of id {}", listener, id)
                     listener(context)
                 } catch (e: Throwable) {
                     logger.error("ResumedListener(id=$id) invoke failed: ${e.localizedMessage}", e)

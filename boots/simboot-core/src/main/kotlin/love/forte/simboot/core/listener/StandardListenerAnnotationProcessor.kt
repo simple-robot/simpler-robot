@@ -93,9 +93,13 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
 
         // filters
         val filters = function.resolveFilters(listener, listenerAttributeMap, context)
+        logger.debug("Size of resolved listener filters: {}", filters.size)
+        logger.debug("Resolved listener filters: {}", filters)
 
         // 所有拦截器
         val interceptors = function.resolveInterceptors(context)
+        logger.debug("Size of resolved listener interceptors: {}", interceptors.size)
+        logger.debug("Resolved listener interceptors: {}", interceptors)
 
         // 合并
         val finalListener = listener + filters + interceptors

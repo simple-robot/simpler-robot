@@ -34,9 +34,7 @@ import love.forte.simbot.event.EventResult
  * @author ForteScarlet
  */
 public abstract class EventListenerTextContentProcessor internal constructor() : AnnotatedEventListenerInterceptor {
-
-
-    override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult = EventResult.default()
+    override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult = process(context.eventContext).let { context.proceed() }
 
     /**
      * 通过 [context] 实例，解析并最终对 [EventListenerProcessingContext.textContent] 进行设置处理.

@@ -32,11 +32,12 @@ public object Globs {
     private const val regexMetaChars = ".^$+{[]|()"
     private const val globMetaChars = "\\*?[{"
     private fun isRegexMeta(c: Char): Boolean {
-        return regexMetaChars.indexOf(c) != -1
+        return c in regexMetaChars
+        //return regexMetaChars.indexOf(c) != -1
     }
 
     private fun isGlobMeta(c: Char): Boolean {
-        return globMetaChars.indexOf(c) != -1
+        return c in globMetaChars
     }
 
     private const val EOL = 0 //TBD

@@ -16,6 +16,7 @@ import love.forte.simboot.core.internal.ResourcesScanner.ResourceVisitValue.JarE
 import love.forte.simboot.core.internal.ResourcesScanner.ResourceVisitValue.PathValue
 import love.forte.simboot.utils.Globs
 import java.io.Closeable
+import java.io.File
 import java.net.JarURLConnection
 import java.net.URL
 import java.nio.file.Files
@@ -35,6 +36,8 @@ import kotlin.streams.asSequence
 public class ResourcesScanner<T>(
     public var classLoader: ClassLoader = ResourcesScanner::class.java.classLoader
 ) : Closeable {
+    private val fileSep get() = File.separator
+    private val fileSepChar get() = File.separatorChar
     private val globs = mutableSetOf<Regex>()
     private val scans = mutableSetOf<String>()
     private val lookups =
@@ -58,7 +61,7 @@ public class ResourcesScanner<T>(
                 if (startPath.isDirectory()) {
                     val deep = Files.list(startPath).asSequence().flatMap { path ->
                         if (path.isRegularFile()) {
-                            val resourceFileName = "$resource/${path.name}"
+                            val resourceFileName = "$resource$fileSep${path.name}"
                             // real file
                             if (globs.any { r -> r.matches(resourceFileName) }) {
                                 visitors.asSequence().flatMap { v ->
@@ -68,8 +71,8 @@ public class ResourcesScanner<T>(
                                 emptySequence()
                             }
                         } else {
-                            val newResource = "$resource/${path.name}".let {
-                                if (it.startsWith("/")) it.substringAfter('/') else it
+                            val newResource = "$resource$fileSep${path.name}".let {
+                                if (it.startsWith(fileSepChar)) it.substringAfter(fileSepChar) else it
                             }
                             doResourcesLookup(model, loader, newResource).flatMap { url ->
                                 lookup(model, newResource, loader, url)
