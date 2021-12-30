@@ -29,31 +29,39 @@ internal class CoreContinuousSessionContext(
     private val manager: ResumedListenerManager
 ) : ContinuousSessionContext() {
 
-    override suspend fun <T> waitingFor(id: ID, timeout: Long, listener: ResumedListener<T>): T =
-        suspendCancellableCoroutine { c ->
-            val deferred = CompletableDeferred<T>()
-            val receiver = deferred.asSession()
-            c.invokeOnCancellation(receiver::cancel) // invokeOnCancellation must only here
-            val provider = c.asSession(deferred)
+    private fun <T> waitingAsReceiver(
+        continuation: CancellableContinuation<T>,
+        id: ID,
+        timeout: Long,
+        listener: ResumedListener<T>
+    ) {
+        val deferred = CompletableDeferred<T>()
+        val receiver = deferred.asSession(continuation)
+        continuation.invokeOnCancellation(receiver::cancel) // invokeOnCancellation must only here
+        val provider = continuation.asSession(deferred)
 
-            manager.set(id, listener, provider, receiver)
+        manager.set(id, listener, provider, receiver)
 
-            if (timeout > 0) {
-                val timeoutJob = coroutineScope.launch(start = CoroutineStart.LAZY) {
-                    try {
-                        withTimeout(timeout) {
-                            delay(timeout + 1000)
-                        }
-                    } catch (timeoutException: TimeoutCancellationException) {
-                        // timeout
-                        provider.cancel(timeoutException)
+        if (timeout > 0) {
+            val timeoutJob = coroutineScope.launch(start = CoroutineStart.LAZY) {
+                try {
+                    withTimeout(timeout) {
+                        delay(timeout + 1000)
                     }
-                }
-                timeoutJob.start().also {
-                    provider.invokeOnCompletion { timeoutJob.cancel() }
+                } catch (timeoutException: TimeoutCancellationException) {
+                    // timeout
+                    provider.cancel(timeoutException)
                 }
             }
+            timeoutJob.start().also {
+                provider.invokeOnCompletion { timeoutJob.cancel() }
+            }
+        }
+    }
 
+    override suspend fun <T> waitingFor(id: ID, timeout: Long, listener: ResumedListener<T>): T =
+        suspendCancellableCoroutine { c ->
+            waitingAsReceiver(c, id, timeout, listener)
         }
 
     override suspend fun <E : Event, T> waitingFor(
@@ -61,20 +69,31 @@ internal class CoreContinuousSessionContext(
         timeout: Long,
         eventKey: Event.Key<E>,
         listener: ClearTargetResumedListener<E, T>
-    ): T = waitingFor(id, timeout, listener)
+    ): T = waitingFor(id, timeout) { c, p ->
+        if (eventKey isSubFrom c.event.key) {
+            eventKey.safeCast(c.event)?.also { event -> listener(event, c, p) }
+        }
+    }
 
 
     override fun <T> waiting(id: ID, timeout: Long, listener: ResumedListener<T>): ContinuousSessionReceiver<T> {
-        return coroutineScope.async { waitingFor(id, timeout, listener) }.asSession()
+        return coroutineScope.async {
+            waitingFor(id, timeout, listener)
+        }.asSession()
     }
+
 
     override fun <E : Event, T> waiting(
         id: ID,
         timeout: Long,
         eventKey: Event.Key<E>,
         listener: ClearTargetResumedListener<E, T>
-    ): ContinuousSessionReceiver<T> {
-        return coroutineScope.async { waitingFor(id, timeout, eventKey, listener) }.asSession()
+    ): ContinuousSessionReceiver<T> = waiting(id, timeout) { c, p ->
+        if (eventKey isSubFrom c.event.key) {
+            eventKey.safeCast(c.event)?.also { event ->
+                listener(event, c, p)
+            }
+        }
     }
 
     override fun <T> getProvider(id: ID): ContinuousSessionProvider<T>? {
@@ -86,17 +105,23 @@ internal class CoreContinuousSessionContext(
     }
 }
 
-internal fun <T> Deferred<T>.asSession(): CoreContinuousSessionReceiver<T> = CoreContinuousSessionReceiver(this)
+internal fun <T> Deferred<T>.asSession(continuation: CancellableContinuation<T>? = null): CoreContinuousSessionReceiver<T> =
+    CoreContinuousSessionReceiver(continuation, this)
 
 
-internal class CoreContinuousSessionReceiver<T>(private val deferred: Deferred<T>) : ContinuousSessionReceiver<T> {
+internal class CoreContinuousSessionReceiver<T>(
+    private val continuation: CancellableContinuation<T>?,
+    private val deferred: Deferred<T>
+) : ContinuousSessionReceiver<T> {
     override suspend fun await(): T = deferred.await()
 
     override fun cancel(reason: Throwable?) {
+        continuation?.cancel(reason)
         deferred.cancel(reason?.let { CancellationException(it.localizedMessage, it) })
     }
 
     override fun tryCancel(reason: Throwable?): Boolean {
+        if (continuation != null && (continuation.isCompleted || continuation.isCancelled)) return false
         if (deferred.isCompleted || deferred.isCancelled) return false
         cancel(reason)
         return true
@@ -110,7 +135,7 @@ internal fun <T> CancellableContinuation<T>.asSession(deferred: CompletableDefer
     CoreContinuousSessionProvider(this, deferred)
 
 internal class CoreContinuousSessionProvider<T>(
-    internal val continuation: CancellableContinuation<T>,
+    private val continuation: CancellableContinuation<T>,
     private val deferred: CompletableDeferred<T>
 ) : ContinuousSessionProvider<T> {
     override fun push(value: T) {

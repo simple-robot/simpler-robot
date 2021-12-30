@@ -18,6 +18,7 @@ import love.forte.simbot.definition.BotContainer
 import love.forte.simbot.event.Event.Key.Companion.getKey
 import love.forte.simbot.message.doSafeCast
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentSkipListSet
 import kotlin.reflect.KClass
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.findAnnotation
@@ -93,8 +94,12 @@ public interface Event : BotContainer {
     }
 
     /**
-     * 一个事件类型的Key。所有的计划对外的事件类型都必须通过 **伴生对象** 实现此类型并提供一个事件唯一的ID名称。
-     * 在事件调度中，api直接提供基于反射 Class 的事件调度, 因此需要通过 [Key] 来判断事件类型与其之间的继承关系。
+     * 一个事件类型的Key。所有的计划对外的事件类型都必须通过 **伴生对象** 实现此类型并提供一个事件**唯一**的ID名称。
+     * 并非所有的事件接口 [Event] 的类型都能够允许被监听，有些事件类型可能仅用做标记或者由于其他原因无法/不允许被**直接**监听，
+     * 因此在事件调度中，需要通过 [Key] 来判断事件类型与其之间的继承关系。
+     *
+     * 所有事件的 [Key.id] 必须尽可能保证唯一，因此建议对ID进行命名的时候使用较为特殊的命名方式以杜绝出现ID重复。
+     * id重复不一定会出现异常提示，但是在使用 [isSubFrom] 等方法的时候，很有可能会出现缓存内容混乱导致无法预期的问题。
      *
      * 事件类型可以继承，且允许多继承，实现方可以通过 [isSubFrom] 来判断当前事件是否为某个类型的子类型。
      *
@@ -104,8 +109,10 @@ public interface Event : BotContainer {
      * val isSubFrom = MessageEvent.Key isSubFrom Event.Key
      *
      * ```
+     * [Key] 的继承关系是单向传递的，因此你能够通过一个key找到它继承的所有父类型，但是无法反向查找。
+
      *
-     * 当一个事件提供伴生Key的时候，[E] 应当且建议与当前事件类型一致, 因为在 [Key.getKey] 等通过类型获取Key的场景下，均默认为 [Key] 的类型与当前事件类型一致。
+     * 当一个事件提供伴生Key的时候，[E] 建议且应当与当前事件类型**一致**, 因为在 [Key.getKey] 等通过类型获取Key的场景下，均默认为 [Key] 的类型与当前事件类型一致。
      * 如下所示：
      * ```kotlin
      * interface MyEvent : Event {
@@ -116,8 +123,10 @@ public interface Event : BotContainer {
      * ```
      *
      *
+     *
      * @see getKey
      * @see EventKey
+     * @see isSubFrom
      */
     public interface Key<E : Event> {
         /**
@@ -127,7 +136,7 @@ public interface Event : BotContainer {
 
         /**
          * 此事件所继承的所有父事件。
-         * 此属性应当是不可变的，且不应在运行期内发生变更。
+         * 此属性应当是不可变的，不应在运行期内发生变更。
          */
         public val parents: Set<Key<*>>
 
@@ -139,32 +148,64 @@ public interface Event : BotContainer {
 
 
         public companion object {
-            private val eventKeyCache = ConcurrentHashMap<KClass<*>, Key<*>>()
+            private val keyCache = ConcurrentHashMap<KClass<*>, Key<*>>()
+            private val subCache = ConcurrentHashMap<String, ConcurrentSkipListSet<String>>()
+            private val notSubCache = ConcurrentHashMap<String, ConcurrentSkipListSet<String>>()
+
+            /**
+             * 检测 [target] 是否为 [from] 的子类型。
+             */
+            @JvmStatic
+            public fun isSub(target: Key<*>, from: Key<*>): Boolean {
+                if (from === Event) return true
+                if (from == target) return true
+                if (from in target.parents) return true
+
+                val tid = target.id.toString()
+                val fid = from.id.toString()
+                if (subCache.computeIfAbsent(tid) { ConcurrentSkipListSet() }.contains(fid)) {
+                    return true
+                }
+                if (notSubCache.computeIfAbsent(tid) { ConcurrentSkipListSet() }.contains(fid)) {
+                    return false
+                }
+
+
+                val isSub = target.parents.any {
+                    it isSubFrom from
+                }
+                if (isSub) {
+                    subCache.computeIfAbsent(tid) { ConcurrentSkipListSet() }.add(fid)
+                } else {
+                    notSubCache.computeIfAbsent(tid) { ConcurrentSkipListSet() }.add(fid)
+                }
+                return isSub
+            }
 
             /**
              * 尝试通过一个 [Event] 的 [KClass] 来得到一个其对应的 [Key].
              */
             @JvmSynthetic
             @OptIn(Api4J::class)
-            public fun <T : Event> getKey(type: KClass<T>): Key<T> {
-                val cached = eventKeyCache[type]
+            public fun <E : Event> getKey(type: KClass<E>): Key<E> {
+                val cached = keyCache[type]
                 @Suppress("UNCHECKED_CAST")
-                if (cached != null) return cached as Key<T>
+                if (cached != null) return cached as Key<E>
 
                 // companion try
                 val companionObject = type.companionObjectInstance
 
                 @Suppress("UNCHECKED_CAST")
-                if (companionObject != null && companionObject is Key<*>) return companionObject as Key<T>
+                if (companionObject != null && companionObject is Key<*>) return companionObject as Key<E>
 
 
 
                 @Suppress("UNCHECKED_CAST")
-                return eventKeyCache.computeIfAbsent(type) { k ->
+                return keyCache.computeIfAbsent(type) { k ->
                     // find EventKey annotation
-                    k.findAnnotation<EventKey>()?.toKey<T>()
+                    k.findAnnotation<EventKey>()?.toKey<E>()
                         ?: throw NoSuchEventKeyDefineException("Unable to find event key in [$type] by companion object or @EventKey annotation")
-                } as Key<T>
+                } as Key<E>
             }
 
             @Api4J
@@ -285,6 +326,13 @@ private class AnnotationEventKey<T : Event>(
 ) : Event.Key<T> {
     override val id: CharSequenceID = idValue.ID
     override fun safeCast(value: Any): T? = type.safeCast(value)
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is Event.Key<*>) return false
+        return id == other.id
+    }
+
+    override fun hashCode(): Int = id.hashCode()
 }
 
 
@@ -301,11 +349,7 @@ public fun <T : Event> KClass<T>.getKey(): Event.Key<T> = Event.Key.getKey(this)
  *
  */
 public infix fun Event.Key<*>.isSubFrom(parentMaybe: Event.Key<*>): Boolean {
-    if (parentMaybe === Event || parentMaybe === this) return true
-    if (parentMaybe in parents) return true
-    return parents.any {
-        it isSubFrom parentMaybe
-    }
+    return Event.Key.isSub(this, parentMaybe)
 }
 
 /**
@@ -313,8 +357,16 @@ public infix fun Event.Key<*>.isSubFrom(parentMaybe: Event.Key<*>): Boolean {
  *
  */
 public operator fun Event.Key<*>.contains(parentIdMaybe: String): Boolean {
-    val idValue = id.toString()
-    if (parentIdMaybe === idValue) return true
+    if (id.toString() == parentIdMaybe) return true
+    return parents.any { parents -> parentIdMaybe in parents }
+}
+
+/**
+ * 判断当前类型是否为提供类型的子类型。
+ *
+ */
+public operator fun Event.Key<*>.contains(parentIdMaybe: ID): Boolean {
+    if (id == parentIdMaybe) return true
     return parents.any { parents -> parentIdMaybe in parents }
 }
 
@@ -326,6 +378,13 @@ public abstract class BaseEventKey<E : Event>(
     override val parents: Set<Event.Key<*>> = emptySet(),
 ) : Event.Key<E> {
     override val id: CharSequenceID = idValue.ID
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is Event.Key<*>) return false
+        return id == other.id
+    }
+
+    override fun hashCode(): Int = id.hashCode()
     override fun toString(): String = "EventKey(id=$id)"
 }
 

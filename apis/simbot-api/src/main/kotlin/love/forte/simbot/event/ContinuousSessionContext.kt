@@ -255,7 +255,7 @@ public fun <T> ContinuousSessionContext.waiting(
 
 
 /**
- * 持续会话的结果接收器，通过 [ContinuousSessionContext.waiting] 构建获取，
+ * 持续会话的结果接收器，通过 [ContinuousSessionContext.waiting] 获取，
  * 用于挂起并等待一个结果。
  *
  * @see ContinuousSessionProvider
@@ -344,7 +344,7 @@ public fun interface BlockingResumedListener<T> : ResumedListener<T> {
     public fun invokeBlocking(context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
 
     @JvmSynthetic
-    override suspend fun invoke(context: EventProcessingContext, provider: ContinuousSessionProvider<T>) {
+    override suspend operator fun invoke(context: EventProcessingContext, provider: ContinuousSessionProvider<T>) {
         invokeBlocking(context, provider)
     }
 }
@@ -352,17 +352,9 @@ public fun interface BlockingResumedListener<T> : ResumedListener<T> {
 /**
  * 有着明确监听目标的 [ResumedListener]。
  */
-public fun interface ClearTargetResumedListener<E : Event, T> : ResumedListener<T> {
+public fun interface ClearTargetResumedListener<E : Event, T> {
     @JvmSynthetic
-    override suspend fun invoke(context: EventProcessingContext, provider: ContinuousSessionProvider<T>) {
-        @Suppress("UNCHECKED_CAST")
-        (context.event as? E)?.also { event ->
-            invoke(event, context, provider)
-        }
-    }
-
-    @JvmSynthetic
-    public suspend fun invoke(event: E, context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
+    public suspend operator fun invoke(event: E, context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
 }
 
 
@@ -373,11 +365,6 @@ public fun interface ClearTargetResumedListener<E : Event, T> : ResumedListener<
  * @see ResumedListener
  */
 @Api4J
-public fun interface BlockingClearTargetResumedListener<E : Event, T> : ClearTargetResumedListener<E, T> {
+public fun interface BlockingClearTargetResumedListener<E : Event, T> {
     public fun invokeBlocking(event: E, context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
-
-    @JvmSynthetic
-    override suspend fun invoke(event: E, context: EventProcessingContext, provider: ContinuousSessionProvider<T>) {
-        invokeBlocking(event, context, provider)
-    }
 }

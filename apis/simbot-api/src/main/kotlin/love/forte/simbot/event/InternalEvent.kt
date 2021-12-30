@@ -49,12 +49,23 @@ public abstract class InternalEvent : Event {
      * 内部事件的类型标识。所有 [InternalEvent] 只能继承与内部事件相关的事件。
      *
      */
-    public interface Key<E : InternalEvent>: Event.Key<E> {
+    public interface Key<E : InternalEvent> : Event.Key<E> {
         override val parents: Set<Event.Key<*>>
     }
 }
 
-public abstract class BaseInternalKey<E : InternalEvent>(idValue: String, override val parents: Set<Event.Key<*>> = emptySet()) : InternalEvent.Key<E> {
+public abstract class BaseInternalKey<E : InternalEvent>(
+    idValue: String,
+    override val parents: Set<Event.Key<*>> = emptySet()
+) : InternalEvent.Key<E> {
     override val id: CharSequenceID = idValue.ID
+
     override fun toString(): String = "InternalEventKey(id=$id)"
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Event.Key<*>) return false
+        return id == other.id
+    }
+
+    override fun hashCode(): Int = id.hashCode()
 }
