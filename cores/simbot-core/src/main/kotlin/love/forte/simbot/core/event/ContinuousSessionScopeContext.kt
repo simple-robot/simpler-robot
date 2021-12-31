@@ -59,15 +59,13 @@ internal class CoreContinuousSessionContext(
     }
 
 
-
-
     override suspend fun <E : Event, T> waitingFor(
         id: ID,
         timeout: Long,
         eventKey: Event.Key<E>,
         listener: ClearTargetResumedListener<E, T>
     ): T = waitingFor(id, timeout) { c, p ->
-        if (eventKey isSubFrom c.event.key) {
+        if (c.event.key isSubFrom eventKey) {
             eventKey.safeCast(c.event)?.also { event -> listener(event, c, p) }
         }
     }
@@ -86,7 +84,7 @@ internal class CoreContinuousSessionContext(
         eventKey: Event.Key<E>,
         listener: ClearTargetResumedListener<E, T>
     ): ContinuousSessionReceiver<T> = waiting(id, timeout) { c, p ->
-        if (eventKey isSubFrom c.event.key) {
+        if (c.event.key isSubFrom eventKey) {
             eventKey.safeCast(c.event)?.also { event ->
                 listener(event, c, p)
             }
