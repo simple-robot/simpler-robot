@@ -76,6 +76,7 @@ public interface EventResult {
             }
 
 
+
         /**
          * 得到一个异步执行函数的 [AsyncEventResult],
          * 其 [AsyncEventResult.content] 为一个预期返回 [EventResult] 的 [Deferred].
@@ -91,6 +92,13 @@ public interface EventResult {
         @JvmOverloads
         @JvmStatic
         public fun default(isTruncated: Boolean = false): EventResult = of(null, isTruncated)
+
+
+        /**
+         * 返回一个阻断后续监听函数执行的响应体(`EventResult(isTruncated=true)`)。
+         */
+        @JvmStatic
+        public fun truncate(): EventResult = default(true)
     }
 
     /**
