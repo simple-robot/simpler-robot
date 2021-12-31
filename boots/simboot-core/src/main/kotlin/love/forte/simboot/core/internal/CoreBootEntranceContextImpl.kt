@@ -132,20 +132,33 @@ internal class CoreBootEntranceContextImpl(
                     beanContainer.all<EventProcessingInterceptor>()
                         .associate { it.ID to beanContainer[it, EventProcessingInterceptor::class] }
 
+                logger.info("Size of all global processing interceptors: {}", allProcessingInterceptor.size)
+                if (logger.isDebugEnabled) {
+                    allListenerInterceptor.forEach {
+                        logger.debug("Global processing interceptors(id={}): {}", it.key, it.value)
+                    }
+                }
+                logger.info("Size of all global listener interceptors: {}", allListenerInterceptor.size)
+                if (logger.isDebugEnabled) {
+                    allListenerInterceptor.forEach {
+                        logger.debug("Global listener interceptors(id={}): {}", it.key, it.value)
+                    }
+                }
 
-                // val allListenerInterceptor = beanContainer.allInstance<EventListenerInterceptor>()
-                // val allProcessingInterceptor = beanContainer.allInstance<EventProcessingInterceptor>()
-                // CoreEventListenerManagerContextFactory
                 val context =
                     beanContainer.getOrNull(CoreEventListenerManagerContextFactory::class)?.managerCoroutineContext
 
                 interceptors {
-                    if (allListenerInterceptor.isNotEmpty()) {
-                        addListenerInterceptors(allListenerInterceptor.filterValues { it !is AnnotatedEventListenerInterceptor }) // 不追加注解拦截器
-                    }
+
                     if (allProcessingInterceptor.isNotEmpty()) {
                         addProcessingInterceptors(allProcessingInterceptor)
                     }
+
+
+                    if (allListenerInterceptor.isNotEmpty()) {
+                       addListenerInterceptors(allListenerInterceptor.filterValues { it !is AnnotatedEventListenerInterceptor }) // 不追加注解拦截器
+                    }
+
                     if (context != null) {
                         coroutineContext = context
                     }
@@ -202,19 +215,18 @@ private fun packagesToClassesGetter(vararg scannerPackages: String): () -> Colle
     return {
         val pathReplace = Regex("[/\\\\]")
         ResourcesScanner<KClass<*>>().use { scanner ->
-            scanner.scan("")
-                .also {
-                    for (scanPkg in scannerPackages) {
-                        it.glob(scanPkg.replace(".", "/") + "**.class")
-                    }
-                }
-                .visitJarEntry { entry, _ ->
-                    val classname = entry.name.replace(pathReplace, ".").substringBeforeLast(".class")
-                    val loadClass = runCatching {
-                        scanner.classLoader.loadClass(classname)
-                    }.getOrElse { e -> throw SimbotIllegalStateException("Class load filed: $classname", e) }
-                    sequenceOf(loadClass.kotlin)
-                }
+            for (scanPkg in scannerPackages) {
+                val scanPath = scanPkg.replace(".", "/")
+                scanner.scan(scanPath)
+                scanner.glob("$scanPath**.class")
+            }
+            scanner.visitJarEntry { entry, _ ->
+                val classname = entry.name.replace(pathReplace, ".").substringBeforeLast(".class")
+                val loadClass = runCatching {
+                    scanner.classLoader.loadClass(classname)
+                }.getOrElse { e -> throw SimbotIllegalStateException("Class load filed: $classname", e) }
+                sequenceOf(loadClass.kotlin)
+            }
                 .visitPath { (_, r) ->
                     // '/Xxx.class'
                     val classname = r.replace(pathReplace, ".").substringBeforeLast(".class").let {

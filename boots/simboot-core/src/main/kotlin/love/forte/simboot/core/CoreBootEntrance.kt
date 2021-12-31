@@ -459,6 +459,13 @@ private fun CoreBootEntranceContext.findAllListener(
 
     val processors = beanContainer.allInstance<ListenerAnnotationProcessor>().sortedBy { it.priority }
 
+    logger.info("Size of all listener annotation processors: {}", processors.size)
+    if (logger.isDebugEnabled) {
+        processors.forEach {
+            logger.debug("Listener annotation processor: {}", it)
+        }
+    }
+
     val listeners = mutableMapOf<String, EventListener>()
 
     val registrar = ListListenerRegistrar { listener ->
@@ -468,6 +475,7 @@ private fun CoreBootEntranceContext.findAllListener(
             throw SimbotIllegalStateException("Duplicate listener id $id")
         }
         listeners[id] = listener
+        logger.debug("Register listener id={}", id)
     }
 
     val tool = KAnnotationTool(mutableMapOf(), mutableMapOf())
@@ -543,10 +551,16 @@ private fun CoreBootEntranceContext.includeAllTopListeners(
             }.getOrElse { e -> throw SimbotIllegalStateException("Class load filed: $classname", e) }
             sequenceOf(loadClass)
         }.collectSequence(true).flatMap { c ->
-            c.methods.mapNotNull { m ->
-                kotlin.runCatching { m.kotlinFunction?.takeIf { f -> with(f.visibility) { this == null || this == KVisibility.PUBLIC } } }
-                    .getOrDefault(null)
+            try {
+                c.methods.mapNotNull { m ->
+                    kotlin.runCatching { m.kotlinFunction?.takeIf { f -> with(f.visibility) { this == null || this == KVisibility.PUBLIC } } }
+                        .getOrDefault(null)
+                }
+            } catch (e: Throwable) {
+                logger.error("Cannot get class [{}] methods: {}", c, e.toString())
+                emptyList()
             }
+
         }.filter { f -> f.instanceParameter == null } // instance is null -> top function
             .filter { f -> tool.getAnnotation(f, Listener::class) != null }.forEach { func ->
                 val listener = tool.getAnnotation(func, Listener::class)!!

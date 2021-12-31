@@ -57,13 +57,16 @@ public class ResourcesScanner<T>(
     private fun lookup(model: ResourceModel, resource: String, loader: ClassLoader, url: URL): Sequence<T> {
         return when (val protocol = url.protocol) {
             "file" -> sequence {
+                val resourceReplace = resource.replace("/", fileSep)
                 val startPath = url.toURI().toPath() //.relativeTo(base)
                 if (startPath.isDirectory()) {
                     val deep = Files.list(startPath).asSequence().flatMap { path ->
                         if (path.isRegularFile()) {
-                            val resourceFileName = "$resource$fileSep${path.name}"
+                            val resourceFileName = "$resourceReplace$fileSep${path.name}"
                             // real file
-                            if (globs.any { r -> r.matches(resourceFileName) }) {
+                            if (globs.any { r ->
+                                    r.matches(resourceFileName)
+                            }) {
                                 visitors.asSequence().flatMap { v ->
                                     v(PathValue(path, resourceFileName))
                                 }
@@ -71,7 +74,7 @@ public class ResourcesScanner<T>(
                                 emptySequence()
                             }
                         } else {
-                            val newResource = "$resource$fileSep${path.name}".let {
+                            val newResource = "$resourceReplace$fileSep${path.name}".let {
                                 if (it.startsWith(fileSepChar)) it.substringAfter(fileSepChar) else it
                             }
                             doResourcesLookup(model, loader, newResource).flatMap { url ->
