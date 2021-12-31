@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
 
 val publishNeed = setOf(
     "simbot-annotation", "simbot-core", "simbot-api",
-    "simboot-api", "simboot-core", "simboot-core-annotation"
+    "simboot-api", "simboot-core", "simboot-core-annotation", "simboot-core-springboot-starter"
 )
 
 
