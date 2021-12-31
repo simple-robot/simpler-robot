@@ -23,6 +23,7 @@ import love.forte.simbot.api.message.events.GroupMsg
 import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.component.mirai.MiraiGroupBotAccountInfo
 import love.forte.simbot.component.mirai.message.*
+import net.mamoe.mirai.contact.AnonymousMember
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.MessageSource
 
@@ -43,7 +44,8 @@ public class MiraiGroupMsg(event: GroupMessageEvent) :
     override val groupInfo: GroupInfo
         get() = miraiGroupMemberInfo
 
-    override val groupMsgType: GroupMsg.Type = GroupMsg.Type.NORMAL
+    override val groupMsgType: GroupMsg.Type =
+        if (event.sender is AnonymousMember) GroupMsg.Type.ANON else GroupMsg.Type.NORMAL
 
     override val flag: MessageGet.MessageFlag<GroupMsg.FlagContent> = miraiGroupFlag { MiraiGroupFlagContent(event.source) }
 
