@@ -209,6 +209,11 @@ public class CoreBootEntrance : SimbootEntrance {
         logger.info("Resolving all bot info.")
         val botInfoList = bootContext.getAllBotInfos(configuration, beanContainer)
         logger.info("Size of all bot info: {}", botInfoList.size)
+        if (logger.isDebugEnabled) {
+            botInfoList.forEach { b ->
+                logger.debug("Bot info: {}", b.infoName)
+            }
+        }
 
         logger.info("Register all bots.")
         // all init bots
@@ -222,6 +227,11 @@ public class CoreBootEntrance : SimbootEntrance {
                     }
                 } catch (mismatch: ComponentMismatchException) {
                     null
+                } catch (exception: VerifyFailureException) {
+                    if (logger.isDebugEnabled) {
+                        logger.debug("Bot info [{}] verify failed. read raw value: \n{}", b.infoName, b.inputStream().use { it.bufferedReader().readText() })
+                    }
+                    throw exception
                 }
             }
 
@@ -291,6 +301,7 @@ private fun SimbootEntranceContext.toCoreBootEntranceContext(): CoreBootEntrance
         is CoreBootEntranceContext -> app
         is KClass<*> -> app.classToCoreBootEntranceContext(this)
         is Class<*> -> app.kotlin.classToCoreBootEntranceContext(this)
+        is SimbootApplication -> app.annotationToCoreBootEntranceContext(this)
         else -> throw SimbootApplicationException(
             """
             CoreBootEntrance application only supports the following possible types:
@@ -310,8 +321,10 @@ private fun KClass<*>.classToCoreBootEntranceContext(context: SimbootEntranceCon
         ?: throw SimbootApplicationException("Application [$this] is not annotated @SimBootApplication.")
 
     return CoreBootEntranceContextImpl(applicationAnnotation, this, context)
+}
 
-
+private fun SimbootApplication.annotationToCoreBootEntranceContext(context: SimbootEntranceContext): CoreBootEntranceContext {
+    return CoreBootEntranceContextImpl(this, null, context)
 }
 
 private class BalancedBotRegistrar(

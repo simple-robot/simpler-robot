@@ -25,7 +25,7 @@ sealed class P : SimbotProject() {
     object Simbot {
         const val GROUP = "love.forte.simbot"
         const val BOOT_GROUP = "love.forte.simbot.boot"
-        const val VERSION = "3.0.0.preview.0.5"
+        const val VERSION = "3.0.0.preview.0.6"
     }
 
     sealed class ForteDI(id: String) : Dep(GROUP, "di-$id", VERSION) {

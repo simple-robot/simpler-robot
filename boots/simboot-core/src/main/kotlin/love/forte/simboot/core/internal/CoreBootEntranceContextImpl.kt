@@ -34,6 +34,7 @@ import love.forte.simbot.core.event.coreListenerManager
 import love.forte.simbot.event.EventListenerInterceptor
 import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.event.EventProcessingInterceptor
+import love.forte.simbot.utils.systemProperties
 import org.slf4j.Logger
 import java.net.URL
 import java.nio.file.Path
@@ -59,7 +60,7 @@ internal const val INCLUDES_KEY = "simbot.includes"
  */
 internal class CoreBootEntranceContextImpl(
     private val simbootApplicationAnnotationInstance: SimbootApplication,
-    private val applicationClass: KClass<*>,
+    private val applicationClass: KClass<*>?,
     private val context: SimbootEntranceContext
 ) : CoreBootEntranceContext {
     companion object {
@@ -68,7 +69,13 @@ internal class CoreBootEntranceContextImpl(
     override val topFunctionScanPackages: Set<String> =
         simbootApplicationAnnotationInstance.topListenerScanPackages.toSet().ifEmpty {
             simbootApplicationAnnotationInstance.scanPackages.ifEmpty {
-                arrayOf(applicationClass.java.`package`?.name ?: "")
+                if (applicationClass == null) {
+                    logger.warn("Application class instance is null, and param 'topListenerScanPackages' of annotation @SimbootApplication is empty.")
+
+                    arrayOf("")
+                } else {
+                    arrayOf(applicationClass.java.`package`?.name ?: "")
+                }
             }.toSet()
         }
 
@@ -76,9 +83,23 @@ internal class CoreBootEntranceContextImpl(
      * bean container factory
      */
     override fun getBeanContainerFactory(): BeanContainerFactory {
-        val packages =
+        val packages: Array<String> =
             simbootApplicationAnnotationInstance.scanPackages.ifEmpty {
-                arrayOf(applicationClass.java.`package`?.name ?: "")
+                if (applicationClass == null) {
+                    logger.warn("Application class instance is null, and param 'scanPackages' of annotation @SimbootApplication is empty.")
+                    //
+                    val mainClass = systemProperties("sun.java.command")
+                    if (mainClass == null) {
+                        logger.warn("Cannot get main class package from system property 'sun.java.command', [scanPackages] will be empty.")
+                        arrayOf("")
+                    } else {
+                        val mainPackage = mainClass.substringBeforeLast('.')
+                        logger.warn("Main class package from system property 'sun.java.command' is '$mainPackage' [scanPackages] will use it.")
+                        arrayOf(mainPackage)
+                    }
+                } else {
+                    arrayOf(applicationClass.java.`package`?.name ?: "")
+                }
             }
 
         val includes = SimbotPropertyResources.findKey(INCLUDES_KEY).values.toSet()
@@ -146,20 +167,22 @@ internal class CoreBootEntranceContextImpl(
         logger.debug("Scan bots base resource path: {}, glob: {}", baseResource, glob)
 
         // all bots verify info
-        return ResourcesScanner<BotVerifyInfo>()
-            .scan(baseResource)
-            .glob(glob)
-            .visitJarEntry { _, url ->
-                sequenceOf(
-                    url.asBotVerifyInfo()
-                )
-            }
-            .visitPath { (path, _) ->
-                sequenceOf(
-                    path.asBotVerifyInfo()
-                )
-            }
-            .toList(false)
+        return ResourcesScanner<BotVerifyInfo>().use {
+            it.scan(baseResource)
+                .glob(glob)
+                .visitJarEntry { entry, _ ->
+                    if (!entry.isDirectory) {
+                        it.classLoader.getResource(entry.toString())?.asBotVerifyInfo()?.let { url -> sequenceOf(url) }
+                            ?: emptySequence()
+                    } else emptySequence()
+                }
+                .visitPath { (path, _) ->
+                    sequenceOf(
+                        path.asBotVerifyInfo()
+                    )
+                }
+                .toList(false)
+        }
 
 
     }
