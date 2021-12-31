@@ -229,7 +229,10 @@ public class CoreBootEntrance : SimbootEntrance {
                     null
                 } catch (exception: VerifyFailureException) {
                     if (logger.isDebugEnabled) {
-                        logger.debug("Bot info [{}] verify failed. read raw value: \n{}", b.infoName, b.inputStream().use { it.bufferedReader().readText() })
+                        logger.debug(
+                            "Bot info [{}] verify failed. read raw value: \n{}",
+                            b.infoName,
+                            b.inputStream().use { it.bufferedReader().readText() })
                     }
                     throw exception
                 }
@@ -250,7 +253,6 @@ public class CoreBootEntrance : SimbootEntrance {
             logger.debug("Bot {} of component {} started. username: {}", b.id, b.component, b.username)
         }
         logger.info("All bots start finished.")
-
 
 
         val job = Job() // alive for join.
@@ -513,13 +515,19 @@ private fun CoreBootEntranceContext.includeAllTopListeners(
     baseBinderContainer: ParameterBinderFactoryContainer,
     registrar: ListListenerRegistrar
 ) {
+    if (logger.isDebugEnabled) {
+        topFunctionScanPackages.forEach {
+            logger.debug("Scan top function package: {}", it)
+        }
+    }
     val pathReplace = Regex("[/\\\\]")
     ResourcesScanner<Class<*>>().use { scanner ->
-        scanner.scan("").also {
-            for (scanPkg in topFunctionScanPackages) {
-                it.glob(scanPkg.replace(".", "/") + "**.class")
-            }
-        }.visitJarEntry { entry, _ ->
+        for (scanPkg in topFunctionScanPackages) {
+            val scanPath = scanPkg.replace(".", "/")
+            scanner.scan(scanPath)
+            scanner.glob("$scanPath**.class")
+        }
+        scanner.visitJarEntry { entry, _ ->
             val classname = entry.name.replace(pathReplace, ".").substringBeforeLast(".class")
             val loadClass = runCatching {
                 scanner.classLoader.loadClass(classname)

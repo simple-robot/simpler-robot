@@ -96,7 +96,12 @@ public class ResourcesScanner<T>(
                     ?: throw IllegalStateException("Resource URL $url open failure: protocol is 'jar' but cannot open as JarURLConnection.")
                 val jarFile = connection.jarFile
                 jarFile.entries().asSequence().forEach { entry ->
+                    //println("entry: $entry")
                     if (globs.any { r ->
+                            // println("r: $r")
+                            // println("r.matches(${entry.name}): ${r.matches(entry.name)}")
+                            // println("r.matches(${entry.name.replace("/", "\\")}): ${r.matches(entry.name.replace("/", "\\"))}")
+                            // println()
                             r.matches(entry.name) || r.matches(entry.name.replace("/", "\\"))
                         }) {
                         visitors.forEach { v ->
