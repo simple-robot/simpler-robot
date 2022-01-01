@@ -195,13 +195,26 @@ public abstract class SingleOnlyMessage<E : Message.Element<E>> : MsgElement<E>,
         if (messages.isEmpty()) this else messages.toMessages()
 }
 
-
+/**
+ * 得到元素为空的 [Messages] 实例。
+ */
 public fun messages(): Messages = EmptyMessages
+
+/**
+ * 得到元素数量为1的[Messages]实例。如果当前消息元素为 [SingleOnlyMessage] 类型，则会直接返回其自身。
+ */
 public fun MsgElement<*>.toMessages(): Messages =
-    if (this is SingleOnlyMessage<*>) this else MessageList(listOf(this))
+    if (this is SingleOnlyMessage<*>) this else SingleValueMessageList(this)
+
 
 public fun messages(vararg messages: MsgElement<*>): Messages = messages.asList().toMessages()
 
+/**
+ * 将 元素为 [MsgElement] 的 [Iterable] 转化为 [Messages] 实例。
+ *
+ * 当自身本身就是 [Messages] 时会直接返回自身。
+ *
+ */
 public fun Iterable<MsgElement<*>>.toMessages(): Messages {
     when (this) {
         is Messages -> return this
@@ -232,7 +245,8 @@ public fun Iterable<MsgElement<*>>.toMessages(): Messages {
         }
     }
 
-    return MessageList(list)
+    return if (list.size == 1) SingleValueMessageList(list.first())
+    else MessageListImpl(list)
 }
 
 
@@ -242,24 +256,78 @@ public operator fun Message.Element<*>.plus(other: SingleOnlyMessage<*>): Messag
 
 
 /**
- * [Messages] 基础实现。
+ * [Messages] 基础实现, 是元素数量不应为空的消息列表。
+ *
+ * [MessageList] 是不可变的，每次变更都**可能**会得到一个新的实例。
  *
  */
-// @Serializable
-public class MessageList
+public sealed class MessageList : Messages, Collection<MsgElement<*>>
 
-/*
- * delegate 的内容不进行验证，通过顶层函数进行solve. 原则上delegate 不允许为空。
- */
-internal constructor(private val delegate: List<MsgElement<*>>) : Messages,
-    List<MsgElement<*>>, AbstractList<MsgElement<*>>() {
+
+internal class SingleValueMessageList(private val value: MsgElement<*>) : MessageList() {
+    override val size: Int get() = 1
+    override fun contains(element: Message.Element<*>): Boolean = value == element
+    override fun containsAll(elements: Collection<Message.Element<*>>): Boolean = elements.all(::contains)
+    override fun get(index: Int): Message.Element<*> {
+        if (index == 0) return value else throw IndexOutOfBoundsException("Index $index out of last index: 0")
+    }
+
+    override fun indexOf(element: Message.Element<*>): Int = if (element == value) 0 else -1
+    override fun lastIndexOf(element: Message.Element<*>): Int = indexOf(element)
+    override fun isEmpty(): Boolean = false
+    override fun iterator(): Iterator<Message.Element<*>> = iterator { yield(value) }
+    override fun listIterator(): ListIterator<Message.Element<*>> = SingleValueListIterator(value)
+    override fun listIterator(index: Int): ListIterator<Message.Element<*>> = SingleValueListIterator(get(index))
+    override fun subList(fromIndex: Int, toIndex: Int): List<Message.Element<*>> {
+        if (fromIndex == 0) {
+            if (toIndex == 0) return emptyList()
+            if (toIndex == 1) return this
+        }
+
+        throw IndexOutOfBoundsException("fromIndex: $fromIndex, toIndex: $toIndex, but lastIndex: 0")
+    }
+    override fun plus(element: Message.Element<*>): Messages {
+        if (element is SingleOnlyMessage<*>) return element
+        return MessageListImpl(listOf(value, element))
+    }
+
+    override fun plus(messages: List<Message.Element<*>>): Messages {
+        if (messages.isEmpty()) return this
+        if (messages.size == 1) return plus(messages.first())
+
+        val list = buildList {
+            add(value)
+            addAll(messages)
+        }
+        return list.toMessages()
+    }
+
+    private class SingleValueListIterator(private val value: MsgElement<*>) : ListIterator<MsgElement<*>> {
+        private var next = false
+        override fun hasNext(): Boolean = !next
+        override fun hasPrevious(): Boolean = next
+        override fun next(): Message.Element<*> {
+            if (next) throw NoSuchElementException()
+            else return value.also {
+                next = true
+            }
+        }
+        override fun previous(): Message.Element<*> {
+            if (next) return value.also { next = false }
+            else throw NoSuchElementException()
+        }
+
+        override fun nextIndex(): Int = if (next) 1 else 0
+        override fun previousIndex(): Int = if (next) 0 else -1
+    }
+}
+
+
+internal class MessageListImpl
+internal constructor(private val delegate: List<MsgElement<*>>) : MessageList(), List<MsgElement<*>> by delegate {
     init {
         Simbot.check(delegate.isNotEmpty()) { "Messages init message list cannot be empty." }
     }
-
-    override val size: Int get() = delegate.size
-    override fun iterator(): Iterator<MsgElement<*>> = delegate.iterator()
-    override fun get(index: Int): Message.Element<*> = delegate[index]
 
     /**
      * 拼接元素。
@@ -267,7 +335,7 @@ internal constructor(private val delegate: List<MsgElement<*>>) : Messages,
     override fun plus(element: Message.Element<*>): Messages {
         if (element is SingleOnlyMessage<*>) return element
 
-        return MessageList(delegate + element)
+        return MessageListImpl(delegate + element)
     }
 
     /**
@@ -275,19 +343,14 @@ internal constructor(private val delegate: List<MsgElement<*>>) : Messages,
      */
     override fun plus(messages: List<Message.Element<*>>): Messages {
         if (messages.isEmpty()) return this
-        if (messages.first() is SingleOnlyMessage<*>) return messages.first().toMessages()
-
-        val newList = delegate.toMutableList()
-        if (messages is Messages) {
-            newList.addAll(messages)
-        } else {
-            for (message in messages) {
-                newList.add(message)
-            }
-
+        if (messages.size == 1) {
+            val element = messages.first()
+            if (element is SingleOnlyMessage<*>) return element
         }
 
+        val newList = delegate.toMutableList()
+        newList.addAll(messages)
 
-        return MessageList(newList)
+        return newList.toMessages()
     }
 }
