@@ -32,26 +32,7 @@ import kotlin.reflect.safeCast
  * @see Messages
  * @see SingleOnlyMessage
  */
-public sealed interface Message : ComponentContainer {
-
-
-    /**
-     * 每个消息，都有一个所属的组件。组件之间不应出现消息交叉。
-     *
-     * @see SimbotComponent
-     */
-    override val component: Component
-
-
-    public fun componentEquals(component: Component, simbotCompAsTrue: Boolean = true): Boolean {
-        if (simbotCompAsTrue) {
-            if (component == SimbotComponent || this.component == SimbotComponent) {
-                return true
-            }
-        }
-        return this.component == component
-    }
-
+public sealed interface Message {
 
     /**
      * 一个 [消息][Message] 的 [元素][Element], 元素本身也是一种消息。
@@ -62,6 +43,12 @@ public sealed interface Message : ComponentContainer {
      */
     public interface Element<E : Element<E>> : Message, ComponentContainer {
         public val key: Key<E>
+
+        /**
+         * 每个消息，都有一个所属的组件。组件之间不应出现消息交叉。
+         *
+         * @see SimbotComponent
+         */
         override val component: Component get() = key.component
         override fun toString(): String
         override fun equals(other: Any?): Boolean
@@ -134,7 +121,8 @@ public inline fun <reified E : Element<E>> Message.Key<E>.cast(value: Any?): E {
 
 
 public inline fun <reified E> doSafeCast(value: Any): E? = if (value is E) value else null
-public inline fun <reified E> doCast(value: Any): E = doSafeCast<E>(value) ?: throw ClassCastException("${value::class} cannot cast to type ${E::class}")
+public inline fun <reified E> doCast(value: Any): E =
+    doSafeCast<E>(value) ?: throw ClassCastException("${value::class} cannot cast to type ${E::class}")
 
 
 
