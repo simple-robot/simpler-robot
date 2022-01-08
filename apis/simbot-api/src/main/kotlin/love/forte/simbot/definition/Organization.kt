@@ -17,6 +17,7 @@ import kotlinx.coroutines.runBlocking
 import love.forte.simbot.*
 import love.forte.simbot.action.MuteAction
 import java.util.stream.Stream
+import kotlin.time.Duration
 
 /**
  * 一个 **组织** 结构（中的一员）。
@@ -86,7 +87,13 @@ public interface Organization : Objectives, OrganizationInfo, MuteAction, Struct
      *
      */
     @JvmSynthetic
-    override suspend fun mute(): Boolean
+    override suspend fun mute(duration: Duration): Boolean
+
+    /**
+     * 接触整个群的禁言。
+     */
+    @JvmSynthetic
+    override suspend fun unmute(): Boolean
 
     @Api4J
     public val owner: Member get() = runBlocking { owner() }

@@ -20,6 +20,7 @@ import love.forte.simbot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.action.MuteAction
+import kotlin.time.Duration
 
 
 /**
@@ -47,7 +48,7 @@ public interface Member : User, MemberInfo, MuteAction {
      * 此行为不会捕获异常。
      *
      */
-    override suspend fun mute(): Boolean
+    override suspend fun mute(duration: Duration): Boolean
 
     @JvmSynthetic
     public suspend fun roles(): Flow<Role>

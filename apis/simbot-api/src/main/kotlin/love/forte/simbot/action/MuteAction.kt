@@ -2,6 +2,9 @@ package love.forte.simbot.action
 
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
+import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.microseconds
 
 
 /**
@@ -30,14 +33,45 @@ public interface MuteAction {
     /**
      * 对当前目标进行 **禁言** 操作。
      *
+     * [duration] 代表禁言时长。[duration] 并不能保证其存在效果，对于一些不支持 [duration] 的场景下，
+     * 可能会由组件内部通过开启一个延时的异步任务来模拟 [duration] 的效果，但是无论如何，绝大多数情况下，[duration] 的值都不允许小于或等于0。
+     *
+     * 当组件支持 [duration] 的时候，它们绝大多数情况下都会至少以 **秒** 为单位，除非你明确的知道当前实现能够支持更低量级，否则请尽可能使用秒或更高的单位。
+     * 同样的，很多情况下对于 [duration] 的上限也同样有限制，请自行斟酌数值，选取合理范围。
+     *
      * @throws NotSupportActionException 当此行为不被支持时
+     *
+     * @see unmute
      */
     @JvmSynthetic
-    public suspend fun mute(): Boolean
+    public suspend fun mute(duration: Duration): Boolean
 
+    /**
+     * 对当前目标进行 **解除禁言** 操作。
+     *
+     * @throws NotSupportActionException 当此行为不被支持时
+     *
+     * @see mute
+     */
+    @JvmSynthetic
+    public suspend fun unmute(): Boolean
 
+    /**
+     * @see mute
+     */
     @Api4J
-    public fun muteBlocking(): Boolean = runBlocking { mute() }
+    public fun muteBlocking(time: Long, unit: TimeUnit): Boolean = runBlocking {
+        mute(unit.toMillis(time).microseconds)
+    }
+
+    /**
+     * @see unmute
+     */
+    @Api4J
+    public fun unmuteBlocking(): Boolean = runBlocking {
+        unmute()
+    }
+
 }
 
 
