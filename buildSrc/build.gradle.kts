@@ -10,8 +10,6 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-val kotlinVersion = "1.6.0"
-
 plugins {
     `kotlin-dsl`
     // kotlin("gradle-plugin") version "1.6.0"

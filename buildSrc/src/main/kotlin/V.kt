@@ -30,7 +30,7 @@ abstract class Dep(val group: String?, val id: String, val version: String?) {
     }
 }
 
-val Dep.notation
+inline val Dep.notation
     get() = buildString {
         if (group != null) append(group).append(':')
         append(id)

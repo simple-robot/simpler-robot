@@ -46,20 +46,20 @@ public interface EventProcessingContext : CoroutineContext.Element, AttributeCon
          * 全局作用域。 一个 [ScopeContext], 此作用域下的内容应当保持.
          *
          */
-        @JvmStatic
+        @JvmField
         public val Global = attribute<ScopeContext>("context.scope.global")
 
         /**
          * 瞬时作用域，每一次的事件处理流程都是一个新的 [ScopeContext].
          */
-        @JvmStatic
+        @JvmField
         public val Instant = attribute<ScopeContext>("context.scope.instant")
 
 
         /**
          * 持续会话作用域. 可以通过持续会话作用域来达成监听函数之间的信息通讯的目的。
          */
-        @JvmStatic
+        @JvmField
         public val ContinuousSession = attribute<ContinuousSessionContext>("context.scope.continuous.session")
 
 

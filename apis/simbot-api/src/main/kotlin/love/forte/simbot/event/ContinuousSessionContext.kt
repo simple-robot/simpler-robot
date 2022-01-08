@@ -18,9 +18,9 @@ import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
+import love.forte.simbot.randomID
 import java.util.concurrent.Future
 import kotlin.experimental.ExperimentalTypeInference
-import kotlin.random.Random
 import kotlin.time.Duration
 
 
@@ -150,7 +150,7 @@ public abstract class ContinuousSessionContext {
     @OptIn(ExperimentalTypeInference::class)
     @JvmSynthetic
     public abstract suspend fun <T> waitingFor(
-        id: ID = Random.nextLong().ID,
+        id: ID = randomID(),
         timeout: Long = 0,
         listener: ResumedListener<T>
     ): T
@@ -162,18 +162,19 @@ public abstract class ContinuousSessionContext {
      */
     @JvmSynthetic
     public abstract suspend fun <E : Event, T> waitingFor(
-        id: ID = Random.nextLong().ID,
+        id: ID = randomID(),
         timeout: Long = 0,
         eventKey: Event.Key<E>,
         listener: ClearTargetResumedListener<E, T>
     ): T
 
     /**
-     * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+     * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突，则上一个函数将会被立即关闭处理。
      *
      */
+    @JvmSynthetic
     public abstract fun <T> waiting(
-        id: ID = Random.nextLong().ID,
+        id: ID = randomID(),
         timeout: Long = 0,
         listener: ResumedListener<T>
     ): ContinuousSessionReceiver<T>
@@ -183,12 +184,59 @@ public abstract class ContinuousSessionContext {
      * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
      *
      */
+    @JvmSynthetic
     public abstract fun <E : Event, T> waiting(
-        id: ID = Random.nextLong().ID,
+        id: ID = randomID(),
         timeout: Long = 0,
         eventKey: Event.Key<E>,
         listener: ClearTargetResumedListener<E, T>
     ): ContinuousSessionReceiver<T>
+
+
+    /**
+     * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+     *
+     * @see waiting
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waiting")
+    public fun <T> waiting4J(
+        id: ID = randomID(),
+        timeout: Long = 0,
+        listener: BlockingResumedListener<T>
+    ): ContinuousSessionReceiver<T> = waiting(id, timeout, listener.parse())
+
+
+    /**
+     * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+     *
+     * @see waiting
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waiting")
+    public fun <E : Event, T> waiting4J(
+        id: ID = randomID(), // randomID(),
+        timeout: Long = 0,
+        eventKey: Event.Key<E>,
+        listener: BlockingClearTargetResumedListener<E, T>
+    ): ContinuousSessionReceiver<T> = waiting(id, timeout, eventKey, listener.parse())
+
+    /**
+     * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+     *
+     * @see waiting
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waiting")
+    public fun <E : Event, T> waiting4J(
+        id: ID = randomID(),
+        timeout: Long = 0,
+        eventType: Class<E>,
+        listener: BlockingClearTargetResumedListener<E, T>
+    ): ContinuousSessionReceiver<T> = waiting(id, timeout, Event.Key.getKey(eventType), listener.parse())
 
 
     /**
@@ -208,9 +256,12 @@ public abstract class ContinuousSessionContext {
 
 }
 
-
+/**
+ * [waitingFor] 的内联简化函数，通过 [E] 和 [T] 来决定 waitingFor 的事件内容与返回类型。
+ *
+ */
 public suspend inline fun <reified E : Event, T> ContinuousSessionContext.waitFor(
-    id: ID = Random.nextLong().ID,
+    id: ID = randomID(),
     timeout: Long = 0,
     listener: ClearTargetResumedListener<E, T>
 ): T {
@@ -218,14 +269,14 @@ public suspend inline fun <reified E : Event, T> ContinuousSessionContext.waitFo
 }
 
 public suspend inline fun <reified E : Event, T> ContinuousSessionContext.waitFor(
-    id: ID = Random.nextLong().ID,
+    id: ID = randomID(),
     timeout: Duration,
     listener: ClearTargetResumedListener<E, T>
 ): T = waitFor(id, timeout.inWholeMilliseconds, listener)
 
 
 public suspend fun <E : Event, T> ContinuousSessionContext.waitingFor(
-    id: ID = Random.nextLong().ID,
+    id: ID = randomID(),
     timeout: Duration,
     eventKey: Event.Key<E>,
     listener: ClearTargetResumedListener<E, T>
@@ -233,14 +284,14 @@ public suspend fun <E : Event, T> ContinuousSessionContext.waitingFor(
 
 
 public suspend fun <T> ContinuousSessionContext.waitingFor(
-    id: ID = Random.nextLong().ID,
+    id: ID = randomID(),
     timeout: Duration,
     listener: ResumedListener<T>
 ): T = waitingFor(id, timeout.inWholeMilliseconds, listener)
 
 
 public fun <E : Event, T> ContinuousSessionContext.waiting(
-    id: ID = Random.nextLong().ID,
+    id: ID = randomID(),
     timeout: Duration,
     eventKey: Event.Key<E>,
     listener: ClearTargetResumedListener<E, T>
@@ -248,7 +299,7 @@ public fun <E : Event, T> ContinuousSessionContext.waiting(
 
 
 public fun <T> ContinuousSessionContext.waiting(
-    id: ID = Random.nextLong().ID,
+    id: ID = randomID(),
     timeout: Duration,
     listener: ResumedListener<T>
 ): ContinuousSessionReceiver<T> = waiting(id, timeout.inWholeMilliseconds, listener)
@@ -331,30 +382,36 @@ public interface ContinuousSessionProvider<T> {
  * @see ClearTargetResumedListener
  * @see BlockingClearTargetResumedListener
  */
-public fun interface ResumedListener<T> : suspend (EventProcessingContext, ContinuousSessionProvider<T>) -> Unit {
-    @JvmSynthetic
-    override suspend fun invoke(context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
+public fun interface ResumedListener<T> {
+    public suspend operator fun invoke(context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
 }
 
 /**
- * 阻塞的
+ * 阻塞的 [ResumedListener].
  */
 @Api4J
-public fun interface BlockingResumedListener<T> : ResumedListener<T> {
-    public fun invokeBlocking(context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
+public fun interface BlockingResumedListener<T> {
+    public operator fun invoke(context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
 
-    @JvmSynthetic
-    override suspend operator fun invoke(context: EventProcessingContext, provider: ContinuousSessionProvider<T>) {
-        invokeBlocking(context, provider)
-    }
+    // override suspend operator fun invoke(context: EventProcessingContext, provider: ContinuousSessionProvider<T>) {
+    //     invokeBlocking(context, provider)
+    // }
 }
+
+@OptIn(Api4J::class)
+internal fun <T> BlockingResumedListener<T>.parse(): ResumedListener<T> = ResumedListener { context, provider -> this(context, provider) }
 
 /**
  * 有着明确监听目标的 [ResumedListener]。
+ *
+ * @see BlockingClearTargetResumedListener
  */
 public fun interface ClearTargetResumedListener<E : Event, T> {
-    @JvmSynthetic
-    public suspend operator fun invoke(event: E, context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
+    public suspend operator fun invoke(
+        event: E,
+        context: EventProcessingContext,
+        provider: ContinuousSessionProvider<T>
+    )
 }
 
 
@@ -366,5 +423,13 @@ public fun interface ClearTargetResumedListener<E : Event, T> {
  */
 @Api4J
 public fun interface BlockingClearTargetResumedListener<E : Event, T> {
-    public fun invokeBlocking(event: E, context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
+    // override suspend fun invoke(event: E, context: EventProcessingContext, provider: ContinuousSessionProvider<T>) {
+    //     invokeBlocking(event, context, provider)
+    // }
+
+    public operator fun invoke(event: E, context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
 }
+
+@OptIn(Api4J::class)
+internal fun <E : Event, T> BlockingClearTargetResumedListener<E, T>.parse(): ClearTargetResumedListener<E, T> =
+    ClearTargetResumedListener { event, context, provider -> this(event, context, provider)  }
