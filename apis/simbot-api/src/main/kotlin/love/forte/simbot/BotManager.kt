@@ -39,7 +39,6 @@ public interface BotRegistrar : ComponentContainer {
 }
 
 
-
 public open class ComponentMismatchException : SimbotIllegalArgumentException {
     public constructor() : super()
     public constructor(message: String?) : super(message)
@@ -53,8 +52,6 @@ public open class VerifyFailureException : SimbotIllegalStateException {
     public constructor(message: String?, cause: Throwable?) : super(message, cause)
     public constructor(cause: Throwable?) : super(cause)
 }
-
-
 
 
 /**
@@ -79,9 +76,6 @@ public interface BotVerifyInfo {
 }
 
 
-
-
-
 /**
  *
  * [Bot] 管理器。
@@ -104,6 +98,16 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
     private fun isBeManaged() = beManaged()
     protected open fun beManaged(): Boolean = true
 
+    /**
+     *
+     * 通过 [BotVerifyInfo] 注册并管理一个 [Bot].
+     *
+     * [BotVerifyInfo] 通常情况下是由组件读取 `*.bot` 文件并提供给当前 [BotManager], 作为用户一般情况下不需要使用函数。
+     *
+     * [BotManager] 的实现通常需要提供其他额外的友好api来使用。
+     *
+     * @throws BotAlreadyRegisteredException 出现验证标识冲突的时候
+     */
     abstract override fun register(verifyInfo: BotVerifyInfo): Bot
 
     /**
@@ -143,3 +147,13 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
 
 
 ////
+
+/**
+ * 当一个 [BotManager] 中已经存在对应ID的时候[Bot]，通过 [BotManager.register] 将会抛出此异常。
+ */
+public open class BotAlreadyRegisteredException : SimbotIllegalStateException {
+    public constructor() : super()
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(cause: Throwable?) : super(cause)
+}
