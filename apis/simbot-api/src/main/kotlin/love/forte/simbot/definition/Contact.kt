@@ -13,7 +13,7 @@
 package love.forte.simbot.definition
 
 import love.forte.simbot.Bot
-import love.forte.simbot.action.MessageSendAction
+import love.forte.simbot.action.SendSupport
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageReceipt
 
@@ -26,7 +26,7 @@ import love.forte.simbot.message.MessageReceipt
  *
  * @author ForteScarlet
  */
-public interface Contact : User, MessageSendAction, BotContainer {
+public interface Contact : User, SendSupport, BotContainer {
 
     /**
      * 联系人所属的 [Bot].

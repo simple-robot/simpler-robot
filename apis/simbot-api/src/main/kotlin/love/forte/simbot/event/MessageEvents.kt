@@ -16,7 +16,7 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.action.DeleteSupport
-import love.forte.simbot.action.MessageSendAction
+import love.forte.simbot.action.SendSupport
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.ReceivedMessageContent
 import love.forte.simbot.message.RemoteMessageContainer
@@ -37,7 +37,7 @@ public interface MessageEvent : Event, RemoteMessageContainer {
     /**
      * 当前消息事件所对应的事件源头.
      *
-     * 通常情况下，[source] 都是可以 [发送消息][MessageSendAction] 的。
+     * 通常情况下，[source] 都是可以 [发送消息][SendSupport] 的。
      *
      */
     public val source: Objectives
