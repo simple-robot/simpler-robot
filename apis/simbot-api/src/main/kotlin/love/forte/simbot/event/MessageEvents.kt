@@ -15,7 +15,7 @@ package love.forte.simbot.event
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
-import love.forte.simbot.action.DeleteAction
+import love.forte.simbot.action.DeleteSupport
 import love.forte.simbot.action.MessageSendAction
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.ReceivedMessageContent
@@ -92,7 +92,7 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
  * @see ChannelMessageEvent
  *
  */
-public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteAction, RemoteMessageContainer {
+public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteSupport, RemoteMessageContainer {
     /**
      * 来自的聊天室，通常是一个群或者一个频道。
      */

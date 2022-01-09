@@ -53,7 +53,7 @@ public interface MessageSendAction {
  *
  *
  */
-public interface MessageReplySupport {
+public interface ReplySupport {
 
     /**
      * 回复当前目标，并得到一个 [回复回执][MessageReplyReceipt]
@@ -96,7 +96,7 @@ public interface MessageReplyReceipt : MessageReceipt {
  *
  * [MessageReactSupport.react] 将不会对参数 `message` 进行类型限制，相对的，实现者需要对参数消息进行校验，并在存在不匹配的情况时抛出异常。
  *
- * [回应][MessageReactSupport.react] 与 [回复][MessageReplySupport.reply] 不同，
+ * [回应][MessageReactSupport.react] 与 [回复][ReplySupport.reply] 不同，
  * 回复常常类似于针对某个消息而回复一条消息，会产生一条新的消息；
  * 而回应则更多的是对于一个消息"作出回应"，通产情况下不会产生新的消息，一般会表现为标记一个表情。
  *
@@ -143,7 +143,7 @@ public suspend fun MessageContainer.sendIfSupport(message: Message): MessageRece
  */
 @JvmSynthetic
 public suspend fun Objectives.replyIfSupport(message: Message): MessageReplyReceipt? =
-    if (this is MessageReplySupport) reply(message) else null
+    if (this is ReplySupport) reply(message) else null
 
 
 /**
@@ -151,7 +151,7 @@ public suspend fun Objectives.replyIfSupport(message: Message): MessageReplyRece
  */
 @JvmSynthetic
 public suspend fun MessageContainer.replyIfSupport(message: Message): MessageReplyReceipt? =
-    if (this is MessageReplySupport) reply(message) else null
+    if (this is ReplySupport) reply(message) else null
 
 
 /**

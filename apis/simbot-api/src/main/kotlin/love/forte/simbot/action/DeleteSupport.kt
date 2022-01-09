@@ -23,7 +23,7 @@ import love.forte.simbot.Api4J
  * 一般用于消息回执或者从远端接收到的消息事件上。
  * @author ForteScarlet
  */
-public interface DeleteAction {
+public interface DeleteSupport {
 
     /**
      * 删除当前目标。

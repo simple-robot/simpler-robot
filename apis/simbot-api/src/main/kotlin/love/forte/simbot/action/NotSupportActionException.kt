@@ -4,7 +4,7 @@ package love.forte.simbot.action
 /**
  *
  * 不支持的行为异常。
- * 对于组件，如果一个行为不被支持（例如 [MuteAction] [DeleteAction]）那么
+ * 对于组件，如果一个行为不被支持（例如 [MuteAction] [DeleteSupport]）那么
  *
  * @author ForteScarlet
  */
