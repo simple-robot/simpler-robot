@@ -19,7 +19,7 @@ import love.forte.simbot.ID
 import love.forte.simbot.SimbotComponent
 import love.forte.simbot.message.Text.Key.getEmptyText
 import love.forte.simbot.message.Text.Key.of
-import java.nio.channels.ByteChannel
+import love.forte.simbot.resources.Resource
 import kotlin.reflect.KClass
 
 /**
@@ -193,9 +193,9 @@ public interface Image : StandardMessage<Image> {
 
 
     /**
-     * 得到这个图片的数据。
+     * 得到这个图片的数据资源。
      */
-    public fun byteChannel(): ByteChannel
+    public suspend fun resource(): Resource
 }
 
 
