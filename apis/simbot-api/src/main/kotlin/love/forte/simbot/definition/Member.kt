@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -19,7 +19,7 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
-import love.forte.simbot.action.MuteAction
+import love.forte.simbot.action.MuteSupport
 import kotlin.time.Duration
 
 
@@ -29,7 +29,7 @@ import kotlin.time.Duration
  * @see GuildMember
  * @see GroupMember
  */
-public interface Member : User, MemberInfo, MuteAction {
+public interface Member : User, MemberInfo, MuteSupport {
 
     override val id: ID
     override val bot: Bot

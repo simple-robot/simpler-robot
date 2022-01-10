@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -18,7 +18,7 @@ import love.forte.simbot.Component
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotComponent
 import love.forte.simbot.message.Text.Key.getEmptyText
-import love.forte.simbot.message.Text.Key.getText
+import love.forte.simbot.message.Text.Key.of
 import java.nio.channels.ByteChannel
 import kotlin.reflect.KClass
 
@@ -63,7 +63,7 @@ public interface PlainText<A : PlainText<A>> : StandardMessage<A> {
  *
  * @see toText
  * @see Text
- * @see getText
+ * @see of
  * @see getEmptyText
  */
 @Serializable
@@ -71,12 +71,12 @@ public interface PlainText<A : PlainText<A>> : StandardMessage<A> {
 public open class Text protected constructor(override val text: String) : PlainText<Text>, BaseStandardMessage<Text>() {
     override val key: Message.Key<Text> get() = Key
 
-    public fun trim(): Text = getText(text.trim())
+    public fun trim(): Text = of(text.trim())
 
     public operator fun plus(other: Text): Text = when {
         text.isEmpty() -> other
         other.text.isEmpty() -> this
-        else -> getText(text + other.text)
+        else -> of(text + other.text)
     }
 
     public operator fun plus(other: String): Text = if (text.isEmpty()) Text(other) else Text(text + other)
@@ -95,7 +95,7 @@ public open class Text protected constructor(override val text: String) : PlainT
         override val elementType: KClass<Text> get() = Text::class
 
         @JvmStatic
-        public fun getText(text: String): Text {
+        public fun of(text: String): Text {
             return if (text.isEmpty()) empty
             else Text(text)
         }
@@ -108,7 +108,8 @@ public open class Text protected constructor(override val text: String) : PlainT
 
 
 @Suppress("RemoveRedundantQualifierName")
-public fun String.toText(): Text = Text.getText(this)
+public fun String.toText(): Text = Text.of(this)
+
 @Suppress("RemoveRedundantQualifierName")
 public fun Text(): Text = Text.getEmptyText()
 public inline fun Text(block: () -> String): Text = block().toText()

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -15,7 +15,7 @@ package love.forte.simbot.definition
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.*
-import love.forte.simbot.action.MuteAction
+import love.forte.simbot.action.MuteSupport
 import java.util.stream.Stream
 import kotlin.time.Duration
 
@@ -56,7 +56,7 @@ import kotlin.time.Duration
  *
  * @author ForteScarlet
  */
-public interface Organization : Objectives, OrganizationInfo, MuteAction, Structured<Organization?, Flow<Organization>>, BotContainer {
+public interface Organization : Objectives, OrganizationInfo, MuteSupport, Structured<Organization?, Flow<Organization>>, BotContainer {
 
     /**
      * 这个组织一定是属于某一个Bot之下的。

@@ -1,3 +1,15 @@
+/*
+ *  Copyright (c) 2022 ForteScarlet <https://github.com/ForteScarlet>
+ *
+ *  根据 Apache License 2.0 获得许可；
+ *  除非遵守许可，否则您不得使用此文件。
+ *  您可以在以下网址获取许可证副本：
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ */
+
 package love.forte.simbot.action
 
 import kotlinx.coroutines.runBlocking
@@ -22,13 +34,13 @@ import kotlin.time.Duration.Companion.microseconds
  *
  * 除了上述两种目前已知的常见形式之外，可能会在未来产生新的情况，例如存在允许同时进行语音、文字交流的聊天室、视频聊天的聊天室等。
  *
- * 目前，[MuteAction] 默认实现于 [love.forte.simbot.definition.Member] 和 [love.forte.simbot.definition.Organization]，
+ * 目前，[MuteSupport] 默认实现于 [love.forte.simbot.definition.Member] 和 [love.forte.simbot.definition.Organization]，
  * 但是api无法保证其实现者能够完美支持此行为，因此在行为不被支持的时候，可能会抛出 [NotSupportActionException] 异常或永远返回一个无效结果。
  *
  *
  * @author ForteScarlet
  */
-public interface MuteAction {
+public interface MuteSupport {
 
     /**
      * 对当前目标进行 **禁言** 操作。
