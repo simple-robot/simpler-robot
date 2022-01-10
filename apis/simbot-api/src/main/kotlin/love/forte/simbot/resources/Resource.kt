@@ -11,6 +11,7 @@
  */
 
 @file:JvmName("Resources")
+
 package love.forte.simbot.resources
 
 import love.forte.simbot.ID
@@ -44,18 +45,37 @@ public sealed class Resource {
 
     public companion object {
 
+        /**
+         * 使用 [ID] 构建一个 [IDResource].
+         */
         @JvmStatic
-        public fun of(id: ID, name: String): IDResource = IDResource(id, name)
+        @JvmOverloads
+        public fun of(id: ID, name: String = id.toString()): IDResource = IDResource(id, name)
 
+        /**
+         * 使用 [URL] 作为一个 [StreamableResource].
+         */
         @JvmStatic
-        public fun of(url: URL): StreamableResource = URLResource(url)
+        @JvmOverloads
+        public fun of(url: URL, name: String = url.toString()): StreamableResource = URLResource(url, name)
 
+        /**
+         * 使用 [File] 作为一个 [StreamableResource].
+         */
         @JvmStatic
-        public fun of(file: File): StreamableResource = FileResource(file)
+        @JvmOverloads
+        public fun of(file: File, name: String = file.toString()): StreamableResource = FileResource(file, name)
 
+        /**
+         * 使用 [Path] 作为一个 [StreamableResource].
+         */
         @JvmStatic
-        public fun of(path: Path): StreamableResource = PathResource(path)
+        @JvmOverloads
+        public fun of(path: Path, name: String = path.toString()): StreamableResource = PathResource(path, name)
 
+        /**
+         * 使用字节数组作为一个 [StreamableResource].
+         */
         @JvmStatic
         public fun of(byteArray: ByteArray, name: String): StreamableResource = ByteArrayResource(name, byteArray)
 
@@ -64,7 +84,8 @@ public sealed class Resource {
          * 不会自动关闭 [inputStream], 需要由调用者处理。
          */
         @JvmStatic
-        public fun of(inputStream: InputStream): StreamableResource {
+        @JvmOverloads
+        public fun of(inputStream: InputStream, name: String? = null): StreamableResource {
             val temp = kotlin.io.path.createTempFile(
                 Path(".simbot/tmp").also {
                     Files.createDirectories(it)
@@ -74,7 +95,7 @@ public sealed class Resource {
             temp.outputStream(StandardOpenOption.CREATE).use(inputStream::copyTo)
             temp.toFile().deleteOnExit()
 
-            return PathResource(temp) { temp.deleteIfExists() }
+            return PathResource(temp, name ?: temp.toString()) { temp.deleteIfExists() }
         }
     }
 }
@@ -104,8 +125,8 @@ public abstract class StreamableResource : Resource(), Closeable {
 /**
  * 使用[URL]作为输入流来源的 [StreamableResource].
  */
-public class URLResource(private val url: URL) : StreamableResource() {
-    override val name: String = url.toString()
+public class URLResource(private val url: URL, override val name: String = url.toString()) : StreamableResource() {
+
     override fun openStream(): InputStream {
         return url.openStream()
     }
@@ -117,8 +138,12 @@ public class URLResource(private val url: URL) : StreamableResource() {
 /**
  * 使用[File]作为输入流来源的 [StreamableResource].
  */
-public class FileResource(private val file: File, private val doClose: () -> Unit = {}) : StreamableResource() {
-    override val name: String = file.toString()
+public class FileResource(
+    private val file: File,
+    override val name: String = file.toString(),
+    private val doClose: () -> Unit = {}
+) : StreamableResource() {
+
     override fun openStream(): FileInputStream {
         return FileInputStream(file)
     }
@@ -133,8 +158,12 @@ public class FileResource(private val file: File, private val doClose: () -> Uni
 /**
  * 使用[Path]作为输入流来源的 [StreamableResource].
  */
-public class PathResource(private val path: Path, private val doClose: () -> Unit = {}) : StreamableResource() {
-    override val name: String = path.toString()
+public class PathResource(
+    private val path: Path,
+    override val name: String = path.toString(),
+    private val doClose: () -> Unit = {}
+) : StreamableResource() {
+
     override fun openStream(): InputStream = path.inputStream(StandardOpenOption.READ)
 
     @Suppress("MemberVisibilityCanBePrivate")
@@ -159,9 +188,9 @@ public class ByteArrayResource(override val name: String, private val byteArray:
 
 
 public fun ID.toResource(name: String): IDResource = Resource.of(this, name)
-public fun URL.toResource(): StreamableResource = Resource.of(this)
-public fun File.toResource(): StreamableResource = Resource.of(this)
-public fun Path.toResource(): StreamableResource = Resource.of(this)
+public fun URL.toResource(name: String = this.toString()): StreamableResource = Resource.of(this, name)
+public fun File.toResource(name: String = this.toString()): StreamableResource = Resource.of(this, name)
+public fun Path.toResource(name: String = this.toString()): StreamableResource = Resource.of(this, name)
 public fun ByteArray.toResource(name: String): StreamableResource = Resource.of(this, name)
-public fun InputStream.toResource(): StreamableResource = Resource.of(this)
-public fun InputStream.useToResource(): StreamableResource = this.use(Resource::of)
+public fun InputStream.toResource(name: String? = null): StreamableResource = Resource.of(this, name)
+public fun InputStream.useToResource(name: String? = null): StreamableResource = this.use { i -> i.toResource(name) }
