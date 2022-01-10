@@ -14,6 +14,15 @@
 
 package love.forte.simbot.resources
 
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.ID
 import java.io.*
 import java.net.URL
@@ -21,10 +30,7 @@ import java.nio.file.Files
 import java.nio.file.OpenOption
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
-import kotlin.io.path.Path
-import kotlin.io.path.deleteIfExists
-import kotlin.io.path.inputStream
-import kotlin.io.path.outputStream
+import kotlin.io.path.*
 
 /**
  *
@@ -35,6 +41,8 @@ import kotlin.io.path.outputStream
  *
  * @author ForteScarlet
  */
+@SerialName("simbot.resource")
+@Serializable
 public sealed class Resource {
 
     /**
@@ -86,7 +94,7 @@ public sealed class Resource {
         @JvmStatic
         @JvmOverloads
         public fun of(inputStream: InputStream, name: String? = null): StreamableResource {
-            val temp = kotlin.io.path.createTempFile(
+            val temp = createTempFile(
                 Path(".simbot/tmp").also {
                     Files.createDirectories(it)
                     it.toFile().deleteOnExit()
@@ -106,7 +114,16 @@ public sealed class Resource {
  * [IDResource] 通常情况下用于作为参数提供者来提供一个资源，并由接受者来自行处理。
  *
  */
-public open class IDResource(public open val id: ID, override val name: String) : Resource()
+@SerialName("simbot.resource.id")
+@Serializable
+public open class IDResource(
+    @Serializable(ID.AsCharSequenceIDSerializer::class)
+    public open val id: ID, override val name: String
+) : Resource() {
+    override fun toString(): String {
+        return "Resource(id=$id, name=$name)"
+    }
+}
 
 
 /**
@@ -116,7 +133,9 @@ public open class IDResource(public open val id: ID, override val name: String) 
  * 一个被 close 的 [StreamableResource] 将不应再继续使用。
  *
  */
-public abstract class StreamableResource : Resource(), Closeable {
+@SerialName("simbot.resource.streamable")
+@Serializable
+public sealed class StreamableResource : Resource(), Closeable {
     public abstract fun openStream(): InputStream
 
 }
@@ -125,29 +144,57 @@ public abstract class StreamableResource : Resource(), Closeable {
 /**
  * 使用[URL]作为输入流来源的 [StreamableResource].
  */
-public class URLResource(private val url: URL, override val name: String = url.toString()) : StreamableResource() {
+@SerialName("simbot.resource.url")
+@Serializable
+public class URLResource(
+    @Serializable(URLSerializer::class)
+    private val url: URL,
+    override val name: String = url.toString()
+) : StreamableResource() {
 
     override fun openStream(): InputStream {
         return url.openStream()
     }
 
+    override fun toString(): String {
+        return "Resource(url=$url, name=$name)"
+    }
     override fun close() {
+    }
+}
+
+internal object URLSerializer : KSerializer<URL> {
+    override fun deserialize(decoder: Decoder): URL {
+        val url = decoder.decodeString()
+        return URL(url)
+    }
+
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("java.net.URL", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: URL) {
+        encoder.encodeString(value.toString())
     }
 }
 
 /**
  * 使用[File]作为输入流来源的 [StreamableResource].
  */
+@SerialName("simbot.resource.file")
+@Serializable
 public class FileResource(
+    @Serializable(FileSerializer::class)
     private val file: File,
     override val name: String = file.toString(),
+    @Transient
     private val doClose: () -> Unit = {}
 ) : StreamableResource() {
 
     override fun openStream(): FileInputStream {
         return FileInputStream(file)
     }
-
+    override fun toString(): String {
+        return "Resource(file=$file, name=$name)"
+    }
     public fun randomAccessFile(mode: String = "r"): RandomAccessFile = RandomAccessFile(file, mode)
 
     override fun close() {
@@ -155,17 +202,38 @@ public class FileResource(
     }
 }
 
+internal object FileSerializer : KSerializer<File> {
+    override fun deserialize(decoder: Decoder): File {
+        val pathname = decoder.decodeString()
+        return File(pathname)
+    }
+
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("file", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: File) {
+        encoder.encodeString(value.path)
+    }
+
+}
+
+
 /**
  * 使用[Path]作为输入流来源的 [StreamableResource].
  */
+@SerialName("simbot.resource.path")
+@Serializable
 public class PathResource(
+    @Serializable(PathSerializer::class)
     private val path: Path,
     override val name: String = path.toString(),
+    @Transient
     private val doClose: () -> Unit = {}
 ) : StreamableResource() {
 
     override fun openStream(): InputStream = path.inputStream(StandardOpenOption.READ)
-
+    override fun toString(): String {
+        return "Resource(path=$path, name=$name)"
+    }
     @Suppress("MemberVisibilityCanBePrivate")
     public fun openStream(vararg options: OpenOption): InputStream = path.inputStream(*options)
 
@@ -174,14 +242,28 @@ public class PathResource(
     }
 }
 
+internal object PathSerializer : KSerializer<Path> {
+    override fun deserialize(decoder: Decoder): Path = Path(decoder.decodeString())
+
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("java.nio.Path", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: Path) {
+        encoder.encodeString(value.pathString)
+    }
+}
+
 /**
  * 使用 [ByteArray] 字节数组作为输入流来源的 [StreamableResource].
  */
+@SerialName("simbot.resource.bytes")
+@Serializable
 public class ByteArrayResource(override val name: String, private val byteArray: ByteArray) : StreamableResource() {
     override fun openStream(): ByteArrayInputStream {
         return byteArray.inputStream()
     }
-
+    override fun toString(): String {
+        return "Resource(byteArray(size)=${byteArray.size}, name=$name)"
+    }
     override fun close() {
     }
 }
