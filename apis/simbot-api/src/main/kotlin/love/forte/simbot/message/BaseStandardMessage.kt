@@ -182,7 +182,7 @@ public object AtAll : BaseStandardMessage<AtAll>(), Message.Key<AtAll> {
  * 因此 [Image] 需要通过 [love.forte.simbot.Bot] 进行上传获取。
  *
  */
-public interface Image : StandardMessage<Image> {
+public interface Image<E : Image<E>> : StandardMessage<E> {
     /**
      * 上传后的图片会有一个服务端返回的ID。
      *
