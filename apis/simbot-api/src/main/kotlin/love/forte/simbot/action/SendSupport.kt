@@ -18,10 +18,7 @@ import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.definition.Objectives
-import love.forte.simbot.message.Message
-import love.forte.simbot.message.MessageContainer
-import love.forte.simbot.message.MessageReceipt
-import love.forte.simbot.message.Text
+import love.forte.simbot.message.*
 
 
 /**
@@ -46,6 +43,21 @@ public interface SendSupport {
 
     @Api4J
     public fun sendBlocking(message: Message): MessageReceipt = runBlocking { send(message) }
+
+    /**
+     * 发送消息，并得到一个回执单。
+     *
+     * @throws MessageSendingException 如果信息发送这个过程本身出现异常
+     * @throws SimbotIllegalArgumentException 如果提供参数中存在不合法参数等
+     * @throws SimbotIllegalStateException 如果当前状态存在异常
+     *
+     */
+    @JvmSynthetic
+    public suspend fun send(message: MessageContent): MessageReceipt = send(message.messages)
+
+
+    @Api4J
+    public fun sendBlocking(message: MessageContent): MessageReceipt = runBlocking { send(message) }
 
 
     @JvmSynthetic
@@ -73,6 +85,15 @@ public interface ReplySupport {
 
     @Api4J
     public fun replyBlocking(message: Message): MessageReplyReceipt = runBlocking { reply(message) }
+
+    /**
+     * 回复当前目标，并得到一个 [回复回执][MessageReplyReceipt]
+     */
+    @JvmSynthetic
+    public suspend fun reply(message: MessageContent): MessageReplyReceipt = reply(message.messages)
+
+    @Api4J
+    public fun replyBlocking(message: MessageContent): MessageReplyReceipt = runBlocking { reply(message) }
 
     @JvmSynthetic
     public suspend fun reply(text: String): MessageReplyReceipt = reply(Text.of(text))
@@ -157,6 +178,20 @@ public suspend fun MessageContainer.sendIfSupport(message: Message): MessageRece
  * 如果此目标允许发送消息，发送，否则得到null。
  */
 @JvmSynthetic
+public suspend fun Objectives.sendIfSupport(message: MessageContent): MessageReceipt? =
+    if (this is SendSupport) send(message) else null
+
+/**
+ * 如果此事件允许发送消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend fun MessageContainer.sendIfSupport(message: MessageContent): MessageReceipt? =
+    if (this is SendSupport) send(message) else null
+
+/**
+ * 如果此目标允许发送消息，发送，否则得到null。
+ */
+@JvmSynthetic
 public suspend fun Objectives.sendIfSupport(message: String): MessageReceipt? =
     if (this is SendSupport) send(message) else null
 
@@ -181,6 +216,22 @@ public suspend fun Objectives.replyIfSupport(message: Message): MessageReplyRece
  */
 @JvmSynthetic
 public suspend fun MessageContainer.replyIfSupport(message: Message): MessageReplyReceipt? =
+    if (this is ReplySupport) reply(message) else null
+
+
+/**
+ * 如果此目标允许回复消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend fun Objectives.replyIfSupport(message: MessageContent): MessageReplyReceipt? =
+    if (this is ReplySupport) reply(message) else null
+
+
+/**
+ * 如果此组织允许回复消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend fun MessageContainer.replyIfSupport(message: MessageContent): MessageReplyReceipt? =
     if (this is ReplySupport) reply(message) else null
 
 
