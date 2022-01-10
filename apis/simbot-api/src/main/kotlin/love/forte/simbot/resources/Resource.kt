@@ -10,6 +10,7 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
+@file:JvmName("Resources")
 package love.forte.simbot.resources
 
 import love.forte.simbot.ID
@@ -56,7 +57,7 @@ public sealed class Resource {
         public fun of(path: Path): StreamableResource = PathResource(path)
 
         @JvmStatic
-        public fun of(name: String, byteArray: ByteArray): StreamableResource = ByteArrayResource(name, byteArray)
+        public fun of(byteArray: ByteArray, name: String): StreamableResource = ByteArrayResource(name, byteArray)
 
         /**
          * 拷贝提供的 [inputStream] 并作为 [StreamableResource] 返回。
@@ -65,10 +66,10 @@ public sealed class Resource {
         @JvmStatic
         public fun of(inputStream: InputStream): StreamableResource {
             val temp = kotlin.io.path.createTempFile(
-                 Path(".simbot/tmp").also {
-                     Files.createDirectories(it)
-                     it.toFile().deleteOnExit()
-                 },
+                Path(".simbot/tmp").also {
+                    Files.createDirectories(it)
+                    it.toFile().deleteOnExit()
+                },
             )
             temp.outputStream(StandardOpenOption.CREATE).use(inputStream::copyTo)
             temp.toFile().deleteOnExit()
@@ -157,3 +158,10 @@ public class ByteArrayResource(override val name: String, private val byteArray:
 }
 
 
+public fun ID.toResource(name: String): IDResource = Resource.of(this, name)
+public fun URL.toResource(): StreamableResource = Resource.of(this)
+public fun File.toResource(): StreamableResource = Resource.of(this)
+public fun Path.toResource(): StreamableResource = Resource.of(this)
+public fun ByteArray.toResource(name: String): StreamableResource = Resource.of(this, name)
+public fun InputStream.toResource(): StreamableResource = Resource.of(this)
+public fun InputStream.useToResource(): StreamableResource = this.use(Resource::of)
