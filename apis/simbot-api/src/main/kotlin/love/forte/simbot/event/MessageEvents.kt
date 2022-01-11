@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -12,6 +12,7 @@
 
 package love.forte.simbot.event
 
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
@@ -34,13 +35,20 @@ public interface MessageEvent : Event, RemoteMessageContainer {
     override val bot: Bot
     override val metadata: Event.Metadata
 
+
     /**
      * 当前消息事件所对应的事件源头.
      *
      * 通常情况下，[source] 都是可以 [发送消息][SendSupport] 的。
      *
      */
+    public suspend fun source(): Objectives
+
+
+    @Api4J
     public val source: Objectives
+        get() = runBlocking { source() }
+
 
     /**
      * 当前消息事件的消息正文。
@@ -60,14 +68,24 @@ public interface MessageEvent : Event, RemoteMessageContainer {
  *
  */
 public interface ContactMessageEvent : MessageEvent, UserEvent {
+
+
     /**
-     * 私有消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
+     * 消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
      */
-    override val source: Contact
+    override suspend fun user(): Contact
 
     @Api4J
-    override val user: User
-        get() = source
+    override val user: Contact
+        get() = runBlocking { user() }
+
+
+    override suspend fun source(): Contact = user()
+
+    @Api4J
+    override val source: Contact
+        get() = runBlocking { source() }
+
 
     /**
      * 通常情况下，联系人消息的可见性是私人的。
@@ -76,10 +94,50 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
         get() = Event.VisibleScope.PRIVATE
 
     public companion object Key : BaseEventKey<ContactMessageEvent>(
-        "api.private_message",
+        "api.contact_message",
         setOf(MessageEvent, UserEvent)
     ) {
         override fun safeCast(value: Any): ContactMessageEvent? = doSafeCast(value)
+    }
+}
+
+
+/**
+ * 一个来自于[好友][Friend]的消息事件。这通常代表为一个私聊消息事件。
+ *
+ * @see ContactMessageEvent
+ */
+public interface FriendMessageEvent : ContactMessageEvent {
+
+    /**
+     * 消息的信息来源是一个可以进行信息交互的 [好友][Friend]
+     */
+    override suspend fun user(): Friend
+
+    @Api4J
+    override val user: Friend
+        get() = runBlocking { user() }
+
+
+    override suspend fun source(): Friend = user()
+
+    @Api4J
+    override val source: Friend
+        get() = runBlocking { source() }
+
+
+    /**
+     * 通常情况下，联系人消息的可见性是私人的。
+     */
+    override val visibleScope: Event.VisibleScope
+        get() = Event.VisibleScope.PRIVATE
+
+
+    public companion object Key : BaseEventKey<FriendMessageEvent>(
+        "api.friend_message",
+        setOf(ContactMessageEvent)
+    ) {
+        override fun safeCast(value: Any): FriendMessageEvent? = doSafeCast(value)
     }
 }
 
@@ -93,15 +151,24 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
  *
  */
 public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteSupport, RemoteMessageContainer {
+
     /**
      * 来自的聊天室，通常是一个群或者一个频道。
      */
+    override suspend fun source(): ChatRoom
+
+    @Api4J
     override val source: ChatRoom
+        get() = runBlocking { source() }
 
     /**
      * 这个消息的发送者.
      */
+    public suspend fun author(): Member
+
+    @Api4J
     public val author: Member
+        get() = runBlocking { author() }
 
 
     /**
@@ -130,12 +197,29 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
     /**
      * 消息来自的群。
      */
-    override val source: Group
-    override val author: Member
+    override suspend fun group(): Group
 
     @Api4J
     override val group: Group
-        get() = source
+        get() = runBlocking { group() }
+
+
+    override suspend fun source(): Group = group()
+
+
+    @Api4J
+    override val source: Group
+        get() = runBlocking { source() }
+
+    /**
+     * 消息发送者
+     */
+    override suspend fun author(): Member
+
+    @Api4J
+    override val author: Member
+        get() = runBlocking { author() }
+
 
     public companion object Key : BaseEventKey<GroupMessageEvent>(
         "api.group_message",
@@ -155,15 +239,25 @@ public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
     /**
      * 消息来自的频道
      */
-    override val source: Channel
-    override val author: Member
-
-    @JvmSynthetic
     override suspend fun channel(): Channel
 
     @Api4J
     override val channel: Channel
-        get() = source
+        get() = runBlocking { channel() }
+
+
+    override suspend fun source(): Channel = channel()
+
+    @Api4J
+    override val source: Channel
+        get() = runBlocking { source() }
+
+    override suspend fun author(): Member
+
+    @Api4J
+    override val author: Member
+        get() = runBlocking { author() }
+
 
     public companion object Key : BaseEventKey<ChannelMessageEvent>(
         "api.channel_message",
@@ -172,6 +266,7 @@ public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
         override fun safeCast(value: Any): ChannelMessageEvent? = doSafeCast(value)
     }
 }
+
 
 /**
  * 消息被回应事件。

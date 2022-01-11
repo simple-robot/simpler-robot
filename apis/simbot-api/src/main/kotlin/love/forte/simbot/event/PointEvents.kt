@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -12,6 +12,7 @@
 
 package love.forte.simbot.event
 
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.message.doSafeCast
 
 
@@ -22,14 +23,18 @@ import love.forte.simbot.message.doSafeCast
  * 因此在 [StartPointEvent] 中 [before] 通常为 null。
  */
 public interface StartPointEvent<S, V> : ChangedEvent<S, V?, V> {
-    override val source: S
-    override val before: V? get() = null
-    override val after: V get() = target
-
     /**
      * 此次变化的目标。
      */
-    public val target: V
+    public suspend fun target(): V
+
+    override suspend fun source(): S
+    override suspend fun before(): V? = null
+    override suspend fun after(): V = target()
+
+    override val before: V? get() = null
+    override val after: V get() = target
+    public val target: V get() = runBlocking { target() }
 
     public companion object Key : BaseEventKey<StartPointEvent<*, *>>("api.start_point", setOf(ChangedEvent)) {
         override fun safeCast(value: Any): StartPointEvent<*, *>? = doSafeCast(value)
@@ -45,14 +50,17 @@ public interface StartPointEvent<S, V> : ChangedEvent<S, V?, V> {
  *
  */
 public interface EndPointEvent<S, V> : ChangedEvent<S, V, V?> {
-    override val source: S
-    override val before: V get() = target
-    override val after: V? get() = null
-
     /**
      * 此次变化的目标。
      */
-    public val target: V
+    public suspend fun target(): V
+
+    override suspend fun before(): V = target()
+    override suspend fun after(): V? = null
+
+    override val before: V get() = target
+    override val after: V? get() = null
+    public val target: V get() = runBlocking { target() }
 
     public companion object Key : BaseEventKey<EndPointEvent<*, *>>("api.end_point", setOf(ChangedEvent)) {
         override fun safeCast(value: Any): EndPointEvent<*, *>? = doSafeCast(value)
@@ -67,8 +75,8 @@ public interface EndPointEvent<S, V> : ChangedEvent<S, V, V?> {
  *
  */
 public interface IncreaseEvent<S, V> : StartPointEvent<S, V> {
-    override val source: S
-    override val target: V
+    override suspend fun source(): S
+    override suspend fun target(): V
 
     public companion object Key : BaseEventKey<IncreaseEvent<*, *>>("api.increase", setOf(StartPointEvent)) {
         override fun safeCast(value: Any): IncreaseEvent<*, *>? = doSafeCast(value)
@@ -81,8 +89,8 @@ public interface IncreaseEvent<S, V> : StartPointEvent<S, V> {
  *
  */
 public interface DecreaseEvent<S, V> : EndPointEvent<S, V> {
-    override val source: S
-    override val target: V
+    override suspend fun source(): S
+    override suspend fun target(): V
 
     public companion object Key : BaseEventKey<DecreaseEvent<*, *>>("api.decrease", setOf(EndPointEvent)) {
         override fun safeCast(value: Any): DecreaseEvent<*, *>? = doSafeCast(value)

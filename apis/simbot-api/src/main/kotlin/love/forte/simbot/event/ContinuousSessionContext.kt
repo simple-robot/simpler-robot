@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -10,7 +10,7 @@
  *   有关许可证下的权限和限制的具体语言，请参见许可证。
  */
 
-@file:JvmName("ContinuousSessionScopeContextUtil2")
+@file:JvmName("ContinuousSessionScopeContextUtil")
 
 package love.forte.simbot.event
 
@@ -47,7 +47,7 @@ import kotlin.time.Duration
  * ```
  *
  * 在 [ContinuousSessionContext] 中，不论是 [provider][getProvider] 还是 [receiver][getReceiver], 它们都会在一次会话结束（使用了能够导致 [ContinuousSessionProvider.isCompleted] == true 的函数 ）后被移除。
- * 因此当会话结束后，[provider][getProvider] 还是 [receiver][getReceiver] 都会变为null。如果你希望得到这次会话的某个返回值，你需要通过 [waitingFor] 挂起等待，或者通过 [waiting] 得到并保存一个 [ContinuousSession] 实例以备使用。
+ * 因此当会话结束后，[provider][getProvider] 还是 [receiver][getReceiver] 都会变为null。如果你希望得到这次会话的某个返回值，你需要通过 [waitingFor] 挂起等待，或者通过 [waiting] 得到并保存一个 [ContinuousSessionReceiver] 实例以备使用。
  *
  *
  * 对于较为简单的会话嵌套，（在kotlin中）你可以使用以下方式轻松完成：
@@ -132,7 +132,6 @@ import kotlin.time.Duration
  *
  * session.waitingFor(randomID(), 5.seconds) { ... }
  * ```
- * @see ContinuousSession
  * @see ContinuousSessionProvider
  * @see ContinuousSessionReceiver
  * @see waitFor
@@ -399,7 +398,8 @@ public fun interface BlockingResumedListener<T> {
 }
 
 @OptIn(Api4J::class)
-internal fun <T> BlockingResumedListener<T>.parse(): ResumedListener<T> = ResumedListener { context, provider -> this(context, provider) }
+internal fun <T> BlockingResumedListener<T>.parse(): ResumedListener<T> =
+    ResumedListener { context, provider -> this(context, provider) }
 
 /**
  * 有着明确监听目标的 [ResumedListener]。
@@ -432,4 +432,4 @@ public fun interface BlockingClearTargetResumedListener<E : Event, T> {
 
 @OptIn(Api4J::class)
 internal fun <E : Event, T> BlockingClearTargetResumedListener<E, T>.parse(): ClearTargetResumedListener<E, T> =
-    ClearTargetResumedListener { event, context, provider -> this(event, context, provider)  }
+    ClearTargetResumedListener { event, context, provider -> this(event, context, provider) }

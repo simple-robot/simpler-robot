@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -15,7 +15,8 @@ package love.forte.simbot.event
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
-import love.forte.simbot.ExperimentalSrApi
+import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.definition.User
 import love.forte.simbot.message.doSafeCast
 
 
@@ -52,34 +53,32 @@ public interface RequestEvent : Event {
     /**
      * 是否同意/接受此次请求。
      */
-    @JvmSynthetic
-    @ExperimentalSrApi
+    @ExperimentalSimbotApi
     public suspend fun accept(/*action: AcceptAction = AccDefault*/): Boolean
 
     @Api4J
-    @ExperimentalSrApi
+    @ExperimentalSimbotApi
     public fun acceptBlocking(): Boolean = runBlocking { accept() }
 
     /**
      * 是否拒绝/回绝此次请求。
      */
-    @JvmSynthetic
-    @ExperimentalSrApi
+    @ExperimentalSimbotApi
     public suspend fun reject(/*action: RejectAction = RejDefault*/): Boolean
 
     @Api4J
-    @ExperimentalSrApi
+    @ExperimentalSimbotApi
     public fun rejectBlocking(): Boolean = runBlocking { reject() }
 
 
     public enum class Type {
         /**
-         * 申请。
+         * 主动申请。
          */
         APPLICATION,
 
         /**
-         * 邀请。
+         * 邀请/被邀请。
          */
         INVITATION
 
@@ -132,5 +131,19 @@ public interface ChannelRequestEvent : RequestEvent, ChannelEvent {
         )
     ) {
         override fun safeCast(value: Any): ChannelRequestEvent? = doSafeCast(value)
+    }
+}
+
+/**
+ * 一个与其他[用户][User]相关的请求事件
+ */
+public interface UserRequestEvent : RequestEvent, UserEvent {
+
+    public companion object Key : BaseEventKey<UserRequestEvent>(
+        "api.user_request", setOf(
+            RequestEvent, UserEvent
+        )
+    ) {
+        override fun safeCast(value: Any): UserRequestEvent? = doSafeCast(value)
     }
 }

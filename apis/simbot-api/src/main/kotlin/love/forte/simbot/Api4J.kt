@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -26,4 +26,4 @@ public annotation class Api4J
 @RequiresOptIn("实验性的simbotAPI，可能会随时变更", level = RequiresOptIn.Level.WARNING)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
-public annotation class ExperimentalSrApi
+public annotation class ExperimentalSimbotApi

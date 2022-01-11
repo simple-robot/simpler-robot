@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -57,19 +57,19 @@ public interface MemberEvent : UserEvent {
     /**
      * 这个[成员][Member]
      */
-    @JvmSynthetic
     public suspend fun member(): Member
 
     @Api4J
     public val member: Member
         get() = runBlocking { member() }
 
+
+    override suspend fun user(): User = member()
+
     @Api4J
     override val user: User
         get() = member
 
-    @JvmSynthetic
-    override suspend fun user(): User = member()
 
     public companion object Key : BaseEventKey<MemberEvent>("api.member", setOf(UserEvent)) {
         override fun safeCast(value: Any): MemberEvent? = doSafeCast(value)
@@ -84,7 +84,6 @@ public interface FriendEvent : UserEvent {
     /**
      * 这个[好友][Friend]
      */
-    @JvmSynthetic
     public suspend fun friend(): Friend
 
 
@@ -96,7 +95,6 @@ public interface FriendEvent : UserEvent {
     override val user: User
         get() = friend
 
-    @JvmSynthetic
     override suspend fun user(): User = friend()
 
 
@@ -104,16 +102,6 @@ public interface FriendEvent : UserEvent {
         override fun safeCast(value: Any): FriendEvent? = doSafeCast(value)
     }
 }
-
-// /**
-//  * 一个主要与 [Bot] 相关的事件。
-//  */
-// public interface BotEvent : UserEvent {
-//
-//     public companion object Key : BaseEventKey<FriendEvent>("api.bot", setOf(UserEvent)) {
-//         override fun safeCast(value: Any): FriendEvent? = doSafeCast(value)
-//     }
-// }
 
 //endregion
 
@@ -126,7 +114,6 @@ public interface OrganizationEvent : ObjectiveEvent {
     /**
      * 这个[组织][Organization]
      */
-    @JvmSynthetic
     public suspend fun organization(): Organization
 
     @Api4J
@@ -146,7 +133,6 @@ public interface GroupEvent : OrganizationEvent {
     /**
      * 这个[群][Group]
      */
-    @JvmSynthetic
     public suspend fun group(): Group
 
     @Api4J
@@ -166,7 +152,6 @@ public interface GuildEvent : OrganizationEvent {
     /**
      * 这个[频道服务器][Guild]
      */
-    @JvmSynthetic
     public suspend fun guild(): Guild
 
 
@@ -187,7 +172,6 @@ public interface ChannelEvent : OrganizationEvent {
     /**
      * 这个[频道][Channel]
      */
-    @JvmSynthetic
     public suspend fun channel(): Channel
 
     @Api4J
