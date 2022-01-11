@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -20,6 +20,7 @@ import love.forte.simbot.LoggerFactory
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.randomID
+import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
 import java.util.*
 import java.util.function.BiConsumer
@@ -143,6 +144,9 @@ internal class CoreListener<E : Event>(
 
 /**
  * 创建一个监听函数。
+ *
+ * [func] 会在 [runWithInterruptible] 中以 [kotlinx.coroutines.Dispatchers.IO] 作为默认调度器被执行。
+ *
  */
 @Api4J
 @JvmOverloads
@@ -154,33 +158,42 @@ public fun <E : Event> blockingCoreListener(
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: BiFunction<EventProcessingContext, E, Any?>
-): EventListener = coreListener(eventKey, id, blockNext, isAsync, logger, func::apply)
+): EventListener = coreListener(eventKey, id, blockNext, isAsync, logger) { context, event ->
+    runWithInterruptible { func.apply(context, event) }
+}
 
 
 /**
  * 创建一个监听函数。
+ *
+ * [func] 会在 [runWithInterruptible] 中以 [kotlinx.coroutines.Dispatchers.IO] 作为默认调度器被执行。
+ *
  */
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
 public fun <E : Event> blockingCoreListener(
     eventKey: Event.Key<E>,
-    id: ID = UUID.randomUUID().ID,
+    id: ID = randomID(),
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     func: BiConsumer<EventProcessingContext, E>
-): EventListener = coreListener(eventKey, id, blockNext, isAsync) { c, e -> func.accept(c, e) }
+): EventListener = coreListener(eventKey, id, blockNext, isAsync) { c, e ->
+    runWithInterruptible { func.accept(c, e) }
+}
 
 
 /**
  * 创建一个监听函数。
+ *
+ * [func] 会在 [runWithInterruptible] 中以 [kotlinx.coroutines.Dispatchers.IO] 作为默认调度器被执行。
  */
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
 public fun <E : Event> blockingCoreListener(
     eventType: Class<E>,
-    id: ID = UUID.randomUUID().ID,
+    id: ID = randomID(),
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
@@ -189,6 +202,8 @@ public fun <E : Event> blockingCoreListener(
 
 /**
  * 创建一个监听函数。
+ *
+ * [func] 会在 [runWithInterruptible] 中以 [kotlinx.coroutines.Dispatchers.IO] 作为默认调度器被执行。
  */
 @Api4J
 @JvmOverloads

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -12,12 +12,14 @@
 
 package love.forte.simboot.listener
 
+import kotlinx.coroutines.Dispatchers
 import love.forte.simbot.Api4J
 import love.forte.simbot.PriorityConstant
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.EventListenerProcessingContext
 import love.forte.simbot.event.EventProcessingContext
 import love.forte.simbot.event.EventResult
+import love.forte.simbot.utils.runWithInterruptible
 import kotlin.reflect.KCallable
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
@@ -28,6 +30,10 @@ import kotlin.reflect.full.callSuspend
  *
  * 可以进行动态参数绑定的 [FunctionalEventListener],
  * 可以通过 [binders] 对 [caller] 进行参数绑定。
+ *
+ * 在 [invoke] 中，如果 [caller] 是可挂起的（`isSuspend = true`）, 则通过可挂起执行。
+ * 如果不是可挂起的，则会通过 [runWithInterruptible] 在可中断中普通执行。
+ * [runWithInterruptible] 默认情况下会使用 [Dispatchers.IO] 作为默认调度器。
  *
  */
 public abstract class FunctionalBindableEventListener<R> : FunctionalEventListener<R>(), GenericBootEventListener {
@@ -74,7 +80,11 @@ public abstract class FunctionalBindableEventListener<R> : FunctionalEventListen
                 else throw BindException(e)
             }.let { value -> convertValue(value, parameters[i]) }
         }
-        val result = caller.callSuspend(*binderParameters.toTypedArray())
+        val args = binderParameters.toTypedArray()
+        val result =
+            if (caller.isSuspend) caller.callSuspend(*args)
+            else runWithInterruptible { caller.call(*args) }
+
         return resultProcess(result)
     }
 

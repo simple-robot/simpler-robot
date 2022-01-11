@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -531,7 +531,7 @@ private class AnnotationFunctionalEventListener<R>(
     private val attributeMap: AttributeMutableMap
 ) : FunctionalBindableEventListener<R>() {
 
-    private lateinit var targetCaches: MutableSet<Event.Key<*>> // = mutableSetOf<>()
+    private lateinit var targetCaches: MutableSet<Event.Key<*>> //= mutableSetOf<>()
     private lateinit var notTargetCaches: MutableSet<Event.Key<*>> //= mutableSetOf<Event.Key<*>>()
 
     init {
@@ -547,8 +547,9 @@ private class AnnotationFunctionalEventListener<R>(
         if (targets.isEmpty()) return true
 
         if (eventType in notTargetCaches) return false
-        if (eventType in targets) return true
         if (eventType in targetCaches) return true
+        if (eventType in targets) return true
+
         synchronized(targetCaches) {
             if (eventType in targetCaches) return true
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -13,8 +13,8 @@
 package love.forte.simbot.event
 
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.*
+import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
 
 
@@ -29,11 +29,8 @@ public fun interface EventListenerFunction : suspend (EventListenerProcessingCon
     /**
      * 执行监听处理流程。
      */
-    @JvmSynthetic
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult
 
-    @Api4J
-    public fun invokeBlocking(context: EventListenerProcessingContext): EventResult = runBlocking { invoke(context) }
 }
 
 
@@ -45,10 +42,11 @@ public fun interface EventListenerFunction : suspend (EventListenerProcessingCon
  */
 @Api4J
 public fun interface BlockingEventListenerFunction : EventListenerFunction {
-    override fun invokeBlocking(context: EventListenerProcessingContext): EventResult
+    @Api4J
+    public fun invokeBlocking(context: EventListenerProcessingContext): EventResult
 
-    @JvmSynthetic
-    override suspend fun invoke(context: EventListenerProcessingContext): EventResult = invokeBlocking(context)
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult =
+        runWithInterruptible { invokeBlocking(context) }
 }
 
 
@@ -60,7 +58,8 @@ public fun interface BlockingEventListenerFunction : EventListenerFunction {
  *
  * 事件监听器存在 [优先级][priority]，默认优先级为 [Int.MAX_VALUE].
  *
- * @see BlockingEventListener
+ *
+ * @see love.forte.simboot.listener.GenericBootEventListener
  *
  * @author ForteScarlet
  */
@@ -135,9 +134,8 @@ public interface BlockingEventListener : EventListener, BlockingEventListenerFun
     override val logger: Logger
     override val isAsync: Boolean
     override fun isTarget(eventType: Event.Key<*>): Boolean
-
-    @JvmSynthetic
-    override suspend fun invoke(context: EventListenerProcessingContext): EventResult = invokeBlocking(context)
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult =
+        runWithInterruptible { invokeBlocking(context) }
 
     /**
      * 非挂起的执行事件监听逻辑。
