@@ -106,12 +106,15 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
  *
  * @see ContactMessageEvent
  */
-public interface FriendMessageEvent : ContactMessageEvent {
+public interface FriendMessageEvent : ContactMessageEvent, FriendEvent {
 
     /**
      * 消息的信息来源是一个可以进行信息交互的 [好友][Friend]
      */
-    override suspend fun user(): Friend
+    override suspend fun friend(): Friend
+
+
+    override suspend fun user(): Friend = friend()
 
     @Api4J
     override val user: Friend
@@ -133,7 +136,7 @@ public interface FriendMessageEvent : ContactMessageEvent {
 
 
     public companion object Key : BaseEventKey<FriendMessageEvent>(
-        "api.friend_message", ContactMessageEvent
+        "api.friend_message", ContactMessageEvent, FriendEvent
     ) {
         override fun safeCast(value: Any): FriendMessageEvent? = doSafeCast(value)
     }
