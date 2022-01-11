@@ -36,7 +36,7 @@ public interface StartPointEvent<S, V> : ChangedEvent<S, V?, V> {
     override val after: V get() = target
     public val target: V get() = runBlocking { target() }
 
-    public companion object Key : BaseEventKey<StartPointEvent<*, *>>("api.start_point", setOf(ChangedEvent)) {
+    public companion object Key : BaseEventKey<StartPointEvent<*, *>>("api.start_point", ChangedEvent) {
         override fun safeCast(value: Any): StartPointEvent<*, *>? = doSafeCast(value)
     }
 }
@@ -62,7 +62,7 @@ public interface EndPointEvent<S, V> : ChangedEvent<S, V, V?> {
     override val after: V? get() = null
     public val target: V get() = runBlocking { target() }
 
-    public companion object Key : BaseEventKey<EndPointEvent<*, *>>("api.end_point", setOf(ChangedEvent)) {
+    public companion object Key : BaseEventKey<EndPointEvent<*, *>>("api.end_point", ChangedEvent) {
         override fun safeCast(value: Any): EndPointEvent<*, *>? = doSafeCast(value)
     }
 
@@ -78,7 +78,7 @@ public interface IncreaseEvent<S, V> : StartPointEvent<S, V> {
     override suspend fun source(): S
     override suspend fun target(): V
 
-    public companion object Key : BaseEventKey<IncreaseEvent<*, *>>("api.increase", setOf(StartPointEvent)) {
+    public companion object Key : BaseEventKey<IncreaseEvent<*, *>>("api.increase", StartPointEvent) {
         override fun safeCast(value: Any): IncreaseEvent<*, *>? = doSafeCast(value)
     }
 }
@@ -92,7 +92,7 @@ public interface DecreaseEvent<S, V> : EndPointEvent<S, V> {
     override suspend fun source(): S
     override suspend fun target(): V
 
-    public companion object Key : BaseEventKey<DecreaseEvent<*, *>>("api.decrease", setOf(EndPointEvent)) {
+    public companion object Key : BaseEventKey<DecreaseEvent<*, *>>("api.decrease", EndPointEvent) {
         override fun safeCast(value: Any): DecreaseEvent<*, *>? = doSafeCast(value)
     }
 }

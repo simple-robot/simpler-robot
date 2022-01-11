@@ -98,9 +98,7 @@ public interface GuildRequestEvent : RequestEvent, GuildEvent {
 
 
     public companion object Key : BaseEventKey<GuildRequestEvent>(
-        "api.guild_request", setOf(
-            RequestEvent, GuildEvent
-        )
+        "api.guild_request", RequestEvent, GuildEvent
     ) {
         override fun safeCast(value: Any): GuildRequestEvent? = doSafeCast(value)
     }
@@ -112,9 +110,7 @@ public interface GuildRequestEvent : RequestEvent, GuildEvent {
 public interface GroupRequestEvent : RequestEvent, GroupEvent {
 
     public companion object Key : BaseEventKey<GroupRequestEvent>(
-        "api.group_request", setOf(
-            RequestEvent, GroupEvent
-        )
+        "api.group_request", RequestEvent, GroupEvent
     ) {
         override fun safeCast(value: Any): GroupRequestEvent? = doSafeCast(value)
     }
@@ -126,9 +122,7 @@ public interface GroupRequestEvent : RequestEvent, GroupEvent {
 public interface ChannelRequestEvent : RequestEvent, ChannelEvent {
 
     public companion object Key : BaseEventKey<ChannelRequestEvent>(
-        "api.channel_request", setOf(
-            RequestEvent, ChannelEvent
-        )
+        "api.channel_request", RequestEvent, ChannelEvent
     ) {
         override fun safeCast(value: Any): ChannelRequestEvent? = doSafeCast(value)
     }
@@ -140,9 +134,7 @@ public interface ChannelRequestEvent : RequestEvent, ChannelEvent {
 public interface UserRequestEvent : RequestEvent, UserEvent {
 
     public companion object Key : BaseEventKey<UserRequestEvent>(
-        "api.user_request", setOf(
-            RequestEvent, UserEvent
-        )
+        "api.user_request", RequestEvent, UserEvent
     ) {
         override fun safeCast(value: Any): UserRequestEvent? = doSafeCast(value)
     }

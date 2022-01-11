@@ -39,7 +39,7 @@ public interface MemberIncreaseEvent : IncreaseEvent<Organization, MemberInfo>, 
     public val actionType: ActionType
 
     public companion object Key :
-        BaseEventKey<MemberIncreaseEvent>("api.member_increase", setOf(IncreaseEvent, OrganizationEvent)) {
+        BaseEventKey<MemberIncreaseEvent>("api.member_increase", IncreaseEvent, OrganizationEvent) {
         override fun safeCast(value: Any): MemberIncreaseEvent? = doSafeCast(value)
     }
 }
@@ -66,7 +66,7 @@ public interface MemberDecreaseEvent : DecreaseEvent<Organization, MemberInfo>, 
     public val actionType: ActionType
 
     public companion object Key :
-        BaseEventKey<MemberDecreaseEvent>("api.member_decrease", setOf(DecreaseEvent, OrganizationEvent)) {
+        BaseEventKey<MemberDecreaseEvent>("api.member_decrease", DecreaseEvent, OrganizationEvent) {
         override fun safeCast(value: Any): MemberDecreaseEvent? = doSafeCast(value)
     }
 }

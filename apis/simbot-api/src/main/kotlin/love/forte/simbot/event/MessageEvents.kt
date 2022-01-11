@@ -94,8 +94,7 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
         get() = Event.VisibleScope.PRIVATE
 
     public companion object Key : BaseEventKey<ContactMessageEvent>(
-        "api.contact_message",
-        setOf(MessageEvent, UserEvent)
+        "api.contact_message", MessageEvent, UserEvent
     ) {
         override fun safeCast(value: Any): ContactMessageEvent? = doSafeCast(value)
     }
@@ -134,8 +133,7 @@ public interface FriendMessageEvent : ContactMessageEvent {
 
 
     public companion object Key : BaseEventKey<FriendMessageEvent>(
-        "api.friend_message",
-        setOf(ContactMessageEvent)
+        "api.friend_message", ContactMessageEvent
     ) {
         override fun safeCast(value: Any): FriendMessageEvent? = doSafeCast(value)
     }
@@ -179,8 +177,7 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
 
 
     public companion object Key : BaseEventKey<ChatroomMessageEvent>(
-        "api.privateMessage",
-        setOf(MessageEvent.Key)
+        "api.privateMessage", MessageEvent.Key
     ) {
         override fun safeCast(value: Any): ChatroomMessageEvent? = doSafeCast(value)
     }
@@ -222,8 +219,7 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
 
 
     public companion object Key : BaseEventKey<GroupMessageEvent>(
-        "api.group_message",
-        setOf(ChatroomMessageEvent, GroupEvent)
+        "api.group_message", ChatroomMessageEvent, GroupEvent
     ) {
         override fun safeCast(value: Any): GroupMessageEvent? = doSafeCast(value)
     }
@@ -260,8 +256,7 @@ public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
 
 
     public companion object Key : BaseEventKey<ChannelMessageEvent>(
-        "api.channel_message",
-        setOf(ChatroomMessageEvent, ChannelEvent)
+        "api.channel_message", ChatroomMessageEvent, ChannelEvent
     ) {
         override fun safeCast(value: Any): ChannelMessageEvent? = doSafeCast(value)
     }

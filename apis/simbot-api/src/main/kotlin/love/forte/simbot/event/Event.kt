@@ -379,6 +379,8 @@ public abstract class BaseEventKey<E : Event>(
     idValue: String,
     override val parents: Set<Event.Key<*>> = emptySet(),
 ) : Event.Key<E> {
+    public constructor(idValue: String, vararg parents: Event.Key<*>) : this(idValue, parents.toSet())
+
     override val id: CharSequenceID = idValue.ID
     override fun equals(other: Any?): Boolean {
         if (other === this) return true

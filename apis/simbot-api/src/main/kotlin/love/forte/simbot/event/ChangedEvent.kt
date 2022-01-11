@@ -93,7 +93,7 @@ public interface ChangedEvent<SOURCE, BEFORE, AFTER> : ChangeEvent<SOURCE, BEFOR
      */
     override val timestamp: Timestamp get() = changedTime
 
-    public companion object Key : BaseEventKey<ChangedEvent<*, *, *>>("api.changed", setOf(ChangeEvent)) {
+    public companion object Key : BaseEventKey<ChangedEvent<*, *, *>>("api.changed", ChangeEvent) {
         override fun safeCast(value: Any): ChangedEvent<*, *, *>? =
             doSafeCast(value)
 

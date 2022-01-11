@@ -44,7 +44,7 @@ public interface UserEvent : ObjectiveEvent {
     public val user: User
         get() = runBlocking { user() }
 
-    public companion object Key : BaseEventKey<UserEvent>("api.user", setOf()) {
+    public companion object Key : BaseEventKey<UserEvent>("api.user") {
         override fun safeCast(value: Any): UserEvent? = doSafeCast(value)
     }
 
@@ -71,7 +71,7 @@ public interface MemberEvent : UserEvent {
         get() = member
 
 
-    public companion object Key : BaseEventKey<MemberEvent>("api.member", setOf(UserEvent)) {
+    public companion object Key : BaseEventKey<MemberEvent>("api.member", UserEvent) {
         override fun safeCast(value: Any): MemberEvent? = doSafeCast(value)
     }
 }
@@ -98,7 +98,7 @@ public interface FriendEvent : UserEvent {
     override suspend fun user(): User = friend()
 
 
-    public companion object Key : BaseEventKey<FriendEvent>("api.friend", setOf(UserEvent)) {
+    public companion object Key : BaseEventKey<FriendEvent>("api.friend", UserEvent) {
         override fun safeCast(value: Any): FriendEvent? = doSafeCast(value)
     }
 }
@@ -120,7 +120,7 @@ public interface OrganizationEvent : ObjectiveEvent {
     public val organization: Organization
         get() = runBlocking { organization() }
 
-    public companion object Key : BaseEventKey<OrganizationEvent>("api.organization", setOf()) {
+    public companion object Key : BaseEventKey<OrganizationEvent>("api.organization") {
         override fun safeCast(value: Any): OrganizationEvent? = doSafeCast(value)
     }
 }
@@ -139,7 +139,7 @@ public interface GroupEvent : OrganizationEvent {
     public val group: Group
         get() = runBlocking { group() }
 
-    public companion object Key : BaseEventKey<GroupEvent>("api.group", setOf(OrganizationEvent)) {
+    public companion object Key : BaseEventKey<GroupEvent>("api.group", OrganizationEvent) {
         override fun safeCast(value: Any): GroupEvent? = doSafeCast(value)
     }
 }
@@ -159,7 +159,7 @@ public interface GuildEvent : OrganizationEvent {
     public val guild: Guild
         get() = runBlocking { guild() }
 
-    public companion object Key : BaseEventKey<GuildEvent>("api.guild", setOf(OrganizationEvent)) {
+    public companion object Key : BaseEventKey<GuildEvent>("api.guild", OrganizationEvent) {
         override fun safeCast(value: Any): GuildEvent? = doSafeCast(value)
     }
 }
@@ -178,7 +178,7 @@ public interface ChannelEvent : OrganizationEvent {
     public val channel: Channel
         get() = runBlocking { channel() }
 
-    public companion object Key : BaseEventKey<ChannelEvent>("api.channel", setOf(OrganizationEvent)) {
+    public companion object Key : BaseEventKey<ChannelEvent>("api.channel", OrganizationEvent) {
         override fun safeCast(value: Any): ChannelEvent? = doSafeCast(value)
     }
 }
