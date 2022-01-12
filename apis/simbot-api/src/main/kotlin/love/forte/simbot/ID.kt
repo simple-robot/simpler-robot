@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -90,7 +90,6 @@ import kotlin.random.Random
  *
  * @see CharSequenceID
  * @see NumericalID
- * @see ComplexID 其他自定义ID
  *
  *
  * @author ForteScarlet
@@ -514,18 +513,18 @@ public fun ID.tryToNumericalID(): NumericalID<*> = if (this is NumericalID<*>) t
 public fun ID.tryToLongID(): LongID = if (this is LongID) this else if (this is NumericalID<*>) this.toLong().ID else BigDecimal(this.toString()).toLong().ID
 
 
-
-/**
- * 如果是一个复杂ID, 即无法通过 [NumericalID] 或 [CharSequenceID] 进行表示的，
- * 则实现此抽象类。
- *
- * 需要保证实现类能够完全的序列化。
- *
- * 如果需要自定义 `equals` 的行为，重写 [doEquals].
- */
-@SerialName("ID.CX")
-@Serializable
-public abstract class ComplexID : ID()
+//
+// /**
+//  * 如果是一个复杂ID, 即无法通过 [NumericalID] 或 [CharSequenceID] 进行表示的，
+//  * 则实现此抽象类。
+//  *
+//  * 需要保证实现类能够完全的序列化。
+//  *
+//  * 如果需要自定义 `equals` 的行为，重写 [doEquals].
+//  */
+// @SerialName("ID.CX")
+// @Serializable
+// public abstract class ComplexID : ID()
 
 
 
