@@ -12,7 +12,9 @@
 
 package love.forte.simbot.utils
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -47,6 +49,28 @@ public interface LazyValue<T> {
 
 public fun <T> lazyValue(initializer: suspend () -> T): LazyValue<T> {
     return LazyValueImpl(initializer)
+}
+
+public fun <T> CoroutineScope.lazyValue(
+    init: Boolean = false,
+    initializer: suspend () -> T
+): LazyValue<T> {
+    return if (init) {
+        LazyValueImpl(async { initializer() }::await)
+    } else {
+        LazyValueImpl(initializer)
+    }
+}
+
+public fun <T> completedLazyValue(value: T): LazyValue<T> {
+    return CompletedLazyValue(value)
+}
+
+private class CompletedLazyValue<T>(value: T) : LazyValue<T> {
+    private val _value = value
+    override val value get() = Result.success(_value)
+    override suspend fun await(): T = _value
+    override val isCompleted: Boolean get() = true
 }
 
 

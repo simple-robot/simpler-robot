@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2022-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -27,16 +27,22 @@ import love.forte.simbot.utils.lazyValue
 
 class A
 
-val value = lazyValue {
-    delay(1000)
-    //throw NullPointerException("NOO")
-    A()
-}
+
 
 @OptIn(ObsoleteCoroutinesApi::class)
 suspend fun main() {
     val job = Job()
     val scope = CoroutineScope(job + newFixedThreadPoolContext(8, "A"))
+
+    val value = scope.lazyValue(init = true) {
+        println("init")
+        delay(1000)
+        //throw NullPointerException("NOO")
+        A()
+    }
+
+    println("wait..")
+    delay(100)
 
     repeat(100) {
         scope.launch {
