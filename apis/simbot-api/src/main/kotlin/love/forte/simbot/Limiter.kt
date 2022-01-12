@@ -135,3 +135,10 @@ public fun <T> Flow<T>.withLimiter(limiter: Limiter): Flow<T> =
     }.let {
         with(limiter.limit) { if (this > 0) take(this) else it }
     }
+
+public fun <T> Sequence<T>.withLimiter(limiter: Limiter): Sequence<T> =
+    let {
+        with(limiter.offset) { if (this > 0) drop(this) else it }
+    }.let {
+        with(limiter.limit) { if (this > 0) take(this) else it }
+    }
