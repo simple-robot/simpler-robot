@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -36,7 +36,7 @@ public interface EventProcessor {
      *
      */
     @JvmSynthetic
-    public suspend fun push(event: Event) : EventProcessingResult
+    public suspend fun push(event: Event): EventProcessingResult
 
 
     /**
@@ -62,13 +62,23 @@ public interface EventProcessor {
 }
 
 
-public suspend inline fun EventProcessor.pushIfProcessable(eventKey: Event.Key<*>, block: () -> Event): EventProcessingResult? {
+public suspend inline fun EventProcessor.pushIfProcessable(
+    eventKey: Event.Key<*>,
+    block: () -> Event
+): EventProcessingResult? {
     if (isProcessable(eventKey)) {
         return push(block())
     }
     return null
 }
 
+
+public suspend inline fun <reified E : Event> EventProcessor.pushIfProcessable(block: () -> E): EventProcessingResult? {
+    if (isProcessable(Event.Key.getKey<E>())) {
+        return push(block())
+    }
+    return null
+}
 
 
 /**
