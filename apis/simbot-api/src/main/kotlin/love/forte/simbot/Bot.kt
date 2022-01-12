@@ -73,14 +73,24 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
      *
      */
-    @JvmSynthetic
     public suspend fun friends(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Friend>
-
+    /**
+     * @see friends
+     */
     @Api4J
     public fun getFriends(grouping: Grouping, limiter: Limiter): Stream<out Friend>
 
+    /**
+     * @see friends
+     */
     @Api4J
     public fun getFriends(): Stream<out Friend> = getFriends(Grouping.EMPTY, Limiter)
+
+    /**
+     * @see friends
+     */
+    @Api4J
+    public fun getFriends(limiter: Limiter): Stream<out Friend> = getFriends(Grouping.EMPTY, limiter)
 
 
     // organizations
@@ -89,35 +99,51 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      *
      * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
      */
-    @JvmSynthetic
     public suspend fun groups(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Group>
 
+    /**
+     * @see groups
+     */
     @Api4J
     public fun getGroups(grouping: Grouping, limiter: Limiter): Stream<out Group>
-
+    /**
+     * @see groups
+     */
     @Api4J
     public fun getGroups(): Stream<out Group> = getGroups(Grouping.EMPTY, Limiter)
+    /**
+     * @see groups
+     */
+    @Api4J
+    public fun getGroups(limiter: Limiter): Stream<out Group> = getGroups(Grouping.EMPTY, limiter)
 
     /**
      * 获取当前的所有频道服务器列表
      *
      * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
      */
-    @JvmSynthetic
     public suspend fun guilds(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Guild>
-
+    /**
+     * @see guilds
+     */
     @Api4J
     public fun getGuilds(grouping: Grouping, limiter: Limiter): Stream<out Guild>
-
+    /**
+     * @see guilds
+     */
     @Api4J
     public fun getGuilds(): Stream<out Guild> = getGuilds(Grouping.EMPTY, Limiter)
+    /**
+     * @see guilds
+     */
+    @Api4J
+    public fun getGuilds(limiter: Limiter): Stream<out Guild> = getGuilds(Grouping.EMPTY, limiter)
 
     // resources
 
     /**
      * 上传一个资源作为资源，并在预期内得到一个 [Image] 结果。
      */
-    @JvmSynthetic
     public suspend fun uploadImage(resource: Resource): Image<*>
 
 
