@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -13,8 +13,11 @@
 package love.forte.simbot
 
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.take
 import love.forte.simbot.Limiter.ZERO
+import java.util.stream.Stream
 
 
 /**
@@ -119,3 +122,16 @@ private data class LimiterImpl(override val offset: Int, override val limit: Int
 }
 
 
+public fun <T> Stream<T>.withLimiter(limiter: Limiter): Stream<T> =
+    let {
+        with(limiter.offset) { if (this > 0) skip(toLong()) else it }
+    }.let {
+        with(limiter.limit) { if (this > 0) limit(toLong()) else it }
+    }
+
+public fun <T> Flow<T>.withLimiter(limiter: Limiter): Flow<T> =
+    let {
+        with(limiter.offset) { if (this > 0) drop(this) else it }
+    }.let {
+        with(limiter.limit) { if (this > 0) take(this) else it }
+    }
