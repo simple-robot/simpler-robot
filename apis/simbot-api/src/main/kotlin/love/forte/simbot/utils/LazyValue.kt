@@ -22,13 +22,18 @@ import kotlinx.coroutines.sync.withLock
 /**
  * 一个类似于 [Deferred] 的支持suspend的懒加载器。
  */
-public interface LazyValue<T> {
+public interface LazyValue<T> : suspend () -> T {
 
     /**
      * 挂起并等待结果值被加载。如果已经加载则会立即返回。
      * 如果加载过程中出现了异常，则每次调用此函数都会得到那个异常。
      */
     public suspend fun await(): T
+
+    /**
+     * @see await
+     */
+    override suspend fun invoke(): T = await()
 
     /**
      * 立即得到加载的值。如果尚未加载，则会返回包裹了 [NotInitializedException] 异常的 result。
