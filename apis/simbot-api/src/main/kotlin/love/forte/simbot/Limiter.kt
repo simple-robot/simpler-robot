@@ -13,18 +13,16 @@
 package love.forte.simbot
 
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.*
 import love.forte.simbot.Limiter.ZERO
 import java.util.stream.Stream
-
+import kotlin.experimental.ExperimentalTypeInference
 
 /**
  *
  * 一个**限流器**。
  *
- * 通俗一点的理解，限流器可以理解为一个用于需要进行 **分页** 的地方，常见于一些返回值为 [kotlinx.coroutines.flow.Flow] 或者 [List] 之类的地方。
+ * 通俗一点的理解，限流器可以理解为一个用于需要进行 **数量限制** 或者说需要 **分页** 的地方，常见于一些返回值为 [kotlinx.coroutines.flow.Flow], [Sequence] 或者 [Stream] 之类的地方。
  *
  * 对于限流的具体实现细节由对应功能的实现者自行决定（包括是否真的进行分页等）。
  *
@@ -45,8 +43,28 @@ import java.util.stream.Stream
  * 对于默认实现无法满足需求的情况，需要进行独立的实现，这一般由核心或者其他组件提供，并会整合在其他参数类型中，
  * 例如存在一个 `Query` 类型，它也许就会为了支持可限流的情况而对 Limiter 进行实现。
  *
+ * ## 扩展
+ * Limiter提供了一些扩展函数来快速对 [flow][Flow]、[sequence][Sequence]、[java stream][Stream] 进行操作, 以flow为例：
+ *
+ * ```kotlin
+ * // toFlow
+ * val limiter: Limiter = ...
+ *     val flow1 = Limiter.toFlow { batchSize ->
+ *          println("batchSize: $batchSize")
+ *          emit(1)
+ *          emit(2)
+ *          emit(3)
+ *      }
+ *
+ *      val flow2 = flow { ... }.withLimiter(limiter)
+ * ```
+ *
  * @see ZERO
  * @see limiter
+ *
+ * @see withLimiter
+ * @see toFlow
+ * @see toSequence
  *
  * @author ForteScarlet
  */
@@ -142,3 +160,18 @@ public fun <T> Sequence<T>.withLimiter(limiter: Limiter): Sequence<T> =
     }.let {
         with(limiter.limit) { if (this > 0) take(this) else it }
     }
+
+/**
+ * 参数提供 [Limiter.batchSize], receiver为 [FlowCollector], flow的结果通过 [withLimiter] 限流
+ */
+@OptIn(ExperimentalTypeInference::class)
+public inline fun <T> Limiter.toFlow(@BuilderInference crossinline collector: suspend FlowCollector<T>.(batchSize: Int) -> Unit): Flow<T> =
+    flow { collector(batchSize) }.withLimiter(this)
+
+/**
+ * 参数提供 [Limiter.batchSize], receiver为 [SequenceScope], sequence的结果通过 [withLimiter] 限流
+ */
+@OptIn(ExperimentalTypeInference::class)
+public inline fun <T> Limiter.toSequence(@BuilderInference crossinline block: suspend SequenceScope<T>.(batchSize: Int) -> Unit): Sequence<T> =
+    sequence { block(batchSize) }.withLimiter(this)
+
