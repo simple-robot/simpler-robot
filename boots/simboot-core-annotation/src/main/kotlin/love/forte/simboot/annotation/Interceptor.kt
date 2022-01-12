@@ -17,8 +17,6 @@ import love.forte.simbot.PriorityConstant
 import kotlin.reflect.KClass
 
 /**
- * TODO 解析实现
-
  * 配合 [Listener] 使用，为一个监听函数指定一个或多个**专属**的监听函数拦截器.
  *
  * 在 [Interceptor] 中使用的拦截器类型为 [AnnotatedEventListenerInterceptor], **而不是**普通的 [love.forte.simbot.event.EventListenerInterceptor], 需要注意。

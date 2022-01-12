@@ -34,7 +34,11 @@ import kotlin.io.path.*
 
 /**
  *
- * 一个[资源][Resource].
+ * 一个[资源][Resource]. 资源存在两种形式：[标识资源][IDResource] 和 [流资源][StreamableResource].
+ *
+ * [IDResource] 代表一个持有唯一标识 [ID] 的资源，一般可以使用在接收者在允许通过ID解析的情况下。
+ * [StreamableResource] 则代表一个允许获取数据流的资源，这通常代表了对本地资源（比如文件）、远程资源（比如某个链接）等资源，
+ * 一般可以使用在接收者需要上传某些资源或者得到了一些能够下载的资源的情况下。比如上传图片、下载图片。
  *
  * @see IDResource
  * @see StreamableResource
@@ -93,6 +97,7 @@ public sealed class Resource {
          */
         @JvmStatic
         @JvmOverloads
+        @Throws(IOException::class)
         public fun of(inputStream: InputStream, name: String? = null): StreamableResource {
             val temp = createTempFile(
                 Path(".simbot/tmp").also {
@@ -111,7 +116,7 @@ public sealed class Resource {
 /**
  * 一个提供了 [id] 信息的 [Resource].
  *
- * [IDResource] 通常情况下用于作为参数提供者来提供一个资源，并由接受者来自行处理。
+ * [IDResource] 通常情况下用于作为参数提供者来提供一个资源的标识，并由接受者来自行处理。
  *
  */
 @SerialName("simbot.resource.id")
@@ -129,15 +134,19 @@ public open class IDResource(
 /**
  * 提供一个可以开启输入流的 [Resource] 实例。
  *
+ * 通过 [openStream] 得到的数据流不会被管理，应当由使用者自行管理、关闭。
+ *
  * [StreamableResource] 实现 [Closeable],
- * 一个被 close 的 [StreamableResource] 将不应再继续使用。
+ * 一个被 close 的 [StreamableResource] 将不应再继续使用，但是 [StreamableResource.close] 不会影响到已经产生的流对象。
  *
  */
 @SerialName("simbot.resource.streamable")
 @Serializable
 public sealed class StreamableResource : Resource(), Closeable {
+    @Throws(IOException::class)
     public abstract fun openStream(): InputStream
 
+    abstract override fun close()
 }
 
 
@@ -148,10 +157,11 @@ public sealed class StreamableResource : Resource(), Closeable {
 @Serializable
 public class URLResource(
     @Serializable(URLSerializer::class)
-    private val url: URL,
+    public val url: URL,
     override val name: String = url.toString()
 ) : StreamableResource() {
 
+    @Throws(IOException::class)
     override fun openStream(): InputStream {
         return url.openStream()
     }
@@ -159,6 +169,7 @@ public class URLResource(
     override fun toString(): String {
         return "Resource(url=$url, name=$name)"
     }
+
     override fun close() {
     }
 }
@@ -183,18 +194,21 @@ internal object URLSerializer : KSerializer<URL> {
 @Serializable
 public class FileResource(
     @Serializable(FileSerializer::class)
-    private val file: File,
+    public val file: File,
     override val name: String = file.toString(),
     @Transient
     private val doClose: () -> Unit = {}
 ) : StreamableResource() {
 
+    @Throws(FileNotFoundException::class)
     override fun openStream(): FileInputStream {
         return FileInputStream(file)
     }
+
     override fun toString(): String {
         return "Resource(file=$file, name=$name)"
     }
+
     public fun randomAccessFile(mode: String = "r"): RandomAccessFile = RandomAccessFile(file, mode)
 
     override fun close() {
@@ -219,22 +233,28 @@ internal object FileSerializer : KSerializer<File> {
 
 /**
  * 使用[Path]作为输入流来源的 [StreamableResource].
+ *
+ * @property doClose 当执行 [close] 时可以选择提供执行操作。
  */
 @SerialName("simbot.resource.path")
 @Serializable
 public class PathResource(
     @Serializable(PathSerializer::class)
-    private val path: Path,
+    public val path: Path,
     override val name: String = path.toString(),
     @Transient
     private val doClose: () -> Unit = {}
 ) : StreamableResource() {
 
+    @Throws(IOException::class)
     override fun openStream(): InputStream = path.inputStream(StandardOpenOption.READ)
+
     override fun toString(): String {
         return "Resource(path=$path, name=$name)"
     }
+
     @Suppress("MemberVisibilityCanBePrivate")
+    @Throws(IOException::class)
     public fun openStream(vararg options: OpenOption): InputStream = path.inputStream(*options)
 
     override fun close() {
@@ -258,21 +278,58 @@ internal object PathSerializer : KSerializer<Path> {
 @SerialName("simbot.resource.bytes")
 @Serializable
 public class ByteArrayResource(override val name: String, private val byteArray: ByteArray) : StreamableResource() {
+    /**
+     * 得到当前资源中字节数组的**副本**。
+     */
+    public val bytes: ByteArray get() = byteArray.copyOf()
+
+    /**
+     * 将当前资源中字节数组拷贝到目标数组中。
+     */
+    @JvmOverloads
+    public fun copyTo(destination: ByteArray, destinationOffset: Int = 0, startIndex: Int = 0, endIndex: Int = byteArray.size) {
+        byteArray.copyInto(destination, destinationOffset, startIndex, endIndex)
+    }
+
+    /**
+     * 字节数组的大小。
+     */
+    @JvmField
+    public val size: Int = byteArray.size
+
+    /**
+     * 获取指定索引位的字节。
+     */
+    public operator fun get(index: Int): Byte = byteArray[index]
+
+    /**
+     * 得到字节数组输入流。
+     */
     override fun openStream(): ByteArrayInputStream {
         return byteArray.inputStream()
     }
+
     override fun toString(): String {
-        return "Resource(byteArray(size)=${byteArray.size}, name=$name)"
+        return "Resource(size of bytes=${size}, name=$name)"
     }
+
     override fun close() {
     }
 }
 
 
 public fun ID.toResource(name: String): IDResource = Resource.of(this, name)
+
 public fun URL.toResource(name: String = this.toString()): StreamableResource = Resource.of(this, name)
+
 public fun File.toResource(name: String = this.toString()): StreamableResource = Resource.of(this, name)
+
 public fun Path.toResource(name: String = this.toString()): StreamableResource = Resource.of(this, name)
+
 public fun ByteArray.toResource(name: String): StreamableResource = Resource.of(this, name)
+
+@Throws(IOException::class)
 public fun InputStream.toResource(name: String? = null): StreamableResource = Resource.of(this, name)
+
+@Throws(IOException::class)
 public fun InputStream.useToResource(name: String? = null): StreamableResource = this.use { i -> i.toResource(name) }

@@ -14,8 +14,16 @@ package love.forte.simbot
 
 
 /**
- *
+ * Simbot中的部分特殊异常的标记接口。
  * @author ForteScarlet
+ *
+ * @see Simbot.check
+ * @see Simbot.require
+ *
+ * @see SimbotException
+ * @see SimbotRuntimeException
+ * @see SimbotIllegalArgumentException
+ * @see SimbotIllegalStateException
  */
 public interface SimbotError {
     public val message: String?
@@ -24,7 +32,7 @@ public interface SimbotError {
 
 
 /**
- *
+ * 基础的simbot受检异常。
  * @author ForteScarlet
  */
 public open class SimbotException : Exception, SimbotError {
@@ -35,7 +43,7 @@ public open class SimbotException : Exception, SimbotError {
 }
 
 /**
- *
+ * 基础的simbot的运行时异常。
  * @author ForteScarlet
  */
 public open class SimbotRuntimeException : RuntimeException, SimbotError {
@@ -46,8 +54,10 @@ public open class SimbotRuntimeException : RuntimeException, SimbotError {
 }
 
 /**
- *
+ * simbot中的参数异常。
  * @author ForteScarlet
+ *
+ * @see IllegalArgumentException
  */
 public open class SimbotIllegalArgumentException : SimbotError, IllegalArgumentException {
     public constructor() : super()
@@ -57,8 +67,10 @@ public open class SimbotIllegalArgumentException : SimbotError, IllegalArgumentE
 }
 
 /**
- *
+ * simbot中的状态异常
  * @author ForteScarlet
+ *
+ * @see IllegalArgumentException
  */
 public open class SimbotIllegalStateException : SimbotError, IllegalArgumentException {
     public constructor() : super()

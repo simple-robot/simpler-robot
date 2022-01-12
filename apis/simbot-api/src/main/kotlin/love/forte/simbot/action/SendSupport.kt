@@ -25,6 +25,14 @@ import love.forte.simbot.message.*
  *
  * 一个允许发送消息的实例的行为。
  *
+ * [SendSupport] 默的实现于 [love.forte.simbot.definition.Contact] 和 [love.forte.simbot.definition.ChatRoom] 上，
+ * 因为作为 “联系人” 和 “聊天室”，他们理应能够发送消息。
+ *
+ *
+ * @see love.forte.simbot.definition.Contact
+ * @see love.forte.simbot.definition.ChatRoom
+ * @see sendIfSupport
+ *
  * @author ForteScarlet
  */
 public interface SendSupport {
@@ -37,42 +45,91 @@ public interface SendSupport {
      * @throws SimbotIllegalStateException 如果当前状态存在异常
      *
      */
-    @JvmSynthetic
     public suspend fun send(message: Message): MessageReceipt
 
 
+    /**
+     * 非挂起的发送消息，并得到一个回执单。
+     * @see send
+     */
     @Api4J
     public fun sendBlocking(message: Message): MessageReceipt = runBlocking { send(message) }
 
     /**
      * 发送消息，并得到一个回执单。
      *
+     * @see send
      * @throws MessageSendingException 如果信息发送这个过程本身出现异常
      * @throws SimbotIllegalArgumentException 如果提供参数中存在不合法参数等
      * @throws SimbotIllegalStateException 如果当前状态存在异常
      *
      */
-    @JvmSynthetic
     public suspend fun send(message: MessageContent): MessageReceipt = send(message.messages)
 
 
+    /**
+     * 非挂起的发送消息，并得到一个回执单。
+     *
+     * @see send
+     */
     @Api4J
     public fun sendBlocking(message: MessageContent): MessageReceipt = runBlocking { send(message) }
 
-
-    @JvmSynthetic
+    /**
+     * 发送一段纯文本消息。
+     * @see send
+     */
     public suspend fun send(text: String): MessageReceipt = send(Text.of(text))
 
-
+    /**
+     * 非挂起的发送一段纯文本消息。
+     * @see send
+     */
     @Api4J
     public fun sendBlocking(text: String): MessageReceipt = runBlocking { send(text) }
 
 
 }
 
+
 /**
- * 通常标记在事件上，代表这是一个 **可回复的** 事件。
+ * 通常标记在事件上，代表这是一个 **可回复消息** 的事件。
  *
+ * [ReplySupport] 期望中是由一些 [事件][love.forte.simbot.event.Event] 进行实现，尤其是 [消息事件][love.forte.simbot.event.MessageEvent]，代表此事件可以 *回复消息* 。
+ * 默认情况下 [ReplySupport] 不会实现于任何默认定义的事件类型（因为无法保证有哪些消息事件存在*可回复消息*这一行为），
+ * 但是这不代表你所监听到的实际事件没有实现此类型（例如`tencent-guild`组件中的消息事件或`mirai`组件中的消息事件，便实际上的实现了 [ReplySupport] ）。
+ *
+ * 相比较于 [SendSupport], [ReplySupport] 更倾向于针对一次事件或者这次事件的发送者为目标的**回复**行为，而不是单纯的发送消息，例如 `tencent-guild` 组件中，
+ * 公域机器人如果想要根据一个@消息回复一段消息，则**必须**引用这个消息的某个ID，因此在 `tencent-guild` 组件中，如果使用的是公域BOT，那么想要回复消息的最好的办法是使用 [ReplySupport.reply] 而不是 [SendSupport.send],
+ * 因此如果要使用 `send`，你必须在消息中拼接一个 `ReplyTo` 来指定目标消息的ID。
+ *
+ *
+ * 当你需要尝试使用回复时，假如你面对的是一个不知道是否真的实现了 [ReplySupport] 接口的消息事件, 那么你可以通过下面的方式来尝试发送：
+ *
+ * *示例中以 [love.forte.simbot.event.GroupMessageEvent] 为例, 以 `boot` 中的注解监听的形式*
+ *
+ * ### Kotlin:
+ * ```kotlin
+ *  suspend fun GroupMessageEvent.listener() {
+ *    replyIfSupport(Text { "Hello Simbot" })
+ *  }
+ * ```
+ * Kotlin中提供了扩展函数 [replyIfSupport], 当当前事件 `event is SendSupport` 的时候进行回复，否则得到结果 `null`.
+ *
+ *
+ * ### Java:
+ * ```java
+ *  public void listener(GroupMessageEvent event) {
+ *      if (event instanceof SendSupport) {
+ *          ((SendSupport) event).sendBlocking(Text.of("Hello Simbot"))
+ *      }
+ *  }
+ * ```
+ *
+ * Java中可能会略显繁琐，你需要通过 `instanceof` 判断实现情况，在允许的情况下进行类型转化并进行回复。
+ *
+ * @see love.forte.simbot.event.MessageEvent
+ * @see replyIfSupport
  *
  */
 public interface ReplySupport {
