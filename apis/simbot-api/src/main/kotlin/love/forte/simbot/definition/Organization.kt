@@ -106,7 +106,6 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport, Struc
      * 组织有可能是层级的，因此一个组织结构可能会有上一层的组织。
      * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
      */
-    @JvmSynthetic
     override suspend fun previous(): Organization?
 
 
@@ -116,19 +115,21 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport, Struc
      * 提供 grouping 查询分组信息。
      *
      */
-    @JvmSynthetic
     override suspend fun children(groupingId: ID?): Flow<Organization> = children(groupingId, Limiter)
 
 
     /**
      * 根据分组ID和限流器尝试获取此组织下的子集。
      */
-    @JvmSynthetic
     public suspend fun children(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Organization>
 
 
     @Api4J
-    public fun getChildren(groupingId: ID? = null, limiter: Limiter = Limiter): Stream<out Organization>
+    public fun getChildren(groupingId: ID?, limiter: Limiter): Stream<out Organization>
+    @Api4J
+    public fun getChildren(groupingId: ID? = null): Stream<out Organization> = getChildren(groupingId, Limiter)
+    @Api4J
+    public fun getChildren(): Stream<out Organization> = getChildren(null, Limiter)
 
     /**
      * 一个组织中，可能存在[成员][members].

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -20,10 +20,15 @@ import java.util.stream.Stream
 
 
 /**
+ * 群组信息。
+ */
+public interface GroupInfo : OrganizationInfo
+
+/**
  * 一个群。
  * @author ForteScarlet
  */
-public interface Group : ChatRoom {
+public interface Group : ChatRoom, GroupInfo {
 
     override val bot: Bot
     override val id: ID
@@ -32,7 +37,6 @@ public interface Group : ChatRoom {
     override val description: String
     override val createTime: Timestamp
     override val ownerId: ID
-    @JvmSynthetic
     override suspend fun owner(): Member
     @Api4J override val owner: Member
     override val maximumMember: Int
@@ -41,22 +45,14 @@ public interface Group : ChatRoom {
     /**
      * 一般来讲，群不存在子集。
      */
-    @JvmSynthetic
     override suspend fun children(groupingId: ID?, limiter: Limiter): Flow<Organization> {
         return emptyFlow()
     }
 
     @Api4J
-    override fun getChildren(groupingId: ID?, limiter: Limiter): Stream<Organization> {
-        return Stream.empty()
-    }
-
+    override fun getChildren(groupingId: ID?, limiter: Limiter): Stream<Organization> = Stream.empty()
 }
 
-/**
- * 群组信息。
- */
-public interface GroupInfo : OrganizationInfo
 
 
 
@@ -73,7 +69,6 @@ public interface Guild : Organization, GuildInfo {
     override val description: String
     override val createTime: Timestamp
     override val ownerId: ID
-    @JvmSynthetic
     override suspend fun owner(): Member
     @Api4J override val owner: Member
     override val maximumMember: Int
@@ -83,15 +78,16 @@ public interface Guild : Organization, GuildInfo {
     /**
      * 一个 Guild 的子集应当是一些频道.
      */
-    @JvmSynthetic
     override suspend fun children(groupingId: ID?, limiter: Limiter): Flow<Channel>
 
-
-    @JvmSynthetic
     override suspend fun children(groupingId: ID?): Flow<Channel> = children(groupingId, Limiter)
 
     @Api4J
     override fun getChildren(groupingId: ID?, limiter: Limiter): Stream<out Channel>
+    @Api4J
+    override fun getChildren(groupingId: ID?): Stream<out Channel> = getChildren(groupingId, Limiter)
+    @Api4J
+    override fun getChildren(): Stream<out Channel> = getChildren(null, Limiter)
 }
 
 /**
@@ -128,7 +124,6 @@ public interface Channel : ChatRoom, ChannelInfo {
     override val description: String
     override val createTime: Timestamp
     override val ownerId: ID
-    @JvmSynthetic
     override suspend fun owner(): Member
     @Api4J override val owner: Member
     override val maximumMember: Int
@@ -138,7 +133,6 @@ public interface Channel : ChatRoom, ChannelInfo {
     /**
      * 得到这个频道对应的guild。
      */
-    @JvmSynthetic
     public suspend fun guild(): Guild
     @Api4J
     public val guild: Guild get() = runBlocking { guild() }

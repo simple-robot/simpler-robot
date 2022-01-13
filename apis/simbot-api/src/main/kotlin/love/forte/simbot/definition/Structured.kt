@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -39,7 +39,7 @@ public interface Structured<P, N> {
     /**
      * 下一级的内容。
      *
-     * 结构化的东西下，其下层**可能**需要一个分组信息(分组ID)来得到特定的内容。
+     * 结构化的东西下，其下层 *可能* 需要一个分组信息(分组ID)来得到特定的内容。
      *
      */
     @JvmSynthetic

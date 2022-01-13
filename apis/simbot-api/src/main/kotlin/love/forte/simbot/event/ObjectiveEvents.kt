@@ -34,15 +34,14 @@ public sealed interface ObjectiveEvent : Event {
 /**
  * 一个与 [用户][User] 相关的事件。
  */
-public interface UserEvent : ObjectiveEvent {
+public interface UserEvent : ObjectiveEvent, UserInfoContainer {
     /**
      * 这个[用户][User]。
      */
-    public suspend fun user(): User
+    override suspend fun user(): User
 
     @Api4J
-    public val user: User
-        get() = runBlocking { user() }
+    override val user: User get() = runBlocking { user() }
 
     public companion object Key : BaseEventKey<UserEvent>("api.user") {
         override fun safeCast(value: Any): UserEvent? = doSafeCast(value)
@@ -53,14 +52,14 @@ public interface UserEvent : ObjectiveEvent {
 /**
  * 一个与 [成员][Member] 相关的事件。
  */
-public interface MemberEvent : UserEvent {
+public interface MemberEvent : UserEvent, MemberInfoContainer {
     /**
      * 这个[成员][Member]
      */
-    public suspend fun member(): Member
+    override suspend fun member(): Member
 
     @Api4J
-    public val member: Member
+    override val member: Member
         get() = runBlocking { member() }
 
 
@@ -80,15 +79,15 @@ public interface MemberEvent : UserEvent {
 /**
  * 一个与 [好友][Friend] 相关的事件。
  */
-public interface FriendEvent : UserEvent {
+public interface FriendEvent : UserEvent, FriendInfoContainer {
     /**
      * 这个[好友][Friend]
      */
-    public suspend fun friend(): Friend
+    override suspend fun friend(): Friend
 
 
     @Api4J
-    public val friend: Friend
+    override val friend: Friend
         get() = runBlocking { friend() }
 
     @Api4J
@@ -128,15 +127,15 @@ public interface OrganizationEvent : ObjectiveEvent {
 /**
  * 一个与 [群][Group] 相关的事件。
  */
-public interface GroupEvent : OrganizationEvent {
+public interface GroupEvent : OrganizationEvent, GroupInfoContainer {
 
     /**
      * 这个[群][Group]
      */
-    public suspend fun group(): Group
+    override suspend fun group(): Group
 
     @Api4J
-    public val group: Group
+    override val group: Group
         get() = runBlocking { group() }
 
     public companion object Key : BaseEventKey<GroupEvent>("api.group", OrganizationEvent) {
