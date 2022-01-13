@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
 
 
 val publishNeed = setOf(
-    "simbot-annotation", "simbot-core", "simbot-api",
+    "simbot-core", "simbot-api",
     "simboot-api", "simboot-core", "simboot-core-annotation", "simboot-core-springboot-starter"
 )
 

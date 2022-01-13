@@ -1,10 +1,22 @@
+/*
+ *  Copyright (c) 2022 ForteScarlet <https://github.com/ForteScarlet>
+ *
+ *  根据 Apache License 2.0 获得许可；
+ *  除非遵守许可，否则您不得使用此文件。
+ *  您可以在以下网址获取许可证副本：
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ */
+
 package love.forte.simboot.annotation
 
 import love.forte.annotationtool.AnnotationMapper
 import love.forte.simboot.listener.EventListenerTextContentProcessor
 import love.forte.simboot.listener.StandardTextContentProcessor
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.PriorityConstant
-import love.forte.simbot.annotation.SimbotExperimentalApi
 import love.forte.simbot.event.EventListenerProcessingContext
 
 
@@ -19,7 +31,7 @@ import love.forte.simbot.event.EventListenerProcessingContext
  * @see EventListenerTextContentProcessor
  * @see StandardTextContentProcessor.Trim
  */
-@SimbotExperimentalApi
+@ExperimentalSimbotApi
 @Interceptor(type = StandardTextContentProcessor.Trim::class, priority = PriorityConstant.FIRST)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
@@ -39,7 +51,7 @@ public annotation class ContentTrim(
  * @see EventListenerTextContentProcessor
  * @see StandardTextContentProcessor.Null
  */
-@SimbotExperimentalApi
+@ExperimentalSimbotApi
 @Interceptor(type = StandardTextContentProcessor.Null::class, priority = PriorityConstant.FIRST)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented

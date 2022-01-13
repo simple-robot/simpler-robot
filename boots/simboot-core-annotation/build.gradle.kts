@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -34,7 +34,7 @@ dependencies {
     api(project(":boots:simboot-api"))
     api("javax.inject:javax.inject:1")
 
-    compileOnly(project(":simbot-annotation"))
+    // compileOnly(project(":simbot-annotation"))
 
     compileOnly(V.Javax.AnnotationApi.notation)
     compileOnly(P.AnnotationTool.Api.notation)
