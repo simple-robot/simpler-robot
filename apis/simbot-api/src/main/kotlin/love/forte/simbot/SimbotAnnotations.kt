@@ -72,3 +72,27 @@ public annotation class InternalSimbotApi
 )
 @MustBeDocumented
 public annotation class SimbotDiscreetApi
+
+
+/**
+ * 标记那些能够监听，但是不建议监听的事件类型，
+ * 常见于一些携带泛型的事件类型。
+ *
+ * @see love.forte.simbot.event.Event
+ */
+@Retention(AnnotationRetention.BINARY)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.ANNOTATION_CLASS,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.LOCAL_VARIABLE,
+    AnnotationTarget.VALUE_PARAMETER,
+    AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER,
+    AnnotationTarget.TYPEALIAS
+)
+@MustBeDocumented
+public annotation class NotSuggestedEvent // todo?

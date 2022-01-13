@@ -26,12 +26,26 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.safeCast
 
 /**
+ * ## 事件类型
  *
- * [事件][Event] 的顶层接口。
+ * 所有 [事件][Event] 的顶层接口。
  *
+ * ## Key
+ * 在事件处理的时候，将不会根据其 `class` 进行直接的类型关系判断来决定事件监听，而是根据 [Event.key][Event.Key] 进行事件之间的继承关系的判断。
  * 对于任意一个继承此接口的事件类型（包括其他接口或抽象），
- * 其类型中必须存在一个实现了 [Event.Key] 的伴生对象，否则此事件将会被视为 **不可监听**。
+ * 其类型中必须存在一个实现了 [Event.Key] 的伴生对象或者通过 [EventKey] 注解指定 [Event.Key] 的实现，否则此事件将会被视为 **不可监听**。
  *
+ *
+ * ## 泛型事件类型
+ *
+ * 所有能够监听的事件中，**不建议**监听带有泛型信息的事件类型（例如 [ChangedEvent]）,
+ * 虽然它们允许被监听，但是它们大多数都代表对其他事件的类型约束。
+ *
+ * 并且，在进行事件监听的时候，事件类型的判断 **不支持** 范型判断，因此如果你需要监听这些携带泛型的事件类型，
+ * 那么你必须使用kotlin中的 `*`，在Java中使用 `?` 或直接忽略它。否则会很容易导致出现异常。
+ *
+ *
+ * @see Event.Key
  * @author ForteScarlet
  */
 public interface Event : BotContainer {
@@ -284,6 +298,8 @@ public interface Event : BotContainer {
  * 通过注解标记一个 [Event] 类型所对应的 [Event.Key] 数据.
  *
  * 用于在无法实现伴生对象的情况下（例如Java）提供 [Event.Key] 信息.
+ *
+ * 此注解没有"继承"的特性，不可嵌套。
  *
  * 使用方式如：
  * ```java
