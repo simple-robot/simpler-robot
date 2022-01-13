@@ -13,16 +13,48 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.Bot
-import love.forte.simbot.definition.FriendInfo
+import love.forte.simbot.definition.Friend
+import love.forte.simbot.message.doSafeCast
 
 
 /**
  * 一个 **好友增加** 事件。
  *
- * 这代表的是好友 **已经** 被添加的事件，不同于 [UserRequestEvent]
- *
- *
+ * 这代表的是好友 **已经** 被添加的事件，不同于 [UserRequestEvent].
  */
-public interface FriendIncreaseEvent : IncreaseEvent<Bot, FriendInfo> {
+public interface FriendIncreaseEvent : IncreaseEvent<Bot, Friend>, FriendEvent {
 
+    override suspend fun source(): Bot
+    override suspend fun friend(): Friend
+
+    //// Impl
+    override suspend fun target(): Friend = friend()
+
+    public companion object Key : BaseEventKey<FriendIncreaseEvent>(
+        "api.friend_increase", IncreaseEvent, FriendEvent
+    ) {
+        override fun safeCast(value: Any): FriendIncreaseEvent? = doSafeCast(value)
+    }
+}
+
+
+/**
+ * 一个 **好友减少** 事件。
+ *
+ * 这代表的是好友 **已经** 被移除的事件。
+ */
+public interface FriendDecreaseEvent : DecreaseEvent<Bot, Friend>, FriendEvent {
+
+
+    override suspend fun source(): Bot
+    override suspend fun friend(): Friend
+
+    //// Impl
+    override suspend fun target(): Friend = friend()
+
+    public companion object Key : BaseEventKey<FriendDecreaseEvent>(
+        "api.friend_decrease", DecreaseEvent, FriendEvent
+    ) {
+        override fun safeCast(value: Any): FriendDecreaseEvent? = doSafeCast(value)
+    }
 }
