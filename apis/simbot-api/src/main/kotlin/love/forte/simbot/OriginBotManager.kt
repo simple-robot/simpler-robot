@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -12,8 +12,6 @@
 
 package love.forte.simbot
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -90,14 +88,14 @@ public object OriginBotManager : Set<BotManager<*>> {
         }
     }
 
-    public fun getManagers(component: Component): Flow<BotManager<*>> {
+    public fun getManagers(component: Component): Sequence<BotManager<*>> {
         lock.read {
             checkShutdown()
-            return flow {
+            return sequence {
                 val iter = managers.keys.iterator()
                 while (iter.hasNext()) {
                     val next: BotManager<*> = iter.next()
-                    if (next.component == component) emit(next)
+                    if (next.component == component) yield(next)
                     else continue
                 }
             }

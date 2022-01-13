@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -143,6 +143,10 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
      */
     public abstract fun get(id: ID): B?
 
+    /**
+     * 获取当前管理器下的所有BOT。
+     */
+    public abstract fun all(): Sequence<B>
 }
 
 
