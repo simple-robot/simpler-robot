@@ -35,9 +35,26 @@ import love.forte.simbot.message.doSafeCast
  *
  * @author ForteScarlet
  */
-public interface RequestEvent : Event {
+public interface RequestEvent : Event, UserInfoContainer {
     override val metadata: Event.Metadata
     override val bot: Bot
+
+    /**
+     * 这个请求的 **发起者**。
+     */
+    public suspend fun requester(): UserInfo
+
+    // Impl
+    @Api4J
+    public val requester: UserInfo
+        get() = runBlocking { requester() }
+
+
+    /**
+     * 通常情况下, [user] 等同于 [requester].
+     */
+    override suspend fun user(): UserInfo = requester()
+
 
     /**
      * 请求事件的可见范围。
@@ -91,6 +108,35 @@ public interface RequestEvent : Event {
     }
 }
 
+/**
+ * [RequestEvent] 事件的子类型，代表一个 **加入** 申请。
+ *
+ * 加入申请可能是外人想要进入当前某个组织内，
+ * 或者由外界的人邀请当前BOT进入他们的某个组织。
+ *
+ * 假若申请人是当前的bot（例如被邀请加入其他组织），那么理论上来讲应当满足 [requester] == [bot].
+ *
+ * 对于一个添加请求来讲，[申请人][requester] 不一定是他自己主动发起的，那么就可能存在一个 [邀请人][inviter].
+ * [inviter] 不一定存在，需要参考实现平台是否支持，以及当前申请事件的语境是否真的存在邀请人。
+ *
+ *
+ * @see RequestEvent
+ * @see GuildJoinRequestEvent
+ * @see GroupJoinRequestEvent
+ */
+public interface JoinRequestEvent : RequestEvent {
+
+    /**
+     * 邀请人。当无法获取或不存在时得到null。
+     */
+    public suspend fun inviter(): UserInfo?
+    public val inviter: UserInfo? get() = runBlocking { inviter() }
+
+    public companion object Key : BaseEventKey<JoinRequestEvent>("api.join_request", RequestEvent) {
+        override fun safeCast(value: Any): JoinRequestEvent? = doSafeCast(value)
+    }
+}
+
 
 /**
  * 一个与频道服务器相关的申请事件。
@@ -107,11 +153,30 @@ public interface GuildRequestEvent : RequestEvent, GuildInfoContainer {
 }
 
 /**
+ * 一个频道的加入申请事件。
+ *
+ * @see GuildRequestEvent
+ * @see JoinRequestEvent
+ */
+public interface GuildJoinRequestEvent : JoinRequestEvent, GuildRequestEvent {
+
+
+    public companion object Key : BaseEventKey<GuildJoinRequestEvent>(
+        "api.guild_join_request", JoinRequestEvent, GuildRequestEvent
+    ) {
+        override fun safeCast(value: Any): GuildJoinRequestEvent? = doSafeCast(value)
+    }
+}
+
+/**
  * 一个与群相关的请求事件。
+ *
+ * @see GroupJoinRequestEvent
  */
 public interface GroupRequestEvent : RequestEvent, GroupInfoContainer {
 
     override suspend fun group(): GroupInfo
+    override suspend fun requester(): UserInfo
 
     public companion object Key : BaseEventKey<GroupRequestEvent>(
         "api.group_request", RequestEvent
@@ -119,6 +184,25 @@ public interface GroupRequestEvent : RequestEvent, GroupInfoContainer {
         override fun safeCast(value: Any): GroupRequestEvent? = doSafeCast(value)
     }
 }
+
+/**
+ * 一个群的加入申请事件。
+ *
+ * @see GroupRequestEvent
+ * @see JoinRequestEvent
+ */
+public interface GroupJoinRequestEvent : GroupRequestEvent {
+
+    override suspend fun group(): GroupInfo
+    override suspend fun requester(): UserInfo
+
+    public companion object Key : BaseEventKey<GroupJoinRequestEvent>(
+        "api.group_join_request", GroupRequestEvent
+    ) {
+        override fun safeCast(value: Any): GroupJoinRequestEvent? = doSafeCast(value)
+    }
+}
+
 
 /**
  * 一个与频道相关的请求事件。
@@ -159,6 +243,9 @@ public interface UserRequestEvent : RequestEvent, UserInfoContainer {
  */
 public interface FriendRequestEvent : UserRequestEvent, FriendInfoContainer {
 
+    /**
+     * [friend] 仅代表申请人的基本信息，不代表他已经成为了好友。
+     */
     override suspend fun friend(): FriendInfo
 
     // Impl
