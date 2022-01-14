@@ -200,13 +200,13 @@ public interface GroupRequestEvent : RequestEvent, GroupInfoContainer {
  * @see GroupRequestEvent
  * @see JoinRequestEvent
  */
-public interface GroupJoinRequestEvent : GroupRequestEvent {
+public interface GroupJoinRequestEvent : GroupRequestEvent, JoinRequestEvent {
 
     override suspend fun group(): GroupInfo
     override suspend fun requester(): UserInfo
 
     public companion object Key : BaseEventKey<GroupJoinRequestEvent>(
-        "api.group_join_request", GroupRequestEvent
+        "api.group_join_request", GroupRequestEvent, JoinRequestEvent
     ) {
         override fun safeCast(value: Any): GroupJoinRequestEvent? = doSafeCast(value)
     }
