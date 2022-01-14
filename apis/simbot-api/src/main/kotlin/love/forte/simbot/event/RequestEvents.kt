@@ -31,13 +31,22 @@ import love.forte.simbot.message.doSafeCast
  * - 外界向当前bot所发出的一种**邀请**。
  *      常见为对BOT的入群邀请。
  *
- * @see AddRequestEvent
+ * 一个请求可能会有一些附加信息, 例如一些属性或者文本消息。
+ * 目前提供了一个 [RequestEvent.message] 来代表一次申请中可能存在的 **文本消息**。
+ * 如果实现实现不支持此属性或者属性为空，将得到null。
+ *
+ * @see JoinRequestEvent
  *
  * @author ForteScarlet
  */
 public interface RequestEvent : Event, UserInfoContainer {
     override val metadata: Event.Metadata
     override val bot: Bot
+
+    /**
+     *
+     */
+    public val message: String?
 
     /**
      * 这个请求的 **发起者**。
@@ -262,67 +271,71 @@ public interface FriendRequestEvent : UserRequestEvent, FriendInfoContainer {
     }
 }
 
-
-// 添加请求
-
+//
+// // 添加请求
+//
+// /**
+//  * 一个添加请求。
+//  * 大多数情况下，bot需要拥有一定的相关权限才可能收到相关的添加请求，比如bot需要是一个管理员，
+//  * 并且在添加的时候需要进行验证。
+//  *
+//  * 默认提供了三个类型的请求事件类型：
+//  * - [GroupAddRequestEvent]
+//  * - [GuildAddRequestEvent]
+//  * - [FriendAddRequestEvent]
+//  */
+// public interface AddRequestEvent : RequestEvent {
+//
+//     public companion object Key : BaseEventKey<AddRequestEvent>("api.add_request", RequestEvent) {
+//         override fun safeCast(value: Any): AddRequestEvent? = doSafeCast(value)
+//     }
+// }
+//
+//
+// /**
+//  * 群添加申请
+//  *
+//  * @see AddRequestEvent
+//  * @see GuildRequestEvent
+//  */
+// public interface GroupAddRequestEvent : AddRequestEvent, GuildRequestEvent {
+//
+//     public companion object Key : BaseEventKey<GroupAddRequestEvent>(
+//         "api.group_add_request", AddRequestEvent, GuildRequestEvent
+//     ) {
+//         override fun safeCast(value: Any): GroupAddRequestEvent? = doSafeCast(value)
+//     }
+// }
+//
+// /**
+//  * 频道添加申请
+//  *
+//  * @see AddRequestEvent
+//  * @see GuildRequestEvent
+//  */
+// public interface GuildAddRequestEvent : AddRequestEvent, GuildRequestEvent {
+//
+//     public companion object Key : BaseEventKey<GuildAddRequestEvent>(
+//         "api.guild_add_request", AddRequestEvent, GuildRequestEvent
+//     ) {
+//         override fun safeCast(value: Any): GuildAddRequestEvent? = doSafeCast(value)
+//     }
+// }
+//
 /**
- * 一个添加请求。
- * 大多数情况下，bot需要拥有一定的相关权限才可能收到相关的添加请求，比如bot需要是一个管理员，
- * 并且在添加的时候需要进行验证。
+ * 好友添加申请。
  *
- * 默认提供了三个类型的请求事件类型：
- * - [GroupAddRequestEvent]
- * - [GuildAddRequestEvent]
- * - [FriendAddRequestEvent]
- */
-public interface AddRequestEvent : RequestEvent {
-
-    public companion object Key : BaseEventKey<AddRequestEvent>("api.add_request", RequestEvent) {
-        override fun safeCast(value: Any): AddRequestEvent? = doSafeCast(value)
-    }
-}
-
-
-/**
- * 群添加申请
- *
- * @see AddRequestEvent
- * @see GuildRequestEvent
- */
-public interface GroupAddRequestEvent : AddRequestEvent, GuildRequestEvent {
-
-    public companion object Key : BaseEventKey<GroupAddRequestEvent>(
-        "api.group_add_request", AddRequestEvent, GuildRequestEvent
-    ) {
-        override fun safeCast(value: Any): GroupAddRequestEvent? = doSafeCast(value)
-    }
-}
-
-/**
- * 频道添加申请
- *
- * @see AddRequestEvent
- * @see GuildRequestEvent
- */
-public interface GuildAddRequestEvent : AddRequestEvent, GuildRequestEvent {
-
-    public companion object Key : BaseEventKey<GuildAddRequestEvent>(
-        "api.guild_add_request", AddRequestEvent, GuildRequestEvent
-    ) {
-        override fun safeCast(value: Any): GuildAddRequestEvent? = doSafeCast(value)
-    }
-}
-
-/**
- * 好友添加申请
- *
- * @see AddRequestEvent
+ * @see JoinRequestEvent
  * @see FriendRequestEvent
  */
-public interface FriendAddRequestEvent : AddRequestEvent, FriendRequestEvent {
+public interface FriendAddRequestEvent : JoinRequestEvent, FriendRequestEvent {
+
+    override suspend fun requester(): FriendInfo
+
+    override suspend fun friend(): FriendInfo = requester()
 
     public companion object Key : BaseEventKey<FriendAddRequestEvent>(
-        "api.friend_add_request", AddRequestEvent, FriendRequestEvent
+        "api.friend_add_request", JoinRequestEvent, FriendRequestEvent
     ) {
         override fun safeCast(value: Any): FriendAddRequestEvent? = doSafeCast(value)
     }
