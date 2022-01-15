@@ -12,6 +12,7 @@
 
 package love.forte.simbot.event
 
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
@@ -88,15 +89,39 @@ public interface RequestEvent : Event, UserInfoContainer {
     public fun acceptBlocking(): Boolean = runBlocking { accept() }
 
     /**
+     * 异步的执行 [accept],并忽略结果。
+     *
+     * 异步中不会捕获异常。
+     */
+    @Api4J
+    @ExperimentalSimbotApi
+    public fun acceptAsync() {
+        bot.launch { accept() }
+    }
+
+    /**
      * 是否拒绝/回绝此次请求。
      */
     @ExperimentalSimbotApi
     public suspend fun reject(): Boolean
 
+    /**
+     * 阻塞的执行 [reject].
+     */
     @Api4J
     @ExperimentalSimbotApi
     public fun rejectBlocking(): Boolean = runBlocking { reject() }
 
+    /**
+     * 异步的执行 [reject], 并且忽略结果。
+     *
+     * 异步中不会捕获异常。
+     */
+    @Api4J
+    @ExperimentalSimbotApi
+    public fun rejectAsync() {
+        bot.launch { reject() }
+    }
 
     public enum class Type {
         /**
