@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -62,6 +62,7 @@ public abstract class BaseInternalKey<E : InternalEvent>(
 
     override fun toString(): String = "InternalEventKey(id=$id)"
     override fun equals(other: Any?): Boolean {
+
         if (this === other) return true
         if (other !is Event.Key<*>) return false
         return id == other.id
