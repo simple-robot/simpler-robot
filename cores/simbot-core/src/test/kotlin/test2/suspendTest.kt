@@ -1,30 +1,23 @@
+/*
+ *  Copyright (c) 2022-2022 ForteScarlet <https://github.com/ForteScarlet>
+ *
+ *  根据 Apache License 2.0 获得许可；
+ *  除非遵守许可，否则您不得使用此文件。
+ *  您可以在以下网址获取许可证副本：
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ */
+
 package test2
 
-import kotlinx.coroutines.CancellableContinuation
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.flow.collect
+import love.forte.simbot.event.GroupMessageEvent
 
 
-lateinit var continuation: CancellableContinuation<Int>
-
-suspend fun run(): Int = suspendCancellableCoroutine { c ->
-    c.invokeOnCancellation { println("ioc1") }
-    continuation = c
-}
-
-suspend fun main() {
-    val deferred = CompletableDeferred<Int>()
-    deferred.invokeOnCompletion { println("handler1") }
-    deferred.invokeOnCompletion { println("handler2") }
-
-    deferred.complete(1)
-    // coroutineScope {
-    //     launch {
-    //         println("num: ${run()}")
-    //     }
-    //     launch {
-    //         delay(500)
-    //         continuation.resume(1)
-    //     }.join()
-    // }
+suspend fun GroupMessageEvent.listener() {
+    group().members().collect {
+        println("Member: $it")
+    }
 }

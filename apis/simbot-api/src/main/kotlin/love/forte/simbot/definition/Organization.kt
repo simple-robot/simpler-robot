@@ -139,7 +139,16 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport, Struc
     public suspend fun members(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Member>
 
     @Api4J
-    public fun getMembers(groupingId: ID? = null, limiter: Limiter = Limiter): Stream<out Member>
+    public fun getMembers(groupingId: ID?, limiter: Limiter): Stream<out Member>
+
+    @Api4J
+    public fun getMembers(groupingId: ID?): Stream<out Member> = getMembers(groupingId, Limiter)
+
+    @Api4J
+    public fun getMembers(limiter: Limiter): Stream<out Member> = getMembers(null, limiter)
+
+    @Api4J
+    public fun getMembers(): Stream<out Member> = getMembers(null, Limiter)
 
 
     /**
