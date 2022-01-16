@@ -12,8 +12,6 @@
 
 package love.forte.test
 
-import kotlin.test.Test
-
 
 /**
  *
@@ -21,7 +19,7 @@ import kotlin.test.Test
  */
 class OkioTest {
 
-    @Test
+    // @Test
     fun io() {
         val p = "C:\\Users\\Administrator\\Desktop\\新建文本文档.txt"
 

@@ -22,7 +22,6 @@ import love.forte.simbot.ID
 import love.forte.simbot.LongID
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.util.*
 import kotlin.test.Test
 
 @Serializable
@@ -41,7 +40,7 @@ data class User2(val id: LongID, val name: String)
  */
 class IDTest {
 
-    @Test
+    //@Test
     fun test() {
         val intId = 123.ID
         val longId = 123456L.ID
@@ -72,31 +71,12 @@ class IDTest {
         assert(id == id1)
     }
 
-    @Test
-    fun bitMapTest() {
-        val set = BitSet()
-        set.set(4)
-        set.set(44)
-        set.set(444)
-        set.set(4444)
-        set.set(44444)
-        println(set)
-        println(set.cardinality())
-        println(set.size())
-    }
-
 
     @Test
     fun groupingTest() {
         val group1 = Grouping("abc".ID, "好友")
-
         val j1 = Json.encodeToString(group1)
-
-        println(j1)
-
-        println(Json.decodeFromString<Grouping>(j1))
-
-
+        assert(Json.decodeFromString<Grouping>(j1).id == "abc".ID)
     }
 
     @Test
@@ -133,7 +113,7 @@ class IDTest {
 }
 
 @Serializable
-data class Role(
+private data class Role(
     @Serializable(ID.AsCharSequenceIDSerializer::class)
     val id: ID,
     val name: String

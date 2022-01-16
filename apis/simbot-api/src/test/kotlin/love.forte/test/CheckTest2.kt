@@ -12,27 +12,23 @@
 
 package love.forte.test
 
-import org.junit.jupiter.api.DisplayName
 import kotlin.system.measureNanoTime
-import kotlin.test.AfterTest
-import kotlin.test.Ignore
-import kotlin.test.Test
 import kotlin.time.Duration.Companion.nanoseconds
 
 /**
  *
  * @author ForteScarlet
  */
-@DisplayName("数值<=0匹配测试")
+// @DisplayName("数值<=0匹配测试")
 class CheckTest2 {
 
-    @AfterTest
+    // @AfterTest
     fun split() {
         println("====")
     }
 
-    @Test
-    @Ignore
+    // @Test
+    // @Ignore
     fun test1() {
         repeat(10000) {
             t1(1, 0, 1)
@@ -65,8 +61,8 @@ class CheckTest2 {
          */
     }
 
-    @Test
-    @Ignore
+    //@Test
+    //@Ignore
     fun test2() {
         repeat(10000) {
             t2(1, 0, 1)

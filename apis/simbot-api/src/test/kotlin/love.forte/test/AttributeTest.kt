@@ -35,11 +35,11 @@ class AttributeTest {
         val foo1 = map[fooAttr]!!
         val foo2 = map[attribute<Foo>("foo")]!! // by a new instance
 
-        println(foo1 === foo2)
+        assert(foo1 === foo2)
     }
 
 
 }
 
 
-class Foo
+private class Foo

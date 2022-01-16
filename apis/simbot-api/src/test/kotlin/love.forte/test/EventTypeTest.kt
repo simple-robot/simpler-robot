@@ -16,8 +16,6 @@ import love.forte.simbot.event.Event
 import love.forte.simbot.event.MessageEvent
 import love.forte.simbot.event.RequestEvent
 import love.forte.simbot.event.isSubFrom
-import kotlin.reflect.KClass
-import kotlin.reflect.full.isSubclassOf
 import kotlin.test.Test
 
 /**
@@ -28,18 +26,9 @@ class EventTypeTest {
 
     @Test
     fun test() {
-        val type = RequestEvent::class.type()!!
-        println(type)
-        println(type.id)
-        println(type isSubFrom Event)
-        println(type isSubFrom MessageEvent)
-
-    }
-
-    fun KClass<out Event>.type(): Event.Key<*>? {
-        return this.nestedClasses.firstOrNull { it.isCompanion }?.takeIf {
-            it.isSubclassOf(Event.Key::class)
-        }?.objectInstance as Event.Key<*>
+        val key = Event.Key.getKey(RequestEvent::class)
+        assert(key isSubFrom Event)
+        assert(!(key isSubFrom MessageEvent))
 
     }
 }

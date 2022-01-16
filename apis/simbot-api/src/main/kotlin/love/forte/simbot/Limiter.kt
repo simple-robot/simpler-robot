@@ -36,7 +36,7 @@ import kotlin.experimental.ExperimentalTypeInference
  *
  * ## 默认实现
  * [Limiter] 提供两个默认实现：
- * - [ZERO] 所有数值恒为 `0` 的伴生对象，可直接作为默认值使用。
+ * - [ZERO] 所有数值恒为 `0` 的伴生实现，可直接作为默认值使用。
  * - 通过 [Limiter.of] (for java) 或者 [limiter] (for kotlin) 得到一个默认的数据类实现。
  *
  * ## 其他实现
