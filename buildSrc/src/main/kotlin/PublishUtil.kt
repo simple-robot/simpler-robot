@@ -53,7 +53,7 @@ inline fun Project.configurePublishing(artifactId: String) {
         repositories {
             mavenLocal()
             maven {
-                if (version.toString().endsWith("SNAPSHOTS", true)) {
+                if (version.toString().contains("SNAPSHOTS", true)) {
                     // snapshot
                     name = Sonatype.`snapshot-oss`.NAME
                     url = uri(Sonatype.`snapshot-oss`.URL)
@@ -62,8 +62,11 @@ inline fun Project.configurePublishing(artifactId: String) {
                     url = uri(Sonatype.oss.URL)
                 }
 
-                val username0 = extra.get("sonatype.username")?.toString()
-                    ?: throw NullPointerException("sonatype-username")
+                val username0 = extra.get("sonatype.username")?.toString() ?: run {
+                    println("[WARN] Cannot found sonatype.username from extra for $artifactId")
+                    return@maven
+                }
+
                 val password0 = extra.get("sonatype.password")?.toString()
                     ?: throw NullPointerException("sonatype-password")
 
