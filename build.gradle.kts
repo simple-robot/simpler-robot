@@ -100,6 +100,8 @@ fun Project.configDokka() {
 val credentialsUsername: String? = extra.get("credentials.username")?.toString()
 val credentialsPassword: String? = extra.get("credentials.password")?.toString()
 
+println("credentialsUsername: $credentialsUsername")
+
 if (credentialsUsername != null && credentialsPassword != null) {
     nexusPublishing {
         packageGroup.set(P.Simbot.GROUP)
