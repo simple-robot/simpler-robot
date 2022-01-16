@@ -12,6 +12,8 @@
 
 package love.forte.simbot
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -24,7 +26,7 @@ import kotlinx.coroutines.runBlocking
  *
  * @author ForteScarlet
  */
-public interface Switchable {
+public interface Switchable : CoroutineScope {
 
     /**
      * 启动操作.
@@ -35,6 +37,11 @@ public interface Switchable {
 
     @Api4J
     public fun startBlocking(): Boolean = runBlocking { start() }
+
+    @Api4J
+    public fun startAsync() {
+        launch { start() }
+    }
 
     /**
      * 关闭操作.
@@ -50,6 +57,15 @@ public interface Switchable {
     @Api4J
     public fun cancelBlocking(): Boolean = runBlocking { cancel() }
 
+    @Api4J
+    public fun cancelAsync() {
+        launch { cancel() }
+    }
+
+    @Api4J
+    public fun cancelAsync(reason: Throwable?) {
+        launch { cancel(reason) }
+    }
 
 
 

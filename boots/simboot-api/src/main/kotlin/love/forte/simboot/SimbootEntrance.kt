@@ -105,7 +105,7 @@ public interface SimbootContext : Survivable {
     override fun toAsync(): Future<Int> {
         val future = CompletableFuture<Int>()
         invokeOnCompletion { reason ->
-            if (reason == null) {
+            if (reason != null) {
                 future.completeExceptionally(reason)
             } else {
                 future.complete(0)

@@ -15,11 +15,10 @@ package love.forte.simbot
 import kotlinx.coroutines.CompletionHandler
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * 可存活的。
- * 此接口提供 `join`、``
+ * 此接口提供 [join]、[invokeOnCompletion] 等函数来对生命周期提供一定操作。
  * @author ForteScarlet
  */
 public interface Survivable : Switchable {
@@ -78,21 +77,3 @@ public interface Survivable : Switchable {
 }
 
 
-private val survivableThreadGroup = ThreadGroup("survivable-thread")
-private val num = AtomicInteger(1)
-
-private class SurvivableThread : Thread(
-    survivableThreadGroup,
-    null,
-    "${survivableThreadGroup.name}-${num.getAndIncrement()}"
-) {
-    init {
-        isDaemon = true
-    }
-
-    override fun run() {
-        kotlin.runCatching {
-            while (!this.isInterrupted) sleep(60_000)
-        }
-    }
-}

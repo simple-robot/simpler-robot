@@ -74,6 +74,7 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
      *
      */
+    @JvmSynthetic
     public suspend fun friends(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Friend>
     /**
      * @see friends

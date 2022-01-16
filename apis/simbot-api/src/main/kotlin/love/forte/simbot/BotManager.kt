@@ -147,6 +147,7 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
      * 获取当前管理器下的所有BOT。
      */
     public abstract fun all(): Sequence<B>
+
 }
 
 

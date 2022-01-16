@@ -12,9 +12,7 @@
 
 package love.forte.simboot.core
 
-import kotlinx.coroutines.CompletionHandler
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.di.BeanContainer
 import love.forte.di.all
@@ -41,6 +39,7 @@ import love.forte.simbot.event.EventListenerRegistrar
 import love.forte.simbot.utils.asCycleIterator
 import org.slf4j.Logger
 import kotlin.concurrent.thread
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KVisibility
@@ -267,8 +266,10 @@ public class CoreBootEntrance : SimbootEntrance {
 
 
 private class CoreSimbootContext(
-    private val job: Job
+    private val job: Job,
 ) : SimbootContext {
+
+    override val coroutineContext: CoroutineContext = Dispatchers.Default + CoroutineName("CoreSimbootContext")
 
     override suspend fun start(): Boolean = false
     override val isStarted: Boolean get() = job.isActive || job.isCompleted
