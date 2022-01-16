@@ -16,6 +16,7 @@ import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.definition.*
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.message.Image
@@ -99,6 +100,7 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      *
      * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
      */
+    @JvmSynthetic
     public suspend fun groups(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Group>
 
     /**
@@ -122,6 +124,7 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      *
      * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
      */
+    @JvmSynthetic
     public suspend fun guilds(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Guild>
     /**
      * @see guilds
@@ -143,9 +146,17 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
 
     /**
      * 上传一个资源作为资源，并在预期内得到一个 [Image] 结果。
+     * 这个 [Image] 不一定是真正已经上传后的结果，它有可能只是一个预处理类型。
+     * 在执行 [uploadImage] 的过程中也不一定出现真正的挂起行为，具体细节请参考具体实现。
      */
+    @JvmSynthetic
     public suspend fun uploadImage(resource: Resource): Image<*>
 
+    /**
+     * @see uploadImage
+     */
+    @Api4J
+    public fun uploadImageBlocking(resource: Resource): Image<*> = runBlocking { uploadImage(resource) }
 
     // public suspend fun uploadFile(resource: Resource): File
 
