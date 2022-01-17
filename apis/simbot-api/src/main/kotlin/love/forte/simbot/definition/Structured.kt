@@ -19,9 +19,7 @@ import love.forte.simbot.ID
 /**
  * 一个非阻塞的 **结构化** 定义。
  *
- * 结构化的东西，他可以有一个 [上级][previous]，以及一个 [下级][children]。
- *
- * 一个结构化的内容，它可能存在一个上级，以及多个下级。
+ * 结构化的东西，可以有一个 [上级][previous]，以及多个 [下级][children]。
  *
  * @author ForteScarlet
  */
@@ -34,7 +32,8 @@ public interface Structured<P, N> {
     public suspend fun previous(): P
 
     @Api4J
-    public fun getPrevious(): P = runBlocking { previous() }
+    public val previous: P
+        get() = runBlocking { previous() }
 
     /**
      * 下一级的内容。

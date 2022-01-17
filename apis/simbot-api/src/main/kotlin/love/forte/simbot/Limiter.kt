@@ -26,10 +26,8 @@ import kotlin.experimental.ExperimentalTypeInference
  *
  * 对于限流的具体实现细节由对应功能的实现者自行决定（包括是否真的进行分页等）。
  *
- * 虽然例如 [kotlinx.coroutines.flow.Flow] 有提供 [kotlinx.coroutines.flow.Flow.take] 、
- * [java.util.stream.Stream] 有提供 [java.util.stream.Stream.limit] 之类的函数，
- *
- * 但是 [Limiter] 更多的是为功能提供一个初始量。
+ * [Flow] 有提供 [Flow.take] 、[Stream] 有提供 [Stream.limit] 之类的函数，但是 [Limiter] 更多的是为功能提供一个初始量。
+ * 有些情况下提供额外的Limiter参数可以对结果的获取有所优化，而有些情况下，使用 Limiter 的效果与直接使用流的API (例如[Flow.take]) 并无区别。
  *
  * ## 有效数字
  * [Limiter] 中，约定其所有有效数字均应大于 `0`。
@@ -37,7 +35,7 @@ import kotlin.experimental.ExperimentalTypeInference
  * ## 默认实现
  * [Limiter] 提供两个默认实现：
  * - [ZERO] 所有数值恒为 `0` 的伴生实现，可直接作为默认值使用。
- * - 通过 [Limiter.of] (for java) 或者 [limiter] (for kotlin) 得到一个默认的数据类实现。
+ * - 通过 [limiter.of(...)][Limiter.of] (for java) 或者 [limiter(...)][limiter] (for kotlin) 得到一个默认的数据类实现。
  *
  * ## 其他实现
  * 对于默认实现无法满足需求的情况，需要进行独立的实现，这一般由核心或者其他组件提供，并会整合在其他参数类型中，
@@ -47,16 +45,15 @@ import kotlin.experimental.ExperimentalTypeInference
  * Limiter提供了一些扩展函数来快速对 [flow][Flow]、[sequence][Sequence]、[java stream][Stream] 进行操作, 以flow为例：
  *
  * ```kotlin
- * // toFlow
  * val limiter: Limiter = ...
- *     val flow1 = Limiter.toFlow { batchSize ->
- *          println("batchSize: $batchSize")
- *          emit(1)
- *          emit(2)
- *          emit(3)
- *      }
+ * val flow1 = Limiter.toFlow { batchSize ->
+ *      println("batchSize: $batchSize")
+ *      emit(1)
+ *      emit(2)
+ *      emit(3)
+ *  }
  *
- *      val flow2 = flow { ... }.withLimiter(limiter)
+ * val flow2 = flow { ... }.withLimiter(limiter)
  * ```
  *
  * @see ZERO

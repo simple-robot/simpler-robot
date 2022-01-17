@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -25,7 +25,7 @@ sealed class P : SimbotProject() {
     object Simbot {
         const val GROUP = "love.forte.simbot"
         const val BOOT_GROUP = "love.forte.simbot.boot"
-        const val VERSION = "3.0.0.preview.1.0"
+        const val VERSION = "3.0.0.preview.1.1"
     }
 
     sealed class ForteDI(id: String) : Dep(GROUP, "di-$id", VERSION) {
