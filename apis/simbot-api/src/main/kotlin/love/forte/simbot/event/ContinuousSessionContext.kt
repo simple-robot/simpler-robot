@@ -210,7 +210,7 @@ public abstract class ContinuousSessionContext {
                 sourceEvent as ContactMessageEvent
                 val sourceUserId = sourceEvent.user().id
                 waitingFor(id, timeout) { context, provider ->
-                    doListenerOnContactMessage(key, context, provider, listener) { sourceUserId }
+                    doListenerOnContactMessage(key, sourceEvent.component, context, provider, listener) { sourceUserId }
                 }
             }
             key isSubFrom ChatroomMessageEvent -> {
@@ -218,7 +218,7 @@ public abstract class ContinuousSessionContext {
                 val sourceAuthorId = sourceEvent.author().id
                 val sourceChatroomId = sourceEvent.source().id
                 waitingFor(id, timeout) { context, provider ->
-                    doListenerOnChatroomMessage(key, context, provider, listener,
+                    doListenerOnChatroomMessage(key, sourceEvent.component, context, provider, listener,
                         { sourceAuthorId },
                         { sourceChatroomId }
                     )
@@ -230,13 +230,14 @@ public abstract class ContinuousSessionContext {
 
     private suspend inline fun <E : MessageEvent, T> doListenerOnContactMessage(
         sourceKey: Event.Key<*>,
+        component: Component,
         context: EventProcessingContext,
         provider: ContinuousSessionProvider<T>,
         listener: ClearTargetResumedListener<E, T>,
         userIdBlock: () -> ID
     ) {
         val event = context.event
-        if (event.key isSubFrom sourceKey) {
+        if (event.component == component && event.key isSubFrom sourceKey) {
             event as ContactMessageEvent
             if (event.user().id == userIdBlock()) {
                 @Suppress("UNCHECKED_CAST")
@@ -247,6 +248,7 @@ public abstract class ContinuousSessionContext {
 
     private suspend inline fun <E : MessageEvent, T> doListenerOnChatroomMessage(
         sourceKey: Event.Key<*>,
+        component: Component,
         context: EventProcessingContext,
         provider: ContinuousSessionProvider<T>,
         listener: ClearTargetResumedListener<E, T>,
@@ -254,7 +256,7 @@ public abstract class ContinuousSessionContext {
         chatroomIdBlock: () -> ID
     ) {
         val event = context.event
-        if (event.key isSubFrom sourceKey) {
+        if (event.component == component && event.key isSubFrom sourceKey) {
             event as ChatroomMessageEvent
             if (event.source().id == chatroomIdBlock() && event.author().id == authorIdBlock()) {
                 @Suppress("UNCHECKED_CAST")
@@ -305,7 +307,13 @@ public abstract class ContinuousSessionContext {
                 sourceEvent as ContactMessageEvent
                 val sourceUserId = lazyValue { sourceEvent.user().id }
                 waiting(id, timeout) { context, provider ->
-                    doListenerOnContactMessage(key, context, provider, listener) { sourceUserId() }
+                    doListenerOnContactMessage(
+                        key,
+                        sourceEvent.component,
+                        context,
+                        provider,
+                        listener
+                    ) { sourceUserId() }
                 }
             }
             key isSubFrom ChatroomMessageEvent -> {
@@ -313,7 +321,7 @@ public abstract class ContinuousSessionContext {
                 val sourceAuthorId = lazyValue { sourceEvent.author().id }
                 val sourceChatroomId = lazyValue { sourceEvent.source().id }
                 waiting(id, timeout) { context, provider ->
-                    doListenerOnChatroomMessage(key, context, provider, listener,
+                    doListenerOnChatroomMessage(key, sourceEvent.component, context, provider, listener,
                         { sourceAuthorId() },
                         { sourceChatroomId() }
                     )
