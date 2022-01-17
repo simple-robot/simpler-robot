@@ -155,6 +155,7 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
      * 获取 [Stream] 形式的bot流。
      */
     @Api4J
+    @JvmName("all")
     public fun all4J(): Stream<B> = all().asStream()
 
 }
