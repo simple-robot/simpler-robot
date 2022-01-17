@@ -63,7 +63,7 @@ public interface Member : User, MemberInfo, MuteSupport {
      * 当前群成员在其所属组织内所扮演/拥有的角色。
      */
     @Api4J
-    public val roles: Stream<Role>
+    public val roles: Stream<out Role>
 
 
     /**
