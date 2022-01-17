@@ -13,13 +13,14 @@
 package love.forte.simbot.definition
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.action.MuteSupport
+import java.util.stream.Stream
 import kotlin.time.Duration
 
 
@@ -41,7 +42,8 @@ public interface Member : User, MemberInfo, MuteSupport {
     public suspend fun organization(): Organization
 
     @Api4J
-    public val organization: Organization get() = runBlocking { organization() }
+    public val organization: Organization
+        get() = runBlocking { organization() }
 
     /**
      * 在客观条件允许的情况下，对其进行禁言。
@@ -50,10 +52,51 @@ public interface Member : User, MemberInfo, MuteSupport {
      */
     override suspend fun mute(duration: Duration): Boolean
 
+    /**
+     * 当前群成员在其所属组织内所扮演/拥有的角色。
+     */
     @JvmSynthetic
     public suspend fun roles(): Flow<Role>
+
+    /**
+     * 当前群成员在其所属组织内所扮演/拥有的角色。
+     */
     @Api4J
-    public val roles: List<Role> get() = runBlocking { roles().toList() }
+    public val roles: Stream<Role>
+
+
+    /**
+     * 判断当前成员是否拥有"管理者"的权限。
+     *
+     * @see Role.isAdmin
+     */
+    public suspend fun isAdmin(): Boolean = roles().firstOrNull { r -> r.isAdmin() } != null
+
+    /**
+     * 判断当前成员是否拥有"拥有者"的权限。
+     *
+     * @see Role.isOwner
+     */
+    public suspend fun isOwner(): Boolean = roles().firstOrNull { r -> r.isOwner() } != null
+
+    /**
+     * 判断当前成员是否拥有"管理者"的权限。
+     *
+     * @see Role.isAdmin
+     */
+    @Api4J
+    public val isAdmin: Boolean
+        get() = roles.anyMatch { r -> r.isAdmin }
+
+    /**
+     * 判断当前成员是否拥有"拥有者"的权限。
+     *
+     * @see Role.isOwner
+     */
+    @Api4J
+    public val isOwner: Boolean
+        get() = roles.anyMatch { r -> r.isOwner }
+
 }
 
 
@@ -66,14 +109,18 @@ public interface GuildMember : Member {
      */
     @JvmSynthetic
     public suspend fun guild(): Guild
+
     @Api4J
-    public val guild: Guild get() = runBlocking { guild() }
+    public val guild: Guild
+        get() = runBlocking { guild() }
 
 
     @JvmSynthetic
     override suspend fun organization(): Guild = guild()
+
     @Api4J
-    override val organization: Guild get() = guild
+    override val organization: Guild
+        get() = guild
 }
 
 
@@ -83,17 +130,19 @@ public interface GroupMember : Member {
      */
     @JvmSynthetic
     public suspend fun group(): Group
+
     @Api4J
-    public val group: Group get() = runBlocking { group() }
+    public val group: Group
+        get() = runBlocking { group() }
 
 
     @JvmSynthetic
     override suspend fun organization(): Group = group()
+
     @Api4J
-    override val organization: Group get() = group
+    override val organization: Group
+        get() = group
 }
-
-
 
 
 /**

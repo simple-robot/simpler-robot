@@ -13,11 +13,18 @@
 package love.forte.simbot.definition
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.*
 import love.forte.simbot.action.MuteSupport
 import java.util.stream.Stream
 import kotlin.time.Duration
+
+suspend fun allAdmin(organization: Organization) {
+    organization.members().firstOrNull { member ->
+        member.roles().firstOrNull { role -> role.isAdmin() } != null
+    }
+}
 
 /**
  * 一个 **组织** 结构（中的一员）。
@@ -31,6 +38,12 @@ import kotlin.time.Duration
  *
  * ## 人
  * 一个组织下，可以存在多个 [成员][Member]. 且成员中可能存在拥有一定程度权限的管理员。
+ *
+ * 查询所有管理员：
+ * ```kotlin
+ *
+ * ```
+ *
  *
  *
  * ## 财产
@@ -133,6 +146,7 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport, Struc
 
     /**
      * 一个组织中，可能存在[成员][members].
+     *
      * @param limiter 对于多条数据的限流器。
      */
     @JvmSynthetic

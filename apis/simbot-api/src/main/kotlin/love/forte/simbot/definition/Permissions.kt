@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -13,6 +13,7 @@
 package love.forte.simbot.definition
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
@@ -214,10 +215,23 @@ public interface Role {
     /**
      * 判断当前角色是否存在某个指定权限。
      */
-    @OptIn(Api4J::class)
+    @Api4J
     public operator fun contains(permission: Permission): Boolean =
         permissions.any { it == permission }
 
+    /**
+     * 此角色中是否包含管理者权限。
+     *
+     * @see PermissionStatus.isAdmin
+     */
+    public suspend fun isAdmin(): Boolean = permissions().firstOrNull { it.status.isAdmin } != null
+
+    /**
+     * 此角色中是否包含所有者权限。
+     *
+     * @see PermissionStatus.isOwner
+     */
+    public suspend fun isOwner(): Boolean = permissions().firstOrNull { it.status.isOwner } != null
 
     /**
      * 此角色中是否包含管理员权限。
