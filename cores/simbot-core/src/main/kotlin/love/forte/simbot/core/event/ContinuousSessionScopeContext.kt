@@ -47,7 +47,7 @@ internal class CoreContinuousSessionContext(
         manager.set(id, listener, provider, receiver)
 
         if (timeout > 0) {
-            val timeoutJob = coroutineScope.launch {
+            val timeoutJob = coroutineScope.launch(start = CoroutineStart.LAZY) {
                 delay(timeout)
                 logger.trace("Session {} timeout", id)
                 @Suppress("ThrowableNotThrown")
@@ -55,6 +55,7 @@ internal class CoreContinuousSessionContext(
                 provider.pushException(ContinuousSessionTimeoutException("Session [$id] has timed out due to the ${timeout.milliseconds} time limit."))
             }
             deferred.invokeOnCompletion { timeoutJob.cancel() }
+            timeoutJob.start()
         }
     }
 
@@ -213,7 +214,7 @@ internal class ResumedListenerManager {
     fun isEmpty(): Boolean = listeners.isEmpty()
 
     suspend fun process(context: CoreEventProcessingContext, scope: CoroutineScope) {
-        listeners.forEach { id, listener ->
+        listeners.forEach { (id, listener) ->
             scope.launch {
                 try {
                     logger.debug("Launch resumed listener: {} of id {}", listener, id)

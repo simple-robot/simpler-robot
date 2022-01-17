@@ -29,20 +29,16 @@ suspend fun main() {
     val j = SupervisorJob()
     val scope = CoroutineScope(j + newFixedThreadPoolContext(8, "test"))
 
-    val job = scope.async {
-        delay(7000)
+    val job = scope.launch(start = CoroutineStart.LAZY) {
+        delay(700)
         println("get value!")
-        5
     }
 
-    val value = withTimeoutOrNull(5000) {
-        job.await()
-    }
+    job.cancel()
+    job.join()
+    println("job down.")
 
-    println("value: $value")
-    println(job.isCancelled)
-    println(job.isCancelled)
-    println(job.isActive)
+    println(job.start())
 
     j.join()
 }
