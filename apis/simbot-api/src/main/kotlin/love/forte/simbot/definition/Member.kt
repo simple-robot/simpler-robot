@@ -50,6 +50,7 @@ public interface Member : User, MemberInfo, MuteSupport {
      * 此行为不会捕获异常。
      *
      */
+    @JvmSynthetic
     override suspend fun mute(duration: Duration): Boolean
 
     /**

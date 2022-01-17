@@ -13,18 +13,12 @@
 package love.forte.simbot.definition
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.*
 import love.forte.simbot.action.MuteSupport
 import java.util.stream.Stream
 import kotlin.time.Duration
 
-suspend fun allAdmin(organization: Organization) {
-    organization.members().firstOrNull { member ->
-        member.roles().firstOrNull { role -> role.isAdmin() } != null
-    }
-}
 
 /**
  * 一个 **组织** 结构（中的一员）。
@@ -41,9 +35,8 @@ suspend fun allAdmin(organization: Organization) {
  *
  * 查询所有管理员：
  * ```kotlin
- *
+ *    organization.members().filter { it.isAdmin() }
  * ```
- *
  *
  *
  * ## 财产
@@ -65,11 +58,15 @@ suspend fun allAdmin(organization: Organization) {
  *
  * 你可以参考 [组织概述](https://www.yuque.com/simpler-robot/simpler-robot-doc/dt3ukr) 中的相关对比图。
  *
- *
+ * @see ChatRoom
+ * @see Group
+ * @see Guild
+ * @see Channel
  *
  * @author ForteScarlet
  */
-public interface Organization : Objectives, OrganizationInfo, MuteSupport, Structured<Organization?, Flow<Organization>>, BotContainer {
+public interface Organization : Objectives, OrganizationInfo, MuteSupport,
+    Structured<Organization?, Flow<Organization>>, BotContainer {
 
     /**
      * 这个组织一定是属于某一个Bot之下的。
@@ -109,7 +106,8 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport, Struc
     override suspend fun unmute(): Boolean
 
     @Api4J
-    public val owner: Member get() = runBlocking { owner() }
+    public val owner: Member
+        get() = runBlocking { owner() }
 
     override val maximumMember: Int
     override val currentMember: Int
@@ -119,6 +117,7 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport, Struc
      * 组织有可能是层级的，因此一个组织结构可能会有上一层的组织。
      * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
      */
+    @JvmSynthetic
     override suspend fun previous(): Organization?
 
 
@@ -128,19 +127,23 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport, Struc
      * 提供 grouping 查询分组信息。
      *
      */
+    @JvmSynthetic
     override suspend fun children(groupingId: ID?): Flow<Organization> = children(groupingId, Limiter)
 
 
     /**
      * 根据分组ID和限流器尝试获取此组织下的子集。
      */
+    @JvmSynthetic
     public suspend fun children(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Organization>
 
 
     @Api4J
     public fun getChildren(groupingId: ID?, limiter: Limiter): Stream<out Organization>
+
     @Api4J
     public fun getChildren(groupingId: ID? = null): Stream<out Organization> = getChildren(groupingId, Limiter)
+
     @Api4J
     public fun getChildren(): Stream<out Organization> = getChildren(null, Limiter)
 
