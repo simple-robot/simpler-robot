@@ -16,8 +16,10 @@ import kotlinx.coroutines.runBlocking
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import java.util.stream.Stream
 import kotlin.concurrent.read
 import kotlin.concurrent.write
+import kotlin.streams.asStream
 
 
 /**
@@ -30,6 +32,7 @@ public object OriginBotManager : Set<BotManager<*>> {
     private val shutdown = AtomicBoolean(false)
 
     @Synchronized
+    @JvmOverloads
     public fun cancel(reason: Throwable? = null) {
         lock.write {
             shutdown.set(true)
@@ -88,6 +91,7 @@ public object OriginBotManager : Set<BotManager<*>> {
         }
     }
 
+    @JvmSynthetic
     public fun getManagers(component: Component): Sequence<BotManager<*>> {
         lock.read {
             checkShutdown()
@@ -101,6 +105,15 @@ public object OriginBotManager : Set<BotManager<*>> {
             }
         }
     }
+
+    /**
+     * 返回 [Stream]. 兼容java。
+     *
+     * @see getManagers
+     */
+    @Api4J
+    @JvmName("getManagers")
+    public fun getManagers4J(component: Component): Stream<BotManager<*>> = getManagers(component).asStream()
 
     public fun getFirstManager(component: Component): BotManager<*>? = lock.read {
         checkShutdown()
