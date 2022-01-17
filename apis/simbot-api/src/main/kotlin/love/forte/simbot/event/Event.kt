@@ -20,6 +20,7 @@ import love.forte.simbot.event.Event.Key.Companion.getKey
 import love.forte.simbot.message.doSafeCast
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentSkipListSet
+import kotlin.contracts.ExperimentalContracts
 import kotlin.reflect.KClass
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.findAnnotation
@@ -366,9 +367,12 @@ public fun <T : Event> KClass<T>.getKey(): Event.Key<T> = Event.Key.getKey(this)
  * 判断当前类型是否为提供类型的子类型。
  *
  */
+@OptIn(ExperimentalContracts::class)
 public infix fun Event.Key<*>.isSubFrom(parentMaybe: Event.Key<*>): Boolean {
     return Event.Key.isSub(this, parentMaybe)
 }
+
+
 
 /**
  * 判断当前类型是否为提供类型的子类型。

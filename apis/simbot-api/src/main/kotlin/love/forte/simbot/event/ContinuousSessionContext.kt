@@ -17,10 +17,7 @@ package love.forte.simbot.event
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
-import love.forte.simbot.Api4J
-import love.forte.simbot.ID
-import love.forte.simbot.SimbotError
-import love.forte.simbot.randomID
+import love.forte.simbot.*
 import java.util.concurrent.Future
 import kotlin.time.Duration
 
@@ -160,7 +157,7 @@ public abstract class ContinuousSessionContext {
     /**
      * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
      *
-     * @see ContinuousSessionTimeoutException [timeout] 大于0 且持续时间超过此时限。
+     * @throws ContinuousSessionTimeoutException 当 [timeout] 大于0 且持续时间超过此时限。
      */
     @JvmSynthetic
     public abstract suspend fun <T> waitingFor(
@@ -171,9 +168,80 @@ public abstract class ContinuousSessionContext {
 
 
     /**
+     * 提供一个 [MessageEvent] 作为参数，
+     * 只有当另外一个同类型或者此类型的自类型的事件(同一个所属组件)被触发、且这个事件的源与发送人一致的时候才会继续触发后续事件。
+     *
+     * ### [ContactMessageEvent]
+     * 如果 [sourceEvent] 为 [ContactMessageEvent] 类型，
+     * 则当下一个同类型或此事件子类型的事件被触发，且：
+     * [ContactMessageEvent.user] 的id与 [sourceEvent] 中的userId一致，则会触发 [listener].
+     *
+     *
+     * ### [ChatroomMessageEvent]
+     * 如果 [sourceEvent] 为 [ChatroomMessageEvent] 类型，
+     * 则当下一个同类型或此事件子类型的事件被触发，且：
+     * [ChatroomMessageEvent.author] 的id与 [sourceEvent] 中的author id一致；
+     * [ChatroomMessageEvent.source] 的id与 [sourceEvent] 中的source id一致，
+     * 则会触发 [listener].
+     *
+     * 目前仅支持上述两个 [MessageEvent] 下的类型，其他 [MessageEvent] 的额外实现不被支持并会抛出异常。
+     *
+     * 这种监听只会影响到同种类型的监听，比如对于一个 [ContactMessageEvent] 下的子类型 `MyMsgEvent1` 和 `MyMsgEvent2`,
+     * 如果你的 [sourceEvent] 类型为 `MyMsgEvent1`, 那么便不会收到 `MyMsgEvent2` 事件类型的消息。
+     *
+     * 上述的各项判断通过 [Event.Key] 进行操作与判断，
+     * 如果对于Key的实现中存在不规范的交叉继承，那么有可能会导致 [ClassCastException].
+     *
+     *
+     * @throws SimbotIllegalArgumentException 如果监听的事件类型不是 [ChatroomMessageEvent] 或 [ContactMessageEvent] 类型的其中一种。
+     * @throws ClassCastException 如果对于 [Event.Key] 的实现不够规范。
+     */
+    @JvmSynthetic
+    public open suspend fun <E : MessageEvent, T> waitingForOnMessage(
+        id: ID = randomID(),
+        timeout: Long = 0,
+        sourceEvent: E,
+        listener: ClearTargetResumedListener<E, T>
+    ): T {
+        val key = sourceEvent.key
+        return when {
+            key isSubFrom ContactMessageEvent -> {
+                sourceEvent as ContactMessageEvent
+                val sourceUserId = sourceEvent.user().id
+                waitingFor(id, timeout) { context, provider ->
+                    val event = context.event
+                    if (event.key isSubFrom key) {
+                        event as ContactMessageEvent
+                        if (event.user().id == sourceUserId) {
+                            @Suppress("UNCHECKED_CAST")
+                            listener(event as E, context, provider)
+                        }
+                    }
+                }
+            }
+            key isSubFrom ChatroomMessageEvent -> {
+                sourceEvent as ChatroomMessageEvent
+                val sourceAuthorId = sourceEvent.author().id
+                val sourceChatroomId = sourceEvent.source().id
+                waitingFor(id, timeout) { context, provider ->
+                    val event = context.event
+                    if (event.key isSubFrom key) {
+                        event as ChatroomMessageEvent
+                        if (event.source().id == sourceChatroomId && event.author().id == sourceAuthorId) {
+                            @Suppress("UNCHECKED_CAST")
+                            listener(event as E, context, provider)
+                        }
+                    }
+                }
+            }
+            else -> throw SimbotIllegalArgumentException("Source event only support subtype of ContactMessageEvent or ChatroomMessageEvent.")
+        }
+    }
+
+    /**
      * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
      *
-     * @see ContinuousSessionTimeoutException [timeout] 大于0 且持续时间超过此时限。
+     * @throws ContinuousSessionTimeoutException [timeout] 大于0 且持续时间超过此时限。
      */
     @JvmSynthetic
     public abstract suspend fun <E : Event, T> waitingFor(
