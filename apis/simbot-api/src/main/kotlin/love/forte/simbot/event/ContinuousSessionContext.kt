@@ -18,6 +18,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
 import love.forte.simbot.*
+import love.forte.simbot.utils.lazyValue
 import java.util.concurrent.Future
 import kotlin.time.Duration
 
@@ -209,14 +210,7 @@ public abstract class ContinuousSessionContext {
                 sourceEvent as ContactMessageEvent
                 val sourceUserId = sourceEvent.user().id
                 waitingFor(id, timeout) { context, provider ->
-                    val event = context.event
-                    if (event.key isSubFrom key) {
-                        event as ContactMessageEvent
-                        if (event.user().id == sourceUserId) {
-                            @Suppress("UNCHECKED_CAST")
-                            listener(event as E, context, provider)
-                        }
-                    }
+                    doListenerOnContactMessage(key, context, provider, listener) { sourceUserId }
                 }
             }
             key isSubFrom ChatroomMessageEvent -> {
@@ -224,17 +218,48 @@ public abstract class ContinuousSessionContext {
                 val sourceAuthorId = sourceEvent.author().id
                 val sourceChatroomId = sourceEvent.source().id
                 waitingFor(id, timeout) { context, provider ->
-                    val event = context.event
-                    if (event.key isSubFrom key) {
-                        event as ChatroomMessageEvent
-                        if (event.source().id == sourceChatroomId && event.author().id == sourceAuthorId) {
-                            @Suppress("UNCHECKED_CAST")
-                            listener(event as E, context, provider)
-                        }
-                    }
+                    doListenerOnChatroomMessage(key, context, provider, listener,
+                        { sourceAuthorId },
+                        { sourceChatroomId }
+                    )
                 }
             }
             else -> throw SimbotIllegalArgumentException("Source event only support subtype of ContactMessageEvent or ChatroomMessageEvent.")
+        }
+    }
+
+    private suspend inline fun <E : MessageEvent, T> doListenerOnContactMessage(
+        sourceKey: Event.Key<*>,
+        context: EventProcessingContext,
+        provider: ContinuousSessionProvider<T>,
+        listener: ClearTargetResumedListener<E, T>,
+        userIdBlock: () -> ID
+    ) {
+        val event = context.event
+        if (event.key isSubFrom sourceKey) {
+            event as ContactMessageEvent
+            if (event.user().id == userIdBlock()) {
+                @Suppress("UNCHECKED_CAST")
+                listener(event as E, context, provider)
+            }
+        }
+    }
+
+    private suspend inline fun <E : MessageEvent, T> doListenerOnChatroomMessage(
+        sourceKey: Event.Key<*>,
+        context: EventProcessingContext,
+        provider: ContinuousSessionProvider<T>,
+        listener: ClearTargetResumedListener<E, T>,
+        authorIdBlock: () -> ID,
+        chatroomIdBlock: () -> ID
+    ) {
+        val event = context.event
+        if (event.key isSubFrom sourceKey) {
+            event as ChatroomMessageEvent
+            if (event.source().id == chatroomIdBlock() && event.author().id == authorIdBlock()) {
+                @Suppress("UNCHECKED_CAST")
+                listener(event as E, context, provider)
+            }
         }
     }
 
@@ -261,6 +286,42 @@ public abstract class ContinuousSessionContext {
         timeout: Long = 0,
         listener: ResumedListener<T>
     ): ContinuousSessionReceiver<T>
+
+
+    // TODO 注释
+    /**
+     *
+     */
+    @JvmSynthetic
+    public fun <E : MessageEvent, T> waitingOnMessage(
+        id: ID = randomID(),
+        timeout: Long = 0,
+        sourceEvent: MessageEvent,
+        listener: ClearTargetResumedListener<E, T>
+    ): ContinuousSessionReceiver<T> {
+        val key = sourceEvent.key
+        return when {
+            key isSubFrom ContactMessageEvent -> {
+                sourceEvent as ContactMessageEvent
+                val sourceUserId = lazyValue { sourceEvent.user().id }
+                waiting(id, timeout) { context, provider ->
+                    doListenerOnContactMessage(key, context, provider, listener) { sourceUserId() }
+                }
+            }
+            key isSubFrom ChatroomMessageEvent -> {
+                sourceEvent as ChatroomMessageEvent
+                val sourceAuthorId = lazyValue { sourceEvent.author().id }
+                val sourceChatroomId = lazyValue { sourceEvent.source().id }
+                waiting(id, timeout) { context, provider ->
+                    doListenerOnChatroomMessage(key, context, provider, listener,
+                        { sourceAuthorId() },
+                        { sourceChatroomId() }
+                    )
+                }
+            }
+            else -> throw SimbotIllegalArgumentException("Source event only support subtype of ContactMessageEvent or ChatroomMessageEvent.")
+        }
+    }
 
 
     /**
