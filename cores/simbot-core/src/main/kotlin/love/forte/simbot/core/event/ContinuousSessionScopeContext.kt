@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -16,12 +16,12 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
 import love.forte.simbot.ID
 import love.forte.simbot.LoggerFactory
-import love.forte.simbot.concurrentIDMapOf
 import love.forte.simbot.event.*
-import love.forte.simbot.toCharSequenceID
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Future
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.time.Duration.Companion.milliseconds
 
 
 internal class CoreContinuousSessionContext(
@@ -36,27 +36,32 @@ internal class CoreContinuousSessionContext(
     private fun <T> waitingAsReceiver(
         continuation: CancellableContinuation<T>,
         id: ID,
+        timeout: Long,
         listener: ResumedListener<T>
     ) {
-        val deferred = CompletableDeferred<T>()
+        val deferred = CompletableDeferred<T>() // use this for hook
         val receiver = deferred.asSession(continuation)
-        continuation.invokeOnCancellation(receiver::cancel) // invokeOnCancellation must only here
+        continuation.invokeOnCancellation(receiver::cancel) // continuation.invokeOnCancellation must only here
         val provider = continuation.asSession(deferred)
 
         manager.set(id, listener, provider, receiver)
+
+        if (timeout > 0) {
+            val timeoutJob = coroutineScope.launch {
+                delay(timeout)
+                logger.trace("Session {} timeout", id)
+                @Suppress("ThrowableNotThrown")
+                // session [abc] 因5秒的时限超时了。
+                provider.pushException(ContinuousSessionTimeoutException("Session [$id] has timed out due to the ${timeout.milliseconds} time limit."))
+            }
+            deferred.invokeOnCompletion { timeoutJob.cancel() }
+        }
     }
 
-    override suspend fun <T> waitingFor(id: ID, timeout: Long, listener: ResumedListener<T>): T = if (timeout > 0) {
-        withTimeout(timeout) {
-            suspendCancellableCoroutine { c ->
-                waitingAsReceiver(c, id, listener)
-            }
-        }
-    } else {
+    override suspend fun <T> waitingFor(id: ID, timeout: Long, listener: ResumedListener<T>): T =
         suspendCancellableCoroutine { c ->
-            waitingAsReceiver(c, id, listener)
+            waitingAsReceiver(c, id, timeout, listener)
         }
-    }
 
 
     override suspend fun <E : Event, T> waitingFor(
@@ -172,7 +177,7 @@ internal class ResumedListenerManager {
         private val logger = LoggerFactory.getLogger(ResumedListenerManager::class)
     }
 
-    private val listeners = concurrentIDMapOf<WaitingListener<*>>()
+    private val listeners = ConcurrentHashMap<String, WaitingListener<*>>()
 
     /**
      * 会 cancel 被顶替的旧值。
@@ -183,10 +188,10 @@ internal class ResumedListenerManager {
         provider: CoreContinuousSessionProvider<T>,
         receiver: CoreContinuousSessionReceiver<T>
     ) {
-        val cid = id.toCharSequenceID()
+        val cid = id.toString()
         val current = WaitingListener(listener, provider, receiver)
         listeners.merge(cid, current) { old, now ->
-            old.provider.cancel(CancellationException("Replaced by the same ID listener"))
+            old.provider.cancel(CancellationException("Replaced by the same ID listener. id = $cid"))
             now
         }
         provider.invokeOnCompletion {
@@ -197,12 +202,12 @@ internal class ResumedListenerManager {
 
     @Suppress("UNCHECKED_CAST")
     fun <T> getProvider(id: ID): ContinuousSessionProvider<T>? {
-        return listeners[id]?.provider as? ContinuousSessionProvider<T>
+        return listeners[id.toString()]?.provider as? ContinuousSessionProvider<T>
     }
 
     @Suppress("UNCHECKED_CAST")
     fun <T> getReceiver(id: ID): ContinuousSessionReceiver<T>? {
-        return listeners[id]?.receiver as? ContinuousSessionReceiver<T>
+        return listeners[id.toString()]?.receiver as? ContinuousSessionReceiver<T>
     }
 
     fun isEmpty(): Boolean = listeners.isEmpty()

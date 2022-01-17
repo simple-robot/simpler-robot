@@ -14,13 +14,14 @@
 
 package love.forte.simbot.event
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
+import love.forte.simbot.SimbotError
 import love.forte.simbot.randomID
 import java.util.concurrent.Future
-import kotlin.experimental.ExperimentalTypeInference
 import kotlin.time.Duration
 
 
@@ -107,7 +108,7 @@ import kotlin.time.Duration
  *          val sessionContext = processingContext.getAttribute(EventProcessingContext.Scope.ContinuousSession) ?: error("不支持会话！")
  *
  *          // 使用 waitingFor<Int>
- *          val num0: Int = sessionContext.waitingFor(randomID()) { context, provider ->
+ *          val num0: Int = sessionContext.waitingFor { context, provider ->
  *              delay(100)
  *              provider.push(1)
  *          }
@@ -115,7 +116,7 @@ import kotlin.time.Duration
  *          assert(num0 == 1)
  *
  *          // 使用 waitFor<GroupEvent, Int>
- *          val num: Int = sessionContext.waitFor(randomID()) { event: GroupEvent, context, provider ->
+ *          val num: Int = sessionContext.waitFor { event: GroupEvent, context, provider ->
  *              delay(100)
  *              provider.push(1)
  *          }
@@ -126,12 +127,26 @@ import kotlin.time.Duration
  *      }
  *}
  * ```
+ *
+ * ## 超时
+ *
  * 当然，不论是 [waitingFor]、[waiting] 还是 [waitFor], 它们都有 `timeout` 参数，来实现在超时异常的处理。当超时的时候，挂起点将会抛出 [kotlinx.coroutines.TimeoutCancellationException] 异常。
+ * 作为参数的超时时间除了会在超时后抛出异常以外，还会关闭内部对应的会话，这是与你在外部直接使用 [kotlinx.coroutines.withTimeout] 有所不同的。
  * ```
  * session.waitingFor(randomID(), 5000) { ... }
  *
  * session.waitingFor(randomID(), 5.seconds) { ... }
  * ```
+ *
+ * 但是需要注意的是，通过 timeout 参数指定时间并超时后，抛出的异常是 [ContinuousSessionTimeoutException] 而并非 [kotlinx.coroutines.TimeoutCancellationException], 这也是与 [kotlinx.coroutines.withTimeout] 有所区别的地方。
+ *
+ * ## 会话清除
+ * 当你通过 [waiting] 或者 [waitingFor] 注册了一个会话之后，只有在出现以下情况后，他们会被清除：
+ * - 通过参数 `timeout` 指定了超时时间，且到达了超时时间。
+ * - 通过 [ContinuousSessionProvider.push] 推送了结果或 [ContinuousSessionProvider.pushException] 推送了异常。
+ * - 通过 [ContinuousSessionProvider.cancel] 或者 [ContinuousSessionReceiver.cancel] 进行了关闭操作。
+ *
+ *
  * @see ContinuousSessionProvider
  * @see ContinuousSessionReceiver
  * @see waitFor
@@ -145,8 +160,8 @@ public abstract class ContinuousSessionContext {
     /**
      * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
      *
+     * @see ContinuousSessionTimeoutException [timeout] 大于0 且持续时间超过此时限。
      */
-    @OptIn(ExperimentalTypeInference::class)
     @JvmSynthetic
     public abstract suspend fun <T> waitingFor(
         id: ID = randomID(),
@@ -158,6 +173,7 @@ public abstract class ContinuousSessionContext {
     /**
      * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
      *
+     * @see ContinuousSessionTimeoutException [timeout] 大于0 且持续时间超过此时限。
      */
     @JvmSynthetic
     public abstract suspend fun <E : Event, T> waitingFor(
@@ -254,6 +270,13 @@ public abstract class ContinuousSessionContext {
 
 
 }
+
+
+/**
+ * [ContinuousSessionContext] 出现内部超时所抛出的异常。
+ */
+public class ContinuousSessionTimeoutException(message: String) : CancellationException(message), SimbotError
+
 
 /**
  * [waitingFor] 的内联简化函数，通过 [E] 和 [T] 来决定 waitingFor 的事件内容与返回类型。
