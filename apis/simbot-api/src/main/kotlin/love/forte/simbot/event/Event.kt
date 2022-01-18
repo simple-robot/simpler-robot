@@ -20,6 +20,7 @@ import love.forte.simbot.event.Event.Key.Companion.getKey
 import love.forte.simbot.message.doSafeCast
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentSkipListSet
+import kotlin.contracts.ExperimentalContracts
 import kotlin.reflect.KClass
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.findAnnotation
@@ -41,7 +42,7 @@ import kotlin.reflect.safeCast
  * 所有能够监听的事件中，**不建议**监听带有泛型信息的事件类型（例如 [ChangedEvent]）,
  * 虽然它们允许被监听，但是它们大多数都代表对其他事件的类型约束。
  *
- * 并且，在进行事件监听的时候，事件类型的判断 **不支持** 范型判断，因此如果你需要监听这些携带泛型的事件类型，
+ * 并且，在进行事件监听的时候，事件类型的判断 **不支持** 泛型判断，因此如果你需要监听这些携带泛型的事件类型，
  * 那么你必须使用kotlin中的 `*`，在Java中使用 `?` 或直接忽略它。否则会很容易导致出现异常。
  *
  *
@@ -366,9 +367,12 @@ public fun <T : Event> KClass<T>.getKey(): Event.Key<T> = Event.Key.getKey(this)
  * 判断当前类型是否为提供类型的子类型。
  *
  */
+@OptIn(ExperimentalContracts::class)
 public infix fun Event.Key<*>.isSubFrom(parentMaybe: Event.Key<*>): Boolean {
     return Event.Key.isSub(this, parentMaybe)
 }
+
+
 
 /**
  * 判断当前类型是否为提供类型的子类型。
