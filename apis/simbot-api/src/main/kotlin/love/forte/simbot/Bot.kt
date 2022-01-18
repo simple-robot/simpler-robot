@@ -66,6 +66,7 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      */
     override val status: UserStatus
 
+    //region 批量获取相关api
     // friends
     /**
      * 根据分组和限流信息得到此bot下的好友列表。
@@ -76,6 +77,7 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      */
     @JvmSynthetic
     public suspend fun friends(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Friend>
+
     /**
      * @see friends
      */
@@ -109,11 +111,13 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      */
     @Api4J
     public fun getGroups(grouping: Grouping, limiter: Limiter): Stream<out Group>
+
     /**
      * @see groups
      */
     @Api4J
     public fun getGroups(): Stream<out Group> = getGroups(Grouping.EMPTY, Limiter)
+
     /**
      * @see groups
      */
@@ -127,23 +131,79 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      */
     @JvmSynthetic
     public suspend fun guilds(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Guild>
+
     /**
      * @see guilds
      */
     @Api4J
     public fun getGuilds(grouping: Grouping, limiter: Limiter): Stream<out Guild>
+
     /**
      * @see guilds
      */
     @Api4J
     public fun getGuilds(): Stream<out Guild> = getGuilds(Grouping.EMPTY, Limiter)
+
     /**
      * @see guilds
      */
     @Api4J
     public fun getGuilds(limiter: Limiter): Stream<out Guild> = getGuilds(Grouping.EMPTY, limiter)
+    //endregion
 
-    // resources
+
+    //// 单独获取
+
+    //region 独立获取
+
+    //region 好友
+
+    /**
+     * 通过唯一标识获取这个bot对应的某个好友，获取不到则为null。
+     */
+    @JvmSynthetic
+    public suspend fun friend(id: ID): Friend?
+
+    /**
+     * 通过唯一标识获取这个bot对应的某个好友，获取不到则为null。
+     */
+    @Api4J
+    public fun getFriend(id: ID): Friend? = runBlocking { friend(id) }
+
+    //endregion
+
+    //region 群
+    /**
+     * 通过唯一标识获取这个bot对应的某个群，获取不到则为null。
+     */
+    @JvmSynthetic
+    public suspend fun group(id: ID): Group?
+
+    /**
+     * 通过唯一标识获取这个bot对应的某个群，获取不到则为null。
+     */
+    @Api4J
+    public fun getGroup(id: ID): Group? = runBlocking { group(id) }
+    //endregion
+
+    //region 频道
+    /**
+     * 通过唯一标识获取这个bot对应的某个频道，获取不到则为null。
+     */
+    @JvmSynthetic
+    public suspend fun guild(id: ID): Guild?
+
+    /**
+     * 通过唯一标识获取这个bot对应的某个频道，获取不到则为null。
+     */
+    @Api4J
+    public fun getGuild(id: ID): Guild? = runBlocking { guild(id) }
+    //endregion
+
+    //endregion
+
+
+    //// resources
 
     /**
      * 上传一个资源作为资源，并在预期内得到一个 [Image] 结果。
