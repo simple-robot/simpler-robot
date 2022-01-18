@@ -19,6 +19,7 @@ import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
 import love.forte.simbot.*
 import love.forte.simbot.utils.lazyValue
+import love.forte.simbot.utils.runWithInterruptible
 import java.util.concurrent.Future
 import kotlin.time.Duration
 
@@ -28,7 +29,7 @@ import kotlin.time.Duration
  * 持续会话的作用域, 通过此作用域在监听函数监听过程中进行会话嵌套。
  *
  * [waitingFor] 与 [waiting] 中注册的临时listener将会在所有监听函数被**触发前**, 依次作为一个独立的**异步任务**执行，
- * 并且因为 [ResumedListener.invoke] 不存在返回值, 因此所有的临时会话监听函数均**无法**对任何正常的监听流程产生影响，也**无法**参与到正常流程中的结果返回中。
+ * 并且因为 [ResumeListener.invoke] 不存在返回值, 因此所有的临时会话监听函数均**无法**对任何正常的监听流程产生影响，也**无法**参与到正常流程中的结果返回中。
  *
  *
  * 在事件处理流程中，包含了临时监听函数的情况大概如下所示：
@@ -164,7 +165,7 @@ public abstract class ContinuousSessionContext {
     public abstract suspend fun <T> waitingFor(
         id: ID = randomID(),
         timeout: Long = 0,
-        listener: ResumedListener<T>
+        listener: ResumeListener<T>
     ): T
 
 
@@ -202,7 +203,7 @@ public abstract class ContinuousSessionContext {
         id: ID = randomID(),
         timeout: Long = 0,
         sourceEvent: E,
-        listener: ClearTargetResumedListener<E, T>
+        listener: ClearTargetResumeListener<E, T>
     ): T {
         val key = sourceEvent.key
         return when {
@@ -233,7 +234,7 @@ public abstract class ContinuousSessionContext {
         component: Component,
         context: EventProcessingContext,
         provider: ContinuousSessionProvider<T>,
-        listener: ClearTargetResumedListener<E, T>,
+        listener: ClearTargetResumeListener<E, T>,
         userIdBlock: () -> ID
     ) {
         val event = context.event
@@ -251,7 +252,7 @@ public abstract class ContinuousSessionContext {
         component: Component,
         context: EventProcessingContext,
         provider: ContinuousSessionProvider<T>,
-        listener: ClearTargetResumedListener<E, T>,
+        listener: ClearTargetResumeListener<E, T>,
         authorIdBlock: () -> ID,
         chatroomIdBlock: () -> ID
     ) {
@@ -275,7 +276,7 @@ public abstract class ContinuousSessionContext {
         id: ID = randomID(),
         timeout: Long = 0,
         eventKey: Event.Key<E>,
-        listener: ClearTargetResumedListener<E, T>
+        listener: ClearTargetResumeListener<E, T>
     ): T
 
     /**
@@ -286,20 +287,26 @@ public abstract class ContinuousSessionContext {
     public abstract fun <T> waiting(
         id: ID = randomID(),
         timeout: Long = 0,
-        listener: ResumedListener<T>
+        listener: ResumeListener<T>
     ): ContinuousSessionReceiver<T>
 
 
-    // TODO 注释
     /**
+     * 提供一个 [MessageEvent] 作为参数，
+     * 只有当另外一个同类型或者此类型的自类型的事件(同一个所属组件)被触发、且这个事件的源与发送人一致的时候才会继续触发后续事件。
      *
+     * 具体说明参考 [waitingForOnMessage].
+     *
+     * @see waitingForOnMessage
+     * @throws SimbotIllegalArgumentException 如果监听的事件类型不是 [ChatroomMessageEvent] 或 [ContactMessageEvent] 类型的其中一种。
+     * @throws ClassCastException 如果对于 [Event.Key] 的实现不够规范。
      */
     @JvmSynthetic
     public fun <E : MessageEvent, T> waitingOnMessage(
         id: ID = randomID(),
         timeout: Long = 0,
         sourceEvent: MessageEvent,
-        listener: ClearTargetResumedListener<E, T>
+        listener: ClearTargetResumeListener<E, T>
     ): ContinuousSessionReceiver<T> {
         val key = sourceEvent.key
         return when {
@@ -341,7 +348,7 @@ public abstract class ContinuousSessionContext {
         id: ID = randomID(),
         timeout: Long = 0,
         eventKey: Event.Key<E>,
-        listener: ClearTargetResumedListener<E, T>
+        listener: ClearTargetResumeListener<E, T>
     ): ContinuousSessionReceiver<T>
 
 
@@ -356,8 +363,24 @@ public abstract class ContinuousSessionContext {
     public fun <T> waiting4J(
         id: ID = randomID(),
         timeout: Long = 0,
-        listener: BlockingResumedListener<T>
+        listener: BlockingResumeListener<T>
     ): ContinuousSessionReceiver<T> = waiting(id, timeout, listener.parse())
+
+
+    /**
+     * 根据一个消息事件监听这个人下一个所发送的消息。
+     *
+     * @see waitingOnMessage
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingOnMessage")
+    public fun <E : MessageEvent, T> waitingOnMessage4J(
+        id: ID = randomID(),
+        timeout: Long = 0,
+        sourceEvent: E,
+        listener: BlockingClearTargetResumeListener<E, T>
+    ): ContinuousSessionReceiver<T> = waitingOnMessage(id, timeout, sourceEvent, listener.parse())
 
 
     /**
@@ -372,7 +395,7 @@ public abstract class ContinuousSessionContext {
         id: ID = randomID(), // randomID(),
         timeout: Long = 0,
         eventKey: Event.Key<E>,
-        listener: BlockingClearTargetResumedListener<E, T>
+        listener: BlockingClearTargetResumeListener<E, T>
     ): ContinuousSessionReceiver<T> = waiting(id, timeout, eventKey, listener.parse())
 
     /**
@@ -387,7 +410,7 @@ public abstract class ContinuousSessionContext {
         id: ID = randomID(),
         timeout: Long = 0,
         eventType: Class<E>,
-        listener: BlockingClearTargetResumedListener<E, T>
+        listener: BlockingClearTargetResumeListener<E, T>
     ): ContinuousSessionReceiver<T> = waiting(id, timeout, Event.Key.getKey(eventType), listener.parse())
 
 
@@ -416,53 +439,72 @@ public class ContinuousSessionTimeoutException(message: String) : CancellationEx
 
 
 /**
- * [waitingFor] 的内联简化函数，通过 [E] 和 [T] 来决定 waitingFor 的事件内容与返回类型。
+ * [ContinuousSessionContext.waitingFor] 的简化函数，通过 [E] 和 [T] 来决定 [ContinuousSessionContext.waitingFor] 的事件内容与返回类型。
  *
+ * @see ContinuousSessionContext.waitingFor
  */
 public suspend inline fun <reified E : Event, T> ContinuousSessionContext.waitFor(
     id: ID = randomID(),
     timeout: Long = 0,
-    listener: ClearTargetResumedListener<E, T>
+    listener: ClearTargetResumeListener<E, T>
 ): T {
     return waitingFor(id, timeout, Event.Key.getKey(), listener)
 }
 
+/**
+ * [ContinuousSessionContext.waitingFor] 的内联简化函数，通过 [E] 和 [T] 来决定 [ContinuousSessionContext.waitingFor] 的事件内容与返回类型。
+ *
+ * @see waitFor
+ */
 public suspend inline fun <reified E : Event, T> ContinuousSessionContext.waitFor(
     id: ID = randomID(),
     timeout: Duration,
-    listener: ClearTargetResumedListener<E, T>
+    listener: ClearTargetResumeListener<E, T>
 ): T = waitFor(id, timeout.inWholeMilliseconds, listener)
 
 
-public suspend fun <E : Event, T> ContinuousSessionContext.waitingFor(
+public suspend inline fun <E : Event, T> ContinuousSessionContext.waitingFor(
     id: ID = randomID(),
     timeout: Duration,
     eventKey: Event.Key<E>,
-    listener: ClearTargetResumedListener<E, T>
+    listener: ClearTargetResumeListener<E, T>
 ): T = waitingFor(id, timeout.inWholeMilliseconds, eventKey, listener)
 
 
-public suspend fun <T> ContinuousSessionContext.waitingFor(
+public suspend inline fun <T> ContinuousSessionContext.waitingFor(
     id: ID = randomID(),
     timeout: Duration,
-    listener: ResumedListener<T>
+    listener: ResumeListener<T>
 ): T = waitingFor(id, timeout.inWholeMilliseconds, listener)
 
+
+public suspend inline fun <E : MessageEvent, T> ContinuousSessionContext.waitingForOnMessage(
+    id: ID = randomID(),
+    timeout: Duration,
+    sourceEvent: E,
+    listener: ClearTargetResumeListener<E, T>
+): T = waitingForOnMessage(id, timeout.inWholeMilliseconds, sourceEvent, listener)
 
 public fun <E : Event, T> ContinuousSessionContext.waiting(
     id: ID = randomID(),
     timeout: Duration,
     eventKey: Event.Key<E>,
-    listener: ClearTargetResumedListener<E, T>
+    listener: ClearTargetResumeListener<E, T>
 ): ContinuousSessionReceiver<T> = waiting(id, timeout.inWholeMilliseconds, eventKey, listener)
 
 
 public fun <T> ContinuousSessionContext.waiting(
     id: ID = randomID(),
     timeout: Duration,
-    listener: ResumedListener<T>
+    listener: ResumeListener<T>
 ): ContinuousSessionReceiver<T> = waiting(id, timeout.inWholeMilliseconds, listener)
 
+public fun <E : MessageEvent, T> ContinuousSessionContext.waitingOnMessage(
+    id: ID = randomID(),
+    timeout: Duration,
+    sourceEvent: MessageEvent,
+    listener: ClearTargetResumeListener<E, T>
+): ContinuousSessionReceiver<T> = waitingOnMessage(id, timeout.inWholeMilliseconds, sourceEvent, listener)
 
 /**
  * 持续会话的结果接收器，通过 [ContinuousSessionContext.waiting] 获取，
@@ -537,36 +579,32 @@ public interface ContinuousSessionProvider<T> {
 
 /**
  *
- * @see BlockingResumedListener
- * @see ClearTargetResumedListener
- * @see BlockingClearTargetResumedListener
+ * @see BlockingResumeListener
+ * @see ClearTargetResumeListener
+ * @see BlockingClearTargetResumeListener
  */
-public fun interface ResumedListener<T> {
+public fun interface ResumeListener<T> {
     public suspend operator fun invoke(context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
 }
 
 /**
- * 阻塞的 [ResumedListener].
+ * 阻塞的 [ResumeListener].
  */
 @Api4J
-public fun interface BlockingResumedListener<T> {
+public fun interface BlockingResumeListener<T> {
     public operator fun invoke(context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
-
-    // override suspend operator fun invoke(context: EventProcessingContext, provider: ContinuousSessionProvider<T>) {
-    //     invokeBlocking(context, provider)
-    // }
 }
 
 @OptIn(Api4J::class)
-internal fun <T> BlockingResumedListener<T>.parse(): ResumedListener<T> =
-    ResumedListener { context, provider -> this(context, provider) }
+internal fun <T> BlockingResumeListener<T>.parse(): ResumeListener<T> =
+    ResumeListener { context, provider -> runWithInterruptible { this(context, provider) } }
 
 /**
- * 有着明确监听目标的 [ResumedListener]。
+ * 有着明确监听目标的 [ResumeListener]。
  *
- * @see BlockingClearTargetResumedListener
+ * @see BlockingClearTargetResumeListener
  */
-public fun interface ClearTargetResumedListener<E : Event, T> {
+public fun interface ClearTargetResumeListener<E : Event, T> {
     public suspend operator fun invoke(
         event: E,
         context: EventProcessingContext,
@@ -576,20 +614,16 @@ public fun interface ClearTargetResumedListener<E : Event, T> {
 
 
 /**
- * 有着明确监听目标的 [ResumedListener]。需要考虑重写 [invoke] 来实现事件类型的准确转化。
+ * 有着明确监听目标的 [ResumeListener]。需要考虑重写 [invoke] 来实现事件类型的准确转化。
  *
- * @see ClearTargetResumedListener
- * @see ResumedListener
+ * @see ClearTargetResumeListener
+ * @see ResumeListener
  */
 @Api4J
-public fun interface BlockingClearTargetResumedListener<E : Event, T> {
-    // override suspend fun invoke(event: E, context: EventProcessingContext, provider: ContinuousSessionProvider<T>) {
-    //     invokeBlocking(event, context, provider)
-    // }
-
+public fun interface BlockingClearTargetResumeListener<E : Event, T> {
     public operator fun invoke(event: E, context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
 }
 
 @OptIn(Api4J::class)
-internal fun <E : Event, T> BlockingClearTargetResumedListener<E, T>.parse(): ClearTargetResumedListener<E, T> =
-    ClearTargetResumedListener { event, context, provider -> this(event, context, provider) }
+internal fun <E : Event, T> BlockingClearTargetResumeListener<E, T>.parse(): ClearTargetResumeListener<E, T> =
+    ClearTargetResumeListener { event, context, provider -> runWithInterruptible { this(event, context, provider) } }

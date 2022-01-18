@@ -37,7 +37,7 @@ internal class CoreContinuousSessionContext(
         continuation: CancellableContinuation<T>,
         id: ID,
         timeout: Long,
-        listener: ResumedListener<T>
+        listener: ResumeListener<T>
     ) {
         val deferred = CompletableDeferred<T>() // use this for hook
         val receiver = deferred.asSession(continuation)
@@ -59,7 +59,7 @@ internal class CoreContinuousSessionContext(
         }
     }
 
-    override suspend fun <T> waitingFor(id: ID, timeout: Long, listener: ResumedListener<T>): T =
+    override suspend fun <T> waitingFor(id: ID, timeout: Long, listener: ResumeListener<T>): T =
         suspendCancellableCoroutine { c ->
             waitingAsReceiver(c, id, timeout, listener)
         }
@@ -69,7 +69,7 @@ internal class CoreContinuousSessionContext(
         id: ID,
         timeout: Long,
         eventKey: Event.Key<E>,
-        listener: ClearTargetResumedListener<E, T>
+        listener: ClearTargetResumeListener<E, T>
     ): T = waitingFor(id, timeout) { c, p ->
         if (c.event.key isSubFrom eventKey) {
             eventKey.safeCast(c.event)?.also { event -> listener(event, c, p) }
@@ -77,7 +77,7 @@ internal class CoreContinuousSessionContext(
     }
 
 
-    override fun <T> waiting(id: ID, timeout: Long, listener: ResumedListener<T>): ContinuousSessionReceiver<T> {
+    override fun <T> waiting(id: ID, timeout: Long, listener: ResumeListener<T>): ContinuousSessionReceiver<T> {
         return coroutineScope.async {
             waitingFor(id, timeout, listener)
         }.asSession()
@@ -88,7 +88,7 @@ internal class CoreContinuousSessionContext(
         id: ID,
         timeout: Long,
         eventKey: Event.Key<E>,
-        listener: ClearTargetResumedListener<E, T>
+        listener: ClearTargetResumeListener<E, T>
     ): ContinuousSessionReceiver<T> = waiting(id, timeout) { c, p ->
         if (c.event.key isSubFrom eventKey) {
             eventKey.safeCast(c.event)?.also { event ->
@@ -164,7 +164,7 @@ internal class CoreContinuousSessionProvider<T>(
 
 
 internal data class WaitingListener<T>(
-    val listener: ResumedListener<T>,
+    val listener: ResumeListener<T>,
     val provider: CoreContinuousSessionProvider<T>,
     val receiver: CoreContinuousSessionReceiver<T>
 ) {
@@ -185,7 +185,7 @@ internal class ResumedListenerManager {
      */
     fun <T> set(
         id: ID,
-        listener: ResumedListener<T>,
+        listener: ResumeListener<T>,
         provider: CoreContinuousSessionProvider<T>,
         receiver: CoreContinuousSessionReceiver<T>
     ) {
