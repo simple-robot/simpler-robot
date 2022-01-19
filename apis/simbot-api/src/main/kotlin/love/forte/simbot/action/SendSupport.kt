@@ -217,6 +217,7 @@ public interface MessageReactReceipt : MessageReceipt {
 }
 
 
+//region send
 /**
  * 如果此目标允许发送消息，发送，否则得到null。
  */
@@ -225,11 +226,25 @@ public suspend fun Objectives.sendIfSupport(message: Message): MessageReceipt? =
     if (this is SendSupport) send(message) else null
 
 /**
+ * 如果此目标允许发送消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend inline fun Objectives.sendIfSupport(message: () -> Message): MessageReceipt? =
+    if (this is SendSupport) send(message()) else null
+
+/**
  * 如果此事件允许发送消息，发送，否则得到null。
  */
 @JvmSynthetic
 public suspend fun MessageContainer.sendIfSupport(message: Message): MessageReceipt? =
     if (this is SendSupport) send(message) else null
+
+/**
+ * 如果此事件允许发送消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend inline fun MessageContainer.sendIfSupport(message: () -> Message): MessageReceipt? =
+    if (this is SendSupport) send(message()) else null
 
 /**
  * 如果此目标允许发送消息，发送，否则得到null。
@@ -258,8 +273,10 @@ public suspend fun Objectives.sendIfSupport(message: String): MessageReceipt? =
 @JvmSynthetic
 public suspend fun MessageContainer.sendIfSupport(message: String): MessageReceipt? =
     if (this is SendSupport) send(message) else null
+//endregion
 
 
+//region reply
 /**
  * 如果此目标允许回复消息，发送，否则得到null。
  */
@@ -274,6 +291,21 @@ public suspend fun Objectives.replyIfSupport(message: Message): MessageReplyRece
 @JvmSynthetic
 public suspend fun MessageContainer.replyIfSupport(message: Message): MessageReplyReceipt? =
     if (this is ReplySupport) reply(message) else null
+
+/**
+ * 如果此目标允许回复消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend inline fun Objectives.replyIfSupport(message: () -> Message): MessageReplyReceipt? =
+    if (this is ReplySupport) reply(message()) else null
+
+
+/**
+ * 如果此组织允许回复消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend inline fun MessageContainer.replyIfSupport(message: () -> Message): MessageReplyReceipt? =
+    if (this is ReplySupport) reply(message()) else null
 
 
 /**
@@ -306,8 +338,10 @@ public suspend fun Objectives.replyIfSupport(message: String): MessageReplyRecei
 @JvmSynthetic
 public suspend fun MessageContainer.replyIfSupport(message: String): MessageReplyReceipt? =
     if (this is ReplySupport) reply(message) else null
+//endregion
 
 
+//region react
 /**
  * 如果此目标允许回复标记消息，发送，否则得到null。
  */
@@ -321,6 +355,21 @@ public suspend fun Objectives.reactIfSupport(message: Message): MessageReactRece
 @JvmSynthetic
 public suspend fun MessageContainer.reactIfSupport(message: Message): MessageReactReceipt? =
     if (this is MessageReactSupport) react(message) else null
+
+/**
+ * 如果此目标允许回复标记消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend inline fun Objectives.reactIfSupport(message: () -> Message): MessageReactReceipt? =
+    if (this is MessageReactSupport) react(message()) else null
+
+/**
+ * 如果此事件允许回复标记消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend inline fun MessageContainer.reactIfSupport(message: () -> Message): MessageReactReceipt? =
+    if (this is MessageReactSupport) react(message()) else null
+//endregion
 
 
 /**
