@@ -37,10 +37,36 @@ public interface Group : ChatRoom, GroupInfo {
     override val description: String
     override val createTime: Timestamp
     override val ownerId: ID
-    override suspend fun owner(): Member
-    @Api4J override val owner: Member
+    override suspend fun owner(): GroupMember
+
+    @Api4J
+    override val owner: GroupMember
     override val maximumMember: Int
     override val currentMember: Int
+
+    //region members
+
+    override suspend fun members(groupingId: ID?, limiter: Limiter): Flow<GroupMember>
+
+    @Api4J
+    override fun getMembers(groupingId: ID?, limiter: Limiter): Stream<out GroupMember>
+
+    @Api4J
+    override fun getMembers(groupingId: ID?): Stream<out GroupMember> = getMembers(groupingId, Limiter)
+
+    @Api4J
+    override fun getMembers(limiter: Limiter): Stream<out GroupMember> = getMembers(null, limiter)
+
+    @Api4J
+    override fun getMembers(): Stream<out GroupMember> = getMembers(null, Limiter)
+    //endregion
+
+
+    //region member
+    override suspend fun member(id: ID): GroupMember?
+
+    override fun getMember(id: ID): GroupMember? = runInBlocking { member(id) }
+    //endregion
 
     /**
      * 一般来讲，群不存在子集。
@@ -49,11 +75,9 @@ public interface Group : ChatRoom, GroupInfo {
         return emptyFlow()
     }
 
-    @Api4J
+    @OptIn(Api4J::class)
     override fun getChildren(groupingId: ID?, limiter: Limiter): Stream<Organization> = Stream.empty()
 }
-
-
 
 
 /**
@@ -70,11 +94,35 @@ public interface Guild : Organization, GuildInfo {
     override val createTime: Timestamp
     override val ownerId: ID
     override suspend fun owner(): Member
-    @Api4J override val owner: Member
+
+    @Api4J
+    override val owner: Member
     override val maximumMember: Int
     override val currentMember: Int
+    //region members
 
+    override suspend fun members(groupingId: ID?, limiter: Limiter): Flow<GuildMember>
 
+    @Api4J
+    override fun getMembers(groupingId: ID?, limiter: Limiter): Stream<out GuildMember>
+
+    @Api4J
+    override fun getMembers(groupingId: ID?): Stream<out GuildMember> = getMembers(groupingId, Limiter)
+
+    @Api4J
+    override fun getMembers(limiter: Limiter): Stream<out GuildMember> = getMembers(null, limiter)
+
+    @Api4J
+    override fun getMembers(): Stream<out GuildMember> = getMembers(null, Limiter)
+
+    //endregion
+
+    //region member
+    override suspend fun member(id: ID): GuildMember?
+    override fun getMember(id: ID): GuildMember? = runInBlocking { member(id) }
+    //endregion
+
+    //region children
     /**
      * 一个 Guild 的子集应当是一些频道.
      */
@@ -84,10 +132,13 @@ public interface Guild : Organization, GuildInfo {
 
     @Api4J
     override fun getChildren(groupingId: ID?, limiter: Limiter): Stream<out Channel>
+
     @Api4J
     override fun getChildren(groupingId: ID?): Stream<out Channel> = getChildren(groupingId, Limiter)
+
     @Api4J
     override fun getChildren(): Stream<out Channel> = getChildren(null, Limiter)
+    //endregion
 }
 
 /**
@@ -109,6 +160,7 @@ public interface GuildInfo : OrganizationInfo {
      */
     public val currentChannel: Int
 
+
 }
 
 /**
@@ -125,7 +177,9 @@ public interface Channel : ChatRoom, ChannelInfo {
     override val createTime: Timestamp
     override val ownerId: ID
     override suspend fun owner(): Member
-    @Api4J override val owner: Member
+
+    @Api4J
+    override val owner: GuildMember
     override val maximumMember: Int
     override val currentMember: Int
 
@@ -134,8 +188,33 @@ public interface Channel : ChatRoom, ChannelInfo {
      * 得到这个频道对应的guild。
      */
     public suspend fun guild(): Guild
+
     @Api4J
-    public val guild: Guild get() = runInBlocking { guild() }
+    public val guild: Guild
+        get() = runInBlocking { guild() }
+
+
+    //region members
+    override suspend fun members(groupingId: ID?, limiter: Limiter): Flow<GuildMember>
+
+    @Api4J
+    override fun getMembers(groupingId: ID?, limiter: Limiter): Stream<out GuildMember>
+
+    @Api4J
+    override fun getMembers(groupingId: ID?): Stream<out GuildMember> = getMembers(groupingId, Limiter)
+
+    @Api4J
+    override fun getMembers(limiter: Limiter): Stream<out GuildMember> = getMembers(null, limiter)
+
+    @Api4J
+    override fun getMembers(): Stream<out GuildMember> = getMembers(null, Limiter)
+    //endregion
+
+    //region member
+    override suspend fun member(id: ID): GuildMember?
+
+    override fun getMember(id: ID): GuildMember? = runInBlocking { member(id) }
+    //endregion
 }
 
 /**

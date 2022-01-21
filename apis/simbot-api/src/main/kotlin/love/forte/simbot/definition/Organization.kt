@@ -169,6 +169,8 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
     public fun getMembers(): Stream<out Member> = getMembers(null, Limiter)
     //endregion
 
+
+    //region member 获取
     /**
      * 尝试通过ID获取一个成员，无法获取则得到null。
      */
@@ -176,6 +178,7 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
     public suspend fun member(id: ID): Member?
 
     public fun getMember(id: ID): Member? = runInBlocking { member(id) }
+    //endregion
 
 
 
