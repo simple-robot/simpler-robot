@@ -14,8 +14,8 @@ package love.forte.simbot.definition
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.*
+import love.forte.simbot.utils.runInBlocking
 import java.util.stream.Stream
 
 
@@ -135,7 +135,7 @@ public interface Channel : ChatRoom, ChannelInfo {
      */
     public suspend fun guild(): Guild
     @Api4J
-    public val guild: Guild get() = runBlocking { guild() }
+    public val guild: Guild get() = runInBlocking { guild() }
 }
 
 /**

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -12,8 +12,8 @@
 
 package love.forte.simbot.action
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
+import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -34,5 +34,5 @@ public interface DeleteSupport {
     public suspend fun delete(): Boolean
 
     @Api4J
-    public fun deleteBlocking(): Boolean = runBlocking { delete() }
+    public fun deleteBlocking(): Boolean = runInBlocking { delete() }
 }

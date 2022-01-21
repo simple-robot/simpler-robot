@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -12,10 +12,10 @@
 
 package love.forte.simbot.message
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.action.DeleteSupport
+import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -46,7 +46,7 @@ public interface MessageReceipt {
      * @return 删除成功为true，失败或不可删除均为null。
      */
     @Api4J
-    public fun deleteIfSupportBlocking(): Boolean = runBlocking { if (this is DeleteSupport) delete() else false }
+    public fun deleteIfSupportBlocking(): Boolean = runInBlocking { if (this is DeleteSupport) delete() else false }
 }
 
 

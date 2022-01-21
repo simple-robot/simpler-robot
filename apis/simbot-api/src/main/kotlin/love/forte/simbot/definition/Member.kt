@@ -14,12 +14,12 @@ package love.forte.simbot.definition
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.action.MuteSupport
+import love.forte.simbot.utils.runInBlocking
 import java.util.stream.Stream
 import kotlin.time.Duration
 
@@ -43,7 +43,7 @@ public interface Member : User, MemberInfo, MuteSupport {
 
     @Api4J
     public val organization: Organization
-        get() = runBlocking { organization() }
+        get() = runInBlocking { organization() }
 
     /**
      * 在客观条件允许的情况下，对其进行禁言。
@@ -113,7 +113,7 @@ public interface GuildMember : Member {
 
     @Api4J
     public val guild: Guild
-        get() = runBlocking { guild() }
+        get() = runInBlocking { guild() }
 
 
     @JvmSynthetic
@@ -134,7 +134,7 @@ public interface GroupMember : Member {
 
     @Api4J
     public val group: Group
-        get() = runBlocking { group() }
+        get() = runInBlocking { group() }
 
 
     @JvmSynthetic

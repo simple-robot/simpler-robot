@@ -12,13 +12,13 @@
 
 package love.forte.simbot.action
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.definition.Objectives
 import love.forte.simbot.message.*
+import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -53,7 +53,7 @@ public interface SendSupport {
      * @see send
      */
     @Api4J
-    public fun sendBlocking(message: Message): MessageReceipt = runBlocking { send(message) }
+    public fun sendBlocking(message: Message): MessageReceipt = runInBlocking { send(message) }
 
     /**
      * 发送消息，并得到一个回执单。
@@ -73,7 +73,7 @@ public interface SendSupport {
      * @see send
      */
     @Api4J
-    public fun sendBlocking(message: MessageContent): MessageReceipt = runBlocking { send(message) }
+    public fun sendBlocking(message: MessageContent): MessageReceipt = runInBlocking { send(message) }
 
     /**
      * 发送一段纯文本消息。
@@ -86,7 +86,7 @@ public interface SendSupport {
      * @see send
      */
     @Api4J
-    public fun sendBlocking(text: String): MessageReceipt = runBlocking { send(text) }
+    public fun sendBlocking(text: String): MessageReceipt = runInBlocking { send(text) }
 
 
 }
@@ -141,7 +141,7 @@ public interface ReplySupport {
     public suspend fun reply(message: Message): MessageReplyReceipt
 
     @Api4J
-    public fun replyBlocking(message: Message): MessageReplyReceipt = runBlocking { reply(message) }
+    public fun replyBlocking(message: Message): MessageReplyReceipt = runInBlocking { reply(message) }
 
     /**
      * 回复当前目标，并得到一个 [回复回执][MessageReplyReceipt]
@@ -150,13 +150,13 @@ public interface ReplySupport {
     public suspend fun reply(message: MessageContent): MessageReplyReceipt = reply(message.messages)
 
     @Api4J
-    public fun replyBlocking(message: MessageContent): MessageReplyReceipt = runBlocking { reply(message) }
+    public fun replyBlocking(message: MessageContent): MessageReplyReceipt = runInBlocking { reply(message) }
 
     @JvmSynthetic
     public suspend fun reply(text: String): MessageReplyReceipt = reply(Text.of(text))
 
     @Api4J
-    public fun replyBlocking(text: String): MessageReplyReceipt = runBlocking { reply(text) }
+    public fun replyBlocking(text: String): MessageReplyReceipt = runInBlocking { reply(text) }
 }
 
 
@@ -201,7 +201,7 @@ public interface MessageReactSupport {
     public suspend fun react(message: Message): MessageReactReceipt
 
     @Api4J
-    public fun reactBlocking(message: Message): MessageReactReceipt = runBlocking { react(message) }
+    public fun reactBlocking(message: Message): MessageReactReceipt = runInBlocking { react(message) }
 
 }
 

@@ -12,10 +12,10 @@
 
 package love.forte.simbot.event
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.EventProcessingResult.Empty
+import love.forte.simbot.utils.runInBlocking
 import org.jetbrains.annotations.UnmodifiableView
 import java.util.concurrent.Future
 
@@ -45,7 +45,7 @@ public interface EventProcessor {
      * *不被推荐的使用方法。*
      */
     @Api4J
-    public fun pushBlocking(event: Event): EventProcessingResult = runBlocking { push(event) }
+    public fun pushBlocking(event: Event): EventProcessingResult = runInBlocking { push(event) }
 
 
     /**

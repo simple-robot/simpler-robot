@@ -12,7 +12,6 @@
 
 package love.forte.simbot.event
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
@@ -22,6 +21,7 @@ import love.forte.simbot.definition.*
 import love.forte.simbot.message.ReceivedMessageContent
 import love.forte.simbot.message.RemoteMessageContainer
 import love.forte.simbot.message.doSafeCast
+import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -47,7 +47,7 @@ public interface MessageEvent : Event, RemoteMessageContainer {
 
     @Api4J
     public val source: Objectives
-        get() = runBlocking { source() }
+        get() = runInBlocking { source() }
 
 
     /**
@@ -77,14 +77,14 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
 
     @Api4J
     override val user: Contact
-        get() = runBlocking { user() }
+        get() = runInBlocking { user() }
 
 
     override suspend fun source(): Contact = user()
 
     @Api4J
     override val source: Contact
-        get() = runBlocking { source() }
+        get() = runInBlocking { source() }
 
 
     /**
@@ -118,14 +118,14 @@ public interface FriendMessageEvent : ContactMessageEvent, FriendEvent {
 
     @Api4J
     override val user: Friend
-        get() = runBlocking { user() }
+        get() = runInBlocking { user() }
 
 
     override suspend fun source(): Friend = user()
 
     @Api4J
     override val source: Friend
-        get() = runBlocking { source() }
+        get() = runInBlocking { source() }
 
 
     /**
@@ -160,7 +160,7 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
 
     @Api4J
     override val source: ChatRoom
-        get() = runBlocking { source() }
+        get() = runInBlocking { source() }
 
     /**
      * 这个消息的发送者.
@@ -169,7 +169,7 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
 
     @Api4J
     public val author: Member
-        get() = runBlocking { author() }
+        get() = runInBlocking { author() }
 
 
     /**
@@ -201,7 +201,7 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
 
     @Api4J
     override val group: Group
-        get() = runBlocking { group() }
+        get() = runInBlocking { group() }
 
 
     override suspend fun source(): Group = group()
@@ -209,7 +209,7 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
 
     @Api4J
     override val source: Group
-        get() = runBlocking { source() }
+        get() = runInBlocking { source() }
 
     /**
      * 消息发送者
@@ -218,7 +218,7 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
 
     @Api4J
     override val author: Member
-        get() = runBlocking { author() }
+        get() = runInBlocking { author() }
 
 
     public companion object Key : BaseEventKey<GroupMessageEvent>(
@@ -242,20 +242,20 @@ public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
 
     @Api4J
     override val channel: Channel
-        get() = runBlocking { channel() }
+        get() = runInBlocking { channel() }
 
 
     override suspend fun source(): Channel = channel()
 
     @Api4J
     override val source: Channel
-        get() = runBlocking { source() }
+        get() = runInBlocking { source() }
 
     override suspend fun author(): Member
 
     @Api4J
     override val author: Member
-        get() = runBlocking { author() }
+        get() = runInBlocking { author() }
 
 
     public companion object Key : BaseEventKey<ChannelMessageEvent>(

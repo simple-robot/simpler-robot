@@ -12,12 +12,12 @@
 
 package love.forte.simbot.event
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.action.ActionType
 import love.forte.simbot.definition.MemberInfo
 import love.forte.simbot.definition.Organization
 import love.forte.simbot.message.doSafeCast
+import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -50,7 +50,7 @@ public interface MemberChangedEvent<BEFORE : MemberInfo?, AFTER : MemberInfo?> :
      */
     @Api4J
     public val operator: MemberInfo?
-        get() = runBlocking { operator() }
+        get() = runInBlocking { operator() }
 
 
     public companion object Key :

@@ -12,8 +12,8 @@
 
 package love.forte.simbot.event
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.message.doSafeCast
+import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -34,7 +34,7 @@ public interface StartPointEvent<S, V> : ChangedEvent<S, V?, V> {
 
     override val before: V? get() = null
     override val after: V get() = target
-    public val target: V get() = runBlocking { target() }
+    public val target: V get() = runInBlocking { target() }
 
     public companion object Key : BaseEventKey<StartPointEvent<*, *>>("api.start_point", ChangedEvent) {
         override fun safeCast(value: Any): StartPointEvent<*, *>? = doSafeCast(value)
@@ -60,7 +60,7 @@ public interface EndPointEvent<S, V> : ChangedEvent<S, V, V?> {
 
     override val before: V get() = target
     override val after: V? get() = null
-    public val target: V get() = runBlocking { target() }
+    public val target: V get() = runInBlocking { target() }
 
     public companion object Key : BaseEventKey<EndPointEvent<*, *>>("api.end_point", ChangedEvent) {
         override fun safeCast(value: Any): EndPointEvent<*, *>? = doSafeCast(value)

@@ -12,9 +12,9 @@
 
 package love.forte.simbot.definition
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
+import love.forte.simbot.utils.runInBlocking
 
 /**
  * 一个非阻塞的 **结构化** 定义。
@@ -33,7 +33,7 @@ public interface Structured<P, N> {
 
     @Api4J
     public val previous: P
-        get() = runBlocking { previous() }
+        get() = runInBlocking { previous() }
 
     /**
      * 下一级的内容。

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2022-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -12,8 +12,8 @@
 
 package love.forte.simbot.action
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
+import love.forte.simbot.utils.runInBlocking
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.microseconds
@@ -72,7 +72,7 @@ public interface MuteSupport {
      * @see mute
      */
     @Api4J
-    public fun muteBlocking(time: Long, unit: TimeUnit): Boolean = runBlocking {
+    public fun muteBlocking(time: Long, unit: TimeUnit): Boolean = runInBlocking {
         mute(unit.toMillis(time).microseconds)
     }
 
@@ -80,7 +80,7 @@ public interface MuteSupport {
      * @see unmute
      */
     @Api4J
-    public fun unmuteBlocking(): Boolean = runBlocking {
+    public fun unmuteBlocking(): Boolean = runInBlocking {
         unmute()
     }
 

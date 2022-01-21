@@ -13,12 +13,12 @@
 package love.forte.simbot.event
 
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.doSafeCast
+import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -57,7 +57,7 @@ public interface RequestEvent : Event, UserInfoContainer {
     // Impl
     @Api4J
     public val requester: UserInfo
-        get() = runBlocking { requester() }
+        get() = runInBlocking { requester() }
 
 
     /**
@@ -86,7 +86,7 @@ public interface RequestEvent : Event, UserInfoContainer {
 
     @Api4J
     @ExperimentalSimbotApi
-    public fun acceptBlocking(): Boolean = runBlocking { accept() }
+    public fun acceptBlocking(): Boolean = runInBlocking { accept() }
 
     /**
      * 异步的执行 [accept],并忽略结果。
@@ -110,7 +110,7 @@ public interface RequestEvent : Event, UserInfoContainer {
      */
     @Api4J
     @ExperimentalSimbotApi
-    public fun rejectBlocking(): Boolean = runBlocking { reject() }
+    public fun rejectBlocking(): Boolean = runInBlocking { reject() }
 
     /**
      * 异步的执行 [reject], 并且忽略结果。
@@ -164,7 +164,7 @@ public interface JoinRequestEvent : RequestEvent {
      * 邀请人。当无法获取或不存在时得到null。
      */
     public suspend fun inviter(): UserInfo?
-    public val inviter: UserInfo? get() = runBlocking { inviter() }
+    public val inviter: UserInfo? get() = runInBlocking { inviter() }
 
     public companion object Key : BaseEventKey<JoinRequestEvent>("api.join_request", RequestEvent) {
         override fun safeCast(value: Any): JoinRequestEvent? = doSafeCast(value)

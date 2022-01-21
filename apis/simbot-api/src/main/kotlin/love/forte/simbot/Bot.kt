@@ -16,11 +16,11 @@ import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.definition.*
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.message.Image
 import love.forte.simbot.resources.Resource
+import love.forte.simbot.utils.runInBlocking
 import org.slf4j.Logger
 import java.util.stream.Stream
 import kotlin.coroutines.CoroutineContext
@@ -168,7 +168,7 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      * 通过唯一标识获取这个bot对应的某个好友，获取不到则为null。
      */
     @Api4J
-    public fun getFriend(id: ID): Friend? = runBlocking { friend(id) }
+    public fun getFriend(id: ID): Friend? = runInBlocking { friend(id) }
 
     //endregion
 
@@ -183,7 +183,7 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      * 通过唯一标识获取这个bot对应的某个群，获取不到则为null。
      */
     @Api4J
-    public fun getGroup(id: ID): Group? = runBlocking { group(id) }
+    public fun getGroup(id: ID): Group? = runInBlocking { group(id) }
     //endregion
 
     //region 频道
@@ -197,7 +197,7 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      * 通过唯一标识获取这个bot对应的某个频道，获取不到则为null。
      */
     @Api4J
-    public fun getGuild(id: ID): Guild? = runBlocking { guild(id) }
+    public fun getGuild(id: ID): Guild? = runInBlocking { guild(id) }
     //endregion
 
     //endregion
@@ -217,7 +217,7 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      * @see uploadImage
      */
     @Api4J
-    public fun uploadImageBlocking(resource: Resource): Image<*> = runBlocking { uploadImage(resource) }
+    public fun uploadImageBlocking(resource: Resource): Image<*> = runInBlocking { uploadImage(resource) }
 
     // public suspend fun uploadFile(resource: Resource): File
 
