@@ -220,6 +220,7 @@ internal class ResumedListenerManager {
                     logger.debug("Launch resumed listener: {} of id {}", listener, id)
                     listener(context)
                 } catch (e: Throwable) {
+                    // TODO process exception?
                     logger.error("ResumedListener(id=$id) invoke failed: ${e.localizedMessage}", e)
                 }
             }
