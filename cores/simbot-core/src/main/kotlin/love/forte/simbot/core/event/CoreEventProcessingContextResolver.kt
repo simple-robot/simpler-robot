@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import love.forte.simbot.Attribute
 import love.forte.simbot.AttributeMutableMap
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventProcessingContext
@@ -31,23 +32,28 @@ internal class CoreEventProcessingContextResolver(
 ) : EventProcessingContextResolver<CoreEventProcessingContext> {
     private val resumedListenerManager = ResumedListenerManager()
 
-    private val globalContext = GlobalScopeContext()
-    private val continuousSessionContext = CoreContinuousSessionContext(coroutineScope, resumedListenerManager)
+    @ExperimentalSimbotApi
+    override val globalContext = GlobalScopeContext()
+
+    @ExperimentalSimbotApi
+    override val continuousSessionContext = CoreContinuousSessionContext(coroutineScope, resumedListenerManager)
 
     /**
      * 每一次的事件处理都应存在的属性内容。
      */
+    @ExperimentalSimbotApi
     private val constMaps = mutableMapOf<Attribute<*>, Any>(
         EventProcessingContext.Scope.Global to globalContext,
         EventProcessingContext.Scope.ContinuousSession to continuousSessionContext
     )
 
-    private class GlobalScopeContext : ScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
+    internal class GlobalScopeContext : ScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
     private class InstantScopeContext : ScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
 
     /**
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
      */
+    @OptIn(ExperimentalSimbotApi::class)
     override suspend fun resolveEventToContext(event: Event, listenerSize: Int): CoreEventProcessingContext {
         val context = CoreEventProcessingContext(
             event, AttributeMutableMap(

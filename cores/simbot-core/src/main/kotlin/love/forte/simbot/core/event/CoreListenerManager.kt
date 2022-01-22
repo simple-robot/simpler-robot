@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -34,9 +34,6 @@ import kotlin.coroutines.CoroutineContext
  * TODO
  */
 public typealias EventListenerExceptionHandler = suspend (EventListenerProcessingContext, Throwable) -> EventResult
-
-
-
 
 
 /**
@@ -75,7 +72,8 @@ public class CoreListenerManager private constructor(
         private val counter: AtomicInteger = AtomicInteger(0)
     }
 
-    private val managerCoroutineContext: CoroutineContext = configuration.coroutineContext.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
+    private val managerCoroutineContext: CoroutineContext =
+        configuration.coroutineContext.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
 
     /**
      * 异常处理器。
@@ -125,6 +123,7 @@ public class CoreListenerManager private constructor(
             return compute
         }
     }
+
 
     /**
      * 注册一个监听函数。
@@ -253,7 +252,19 @@ public class CoreListenerManager private constructor(
 
     @Suppress("UNCHECKED_CAST")
     private val resolver: EventProcessingContextResolver<EventProcessingContext> =
-        configuration.eventProcessingContextResolver(this, CoroutineScope(managerCoroutineContext)) as EventProcessingContextResolver<EventProcessingContext>
+        configuration.eventProcessingContextResolver(
+            this,
+            CoroutineScope(managerCoroutineContext)
+        ) as EventProcessingContextResolver<EventProcessingContext>
+
+
+    @ExperimentalSimbotApi
+    override val globalScopeContext: ScopeContext
+        get() = resolver.globalContext
+
+    @ExperimentalSimbotApi
+    override val continuousSessionContext: ContinuousSessionContext
+        get() = resolver.continuousSessionContext
 
     /**
      * 通过 [Event] 得到一个 [EventProcessingContext].
@@ -307,6 +318,20 @@ public class CoreListenerManager private constructor(
  * @sample CoreEventProcessingContextResolver
  */
 public interface EventProcessingContextResolver<C : EventProcessingContext> {
+
+    /**
+     * 获取为当前manager服务的全局作用域对象。
+     * 作为一个全局作用域，它理应能够脱离事件调用流程之外而获取。
+     */
+    @ExperimentalSimbotApi
+    public val globalContext: ScopeContext
+
+    /**
+     * 获取为当前manager服务的持续会话作用域。
+     * 持续会话作用域与一个独立的监听函数无关，因此应当能够脱离监听函数流程之外而获取。
+     */
+    @ExperimentalSimbotApi
+    public val continuousSessionContext: ContinuousSessionContext
 
     /**
      * 检测当前事件是否允许监听。
