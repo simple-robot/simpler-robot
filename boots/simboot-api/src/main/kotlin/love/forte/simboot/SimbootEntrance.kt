@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -102,13 +102,13 @@ public interface SimbootContext : Survivable {
      *
      */
     @Api4J
-    override fun toAsync(): Future<Int> {
-        val future = CompletableFuture<Int>()
+    override fun toAsync(): Future<Unit> {
+        val future = CompletableFuture<Unit>()
         invokeOnCompletion { reason ->
             if (reason != null) {
                 future.completeExceptionally(reason)
             } else {
-                future.complete(0)
+                future.complete(Unit)
             }
         }
         return future
