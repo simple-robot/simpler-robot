@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -13,14 +13,13 @@
 package love.forte.simbot.core.event
 
 import kotlinx.coroutines.CoroutineScope
-import love.forte.simbot.Api4J
-import love.forte.simbot.ID
-import love.forte.simbot.PriorityConstant
+import kotlinx.coroutines.runInterruptible
+import love.forte.simbot.*
 import love.forte.simbot.event.EventListenerInterceptor
 import love.forte.simbot.event.EventProcessingInterceptor
 import love.forte.simbot.event.EventProcessingResult
 import love.forte.simbot.event.EventResult
-import love.forte.simbot.mutableIDMapOf
+import java.util.function.Function
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -70,7 +69,7 @@ public class CoreListenerManagerConfiguration {
 
     @Api4J
     @CoreEventManagerConfigDSL
-    public fun listenerExceptionHandler(handler: java.util.function.Function<Throwable, EventResult>) {
+    public fun listenerExceptionHandler(handler: Function<Throwable, EventResult>) {
         listenerExceptionHandler = handler::apply
     }
 
@@ -169,17 +168,17 @@ public class EventInterceptorsGenerator {
      * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
      * 得到一个流程拦截器 [EventProcessingInterceptor].
      */
-    @JvmOverloads
+    @JvmSynthetic
     @EventInterceptorsGeneratorDSL
     public fun processingIntercept(
-        id: ID,
+        id: ID = randomID(),
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
     ): EventProcessingInterceptor = coreProcessingInterceptor(priority, interceptFunction).also {
         addPro(id, it)
     }
 
-    @JvmOverloads
+    @JvmSynthetic
     @EventInterceptorsGeneratorDSL
     public fun processingIntercept(
         id: String,
@@ -187,15 +186,35 @@ public class EventInterceptorsGenerator {
         interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
     ): EventProcessingInterceptor = processingIntercept(id.ID, priority, interceptFunction)
 
+    @JvmOverloads
+    @Api4J
+    public fun processingIntercept(
+        id: String,
+        priority: Int = PriorityConstant.NORMAL,
+        interceptFunction: Function<EventProcessingInterceptor.Context, EventProcessingResult>
+    ): EventProcessingInterceptor = processingIntercept(id.ID, priority) {
+        runInterruptible { interceptFunction.apply(it) }
+    }
+
+    @JvmOverloads
+    @Api4J
+    public fun processingIntercept(
+        id: ID = randomID(),
+        priority: Int = PriorityConstant.NORMAL,
+        interceptFunction: Function<EventProcessingInterceptor.Context, EventProcessingResult>
+    ): EventProcessingInterceptor = processingIntercept(id, priority) {
+        runInterruptible { interceptFunction.apply(it) }
+    }
+
 
     /**
      * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
      * 得到一个流程拦截器 [EventListenerInterceptor].
      */
-    @JvmOverloads
+    @JvmSynthetic
     @EventInterceptorsGeneratorDSL
     public fun listenerIntercept(
-        id: ID,
+        id: ID = randomID(),
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
     ): EventListenerInterceptor =
@@ -207,7 +226,7 @@ public class EventInterceptorsGenerator {
      * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
      * 得到一个流程拦截器 [EventListenerInterceptor].
      */
-    @JvmOverloads
+    @JvmSynthetic
     @EventInterceptorsGeneratorDSL
     public fun listenerIntercept(
         id: String,
@@ -215,6 +234,38 @@ public class EventInterceptorsGenerator {
         interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
     ): EventListenerInterceptor =
         listenerIntercept(id.ID, priority, interceptFunction)
+
+
+
+    /**
+     * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
+     * 得到一个流程拦截器 [EventListenerInterceptor].
+     */
+    @JvmOverloads
+    @Api4J
+    public fun listenerIntercept(
+        id: ID = randomID(),
+        priority: Int = PriorityConstant.NORMAL,
+        interceptFunction: Function<EventListenerInterceptor.Context, EventResult>
+    ): EventListenerInterceptor =
+        listenerIntercept(id, priority) {
+            runInterruptible { interceptFunction.apply(it) }
+        }
+
+    /**
+     * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
+     * 得到一个流程拦截器 [EventListenerInterceptor].
+     */
+    @JvmOverloads
+    @Api4J
+    public fun listenerIntercept(
+        id: String,
+        priority: Int = PriorityConstant.NORMAL,
+        interceptFunction: Function<EventListenerInterceptor.Context, EventResult>
+    ): EventListenerInterceptor =
+        listenerIntercept(id, priority) {
+            runInterruptible { interceptFunction.apply(it) }
+        }
 
 
 }
