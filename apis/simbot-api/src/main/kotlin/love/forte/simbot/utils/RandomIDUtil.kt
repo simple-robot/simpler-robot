@@ -14,10 +14,10 @@ package love.forte.simbot.utils
 
 import kotlin.random.Random
 
-public object UUIDUtil {
+public object RandomIDUtil {
 
     @JvmStatic
-    public fun randomUUID(): String {
+    public fun randomID(): String {
         // 还不知道 kotlin.Random 和 ThreadLocalRandom 之间的性能差距
         val lsb = Random.nextLong()
         val msb = Random.nextLong()
@@ -35,74 +35,28 @@ public object UUIDUtil {
         var charPos = offset + len
         val mask = (1 shl 4) - 1
         do {
-            buf[--charPos] = DIGITS[v.toInt() and mask].code.toByte()
-            v = value ushr 4
+            buf[--charPos] = D[v.toInt() and mask].code.toByte()
+            v = v ushr 4
         } while (charPos > offset)
     }
 
-    private val DIGITS = charArrayOf(
-        '0',
+    private val D = charArrayOf(
         '1',
-        '2',
+        '9',
+        '0',
+        '8',
         '3',
-        '4',
         '5',
         '6',
-        '7',
-        '8',
-        '9',
-        'a',
-        'b',
-        'c',
-        'd',
-        'e',
-        'f',
-        'g',
-        'h',
-        'i',
-        'j',
-        'k',
-        'l',
-        'm',
-        'n',
-        'o',
-        'p',
-        'q',
-        'r',
-        's',
-        't',
-        'u',
-        'v',
-        'w',
-        'x',
-        'y',
-        'z',
-        'A',
-        'B',
-        'C',
-        'D',
-        'E',
         'F',
-        'G',
-        'H',
-        'I',
-        'J',
-        'K',
-        'L',
-        'M',
-        'N',
         'O',
-        'P',
-        'Q',
         'R',
-        'S',
         'T',
-        'U',
-        'V',
-        'W',
-        'X',
-        'Y',
-        'Z'
+        'E',
+        'S',
+        'C',
+        'A',
+        'L',
     )
 
 }

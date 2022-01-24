@@ -22,7 +22,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import love.forte.simbot.utils.UUIDUtil
+import love.forte.simbot.utils.RandomIDUtil
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
@@ -194,7 +194,7 @@ public val UUID.ID: CharSequenceID
 /**
  * 取得一个随机ID。
  */
-public fun randomID(): ID = UUIDUtil.randomUUID().ID
+public fun randomID(): ID = RandomIDUtil.randomID().ID
 
 
 /**
