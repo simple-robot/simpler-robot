@@ -27,6 +27,7 @@ public interface Processor<T, R> {
     /**
      * 对目标进行处理, 并得到一个结果。
       */
+    @JvmSynthetic
     public suspend fun process(target: T): R
 
 }

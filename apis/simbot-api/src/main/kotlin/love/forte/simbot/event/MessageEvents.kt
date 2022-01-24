@@ -47,6 +47,7 @@ public interface MessageEvent : Event, RemoteMessageContainer {
      * 通常情况下，[source] 都是可以 [发送消息][SendSupport] 的。
      *
      */
+    @JvmSynthetic
     public suspend fun source(): Objectives
 
 
@@ -78,6 +79,7 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
     /**
      * 消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
      */
+    @JvmSynthetic
     override suspend fun user(): Contact
 
     @Api4J
@@ -85,6 +87,7 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
         get() = runInBlocking { user() }
 
 
+    @JvmSynthetic
     override suspend fun source(): Contact = user()
 
     @Api4J
@@ -116,9 +119,11 @@ public interface FriendMessageEvent : ContactMessageEvent, FriendEvent {
     /**
      * 消息的信息来源是一个可以进行信息交互的 [好友][Friend]
      */
+    @JvmSynthetic
     override suspend fun friend(): Friend
 
 
+    @JvmSynthetic
     override suspend fun user(): Friend = friend()
 
     @Api4J
@@ -126,6 +131,7 @@ public interface FriendMessageEvent : ContactMessageEvent, FriendEvent {
         get() = runInBlocking { user() }
 
 
+    @JvmSynthetic
     override suspend fun source(): Friend = user()
 
     @Api4J
@@ -161,6 +167,7 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
     /**
      * 来自的聊天室，通常是一个群或者一个频道。
      */
+    @JvmSynthetic
     override suspend fun source(): ChatRoom
 
     @Api4J
@@ -170,6 +177,7 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
     /**
      * 这个消息的发送者.
      */
+    @JvmSynthetic
     public suspend fun author(): Member
 
     @Api4J
@@ -181,6 +189,7 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
      * 预期内，假若当前bot拥有足够的权限则可以对消息进行删除（撤回）操作。
      *
      */
+    @JvmSynthetic
     override suspend fun delete(): Boolean
 
 
@@ -202,6 +211,7 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
     /**
      * 消息来自的群。
      */
+    @JvmSynthetic
     override suspend fun group(): Group
 
     @Api4J
@@ -209,6 +219,7 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
         get() = runInBlocking { group() }
 
 
+    @JvmSynthetic
     override suspend fun source(): Group = group()
 
 
@@ -219,6 +230,7 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
     /**
      * 消息发送者
      */
+    @JvmSynthetic
     override suspend fun author(): Member
 
     @Api4J

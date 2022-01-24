@@ -57,6 +57,14 @@ subprojects {
         configDokka()
     }
 
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        kotlinOptions {
+            freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
+        }
+    }
+
+
     afterEvaluate {
         if (name in publishNeed) {
 

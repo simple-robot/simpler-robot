@@ -48,6 +48,7 @@ public interface ChangeEvent<SOURCE, BEFORE, AFTER> : Event {
     /**
      * 变更载体，或者说变更内容的源。
      */
+    @JvmSynthetic
     public suspend fun source(): SOURCE
 
     public val source: SOURCE get() = runInBlocking { source() }
@@ -55,6 +56,7 @@ public interface ChangeEvent<SOURCE, BEFORE, AFTER> : Event {
     /**
      * 变更行为前的内容。
      */
+    @JvmSynthetic
     public suspend fun before(): BEFORE
 
     public val before: BEFORE get() = runInBlocking { before() }
@@ -62,6 +64,7 @@ public interface ChangeEvent<SOURCE, BEFORE, AFTER> : Event {
     /**
      * 变更行为后的内容。
      */
+    @JvmSynthetic
     public suspend fun after(): AFTER
 
     public val after: AFTER get() = runInBlocking { after() }

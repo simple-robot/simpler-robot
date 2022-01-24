@@ -29,10 +29,13 @@ import love.forte.simbot.message.doSafeCast
  */
 public interface FriendIncreaseEvent : IncreaseEvent<Bot, Friend>, FriendEvent {
 
+    @JvmSynthetic
     override suspend fun source(): Bot
+    @JvmSynthetic
     override suspend fun friend(): Friend
 
     //// Impl
+    @JvmSynthetic
     override suspend fun target(): Friend = friend()
 
     public companion object Key : BaseEventKey<FriendIncreaseEvent>(
@@ -51,10 +54,13 @@ public interface FriendIncreaseEvent : IncreaseEvent<Bot, Friend>, FriendEvent {
 public interface FriendDecreaseEvent : DecreaseEvent<Bot, Friend>, FriendEvent {
 
 
+    @JvmSynthetic
     override suspend fun source(): Bot
+    @JvmSynthetic
     override suspend fun friend(): Friend
 
     //// Impl
+    @JvmSynthetic
     override suspend fun target(): Friend = friend()
 
     public companion object Key : BaseEventKey<FriendDecreaseEvent>(

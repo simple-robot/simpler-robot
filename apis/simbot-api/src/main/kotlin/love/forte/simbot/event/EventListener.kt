@@ -34,6 +34,7 @@ public fun interface EventListenerFunction : suspend (EventListenerProcessingCon
     /**
      * 执行监听处理流程。
      */
+    @JvmSynthetic
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult
 
 }
@@ -50,6 +51,7 @@ public fun interface BlockingEventListenerFunction : EventListenerFunction {
     @Api4J
     public fun invokeBlocking(context: EventListenerProcessingContext): EventResult
 
+    @JvmSynthetic
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult =
         runWithInterruptible { invokeBlocking(context) }
 }
@@ -139,6 +141,7 @@ public interface BlockingEventListener : EventListener, BlockingEventListenerFun
     override val logger: Logger
     override val isAsync: Boolean
     override fun isTarget(eventType: Event.Key<*>): Boolean
+    @JvmSynthetic
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult =
         runWithInterruptible { invokeBlocking(context) }
 

@@ -57,6 +57,7 @@ public interface RequestEvent : Event, UserInfoContainer {
     /**
      * 这个请求的 **发起者**。
      */
+    @JvmSynthetic
     public suspend fun requester(): UserInfo
 
     // Impl
@@ -68,6 +69,7 @@ public interface RequestEvent : Event, UserInfoContainer {
     /**
      * 通常情况下, [user] 等同于 [requester].
      */
+    @JvmSynthetic
     override suspend fun user(): UserInfo = requester()
 
 
@@ -86,10 +88,12 @@ public interface RequestEvent : Event, UserInfoContainer {
     /**
      * 是否同意/接受此次请求。
      */
+    @JvmSynthetic
     @ExperimentalSimbotApi
     public suspend fun accept(): Boolean
 
     @Api4J
+    @JvmSynthetic
     @ExperimentalSimbotApi
     public fun acceptBlocking(): Boolean = runInBlocking { accept() }
 
@@ -107,6 +111,7 @@ public interface RequestEvent : Event, UserInfoContainer {
     /**
      * 是否拒绝/回绝此次请求。
      */
+    @JvmSynthetic
     @ExperimentalSimbotApi
     public suspend fun reject(): Boolean
 
@@ -168,6 +173,7 @@ public interface JoinRequestEvent : RequestEvent {
     /**
      * 邀请人。当无法获取或不存在时得到null。
      */
+    @JvmSynthetic
     public suspend fun inviter(): UserInfo?
     public val inviter: UserInfo? get() = runInBlocking { inviter() }
 
@@ -182,6 +188,7 @@ public interface JoinRequestEvent : RequestEvent {
  */
 public interface GuildRequestEvent : RequestEvent, GuildInfoContainer {
 
+    @JvmSynthetic
     override suspend fun guild(): GuildInfo
 
     public companion object Key : BaseEventKey<GuildRequestEvent>(
@@ -214,7 +221,9 @@ public interface GuildJoinRequestEvent : JoinRequestEvent, GuildRequestEvent {
  */
 public interface GroupRequestEvent : RequestEvent, GroupInfoContainer {
 
+    @JvmSynthetic
     override suspend fun group(): GroupInfo
+    @JvmSynthetic
     override suspend fun requester(): UserInfo
 
     public companion object Key : BaseEventKey<GroupRequestEvent>(
@@ -232,7 +241,9 @@ public interface GroupRequestEvent : RequestEvent, GroupInfoContainer {
  */
 public interface GroupJoinRequestEvent : GroupRequestEvent, JoinRequestEvent {
 
+    @JvmSynthetic
     override suspend fun group(): GroupInfo
+    @JvmSynthetic
     override suspend fun requester(): UserInfo
 
     public companion object Key : BaseEventKey<GroupJoinRequestEvent>(
@@ -248,6 +259,7 @@ public interface GroupJoinRequestEvent : GroupRequestEvent, JoinRequestEvent {
  */
 public interface ChannelRequestEvent : RequestEvent, ChannelInfoContainer {
 
+    @JvmSynthetic
     override suspend fun channel(): ChannelInfo
 
 
@@ -266,6 +278,7 @@ public interface ChannelRequestEvent : RequestEvent, ChannelInfoContainer {
  */
 public interface UserRequestEvent : RequestEvent, UserInfoContainer {
 
+    @JvmSynthetic
     override suspend fun user(): UserInfo
 
     public companion object Key : BaseEventKey<UserRequestEvent>(
@@ -285,6 +298,7 @@ public interface FriendRequestEvent : UserRequestEvent, FriendInfoContainer {
     /**
      * [friend] 仅代表申请人的基本信息，不代表他已经成为了好友。
      */
+    @JvmSynthetic
     override suspend fun friend(): FriendInfo
 
     // Impl

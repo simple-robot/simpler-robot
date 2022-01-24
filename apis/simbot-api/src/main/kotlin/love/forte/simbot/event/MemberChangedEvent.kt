@@ -46,6 +46,7 @@ public interface MemberChangedEvent<BEFORE : MemberInfo?, AFTER : MemberInfo?> :
      * 无法保证当前事件能够获取到 [operator] 的信息，当不支持对此信息进行获取的时候，将会得到 `null`。
      *
      */
+    @JvmSynthetic
     public suspend fun operator(): MemberInfo?
 
     /**
@@ -78,11 +79,13 @@ public interface MemberIncreaseEvent : IncreaseEvent<Organization, MemberInfo>,
     /**
      * 增加事件发生所在的组织。
      */
+    @JvmSynthetic
     override suspend fun source(): Organization
 
     /**
      * 增加的这个群成员的基础信息。
      */
+    @JvmSynthetic
     override suspend fun target(): MemberInfo
 
     /**
@@ -93,6 +96,7 @@ public interface MemberIncreaseEvent : IncreaseEvent<Organization, MemberInfo>,
     /**
      * 群成员新增，[before] 所代表内容永远为null。
      */
+    @JvmSynthetic
     override suspend fun before(): MemberInfo? = null
 
     /**
@@ -119,16 +123,19 @@ public interface MemberDecreaseEvent : DecreaseEvent<Organization, MemberInfo>,
     /**
      * 发生增加事件的组织。
      */
+    @JvmSynthetic
     override suspend fun source(): Organization
 
     /**
      * 离开群成员的基础信息。
      */
+    @JvmSynthetic
     override suspend fun target(): MemberInfo
 
     /**
      * 群成员离开，[after] 所代表内容永远为null。
      */
+    @JvmSynthetic
     override suspend fun after(): MemberInfo? = null
 
     /**

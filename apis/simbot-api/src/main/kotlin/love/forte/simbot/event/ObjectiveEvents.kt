@@ -43,6 +43,7 @@ public interface UserEvent : ObjectiveEvent, UserInfoContainer {
     /**
      * 这个[用户][User]。
      */
+    @JvmSynthetic
     override suspend fun user(): User
 
     @Api4J
@@ -61,6 +62,7 @@ public interface MemberEvent : UserEvent, MemberInfoContainer {
     /**
      * 这个[成员][Member]
      */
+    @JvmSynthetic
     override suspend fun member(): Member
 
     @Api4J
@@ -68,6 +70,7 @@ public interface MemberEvent : UserEvent, MemberInfoContainer {
         get() = runInBlocking { member() }
 
 
+    @JvmSynthetic
     override suspend fun user(): User = member()
 
     @Api4J
@@ -88,6 +91,7 @@ public interface FriendEvent : UserEvent, FriendInfoContainer {
     /**
      * 这个[好友][Friend]
      */
+    @JvmSynthetic
     override suspend fun friend(): Friend
 
 
@@ -99,6 +103,7 @@ public interface FriendEvent : UserEvent, FriendInfoContainer {
     override val user: User
         get() = friend
 
+    @JvmSynthetic
     override suspend fun user(): User = friend()
 
 
@@ -118,6 +123,7 @@ public interface OrganizationEvent : ObjectiveEvent {
     /**
      * 这个[组织][Organization]
      */
+    @JvmSynthetic
     public suspend fun organization(): Organization
 
     @Api4J
@@ -137,6 +143,7 @@ public interface GroupEvent : OrganizationEvent, GroupInfoContainer {
     /**
      * 这个[群][Group]
      */
+    @JvmSynthetic
     override suspend fun group(): Group
 
     @Api4J
@@ -156,6 +163,7 @@ public interface GuildEvent : OrganizationEvent {
     /**
      * 这个[频道服务器][Guild]
      */
+    @JvmSynthetic
     public suspend fun guild(): Guild
 
 
@@ -176,6 +184,7 @@ public interface ChannelEvent : OrganizationEvent {
     /**
      * 这个[频道][Channel]
      */
+    @JvmSynthetic
     public suspend fun channel(): Channel
 
     @Api4J
