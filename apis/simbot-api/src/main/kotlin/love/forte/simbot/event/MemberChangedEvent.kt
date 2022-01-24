@@ -1,13 +1,18 @@
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  根据 GNU LESSER GENERAL PUBLIC LICENSE 3 获得许可；
- *  除非遵守许可，否则您不得使用此文件。
- *  您可以在以下网址获取许可证副本：
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
- *       https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
- *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
+ *
+ *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ *  https://www.gnu.org/licenses
+ *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
+ *
  */
 
 package love.forte.simbot.event
@@ -41,6 +46,7 @@ public interface MemberChangedEvent<BEFORE : MemberInfo?, AFTER : MemberInfo?> :
      * 无法保证当前事件能够获取到 [operator] 的信息，当不支持对此信息进行获取的时候，将会得到 `null`。
      *
      */
+    @JvmSynthetic
     public suspend fun operator(): MemberInfo?
 
     /**
@@ -73,11 +79,13 @@ public interface MemberIncreaseEvent : IncreaseEvent<Organization, MemberInfo>,
     /**
      * 增加事件发生所在的组织。
      */
+    @JvmSynthetic
     override suspend fun source(): Organization
 
     /**
      * 增加的这个群成员的基础信息。
      */
+    @JvmSynthetic
     override suspend fun target(): MemberInfo
 
     /**
@@ -88,6 +96,7 @@ public interface MemberIncreaseEvent : IncreaseEvent<Organization, MemberInfo>,
     /**
      * 群成员新增，[before] 所代表内容永远为null。
      */
+    @JvmSynthetic
     override suspend fun before(): MemberInfo? = null
 
     /**
@@ -114,16 +123,19 @@ public interface MemberDecreaseEvent : DecreaseEvent<Organization, MemberInfo>,
     /**
      * 发生增加事件的组织。
      */
+    @JvmSynthetic
     override suspend fun source(): Organization
 
     /**
      * 离开群成员的基础信息。
      */
+    @JvmSynthetic
     override suspend fun target(): MemberInfo
 
     /**
      * 群成员离开，[after] 所代表内容永远为null。
      */
+    @JvmSynthetic
     override suspend fun after(): MemberInfo? = null
 
     /**

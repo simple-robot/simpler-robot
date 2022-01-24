@@ -1,13 +1,18 @@
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  根据 GNU LESSER GENERAL PUBLIC LICENSE 3 获得许可；
- *  除非遵守许可，否则您不得使用此文件。
- *  您可以在以下网址获取许可证副本：
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
- *       https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
- *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
+ *
+ *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ *  https://www.gnu.org/licenses
+ *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
+ *
  */
 
 package love.forte.simbot.event
@@ -52,6 +57,7 @@ public interface RequestEvent : Event, UserInfoContainer {
     /**
      * 这个请求的 **发起者**。
      */
+    @JvmSynthetic
     public suspend fun requester(): UserInfo
 
     // Impl
@@ -63,6 +69,7 @@ public interface RequestEvent : Event, UserInfoContainer {
     /**
      * 通常情况下, [user] 等同于 [requester].
      */
+    @JvmSynthetic
     override suspend fun user(): UserInfo = requester()
 
 
@@ -81,10 +88,12 @@ public interface RequestEvent : Event, UserInfoContainer {
     /**
      * 是否同意/接受此次请求。
      */
+    @JvmSynthetic
     @ExperimentalSimbotApi
     public suspend fun accept(): Boolean
 
     @Api4J
+    @JvmSynthetic
     @ExperimentalSimbotApi
     public fun acceptBlocking(): Boolean = runInBlocking { accept() }
 
@@ -102,6 +111,7 @@ public interface RequestEvent : Event, UserInfoContainer {
     /**
      * 是否拒绝/回绝此次请求。
      */
+    @JvmSynthetic
     @ExperimentalSimbotApi
     public suspend fun reject(): Boolean
 
@@ -163,6 +173,7 @@ public interface JoinRequestEvent : RequestEvent {
     /**
      * 邀请人。当无法获取或不存在时得到null。
      */
+    @JvmSynthetic
     public suspend fun inviter(): UserInfo?
     public val inviter: UserInfo? get() = runInBlocking { inviter() }
 
@@ -177,6 +188,7 @@ public interface JoinRequestEvent : RequestEvent {
  */
 public interface GuildRequestEvent : RequestEvent, GuildInfoContainer {
 
+    @JvmSynthetic
     override suspend fun guild(): GuildInfo
 
     public companion object Key : BaseEventKey<GuildRequestEvent>(
@@ -209,7 +221,9 @@ public interface GuildJoinRequestEvent : JoinRequestEvent, GuildRequestEvent {
  */
 public interface GroupRequestEvent : RequestEvent, GroupInfoContainer {
 
+    @JvmSynthetic
     override suspend fun group(): GroupInfo
+    @JvmSynthetic
     override suspend fun requester(): UserInfo
 
     public companion object Key : BaseEventKey<GroupRequestEvent>(
@@ -227,7 +241,9 @@ public interface GroupRequestEvent : RequestEvent, GroupInfoContainer {
  */
 public interface GroupJoinRequestEvent : GroupRequestEvent, JoinRequestEvent {
 
+    @JvmSynthetic
     override suspend fun group(): GroupInfo
+    @JvmSynthetic
     override suspend fun requester(): UserInfo
 
     public companion object Key : BaseEventKey<GroupJoinRequestEvent>(
@@ -243,6 +259,7 @@ public interface GroupJoinRequestEvent : GroupRequestEvent, JoinRequestEvent {
  */
 public interface ChannelRequestEvent : RequestEvent, ChannelInfoContainer {
 
+    @JvmSynthetic
     override suspend fun channel(): ChannelInfo
 
 
@@ -261,6 +278,7 @@ public interface ChannelRequestEvent : RequestEvent, ChannelInfoContainer {
  */
 public interface UserRequestEvent : RequestEvent, UserInfoContainer {
 
+    @JvmSynthetic
     override suspend fun user(): UserInfo
 
     public companion object Key : BaseEventKey<UserRequestEvent>(
@@ -280,6 +298,7 @@ public interface FriendRequestEvent : UserRequestEvent, FriendInfoContainer {
     /**
      * [friend] 仅代表申请人的基本信息，不代表他已经成为了好友。
      */
+    @JvmSynthetic
     override suspend fun friend(): FriendInfo
 
     // Impl

@@ -1,13 +1,18 @@
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  根据 GNU LESSER GENERAL PUBLIC LICENSE 3 获得许可；
- *  除非遵守许可，否则您不得使用此文件。
- *  您可以在以下网址获取许可证副本：
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
- *       https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
- *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
+ *
+ *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ *  https://www.gnu.org/licenses
+ *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
+ *
  */
 
 package love.forte.simbot.event
@@ -38,6 +43,7 @@ public interface UserEvent : ObjectiveEvent, UserInfoContainer {
     /**
      * 这个[用户][User]。
      */
+    @JvmSynthetic
     override suspend fun user(): User
 
     @Api4J
@@ -56,6 +62,7 @@ public interface MemberEvent : UserEvent, MemberInfoContainer {
     /**
      * 这个[成员][Member]
      */
+    @JvmSynthetic
     override suspend fun member(): Member
 
     @Api4J
@@ -63,6 +70,7 @@ public interface MemberEvent : UserEvent, MemberInfoContainer {
         get() = runInBlocking { member() }
 
 
+    @JvmSynthetic
     override suspend fun user(): User = member()
 
     @Api4J
@@ -83,6 +91,7 @@ public interface FriendEvent : UserEvent, FriendInfoContainer {
     /**
      * 这个[好友][Friend]
      */
+    @JvmSynthetic
     override suspend fun friend(): Friend
 
 
@@ -94,6 +103,7 @@ public interface FriendEvent : UserEvent, FriendInfoContainer {
     override val user: User
         get() = friend
 
+    @JvmSynthetic
     override suspend fun user(): User = friend()
 
 
@@ -113,6 +123,7 @@ public interface OrganizationEvent : ObjectiveEvent {
     /**
      * 这个[组织][Organization]
      */
+    @JvmSynthetic
     public suspend fun organization(): Organization
 
     @Api4J
@@ -132,6 +143,7 @@ public interface GroupEvent : OrganizationEvent, GroupInfoContainer {
     /**
      * 这个[群][Group]
      */
+    @JvmSynthetic
     override suspend fun group(): Group
 
     @Api4J
@@ -151,6 +163,7 @@ public interface GuildEvent : OrganizationEvent {
     /**
      * 这个[频道服务器][Guild]
      */
+    @JvmSynthetic
     public suspend fun guild(): Guild
 
 
@@ -171,6 +184,7 @@ public interface ChannelEvent : OrganizationEvent {
     /**
      * 这个[频道][Channel]
      */
+    @JvmSynthetic
     public suspend fun channel(): Channel
 
     @Api4J

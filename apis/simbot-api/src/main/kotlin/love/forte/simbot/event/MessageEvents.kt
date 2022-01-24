@@ -1,13 +1,18 @@
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  根据 GNU LESSER GENERAL PUBLIC LICENSE 3 获得许可；
- *  除非遵守许可，否则您不得使用此文件。
- *  您可以在以下网址获取许可证副本：
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
- *       https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
- *   有关许可证下的权限和限制的具体语言，请参见许可证。
+ *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
+ *
+ *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ *  https://www.gnu.org/licenses
+ *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
+ *
  */
 
 package love.forte.simbot.event
@@ -42,6 +47,7 @@ public interface MessageEvent : Event, RemoteMessageContainer {
      * 通常情况下，[source] 都是可以 [发送消息][SendSupport] 的。
      *
      */
+    @JvmSynthetic
     public suspend fun source(): Objectives
 
 
@@ -73,6 +79,7 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
     /**
      * 消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
      */
+    @JvmSynthetic
     override suspend fun user(): Contact
 
     @Api4J
@@ -80,6 +87,7 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
         get() = runInBlocking { user() }
 
 
+    @JvmSynthetic
     override suspend fun source(): Contact = user()
 
     @Api4J
@@ -111,9 +119,11 @@ public interface FriendMessageEvent : ContactMessageEvent, FriendEvent {
     /**
      * 消息的信息来源是一个可以进行信息交互的 [好友][Friend]
      */
+    @JvmSynthetic
     override suspend fun friend(): Friend
 
 
+    @JvmSynthetic
     override suspend fun user(): Friend = friend()
 
     @Api4J
@@ -121,6 +131,7 @@ public interface FriendMessageEvent : ContactMessageEvent, FriendEvent {
         get() = runInBlocking { user() }
 
 
+    @JvmSynthetic
     override suspend fun source(): Friend = user()
 
     @Api4J
@@ -156,6 +167,7 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
     /**
      * 来自的聊天室，通常是一个群或者一个频道。
      */
+    @JvmSynthetic
     override suspend fun source(): ChatRoom
 
     @Api4J
@@ -165,6 +177,7 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
     /**
      * 这个消息的发送者.
      */
+    @JvmSynthetic
     public suspend fun author(): Member
 
     @Api4J
@@ -176,6 +189,7 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
      * 预期内，假若当前bot拥有足够的权限则可以对消息进行删除（撤回）操作。
      *
      */
+    @JvmSynthetic
     override suspend fun delete(): Boolean
 
 
@@ -197,6 +211,7 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
     /**
      * 消息来自的群。
      */
+    @JvmSynthetic
     override suspend fun group(): Group
 
     @Api4J
@@ -204,6 +219,7 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
         get() = runInBlocking { group() }
 
 
+    @JvmSynthetic
     override suspend fun source(): Group = group()
 
 
@@ -214,6 +230,7 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
     /**
      * 消息发送者
      */
+    @JvmSynthetic
     override suspend fun author(): Member
 
     @Api4J
