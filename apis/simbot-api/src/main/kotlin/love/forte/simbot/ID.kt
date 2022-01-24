@@ -22,6 +22,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import love.forte.simbot.utils.UUIDUtil
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
@@ -30,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.LongAccumulator
 import java.util.concurrent.atomic.LongAdder
-import kotlin.random.Random
+
 
 /**
  * 唯一标识 [ID].
@@ -193,7 +194,7 @@ public val UUID.ID: CharSequenceID
 /**
  * 取得一个随机ID。
  */
-public fun randomID(): ID = Random.nextLong().ID
+public fun randomID(): ID = UUIDUtil.randomUUID().ID
 
 
 /**
@@ -669,5 +670,4 @@ public open class IDException : RuntimeException {
     public constructor(message: String?, cause: Throwable?) : super(message, cause)
     public constructor(cause: Throwable?) : super(cause)
 }
-
 
