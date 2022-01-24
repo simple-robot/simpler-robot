@@ -12,7 +12,7 @@
 
 package love.forte.simbot
 
-import kotlinx.coroutines.runBlocking
+import love.forte.simbot.utils.runInBlocking
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.locks.ReentrantReadWriteLock
@@ -40,7 +40,7 @@ public object OriginBotManager : Set<BotManager<*>> {
             var err: Throwable? = null
             for (manager in managers.keys.toList()) {
                 kotlin.runCatching {
-                    runBlocking { manager.cancel(reason) }
+                    runInBlocking { manager.cancel(reason) }
                 }.getOrElse { e ->
                     kotlin.runCatching {
                         val err0 = err

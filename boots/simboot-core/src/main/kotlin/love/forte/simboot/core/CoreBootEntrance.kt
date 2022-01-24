@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -12,7 +12,10 @@
 
 package love.forte.simboot.core
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletionHandler
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.di.BeanContainer
 import love.forte.di.all
@@ -37,6 +40,7 @@ import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.event.EventListenerRegistrar
 import love.forte.simbot.utils.asCycleIterator
+import love.forte.simbot.utils.runInBlocking
 import org.slf4j.Logger
 import kotlin.concurrent.thread
 import kotlin.coroutines.CoroutineContext
@@ -248,7 +252,7 @@ public class CoreBootEntrance : SimbootEntrance {
         logger.info("Starting all bots")
         allBots.forEach { b ->
             logger.debug("Starting bot {} of component {}", b.id, b.component)
-            runBlocking { b.start() }
+            runInBlocking { b.start() }
             logger.debug("Bot {} of component {} started. username: {}", b.id, b.component, b.username)
         }
         logger.info("All bots start finished.")

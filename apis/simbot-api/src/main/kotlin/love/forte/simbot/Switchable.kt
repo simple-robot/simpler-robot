@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -14,7 +14,7 @@ package love.forte.simbot
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import love.forte.simbot.utils.runInBlocking
 
 /**
  *
@@ -36,7 +36,7 @@ public interface Switchable : CoroutineScope {
     public suspend fun start(): Boolean
 
     @Api4J
-    public fun startBlocking(): Boolean = runBlocking { start() }
+    public fun startBlocking(): Boolean = runInBlocking { start() }
 
     @Api4J
     public fun startAsync() {
@@ -52,10 +52,10 @@ public interface Switchable : CoroutineScope {
     public suspend fun cancel(reason: Throwable? = null): Boolean
 
     @Api4J
-    public fun cancelBlocking(reason: Throwable?): Boolean = runBlocking { cancel(reason) }
+    public fun cancelBlocking(reason: Throwable?): Boolean = runInBlocking { cancel(reason) }
 
     @Api4J
-    public fun cancelBlocking(): Boolean = runBlocking { cancel() }
+    public fun cancelBlocking(): Boolean = runInBlocking { cancel() }
 
     @Api4J
     public fun cancelAsync() {

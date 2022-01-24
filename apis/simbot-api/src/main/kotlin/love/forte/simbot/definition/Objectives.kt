@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -12,13 +12,13 @@
 
 package love.forte.simbot.definition
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.action.SendSupport
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageReceipt
+import love.forte.simbot.utils.runInBlocking
 
 /**
  * [Objectives] 是对与 [Bot] 相关联的对象 （一个[组织][Organization] 或一个具体的[用户][User]） 的统称。
@@ -54,7 +54,7 @@ public sealed interface Objectives : BotContainer {
      */
     @Api4J
     public fun sendIfSupportBlocking(message: Message): MessageReceipt? =
-        if (this is SendSupport) runBlocking { send(message) } else null
+        if (this is SendSupport) runInBlocking { send(message) } else null
 
 
 }

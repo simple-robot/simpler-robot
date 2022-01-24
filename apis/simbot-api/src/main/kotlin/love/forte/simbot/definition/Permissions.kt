@@ -15,9 +15,9 @@ package love.forte.simbot.definition
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
+import love.forte.simbot.utils.runInBlocking
 import java.util.*
 
 
@@ -210,7 +210,7 @@ public interface Role {
 
 
     @Api4J
-    public val permissions: List<Permission> get() = runBlocking { permissions().toList() }
+    public val permissions: List<Permission> get() = runInBlocking { permissions().toList() }
 
     /**
      * 判断当前角色是否存在某个指定权限。

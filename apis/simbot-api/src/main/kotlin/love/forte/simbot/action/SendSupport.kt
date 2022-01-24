@@ -12,13 +12,13 @@
 
 package love.forte.simbot.action
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.definition.Objectives
 import love.forte.simbot.message.*
+import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -53,7 +53,7 @@ public interface SendSupport {
      * @see send
      */
     @Api4J
-    public fun sendBlocking(message: Message): MessageReceipt = runBlocking { send(message) }
+    public fun sendBlocking(message: Message): MessageReceipt = runInBlocking { send(message) }
 
     /**
      * 发送消息，并得到一个回执单。
@@ -73,7 +73,7 @@ public interface SendSupport {
      * @see send
      */
     @Api4J
-    public fun sendBlocking(message: MessageContent): MessageReceipt = runBlocking { send(message) }
+    public fun sendBlocking(message: MessageContent): MessageReceipt = runInBlocking { send(message) }
 
     /**
      * 发送一段纯文本消息。
@@ -86,7 +86,7 @@ public interface SendSupport {
      * @see send
      */
     @Api4J
-    public fun sendBlocking(text: String): MessageReceipt = runBlocking { send(text) }
+    public fun sendBlocking(text: String): MessageReceipt = runInBlocking { send(text) }
 
 
 }
@@ -100,8 +100,8 @@ public interface SendSupport {
  * 但是这不代表你所监听到的实际事件没有实现此类型（例如`tencent-guild`组件中的消息事件或`mirai`组件中的消息事件，便实际上的实现了 [ReplySupport] ）。
  *
  * 相比较于 [SendSupport], [ReplySupport] 更倾向于针对一次事件或者这次事件的发送者为目标的**回复**行为，而不是单纯的发送消息，例如 `tencent-guild` 组件中，
- * 公域机器人如果想要根据一个@消息回复一段消息，则**必须**引用这个消息的某个ID，因此在 `tencent-guild` 组件中，如果使用的是公域BOT，那么想要回复消息的最好的办法是使用 [ReplySupport.reply] 而不是 [SendSupport.send],
- * 因此如果要使用 `send`，你必须在消息中拼接一个 `ReplyTo` 来指定目标消息的ID。
+ * 公域机器人如果想要根据一个@消息回复一段消息，则**必须**引用这个消息的ID，因此在 `tencent-guild` 组件中，如果使用的是公域BOT，那么想要回复消息的最好的办法是使用 [ReplySupport.reply] 而不是 [SendSupport.send],
+ * 如果要使用 `send`，你必须在消息中拼接一个 `ReplyTo` 来指定目标消息的ID。
  *
  *
  * 当你需要尝试使用回复时，假如你面对的是一个不知道是否真的实现了 [ReplySupport] 接口的消息事件, 那么你可以通过下面的方式来尝试发送：
@@ -111,7 +111,7 @@ public interface SendSupport {
  * ### Kotlin:
  * ```kotlin
  *  suspend fun GroupMessageEvent.listener() {
- *    replyIfSupport(Text { "Hello Simbot" })
+ *    replyIfSupport { "Hello Simbot" }
  *  }
  * ```
  * Kotlin中提供了扩展函数 [replyIfSupport], 当当前事件 `event is SendSupport` 的时候进行回复，否则得到结果 `null`.
@@ -121,7 +121,7 @@ public interface SendSupport {
  * ```java
  *  public void listener(GroupMessageEvent event) {
  *      if (event instanceof SendSupport) {
- *          ((SendSupport) event).sendBlocking(Text.of("Hello Simbot"))
+ *          ((SendSupport) event).sendBlocking("Hello Simbot")
  *      }
  *  }
  * ```
@@ -141,7 +141,7 @@ public interface ReplySupport {
     public suspend fun reply(message: Message): MessageReplyReceipt
 
     @Api4J
-    public fun replyBlocking(message: Message): MessageReplyReceipt = runBlocking { reply(message) }
+    public fun replyBlocking(message: Message): MessageReplyReceipt = runInBlocking { reply(message) }
 
     /**
      * 回复当前目标，并得到一个 [回复回执][MessageReplyReceipt]
@@ -150,13 +150,13 @@ public interface ReplySupport {
     public suspend fun reply(message: MessageContent): MessageReplyReceipt = reply(message.messages)
 
     @Api4J
-    public fun replyBlocking(message: MessageContent): MessageReplyReceipt = runBlocking { reply(message) }
+    public fun replyBlocking(message: MessageContent): MessageReplyReceipt = runInBlocking { reply(message) }
 
     @JvmSynthetic
     public suspend fun reply(text: String): MessageReplyReceipt = reply(Text.of(text))
 
     @Api4J
-    public fun replyBlocking(text: String): MessageReplyReceipt = runBlocking { reply(text) }
+    public fun replyBlocking(text: String): MessageReplyReceipt = runInBlocking { reply(text) }
 }
 
 
@@ -183,7 +183,7 @@ public interface MessageReplyReceipt : MessageReceipt {
 /**
  * 消息回应支持。
  *
- * 此接口通常标记在一个 [消息事件][love.forte.simbot.event.MessageEvent] 上，代表这个消息能够被 *标记*。
+ * 此接口通常标记在一个 [消息事件][love.forte.simbot.event.MessageEvent] 上，代表这个消息能够被 *回应*。
  *
  * 很多允许频道的平台都会有这个功能，能够标记的内容也应当属于一个 [Message], 不过它们大多数的时候支持的类型有限，
  * 例如 emoji 或者一些自定义表情。
@@ -201,7 +201,7 @@ public interface MessageReactSupport {
     public suspend fun react(message: Message): MessageReactReceipt
 
     @Api4J
-    public fun reactBlocking(message: Message): MessageReactReceipt = runBlocking { react(message) }
+    public fun reactBlocking(message: Message): MessageReactReceipt = runInBlocking { react(message) }
 
 }
 
@@ -217,6 +217,7 @@ public interface MessageReactReceipt : MessageReceipt {
 }
 
 
+//region send
 /**
  * 如果此目标允许发送消息，发送，否则得到null。
  */
@@ -225,11 +226,25 @@ public suspend fun Objectives.sendIfSupport(message: Message): MessageReceipt? =
     if (this is SendSupport) send(message) else null
 
 /**
+ * 如果此目标允许发送消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend inline fun Objectives.sendIfSupport(message: () -> Message): MessageReceipt? =
+    if (this is SendSupport) send(message()) else null
+
+/**
  * 如果此事件允许发送消息，发送，否则得到null。
  */
 @JvmSynthetic
 public suspend fun MessageContainer.sendIfSupport(message: Message): MessageReceipt? =
     if (this is SendSupport) send(message) else null
+
+/**
+ * 如果此事件允许发送消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend inline fun MessageContainer.sendIfSupport(message: () -> Message): MessageReceipt? =
+    if (this is SendSupport) send(message()) else null
 
 /**
  * 如果此目标允许发送消息，发送，否则得到null。
@@ -258,8 +273,10 @@ public suspend fun Objectives.sendIfSupport(message: String): MessageReceipt? =
 @JvmSynthetic
 public suspend fun MessageContainer.sendIfSupport(message: String): MessageReceipt? =
     if (this is SendSupport) send(message) else null
+//endregion
 
 
+//region reply
 /**
  * 如果此目标允许回复消息，发送，否则得到null。
  */
@@ -274,6 +291,21 @@ public suspend fun Objectives.replyIfSupport(message: Message): MessageReplyRece
 @JvmSynthetic
 public suspend fun MessageContainer.replyIfSupport(message: Message): MessageReplyReceipt? =
     if (this is ReplySupport) reply(message) else null
+
+/**
+ * 如果此目标允许回复消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend inline fun Objectives.replyIfSupport(message: () -> Message): MessageReplyReceipt? =
+    if (this is ReplySupport) reply(message()) else null
+
+
+/**
+ * 如果此组织允许回复消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend inline fun MessageContainer.replyIfSupport(message: () -> Message): MessageReplyReceipt? =
+    if (this is ReplySupport) reply(message()) else null
 
 
 /**
@@ -306,8 +338,10 @@ public suspend fun Objectives.replyIfSupport(message: String): MessageReplyRecei
 @JvmSynthetic
 public suspend fun MessageContainer.replyIfSupport(message: String): MessageReplyReceipt? =
     if (this is ReplySupport) reply(message) else null
+//endregion
 
 
+//region react
 /**
  * 如果此目标允许回复标记消息，发送，否则得到null。
  */
@@ -321,6 +355,21 @@ public suspend fun Objectives.reactIfSupport(message: Message): MessageReactRece
 @JvmSynthetic
 public suspend fun MessageContainer.reactIfSupport(message: Message): MessageReactReceipt? =
     if (this is MessageReactSupport) react(message) else null
+
+/**
+ * 如果此目标允许回复标记消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend inline fun Objectives.reactIfSupport(message: () -> Message): MessageReactReceipt? =
+    if (this is MessageReactSupport) react(message()) else null
+
+/**
+ * 如果此事件允许回复标记消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend inline fun MessageContainer.reactIfSupport(message: () -> Message): MessageReactReceipt? =
+    if (this is MessageReactSupport) react(message()) else null
+//endregion
 
 
 /**

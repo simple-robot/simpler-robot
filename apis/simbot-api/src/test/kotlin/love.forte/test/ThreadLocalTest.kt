@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -13,6 +13,7 @@
 package love.forte.test
 
 import kotlinx.coroutines.*
+import love.forte.simbot.utils.runInBlocking
 import org.junit.jupiter.api.DisplayName
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -27,7 +28,7 @@ class ThreadLocalTest {
     @Ignore
     @Test
     @OptIn(ObsoleteCoroutinesApi::class)
-    fun test1() = runBlocking {
+    fun test1() = runInBlocking {
         val dis1 = newFixedThreadPoolContext(4, "dis1")
         val dis2 = newFixedThreadPoolContext(4, "dis2")
         val local = ThreadLocal<String>()

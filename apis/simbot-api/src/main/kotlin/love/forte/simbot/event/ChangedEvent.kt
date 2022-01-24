@@ -12,9 +12,9 @@
 
 package love.forte.simbot.event
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Timestamp
 import love.forte.simbot.message.doSafeCast
+import love.forte.simbot.utils.runInBlocking
 
 /**
  * 一个与 **变更** 有关的事件。
@@ -45,21 +45,21 @@ public interface ChangeEvent<SOURCE, BEFORE, AFTER> : Event {
      */
     public suspend fun source(): SOURCE
 
-    public val source: SOURCE get() = runBlocking { source() }
+    public val source: SOURCE get() = runInBlocking { source() }
 
     /**
      * 变更行为前的内容。
      */
     public suspend fun before(): BEFORE
 
-    public val before: BEFORE get() = runBlocking { before() }
+    public val before: BEFORE get() = runInBlocking { before() }
 
     /**
      * 变更行为后的内容。
      */
     public suspend fun after(): AFTER
 
-    public val after: AFTER get() = runBlocking { after() }
+    public val after: AFTER get() = runInBlocking { after() }
 
 
     public companion object Key : BaseEventKey<ChangeEvent<*, *, *>>("api.change") {

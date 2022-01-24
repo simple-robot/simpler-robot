@@ -24,7 +24,12 @@ import java.util.concurrent.Future
 public interface Survivable : Switchable {
 
     /**
-     * 挂起直到当前实例被 [cancel].
+     * 挂起, 直到当前实例被 [cancel] 或完成.
+     *
+     * Java中考虑使用 [waiting] 或者通过 [toAsync] 得到 [Future] 来更灵活的操作。
+     *
+     * @see waiting
+     * @see toAsync
      */
     @JvmSynthetic
     public suspend fun join()
@@ -44,6 +49,7 @@ public interface Survivable : Switchable {
      *
      */
     @Api4J
+    @Throws(InterruptedException::class)
     public fun waiting() {
         toAsync().get()
     }

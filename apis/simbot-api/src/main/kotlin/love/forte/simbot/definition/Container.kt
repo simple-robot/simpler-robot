@@ -12,9 +12,9 @@
 
 package love.forte.simbot.definition
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
+import love.forte.simbot.utils.runInBlocking
 
 /**
  * 定义一个 **容器**。
@@ -42,7 +42,7 @@ public interface BotContainer : Container {
  */
 public interface ChannelInfoContainer : SuspendablePropertyContainer {
     public suspend fun channel(): ChannelInfo
-    @Api4J public val channel: ChannelInfo get() = runBlocking { channel() }
+    @Api4J public val channel: ChannelInfo get() = runInBlocking { channel() }
 }
 
 /**
@@ -50,7 +50,7 @@ public interface ChannelInfoContainer : SuspendablePropertyContainer {
  */
 public interface GuildInfoContainer : SuspendablePropertyContainer {
     public suspend fun guild(): GuildInfo
-    @Api4J public val guild: GuildInfo get() = runBlocking { guild() }
+    @Api4J public val guild: GuildInfo get() = runInBlocking { guild() }
 }
 
 /**
@@ -58,7 +58,7 @@ public interface GuildInfoContainer : SuspendablePropertyContainer {
  */
 public interface GroupInfoContainer : SuspendablePropertyContainer {
     public suspend fun group(): GroupInfo
-    @Api4J public val group: GroupInfo get() = runBlocking { group() }
+    @Api4J public val group: GroupInfo get() = runInBlocking { group() }
 }
 
 /**
@@ -66,7 +66,7 @@ public interface GroupInfoContainer : SuspendablePropertyContainer {
  */
 public interface UserInfoContainer : SuspendablePropertyContainer {
     public suspend fun user(): UserInfo
-    @Api4J public val user: UserInfo get() = runBlocking { user() }
+    @Api4J public val user: UserInfo get() = runInBlocking { user() }
 }
 
 /**
@@ -74,7 +74,7 @@ public interface UserInfoContainer : SuspendablePropertyContainer {
  */
 public interface MemberInfoContainer : SuspendablePropertyContainer {
     public suspend fun member(): MemberInfo
-    @Api4J public val member: MemberInfo get() = runBlocking { member() }
+    @Api4J public val member: MemberInfo get() = runInBlocking { member() }
 }
 
 /**
@@ -82,6 +82,6 @@ public interface MemberInfoContainer : SuspendablePropertyContainer {
  */
 public interface FriendInfoContainer : SuspendablePropertyContainer {
     public suspend fun friend(): FriendInfo
-    @Api4J public val friend: FriendInfo get() = runBlocking { friend() }
+    @Api4J public val friend: FriendInfo get() = runInBlocking { friend() }
 }
 

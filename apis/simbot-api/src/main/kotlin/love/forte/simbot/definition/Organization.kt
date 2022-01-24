@@ -13,9 +13,9 @@
 package love.forte.simbot.definition
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.*
 import love.forte.simbot.action.MuteSupport
+import love.forte.simbot.utils.runInBlocking
 import java.util.stream.Stream
 import kotlin.time.Duration
 
@@ -107,7 +107,7 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
 
     @Api4J
     public val owner: Member
-        get() = runBlocking { owner() }
+        get() = runInBlocking { owner() }
 
     override val maximumMember: Int
     override val currentMember: Int
@@ -147,6 +147,7 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
     @Api4J
     public fun getChildren(): Stream<out Organization> = getChildren(null, Limiter)
 
+    //region member 列表
     /**
      * 一个组织中，可能存在[成员][members].
      *
@@ -166,6 +167,19 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
 
     @Api4J
     public fun getMembers(): Stream<out Member> = getMembers(null, Limiter)
+    //endregion
+
+
+    //region member 获取
+    /**
+     * 尝试通过ID获取一个成员，无法获取则得到null。
+     */
+    @JvmSynthetic
+    public suspend fun member(id: ID): Member?
+
+    public fun getMember(id: ID): Member? = runInBlocking { member(id) }
+    //endregion
+
 
 
     /**

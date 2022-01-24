@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2021 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
  *  根据 Apache License 2.0 获得许可；
  *  除非遵守许可，否则您不得使用此文件。
@@ -12,9 +12,9 @@
 
 package test
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.event.EventProcessingInterceptor
 import love.forte.simbot.event.EventProcessingResult
+import love.forte.simbot.utils.runInBlocking
 
 /**
  *
@@ -22,7 +22,7 @@ import love.forte.simbot.event.EventProcessingResult
  */
 class InterceptorTest {
     @org.junit.Test
-    fun test(): Unit = runBlocking {
+    fun test(): Unit = runInBlocking {
         val inter1 = TestInterceptor {
             println("inter 1 start")
             it.proceed().also {

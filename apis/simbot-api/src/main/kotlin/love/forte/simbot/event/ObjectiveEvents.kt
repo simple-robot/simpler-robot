@@ -12,11 +12,11 @@
 
 package love.forte.simbot.event
 
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.doSafeCast
+import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -41,7 +41,7 @@ public interface UserEvent : ObjectiveEvent, UserInfoContainer {
     override suspend fun user(): User
 
     @Api4J
-    override val user: User get() = runBlocking { user() }
+    override val user: User get() = runInBlocking { user() }
 
     public companion object Key : BaseEventKey<UserEvent>("api.user") {
         override fun safeCast(value: Any): UserEvent? = doSafeCast(value)
@@ -60,7 +60,7 @@ public interface MemberEvent : UserEvent, MemberInfoContainer {
 
     @Api4J
     override val member: Member
-        get() = runBlocking { member() }
+        get() = runInBlocking { member() }
 
 
     override suspend fun user(): User = member()
@@ -88,7 +88,7 @@ public interface FriendEvent : UserEvent, FriendInfoContainer {
 
     @Api4J
     override val friend: Friend
-        get() = runBlocking { friend() }
+        get() = runInBlocking { friend() }
 
     @Api4J
     override val user: User
@@ -117,7 +117,7 @@ public interface OrganizationEvent : ObjectiveEvent {
 
     @Api4J
     public val organization: Organization
-        get() = runBlocking { organization() }
+        get() = runInBlocking { organization() }
 
     public companion object Key : BaseEventKey<OrganizationEvent>("api.organization") {
         override fun safeCast(value: Any): OrganizationEvent? = doSafeCast(value)
@@ -136,7 +136,7 @@ public interface GroupEvent : OrganizationEvent, GroupInfoContainer {
 
     @Api4J
     override val group: Group
-        get() = runBlocking { group() }
+        get() = runInBlocking { group() }
 
     public companion object Key : BaseEventKey<GroupEvent>("api.group", OrganizationEvent) {
         override fun safeCast(value: Any): GroupEvent? = doSafeCast(value)
@@ -156,7 +156,7 @@ public interface GuildEvent : OrganizationEvent {
 
     @Api4J
     public val guild: Guild
-        get() = runBlocking { guild() }
+        get() = runInBlocking { guild() }
 
     public companion object Key : BaseEventKey<GuildEvent>("api.guild", OrganizationEvent) {
         override fun safeCast(value: Any): GuildEvent? = doSafeCast(value)
@@ -175,7 +175,7 @@ public interface ChannelEvent : OrganizationEvent {
 
     @Api4J
     public val channel: Channel
-        get() = runBlocking { channel() }
+        get() = runInBlocking { channel() }
 
     public companion object Key : BaseEventKey<ChannelEvent>("api.channel", OrganizationEvent) {
         override fun safeCast(value: Any): ChannelEvent? = doSafeCast(value)
