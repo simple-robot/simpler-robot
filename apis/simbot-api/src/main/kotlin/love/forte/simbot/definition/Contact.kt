@@ -42,6 +42,7 @@ public interface Contact : User, SendSupport, BotContainer {
     /**
      * 向此联系目标发送消息。
      */
+    @JvmSynthetic
     override suspend fun send(message: Message): MessageReceipt
 
 }
