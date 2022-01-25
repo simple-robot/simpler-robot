@@ -14,3 +14,146 @@
  *
  *
  */
+
+package love.forte.simboot.annotation
+
+import love.forte.simbot.event.*
+import kotlin.annotation.AnnotationTarget.FUNCTION
+
+/**
+ * @see FriendIncreaseEvent
+ */
+@Target(FUNCTION)
+@Listen(FriendIncreaseEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnFriendIncrease
+
+/**
+ * @see FriendDecreaseEvent
+ */
+@Target(FUNCTION)
+@Listen(FriendDecreaseEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnFriendDecrease
+
+
+/**
+ * @see MemberIncreaseEvent
+ */
+@Target(FUNCTION)
+@Listen(MemberIncreaseEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnMemberIncrease
+
+/**
+ * @see MemberDecreaseEvent
+ */
+@Target(FUNCTION)
+@Listen(MemberDecreaseEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnMemberDecrease
+
+
+/**
+ * @see ContactMessageEvent
+ */
+@Target(FUNCTION)
+@Listen(ContactMessageEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnContactMessage
+
+/**
+ * @see FriendMessageEvent
+ */
+@Target(FUNCTION)
+@Listen(FriendMessageEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnFriendMessage
+
+/**
+ * @see ChatroomMessageEvent
+ */
+@Target(FUNCTION)
+@Listen(ChatroomMessageEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnChatroomMessage
+
+/**
+ * @see GroupMessageEvent
+ */
+@Target(FUNCTION)
+@Listen(GroupMessageEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnGroupMessage
+
+/**
+ * @see ChannelMessageEvent
+ */
+@Target(FUNCTION)
+@Listen(ChannelMessageEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnChannelMessage
+
+/**
+ * @see MessageReactedEvent
+ */
+@Target(FUNCTION)
+@Listen(MessageReactedEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnMessageReacted
+
+
+/**
+ * @see JoinRequestEvent
+ */
+@Target(FUNCTION)
+@Listen(JoinRequestEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnJoinRequest
+
+/**
+ * @see GuildJoinRequestEvent
+ */
+@Target(FUNCTION)
+@Listen(GuildJoinRequestEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnGuildJoinRequest
+
+/**
+ * @see GroupJoinRequestEvent
+ */
+@Target(FUNCTION)
+@Listen(GroupJoinRequestEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnGroupJoinRequest
+
+/**
+ * @see ChannelRequestEvent
+ */
+@Target(FUNCTION)
+@Listen(ChannelRequestEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnChannelRequest
+
+/**
+ * @see FriendAddRequestEvent
+ */
+@Target(FUNCTION)
+@Listen(FriendAddRequestEvent::class)
+@MustBeDocumented
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
+public annotation class OnFriendAddRequest
