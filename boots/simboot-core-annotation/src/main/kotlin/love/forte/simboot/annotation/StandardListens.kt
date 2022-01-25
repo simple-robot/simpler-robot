@@ -14,37 +14,3 @@
  *
  *
  */
-
-package love.forte.simboot.annotation
-
-import love.forte.simbot.event.*
-
-
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
-@MustBeDocumented
-@Listen(FriendEvent::class)
-public annotation class OnFriend
-
-
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
-@MustBeDocumented
-@Listen(GroupMessageEvent::class)
-public annotation class OnGroup
-
-
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
-@MustBeDocumented
-@Listen(ChannelMessageEvent::class)
-public annotation class OnChannel
-
-
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
-@MustBeDocumented
-@Listen(GuildEvent::class)
-public annotation class OnGuild
-
-
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
-@MustBeDocumented
-@Listen(MessageEvent::class)
-public annotation class OnMessage
