@@ -50,6 +50,7 @@ public interface SendSupport {
      * @throws SimbotIllegalStateException 如果当前状态存在异常
      *
      */
+    @JvmSynthetic
     public suspend fun send(message: Message): MessageReceipt
 
 
@@ -69,6 +70,7 @@ public interface SendSupport {
      * @throws SimbotIllegalStateException 如果当前状态存在异常
      *
      */
+    @JvmSynthetic
     public suspend fun send(message: MessageContent): MessageReceipt = send(message.messages)
 
 
@@ -84,6 +86,7 @@ public interface SendSupport {
      * 发送一段纯文本消息。
      * @see send
      */
+    @JvmSynthetic
     public suspend fun send(text: String): MessageReceipt = send(Text.of(text))
 
     /**
