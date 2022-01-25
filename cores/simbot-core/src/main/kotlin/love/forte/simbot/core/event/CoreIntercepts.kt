@@ -17,36 +17,11 @@
 
 @file:JvmName("CoreInterceptUtil")
 @file:JvmMultifileClass
+
 package love.forte.simbot.core.event
 
 import love.forte.simbot.event.*
 
-//
-// /**
-//  * 构建一个独立的监听函数拦截器。
-//  *
-//  */
-// @JvmSynthetic
-// public fun coreListenerIntercept(
-//     id: ID = UUID.randomUUID().ID,
-//     priority: Int = PriorityConstant.NORMAL,
-//     interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
-// ): EventListenerInterceptor {
-//     return CoreFunctionalEventListenerInterceptor(
-//         id, priority, interceptFunction
-//     )
-// }
-//
-// /**
-//  * @see coreListenerIntercept
-//  */
-// @JvmOverloads
-// @JvmName("coreListenerIntercept")
-// public fun coreListenerIntercept4J(
-//     id: ID = UUID.randomUUID().ID,
-//     priority: Int = PriorityConstant.NORMAL,
-//     interceptFunction: (EventListenerInterceptor.Context) -> EventResult
-// ): EventListenerInterceptor = coreListenerIntercept(id, priority, interceptFunction)
 
 /**
  * 为当前监听函数组合一套拦截器。
@@ -65,12 +40,13 @@ public operator fun EventListener.plus(interceptors: Collection<EventListenerInt
 
 
 internal class EventListenerWithInterceptor(
-    listener: EventListener,
+    private val listener: EventListener,
     interceptors: Collection<EventListenerInterceptor>
 ) : EventListener by listener {
     private val entrance = EventListenerIteratorInterceptEntrance(listener, interceptors)
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         return entrance.doIntercept(context)
     }
+
 }
 

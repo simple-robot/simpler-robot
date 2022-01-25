@@ -22,6 +22,7 @@ import love.forte.simboot.listener.ParameterBinder
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.listener.ParameterBinderResult
 import love.forte.simbot.Attribute
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerProcessingContext
@@ -35,6 +36,8 @@ import kotlin.reflect.full.isSubclassOf
  *
  */
 public object EventParameterBinderFactory : ParameterBinderFactory {
+
+    @OptIn(ExperimentalSimbotApi::class)
     override fun resolveToBinder(context: ParameterBinderFactory.Context): ParameterBinderResult {
         val type = context.parameter.type
         val classifier = type.classifier as? KClass<*> ?: return ParameterBinderResult.empty()
@@ -69,6 +72,8 @@ public object EventParameterBinderFactory : ParameterBinderFactory {
             classifier.isSubclassOf(EventProcessingContext.Scope.Global.type) -> {
                 return ParameterBinderResult.normal(attributeBinder(nullable, EventProcessingContext.Scope.Global) { "Scope [Global] in current context is null." } )
             }
+
+
             classifier.isSubclassOf(EventProcessingContext.Scope.ContinuousSession.type) -> {
                 return ParameterBinderResult.normal(attributeBinder(nullable, EventProcessingContext.Scope.ContinuousSession) { "Scope [ContinuousSession] in current context is null." } )
             }

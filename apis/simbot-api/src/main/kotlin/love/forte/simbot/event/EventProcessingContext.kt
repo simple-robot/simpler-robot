@@ -17,10 +17,7 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.Attribute
-import love.forte.simbot.AttributeContainer
-import love.forte.simbot.MutableAttributeMap
-import love.forte.simbot.attribute
+import love.forte.simbot.*
 import org.jetbrains.annotations.UnmodifiableView
 import kotlin.coroutines.CoroutineContext
 
@@ -65,6 +62,7 @@ public interface EventProcessingContext : CoroutineContext.Element, AttributeCon
          * 持续会话作用域. 可以通过持续会话作用域来达成监听函数之间的信息通讯的目的。
          */
         @JvmField
+        @ExperimentalSimbotApi
         public val ContinuousSession = attribute<ContinuousSessionContext>("context.scope.continuous.session")
 
 

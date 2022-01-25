@@ -19,16 +19,18 @@ package love.forte.simbot.core.event
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.ID
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.event.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Future
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.time.Duration.Companion.milliseconds
 
-
+@ExperimentalSimbotApi
 internal class CoreContinuousSessionContext(
     override val coroutineScope: CoroutineScope,
     private val manager: ResumedListenerManager
@@ -46,17 +48,20 @@ internal class CoreContinuousSessionContext(
     ) {
         val deferred = CompletableDeferred<T>() // use this for hook
         val receiver = deferred.asSession(continuation)
-        continuation.invokeOnCancellation(receiver::cancel) // continuation.invokeOnCancellation must only here
         val provider = continuation.asSession(deferred)
+
+        // continuation.invokeOnCancellation { e ->
+        //     deferred.cancel(e?.let { CancellationException(it.localizedMessage, it) })
+        // }
+
 
         manager.set(id, listener, provider, receiver)
 
         if (timeout > 0) {
             val timeoutJob = coroutineScope.launch(start = CoroutineStart.LAZY) {
                 delay(timeout)
-                logger.trace("Session {} timeout", id)
+                logger.debug("Session 「{}」 timeout", id)
                 @Suppress("ThrowableNotThrown")
-                // session [abc] 因5秒的时限超时了。
                 provider.pushException(ContinuousSessionTimeoutException("Session [$id] has timed out due to the ${timeout.milliseconds} time limit."))
             }
             deferred.invokeOnCompletion { timeoutJob.cancel() }
@@ -82,25 +87,23 @@ internal class CoreContinuousSessionContext(
     }
 
 
-    override fun <T> waiting(id: ID, timeout: Long, listener: ResumeListener<T>): ContinuousSessionReceiver<T> {
-        return coroutineScope.async {
-            waitingFor(id, timeout, listener)
-        }.asSession()
-    }
-
-
-    override fun <E : Event, T> waiting(
-        id: ID,
-        timeout: Long,
-        eventKey: Event.Key<E>,
-        listener: ClearTargetResumeListener<E, T>
-    ): ContinuousSessionReceiver<T> = waiting(id, timeout) { c, p ->
-        if (c.event.key isSubFrom eventKey) {
-            eventKey.safeCast(c.event)?.also { event ->
-                listener(event, c, p)
-            }
-        }
-    }
+    // override fun <T> waiting(id: ID, timeout: Long, listener: ResumeListener<T>): ContinuousSessionReceiver<T> {
+    //     return coroutineScope.async {
+    //         waitingFor(id, timeout, listener)
+    //     }.asSession()
+    // }
+    // override fun <E : Event, T> waiting(
+    //     id: ID,
+    //     timeout: Long,
+    //     eventKey: Event.Key<E>,
+    //     listener: ClearTargetResumeListener<E, T>
+    // ): ContinuousSessionReceiver<T> = waiting(id, timeout) { c, p ->
+    //     if (c.event.key isSubFrom eventKey) {
+    //         eventKey.safeCast(c.event)?.also { event ->
+    //             listener(event, c, p)
+    //         }
+    //     }
+    // }
 
     override fun <T> getProvider(id: ID): ContinuousSessionProvider<T>? {
         return manager.getProvider(id)
@@ -119,18 +122,21 @@ internal class CoreContinuousSessionReceiver<T>(
     private val continuation: CancellableContinuation<T>?,
     private val deferred: Deferred<T>
 ) : ContinuousSessionReceiver<T> {
+    private val compiled = AtomicBoolean(deferred.isCompleted)
+
+    init {
+        deferred.invokeOnCompletion {
+            compiled.compareAndSet(false, true)
+        }
+    }
+
     override suspend fun await(): T = deferred.await()
 
     override fun cancel(reason: Throwable?) {
-        continuation?.cancel(reason)
-        deferred.cancel(reason?.let { CancellationException(it.localizedMessage, it) })
-    }
-
-    override fun tryCancel(reason: Throwable?): Boolean {
-        if (continuation != null && (continuation.isCompleted || continuation.isCancelled)) return false
-        if (deferred.isCompleted || deferred.isCancelled) return false
-        cancel(reason)
-        return true
+        if (compiled.compareAndSet(false, true)) {
+            continuation?.cancel(reason)
+            deferred.cancel(reason?.let { CancellationException(it.localizedMessage, it) })
+        }
     }
 
     override fun asFuture(): Future<T> = deferred.asCompletableFuture()
@@ -144,19 +150,31 @@ internal class CoreContinuousSessionProvider<T>(
     private val continuation: CancellableContinuation<T>,
     private val deferred: CompletableDeferred<T>
 ) : ContinuousSessionProvider<T> {
+
+    private val completed = AtomicBoolean(continuation.isCompleted)
+
     override fun push(value: T) {
-        continuation.resume(value)
-        deferred.complete(value)
+        if (completed.compareAndSet(false, true)) {
+            println("continuation resume($value)")
+            continuation.resume(value)
+            println("deferred complete($value)")
+            deferred.complete(value)
+        }
     }
 
     override fun pushException(e: Throwable) {
-        continuation.resumeWithException(e)
-        deferred.completeExceptionally(e)
+        if (completed.compareAndSet(false, true)) {
+            continuation.resumeWithException(e)
+            deferred.completeExceptionally(e)
+        }
+
     }
 
     override fun cancel(reason: Throwable?) {
-        continuation.cancel(reason)
-        deferred.cancel(reason?.let { CancellationException(reason.localizedMessage, reason) })
+        if (completed.compareAndSet(false, true)) {
+            continuation.cancel(reason)
+            deferred.cancel(reason?.let { CancellationException(reason.localizedMessage, reason) })
+        }
     }
 
     override fun invokeOnCompletion(handler: CompletionHandler) {
@@ -164,7 +182,7 @@ internal class CoreContinuousSessionProvider<T>(
     }
 
     override val isCompleted: Boolean
-        get() = continuation.isCompleted
+        get() = completed.get() //continuation.isCompleted
 }
 
 
@@ -174,7 +192,9 @@ internal data class WaitingListener<T>(
     val receiver: CoreContinuousSessionReceiver<T>
 ) {
     suspend operator fun invoke(context: EventProcessingContext) {
-        listener(context, provider)
+        if (!provider.isCompleted) {
+            listener(context, provider)
+        }
     }
 }
 
@@ -197,6 +217,7 @@ internal class ResumedListenerManager {
         val cid = id.toString()
         val current = WaitingListener(listener, provider, receiver)
         listeners.merge(cid, current) { old, now ->
+            logger.debug("Merge waiting listener with save id {}", cid)
             old.provider.cancel(CancellationException("Replaced by the same ID listener. id = $cid"))
             now
         }
@@ -222,11 +243,17 @@ internal class ResumedListenerManager {
         listeners.forEach { (id, listener) ->
             scope.launch {
                 try {
-                    logger.debug("Launch resumed listener: {} of id {}", listener, id)
+                    logger.debug("Launch resumed listener: {} of id {} by event {}", listener, id, context.event)
                     listener(context)
                 } catch (e: Throwable) {
-                    // TODO process exception?
-                    logger.error("ResumedListener(id=$id) invoke failed: ${e.localizedMessage}", e)
+                    if (e is CancellationException) {
+                        if (logger.isDebugEnabled) {
+                            logger.debug("ResumeListener(id=$id) invoke failed: ${e.localizedMessage}", e)
+                        }
+                    } else {
+                        // TODO process exception?
+                        logger.error("ResumedListener(id=$id) invoke failed: ${e.localizedMessage}", e)
+                    }
                 }
             }
         }
