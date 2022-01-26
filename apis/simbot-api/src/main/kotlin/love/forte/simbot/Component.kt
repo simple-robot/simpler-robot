@@ -21,6 +21,7 @@ import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.Components.find
 import love.forte.simbot.Components.get
 import love.forte.simbot.definition.Container
+import love.forte.simbot.definition.IDContainer
 import love.forte.simbot.message.Messages
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -95,11 +96,20 @@ public object SimbotComponent : Component() {
     override fun hashCode(): Int = 0
     override fun contains(scope: Scope): Boolean = scope is Component
 
-    private object SimbotAttributes : AttributeMap by AttributeMutableMap(mutableMapOf(
-        ComponentAttributes.authors to Authors(Author(
-            id = "ForteScarlet".ID, name = "ForteScarlet", email = "ForteScarlet@163.com", url = "forte.love", roles = listOf("developer"), timezone = 8
-        ))
-    ))
+    private object SimbotAttributes : AttributeMap by AttributeMutableMap(
+        mutableMapOf(
+            ComponentAttributes.authors to Authors(
+                Author(
+                    id = "ForteScarlet".ID,
+                    name = "ForteScarlet",
+                    email = "ForteScarlet@163.com",
+                    url = "forte.love",
+                    roles = listOf("developer"),
+                    timezone = 8
+                )
+            )
+        )
+    )
 
 }
 
@@ -193,7 +203,6 @@ public object Components {
     }
 
 
-
     /**
      * 创建一个对应 [id] 的 [Component] 并记录。如果 [Component] 已经存在，则抛出 [ComponentAlreadyExistsException].
      *
@@ -236,7 +245,8 @@ public object Components {
 
 
     @Suppress("MemberVisibilityCanBePrivate")
-    public val all: Sequence<Component> get() = comps.values.asSequence()
+    public val all: Sequence<Component>
+        get() = comps.values.asSequence()
 
     @Api4J
     public fun all(): Stream<Component> = all.asStream()
@@ -313,13 +323,13 @@ public interface ComponentInformationRegistrar {
 /**
  * 通过 Java SPI 注册一个组件。
  */
-public interface ComponentInformation {
+public interface ComponentInformation : IDContainer {
 
     /**
      * 组件ID。一般建议用类似全限定名称来定义。
      *
      */
-    public val id: ID
+    override val id: ID
 
     /**
      * 组件名称。

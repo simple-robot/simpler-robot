@@ -172,12 +172,12 @@ private class PermissionStatusImpl(val status: BitSet) : PermissionStatus {
 /**
  * 一个**权限**信息，通常 存在于 [Role] 并使用在 [Organization] 与 [Member] 中，为组织和其成员限定权限。
  */
-public interface Permission {
+public interface Permission : IDContainer {
 
     /**
      * 权限
      */
-    public val id: ID
+    override val id: ID
 
 
     /**
@@ -195,11 +195,11 @@ public interface Permission {
  * 一个角色可能包含多重 "权限".
  *
  */
-public interface Role {
+public interface Role : IDContainer {
     /**
      * 这个角色的ID
      */
-    public val id: ID
+    override val id: ID
 
     /**
      * 这个角色的名称。

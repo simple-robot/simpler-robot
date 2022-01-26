@@ -18,6 +18,7 @@
 package love.forte.simbot
 
 import kotlinx.serialization.Serializable
+import love.forte.simbot.definition.IDContainer
 
 
 /**
@@ -28,12 +29,12 @@ import kotlinx.serialization.Serializable
  *
  * @author ForteScarlet
  */
-public interface Scope {
+public interface Scope : IDContainer {
 
     /**
      * 作用域的标识。
      */
-    public val id: ID
+    override val id: ID
 
     /**
      * 作用域的名称。
