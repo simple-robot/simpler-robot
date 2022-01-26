@@ -23,28 +23,33 @@ import love.forte.simbot.event.*
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(FriendEvent::class)
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
 public annotation class OnFriend
 
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GroupMessageEvent::class)
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
 public annotation class OnGroup
 
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(ChannelMessageEvent::class)
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
 public annotation class OnChannel
 
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(GuildEvent::class)
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
 public annotation class OnGuild
 
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 @Listen(MessageEvent::class)
+@Deprecated("使用@Listen及其衍生注解意义不大, 考虑直接使用参数作为监听类型。")
 public annotation class OnMessage

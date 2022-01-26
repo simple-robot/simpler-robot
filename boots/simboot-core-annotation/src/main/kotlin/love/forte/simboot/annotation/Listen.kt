@@ -26,6 +26,10 @@ import kotlin.reflect.KClass
  * 需要在标记 [Listener] 的情况下使用 [Listen]. 当标记 [Listen] 后，
  * 不会再自动判定类型。
  *
+ * 更推荐使用 [Listener] 配合监听类型参数的形式，[Listen] 的必要性已经不大了。
+ * 未来可能会考虑移除 [Listen] 和 [Listens].
+ *
+ *
  * @property value 事件类型。指定的事件必须存在一个实现了 [Event.Key] 的伴生对象，否则此事件将会被视为不可监听并抛出异常。
  *
  * @see love.forte.simbot.event.Event
