@@ -19,6 +19,7 @@ package love.forte.simbot.definition
 
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
+import love.forte.simbot.ID
 import love.forte.simbot.utils.runInBlocking
 
 /**
@@ -32,6 +33,18 @@ public interface Container
  * 标记这是一个可能同时存在 suspend property 和 普通api 的容器。
  */
 public interface SuspendablePropertyContainer : Container
+
+
+/**
+ * 一个存在唯一标识的容器。
+ */
+public interface IDContainer : Container {
+
+    /**
+     * 容器中的唯一标识。
+     */
+    public val id: ID
+}
 
 /**
  * 一个 **Bot容器**.

@@ -27,12 +27,12 @@ import java.util.*
  *
  * @author ForteScarlet
  */
-public interface UserInfo {
+public interface UserInfo : IDContainer {
 
     /**
      * 此用户的ID。
      */
-    public val id: ID
+    override val id: ID
 
     /**
      * 这个账号的用户名。

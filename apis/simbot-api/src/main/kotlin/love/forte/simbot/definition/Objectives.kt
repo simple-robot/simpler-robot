@@ -36,14 +36,14 @@ import love.forte.simbot.utils.runInBlocking
  *
  * @author ForteScarlet
  */
-public sealed interface Objectives : BotContainer {
+public sealed interface Objectives : BotContainer, IDContainer {
 
     /**
      * 当前对象对应的唯一ID。
      *
      * @see ID
      */
-    public val id: ID
+    override val id: ID
 
     /**
      * 当前 [Objectives] 来自的bot。
