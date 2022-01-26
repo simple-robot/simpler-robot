@@ -26,7 +26,7 @@ import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.utils.runInBlocking
 
 /**
- * [Objectives] 是对与 [Bot] 相关联的对象 （一个[组织][Organization] 或一个具体的[用户][User]） 的统称。
+ * [Objectives] 是对与 [Bot] 相关联的对象 （一个[组织][Organization]或一个具体的[用户][User]） 的统称。
  *
  * 不论 [组织][Organization] 还是 [用户][User]，它们均来自一个 [Bot].
  *
