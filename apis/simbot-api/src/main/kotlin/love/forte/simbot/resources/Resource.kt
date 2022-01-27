@@ -29,6 +29,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.ID
+import love.forte.simbot.definition.IDContainer
 import java.io.*
 import java.net.URL
 import java.nio.file.Files
@@ -128,8 +129,8 @@ public sealed class Resource {
 @Serializable
 public open class IDResource(
     @Serializable(ID.AsCharSequenceIDSerializer::class)
-    public open val id: ID, override val name: String
-) : Resource() {
+    public override val id: ID, override val name: String
+) : Resource(), IDContainer {
     override fun toString(): String {
         return "Resource(id=$id, name=$name)"
     }
