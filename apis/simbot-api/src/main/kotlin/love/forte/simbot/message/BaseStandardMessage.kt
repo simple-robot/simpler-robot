@@ -22,6 +22,7 @@ import kotlinx.serialization.Serializable
 import love.forte.simbot.Component
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotComponent
+import love.forte.simbot.definition.IDContainer
 import love.forte.simbot.message.Text.Key.getEmptyText
 import love.forte.simbot.message.Text.Key.of
 import love.forte.simbot.resources.Resource
@@ -187,14 +188,14 @@ public object AtAll : BaseStandardMessage<AtAll>(), Message.Key<AtAll> {
  * 因此 [Image] 需要通过 [love.forte.simbot.Bot] 进行上传获取。
  *
  */
-public interface Image<E : Image<E>> : StandardMessage<E> {
+public interface Image<E : Image<E>> : StandardMessage<E>, IDContainer {
     /**
      * 上传后的图片会有一个服务端返回的ID。
      *
      * 根据以往的经验，相同图片所上传得到的结果并不100%是相同的。
      *
      */
-    public val id: ID
+    override val id: ID
 
 
     /**
@@ -259,14 +260,14 @@ public data class Face(
 /**
  * [RemoteResource] 代表一个携带 [url] 信息的远程资源。常见为文件或图片等形式。
  */
-public interface RemoteResource<E : RemoteResource<E>> : StandardMessage<E> {
+public interface RemoteResource<E : RemoteResource<E>> : StandardMessage<E>, IDContainer {
 
     /**
      * 对于一个资源，应当又一个对应的唯一ID。
      *
      * 在一些没有的场景下，id可能是 [url] 本身，或是一个固定值。
      */
-    public val id: ID
+    override val id: ID
 
     /**
      * 此资源的URL地址。

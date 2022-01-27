@@ -20,6 +20,7 @@ package love.forte.simbot.message
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.action.DeleteSupport
+import love.forte.simbot.definition.IDContainer
 import love.forte.simbot.utils.runInBlocking
 
 
@@ -27,12 +28,12 @@ import love.forte.simbot.utils.runInBlocking
  * 消息回执，当消息发出去后所得到的回执信息。
  * @author ForteScarlet
  */
-public interface MessageReceipt {
+public interface MessageReceipt : IDContainer {
 
     /**
      * 一个消息回执中存在一个ID.
      */
-    public val id: ID
+    override val id: ID
 
     /**
      * 消息是否发送成功。此属性的 `false` 一般代表在排除其他所有的 **异常情况** 下，在正常流程中依然发送失败（例如发送的消息是空的）。

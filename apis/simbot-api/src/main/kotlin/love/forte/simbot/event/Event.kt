@@ -21,6 +21,7 @@ package love.forte.simbot.event
 import kotlinx.serialization.Serializable
 import love.forte.simbot.*
 import love.forte.simbot.definition.BotContainer
+import love.forte.simbot.definition.IDContainer
 import love.forte.simbot.event.Event.Key.Companion.getKey
 import love.forte.simbot.message.doSafeCast
 import java.util.concurrent.ConcurrentHashMap
@@ -54,9 +55,9 @@ import kotlin.reflect.safeCast
  * @see Event.Key
  * @author ForteScarlet
  */
-public interface Event : BotContainer {
+public interface Event : BotContainer, IDContainer {
 
-    public val id: ID get() = metadata.id
+    override val id: ID get() = metadata.id
 
     /**
      * 与这个事件有关系的 [Bot].
@@ -255,9 +256,9 @@ public interface Event : BotContainer {
      *
      * [元数据][Metadata]应能够支持[序列化][Serializable].
      */
-    public interface Metadata {
+    public interface Metadata : IDContainer {
         /** 元数据唯一标识。 */
-        public val id: ID
+        override val id: ID
     }
 
 

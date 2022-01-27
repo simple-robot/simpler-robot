@@ -26,7 +26,7 @@ import love.forte.simbot.message.MessageReceipt
 import love.forte.simbot.utils.runInBlocking
 
 /**
- * [Objectives] 是对与 [Bot] 相关联的对象 （一个[组织][Organization] 或一个具体的[用户][User]） 的统称。
+ * [Objectives] 是对与 [Bot] 相关联的对象 （一个[组织][Organization]或一个具体的[用户][User]） 的统称。
  *
  * 不论 [组织][Organization] 还是 [用户][User]，它们均来自一个 [Bot].
  *
@@ -36,14 +36,14 @@ import love.forte.simbot.utils.runInBlocking
  *
  * @author ForteScarlet
  */
-public sealed interface Objectives : BotContainer {
+public sealed interface Objectives : BotContainer, IDContainer {
 
     /**
      * 当前对象对应的唯一ID。
      *
      * @see ID
      */
-    public val id: ID
+    override val id: ID
 
     /**
      * 当前 [Objectives] 来自的bot。
