@@ -124,6 +124,7 @@ public sealed class Resource {
  *
  * [IDResource] 通常情况下用于作为参数提供者来提供一个资源的标识，并由接受者来自行处理。
  *
+ * @see Resource.of
  */
 @SerialName("simbot.resource.id")
 @Serializable
@@ -145,6 +146,7 @@ public open class IDResource(
  * [StreamableResource] 实现 [Closeable],
  * 一个被 close 的 [StreamableResource] 将不应再继续使用，但是 [StreamableResource.close] 不会影响到已经产生的流对象。
  *
+ * @see Resource.of
  */
 @SerialName("simbot.resource.streamable")
 @Serializable
@@ -152,6 +154,13 @@ public sealed class StreamableResource : Resource(), Closeable {
     @Throws(IOException::class)
     public abstract fun openStream(): InputStream
 
+    /**
+     * [StreamableResource] 在使用的过程中可能会产生一些需要手动进行 [close] 的产物，
+     * 因此在不使用 [StreamableResource] 的时候，使用 [close] 对其进行关闭。
+     *
+     * @throws IOException
+     */
+    @Throws(IOException::class)
     abstract override fun close()
 }
 
@@ -215,6 +224,7 @@ public class FileResource(
         return "Resource(file=$file, name=$name)"
     }
 
+    @JvmOverloads
     public fun randomAccessFile(mode: String = "r"): RandomAccessFile = RandomAccessFile(file, mode)
 
     override fun close() {
@@ -293,7 +303,12 @@ public class ByteArrayResource(override val name: String, private val byteArray:
      * 将当前资源中字节数组拷贝到目标数组中。
      */
     @JvmOverloads
-    public fun copyTo(destination: ByteArray, destinationOffset: Int = 0, startIndex: Int = 0, endIndex: Int = byteArray.size) {
+    public fun copyTo(
+        destination: ByteArray,
+        destinationOffset: Int = 0,
+        startIndex: Int = 0,
+        endIndex: Int = byteArray.size
+    ) {
         byteArray.copyInto(destination, destinationOffset, startIndex, endIndex)
     }
 
@@ -320,6 +335,7 @@ public class ByteArrayResource(override val name: String, private val byteArray:
     }
 
     override fun close() {
+        // Nothing
     }
 }
 
