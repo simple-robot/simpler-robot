@@ -31,6 +31,9 @@ import love.forte.simbot.message.doSafeCast
  *
  * 内部事件应当是一个独立的事件体系，不能继承任何非内部事件的其他事件。
  *
+ *
+ * 内部事件的实现由组件决定，无法保证每个组件都会对所有的内部事件提供相应的推送。
+ *
  * @author ForteScarlet
  */
 public abstract class InternalEvent : Event {

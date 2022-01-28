@@ -17,11 +17,33 @@
 
 package love.forte.simbot.event.internal
 
+import love.forte.simbot.Bot
+import love.forte.simbot.definition.BotContainer
+
+
+/**
+ * 与 [Bot] 相关的内部流转事件。
+ *
+ * @author ForteScarlet
+ */
+public abstract class InternalBotEvent : InternalEvent()
+
+
+/**
+ * 一个被注册的bot。只要被注册就应触发。
+ *
+ * @author ForteScarlet
+ */
+public abstract class BotRegisteredEvent : InternalEvent(), BotContainer {
+    abstract override val bot: Bot
+}
+
 /**
  *
  * 某个Bot执行了 [Bot.start]
  *
  * @author ForteScarlet
  */
-public abstract class BotStartEvent : InternalEvent() {
+public abstract class BotStartedEvent : InternalEvent(), BotContainer {
+    abstract override val bot: Bot
 }
