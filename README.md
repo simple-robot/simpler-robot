@@ -54,7 +54,7 @@
 <br>
 <br>
 
-3.x版本正在孵化中，有兴趣可参考分支 [v3.0.0-preview](https://github.com/ForteScarlet/simpler-robot/tree/dev-v3.0.0-preview)
+3.x版本正在孵化中，有兴趣可参考分支 [v3-dev](https://github.com/ForteScarlet/simpler-robot/tree/v3-dev)
 
 <br>
 <br>
