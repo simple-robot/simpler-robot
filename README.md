@@ -131,13 +131,13 @@ implementation "love.forte.simbot:simbot-core:$simbotVersion"
 
 ## 走马观花
 
-#### 事件监听
+### 事件监听
 
 > 下述以 simbot-boot模块中的注解监听形式为例
 
 ```kotlin
 @Listener
-suspend fun GroupMessageEvent.listener() {
+suspend fun GroupMessageEvent.listen() {
     println("事件来源群: ${group().name}")
     replyIfSupport { "你好！" }
 }
@@ -146,15 +146,16 @@ suspend fun GroupMessageEvent.listener() {
 ```kotlin
 @Filter("你好")
 @Listener
-suspend fun FriendMessageEvent.listener() {
+suspend fun FriendMessageEvent.listen() {
     friend().send("你也好")
 }
 ```
 
-#### 对象获取
+### 对象获取
 
 ```kotlin
-suspend fun GuildMessageEvent.listener() {
+@Listener
+suspend fun GuildMessageEvent.listen() {
     // 频道的所有子频道
     val channels: Flow<Channel> = children()
     // bot的所有好友
@@ -165,6 +166,49 @@ suspend fun GuildMessageEvent.listener() {
     val groupId = group.id
     val groupName = group.name
     val groupIcon = group.icon
+}
+```
+
+### 延时发送/动态参数
+
+```kotlin
+@Filter("我叫{{name}}")
+@Listener
+suspend fun FriendMessageEvent.listen(@FilterValue("name") name: String) {
+    val friend = friend()
+    bot.launch {
+        delay(3000)
+        friend.send("Hello, $name")
+    }
+}
+```
+
+### 特殊消息
+
+#### 上传并发送图片
+
+```kotlin
+@Listener
+suspend fun FriendMessageEvent.listen() {
+    val img = Path("img/example.png")
+    val imgResource = Resource.of(img)
+
+    val imgForSend = bot.uploadImage(imgResource)
+
+    // send img to friend
+    friend().send(imgForSend)
+}
+```
+
+#### 群里at + 文本
+
+```kotlin
+@Listener
+suspend fun GroupMessageEvent.listen() {
+    val authorId = author().id
+    val at = At(authorId)
+
+    group().send(at + Text { "你好?" })
 }
 ```
 
