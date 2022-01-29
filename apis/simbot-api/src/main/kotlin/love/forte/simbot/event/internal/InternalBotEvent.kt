@@ -28,7 +28,7 @@ import love.forte.simbot.message.doSafeCast
  * @author ForteScarlet
  */
 public abstract class InternalBotEvent : InternalEvent() {
-    public companion object Key : BaseInternalKey<InternalBotEvent>("internal.bot", InternalEvent) {
+    public companion object Key : BaseInternalKey<InternalBotEvent>("api.internal.bot", InternalEvent) {
         override fun safeCast(value: Any): InternalBotEvent? = doSafeCast(value)
     }
 }
@@ -42,7 +42,7 @@ public abstract class InternalBotEvent : InternalEvent() {
 public abstract class BotRegisteredEvent : InternalEvent(), BotContainer {
     abstract override val bot: Bot
 
-    public companion object Key : BaseInternalKey<BotRegisteredEvent>("internal.bot.registered", InternalBotEvent) {
+    public companion object Key : BaseInternalKey<BotRegisteredEvent>("api.internal.bot.registered", InternalBotEvent) {
         override fun safeCast(value: Any): BotRegisteredEvent? = doSafeCast(value)
     }
 }
@@ -56,7 +56,7 @@ public abstract class BotRegisteredEvent : InternalEvent(), BotContainer {
 public abstract class BotStartedEvent : InternalEvent(), BotContainer {
     abstract override val bot: Bot
 
-    public companion object Key : BaseInternalKey<BotStartedEvent>("internal.bot.started", InternalBotEvent) {
+    public companion object Key : BaseInternalKey<BotStartedEvent>("api.internal.bot.started", InternalBotEvent) {
         override fun safeCast(value: Any): BotStartedEvent? = doSafeCast(value)
     }
 }
