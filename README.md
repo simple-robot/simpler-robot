@@ -5,8 +5,7 @@
         - simply-robot -
     </h2>
     <small>
-        ~ <span style="color: #b8fcc7">simbot</span> 
-<span style="color: #58ad93">v3</span> ~      
+        ~ simbot v3 ~      
 </small>
 <br>
     <span>
