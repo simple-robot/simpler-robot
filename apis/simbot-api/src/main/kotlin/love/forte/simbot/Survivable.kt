@@ -18,6 +18,7 @@
 package love.forte.simbot
 
 import kotlinx.coroutines.CompletionHandler
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
@@ -45,18 +46,14 @@ public interface Survivable : Switchable {
     public fun invokeOnCompletion(handler: CompletionHandler)
 
     /**
-     * 通过 [toAsync] 并使用 [get] 来进行阻塞等待。
+     * 阻塞当前线程并等待 [join] 的挂起结束。
      *
-     * 通过 [invokeOnCompletion] 实现线程终止，因此如果实现者不支持 [invokeOnCompletion],
-     * 需要考虑重写此方法以提供更优解。
-     *
-     * 你应当在主线程等与调度无关的线程进行此操作。
+     * 应当谨慎使用会造成阻塞的api，且在Kotlin中避免使用。
      *
      */
     @Api4J
-    @Throws(InterruptedException::class)
     public fun waiting() {
-        toAsync().get()
+        runBlocking { join() }
     }
 
     /**

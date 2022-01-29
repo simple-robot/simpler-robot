@@ -16,6 +16,7 @@
  */
 
 import kotlinx.coroutines.*
+import java.util.concurrent.TimeUnit
 
 /*
  *  Copyright (c) 2022 ForteScarlet <https://github.com/ForteScarlet>
@@ -31,19 +32,32 @@ import kotlinx.coroutines.*
 
 @OptIn(ObsoleteCoroutinesApi::class)
 suspend fun main() {
+
+}
+
+public object Run {
     val j = SupervisorJob()
+    @OptIn(ObsoleteCoroutinesApi::class)
     val scope = CoroutineScope(j + newFixedThreadPoolContext(8, "test"))
 
-    val job = scope.launch(start = CoroutineStart.LAZY) {
-        delay(700)
-        println("get value!")
+    private lateinit var def: Deferred<Int>
+
+    @JvmStatic
+    fun start() {
+        def = scope.async {
+            delay(5_000)
+            1
+        }
     }
 
-    job.cancel()
-    job.join()
-    println("job down.")
+    @JvmStatic
+    fun get(time: Long, timeUnit: TimeUnit): Int {
+        return runBlocking {
+            withTimeout(timeUnit.toMillis(time)) {
+                def.await()
+            }
+        }
+    }
 
-    println(job.start())
 
-    j.join()
 }

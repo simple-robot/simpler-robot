@@ -29,6 +29,7 @@ public annotation class Api4J
 /**
  * 标记一个方法
  */
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION)
 @RequiresOptIn("实验性的simbotAPI，可能会随时变更", level = RequiresOptIn.Level.WARNING)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented

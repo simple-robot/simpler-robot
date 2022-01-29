@@ -73,7 +73,6 @@ public abstract class FunctionalBindableEventListener<R> : FunctionalEventListen
         else EventResult.of(result)
     }
 
-
     /**
      * 函数执行。
      */

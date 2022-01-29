@@ -22,10 +22,14 @@ package love.forte.simbot.event
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import love.forte.simbot.*
-import love.forte.simbot.utils.lazyValue
+import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInTimeoutBlocking
 import love.forte.simbot.utils.runWithInterruptible
 import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import kotlin.time.Duration
 
 
@@ -33,7 +37,9 @@ import kotlin.time.Duration
  *
  * 持续会话的作用域, 通过此作用域在监听函数监听过程中进行会话嵌套。
  *
- * [waitingFor] 与 [waiting] 中注册的临时listener将会在所有监听函数被**触发前**, 依次作为一个独立的**异步任务**执行，
+ * **注: [ContinuousSessionContext] 尚处于实验阶段, 且目前对Java的友好度一般。如果是Java开发者目前请不要过度依赖此功能。**
+ *
+ * [waitingFor] 中注册的临时listener将会在所有监听函数被**触发前**, 依次作为一个独立的**异步任务**执行，
  * 并且因为 [ResumeListener.invoke] 不存在返回值, 因此所有的临时会话监听函数均**无法**对任何正常的监听流程产生影响，也**无法**参与到正常流程中的结果返回中。
  *
  *
@@ -52,7 +58,7 @@ import kotlin.time.Duration
  * ```
  *
  * 在 [ContinuousSessionContext] 中，不论是 [provider][getProvider] 还是 [receiver][getReceiver], 它们都会在一次会话结束（使用了能够导致 [ContinuousSessionProvider.isCompleted] == true 的函数 ）后被移除。
- * 因此当会话结束后，[provider][getProvider] 还是 [receiver][getReceiver] 都会变为null。如果你希望得到这次会话的某个返回值，你需要通过 [waitingFor] 挂起等待，或者通过 [waiting] 得到并保存一个 [ContinuousSessionReceiver] 实例以备使用。
+ * 因此当会话结束后，[provider][getProvider] 还是 [receiver][getReceiver] 都会变为null。如果你希望得到这次会话的某个返回值，你需要通过 [waitingFor] 挂起等待。
  *
  *
  * 对于较为简单的会话嵌套，（在kotlin中）你可以使用以下方式轻松完成：
@@ -134,7 +140,7 @@ import kotlin.time.Duration
  *
  * ## 超时
  *
- * 当然，不论是 [waitingFor]、[waiting] 还是 [waitFor], 它们都有 `timeout` 参数，来实现在超时异常的处理。当超时的时候，挂起点将会抛出 [kotlinx.coroutines.TimeoutCancellationException] 异常。
+ * 当然，不论是 [waitingFor] 还是 [waitFor], 它们都有 `timeout` 参数，来实现在超时异常的处理。当超时的时候，挂起点将会抛出 [kotlinx.coroutines.TimeoutCancellationException] 异常。
  * 作为参数的超时时间除了会在超时后抛出异常以外，还会关闭内部对应的会话，这是与你在外部直接使用 [kotlinx.coroutines.withTimeout] 有所不同的。
  * ```
  * session.waitingFor(randomID(), 5000) { ... }
@@ -145,7 +151,7 @@ import kotlin.time.Duration
  * 但是需要注意的是，通过 timeout 参数指定时间并超时后，抛出的异常是 [ContinuousSessionTimeoutException] 而并非 [kotlinx.coroutines.TimeoutCancellationException], 这也是与 [kotlinx.coroutines.withTimeout] 有所区别的地方。
  *
  * ## 会话清除
- * 当你通过 [waiting] 或者 [waitingFor] 注册了一个会话之后，只有在出现以下情况后，他们会被清除：
+ * 当你通过 [waitingFor] 注册了一个会话之后，只有在出现以下情况后，他们会被清除：
  * - 通过参数 `timeout` 指定了超时时间，且到达了超时时间。
  * - 通过 [ContinuousSessionProvider.push] 推送了结果或 [ContinuousSessionProvider.pushException] 推送了异常。
  * - 通过 [ContinuousSessionProvider.cancel] 或者 [ContinuousSessionReceiver.cancel] 进行了关闭操作。
@@ -157,6 +163,7 @@ import kotlin.time.Duration
  *
  * @author ForteScarlet
  */
+@ExperimentalSimbotApi
 public abstract class ContinuousSessionContext {
 
     protected abstract val coroutineScope: CoroutineScope
@@ -172,6 +179,17 @@ public abstract class ContinuousSessionContext {
         timeout: Long = 0,
         listener: ResumeListener<T>
     ): T
+
+
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingFor")
+    @Throws(InterruptedException::class)
+    public fun <T> waitingFor4J(
+        id: ID = randomID(),
+        timeout: Long = 0,
+        listener: BlockingResumeListener<T>
+    ): T = runInBlocking { waitingFor(id, timeout, listener.parse()) }
 
 
     /**
@@ -216,7 +234,10 @@ public abstract class ContinuousSessionContext {
                 sourceEvent as ContactMessageEvent
                 val sourceUserId = sourceEvent.user().id
                 waitingFor(id, timeout) { context, provider ->
-                    doListenerOnContactMessage(key, sourceEvent.component, context, provider, listener) { sourceUserId }
+                    doListenerOnContactMessage(
+                        key, sourceEvent.component, context,
+                        provider, listener, sourceUserId
+                    )
                 }
             }
             key isSubFrom ChatroomMessageEvent -> {
@@ -224,9 +245,10 @@ public abstract class ContinuousSessionContext {
                 val sourceAuthorId = sourceEvent.author().id
                 val sourceChatroomId = sourceEvent.source().id
                 waitingFor(id, timeout) { context, provider ->
-                    doListenerOnChatroomMessage(key, sourceEvent.component, context, provider, listener,
-                        { sourceAuthorId },
-                        { sourceChatroomId }
+                    doListenerOnChatroomMessage(
+                        key, sourceEvent.component, context, provider, listener,
+                        sourceAuthorId,
+                        sourceChatroomId
                     )
                 }
             }
@@ -234,18 +256,31 @@ public abstract class ContinuousSessionContext {
         }
     }
 
+
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForOnMessage")
+    @Throws(InterruptedException::class)
+    public fun <E : MessageEvent, T> waitingForOnMessage4J(
+        id: ID = randomID(),
+        timeout: Long = 0,
+        sourceEvent: E,
+        listener: BlockingClearTargetResumeListener<E, T>
+    ): T = runInBlocking { waitingForOnMessage(id, timeout, sourceEvent, listener.parse()) }
+
+
     private suspend inline fun <E : MessageEvent, T> doListenerOnContactMessage(
         sourceKey: Event.Key<*>,
         component: Component,
         context: EventProcessingContext,
         provider: ContinuousSessionProvider<T>,
         listener: ClearTargetResumeListener<E, T>,
-        userIdBlock: () -> ID
+        userId: ID
     ) {
         val event = context.event
         if (event.component == component && event.key isSubFrom sourceKey) {
             event as ContactMessageEvent
-            if (event.user().id == userIdBlock()) {
+            if (event.user().id == userId) {
                 @Suppress("UNCHECKED_CAST")
                 listener(event as E, context, provider)
             }
@@ -258,13 +293,13 @@ public abstract class ContinuousSessionContext {
         context: EventProcessingContext,
         provider: ContinuousSessionProvider<T>,
         listener: ClearTargetResumeListener<E, T>,
-        authorIdBlock: () -> ID,
-        chatroomIdBlock: () -> ID
+        authorId: ID,
+        chatroomId: ID
     ) {
         val event = context.event
         if (event.component == component && event.key isSubFrom sourceKey) {
             event as ChatroomMessageEvent
-            if (event.source().id == chatroomIdBlock() && event.author().id == authorIdBlock()) {
+            if (event.source().id == chatroomId && event.author().id == authorId) {
                 @Suppress("UNCHECKED_CAST")
                 listener(event as E, context, provider)
             }
@@ -284,139 +319,154 @@ public abstract class ContinuousSessionContext {
         listener: ClearTargetResumeListener<E, T>
     ): T
 
-    /**
-     * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突，则上一个函数将会被立即关闭处理。
-     *
-     */
-    @JvmSynthetic
-    public abstract fun <T> waiting(
-        id: ID = randomID(),
-        timeout: Long = 0,
-        listener: ResumeListener<T>
-    ): ContinuousSessionReceiver<T>
 
-
-    /**
-     * 提供一个 [MessageEvent] 作为参数，
-     * 只有当另外一个同类型或者此类型的自类型的事件(同一个所属组件)被触发、且这个事件的源与发送人一致的时候才会继续触发后续事件。
-     *
-     * 具体说明参考 [waitingForOnMessage].
-     *
-     * @see waitingForOnMessage
-     * @throws SimbotIllegalArgumentException 如果监听的事件类型不是 [ChatroomMessageEvent] 或 [ContactMessageEvent] 类型的其中一种。
-     * @throws ClassCastException 如果对于 [Event.Key] 的实现不够规范。
-     */
-    @JvmSynthetic
-    public fun <E : MessageEvent, T> waitingOnMessage(
-        id: ID = randomID(),
-        timeout: Long = 0,
-        sourceEvent: MessageEvent,
-        listener: ClearTargetResumeListener<E, T>
-    ): ContinuousSessionReceiver<T> {
-        val key = sourceEvent.key
-        return when {
-            key isSubFrom ContactMessageEvent -> {
-                sourceEvent as ContactMessageEvent
-                val sourceUserId = lazyValue { sourceEvent.user().id }
-                waiting(id, timeout) { context, provider ->
-                    doListenerOnContactMessage(
-                        key,
-                        sourceEvent.component,
-                        context,
-                        provider,
-                        listener
-                    ) { sourceUserId() }
-                }
-            }
-            key isSubFrom ChatroomMessageEvent -> {
-                sourceEvent as ChatroomMessageEvent
-                val sourceAuthorId = lazyValue { sourceEvent.author().id }
-                val sourceChatroomId = lazyValue { sourceEvent.source().id }
-                waiting(id, timeout) { context, provider ->
-                    doListenerOnChatroomMessage(key, sourceEvent.component, context, provider, listener,
-                        { sourceAuthorId() },
-                        { sourceChatroomId() }
-                    )
-                }
-            }
-            else -> throw SimbotIllegalArgumentException("Source event only support subtype of ContactMessageEvent or ChatroomMessageEvent.")
-        }
-    }
-
-
-    /**
-     * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
-     *
-     */
-    @JvmSynthetic
-    public abstract fun <E : Event, T> waiting(
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingFor")
+    @Throws(InterruptedException::class)
+    public fun <E : Event, T> waitingFor4J(
         id: ID = randomID(),
         timeout: Long = 0,
         eventKey: Event.Key<E>,
-        listener: ClearTargetResumeListener<E, T>
-    ): ContinuousSessionReceiver<T>
-
-
-    /**
-     * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
-     *
-     * @see waiting
-     */
-    @Api4J
-    @JvmOverloads
-    @JvmName("waiting")
-    public fun <T> waiting4J(
-        id: ID = randomID(),
-        timeout: Long = 0,
-        listener: BlockingResumeListener<T>
-    ): ContinuousSessionReceiver<T> = waiting(id, timeout, listener.parse())
-
-
-    /**
-     * 根据一个消息事件监听这个人下一个所发送的消息。
-     *
-     * @see waitingOnMessage
-     */
-    @Api4J
-    @JvmOverloads
-    @JvmName("waitingOnMessage")
-    public fun <E : MessageEvent, T> waitingOnMessage4J(
-        id: ID = randomID(),
-        timeout: Long = 0,
-        sourceEvent: E,
         listener: BlockingClearTargetResumeListener<E, T>
-    ): ContinuousSessionReceiver<T> = waitingOnMessage(id, timeout, sourceEvent, listener.parse())
+    ): T = runInBlocking { waitingFor(id, timeout, eventKey, listener.parse()) }
 
 
-    /**
-     * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
-     *
-     * @see waiting
-     */
-    @Api4J
-    @JvmOverloads
-    @JvmName("waiting")
-    public fun <E : Event, T> waiting4J(
-        id: ID = randomID(), // randomID(),
-        timeout: Long = 0,
-        eventKey: Event.Key<E>,
-        listener: BlockingClearTargetResumeListener<E, T>
-    ): ContinuousSessionReceiver<T> = waiting(id, timeout, eventKey, listener.parse())
+    // /**
+    //  * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突，则上一个函数将会被立即关闭处理。
+    //  *
+    //  */
+    // @JvmSynthetic
+    // public abstract fun <T> waiting(
+    //     id: ID = randomID(),
+    //     timeout: Long = 0,
+    //     listener: ResumeListener<T>
+    // ): ContinuousSessionReceiver<T>
+    //
+    //
+    // /**
+    //  * 提供一个 [MessageEvent] 作为参数，
+    //  * 只有当另外一个同类型或者此类型的自类型的事件(同一个所属组件)被触发、且这个事件的源与发送人一致的时候才会继续触发后续事件。
+    //  *
+    //  * 具体说明参考 [waitingForOnMessage].
+    //  *
+    //  * @see waitingForOnMessage
+    //  * @throws SimbotIllegalArgumentException 如果监听的事件类型不是 [ChatroomMessageEvent] 或 [ContactMessageEvent] 类型的其中一种。
+    //  * @throws ClassCastException 如果对于 [Event.Key] 的实现不够规范。
+    //  */
+    // @JvmSynthetic
+    // public fun <E : MessageEvent, T> waitingOnMessage(
+    //     id: ID = randomID(),
+    //     timeout: Long = 0,
+    //     sourceEvent: MessageEvent,
+    //     listener: ClearTargetResumeListener<E, T>
+    // ): ContinuousSessionReceiver<T> {
+    //     val key = sourceEvent.key
+    //     return when {
+    //         key isSubFrom ContactMessageEvent -> {
+    //             sourceEvent as ContactMessageEvent
+    //             waiting(id, timeout) { context, provider ->
+    //                 val userId = sourceEvent.user().id
+    //                 doListenerOnContactMessage(
+    //                     key,
+    //                     sourceEvent.component,
+    //                     context,
+    //                     provider,
+    //                     listener,
+    //                     userId
+    //                 )
+    //             }
+    //         }
+    //         key isSubFrom ChatroomMessageEvent -> {
+    //             sourceEvent as ChatroomMessageEvent
+    //             waiting(id, timeout) { context, provider ->
+    //                 val authorId = sourceEvent.author().id
+    //                 val sourceId = sourceEvent.source().id
+    //                 doListenerOnChatroomMessage(
+    //                     key, sourceEvent.component, context, provider, listener,
+    //                     authorId,
+    //                     sourceId
+    //                 )
+    //             }
+    //         }
+    //         else -> throw SimbotIllegalArgumentException("Source event only support subtype of ContactMessageEvent or ChatroomMessageEvent.")
+    //     }
+    // }
+    //
+    //
+    // /**
+    //  * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+    //  *
+    //  */
+    // @JvmSynthetic
+    // public abstract fun <E : Event, T> waiting(
+    //     id: ID = randomID(),
+    //     timeout: Long = 0,
+    //     eventKey: Event.Key<E>,
+    //     listener: ClearTargetResumeListener<E, T>
+    // ): ContinuousSessionReceiver<T>
 
-    /**
-     * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
-     *
-     * @see waiting
-     */
-    @Api4J
-    @JvmOverloads
-    @JvmName("waiting")
-    public fun <E : Event, T> waiting4J(
-        id: ID = randomID(),
-        timeout: Long = 0,
-        eventType: Class<E>,
-        listener: BlockingClearTargetResumeListener<E, T>
-    ): ContinuousSessionReceiver<T> = waiting(id, timeout, Event.Key.getKey(eventType), listener.parse())
+    //
+    // /**
+    //  * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+    //  *
+    //  * @see waiting
+    //  */
+    // @Api4J
+    // @JvmOverloads
+    // @JvmName("waiting")
+    // public fun <T> waiting4J(
+    //     id: ID = randomID(),
+    //     timeout: Long = 0,
+    //     listener: BlockingResumeListener<T>
+    // ): ContinuousSessionReceiver<T> = waiting(id, timeout, listener.parse())
+    //
+    //
+    // /**
+    //  * 根据一个消息事件监听这个人下一个所发送的消息。
+    //  *
+    //  * @see waitingOnMessage
+    //  */
+    // @Api4J
+    // @JvmOverloads
+    // @JvmName("waitingOnMessage")
+    // public fun <E : MessageEvent, T> waitingOnMessage4J(
+    //     id: ID = randomID(),
+    //     timeout: Long = 0,
+    //     sourceEvent: E,
+    //     listener: BlockingClearTargetResumeListener<E, T>
+    // ): ContinuousSessionReceiver<T> = waitingOnMessage(id, timeout, sourceEvent, listener.parse())
+    //
+    //
+    // /**
+    //  * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+    //  *
+    //  * @see waiting
+    //  */
+    // @Api4J
+    // @JvmOverloads
+    // @JvmName("waiting")
+    // public fun <E : Event, T> waiting4J(
+    //     id: ID = randomID(), // randomID(),
+    //     timeout: Long = 0,
+    //     eventKey: Event.Key<E>,
+    //     listener: BlockingClearTargetResumeListener<E, T>
+    // ): ContinuousSessionReceiver<T> = waiting(id, timeout, eventKey, listener.parse())
+    //
+    // /**
+    //  * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+    //  *
+    //  * @see waiting
+    //  */
+    // @Api4J
+    // @JvmOverloads
+    // @JvmName("waiting")
+    // public fun <E : Event, T> waiting4J(
+    //     id: ID = randomID(),
+    //     timeout: Long = 0,
+    //     eventType: Class<E>,
+    //     listener: BlockingClearTargetResumeListener<E, T>
+    // ): ContinuousSessionReceiver<T> = waiting(id, timeout, Event.Key.getKey(eventType), listener.parse())
 
 
     /**
@@ -448,6 +498,7 @@ public class ContinuousSessionTimeoutException(message: String) : CancellationEx
  *
  * @see ContinuousSessionContext.waitingFor
  */
+@ExperimentalSimbotApi
 public suspend inline fun <reified E : Event, T> ContinuousSessionContext.waitFor(
     id: ID = randomID(),
     timeout: Long = 0,
@@ -461,6 +512,7 @@ public suspend inline fun <reified E : Event, T> ContinuousSessionContext.waitFo
  *
  * @see waitFor
  */
+@ExperimentalSimbotApi
 public suspend inline fun <reified E : Event, T> ContinuousSessionContext.waitFor(
     id: ID = randomID(),
     timeout: Duration,
@@ -468,6 +520,7 @@ public suspend inline fun <reified E : Event, T> ContinuousSessionContext.waitFo
 ): T = waitFor(id, timeout.inWholeMilliseconds, listener)
 
 
+@ExperimentalSimbotApi
 public suspend inline fun <E : Event, T> ContinuousSessionContext.waitingFor(
     id: ID = randomID(),
     timeout: Duration,
@@ -476,6 +529,7 @@ public suspend inline fun <E : Event, T> ContinuousSessionContext.waitingFor(
 ): T = waitingFor(id, timeout.inWholeMilliseconds, eventKey, listener)
 
 
+@ExperimentalSimbotApi
 public suspend inline fun <T> ContinuousSessionContext.waitingFor(
     id: ID = randomID(),
     timeout: Duration,
@@ -483,6 +537,7 @@ public suspend inline fun <T> ContinuousSessionContext.waitingFor(
 ): T = waitingFor(id, timeout.inWholeMilliseconds, listener)
 
 
+@ExperimentalSimbotApi
 public suspend inline fun <E : MessageEvent, T> ContinuousSessionContext.waitingForOnMessage(
     id: ID = randomID(),
     timeout: Duration,
@@ -490,29 +545,33 @@ public suspend inline fun <E : MessageEvent, T> ContinuousSessionContext.waiting
     listener: ClearTargetResumeListener<E, T>
 ): T = waitingForOnMessage(id, timeout.inWholeMilliseconds, sourceEvent, listener)
 
-public fun <E : Event, T> ContinuousSessionContext.waiting(
-    id: ID = randomID(),
-    timeout: Duration,
-    eventKey: Event.Key<E>,
-    listener: ClearTargetResumeListener<E, T>
-): ContinuousSessionReceiver<T> = waiting(id, timeout.inWholeMilliseconds, eventKey, listener)
-
-
-public fun <T> ContinuousSessionContext.waiting(
-    id: ID = randomID(),
-    timeout: Duration,
-    listener: ResumeListener<T>
-): ContinuousSessionReceiver<T> = waiting(id, timeout.inWholeMilliseconds, listener)
-
-public fun <E : MessageEvent, T> ContinuousSessionContext.waitingOnMessage(
-    id: ID = randomID(),
-    timeout: Duration,
-    sourceEvent: MessageEvent,
-    listener: ClearTargetResumeListener<E, T>
-): ContinuousSessionReceiver<T> = waitingOnMessage(id, timeout.inWholeMilliseconds, sourceEvent, listener)
+//
+// @ExperimentalSimbotApi
+// public fun <E : Event, T> ContinuousSessionContext.waiting(
+//     id: ID = randomID(),
+//     timeout: Duration,
+//     eventKey: Event.Key<E>,
+//     listener: ClearTargetResumeListener<E, T>
+// ): ContinuousSessionReceiver<T> = waiting(id, timeout.inWholeMilliseconds, eventKey, listener)
+//
+//
+// @ExperimentalSimbotApi
+// public fun <T> ContinuousSessionContext.waiting(
+//     id: ID = randomID(),
+//     timeout: Duration,
+//     listener: ResumeListener<T>
+// ): ContinuousSessionReceiver<T> = waiting(id, timeout.inWholeMilliseconds, listener)
+//
+// @ExperimentalSimbotApi
+// public fun <E : MessageEvent, T> ContinuousSessionContext.waitingOnMessage(
+//     id: ID = randomID(),
+//     timeout: Duration,
+//     sourceEvent: MessageEvent,
+//     listener: ClearTargetResumeListener<E, T>
+// ): ContinuousSessionReceiver<T> = waitingOnMessage(id, timeout.inWholeMilliseconds, sourceEvent, listener)
 
 /**
- * 持续会话的结果接收器，通过 [ContinuousSessionContext.waiting] 获取，
+ * 持续会话的结果接收器，通过 [ContinuousSessionContext.getReceiver] 获取，
  * 用于挂起并等待一个结果。
  *
  * @see ContinuousSessionProvider
@@ -526,14 +585,34 @@ public interface ContinuousSessionReceiver<T> {
     public suspend fun await(): T
 
     /**
+     * 阻塞的等待当前receiver得到结果或推送了异常。
+     *
+     * 会一直阻塞当前线程直到 [await] 返回。
+     *
+     * @throws InterruptedException 阻塞内容所在线程被中断
+     */
+    @Api4J
+    @Throws(InterruptedException::class)
+    public fun waiting(): T = runInBlocking { await() }
+
+
+    /**
+     * 阻塞的等待当前receiver得到结果或推送了异常，如果在规定时间内未结束则抛出超时异常。
+     *
+     * @throws InterruptedException 阻塞内容所在线程被中断
+     * @throws TimeoutException 如果时限内未响应
+     */
+    @Api4J
+    @Throws(InterruptedException::class, TimeoutException::class)
+    public fun waiting(timeout: Long, timeUnit: TimeUnit): T =
+        runInTimeoutBlocking(timeUnit.toMillis(timeout)) {
+            await()
+        }
+
+    /**
      * 终止此会话。不会对终止状态进行检测。
      */
     public fun cancel(reason: Throwable? = null)
-
-    /**
-     * 终止此会话。会对终止状态进行检测，如果已经终止或完成则不会进行cancel行为。
-     */
-    public fun tryCancel(reason: Throwable? = null): Boolean
 
     /**
      * 将当前这个 session 转化为 [Future].
@@ -627,6 +706,7 @@ public fun interface ClearTargetResumeListener<E : Event, T> {
 @Api4J
 public fun interface BlockingClearTargetResumeListener<E : Event, T> {
     public operator fun invoke(event: E, context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
+
 }
 
 @OptIn(Api4J::class)

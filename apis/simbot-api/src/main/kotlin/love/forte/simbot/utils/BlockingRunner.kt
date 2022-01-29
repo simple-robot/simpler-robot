@@ -17,17 +17,36 @@
 
 package love.forte.simbot.utils
 
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import java.util.concurrent.TimeoutException
 import kotlin.coroutines.CoroutineContext
 
-private val DefaultBlockingContext: CoroutineContext = Dispatchers.IO + CoroutineName("runInBlocking")
+// private val DefaultBlockingContext: CoroutineContext = Dispatchers.IO + CoroutineName("runInBlocking")
+private val DefaultBlockingContext: CoroutineContext = CoroutineName("runInBlocking")
 
-
+/**
+ * @see runBlocking
+ */
 @Throws(InterruptedException::class)
 public fun <T> runInBlocking(
     context: CoroutineContext = DefaultBlockingContext,
     block: suspend CoroutineScope.() -> T
 ): T = runBlocking(context, block)
+
+/**
+ * 如果超时，则抛出 [TimeoutException].
+ * @see runInBlocking
+ * @see withTimeout
+ */
+@Throws(InterruptedException::class, TimeoutException::class)
+public fun <T> runInTimeoutBlocking(
+    timeout: Long,
+    context: CoroutineContext = DefaultBlockingContext,
+    block: suspend CoroutineScope.() -> T
+): T = runInBlocking(context) {
+    try {
+        withTimeout(timeout, block)
+    } catch (timeout: TimeoutCancellationException) {
+        throw TimeoutException(timeout.localizedMessage).initCause(timeout)
+    }
+}

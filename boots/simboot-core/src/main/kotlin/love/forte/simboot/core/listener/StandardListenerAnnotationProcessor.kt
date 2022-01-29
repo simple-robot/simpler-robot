@@ -86,6 +86,7 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
 
         val listener = AnnotationFunctionalEventListener(
             id = id,
+            priority = context.listenerData.priority,
             isAsync = context.listenerData.async,
             targets = targets, // If empty, listen all event.
             caller = function,
@@ -528,6 +529,7 @@ private class EmptyBinder(
 
 private class AnnotationFunctionalEventListener<R>(
     override val id: ID,
+    override val priority: Int,
     override val isAsync: Boolean,
     private val targets: Set<Event.Key<*>>,
     override val caller: KFunction<R>,
@@ -535,6 +537,10 @@ private class AnnotationFunctionalEventListener<R>(
     override val binders: Array<ParameterBinder>,
     private val attributeMap: AttributeMutableMap
 ) : FunctionalBindableEventListener<R>() {
+
+    init {
+        logger.debug("{} suspend: {}", id, caller.isSuspend)
+    }
 
     private lateinit var targetCaches: MutableSet<Event.Key<*>> //= mutableSetOf<>()
     private lateinit var notTargetCaches: MutableSet<Event.Key<*>> //= mutableSetOf<Event.Key<*>>()
