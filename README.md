@@ -1,3 +1,4 @@
+<!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
     <img src=".simbot/logo.png" alt="logo" style="width:230px; height:230px; border-radius:50%; " />
     <h2>
@@ -27,7 +28,7 @@
    <img alt="lines" src="https://img.shields.io/tokei/lines/github/ForteScarlet/simpler-robot" />
    <img alt="issues" src="https://img.shields.io/github/issues-closed/ForteScarlet/simpler-robot?color=green" />
    <img alt="last commit" src="https://img.shields.io/github/last-commit/ForteScarlet/simpler-robot" />
-   <a href="./LICENSE"><img alt="license" src="https://img.shields.io/github/license/ForteScarlet/simpler-robot" /></a>
+   <a href="./COPYING"><img alt="copying" src="https://img.shields.io/github/license/ForteScarlet/simpler-robot" /></a>
     </div>
 
 ## 简介
@@ -166,5 +167,33 @@ suspend fun GuildMessageEvent.listener() {
 ```
 
 更多示例代码可以参考[3.x文档](https://www.yuque.com/simpler-robot/simpler-robot-doc/mudleb)中的《走马观花》相关内容.
+
+
+## 协助我
+- 你可以通过 [pr](https://github.com/ForteScarlet/simpler-robot/pulls "pull request") 为项目代码作出贡献。
+- 你可以通过 [issue](https://github.com/ForteScarlet/simpler-robot/issues "issues") 提出一个建议或者反馈一个问题。
+- 你可以通过 [讨论区](https://github.com/ForteScarlet/simpler-robot/discussions "discussions") 与其他人或者simbot开发团队相互友好交流。
+- 如果你通过此项目创建了一个很酷的项目，欢迎通过 [issue](https://github.com/ForteScarlet/simpler-robot/issues) 、[讨论区](https://github.com/ForteScarlet/simpler-robot/discussions)
+  等方式联系团队开发人员，并将你酷酷的项目展示在作品展示区。
+
+
+## 捐助我
+如果你喜欢这个项目，不妨试着 [捐助](https://www.yuque.com/docs/share/43264d27-99a7-4287-97c0-b387f5b0947e) 一下我们，十分感谢。
+
+
+## 特别鸣谢
+
+[<img src=".github/logo/jetbrains.png" width="200" alt="jetbrains" />](https://www.jetbrains.com/?from=simpler-robot)
+
+感谢 [jetbrains](https://www.jetbrains.com/?from=simpler-robot "jetbrains") 为团队提供的免费授权，也希望大家能够支持jetbrains及其产品，支持正版。
+
+
+## 贡献你的星星！
+[![Stargazers over time](https://starchart.cc/ForteScarlet/simpler-robot.svg)](https://starchart.cc/ForteScarlet/simpler-robot)
+
+
+## 开源协议
+simbot3(当前仓库下相关内容)以 LGPL 3.0协议开源
+
 
 文档持续优化中...
