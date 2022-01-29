@@ -6,7 +6,7 @@
     </h2>
     <small>
         ~ <span style="color: #b8fcc7">simbot</span> 
-<span style="color: #58ad93">3</span> ~      
+<span style="color: #58ad93">v3</span> ~      
 </small>
 <br>
     <span>
