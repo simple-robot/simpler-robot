@@ -59,6 +59,7 @@ simbot3支持多组件协同，但是这会给版本控制带来更大的挑战�
 <br>
 
 ## 注意！！
+
 目前simbot3仍然处于**前期阶段**，如果你想参考simbot2, 可以参考分支: [v2-dev](https://github.com/ForteScarlet/simpler-robot/tree/v2-dev)
 
 ## 文档
@@ -105,24 +106,26 @@ Mirai组件：<https://github.com/simple-robot/simbot-component-mirai>
 ```
 
 #### Gradle Kotlin DSL
+
 ```kotlin
 // 3.x中，大部分组件的版本维护独立于标准库，但是会在版本号中体现依赖标准库的版本号。
-val simbotVersion = simbot-core的版本号
+val simbotVersion = simbot - core的版本号
 
 // simbot核心标准库
 implementation("love.forte.simbot:simbot-core:$simbotVersion")
 ```
 
 #### Gradle Groovy
+
 ```groovy
-simbotVersion = simbot-core的版本号
+simbotVersion = simbot - core的版本号
 
 // simbot核心标准库
 implementation "love.forte.simbot:simbot-core:$simbotVersion"
 ```
 
-
 ## 快速开始
+
 有关快速开始的相关内容，请参考文档中 [《快速开始》](https://www.yuque.com/simpler-robot/simpler-robot-doc/fvdmq1) 中的相关**子章节**。
 
 <br>
@@ -168,18 +171,18 @@ suspend fun GuildMessageEvent.listener() {
 
 更多示例代码可以参考[3.x文档](https://www.yuque.com/simpler-robot/simpler-robot-doc/mudleb)中的《走马观花》相关内容.
 
-
 ## 协助我
+
 - 你可以通过 [pr](https://github.com/ForteScarlet/simpler-robot/pulls "pull request") 为项目代码作出贡献。
 - 你可以通过 [issue](https://github.com/ForteScarlet/simpler-robot/issues "issues") 提出一个建议或者反馈一个问题。
 - 你可以通过 [讨论区](https://github.com/ForteScarlet/simpler-robot/discussions "discussions") 与其他人或者simbot开发团队相互友好交流。
-- 如果你通过此项目创建了一个很酷的项目，欢迎通过 [issue](https://github.com/ForteScarlet/simpler-robot/issues) 、[讨论区](https://github.com/ForteScarlet/simpler-robot/discussions)
+- 如果你通过此项目创建了一个很酷的项目，欢迎通过 [issue](https://github.com/ForteScarlet/simpler-robot/issues)
+  、[讨论区](https://github.com/ForteScarlet/simpler-robot/discussions)
   等方式联系团队开发人员，并将你酷酷的项目展示在作品展示区。
 
-
 ## 捐助我
-如果你喜欢这个项目，不妨试着 [捐助](https://www.yuque.com/docs/share/43264d27-99a7-4287-97c0-b387f5b0947e) 一下我们，十分感谢。
 
+如果你喜欢这个项目，不妨试着 [捐助](https://www.yuque.com/docs/share/43264d27-99a7-4287-97c0-b387f5b0947e) 一下我们，十分感谢。
 
 ## 特别鸣谢
 
@@ -187,13 +190,18 @@ suspend fun GuildMessageEvent.listener() {
 
 感谢 [jetbrains](https://www.jetbrains.com/?from=simpler-robot "jetbrains") 为团队提供的免费授权，也希望大家能够支持jetbrains及其产品，支持正版。
 
-
 ## 贡献你的星星！
+
 [![Stargazers over time](https://starchart.cc/ForteScarlet/simpler-robot.svg)](https://starchart.cc/ForteScarlet/simpler-robot)
 
-
 ## 开源协议
-simbot3(当前仓库下相关内容)以 LGPL 3.0协议开源
 
+simbot3(当前仓库下相关内容)以 `LGPL 3.0` 协议开源。
+
+详细参见：
+
+[COPYING](COPYING)
+
+[COPYING.LESSER](COPYING.LESSER)
 
 文档持续优化中...
