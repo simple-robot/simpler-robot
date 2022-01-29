@@ -83,7 +83,6 @@ Mirai组件：<https://github.com/simple-robot/simbot-component-mirai>
 > Warn: 对于组件, 你需要去上面提及的组件仓库中选择你需要使用的.
 > 一个普通的simbot依赖不会有任何实现, 因此下述提及的依赖使用**不能**独立使用。
 >
-> 由于simbot3
 
 ### simbot-core
 
