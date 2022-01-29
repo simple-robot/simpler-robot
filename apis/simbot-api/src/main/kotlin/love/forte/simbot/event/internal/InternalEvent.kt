@@ -67,6 +67,7 @@ public abstract class BaseInternalKey<E : InternalEvent>(
     idValue: String,
     override val parents: Set<Event.Key<*>> = emptySet()
 ) : InternalEvent.Key<E> {
+    public constructor(idValue: String, vararg parents: Event.Key<*>): this(idValue, parents.toSet())
     override val id: CharSequenceID = idValue.ID
 
     override fun toString(): String = "InternalEventKey(id=$id)"
