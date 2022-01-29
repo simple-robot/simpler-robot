@@ -37,6 +37,13 @@ public abstract class InternalBotEvent : InternalEvent() {
 /**
  * 一个被注册的bot。只要被注册就应触发。
  *
+ * 由于 [love.forte.simbot.BotManager.register] 并非可挂起函数，
+ * 因此通常情况下BotManager在完成bot注册逻辑后会立即返回，而对于 [BotRegisteredEvent] 事件的推送会异步的进行.
+ *
+ *
+ * @see love.forte.simbot.BotManager
+ * @see love.forte.simbot.BotManager.register
+ *
  * @author ForteScarlet
  */
 public abstract class BotRegisteredEvent : InternalEvent(), BotContainer {
@@ -49,7 +56,13 @@ public abstract class BotRegisteredEvent : InternalEvent(), BotContainer {
 
 /**
  *
- * 某个Bot执行了 [Bot.start]
+ * 某个Bot执行了 [Bot.start].
+ *
+ * 因为 [Bot.start] 本质上是可挂起的，因此通常情况下bot执行`start`后，
+ * 会推送并等待针对事件[BotStartedEvent]的整个处理流程完成后才会结束挂起。
+ *
+ *
+ * @see Bot.start
  *
  * @author ForteScarlet
  */
