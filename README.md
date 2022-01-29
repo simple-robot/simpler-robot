@@ -57,6 +57,7 @@ simbot3支持多组件协同，但是这会给版本控制带来更大的挑战�
 <br>
 <br>
 
+## 注意！！
 目前simbot3仍然处于**前期阶段**，如果你想参考simbot2, 可以参考分支: [v2-dev](https://github.com/ForteScarlet/simpler-robot/tree/v2-dev)
 
 ## 文档
