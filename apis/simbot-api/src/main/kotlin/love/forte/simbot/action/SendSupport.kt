@@ -107,7 +107,7 @@ public interface SendSupport {
  * 默认情况下 [ReplySupport] 不会实现于任何默认定义的事件类型（因为无法保证有哪些消息事件存在*可回复消息*这一行为），
  * 但是这不代表你所监听到的实际事件没有实现此类型（例如`tencent-guild`组件中的消息事件或`mirai`组件中的消息事件，便实际上的实现了 [ReplySupport] ）。
  *
- * *未来可能会默认实现于 [love.forte.simbot.event.MessageEvent]*
+ * *Note: 未来可能会默认实现于 [love.forte.simbot.event.MessageEvent]*
  *
  * 相比较于 [SendSupport], [ReplySupport] 更倾向于针对一次事件或者这次事件的发送者为目标的**回复**行为，而不是单纯的发送消息，例如 `tencent-guild` 组件中，
  * 公域机器人如果想要根据一个@消息回复一段消息，则**必须**引用这个消息的ID，因此在 `tencent-guild` 组件中，如果使用的是公域BOT，那么想要回复消息的最好的办法是使用 [ReplySupport.reply] 而不是 [SendSupport.send],
