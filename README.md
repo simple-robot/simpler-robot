@@ -4,6 +4,11 @@
     <h2>
         - simply-robot -
     </h2>
+    <small>
+        ~ <span style="color: #b8fcc7">simbot</span> 
+<span style="color: #58ad93">3</span> ~      
+</small>
+<br>
     <span>
         <a href="https://github.com/ForteScarlet/simpler-robot" target="_blank">github</a>
     </span> 
@@ -74,9 +79,15 @@ simbot3的文档与simbot2的文档在一起，都在 [语雀文档](https://www
 <br>
 simbot3目前已经实现的组件以及计划中的组件会列举于此，且不定期更新：
 
-腾讯频道组件：<https://github.com/simple-robot/simbot-component-tencent-guild>
+| 对接目标                                    | 组件作者        | 地址                                                               | 状态    |
+|-----------------------------------------|-------------|------------------------------------------------------------------|-------|
+| 腾讯频道                                    | simbot team | <https://github.com/simple-robot/simbot-component-tencent-guild> | 维护中   |
+| [Mirai](https://github.com/mamoe/mirai) | simbot team | <https://github.com/simple-robot/simbot-component-mirai>         | 维护中   |
+| 开黑啦                                     | simbot team | <https://github.com/simple-robot/simbot-component-kaiheila>      | *计划中* |
 
-Mirai组件：<https://github.com/simple-robot/simbot-component-mirai>
+腾讯频道组件：
+
+Mirai组件：
 
 ## 使用
 
@@ -107,7 +118,6 @@ Mirai组件：<https://github.com/simple-robot/simbot-component-mirai>
 #### Gradle Kotlin DSL
 
 ```kotlin
-// 3.x中，大部分组件的版本维护独立于标准库，但是会在版本号中体现依赖标准库的版本号。
 val simbotVersion = simbot - core的版本号
 
 // simbot核心标准库
