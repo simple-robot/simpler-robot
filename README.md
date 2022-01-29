@@ -34,7 +34,7 @@
 
 这是一个通用机器人开发框架，是simple-robot的3.x版本(下文简称`simbot3`)。
 
-`simbot` 是一个JVM平台的通用机器人开发框架，基于simbot核心API并对接开发不同平台的机器人应用，你可以使用相同的代码风格来开发不同平台的机器人。
+`simbot3` 是一个JVM平台的通用机器人开发框架，基于simbot核心API并对接开发不同平台的机器人应用，你可以使用相同的代码风格来开发不同平台的机器人。
 
 它提供了丰富的api接口与各种模块以支持机器人开发者与组件开发者使用，对于机器人开发者，你可以通过功能丰富的注解来实现各种较为复杂的事件匹配逻辑。对于组件开发者，你拥有很高的可选择性与灵活性来针对一个平台进行对接。
 
@@ -42,12 +42,17 @@ simbot3相比较于simbot2时代，其(再一次的)完全重构了整体架构�
 
 <br>
 
+### 模块差异
+
 simbot3中，simbot-core与simbot-boot(首先提醒，这里的boot指的不是springboot)之间的使用方式上会有较大的区别：
 
 在simbot-core上，你的使用方式会更加"原生"，其允许你在更加复杂的代码中拥有更强的控制能力与灵活度。这更适合较为小型的系统或者需要更加灵活控制代码的应用。
 
 而在simbot-boot(simboot)上，则提供了更多源于而优于simbot前代的注解开发与自动扫描机制，可以更快速高效的开发你的应用。
 
+### 组件协同
+
+simbot3支持多组件协同，但是这会给版本控制带来更大的挑战，因此如果你希望在你的应用里使用多组件，请仔细检查并测试各个组件之间的版本依赖关系。
 
 <br>
 <br>
@@ -70,10 +75,62 @@ simbot3目前已经实现的组件以及计划中的组件会列举于此，且�
 
 Mirai组件：<https://github.com/simple-robot/simbot-component-mirai>
 
+## 使用
+
+> Warn: 对于组件, 你需要去上面提及的组件仓库中选择你需要使用的.
+> 一个普通的simbot依赖不会有任何实现, 因此下述提及的依赖使用**不能**独立使用。
+>
+> 由于simbot3
+
+### simbot-core
+
+#### Maven
+
+```xml
+<!-- 3.x中，大部分组件的版本维护独立于标准库，但是会在版本号中体现依赖标准库的版本号。 -->
+<properties>
+    <simbot.version>simbot-core的版本号</simbot.version>
+</properties>
+```
+
+```xml
+<!-- simbot核心标准库 -->
+<dependency>
+    <groupId>love.forte.simbot</groupId>
+    <artifactId>simbot-core</artifactId>
+    <version>${simbot.version}</version>
+</dependency>
+```
+
+#### Gradle Kotlin DSL
+```kotlin
+// 3.x中，大部分组件的版本维护独立于标准库，但是会在版本号中体现依赖标准库的版本号。
+val simbotVersion = simbot-core的版本号
+
+// simbot核心标准库
+implementation("love.forte.simbot:simbot-core:$simbotVersion")
+```
+
+#### Gradle Groovy
+```groovy
+simbotVersion = simbot-core的版本号
+
+// simbot核心标准库
+implementation "love.forte.simbot:simbot-core:$simbotVersion"
+```
+
+
+## 快速开始
+有关快速开始的相关内容，请参考文档中 [《快速开始》](https://www.yuque.com/simpler-robot/simpler-robot-doc/fvdmq1) 中的相关**子章节**。
+
+<br>
 
 ## 走马观花
+
 #### 事件监听
+
 > 下述以 simbot-boot模块中的注解监听形式为例
+
 ```kotlin
 @Listener
 suspend fun GroupMessageEvent.listener() {
@@ -91,6 +148,7 @@ suspend fun FriendMessageEvent.listener() {
 ```
 
 #### 对象获取
+
 ```kotlin
 suspend fun GuildMessageEvent.listener() {
     // 频道的所有子频道
