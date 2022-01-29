@@ -15,11 +15,12 @@
  *
  */
 
-package love.forte.simbot.event
+package love.forte.simbot.event.internal
 
 import love.forte.simbot.Bot
 import love.forte.simbot.CharSequenceID
 import love.forte.simbot.ID
+import love.forte.simbot.event.Event
 import love.forte.simbot.message.doSafeCast
 
 /**
@@ -29,6 +30,9 @@ import love.forte.simbot.message.doSafeCast
  * 一个 [内部事件][InternalEvent] 代表此事件仅由当前程序内部进行推送并使用，不涉及真正的对外事件。
  *
  * 内部事件应当是一个独立的事件体系，不能继承任何非内部事件的其他事件。
+ *
+ *
+ * 内部事件的实现由组件决定，无法保证每个组件都会对所有的内部事件提供相应的推送。
  *
  * @author ForteScarlet
  */
