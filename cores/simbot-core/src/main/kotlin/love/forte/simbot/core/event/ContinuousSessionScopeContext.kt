@@ -23,6 +23,7 @@ import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.ID
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.event.*
+import love.forte.simbot.literal
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Future
 import java.util.concurrent.atomic.AtomicBoolean

@@ -24,6 +24,7 @@ import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.core.event.coreFilter
 import love.forte.simbot.event.*
+import love.forte.simbot.literal
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance

@@ -30,6 +30,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.ID
 import love.forte.simbot.definition.IDContainer
+import love.forte.simbot.literal
 import java.io.*
 import java.net.URL
 import java.nio.file.Files
