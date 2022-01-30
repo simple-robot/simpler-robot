@@ -54,4 +54,9 @@ public interface FriendInfo : UserInfo {
      */
     public val grouping: Grouping
 
+    /**
+     * 优先尝试获取好友的 [remark], 如果 [remark] 为null，则取其 [username].
+     */
+    public val remarkOrUsername: String get() = remark ?: username
+
 }

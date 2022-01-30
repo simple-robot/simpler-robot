@@ -163,7 +163,7 @@ public interface MemberInfo : UserInfo {
      * 此成员在当前组织下的昵称。
      * [nickname]不可为null，当一个群成员不存在群昵称的时候，[nickname] 为空字符串。
      *
-     * @see nickOrNormalName
+     * @see nickOrUsername
      */
     public val nickname: String
 
@@ -178,16 +178,16 @@ public interface MemberInfo : UserInfo {
     /**
      * 优先尝试获取 [nickname], 如果 [nickname] 为空，则使用 [username].
      */
-    public val nickOrNormalName: String get() = nickname.ifEmpty { username }
+    public val nickOrUsername: String get() = nickname.ifEmpty { username }
 
 }
 
 
 /**
- * 尝试通过 [MemberInfo.nickOrNormalName] 获取当前用户的有效名称(不为空的)。
+ * 尝试通过 [MemberInfo.nickOrUsername] 获取当前用户的有效名称(不为空的)。
  * 如果最终结果依旧为空，得到null。
  */
-public inline val MemberInfo.validName: String? get() = nickOrNormalName.ifEmpty { null }
+public inline val MemberInfo.validName: String? get() = nickOrUsername.ifEmpty { null }
 
 /**
  * 尝试获取 [MemberInfo] 中不为全空白字符串的有效名称。
