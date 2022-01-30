@@ -154,6 +154,34 @@ public interface MemberDecreaseEvent : DecreaseEvent<Organization, MemberInfo>,
     }
 }
 
+// TODO
+//  群、频道成员变动事件实现
+
+
+/**
+ * @see MemberIncreaseEvent
+ */
+@Deprecated("尚未实现")
+public interface GroupMemberIncreaseEvent
+
+/**
+ * @see MemberIncreaseEvent
+ */
+@Deprecated("尚未实现")
+public interface GuildMemberIncreaseEvent
+
+/**
+ * @see MemberDecreaseEvent
+ */
+@Deprecated("尚未实现")
+public interface GroupMemberDecreaseEvent
+
+/**
+ * @see MemberDecreaseEvent
+ */
+@Deprecated("尚未实现")
+public interface GuildMemberDecreaseEvent
+
 
 
 
