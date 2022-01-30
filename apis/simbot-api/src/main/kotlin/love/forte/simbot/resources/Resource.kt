@@ -39,15 +39,15 @@ import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 import kotlin.io.path.*
 
+
+// TODO 资源api重新设计
 /**
  *
- * 一个[资源][Resource]. 资源存在两种形式：[标识资源][IDResource] 和 [流资源][StreamableResource].
+ * 一个[资源][Resource].
  *
- * [IDResource] 代表一个持有唯一标识 [ID] 的资源，一般可以使用在接收者在允许通过ID解析的情况下。
- * [StreamableResource] 则代表一个允许获取数据流的资源，这通常代表了对本地资源（比如文件）、远程资源（比如某个链接）等资源，
+ * [StreamableResource] 代表一个允许获取数据流的资源，这通常代表了对本地资源（比如文件）、远程资源（比如某个链接）等资源，
  * 一般可以使用在接收者需要上传某些资源或者得到了一些能够下载的资源的情况下。比如上传图片、下载图片。
  *
- * @see IDResource
  * @see StreamableResource
  *
  * @author ForteScarlet
