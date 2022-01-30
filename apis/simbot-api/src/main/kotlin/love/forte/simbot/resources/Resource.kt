@@ -28,9 +28,6 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import love.forte.simbot.ID
-import love.forte.simbot.definition.IDContainer
-import love.forte.simbot.literal
 import java.io.*
 import java.net.URL
 import java.nio.file.Files
@@ -64,12 +61,12 @@ public sealed class Resource {
 
     public companion object {
 
-        /**
-         * 使用 [ID] 构建一个 [IDResource].
-         */
-        @JvmStatic
-        @JvmOverloads
-        public fun of(id: ID, name: String = id.literal): IDResource = IDResource(id, name)
+        // /**
+        //  * 使用 [ID] 构建一个 [IDResource].
+        //  */
+        // @JvmStatic
+        // @JvmOverloads
+        // public fun of(id: ID, name: String = id.literal): IDResource = IDResource(id, name)
 
         /**
          * 使用 [URL] 作为一个 [StreamableResource].
@@ -119,24 +116,24 @@ public sealed class Resource {
         }
     }
 }
-
-/**
- * 一个提供了 [id] 信息的 [Resource].
- *
- * [IDResource] 通常情况下用于作为参数提供者来提供一个资源的标识，并由接受者来自行处理。
- *
- * @see Resource.of
- */
-@SerialName("simbot.resource.id")
-@Serializable
-public open class IDResource(
-    @Serializable(ID.AsCharSequenceIDSerializer::class)
-    public override val id: ID, override val name: String
-) : Resource(), IDContainer {
-    override fun toString(): String {
-        return "Resource(id=$id, name=$name)"
-    }
-}
+//
+// /**
+//  * 一个提供了 [id] 信息的 [Resource].
+//  *
+//  * [IDResource] 通常情况下用于作为参数提供者来提供一个资源的标识，并由接受者来自行处理。
+//  *
+//  * @see Resource.of
+//  */
+// @SerialName("simbot.resource.id")
+// @Serializable
+// public open class IDResource(
+//     @Serializable(ID.AsCharSequenceIDSerializer::class)
+//     public override val id: ID, override val name: String
+// ) : Resource(), IDContainer {
+//     override fun toString(): String {
+//         return "Resource(id=$id, name=$name)"
+//     }
+// }
 
 
 /**
@@ -341,7 +338,7 @@ public class ByteArrayResource(override val name: String, private val byteArray:
 }
 
 
-public fun ID.toResource(name: String): IDResource = Resource.of(this, name)
+// public fun ID.toResource(name: String): IDResource = Resource.of(this, name)
 
 public fun URL.toResource(name: String = this.toString()): StreamableResource = Resource.of(this, name)
 
