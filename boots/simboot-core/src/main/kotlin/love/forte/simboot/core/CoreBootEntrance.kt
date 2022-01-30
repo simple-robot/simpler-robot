@@ -166,7 +166,7 @@ public class CoreBootEntrance : SimbootEntrance {
             it(listenerManager).also {
                 logger.debug("Bot registrar: {} ({})", it, it.javaClass)
             }
-        }.groupBy { r -> r.component.id.toString() }.mapValues { (key, values) ->
+        }.groupBy { r -> r.component.id.literal }.mapValues { (key, values) ->
             if (values.size != 1) {
                 logger.warn(
                     "There are multiple registrars under the component [{}], and they will be registered sequentially in a balanced manner.",
@@ -479,7 +479,7 @@ private fun CoreBootEntranceContext.findAllListener(
     val listeners = mutableMapOf<String, EventListener>()
 
     val registrar = ListListenerRegistrar { listener ->
-        val id = listener.id.toString()
+        val id = listener.id.literal
 
         if (listeners.containsKey(id)) {
             throw SimbotIllegalStateException("Duplicate listener id $id")

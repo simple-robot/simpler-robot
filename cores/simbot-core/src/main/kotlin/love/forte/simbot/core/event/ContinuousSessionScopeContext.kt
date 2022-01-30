@@ -214,7 +214,7 @@ internal class ResumedListenerManager {
         provider: CoreContinuousSessionProvider<T>,
         receiver: CoreContinuousSessionReceiver<T>
     ) {
-        val cid = id.toString()
+        val cid = id.literal
         val current = WaitingListener(listener, provider, receiver)
         listeners.merge(cid, current) { old, now ->
             logger.debug("Merge waiting listener with save id {}", cid)
@@ -229,12 +229,12 @@ internal class ResumedListenerManager {
 
     @Suppress("UNCHECKED_CAST")
     fun <T> getProvider(id: ID): ContinuousSessionProvider<T>? {
-        return listeners[id.toString()]?.provider as? ContinuousSessionProvider<T>
+        return listeners[id.literal]?.provider as? ContinuousSessionProvider<T>
     }
 
     @Suppress("UNCHECKED_CAST")
     fun <T> getReceiver(id: ID): ContinuousSessionReceiver<T>? {
-        return listeners[id.toString()]?.receiver as? ContinuousSessionReceiver<T>
+        return listeners[id.literal]?.receiver as? ContinuousSessionReceiver<T>
     }
 
     fun isEmpty(): Boolean = listeners.isEmpty()

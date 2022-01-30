@@ -210,7 +210,7 @@ public object Components {
      */
     internal fun create(
         id: CharSequenceID,
-        name: String = id.toString(),
+        name: String = id.literal,
         attributes: AttributeMutableMap
     ): Component {
         return comps.compute(id) { k, old ->
@@ -227,7 +227,7 @@ public object Components {
      *
      * @throws NoSuchComponentException 如果没有对应的 component
      */
-    public operator fun get(id: ID): Component = find(id) ?: throw NoSuchComponentException(id.toString())
+    public operator fun get(id: ID): Component = find(id) ?: throw NoSuchComponentException(id.literal)
     public operator fun get(id: String): Component = this[id.ID]
 
 

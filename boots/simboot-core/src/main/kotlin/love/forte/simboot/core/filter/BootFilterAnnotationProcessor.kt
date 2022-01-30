@@ -200,38 +200,38 @@ private fun FilterTarget.toMatcher(): suspend (Event) -> Boolean {
         }
 
         if (bots.isNotEmpty()) {
-            if (event.bot.id.toString() !in bots) {
+            if (event.bot.id.literal !in bots) {
                 return@M false
             }
         }
 
         if (authors.isNotEmpty()) {
             if (event is ChatroomMessageEvent) {
-                if (event.author().id.toString() !in authors) {
+                if (event.author().id.literal !in authors) {
                     return@M false
                 }
             }
             if (event is ContactMessageEvent) {
-                if (event.source().id.toString() !in authors) {
+                if (event.source().id.literal !in authors) {
                     return@M false
                 }
             }
         }
 
         if (groups.isNotEmpty() && event is GroupEvent) {
-            if (event.group().id.toString() !in groups) {
+            if (event.group().id.literal !in groups) {
                 return@M false
             }
         }
 
         if (channels.isNotEmpty() && event is ChannelEvent) {
-            if (event.channel().id.toString() !in channels) {
+            if (event.channel().id.literal !in channels) {
                 return@M false
             }
         }
 
         if (guilds.isNotEmpty() && event is GuildEvent) {
-            if (event.guild().id.toString() !in guilds) {
+            if (event.guild().id.literal !in guilds) {
                 return@M false
             }
         }

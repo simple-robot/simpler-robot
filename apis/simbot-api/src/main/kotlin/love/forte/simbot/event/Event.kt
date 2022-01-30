@@ -184,8 +184,8 @@ public interface Event : BotContainer, IDContainer {
                 if (from == target) return true
                 if (from in target.parents) return true
 
-                val tid = target.id.toString()
-                val fid = from.id.toString()
+                val tid = target.id.literal
+                val fid = from.id.literal
                 if (subCache.computeIfAbsent(tid) { ConcurrentSkipListSet() }.contains(fid)) {
                     return true
                 }
@@ -385,7 +385,7 @@ public infix fun Event.Key<*>.isSubFrom(parentMaybe: Event.Key<*>): Boolean {
  *
  */
 public operator fun Event.Key<*>.contains(parentIdMaybe: String): Boolean {
-    if (id.toString() == parentIdMaybe) return true
+    if (id.literal == parentIdMaybe) return true
     return parents.any { parents -> parentIdMaybe in parents }
 }
 

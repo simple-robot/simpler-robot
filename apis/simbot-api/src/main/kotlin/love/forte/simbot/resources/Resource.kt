@@ -68,7 +68,7 @@ public sealed class Resource {
          */
         @JvmStatic
         @JvmOverloads
-        public fun of(id: ID, name: String = id.toString()): IDResource = IDResource(id, name)
+        public fun of(id: ID, name: String = id.literal): IDResource = IDResource(id, name)
 
         /**
          * 使用 [URL] 作为一个 [StreamableResource].

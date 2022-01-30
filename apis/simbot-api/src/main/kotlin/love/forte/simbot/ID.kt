@@ -68,7 +68,7 @@ import java.util.concurrent.atomic.LongAdder
  * ```
  *
  * 鉴于 [ID] 的最终序列化结果为原始类型，并且是非封闭性的，
- * 因此在使用 [ID] 的时候，必须实现 [序列化][Serializable], 且使用一个具体的最终类型。
+ * 因此在序列化是时使用 [ID]，需要使用一个具体的最终类型。
  *
  * ```kotlin
  * // 直接使用具体的ID类型，比如LongID
@@ -145,6 +145,11 @@ public sealed class ID : Comparable<ID>, Cloneable {
 
     }
 }
+
+/**
+ * [ID]的字面值。等同于 [ID.toString].
+ */
+public inline val ID.literal: String get() = toString()
 
 /**
  * 将一个 [Int] 作为 [ID][IntID].
