@@ -204,7 +204,12 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
  * 一个组织的部分最基础的信息。
  *
  */
-public interface OrganizationInfo {
+public interface OrganizationInfo : IDContainer {
+
+    /**
+     * 此组织的唯一标识.
+     */
+    override val id: ID
 
     /**
      * 组织的名称。
