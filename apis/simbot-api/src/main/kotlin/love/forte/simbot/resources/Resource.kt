@@ -56,7 +56,9 @@ public interface Resource : Closeable {
      */
     public val name: String
 
-
+    /**
+     * 得到当前资源中所对应的数据流。
+     */
     @Throws(IOException::class)
     public fun openStream(): InputStream
 
@@ -148,6 +150,9 @@ public class URLResource(
     override val name: String = url.toString()
 ) : StandardStreamableResource() {
 
+    /**
+     * @see URL.openStream
+     */
     @Throws(IOException::class)
     override fun openStream(): InputStream {
         return url.openStream()
@@ -187,6 +192,9 @@ public class FileResource(
     private val doClose: () -> Unit = {}
 ) : StandardStreamableResource() {
 
+    /**
+     * @see FileInputStream
+     */
     @Throws(FileNotFoundException::class)
     override fun openStream(): FileInputStream {
         return FileInputStream(file)
