@@ -49,8 +49,6 @@ import kotlin.io.path.*
  *
  * @author ForteScarlet
  */
-@SerialName("simbot.resource")
-@Serializable
 public sealed class Resource {
 
     /**
