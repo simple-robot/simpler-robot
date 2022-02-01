@@ -40,67 +40,73 @@ import kotlin.io.path.*
 // TODO 资源api重新设计
 /**
  *
- * 一个[资源][Resource].
- *
- * [StreamableResource] 代表一个允许获取数据流的资源，这通常代表了对本地资源（比如文件）、远程资源（比如某个链接）等资源，
+ * 一个[资源][Resource]. 代表一个允许获取数据流的资源，这通常代表了对本地资源（比如文件）、远程资源（比如某个链接）等资源，
  * 一般可以使用在接收者需要上传某些资源或者得到了一些能够下载的资源的情况下。比如上传图片、下载图片。
  *
- * @see StreamableResource
+ *
+ *
+ * @see StandardStreamableResource
  *
  * @author ForteScarlet
  */
-public sealed class Resource {
+public interface Resource : Closeable {
 
     /**
      * 得到资源名称。
      */
-    public abstract val name: String
+    public val name: String
+
+
+    @Throws(IOException::class)
+    public fun openStream(): InputStream
+
+    /**
+     * [StandardStreamableResource] 在使用的过程中可能会产生一些需要手动进行 [close] 的产物，
+     * 因此在不使用 [StandardStreamableResource] 的时候，使用 [close] 对其进行关闭。
+     *
+     * @throws IOException
+     */
+    @Throws(IOException::class)
+    override fun close()
 
 
     public companion object {
 
-        // /**
-        //  * 使用 [ID] 构建一个 [IDResource].
-        //  */
-        // @JvmStatic
-        // @JvmOverloads
-        // public fun of(id: ID, name: String = id.literal): IDResource = IDResource(id, name)
-
         /**
-         * 使用 [URL] 作为一个 [StreamableResource].
+         * 使用 [URL] 作为一个 [StandardStreamableResource].
          */
         @JvmStatic
         @JvmOverloads
-        public fun of(url: URL, name: String = url.toString()): StreamableResource = URLResource(url, name)
+        public fun of(url: URL, name: String = url.toString()): StandardStreamableResource = URLResource(url, name)
 
         /**
-         * 使用 [File] 作为一个 [StreamableResource].
+         * 使用 [File] 作为一个 [StandardStreamableResource].
          */
         @JvmStatic
         @JvmOverloads
-        public fun of(file: File, name: String = file.toString()): StreamableResource = FileResource(file, name)
+        public fun of(file: File, name: String = file.toString()): StandardStreamableResource = FileResource(file, name)
 
         /**
-         * 使用 [Path] 作为一个 [StreamableResource].
+         * 使用 [Path] 作为一个 [StandardStreamableResource].
          */
         @JvmStatic
         @JvmOverloads
-        public fun of(path: Path, name: String = path.toString()): StreamableResource = PathResource(path, name)
+        public fun of(path: Path, name: String = path.toString()): StandardStreamableResource = PathResource(path, name)
 
         /**
-         * 使用字节数组作为一个 [StreamableResource].
+         * 使用字节数组作为一个 [StandardStreamableResource].
          */
         @JvmStatic
-        public fun of(byteArray: ByteArray, name: String): StreamableResource = ByteArrayResource(name, byteArray)
+        public fun of(byteArray: ByteArray, name: String): StandardStreamableResource = ByteArrayResource(name, byteArray)
 
         /**
-         * 拷贝提供的 [inputStream] 并作为 [StreamableResource] 返回。
+         * 拷贝提供的 [inputStream] 并作为 [StandardStreamableResource] 返回。
          * 不会自动关闭 [inputStream], 需要由调用者处理。
          */
         @JvmStatic
         @JvmOverloads
         @Throws(IOException::class)
-        public fun of(inputStream: InputStream, name: String? = null): StreamableResource {
+        public fun of(inputStream: InputStream, name: String? = null): StandardStreamableResource {
             val temp = createTempFile(
                 Path(".simbot/tmp").also {
                     Files.createDirectories(it)
@@ -114,55 +120,25 @@ public sealed class Resource {
         }
     }
 }
-//
-// /**
-//  * 一个提供了 [id] 信息的 [Resource].
-//  *
-//  * [IDResource] 通常情况下用于作为参数提供者来提供一个资源的标识，并由接受者来自行处理。
-//  *
-//  * @see Resource.of
-//  */
-// @SerialName("simbot.resource.id")
-// @Serializable
-// public open class IDResource(
-//     @Serializable(ID.AsCharSequenceIDSerializer::class)
-//     public override val id: ID, override val name: String
-// ) : Resource(), IDContainer {
-//     override fun toString(): String {
-//         return "Resource(id=$id, name=$name)"
-//     }
-// }
 
 
 /**
- * 提供一个可以开启输入流的 [Resource] 实例。
+ * 提供一个可以开启输入流的 [Resource] 实例,
  *
  * 通过 [openStream] 得到的数据流不会被管理，应当由使用者自行管理、关闭。
  *
- * [StreamableResource] 实现 [Closeable],
- * 一个被 close 的 [StreamableResource] 将不应再继续使用，但是 [StreamableResource.close] 不会影响到已经产生的流对象。
+ * [StandardStreamableResource] 实现 [Closeable],
+ * 一个被 close 的 [StandardStreamableResource] 将不应再继续使用，但是 [StandardStreamableResource.close] 不会影响到已经产生的流对象。
  *
  * @see Resource.of
  */
 @SerialName("simbot.resource.streamable")
 @Serializable
-public sealed class StreamableResource : Resource(), Closeable {
-    @Throws(IOException::class)
-    public abstract fun openStream(): InputStream
-
-    /**
-     * [StreamableResource] 在使用的过程中可能会产生一些需要手动进行 [close] 的产物，
-     * 因此在不使用 [StreamableResource] 的时候，使用 [close] 对其进行关闭。
-     *
-     * @throws IOException
-     */
-    @Throws(IOException::class)
-    abstract override fun close()
-}
+public sealed class StandardStreamableResource : Resource, Closeable
 
 
 /**
- * 使用[URL]作为输入流来源的 [StreamableResource].
+ * 使用[URL]作为输入流来源的 [StandardStreamableResource].
  */
 @SerialName("simbot.resource.url")
 @Serializable
@@ -170,7 +146,7 @@ public class URLResource(
     @Serializable(URLSerializer::class)
     public val url: URL,
     override val name: String = url.toString()
-) : StreamableResource() {
+) : StandardStreamableResource() {
 
     @Throws(IOException::class)
     override fun openStream(): InputStream {
@@ -199,7 +175,7 @@ internal object URLSerializer : KSerializer<URL> {
 }
 
 /**
- * 使用[File]作为输入流来源的 [StreamableResource].
+ * 使用[File]作为输入流来源的 [StandardStreamableResource].
  */
 @SerialName("simbot.resource.file")
 @Serializable
@@ -209,7 +185,7 @@ public class FileResource(
     override val name: String = file.toString(),
     @Transient
     private val doClose: () -> Unit = {}
-) : StreamableResource() {
+) : StandardStreamableResource() {
 
     @Throws(FileNotFoundException::class)
     override fun openStream(): FileInputStream {
@@ -244,7 +220,7 @@ internal object FileSerializer : KSerializer<File> {
 
 
 /**
- * 使用[Path]作为输入流来源的 [StreamableResource].
+ * 使用[Path]作为输入流来源的 [StandardStreamableResource].
  *
  * @property doClose 当执行 [close] 时可以选择提供执行操作。
  */
@@ -256,7 +232,7 @@ public class PathResource(
     override val name: String = path.toString(),
     @Transient
     private val doClose: () -> Unit = {}
-) : StreamableResource() {
+) : StandardStreamableResource() {
 
     @Throws(IOException::class)
     override fun openStream(): InputStream = path.inputStream(StandardOpenOption.READ)
@@ -285,11 +261,11 @@ internal object PathSerializer : KSerializer<Path> {
 }
 
 /**
- * 使用 [ByteArray] 字节数组作为输入流来源的 [StreamableResource].
+ * 使用 [ByteArray] 字节数组作为输入流来源的 [StandardStreamableResource].
  */
 @SerialName("simbot.resource.bytes")
 @Serializable
-public class ByteArrayResource(override val name: String, private val byteArray: ByteArray) : StreamableResource() {
+public class ByteArrayResource(override val name: String, private val byteArray: ByteArray) : StandardStreamableResource() {
     /**
      * 得到当前资源中字节数组的**副本**。
      */
@@ -338,16 +314,16 @@ public class ByteArrayResource(override val name: String, private val byteArray:
 
 // public fun ID.toResource(name: String): IDResource = Resource.of(this, name)
 
-public fun URL.toResource(name: String = this.toString()): StreamableResource = Resource.of(this, name)
+public fun URL.toResource(name: String = this.toString()): StandardStreamableResource = Resource.of(this, name)
 
-public fun File.toResource(name: String = this.toString()): StreamableResource = Resource.of(this, name)
+public fun File.toResource(name: String = this.toString()): StandardStreamableResource = Resource.of(this, name)
 
-public fun Path.toResource(name: String = this.toString()): StreamableResource = Resource.of(this, name)
+public fun Path.toResource(name: String = this.toString()): StandardStreamableResource = Resource.of(this, name)
 
-public fun ByteArray.toResource(name: String): StreamableResource = Resource.of(this, name)
-
-@Throws(IOException::class)
-public fun InputStream.toResource(name: String? = null): StreamableResource = Resource.of(this, name)
+public fun ByteArray.toResource(name: String): StandardStreamableResource = Resource.of(this, name)
 
 @Throws(IOException::class)
-public fun InputStream.useToResource(name: String? = null): StreamableResource = this.use { i -> i.toResource(name) }
+public fun InputStream.toResource(name: String? = null): StandardStreamableResource = Resource.of(this, name)
+
+@Throws(IOException::class)
+public fun InputStream.useToResource(name: String? = null): StandardStreamableResource = this.use { i -> i.toResource(name) }
