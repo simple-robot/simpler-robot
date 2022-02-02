@@ -16,7 +16,7 @@
  */
 
 import kotlinx.serialization.json.Json
-import love.forte.simbot.resources.StandardStreamableResource
+import love.forte.simbot.resources.StandardResource
 import love.forte.simbot.resources.toResource
 import kotlin.io.path.Path
 
@@ -24,11 +24,11 @@ fun main() {
 
     val r = Path(".").toResource()
 
-    val json = Json.encodeToString(StandardStreamableResource.serializer(), r)
+    val json = Json.encodeToString(StandardResource.serializer(), r)
 
     println(json)
 
-    val resource = Json.decodeFromString(StandardStreamableResource.serializer(), json)
+    val resource = Json.decodeFromString(StandardResource.serializer(), json)
 
     println(resource)
 }
