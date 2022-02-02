@@ -28,6 +28,9 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import love.forte.simbot.ID
+import love.forte.simbot.definition.IDContainer
+import love.forte.simbot.literal
 import java.io.*
 import java.net.URL
 import java.nio.file.Files
@@ -36,13 +39,10 @@ import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 import kotlin.io.path.*
 
-
 /**
  *
  * 一个[资源][Resource]. 代表一个允许获取数据流的资源，这通常代表了对本地资源（比如文件）、远程资源（比如某个链接）等资源，
  * 一般可以使用在接收者需要上传某些资源或者得到了一些能够下载的资源的情况下。比如上传图片、下载图片。
- *
- *
  *
  * @see StandardResource
  *
@@ -132,7 +132,6 @@ public interface Resource : Closeable {
  * 通过 [openStream] 得到的数据流不会被管理，应当由使用者自行管理、关闭。
  *
  *
- * [StandardResource]
  *
  * @see Resource.of
  */
