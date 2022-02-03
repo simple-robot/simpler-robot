@@ -57,6 +57,11 @@ public interface UserEvent : ObjectiveEvent, UserInfoContainer {
 }
 
 
+public suspend inline fun <R> UserEvent.inUser(block: (User) -> R): R {
+    return user().let(block)
+}
+
+
 public suspend inline fun <R> UserEvent.useUser(block: User.() -> R): R {
     return user().let(block)
 }
@@ -90,6 +95,10 @@ public interface MemberEvent : UserEvent, MemberInfoContainer {
     }
 }
 
+
+public suspend inline fun <R> MemberEvent.inMember(block: (Member) -> R): R {
+    return member().let(block)
+}
 
 public suspend inline fun <R> MemberEvent.useMember(block: Member.() -> R): R {
     return member().let(block)
@@ -125,6 +134,10 @@ public interface FriendEvent : UserEvent, FriendInfoContainer {
 }
 
 
+public suspend inline fun <R> FriendEvent.inFriend(block: (Friend) -> R): R {
+    return friend().let(block)
+}
+
 public suspend inline fun <R> FriendEvent.useFriend(block: Friend.() -> R): R {
     return friend().let(block)
 }
@@ -154,7 +167,11 @@ public interface OrganizationEvent : ObjectiveEvent {
 }
 
 
-public suspend inline fun <R> OrganizationEvent.useOrganization(block: Organization.() -> R): R {
+public suspend inline fun <R> OrganizationEvent.inOrganization(block: Organization.() -> R): R {
+    return organization().let(block)
+}
+
+public suspend inline fun <R> OrganizationEvent.useOrganization(block: (Organization) -> R): R {
     return organization().let(block)
 }
 
@@ -180,7 +197,11 @@ public interface GroupEvent : OrganizationEvent, GroupInfoContainer {
 }
 
 
-public suspend inline fun <R> GroupEvent.useGroup(block: Group.() -> R): R {
+public suspend inline fun <R> GroupEvent.inGroup(block: Group.() -> R): R {
+    return group().let(block)
+}
+
+public suspend inline fun <R> GroupEvent.useGroup(block: (Group) -> R): R {
     return group().let(block)
 }
 
@@ -206,7 +227,11 @@ public interface GuildEvent : OrganizationEvent {
 }
 
 
-public suspend inline fun <R> GuildEvent.useGuild(block: Guild.() -> R): R {
+public suspend inline fun <R> GuildEvent.inGuild(block: Guild.() -> R): R {
+    return guild().let(block)
+}
+
+public suspend inline fun <R> GuildEvent.useGuild(block: (Guild) -> R): R {
     return guild().let(block)
 }
 
@@ -231,7 +256,12 @@ public interface ChannelEvent : OrganizationEvent {
 }
 
 
-public suspend inline fun <R> ChannelEvent.useChannel(block: Channel.() -> R): R {
+public suspend inline fun <R> ChannelEvent.inChannel(block: Channel.() -> R): R {
+    return channel().let(block)
+}
+
+
+public suspend inline fun <R> ChannelEvent.useChannel(block: (Channel) -> R): R {
     return channel().let(block)
 }
 
