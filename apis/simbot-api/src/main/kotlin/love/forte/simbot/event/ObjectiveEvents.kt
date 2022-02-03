@@ -47,13 +47,20 @@ public interface UserEvent : ObjectiveEvent, UserInfoContainer {
     override suspend fun user(): User
 
     @Api4J
-    override val user: User get() = runInBlocking { user() }
+    override val user: User
+        get() = runInBlocking { user() }
 
     public companion object Key : BaseEventKey<UserEvent>("api.user") {
         override fun safeCast(value: Any): UserEvent? = doSafeCast(value)
     }
 
 }
+
+
+public suspend inline fun <R> UserEvent.useUser(block: User.() -> R): R {
+    return user().let(block)
+}
+
 
 /**
  * 一个与 [成员][Member] 相关的事件。
@@ -81,6 +88,11 @@ public interface MemberEvent : UserEvent, MemberInfoContainer {
     public companion object Key : BaseEventKey<MemberEvent>("api.member", UserEvent) {
         override fun safeCast(value: Any): MemberEvent? = doSafeCast(value)
     }
+}
+
+
+public suspend inline fun <R> MemberEvent.useMember(block: Member.() -> R): R {
+    return member().let(block)
 }
 
 
@@ -112,6 +124,12 @@ public interface FriendEvent : UserEvent, FriendInfoContainer {
     }
 }
 
+
+public suspend inline fun <R> FriendEvent.useFriend(block: Friend.() -> R): R {
+    return friend().let(block)
+}
+
+
 //endregion
 
 
@@ -135,6 +153,12 @@ public interface OrganizationEvent : ObjectiveEvent {
     }
 }
 
+
+public suspend inline fun <R> OrganizationEvent.useOrganization(block: Organization.() -> R): R {
+    return organization().let(block)
+}
+
+
 /**
  * 一个与 [群][Group] 相关的事件。
  */
@@ -153,6 +177,11 @@ public interface GroupEvent : OrganizationEvent, GroupInfoContainer {
     public companion object Key : BaseEventKey<GroupEvent>("api.group", OrganizationEvent) {
         override fun safeCast(value: Any): GroupEvent? = doSafeCast(value)
     }
+}
+
+
+public suspend inline fun <R> GroupEvent.useGroup(block: Group.() -> R): R {
+    return group().let(block)
 }
 
 
@@ -177,6 +206,11 @@ public interface GuildEvent : OrganizationEvent {
 }
 
 
+public suspend inline fun <R> GuildEvent.useGuild(block: Guild.() -> R): R {
+    return guild().let(block)
+}
+
+
 /**
  * 一个与 [频道][Channel] 相关的事件。
  */
@@ -195,6 +229,12 @@ public interface ChannelEvent : OrganizationEvent {
         override fun safeCast(value: Any): ChannelEvent? = doSafeCast(value)
     }
 }
+
+
+public suspend inline fun <R> ChannelEvent.useChannel(block: Channel.() -> R): R {
+    return channel().let(block)
+}
+
 
 //endregion
 
