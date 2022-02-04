@@ -23,6 +23,8 @@ import love.forte.simbot.Component
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotComponent
 import love.forte.simbot.definition.IDContainer
+import love.forte.simbot.message.At.Key.equals
+import love.forte.simbot.message.At.Key.hashCode
 import love.forte.simbot.message.Text.Key.getEmptyText
 import love.forte.simbot.message.Text.Key.of
 import love.forte.simbot.resources.Resource
@@ -144,13 +146,28 @@ public data class At @JvmOverloads constructor(
     public val atType: String = "user",
 
     /**
-     * 这个at在原始数据中或者原始事件中的样子。默认情况下，是字符串 '@[target]'
+     * 这个at在原始数据中或者原始事件中的样子。默认情况下，是字符串 '@[target]'。
+     * 此值将不会参与 [equals] 于 [hashCode] 的计算。
      */
     @SerialName("origin_content")
     public val originContent: String = "@$target"
 
 ) : BaseStandardMessage<At>() {
     override val key: Message.Key<At> get() = Key
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is At) return false
+        return other.target == target && other.atType == atType
+    }
+
+
+
+    override fun hashCode(): Int {
+        return 31 * target.hashCode() + atType.hashCode()
+    }
+
+
 
     public companion object Key : Message.Key<At> {
         override val component: Component get() = SimbotComponent
