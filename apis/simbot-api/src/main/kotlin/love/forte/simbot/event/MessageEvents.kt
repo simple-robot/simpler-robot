@@ -202,6 +202,10 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
 }
 
 
+public inline suspend fun <R> ChatroomMessageEvent.useAuthor(block: (Member) -> R): R = author().let(block)
+public inline suspend fun <R> ChatroomMessageEvent.inAuthor(block: Member.() -> R): R = author().let(block)
+
+
 /**
  *  代表一个来自[群][Group]的消息事件。
  *

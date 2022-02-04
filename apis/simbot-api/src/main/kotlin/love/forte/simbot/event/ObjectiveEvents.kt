@@ -57,8 +57,8 @@ public interface UserEvent : ObjectiveEvent, UserInfoContainer {
 }
 
 
-public suspend inline fun <R> UserEvent.inUser(block: (User) -> R): R = user().let(block)
-public suspend inline fun <R> UserEvent.useUser(block: User.() -> R): R = user().let(block)
+public suspend inline fun <R> UserEvent.inUser(block: User.() -> R): R = user().let(block)
+public suspend inline fun <R> UserEvent.useUser(block: (User) -> R): R = user().let(block)
 
 
 
@@ -91,8 +91,8 @@ public interface MemberEvent : UserEvent, MemberInfoContainer {
 }
 
 
-public suspend inline fun <R> MemberEvent.inMember(block: (Member) -> R): R = member().let(block)
-public suspend inline fun <R> MemberEvent.useMember(block: Member.() -> R): R = member().let(block)
+public suspend inline fun <R> MemberEvent.inMember(block: Member.() -> R): R = member().let(block)
+public suspend inline fun <R> MemberEvent.useMember(block: (Member) -> R): R = member().let(block)
 
 
 
@@ -125,8 +125,8 @@ public interface FriendEvent : UserEvent, FriendInfoContainer {
 }
 
 
-public suspend inline fun <R> FriendEvent.inFriend(block: (Friend) -> R): R = friend().let(block)
-public suspend inline fun <R> FriendEvent.useFriend(block: Friend.() -> R): R = friend().let(block)
+public suspend inline fun <R> FriendEvent.inFriend(block: Friend.() -> R): R = friend().let(block)
+public suspend inline fun <R> FriendEvent.useFriend(block: (Friend) -> R): R = friend().let(block)
 
 
 
