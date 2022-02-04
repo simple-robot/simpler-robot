@@ -49,7 +49,8 @@ public fun TargetFilter.toData(source: Any? = null): TargetFilterData {
         authors = authors.toList(),
         groups = groups.toList(),
         channels = channels.toList(),
-        guilds = guilds.toList()
+        guilds = guilds.toList(),
+        atBot = atBot
     )
 }
 

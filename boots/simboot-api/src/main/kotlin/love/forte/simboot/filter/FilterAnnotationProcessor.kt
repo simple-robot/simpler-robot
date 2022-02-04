@@ -58,6 +58,7 @@ public data class FilterData(
  * @property groups same as [love.forte.simboot.annotation.TargetFilter].groups
  * @property channels same as [love.forte.simboot.annotation.TargetFilter].channels
  * @property guilds same as [love.forte.simboot.annotation.TargetFilter].guilds
+ * @property atBot same as [love.forte.simboot.annotation.TargetFilter].atBot
  */
 public data class TargetFilterData(
     val source: Any?,
@@ -66,7 +67,8 @@ public data class TargetFilterData(
     val authors: List<String> = emptyList(),
     val groups: List<String> = emptyList(),
     val channels: List<String> = emptyList(),
-    val guilds: List<String> = emptyList()
+    val guilds: List<String> = emptyList(),
+    val atBot: Boolean = false
 )
 
 /**

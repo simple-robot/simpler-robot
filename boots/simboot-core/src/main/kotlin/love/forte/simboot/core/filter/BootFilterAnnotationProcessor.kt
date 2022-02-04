@@ -25,6 +25,7 @@ import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.core.event.coreFilter
 import love.forte.simbot.event.*
 import love.forte.simbot.literal
+import love.forte.simbot.message.At
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
@@ -133,6 +134,7 @@ private data class FilterTarget(
     val groups: Set<String>,
     val channels: Set<String>,
     val guilds: Set<String>,
+    val atBot: Boolean
 )
 
 private fun TargetFilterData.box(): FilterTarget? {
@@ -142,7 +144,8 @@ private fun TargetFilterData.box(): FilterTarget? {
         authors.isEmpty() &&
         groups.isEmpty() &&
         channels.isEmpty() &&
-        guilds.isEmpty()
+        guilds.isEmpty() &&
+        !atBot
     ) {
         return null
     }
@@ -153,7 +156,8 @@ private fun TargetFilterData.box(): FilterTarget? {
         authors.toSet(),
         groups.toSet(),
         channels.toSet(),
-        guilds.toSet()
+        guilds.toSet(),
+        atBot
     )
 
 }
@@ -233,6 +237,13 @@ private fun FilterTarget.toMatcher(): suspend (Event) -> Boolean {
 
         if (guilds.isNotEmpty() && event is GuildEvent) {
             if (event.guild().id.literal !in guilds) {
+                return@M false
+            }
+        }
+
+        // atBot
+        if (atBot && event is ChatroomMessageEvent) {
+            if (event.messageContent.messages.none { it is At && it.target == event.bot.id }) {
                 return@M false
             }
         }

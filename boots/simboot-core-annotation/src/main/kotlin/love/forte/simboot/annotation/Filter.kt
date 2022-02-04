@@ -128,17 +128,57 @@ public annotation class Filter(
 
 
 /**
- * 针对目标对象（例如事件组件、bot、群、联系人等）的匹配规则，不可标记在任何地方，作为 [Filter] 的参数 [Filter.target].
+ * 针对目标对象（例如事件组件、bot、群、联系人等）的匹配规则，不可标记在任何地方，作为 [Filter] 的参数 [target][Filter.target] 使用.
  *
- * 以下所有属性的匹配结果为并集，即全部匹配成功后得到true。如果是多个参数，假如参数为空，则认为其永远为 true.
+ * 以下所有属性的匹配结果为并集，即**全部**匹配成功后得到true。假如某参数为空，则认为其为 `true`.
  *
  * @property components 对接收事件的组件匹配. 大多数情况下，对于组件的唯一ID，组件实现库都应当有所说明或通过常量提供。 `["comp1", "comp2"]`
- * @property bots 对接收事件的botID匹配。
- * @property authors 对消息发送者的ID匹配。
- * @property groups 如果这是个[群相关事件][GroupEvent] ，则对群ID匹配。
- * @property channels 如果是个[频道相关事件][ChannelEvent], 则对频道ID匹配。
- * @property guilds 如果是个[频道服务器相关事件][GuildEvent], 则对频道服务器ID匹配。
  *
+ * 相当于:
+ * ```kotlin
+ *  event.component.id.literal in components
+ * ```
+ *
+ * 除了通过此 [components] 作为组件的筛选条件，直接监听一个组件下特有的事件类型能够更好的起到组件过滤的作用。
+ * @property bots 对接收事件的botID匹配。
+ *
+ * 相当于:
+ * ```kotlin
+ * event.bot.id.literal in bots
+ * ```
+ * @property authors 对消息发送者的ID匹配。
+ *
+ * 相当于:
+ * ```kotlin
+ * event.author().id.literal in authors
+ * ```
+ * @property groups 如果这是个[群相关事件][GroupEvent] ，则对群ID匹配。
+ *
+ * 相当于:
+ * ```kotlin
+ * event.group().id.literal in groups
+ * ```
+ *
+ * @property channels 如果是个[子频道相关事件][ChannelEvent], 则对频道ID匹配。
+ *
+ * 相当于:
+ * ```kotlin
+ * event.channel().id.literal in channels
+ * ```
+ * @property guilds 如果是个[频道服务器相关事件][GuildEvent], 则对频道服务器ID匹配。
+ * @property atBot 只有当前消息中存在任意一个 [At.target][love.forte.simbot.message.At.target] == event.bot.id 的 [At][love.forte.simbot.message.At] 消息的时候才会通过匹配。
+ *
+ * 相当于:
+ * ```kotlin
+ * event.messageContent.messages.any { it is At && it.target == event.bot.id }
+ * ```
+ * 此参数只有在当前事件类型为 [ChatroomMessageEvent][love.forte.simbot.event.ChatroomMessageEvent] 的时候才会生效，且建议配合 [ContentTrim] 一起使用。
+ *
+ * 需要注意的是, [atBot] 的匹配结果**不一定准确**，例如当 bot.id 与实际的at目标ID不一致的时候。是否准确由对应组件下Bot、At等相关内容的构建与实现方式有关。此问题获取会在后续版本提供一个约定接口来完善相关匹配。
+ *
+ * @see Filter
+ * @see love.forte.simboot.core.listener.StandardListenerAnnotationProcessor
+ * @see love.forte.simboot.core.filter.BootFiltersAnnotationProcessor
  */
 @Retention(AnnotationRetention.SOURCE)
 public annotation class TargetFilter(
@@ -147,7 +187,8 @@ public annotation class TargetFilter(
     val authors: Array<String> = [],
     val groups: Array<String> = [],
     val channels: Array<String> = [],
-    val guilds: Array<String> = []
+    val guilds: Array<String> = [],
+    val atBot: Boolean = false
 )
 
 
