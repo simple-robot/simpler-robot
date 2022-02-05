@@ -197,7 +197,7 @@ public annotation class TargetFilter(
  *
  *
  * @property value 所有子过滤器。
- * @property multiMatchType 多个过滤器之间的匹配策略。
+ * @property multiMatchType 多个过滤器之间的匹配策略。默认情况下为 [any][MultiFilterMatchType.ANY] 匹配。
  * @property processor 当前注解应使用的注解处理器。
  * 对应的处理器类型如果是 `object` 类型，则会直接获取其实例。
  *
@@ -212,6 +212,6 @@ public annotation class TargetFilter(
 @MustBeDocumented
 public annotation class Filters(
     vararg val value: Filter,
-    val multiMatchType: MultiFilterMatchType = MultiFilterMatchType.ALL,
+    val multiMatchType: MultiFilterMatchType = MultiFilterMatchType.ANY,
     val processor: KClass<out FiltersAnnotationProcessor> = FiltersAnnotationProcessor::class
 )
