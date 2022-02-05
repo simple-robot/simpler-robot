@@ -36,7 +36,7 @@ sealed class P : SimbotProject() {
     sealed class ForteDI(id: String) : Dep(GROUP, "di-$id", VERSION) {
         companion object {
             const val GROUP = "love.forte.di"
-            const val VERSION = "0.0.1"
+            const val VERSION = "0.0.3"
         }
         object Api : ForteDI("api")
         object Core : ForteDI("core")
