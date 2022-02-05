@@ -39,7 +39,7 @@ import kotlin.reflect.KClass
  *
  * @property target 目标过滤内容 see [TargetFilter]
  * @property and 可以再提供一个 `&` 与关系的子过滤器，最终结果为 `当前filter && and-filters`
- *
+ * # 注意：尚未实现！
  * ### Kotlin
  * ```kotlin
  * @Filter("Foo1")
@@ -70,7 +70,7 @@ import kotlin.reflect.KClass
  * 不建议在注解中存在过多的filter嵌套，假如有需要，考虑使用 [processor].
  *
  * @property or 可以再提供一个 `|` 或关系的子过滤器，最终结果为 `当前filter || and-filters`.
- *
+ * # 注意：尚未实现！
  * ### Kotlin
  * ```kotlin
  * @Filter("Foo1")
@@ -121,10 +121,30 @@ public annotation class Filter(
     // val valueSelector: TODO value 目标选择器?
     val matchType: MatchType = MatchType.REGEX_MATCHES,
     val target: TargetFilter = TargetFilter(),
-    val and: Filters = Filters(),
-    val or: Filters = Filters(),
+    /*
+        原本，and和or的定义都是 Filters。
+        但是Java规范中不允许注解的嵌套，尽管这在Kotlin中是允许的，但是会导致很多兼容问题，例如无法在Spring中使用此注解。
+        你可以参考：
+        stackoverflow:    https://stackoverflow.com/questions/7075761/java-cyclic-annotations
+        springboot issue: https://github.com/spring-projects/spring-boot/issues/29662
+     */
+
+    @Suppress("DEPRECATION") @Deprecated("尚未实现")
+    val and: AndFilters = AndFilters(),
+
+    @Suppress("DEPRECATION") @Deprecated("尚未实现")
+    val or: OrFilters = OrFilters(),
+
     val processor: KClass<out FilterAnnotationProcessor> = FilterAnnotationProcessor::class,
 )
+
+@Deprecated("对于嵌套注解的兼容，会在未来提供实现")
+@Retention(AnnotationRetention.SOURCE)
+public annotation class AndFilters
+
+@Deprecated("对于嵌套注解的兼容，会在未来提供实现")
+@Retention(AnnotationRetention.SOURCE)
+public annotation class OrFilters
 
 
 /**
