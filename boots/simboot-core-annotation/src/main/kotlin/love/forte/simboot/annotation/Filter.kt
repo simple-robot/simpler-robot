@@ -174,7 +174,7 @@ public annotation class Filter(
  * ```
  * 此参数只有在当前事件类型为 [ChatroomMessageEvent][love.forte.simbot.event.ChatroomMessageEvent] 的时候才会生效，且建议配合 [ContentTrim] 一起使用。
  *
- * 需要注意的是, [atBot] 的匹配结果**不一定准确**，例如当 bot.id 与实际的at目标ID不一致的时候。是否准确由对应组件下Bot、At等相关内容的构建与实现方式有关。此问题获取会在后续版本提供一个约定接口来完善相关匹配。
+ * 需要注意的是, [atBot] 的匹配结果**不一定准确**，例如当 bot.id 与实际的at目标ID不一致的时候。是否准确由对应组件下Bot、At等相关内容的构建与实现方式有关。此问题或许会在后续版本提供一个约定接口来完善相关匹配。
  *
  * @see Filter
  * @see love.forte.simboot.core.listener.StandardListenerAnnotationProcessor
