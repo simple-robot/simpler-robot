@@ -48,7 +48,7 @@ sealed class P : SimbotProject() {
     sealed class AnnotationTool(id: String) : Dep(GROUP, id, VERSION) {
         companion object {
             const val GROUP = "love.forte.annotation-tool"
-            const val VERSION = "0.6.1"
+            const val VERSION = "0.6.2"
         }
         object Api : AnnotationTool("api")
         object Core : AnnotationTool("core")
