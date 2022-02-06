@@ -84,7 +84,7 @@ public data class TargetFilterData(
 public data class FiltersData(
     val source: Any?,
     val value: List<FilterData> = emptyList(),
-    val multiMatchType: MultiFilterMatchType = MultiFilterMatchType.ALL,
+    val multiMatchType: MultiFilterMatchType = MultiFilterMatchType.ANY,
     val processor: KClass<out FiltersAnnotationProcessor> = FiltersAnnotationProcessor::class,
 )
 

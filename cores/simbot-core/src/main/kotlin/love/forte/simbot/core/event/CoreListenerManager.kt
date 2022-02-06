@@ -213,9 +213,10 @@ public class CoreListenerManager private constructor(
                             invoker(bot, listenerContext)
                         }
                         val result = if (handleResult.isFailure) {
+                            val err = handleResult.exceptionOrNull()
                             invoker.listener.logger.error(
-                                "Listener process failed.",
-                                handleResult.exceptionOrNull()!!
+                                "Listener process failed: $err",
+                                err!!
                             )
                             EventResult.invalid()
                         } else {

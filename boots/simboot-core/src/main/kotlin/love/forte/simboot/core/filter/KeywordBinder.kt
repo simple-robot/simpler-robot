@@ -18,12 +18,14 @@
 package love.forte.simboot.core.filter
 
 import love.forte.annotationtool.core.KAnnotationTool
+import love.forte.annotationtool.core.nonConverters
 import love.forte.simboot.annotation.FilterValue
 import love.forte.simboot.listener.BindException
 import love.forte.simboot.listener.ParameterBinder
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.listener.ParameterBinderResult
 import love.forte.simbot.event.EventListenerProcessingContext
+import kotlin.reflect.KClass
 
 /**
  *
@@ -35,18 +37,29 @@ public object KeywordBinderFactory : ParameterBinderFactory {
     override fun resolveToBinder(context: ParameterBinderFactory.Context): ParameterBinderResult {
         val tool = KAnnotationTool()
         val value = tool.getAnnotation(context.parameter, FilterValue::class) ?: return ParameterBinderResult.empty()
+        val paramType = context.parameter.type as? KClass<*>
         return ParameterBinderResult.normal(
-            if (value.required) KeywordBinder.Required(value.value) else KeywordBinder.NotRequired(
-                value.value
-            )
+            if (value.required)
+                KeywordBinder.Required(value.value, paramType)
+            else KeywordBinder.NotRequired(value.value, paramType)
         )
     }
 }
 
 
-private sealed class KeywordBinder(val name: String) : ParameterBinder {
+private sealed class KeywordBinder(val name: String, val paramType: KClass<*>?) : ParameterBinder {
 
-    class Required(name: String) : KeywordBinder(name) {
+    private val converter: (Any) -> Any = if (paramType != null && paramType != String::class) {
+        {
+            nonConverters().convert(instance = it, to = paramType)
+        }
+    } else {
+        { it }
+    }
+
+    protected fun convert(param: Any): Any = converter(param)
+
+    class Required(name: String, paramType: KClass<*>?) : KeywordBinder(name, paramType) {
         override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
             val keywords = context.listener.getAttribute(KeywordsAttribute)
                 ?: return Result.failure(BindException("Current listener function does not have any keyword"))
@@ -55,21 +68,23 @@ private sealed class KeywordBinder(val name: String) : ParameterBinder {
                 context.textContent ?: return Result.failure(BindException("Current event's textContent is null."))
 
             for (keyword in keywords) {
-                val param = keyword.matcherValue.getParam(textContent, name)
-                if (param != null) return Result.success(param)
+                val param = keyword.matcherValue.getParam(name, textContent)
+                if (param != null) {
+                    return Result.success(convert(param))
+                }
             }
 
             return Result.failure(BindException("No keyword matched successfully."))
         }
     }
 
-    class NotRequired(name: String) : KeywordBinder(name) {
+    class NotRequired(name: String, paramType: KClass<*>?) : KeywordBinder(name, paramType) {
         override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
             val keywords = context.listener.getAttribute(KeywordsAttribute) ?: return Result.success(null)
             val textContent = context.textContent ?: return Result.success(null)
             for (keyword in keywords) {
-                val param = keyword.matcherValue.getParam(textContent, name)
-                if (param != null) return Result.success(param)
+                val param = keyword.matcherValue.getParam(name, textContent)
+                if (param != null) return Result.success(convert(param))
             }
 
             return Result.success(null)

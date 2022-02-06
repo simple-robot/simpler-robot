@@ -297,9 +297,33 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
         // id in data
         val dataId = context.listenerData.id.takeIf { it.isNotEmpty() }?.ID
 
+        fun StringBuilder.paramAppend(parameters: List<KParameter>) {
+            parameters.forEachIndexed { i, p ->
+                if (i != 0) append(',')
+                append((p.type.classifier as? KClass<*>)?.let { c -> c.qualifiedName ?: c.jvmName }
+                    ?: p.type.toString())
+            }
+        }
+
         val id = dataId ?: fromInstance?.let { f ->
-            "${f.qualifiedName ?: f.jvmName}.$name".ID
-        } ?: name.ID
+            val idStr = buildString {
+                append(f.qualifiedName ?: f.jvmName).append('.').append(name)
+                if (parameters.isNotEmpty()) {
+                    append('(')
+                    paramAppend(parameters)
+                    append(')')
+                }
+            }
+
+            idStr.ID
+        } ?: buildString {
+            append(name)
+            if (parameters.isNotEmpty()) {
+                append('(')
+                paramAppend(parameters)
+                append(')')
+            }
+        }.ID
 
         return id
 
@@ -496,7 +520,7 @@ private class MergedBinder(
                 if (result != null) return result
             }
 
-            Result.failure<Any?>(BindException("Nothing binder success.", err))
+            Result.failure<Any?>(BindException("Nothing binder success. listener id: ${context.listener.id}", err))
         }.getOrElse { binderInvokeException ->
             err?.also {
                 binderInvokeException.addSuppressed(it)
