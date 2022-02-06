@@ -200,8 +200,8 @@ public class CoreListenerManager private constructor(
         context: EventProcessingContext,
         invokers: List<ListenerInvoker>
     ): EventProcessingResult {
-        val bot = context.event.bot
-        val dispatchContext = context.event.bot.coroutineContext + managerCoroutineContext
+        val currentBot = context.event.bot
+        val dispatchContext = currentBot.coroutineContext + managerCoroutineContext
 
         return withContext(dispatchContext + context) {
             kotlin.runCatching {
@@ -210,7 +210,7 @@ public class CoreListenerManager private constructor(
                     for (invoker in invokers) {
                         val listenerContext = context.withListener(invoker.listener)
                         val handleResult = runForEventResultWithHandler {
-                            invoker(bot, listenerContext)
+                            invoker(currentBot, listenerContext)
                         }
                         val result = if (handleResult.isFailure) {
                             val err = handleResult.exceptionOrNull()
@@ -234,7 +234,7 @@ public class CoreListenerManager private constructor(
                     CoreEventProcessingResult(context.results)
                 }
             }.getOrElse {
-                bot.logger.error("Event process failed.", it)
+                currentBot.logger.error("Event process failed.", it)
                 EventProcessingResult
             }
         }
@@ -292,12 +292,18 @@ public class CoreListenerManager private constructor(
             EventInterceptEntrance.eventListenerInterceptEntrance(listener, listenerIntercepts)
 
         private val function: suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult =
-            if (isAsync) { scope, context ->
-                EventResult.async(scope.async {
-                    listenerInterceptEntrance.doIntercept(context, listener::invoke)
-                })
+            if (isAsync) {
+                { scope, context ->
+                    val asyncDeferred = scope.async {
+                        listenerInterceptEntrance.doIntercept(context, listener::invoke)
+                    }
+                    asyncDeferred.start()
+                    EventResult.async(asyncDeferred)
+                }
             }
-            else { _, context -> listenerInterceptEntrance.doIntercept(context, listener::invoke) }
+            else {
+                { _, context -> listenerInterceptEntrance.doIntercept(context, listener::invoke) }
+            }
 
         override suspend fun invoke(scope: CoroutineScope, context: EventListenerProcessingContext): EventResult {
             return try {

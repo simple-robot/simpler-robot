@@ -52,5 +52,5 @@ import love.forte.simbot.PriorityConstant
 public annotation class Listener(
     val id: String = "",
     val priority: Int = PriorityConstant.NORMAL,
-    val async: Boolean = false,
+    val async: Boolean = false, // TODO 存在未知问题会导致此事件无法被触发
 )
