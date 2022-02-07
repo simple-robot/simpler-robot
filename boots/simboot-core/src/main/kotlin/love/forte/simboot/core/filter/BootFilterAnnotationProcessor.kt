@@ -183,7 +183,7 @@ private class FilterViaAnnotation(
         val textContent = contentSelector(context) //.textContent
 
         // match
-        if (textContent != null) {
+        if (textContent != null && keyword.text.isNotEmpty()) {
             if (!matchType.match(textContent, keyword)) {
                 return false
             }

@@ -20,7 +20,7 @@ package love.forte.simboot.filter
 public object EmptyFilterParameterMatcher : MatcherValue {
     override val original: String get() = ""
     override val regex: Regex = Regex("")
-    override fun matches(text: String): Boolean = false
+    override fun matches(text: String): Boolean = true
     override fun getParam(name: String, text: String): String? = null
     override fun getParameters(text: String?): MatchParameters = EmptyFilterParameters
 }
