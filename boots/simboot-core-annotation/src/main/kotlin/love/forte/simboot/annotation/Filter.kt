@@ -33,7 +33,8 @@ import kotlin.reflect.KClass
  * @property value 匹配规则值，会对 [EventListenerProcessingContext.textContent][love.forte.simbot.event.EventListenerProcessingContext.textContent] 进行匹配。
  * 如果此属性为空，则相当于不生效。
  * @property ifNullPass 当 [value] 匹配的目标（[EventListenerProcessingContext.textContent][love.forte.simbot.event.EventListenerProcessingContext.textContent]）的值为 null 的时候，
- * 是否直接放行。如果为 `true`, 则代表匹配值为null的时候视为匹配通过，反之则为匹配失败。默认为 `false`。
+ * 是否直接放行。如果为 `true`, 则代表匹配值为null的时候视为匹配通过，反之则为匹配失败。默认为 `false`。此参数只有当 [value] 不为空的时候有效。如果 [value] 为空，则不会进行匹配。
+ * 这并不仅仅局限于[消息事件][love.forte.simbot.event.MessageEvent], 而生效与所有的事件类型。而对于那些本身即不是消息事件的事件来说, `textContent` 默认为null。
  * @property matchType 针对匹配目标所使用的匹配规则。
  * 默认情况下使用 [正则完全匹配][MatchType.REGEX_MATCHES].
  *

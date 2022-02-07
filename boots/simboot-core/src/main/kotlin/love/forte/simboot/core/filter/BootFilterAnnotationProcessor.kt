@@ -183,11 +183,16 @@ private class FilterViaAnnotation(
         val textContent = contentSelector(context) //.textContent
 
         // match
-        if (textContent != null) {
-            if (keyword.text.isNotEmpty() && !matchType.match(textContent, keyword)) {
-                return false
-            }
-        } else return ifNullPass
+        // 存在匹配词, 尝试匹配
+        if (keyword !== EmptyKeyword) {
+            if (textContent != null) {
+                if (!matchType.match(textContent, keyword)) {
+                    return false
+                }
+            } else return ifNullPass
+        }
+        // 匹配关键词本身没有, 直接放行.
+
 
         // maybe other match
 
