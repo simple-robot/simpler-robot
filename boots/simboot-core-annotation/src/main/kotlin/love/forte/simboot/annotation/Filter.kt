@@ -39,7 +39,7 @@ import kotlin.reflect.KClass
  * 默认情况下使用 [正则完全匹配][MatchType.REGEX_MATCHES].
  *
  * @property target 目标过滤内容 see [TargetFilter]
- * @property and 可以再提供一个 `&` 与关系的子过滤器，最终结果为 `当前filter && and-filters`
+ * @property and 可以再提供一个 `&&` (与关系)的子过滤器，最终结果为 `当前filter && and-filters`
  * # 注意：尚未实现！
  * ### Kotlin
  * ```kotlin
@@ -70,7 +70,7 @@ import kotlin.reflect.KClass
  *
  * 不建议在注解中存在过多的filter嵌套，假如有需要，考虑使用 [processor].
  *
- * @property or 可以再提供一个 `|` 或关系的子过滤器，最终结果为 `当前filter || and-filters`.
+ * @property or 可以再提供一个 `||` (或关系)的子过滤器，最终结果为 `当前filter || and-filters`.
  * # 注意：尚未实现！
  * ### Kotlin
  * ```kotlin
