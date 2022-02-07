@@ -80,6 +80,8 @@ public class CoreListenerManager private constructor(
     private val managerCoroutineContext: CoroutineContext =
         configuration.coroutineContext.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
 
+    private val managerScope = CoroutineScope(managerCoroutineContext)
+
     /**
      * 异常处理器。
      */
@@ -210,7 +212,8 @@ public class CoreListenerManager private constructor(
                     for (invoker in invokers) {
                         val listenerContext = context.withListener(invoker.listener)
                         val handleResult = runForEventResultWithHandler {
-                            invoker(currentBot, listenerContext)
+                            // maybe scope use bot?
+                            invoker(managerScope, listenerContext)
                         }
                         val result = if (handleResult.isFailure) {
                             val err = handleResult.exceptionOrNull()
