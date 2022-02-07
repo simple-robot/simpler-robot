@@ -95,7 +95,7 @@ import kotlin.reflect.KClass
  *
  * ```
  *
- * 与 [and] 同时存在时候，匹配效果则如：`this filter && and filter || or filter`
+ * 与 [and] 同时存在时候，匹配效果则如：`this-filter && and-filters || or-filters`
  *
  * @property processor 当前注解应使用的注解处理器。
  * 对应的处理器类型如果是 `object` 类型，则会直接获取其实例。
@@ -128,12 +128,13 @@ public annotation class Filter(
         stackoverflow:    https://stackoverflow.com/questions/7075761/java-cyclic-annotations
         springboot issue: https://github.com/spring-projects/spring-boot/issues/29662
      */
-
     @Suppress("DEPRECATION") @Deprecated("尚未实现")
     val and: AndFilters = AndFilters(),
 
     @Suppress("DEPRECATION") @Deprecated("尚未实现")
     val or: OrFilters = OrFilters(),
+    // val and: Filters = Filters(),
+    // val or: Filters = Filters(),
 
     val processor: KClass<out FilterAnnotationProcessor> = FilterAnnotationProcessor::class,
 )
