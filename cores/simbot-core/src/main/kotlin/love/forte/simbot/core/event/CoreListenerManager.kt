@@ -50,7 +50,7 @@ public typealias EventListenerExceptionHandler = suspend (EventListenerProcessin
  *
  * ## 异步函数
  * [CoreListenerManager] 中，对于一个异步函数 ([EventListener.isAsync] == true 的函数) 的处理方式与其接口定义的描述相同，
- * 对于这个异步函数的拦截器会与当前异步函数共同进入一个由 [事件bot][Event.bot] 所提供的异步任务中，并对当前的 [EventProcessingContext] 立即返回一个 [AsyncEventResult].
+ * 对于这个异步函数的拦截器会与当前异步函数共同进入一个由 当前事件管理器所提供的异步任务中，并对当前的 [EventProcessingContext] 立即返回一个 [AsyncEventResult].
  *
  *
  *
@@ -189,8 +189,7 @@ public class CoreListenerManager private constructor(
         }
 
 
-        val scope: CoroutineScope = event.bot
-        val deferred = scope.async { doInvoke(resolveToContext(event, invokers.size), invokers) }
+        val deferred = managerScope.async { doInvoke(resolveToContext(event, invokers.size), invokers) }
         return deferred.asCompletableFuture()
     }
 
