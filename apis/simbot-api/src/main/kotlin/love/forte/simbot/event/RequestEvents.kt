@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.ID
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.doSafeCast
 import love.forte.simbot.utils.runInBlocking
@@ -46,7 +47,8 @@ import love.forte.simbot.utils.runInBlocking
  * @author ForteScarlet
  */
 public interface RequestEvent : Event, UserInfoContainer {
-    override val metadata: Event.Metadata
+    override val id: ID
+
     override val bot: Bot
 
     /**
@@ -258,6 +260,7 @@ public interface GroupJoinRequestEvent : GroupRequestEvent, JoinRequestEvent {
  * 一个与频道相关的请求事件。
  */
 public interface ChannelRequestEvent : RequestEvent, ChannelInfoContainer {
+    override val id: ID
 
     @JvmSynthetic
     override suspend fun channel(): ChannelInfo

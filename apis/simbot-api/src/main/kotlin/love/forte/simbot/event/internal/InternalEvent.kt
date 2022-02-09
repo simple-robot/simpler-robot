@@ -37,8 +37,8 @@ import love.forte.simbot.message.doSafeCast
  * @author ForteScarlet
  */
 public abstract class InternalEvent : Event {
+    abstract override val id: ID
     abstract override val bot: Bot
-    abstract override val metadata: Event.Metadata
     abstract override val key: Key<out InternalEvent>
 
     /**

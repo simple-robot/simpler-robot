@@ -57,17 +57,17 @@ import kotlin.reflect.safeCast
  */
 public interface Event : BotContainer, IDContainer {
 
-    override val id: ID get() = metadata.id
+    override val id: ID // get() = metadata.id
 
     /**
      * 与这个事件有关系的 [Bot].
      */
     override val bot: Bot
 
-    /**
-     * 这个事件的[元数据][Metadata]。
-     */
-    public val metadata: Metadata
+    // /**
+    //  * 这个事件的[元数据][Metadata]。
+    //  */
+    // public val metadata: Metadata
 
 
     /**
