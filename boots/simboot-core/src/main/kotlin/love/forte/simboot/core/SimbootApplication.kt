@@ -28,17 +28,15 @@ import love.forte.simboot.SimbootEntrance
  *
  *
  * @property scanPackages 指定所需扫描包路径。 如果为空默认选取标记类所在包路径为根路径。
- * @property configFilePrefix 配置文件前缀。会扫描 `resources:$prefix*.*` 和 `file:$prefix*.*` 的相关文件。
- * 文件格式支持：
- * - `.properties`
- * - `.yaml`
- * - `.yml`
- * - `.json`
+ * @property topListenerScanPackages 指定需要扫描的顶层监听函数路径。顶层监听函数正常来讲只有kotlin下会有，例如：
+ * ```kotlin
+ * @Listener
+ * suspend fun FriendEvent.onEvent() { ... }
+ * ```
  *
  */
 @Target(AnnotationTarget.CLASS)
 public annotation class SimbootApplication(
     val scanPackages: Array<String> = [],
     val topListenerScanPackages: Array<String> = [],
-    val configFilePrefix: String = "simbot"
 )
