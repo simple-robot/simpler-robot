@@ -22,6 +22,7 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.Survivable
 import org.slf4j.Logger
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ExecutionException
 import java.util.concurrent.Future
 
 /**
@@ -65,8 +66,6 @@ public interface SimbootEntranceContext {
 }
 
 
-
-
 /**
  * Boot启动流程结束后得到的最终结果。
  */
@@ -95,6 +94,7 @@ public interface SimbootContext : Survivable {
      * 通过 [toAsync] 得到一个 [Future] 并阻塞直到程序结束。
      */
     @Api4J
+    @Throws(InterruptedException::class, ExecutionException::class)
     public fun joinBlocking() {
         toAsync().get()
     }

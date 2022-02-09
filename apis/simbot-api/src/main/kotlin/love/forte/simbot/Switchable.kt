@@ -41,6 +41,7 @@ public interface Switchable : CoroutineScope {
     public suspend fun start(): Boolean
 
     @Api4J
+    @Throws(InterruptedException::class)
     public fun startBlocking(): Boolean = runInBlocking { start() }
 
     @Api4J
@@ -57,9 +58,11 @@ public interface Switchable : CoroutineScope {
     public suspend fun cancel(reason: Throwable? = null): Boolean
 
     @Api4J
+    @Throws(InterruptedException::class)
     public fun cancelBlocking(reason: Throwable?): Boolean = runInBlocking { cancel(reason) }
 
     @Api4J
+    @Throws(InterruptedException::class)
     public fun cancelBlocking(): Boolean = runInBlocking { cancel() }
 
     @Api4J

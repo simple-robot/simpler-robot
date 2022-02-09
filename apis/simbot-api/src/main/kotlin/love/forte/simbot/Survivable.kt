@@ -52,6 +52,7 @@ public interface Survivable : Switchable {
      *
      */
     @Api4J
+    @Throws(InterruptedException::class)
     public fun waiting() {
         runBlocking { join() }
     }
