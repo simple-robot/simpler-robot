@@ -15,6 +15,9 @@
  *
  */
 
+import love.forte.simbot.Bot
+import love.forte.simbot.BotManager
+import love.forte.simbot.ID
 import love.forte.simbot.OriginBotManager
 
 /*
@@ -39,3 +42,10 @@ fun main() {
 
 }
 
+fun bm(manager: BotManager<*>) {
+    // 获取所有Bot，以序列Sequence的形式返回
+    val all: Sequence<Bot> = manager.all()
+
+    // 获取指定的Bot
+    val bot: Bot? = manager.get(123.ID)
+}

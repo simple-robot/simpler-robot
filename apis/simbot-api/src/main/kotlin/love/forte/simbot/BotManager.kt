@@ -64,7 +64,7 @@ public open class VerifyFailureException : SimbotIllegalStateException {
 /**
  * BOT用于验证身份的信息，通过读取 `.bot` 文件解析而来.
  *
- * [BotVerifyInfo] 可能是 properties格式、json格式或yaml格式。
+ * [BotVerifyInfo] 为 Json 格式的内容。
  *
  * 此处仅提供获取其输入流的方法.
  *
