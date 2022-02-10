@@ -24,7 +24,6 @@ import love.forte.simbot.Component
 import love.forte.simbot.ComponentContainer
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotComponent
-import love.forte.simbot.event.Event
 import love.forte.simbot.message.Message.Element
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
@@ -106,7 +105,7 @@ public sealed interface Message {
         public abstract val id: ID
         override fun equals(other: Any?): Boolean {
             if (other === this) return true
-            if (other !is Event.Metadata) return false
+            if (other !is Metadata) return false
 
             return id == other.id
         }
