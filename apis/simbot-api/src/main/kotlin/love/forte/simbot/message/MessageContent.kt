@@ -20,7 +20,7 @@ package love.forte.simbot.message
 import love.forte.simbot.ID
 
 /**
- * 一个消息内容，其中存在一个 [消息元数据][Message.Metadata] 和一个[消息链][Messages]。
+ * 一个消息内容，其中存在一个[消息链][Messages]。
  *
  * 对于一个事件，使用 [接收的消息内容][ReceivedMessageContent].
  *
@@ -53,14 +53,9 @@ public abstract class MessageContent {
 public sealed class RemoteMessageContent : MessageContent() {
 
     /**
-     * 接收到的消息的 [元数据][Message.Metadata].
+     * 此消息的唯一标识。
      */
-    public abstract val metadata: Message.Metadata
-
-    /**
-     * [metadata] 中的 [id][Message.Metadata.id]。
-     */
-    override val messageId: ID get() = metadata.id
+    abstract override val messageId: ID
 }
 
 
