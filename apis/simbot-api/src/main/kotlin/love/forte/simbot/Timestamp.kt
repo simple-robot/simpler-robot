@@ -32,7 +32,7 @@ import java.time.temporal.TemporalAdjuster
 /**
  * 一个 **时间戳** 。
  *
- * 通常情况下，[second] 或 [millisecond] 得到小于等于0的值，那么就说明此时间戳并不是一个真正的时间戳，
+ * 通常情况下，[second] 或 [millisecond] 得到-1的值，那么就说明此时间戳并不是一个真正的时间戳，
  * 而是一个不被支持的默认值。
  * 通过 [Timestamp] 你可以直接通过 [isSupport] 对支持情况进行判断。
  *
@@ -139,6 +139,10 @@ public data class InstantTimestamp(
  */
 public inline val Timestamp.instantValue: Instant? get() = takeIf { it is InstantTimestamp }?.let { (it as InstantTimestamp).instant }
 
+/**
+ * 是否是不支持的 timestamp.
+ */
+public fun Timestamp.isNotSupport(): Boolean = !isSupport()
 
 public object InstantSerializer : KSerializer<Instant> {
     override fun deserialize(decoder: Decoder): Instant {
