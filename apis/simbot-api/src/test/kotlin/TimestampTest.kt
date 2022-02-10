@@ -49,7 +49,7 @@ class TimestampTest {
 
         val newList = list.sorted()
 
-        println(newList)
+        assert(newList.first() === Timestamp.NotSupport)
     }
 
 }
