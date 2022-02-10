@@ -37,8 +37,9 @@ import love.forte.simbot.utils.runInBlocking
  *
  */
 public interface MessageEvent : Event, RemoteMessageContainer {
+    override val id: ID
+
     override val bot: Bot
-    override val metadata: Event.Metadata
 
 
     /**
@@ -74,6 +75,7 @@ public interface MessageEvent : Event, RemoteMessageContainer {
  *
  */
 public interface ContactMessageEvent : MessageEvent, UserEvent {
+    override val id: ID
 
 
     /**
@@ -163,6 +165,7 @@ public interface FriendMessageEvent : ContactMessageEvent, FriendEvent {
  *
  */
 public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteSupport, RemoteMessageContainer {
+    override val id: ID
 
     /**
      * 来自的聊天室，通常是一个群或者一个频道。
@@ -256,6 +259,7 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
  *
  */
 public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
+    override val id: ID
     /**
      * 消息来自的频道
      */

@@ -17,6 +17,7 @@
 
 package love.forte.simbot.event
 
+import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.message.doSafeCast
 import love.forte.simbot.utils.runInBlocking
@@ -43,6 +44,7 @@ import love.forte.simbot.utils.runInBlocking
  * @see ChangedEvent
  */
 public interface ChangeEvent<SOURCE, BEFORE, AFTER> : Event {
+    override val id: ID
 
 
     /**

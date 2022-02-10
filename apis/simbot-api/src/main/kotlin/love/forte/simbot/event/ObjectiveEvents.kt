@@ -19,6 +19,7 @@ package love.forte.simbot.event
 
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
+import love.forte.simbot.ID
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.doSafeCast
 import love.forte.simbot.utils.runInBlocking
@@ -215,6 +216,7 @@ public suspend inline fun <R> GuildEvent.useGuild(block: (Guild) -> R): R = guil
  * 一个与 [频道][Channel] 相关的事件。
  */
 public interface ChannelEvent : OrganizationEvent {
+    override val id: ID
     /**
      * 这个[频道][Channel]
      */

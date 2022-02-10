@@ -19,12 +19,9 @@
 
 package love.forte.simbot.message
 
-import kotlinx.serialization.Serializable
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentContainer
-import love.forte.simbot.ID
 import love.forte.simbot.SimbotComponent
-import love.forte.simbot.event.Event
 import love.forte.simbot.message.Message.Element
 import kotlin.reflect.KClass
 import kotlin.reflect.safeCast
@@ -84,34 +81,6 @@ public sealed interface Message {
          */
         public fun safeCast(instance: Any?): E? = elementType.safeCast(instance)
 
-    }
-
-    /**
-     * 一个消息的 [元数据][Metadata].
-     * 元数据中，可能存在很多这个消息的原始基础信息，比如唯一标识、接收时间等等。
-     *
-     * [Metadata] 应当能够用于对一个消息进行唯一定位。
-     *
-     * 具体内容由实现者决定，但是 [Metadata] 至少要能提供出一个唯一[id].
-     *
-     * [id] 一般用于判断两个的 [Metadata] 是否不同，来代表 [Metadata] 的唯一性。
-     * 而其他非唯一数据则不需要保存至 [id] 中。
-     *
-     *
-     * @see ID
-     * @see MessageContent
-     */
-    @Serializable
-    public abstract class Metadata {
-        public abstract val id: ID
-        override fun equals(other: Any?): Boolean {
-            if (other === this) return true
-            if (other !is Event.Metadata) return false
-
-            return id == other.id
-        }
-
-        override fun hashCode(): Int = id.hashCode()
     }
 
 

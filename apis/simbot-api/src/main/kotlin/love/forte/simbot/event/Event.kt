@@ -18,7 +18,6 @@
 
 package love.forte.simbot.event
 
-import kotlinx.serialization.Serializable
 import love.forte.simbot.*
 import love.forte.simbot.definition.BotContainer
 import love.forte.simbot.definition.IDContainer
@@ -57,23 +56,18 @@ import kotlin.reflect.safeCast
  */
 public interface Event : BotContainer, IDContainer {
 
-    override val id: ID get() = metadata.id
+    override val id: ID
 
     /**
      * 与这个事件有关系的 [Bot].
      */
     override val bot: Bot
 
-    /**
-     * 这个事件的[元数据][Metadata]。
-     */
-    public val metadata: Metadata
-
 
     /**
      * 此时间发生的时间戳。
      *
-     * 如果平台API支持，则为对应时间，如果不支持则考虑使用实例构建时的时间戳。
+     * 如果平台API支持，则为对应时间，如果不支持则一般为构建时的瞬时时间戳。
      */
     public val timestamp: Timestamp
 
@@ -82,8 +76,6 @@ public interface Event : BotContainer, IDContainer {
      */
     public val visibleScope: VisibleScope
 
-    // 考虑事件环境，一般代表这个事件的发生地。例如群聊、私聊、系统消息等事件的根本环境都不同。
-    // public val environment: environment
 
     /**
      * 得到当前事件所对应的类型key。
@@ -244,25 +236,6 @@ public interface Event : BotContainer, IDContainer {
 
 
     /**
-     * 事件的 [元数据][Metadata].
-     *
-     * 事件元数据记录这个事件较为原始的数据，例如其唯一ID、服务器时间等。
-     *
-     * 元数据中存在什么，完全由事件实现者决定。
-     * 但是无论如何，元消息应当存在一个能够决定当前事件唯一性的 [id].
-     *
-     * 对于两个事件之间是否相同，即使用 [component] 和 [Metadata.id] 进行决定, 当同一个组件下的事件之间的 [Metadata.id] 的 [equals] 得到 `true`，
-     * 则认为两个事件相同。
-     *
-     * [元数据][Metadata]应能够支持[序列化][Serializable].
-     */
-    public interface Metadata : IDContainer {
-        /** 元数据唯一标识。 */
-        override val id: ID
-    }
-
-
-    /**
      * 消息事件的可见范围类型。
      *
      */
@@ -377,7 +350,6 @@ public fun <T : Event> KClass<T>.getKey(): Event.Key<T> = Event.Key.getKey(this)
 public infix fun Event.Key<*>.isSubFrom(parentMaybe: Event.Key<*>): Boolean {
     return Event.Key.isSub(this, parentMaybe)
 }
-
 
 
 /**
