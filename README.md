@@ -28,11 +28,16 @@
    <img alt="stars" src="https://img.shields.io/github/stars/ForteScarlet/simpler-robot" />
    <img alt="forks" src="https://img.shields.io/github/forks/ForteScarlet/simpler-robot" />
    <img alt="watchers" src="https://img.shields.io/github/watchers/ForteScarlet/simpler-robot" />
-   <img alt="repo size" src="https://img.shields.io/github/repo-size/ForteScarlet/simpler-robot" />
+   <img alt="repo-size" src="https://img.shields.io/github/repo-size/ForteScarlet/simpler-robot" />
    
    <img alt="issues" src="https://img.shields.io/github/issues-closed/ForteScarlet/simpler-robot?color=green" />
-   <img alt="last commit" src="https://img.shields.io/github/last-commit/ForteScarlet/simpler-robot" />
-   <a href="./COPYING"><img alt="copying" src="https://img.shields.io/github/license/ForteScarlet/simpler-robot" /></a>
+   <img alt="last-commit" src="https://img.shields.io/github/last-commit/ForteScarlet/simpler-robot" />
+   <img alt="search-hit" src="https://img.shields.io/github/search/ForteScarlet/simpler-robot/simbot" />
+   <img alt="top-language" src="https://img.shields.io/github/languages/top/ForteScarlet/simpler-robot" />
+   <img alt="last-commit" src="https://img.shields.io/github/last-commit/ForteScarlet/simpler-robot" />
+<a href="./COPYING"><img alt="copying" src="https://img.shields.io/github/license/ForteScarlet/simpler-robot" /></a>
+
+<br>
     </div>
 
 <!-- <img alt="lines" src="https://img.shields.io/tokei/lines/github/ForteScarlet/simpler-robot" /> -->
