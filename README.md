@@ -29,11 +29,13 @@
    <img alt="forks" src="https://img.shields.io/github/forks/ForteScarlet/simpler-robot" />
    <img alt="watchers" src="https://img.shields.io/github/watchers/ForteScarlet/simpler-robot" />
    <img alt="repo size" src="https://img.shields.io/github/repo-size/ForteScarlet/simpler-robot" />
-   <img alt="lines" src="https://img.shields.io/tokei/lines/github/ForteScarlet/simpler-robot" />
+   
    <img alt="issues" src="https://img.shields.io/github/issues-closed/ForteScarlet/simpler-robot?color=green" />
    <img alt="last commit" src="https://img.shields.io/github/last-commit/ForteScarlet/simpler-robot" />
    <a href="./COPYING"><img alt="copying" src="https://img.shields.io/github/license/ForteScarlet/simpler-robot" /></a>
     </div>
+
+<!-- <img alt="lines" src="https://img.shields.io/tokei/lines/github/ForteScarlet/simpler-robot" /> -->
 
 ## 简介
 
