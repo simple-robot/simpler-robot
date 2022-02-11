@@ -211,7 +211,7 @@ public interface Role : IDContainer {
      * 角色所属权限集。
      */
     @JvmSynthetic
-    public suspend fun permissions(): Flow<Permission>
+    public suspend fun permissions(): Flow<Permission> // TODO
 
 
     @Api4J

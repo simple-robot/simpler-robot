@@ -72,14 +72,14 @@ public interface Member : User, MemberInfo, MuteSupport {
 
 
     /**
-     * 判断当前成员是否拥有"管理者"的权限。
+     * 判断当前成员是否拥有"管理者"这样的角色。
      *
      * @see Role.isAdmin
      */
     public suspend fun isAdmin(): Boolean = roles().firstOrNull { r -> r.isAdmin() } != null
 
     /**
-     * 判断当前成员是否拥有"拥有者"的权限。
+     * 判断当前成员是否拥有"拥有者"这样的角色。
      *
      * @see Role.isOwner
      */
