@@ -17,12 +17,7 @@
 
 package love.forte.simbot.definition
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.toList
-import love.forte.simbot.Api4J
 import love.forte.simbot.ID
-import love.forte.simbot.utils.runInBlocking
 import java.util.*
 
 
@@ -34,6 +29,8 @@ import java.util.*
  *
  * [PermissionStatus] 不建议在 [Permission] 中参与 [Permission.equals] 匹配。
  */
+@Suppress("DEPRECATION")
+@Deprecated("Unused")
 public interface PermissionStatus {
 
     /**
@@ -83,7 +80,8 @@ public interface PermissionStatus {
     }
 }
 
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "DEPRECATION")
+@Deprecated("Unused")
 public class PermissionStatusBuilder {
     private val status = BitSet()
     public fun with(status: PermissionStatus): PermissionStatusBuilder = also {
@@ -133,7 +131,7 @@ public class PermissionStatusBuilder {
 }
 
 
-@Suppress("MemberVisibilityCanBePrivate")
+@Suppress("MemberVisibilityCanBePrivate", "DEPRECATION")
 private class PermissionStatusImpl(val status: BitSet) : PermissionStatus {
     companion object {
         internal const val IS_OWNER = 1
@@ -172,6 +170,8 @@ private class PermissionStatusImpl(val status: BitSet) : PermissionStatus {
 /**
  * 一个**权限**信息，通常 存在于 [Role] 并使用在 [Organization] 与 [Member] 中，为组织和其成员限定权限。
  */
+@Suppress("DEPRECATION")
+@Deprecated("Unused")
 public interface Permission : IDContainer {
 
     /**
@@ -192,7 +192,11 @@ public interface Permission : IDContainer {
 /**
  * 一个组织中的成员"角色"，角色承担了为成员分配权限的能力。
  *
- * 一个角色可能包含多重 "权限".
+ * 以 [群聊][Group] 为例，一个普通的群聊可能存在三种最常见的角色：*普通群员*、*管理员*和*创建者*。
+ *
+ * @see Group.roles
+ * @see Channel.roles
+ * @see Guild.roles
  *
  */
 public interface Role : IDContainer {
@@ -206,49 +210,60 @@ public interface Role : IDContainer {
      */
     public val name: String
 
-
     /**
-     * 角色所属权限集。
+     * 是否是一个*管理员*。大多数场景下，[拥有者][isOwner] 也属于一种管理员。
      */
-    @JvmSynthetic
-    public suspend fun permissions(): Flow<Permission>
-
-
-    @Api4J
-    public val permissions: List<Permission> get() = runInBlocking { permissions().toList() }
-
-    /**
-     * 判断当前角色是否存在某个指定权限。
-     */
-    @Api4J
-    public operator fun contains(permission: Permission): Boolean =
-        permissions.any { it == permission }
-
-    /**
-     * 此角色中是否包含管理者权限。
-     *
-     * @see PermissionStatus.isAdmin
-     */
-    public suspend fun isAdmin(): Boolean = permissions().firstOrNull { it.status.isAdmin } != null
-
-    /**
-     * 此角色中是否包含所有者权限。
-     *
-     * @see PermissionStatus.isOwner
-     */
-    public suspend fun isOwner(): Boolean = permissions().firstOrNull { it.status.isOwner } != null
-
-    /**
-     * 此角色中是否包含管理员权限。
-     */
-    @Api4J
-    public val isAdmin: Boolean get() = permissions.any { it.status.isAdmin }
+    public val isAdmin: Boolean
 
 
     /**
-     * 此角色中是否包含所有者权限。
+     * 是否能够代表一个*拥有者*。
      */
-    @Api4J
-    public val isOwner: Boolean get() = permissions.any { it.status.isOwner }
+    public val isOwner: Boolean
+
+    //
+    // /**
+    //  * 角色所属权限集。
+    //  */
+    // @JvmSynthetic
+    // public suspend fun permissions(): Flow<Permission>
+    //
+    //
+    // @Api4J
+    // public val permissions: List<Permission> get() = runInBlocking { permissions().toList() }
+    //
+    // /**
+    //  * 判断当前角色是否存在某个指定权限。
+    //  */
+    // @Api4J
+    // public operator fun contains(permission: Permission): Boolean =
+    //     permissions.any { it == permission }
+    //
+    // /**
+    //  * 此角色中是否包含管理者权限。
+    //  *
+    //  * @see PermissionStatus.isAdmin
+    //  */
+    // public suspend fun isAdmin(): Boolean = permissions().firstOrNull { it.status.isAdmin } != null
+    //
+    // /**
+    //  * 此角色中是否包含所有者权限。
+    //  *
+    //  * @see PermissionStatus.isOwner
+    //  */
+    // public suspend fun isOwner(): Boolean = permissions().firstOrNull { it.status.isOwner } != null
+    //
+    // /**
+    //  * 此角色中是否包含管理员权限。
+    //  */
+    // @Api4J
+    // public val isAdmin: Boolean get() = permissions.any { it.status.isAdmin }
+    //
+    //
+    // /**
+    //  * 此角色中是否包含所有者权限。
+    //  */
+    // @Api4J
+    // public val isOwner: Boolean get() = permissions.any { it.status.isOwner }
 
 }
