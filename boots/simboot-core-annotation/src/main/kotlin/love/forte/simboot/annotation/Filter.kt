@@ -124,8 +124,7 @@ public annotation class Filter(
         原本，and和or的定义都是 Filters。
         但是Java规范中不允许注解的嵌套，尽管这在Kotlin中是允许的，但是会导致很多兼容问题，例如无法在Spring中使用此注解。
         你可以参考：
-        stackoverflow:    https://stackoverflow.com/questions/7075761/java-cyclic-annotations
-        springboot issue: https://github.com/spring-projects/spring-boot/issues/29662
+        spring issue: https://github.com/spring-projects/spring-boot/issues/29662
      */
     // @Suppress("DEPRECATION") @Deprecated("尚未实现")
     // val and: AndFilters = AndFilters(),
