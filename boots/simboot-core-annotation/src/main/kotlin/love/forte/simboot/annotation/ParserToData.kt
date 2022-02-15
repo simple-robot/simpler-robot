@@ -34,10 +34,10 @@ public fun Filter.toData(source: Any? = null): FilterData {
         ifNullPass = ifNullPass,
         matchType = matchType,
         target = target.toData(source = source),
-        // and = and.toData(source), // FiltersData(source = source),
-        // or = or.toData(source),   // FiltersData(source = source),
-        and = FiltersData(source = source), // TODO and.toData(source = source),
-        or = FiltersData(source = source), //TODO or.toData(source = source),
+        and = and.toData(source), // FiltersData(source = source),
+        or = or.toData(source),   // FiltersData(source = source),
+        // and = FiltersData(source = source),
+        // or = FiltersData(source = source),
         processor = processor
 
     )
