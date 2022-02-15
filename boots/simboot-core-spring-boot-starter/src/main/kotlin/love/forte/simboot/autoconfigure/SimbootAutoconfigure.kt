@@ -18,16 +18,11 @@
 package love.forte.simboot.autoconfigure
 
 import love.forte.simboot.SimbootContext
-import love.forte.simbot.SimbotIllegalArgumentException
-import org.springframework.beans.factory.BeanFactory
-import org.springframework.beans.factory.BeanFactoryAware
-import org.springframework.beans.factory.ListableBeanFactory
-import org.springframework.beans.factory.support.BeanDefinitionBuilder
-import org.springframework.beans.factory.support.BeanDefinitionRegistry
-import org.springframework.beans.factory.support.BeanNameGenerator
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar
-import org.springframework.core.type.AnnotationMetadata
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 
 /**
  *
@@ -36,31 +31,40 @@ import org.springframework.core.type.AnnotationMetadata
 @Import(
     SpringbootCoreBootEntranceContextFactoriesConfiguration::class
 )
-public open class SimbootAutoconfigure :
-    ImportBeanDefinitionRegistrar,
-    BeanFactoryAware {
-    private lateinit var beanFactory: ListableBeanFactory
+@Order(Ordered.LOWEST_PRECEDENCE) // The lowest
+public open class SimbootAutoconfigure
+// :
+// ImportBeanDefinitionRegistrar,
+// BeanFactoryAware
+{
+    // private lateinit var beanFactory: ListableBeanFactory
 
-    override fun registerBeanDefinitions(
-        importingClassMetadata: AnnotationMetadata,
-        registry: BeanDefinitionRegistry,
-        importBeanNameGenerator: BeanNameGenerator
-    ) {
-
-
-        val beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(SimbootContext::class.java) {
-            val runner = beanFactory.getBean(SimbootAppRunner::class.java)
-            runner.run()
-        }
-            .beanDefinition
-        val name = importBeanNameGenerator.generateBeanName(beanDefinition, registry)
-        registry.registerBeanDefinition(name, beanDefinition)
+    @Bean
+    @ConditionalOnMissingBean(SimbootContext::class)
+    public fun runAndConfigSimbotContext(appRunner: SimbootAppRunner): SimbootContext {
+        return appRunner.run()
     }
 
-    override fun setBeanFactory(beanFactory: BeanFactory) {
-        this.beanFactory = if (beanFactory is ListableBeanFactory) beanFactory
-        else throw SimbotIllegalArgumentException("BeanFactory is not ListableBeanFactory.")
-    }
+    // override fun registerBeanDefinitions(
+    //     importingClassMetadata: AnnotationMetadata,
+    //     registry: BeanDefinitionRegistry,
+    //     importBeanNameGenerator: BeanNameGenerator
+    // ) {
+    //
+    //
+    //     val beanDefinition = BeanDefinitionBuilder.genericBeanDefinition(SimbootContext::class.java) {
+    //         val runner = beanFactory.getBean(SimbootAppRunner::class.java)
+    //         runner.run()
+    //     }
+    //         .beanDefinition
+    //     val name = importBeanNameGenerator.generateBeanName(beanDefinition, registry)
+    //     registry.registerBeanDefinition(name, beanDefinition)
+    // }
+
+    // override fun setBeanFactory(beanFactory: BeanFactory) {
+    //     this.beanFactory = if (beanFactory is ListableBeanFactory) beanFactory
+    //     else throw SimbotIllegalArgumentException("BeanFactory is not ListableBeanFactory.")
+    // }
 
 
 }
