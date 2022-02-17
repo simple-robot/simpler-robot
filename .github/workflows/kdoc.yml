@@ -42,12 +42,18 @@ jobs:
 #          name: htmlDocs
 #          path: dokka/**
 
-      - name: Push to doc repository
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.PUSH_TOKEN }}
-          branch: master
-          directory: dokka/html
-          repository: simple-robot-library/simbot3-main-kdoc
-
+#      - name: Push to doc repository
+#        uses: ad-m/github-push-action@v0.6.0
+#        with:
+#          github_token: ${{ secrets.PUSH_TOKEN }}
+#          branch: master
+#          directory: dokka/html
+#          repository: simple-robot-library/simbot3-main-apiDoc
+        - name: Push to doc repository
+          uses: peaceiris/actions-gh-pages@v3
+          with:
+            personal_token: ${{ secrets.PUSH_TOKEN }}
+            external_repository: simple-robot-library/simbot3-main-apiDoc
+            publish_branch: gh-pages  # default: gh-pages
+            publish_dir: ./dokka/html
 
