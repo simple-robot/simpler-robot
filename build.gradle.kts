@@ -105,7 +105,6 @@ fun org.jetbrains.dokka.gradle.AbstractDokkaTask.configOutput(format: String) {
 }
 
 tasks.dokkaHtmlMultiModule.configure {
-
     configOutput("html")
 }
 tasks.dokkaGfmMultiModule.configure {
@@ -116,12 +115,12 @@ tasks.dokkaGfmMultiModule.configure {
 // nexus staging
 
 
-val credentialsUsername: String? = extra.get("credentials.username")?.toString()
-val credentialsPassword: String? = extra.get("credentials.password")?.toString()
+val sonatypeUsername: String? = extra.getIfHas("sonatype.username")?.toString()
+val sonatypePassword: String? = extra.getIfHas("sonatype.password")?.toString()
 
-println("credentialsUsername: $credentialsUsername")
+println("sonatypeUsername: $sonatypeUsername")
 
-if (credentialsUsername != null && credentialsPassword != null) {
+if (sonatypeUsername != null && sonatypePassword != null) {
     nexusPublishing {
         packageGroup.set(P.Simbot.GROUP)
 
@@ -136,8 +135,8 @@ if (credentialsUsername != null && credentialsPassword != null) {
         repositories {
             sonatype {
                 snapshotRepositoryUrl.set(uri(Sonatype.`snapshot-oss`.URL))
-                username.set(credentialsUsername)
-                password.set(credentialsPassword)
+                username.set(sonatypeUsername)
+                password.set(sonatypePassword)
             }
         }
     }
