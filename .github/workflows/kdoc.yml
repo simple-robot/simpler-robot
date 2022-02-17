@@ -46,6 +46,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: master
           directory: dokka/html
-          repository: https://github.com/simple-robot-library/simbot3-main-kdoc.git
+          repository: simple-robot-library/simbot3-main-kdoc
 
 
