@@ -119,12 +119,20 @@ if (credentialsUsername != null && credentialsPassword != null) {
     nexusPublishing {
         packageGroup.set(P.Simbot.GROUP)
 
+        useStaging.set(
+            project.provider { !project.version.toString().endsWith("SNAPSHOT", ignoreCase = true) }
+        )
+
+        transitionCheckOptions {
+            maxRetries.set(20)
+            delayBetween.set(java.time.Duration.ofSeconds(5))
+        }
         repositories {
             sonatype {
+                snapshotRepositoryUrl.set(uri(Sonatype.`snapshot-oss`.URL))
                 username.set(credentialsUsername)
                 password.set(credentialsPassword)
             }
-
         }
     }
 }

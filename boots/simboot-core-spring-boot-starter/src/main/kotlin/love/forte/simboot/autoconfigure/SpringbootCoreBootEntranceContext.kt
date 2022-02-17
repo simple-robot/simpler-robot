@@ -28,6 +28,7 @@ import love.forte.simbot.event.EventListenerManager
 import org.slf4j.Logger
 import org.springframework.core.io.Resource
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
+import java.io.FileNotFoundException
 import java.io.InputStream
 
 /**
@@ -57,8 +58,20 @@ public class SpringbootCoreBootEntranceContext(
         //
         val resolver = PathMatchingResourcePatternResolver()
         // find file first
-        val resources = resolver.getResources("file:$BOTS_PATTERN")
-            .ifEmpty { resolver.getResources("classpath:$BOTS_PATTERN") }
+        // may java.io.FileNotFoundException
+        val resources = try {
+            resolver.getResources("file:$BOTS_PATTERN")
+        } catch (fnf: FileNotFoundException) {
+            logger.warn("Can not resolve resource path 「{}」: {}, just use empty resources.", "file:$BOTS_PATTERN", fnf.localizedMessage)
+            emptyArray<Resource>()
+        }.ifEmpty {
+            try {
+                resolver.getResources("classpath:$BOTS_PATTERN")
+            } catch (fnf: FileNotFoundException) {
+                logger.warn("Can not resolve resource path 「{}」: {}, just use empty resources.", "classpath:$BOTS_PATTERN", fnf.localizedMessage)
+                emptyArray<Resource>()
+            }
+        }
 
         return resources.map { SpringResourceBotVerifyInfo(it) }
     }
