@@ -1,0 +1,46 @@
+name: Deploy doc
+on: push
+  # push:
+  #   tags:
+  #     - doc**
+  #     - v*.*.*
+
+jobs:
+  deploy-doc:
+    name: Deploy-doc
+    runs-on: ubuntu-latest
+    steps:
+      # 检出仓库代码
+      - name: Check out repo
+        uses: actions/checkout@v2
+
+      # setup Java
+      - name: Setup java8
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+          cache: 'gradle'
+
+      # setup Gradle
+      - name: Gradle generate documentation
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 7.3.3
+          arguments: dokkaHtmlMultiModule
+
+      - name: Upload html docs
+        uses: actions/upload-artifact@v2.3.1
+        with:
+          name: htmlDocs
+          path: dokka/**
+
+      - name: Push to doc repository
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
+          directory: dokka/html
+          repository: https://github.com/simple-robot-library/simbot3-main-kdoc.git
+
+

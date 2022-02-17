@@ -17,10 +17,9 @@
 
 
 plugins {
-    kotlin("jvm") version "1.6.0" apply false
-    // kotlin("multiplatform") version "1.6.0" apply false
-    kotlin("plugin.serialization") version "1.6.0" apply false
-    id("org.jetbrains.dokka") version "1.5.30" apply false
+    kotlin("jvm") version "1.6.10" apply false
+    kotlin("plugin.serialization") version "1.6.10" apply false
+    id("org.jetbrains.dokka") // version "1.6.10" apply false
     `maven-publish`
     signing
     // see https://github.com/gradle-nexus/publish-plugin
@@ -52,11 +51,6 @@ subprojects {
         mavenLocal()
         mavenCentral()
     }
-
-    plugins.findPlugin("org.jetbrains.dokka")?.let {
-        configDokka()
-    }
-
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         kotlinOptions {
@@ -96,14 +90,26 @@ subprojects {
 
 
 
-/**
- * config dokka output.
- */
-fun Project.configDokka() {
-    tasks.named<org.jetbrains.dokka.gradle.DokkaTask>("dokkaHtml") {
-        val root = rootProject.rootDir
-        outputDirectory.set(File(root, "dokkaOutput/${project.name}"))
-    }
+// /**
+//  * config dokka output.
+//  */
+// fun Project.configDokka() {
+//     tasks.withType<org.jetbrains.dokka.gradle.DokkaTask>() {
+//         outputDirectory.set(rootProject.file("dokkaOutput/${project.name}"))
+//         println("$this Dokka output dir: ${outputDirectory.get()}")
+//     }
+// }
+
+fun org.jetbrains.dokka.gradle.AbstractDokkaTask.configOutput(format: String) {
+    outputDirectory.set(rootProject.file("dokka/$format/"))
+}
+
+tasks.dokkaHtmlMultiModule.configure {
+
+    configOutput("html")
+}
+tasks.dokkaGfmMultiModule.configure {
+    configOutput("gfm")
 }
 
 

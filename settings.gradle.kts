@@ -20,6 +20,9 @@ pluginManagement {
         mavenCentral()
         maven { setUrl("https://plugins.gradle.org/m2/") }
     }
+    plugins {
+        id("org.jetbrains.dokka") version "1.6.10"
+    }
 }
 rootProject.name = "simply-robot"
 
