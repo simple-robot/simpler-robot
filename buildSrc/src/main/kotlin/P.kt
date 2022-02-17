@@ -28,9 +28,13 @@ abstract class SimbotProject {
  */
 sealed class P : SimbotProject() {
     object Simbot {
+        private const val SNAPSHOT = true
         const val GROUP = "love.forte.simbot"
         const val BOOT_GROUP = "love.forte.simbot.boot"
-        const val VERSION = "3.0.0.preview.3.0"
+        private const val REAL_VERSION = "3.0.0.preview.3.0"
+
+
+        val VERSION = if (SNAPSHOT) "$REAL_VERSION-SNAPSHOT" else REAL_VERSION
 
     }
 
@@ -39,6 +43,7 @@ sealed class P : SimbotProject() {
             const val GROUP = "love.forte.di"
             const val VERSION = "0.0.3"
         }
+
         object Api : ForteDI("api")
         object Core : ForteDI("core")
         object Spring : ForteDI("spring")
@@ -51,6 +56,7 @@ sealed class P : SimbotProject() {
             const val GROUP = "love.forte.annotation-tool"
             const val VERSION = "0.6.3"
         }
+
         object Api : AnnotationTool("api")
         object Core : AnnotationTool("core")
         object KCore : AnnotationTool("kcore")

@@ -30,7 +30,7 @@ includePro(":cores:simbot-core")
 includePro(":boots:simboot-api")
 includePro(":boots:simboot-core-annotation")
 includePro(":boots:simboot-core")
-includePro(":boots:simboot-core-springboot-starter")
+includePro(":boots:simboot-core-spring-boot-starter")
 
 
 
