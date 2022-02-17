@@ -49,11 +49,11 @@ jobs:
 #          branch: master
 #          directory: dokka/html
 #          repository: simple-robot-library/simbot3-main-apiDoc
-        - name: Push to doc repository
-          uses: peaceiris/actions-gh-pages@v3
-          with:
-            personal_token: ${{ secrets.PUSH_TOKEN }}
-            external_repository: simple-robot-library/simbot3-main-apiDoc
-            publish_branch: gh-pages  # default: gh-pages
-            publish_dir: ./dokka/html
 
+      - name: Push to doc repository
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.PUSH_TOKEN }}
+          external_repository: simple-robot-library/simbot3-main-apiDoc
+          publish_branch: gh-pages  # default: gh-pages
+          publish_dir: ./dokka/html
