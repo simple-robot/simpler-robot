@@ -27,7 +27,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.3.3
-          arguments: dokkaHtmlMultiModule
+          arguments: clean build dokkaHtmlMultiModule
 
       - name: Upload html docs
         uses: actions/upload-artifact@v2.3.1
