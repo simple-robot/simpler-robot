@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: '8'
+          java-version: 11
           cache: 'gradle'
 
       # setup Gradle
@@ -27,7 +27,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.3.3
-          arguments: clean build dokkaHtmlMultiModule
+          arguments: clean build dokkaHtmlMultiModule --debug
 
       - name: Upload html docs
         uses: actions/upload-artifact@v2.3.1
