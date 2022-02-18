@@ -27,7 +27,7 @@ public annotation class Api4J
 
 
 /**
- * 标记一个方法
+ * 标记一个实验性质的相关内容。
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION)
 @RequiresOptIn("实验性的simbotAPI，可能会随时变更", level = RequiresOptIn.Level.WARNING)
@@ -37,7 +37,7 @@ public annotation class ExperimentalSimbotApi
 
 
 /**
- * 表示被标记的Api是simbot内部api。
+ * 标记一个作为内部API所使用的相关内容。如无必要则不应该使用内部API。一个内部API可能会在没有任何通知的情况下发生变更、删除。
  */
 @RequiresOptIn(message = "内部API，其可用性不会被保证，也不会有任何变更通知。", level = RequiresOptIn.Level.WARNING)
 @Retention(AnnotationRetention.BINARY)

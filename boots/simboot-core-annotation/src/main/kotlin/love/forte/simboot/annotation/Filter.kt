@@ -28,7 +28,34 @@ import kotlin.reflect.KClass
 
 /**
  * 与 [Listener] 配合使用，会被解析为对应监听函数的通用属性过滤器。
- * [Filter] 是一种根据常见属性提供标准过滤规则的注解，
+ * [Filter] 是一种根据常见属性提供标准过滤规则的注解，在 `boot` 模块中由 [FilterAnnotationProcessor] 和 [FiltersAnnotationProcessor] 处理器进行解析处理。
+ *
+ * <br>
+ *
+ * ## Spring的堆栈溢出
+ * 如果你要在 [Spring](https://spring.io/) 中使用此注解，那么你必须保证你项目中的 [Spring Framework](https://spring.io/projects/spring-framework) 的版本大于等于 **`5.3.16`**。
+ * (**注: SpringBoot `v2.6.3` 的 Spring Framework 版本为 `5.3.15`**)
+ *
+ * 具体原因请参考 [Spring Framework#28012](https://github.com/spring-projects/spring-framework/issues/28012) .
+ *
+ * 在Spring Boot中更新 Spring Framework的方式可参考 [Dependency Versions](https://docs.spring.io/spring-boot/docs/current/reference/html/dependency-versions.html).
+ *
+ * **Maven**
+ * ```properties
+ * <properties>
+ *      <spring-framework.version>5.3.16</spring-framework.version>
+ * </properties>
+ * ```
+ *
+ * **Gradle Groovy**
+ * ```groovy
+ *  ext['spring-framework.version'] = '5.3.16'
+ * ```
+ *
+ * **Gradle Kotlin DSL**
+ * ```kotlin
+ * ext["spring-framework.version"] = "5.3.16"
+ * ```
  *
  * @param value 匹配规则值，会对 [EventListenerProcessingContext.textContent][love.forte.simbot.event.EventListenerProcessingContext.textContent] 进行匹配。
  * 如果此属性为空，则相当于不生效。
@@ -115,6 +142,10 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
 public annotation class Filter(
+    /**
+     * 匹配规则值，会对 [EventListenerProcessingContext.textContent][love.forte.simbot.event.EventListenerProcessingContext.textContent] 进行匹配。
+     * 如果此属性为空，则相当于不生效。
+     */
     val value: String = "",
     val ifNullPass: Boolean = false,
     // val valueSelector: TODO value 目标选择器?
