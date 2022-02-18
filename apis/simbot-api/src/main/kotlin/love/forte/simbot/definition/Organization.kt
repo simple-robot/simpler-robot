@@ -105,7 +105,7 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
     override suspend fun mute(duration: Duration): Boolean
 
     /**
-     * 接触整个群的禁言。
+     * 结束整个群的禁言。
      */
     @JvmSynthetic
     override suspend fun unmute(): Boolean
