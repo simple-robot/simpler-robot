@@ -63,6 +63,11 @@ subprojects {
             configureEach {
                 skipEmptyPackages.set(true)
                 jdkVersion.set(8)
+                reportUndocumented.set(true)
+                perPackageOption {
+                    matchingRegex.set(""".*\.internal.*""") // will match all .internal packages and sub-packages
+                    suppress.set(true)
+                }
             }
         }
     }
@@ -88,6 +93,7 @@ subprojects {
 
 
 fun org.jetbrains.dokka.gradle.AbstractDokkaTask.configOutput(format: String) {
+    moduleName.set("simple-robot")
     outputDirectory.set(rootProject.file("dokka/$format/v$version"))
 }
 
