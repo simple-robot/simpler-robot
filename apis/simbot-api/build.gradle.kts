@@ -47,6 +47,16 @@ tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
+tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
+    dokkaSourceSets {
+        configureEach {
+            skipEmptyPackages.set(true)
+            includes.from("Module.md")
+            displayName.set("api")
+        }
+    }
+}
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
         javaParameters = true

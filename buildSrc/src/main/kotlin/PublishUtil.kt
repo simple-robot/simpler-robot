@@ -28,6 +28,7 @@ import org.gradle.kotlin.dsl.*
 
 inline fun Project.configurePublishing(artifactId: String) {
 
+
     val sourcesJar by tasks.registering(Jar::class) {
         archiveClassifier.set("sources")
         from(sourceSets["main"].allSource)
@@ -57,6 +58,15 @@ inline fun Project.configurePublishing(artifactId: String) {
 
         repositories {
             mavenLocal()
+
+            val username0 = extra.getIfHas("sonatype.username")?.toString() ?: run {
+                println("[WARN] Cannot found sonatype.username from extra for $artifactId")
+                return@repositories
+            }
+
+            val password0 = extra.get("sonatype.password")?.toString()
+                ?: throw NullPointerException("sonatype-password")
+
             maven {
                 if (version.toString().contains("SNAPSHOT", true)) {
                     // snapshot
@@ -70,13 +80,6 @@ inline fun Project.configurePublishing(artifactId: String) {
                 println("Publish repository name: $name")
                 println("Publish repository url:  $url")
 
-                val username0 = extra.get("sonatype.username")?.toString() ?: run {
-                    println("[WARN] Cannot found sonatype.username from extra for $artifactId")
-                    return@maven
-                }
-
-                val password0 = extra.get("sonatype.password")?.toString()
-                    ?: throw NullPointerException("sonatype-password")
 
                 credentials {
                     username = username0

@@ -78,6 +78,8 @@ simbot3支持多组件协同，但是这会给版本控制带来更大的挑战�
 simbot3的文档与simbot2的文档在一起，都在 [语雀文档](https://www.yuque.com/simpler-robot/simpler-robot-doc)
 中。但是这次simbot3中的源码注释相比以前更为丰富，因此我建议对api相关的内容优先查阅代码中的文档注释。
 
+当然，你也可以去看看[API Doc](https://simple-robot-library.github.io/simbot3-main-apiDoc) ，API文档会在每次版本发布的时候更新。
+
 ## 组件
 
 在simbot3相关的系列组件中，大部分需要依赖第三方库（也有可能是由simbot团队实现的）的组件，基本上都会使用独立的仓库进行管理，

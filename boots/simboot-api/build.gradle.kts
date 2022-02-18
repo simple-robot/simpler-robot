@@ -65,3 +65,12 @@ kotlin {
         }
 }
 
+tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
+    dokkaSourceSets {
+        configureEach {
+            skipEmptyPackages.set(true)
+            includes.from("Module.md")
+            displayName.set("boot-api")
+        }
+    }
+}
