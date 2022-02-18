@@ -31,7 +31,7 @@ sealed class P : SimbotProject() {
         private const val SNAPSHOT = true
         const val GROUP = "love.forte.simbot"
         const val BOOT_GROUP = "love.forte.simbot.boot"
-        private const val REAL_VERSION = "3.0.0.preview.3.0"
+        private const val REAL_VERSION = "3.0.0.preview.3.1"
 
 
         val VERSION = if (SNAPSHOT) "$REAL_VERSION-SNAPSHOT" else REAL_VERSION
