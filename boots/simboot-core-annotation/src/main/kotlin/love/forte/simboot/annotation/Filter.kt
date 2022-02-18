@@ -30,16 +30,16 @@ import kotlin.reflect.KClass
  * 与 [Listener] 配合使用，会被解析为对应监听函数的通用属性过滤器。
  * [Filter] 是一种根据常见属性提供标准过滤规则的注解，
  *
- * @property value 匹配规则值，会对 [EventListenerProcessingContext.textContent][love.forte.simbot.event.EventListenerProcessingContext.textContent] 进行匹配。
+ * @param value 匹配规则值，会对 [EventListenerProcessingContext.textContent][love.forte.simbot.event.EventListenerProcessingContext.textContent] 进行匹配。
  * 如果此属性为空，则相当于不生效。
- * @property ifNullPass 当 [value] 匹配的目标（[EventListenerProcessingContext.textContent][love.forte.simbot.event.EventListenerProcessingContext.textContent]）的值为 null 的时候，
+ * @param ifNullPass 当 [value] 匹配的目标（[EventListenerProcessingContext.textContent][love.forte.simbot.event.EventListenerProcessingContext.textContent]）的值为 null 的时候，
  * 是否直接放行。如果为 `true`, 则代表匹配值为null的时候视为匹配通过，反之则为匹配失败。默认为 `false`。此参数只有当 [value] 不为空的时候有效。如果 [value] 为空，则不会进行匹配。
  * 这并不仅仅局限于[消息事件][love.forte.simbot.event.MessageEvent], 而生效与所有的事件类型。而对于那些本身即不是消息事件的事件来说, `textContent` 默认为null。
- * @property matchType 针对匹配目标所使用的匹配规则。
+ * @param matchType 针对匹配目标所使用的匹配规则。
  * 默认情况下使用 [正则完全匹配][MatchType.REGEX_MATCHES].
  *
- * @property target 目标过滤内容 see [TargetFilter]
- * @property and 可以再提供一个 `&&` (与关系)的子过滤器，最终结果为 `当前filter && and-filters`
+ * @param target 目标过滤内容 see [TargetFilter]
+ * @param and 可以再提供一个 `&&` (与关系)的子过滤器，最终结果为 `当前filter && and-filters`
  * ### Kotlin
  * ```kotlin
  * @Filter("Foo1")
@@ -69,7 +69,7 @@ import kotlin.reflect.KClass
  *
  * 不建议在注解中存在过多的filter嵌套，假如有需要，考虑使用 [processor].
  *
- * @property or 可以再提供一个 `||` (或关系)的子过滤器，最终结果为 `当前filter || and-filters`.
+ * @param or 可以再提供一个 `||` (或关系)的子过滤器，最终结果为 `当前filter || and-filters`.
  * ### Kotlin
  * ```kotlin
  * @Filter("Foo1")
@@ -96,7 +96,7 @@ import kotlin.reflect.KClass
  *
  * 与 [and] 同时存在时候，匹配效果则如：`this-filter && and-filters || or-filters`
  *
- * @property processor 当前注解应使用的注解处理器。
+ * @param processor 当前注解应使用的注解处理器。
  * 对应的处理器类型如果是 `object` 类型，则会直接获取其实例。
  *
  * 如果为普通class则在环境允许的情况下会尝试通过依赖管理器获取，
@@ -151,7 +151,7 @@ public annotation class OrFilters
  *
  * 以下所有属性的匹配结果为并集，即**全部**匹配成功后得到true。假如某参数为空，则认为其为 `true`.
  *
- * @property components 对接收事件的组件匹配. 大多数情况下，对于组件的唯一ID，组件实现库都应当有所说明或通过常量提供。 `["comp1", "comp2"]`
+ * @param components 对接收事件的组件匹配. 大多数情况下，对于组件的唯一ID，组件实现库都应当有所说明或通过常量提供。 `["comp1", "comp2"]`
  *
  * 相当于:
  * ```kotlin
@@ -159,33 +159,33 @@ public annotation class OrFilters
  * ```
  *
  * 除了通过此 [components] 作为组件的筛选条件，直接监听一个组件下特有的事件类型能够更好的起到组件过滤的作用。
- * @property bots 对接收事件的botID匹配。
+ * @param bots 对接收事件的botID匹配。
  *
  * 相当于:
  * ```kotlin
  * event.bot.id.literal in bots
  * ```
- * @property authors 对消息发送者的ID匹配。
+ * @param authors 对消息发送者的ID匹配。
  *
  * 相当于:
  * ```kotlin
  * event.author().id.literal in authors
  * ```
- * @property groups 如果这是个[群相关事件][GroupEvent] ，则对群ID匹配。
+ * @param groups 如果这是个[群相关事件][GroupEvent] ，则对群ID匹配。
  *
  * 相当于:
  * ```kotlin
  * event.group().id.literal in groups
  * ```
  *
- * @property channels 如果是个[子频道相关事件][ChannelEvent], 则对频道ID匹配。
+ * @param channels 如果是个[子频道相关事件][ChannelEvent], 则对频道ID匹配。
  *
  * 相当于:
  * ```kotlin
  * event.channel().id.literal in channels
  * ```
- * @property guilds 如果是个[频道服务器相关事件][GuildEvent], 则对频道服务器ID匹配。
- * @property atBot 只有当前消息中存在任意一个 [At.target][love.forte.simbot.message.At.target] == event.bot.id 的 [At][love.forte.simbot.message.At] 消息的时候才会通过匹配。
+ * @param guilds 如果是个[频道服务器相关事件][GuildEvent], 则对频道服务器ID匹配。
+ * @param atBot 只有当前消息中存在任意一个 [At.target][love.forte.simbot.message.At.target] == event.bot.id 的 [At][love.forte.simbot.message.At] 消息的时候才会通过匹配。
  *
  * 相当于:
  * ```kotlin
@@ -215,9 +215,9 @@ public annotation class TargetFilter(
  * 多个 [子过滤器][Filter] 的集合。一个 [Filters] 最终会表现为一个汇总过滤器。
  *
  *
- * @property value 所有子过滤器。
- * @property multiMatchType 多个过滤器之间的匹配策略。默认情况下为 [any][MultiFilterMatchType.ANY] 匹配。
- * @property processor 当前注解应使用的注解处理器。
+ * @param value 所有子过滤器。
+ * @param multiMatchType 多个过滤器之间的匹配策略。默认情况下为 [any][MultiFilterMatchType.ANY] 匹配。
+ * @param processor 当前注解应使用的注解处理器。
  * 对应的处理器类型如果是 `object` 类型，则会直接获取其实例。
  *
  * 如果为普通class则在环境允许的情况下会尝试通过bean容器获取，如果容器中不存在此类型实例（如果存在多个实例，不会进行异常捕获），则会尝试直接通过**公开无参构造**进行实例化。

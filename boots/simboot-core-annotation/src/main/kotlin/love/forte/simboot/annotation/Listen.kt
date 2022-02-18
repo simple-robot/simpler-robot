@@ -30,7 +30,7 @@ import kotlin.reflect.KClass
  * 未来可能会考虑移除 [Listen] 和 [Listens].
  *
  *
- * @property value 事件类型。指定的事件必须存在一个实现了 [Event.Key] 的伴生对象，否则此事件将会被视为不可监听并抛出异常。
+ * @param value 事件类型。指定的事件必须存在一个实现了 [Event.Key] 的伴生对象，否则此事件将会被视为不可监听并抛出异常。
  *
  * @see love.forte.simbot.event.Event
  */

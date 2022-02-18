@@ -27,8 +27,8 @@ import love.forte.simboot.SimbootEntrance
  * 此注解在当前环境 [SimbootEntrance] 所选取的启动入口为 [CoreBootEntrance] 的情况下有效。
  *
  *
- * @property scanPackages 指定所需扫描包路径。 如果为空默认选取标记类所在包路径为根路径。
- * @property topListenerScanPackages 指定需要扫描的顶层监听函数路径。顶层监听函数正常来讲只有kotlin下会有，例如：
+ * @param scanPackages 指定所需扫描包路径。 如果为空默认选取标记类所在包路径为根路径。
+ * @param topListenerScanPackages 指定需要扫描的顶层监听函数路径。顶层监听函数正常来讲只有kotlin下会有，例如：
  * ```kotlin
  * @Listener
  * suspend fun FriendEvent.onEvent() { ... }

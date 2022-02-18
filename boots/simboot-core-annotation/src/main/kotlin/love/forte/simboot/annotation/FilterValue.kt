@@ -21,8 +21,8 @@ package love.forte.simboot.annotation
  * 指定一个参数，此参数为通过 [love.forte.simboot.filter.Keyword]
  * 解析而得到的动态参数提取器中的内容。
  *
- * @property value 所需动态参数的key。
- * @property required 对于参数绑定器来讲其是否为必须的。
+ * @param value 所需动态参数的key。
+ * @param required 对于参数绑定器来讲其是否为必须的。
  *  如果不是必须的，则在无法获取参数后传递null作为结果，否则将会抛出异常并交由后续绑定器处理。
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
