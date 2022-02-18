@@ -56,6 +56,9 @@ import kotlin.reflect.safeCast
  */
 public interface Event : BotContainer, IDContainer {
 
+    /**
+     * 事件的唯一标识。
+     */
     override val id: ID
 
     /**
