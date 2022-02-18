@@ -29,8 +29,8 @@ import org.springframework.core.annotation.AliasFor
  *
  * 如果标记的函数上同样存在 [Listener], 则代表将指定ID的binder应用于当前监听函数。此时作用域只能为 [Binder.Scope.SPECIFY] 且必须指定所需id。
  *
- * @property id 当 [scope] 为 [Scope.SPECIFY] 时，指定对应ID. 指定id时，如果不是在 [Listener] 上，则值应当有且只有一个。
- * @property scope binder作用域。
+ * @param id 当 [scope] 为 [Scope.SPECIFY] 时，指定对应ID. 指定id时，如果不是在 [Listener] 上，则值应当有且只有一个。
+ * @param scope binder作用域。
  *
  * @see SpecifyBinder
  * @see CurrentBinder

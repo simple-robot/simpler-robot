@@ -17,10 +17,9 @@
 
 
 plugins {
-    kotlin("jvm") version "1.6.0" apply false
-    // kotlin("multiplatform") version "1.6.0" apply false
-    kotlin("plugin.serialization") version "1.6.0" apply false
-    id("org.jetbrains.dokka") version "1.5.30" apply false
+    kotlin("jvm") version "1.6.10" apply false
+    kotlin("plugin.serialization") version "1.6.10" apply false
+    id("org.jetbrains.dokka") // version "1.6.10" apply false
     `maven-publish`
     signing
     // see https://github.com/gradle-nexus/publish-plugin
@@ -53,42 +52,39 @@ subprojects {
         mavenCentral()
     }
 
-    plugins.findPlugin("org.jetbrains.dokka")?.let {
-        configDokka()
-    }
-
-
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         kotlinOptions {
             freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
         }
     }
 
+    tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
+        dokkaSourceSets {
+            configureEach {
+                skipEmptyPackages.set(true)
+                jdkVersion.set(8)
+                reportUndocumented.set(true)
+                perPackageOption {
+                    matchingRegex.set(""".*\.internal.*""") // will match all .internal packages and sub-packages
+                    suppress.set(true)
+                }
+            }
+        }
+    }
 
     afterEvaluate {
         if (name in publishNeed) {
 
             configurePublishing(name)
             println("[publishing-configure] - [$name] configured.")
-            // set gpg file path to root
-            // val secretKeyRingFile = local().getProperty(secretKeyRingFileKey) ?: throw kotlin.NullPointerException(secretKeyRingFileKey)
             val secretRingFile = File(project.rootDir, "ForteScarlet.gpg")
             extra[secretKeyRingFileKey] = secretRingFile
             setProperty(secretKeyRingFileKey, secretRingFile)
 
             signing {
-                // val key = local().getProperty("signing.keyId")
-                // val password = local().getProperty("signing.password")
-                // this.useInMemoryPgpKeys(key, password)
                 sign(publishing.publications)
             }
-
         }
-        // else {
-        //     // only local
-        //     configurePublishingLocal(name)
-        //     println("[publishing-local-configure] - [$name] configured.")
-        // }
     }
 
 
@@ -96,26 +92,47 @@ subprojects {
 
 
 
-/**
- * config dokka output.
- */
-fun Project.configDokka() {
-    tasks.named<org.jetbrains.dokka.gradle.DokkaTask>("dokkaHtml") {
-        val root = rootProject.rootDir
-        outputDirectory.set(File(root, "dokkaOutput/${project.name}"))
-    }
+fun org.jetbrains.dokka.gradle.AbstractDokkaTask.configOutput(format: String) {
+    moduleName.set("simple-robot")
+    outputDirectory.set(rootProject.file("dokka/$format/v$version"))
 }
 
+tasks.dokkaHtmlMultiModule.configure {
+    configOutput("html")
+}
+tasks.dokkaGfmMultiModule.configure {
+    configOutput("gfm")
+}
+
+tasks.register("dokkaHtmlMultiModuleAndPost") {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    dependsOn("dokkaHtmlMultiModule")
+    doLast {
+        val outDir = rootProject.file("dokka/html")
+        val indexFile = File(outDir, "index.html")
+        indexFile.createNewFile()
+        indexFile.writeText("""
+            <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <meta http-equiv="refresh" content="0;URL='v$version'" />
+            </head>
+            <body>
+            </body>
+            </html>
+        """.trimIndent())
+
+        // TODO readme
+    }
+}
 
 // nexus staging
 
+val sonatypeUsername: String? = extra.getIfHas("sonatype.username")?.toString()
+val sonatypePassword: String? = extra.getIfHas("sonatype.password")?.toString()
 
-val credentialsUsername: String? = extra.get("credentials.username")?.toString()
-val credentialsPassword: String? = extra.get("credentials.password")?.toString()
+println("sonatypeUsername: $sonatypeUsername")
 
-println("credentialsUsername: $credentialsUsername")
-
-if (credentialsUsername != null && credentialsPassword != null) {
+if (sonatypeUsername != null && sonatypePassword != null) {
     nexusPublishing {
         packageGroup.set(P.Simbot.GROUP)
 
@@ -130,8 +147,8 @@ if (credentialsUsername != null && credentialsPassword != null) {
         repositories {
             sonatype {
                 snapshotRepositoryUrl.set(uri(Sonatype.`snapshot-oss`.URL))
-                username.set(credentialsUsername)
-                password.set(credentialsPassword)
+                username.set(sonatypeUsername)
+                password.set(sonatypePassword)
             }
         }
     }

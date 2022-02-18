@@ -28,9 +28,6 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import love.forte.simbot.ID
-import love.forte.simbot.definition.IDContainer
-import love.forte.simbot.literal
 import java.io.*
 import java.net.URL
 import java.nio.file.Files
@@ -231,7 +228,7 @@ internal object FileSerializer : KSerializer<File> {
 /**
  * 使用[Path]作为输入流来源的 [StandardResource].
  *
- * @property doClose 当执行 [close] 时可以选择提供执行操作。
+ * @param doClose 当执行 [close] 时可以选择提供执行操作。
  */
 @SerialName("simbot.resource.path")
 @Serializable

@@ -291,9 +291,9 @@ public interface Event : BotContainer, IDContainer {
  *  }
  * ```
  *
- * @property id 此事件的 [Event.Key.id]
- * @property type 被标记事件的类型
- * @property parents 此事件的 [Event.Key.parents]
+ * @param id 此事件的 [Event.Key.id]
+ * @param type 被标记事件的类型
+ * @param parents 此事件的 [Event.Key.parents]
  *
  * @see Event.Key
  */
