@@ -1,9 +1,9 @@
 name: Deploy doc
-on: # push
-  push:
-    tags:
-      - doc**
-      - v3.*.*
+on: push
+  # push:
+  #   tags:
+  #     - doc**
+  #     - v3.*.*
 
 jobs:
   deploy-doc:
@@ -34,7 +34,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.3.3
-          arguments: clean build dokkaHtmlMultiModule
+          arguments: clean build dokkaHtmlMultiModuleAndPost
 
       - name: Push to doc repository
         uses: peaceiris/actions-gh-pages@v3

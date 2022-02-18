@@ -58,31 +58,28 @@ subprojects {
         }
     }
 
+    tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
+        dokkaSourceSets {
+            configureEach {
+                skipEmptyPackages.set(true)
+                jdkVersion.set(8)
+            }
+        }
+    }
 
     afterEvaluate {
         if (name in publishNeed) {
 
             configurePublishing(name)
             println("[publishing-configure] - [$name] configured.")
-            // set gpg file path to root
-            // val secretKeyRingFile = local().getProperty(secretKeyRingFileKey) ?: throw kotlin.NullPointerException(secretKeyRingFileKey)
             val secretRingFile = File(project.rootDir, "ForteScarlet.gpg")
             extra[secretKeyRingFileKey] = secretRingFile
             setProperty(secretKeyRingFileKey, secretRingFile)
 
             signing {
-                // val key = local().getProperty("signing.keyId")
-                // val password = local().getProperty("signing.password")
-                // this.useInMemoryPgpKeys(key, password)
                 sign(publishing.publications)
             }
-
         }
-        // else {
-        //     // only local
-        //     configurePublishingLocal(name)
-        //     println("[publishing-local-configure] - [$name] configured.")
-        // }
     }
 
 
@@ -90,18 +87,8 @@ subprojects {
 
 
 
-// /**
-//  * config dokka output.
-//  */
-// fun Project.configDokka() {
-//     tasks.withType<org.jetbrains.dokka.gradle.DokkaTask>() {
-//         outputDirectory.set(rootProject.file("dokkaOutput/${project.name}"))
-//         println("$this Dokka output dir: ${outputDirectory.get()}")
-//     }
-// }
-
 fun org.jetbrains.dokka.gradle.AbstractDokkaTask.configOutput(format: String) {
-    outputDirectory.set(rootProject.file("dokka/$format/"))
+    outputDirectory.set(rootProject.file("dokka/$format/v$version"))
 }
 
 tasks.dokkaHtmlMultiModule.configure {
@@ -111,9 +98,28 @@ tasks.dokkaGfmMultiModule.configure {
     configOutput("gfm")
 }
 
+tasks.register("dokkaHtmlMultiModuleAndPost") {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    dependsOn("dokkaHtmlMultiModule")
+    doLast {
+        val outDir = rootProject.file("dokka/html")
+        val indexFile = File(outDir, "index.html")
+        indexFile.createNewFile()
+        indexFile.writeText("""
+            <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <meta http-equiv="refresh" content="0;URL='v$version'" />
+            </head>
+            <body>
+            </body>
+            </html>
+        """.trimIndent())
+
+        // TODO readme
+    }
+}
 
 // nexus staging
-
 
 val sonatypeUsername: String? = extra.getIfHas("sonatype.username")?.toString()
 val sonatypePassword: String? = extra.getIfHas("sonatype.password")?.toString()
