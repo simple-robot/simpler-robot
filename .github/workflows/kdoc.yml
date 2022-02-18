@@ -3,7 +3,7 @@ on: # push
   push:
     tags:
       - doc**
-      - v*.*.*
+      - v3.*.*
 
 jobs:
   deploy-doc:
@@ -35,20 +35,6 @@ jobs:
         with:
           gradle-version: 7.3.3
           arguments: clean build dokkaHtmlMultiModule
-
-#      - name: Upload html docs
-#        uses: actions/upload-artifact@v2.3.1
-#        with:
-#          name: htmlDocs
-#          path: dokka/**
-
-#      - name: Push to doc repository
-#        uses: ad-m/github-push-action@v0.6.0
-#        with:
-#          github_token: ${{ secrets.PUSH_TOKEN }}
-#          branch: master
-#          directory: dokka/html
-#          repository: simple-robot-library/simbot3-main-apiDoc
 
       - name: Push to doc repository
         uses: peaceiris/actions-gh-pages@v3
