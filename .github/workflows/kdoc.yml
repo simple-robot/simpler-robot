@@ -7,6 +7,7 @@ on: push
 
 jobs:
   deploy-doc:
+    if: github.repository == 'ForteScarlet/simpler-robot'
     name: Deploy-doc
     runs-on: ubuntu-latest
     steps:
@@ -42,4 +43,6 @@ jobs:
           personal_token: ${{ secrets.PUSH_TOKEN }}
           external_repository: simple-robot-library/simbot3-main-apiDoc
           publish_branch: gh-pages  # default: gh-pages
+          keep_files: true
           publish_dir: ./dokka/html
+          full_commit_message: Publish ${{ github.ref_name }} documentation
