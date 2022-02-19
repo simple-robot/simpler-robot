@@ -27,7 +27,7 @@ pluginManagement {
 rootProject.name = "simply-robot"
 
 includePro(":apis:simbot-api")
-// includePro(":simbot-annotation")
+includePro(":apis:simbot-logger")
 includePro(":cores:simbot-core")
 
 includePro(":boots:simboot-api")
