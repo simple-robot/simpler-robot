@@ -44,12 +44,13 @@ val isPublishConfigurable = when {
     else -> true
 }
 
-if (!isPublishConfigurable) {
-    println("[WARN] - isPublishConfigurable is false. isSnapshotOnly: ${isSnapshotOnly}, P.Simbot.SNAPSHOT: ${P.Simbot.SNAPSHOT}")
-}
+println("isSnapshotOnly: $isSnapshotOnly")
+println("isReleaseOnly: $isReleaseOnly")
+println("isPublishConfigurable: $isPublishConfigurable")
 
 
 val secretKeyRingFileKey = "signing.secretKeyRingFile"
+
 
 subprojects {
     println("ROOT SUB: $this")
@@ -88,13 +89,15 @@ subprojects {
         afterEvaluate {
             configurePublishing(name)
             println("[publishing-configure] - [$name] configured.")
-            val secretRingFile = File(project.rootDir, "ForteScarlet.gpg")
-            extra[secretKeyRingFileKey] = secretRingFile
-            setProperty(secretKeyRingFileKey, secretRingFile)
 
             signing {
+                val secretRingFile = rootProject.file("ForteScarlet.gpg")
+                extra[secretKeyRingFileKey] = secretRingFile
+                setProperty(secretKeyRingFileKey, secretRingFile)
+
                 sign(publishing.publications)
             }
+
         }
     }
 

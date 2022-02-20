@@ -11,6 +11,15 @@ jobs:
     name: Publish snapshot
     runs-on: ubuntu-latest
     steps:
+
+      # setup Java
+      - name: Setup java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: 11
+          cache: 'gradle'
+
       # 检出仓库代码
       - name: Check out repo
         uses: actions/checkout@v2
