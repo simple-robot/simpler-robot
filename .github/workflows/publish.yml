@@ -11,6 +11,9 @@ jobs:
     name: Publish snapshot
     runs-on: ubuntu-latest
     steps:
+      # 检出仓库代码
+      - name: Check out repo
+        uses: actions/checkout@v2
 
       # setup Java
       - name: Setup java
@@ -19,10 +22,6 @@ jobs:
           distribution: 'temurin'
           java-version: 11
           cache: 'gradle'
-
-      # 检出仓库代码
-      - name: Check out repo
-        uses: actions/checkout@v2
 
       # the gpg
       - name: Decode gpg file
