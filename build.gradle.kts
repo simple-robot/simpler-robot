@@ -56,9 +56,7 @@ subprojects {
     println("ROOT SUB: $this")
     group = P.Simbot.GROUP
     version = P.Simbot.VERSION
-    apply(plugin = "maven-publish")
     apply(plugin = "java")
-    apply(plugin = "signing")
 
     repositories {
         mavenLocal()
@@ -86,6 +84,8 @@ subprojects {
     }
 
     if (isPublishConfigurable && name in publishNeed) {
+        apply(plugin = "maven-publish")
+        apply(plugin = "signing")
         afterEvaluate {
             configurePublishing(name)
             println("[publishing-configure] - [$name] configured.")
@@ -97,7 +97,6 @@ subprojects {
 
                 sign(publishing.publications)
             }
-
         }
     }
 
