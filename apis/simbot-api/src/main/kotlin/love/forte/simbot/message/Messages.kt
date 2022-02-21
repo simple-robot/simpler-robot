@@ -283,7 +283,7 @@ public operator fun Message.Element<*>.plus(other: SingleOnlyMessage<*>): Messag
 /**
  * [Messages] 基础实现, 是元素数量不应为空的消息列表。
  *
- * [MessageList] 是不可变的，每次变更都**可能**会得到一个新的实例。
+ * [MessageList] 是不可变的，每次变更都会得到一个新的实例。
  *
  */
 public sealed class MessageList : Messages, Collection<MsgElement<*>>
@@ -378,4 +378,16 @@ internal constructor(private val delegate: List<MsgElement<*>>) : MessageList(),
 
         return newList.toMessages()
     }
+
+    override fun toString(): String = delegate.toString()
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is MessageListImpl) return false
+
+        return delegate == other.delegate
+    }
+
+    override fun hashCode(): Int = delegate.hashCode()
+
 }
