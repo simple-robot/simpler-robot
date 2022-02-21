@@ -52,6 +52,9 @@ public interface MessageElementPolymorphicRegistrar {
  * [Messages] 中可以存在多个不同组件之间的 [MsgElement], 但是除了与 [SimbotComponent] 混用之外，不建议这么做。
  * 大多数情况下，组件对于 [Messages] 的解析很少会顾及到其他组件，而当遇到不支持的组件的时候，大概率会将其忽略或抛出异常。
  *
+ * ### 序列化
+ * 当你需要对 [Messages] 进行序列化的时候，你所使用的 [KSerializer] 必须为 [Messages.serializer].
+ *
  * @see EmptyMessages
  * @see SingleOnlyMessage
  * @see MessageList
@@ -92,9 +95,16 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
             }
         }
 
+        /**
+         * 当前 [Messages] 可用于序列化的 [SerializersModule]. 在组件加载完毕后，其中应包含了所有组件下注册的额外消息类型的多态信息。
+         *
+         */
         public val serializersModule: SerializersModule get() = _serializersModule
 
 
+        /**
+         * 将 [Messages.serializersModule] 与目标 [serializersModule] 进行合并。
+         */
         public fun mergeSerializersModule(serializersModule: SerializersModule) {
             _serializersModule += serializersModule
         }
@@ -107,6 +117,9 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
             registrarPolymorphic(builderAction)
         }
 
+        /**
+         * 向 [serializersModule] 中注册多态信息。
+         */
         public inline fun <reified M : MsgElement<*>> registrarPolymorphic(crossinline builderAction: PolymorphicModuleBuilder<M>.() -> Unit) {
             mergeSerializersModule {
                 polymorphic(baseClass = M::class, builderAction = builderAction)
@@ -122,6 +135,9 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
             }
         }
 
+        /**
+         * 可用于 [Messages] 进行序列化的 [KSerializer].
+         */
         public val serializer: KSerializer<Messages> get() = MessagesSerializer
 
         /**
@@ -142,6 +158,9 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
         @JvmStatic
         public fun MsgElement<*>.elementToMessages(): Messages = toMessages()
 
+        /**
+         * 将一个list转为 [Messages].
+         */
         @JvmStatic
         public fun List<MsgElement<*>>.listToMessages(): Messages = toMessages()
 
@@ -168,6 +187,7 @@ public fun emptyMessages(): Messages = EmptyMessages
 public object EmptyMessages : Messages, List<MsgElement<*>> by emptyList() {
     override fun plus(element: Message.Element<*>): Messages = element.toMessages()
     override fun plus(messages: List<Message.Element<*>>): Messages = messages.toMessages()
+    override fun toString(): String = "EmptyMessages()"
 }
 
 
