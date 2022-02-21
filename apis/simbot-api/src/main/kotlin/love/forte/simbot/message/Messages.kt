@@ -28,6 +28,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.modules.*
+import love.forte.simbot.Api4J
 import love.forte.simbot.Component
 import love.forte.simbot.Simbot
 import love.forte.simbot.SimbotComponent
@@ -79,6 +80,8 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
     /**
      */
     public companion object : MessageElementPolymorphicRegistrar {
+
+        //private var json: Result<Json> =
 
         @JvmSynthetic
         @Suppress("ObjectPropertyName")
@@ -150,6 +153,16 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          */
         @JvmStatic
         public fun getMessages(vararg messages: MsgElement<*>): Messages = messages(*messages)
+
+
+
+        @Api4J
+        @JvmStatic
+        public fun toJson() {
+
+        }
+
+
     }
 
 }
