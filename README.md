@@ -87,11 +87,11 @@ simbot3的文档与simbot2的文档在一起，都在 [语雀文档](https://www
 <br>
 simbot3目前已经实现的组件以及计划中的组件会列举于此，且不定期更新：
 
-| 对接目标                                    | 组件作者        | 地址                                                               | 状态    |
-|-----------------------------------------|-------------|------------------------------------------------------------------|-------|
-| 腾讯频道                                    | simbot team | <https://github.com/simple-robot/simbot-component-tencent-guild> | 维护中   |
-| [Mirai](https://github.com/mamoe/mirai) | simbot team | <https://github.com/simple-robot/simbot-component-mirai>         | 维护中   |
-| 开黑啦                                     | simbot team | <https://github.com/simple-robot/simbot-component-kaiheila>      | *计划中* |
+|                  对接目标                   |     作者      |                               仓库地址                               |  状态   |
+|:---------------------------------------:|:-----------:|:----------------------------------------------------------------:|:-----:|
+|                  腾讯频道                   | simbot team | <https://github.com/simple-robot/simbot-component-tencent-guild> |  维护中  |
+| [Mirai](https://github.com/mamoe/mirai) | simbot team |     <https://github.com/simple-robot/simbot-component-mirai>     |  维护中  |
+|                   开黑啦                   | simbot team |   <https://github.com/simple-robot/simbot-component-kaiheila>    | *计划中* |
 
 腾讯频道组件：
 
