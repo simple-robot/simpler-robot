@@ -58,7 +58,7 @@ public interface MessageElementPolymorphicRegistrar {
  * 当你需要对 [Messages] 进行序列化的时候，你所使用的 [KSerializer] 必须为 [Messages.serializer].
  *
  * ### 构建器
- * 除了直接使用拼接的方式，你也可以参考 [MessagesBuilder] 来使用构建器来构建 [Messages] 实例。
+ * 除了直接使用拼接的方式，你也可以参考 [MessagesBuilder] 通过构建器来构建 [Messages] 实例。
  *
  * @see EmptyMessages
  * @see SingleOnlyMessage
