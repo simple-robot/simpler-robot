@@ -27,7 +27,7 @@ import kotlin.experimental.ExperimentalTypeInference
  *
  * 一个**限流器**。
  *
- * 通俗一点的理解，限流器可以理解为一个用于需要进行 **数量限制** 或者说需要 **分页** 的地方，常见于一些返回值为 [kotlinx.coroutines.flow.Flow], [Sequence] 或者 [Stream] 之类的地方。
+ * 通俗一点的理解，限流器可以理解为一个用于需要进行 **数量限制** 或者说需要 **分页** 的地方，常见于一些返回值为 [Flow], [Sequence] 或者 [Stream] 之类的地方。
  *
  * 对于限流的具体实现细节由对应功能的实现者自行决定（包括是否真的进行分页等）。
  *
@@ -105,6 +105,13 @@ public interface Limiter {
         override val limit: Int get() = 0
         override val batchSize: Int get() = 0
 
+        /**
+         * 根据参数得到 [Limiter] 实例。
+         *
+         * @param offset 偏移量。默认为 [ZERO.offset].
+         * @param limit 元素数，默认为 [ZERO.limit].
+         * @param batchSize 批次大小，默认为 [ZERO.batchSize].
+         */
         @Api4J
         @JvmStatic
         @JvmOverloads
@@ -131,8 +138,14 @@ public interface Limiter {
 public fun limiter(offset: Int = ZERO.offset, limit: Int = ZERO.limit, batchSize: Int = ZERO.batchSize): Limiter =
     if (offset <= 0 && limit <= 0 && batchSize <= 0) Limiter else LimiterImpl(offset, limit, batchSize)
 
-
+/**
+ * 得到当前 [Limiter] 中等价的分页属性：页码大小。相当于 [Limiter.limit].
+ */
 public inline val Limiter.pageSize: Int get() = limit
+
+/**
+ * 得到当前 [Limiter] 中等价的分页属性：每页数量。计算方式大概类似于 `pageNum = offset / pageSize`.
+ */
 public inline val Limiter.pageNum: Int get() = if (offset <= 0 || pageSize <= 0) 0 else offset / pageSize  // offset = ps * pn, pn = offset / ps
 
 
@@ -141,7 +154,9 @@ private data class LimiterImpl(override val offset: Int, override val limit: Int
     override fun toString(): String = "Limiter(offset=$offset, limit=$limit, batchSize=$batchSize)"
 }
 
-
+/**
+ * 使用 [limiter] 对目标 [Stream] 进行限流。
+ */
 public fun <T> Stream<T>.withLimiter(limiter: Limiter): Stream<T> =
     let {
         with(limiter.offset) { if (this > 0) skip(toLong()) else it }
@@ -149,6 +164,9 @@ public fun <T> Stream<T>.withLimiter(limiter: Limiter): Stream<T> =
         with(limiter.limit) { if (this > 0) limit(toLong()) else it }
     }
 
+/**
+ * 使用 [limiter] 对目标 [Flow] 进行限流。
+ */
 public fun <T> Flow<T>.withLimiter(limiter: Limiter): Flow<T> =
     let {
         with(limiter.offset) { if (this > 0) drop(this) else it }
@@ -156,6 +174,9 @@ public fun <T> Flow<T>.withLimiter(limiter: Limiter): Flow<T> =
         with(limiter.limit) { if (this > 0) take(this) else it }
     }
 
+/**
+ * 使用 [limiter] 对目标 [Sequence] 进行限流。
+ */
 public fun <T> Sequence<T>.withLimiter(limiter: Limiter): Sequence<T> =
     let {
         with(limiter.offset) { if (this > 0) drop(this) else it }

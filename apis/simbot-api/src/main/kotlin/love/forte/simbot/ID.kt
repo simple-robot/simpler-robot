@@ -83,17 +83,6 @@ import java.util.concurrent.atomic.LongAdder
  * 那么你可以考虑将此字段的序列化器标记为 [ID.AsCharSequenceIDSerializer].
  *
  * ```kotlin
- *  class {
- *  // ....
- *  @Serializable(ID.AsCharSequenceIDSerializer::class)
- *  val id: ID,
- *  // ...
- * }
- * ```
- *
- * 此序列化其会永远将ID视为其字面值字符串作为序列化目标。
- *
- * ```kotlin
  * @Serializable
  * data class Example(
  *      @Serializable(ID.AsCharSequenceIDSerializer::class)
@@ -101,6 +90,10 @@ import java.util.concurrent.atomic.LongAdder
  *      val name: String
  * )
  * ```
+ *
+ * 此序列化其会永远将ID视为其字面值字符串作为序列化目标。
+ *
+
  *
  * @see CharSequenceID
  * @see NumericalID
@@ -244,7 +237,7 @@ public fun currentTimeMillisID(): LongID = System.currentTimeMillis().ID
  *
  * 或者一个平台下相关的 [其他 Number][ArbitraryNumericalID] 实现。
  *
- * e.g.:
+ * 示例:
  * ```
  * // Kotlin
  * val id: LongID = 123L.ID
@@ -274,6 +267,10 @@ public fun currentTimeMillisID(): LongID = System.currentTimeMillis().ID
 @SerialName("ID.N")
 @Serializable
 public sealed class NumericalID<N : Number> : ID() {
+
+    /**
+     * 此数字ID的值。
+     */
     public abstract val value: N
 
     override fun compareTo(other: ID): Int {
@@ -306,12 +303,46 @@ public sealed class NumericalID<N : Number> : ID() {
     }
 
     //region from kotlin.Number
+    /**
+     * 将当前数字转为 [Double]. 同 [Number.toDouble].
+     * @see Number.toDouble
+     */
     public open fun toDouble(): Double = value.toDouble()
+
+    /**
+     * 将当前数字转为 [Float]. 同 [Number.toFloat].
+     * @see Number.toFloat
+     */
     public open fun toFloat(): Float = value.toFloat()
+
+    /**
+     * 将当前数字转为 [Long]. 同 [Number.toLong].
+     * @see Number.toLong
+     */
     public open fun toLong(): Long = value.toLong()
+
+    /**
+     * 将当前数字转为 [Int]. 同 [Number.toInt].
+     * @see Number.toInt
+     */
     public open fun toInt(): Int = value.toInt()
+
+    /**
+     * 将当前数字转为 [Char]. 同 [Number.toChar].
+     * @see Number.toChar
+     */
     public open fun toChar(): Char = value.toChar()
+
+    /**
+     * 将当前数字转为 [Short]. 同 [Number.toShort].
+     * @see Number.toShort
+     */
     public open fun toShort(): Short = value.toShort()
+
+    /**
+     * 将当前数字转为 [Byte]. 同 [Number.toByte].
+     * @see Number.toByte
+     */
     public open fun toByte(): Byte = value.toByte()
 
     //endregion
@@ -458,9 +489,8 @@ public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID
      * @see BigDecimal.toBigIntegerExact
      */
     @JvmOverloads
-    public fun toBigIntegerID(exact: Boolean = false): BigIntegerID =
-        if (exact) value.toBigIntegerExact().ID
-        else value.toBigInteger().ID
+    public fun toBigIntegerID(exact: Boolean = false): BigIntegerID = if (exact) value.toBigIntegerExact().ID
+    else value.toBigInteger().ID
 
 
     public companion object {
@@ -570,23 +600,24 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
 /**
  * 以 [字符][CharSequence] 作为字面值的 [ID].
  *
- * ```kt
+ * ```kotlin
  * // Kotlin
- * val id = "ID".ID
+ * val id = "forte".ID
  * ```
  *
  * ```java
  * // Java
- * StringID id = ID.by("ID");
+ * StringID id = Identifies.ID("forte");
  * ```
  *
- * 序列化的时候，如果需要将 [CharSequenceID] 字段作为字符串字面量序列化，可以使用 [CharSequenceID.Serializer].
- *
+ * ### 可变字符序列
  * 注意，尽可能避免将 [StringBuilder] 等可变序列作为参数提供, 除非你明确的知道你在做什么。
  * [CharSequenceID] 的 [value][CharSequenceID.value] 目前将会直接使用其引用作为参数。
  *
+ * ### 转化
  * 所有的ID都拥有转化为字符序列ID的能力。
  *
+ * ### 构建
  * 获取 [CharSequenceID]:
  * ```kotlin
  * val id: CharSequenceID = "Hello".ID
@@ -601,6 +632,7 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
  * @see CharSequence.ID
  * @see ID.toCharSequenceID
  * @see ID.AsCharSequenceIDSerializer
+ * @property value 用于代表当前ID值的字符序列。
  */
 @SerialName("ID.CS")
 @Serializable(with = CharSequenceID.Serializer::class)
@@ -613,6 +645,9 @@ public data class CharSequenceID(val value: CharSequence) : ID() {
     override fun compareTo(other: ID): Int = if (other === this) 0 else toString().compareTo(other.toString())
     override fun clone(): CharSequenceID = copy()
 
+    /**
+     * 当前字符序列长度。
+     */
     public val length: Int get() = value.length
 
     /**
@@ -643,13 +678,12 @@ public fun ID.toCharSequenceID(): CharSequenceID = if (this is CharSequenceID) t
  *
  * @throws IDException 无法进行转化时。
  */
-public fun ID.tryToNumericalID(): NumericalID<*> =
-    if (this is NumericalID<*>) this
-    else try {
-        BigDecimalID(BigDecimal(toString()))
-    } catch (nfe: NumberFormatException) {
-        throw IDException("Unable to convert id [$this] to LongID", nfe)
-    }
+public fun ID.tryToNumericalID(): NumericalID<*> = if (this is NumericalID<*>) this
+else try {
+    BigDecimalID(BigDecimal(toString()))
+} catch (nfe: NumberFormatException) {
+    throw IDException("Unable to convert id [$this] to LongID", nfe)
+}
 
 
 /**
@@ -659,16 +693,15 @@ public fun ID.tryToNumericalID(): NumericalID<*> =
  *
  * @throws IDException 无法进行转化时。
  */
-public fun ID.tryToLongID(): LongID =
-    when (this) {
-        is LongID -> this
-        is NumericalID<*> -> this.toLong().ID
-        else -> try {
-            BigDecimal(toString()).toLong().ID
-        } catch (nfe: NumberFormatException) {
-            throw IDException("Unable to convert id [$this] to LongID", nfe)
-        }
+public fun ID.tryToLongID(): LongID = when (this) {
+    is LongID -> this
+    is NumericalID<*> -> this.toLong().ID
+    else -> try {
+        BigDecimal(toString()).toLong().ID
+    } catch (nfe: NumberFormatException) {
+        throw IDException("Unable to convert id [$this] to LongID", nfe)
     }
+}
 
 
 /**

@@ -41,7 +41,7 @@ public interface SuspendablePropertyContainer : Container
 public interface IDContainer : Container {
 
     /**
-     * 容器中的唯一标识。
+     * 唯一标识。
      */
     public val id: ID
 }
@@ -52,6 +52,10 @@ public interface IDContainer : Container {
  *
  */
 public interface BotContainer : Container {
+
+    /**
+     * 当前bot
+     */
     public val bot: Bot
 }
 
@@ -59,7 +63,14 @@ public interface BotContainer : Container {
  * 存在 [ChannelInfo] 的容器。
  */
 public interface ChannelInfoContainer : SuspendablePropertyContainer {
+    /**
+     * 当前 [channel][ChannelInfo].
+     */
     public suspend fun channel(): ChannelInfo
+
+    /**
+     * 当前 [channel][ChannelInfo].
+     */
     @Api4J public val channel: ChannelInfo get() = runInBlocking { channel() }
 }
 
@@ -67,7 +78,14 @@ public interface ChannelInfoContainer : SuspendablePropertyContainer {
  * 存在 [ChannelInfo] 的容器。
  */
 public interface GuildInfoContainer : SuspendablePropertyContainer {
+    /**
+     * 当前 [guild][GuildInfo].
+     */
     public suspend fun guild(): GuildInfo
+
+    /**
+     * 当前 [guild][GuildInfo].
+     */
     @Api4J public val guild: GuildInfo get() = runInBlocking { guild() }
 }
 
@@ -75,7 +93,13 @@ public interface GuildInfoContainer : SuspendablePropertyContainer {
  * 存在 [GroupInfo] 的容器。
  */
 public interface GroupInfoContainer : SuspendablePropertyContainer {
+    /**
+     * 当前 [group][GroupInfo].
+     */
     public suspend fun group(): GroupInfo
+    /**
+     * 当前 [group][GroupInfo].
+     */
     @Api4J public val group: GroupInfo get() = runInBlocking { group() }
 }
 
@@ -83,7 +107,16 @@ public interface GroupInfoContainer : SuspendablePropertyContainer {
  * 存在 [UserInfo] 的容器。
  */
 public interface UserInfoContainer : SuspendablePropertyContainer {
+
+    /**
+     * 当前 [user][UserInfo]
+     */
     public suspend fun user(): UserInfo
+
+
+    /**
+     * 当前 [user][UserInfo]
+     */
     @Api4J public val user: UserInfo get() = runInBlocking { user() }
 }
 
@@ -91,7 +124,14 @@ public interface UserInfoContainer : SuspendablePropertyContainer {
  * 存在 [MemberInfo] 的容器。
  */
 public interface MemberInfoContainer : SuspendablePropertyContainer {
+    /**
+     * 当前 [member][MemberInfo].
+     */
     public suspend fun member(): MemberInfo
+
+    /**
+     * 当前 [member][MemberInfo].
+     */
     @Api4J public val member: MemberInfo get() = runInBlocking { member() }
 }
 
@@ -99,7 +139,14 @@ public interface MemberInfoContainer : SuspendablePropertyContainer {
  * 存在 [FriendInfo] 的容器。
  */
 public interface FriendInfoContainer : SuspendablePropertyContainer {
+    /**
+     * 当前 [friend][FriendInfo].
+     */
     public suspend fun friend(): FriendInfo
+
+    /**
+     * 当前 [friend][FriendInfo].
+     */
     @Api4J public val friend: FriendInfo get() = runInBlocking { friend() }
 }
 

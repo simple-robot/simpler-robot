@@ -27,8 +27,6 @@ plugins {
     idea
 }
 
-
-
 group = P.Simbot.GROUP
 version = P.Simbot.VERSION
 
@@ -37,15 +35,28 @@ repositories {
     mavenCentral()
 }
 
+val isSnapshotOnly = System.getProperty("snapshotOnly") != null
+val isReleaseOnly = System.getProperty("releaseOnly") != null
+
+val isPublishConfigurable = when {
+    isSnapshotOnly -> P.Simbot.SNAPSHOT
+    isReleaseOnly -> !P.Simbot.SNAPSHOT
+    else -> true
+}
+
+println("isSnapshotOnly: $isSnapshotOnly")
+println("isReleaseOnly: $isReleaseOnly")
+println("isPublishConfigurable: $isPublishConfigurable")
+
+
 val secretKeyRingFileKey = "signing.secretKeyRingFile"
+
 
 subprojects {
     println("ROOT SUB: $this")
     group = P.Simbot.GROUP
     version = P.Simbot.VERSION
-    apply(plugin = "maven-publish")
     apply(plugin = "java")
-    apply(plugin = "signing")
 
     repositories {
         mavenLocal()
@@ -58,31 +69,35 @@ subprojects {
         }
     }
 
+    tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
+        dokkaSourceSets {
+            configureEach {
+                skipEmptyPackages.set(true)
+                jdkVersion.set(8)
+                reportUndocumented.set(true)
+                perPackageOption {
+                    matchingRegex.set(""".*\.internal.*""") // will match all .internal packages and sub-packages
+                    suppress.set(true)
+                }
+            }
+        }
+    }
 
-    afterEvaluate {
-        if (name in publishNeed) {
-
+    if (isPublishConfigurable && name in publishNeed) {
+        apply(plugin = "maven-publish")
+        apply(plugin = "signing")
+        afterEvaluate {
             configurePublishing(name)
             println("[publishing-configure] - [$name] configured.")
-            // set gpg file path to root
-            // val secretKeyRingFile = local().getProperty(secretKeyRingFileKey) ?: throw kotlin.NullPointerException(secretKeyRingFileKey)
-            val secretRingFile = File(project.rootDir, "ForteScarlet.gpg")
-            extra[secretKeyRingFileKey] = secretRingFile
-            setProperty(secretKeyRingFileKey, secretRingFile)
 
             signing {
-                // val key = local().getProperty("signing.keyId")
-                // val password = local().getProperty("signing.password")
-                // this.useInMemoryPgpKeys(key, password)
+                val secretRingFile = rootProject.file("ForteScarlet.gpg")
+                extra[secretKeyRingFileKey] = secretRingFile
+                setProperty(secretKeyRingFileKey, secretRingFile)
+
                 sign(publishing.publications)
             }
-
         }
-        // else {
-        //     // only local
-        //     configurePublishingLocal(name)
-        //     println("[publishing-local-configure] - [$name] configured.")
-        // }
     }
 
 
@@ -90,18 +105,9 @@ subprojects {
 
 
 
-// /**
-//  * config dokka output.
-//  */
-// fun Project.configDokka() {
-//     tasks.withType<org.jetbrains.dokka.gradle.DokkaTask>() {
-//         outputDirectory.set(rootProject.file("dokkaOutput/${project.name}"))
-//         println("$this Dokka output dir: ${outputDirectory.get()}")
-//     }
-// }
-
 fun org.jetbrains.dokka.gradle.AbstractDokkaTask.configOutput(format: String) {
-    outputDirectory.set(rootProject.file("dokka/$format/"))
+    moduleName.set("simple-robot")
+    outputDirectory.set(rootProject.file("dokka/$format/v$version"))
 }
 
 tasks.dokkaHtmlMultiModule.configure {
@@ -111,36 +117,68 @@ tasks.dokkaGfmMultiModule.configure {
     configOutput("gfm")
 }
 
+tasks.register("dokkaHtmlMultiModuleAndPost") {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    dependsOn("dokkaHtmlMultiModule")
+    doLast {
+        val outDir = rootProject.file("dokka/html")
+        val indexFile = File(outDir, "index.html")
+        indexFile.createNewFile()
+        indexFile.writeText(
+            """
+            <html xmlns="http://www.w3.org/1999/xhtml">
+            <head>
+                <meta http-equiv="refresh" content="0;URL='v$version'" />
+            </head>
+            <body>
+            </body>
+            </html>
+        """.trimIndent()
+        )
+
+        // TODO readme
+    }
+}
 
 // nexus staging
 
+if (isPublishConfigurable) {
 
-val sonatypeUsername: String? = extra.getIfHas("sonatype.username")?.toString()
-val sonatypePassword: String? = extra.getIfHas("sonatype.password")?.toString()
+    val sonatypeUsername: String? =
+        extra.getIfHas("sonatype.username")?.toString() ?: System.getProperty("sonatype.username")
+        ?: System.getenv("SONATYPE_USERNAME")
 
-println("sonatypeUsername: $sonatypeUsername")
+    val sonatypePassword: String? =
+        extra.getIfHas("sonatype.password")?.toString() ?: System.getProperty("sonatype.password")
+        ?: System.getenv("SONATYPE_PASSWORD")
 
-if (sonatypeUsername != null && sonatypePassword != null) {
-    nexusPublishing {
-        packageGroup.set(P.Simbot.GROUP)
+    println("sonatypeUsername: $sonatypeUsername")
 
-        useStaging.set(
-            project.provider { !project.version.toString().endsWith("SNAPSHOT", ignoreCase = true) }
-        )
+    if (sonatypeUsername != null && sonatypePassword != null) {
+        nexusPublishing {
+            packageGroup.set(P.Simbot.GROUP)
 
-        transitionCheckOptions {
-            maxRetries.set(20)
-            delayBetween.set(java.time.Duration.ofSeconds(5))
-        }
-        repositories {
-            sonatype {
-                snapshotRepositoryUrl.set(uri(Sonatype.`snapshot-oss`.URL))
-                username.set(sonatypeUsername)
-                password.set(sonatypePassword)
+            useStaging.set(
+                project.provider { !project.version.toString().endsWith("SNAPSHOT", ignoreCase = true) }
+            )
+
+            transitionCheckOptions {
+                maxRetries.set(20)
+                delayBetween.set(java.time.Duration.ofSeconds(5))
+            }
+            repositories {
+                sonatype {
+                    snapshotRepositoryUrl.set(uri(Sonatype.`snapshot-oss`.URL))
+                    username.set(sonatypeUsername)
+                    password.set(sonatypePassword)
+                }
             }
         }
+    } else {
+        println("[WARN] - sonatype.username or sonatype.password is null, cannot config nexus publishing.")
     }
 }
+
 
 // idea
 idea {

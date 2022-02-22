@@ -27,13 +27,13 @@ import kotlin.reflect.KClass
 /**
  * Annotation data for [love.forte.simboot.annotation.Filter].
  *
- * @property value same as [love.forte.simboot.annotation.Filter].value
- * @property matchType same as [love.forte.simboot.annotation.Filter].matchType
- * @property target same as [love.forte.simboot.annotation.Filter].target
- * @property and same as [love.forte.simboot.annotation.Filter].and
- * @property or same as [love.forte.simboot.annotation.Filter].or
- * @property processor same as [love.forte.simboot.annotation.Filter].processor
- * @property source [FilterData] 注解的 *源*。大多数情况下代表此注解所在的 [kotlin.reflect.KAnnotatedElement] 或 [java.lang.reflect.AnnotatedElement]。
+ * @param value same as [love.forte.simboot.annotation.Filter].value
+ * @param matchType same as [love.forte.simboot.annotation.Filter].matchType
+ * @param target same as [love.forte.simboot.annotation.Filter].target
+ * @param and same as [love.forte.simboot.annotation.Filter].and
+ * @param or same as [love.forte.simboot.annotation.Filter].or
+ * @param processor same as [love.forte.simboot.annotation.Filter].processor
+ * @param source [FilterData] 注解的 *源*。大多数情况下代表此注解所在的 [kotlin.reflect.KAnnotatedElement] 或 [java.lang.reflect.AnnotatedElement]。
  * 并不一定存在真实的源，当 [FilterData] 是通过手动构建等情况得到的，则无法确定 [source] 为何。
  *
  * @see love.forte.simboot.annotation.Filter
@@ -52,13 +52,13 @@ public data class FilterData(
 /**
  * Annotation data for [love.forte.simboot.annotation.TargetFilter].
  *
- * @property components same as [love.forte.simboot.annotation.TargetFilter].components
- * @property bots same as [love.forte.simboot.annotation.TargetFilter].bots
- * @property authors same as [love.forte.simboot.annotation.TargetFilter].authors
- * @property groups same as [love.forte.simboot.annotation.TargetFilter].groups
- * @property channels same as [love.forte.simboot.annotation.TargetFilter].channels
- * @property guilds same as [love.forte.simboot.annotation.TargetFilter].guilds
- * @property atBot same as [love.forte.simboot.annotation.TargetFilter].atBot
+ * @param components same as [love.forte.simboot.annotation.TargetFilter].components
+ * @param bots same as [love.forte.simboot.annotation.TargetFilter].bots
+ * @param authors same as [love.forte.simboot.annotation.TargetFilter].authors
+ * @param groups same as [love.forte.simboot.annotation.TargetFilter].groups
+ * @param channels same as [love.forte.simboot.annotation.TargetFilter].channels
+ * @param guilds same as [love.forte.simboot.annotation.TargetFilter].guilds
+ * @param atBot same as [love.forte.simboot.annotation.TargetFilter].atBot
  */
 public data class TargetFilterData(
     val source: Any?,
@@ -74,11 +74,11 @@ public data class TargetFilterData(
 /**
  * Annotation data for [love.forte.simboot.annotation.Filters].
  *
- * @property value same as [love.forte.simboot.annotation.Filters].value
- * @property multiMatchType same as [love.forte.simboot.annotation.Filters].multiMatchType
- * @property processor same as [love.forte.simboot.annotation.Filters].processor
+ * @param value same as [love.forte.simboot.annotation.Filters].value
+ * @param multiMatchType same as [love.forte.simboot.annotation.Filters].multiMatchType
+ * @param processor same as [love.forte.simboot.annotation.Filters].processor
  *
- * @property source [FiltersData] 的*源*, 大多数情况下代表此注解所在的 [kotlin.reflect.KAnnotatedElement] 或 [java.lang.reflect.AnnotatedElement]。
+ * @param source [FiltersData] 的*源*, 大多数情况下代表此注解所在的 [kotlin.reflect.KAnnotatedElement] 或 [java.lang.reflect.AnnotatedElement]。
  * 并不一定存在真实的源，当 [FiltersData] 是通过手动构建等情况得到的，则无法确定 [source] 为何。
  */
 public data class FiltersData(

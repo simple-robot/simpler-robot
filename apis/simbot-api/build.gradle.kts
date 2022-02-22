@@ -53,6 +53,9 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
             skipEmptyPackages.set(true)
             includes.from("Module.md")
             displayName.set("api")
+            perPackageOption {
+                // this.
+            }
         }
     }
 }

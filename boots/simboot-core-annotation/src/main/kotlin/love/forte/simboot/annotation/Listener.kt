@@ -35,9 +35,9 @@ import love.forte.simbot.PriorityConstant
  * 当不指定的时候默认为当前标记对象的全限定二进制名称。
  *
  *
- * @property id 监听函数ID。
- * @property priority 此事件的优先级。
- * @property async 此函数是否为异步函数。
+ * @param id 监听函数ID。
+ * @param priority 此事件的优先级。
+ * @param async 此函数是否为异步函数。
  * 如果为 `object` 类型，则会直接获取实例，否则会尝试通过可用途径获取对应结果。
  *
  * @see Filter

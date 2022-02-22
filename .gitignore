@@ -3,6 +3,10 @@
 **/build/
 !src/**/build/
 
+# dokka output
+dokka/
+dokka/**
+
 *.gpg
 
 # Ignore Gradle GUI config
