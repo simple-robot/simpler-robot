@@ -128,7 +128,7 @@ Mirai组件：
 #### Gradle Kotlin DSL
 
 ```kotlin
-val simbotVersion = simbot - core的版本号
+val simbotVersion = // $version
 
 // simbot核心标准库
 implementation("love.forte.simbot:simbot-core:$simbotVersion")
@@ -137,7 +137,7 @@ implementation("love.forte.simbot:simbot-core:$simbotVersion")
 #### Gradle Groovy
 
 ```groovy
-simbotVersion = simbot - core的版本号
+simbotVersion = // $version
 
 // simbot核心标准库
 implementation "love.forte.simbot:simbot-core:$simbotVersion"
