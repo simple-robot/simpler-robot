@@ -180,6 +180,33 @@ if (isPublishConfigurable) {
 }
 
 
+tasks.create("createChangelog") {
+    group = "build"
+    doFirst {
+        val version = "v${rootProject.version}"
+        println("Generate change log for $version ...")
+        // configurations.runtimeClasspath
+        val changelogDir = rootProject.file(".changelog").also {
+            it.mkdirs()
+        }
+        val file = File(changelogDir, "$version.md")
+        if (!file.exists()) {
+            file.createNewFile()
+            val autoGenerateText = """
+                
+
+                ## 其他日志
+                
+            """.trimIndent()
+
+
+            file.writeText(autoGenerateText)
+        }
+
+
+    }
+}
+
 // idea
 idea {
     module {
