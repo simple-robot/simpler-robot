@@ -50,7 +50,8 @@ jobs:
         with:
           body_path: .changelog/${{ github.ref_name }}.md
           generate_release_notes: true
-          draft: true
+          prerelease: ${{ contains(github.ref_name, 'preview') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}
+          # draft: true
 
 
 
