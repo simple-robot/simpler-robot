@@ -107,10 +107,12 @@ Mirai组件：
 
 #### Maven
 
+版本参考：[![](https://img.shields.io/maven-central/v/love.forte.simbot/simbot-api)](https://repo1.maven.org/maven2/love/forte/simbot/simbot-api/)
+
 ```xml
 <!-- 3.x中，大部分组件的版本维护独立于标准库，但是会在版本号中体现依赖标准库的版本号。 -->
 <properties>
-    <simbot.version>simbot-core的版本号</simbot.version>
+    <simbot.version>${version}</simbot.version>
 </properties>
 ```
 
