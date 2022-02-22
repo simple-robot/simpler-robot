@@ -27,6 +27,7 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.*
 import love.forte.simbot.Api4J
 import love.forte.simbot.Component
@@ -84,8 +85,6 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
      */
     public companion object : MessageElementPolymorphicRegistrar {
 
-        //private var json: Result<Json> =
-
         @JvmSynthetic
         @Suppress("ObjectPropertyName")
         private var _serializersModule = SerializersModule {
@@ -98,32 +97,55 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
             }
         }
 
+        @Volatile
+        private var json: Json = Json {
+            isLenient = true
+            ignoreUnknownKeys = true
+            serializersModule = _serializersModule
+        }
+
         /**
          * 当前 [Messages] 可用于序列化的 [SerializersModule]. 在组件加载完毕后，其中应包含了所有组件下注册的额外消息类型的多态信息。
          *
          */
         public val serializersModule: SerializersModule get() = _serializersModule
 
+        private fun setJson() {
+            json = Json {
+                isLenient = true
+                ignoreUnknownKeys = true
+                serializersModule = _serializersModule
+            }
+        }
 
         /**
          * 将 [Messages.serializersModule] 与目标 [serializersModule] 进行合并。
          */
+        @Synchronized
         public fun mergeSerializersModule(serializersModule: SerializersModule) {
             _serializersModule += serializersModule
+            setJson()
         }
 
+        /**
+         * 将 [Messages.serializersModule] 与目标 [serializersModule] 进行合并。
+         */
+        @Suppress("MemberVisibilityCanBePrivate")
         public fun mergeSerializersModule(builderAction: SerializersModuleBuilder.() -> Unit) {
             mergeSerializersModule(SerializersModule(builderAction))
         }
 
+        /**
+         * 向 [serializersModule] 中注册一个 [MsgElement] 的多态信息。
+         */
         public override fun registrar(builderAction: PolymorphicModuleBuilder<MsgElement<*>>.() -> Unit) {
             registrarPolymorphic(builderAction)
         }
 
         /**
-         * 向 [serializersModule] 中注册多态信息。
+         * 向 [serializersModule] 中注册一个 [MsgElement] 的多态信息。
          */
-        public inline fun <reified M : MsgElement<*>> registrarPolymorphic(crossinline builderAction: PolymorphicModuleBuilder<M>.() -> Unit) {
+        private inline fun <reified M : MsgElement<*>> registrarPolymorphic(crossinline builderAction: PolymorphicModuleBuilder<M>.() -> Unit) {
             mergeSerializersModule {
                 polymorphic(baseClass = M::class, builderAction = builderAction)
             }
@@ -141,6 +163,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
         /**
          * 可用于 [Messages] 进行序列化的 [KSerializer].
          */
+        @JvmStatic
         public val serializer: KSerializer<Messages> get() = MessagesSerializer
 
         /**
@@ -174,12 +197,30 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
         public fun getMessages(vararg messages: MsgElement<*>): Messages = messages(*messages)
 
 
+        //region serializer api for java
 
+        /**
+         * 尝试将指定消息链转化为json字符串。
+         *
+         * 此函数为Java使用者提供，使用内置的 Json 序列化器。
+         */
         @Api4J
         @JvmStatic
-        public fun toJson() {
-
+        public fun toJsonString(messages: Messages): String {
+            return json.encodeToString(serializer, messages)
         }
+
+        /**
+         * 尝试通过json字符串反序列化出 [Messages] 实例。
+         *
+         * 此函数为Java使用者提供，使用内置的 Json 序列化器。
+         */
+        @Api4J
+        @JvmStatic
+        public fun fromJsonString(jsonString: String): Messages {
+            return json.decodeFromString(serializer, jsonString)
+        }
+        //endregion
 
 
     }
@@ -324,6 +365,7 @@ internal class SingleValueMessageList(private val value: MsgElement<*>) : Messag
 
         throw IndexOutOfBoundsException("fromIndex: $fromIndex, toIndex: $toIndex, but lastIndex: 0")
     }
+
     override fun plus(element: Message.Element<*>): Messages {
         if (element is SingleOnlyMessage<*>) return element
         return MessageListImpl(listOf(value, element))
@@ -350,6 +392,7 @@ internal class SingleValueMessageList(private val value: MsgElement<*>) : Messag
                 next = true
             }
         }
+
         override fun previous(): Message.Element<*> {
             if (next) return value.also { next = false }
             else throw NoSuchElementException()
