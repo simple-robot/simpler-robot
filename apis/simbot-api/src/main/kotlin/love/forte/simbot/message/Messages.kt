@@ -57,9 +57,13 @@ public interface MessageElementPolymorphicRegistrar {
  * ### 序列化
  * 当你需要对 [Messages] 进行序列化的时候，你所使用的 [KSerializer] 必须为 [Messages.serializer].
  *
+ * ### 构建器
+ * 除了直接使用拼接的方式，你也可以参考 [MessagesBuilder] 来使用构建器来构建 [Messages] 实例。
+ *
  * @see EmptyMessages
  * @see SingleOnlyMessage
  * @see MessageList
+ * @see MessagesBuilder
  */
 public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
 
@@ -73,7 +77,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
     /**
      * 拼接 [MsgElement] 列表.
      */
-    public operator fun plus(messages: List<MsgElement<*>>): Messages
+    public operator fun plus(messages: Collection<MsgElement<*>>): Messages
 
 
     /**
@@ -164,7 +168,8 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          * 可用于 [Messages] 进行序列化的 [KSerializer].
          */
         @JvmStatic
-        public val serializer: KSerializer<Messages> get() = MessagesSerializer
+        public val serializer: KSerializer<Messages>
+            get() = MessagesSerializer
 
         /**
          * 得到一个空的消息列表。
@@ -240,7 +245,7 @@ public fun emptyMessages(): Messages = EmptyMessages
 @Serializable
 public object EmptyMessages : Messages, List<MsgElement<*>> by emptyList() {
     override fun plus(element: Message.Element<*>): Messages = element.toMessages()
-    override fun plus(messages: List<Message.Element<*>>): Messages = messages.toMessages()
+    override fun plus(messages: Collection<Message.Element<*>>): Messages = messages.toMessages()
     override fun toString(): String = "EmptyMessages()"
 }
 
@@ -270,7 +275,7 @@ public abstract class SingleOnlyMessage<E : Message.Element<E>> : MsgElement<E>,
     /**
      * 拼接元素。
      */
-    override fun plus(messages: List<Message.Element<*>>): Messages =
+    override fun plus(messages: Collection<Message.Element<*>>): Messages =
         if (messages.isEmpty()) this else messages.toMessages()
 }
 
@@ -371,7 +376,7 @@ internal class SingleValueMessageList(private val value: MsgElement<*>) : Messag
         return MessageListImpl(listOf(value, element))
     }
 
-    override fun plus(messages: List<Message.Element<*>>): Messages {
+    override fun plus(messages: Collection<Message.Element<*>>): Messages {
         if (messages.isEmpty()) return this
         if (messages.size == 1) return plus(messages.first())
 
@@ -422,7 +427,7 @@ internal constructor(private val delegate: List<MsgElement<*>>) : MessageList(),
     /**
      * 拼接元素。
      */
-    override fun plus(messages: List<Message.Element<*>>): Messages {
+    override fun plus(messages: Collection<Message.Element<*>>): Messages {
         if (messages.isEmpty()) return this
         if (messages.size == 1) {
             val element = messages.first()
