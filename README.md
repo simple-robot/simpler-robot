@@ -228,7 +228,7 @@ suspend fun GroupMessageEvent.listen() {
     val authorId = author().id
     val at = At(authorId)
 
-    group().send(at + Text { "你好?" })
+    group().send(at + "你好?".toText())
 }
 ```
 
