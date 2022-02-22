@@ -1,8 +1,6 @@
 name: Publish Release
 on:
   push:
-    branches:
-      - v3-dev
     tags:
       - v3.**.**
 jobs:
