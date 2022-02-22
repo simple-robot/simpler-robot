@@ -195,6 +195,11 @@ tasks.create("createChangelog") {
             val autoGenerateText = """
                 
 
+                ## 组件更新
+                相关组件会在后续跟进更新
+                - [mirai组件](https://github.com/simple-robot/simbot-component-mirai/releases)
+                - [腾讯频道组件](https://github.com/simple-robot/simbot-component-tencent-guild/releases)
+
                 ## 其他日志
                 
             """.trimIndent()
