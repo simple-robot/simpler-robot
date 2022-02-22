@@ -17,6 +17,7 @@
 
 package love.forte.simboot.autoconfigure
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import love.forte.simboot.core.configuration.CoreEventListenerManagerContextFactory
 import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
@@ -32,16 +33,30 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import kotlin.coroutines.CoroutineContext
 
 /**
+ * 在 `spring-boot-starter` 中作为事件调度器的容器。
+ */
+public open class SimbotEventDispatcherContainer(public val dispatcher: CoroutineDispatcher)
+
+
+
+
+/**
  * 配置 [EventListenerManager]
  * @author ForteScarlet
  */
 public open class SpringEventListenerManagerConfiguration {
 
     @Bean
+    @ConditionalOnMissingBean(SimbotEventDispatcherContainer::class)
+    public open fun defaultSimbotEventDispatcher(executor: ThreadPoolTaskExecutor): SimbotEventDispatcherContainer = SimbotEventDispatcherContainer(executor.asCoroutineDispatcher())
+
+
+    @Bean
     @ConditionalOnMissingBean(CoreEventListenerManagerContextFactory::class)
-    public open fun defaultCoreEventListenerManagerContextFactory(executor: ThreadPoolTaskExecutor): CoreEventListenerManagerContextFactory {
+    public open fun defaultCoreEventListenerManagerContextFactory(dispatcherContainer: SimbotEventDispatcherContainer): CoreEventListenerManagerContextFactory {
+        val dispatcher = dispatcherContainer.dispatcher
         return object : CoreEventListenerManagerContextFactory {
-            override val managerCoroutineContext: CoroutineContext = executor.asCoroutineDispatcher()
+            override val managerCoroutineContext: CoroutineContext = dispatcher
         }
     }
 
