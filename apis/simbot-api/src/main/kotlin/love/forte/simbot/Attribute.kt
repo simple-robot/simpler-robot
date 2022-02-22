@@ -56,6 +56,9 @@ import kotlin.reflect.full.safeCast
  *
  * @see AttributeMap
  *
+ * @property name 属性的名称
+ * @property type 属性对应的元素类型
+ *
  */
 @Serializable
 public class Attribute<T : Any> private constructor(
