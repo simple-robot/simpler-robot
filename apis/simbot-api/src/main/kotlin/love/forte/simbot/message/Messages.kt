@@ -27,7 +27,9 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.*
+import love.forte.simbot.Api4J
 import love.forte.simbot.Component
 import love.forte.simbot.Simbot
 import love.forte.simbot.SimbotComponent
@@ -52,9 +54,16 @@ public interface MessageElementPolymorphicRegistrar {
  * [Messages] 中可以存在多个不同组件之间的 [MsgElement], 但是除了与 [SimbotComponent] 混用之外，不建议这么做。
  * 大多数情况下，组件对于 [Messages] 的解析很少会顾及到其他组件，而当遇到不支持的组件的时候，大概率会将其忽略或抛出异常。
  *
+ * ### 序列化
+ * 当你需要对 [Messages] 进行序列化的时候，你所使用的 [KSerializer] 必须为 [Messages.serializer].
+ *
+ * ### 构建器
+ * 除了直接使用拼接的方式，你也可以参考 [MessagesBuilder] 通过构建器来构建 [Messages] 实例。
+ *
  * @see EmptyMessages
  * @see SingleOnlyMessage
  * @see MessageList
+ * @see MessagesBuilder
  */
 public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
 
@@ -68,7 +77,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
     /**
      * 拼接 [MsgElement] 列表.
      */
-    public operator fun plus(messages: List<MsgElement<*>>): Messages
+    public operator fun plus(messages: Collection<MsgElement<*>>): Messages
 
 
     /**
@@ -92,22 +101,55 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
             }
         }
 
-        public val serializersModule: SerializersModule get() = _serializersModule
-
-
-        public fun mergeSerializersModule(serializersModule: SerializersModule) {
-            _serializersModule += serializersModule
+        @Volatile
+        private var json: Json = Json {
+            isLenient = true
+            ignoreUnknownKeys = true
+            serializersModule = _serializersModule
         }
 
+        /**
+         * 当前 [Messages] 可用于序列化的 [SerializersModule]. 在组件加载完毕后，其中应包含了所有组件下注册的额外消息类型的多态信息。
+         *
+         */
+        public val serializersModule: SerializersModule get() = _serializersModule
+
+        private fun setJson() {
+            json = Json {
+                isLenient = true
+                ignoreUnknownKeys = true
+                serializersModule = _serializersModule
+            }
+        }
+
+        /**
+         * 将 [Messages.serializersModule] 与目标 [serializersModule] 进行合并。
+         */
+        @Synchronized
+        public fun mergeSerializersModule(serializersModule: SerializersModule) {
+            _serializersModule += serializersModule
+            setJson()
+        }
+
+        /**
+         * 将 [Messages.serializersModule] 与目标 [serializersModule] 进行合并。
+         */
+        @Suppress("MemberVisibilityCanBePrivate")
         public fun mergeSerializersModule(builderAction: SerializersModuleBuilder.() -> Unit) {
             mergeSerializersModule(SerializersModule(builderAction))
         }
 
+        /**
+         * 向 [serializersModule] 中注册一个 [MsgElement] 的多态信息。
+         */
         public override fun registrar(builderAction: PolymorphicModuleBuilder<MsgElement<*>>.() -> Unit) {
             registrarPolymorphic(builderAction)
         }
 
-        public inline fun <reified M : MsgElement<*>> registrarPolymorphic(crossinline builderAction: PolymorphicModuleBuilder<M>.() -> Unit) {
+        /**
+         * 向 [serializersModule] 中注册一个 [MsgElement] 的多态信息。
+         */
+        private inline fun <reified M : MsgElement<*>> registrarPolymorphic(crossinline builderAction: PolymorphicModuleBuilder<M>.() -> Unit) {
             mergeSerializersModule {
                 polymorphic(baseClass = M::class, builderAction = builderAction)
             }
@@ -122,7 +164,12 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
             }
         }
 
-        public val serializer: KSerializer<Messages> get() = MessagesSerializer
+        /**
+         * 可用于 [Messages] 进行序列化的 [KSerializer].
+         */
+        @JvmStatic
+        public val serializer: KSerializer<Messages>
+            get() = MessagesSerializer
 
         /**
          * 得到一个空的消息列表。
@@ -142,6 +189,9 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
         @JvmStatic
         public fun MsgElement<*>.elementToMessages(): Messages = toMessages()
 
+        /**
+         * 将一个list转为 [Messages].
+         */
         @JvmStatic
         public fun List<MsgElement<*>>.listToMessages(): Messages = toMessages()
 
@@ -150,6 +200,34 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          */
         @JvmStatic
         public fun getMessages(vararg messages: MsgElement<*>): Messages = messages(*messages)
+
+
+        //region serializer api for java
+
+        /**
+         * 尝试将指定消息链转化为json字符串。
+         *
+         * 此函数为Java使用者提供，使用内置的 Json 序列化器。
+         */
+        @Api4J
+        @JvmStatic
+        public fun toJsonString(messages: Messages): String {
+            return json.encodeToString(serializer, messages)
+        }
+
+        /**
+         * 尝试通过json字符串反序列化出 [Messages] 实例。
+         *
+         * 此函数为Java使用者提供，使用内置的 Json 序列化器。
+         */
+        @Api4J
+        @JvmStatic
+        public fun fromJsonString(jsonString: String): Messages {
+            return json.decodeFromString(serializer, jsonString)
+        }
+        //endregion
+
+
     }
 
 }
@@ -167,7 +245,8 @@ public fun emptyMessages(): Messages = EmptyMessages
 @Serializable
 public object EmptyMessages : Messages, List<MsgElement<*>> by emptyList() {
     override fun plus(element: Message.Element<*>): Messages = element.toMessages()
-    override fun plus(messages: List<Message.Element<*>>): Messages = messages.toMessages()
+    override fun plus(messages: Collection<Message.Element<*>>): Messages = messages.toMessages()
+    override fun toString(): String = "EmptyMessages()"
 }
 
 
@@ -196,7 +275,7 @@ public abstract class SingleOnlyMessage<E : Message.Element<E>> : MsgElement<E>,
     /**
      * 拼接元素。
      */
-    override fun plus(messages: List<Message.Element<*>>): Messages =
+    override fun plus(messages: Collection<Message.Element<*>>): Messages =
         if (messages.isEmpty()) this else messages.toMessages()
 }
 
@@ -263,7 +342,7 @@ public operator fun Message.Element<*>.plus(other: SingleOnlyMessage<*>): Messag
 /**
  * [Messages] 基础实现, 是元素数量不应为空的消息列表。
  *
- * [MessageList] 是不可变的，每次变更都**可能**会得到一个新的实例。
+ * [MessageList] 是不可变的，每次变更都会得到一个新的实例。
  *
  */
 public sealed class MessageList : Messages, Collection<MsgElement<*>>
@@ -291,12 +370,13 @@ internal class SingleValueMessageList(private val value: MsgElement<*>) : Messag
 
         throw IndexOutOfBoundsException("fromIndex: $fromIndex, toIndex: $toIndex, but lastIndex: 0")
     }
+
     override fun plus(element: Message.Element<*>): Messages {
         if (element is SingleOnlyMessage<*>) return element
         return MessageListImpl(listOf(value, element))
     }
 
-    override fun plus(messages: List<Message.Element<*>>): Messages {
+    override fun plus(messages: Collection<Message.Element<*>>): Messages {
         if (messages.isEmpty()) return this
         if (messages.size == 1) return plus(messages.first())
 
@@ -317,6 +397,7 @@ internal class SingleValueMessageList(private val value: MsgElement<*>) : Messag
                 next = true
             }
         }
+
         override fun previous(): Message.Element<*> {
             if (next) return value.also { next = false }
             else throw NoSuchElementException()
@@ -346,7 +427,7 @@ internal constructor(private val delegate: List<MsgElement<*>>) : MessageList(),
     /**
      * 拼接元素。
      */
-    override fun plus(messages: List<Message.Element<*>>): Messages {
+    override fun plus(messages: Collection<Message.Element<*>>): Messages {
         if (messages.isEmpty()) return this
         if (messages.size == 1) {
             val element = messages.first()
@@ -358,4 +439,16 @@ internal constructor(private val delegate: List<MsgElement<*>>) : MessageList(),
 
         return newList.toMessages()
     }
+
+    override fun toString(): String = delegate.toString()
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is MessageListImpl) return false
+
+        return delegate == other.delegate
+    }
+
+    override fun hashCode(): Int = delegate.hashCode()
+
 }

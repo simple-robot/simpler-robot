@@ -87,11 +87,11 @@ simbot3的文档与simbot2的文档在一起，都在 [语雀文档](https://www
 <br>
 simbot3目前已经实现的组件以及计划中的组件会列举于此，且不定期更新：
 
-| 对接目标                                    | 组件作者        | 地址                                                               | 状态    |
-|-----------------------------------------|-------------|------------------------------------------------------------------|-------|
-| 腾讯频道                                    | simbot team | <https://github.com/simple-robot/simbot-component-tencent-guild> | 维护中   |
-| [Mirai](https://github.com/mamoe/mirai) | simbot team | <https://github.com/simple-robot/simbot-component-mirai>         | 维护中   |
-| 开黑啦                                     | simbot team | <https://github.com/simple-robot/simbot-component-kaiheila>      | *计划中* |
+|                  对接目标                   |     作者      |                               仓库地址                               |  状态   |
+|:---------------------------------------:|:-----------:|:----------------------------------------------------------------:|:-----:|
+|                  腾讯频道                   | simbot team | <https://github.com/simple-robot/simbot-component-tencent-guild> |  维护中  |
+| [Mirai](https://github.com/mamoe/mirai) | simbot team |     <https://github.com/simple-robot/simbot-component-mirai>     |  维护中  |
+|                   开黑啦                   | simbot team |   <https://github.com/simple-robot/simbot-component-kaiheila>    | *计划中* |
 
 腾讯频道组件：
 
@@ -107,10 +107,12 @@ Mirai组件：
 
 #### Maven
 
+版本参考：[![](https://img.shields.io/maven-central/v/love.forte.simbot/simbot-api)](https://repo1.maven.org/maven2/love/forte/simbot/simbot-api/)
+
 ```xml
 <!-- 3.x中，大部分组件的版本维护独立于标准库，但是会在版本号中体现依赖标准库的版本号。 -->
 <properties>
-    <simbot.version>simbot-core的版本号</simbot.version>
+    <simbot.version>${version}</simbot.version>
 </properties>
 ```
 
@@ -126,7 +128,7 @@ Mirai组件：
 #### Gradle Kotlin DSL
 
 ```kotlin
-val simbotVersion = simbot - core的版本号
+val simbotVersion = // $version
 
 // simbot核心标准库
 implementation("love.forte.simbot:simbot-core:$simbotVersion")
@@ -135,7 +137,7 @@ implementation("love.forte.simbot:simbot-core:$simbotVersion")
 #### Gradle Groovy
 
 ```groovy
-simbotVersion = simbot - core的版本号
+simbotVersion = // $version
 
 // simbot核心标准库
 implementation "love.forte.simbot:simbot-core:$simbotVersion"
@@ -226,7 +228,7 @@ suspend fun GroupMessageEvent.listen() {
     val authorId = author().id
     val at = At(authorId)
 
-    group().send(at + Text { "你好?" })
+    group().send(at + "你好?".toText())
 }
 ```
 

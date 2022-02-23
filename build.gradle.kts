@@ -19,15 +19,13 @@
 plugins {
     kotlin("jvm") version "1.6.10" apply false
     kotlin("plugin.serialization") version "1.6.10" apply false
-    id("org.jetbrains.dokka") // version "1.6.10" apply false
+    id("org.jetbrains.dokka")
     `maven-publish`
     signing
     // see https://github.com/gradle-nexus/publish-plugin
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
     idea
 }
-
-
 
 group = P.Simbot.GROUP
 version = P.Simbot.VERSION
@@ -37,15 +35,28 @@ repositories {
     mavenCentral()
 }
 
+val isSnapshotOnly = System.getProperty("snapshotOnly") != null
+val isReleaseOnly = System.getProperty("releaseOnly") != null
+
+val isPublishConfigurable = when {
+    isSnapshotOnly -> P.Simbot.SNAPSHOT
+    isReleaseOnly -> !P.Simbot.SNAPSHOT
+    else -> true
+}
+
+println("isSnapshotOnly: $isSnapshotOnly")
+println("isReleaseOnly: $isReleaseOnly")
+println("isPublishConfigurable: $isPublishConfigurable")
+
+
 val secretKeyRingFileKey = "signing.secretKeyRingFile"
+
 
 subprojects {
     println("ROOT SUB: $this")
     group = P.Simbot.GROUP
     version = P.Simbot.VERSION
-    apply(plugin = "maven-publish")
     apply(plugin = "java")
-    apply(plugin = "signing")
 
     repositories {
         mavenLocal()
@@ -72,16 +83,18 @@ subprojects {
         }
     }
 
-    afterEvaluate {
-        if (name in publishNeed) {
-
+    if (isPublishConfigurable && name in publishNeed) {
+        apply(plugin = "maven-publish")
+        apply(plugin = "signing")
+        afterEvaluate {
             configurePublishing(name)
             println("[publishing-configure] - [$name] configured.")
-            val secretRingFile = File(project.rootDir, "ForteScarlet.gpg")
-            extra[secretKeyRingFileKey] = secretRingFile
-            setProperty(secretKeyRingFileKey, secretRingFile)
 
             signing {
+                val secretRingFile = rootProject.file("ForteScarlet.gpg")
+                extra[secretKeyRingFileKey] = secretRingFile
+                setProperty(secretKeyRingFileKey, secretRingFile)
+
                 sign(publishing.publications)
             }
         }
@@ -111,7 +124,8 @@ tasks.register("dokkaHtmlMultiModuleAndPost") {
         val outDir = rootProject.file("dokka/html")
         val indexFile = File(outDir, "index.html")
         indexFile.createNewFile()
-        indexFile.writeText("""
+        indexFile.writeText(
+            """
             <html xmlns="http://www.w3.org/1999/xhtml">
             <head>
                 <meta http-equiv="refresh" content="0;URL='v$version'" />
@@ -119,7 +133,8 @@ tasks.register("dokkaHtmlMultiModuleAndPost") {
             <body>
             </body>
             </html>
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         // TODO readme
     }
@@ -127,30 +142,73 @@ tasks.register("dokkaHtmlMultiModuleAndPost") {
 
 // nexus staging
 
-val sonatypeUsername: String? = extra.getIfHas("sonatype.username")?.toString()
-val sonatypePassword: String? = extra.getIfHas("sonatype.password")?.toString()
+if (isPublishConfigurable) {
 
-println("sonatypeUsername: $sonatypeUsername")
+    val sonatypeUsername: String? =
+        extra.getIfHas("sonatype.username")?.toString() ?: System.getProperty("sonatype.username")
+        ?: System.getenv("SONATYPE_USERNAME")
 
-if (sonatypeUsername != null && sonatypePassword != null) {
-    nexusPublishing {
-        packageGroup.set(P.Simbot.GROUP)
+    val sonatypePassword: String? =
+        extra.getIfHas("sonatype.password")?.toString() ?: System.getProperty("sonatype.password")
+        ?: System.getenv("SONATYPE_PASSWORD")
 
-        useStaging.set(
-            project.provider { !project.version.toString().endsWith("SNAPSHOT", ignoreCase = true) }
-        )
+    println("sonatypeUsername: $sonatypeUsername")
 
-        transitionCheckOptions {
-            maxRetries.set(20)
-            delayBetween.set(java.time.Duration.ofSeconds(5))
-        }
-        repositories {
-            sonatype {
-                snapshotRepositoryUrl.set(uri(Sonatype.`snapshot-oss`.URL))
-                username.set(sonatypeUsername)
-                password.set(sonatypePassword)
+    if (sonatypeUsername != null && sonatypePassword != null) {
+        nexusPublishing {
+            packageGroup.set(P.Simbot.GROUP)
+
+            useStaging.set(
+                project.provider { !project.version.toString().endsWith("SNAPSHOT", ignoreCase = true) }
+            )
+
+            transitionCheckOptions {
+                maxRetries.set(20)
+                delayBetween.set(java.time.Duration.ofSeconds(5))
+            }
+            repositories {
+                sonatype {
+                    snapshotRepositoryUrl.set(uri(Sonatype.`snapshot-oss`.URL))
+                    username.set(sonatypeUsername)
+                    password.set(sonatypePassword)
+                }
             }
         }
+    } else {
+        println("[WARN] - sonatype.username or sonatype.password is null, cannot config nexus publishing.")
+    }
+}
+
+
+tasks.create("createChangelog") {
+    group = "build"
+    doFirst {
+        val version = "v${rootProject.version}"
+        println("Generate change log for $version ...")
+        // configurations.runtimeClasspath
+        val changelogDir = rootProject.file(".changelog").also {
+            it.mkdirs()
+        }
+        val file = File(changelogDir, "$version.md")
+        if (!file.exists()) {
+            file.createNewFile()
+            val autoGenerateText = """
+                
+
+                ## 组件更新
+                相关组件会在后续跟进更新
+                - [mirai组件](https://github.com/simple-robot/simbot-component-mirai/releases)
+                - [腾讯频道组件](https://github.com/simple-robot/simbot-component-tencent-guild/releases)
+
+                ## 其他日志
+                
+            """.trimIndent()
+
+
+            file.writeText(autoGenerateText)
+        }
+
+
     }
 }
 

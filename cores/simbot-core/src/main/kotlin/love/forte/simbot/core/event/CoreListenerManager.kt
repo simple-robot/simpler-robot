@@ -202,9 +202,9 @@ public class CoreListenerManager private constructor(
         invokers: List<ListenerInvoker>
     ): EventProcessingResult {
         val currentBot = context.event.bot
-        val dispatchContext = currentBot.coroutineContext + managerCoroutineContext
+        // val dispatchContext = currentBot.coroutineContext + managerCoroutineContext
 
-        return withContext(dispatchContext + context) {
+        return withContext(managerCoroutineContext + context) {
             kotlin.runCatching {
                 processingInterceptEntrance.doIntercept(context) {
                     // do invoke with intercept
