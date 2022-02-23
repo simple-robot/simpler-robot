@@ -62,7 +62,7 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-webflux:2.6.3")
     testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.preview.3.0-2100.0.1")
-    testImplementation(V.Kotlinx.Coroutines.Reactor.notation)
+    // testImplementation(V.Kotlinx.Coroutines.Reactor.notation)
 }
 repositories {
     mavenCentral()
