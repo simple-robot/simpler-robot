@@ -2,7 +2,6 @@ package love.forte.test.webflux
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.reactor.asFlux
 import love.forte.simboot.annotation.Listener
 import love.forte.simboot.autoconfigure.EnableSimbot
 import love.forte.simbot.PriorityConstant
@@ -13,6 +12,7 @@ import org.springframework.boot.runApplication
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ResponseBody
+import reactor.core.publisher.Mono
 
 
 /**
@@ -48,13 +48,7 @@ open class MyController {
     }
 
     @Listener
-    suspend fun FriendMessageEvent.myListen2() = flow {
-        emit("3")
-        bot.logger.info("emit: {}", 3)
-        delay(2000)
-        emit("4")
-        bot.logger.info("emit: {}", 4)
-    }.asFlux()
+    suspend fun FriendMessageEvent.myListen2() = Mono.just(3)
 
     @Listener(priority = PriorityConstant.LAST)
     suspend fun FriendMessageEvent.myListen3(context: EventProcessingContext) {
