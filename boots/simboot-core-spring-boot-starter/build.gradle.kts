@@ -28,6 +28,16 @@ tasks.getByName<Test>("test") {
     useJUnit()
 }
 
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = uri(Sonatype.`snapshot-oss`.URL)
+        mavenContent {
+            snapshotsOnly()
+        }
+    }
+}
 
 dependencies {
     api(project(":boots:simboot-core"))
@@ -46,9 +56,13 @@ dependencies {
     testImplementation(V.Kotlinx.Serialization.Properties.notation)
     testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
 
-    testImplementation(V.Log4j.Api.notation)
-    testImplementation(V.Log4j.Core.notation)
-    testImplementation(V.Log4j.Slf4jImpl.notation)
+    //testImplementation(V.Log4j.Api.notation)
+    //testImplementation(V.Log4j.Core.notation)
+    //testImplementation(V.Log4j.Slf4jImpl.notation)
+
+    testImplementation("org.springframework.boot:spring-boot-starter-webflux:2.6.3")
+    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.preview.3.0-2100.0.1")
+    testImplementation(V.Kotlinx.Coroutines.Reactor.notation)
 }
 repositories {
     mavenCentral()
