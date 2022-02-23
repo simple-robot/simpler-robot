@@ -34,7 +34,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.4
-          arguments: clean build test publishToSonatype closeAndReleaseStagingRepository -DsnapshotOnly -Psigning.secretKeyRingFile=ForteScarlet.gpg -Psigning.keyId=${{ secrets.SIGN_KEY_ID }} -Psigning.password=${{ secrets.SIGN_PASS }} -Psonatype.username=${{ secrets.OSS_USERNAME }} -Psonatype.password=${{ secrets.OSS_PASSWORD }}  -Porg.gradle.jvmargs="org.gradle.jvmargs=-Xmx4G -Xms4G -XX:MaxMetaspaceSize=512m -Dfile.encoding=UT-8"
+          arguments: clean build test publishToSonatype closeAndReleaseStagingRepository -DsnapshotOnly -Psigning.secretKeyRingFile=ForteScarlet.gpg -Psigning.keyId=${{ secrets.SIGN_KEY_ID }} -Psigning.password=${{ secrets.SIGN_PASS }} -Psonatype.username=${{ secrets.OSS_USERNAME }} -Psonatype.password=${{ secrets.OSS_PASSWORD }}  -Porg.gradle.jvmargs="org.gradle.jvmargs=-Xmx4G -Xms4G -XX:MaxMetaspaceSize=512m -Dfile.encoding=UT-8" -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true
 
 
 
