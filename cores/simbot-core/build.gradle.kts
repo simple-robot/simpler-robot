@@ -28,11 +28,8 @@ tasks.getByName<Test>("test") {
     useJUnit()
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        javaParameters = true
-        jvmTarget = "1.8"
-    }
+kotlin {
+    this.target
 }
 
 dependencies {
@@ -41,6 +38,11 @@ dependencies {
     api(V.Kotlinx.Coroutines.Core.Jvm.notation)
     api(V.Kotlinx.Coroutines.J8.notation)
     api(V.Kotlinx.Serialization.Core.notation)
+
+    compileOnly(V.Kotlinx.Coroutines.Reactive.notation)
+    compileOnly(V.Kotlinx.Coroutines.Reactor.notation)
+    compileOnly(V.Kotlinx.Coroutines.Rx2.notation)
+    compileOnly(V.Kotlinx.Coroutines.Rx3.notation)
 
     testImplementation(V.Kotlin.Test.Junit.notation)
     testImplementation(V.Kotlinx.Serialization.Json.notation)

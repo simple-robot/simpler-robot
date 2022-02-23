@@ -28,12 +28,6 @@ tasks.getByName<Test>("test") {
     useJUnit()
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        javaParameters = true
-        jvmTarget = "1.8"
-    }
-}
 
 dependencies {
     api(project(":boots:simboot-core"))

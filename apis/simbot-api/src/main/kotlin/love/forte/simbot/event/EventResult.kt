@@ -41,7 +41,40 @@ public interface EventResult {
 
     /**
      * 此为监听函数所返回的真正内容。
-     * 对于此内容，
+     *
+     * ### Reactive API
+     *
+     * 当 [content] 的返回值为 reactive api相关的内容，且当前 [EventResult] 实例为 [SimpleEventResult] 类型的时候，
+     * 处理器应当对 reactive 的相关api对其进行转化收集。这通常使用在Java使用者或者与其他reactive API配合使用的时候。
+     *
+     * 比如当你的函数返回了 [flux](https://projectreactor.io/docs/core/3.4.1/api/reactor/core/publisher/Flux.html),
+     * 那么它将会被收集为 [List] 后重新作为 [content] 构建为 EventResult.
+     *
+     * 同样的，如果你返回的是 [kotlinx.coroutines.flow.Flow], 也会在函数返回后进行收集。
+     *
+     * 值得注意的是, 这个行为会在返回值返回后立即执行, 而不是等待所有监听函数执行结束后。
+     *
+     * 支持的收集类型有：
+     * - [kotlinx.coroutines.flow.Flow]
+     *
+     * - `org.reactivestreams.Publisher`
+     * - `reactor.core.publisher.Flux`
+     * - `reactor.core.publisher.Mono`
+     *
+     * - `io.reactivex.CompletableSource`
+     * - `io.reactivex.SingleSource`
+     * - `io.reactivex.MaybeSource`
+     * - `io.reactivex.ObservableSource`
+     * - `io.reactivex.Flowable`
+     *
+     * - `io.reactivex.rxjava3.core.CompletableSource`
+     * - `io.reactivex.rxjava3.core.SingleSource`
+     * - `io.reactivex.rxjava3.core.MaybeSource`
+     * - `io.reactivex.rxjava3.core.ObservableSource`
+     * - `io.reactivex.rxjava3.core.Flowable`
+     *
+     *
+     * 详情请见 [kotlinx-coroutines-reactive](https://github.com/Kotlin/kotlinx.coroutines/blob/master/reactive/README.md) .
      */
     public val content: Any?
 
@@ -77,9 +110,8 @@ public interface EventResult {
             if (content == null) {
                 if (isTruncated) Truncated else NormalEmpty
             } else {
-                EventResultImpl(content, isTruncated)
+                SimpleEventResult(content, isTruncated)
             }
-
 
 
         /**
@@ -119,7 +151,7 @@ public interface EventResult {
 
     /**
      * 默认的 [EventResult] 实现，也是部分常见策略下的结果内容。
-     * 
+     *
      * @see Truncated
      */
     private sealed class Default : EventResult {
@@ -146,7 +178,42 @@ public open class AsyncEventResult(override val content: Deferred<EventResult>) 
     public fun contentAsFuture(): Future<EventResult> = content.asCompletableFuture()
 }
 
+/**
+ * [EventResult] 的基础实现类型。
+ * @see EventResult
+ */
+public open class SimpleEventResult
+@JvmOverloads constructor(
+    override val content: Any? = null,
+    override val isTruncated: Boolean = false
+) : EventResult {
 
-private data class EventResultImpl(override val content: Any?, override val isTruncated: Boolean) : EventResult
+    /**
+     * 根据当前的 [content] 和 [isTruncated] 拷贝得到一个新的实例，并且允许提供额外的参数覆盖当前内容。
+     */
+    @JvmOverloads
+    public open fun copy(newContent: Any? = content, newTruncated: Boolean = isTruncated): SimpleEventResult {
+        return SimpleEventResult(newContent, newTruncated)
+    }
+
+    override fun toString(): String = "SimpleEventResult(content=$content, isTruncated=$isTruncated)"
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SimpleEventResult) return false
+
+        if (content != other.content) return false
+        if (isTruncated != other.isTruncated) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = content?.hashCode() ?: 0
+        result = 31 * result + isTruncated.hashCode()
+        return result
+    }
+
+
+}
 
 

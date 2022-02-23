@@ -52,6 +52,7 @@ println("isPublishConfigurable: $isPublishConfigurable")
 val secretKeyRingFileKey = "signing.secretKeyRingFile"
 
 
+
 subprojects {
     println("ROOT SUB: $this")
     group = P.Simbot.GROUP
@@ -65,8 +66,16 @@ subprojects {
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         kotlinOptions {
+            jvmTarget = "1.8"
+            javaParameters = true
             freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
+
         }
+    }
+
+    tasks.withType<JavaCompile>().configureEach {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
     }
 
     tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
