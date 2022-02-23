@@ -26,6 +26,7 @@ public object SimbotLoggerFactory : ILoggerFactory {
      */
     override fun getLogger(name: String?): Logger {
         // TODO("Not yet implemented")
-        return SimbotLogger()
+        // return SimbotLogger()
+        TODO()
     }
 }

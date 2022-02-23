@@ -1,6 +1,6 @@
 package love.forte.simbot.logger.test
 
-import org.slf4j.LoggerFactory
+import love.forte.simbot.logger.getOnMax
 import kotlin.test.Test
 
 
@@ -12,10 +12,9 @@ class LoggerFactoryTest {
 
     @Test
     fun getLogger() {
-        val logger = LoggerFactory.getLogger("Hello World")
-
-        logger.info("Info {}", "Message")
-
+        assert("ForteScarlet".getOnMax(7) == "Scarlet")
+        assert("ForteScarlet".getOnMax(12) == "ForteScarlet")
+        assert("ForteScarlet".getOnMax(0) == "")
     }
 
 
