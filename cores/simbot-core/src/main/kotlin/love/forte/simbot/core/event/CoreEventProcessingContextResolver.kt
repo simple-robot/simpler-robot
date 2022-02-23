@@ -34,6 +34,7 @@ import love.forte.simbot.AttributeMutableMap
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.event.*
+import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -110,14 +111,29 @@ internal class CoreEventProcessingContextResolver(
     }
 
     private companion object {
+        private val logger = LoggerFactory.getLogger(CoreEventProcessingContextResolver::class.java)
         private val reactorSupport: Boolean = kotlin.runCatching {
             Companion::class.java.classLoader.loadClass("reactor.core.publisher.Flux")
             Companion::class.java.classLoader.loadClass("reactor.core.publisher.Mono")
+
+            try {
+                Companion::class.java.classLoader.loadClass("kotlinx.coroutines.reactor.MonoKt")
+            } catch (cnf: ClassNotFoundException) {
+                logger.warn("The reactor API is used, but the `kotlinx-coroutine-reactor` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-reactor` to your classpath, otherwise the reactor API will not work.", cnf)
+                return@runCatching false
+            }
             true
         }.getOrElse { false }
 
         private val reactiveSupport: Boolean = kotlin.runCatching {
             Companion::class.java.classLoader.loadClass("org.reactivestreams.Publisher")
+
+            try {
+                Companion::class.java.classLoader.loadClass("kotlinx.coroutines.reactive.ReactiveFlowKt")
+            } catch (cnf: ClassNotFoundException) {
+                logger.warn("The reactive API is used, but the `kotlinx-coroutine-reactive` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-reactive` to your classpath, otherwise the reactive API will not work.", cnf)
+                return@runCatching false
+            }
             true
         }.getOrElse { false }
 
@@ -127,6 +143,14 @@ internal class CoreEventProcessingContextResolver(
             Companion::class.java.classLoader.loadClass("io.reactivex.MaybeSource")
             Companion::class.java.classLoader.loadClass("io.reactivex.ObservableSource")
             Companion::class.java.classLoader.loadClass("io.reactivex.Flowable")
+
+            try {
+                Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx2.RxAwaitKt")
+                Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx2.RxConvertKt")
+            } catch (cnf: ClassNotFoundException) {
+                logger.warn("The RxJava 2.x API is used, but the `kotlinx-coroutine-rx2` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-rx2` to your classpath, otherwise the RxJava 2.x API will not work.", cnf)
+                return@runCatching false
+            }
             true
         }.getOrElse { false }
 
@@ -136,6 +160,14 @@ internal class CoreEventProcessingContextResolver(
             Companion::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.MaybeSource")
             Companion::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.ObservableSource")
             Companion::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.Flowable")
+
+            try {
+                Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx3.RxAwaitKt")
+                Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx3.RxConvertKt")
+            } catch (cnf: ClassNotFoundException) {
+                logger.warn("The RxJava 3.x API is used, but the `kotlinx-coroutine-rx3` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-rx3` to your classpath, otherwise the RxJava 3.x API will not work.", cnf)
+                return@runCatching false
+            }
             true
         }.getOrElse { false }
 

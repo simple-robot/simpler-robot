@@ -73,6 +73,8 @@ public interface EventResult {
      * - `io.reactivex.rxjava3.core.ObservableSource`
      * - `io.reactivex.rxjava3.core.Flowable`
      *
+     * 但是相对应的，
+     *
      *
      * 详情请见 [kotlinx-coroutines-reactive](https://github.com/Kotlin/kotlinx.coroutines/blob/master/reactive/README.md) .
      */
