@@ -25,17 +25,17 @@ jobs:
           java-version: 11
           cache: 'gradle'
 
-      - name: Create gradle.properties
-        run: |
-          echo "org.gradle.daemon=false" > gradle.properties
-          echo "org.gradle.jvmargs=-Xmx4G -Xms2G -XX:MaxMetaspaceSize=512m -Dfile.encoding=UT-8" >> gradle.properties
+#      - name: Create gradle.properties
+#        run: |
+#          echo "org.gradle.daemon=false" > gradle.properties
+#          echo "org.gradle.jvmargs=-Xmx4G -Xms2G -XX:MaxMetaspaceSize=512m -Dfile.encoding=UT-8" >> gradle.properties
 
       # setup Gradle
       - name: Gradle generate documentation
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.4
-          arguments: clean build dokkaHtmlMultiModuleAndPost  -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true
+          arguments: clean build dokkaHtmlMultiModuleAndPost -Porg.gradle.daemon=false -Porg.gradle.jvmargs="-Xmx4G -Xms2G -XX:MaxMetaspaceSize=512m -Dfile.encoding=UT-8" -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true
 
       # https://github.com/marketplace/actions/github-pages-action
       - name: Push to doc repository
