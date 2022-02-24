@@ -221,6 +221,17 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
         object Slf4jImpl : Log4j("slf4j-impl")
     }
 
+    sealed class Logback(id:String) : V("ch.qos.logback", id = "logback-$id", version = VERSION) {
+        companion object {
+            const val VERSION = "1.3.0-alpha13"
+        }
+
+        object Core : Logback("core")
+        object Classic : Logback("classic")
+
+
+    }
+
     /**
      * Okio https://square.github.io/okio/#releases
      */

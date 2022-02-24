@@ -30,6 +30,7 @@ dependencies {
     api(V.Kotlinx.Coroutines.J8.notation)
     api(V.Kotlinx.Serialization.Core.notation)
     api(V.Slf4j.Api.notation)
+    api(project(":apis:simbot-logger"))
     compileOnly(V.Jetbrains.Annotations.notation)
 
     compileOnly(V.Kotlinx.Serialization.Json.notation)

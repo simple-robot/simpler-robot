@@ -1,7 +1,7 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x、simbot 3.x、simbot3) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -12,20 +12,38 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 plugins {
     `java-library`
     `maven-publish`
     kotlin("jvm")
-    kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
 
 }
 
+dependencies {
+    api(V.Kotlinx.Coroutines.Core.Jvm.notation)
+    api(V.Slf4j.Api.notation)
+    api("com.lmax:disruptor:3.4.4")
+
+    compileOnly(V.Jetbrains.Annotations.notation)
+
+    testImplementation(V.Kotlin.Test.Junit5.notation)
+}
+
 tasks.getByName<Test>("test") {
-    useJUnit()
+    useJUnitPlatform()
+}
+
+tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
+    dokkaSourceSets {
+        configureEach {
+            skipEmptyPackages.set(true)
+            includes.from("Module.md")
+            displayName.set("logger")
+        }
+    }
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
@@ -33,29 +51,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
         javaParameters = true
         jvmTarget = "1.8"
     }
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-
-
-dependencies {
-    api(project(":boots:simboot-api"))
-    api(project(":boots:simboot-core-annotation"))
-
-    api(V.Slf4j.Api.notation)
-    api(V.Kotlinx.Coroutines.Core.Jvm.notation)
-    api(V.Kotlinx.Serialization.Core.notation)
-
-    api(P.ForteDI.Core.notation)
-    api(P.AnnotationTool.KCore.notation)
-
-    testImplementation(V.Kotlin.Test.Junit.notation)
-    testImplementation(V.Kotlinx.Serialization.Json.notation)
-    testImplementation(V.Kotlinx.Serialization.Properties.notation)
-    testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
 }
 
 kotlin {
@@ -66,16 +61,6 @@ kotlin {
     sourceSets.all {
         languageSettings {
             optIn("kotlin.RequiresOptIn")
-        }
-    }
-}
-
-tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
-    dokkaSourceSets {
-        configureEach {
-            skipEmptyPackages.set(true)
-            includes.from("Module.md")
-            displayName.set("boot-core")
         }
     }
 }
