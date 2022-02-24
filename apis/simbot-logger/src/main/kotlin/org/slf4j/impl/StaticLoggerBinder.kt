@@ -1,75 +1,54 @@
+/*
+ *  Copyright (c) 2022-2022 ForteScarlet <https://github.com/ForteScarlet>
+ *
+ *  本文件是 simply-robot (或称 simple-robot 3.x、simbot 3.x、simbot3) 的一部分。
+ *
+ *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ *
+ *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
+ *
+ *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ *  https://www.gnu.org/licenses
+ *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
+ */
+
 package org.slf4j.impl
 
+import love.forte.simbot.logger.DefaultSimbotLoggerProcessorsFactory
 import love.forte.simbot.logger.SimbotLoggerFactory
 import love.forte.simbot.logger.SimbotLoggerProcessorsFactory
-import love.forte.simbot.logger.StandardSimbotLoggerProcessorsFactory
 import org.slf4j.ILoggerFactory
 import org.slf4j.helpers.Util
 import org.slf4j.spi.LoggerFactoryBinder
 import java.util.*
 
 /**
- * slf4j-api 的logger绑定器。
+ * simbot-logger 下的日志工厂绑定器。
  *
+ * `simbot-logger` 的所有日志处理均通过 [SimbotLoggerProcessorsFactory] 所得到的处理器列表进行链式处理。
+ *
+ * @see SimbotLoggerFactory
+ * @see SimbotLoggerProcessorsFactory
+ *
+ * @author forte
  */
 public object StaticLoggerBinder : LoggerFactoryBinder {
-    // private lateinit var theBinder: LoggerFactoryBinder
-
-    /**
-     * 获取当前实例.
-     */
-    @JvmStatic
-    public fun getSingleton(): StaticLoggerBinder = this
-
-
-    private fun getTheBinder(): LoggerFactoryBinder {
-        return SimbotLoggerStaticLoggerBinder
-        // if (::theBinder.isInitialized) {
-        //     return theBinder
-        // }
-        //
-        // synchronized(this) {
-        //     if (::theBinder.isInitialized) {
-        //         return theBinder
-        //     }
-        //     TODO()
-        // }
-    }
-
-    /**
-     * Return the instance of [ILoggerFactory] that [org.slf4j.LoggerFactory] class should bind to.
-     *
-     * @return the instance of [ILoggerFactory] that [org.slf4j.LoggerFactory] class should bind to.
-     */
-    override fun getLoggerFactory(): ILoggerFactory = getTheBinder().loggerFactory
-
-    /**
-     * The String form of the [ILoggerFactory] object that this
-     * `LoggerFactoryBinder` instance is *intended* to return.
-     *
-     *
-     * This method allows the developer to interrogate this binder's intention
-     * which may be different from the [ILoggerFactory] instance it is able to
-     * yield in practice. The discrepancy should only occur in case of errors.
-     *
-     * @return the class name of the intended [ILoggerFactory] instance
-     */
-    override fun getLoggerFactoryClassStr(): String = getTheBinder().loggerFactoryClassStr
-
-
-}
-
-
-private object SimbotLoggerStaticLoggerBinder : LoggerFactoryBinder {
     private val processFactory by lazy {
         val loader = ServiceLoader.load(SimbotLoggerProcessorsFactory::class.java, javaClass.classLoader)
-        val loaderList = loader.toList()
+        val processorList = loader.toList()
 
-        if (loaderList.isEmpty()) {
-            return@lazy StandardSimbotLoggerProcessorsFactory
+        if (processorList.isEmpty()) {
+            return@lazy DefaultSimbotLoggerProcessorsFactory
         }
 
-        return@lazy loaderList.first()
+        val firstProcessor = processorList.first()
+        if (processorList.size > 1) {
+            report("There are multiple SimbotLoggerProcessorsFactory loaded. The [$firstProcessor] will be selected.")
+        }
+
+        firstProcessor
     }
 
     private val loggerFactory by lazy {
@@ -77,6 +56,9 @@ private object SimbotLoggerStaticLoggerBinder : LoggerFactoryBinder {
     }
 
     private const val LOGGER_FACTORY_CLASS_STR = "love.forte.simbot.logger.SimbotLoggerFactory"
+    @JvmStatic
+    public fun getSingleton(): StaticLoggerBinder = this
+
     override fun getLoggerFactory(): ILoggerFactory = loggerFactory
     override fun getLoggerFactoryClassStr(): String = LOGGER_FACTORY_CLASS_STR
 }
@@ -89,23 +71,5 @@ private fun report(msg: String) {
     System.err.println("SIMBOT-LOGGER: $msg")
 }
 
-/**
- * 类似于 [Util.report].
- */
-@Suppress("SameParameterValue")
-private fun report(msg: String, t: Throwable) {
-    System.err.println("SIMBOT-LOGGER: $msg")
-    System.err.println("SIMBOT-LOGGER: Reported exception: ")
-    t.printStackTrace(System.err)
-}
 
 
-/*
-    尝试寻找所有已知的LoggerFactory实例。
- */
-
-private fun findAnyILogger() {
-    // LoggerFactoryBinder
-    // Log4jLoggerFactory() // log4j
-    // LoggerFactory
-}

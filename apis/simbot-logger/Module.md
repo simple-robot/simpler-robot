@@ -1,3 +1,3 @@
-# Module simbot-api
+# Module simbot-logger
 
-simbot3的基础模块，定义simbot中的各项标准接口, 是其他模块的基础模块。
+simbot下基于 [SLF4J API](https://www.slf4j.org/) 进行实现的简易异步日志。

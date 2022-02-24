@@ -1,12 +1,28 @@
+/*
+ *  Copyright (c) 2022-2022 ForteScarlet <https://github.com/ForteScarlet>
+ *
+ *  本文件是 simply-robot (或称 simple-robot 3.x、simbot 3.x、simbot3) 的一部分。
+ *
+ *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ *
+ *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
+ *
+ *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ *  https://www.gnu.org/licenses
+ *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
+ */
+
 package love.forte.simbot.logger
 
 import org.slf4j.Marker
 import org.slf4j.event.Level
 
 /**
- * 用于作为 [SimbotLogger] 中的日志处理器所使用的，通过 [SimbotLoggerProcessorsFactory] 进行加载，并取第一个有效值。
+ * 用于作为 [SimbotLogger] 中的日志处理器所使用的，通过 [SimbotLoggerProcessorsFactory] 进行加载，并取第一个有效工厂。
  *
- * 如果无法加载任何处理器，将会使用默认的处理器于控制台输出相应日志。
+ * 如果无法加载任何处理器，将会使用默认的处理器 [ConsoleSimbotLoggerProcessor] 于控制台输出相应的日志。
  *
  * @author ForteScarlet
  */
@@ -20,11 +36,6 @@ public interface SimbotLoggerProcessor {
      * 处理日志。 [doHandle] 是当 [SimbotLoggerFactory] 中的异步处理通道尚未关闭的时候进行的处理函数。
      */
     public fun doHandle(info: LogInfo)
-
-    // /**
-    //  * 处理日志。[doHandleClosed] 只有当 [SimbotLoggerFactory] 中的异步处理通道被关闭后使用。
-    //  */
-    // public fun doHandleClosed(info: LogInfo)
 }
 
 /**

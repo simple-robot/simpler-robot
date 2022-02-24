@@ -14,30 +14,22 @@
  *
  */
 
-package love.forte.simbot.logger.test
+package love.forte.simbot.logger
 
-import kotlin.test.Test
 
 /**
- *
- * @author ForteScarlet
+ * 当无法加载任何 [SimbotLoggerProcessorsFactory] 时使用的默认工厂。
+ * 默认工厂中只有一个用于控制台输出的 [ConsoleSimbotLoggerProcessor].
  */
-class RegexReplaceTest {
-    private val regex = Regex("\\{}")
+public object DefaultSimbotLoggerProcessorsFactory : SimbotLoggerProcessorsFactory {
+    private val processors = listOf(
+        ConsoleSimbotLoggerProcessor(null) // use default value.
+    )
 
-    @Test
-    fun test() {
-        val msg = "Hello {}, My {}."
-
-        var index = 0
-
-        val replaced = regex.replace(msg) { result ->
-            println(result)
-            println(result.value)
-            "{}"
-        }
-
-        println(replaced)
-
+    /**
+     * 得到默认工厂中的处理器。
+     */
+    override fun getProcessors(): List<SimbotLoggerProcessor> {
+        return processors
     }
 }
