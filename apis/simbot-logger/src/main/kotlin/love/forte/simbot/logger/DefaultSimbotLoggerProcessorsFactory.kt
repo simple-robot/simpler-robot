@@ -20,6 +20,7 @@ package love.forte.simbot.logger
 /**
  * 当无法加载任何 [SimbotLoggerProcessorsFactory] 时使用的默认工厂。
  * 默认工厂中只有一个用于控制台输出的 [ConsoleSimbotLoggerProcessor].
+ *
  */
 public object DefaultSimbotLoggerProcessorsFactory : SimbotLoggerProcessorsFactory {
     private val processors = listOf(
