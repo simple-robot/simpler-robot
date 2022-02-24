@@ -46,7 +46,6 @@ dependencies {
     testImplementation(V.Kotlinx.Serialization.Json.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)
     testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
-    testImplementation(project(":apis:simbot-logger"))
 
 }
 
