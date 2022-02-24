@@ -18,15 +18,23 @@
 package love.forte.simbot.core.event
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactor.awaitSingleOrNull
+import kotlinx.coroutines.rx2.asFlow
+import kotlinx.coroutines.rx2.await
+import kotlinx.coroutines.rx2.awaitSingleOrNull
+import kotlinx.coroutines.rx3.asFlow
+import kotlinx.coroutines.rx3.await
+import kotlinx.coroutines.rx3.awaitSingleOrNull
 import love.forte.simbot.Attribute
 import love.forte.simbot.AttributeMutableMap
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.MutableAttributeMap
-import love.forte.simbot.event.Event
-import love.forte.simbot.event.EventProcessingContext
-import love.forte.simbot.event.EventResult
-import love.forte.simbot.event.ScopeContext
+import love.forte.simbot.event.*
+import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -88,7 +96,8 @@ internal class CoreEventProcessingContextResolver(
         result: EventResult
     ): ListenerInvokeType {
         if (result != EventResult.Invalid) {
-            context._results.add(result)
+            val newResult = tryCollect(result)
+            context._results.add(newResult)
         }
         return if (result.isTruncated) ListenerInvokeType.TRUNCATED
         else ListenerInvokeType.CONTINUE
@@ -101,4 +110,134 @@ internal class CoreEventProcessingContextResolver(
         return !resumedListenerManager.isEmpty()
     }
 
+    private companion object {
+        private val logger = LoggerFactory.getLogger(CoreEventProcessingContextResolver::class.java)
+
+        private val reactiveSupport: Boolean by lazy {
+            kotlin.runCatching {
+                Companion::class.java.classLoader.loadClass("org.reactivestreams.Publisher")
+
+                try {
+                    Companion::class.java.classLoader.loadClass("kotlinx.coroutines.reactive.ReactiveFlowKt")
+                } catch (cnf: ClassNotFoundException) {
+                    logger.warn("The reactive API is used, but the `kotlinx-coroutine-reactive` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-reactive` to your classpath, otherwise the reactive API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.", cnf)
+                    return@runCatching false
+                }
+                true
+            }.getOrElse { false }
+        }
+
+        private val reactorSupport: Boolean by lazy {
+            kotlin.runCatching {
+                Companion::class.java.classLoader.loadClass("reactor.core.publisher.Flux")
+                Companion::class.java.classLoader.loadClass("reactor.core.publisher.Mono")
+
+                try {
+                    Companion::class.java.classLoader.loadClass("kotlinx.coroutines.reactor.MonoKt")
+                } catch (cnf: ClassNotFoundException) {
+                    logger.warn("The reactor API is used, but the `kotlinx-coroutine-reactor` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-reactor` to your classpath, otherwise the reactor API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.", cnf)
+                    return@runCatching false
+                }
+                true
+            }.getOrElse { false }
+        }
+
+        private val rx2Support: Boolean by lazy {
+            kotlin.runCatching {
+                Companion::class.java.classLoader.loadClass("io.reactivex.Completable")
+                Companion::class.java.classLoader.loadClass("io.reactivex.SingleSource")
+                Companion::class.java.classLoader.loadClass("io.reactivex.MaybeSource")
+                Companion::class.java.classLoader.loadClass("io.reactivex.ObservableSource")
+                Companion::class.java.classLoader.loadClass("io.reactivex.Flowable")
+
+                try {
+                    Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx2.RxAwaitKt")
+                    Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx2.RxConvertKt")
+                } catch (cnf: ClassNotFoundException) {
+                    logger.warn("The RxJava 2.x API is used, but the `kotlinx-coroutine-rx2` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-rx2` to your classpath, otherwise the RxJava 2.x API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.", cnf)
+                    return@runCatching false
+                }
+                true
+            }.getOrElse { false }
+        }
+
+        private val rx3Support: Boolean by lazy {
+            kotlin.runCatching {
+                Companion::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.Completable")
+                Companion::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.SingleSource")
+                Companion::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.MaybeSource")
+                Companion::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.ObservableSource")
+                Companion::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.Flowable")
+
+                try {
+                    Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx3.RxAwaitKt")
+                    Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx3.RxConvertKt")
+                } catch (cnf: ClassNotFoundException) {
+                    logger.warn("The RxJava 3.x API is used, but the `kotlinx-coroutine-rx3` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-rx3` to your classpath, otherwise the RxJava 3.x API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.", cnf)
+                    return@runCatching false
+                }
+                true
+            }.getOrElse { false }
+        }
+
+        private suspend fun tryCollect(result: EventResult): EventResult {
+            if (result !is SimpleEventResult) return result
+            val content = result.content ?: return result
+
+            if (content is Flow<*>) {
+                return result.copy(newContent = content.toList())
+            }
+
+            if (reactorSupport) {
+                when (content) {
+                    is reactor.core.publisher.Flux<*> -> return result.copy(newContent = content.asFlow().toList())
+                    is reactor.core.publisher.Mono<*> -> return result.copy(newContent = content.awaitSingleOrNull())
+                }
+            }
+
+            if (rx2Support) {
+                when (content) {
+                    is io.reactivex.CompletableSource -> {
+                        content.await() // Just await
+                        return result.copy(newContent = null)
+                    }
+                    is io.reactivex.SingleSource<*> -> return result.copy(newContent = content.await())
+                    is io.reactivex.MaybeSource<*> -> return result.copy(newContent = content.awaitSingleOrNull())
+                    is io.reactivex.ObservableSource<*> -> return result.copy(newContent = content.asFlow().toList())
+                    is io.reactivex.Flowable<*> -> return result.copy(newContent = content.asFlow().toList())
+                }
+            }
+
+            if (rx3Support) {
+                when (content) {
+                    is io.reactivex.rxjava3.core.Completable -> {
+                        content.await()
+                        return result.copy(newContent = null)
+                    }
+                    is io.reactivex.rxjava3.core.SingleSource<*> -> return result.copy(newContent = content.await())
+                    is io.reactivex.rxjava3.core.MaybeSource<*> -> return result.copy(newContent = content.awaitSingleOrNull())
+                    is io.reactivex.rxjava3.core.ObservableSource<*> -> return result.copy(
+                        newContent = content.asFlow().toList()
+                    )
+                    is io.reactivex.rxjava3.core.Flowable<*> -> return result.copy(
+                        newContent = content.asFlow().toList()
+                    )
+                }
+            }
+
+            if (reactiveSupport) {
+                when (content) {
+                    is org.reactivestreams.Publisher<*> -> {
+                        val newContent = content.asFlow().toList()
+                        return result.copy(newContent = newContent)
+                    }
+                }
+            }
+
+
+            return result
+        }
+    }
+
 }
+

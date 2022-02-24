@@ -329,7 +329,6 @@ public class CoreListenerManager private constructor(
  *
  *  在 [CoreListenerManager] 中仅会使用同一个 [EventProcessingContextResolver] 实例。
  *
- * @sample CoreEventProcessingContextResolver
  */
 public interface EventProcessingContextResolver<C : EventProcessingContext> {
 
@@ -367,6 +366,14 @@ public interface EventProcessingContextResolver<C : EventProcessingContext> {
      * [CoreListenerManager] 会对所有得到的结果进行尝试推送，包括 [EventResult.Invalid],
      * 但是建议不会真正的添加 [EventResult.Invalid].
      *
+     *
+     * ### Reactive API
+     * 在核心模块的默认实现下，[appendResultIntoContext] 中支持对 `reactive API` 的相关支持。
+     *
+     *
+     * 详情请参考 [kotlinx-coroutine-reactive](https://github.com/Kotlin/kotlinx.coroutines/blob/master/reactive/README.md) 。
+     *
+     * @see EventResult.content
      */
     @JvmSynthetic
     public suspend fun appendResultIntoContext(context: C, result: EventResult): ListenerInvokeType
@@ -413,7 +420,13 @@ internal class CoreEventProcessingContext(
 
 private data class CoreEventProcessingResult(override val results: List<EventResult>) : EventProcessingResult
 
-
+/**
+ * 向当前的 [EventProcessingContext] 提供一个监听函数 [listener], 使其成为 [EventListenerProcessingContext].
+ *
+ * @param listener 监听函数
+ * @receiver 事件处理上下文
+ * @return 监听函数处理上下文
+ */
 public fun EventProcessingContext.withListener(listener: EventListener): EventListenerProcessingContext =
     CoreEventListenerProcessingContext(this, listener)
 
