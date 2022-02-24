@@ -92,11 +92,6 @@ public class SimbotLogger(
                 timestamp
             )
         )
-        // processScope.launch {
-        //     processChannel.send(
-        //
-        //     )
-        // }
     }
 
 
