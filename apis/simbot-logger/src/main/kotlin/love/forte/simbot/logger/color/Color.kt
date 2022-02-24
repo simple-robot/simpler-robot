@@ -23,8 +23,14 @@ public interface Color {
     public val suffix: String
 }
 
+public fun String.decorativeColor(color: Color): String {
+    return "${color.prefix}$this${color.suffix}"
+}
 
 public fun StringBuilder.appendColor(color: Color, value: String): StringBuilder {
+    return append(color.prefix).append(value).append(color.suffix)
+}
+public fun StringBuilder.appendColor(color: Color, value: Char): StringBuilder {
     return append(color.prefix).append(value).append(color.suffix)
 }
 

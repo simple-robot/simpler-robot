@@ -4,10 +4,12 @@ import org.slf4j.LoggerFactory
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
 
+class LoggerFactoryTest
+
 @OptIn(ExperimentalTime::class)
 fun main() {
-    val logger = LoggerFactory.getLogger("Forte-Demo")
-    val repeatTime = 200000
+    val logger = LoggerFactory.getLogger(LoggerFactoryTest::class.java)
+    val repeatTime = 400_000
     val time2 = measureTime {
         repeat(repeatTime) {
             println("Hello World, I am ${User()}, the time: $it")
@@ -25,7 +27,6 @@ fun main() {
         }
     }
 
-    // Thread.sleep(200)
 
     /*
         time: 1.487475057s
@@ -34,6 +35,7 @@ fun main() {
 
 
      */
+    Thread.sleep(5000)
 
     println()
     println()

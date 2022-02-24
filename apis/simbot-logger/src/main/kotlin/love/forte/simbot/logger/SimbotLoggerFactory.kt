@@ -33,7 +33,7 @@ public class SimbotLoggerFactory(
                 }
             },
             ProducerType.SINGLE,
-            YieldingWaitStrategy()
+            SleepingWaitStrategy()
         )
         disruptor.handleEventsWith(LogInfoDataEventHandler(processors))
         disruptor.start()

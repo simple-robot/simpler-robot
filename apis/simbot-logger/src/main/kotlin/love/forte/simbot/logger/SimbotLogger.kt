@@ -1,5 +1,7 @@
 package love.forte.simbot.logger
 
+import love.forte.simbot.logger.color.FontColor
+import love.forte.simbot.logger.color.decorativeColor
 import org.slf4j.Logger
 import org.slf4j.Marker
 import org.slf4j.event.Level
@@ -14,9 +16,37 @@ public class SimbotLogger(
     private val processors: List<SimbotLoggerProcessor>,
     private val sendLog: (LogInfo) -> Unit
 ) : Logger {
-    private val simpleName: String = fullyQualifiedCallerName.getOnMax(20)
+    private val simpleName: String // = fullyQualifiedCallerName.getOnMax(20)
+
+    init {
+        var simpleName0 = if (fullyQualifiedCallerName.length > MAX_NAME_SIZE) {
+            val split = fullyQualifiedCallerName.split('.')
+            buildString(MAX_NAME_SIZE) {
+                split.forEachIndexed { index, s ->
+                    if (index != split.lastIndex) {
+                        if (s.isNotEmpty()) {
+                            append(s.first())
+                        } else {
+                            append('?')
+                        }
+                        append('.')
+                    } else {
+                        append(s)
+                    }
+                }
+            }
+        } else {
+            fullyQualifiedCallerName
+        }
+
+        if (simpleName0.length < MAX_NAME_SIZE) {
+            simpleName0 = " ".repeat(MAX_NAME_SIZE - simpleName0.length) + simpleName0
+        }
+        simpleName = simpleName0.decorativeColor(FontColor.BLUE)
+    }
 
     public companion object {
+        private const val MAX_NAME_SIZE = 35
         private val EMPTY_ARGUMENTS = emptyArray<Any?>()
         private fun Any?.toArgArray(): Array<out Any?> {
             (return if (this is Array<*>) this
