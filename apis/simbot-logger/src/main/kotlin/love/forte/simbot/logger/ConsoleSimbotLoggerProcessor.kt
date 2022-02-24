@@ -41,7 +41,7 @@ public class ConsoleSimbotLoggerProcessor(level: Level?) : SimbotLoggerProcessor
     private val level: Level = level ?: loadLevel()
 
     override fun isLevelEnabled(level: Level, marker: Marker?): Boolean {
-        return this.level.toInt() >= level.toInt()
+        return this.level.toInt() <= level.toInt()
     }
 
     private fun printLog(info: LogInfo) {

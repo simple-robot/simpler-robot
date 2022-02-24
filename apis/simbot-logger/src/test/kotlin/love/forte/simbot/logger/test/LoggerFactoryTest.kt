@@ -25,7 +25,7 @@ class LoggerFactoryTest
 @OptIn(ExperimentalTime::class)
 fun main() {
     val logger = LoggerFactory.getLogger(LoggerFactoryTest::class.java)
-    val repeatTime = 400_000
+    val repeatTime = 40
     val time2 = measureTime {
         repeat(repeatTime) {
             println("Hello World, I am ${User()}, the time: $it")
@@ -39,7 +39,7 @@ fun main() {
 
     val time1 = measureTime {
         repeat(repeatTime) {
-            logger.info("Hello {}, I am {}, the time: {}", "World", User(), it)
+            logger.debug("Hello {}, I am {}, the time: {}", "World", User(), it)
         }
     }
 

@@ -98,13 +98,19 @@ private class LogInfoDataEventHandler(
 ) : EventHandler<LogInfoEvent>, WorkHandler<LogInfoEvent> {
     override fun onEvent(event: LogInfoEvent, sequence: Long, endOfBatch: Boolean) {
         processors.forEach { processor ->
-            processor.doHandle(event.info)
+            val info = event.info
+            if (processor.isLevelEnabled(info.level, info.marker)) {
+                processor.doHandle(info)
+            }
         }
     }
 
     override fun onEvent(event: LogInfoEvent) {
         processors.forEach { processor ->
-            processor.doHandle(event.info)
+            val info = event.info
+            if (processor.isLevelEnabled(info.level, info.marker)) {
+                processor.doHandle(info)
+            }
         }
     }
 }
