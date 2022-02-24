@@ -39,7 +39,7 @@ public interface SimbotLoggerProcessor {
 }
 
 /**
- * [SimbotLoggerProcessor] 的工厂接口， 通过 `Java Service Loader` 进行加载。
+ * [SimbotLoggerProcessor] 的工厂接口， 通过 `Java Service Loader` ([java.util.ServiceLoader]) 进行加载。
  */
 public interface SimbotLoggerProcessorsFactory {
     public fun getProcessors(): List<SimbotLoggerProcessor>

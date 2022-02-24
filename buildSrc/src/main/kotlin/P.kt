@@ -28,7 +28,10 @@ abstract class SimbotProject {
 sealed class P : SimbotProject() {
     @Suppress("MemberVisibilityCanBePrivate")
     object Simbot {
-        const val SNAPSHOT = true
+        init {
+            println("System.getProperty(\"isSnapshot\"): ${System.getProperty("isSnapshot")}")
+        }
+        val SNAPSHOT = System.getProperty("isSnapshot")?.equals("true", true) ?: false
         const val GROUP = "love.forte.simbot"
         const val BOOT_GROUP = "love.forte.simbot.boot"
         private const val REAL_VERSION = "3.0.0.preview.4.0"
