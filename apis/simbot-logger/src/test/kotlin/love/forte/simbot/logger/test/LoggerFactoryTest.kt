@@ -7,17 +7,17 @@ import kotlin.time.measureTime
 @OptIn(ExperimentalTime::class)
 fun main() {
     val logger = LoggerFactory.getLogger("Forte-Demo")
-    val repeatTime = 500_000
+    val repeatTime = 200000
     val time2 = measureTime {
         repeat(repeatTime) {
             println("Hello World, I am ${User()}, the time: $it")
         }
     }
-    val time3 = measureTime {
-        repeat(repeatTime) {
-            System.out.printf("Hello %s, I am %s, the time: %s\n", "world", User(), it)
-        }
-    }
+    // val time3 = measureTime {
+    //     repeat(repeatTime) {
+    //         System.out.printf("Hello %s, I am %s, the time: %s\n", "world", User(), it)
+    //     }
+    // }
 
     val time1 = measureTime {
         repeat(repeatTime) {
@@ -25,7 +25,7 @@ fun main() {
         }
     }
 
-    Thread.sleep(15000)
+    // Thread.sleep(200)
 
     /*
         time: 1.487475057s
@@ -44,7 +44,7 @@ fun main() {
 
     println("time1( logger): $time1")
     println("time2(println): $time2")
-    println("time3( printf): $time3")
+    //println("time3( printf): $time3")
 }
 
 data class User(val name: String = "forte")

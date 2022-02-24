@@ -26,6 +26,7 @@ plugins {
 dependencies {
     api(V.Kotlinx.Coroutines.Core.Jvm.notation)
     api(V.Slf4j.Api.notation)
+    api("com.lmax:disruptor:3.4.4")
 
     compileOnly(V.Jetbrains.Annotations.notation)
 

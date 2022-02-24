@@ -19,12 +19,12 @@ public interface SimbotLoggerProcessor {
     /**
      * 处理日志。 [doHandle] 是当 [SimbotLoggerFactory] 中的异步处理通道尚未关闭的时候进行的处理函数。
      */
-    public suspend fun doHandle(info: LogInfo)
+    public fun doHandle(info: LogInfo)
 
-    /**
-     * 处理日志。[doHandleClosed] 只有当 [SimbotLoggerFactory] 中的异步处理通道被关闭后使用。
-     */
-    public fun doHandleClosed(info: LogInfo)
+    // /**
+    //  * 处理日志。[doHandleClosed] 只有当 [SimbotLoggerFactory] 中的异步处理通道被关闭后使用。
+    //  */
+    // public fun doHandleClosed(info: LogInfo)
 }
 
 /**

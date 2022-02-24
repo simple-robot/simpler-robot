@@ -1,6 +1,5 @@
 package love.forte.simbot.logger
 
-import kotlinx.coroutines.channels.Channel
 import org.slf4j.Logger
 import org.slf4j.Marker
 import org.slf4j.event.Level
@@ -15,7 +14,6 @@ public class SimbotLogger(
     private val processors: List<SimbotLoggerProcessor>,
     private val sendLog: (LogInfo) -> Unit
 ) : Logger {
-    private val processChannel: Channel<LogInfo> = Channel(capacity = 64)
     private val simpleName: String = fullyQualifiedCallerName.getOnMax(20)
 
     public companion object {
@@ -25,14 +23,6 @@ public class SimbotLogger(
             else arrayOf(this))
         }
     }
-
-    // init {
-    //     processChannel.consumeAsFlow().onEach { logInfo ->
-    //         processors.forEach { processor ->
-    //             processor.doHandle(logInfo)
-    //         }
-    //     }.launchIn(processScope)
-    // }
 
     override fun isTraceEnabled(): Boolean = isLevelEnabled(Level.TRACE)
     override fun isTraceEnabled(marker: Marker?): Boolean = isLevelEnabled(Level.TRACE, marker)

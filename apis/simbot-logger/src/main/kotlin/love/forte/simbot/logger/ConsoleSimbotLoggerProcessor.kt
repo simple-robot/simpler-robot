@@ -22,7 +22,7 @@ public class ConsoleSimbotLoggerProcessor(private val level: Level) : SimbotLogg
         // 2022-02-23 16:52:36.014  INFO 8070 --- [thread name] full name : msg
         val printer: PrintStream = if (info.level == Level.ERROR) System.err else System.out
 
-        val printMsg = buildString {
+        val printMsg = buildString(info.formattedMsg.length + 80) {
             appendColor(FontColor.BLUE, Instant.ofEpochMilli(info.timestamp).toString()).append(' ')
 
             if (info.level.toString().length <= 4) {
@@ -39,14 +39,19 @@ public class ConsoleSimbotLoggerProcessor(private val level: Level) : SimbotLogg
             append(info.name).append("  : ").append(info.formattedMsg)
         }
 
+        // printer.flush()
+        // printer.write(printMsg.toByteArray())
         printer.println(printMsg)
+        if (info.error != null) {
+            info.error.printStackTrace(printer)
+        }
     }
 
-    override suspend fun doHandle(info: LogInfo) {
-        printLog(info)
-    }
+    // override suspend fun doHandle(info: LogInfo) {
+    //     printLog(info)
+    // }
 
-    override fun doHandleClosed(info: LogInfo) {
+    override fun doHandle(info: LogInfo) {
         printLog(info)
     }
 }
