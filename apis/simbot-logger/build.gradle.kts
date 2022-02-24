@@ -28,26 +28,8 @@ dependencies {
     api(V.Slf4j.Api.notation)
 
     compileOnly(V.Jetbrains.Annotations.notation)
-    compileOnly(V.Kotlinx.Serialization.Json.notation)
-    compileOnly(V.Kotlinx.Serialization.Properties.notation)
-    compileOnly(V.Kotlinx.Serialization.Yaml.notation)
-
-    compileOnly(V.Log4j.Api.notation)
-    compileOnly(V.Log4j.Core.notation)
-    compileOnly(V.Log4j.Slf4jImpl.notation)
-
-    compileOnly(V.Logback.Core.notation)
-    compileOnly(V.Logback.Classic.notation)
 
     testImplementation(V.Kotlin.Test.Junit5.notation)
-
-    testImplementation(V.Log4j.Api.notation)
-    testImplementation(V.Log4j.Core.notation)
-    testImplementation(V.Log4j.Slf4jImpl.notation)
-
-    testImplementation(V.Logback.Core.notation)
-    testImplementation(V.Logback.Classic.notation)
-
 }
 
 tasks.getByName<Test>("test") {

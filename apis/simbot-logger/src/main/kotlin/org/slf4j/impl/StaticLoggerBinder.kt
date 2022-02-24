@@ -1,16 +1,19 @@
 package org.slf4j.impl
 
 import love.forte.simbot.logger.SimbotLoggerFactory
+import love.forte.simbot.logger.SimbotLoggerProcessorsFactory
+import love.forte.simbot.logger.StandardSimbotLoggerProcessorsFactory
 import org.slf4j.ILoggerFactory
 import org.slf4j.helpers.Util
 import org.slf4j.spi.LoggerFactoryBinder
+import java.util.*
 
 /**
  * slf4j-api 的logger绑定器。
  *
  */
 public object StaticLoggerBinder : LoggerFactoryBinder {
-    private lateinit var theBinder: LoggerFactoryBinder
+    // private lateinit var theBinder: LoggerFactoryBinder
 
     /**
      * 获取当前实例.
@@ -20,18 +23,17 @@ public object StaticLoggerBinder : LoggerFactoryBinder {
 
 
     private fun getTheBinder(): LoggerFactoryBinder {
-        if (::theBinder.isInitialized) {
-            return theBinder
-        }
-
-        synchronized(this) {
-            if (::theBinder.isInitialized) {
-                return theBinder
-            }
-
-
-            TODO()
-        }
+        return SimbotLoggerStaticLoggerBinder
+        // if (::theBinder.isInitialized) {
+        //     return theBinder
+        // }
+        //
+        // synchronized(this) {
+        //     if (::theBinder.isInitialized) {
+        //         return theBinder
+        //     }
+        //     TODO()
+        // }
     }
 
     /**
@@ -59,8 +61,23 @@ public object StaticLoggerBinder : LoggerFactoryBinder {
 
 
 private object SimbotLoggerStaticLoggerBinder : LoggerFactoryBinder {
+    private val processFactory by lazy {
+        val loader = ServiceLoader.load(SimbotLoggerProcessorsFactory::class.java, javaClass.classLoader)
+        val loaderList = loader.toList()
+
+        if (loaderList.isEmpty()) {
+            return@lazy StandardSimbotLoggerProcessorsFactory
+        }
+
+        return@lazy loaderList.first()
+    }
+
+    private val loggerFactory by lazy {
+        SimbotLoggerFactory(processFactory.getProcessors())
+    }
+
     private const val LOGGER_FACTORY_CLASS_STR = "love.forte.simbot.logger.SimbotLoggerFactory"
-    override fun getLoggerFactory(): ILoggerFactory = SimbotLoggerFactory
+    override fun getLoggerFactory(): ILoggerFactory = loggerFactory
     override fun getLoggerFactoryClassStr(): String = LOGGER_FACTORY_CLASS_STR
 }
 
