@@ -103,6 +103,7 @@ class WaitImpl<T>(
                 currentState.continuation.resume(value)
                 println("resume: $value")
             }
+            else -> {}
         }
     }
 
@@ -117,6 +118,7 @@ class WaitImpl<T>(
                 is WaitState.Init -> {
                     state = WaitState.Waiting(continuation)
                 }
+                else -> {}
             }
         }
     }

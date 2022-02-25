@@ -13,6 +13,7 @@
  */
 
 @file:JvmName("MiraiForwardMessageUtil")
+@file:Suppress("unused")
 
 package love.forte.simbot.component.mirai.message
 
@@ -25,27 +26,24 @@ import love.forte.simbot.api.message.events.MessageGet
 import love.forte.simbot.component.mirai.message.event.MiraiMessageMsgGet
 import love.forte.simbot.component.mirai.utils.toMiraiMessageContent
 import love.forte.simbot.processor.RemoteResourceInProcessor
-import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.Contact
 import net.mamoe.mirai.message.data.*
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 private inline val nowSecond
-    get() = Duration.milliseconds(System.currentTimeMillis()).inWholeSeconds.toInt()
+    get() = System.currentTimeMillis().milliseconds.inWholeSeconds.toInt()
 
 /**
  *
  * @author ForteScarlet
  */
+@Suppress("unused")
 public class MiraiForwardMessageBuilder(
     private val cache: MiraiMessageCache? = null,
     private val remoteResourceInProcessor: RemoteResourceInProcessor,
 ) {
     private val nodes = mutableListOf<suspend (Contact) -> ForwardMessage.Node>()
-
-    private val b = ForwardMessageBuilder(Bot.instances[0].asFriend)
 
     @JvmSynthetic
     public fun add(nodeBlock: suspend (Contact) -> ForwardMessage.Node): MiraiForwardMessageBuilder = also {
@@ -107,7 +105,8 @@ public class MiraiForwardMessageBuilder(
                 add(senderId, senderName, time, message::getMessage)
             }
             else -> {
-                add(senderId,
+                add(
+                    senderId,
                     senderName,
                     time,
                     message.toMiraiMessageContent(null, cache, remoteResourceInProcessor)::getMessage
@@ -119,7 +118,6 @@ public class MiraiForwardMessageBuilder(
     }
 
 
-    @OptIn(ExperimentalTime::class)
     @JvmOverloads
     public fun add(
         senderId: Long? = null,
@@ -156,7 +154,7 @@ public class MiraiForwardMessageBuilder(
 
         val senderId0 = senderId ?: event.accountInfo.accountCodeNumber
         val senderName0 = senderName ?: event.accountInfo.accountRemarkOrNickname ?: " "
-        val time0 = time ?: Duration.milliseconds(event.time).inWholeSeconds.toInt()
+        val time0 = time ?: event.time.milliseconds.inWholeSeconds.toInt()
 
         return add(senderId0, senderName0, time0, messageGetter)
     }
@@ -174,7 +172,6 @@ public class MiraiForwardMessageBuilder(
         add(senderId, senderName, time, messageGetter::invoke)
 
 
-
     /**
      * 添加一条消息。
      */
@@ -186,7 +183,6 @@ public class MiraiForwardMessageBuilder(
         message: String,
     ) =
         add(senderId, senderName, time, message.toMiraiMessageContent(null, cache, remoteResourceInProcessor))
-
 
 
     /**
@@ -303,7 +299,6 @@ public class MiraiForwardMessageBuilder(
 
 
 @JvmOverloads
-@OptIn(ExperimentalTime::class)
 public fun MessageGet.toForwardMessage(
     cache: MiraiMessageCache? = null,
     remoteResourceInProcessor: RemoteResourceInProcessor = RemoteResourceInProcessor.Default,
@@ -337,7 +332,7 @@ public fun MessageGet.toForwardMessage(
 
     val senderId = this.accountInfo.accountCodeNumber
     val senderName = this.accountInfo.accountRemarkOrNickname ?: " "
-    val time = Duration.milliseconds(time).inWholeSeconds.toInt()
+    val time = time.milliseconds.inWholeSeconds.toInt()
 
     return MiraiForwardMessage(listOf { c ->
         ForwardMessage.Node(

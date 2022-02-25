@@ -392,12 +392,12 @@ constructor(
 @Deprecated("Use MiraiAudioMessageContent", replaceWith = ReplaceWith("MiraiAudioMessageContent"))
 public class MiraiVoiceMessageContent(
     override val neko: Neko,
-    @Suppress("DEPRECATION") private val voiceFunction: suspend (Contact) -> Voice,
+    @Suppress("DEPRECATION") private val voiceFunction: suspend (Contact) -> Audio,
 ) : MiraiMessageContent(), NekoAble {
 
     @Suppress("DEPRECATION")
     @Volatile
-    private lateinit var voice: Voice
+    private lateinit var voice: Audio
 
     /** lock */
     private val lock = Mutex()

@@ -99,6 +99,7 @@ class GeneratorIterator<T>(
         println("resume")
         when (val currentState = state) {
             is State.NotReady -> currentState.continuation.resume(Unit)
+            else -> {}
         }
     }
 
