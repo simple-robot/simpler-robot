@@ -1,13 +1,10 @@
-name: "问题反馈"
+name: "🔧问题反馈"
 description: "反馈你所遇到的大大小小的问题"
 title: "[BUG]: "
-labels: ["bug?"]
-assignees: ["ForteScarlet"]
+labels: [ "bug?" ]
+assignees: [ "ForteScarlet" ]
 # https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
 body:
-  - type: markdown
-    attributes:
-      value: "### 问题描述"
 
   - type: textarea
     id: description
@@ -38,19 +35,11 @@ body:
       description: 如果有需要补充的其他版本信息，可以在此补充
       placeholder: "例如: simbot-component-tencentguild: v3.0.0-0.1"
 
-  - type: markdown
-    attributes:
-      value: "### 复现方式"
-
   - type: textarea
     id: recurrent
     attributes:
       label: 复现方式
       description: 提供可行的问题复现方式
-
-  - type: markdown
-    attributes:
-      value: "### 相关日志"
 
   - type: textarea
     id: log
@@ -59,6 +48,7 @@ body:
       description: 如果存在日志，请提供问题出现时的相关日志及上下文
       placeholder: 问题出现的相关日志
       render: Text
+
   - type: textarea
     id: replenish
     attributes:

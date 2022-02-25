@@ -1,0 +1,16 @@
+name: "🤔️疑问"
+description: "提出一些你的疑问"
+labels: [ "疑问" ]
+assignees: [ "ForteScarlet" ]
+# https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
+body:
+
+  - type: textarea
+    id: question
+    attributes:
+      label: 疑问描述
+      description: 描述你遇到的问题
+      placeholder: "例如: 我不知道如何编写Java"
+    validations:
+      required: true
+

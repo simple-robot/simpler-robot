@@ -1,0 +1,15 @@
+name: "💡意见建议"
+description: "提出你的好想法"
+title: ""
+labels: [ "建议" ]
+assignees: [ "ForteScarlet" ]
+# https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
+body:
+  - type: textarea
+    id: advice
+    attributes:
+      label: 建议描述
+      description: 描述你的建议
+      placeholder: "例如: 我希望能够自动生成脑海中的需求"
+    validations:
+      required: true
