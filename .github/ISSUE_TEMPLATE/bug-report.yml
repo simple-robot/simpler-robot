@@ -15,8 +15,9 @@ body:
       label: 问题描述
       description: 描述你遇到的问题
       placeholder: "例如: 我发现xx处注释有错别字"
-  validations:
-    required: true
+    validations:
+      required: true
+
   - type: markdown
     attributes:
       value: "### 版本信息"
@@ -29,6 +30,7 @@ body:
       placeholder: "例如: v3.0.0"
     validations:
       required: true
+
   - type: textarea
     id: otherVersion
     attributes:
@@ -45,7 +47,6 @@ body:
     attributes:
       label: 复现方式
       description: 提供可行的问题复现方式
-
 
   - type: markdown
     attributes:
