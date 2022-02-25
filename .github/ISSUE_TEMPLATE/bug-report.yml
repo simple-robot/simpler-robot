@@ -8,6 +8,19 @@ body:
   - type: markdown
     attributes:
       value: "### 问题描述"
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 描述你遇到的问题
+      placeholder: "例如: 我发现xx处注释有错别字"
+  validations:
+    required: true
+  - type: markdown
+    attributes:
+      value: "### 版本信息"
+
   - type: input
     id: version
     attributes:
@@ -26,6 +39,17 @@ body:
   - type: markdown
     attributes:
       value: "### 复现方式"
+
+  - type: textarea
+    id: recurrent
+    attributes:
+      label: 复现方式
+      description: 提供可行的问题复现方式
+
+
+  - type: markdown
+    attributes:
+      value: "### 相关日志"
 
   - type: textarea
     id: log
