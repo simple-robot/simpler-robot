@@ -1,5 +1,6 @@
 name: "🖼作品展示申请"
 description: "展示你的作品～"
+title: "[SHOW]: "
 labels: [ "作品展示" ]
 assignees: [ "ForteScarlet" ]
 # https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
