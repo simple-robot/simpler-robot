@@ -807,10 +807,10 @@
                     </executions>
                     <configuration>
                         <!-- 这个configuration必须配置，用于gpg非交互式密码输入 -->
-                        <gpgArguments>
-                            <arg>--pinentry-mode</arg>
-                            <arg>loopback</arg>
-                        </gpgArguments>
+                        <!--<gpgArguments>-->
+                        <!--    <arg>&#45;&#45;pinentry-mode</arg>-->
+                        <!--    <arg>loopback</arg>-->
+                        <!--</gpgArguments>-->
                     </configuration>
                 </plugin>
             </plugins>
