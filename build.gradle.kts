@@ -54,7 +54,6 @@ val secretKeyRingFileKey = "signing.secretKeyRingFile"
 
 
 subprojects {
-    println("ROOT SUB: $this")
     group = P.Simbot.GROUP
     version = P.Simbot.VERSION
     apply(plugin = "java")

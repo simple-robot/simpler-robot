@@ -29,7 +29,6 @@ tasks.getByName<Test>("test") {
 }
 
 
-
 dependencies {
     api(project(":cores:simbot-core"))
     api(P.ForteDI.Api.notation)
