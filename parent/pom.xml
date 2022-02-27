@@ -54,7 +54,7 @@
         <jackson.version>2.11.3</jackson.version>
         <jackson-kt-module.version>2.11.4</jackson-kt-module.version>
         <moshi.version>1.11.0</moshi.version>
-        <hutool.version>5.5.1</hutool.version>
+        <hutool.version>5.7.19</hutool.version>
         <quartz.version>2.3.2</quartz.version>
 
         <commons.version>1.0.7</commons.version>
