@@ -18,17 +18,13 @@
 package love.forte.simbot.core.event
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.future.asCompletableFuture
-import love.forte.simbot.ExperimentalSimbotApi
-import love.forte.simbot.ID
-import love.forte.simbot.LoggerFactory
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.future.*
+import love.forte.simbot.*
 import love.forte.simbot.event.*
-import love.forte.simbot.literal
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.Future
-import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+import java.util.concurrent.*
+import java.util.concurrent.atomic.*
+import kotlin.coroutines.*
 import kotlin.time.Duration.Companion.milliseconds
 
 @ExperimentalSimbotApi
@@ -156,9 +152,7 @@ internal class CoreContinuousSessionProvider<T>(
 
     override fun push(value: T) {
         if (completed.compareAndSet(false, true)) {
-            println("continuation resume($value)")
             continuation.resume(value)
-            println("deferred complete($value)")
             deferred.complete(value)
         }
     }
@@ -219,7 +213,7 @@ internal class ResumedListenerManager {
         val current = WaitingListener(listener, provider, receiver)
         listeners.merge(cid, current) { old, now ->
             logger.debug("Merge waiting listener with save id {}", cid)
-            old.provider.cancel(CancellationException("Replaced by the same ID listener. id = $cid"))
+            old.provider.cancel(SimbotIllegalStateException("Replaced by the same ID listener. id = $cid"))
             now
         }
         provider.invokeOnCompletion {
