@@ -11,6 +11,8 @@ jobs:
       # 检出仓库代码
       - name: Check Out Repo
         uses: actions/checkout@v2
+        with:
+          submodules: true
 
       # setup Java
       - name: Setup Java
@@ -43,6 +45,8 @@ jobs:
       # 检出仓库代码
       - name: Check Out Repo
         uses: actions/checkout@v2
+        with:
+          submodules: true
 
         # Create gitHub release
       - name: Create Github Release

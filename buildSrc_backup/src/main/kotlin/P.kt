@@ -16,7 +16,7 @@
 
 
 abstract class SimbotProject {
-
+    //
     abstract val group: String
     abstract val version: String
 }
