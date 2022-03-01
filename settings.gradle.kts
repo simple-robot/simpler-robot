@@ -34,6 +34,7 @@ includePro(":boots:simboot-api")
 includePro(":boots:simboot-core-annotation")
 includePro(":boots:simboot-core")
 includePro(":boots:simboot-core-spring-boot-starter")
+includePro(":components:simbot-component-test")
 
 
 
