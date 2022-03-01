@@ -17,25 +17,16 @@
 
 package love.forte.simbot.core.event
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.reactive.asFlow
-import kotlinx.coroutines.reactor.awaitSingleOrNull
-import kotlinx.coroutines.rx2.asFlow
-import kotlinx.coroutines.rx2.await
-import kotlinx.coroutines.rx2.awaitSingleOrNull
-import kotlinx.coroutines.rx3.asFlow
-import kotlinx.coroutines.rx3.await
-import kotlinx.coroutines.rx3.awaitSingleOrNull
-import love.forte.simbot.Attribute
-import love.forte.simbot.AttributeMutableMap
-import love.forte.simbot.ExperimentalSimbotApi
-import love.forte.simbot.MutableAttributeMap
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.reactive.*
+import kotlinx.coroutines.reactor.*
+import kotlinx.coroutines.rx2.*
+import kotlinx.coroutines.rx3.*
+import love.forte.simbot.*
 import love.forte.simbot.event.*
 import org.slf4j.LoggerFactory
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.*
 
 /**
  * 核心默认的事件上下文处理器。
@@ -69,11 +60,9 @@ internal class CoreEventProcessingContextResolver(
     @OptIn(ExperimentalSimbotApi::class)
     override suspend fun resolveEventToContext(event: Event, listenerSize: Int): CoreEventProcessingContext {
         val context = CoreEventProcessingContext(
-            event, AttributeMutableMap(
-                ConcurrentHashMap(
-                    constMaps,
-                ).apply { put(EventProcessingContext.Scope.Instant, InstantScopeContext()) }
-            )
+            event, AttributeMutableMap(ConcurrentHashMap(
+                constMaps,
+            ).apply { put(EventProcessingContext.Scope.Instant, InstantScopeContext()) })
         ) {
             ArrayList(
                 listenerSize
@@ -92,8 +81,7 @@ internal class CoreEventProcessingContextResolver(
      * 将一次事件结果拼接到当前上下文结果集中。
      */
     override suspend fun appendResultIntoContext(
-        context: CoreEventProcessingContext,
-        result: EventResult
+        context: CoreEventProcessingContext, result: EventResult
     ): ListenerInvokeType {
         if (result != EventResult.Invalid) {
             val newResult = tryCollect(result)
@@ -116,30 +104,42 @@ internal class CoreEventProcessingContextResolver(
         private val reactiveSupport: Boolean by lazy {
             kotlin.runCatching {
                 Companion::class.java.classLoader.loadClass("org.reactivestreams.Publisher")
-
-                try {
-                    Companion::class.java.classLoader.loadClass("kotlinx.coroutines.reactive.ReactiveFlowKt")
-                } catch (cnf: ClassNotFoundException) {
-                    logger.warn("The reactive API is used, but the `kotlinx-coroutine-reactive` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-reactive` to your classpath, otherwise the reactive API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.", cnf)
-                    return@runCatching false
-                }
                 true
             }.getOrElse { false }
+        }
+
+        private val reactiveKotlinSupport: Boolean by lazy {
+            try {
+                Companion::class.java.classLoader.loadClass("kotlinx.coroutines.reactive.ReactiveFlowKt")
+                true
+            } catch (cnf: ClassNotFoundException) {
+                logger.warn(
+                    "Uses a result content of type `org.reactivestreams.Publisher`, but does not found `kotlinx-coroutine-reactive`. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-reactive` to your classpath, otherwise the reactive API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.",
+                    cnf
+                )
+                false
+            }
         }
 
         private val reactorSupport: Boolean by lazy {
             kotlin.runCatching {
                 Companion::class.java.classLoader.loadClass("reactor.core.publisher.Flux")
                 Companion::class.java.classLoader.loadClass("reactor.core.publisher.Mono")
-
-                try {
-                    Companion::class.java.classLoader.loadClass("kotlinx.coroutines.reactor.MonoKt")
-                } catch (cnf: ClassNotFoundException) {
-                    logger.warn("The reactor API is used, but the `kotlinx-coroutine-reactor` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-reactor` to your classpath, otherwise the reactor API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.", cnf)
-                    return@runCatching false
-                }
                 true
             }.getOrElse { false }
+        }
+
+        private val reactorKotlinSupport: Boolean by lazy {
+            try {
+                Companion::class.java.classLoader.loadClass("kotlinx.coroutines.reactor.MonoKt")
+                true
+            } catch (cnf: ClassNotFoundException) {
+                logger.warn(
+                    "The reactor API is used, but the `kotlinx-coroutine-reactor` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-reactor` to your classpath, otherwise the reactor API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.",
+                    cnf
+                )
+                false
+            }
         }
 
         private val rx2Support: Boolean by lazy {
@@ -149,16 +149,22 @@ internal class CoreEventProcessingContextResolver(
                 Companion::class.java.classLoader.loadClass("io.reactivex.MaybeSource")
                 Companion::class.java.classLoader.loadClass("io.reactivex.ObservableSource")
                 Companion::class.java.classLoader.loadClass("io.reactivex.Flowable")
-
-                try {
-                    Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx2.RxAwaitKt")
-                    Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx2.RxConvertKt")
-                } catch (cnf: ClassNotFoundException) {
-                    logger.warn("The RxJava 2.x API is used, but the `kotlinx-coroutine-rx2` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-rx2` to your classpath, otherwise the RxJava 2.x API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.", cnf)
-                    return@runCatching false
-                }
                 true
             }.getOrElse { false }
+        }
+
+        private val rx2KotlinSupport: Boolean by lazy {
+            try {
+                Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx2.RxAwaitKt")
+                Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx2.RxConvertKt")
+                true
+            } catch (cnf: ClassNotFoundException) {
+                logger.warn(
+                    "The RxJava 2.x API is used, but the `kotlinx-coroutine-rx2` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-rx2` to your classpath, otherwise the RxJava 2.x API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.",
+                    cnf
+                )
+                false
+            }
         }
 
         private val rx3Support: Boolean by lazy {
@@ -168,16 +174,22 @@ internal class CoreEventProcessingContextResolver(
                 Companion::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.MaybeSource")
                 Companion::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.ObservableSource")
                 Companion::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.Flowable")
-
-                try {
-                    Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx3.RxAwaitKt")
-                    Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx3.RxConvertKt")
-                } catch (cnf: ClassNotFoundException) {
-                    logger.warn("The RxJava 3.x API is used, but the `kotlinx-coroutine-rx3` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-rx3` to your classpath, otherwise the RxJava 3.x API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.", cnf)
-                    return@runCatching false
-                }
                 true
             }.getOrElse { false }
+        }
+
+        private val rx3KotlinSupport: Boolean by lazy {
+            try {
+                Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx3.RxAwaitKt")
+                Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx3.RxConvertKt")
+                true
+            } catch (cnf: ClassNotFoundException) {
+                logger.warn(
+                    "The RxJava 3.x API is used, but the `kotlinx-coroutine-rx3` is not found. Please consider adding the `org.jetbrains.kotlinx:kotlinx-coroutine-rx3` to your classpath, otherwise the RxJava 3.x API will not work as a return value (the `content` of SimpleEventResult) for the simbot listener.",
+                    cnf
+                )
+                false
+            }
         }
 
         private suspend fun tryCollect(result: EventResult): EventResult {
@@ -190,8 +202,11 @@ internal class CoreEventProcessingContextResolver(
 
             if (reactorSupport) {
                 when (content) {
-                    is reactor.core.publisher.Flux<*> -> return result.copy(newContent = content.asFlow().toList())
-                    is reactor.core.publisher.Mono<*> -> return result.copy(newContent = content.awaitSingleOrNull())
+                    is reactor.core.publisher.Flux<*> -> return if (reactiveKotlinSupport) result.copy(
+                        newContent = content.asFlow().toList()
+                    ) else result // else return itself
+
+                    is reactor.core.publisher.Mono<*> -> return if (reactorKotlinSupport) result.copy(newContent = content.awaitSingleOrNull()) else result
                 }
             }
 
@@ -201,10 +216,14 @@ internal class CoreEventProcessingContextResolver(
                         content.await() // Just await
                         return result.copy(newContent = null)
                     }
-                    is io.reactivex.SingleSource<*> -> return result.copy(newContent = content.await())
-                    is io.reactivex.MaybeSource<*> -> return result.copy(newContent = content.awaitSingleOrNull())
-                    is io.reactivex.ObservableSource<*> -> return result.copy(newContent = content.asFlow().toList())
-                    is io.reactivex.Flowable<*> -> return result.copy(newContent = content.asFlow().toList())
+                    is io.reactivex.SingleSource<*> -> return if (rx2KotlinSupport) result.copy(newContent = content.await()) else result
+                    is io.reactivex.MaybeSource<*> -> return if (rx2KotlinSupport) result.copy(newContent = content.awaitSingleOrNull()) else result
+                    is io.reactivex.ObservableSource<*> -> return if (reactiveKotlinSupport) result.copy(
+                        newContent = content.asFlow().toList()
+                    ) else result
+                    is io.reactivex.Flowable<*> -> return if (reactiveKotlinSupport) result.copy(
+                        newContent = content.asFlow().toList()
+                    ) else result
                 }
             }
 
@@ -214,8 +233,8 @@ internal class CoreEventProcessingContextResolver(
                         content.await()
                         return result.copy(newContent = null)
                     }
-                    is io.reactivex.rxjava3.core.SingleSource<*> -> return result.copy(newContent = content.await())
-                    is io.reactivex.rxjava3.core.MaybeSource<*> -> return result.copy(newContent = content.awaitSingleOrNull())
+                    is io.reactivex.rxjava3.core.SingleSource<*> -> return if (rx3KotlinSupport) result.copy(newContent = content.await()) else result
+                    is io.reactivex.rxjava3.core.MaybeSource<*> -> return if (rx3KotlinSupport) result.copy(newContent = content.awaitSingleOrNull()) else result
                     is io.reactivex.rxjava3.core.ObservableSource<*> -> return result.copy(
                         newContent = content.asFlow().toList()
                     )
@@ -227,10 +246,9 @@ internal class CoreEventProcessingContextResolver(
 
             if (reactiveSupport) {
                 when (content) {
-                    is org.reactivestreams.Publisher<*> -> {
-                        val newContent = content.asFlow().toList()
-                        return result.copy(newContent = newContent)
-                    }
+                    is org.reactivestreams.Publisher<*> -> return if (reactiveKotlinSupport) result.copy(
+                        newContent = content.asFlow().toList()
+                    ) else result
                 }
             }
 
