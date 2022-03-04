@@ -77,7 +77,31 @@ public annotation class InternalSimbotApi
     AnnotationTarget.TYPEALIAS
 )
 @MustBeDocumented
-public annotation class SimbotDiscreetApi
+public annotation class DiscreetSimbotApi
+
+
+/**
+ * 表示十分脆弱的、存在性能瓶颈、限制或有更好替代品的API，应阅读相应的文档并选择更优方案，同时尽量避免使用相关API。
+ *
+ * 被标记的相关内容可能会在未来进行优化、变更或删除。
+ */
+@RequiresOptIn(message = "表示十分脆弱的、存在性能瓶颈、限制或有更好替代品的API，应阅读相应的文档并选择更优方案，同时尽量避免使用相关API", level = RequiresOptIn.Level.WARNING)
+@Retention(AnnotationRetention.BINARY)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.ANNOTATION_CLASS,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.LOCAL_VARIABLE,
+    AnnotationTarget.VALUE_PARAMETER,
+    AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER,
+    AnnotationTarget.TYPEALIAS
+)
+@MustBeDocumented
+public annotation class FragileSimbotApi
 
 
 /**
