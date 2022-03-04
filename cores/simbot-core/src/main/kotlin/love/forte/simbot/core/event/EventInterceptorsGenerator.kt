@@ -79,7 +79,7 @@ internal annotation class EventInterceptorsGeneratorDSL
  *
  */
 @EventInterceptorsGeneratorDSL
-public class EventInterceptorsGenerator @InternalSimbotApi constructor(private val configuration: CoreListenerManagerConfiguration) {
+public class EventInterceptorsGenerator @InternalSimbotApi constructor(private val end: (Map<ID, EventProcessingInterceptor>, Map<ID, EventListenerInterceptor>) -> CoreListenerManagerConfiguration) {
     @Volatile
     private var _processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
 
@@ -220,7 +220,7 @@ public class EventInterceptorsGenerator @InternalSimbotApi constructor(private v
     /**
      * 回到配置主类
      */
-    public fun end(): CoreListenerManagerConfiguration = configuration
+    public fun end(): CoreListenerManagerConfiguration = end(processingInterceptors, listenerInterceptors)
 
 }
 

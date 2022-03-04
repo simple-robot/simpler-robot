@@ -140,11 +140,8 @@ public class CoreListenerManagerConfiguration {
      * ```
      */
     @CoreEventManagerConfigDSL
-    public fun interceptors(block: EventInterceptorsGenerator.() -> Unit): CoreListenerManagerConfiguration = also {
-        val generated = interceptors().also(block)
-        addListenerInterceptors(generated.listenerInterceptors)
-        addProcessingInterceptors(generated.processingInterceptors)
-    }
+    public fun interceptors(block: EventInterceptorsGenerator.() -> Unit): CoreListenerManagerConfiguration =
+        interceptors().also(block).end()
 
     /**
      * 进入到拦截器配置域。
@@ -167,7 +164,11 @@ public class CoreListenerManagerConfiguration {
      * ```
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    public fun interceptors(): EventInterceptorsGenerator = EventInterceptorsGenerator(this)
+    public fun interceptors(): EventInterceptorsGenerator = EventInterceptorsGenerator { ps, ls ->
+        addProcessingInterceptors(ps)
+        addListenerInterceptors(ls)
+        this
+    }
 
     //endregion
 
@@ -199,6 +200,42 @@ public class CoreListenerManagerConfiguration {
      */
     public fun addListeners(vararg listeners: EventListener): CoreListenerManagerConfiguration = also {
         this.listeners.addAll(listeners)
+    }
+
+    /**
+     * 进入到拦截器配置域.
+     *
+     *  @see EventListenersGenerator
+     */
+    @EventListenersGeneratorDSL
+    public fun listeners(block: EventListenersGenerator.() -> Unit): CoreListenerManagerConfiguration =
+        listeners().also(block).end()
+
+
+    /**
+     * 进入到监听函数配置域。
+     *
+     * *此函数更适合在Java中进行链式调用*。
+     *
+     * ```Java
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     * ```
+     *
+     *
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
+    public fun listeners(): EventListenersGenerator = EventListenersGenerator {
+        this.listeners.addAll(it)
+        this
     }
 
     //endregion
