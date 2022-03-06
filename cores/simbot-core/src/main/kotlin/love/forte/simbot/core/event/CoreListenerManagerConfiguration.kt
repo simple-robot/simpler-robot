@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.core.event
@@ -216,19 +215,6 @@ public class CoreListenerManagerConfiguration {
      * 进入到监听函数配置域。
      *
      * *此函数更适合在Java中进行链式调用*。
-     *
-     * ```Java
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     * ```
      *
      *
      */

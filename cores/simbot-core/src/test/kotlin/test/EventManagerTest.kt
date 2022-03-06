@@ -12,12 +12,13 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package test
 
-import org.junit.Test
+import love.forte.simbot.core.event.*
+import love.forte.simbot.event.*
+import org.junit.*
 
 /**
  *
@@ -28,6 +29,29 @@ class EventManagerTest {
     @Test
     fun configTest() {
         // CoreEventMangerConfiguration
+        coreListenerManager {
+            listeners {
+                filters {
+
+                }
+
+                listener(FriendMessageEvent) {
+                    filter {
+                        // 可以提供独立过滤器。
+                        true
+                    }
+                    handle { context, event ->
+                        event.friend().send("Context: $context")
+                    }
+                }
+
+                listeners {
+
+                }
+
+            }
+
+        }
 
 
 

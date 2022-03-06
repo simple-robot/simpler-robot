@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -102,26 +102,66 @@ public class EventListenersGenerator @InternalSimbotApi constructor(private val 
     public fun filters(): FiltersGenerator<EventListenersGenerator> = FiltersGenerator(this, globalFilters)
 
 
+    /**
+     * 构建一个监听函数。
+     *
+     * ```kotlin
+     * listener(FriendMessageEvent) {
+     *      filter {
+     *          // 可以提供独立过滤器。
+     *          true
+     *      }
+     *
+     *      // 监听函数的处理逻辑
+     *      handle { context, event ->
+     *          event.friend().send("Context: $context")
+     *      }
+     * }
+     * ```
+     *
+     */
     @EventListenersGeneratorDSL
     public fun <E : Event> listener(
         eventKey: Event.Key<E>,
         block: ListenerGenerator<E>.() -> Unit
     ): EventListenersGenerator =
-        listener(eventKey).also(block).end()
+        listenerGenerate(eventKey).also(block).end()
 
 
-    @Suppress("MemberVisibilityCanBePrivate")
-    public fun <E : Event> listener(eventKey: Event.Key<E>): ListenerGenerator<E> =
+    /**
+     * 提供一个 [Event.Key] 并得到一个 [构建器][ListenerGenerator]。
+     *
+     * ```java
+     * // Java
+     * generator
+     *  .listenerGenerate(FriendMessageEvent.Key)
+     *  .filter(context -> true) // filter
+     *  .handle((context, event) -> {
+     *      event.getFriend().sendBlocking("Context: " + context);
+     *  }) // handler
+     * ```
+     *
+     */
+    public fun <E : Event> listenerGenerate(eventKey: Event.Key<E>): ListenerGenerator<E> =
         ListenerGenerator(eventKey, globalFilters.toMutableList()) {
             listeners.add(it)
             this
         }
 
+    /**
+     * 直接提供一个 [EventListener] 实例。
+     *
+     */
     @EventListenersGeneratorDSL
     public fun listener(listener: EventListener): EventListenersGenerator = also {
         listeners.add(listener)
     }
 
+
+    /**
+     * 通过 `+=` 的方式直接提供一个 [EventListener] 实例。
+     *
+     */
     @EventListenersGeneratorDSL
     public operator fun EventListener.unaryPlus() {
         listeners.add(this)
@@ -413,6 +453,9 @@ public class FilterGenerator<B> @InternalSimbotApi constructor(private val end: 
     }
 
 
+    /**
+     * 匹配规则函数
+     */
     @Suppress("FunctionName")
     @Api4J
     @JvmName("test")
@@ -425,5 +468,8 @@ public class FilterGenerator<B> @InternalSimbotApi constructor(private val end: 
         return coreFilter(priority, tester)
     }
 
+    /**
+     * 结束构建，执行 end 收尾并返回上层结果。
+     */
     public fun end(): B = end(build())
 }
