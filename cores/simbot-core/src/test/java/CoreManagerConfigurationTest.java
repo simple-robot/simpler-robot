@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -14,6 +14,7 @@
  *
  */
 
+import kotlin.Unit;
 import love.forte.simbot.Identifies;
 import love.forte.simbot.PriorityConstant;
 import love.forte.simbot.core.event.EventInterceptorsGenerator;
@@ -27,16 +28,8 @@ public class CoreManagerConfigurationTest {
 
     public void run(EventInterceptorsGenerator generator) {
         generator
-                .listenerIntercept(Identifies.randomID(), PriorityConstant.FIRST, context -> {
-                    // do...
-
-                    return context.proceedBlocking();
-                })
-                .listenerIntercept(Identifies.randomID(), PriorityConstant.FIRST, context -> {
-                    // do...
-
-                    return context.proceedBlocking();
-                })
+                .listenerIntercept(Identifies.randomID(), PriorityConstant.FIRST, context -> context.proceedBlocking())
+                .listenerIntercept(Identifies.randomID(), PriorityConstant.FIRST, context -> context.proceedBlocking())
                 .end() // back to config
 
                 .listeners()
@@ -45,9 +38,14 @@ public class CoreManagerConfigurationTest {
                 .handle((context, event) -> {
                     event.getFriend().sendBlocking("Context: " + context);
                 }) // handler
-
-                // ...
-                ;
+                .end()
+                .listener(FriendMessageEvent.Key, g -> {
+                    g.end();
+                    return Unit.INSTANCE; // 默认的，基础的
+                })
+                .end()
+        // ...
+        ;
 
     }
 

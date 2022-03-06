@@ -38,6 +38,7 @@ class EventManagerTest {
                 listener(FriendMessageEvent) {
                     filter {
                         // 可以提供独立过滤器。
+                        EventResult.defaults()
                         true
                     }
                     handle { context, event ->
