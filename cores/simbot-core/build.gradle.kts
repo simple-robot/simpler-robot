@@ -59,6 +59,7 @@ kotlin {
     sourceSets.all {
             languageSettings {
                 optIn("kotlin.RequiresOptIn")
+                optIn("love.forte.simbot.InternalSimbotApi")
             }
         }
 }

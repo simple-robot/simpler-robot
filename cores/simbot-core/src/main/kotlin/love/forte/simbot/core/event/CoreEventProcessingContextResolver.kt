@@ -196,7 +196,7 @@ internal class CoreEventProcessingContextResolver(
             if (result !is SimpleEventResult) return result
             val content = result.content ?: return result
 
-            if (content is Flow<*>) {
+            if (content is kotlinx.coroutines.flow.Flow<*>) {
                 return result.copy(newContent = content.toList())
             }
 

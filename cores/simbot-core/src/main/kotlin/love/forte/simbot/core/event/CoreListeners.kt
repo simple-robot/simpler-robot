@@ -19,12 +19,9 @@
 
 package love.forte.simbot.core.event
 
-import love.forte.simbot.Api4J
-import love.forte.simbot.ID
-import love.forte.simbot.LoggerFactory
+import love.forte.simbot.*
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
-import love.forte.simbot.randomID
 import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
 import java.util.*
@@ -78,8 +75,11 @@ internal class EventListenerWithFilter(
 
 /**
  * 向 [EventListenerManager] 中注册一个监听器。
+ *
+ * ### Fragile API: [EventListenerRegistrar.register]
  */
 @JvmSynthetic
+@FragileSimbotApi
 public fun <E : Event> EventListenerRegistrar.listen(
     eventKey: Event.Key<E>,
     id: ID = UUID.randomUUID().ID,
@@ -91,8 +91,14 @@ public fun <E : Event> EventListenerRegistrar.listen(
 
 /**
  * 向 [EventListenerManager] 中注册一个监听器。
+ *
+ * ### Fragile API: [E]::class
+ * 此内联函数使用了 `reified` 枚举并通过反射获取对应类型的 [Event.Key]. simbot核心模块中更建议你尽可能的减少对存在反射的API的使用。
+ *
+ * ### Fragile API: [EventListenerRegistrar.register]
  */
 @JvmSynthetic
+@FragileSimbotApi
 public inline fun <reified E : Event> EventListenerRegistrar.listen(
     id: ID = randomID(),
     blockNext: Boolean = false,
@@ -117,8 +123,12 @@ public fun <E : Event> coreListener(
 
 /**
  * 构建一个监听函数。
+ *
+ * ### Fragile API: [E]::class
+ * 此内联函数使用了 `reified` 枚举并通过反射获取对应类型的 [Event.Key]. simbot核心模块中更建议你尽可能的减少对存在反射的API的使用。
  */
 @JvmSynthetic
+@FragileSimbotApi
 public inline fun <reified E : Event> coreListener(
     id: ID = UUID.randomUUID().ID,
     blockNext: Boolean = false,
@@ -140,7 +150,8 @@ private class CoreListener<E : Event>(
     override fun isTarget(eventType: Event.Key<*>): Boolean = eventType.isSubFrom(key)
 
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
-        return EventResult.of(func(context, key.safeCast(context.event)!!), blockNext)
+        val result = func(context, key.safeCast(context.event)!!)
+        return if (result is EventResult) result else EventResult.of(result, blockNext)
     }
 
 }
@@ -158,7 +169,7 @@ private class BlockingCoreListener<E : Event>(
 
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         val result = runWithInterruptible { func.apply(context, key.safeCast(context.event)!!) }
-        return EventResult.of(result, blockNext)
+        return if (result is EventResult) result else EventResult.of(result, blockNext)
     }
 
 }

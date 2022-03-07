@@ -18,14 +18,14 @@
 package love.forte.simbot.core.event
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.future.asCompletableFuture
+import kotlinx.coroutines.future.*
 import love.forte.simbot.*
 import love.forte.simbot.event.*
-import love.forte.simbot.utils.view
-import java.lang.reflect.InvocationTargetException
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.atomic.AtomicInteger
-import kotlin.coroutines.CoroutineContext
+import love.forte.simbot.utils.*
+import java.lang.reflect.*
+import java.util.concurrent.*
+import java.util.concurrent.atomic.*
+import kotlin.coroutines.*
 
 
 /**
@@ -101,7 +101,9 @@ public class CoreListenerManager private constructor(
     /**
      * 监听函数列表。ID唯一
      */
-    private val listeners: MutableMap<CharSequenceID, EventListener> = LinkedHashMap()
+    private val listeners: MutableMap<CharSequenceID, EventListener> =
+        configuration.listeners.associateByTo(mutableMapOf()) { it.id.toCharSequenceID() }
+
 
     /**
      * 完成缓存与处理的监听函数队列.
@@ -138,6 +140,7 @@ public class CoreListenerManager private constructor(
      * 每次注册监听函数都会直接清空缓存。
      *
      */
+    @FragileSimbotApi
     override fun register(listener: EventListener) {
         synchronized(this) {
             val id = listener.id.toCharSequenceID()
@@ -302,8 +305,7 @@ public class CoreListenerManager private constructor(
                     asyncDeferred.start()
                     EventResult.async(asyncDeferred)
                 }
-            }
-            else {
+            } else {
                 { _, context -> listenerInterceptEntrance.doIntercept(context, listener::invoke) }
             }
 

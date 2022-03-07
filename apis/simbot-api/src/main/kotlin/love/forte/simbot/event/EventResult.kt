@@ -1,7 +1,7 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x、simbot 3.x、simbot3) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -16,13 +16,13 @@
 
 package love.forte.simbot.event
 
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.future.asCompletableFuture
-import love.forte.simbot.Api4J
+import kotlinx.coroutines.*
+import kotlinx.coroutines.future.*
+import love.forte.simbot.*
 import love.forte.simbot.event.EventResult.Default.NormalEmpty
 import love.forte.simbot.event.EventResult.Default.Truncated
 import love.forte.simbot.event.EventResult.Invalid
-import java.util.concurrent.Future
+import java.util.concurrent.*
 
 
 /**
@@ -129,14 +129,14 @@ public interface EventResult {
          */
         @JvmOverloads
         @JvmStatic
-        public fun default(isTruncated: Boolean = false): EventResult = of(null, isTruncated)
+        public fun defaults(isTruncated: Boolean = false): EventResult = of(null, isTruncated)
 
 
         /**
          * 返回一个阻断后续监听函数执行的响应体(`EventResult(isTruncated=true)`)。
          */
         @JvmStatic
-        public fun truncate(): EventResult = default(true)
+        public fun truncate(): EventResult = defaults(true)
     }
 
     /**
