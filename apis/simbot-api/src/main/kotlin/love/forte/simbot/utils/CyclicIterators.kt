@@ -17,10 +17,7 @@
 
 package love.forte.simbot.utils
 
-import love.forte.simbot.Simbot
-import love.forte.simbot.SimbotIllegalArgumentException
-
-
+import love.forte.simbot.*
 
 
 /**
@@ -32,14 +29,12 @@ public abstract class CyclicIterator<T> : Iterator<T> {
     abstract override fun next(): T
 }
 
-private class FunctionalCyclicIterator<T>(private val nextValue: () -> T) : Iterator<T> {
-    override fun hasNext(): Boolean = true
+private class FunctionalCyclicIterator<T>(private val nextValue: () -> T) : CyclicIterator<T>() {
     override fun next(): T = nextValue()
 }
 
 
-private class ConstIterator<T>(private val value: T) : Iterator<T> {
-    override fun hasNext(): Boolean = true
+private class ConstIterator<T>(private val value: T) : CyclicIterator<T>() {
     override fun next(): T = value
 }
 
