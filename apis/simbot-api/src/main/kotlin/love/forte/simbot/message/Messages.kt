@@ -20,19 +20,13 @@
 
 package love.forte.simbot.message
 
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.PolymorphicSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.*
+import kotlinx.serialization.builtins.*
+import kotlinx.serialization.descriptors.*
+import kotlinx.serialization.encoding.*
+import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.*
-import love.forte.simbot.Api4J
-import love.forte.simbot.Component
-import love.forte.simbot.Simbot
-import love.forte.simbot.SimbotComponent
+import love.forte.simbot.*
 import love.forte.simbot.message.Message.Element as MsgElement
 
 
@@ -175,13 +169,13 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          * 得到一个空的消息列表。
          */
         @JvmStatic
-        public fun getEmptyMessages(): Messages = emptyMessages()
+        public fun emptyMessages(): Messages = love.forte.simbot.message.emptyMessages()
 
         /**
          * 得到一个空的消息列表。
          */
         @JvmStatic
-        public fun getMessages(): Messages = messages()
+        public fun messages(): Messages = love.forte.simbot.message.messages()
 
         /**
          * 将一个 [MsgElement] 作为一个 [Messages].
@@ -199,7 +193,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          * 得到一个消息列表。
          */
         @JvmStatic
-        public fun getMessages(vararg messages: MsgElement<*>): Messages = messages(*messages)
+        public fun toMessages(vararg messages: MsgElement<*>): Messages = messages.asList().toMessages()
 
 
         //region serializer api for java
@@ -334,7 +328,8 @@ public fun Iterable<MsgElement<*>>.toMessages(): Messages {
 }
 
 
-public operator fun Message.Element<*>.plus(other: Message.Element<*>): Messages = messages(this, other)
+public operator fun Message.Element<*>.plus(other: Message.Element<*>): Messages =
+    messages(this, other)
 public operator fun Message.Element<*>.plus(other: Messages): Messages = this.toMessages() + other
 public operator fun Message.Element<*>.plus(other: SingleOnlyMessage<*>): Messages = other
 

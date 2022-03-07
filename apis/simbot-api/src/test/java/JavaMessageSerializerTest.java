@@ -13,7 +13,7 @@ public class JavaMessageSerializerTest {
 
     @Test
     public void serializer() {
-        final Messages messages = Messages.getMessages(
+        final Messages messages = Messages.toMessages(
                 new At(Identifies.ID(123)),
                 Text.of("Hello "),
                 Text.of("World")

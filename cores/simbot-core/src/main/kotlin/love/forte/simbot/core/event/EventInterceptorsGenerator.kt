@@ -239,7 +239,7 @@ public class EventInterceptorsGenerator @InternalSimbotApi constructor(private v
  */
 public fun CoreListenerManagerConfiguration.addProcessingInterceptors(vararg interceptors: Pair<ID, EventProcessingInterceptor>) {
     if (interceptors.isNotEmpty()) {
-        addProcessingInterceptors(mapOf(*interceptors))
+        addProcessingInterceptors(interceptors.toMap())
     }
 }
 
@@ -257,7 +257,7 @@ public fun CoreListenerManagerConfiguration.addProcessingInterceptors(vararg int
  */
 public fun CoreListenerManagerConfiguration.addListenerInterceptors(vararg interceptors: Pair<ID, EventListenerInterceptor>) {
     if (interceptors.isNotEmpty()) {
-        addListenerInterceptors(mapOf(*interceptors))
+        addListenerInterceptors(interceptors.toMap())
     }
 }
 
