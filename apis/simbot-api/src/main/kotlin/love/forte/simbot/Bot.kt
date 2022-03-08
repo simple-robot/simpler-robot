@@ -12,23 +12,20 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot
 
-import kotlinx.coroutines.CompletionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import love.forte.simbot.definition.*
-import love.forte.simbot.event.EventProcessor
-import love.forte.simbot.message.Image
-import love.forte.simbot.resources.Resource
-import love.forte.simbot.utils.runInBlocking
-import org.slf4j.Logger
-import java.util.stream.Stream
-import kotlin.coroutines.CoroutineContext
+import love.forte.simbot.event.*
+import love.forte.simbot.message.*
+import love.forte.simbot.resources.*
+import love.forte.simbot.utils.*
+import org.slf4j.*
+import java.util.stream.*
+import kotlin.coroutines.*
 
 
 /**
@@ -43,6 +40,15 @@ import kotlin.coroutines.CoroutineContext
 public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
     override val coroutineContext: CoroutineContext
 
+    /**
+     * Bot的唯一标识。此处的唯一标识通常指的是在其所属的 [BotManager] 中的唯一标识，
+     * 而不代表其在对应平台系统内的唯一标识。
+     *
+     * 举个简单的例子，有可能bot的 [id] 指的是某种 `clientId`, 而不是类似于 [User.id] 中的用户ID。
+     *
+     * 这可能会造成bot的 [id] 和 bot作为 [User] 时的ID不一致的情况，因此如果你希望判断一个bot的id是否为指定值，可以参考使用 [isMe].
+     *
+     */
     override val id: ID
     override val bot: Bot get() = this
     override val username: String
@@ -70,6 +76,12 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      * 当前Bot的用户状态。
      */
     override val status: UserStatus
+
+    /**
+     * 用于检测一个 [ID] 是否属于当前BOT。一个bot可能会存在多个领域的ID，例如作为bot的client ID和作为user的普通ID。
+     */
+    public fun isMe(id: ID): Boolean
+
 
     //region 批量获取相关api
     // friends
@@ -297,3 +309,4 @@ public interface BotInfo : UserInfo {
     override val avatar: String
     override val username: String
 }
+
