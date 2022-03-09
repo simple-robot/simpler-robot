@@ -10,7 +10,6 @@ import love.forte.simbot.event.*
  *
  * 一个组件应该有一个[id]作为唯一标识，用于与其他组件进行区分。
  *
- *
  */
 public interface Component : IDContainer {
 
