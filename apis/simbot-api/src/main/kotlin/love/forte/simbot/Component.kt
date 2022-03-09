@@ -1,5 +1,6 @@
 package love.forte.simbot
 
+import kotlinx.serialization.modules.*
 import love.forte.simbot.definition.*
 import love.forte.simbot.event.*
 
@@ -9,8 +10,21 @@ import love.forte.simbot.event.*
  *
  * 一个组件应该有一个[id]作为唯一标识，用于与其他组件进行区分。
  *
+ *
  */
-public interface Component : IDContainer
+public interface Component : IDContainer {
+
+    /**
+     * 此组件所提供的所有消息序列化信息。
+     *
+     * 除了通过 [Component.componentSerializersModule] 获取之外，
+     * 通常情况下组件的实现会提供其他的全局方式来或者这些序列化信息。
+     *
+     */
+    public val componentSerializersModule: SerializersModule
+
+
+}
 
 
 /**
@@ -72,7 +86,6 @@ public interface ComponentContainer : Container {
      */
     public val component: Component
 }
-
 
 
 //////////////////////// Exceptions ////////////////////////////
