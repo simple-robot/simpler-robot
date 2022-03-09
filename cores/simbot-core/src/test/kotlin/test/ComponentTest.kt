@@ -1,5 +1,7 @@
 package test
 
+import kotlinx.serialization.*
+import kotlinx.serialization.modules.*
 import love.forte.simbot.*
 import love.forte.simbot.core.event.*
 
@@ -9,6 +11,10 @@ class TestComponent(
     val age: Int
 ) : Component {
     override val id: ID = ID.ID
+
+    @OptIn(ExperimentalSerializationApi::class)
+    override val componentSerializersModule: SerializersModule
+        get() = EmptySerializersModule
 
     override fun toString(): String {
         return "TestComponent(name=$name, age=$age)"
