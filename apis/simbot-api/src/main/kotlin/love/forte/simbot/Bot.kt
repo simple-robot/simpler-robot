@@ -37,7 +37,7 @@ import kotlin.coroutines.*
  *
  * @author ForteScarlet
  */
-public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
+public interface Bot : User, CoroutineScope, Survivable, LoggerContainer, ComponentContainer {
     override val coroutineContext: CoroutineContext
 
     /**
@@ -70,7 +70,7 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer {
      * 每个Bot都有一个所属组件。
      *
      */
-    public val component: Component
+    override val component: Component
 
     /**
      * 当前Bot的用户状态。

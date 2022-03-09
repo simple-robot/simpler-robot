@@ -19,14 +19,12 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.*
-import love.forte.simbot.definition.BotContainer
-import love.forte.simbot.definition.IDContainer
+import love.forte.simbot.definition.*
 import love.forte.simbot.event.Event.Key.Companion.getKey
-import love.forte.simbot.message.doSafeCast
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentSkipListSet
-import kotlin.contracts.ExperimentalContracts
-import kotlin.reflect.KClass
+import love.forte.simbot.message.*
+import java.util.concurrent.*
+import kotlin.contracts.*
+import kotlin.reflect.*
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.safeCast
@@ -51,10 +49,12 @@ import kotlin.reflect.safeCast
  * 那么你必须使用kotlin中的 `*`，在Java中使用 `?` 或直接忽略它。否则会很容易导致出现异常。
  *
  *
+ *
+ *
  * @see Event.Key
  * @author ForteScarlet
  */
-public interface Event : BotContainer, IDContainer {
+public interface Event : BotContainer, IDContainer, ComponentContainer {
 
     /**
      * 事件的唯一标识。
@@ -66,6 +66,12 @@ public interface Event : BotContainer, IDContainer {
      */
     override val bot: Bot
 
+    /**
+     * 一个事件所属的组件。
+     * 通常与 [bot] 的组件所属一致。
+     */
+    override val component: Component
+        get() = bot.component
 
     /**
      * 此时间发生的时间戳。
@@ -395,11 +401,6 @@ public abstract class BaseEventKey<E : Event>(
 
 
 /////
-
-/**
- * 事件的所属组件。
- */
-public inline val Event.component: Component get() = bot.component
 
 
 /**

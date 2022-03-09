@@ -69,7 +69,15 @@ public interface EventProcessor {
      *
      * @throws NoSuchComponentException
      */
-    public fun getComponent(id: ID): Comp
+    public fun getComponent(id: ID): Component
+
+
+    /**
+     * 从当前事件处理器中尝试根据 [id] 得到一个组件实例，如果不存在对应组件，则会抛出 [NoSuchComponentException].
+     *
+     * @throws NoSuchComponentException
+     */
+    public fun getComponent(id: String): Component
 
 }
 

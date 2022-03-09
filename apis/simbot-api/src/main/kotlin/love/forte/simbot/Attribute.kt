@@ -44,7 +44,7 @@ import kotlin.reflect.jvm.*
 /**
  * 一个属性。
  *
- * 此类型通常使用在 [Component.attributes], 或者作为事件处理中的上下文使用。
+ * 此类型通常使用在 [Component2.attributes], 或者作为事件处理中的上下文使用。
  * [Attribute] 拥有一个 [属性名][name], 而不会真实保留 [T] 类型信息。
  *
  * [Attribute] 的 [Attribute.hashcode] 将会直接与 [name] 一致，因此可以直接将 [Attribute] 作为一个 [Map] 的 Key,

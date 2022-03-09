@@ -19,6 +19,9 @@ package love.forte.simbot.core.event
 import kotlinx.coroutines.*
 import love.forte.simbot.*
 import love.forte.simbot.event.*
+import love.forte.simbot.event.EventListener
+import love.forte.simbot.utils.*
+import java.util.*
 import java.util.function.Function
 import kotlin.coroutines.*
 
@@ -44,7 +47,41 @@ internal annotation class CoreEventManagerConfigDSL
  * @see coreListenerManager
  */
 @CoreEventManagerConfigDSL
-public class CoreListenerManagerConfiguration {
+public class CoreListenerManagerConfiguration : EventListenerManagerConfiguration {
+    private val componentConfigurations = mutableMapOf<Attribute<*>, Any.() -> Unit>()
+    private val componentRegistrars = mutableMapOf<Attribute<*>, () -> Component>()
+
+    @CoreEventManagerConfigDSL
+    override fun <C : Component, Config : Any> install(registrar: ComponentRegistrar<C, Config>, config: Config.() -> Unit) {
+        val key = registrar.key
+        val oldConfig = componentConfigurations[key]
+
+        componentConfigurations[key] = {
+            // 追加配置
+            oldConfig?.invoke(this)
+            @Suppress("UNCHECKED_CAST")
+            (this as Config).config()
+        }
+
+        if (key in componentRegistrars) return
+
+        componentRegistrars[key] = {
+            val configuration = componentConfigurations[key]!!
+            registrar.register(configuration)
+        }
+    }
+
+    /**
+     * 尝试加载所有的 [ComponentRegistrarFactory] 并注册它们。统一使用默认配置进行注册。
+     */
+    @ExperimentalSimbotApi
+    @CoreEventManagerConfigDSL
+    override fun installAll() {
+        val factories = ServiceLoader.load(ComponentRegistrarFactory::class.java, this.currentClassLoader)
+        factories.forEach {
+            install(it.registrar)
+        }
+    }
 
     /**
      * 事件管理器的上下文. 可以基于此提供调度器。
@@ -54,12 +91,13 @@ public class CoreListenerManagerConfiguration {
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext
 
 
-    internal var processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
+    private var processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
 
-    internal var listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
+
+    private var listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
 
     // 初始监听函数
-    internal var listeners = mutableListOf<EventListener>()
+    private var listeners = mutableListOf<EventListener>()
 
     /**
      * 自定义的监听函数异常处理器。
@@ -237,4 +275,41 @@ public class CoreListenerManagerConfiguration {
         private set
 
 
+    internal fun build(): ConfigResult {
+        // install components
+        val components = componentRegistrars.values.associate {
+            val comp = it()
+            comp.id.literal to comp
+        }
+
+        return ConfigResult(
+            coroutineContext,
+            components = components,
+            exceptionHandler = listenerExceptionHandler,
+            processingInterceptors = idMapOf(processingInterceptors),
+            listenerInterceptors = idMapOf(listenerInterceptors),
+            listeners = listeners.toList()
+        )
+    }
 }
+
+
+internal data class ConfigResult(
+    internal val coroutineContext: CoroutineContext,
+    internal val components: Map<String, Component>,
+    internal val exceptionHandler: ((Throwable) -> EventResult)? = null,
+    internal val processingInterceptors: IDMaps<EventProcessingInterceptor>,
+    internal val listenerInterceptors: IDMaps<EventListenerInterceptor>,
+    internal val listeners: List<EventListener>
+
+)
+
+/*
+ internal var processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
+
+
+    internal var listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
+
+    // 初始监听函数
+    internal var listeners = mutableListOf<EventListener>()
+ */

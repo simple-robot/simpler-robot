@@ -16,38 +16,39 @@
 
 package love.forte.simboot.core.internal
 
-import love.forte.annotationtool.core.KAnnotationTool
-import love.forte.di.BeanContainer
-import love.forte.di.all
-import love.forte.di.core.internal.AnnotationGetter
-import love.forte.simboot.Configuration
-import love.forte.simboot.SimbootEntranceContext
-import love.forte.simboot.SimbotPropertyResources
-import love.forte.simboot.core.CoreBootEntranceContext
-import love.forte.simboot.core.SimbootApplication
-import love.forte.simboot.core.configuration.CoreEventListenerManagerContextFactory
-import love.forte.simboot.factory.BeanContainerFactory
-import love.forte.simboot.factory.ConfigurationFactory
-import love.forte.simboot.factory.EventListenerManagerFactory
-import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
-import love.forte.simbot.BotVerifyInfo
-import love.forte.simbot.ID
-import love.forte.simbot.SimbotIllegalStateException
-import love.forte.simbot.asBotVerifyInfo
-import love.forte.simbot.core.event.coreListenerManager
-import love.forte.simbot.event.EventListenerInterceptor
-import love.forte.simbot.event.EventListenerManager
-import love.forte.simbot.event.EventProcessingInterceptor
-import love.forte.simbot.utils.systemProperties
-import org.slf4j.Logger
-import java.net.URL
-import java.nio.file.Path
+import love.forte.annotationtool.core.*
+import love.forte.di.*
+import love.forte.di.core.internal.*
+import love.forte.simboot.*
+import love.forte.simboot.core.*
+import love.forte.simboot.core.configuration.*
+import love.forte.simboot.factory.*
+import love.forte.simboot.interceptor.*
+import love.forte.simbot.*
+import love.forte.simbot.core.event.*
+import love.forte.simbot.event.*
+import love.forte.simbot.utils.*
+import org.slf4j.*
+import java.net.*
+import java.nio.file.*
 import java.util.*
-import kotlin.io.path.bufferedReader
-import kotlin.reflect.KAnnotatedElement
-import kotlin.reflect.KClass
-import kotlin.reflect.KVisibility
-import kotlin.reflect.cast
+import kotlin.collections.Collection
+import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.Set
+import kotlin.collections.associate
+import kotlin.collections.emptyList
+import kotlin.collections.filterValues
+import kotlin.collections.forEach
+import kotlin.collections.ifEmpty
+import kotlin.collections.isEmpty
+import kotlin.collections.isNotEmpty
+import kotlin.collections.mapNotNull
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
+import kotlin.collections.toSet
+import kotlin.io.path.*
+import kotlin.reflect.*
 
 /**
  * 扫描并加载所有在 `META-INF/simbot.factories` 中 key为 `simbot.includes` 的元素。
@@ -125,7 +126,6 @@ internal class CoreBootEntranceContextImpl(
         return beanContainer.getOrNull(EventListenerManagerFactory::class)
             ?.getEventListenerManager()
             ?: coreListenerManager {
-
                 // 所有的拦截器
 
                 val allListenerInterceptor: Map<ID, EventListenerInterceptor> =

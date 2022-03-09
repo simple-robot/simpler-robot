@@ -251,7 +251,6 @@ public object EmptyMessages : Messages, List<MsgElement<*>> by emptyList() {
  */
 public abstract class SingleOnlyMessage<E : Message.Element<E>> : MsgElement<E>, Messages,
     AbstractList<MsgElement<*>>() {
-    abstract override val component: Component
     abstract override val key: Message.Key<E>
 
 

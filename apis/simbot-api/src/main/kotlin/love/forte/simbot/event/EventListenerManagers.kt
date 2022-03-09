@@ -120,7 +120,7 @@ public interface EventListenerManagerConfiguration {
      * @param registrar 组件注册器。
      * @param config 配置函数
      */
-    public fun <C : Comp, Config : Any> install(
+    public fun <C : Component, Config : Any> install(
         registrar: ComponentRegistrar<C, Config>,
         config: Config.() -> Unit = {}
     )
