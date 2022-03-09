@@ -87,7 +87,7 @@ simbot3的文档与simbot2的文档在一起，都在 [语雀文档](https://www
 <br>
 simbot3目前已经实现的组件以及计划中的组件会列举于此，且不定期更新：
 
-|                  对接目标                   |     作者      |                               仓库地址                               |  状态   |
+|                  对接目标                   |     作者      |                              组件仓库地址                              |  状态   |
 |:---------------------------------------:|:-----------:|:----------------------------------------------------------------:|:-----:|
 |                  腾讯频道                   | simbot team | <https://github.com/simple-robot/simbot-component-tencent-guild> |  维护中  |
 | [Mirai](https://github.com/mamoe/mirai) | simbot team |     <https://github.com/simple-robot/simbot-component-mirai>     |  维护中  |
@@ -108,6 +108,8 @@ Mirai组件：
 #### Maven
 
 版本参考：[![](https://img.shields.io/maven-central/v/love.forte.simbot/simbot-api)](https://repo1.maven.org/maven2/love/forte/simbot/simbot-api/)
+
+> 此处版本参考，需要版本在 v3.x.x 以上。如果显示为v2.x.x, 请前往 [releases](https://github.com/ForteScarlet/simpler-robot/releases) 寻找v3版本，或者查看 [v2](https://github.com/ForteScarlet/simpler-robot/tree/v2-dev) 版本说明。
 
 ```xml
 <!-- 3.x中，大部分组件的版本维护独立于标准库，但是会在版本号中体现依赖标准库的版本号。 -->
