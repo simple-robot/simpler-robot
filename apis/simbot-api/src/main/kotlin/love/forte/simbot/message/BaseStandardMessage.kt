@@ -17,18 +17,14 @@
 
 package love.forte.simbot.message
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import love.forte.simbot.Component
-import love.forte.simbot.ID
-import love.forte.simbot.SimbotComponent
-import love.forte.simbot.definition.IDContainer
+import kotlinx.serialization.*
+import love.forte.simbot.*
+import love.forte.simbot.definition.*
 import love.forte.simbot.message.At.Key.equals
 import love.forte.simbot.message.At.Key.hashCode
 import love.forte.simbot.message.Text.Key.getEmptyText
 import love.forte.simbot.message.Text.Key.of
-import love.forte.simbot.resources.Resource
-import kotlin.reflect.KClass
+import love.forte.simbot.resources.*
 
 /**
  * 一些由核心提供的标准 [Message] 实例或标准.
@@ -40,11 +36,11 @@ import kotlin.reflect.KClass
  * - [emoji][]
  *
  */
-public sealed interface StandardMessage<E : Message.Element<E>> : Message.Element<E>
+public sealed interface StandardMessage<out E : Message.Element<E>> : Message.Element<E>
 
 @SerialName("m.std")
 @Serializable
-public sealed class BaseStandardMessage<E : Message.Element<E>> : StandardMessage<E>
+public sealed class BaseStandardMessage<out E : Message.Element<E>> : StandardMessage<E>
 
 
 /** 判断一个 [Message.Element] 是否为一个标准 [Message] 下的实现。 */
@@ -58,8 +54,12 @@ public inline val Message.Element<*>.isStandard: Boolean get() = this is Standar
  *
  * @see Text
  */
-public interface PlainText<A : PlainText<A>> : StandardMessage<A> {
+public interface PlainText<out A : PlainText<A>> : StandardMessage<A> {
     public val text: String
+
+    public companion object Key : Message.Key<PlainText<*>> {
+        override fun safeCast(value: Any): PlainText<*>? = safeCast(value)
+    }
 }
 
 /**
@@ -99,8 +99,7 @@ public open class Text protected constructor(override val text: String) : PlainT
 
     public companion object Key : Message.Key<Text> {
         private val empty = Text("")
-        override val component: Component get() = SimbotComponent
-        override val elementType: KClass<Text> get() = Text::class
+        override fun safeCast(value: Any): Text? = doSafeCast(value)
 
         @JvmStatic
         public fun of(text: String): Text {
@@ -162,16 +161,13 @@ public data class At @JvmOverloads constructor(
     }
 
 
-
     override fun hashCode(): Int {
-        return 31 * target.hashCode() + atType.hashCode()
+        return 31 * (target.hashCode() + atType.hashCode())
     }
 
 
-
     public companion object Key : Message.Key<At> {
-        override val component: Component get() = SimbotComponent
-        override val elementType: KClass<At> get() = At::class
+        override fun safeCast(value: Any): At? = doSafeCast(value)
     }
 }
 
@@ -186,9 +182,7 @@ public object AtAll : BaseStandardMessage<AtAll>(), Message.Key<AtAll> {
 
     override fun toString(): String = "AtAll"
     override fun equals(other: Any?): Boolean = other is AtAll
-    override val component: Component get() = SimbotComponent
-    override val elementType: KClass<AtAll> get() = AtAll::class
-    override fun safeCast(instance: Any?): AtAll? = if (instance == this) this else null
+    override fun safeCast(value: Any): AtAll? = doSafeCast(value)
 }
 
 //endregion
@@ -219,6 +213,12 @@ public interface Image<E : Image<E>> : StandardMessage<E>, IDContainer {
      * 得到这个图片的数据资源。
      */
     public suspend fun resource(): Resource
+
+
+    public companion object Key : Message.Key<Image<*>> {
+        override fun safeCast(value: Any): Image<*>? = doSafeCast(value)
+    }
+
 }
 
 
@@ -245,8 +245,7 @@ public data class Emoji(
 
 
     public companion object Key : Message.Key<Emoji> {
-        override val component: Component get() = SimbotComponent
-        override val elementType: KClass<Emoji> get() = Emoji::class
+        override fun safeCast(value: Any): Emoji? = doSafeCast(value)
     }
 }
 //endregion
@@ -266,8 +265,7 @@ public data class Face(
         get() = Key
 
     public companion object Key : Message.Key<Face> {
-        override val component: Component get() = SimbotComponent
-        override val elementType: KClass<Face> get() = Face::class
+        override fun safeCast(value: Any): Face? = doSafeCast(value)
     }
 }
 //endregion
@@ -276,6 +274,9 @@ public data class Face(
 //region 远程资源
 /**
  * [RemoteResource] 代表一个携带 [url] 信息的远程资源。常见为文件或图片等形式。
+ *
+ * *此类型可能会被删除*
+ *
  */
 public interface RemoteResource<E : RemoteResource<E>> : StandardMessage<E>, IDContainer {
 
@@ -290,6 +291,10 @@ public interface RemoteResource<E : RemoteResource<E>> : StandardMessage<E>, IDC
      * 此资源的URL地址。
      */
     public val url: String
+
+    public companion object Key : Message.Key<RemoteResource<*>> {
+        override fun safeCast(value: Any): RemoteResource<*>? = doSafeCast(value)
+    }
 }
 //endregion
 
