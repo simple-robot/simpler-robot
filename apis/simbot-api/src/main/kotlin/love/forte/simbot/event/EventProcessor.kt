@@ -17,12 +17,11 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.Api4J
-import love.forte.simbot.SimbotIllegalStateException
+import love.forte.simbot.*
 import love.forte.simbot.event.EventProcessingResult.Empty
-import love.forte.simbot.utils.runInBlocking
-import org.jetbrains.annotations.UnmodifiableView
-import java.util.concurrent.Future
+import love.forte.simbot.utils.*
+import org.jetbrains.annotations.*
+import java.util.concurrent.*
 
 
 /**
@@ -63,6 +62,22 @@ public interface EventProcessor {
      * 判断是否存在对应的事件监听器。
      */
     public fun isProcessable(eventKey: Event.Key<*>): Boolean
+
+
+    /**
+     * 从当前事件处理器中尝试根据 [id] 得到一个组件实例，如果不存在对应组件，则会抛出 [NoSuchComponentException].
+     *
+     * @throws NoSuchComponentException
+     */
+    public fun getComponent(id: ID): Component
+
+
+    /**
+     * 从当前事件处理器中尝试根据 [id] 得到一个组件实例，如果不存在对应组件，则会抛出 [NoSuchComponentException].
+     *
+     * @throws NoSuchComponentException
+     */
+    public fun getComponent(id: String): Component
 
 }
 

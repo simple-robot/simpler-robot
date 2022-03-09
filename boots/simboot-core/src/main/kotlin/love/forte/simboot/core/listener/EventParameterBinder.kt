@@ -17,18 +17,11 @@
 
 package love.forte.simboot.core.listener
 
-import love.forte.simboot.listener.BindException
-import love.forte.simboot.listener.ParameterBinder
-import love.forte.simboot.listener.ParameterBinderFactory
-import love.forte.simboot.listener.ParameterBinderResult
-import love.forte.simbot.Attribute
-import love.forte.simbot.ExperimentalSimbotApi
-import love.forte.simbot.event.Event
-import love.forte.simbot.event.EventListener
-import love.forte.simbot.event.EventListenerProcessingContext
-import love.forte.simbot.event.EventProcessingContext
-import kotlin.reflect.KClass
-import kotlin.reflect.full.isSubclassOf
+import love.forte.simboot.listener.*
+import love.forte.simbot.*
+import love.forte.simbot.event.*
+import kotlin.reflect.*
+import kotlin.reflect.full.*
 
 
 /**
@@ -66,15 +59,16 @@ public object EventParameterBinderFactory : ParameterBinderFactory {
 
             // Scope 相关类型
 
-            classifier.isSubclassOf(EventProcessingContext.Scope.Instant.type) -> {
+            // classifier.isSubclassOf(EventProcessingContext.Scope.Instant.type) -> {
+            classifier.isSubclassOf(InstantScopeContext::class) -> {
                 return ParameterBinderResult.normal(attributeBinder(nullable, EventProcessingContext.Scope.Instant) { "Scope [Instant] in current context is null." } )
             }
-            classifier.isSubclassOf(EventProcessingContext.Scope.Global.type) -> {
+            classifier.isSubclassOf(GlobalScopeContext::class) -> {
                 return ParameterBinderResult.normal(attributeBinder(nullable, EventProcessingContext.Scope.Global) { "Scope [Global] in current context is null." } )
             }
 
 
-            classifier.isSubclassOf(EventProcessingContext.Scope.ContinuousSession.type) -> {
+            classifier.isSubclassOf(ContinuousSessionContext::class) -> {
                 return ParameterBinderResult.normal(attributeBinder(nullable, EventProcessingContext.Scope.ContinuousSession) { "Scope [ContinuousSession] in current context is null." } )
             }
 

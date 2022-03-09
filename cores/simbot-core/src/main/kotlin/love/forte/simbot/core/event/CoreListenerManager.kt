@@ -77,38 +77,68 @@ public class CoreListenerManager private constructor(
         private val counter: AtomicInteger = AtomicInteger(0)
     }
 
-    private val managerCoroutineContext: CoroutineContext =
-        configuration.coroutineContext.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
 
-    private val managerScope = CoroutineScope(managerCoroutineContext)
+    private val managerCoroutineContext: CoroutineContext // =
+    // configuration.coroutineContext.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
+
+    private val managerScope: CoroutineScope // = CoroutineScope(managerCoroutineContext)
 
     /**
      * 异常处理器。
      */
-    private val listenerExceptionHandler = configuration.listenerExceptionHandler
+    private val listenerExceptionHandler: ((Throwable) -> EventResult)? // = configuration.listenerExceptionHandler
 
     /**
      * 事件过程拦截器入口。
      */
-    private val processingInterceptEntrance =
-        EventInterceptEntrance.eventProcessingInterceptEntrance(configuration.processingInterceptors.values.sortedBy { it.priority })
+    private val processingInterceptEntrance: EventInterceptEntrance<EventProcessingInterceptor.Context, EventProcessingResult, EventProcessingContext> // =
+    // EventInterceptEntrance.eventProcessingInterceptEntrance(configuration.processingInterceptors.values.sortedBy { it.priority })
 
     /**
      * 监听函数拦截器集。
      */
-    private val listenerIntercepts = configuration.listenerInterceptors.values.sortedBy { it.priority }
+    private val listenerIntercepts: List<EventListenerInterceptor> // = configuration.listenerInterceptors.values.sortedBy { it.priority }
 
     /**
      * 监听函数列表。ID唯一
      */
-    private val listeners: MutableMap<CharSequenceID, EventListener> =
-        configuration.listeners.associateByTo(mutableMapOf()) { it.id.toCharSequenceID() }
+    private val listeners: MutableMap<CharSequenceID, EventListener> // =
+    // configuration.listeners.associateByTo(mutableMapOf()) { it.id.toCharSequenceID() }
 
+    private val components: Map<String, Component>
 
     /**
      * 完成缓存与处理的监听函数队列.
      */
     private val resolvedInvokers: MutableMap<Event.Key<*>, List<ListenerInvoker>> = LinkedHashMap()
+
+
+    init {
+        val configResult: ConfigResult = configuration.build()
+        val context = configResult.coroutineContext
+        context.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
+
+        managerCoroutineContext = context
+        managerScope = CoroutineScope(managerCoroutineContext)
+
+        listenerExceptionHandler = configResult.exceptionHandler
+        processingInterceptEntrance =
+            EventInterceptEntrance.eventProcessingInterceptEntrance(configResult.processingInterceptors.values.sortedBy { it.priority })
+        listenerIntercepts = configResult.listenerInterceptors.values.sortedBy { it.priority }
+        listeners = configResult.listeners.associateByTo(mutableMapOf()) { it.id.toCharSequenceID() }
+
+        components = configResult.components
+    }
+
+
+    override fun getComponent(id: ID): Component {
+        return getComponent(id.literal)
+    }
+
+
+    override fun getComponent(id: String): Component {
+        return components[id] ?: throw NoSuchComponentException(id)
+    }
 
 
     private fun getInvokers(type: Event.Key<*>): List<ListenerInvoker> {

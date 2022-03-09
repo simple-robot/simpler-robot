@@ -19,12 +19,7 @@
 
 package love.forte.simbot.message
 
-import love.forte.simbot.Component
-import love.forte.simbot.ComponentContainer
-import love.forte.simbot.SimbotComponent
 import love.forte.simbot.message.Message.Element
-import kotlin.reflect.KClass
-import kotlin.reflect.safeCast
 
 
 /**
@@ -43,15 +38,9 @@ public sealed interface Message {
      *
      * @see SingleOnlyMessage 约束一个消息列表中仅只能存在此一种消息元素的消息。
      */
-    public interface Element<E : Element<E>> : Message, ComponentContainer {
+    public interface Element<out E : Element<E>> : Message {
         public val key: Key<E>
 
-        /**
-         * 每个消息，都有一个所属的组件。组件之间不应出现消息交叉。
-         *
-         * @see SimbotComponent
-         */
-        override val component: Component get() = key.component
         override fun toString(): String
         override fun equals(other: Any?): Boolean
     }
@@ -62,24 +51,14 @@ public sealed interface Message {
      * 一般由伴生对象或对象实现。
      *
      */
-    public interface Key<E : Element<E>> : ComponentContainer {
-        /**
-         * 任何消息都应由某个组件所提供。
-         * 在检测冲突的前提是组件应当一致。
-         */
-        override val component: Component
-
-        /**
-         * 得到此元素的 [KClass].
-         */
-        public val elementType: KClass<E>
+    public interface Key<out E : Element<E>> {
 
         /**
          * 将一个实例转化为 [E] 实例。 无法转化得到null。
          *
          * *Just like JVM KClass::safeCast.*
          */
-        public fun safeCast(instance: Any?): E? = elementType.safeCast(instance)
+        public fun safeCast(value: Any): E?
 
     }
 

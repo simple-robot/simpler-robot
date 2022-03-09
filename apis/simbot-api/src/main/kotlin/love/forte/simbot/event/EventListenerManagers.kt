@@ -108,3 +108,33 @@ public interface EventListenerManager :
 
 }
 
+
+/**
+ * 用于配置 [EventListenerManager] 的基础抽象类，其定义了针对组件的注册api。
+ */
+public interface EventListenerManagerConfiguration {
+
+    /**
+     * 注册一个组件信息到当前事件管理器中。
+     *
+     * @param registrar 组件注册器。
+     * @param config 配置函数
+     */
+    public fun <C : Component, Config : Any> install(
+        registrar: ComponentRegistrar<C, Config>,
+        config: Config.() -> Unit = {}
+    )
+
+
+    /**
+     * 尝试注册所有可寻的组件到当前配置中。
+     *
+     * 此函数需要对应的组件注册器支持 `Java SPI` 加载。
+     *
+     * @see ComponentRegistrar
+     */
+    @ExperimentalSimbotApi
+    public fun installAll()
+
+
+}

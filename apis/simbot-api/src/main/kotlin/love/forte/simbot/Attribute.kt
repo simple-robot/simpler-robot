@@ -19,11 +19,9 @@
 
 package love.forte.simbot
 
-import kotlinx.serialization.Serializable
-import love.forte.simbot.SimbotComponent.name
-import kotlin.reflect.KClass
-import kotlin.reflect.full.cast
-import kotlin.reflect.full.safeCast
+import kotlinx.serialization.*
+import kotlin.reflect.*
+import kotlin.reflect.jvm.*
 
 
 /*
@@ -46,24 +44,24 @@ import kotlin.reflect.full.safeCast
 /**
  * 一个属性。
  *
- * 此类型通常使用在 [Component.attributes], 或者作为事件处理中的上下文使用。
+ * 此类型通常使用在 [Component2.attributes], 或者作为事件处理中的上下文使用。
+ * [Attribute] 拥有一个 [属性名][name], 而不会真实保留 [T] 类型信息。
  *
- * [Attribute] 拥有一个 [属性名][name] 和此属性对应的 [类型][type], 其中，
+ * [Attribute] 的 [Attribute.hashcode] 将会直接与 [name] 一致，因此可以直接将 [Attribute] 作为一个 [Map] 的 Key,
+ * 并且在进行 [Attribute.equals] 比较的时候，会对 [name] 进行比较。
  *
- * 对于一个 [Attribute], 它的 [Attribute.hashcode] 将会直接与 [name] 一致，因此可以直接将 [Attribute] 作为一个 [Map] 的 Key.
  *
- * 但是在进行 [Attribute.equals] 比较的时候，会同时对 [name] 和 [type] 进行比较。
+ * **Note: 由于 [Attribute] 不保留任何类型信息，因此在使用 [Attribute] 进行类型转化的时候均为非检转化，因此你需要更严谨的使用此类型以避免出现类型转化异常。**
+ *
  *
  * @see AttributeMap
  *
  * @property name 属性的名称
- * @property type 属性对应的元素类型
  *
  */
 @Serializable
 public class Attribute<T : Any> private constructor(
-    public val name: String,
-    public val type: KClass<T>
+    public val name: String
 ) {
     private val hashcode: Int get() = name.hashCode()
 
@@ -72,32 +70,70 @@ public class Attribute<T : Any> private constructor(
         if (this === other) return true
         if (other !is Attribute<*>) return false
 
-        if (name != other.name) return false
-        return type == other.type
+        return name == other.name
     }
 
     override fun toString(): String = name
 
     public companion object {
-        @Api4J
-        @JvmStatic
-        public fun <T : Any> of(name: String, type: Class<T>): Attribute<T> = of(name, type.kotlin)
 
         /**
-         * @see attribute
+         * 构建一个 [Attribute] 实例。
          */
+        @Api4J
+        @JvmStatic
+        @Suppress("UNUSED_PARAMETER")
+        public fun <T : Any> of(name: String, type: Class<T>): Attribute<T> = of(name)
+
+
+        @Suppress("UNUSED_PARAMETER")
+        @Deprecated("Use of(name)", ReplaceWith("of(name)"))
         @JvmSynthetic
-        public fun <T : Any> of(name: String, type: KClass<T>): Attribute<T> = Attribute(name, type)
+        public fun <T : Any> of(name: String, type: KClass<T>): Attribute<T> = of(name)
+
+
+        /**
+         * 构建一个 [Attribute] 实例。
+         *
+         * Kotlin:
+         * ```kotlin
+         * val attribute = Attribute.of<Foo>("foo")
+         * ```
+         *
+         * Java:
+         * ```java
+         * final Attribute<Foo> foo = Attribute.of("foo");
+         * final Attribute<Bar> bar = Attribute.of("bar", Bar.class);
+         *  Attribute.<Tar>of("tar"); // anonymous
+         * ```
+         *
+         */
+        @JvmStatic
+        public fun <T : Any> of(name: String): Attribute<T> = Attribute(name)
+
     }
 
 
 }
 
+@Suppress("UNUSED_PARAMETER")
 @JvmSynthetic
-public fun <T : Any> attribute(name: String, type: KClass<T>): Attribute<T> = Attribute.of(name, type)
-public inline fun <reified T : Any> attribute(name: String): Attribute<T> = attribute(name, T::class)
+@Deprecated("Use attribute(name)", ReplaceWith("attribute(name)"))
+public fun <T : Any> attribute(name: String, type: KClass<T>): Attribute<T> = attribute(name)
+
+/**
+ * 构建一个 [Attribute] 实例。
+ *
+ * ```kotlin
+ * val attribute = attribute<Foo>("foo")
+ * ```
+ *
+ */
+public fun <T : Any> attribute(name: String): Attribute<T> = Attribute.of(name)
+
+@Deprecated("Use attribute(name)", ReplaceWith("of(name)"))
 public inline fun <reified T : Any> attribute(): Attribute<T> =
-    with(T::class) { attribute(qualifiedName ?: name, this) }
+    with(T::class) { Attribute.of(this.qualifiedName ?: this.simpleName ?: this.jvmName) }
 
 
 /**
@@ -105,9 +141,6 @@ public inline fun <reified T : Any> attribute(): Attribute<T> =
  *
  * [AttributeMap]与名称字符串为键的映射表相比，其没有明确的值类型，取而代之的是通过 [Attribute] 来规定元素类型的。
  *
- *
- * [AttributeMap] 中的Key即为 [Attribute], 并且以类型作为 [equals] 条件之一，
- * 因此在使用 [AttributeMap] 的时候，应当避免出现相同 [Attribute.name] 但是 [Attribute.type] 不同的情况。
  *
  *
  * [AttributeMap] 不允许存入null值。
@@ -141,7 +174,10 @@ public interface AttributeMap : AttributeContainer {
      */
     public operator fun <T : Any> get(attribute: Attribute<T>): T?
 
-
+    /**
+     * 获取指定值。
+     * @see get
+     */
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T? = get(attribute)
 
     /**
@@ -218,43 +254,43 @@ public class AttributeMutableMap(private val values: MutableMap<Attribute<*>, An
 
     override fun size(): Int = values.size
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : Any> get(attribute: Attribute<T>): T? {
         val got = values[attribute] ?: return null
-        return attribute.type.cast(got)
+        return got as T
+        // return attribute.type.cast(got)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : Any> put(attribute: Attribute<T>, value: T): T? {
-        val type = attribute.type
-        return values.put(attribute, type.cast(value))?.let { type.safeCast(it) }
+        return values.put(attribute, value)?.let { it as T }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : Any> merge(attribute: Attribute<T>, value: T, remapping: (T, T) -> T): T {
-        val type = attribute.type
         val newValue = values.merge(attribute, value) { old, now ->
-            val oldValue = type.cast(old)
-            val nowValue = type.cast(now)
+            val oldValue = old as T
+            val nowValue = now as T
             remapping(oldValue, nowValue)
         }
-        return type.cast(newValue)
+        return newValue as T
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : Any> computeIfAbsent(attribute: Attribute<T>, mappingFunction: (Attribute<T>) -> T): T {
-        val type = attribute.type
         val value = values.computeIfAbsent(attribute) { k ->
-            @Suppress("UNCHECKED_CAST")
             mappingFunction(k as Attribute<T>)
         }
-        return type.cast(value)
+        return value as T
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : Any> computeIfPresent(attribute: Attribute<T>, remappingFunction: (Attribute<T>, T) -> T?): T? {
-        val type = attribute.type
         val value = values.computeIfPresent(attribute) { k, old ->
-            @Suppress("UNCHECKED_CAST")
             k as Attribute<T>
-            remappingFunction(k , k.type.cast(old))
+            remappingFunction(k, old as T)
         }
-        return value?.let { type.cast(it) }
+        return value?.let { it as T }
     }
 
     override fun <T : Any> contains(attribute: Attribute<T>): Boolean {
@@ -262,9 +298,9 @@ public class AttributeMutableMap(private val values: MutableMap<Attribute<*>, An
     }
 
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : Any> remove(attribute: Attribute<T>): T? {
-        val removedValue = values.remove(attribute) ?: return null
-        return removedValue.let { attribute.type.safeCast(it) }
+        return values.remove(attribute)?.let { it as T }
     }
 
     override fun toString(): String = values.toString()
