@@ -91,7 +91,7 @@ simbot3目前已经实现的组件以及计划中的组件会列举于此，且�
 |:---------------------------------------:|:-----------:|:----------------------------------------------------------------:|:-----:|
 |                  腾讯频道                   | simbot team | <https://github.com/simple-robot/simbot-component-tencent-guild> |  维护中  |
 | [Mirai](https://github.com/mamoe/mirai) | simbot team |     <https://github.com/simple-robot/simbot-component-mirai>     |  维护中  |
-|                   开黑啦                   | simbot team |   <https://github.com/simple-robot/simbot-component-kaiheila>    | **开发中** |
+| [开黑啦](https://www.kaiheila.cn/)       | simbot team |   <https://github.com/simple-robot/simbot-component-kaiheila>    | **开发中** |
 
 腾讯频道组件：
 
