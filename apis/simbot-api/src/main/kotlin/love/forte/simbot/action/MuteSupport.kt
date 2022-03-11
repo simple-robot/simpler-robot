@@ -89,7 +89,9 @@ public interface MuteSupport {
      * @see mute
      */
     @Api4J
-    public fun muteBlocking(): Boolean = runInBlocking { mute() }
+    public fun muteBlocking(): Boolean = runInBlocking {
+        mute()
+    }
 
     /**
      * @see unmute
