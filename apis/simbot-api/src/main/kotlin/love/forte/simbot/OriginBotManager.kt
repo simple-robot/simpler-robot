@@ -18,13 +18,12 @@
 package love.forte.simbot
 
 import love.forte.simbot.OriginBotManager.cancel
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.*
 import java.util.*
-import java.util.concurrent.locks.ReentrantReadWriteLock
-import java.util.stream.Stream
-import kotlin.concurrent.read
-import kotlin.concurrent.write
-import kotlin.streams.asStream
+import java.util.concurrent.locks.*
+import java.util.stream.*
+import kotlin.concurrent.*
+import kotlin.streams.*
 
 
 /**
@@ -70,14 +69,14 @@ public object OriginBotManager : Set<BotManager<*>> {
                             err = SimbotIllegalStateException("BotManager shutdown failed.")
                             err!!.addSuppressed(
                                 SimbotIllegalStateException(
-                                    "Manager $manager of component ${manager.component.name}",
+                                    "Manager $manager of component ${manager.component.id}",
                                     e
                                 )
                             )
                         } else {
                             err0.addSuppressed(
                                 SimbotIllegalStateException(
-                                    "Manager $manager of component ${manager.component.name}",
+                                    "Manager $manager of component ${manager.component.id}",
                                     e
                                 )
                             )

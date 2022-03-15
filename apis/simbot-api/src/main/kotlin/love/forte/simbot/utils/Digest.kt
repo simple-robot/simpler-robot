@@ -17,32 +17,41 @@
 
 package love.forte.simbot.utils
 
-import java.security.MessageDigest
+
+/**
+ * @see java.security.MessageDigest
+ */
+public typealias Digest = java.security.MessageDigest
 
 
-
-public typealias Digest = MessageDigest
-
-
-
+/**
+ * 根据一个算法名称得到一个对应的信息摘要算法.
+ *
+ * @throws java.security.NoSuchAlgorithmException – if no Provider supports a MessageDigestSpi implementation for the specified algorithm.
+ *
+ * @see java.security.MessageDigest.getInstance
+ */
 public fun digest(algorithm: String): Digest = Digest.getInstance(algorithm)
 
-
+/**
+ * 根据一个算法名称得到一个对应的信息摘要算法, 并在 [block] 中使用它, 然后得到摘要结果。
+ *
+ * @throws java.security.NoSuchAlgorithmException – if no Provider supports a MessageDigestSpi implementation for the specified algorithm.
+ *
+ * @see digest
+ */
 public inline fun digest(algorithm: String, block: Digest.() -> Unit): ByteArray =
     digest(algorithm).also(block).digest()
 
 
+/**
+ * 尝试获取 `md5` 摘要算法，并使用它得到摘要结果。
+ */
 public inline fun md5(block: Digest.() -> Unit): ByteArray = digest("md5", block)
 
-
-
-
-
-
-
-
-
-
+/**
+ * 将一个 [ByteArray] 转为16进制的字符串。
+ */
 public fun ByteArray.toHex(): String {
     return buildString {
         this@toHex.forEach { b ->

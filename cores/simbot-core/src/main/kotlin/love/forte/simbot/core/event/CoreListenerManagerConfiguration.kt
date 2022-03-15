@@ -12,21 +12,18 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.core.event
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.runInterruptible
+import kotlinx.coroutines.*
 import love.forte.simbot.*
-import love.forte.simbot.event.EventListenerInterceptor
-import love.forte.simbot.event.EventProcessingInterceptor
-import love.forte.simbot.event.EventProcessingResult
-import love.forte.simbot.event.EventResult
+import love.forte.simbot.event.*
+import love.forte.simbot.event.EventListener
+import love.forte.simbot.utils.*
+import java.util.*
 import java.util.function.Function
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.*
 
 
 @DslMarker
@@ -34,12 +31,57 @@ internal annotation class CoreEventManagerConfigDSL
 
 /**
  * [CoreListenerManager] 的配置文件.
- *
  * 当配置文件作为构建参数的时候，他会被立即使用。
  *
+ * ### 拦截器
+ * 通过 [interceptors] [addListenerInterceptors] [addListenerInterceptors] 等相关函数来向配置中追加对应作用域的拦截器。
+ * ```kotlin
+ * coreListenerManager {
+ *
+ * }
+ * ```
+ * ### 监听函数
+ *
+ *
+ * @see CoreListenerManager.newInstance
+ * @see coreListenerManager
  */
 @CoreEventManagerConfigDSL
-public class CoreListenerManagerConfiguration {
+public class CoreListenerManagerConfiguration : EventListenerManagerConfiguration {
+    private val componentConfigurations = mutableMapOf<Attribute<*>, Any.() -> Unit>()
+    private val componentRegistrars = mutableMapOf<Attribute<*>, () -> Component>()
+
+    @CoreEventManagerConfigDSL
+    override fun <C : Component, Config : Any> install(registrar: ComponentRegistrar<C, Config>, config: Config.() -> Unit) {
+        val key = registrar.key
+        val oldConfig = componentConfigurations[key]
+
+        componentConfigurations[key] = {
+            // 追加配置
+            oldConfig?.invoke(this)
+            @Suppress("UNCHECKED_CAST")
+            (this as Config).config()
+        }
+
+        if (key in componentRegistrars) return
+
+        componentRegistrars[key] = {
+            val configuration = componentConfigurations[key]!!
+            registrar.register(configuration)
+        }
+    }
+
+    /**
+     * 尝试加载所有的 [ComponentRegistrarFactory] 并注册它们。统一使用默认配置进行注册。
+     */
+    @ExperimentalSimbotApi
+    @CoreEventManagerConfigDSL
+    override fun installAll() {
+        val factories = ServiceLoader.load(ComponentRegistrarFactory::class.java, this.currentClassLoader)
+        factories.forEach {
+            install(it.registrar)
+        }
+    }
 
     /**
      * 事件管理器的上下文. 可以基于此提供调度器。
@@ -48,14 +90,14 @@ public class CoreListenerManagerConfiguration {
     @CoreEventManagerConfigDSL
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext
 
-    @Volatile
-    @JvmSynthetic
-    internal var processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
 
-    @Volatile
-    @JvmSynthetic
-    internal var listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
+    private var processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
 
+
+    private var listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
+
+    // 初始监听函数
+    private var listeners = mutableListOf<EventListener>()
 
     /**
      * 自定义的监听函数异常处理器。
@@ -63,21 +105,44 @@ public class CoreListenerManagerConfiguration {
      */
     @Volatile
     @JvmSynthetic
-    internal var listenerExceptionHandler: ((Throwable) -> EventResult)? = null
+    public var listenerExceptionHandler: ((Throwable) -> EventResult)? = null
 
 
     @JvmSynthetic
     @CoreEventManagerConfigDSL
-    public fun listenerExceptionHandler(handler: (Throwable) -> EventResult) {
+    public fun listenerExceptionHandler(handler: (Throwable) -> EventResult): CoreListenerManagerConfiguration = also {
         listenerExceptionHandler = handler
     }
 
     @Api4J
     @CoreEventManagerConfigDSL
-    public fun listenerExceptionHandler(handler: Function<Throwable, EventResult>) {
-        listenerExceptionHandler = handler::apply
-    }
+    public fun listenerExceptionHandler(handler: Function<Throwable, EventResult>): CoreListenerManagerConfiguration =
+        also {
+            listenerExceptionHandler = handler::apply
+        }
 
+    //region 拦截器相关
+    /**
+     * 添加一个流程拦截器，ID需要唯一。
+     * 如果出现重复ID，会抛出 [IllegalStateException] 并且不会真正的向当前配置中追加数据。
+     *
+     * @throws IllegalStateException 如果出现重复ID
+     */
+    @Synchronized
+    @CoreEventManagerConfigDSL
+    public fun addProcessingInterceptors(interceptors: Map<ID, EventProcessingInterceptor>): CoreListenerManagerConfiguration =
+        also {
+            if (interceptors.isEmpty()) return this
+
+            val processingInterceptorsCopy = processingInterceptors.toMutableMap()
+
+            for ((id, interceptor) in interceptors) {
+                processingInterceptorsCopy.merge(id, interceptor) { _, _ ->
+                    throw IllegalStateException("Duplicate ID: $id")
+                }
+            }
+            processingInterceptors = mutableIDMapOf(processingInterceptorsCopy)
+        }
 
     /**
      * 添加一个流程拦截器，ID需要唯一。
@@ -87,43 +152,117 @@ public class CoreListenerManagerConfiguration {
      */
     @Synchronized
     @CoreEventManagerConfigDSL
-    public fun addProcessingInterceptors(interceptors: Map<ID, EventProcessingInterceptor>) {
-        val processingInterceptorsCopy = processingInterceptors.toMutableMap()
+    public fun addListenerInterceptors(interceptors: Map<ID, EventListenerInterceptor>): CoreListenerManagerConfiguration =
+        also {
+            if (interceptors.isEmpty()) return this
 
-        for ((id, interceptor) in interceptors) {
-            processingInterceptorsCopy.merge(id, interceptor) { _, _ ->
-                throw IllegalStateException("Duplicate ID: $id")
+            val listenerInterceptorsCopy = listenerInterceptors.toMutableMap()
+
+            for ((id, interceptor) in interceptors) {
+                listenerInterceptorsCopy.merge(id, interceptor) { _, _ ->
+                    throw IllegalStateException("Duplicate ID: $id")
+                }
             }
+
+            listenerInterceptors = mutableIDMapOf(listenerInterceptorsCopy)
         }
-        processingInterceptors = mutableIDMapOf(processingInterceptorsCopy)
+
+    /**
+     * 进入到拦截器配置域。
+     * ```kotlin
+     * interceptors {
+     *    processingIntercept { ... }
+     *    listenerIntercept { ... }
+     * }
+     * ```
+     */
+    @CoreEventManagerConfigDSL
+    public fun interceptors(block: EventInterceptorsGenerator.() -> Unit): CoreListenerManagerConfiguration =
+        interceptors().also(block).end()
+
+    /**
+     * 进入到拦截器配置域。
+     *
+     * *此函数更适合在Java中进行链式调用*。
+     * ```java
+     * configuration
+     *         .interceptors() // enter to interceptors generator
+     *         .listenerIntercept(context -> {
+     *             // do something
+     *             return context.proceedBlocking();
+     *         })
+     *         .processingIntercept(context -> {
+     *             // do something
+     *             return context.proceedBlocking();
+     *         })
+     *         .end() // back to config
+     *         .addListener(...);
+     *
+     * ```
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
+    public fun interceptors(): EventInterceptorsGenerator = EventInterceptorsGenerator { ps, ls ->
+        addProcessingInterceptors(ps)
+        addListenerInterceptors(ls)
+        this
+    }
+
+    //endregion
+
+
+    //region 监听函数相关
+
+    /**
+     * 直接添加一个监听函数。
+     * ```kotlin
+     * addListener(coreListener(FriendMessageEvent) { context, event ->
+     *     delay(200)
+     *     event.friend().send("Hi! context: $context")
+     * })
+     * ```
+     */
+    public fun addListener(listener: EventListener): CoreListenerManagerConfiguration = also {
+        listeners.add(listener)
     }
 
     /**
-     * 添加一个流程拦截器，ID需要唯一。
-     * 如果出现重复ID，会抛出 [IllegalStateException] 并且不会真正的向当前配置中追加数据。
-     *
-     * @throws IllegalStateException 如果出现重复ID
+     * 添加多个监听函数。
      */
-    @Synchronized
-    @CoreEventManagerConfigDSL
-    public fun addListenerInterceptors(interceptors: Map<ID, EventListenerInterceptor>) {
-        val listenerInterceptorsCopy = listenerInterceptors.toMutableMap()
-
-        for ((id, interceptor) in interceptors) {
-            listenerInterceptorsCopy.merge(id, interceptor) { _, _ ->
-                throw IllegalStateException("Duplicate ID: $id")
-            }
-        }
-
-        listenerInterceptors = mutableIDMapOf(listenerInterceptorsCopy)
+    public fun addListeners(listeners: Collection<EventListener>): CoreListenerManagerConfiguration = also {
+        this.listeners.addAll(listeners)
     }
 
-    @CoreEventManagerConfigDSL
-    public fun interceptors(block: EventInterceptorsGenerator.() -> Unit) {
-        val generated = EventInterceptorsGenerator().also(block)
-        addListenerInterceptors(generated.listenerInterceptors)
-        addProcessingInterceptors(generated.processingInterceptors)
+    /**
+     * 添加多个监听函数。
+     */
+    public fun addListeners(vararg listeners: EventListener): CoreListenerManagerConfiguration = also {
+        this.listeners.addAll(listeners)
     }
+
+    /**
+     * 进入到拦截器配置域.
+     *
+     *  @see EventListenersGenerator
+     */
+    @EventListenersGeneratorDSL
+    public fun listeners(block: EventListenersGenerator.() -> Unit): CoreListenerManagerConfiguration =
+        listeners().also(block).end()
+
+
+    /**
+     * 进入到监听函数配置域。
+     *
+     * *此函数更适合在Java中进行链式调用*。
+     *
+     *
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
+    public fun listeners(): EventListenersGenerator = EventListenersGenerator {
+        this.listeners.addAll(it)
+        this
+    }
+
+    //endregion
 
 
     /**
@@ -133,144 +272,44 @@ public class CoreListenerManagerConfiguration {
     // @CoreEventManagerConfigDSL
     public var eventProcessingContextResolver: (manager: CoreListenerManager, scope: CoroutineScope) -> EventProcessingContextResolver<*> =
         { _, scope -> CoreEventProcessingContextResolver(scope) }
-        internal set
+        private set
 
 
+    internal fun build(): ConfigResult {
+        // install components
+        val components = componentRegistrars.values.associate {
+            val comp = it()
+            comp.id.literal to comp
+        }
+
+        return ConfigResult(
+            coroutineContext,
+            components = components,
+            exceptionHandler = listenerExceptionHandler,
+            processingInterceptors = idMapOf(processingInterceptors),
+            listenerInterceptors = idMapOf(listenerInterceptors),
+            listeners = listeners.toList()
+        )
+    }
 }
 
-@DslMarker
-internal annotation class EventInterceptorsGeneratorDSL
 
-@EventInterceptorsGeneratorDSL
-public class EventInterceptorsGenerator {
-    @Volatile
-    private var _processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
+internal data class ConfigResult(
+    internal val coroutineContext: CoroutineContext,
+    internal val components: Map<String, Component>,
+    internal val exceptionHandler: ((Throwable) -> EventResult)? = null,
+    internal val processingInterceptors: IDMaps<EventProcessingInterceptor>,
+    internal val listenerInterceptors: IDMaps<EventListenerInterceptor>,
+    internal val listeners: List<EventListener>
 
-    public val processingInterceptors: Map<ID, EventProcessingInterceptor>
-        get() = _processingInterceptors
+)
 
-    @Volatile
-    private var _listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
-
-    public val listenerInterceptors: Map<ID, EventListenerInterceptor>
-        get() = _listenerInterceptors
+/*
+ internal var processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
 
 
-    @Synchronized
-    private fun addLis(id: ID, interceptor: EventListenerInterceptor) {
-        _listenerInterceptors.merge(id, interceptor) { _, _ ->
-            throw IllegalStateException("Duplicate ID: $id")
-        }
-    }
+    internal var listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
 
-    private fun addPro(id: ID, interceptor: EventProcessingInterceptor) {
-        _processingInterceptors.merge(id, interceptor) { _, _ ->
-            throw IllegalStateException("Duplicate ID: $id")
-        }
-    }
-
-    /**
-     * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
-     * 得到一个流程拦截器 [EventProcessingInterceptor].
-     */
-    @JvmSynthetic
-    @EventInterceptorsGeneratorDSL
-    public fun processingIntercept(
-        id: ID = randomID(),
-        priority: Int = PriorityConstant.NORMAL,
-        interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
-    ): EventProcessingInterceptor = coreProcessingInterceptor(priority, interceptFunction).also {
-        addPro(id, it)
-    }
-
-    @JvmSynthetic
-    @EventInterceptorsGeneratorDSL
-    public fun processingIntercept(
-        id: String,
-        priority: Int = PriorityConstant.NORMAL,
-        interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
-    ): EventProcessingInterceptor = processingIntercept(id.ID, priority, interceptFunction)
-
-    @JvmOverloads
-    @Api4J
-    public fun processingIntercept(
-        id: String,
-        priority: Int = PriorityConstant.NORMAL,
-        interceptFunction: Function<EventProcessingInterceptor.Context, EventProcessingResult>
-    ): EventProcessingInterceptor = processingIntercept(id.ID, priority) {
-        runInterruptible { interceptFunction.apply(it) }
-    }
-
-    @JvmOverloads
-    @Api4J
-    public fun processingIntercept(
-        id: ID = randomID(),
-        priority: Int = PriorityConstant.NORMAL,
-        interceptFunction: Function<EventProcessingInterceptor.Context, EventProcessingResult>
-    ): EventProcessingInterceptor = processingIntercept(id, priority) {
-        runInterruptible { interceptFunction.apply(it) }
-    }
-
-
-    /**
-     * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
-     * 得到一个流程拦截器 [EventListenerInterceptor].
-     */
-    @JvmSynthetic
-    @EventInterceptorsGeneratorDSL
-    public fun listenerIntercept(
-        id: ID = randomID(),
-        priority: Int = PriorityConstant.NORMAL,
-        interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
-    ): EventListenerInterceptor =
-        coreListenerInterceptor(priority, interceptFunction).also {
-            addLis(id, it)
-        }
-
-    /**
-     * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
-     * 得到一个流程拦截器 [EventListenerInterceptor].
-     */
-    @JvmSynthetic
-    @EventInterceptorsGeneratorDSL
-    public fun listenerIntercept(
-        id: String,
-        priority: Int = PriorityConstant.NORMAL,
-        interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
-    ): EventListenerInterceptor =
-        listenerIntercept(id.ID, priority, interceptFunction)
-
-
-
-    /**
-     * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
-     * 得到一个流程拦截器 [EventListenerInterceptor].
-     */
-    @JvmOverloads
-    @Api4J
-    public fun listenerIntercept(
-        id: ID = randomID(),
-        priority: Int = PriorityConstant.NORMAL,
-        interceptFunction: Function<EventListenerInterceptor.Context, EventResult>
-    ): EventListenerInterceptor =
-        listenerIntercept(id, priority) {
-            runInterruptible { interceptFunction.apply(it) }
-        }
-
-    /**
-     * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
-     * 得到一个流程拦截器 [EventListenerInterceptor].
-     */
-    @JvmOverloads
-    @Api4J
-    public fun listenerIntercept(
-        id: String,
-        priority: Int = PriorityConstant.NORMAL,
-        interceptFunction: Function<EventListenerInterceptor.Context, EventResult>
-    ): EventListenerInterceptor =
-        listenerIntercept(id, priority) {
-            runInterruptible { interceptFunction.apply(it) }
-        }
-
-
-}
+    // 初始监听函数
+    internal var listeners = mutableListOf<EventListener>()
+ */

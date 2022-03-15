@@ -17,8 +17,7 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.ExperimentalSimbotApi
-import love.forte.simbot.ID
+import love.forte.simbot.*
 
 
 /**
@@ -52,8 +51,18 @@ public interface EventListenerRegistrar {
      *
      * 这时候无法保证在时间点A之后的这个事件能够触发此监听函数。
      *
+     * ## 脆弱的
+     * [register] 被标记为 [脆弱的API][FragileSimbotApi], 因为 [EventListenerRegistrar] 的行为是在 [EventListenerManager] 构建完成后的运行时期动态添加**额外的**监听函数。
+     *
+     * 在 [EventListenerManager] 中（以核心实现 [love.forte.simbot.core.event.CoreListenerManager]为例），会针对所有监听函数并根据他们所监听的事件类型进行解析与缓存，以改善提升每次事件触发时的响应速度。
+     * 也因由此，对监听函数的解析与缓存所代来的问题就是会在运行时额外添加的时候带来更大的性能损耗和更长的不一致延迟 —— 它会在收到注册请求后，清除所有的内部缓存并等待下一次的缓存构建。而这个行为会仅仅因为一次监听函数的注册而波及到**所有**的监听函数。
+     *
+     * 相关的动态追加*也许*未来会进行更多的优化，也有可能会将其废弃，但是当下节点，请尽量避免。
+     *
+     *
      * @throws IllegalStateException 如果出现ID重复
      */
+    @FragileSimbotApi
     public fun register(listener: EventListener)
 
 }
@@ -99,3 +108,33 @@ public interface EventListenerManager :
 
 }
 
+
+/**
+ * 用于配置 [EventListenerManager] 的基础抽象类，其定义了针对组件的注册api。
+ */
+public interface EventListenerManagerConfiguration {
+
+    /**
+     * 注册一个组件信息到当前事件管理器中。
+     *
+     * @param registrar 组件注册器。
+     * @param config 配置函数
+     */
+    public fun <C : Component, Config : Any> install(
+        registrar: ComponentRegistrar<C, Config>,
+        config: Config.() -> Unit = {}
+    )
+
+
+    /**
+     * 尝试注册所有可寻的组件到当前配置中。
+     *
+     * 此函数需要对应的组件注册器支持 `Java SPI` 加载。
+     *
+     * @see ComponentRegistrar
+     */
+    @ExperimentalSimbotApi
+    public fun installAll()
+
+
+}

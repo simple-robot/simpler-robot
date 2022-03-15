@@ -17,12 +17,12 @@
 
 package love.forte.simbot.definition
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.*
 import love.forte.simbot.*
-import love.forte.simbot.action.MuteSupport
-import love.forte.simbot.utils.runInBlocking
-import java.util.stream.Stream
-import kotlin.time.Duration
+import love.forte.simbot.action.*
+import love.forte.simbot.utils.*
+import java.util.stream.*
+import kotlin.time.*
 
 
 /**
@@ -98,7 +98,7 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
     public suspend fun owner(): Member
 
     /**
-     * 对整个群进行禁言。
+     * 对整个组织进行禁言。
      *
      */
     @JvmSynthetic

@@ -17,48 +17,26 @@
 
 package love.forte.simboot.core
 
-import kotlinx.coroutines.CompletionHandler
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import love.forte.annotationtool.core.KAnnotationTool
-import love.forte.di.BeanContainer
-import love.forte.di.all
-import love.forte.di.allInstance
+import kotlinx.coroutines.*
+import love.forte.annotationtool.core.*
+import love.forte.di.*
 import love.forte.simboot.*
 import love.forte.simboot.annotation.*
-import love.forte.simboot.core.filter.KeywordBinderFactory
-import love.forte.simboot.core.internal.CoreBootEntranceContextImpl
-import love.forte.simboot.core.internal.ResourcesScanner
-import love.forte.simboot.core.internal.visitJarEntry
-import love.forte.simboot.core.internal.visitPath
-import love.forte.simboot.core.listener.AutoInjectBinderFactory
-import love.forte.simboot.core.listener.EventParameterBinderFactory
-import love.forte.simboot.core.listener.InstanceInjectBinderFactory
-import love.forte.simboot.core.listener.toBinderFactory
-import love.forte.simboot.factory.BeanContainerFactory
-import love.forte.simboot.factory.BotRegistrarFactory
-import love.forte.simboot.factory.ConfigurationFactory
+import love.forte.simboot.core.filter.*
+import love.forte.simboot.core.internal.*
+import love.forte.simboot.core.listener.*
+import love.forte.simboot.factory.*
 import love.forte.simboot.listener.*
 import love.forte.simbot.*
-import love.forte.simbot.event.EventListener
-import love.forte.simbot.event.EventListenerManager
-import love.forte.simbot.event.EventListenerRegistrar
-import love.forte.simbot.utils.asCycleIterator
-import love.forte.simbot.utils.runInBlocking
-import org.slf4j.Logger
-import kotlin.concurrent.thread
-import kotlin.coroutines.CoroutineContext
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
-import kotlin.reflect.KVisibility
-import kotlin.reflect.full.instanceParameter
-import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.memberExtensionFunctions
-import kotlin.reflect.full.memberFunctions
-import kotlin.reflect.jvm.kotlinFunction
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTimedValue
+import love.forte.simbot.event.*
+import love.forte.simbot.utils.*
+import org.slf4j.*
+import kotlin.concurrent.*
+import kotlin.coroutines.*
+import kotlin.reflect.*
+import kotlin.reflect.full.*
+import kotlin.reflect.jvm.*
+import kotlin.time.*
 
 
 public interface CoreBootEntranceContext {
@@ -135,6 +113,7 @@ public class CoreBootEntrance : SimbootEntrance {
     }
 
 
+    @OptIn(FragileSimbotApi::class)
     private fun run0(context: SimbootEntranceContext): SimbootContext {
         val bootContext: CoreBootEntranceContext = context.toCoreBootEntranceContext()
         val logger = bootContext.logger
@@ -215,7 +194,7 @@ public class CoreBootEntrance : SimbootEntrance {
         listeners.forEach(listenerManager::register)
 
         logger.info("Resolving all bot info.")
-        val botInfoList = bootContext.getAllBotInfos(configuration, beanContainer)
+        val botInfoList: List<BotVerifyInfo> = bootContext.getAllBotInfos(configuration, beanContainer)
         logger.info("Size of all bot info: {}", botInfoList.size)
         if (logger.isDebugEnabled) {
             botInfoList.forEach { b ->
@@ -230,7 +209,7 @@ public class CoreBootEntrance : SimbootEntrance {
                 try {
                     botRegistrar.register(b).also {
                         logger.debug(
-                            "Bot [{}] registered by registrar of component {}", b.infoName, botRegistrar.component.name
+                            "Bot [{}] registered by registrar of component {}", b.infoName, botRegistrar.component.id
                         )
                     }
                 } catch (mismatch: ComponentMismatchException) {
@@ -254,13 +233,17 @@ public class CoreBootEntrance : SimbootEntrance {
 
         }
         logger.info("All bots register finished. Size of all bots: {}", allBots.size)
-        logger.info("Starting all bots")
-        allBots.forEach { b ->
-            logger.debug("Starting bot {} of component {}", b.id, b.component)
-            runInBlocking { b.start() }
-            logger.debug("Bot {} of component {} started. username: {}", b.id, b.component, b.username)
+        if (allBots.isNotEmpty()) {
+            logger.info("Starting all bots")
+            allBots.forEach { b ->
+                logger.info("Starting bot {} of component {}", b.id, b.component)
+                runInBlocking { b.start() }
+                logger.debug("Bot {} of component {} started. username: {}", b.id, b.component, b.username)
+            }
+            logger.info("All bots start finished.")
+        } else {
+            logger.warn("Registered bots are empty, nothing to start.")
         }
-        logger.info("All bots start finished.")
 
 
         val job = Job() // alive for join.
@@ -348,7 +331,7 @@ private class BalancedBotRegistrar(
         }
 
         registrars.forEachIndexed { i, it ->
-            Simbot.require(component like it.component) { "Component of registrar $it index $i != target component $component" }
+            Simbot.require(component == it.component) { "Component of registrar $it index $i != target component $component" }
         }
     }
 

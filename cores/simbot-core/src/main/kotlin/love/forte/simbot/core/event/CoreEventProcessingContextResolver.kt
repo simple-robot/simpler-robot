@@ -37,7 +37,7 @@ internal class CoreEventProcessingContextResolver(
     private val resumedListenerManager = ResumedListenerManager()
 
     @ExperimentalSimbotApi
-    override val globalContext = GlobalScopeContext()
+    override val globalContext = GlobalScopeContextImpl()
 
     @ExperimentalSimbotApi
     override val continuousSessionContext = CoreContinuousSessionContext(coroutineScope, resumedListenerManager)
@@ -51,8 +51,8 @@ internal class CoreEventProcessingContextResolver(
         EventProcessingContext.Scope.ContinuousSession to continuousSessionContext
     )
 
-    internal class GlobalScopeContext : ScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
-    private class InstantScopeContext : ScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
+    internal class GlobalScopeContextImpl : GlobalScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
+    internal class InstantScopeContextImpl : InstantScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
 
     /**
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
@@ -62,7 +62,7 @@ internal class CoreEventProcessingContextResolver(
         val context = CoreEventProcessingContext(
             event, AttributeMutableMap(ConcurrentHashMap(
                 constMaps,
-            ).apply { put(EventProcessingContext.Scope.Instant, InstantScopeContext()) })
+            ).apply { put(EventProcessingContext.Scope.Instant, InstantScopeContextImpl()) })
         ) {
             ArrayList(
                 listenerSize
@@ -196,7 +196,7 @@ internal class CoreEventProcessingContextResolver(
             if (result !is SimpleEventResult) return result
             val content = result.content ?: return result
 
-            if (content is Flow<*>) {
+            if (content is kotlinx.coroutines.flow.Flow<*>) {
                 return result.copy(newContent = content.toList())
             }
 

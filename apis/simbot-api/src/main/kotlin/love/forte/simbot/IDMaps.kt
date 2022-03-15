@@ -17,10 +17,8 @@
 
 package love.forte.simbot
 
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentMap
-import java.util.function.BiConsumer
-import java.util.function.BiFunction
+import java.util.concurrent.*
+import java.util.function.*
 import java.util.function.Function
 
 
@@ -49,7 +47,7 @@ public fun <V> idMapOf(vararg pairs: Pair<ID, V>): IDMaps<V> =
     when {
         pairs.isEmpty() -> emptyIDMap()
         pairs.size == 1 -> SignalPairIDMap(pairs[0].first, pairs[0].second)
-        else -> CharSequenceIDMap(mutableMapOf(*pairs))
+        else -> CharSequenceIDMap(pairs.toMap(mutableMapOf()))
     }
 
 public fun <V> idMapOf(map: Map<ID, V>): IDMaps<V> =
@@ -62,7 +60,7 @@ public fun <V> idMapOf(map: Map<ID, V>): IDMaps<V> =
 
 public fun <V> mutableIDMapOf(): MutableIDMaps<V> = CharSequenceIDMap(mutableMapOf())
 
-public fun <V> mutableIDMapOf(vararg pairs: Pair<ID, V>): MutableIDMaps<V> = CharSequenceIDMap(mutableMapOf(*pairs))
+public fun <V> mutableIDMapOf(vararg pairs: Pair<ID, V>): MutableIDMaps<V> = CharSequenceIDMap(pairs.toMap(mutableMapOf()))
 
 public fun <V> mutableIDMapOf(map: Map<ID, V>): MutableIDMaps<V> = CharSequenceIDMap(map.toMutableMap())
 

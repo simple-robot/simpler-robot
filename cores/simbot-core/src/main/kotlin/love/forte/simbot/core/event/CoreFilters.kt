@@ -18,7 +18,7 @@
 
 package love.forte.simbot.core.event
 
-import love.forte.simbot.Api4J
+import love.forte.simbot.*
 import love.forte.simbot.event.EventFilter
 import love.forte.simbot.event.EventListenerProcessingContext
 import love.forte.simbot.utils.runWithInterruptible
@@ -28,8 +28,8 @@ import java.util.function.Predicate
  * 构建一个 [EventFilter].
  */
 @JvmSynthetic
-public fun coreFilter(tester: suspend (context: EventListenerProcessingContext) -> Boolean): EventFilter =
-    CoreFilter(tester)
+public fun coreFilter(priority: Int = PriorityConstant.NORMAL, tester: suspend (context: EventListenerProcessingContext) -> Boolean): EventFilter =
+    CoreFilter(priority, tester)
 
 
 /**
@@ -41,13 +41,15 @@ public fun coreFilter(tester: suspend (context: EventListenerProcessingContext) 
  * @see EventFilter
  */
 @Api4J
-public fun blockingCoreFilter(tester: Predicate<EventListenerProcessingContext>): EventFilter =
-    coreFilter {
+@JvmOverloads
+public fun blockingCoreFilter(priority: Int = PriorityConstant.NORMAL, tester: Predicate<EventListenerProcessingContext>): EventFilter =
+    coreFilter(priority) {
         runWithInterruptible { tester.test(it) }
     }
 
 
 private class CoreFilter(
+    override val priority: Int,
     private val func: suspend (EventListenerProcessingContext) -> Boolean
 ) : EventFilter {
 

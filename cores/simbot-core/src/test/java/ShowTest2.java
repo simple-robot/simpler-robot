@@ -12,25 +12,22 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
+
+import love.forte.simbot.event.GroupMessageEvent;
 
 /**
  * @author ForteScarlet
  */
 public class ShowTest2 {
 
-    // @Filter(value = ".*Hi", matchType = MatchType.Regex, conponent = "simbot.tencentguild")
-    // @Listen(GroupMessageEvent.class)
-    // public void myListenerB2(GroupMessageEvent event) {
-    //     final Messages messages = Messages.getMessages(
-    //             Text.getText("I Love You."),
-    //             new At(event.getAuthor().getId())
-    //     );
-    //
-    //     // send to group
-    //     event.getGroup().sendBlocking(messages);
-    //
-    // }
+    public void myListenerB2(GroupMessageEvent event) {
+        // File imageFile = new File(...);
+        // final Image<?> image = event.getBot().uploadImageBlocking(Resource.of(imageFile));
+
+        // event.getSource().sendBlocking(image);
+
+
+    }
 
 }

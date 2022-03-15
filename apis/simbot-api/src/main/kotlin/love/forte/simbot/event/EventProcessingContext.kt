@@ -18,8 +18,8 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.*
-import org.jetbrains.annotations.UnmodifiableView
-import kotlin.coroutines.CoroutineContext
+import org.jetbrains.annotations.*
+import kotlin.coroutines.*
 
 
 /**
@@ -96,6 +96,17 @@ public interface EventProcessingContext : CoroutineContext.Element, AttributeCon
  * 作用域上下文，提供部分贯穿事件的作用域参数信息。
  */
 public interface ScopeContext : MutableAttributeMap
+
+
+/**
+ * 全局作用域上下文，代表以事件处理器为作用域唯一实例的上下文类型。
+ */
+public interface GlobalScopeContext : ScopeContext
+
+/**
+ * 瞬时作用域上下文，代表为每次事件触发时都会产生一个新的实例的上下文类型。
+ */
+public interface InstantScopeContext : ScopeContext
 
 
 /**

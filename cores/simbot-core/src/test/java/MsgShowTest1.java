@@ -25,7 +25,7 @@ public class MsgShowTest1 {
         final Messages newMessagesOfList = messagesOfList.plus(AtAll.INSTANCE);
 
         // 通过 Messages.getMessages 得到消息链
-        final Messages messages = Messages.getMessages(Text.of("forte"), new At(Identifies.ID(114514)), AtAll.INSTANCE);
+        final Messages messages = Messages.toMessages(Text.of("forte"), new At(Identifies.ID(114514)), AtAll.INSTANCE);
 
 
     }
