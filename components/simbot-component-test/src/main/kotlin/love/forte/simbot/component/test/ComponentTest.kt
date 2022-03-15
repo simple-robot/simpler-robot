@@ -1,7 +1,7 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x、simbot 3.x、simbot3) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -16,57 +16,132 @@
 
 package love.forte.simbot.component.test
 
+import kotlinx.serialization.modules.*
 import love.forte.simbot.*
+import love.forte.simbot.message.*
 
 /**
- * test组件的 [组件][Component] 实例信息。
+ * 测试组件的组件实现。
  */
-public object ComponentTest {
-    /**
-     * test组件唯一标识的字符串常量。
-     */
-    public const val COMPONENT_ID: String = "simbot.test"
+public class TestComponent : Component {
 
     /**
-     * 一个默认的头像图片地址。
+     * 组件ID
      */
-    public const val DEFAULT_AVATAR: String = "https://p.qlogo.cn/gh/782930037/782930037/640"
-
-    private lateinit var realComponent: Component
+    override val id: ID
+        get() = componentID
 
     /**
-     * test 组件的 [组件][Component] 实例。
+     * 组件中的消息序列化信息。
      */
-    @JvmStatic
-    public val component: Component
-        get() {
-            if (::realComponent.isInitialized) {
-                return realComponent
+    override val componentSerializersModule: SerializersModule
+        get() = messageSerializersModule
+
+    /**
+     * [TestComponent] 的组件注册器。
+     *
+     */
+    public companion object Registrar : ComponentRegistrar<TestComponent, TestComponentConfiguration> {
+
+        /**
+         * 此组件的唯一标识常量。
+         */
+        @Suppress("MemberVisibilityCanBePrivate")
+        public const val ID_VALUE: String = "simbot.test"
+
+        /**
+         * 此组件的唯一标识ID。
+         */
+        public val componentID: ID = ID_VALUE.ID
+
+        /**
+         * 一个默认的头像图片地址。
+         */
+        public const val DEFAULT_AVATAR: String = "https://p.qlogo.cn/gh/782930037/782930037/640"
+
+        /**
+         * 组件注册时用的唯一标识。
+         */
+        override val key: Attribute<TestComponent> = attribute(ID_VALUE)
+
+        /**
+         * 注册组件信息。
+         */
+        override fun register(block: TestComponentConfiguration.() -> Unit): TestComponent {
+
+            return TestComponent()
+        }
+
+        /**
+         * 组件中的消息序列化信息。
+         */
+        @JvmStatic
+        public val messageSerializersModule: SerializersModule = SerializersModule {
+            polymorphic(Message.Element::class) {
+                subclass(TestImage::class, TestImage.serializer())
             }
-            return Components[COMPONENT_ID]
         }
 
 
-    internal object TestComponentInformation : ComponentInformation {
-        override val id: ID = COMPONENT_ID.ID
-        override val name: String = "simbot.test"
-
-        override fun configAttributes(attributes: MutableAttributeMap) {
         }
-
-        override fun setComponent(component: Component) {
-            realComponent = component
-        }
-    }
 }
-
 
 /**
- * test组件中的信息注册器。
+ * [TestComponent] 组件注册时用的配置类信息。
  */
-public class TestComponentInformationRegistrar : ComponentInformationRegistrar {
-    override fun informations(): ComponentInformationRegistrar.Result {
-        return ComponentInformationRegistrar.Result.ok(listOf(ComponentTest.TestComponentInformation))
-    }
-}
+public class TestComponentConfiguration {}
+
+
+//
+// /**
+//  * test组件的 [组件][Component] 实例信息。
+//  */
+// public object ComponentTest {
+//     /**
+//      * test组件唯一标识的字符串常量。
+//      */
+//     public const val COMPONENT_ID: String = "simbot.test"
+//
+//     /**
+//      * 一个默认的头像图片地址。
+//      */
+//     public const val DEFAULT_AVATAR: String = "https://p.qlogo.cn/gh/782930037/782930037/640"
+//
+//     private lateinit var realComponent: Component
+//
+//     /**
+//      * test 组件的 [组件][Component] 实例。
+//      */
+//     @JvmStatic
+//     public val component: Component
+//         get() {
+//             if (::realComponent.isInitialized) {
+//                 return realComponent
+//             }
+//             return Components[COMPONENT_ID]
+//         }
+//
+//
+//     internal object TestComponentInformation : ComponentInformation {
+//         override val id: ID = COMPONENT_ID.ID
+//         override val name: String = "simbot.test"
+//
+//         override fun configAttributes(attributes: MutableAttributeMap) {
+//         }
+//
+//         override fun setComponent(component: Component) {
+//             realComponent = component
+//         }
+//     }
+// }
+//
+//
+// /**
+//  * test组件中的信息注册器。
+//  */
+// public class TestComponentInformationRegistrar : ComponentInformationRegistrar {
+//     override fun informations(): ComponentInformationRegistrar.Result {
+//         return ComponentInformationRegistrar.Result.ok(listOf(ComponentTest.TestComponentInformation))
+//     }
+// }
 

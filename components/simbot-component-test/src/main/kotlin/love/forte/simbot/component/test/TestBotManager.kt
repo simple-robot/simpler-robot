@@ -1,7 +1,7 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x、simbot 3.x、simbot3) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -19,7 +19,6 @@ package love.forte.simbot.component.test
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import love.forte.simbot.*
-import love.forte.simbot.component.test.ComponentTest.DEFAULT_AVATAR
 import love.forte.simbot.component.test.internal.*
 import love.forte.simbot.definition.*
 import love.forte.simbot.event.*
@@ -40,6 +39,11 @@ public abstract class TestBotManager : BotManager<TestBot>() {
     public abstract val configuration: TestBotManagerConfiguration
 
     /**
+     * 组件信息。
+     */
+    abstract override val component: TestComponent
+
+    /**
      * 通过 [BotVerifyInfo] 注册bot信息。
      */
     @OptIn(ExperimentalSerializationApi::class)
@@ -49,8 +53,8 @@ public abstract class TestBotManager : BotManager<TestBot>() {
             ignoreUnknownKeys = true
         }
         val info = verifyInfo.inputStream().use { json.decodeFromStream(TestBotVerifyInfo.serializer(), it) }
-        if (info.component != ComponentTest.COMPONENT_ID) {
-            throw ComponentMismatchException("${info.component} is not ${ComponentTest.COMPONENT_ID}")
+        if (info.component != TestComponent.ID_VALUE) {
+            throw ComponentMismatchException("${info.component} is not ${TestComponent.ID_VALUE}")
         }
 
         return register(
@@ -80,12 +84,12 @@ public abstract class TestBotManager : BotManager<TestBot>() {
 }
 
 
-@kotlinx.serialization.Serializable
+@Serializable
 internal data class TestBotVerifyInfo(
     val component: String,
     val id: String,
     val username: String,
-    val avatar: String = "https://p.qlogo.cn/gh/$id/${id}/640",
+    val avatar: String = TestComponent.DEFAULT_AVATAR,
 )
 
 
@@ -302,7 +306,7 @@ public class GeneratorsConfiguration {
                     remark = null,
                     grouping = Grouping.EMPTY,
                     username = "Friend No.$it",
-                    avatar = ComponentTest.DEFAULT_AVATAR,
+                    avatar = TestComponent.DEFAULT_AVATAR,
                     status = defaultUserStatus,
                     configuration = managerConfig,
                 )
@@ -351,7 +355,7 @@ public class GeneratorsConfiguration {
                     // 2022-02-02 22:22:22 and then
                     joinTime = Timestamp.byMillisecond(BASE_JOIN_TIME + it.days.inWholeMilliseconds),
                     username = "GroupMember No.$it",
-                    avatar = DEFAULT_AVATAR,
+                    avatar = TestComponent.DEFAULT_AVATAR,
                     status = defaultUserStatus,
                     fromGroup = group,
                     configuration = managerConfig,

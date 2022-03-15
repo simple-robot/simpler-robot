@@ -1,7 +1,7 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x、simbot 3.x、simbot3) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -16,13 +16,10 @@
 
 package love.forte.simbot.component.test
 
-import love.forte.simbot.Bot
-import love.forte.simbot.Component
-import love.forte.simbot.ID
-import love.forte.simbot.component.test.ComponentTest.DEFAULT_AVATAR
-import love.forte.simbot.component.test.internal.TestBotImpl
-import love.forte.simbot.definition.UserStatus
-import org.slf4j.Logger
+import love.forte.simbot.*
+import love.forte.simbot.component.test.internal.*
+import love.forte.simbot.definition.*
+import org.slf4j.*
 import org.slf4j.LoggerFactory
 
 /**
@@ -30,9 +27,7 @@ import org.slf4j.LoggerFactory
  * @author ForteScarlet
  */
 public interface TestBot : Bot {
-    override val component: Component
-        get() = ComponentTest.component
-
+    override val component: TestComponent
 }
 
 
@@ -42,7 +37,7 @@ public interface TestBot : Bot {
 public class TestBotConfiguration(
     public val id: ID,
     public val username: String,
-    public val avatar: String = DEFAULT_AVATAR,
+    public val avatar: String = TestComponent.DEFAULT_AVATAR,
     public val logger: Logger = LoggerFactory.getLogger("love.forte.simbot.component.test.bot.$id"),
     public val status: UserStatus = TestBotImpl.defaultUserStatus,
 )

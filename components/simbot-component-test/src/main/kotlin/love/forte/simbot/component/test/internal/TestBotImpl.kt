@@ -1,7 +1,7 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x、simbot 3.x、simbot3) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -37,6 +37,7 @@ import kotlin.streams.*
  */
 internal class TestBotImpl(
     override val id: ID,
+    override val component: TestComponent,
     override val username: String,
     override val manager: TestBotManager,
     override val eventProcessor: EventProcessor,
@@ -50,6 +51,8 @@ internal class TestBotImpl(
 
 
     ) : TestBot {
+    override fun isMe(id: ID): Boolean = this.id == id
+
     private val currentJob = SupervisorJob(parentJob)
     override val coroutineContext: CoroutineContext = coroutineContext + currentJob
 
