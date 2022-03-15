@@ -113,6 +113,7 @@ public class CoreBootEntrance : SimbootEntrance {
     }
 
 
+    @OptIn(FragileSimbotApi::class)
     private fun run0(context: SimbootEntranceContext): SimbootContext {
         val bootContext: CoreBootEntranceContext = context.toCoreBootEntranceContext()
         val logger = bootContext.logger
@@ -193,7 +194,7 @@ public class CoreBootEntrance : SimbootEntrance {
         listeners.forEach(listenerManager::register)
 
         logger.info("Resolving all bot info.")
-        val botInfoList = bootContext.getAllBotInfos(configuration, beanContainer)
+        val botInfoList: List<BotVerifyInfo> = bootContext.getAllBotInfos(configuration, beanContainer)
         logger.info("Size of all bot info: {}", botInfoList.size)
         if (logger.isDebugEnabled) {
             botInfoList.forEach { b ->
@@ -232,13 +233,17 @@ public class CoreBootEntrance : SimbootEntrance {
 
         }
         logger.info("All bots register finished. Size of all bots: {}", allBots.size)
-        logger.info("Starting all bots")
-        allBots.forEach { b ->
-            logger.debug("Starting bot {} of component {}", b.id, b.component)
-            runInBlocking { b.start() }
-            logger.debug("Bot {} of component {} started. username: {}", b.id, b.component, b.username)
+        if (allBots.isNotEmpty()) {
+            logger.info("Starting all bots")
+            allBots.forEach { b ->
+                logger.info("Starting bot {} of component {}", b.id, b.component)
+                runInBlocking { b.start() }
+                logger.debug("Bot {} of component {} started. username: {}", b.id, b.component, b.username)
+            }
+            logger.info("All bots start finished.")
+        } else {
+            logger.warn("Registered bots are empty, nothing to start.")
         }
-        logger.info("All bots start finished.")
 
 
         val job = Job() // alive for join.
