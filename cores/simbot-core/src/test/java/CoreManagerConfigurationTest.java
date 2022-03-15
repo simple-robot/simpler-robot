@@ -17,7 +17,11 @@
 import kotlin.Unit;
 import love.forte.simbot.Identifies;
 import love.forte.simbot.PriorityConstant;
+import love.forte.simbot.core.event.CoreListenerManager;
+import love.forte.simbot.core.event.CoreListenerManagerConfiguration;
+import love.forte.simbot.core.event.CoreListenerUtil;
 import love.forte.simbot.core.event.EventInterceptorsGenerator;
+import love.forte.simbot.event.EventListener;
 import love.forte.simbot.event.FriendMessageEvent;
 
 /**
@@ -25,6 +29,24 @@ import love.forte.simbot.event.FriendMessageEvent;
  */
 @SuppressWarnings("Convert2MethodRef")
 public class CoreManagerConfigurationTest {
+
+    public void run2() {
+        final CoreListenerManagerConfiguration configuration = new CoreListenerManagerConfiguration();
+
+        // Java中，使用 `addListener` 是相对比较简便的方式。
+        EventListener listener1 = CoreListenerUtil.newCoreListener(FriendMessageEvent.Key, (context, event) -> {
+            // do..
+            return null;
+        });
+        configuration.addListener(listener1);
+
+
+        CoreListenerManager.newInstance(configuration);
+
+
+    }
+
+
 
     public void run(EventInterceptorsGenerator generator) {
         generator
