@@ -32,21 +32,7 @@ import org.slf4j.*
 import java.net.*
 import java.nio.file.*
 import java.util.*
-import kotlin.collections.Collection
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.Set
-import kotlin.collections.associate
-import kotlin.collections.emptyList
-import kotlin.collections.filterValues
-import kotlin.collections.forEach
-import kotlin.collections.ifEmpty
-import kotlin.collections.isEmpty
-import kotlin.collections.isNotEmpty
-import kotlin.collections.mapNotNull
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
-import kotlin.collections.toSet
 import kotlin.io.path.*
 import kotlin.reflect.*
 
@@ -121,11 +107,14 @@ internal class CoreBootEntranceContextImpl(
     }
 
 
+    @OptIn(ExperimentalSimbotApi::class)
     override fun getListenerManager(beanContainer: BeanContainer): EventListenerManager {
 
         return beanContainer.getOrNull(EventListenerManagerFactory::class)
             ?.getEventListenerManager()
             ?: coreListenerManager {
+                // install all components
+                installAll()
                 // 所有的拦截器
 
                 val allListenerInterceptor: Map<ID, EventListenerInterceptor> =
