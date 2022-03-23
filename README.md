@@ -2,7 +2,7 @@
 <div align="center">
     <img src=".simbot/logo.png" alt="logo" style="width:230px; height:230px; border-radius:50%; " />
     <h2>
-        - simply-robot -
+        - Simply Robot -
     </h2>
     <small>
         ~ simbot v3 ~      
