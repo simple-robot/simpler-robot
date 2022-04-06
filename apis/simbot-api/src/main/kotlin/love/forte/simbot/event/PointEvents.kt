@@ -54,7 +54,7 @@ public interface StartPointEvent<S, V> : ChangedEvent<S, V?, V> {
  * 因此在 [EndPointEvent] 中，[after] 应为null。
  *
  */
-public interface EndPointEvent<S, V> : ChangedEvent<S, V, V?> {
+public interface EndPointEvent<out S, out V> : ChangedEvent<S, V, V?> {
     /**
      * 此次变化的目标。
      */
@@ -93,7 +93,7 @@ public interface IncreaseEvent<S, V> : StartPointEvent<S, V> {
  * 一个 **减少** 事件，代表某种 [事物][target] 被从一个 [源][source] 中移除。
  *
  */
-public interface DecreaseEvent<S, V> : EndPointEvent<S, V> {
+public interface DecreaseEvent<out S, out V> : EndPointEvent<S, V> {
     override suspend fun source(): S
     override suspend fun target(): V
 

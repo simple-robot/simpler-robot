@@ -43,7 +43,7 @@ import love.forte.simbot.utils.runInBlocking
  *
  * @see ChangedEvent
  */
-public interface ChangeEvent<SOURCE, BEFORE, AFTER> : Event {
+public interface ChangeEvent<out SOURCE, out BEFORE, out AFTER> : Event {
     override val id: ID
 
 
@@ -88,7 +88,7 @@ public interface ChangeEvent<SOURCE, BEFORE, AFTER> : Event {
  * @see ChangeEvent
  * @author ForteScarlet
  */
-public interface ChangedEvent<SOURCE, BEFORE, AFTER> : ChangeEvent<SOURCE, BEFORE, AFTER> {
+public interface ChangedEvent<out SOURCE, out BEFORE, out AFTER> : ChangeEvent<SOURCE, BEFORE, AFTER> {
     override suspend fun source(): SOURCE
     override suspend fun before(): BEFORE
     override suspend fun after(): AFTER
