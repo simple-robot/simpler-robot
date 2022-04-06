@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.core
@@ -591,6 +590,7 @@ private class ListenerAnnotationProcessorContextImpl(
 
 
 private class ListListenerRegistrar(private val handler: (EventListener) -> Unit) : EventListenerRegistrar {
+    @OptIn(FragileSimbotApi::class)
     override fun register(listener: EventListener) {
         handler(listener)
     }

@@ -12,38 +12,28 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.core.listener
 
-import love.forte.annotationtool.core.KAnnotationTool
-import love.forte.annotationtool.core.nonConverters
-import love.forte.di.annotation.Beans
-import love.forte.simboot.annotation.Binder
+import love.forte.annotationtool.core.*
+import love.forte.di.annotation.*
+import love.forte.simboot.annotation.*
 import love.forte.simboot.annotation.Filter
-import love.forte.simboot.annotation.Filters
-import love.forte.simboot.annotation.toData
-import love.forte.simboot.core.filter.BootFiltersAnnotationProcessor
-import love.forte.simboot.filter.EventFilterRegistrar
-import love.forte.simboot.filter.FiltersAnnotationProcessor
-import love.forte.simboot.filter.FiltersData
-import love.forte.simboot.filter.filtersAnnotationProcessContext
-import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
+import love.forte.simboot.core.filter.*
+import love.forte.simboot.filter.*
+import love.forte.simboot.interceptor.*
 import love.forte.simboot.listener.*
 import love.forte.simbot.*
-import love.forte.simbot.core.event.plus
+import love.forte.simbot.LoggerFactory
+import love.forte.simbot.core.event.*
 import love.forte.simbot.event.*
-import org.slf4j.Logger
-import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Named
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
-import kotlin.reflect.KParameter
-import kotlin.reflect.KVisibility
+import org.slf4j.*
+import java.util.concurrent.*
+import javax.inject.*
+import kotlin.reflect.*
 import kotlin.reflect.full.*
-import kotlin.reflect.jvm.jvmName
-import kotlin.reflect.jvm.kotlinFunction
+import kotlin.reflect.jvm.*
 import love.forte.simboot.annotation.Interceptor as InterceptorAnnotation
 
 /**
@@ -61,6 +51,7 @@ public class StandardListenerAnnotationProcessor : ListenerAnnotationProcessor {
     private val instanceCache = ConcurrentHashMap<KClass<*>, Any>()
 
 
+    @OptIn(FragileSimbotApi::class)
     override fun process(context: ListenerAnnotationProcessorContext): Boolean {
         val function = context.function
         val from = context.from

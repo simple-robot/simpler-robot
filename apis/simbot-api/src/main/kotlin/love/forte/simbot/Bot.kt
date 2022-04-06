@@ -16,16 +16,20 @@
 
 package love.forte.simbot
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CompletionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.cancel
 import love.forte.simbot.definition.*
-import love.forte.simbot.event.*
-import love.forte.simbot.message.*
-import love.forte.simbot.resources.*
-import love.forte.simbot.utils.*
-import org.slf4j.*
-import java.util.stream.*
-import kotlin.coroutines.*
+import love.forte.simbot.event.EventProcessor
+import love.forte.simbot.message.Image
+import love.forte.simbot.resources.Resource
+import love.forte.simbot.utils.runInBlocking
+import org.slf4j.Logger
+import java.util.stream.Stream
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -84,6 +88,9 @@ public interface Bot : User, CoroutineScope, Survivable, LoggerContainer, Compon
 
 
     //region 批量获取相关api
+    // TODO contacts?
+
+
     // friends
     /**
      * 根据分组和限流信息得到此bot下的好友列表。

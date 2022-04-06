@@ -2,7 +2,7 @@
 <div align="center">
     <img src=".simbot/logo.png" alt="logo" style="width:230px; height:230px; border-radius:50%; " />
     <h2>
-        - simply-robot -
+        - Simply Robot -
     </h2>
     <small>
         ~ simbot v3 ~      
@@ -44,7 +44,7 @@
 
 ## 简介
 
-这是一个通用机器人开发框架，是simple-robot的3.x版本(下文简称`simbot3`)。
+`Simply Robot` 是一个通用机器人开发框架，是 **`Simple Robot`** 的 3.x 版本命名 (下文简称`simbot3`)。
 
 `simbot3` 是一个JVM平台的通用机器人开发框架，基于simbot核心API并对接开发不同平台的机器人应用，你可以使用相同的代码风格来开发不同平台的机器人。
 
