@@ -31,7 +31,7 @@ import love.forte.simbot.utils.runInBlocking
  * @see MemberIncreaseEvent
  * @see MemberDecreaseEvent
  */
-public interface MemberChangedEvent<BEFORE : MemberInfo?, AFTER : MemberInfo?> :
+public interface MemberChangedEvent<out BEFORE : MemberInfo?, out AFTER : MemberInfo?> :
     ChangedEvent<Organization, BEFORE, AFTER>, OrganizationEvent {
 
     /**
