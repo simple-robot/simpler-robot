@@ -27,7 +27,7 @@ import love.forte.simbot.utils.runInBlocking
  * [StartPointEvent] 是一个变化的起始变化，通常情况下其代表在变化后变化体开始存在，
  * 因此在 [StartPointEvent] 中 [before] 通常为 null。
  */
-public interface StartPointEvent<S, V> : ChangedEvent<S, V?, V> {
+public interface StartPointEvent<out S, out V> : ChangedEvent<S, V?, V> {
     /**
      * 此次变化的目标。
      */
@@ -54,18 +54,18 @@ public interface StartPointEvent<S, V> : ChangedEvent<S, V?, V> {
  * 因此在 [EndPointEvent] 中，[after] 应为null。
  *
  */
-public interface EndPointEvent<out S, out V> : ChangedEvent<S, V, V?> {
+public interface EndPointEvent<out S, out T> : ChangedEvent<S, T, T?> {
     /**
      * 此次变化的目标。
      */
-    public suspend fun target(): V
+    public suspend fun target(): T
 
-    override suspend fun before(): V = target()
-    override suspend fun after(): V? = null
+    override suspend fun before(): T = target()
+    override suspend fun after(): T? = null
 
-    override val before: V get() = target
-    override val after: V? get() = null
-    public val target: V get() = runInBlocking { target() }
+    override val before: T get() = target
+    override val after: T? get() = null
+    public val target: T get() = runInBlocking { target() }
 
     public companion object Key : BaseEventKey<EndPointEvent<*, *>>("api.end_point", ChangedEvent) {
         override fun safeCast(value: Any): EndPointEvent<*, *>? = doSafeCast(value)
@@ -79,7 +79,7 @@ public interface EndPointEvent<out S, out V> : ChangedEvent<S, V, V?> {
  *
  *
  */
-public interface IncreaseEvent<S, V> : StartPointEvent<S, V> {
+public interface IncreaseEvent<out S, out V> : StartPointEvent<S, V> {
     override suspend fun source(): S
     override suspend fun target(): V
 
@@ -93,9 +93,9 @@ public interface IncreaseEvent<S, V> : StartPointEvent<S, V> {
  * 一个 **减少** 事件，代表某种 [事物][target] 被从一个 [源][source] 中移除。
  *
  */
-public interface DecreaseEvent<out S, out V> : EndPointEvent<S, V> {
+public interface DecreaseEvent<out S, out T> : EndPointEvent<S, T> {
     override suspend fun source(): S
-    override suspend fun target(): V
+    override suspend fun target(): T
 
     public companion object Key : BaseEventKey<DecreaseEvent<*, *>>("api.decrease", EndPointEvent) {
         override fun safeCast(value: Any): DecreaseEvent<*, *>? = doSafeCast(value)
