@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 
@@ -39,8 +38,8 @@ val isSnapshotOnly = System.getProperty("snapshotOnly") != null
 val isReleaseOnly = System.getProperty("releaseOnly") != null
 
 val isPublishConfigurable = when {
-    isSnapshotOnly -> P.Simbot.SNAPSHOT
-    isReleaseOnly -> !P.Simbot.SNAPSHOT
+    isSnapshotOnly -> P.Simbot.isSnapshot
+    isReleaseOnly -> !P.Simbot.isSnapshot
     else -> true
 }
 
