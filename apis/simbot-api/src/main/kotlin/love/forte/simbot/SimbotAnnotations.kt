@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot
@@ -30,7 +29,7 @@ public annotation class Api4J
  * 标记一个实验性质的相关内容。
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION)
-@RequiresOptIn("实验性的simbotAPI，可能会随时变更", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn("实验性的API，可能会随时变更", level = RequiresOptIn.Level.WARNING)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 public annotation class ExperimentalSimbotApi
@@ -85,7 +84,7 @@ public annotation class DiscreetSimbotApi
  *
  * 被标记的相关内容可能会在未来进行优化、变更或删除。
  */
-@RequiresOptIn(message = "表示十分脆弱的、存在性能瓶颈、限制或有更好替代品的API，应阅读相应的文档并选择更优方案，同时尽量避免使用相关API", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn(message = "十分脆弱的、存在性能瓶颈、限制或有更好替代品的API，应阅读相应的文档并选择更优方案，同时尽量避免使用相关API", level = RequiresOptIn.Level.WARNING)
 @Retention(AnnotationRetention.BINARY)
 @Target(
     AnnotationTarget.CLASS,
@@ -126,3 +125,8 @@ public annotation class FragileSimbotApi
 )
 @MustBeDocumented
 public annotation class NotSuggestedEvent // todo?
+
+
+@RequiresOptIn(message = "You have found a bonus! But you're better off using something normal.", level = RequiresOptIn.Level.WARNING)
+@Retention(AnnotationRetention.BINARY)
+public annotation class Bonus

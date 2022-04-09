@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 @file:JvmName("Identifies")
@@ -122,7 +121,29 @@ public sealed class ID : Comparable<ID>, Cloneable {
     protected open fun doEquals(other: ID): Boolean = false
     abstract override fun hashCode(): Int
 
-    public companion object;
+    @Suppress("FunctionName")
+    public companion object {
+        @Bonus @JvmStatic
+        public fun `$`(value: Int): ID = value.ID
+        @Bonus @JvmStatic
+        public fun `$`(value: Char): ID = value.ID
+        @Bonus @JvmStatic
+        public fun `$`(value: Long): ID = value.ID
+        @Bonus @JvmStatic
+        public fun `$`(value: Double): ID = value.ID
+        @Bonus @JvmStatic
+        public fun `$`(value: Float): ID = value.ID
+        @Bonus @JvmStatic
+        public fun `$`(value: CharSequence): ID = value.ID
+        @Bonus @JvmStatic
+        public fun `$`(value: UUID): ID = value.ID
+        @Bonus @JvmStatic
+        public fun `$`(value: AtomicInteger): ID = value.ID
+        @Bonus @JvmStatic
+        public fun `$`(value: LongAdder): ID = value.ID
+        @Bonus @JvmStatic
+        public fun `$`(value: LongAccumulator): ID = value.ID
+    }
 
     /**
      * 将一个 [ID] 视为一个 [CharSequenceID] 进行序列化。
@@ -459,7 +480,7 @@ public data class FloatID(public val number: Float) : NumericalID<Float>() {
 @Suppress("CanBeParameter")
 @SerialName("ID.N.A")
 @Serializable
-public sealed class ArbitraryNumericalID<N : Number> private constructor() : NumericalID<N>()
+public sealed class ArbitraryNumericalID<N : Number> : NumericalID<N>()
 
 
 /**
