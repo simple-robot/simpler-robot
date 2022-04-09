@@ -101,6 +101,7 @@ import java.util.concurrent.atomic.LongAdder
  * @author ForteScarlet
  */
 @Serializable
+@SerialName("ID")
 public sealed class ID : Comparable<ID>, Cloneable {
     /**
      * [ID] 的 [toString] 结果必须是当前ID所对应的字面值。
@@ -286,7 +287,7 @@ public fun currentTimeMillisID(): LongID = System.currentTimeMillis().ID
  * @see Float.ID
  */
 @Suppress("MemberVisibilityCanBePrivate", "EqualsOrHashCode")
-@SerialName("ID.N")
+@SerialName("ID.Number")
 @Serializable
 public sealed class NumericalID<N : Number> : ID() {
 
@@ -389,7 +390,7 @@ public sealed class NumericalID<N : Number> : ID() {
 
 //region 标准的基础数据ID实现
 /** 使用 [Int] 或 [Char] 字面值的 [NumericalID] 实现。 */
-@SerialName("ID.N.I")
+@SerialName("ID.Int")
 @Serializable(with = IntID.Serializer::class)
 public data class IntID(public val number: Int) : NumericalID<Int>() {
     override val value: Int
@@ -411,7 +412,7 @@ public data class IntID(public val number: Int) : NumericalID<Int>() {
 }
 
 /** 使用 [Long] 字面值的 [NumericalID] 实现。 */
-@SerialName("ID.N.L")
+@SerialName("ID.Long")
 @Serializable(with = LongID.Serializer::class)
 public data class LongID(public val number: Long) : NumericalID<Long>() {
     override val value: Long
@@ -431,7 +432,7 @@ public data class LongID(public val number: Long) : NumericalID<Long>() {
 }
 
 /** 使用 [Double] 字面值的 [NumericalID] 实现。 */
-@SerialName("ID.N.D")
+@SerialName("ID.Double")
 @Serializable(with = DoubleID.Serializer::class)
 public data class DoubleID(public val number: Double) : NumericalID<Double>() {
     override val value: Double
@@ -450,7 +451,7 @@ public data class DoubleID(public val number: Double) : NumericalID<Double>() {
 }
 
 /** 使用 [Float] 字面值的 [NumericalID] 实现。 */
-@SerialName("ID.N.F")
+@SerialName("ID.Float")
 @Serializable(with = FloatID.Serializer::class)
 public data class FloatID(public val number: Float) : NumericalID<Float>() {
     override val value: Float
@@ -479,7 +480,7 @@ public data class FloatID(public val number: Float) : NumericalID<Float>() {
  *
  */
 @Suppress("CanBeParameter")
-@SerialName("ID.N.A")
+@SerialName("ID.ArbitraryNumerical")
 @Serializable
 public sealed class ArbitraryNumericalID<N : Number> : NumericalID<N>()
 
@@ -489,7 +490,7 @@ public sealed class ArbitraryNumericalID<N : Number> : NumericalID<N>()
  *
  * @see BigDecimal.ID
  */
-@SerialName("ID.N.A.BD")
+@SerialName("ID.BigDecimal")
 @Serializable(with = BigDecimalID.Serializer::class)
 public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID<BigDecimal>() {
     override fun clone(): BigDecimalID = BigDecimalID(value)
@@ -533,7 +534,7 @@ public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID
  *
  * @see BigInteger.ID
  */
-@SerialName("ID.N.A.BI")
+@SerialName("ID.BigInteger")
 @Serializable(with = BigIntegerID.Serializer::class)
 public class BigIntegerID(override val value: BigInteger) : ArbitraryNumericalID<BigInteger>() {
     override fun clone(): BigIntegerID = BigIntegerID(value)
@@ -656,7 +657,7 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
  * @see ID.AsCharSequenceIDSerializer
  * @property value 用于代表当前ID值的字符序列。
  */
-@SerialName("ID.CS")
+@SerialName("ID.CharSequence")
 @Serializable(with = CharSequenceID.Serializer::class)
 public data class CharSequenceID(val value: CharSequence) : ID() {
     /**
@@ -688,6 +689,11 @@ public data class CharSequenceID(val value: CharSequence) : ID() {
         public val EMPTY: CharSequenceID = CharSequenceID("")
     }
 }
+
+/**
+ * 绝大多数情况下，你都会将 [CharSequenceID] 当成 `StringID` 来使用，不是么？
+ */
+public typealias StringID = CharSequenceID
 
 /**
  * 所有的ID都拥有转化为字符序列ID的能力。
