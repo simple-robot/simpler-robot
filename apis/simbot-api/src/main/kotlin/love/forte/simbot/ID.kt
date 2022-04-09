@@ -113,12 +113,13 @@ public sealed class ID : Comparable<ID>, Cloneable {
     abstract override fun compareTo(other: ID): Int
 
     final override fun equals(other: Any?): Boolean {
+        if (other === this) return true
         if (other !is ID) return false
         if (doEquals(other)) return true
-        return toString() == other.toString()
+        return literal == other.literal
     }
 
-    protected open fun doEquals(other: ID): Boolean = false
+    protected abstract fun doEquals(other: ID): Boolean
     abstract override fun hashCode(): Int
 
     @Suppress("FunctionName")
@@ -374,8 +375,8 @@ public sealed class NumericalID<N : Number> : ID() {
                 is LongID -> toLong() == other.value
                 is DoubleID -> toDouble() == other.value
                 is FloatID -> toFloat() == other.value
-                is BigIntegerID -> if (this is BigIntegerID) this == other else toString() == other.toString()
-                is BigDecimalID -> if (this is BigDecimalID) this == other else toString() == other.toString()
+                is BigIntegerID -> this is BigIntegerID && (value == other.value)
+                is BigDecimalID -> this is BigDecimalID && (value == other.value)
             }
         }
 
