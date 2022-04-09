@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.test
@@ -24,7 +23,6 @@ import kotlinx.serialization.json.Json
 import love.forte.simbot.DoubleID
 import love.forte.simbot.Grouping
 import love.forte.simbot.ID
-import love.forte.simbot.LongID
 import java.math.BigDecimal
 import java.math.BigInteger
 import kotlin.test.Test
@@ -35,24 +33,22 @@ data class User(
     val age: Int,
 )
 
-@Serializable
-data class User2(val id: LongID, val name: String)
-
 
 /**
  *
  * @author ForteScarlet
  */
+// @Suppress("UNUSED_VARIABLE")
 class IDTest {
 
-    //@Test
+    @Test
     fun test() {
-        val intId = 123.ID
-        val longId = 123456L.ID
-        val doubleId = 123.456.ID
-        val floatId = 123.456F.ID
-        val bdId = BigDecimal("123.456").ID
-        val biId = BigInteger.valueOf(123456).ID
+        assert(123.ID.number == 123)
+        assert(123456L.ID.number == 123456L)
+        assert(123.456.ID.number == 123.456)
+        assert(123.456F.ID.number == 123.456F)
+        assert(BigDecimal("123.456").ID.value == BigDecimal("123.456"))
+        assert(BigInteger.valueOf(123456).ID.value == BigInteger.valueOf(123456))
 
     }
 

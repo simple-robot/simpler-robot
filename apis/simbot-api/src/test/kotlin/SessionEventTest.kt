@@ -12,13 +12,15 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.event.ContinuousSessionContext
 import love.forte.simbot.event.GroupMessageEvent
 
 
+@Suppress("unused", "UNUSED_VARIABLE")
+@OptIn(ExperimentalSimbotApi::class)
 suspend fun GroupMessageEvent.listen(sessionContext: ContinuousSessionContext) {
     val name: String = sessionContext.waitingForOnMessage(sourceEvent = this) { event, context, provider ->
         provider.push("Hi")
