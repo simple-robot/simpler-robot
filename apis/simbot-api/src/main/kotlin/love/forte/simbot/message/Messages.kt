@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 // @file:JvmMultifileClass
@@ -20,13 +19,17 @@
 
 package love.forte.simbot.message
 
-import kotlinx.serialization.*
-import kotlinx.serialization.builtins.*
-import kotlinx.serialization.descriptors.*
-import kotlinx.serialization.encoding.*
-import kotlinx.serialization.json.*
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.PolymorphicSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.*
-import love.forte.simbot.*
+import love.forte.simbot.Api4J
+import love.forte.simbot.Simbot
 import love.forte.simbot.message.Message.Element as MsgElement
 
 
@@ -45,7 +48,7 @@ public interface MessageElementPolymorphicRegistrar {
  *
  * [Messages] 是不可变的，但是 [Messages] 中的元素并不一定。每次进行 [plus] 都应视为得到了一个新的 [Messages] 实例。
  *
- * [Messages] 中可以存在多个不同组件之间的 [MsgElement], 但是除了与 [SimbotComponent] 混用之外，不建议这么做。
+ * [Messages] 中可以存在多个不同组件之间的 [MsgElement], 但是不建议这么做。
  * 大多数情况下，组件对于 [Messages] 的解析很少会顾及到其他组件，而当遇到不支持的组件的时候，大概率会将其忽略或抛出异常。
  *
  * ### 序列化
@@ -240,7 +243,7 @@ public fun emptyMessages(): Messages = EmptyMessages
 public object EmptyMessages : Messages, List<MsgElement<*>> by emptyList() {
     override fun plus(element: Message.Element<*>): Messages = element.toMessages()
     override fun plus(messages: Collection<Message.Element<*>>): Messages = messages.toMessages()
-    override fun toString(): String = "EmptyMessages()"
+    override fun toString(): String = "Messages([])"
 }
 
 
@@ -334,9 +337,9 @@ public operator fun Message.Element<*>.plus(other: SingleOnlyMessage<*>): Messag
 
 
 /**
- * [Messages] 基础实现, 是元素数量不应为空的消息列表。
+ * [Messages] 基础实现, 是元素数量**不应为空**的消息列表。代表为空消息的对象为 [EmptyMessages].
  *
- * [MessageList] 是不可变的，每次变更都会得到一个新的实例。
+ * [MessageList] 是不可变的。
  *
  */
 public sealed class MessageList : Messages, Collection<MsgElement<*>>
@@ -400,6 +403,21 @@ internal class SingleValueMessageList(private val value: MsgElement<*>) : Messag
         override fun nextIndex(): Int = if (next) 1 else 0
         override fun previousIndex(): Int = if (next) 0 else -1
     }
+
+    override fun toString(): String {
+        return "Messages([$value])"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is MessageList) return false
+        if (other.size != 1) return false
+        return value == other.first()
+    }
+
+    override fun hashCode(): Int {
+        return value.hashCode()
+    }
 }
 
 
@@ -434,13 +452,24 @@ internal constructor(private val delegate: List<MsgElement<*>>) : MessageList(),
         return newList.toMessages()
     }
 
-    override fun toString(): String = delegate.toString()
+    override fun toString(): String = "Messages(${delegate.toString()})"
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
-        if (other !is MessageListImpl) return false
+        if (other !is MessageList) return false
 
-        return delegate == other.delegate
+        if (other is MessageListImpl) {
+            return delegate == other.delegate
+        }
+
+        if (other.size != size) return false
+        val otherIter = other.iterator()
+        for (element in this) {
+            if (!otherIter.hasNext()) return false
+            if (otherIter.next() != element) return false
+        }
+
+        return true
     }
 
     override fun hashCode(): Int = delegate.hashCode()
