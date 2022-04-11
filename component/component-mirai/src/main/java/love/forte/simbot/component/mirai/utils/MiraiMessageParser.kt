@@ -738,6 +738,13 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
         // face
         is Face -> CatCodeUtil.nekoTemplate.face(id.toString())
 
+        is Dice -> {
+            CatCodeUtil.getNekoBuilder("dice", false)
+                .key("value").value(value)
+                .key("random").value(true)
+                .build()
+        }
+
         // market face
         is MarketFace -> CatCodeUtil.getNekoBuilder("marketFace", true)
             .key("id").value(id)
@@ -816,12 +823,7 @@ public fun SingleMessage.toNeko(cache: MiraiMessageCache? = null): Neko {
                 .build()
         }
 
-        is Dice -> {
-            CatCodeUtil.getNekoBuilder("dice", false)
-                .key("value").value(value)
-                .key("random").value(true)
-                .build()
-        }
+
 
         // 转发消息
         is ForwardMessage -> {
