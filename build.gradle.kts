@@ -208,6 +208,16 @@ tasks.create("createChangelog") {
                 - [腾讯频道组件](https://github.com/simple-robot/simbot-component-tencent-guild/releases)
                 - [开黑啦组件](https://github.com/simple-robot/simbot-component-kaiheila/releases)
 
+                ## 仓库参考
+                
+                - [simbot-api: v$version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-api/$version)
+                - [simbot-core: v$version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-core/$version)
+                - [simbot-logger: v$version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-logger/$version)
+                - [simboot-api: v$version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-api/$version)
+                - [simboot-core: v$version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core/$version)
+                - [simboot-core-annotation: v$version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-annotation/$version)
+                - [simboot-core-spring-boot-starter: v$version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-spring-boot-starter/$version)
+
                 ## 其他日志
                 
             """.trimIndent()
