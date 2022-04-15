@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 plugins {
@@ -28,9 +27,6 @@ tasks.getByName<Test>("test") {
     useJUnit()
 }
 
-kotlin {
-    this.target
-}
 
 dependencies {
     api(project(":apis:simbot-api"))
