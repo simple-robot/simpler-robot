@@ -190,7 +190,8 @@ if (isPublishConfigurable) {
 tasks.create("createChangelog") {
     group = "build"
     doFirst {
-        val version = "v${rootProject.version}"
+        val realVersion = rootProject.version
+        val version = "v$realVersion"
         println("Generate change log for $version ...")
         // configurations.runtimeClasspath
         val changelogDir = rootProject.file(".changelog").also {
@@ -210,13 +211,13 @@ tasks.create("createChangelog") {
 
                 ## 仓库参考
                 
-                - [simbot-api: v$version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-api/$version)
-                - [simbot-core: v$version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-core/$version)
-                - [simbot-logger: v$version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-logger/$version)
-                - [simboot-api: v$version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-api/$version)
-                - [simboot-core: v$version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core/$version)
-                - [simboot-core-annotation: v$version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-annotation/$version)
-                - [simboot-core-spring-boot-starter: v$version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-spring-boot-starter/$version)
+                - [simbot-api: $version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-api/$realVersion)
+                - [simbot-core: $version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-core/$realVersion)
+                - [simbot-logger: $version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-logger/$realVersion)
+                - [simboot-api: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-api/$realVersion)
+                - [simboot-core: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core/$realVersion)
+                - [simboot-core-annotation: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-annotation/$realVersion)
+                - [simboot-core-spring-boot-starter: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-spring-boot-starter/$realVersion)
 
                 ## 其他日志
                 
