@@ -19,6 +19,8 @@ package love.forte.simboot.autoconfigure
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
+import love.forte.simboot.config.ComponentRegistryConfigure
+import love.forte.simboot.config.InstallAllComponentRegistryConfigure
 import love.forte.simboot.core.configuration.CoreEventListenerManagerContextFactory
 import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
 import love.forte.simbot.ID
@@ -38,8 +40,6 @@ import kotlin.coroutines.CoroutineContext
 public open class SimbotEventDispatcherContainer(public val dispatcher: CoroutineDispatcher)
 
 
-
-
 /**
  * 配置 [EventListenerManager]
  * @author ForteScarlet
@@ -48,7 +48,8 @@ public open class SpringEventListenerManagerConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(SimbotEventDispatcherContainer::class)
-    public open fun defaultSimbotEventDispatcher(executor: ThreadPoolTaskExecutor): SimbotEventDispatcherContainer = SimbotEventDispatcherContainer(executor.asCoroutineDispatcher())
+    public open fun defaultSimbotEventDispatcher(executor: ThreadPoolTaskExecutor): SimbotEventDispatcherContainer =
+        SimbotEventDispatcherContainer(executor.asCoroutineDispatcher())
 
 
     @Bean
@@ -61,10 +62,16 @@ public open class SpringEventListenerManagerConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean(ComponentRegistryConfigure::class)
+    public open fun defaultComponentRegistryConfigure(): InstallAllComponentRegistryConfigure =
+        InstallAllComponentRegistryConfigure
+
+    @Bean
     @ConditionalOnMissingBean(EventListenerManager::class)
     public open fun eventListenerManager(
         beanFactory: ListableBeanFactory,
-        contextFactory: CoreEventListenerManagerContextFactory
+        contextFactory: CoreEventListenerManagerContextFactory,
+        componentRegistryConfigures: List<ComponentRegistryConfigure>
     ): EventListenerManager {
         val listenerInterceptorClass = EventListenerInterceptor::class.java
         val listenerInterceptors = beanFactory.getBeanNamesForType(listenerInterceptorClass).associate { name ->
@@ -79,6 +86,10 @@ public open class SpringEventListenerManagerConfiguration {
         val context = contextFactory.managerCoroutineContext
 
         return coreListenerManager {
+            componentRegistryConfigures.forEach {
+                it.registerComponent(this)
+            }
+
             if (processingInterceptors.isNotEmpty()) {
                 addProcessingInterceptors(processingInterceptors)
             }
