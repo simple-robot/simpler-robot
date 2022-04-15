@@ -60,8 +60,8 @@ dependencies {
     //testImplementation(V.Log4j.Core.notation)
     //testImplementation(V.Log4j.Slf4jImpl.notation)
 
-    testImplementation("org.springframework.boot:spring-boot-starter-webflux:2.6.3")
-    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.preview.3.0-2100.0.1")
+    testImplementation("org.springframework.boot:spring-boot-starter-webflux:2.6.6")
+    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0.preview.1.0")
     // testImplementation(V.Kotlinx.Coroutines.Reactor.notation)
 }
 repositories {
