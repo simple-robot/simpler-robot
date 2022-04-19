@@ -32,13 +32,9 @@ class RegexReplaceTest {
 
         var index = 0
 
-        val replaced = regex.replace(msg) { result ->
-            println(result)
-            println(result.value)
-            "{}"
-        }
+        val replaced = regex.replace(msg) { (index++).toString() }
 
-        println(replaced)
+        assert(replaced == "Hello 0, My 1.")
 
     }
 }
