@@ -4,8 +4,8 @@ on: # push
     branches:
       - v3-dev
     paths:
-      - '**src/main/kotlin/**.kt'
-      - '**src/main/java/**.java'
+      - '**src/**/kotlin/**.kt'
+      - '**src/**/java/**.java'
 jobs:
   publish-snapshot:
     name: Publish snapshot
