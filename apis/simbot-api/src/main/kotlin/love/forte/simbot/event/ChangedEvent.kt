@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.event
@@ -21,6 +20,8 @@ import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.message.doSafeCast
 import love.forte.simbot.utils.runInBlocking
+
+// TODO BaseEvent
 
 /**
  * 一个与 **变更** 有关的事件。
@@ -43,6 +44,7 @@ import love.forte.simbot.utils.runInBlocking
  *
  * @see ChangedEvent
  */
+@BaseEvent
 public interface ChangeEvent<out SOURCE, out BEFORE, out AFTER> : Event {
     override val id: ID
 
