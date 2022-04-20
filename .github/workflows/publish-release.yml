@@ -4,9 +4,34 @@ on:
     tags:
       - v3.**.**
 jobs:
-  publish-snapshot:
+  run-test:
+    name: Run Test
+    runs-on: ubuntu-latest
+    steps:
+      # 检出仓库代码
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      # setup Java
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: 8
+
+    # setup Gradle
+    - name: Gradle Publish Release
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-version: 7.4
+        arguments: clean build test
+
+  publish-release:
     name: Publish Release
     runs-on: ubuntu-latest
+    needs: run-test
     steps:
       # 检出仓库代码
       - name: Check Out Repo
@@ -38,7 +63,7 @@ jobs:
   create-release:
     name: Create release
     runs-on: ubuntu-latest
-    needs: publish-snapshot
+    needs: publish-release
     permissions:
       contents: write
     steps:
@@ -57,5 +82,36 @@ jobs:
           prerelease: ${{ contains(github.ref_name, 'preview') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}
           # draft: true
 
+  publish-snapshot:
+    name: Publish snapshot
+    runs-on: ubuntu-latest
+    needs: publish-release
+    steps:
+      # 检出仓库代码
+      - name: Check out repo
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      # setup Java
+      - name: Setup java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: 8
+          cache: 'gradle'
+
+      # the gpg
+      - name: Decode gpg file
+        run: |
+          echo "${{ secrets.GPG_B64 }}" > ForteScarlet.gpg.b64
+          base64 -d ForteScarlet.gpg.b64 > ForteScarlet.gpg
+
+      # setup Gradle
+      - name: Gradle publish snapshot
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 7.4
+          arguments: clean build test publishToSonatype closeAndReleaseStagingRepository -DisSnapshot=true -DsnapshotOnly -Psigning.secretKeyRingFile=ForteScarlet.gpg -Psigning.keyId=${{ secrets.SIGN_KEY_ID }} -Psigning.password=${{ secrets.SIGN_PASS }} -Psonatype.username=${{ secrets.OSS_USERNAME }} -Psonatype.password=${{ secrets.OSS_PASSWORD }}  -Porg.gradle.jvmargs="org.gradle.jvmargs=-Xmx4G -Xms4G -XX:MaxMetaspaceSize=512m -Dfile.encoding=UT-8" -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true
 
 
