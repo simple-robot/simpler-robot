@@ -12,40 +12,32 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
-import love.forte.simbot.Bot
-import love.forte.simbot.BotManager
-import love.forte.simbot.ID
-import love.forte.simbot.OriginBotManager
+package love.forte.simbot.application
 
-/*
- *  Copyright (c) 2022 ForteScarlet <https://github.com/ForteScarlet>
- *
- *  根据 Apache License 2.0 获得许可；
- *  除非遵守许可，否则您不得使用此文件。
- *  您可以在以下网址获取许可证副本：
- *
- *       https://www.apache.org/licenses/LICENSE-2.0
- *
- *   有关许可证下的权限和限制的具体语言，请参见许可证。
+import love.forte.simbot.Component
+import love.forte.simbot.event.EventListenerManager
+
+
+/**
+ * [EventListenerManager] 的构建工厂。
+ * @see EventListenerManager
+ * @author ForteScarlet
  */
+public interface EventListenerManagerFactory<out M : EventListenerManager, Config : Any> {
 
-
-fun main() {
-    OriginBotManager.forEach {
-        println("BotManager: $it")
-    }
-
-    OriginBotManager.cancel()
+    /**
+     * 提供配置函数, 构建一个目标监听函数管理器。
+     *
+     * @param configurator 配置函数
+     */
+    public fun create(components: List<Component>, configurator: Config.() -> Unit): M
 
 }
 
-fun bm(manager: BotManager<*>) {
-    // 获取所有Bot，以序列Sequence的形式返回
-    val all: Sequence<Bot> = manager.all()
 
-    // 获取指定的Bot
-    val bot: Bot? = manager.get(123.ID)
-}
+@DslMarker
+@Retention(AnnotationRetention.BINARY)
+public annotation class EventListenerFactoryDsl
+

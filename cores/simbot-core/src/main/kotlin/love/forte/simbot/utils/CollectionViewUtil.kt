@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 @file:JvmName("CollectionViewUtil")
@@ -21,6 +20,8 @@ package love.forte.simbot.utils
 
 
 public fun <T> List<T>.view(): List<T> = ListView(this)
+
+
 private class ListView<T>(private val delegate: List<T>) : List<T> by delegate {
     override fun toString(): String = delegate.toString()
     override fun hashCode(): Int = delegate.hashCode()

@@ -12,18 +12,18 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot
 
 import love.forte.simbot.OriginBotManager.cancel
-import love.forte.simbot.utils.*
+import love.forte.simbot.utils.runInBlocking
 import java.util.*
-import java.util.concurrent.locks.*
-import java.util.stream.*
-import kotlin.concurrent.*
-import kotlin.streams.*
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import java.util.stream.Stream
+import kotlin.concurrent.read
+import kotlin.concurrent.write
+import kotlin.streams.asStream
 
 
 /**
@@ -34,6 +34,7 @@ import kotlin.streams.*
  * 如果你想要某个 [BotManager] 脱离 [OriginBotManager] 的管理，使用 [BotManager.breakAway]
  *
  */
+@FragileSimbotApi
 public object OriginBotManager : Set<BotManager<*>> {
     private val logger = LoggerFactory.getLogger(OriginBotManager::class)
     private val lock = ReentrantReadWriteLock()

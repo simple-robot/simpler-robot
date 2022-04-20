@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 @file:JvmName("BotVerifyInfoUtil")
@@ -23,6 +22,23 @@ import java.io.InputStream
 import java.net.URL
 import java.nio.file.Path
 import kotlin.io.path.inputStream
+
+
+/**
+ * 目前所支持的外部Bot配置信息文件格式。
+ */
+public enum class BotInfoSupportType {
+    /**
+     * `*.bot` 或 `*.bot.json` 格式的文件均视为 `.json` 格式并进行加载。
+     */
+    JSON
+}
+
+
+
+
+
+
 
 
 public fun URL.asBotVerifyInfo(): BotVerifyInfo {

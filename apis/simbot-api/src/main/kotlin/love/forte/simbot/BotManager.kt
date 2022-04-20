@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot
@@ -60,7 +59,7 @@ public open class VerifyFailureException : SimbotIllegalStateException {
     public constructor(cause: Throwable?) : super(cause)
 }
 
-
+// TODO support for more file type via StringFormat.
 /**
  * BOT用于验证身份的信息，通过读取 `.bot` 文件解析而来.
  *
@@ -97,6 +96,7 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
     init {
         if (isBeManaged()) {
             @Suppress("LeakingThis")
+            @OptIn(FragileSimbotApi::class)
             OriginBotManager.register(this)
         }
     }
@@ -121,6 +121,7 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
      * 执行关闭操作。
      * [doCancel] 为当前manager的自定义管理，当前manager关闭后，将会从 [OriginBotManager] 剔除自己。
      */
+    @OptIn(FragileSimbotApi::class)
     @JvmSynthetic
     override suspend fun cancel(reason: Throwable?): Boolean {
         // remove first.
@@ -131,6 +132,7 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
     /**
      * 使当前 manager 脱离 [OriginBotManager] 的管理。
      */
+    @OptIn(FragileSimbotApi::class)
     public fun breakAway(): Boolean {
         return OriginBotManager.remove(this)
     }
