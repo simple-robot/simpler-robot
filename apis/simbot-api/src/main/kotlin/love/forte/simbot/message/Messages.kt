@@ -44,17 +44,15 @@ public interface MessageElementPolymorphicRegistrar {
 
 
 /**
- * 消息列表，即 [MsgElement] 的列表，连接多条[消息元素][MsgElement]的链表。
+ * 消息列表，代表为可能多条的 [MsgElement] 信息。
  *
+ * ## 不可变
  * [Messages] 是不可变的，但是 [Messages] 中的元素并不一定。每次进行 [plus] 都应视为得到了一个新的 [Messages] 实例。
  *
- * [Messages] 中可以存在多个不同组件之间的 [MsgElement], 但是不建议这么做。
- * 大多数情况下，组件对于 [Messages] 的解析很少会顾及到其他组件，而当遇到不支持的组件的时候，大概率会将其忽略或抛出异常。
- *
- * ### 序列化
+ * ## 序列化
  * 当你需要对 [Messages] 进行序列化的时候，你所使用的 [KSerializer] 必须为 [Messages.serializer].
  *
- * ### 构建器
+ * ## 构建器
  * 除了直接使用拼接的方式，你也可以参考 [MessagesBuilder] 通过构建器来构建 [Messages] 实例。
  *
  * @see EmptyMessages
@@ -243,7 +241,7 @@ public fun emptyMessages(): Messages = EmptyMessages
 public object EmptyMessages : Messages, List<MsgElement<*>> by emptyList() {
     override fun plus(element: Message.Element<*>): Messages = element.toMessages()
     override fun plus(messages: Collection<Message.Element<*>>): Messages = messages.toMessages()
-    override fun toString(): String = "Messages([])"
+    override fun toString(): String = "E@Messages([])"
 }
 
 
@@ -256,6 +254,10 @@ public abstract class SingleOnlyMessage<E : Message.Element<E>> : MsgElement<E>,
     AbstractList<MsgElement<*>>() {
     abstract override val key: Message.Key<E>
 
+    /**
+     * 用作 [toString] 展示信息的消息字符串结果。
+     */
+    protected abstract fun messageString(): String
 
     // List
     final override val size: Int get() = 1
@@ -273,6 +275,10 @@ public abstract class SingleOnlyMessage<E : Message.Element<E>> : MsgElement<E>,
      */
     override fun plus(messages: Collection<Message.Element<*>>): Messages =
         if (messages.isEmpty()) this else messages.toMessages()
+
+    final override fun toString(): String {
+        return "S@Messages([$this])"
+    }
 }
 
 /**
@@ -286,7 +292,9 @@ public fun messages(): Messages = EmptyMessages
 public fun MsgElement<*>.toMessages(): Messages =
     if (this is SingleOnlyMessage<*>) this else SingleValueMessageList(this)
 
-
+/**
+ * 将提供的消息元素组合为 [Messages].
+ */
 public fun messages(vararg messages: MsgElement<*>): Messages = messages.asList().toMessages()
 
 /**
@@ -330,9 +338,33 @@ public fun Iterable<MsgElement<*>>.toMessages(): Messages {
 }
 
 
+/**
+ * [Message.Element] 与另外一个 [Message.Element] 进行拼接并组合为 [Messages].
+ */
 public operator fun Message.Element<*>.plus(other: Message.Element<*>): Messages =
-    messages(this, other)
-public operator fun Message.Element<*>.plus(other: Messages): Messages = this.toMessages() + other
+    when {
+        // 当前为single only或者目标为single only, 都将导致直接保留后者.
+        this is SingleOnlyMessage || other is SingleOnlyMessage -> other.toMessages()
+        else -> messages(this, other)
+    }
+
+/**
+ * [Message.Element] 与另外一个 [Messages] 进行拼接并组合为 [Messages].
+ *
+ * 作为 `receiver` 的 [Message.Element] 会尝试置于首位, 但如果 [other] 是 [SingleOnlyMessage], 则 `receiver` 将会被舍弃。
+ */
+public operator fun Message.Element<*>.plus(other: Messages): Messages =
+    // if (other is SingleOnlyMessage<*>) other else this.toMessages() + other
+    when {
+        other.isEmpty() -> this.toMessages()
+        // 当前为single only或者目标为single only, 都将导致直接保留后者.
+        this is SingleOnlyMessage || other is SingleOnlyMessage<*> -> other
+        else -> this.toMessages() + other
+    }
+
+/**
+ * 与一个 [SingleOnlyMessage] 进行拼接并得到 [Messages]. 将会直接舍弃 `receiver`。
+ */
 public operator fun Message.Element<*>.plus(other: SingleOnlyMessage<*>): Messages = other
 
 
@@ -421,8 +453,7 @@ internal class SingleValueMessageList(private val value: MsgElement<*>) : Messag
 }
 
 
-internal class MessageListImpl
-internal constructor(private val delegate: List<MsgElement<*>>) : MessageList(), List<MsgElement<*>> by delegate {
+internal class MessageListImpl(private val delegate: List<MsgElement<*>>) : MessageList(), List<MsgElement<*>> by delegate {
     init {
         Simbot.check(delegate.isNotEmpty()) { "Messages init message list cannot be empty." }
     }
