@@ -21,12 +21,12 @@ jobs:
           distribution: 'temurin'
           java-version: 8
 
-    # setup Gradle
-    - name: Gradle Publish Release
-      uses: gradle/gradle-build-action@v2
-      with:
-        gradle-version: 7.4
-        arguments: clean build test
+      # setup Gradle
+      - name: Gradle Publish Release
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 7.4
+          arguments: clean build test
 
   publish-release:
     name: Publish Release
