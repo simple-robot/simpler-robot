@@ -153,8 +153,30 @@ public object OriginBotManager : Set<BotManager<*>> {
                 val iter = managers.keys.iterator()
                 while (iter.hasNext()) {
                     val next: BotManager<*> = iter.next()
-                    if (next.component == component) yield(next)
-                    else continue
+                    if (next.component == component) {
+                        checkShutdown()
+                        yield(next)
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 根据指定ID查询组件ID与其相等的 [BotManager].
+     */
+    @JvmSynthetic
+    public fun getManagers(componentId: ID): Sequence<BotManager<*>> {
+        lock.read {
+            checkShutdown()
+            return sequence {
+                val iter = managers.keys.iterator()
+                while (iter.hasNext()) {
+                    val next: BotManager<*> = iter.next()
+                    if (next.component.id == componentId) {
+                        checkShutdown()
+                        yield(next)
+                    }
                 }
             }
         }
@@ -168,6 +190,15 @@ public object OriginBotManager : Set<BotManager<*>> {
     @Api4J
     @JvmName("getManagers")
     public fun getManagers4J(component: Component): Stream<BotManager<*>> = getManagers(component).asStream()
+
+    /**
+     * [getManagers], 返回 [Stream].
+     *
+     * @see getManagers
+     */
+    @Api4J
+    @JvmName("getManagers")
+    public fun getManagers4J(componentId: ID): Stream<BotManager<*>> = getManagers(componentId).asStream()
 
     /**
      * 获取某个指定组件下的第一个能够得到的 [BotManager], 如果找不到则返回null。
