@@ -16,14 +16,15 @@
 
 package love.forte.simbot.core.event
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
 import love.forte.simbot.*
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
-import love.forte.simbot.utils.*
+import love.forte.simbot.utils.currentClassLoader
 import java.util.*
 import java.util.function.Function
-import kotlin.coroutines.*
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 
 @DslMarker
@@ -52,7 +53,7 @@ public class CoreListenerManagerConfiguration : EventListenerManagerConfiguratio
     private val componentRegistrars = mutableMapOf<Attribute<*>, () -> Component>()
 
     @CoreEventManagerConfigDSL
-    override fun <C : Component, Config : Any> install(registrar: ComponentRegistrar<C, Config>, config: Config.() -> Unit) {
+    override fun <C : Component, Config : Any> install(registrar: ComponentFactory<C, Config>, config: Config.() -> Unit) {
         val key = registrar.key
         val oldConfig = componentConfigurations[key]
 
@@ -67,17 +68,17 @@ public class CoreListenerManagerConfiguration : EventListenerManagerConfiguratio
 
         componentRegistrars[key] = {
             val configuration = componentConfigurations[key]!!
-            registrar.register(configuration)
+            registrar.create(configuration)
         }
     }
 
     /**
-     * 尝试加载所有的 [ComponentRegistrarFactory] 并注册它们。统一使用默认配置进行注册。
+     * 尝试加载所有的 [ComponentAutoRegistrarFactory] 并注册它们。统一使用默认配置进行注册。
      */
     @ExperimentalSimbotApi
     @CoreEventManagerConfigDSL
     override fun installAll() {
-        val factories = ServiceLoader.load(ComponentRegistrarFactory::class.java, this.currentClassLoader)
+        val factories = ServiceLoader.load(ComponentAutoRegistrarFactory::class.java, this.currentClassLoader)
         factories.forEach {
             install(it.registrar)
         }

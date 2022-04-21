@@ -12,11 +12,11 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot
 
+import love.forte.simbot.application.EventProvider
 import java.io.InputStream
 import java.util.stream.Stream
 import kotlin.streams.asStream
@@ -91,9 +91,15 @@ public interface BotVerifyInfo {
  *
  * [BotManager] 实现 [Survivable], 其存活周期与 [Bot] 无关。
  *
+ * ## 事件提供者
+ *
+ * [BotManager] 是一种特殊的 [EventProvider] 实现，可用于安装在 [love.forte.simbot.application.Application] 环境中。
+ *
+ * @see EventProvider
+ *
  * @author ForteScarlet
  */
-public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Survivable {
+public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, EventProvider {
     init {
         if (isBeManaged()) {
             registerSelf()

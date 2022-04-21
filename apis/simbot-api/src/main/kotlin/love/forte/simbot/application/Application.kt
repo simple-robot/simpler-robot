@@ -19,6 +19,8 @@ package love.forte.simbot.application
 import kotlinx.coroutines.CoroutineScope
 import love.forte.simbot.BotManager
 import love.forte.simbot.Component
+import love.forte.simbot.ID
+import love.forte.simbot.NoSuchComponentException
 import love.forte.simbot.event.EventListenerManager
 
 
@@ -33,54 +35,47 @@ import love.forte.simbot.event.EventListenerManager
  * @author ForteScarlet
  */
 public interface Application : CoroutineScope {
-    /*
-        应用程序的存在意义是提供一个作用域
-        作用域涵盖事件的处理，与(可能的)事件的收发
-
-        应用程序的整体流程是
-        构建 listener manager, 构建事件监听器, 用作事件处理，首要工作
-        构建 bot manager, 向其提供事件处理器, 并在之后用于向事件处理器推送事件
-
-        其中，事件监听需要涉及“组件”。组件应该安装在。。？
-        安装在 Application?
-
-        configuration?
-
-        安装组件 组件 factory?
-
-        构建event manager, 提供安装的组件？ manager factory?
-
-        构建 bot managers, manager 和 安装的组件？ managers factory?
-
-     */
 
     /**
-     *
+     * 当前 [Application] 的环境属性。
      */
     public val environment: Environment
-
 
 
     /**
      * 当前应用的环境内容，如事件处理器、bot管理器等。
      */
     public interface Environment {
-        /**
-         * 当前应用下的事件处理器。
-         */
-        public val eventListenerManager: EventListenerManager
-
-        /**
-         * 当前应用下的bot管理器的 **列表视图**。
-         */
-        public val botManagers: List<BotManager<*>>
 
         /**
          * 当前应用程序安装的所有组件的 **列表视图**。
          */
         public val components: List<Component>
-    }
 
+        /**
+         * 尝试根据ID获取一个指定的组件对象。如果未找到则会抛出 [NoSuchComponentException].
+         *
+         * @throws NoSuchComponentException 当没有找到目标ID的组件时
+         */
+        public fun getComponent(id: ID): Component
+
+        /**
+         * 尝试根据ID获取一个指定的组件对象。如果未找到则会返回null。
+         */
+        public fun getComponentOrNull(id: ID): Component?
+
+        /**
+         * 当前应用下的事件处理器。
+         */
+        public val eventListenerManager: EventListenerManager
+
+
+        /**
+         * 当前应用下的事件提供者的 **列表视图**。
+         */
+        public val providers: List<EventProvider>
+
+    }
 
 
     /**
@@ -94,6 +89,11 @@ public interface Application : CoroutineScope {
     public suspend fun shutdown()
 }
 
+
+/**
+ * 得到目标环境参数中的所有 [BotManager] 实例。
+ */
+public inline val Application.Environment.botManagers: List<BotManager<*>> get() = providers.filterIsInstance<BotManager<*>>()
 
 
 

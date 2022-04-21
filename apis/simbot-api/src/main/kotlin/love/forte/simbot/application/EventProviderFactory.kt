@@ -16,28 +16,38 @@
 
 package love.forte.simbot.application
 
-import love.forte.simbot.Component
-import love.forte.simbot.event.EventListenerManager
+import love.forte.simbot.BotManager
+import love.forte.simbot.Survivable
+import love.forte.simbot.event.EventProcessor
 
 
 /**
- * [EventListenerManager] 的构建工厂。
- * @see EventListenerManager
+ * 事件提供者。
+ *
+ * 用于安装在 [Application] 中，通过 [EventProviderFactory] 向其提供一个 [事件处理器][EventProvider],
+ * 使其能够向目标事件处理器提供(推送)事件。
+ *
+ * @see BotManager
+ *
+ */
+public interface EventProvider : Survivable
+
+
+
+/**
+ * [EventProvider] 工厂，用于在 [Application] 的过程中构建 [EventProvider].
+ *
  * @author ForteScarlet
  */
-public interface EventListenerManagerFactory<out M : EventListenerManager, Config : Any> {
+public interface EventProviderFactory<Provider : EventProvider, Config : Any> {
 
     /**
-     * 提供配置函数, 构建一个目标监听函数管理器。
-     *
-     * @param configurator 配置函数
+     * 提供所需属性，构建一个 [EventProvider].
      */
-    public fun create(components: List<Component>, configurator: Config.() -> Unit): M
+    public fun create(
+        eventProcessor: EventProcessor,
+        applicationConfiguration: ApplicationConfiguration,
+        configurator: Config.() -> Unit,
+    ): Provider
 
 }
-
-
-@DslMarker
-@Retention(AnnotationRetention.BINARY)
-public annotation class EventListenerFactoryDsl
-

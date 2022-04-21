@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.event
@@ -121,7 +120,7 @@ public interface EventListenerManagerConfiguration {
      * @param config 配置函数
      */
     public fun <C : Component, Config : Any> install(
-        registrar: ComponentRegistrar<C, Config>,
+        registrar: ComponentFactory<C, Config>,
         config: Config.() -> Unit = {}
     )
 
@@ -131,7 +130,7 @@ public interface EventListenerManagerConfiguration {
      *
      * 此函数需要对应的组件注册器支持 `Java SPI` 加载。
      *
-     * @see ComponentRegistrar
+     * @see ComponentFactory
      */
     @ExperimentalSimbotApi
     public fun installAll()

@@ -17,8 +17,8 @@
 package love.forte.simbot.application
 
 import love.forte.simbot.Component
+import love.forte.simbot.ComponentFactory
 import love.forte.simbot.application.Application.Environment
-import love.forte.simbot.event.EventListenerManager
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -28,16 +28,15 @@ import kotlin.coroutines.EmptyCoroutineContext
  *
  * @author ForteScarlet
  */
-public interface ApplicationEnvironmentFactory<
-        CBuilder : ComponentsBuilder,
-        MConfig : Any,
-        BMBuilder : BotManagersBuilder,
-        out Env : Environment,
-        AppBuilder : ApplicationEnvironmentBuilder<CBuilder, MConfig, BMBuilder, Env>,
-        AppConfig : ApplicationConfiguration,
+public interface ApplicationFactory<
+        Config : ApplicationConfiguration,
+        Builder : ApplicationEnvironmentBuilder,
         > {
 
-    public fun create(config: AppConfig.() -> Unit, configurator: AppBuilder.() -> Unit): Env
+    /**
+     * 提供配置函数和构建器函数，构建一个 [Application] 实例。
+     */
+    public fun create(configurator: Config.() -> Unit, builder: Builder.() -> Unit): Application
 
 }
 
@@ -46,44 +45,17 @@ public interface ApplicationEnvironmentFactory<
  * [Environment] 的构建器.
  * @param CBuilder 组件构建器的实例。
  */
-public interface ApplicationEnvironmentBuilder<
-        CBuilder : ComponentsBuilder,
-        MConfig : Any,
-        BMBuilder : BotManagersBuilder,
-        out Env : Environment,
-        > {
+public interface ApplicationEnvironmentBuilder {
 
     /**
-     * 配置组件注册信息。
+     * 注册一个 [组件][Component].
      */
-    @ComponentBuildDsl
-    public fun components(componentsFactory: ComponentsFactory<CBuilder>, configurator: CBuilder.() -> Unit = {})
-
+    public fun <C : Component, Config : Any> install(componentFactory: ComponentFactory<C, Config>)
 
     /**
-     * 配置事件处理器的构建。
+     * 注册一个事件提供者。
      */
-    @EventListenerFactoryDsl
-    public fun listenerManager(
-        components: List<Component>,
-        factory: EventListenerManagerFactory<*, MConfig>,
-        configurator: MConfig.() -> Unit = {},
-    )
-
-    /**
-     * 配置bot管理器的构建。
-     */
-    @BotManagersDsl
-    public fun botManagers(
-        components: List<Component>,
-        eventListenerManager: EventListenerManager,
-        factory: BotManagersFactory<BMBuilder>,
-        configurator: BMBuilder.() -> Unit,
-    ) // TODO
-
-
-    public fun build(): Env
-
+    public fun <P : EventProvider, Config : Any> install(eventProviderFactory: EventProviderFactory<P, Config>)
 
 }
 
