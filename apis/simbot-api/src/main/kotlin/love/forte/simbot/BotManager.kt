@@ -12,6 +12,7 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
+ *
  */
 
 package love.forte.simbot
@@ -95,15 +96,18 @@ public interface BotVerifyInfo {
 public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Survivable {
     init {
         if (isBeManaged()) {
-            @Suppress("LeakingThis")
-            @OptIn(FragileSimbotApi::class)
-            OriginBotManager.register(this)
+            registerSelf()
         }
     }
 
     // kill warn
     private fun isBeManaged() = beManaged()
     protected open fun beManaged(): Boolean = true
+
+    @OptIn(FragileSimbotApi::class)
+    private fun registerSelf() {
+        OriginBotManager.register(this)
+    }
 
     /**
      *
