@@ -16,7 +16,9 @@
 
 package love.forte.simbot.application
 
+import love.forte.simbot.Attribute
 import love.forte.simbot.BotManager
+import love.forte.simbot.Component
 import love.forte.simbot.Survivable
 import love.forte.simbot.event.EventProcessor
 
@@ -26,6 +28,8 @@ import love.forte.simbot.event.EventProcessor
  *
  * 用于安装在 [Application] 中，通过 [EventProviderFactory] 向其提供一个 [事件处理器][EventProvider],
  * 使其能够向目标事件处理器提供(推送)事件。
+ *
+ * 事件提供者无所谓形式，可以是一个 [BotManager], 或是一个定时任务、一个http服务。
  *
  * @see BotManager
  *
@@ -39,15 +43,26 @@ public interface EventProvider : Survivable
  *
  * @author ForteScarlet
  */
-public interface EventProviderFactory<Provider : EventProvider, Config : Any> {
+public interface EventProviderFactory<P : EventProvider, Config : Any> {
+
+    /**
+     * 此工厂的唯一属性。
+     */
+    public val key: Attribute<P>
 
     /**
      * 提供所需属性，构建一个 [EventProvider].
      */
     public fun create(
         eventProcessor: EventProcessor,
+        components: List<Component>,
         applicationConfiguration: ApplicationConfiguration,
         configurator: Config.() -> Unit,
-    ): Provider
+    ): P
 
 }
+
+
+
+
+public interface EventProviderAutoRegistrarFactory

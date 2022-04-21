@@ -19,6 +19,7 @@ package love.forte.simbot.application
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentFactory
 import love.forte.simbot.application.Application.Environment
+import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -30,13 +31,14 @@ import kotlin.coroutines.EmptyCoroutineContext
  */
 public interface ApplicationFactory<
         Config : ApplicationConfiguration,
-        Builder : ApplicationEnvironmentBuilder,
+        Builder : ApplicationBuilder,
+        A : Application
         > {
 
     /**
      * 提供配置函数和构建器函数，构建一个 [Application] 实例。
      */
-    public fun create(configurator: Config.() -> Unit, builder: Builder.() -> Unit): Application
+    public fun create(configurator: Config.() -> Unit, builder: Builder.() -> Unit): A
 
 }
 
@@ -45,19 +47,35 @@ public interface ApplicationFactory<
  * [Environment] 的构建器.
  * @param CBuilder 组件构建器的实例。
  */
-public interface ApplicationEnvironmentBuilder {
+public interface ApplicationBuilder {
 
     /**
      * 注册一个 [组件][Component].
      */
-    public fun <C : Component, Config : Any> install(componentFactory: ComponentFactory<C, Config>)
+    @ApplicationBuildDsl
+    public fun <C : Component, Config : Any> install(
+        componentFactory: ComponentFactory<C, Config>,
+        configurator: Config.() -> Unit = {},
+    )
 
     /**
      * 注册一个事件提供者。
      */
-    public fun <P : EventProvider, Config : Any> install(eventProviderFactory: EventProviderFactory<P, Config>)
+    @ApplicationBuildDsl
+    public fun <P : EventProvider, Config : Any> install(
+        eventProviderFactory: EventProviderFactory<P, Config>,
+        configurator: Config.() -> Unit = {},
+    )
 
 }
+
+/**
+ * 标记为用于 [ApplicationBuilder] 的 dsl api.
+ */
+@DslMarker
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
+public annotation class ApplicationBuildDsl
 
 
 /**
@@ -71,5 +89,9 @@ public open class ApplicationConfiguration {
      */
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext
 
+    /**
+     * 提供一个用于Application内部的日志对象。
+     */
+    public var logger: Logger? = null
 
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -17,10 +17,11 @@
 package love.forte.simbot
 
 import kotlinx.serialization.modules.SerializersModule
+import love.forte.simbot.application.ApplicationBuilder
 import love.forte.simbot.definition.Container
 import love.forte.simbot.definition.IDContainer
 import love.forte.simbot.event.EventListenerManager
-import love.forte.simbot.event.EventListenerManagerConfiguration
+import java.util.*
 
 
 /**
@@ -45,24 +46,9 @@ public interface Component : IDContainer {
 
 
 /**
- * 用于支持 [EventListenerManagerConfiguration.installAll] 进行自动加载的工厂类型定义，
- * 实现 [registrar] 并返回一个 [ComponentFactory] 实例。
- *
- * 此类型的实现必须存在无参构造。
- */
-public interface ComponentAutoRegistrarFactory<C : Component, out Config : Any> {
-
-    /**
-     * 得到 [ComponentFactory] 实例。
-     */
-    public val registrar: ComponentFactory<C, Config>
-}
-
-
-/**
  * 组件注册器。
  *
- * 如果希望组件能够支持 [EventListenerManagerConfiguration.installAll],
+ * 如果希望组件能够支持 [ApplicationBuilder.installAllComponents],
  * 则需要提供 [ComponentAutoRegistrarFactory] 用于通过 `Java SPI` 机制注册 [ComponentFactory] 信息。
  *
  * 当提供 配置类型[Config]的时候，应尽可能保持其所有内容均存在默认值。
@@ -105,9 +91,44 @@ public interface ComponentContainer : Container {
 }
 
 
-//////////////////////// Exceptions ////////////////////////////
+//region Auto-Registrar
+/**
+ * 用于支持 [ApplicationBuilder.installAllComponents] 进行自动加载的工厂类型定义，
+ * 实现 [registrar] 并返回一个 [ComponentFactory] 实例。
+ *
+ * 此类型的实现必须存在无参构造。
+ */
+public interface ComponentAutoRegistrarFactory<C : Component, out Config : Any> {
+
+    /**
+     * 得到 [ComponentFactory] 实例。
+     */
+    public val registrar: ComponentFactory<C, Config>
+}
 
 
+/**
+ * 尝试加载所有的 [ComponentAutoRegistrarFactory] 并注册到 [ApplicationBuilder] 中。
+ */
+public fun ApplicationBuilder.installAllComponents(classLoader: ClassLoader = this.currentClassLoader) {
+    val factories = ServiceLoader.load(ComponentAutoRegistrarFactory::class.java, classLoader)
+    factories.forEach {
+        install(it.registrar)
+    }
+
+}
+
+internal inline val Any.currentClassLoader: ClassLoader
+    get() =
+        javaClass.classLoader
+            ?: Thread.currentThread().contextClassLoader
+            ?: ClassLoader.getSystemClassLoader()
+
+
+//endregion
+
+
+//region Exceptions
 public class NoSuchComponentException : SimbotRuntimeException {
     public constructor() : super()
     public constructor(message: String?) : super(message)
@@ -122,4 +143,5 @@ public class ComponentAlreadyExistsException : SimbotRuntimeException {
     public constructor(message: String?, cause: Throwable?) : super(message, cause)
     public constructor(cause: Throwable?) : super(cause)
 }
+//endregion
 

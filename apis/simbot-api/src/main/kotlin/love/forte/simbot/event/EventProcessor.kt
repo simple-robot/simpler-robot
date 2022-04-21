@@ -12,16 +12,16 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.event
 
-import love.forte.simbot.*
+import love.forte.simbot.Api4J
+import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.EventProcessingResult.Empty
-import love.forte.simbot.utils.*
-import org.jetbrains.annotations.*
-import java.util.concurrent.*
+import love.forte.simbot.utils.runInBlocking
+import org.jetbrains.annotations.UnmodifiableView
+import java.util.concurrent.Future
 
 
 /**
@@ -64,20 +64,20 @@ public interface EventProcessor {
     public fun isProcessable(eventKey: Event.Key<*>): Boolean
 
 
-    /**
-     * 从当前事件处理器中尝试根据 [id] 得到一个组件实例，如果不存在对应组件，则会抛出 [NoSuchComponentException].
-     *
-     * @throws NoSuchComponentException
-     */
-    public fun getComponent(id: ID): Component
-
-
-    /**
-     * 从当前事件处理器中尝试根据 [id] 得到一个组件实例，如果不存在对应组件，则会抛出 [NoSuchComponentException].
-     *
-     * @throws NoSuchComponentException
-     */
-    public fun getComponent(id: String): Component
+    // /**
+    //  * 从当前事件处理器中尝试根据 [id] 得到一个组件实例，如果不存在对应组件，则会抛出 [NoSuchComponentException].
+    //  *
+    //  * @throws NoSuchComponentException
+    //  */
+    // public fun getComponent(id: ID): Component
+    //
+    //
+    // /**
+    //  * 从当前事件处理器中尝试根据 [id] 得到一个组件实例，如果不存在对应组件，则会抛出 [NoSuchComponentException].
+    //  *
+    //  * @throws NoSuchComponentException
+    //  */
+    // public fun getComponent(id: String): Component
 
 }
 

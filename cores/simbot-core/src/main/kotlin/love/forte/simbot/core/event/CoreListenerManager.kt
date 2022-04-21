@@ -12,20 +12,19 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.core.event
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.future.*
+import kotlinx.coroutines.future.asCompletableFuture
 import love.forte.simbot.*
 import love.forte.simbot.event.*
-import love.forte.simbot.utils.*
-import java.lang.reflect.*
-import java.util.concurrent.*
-import java.util.concurrent.atomic.*
-import kotlin.coroutines.*
+import love.forte.simbot.utils.view
+import java.lang.reflect.InvocationTargetException
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -105,7 +104,7 @@ public class CoreListenerManager private constructor(
     private val listeners: MutableMap<CharSequenceID, EventListener> // =
     // configuration.listeners.associateByTo(mutableMapOf()) { it.id.toCharSequenceID() }
 
-    private val components: Map<String, Component>
+    // private val components: Map<String, Component>
 
     /**
      * 完成缓存与处理的监听函数队列.
@@ -114,30 +113,20 @@ public class CoreListenerManager private constructor(
 
 
     init {
-        val configResult: ConfigResult = configuration.build()
-        val context = configResult.coroutineContext
+        val coreListenerManagerConfig: CoreListenerManagerConfig = configuration.build()
+        val context = coreListenerManagerConfig.coroutineContext
         context.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
 
         managerCoroutineContext = context
         managerScope = CoroutineScope(managerCoroutineContext)
 
-        listenerExceptionHandler = configResult.exceptionHandler
+        listenerExceptionHandler = coreListenerManagerConfig.exceptionHandler
         processingInterceptEntrance =
-            EventInterceptEntrance.eventProcessingInterceptEntrance(configResult.processingInterceptors.values.sortedBy { it.priority })
-        listenerIntercepts = configResult.listenerInterceptors.values.sortedBy { it.priority }
-        listeners = configResult.listeners.associateByTo(mutableMapOf()) { it.id.toCharSequenceID() }
+            EventInterceptEntrance.eventProcessingInterceptEntrance(coreListenerManagerConfig.processingInterceptors.values.sortedBy { it.priority })
+        listenerIntercepts = coreListenerManagerConfig.listenerInterceptors.values.sortedBy { it.priority }
+        listeners = coreListenerManagerConfig.listeners.associateByTo(mutableMapOf()) { it.id.toCharSequenceID() }
 
-        components = configResult.components
-    }
-
-
-    override fun getComponent(id: ID): Component {
-        return getComponent(id.literal)
-    }
-
-
-    override fun getComponent(id: String): Component {
-        return components[id] ?: throw NoSuchComponentException(id)
+        // components = configResult.components
     }
 
 

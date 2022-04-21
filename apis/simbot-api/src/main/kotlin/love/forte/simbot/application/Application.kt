@@ -85,6 +85,9 @@ public interface Application : CoroutineScope {
 
     /**
      * 终止当前应用，并关闭其中所有可能的资源。
+     *
+     * [Application] 被终止后将不能再次启动。
+     *
      */
     public suspend fun shutdown()
 }

@@ -18,10 +18,10 @@ package love.forte.simbot.core.event
 
 import kotlinx.coroutines.CoroutineScope
 import love.forte.simbot.*
-import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
-import love.forte.simbot.utils.currentClassLoader
-import java.util.*
+import love.forte.simbot.event.EventListenerInterceptor
+import love.forte.simbot.event.EventProcessingInterceptor
+import love.forte.simbot.event.EventResult
 import java.util.function.Function
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -48,41 +48,8 @@ internal annotation class CoreEventManagerConfigDSL
  * @see coreListenerManager
  */
 @CoreEventManagerConfigDSL
-public class CoreListenerManagerConfiguration : EventListenerManagerConfiguration {
-    private val componentConfigurations = mutableMapOf<Attribute<*>, Any.() -> Unit>()
-    private val componentRegistrars = mutableMapOf<Attribute<*>, () -> Component>()
+public class CoreListenerManagerConfiguration {
 
-    @CoreEventManagerConfigDSL
-    override fun <C : Component, Config : Any> install(registrar: ComponentFactory<C, Config>, config: Config.() -> Unit) {
-        val key = registrar.key
-        val oldConfig = componentConfigurations[key]
-
-        componentConfigurations[key] = {
-            // 追加配置
-            oldConfig?.invoke(this)
-            @Suppress("UNCHECKED_CAST")
-            (this as Config).config()
-        }
-
-        if (key in componentRegistrars) return
-
-        componentRegistrars[key] = {
-            val configuration = componentConfigurations[key]!!
-            registrar.create(configuration)
-        }
-    }
-
-    /**
-     * 尝试加载所有的 [ComponentAutoRegistrarFactory] 并注册它们。统一使用默认配置进行注册。
-     */
-    @ExperimentalSimbotApi
-    @CoreEventManagerConfigDSL
-    override fun installAll() {
-        val factories = ServiceLoader.load(ComponentAutoRegistrarFactory::class.java, this.currentClassLoader)
-        factories.forEach {
-            install(it.registrar)
-        }
-    }
 
     /**
      * 事件管理器的上下文. 可以基于此提供调度器。
@@ -276,28 +243,28 @@ public class CoreListenerManagerConfiguration : EventListenerManagerConfiguratio
         private set
 
 
-    internal fun build(): ConfigResult {
-        // install components
-        val components = componentRegistrars.values.associate {
-            val comp = it()
-            comp.id.literal to comp
-        }
-
-        return ConfigResult(
+    internal fun build(): CoreListenerManagerConfig {
+        return CoreListenerManagerConfig(
             coroutineContext,
-            components = components,
             exceptionHandler = listenerExceptionHandler,
             processingInterceptors = idMapOf(processingInterceptors),
             listenerInterceptors = idMapOf(listenerInterceptors),
             listeners = listeners.toList()
         )
     }
+
+
+    public companion object {
+        public inline operator fun invoke(block: CoreListenerManagerConfiguration.() -> Unit): CoreListenerManagerConfiguration {
+            return CoreListenerManagerConfiguration().also(block)
+        }
+    }
+
 }
 
 
-internal data class ConfigResult(
+public data class CoreListenerManagerConfig(
     internal val coroutineContext: CoroutineContext,
-    internal val components: Map<String, Component>,
     internal val exceptionHandler: ((Throwable) -> EventResult)? = null,
     internal val processingInterceptors: IDMaps<EventProcessingInterceptor>,
     internal val listenerInterceptors: IDMaps<EventListenerInterceptor>,
@@ -305,12 +272,3 @@ internal data class ConfigResult(
 
 )
 
-/*
- internal var processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
-
-
-    internal var listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
-
-    // 初始监听函数
-    internal var listeners = mutableListOf<EventListener>()
- */

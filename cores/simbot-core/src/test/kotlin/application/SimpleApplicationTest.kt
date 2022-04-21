@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -14,50 +14,27 @@
  *
  */
 
-package test
+package application
 
-import love.forte.simbot.core.event.*
-import love.forte.simbot.event.*
-import org.junit.*
+import love.forte.simbot.application.simbotApplication
+import love.forte.simbot.core.application.Simple
+import org.junit.Test
+
 
 /**
  *
  * @author ForteScarlet
  */
-class EventManagerTest {
+class SimpleApplicationTest {
 
     @Test
-    fun configTest() {
-        // CoreEventMangerConfiguration
-        coreListenerManager {
-            listeners {
-                filters {
-
-                }
-
-                listener(FriendMessageEvent) {
-                    filter {
-                        // 可以提供独立过滤器。
-                        EventResult.defaults()
-                        true
-                    }
-                    handle { context, event ->
-                        event.friend().send("Context: $context")
-                    }
-                }
-
-                listeners {
-
-                }
-
-            }
+    fun app() {
+        simbotApplication(Simple) {
 
         }
-
-
 
     }
 
 
-
 }
+

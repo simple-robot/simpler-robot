@@ -12,10 +12,9 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
-@file:JvmName("CoreListenerUtil")
+@file:JvmName("CoreListeners")
 
 package love.forte.simbot.core.event
 
@@ -30,46 +29,56 @@ import java.util.function.BiFunction
 
 
 /**
- * 向一个 [EventListener] 中拼接一个 [EventFilter].
+ * 向目标 [EventListener] 外层包装 [EventFilter].
  */
 public operator fun EventListener.plus(filter: EventFilter): EventListener {
-    return if (this is EventListenerWithFilter) {
-        EventListenerWithFilter(filters + filter, listener)
-    } else {
-        EventListenerWithFilter(listOf(filter), this)
+    return proxy { listener ->
+        if (!filter.test(this)) return@proxy filter.defaultResult(this)
+        listener(this)
     }
 }
 
 /**
- * 向一个 [EventListener] 中拼接多个 [EventFilter].
+ * 向目标 [EventListener] 外层包装多个 [EventFilter].
  */
 public operator fun EventListener.plus(filters: Iterable<EventFilter>): EventListener {
-    return if (this is EventListenerWithFilter) {
-        EventListenerWithFilter((this.filters + filters).sortedBy { it.priority }, listener)
-    } else {
-        EventListenerWithFilter(filters.sortedBy { it.priority }, this)
+    val sorted = filters.sortedBy { it.priority }
+    return proxy { listener ->
+        for (filter in sorted) {
+            if (!filter.test(this)) return@proxy filter.defaultResult(this)
+        }
+
+        listener(this)
     }
+}
+
+/**
+ * 提供一层包装来代理目标监听函数。
+ */
+public fun EventListener.proxy(delegate: suspend EventListenerProcessingContext.(EventListener) -> EventResult): EventListener {
+    return EventListenerHandle(this, delegate)
 }
 
 
 /**
  * 通过提供一组过滤器来得到一个 [Listener][EventListener].
  */
-internal class EventListenerWithFilter(
-    internal val filters: List<EventFilter>,
-    internal val listener: EventListener
+internal class EventListenerHandle(
+    internal val listener: EventListener,
+    internal val handle: suspend EventListenerProcessingContext.(EventListener) -> EventResult,
 ) : EventListener by listener {
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
-        for (filter in filters) {
-            if (!filter.test(context)) return filter.defaultResult(context)
-        }
-
-        return listener.invoke(context)
+        return context.handle(listener)
+        // for (filter in filters) {
+        //     if (!filter.test(context)) return filter.defaultResult(context)
+        // }
+        //
+        // return listener.invoke(context)
     }
 
 
     override fun toString(): String {
-        return "$listener with filter(s)(${filters.size})"
+        return "Delegate($listener)"
     }
 }
 
@@ -86,7 +95,7 @@ public fun <E : Event> EventListenerRegistrar.listen(
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    func: suspend (EventListenerProcessingContext, E) -> Any?
+    func: suspend EventListenerProcessingContext.(E) -> Any?,
 ): EventListener = coreListener(eventKey, id, blockNext, isAsync, logger, func).also(::register)
 
 /**
@@ -104,7 +113,7 @@ public inline fun <reified E : Event> EventListenerRegistrar.listen(
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    noinline func: suspend (EventListenerProcessingContext, E) -> Any?
+    noinline func: suspend EventListenerProcessingContext.(E) -> Any?,
 ): EventListener = listen(E::class.getKey(), id, blockNext, isAsync, logger, func)
 
 
@@ -118,7 +127,7 @@ public fun <E : Event> coreListener(
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    func: suspend (EventListenerProcessingContext, E) -> Any?
+    func: suspend EventListenerProcessingContext.(E) -> Any?,
 ): EventListener = CoreListener(id, eventKey, blockNext, isAsync, logger, func)
 
 /**
@@ -134,7 +143,7 @@ public inline fun <reified E : Event> coreListener(
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    noinline func: suspend (EventListenerProcessingContext, E) -> Any?
+    noinline func: suspend (EventListenerProcessingContext, E) -> Any?,
 ): EventListener = coreListener(E::class.getKey(), id, blockNext, isAsync, logger, func)
 
 
@@ -144,7 +153,7 @@ private class CoreListener<E : Event>(
     private val blockNext: Boolean,
     override val isAsync: Boolean,
     override val logger: Logger,
-    private val func: suspend (EventListenerProcessingContext, E) -> Any?
+    private val func: suspend (EventListenerProcessingContext, E) -> Any?,
 ) : EventListener {
 
     override fun isTarget(eventType: Event.Key<*>): Boolean = eventType.isSubFrom(key)
@@ -162,7 +171,7 @@ private class BlockingCoreListener<E : Event>(
     private val blockNext: Boolean,
     override val isAsync: Boolean,
     override val logger: Logger,
-    private val func: BiFunction<EventListenerProcessingContext, E, Any?> // (EventListenerProcessingContext, E) -> Any?
+    private val func: BiFunction<EventListenerProcessingContext, E, Any?>, // (EventListenerProcessingContext, E) -> Any?
 ) : EventListener {
 
     override fun isTarget(eventType: Event.Key<*>): Boolean = eventType.isSubFrom(key)
@@ -192,7 +201,7 @@ public fun <E : Event> blockingCoreListener(
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    func: BiFunction<EventListenerProcessingContext, E, Any?>
+    func: BiFunction<EventListenerProcessingContext, E, Any?>,
 ): EventListener =
     BlockingCoreListener(id, eventKey, blockNext, isAsync, logger, func)
 
@@ -212,7 +221,7 @@ public fun <E : Event> blockingCoreListener(
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    func: BiConsumer<EventListenerProcessingContext, E>
+    func: BiConsumer<EventListenerProcessingContext, E>,
 ): EventListener =
     BlockingCoreListener(
         id, eventKey, blockNext, isAsync, logger
@@ -236,7 +245,7 @@ public fun <E : Event> blockingCoreListener(
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    func: BiFunction<EventListenerProcessingContext, E, Any?>
+    func: BiFunction<EventListenerProcessingContext, E, Any?>,
 ): EventListener = blockingCoreListener(Event.Key.getKey(eventType), id, blockNext, isAsync, logger, func)
 
 /**
@@ -253,5 +262,5 @@ public fun <E : Event> blockingCoreListener(
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    func: BiConsumer<EventListenerProcessingContext, E>
+    func: BiConsumer<EventListenerProcessingContext, E>,
 ): EventListener = blockingCoreListener(Event.Key.getKey(eventType), id, blockNext, isAsync, logger, func)

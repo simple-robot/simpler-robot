@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -21,11 +21,11 @@ package love.forte.simbot.application
  * 构建并启用一个 [Application].
  *
  */
-public fun <Config : ApplicationConfiguration, Builder : ApplicationEnvironmentBuilder> simbotApplication(
-    factory: ApplicationFactory<Config, Builder>,
+public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder, A : Application> simbotApplication(
+    factory: ApplicationFactory<Config, Builder, A>,
     configurator: Config.() -> Unit = {},
     builder: Builder.() -> Unit = {},
-): Application {
+): A {
     return factory.create(configurator, builder)
 }
 
