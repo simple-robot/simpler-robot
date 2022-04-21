@@ -19,6 +19,8 @@ package love.forte.simbot.application
 import love.forte.simbot.Component
 import love.forte.simbot.application.Application.Environment
 import love.forte.simbot.event.EventListenerManager
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 
 /**
@@ -32,9 +34,10 @@ public interface ApplicationEnvironmentFactory<
         BMBuilder : BotManagersBuilder,
         out Env : Environment,
         AppBuilder : ApplicationEnvironmentBuilder<CBuilder, MConfig, BMBuilder, Env>,
+        AppConfig : ApplicationConfiguration,
         > {
 
-    public fun create(configurator: AppBuilder.() -> Unit): Env
+    public fun create(config: AppConfig.() -> Unit, configurator: AppBuilder.() -> Unit): Env
 
 }
 
@@ -80,6 +83,21 @@ public interface ApplicationEnvironmentBuilder<
 
 
     public fun build(): Env
+
+
+}
+
+
+/**
+ * 整个应用程序进行构建所需的基本配置信息。
+ */
+public open class ApplicationConfiguration {
+
+    /**
+     * 当前application内所使用的协程上下文。
+     *
+     */
+    public var coroutineContext: CoroutineContext = EmptyCoroutineContext
 
 
 }

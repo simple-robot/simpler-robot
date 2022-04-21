@@ -83,8 +83,6 @@ public interface Application : CoroutineScope {
 
 
 
-
-
     /**
      * 挂起此应用直至其被终止。
      */
@@ -95,7 +93,6 @@ public interface Application : CoroutineScope {
      */
     public suspend fun shutdown()
 }
-
 
 
 
