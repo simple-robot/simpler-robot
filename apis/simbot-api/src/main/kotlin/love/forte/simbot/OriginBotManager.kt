@@ -21,10 +21,8 @@ import love.forte.simbot.OriginBotManager.cancel
 import love.forte.simbot.utils.runInBlocking
 import java.util.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
-import java.util.stream.Stream
 import kotlin.concurrent.read
 import kotlin.concurrent.write
-import kotlin.streams.asStream
 
 
 /**
@@ -146,19 +144,10 @@ public object OriginBotManager : Set<BotManager<*>> {
      *
      */
     @JvmSynthetic
-    public fun getManagers(component: Component): Sequence<BotManager<*>> {
+    public fun getManagers(component: Component): List<BotManager<*>> {
         lock.read {
             checkShutdown()
-            return sequence {
-                val iter = managers.keys.iterator()
-                while (iter.hasNext()) {
-                    val next: BotManager<*> = iter.next()
-                    if (next.component == component) {
-                        checkShutdown()
-                        yield(next)
-                    }
-                }
-            }
+            return filter { it.component == component }
         }
     }
 
@@ -166,39 +155,13 @@ public object OriginBotManager : Set<BotManager<*>> {
      * 根据指定ID查询组件ID与其相等的 [BotManager].
      */
     @JvmSynthetic
-    public fun getManagers(componentId: ID): Sequence<BotManager<*>> {
+    public fun getManagers(componentId: ID): List<BotManager<*>> {
         lock.read {
             checkShutdown()
-            return sequence {
-                val iter = managers.keys.iterator()
-                while (iter.hasNext()) {
-                    val next: BotManager<*> = iter.next()
-                    if (next.component.id == componentId) {
-                        checkShutdown()
-                        yield(next)
-                    }
-                }
-            }
+            return filter { it.component.id == componentId }
         }
     }
 
-    /**
-     * [getManagers], 返回 [Stream].
-     *
-     * @see getManagers
-     */
-    @Api4J
-    @JvmName("getManagers")
-    public fun getManagers4J(component: Component): Stream<BotManager<*>> = getManagers(component).asStream()
-
-    /**
-     * [getManagers], 返回 [Stream].
-     *
-     * @see getManagers
-     */
-    @Api4J
-    @JvmName("getManagers")
-    public fun getManagers4J(componentId: ID): Stream<BotManager<*>> = getManagers(componentId).asStream()
 
     /**
      * 获取某个指定组件下的第一个能够得到的 [BotManager], 如果找不到则返回null。
@@ -209,6 +172,17 @@ public object OriginBotManager : Set<BotManager<*>> {
     public fun getFirstManager(component: Component): BotManager<*>? = lock.read {
         checkShutdown()
         managers.keys.firstOrNull { it.component == component }
+    }
+
+    /**
+     * 获取某个指定组件下的第一个能够得到的 [BotManager], 如果找不到则返回null。
+     *
+     * @param componentId component的id。
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
+    public fun getFirstManager(componentId: ID): BotManager<*>? = lock.read {
+        checkShutdown()
+        managers.keys.firstOrNull { it.component.id == componentId }
     }
 
     /**
