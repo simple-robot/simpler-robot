@@ -18,20 +18,29 @@
 package love.forte.simbot
 
 import love.forte.simbot.OriginBotManager.cancel
-import love.forte.simbot.utils.*
+import love.forte.simbot.utils.runInBlocking
 import java.util.*
-import java.util.concurrent.locks.*
-import java.util.stream.*
-import kotlin.concurrent.*
-import kotlin.streams.*
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import java.util.stream.Stream
+import kotlin.concurrent.read
+import kotlin.concurrent.write
+import kotlin.streams.asStream
 
 
 /**
  * 所有 [BotManager] 的统一管理器.
  *
- * [OriginBotManager] 是所有 [BotManager] 实例的统一管理类，在正常情况下，所有的 [BotManager] 实现类在新建实例的时候都会将自身交由 [OriginBotManager] 进行统一管理。[OriginBotManager] 内部不会持有这些manager，当一个 [BotManager] 执行了 [cancel] 或被垃圾回收后，[OriginBotManager] 中将无法再获取到它。
+ * [OriginBotManager] 是所有 [BotManager] 实例的统一管理类，在正常情况下，
+ * 所有的 [BotManager] 实现类在新建实例的时候都会将自身交由 [OriginBotManager] 进行统一管理。
+ * [OriginBotManager] 内部不会持有这些manager，当一个 [BotManager] 执行了 [cancel] 或被垃圾回收后，
+ * [OriginBotManager] 中将无法再获取到它。
  *
  * 如果你想要某个 [BotManager] 脱离 [OriginBotManager] 的管理，使用 [BotManager.breakAway]
+ *
+ * ## 谨慎使用
+ * [OriginBotManager] 是脱离环境的 **全局性** 功能，当你的整个应用中存在多个环境时，使用它则很可能造成各种混乱。
+ * [BotManager] 作为属性存在于很多对象中，你应当优先考虑使用那些明确的api，而对于全局性的 [OriginBotManager],
+ * 则是最后的选择。
  *
  */
 public object OriginBotManager : Set<BotManager<*>> {
