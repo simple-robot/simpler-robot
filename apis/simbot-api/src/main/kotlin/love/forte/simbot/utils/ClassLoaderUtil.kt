@@ -14,17 +14,11 @@
  *
  */
 
-import love.forte.simbot.core.event.CoreListeners;
-import love.forte.simbot.event.EventListener;
-import love.forte.simbot.event.MessageEvent;
-
-/**
- * @author ForteScarlet
- */
-public class JEventMain {
-    public static void main(String[] args) {
-        final EventListener eventListener = CoreListeners.newCoreListener(MessageEvent.class, (c, e) -> 1);
+package love.forte.simbot.utils
 
 
-    }
-}
+internal inline val Any.currentClassLoader: ClassLoader
+    get() =
+        javaClass.classLoader
+            ?: Thread.currentThread().contextClassLoader
+            ?: ClassLoader.getSystemClassLoader()

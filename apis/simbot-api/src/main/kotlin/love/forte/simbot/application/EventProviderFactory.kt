@@ -16,11 +16,10 @@
 
 package love.forte.simbot.application
 
-import love.forte.simbot.Attribute
-import love.forte.simbot.BotManager
-import love.forte.simbot.Component
-import love.forte.simbot.Survivable
+import love.forte.simbot.*
 import love.forte.simbot.event.EventProcessor
+import love.forte.simbot.utils.currentClassLoader
+import java.util.*
 
 
 /**
@@ -63,6 +62,33 @@ public interface EventProviderFactory<P : EventProvider, Config : Any> {
 }
 
 
+/**
+ * 实现自动注册的配置类。通过 Java SPI 机制加载。
+ */
+public interface EventProviderAutoRegistrarFactory<P : EventProvider, Config : Any> {
+
+    /**
+     * 得到 [EventProviderFactory] 实例。
+     */
+    public val registrar: EventProviderFactory<P, Config>
+
+}
 
 
-public interface EventProviderAutoRegistrarFactory
+/**
+ * 尝试加载所有的 [ComponentAutoRegistrarFactory] 并注册到 [ApplicationBuilder] 中。
+ */
+@ApplicationBuildDsl
+public fun ApplicationBuilder.installAllEventProviders(classLoader: ClassLoader = this.currentClassLoader) {
+    val factories = ServiceLoader.load(EventProviderAutoRegistrarFactory::class.java, classLoader)
+    factories.forEach {
+        install(it.registrar)
+    }
+
+}
+//
+// internal inline val Any.currentClassLoader: ClassLoader
+//     get() =
+//         javaClass.classLoader
+//             ?: Thread.currentThread().contextClassLoader
+//             ?: ClassLoader.getSystemClassLoader()

@@ -17,10 +17,12 @@
 package love.forte.simbot
 
 import kotlinx.serialization.modules.SerializersModule
+import love.forte.simbot.application.ApplicationBuildDsl
 import love.forte.simbot.application.ApplicationBuilder
 import love.forte.simbot.definition.Container
 import love.forte.simbot.definition.IDContainer
 import love.forte.simbot.event.EventListenerManager
+import love.forte.simbot.utils.currentClassLoader
 import java.util.*
 
 
@@ -110,6 +112,7 @@ public interface ComponentAutoRegistrarFactory<C : Component, out Config : Any> 
 /**
  * 尝试加载所有的 [ComponentAutoRegistrarFactory] 并注册到 [ApplicationBuilder] 中。
  */
+@ApplicationBuildDsl
 public fun ApplicationBuilder.installAllComponents(classLoader: ClassLoader = this.currentClassLoader) {
     val factories = ServiceLoader.load(ComponentAutoRegistrarFactory::class.java, classLoader)
     factories.forEach {
@@ -118,11 +121,6 @@ public fun ApplicationBuilder.installAllComponents(classLoader: ClassLoader = th
 
 }
 
-internal inline val Any.currentClassLoader: ClassLoader
-    get() =
-        javaClass.classLoader
-            ?: Thread.currentThread().contextClassLoader
-            ?: ClassLoader.getSystemClassLoader()
 
 
 //endregion

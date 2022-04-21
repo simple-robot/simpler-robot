@@ -16,8 +16,10 @@
 
 package application
 
+import love.forte.simbot.application.installAllEventProviders
 import love.forte.simbot.application.simbotApplication
 import love.forte.simbot.core.application.Simple
+import love.forte.simbot.installAllComponents
 import org.junit.Test
 
 
@@ -30,6 +32,13 @@ class SimpleApplicationTest {
     @Test
     fun app() {
         simbotApplication(Simple) {
+            listenerManager {
+                // ...
+            }
+
+            installAllComponents()
+            installAllEventProviders()
+
 
         }
 

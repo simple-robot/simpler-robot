@@ -19,14 +19,12 @@ package love.forte.simbot.core.application
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import love.forte.simbot.application.Application
-import love.forte.simbot.application.ApplicationConfiguration
-import love.forte.simbot.application.ApplicationFactory
-import love.forte.simbot.application.simbotApplication
+import love.forte.simbot.application.*
 import love.forte.simbot.core.event.CoreListenerManager
 import love.forte.simbot.core.event.CoreListenerManagerConfiguration
 import love.forte.simbot.core.event.coreListenerManager
 import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -45,7 +43,7 @@ public object Simple : ApplicationFactory<SimpleApplicationConfiguration, Simple
 }
 
 
-public class SimpleApplication private constructor(
+public class SimpleApplication internal constructor(
     private val simpleEnvironment: SimpleEnvironment,
 ) : Application {
     override val coroutineContext: CoroutineContext
@@ -97,6 +95,7 @@ public class SimpleApplicationBuilder : BaseApplicationBuilder() {
      * 配置内部的 listener manager.
      *
      */
+    @ApplicationBuildDsl
     public fun listenerManager(configurator: CoreListenerManagerConfiguration.() -> Unit) {
         val old = listenerManagerConfigurator
         listenerManagerConfigurator = { old(); configurator() }
@@ -113,14 +112,27 @@ public class SimpleApplicationBuilder : BaseApplicationBuilder() {
 
 
     internal fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {
-        // components.
         val components = buildComponents()
+        val listenerManager = buildListenerManager(appConfig)
+        val providers = buildProviders(listenerManager, components, appConfig)
+        val environment = SimpleEnvironment(
+            components,
+            listenerManager,
+            providers,
+            appConfig.toProperties()
+        )
 
-        // core
-
-        TODO()
+        return SimpleApplication(environment)
     }
 
+
+    private fun SimpleApplicationConfiguration.toProperties(): SimpleApplicationProperties {
+        val logger = logger ?: LoggerFactory.getLogger("love.forte.simbot.core.application.Simple")
+        return SimpleApplicationProperties(
+            logger = logger,
+            coroutineContext = coroutineContext
+        )
+    }
 
 }
 
