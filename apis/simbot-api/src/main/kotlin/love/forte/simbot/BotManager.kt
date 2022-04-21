@@ -96,14 +96,17 @@ public interface BotVerifyInfo {
 public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Survivable {
     init {
         if (isBeManaged()) {
-            @Suppress("LeakingThis")
-            OriginBotManager.register(this)
+            registerSelf()
         }
     }
 
     // kill warn
     private fun isBeManaged() = beManaged()
     protected open fun beManaged(): Boolean = true
+
+    private fun registerSelf() {
+        OriginBotManager.register(this)
+    }
 
     /**
      *
