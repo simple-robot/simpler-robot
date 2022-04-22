@@ -41,12 +41,6 @@ public abstract class InternalEvent : Event {
     abstract override val bot: Bot
     abstract override val key: Key<out InternalEvent>
 
-    /**
-     * 内部事件是当前应用程序所推送的伪事件，与实际业务无关，理论上只有bot自己能够收到此事件。
-     * 因此默认情况下，[InternalEvent] 的访问级别属于 [Event.VisibleScope.PRIVATE].
-     */
-    override val visibleScope: Event.VisibleScope get() = Event.VisibleScope.PRIVATE
-
     public companion object Root : Key<InternalEvent> {
         override val id: CharSequenceID = "api.internal".ID
         override fun safeCast(value: Any): InternalEvent? = doSafeCast(value)

@@ -23,13 +23,15 @@ package love.forte.simbot.action
  * 不支持的行为异常。
  * 对于组件，如果一个行为不被支持（例如 [MuteSupport] [DeleteSupport]）那么
  *
+ * TODO 可能会移除
+ *
  * @author ForteScarlet
  */
-public class NotSupportActionException : ActionException {
+public class UnsupportedActionException : ActionException {
     public constructor() : super()
     public constructor(message: String?) : super(message)
     public constructor(message: String?, cause: Throwable?) : super(message, cause)
     public constructor(cause: Throwable?) : super(cause)
 }
 
-public inline fun actionNotSupportBecause(block: () -> String): Nothing = throw NotSupportActionException(block())
+public inline fun actionUnsupported(block: () -> String): Nothing = throw UnsupportedActionException(block())

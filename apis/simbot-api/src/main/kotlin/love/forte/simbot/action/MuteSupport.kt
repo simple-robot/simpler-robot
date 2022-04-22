@@ -17,10 +17,10 @@
 
 package love.forte.simbot.action
 
-import love.forte.simbot.*
-import love.forte.simbot.utils.*
-import java.util.concurrent.*
-import kotlin.time.*
+import love.forte.simbot.Api4J
+import love.forte.simbot.utils.runInBlocking
+import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.Duration.Companion.nanoseconds
 
@@ -41,7 +41,7 @@ import kotlin.time.Duration.Companion.nanoseconds
  * 除了上述两种目前已知的常见形式之外，可能会在未来产生新的情况，例如存在允许同时进行语音、文字交流的聊天室、视频聊天的聊天室等。
  *
  * 目前，[MuteSupport] 默认实现于 [love.forte.simbot.definition.Member] 和 [love.forte.simbot.definition.Organization]，
- * 但是api无法保证其实现者能够完美支持此行为，因此在行为不被支持的时候，可能会抛出 [NotSupportActionException] 异常或永远返回一个无效结果。
+ * 但是api无法保证其实现者能够完美支持此行为，因此在行为不被支持的时候，可能会抛出 [UnsupportedActionException] 异常或永远返回一个无效结果。
  *
  *
  * @author ForteScarlet
@@ -60,7 +60,7 @@ public interface MuteSupport {
      * 当组件支持 [duration] 的时候，它们绝大多数情况下都会至少以 **秒** 为单位，除非你明确的知道当前实现能够支持更低量级，否则请尽可能使用秒或更高的单位。
      * 同样的，很多情况下对于 [duration] 的上限也同样有限制，请自行斟酌数值，选取合理范围。
      *
-     * @throws NotSupportActionException 当此行为不被支持时
+     * @throws UnsupportedActionException 当此行为不被支持时
      *
      * @see unmute
      */
@@ -70,7 +70,7 @@ public interface MuteSupport {
     /**
      * 对当前目标进行 **解除禁言** 操作。
      *
-     * @throws NotSupportActionException 当此行为不被支持时
+     * @throws UnsupportedActionException 当此行为不被支持时
      *
      * @see mute
      */

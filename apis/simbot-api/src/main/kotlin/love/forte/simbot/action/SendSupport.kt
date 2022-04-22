@@ -184,7 +184,7 @@ public interface MessageReplyReceipt : MessageReceipt {
      *
      * 并不代表所有平台都会这么做，或者说大多数情况下，在回复次数耗尽后会抛出异常。
      *
-     * @throws NotSupportActionException 当此行为不被支持时
+     * @throws UnsupportedActionException 当此行为不被支持时
      */
     public val isReplySuccess: Boolean
 }

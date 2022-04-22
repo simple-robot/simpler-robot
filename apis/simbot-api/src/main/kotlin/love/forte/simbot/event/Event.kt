@@ -19,12 +19,14 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.*
-import love.forte.simbot.definition.*
+import love.forte.simbot.definition.BotContainer
+import love.forte.simbot.definition.IDContainer
 import love.forte.simbot.event.Event.Key.Companion.getKey
-import love.forte.simbot.message.*
-import java.util.concurrent.*
-import kotlin.contracts.*
-import kotlin.reflect.*
+import love.forte.simbot.event.Event.Key.Companion.isSub
+import love.forte.simbot.message.doSafeCast
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentSkipListSet
+import kotlin.reflect.KClass
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.safeCast
@@ -82,8 +84,13 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
 
     /**
      * 这个事件客观上的 [可见范围][VisibleScope]。
+     *
+     * 此属性意义不大，未来可能会移除。
+     *
      */
-    public val visibleScope: VisibleScope
+    @Suppress("DEPRECATION")
+    @Deprecated("此属性意义不大，未来可能会移除。", ReplaceWith("VisibleScope.PUBLIC", "love.forte.simbot.event.Event.VisibleScope"))
+    public val visibleScope: VisibleScope get() = VisibleScope.PUBLIC
 
 
     /**
@@ -123,9 +130,9 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
      * 因此在事件调度中，需要通过 [Key] 来判断事件类型与其之间的继承关系。
      *
      * 所有事件的 [Key.id] 必须尽可能保证唯一，因此建议对ID进行命名的时候使用较为特殊的命名方式以杜绝出现ID重复。
-     * id重复不一定会出现异常提示，但是在使用 [isSubFrom] 等方法的时候，很有可能会出现缓存内容混乱导致无法预期的问题。
+     * id重复不一定会出现异常提示，但是在使用 [isSub] 等方法的时候，很有可能会出现缓存内容混乱导致无法预期的问题。
      *
-     * 事件类型可以继承，且允许多继承，实现方可以通过 [isSubFrom] 来判断当前事件是否为某个类型的子类型。
+     * 事件类型可以继承，且允许多继承，实现方可以通过 [isSub] 来判断当前事件是否为某个类型的子类型。
      *
      * 比如
      * ```kotlin
@@ -150,7 +157,7 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
      *
      * @see getKey
      * @see EventKey
-     * @see isSubFrom
+     * @see isSub
      */
     public interface Key<E : Event> {
         /**
@@ -177,10 +184,11 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
             private val notSubCache = ConcurrentHashMap<String, ConcurrentSkipListSet<String>>()
 
             /**
-             * 检测 [target] 是否为 [from] 的子类型。
+             * 检测当前接收器是否为 [from] 的子类型。
              */
             @JvmStatic
-            public fun isSub(target: Key<*>, from: Key<*>): Boolean {
+            public infix fun Key<*>.isSub(from: Key<*>): Boolean {
+                val target = this
                 if (from === Event) return true
                 if (from == target) return true
                 if (from in target.parents) return true
@@ -196,7 +204,7 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
 
 
                 val isSub = target.parents.any {
-                    it isSubFrom from
+                    it isSub from
                 }
                 if (isSub) {
                     subCache.computeIfAbsent(tid) { ConcurrentSkipListSet() }.add(fid)
@@ -246,8 +254,8 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
 
     /**
      * 消息事件的可见范围类型。
-     *
      */
+    @Deprecated("含义不明确，缺少应用场景，未来可能会移除")
     public enum class VisibleScope {
 
         /**
@@ -309,7 +317,7 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
 public annotation class EventKey(
     val id: String,
     val type: KClass<out Event>,
-    val parents: Array<KClass<out Event>>
+    val parents: Array<KClass<out Event>>,
 )
 
 /**
@@ -329,7 +337,7 @@ private fun <T : Event> EventKey.toKey(): Event.Key<T> =
 private class AnnotationEventKey<T : Event>(
     idValue: String,
     private val type: KClass<T>,
-    override val parents: Set<Event.Key<*>>
+    override val parents: Set<Event.Key<*>>,
 ) : Event.Key<T> {
     override val id: CharSequenceID = idValue.ID
     override fun safeCast(value: Any): T? = type.safeCast(value)
@@ -355,9 +363,10 @@ public fun <T : Event> KClass<T>.getKey(): Event.Key<T> = Event.Key.getKey(this)
  * 判断当前类型是否为提供类型的子类型。
  *
  */
-@OptIn(ExperimentalContracts::class)
+@Deprecated("Just use '... isSub ...'",
+    ReplaceWith("this isSub parentMaybe", "love.forte.simbot.event.Event.Key.Companion.isSub"))
 public infix fun Event.Key<*>.isSubFrom(parentMaybe: Event.Key<*>): Boolean {
-    return Event.Key.isSub(this, parentMaybe)
+    return this isSub parentMaybe
 }
 
 
@@ -405,5 +414,6 @@ public abstract class BaseEventKey<E : Event>(
 
 /**
  * 没有定义 [Event.Key] 异常。
+ *
  */
 public class NoSuchEventKeyDefineException internal constructor(message: String?) : SimbotIllegalStateException(message)
