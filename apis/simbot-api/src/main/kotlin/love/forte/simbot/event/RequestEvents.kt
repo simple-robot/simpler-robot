@@ -31,21 +31,20 @@ import love.forte.simbot.utils.runInBlocking
  *
  * 与 **请求** 有关的事件。
  *
- * 一个请求可能有两种情况：
- * - 外界向当前bot为某种目的而发出的**申请**。
- *      常见为一个入群申请、好友添加申请。
+ * 常见情况下，一个请求可能有两种情况：
+ * - 外界向当前bot为某种目的而发出的**申请**。比如一个入群申请、好友添加申请。
  *
- * - 外界向当前bot所发出的一种**邀请**。
- *      常见为对BOT的入群邀请。
+ * - 外界向当前bot所发出的一种**邀请**。比如对BOT的入群邀请。
  *
  * 一个请求可能会有一些附加信息, 例如一些属性或者文本消息。
- * 目前提供了一个 [RequestEvent.message] 来代表一次申请中可能存在的 **文本消息**。
+ * 目前提供了一个 [message] 来代表一次申请中可能存在的 **文本消息**。
  * 如果实现实现不支持此属性或者属性为空，将得到null。
  *
  * @see JoinRequestEvent
  *
  * @author ForteScarlet
  */
+@BaseEvent
 public interface RequestEvent : Event, UserInfoContainer {
     /**
      * 事件标识。
@@ -53,12 +52,12 @@ public interface RequestEvent : Event, UserInfoContainer {
     override val id: ID
 
     /**
-     * 当前bot
+     * 当前[Bot]。
      */
     override val bot: Bot
 
     /**
-     * 一个申请事件可能会存在验证消息。
+     * 一个申请事件可能会存在附加的文本消息。
      */
     public val message: String?
 
@@ -79,16 +78,19 @@ public interface RequestEvent : Event, UserInfoContainer {
      */
     @Api4J
     public val requester: UserInfo
-        get() = runInBlocking { requester() }
 
 
     /**
      * 通常情况下, [user] 等同于 [requester].
      */
     @JvmSynthetic
-    override suspend fun user(): UserInfo = requester()
+    override suspend fun user(): UserInfo
 
-
+    /**
+     * 通常情况下, [user] 等同于 [requester].
+     */
+    @Api4J
+    override val user: UserInfo
 
     /**
      * 此申请的类型。
@@ -96,12 +98,15 @@ public interface RequestEvent : Event, UserInfoContainer {
     public val type: Type
 
     /**
-     * 是否同意/接受此次请求。
+     * 同意/接受此次请求。
      */
     @JvmSynthetic
     @ExperimentalSimbotApi
     public suspend fun accept(): Boolean
 
+    /**
+     * 同意/接受此次请求。
+     */
     @Api4J
     @JvmSynthetic
     @ExperimentalSimbotApi
@@ -119,14 +124,14 @@ public interface RequestEvent : Event, UserInfoContainer {
     }
 
     /**
-     * 是否拒绝/回绝此次请求。
+     * 拒绝/回绝此次请求。
      */
     @JvmSynthetic
     @ExperimentalSimbotApi
     public suspend fun reject(): Boolean
 
     /**
-     * 阻塞的执行 [reject].
+     * 拒绝/回绝此次请求。
      */
     @Api4J
     @ExperimentalSimbotApi
@@ -143,6 +148,9 @@ public interface RequestEvent : Event, UserInfoContainer {
         bot.launch { reject() }
     }
 
+    /**
+     * [RequestEvent] 的类型。
+     */
     public enum class Type {
         /**
          * 主动申请。
@@ -178,15 +186,23 @@ public interface RequestEvent : Event, UserInfoContainer {
  * @see GuildJoinRequestEvent
  * @see GroupJoinRequestEvent
  */
+@BaseEvent
 public interface JoinRequestEvent : RequestEvent {
 
     /**
-     * 这个添加请求的 **申请人**。假如BOT是被邀请者，则此值可能代表 [bot], 而邀请的人则为 [inviter]。
+     * 这个添加请求的 **申请人**。
+     *
+     * 假如BOT是被邀请者，则此值可能代表 [bot], 而邀请的人则为 [inviter]。
+     *
      */
+    @JvmSynthetic
     override suspend fun requester(): UserInfo
 
     /**
-     * 这个添加请求的 **申请人**。假如BOT是被邀请者，则此值可能代表 [bot], 而邀请的人则为 [inviter]。
+     * 这个添加请求的 **申请人**。
+     *
+     * 假如BOT是被邀请者，则此值可能代表 [bot], 而邀请的人则为 [inviter]。
+     *
      */
     @Api4J
     override val requester: UserInfo
@@ -200,7 +216,7 @@ public interface JoinRequestEvent : RequestEvent {
     /**
      * 邀请人。当无法获取或不存在时得到null。
      */
-    public val inviter: UserInfo? get() = runInBlocking { inviter() }
+    public val inviter: UserInfo?
 
     public companion object Key : BaseEventKey<JoinRequestEvent>("api.join_request", RequestEvent) {
         override fun safeCast(value: Any): JoinRequestEvent? = doSafeCast(value)
@@ -212,10 +228,6 @@ public interface JoinRequestEvent : RequestEvent {
  * 一个与频道服务器相关的申请事件。
  */
 public interface GuildRequestEvent : RequestEvent, GuildInfoContainer {
-
-    @JvmSynthetic
-    override suspend fun guild(): GuildInfo
-
     public companion object Key : BaseEventKey<GuildRequestEvent>(
         "api.guild_request", RequestEvent
     ) {
@@ -234,6 +246,7 @@ public interface GuildJoinRequestEvent : JoinRequestEvent, GuildRequestEvent {
     /**
      * 想要申请加入的人的信息。假如这是一个BOT被邀请的事件，则此信息可能等于 [bot].
      */
+    @JvmSynthetic
     override suspend fun requester(): UserInfo
 
     /**
@@ -255,12 +268,6 @@ public interface GuildJoinRequestEvent : JoinRequestEvent, GuildRequestEvent {
  * @see GroupJoinRequestEvent
  */
 public interface GroupRequestEvent : RequestEvent, GroupInfoContainer {
-
-    @JvmSynthetic
-    override suspend fun group(): GroupInfo
-    @JvmSynthetic
-    override suspend fun requester(): UserInfo
-
     public companion object Key : BaseEventKey<GroupRequestEvent>(
         "api.group_request", RequestEvent
     ) {
@@ -277,16 +284,16 @@ public interface GroupRequestEvent : RequestEvent, GroupInfoContainer {
 public interface GroupJoinRequestEvent : GroupRequestEvent, JoinRequestEvent {
 
     /**
-     * 被申请进入的群信息。
-     */
-    @JvmSynthetic
-    override suspend fun group(): GroupInfo
-
-    /**
      * 想要加入目标群的人的信息。假如是BOT被邀请的事件，则此值可能等同于 [bot].
      */
     @JvmSynthetic
     override suspend fun requester(): UserInfo
+
+    /**
+     * 想要加入目标群的人的信息。假如是BOT被邀请的事件，则此值可能等同于 [bot].
+     */
+    @Api4J
+    override val requester: UserInfo
 
     public companion object Key : BaseEventKey<GroupJoinRequestEvent>(
         "api.group_join_request", GroupRequestEvent, JoinRequestEvent
@@ -300,11 +307,6 @@ public interface GroupJoinRequestEvent : GroupRequestEvent, JoinRequestEvent {
  * 一个与频道相关的请求事件。
  */
 public interface ChannelRequestEvent : RequestEvent, ChannelInfoContainer {
-    override val id: ID
-
-    @JvmSynthetic
-    override suspend fun channel(): ChannelInfo
-
 
     public companion object Key : BaseEventKey<ChannelRequestEvent>(
         "api.channel_request", RequestEvent
@@ -320,10 +322,6 @@ public interface ChannelRequestEvent : RequestEvent, ChannelInfoContainer {
  * @see FriendRequestEvent
  */
 public interface UserRequestEvent : RequestEvent, UserInfoContainer {
-
-    @JvmSynthetic
-    override suspend fun user(): UserInfo
-
     public companion object Key : BaseEventKey<UserRequestEvent>(
         "api.user_request", RequestEvent
     ) {
@@ -337,20 +335,6 @@ public interface UserRequestEvent : RequestEvent, UserInfoContainer {
  * 请求事件不能保证能够得到完整的 [Friend] 对象，但是应尽可能提供基本的用户信息 [FriendInfo].
  */
 public interface FriendRequestEvent : UserRequestEvent, FriendInfoContainer {
-
-    /**
-     * [friend] 仅代表申请人的基本信息，不代表他已经成为了好友。
-     */
-    @JvmSynthetic
-    override suspend fun friend(): FriendInfo
-
-    // Impl
-    override suspend fun user(): UserInfo = friend()
-
-    @Api4J
-    override val user: UserInfo
-        get() = friend
-
     public companion object Key : BaseEventKey<FriendRequestEvent>(
         "api.friend_request", UserRequestEvent
     ) {
@@ -358,57 +342,7 @@ public interface FriendRequestEvent : UserRequestEvent, FriendInfoContainer {
     }
 }
 
-//
-// // 添加请求
-//
-// /**
-//  * 一个添加请求。
-//  * 大多数情况下，bot需要拥有一定的相关权限才可能收到相关的添加请求，比如bot需要是一个管理员，
-//  * 并且在添加的时候需要进行验证。
-//  *
-//  * 默认提供了三个类型的请求事件类型：
-//  * - [GroupAddRequestEvent]
-//  * - [GuildAddRequestEvent]
-//  * - [FriendAddRequestEvent]
-//  */
-// public interface AddRequestEvent : RequestEvent {
-//
-//     public companion object Key : BaseEventKey<AddRequestEvent>("api.add_request", RequestEvent) {
-//         override fun safeCast(value: Any): AddRequestEvent? = doSafeCast(value)
-//     }
-// }
-//
-//
-// /**
-//  * 群添加申请
-//  *
-//  * @see AddRequestEvent
-//  * @see GuildRequestEvent
-//  */
-// public interface GroupAddRequestEvent : AddRequestEvent, GuildRequestEvent {
-//
-//     public companion object Key : BaseEventKey<GroupAddRequestEvent>(
-//         "api.group_add_request", AddRequestEvent, GuildRequestEvent
-//     ) {
-//         override fun safeCast(value: Any): GroupAddRequestEvent? = doSafeCast(value)
-//     }
-// }
-//
-// /**
-//  * 频道添加申请
-//  *
-//  * @see AddRequestEvent
-//  * @see GuildRequestEvent
-//  */
-// public interface GuildAddRequestEvent : AddRequestEvent, GuildRequestEvent {
-//
-//     public companion object Key : BaseEventKey<GuildAddRequestEvent>(
-//         "api.guild_add_request", AddRequestEvent, GuildRequestEvent
-//     ) {
-//         override fun safeCast(value: Any): GuildAddRequestEvent? = doSafeCast(value)
-//     }
-// }
-//
+
 /**
  * 好友添加申请。
  *
@@ -416,17 +350,6 @@ public interface FriendRequestEvent : UserRequestEvent, FriendInfoContainer {
  * @see FriendRequestEvent
  */
 public interface FriendAddRequestEvent : JoinRequestEvent, FriendRequestEvent {
-
-    /**
-     * 想要成为好友的人的信息。
-     */
-    override suspend fun requester(): FriendInfo
-
-    /**
-     * 等同于 [requester], 当前申请人的信息。
-     */
-    override suspend fun friend(): FriendInfo = requester()
-
     public companion object Key : BaseEventKey<FriendAddRequestEvent>(
         "api.friend_add_request", JoinRequestEvent, FriendRequestEvent
     ) {
