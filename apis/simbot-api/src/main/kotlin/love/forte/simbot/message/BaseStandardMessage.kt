@@ -17,14 +17,17 @@
 
 package love.forte.simbot.message
 
-import kotlinx.serialization.*
-import love.forte.simbot.*
-import love.forte.simbot.definition.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import love.forte.simbot.Api4J
+import love.forte.simbot.ID
+import love.forte.simbot.definition.IDContainer
+import love.forte.simbot.definition.ResourceContainer
 import love.forte.simbot.message.At.Key.equals
 import love.forte.simbot.message.At.Key.hashCode
 import love.forte.simbot.message.Text.Key.getEmptyText
 import love.forte.simbot.message.Text.Key.of
-import love.forte.simbot.resources.*
+import love.forte.simbot.resources.Resource
 
 /**
  * 一些由核心提供的标准 [Message] 实例或标准.
@@ -199,7 +202,7 @@ public object AtAll : BaseStandardMessage<AtAll>(), Message.Key<AtAll> {
  * 因此 [Image] 需要通过 [love.forte.simbot.Bot] 进行上传获取。
  *
  */
-public interface Image<E : Image<E>> : StandardMessage<E>, IDContainer {
+public interface Image<E : Image<E>> : StandardMessage<E>, IDContainer, ResourceContainer {
     /**
      * 上传后的图片会有一个服务端返回的ID。
      *
@@ -212,7 +215,15 @@ public interface Image<E : Image<E>> : StandardMessage<E>, IDContainer {
     /**
      * 得到这个图片的数据资源。
      */
-    public suspend fun resource(): Resource
+    @JvmSynthetic
+    override suspend fun resource(): Resource
+
+
+    /**
+     * 得到这个图片的数据资源。
+     */
+    @Api4J
+    override val resource: Resource
 
 
     public companion object Key : Message.Key<Image<*>> {
