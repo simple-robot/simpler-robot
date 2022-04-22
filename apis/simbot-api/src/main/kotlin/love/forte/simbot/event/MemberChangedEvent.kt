@@ -19,10 +19,10 @@ package love.forte.simbot.event
 
 import love.forte.simbot.Api4J
 import love.forte.simbot.action.ActionType
+import love.forte.simbot.definition.Member
 import love.forte.simbot.definition.MemberInfo
 import love.forte.simbot.definition.Organization
 import love.forte.simbot.message.doSafeCast
-import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -31,8 +31,8 @@ import love.forte.simbot.utils.runInBlocking
  * @see MemberIncreaseEvent
  * @see MemberDecreaseEvent
  */
-public interface MemberChangedEvent<out SOURCE : Organization, out BEFORE : MemberInfo?, out AFTER : MemberInfo?> :
-    ChangedEvent<SOURCE, BEFORE, AFTER>, OrganizationEvent {
+public interface MemberChangedEvent :
+    ChangedEvent, OrganizationEvent, MemberEvent {
 
     /**
      * 这次组织成员变动的**操作者**。
@@ -56,12 +56,12 @@ public interface MemberChangedEvent<out SOURCE : Organization, out BEFORE : Memb
      */
     @Api4J
     public val operator: MemberInfo?
-        get() = runInBlocking { operator() }
-
 
     public companion object Key :
-        BaseEventKey<MemberChangedEvent<*, *, *>>("api.member_changed", ChangedEvent, OrganizationEvent) {
-        override fun safeCast(value: Any): MemberChangedEvent<*, *, *>? = doSafeCast(value)
+        BaseEventKey<MemberChangedEvent>(
+            "api.member_changed",
+            ChangedEvent, OrganizationEvent, MemberEvent) {
+        override fun safeCast(value: Any): MemberChangedEvent? = doSafeCast(value)
     }
 }
 
@@ -73,32 +73,34 @@ public interface MemberChangedEvent<out SOURCE : Organization, out BEFORE : Memb
  * @see IncreaseEvent
  * @see MemberChangedEvent
  */
-public interface MemberIncreaseEvent<out S : Organization, out T : MemberInfo> :
-    IncreaseEvent<S, T>,
-    MemberChangedEvent<S, T?, T> {
+public interface MemberIncreaseEvent :
+    IncreaseEvent,
+    MemberChangedEvent {
 
     /**
-     * 增加事件发生所在的组织。
+     * 成员增加事件发生所在的组织。
      */
     @JvmSynthetic
-    override suspend fun source(): S
+    override suspend fun source(): Organization
 
     /**
-     * 增加的这个群成员的基础信息。
+     * 成员增加事件发生所在的组织。
+     */
+    @Api4J
+    override val source: Organization
+
+
+    /**
+     * 增加的[成员][Member]。
      */
     @JvmSynthetic
-    override suspend fun target(): T
+    override suspend fun after(): Member
 
     /**
-     * 群成员新增，[before] 所代表内容永远为null。
+     * 增加的[成员][Member]。
      */
-    override val before: T? get() = null
-
-    /**
-     * 群成员新增，[before] 所代表内容永远为null。
-     */
-    @JvmSynthetic
-    override suspend fun before(): T? = null
+    @Api4J
+    override val after: Member
 
     /**
      * 行为类型。主动/被动
@@ -106,8 +108,10 @@ public interface MemberIncreaseEvent<out S : Organization, out T : MemberInfo> :
     public val actionType: ActionType
 
     public companion object Key :
-        BaseEventKey<MemberIncreaseEvent<*, *>>("api.member_increase", IncreaseEvent, MemberChangedEvent) {
-        override fun safeCast(value: Any): MemberIncreaseEvent<*, *>? = doSafeCast(value)
+        BaseEventKey<MemberIncreaseEvent>(
+            "api.member_increase",
+            IncreaseEvent, MemberChangedEvent) {
+        override fun safeCast(value: Any): MemberIncreaseEvent? = doSafeCast(value)
     }
 }
 
@@ -118,32 +122,22 @@ public interface MemberIncreaseEvent<out S : Organization, out T : MemberInfo> :
  * @see DecreaseEvent
  * @see MemberChangedEvent
  */
-public interface MemberDecreaseEvent<out S : Organization, out T : MemberInfo> :
-    DecreaseEvent<S, T>,
-    MemberChangedEvent<S, T, T?> {
+public interface MemberDecreaseEvent :
+    DecreaseEvent,
+    MemberChangedEvent {
+
 
     /**
-     * 发生增加事件的组织。
+     * 离开的[成员][Member]
      */
     @JvmSynthetic
-    override suspend fun source(): S
+    override suspend fun before(): Member
 
     /**
-     * 离开群成员的基础信息。
+     * 离开的[成员][Member]
      */
-    @JvmSynthetic
-    override suspend fun target(): T
-
-    /**
-     * 群成员离开，[after] 所代表内容永远为null。
-     */
-    @JvmSynthetic
-    override suspend fun after(): T? = null
-
-    /**
-     * 群成员离开，[after] 所代表内容永远为null。
-     */
-    override val after: T? get() = null
+    @Api4J
+    override val before: Member
 
     /**
      * 行为类型。主动/被动
@@ -151,8 +145,10 @@ public interface MemberDecreaseEvent<out S : Organization, out T : MemberInfo> :
     public val actionType: ActionType
 
     public companion object Key :
-        BaseEventKey<MemberDecreaseEvent<*, *>>("api.member_decrease", DecreaseEvent, MemberChangedEvent) {
-        override fun safeCast(value: Any): MemberDecreaseEvent<*, *>? = doSafeCast(value)
+        BaseEventKey<MemberDecreaseEvent>(
+            "api.member_decrease",
+            DecreaseEvent, MemberChangedEvent) {
+        override fun safeCast(value: Any): MemberDecreaseEvent? = doSafeCast(value)
     }
 }
 

@@ -17,9 +17,51 @@
 
 package love.forte.simbot.event
 
+import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.definition.Friend
 import love.forte.simbot.message.doSafeCast
+
+
+/**
+ * 一个 [Bot] 的 [好友][Friend] 发生了变化，比如 [增加][FriendIncreaseEvent] 或 [减少][FriendDecreaseEvent] 了。
+ */
+@BaseEvent
+public interface FriendChangedEvent : ChangedEvent, FriendEvent {
+
+    /**
+     * 发生好友变更的[Bot]。
+     */
+    @JvmSynthetic
+    override suspend fun source(): Bot
+
+    /**
+     * 发生好友变更的[Bot]。
+     */
+    @Api4J
+    override val source: Bot
+
+    /**
+     * 涉及到的[好友][Friend]。
+     */
+    @JvmSynthetic
+    override suspend fun friend(): Friend
+
+    /**
+     * 涉及到的[好友][Friend]。
+     */
+    @Api4J
+    override val friend: Friend
+
+
+    public companion object Key : BaseEventKey<FriendChangedEvent>(
+        "api.friend_changed",
+        ChangedEvent, FriendEvent) {
+        override fun safeCast(value: Any): FriendChangedEvent? = doSafeCast(value)
+    }
+
+
+}
 
 
 /**
@@ -27,19 +69,22 @@ import love.forte.simbot.message.doSafeCast
  *
  * 这代表的是好友 **已经** 被添加的事件，不同于 [UserRequestEvent].
  */
-public interface FriendIncreaseEvent : IncreaseEvent<Bot, Friend>, FriendEvent {
+public interface FriendIncreaseEvent : IncreaseEvent, FriendChangedEvent {
+    /**
+     * 增加的[好友][Friend]。
+     */
+    @JvmSynthetic
+    override suspend fun after(): Friend
 
-    @JvmSynthetic
-    override suspend fun source(): Bot
-    @JvmSynthetic
-    override suspend fun friend(): Friend
+    /**
+     * 增加的[好友][Friend]。
+     */
+    @Api4J
+    override val after: Friend
 
-    //// Impl
-    @JvmSynthetic
-    override suspend fun target(): Friend = friend()
 
     public companion object Key : BaseEventKey<FriendIncreaseEvent>(
-        "api.friend_increase", IncreaseEvent, FriendEvent
+        "api.friend_increase", IncreaseEvent, FriendChangedEvent
     ) {
         override fun safeCast(value: Any): FriendIncreaseEvent? = doSafeCast(value)
     }
@@ -51,20 +96,25 @@ public interface FriendIncreaseEvent : IncreaseEvent<Bot, Friend>, FriendEvent {
  *
  * 这代表的是好友 **已经** 被移除的事件。
  */
-public interface FriendDecreaseEvent : DecreaseEvent<Bot, Friend>, FriendEvent {
+public interface FriendDecreaseEvent : DecreaseEvent, FriendChangedEvent {
 
 
+    /**
+     * 减少的 [好友][Friend].
+     */
     @JvmSynthetic
-    override suspend fun source(): Bot
-    @JvmSynthetic
-    override suspend fun friend(): Friend
+    override suspend fun before(): Friend
 
-    //// Impl
-    @JvmSynthetic
-    override suspend fun target(): Friend = friend()
+    /**
+     * 减少的 [好友][Friend].
+     */
+    @Api4J
+    override val before: Friend
+
+
 
     public companion object Key : BaseEventKey<FriendDecreaseEvent>(
-        "api.friend_decrease", DecreaseEvent, FriendEvent
+        "api.friend_decrease", DecreaseEvent, FriendChangedEvent
     ) {
         override fun safeCast(value: Any): FriendDecreaseEvent? = doSafeCast(value)
     }

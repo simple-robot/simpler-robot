@@ -19,10 +19,8 @@ package love.forte.simbot.event
 
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
-import love.forte.simbot.ID
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.doSafeCast
-import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -47,9 +45,11 @@ public interface UserEvent : ObjectiveEvent, UserInfoContainer {
     @JvmSynthetic
     override suspend fun user(): User
 
+    /**
+     * 这个[用户][User]。
+     */
     @Api4J
     override val user: User
-        get() = runInBlocking { user() }
 
     public companion object Key : BaseEventKey<UserEvent>("api.user") {
         override fun safeCast(value: Any): UserEvent? = doSafeCast(value)
@@ -62,7 +62,6 @@ public suspend inline fun <R> UserEvent.inUser(block: User.() -> R): R = user().
 public suspend inline fun <R> UserEvent.useUser(block: (User) -> R): R = user().let(block)
 
 
-
 /**
  * 一个与 [成员][Member] 相关的事件。
  */
@@ -73,17 +72,24 @@ public interface MemberEvent : UserEvent, MemberInfoContainer {
     @JvmSynthetic
     override suspend fun member(): Member
 
+    /**
+     * 这个[成员][Member]
+     */
     @Api4J
     override val member: Member
-        get() = runInBlocking { member() }
 
 
+    /**
+     * 这个[成员][Member]
+     */
     @JvmSynthetic
-    override suspend fun user(): User = member()
+    override suspend fun user(): Member
 
+    /**
+     * 这个[成员][Member]
+     */
     @Api4J
-    override val user: User
-        get() = member
+    override val user: Member
 
 
     public companion object Key : BaseEventKey<MemberEvent>("api.member", UserEvent) {
@@ -96,7 +102,6 @@ public suspend inline fun <R> MemberEvent.inMember(block: Member.() -> R): R = m
 public suspend inline fun <R> MemberEvent.useMember(block: (Member) -> R): R = member().let(block)
 
 
-
 /**
  * 一个与 [好友][Friend] 相关的事件。
  */
@@ -107,17 +112,24 @@ public interface FriendEvent : UserEvent, FriendInfoContainer {
     @JvmSynthetic
     override suspend fun friend(): Friend
 
-
+    /**
+     * 这个[好友][Friend]
+     */
     @Api4J
     override val friend: Friend
-        get() = runInBlocking { friend() }
 
-    @Api4J
-    override val user: User
-        get() = friend
 
+    /**
+     * 这个[好友][Friend]
+     */
     @JvmSynthetic
-    override suspend fun user(): User = friend()
+    override suspend fun user(): Friend
+
+    /**
+     * 这个[好友][Friend]
+     */
+    @Api4J
+    override val user: Friend
 
 
     public companion object Key : BaseEventKey<FriendEvent>("api.friend", UserEvent) {
@@ -128,7 +140,6 @@ public interface FriendEvent : UserEvent, FriendInfoContainer {
 
 public suspend inline fun <R> FriendEvent.inFriend(block: Friend.() -> R): R = friend().let(block)
 public suspend inline fun <R> FriendEvent.useFriend(block: (Friend) -> R): R = friend().let(block)
-
 
 
 //endregion
@@ -145,9 +156,12 @@ public interface OrganizationEvent : ObjectiveEvent {
     @JvmSynthetic
     public suspend fun organization(): Organization
 
+    /**
+     * 这个[组织][Organization]
+     */
     @Api4J
     public val organization: Organization
-        get() = runInBlocking { organization() }
+
 
     public companion object Key : BaseEventKey<OrganizationEvent>("api.organization") {
         override fun safeCast(value: Any): OrganizationEvent? = doSafeCast(value)
@@ -155,9 +169,11 @@ public interface OrganizationEvent : ObjectiveEvent {
 }
 
 
-public suspend inline fun <R> OrganizationEvent.inOrganization(block: Organization.() -> R): R = organization().let(block)
-public suspend inline fun <R> OrganizationEvent.useOrganization(block: (Organization) -> R): R = organization().let(block)
+public suspend inline fun <R> OrganizationEvent.inOrganization(block: Organization.() -> R): R =
+    organization().let(block)
 
+public suspend inline fun <R> OrganizationEvent.useOrganization(block: (Organization) -> R): R =
+    organization().let(block)
 
 
 /**
@@ -171,9 +187,25 @@ public interface GroupEvent : OrganizationEvent, GroupInfoContainer {
     @JvmSynthetic
     override suspend fun group(): Group
 
+    /**
+     * 这个[群][Group]
+     */
     @Api4J
     override val group: Group
-        get() = runInBlocking { group() }
+
+
+    /**
+     * 这个[群][Group]
+     */
+    @JvmSynthetic
+    override suspend fun organization(): Group
+
+    /**
+     *
+     * 这个[群][Group]
+     */
+    @Api4J
+    override val organization: Group
 
     public companion object Key : BaseEventKey<GroupEvent>("api.group", OrganizationEvent) {
         override fun safeCast(value: Any): GroupEvent? = doSafeCast(value)
@@ -183,7 +215,6 @@ public interface GroupEvent : OrganizationEvent, GroupInfoContainer {
 
 public suspend inline fun <R> GroupEvent.inGroup(block: Group.() -> R): R = group().let(block)
 public suspend inline fun <R> GroupEvent.useGroup(block: (Group) -> R): R = group().let(block)
-
 
 
 /**
@@ -197,9 +228,24 @@ public interface GuildEvent : OrganizationEvent {
     public suspend fun guild(): Guild
 
 
+    /**
+     * 这个[频道服务器][Guild]
+     */
     @Api4J
     public val guild: Guild
-        get() = runInBlocking { guild() }
+
+
+    /**
+     * 这个[频道服务器][Guild]
+     */
+    @JvmSynthetic
+    override suspend fun organization(): Guild
+
+    /**
+     * 这个[频道服务器][Guild]
+     */
+    @Api4J
+    override val organization: Guild
 
     public companion object Key : BaseEventKey<GuildEvent>("api.guild", OrganizationEvent) {
         override fun safeCast(value: Any): GuildEvent? = doSafeCast(value)
@@ -211,21 +257,35 @@ public suspend inline fun <R> GuildEvent.inGuild(block: Guild.() -> R): R = guil
 public suspend inline fun <R> GuildEvent.useGuild(block: (Guild) -> R): R = guild().let(block)
 
 
-
 /**
  * 一个与 [频道][Channel] 相关的事件。
  */
 public interface ChannelEvent : OrganizationEvent {
-    override val id: ID
+
     /**
      * 这个[频道][Channel]
      */
     @JvmSynthetic
     public suspend fun channel(): Channel
 
+    /**
+     * 这个[频道][Channel]
+     */
     @Api4J
     public val channel: Channel
-        get() = runInBlocking { channel() }
+
+
+    /**
+     * 这个[频道][Channel]
+     */
+    @JvmSynthetic
+    override suspend fun organization(): Channel
+
+    /**
+     * 这个[频道][Channel]
+     */
+    @Api4J
+    override val organization: Channel
 
     public companion object Key : BaseEventKey<ChannelEvent>("api.channel", OrganizationEvent) {
         override fun safeCast(value: Any): ChannelEvent? = doSafeCast(value)
@@ -235,7 +295,6 @@ public interface ChannelEvent : OrganizationEvent {
 
 public suspend inline fun <R> ChannelEvent.inChannel(block: Channel.() -> R): R = channel().let(block)
 public suspend inline fun <R> ChannelEvent.useChannel(block: (Channel) -> R): R = channel().let(block)
-
 
 
 //endregion
