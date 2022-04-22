@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot
@@ -62,6 +61,42 @@ public open class VerifyFailureException : SimbotIllegalStateException {
 
 
 /**
+ * 目前支持的bot配置文件格式。
+ */
+public enum class SupportedBotVerificationType(
+    /**
+     * 用于验证一个文件名是否为匹配的文件名。
+     */
+    private val fileNameMatcher: (name: String) -> Boolean,
+) {
+    /**
+     * Json格式的bot配置文件。格式允许 `*.bot` 或 `*.bot.json`。
+     */
+    JSON(regexMatcher(Regex(".+\\.bot(\\.json)?"))),
+
+    /**
+     * Yaml格式的bot配置文件。格式允许 `*.bot.yaml` 或 `*.bot.yml`。
+     */
+    YAML(regexMatcher(Regex(".+\\.bot\\.ya?ml"))),
+
+    /**
+     * Properties格式的bot配置文件。格式允许 `*.bot.properties`。
+     */
+    PROPERTIES(regexMatcher(Regex(".+\\.bot\\.properties"))),
+    ;
+
+    /**
+     * 判断文件名是否匹配。
+     */
+    public fun match(fileName: String): Boolean = fileNameMatcher(fileName)
+
+}
+
+
+private fun regexMatcher(regex: Regex): (String) -> Boolean = regex::matches
+
+
+/**
  * BOT用于验证身份的信息，通过读取 `.bot` 文件解析而来.
  *
  * [BotVerifyInfo] 为 Json 格式的内容。
@@ -70,6 +105,9 @@ public open class VerifyFailureException : SimbotIllegalStateException {
  *
  */
 public interface BotVerifyInfo {
+
+    // TODO
+    // public val componentId: String
 
     /**
      * 获取此资源的名称，一般代表其文件名。
