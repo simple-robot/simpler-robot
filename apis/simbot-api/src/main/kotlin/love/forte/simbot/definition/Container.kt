@@ -20,6 +20,7 @@ package love.forte.simbot.definition
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
+import love.forte.simbot.resources.Resource
 
 /**
  * 定义一个 **容器**。
@@ -162,3 +163,23 @@ public interface FriendInfoContainer : SuspendablePropertyContainer {
     public val friend: FriendInfo
 }
 
+
+/**
+ * 存在 [Resource] 的容器。
+ */
+public interface ResourceContainer : SuspendablePropertyContainer {
+
+    /**
+     * 得到当前容器中的 [资源][Resource].
+     */
+    @JvmSynthetic
+    public suspend fun resource(): Resource
+
+
+    /**
+     * 得到当前容器中的 [资源][Resource].
+     */
+    @Api4J
+    public val resource: Resource
+
+}
