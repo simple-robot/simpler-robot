@@ -20,9 +20,7 @@ import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.application.*
-import love.forte.simbot.core.event.CoreListenerManager
-import love.forte.simbot.core.event.CoreListenerManagerConfiguration
-import love.forte.simbot.core.event.coreListenerManager
+import love.forte.simbot.core.event.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
@@ -89,6 +87,30 @@ public class SimpleApplication internal constructor(
  */
 public class SimpleApplicationBuilder : BaseApplicationBuilder() {
     private var listenerManagerConfigurator: CoreListenerManagerConfiguration.() -> Unit = {}
+
+
+    /**
+     * 配置 [listenerManager] 的 `listeners`.
+     * 相当于
+     * ```kotlin
+     * listenerManager {
+     *    listeners {
+     *       block()
+     *    }
+     * }
+     * ```
+     */
+    @EventListenersGeneratorDSL
+    public inline fun listeners(crossinline block: EventListenersGenerator.() -> Unit) {
+        listenerManager {
+            listeners {
+                block()
+            }
+        }
+    }
+
+
+
 
 
     /**

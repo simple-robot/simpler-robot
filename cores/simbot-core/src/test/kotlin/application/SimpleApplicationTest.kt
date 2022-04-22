@@ -32,8 +32,8 @@ class SimpleApplicationTest {
     @Test
     fun app() {
         simbotApplication(Simple) {
-            listenerManager {
-                // ...
+            listeners {
+
             }
 
             installAllComponents()
