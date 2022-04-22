@@ -24,6 +24,7 @@ import love.forte.simbot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.action.MuteSupport
+import love.forte.simbot.action.SendSupport
 import love.forte.simbot.utils.runInBlocking
 import java.util.stream.Stream
 import kotlin.time.Duration
@@ -35,7 +36,7 @@ import kotlin.time.Duration
  * @see GuildMember
  * @see GroupMember
  */
-public interface Member : User, MemberInfo, MuteSupport {
+public interface Member : User, MemberInfo, MuteSupport, SendSupport {
 
     override val id: ID
     override val bot: Bot
@@ -46,6 +47,9 @@ public interface Member : User, MemberInfo, MuteSupport {
     @JvmSynthetic
     public suspend fun organization(): Organization
 
+    /**
+     * 这个成员所属的组织。一般来讲，一个 [Member] 实例不会同时存在于 [Group] 和 [Channel].
+     */
     @Api4J
     public val organization: Organization
         get() = runInBlocking { organization() }
@@ -116,17 +120,24 @@ public interface GuildMember : Member {
     @JvmSynthetic
     public suspend fun guild(): Guild
 
+    /**
+     * 这个成员所属的频道服务器。
+     */
     @Api4J
     public val guild: Guild
-        get() = runInBlocking { guild() }
 
 
+    /**
+     * 这个成员所属的频道服务器。
+     */
     @JvmSynthetic
     override suspend fun organization(): Guild = guild()
 
+    /**
+     * 这个成员所属的频道服务器。
+     */
     @Api4J
     override val organization: Guild
-        get() = guild
 }
 
 
@@ -137,14 +148,23 @@ public interface GroupMember : Member {
     @JvmSynthetic
     public suspend fun group(): Group
 
+    /**
+     * 这个成员所属的群。
+     */
     @Api4J
     public val group: Group
         get() = runInBlocking { group() }
 
 
+    /**
+     * 这个成员所属的群。
+     */
     @JvmSynthetic
     override suspend fun organization(): Group = group()
 
+    /**
+     * 这个成员所属的群。
+     */
     @Api4J
     override val organization: Group
         get() = group
