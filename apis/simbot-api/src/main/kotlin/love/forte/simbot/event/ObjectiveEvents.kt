@@ -29,6 +29,7 @@ import love.forte.simbot.message.doSafeCast
  *
  * [ObjectiveEvent] 是一个标记用事件类型，不存在 Key, 不允许被直接监听。
  */
+@BaseEvent
 public sealed interface ObjectiveEvent : Event {
     override val bot: Bot
 }
@@ -38,6 +39,7 @@ public sealed interface ObjectiveEvent : Event {
 /**
  * 一个与 [用户][User] 相关的事件。
  */
+@BaseEvent
 public interface UserEvent : ObjectiveEvent, UserInfoContainer {
     /**
      * 这个[用户][User]。
@@ -65,6 +67,7 @@ public suspend inline fun <R> UserEvent.useUser(block: (User) -> R): R = user().
 /**
  * 一个与 [成员][Member] 相关的事件。
  */
+@BaseEvent
 public interface MemberEvent : UserEvent, MemberInfoContainer {
     /**
      * 这个[成员][Member]
@@ -105,6 +108,7 @@ public suspend inline fun <R> MemberEvent.useMember(block: (Member) -> R): R = m
 /**
  * 一个与 [好友][Friend] 相关的事件。
  */
+@BaseEvent
 public interface FriendEvent : UserEvent, FriendInfoContainer {
     /**
      * 这个[好友][Friend]
@@ -149,6 +153,7 @@ public suspend inline fun <R> FriendEvent.useFriend(block: (Friend) -> R): R = f
 /**
  * 一个与 [组织][Organization] 相关的事件。
  */
+@BaseEvent
 public interface OrganizationEvent : ObjectiveEvent {
     /**
      * 这个[组织][Organization]
@@ -179,6 +184,7 @@ public suspend inline fun <R> OrganizationEvent.useOrganization(block: (Organiza
 /**
  * 一个与 [群][Group] 相关的事件。
  */
+@BaseEvent
 public interface GroupEvent : OrganizationEvent, GroupInfoContainer {
 
     /**
@@ -220,6 +226,7 @@ public suspend inline fun <R> GroupEvent.useGroup(block: (Group) -> R): R = grou
 /**
  * 一个与 [频道服务器][Guild] 相关的事件。
  */
+@BaseEvent
 public interface GuildEvent : OrganizationEvent {
     /**
      * 这个[频道服务器][Guild]
@@ -260,6 +267,7 @@ public suspend inline fun <R> GuildEvent.useGuild(block: (Guild) -> R): R = guil
 /**
  * 一个与 [频道][Channel] 相关的事件。
  */
+@BaseEvent
 public interface ChannelEvent : OrganizationEvent {
 
     /**

@@ -31,6 +31,7 @@ import love.forte.simbot.message.doSafeCast
  * @see MemberIncreaseEvent
  * @see MemberDecreaseEvent
  */
+@BaseEvent
 public interface MemberChangedEvent :
     ChangedEvent, OrganizationEvent, MemberEvent {
 

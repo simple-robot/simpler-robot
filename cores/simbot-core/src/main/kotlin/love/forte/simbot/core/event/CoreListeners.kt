@@ -21,6 +21,7 @@ package love.forte.simbot.core.event
 
 import love.forte.simbot.*
 import love.forte.simbot.event.*
+import love.forte.simbot.event.Event.Key.Companion.isSub
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
@@ -147,7 +148,7 @@ private class CoreListener<E : Event>(
     private val func: suspend (EventListenerProcessingContext, E) -> Any?
 ) : EventListener {
 
-    override fun isTarget(eventType: Event.Key<*>): Boolean = eventType.isSubFrom(key)
+    override fun isTarget(eventType: Event.Key<*>): Boolean = eventType isSub key
 
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         val result = func(context, key.safeCast(context.event)!!)
@@ -165,7 +166,7 @@ private class BlockingCoreListener<E : Event>(
     private val func: BiFunction<EventListenerProcessingContext, E, Any?> // (EventListenerProcessingContext, E) -> Any?
 ) : EventListener {
 
-    override fun isTarget(eventType: Event.Key<*>): Boolean = eventType.isSubFrom(key)
+    override fun isTarget(eventType: Event.Key<*>): Boolean = eventType isSub key
 
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         val result = runWithInterruptible { func.apply(context, key.safeCast(context.event)!!) }

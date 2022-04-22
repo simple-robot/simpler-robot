@@ -89,12 +89,6 @@ public interface RequestEvent : Event, UserInfoContainer {
     override suspend fun user(): UserInfo = requester()
 
 
-    /**
-     * 请求事件的可见范围。
-     * 对于请求事件，可见范围普遍为 [Event.VisibleScope.INTERNAL] 或 [Event.VisibleScope.PRIVATE].
-     */
-    override val visibleScope: Event.VisibleScope
-
 
     /**
      * 此申请的类型。
