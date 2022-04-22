@@ -21,9 +21,7 @@ package love.forte.simbot.action
 /**
  *
  * 不支持的行为异常。
- * 对于组件，如果一个行为不被支持（例如 [MuteSupport] [DeleteSupport]）那么
- *
- * TODO 可能会移除
+ * 对于组件，如果一个行为不被支持（例如 [SendSupport]）那么可能会抛出此异常。
  *
  * @author ForteScarlet
  */

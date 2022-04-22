@@ -48,6 +48,7 @@ public interface SendSupport {
      * @throws MessageSendingException 如果信息发送这个过程本身出现异常
      * @throws SimbotIllegalArgumentException 如果提供参数中存在不合法参数等
      * @throws SimbotIllegalStateException 如果当前状态存在异常
+     * @throws UnsupportedActionException 当不允许向成员发送消息时
      *
      */
     @JvmSynthetic
