@@ -16,8 +16,6 @@
 
 package love.forte.simbot
 
-import java.io.InputStream
-
 
 /**
  * Bot注册器。
@@ -42,7 +40,9 @@ public interface BotRegistrar : ComponentContainer {
     public fun register(verifyInfo: BotVerifyInfo): Bot
 }
 
-
+/**
+ * 当组件与预期组件不匹配的时候出现的异常。
+ */
 public open class ComponentMismatchException : SimbotIllegalArgumentException {
     public constructor() : super()
     public constructor(message: String?) : super(message)
@@ -50,72 +50,14 @@ public open class ComponentMismatchException : SimbotIllegalArgumentException {
     public constructor(cause: Throwable?) : super(cause)
 }
 
+/**
+ * 当验证失败的时候出现的异常。
+ */
 public open class VerifyFailureException : SimbotIllegalStateException {
     public constructor() : super()
     public constructor(message: String?) : super(message)
     public constructor(message: String?, cause: Throwable?) : super(message, cause)
     public constructor(cause: Throwable?) : super(cause)
-}
-
-
-/**
- * 目前支持的bot配置文件格式。
- */
-public enum class SupportedBotVerificationType(
-    /**
-     * 用于验证一个文件名是否为匹配的文件名。
-     */
-    private val fileNameMatcher: (name: String) -> Boolean,
-) {
-    /**
-     * Json格式的bot配置文件。格式允许 `*.bot` 或 `*.bot.json`。
-     */
-    JSON(regexMatcher(Regex(".+\\.bot(\\.json)?"))),
-
-    /**
-     * Yaml格式的bot配置文件。格式允许 `*.bot.yaml` 或 `*.bot.yml`。
-     */
-    YAML(regexMatcher(Regex(".+\\.bot\\.ya?ml"))),
-
-    /**
-     * Properties格式的bot配置文件。格式允许 `*.bot.properties`。
-     */
-    PROPERTIES(regexMatcher(Regex(".+\\.bot\\.properties"))),
-    ;
-
-    /**
-     * 判断文件名是否匹配。
-     */
-    public fun match(fileName: String): Boolean = fileNameMatcher(fileName)
-
-}
-
-
-private fun regexMatcher(regex: Regex): (String) -> Boolean = regex::matches
-
-
-/**
- * BOT用于验证身份的信息，通过读取 `.bot` 文件解析而来.
- *
- * [BotVerifyInfo] 为 Json 格式的内容。
- *
- * 此处仅提供获取其输入流的方法.
- *
- */
-public interface BotVerifyInfo {
-
-    // TODO
-    // public val componentId: String
-
-    /**
-     * 获取此资源的名称，一般代表其文件名。
-     */
-    public val infoName: String
-
-    /**
-     * 读取其输入流.
-     */
-    public fun inputStream(): InputStream
 }
 
 
