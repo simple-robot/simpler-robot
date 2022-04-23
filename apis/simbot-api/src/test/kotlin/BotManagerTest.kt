@@ -12,11 +12,8 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
-import love.forte.simbot.Bot
-import love.forte.simbot.BotManager
 import love.forte.simbot.ID
 import love.forte.simbot.OriginBotManager
 
@@ -34,18 +31,10 @@ import love.forte.simbot.OriginBotManager
 
 
 fun main() {
-    OriginBotManager.forEach {
-        println("BotManager: $it")
-    }
+    val manager = OriginBotManager.getFirstManager(123.ID)!!
 
-    OriginBotManager.cancel()
+    val bot = manager[123.ID]
+
 
 }
 
-fun bm(manager: BotManager<*>) {
-    // 获取所有Bot，以序列Sequence的形式返回
-    val all: Sequence<Bot> = manager.all()
-
-    // 获取指定的Bot
-    val bot: Bot? = manager.get(123.ID)
-}
