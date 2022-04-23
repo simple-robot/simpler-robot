@@ -1,6 +1,6 @@
 name: "🔧问题反馈"
 description: "反馈你所遇到的大大小小的问题"
-title: "[BUG] "
+title: "BUG: "
 labels: [ "bug?" ]
 assignees: [ "ForteScarlet" ]
 # https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
