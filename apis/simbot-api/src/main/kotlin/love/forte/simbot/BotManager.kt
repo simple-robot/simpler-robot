@@ -17,8 +17,6 @@
 package love.forte.simbot
 
 import java.io.InputStream
-import java.util.stream.Stream
-import kotlin.streams.asStream
 
 
 /**
@@ -189,20 +187,12 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
      * 当 [Bot] 关闭后，[BotManager] 中不应能够再获取到此Bot。
      *
      */
-    public abstract fun get(id: ID): B?
+    public abstract operator fun get(id: ID): B?
 
     /**
-     * 获取当前管理器下的所有BOT。
+     * 获取当前管理器下的所有BOT列表。
      */
-    @JvmSynthetic
-    public abstract fun all(): Sequence<B>
-
-    /**
-     * 获取 [Stream] 形式的bot流。
-     */
-    @Api4J
-    @JvmName("all")
-    public fun all4J(): Stream<B> = all().asStream()
+    public abstract fun all(): List<B>
 
 }
 
