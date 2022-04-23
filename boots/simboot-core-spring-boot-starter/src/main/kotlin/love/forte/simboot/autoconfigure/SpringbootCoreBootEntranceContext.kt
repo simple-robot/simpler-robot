@@ -12,18 +12,17 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.autoconfigure
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import love.forte.di.BeanContainer
 import love.forte.simboot.Configuration
 import love.forte.simboot.core.CoreBootEntranceContext
 import love.forte.simboot.factory.BeanContainerFactory
 import love.forte.simboot.factory.ConfigurationFactory
-import love.forte.simbot.BotVerifyInfo
-import love.forte.simbot.LoggerFactory
+import love.forte.simbot.*
 import love.forte.simbot.event.EventListenerManager
 import org.slf4j.Logger
 import org.springframework.core.io.Resource
@@ -51,6 +50,7 @@ public class SpringbootCoreBootEntranceContext(
         return _beanContainerFactory
     }
 
+    @OptIn(ExperimentalSimbotApi::class, ExperimentalSerializationApi::class)
     override fun getAllBotInfos(
         configuration: Configuration,
         beanContainer: BeanContainer
@@ -60,6 +60,7 @@ public class SpringbootCoreBootEntranceContext(
         // find file first
         // may java.io.FileNotFoundException
         val resources = try {
+            // TODO
             resolver.getResources("file:$BOTS_PATTERN")
         } catch (fnf: FileNotFoundException) {
             logger.warn("Can not resolve resource path 「{}」: {}, just use empty resources.", "file:$BOTS_PATTERN", fnf.localizedMessage)
@@ -73,7 +74,13 @@ public class SpringbootCoreBootEntranceContext(
             }
         }
 
-        return resources.map { SpringResourceBotVerifyInfo(it) }
+        val allDecoders = StandardBotVerifyInfoDecoderFactory.supportDecoderFactories(logger)
+
+        return resources.mapNotNull { resource ->
+            val name = resource.filename ?: return@mapNotNull null
+            val decoder = allDecoders.find { d -> d.match(name) } ?: return@mapNotNull null
+            SpringResourceBotVerifyInfo(decoder.create(), resource)
+        }
     }
 
     override fun getListenerManager(beanContainer: BeanContainer): EventListenerManager {
@@ -90,8 +97,9 @@ public class SpringbootCoreBootEntranceContext(
 
 
 private class SpringResourceBotVerifyInfo(
+    override val decoder: BotVerifyInfoDecoder,
     private val resource: Resource
-) : BotVerifyInfo {
+) : DecoderBotVerifyInfo() {
     override val infoName: String get() = resource.filename ?: resource.url.toString()
     override fun inputStream(): InputStream = resource.inputStream
 }

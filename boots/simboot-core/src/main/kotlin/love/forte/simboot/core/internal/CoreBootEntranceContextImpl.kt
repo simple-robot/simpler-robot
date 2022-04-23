@@ -1,7 +1,7 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <https://github.com/ForteScarlet>
+ *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x、simbot 3.x、simbot3) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -40,11 +40,6 @@ import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.event.EventProcessingInterceptor
 import love.forte.simbot.utils.systemProperties
 import org.slf4j.Logger
-import java.net.URL
-import java.nio.file.Path
-import java.util.*
-import kotlin.collections.set
-import kotlin.io.path.bufferedReader
 import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KClass
 import kotlin.reflect.KVisibility
@@ -199,13 +194,14 @@ internal class CoreBootEntranceContextImpl(
                 .glob(glob)
                 .visitJarEntry { entry, _ ->
                     if (!entry.isDirectory) {
-                        it.classLoader.getResource(entry.toString())?.asBotVerifyInfo()?.let { url -> sequenceOf(url) }
+                        // TODO
+                        it.classLoader.getResource(entry.toString())?.toBotVerifyInfo(StandardBotVerifyInfoDecoderFactory.Json)?.let { url -> sequenceOf(url) }
                             ?: emptySequence()
                     } else emptySequence()
                 }
                 .visitPath { (path, _) ->
                     sequenceOf(
-                        path.asBotVerifyInfo()
+                        path.toBotVerifyInfo(StandardBotVerifyInfoDecoderFactory.Json)
                     )
                 }
                 .toList(false)
@@ -299,26 +295,6 @@ private class AnnotationToolGetter(private val tool: KAnnotationTool) : Annotati
         }
     }
 }
-
-
-private fun Path.readProperties(): Properties {
-    return Properties().also { p ->
-        bufferedReader().use(p::load)
-    }
-}
-
-private fun URL.readProperties(): Properties {
-    return Properties().also { p ->
-        openStream().bufferedReader().use(p::load)
-    }
-}
-
-private val Properties.stringMap: Map<String, String>
-    get() {
-        return mutableMapOf<String, String>().also { map ->
-            stringPropertyNames().forEach { name -> map[name] = getProperty(name) }
-        }
-    }
 
 
 private object EmptyConfiguration : Configuration {
