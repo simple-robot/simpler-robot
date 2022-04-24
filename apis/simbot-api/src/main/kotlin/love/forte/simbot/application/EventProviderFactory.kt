@@ -28,7 +28,7 @@ import java.util.*
  * 用于安装在 [Application] 中，通过 [EventProviderFactory] 向其提供一个 [事件处理器][EventProvider],
  * 使其能够向目标事件处理器提供(推送)事件。
  *
- * 事件提供者无所谓形式，可以是一个 [BotManager], 或是一个定时任务、一个http服务。
+ * 事件提供者无所谓形式，可以是一个 [BotManager], 或是一个定时任务、一个http服务, 或者其他任何什么。
  *
  * @see BotManager
  *

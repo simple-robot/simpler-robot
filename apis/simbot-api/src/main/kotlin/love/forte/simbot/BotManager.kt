@@ -16,6 +16,8 @@
 
 package love.forte.simbot
 
+import love.forte.simbot.application.EventProvider
+
 
 /**
  * Bot注册器。
@@ -71,7 +73,7 @@ public open class VerifyFailureException : SimbotIllegalStateException {
  *
  * ## 事件提供者
  *
- * [BotManager] 是一种特殊的 [EventProvider] 实现，可用于安装在 [love.forte.simbot.application.Application] 环境中。
+ * [BotManager] 是一种的 [EventProvider] 实现，可用于安装在 [love.forte.simbot.application.Application] 环境中。
  *
  * @see EventProvider
  *

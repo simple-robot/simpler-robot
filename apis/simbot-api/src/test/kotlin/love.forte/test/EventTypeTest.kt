@@ -12,15 +12,14 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.test
 
 import love.forte.simbot.event.Event
+import love.forte.simbot.event.Event.Key.Companion.isSub
 import love.forte.simbot.event.MessageEvent
 import love.forte.simbot.event.RequestEvent
-import love.forte.simbot.event.isSubFrom
 import kotlin.test.Test
 
 /**
@@ -32,8 +31,8 @@ class EventTypeTest {
     @Test
     fun test() {
         val key = Event.Key.getKey(RequestEvent::class)
-        assert(key isSubFrom Event)
-        assert(!(key isSubFrom MessageEvent))
+        assert(key isSub Event)
+        assert(!(key isSub MessageEvent))
 
     }
 }
