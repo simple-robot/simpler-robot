@@ -240,7 +240,7 @@ public class CoreBootEntrance : SimbootEntrance {
                         logger.debug(
                             "Bot info [{}] verify failed. read raw value: \n{}",
                             b.name,
-                            b.inputStream().use { it.bufferedReader().readText() })
+                            b.openStream().use { it.bufferedReader().readText() })
                     }
                     throw exception
                 }
