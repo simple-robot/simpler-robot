@@ -100,6 +100,9 @@ private class SpringResourceBotVerifyInfo(
     override val decoder: BotVerifyInfoDecoder,
     private val resource: Resource
 ) : DecoderBotVerifyInfo() {
-    override val infoName: String get() = resource.filename ?: resource.url.toString()
+    override val name: String get() = resource.filename ?: resource.url.toString()
     override fun inputStream(): InputStream = resource.inputStream
+
+    override fun close() {
+    }
 }
