@@ -16,8 +16,8 @@
  */
 
 import kotlinx.serialization.json.Json
+import love.forte.simbot.resources.Resource.Companion.toResource
 import love.forte.simbot.resources.StandardResource
-import love.forte.simbot.resources.toResource
 import kotlin.io.path.Path
 
 fun main() {

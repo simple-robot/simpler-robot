@@ -23,7 +23,11 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonBuilder
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.properties.Properties
+import love.forte.simbot.resources.DeserializableResource
+import love.forte.simbot.resources.DeserializableResourceDecoder
+import love.forte.simbot.resources.SerialFormatDeserializableResourceDecoder
 import org.slf4j.Logger
+import java.io.IOException
 import java.io.InputStream
 import java.util.Properties as JavaProperties
 
@@ -64,7 +68,7 @@ public data class ComponentModel(val component: String? = null)
  *
  *
  */
-public interface BotVerifyInfo {
+public interface BotVerifyInfo : DeserializableResource {
 
     public companion object {
 
@@ -86,18 +90,27 @@ public interface BotVerifyInfo {
     /**
      * 获取此资源的名称，一般代表其文件名。
      */
-    public val infoName: String
+    override val name: String
 
     /**
      * 读取其输入流.
      */
+    @Throws(IOException::class)
     public fun inputStream(): InputStream
 
 
     /**
+     * 读取其输入流. 同 [inputStream].
+     */
+    @Throws(IOException::class)
+    override fun openStream(): InputStream {
+        return inputStream()
+    }
+
+    /**
      * 提供一个 [DeserializationStrategy], 将当前验证信息解码为目标类型。
      */
-    public fun <T> decode(deserializer: DeserializationStrategy<T>): T
+    override fun <T> decode(deserializer: DeserializationStrategy<T>): T
 
 
 }
@@ -130,7 +143,7 @@ public interface BotVerifyInfoDecoderFactory<C : Any, D : BotVerifyInfoDecoder> 
  *
  * @see StandardBotVerifyInfoDecoderFactory
  */
-public interface BotVerifyInfoDecoder {
+public interface BotVerifyInfoDecoder : DeserializableResourceDecoder {
 
     /**
      * 尝试从提供的数据信息中解析得到当前配置中的组件信息。
@@ -144,7 +157,7 @@ public interface BotVerifyInfoDecoder {
      *
      * @param inputStream 提供的数据输入流。应当由调用者关闭。
      */
-    public fun <T> decode(inputStream: InputStream, deserializer: DeserializationStrategy<T>): T
+    override fun <T> decode(inputStream: InputStream, deserializer: DeserializationStrategy<T>): T
 
 }
 
@@ -261,12 +274,12 @@ private fun regexMatcher(regex: Regex): (String) -> Boolean = regex::matches
  * 基于 [SerialFormat] 的标准解码器抽象。
  */
 public abstract class StandardSerialFormatBotVerifyInfoDecoder<F : SerialFormat, V : Any> internal constructor() :
-    BotVerifyInfoDecoder {
+    BotVerifyInfoDecoder, SerialFormatDeserializableResourceDecoder() {
 
     /**
      * 用于进行常规解码的解码器。
      */
-    protected abstract val decoder: F
+    public abstract override val format: F
 
 
     /**
@@ -278,7 +291,7 @@ public abstract class StandardSerialFormatBotVerifyInfoDecoder<F : SerialFormat,
     /**
      * 解码。
      */
-    public fun <T> decode(value: V, deserializer: DeserializationStrategy<T>): T = decode(decoder, value, deserializer)
+    public fun <T> decode(value: V, deserializer: DeserializationStrategy<T>): T = decode(format, value, deserializer)
 
     /**
      * 将 [inputStream] 准备为目标结果类型。
@@ -291,7 +304,7 @@ public abstract class StandardSerialFormatBotVerifyInfoDecoder<F : SerialFormat,
      */
     override fun <T> decode(inputStream: InputStream, deserializer: DeserializationStrategy<T>): T {
         val value = inputStream.prepareToValue()
-        return decode(decoder, value, deserializer)
+        return decode(format, value, deserializer)
     }
 }
 
@@ -361,9 +374,9 @@ private fun InputStream.trimText(): String = reader().readText().trim()
  * Note: 需要保证环境中存在 `org.jetbrains.kotlinx:kotlinx-serialization-json`，参考 [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)。
  *
  */
-public class JsonBotVerifyInfoDecoder internal constructor(override val decoder: Json) :
+public class JsonBotVerifyInfoDecoder(override val format: Json) :
     StandardStringFormatBotVerifyInfoDecoder() {
-    override val modelDecoder: StringFormat = Json(from = decoder) {
+    override val modelDecoder: StringFormat = Json(from = format) {
         isLenient = true
         ignoreUnknownKeys = true
     }
@@ -400,10 +413,10 @@ public class JsonBotVerifyInfoDecoder internal constructor(override val decoder:
  * Note: 需要保证环境中存在 `com.charleskorn.kaml:kaml`, 参考 [charleskorn/kaml](https://github.com/charleskorn/kaml)
  *
  */
-public class YamlBotVerifyInfoDecoder internal constructor(override val decoder: Yaml) :
+public class YamlBotVerifyInfoDecoder(override val format: Yaml) :
     StandardStringFormatBotVerifyInfoDecoder() {
     override val modelDecoder: StringFormat =
-        Yaml(decoder.serializersModule, decoder.configuration.copy(strictMode = false))
+        Yaml(format.serializersModule, format.configuration.copy(strictMode = false))
 
     public companion object Factory :
         StandardBotVerifyInfoDecoderFactory<YamlBotVerifyInfoDecoderConfiguration, YamlBotVerifyInfoDecoder>() {
@@ -455,7 +468,7 @@ public class YamlBotVerifyInfoDecoder internal constructor(override val decoder:
  *
  */
 @ExperimentalSerializationApi
-public class PropertiesBotVerifyInfoDecoder internal constructor(override val decoder: Properties) :
+public class PropertiesBotVerifyInfoDecoder(override val format: Properties) :
     StandardSerialFormatBotVerifyInfoDecoder<Properties, Map<String, String>>() {
 
     override fun decodeComponentId(inputStream: InputStream): String? {

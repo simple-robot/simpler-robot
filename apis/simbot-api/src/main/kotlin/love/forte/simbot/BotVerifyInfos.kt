@@ -48,7 +48,7 @@ public abstract class DecoderBotVerifyInfo : BotVerifyInfo {
     override val componentId: String by lazy {
         initializedComponentId
             ?: inputStream().use { inp -> decoder.decodeComponentId(inp) }
-            ?: throw NoSuchComponentException("required property 'component' cannot be found in current verify info $infoName")
+            ?: throw NoSuchComponentException("required property 'component' cannot be found in current verify info $name")
     }
 
     override fun <T> decode(deserializer: DeserializationStrategy<T>): T {
@@ -62,9 +62,13 @@ private class URLBotVerifyInfo(
     override val decoder: BotVerifyInfoDecoder,
     private val url: URL,
 ) : DecoderBotVerifyInfo() {
-    override val infoName: String get() = url.toString()
+    override val name: String get() = url.toString()
 
     override fun inputStream(): InputStream = url.openStream()
+
+    override fun close() {
+        // close nothing.
+    }
 }
 
 
@@ -72,9 +76,14 @@ private class PathBotVerifyInfo(
     override val decoder: BotVerifyInfoDecoder,
     private val path: Path,
 ) : DecoderBotVerifyInfo() {
-    override val infoName: String get() = path.toString()
+    override val name: String get() = path.toString()
 
     override fun inputStream(): InputStream = path.inputStream()
+
+
+    override fun close() {
+        // close nothing.
+    }
 }
 
 /**
@@ -83,12 +92,17 @@ private class PathBotVerifyInfo(
  */
 public class ByteArrayBotVerifyInfo(
     override val decoder: BotVerifyInfoDecoder,
-    override val infoName: String,
+    override val name: String,
     private val value: ByteArray,
 ) : DecoderBotVerifyInfo() {
 
     override fun inputStream(): InputStream {
         return value.inputStream()
+    }
+
+
+    override fun close() {
+        // close nothing.
     }
 
     override fun <T> decode(deserializer: DeserializationStrategy<T>): T {
