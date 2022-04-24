@@ -28,6 +28,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import love.forte.simbot.resources.Resource.Companion.toResource
 import java.io.*
 import java.net.URL
 import java.nio.file.Files
@@ -77,28 +78,32 @@ public interface Resource : Closeable {
          */
         @JvmStatic
         @JvmOverloads
-        public fun of(url: URL, name: String = url.toString()): StandardResource = URLResource(url, name)
+        @JvmName("of")
+        public fun URL.toResource(name: String = toString()): URLResource = URLResource(this, name)
 
         /**
          * 使用 [File] 作为一个 [StandardResource].
          */
         @JvmStatic
         @JvmOverloads
-        public fun of(file: File, name: String = file.toString()): StandardResource = FileResource(file, name)
+        @JvmName("of")
+        public fun File.toResource(name: String = toString()): FileResource = FileResource(this, name)
 
         /**
          * 使用 [Path] 作为一个 [StandardResource].
          */
         @JvmStatic
         @JvmOverloads
-        public fun of(path: Path, name: String = path.toString()): StandardResource = PathResource(path, name)
+        @JvmName("of")
+        public fun Path.toResource(name: String = toString()): PathResource = PathResource(this, name)
 
         /**
          * 使用字节数组作为一个 [StandardResource].
          */
         @JvmStatic
-        public fun of(byteArray: ByteArray, name: String): StandardResource =
-            ByteArrayResource(name, byteArray)
+        @JvmName("of")
+        public fun ByteArray.toResource(name: String): ByteArrayResource =
+            ByteArrayResource(name, this)
 
         /**
          * 拷贝提供的 [inputStream] 并作为 [StandardResource] 返回。
@@ -106,15 +111,16 @@ public interface Resource : Closeable {
          */
         @JvmStatic
         @JvmOverloads
+        @JvmName("of")
         @Throws(IOException::class)
-        public fun of(inputStream: InputStream, name: String? = null): StandardResource {
+        public fun InputStream.toResource(name: String? = null): StandardResource {
             val temp = createTempFile(
                 Path(".simbot/tmp").also {
                     Files.createDirectories(it)
                     it.toFile().deleteOnExit()
                 },
             )
-            temp.outputStream(StandardOpenOption.CREATE).use(inputStream::copyTo)
+            temp.outputStream(StandardOpenOption.CREATE).use(this::copyTo)
             temp.toFile().deleteOnExit()
 
             return PathResource(temp, name ?: temp.toString()) { temp.deleteIfExists() }
@@ -130,7 +136,7 @@ public interface Resource : Closeable {
  *
  *
  *
- * @see Resource.of
+ * @see Resource.toResource
  */
 @SerialName("simbot.resource.streamable")
 @Serializable
@@ -319,25 +325,9 @@ public class ByteArrayResource(override val name: String, private val byteArray:
 }
 
 
-// public fun ID.toResource(name: String): IDResource = Resource.of(this, name)
-
-public fun URL.toResource(name: String = this.toString()): StandardResource = Resource.of(this, name)
-
-public fun File.toResource(name: String = this.toString()): StandardResource = Resource.of(this, name)
-
-public fun Path.toResource(name: String = this.toString()): StandardResource = Resource.of(this, name)
-
-public fun ByteArray.toResource(name: String): StandardResource = Resource.of(this, name)
-
-/**
- * 将作为receiver的输入流转化为一个 [StandardResource], 但是不会对输入流进行关闭。
- */
-@Throws(IOException::class)
-public fun InputStream.toResource(name: String? = null): StandardResource = Resource.of(this, name)
-
 /**
  * 将作为receiver的输入流转化为一个 [StandardResource], 同时关闭输入流。
  */
 @Throws(IOException::class)
 public fun InputStream.useToResource(name: String? = null): StandardResource =
-    this.use { i -> i.toResource(name) }
+    use { i -> i.toResource(name) }
