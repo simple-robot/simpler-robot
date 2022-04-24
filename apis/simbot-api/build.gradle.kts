@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 plugins {
@@ -36,10 +35,12 @@ dependencies {
     compileOnly(V.Kotlinx.Serialization.Json.notation)
     compileOnly(V.Kotlinx.Serialization.Properties.notation)
     compileOnly(V.Kotlinx.Serialization.Yaml.notation)
+    compileOnly(V.Kotlinx.Serialization.Protobuf.notation)
 
     testImplementation(V.Kotlin.Reflect.notation)
     testImplementation(V.Kotlin.Test.Junit5.notation)
     testImplementation(V.Kotlinx.Serialization.Json.notation)
+    testImplementation(V.Kotlinx.Serialization.Yaml.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)
     testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
 }

@@ -14,10 +14,11 @@
  *
  */
 
-@file:JvmName("BotVerifyInfoUtil")
+@file:JvmName("BotVerifyInfos")
 
 package love.forte.simbot
 
+import kotlinx.serialization.DeserializationStrategy
 import java.io.InputStream
 import java.net.URL
 import java.nio.file.Path
@@ -25,66 +26,191 @@ import kotlin.io.path.inputStream
 
 
 /**
- * 目前所支持的外部Bot配置信息文件格式。
+ *
+ * [BotVerifyInfo] 的基础抽象类, 使用 [BotVerifyInfoDecoder] 作为内置解码器。
+ *
  */
-public enum class BotInfoSupportType {
+public abstract class DecoderBotVerifyInfo : BotVerifyInfo {
+    protected abstract val decoder: BotVerifyInfoDecoder
+
     /**
-     * `*.bot` 或 `*.bot.json` 格式的文件均视为 `.json` 格式并进行加载。
+     * 已经初始化了的组件id信息。
+     *
+     * 此属性只会被使用一次。
      */
-    JSON
-}
+    protected open val initializedComponentId: String? get() = null
 
+    /**
+     * 获取此验证信息的组件id。默认情况下优先尝试通过 [initializedComponentId] 初始化信息，
+     * 如果 [initializedComponentId] 值为null, 则尝试通过 [decoder.decodeComponentId(...)][BotVerifyInfoDecoder.decodeComponentId]
+     * 来初始化组件id信息。
+     */
+    override val componentId: String by lazy {
+        initializedComponentId
+            ?: inputStream().use { inp -> decoder.decodeComponentId(inp) }
+            ?: throw NoSuchComponentException("required property 'component' cannot be found in current verify info $name")
+    }
 
+    override fun <T> decode(deserializer: DeserializationStrategy<T>): T {
+        return inputStream().use { inp -> decoder.decode(inp, deserializer) }
+    }
 
-
-
-
-
-
-public fun URL.asBotVerifyInfo(): BotVerifyInfo {
-    return URLBotVerifyInfo(this)
 }
 
 
 private class URLBotVerifyInfo(
+    override val decoder: BotVerifyInfoDecoder,
     private val url: URL,
-) : BotVerifyInfo {
-    override val infoName: String get() = url.toString()
+) : DecoderBotVerifyInfo() {
+    override val name: String get() = url.toString()
 
     override fun inputStream(): InputStream = url.openStream()
+
+    override fun close() {
+        // close nothing.
+    }
 }
 
 
-public fun Path.asBotVerifyInfo(): BotVerifyInfo {
-    return PathBotVerifyInfo(this)
-}
+private class PathBotVerifyInfo(
+    override val decoder: BotVerifyInfoDecoder,
+    private val path: Path,
+) : DecoderBotVerifyInfo() {
+    override val name: String get() = path.toString()
 
-private class PathBotVerifyInfo(private val path: Path) : BotVerifyInfo {
-    override val infoName: String get() = path.toString()
     override fun inputStream(): InputStream = path.inputStream()
+
+
+    override fun close() {
+        // close nothing.
+    }
 }
 
+/**
+ * 将 [ByteArray] 内容作为 [BotVerifyInfo] 实现。
+ *
+ */
+public class ByteArrayBotVerifyInfo(
+    override val decoder: BotVerifyInfoDecoder,
+    override val name: String,
+    private val value: ByteArray,
+) : DecoderBotVerifyInfo() {
 
-public inline fun <T> BotVerifyInfo.tryResolveVerifyInfo(
-    initErr: () -> Throwable,
-    vararg decoders: (InputStream) -> T
-): Result<T> {
-    lateinit var err: Throwable
-
-    decoders.forEachIndexed { index, decoder ->
-        val inp = inputStream()
-        try {
-            val result = decoder(inp)
-            return Result.success(result)
-        } catch (e: Throwable) {
-            if (index == 0) {
-                err = initErr()
-            }
-            err.addSuppressed(e)
-        } finally {
-            inp.close()
-        }
+    override fun inputStream(): InputStream {
+        return value.inputStream()
     }
 
-    return Result.failure(err)
+
+    override fun close() {
+        // close nothing.
+    }
+
+    override fun <T> decode(deserializer: DeserializationStrategy<T>): T {
+        if (decoder is StandardBinaryFormatBotVerifyInfoDecoder) {
+            return decoder.decode(value, deserializer)
+        }
+
+        if (decoder is StandardStringFormatBotVerifyInfoDecoder) {
+            return decoder.decode(value.toString(Charsets.UTF_8), deserializer)
+        }
+
+        return super.decode(deserializer)
+    }
 }
+
+
+/**
+ * 将一个 [URL] 转为 [BotVerifyInfo].
+ *
+ */
+public fun URL.toBotVerifyInfo(decoder: BotVerifyInfoDecoder): BotVerifyInfo {
+    return URLBotVerifyInfo(decoder, this)
+}
+
+/**
+ * 将一个 [Path] 转为 [BotVerifyInfo].
+ */
+public fun Path.toBotVerifyInfo(decoder: BotVerifyInfoDecoder): BotVerifyInfo {
+    return PathBotVerifyInfo(decoder, this)
+}
+
+/**
+ * 将一个 [InputStream] 转为 [BotVerifyInfo].
+ *
+ * @param infoName 给 bot verify info 提供一个名称。
+ */
+public fun InputStream.toBotVerifyInfo(decoder: BotVerifyInfoDecoder, infoName: String): ByteArrayBotVerifyInfo {
+    val bytes = readBytes()
+    return ByteArrayBotVerifyInfo(decoder, infoName, bytes)
+}
+
+/**
+ * 将一个 [URL] 转为 [BotVerifyInfo].
+ *
+ * e.g.
+ * ```kotlin
+ * // 解析json配置
+ *
+ * url: URL = ...
+ *
+ * url.toBotVerifyInfo(StandardBotVerifyInfoDecoderFactory.Json) {
+ *   isLenient = true
+ *   ignoreUnknownKeys = true
+ * }
+ * ```
+ */
+@JvmOverloads
+public fun <C : Any> URL.toBotVerifyInfo(
+    factory: BotVerifyInfoDecoderFactory<C, *>,
+    configurator: C.() -> Unit = {},
+): BotVerifyInfo {
+    return toBotVerifyInfo(factory.create(configurator))
+}
+
+
+/**
+ * 将一个 [Path] 转为 [BotVerifyInfo].
+ * e.g.
+ * ```kotlin
+ * // 解析json配置
+ * path: Path = ...
+ * path.toBotVerifyInfo(StandardBotVerifyInfoDecoderFactory.Json) {
+ *   isLenient = true
+ *   ignoreUnknownKeys = true
+ * }
+ * ```
+ */
+@JvmOverloads
+public fun <C : Any> Path.toBotVerifyInfo(
+    factory: BotVerifyInfoDecoderFactory<C, *>,
+    configurator: C.() -> Unit = {},
+): BotVerifyInfo {
+    return toBotVerifyInfo(factory.create(configurator))
+}
+
+
+/**
+ * 将一个 [InputStream] 转为 [BotVerifyInfo].
+ * e.g.
+ * ```kotlin
+ * // 解析json配置
+ * input: InputStream = ...
+ * val infoName: String = "myBot.json"
+ * input.toBotVerifyInfo(StandardBotVerifyInfoDecoderFactory.Json, infoName) {
+ *   isLenient = true
+ *   ignoreUnknownKeys = true
+ * }
+ * ```
+ */
+@JvmOverloads
+public fun <C : Any> InputStream.toBotVerifyInfo(
+    factory: BotVerifyInfoDecoderFactory<C, *>,
+    infoName: String,
+    configurator: C.() -> Unit = {},
+): BotVerifyInfo {
+    return toBotVerifyInfo(factory.create(configurator), infoName)
+}
+
+
+
+

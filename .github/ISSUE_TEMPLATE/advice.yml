@@ -1,6 +1,6 @@
 name: "💡意见建议"
 description: "提出你的好想法"
-title: ""
+title: "SUG: "
 labels: [ "建议" ]
 assignees: [ "ForteScarlet" ]
 # https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema

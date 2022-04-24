@@ -34,12 +34,20 @@ import kotlin.concurrent.write
  *
  * 如果你想要某个 [BotManager] 脱离 [OriginBotManager] 的管理，使用 [BotManager.breakAway]
  *
- * ## 谨慎使用
+ * **遍历所有**:
+ * ```kotlin
+ * OriginBotManager.forEach { manager ->
+ *  // do...
+ *  }
+ * ```
+ *
+ * ## ⚠ 谨慎使用
  * [OriginBotManager] 是脱离环境的 **全局性** 功能，当你的整个应用中存在多个环境时，使用它则很可能造成各种混乱。
- * [BotManager] 作为属性存在于很多对象中，你应当优先考虑使用那些明确的api，而对于全局性的 [OriginBotManager],
- * 则是最后的选择。
+ * [BotManager] 作为属性存在于很多对象中，你应当优先考虑使用那些明确的api（例如 [Bot.manager]、[love.forte.simbot.event.Event.bot] 等），
+ * 而对于全局性的 [OriginBotManager], 是最后的选择。
  *
  */
+@Suppress("MemberVisibilityCanBePrivate")
 @FragileSimbotApi
 public object OriginBotManager : Set<BotManager<*>> {
     private val logger = LoggerFactory.getLogger(OriginBotManager::class)
@@ -125,15 +133,15 @@ public object OriginBotManager : Set<BotManager<*>> {
      * 例如, 获取某组件下所有bot的所有好友：
      * ```kotlin
      * OriginBotManager
-     * .getManagers(XxxComponent)
+     * .getManagers("component.id".ID)
      * .flatMap { manager -> manager.all() }
      * .asFlow() // Bot.friends() 是Flow类型
      * .flatMapConcat { bot -> bot.friends() }
      * ```
      *
-     * ### getManagers()?
+     * ## getManagers()?
      *
-     * 如果你在寻找不需要 [Component] 参数的 `getManagers()` 函数，请停下。[OriginBotManager] 其本身作为一个 [Set] 的实现即可以代表所有的BotManager。
+     * 如果你在寻找不需要参数的 `getManagers()` 函数，请停下。[OriginBotManager] 其本身作为一个 [Set] 的实现即可以直接代表所有的 [BotManager]。
      *
      * 假如你需要遍历所有，那么：
      * ```kotlin
@@ -143,7 +151,6 @@ public object OriginBotManager : Set<BotManager<*>> {
      * ```
      *
      */
-    @JvmSynthetic
     public fun getManagers(component: Component): List<BotManager<*>> {
         lock.read {
             checkShutdown()
@@ -154,7 +161,6 @@ public object OriginBotManager : Set<BotManager<*>> {
     /**
      * 根据指定ID查询组件ID与其相等的 [BotManager].
      */
-    @JvmSynthetic
     public fun getManagers(componentId: ID): List<BotManager<*>> {
         lock.read {
             checkShutdown()
@@ -197,6 +203,42 @@ public object OriginBotManager : Set<BotManager<*>> {
         }?.get(id)
     }
 
+    /**
+     * 根据一个Bot的id以及对应的组件ID来得到一个此组件下指定ID的bot。如果manager不存在或者没有这个id的bot，则会得到null。
+     *
+     * 如果提供的 [组件ID][componentId] 为null，则会尝试寻找第一个id匹配的bot。
+     *
+     * @param id Bot的id
+     * @param componentId [Component.id]
+     */
+    @JvmOverloads
+    public fun getBot(id: ID, componentId: ID? = null): Bot? {
+        if (componentId == null) {
+            val managers = managers.keys
+            for (manager in managers) {
+                val bot = manager.get(id)
+                if (bot != null) return bot
+            }
+            return null
+        }
+
+        return managers.keys.firstOrNull {
+            it.component.id == componentId
+        }?.get(id)
+    }
+
+
+    /**
+     * 尝试获取任意一个 [BotManager] 下的任意一个 [Bot]。如果当前元素为空则会得到null。
+     *
+     * @param component 可以提供一个组件信息。默认为null
+     */
+    @JvmOverloads
+    public fun getAnyBot(component: Component? = null): Bot? {
+        fun Iterable<BotManager<*>>.firstBotOrNull() = firstOrNull()?.all()?.firstOrNull()
+
+        return (component?.let { getManagers(component) } ?: this).firstBotOrNull()
+    }
 
     /**
      * 尝试获取任意一个manager。如果当前元素为空则会得到null。

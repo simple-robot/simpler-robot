@@ -16,11 +16,6 @@
 
 package love.forte.simbot
 
-import love.forte.simbot.application.EventProvider
-import java.io.InputStream
-import java.util.stream.Stream
-import kotlin.streams.asStream
-
 
 /**
  * Bot注册器。
@@ -45,7 +40,9 @@ public interface BotRegistrar : ComponentContainer {
     public fun register(verifyInfo: BotVerifyInfo): Bot
 }
 
-
+/**
+ * 当组件与预期组件不匹配的时候出现的异常。
+ */
 public open class ComponentMismatchException : SimbotIllegalArgumentException {
     public constructor() : super()
     public constructor(message: String?) : super(message)
@@ -53,33 +50,14 @@ public open class ComponentMismatchException : SimbotIllegalArgumentException {
     public constructor(cause: Throwable?) : super(cause)
 }
 
+/**
+ * 当验证失败的时候出现的异常。
+ */
 public open class VerifyFailureException : SimbotIllegalStateException {
     public constructor() : super()
     public constructor(message: String?) : super(message)
     public constructor(message: String?, cause: Throwable?) : super(message, cause)
     public constructor(cause: Throwable?) : super(cause)
-}
-
-// TODO support for more file type via StringFormat.
-/**
- * BOT用于验证身份的信息，通过读取 `.bot` 文件解析而来.
- *
- * [BotVerifyInfo] 为 Json 格式的内容。
- *
- * 此处仅提供获取其输入流的方法.
- *
- */
-public interface BotVerifyInfo {
-
-    /**
-     * 获取此资源的名称，一般代表其文件名。
-     */
-    public val infoName: String
-
-    /**
-     * 读取其输入流.
-     */
-    public fun inputStream(): InputStream
 }
 
 
@@ -160,20 +138,12 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Ev
      * 当 [Bot] 关闭后，[BotManager] 中不应能够再获取到此Bot。
      *
      */
-    public abstract fun get(id: ID): B?
+    public abstract operator fun get(id: ID): B?
 
     /**
-     * 获取当前管理器下的所有BOT。
+     * 获取当前管理器下的所有BOT列表。
      */
-    @JvmSynthetic
-    public abstract fun all(): Sequence<B>
-
-    /**
-     * 获取 [Stream] 形式的bot流。
-     */
-    @Api4J
-    @JvmName("all")
-    public fun all4J(): Stream<B> = all().asStream()
+    public abstract fun all(): List<B>
 
 }
 

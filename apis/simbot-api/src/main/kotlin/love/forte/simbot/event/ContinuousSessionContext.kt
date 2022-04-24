@@ -24,6 +24,7 @@ import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import love.forte.simbot.*
+import love.forte.simbot.event.Event.Key.Companion.isSub
 import love.forte.simbot.utils.runInBlocking
 import love.forte.simbot.utils.runInTimeoutBlocking
 import love.forte.simbot.utils.runWithInterruptible
@@ -230,7 +231,7 @@ public abstract class ContinuousSessionContext {
     ): T {
         val key = sourceEvent.key
         return when {
-            key isSubFrom ContactMessageEvent -> {
+            key isSub ContactMessageEvent -> {
                 sourceEvent as ContactMessageEvent
                 val sourceUserId = sourceEvent.user().id
                 waitingFor(id, timeout) { context, provider ->
@@ -240,7 +241,7 @@ public abstract class ContinuousSessionContext {
                     )
                 }
             }
-            key isSubFrom ChatroomMessageEvent -> {
+            key isSub ChatroomMessageEvent -> {
                 sourceEvent as ChatroomMessageEvent
                 val sourceAuthorId = sourceEvent.author().id
                 val sourceChatroomId = sourceEvent.source().id
@@ -278,7 +279,7 @@ public abstract class ContinuousSessionContext {
         userId: ID
     ) {
         val event = context.event
-        if (event.component == component && event.key isSubFrom sourceKey) {
+        if (event.component == component && event.key isSub sourceKey) {
             event as ContactMessageEvent
             if (event.user().id == userId) {
                 @Suppress("UNCHECKED_CAST")
@@ -297,7 +298,7 @@ public abstract class ContinuousSessionContext {
         chatroomId: ID
     ) {
         val event = context.event
-        if (event.component == component && event.key isSubFrom sourceKey) {
+        if (event.component == component && event.key isSub sourceKey) {
             event as ChatroomMessageEvent
             if (event.source().id == chatroomId && event.author().id == authorId) {
                 @Suppress("UNCHECKED_CAST")

@@ -20,7 +20,7 @@ package love.forte.simbot.definition
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.resources.Resource
 
 /**
  * 定义一个 **容器**。
@@ -66,12 +66,14 @@ public interface ChannelInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [channel][ChannelInfo].
      */
+    @JvmSynthetic
     public suspend fun channel(): ChannelInfo
 
     /**
      * 当前 [channel][ChannelInfo].
      */
-    @Api4J public val channel: ChannelInfo get() = runInBlocking { channel() }
+    @Api4J
+    public val channel: ChannelInfo
 }
 
 /**
@@ -81,12 +83,14 @@ public interface GuildInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [guild][GuildInfo].
      */
+    @JvmSynthetic
     public suspend fun guild(): GuildInfo
 
     /**
      * 当前 [guild][GuildInfo].
      */
-    @Api4J public val guild: GuildInfo get() = runInBlocking { guild() }
+    @Api4J
+    public val guild: GuildInfo
 }
 
 /**
@@ -96,11 +100,14 @@ public interface GroupInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [group][GroupInfo].
      */
+    @JvmSynthetic
     public suspend fun group(): GroupInfo
+
     /**
      * 当前 [group][GroupInfo].
      */
-    @Api4J public val group: GroupInfo get() = runInBlocking { group() }
+    @Api4J
+    public val group: GroupInfo
 }
 
 /**
@@ -111,13 +118,15 @@ public interface UserInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [user][UserInfo]
      */
+    @JvmSynthetic
     public suspend fun user(): UserInfo
 
 
     /**
      * 当前 [user][UserInfo]
      */
-    @Api4J public val user: UserInfo get() = runInBlocking { user() }
+    @Api4J
+    public val user: UserInfo
 }
 
 /**
@@ -127,12 +136,14 @@ public interface MemberInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [member][MemberInfo].
      */
+    @JvmSynthetic
     public suspend fun member(): MemberInfo
 
     /**
      * 当前 [member][MemberInfo].
      */
-    @Api4J public val member: MemberInfo get() = runInBlocking { member() }
+    @Api4J
+    public val member: MemberInfo
 }
 
 /**
@@ -142,11 +153,33 @@ public interface FriendInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [friend][FriendInfo].
      */
+    @JvmSynthetic
     public suspend fun friend(): FriendInfo
 
     /**
      * 当前 [friend][FriendInfo].
      */
-    @Api4J public val friend: FriendInfo get() = runInBlocking { friend() }
+    @Api4J
+    public val friend: FriendInfo
 }
 
+
+/**
+ * 存在 [Resource] 的容器。
+ */
+public interface ResourceContainer : SuspendablePropertyContainer {
+
+    /**
+     * 得到当前容器中的 [资源][Resource].
+     */
+    @JvmSynthetic
+    public suspend fun resource(): Resource
+
+
+    /**
+     * 得到当前容器中的 [资源][Resource].
+     */
+    @Api4J
+    public val resource: Resource
+
+}

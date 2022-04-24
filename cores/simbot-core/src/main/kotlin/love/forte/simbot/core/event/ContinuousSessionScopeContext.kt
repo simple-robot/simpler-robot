@@ -18,13 +18,15 @@
 package love.forte.simbot.core.event
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.future.*
+import kotlinx.coroutines.future.asCompletableFuture
 import love.forte.simbot.*
 import love.forte.simbot.event.*
-import java.util.concurrent.*
-import java.util.concurrent.atomic.*
-import kotlin.coroutines.*
+import love.forte.simbot.event.Event.Key.Companion.isSub
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Future
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.time.Duration.Companion.milliseconds
 
 @ExperimentalSimbotApi
@@ -78,7 +80,7 @@ internal class CoreContinuousSessionContext(
         eventKey: Event.Key<E>,
         listener: ClearTargetResumeListener<E, T>
     ): T = waitingFor(id, timeout) { c, p ->
-        if (c.event.key isSubFrom eventKey) {
+        if (c.event.key isSub eventKey) {
             eventKey.safeCast(c.event)?.also { event -> listener(event, c, p) }
         }
     }

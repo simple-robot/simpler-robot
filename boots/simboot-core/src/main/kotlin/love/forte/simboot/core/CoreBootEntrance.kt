@@ -219,7 +219,7 @@ public class CoreBootEntrance : SimbootEntrance {
         logger.info("Size of all bot info: {}", botInfoList.size)
         if (logger.isDebugEnabled) {
             botInfoList.forEach { b ->
-                logger.debug("Bot info: {}", b.infoName)
+                logger.debug("Bot info: {}", b.name)
             }
         }
 
@@ -230,7 +230,7 @@ public class CoreBootEntrance : SimbootEntrance {
                 try {
                     botRegistrar.register(b).also {
                         logger.debug(
-                            "Bot [{}] registered by registrar of component {}", b.infoName, botRegistrar.component.id
+                            "Bot [{}] registered by registrar of component {}", b.name, botRegistrar.component.id
                         )
                     }
                 } catch (mismatch: ComponentMismatchException) {
@@ -239,8 +239,8 @@ public class CoreBootEntrance : SimbootEntrance {
                     if (logger.isDebugEnabled) {
                         logger.debug(
                             "Bot info [{}] verify failed. read raw value: \n{}",
-                            b.infoName,
-                            b.inputStream().use { it.bufferedReader().readText() })
+                            b.name,
+                            b.openStream().use { it.bufferedReader().readText() })
                     }
                     throw exception
                 }
@@ -248,7 +248,7 @@ public class CoreBootEntrance : SimbootEntrance {
 
 
             registrars.ifEmpty {
-                logger.warn("Bot info [{}] is not registered by any component", b.infoName)
+                logger.warn("Bot info [{}] is not registered by any component", b.name)
                 emptyList()
             }
 

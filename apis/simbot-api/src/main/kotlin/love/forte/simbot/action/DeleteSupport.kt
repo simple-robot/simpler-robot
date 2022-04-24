@@ -25,7 +25,6 @@ import love.forte.simbot.utils.runInBlocking
  * 允许一种删除行为。
  * 标记一个消息为可删除的，通常可理解为是可撤回的。
  *
- * 一般用于消息回执或者从远端接收到的消息事件上。
  * @author ForteScarlet
  */
 public interface DeleteSupport {
@@ -33,11 +32,26 @@ public interface DeleteSupport {
     /**
      * 删除当前目标。
      *
+     * 如果因为组件自身特性而导致任何条件都无法满足任何对象的 `delete` 操作，
+     * 则可能固定返回 `false`, 否则大多数情况下会返回 `true`.
+     *
+     * 如果是因为诸如权限、超时等限制条件导致的无法删除，则可能会抛出相应的异常。
+     *
      * @return 是否删除成功，不代表会捕获异常。
      */
     @JvmSynthetic
     public suspend fun delete(): Boolean
 
+    /**
+     * 删除当前目标。
+     *
+     * 如果因为组件自身特性而导致任何条件都无法满足任何对象的 `delete` 操作，
+     * 则可能固定返回 `false`, 否则大多数情况下会返回 `true`.
+     *
+     * 如果是因为诸如权限、超时等限制条件导致的无法删除，则可能会抛出相应的异常。
+     *
+     * @return 是否删除成功，不代表会捕获异常。
+     */
     @Api4J
     public fun deleteBlocking(): Boolean = runInBlocking { delete() }
 }
