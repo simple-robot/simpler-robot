@@ -6,6 +6,7 @@ on: # push
     paths:
       - '**src/**/kotlin/**.kt'
       - '**src/**/java/**.java'
+      - 'buildSrc'
 jobs:
   publish-snapshot:
     name: Publish snapshot
