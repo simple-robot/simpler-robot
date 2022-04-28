@@ -51,6 +51,15 @@ public fun simpleApplication(
 ): SimpleApplication = simbotApplication(Simple, configurator, builder)
 
 
+
+/**
+ * [SimpleApplication] 的配置类。
+ */
+public open class SimpleApplicationConfiguration : ApplicationConfiguration()
+
+
+
+
 /**
  * 通过 [Simple] 构建而得到的 [Application] 实例。
  */
@@ -218,10 +227,5 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseAppli
     }
 
 }
-
-/**
- * [SimpleApplication] 的配置类。
- */
-public open class SimpleApplicationConfiguration : ApplicationConfiguration()
 
 
