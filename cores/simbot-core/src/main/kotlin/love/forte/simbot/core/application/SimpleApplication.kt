@@ -21,7 +21,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.application.*
 import love.forte.simbot.core.event.*
-import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -37,19 +36,87 @@ public object Simple : ApplicationFactory<SimpleApplicationConfiguration, Simple
     ): SimpleApplication {
         // init configurator
         val config = SimpleApplicationConfiguration().also(configurator)
-        val appBuilder = SimpleApplicationBuilder().also(builder)
+        val appBuilder = SimpleApplicationBuilderImpl().also(builder)
         return appBuilder.build(config)
     }
 }
 
+
+/**
+ * 使用 [Simple] 作为应用工厂来构建一个 [Application].
+ */
+public fun simpleApplication(
+    configurator: SimpleApplicationConfiguration.() -> Unit = {},
+    builder: SimpleApplicationBuilder.() -> Unit = {},
+): SimpleApplication = simbotApplication(Simple, configurator, builder)
+
+
 /**
  * 通过 [Simple] 构建而得到的 [Application] 实例。
  */
-public class SimpleApplication internal constructor(
+public interface SimpleApplication : Application {
+
+    /**
+     * [SimpleApplication] 使用 [CoreListenerManager] 作为事件管理器。
+     */
+    override val eventListenerManager: CoreListenerManager
+
+
+    /**
+     * 所有的事件提供者。
+     */
+    override val providers: List<EventProvider>
+}
+
+
+/**
+ * 用于构建 [SimpleApplication] 的构建器类型。
+ */
+public interface SimpleApplicationBuilder : ApplicationBuilder<SimpleApplication> {
+
+    /**
+     * 配置内部的 core listener manager.
+     *
+     */
+    @ApplicationBuildDsl
+    public fun listenerManager(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
+}
+
+
+/**
+ * 配置 [SimpleApplicationBuilder.listenerManager] 的 `listeners`.
+ * 相当于
+ * ```kotlin
+ * listenerManager { env ->
+ *    listeners {
+ *       block(env)
+ *    }
+ * }
+ * ```
+ */
+@EventListenersGeneratorDSL
+public inline fun SimpleApplicationBuilder.listeners(crossinline block: EventListenersGenerator.(environment: Application.Environment) -> Unit) {
+    listenerManager { env ->
+        listeners {
+            block(env)
+        }
+    }
+}
+
+
+
+
+
+
+
+/**
+ * 通过 [Simple] 构建而得到的 [Application] 实例。
+ */
+private class SimpleApplicationImpl(
     private val simpleEnvironment: SimpleEnvironment,
-    override val eventListenerManager: EventListenerManager,
+    override val eventListenerManager: CoreListenerManager,
     private val providerList: List<EventProvider>,
-) : Application {
+) : SimpleApplication {
     override val providers: List<EventProvider> = providerList.view()
 
     override val coroutineContext: CoroutineContext
@@ -85,7 +152,7 @@ public class SimpleApplication internal constructor(
                 // else log
             }
         }
-        // TODO
+        // TODO?
 
     }
 }
@@ -94,38 +161,16 @@ public class SimpleApplication internal constructor(
 /**
  * [SimpleApplication]所使用的构建器。
  */
-public class SimpleApplicationBuilder : BaseApplicationBuilder<SimpleApplication>() {
+private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseApplicationBuilder<SimpleApplication>() {
     private var listenerManagerConfigurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit =
         {}
 
 
     /**
-     * 配置 [listenerManager] 的 `listeners`.
-     * 相当于
-     * ```kotlin
-     * listenerManager { env ->
-     *    listeners {
-     *       block(env)
-     *    }
-     * }
-     * ```
-     */
-    @EventListenersGeneratorDSL
-    public inline fun listeners(crossinline block: EventListenersGenerator.(environment: Application.Environment) -> Unit) {
-        listenerManager { env ->
-            listeners {
-                block(env)
-            }
-        }
-    }
-
-
-    /**
      * 配置内部的 listener manager.
-     *
      */
     @ApplicationBuildDsl
-    public fun listenerManager(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
+    override fun listenerManager(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
         val old = listenerManagerConfigurator
         listenerManagerConfigurator = { env -> old(env); configurator(env) }
     }
@@ -144,7 +189,7 @@ public class SimpleApplicationBuilder : BaseApplicationBuilder<SimpleApplication
     }
 
 
-    internal fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {
+    fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {
         val components = buildComponents()
 
         val environment = SimpleEnvironment(
@@ -155,7 +200,7 @@ public class SimpleApplicationBuilder : BaseApplicationBuilder<SimpleApplication
         val listenerManager = buildListenerManager(appConfig, environment)
         val providers = buildProviders(listenerManager, components, appConfig)
 
-        val application = SimpleApplication(environment, listenerManager, providers)
+        val application = SimpleApplicationImpl(environment, listenerManager, providers)
 
         // complete.
         complete(application)
@@ -180,10 +225,3 @@ public class SimpleApplicationBuilder : BaseApplicationBuilder<SimpleApplication
 public open class SimpleApplicationConfiguration : ApplicationConfiguration()
 
 
-/**
- * 使用 [Simple] 作为应用工厂来构建一个 [Application].
- */
-public fun simpleApplication(
-    configurator: SimpleApplicationConfiguration.() -> Unit = {},
-    builder: SimpleApplicationBuilder.() -> Unit = {},
-): SimpleApplication = simbotApplication(Simple, configurator, builder)
