@@ -20,6 +20,7 @@ import kotlinx.coroutines.CompletableJob
 import love.forte.simbot.application.Application
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.cancellation.CancellationException
 
 
 /**
@@ -35,8 +36,10 @@ public abstract class BaseApplication : Application {
         job.join()
     }
 
-    override suspend fun shutdown() {
-        job.cancel()
+    // TODO sync.
+
+    override suspend fun shutdown(reason: Throwable?) {
+        job.cancel(reason?.let { CancellationException(reason) })
         stopAll()
     }
 

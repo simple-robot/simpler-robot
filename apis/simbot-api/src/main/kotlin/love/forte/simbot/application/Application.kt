@@ -93,7 +93,7 @@ public interface Application : CoroutineScope {
      * [Application] 被终止后将不能再次启动。
      *
      */
-    public suspend fun shutdown()
+    public suspend fun shutdown(reason: Throwable?)
 }
 
 

@@ -17,9 +17,12 @@
 package love.forte.simboot.core.application
 
 import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.di.BeanContainer
+import love.forte.simboot.SimbootContext
+import love.forte.simbot.Api4J
 import love.forte.simbot.application.Application
 import love.forte.simbot.application.ApplicationBuilder
 import love.forte.simbot.application.ApplicationFactory
@@ -81,12 +84,36 @@ public interface BootApplicationBuilder : ApplicationBuilder<BootApplication>
 /**
  * [Boot] 所得到的最终的 [Application] 实现, 基于 [SimpleApplication].
  */
-public interface BootApplication : SimpleApplication {
+public interface BootApplication : SimpleApplication, SimbootContext {
 
     /**
      * 当前环境中的 [Bean容器][BeanContainer].
      */
     public val beanContainer: BeanContainer
+
+    /**
+     * [BootApplication] 不需要执行 [start].
+     */
+    override suspend fun start(): Boolean = false
+
+    /**
+     * [BootApplication] 不需要 `start`.
+     */
+    @OptIn(Api4J::class)
+    override fun startBlocking(): Boolean = false
+
+    /**
+     * [BootApplication] 不需要 `start`.
+     */
+    @OptIn(Api4J::class)
+    override fun startAsync() { }
+
+    /**
+     * [BootApplication] 从一开始就是启用状态。
+     */
+    override val isStarted: Boolean
+        get() = true
+
 
 }
 
@@ -113,6 +140,20 @@ private class BootApplicationImpl(
         logger = environment.logger
     }
 
+    override val isActive: Boolean
+        get() = job.isActive
+
+    override val isCancelled: Boolean
+        get() = job.isCancelled
+
+    override suspend fun cancel(reason: Throwable?): Boolean {
+        shutdown(reason)
+        return true
+    }
+
+    override fun invokeOnCompletion(handler: CompletionHandler) {
+        job.invokeOnCompletion(handler)
+    }
 }
 
 /**
