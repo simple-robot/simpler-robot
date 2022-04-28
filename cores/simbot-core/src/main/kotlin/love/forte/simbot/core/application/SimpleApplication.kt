@@ -136,7 +136,8 @@ public class SimpleApplicationBuilder : BaseApplicationBuilder<SimpleApplication
         environment: Application.Environment
     ): CoreListenerManager {
         val initial = CoreListenerManagerConfiguration {
-            coroutineContext = appConfig.coroutineContext.minusKey(Job)
+            // TODO job?
+            coroutineContext = appConfig.coroutineContext
         }
 
         return coreListenerManager(initial = initial, block = { listenerManagerConfigurator(environment) })
