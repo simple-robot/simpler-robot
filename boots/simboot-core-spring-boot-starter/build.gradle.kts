@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 plugins {
@@ -40,9 +39,13 @@ repositories {
 }
 
 dependencies {
-    api(project(":boots:simboot-core"))
+    api(project(":boots:simboot-core")) {
+        exclude("love.forte.simbot", "simbot-logger")
+    }
+
     api(V.Javax.Inject.notation)
     api(P.ForteDI.Spring.notation)
+    api(V.Spring.Boot.Logging.notation)
 
     implementation(V.Spring.Boot.Autoconfigure.notation)
     implementation(V.Spring.Boot.ConfigurationProcessor.notation)
