@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 plugins {
@@ -30,7 +29,9 @@ tasks.getByName<Test>("test") {
 
 
 dependencies {
-    api(project(":cores:simbot-core"))
+    api(project(":cores:simbot-core")) {
+        exclude("love.forte.simbot", "simbot-logger")
+    }
     api(P.ForteDI.Api.notation)
 
     api(V.Slf4j.Api.notation)
