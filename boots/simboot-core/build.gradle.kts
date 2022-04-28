@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 plugins {
@@ -37,6 +36,8 @@ repositories {
 
 
 dependencies {
+    // boot-core 使用 simbot-logger
+    api(project(":apis:simbot-logger"))
     api(project(":boots:simboot-api"))
     api(project(":boots:simboot-core-annotation"))
 
@@ -54,7 +55,7 @@ dependencies {
 }
 
 kotlin {
-    // 严格模式
+    // 严格模式warn
     explicitApiWarning()
 
 
