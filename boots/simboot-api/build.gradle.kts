@@ -30,7 +30,7 @@ tasks.getByName<Test>("test") {
 
 dependencies {
     api(project(":cores:simbot-core")) {
-        exclude("love.forte.simbot", "simbot-logger")
+        exclude("love.forte.simbot:simbot-logger")
     }
     api(P.ForteDI.Api.notation)
 
