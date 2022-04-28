@@ -51,13 +51,10 @@ public fun simpleApplication(
 ): SimpleApplication = simbotApplication(Simple, configurator, builder)
 
 
-
 /**
  * [SimpleApplication] 的配置类。
  */
 public open class SimpleApplicationConfiguration : ApplicationConfiguration()
-
-
 
 
 /**
@@ -113,56 +110,25 @@ public inline fun SimpleApplicationBuilder.listeners(crossinline block: EventLis
 }
 
 
-
-
-
-
-
 /**
  * 通过 [Simple] 构建而得到的 [Application] 实例。
  */
 private class SimpleApplicationImpl(
-    private val simpleEnvironment: SimpleEnvironment,
+    override val environment: SimpleEnvironment,
     override val eventListenerManager: CoreListenerManager,
-    private val providerList: List<EventProvider>,
-) : SimpleApplication {
+    providerList: List<EventProvider>,
+) : SimpleApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
 
     override val coroutineContext: CoroutineContext
-    private val job: CompletableJob
-    private val logger: Logger
+    override val job: CompletableJob
+    override val logger: Logger
 
     init {
-        val properties = simpleEnvironment.properties
-        val currentCoroutineContext = properties.coroutineContext
+        val currentCoroutineContext = environment.coroutineContext
         job = SupervisorJob(currentCoroutineContext[Job])
         coroutineContext = currentCoroutineContext + job
-        logger = properties.logger
-
-    }
-
-
-    override val environment: Application.Environment get() = simpleEnvironment
-
-    override suspend fun join() {
-        job.join()
-    }
-
-    override suspend fun shutdown() {
-        job.cancel()
-        stopAll()
-    }
-
-    private suspend fun stopAll() {
-        providerList.forEach {
-            kotlin.runCatching {
-                it.cancel()
-            }.getOrElse {
-                // else log
-            }
-        }
-        // TODO?
-
+        logger = environment.logger
     }
 }
 
@@ -201,9 +167,12 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseAppli
     fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {
         val components = buildComponents()
 
+        val logger = appConfig.logger ?: LoggerFactory.getLogger("love.forte.simbot.core.application.Simple")
+
         val environment = SimpleEnvironment(
             components,
-            appConfig.toProperties()
+            logger,
+            appConfig.coroutineContext
         )
 
         val listenerManager = buildListenerManager(appConfig, environment)
@@ -217,14 +186,6 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseAppli
         return application
     }
 
-
-    private fun SimpleApplicationConfiguration.toProperties(): SimpleApplicationProperties {
-        val logger = logger ?: LoggerFactory.getLogger("love.forte.simbot.core.application.Simple")
-        return SimpleApplicationProperties(
-            logger = logger,
-            coroutineContext = coroutineContext
-        )
-    }
 
 }
 
