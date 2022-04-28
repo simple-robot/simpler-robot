@@ -40,6 +40,8 @@ public interface Component : IDContainer {
      * 除了通过 [Component.componentSerializersModule] 获取之外，
      * 通常情况下组件的实现会提供其他的全局方式来或者这些序列化信息。
      *
+     * 例如可以直接通过 `FooComponent.componentSerializersModule` 来获取。
+     *
      */
     public val componentSerializersModule: SerializersModule
 

@@ -17,6 +17,7 @@
 package love.forte.simbot.application
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.BotManager
 import love.forte.simbot.Component
 import love.forte.simbot.ID
@@ -74,6 +75,11 @@ public interface Application : CoroutineScope {
          * 当前应用下的事件提供者的 **列表视图**。
          */
         public val providers: List<EventProvider>
+
+        /**
+         * 得到所有组件注册所最终汇总出来的 [SerializersModule] 实例，可用于构建序列化器。
+         */
+        public val serializersModule: SerializersModule
 
     }
 
