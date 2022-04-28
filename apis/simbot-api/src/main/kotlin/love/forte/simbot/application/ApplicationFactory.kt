@@ -18,6 +18,7 @@ package love.forte.simbot.application
 
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentFactory
+import love.forte.simbot.ability.CompletionPerceivable
 import love.forte.simbot.application.Application.Environment
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
@@ -31,7 +32,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  */
 public interface ApplicationFactory<
         Config : ApplicationConfiguration,
-        Builder : ApplicationBuilder,
+        Builder : ApplicationBuilder<A>,
         A : Application
         > {
 
@@ -45,9 +46,9 @@ public interface ApplicationFactory<
 
 /**
  * [Environment] 的构建器.
- * @param CBuilder 组件构建器的实例。
+ * @param A 目标 [Application] 类型
  */
-public interface ApplicationBuilder {
+public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> {
 
     /**
      * 注册一个 [组件][Component].
@@ -55,7 +56,7 @@ public interface ApplicationBuilder {
     @ApplicationBuildDsl
     public fun <C : Component, Config : Any> install(
         componentFactory: ComponentFactory<C, Config>,
-        configurator: Config.() -> Unit = {},
+        configurator: Config.(perceivable: CompletionPerceivable<A>) -> Unit = {},
     )
 
     /**
@@ -64,8 +65,17 @@ public interface ApplicationBuilder {
     @ApplicationBuildDsl
     public fun <P : EventProvider, Config : Any> install(
         eventProviderFactory: EventProviderFactory<P, Config>,
-        configurator: Config.() -> Unit = {},
+        configurator: Config.(perceivable: CompletionPerceivable<A>) -> Unit = {},
     )
+
+
+    /**
+     * 注册一个当 [Application] 构建完成后的回调函数。
+     *
+     * 假如当前builder已经构建完毕，再调用此函数无效果。
+     */
+    @ApplicationBuildDsl
+    override fun onCompletion(handle: (A) -> Unit)
 
 }
 

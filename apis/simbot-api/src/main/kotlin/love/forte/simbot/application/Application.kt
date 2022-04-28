@@ -44,7 +44,7 @@ public interface Application : CoroutineScope {
 
 
     /**
-     * 当前应用的环境内容，如事件处理器、bot管理器等。
+     * 当前应用的组件环境内容。
      */
     public interface Environment {
 
@@ -65,24 +65,22 @@ public interface Application : CoroutineScope {
          */
         public fun getComponentOrNull(id: ID): Component?
 
-        /**
-         * 当前应用下的事件处理器。
-         */
-        public val eventListenerManager: EventListenerManager
-
-
-        /**
-         * 当前应用下的事件提供者的 **列表视图**。
-         */
-        public val providers: List<EventProvider>
 
         /**
          * 得到所有组件注册所最终汇总出来的 [SerializersModule] 实例，可用于构建序列化器。
          */
         public val serializersModule: SerializersModule
-
     }
 
+    /**
+     * 得到当前 [Application] 最终的 [EventListenerManager].
+     */
+    public val eventListenerManager: EventListenerManager
+
+    /**
+     * 当前应用下的 [事件提供者][EventProvider] 的 **列表视图**。
+     */
+    public val providers: List<EventProvider>
 
     /**
      * 挂起此应用直至其被终止。
@@ -102,7 +100,7 @@ public interface Application : CoroutineScope {
 /**
  * 得到目标环境参数中的所有 [BotManager] 实例。
  */
-public inline val Application.Environment.botManagers: List<BotManager<*>> get() = providers.filterIsInstance<BotManager<*>>()
+public inline val Application.botManagers: List<BotManager<*>> get() = providers.filterIsInstance<BotManager<*>>()
 
 
 

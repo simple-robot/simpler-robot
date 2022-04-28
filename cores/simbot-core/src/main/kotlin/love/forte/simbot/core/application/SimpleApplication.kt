@@ -21,6 +21,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.application.*
 import love.forte.simbot.core.event.*
+import love.forte.simbot.event.EventListenerManager
+import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
@@ -40,10 +42,16 @@ public object Simple : ApplicationFactory<SimpleApplicationConfiguration, Simple
     }
 }
 
-
+/**
+ * 通过 [Simple] 构建而得到的 [Application] 实例。
+ */
 public class SimpleApplication internal constructor(
     private val simpleEnvironment: SimpleEnvironment,
+    override val eventListenerManager: EventListenerManager,
+    private val providerList: List<EventProvider>,
 ) : Application {
+    override val providers: List<EventProvider> = providerList.view()
+
     override val coroutineContext: CoroutineContext
     private val job: CompletableJob
     private val logger: Logger
@@ -54,7 +62,6 @@ public class SimpleApplication internal constructor(
         job = SupervisorJob(currentCoroutineContext[Job])
         coroutineContext = currentCoroutineContext + job
         logger = properties.logger
-
 
     }
 
@@ -71,10 +78,12 @@ public class SimpleApplication internal constructor(
     }
 
     private suspend fun stopAll() {
-        environment.providers.forEach {
+        providerList.forEach {
             kotlin.runCatching {
                 it.cancel()
-            }.getOrElse { }
+            }.getOrElse {
+                // else log
+            }
         }
         // TODO
 
@@ -85,32 +94,30 @@ public class SimpleApplication internal constructor(
 /**
  * [SimpleApplication]所使用的构建器。
  */
-public class SimpleApplicationBuilder : BaseApplicationBuilder() {
-    private var listenerManagerConfigurator: CoreListenerManagerConfiguration.() -> Unit = {}
+public class SimpleApplicationBuilder : BaseApplicationBuilder<SimpleApplication>() {
+    private var listenerManagerConfigurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit =
+        {}
 
 
     /**
      * 配置 [listenerManager] 的 `listeners`.
      * 相当于
      * ```kotlin
-     * listenerManager {
+     * listenerManager { env ->
      *    listeners {
-     *       block()
+     *       block(env)
      *    }
      * }
      * ```
      */
     @EventListenersGeneratorDSL
-    public inline fun listeners(crossinline block: EventListenersGenerator.() -> Unit) {
-        listenerManager {
+    public inline fun listeners(crossinline block: EventListenersGenerator.(environment: Application.Environment) -> Unit) {
+        listenerManager { env ->
             listeners {
-                block()
+                block(env)
             }
         }
     }
-
-
-
 
 
     /**
@@ -118,33 +125,41 @@ public class SimpleApplicationBuilder : BaseApplicationBuilder() {
      *
      */
     @ApplicationBuildDsl
-    public fun listenerManager(configurator: CoreListenerManagerConfiguration.() -> Unit) {
+    public fun listenerManager(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
         val old = listenerManagerConfigurator
-        listenerManagerConfigurator = { old(); configurator() }
+        listenerManagerConfigurator = { env -> old(env); configurator(env) }
     }
 
 
-    private fun buildListenerManager(appConfig: SimpleApplicationConfiguration): CoreListenerManager {
+    private fun buildListenerManager(
+        appConfig: SimpleApplicationConfiguration,
+        environment: Application.Environment
+    ): CoreListenerManager {
         val initial = CoreListenerManagerConfiguration {
             coroutineContext = appConfig.coroutineContext.minusKey(Job)
         }
 
-        return coreListenerManager(initial = initial, block = listenerManagerConfigurator)
+        return coreListenerManager(initial = initial, block = { listenerManagerConfigurator(environment) })
     }
 
 
     internal fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {
         val components = buildComponents()
-        val listenerManager = buildListenerManager(appConfig)
-        val providers = buildProviders(listenerManager, components, appConfig)
+
         val environment = SimpleEnvironment(
             components,
-            listenerManager,
-            providers,
             appConfig.toProperties()
         )
 
-        return SimpleApplication(environment)
+        val listenerManager = buildListenerManager(appConfig, environment)
+        val providers = buildProviders(listenerManager, components, appConfig)
+
+        val application = SimpleApplication(environment, listenerManager, providers)
+
+        // complete.
+        complete(application)
+
+        return application
     }
 
 

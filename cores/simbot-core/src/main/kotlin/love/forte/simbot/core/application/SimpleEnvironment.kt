@@ -21,8 +21,6 @@ import love.forte.simbot.Component
 import love.forte.simbot.ID
 import love.forte.simbot.NoSuchComponentException
 import love.forte.simbot.application.Application
-import love.forte.simbot.application.EventProvider
-import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.literal
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
@@ -34,14 +32,11 @@ import kotlin.coroutines.CoroutineContext
  */
 internal class SimpleEnvironment(
     private val components0: List<Component>,
-    override val eventListenerManager: EventListenerManager,
-    providers0: List<EventProvider>,
     // others
     val properties: SimpleApplicationProperties,
 
     ) : Application.Environment {
     override val components: List<Component> = components0.view()
-    override val providers: List<EventProvider> = providers0.view()
     override val serializersModule: SerializersModule = SerializersModule {
         components0.forEach { include(it.componentSerializersModule) }
     }

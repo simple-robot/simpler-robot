@@ -14,9 +14,12 @@
  *
  */
 
+@file:JvmName("Components")
+
 package love.forte.simbot
 
 import kotlinx.serialization.modules.SerializersModule
+import love.forte.simbot.application.Application
 import love.forte.simbot.application.ApplicationBuildDsl
 import love.forte.simbot.application.ApplicationBuilder
 import love.forte.simbot.definition.Container
@@ -115,14 +118,15 @@ public interface ComponentAutoRegistrarFactory<C : Component, out Config : Any> 
  * 尝试加载所有的 [ComponentAutoRegistrarFactory] 并注册到 [ApplicationBuilder] 中。
  */
 @ApplicationBuildDsl
-public fun ApplicationBuilder.installAllComponents(classLoader: ClassLoader = this.currentClassLoader) {
+public fun <A : Application> ApplicationBuilder<A>.installAllComponents(
+    classLoader: ClassLoader = this.currentClassLoader,
+) {
     val factories = ServiceLoader.load(ComponentAutoRegistrarFactory::class.java, classLoader)
     factories.forEach {
         install(it.registrar)
     }
 
 }
-
 
 
 //endregion
