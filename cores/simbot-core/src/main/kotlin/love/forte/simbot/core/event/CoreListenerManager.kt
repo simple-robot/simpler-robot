@@ -115,9 +115,10 @@ public class CoreListenerManager private constructor(
     init {
         val coreListenerManagerConfig: CoreListenerManagerConfig = configuration.build()
         val context = coreListenerManagerConfig.coroutineContext
-        context.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
+        // TODO Job
+        // context.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
 
-        managerCoroutineContext = context
+        managerCoroutineContext = context.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
         managerScope = CoroutineScope(managerCoroutineContext)
 
         listenerExceptionHandler = coreListenerManagerConfig.exceptionHandler

@@ -14,37 +14,20 @@
  *
  */
 
-package application
-
-import love.forte.simbot.application.installAllEventProviders
-import love.forte.simbot.application.simbotApplication
-import love.forte.simbot.core.application.Simple
-import love.forte.simbot.installAllComponents
-import org.junit.Test
+package love.forte.simbot.ability
 
 
 /**
  *
+ * 可以感知到某个目标的完成的。
+ *
  * @author ForteScarlet
  */
-class SimpleApplicationTest {
+public interface CompletionPerceivable<T> {
 
-    @Test
-    fun app() {
-        simbotApplication(Simple) {
-            listeners {
-
-            }
-
-            installAllComponents()
-            installAllEventProviders()
-
-
-
-        }
-
-    }
-
+    /**
+     * 当目标完成时执行注册的回调函数。
+     */
+    public fun onCompletion(handle: (T) -> Unit)
 
 }
-

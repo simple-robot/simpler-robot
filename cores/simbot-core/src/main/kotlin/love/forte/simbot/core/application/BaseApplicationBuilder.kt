@@ -19,11 +19,10 @@ package love.forte.simbot.core.application
 import love.forte.simbot.Attribute
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentFactory
-import love.forte.simbot.application.ApplicationBuilder
-import love.forte.simbot.application.ApplicationConfiguration
-import love.forte.simbot.application.EventProvider
-import love.forte.simbot.application.EventProviderFactory
+import love.forte.simbot.ability.CompletionPerceivable
+import love.forte.simbot.application.*
 import love.forte.simbot.event.EventProcessor
+import java.util.concurrent.ConcurrentLinkedQueue
 
 
 /**
@@ -32,12 +31,19 @@ import love.forte.simbot.event.EventProcessor
  *
  * @author ForteScarlet
  */
-public abstract class BaseApplicationBuilder : ApplicationBuilder {
+public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuilder<A> {
     private val componentConfigurations = mutableMapOf<Attribute<*>, Any.() -> Unit>()
     private val componentFactories = mutableMapOf<Attribute<*>, () -> Component>()
 
+    /**
+     * 事件提供者配置。
+     */
     private val eventProviderConfigurations =
         mutableMapOf<Attribute<*>, Any.() -> Unit>()
+
+    /**
+     * 事件提供者工厂。
+     */
     private val eventProviderFactories =
         mutableMapOf<Attribute<*>, (EventProcessor, List<Component>, ApplicationConfiguration) -> EventProvider>()
 
@@ -46,7 +52,7 @@ public abstract class BaseApplicationBuilder : ApplicationBuilder {
      */
     override fun <C : Component, Config : Any> install(
         componentFactory: ComponentFactory<C, Config>,
-        configurator: Config.() -> Unit,
+        configurator: Config.(perceivable: CompletionPerceivable<A>) -> Unit,
     ) {
         val key = componentFactory.key
         val newConfig: Any.() -> Unit = newConfigurator(key, eventProviderConfigurations, configurator)
@@ -66,7 +72,7 @@ public abstract class BaseApplicationBuilder : ApplicationBuilder {
      */
     override fun <P : EventProvider, Config : Any> install(
         eventProviderFactory: EventProviderFactory<P, Config>,
-        configurator: Config.() -> Unit,
+        configurator: Config.(perceivable: CompletionPerceivable<A>) -> Unit,
     ) {
         val key = eventProviderFactory.key
         val newConfig: Any.() -> Unit = newConfigurator(key, eventProviderConfigurations, configurator)
@@ -85,18 +91,18 @@ public abstract class BaseApplicationBuilder : ApplicationBuilder {
     private fun <Config : Any> newConfigurator(
         key: Attribute<*>,
         configurations: Map<Attribute<*>, Any.() -> Unit>,
-        configurator: Config.() -> Unit,
+        configurator: Config.(builder: ApplicationBuilder<A>) -> Unit,
     ): (Any.() -> Unit) {
         val oldConfig = configurations[key]
         @Suppress("UNCHECKED_CAST")
         return if (oldConfig != null) {
             {
                 oldConfig.invoke(this)
-                (this as Config).configurator()
+                (this as Config).configurator(this@BaseApplicationBuilder)
             }
         } else {
             {
-                (this as Config).configurator()
+                (this as Config).configurator(this@BaseApplicationBuilder)
             }
         }
     }
@@ -106,8 +112,32 @@ public abstract class BaseApplicationBuilder : ApplicationBuilder {
         return componentFactories.values.map { it() }
     }
 
-    protected fun buildProviders(eventProcessor: EventProcessor, components: List<Component>, applicationConfiguration: ApplicationConfiguration): List<EventProvider> {
+
+    protected fun buildProviders(
+        eventProcessor: EventProcessor,
+        components: List<Component>,
+        applicationConfiguration: ApplicationConfiguration
+    ): List<EventProvider> {
         return eventProviderFactories.values.map { it(eventProcessor, components, applicationConfiguration) }
+    }
+
+
+    /**
+     * 当构建完成时统一执行的函数列表。
+     */
+    private val onCompletions = ConcurrentLinkedQueue<(A) -> Unit>()
+
+
+    override fun onCompletion(handle: (A) -> Unit) {
+        onCompletions.add(handle)
+    }
+
+
+    /**
+     * 当 [Application] 构建完毕，则执行此函数来执行所有的 `onCompletion` 回调函数。
+     */
+    protected fun complete(application: A) {
+        onCompletions.forEach { it(application) }
     }
 
 }
