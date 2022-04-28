@@ -29,6 +29,8 @@ tasks.getByName<Test>("test") {
 
 
 dependencies {
+    // simbot-core 使用 logger
+    api(project(":apis:simbot-logger"))
     api(project(":apis:simbot-api"))
     api(V.Slf4j.Api.notation)
     api(V.Kotlinx.Coroutines.Core.Jvm.notation)
