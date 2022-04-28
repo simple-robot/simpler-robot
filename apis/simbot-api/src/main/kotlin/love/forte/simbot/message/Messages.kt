@@ -38,6 +38,7 @@ import love.forte.simbot.message.Message.Element as MsgElement
  *
  * @see Messages
  */
+@Deprecated("将会被弃用")
 public interface MessageElementPolymorphicRegistrar {
     public fun registrar(builderAction: PolymorphicModuleBuilder<MsgElement<*>>.() -> Unit)
 }
@@ -82,6 +83,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
 
     /**
      */
+    @Suppress("DEPRECATION")
     public companion object : MessageElementPolymorphicRegistrar {
 
         @JvmSynthetic
@@ -107,6 +109,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          * 当前 [Messages] 可用于序列化的 [SerializersModule]. 在组件加载完毕后，其中应包含了所有组件下注册的额外消息类型的多态信息。
          *
          */
+        @Deprecated("此方式的序列化将会被弃用")
         public val serializersModule: SerializersModule get() = _serializersModule
 
         private fun setJson() {
@@ -121,6 +124,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          * 将 [Messages.serializersModule] 与目标 [serializersModule] 进行合并。
          */
         @Synchronized
+        @Deprecated("此方式的序列化将会被弃用")
         public fun mergeSerializersModule(serializersModule: SerializersModule) {
             _serializersModule += serializersModule
             setJson()
@@ -130,6 +134,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          * 将 [Messages.serializersModule] 与目标 [serializersModule] 进行合并。
          */
         @Suppress("MemberVisibilityCanBePrivate")
+        @Deprecated("此方式的序列化将会被弃用")
         public fun mergeSerializersModule(builderAction: SerializersModuleBuilder.() -> Unit) {
             mergeSerializersModule(SerializersModule(builderAction))
         }
@@ -137,6 +142,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
         /**
          * 向 [serializersModule] 中注册一个 [MsgElement] 的多态信息。
          */
+        @Deprecated("此方式的序列化将会被弃用")
         public override fun registrar(builderAction: PolymorphicModuleBuilder<MsgElement<*>>.() -> Unit) {
             registrarPolymorphic(builderAction)
         }
@@ -453,7 +459,8 @@ internal class SingleValueMessageList(private val value: MsgElement<*>) : Messag
 }
 
 
-internal class MessageListImpl(private val delegate: List<MsgElement<*>>) : MessageList(), List<MsgElement<*>> by delegate {
+internal class MessageListImpl(private val delegate: List<MsgElement<*>>) : MessageList(),
+    List<MsgElement<*>> by delegate {
     init {
         Simbot.check(delegate.isNotEmpty()) { "Messages init message list cannot be empty." }
     }

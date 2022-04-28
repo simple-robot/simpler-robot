@@ -16,6 +16,7 @@
 
 package love.forte.simbot.core.application
 
+import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.Component
 import love.forte.simbot.ID
 import love.forte.simbot.NoSuchComponentException
@@ -27,16 +28,23 @@ import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
 
+/**
+ *
+ * @author ForteScarlet
+ */
 internal class SimpleEnvironment(
     private val components0: List<Component>,
     override val eventListenerManager: EventListenerManager,
-    private val providers0: List<EventProvider>,
+    providers0: List<EventProvider>,
     // others
     val properties: SimpleApplicationProperties,
 
     ) : Application.Environment {
     override val components: List<Component> = components0.view()
     override val providers: List<EventProvider> = providers0.view()
+    override val serializersModule: SerializersModule = SerializersModule {
+        components0.forEach { include(it.componentSerializersModule) }
+    }
 
     override fun getComponent(id: ID): Component = getComponentOrNull(id) ?: throw NoSuchComponentException(id.literal)
     override fun getComponentOrNull(id: ID): Component? = components.firstOrNull { it.id == id }
