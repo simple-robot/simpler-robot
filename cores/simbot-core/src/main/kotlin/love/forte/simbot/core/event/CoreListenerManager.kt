@@ -18,6 +18,7 @@ package love.forte.simbot.core.event
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
+import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
 import love.forte.simbot.event.*
 import love.forte.simbot.utils.view
@@ -118,7 +119,8 @@ public class CoreListenerManager private constructor(
         // TODO Job
         // context.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
 
-        managerCoroutineContext = context.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
+        managerCoroutineContext =
+            context.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
         managerScope = CoroutineScope(managerCoroutineContext)
 
         listenerExceptionHandler = coreListenerManagerConfig.exceptionHandler
@@ -422,20 +424,41 @@ public enum class ListenerInvokeType {
 }
 
 
+@OptIn(ExperimentalSimbotApi::class)
 internal class CoreEventProcessingContext(
     override val event: Event,
+    override val messagesSerializersModule: SerializersModule,
+    private val globalScopeContext: GlobalScopeContext,
+    private val continuousSessionContext: CoreContinuousSessionContext,
+    private val instantScopeContextInitializer: () -> InstantScopeContext,
     private val attributeMap: AttributeMap,
-    resultInit: () -> MutableList<EventResult>
+    resultInitSize: Int
 ) : EventProcessingContext {
+
 
     @Suppress("PropertyName")
     @JvmSynthetic
-    val _results = resultInit()
+    val _results = ArrayList<EventResult>(resultInitSize)
 
     override val results: List<EventResult> = _results.view()
 
+    lateinit var instantScope: InstantScopeContext
+
+    @Suppress("UNCHECKED_CAST")
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T? {
-        return attributeMap[attribute]
+        return when (attribute) {
+            EventProcessingContext.Scope.Global -> globalScopeContext as T
+            EventProcessingContext.Scope.Instant -> {
+                fun ifInit(): InstantScopeContext? = if (::instantScope.isInitialized) instantScope else null
+                return (ifInit() ?: synchronized(this) {
+                    ifInit() ?: instantScopeContextInitializer().also {
+                        instantScope = it
+                    }
+                }) as T
+            }
+            EventProcessingContext.Scope.ContinuousSession -> continuousSessionContext as T
+            else -> attributeMap[attribute]
+        }
     }
 }
 

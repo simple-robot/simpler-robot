@@ -12,14 +12,14 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.event
 
+import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
-import org.jetbrains.annotations.*
-import kotlin.coroutines.*
+import org.jetbrains.annotations.UnmodifiableView
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -37,39 +37,6 @@ public interface EventProcessingContext : CoroutineContext.Element, AttributeCon
 
 
     /**
-     * 事件流程上下文的部分作用域。 [Scope] 中的所有作用域应该按照约定由 [EventProcessingContext] 的产生者进行实现与提供。
-     *
-     * 通过 [getAttribute] 获取对应作用域结果。
-     *
-     */
-    @Suppress("NO_EXPLICIT_RETURN_TYPE_IN_API_MODE_WARNING")
-    public object Scope {
-        /**
-         * 全局作用域。 一个 [ScopeContext], 此作用域下的内容应当保持.
-         *
-         */
-        @JvmField
-        public val Global = attribute<ScopeContext>("context.scope.global")
-
-        /**
-         * 瞬时作用域，每一次的事件处理流程都是一个新的 [ScopeContext].
-         */
-        @JvmField
-        public val Instant = attribute<ScopeContext>("context.scope.instant")
-
-
-        /**
-         * 持续会话作用域. 可以通过持续会话作用域来达成监听函数之间的信息通讯的目的。
-         */
-        @JvmField
-        @ExperimentalSimbotApi
-        public val ContinuousSession = attribute<ContinuousSessionContext>("context.scope.continuous.session")
-
-
-    }
-
-
-    /**
      * 本次监听流程中的事件主题。
      */
     public val event: Event
@@ -81,13 +48,50 @@ public interface EventProcessingContext : CoroutineContext.Element, AttributeCon
      */
     public val results: @UnmodifiableView List<EventResult>
 
+
+    /**
+     * 当前事件所处环境中所能够提供的消息序列化模块信息。
+     */
+    public val messagesSerializersModule: SerializersModule
+
+
     /**
      * 根据一个 [Attribute] 得到一个属性。
      *
      */
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T?
 
-    // other..?
+
+
+
+    /**
+     * 事件流程上下文的部分作用域。 [Scope] 中的所有作用域应该按照约定由 [EventProcessingContext] 的产生者进行实现与提供。
+     *
+     * 通过 [getAttribute] 获取对应作用域结果。
+     *
+     */
+    public object Scope {
+        /**
+         * 全局作用域。 一个 [ScopeContext], 此作用域下的内容应当保持.
+         *
+         */
+        @JvmField
+        public val Global: Attribute<ScopeContext> = attribute("context.scope.global")
+
+        /**
+         * 瞬时作用域，每一次的事件处理流程都是一个新的 [ScopeContext].
+         */
+        @JvmField
+        public val Instant: Attribute<ScopeContext> = attribute("context.scope.instant")
+
+
+        /**
+         * 持续会话作用域. 可以通过持续会话作用域来达成监听函数之间的信息通讯的目的。
+         */
+        @JvmField
+        @ExperimentalSimbotApi
+        public val ContinuousSession: Attribute<ContinuousSessionContext> = attribute("context.scope.continuous.session")
+    }
 
 }
 
