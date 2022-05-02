@@ -17,6 +17,9 @@
 package love.forte.simbot.core.event
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.modules.EmptySerializersModule
+import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerInterceptor
@@ -243,13 +246,15 @@ public class CoreListenerManagerConfiguration {
         private set
 
 
-    internal fun build(): CoreListenerManagerConfig {
+    @OptIn(ExperimentalSerializationApi::class)
+    internal fun build(serializersModule: SerializersModule = EmptySerializersModule): CoreListenerManagerConfig {
         return CoreListenerManagerConfig(
             coroutineContext,
             exceptionHandler = listenerExceptionHandler,
             processingInterceptors = idMapOf(processingInterceptors),
             listenerInterceptors = idMapOf(listenerInterceptors),
-            listeners = listeners.toList()
+            listeners = listeners.toList(),
+            serializersModule // TODO
         )
     }
 
@@ -268,7 +273,8 @@ public data class CoreListenerManagerConfig(
     internal val exceptionHandler: ((Throwable) -> EventResult)? = null,
     internal val processingInterceptors: IDMaps<EventProcessingInterceptor>,
     internal val listenerInterceptors: IDMaps<EventListenerInterceptor>,
-    internal val listeners: List<EventListener>
+    internal val listeners: List<EventListener>,
+    internal val messageSerializersModule: SerializersModule
 
 )
 
