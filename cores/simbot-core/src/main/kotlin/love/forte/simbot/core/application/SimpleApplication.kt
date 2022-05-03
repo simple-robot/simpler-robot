@@ -85,15 +85,15 @@ public interface SimpleApplicationBuilder : ApplicationBuilder<SimpleApplication
      *
      */
     @ApplicationBuildDsl
-    public fun listenerManager(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
+    public fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
 }
 
 
 /**
- * 配置 [SimpleApplicationBuilder.listenerManager] 的 `listeners`.
+ * 配置 [SimpleApplicationBuilder.eventProcessor] 的 `listeners`.
  * 相当于
  * ```kotlin
- * listenerManager { env ->
+ * eventProcessor { env ->
  *    listeners {
  *       block(env)
  *    }
@@ -102,7 +102,7 @@ public interface SimpleApplicationBuilder : ApplicationBuilder<SimpleApplication
  */
 @EventListenersGeneratorDSL
 public inline fun SimpleApplicationBuilder.listeners(crossinline block: EventListenersGenerator.(environment: Application.Environment) -> Unit) {
-    listenerManager { env ->
+    eventProcessor { env ->
         listeners {
             block(env)
         }
@@ -145,7 +145,7 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseAppli
      * 配置内部的 listener manager.
      */
     @ApplicationBuildDsl
-    override fun listenerManager(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
+    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
         val old = listenerManagerConfigurator
         listenerManagerConfigurator = { env -> old(env); configurator(env) }
     }

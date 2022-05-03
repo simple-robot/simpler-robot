@@ -21,7 +21,7 @@ package love.forte.simbot.application
  * 构建并启用一个 [Application].
  *
  */
-public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder, A : Application> simbotApplication(
+public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, A : Application> simbotApplication(
     factory: ApplicationFactory<Config, Builder, A>,
     configurator: Config.() -> Unit = {},
     builder: Builder.() -> Unit = {},

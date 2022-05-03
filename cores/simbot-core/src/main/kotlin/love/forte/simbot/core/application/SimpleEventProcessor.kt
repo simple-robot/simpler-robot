@@ -14,19 +14,11 @@
  *
  */
 
-package love.forte.simboot.config
+package love.forte.simbot.core.application
 
-import love.forte.simbot.application.ApplicationBuilder
 
 /**
- * 提供用于针对组件的注册配置类。
  *
  * @author ForteScarlet
  */
-public abstract class ComponentRegistryConfigure {
-
-    /**
-     * 提供 [ApplicationBuilder] 并注册组件。
-     */
-    public abstract fun registerComponent(applicationBuilder: ApplicationBuilder<*>)
-}
+public interface SimpleEventProcessor

@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.autoconfigure
@@ -87,7 +86,8 @@ public open class SpringEventListenerManagerConfiguration {
 
         return coreListenerManager {
             componentRegistryConfigures.forEach {
-                it.registerComponent(this)
+                // TODO
+                // it.registerComponent(this)
             }
 
             if (processingInterceptors.isNotEmpty()) {

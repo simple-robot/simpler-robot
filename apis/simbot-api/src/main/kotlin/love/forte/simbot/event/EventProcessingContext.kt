@@ -58,6 +58,8 @@ public interface EventProcessingContext : CoroutineContext.Element, AttributeCon
     /**
      * 根据一个 [Attribute] 得到一个属性。
      *
+     * 其中，除了 [Scope.Global] 和 [Scope.ContinuousSession] 以外的所有内容都是**瞬时的**, 只会存在与当前上下文。
+     *
      */
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T?
 
@@ -82,6 +84,7 @@ public interface EventProcessingContext : CoroutineContext.Element, AttributeCon
          * 瞬时作用域，每一次的事件处理流程都是一个新的 [ScopeContext].
          */
         @JvmField
+        @Deprecated("Just use EventProcessingContext")
         public val Instant: Attribute<ScopeContext> = attribute("context.scope.instant")
 
 

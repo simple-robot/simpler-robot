@@ -27,7 +27,7 @@ import love.forte.simbot.installAllComponents
  * @author ForteScarlet
  */
 public object InstallAllComponentRegistryConfigure : ComponentRegistryConfigure() {
-    override fun registerComponent(applicationBuilder: ApplicationBuilder) {
+    override fun registerComponent(applicationBuilder: ApplicationBuilder<*>) {
         applicationBuilder.installAllComponents()
     }
 }
