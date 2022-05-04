@@ -14,24 +14,24 @@
  *
  */
 
-package love.forte.simbot.application
+package love.forte.simboot.autoconfigure.application
+
+import love.forte.simbot.application.ApplicationConfiguration
 
 
-/**
- * 构建并启用一个 [Application].
- *
- */
-public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, A : Application> simbotApplication(
-    factory: ApplicationFactory<Config, Builder, A>,
-    configurator: Config.() -> Unit = {},
-    builder: Builder.(Config) -> Unit = {},
-): A {
-    return factory.create(configurator, builder)
+public open class SpringBootApplicationConfiguration : ApplicationConfiguration() {
+
+    /**
+     *
+     * 所有需要尝试进行加载的 `*.bot.?` 的配置文件资源。默认为 <code>simbot-bots/&#42;.bot&#42;</code>。
+     *
+     */
+    public var botConfigurationResources : List<String> = listOf("simbot-bots/*.bot*")
+
+
+
+
+
+
+
 }
-
-
-
-
-
-
-

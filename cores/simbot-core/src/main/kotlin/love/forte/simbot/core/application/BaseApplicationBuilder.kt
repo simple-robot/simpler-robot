@@ -16,11 +16,10 @@
 
 package love.forte.simbot.core.application
 
-import love.forte.simbot.Attribute
-import love.forte.simbot.Component
-import love.forte.simbot.ComponentFactory
+import love.forte.simbot.*
 import love.forte.simbot.ability.CompletionPerceivable
 import love.forte.simbot.application.*
+import love.forte.simbot.application.BotRegistrar
 import love.forte.simbot.event.EventProcessor
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -34,6 +33,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuilder<A> {
     private val componentConfigurations = mutableMapOf<Attribute<*>, Any.() -> Unit>()
     private val componentFactories = mutableMapOf<Attribute<*>, () -> Component>()
+    private val botRegisters = mutableListOf<BotRegistrar.() -> Unit>()
 
     /**
      * 事件提供者配置。
@@ -87,6 +87,13 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
 
     }
 
+    /**
+     * 添加一个bot注册函数。
+     */
+    override fun bots(registrar: BotRegistrar.() -> Unit) {
+        botRegisters.add(registrar)
+    }
+
 
     private fun <Config : Any> newConfigurator(
         key: Attribute<*>,
@@ -121,6 +128,16 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
         return eventProviderFactories.values.map { it(eventProcessor, components, applicationConfiguration) }
     }
 
+    /**
+     * 提供botManager列表并执行它们的注册逻辑。
+     */
+    protected fun registerBots(botManagers: List<love.forte.simbot.BotRegistrar>) {
+        val registrar = BotRegistrarImpl(botManagers)
+        botRegisters.forEach {
+            it(registrar)
+        }
+    }
+
 
     /**
      * 当构建完成时统一执行的函数列表。
@@ -140,4 +157,21 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
         onCompletions.forEach { it(application) }
     }
 
+
+    private class BotRegistrarImpl(private val registrars: List<love.forte.simbot.BotRegistrar>) : BotRegistrar {
+        override fun register(botVerifyInfo: BotVerifyInfo): Bot? {
+            for (manager in registrars) {
+                try {
+                    return manager.register(botVerifyInfo)
+                } catch (ignore: ComponentMismatchException) {
+                    // ignore this.
+                }
+            }
+            return null
+        }
+
+        override fun toString(): String {
+            return "BotRegistrarImpl(registrars=$registrars)"
+        }
+    }
 }

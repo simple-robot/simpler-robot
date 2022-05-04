@@ -14,7 +14,7 @@
  *
  */
 
-package love.forte.simbot.core.application
+package love.forte.simboot.autoconfigure.application
 
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.Component
@@ -26,22 +26,23 @@ import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
 
+
 /**
  *
  * @author ForteScarlet
  */
-internal class SimpleEnvironment(
+internal class SpringBootEnvironment(
     components0: List<Component>,
     val logger: Logger,
     val coroutineContext: CoroutineContext,
-
-    ) : Application.Environment {
+) : Application.Environment {
     override val components: List<Component> = components0.view()
-    override val serializersModule: SerializersModule = SerializersModule {
-        components0.forEach { include(it.componentSerializersModule) }
+    override val serializersModule = SerializersModule {
+        components0.forEach {
+            include(it.componentSerializersModule)
+        }
     }
 
     override fun getComponent(id: ID): Component = getComponentOrNull(id) ?: throw NoSuchComponentException(id.literal)
     override fun getComponentOrNull(id: ID): Component? = components.firstOrNull { it.id == id }
 }
-

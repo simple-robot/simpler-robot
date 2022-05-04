@@ -16,11 +16,14 @@
 
 package love.forte.simbot.application
 
+import love.forte.simbot.Bot
+import love.forte.simbot.BotVerifyInfo
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentFactory
 import love.forte.simbot.ability.CompletionPerceivable
 import love.forte.simbot.application.Application.Environment
 import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -39,7 +42,7 @@ public interface ApplicationFactory<
     /**
      * 提供配置函数和构建器函数，构建一个 [Application] 实例。
      */
-    public fun create(configurator: Config.() -> Unit, builder: Builder.() -> Unit): A
+    public fun create(configurator: Config.() -> Unit, builder: Builder.(Config) -> Unit): A
 
 }
 
@@ -70,14 +73,35 @@ public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> 
 
 
     /**
+     * 提供一个可以使用 [BotVerifyInfo] 进行通用性bot注册的配置方式。
+     */
+    @ApplicationBuildDsl
+    public fun bots(registrar: BotRegistrar.() -> Unit)
+
+
+    /**
      * 注册一个当 [Application] 构建完成后的回调函数。
      *
      * 假如当前builder已经构建完毕，再调用此函数无效果。
      */
     @ApplicationBuildDsl
-    override fun onCompletion(handle: (A) -> Unit)
+    override fun onCompletion(handle: (application: A) -> Unit)
 
 }
+
+
+/**
+ *
+ * TODO 补注释
+ */
+public interface BotRegistrar {
+
+    /**
+     * TODO 补注释
+     */
+    public fun register(botVerifyInfo: BotVerifyInfo): Bot?
+}
+
 
 /**
  * 标记为用于 [ApplicationBuilder] 的 dsl api.
@@ -102,6 +126,6 @@ public open class ApplicationConfiguration {
     /**
      * 提供一个用于Application内部的日志对象。
      */
-    public var logger: Logger? = null
+    public var logger: Logger = LoggerFactory.getLogger("love.forte.simbot.application.ApplicationConfiguration")
 
 }

@@ -32,10 +32,15 @@ import kotlin.coroutines.CoroutineContext
  */
 internal class BootEnvironment(
     override val components: List<Component>,
-    override val serializersModule: SerializersModule,
     val logger: Logger,
     val coroutineContext: CoroutineContext,
 ) : Application.Environment {
     override fun getComponent(id: ID): Component = getComponentOrNull(id) ?: throw NoSuchComponentException(id.literal)
     override fun getComponentOrNull(id: ID): Component? = components.firstOrNull { it.id == id }
+    override val serializersModule: SerializersModule = SerializersModule {
+        components.forEach {
+            include(it.componentSerializersModule)
+        }
+    }
+
 }

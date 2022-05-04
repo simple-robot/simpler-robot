@@ -20,10 +20,11 @@ import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.application.*
-import love.forte.simbot.core.event.*
+import love.forte.simbot.core.event.CoreListenerManager
+import love.forte.simbot.core.event.CoreListenerManagerConfiguration
+import love.forte.simbot.core.event.coreListenerManager
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -32,11 +33,13 @@ import kotlin.coroutines.CoroutineContext
 public object Simple : ApplicationFactory<SimpleApplicationConfiguration, SimpleApplicationBuilder, SimpleApplication> {
     override fun create(
         configurator: SimpleApplicationConfiguration.() -> Unit,
-        builder: SimpleApplicationBuilder.() -> Unit,
+        builder: SimpleApplicationBuilder.(SimpleApplicationConfiguration) -> Unit,
     ): SimpleApplication {
         // init configurator
         val config = SimpleApplicationConfiguration().also(configurator)
-        val appBuilder = SimpleApplicationBuilderImpl().also(builder)
+        val appBuilder = SimpleApplicationBuilderImpl().apply {
+            builder(config)
+        }
         return appBuilder.build(config)
     }
 }
@@ -47,7 +50,7 @@ public object Simple : ApplicationFactory<SimpleApplicationConfiguration, Simple
  */
 public fun simpleApplication(
     configurator: SimpleApplicationConfiguration.() -> Unit = {},
-    builder: SimpleApplicationBuilder.() -> Unit = {},
+    builder: SimpleApplicationBuilder.(SimpleApplicationConfiguration) -> Unit = {},
 ): SimpleApplication = simbotApplication(Simple, configurator, builder)
 
 
@@ -78,35 +81,15 @@ public interface SimpleApplication : Application {
 /**
  * 用于构建 [SimpleApplication] 的构建器类型。
  */
-public interface SimpleApplicationBuilder : ApplicationBuilder<SimpleApplication> {
+public interface SimpleApplicationBuilder : ApplicationBuilder<SimpleApplication>,
+    CoreEventProcessableApplicationBuilder<SimpleApplication> {
 
     /**
      * 配置内部的 core listener manager.
      *
      */
     @ApplicationBuildDsl
-    public fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
-}
-
-
-/**
- * 配置 [SimpleApplicationBuilder.eventProcessor] 的 `listeners`.
- * 相当于
- * ```kotlin
- * eventProcessor { env ->
- *    listeners {
- *       block(env)
- *    }
- * }
- * ```
- */
-@EventListenersGeneratorDSL
-public inline fun SimpleApplicationBuilder.listeners(crossinline block: EventListenersGenerator.(environment: Application.Environment) -> Unit) {
-    eventProcessor { env ->
-        listeners {
-            block(env)
-        }
-    }
+    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
 }
 
 
@@ -114,6 +97,7 @@ public inline fun SimpleApplicationBuilder.listeners(crossinline block: EventLis
  * 通过 [Simple] 构建而得到的 [Application] 实例。
  */
 private class SimpleApplicationImpl(
+    override val configuration: ApplicationConfiguration,
     override val environment: SimpleEnvironment,
     override val eventListenerManager: CoreListenerManager,
     providerList: List<EventProvider>,
@@ -137,6 +121,7 @@ private class SimpleApplicationImpl(
  * [SimpleApplication]所使用的构建器。
  */
 private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseApplicationBuilder<SimpleApplication>() {
+    // TODO event processor 抽象化。
     private var listenerManagerConfigurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit =
         {}
 
@@ -167,7 +152,7 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseAppli
     fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {
         val components = buildComponents()
 
-        val logger = appConfig.logger ?: LoggerFactory.getLogger("love.forte.simbot.core.application.Simple")
+        val logger = appConfig.logger
 
         val environment = SimpleEnvironment(
             components,
@@ -178,7 +163,10 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseAppli
         val listenerManager = buildListenerManager(appConfig, environment)
         val providers = buildProviders(listenerManager, components, appConfig)
 
-        val application = SimpleApplicationImpl(environment, listenerManager, providers)
+        // register bots
+        registerBots(providers.filterIsInstance<love.forte.simbot.BotRegistrar>())
+
+        val application = SimpleApplicationImpl(appConfig, environment, listenerManager, providers)
 
         // complete.
         complete(application)

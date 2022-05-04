@@ -14,24 +14,28 @@
  *
  */
 
-package love.forte.simbot.application
+package love.forte.simboot.autoconfigure
+
+import love.forte.simboot.autoconfigure.application.SpringBootApplicationBuilder
+import love.forte.simboot.autoconfigure.application.SpringBootApplicationConfiguration
+import love.forte.simbot.ComponentFactory
+import love.forte.simbot.installAllComponents
 
 
 /**
- * 构建并启用一个 [Application].
  *
+ * @author ForteScarlet
  */
-public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, A : Application> simbotApplication(
-    factory: ApplicationFactory<Config, Builder, A>,
-    configurator: Config.() -> Unit = {},
-    builder: Builder.(Config) -> Unit = {},
-): A {
-    return factory.create(configurator, builder)
+public open class SimbotSpringBootComponentAutoInstallConfigure(
+    private val factories: List<ComponentFactory<*, *>>
+) : SimbotSpringBootApplicationConfigure {
+    override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
+        if (factories.isEmpty()) {
+            installAllComponents()
+        } else {
+            factories.forEach {
+                install(it)
+            }
+        }
+    }
 }
-
-
-
-
-
-
-

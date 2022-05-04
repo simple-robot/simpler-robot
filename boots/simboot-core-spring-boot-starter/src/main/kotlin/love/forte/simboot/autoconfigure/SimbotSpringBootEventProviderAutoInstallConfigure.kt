@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -12,25 +12,30 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.autoconfigure
 
-import org.springframework.boot.context.properties.ConfigurationProperties
+import love.forte.simboot.autoconfigure.application.SpringBootApplicationBuilder
+import love.forte.simboot.autoconfigure.application.SpringBootApplicationConfiguration
+import love.forte.simbot.application.EventProviderFactory
+import love.forte.simbot.application.installAllEventProviders
+
 
 /**
  *
  * @author ForteScarlet
  */
-@Suppress("ConfigurationProperties")
-@ConfigurationProperties(prefix = "simbot.core")
-public open class SimbootContextStarterProperties {
-
-    /**
-     * 是否在启动后以独立线程保持 [love.forte.simboot.SimbootContext] 实例的运行。
-     */
-    public var keepAlive: Boolean = false
-
-
+public open class SimbotSpringBootEventProviderAutoInstallConfigure(
+    private val factories: List<EventProviderFactory<*, *>>
+) : SimbotSpringBootApplicationConfigure {
+    override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
+        if (factories.isEmpty()) {
+            installAllEventProviders()
+        } else {
+            factories.forEach {
+                install(it)
+            }
+        }
+    }
 }

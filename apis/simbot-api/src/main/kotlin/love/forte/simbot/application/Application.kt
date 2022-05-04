@@ -44,6 +44,13 @@ public interface Application : CoroutineScope {
 
 
     /**
+     * 在进行构建时所使用的配置信息。
+     * 构建完成后可以得到，但是尽可能不要进行修改操作。这可能没有意义，也可能会导致意外的错误。
+     */
+    public val configuration: ApplicationConfiguration
+
+
+    /**
      * 当前应用的组件环境内容。
      */
     public interface Environment {

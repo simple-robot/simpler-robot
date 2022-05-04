@@ -17,31 +17,24 @@
 package love.forte.simboot.autoconfigure
 
 import love.forte.simbot.application.Application
-import love.forte.simbot.application.ApplicationBuilder
-import love.forte.simbot.application.ApplicationConfiguration
-import love.forte.simbot.application.ApplicationFactory
+import org.springframework.beans.factory.DisposableBean
+import org.springframework.boot.ApplicationArguments
+import org.springframework.boot.ApplicationRunner
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 
-/**
- * 兼容 SpringBoot 的 [Application] 工厂。
- */
-public object SpringBoot : ApplicationFactory<SpringBootApplicationConfiguration, SpringBootApplicationBuilder, SpringBootApplication> {
-    override fun create(
-        configurator: SpringBootApplicationConfiguration.() -> Unit,
-        builder: SpringBootApplicationBuilder.() -> Unit
-    ): SpringBootApplication {
-        TODO("Not yet implemented")
-    }
-}
-
-/**
- * 兼容 `Spring Boot` 的 `Application` 实现。
- */
-public interface SpringBootApplication : Application
 
 /**
  *
+ * @author ForteScarlet
  */
-public open class SpringBootApplicationConfiguration : ApplicationConfiguration()
+@ConditionalOnClass(Application::class)
+public open class SimbotSpringBootApplicationStarter(private val application: Application) : ApplicationRunner, DisposableBean {
 
+    override fun run(args: ApplicationArguments?) {
+        // TODO
+    }
 
-public interface SpringBootApplicationBuilder  : ApplicationBuilder<SpringBootApplication>
+    override fun destroy() {
+        // TODO
+    }
+}

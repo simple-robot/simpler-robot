@@ -14,7 +14,7 @@
  *
  */
 
-package love.forte.simboot.autoconfigure
+package love.forte.simboot.autoconfigure.bk
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher

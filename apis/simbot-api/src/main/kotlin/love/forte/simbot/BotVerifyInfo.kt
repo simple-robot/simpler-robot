@@ -165,7 +165,9 @@ public interface BotVerifyInfoDecoder : DeserializableResourceDecoder {
 /**
  * 基于 [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization) 库中的部分模块的 [BotVerifyInfoDecoderFactory] 标准实现。
  *
- * @see JsonBotVerifyInfoDecoder
+ * @see JsonBotVerifyInfoDecoder.Factory
+ * @see YamlBotVerifyInfoDecoder.Factory
+ * @see PropertiesBotVerifyInfoDecoder.Factory
  *
  */
 public sealed class StandardBotVerifyInfoDecoderFactory<C : Any, D : BotVerifyInfoDecoder> :
@@ -427,8 +429,12 @@ public class YamlBotVerifyInfoDecoder(override val format: Yaml) :
 
         override fun create(configurator: YamlBotVerifyInfoDecoderConfiguration.() -> Unit): YamlBotVerifyInfoDecoder {
             val configuration = YamlBotVerifyInfoDecoderConfiguration().also(configurator)
-            return YamlBotVerifyInfoDecoder(Yaml(configuration.serializersModule,
-                configuration.createYamlConfiguration()))
+            return YamlBotVerifyInfoDecoder(
+                Yaml(
+                    configuration.serializersModule,
+                    configuration.createYamlConfiguration()
+                )
+            )
         }
 
         public fun create(decoder: Yaml): YamlBotVerifyInfoDecoder {

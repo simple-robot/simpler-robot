@@ -12,41 +12,46 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
-package love.forte.simboot.autoconfigure
+package love.forte.simboot.autoconfigure.bk
 
-import love.forte.simboot.core.CoreBootEntranceContext
 import love.forte.simboot.factory.BeanContainerFactory
 import love.forte.simboot.factory.ConfigurationFactory
-import love.forte.simbot.event.EventListenerManager
-import org.springframework.boot.ApplicationArguments
+import org.springframework.beans.factory.ListableBeanFactory
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
+import org.springframework.core.env.ConfigurableEnvironment
 
 /**
- * 配置 [SpringbootCoreBootEntranceContext]
+ *
+ * 通过 [ConfigurableEnvironment] 配置 [SpringConfigurationFactory].
+ *
  * @author ForteScarlet
  */
-public open class SpringbootCoreBootEntranceContextConfiguration {
+public open class SpringbootCoreBootEntranceContextFactoriesConfiguration {
 
+    /**
+     * 提供 [ConfigurationFactory] 配置。
+     */
     @Bean
-    @ConditionalOnMissingBean(CoreBootEntranceContext::class)
-    public fun springbootCoreBootEntranceContextConfiguration(
-        configurationFactory: ConfigurationFactory,
-        beanContainerFactory: BeanContainerFactory,
-        listenerManager: EventListenerManager,
-        args: ApplicationArguments
-    ): SpringbootCoreBootEntranceContext {
-        return SpringbootCoreBootEntranceContext(
-            configurationFactory,
-            beanContainerFactory,
-            listenerManager,
-            emptySet(),
-            args.sourceArgs
-        )
+    @ConditionalOnMissingBean(ConfigurationFactory::class)
+    public open fun configurationFactory(environment: ConfigurableEnvironment): ConfigurationFactory {
+        return SpringConfigurationFactory(environment)
     }
 
 
+    /**
+     * 提供 [BeanContainerFactory] 配置。
+     */
+    @Bean
+    @ConditionalOnMissingBean(BeanContainerFactory::class)
+    public open fun beanContainerFactory(beanFactory: ListableBeanFactory): SpringBeanContainerFactory {
+        return SpringBeanContainerFactory(beanFactory)
+    }
+
+
+
+
 }
+

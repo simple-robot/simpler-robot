@@ -14,24 +14,21 @@
  *
  */
 
-package love.forte.simbot.application
+package love.forte.simboot.autoconfigure
+
+import love.forte.simboot.autoconfigure.application.SpringBootApplicationBuilder
+import love.forte.simboot.autoconfigure.application.SpringBootApplicationConfiguration
 
 
 /**
- * 构建并启用一个 [Application].
  *
+ * 对 application 的build环节进行操作的配置类。
+ * ```kotlin
+ * springBootApplication(initialConfiguration, configurator = { ... }) { /* 位于此处 */ }
+ * ```
+ *
+ * @author ForteScarlet
  */
-public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, A : Application> simbotApplication(
-    factory: ApplicationFactory<Config, Builder, A>,
-    configurator: Config.() -> Unit = {},
-    builder: Builder.(Config) -> Unit = {},
-): A {
-    return factory.create(configurator, builder)
+public fun interface SimbotSpringBootApplicationConfigure {
+    public fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration)
 }
-
-
-
-
-
-
-

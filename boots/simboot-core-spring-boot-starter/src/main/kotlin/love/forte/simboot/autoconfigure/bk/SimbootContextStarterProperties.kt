@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -14,24 +14,22 @@
  *
  */
 
-package love.forte.simbot.application
+package love.forte.simboot.autoconfigure.bk
 
+import org.springframework.boot.context.properties.ConfigurationProperties
 
 /**
- * 构建并启用一个 [Application].
  *
+ * @author ForteScarlet
  */
-public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, A : Application> simbotApplication(
-    factory: ApplicationFactory<Config, Builder, A>,
-    configurator: Config.() -> Unit = {},
-    builder: Builder.(Config) -> Unit = {},
-): A {
-    return factory.create(configurator, builder)
+@Suppress("ConfigurationProperties")
+@ConfigurationProperties(prefix = "simbot.core")
+public open class SimbootContextStarterProperties {
+
+    /**
+     * 是否在启动后以独立线程保持 [love.forte.simboot.SimbootContext] 实例的运行。
+     */
+    public var keepAlive: Boolean = false
+
+
 }
-
-
-
-
-
-
-

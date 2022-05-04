@@ -14,7 +14,7 @@
  *
  */
 
-package love.forte.simboot.autoconfigure
+package love.forte.simboot.autoconfigure.bk
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import love.forte.di.BeanContainer

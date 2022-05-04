@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.event
@@ -33,15 +32,10 @@ import love.forte.simbot.PriorityConstant
  */
 public sealed interface EventInterceptor<C : EventInterceptor.Context<R>, R> : Interceptor<C, R> {
     /**
-     * 拦截器应该存在一个唯一ID。
-     * 对于过程拦截器和监听函数拦截器，它们可以分别独立。
-     */
-    //public val id: ID
-
-    /**
      * 优先级。
      */
     public val priority: Int get() = PriorityConstant.NORMAL
+
 
     /**
      * 事件拦截器所拦截的目标内容。

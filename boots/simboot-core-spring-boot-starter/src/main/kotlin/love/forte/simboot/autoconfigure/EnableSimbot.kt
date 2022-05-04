@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.autoconfigure
@@ -51,14 +50,18 @@ import org.springframework.context.annotation.Import
 @Target(AnnotationTarget.CLASS)
 @Import(
     SimbotIncludesSelector::class,
-    SpringbootCoreBootEntranceContextFactoriesConfiguration::class,
-    SpringEventListenerManagerConfiguration::class,
-    SpringbootCoreBootEntranceContextConfiguration::class,
-    SimbootAppRunnerConfiguration::class,
-    SimbootAutoconfigure::class,
-    SimbootContextStarterProperties::class,
-    SimbotAppStarter::class
+    CoroutineDispatcherConfiguration::class,
+    SimbotSpringBootApplicationConfiguration::class,
+    SimbotSpringBootBotAutoRegisterConfigure::class,
+    SimbotSpringBootComponentAutoInstallConfigure::class,
+    SimbotSpringBootEventProviderAutoInstallConfigure::class,
+    SimbotSpringBootApplicationStarter::class,
+    // SpringbootCoreBootEntranceContextFactoriesConfiguration::class,
+    // SpringEventListenerManagerConfiguration::class,
+    // SpringbootCoreBootEntranceContextConfiguration::class,
+    // SimbootAppRunnerConfiguration::class,
+    // SimbootAutoconfigure::class,
+    // SimbootContextStarterProperties::class,
+    // SimbotAppStarter::class
 )
-public annotation class EnableSimbot(
-    //
-)
+public annotation class EnableSimbot

@@ -20,20 +20,18 @@ import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import love.forte.di.Bean
 import love.forte.di.BeanContainer
 import love.forte.simboot.SimbootContext
 import love.forte.simbot.Api4J
-import love.forte.simbot.application.Application
-import love.forte.simbot.application.ApplicationBuilder
-import love.forte.simbot.application.ApplicationFactory
-import love.forte.simbot.application.EventProvider
-import love.forte.simbot.core.application.BaseApplication
-import love.forte.simbot.core.application.BaseApplicationBuilder
-import love.forte.simbot.core.application.SimpleApplication
-import love.forte.simbot.core.application.SimpleApplicationConfiguration
+import love.forte.simbot.application.*
+import love.forte.simbot.core.application.*
 import love.forte.simbot.core.event.CoreListenerManager
+import love.forte.simbot.core.event.CoreListenerManagerConfiguration
+import love.forte.simbot.core.event.coreListenerManager
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
+import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -43,11 +41,13 @@ import kotlin.coroutines.CoroutineContext
 public object Boot : ApplicationFactory<BootApplicationConfiguration, BootApplicationBuilder, BootApplication> {
     override fun create(
         configurator: BootApplicationConfiguration.() -> Unit,
-        builder: BootApplicationBuilder.() -> Unit
+        builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit
     ): BootApplication {
         // init configurator
         val config = BootApplicationConfiguration().also(configurator)
-        val appBuilder = BootApplicationBuilderImpl().also(builder)
+        val appBuilder = BootApplicationBuilderImpl().apply {
+            builder(config)
+        }
         return appBuilder.build(config)
     }
 }
@@ -69,16 +69,20 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
     public var classesScanScope: List<String> = emptyList()
 
 
-
-
-
 }
 
 
 /**
  * 用于构建 [BootApplication] 的构建器。
  */
-public interface BootApplicationBuilder : ApplicationBuilder<BootApplication>
+public interface BootApplicationBuilder : ApplicationBuilder<BootApplication>,
+    CoreEventProcessableApplicationBuilder<BootApplication> {
+
+    /**
+     * 事件处理器。
+     */
+    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
+}
 
 
 /**
@@ -106,7 +110,8 @@ public interface BootApplication : SimpleApplication, SimbootContext {
      * [BootApplication] 不需要 `start`.
      */
     @OptIn(Api4J::class)
-    override fun startAsync() { }
+    override fun startAsync() {
+    }
 
     /**
      * [BootApplication] 从一开始就是启用状态。
@@ -122,6 +127,7 @@ public interface BootApplication : SimpleApplication, SimbootContext {
  * [BootApplication] 实现。
  */
 private class BootApplicationImpl(
+    override val configuration: ApplicationConfiguration,
     override val environment: BootEnvironment,
     override val eventListenerManager: CoreListenerManager,
     override val beanContainer: BeanContainer,
@@ -156,14 +162,91 @@ private class BootApplicationImpl(
     }
 }
 
+
 /**
  * [BootApplicationBuilder] 的实现。
  */
 private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseApplicationBuilder<BootApplication>() {
+    //region listener manager config
+    private var listenerManagerConfigurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit =
+        {}
+
+
+    /**
+     * 配置内部的 listener manager.
+     */
+    @ApplicationBuildDsl
+    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
+        val old = listenerManagerConfigurator
+        listenerManagerConfigurator = { env -> old(env); configurator(env) }
+    }
+
+
+    private fun buildListenerManager(
+        appConfig: SimpleApplicationConfiguration,
+        environment: Application.Environment
+    ): CoreListenerManager {
+        val initial = CoreListenerManagerConfiguration {
+            // TODO job?
+            coroutineContext = appConfig.coroutineContext
+        }
+
+        return coreListenerManager(initial = initial, block = { listenerManagerConfigurator(environment) })
+    }
+    //endregion
+
+    private val beanContainerBuilderConfigurations = ConcurrentLinkedQueue<BeanContainerBuilder.() -> Unit>()
+
+
+    fun beans(beanContainerBuilder: BeanContainerBuilder.() -> Unit) {
+        beanContainerBuilderConfigurations.add(beanContainerBuilder)
+
+    }
 
 
     fun build(configuration: BootApplicationConfiguration): BootApplication {
+        val components = buildComponents()
+
+        val logger = configuration.logger
+
+        val environment = BootEnvironment(
+            components,
+            logger,
+            configuration.coroutineContext
+        )
+
+        val listenerManager = buildListenerManager(configuration, environment)
+        val providers = buildProviders(listenerManager, components, configuration)
+
+        // register bots
+        registerBots(providers.filterIsInstance<love.forte.simbot.BotRegistrar>())
+
+        // bean container
+        val beanContainer: BeanContainer = TODO()
+
+        val application = BootApplicationImpl(configuration, environment, listenerManager, beanContainer, providers)
+
+        // complete.
+        complete(application)
 
         TODO()
     }
+}
+
+/*
+        TODO
+            beans {
+                bean(name, instance)
+                bean(name) { init func }
+                scan("com.example1", "com.example2")
+            }
+         */
+
+public interface BeanContainerBuilder {
+
+    public fun <T : Any> bean(name: String, bean: Bean<T>): Bean<T>
+    public fun <T : Any> bean(name: String, instance: T): Bean<T>
+    public fun <T : Any> bean(name: String, factory: () -> T): Bean<T>
+    public fun scan(vararg targetPackages: String)
+
 }

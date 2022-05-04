@@ -61,13 +61,19 @@ public class CoreListenerManagerConfiguration {
     @CoreEventManagerConfigDSL
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext
 
-
+    /**
+     * 事件流程拦截器的列表。
+     */
     private var processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
 
-
+    /**
+     * 监听函数拦截器的列表。
+     */
     private var listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
 
-    // 初始监听函数
+    /**
+     * 监听函数的列表。
+     */
     private var listeners = mutableListOf<EventListener>()
 
     /**
@@ -76,21 +82,28 @@ public class CoreListenerManagerConfiguration {
      */
     @Volatile
     @JvmSynthetic
-    public var listenerExceptionHandler: ((Throwable) -> EventResult)? = null
+    private var listenerExceptionHandler: ((Throwable) -> EventResult)? = null
 
-
+    /**
+     * 自定义的监听函数异常处理器。
+     *
+     */
     @JvmSynthetic
     @CoreEventManagerConfigDSL
     public fun listenerExceptionHandler(handler: (Throwable) -> EventResult): CoreListenerManagerConfiguration = also {
         listenerExceptionHandler = handler
     }
 
+    /**
+     * 自定义的监听函数异常处理器。
+     *
+     */
     @Api4J
-    @CoreEventManagerConfigDSL
     public fun listenerExceptionHandler(handler: Function<Throwable, EventResult>): CoreListenerManagerConfiguration =
         also {
             listenerExceptionHandler = handler::apply
         }
+
 
     //region 拦截器相关
     /**
