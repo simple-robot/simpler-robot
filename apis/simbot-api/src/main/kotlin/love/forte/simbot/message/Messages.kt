@@ -109,7 +109,6 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          * 当前 [Messages] 可用于序列化的 [SerializersModule]. 在组件加载完毕后，其中应包含了所有组件下注册的额外消息类型的多态信息。
          *
          */
-        @Deprecated("此方式的序列化将会被弃用")
         public val serializersModule: SerializersModule get() = _serializersModule
 
         private fun setJson() {
@@ -212,6 +211,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          */
         @Api4J
         @JvmStatic
+        @Deprecated("Use MessageSerializationUtil.")
         public fun toJsonString(messages: Messages): String {
             return json.encodeToString(serializer, messages)
         }
@@ -223,6 +223,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          */
         @Api4J
         @JvmStatic
+        @Deprecated("Use MessageSerializationUtil.")
         public fun fromJsonString(jsonString: String): Messages {
             return json.decodeFromString(serializer, jsonString)
         }
@@ -490,7 +491,7 @@ internal class MessageListImpl(private val delegate: List<MsgElement<*>>) : Mess
         return newList.toMessages()
     }
 
-    override fun toString(): String = "Messages(${delegate.toString()})"
+    override fun toString(): String = "Messages($delegate)"
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
