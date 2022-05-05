@@ -28,6 +28,6 @@ public interface CompletionPerceivable<T> {
     /**
      * 当目标完成时执行注册的回调函数。
      */
-    public fun onCompletion(handle: (T) -> Unit)
+    public fun onCompletion(handle: (application: T) -> Unit)
 
 }

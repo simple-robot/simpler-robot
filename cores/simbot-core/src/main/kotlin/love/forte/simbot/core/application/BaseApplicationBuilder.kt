@@ -130,12 +130,15 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
 
     /**
      * 提供botManager列表并执行它们的注册逻辑。
+     *
+     * @return 被注册的bot数量
      */
-    protected fun registerBots(botManagers: List<love.forte.simbot.BotRegistrar>) {
+    protected fun registerBots(botManagers: List<love.forte.simbot.BotRegistrar>): List<Bot> {
         val registrar = BotRegistrarImpl(botManagers)
         botRegisters.forEach {
             it(registrar)
         }
+        return registrar.bots
     }
 
 
@@ -145,7 +148,7 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
     private val onCompletions = ConcurrentLinkedQueue<(A) -> Unit>()
 
 
-    override fun onCompletion(handle: (A) -> Unit) {
+    override fun onCompletion(handle: (application: A) -> Unit) {
         onCompletions.add(handle)
     }
 
@@ -159,11 +162,23 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
 
 
     private class BotRegistrarImpl(private val registrars: List<love.forte.simbot.BotRegistrar>) : BotRegistrar {
+        val bots = mutableListOf<Bot>()
+
         override fun register(botVerifyInfo: BotVerifyInfo): Bot? {
+            logger.info("Registering bot with verify info [{}]", botVerifyInfo)
             for (manager in registrars) {
                 try {
-                    return manager.register(botVerifyInfo)
+                    return manager.register(botVerifyInfo).also { bot ->
+                        logger.debug(
+                            "Bot verify info [{}] is registered as [{}] via manager [{}]",
+                            botVerifyInfo,
+                            bot,
+                            manager
+                        )
+                        bots.add(bot)
+                    }
                 } catch (ignore: ComponentMismatchException) {
+                    logger.debug("Bot verify info [{}] is not matched by manager {}, try next.", botVerifyInfo, manager)
                     // ignore this.
                 }
             }
@@ -172,6 +187,11 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
 
         override fun toString(): String {
             return "BotRegistrarImpl(registrars=$registrars)"
+        }
+
+        private companion object {
+            private val logger =
+                LoggerFactory.getLogger("love.forte.simbot.core.application.BaseApplicationBuilder.BotRegistrarImpl")
         }
     }
 }
