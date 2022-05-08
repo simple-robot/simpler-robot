@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 @file:JvmName("AnnotationParseUtil")
@@ -38,7 +37,7 @@ public fun Filter.toData(source: Any? = null): FilterData {
         or = or.toData(source),   // FiltersData(source = source),
         // and = FiltersData(source = source),
         // or = FiltersData(source = source),
-        processor = processor
+        // processor = processor
 
     )
 }
@@ -61,7 +60,6 @@ public fun Filters.toData(source: Any? = null, valueList: List<FilterData>? = nu
         source = source,
         value = valueList ?: value.map(Filter::toData),
         multiMatchType = multiMatchType,
-        processor = processor,
     )
 }
 
