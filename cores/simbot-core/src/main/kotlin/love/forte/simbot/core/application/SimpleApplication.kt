@@ -21,8 +21,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.application.*
 import love.forte.simbot.core.event.CoreListenerManager
-import love.forte.simbot.core.event.CoreListenerManagerConfiguration
-import love.forte.simbot.core.event.coreListenerManager
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
@@ -64,13 +62,13 @@ public open class SimpleApplicationConfiguration : ApplicationConfiguration()
  * 通过 [Simple] 构建而得到的 [Application] 实例。
  */
 public interface SimpleApplication : Application {
-
+    
     /**
      * [SimpleApplication] 使用 [CoreListenerManager] 作为事件管理器。
      */
     override val eventListenerManager: CoreListenerManager
-
-
+    
+    
     /**
      * 所有的事件提供者。
      */
@@ -81,16 +79,10 @@ public interface SimpleApplication : Application {
 /**
  * 用于构建 [SimpleApplication] 的构建器类型。
  */
-public interface SimpleApplicationBuilder : ApplicationBuilder<SimpleApplication>,
-    CoreEventProcessableApplicationBuilder<SimpleApplication> {
+public interface SimpleApplicationBuilder : CoreApplicationBuilder<SimpleApplication>
 
-    /**
-     * 配置内部的 core listener manager.
-     *
-     */
-    @ApplicationBuildDsl
-    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
-}
+
+
 
 
 /**
@@ -103,11 +95,11 @@ private class SimpleApplicationImpl(
     providerList: List<EventProvider>,
 ) : SimpleApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
-
+    
     override val coroutineContext: CoroutineContext
     override val job: CompletableJob
     override val logger: Logger
-
+    
     init {
         val currentCoroutineContext = environment.coroutineContext
         job = SupervisorJob(currentCoroutineContext[Job])
@@ -117,64 +109,39 @@ private class SimpleApplicationImpl(
 }
 
 
+
 /**
  * [SimpleApplication]所使用的构建器。
  */
-private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseApplicationBuilder<SimpleApplication>() {
-    // TODO event processor 抽象化。
-    private var listenerManagerConfigurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit =
-        {}
-
-
-    /**
-     * 配置内部的 listener manager.
-     */
-    @ApplicationBuildDsl
-    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
-        val old = listenerManagerConfigurator
-        listenerManagerConfigurator = { env -> old(env); configurator(env) }
-    }
-
-
-    private fun buildListenerManager(
-        appConfig: SimpleApplicationConfiguration,
-        environment: Application.Environment
-    ): CoreListenerManager {
-        val initial = CoreListenerManagerConfiguration {
-            // TODO job?
-            coroutineContext = appConfig.coroutineContext
-        }
-
-        return coreListenerManager(initial = initial, block = { listenerManagerConfigurator(environment) })
-    }
-
-
+private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseCoreApplicationBuilder<SimpleApplication>() {
+    
+    
     fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {
         val components = buildComponents()
-
+        
         val logger = appConfig.logger
-
+        
         val environment = SimpleEnvironment(
             components,
             logger,
             appConfig.coroutineContext
         )
-
+        
         val listenerManager = buildListenerManager(appConfig, environment)
         val providers = buildProviders(listenerManager, components, appConfig)
-
+        
         // register bots
         registerBots(providers.filterIsInstance<love.forte.simbot.BotRegistrar>())
-
+        
         val application = SimpleApplicationImpl(appConfig, environment, listenerManager, providers)
-
+        
         // complete.
         complete(application)
-
+        
         return application
     }
-
-
+    
+    
 }
 
 

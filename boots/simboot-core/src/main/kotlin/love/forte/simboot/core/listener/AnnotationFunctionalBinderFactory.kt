@@ -12,12 +12,10 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.core.listener
 
-import love.forte.di.BeanContainer
 import love.forte.simboot.annotation.Binder
 import love.forte.simboot.listener.ParameterBinder
 import love.forte.simboot.listener.ParameterBinderFactory
@@ -33,12 +31,12 @@ import kotlin.reflect.full.valueParameters
 
 
 internal class AnnotationFunctionalBinderFactory(
-    private val instanceGetter: (BeanContainer) -> Any?,
-    private val caller: (instance: Any?, ParameterBinderFactory.Context) -> ParameterBinderResult
+    private val instanceGetter: (ParameterBinderFactory.Context) -> Any?,
+    private val caller: (instance: Any?, ParameterBinderFactory.Context) -> ParameterBinderResult,
 ) : ParameterBinderFactory {
-
+    
     override fun resolveToBinder(context: ParameterBinderFactory.Context): ParameterBinderResult {
-        val instance = instanceGetter.invoke(context.annotationProcessContext.beanContainer)
+        val instance = instanceGetter(context)
         return caller(instance, context)
     }
 }
@@ -52,44 +50,44 @@ internal class AnnotationFunctionalBinderFactory(
  * @param beanId 这个binder存在的实例的bean id.
  *
  */
-internal fun KFunction<*>.toBinderFactory(beanId: String?): AnnotationFunctionalBinderFactory {
+internal fun KFunction<*>.toBinderFactory(instanceGetter: (ParameterBinderFactory.Context) -> Any?): AnnotationFunctionalBinderFactory {
     val classifier = this.returnType.classifier
     if (classifier !is KClass<*>) throw SimbotIllegalStateException("Binder's return type must be clear, and be of type [ParameterBinderResult] or [ParameterBinder], but $classifier")
-
+    
     val type: Int = when {
         classifier.isSubclassOf(ParameterBinderResult::class) -> 1
         classifier.isSubclassOf(ParameterBinder::class) -> 2
         else -> throw SimbotIllegalStateException("Binder's return type must be clear, and be of type [ParameterBinderResult] or [ParameterBinder], but $classifier")
     }
-
+    
     val instanceParameter0 = instanceParameter
     val extensionReceiverParameter0 = extensionReceiverParameter
     val valueParameters0 = valueParameters
-
+    
     val contextParameters: KParameter? = when {
         // both
         extensionReceiverParameter0 != null && valueParameters0.isNotEmpty() -> throw SimbotIllegalStateException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but receiver: $extensionReceiverParameter0 and value parameters size: ${valueParameters0.size}")
-
+        
         // nothing
         extensionReceiverParameter0 == null && valueParameters0.isEmpty() -> null // no parameter
         // throw SimbotIllegalStateException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but parameters was empty.")
-
+        
         // more values
         extensionReceiverParameter0 == null && valueParameters0.size > 1 -> throw SimbotIllegalStateException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but parameters was more than 1: ${valueParameters0.size}.")
-
+        
         extensionReceiverParameter0 != null -> {
             val typeClass = extensionReceiverParameter0.type.classifier
             if (typeClass !is KClass<*>) {
                 throw SimbotIllegalStateException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but type of the receiver was: $typeClass")
             }
-
+            
             if (!typeClass.isSubclassOf(ParameterBinderFactory.Context::class)) {
                 throw SimbotIllegalStateException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but type of the receiver was: $typeClass")
             }
-
+            
             extensionReceiverParameter0
         }
-
+        
         // extensionReceiverParameter0 == null, values size = 1
         else -> {
             val singleParameter = valueParameters0.first()
@@ -97,132 +95,85 @@ internal fun KFunction<*>.toBinderFactory(beanId: String?): AnnotationFunctional
             if (typeClass !is KClass<*>) {
                 throw SimbotIllegalStateException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but type of the single parameter was: $typeClass")
             }
-
+            
             if (!typeClass.isSubclassOf(ParameterBinderFactory.Context::class)) {
                 throw SimbotIllegalStateException("The binder function has and can only have one parameter of type [ParameterBinderFactory.Context]. but type of the single parameter was: $typeClass")
             }
             singleParameter
         }
     }
-
-
-
-
+    
+    
     return when (type) {
         // ParameterBinderResult
         // return type is ParameterBinderResult type.
         1 -> when {
             instanceParameter0 == null && contextParameters == null -> AnnotationFunctionalBinderFactory(
-                { null },
-                { _, _ -> call() as ParameterBinderResult }
-            )
+                instanceGetter
+            ) { _, _ -> call() as ParameterBinderResult }
+            
             // contextParameters != null
             instanceParameter0 == null -> AnnotationFunctionalBinderFactory(
-                { null },
-                { _, context -> call(context) as ParameterBinderResult }
-            )
+                instanceGetter
+            ) { _, context -> call(context) as ParameterBinderResult }
+            
             // instance not null
-            contextParameters == null ->
-                if (beanId != null) {
-                    AnnotationFunctionalBinderFactory({ container -> container[beanId] }, { instance, _ ->
-                        call(instance) as ParameterBinderResult
-                    })
-                } else {
-                    val beanType = instanceParameter0.type as KClass<*>
-                    AnnotationFunctionalBinderFactory({ container -> container[beanType] }, { instance, _ ->
-                        call(instance) as ParameterBinderResult
-                    })
-                }
-            // all not null
-            else -> {
-                if (beanId != null) {
-                    AnnotationFunctionalBinderFactory({ container -> container[beanId] }, { instance, context ->
-                        callBy(
-                            mapOf(instanceParameter0 to instance, contextParameters to context)
-                        ) as ParameterBinderResult
-                    })
-                } else {
-                    val beanType = instanceParameter0.type as KClass<*>
-                    AnnotationFunctionalBinderFactory({ container -> container[beanType] }, { instance, context ->
-                        callBy(
-                            mapOf(instanceParameter0 to instance, contextParameters to context)
-                        ) as ParameterBinderResult
-                    })
-                }
+            contextParameters == null -> AnnotationFunctionalBinderFactory(instanceGetter) { instance, _ ->
+                call(instance) as ParameterBinderResult
             }
+            
+            // all not null
+            else -> AnnotationFunctionalBinderFactory(instanceGetter) { instance, context ->
+                callBy(
+                    mapOf(instanceParameter0 to instance, contextParameters to context)
+                ) as ParameterBinderResult
+            }
+            
+            
         }
-
-        //2 ParameterBinder
+        
+        // 2 ParameterBinder
         else -> when {
             instanceParameter0 == null && contextParameters == null -> AnnotationFunctionalBinderFactory(
-                { null },
-                { _, _ ->
-                    val binder = call() as ParameterBinder?
-                    if (binder == null) ParameterBinderResult.empty()
-                    else ParameterBinderResult.normal(binder)
-                }
-            )
-
+                instanceGetter
+            ) { _, _ ->
+                val binder = call() as ParameterBinder?
+                if (binder == null) ParameterBinderResult.empty()
+                else ParameterBinderResult.normal(binder)
+            }
+            
             // contextParameters not null
             instanceParameter0 == null -> AnnotationFunctionalBinderFactory(
-                { null },
-                { _, context ->
-                    val binder = call(context) as ParameterBinder?
+                instanceGetter
+            ) { _, context ->
+                val binder = call(context) as ParameterBinder?
+                if (binder == null) ParameterBinderResult.empty()
+                else ParameterBinderResult.normal(binder)
+            }
+            
+            // instanceParameter0 not null
+            contextParameters == null ->
+                AnnotationFunctionalBinderFactory(
+                    instanceGetter
+                ) { instance, _ ->
+                    val binder = call(instance) as ParameterBinder?
                     if (binder == null) ParameterBinderResult.empty()
                     else ParameterBinderResult.normal(binder)
                 }
-            )
-
-            // instanceParameter0 not null
-            contextParameters == null ->
-                if (beanId != null) {
-                    AnnotationFunctionalBinderFactory(
-                        { container -> container[beanId] },
-                        { instance, _ ->
-                            val binder = call(instance) as ParameterBinder?
-                            if (binder == null) ParameterBinderResult.empty()
-                            else ParameterBinderResult.normal(binder)
-                        }
-                    )
-                } else {
-                    val beanType = instanceParameter0.type as KClass<*>
-                    AnnotationFunctionalBinderFactory(
-                        { container -> container[beanType] },
-                        { instance, _ ->
-                            val binder = call(instance) as ParameterBinder?
-                            if (binder == null) ParameterBinderResult.empty()
-                            else ParameterBinderResult.normal(binder)
-                        }
-                    )
-                }
-
+            
             // all not null
-            else -> if (beanId != null) {
+            else ->
                 AnnotationFunctionalBinderFactory(
-                    { container -> container[beanId] },
-                    { instance, context ->
-                        val binder = callBy(
-                            mapOf(instanceParameter0 to instance, contextParameters to context)
-                        ) as ParameterBinder?
-                        if (binder == null) ParameterBinderResult.empty()
-                        else ParameterBinderResult.normal(binder)
-                    }
-                )
-            } else {
-                val beanType = instanceParameter0.type.classifier as KClass<*>
-                AnnotationFunctionalBinderFactory(
-                    { container -> container[beanType] },
-                    { instance, context ->
-                        val binder = callBy(
-                            mapOf(instanceParameter0 to instance, contextParameters to context)
-                        ) as ParameterBinder?
-                        if (binder == null) ParameterBinderResult.empty()
-                        else ParameterBinderResult.normal(binder)
-                    }
-                )
-            }
+                    instanceGetter
+                ) { instance, context ->
+                    val binder = callBy(
+                        mapOf(instanceParameter0 to instance, contextParameters to context)
+                    ) as ParameterBinder?
+                    if (binder == null) ParameterBinderResult.empty()
+                    else ParameterBinderResult.normal(binder)
+                }
         }
     }
-
+    
 }
 

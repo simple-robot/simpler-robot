@@ -17,21 +17,36 @@
 package love.forte.simboot.core.application
 
 import kotlinx.coroutines.*
+import love.forte.annotationtool.core.KAnnotationTool
+import love.forte.annotationtool.core.getAnnotation
 import love.forte.di.Bean
 import love.forte.di.BeanContainer
+import love.forte.di.all
 import love.forte.simboot.SimbootContext
+import love.forte.simboot.annotation.Binder
 import love.forte.simboot.annotation.Listener
+import love.forte.simboot.core.filter.KeywordBinderFactory
+import love.forte.simboot.core.listener.*
+import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simbot.Api4J
-import love.forte.simbot.application.*
+import love.forte.simbot.SimbotIllegalStateException
+import love.forte.simbot.application.Application
+import love.forte.simbot.application.ApplicationConfiguration
+import love.forte.simbot.application.ApplicationFactory
+import love.forte.simbot.application.EventProvider
 import love.forte.simbot.core.application.*
 import love.forte.simbot.core.event.CoreListenerManager
 import love.forte.simbot.core.event.CoreListenerManagerConfiguration
 import love.forte.simbot.core.event.EventListenersGenerator
-import love.forte.simbot.core.event.coreListenerManager
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.coroutines.CoroutineContext
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.full.memberExtensionFunctions
+import kotlin.reflect.full.memberFunctions
 
 /**
  * boot-core 模块所提供的 [ApplicationFactory] 实现，基于 [SimpleApplication] 的拓展。
@@ -40,7 +55,7 @@ import kotlin.coroutines.CoroutineContext
 public object Boot : ApplicationFactory<BootApplicationConfiguration, BootApplicationBuilder, BootApplication> {
     override fun create(
         configurator: BootApplicationConfiguration.() -> Unit,
-        builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit
+        builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit,
     ): BootApplication {
         // init configurator
         val config = BootApplicationConfiguration().also(configurator)
@@ -60,13 +75,13 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
      * 提供额外参数，例如命令行参数。
      */
     public var args: List<String> = emptyList()
-
+    
     /**
      * 需要进行依赖扫描的所有包路径。
      *
      */
     public var classesScanScope: List<String> = emptyList()
-
+    
     /**
      * 是否在bot注册后，在 application 构建完毕的时候自动执行 `Bot.start`。
      *
@@ -105,25 +120,25 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
      *
      */
     public var isAutoStartBots: Boolean = true
-
+    
 }
 
 
 /**
  * 用于构建 [BootApplication] 的构建器。
  */
-public interface BootApplicationBuilder : ApplicationBuilder<BootApplication>,
-    CoreEventProcessableApplicationBuilder<BootApplication> {
-
+public interface BootApplicationBuilder : CoreApplicationBuilder<BootApplication> {
+    
     /**
      * 事件处理器。
      */
     override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
-
-
+    
+    
     /**
      *
-     * 配置当前环境中所使用的依赖管理器。在进行构建的时候会自动扫描所有加载的bean中标记了 [Listener] 注解的函数并将它们解析为监听函数。
+     * 配置当前环境中所使用的依赖管理器。
+     * 在进行构建的时候会自动扫描所有加载的bean中标记了 [Listener] 注解的函数并将它们解析为监听函数。
      *
      * e.g.
      * ```kotlin
@@ -137,11 +152,13 @@ public interface BootApplicationBuilder : ApplicationBuilder<BootApplication>,
      *
      */
     public fun beans(beanContainerBuilder: BeanContainerBuilder.() -> Unit)
-
-
-    // TODO binder
-
-
+    
+    
+    /**
+     * 在 [beans] 配置之外额外配置binder信息。
+     */
+    public fun binders(parameterBinderBuilder: ParameterBinderBuilder.() -> Unit)
+    
 }
 
 
@@ -149,37 +166,37 @@ public interface BootApplicationBuilder : ApplicationBuilder<BootApplication>,
  * [Boot] 所得到的最终的 [Application] 实现, 基于 [SimpleApplication].
  */
 public interface BootApplication : SimpleApplication, SimbootContext {
-
+    
     /**
      * 当前环境中的 [Bean容器][BeanContainer].
      */
     public val beanContainer: BeanContainer
-
+    
     /**
      * [BootApplication] 不需要执行 [start].
      */
     override suspend fun start(): Boolean = false
-
+    
     /**
      * [BootApplication] 不需要 `start`.
      */
     @OptIn(Api4J::class)
     override fun startBlocking(): Boolean = false
-
+    
     /**
      * [BootApplication] 不需要 `start`.
      */
     @OptIn(Api4J::class)
     override fun startAsync() {
     }
-
+    
     /**
      * [BootApplication] 从一开始就是启用状态。
      */
     override val isStarted: Boolean
         get() = true
-
-
+    
+    
 }
 
 
@@ -194,29 +211,29 @@ private class BootApplicationImpl(
     providerList: List<EventProvider>,
 ) : BootApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
-
+    
     override val coroutineContext: CoroutineContext
     override val job: CompletableJob
     override val logger: Logger
-
+    
     init {
         val currentCoroutineContext = environment.coroutineContext
         job = SupervisorJob(currentCoroutineContext[Job])
         coroutineContext = currentCoroutineContext + job
         logger = environment.logger
     }
-
+    
     override val isActive: Boolean
         get() = job.isActive
-
+    
     override val isCancelled: Boolean
         get() = job.isCancelled
-
+    
     override suspend fun cancel(reason: Throwable?): Boolean {
         shutdown(reason)
         return true
     }
-
+    
     override fun invokeOnCompletion(handler: CompletionHandler) {
         job.invokeOnCompletion(handler)
     }
@@ -226,52 +243,27 @@ private class BootApplicationImpl(
 /**
  * [BootApplicationBuilder] 的实现。
  */
-private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseApplicationBuilder<BootApplication>() {
-    //region listener manager config
-    private var listenerManagerConfigurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit =
-        {}
-
-
-    /**
-     * 配置内部的 listener manager.
-     */
-    @ApplicationBuildDsl
-    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
-        val old = listenerManagerConfigurator
-        listenerManagerConfigurator = { env -> old(env); configurator(env) }
-    }
-
-
-    private fun buildListenerManager(
-        appConfig: SimpleApplicationConfiguration,
-        environment: Application.Environment
-    ): CoreListenerManager {
-        val initial = CoreListenerManagerConfiguration {
-            // TODO job?
-            coroutineContext = appConfig.coroutineContext
-        }
-
-        return coreListenerManager(initial = initial, block = { listenerManagerConfigurator(environment) })
-    }
-    //endregion
-
+private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreApplicationBuilder<BootApplication>() {
     private val beanContainerBuilderConfigurations = ConcurrentLinkedQueue<BeanContainerBuilder.() -> Unit>()
-
-
     override fun beans(beanContainerBuilder: BeanContainerBuilder.() -> Unit) {
         beanContainerBuilderConfigurations.add(beanContainerBuilder)
     }
-
-
+    
+    private val binderBuilderConfigurations = ConcurrentLinkedQueue<ParameterBinderBuilder.() -> Unit>()
+    override fun binders(parameterBinderBuilder: ParameterBinderBuilder.() -> Unit) {
+        binderBuilderConfigurations.add(parameterBinderBuilder)
+    }
+    
+    
     fun build(configuration: BootApplicationConfiguration): BootApplication {
         val logger = configuration.logger
-
+        
         logger.debug("Building components...")
         val components = buildComponents()
         logger.debug("Components are built: {}", components)
         logger.info("The size of components built is {}", components.size)
-
-
+        
+        
         logger.debug("Creating boot environment...")
         val environment = BootEnvironment(
             components,
@@ -279,16 +271,16 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseApplicati
             configuration.coroutineContext
         )
         logger.debug("Boot environment created: {}", environment)
-
+        
         logger.debug("Building listener manager...")
         val listenerManager = buildListenerManager(configuration, environment)
         logger.debug("Listener manager is built: {}", listenerManager)
-
+        
         logger.debug("Building providers...")
         val providers = buildProviders(listenerManager, components, configuration)
         logger.debug("Providers are built: {}", providers)
         logger.info("The size of providers built is {}", providers.size)
-
+        
         // bean container
         val beanContainerBuilder = BeanContainerBuilderImpl(configuration)
         logger.debug("Building bean container by builder: {}", beanContainerBuilder)
@@ -297,11 +289,8 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseApplicati
         }
         val beanContainer: BeanContainer = beanContainerBuilder.build()
         logger.debug("Bean container is built: {}", beanContainer)
-
-        listeners {
-
-        }
-
+        
+        
         // register bots
         logger.debug("Registering bots...")
         val bots = registerBots(providers.filterIsInstance<love.forte.simbot.BotRegistrar>())
@@ -317,20 +306,38 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseApplicati
                 }
             }
         }
-
-        // scan and register listener
+        val tool = KAnnotationTool(mutableMapOf(), mutableMapOf())
+        
+        val binderBuilder = ParameterBinderBuilderImpl()
+        
+        // Binder containers.
+        resolvedBinderContainerFromBeanContainer(binderBuilder, beanContainer, tool)
+      
+        // include default global binders
+        binderBuilder.includeDefaults()
+        
+        val binderManager = binderBuilder.build()
+        
+        // TODO scan and register listener
+        val processor = KFunctionListenerProcessor()
+        
+        listeners {
+            autoConfigFromBeanContainer(binderManager, beanContainer, processor, tool)
+            // TODO top level functions
+        }
+        
         TODO()
-
+        
         // create application
         val application = BootApplicationImpl(configuration, environment, listenerManager, beanContainer, providers)
-
+        
         // complete.
         complete(application)
-
+        
         return application
     }
-
-
+    
+    
 }
 
 
@@ -345,17 +352,103 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseApplicati
  */
 public inline fun <reified T : Any> BeanContainerBuilder.beanBy(
     name: String,
-    crossinline factory: () -> T
+    crossinline factory: () -> T,
 ): Bean<out T> {
     return bean(name, T::class) { factory() }
 }
 
 
-private fun EventListenersGenerator.autoConfigFromBeanContainer(
-    environment: BootEnvironment,
-    beanContainer: BeanContainer
+private fun resolvedBinderContainerFromBeanContainer(
+    parameterBinderBuilder: ParameterBinderBuilder,
+    beanContainer: BeanContainer,
+    tool: KAnnotationTool,
 ) {
-
-
-    TODO()
+    beanContainer.all.forEach { name ->
+        // type, and functions
+        val type = beanContainer.getType(name)
+        if (type.isSubclassOf(ParameterBinderFactory::class)) {
+            val binder = tool.getAnnotation<Binder>(type)
+            
+            fun globalBinderFactory() {
+                val instance = beanContainer[name, type] as ParameterBinderFactory
+                parameterBinderBuilder.binder(binderFactory = instance)
+            }
+            
+            fun specifyBinderFactory(id: String) {
+                val instance = beanContainer[name, type] as ParameterBinderFactory
+                parameterBinderBuilder.binder(id = id, binderFactory = instance)
+            }
+            
+            if (binder == null) {
+                globalBinderFactory()
+            } else {
+                val id = binder.value.firstOrNull()
+                when (binder.scope) {
+                    Binder.Scope.GLOBAL -> globalBinderFactory()
+                    Binder.Scope.SPECIFY -> {
+                        if (id == null) {
+                            throw SimbotIllegalStateException("The Binder named [$name] of type [type] annotate @Binder with scope [SPECIFY], but the required property id (@Binder.value) is empty.")
+                        }
+                        specifyBinderFactory(id)
+                    }
+                    Binder.Scope.DEFAULT -> {
+                        if (id == null) {
+                            globalBinderFactory()
+                        } else {
+                            specifyBinderFactory(id)
+                        }
+                    }
+                    else -> {
+                        // 通过类实现的ParameterBinderFactory不允许使用Binder.Scope.CURRENT
+                        throw SimbotIllegalStateException("Parameter Binder Factory implemented by class does not allow Binder.Scope.CURRENT, but $binder")
+                    }
+                }
+                
+            }
+        } else {
+            // TODO find functions..
+        }
+        
+    }
 }
+
+
+
+private fun ParameterBinderBuilder.includeDefaults() {
+    binder(binderFactory = InstanceInjectBinderFactory)
+    binder(binderFactory = EventParameterBinderFactory)
+    binder(binderFactory = KeywordBinderFactory)
+    binder(binderFactory = AutoInjectBinderFactory)
+}
+
+
+private fun EventListenersGenerator.autoConfigFromBeanContainer(
+    binderManager: BinderManager,
+    beanContainer: BeanContainer,
+    listenerProcessor: KFunctionListenerProcessor,
+    tool: KAnnotationTool,
+) {
+    beanContainer.all.forEach { name ->
+        val type = beanContainer.getType(name)
+        for (func in type.allFunctions) {
+            val listener = tool.getAnnotation(func, Listener::class) ?: continue
+            
+            val resolvedListener = listenerProcessor.process(FunctionalListenerProcessContext(
+                id = listener.id.takeIf { it.isNotEmpty() },
+                function = func,
+                priority = listener.priority,
+                isAsync = listener.async,
+                binderManager = binderManager,
+                beanContainer = beanContainer,
+            ))
+            
+            // include listener.
+            listener(resolvedListener)
+        }
+    }
+}
+
+private val KClass<*>.allFunctions: List<KFunction<*>>
+    get() = kotlin.runCatching {
+        memberFunctions + memberExtensionFunctions
+    }.getOrDefault(emptyList())

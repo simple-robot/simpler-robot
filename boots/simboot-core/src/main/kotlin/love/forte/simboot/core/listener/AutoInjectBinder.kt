@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.core.listener
@@ -41,7 +40,7 @@ public object AutoInjectBinderFactory : ParameterBinderFactory {
         val injectNeed = annotationTool.getAnnotation(parameter, Inject::class) != null
         if (!injectNeed) return ParameterBinderResult.empty()
 
-        val container = context.annotationProcessContext.beanContainer
+        val container = context.beanContainer
 
         val name = annotationTool.getAnnotation(parameter, Named::class)?.value
         return ParameterBinderResult.normal(

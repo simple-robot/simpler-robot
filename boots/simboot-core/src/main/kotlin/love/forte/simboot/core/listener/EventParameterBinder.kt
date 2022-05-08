@@ -12,16 +12,19 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.core.listener
 
-import love.forte.simboot.listener.*
-import love.forte.simbot.*
+import love.forte.simboot.listener.BindException
+import love.forte.simboot.listener.ParameterBinder
+import love.forte.simboot.listener.ParameterBinderFactory
+import love.forte.simboot.listener.ParameterBinderResult
+import love.forte.simbot.Attribute
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.event.*
-import kotlin.reflect.*
-import kotlin.reflect.full.*
+import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 
 
 /**
@@ -29,53 +32,56 @@ import kotlin.reflect.full.*
  *
  */
 public object EventParameterBinderFactory : ParameterBinderFactory {
-
+    
     @OptIn(ExperimentalSimbotApi::class)
     override fun resolveToBinder(context: ParameterBinderFactory.Context): ParameterBinderResult {
         val type = context.parameter.type
         val classifier = type.classifier as? KClass<*> ?: return ParameterBinderResult.empty()
-        //if (classifier !is KClass<*>)
-
+        // if (classifier !is KClass<*>)
+        
         val nullable = type.isMarkedNullable
-
+        
         return when {
             // 是不是 Event子类型
             classifier.isSubclassOf(Event::class) -> {
                 @Suppress("UNCHECKED_CAST")
                 return ParameterBinderResult.normal(EventInstanceBinder(classifier as KClass<Event>))
             }
-
+            
             // 是不是 EventListener 子类型
             classifier.isSubclassOf(EventListener::class) -> {
                 @Suppress("UNCHECKED_CAST")
                 return ParameterBinderResult.normal(EventListenerInstanceBinder(classifier as KClass<EventListener>))
             }
-
+            
             // 是不是 EventProcessingContext 子类型
             classifier.isSubclassOf(EventProcessingContext::class) -> {
                 @Suppress("UNCHECKED_CAST")
                 return ParameterBinderResult.normal(EventListenerProcessingContextInstanceBinder(classifier as KClass<EventProcessingContext>))
             }
-
+            
             // Scope 相关类型
-
+            
             // classifier.isSubclassOf(EventProcessingContext.Scope.Instant.type) -> {
             classifier.isSubclassOf(InstantScopeContext::class) -> {
-                return ParameterBinderResult.normal(attributeBinder(nullable, EventProcessingContext.Scope.Instant) { "Scope [Instant] in current context is null." } )
+                return ParameterBinderResult.normal(attributeBinder(nullable,
+                    EventProcessingContext.Scope.Instant) { "Scope [Instant] in current context is null." })
             }
             classifier.isSubclassOf(GlobalScopeContext::class) -> {
-                return ParameterBinderResult.normal(attributeBinder(nullable, EventProcessingContext.Scope.Global) { "Scope [Global] in current context is null." } )
+                return ParameterBinderResult.normal(attributeBinder(nullable,
+                    EventProcessingContext.Scope.Global) { "Scope [Global] in current context is null." })
             }
-
-
+            
+            
             classifier.isSubclassOf(ContinuousSessionContext::class) -> {
-                return ParameterBinderResult.normal(attributeBinder(nullable, EventProcessingContext.Scope.ContinuousSession) { "Scope [ContinuousSession] in current context is null." } )
+                return ParameterBinderResult.normal(attributeBinder(nullable,
+                    EventProcessingContext.Scope.ContinuousSession) { "Scope [ContinuousSession] in current context is null." })
             }
-
-
+            
+            
             else -> ParameterBinderResult.empty()
         }
-
+        
     }
 }
 
@@ -115,21 +121,25 @@ private class EventListenerInstanceBinder(private val targetType: KClass<EventLi
     }
 }
 
-private inline fun attributeBinder(nullable: Boolean, attribute: Attribute<*>, nullMessageBlock: () -> String): AttributeBinder {
+private inline fun attributeBinder(
+    nullable: Boolean,
+    attribute: Attribute<*>,
+    nullMessageBlock: () -> String,
+): AttributeBinder {
     return if (nullable) AttributeBinder.Nullable(attribute)
     else AttributeBinder.Notnull(attribute, nullMessageBlock())
 }
 
 private sealed class AttributeBinder : ParameterBinder {
-
+    
     protected abstract val attribute: Attribute<*>
-
+    
     class Nullable(override val attribute: Attribute<*>) : AttributeBinder() {
         override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
             return context.getAttribute(attribute).let { Result.success(it) }
         }
     }
-
+    
     class Notnull(override val attribute: Attribute<*>, private val nullMessage: String) : AttributeBinder() {
         override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
             return context.getAttribute(attribute)?.let { Result.success(it) }

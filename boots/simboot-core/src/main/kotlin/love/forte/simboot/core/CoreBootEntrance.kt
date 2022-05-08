@@ -25,7 +25,10 @@ import love.forte.di.BeanContainer
 import love.forte.di.all
 import love.forte.di.allInstance
 import love.forte.simboot.*
-import love.forte.simboot.annotation.*
+import love.forte.simboot.annotation.Listen
+import love.forte.simboot.annotation.Listener
+import love.forte.simboot.annotation.Listens
+import love.forte.simboot.annotation.toData
 import love.forte.simboot.core.filter.KeywordBinderFactory
 import love.forte.simboot.core.internal.CoreBootEntranceContextImpl
 import love.forte.simboot.core.internal.ResourcesScanner
@@ -34,11 +37,12 @@ import love.forte.simboot.core.internal.visitPath
 import love.forte.simboot.core.listener.AutoInjectBinderFactory
 import love.forte.simboot.core.listener.EventParameterBinderFactory
 import love.forte.simboot.core.listener.InstanceInjectBinderFactory
-import love.forte.simboot.core.listener.toBinderFactory
 import love.forte.simboot.factory.BeanContainerFactory
 import love.forte.simboot.factory.BotRegistrarFactory
 import love.forte.simboot.factory.ConfigurationFactory
-import love.forte.simboot.listener.*
+import love.forte.simboot.listener.ListenerAnnotationProcessor
+import love.forte.simboot.listener.ParameterBinderFactory
+import love.forte.simboot.listener.ParameterBinderFactoryContainer
 import love.forte.simbot.*
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerManager
@@ -52,7 +56,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.instanceParameter
-import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.memberExtensionFunctions
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.kotlinFunction
@@ -61,44 +64,44 @@ import kotlin.time.measureTimedValue
 
 
 public interface CoreBootEntranceContext {
-
-
+    
+    
     /**
      * [Configuration] 工厂.
      */
     public fun getConfigurationFactory(): ConfigurationFactory
-
+    
     /**
      * [BeanContainer] 工厂.
      */
     public fun getBeanContainerFactory(): BeanContainerFactory
-
-
+    
+    
     /**
      * 读取所有的bot配置文件信息。
      */
     public fun getAllBotInfos(
-        configuration: Configuration, beanContainer: BeanContainer
+        configuration: Configuration, beanContainer: BeanContainer,
     ): List<BotVerifyInfo>
-
-
+    
+    
     /**
      * 通过 [BeanContainer] 最终得到一个 [EventListenerManager].
      */
     public fun getListenerManager(beanContainer: BeanContainer): EventListenerManager
-
-
+    
+    
     /**
      * 尝试扫描顶层函数的列表
      */
     public val topFunctionScanPackages: Set<String>
-
-
+    
+    
     /**
      * 启动命令参数。
      */
     public val args: Array<String>
-
+    
     /**
      * 由boot所提供的日志。
      */
@@ -118,39 +121,39 @@ public class CoreBootEntrance : SimbootEntrance {
     public companion object {
         internal val annotationTool: KAnnotationTool = KAnnotationTool()
     }
-
+    
     @OptIn(ExperimentalTime::class)
     override fun run(context: SimbootEntranceContext): SimbootContext {
         // banner
-
+        
         val contextTimedValue = measureTimedValue {
             run0(context)
         }
-
+        
         val time = contextTimedValue.duration
         context.logger.info("Simboot core entrance start finished. duration time {}", time.toString())
-
+        
         return contextTimedValue.value
     }
-
-
+    
+    
     @OptIn(FragileSimbotApi::class)
     private fun run0(context: SimbootEntranceContext): SimbootContext {
         val bootContext: CoreBootEntranceContext = context.toCoreBootEntranceContext()
         val logger = bootContext.logger
         // 获取所有配置
         val configuration = bootContext.getConfigurationFactory()(context)
-
+        
         logger.info("Resolving bean container")
         // 初始化 bean container
         val beanContainer = bootContext.getBeanContainerFactory()(configuration)
         logger.debug("Using bean container: {} ({})", beanContainer, beanContainer.javaClass)
-
+        
         // 初始化 listener manager -> listener manager factory
         logger.info("Resolving listener manager")
         val listenerManager = bootContext.getListenerManager(beanContainer)
         logger.debug("Using listener manager: {} ({})", listenerManager, listenerManager.javaClass)
-
+        
         // 获取所有的 BotRegistrar -> BotRegistrarFactory
         logger.info("Resolving all bot registrar factories")
         val allBotRegistrarFactories = beanContainer.allInstance<BotRegistrarFactory>()
@@ -160,7 +163,7 @@ public class CoreBootEntrance : SimbootEntrance {
                 logger.debug("Bot registrar factory: {} ({})", f, f.javaClass)
             }
         }
-
+        
         // all registrars and group by component name.
         val allBotRegistrars = allBotRegistrarFactories.map {
             it(listenerManager).also {
@@ -176,8 +179,8 @@ public class CoreBootEntrance : SimbootEntrance {
                 BalancedBotRegistrar(component, values.toList())
             } else values[0]
         }.values
-
-
+        
+        
         // 所有的base binder factory
         logger.info("Resolving all base binder factories")
         val baseBinderFactories = mutableSetOf(
@@ -190,11 +193,11 @@ public class CoreBootEntrance : SimbootEntrance {
                 logger.debug("Base binder factory: {} ({})", f, f.javaClass)
             }
         }
-
+        
         val binderManager = BinderManager(
             mutableMapOf(), baseBinderFactories
         )
-
+        
         logger.info("Resolving all binders.")
         bootContext.allBinders(binderManager, beanContainer, annotationTool)
         logger.info("Size of normal binder: {}", binderManager.normalSize)
@@ -204,16 +207,16 @@ public class CoreBootEntrance : SimbootEntrance {
                 logger.debug("Global binder: {} ({})", b, b.javaClass)
             }
         }
-
+        
         // 所有的type，尝试解析为listener
         logger.info("Resolve all listeners.")
         val listeners = bootContext.findAllListener(
             beanContainer, binderManager
         )
         logger.info("Size of all listener: {}", listeners.size)
-
+        
         listeners.forEach(listenerManager::register)
-
+        
         logger.info("Resolving all bot info.")
         val botInfoList: List<BotVerifyInfo> = bootContext.getAllBotInfos(configuration, beanContainer)
         logger.info("Size of all bot info: {}", botInfoList.size)
@@ -222,7 +225,7 @@ public class CoreBootEntrance : SimbootEntrance {
                 logger.debug("Bot info: {}", b.name)
             }
         }
-
+        
         logger.info("Register all bots.")
         // all init bots
         val allBots = botInfoList.flatMap { b ->
@@ -245,13 +248,13 @@ public class CoreBootEntrance : SimbootEntrance {
                     throw exception
                 }
             }
-
-
+            
+            
             registrars.ifEmpty {
                 logger.warn("Bot info [{}] is not registered by any component", b.name)
                 emptyList()
             }
-
+            
         }
         logger.info("All bots register finished. Size of all bots: {}", allBots.size)
         if (allBots.isNotEmpty()) {
@@ -265,40 +268,40 @@ public class CoreBootEntrance : SimbootEntrance {
         } else {
             logger.warn("Registered bots are empty, nothing to start.")
         }
-
-
+        
+        
         val job = Job() // alive for join.
         Runtime.getRuntime().addShutdownHook(thread(start = false) {
             job.cancel()
         })
-
+        
         return CoreSimbootContext(job)
     }
-
+    
 }
 
 
 private class CoreSimbootContext(
     private val job: Job,
 ) : SimbootContext {
-
+    
     override val coroutineContext: CoroutineContext = Dispatchers.Default + CoroutineName("CoreSimbootContext")
-
+    
     override suspend fun start(): Boolean = false
     override val isStarted: Boolean get() = job.isActive || job.isCompleted
     override val isActive: Boolean get() = job.isActive
     override val isCancelled: Boolean get() = job.isCancelled
-
+    
     override suspend fun join() {
         job.join()
     }
-
+    
     @OptIn(FragileSimbotApi::class)
     override suspend fun cancel(reason: Throwable?): Boolean {
         // close all bot manager
         // TODO close applicaton?
         OriginBotManager.cancel(reason)
-
+        
         return if (job.isCancelled) {
             false
         } else {
@@ -306,7 +309,7 @@ private class CoreSimbootContext(
             true
         }
     }
-
+    
     override fun invokeOnCompletion(handler: CompletionHandler) {
         job.invokeOnCompletion(handler)
     }
@@ -337,7 +340,7 @@ private fun KClass<*>.classToCoreBootEntranceContext(context: SimbootEntranceCon
     val tool = CoreBootEntrance.annotationTool
     val applicationAnnotation = tool.getAnnotation(this, SimbootApplication::class)
         ?: throw SimbootApplicationException("Application [$this] is not annotated @SimBootApplication.")
-
+    
     return CoreBootEntranceContextImpl(applicationAnnotation, this, context)
 }
 
@@ -346,20 +349,20 @@ private fun SimbootApplication.annotationToCoreBootEntranceContext(context: Simb
 }
 
 private class BalancedBotRegistrar(
-    override val component: Component, registrars: List<BotRegistrar>
+    override val component: Component, registrars: List<BotRegistrar>,
 ) : BotRegistrar {
     init {
         if (registrars.isEmpty()) {
             throw SimbotIllegalArgumentException("Registrars cannot be empty.")
         }
-
+        
         registrars.forEachIndexed { i, it ->
             Simbot.require(component == it.component) { "Component of registrar $it index $i != target component $component" }
         }
     }
-
+    
     private val iter = registrars.toList().asCycleIterator()
-
+    
     override fun register(verifyInfo: BotVerifyInfo): Bot {
         return iter.next().register(verifyInfo)
     }
@@ -367,101 +370,102 @@ private class BalancedBotRegistrar(
 
 
 private fun CoreBootEntranceContext.allBinders(
-    manager: BinderManager, beanContainer: BeanContainer, annotationTool: KAnnotationTool
+    manager: BinderManager, beanContainer: BeanContainer, annotationTool: KAnnotationTool,
 ) {
-
-    beanContainer.all.forEach { name ->
-        val type = beanContainer.getType(name)
-
-        val isSub = kotlin.runCatching {
-            type.isSubclassOf(ParameterBinderFactory::class)
-        }.getOrElse { e ->
-            if (e.toString()
-                    .startsWith("kotlin.reflect.jvm.internal.KotlinReflectionInternalError: Unresolved class:")
-            ) {
-                kotlin.runCatching {
-                    ParameterBinderFactory::class.java.isAssignableFrom(type.java)
-                }.getOrElse {
-                    logger.debug("cannot resolve type: $type")
-                    false
-                }
-            } else throw e
-        }
-
-        if (isSub) {
-            val binder = annotationTool.getAnnotation(type, Binder::class)
-            if (binder != null) {
-                when (binder.scope) {
-                    Binder.Scope.GLOBAL -> {
-                        manager.addGlobalBinder(beanContainer[name, ParameterBinderFactory::class])
-                    }
-                    Binder.Scope.SPECIFY -> {
-                        val id = binder.id.firstOrNull()?.takeIf { it.isNotEmpty() } ?: name
-                        manager.addIdBinder(id, beanContainer[name, ParameterBinderFactory::class])
-                    }
-                    Binder.Scope.CURRENT -> {
-                        throw SimbotIllegalStateException("Class level binder's scope cannot be CURRENT.")
-                    }
-                }
-            } else {
-                manager.addIdBinder(name, beanContainer[name, ParameterBinderFactory::class])
-            }
-        } else {
-            type.allFunctions.filter { f ->
-                annotationTool.getAnnotation(f, Binder::class) != null
-            }.forEach { f ->
-                val binder = annotationTool.getAnnotation(f, Binder::class)!!
-                when (binder.scope) {
-                    Binder.Scope.GLOBAL -> {
-                        manager.addGlobalBinder(f.toBinderFactory(name))
-                    }
-                    Binder.Scope.SPECIFY -> {
-                        val id = binder.id.firstOrNull()
-                            ?: throw SimbotIllegalStateException("The binder whose scope is SPECIFY must specify an id.")
-                        manager.addIdBinder(id, f.toBinderFactory(name))
-                    }
-                    Binder.Scope.CURRENT -> {
-                        // skip when scope is current.
-                    }
-                }
-            }
-        }
-
-
-    }
+    
+    // beanContainer.all.forEach { name ->
+    //     val type = beanContainer.getType(name)
+    //
+    //     val isSub = kotlin.runCatching {
+    //         type.isSubclassOf(ParameterBinderFactory::class)
+    //     }.getOrElse { e ->
+    //         if (e.toString()
+    //                 .startsWith("kotlin.reflect.jvm.internal.KotlinReflectionInternalError: Unresolved class:")
+    //         ) {
+    //             kotlin.runCatching {
+    //                 ParameterBinderFactory::class.java.isAssignableFrom(type.java)
+    //             }.getOrElse {
+    //                 logger.debug("cannot resolve type: $type")
+    //                 false
+    //             }
+    //         } else throw e
+    //     }
+    //
+    //     if (isSub) {
+    //         val binder = annotationTool.getAnnotation(type, Binder::class)
+    //         if (binder != null) {
+    //             when (binder.scope) {
+    //                 Binder.Scope.GLOBAL -> {
+    //                     manager.addGlobalBinder(beanContainer[name, ParameterBinderFactory::class])
+    //                 }
+    //                 Binder.Scope.SPECIFY -> {
+    //                     val id = binder.value.firstOrNull()?.takeIf { it.isNotEmpty() } ?: name
+    //                     manager.addIdBinder(id, beanContainer[name, ParameterBinderFactory::class])
+    //                 }
+    //                 Binder.Scope.CURRENT -> {
+    //                     throw SimbotIllegalStateException("Class level binder's scope cannot be CURRENT.")
+    //                 }
+    //             }
+    //         } else {
+    //             manager.addIdBinder(name, beanContainer[name, ParameterBinderFactory::class])
+    //         }
+    //     } else {
+    //         type.allFunctions.filter { f ->
+    //             annotationTool.getAnnotation(f, Binder::class) != null
+    //         }.forEach { f ->
+    //             val binder = annotationTool.getAnnotation(f, Binder::class)!!
+    //             when (binder.scope) {
+    //                 Binder.Scope.GLOBAL -> {
+    //                     manager.addGlobalBinder(f.toBinderFactory(name))
+    //                 }
+    //                 Binder.Scope.SPECIFY -> {
+    //                     val id = binder.value.firstOrNull()
+    //                         ?: throw SimbotIllegalStateException("The binder whose scope is SPECIFY must specify an id.")
+    //                     manager.addIdBinder(id, f.toBinderFactory(name))
+    //                 }
+    //                 Binder.Scope.CURRENT -> {
+    //                     // skip when scope is current.
+    //                 }
+    //             }
+    //         }
+    //     }
+    //
+    //
+    // }
 }
 
 
 private class BinderManager(
     private val idBinders: MutableMap<String, ParameterBinderFactory> = mutableMapOf(),
-    private val globalBinders: MutableSet<ParameterBinderFactory> = mutableSetOf()
+    private val globalBinders: MutableSet<ParameterBinderFactory> = mutableSetOf(),
 ) : ParameterBinderFactoryContainer {
-
+    
     val normalSize: Int get() = idBinders.size
     val globalSize: Int get() = globalBinders.size
-
+    
     fun addIdBinder(id: String, factory: ParameterBinderFactory) {
         idBinders.merge(id, factory) { old, now ->
             throw SimbotIllegalStateException("Duplicate binder factory ID. id: $id, $old vs $now")
         }
     }
-
+    
     fun addGlobalBinder(factory: ParameterBinderFactory) {
         if (!globalBinders.add(factory)) {
             throw SimbotIllegalStateException("Duplicate binder factory $factory")
         }
     }
-
+    
     override fun get(id: String): ParameterBinderFactory? {
         return idBinders[id]
     }
-
+    
     override fun getGlobals(): List<ParameterBinderFactory> {
         return globalBinders.toList()
     }
-
+    
     override fun resolveFunctionToBinderFactory(beanId: String?, function: KFunction<*>): ParameterBinderFactory {
-        return function.toBinderFactory(beanId)
+        TODO()
+        // return function.toBinderFactory(beanId)
     }
 }
 
@@ -470,32 +474,32 @@ private class BinderManager(
  * 寻找并尝试加载所有的监听函数。
  */
 private fun CoreBootEntranceContext.findAllListener(
-    beanContainer: BeanContainer, baseBinderContainer: ParameterBinderFactoryContainer
+    beanContainer: BeanContainer, baseBinderContainer: ParameterBinderFactoryContainer,
 ): List<EventListener> {
-
+    
     val processors = beanContainer.allInstance<ListenerAnnotationProcessor>().sortedBy { it.priority }
-
+    
     logger.info("Size of all listener annotation processors: {}", processors.size)
     if (logger.isDebugEnabled) {
         processors.forEach {
             logger.debug("Listener annotation processor: {}", it)
         }
     }
-
+    
     val listeners = mutableMapOf<String, EventListener>()
-
+    
     val registrar = ListListenerRegistrar { listener ->
         val id = listener.id.literal
-
+        
         if (listeners.containsKey(id)) {
             throw SimbotIllegalStateException("Duplicate listener id $id")
         }
         listeners[id] = listener
         logger.debug("Register listener id={}", id)
     }
-
+    
     val tool = KAnnotationTool(mutableMapOf(), mutableMapOf())
-
+    
     beanContainer.all.forEach { name ->
         val type = beanContainer.getType(name)
         for (func in type.allFunctions) {
@@ -503,28 +507,28 @@ private fun CoreBootEntranceContext.findAllListener(
             val listens = tool.getAnnotation(func, Listens::class)
             val listenDataList = tool.getAnnotations(func, Listen::class)
             val listenerData = listener.toData(listens?.toData(listenDataList.map { it.toData() }))
-
-            val context = ListenerAnnotationProcessorContextImpl(
-                listenerData = listenerData,
-                beanId = name,
-                from = type,
-                binderFactoryContainer = baseBinderContainer,
-                function = func,
-                beanContainer = beanContainer,
-                listenerRegistrar = registrar
-            )
-
-            processors.forEach { processor ->
-                processor.process(context)
-            }
+            
+            // val context = FunctionListenerAnnotationProcessorContextImpl(
+            //     listenerData = listenerData,
+            //     beanId = name,
+            //     from = type,
+            //     binderFactoryContainer = baseBinderContainer,
+            //     function = func,
+            //     beanContainer = beanContainer,
+            //     listenerRegistrar = registrar
+            // )
+            //
+            // processors.forEach { processor ->
+            //     processor.process(context)
+            // }
         }
-
-
+        
+        
     }
-
+    
     logger.debug("Scan and include all top-level function listeners.")
     includeAllTopListeners(processors, tool, beanContainer, baseBinderContainer, registrar)
-
+    
     return listeners.values.toList().also {
         logger.debug("All functional listeners resolved, size: {}", it.size)
     }
@@ -537,7 +541,7 @@ private fun CoreBootEntranceContext.includeAllTopListeners(
     tool: KAnnotationTool,
     beanContainer: BeanContainer,
     baseBinderContainer: ParameterBinderFactoryContainer,
-    registrar: ListListenerRegistrar
+    registrar: ListListenerRegistrar,
 ) {
     if (logger.isDebugEnabled) {
         topFunctionScanPackages.forEach {
@@ -576,41 +580,30 @@ private fun CoreBootEntranceContext.includeAllTopListeners(
                 logger.error("Cannot get class [{}] methods: {}", c, e.toString())
                 emptyList()
             }
-
+            
         }.filter { f -> f.instanceParameter == null } // instance is null -> top function
             .filter { f -> tool.getAnnotation(f, Listener::class) != null }.forEach { func ->
                 val listener = tool.getAnnotation(func, Listener::class)!!
                 val listens = tool.getAnnotation(func, Listens::class)
                 val listenDataList = tool.getAnnotations(func, Listen::class)
                 val listenerData = listener.toData(listens?.toData(listenDataList.map { it.toData() }))
-
-                val context = ListenerAnnotationProcessorContextImpl(
-                    listenerData = listenerData,
-                    beanId = null,
-                    from = TopFuncFrom::class,
-                    binderFactoryContainer = baseBinderContainer,
-                    function = func,
-                    beanContainer = beanContainer,
-                    listenerRegistrar = registrar
-                )
-
-                processors.forEach { processor ->
-                    processor.process(context)
-                }
+                
+                // val context = FunctionListenerAnnotationProcessorContextImpl(
+                //     listenerData = listenerData,
+                //     beanId = null,
+                //     from = TopFuncFrom::class,
+                //     binderFactoryContainer = baseBinderContainer,
+                //     function = func,
+                //     beanContainer = beanContainer,
+                //     listenerRegistrar = registrar
+                // )
+                //
+                // processors.forEach { processor ->
+                //     processor.process(context)
+                // }
             }
     }
 }
-
-
-private class ListenerAnnotationProcessorContextImpl(
-    override val listenerData: ListenerData,
-    override val beanId: String?,
-    override val from: KClass<*>,
-    override val binderFactoryContainer: ParameterBinderFactoryContainer,
-    override val function: KFunction<*>,
-    override val beanContainer: BeanContainer,
-    override val listenerRegistrar: EventListenerRegistrar
-) : ListenerAnnotationProcessorContext
 
 
 private class ListListenerRegistrar(private val handler: (EventListener) -> Unit) : EventListenerRegistrar {
@@ -618,7 +611,7 @@ private class ListListenerRegistrar(private val handler: (EventListener) -> Unit
     override fun register(listener: EventListener) {
         handler(listener)
     }
-
+    
 }
 
 

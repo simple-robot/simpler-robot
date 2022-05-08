@@ -12,30 +12,24 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.annotation
 
-import love.forte.simboot.filter.FilterAnnotationProcessor
-import love.forte.simboot.filter.FiltersAnnotationProcessor
 import love.forte.simboot.filter.MatchType
 import love.forte.simboot.filter.MultiFilterMatchType
 import love.forte.simbot.event.ChannelEvent
 import love.forte.simbot.event.GroupEvent
 import love.forte.simbot.event.GuildEvent
-import kotlin.reflect.KClass
 
 /**
  * 与 [Listener] 配合使用，会被解析为对应监听函数的通用属性过滤器。
- *
- * [Filter] 是一种根据常见属性提供标准过滤规则的注解，在 `boot` 模块中由 [FilterAnnotationProcessor] 和 [FiltersAnnotationProcessor] 处理器进行解析处理。
  *
  * <br>
  *
  * ### Spring的堆栈溢出
  * 如果你要在 [Spring](https://spring.io/) 中使用此注解，那么你必须保证你项目中的 [Spring Framework](https://spring.io/projects/spring-framework) 的版本大于等于 **`5.3.16`**。
- * (**注: SpringBoot `2.6.3` 的 Spring Framework 版本为 `5.3.15`**)
+ * (**注: SpringBoot应当至少为 `2.6.6`。**)
  *
  * 具体原因请参考 [Spring Framework#28012](https://github.com/spring-projects/spring-framework/issues/28012) .
  *
@@ -58,7 +52,7 @@ import kotlin.reflect.KClass
  * ext["spring-framework.version"] = "5.3.16"
  * ```
  *
-
+ 
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
@@ -71,7 +65,7 @@ public annotation class Filter(
      * 如果此属性为空，则相当于不生效。
      */
     val value: String = "",
-
+    
     /**
      * 当 [value] 匹配的目标（[EventListenerProcessingContext.textContent][love.forte.simbot.event.EventListenerProcessingContext.textContent]）的值为 null 的时候，
      * 是否直接放行。如果为 `true`, 则代表匹配值为null的时候视为匹配通过，反之则为匹配失败。默认为 `false`。此参数只有当 [value] 不为空的时候有效。如果 [value] 为空，则不会进行匹配。
@@ -79,13 +73,13 @@ public annotation class Filter(
      *
      */
     val ifNullPass: Boolean = false,
-
+    
     /**
      * 针对匹配目标所使用的匹配规则。
      * 默认情况下使用 [正则完全匹配][MatchType.REGEX_MATCHES].
      */
     val matchType: MatchType = MatchType.REGEX_MATCHES,
-
+    
     /**
      * 目标过滤内容。
      *
@@ -94,7 +88,7 @@ public annotation class Filter(
      * @see [TargetFilter]
      */
     val target: TargetFilter = TargetFilter(),
-
+    
     /**
      * 可以再提供一个 `&&` (与关系)的子过滤器，最终结果为 `当前filter && and-filters` .
      * ### Kotlin
@@ -128,7 +122,7 @@ public annotation class Filter(
      *
      */
     val and: Filters = Filters(),
-
+    
     /**
      * 可以再提供一个 `||` (或关系)的子过滤器，最终结果为 `当前filter || and-filters`.
      * ### Kotlin
@@ -159,24 +153,8 @@ public annotation class Filter(
      *
      */
     val or: Filters = Filters(),
-
-    /**
-     * 当前注解应使用的注解处理器。
-     *
-     *
-     * 对应的处理器类型如果是 `object` 类型，则会直接获取其实例。
-     *
-     * 如果为普通class则在环境允许的情况下会尝试通过依赖管理器获取，
-     * 如果当前环境不存在诸如依赖获取器一类的东西，则会直接实例化。
-     *
-     * 当指定了自定义 [processor] 后，
-     * 上述所有字段的最终表现形式均无法得到保证，其最终结果由指定的处理器全权负责。
-     *
-     * 当 [Filters.processor] 被重新指定后，无法保证对于当前 [processor] 的处理方式。
-     *
-     */
-    val processor: KClass<out FilterAnnotationProcessor> = FilterAnnotationProcessor::class,
-)
+    
+    )
 
 @Deprecated("对于嵌套注解的兼容，会在未来提供实现")
 @Retention(AnnotationRetention.SOURCE)
@@ -193,8 +171,6 @@ public annotation class OrFilters
  * 以下所有属性的匹配结果为并集，即**全部**匹配成功后得到true。假如某参数为空，则认为其为 `true`.
  *
  * @see Filter
- * @see love.forte.simboot.core.listener.StandardListenerAnnotationProcessor
- * @see love.forte.simboot.core.filter.BootFiltersAnnotationProcessor
  */
 @Retention(AnnotationRetention.SOURCE)
 public annotation class TargetFilter(
@@ -209,7 +185,7 @@ public annotation class TargetFilter(
      * 除了通过此 [components] 作为组件的筛选条件，直接监听一个组件下特有的事件类型能够更好的起到组件过滤的作用。
      */
     val components: Array<String> = [],
-
+    
     /**
      * 对接收事件的botID匹配。
      *
@@ -219,7 +195,7 @@ public annotation class TargetFilter(
      * ```
      */
     val bots: Array<String> = [],
-
+    
     /**
      * 对消息发送者的ID匹配。
      *
@@ -229,7 +205,7 @@ public annotation class TargetFilter(
      * ```
      */
     val authors: Array<String> = [],
-
+    
     /**
      * 如果这是个[群相关事件][GroupEvent] ，则对群ID匹配。
      *
@@ -240,7 +216,7 @@ public annotation class TargetFilter(
      *
      */
     val groups: Array<String> = [],
-
+    
     /**
      * 如果是个[子频道相关事件][ChannelEvent], 则对频道ID匹配。
      *
@@ -250,12 +226,12 @@ public annotation class TargetFilter(
      * ```
      */
     val channels: Array<String> = [],
-
+    
     /**
      * 如果是个[频道服务器相关事件][GuildEvent], 则对频道服务器ID匹配。
      */
     val guilds: Array<String> = [],
-
+    
     /**
      * 只有当前消息中存在任意一个 [At.target][love.forte.simbot.message.At.target] == event.bot.id 的 [At][love.forte.simbot.message.At] 消息的时候才会通过匹配。
      *
@@ -268,7 +244,7 @@ public annotation class TargetFilter(
      * 需要注意的是, [atBot] 的匹配结果**不一定准确**，例如当 bot.id 与实际的at目标ID不一致的时候。是否准确由对应组件下Bot、At等相关内容的构建与实现方式有关。此问题或许会在后续版本提供一个约定接口来完善相关匹配。
      *
      */
-    val atBot: Boolean = false
+    val atBot: Boolean = false,
 )
 
 
@@ -285,21 +261,9 @@ public annotation class Filters(
      * 所有子过滤器。
      */
     vararg val value: Filter,
-
+    
     /**
      * 多个过滤器之间的匹配策略。默认情况下为 [any][MultiFilterMatchType.ANY] 匹配。
      */
     val multiMatchType: MultiFilterMatchType = MultiFilterMatchType.ANY,
-
-    /**
-     * 当前注解应使用的注解处理器。
-     * 对应的处理器类型如果是 `object` 类型，则会直接获取其实例。
-     *
-     * 如果为普通class则在环境允许的情况下会尝试通过bean容器获取，如果容器中不存在此类型实例（如果存在多个实例，不会进行异常捕获），则会尝试直接通过**公开无参构造**进行实例化。
-     *
-     * 当指定了自定义 [processor] 后，
-     * 上述所有字段的最终表现形式均无法得到保证，其最终结果由指定的处理器全权负责。
-     *
-     */
-    val processor: KClass<out FiltersAnnotationProcessor> = FiltersAnnotationProcessor::class
 )

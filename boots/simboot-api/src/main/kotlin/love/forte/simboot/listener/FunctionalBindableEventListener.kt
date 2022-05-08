@@ -12,12 +12,12 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.listener
 
 import kotlinx.coroutines.Dispatchers
+import love.forte.di.BeanContainer
 import love.forte.simbot.Api4J
 import love.forte.simbot.PriorityConstant
 import love.forte.simbot.SimbotIllegalStateException
@@ -166,7 +166,7 @@ public interface ParameterBinderFactory {
         /**
          * 监听函数注解处理器的上下文。
          */
-        public val annotationProcessContext: ListenerAnnotationProcessorContext
+        public val beanContainer: BeanContainer
 
         /**
          * 目标监听函数所对应的函数体。

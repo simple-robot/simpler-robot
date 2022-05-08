@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.filter
@@ -21,7 +20,7 @@ import love.forte.di.BeanContainer
 import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.event.EventFilter
 import love.forte.simbot.event.EventListener
-import kotlin.reflect.KClass
+import kotlin.reflect.KAnnotatedElement
 
 
 /**
@@ -45,8 +44,7 @@ public data class FilterData(
     val matchType: MatchType = MatchType.REGEX_MATCHES,
     val target: TargetFilterData = TargetFilterData(source = source),
     val and: FiltersData = FiltersData(source = source),
-    val or: FiltersData = FiltersData(source = source),
-    val processor: KClass<out FilterAnnotationProcessor> = FilterAnnotationProcessor::class,
+    val or: FiltersData = FiltersData(source = source)
 )
 
 /**
@@ -85,7 +83,6 @@ public data class FiltersData(
     val source: Any?,
     val value: List<FilterData> = emptyList(),
     val multiMatchType: MultiFilterMatchType = MultiFilterMatchType.ANY,
-    val processor: KClass<out FiltersAnnotationProcessor> = FiltersAnnotationProcessor::class,
 )
 
 
@@ -149,7 +146,7 @@ public interface FilterAnnotationProcessor {
 
 
 public interface FiltersAnnotationProcessContext {
-    public val filters: FiltersData
+    public val annotateElement: KAnnotatedElement
     public val listener: EventListener
     public val listenerAttributes: MutableAttributeMap
     public val registrar: EventFilterRegistrar
@@ -158,38 +155,31 @@ public interface FiltersAnnotationProcessContext {
 }
 
 public fun filtersAnnotationProcessContext(
-    filter: FiltersData,
+    annotateElement: KAnnotatedElement,
     listener: EventListener,
     attributeMap: MutableAttributeMap,
     registrar: EventFilterRegistrar,
     beanContainer: BeanContainer
 ): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
-    filter, listener, attributeMap, registrar, beanContainer
+    annotateElement, listener, attributeMap, registrar, beanContainer
 )
 
 public fun filtersAnnotationProcessContext(
-    filter: FiltersData,
-    registrar: EventFilterRegistrar,
-    context: FilterAnnotationProcessContext
-): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
-    filter, context.listener, context.listenerAttributes, registrar, context.beanContainer
-)
-
-public fun filtersAnnotationProcessContext(
-    filter: FiltersData,
+    annotateElement: KAnnotatedElement,
     context: FiltersAnnotationProcessContext
 ): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
-    filter, context.listener, context.listenerAttributes, context.registrar, context.beanContainer
+    annotateElement, context.listener, context.listenerAttributes, context.registrar, context.beanContainer
 )
 
 
 private class FiltersAnnotationProcessContextImpl(
-    override val filters: FiltersData,
+    override val annotateElement: KAnnotatedElement,
     override val listener: EventListener,
     override val listenerAttributes: MutableAttributeMap,
     override val registrar: EventFilterRegistrar,
-    override val beanContainer: BeanContainer
+    override val beanContainer: BeanContainer,
 ) : FiltersAnnotationProcessContext
+
 
 /**
  * 对 [FiltersData] 进行解析的处理加工器接口。
@@ -203,7 +193,7 @@ public interface FiltersAnnotationProcessor {
      * @return 如果 [FiltersData.value] 为空或者因为其他原因导致没有有效的过滤器，则返回null.
      *
      */
-    public fun process(context: FiltersAnnotationProcessContext)
+    public fun process(context: FiltersAnnotationProcessContext): List<EventFilter>
 
 
 }

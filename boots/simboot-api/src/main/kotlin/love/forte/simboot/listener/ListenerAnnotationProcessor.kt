@@ -12,18 +12,15 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.listener
 
-import love.forte.di.BeanContainer
 import love.forte.simbot.PriorityConstant
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerRegistrar
 import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
 
 
 /**
@@ -47,54 +44,13 @@ public interface ListenerAnnotationProcessor {
     public val priority: Int get() = PriorityConstant.NORMAL
 
     /**
-     * 提供 [ListenerAnnotationProcessorContext], 进行处理并向 [ListenerAnnotationProcessorContext.listenerRegistrar] 中注册监听函数。
+     * 提供 [FunctionListenerAnnotationProcessorContext], 进行处理并向 [FunctionListenerAnnotationProcessorContext.listenerRegistrar] 中注册监听函数。
      *
      * @return 如果返回true，则会继续此处理器后续的处理器，返回false将会终止处理。
      *
      */
-    public fun process(context: ListenerAnnotationProcessorContext): Boolean
+    public fun process(context: Unit): Boolean // TODO delete
 
-}
-
-
-/**
- * [ListenerAnnotationProcessor] 进行处理所需参数集.
- */
-public interface ListenerAnnotationProcessorContext {
-    /**
-     * 监听函数注解实例对象
-     */
-    public val listenerData: ListenerData
-
-    /**
-     * 如果能够获取，将会提供一个当前函数所属的bean的id。
-     */
-    public val beanId: String?
-
-    /**
-     * 此监听函数被获取到的所属类实例。
-     */
-    public val from: KClass<*>?
-
-    /**
-     * 可以寻找所有的binder factory的容器。
-     */
-    public val binderFactoryContainer: ParameterBinderFactoryContainer
-
-    /**
-     * 此监听函数对应的function。
-     */
-    public val function: KFunction<*>
-
-    /**
-     * Bean容器。
-     */
-    public val beanContainer: BeanContainer
-
-    /**
-     * 监听函数注册器。
-     */
-    public val listenerRegistrar: EventListenerRegistrar
 }
 
 
