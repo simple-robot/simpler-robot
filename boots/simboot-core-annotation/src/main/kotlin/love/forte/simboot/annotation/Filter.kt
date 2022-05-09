@@ -16,15 +16,26 @@
 
 package love.forte.simboot.annotation
 
+import love.forte.simboot.annotation.TargetFilter.Companion.NON_PREFIX
 import love.forte.simboot.filter.MatchType
 import love.forte.simboot.filter.MultiFilterMatchType
 import love.forte.simbot.event.ChannelEvent
 import love.forte.simbot.event.GroupEvent
 import love.forte.simbot.event.GuildEvent
 
+
 /**
  * 与 [Listener] 配合使用，会被解析为对应监听函数的通用属性过滤器。
+ * e.g.
+ * ```kotlin
+ * // 默认情况下, 多个 @Filter 存在的时候匹配模式为 ANY, 即其中任意一个匹配即可。
+ * @Filter("example1", matchType = MatchType.REGEX_MATCHES)
+ * @Filter("example2", target = TargetFilter(authors = ["id1", "id2"]))
+ * suspend fun FooEvent.bar() {
+ *  // ...
+ * }
  *
+ * ```
  * <br>
  *
  * ### Spring的堆栈溢出
@@ -166,13 +177,22 @@ public annotation class OrFilters
 
 
 /**
+ * 通用属性过滤规则。
+ *
  * 针对目标对象（例如事件组件、bot、群、联系人等）的匹配规则，不可标记在任何地方，作为 [Filter] 的参数 [target][Filter.target] 使用.
  *
  * 以下所有属性的匹配结果为并集，即**全部**匹配成功后得到true。假如某参数为空，则认为其为 `true`.
  *
+ * ## “非”前缀
+ *
+ * 下述所有属性中，如果某个值的前缀为 [NON_PREFIX], 则其代表的意思与正常相反：即需要不等于。
+ * 例如一个 `@TargetFilter(bots = ["forliy"])`, 其代表此事件只能由 `bot.id == "forliy"` 的bot匹配。
+ * 而如果使用 `@TargetFilter(bots = ["!forliy"])`, 则代表由所有 `bot.id != "forliy"` 的bot匹配。
+ *
  * @see Filter
  */
 @Retention(AnnotationRetention.SOURCE)
+@Target(allowedTargets = [])
 public annotation class TargetFilter(
     /**
      * 对接收事件的组件匹配. 大多数情况下，对于组件的唯一ID，组件实现库都应当有所说明或通过常量提供。 `["comp1", "comp2"]`
@@ -239,13 +259,21 @@ public annotation class TargetFilter(
      * ```kotlin
      * event.messageContent.messages.any { it is At && it.target == event.bot.id }
      * ```
-     * 此参数只有在当前事件类型为 [ChatroomMessageEvent][love.forte.simbot.event.ChatroomMessageEvent] 的时候才会生效，且建议配合 [ContentTrim] 一起使用。
+     * 此参数只有在当前事件类型为 [ChatroomMessageEvent][love.forte.simbot.event.ChatRoomMessageEvent] 的时候才会生效，且建议配合 [ContentTrim] 一起使用。
      *
      * 需要注意的是, [atBot] 的匹配结果**不一定准确**，例如当 bot.id 与实际的at目标ID不一致的时候。是否准确由对应组件下Bot、At等相关内容的构建与实现方式有关。此问题或许会在后续版本提供一个约定接口来完善相关匹配。
      *
      */
     val atBot: Boolean = false,
-)
+) {
+    public companion object {
+        /**
+         * [TargetFilter] 中的“非”前缀。
+         *
+         */
+        public const val NON_PREFIX: String = "!"
+    }
+}
 
 
 /**

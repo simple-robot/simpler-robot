@@ -45,13 +45,14 @@ dependencies {
     api(V.Kotlinx.Coroutines.Core.Jvm.notation)
     api(V.Kotlinx.Serialization.Core.notation)
 
+    api(V.Kotlinx.Serialization.Json.notation)
     api(P.ForteDI.Core.notation)
     api(P.AnnotationTool.KCore.notation)
 
     testImplementation(V.Kotlin.Test.Junit.notation)
-    testImplementation(V.Kotlinx.Serialization.Json.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)
     testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
+    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0.preview.2.3")
 }
 
 kotlin {

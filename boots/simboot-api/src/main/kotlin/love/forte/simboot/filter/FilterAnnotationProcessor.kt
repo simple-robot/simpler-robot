@@ -16,12 +16,6 @@
 
 package love.forte.simboot.filter
 
-import love.forte.di.BeanContainer
-import love.forte.simbot.MutableAttributeMap
-import love.forte.simbot.event.EventFilter
-import love.forte.simbot.event.EventListener
-import kotlin.reflect.KAnnotatedElement
-
 
 /**
  * Annotation data for [love.forte.simboot.annotation.Filter].
@@ -87,113 +81,6 @@ public data class FiltersData(
 
 
 
-public interface FilterAnnotationProcessContext {
-    public val filter: FilterData
-    public val listener: EventListener
-    public val listenerAttributes: MutableAttributeMap
-    public val registrar: EventFilterRegistrar
-    public val beanContainer: BeanContainer
-}
-
-public fun filterAnnotationProcessContext(
-    filter: FilterData,
-    listener: EventListener,
-    listenerAttributes: MutableAttributeMap,
-    registrar: EventFilterRegistrar,
-    beanContainer: BeanContainer
-): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
-    filter, listener, listenerAttributes, registrar, beanContainer
-)
-
-public fun filterAnnotationProcessContext(
-    filter: FilterData,
-    context: FilterAnnotationProcessContext
-): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
-    filter, context.listener, context.listenerAttributes, context.registrar, context.beanContainer
-)
-
-public fun filterAnnotationProcessContext(
-    filter: FilterData,
-    context: FiltersAnnotationProcessContext
-): FilterAnnotationProcessContext = FilterAnnotationProcessContextImpl(
-    filter, context.listener, context.listenerAttributes, context.registrar, context.beanContainer
-)
 
 
-private class FilterAnnotationProcessContextImpl(
-    override val filter: FilterData,
-    override val listener: EventListener,
-    override val listenerAttributes: MutableAttributeMap,
-    override val registrar: EventFilterRegistrar,
-    override val beanContainer: BeanContainer
-) : FilterAnnotationProcessContext
 
-
-/**
- *
- * 对 [FilterData] 进行解析的处理加工器接口。
- *
- * @author ForteScarlet
- */
-public interface FilterAnnotationProcessor {
-    /**
-     * 尝试解析处理并得到 [EventFilter].
-     *
-     * 正常来讲应该由 [FiltersAnnotationProcessor] 进行注册，而不需要通过此函数注册过滤器, [FilterAnnotationProcessor] 应当通过 [process] 的返回值来表示需要进行注册的过滤器。
-     */
-    public fun process(context: FilterAnnotationProcessContext): EventFilter?
-}
-
-
-public interface FiltersAnnotationProcessContext {
-    public val annotateElement: KAnnotatedElement
-    public val listener: EventListener
-    public val listenerAttributes: MutableAttributeMap
-    public val registrar: EventFilterRegistrar
-    public val beanContainer: BeanContainer
-
-}
-
-public fun filtersAnnotationProcessContext(
-    annotateElement: KAnnotatedElement,
-    listener: EventListener,
-    attributeMap: MutableAttributeMap,
-    registrar: EventFilterRegistrar,
-    beanContainer: BeanContainer
-): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
-    annotateElement, listener, attributeMap, registrar, beanContainer
-)
-
-public fun filtersAnnotationProcessContext(
-    annotateElement: KAnnotatedElement,
-    context: FiltersAnnotationProcessContext
-): FiltersAnnotationProcessContext = FiltersAnnotationProcessContextImpl(
-    annotateElement, context.listener, context.listenerAttributes, context.registrar, context.beanContainer
-)
-
-
-private class FiltersAnnotationProcessContextImpl(
-    override val annotateElement: KAnnotatedElement,
-    override val listener: EventListener,
-    override val listenerAttributes: MutableAttributeMap,
-    override val registrar: EventFilterRegistrar,
-    override val beanContainer: BeanContainer,
-) : FiltersAnnotationProcessContext
-
-
-/**
- * 对 [FiltersData] 进行解析的处理加工器接口。
- *
- */
-public interface FiltersAnnotationProcessor {
-
-    /**
-     * 处理并注册多个最终的 [EventFilter] 实例。所有实例最终会注入到当前的目标监听函数中。
-     *
-     * @return 如果 [FiltersData.value] 为空或者因为其他原因导致没有有效的过滤器，则返回null.
-     *
-     */
-    public fun process(context: FiltersAnnotationProcessContext): List<EventFilter>
-
-
-}

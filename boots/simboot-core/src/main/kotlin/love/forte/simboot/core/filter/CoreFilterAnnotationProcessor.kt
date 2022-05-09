@@ -21,8 +21,6 @@ import love.forte.simboot.annotation.Filters
 import love.forte.simboot.annotation.TargetFilter
 import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simboot.filter.*
-import love.forte.simbot.CharSequenceID
-import love.forte.simbot.ID
 import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.core.event.coreFilter
 import love.forte.simbot.event.*
@@ -126,12 +124,21 @@ private fun Filters.process(context: FiltersAnnotationProcessContext): EventFilt
  * @see TargetFilterData
  */
 private data class FilterTarget(
-    val components: Set<CharSequenceID>,
+    val components: Set<String>,
     val bots: Set<String>,
     val authors: Set<String>,
     val groups: Set<String>,
     val channels: Set<String>,
     val guilds: Set<String>,
+    // 非
+    val nonComponents: Set<String>,
+    val nonBots: Set<String>,
+    val nonAuthors: Set<String>,
+    val nonGroups: Set<String>,
+    val nonChannels: Set<String>,
+    val nonGuilds: Set<String>,
+    
+    // at bot
     val atBot: Boolean,
 )
 
@@ -149,16 +156,44 @@ private fun TargetFilter.box(): FilterTarget? {
         return null
     }
     
+    fun Array<String>.normals(): Set<String> {
+        return filterTo(mutableSetOf()) { !it.startsWith(TargetFilter.NON_PREFIX) }
+    }
+    
+    // 同时移除前缀
+    fun Array<String>.nons(): Set<String> {
+        return mapNotNullTo(mutableSetOf()) {
+            if (it.startsWith(TargetFilter.NON_PREFIX)) {
+                it.substringAfter(TargetFilter.NON_PREFIX)
+            } else {
+                null
+            }
+        }
+    }
+    
     return FilterTarget(
-        components.map { it.ID }.toSet(),
-        bots.toSet(),
-        authors.toSet(),
-        groups.toSet(),
-        channels.toSet(),
-        guilds.toSet(),
+        components.normals(),
+        bots.normals(),
+        authors.normals(),
+        groups.normals(),
+        channels.normals(),
+        guilds.normals(),
+        // 非
+        components.nons(),
+        bots.nons(),
+        authors.nons(),
+        groups.nons(),
+        channels.nons(),
+        guilds.nons(),
+        
         atBot
     )
     
+}
+
+
+private object AlwaysTrue : suspend (Event) -> Boolean {
+    override suspend fun invoke(p1: Event): Boolean = true
 }
 
 
@@ -170,7 +205,7 @@ private class AnnotationFilter(
     val contentSelector: (EventListenerProcessingContext) -> String?,
 ) : EventFilter {
     val keyword = if (value.isEmpty()) EmptyKeyword else KeywordImpl(value)
-    val targetMatch: suspend (Event) -> Boolean = target?.toMatcher() ?: { true }
+    val targetMatch: suspend (Event) -> Boolean = target?.toMatcher() ?: AlwaysTrue
     
     override suspend fun test(context: EventListenerProcessingContext): Boolean {
         val event = context.event
@@ -192,68 +227,114 @@ private class AnnotationFilter(
             } else return ifNullPass
         }
         // 匹配关键词本身没有, 直接放行.
+        // maybe other match..?
         
-        
-        // maybe other match
         
         return true
     }
 }
 
+private inline fun <T, C : Collection<T>> C.ifIsNotEmpty(block: (C) -> Unit) {
+    if (isNotEmpty()) {
+        block(this)
+    }
+}
+
 
 private fun FilterTarget.toMatcher(): suspend (Event) -> Boolean {
-    return M@{ event ->
-        if (components.isNotEmpty()) {
-            if (event.component.id !in components) {
-                return@M false
-            }
+    
+    val matchers = buildList<suspend Event.() -> Boolean> {
+        // components
+        components.ifIsNotEmpty {
+            add { component.id.literal in components }
+        }
+        nonComponents.ifIsNotEmpty {
+            add { component.id.literal !in it }
+        }
+        // bots
+        bots.ifIsNotEmpty {
+            add { bot.id.literal in it }
+        }
+        nonBots.ifIsNotEmpty {
+            add { bot.id.literal !in it }
         }
         
-        if (bots.isNotEmpty()) {
-            if (event.bot.id.literal !in bots) {
-                return@M false
-            }
-        }
-        
-        if (authors.isNotEmpty()) {
-            if (event is ChatroomMessageEvent) {
-                if (event.author().id.literal !in authors) {
-                    return@M false
+        // authors
+        authors.ifIsNotEmpty {
+            add {
+                when (this) {
+                    is ChatRoomMessageEvent -> author().id.literal in it
+                    is ContactMessageEvent -> source().id.literal in it
+                    else -> true
                 }
             }
-            if (event is ContactMessageEvent) {
-                if (event.source().id.literal !in authors) {
-                    return@M false
+        }
+        nonAuthors.ifIsNotEmpty {
+            add {
+                when (this) {
+                    is ChatRoomMessageEvent -> author().id.literal !in it
+                    is ContactMessageEvent -> source().id.literal !in it
+                    else -> true
                 }
             }
         }
         
-        if (groups.isNotEmpty() && event is GroupEvent) {
-            if (event.group().id.literal !in groups) {
-                return@M false
+        // groups
+        groups.ifIsNotEmpty {
+            add {
+                if (this is GroupEvent) group().id.literal in it else true
+            }
+        }
+        nonGroups.ifIsNotEmpty {
+            add {
+                if (this is GroupEvent) group().id.literal !in it else true
             }
         }
         
-        if (channels.isNotEmpty() && event is ChannelEvent) {
-            if (event.channel().id.literal !in channels) {
-                return@M false
+        // channels
+        channels.ifIsNotEmpty {
+            add {
+                if (this is ChannelEvent) channel().id.literal in it else true
+            }
+        }
+        nonChannels.ifIsNotEmpty {
+            add {
+                if (this is ChannelEvent) channel().id.literal !in it else true
             }
         }
         
-        if (guilds.isNotEmpty() && event is GuildEvent) {
-            if (event.guild().id.literal !in guilds) {
-                return@M false
+        // guilds
+        guilds.ifIsNotEmpty {
+            add {
+                if (this is GuildEvent) guild().id.literal in it else true
+            }
+        }
+        nonGuilds.ifIsNotEmpty {
+            add {
+                if (this is GuildEvent) guild().id.literal !in it else true
             }
         }
         
         // atBot
-        if (atBot && event is ChatroomMessageEvent) {
-            if (event.messageContent.messages.none { it is At && !event.bot.isMe(it.target) }) {
-                return@M false
+        if (atBot) {
+            add {
+                if (this is ChatRoomMessageEvent) {
+                    messageContent.messages.any { it is At && bot.isMe(it.target) }
+                } else {
+                    true
+                }
             }
         }
-        
-        true
+    }
+    
+    if (matchers.isEmpty()) {
+        return AlwaysTrue
+    }
+    
+    val matchersArray = matchers.toTypedArray()
+    
+    return { event ->
+        matchersArray.all { m -> event.m() }
     }
     
 }
@@ -275,7 +356,7 @@ internal object CoreFiltersAnnotationProcessor {
     fun process(context: FiltersAnnotationProcessContext): List<EventFilter> {
         val filters = context.filters
         val filterList = context.filterList
-    
+        
         if (filters == null && filterList.isEmpty()) return emptyList()
         
         val eventFilterList = filterList.mapNotNull { f ->
@@ -292,7 +373,8 @@ internal object CoreFiltersAnnotationProcessor {
         val multiMatchType = filters?.multiMatchType ?: MultiFilterMatchType.ANY
         
         @Suppress("SuspiciousCallableReferenceInLambda")
-        val matcherList: List<suspend (EventListenerProcessingContext) -> Boolean> = eventFilterList.sortedBy { it.priority }.map { f -> f::test }
+        val matcherList: List<suspend (EventListenerProcessingContext) -> Boolean> =
+            eventFilterList.sortedBy { it.priority }.map { f -> f::test }
         
         val filter = coreFilter {
             multiMatchType.match(it, matcherList)

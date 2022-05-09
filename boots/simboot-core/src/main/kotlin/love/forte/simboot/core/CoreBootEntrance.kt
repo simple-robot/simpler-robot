@@ -25,10 +25,7 @@ import love.forte.di.BeanContainer
 import love.forte.di.all
 import love.forte.di.allInstance
 import love.forte.simboot.*
-import love.forte.simboot.annotation.Listen
 import love.forte.simboot.annotation.Listener
-import love.forte.simboot.annotation.Listens
-import love.forte.simboot.annotation.toData
 import love.forte.simboot.core.filter.KeywordBinderFactory
 import love.forte.simboot.core.internal.CoreBootEntranceContextImpl
 import love.forte.simboot.core.internal.ResourcesScanner
@@ -503,10 +500,10 @@ private fun CoreBootEntranceContext.findAllListener(
     beanContainer.all.forEach { name ->
         val type = beanContainer.getType(name)
         for (func in type.allFunctions) {
-            val listener = tool.getAnnotation(func, Listener::class) ?: continue
-            val listens = tool.getAnnotation(func, Listens::class)
-            val listenDataList = tool.getAnnotations(func, Listen::class)
-            val listenerData = listener.toData(listens?.toData(listenDataList.map { it.toData() }))
+            // val listener = tool.getAnnotation(func, Listener::class) ?: continue
+            // val listens = tool.getAnnotation(func, Listens::class)
+            // val listenDataList = tool.getAnnotations(func, Listen::class)
+            // val listenerData = listener.toData(listens?.toData(listenDataList.map { it.toData() }))
             
             // val context = FunctionListenerAnnotationProcessorContextImpl(
             //     listenerData = listenerData,
@@ -583,10 +580,10 @@ private fun CoreBootEntranceContext.includeAllTopListeners(
             
         }.filter { f -> f.instanceParameter == null } // instance is null -> top function
             .filter { f -> tool.getAnnotation(f, Listener::class) != null }.forEach { func ->
-                val listener = tool.getAnnotation(func, Listener::class)!!
-                val listens = tool.getAnnotation(func, Listens::class)
-                val listenDataList = tool.getAnnotations(func, Listen::class)
-                val listenerData = listener.toData(listens?.toData(listenDataList.map { it.toData() }))
+                // val listener = tool.getAnnotation(func, Listener::class)!!
+                // val listens = tool.getAnnotation(func, Listens::class)
+                // val listenDataList = tool.getAnnotations(func, Listen::class)
+                // val listenerData = listener.toData(listens?.toData(listenDataList.map { it.toData() }))
                 
                 // val context = FunctionListenerAnnotationProcessorContextImpl(
                 //     listenerData = listenerData,

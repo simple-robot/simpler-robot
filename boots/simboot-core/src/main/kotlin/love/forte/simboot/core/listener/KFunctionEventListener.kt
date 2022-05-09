@@ -43,12 +43,8 @@ public class KFunctionEventListener<R>(
     private val attributeMap: AttributeMutableMap,
 ) : FunctionalBindableEventListener<R>() {
     
-    init {
-        logger.debug("{} suspend: {}", id, caller.isSuspend)
-    }
-    
     override fun toString(): String {
-        return "KFunctionEventListener(id=$id, priority=$priority, isAsync=$isAsync, targets=${targets.takeIf { it.isNotEmpty() }?.joinToString(", ") ?: "[<ALL>]"}, caller=$caller, binders=${binders.joinToString(separator = ", ")})"
+        return "KFunctionEventListener(id=$id, priority=$priority, isAsync=$isAsync, isSuspend=${caller.isSuspend}, targets=${targets.takeIf { it.isNotEmpty() }?.joinToString(", ", "[", "]") ?: "[<ALL>]"}, binders=${binders.joinToString(separator = ", ", "[", "]")}, caller=$caller)"
     }
     
     private lateinit var targetCaches: MutableSet<Event.Key<*>> //= mutableSetOf<>()

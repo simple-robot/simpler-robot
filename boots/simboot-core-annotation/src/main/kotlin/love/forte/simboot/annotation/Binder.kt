@@ -28,7 +28,7 @@ import org.springframework.core.annotation.AliasFor
  *
  * 如果标记的函数上同样存在 [Listener], 则代表将指定ID的binder应用于当前监听函数。此时作用域只能为 [Binder.Scope.SPECIFY] 且必须指定所需id。
  *
- * @param value 当 [scope] 为 [Scope.SPECIFY] 时，指定对应ID. 指定id时，如果不是在 [Listener] 上，则值应当有且只有一个。
+ * @param value ID标识。当 [scope] 为 [Scope.SPECIFY] 时，指定对应ID. 指定id时，如果不是在 [Listener] 上，则值应当有且只有一个。
  * @param scope binder作用域。
  *
  * @see SpecifyBinder
@@ -47,7 +47,9 @@ public annotation class Binder(
     public enum class Scope {
         
         /**
-         * 默认的作用域。当使用此类型的时候，应尝试根据获取的位置来自动填充一个默认的作用域。
+         * 默认的作用域。
+         *
+         * 当使用此类型的时候，应尝试根据获取的位置来自动填充一个默认的作用域。
          * - 当标记在一个同时存在 [Listener] 注解的函数上的时候，相当于使用了 [SPECIFY].
          * - 当标记在一个不存在 [Listener] 注解的函数上的时候，相当于使用了 [CURRENT].
          * - 当标记在了一个实现了 [love.forte.simboot.listener.ParameterBinderFactory] 接口的类上的时候，相当于使用了 [GLOBAL].

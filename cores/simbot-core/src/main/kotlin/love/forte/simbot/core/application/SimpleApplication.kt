@@ -24,21 +24,29 @@ import love.forte.simbot.core.event.CoreListenerManager
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration.Companion.nanoseconds
 
 /**
  * 由核心所提供的最基础的 [ApplicationFactory] 实现。
  */
 public object Simple : ApplicationFactory<SimpleApplicationConfiguration, SimpleApplicationBuilder, SimpleApplication> {
+    
     override fun create(
         configurator: SimpleApplicationConfiguration.() -> Unit,
         builder: SimpleApplicationBuilder.(SimpleApplicationConfiguration) -> Unit,
     ): SimpleApplication {
         // init configurator
         val config = SimpleApplicationConfiguration().also(configurator)
+        val logger = config.logger
+        val startTime = System.nanoTime()
         val appBuilder = SimpleApplicationBuilderImpl().apply {
             builder(config)
         }
-        return appBuilder.build(config)
+        
+        return appBuilder.build(config).also {
+            val duration = (System.nanoTime() - startTime).nanoseconds
+            logger.info("Simple Application built in {}", duration.toString())
+        }
     }
 }
 
@@ -82,9 +90,6 @@ public interface SimpleApplication : Application {
 public interface SimpleApplicationBuilder : CoreApplicationBuilder<SimpleApplication>
 
 
-
-
-
 /**
  * 通过 [Simple] 构建而得到的 [Application] 实例。
  */
@@ -107,7 +112,6 @@ private class SimpleApplicationImpl(
         logger = environment.logger
     }
 }
-
 
 
 /**

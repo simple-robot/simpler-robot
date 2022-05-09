@@ -40,6 +40,7 @@ import love.forte.simbot.core.application.*
 import love.forte.simbot.core.event.CoreListenerManager
 import love.forte.simbot.core.event.CoreListenerManagerConfiguration
 import love.forte.simbot.core.event.EventListenersGenerator
+import love.forte.simbot.event.EventListener
 import love.forte.simbot.resources.Resource
 import love.forte.simbot.utils.runInBlocking
 import love.forte.simbot.utils.view
@@ -55,6 +56,7 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.memberExtensionFunctions
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.kotlinFunction
+import kotlin.time.Duration.Companion.nanoseconds
 
 /**
  * boot-core 模块所提供的 [ApplicationFactory] 实现，基于 [SimpleApplication] 的拓展。
@@ -72,10 +74,16 @@ public object Boot : ApplicationFactory<BootApplicationConfiguration, BootApplic
     ): BootApplication {
         // init configurator
         val config = BootApplicationConfiguration().also(configurator)
+        val logger = config.logger
+        val startTime = System.nanoTime()
         val appBuilder = BootApplicationBuilderImpl().apply {
             builder(config)
         }
-        return appBuilder.build(config)
+        return appBuilder.build(config).also {
+            val duration = (System.nanoTime() - startTime).nanoseconds
+            logger.info("Boot Application built in {}", duration.toString())
+        }
+        
     }
 }
 
@@ -468,7 +476,7 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
         
         // auto scan listeners.
         listeners {
-            autoConfigFromBeanContainer(binderManager, beanContainer, processor, tool)
+            autoConfigFromBeanContainer(logger, binderManager, beanContainer, processor, tool)
             autoScanTopFunction(classLoader, logger, binderManager,
                 beanContainer,
                 processor,
@@ -511,7 +519,8 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
         }
         
         val bots = registerBots(providers.filterIsInstance<love.forte.simbot.BotRegistrar>())
-        logger.info("Bots registered. Size of bots: {}", bots.size)
+        logger.info("Bots all registered. The size of bots: {}", bots.size)
+        logger.debug("The all registered bots: {}", bots)
         val isAutoStartBots = configuration.isAutoStartBots
         logger.debug("Auto start bots: {}", isAutoStartBots)
         if (isAutoStartBots) {
@@ -519,9 +528,10 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
                 bots.forEach { bot ->
                     logger.info("Blocking start bot {}", bot)
                     val started = runBlocking { bot.start() }
-                    logger.info("Bot {} started: {}", bot, started)
+                    logger.info("Bot [{}] started: {}", bot, started)
                 }
             }
+            logger.debug("Registered on completion function for start bots.")
         }
         // endregion
         
@@ -700,6 +710,7 @@ private fun ParameterBinderBuilder.includeDefaults() {
 
 
 private fun EventListenersGenerator.autoConfigFromBeanContainer(
+    logger: Logger,
     binderManager: BinderManager,
     beanContainer: BeanContainer,
     listenerProcessor: KFunctionListenerProcessor,
@@ -707,21 +718,34 @@ private fun EventListenersGenerator.autoConfigFromBeanContainer(
 ) {
     beanContainer.all.forEach { name ->
         val type = beanContainer.getType(name)
-        for (func in type.allFunctions) {
-            val listener = tool.getAnnotation(func, Listener::class) ?: continue
+        // if is listener
+        if (type.isSubclassOf(EventListener::class)) {
+            val listener = beanContainer[name, type] as EventListener
+            logger.debug("Load event listener instance [{}] by type [{}] named [{}]", listener, type, name)
+            listener(listener)
             
-            val resolvedListener = listenerProcessor.process(FunctionalListenerProcessContext(
-                id = listener.id.takeIf { it.isNotEmpty() },
-                function = func,
-                priority = listener.priority,
-                isAsync = listener.async,
-                binderManager = binderManager,
-                beanContainer = beanContainer,
-            ))
-            
-            // include listener.
-            listener(resolvedListener)
+        } else {
+            for (func in type.allFunctions) {
+                val listener = tool.getAnnotation(func, Listener::class) ?: continue
+                
+                logger.debug("Resolving listener function [{}] from type [{}]", func, type)
+                
+                val resolvedListener = listenerProcessor.process(FunctionalListenerProcessContext(
+                    id = listener.id.takeIf { it.isNotEmpty() },
+                    function = func,
+                    priority = listener.priority,
+                    isAsync = listener.async,
+                    binderManager = binderManager,
+                    beanContainer = beanContainer,
+                ))
+        
+                logger.debug("Resolved listener: [{}]", resolvedListener)
+        
+                // include listener.
+                listener(resolvedListener)
+            }
         }
+        
     }
 }
 
@@ -768,7 +792,7 @@ private fun EventListenersGenerator.autoScanTopFunction(
                     kotlin.runCatching {
                         val listener = tool.getAnnotation<Listener>(function) ?: return@runCatching
                         
-                        logger.debug("Resolving top-level listener function {}", function)
+                        logger.debug("Resolving top-level listener function [{}]", function)
                         
                         val resolvedListener = listenerProcessor.process(FunctionalListenerProcessContext(
                             id = listener.id.takeIf { it.isNotEmpty() },
@@ -778,7 +802,9 @@ private fun EventListenersGenerator.autoScanTopFunction(
                             binderManager = binderManager,
                             beanContainer = beanContainer,
                         ))
-                        
+    
+                        logger.debug("Resolved top-level listener: [{}]", resolvedListener)
+    
                         listener(resolvedListener)
                     }
                     

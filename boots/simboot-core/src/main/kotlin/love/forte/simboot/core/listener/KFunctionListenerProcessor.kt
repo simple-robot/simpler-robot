@@ -64,10 +64,9 @@ internal class KFunctionListenerProcessor {
      */
     fun process(context: FunctionalListenerProcessContext): EventListener {
         val function = context.function.also { it.checkLegal() }
-        val functionSign = function.sign()
         
-        val functionId = context.id ?: functionSign
-        val functionLogger = LoggerFactory.getLogger("love.forte.simbot.listener.$functionId")
+        val functionId = context.id ?: function.sign()
+        val functionLogger = LoggerFactory.getLogger("love.forte.simbot.listener.${function.name}")
         val listenerTargets = function.listenTargets()
         val binders = function.binders(context)
         val listenerAttributeMap = AttributeMutableMap(ConcurrentHashMap())
@@ -83,10 +82,6 @@ internal class KFunctionListenerProcessor {
             attributeMap = listenerAttributeMap,
         )
         
-        logger.info("Resolve listener: id={}, targets={}",
-            listener.id,
-            listenerTargets.map { t -> t.id.literal }.ifEmpty { listOf("<ALL>") })
-        
         // filters
         val filters = function.filters(listener, listenerAttributeMap, context)
         logger.debug("Size of resolved listener filters: {}", filters.size)
@@ -95,6 +90,10 @@ internal class KFunctionListenerProcessor {
         val interceptors = function.interceptors(listener, listenerAttributeMap, context)
         logger.debug("Size of resolved listener interceptors: {}", interceptors.size)
         logger.debug("Resolved listener interceptors: {}", interceptors)
+        
+        if (filters.isEmpty() && interceptors.isEmpty()) {
+            return listener
+        }
         
         // 合并
         return (listener + filters) + interceptors
