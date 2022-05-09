@@ -20,7 +20,10 @@ import love.forte.simboot.annotation.Filter
 import love.forte.simboot.annotation.Filters
 import love.forte.simboot.annotation.TargetFilter
 import love.forte.simboot.core.listener.FunctionalListenerProcessContext
-import love.forte.simboot.filter.*
+import love.forte.simboot.filter.EmptyKeyword
+import love.forte.simboot.filter.MatchType
+import love.forte.simboot.filter.MultiFilterMatchType
+import love.forte.simboot.filter.TargetFilterData
 import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.core.event.coreFilter
 import love.forte.simbot.event.*
@@ -91,12 +94,6 @@ private object CoreFilterAnnotationProcessor {
         }
     }
     
-}
-
-private class ListFilterRegistrar(val list: MutableList<EventFilter>) : EventFilterRegistrar {
-    override fun register(filter: EventFilter) {
-        list.add(filter)
-    }
 }
 
 private fun Filters.process(context: FiltersAnnotationProcessContext): EventFilter? {

@@ -17,7 +17,7 @@
 package love.forte.simboot.core.application
 
 import love.forte.simboot.annotation.Binder
-import love.forte.simboot.core.listener.toBinderFactory
+import love.forte.simboot.core.binder.toBinderFactory
 import love.forte.simboot.listener.ParameterBinder
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.listener.ParameterBinderResult

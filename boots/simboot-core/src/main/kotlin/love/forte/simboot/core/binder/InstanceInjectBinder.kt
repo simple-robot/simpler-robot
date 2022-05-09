@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -14,56 +14,52 @@
  *
  */
 
-package love.forte.simboot.core.listener
+package love.forte.simboot.core.binder
 
-import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.di.BeanContainer
 import love.forte.simboot.listener.ParameterBinder
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.listener.ParameterBinderResult
-import love.forte.simboot.utils.WeakVal
 import love.forte.simbot.PriorityConstant
 import love.forte.simbot.event.EventListenerProcessingContext
-import javax.inject.Inject
 import javax.inject.Named
 import kotlin.reflect.KClass
-
+import kotlin.reflect.KParameter
+import kotlin.reflect.full.findAnnotation
 
 /**
- * 尝试为参数其提供一个对应的实例。
+ * 如果参数类型为 [KParameter.Kind.INSTANCE]，尝试通过beanContainer获取其实例。
  */
-public object AutoInjectBinderFactory : ParameterBinderFactory {
-    private val annotationTool: KAnnotationTool by WeakVal(true, ::KAnnotationTool)
-
+public object InstanceInjectBinderFactory : ParameterBinderFactory {
+    override val priority: Int get() = PriorityConstant.LAST
+    
     override fun resolveToBinder(context: ParameterBinderFactory.Context): ParameterBinderResult {
         val parameter = context.parameter
-        val injectNeed = annotationTool.getAnnotation(parameter, Inject::class) != null
-        if (!injectNeed) return ParameterBinderResult.empty()
-
-        val container = context.beanContainer
-
-        val name = annotationTool.getAnnotation(parameter, Named::class)?.value
+        if (parameter.kind != KParameter.Kind.INSTANCE) return ParameterBinderResult.empty()
+        
+        val type = parameter.type.classifier as? KClass<*> ?: return ParameterBinderResult.empty()
+        
+        val name = parameter.findAnnotation<Named>()?.value
+        
         return ParameterBinderResult.normal(
-            if (name != null) AutoInjectBinderByName(name, container)
-            else AutoInjectBinderByType(
-                parameter.type.classifier as KClass<*>, container
+            InstanceBinder(
+                name = name,
+                type = type,
+                beanContainer = context.beanContainer
             )
-        , PriorityConstant.NORMAL + 1
         )
+        
+        
     }
 }
 
 
-private class AutoInjectBinderByName(private val name: String, private val container: BeanContainer) : ParameterBinder {
+private class InstanceBinder(
+    private val name: String?,
+    private val type: KClass<*>,
+    private val beanContainer: BeanContainer,
+) : ParameterBinder {
     override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
-        return kotlin.runCatching { container[name] }
-    }
-}
-
-
-private class AutoInjectBinderByType(private val type: KClass<*>, private val container: BeanContainer) :
-    ParameterBinder {
-    override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
-        return kotlin.runCatching { container[type] }
+        return kotlin.runCatching { name?.let { n -> beanContainer[n, type] } ?: beanContainer[type] }
     }
 }

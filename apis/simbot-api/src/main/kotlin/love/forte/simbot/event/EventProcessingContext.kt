@@ -17,7 +17,10 @@
 package love.forte.simbot.event
 
 import kotlinx.serialization.modules.SerializersModule
-import love.forte.simbot.*
+import love.forte.simbot.Attribute
+import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.MutableAttributeMap
+import love.forte.simbot.attribute
 import org.jetbrains.annotations.UnmodifiableView
 import kotlin.coroutines.CoroutineContext
 
@@ -31,7 +34,7 @@ import kotlin.coroutines.CoroutineContext
  * 事件流程中进行流转的上下文也是一个协程上下文.
  * @author ForteScarlet
  */
-public interface EventProcessingContext : CoroutineContext.Element, AttributeContainer {
+public interface EventProcessingContext : CoroutineContext.Element, InstantScopeContext {
     public companion object Key : CoroutineContext.Key<EventProcessingContext>
     override val key: CoroutineContext.Key<*> get() = Key
 
@@ -110,10 +113,12 @@ public interface ScopeContext : MutableAttributeMap
  */
 public interface GlobalScopeContext : ScopeContext
 
+
 /**
- * 瞬时作用域上下文，代表为每次事件触发时都会产生一个新的实例的上下文类型。
+ * 瞬时作用域上下文，由 [EventProcessingContext] 直接实现。
  */
 public interface InstantScopeContext : ScopeContext
+
 
 
 /**

@@ -14,7 +14,7 @@
  *
  */
 
-package love.forte.simboot.core.listener
+package love.forte.simboot.core.binder
 
 import love.forte.simboot.listener.BindException
 import love.forte.simboot.listener.ParameterBinder
@@ -25,6 +25,7 @@ import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.event.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.safeCast
 
 
 /**
@@ -32,12 +33,12 @@ import kotlin.reflect.full.isSubclassOf
  *
  */
 public object EventParameterBinderFactory : ParameterBinderFactory {
+    // private val logger = LoggerFactory.getLogger(EventParameterBinderFactory::class.java)
     
     @OptIn(ExperimentalSimbotApi::class)
     override fun resolveToBinder(context: ParameterBinderFactory.Context): ParameterBinderResult {
         val type = context.parameter.type
         val classifier = type.classifier as? KClass<*> ?: return ParameterBinderResult.empty()
-        // if (classifier !is KClass<*>)
         
         val nullable = type.isMarkedNullable
         
@@ -55,18 +56,13 @@ public object EventParameterBinderFactory : ParameterBinderFactory {
             }
             
             // 是不是 EventProcessingContext 子类型
-            classifier.isSubclassOf(EventProcessingContext::class) -> {
+            classifier.isSubclassOf(EventProcessingContext::class) || classifier.isSubclassOf(InstantScopeContext::class) -> {
                 @Suppress("UNCHECKED_CAST")
                 return ParameterBinderResult.normal(EventListenerProcessingContextInstanceBinder(classifier as KClass<EventProcessingContext>))
             }
             
             // Scope 相关类型
             
-            // classifier.isSubclassOf(EventProcessingContext.Scope.Instant.type) -> {
-            classifier.isSubclassOf(InstantScopeContext::class) -> {
-                return ParameterBinderResult.normal(attributeBinder(nullable,
-                    EventProcessingContext.Scope.Instant) { "Scope [Instant] in current context is null." })
-            }
             classifier.isSubclassOf(GlobalScopeContext::class) -> {
                 return ParameterBinderResult.normal(attributeBinder(nullable,
                     EventProcessingContext.Scope.Global) { "Scope [Global] in current context is null." })
@@ -85,15 +81,15 @@ public object EventParameterBinderFactory : ParameterBinderFactory {
     }
 }
 
+
 /**
  * 提供事件本体作为参数。
  */
 private class EventInstanceBinder(private val targetType: KClass<Event>) : ParameterBinder {
     override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
         // 如果当前事件类型是目标类型的子类，提供参数
-        val event = context.event
-        return if (targetType.isInstance(event)) Result.success(event)
-        else Result.failure(BindException("The type of event is inconsistent with the target type $targetType"))
+        return targetType.safeCast(context.event)?.let { Result.success(it) }
+            ?: Result.failure(BindException("The type of event is inconsistent with the target type $targetType"))
     }
 }
 
@@ -104,8 +100,8 @@ private class EventListenerProcessingContextInstanceBinder(private val targetTyp
     ParameterBinder {
     override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
         // 如果当前context类型是目标类型的子类，提供参数
-        return if (targetType.isInstance(context)) Result.success(context)
-        else Result.failure(BindException("The type of context is inconsistent with the target type $targetType"))
+        return targetType.safeCast(context)?.let { Result.success(it) }
+            ?: Result.failure(BindException("The type of context is inconsistent with the target type $targetType"))
     }
 }
 
@@ -115,9 +111,8 @@ private class EventListenerProcessingContextInstanceBinder(private val targetTyp
 private class EventListenerInstanceBinder(private val targetType: KClass<EventListener>) : ParameterBinder {
     override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
         // 如果当前listener类型是目标类型的子类，提供参数
-        val listener = context.listener
-        return if (targetType.isInstance(listener)) Result.success(listener)
-        else Result.failure(BindException("The type of listener is inconsistent with the target type $targetType"))
+        return targetType.safeCast(context.listener)?.let { Result.success(it) }
+            ?: Result.failure(BindException("The type of listener is inconsistent with the target type $targetType"))
     }
 }
 

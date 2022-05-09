@@ -459,15 +459,64 @@ internal class CoreEventProcessingContext(
 
     override val results: List<EventResult> = _results.view()
 
-    lateinit var instantScope: InstantScopeContext
+    private lateinit var instantScope0: InstantScopeContext
+    private val instantScope: InstantScopeContext
+        get() {
+            if (::instantScope0.isInitialized) {
+                return instantScope0
+            }
+            return synchronized(this) {
+                if (::instantScope0.isInitialized) {
+                    instantScope0
+                } else {
+                    instantScopeContextInitializer().also {
+                        instantScope0 = it
+                    }
+                }
+            }
+        }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T? {
         return when (attribute) {
+            @Suppress("DEPRECATION")
+            EventProcessingContext.Scope.Instant -> this as T
             EventProcessingContext.Scope.Global -> globalScopeContext as T
             EventProcessingContext.Scope.ContinuousSession -> continuousSessionContext as T
             else -> attributeMap[attribute]
         }
+    }
+    
+    override fun <T : Any> get(attribute: Attribute<T>): T? {
+        return instantScope[attribute]
+    }
+    
+    override fun <T : Any> contains(attribute: Attribute<T>): Boolean {
+        return instantScope.contains(attribute)
+    }
+    
+    override fun size(): Int {
+        return instantScope.size()
+    }
+    
+    override fun <T : Any> put(attribute: Attribute<T>, value: T): T? {
+        return instantScope.put(attribute, value)
+    }
+    
+    override fun <T : Any> merge(attribute: Attribute<T>, value: T, remapping: (T, T) -> T): T {
+        return instantScope.merge(attribute, value, remapping)
+    }
+    
+    override fun <T : Any> computeIfAbsent(attribute: Attribute<T>, mappingFunction: (Attribute<T>) -> T): T {
+        return instantScope.computeIfAbsent(attribute, mappingFunction)
+    }
+    
+    override fun <T : Any> computeIfPresent(attribute: Attribute<T>, remappingFunction: (Attribute<T>, T) -> T?): T? {
+        return instantScope.computeIfPresent(attribute, remappingFunction)
+    }
+    
+    override fun <T : Any> remove(attribute: Attribute<T>): T? {
+        return instantScope.remove(attribute)
     }
 }
 

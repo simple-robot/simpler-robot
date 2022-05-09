@@ -14,7 +14,7 @@
  *
  */
 
-package love.forte.simboot.core.listener
+package love.forte.simboot.core.binder
 
 import love.forte.simboot.annotation.Binder
 import love.forte.simboot.listener.ParameterBinder
@@ -47,7 +47,7 @@ internal class AnnotationFunctionalBinderFactory(
  *
  * 此函数的返回值必须为 [ParameterBinderResult] 或者 [ParameterBinder].
  *
- * @param beanId 这个binder存在的实例的bean id.
+ * @param instanceGetter 这个binder执行所需的实例获取函数。
  *
  */
 internal fun KFunction<*>.toBinderFactory(instanceGetter: (ParameterBinderFactory.Context) -> Any?): AnnotationFunctionalBinderFactory {
