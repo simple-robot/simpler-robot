@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.annotation
@@ -32,6 +31,7 @@ import kotlin.reflect.KClass
  *
  * @param value 事件类型。指定的事件必须存在一个实现了 [Event.Key] 的伴生对象，否则此事件将会被视为不可监听并抛出异常。
  *
+ * @see Listener
  * @see love.forte.simbot.event.Event
  */
 @Retention(AnnotationRetention.RUNTIME)
