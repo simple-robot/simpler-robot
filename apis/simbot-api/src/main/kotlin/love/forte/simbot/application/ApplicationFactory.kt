@@ -56,7 +56,7 @@ public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> 
     /**
      * 注册一个 [组件][Component].
      */
-    @ApplicationBuildDsl
+    @ApplicationBuilderDsl
     public fun <C : Component, Config : Any> install(
         componentFactory: ComponentFactory<C, Config>,
         configurator: Config.(perceivable: CompletionPerceivable<A>) -> Unit = {},
@@ -65,7 +65,7 @@ public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> 
     /**
      * 注册一个事件提供者。
      */
-    @ApplicationBuildDsl
+    @ApplicationBuilderDsl
     public fun <P : EventProvider, Config : Any> install(
         eventProviderFactory: EventProviderFactory<P, Config>,
         configurator: Config.(perceivable: CompletionPerceivable<A>) -> Unit = {},
@@ -75,7 +75,7 @@ public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> 
     /**
      * 提供一个可以使用 [BotVerifyInfo] 进行通用性bot注册的配置方式。
      */
-    @ApplicationBuildDsl
+    @ApplicationBuilderDsl
     public fun bots(registrar: BotRegistrar.() -> Unit)
 
 
@@ -84,7 +84,7 @@ public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> 
      *
      * 假如当前builder已经构建完毕，再调用此函数无效果。
      */
-    @ApplicationBuildDsl
+    @ApplicationBuilderDsl
     override fun onCompletion(handle: (application: A) -> Unit)
 
 }
@@ -109,7 +109,7 @@ public interface BotRegistrar {
 @DslMarker
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
-public annotation class ApplicationBuildDsl
+public annotation class ApplicationBuilderDsl
 
 
 /**

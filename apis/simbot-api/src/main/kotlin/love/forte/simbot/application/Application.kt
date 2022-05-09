@@ -18,11 +18,9 @@ package love.forte.simbot.application
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.modules.SerializersModule
-import love.forte.simbot.BotManager
-import love.forte.simbot.Component
-import love.forte.simbot.ID
-import love.forte.simbot.NoSuchComponentException
+import love.forte.simbot.*
 import love.forte.simbot.event.EventListenerManager
+import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -93,6 +91,14 @@ public interface Application : CoroutineScope {
      * 挂起此应用直至其被终止。
      */
     public suspend fun join()
+    
+    
+    /**
+     * 阻塞的 [join] 当前应用直到其被关闭。
+     */
+    @Api4J
+    public fun joinBlocking(): Unit = runInBlocking { join() }
+    
 
     /**
      * 终止当前应用，并关闭其中所有可能的资源。

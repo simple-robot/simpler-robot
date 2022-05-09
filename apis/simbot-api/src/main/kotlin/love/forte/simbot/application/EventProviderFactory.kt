@@ -79,7 +79,7 @@ public interface EventProviderAutoRegistrarFactory<P : EventProvider, Config : A
 /**
  * 尝试加载所有的 [ComponentAutoRegistrarFactory] 并注册到 [ApplicationBuilder] 中。
  */
-@ApplicationBuildDsl
+@ApplicationBuilderDsl
 public fun <A : Application> ApplicationBuilder<A>.installAllEventProviders(classLoader: ClassLoader = this.currentClassLoader) {
     val factories = ServiceLoader.load(EventProviderAutoRegistrarFactory::class.java, classLoader)
     factories.forEach {

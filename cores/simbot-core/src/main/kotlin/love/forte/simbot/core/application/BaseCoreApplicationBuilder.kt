@@ -17,12 +17,13 @@
 package love.forte.simbot.core.application
 
 import love.forte.simbot.application.Application
-import love.forte.simbot.application.ApplicationBuildDsl
 import love.forte.simbot.application.ApplicationBuilder
+import love.forte.simbot.application.ApplicationBuilderDsl
 import love.forte.simbot.application.ApplicationConfiguration
 import love.forte.simbot.core.event.CoreListenerManager
 import love.forte.simbot.core.event.CoreListenerManagerConfiguration
 import love.forte.simbot.core.event.coreListenerManager
+import java.util.concurrent.ConcurrentLinkedQueue
 
 
 /**
@@ -33,7 +34,7 @@ public interface CoreApplicationBuilder<A : Application> : CoreEventProcessableA
     /**
      * 配置当前的构建器内的事件处理器。
      */
-    @ApplicationBuildDsl
+    @ApplicationBuilderDsl
     override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
 }
 
@@ -46,16 +47,15 @@ public interface CoreApplicationBuilder<A : Application> : CoreEventProcessableA
  */
 public abstract class BaseCoreApplicationBuilder<A : Application> : BaseApplicationBuilder<A>(),
     CoreApplicationBuilder<A> {
-    protected open var listenerManagerConfigurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit =
-        {}
+    protected open var listenerManagerConfigurations: ConcurrentLinkedQueue<CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit> =
+        ConcurrentLinkedQueue()
     
     
     /**
      * 配置当前的构建器内的事件处理器。
      */
     override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
-        val old = listenerManagerConfigurator
-        listenerManagerConfigurator = { env -> old(env); configurator(env) }
+        listenerManagerConfigurations.add(configurator)
     }
     
     /**
@@ -69,9 +69,12 @@ public abstract class BaseCoreApplicationBuilder<A : Application> : BaseApplicat
             coroutineContext = appConfig.coroutineContext
         }
         
-        return coreListenerManager(initial = initial, block = { listenerManagerConfigurator(environment) })
+        return coreListenerManager(initial = initial, block = {
+            listenerManagerConfigurations.forEach { config ->
+                config(environment)
+            }
+        })
     }
-    
     
     
 }

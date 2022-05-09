@@ -17,8 +17,8 @@
 package love.forte.simbot.core.application
 
 import love.forte.simbot.application.Application
-import love.forte.simbot.application.ApplicationBuildDsl
 import love.forte.simbot.application.ApplicationBuilder
+import love.forte.simbot.application.ApplicationBuilderDsl
 import love.forte.simbot.core.event.CoreListenerManagerConfiguration
 import love.forte.simbot.core.event.EventListenersGenerator
 
@@ -33,7 +33,7 @@ public interface CoreEventProcessableApplicationBuilder<A : Application> : Appli
      * 配置内部的 core listener manager.
      *
      */
-    @ApplicationBuildDsl
+    @ApplicationBuilderDsl
     public fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
 
 }
@@ -51,7 +51,7 @@ public interface CoreEventProcessableApplicationBuilder<A : Application> : Appli
  * }
  * ```
  */
-@ApplicationBuildDsl
+@ApplicationBuilderDsl
 public inline fun CoreEventProcessableApplicationBuilder<*>.listeners(crossinline block: EventListenersGenerator.(environment: Application.Environment) -> Unit) {
     eventProcessor { env ->
         listeners {

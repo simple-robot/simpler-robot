@@ -22,6 +22,9 @@ import love.forte.simbot.application.*
 import love.forte.simbot.application.BotRegistrar
 import love.forte.simbot.event.EventProcessor
 import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 
 /**
@@ -33,20 +36,23 @@ import java.util.concurrent.ConcurrentLinkedQueue
 public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuilder<A> {
     private val componentConfigurations = mutableMapOf<Attribute<*>, Any.() -> Unit>()
     private val componentFactories = mutableMapOf<Attribute<*>, () -> Component>()
-    private val botRegisters = mutableListOf<BotRegistrar.() -> Unit>()
-
+    private val botRegisters = ConcurrentLinkedQueue<BotRegistrar.() -> Unit>()
+    
+    private val applicationLock = ReentrantReadWriteLock()
+    private lateinit var applicationInstance: A
+    
     /**
      * 事件提供者配置。
      */
     private val eventProviderConfigurations =
         mutableMapOf<Attribute<*>, Any.() -> Unit>()
-
+    
     /**
      * 事件提供者工厂。
      */
     private val eventProviderFactories =
         mutableMapOf<Attribute<*>, (EventProcessor, List<Component>, ApplicationConfiguration) -> EventProvider>()
-
+    
     /**
      * 注册一个 [组件][Component].
      */
@@ -57,16 +63,16 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
         val key = componentFactory.key
         val newConfig: Any.() -> Unit = newConfigurator(key, eventProviderConfigurations, configurator)
         eventProviderConfigurations[key] = newConfig
-
+        
         if (key in componentFactories) return
-
+        
         componentFactories[key] = {
             val configuration = componentConfigurations[key]!!
             componentFactory.create(configuration)
         }
     }
-
-
+    
+    
     /**
      * 注册一个 [事件提供者][EventProvider].
      */
@@ -77,24 +83,24 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
         val key = eventProviderFactory.key
         val newConfig: Any.() -> Unit = newConfigurator(key, eventProviderConfigurations, configurator)
         eventProviderConfigurations[key] = newConfig
-
+        
         if (key in eventProviderFactories) return
-
+        
         eventProviderFactories[key] = { eventProcessor, components, applicationConfiguration ->
             val configuration = eventProviderConfigurations[key]!!
             eventProviderFactory.create(eventProcessor, components, applicationConfiguration, configuration)
         }
-
+        
     }
-
+    
     /**
      * 添加一个bot注册函数。
      */
     override fun bots(registrar: BotRegistrar.() -> Unit) {
         botRegisters.add(registrar)
     }
-
-
+    
+    
     private fun <Config : Any> newConfigurator(
         key: Attribute<*>,
         configurations: Map<Attribute<*>, Any.() -> Unit>,
@@ -113,21 +119,21 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
             }
         }
     }
-
-
+    
+    
     protected fun buildComponents(): List<Component> {
         return componentFactories.values.map { it() }
     }
-
-
+    
+    
     protected fun buildProviders(
         eventProcessor: EventProcessor,
         components: List<Component>,
-        applicationConfiguration: ApplicationConfiguration
+        applicationConfiguration: ApplicationConfiguration,
     ): List<EventProvider> {
         return eventProviderFactories.values.map { it(eventProcessor, components, applicationConfiguration) }
     }
-
+    
     /**
      * 提供botManager列表并执行它们的注册逻辑。
      *
@@ -140,30 +146,41 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
         }
         return registrar.bots
     }
-
-
+    
+    
     /**
      * 当构建完成时统一执行的函数列表。
      */
     private val onCompletions = ConcurrentLinkedQueue<(A) -> Unit>()
-
-
+    
+    
     override fun onCompletion(handle: (application: A) -> Unit) {
-        onCompletions.add(handle)
+        applicationLock.read {
+            if (::applicationInstance.isInitialized) {
+                handle(applicationInstance)
+            } else {
+                onCompletions.add(handle)
+            }
+        }
     }
-
-
+    
+    
     /**
      * 当 [Application] 构建完毕，则执行此函数来执行所有的 `onCompletion` 回调函数。
      */
     protected fun complete(application: A) {
-        onCompletions.forEach { it(application) }
+        applicationLock.write {
+            applicationInstance = application
+        }
+        while (onCompletions.isNotEmpty()) {
+            onCompletions.poll()(application)
+        }
     }
-
-
+    
+    
     private class BotRegistrarImpl(private val registrars: List<love.forte.simbot.BotRegistrar>) : BotRegistrar {
         val bots = mutableListOf<Bot>()
-
+        
         override fun register(botVerifyInfo: BotVerifyInfo): Bot? {
             logger.info("Registering bot with verify info [{}]", botVerifyInfo)
             for (manager in registrars) {
@@ -184,11 +201,11 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
             }
             return null
         }
-
+        
         override fun toString(): String {
             return "BotRegistrarImpl(registrars=$registrars)"
         }
-
+        
         private companion object {
             private val logger =
                 LoggerFactory.getLogger("love.forte.simbot.core.application.BaseApplicationBuilder.BotRegistrarImpl")

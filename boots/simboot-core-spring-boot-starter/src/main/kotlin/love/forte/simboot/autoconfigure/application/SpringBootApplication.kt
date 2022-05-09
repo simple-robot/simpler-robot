@@ -90,7 +90,7 @@ public interface SpringBootApplicationBuilder : ApplicationBuilder<SpringBootApp
      * 配置内部的 core listener manager.
      *
      */
-    @ApplicationBuildDsl
+    @ApplicationBuilderDsl
     override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
 }
 

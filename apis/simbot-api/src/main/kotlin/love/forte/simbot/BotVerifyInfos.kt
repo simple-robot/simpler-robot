@@ -19,6 +19,7 @@
 package love.forte.simbot
 
 import kotlinx.serialization.DeserializationStrategy
+import love.forte.simbot.resources.Resource
 import java.io.InputStream
 import java.net.URL
 import java.nio.file.Path
@@ -32,14 +33,14 @@ import kotlin.io.path.inputStream
  */
 public abstract class DecoderBotVerifyInfo : BotVerifyInfo {
     protected abstract val decoder: BotVerifyInfoDecoder
-
+    
     /**
      * 已经初始化了的组件id信息。
      *
      * 此属性只会被使用一次。
      */
     protected open val initializedComponentId: String? get() = null
-
+    
     /**
      * 获取此验证信息的组件id。默认情况下优先尝试通过 [initializedComponentId] 初始化信息，
      * 如果 [initializedComponentId] 值为null, 则尝试通过 [decoder.decodeComponentId(...)][BotVerifyInfoDecoder.decodeComponentId]
@@ -50,11 +51,24 @@ public abstract class DecoderBotVerifyInfo : BotVerifyInfo {
             ?: inputStream().use { inp -> decoder.decodeComponentId(inp) }
             ?: throw NoSuchComponentException("required property 'component' cannot be found in current verify info $name")
     }
-
+    
     override fun <T> decode(deserializer: DeserializationStrategy<T>): T {
         return inputStream().use { inp -> decoder.decode(inp, deserializer) }
     }
+    
+}
 
+
+private class ResourceAsBotVerifyInfo(override val decoder: BotVerifyInfoDecoder, private val resource: Resource) :
+    DecoderBotVerifyInfo(), Resource by resource {
+    
+    override fun inputStream(): InputStream {
+        return openStream()
+    }
+    
+    override fun openStream(): InputStream {
+        return resource.openStream()
+    }
 }
 
 
@@ -63,9 +77,9 @@ private class URLBotVerifyInfo(
     private val url: URL,
 ) : DecoderBotVerifyInfo() {
     override val name: String get() = url.toString()
-
+    
     override fun inputStream(): InputStream = url.openStream()
-
+    
     override fun close() {
         // close nothing.
     }
@@ -77,10 +91,10 @@ private class PathBotVerifyInfo(
     private val path: Path,
 ) : DecoderBotVerifyInfo() {
     override val name: String get() = path.toString()
-
+    
     override fun inputStream(): InputStream = path.inputStream()
-
-
+    
+    
     override fun close() {
         // close nothing.
     }
@@ -95,27 +109,35 @@ public class ByteArrayBotVerifyInfo(
     override val name: String,
     private val value: ByteArray,
 ) : DecoderBotVerifyInfo() {
-
+    
     override fun inputStream(): InputStream {
         return value.inputStream()
     }
-
-
+    
+    
     override fun close() {
         // close nothing.
     }
-
+    
     override fun <T> decode(deserializer: DeserializationStrategy<T>): T {
         if (decoder is StandardBinaryFormatBotVerifyInfoDecoder) {
             return decoder.decode(value, deserializer)
         }
-
+        
         if (decoder is StandardStringFormatBotVerifyInfoDecoder) {
             return decoder.decode(value.toString(Charsets.UTF_8), deserializer)
         }
-
+        
         return super.decode(deserializer)
     }
+}
+
+
+/**
+ * 将一个 [Resource] 转为 [BotVerifyInfo].
+ */
+public fun Resource.toBotVerifyInfo(decoder: BotVerifyInfoDecoder): BotVerifyInfo {
+    return ResourceAsBotVerifyInfo(decoder, this)
 }
 
 
