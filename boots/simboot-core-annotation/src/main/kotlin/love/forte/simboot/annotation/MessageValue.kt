@@ -23,6 +23,7 @@ package love.forte.simboot.annotation
  */
 //  TODO
 @Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.RUNTIME)
 public annotation class MessageValue(
     /**
      * 是否使用倒序查找。默认为false。

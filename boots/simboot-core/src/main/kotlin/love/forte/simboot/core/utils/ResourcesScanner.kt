@@ -15,10 +15,10 @@
  *
  */
 
-package love.forte.simboot.core.internal
+package love.forte.simboot.core.utils
 
-import love.forte.simboot.core.internal.ResourcesScanner.ResourceVisitValue.JarEntryValue
-import love.forte.simboot.core.internal.ResourcesScanner.ResourceVisitValue.PathValue
+import love.forte.simboot.core.utils.ResourcesScanner.ResourceVisitValue.JarEntryValue
+import love.forte.simboot.core.utils.ResourcesScanner.ResourceVisitValue.PathValue
 import love.forte.simboot.utils.Globs
 import java.io.Closeable
 import java.io.File
@@ -39,7 +39,7 @@ import kotlin.streams.asSequence
  * @author ForteScarlet
  */
 public class ResourcesScanner<T>(
-    public var classLoader: ClassLoader = ResourcesScanner::class.java.classLoader
+    public var classLoader: ClassLoader = ResourcesScanner::class.java.classLoader,
 ) : Closeable {
     private val fileSep get() = File.separator
     private val fileSepChar get() = File.separatorChar
@@ -48,17 +48,17 @@ public class ResourcesScanner<T>(
     private val lookups =
         mutableListOf<(model: ResourceModel, resource: String, loader: ClassLoader, url: URL) -> Sequence<T>>()
     private val visitors = mutableListOf<(ResourceVisitValue<*>) -> Sequence<T>>()
-
+    
     override fun close() {
         clear()
     }
-
+    
     private fun clear() {
         globs.clear()
         visitors.clear()
         scans.clear()
     }
-
+    
     private fun lookup(model: ResourceModel, resource: String, loader: ClassLoader, url: URL): Sequence<T> {
         return when (val protocol = url.protocol) {
             "file" -> sequence {
@@ -71,9 +71,9 @@ public class ResourcesScanner<T>(
                             // real file
                             if (globs.any { r ->
                                     r.matches(resourceFileName)
-                            }) {
+                                }) {
                                 visitors.asSequence().flatMap { v ->
-                                    v(PathValue(path, resourceFileName))
+                                    v(ResourceVisitValue.PathValue(path, resourceFileName))
                                 }
                             } else {
                                 emptySequence()
@@ -93,18 +93,18 @@ public class ResourcesScanner<T>(
                     // is File.
                     if (globs.any { r -> r.matches(resource) }) {
                         visitors.forEach { v ->
-                            yieldAll(v(PathValue(startPath, resource)))
+                            yieldAll(v(ResourceVisitValue.PathValue(startPath, resource)))
                         }
                     }
                 }
-
+                
             }
             "jar" -> sequence {
                 val connection = url.openConnection() as? JarURLConnection
                     ?: throw IllegalStateException("Resource URL $url open failure: protocol is 'jar' but cannot open as JarURLConnection.")
                 val jarFile = connection.jarFile
                 jarFile.entries().asSequence().forEach { entry ->
-                    //println("entry: $entry")
+                    // println("entry: $entry")
                     if (globs.any { r ->
                             // println("r: $r")
                             // println("r.matches(${entry.name}): ${r.matches(entry.name)}")
@@ -113,7 +113,7 @@ public class ResourcesScanner<T>(
                             r.matches(entry.name) || r.matches(entry.name.replace("/", "\\"))
                         }) {
                         visitors.forEach { v ->
-                            yieldAll(v(JarEntryValue(entry, url)))
+                            yieldAll(v(ResourceVisitValue.JarEntryValue(entry, url)))
                         }
                     }
                 }
@@ -121,26 +121,26 @@ public class ResourcesScanner<T>(
             else -> throw UnsupportedOperationException("Not support url protocol: $protocol")
         }
     }
-
-
+    
+    
     public fun glob(glob: String): ResourcesScanner<T> = also {
         if (globs.add(Regex(Globs.toRegex(glob), setOf(RegexOption.IGNORE_CASE)))) {
             lookups.add(::lookup) // { loader, url -> lookup(loader, url) }
         }
     }
-
+    
     /**
      * 访问经由globs过滤后的资源。
      */
     public fun visit(visitor: (ResourceVisitValue<*>) -> Sequence<T>): ResourcesScanner<T> = also {
         visitors.add(visitor)
     }
-
+    
     public fun scan(resource: String): ResourcesScanner<T> = also {
         scans.add(resource)
     }
-
-
+    
+    
     private fun doCollect(model: ResourceModel, classLoader: ClassLoader): Sequence<T> {
         return scans.asSequence().flatMap { resource ->
             doResourcesLookup(model, classLoader, resource).flatMap { url ->
@@ -148,17 +148,17 @@ public class ResourcesScanner<T>(
             }
         }
     }
-
+    
     private fun doResourcesLookup(model: ResourceModel, classLoader: ClassLoader, resource: String): Sequence<URL> {
         return model.getResources(classLoader, resource)
     }
-
-
+    
+    
     @JvmOverloads
     public fun <C : MutableCollection<T>> collect(
         allResources: Boolean,
         collection: C,
-        classLoader: ClassLoader = this.classLoader
+        classLoader: ClassLoader = this.classLoader,
     ): C {
         if (allResources) {
             doCollect(ResourceModel.All, classLoader).forEach(collection::add)
@@ -167,7 +167,7 @@ public class ResourcesScanner<T>(
         }
         return collection
     }
-
+    
     @JvmOverloads
     public fun collectSequence(allResources: Boolean, classLoader: ClassLoader = this.classLoader): Sequence<T> {
         return if (allResources) {
@@ -176,28 +176,28 @@ public class ResourcesScanner<T>(
             doCollect(ResourceModel.Current, classLoader)
         }
     }
-
-
+    
+    
     public companion object {
     }
-
+    
     private sealed class ResourceModel {
         abstract fun getResources(classLoader: ClassLoader, resource: String): Sequence<URL>
-
+        
         object Current : ResourceModel() {
             override fun getResources(classLoader: ClassLoader, resource: String): Sequence<URL> {
                 return classLoader.getResource(resource)?.let { sequenceOf(it) } ?: emptySequence()
             }
         }
-
+        
         object All : ResourceModel() {
             override fun getResources(classLoader: ClassLoader, resource: String): Sequence<URL> {
                 return classLoader.getResources(resource).asSequence()
             }
         }
     }
-
-
+    
+    
     /**
      * 访问被扫描的URL最终的内容。
      *
@@ -208,21 +208,22 @@ public class ResourcesScanner<T>(
      */
     public sealed class ResourceVisitValue<T> {
         public abstract val value: T
-
+        
         public data class PathValue internal constructor(override val value: Path, public val resource: String) :
             ResourceVisitValue<Path>()
-
+        
         public data class JarEntryValue internal constructor(override val value: JarEntry, public val url: URL) :
             ResourceVisitValue<JarEntry>()
     }
-
+    
 }
 
 
-public fun <T> ResourcesScanner<T>.visitPath(visitor: (PathValue) -> Sequence<T>): ResourcesScanner<T> = visit {
-    if (it is PathValue) visitor(it)
-    else emptySequence()
-}
+public fun <T> ResourcesScanner<T>.visitPath(visitor: (ResourcesScanner.ResourceVisitValue.PathValue) -> Sequence<T>): ResourcesScanner<T> =
+    visit {
+        if (it is PathValue) visitor(it)
+        else emptySequence()
+    }
 
 public fun <T> ResourcesScanner<T>.visitJarEntry(visitor: (JarEntry, URL) -> Sequence<T>): ResourcesScanner<T> = visit {
     if (it is JarEntryValue) visitor(it.value, it.url)

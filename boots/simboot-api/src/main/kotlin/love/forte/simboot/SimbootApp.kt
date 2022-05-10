@@ -24,41 +24,25 @@ import org.slf4j.Logger
 import java.util.*
 
 /**
- * Simbot boot 入口处，通过 `Java SPI` 加载 [SimbootEntrance] 实例并进行启动。
- *
- * 假若当前运行环境中通过 `Java SPI` 加载得到多个 [SimbootEntrance]，
- * [SimbootApp] 会通过异常展示所有可选内容。你可以通过设置系统参数(System properties)：
- *
- * ```
- * simboot.entrance=xxx.xxx.xxx.XxxEntrance
- * ```
- *
- * 来指定一个你所需要的最终目标。你可以在main函数起始处或者 通过`-D` 启动参数来完成这一操作：
- *
- * ```
- * java -jar -Dsimboot.entrance=xxx.xxx.XxxEntrance YourFile.jar
- * ```
- *
- * 当然，这并不是说这个参数只有在出现冲突的时候才起作用。事实上，只要这个参数存在，则会直接使用此参数指定的目标，
- * 除非指定的目标并不存在或者无法通过无参构造实例化，这样便会得到一个异常。
- *
- *
- *
- *
+ * simboot-api 不再提供应用入口。SimbootApp由 simboot-core 提供。此类会在不久后删除。
  */
+@Deprecated(
+    message = "Use the love.forte.simboot.core.SimbootApp.",
+    level = DeprecationLevel.ERROR
+)
 public object SimbootApp {
-
+    
     /**
      * 指定 [SimbootEntrance] 的系统参数Key。
      */
     public const val SPECIFY_KEY: String = "simboot.entrance"
-
+    
     /**
      * A boot logger.
      */
-    private val bootLogger = LoggerFactory.getLogger(SimbootApp::class)
-
-
+    private val bootLogger = LoggerFactory.getLogger("love.forte.simboot.SimbootApp")
+    
+    
     /**
      * 通过加载当前 classpath 中的 [SimbootEntrance] 实例来启动一个BOOT。
      *
@@ -75,18 +59,18 @@ public object SimbootApp {
             throw SimbootApplicationException(failure)
         }
     }
-
-
+    
+    
     private class Context(
         override val application: Any?,
         override val args: Array<String>,
-        override val logger: Logger
+        override val logger: Logger,
     ) : SimbootEntranceContext
 }
 
 
 private fun loadEntranceInstance(): SimbootEntrance {
-    val specified = System.getProperty(SimbootApp.SPECIFY_KEY)
+    val specified = System.getProperty("simboot.entrance")
     return if (specified != null) {
         loadEntranceInstanceSpecified(specified)
     } else {
@@ -108,9 +92,9 @@ private fun loadEntranceInstance(): SimbootEntrance {
 private fun loadEntranceInstanceSpecified(specifiedPath: String): SimbootEntrance {
     val loader = Thread.currentThread().contextClassLoader
         ?: ClassLoader.getSystemClassLoader()
-
+    
     val loadedClass = loader.loadClass(specifiedPath)
-
+    
     return loadedClass.getConstructor().newInstance() as SimbootEntrance
 }
 
@@ -123,12 +107,12 @@ private fun loadEntranceInstanceByServiceLoader(): SimbootEntrance {
             No service was found.
             
             Please check if there is at least one META-INF/services/love.forte.simboot.SimBootEntrance file in classPath,
-            Or use the -D${SimbootApp.SPECIFY_KEY} to specify a specific simboot entrance service.
+            Or use the -Dsimboot.entrance to specify a specific simboot entrance service.
         
         """.trimIndent()
         throw SimbotIllegalStateException(message)
     }
-
+    
     if (list.size > 1) {
         val message = buildString {
             append("There is more than one entrance service instance\n\n")
@@ -136,12 +120,12 @@ private fun loadEntranceInstanceByServiceLoader(): SimbootEntrance {
             for (instance in list) {
                 append("\t-\t").append(instance::class.java.name).append("\n")
             }
-            append("Please use -D${SimbootApp.SPECIFY_KEY} to specify a simboot entrance service")
+            append("Please use -Dsimboot.entrance to specify a simboot entrance service")
         }
-
+        
         throw SimbotIllegalStateException(message)
     }
-
+    
     return list.first()
 }
 

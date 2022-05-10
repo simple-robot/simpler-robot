@@ -37,18 +37,18 @@ public class KFunctionEventListener<R>(
     override val priority: Int,
     override val isAsync: Boolean,
     private val targets: Set<Event.Key<*>>,
-    override val caller: KFunction<R>,
+    caller: KFunction<R>,
     override val logger: Logger,
     override val binders: Array<ParameterBinder>,
     private val attributeMap: AttributeMutableMap,
-) : FunctionalBindableEventListener<R>() {
+) : FunctionalBindableEventListener<R>(caller) {
     
     override fun toString(): String {
         return "KFunctionEventListener(id=$id, priority=$priority, isAsync=$isAsync, isSuspend=${caller.isSuspend}, targets=${targets.takeIf { it.isNotEmpty() }?.joinToString(", ", "[", "]") ?: "[<ALL>]"}, binders=${binders.joinToString(separator = ", ", "[", "]")}, caller=$caller)"
     }
     
-    private lateinit var targetCaches: MutableSet<Event.Key<*>> //= mutableSetOf<>()
-    private lateinit var notTargetCaches: MutableSet<Event.Key<*>> //= mutableSetOf<Event.Key<*>>()
+    private lateinit var targetCaches: MutableSet<Event.Key<*>>
+    private lateinit var notTargetCaches: MutableSet<Event.Key<*>>
     
     init {
         // not empty, init it.

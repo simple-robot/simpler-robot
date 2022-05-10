@@ -18,9 +18,14 @@ package love.forte.simboot.core
 
 import love.forte.simboot.core.application.Boot
 import love.forte.simboot.core.application.BootApplication
+import love.forte.simboot.core.application.BootApplicationBuilder
 import love.forte.simboot.core.application.BootApplicationConfiguration
+import love.forte.simbot.Api4J
+import love.forte.simbot.SimbotRuntimeException
 import love.forte.simbot.application.simbotApplication
+import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
 
 /**
  * 为使用 [Boot] 作为应用工厂而提供更加简化的预设操作，
@@ -45,31 +50,181 @@ import kotlin.reflect.KClass
  *
  */
 public object SimbootApp {
-
-
-    @JvmStatic
-    @JvmOverloads
-    @JvmName("run")
-    public operator fun invoke(
-        entrance: KClass<*>?, // TODO KClass, config, other..
+    private val logger = LoggerFactory.getLogger("love.forte.simboot.core.SimbootApp")
+    
+    
+    /**
+     * 使用 [Boot] 作为 simbot 应用工厂来构建一个 [BootApplication].
+     *
+     * @throws SimbootApplicationException 在启动准备过程中出现的异常, 例如提供的 [entrance] 不存在包路径等情况。
+     */
+    @JvmSynthetic
+    public fun invoke(
+        entrance: KClass<*>? = null,
         vararg args: String,
-        configurator: BootApplicationConfiguration.() -> Unit = {}
+        configurator: BootApplicationConfiguration.() -> Unit = {},
     ): BootApplication {
-        return simbotApplication(Boot, configurator = {
-            // initialize
-            this.args = args.toList()
-            configurator()
-        }) {
-            TODO()
+        val appAnnotation = entrance?.findAnnotation<SimbootApplication>()
+        
+        val scanPackage = appAnnotation?.classesPackages?.ifEmpty { null }?.toList()
+            ?: entrance?.let {
+                runCatching {
+                    val package0 = it.java.`package`
+                        ?: throw SimbootApplicationException("Cannot found the Package from type $it")
+                    package0.name?.let { listOf(it) }
+                    
+                }.getOrNull()
+            }
+            ?: preStack("love.forte.simboot.core.SimbootApp", "invoke")?.let { stack ->
+                stack.className.substringBeforeLast(delimiter = ".", missingDelimiterValue = "")
+                    .takeIf { it.isNotEmpty() }?.let { pkg ->
+                        listOf(pkg).also {
+                            logger.warn("The entrance class or @SimbootApplication is null, try get and use the base scan package: {}",
+                                it)
+                        }
+                    }
+            } ?: throw SimbootApplicationException("cannot resolve the scan package.")
+        
+        
+        val configs = resolveToConfig(appAnnotation, scanPackage)
+        val initialConfigurator = configToInitialConfigurator(args.toList(), scanPackage, configs, configurator)
+        
+        
+        return runApp(configurator = initialConfigurator) {
+            onCompletion {
+                logger.info("Boot application completion via entrance {} with {}", entrance, appAnnotation)
+            }
         }
     }
-
+    
+    /**
+     * 使用 [Boot] 作为 simbot 应用工厂来构建一个 [BootApplication].
+     *
+     * ```java
+     * final BootApplication app = SimbootApp.run(MyApp.class, "arg1", "arg2");
+     * // ...
+     * app.joinBlocking();
+     * ```
+     *
+     * @throws SimbootApplicationException 在启动准备过程中出现的异常, 例如提供的 [entrance] 不存在包路径等情况。
+     *
+     */
+    @Api4J
+    @JvmStatic
+    @JvmOverloads
+    public fun run(entrance: Class<*>? = null, vararg args: String): BootApplication {
+        val appAnnotation = entrance?.getAnnotation(SimbootApplication::class.java)
+        val scanPackage = appAnnotation?.classesPackages?.ifEmpty { null }?.toList()
+            ?: entrance?.let {
+                runCatching {
+                    val package0 = it.`package`
+                        ?: throw SimbootApplicationException("Cannot found the Package from type $it")
+                    
+                    package0.name?.let { listOf(it) }
+                }.getOrNull()
+            }
+            ?: preStack("love.forte.simboot.core.SimbootApp", "run")?.let { stack ->
+                stack.className.substringBeforeLast(delimiter = ".", missingDelimiterValue = "")
+                    .takeIf { it.isNotEmpty() }?.let { pkg ->
+                        listOf(pkg).also {
+                            logger.warn("The entrance class or @SimbootApplication is null, try get and use the base scan package: {}",
+                                it)
+                        }
+                    }
+            } ?: throw SimbootApplicationException("cannot resolve the scan package.")
+        
+        val configs = resolveToConfig(appAnnotation, scanPackage)
+        val initialConfigurator = configToInitialConfigurator(args.toList(), scanPackage, configs)
+        
+        return runApp(configurator = initialConfigurator) {
+            onCompletion {
+                logger.info("Boot application completion via entrance {} with {}", entrance, appAnnotation)
+            }
+        }
+        
+    }
+    
+    
+    private data class Configs(
+        val topListenerScanPackage: List<String>,
+        val topBinderScanPackage: List<String>,
+        val botScanResources: List<String>?,
+    )
+    
+    private fun resolveToConfig(appAnnotation: SimbootApplication?, scanPackage: List<String>): Configs {
+        val topListenerScanPackage = appAnnotation?.topListenerPackages?.ifEmpty { null }?.toList()
+            ?: (if (appAnnotation?.classesPackagesForTopListener == true) scanPackage else null) ?: emptyList()
+        
+        val topBinderScanPackage = appAnnotation?.topBinderPackages?.ifEmpty { null }?.toList()
+            ?: (if (appAnnotation?.classesPackagesForTopBinder == true) scanPackage else null) ?: emptyList()
+        
+        val botScanResources = appAnnotation?.botResources?.ifEmpty { null }?.toList()
+        
+        return Configs(topListenerScanPackage, topBinderScanPackage, botScanResources)
+    }
+    
+    private fun configToInitialConfigurator(
+        args: List<String>,
+        scanPackage: List<String>,
+        config: Configs,
+        configurator: BootApplicationConfiguration.() -> Unit = {},
+    ): BootApplicationConfiguration.() -> Unit {
+        return {
+            this.args = args.toList()
+            classesScanPackage = scanPackage
+            topLevelListenerScanPackage = config.topListenerScanPackage
+            topLevelBinderScanPackage = config.topBinderScanPackage
+            if (config.botScanResources != null) {
+                botScanResources = config.botScanResources
+            }
+            configurator()
+        }
+    }
+    
+    
+    private fun runApp(
+        configurator: BootApplicationConfiguration.() -> Unit,
+        builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit,
+    ): BootApplication {
+        return simbotApplication(Boot, configurator = configurator, builder = builder)
+    }
+    
 }
 
 
+private inline fun preStack(className: String, methodName: String, inlineMark: () -> Unit = {}): StackTraceElement? {
+    inlineMark()
+    var isCurrent = false
+    for (stack in Thread.currentThread().stackTrace) {
+        if (stack.className == className && stack.methodName.substringBefore("$") == methodName) {
+            isCurrent = true
+            continue
+        }
+        
+        if (isCurrent) {
+            return stack
+        }
+    }
+    
+    return null
+}
+
+
+/**
+ * 使用 [Boot] 作为 simbot 应用工厂来构建一个 [BootApplication].
+ */
 public inline operator fun <reified T> SimbootApp.invoke(
     vararg args: String,
-    crossinline configurator: BootApplicationConfiguration.() -> Unit = {}
-): BootApplication = SimbootApp(T::class, *args) { configurator() }
+    crossinline configurator: BootApplicationConfiguration.() -> Unit = {},
+): BootApplication = invoke(T::class, *args) { configurator() }
 
 
+/**
+ * 在 [SimbootApp] 启动过程中可能出现的任何异常。
+ */
+public open class SimbootApplicationException : SimbotRuntimeException {
+    public constructor() : super()
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(cause: Throwable?) : super(cause)
+}

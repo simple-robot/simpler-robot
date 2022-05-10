@@ -87,7 +87,7 @@ internal class KFunctionListenerProcessor {
         logger.debug("Size of resolved listener filters: {}", filters.size)
         logger.debug("Resolved listener filters: {}", filters)
         // interceptors
-        val interceptors = function.interceptors(listener, listenerAttributeMap, context)
+        val interceptors = function.interceptors(context)
         logger.debug("Size of resolved listener interceptors: {}", interceptors.size)
         logger.debug("Resolved listener interceptors: {}", interceptors)
         
@@ -231,7 +231,7 @@ internal class KFunctionListenerProcessor {
                                         context.beanContainer[currentClass]
                                     }
                                 }
-                               
+                                
                             }
                             
                             binderFactories.add(factory)
@@ -313,12 +313,13 @@ internal class KFunctionListenerProcessor {
                 }
                 bindList.isEmpty() -> {
                     // spare as normal.
-                    MergedBinder(bindSpareList.map { it.binder }, emptyList())
+                    MergedBinder(bindSpareList.map { it.binder }, emptyList(), parameter)
                 }
                 else -> {
                     MergedBinder(
                         bindList.map { it.binder },
                         bindSpareList.map { it.binder }.ifEmpty { emptyList() },
+                        parameter
                     )
                 }
             }
@@ -349,11 +350,7 @@ internal class KFunctionListenerProcessor {
     }
     
     
-    private fun KFunction<*>.interceptors(
-        listener: EventListener,
-        listenerAttributeMap: MutableAttributeMap,
-        context: FunctionalListenerProcessContext,
-    ): List<EventListenerInterceptor> {
+    private fun KFunction<*>.interceptors(context: FunctionalListenerProcessContext): List<EventListenerInterceptor> {
         val annotations = annotationTool.getAnnotations(this, InterceptorAnnotation::class)
         if (annotations.isEmpty()) return emptyList()
         
@@ -408,13 +405,18 @@ private data class ParameterBinderFactoryContextImpl(
 private class EmptyBinder(
     private val parameter: KParameter,
 ) : ParameterBinder {
-    private val resultProvider: () -> Result<Any?> = if (parameter.type.isMarkedNullable) {
-        val nullResult: Result<Any?> = Result.success(null)
-        ({ nullResult })
-    } else {
-        {
-            Result.failure(BindException("Parameter(#${parameter.index}) [$parameter] has no binder."))
+    private val resultProvider: () -> Result<Any?> = when {
+        parameter.isOptional -> {
+            val ignoreResult: Result<Any?> = Result.success(ParameterBinder.Ignore)
+            ({ ignoreResult })
         }
+        parameter.type.isMarkedNullable -> {
+            val nullResult: Result<Any?> = Result.success(null)
+            ({ nullResult })
+        }
+        else -> ({
+            Result.failure(BindException("Parameter(#${parameter.index}) [$parameter] has no binder."))
+        })
     }
     
     override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
@@ -429,7 +431,12 @@ private class EmptyBinder(
 private class MergedBinder(
     private val binders: List<ParameterBinder>, // not be empty
     private val spare: List<ParameterBinder>, // empty able
+    private val parameter: KParameter,
 ) : ParameterBinder {
+    private companion object {
+        val logger = LoggerFactory.getLogger(MergedBinder::class)
+    }
+    
     init {
         if (binders.isEmpty()) throw IllegalArgumentException("Binders cannot be empty.")
     }
@@ -437,6 +444,7 @@ private class MergedBinder(
     
     override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
         var err: Throwable? = null
+        val isOptional = parameter.isOptional
         
         suspend fun ParameterBinder.invoke(): Result<Any?>? {
             val result = arg(context)
@@ -465,8 +473,17 @@ private class MergedBinder(
                 val result = binder.invoke()
                 if (result != null) return result
             }
+            if (parameter.isOptional) {
+                if (logger.isTraceEnabled) {
+                    logger.debug("Nothing binder success for listener(id={}).", context.listener.id)
+                    logger.trace("Nothing binder success for listener(id=${context.listener.id})", err)
+                } else {
+                    logger.debug("Nothing binder success for listener(id={}). Enable trace level logging to view detailed reasons.", context.listener.id)
+                }
+                return Result.success(ParameterBinder.Ignore)
+            }
             
-            Result.failure<Any?>(BindException("Nothing binder success. listener id: ${context.listener.id}", err))
+            Result.failure<Any?>(BindException("Nothing binder success for listener(id=${context.listener.id})", err))
         }.getOrElse { binderInvokeException ->
             err?.also {
                 binderInvokeException.addSuppressed(it)
