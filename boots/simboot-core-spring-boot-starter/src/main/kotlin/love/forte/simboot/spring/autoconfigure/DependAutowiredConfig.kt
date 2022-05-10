@@ -14,14 +14,22 @@
  *
  */
 
-package love.forte.simboot.filter
+package love.forte.simboot.spring.autoconfigure
+
+import love.forte.di.annotation.Depend
+import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor
+import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor
 
 
+private fun getMyAutowiredAnnotationBeanPostProcessor(): AutowiredAnnotationBeanPostProcessor =
+    AutowiredAnnotationBeanPostProcessor().also {
+        it.setAutowiredAnnotationType(Depend::class.java)
+    }
 
-
-
-
-
-
-
-
+/**
+ * 使 [Depend] 支持 autowired.
+ * @author ForteScarlet
+ */
+public open class AutowiredConfig :
+    SmartInstantiationAwareBeanPostProcessor
+    by getMyAutowiredAnnotationBeanPostProcessor()

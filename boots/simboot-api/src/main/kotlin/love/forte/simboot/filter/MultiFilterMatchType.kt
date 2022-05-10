@@ -27,27 +27,30 @@ import love.forte.simbot.event.EventListenerProcessingContext
  * @author ForteScarlet
  */
 public enum class MultiFilterMatchType(private val matcher: suspend (EventListenerProcessingContext, Collection<suspend (target: EventListenerProcessingContext) -> Boolean>) -> Boolean) {
-
+    
     /**
      * 任意匹配成功即可
      */
     ANY({ t, r -> r.any { it(t) } }),
-
+    
     /**
      * 需要全部匹配成功
      */
     ALL({ t, r -> r.all { it(t) } }),
-
+    
     /**
-     * 需要无成功
+     * 需要无匹配内容
      */
     NONE({ t, r -> r.none { it(t) } }),
-
+    
     ;
-
+    
+    /**
+     * 提供匹配目标和多个匹配函数来进行多值匹配。
+     */
     public suspend fun match(
         target: EventListenerProcessingContext,
-        rule: Collection<suspend (target: EventListenerProcessingContext) -> Boolean>
+        rule: Collection<suspend (target: EventListenerProcessingContext) -> Boolean>,
     ): Boolean = matcher(target, rule)
-
+    
 }

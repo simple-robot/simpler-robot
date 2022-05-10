@@ -14,45 +14,28 @@
  *
  */
 
-package love.forte.simboot.core.listener
+package love.forte.simboot.spring.autoconfigure
 
-import love.forte.di.BeanContainer
-import love.forte.simboot.core.binder.BinderManager
-import kotlin.reflect.KFunction
+import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
+import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
+import love.forte.simbot.ComponentFactory
+import love.forte.simbot.installAllComponents
+
 
 /**
- * [KFunctionListenerProcessor] 进行处理所需参数集.
+ *
+ * @author ForteScarlet
  */
-public data class FunctionalListenerProcessContext(
-    
-    /**
-     * 此监听函数所指定的特殊ID。
-     */
-    val id: String?,
-    
-    /**
-     * 此监听函数对应的function。
-     */
-    val function: KFunction<*>,
-    
-    /**
-     * 此监听函数的期望优先级。
-     */
-    val priority: Int,
-    
-    /**
-     * 此监听函数期望中是否为异步。
-     */
-    val isAsync: Boolean,
-    
-    /**
-     * binder factory的容器。
-     */
-    val binderManager: BinderManager,
-    
-    /**
-     * Bean容器。
-     */
-    val beanContainer: BeanContainer,
-)
-
+public open class SimbotSpringBootComponentAutoInstallBuildConfigure(
+    private val factories: List<ComponentFactory<*, *>>,
+) : SimbotSpringBootApplicationBuildConfigure {
+    override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
+        if (factories.isEmpty()) {
+            installAllComponents()
+        } else {
+            factories.forEach {
+                install(it)
+            }
+        }
+    }
+}

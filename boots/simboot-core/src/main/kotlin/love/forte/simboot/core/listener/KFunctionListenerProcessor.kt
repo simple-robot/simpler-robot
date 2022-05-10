@@ -51,7 +51,7 @@ import love.forte.simboot.annotation.Interceptor as InterceptorAnnotation
  *
  * @author ForteScarlet
  */
-internal class KFunctionListenerProcessor {
+public class KFunctionListenerProcessor {
     private val instanceCache = ConcurrentHashMap<KClass<*>, Any>()
     private val annotationTool = KAnnotationTool()
     private val logger = LoggerFactory.getLogger(KFunctionListenerProcessor::class)
@@ -62,7 +62,7 @@ internal class KFunctionListenerProcessor {
      *
      *
      */
-    fun process(context: FunctionalListenerProcessContext): EventListener {
+    public fun process(context: FunctionalListenerProcessContext): EventListener {
         val function = context.function.also { it.checkLegal() }
         
         val functionId = context.id ?: function.sign()
@@ -473,12 +473,13 @@ private class MergedBinder(
                 val result = binder.invoke()
                 if (result != null) return result
             }
-            if (parameter.isOptional) {
+            if (isOptional) {
                 if (logger.isTraceEnabled) {
                     logger.debug("Nothing binder success for listener(id={}).", context.listener.id)
                     logger.trace("Nothing binder success for listener(id=${context.listener.id})", err)
                 } else {
-                    logger.debug("Nothing binder success for listener(id={}). Enable trace level logging to view detailed reasons.", context.listener.id)
+                    logger.debug("Nothing binder success for listener(id={}). Enable trace level logging to view detailed reasons.",
+                        context.listener.id)
                 }
                 return Result.success(ParameterBinder.Ignore)
             }

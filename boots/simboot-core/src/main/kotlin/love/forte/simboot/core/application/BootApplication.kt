@@ -26,10 +26,7 @@ import love.forte.simboot.SimbootContext
 import love.forte.simboot.annotation.Binder
 import love.forte.simboot.annotation.Binder.Scope.*
 import love.forte.simboot.annotation.Listener
-import love.forte.simboot.core.binder.AutoInjectBinderFactory
-import love.forte.simboot.core.binder.EventParameterBinderFactory
-import love.forte.simboot.core.binder.InstanceInjectBinderFactory
-import love.forte.simboot.core.binder.KeywordBinderFactory
+import love.forte.simboot.core.binder.*
 import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simboot.core.listener.KFunctionListenerProcessor
 import love.forte.simboot.core.utils.isFinal
@@ -104,7 +101,7 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
     /**
      * 提供额外参数，例如命令行参数。
      */
-    public var args: List<String> = emptyList()
+    public open var args: List<String> = emptyList()
     
     /**
      * 追加或设置 [BootApplicationConfiguration.args] 命令行参数。
@@ -114,7 +111,7 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
      *
      */
     @JvmOverloads
-    public fun args(append: Boolean = true, vararg args: String) {
+    public open fun args(append: Boolean = true, vararg args: String) {
         if (append) {
             if (args.isNotEmpty()) {
                 this.args = this.args + args.asList()
@@ -127,20 +124,20 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
     /**
      * 在通过 [classesScanPackage] 或 [topLevelListenerScanPackage] 进行包扫描的时候所使用的类加载器。
      */
-    public var classLoader: ClassLoader = BootApplicationConfiguration::class.java.classLoader
+    public open var classLoader: ClassLoader = BootApplicationConfiguration::class.java.classLoader
     
     /**
      * 需要加载的所有 `*.bot(.*)?` 文件的资源扫描glob。默认为 [DEFAULT_BOT_VERIFY_GLOB]。
      *
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    public var botScanResources: List<String> = listOf(DEFAULT_BOT_VERIFY_GLOB)
+    public open var botConfigurationResources: List<String> = listOf(DEFAULT_BOT_VERIFY_GLOB)
     
     /**
-     * 在 [botScanResources] 之外可以提供其他独立的配置资源信息。
+     * 在 [botConfigurationResources] 之外可以提供其他独立的配置资源信息。
      * 例如一些系统文件系统中的某些指定资源作为 *.bot 验证信息文件。
      */
-    public var botResources: List<Resource> = emptyList()
+    public open var botConfigurations: List<Resource> = emptyList()
     
     /**
      * 配置用于针对 `*.bot` 配置文件的解码器列表。
@@ -148,11 +145,11 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
      * 如果此集合为空，则会尝试通过 [StandardBotVerifyInfoDecoderFactory.supportDecoderFactories]
      * 加载所有当前环境下所支持的解码器工厂并构建对应的解码器。
      */
-    private val botVerifyInfoDecoderFactories =
-        mutableMapOf<BotVerifyInfoDecoderFactory<*, *>, () -> BotVerifyInfoDecoder>()
+    protected open val botVerifyInfoDecoderFactories: MutableMap<BotVerifyInfoDecoderFactory<*, *>, () -> BotVerifyInfoDecoder> =
+        mutableMapOf()
     
-    private val botVerifyInfoDecoderConfigurations =
-        mutableMapOf<BotVerifyInfoDecoderFactory<*, *>, Any.() -> Unit>()
+    protected open val botVerifyInfoDecoderConfigurations: MutableMap<BotVerifyInfoDecoderFactory<*, *>, Any.() -> Unit> =
+        mutableMapOf()
     
     /**
      * 使用一个 [BotVerifyInfoDecoderFactory]
@@ -161,7 +158,7 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
      * 注: 目前同一个 [factory] 实例仅允许注册并配置一个。
      */
     @JvmOverloads
-    public fun <C : Any, D : BotVerifyInfoDecoder> botVerifyInfoDecoderFactory(
+    public open fun <C : Any, D : BotVerifyInfoDecoder> botVerifyInfoDecoderFactory(
         factory: BotVerifyInfoDecoderFactory<C, D>,
         configurator: C.() -> Unit = {},
     ) {
@@ -216,18 +213,18 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
      * 需要进行依赖扫描的所有包路径。
      *
      */
-    public var classesScanPackage: List<String> = emptyList()
+    public open var classesScanPackage: List<String> = emptyList()
     
     /**
      * 需要进行顶层监听函数扫描的包路径。
      */
-    public var topLevelListenerScanPackage: List<String> = emptyList()
+    public open var topLevelListenerScanPackage: List<String> = emptyList()
     
     
     /**
      * 需要进行顶层Binder函数扫描的包路径。
      */
-    public var topLevelBinderScanPackage: List<String> = emptyList()
+    public open var topLevelBinderScanPackage: List<String> = emptyList()
     
     
     /**
@@ -267,7 +264,7 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
      * 默认为`true`。
      *
      */
-    public var isAutoStartBots: Boolean = true
+    public open var isAutoStartBots: Boolean = true
     
 }
 
@@ -516,9 +513,9 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
             bots {
                 autoRegisterBots(classLoader,
                     logger,
-                    configuration.botScanResources,
+                    configuration.botConfigurationResources,
                     botVerifyDecoderFactories,
-                    configuration.botResources)
+                    configuration.botConfigurations)
             }
         }
         

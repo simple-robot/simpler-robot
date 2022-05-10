@@ -14,14 +14,20 @@
  *
  */
 
-package love.forte.simboot.filter
+package love.forte.simboot.spring.autoconfigure.bk
 
-
-
-
-
-
-
-
-
-
+/**
+ *
+ * @author ForteScarlet
+ */
+// @Suppress("ConfigurationProperties")
+// @ConfigurationProperties(prefix = "simbot.core")
+public open class SimbootContextStarterProperties {
+    
+    /**
+     * 是否在启动后以独立线程保持 [love.forte.simboot.SimbootContext] 实例的运行。
+     */
+    public var keepAlive: Boolean = false
+    
+    
+}

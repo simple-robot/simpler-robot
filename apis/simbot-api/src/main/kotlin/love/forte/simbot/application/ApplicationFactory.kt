@@ -121,11 +121,11 @@ public open class ApplicationConfiguration {
      * 当前application内所使用的协程上下文。
      *
      */
-    public var coroutineContext: CoroutineContext = EmptyCoroutineContext
+    public open var coroutineContext: CoroutineContext = EmptyCoroutineContext
 
     /**
      * 提供一个用于Application内部的日志对象。
      */
-    public var logger: Logger = LoggerFactory.getLogger("love.forte.simbot.application.ApplicationConfiguration")
+    public open var logger: Logger = LoggerFactory.getLogger("love.forte.simbot.application.ApplicationConfiguration")
 
 }

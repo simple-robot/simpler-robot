@@ -14,14 +14,35 @@
  *
  */
 
-package love.forte.simboot.filter
+package love.forte.simboot.spring.autoconfigure.bk
+
+import love.forte.simboot.SimbootContext
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.context.annotation.Bean
+
+/**
+ *
+ * 配置用于启动simboot的执行器。
+ *
+ * @author ForteScarlet
+ */
+public open class SimbootAppRunnerConfiguration {
+    
+    @Bean
+    @ConditionalOnMissingBean(SimbootAppRunner::class)
+    public fun defaultSimbootAppRunner(): SimbootAppRunner {
+        TODO()
+    }
+    
+}
 
 
+public interface SimbootAppRunner {
+    public fun run(): SimbootContext
+}
 
-
-
-
-
-
-
-
+private class DefaultSimbootAppRunner : SimbootAppRunner {
+    override fun run(): SimbootContext {
+        TODO()
+    }
+}

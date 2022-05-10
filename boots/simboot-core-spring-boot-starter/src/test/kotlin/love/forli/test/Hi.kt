@@ -12,16 +12,13 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
+ *
  */
+package love.forli.test
 
-package love.forte.simboot.filter
-
-
-
-
-
-
-
-
-
-
+/**
+ *
+ * @author ForteScarlet
+ */
+open class Hi {
+}

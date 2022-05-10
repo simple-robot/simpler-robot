@@ -175,7 +175,7 @@ public object SimbootApp {
             topLevelListenerScanPackage = config.topListenerScanPackage
             topLevelBinderScanPackage = config.topBinderScanPackage
             if (config.botScanResources != null) {
-                botScanResources = config.botScanResources
+                botConfigurationResources = config.botScanResources
             }
             configurator()
         }

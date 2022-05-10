@@ -14,45 +14,28 @@
  *
  */
 
-package love.forte.simboot.core.listener
+package love.forte.simboot.spring.autoconfigure
 
-import love.forte.di.BeanContainer
-import love.forte.simboot.core.binder.BinderManager
-import kotlin.reflect.KFunction
+import love.forte.simbot.application.Application
+import org.springframework.beans.factory.DisposableBean
+import org.springframework.boot.ApplicationArguments
+import org.springframework.boot.ApplicationRunner
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
+
 
 /**
- * [KFunctionListenerProcessor] 进行处理所需参数集.
+ *
+ * @author ForteScarlet
  */
-public data class FunctionalListenerProcessContext(
+@ConditionalOnClass(Application::class)
+public open class SimbotSpringBootApplicationStarter(private val application: Application) : ApplicationRunner,
+    DisposableBean {
     
-    /**
-     * 此监听函数所指定的特殊ID。
-     */
-    val id: String?,
+    override fun run(args: ApplicationArguments?) {
+        // TODO
+    }
     
-    /**
-     * 此监听函数对应的function。
-     */
-    val function: KFunction<*>,
-    
-    /**
-     * 此监听函数的期望优先级。
-     */
-    val priority: Int,
-    
-    /**
-     * 此监听函数期望中是否为异步。
-     */
-    val isAsync: Boolean,
-    
-    /**
-     * binder factory的容器。
-     */
-    val binderManager: BinderManager,
-    
-    /**
-     * Bean容器。
-     */
-    val beanContainer: BeanContainer,
-)
-
+    override fun destroy() {
+        // TODO
+    }
+}

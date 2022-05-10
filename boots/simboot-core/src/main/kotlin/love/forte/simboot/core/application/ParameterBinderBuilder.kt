@@ -17,13 +17,9 @@
 package love.forte.simboot.core.application
 
 import love.forte.simboot.annotation.Binder
-import love.forte.simboot.core.binder.toBinderFactory
 import love.forte.simboot.listener.ParameterBinder
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.listener.ParameterBinderResult
-import love.forte.simbot.SimbotIllegalStateException
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.reflect.KFunction
 
 
@@ -61,66 +57,3 @@ public interface ParameterBinderBuilder {
 }
 
 
-internal class ParameterBinderBuilderImpl : ParameterBinderBuilder {
-    private val globalBinders = ConcurrentLinkedQueue<ParameterBinderFactory>()
-    private val idBinders = ConcurrentHashMap<String, ParameterBinderFactory>()
-    
-    override fun binder(id: String?, binderFactory: ParameterBinderFactory) {
-        if (id == null) {
-            globalBinders.add(binderFactory)
-        } else {
-            idBinders.merge(id, binderFactory) { old, curr ->
-                // id为A的binder已经存在.
-                throw SimbotIllegalStateException("The binder factory with id [$id] already exists. old: $old, current: $curr")
-            }
-        }
-    }
-    
-    override fun binder(
-        id: String?,
-        function: KFunction<*>,
-        instanceGetter: (ParameterBinderFactory.Context) -> Any?,
-    ): ParameterBinderFactory {
-        val factory = function.toBinderFactory(instanceGetter)
-        binder(id, factory)
-        return factory
-    }
-    
-    fun build(): BinderManagerImpl {
-        return BinderManagerImpl(globalBinders = globalBinders.toList(), idBinders = idBinders)
-    }
-    
-}
-
-
-public interface BinderManager {
-    public operator fun get(id: String): ParameterBinderFactory?
-    
-    public fun getGlobals(): List<ParameterBinderFactory>
-    
-    public fun resolveFunctionToBinderFactory(
-        function: KFunction<*>,
-        instanceGetter: (ParameterBinderFactory.Context) -> Any?,
-    ): ParameterBinderFactory
-}
-
-
-internal class BinderManagerImpl(
-    private val globalBinders: List<ParameterBinderFactory> = emptyList(),
-    private val idBinders: MutableMap<String, ParameterBinderFactory> = mutableMapOf(),
-) : BinderManager {
-    override fun get(id: String): ParameterBinderFactory? {
-        return idBinders[id]
-    }
-    
-    override fun getGlobals(): List<ParameterBinderFactory> {
-        return globalBinders.toList()
-    }
-    
-    override fun resolveFunctionToBinderFactory(
-        function: KFunction<*>,
-        instanceGetter: (ParameterBinderFactory.Context) -> Any?,
-    ): ParameterBinderFactory {
-        return function.toBinderFactory(instanceGetter)
-    }
-}

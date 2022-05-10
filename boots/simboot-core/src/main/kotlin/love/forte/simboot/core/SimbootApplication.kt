@@ -92,7 +92,7 @@ public annotation class SimbootApplication(
      *
      * 如果为空则使用默认配置，配置中默认值为 `simbot-bots/ *.bot*` [BootApplicationConfiguration.DEFAULT_BOT_VERIFY_GLOB] 。
      *
-     * @see BootApplicationConfiguration.botResources
+     * @see BootApplicationConfiguration.botConfigurations
      */
     val botResources: Array<String> = [],
     
