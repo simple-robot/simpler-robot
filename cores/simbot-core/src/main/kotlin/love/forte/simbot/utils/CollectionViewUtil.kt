@@ -15,19 +15,27 @@
  */
 
 @file:JvmName("CollectionViewUtil")
+
 package love.forte.simbot.utils
 
+/**
+ * 将目标列表实例转化为一个 [列表视图][ListView].
+ */
+public fun <T> List<T>.view(): ListView<T> = ListView(this)
 
 
-public fun <T> List<T>.view(): List<T> = ListView(this)
 
-
-private class ListView<T>(private val delegate: List<T>) : List<T> by delegate {
+/**
+ * 列表视图，对一个目标列表进行代理包装并作为一个 **只读** 视图使用。
+ * 此视图不可修改，但是内部元素可能会随着原始的 [代理目标][delegate] 的变化而变化。
+ *
+ */
+public class ListView<T>(private val delegate: List<T>) : List<T> by delegate {
     override fun toString(): String = delegate.toString()
     override fun hashCode(): Int = delegate.hashCode()
     override fun equals(other: Any?): Boolean {
         return if (other is ListView<*>) delegate == other.delegate
         else delegate == other
     }
-
+    
 }
