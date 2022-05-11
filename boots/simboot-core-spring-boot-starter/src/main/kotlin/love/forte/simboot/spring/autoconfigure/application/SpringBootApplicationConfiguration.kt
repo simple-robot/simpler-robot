@@ -18,8 +18,10 @@ package love.forte.simboot.spring.autoconfigure.application
 
 import love.forte.simboot.core.application.BootApplicationConfiguration
 import love.forte.simboot.core.application.BootApplicationConfiguration.Companion.DEFAULT_BOT_VERIFY_GLOB
+import love.forte.simboot.listener.ParameterBinderFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.boot.ApplicationArguments
 import org.springframework.context.ApplicationContext
 
 
@@ -28,10 +30,6 @@ import org.springframework.context.ApplicationContext
  */
 @Suppress("MemberVisibilityCanBePrivate")
 public class SpringBootApplicationConfigurationProperties {
-    /**
-     * 运行参数。
-     */
-    public var args: List<String> = emptyList()
     
     /**
      * 需要加载的所有 `*.bot(.*)?` 文件的资源扫描glob。默认为 [DEFAULT_BOT_VERIFY_GLOB]。
@@ -40,17 +38,59 @@ public class SpringBootApplicationConfigurationProperties {
     public var botConfigurationResources: List<String> = listOf(DEFAULT_BOT_VERIFY_GLOB)
     
     
-    public fun toConfiguration(applicationContext: ApplicationContext): SpringBootApplicationConfiguration {
-        return SpringBootApplicationConfiguration().also {
-            it.args = this.args
-            it.botConfigurationResources = this.botConfigurationResources
-            it.applicationContext = applicationContext
+    /**
+     * 需要进行顶层监听函数扫描的包路径。为空时不扫描。默认为空。
+     */
+    public var topLevelListenerScanPackage: List<String> = emptyList()
+    
+    
+    /**
+     * 需要进行顶层 [Binder][ParameterBinderFactory] 函数扫描的包路径。为空时不扫描。默认为空。
+     */
+    public var topLevelBinderScanPackage: List<String> = emptyList()
+    
+    
+    /**
+     * 是否在bot注册后，在 `application` 构建完毕的时候自动执行 `Bot.start`。
+     *
+     * 这一行为将会是阻塞的 （ `runBlocking { bot.start() }` ）。
+     *
+     * 默认为`true`。
+     *
+     */
+    public var isAutoStartBots: Boolean = true
+    
+    
+    public fun toConfiguration(
+        applicationArguments: ApplicationArguments,
+        applicationContext: ApplicationContext,
+    ): SpringBootApplicationConfiguration {
+        return SpringBootApplicationConfiguration().also { config ->
+            config.applicationArguments = applicationArguments
+            config.args = applicationArguments.sourceArgs.asList()
+            config.botConfigurationResources = this.botConfigurationResources
+            config.applicationContext = applicationContext
+            applicationContext.classLoader?.also {
+                config.classLoader = it
+            }
+            config.topLevelListenerScanPackage = this.topLevelListenerScanPackage
+            config.topLevelBinderScanPackage = this.topLevelBinderScanPackage
         }
     }
 }
 
 
+/**
+ * 在 [SpringBoot] 中所使用的应用程序配置类。
+ *
+ * 在使用前需要对 [applicationArguments] 、[applicationContext] 等与 Spring Boot 相关的配置信息。
+ *
+ * @see BootApplicationConfiguration
+ */
 public open class SpringBootApplicationConfiguration : BootApplicationConfiguration() {
+    public open lateinit var applicationArguments: ApplicationArguments
+    public open lateinit var applicationContext: ApplicationContext
+    
     override var logger: Logger = LoggerFactory.getLogger(SpringBootApplicationConfiguration::class.java)
-    internal lateinit var applicationContext: ApplicationContext
+    override var classLoader: ClassLoader = SpringBootApplicationConfiguration::class.java.classLoader
 }

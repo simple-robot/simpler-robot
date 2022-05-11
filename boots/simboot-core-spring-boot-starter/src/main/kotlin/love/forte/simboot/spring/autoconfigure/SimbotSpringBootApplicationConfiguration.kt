@@ -22,6 +22,7 @@ import love.forte.simboot.spring.autoconfigure.application.SpringBootApplication
 import love.forte.simboot.spring.autoconfigure.application.springBootApplication
 import love.forte.simbot.application.Application
 import love.forte.simbot.event.EventListenerManager
+import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.ApplicationContext
@@ -48,8 +49,13 @@ public open class SimbotSpringBootApplicationConfiguration {
     public fun applicationConfiguration(
         applicationConfigurationProperties: SpringBootApplicationConfigurationProperties,
         applicationContext: ApplicationContext,
+        applicationArguments: ApplicationArguments,
     ): SpringBootApplicationConfiguration {
-        return applicationConfigurationProperties.toConfiguration(applicationContext)
+        
+        return applicationConfigurationProperties.toConfiguration(
+            applicationArguments,
+            applicationContext
+        )
     }
     
     

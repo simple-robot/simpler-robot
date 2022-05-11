@@ -11,6 +11,12 @@ public class CoreBinderManager(
     private val globalBinderFactories: List<ParameterBinderFactory> = emptyList(),
     private val idBinderFactories: MutableMap<String, ParameterBinderFactory> = mutableMapOf(),
 ) : BinderManager {
+    override val normalBinderFactorySize: Int
+        get() = idBinderFactories.size
+    
+    override val globalBinderFactorySize: Int
+        get() = globalBinderFactories.size
+    
     override fun get(id: String): ParameterBinderFactory? {
         return idBinderFactories[id]
     }

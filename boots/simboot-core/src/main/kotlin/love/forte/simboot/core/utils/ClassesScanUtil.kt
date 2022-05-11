@@ -1,6 +1,7 @@
 package love.forte.simboot.core.utils
 
 import love.forte.simboot.utils.Globs
+import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.resources.Resource
 import love.forte.simbot.resources.Resource.Companion.toResource
@@ -59,6 +60,7 @@ internal fun <T> scanClass(
  * - 不是抽象的。
  * - 不是枚举、不是注解、不是数组。
  */
+@OptIn(InternalSimbotApi::class)
 internal fun <T> scanTopClass(
     classLoader: ClassLoader,
     targetPackages: List<String>,
@@ -67,23 +69,7 @@ internal fun <T> scanTopClass(
 ): T {
     return scanClass(classLoader, targetPackages, onFailure) {
         filter { c ->
-            kotlin.runCatching {
-                // constructors must be empty.
-                if (c.constructors.isNotEmpty()) {
-                    return@runCatching false
-                }
-                // interfaces must be empty.
-                if (c.interfaces.isNotEmpty()) {
-                    return@runCatching false
-                }
-                
-                if (c.getAnnotation(Metadata::class.java) == null) {
-                    return@runCatching false
-                }
-                
-                // public, final, not abstract, not array, not enum, not annotation
-                (c.isPublic && c.isFinal) && !c.isAbstract && !c.isArray && !c.isEnum && !c.isAnnotation
-            }.getOrElse { false }
+            kotlin.runCatching { c.isTopClass() }.getOrElse { false }
         }.collector()
     }
 }
@@ -137,4 +123,36 @@ internal fun pathPrefix(origin: String, globRegex: String = Globs.toRegex(origin
     }
     
     return builder.toString()
+}
+
+/**
+ * 判断一个 [Class] 是否 **疑似为** 一个Kotlin中的顶层函数。
+ *
+ * 当一个 [Class] 符合如下条件时得到 `true`。
+ * - [Class.getConstructors] 为空。
+ * - [Class.getInterfaces] 为空。
+ * - 此 class 存在 [@kotlin.Metadata][kotlin.Metadata] 注解。
+ * - 是 `public`、`final` 的
+ * - 不是抽象的。
+ * - 不是枚举、不是注解、不是数组。
+ *
+ * _Note: 此函数不捕获异常。_
+ */
+@InternalSimbotApi
+public fun Class<*>.isTopClass(): Boolean {
+    // constructors must be empty.
+    if (constructors.isNotEmpty()) {
+        return false
+    }
+    // interfaces must be empty.
+    if (interfaces.isNotEmpty()) {
+        return false
+    }
+    
+    if (getAnnotation(Metadata::class.java) == null) {
+        return false
+    }
+    
+    // public, final, not abstract, not array, not enum, not annotation
+    return (isPublic && isFinal) && !isAbstract && !isArray && !isEnum && !isAnnotation
 }

@@ -44,5 +44,4 @@ open class Main
 
 fun main(vararg args: String) {
     runApplication<Main>(*args)
-    
 }

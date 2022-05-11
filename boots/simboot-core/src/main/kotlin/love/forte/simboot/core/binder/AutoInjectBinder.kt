@@ -21,7 +21,6 @@ import love.forte.di.BeanContainer
 import love.forte.simboot.listener.ParameterBinder
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.listener.ParameterBinderResult
-import love.forte.simboot.utils.WeakVal
 import love.forte.simbot.PriorityConstant
 import love.forte.simbot.event.EventListenerProcessingContext
 import javax.inject.Inject
@@ -33,9 +32,9 @@ import kotlin.reflect.KClass
  * 尝试为参数其提供一个对应的实例。
  */
 public object AutoInjectBinderFactory : ParameterBinderFactory {
-    private val annotationTool: KAnnotationTool by WeakVal(true, ::KAnnotationTool)
 
     override fun resolveToBinder(context: ParameterBinderFactory.Context): ParameterBinderResult {
+        val annotationTool = KAnnotationTool()
         val parameter = context.parameter
         val injectNeed = annotationTool.getAnnotation(parameter, Inject::class) != null
         if (!injectNeed) return ParameterBinderResult.empty()

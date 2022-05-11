@@ -51,11 +51,14 @@ import love.forte.simboot.annotation.Interceptor as InterceptorAnnotation
  *
  * @author ForteScarlet
  */
-public class KFunctionListenerProcessor {
+public class KFunctionListenerProcessor(
+    private val annotationTool: KAnnotationTool = KAnnotationTool(),
+) {
     private val instanceCache = ConcurrentHashMap<KClass<*>, Any>()
-    private val annotationTool = KAnnotationTool()
-    private val logger = LoggerFactory.getLogger(KFunctionListenerProcessor::class)
     
+    private companion object {
+        private val logger = LoggerFactory.getLogger(KFunctionListenerProcessor::class)
+    }
     
     /**
      * 提供参数并将其解析为监听函数。
@@ -90,13 +93,16 @@ public class KFunctionListenerProcessor {
         // filters
         val filters = function.filters(listener, listenerAttributeMap, context)
         logger.debug("Size of resolved listener filters: {}", filters.size)
-        logger.debug("Resolved listener filters: {}", filters)
+        if (filters.isNotEmpty()) {
+            logger.debug("Resolved listener filters: {}", filters)
+        }
         
         // interceptors
         val interceptors = function.interceptors(context)
         logger.debug("Size of resolved listener interceptors: {}", interceptors.size)
-        logger.debug("Resolved listener interceptors: {}", interceptors)
-        
+        if (interceptors.isNotEmpty()) {
+            logger.debug("Resolved listener interceptors: {}", interceptors)
+        }
         
         var resolvedListener: EventListener = listener
         

@@ -14,7 +14,7 @@
  *
  */
 
-package love.forte.simboot.spring.autoconfigure.bk
+package love.forte.simboot.spring.autoconfigure
 
 import love.forte.di.*
 import love.forte.simboot.factory.BeanContainerFactory

@@ -7,9 +7,11 @@ import org.springframework.context.annotation.Import
  * @author ForteScarlet
  */
 @Import(
+    DefaultBinderFactoryConfigure::class,
     SimbotSpringBootListenerAutoRegisterBuildConfigure::class,
     SimbotSpringBootBotAutoRegisterBuildConfigure::class,
     SimbotSpringBootComponentAutoInstallBuildConfigure::class,
     SimbotSpringBootEventProviderAutoInstallBuildConfigure::class,
+    SimbotSpringBootListenerAutoRegisterBuildConfigure::class,
 )
 public open class SimbotSpringBootDefaultConfigures

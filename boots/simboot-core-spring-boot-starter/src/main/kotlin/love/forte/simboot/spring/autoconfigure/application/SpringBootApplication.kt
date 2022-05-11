@@ -19,6 +19,7 @@ package love.forte.simboot.spring.autoconfigure.application
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.application.*
 import love.forte.simbot.core.application.BaseApplication
 import love.forte.simbot.core.application.BaseApplicationBuilder
@@ -30,6 +31,7 @@ import love.forte.simbot.core.event.coreListenerManager
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration.Companion.nanoseconds
 
 
 /**
@@ -53,9 +55,13 @@ public object SpringBoot :
         configuration: SpringBootApplicationConfiguration,
         builder: SpringBootApplicationBuilder.(SpringBootApplicationConfiguration) -> Unit,
     ): SpringBootApplication {
+        val logger = configuration.logger
+        val startTime = System.nanoTime()
         return SpringBootApplicationBuilderImpl().apply {
             builder(configuration)
-        }.build(configuration)
+        }.build(configuration).also {
+            logger.info("Simbot Spring Boot Application built in {}", (System.nanoTime() - startTime).nanoseconds.toString())
+        }
     }
 }
 
@@ -125,25 +131,54 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
     }
     
     
-    // TODO
-    fun build(appConfig: SpringBootApplicationConfiguration): SpringBootApplication {
-        // TODO
+    @Suppress("DuplicatedCode")
+    fun build(configuration: SpringBootApplicationConfiguration): SpringBootApplication {
         val components = buildComponents()
         
-        val logger = appConfig.logger
+        val logger = configuration.logger
         
         val environment = SpringBootEnvironment(
             components,
             logger,
-            appConfig.coroutineContext
+            configuration.coroutineContext
         )
         
-        val listenerManager = buildListenerManager(appConfig, environment)
-        val providers = buildProviders(listenerManager, components, appConfig)
+        logger.debug("Building listener manager...")
+        val listenerManager = buildListenerManager(configuration, environment)
+        logger.debug("Listener manager is built: {}", listenerManager)
         
-        registerBots(providers.filterIsInstance<love.forte.simbot.BotRegistrar>())
         
-        val application = SpringBootApplicationImpl(appConfig, environment, listenerManager, providers)
+        logger.debug("Building providers...")
+        val providers = buildProviders(listenerManager, components, configuration)
+        logger.info("The size of providers built is {}", providers.size)
+        if (providers.isNotEmpty()) {
+            logger.debug("The built providers: {}", providers)
+        }
+        
+        logger.debug("Registering bots...")
+        val bots = registerBots(providers.filterIsInstance<love.forte.simbot.BotRegistrar>())
+        
+        logger.info("Bots all registered. The size of bots: {}", bots.size)
+        if (bots.isNotEmpty()) {
+            logger.debug("The all registered bots: {}", bots)
+        }
+        val isAutoStartBots = configuration.isAutoStartBots
+        logger.debug("Auto start bots: {}", isAutoStartBots)
+        if (isAutoStartBots && bots.isNotEmpty()) {
+            onCompletion {
+                bots.forEach { bot ->
+                    logger.info("Blocking start bot {}", bot)
+                    val started = runBlocking { bot.start() }
+                    logger.info("Bot [{}] started: {}", bot, started)
+                }
+            }
+            logger.debug("Registered on completion function for start bots.")
+        }
+        if (isAutoStartBots && bots.isEmpty()) {
+            logger.debug("But the registered bots are empty.")
+        }
+        
+        val application = SpringBootApplicationImpl(configuration, environment, listenerManager, providers)
         
         // complete.
         complete(application)
@@ -154,7 +189,6 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
 }
 
 
-// TODO
 private class SpringBootApplicationImpl(
     override val configuration: ApplicationConfiguration,
     override val environment: SpringBootEnvironment,

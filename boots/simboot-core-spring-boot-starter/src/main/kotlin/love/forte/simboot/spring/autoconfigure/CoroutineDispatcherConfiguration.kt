@@ -18,7 +18,6 @@ package love.forte.simboot.spring.autoconfigure
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
-import love.forte.simboot.spring.autoconfigure.bk.SimbotEventDispatcherContainer
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor

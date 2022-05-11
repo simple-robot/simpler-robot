@@ -413,6 +413,7 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
     }
     
     
+    @Suppress("DuplicatedCode")
     fun build(configuration: BootApplicationConfiguration): BootApplication {
         val logger = configuration.logger
         val classLoader = configuration.classLoader
@@ -494,8 +495,11 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
         // region build providers
         logger.debug("Building providers...")
         val providers = buildProviders(listenerManager, components, configuration)
-        logger.debug("Providers are built: {}", providers)
         logger.info("The size of providers built is {}", providers.size)
+        if (providers.isNotEmpty()) {
+            logger.debug("The built providers: {}", providers)
+        }
+    
         // endregion
         
         // region register bots
@@ -521,10 +525,12 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
         
         val bots = registerBots(providers.filterIsInstance<love.forte.simbot.BotRegistrar>())
         logger.info("Bots all registered. The size of bots: {}", bots.size)
-        logger.debug("The all registered bots: {}", bots)
+        if (bots.isNotEmpty()) {
+            logger.debug("The all registered bots: {}", bots)
+        }
         val isAutoStartBots = configuration.isAutoStartBots
         logger.debug("Auto start bots: {}", isAutoStartBots)
-        if (isAutoStartBots) {
+        if (isAutoStartBots && bots.isNotEmpty()) {
             onCompletion {
                 bots.forEach { bot ->
                     logger.info("Blocking start bot {}", bot)
@@ -533,6 +539,9 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
                 }
             }
             logger.debug("Registered on completion function for start bots.")
+        }
+        if (isAutoStartBots && bots.isEmpty()) {
+            logger.debug("But the registered bots are empty.")
         }
         // endregion
         
@@ -740,7 +749,7 @@ private fun EventListenersGenerator.autoConfigFromBeanContainer(
                     beanContainer = beanContainer,
                 ))
         
-                logger.debug("Resolved listener: [{}]", resolvedListener)
+                logger.debug("Resolved listener: [{}] by processor [{}]", resolvedListener, listenerProcessor)
         
                 // include listener.
                 listener(resolvedListener)
@@ -804,7 +813,7 @@ private fun EventListenersGenerator.autoScanTopFunction(
                             beanContainer = beanContainer,
                         ))
     
-                        logger.debug("Resolved top-level listener: [{}]", resolvedListener)
+                        logger.debug("Resolved top-level listener: [{}] by processor [{}]", resolvedListener, listenerProcessor)
     
                         listener(resolvedListener)
                     }
