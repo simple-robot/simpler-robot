@@ -67,15 +67,20 @@ public class KFunctionListenerProcessor {
         
         val functionId = context.id ?: function.sign()
         val functionLogger = LoggerFactory.getLogger("love.forte.simbot.listener.${function.name}")
-        val listenerTargets = function.listenTargets()
+        val listenTargets = function.listenTargets()
         val binders = function.binders(context)
         val listenerAttributeMap = AttributeMutableMap(ConcurrentHashMap())
+        
+        // attributes
+        listenerAttributeMap[RAW_FUNCTION] = function
+        listenerAttributeMap[RAW_BINDERS] = binders
+        listenerAttributeMap[RAW_LISTEN_TARGETS] = listenTargets
         
         val listener = KFunctionEventListener(
             id = functionId.ID,
             priority = context.priority,
             isAsync = context.isAsync,
-            targets = listenerTargets.toSet(),
+            targets = listenTargets.toSet(),
             caller = function,
             logger = functionLogger,
             binders = binders.toTypedArray(),
@@ -86,17 +91,24 @@ public class KFunctionListenerProcessor {
         val filters = function.filters(listener, listenerAttributeMap, context)
         logger.debug("Size of resolved listener filters: {}", filters.size)
         logger.debug("Resolved listener filters: {}", filters)
+        
         // interceptors
         val interceptors = function.interceptors(context)
         logger.debug("Size of resolved listener interceptors: {}", interceptors.size)
         logger.debug("Resolved listener interceptors: {}", interceptors)
         
-        if (filters.isEmpty() && interceptors.isEmpty()) {
-            return listener
+        
+        var resolvedListener: EventListener = listener
+        
+        if (filters.isNotEmpty()) {
+            resolvedListener += filters
         }
         
-        // 合并
-        return (listener + filters) + interceptors
+        if (interceptors.isNotEmpty()) {
+            resolvedListener += interceptors
+        }
+        
+        return resolvedListener
     }
     
     
