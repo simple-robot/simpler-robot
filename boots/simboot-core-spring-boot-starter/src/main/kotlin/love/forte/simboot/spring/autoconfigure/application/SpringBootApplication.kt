@@ -39,9 +39,9 @@ import kotlin.time.Duration.Companion.nanoseconds
  */
 public object SpringBoot :
     ApplicationFactory<SpringBootApplicationConfiguration, SpringBootApplicationBuilder, SpringBootApplication> {
-    override fun create(
+    override suspend fun create(
         configurator: SpringBootApplicationConfiguration.() -> Unit,
-        builder: SpringBootApplicationBuilder.(SpringBootApplicationConfiguration) -> Unit,
+        builder: suspend SpringBootApplicationBuilder.(SpringBootApplicationConfiguration) -> Unit,
     ): SpringBootApplication {
         val configuration = SpringBootApplicationConfiguration().also(configurator)
         return create(configuration, builder)
@@ -51,9 +51,9 @@ public object SpringBoot :
      * 直接提供配置类进行构建。
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    public fun create(
+    public suspend fun create(
         configuration: SpringBootApplicationConfiguration,
-        builder: SpringBootApplicationBuilder.(SpringBootApplicationConfiguration) -> Unit,
+        builder: suspend SpringBootApplicationBuilder.(SpringBootApplicationConfiguration) -> Unit,
     ): SpringBootApplication {
         val logger = configuration.logger
         val startTime = System.nanoTime()
@@ -74,9 +74,9 @@ public fun springBootApplication(
     initialConfiguration: SpringBootApplicationConfiguration = SpringBootApplicationConfiguration(),
     configurator: SpringBootApplicationConfiguration.() -> Unit = {},
     builder: SpringBootApplicationBuilder.(SpringBootApplicationConfiguration) -> Unit = {},
-): SpringBootApplication {
+): ApplicationLauncher<SpringBootApplication> {
     val configuration = initialConfiguration.also(configurator)
-    return SpringBoot.create(configuration, builder)
+    return applicationLauncher { SpringBoot.create(configuration, builder) }
 }
 
 

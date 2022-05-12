@@ -31,9 +31,9 @@ import kotlin.time.Duration.Companion.nanoseconds
  */
 public object Simple : ApplicationFactory<SimpleApplicationConfiguration, SimpleApplicationBuilder, SimpleApplication> {
     
-    override fun create(
+    override suspend fun create(
         configurator: SimpleApplicationConfiguration.() -> Unit,
-        builder: SimpleApplicationBuilder.(SimpleApplicationConfiguration) -> Unit,
+        builder: suspend SimpleApplicationBuilder.(SimpleApplicationConfiguration) -> Unit,
     ): SimpleApplication {
         // init configurator
         val config = SimpleApplicationConfiguration().also(configurator)

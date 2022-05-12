@@ -69,9 +69,9 @@ import kotlin.time.Duration.Companion.nanoseconds
  *
  */
 public object Boot : ApplicationFactory<BootApplicationConfiguration, BootApplicationBuilder, BootApplication> {
-    override fun create(
+    override suspend fun create(
         configurator: BootApplicationConfiguration.() -> Unit,
-        builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit,
+        builder: suspend BootApplicationBuilder.(BootApplicationConfiguration) -> Unit,
     ): BootApplication {
         // init configurator
         val config = BootApplicationConfiguration().also(configurator)

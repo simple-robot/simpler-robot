@@ -18,6 +18,8 @@
 
 package love.forte.simbot.application
 
+import kotlinx.coroutines.runBlocking
+
 
 /**
  * 构建并启用一个 [Application].
@@ -56,14 +58,16 @@ public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, 
     configurator: Config.() -> Unit = {},
     builder: Builder.(Config) -> Unit = {},
 ): A {
-    return factory.create(configurator, builder)
+    // TODO
+    return runBlocking { factory.create(configurator, builder) }
 }
 
 
+// TODO
 public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, A : Application> simbotApplication0(
     factory: ApplicationFactory<Config, Builder, A>,
     configurator: Config.() -> Unit = {},
-    builder: Builder.(Config) -> Unit = {},
+    builder: suspend Builder.(Config) -> Unit = {},
 ): ApplicationLauncher<A> {
     return applicationLauncher { factory.create(configurator, builder) }
 }
