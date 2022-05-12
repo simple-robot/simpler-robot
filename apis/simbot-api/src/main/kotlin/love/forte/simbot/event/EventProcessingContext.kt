@@ -12,14 +12,17 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.event
 
-import love.forte.simbot.*
-import org.jetbrains.annotations.*
-import kotlin.coroutines.*
+import kotlinx.serialization.modules.SerializersModule
+import love.forte.simbot.Attribute
+import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.MutableAttributeMap
+import love.forte.simbot.attribute
+import org.jetbrains.annotations.UnmodifiableView
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -31,42 +34,9 @@ import kotlin.coroutines.*
  * 事件流程中进行流转的上下文也是一个协程上下文.
  * @author ForteScarlet
  */
-public interface EventProcessingContext : CoroutineContext.Element, AttributeContainer {
+public interface EventProcessingContext : CoroutineContext.Element, InstantScopeContext {
     public companion object Key : CoroutineContext.Key<EventProcessingContext>
     override val key: CoroutineContext.Key<*> get() = Key
-
-
-    /**
-     * 事件流程上下文的部分作用域。 [Scope] 中的所有作用域应该按照约定由 [EventProcessingContext] 的产生者进行实现与提供。
-     *
-     * 通过 [getAttribute] 获取对应作用域结果。
-     *
-     */
-    @Suppress("NO_EXPLICIT_RETURN_TYPE_IN_API_MODE_WARNING")
-    public object Scope {
-        /**
-         * 全局作用域。 一个 [ScopeContext], 此作用域下的内容应当保持.
-         *
-         */
-        @JvmField
-        public val Global = attribute<ScopeContext>("context.scope.global")
-
-        /**
-         * 瞬时作用域，每一次的事件处理流程都是一个新的 [ScopeContext].
-         */
-        @JvmField
-        public val Instant = attribute<ScopeContext>("context.scope.instant")
-
-
-        /**
-         * 持续会话作用域. 可以通过持续会话作用域来达成监听函数之间的信息通讯的目的。
-         */
-        @JvmField
-        @ExperimentalSimbotApi
-        public val ContinuousSession = attribute<ContinuousSessionContext>("context.scope.continuous.session")
-
-
-    }
 
 
     /**
@@ -81,13 +51,53 @@ public interface EventProcessingContext : CoroutineContext.Element, AttributeCon
      */
     public val results: @UnmodifiableView List<EventResult>
 
+
+    /**
+     * 当前事件所处环境中所能够提供的消息序列化模块信息。
+     */
+    public val messagesSerializersModule: SerializersModule
+
+
     /**
      * 根据一个 [Attribute] 得到一个属性。
+     *
+     * 其中，除了 [Scope.Global] 和 [Scope.ContinuousSession] 以外的所有内容都是**瞬时的**, 只会存在与当前上下文。
      *
      */
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T?
 
-    // other..?
+
+
+
+    /**
+     * 事件流程上下文的部分作用域。 [Scope] 中的所有作用域应该按照约定由 [EventProcessingContext] 的产生者进行实现与提供。
+     *
+     * 通过 [getAttribute] 获取对应作用域结果。
+     *
+     */
+    public object Scope {
+        /**
+         * 全局作用域。 一个 [ScopeContext], 此作用域下的内容应当保持.
+         *
+         */
+        @JvmField
+        public val Global: Attribute<ScopeContext> = attribute("context.scope.global")
+
+        /**
+         * 瞬时作用域，每一次的事件处理流程都是一个新的 [ScopeContext].
+         */
+        @JvmField
+        @Deprecated("Just use EventProcessingContext")
+        public val Instant: Attribute<ScopeContext> = attribute("context.scope.instant")
+
+
+        /**
+         * 持续会话作用域. 可以通过持续会话作用域来达成监听函数之间的信息通讯的目的。
+         */
+        @JvmField
+        @ExperimentalSimbotApi
+        public val ContinuousSession: Attribute<ContinuousSessionContext> = attribute("context.scope.continuous.session")
+    }
 
 }
 
@@ -103,10 +113,12 @@ public interface ScopeContext : MutableAttributeMap
  */
 public interface GlobalScopeContext : ScopeContext
 
+
 /**
- * 瞬时作用域上下文，代表为每次事件触发时都会产生一个新的实例的上下文类型。
+ * 瞬时作用域上下文，由 [EventProcessingContext] 直接实现。
  */
 public interface InstantScopeContext : ScopeContext
+
 
 
 /**

@@ -23,7 +23,7 @@ package love.forte.simbot
 @Suppress("MemberVisibilityCanBePrivate")
 public object PriorityConstant {
 
-    // 前九个 "较为优先"级别。
+    // 前九个 "较为优先" 级别。
 
     public const val PRIORITIZED_1: Int = 10
     public const val PRIORITIZED_2: Int = PRIORITIZED_1 + 10
@@ -50,7 +50,7 @@ public object PriorityConstant {
      */
     public const val LAST: Int = Int.MAX_VALUE - 100
 
-    // 后九个 "较为次后"级别。
+    // 后九个 "较为次后" 级别。
 
     public const val AFTER_1: Int = 1100
     public const val AFTER_2: Int = AFTER_1 + 10

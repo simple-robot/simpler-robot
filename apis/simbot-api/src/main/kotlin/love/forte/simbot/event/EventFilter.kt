@@ -83,13 +83,22 @@ public interface BlockingEventFilter : EventFilter, BlockingFilter<EventListener
      */
     @Api4J
     public fun defaultResultBlocking(context: EventProcessingContext): EventResult = EventResult.Invalid
-
-
-
-
+    
+    
+    
+    
+    /**
+     * 过滤器的检测函数。通过 [EventProcessingContext] 来验证是否需要处理当前事件。
+     */
     @JvmSynthetic
     @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override suspend fun test(context: EventListenerProcessingContext): Boolean= testBlocking()
+    
+    
+    /**
+     * 如果过滤器匹配失败，可以通过此函数得到一个默认的返回值。
+     * 默认情况下返回 [EventResult.Invalid].
+     */
     @JvmSynthetic
     override suspend fun defaultResult(context: EventProcessingContext): EventResult = defaultResultBlocking(context)
 

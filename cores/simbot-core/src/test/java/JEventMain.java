@@ -12,10 +12,9 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
-import love.forte.simbot.core.event.CoreListenerUtil;
+import love.forte.simbot.core.event.CoreListeners;
 import love.forte.simbot.event.EventListener;
 import love.forte.simbot.event.MessageEvent;
 
@@ -24,9 +23,7 @@ import love.forte.simbot.event.MessageEvent;
  */
 public class JEventMain {
     public static void main(String[] args) {
-        final EventListener eventListener = CoreListenerUtil.newCoreListener(MessageEvent.class, (c, e) -> {
-            return 1;
-        });
+        final EventListener eventListener = CoreListeners.newCoreListener(MessageEvent.class, (c, e) -> 1);
 
 
     }

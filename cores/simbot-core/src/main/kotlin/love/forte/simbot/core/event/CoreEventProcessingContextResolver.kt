@@ -12,27 +12,35 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.core.event
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.reactive.*
-import kotlinx.coroutines.reactor.*
-import kotlinx.coroutines.rx2.*
-import kotlinx.coroutines.rx3.*
-import love.forte.simbot.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactor.awaitSingleOrNull
+import kotlinx.coroutines.rx2.asFlow
+import kotlinx.coroutines.rx2.await
+import kotlinx.coroutines.rx2.awaitSingleOrNull
+import kotlinx.coroutines.rx3.asFlow
+import kotlinx.coroutines.rx3.await
+import kotlinx.coroutines.rx3.awaitSingleOrNull
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.modules.EmptySerializersModule
+import love.forte.simbot.AttributeMutableMap
+import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.event.*
 import org.slf4j.LoggerFactory
-import java.util.concurrent.*
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * 核心默认的事件上下文处理器。
  */
 internal class CoreEventProcessingContextResolver(
-    private val coroutineScope: CoroutineScope
+    private val coroutineScope: CoroutineScope,
 ) : EventProcessingContextResolver<CoreEventProcessingContext> {
     private val resumedListenerManager = ResumedListenerManager()
 
@@ -42,32 +50,36 @@ internal class CoreEventProcessingContextResolver(
     @ExperimentalSimbotApi
     override val continuousSessionContext = CoreContinuousSessionContext(coroutineScope, resumedListenerManager)
 
-    /**
-     * 每一次的事件处理都应存在的属性内容。
-     */
-    @ExperimentalSimbotApi
-    private val constMaps = mutableMapOf<Attribute<*>, Any>(
-        EventProcessingContext.Scope.Global to globalContext,
-        EventProcessingContext.Scope.ContinuousSession to continuousSessionContext
-    )
 
-    internal class GlobalScopeContextImpl : GlobalScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
-    internal class InstantScopeContextImpl : InstantScopeContext, MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
+    internal class GlobalScopeContextImpl : GlobalScopeContext,
+        MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
+
+
+    internal class InstantScopeContextImpl : InstantScopeContext,
+        MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
 
     /**
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
      */
-    @OptIn(ExperimentalSimbotApi::class)
+    @OptIn(ExperimentalSimbotApi::class, ExperimentalSerializationApi::class)
     override suspend fun resolveEventToContext(event: Event, listenerSize: Int): CoreEventProcessingContext {
         val context = CoreEventProcessingContext(
-            event, AttributeMutableMap(ConcurrentHashMap(
-                constMaps,
-            ).apply { put(EventProcessingContext.Scope.Instant, InstantScopeContextImpl()) })
-        ) {
-            ArrayList(
-                listenerSize
-            )
-        }
+            event,
+            // TODO
+            messagesSerializersModule = EmptySerializersModule,
+            globalContext,
+            continuousSessionContext,
+            { InstantScopeContextImpl() },
+            AttributeMutableMap(ConcurrentHashMap()),
+            listenerSize
+        )
+        // val context = CoreEventProcessingContext(
+        //     event, AttributeMutableMap(ConcurrentHashMap(
+        //         constMaps,
+        //     ).apply { put(EventProcessingContext.Scope.Instant, InstantScopeContextImpl()) })
+        // ) {
+        //     ArrayList(listenerSize)
+        // }
 
         coroutineScope.launch {
             resumedListenerManager.process(context, this)

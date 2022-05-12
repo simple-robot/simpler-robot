@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.event
@@ -32,7 +31,7 @@ import love.forte.simbot.message.doSafeCast
  * 一个存在消息内容的[事件][Event]。
  *
  * @see ContactMessageEvent
- * @see ChatroomMessageEvent
+ * @see ChatRoomMessageEvent
  *
  */
 @BaseEvent
@@ -173,7 +172,7 @@ public interface FriendMessageEvent : ContactMessageEvent, FriendEvent {
  * @see ChannelMessageEvent
  *
  */
-public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteSupport, RemoteMessageContainer {
+public interface ChatRoomMessageEvent : MessageEvent, OrganizationEvent, DeleteSupport, RemoteMessageContainer {
     override val id: ID
 
     /**
@@ -210,10 +209,10 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
     override suspend fun delete(): Boolean
 
 
-    public companion object Key : BaseEventKey<ChatroomMessageEvent>(
+    public companion object Key : BaseEventKey<ChatRoomMessageEvent>(
         "api.privateMessage", MessageEvent.Key
     ) {
-        override fun safeCast(value: Any): ChatroomMessageEvent? = doSafeCast(value)
+        override fun safeCast(value: Any): ChatRoomMessageEvent? = doSafeCast(value)
     }
 
 }
@@ -225,7 +224,7 @@ public interface ChatroomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
  * }
  * ```
  */
-public suspend inline fun <R> ChatroomMessageEvent.useAuthor(block: (Member) -> R): R = author().let(block)
+public suspend inline fun <R> ChatRoomMessageEvent.useAuthor(block: (Member) -> R): R = author().let(block)
 
 /**
  * ```kotlin
@@ -234,14 +233,14 @@ public suspend inline fun <R> ChatroomMessageEvent.useAuthor(block: (Member) -> 
  * }
  * ```
  */
-public suspend inline fun <R> ChatroomMessageEvent.inAuthor(block: Member.() -> R): R = author().let(block)
+public suspend inline fun <R> ChatRoomMessageEvent.inAuthor(block: Member.() -> R): R = author().let(block)
 
 
 /**
  *  代表一个来自[群][Group]的消息事件。
  *
  */
-public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
+public interface GroupMessageEvent : ChatRoomMessageEvent, GroupEvent {
 
     /**
      * 消息来自的[群][Group]。
@@ -258,7 +257,7 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
 
 
     public companion object Key : BaseEventKey<GroupMessageEvent>(
-        "api.group_message", ChatroomMessageEvent, GroupEvent
+        "api.group_message", ChatRoomMessageEvent, GroupEvent
     ) {
         override fun safeCast(value: Any): GroupMessageEvent? = doSafeCast(value)
     }
@@ -270,7 +269,7 @@ public interface GroupMessageEvent : ChatroomMessageEvent, GroupEvent {
  * 代表一个来自[频道][Channel]的消息事件。
  *
  */
-public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
+public interface ChannelMessageEvent : ChatRoomMessageEvent, ChannelEvent {
 
     /**
      * 消息事件来源的[频道][Channel].
@@ -285,7 +284,7 @@ public interface ChannelMessageEvent : ChatroomMessageEvent, ChannelEvent {
 
 
     public companion object Key : BaseEventKey<ChannelMessageEvent>(
-        "api.channel_message", ChatroomMessageEvent, ChannelEvent
+        "api.channel_message", ChatRoomMessageEvent, ChannelEvent
     ) {
         override fun safeCast(value: Any): ChannelMessageEvent? = doSafeCast(value)
     }

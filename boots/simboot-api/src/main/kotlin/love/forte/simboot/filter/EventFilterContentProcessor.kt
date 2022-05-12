@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.filter
@@ -30,9 +29,12 @@ import love.forte.simbot.event.EventListenerProcessingContext
 public interface EventFilterContentProcessor {
 
     /**
-     * 对事件进行处理，得到需要被匹配的值。[preContent] 为上个处理器提供的结果。
+     * 对事件进行处理，得到需要被匹配的值。
+     *
+     * [preContent] 为上个处理器提供的结果。
+     *
      * 如果是第一个处理器，且事件是 [love.forte.simbot.event.MessageEvent] 类型,
-     * 则为 [MessageEvent.messageContent.plainText][love.forte.simbot.message.MessageContent.plainText],
+     * 则 [preContent] 为 [MessageEvent.messageContent.plainText][love.forte.simbot.message.MessageContent.plainText],
      * 否则为null。
      */
     public suspend fun process(preContent: String?, context: EventListenerProcessingContext): String?

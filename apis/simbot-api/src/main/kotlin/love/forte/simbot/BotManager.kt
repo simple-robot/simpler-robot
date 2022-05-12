@@ -16,6 +16,8 @@
 
 package love.forte.simbot
 
+import love.forte.simbot.application.EventProvider
+
 
 /**
  * Bot注册器。
@@ -69,9 +71,15 @@ public open class VerifyFailureException : SimbotIllegalStateException {
  *
  * [BotManager] 实现 [Survivable], 其存活周期与 [Bot] 无关。
  *
+ * ## 事件提供者
+ *
+ * [BotManager] 是一种的 [EventProvider] 实现，可用于安装在 [love.forte.simbot.application.Application] 环境中。
+ *
+ * @see EventProvider
+ *
  * @author ForteScarlet
  */
-public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Survivable {
+public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, EventProvider {
     init {
         if (isBeManaged()) {
             registerSelf()
@@ -82,6 +90,7 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
     private fun isBeManaged() = beManaged()
     protected open fun beManaged(): Boolean = true
 
+    @OptIn(FragileSimbotApi::class)
     private fun registerSelf() {
         OriginBotManager.register(this)
     }
@@ -102,6 +111,7 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
      * 执行关闭操作。
      * [doCancel] 为当前manager的自定义管理，当前manager关闭后，将会从 [OriginBotManager] 剔除自己。
      */
+    @OptIn(FragileSimbotApi::class)
     @JvmSynthetic
     override suspend fun cancel(reason: Throwable?): Boolean {
         // remove first.
@@ -112,6 +122,7 @@ public abstract class BotManager<B : Bot> : BotRegistrar, ComponentContainer, Su
     /**
      * 使当前 manager 脱离 [OriginBotManager] 的管理。
      */
+    @OptIn(FragileSimbotApi::class)
     public fun breakAway(): Boolean {
         return OriginBotManager.remove(this)
     }

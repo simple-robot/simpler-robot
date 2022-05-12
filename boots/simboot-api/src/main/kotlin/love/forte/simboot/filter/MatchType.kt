@@ -22,61 +22,64 @@ package love.forte.simboot.filter
  * @author ForteScarlet
  */
 public enum class MatchType(
-    private val matcher: KeywordMatcher
+    /**
+     * Keyword匹配器。
+     */
+    private val matcher: KeywordMatcher,
 ) : KeywordMatcher by matcher {
     /**
      * 全等匹配
      *
-     * @sample StringMatchers.EQUALS
+     * @see StringMatchers.EQUALS
      */
     TEXT_EQUALS(StringMatchers.EQUALS),
-
+    
     /**
      * 忽略大小写的全等匹配
      *
-     * @sample StringMatchers.EQUALS_IGNORE_CASE
+     * @see StringMatchers.EQUALS_IGNORE_CASE
      */
     TEXT_EQUALS_IGNORE_CASE(StringMatchers.EQUALS_IGNORE_CASE),
-
-
+    
+    
     /**
      * 首部匹配
      *
-     * @sample StringMatchers.STARTS_WITH
+     * @see StringMatchers.STARTS_WITH
      */
     TEXT_STARTS_WITH(StringMatchers.STARTS_WITH),
-
+    
     /**
      * 尾部匹配.
      *
-     * @sample StringMatchers.ENDS_WITH
+     * @see StringMatchers.ENDS_WITH
      */
     TEXT_ENDS_WITH(StringMatchers.ENDS_WITH),
-
+    
     /**
      * 包含匹配.
      *
-     * @sample StringMatchers.CONTAINS
+     * @see StringMatchers.CONTAINS
      */
     TEXT_CONTAINS(StringMatchers.CONTAINS),
-
+    
     /**
      * 正则完全匹配. `regex.matches(...)`
      *
-     * @sample KeywordRegexMatchers.MATCHES
+     * @see KeywordRegexMatchers.MATCHES
      */
     REGEX_MATCHES(KeywordRegexMatchers.MATCHES),
-
-
+    
+    
     /**
      * 正则包含匹配. `regex.find(...)`
      *
-     * @sample KeywordRegexMatchers.CONTAINS
+     * @see KeywordRegexMatchers.CONTAINS
      */
     REGEX_CONTAINS(KeywordRegexMatchers.CONTAINS),
-
+    
     ;
-
+    
     constructor(matcher: StringMatcher) : this(matcher.toKeywordMatcher())
-
+    
 }

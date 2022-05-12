@@ -48,6 +48,7 @@ import kotlin.concurrent.write
  *
  */
 @Suppress("MemberVisibilityCanBePrivate")
+@FragileSimbotApi
 public object OriginBotManager : Set<BotManager<*>> {
     private val logger = LoggerFactory.getLogger(OriginBotManager::class)
     private val lock = ReentrantReadWriteLock()

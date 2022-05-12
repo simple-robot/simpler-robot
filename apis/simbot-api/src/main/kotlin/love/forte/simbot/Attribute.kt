@@ -131,7 +131,7 @@ public fun <T : Any> attribute(name: String, type: KClass<T>): Attribute<T> = at
  */
 public fun <T : Any> attribute(name: String): Attribute<T> = Attribute.of(name)
 
-@Deprecated("Use attribute(name)", ReplaceWith("of(name)"))
+@Deprecated("Use attribute(name)", ReplaceWith("attribute(name)"))
 public inline fun <reified T : Any> attribute(): Attribute<T> =
     with(T::class) { Attribute.of(this.qualifiedName ?: this.simpleName ?: this.jvmName) }
 

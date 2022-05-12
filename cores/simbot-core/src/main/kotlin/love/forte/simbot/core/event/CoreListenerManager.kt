@@ -12,20 +12,20 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.core.event
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.future.*
+import kotlinx.coroutines.future.asCompletableFuture
+import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
 import love.forte.simbot.event.*
-import love.forte.simbot.utils.*
-import java.lang.reflect.*
-import java.util.concurrent.*
-import java.util.concurrent.atomic.*
-import kotlin.coroutines.*
+import love.forte.simbot.utils.view
+import java.lang.reflect.InvocationTargetException
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -39,6 +39,7 @@ import kotlin.coroutines.*
  * TODO
  */
 public typealias EventListenerExceptionHandler = suspend (EventListenerProcessingContext, Throwable) -> EventResult
+
 
 
 /**
@@ -65,47 +66,66 @@ public typealias EventListenerExceptionHandler = suspend (EventListenerProcessin
  * 而对于 [register], 由于它在注册的时候同样会使用当前对象进行锁定，因此如果存在多个需要注册的监听函数，最好在循环体外部锁住当前对象以防止监听函数缓存频繁争夺同步锁。
  *
  */
-public class CoreListenerManager private constructor(
-    configuration: CoreListenerManagerConfiguration
-) : EventListenerManager {
+public interface CoreListenerManager : EventListenerManager {
+
+
+    /**
+     * 判断指定事件类型在当前事件管理器中是否能够被执行（存在任意对应的监听函数）。
+     *
+     * e.g.
+     * ```kotlin
+     * if (FriendMessageEvent in manager) { ... }
+     * ```
+     */
+    public operator fun contains(eventType: Event.Key<*>): Boolean
+
+
 
     public companion object {
+        /**
+         * 通过配置信息构建一个 [CoreListenerManager] 实例。
+         */
         @JvmStatic
         public fun newInstance(configuration: CoreListenerManagerConfiguration): CoreListenerManager =
-            CoreListenerManager(configuration)
+            CoreListenerManagerImpl(configuration)
 
+    }
+}
+
+
+
+
+
+internal class CoreListenerManagerImpl internal constructor(
+    configuration: CoreListenerManagerConfiguration
+) : CoreListenerManager {
+    private companion object {
         private val counter: AtomicInteger = AtomicInteger(0)
     }
-
-
-    private val managerCoroutineContext: CoroutineContext // =
-    // configuration.coroutineContext.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
-
-    private val managerScope: CoroutineScope // = CoroutineScope(managerCoroutineContext)
+    private val managerCoroutineContext: CoroutineContext
+    private val managerScope: CoroutineScope
 
     /**
      * 异常处理器。
      */
-    private val listenerExceptionHandler: ((Throwable) -> EventResult)? // = configuration.listenerExceptionHandler
+    private val listenerExceptionHandler: ((Throwable) -> EventResult)?
 
+    
     /**
      * 事件过程拦截器入口。
      */
-    private val processingInterceptEntrance: EventInterceptEntrance<EventProcessingInterceptor.Context, EventProcessingResult, EventProcessingContext> // =
-    // EventInterceptEntrance.eventProcessingInterceptEntrance(configuration.processingInterceptors.values.sortedBy { it.priority })
+    private val processingInterceptEntrance: EventInterceptEntrance<EventProcessingInterceptor.Context, EventProcessingResult, EventProcessingContext>
 
     /**
      * 监听函数拦截器集。
      */
-    private val listenerIntercepts: List<EventListenerInterceptor> // = configuration.listenerInterceptors.values.sortedBy { it.priority }
+    private val listenerIntercepts: List<EventListenerInterceptor>
 
     /**
      * 监听函数列表。ID唯一
      */
     private val listeners: MutableMap<CharSequenceID, EventListener> // =
-    // configuration.listeners.associateByTo(mutableMapOf()) { it.id.toCharSequenceID() }
 
-    private val components: Map<String, Component>
 
     /**
      * 完成缓存与处理的监听函数队列.
@@ -114,30 +134,24 @@ public class CoreListenerManager private constructor(
 
 
     init {
-        val configResult: ConfigResult = configuration.build()
-        val context = configResult.coroutineContext
-        context.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
+        val coreListenerManagerConfig: CoreListenerManagerConfig = configuration.build()
+        val context = coreListenerManagerConfig.coroutineContext
+        // TODO Job?
+        // context.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
 
-        managerCoroutineContext = context
+        managerCoroutineContext =
+            context.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
+
         managerScope = CoroutineScope(managerCoroutineContext)
 
-        listenerExceptionHandler = configResult.exceptionHandler
+        listenerExceptionHandler = coreListenerManagerConfig.exceptionHandler
+
         processingInterceptEntrance =
-            EventInterceptEntrance.eventProcessingInterceptEntrance(configResult.processingInterceptors.values.sortedBy { it.priority })
-        listenerIntercepts = configResult.listenerInterceptors.values.sortedBy { it.priority }
-        listeners = configResult.listeners.associateByTo(mutableMapOf()) { it.id.toCharSequenceID() }
+            EventInterceptEntrance.eventProcessingInterceptEntrance(coreListenerManagerConfig.processingInterceptors.values.sortedBy { it.priority })
 
-        components = configResult.components
-    }
+        listenerIntercepts = coreListenerManagerConfig.listenerInterceptors.values.sortedBy { it.priority }
 
-
-    override fun getComponent(id: ID): Component {
-        return getComponent(id.literal)
-    }
-
-
-    override fun getComponent(id: String): Component {
-        return components[id] ?: throw NoSuchComponentException(id)
+        listeners = coreListenerManagerConfig.listeners.associateByTo(mutableMapOf()) { it.id.toCharSequenceID() }
     }
 
 
@@ -191,7 +205,7 @@ public class CoreListenerManager private constructor(
     /**
      * 判断指定事件类型在当前事件管理器中是否能够被执行（存在任意对应的监听函数）。
      */
-    public operator fun contains(eventType: Event.Key<*>): Boolean {
+    override operator fun contains(eventType: Event.Key<*>): Boolean {
         return getInvokers(eventType).isNotEmpty()
     }
 
@@ -231,7 +245,7 @@ public class CoreListenerManager private constructor(
      * 切换到当前管理器中的调度器并触发对应事件的内容。
      */
     private suspend fun doInvoke(
-        context: EventProcessingContext,
+        context: CoreEventProcessingContext,
         invokers: List<ListenerInvoker>
     ): EventProcessingResult {
         val currentBot = context.event.bot
@@ -291,12 +305,7 @@ public class CoreListenerManager private constructor(
     }
 
 
-    @Suppress("UNCHECKED_CAST")
-    private val resolver: EventProcessingContextResolver<EventProcessingContext> =
-        configuration.eventProcessingContextResolver(
-            this,
-            CoroutineScope(managerCoroutineContext)
-        ) as EventProcessingContextResolver<EventProcessingContext>
+    private val resolver: CoreEventProcessingContextResolver = CoreEventProcessingContextResolver(CoroutineScope(managerCoroutineContext))
 
 
     @ExperimentalSimbotApi
@@ -310,11 +319,11 @@ public class CoreListenerManager private constructor(
     /**
      * 通过 [Event] 得到一个 [EventProcessingContext].
      */
-    private suspend fun resolveToContext(event: Event, listenerSize: Int): EventProcessingContext {
+    private suspend fun resolveToContext(event: Event, listenerSize: Int): CoreEventProcessingContext {
         return resolver.resolveEventToContext(event, listenerSize)
     }
 
-    private suspend fun appendResult(context: EventProcessingContext, result: EventResult): ListenerInvokeType {
+    private suspend fun appendResult(context: CoreEventProcessingContext, result: EventResult): ListenerInvokeType {
         return resolver.appendResultIntoContext(context, result)
     }
 
@@ -432,25 +441,88 @@ public enum class ListenerInvokeType {
 }
 
 
+@OptIn(ExperimentalSimbotApi::class)
 internal class CoreEventProcessingContext(
     override val event: Event,
+    override val messagesSerializersModule: SerializersModule,
+    private val globalScopeContext: GlobalScopeContext,
+    private val continuousSessionContext: CoreContinuousSessionContext,
+    private val instantScopeContextInitializer: () -> InstantScopeContext,
     private val attributeMap: AttributeMap,
-    resultInit: () -> MutableList<EventResult>
+    resultInitSize: Int
 ) : EventProcessingContext {
+
 
     @Suppress("PropertyName")
     @JvmSynthetic
-    val _results = resultInit()
+    val _results = ArrayList<EventResult>(resultInitSize)
 
     override val results: List<EventResult> = _results.view()
 
+    private lateinit var instantScope0: InstantScopeContext
+    private val instantScope: InstantScopeContext
+        get() {
+            if (::instantScope0.isInitialized) {
+                return instantScope0
+            }
+            return synchronized(this) {
+                if (::instantScope0.isInitialized) {
+                    instantScope0
+                } else {
+                    instantScopeContextInitializer().also {
+                        instantScope0 = it
+                    }
+                }
+            }
+        }
+
+    @Suppress("UNCHECKED_CAST")
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T? {
-        return attributeMap[attribute]
+        return when (attribute) {
+            @Suppress("DEPRECATION")
+            EventProcessingContext.Scope.Instant -> this as T
+            EventProcessingContext.Scope.Global -> globalScopeContext as T
+            EventProcessingContext.Scope.ContinuousSession -> continuousSessionContext as T
+            else -> attributeMap[attribute]
+        }
+    }
+    
+    override fun <T : Any> get(attribute: Attribute<T>): T? {
+        return instantScope[attribute]
+    }
+    
+    override fun <T : Any> contains(attribute: Attribute<T>): Boolean {
+        return instantScope.contains(attribute)
+    }
+    
+    override fun size(): Int {
+        return instantScope.size()
+    }
+    
+    override fun <T : Any> put(attribute: Attribute<T>, value: T): T? {
+        return instantScope.put(attribute, value)
+    }
+    
+    override fun <T : Any> merge(attribute: Attribute<T>, value: T, remapping: (T, T) -> T): T {
+        return instantScope.merge(attribute, value, remapping)
+    }
+    
+    override fun <T : Any> computeIfAbsent(attribute: Attribute<T>, mappingFunction: (Attribute<T>) -> T): T {
+        return instantScope.computeIfAbsent(attribute, mappingFunction)
+    }
+    
+    override fun <T : Any> computeIfPresent(attribute: Attribute<T>, remappingFunction: (Attribute<T>, T) -> T?): T? {
+        return instantScope.computeIfPresent(attribute, remappingFunction)
+    }
+    
+    override fun <T : Any> remove(attribute: Attribute<T>): T? {
+        return instantScope.remove(attribute)
     }
 }
 
 
 private data class CoreEventProcessingResult(override val results: List<EventResult>) : EventProcessingResult
+
 
 /**
  * 向当前的 [EventProcessingContext] 提供一个监听函数 [listener], 使其成为 [EventListenerProcessingContext].
@@ -461,6 +533,7 @@ private data class CoreEventProcessingResult(override val results: List<EventRes
  */
 public fun EventProcessingContext.withListener(listener: EventListener): EventListenerProcessingContext =
     CoreEventListenerProcessingContext(this, listener)
+
 
 
 private class CoreEventListenerProcessingContext(

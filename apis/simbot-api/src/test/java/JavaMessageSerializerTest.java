@@ -14,18 +14,14 @@
  *
  */
 
-import love.forte.simbot.BotVerifyInfo;
-import love.forte.simbot.BotVerifyInfos;
+import kotlinx.serialization.json.Json;
 import love.forte.simbot.Identifies;
-import love.forte.simbot.StandardBotVerifyInfoDecoderFactory;
 import love.forte.simbot.message.At;
+import love.forte.simbot.message.MessageSerializationUtil;
 import love.forte.simbot.message.Messages;
 import love.forte.simbot.message.Text;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author ForteScarlet
@@ -41,15 +37,12 @@ public class JavaMessageSerializerTest {
                 Text.of("World")
         );
 
-        final String jsonString = Messages.toJsonString(messages);
 
-        final Messages messages2 = Messages.fromJsonString(jsonString);
 
-        assert messages.equals(messages2);
-        assert messages2.equals(messages);
-
-        final Path path = Paths.get("my-bot.bot.json");
-        final BotVerifyInfo info = BotVerifyInfos.toBotVerifyInfo(path, StandardBotVerifyInfoDecoderFactory.json());
+        MessageSerializationUtil.createJson(Json.Default, builder -> {
+            builder.setLenient(true);
+            // or other...
+        });
 
 
     }

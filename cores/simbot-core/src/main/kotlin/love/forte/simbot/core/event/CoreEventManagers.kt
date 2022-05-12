@@ -12,25 +12,19 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.core.event
 
-import love.forte.simbot.event.EventListenerManager
-
-// /**
-//  * 构建一个 [CoreListenerManager].
-//  */
-// public inline fun coreListenerManager(block: CoreListenerManagerConfiguration.() -> Unit): EventListenerManager {
-//     return CoreListenerManager.newInstance(CoreListenerManagerConfiguration().also(block))
-// }
 
 /**
  * 构建一个 [CoreListenerManager].
  *
  * 可以选择提供一个初始的 [CoreListenerManagerConfiguration]。
  */
-public inline fun coreListenerManager(initial: CoreListenerManagerConfiguration = CoreListenerManagerConfiguration(), block: CoreListenerManagerConfiguration.() -> Unit): EventListenerManager {
+public inline fun coreListenerManager(
+    initial: CoreListenerManagerConfiguration = CoreListenerManagerConfiguration(),
+    block: CoreListenerManagerConfiguration.() -> Unit,
+): CoreListenerManager {
     return CoreListenerManager.newInstance(initial.also(block))
 }

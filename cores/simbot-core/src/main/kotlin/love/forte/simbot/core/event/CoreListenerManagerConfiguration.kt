@@ -16,14 +16,18 @@
 
 package love.forte.simbot.core.event
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.modules.EmptySerializersModule
+import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
-import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
-import love.forte.simbot.utils.*
-import java.util.*
+import love.forte.simbot.event.EventListenerInterceptor
+import love.forte.simbot.event.EventProcessingInterceptor
+import love.forte.simbot.event.EventResult
 import java.util.function.Function
-import kotlin.coroutines.*
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 
 @DslMarker
@@ -47,41 +51,8 @@ internal annotation class CoreEventManagerConfigDSL
  * @see coreListenerManager
  */
 @CoreEventManagerConfigDSL
-public class CoreListenerManagerConfiguration : EventListenerManagerConfiguration {
-    private val componentConfigurations = mutableMapOf<Attribute<*>, Any.() -> Unit>()
-    private val componentRegistrars = mutableMapOf<Attribute<*>, () -> Component>()
+public class CoreListenerManagerConfiguration {
 
-    @CoreEventManagerConfigDSL
-    override fun <C : Component, Config : Any> install(registrar: ComponentRegistrar<C, Config>, config: Config.() -> Unit) {
-        val key = registrar.key
-        val oldConfig = componentConfigurations[key]
-
-        componentConfigurations[key] = {
-            // 追加配置
-            oldConfig?.invoke(this)
-            @Suppress("UNCHECKED_CAST")
-            (this as Config).config()
-        }
-
-        if (key in componentRegistrars) return
-
-        componentRegistrars[key] = {
-            val configuration = componentConfigurations[key]!!
-            registrar.register(configuration)
-        }
-    }
-
-    /**
-     * 尝试加载所有的 [ComponentRegistrarFactory] 并注册它们。统一使用默认配置进行注册。
-     */
-    @ExperimentalSimbotApi
-    @CoreEventManagerConfigDSL
-    override fun installAll() {
-        val factories = ServiceLoader.load(ComponentRegistrarFactory::class.java, this.currentClassLoader)
-        factories.forEach {
-            install(it.registrar)
-        }
-    }
 
     /**
      * 事件管理器的上下文. 可以基于此提供调度器。
@@ -90,13 +61,19 @@ public class CoreListenerManagerConfiguration : EventListenerManagerConfiguratio
     @CoreEventManagerConfigDSL
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext
 
-
+    /**
+     * 事件流程拦截器的列表。
+     */
     private var processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
 
-
+    /**
+     * 监听函数拦截器的列表。
+     */
     private var listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
 
-    // 初始监听函数
+    /**
+     * 监听函数的列表。
+     */
     private var listeners = mutableListOf<EventListener>()
 
     /**
@@ -105,21 +82,28 @@ public class CoreListenerManagerConfiguration : EventListenerManagerConfiguratio
      */
     @Volatile
     @JvmSynthetic
-    public var listenerExceptionHandler: ((Throwable) -> EventResult)? = null
+    private var listenerExceptionHandler: ((Throwable) -> EventResult)? = null
 
-
+    /**
+     * 自定义的监听函数异常处理器。
+     *
+     */
     @JvmSynthetic
     @CoreEventManagerConfigDSL
     public fun listenerExceptionHandler(handler: (Throwable) -> EventResult): CoreListenerManagerConfiguration = also {
         listenerExceptionHandler = handler
     }
 
+    /**
+     * 自定义的监听函数异常处理器。
+     *
+     */
     @Api4J
-    @CoreEventManagerConfigDSL
     public fun listenerExceptionHandler(handler: Function<Throwable, EventResult>): CoreListenerManagerConfiguration =
         also {
             listenerExceptionHandler = handler::apply
         }
+
 
     //region 拦截器相关
     /**
@@ -275,41 +259,35 @@ public class CoreListenerManagerConfiguration : EventListenerManagerConfiguratio
         private set
 
 
-    internal fun build(): ConfigResult {
-        // install components
-        val components = componentRegistrars.values.associate {
-            val comp = it()
-            comp.id.literal to comp
-        }
-
-        return ConfigResult(
+    @OptIn(ExperimentalSerializationApi::class)
+    internal fun build(serializersModule: SerializersModule = EmptySerializersModule): CoreListenerManagerConfig {
+        return CoreListenerManagerConfig(
             coroutineContext,
-            components = components,
             exceptionHandler = listenerExceptionHandler,
             processingInterceptors = idMapOf(processingInterceptors),
             listenerInterceptors = idMapOf(listenerInterceptors),
-            listeners = listeners.toList()
+            listeners = listeners.toList(),
+            serializersModule // TODO
         )
     }
+
+
+    public companion object {
+        public inline operator fun invoke(block: CoreListenerManagerConfiguration.() -> Unit): CoreListenerManagerConfiguration {
+            return CoreListenerManagerConfiguration().also(block)
+        }
+    }
+
 }
 
 
-internal data class ConfigResult(
+public data class CoreListenerManagerConfig(
     internal val coroutineContext: CoroutineContext,
-    internal val components: Map<String, Component>,
     internal val exceptionHandler: ((Throwable) -> EventResult)? = null,
     internal val processingInterceptors: IDMaps<EventProcessingInterceptor>,
     internal val listenerInterceptors: IDMaps<EventListenerInterceptor>,
-    internal val listeners: List<EventListener>
+    internal val listeners: List<EventListener>,
+    internal val messageSerializersModule: SerializersModule
 
 )
 
-/*
- internal var processingInterceptors = mutableIDMapOf<EventProcessingInterceptor>()
-
-
-    internal var listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
-
-    // 初始监听函数
-    internal var listeners = mutableListOf<EventListener>()
- */

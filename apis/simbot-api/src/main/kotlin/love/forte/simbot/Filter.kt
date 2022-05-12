@@ -45,12 +45,20 @@ public interface Filter<T> {
  */
 @Api4J
 public interface BlockingFilter<T> : Filter<T> {
-
+    
+    /**
+     * 通过匹配目标进行检测，得到匹配结果。
+     *
+     */
     @JvmSynthetic
     override suspend fun test(t: T): Boolean {
         return testBlocking()
     }
-
+    
+    /**
+     * 通过匹配目标进行阻塞的检测，得到匹配结果。
+     *
+     */
     @Api4J
     public fun testBlocking(): Boolean
 }

@@ -37,7 +37,8 @@ import love.forte.simbot.event.EventResult
  * @author ForteScarlet
  */
 public interface AnnotatedEventListenerInterceptor : EventListenerInterceptor {
-    @JvmSynthetic override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult
+    @JvmSynthetic
+    override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult
 }
 
 /**
@@ -49,7 +50,9 @@ public interface AnnotatedEventListenerInterceptor : EventListenerInterceptor {
  * @see BlockingEventListenerInterceptor
  */
 @Api4J
-public interface AnnotatedBlockingEventListenerInterceptor : AnnotatedEventListenerInterceptor, BlockingEventListenerInterceptor {
-    @JvmSynthetic override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult = doIntercept(context)
+public interface AnnotatedBlockingEventListenerInterceptor : AnnotatedEventListenerInterceptor,
+    BlockingEventListenerInterceptor {
+    @JvmSynthetic
+    override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult = doIntercept(context)
     override fun doIntercept(context: EventListenerInterceptor.Context): EventResult
 }
