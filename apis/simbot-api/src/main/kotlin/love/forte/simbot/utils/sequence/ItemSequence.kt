@@ -20,6 +20,7 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.BlockingApi
 import love.forte.simbot.InternalSimbotApi
 import java.util.stream.Stream
+import kotlin.streams.asSequence
 
 
 /**
@@ -88,8 +89,7 @@ public interface ItemSequence<out V> : BaseSequence<V> {
         /**
          * 将 [Sequence] 转化为 [ItemSequence].
          */
-        @JvmStatic
-        @JvmName("of")
+        @JvmSynthetic
         public fun <V> Sequence<V>.asItemSequence(): ItemSequence<V> = SimpleItemSequence(this)
         
         /**
@@ -100,6 +100,14 @@ public interface ItemSequence<out V> : BaseSequence<V> {
         public fun <V> Collection<V>.asItemSequence(): ItemSequence<V> =
             if (isEmpty()) empty() else CollectionItemSequence(this)
         
+        
+        /**
+         * 将 [Stream] 转化为 [ItemSequence].
+         */
+        @Api4J
+        @JvmStatic
+        @JvmName("of")
+        public fun <V> Stream<V>.asItemSequence(): ItemSequence<V> = asSequence().asItemSequence()
         
         /**
          * 将提供的元素转化为 [ItemSequence].

@@ -26,32 +26,21 @@ import java.util.stream.Stream
  * @author ForteScarlet
  */
 internal class CollectionItemSequence<out V>(private val collection: Collection<V>) : ItemSequence<V> {
-    
-    private var matcherBuf: Matcher<V>? = null
+    private var filters = mutableListOf<Matcher<V>>()
     
     override fun filter(matcher: Matcher<V>): ItemSequence<V> {
-        val buf = matcherBuf
-        return if (buf != null) {
-            collection.asSequence().filter(buf).filter(matcher).asItemSequence()
-        } else {
-            matcherBuf = matcher
-            this
-        }
+        filters.add(matcher)
+        return this
     }
     
     override fun <T> map(mapper: Mapper<V, T>): ItemSequence<T> {
-        var seq = collection.asSequence()
-        matcherBuf?.also { buf ->
-            seq = seq.filter(buf)
-        }
-        return seq.map(mapper).asItemSequence()
+        return asSequence().map(mapper).asItemSequence()
     }
     
     override fun collect(visitor: Visitor<V>) {
-        val matcher = matcherBuf
-        if (matcher != null) {
+        if (filters.isNotEmpty()) {
             collection.forEach {
-                if (matcher(it)) {
+                if (filters.all { f -> f(it) }) {
                     visitor(it)
                 }
             }
@@ -62,10 +51,9 @@ internal class CollectionItemSequence<out V>(private val collection: Collection<
     
     override fun <C : MutableCollection<in V>> collectTo(destination: C): C {
         return destination.also { c ->
-            val matcher = matcherBuf
-            if (matcher != null) {
+            if (filters.isNotEmpty()) {
                 collection.forEach {
-                    if (matcher(it)) {
+                    if (filters.all { f -> f(it) }) {
                         c.add(it)
                     }
                 }
@@ -76,9 +64,8 @@ internal class CollectionItemSequence<out V>(private val collection: Collection<
     }
     
     override fun toList(): List<V> {
-        val matcher = matcherBuf
-        return if (matcher != null) {
-            collection.filter(matcher)
+        return if (filters.isNotEmpty()) {
+            collection.filter { filters.all { f -> f(it) } }
         } else {
             collection.toList()
         }
@@ -86,9 +73,9 @@ internal class CollectionItemSequence<out V>(private val collection: Collection<
     
     override fun asSequence(): Sequence<V> {
         var seq = collection.asSequence()
-        val matcher = matcherBuf
-        if (matcher != null) {
-            seq = seq.filter(matcher)
+        if (filters.isNotEmpty()) {
+            val filtersCopy = filters.toList()
+            seq = seq.filter { v -> filtersCopy.all { m -> m(v) } }
         }
         return seq
     }
@@ -96,9 +83,9 @@ internal class CollectionItemSequence<out V>(private val collection: Collection<
     @Api4J
     override fun asStream(): Stream<out V> {
         var stream = collection.stream()
-        val matcher = matcherBuf
-        if (matcher != null) {
-            stream = stream.filter(matcher)
+        if (filters.isNotEmpty()) {
+            val filtersCopy = filters.toList()
+            stream = stream.filter { v -> filtersCopy.all { m -> m(v) } }
         }
         return stream
     }

@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import love.forte.simbot.Api4J
 import love.forte.simbot.BlockingApi
 import love.forte.simbot.InternalSimbotApi
+import love.forte.simbot.utils.sequence.ItemSequence.Companion.asItemSequence
 import java.util.stream.Stream
 
 
@@ -115,6 +116,66 @@ public interface ItemFlow<out V> : ItemSequence<V>, BaseSequence<V> {
      */
     @Api4J
     override fun asStream(): Stream<out V>
+    
+    
+    public companion object {
+        
+        /**
+         * 得到一个空元素的 [ItemFlow] 实例。
+         */
+        @JvmStatic
+        public fun <V> empty(): ItemFlow<V> = EmptyItemFlow
+        
+        /**
+         * 将一个 [Collection] 转化为 [ItemFlow] 实例。
+         */
+        @JvmStatic
+        @JvmName("of")
+        public fun <V> Collection<V>.asItemFlow(): ItemFlow<V> = CollectionItemFlow(this)
+        
+        
+        /**
+         * 将一个 [ItemSequence] 转化为 [ItemFlow] 实例。
+         */
+        @JvmStatic
+        @JvmName("of")
+        public fun <V> ItemSequence<V>.asItemFlow(): ItemFlow<V> = SequenceItemFlow(this)
+        
+        
+        /**
+         * 将一个 [Sequence] 转化为 [ItemFlow] 实例。
+         */
+        @JvmSynthetic
+        public fun <V> Sequence<V>.asItemFlow(): ItemFlow<V> = SequenceItemFlow(asItemSequence())
+        
+        
+        /**
+         * 将一个 [Stream] 转化为 [ItemFlow] 实例。
+         */
+        @Api4J
+        @JvmStatic
+        @JvmName("of")
+        public fun <V> Stream<V>.asItemFlow(): ItemFlow<V> = SequenceItemFlow(asItemSequence())
+        
+        
+        /**
+         * 将一个 [Collection] 转化为 [ItemFlow] 实例。
+         */
+        @JvmStatic
+        @JvmName("of")
+        public fun <V> Flow<V>.asItemFlow(): ItemFlow<V> = SimpleItemFlow(this)
+        
+        /**
+         * 将多个元素转化为 [ItemFlow] 实例。
+         */
+        @JvmStatic
+        @JvmName("of")
+        public fun <V> itemFlow(vararg values: V): ItemFlow<V> {
+            return if (values.isEmpty()) empty() else values.toList().asItemFlow()
+        }
+        
+    }
+    
 }
 
 
