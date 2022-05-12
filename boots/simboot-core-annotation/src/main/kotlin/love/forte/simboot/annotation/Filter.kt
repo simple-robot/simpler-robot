@@ -22,6 +22,7 @@ import love.forte.simboot.filter.MultiFilterMatchType
 import love.forte.simbot.event.ChannelEvent
 import love.forte.simbot.event.GroupEvent
 import love.forte.simbot.event.GuildEvent
+import kotlin.reflect.KClass
 
 
 /**
@@ -129,7 +130,7 @@ public annotation class Filter(
      *
      * 与 [or] 同时存在时候，匹配效果则如：`this-filter && and-filters || or-filters`
      *
-     * 不建议在注解中存在过多的filter嵌套，假如有需要，考虑使用 [processor].
+     * 不建议在注解中存在过多的filter嵌套，假如有需要，考虑使用 [by] 指定具体的过滤器实现。
      *
      */
     val and: Filters = Filters(),
@@ -164,6 +165,19 @@ public annotation class Filter(
      *
      */
     val or: Filters = Filters(),
+
+    /**
+     * 指定一个对当前 [Filter] 的处理过滤器。当 [by] 指定了任意一个不直接等同于 [AnnotationEventFilter]
+     * 的类型时，此注解的上述其他参数将会
+     *
+     *
+     * ```kotlin
+     * @Filter(by = FooAnnotationEventFilter::class)
+     * suspend fun Event.onEvent() { ... }
+     * ```
+     *
+     */
+    val by: KClass<out AnnotationEventFilter> = AnnotationEventFilter::class
     
     )
 
