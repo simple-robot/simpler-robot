@@ -181,7 +181,7 @@ internal class BeanContainerBuilderImpl(
     }
     
     override fun scan(vararg targetPackages: String) {
-        scan(defaultClassLoader, *targetPackages)
+        scan(defaultClassLoader, targetPackages = targetPackages)
     }
     
     override fun scan(classLoader: ClassLoader, targetPackages: List<String>) {
@@ -223,7 +223,7 @@ internal class BeanContainerBuilderImpl(
         }
         val classRegistrar = coreBeanClassRegistrar(annotationGetter)
         val classes = classesScans.flatMap { it() }
-        classRegistrar.register(*classes.toSet().toTypedArray())
+        classRegistrar.register(types = classes.toSet().toTypedArray())
         classRegistrar.inject(manager)
         
         return manager

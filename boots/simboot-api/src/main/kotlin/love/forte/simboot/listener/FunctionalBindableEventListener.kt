@@ -102,8 +102,8 @@ public abstract class FunctionalBindableEventListener<R>(
         val args = binderParameters.toTypedArray()
         
         val result =
-            if (caller.isSuspend) caller.callSuspend(*args)
-            else runWithInterruptible { caller.call(*args) }
+            if (caller.isSuspend) caller.callSuspend(args = args)
+            else runWithInterruptible { caller.call(args = args) }
         
         return resultProcess(result)
     }

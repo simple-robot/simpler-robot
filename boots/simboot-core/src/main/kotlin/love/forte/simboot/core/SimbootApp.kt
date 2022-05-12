@@ -216,7 +216,7 @@ private inline fun preStack(className: String, methodName: String, inlineMark: (
 public inline operator fun <reified T> SimbootApp.invoke(
     vararg args: String,
     crossinline configurator: BootApplicationConfiguration.() -> Unit = {},
-): BootApplication = invoke(T::class, *args) { configurator() }
+): BootApplication = invoke(T::class, args = args) { configurator() }
 
 
 /**
