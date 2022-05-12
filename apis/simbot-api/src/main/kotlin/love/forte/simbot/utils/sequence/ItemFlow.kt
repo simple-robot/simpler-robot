@@ -18,6 +18,8 @@ package love.forte.simbot.utils.sequence
 
 import kotlinx.coroutines.flow.Flow
 import love.forte.simbot.Api4J
+import love.forte.simbot.BlockingApi
+import love.forte.simbot.InternalSimbotApi
 import java.util.stream.Stream
 
 
@@ -26,11 +28,13 @@ import java.util.stream.Stream
  *
  */
 // TODO
-public interface ItemFlow<out V> : ItemSequence<V> {
+@OptIn(InternalSimbotApi::class)
+public interface ItemFlow<out V> : ItemSequence<V>, BaseSequence<V> {
     
     /**
      * 根据规则 [matcher] 过滤其中的参数并得到过滤后的下游流。
      */
+    @BlockingApi
     override fun filter(matcher: Matcher<V>): ItemFlow<V>
     
     /**
@@ -42,6 +46,7 @@ public interface ItemFlow<out V> : ItemSequence<V> {
     /**
      * 根据转化器 [mapper] 将流中的元素转化为目标类型 [T] 并得到下游流。
      */
+    @BlockingApi
     override fun <T> map(mapper: Mapper<V, T>): ItemFlow<T>
     
     /**
@@ -54,6 +59,7 @@ public interface ItemFlow<out V> : ItemSequence<V> {
     /**
      * 通过 [visitor] 逐一遍历其中的所有元素。
      */
+    @BlockingApi
     override fun collect(visitor: Visitor<V>)
     
     /**
@@ -65,6 +71,7 @@ public interface ItemFlow<out V> : ItemSequence<V> {
     /**
      * 将当前流中的元素阻塞的收集到目标集合 [destination] 中。
      */
+    @BlockingApi
     override fun <C : MutableCollection<in V>> collectTo(destination: C): C
     
     
@@ -77,7 +84,10 @@ public interface ItemFlow<out V> : ItemSequence<V> {
     
     /**
      * 将当前流中的元素阻塞的收集到一个 [List] 中。
+     *
+     * @see collectToList
      */
+    @BlockingApi
     override fun toList(): List<V>
     
     /**
@@ -97,7 +107,7 @@ public interface ItemFlow<out V> : ItemSequence<V> {
      * 将当前流转化为内部阻塞的 [Kotlin Sequence][Sequence] 类型。
      */
     @JvmSynthetic
-    @Deprecated("Should use asFlow in ItemFlow", ReplaceWith("asFlow"))
+    @BlockingApi
     override fun asSequence(): Sequence<V>
     
     /**

@@ -19,7 +19,7 @@ package love.forte.simbot.utils.sequence
 
 
 /**
- * 常见的_匹配_函数接口，提供一个参数，判断其结果。
+ * 常见的 _匹配_ 函数接口，提供一个参数，判断其结果。
  *
  * `(V) -> Boolean`。
  *
@@ -33,7 +33,7 @@ public fun interface Matcher<in V> : (V) -> Boolean {
 
 
 /**
- * 常见的_转化_函数接口，提供一个参数，转化其值。
+ * 常见的 _转化_ 函数接口，提供一个参数，转化其值。
  *
  * `(V) -> T`。
  *
@@ -46,7 +46,7 @@ public fun interface Mapper<in V, out T> : (V) -> T {
 }
 
 /**
- * 常见的_访问_接口，用于序列对结果进行逐一访问的情况，类似于使用在 `forEach` 、`collect` 等函数中的情况。
+ * 常见的 _访问_ 接口，用于序列对结果进行逐一访问的情况，类似于使用在 `forEach` 、`collect` 等函数中的情况。
  */
 public fun interface Visitor<in V> {
     /**

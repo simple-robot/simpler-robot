@@ -24,6 +24,14 @@ package love.forte.simbot
 @MustBeDocumented
 public annotation class Api4J
 
+/**
+ * 标记一个函数为"阻塞"性的。一般用于可能同时存在同意义的挂起函数的api上。
+ */
+@RequiresOptIn("可能存在同意义非阻塞api的阻塞api，优先考虑使用非阻塞的api", level = RequiresOptIn.Level.WARNING)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+public annotation class BlockingApi
+
 
 /**
  * 标记一个实验性质的相关内容。

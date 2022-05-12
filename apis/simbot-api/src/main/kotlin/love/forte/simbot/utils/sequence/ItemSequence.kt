@@ -17,6 +17,8 @@
 package love.forte.simbot.utils.sequence
 
 import love.forte.simbot.Api4J
+import love.forte.simbot.BlockingApi
+import love.forte.simbot.InternalSimbotApi
 import java.util.stream.Stream
 
 
@@ -24,7 +26,7 @@ import java.util.stream.Stream
  *
  * 元素序列。
  *
- * 此序列代表一个可能包含了0到多个连续的元素序列. [ItemSequence] 关心针对内容元素的流式操作与收集，
+ * 此序列代表一个可能包含了0到多个连续的元素序列. [ItemSequence] 关心序列中的内容元素，
  * 并尽可能兼顾在Kotlin中的便利性与在Java中的兼容性。
  *
  * [ItemSequence] 旨在消除或降低 [kotlin.sequences.Sequence] 、[java.util.stream.Stream]、 [Collection] （以及 [Java Collection][java.util.Collection]）
@@ -33,47 +35,48 @@ import java.util.stream.Stream
  *
  * @author ForteScarlet
  */
-public interface ItemSequence<out V> {
+@OptIn(InternalSimbotApi::class, BlockingApi::class)
+public interface ItemSequence<out V> : BaseSequence<V> {
     
     /**
      * 根据规则 [matcher] 过滤其中的参数并得到过滤后的下游序列。
      */
-    public fun filter(matcher: Matcher<V>): ItemSequence<V>
+    override fun filter(matcher: Matcher<V>): ItemSequence<V>
     
     /**
      * 根据转化器 [mapper] 将序列中的元素转化为目标类型 [T] 并得到下游序列。
      */
-    public fun <T> map(mapper: Mapper<V, T>): ItemSequence<T>
+    override fun <T> map(mapper: Mapper<V, T>): ItemSequence<T>
     
     
     /**
      * 通过 [visitor] 逐一遍历其中的所有元素。
      */
-    public fun collect(visitor: Visitor<V>)
+    override fun collect(visitor: Visitor<V>)
     
     /**
      * 将当前序列中的元素收集到目标集合 [destination] 中。
      */
-    public fun <C : MutableCollection<in V>> collectTo(destination: C): C
+    override fun <C : MutableCollection<in V>> collectTo(destination: C): C
     
     /**
      * 将当前序列中的元素收集并转化为一个 [List]。
      */
-    public fun toList(): List<V>
+    override fun toList(): List<V>
     
     
     /**
      * 将当前序列转化为 [Kotlin Sequence][Sequence] 类型。
      */
     @JvmSynthetic
-    public fun asSequence(): Sequence<V>
+    override fun asSequence(): Sequence<V>
     
     /**
      * 将当前序列转化为 [Java Stream][Stream] 类型。
      */
     @Api4J
-    public fun asStream(): Stream<out V>
-
+    override fun asStream(): Stream<out V>
+    
     
     public companion object {
         /**
@@ -88,13 +91,25 @@ public interface ItemSequence<out V> {
         @JvmStatic
         @JvmName("of")
         public fun <V> Sequence<V>.asItemSequence(): ItemSequence<V> = SimpleItemSequence(this)
-    
+        
         /**
          * 将 [Collection] 转化为 [ItemSequence].
          */
         @JvmStatic
         @JvmName("of")
-        public fun <V> Collection<V>.asItemSequence(): ItemSequence<V> = if (isEmpty()) empty() else CollectionItemSequence(this)
+        public fun <V> Collection<V>.asItemSequence(): ItemSequence<V> =
+            if (isEmpty()) empty() else CollectionItemSequence(this)
+        
+        
+        /**
+         * 将提供的元素转化为 [ItemSequence].
+         */
+        @JvmStatic
+        @JvmName("of")
+        public fun <V> itemSequence(vararg values: V): ItemSequence<V> {
+            return if (values.isEmpty()) empty()
+            else values.asList().asItemSequence()
+        }
     }
 }
 
