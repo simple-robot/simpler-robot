@@ -59,6 +59,20 @@ public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, 
     return factory.create(configurator, builder)
 }
 
+
+public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, A : Application> simbotApplication0(
+    factory: ApplicationFactory<Config, Builder, A>,
+    configurator: Config.() -> Unit = {},
+    builder: Builder.(Config) -> Unit = {},
+): ApplicationLauncher<A> {
+    return applicationLauncher { factory.create(configurator, builder) }
+}
+
+
+
+
+
+
 /**
  * 通过 [ApplicationDslBuilder] 来使用DSL风格或链式调用风格构建目标 [Application][A].
  *

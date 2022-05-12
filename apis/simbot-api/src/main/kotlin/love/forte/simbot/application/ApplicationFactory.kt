@@ -21,7 +21,6 @@ import love.forte.simbot.BotVerifyInfo
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentFactory
 import love.forte.simbot.ability.CompletionPerceivable
-import love.forte.simbot.application.Application.Environment
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
@@ -48,7 +47,7 @@ public interface ApplicationFactory<
 
 
 /**
- * [Environment] 的构建器.
+ * [Application] 的构建器.
  * @param A 目标 [Application] 类型
  */
 public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> {
