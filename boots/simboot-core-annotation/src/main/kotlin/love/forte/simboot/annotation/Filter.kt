@@ -168,7 +168,7 @@ public annotation class Filter(
 
     /**
      * 指定一个对当前 [Filter] 的处理过滤器。当 [by] 指定了任意一个不直接等同于 [AnnotationEventFilter]
-     * 的类型时，此注解的上述其他参数将会
+     * 的类型时，此注解的上述其他参数将不再继续被解析，而是直接交由指定目标进行处理。
      *
      *
      * ```kotlin
@@ -180,14 +180,6 @@ public annotation class Filter(
     val by: KClass<out AnnotationEventFilter> = AnnotationEventFilter::class
     
     )
-
-@Deprecated("对于嵌套注解的兼容，会在未来提供实现")
-@Retention(AnnotationRetention.SOURCE)
-public annotation class AndFilters
-
-@Deprecated("对于嵌套注解的兼容，会在未来提供实现")
-@Retention(AnnotationRetention.SOURCE)
-public annotation class OrFilters
 
 
 /**
@@ -291,7 +283,7 @@ public annotation class TargetFilter(
 
 
 /**
- * 多个 [子过滤器][Filter] 的集合。一个 [Filters] 最终会表现为一个汇总过滤器。
+ * 多个 [子过滤器][Filter] 的容器。一个 [Filters] 最终会表现为一个汇总过滤器。
  *
  * @see Filter
  */

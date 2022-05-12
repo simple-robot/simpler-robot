@@ -23,6 +23,7 @@ import love.forte.simboot.annotation.*
 import love.forte.simboot.annotation.Filter
 import love.forte.simboot.core.filter.CoreFiltersAnnotationProcessor
 import love.forte.simboot.core.filter.FiltersAnnotationProcessContext
+import love.forte.simboot.filter.MultiFilterMatchType
 import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
 import love.forte.simboot.listener.BindException
 import love.forte.simboot.listener.ParameterBinder
@@ -315,14 +316,18 @@ public class KFunctionListenerProcessor(
             bindList.sortBy { it.priority }
             bindSpareList.sortBy { it.priority }
             
-            logger.debug("There are actually {} normal binders bound to parameter [{}]. the binders: {}",
+            logger.debug(
+                "There are actually {} normal binders bound to parameter [{}]. the binders: {}",
                 bindList.size,
                 parameter,
-                bindList)
-            logger.debug("There are actually {} spare binders bound to parameter [{}]. the binders: {}",
+                bindList
+            )
+            logger.debug(
+                "There are actually {} spare binders bound to parameter [{}]. the binders: {}",
                 bindSpareList.size,
                 parameter,
-                bindSpareList)
+                bindSpareList
+            )
             
             when {
                 bindList.isEmpty() && bindSpareList.isEmpty() -> {
@@ -357,14 +362,18 @@ public class KFunctionListenerProcessor(
         val filters = annotationTool.getAnnotation(this, Filters::class)
         val filterList = annotationTool.getAnnotations(this, Filter::class)
         
-        return CoreFiltersAnnotationProcessor.process(FiltersAnnotationProcessContext(
-            this,
-            filters,
-            filterList,
-            listener,
-            listenerAttributeMap,
-            context
-        ))
+        val filtersAnnotation =
+            Filters(value = filterList.toTypedArray(), filters?.multiMatchType ?: MultiFilterMatchType.ANY)
+        
+        return CoreFiltersAnnotationProcessor.process(
+            FiltersAnnotationProcessContext(
+                this,
+                filtersAnnotation,
+                listener,
+                listenerAttributeMap,
+                context
+            )
+        )
     }
     
     
@@ -496,8 +505,10 @@ private class MergedBinder(
                     logger.debug("Nothing binder success for listener(id={}).", context.listener.id)
                     logger.trace("Nothing binder success for listener(id=${context.listener.id})", err)
                 } else {
-                    logger.debug("Nothing binder success for listener(id={}). Enable trace level logging to view detailed reasons.",
-                        context.listener.id)
+                    logger.debug(
+                        "Nothing binder success for listener(id={}). Enable trace level logging to view detailed reasons.",
+                        context.listener.id
+                    )
                 }
                 return Result.success(ParameterBinder.Ignore)
             }
