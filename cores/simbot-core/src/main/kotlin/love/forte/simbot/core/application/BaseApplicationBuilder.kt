@@ -62,8 +62,8 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
         configurator: Config.(perceivable: CompletionPerceivable<A>) -> Unit,
     ) {
         val key = componentFactory.key
-        val newConfig: Any.() -> Unit = newConfigurator(key, eventProviderConfigurations, configurator)
-        eventProviderConfigurations[key] = newConfig
+        val newConfig: Any.() -> Unit = newConfigurator(key, componentConfigurations, configurator)
+        componentConfigurations[key] = newConfig
         
         if (key in componentFactories) return
         
