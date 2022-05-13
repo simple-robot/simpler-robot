@@ -32,4 +32,12 @@ public class UnsupportedActionException : ActionException {
     public constructor(cause: Throwable?) : super(cause)
 }
 
-public inline fun actionUnsupported(block: () -> String): Nothing = throw UnsupportedActionException(block())
+/**
+ * 抛出 [UnsupportedActionException].
+ *
+ * e.g.
+ * ```kotlin
+ * actionUnsupported(cause) { "Send message" }
+ * ```
+ */
+public inline fun actionUnsupported(cause: Throwable? = null, block: () -> String): Nothing = throw UnsupportedActionException(block(), cause)

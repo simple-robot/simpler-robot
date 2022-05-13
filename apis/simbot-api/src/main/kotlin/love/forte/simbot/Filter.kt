@@ -20,9 +20,9 @@ package love.forte.simbot
 
 /**
  *
- * 过滤器, 对一个指定的目标进行过滤匹配, 并得到最终的匹配结果。
+ * 过滤器。 对一个指定的目标进行过滤匹配, 并得到最终的匹配结果。
  *
- * 此过滤器也同样是一个可挂起的。
+ * 此过滤器的匹配函数 [test] 是可挂起的。
  *
  * @see BlockingFilter
  *
@@ -41,6 +41,8 @@ public interface Filter<T> {
 
 
 /**
+ * 过滤器。 对一个指定的目标进行过滤匹配, 并得到最终的匹配结果。
+ *
  * 使用非挂起函数的 [testBlocking] 来实现 [Filter] 的 [test].
  */
 @Api4J

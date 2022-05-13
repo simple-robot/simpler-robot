@@ -16,7 +16,10 @@
 
 package love.forte.simboot.core.application
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.CompletionHandler
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.ExperimentalSerializationApi
 import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.annotationtool.core.getAnnotation
@@ -69,9 +72,9 @@ import kotlin.time.Duration.Companion.nanoseconds
  *
  */
 public object Boot : ApplicationFactory<BootApplicationConfiguration, BootApplicationBuilder, BootApplication> {
-    override fun create(
+    override suspend fun create(
         configurator: BootApplicationConfiguration.() -> Unit,
-        builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit,
+        builder: suspend BootApplicationBuilder.(BootApplicationConfiguration) -> Unit,
     ): BootApplication {
         // init configurator
         val config = BootApplicationConfiguration().also(configurator)
@@ -230,7 +233,7 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
     /**
      * 是否在bot注册后，在 application 构建完毕的时候自动执行 `Bot.start`。
      *
-     * 这一行为将会是阻塞的 （ `runBlocking { bot.start() }` ）。
+     * 这一行为会注册到 [ApplicationBuilder.onCompletion] 中.
      *
      * 如果设置为 `true`，效果类似于：
      * ```kotlin
@@ -238,26 +241,10 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
      *     bots {
      *         register(...)?.also { bot ->
      *             onCompletion {
-     *                 runBlocking { bot.start() }
+     *                 bot.start()
      *             }
      *         }
      *     }
-     * }
-     * ```
-     *
-     * 或者
-     * ```kotlin
-     * simbotApplication(...) {
-     *    // install a component
-     *    install(FooComponent)
-     *    // install bot manager by 'foo component'.
-     *    install(FooBotManager) {
-     *      register(code, pass).also { bot ->
-     *          onCompletion {
-     *              runBlocking { bot.start() }
-     *          }
-     *      }
-     *    }
      * }
      * ```
      *
@@ -414,7 +401,7 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
     
     
     @Suppress("DuplicatedCode")
-    fun build(configuration: BootApplicationConfiguration): BootApplication {
+    suspend fun build(configuration: BootApplicationConfiguration): BootApplication {
         val logger = configuration.logger
         val classLoader = configuration.classLoader
         val tool = KAnnotationTool(ConcurrentHashMap(), ConcurrentHashMap())
@@ -462,10 +449,12 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
         
         // Binder containers.
         resolvedBinderContainerFromBeanContainer(binderBuilder, beanContainer, tool)
-        resolvedBinderContainerFromScanTopLevelFunctions(binderBuilder,
+        resolvedBinderContainerFromScanTopLevelFunctions(
+            binderBuilder,
             classLoader,
             configuration.topLevelBinderScanPackage,
-            tool)
+            tool
+        )
         
         // include default global binders
         binderBuilder.includeDefaults()
@@ -479,11 +468,13 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
         // auto scan listeners.
         listeners {
             autoConfigFromBeanContainer(logger, binderManager, beanContainer, processor, tool)
-            autoScanTopFunction(classLoader, logger, binderManager,
+            autoScanTopFunction(
+                classLoader, logger, binderManager,
                 beanContainer,
                 processor,
                 tool,
-                configuration.topLevelListenerScanPackage)
+                configuration.topLevelListenerScanPackage
+            )
         }
         
         
@@ -499,7 +490,7 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
         if (providers.isNotEmpty()) {
             logger.debug("The built providers: {}", providers)
         }
-    
+        
         // endregion
         
         // region register bots
@@ -515,11 +506,13 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
             logger.error("There is no bot verify info decoder available, and the bot information cannot be automatically scanned.")
         } else {
             bots {
-                autoRegisterBots(classLoader,
+                autoRegisterBots(
+                    classLoader,
                     logger,
                     configuration.botConfigurationResources,
                     botVerifyDecoderFactories,
-                    configuration.botConfigurations)
+                    configuration.botConfigurations
+                )
             }
         }
         
@@ -534,7 +527,7 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
             onCompletion {
                 bots.forEach { bot ->
                     logger.info("Blocking start bot {}", bot)
-                    val started = runBlocking { bot.start() }
+                    val started = bot.start()
                     logger.info("Bot [{}] started: {}", bot, started)
                 }
             }
@@ -740,17 +733,19 @@ private fun EventListenersGenerator.autoConfigFromBeanContainer(
                 
                 logger.debug("Resolving listener function [{}] from type [{}]", func, type)
                 
-                val resolvedListener = listenerProcessor.process(FunctionalListenerProcessContext(
-                    id = listener.id.takeIf { it.isNotEmpty() },
-                    function = func,
-                    priority = listener.priority,
-                    isAsync = listener.async,
-                    binderManager = binderManager,
-                    beanContainer = beanContainer,
-                ))
-        
+                val resolvedListener = listenerProcessor.process(
+                    FunctionalListenerProcessContext(
+                        id = listener.id.takeIf { it.isNotEmpty() },
+                        function = func,
+                        priority = listener.priority,
+                        isAsync = listener.async,
+                        binderManager = binderManager,
+                        beanContainer = beanContainer,
+                    )
+                )
+                
                 logger.debug("Resolved listener: [{}] by processor [{}]", resolvedListener, listenerProcessor)
-        
+                
                 // include listener.
                 listener(resolvedListener)
             }
@@ -793,8 +788,10 @@ private fun EventListenersGenerator.autoScanTopFunction(
                         kf
                     }.getOrElse { e ->
                         if (logger.isDebugEnabled) {
-                            logger.debug("The method [$m] of class [$c] cannot be resolved to KFunction. Skip for now.",
-                                e)
+                            logger.debug(
+                                "The method [$m] of class [$c] cannot be resolved to KFunction. Skip for now.",
+                                e
+                            )
                         }
                         null
                     }
@@ -804,17 +801,23 @@ private fun EventListenersGenerator.autoScanTopFunction(
                         
                         logger.debug("Resolving top-level listener function [{}]", function)
                         
-                        val resolvedListener = listenerProcessor.process(FunctionalListenerProcessContext(
-                            id = listener.id.takeIf { it.isNotEmpty() },
-                            function = function,
-                            priority = listener.priority,
-                            isAsync = listener.async,
-                            binderManager = binderManager,
-                            beanContainer = beanContainer,
-                        ))
-    
-                        logger.debug("Resolved top-level listener: [{}] by processor [{}]", resolvedListener, listenerProcessor)
-    
+                        val resolvedListener = listenerProcessor.process(
+                            FunctionalListenerProcessContext(
+                                id = listener.id.takeIf { it.isNotEmpty() },
+                                function = function,
+                                priority = listener.priority,
+                                isAsync = listener.async,
+                                binderManager = binderManager,
+                                beanContainer = beanContainer,
+                            )
+                        )
+                        
+                        logger.debug(
+                            "Resolved top-level listener: [{}] by processor [{}]",
+                            resolvedListener,
+                            listenerProcessor
+                        )
+                        
                         listener(resolvedListener)
                     }
                     

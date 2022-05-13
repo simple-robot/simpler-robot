@@ -19,6 +19,7 @@ package love.forte.simbot.core.application
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import love.forte.simbot.LoggerFactory
 import love.forte.simbot.application.*
 import love.forte.simbot.core.event.CoreListenerManager
 import love.forte.simbot.utils.view
@@ -30,14 +31,18 @@ import kotlin.time.Duration.Companion.nanoseconds
  * 由核心所提供的最基础的 [ApplicationFactory] 实现。
  */
 public object Simple : ApplicationFactory<SimpleApplicationConfiguration, SimpleApplicationBuilder, SimpleApplication> {
+    private val logger = LoggerFactory.getLogger<Simple>()
     
-    override fun create(
+    override suspend fun create(
         configurator: SimpleApplicationConfiguration.() -> Unit,
-        builder: SimpleApplicationBuilder.(SimpleApplicationConfiguration) -> Unit,
+        builder: suspend SimpleApplicationBuilder.(SimpleApplicationConfiguration) -> Unit,
     ): SimpleApplication {
         // init configurator
-        val config = SimpleApplicationConfiguration().also(configurator)
+        val config = SimpleApplicationConfiguration().also {
+            it.logger = this.logger
+        }.also(configurator)
         val logger = config.logger
+        logger.debug("Configuration init: {}", config)
         val startTime = System.nanoTime()
         val appBuilder = SimpleApplicationBuilderImpl().apply {
             builder(config)
@@ -57,7 +62,16 @@ public object Simple : ApplicationFactory<SimpleApplicationConfiguration, Simple
 public fun simpleApplication(
     configurator: SimpleApplicationConfiguration.() -> Unit = {},
     builder: SimpleApplicationBuilder.(SimpleApplicationConfiguration) -> Unit = {},
-): SimpleApplication = simbotApplication(Simple, configurator, builder)
+): ApplicationLauncher<SimpleApplication> = simbotApplication(Simple, configurator, builder)
+
+
+/**
+ * 使用 [Simple] 作为应用工厂来构建一个 [Application].
+ */
+public suspend fun createSimpleApplication(
+    configurator: SimpleApplicationConfiguration.() -> Unit = {},
+    builder: SimpleApplicationBuilder.(SimpleApplicationConfiguration) -> Unit = {},
+): SimpleApplication = createSimbotApplication(Simple, configurator, builder)
 
 
 /**
@@ -120,22 +134,35 @@ private class SimpleApplicationImpl(
 private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseCoreApplicationBuilder<SimpleApplication>() {
     
     
-    fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {
-        val components = buildComponents()
-        
+    suspend fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {
         val logger = appConfig.logger
+        
+        logger.debug("Building components...")
+        val components = buildComponents()
+        logger.debug("Components are built: {}", components)
+        logger.info("The size of components built is {}", components.size)
         
         val environment = SimpleEnvironment(
             components,
             logger,
             appConfig.coroutineContext
         )
+        logger.debug("Init SimpleEnvironment: {}", environment)
         
+        logger.debug("Building listeners...")
         val listenerManager = buildListenerManager(appConfig, environment)
+        logger.debug("Listeners are built by listener manager: {}", listenerManager)
+        
+        logger.debug("Building providers...")
         val providers = buildProviders(listenerManager, components, appConfig)
+        logger.debug("Providers are built: {}", providers)
+        logger.info("The size of providers built is {}", providers.size)
         
         // register bots
-        registerBots(providers.filterIsInstance<love.forte.simbot.BotRegistrar>())
+        logger.debug("Registing bots...")
+        val bots = registerBots(providers.filterIsInstance<love.forte.simbot.BotRegistrar>())
+        logger.debug("All bot registers: {}", bots)
+        logger.info("The size of bots registered: {}", bots.size)
         
         val application = SimpleApplicationImpl(appConfig, environment, listenerManager, providers)
         

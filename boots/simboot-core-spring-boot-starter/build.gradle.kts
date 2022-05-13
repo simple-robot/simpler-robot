@@ -59,7 +59,7 @@ dependencies {
     testImplementation(V.Kotlinx.Serialization.Json.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)
     testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
-
+    testImplementation("org.springframework.boot:spring-boot-starter-aop:2.6.7")
     //testImplementation(V.Log4j.Api.notation)
     //testImplementation(V.Log4j.Core.notation)
     //testImplementation(V.Log4j.Slf4jImpl.notation)

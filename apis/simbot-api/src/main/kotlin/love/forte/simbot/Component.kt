@@ -36,7 +36,7 @@ import java.util.*
  *
  */
 public interface Component : IDContainer {
-
+    
     /**
      * 此组件所提供的所有消息序列化信息。
      *
@@ -47,8 +47,8 @@ public interface Component : IDContainer {
      *
      */
     public val componentSerializersModule: SerializersModule
-
-
+    
+    
 }
 
 
@@ -64,7 +64,7 @@ public interface Component : IDContainer {
  * @param Config 此组件注册时的配置类类型。
  */
 public interface ComponentFactory<C : Component, out Config : Any> {
-
+    
     /**
      * 用于在通过 [EventListenerManager] 注册组件的时候进行唯一标记使用。
      *
@@ -77,12 +77,13 @@ public interface ComponentFactory<C : Component, out Config : Any> {
      *
      */
     public val key: Attribute<C>
-
+    
     /**
      * 提供注册函数，得到对应的组件实例。
      */
-    public fun create(configurator: Config.() -> Unit): C
-
+    @JvmSynthetic
+    public suspend fun create(configurator: Config.() -> Unit): C
+    
 }
 
 
@@ -98,7 +99,7 @@ public interface ComponentContainer : Container {
 }
 
 
-//region Auto-Registrar
+// region Auto-Registrar
 /**
  * 用于支持 [ApplicationBuilder.installAllComponents] 进行自动加载的工厂类型定义，
  * 实现 [registrar] 并返回一个 [ComponentFactory] 实例。
@@ -106,7 +107,7 @@ public interface ComponentContainer : Container {
  * 此类型的实现必须存在无参构造。
  */
 public interface ComponentAutoRegistrarFactory<C : Component, out Config : Any> {
-
+    
     /**
      * 得到 [ComponentFactory] 实例。
      */
@@ -125,14 +126,14 @@ public fun <A : Application> ApplicationBuilder<A>.installAllComponents(
     factories.forEach {
         install(it.registrar)
     }
-
+    
 }
 
 
-//endregion
+// endregion
 
 
-//region Exceptions
+// region Exceptions
 public class NoSuchComponentException : SimbotRuntimeException {
     public constructor() : super()
     public constructor(message: String?) : super(message)
@@ -147,5 +148,5 @@ public class ComponentAlreadyExistsException : SimbotRuntimeException {
     public constructor(message: String?, cause: Throwable?) : super(message, cause)
     public constructor(cause: Throwable?) : super(cause)
 }
-//endregion
+// endregion
 

@@ -20,6 +20,7 @@ import love.forte.simboot.spring.autoconfigure.application.SpringBootApplication
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfigurationProperties
 import love.forte.simboot.spring.autoconfigure.application.springBootApplication
+import love.forte.simbot.Api4J
 import love.forte.simbot.application.Application
 import love.forte.simbot.event.EventListenerManager
 import org.springframework.boot.ApplicationArguments
@@ -62,6 +63,7 @@ public open class SimbotSpringBootApplicationConfiguration {
     /**
      * 构建 [simbot application][Application].
      */
+    @OptIn(Api4J::class)
     @Bean
     @ConditionalOnMissingBean(Application::class)
     public fun simbotSpringBootApplication(
@@ -86,7 +88,8 @@ public open class SimbotSpringBootApplicationConfiguration {
             applicationConfigures.forEach { configure ->
                 configure.run { config(configuration) }
             }
-        }
+            // TODO..?
+        }.launchBlocking()
     }
     
     

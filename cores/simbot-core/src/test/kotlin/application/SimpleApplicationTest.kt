@@ -16,38 +16,19 @@
 
 package application
 
-import love.forte.simbot.application.installAllEventProviders
-import love.forte.simbot.application.simbotApplication
-import love.forte.simbot.core.application.Simple
-import love.forte.simbot.core.application.listeners
-import love.forte.simbot.installAllComponents
-import org.junit.Test
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import love.forte.simbot.LoggerFactory
+import love.forte.simbot.core.application.createSimpleApplication
+import kotlin.time.Duration.Companion.seconds
 
 
-/**
- *
- * @author ForteScarlet
- */
-class SimpleApplicationTest {
-
-    @Test
-    fun app() {
-        simbotApplication(Simple) {
-            listeners {
-
-            }
-
-            eventProcessor {  }
-
-            installAllComponents()
-            installAllEventProviders()
-
-
-
-        }
-
+suspend fun main() {
+    LoggerFactory.getLogger("Main").debug("Debug enabled.")
+    val app = createSimpleApplication()
+    app.launch {
+        delay(30.seconds)
+        app.shutdown()
     }
-
-
+    app.join()
 }
-

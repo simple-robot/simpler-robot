@@ -131,8 +131,8 @@ public interface SendSupport {
  * ### Java:
  * ```java
  *  public void listener(GroupMessageEvent event) {
- *      if (event instanceof SendSupport) {
- *          ((SendSupport) event).sendBlocking("Hello Simbot")
+ *      if (event instanceof ReplySupport) {
+ *          ((ReplySupport) event).replyBlocking("Hello Simbot")
  *      }
  *  }
  * ```

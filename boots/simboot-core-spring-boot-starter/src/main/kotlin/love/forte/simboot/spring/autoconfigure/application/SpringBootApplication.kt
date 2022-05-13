@@ -19,7 +19,6 @@ package love.forte.simboot.spring.autoconfigure.application
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.application.*
 import love.forte.simbot.core.application.BaseApplication
 import love.forte.simbot.core.application.BaseApplicationBuilder
@@ -39,9 +38,9 @@ import kotlin.time.Duration.Companion.nanoseconds
  */
 public object SpringBoot :
     ApplicationFactory<SpringBootApplicationConfiguration, SpringBootApplicationBuilder, SpringBootApplication> {
-    override fun create(
+    override suspend fun create(
         configurator: SpringBootApplicationConfiguration.() -> Unit,
-        builder: SpringBootApplicationBuilder.(SpringBootApplicationConfiguration) -> Unit,
+        builder: suspend SpringBootApplicationBuilder.(SpringBootApplicationConfiguration) -> Unit,
     ): SpringBootApplication {
         val configuration = SpringBootApplicationConfiguration().also(configurator)
         return create(configuration, builder)
@@ -51,16 +50,19 @@ public object SpringBoot :
      * 直接提供配置类进行构建。
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    public fun create(
+    public suspend fun create(
         configuration: SpringBootApplicationConfiguration,
-        builder: SpringBootApplicationBuilder.(SpringBootApplicationConfiguration) -> Unit,
+        builder: suspend SpringBootApplicationBuilder.(SpringBootApplicationConfiguration) -> Unit,
     ): SpringBootApplication {
         val logger = configuration.logger
         val startTime = System.nanoTime()
         return SpringBootApplicationBuilderImpl().apply {
             builder(configuration)
         }.build(configuration).also {
-            logger.info("Simbot Spring Boot Application built in {}", (System.nanoTime() - startTime).nanoseconds.toString())
+            logger.info(
+                "Simbot Spring Boot Application built in {}",
+                (System.nanoTime() - startTime).nanoseconds.toString()
+            )
         }
     }
 }
@@ -74,9 +76,9 @@ public fun springBootApplication(
     initialConfiguration: SpringBootApplicationConfiguration = SpringBootApplicationConfiguration(),
     configurator: SpringBootApplicationConfiguration.() -> Unit = {},
     builder: SpringBootApplicationBuilder.(SpringBootApplicationConfiguration) -> Unit = {},
-): SpringBootApplication {
+): ApplicationLauncher<SpringBootApplication> {
     val configuration = initialConfiguration.also(configurator)
-    return SpringBoot.create(configuration, builder)
+    return applicationLauncher { SpringBoot.create(configuration, builder) }
 }
 
 
@@ -132,7 +134,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
     
     
     @Suppress("DuplicatedCode")
-    fun build(configuration: SpringBootApplicationConfiguration): SpringBootApplication {
+    suspend fun build(configuration: SpringBootApplicationConfiguration): SpringBootApplication {
         val components = buildComponents()
         
         val logger = configuration.logger
@@ -168,7 +170,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
             onCompletion {
                 bots.forEach { bot ->
                     logger.info("Blocking start bot {}", bot)
-                    val started = runBlocking { bot.start() }
+                    val started = bot.start()
                     logger.info("Bot [{}] started: {}", bot, started)
                 }
             }

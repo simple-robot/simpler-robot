@@ -18,7 +18,11 @@
 
 package love.forte.simbot.application
 
-import love.forte.simbot.*
+import love.forte.simbot.Attribute
+import love.forte.simbot.BotManager
+import love.forte.simbot.Component
+import love.forte.simbot.ComponentAutoRegistrarFactory
+import love.forte.simbot.ability.Survivable
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.utils.currentClassLoader
 import java.util.*
@@ -53,7 +57,7 @@ public interface EventProviderFactory<P : EventProvider, Config : Any> {
     /**
      * 提供所需属性，构建一个 [EventProvider].
      */
-    public fun create(
+    public suspend fun create(
         eventProcessor: EventProcessor,
         components: List<Component>,
         applicationConfiguration: ApplicationConfiguration,

@@ -22,6 +22,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.cancel
+import love.forte.simbot.ability.Survivable
 import love.forte.simbot.definition.*
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.message.Image

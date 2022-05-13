@@ -19,7 +19,7 @@ package love.forte.simboot
 
 import kotlinx.coroutines.CompletionHandler
 import love.forte.simbot.Api4J
-import love.forte.simbot.Survivable
+import love.forte.simbot.ability.Survivable
 import org.slf4j.Logger
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException

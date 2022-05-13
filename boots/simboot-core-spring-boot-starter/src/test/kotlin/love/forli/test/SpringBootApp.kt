@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -12,19 +12,38 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
+ *
  */
 
-import love.forte.simbot.core.event.CoreListeners;
-import love.forte.simbot.event.EventListener;
-import love.forte.simbot.event.MessageEvent;
+package love.forli.test
 
-/**
- * @author ForteScarlet
- */
-public class JEventMain {
-    public static void main(String[] args) {
-        final EventListener eventListener = CoreListeners.newCoreListener(MessageEvent.class, (c, e) -> 1);
+import love.forte.simboot.annotation.Listener
+import love.forte.simboot.spring.autoconfigure.EnableSimbot
+import love.forte.simbot.event.MessageEvent
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
+import org.springframework.context.annotation.EnableAspectJAutoProxy
+import org.springframework.stereotype.Component
+
+@EnableSimbot
+@SpringBootApplication
+@EnableAspectJAutoProxy
+open class SpringBootApp
 
 
-    }
+fun main(vararg args: String) {
+    runApplication<SpringBootApp>(*args)
 }
+
+
+@Component
+open class MyListeners {
+    
+    @Listener
+    suspend fun MessageEvent.myLis() {
+        println(source())
+    }
+    
+}
+
+
