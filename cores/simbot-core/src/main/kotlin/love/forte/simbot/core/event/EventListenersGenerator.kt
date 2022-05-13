@@ -39,16 +39,21 @@ internal annotation class EventListenersGeneratorDSL
  * // 假设在 CoreListenerManagerConfiguration 中
  * listeners {
  *     // plus listener of EventListenersGenerator
- *     +coreListener(FriendMessageEvent) { _, _ -> /* Nothing here. */ }
+ *     +coreListener(FooEvent) { _, _ -> /* Nothing here. */ }
  *
  *     // listener of EventListenersGenerator
- *     listener(FriendMessageEvent) {
+ *     listener(FooEvent) {
  *         // handle of `listener`
- *         handle { context, friendMessageEvent ->
+ *         handle { context, event ->
  *             // do..
- *             delay(200)
- *             friendMessageEvent.friend().send("Hi! context: $context")
+ *             delay(200) // suspend support
+ *             event.friend().send("Hello!")
  *         }
+ *     }
+ *
+ *     // use invoke handle function
+ *     FooEvent { // Same as: FooEvent.Key.invoke { ... }
+ *        // do...
  *     }
  * }
  * ```
@@ -64,14 +69,13 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * 构建一个监听函数。
      *
      * ```kotlin
-     * listener(FriendMessageEvent) {
+     * listener(FooEvent) {
      *      // 监听函数的处理逻辑
      *      handle { context, event ->
      *          event.friend().send("Context: $context")
      *      }
      * }
      * ```
-     *
      */
     @EventListenersGeneratorDSL
     public fun <E : Event> listener(
@@ -96,16 +100,51 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     /**
      * 通过 `+=` 的方式直接提供一个 [EventListener] 实例。
      *
+     * ```kotlin
+     * listeners {
+     *    +fooListener
+     * }
+     * ```
+     *
      */
     @EventListenersGeneratorDSL
     public operator fun EventListener.unaryPlus() {
         listeners.add(this)
     }
     
+    /**
+     * 监听指定的事件类型并直接进行事件处理。
+     *
+     * e.g.
+     * ```kotlin
+     * FooEvent { context, event ->
+     *     // do handle
+     * }
+     * ```
+     *
+     * 相当于：
+     * ```kotlin
+     * listener(FooEvent) {
+     *     handle {
+     *        // do handle
+     *     }
+     * }
+     * ```
+     *
+     * @receiver 需要监听的 [事件类型][Event.Key] 对象实例。
+     *
+     */
+    public operator fun <E : Event> Event.Key<E>.invoke(handle: suspend (EventListenerProcessingContext, E) -> Any?) {
+        listener(this) {
+            handle(handle)
+        }
+    }
+    
     public fun build(): List<EventListener> {
         return listeners
     }
 }
+
 
 // region listener generator
 @DslMarker
