@@ -21,33 +21,34 @@
 
 package love.forte.simbot
 
-import org.jetbrains.annotations.PropertyKey
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.*
 import kotlin.reflect.KClass
 
 
-/**
- * api模块下使用的 i18n内容。
- */
-internal val
-        @receiver:PropertyKey(resourceBundle = "lang.api-message")
-        String.i18n: String
-    get() = I18n[this]
+// /**
+//  * api模块下使用的 i18n内容。
+//  * TODO
+//  */
+// internal val
+//         @receiver:PropertyKey(resourceBundle = "lang.api-message")
+//         String.i18n: String
+//     get() = I18n[this]
 
-
-internal object I18n {
-    private val resourceBundle = ResourceBundle.getBundle("lang/api-message")
-    operator fun get(
-        @PropertyKey(
-            resourceBundle = "lang.api-message"
-        )
-        key: String,
-    ): String = resourceBundle.getString(key)
-    val keys: Iterator<String> get() = resourceBundle.keys.iterator()
-    val locale: String get() = resourceBundle.locale.displayName
-}
+// TODO
+//
+// internal object I18n {
+//     private val resourceBundle = ResourceBundle.getBundle("lang/api-message")
+//     operator fun get(
+//         @PropertyKey(
+//             resourceBundle = "lang.api-message"
+//         )
+//         key: String,
+//     ): String = resourceBundle.getString(key)
+//
+//     val keys: Iterator<String> get() = resourceBundle.keys.iterator()
+//     val locale: String get() = resourceBundle.locale.displayName
+// }
 
 
 /**
@@ -55,9 +56,19 @@ internal object I18n {
  * @author ForteScarlet
  */
 public object LoggerFactory {
+    
+    /**
+     * 根据名称得到一个 [Logger].
+     *
+     * @see LoggerFactory.getLogger
+     */
     @JvmStatic
     public fun getLogger(name: String): Logger = LoggerFactory.getLogger(name)
-
+    
+    /**
+     * 根据 [KClass]（的全限定名称）构建一个 [Logger].
+     *
+     */
     @JvmStatic
     public fun getLogger(type: KClass<*>): Logger =
         kotlin.runCatching { getLogger(type.java) }.getOrElse {
@@ -65,8 +76,20 @@ public object LoggerFactory {
                 getLogger(type.toString())
             }
         }
-
+    
+    /**
+     * 根据 [T]（的全限定名称）构建一个 [Logger].
+     *
+     */
+    public inline fun <reified T : Any> getLogger(): Logger = getLogger(T::class)
+    
+    
+    /**
+     * 根据 [Class] 构建一个 [Logger].
+     *
+     * @see LoggerFactory.getLogger
+     */
     @JvmStatic
     public fun getLogger(type: Class<*>): Logger = LoggerFactory.getLogger(type)
-
+    
 }

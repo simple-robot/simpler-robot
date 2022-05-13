@@ -17,11 +17,14 @@
 package love.forte.simbot.core.event
 
 import love.forte.simbot.*
-import love.forte.simbot.LoggerFactory
-import love.forte.simbot.event.*
-import love.forte.simbot.utils.*
-import org.slf4j.*
-import java.util.function.*
+import love.forte.simbot.event.Event
+import love.forte.simbot.event.EventListener
+import love.forte.simbot.event.EventListenerProcessingContext
+import love.forte.simbot.event.EventResult
+import love.forte.simbot.utils.runWithInterruptible
+import org.slf4j.Logger
+import java.util.function.BiConsumer
+import java.util.function.BiFunction
 
 @DslMarker
 internal annotation class EventListenersGeneratorDSL
@@ -29,48 +32,17 @@ internal annotation class EventListenersGeneratorDSL
 
 /**
  *
- * 用于构建监听函数的构建器，可以同时搭配过滤器使用。
+ * 用于构建监听函数的构建器。
  *
  * 结构示例：
  * ```kotlin
  * // 假设在 CoreListenerManagerConfiguration 中
  * listeners {
- *     // global filters of EventListenersGenerator
- *     filters {
- *         // filter of filters
- *         filter {
- *             println("A!")
- *             true
- *         }
- *         // filter of filters
- *         filter {
- *             println("B!")
- *             true
- *         }
- *     }
  *     // plus listener of EventListenersGenerator
  *     +coreListener(FriendMessageEvent) { _, _ -> /* Nothing here. */ }
+ *
  *     // listener of EventListenersGenerator
  *     listener(FriendMessageEvent) {
- *         // multi filters of `listener`
- *         filters {
- *             // generate filter of `filters`
- *             generateFilter {
- *                 // priority of `generateFilter`
- *                 priority = PriorityConstant.LAST
- *                 // test of `generateFilter`
- *                 test { true }
- *             }
- *         }
- *         // filter of `listener`
- *         filter { true }
- *         // generate filter under `listener`
- *         generateFilter {
- *             // filter priority of `generateFilter`
- *             priority = PriorityConstant.FIRST
- *             // test of `generateFilter`
- *             test { true }
- *         }
  *         // handle of `listener`
  *         handle { context, friendMessageEvent ->
  *             // do..
@@ -84,34 +56,15 @@ internal annotation class EventListenersGeneratorDSL
  *  @author ForteScarlet
  */
 @EventListenersGeneratorDSL
-public class EventListenersGenerator @InternalSimbotApi constructor(private val end: (List<EventListener>) -> CoreListenerManagerConfiguration) {
+public class EventListenersGenerator @InternalSimbotApi constructor() {
     private val listeners = mutableListOf<EventListener>()
-    private val globalFilters = mutableListOf<EventFilter>()
-
-    /**
-     * 配置全局过滤器。[filters] 之后配置的所有监听函数都会受到其中的过滤器的影响。
-     */
-    @EventListenersGeneratorDSL
-    public fun filters(block: FiltersGenerator<EventListenersGenerator>.() -> Unit): EventListenersGenerator =
-        filters().also(block).end()
-
-    /**
-     * 配置全局过滤器。
-     */
-    @Suppress("MemberVisibilityCanBePrivate")
-    public fun filters(): FiltersGenerator<EventListenersGenerator> = FiltersGenerator(this, globalFilters)
-
-
+    
+    
     /**
      * 构建一个监听函数。
      *
      * ```kotlin
      * listener(FriendMessageEvent) {
-     *      filter {
-     *          // 可以提供独立过滤器。
-     *          true
-     *      }
-     *
      *      // 监听函数的处理逻辑
      *      handle { context, event ->
      *          event.friend().send("Context: $context")
@@ -123,31 +76,13 @@ public class EventListenersGenerator @InternalSimbotApi constructor(private val 
     @EventListenersGeneratorDSL
     public fun <E : Event> listener(
         eventKey: Event.Key<E>,
-        block: ListenerGenerator<E>.() -> Unit
-    ): EventListenersGenerator =
-        listenerGenerate(eventKey).also(block).end()
-
-
-    /**
-     * 提供一个 [Event.Key] 并得到一个 [构建器][ListenerGenerator]。
-     *
-     * ```java
-     * // Java
-     * generator
-     *  .listenerGenerate(FriendMessageEvent.Key)
-     *  .filter(context -> true) // filter
-     *  .handle((context, event) -> {
-     *      event.getFriend().sendBlocking("Context: " + context);
-     *  }) // handler
-     * ```
-     *
-     */
-    public fun <E : Event> listenerGenerate(eventKey: Event.Key<E>): ListenerGenerator<E> =
-        ListenerGenerator(eventKey, globalFilters.toMutableList()) {
-            listeners.add(it)
-            this
-        }
-
+        block: ListenerGenerator<E>.() -> Unit,
+    ): EventListenersGenerator = also {
+        val listener = ListenerGenerator(eventKey).also(block).build()
+        listeners.add(listener)
+    }
+    
+    
     /**
      * 直接提供一个 [EventListener] 实例。
      *
@@ -156,8 +91,8 @@ public class EventListenersGenerator @InternalSimbotApi constructor(private val 
     public fun listener(listener: EventListener): EventListenersGenerator = also {
         listeners.add(listener)
     }
-
-
+    
+    
     /**
      * 通过 `+=` 的方式直接提供一个 [EventListener] 实例。
      *
@@ -166,60 +101,13 @@ public class EventListenersGenerator @InternalSimbotApi constructor(private val 
     public operator fun EventListener.unaryPlus() {
         listeners.add(this)
     }
-
-
-    /**
-     * 回到配置主类.
-     */
-    public fun end(): CoreListenerManagerConfiguration = end(listeners)
-
+    
+    public fun build(): List<EventListener> {
+        return listeners
+    }
 }
 
-//region filter generator
-@DslMarker
-internal annotation class FiltersGeneratorDSL
-
-/**
- * 过滤器构建器。
- */
-@FiltersGeneratorDSL
-public class FiltersGenerator<B> @InternalSimbotApi constructor(
-    private val backTo: B, private val filters: MutableList<EventFilter>
-) {
-
-    /**
-     * 使用过滤函数 [tester] 通过 [coreFilter] 构建并添加一个过滤器。
-     */
-    @FiltersGeneratorForListenersDSL
-    @JvmSynthetic
-    public fun filter(
-        priority: Int = PriorityConstant.NORMAL, tester: suspend (context: EventListenerProcessingContext) -> Boolean
-    ) {
-        filters.add(coreFilter(priority, tester))
-    }
-
-
-    /**
-     * 使用过滤函数 [tester] 通过 [blockingCoreFilter] 构建并添加一个过滤器。
-     */
-    @Api4J
-    @JvmOverloads
-    public fun filter(
-        priority: Int = PriorityConstant.NORMAL, tester: Predicate<EventListenerProcessingContext>
-    ): FiltersGenerator<B> = also {
-        filters.add(blockingCoreFilter(priority, tester))
-    }
-
-
-    /**
-     * 返回上级配置域
-     */
-    public fun end(): B = backTo
-}
-//endregion
-
-
-//region listener generator
+// region listener generator
 @DslMarker
 internal annotation class ListenerGeneratorDSL
 
@@ -232,91 +120,37 @@ internal annotation class ListenerGeneratorDSL
  * @author ForteScarlet
  */
 @ListenerGeneratorDSL
-public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(
-    private val eventKey: Event.Key<E>,
-    private val filters: MutableList<EventFilter>,
-    private val end: (EventListener) -> EventListenersGenerator
-) {
-
-
+public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private val eventKey: Event.Key<E>) {
+    
+    
     /**
      * 设置listener的ID
      */
     @ListenerGeneratorDSL
     public var id: ID? = null
-
-
+    
+    
     /**
      * 使用的日志
      */
     @ListenerGeneratorDSL
     public var logger: Logger? = null
-
+    
     /**
      * 当处理函数的响应值不是 [EventResult] 类型的时候，是否默认阻止下一个函数的执行。
      */
     @ListenerGeneratorDSL
     public var blockNext: Boolean = false
-
+    
     /**
      * 是否标记为异步函数。
      */
     @ListenerGeneratorDSL
     public var isAsync: Boolean = false
-
+    
+    
     private var func: suspend (EventListenerProcessingContext, E) -> Any? = { _, _ -> null }
-
-    /**
-     * 为当前监听函数提供其独立过滤器。
-     */
-    @ListenerGeneratorDSL
-    public fun filters(block: FiltersGeneratorForListeners.() -> Unit): ListenerGenerator<E> = also {
-        filters().also(block)
-    }
-
-    /**
-     * 配置此监听函数的过滤器。
-     */
-    @Suppress("MemberVisibilityCanBePrivate")
-    public fun filters(): FiltersGeneratorForListeners = FiltersGeneratorForListeners(filters)
-
-    /**
-     * 构建filter
-     */
-    @JvmSynthetic
-    @ListenerGeneratorDSL
-    public fun filter(
-        priority: Int = PriorityConstant.NORMAL,
-        tester: suspend (context: EventListenerProcessingContext) -> Boolean
-    ): ListenerGenerator<E> = also {
-        filters.add(coreFilter(priority, tester))
-    }
-
-    /**
-     * 构建filter
-     */
-    @Api4J
-    @JvmOverloads
-    @JvmName("filter")
-    @Suppress("FunctionName")
-    public fun _filter(
-        priority: Int = PriorityConstant.NORMAL,
-        tester: Predicate<EventListenerProcessingContext>
-    ): ListenerGenerator<E> = also {
-        filters.add(coreFilter(priority) { runWithInterruptible { tester.test(it) } })
-    }
-
-    /**
-     * 构建filter
-     */
-    @ListenerGeneratorDSL
-    public fun generateFilter(block: FilterGenerator<ListenerGenerator<E>>.() -> Unit): ListenerGenerator<E> = also {
-        FilterGenerator {
-            filters.add(it)
-            this
-        }.also(block).end()
-    }
-
+    
     /**
      * 监听函数。
      */
@@ -325,7 +159,7 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(
     public fun handle(func: suspend (EventListenerProcessingContext, E) -> Any?) {
         this.func = func
     }
-
+    
     /**
      * 监听函数。
      */
@@ -338,7 +172,7 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(
             null
         }
     }
-
+    
     /**
      * 监听函数。
      */
@@ -348,8 +182,8 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(
     public fun _handle(func: BiFunction<EventListenerProcessingContext, E, Any?>): ListenerGenerator<E> = also {
         this.func = { c, e -> runWithInterruptible { func.apply(c, e) } }
     }
-
-    private fun build(): EventListener {
+    
+    internal fun build(): EventListener {
         val id0 = id ?: randomID()
         return coreListener(
             eventKey = eventKey,
@@ -358,118 +192,9 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(
             isAsync = isAsync,
             logger = logger ?: LoggerFactory.getLogger("love.forte.core.listener.$id0"),
             func = func
-        ) + filters
+        )
     }
-
-    /**
-     * 返回上级配置域
-     */
-    public fun end(): EventListenersGenerator = end(build())
-
+    
 }
-//endregion
+// endregion
 
-
-//region filter for listener
-@DslMarker
-internal annotation class FiltersGeneratorForListenersDSL
-
-
-/**
- * 在 [ListenerGenerator] 为此监听函数构建过滤器的生成器。
- *
- */
-@FiltersGeneratorForListenersDSL
-public class FiltersGeneratorForListeners @InternalSimbotApi constructor(
-    private val filters: MutableList<EventFilter>
-) {
-
-
-    /**
-     * 使用过滤函数 [tester] 通过 [coreFilter] 构建并添加一个过滤器。
-     */
-    @FiltersGeneratorForListenersDSL
-    @JvmSynthetic
-    public fun filter(
-        priority: Int = PriorityConstant.NORMAL, tester: suspend (context: EventListenerProcessingContext) -> Boolean
-    ) {
-        filters.add(coreFilter(priority, tester))
-    }
-
-
-    /**
-     * 使用过滤函数 [tester] 通过 [blockingCoreFilter] 构建并添加一个过滤器。
-     */
-    @Api4J
-    @JvmOverloads
-    @JvmName("filter")
-    @Suppress("FunctionName")
-    public fun filter(
-        priority: Int = PriorityConstant.NORMAL, tester: Predicate<EventListenerProcessingContext>
-    ): FiltersGeneratorForListeners = also {
-        filters.add(blockingCoreFilter(priority, tester))
-    }
-
-    /**
-     * 构建filter
-     */
-    @FiltersGeneratorForListenersDSL
-    public fun generateFilter(block: FilterGenerator<FiltersGeneratorForListeners>.() -> Unit): FiltersGeneratorForListeners =
-        also {
-            FilterGenerator {
-                filters.add(it)
-                this
-            }.also(block).end()
-        }
-}
-
-
-//endregion
-
-@DslMarker
-internal annotation class FilterGeneratorDSL
-
-/**
- * Filter 生成器
- */
-@FilterGeneratorDSL
-public class FilterGenerator<B> @InternalSimbotApi constructor(private val end: (EventFilter) -> B) {
-
-    /**
-     * 优先级
-     */
-    @FilterGeneratorDSL
-    public var priority: Int = PriorityConstant.NORMAL
-
-    private var tester: suspend (context: EventListenerProcessingContext) -> Boolean = { true }
-
-    /**
-     * 匹配规则函数
-     */
-    @JvmSynthetic
-    @FilterGeneratorDSL
-    public fun test(tester: suspend (context: EventListenerProcessingContext) -> Boolean) {
-        this.tester = tester
-    }
-
-
-    /**
-     * 匹配规则函数
-     */
-    @Suppress("FunctionName")
-    @Api4J
-    @JvmName("test")
-    public fun _test(tester: Predicate<EventListenerProcessingContext>) {
-        this.tester = { c -> runWithInterruptible { tester.test(c) } }
-    }
-
-
-    private fun build(): EventFilter {
-        return coreFilter(priority, tester)
-    }
-
-    /**
-     * 结束构建，执行 end 收尾并返回上层结果。
-     */
-    public fun end(): B = end(build())
-}

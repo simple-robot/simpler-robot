@@ -25,7 +25,6 @@ import love.forte.simboot.annotation.TargetFilter
 import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simboot.filter.EmptyKeyword
 import love.forte.simboot.filter.MatchType
-import love.forte.simboot.filter.MultiFilterMatchType
 import love.forte.simbot.*
 import love.forte.simbot.core.event.coreFilter
 import love.forte.simbot.event.*
@@ -76,13 +75,13 @@ public object CoreFilterAnnotationProcessor {
         filters: Filters,
         filter: Filter,
         context: FiltersAnnotationProcessContext,
-    ): EventFilter? {
+    ): EventFilter {
         val obj = type.objectInstance
         val annotationEventFilter: AnnotationEventFilter = obj ?: run {
             // from bean container
             val beanContainer = context.context.beanContainer
             val beanNames = beanContainer.getAll(type)
-            
+    
             val fromContainer = kotlin.runCatching {
                 when {
                     beanNames.size > 1 -> {
@@ -100,16 +99,16 @@ public object CoreFilterAnnotationProcessor {
                 logger.debug("Cannot get the instance of type [$type] in beanContainers by names [$beanNames]", e)
                 null
             }
-            
+    
             if (fromContainer != null) {
                 return@run fromContainer
             }
-            
+    
             // try to create instance.
             return@run kotlin.runCatching {
                 val constructor = type.constructors.find { it.parameters.isEmpty() }
                     ?: throw NoSuchElementException("Public, no-argument constructor for type [$type]")
-                
+        
                 constructor.call()
             }.getOrElse { e ->
                 throw SimbotIllegalStateException("Cannot create instance for type [$type]", e)
@@ -362,7 +361,7 @@ public object CoreFiltersAnnotationProcessor {
         
         // multi
         
-        val multiMatchType = filters?.multiMatchType ?: MultiFilterMatchType.ANY
+        val multiMatchType = filters.multiMatchType
         
         @Suppress("SuspiciousCallableReferenceInLambda")
         val matcherList: List<suspend (EventListenerProcessingContext) -> Boolean> =

@@ -22,7 +22,9 @@ import love.forte.simboot.core.application.BootApplicationBuilder
 import love.forte.simboot.core.application.BootApplicationConfiguration
 import love.forte.simbot.Api4J
 import love.forte.simbot.SimbotRuntimeException
-import love.forte.simbot.application.simbotApplication
+import love.forte.simbot.application.ApplicationLauncher
+import love.forte.simbot.application.applicationLauncher
+import love.forte.simbot.application.createSimbotApplication
 import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
@@ -59,7 +61,7 @@ public object SimbootApp {
      * @throws SimbootApplicationException 在启动准备过程中出现的异常, 例如提供的 [entrance] 不存在包路径等情况。
      */
     @JvmSynthetic
-    public fun invoke(
+    public suspend fun run(
         entrance: KClass<*>? = null,
         vararg args: String,
         configurator: BootApplicationConfiguration.() -> Unit = {},
@@ -79,8 +81,10 @@ public object SimbootApp {
                 stack.className.substringBeforeLast(delimiter = ".", missingDelimiterValue = "")
                     .takeIf { it.isNotEmpty() }?.let { pkg ->
                         listOf(pkg).also {
-                            logger.warn("The entrance class or @SimbootApplication is null, try get and use the base scan package: {}",
-                                it)
+                            logger.warn(
+                                "The entrance class or @SimbootApplication is null, try get and use the base scan package: {}",
+                                it
+                            )
                         }
                     }
             } ?: throw SimbootApplicationException("cannot resolve the scan package.")
@@ -112,7 +116,8 @@ public object SimbootApp {
     @Api4J
     @JvmStatic
     @JvmOverloads
-    public fun run(entrance: Class<*>? = null, vararg args: String): BootApplication {
+    @JvmName("run")
+    public fun run4J(entrance: Class<*>? = null, vararg args: String): ApplicationLauncher<BootApplication> {
         val appAnnotation = entrance?.getAnnotation(SimbootApplication::class.java)
         val scanPackage = appAnnotation?.classesPackages?.ifEmpty { null }?.toList()
             ?: entrance?.let {
@@ -127,8 +132,10 @@ public object SimbootApp {
                 stack.className.substringBeforeLast(delimiter = ".", missingDelimiterValue = "")
                     .takeIf { it.isNotEmpty() }?.let { pkg ->
                         listOf(pkg).also {
-                            logger.warn("The entrance class or @SimbootApplication is null, try get and use the base scan package: {}",
-                                it)
+                            logger.warn(
+                                "The entrance class or @SimbootApplication is null, try get and use the base scan package: {}",
+                                it
+                            )
                         }
                     }
             } ?: throw SimbootApplicationException("cannot resolve the scan package.")
@@ -136,9 +143,11 @@ public object SimbootApp {
         val configs = resolveToConfig(appAnnotation, scanPackage)
         val initialConfigurator = configToInitialConfigurator(args.toList(), scanPackage, configs)
         
-        return runApp(configurator = initialConfigurator) {
-            onCompletion {
-                logger.info("Boot application completion via entrance {} with {}", entrance, appAnnotation)
+        return applicationLauncher {
+            runApp(configurator = initialConfigurator) {
+                onCompletion {
+                    logger.info("Boot application completion via entrance {} with {}", entrance, appAnnotation)
+                }
             }
         }
         
@@ -182,11 +191,11 @@ public object SimbootApp {
     }
     
     
-    private fun runApp(
+    private suspend fun runApp(
         configurator: BootApplicationConfiguration.() -> Unit,
         builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit,
     ): BootApplication {
-        return simbotApplication(Boot, configurator = configurator, builder = builder)
+        return createSimbotApplication(Boot, configurator = configurator, builder = builder)
     }
     
 }
@@ -213,10 +222,10 @@ private inline fun preStack(className: String, methodName: String, inlineMark: (
 /**
  * 使用 [Boot] 作为 simbot 应用工厂来构建一个 [BootApplication].
  */
-public inline operator fun <reified T> SimbootApp.invoke(
+public suspend inline operator fun <reified T> SimbootApp.invoke(
     vararg args: String,
     crossinline configurator: BootApplicationConfiguration.() -> Unit = {},
-): BootApplication = invoke(T::class, args = args) { configurator() }
+): BootApplication = run(T::class, args = args) { configurator() }
 
 
 /**

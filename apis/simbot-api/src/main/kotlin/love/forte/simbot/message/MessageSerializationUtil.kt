@@ -16,6 +16,7 @@
 
 package love.forte.simbot.message
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonBuilder
 import kotlinx.serialization.modules.SerializersModule
@@ -23,6 +24,7 @@ import kotlinx.serialization.modules.plus
 import love.forte.simbot.Api4J
 import love.forte.simbot.ComponentAutoRegistrarFactory
 import love.forte.simbot.event.EventProcessingContext
+import love.forte.simbot.utils.runInBlocking
 import org.slf4j.LoggerFactory
 import java.util.*
 
@@ -37,7 +39,7 @@ private val logger = LoggerFactory.getLogger("love.forte.simbot.message.MessageS
  */
 @Api4J
 public object MessageSerializationUtil {
-
+    
     /**
      * 默认的 [Json] 实例。会在首次获取的时候尝试加载当前环境中所有可用组件中的序列化模块。
      *
@@ -48,12 +50,12 @@ public object MessageSerializationUtil {
             isLenient = true
             ignoreUnknownKeys = true
             encodeDefaults = true
-            serializersModule = tryFindAllMessageSerializersModule()
+            serializersModule = runInBlocking(Dispatchers.IO) { tryFindAllMessageSerializersModule() }
         }
     }
-
+    
     private val defaultJsonBuilder: JsonBuilder4J = JsonBuilder4J {}
-
+    
     /**
      * 操作提供的 [JsonBuilder] 构建一个 `kotlinx-serialization-json` 中的 [Json] 对象。
      *
@@ -71,7 +73,7 @@ public object MessageSerializationUtil {
     public fun createJson(
         from: Json? = null,
         builder: JsonBuilder4J = defaultJsonBuilder,
-        eventProcessingContext: EventProcessingContext? = null
+        eventProcessingContext: EventProcessingContext? = null,
     ): Json {
         return Json(from = from ?: Json.Default) {
             eventProcessingContext?.also { context ->
@@ -80,7 +82,7 @@ public object MessageSerializationUtil {
             builder(this)
         }
     }
-
+    
     /**
      * 操作提供的 [JsonBuilder] 构建一个 `kotlinx-serialization-json` 中的 [Json] 对象。
      *
@@ -98,7 +100,7 @@ public object MessageSerializationUtil {
     public fun createJson(
         from: Json? = null,
         builder: JsonBuilder4J = defaultJsonBuilder,
-        vararg serializersModules: SerializersModule
+        vararg serializersModules: SerializersModule,
     ): Json {
         return Json(from = from ?: Json.Default) {
             if (serializersModules.isNotEmpty()) {
@@ -113,7 +115,7 @@ public object MessageSerializationUtil {
             builder(this)
         }
     }
-
+    
     /**
      * 直接通过 [Json] 对 [Messages] 进行序列化。
      *
@@ -127,7 +129,7 @@ public object MessageSerializationUtil {
     public fun toJsonString(messages: Messages, json: Json = defaultJson): String {
         return json.encodeToString(Messages.serializer, messages)
     }
-
+    
     /**
      * 直接通过 [Json] 对json字符串进行反序列化。
      *
@@ -141,8 +143,8 @@ public object MessageSerializationUtil {
     public fun fromJsonString(jsonString: String, json: Json = defaultJson): Messages {
         return json.decodeFromString(Messages.serializer, jsonString)
     }
-
-
+    
+    
 }
 
 /**
@@ -156,8 +158,8 @@ public fun interface JsonBuilder4J {
 }
 
 
-private fun tryFindAllMessageSerializersModule(): SerializersModule {
-
+private suspend fun tryFindAllMessageSerializersModule(): SerializersModule {
+    
     logger.debug("Try find all message serializers module...")
     val componentSerializers = runCatching {
         ServiceLoader.load(ComponentAutoRegistrarFactory::class.java).map {
@@ -167,7 +169,7 @@ private fun tryFindAllMessageSerializersModule(): SerializersModule {
             }
         }
     }.getOrElse { emptyList() }
-
+    
     return SerializersModule {
         include(Messages.serializersModule)
         componentSerializers.forEach {

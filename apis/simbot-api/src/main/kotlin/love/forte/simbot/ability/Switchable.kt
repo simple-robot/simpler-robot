@@ -14,10 +14,11 @@
  *
  */
 
-package love.forte.simbot
+package love.forte.simbot.ability
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import love.forte.simbot.Api4J
 import love.forte.simbot.utils.runInBlocking
 
 /**

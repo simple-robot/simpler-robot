@@ -2,14 +2,36 @@
 
 package love.forte.simboot.core.application
 
-import love.forte.simbot.application.ApplicationDslBuilder
-import love.forte.simbot.application.ApplicationDslBuilderDsl
-import love.forte.simbot.application.buildSimbotApplication
-import love.forte.simbot.application.simbotApplication
+import love.forte.simbot.application.*
 
 
 /**
- * 通过 [simbotApplication] 并使用 [Boot] 作为 Application Factory 来构建一个 [BootApplication].
+ * 通过 [createSimbotApplication] 并使用 [Boot] 作为 Application Factory 来构建一个 [BootApplication].
+ *
+ * 相当于 `createSimbotApplication(Boot, configurator, builder)`。
+ *
+ * e.g.
+ * ```kotlin
+ * createBootApplication({
+ *      // config...
+ * }) {
+ *  // build...
+ * }
+ *
+ * ```
+ * @see Boot
+ * @see BootApplication
+ *
+ */
+public suspend fun createBootApplication(
+    configurator: BootApplicationConfiguration.() -> Unit = {},
+    builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit = {},
+): BootApplication {
+    return createSimbotApplication(Boot, configurator, builder)
+}
+
+/**
+ * 通过 [simbotApplication] 并使用 [Boot] 作为 Application Factory 来构建一个 [BootApplication] 的 [ApplicationLauncher].
  *
  * 相当于 `simbotApplication(Boot, configurator, builder)`。
  *
@@ -26,15 +48,11 @@ import love.forte.simbot.application.simbotApplication
  * @see BootApplication
  *
  */
-public inline fun bootApplication(
-    crossinline configurator: BootApplicationConfiguration.() -> Unit = {},
-    crossinline builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit,
-): BootApplication {
-    return simbotApplication(Boot, {
-        configurator()
-    }) {
-        builder(it)
-    }
+public fun bootApplication(
+    configurator: BootApplicationConfiguration.() -> Unit = {},
+    builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit = {},
+): ApplicationLauncher<BootApplication> {
+    return simbotApplication(Boot, configurator, builder)
 }
 
 
@@ -144,6 +162,20 @@ public inline fun bootApplication(
  */
 @JvmSynthetic
 @ApplicationDslBuilderDsl
-public fun buildBootApplication(block: ApplicationDslBuilder<BootApplicationConfiguration, BootApplicationBuilder, BootApplication>.() -> Unit = {}): BootApplication {
+public suspend fun buildBootApplication(block: ApplicationDslBuilder<BootApplicationConfiguration, BootApplicationBuilder, BootApplication>.() -> Unit = {}): BootApplication {
     return buildSimbotApplication(Boot, block)
+}
+
+/**
+ * 通过 [buildSimbotApplication] 来提供 `DSL` 风格的方式来配置 [BootApplication].
+ *
+ * 相当于使用 `simbotApplication(Boot, {...}) { ... }`。
+ *
+ * @see Boot
+ * @see BootApplication
+ *
+ */
+@ApplicationDslBuilderDsl
+public fun buildBootApplicationLauncher(block: ApplicationDslBuilder<BootApplicationConfiguration, BootApplicationBuilder, BootApplication>.() -> Unit = {}): ApplicationLauncher<BootApplication> {
+    return buildSimbotApplicationLauncher(Boot, block)
 }

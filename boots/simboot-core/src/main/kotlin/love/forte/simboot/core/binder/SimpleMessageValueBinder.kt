@@ -56,24 +56,29 @@ public object MessageValueBinderFactory : ParameterBinderFactory {
         val tool = KAnnotationTool()
         val parameter = context.parameter
         val messageValue = tool.getAnnotation<MessageValue>(parameter) ?: return ParameterBinderResult.empty()
+        val isReversed: Boolean = messageValue.isReversed
         val isNullable = parameter.type.isMarkedNullable
         
-        val targetType: Message.Key<*>
-        val classifier = parameter.type.classifier
-        if (classifier is KClass<*>) {
-            return ParameterBinderResult.normal(classifier.resolve(isNullable))
-        } else if (classifier is KTypeParameter) {
-            return ParameterBinderResult.normal(classifier.resolve(isNullable))
-        } else {
-            // TODO no
-            return ParameterBinderResult.empty()
+        // val targetType: Message.Key<*>
+        
+        return when (val classifier = parameter.type.classifier) {
+            is KClass<*> -> {
+                ParameterBinderResult.normal(classifier.resolve(isNullable, isReversed))
+            }
+            is KTypeParameter -> {
+                ParameterBinderResult.normal(classifier.resolve(isNullable, isReversed))
+            }
+            else -> {
+                // TODO no
+                ParameterBinderResult.empty()
+            }
         }
         
         
     }
     
     
-    private fun KClass<*>.resolve(isNullable: Boolean): ParameterBinder {
+    private fun KClass<*>.resolve(isNullable: Boolean, isReversed: Boolean): ParameterBinder {
         // if is type of message
         if (isSubclassOf(Message::class)) {
             when {
@@ -90,7 +95,7 @@ public object MessageValueBinderFactory : ParameterBinderFactory {
         TODO()
     }
     
-    private fun KTypeParameter.resolve(isNullable: Boolean): ParameterBinder {
+    private fun KTypeParameter.resolve(isNullable: Boolean, isReversed: Boolean): ParameterBinder {
         
         
         TODO()

@@ -31,6 +31,8 @@ import kotlin.coroutines.EmptyCoroutineContext
  *
  * 应用程序启动器。
  *
+ * [ApplicationLauncher] 用在 [simbotApplication] 或与之相关的函数中，用来实现在配置application之后而不直接启动的情况。
+ *
  * @see applicationLauncher
  *
  * @author ForteScarlet
@@ -91,7 +93,6 @@ public fun <A : Application> applicationLauncher(
 ): ApplicationLauncher<A> {
     return ApplicationLauncherImpl(create, context)
 }
-
 
 
 private class ApplicationLauncherImpl<out A : Application>(

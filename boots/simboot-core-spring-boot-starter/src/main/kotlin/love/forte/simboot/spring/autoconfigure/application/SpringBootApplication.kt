@@ -19,7 +19,6 @@ package love.forte.simboot.spring.autoconfigure.application
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.application.*
 import love.forte.simbot.core.application.BaseApplication
 import love.forte.simbot.core.application.BaseApplicationBuilder
@@ -60,7 +59,10 @@ public object SpringBoot :
         return SpringBootApplicationBuilderImpl().apply {
             builder(configuration)
         }.build(configuration).also {
-            logger.info("Simbot Spring Boot Application built in {}", (System.nanoTime() - startTime).nanoseconds.toString())
+            logger.info(
+                "Simbot Spring Boot Application built in {}",
+                (System.nanoTime() - startTime).nanoseconds.toString()
+            )
         }
     }
 }
@@ -132,7 +134,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
     
     
     @Suppress("DuplicatedCode")
-    fun build(configuration: SpringBootApplicationConfiguration): SpringBootApplication {
+    suspend fun build(configuration: SpringBootApplicationConfiguration): SpringBootApplication {
         val components = buildComponents()
         
         val logger = configuration.logger
@@ -168,7 +170,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
             onCompletion {
                 bots.forEach { bot ->
                     logger.info("Blocking start bot {}", bot)
-                    val started = runBlocking { bot.start() }
+                    val started = bot.start()
                     logger.info("Bot [{}] started: {}", bot, started)
                 }
             }

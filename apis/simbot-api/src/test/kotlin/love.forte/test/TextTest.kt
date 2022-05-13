@@ -32,9 +32,6 @@ class TextTest {
     @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun textTest() {
-        Messages.registrar {
-        }
-
         val t1 = Text()
         val t2 = Text { "Abc" }
         val t3 = "23333".toText()

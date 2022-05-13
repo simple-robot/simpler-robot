@@ -34,62 +34,63 @@ import love.forte.simbot.utils.runInBlocking
  * @author ForteScarlet
  */
 public interface Application : CoroutineScope {
-
+    
     /**
      * 当前 [Application] 的环境属性。
      */
     public val environment: Environment
-
-
+    
+    
     /**
      * 在进行构建时所使用的配置信息。
      * 构建完成后可以得到，但是尽可能不要进行修改操作。这可能没有意义，也可能会导致意外的错误。
      */
     public val configuration: ApplicationConfiguration
-
-
+    
+    
     /**
      * 当前应用的组件环境内容。
      */
     public interface Environment {
-
+        
         /**
          * 当前应用程序安装的所有组件的 **列表视图**。
          */
         public val components: List<Component>
-
+        
         /**
          * 尝试根据ID获取一个指定的组件对象。如果未找到则会抛出 [NoSuchComponentException].
          *
          * @throws NoSuchComponentException 当没有找到目标ID的组件时
          */
         public fun getComponent(id: ID): Component
-
+        
         /**
          * 尝试根据ID获取一个指定的组件对象。如果未找到则会返回null。
          */
         public fun getComponentOrNull(id: ID): Component?
-
-
+        
+        
         /**
          * 得到所有组件注册所最终汇总出来的 [SerializersModule] 实例，可用于构建序列化器。
          */
         public val serializersModule: SerializersModule
     }
-
+    
     /**
      * 得到当前 [Application] 最终的 [EventListenerManager].
      */
     public val eventListenerManager: EventListenerManager
-
+    
     /**
      * 当前应用下的 [事件提供者][EventProvider] 的 **列表视图**。
      */
     public val providers: List<EventProvider>
-
+    
     /**
      * 挂起此应用直至其被终止。
      */
+    @JvmSynthetic
     public suspend fun join()
     
     
@@ -99,14 +100,33 @@ public interface Application : CoroutineScope {
     @Api4J
     public fun joinBlocking(): Unit = runInBlocking { join() }
     
-
+    
     /**
      * 终止当前应用，并关闭其中所有可能的资源。
      *
      * [Application] 被终止后将不能再次启动。
      *
      */
-    public suspend fun shutdown(reason: Throwable?)
+    @JvmSynthetic
+    public suspend fun shutdown(reason: Throwable? = null)
+    
+    /**
+     * 终止当前应用，并关闭其中所有可能的资源。
+     *
+     * [Application] 被终止后将不能再次启动。
+     *
+     */
+    @Api4J
+    public fun shutdownBlocking(reason: Throwable?): Unit = runInBlocking { shutdown(reason) }
+    
+    /**
+     * 终止当前应用，并关闭其中所有可能的资源。
+     *
+     * [Application] 被终止后将不能再次启动。
+     *
+     */
+    @Api4J
+    public fun shutdownBlocking(): Unit = runInBlocking { shutdown() }
 }
 
 

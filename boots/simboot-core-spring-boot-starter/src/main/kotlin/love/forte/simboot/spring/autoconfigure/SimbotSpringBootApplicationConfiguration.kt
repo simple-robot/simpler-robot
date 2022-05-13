@@ -88,7 +88,7 @@ public open class SimbotSpringBootApplicationConfiguration {
             applicationConfigures.forEach { configure ->
                 configure.run { config(configuration) }
             }
-            // TODO
+            // TODO..?
         }.launchBlocking()
     }
     

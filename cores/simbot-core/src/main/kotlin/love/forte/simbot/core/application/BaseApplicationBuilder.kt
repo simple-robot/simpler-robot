@@ -16,6 +16,7 @@
 
 package love.forte.simbot.core.application
 
+import kotlinx.coroutines.launch
 import love.forte.simbot.*
 import love.forte.simbot.ability.CompletionPerceivable
 import love.forte.simbot.application.*
@@ -35,8 +36,8 @@ import kotlin.concurrent.write
  */
 public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuilder<A> {
     private val componentConfigurations = mutableMapOf<Attribute<*>, Any.() -> Unit>()
-    private val componentFactories = mutableMapOf<Attribute<*>, () -> Component>()
-    private val botRegisters = ConcurrentLinkedQueue<BotRegistrar.() -> Unit>()
+    private val componentFactories = mutableMapOf<Attribute<*>, suspend () -> Component>()
+    private val botRegisters = ConcurrentLinkedQueue<suspend BotRegistrar.() -> Unit>()
     
     private val applicationLock = ReentrantReadWriteLock()
     private lateinit var applicationInstance: A
@@ -51,7 +52,7 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
      * 事件提供者工厂。
      */
     private val eventProviderFactories =
-        mutableMapOf<Attribute<*>, (EventProcessor, List<Component>, ApplicationConfiguration) -> EventProvider>()
+        mutableMapOf<Attribute<*>, suspend (EventProcessor, List<Component>, ApplicationConfiguration) -> EventProvider>()
     
     /**
      * 注册一个 [组件][Component].
@@ -96,7 +97,7 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
     /**
      * 添加一个bot注册函数。
      */
-    override fun bots(registrar: BotRegistrar.() -> Unit) {
+    override fun bots(registrar: suspend BotRegistrar.() -> Unit) {
         botRegisters.add(registrar)
     }
     
@@ -121,12 +122,12 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
     }
     
     
-    protected fun buildComponents(): List<Component> {
+    protected suspend fun buildComponents(): List<Component> {
         return componentFactories.values.map { it() }
     }
     
     
-    protected fun buildProviders(
+    protected suspend fun buildProviders(
         eventProcessor: EventProcessor,
         components: List<Component>,
         applicationConfiguration: ApplicationConfiguration,
@@ -139,7 +140,7 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
      *
      * @return 被注册的bot数量
      */
-    protected fun registerBots(botManagers: List<love.forte.simbot.BotRegistrar>): List<Bot> {
+    protected suspend fun registerBots(botManagers: List<love.forte.simbot.BotRegistrar>): List<Bot> {
         val registrar = BotRegistrarImpl(botManagers)
         botRegisters.forEach {
             it(registrar)
@@ -151,13 +152,14 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
     /**
      * 当构建完成时统一执行的函数列表。
      */
-    private val onCompletions = ConcurrentLinkedQueue<(A) -> Unit>()
+    private val onCompletions = ConcurrentLinkedQueue<suspend (A) -> Unit>()
     
     
-    override fun onCompletion(handle: (application: A) -> Unit) {
+    override fun onCompletion(handle: suspend (application: A) -> Unit) {
         applicationLock.read {
             if (::applicationInstance.isInitialized) {
-                handle(applicationInstance)
+                val app = applicationInstance
+                app.launch { handle(app) }
             } else {
                 onCompletions.add(handle)
             }
@@ -168,12 +170,12 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
     /**
      * 当 [Application] 构建完毕，则执行此函数来执行所有的 `onCompletion` 回调函数。
      */
-    protected fun complete(application: A) {
+    protected suspend fun complete(application: A) {
         applicationLock.write {
             applicationInstance = application
         }
         while (onCompletions.isNotEmpty()) {
-            onCompletions.poll()(application)
+            onCompletions.poll().invoke(application)
         }
     }
     

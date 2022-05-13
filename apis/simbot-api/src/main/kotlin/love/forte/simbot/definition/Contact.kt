@@ -27,24 +27,27 @@ import love.forte.simbot.message.MessageReceipt
  *
  * 一个联系目标。联系人是除 [Bot] 以外的可以进行信息交流的 [User], 例如 [好友][Friend], 或者一个[群成员][Member]。
  *
- * 但是并不是 [Bot] 以外的所有人都可以进行信息交流，比如对于一个群成员，可能会受限于权限，或者受限于组织类型（例如一个订阅型组织，参考tg的频道）.
+ * 虽然 [Contact] 实现了 [SendSupport], 但是并不是 [Bot] 以外的所有人都可以进行信息交流，比如对于一个群成员，可能会受限于权限，或者受限于组织类型（例如一个订阅型组织，参考tg的频道）.
+ *
  *
  * @author ForteScarlet
  */
 public interface Contact : User, SendSupport, BotContainer {
-
+    
     /**
      * 联系人所属的 [Bot].
      */
     override val bot: Bot
-
-
+    
+    
     /**
      * 向此联系目标发送消息。
+     *
+     * @throws love.forte.simbot.action.UnsupportedActionException 当此对象不支持发生消息时
      */
     @JvmSynthetic
     override suspend fun send(message: Message): MessageReceipt
-
+    
 }
 
 
