@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot
@@ -33,6 +32,7 @@ public object Simbot {
      *
      * @see kotlin.check
      */
+    @JvmSynthetic
     public inline fun check(value: Boolean) {
         contract {
             returns() implies value
@@ -46,6 +46,7 @@ public object Simbot {
      *
      * @see kotlin.check
      */
+    @JvmSynthetic
     public inline fun check(value: Boolean, lazyMessage: () -> Any) {
         contract {
             returns() implies value
@@ -63,6 +64,7 @@ public object Simbot {
      * Like [kotlin.require].
      * @see kotlin.require
      */
+    @JvmSynthetic
     public inline fun require(value: Boolean) {
         contract {
             returns() implies value
@@ -75,6 +77,7 @@ public object Simbot {
      * Like [kotlin.require].
      * @see kotlin.require
      */
+    @JvmSynthetic
     public inline fun require(value: Boolean, lazyMessage: () -> Any) {
         contract {
             returns() implies value
