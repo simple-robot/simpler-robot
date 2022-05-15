@@ -47,6 +47,10 @@ public interface ApplicationFactory<
 
 /**
  * [Application] 的构建器.
+ *
+ * 在 [ApplicationBuilder] 中，所有相关的函数如果没做特殊说明的话均为 **非线程安全的**。
+ * 因此请避免并行的使用未作特殊说明的函数。
+ *
  * @param A 目标 [Application] 类型
  */
 public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> {
@@ -80,7 +84,13 @@ public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> 
     /**
      * 注册一个当 [Application] 构建完成后的回调函数。
      *
-     * 假如当前builder已经构建完毕，再调用此函数无效果。
+     * [onCompletion] 的实现应当是**线程安全**的。因此你可以安全的在 [ApplicationBuilder]
+     * 内的一些其他函数中并行的注册或使用 [handle] 函数。
+     *
+     * [onCompletion] 在并行注册的情况下，不保证其最终的执行顺序。
+     *
+     * 假如当前builder已经构建完毕，再调用此函数则会**异步的**立刻执行 [handle] 函数。
+     * 此时执行 [handle] 使用的异步协程作用域为已经构建完毕的 [Application].
      */
     @ApplicationBuilderDsl
     override fun onCompletion(handle: suspend (application: A) -> Unit)

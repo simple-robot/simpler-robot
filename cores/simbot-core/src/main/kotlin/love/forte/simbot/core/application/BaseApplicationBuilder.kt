@@ -37,9 +37,13 @@ import kotlin.concurrent.write
 public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuilder<A> {
     private val componentConfigurations = mutableMapOf<Attribute<*>, Any.() -> Unit>()
     private val componentFactories = mutableMapOf<Attribute<*>, suspend () -> Component>()
-    private val botRegisters = ConcurrentLinkedQueue<suspend BotRegistrar.() -> Unit>()
+    
+    // private val botRegisterConfig = mutableListOf<suspend BotRegistrar.() -> Unit>()
+    private var botRegisterConfig: (suspend BotRegistrar.() -> Unit) = {}
     
     private val applicationLock = ReentrantReadWriteLock()
+    
+    @Volatile
     private lateinit var applicationInstance: A
     
     /**
@@ -98,7 +102,12 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
      * 添加一个bot注册函数。
      */
     override fun bots(registrar: suspend BotRegistrar.() -> Unit) {
-        botRegisters.add(registrar)
+        botRegisterConfig.also { old ->
+            botRegisterConfig = {
+                old()
+                registrar()
+            }
+        }
     }
     
     
@@ -142,9 +151,7 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
      */
     protected suspend fun registerBots(botManagers: List<love.forte.simbot.BotRegistrar>): List<Bot> {
         val registrar = BotRegistrarImpl(botManagers)
-        botRegisters.forEach {
-            it(registrar)
-        }
+        botRegisterConfig(registrar)
         return registrar.bots
     }
     
@@ -154,29 +161,41 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
      */
     private val onCompletions = ConcurrentLinkedQueue<suspend (A) -> Unit>()
     
+    private suspend fun doOnCompletion(application: A) {
+        while (onCompletions.isNotEmpty()) {
+            onCompletions.poll().invoke(application)
+        }
+    }
     
     override fun onCompletion(handle: suspend (application: A) -> Unit) {
+        var app: A? = null
         applicationLock.read {
             if (::applicationInstance.isInitialized) {
-                val app = applicationInstance
-                app.launch { handle(app) }
+                app = applicationInstance
             } else {
                 onCompletions.add(handle)
+            }
+        }
+        app?.also {
+            it.launch {
+                doOnCompletion(it)
+                handle(it)
             }
         }
     }
     
     
     /**
-     * 当 [Application] 构建完毕，则执行此函数来执行所有的 `onCompletion` 回调函数。
+     * 当 [Application] 构建完毕，则执行此函数来执行所有的回调函数。
      */
     protected suspend fun complete(application: A) {
         applicationLock.write {
+            if (::applicationInstance.isInitialized) {
+                throw SimbotIllegalStateException("Application has been initialized: $applicationInstance")
+            }
             applicationInstance = application
         }
-        while (onCompletions.isNotEmpty()) {
-            onCompletions.poll().invoke(application)
-        }
+        doOnCompletion(application)
     }
     
     
