@@ -88,6 +88,7 @@ public class CoreListenerManagerConfiguration {
      *
      */
     @JvmSynthetic
+    @ExperimentalSimbotApi
     @CoreEventManagerConfigDSL
     public fun listenerExceptionHandler(handler: (Throwable) -> EventResult): CoreListenerManagerConfiguration = also {
         listenerExceptionHandler = handler
@@ -98,6 +99,7 @@ public class CoreListenerManagerConfiguration {
      *
      */
     @Api4J
+    @ExperimentalSimbotApi
     public fun listenerExceptionHandler(handler: Function<Throwable, EventResult>): CoreListenerManagerConfiguration =
         also {
             listenerExceptionHandler = handler::apply
@@ -111,7 +113,6 @@ public class CoreListenerManagerConfiguration {
      *
      * @throws IllegalStateException 如果出现重复ID
      */
-    @Synchronized
     @CoreEventManagerConfigDSL
     public fun addProcessingInterceptors(interceptors: Map<ID, EventProcessingInterceptor>): CoreListenerManagerConfiguration =
         also {
@@ -133,7 +134,6 @@ public class CoreListenerManagerConfiguration {
      *
      * @throws IllegalStateException 如果出现重复ID
      */
-    @Synchronized
     @CoreEventManagerConfigDSL
     public fun addListenerInterceptors(interceptors: Map<ID, EventListenerInterceptor>): CoreListenerManagerConfiguration =
         also {
@@ -194,14 +194,14 @@ public class CoreListenerManagerConfiguration {
     }
     
     /**
-     * 添加多个监听函数。
+     * 添接加多个监听函数。
      */
     public fun addListeners(listeners: Collection<EventListener>): CoreListenerManagerConfiguration = also {
         this.listeners.addAll(listeners)
     }
     
     /**
-     * 添加多个监听函数。
+     * 直接添加多个监听函数。
      */
     public fun addListeners(vararg listeners: EventListener): CoreListenerManagerConfiguration = also {
         this.listeners.addAll(listeners)
@@ -223,8 +223,7 @@ public class CoreListenerManagerConfiguration {
     /**
      * 进入到监听函数配置域。
      */
-    @Suppress("MemberVisibilityCanBePrivate")
-    public fun listeners(): EventListenersGenerator = EventListenersGenerator()
+    private fun listeners(): EventListenersGenerator = EventListenersGenerator()
     
     // endregion
     
