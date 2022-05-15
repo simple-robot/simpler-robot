@@ -47,19 +47,22 @@ public interface CoreApplicationBuilder<A : Application> : CoreEventProcessableA
 public abstract class BaseCoreApplicationBuilder<A : Application> : BaseApplicationBuilder<A>(),
     CoreApplicationBuilder<A> {
     // protected open var listenerManagerConfigurations: ConcurrentLinkedQueue<CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit> = ConcurrentLinkedQueue()
-    protected open var listenerManagerConfig: (CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) = {}
+    private var listenerManagerConfig: (CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) = {}
     
-    
-    /**
-     * 配置当前的构建器内的事件处理器。
-     */
-    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
+    protected open fun addListenerManagerConfig(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
         listenerManagerConfig.also { old ->
             listenerManagerConfig = {
                 old(it)
                 configurator(it)
             }
         }
+    }
+    
+    /**
+     * 配置当前的构建器内的事件处理器。
+     */
+    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
+        addListenerManagerConfig(configurator)
     }
     
     /**
