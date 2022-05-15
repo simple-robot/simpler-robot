@@ -23,7 +23,6 @@ import love.forte.simbot.application.ApplicationConfiguration
 import love.forte.simbot.core.event.CoreListenerManager
 import love.forte.simbot.core.event.CoreListenerManagerConfiguration
 import love.forte.simbot.core.event.coreListenerManager
-import java.util.concurrent.ConcurrentLinkedQueue
 
 
 /**
@@ -47,15 +46,20 @@ public interface CoreApplicationBuilder<A : Application> : CoreEventProcessableA
  */
 public abstract class BaseCoreApplicationBuilder<A : Application> : BaseApplicationBuilder<A>(),
     CoreApplicationBuilder<A> {
-    protected open var listenerManagerConfigurations: ConcurrentLinkedQueue<CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit> =
-        ConcurrentLinkedQueue()
+    // protected open var listenerManagerConfigurations: ConcurrentLinkedQueue<CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit> = ConcurrentLinkedQueue()
+    protected open var listenerManagerConfig: (CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) = {}
     
     
     /**
      * 配置当前的构建器内的事件处理器。
      */
     override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
-        listenerManagerConfigurations.add(configurator)
+        listenerManagerConfig.also { old ->
+            listenerManagerConfig = {
+                old(it)
+                configurator(it)
+            }
+        }
     }
     
     /**
@@ -70,9 +74,7 @@ public abstract class BaseCoreApplicationBuilder<A : Application> : BaseApplicat
         }
         
         return coreListenerManager(initial = initial, block = {
-            listenerManagerConfigurations.forEach { config ->
-                config(environment)
-            }
+            listenerManagerConfig(environment)
         })
     }
     

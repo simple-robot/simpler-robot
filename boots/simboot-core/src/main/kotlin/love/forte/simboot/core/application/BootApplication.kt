@@ -50,7 +50,6 @@ import love.forte.simbot.utils.runInBlocking
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -389,14 +388,24 @@ private class BootApplicationImpl(
  * [BootApplicationBuilder] 的实现。
  */
 private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreApplicationBuilder<BootApplication>() {
-    private val beanContainerBuilderConfigurations = ConcurrentLinkedQueue<BeanContainerBuilder.() -> Unit>()
+    private var beanContainerBuilderConfig: (BeanContainerBuilder.() -> Unit) = {}
     override fun beans(beanContainerBuilder: BeanContainerBuilder.() -> Unit) {
-        beanContainerBuilderConfigurations.add(beanContainerBuilder)
+        beanContainerBuilderConfig.also { old ->
+            beanContainerBuilderConfig = {
+                old()
+                beanContainerBuilder()
+            }
+        }
     }
     
-    private val binderBuilderConfigurations = ConcurrentLinkedQueue<ParameterBinderBuilder.() -> Unit>()
+    private var binderBuilderConfig: (ParameterBinderBuilder.() -> Unit) = {}
     override fun binders(parameterBinderBuilder: ParameterBinderBuilder.() -> Unit) {
-        binderBuilderConfigurations.add(parameterBinderBuilder)
+        binderBuilderConfig.also { old ->
+            binderBuilderConfig = {
+                old()
+                parameterBinderBuilder()
+            }
+        }
     }
     
     
@@ -433,19 +442,15 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
         }
         
         logger.debug("Building bean container by builder: {}", beanContainerBuilder)
-        beanContainerBuilderConfigurations.forEach { config ->
-            beanContainerBuilder.config()
-        }
+        beanContainerBuilder.beanContainerBuilderConfig()
         
         val beanContainer: BeanContainer = beanContainerBuilder.build()
         logger.debug("Bean container is built: {}", beanContainer)
         // endregion
         
         // region build binders
-        val binderBuilder = ParameterBinderBuilderImpl()
-        binderBuilderConfigurations.forEach { config ->
-            binderBuilder.config()
-        }
+        val binderBuilder = ParameterBinderBuilderImpl().also(binderBuilderConfig)
+        
         
         // Binder containers.
         resolvedBinderContainerFromBeanContainer(binderBuilder, beanContainer, tool)
