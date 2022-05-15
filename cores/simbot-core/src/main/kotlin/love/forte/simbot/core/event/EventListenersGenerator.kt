@@ -39,12 +39,12 @@ internal annotation class EventListenersGeneratorDSL
  * // 假设在 CoreListenerManagerConfiguration 中
  * listeners {
  *     // plus listener of EventListenersGenerator
- *     +coreListener(FooEvent) { _, _ -> /* Nothing here. */ }
+ *     +coreListener(FooEvent) { /* Nothing here. */ }
  *
  *     // listener of EventListenersGenerator
  *     listener(FooEvent) {
  *         // handle of `listener`
- *         handle { context, event ->
+ *         handle { event -> // this: EventListenerProcessingContext
  *             // do..
  *             delay(200) // suspend support
  *             event.friend().send("Hello!")
@@ -71,7 +71,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * ```kotlin
      * listener(FooEvent) {
      *      // 监听函数的处理逻辑
-     *      handle { context, event ->
+     *      handle { event -> // this: EventListenerProcessingContext
      *          event.friend().send("Context: $context")
      *      }
      * }
@@ -117,7 +117,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      *
      * e.g.
      * ```kotlin
-     * FooEvent { context, event ->
+     * FooEvent { event -> // this: EventListenerProcessingContext
      *     // do handle
      * }
      * ```
@@ -125,7 +125,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * 相当于：
      * ```kotlin
      * listener(FooEvent) {
-     *     handle {
+     *     handle { event -> // this: EventListenerProcessingContext
      *        // do handle
      *     }
      * }
@@ -134,12 +134,15 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * @receiver 需要监听的 [事件类型][Event.Key] 对象实例。
      *
      */
-    public operator fun <E : Event> Event.Key<E>.invoke(handle: suspend (EventListenerProcessingContext, E) -> Any?) {
+    public operator fun <E : Event> Event.Key<E>.invoke(handle: suspend EventListenerProcessingContext.(E) -> Any?) {
         listener(this) {
             handle(handle)
         }
     }
     
+    /**
+     * 得到当前构建的所有 listeners。
+     */
     public fun build(): List<EventListener> {
         return listeners
     }
@@ -188,14 +191,14 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
     public var isAsync: Boolean = false
     
     
-    private var func: suspend (EventListenerProcessingContext, E) -> Any? = { _, _ -> null }
+    private var func: suspend EventListenerProcessingContext.(E) -> Any? = { null }
     
     /**
      * 监听函数。
      */
     @JvmSynthetic
     @ListenerGeneratorDSL
-    public fun handle(func: suspend (EventListenerProcessingContext, E) -> Any?) {
+    public fun handle(func: suspend EventListenerProcessingContext.(E) -> Any?) {
         this.func = func
     }
     
@@ -206,8 +209,8 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
     @JvmName("handle")
     @Suppress("FunctionName")
     public fun _handle(func: BiConsumer<EventListenerProcessingContext, E>): ListenerGenerator<E> = also {
-        this.func = { c, e ->
-            runWithInterruptible { func.accept(c, e) }
+        this.func = { e ->
+            runWithInterruptible { func.accept(this, e) }
             null
         }
     }
@@ -219,7 +222,7 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
     @JvmName("handle")
     @Suppress("FunctionName")
     public fun _handle(func: BiFunction<EventListenerProcessingContext, E, Any?>): ListenerGenerator<E> = also {
-        this.func = { c, e -> runWithInterruptible { func.apply(c, e) } }
+        this.func = { e -> runWithInterruptible { func.apply(this, e) } }
     }
     
     internal fun build(): EventListener {

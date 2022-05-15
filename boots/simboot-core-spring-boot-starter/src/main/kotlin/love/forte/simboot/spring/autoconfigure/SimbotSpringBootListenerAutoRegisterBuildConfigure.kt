@@ -1,3 +1,19 @@
+/*
+ *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ *
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *
+ *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ *
+ *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
+ *
+ *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ *  https://www.gnu.org/licenses
+ *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
+ */
+
 package love.forte.simboot.spring.autoconfigure
 
 import love.forte.annotationtool.core.KAnnotationTool
@@ -57,10 +73,12 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         val listenerProcessor = KFunctionListenerProcessor(tool)
         logger.debug("Resolving binders...")
         val binderManager = resolveBinderManager(tool, configuration)
-        logger.debug("The size of resolved binders is {} (normal: {}, global: {})",
+        logger.debug(
+            "The size of resolved binders is {} (normal: {}, global: {})",
             binderManager.normalBinderFactorySize + binderManager.globalBinderFactorySize,
             binderManager.normalBinderFactorySize,
-            binderManager.globalBinderFactorySize)
+            binderManager.globalBinderFactorySize
+        )
         
         logger.debug("Resolving listeners...")
         val listeners = resolveListeners(tool, listenerProcessor, binderManager, configuration)
@@ -141,7 +159,7 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
                 
                 Quadruple(name, kClass, function, binderAnnotation)
             }
-        }.forEach { (name, type, function, binder) ->
+        }.forEach { (name, _, function, binder) ->
             // not current
             val scope = binder.scope
             val id = binder.value.firstOrNull()
@@ -188,12 +206,14 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         val topBinderPackages = configuration.topLevelBinderScanPackage
         if (topBinderPackages.isNotEmpty()) {
             logger.debug("Resolving top-level function binder in {}", topBinderPackages)
-            resolveTopLevelManagerTo(tool,
+            resolveTopLevelManagerTo(
+                tool,
                 configuration.classLoader,
                 configuration.topLevelBinderScanPackage,
                 globalBinderFactories,
                 idBinderFactories,
-                binderManager)
+                binderManager
+            )
         } else {
             logger.debug("Top-level binder package scan target is empty.")
         }
@@ -219,7 +239,7 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
             
             
             Quadruple(metadata, kc, func, binderAnnotation)
-        }.forEach { (metadata, kc, func, annotation) ->
+        }.forEach { (_, _, func, annotation) ->
             val scope = annotation.scope
             if (scope == Binder.Scope.CURRENT) {
                 throw SimbotIllegalStateException("The binder scope of top-level binder function cannot be CURRENT, but $annotation")
@@ -264,12 +284,13 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         // scan functions
         applicationContext.beanDefinitionNames.asSequence().map { name -> name to applicationContext.getType(name) }
             .flatMap { (name, type) ->
-                val kClass = kotlin.runCatching { type.kotlin }.getOrElse {
+                val kClass = kotlin.runCatching { type?.kotlin }.getOrElse {
                     logger.debug("Cannot resolve type {} to kotlin, skip it.", type)
                     return@flatMap emptySequence()
                 }
-                kClass.allDeclaredFunctions.asSequence().map { function -> Triple(name, kClass, function) }
-            }.mapNotNullTo(listeners) { (name, type, function) ->
+                kClass?.allDeclaredFunctions?.asSequence()?.map { function -> Triple(name, kClass, function) }
+                    ?: emptySequence()
+            }.mapNotNullTo(listeners) { (name, _, function) ->
                 // check @Listener
                 val listenerAnnotation = tool.getAnnotation<Listener>(function) ?: return@mapNotNullTo null
                 
@@ -282,14 +303,16 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
                 val listenerId = "$name#$functionSign"
                 
                 
-                val resolvedListener = listenerProcessor.process(FunctionalListenerProcessContext(
-                    id = listenerId,
-                    function = function,
-                    priority = listenerAnnotation.priority,
-                    isAsync = listenerAnnotation.async,
-                    binderManager = binderManager,
-                    beanContainer = beanContainer,
-                ))
+                val resolvedListener = listenerProcessor.process(
+                    FunctionalListenerProcessContext(
+                        id = listenerId,
+                        function = function,
+                        priority = listenerAnnotation.priority,
+                        isAsync = listenerAnnotation.async,
+                        binderManager = binderManager,
+                        beanContainer = beanContainer,
+                    )
+                )
                 
                 logger.debug("Resolved listener [{}] by processor [{}]", resolvedListener, listenerProcessor)
                 
@@ -298,12 +321,14 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         
         val topLevelPackages = configuration.topLevelListenerScanPackage
         if (topLevelPackages.isNotEmpty()) {
-            resolveTopLevelListenersTo(tool,
+            resolveTopLevelListenersTo(
+                tool,
                 listenerProcessor,
                 binderManager,
                 configuration.classLoader,
                 configuration.topLevelListenerScanPackage,
-                listeners)
+                listeners
+            )
         } else {
             logger.debug("Top-level listener function scan target is empty.")
         }
@@ -313,7 +338,6 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
     }
     
     
-    @OptIn(InternalSimbotApi::class)
     private fun resolveTopLevelListenersTo(
         tool: KAnnotationTool,
         listenerProcessor: KFunctionListenerProcessor,
@@ -332,14 +356,16 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         }.mapNotNullTo(listeners) { (_, _, func, annotation) ->
             kotlin.runCatching {
                 val id = annotation.id.ifEmpty { "TOP#${func.sign()}" }
-                val resolvedListener = listenerProcessor.process(FunctionalListenerProcessContext(
-                    id = id,
-                    function = func,
-                    priority = annotation.priority,
-                    isAsync = annotation.async,
-                    binderManager = binderManager,
-                    beanContainer = beanContainer,
-                ))
+                val resolvedListener = listenerProcessor.process(
+                    FunctionalListenerProcessContext(
+                        id = id,
+                        function = func,
+                        priority = annotation.priority,
+                        isAsync = annotation.async,
+                        binderManager = binderManager,
+                        beanContainer = beanContainer,
+                    )
+                )
                 
                 logger.debug("Resolved top-level listener: [{}] by processor [{}]", resolvedListener, listenerProcessor)
                 

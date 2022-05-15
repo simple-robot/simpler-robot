@@ -144,7 +144,7 @@ public inline fun <reified E : Event> coreListener(
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    noinline func: suspend (EventListenerProcessingContext, E) -> Any?,
+    noinline func: suspend EventListenerProcessingContext.(E) -> Any?,
 ): EventListener = coreListener(E::class.getKey(), id, blockNext, isAsync, logger, func)
 
 
