@@ -64,7 +64,6 @@ internal annotation class EventListenersGeneratorDSL
 public class EventListenersGenerator @InternalSimbotApi constructor() {
     private val listeners = mutableListOf<EventListener>()
     
-    
     /**
      * 构建一个监听函数。
      *
@@ -134,6 +133,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * @receiver 需要监听的 [事件类型][Event.Key] 对象实例。
      *
      */
+    @EventListenersGeneratorDSL
     public operator fun <E : Event> Event.Key<E>.invoke(handle: suspend EventListenerProcessingContext.(E) -> Any?) {
         listener(this) {
             handle(handle)

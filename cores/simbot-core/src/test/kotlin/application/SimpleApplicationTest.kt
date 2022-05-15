@@ -20,12 +20,22 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.core.application.createSimpleApplication
+import love.forte.simbot.core.application.listeners
+import love.forte.simbot.event.FriendMessageEvent
 import kotlin.time.Duration.Companion.seconds
 
 
 suspend fun main() {
     LoggerFactory.getLogger("Main").debug("Debug enabled.")
-    val app = createSimpleApplication()
+    val app = createSimpleApplication {
+        listeners {
+            FriendMessageEvent {event ->
+            
+            }
+            
+            
+        }
+    }
     app.launch {
         delay(30.seconds)
         app.shutdown()
