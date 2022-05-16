@@ -75,6 +75,7 @@ public class SpringBootApplicationConfigurationProperties {
             }
             config.topLevelListenerScanPackage = this.topLevelListenerScanPackage
             config.topLevelBinderScanPackage = this.topLevelBinderScanPackage
+            config.isAutoStartBots = this.isAutoStartBots
         }
     }
 }

@@ -96,15 +96,6 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure(
                                 this
                             )
                         }
-                    }?.also { bot ->
-                        onCompletion {
-                            // start bot on completion
-                            val logger = configuration.logger
-                            
-                            logger.debug("Starting bot: {}", bot)
-                            val start = bot.start()
-                            configuration.logger.debug("Bot [{}] started: {}", bot, start)
-                        }
                     }
                 }
             }
