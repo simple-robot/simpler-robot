@@ -169,7 +169,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
         if (isAutoStartBots && bots.isNotEmpty()) {
             onCompletion {
                 bots.forEach { bot ->
-                    logger.info("Blocking start bot {}", bot)
+                    logger.info("Starting bot {}", bot)
                     val started = bot.start()
                     logger.info("Bot [{}] started: {}", bot, started)
                 }
