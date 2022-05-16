@@ -16,6 +16,9 @@
 
 package love.forte.simbot
 
+import love.forte.simbot.application.ApplicationBuilder
+import love.forte.simbot.application.installAllEventProviders
+import love.forte.simbot.utils.currentClassLoader
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -39,7 +42,7 @@ public object Simbot {
         }
         check(value) { "Check failed." }
     }
-
+    
     /**
      * Throws an [SimbotIllegalStateException] with the result of calling [lazyMessage] if the [value] is false.
      * Like [kotlin.check].
@@ -56,8 +59,8 @@ public object Simbot {
             throw SimbotIllegalStateException(message.toString())
         }
     }
-
-
+    
+    
     /**
      * Throws an [SimbotIllegalArgumentException] if the [value] is false.
      *
@@ -71,7 +74,7 @@ public object Simbot {
         }
         require(value) { "Failed requirement." }
     }
-
+    
     /**
      * Throws an [SimbotIllegalArgumentException] with the result of calling [lazyMessage] if the [value] is false.
      * Like [kotlin.require].
@@ -87,4 +90,22 @@ public object Simbot {
             throw SimbotIllegalArgumentException(message.toString())
         }
     }
+}
+
+
+/**
+ * 尝试加载所有的 [ComponentAutoRegistrarFactory] 和 [ComponentAutoRegistrarFactory]
+ * 并注册到 [ApplicationBuilder] 中。
+ *
+ * 相当于同时使用 [installAllComponents] 和 [installAllEventProviders]：
+ * ```kotlin
+ * simbotApplication(Foo) {
+ *    installAllComponents(classLoader)
+ *    installAllEventProviders(classLoader)
+ * }
+ * ```
+ */
+public fun ApplicationBuilder<*>.installAll(classLoader: ClassLoader = this.currentClassLoader) {
+    installAllComponents(classLoader)
+    installAllEventProviders(classLoader)
 }
