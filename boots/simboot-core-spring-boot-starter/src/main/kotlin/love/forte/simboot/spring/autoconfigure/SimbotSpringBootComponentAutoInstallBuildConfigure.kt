@@ -18,11 +18,56 @@ package love.forte.simboot.spring.autoconfigure
 
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
+import love.forte.simbot.Component
 import love.forte.simbot.ComponentFactory
 import love.forte.simbot.installAllComponents
 
 
 /**
+ * 自动配置当前可加载的所有 [Component] 的配置类。
+ *
+ * 如果当前spring环境中存在任何额外的[ComponentFactory], 则使用这些 factory;
+ * 否则会直接使用 [installAllComponents] 来尝试加载环境中的所有可加载项。
+ *
+ * For example custom factories:
+ *
+ * **Kotlin**
+ * ```kotlin
+ * @Configuration(proxyBeanMethods = false)
+ * open class MyCustomFactoryConfiguration {
+ *
+ *    @Bean
+ *    fun fooFactory(): FooComponent.Factory {
+ *       return FooComponent
+ *    }
+ *
+ *    @Bean
+ *    fun barFactory(): BarFactory {
+ *       return BarFactory()
+ *    }
+ *
+ *    // ...
+ *
+ * }
+ * ```
+ *
+ * **Java**
+ * ```java
+ * @Configuration(proxyBeanMethods = false)
+ * public class MyCustomFactoryConfiguration {
+ *
+ *    @Bean
+ *    public FooComponent.Factory fooFactory() {
+ *       return FooComponent.Factory;
+ *    }
+ *
+ *    @Bean
+ *    public BarFactory barFactory() {
+ *       return new BarFactory();
+ *    }
+ * }
+ * ```
+ *
  *
  * @author ForteScarlet
  */

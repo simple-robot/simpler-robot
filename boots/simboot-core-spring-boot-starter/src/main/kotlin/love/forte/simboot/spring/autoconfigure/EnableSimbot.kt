@@ -55,6 +55,5 @@ import org.springframework.context.annotation.Import
     SimbotSpringBootDefaultConfigures::class,
     // app
     SimbotSpringBootApplicationConfiguration::class,
-    SimbotSpringBootApplicationStarter::class,
 )
 public annotation class EnableSimbot

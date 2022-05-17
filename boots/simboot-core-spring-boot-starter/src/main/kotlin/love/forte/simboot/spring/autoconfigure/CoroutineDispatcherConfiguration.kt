@@ -24,12 +24,17 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 
 
 /**
- * 在 `spring-boot-starter` 中作为事件调度器的容器。
+ * 在 `spring-boot-starter` 中提供事件调度器 [CoroutineDispatcher] 的容器。
  */
 public open class CoroutineDispatcherContainer(public val dispatcher: CoroutineDispatcher)
 
 
 /**
+ *
+ * 对 [CoroutineDispatcherContainer] 的默认配置类。
+ *
+ * 将 spring 所提供的线程池实例 [ThreadPoolTaskExecutor] 转化为 [CoroutineDispatcher]
+ * 并置于容器中。
  *
  * @author ForteScarlet
  */
@@ -38,7 +43,7 @@ public open class CoroutineDispatcherConfiguration {
      * 默认情况下将spring内部的 [ThreadPoolTaskExecutor] 作为调度器。
      */
     @Bean
-    @ConditionalOnMissingBean(SimbotEventDispatcherContainer::class)
+    @ConditionalOnMissingBean(CoroutineDispatcherContainer::class)
     public open fun defaultSimbotEventDispatcher(executor: ThreadPoolTaskExecutor): CoroutineDispatcherContainer =
         CoroutineDispatcherContainer(executor.asCoroutineDispatcher())
     

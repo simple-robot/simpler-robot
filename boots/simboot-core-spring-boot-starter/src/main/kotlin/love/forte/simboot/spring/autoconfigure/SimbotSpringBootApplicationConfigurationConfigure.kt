@@ -23,7 +23,7 @@ import love.forte.simboot.spring.autoconfigure.application.SpringBootApplication
  *
  * 对 application 的配置环节进行操作的配置类。
  * ```kotlin
- * springBootApplication(initialConfiguration, configurator = { /* 位于此处 */  }) { ... }
+ * springBootApplication(initialConfiguration, configurator = { /* 此配置位于此处 */  }) { ... }
  * ```
  *
  * @author ForteScarlet

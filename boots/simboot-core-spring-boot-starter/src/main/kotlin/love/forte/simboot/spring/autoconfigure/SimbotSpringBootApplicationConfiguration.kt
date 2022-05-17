@@ -33,6 +33,8 @@ import org.springframework.context.annotation.Bean
 
 /**
  *
+ * 对 [Application] 的配置类。
+ *
  * @author ForteScarlet
  */
 public open class SimbotSpringBootApplicationConfiguration {
@@ -64,7 +66,7 @@ public open class SimbotSpringBootApplicationConfiguration {
      * 构建 [simbot application][Application].
      */
     @OptIn(Api4J::class)
-    @Bean
+    @Bean(destroyMethod = "shutdownBlocking")
     @ConditionalOnMissingBean(Application::class)
     public fun simbotSpringBootApplication(
         initialConfiguration: SpringBootApplicationConfiguration,

@@ -19,6 +19,7 @@ package love.forte.simboot.spring.autoconfigure.application
 import love.forte.simboot.core.application.BootApplicationConfiguration
 import love.forte.simboot.core.application.BootApplicationConfiguration.Companion.DEFAULT_BOT_VERIFY_GLOB
 import love.forte.simboot.listener.ParameterBinderFactory
+import love.forte.simbot.Bot
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
@@ -32,7 +33,7 @@ import org.springframework.context.ApplicationContext
 public class SpringBootApplicationConfigurationProperties {
     
     /**
-     * 需要加载的所有 `*.bot(.*)?` 文件的资源扫描glob。默认为 [DEFAULT_BOT_VERIFY_GLOB]。
+     * 需要加载的所有 bot 配置文件的资源扫描glob。默认为 [DEFAULT_BOT_VERIFY_GLOB]。
      *
      */
     public var botConfigurationResources: List<String> = listOf(DEFAULT_BOT_VERIFY_GLOB)
@@ -49,13 +50,10 @@ public class SpringBootApplicationConfigurationProperties {
      */
     public var topLevelBinderScanPackage: List<String> = emptyList()
     
-    
     /**
-     * 是否在bot注册后，在 `application` 构建完毕的时候自动执行 `Bot.start`。
+     * 是否在bot注册后，在 `application` 构建完毕的时候自动执行 [Bot.start]。
      *
-     * 这一行为将会是阻塞的 （ `runBlocking { bot.start() }` ）。
-     *
-     * 默认为`true`。
+     * 默认为true。
      *
      */
     public var isAutoStartBots: Boolean = true
@@ -66,10 +64,10 @@ public class SpringBootApplicationConfigurationProperties {
         applicationContext: ApplicationContext,
     ): SpringBootApplicationConfiguration {
         return SpringBootApplicationConfiguration().also { config ->
+            config.applicationContext = applicationContext
             config.applicationArguments = applicationArguments
             config.args = applicationArguments.sourceArgs.asList()
             config.botConfigurationResources = this.botConfigurationResources
-            config.applicationContext = applicationContext
             applicationContext.classLoader?.also {
                 config.classLoader = it
             }
