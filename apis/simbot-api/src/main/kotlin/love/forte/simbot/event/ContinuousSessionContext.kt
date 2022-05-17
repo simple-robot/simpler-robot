@@ -29,6 +29,75 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 
+public interface ContinuousSessionContextTODO {
+    
+    /**
+     * 注册一个临时监听函数并等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+     *
+     * ```kotlin
+     * val session: ContinuousSessionContext = ...
+     *
+     * session.waiting { provider -> // this: EventProcessingContext
+     *    // ...
+     *    provider.push(...)
+     * }
+     * ```
+     *
+     * ## 超时处理
+     * 使用 [withTimeout] 或其衍生函数来进行超时控制。
+     * ```kotlin
+     * val session: ContinuousSessionContext = ...
+     *
+     * withTimeout(5.seconds) {
+     *    session.waiting { provider -> // this: EventProcessingContext
+     *       // ...
+     *       provider.push(...)
+     *    }
+     * }
+     * ```
+     *
+     */
+    @JvmSynthetic
+    public suspend fun <T> waiting(
+        id: ID = randomID(),
+        listener: ResumeListener<T>,
+    ): T
+    
+    
+    /**
+     * 注册一个临时监听函数并等待.
+     *
+     * 使用随机ID。
+     */
+    @Api4J
+    public fun <T> waiting(blockingListener: BlockingResumeListener<T>): T
+    
+    
+    /**
+     * 注册一个临时监听函数并等待.
+     *
+     * 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+     */
+    @Api4J
+    public fun <T> waiting(id: ID, blockingListener: BlockingResumeListener<T>): T
+    
+    
+    // waitingForNextMessage
+    // waitingForNextEvent
+    //
+    // nextMessage
+    // nextEvent
+    //
+    // Context.nextMessage
+    // Context.nextEvent
+    //
+    // Event.nextMessage
+    // Event.nextEvent
+    
+    
+}
+
+
 /**
  *
  * 持续会话的作用域, 通过此作用域在监听函数监听过程中进行会话嵌套。
@@ -82,17 +151,17 @@ import java.util.concurrent.TimeoutException
  *
  * ```
  *
- * 不过假如你的逻辑比较复杂，可能在 `waitingFor` 中仍需要嵌套更多的其他listener，那么建议对整个函数进行拆分。比如：
+ * 不过假如你的逻辑比较复杂，可能在 [waiting] 中仍需要嵌套更多的其他listener，那么建议对整个函数进行拆分。比如：
  * ```
- *suspend fun EventListenersGenerator.myListener() {
+ * suspend fun EventListenersGenerator.myListener() {
  *      GroupEvent { event: GroupEvent  -> // this: EventListenerProcessingContext
  *              // 获取 session context, 并认为它不为null。
  *              val sessionContext = context.getAttribute(EventProcessingContext.Scope.ContinuousSession) ?: error("不支持会话！")
  *
  *              // 假设你需要获取2个数字，每个数字中同样需要再次等待一个数字。
  *
- *              val num1 = sessionContext.waitingFor(randomID(), listener = ::getNum1)
- *              val num2 = sessionContext.waitingFor(randomID(), listener = ::getNum2)
+ *              val num1 = sessionContext.waitingFor(listener = EventProcessingContext::getNum1)
+ *              val num2 = sessionContext.waitingFor(listener = ::getNum2)
  *
  *              // getNum1&2: suspend fun EventProcessingContext.getNum1(provider: ContinuousSessionProvider<Int>): Unit
  *
@@ -100,21 +169,13 @@ import java.util.concurrent.TimeoutException
  *              null
  *          }
  *      }
+ *
+ *  suspend fun EventProcessingContext.getNum1(provider: ContinuousSessionProvider<Int>): Unit { ... }
+ *  suspend fun getNum2(context: EventProcessingContext, provider: ContinuousSessionProvider<Int>): Unit { ... }
  * ```
  *
- * 如果你有明确的监听类型目标，你也可以使用 [waiting] 或 [waitFor] 来简化类型匹配:
- * ```
- *suspend fun EventListenersGenerator.myListener() {
- *      GroupEvent { event : GroupEvent -> // this: EventListenerProcessingContext
- *          // 获取 session context, 并认为它不为null。
- *          val sessionContext = processingContext.getAttribute(EventProcessingContext.Scope.ContinuousSession) ?: error("不支持会话！")
- *
- *          assert(num == 1)
- *
- *          null
- *      }
- *}
- * ```
+ * 如果你有明确的监听类型目标，你也可以使用 `nextXxx` 或 `waitingForXxx` 的相关函数来简化类型匹配:
+ 
  *
  * ## 超时
  * 对于挂起函数, 你可以使用 [withTimeout] 来包裹诸如 [waiting] 或者 [waitingNextMessage] 等这类挂起函数。
@@ -173,9 +234,8 @@ public abstract class ContinuousSessionContext {
     
     @Api4J
     @JvmOverloads
-    @JvmName("waiting")
-    public fun <T> waiting4J(id: ID = randomID(), listener: BlockingResumeListener<T>): T {
-        return runInBlocking { waiting(id, listener.parse()) }
+    public fun <T> waiting(id: ID = randomID(), blockingListener: BlockingResumeListener<T>): T {
+        return runInBlocking { waiting(id, blockingListener.parse()) }
     }
     
     
