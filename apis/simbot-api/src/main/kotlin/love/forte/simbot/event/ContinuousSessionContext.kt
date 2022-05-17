@@ -174,7 +174,7 @@ public abstract class ContinuousSessionContext {
     @Api4J
     @JvmOverloads
     @JvmName("waiting")
-    public fun <T> waiting4J(id: ID = randomID(), listener: BlockingResumeListener<T>) {
+    public fun <T> waiting4J(id: ID = randomID(), listener: BlockingResumeListener<T>): T {
         return runInBlocking { waiting(id, listener.parse()) }
     }
     
