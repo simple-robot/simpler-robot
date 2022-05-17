@@ -43,29 +43,29 @@ internal class CoreEventProcessingContextResolver(
     private val coroutineScope: CoroutineScope,
 ) : EventProcessingContextResolver<CoreEventProcessingContext> {
     private val resumedListenerManager = ResumedListenerManager()
-
+    
     @ExperimentalSimbotApi
     override val globalContext = GlobalScopeContextImpl()
-
+    
     @ExperimentalSimbotApi
-    override val continuousSessionContext = CoreContinuousSessionContext(coroutineScope, resumedListenerManager)
-
-
+    override val continuousSessionContext = SimpleContinuousSessionContext(coroutineScope, resumedListenerManager)
+    
+    
     internal class GlobalScopeContextImpl : GlobalScopeContext,
         MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
-
-
+    
+    
     internal class InstantScopeContextImpl : InstantScopeContext,
         MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
-
+    
     /**
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
      */
     @OptIn(ExperimentalSimbotApi::class, ExperimentalSerializationApi::class)
     override suspend fun resolveEventToContext(event: Event, listenerSize: Int): CoreEventProcessingContext {
+        
         val context = CoreEventProcessingContext(
             event,
-            // TODO
             messagesSerializersModule = EmptySerializersModule,
             globalContext,
             continuousSessionContext,
@@ -73,27 +73,20 @@ internal class CoreEventProcessingContextResolver(
             AttributeMutableMap(ConcurrentHashMap()),
             listenerSize
         )
-        // val context = CoreEventProcessingContext(
-        //     event, AttributeMutableMap(ConcurrentHashMap(
-        //         constMaps,
-        //     ).apply { put(EventProcessingContext.Scope.Instant, InstantScopeContextImpl()) })
-        // ) {
-        //     ArrayList(listenerSize)
-        // }
-
+        
         coroutineScope.launch {
             resumedListenerManager.process(context, this)
         }
-
+        
         return context
     }
-
-
+    
+    
     /**
      * 将一次事件结果拼接到当前上下文结果集中。
      */
     override suspend fun appendResultIntoContext(
-        context: CoreEventProcessingContext, result: EventResult
+        context: CoreEventProcessingContext, result: EventResult,
     ): ListenerInvokeType {
         if (result != EventResult.Invalid) {
             val newResult = tryCollect(result)
@@ -102,24 +95,24 @@ internal class CoreEventProcessingContextResolver(
         return if (result.isTruncated) ListenerInvokeType.TRUNCATED
         else ListenerInvokeType.CONTINUE
     }
-
+    
     /**
      * 只要存在任意会话监听函数，则都需要进行监听事件推送。
      */
     override fun isProcessable(eventKey: Event.Key<*>): Boolean {
         return !resumedListenerManager.isEmpty()
     }
-
+    
     private companion object {
         private val logger = LoggerFactory.getLogger(CoreEventProcessingContextResolver::class.java)
-
+        
         private val reactiveSupport: Boolean by lazy {
             kotlin.runCatching {
                 Companion::class.java.classLoader.loadClass("org.reactivestreams.Publisher")
                 true
             }.getOrElse { false }
         }
-
+        
         private val reactiveKotlinSupport: Boolean by lazy {
             try {
                 Companion::class.java.classLoader.loadClass("kotlinx.coroutines.reactive.ReactiveFlowKt")
@@ -132,7 +125,7 @@ internal class CoreEventProcessingContextResolver(
                 false
             }
         }
-
+        
         private val reactorSupport: Boolean by lazy {
             kotlin.runCatching {
                 Companion::class.java.classLoader.loadClass("reactor.core.publisher.Flux")
@@ -140,7 +133,7 @@ internal class CoreEventProcessingContextResolver(
                 true
             }.getOrElse { false }
         }
-
+        
         private val reactorKotlinSupport: Boolean by lazy {
             try {
                 Companion::class.java.classLoader.loadClass("kotlinx.coroutines.reactor.MonoKt")
@@ -153,7 +146,7 @@ internal class CoreEventProcessingContextResolver(
                 false
             }
         }
-
+        
         private val rx2Support: Boolean by lazy {
             kotlin.runCatching {
                 Companion::class.java.classLoader.loadClass("io.reactivex.Completable")
@@ -164,7 +157,7 @@ internal class CoreEventProcessingContextResolver(
                 true
             }.getOrElse { false }
         }
-
+        
         private val rx2KotlinSupport: Boolean by lazy {
             try {
                 Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx2.RxAwaitKt")
@@ -178,7 +171,7 @@ internal class CoreEventProcessingContextResolver(
                 false
             }
         }
-
+        
         private val rx3Support: Boolean by lazy {
             kotlin.runCatching {
                 Companion::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.Completable")
@@ -189,7 +182,7 @@ internal class CoreEventProcessingContextResolver(
                 true
             }.getOrElse { false }
         }
-
+        
         private val rx3KotlinSupport: Boolean by lazy {
             try {
                 Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx3.RxAwaitKt")
@@ -203,25 +196,25 @@ internal class CoreEventProcessingContextResolver(
                 false
             }
         }
-
+        
         private suspend fun tryCollect(result: EventResult): EventResult {
             if (result !is SimpleEventResult) return result
             val content = result.content ?: return result
-
+            
             if (content is kotlinx.coroutines.flow.Flow<*>) {
                 return result.copy(newContent = content.toList())
             }
-
+            
             if (reactorSupport) {
                 when (content) {
                     is reactor.core.publisher.Flux<*> -> return if (reactiveKotlinSupport) result.copy(
                         newContent = content.asFlow().toList()
                     ) else result // else return itself
-
+                    
                     is reactor.core.publisher.Mono<*> -> return if (reactorKotlinSupport) result.copy(newContent = content.awaitSingleOrNull()) else result
                 }
             }
-
+            
             if (rx2Support) {
                 when (content) {
                     is io.reactivex.CompletableSource -> {
@@ -238,7 +231,7 @@ internal class CoreEventProcessingContextResolver(
                     ) else result
                 }
             }
-
+            
             if (rx3Support) {
                 when (content) {
                     is io.reactivex.rxjava3.core.Completable -> {
@@ -255,7 +248,7 @@ internal class CoreEventProcessingContextResolver(
                     )
                 }
             }
-
+            
             if (reactiveSupport) {
                 when (content) {
                     is org.reactivestreams.Publisher<*> -> return if (reactiveKotlinSupport) result.copy(
@@ -263,11 +256,11 @@ internal class CoreEventProcessingContextResolver(
                     ) else result
                 }
             }
-
-
+            
+            
             return result
         }
     }
-
+    
 }
 
