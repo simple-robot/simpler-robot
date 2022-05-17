@@ -16,7 +16,6 @@
 
 package love.forte.simboot.spring.autoconfigure
 
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.ExperimentalSerializationApi
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
@@ -62,15 +61,21 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure(
                 it.filename != null
             }
             .distinct()
-            .map {
+            .mapNotNull {
                 configuration.logger.debug("Resolved bot register resource: {}", it)
                 val decoderFactory = decoderList.findLast { decoder -> decoder.match(it.filename!!) }
-                    ?: TODO() // err? warn?
+                    // ?: null // err? warn?
+                
+                if (decoderFactory == null) {
+                    // 没有任何解码器能匹配此资源。
+                    configuration.logger.warn("No decoders match bot resource [{}] in {}.", it, decoderList)
+                    return@mapNotNull null
+                }
                 
                 var botVerifyInfo: BotVerifyInfo? = null
                 
                 if (it.isFile) {
-                    val file = kotlin.runCatching {
+                    kotlin.runCatching {
                         botVerifyInfo =
                             it.file.takeIf { f -> f.exists() }?.toPath()?.toBotVerifyInfo(decoderFactory)
                                 ?: return@runCatching
@@ -90,12 +95,6 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure(
                                 res,
                                 this
                             )
-                        }
-                    }?.also { bot ->
-                        onCompletion {
-                            // start bot on completion
-                            configuration.logger.debug("Blocking Start bot: {}", bot)
-                            runBlocking { bot.start() }
                         }
                     }
                 }

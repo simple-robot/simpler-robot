@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -14,20 +14,12 @@
  *
  */
 
-package love.forte.simboot.spring.autoconfigure
+import org.gradle.api.attributes.Attribute
 
-import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
+object SimbotAttributes {
+
+    @JvmField
+    val MODULE_NAME = Attribute.of("simbot.module.name", String::class.java)
 
 
-/**
- *
- * 对 application 的配置环节进行操作的配置类。
- * ```kotlin
- * springBootApplication(initialConfiguration, configurator = { /* 此配置位于此处 */  }) { ... }
- * ```
- *
- * @author ForteScarlet
- */
-public fun interface SimbotSpringBootApplicationConfigurationConfigure {
-    public fun SpringBootApplicationConfiguration.config()
 }

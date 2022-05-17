@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -14,20 +14,24 @@
  *
  */
 
-package love.forte.simboot.spring.autoconfigure
+import org.gradle.api.Project
+import org.gradle.api.plugins.ExtraPropertiesExtension
+import java.io.File
+import java.util.*
 
-import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
+internal lateinit var prop: Properties
+
+fun Project.local(): Properties {
+    if (::prop.isInitialized) return prop
+    val f = File(rootDir, "local.properties")
+    val properties = Properties().also {
+        java.io.FileInputStream(f).use(it::load)
+    }
+    prop = properties
+    return prop
+}
 
 
-/**
- *
- * 对 application 的配置环节进行操作的配置类。
- * ```kotlin
- * springBootApplication(initialConfiguration, configurator = { /* 此配置位于此处 */  }) { ... }
- * ```
- *
- * @author ForteScarlet
- */
-public fun interface SimbotSpringBootApplicationConfigurationConfigure {
-    public fun SpringBootApplicationConfiguration.config()
+fun ExtraPropertiesExtension.getIfHas(key: String): Any? {
+    return if (has(key)) get(key) else null
 }

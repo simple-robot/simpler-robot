@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Import
 
 /**
  * The default configures.
+ *
  * @author ForteScarlet
  */
 @Import(

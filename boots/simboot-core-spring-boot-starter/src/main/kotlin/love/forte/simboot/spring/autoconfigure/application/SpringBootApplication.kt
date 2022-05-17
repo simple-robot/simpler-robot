@@ -34,7 +34,18 @@ import kotlin.time.Duration.Companion.nanoseconds
 
 
 /**
- * 兼容 SpringBoot 的 [Application] 工厂。
+ * 兼容 [Spring Boot](https://spring.io) 的 [Application] 工厂。
+ *
+ *
+ * ## [SpringBootApplication]
+ * [SpringBoot] 提供的 [Application] 实现为 [SpringBootApplication].
+ *
+ * ## 扩展函数
+ * [SpringBoot] 工厂提供了 [springBootApplication] 等扩展了 [simbotApplication] 的函数来简化操作。
+ *
+ *
+ * @see SpringBootApplication
+ *
  */
 public object SpringBoot :
     ApplicationFactory<SpringBootApplicationConfiguration, SpringBootApplicationBuilder, SpringBootApplication> {
@@ -69,9 +80,12 @@ public object SpringBoot :
 
 
 /**
- * 使用 [SpringBoot] 作为工厂构建一个 [SpringBootApplication].
+ * 使用 [SpringBoot] 作为工厂构建一个 [SpringBootApplication] 为目标的 [launcher][ApplicationLauncher].
+ *
+ * [springBootApplication] 并非是 [simbotApplication] 的直接扩展。与 [simbotApplication] 不同的是,
+ * [springBootApplication] 可以提供一个 [初始化配置][initialConfiguration] 实例。
+ *
  */
-@JvmOverloads
 public fun springBootApplication(
     initialConfiguration: SpringBootApplicationConfiguration = SpringBootApplicationConfiguration(),
     configurator: SpringBootApplicationConfiguration.() -> Unit = {},
@@ -83,7 +97,17 @@ public fun springBootApplication(
 
 
 /**
- * 兼容 `Spring Boot` 的 `Application` 实现。
+ * 作为 `Spring Boot Starter` 的 [Application] 实现。
+ *
+ * [SpringBootApplication] 用于作为一个 [Spring Boot Starter](https://spring.io/projects/spring-boot#overview) 来使用的 [Application] 工厂，
+ * 此工厂通常在 Spring Boot 环境下配合 [love.forte.simboot.spring.autoconfigure.EnableSimbot] 注解来一键开箱，
+ * 而不需要通过 [simbotApplication] 等启动函数来手动开启 ———— 也不应该这么做。
+ *
+ * 因此, [SpringBootApplication] 是Java友好的。 相对于基础的 [love.forte.simboot.core.application.Boot] 模块而言，
+ * [SpringBootApplication] 将内部的依赖管理以及各种配置的实现全部交给了 `Spring Boot` ，因此会与 `Spring Boot` 之间有着更紧密的交融。
+ *
+ *
+ * @see SpringBoot
  */
 public interface SpringBootApplication : Application
 
@@ -169,7 +193,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
         if (isAutoStartBots && bots.isNotEmpty()) {
             onCompletion {
                 bots.forEach { bot ->
-                    logger.info("Blocking start bot {}", bot)
+                    logger.info("Starting bot {}", bot)
                     val started = bot.start()
                     logger.info("Bot [{}] started: {}", bot, started)
                 }

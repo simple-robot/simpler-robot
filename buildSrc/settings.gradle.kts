@@ -14,25 +14,3 @@
  *
  */
 
-package love.forte.simboot.spring.autoconfigure
-
-import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
-import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
-
-
-/**
- *
- * 对 application 的build环节进行操作的配置类。
- * ```kotlin
- * springBootApplication(initialConfiguration, configurator = { ... }) { /* 此配置位于此处 */ }
- * ```
- *
- * @author ForteScarlet
- */
-public fun interface SimbotSpringBootApplicationBuildConfigure {
-    
-    /**
-     * 通过 builder 对 [love.forte.simboot.spring.autoconfigure.application.SpringBoot] 进行配置。
-     */
-    public fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration)
-}

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -14,20 +14,15 @@
  *
  */
 
-package love.forte.simboot.spring.autoconfigure
-
-import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
-
+package love.forte.simboot.autoconfigure
 
 /**
+ * Deprecated: 使用 [love.forte.simboot.spring.autoconfigure.EnableSimbot]。
  *
- * 对 application 的配置环节进行操作的配置类。
- * ```kotlin
- * springBootApplication(initialConfiguration, configurator = { /* 此配置位于此处 */  }) { ... }
- * ```
+ * 此注解之后将会被删除。
  *
- * @author ForteScarlet
  */
-public fun interface SimbotSpringBootApplicationConfigurationConfigure {
-    public fun SpringBootApplicationConfiguration.config()
-}
+@Target(AnnotationTarget.CLASS)
+@love.forte.simboot.spring.autoconfigure.EnableSimbot
+@Deprecated("Use @love.forte.simboot.spring.autoconfigure.EnableSimbot", level = DeprecationLevel.ERROR)
+public annotation class EnableSimbot

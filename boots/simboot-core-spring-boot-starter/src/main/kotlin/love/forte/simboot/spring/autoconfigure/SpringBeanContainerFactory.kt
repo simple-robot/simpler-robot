@@ -24,6 +24,10 @@ import org.springframework.beans.factory.NoUniqueBeanDefinitionException
 import kotlin.reflect.KClass
 
 // region bean container
+
+/**
+ * [BeanContainerFactory] 基于 [ListableBeanFactory] 的实现。
+ */
 public open class SpringBeanContainerFactory(private val listableBeanFactory: ListableBeanFactory) :
     BeanContainerFactory {
     override fun invoke(configuration: love.forte.simboot.Configuration): BeanContainer {
@@ -31,7 +35,9 @@ public open class SpringBeanContainerFactory(private val listableBeanFactory: Li
     }
 }
 
-
+/**
+ * 基于 [ListableBeanFactory] 的 [love.forte.di.spring.SpringBeanContainer] 实现。
+ */
 public open class SpringBeanContainer(override val listableBeanFactory: ListableBeanFactory) : BeanContainer,
     love.forte.di.spring.SpringBeanContainer {
     

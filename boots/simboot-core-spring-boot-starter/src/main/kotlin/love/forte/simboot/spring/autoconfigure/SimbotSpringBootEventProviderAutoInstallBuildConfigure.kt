@@ -18,11 +18,56 @@ package love.forte.simboot.spring.autoconfigure
 
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
+import love.forte.simbot.application.EventProvider
 import love.forte.simbot.application.EventProviderFactory
 import love.forte.simbot.application.installAllEventProviders
 
 
 /**
+ * 自动配置当前可加载的所有 [EventProvider] 的配置类。
+ *
+ * 如果当前spring环境中存在任何额外的[EventProviderFactory], 则使用这些 factory;
+ * 否则会直接使用 [installAllEventProviders] 来尝试加载环境中的所有可加载项。
+ *
+ * For example custom factories:
+ *
+ * **Kotlin**
+ * ```kotlin
+ * @Configuration(proxyBeanMethods = false)
+ * open class MyCustomFactoryConfiguration {
+ *
+ *    @Bean
+ *    fun fooFactory(): FooProvider.Factory {
+ *       return FooProvider
+ *    }
+ *
+ *    @Bean
+ *    fun barFactory(): BarFactory {
+ *       return BarFactory()
+ *    }
+ *
+ *    // ...
+ *
+ * }
+ * ```
+ *
+ * **Java**
+ * ```java
+ * @Configuration(proxyBeanMethods = false)
+ * public class MyCustomFactoryConfiguration {
+ *
+ *    @Bean
+ *    public FooProvider.Factory fooFactory() {
+ *       return FooProvider.Factory;
+ *    }
+ *
+ *    @Bean
+ *    public BarFactory barFactory() {
+ *       return new BarFactory();
+ *    }
+ * }
+ * ```
+ *
  *
  * @author ForteScarlet
  */

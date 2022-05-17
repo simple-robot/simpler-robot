@@ -17,7 +17,6 @@
 package love.forte.simboot.spring.autoconfigure
 
 import love.forte.simbot.application.Application
-import org.springframework.beans.factory.DisposableBean
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
@@ -28,14 +27,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
  * @author ForteScarlet
  */
 @ConditionalOnClass(Application::class)
-public open class SimbotSpringBootApplicationStarter(private val application: Application) : ApplicationRunner,
-    DisposableBean {
+public open class SimbotSpringBootApplicationStarter : ApplicationRunner {
+    
     
     override fun run(args: ApplicationArguments?) {
-        // TODO
+        // Do..?
     }
-    
-    override fun destroy() {
-        // TODO
-    }
+   
 }
