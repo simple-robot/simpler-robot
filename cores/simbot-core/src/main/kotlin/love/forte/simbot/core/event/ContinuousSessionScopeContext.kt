@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.core.event
@@ -220,14 +219,14 @@ internal class ResumedListenerManager {
         listeners.forEach { (id, listener) ->
             scope.launch {
                 try {
-                    logger.debug("Launch resumed listener: {} of id {} by event {}", listener, id, context.event)
+                    logger.trace("Launch resumed listener: {} of id {} by event {}", listener, id, context.event)
                     listener(context)
+                } catch (e: CancellationException) {
+                    if (logger.isDebugEnabled) {
+                        logger.debug("ResumeListener(id=$id) invoke failed: ${e.localizedMessage}", e)
+                    }
                 } catch (e: Throwable) {
-                    if (e is CancellationException) {
-                        if (logger.isDebugEnabled) {
-                            logger.debug("ResumeListener(id=$id) invoke failed: ${e.localizedMessage}", e)
-                        }
-                    } else {
+                    if (logger.isErrorEnabled) {
                         logger.error("ResumedListener(id=$id) invoke failed: ${e.localizedMessage}", e)
                     }
                 }
