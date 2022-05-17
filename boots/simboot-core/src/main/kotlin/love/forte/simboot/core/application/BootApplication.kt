@@ -417,6 +417,10 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
         
         // region build components
         logger.debug("Building components...")
+        if (componentFactoriesSize() <= 0) {
+            logger.debug("There are no installed components. Try to find and install all component factories in current environment.")
+            installAllComponents(classLoader)
+        }
         val components = buildComponents()
         logger.debug("Components are built: {}", components)
         logger.info("The size of components built is {}", components.size)
@@ -488,8 +492,15 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
         logger.debug("Listener manager is built: {}", listenerManager)
         // endregion
         
+        // region build components
+        // endregion
+        
         // region build providers
         logger.debug("Building providers...")
+        if (eventProviderFactoriesSize() <= 0) {
+            logger.debug("There are no installed event providers. Try to find and install all event provider factories in current environment.")
+            installAllEventProviders(classLoader)
+        }
         val providers = buildProviders(listenerManager, components, configuration)
         logger.info("The size of providers built is {}", providers.size)
         if (providers.isNotEmpty()) {
