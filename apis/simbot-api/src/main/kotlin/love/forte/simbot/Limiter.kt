@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot
@@ -81,7 +80,7 @@ public interface Limiter {
      * 限流数量，即本次所得数据量最大不应超过此限制。
      * 例如 `limit = 10`, 那么返回值结果中的最终元素数量应当 `<= 10`.
      *
-     * 当 `limit <= 0` 的时候，可认为返回值不受限制，或者使用实现方的默认值。
+     * 当 `limit <= 0` 的时候，可认为返回值不受限制。
      *
      * 对于极少的情况，limit = 0 是存在特殊含义的时候，实现方应当有所说明。
      *
