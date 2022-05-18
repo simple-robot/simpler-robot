@@ -68,6 +68,7 @@ private const val DISPATCHER_CORE_SIZE_PROPERTY = "$DISPATCHER_BASE_PROPERTY.cor
 private const val DISPATCHER_MAX_SIZE_PROPERTY = "$DISPATCHER_BASE_PROPERTY.maxSize"
 private const val DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$DISPATCHER_BASE_PROPERTY.keepAliveTime"
 
+
 /**
  * 使用在 [runInBlocking] 中的调度器实现。
  * 会在首次被获取的时候进行实例化。
@@ -75,12 +76,12 @@ private const val DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$DISPATCHER_BASE_PROPER
  * 默认情况下，[DefaultBlockingDispatcher] 会构建一个默认的线程池作为调度器：
  * ```kotlin
  * ThreadPoolExecutor(
- *     ,
- *     Int.MAX_VALUE,
- *     60,
- *     TimeUnit.SECONDS,
+ *     coreSize,
+ *     maxSize,
+ *     keepAliveTime,
+ *     TimeUnit.MILLISECONDS,
  *     LinkedBlockingQueue(),
- *     { r -> ... }
+ *     { r -> ... } // isDaemon = true
  * ) { runnable, executor -> logger.error(...) }
  * ```
  * 其中存在部分可配置内容：
@@ -89,7 +90,7 @@ private const val DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$DISPATCHER_BASE_PROPER
  * | --- | :----: | -----: |
  * | [核心线程数][ThreadPoolExecutor.corePoolSize] | `simbot.runInBlocking.dispatcher.coreSize` | [availableProcessors][Runtime.availableProcessors] - 1 |
  * | [最大线程数][ThreadPoolExecutor.maximumPoolSize] | `simbot.runInBlocking.dispatcher.maxSize` | [Int.MAX_VALUE] |
- * |[ 维持时间（毫秒）][ThreadPoolExecutor.keepAliveTime] | `simbot.runInBlocking.dispatcher.keepAliveTime` | `60*1000` |
+ * |[ 维持时间][ThreadPoolExecutor.keepAliveTime]（毫秒） | `simbot.runInBlocking.dispatcher.keepAliveTime` | `60*1000` |
  *
  * 除了提供调度器的使用，你也可以指定一个从 [Dispatchers] 中存在的属性。使用如下JVM参数可以覆盖调度器的使用：
  * _(参数值不区分大小写)_
