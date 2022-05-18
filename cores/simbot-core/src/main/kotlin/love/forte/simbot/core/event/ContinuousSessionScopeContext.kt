@@ -29,7 +29,7 @@ import kotlin.coroutines.resumeWithException
 internal class SimpleContinuousSessionContext(
     override val coroutineScope: CoroutineScope,
     private val manager: ResumedListenerManager,
-) : ContinuousSessionContext() {
+) : BaseContinuousSessionContext() {
     
     companion object {
         private val logger = LoggerFactory.getLogger(SimpleContinuousSessionContext::class)
