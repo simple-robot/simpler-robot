@@ -19,14 +19,65 @@
 package love.forte.simbot.event
 
 import kotlinx.coroutines.*
-import love.forte.simbot.Api4J
-import love.forte.simbot.ID
-import love.forte.simbot.randomID
+import love.forte.simbot.*
+import love.forte.simbot.message.Message
+import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.Messages
 import love.forte.simbot.utils.runInBlocking
 import love.forte.simbot.utils.runInTimeoutBlocking
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+
+
+/**
+ * [ContinuousSessionContext] 的基础接口。
+ * 为 [ContinuousSessionContext] 提供最基础的核心的函数：[waiting].
+ *
+ * [ContinuousSessionContext] 中的所有函数实现都由 [waiting] 衍生而来。
+ *
+ * @see ContinuousSessionContext
+ *
+ */
+// 实际上如果不是为了提供兼容的阻塞函数, [ContinuousSessionContext] 里的那些函数都能直接用扩展函数解决的，啧。
+@ExperimentalSimbotApi
+public interface BaseContinuousSessionContext {
+    
+    /**
+     * 注册一个临时监听函数并挂起等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+     *
+     * ```kotlin
+     * val session: ContinuousSessionContext = ...
+     *
+     * session.waiting { provider -> // this: EventProcessingContext
+     *    // ...
+     *    provider.push(...)
+     * }
+     * ```
+     *
+     * ## 超时处理
+     * 使用 [withTimeout] 或其衍生函数来进行超时控制。
+     * ```kotlin
+     * val session: ContinuousSessionContext = ...
+     *
+     * withTimeout(5.seconds) {
+     *    session.waiting { provider -> // this: EventProcessingContext
+     *       // ...
+     *       provider.push(...)
+     *    }
+     * }
+     * ```
+     *
+     * @throws CancellationException 被终止时
+     *
+     */
+    @JvmSynthetic
+    public suspend fun <T> waiting(
+        id: ID = randomID(),
+        listener: ResumeListener<T>,
+    ): T
+    
+}
 
 
 /**
@@ -80,7 +131,7 @@ import java.util.concurrent.TimeoutException
  *
  * ```
  *
- * 不过假如你的逻辑比较复杂，可能在 [waiting] 中仍需要嵌套更多的其他listener，那么建议对整个函数进行拆分。比如：
+ * 不过假如你的逻辑比较复杂，可能在 [waiting] 中仍需要嵌套更多的其他listener，那么对函数进行拆分也许是个不错的选择。比如：
  * ```
  * suspend fun EventListenersGenerator.myListener() {
  *      GroupEvent { event: GroupEvent  -> // this: EventListenerProcessingContext
@@ -97,14 +148,15 @@ import java.util.concurrent.TimeoutException
  *          }
  *      }
  *
- *  private suspend fun EventProcessingContext.getNum1(provider: ContinuousSessionProvider<Int>): Unit = 4
- *  private suspend fun getNum2(context: EventProcessingContext, provider: ContinuousSessionProvider<Int>): Unit = 6
+ *  suspend fun EventProcessingContext.getNum1(provider: ContinuousSessionProvider<Int>): Unit = 4
+ *
+ *  suspend fun getNum2(context: EventProcessingContext, provider: ContinuousSessionProvider<Int>): Unit = 6
  * ```
  *
  * 如果你有明确的监听类型目标，你也可以使用 `nextXxx` 或 `waitingForXxx` 的相关函数来简化类型匹配:
  
  *
- * ## 超时
+ * ## 超时处理
  * 在 Kotlin 中，你可以使用 [withTimeout] 来包裹诸如 [waiting] 或者 [next] 等这类挂起函数来控制超时时间。
  * ```kotlin
  * val session: ContinuousSessionContext = ...
@@ -133,7 +185,8 @@ import java.util.concurrent.TimeoutException
  *
  * @author ForteScarlet
  */
-public abstract class ContinuousSessionContext {
+@ExperimentalSimbotApi
+public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     
     // region waiting
     /**
@@ -165,8 +218,8 @@ public abstract class ContinuousSessionContext {
      *
      */
     @JvmSynthetic
-    public abstract suspend fun <T> waiting(
-        id: ID = randomID(),
+    abstract override suspend fun <T> waiting(
+        id: ID,
         listener: ResumeListener<T>,
     ): T
     
@@ -297,9 +350,7 @@ public abstract class ContinuousSessionContext {
      * 那么此时，你通过 [waitingForNext] 所能得到的事件类型很有可能只能是 `BarEvent` 或 `TarEvent`
      * 中的 **某一种**，而并非所有可能的 `FooEvent` 。
      *
-     *
-     *
-     *
+     * @throws CancellationException 被终止关闭时
      *
      * @param id 临时监听函数的唯一标识。
      * @param key 所需监听函数的类型。
@@ -417,11 +468,16 @@ public abstract class ContinuousSessionContext {
      * waitingForNext(id, Event.Root, matcher)
      * ```
      *
+     * @throws CancellationException 被终止时
+     *
      * @see waitingForNext
      *
      */
     @JvmSynthetic
-    public suspend fun waitingForNext(id: ID = randomID(), matcher: EventMatcher<Event> = EventMatcher): Event {
+    public suspend fun waitingForNext(
+        id: ID = randomID(),
+        matcher: EventMatcher<Event> = EventMatcher,
+    ): Event {
         return waitingForNext(id, Event.Root, matcher)
     }
     
@@ -539,6 +595,7 @@ public abstract class ContinuousSessionContext {
      *
      * | 当前事件类型 |  [目标类型][key]同类型 | [目标类型][key]不同类型 |
      * | :------------------------------------------ | ------------------- | --------------------: |
+     * | [Event]                | [bot][Event.bot] 的ID要相同                               | _不会出现不同类型_ |
      * | [OrganizationEvent]    | [organization][OrganizationEvent.organization] 的ID要相同 | 放行 |
      * | [UserEvent]            | [user][UserEvent.user] 的ID要相同                         | 放行 |
      * | [MessageEvent]         |  [source][MessageEvent.source] 的ID要相同                 | 放行 |
@@ -612,13 +669,14 @@ public abstract class ContinuousSessionContext {
      *
      * | 当前事件类型 |  [目标类型][key]同类型 | [目标类型][key]不同类型 |
      * | :------------------------------------------ | ------------------- | --------------------: |
-     * | [OrganizationEvent]    | [organization][OrganizationEvent.organization] 的ID要相同 | 放行 |
-     * | [UserEvent]            | [user][UserEvent.user] 的ID要相同                         | 放行 |
-     * | [MessageEvent]         |  [source][MessageEvent.source] 的ID要相同                 | 放行 |
-     * | [ChatRoomMessageEvent] |  [author][ChatRoomMessageEvent.author] 的ID要相同         | 放行 |
+     * | [Event]                | [bot][Event.bot] 的ID要相同                               | _不会出现不同类型_ |
+     * | [OrganizationEvent]    | [organization][OrganizationEvent.organization] 的ID要相同 | 放行             |
+     * | [UserEvent]            | [user][UserEvent.user] 的ID要相同                         | 放行             |
+     * | [MessageEvent]         |  [source][MessageEvent.source] 的ID要相同                 | 放行             |
+     * | [ChatRoomMessageEvent] |  [author][ChatRoomMessageEvent.author] 的ID要相同         | 放行             |
      *
      *
-     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
      * @param id 临时监听函数唯一标识
      * @param key 目标事件类型
@@ -626,6 +684,7 @@ public abstract class ContinuousSessionContext {
      * @param timeUnit [timeout] 的时间类型
      *
      * @see waiting
+     * @see waitingForNext
      *
      * @receiver 当前所处的事件环境
      */
@@ -680,25 +739,497 @@ public abstract class ContinuousSessionContext {
     ): E {
         return event.nextBlocking(id, key, timeout, timeUnit)
     }
-    
-    
-    
-    
-    // endregion
     // endregion
     
-    
-    // waitingForNextMessage - matcher
+    // region next without key
+    /**
+     * 挂起并等待在具体的事件 [Event] 环境下根据条件获取下一个匹配的 [事件][Event].
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [Event] 的类型进行匹配。
+     *
+     *
+     * [next] 对事件类型进行的对应的匹配规则对照表如下:
+     *
+     * | 当前事件类型 |  目标类型同类型 | 目标类型不同类型 |
+     * | :------------------------------------------ | ------------------- | --------------------: |
+     * | [OrganizationEvent]    | [organization][OrganizationEvent.organization] 的ID要相同 | 放行 |
+     * | [UserEvent]            | [user][UserEvent.user] 的ID要相同                         | 放行 |
+     * | [MessageEvent]         |  [source][MessageEvent.source] 的ID要相同                 | 放行 |
+     * | [ChatRoomMessageEvent] |  [author][ChatRoomMessageEvent.author] 的ID要相同         | 放行 |
+     *
+     *
+     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * ## 超时处理
+     * 使用 [withTimeout] 或其衍生函数来进行超时控制。
+     * ```kotlin
+     * val session: ContinuousSessionContext = ...
+     *
+     * withTimeout(5.seconds) {
+     *    session {
+     *       next { event -> // this: EventProcessingContext
+     *         // ...
+     *         true
+     *       }
+     *    }
+     * }
+     * ```
+     *
+     * 你可能注意到了上述示例中出现了如下用法：
+     * ```kotlin
+     * session {
+     *    next(id, FooEvent) { /* ... */ }
+     * }
+     * ```
+     *
+     * 这是通过扩展函数 [ContinuousSessionContext.invoke] 所提供的，旨在简化 [next] 这类函数的使用。
+     *
+     *
+     * @param id 临时监听函数的唯一标识
+     *
+     * @see ContinuousSessionContext.invoke
+     *
+     * @receiver 当前所处的事件环境
+     */
     @JvmSynthetic
-    public suspend fun waitingForNextMessage() {
-    
+    public suspend fun Event.next(id: ID = randomID()): Event {
+        return next(id, Event.Root)
     }
     
     
-    // waitingForNextMessage
-    // Context.nextMessage
-    // Event.nextMessage
+    /**
+     * 挂起并等待在当前的事件处理上下文 [EventProcessingContext] 中根据条件获取下一个匹配的 [事件][Event].
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 更多说明参考 [Event.next].
+     *
+     * @receiver 当前的事件处理上下文环境
+     * @see Event.next
+     */
+    @JvmSynthetic
+    public suspend fun EventProcessingContext.next(id: ID = randomID()): Event {
+        return event.next(id)
+    }
     
+    
+    /**
+     * 阻塞并等待在具体的事件 [Event] 环境下根据条件获取下一个匹配的 [事件][Event].
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [Event] 的类型进行匹配。
+     *
+     *
+     * [next] 对事件类型进行的对应的匹配规则对照表如下:
+     *
+     * | 当前事件类型 |  目标类型同类型 | 目标类型不同类型 |
+     * | :------------------------------------------ | ------------------- | --------------------: |
+     * | [Event]                | [bot][Event.bot] 的ID要相同                               | _不会出现不同类型_ |
+     * | [OrganizationEvent]    | [organization][OrganizationEvent.organization] 的ID要相同 | 放行             |
+     * | [UserEvent]            | [user][UserEvent.user] 的ID要相同                         | 放行             |
+     * | [MessageEvent]         |  [source][MessageEvent.source] 的ID要相同                 | 放行             |
+     * | [ChatRoomMessageEvent] |  [author][ChatRoomMessageEvent.author] 的ID要相同         | 放行             |
+     *
+     *
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param id 临时监听函数唯一标识
+     * @param timeout 超时时间。大于0时生效
+     * @param timeUnit [timeout] 的时间类型
+     *
+     * @see waiting
+     * @see waitingForNext
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("next")
+    public fun Event.nextBlocking(
+        id: ID = randomID(),
+        timeout: Long = 0,
+        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+    ): Event {
+        return nextBlocking(id = id, key = Event.Root, timeout = timeout, timeUnit = timeUnit)
+    }
+    
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [事件][Event].
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param id 临时监听函数唯一标识
+     * @param timeout 超时时间。大于0时生效
+     * @param timeUnit [timeout] 的时间类型
+     *
+     * @see Event.next
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("next")
+    public fun EventProcessingContext.nextBlocking(
+        id: ID = randomID(),
+        timeout: Long = 0,
+        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+    ): Event {
+        return event.nextBlocking(id, Event.Root, timeout, timeUnit)
+    }
+    // endregion
+    // endregion
+    
+    
+    // region waitingForNextMessage
+    
+    /**
+     * 挂起并等待下一个符合条件的 [消息事件][MessageEvent] 中的消息体。
+     *
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessages] 限制了等待的消息类型 [E]
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
+     *
+     * **_更多内容参考 [waitingForNext] 文档注释。_**
+     *
+     * ## 超时处理
+     * 使用 [withTimeout] 或其衍生函数来进行超时控制。
+     * ```kotlin
+     * val session: ContinuousSessionContext = ...
+     *
+     * withTimeout(5.seconds) {
+     *    session.waitingForNextMessages(id, FooEvent) { event -> // this: EventProcessingContext
+     *       // ...
+     *       true
+     *    }
+     * }
+     * ```
+     *
+     * ## 获取 [MessageContent] ?
+     * 如果你需要获取并使用 [MessageContent], 则考虑选择通过 [waitingForNext] 来得到事件本体并获取他。
+     *
+     * ## 具体的 [Message.Element] ?
+     * 当你想要得到一个具体的 [Message.Element] 对象，那么你需要想明白：
+     * - 你需要的是对应事件中 _可能存在的_ 这个消息元素类型吗？
+     * - 或者你需要的是 _必须存在_ 这个消息元素的事件？
+     * - 你需要的是 _第一个_ 符合类型的元素？还是 _最后一个_ 符合类型的元素？
+     * - 你是否对需要的消息元素中的 _属性_ 有所要求？
+     * - ...
+     *
+     * 对于直接获取一个 [Message.Element] 的情况太过纷杂，如果你无法通过 [waitingForNextMessages] 或者 [nextMessages] 来满足需求，
+     * 那么请考虑使用 [waiting] 或 [waitingForNext] 等更细致的函数。
+     *
+     *
+     * @throws CancellationException 被终止时
+     *
+     * @see waitingForNext
+     *
+     */
+    @JvmSynthetic
+    public suspend fun <E : MessageEvent> waitingForNextMessages(
+        id: ID = randomID(),
+        key: Event.Key<E>,
+        matcher: EventMatcher<E> = EventMatcher,
+    ): Messages {
+        return waitingForNext(id, key, matcher).messageContent.messages
+    }
+    
+    /**
+     * 挂起并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
+     *
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessages] 限制了等待的消息类型 [MessageEvent]
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
+     *
+     * **_更多内容参考 [waitingForNext] 文档注释。_**
+     *
+     * ## 超时处理
+     * 使用 [withTimeout] 或其衍生函数来进行超时控制。
+     * ```kotlin
+     * val session: ContinuousSessionContext = ...
+     *
+     * withTimeout(5.seconds) {
+     *    session.waitingForNextMessages(id, FooEvent) { event -> // this: EventProcessingContext
+     *       // ...
+     *       true
+     *    }
+     * }
+     * ```
+     *
+     * ## 获取 [MessageContent] ?
+     * 如果你需要获取并使用 [MessageContent], 则考虑选择通过 [waitingForNext] 来得到事件本体并获取他。
+     *
+     * ## 具体的 [Message.Element] ?
+     * 当你想要得到一个具体的 [Message.Element] 对象，那么你需要想明白：
+     * - 你需要的是对应事件中 _可能存在的_ 这个消息元素类型吗？
+     * - 或者你需要的是 _必须存在_ 这个消息元素的事件？
+     * - 你需要的是 _第一个_ 符合类型的元素？还是 _最后一个_ 符合类型的元素？
+     * - 你是否对需要的消息元素中的 _属性_ 有所要求？
+     * - ...
+     *
+     * 对于直接获取一个 [Message.Element] 的情况太过纷杂，如果你无法通过 [waitingForNextMessages] 或者 [nextMessages] 来满足需求，
+     * 那么请考虑使用 [waiting] 或 [waitingForNext] 等更细致的函数。
+     *
+     *
+     * @throws CancellationException 被终止时
+     *
+     * @see waitingForNext
+     *
+     */
+    @JvmSynthetic
+    public suspend fun waitingForNextMessages(
+        id: ID = randomID(),
+        matcher: EventMatcher<MessageEvent> = EventMatcher,
+    ): Messages {
+        return waitingForNext(id, MessageEvent, matcher).messageContent.messages
+    }
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
+     *
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessages] 限制了等待的消息类型 [E]
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
+     *
+     *
+     * 更多说明参考 [waitingForNextMessages] 文档注释。
+     *
+     * @throws TimeoutCancellationException 当超时
+     * @throws CancellationException 被终止时
+     *
+     * @param id 临时监听函数唯一标识
+     * @param key 目标函数类型
+     * @param timeout 超时时间。大于0时生效。
+     * @param timeUnit [timeout] 时间单位。默认为 [毫秒][TimeUnit.MILLISECONDS]
+     * @param matcher 匹配函数
+     *
+     * @see waitingForNextMessages
+     *
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNextMessages")
+    public fun <E : MessageEvent> waitForNextMessagesBlocking(
+        id: ID = randomID(),
+        key: Event.Key<E>,
+        timeout: Long = 0,
+        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+        matcher: BlockingEventMatcher<E> = BlockingEventMatcher,
+    ): Messages {
+        suspend fun doWait() = waitingForNextMessages(id, key, matcher.parse())
+        val mill = timeUnit.toMillis(timeout)
+        if (mill > 0) {
+            return runInBlocking {
+                withTimeout(mill) { doWait() }
+            }
+        }
+        
+        return runInBlocking { doWait() }
+    }
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
+     *
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessages] 限制了等待的消息类型 [MessageEvent]
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
+     *
+     *
+     * 更多说明参考 [waitingForNextMessages] 文档注释。
+     *
+     * @throws TimeoutCancellationException 当超时
+     * @throws CancellationException 被终止时
+     *
+     * @param id 临时监听函数唯一标识
+     * @param timeout 超时时间。大于0时生效。
+     * @param timeUnit [timeout] 时间单位。默认为 [毫秒][TimeUnit.MILLISECONDS]
+     * @param matcher 匹配函数
+     *
+     * @see waitingForNextMessages
+     *
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNextMessages")
+    public fun waitForNextMessagesBlocking(
+        id: ID = randomID(),
+        timeout: Long = 0,
+        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+        matcher: BlockingEventMatcher<MessageEvent> = BlockingEventMatcher,
+    ): Messages {
+        return waitForNextMessagesBlocking(id, MessageEvent, timeout, timeUnit, matcher)
+    }
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
+     *
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessages] 限制了等待的消息类型 [MessageEvent]
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
+     *
+     *
+     * 更多说明参考 [waitingForNextMessages] 文档注释。
+     *
+     * @throws CancellationException 被终止时
+     *
+     * @param id 临时监听函数唯一标识
+     * @param matcher 匹配函数
+     *
+     * @see waitingForNextMessages
+     *
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNextMessages")
+    public fun waitForNextMessagesBlocking(
+        id: ID = randomID(),
+        matcher: BlockingEventMatcher<MessageEvent>,
+    ): Messages {
+        return waitForNextMessagesBlocking(id = id, key = MessageEvent, timeout = 0, matcher = matcher)
+    }
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
+     *
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessages] 限制了等待的消息类型 [MessageEvent]
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
+     *
+     *
+     * 更多说明参考 [waitingForNextMessages] 文档注释。
+     *
+     * @throws CancellationException 被终止时
+     *
+     * @param key 目标事件类型
+     * @param matcher 匹配函数
+     *
+     * @see waitingForNextMessages
+     *
+     */
+    @Api4J
+    @JvmName("waitingForNextMessages")
+    public fun <E : MessageEvent> waitForNextMessagesBlocking(
+        key: Event.Key<E>,
+        matcher: BlockingEventMatcher<MessageEvent>,
+    ): Messages {
+        return waitForNextMessagesBlocking(id = randomID(), key = key, timeout = 0, matcher = matcher)
+    }
+    // endregion
+    
+    // region Context.nextMessage
+    
+    /**
+     * 挂起并等待符合当前 [Event] 作用域下的下一个消息事件的 [消息链][Messages].
+     *
+     * 行为类似于 [next][Event.next], 区别在于 [nextMessages] 只允许目标为 [消息事件][MessageEvent]
+     * 且返回值为 [Messages].
+     *
+     * 对于作用域下的事件匹配机制的说明参考 [next][Event.next] 文档注释。
+     *
+     * @throws CancellationException 被终止时
+     *
+     * @see Event.next
+     * @see EventProcessingContext.nextMessages
+     */
+    public suspend fun Event.nextMessages(
+        id: ID = randomID(),
+        key: Event.Key<out MessageEvent>,
+    ): Messages = next(id, key).messageContent.messages
+    
+    
+    /**
+     * 挂起并等待符合当前 [Event] 作用域下的下一个消息事件的 [消息链][Messages].
+     *
+     * 行为类似于 [next][EventProcessingContext.next], 区别在于 [nextMessages] 只允许目标为 [消息事件][MessageEvent]
+     * 且返回值为 [Messages].
+     *
+     * 对于作用域下的事件匹配机制的说明参考 [next][EventProcessingContext.next] 文档注释。
+     *
+     * @throws CancellationException 被终止时
+     *
+     * @see EventProcessingContext.next
+     * @see Event.nextMessages
+     */
+    public suspend fun EventProcessingContext.nextMessages(
+        id: ID = randomID(),
+        key: Event.Key<out MessageEvent>,
+    ): Messages = next(id, key).messageContent.messages
+    
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 中的 [消息链][Messages] 。
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 具体说明参考 [EventProcessingContext.nextMessages].
+     *
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param id 临时监听函数唯一标识
+     * @param key 目标事件类型
+     * @param timeout 超时时间。大于0时生效
+     * @param timeUnit [timeout] 的时间类型
+     *
+     * @see Event.nextMessages
+     * @see Event.next
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("nextMessages")
+    public fun Event.nextMessagesBlocking(
+        id: ID = randomID(),
+        key: Event.Key<out MessageEvent>,
+        timeout: Long = 0,
+        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+    ): Messages {
+        suspend fun doWait() = nextMessages(id, key)
+        
+        val mill = timeUnit.toMillis(timeout)
+        if (mill > 0) {
+            return runInBlocking {
+                withTimeout(mill) { doWait() }
+            }
+        }
+        
+        return runInBlocking { doWait() }
+        
+    }
+    
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 中的 [消息链][Messages] 。
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 具体说明参考 [EventProcessingContext.nextMessages].
+     *
+     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param id 临时监听函数唯一标识
+     * @param key 目标事件类型
+     * @param timeout 超时时间。大于0时生效
+     * @param timeUnit [timeout] 的时间类型
+     *
+     * @see EventProcessingContext.next
+     * @see EventProcessingContext.nextMessages
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("nextMessages")
+    public fun EventProcessingContext.nextMessagesBlocking(
+        id: ID = randomID(),
+        key: Event.Key<out MessageEvent>,
+        timeout: Long = 0,
+        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+    ): Messages {
+        return event.nextMessagesBlocking(id, key, timeout, timeUnit)
+    }
+    
+    // endregion
+    // region Event.nextMessage
+    
+    // endregion
     
     /**
      * 尝试通过ID获取一个 provider.
@@ -721,27 +1252,68 @@ public abstract class ContinuousSessionContext {
 /**
  * 进入到 [ContinuousSessionContext] 上下文中。
  *
- * 主要作用为可以更方便的使用 [ContinuousSessionContext.next] 等需要多个接收环境的情况。
- *
- * ```kotlin
- * val session: ContinuousSessionContext = ...
+ * 主要作用为可以更方便的使用 [ContinuousSessionContext.next] 、[ContinuousSessionContext.nextMessages] 等需要事件上下文环境的情况。
  *
  * e.g.
- * session {
- *    // in session
- *    next(key = FooEvent)
+ * ```kotlin
+ * suspend fun EventProcessingContext.barListener(event: BarEvent, session: ContinuousSessionContext) {
+ *    session { // this: session
+ *       next(...)
+ *    }
+ * }
+ *
+ * // ---------------------------------------
+ *
+ * suspend fun FooMessageEvent.fooListener(session: ContinuousSessionContext) {
+ *    session { // this: session
+ *        nextMessages(...)
+ *    }
  * }
  * ```
+ *
+ * 这种行为类似于 [run] 或 [apply]。 你也可以使用它们来代替当前函数。
+ *
+ * @receiver [ContinuousSessionContext] 实例
+ * @return [block] 函数的最终返回值
  */
-public inline operator fun ContinuousSessionContext.invoke(block: ContinuousSessionContext.() -> Unit) {
-    block()
-}
+@ExperimentalSimbotApi
+public inline operator fun <T> ContinuousSessionContext.invoke(block: ContinuousSessionContext.() -> T): T = block()
 
 
+/**
+ * | 当前事件类型 |  目标类型同类型 | target不同类型 |
+ * | :------------------------------------------ | ------------------- | --------------------: |
+ * | [OrganizationEvent]    | [organization][OrganizationEvent.organization] 的ID要相同 | 放行 |
+ * | [UserEvent]            | [user][UserEvent.user] 的ID要相同                         | 放行 |
+ * | [MessageEvent]         |  [source][MessageEvent.source] 的ID要相同                 | 放行 |
+ * | [ChatRoomMessageEvent] |  [author][ChatRoomMessageEvent.author] 的ID要相同         | 放行 |
+ */
 private fun <E : Event> Event.toMatcher(): EventMatcher<E> {
     return EventMatcher { event ->
+        val eventBot = event.bot
+        if (bot !== eventBot && bot.isNotMe(eventBot.id)) {
+            return@EventMatcher false
+        }
         
-        TODO()
+        if (this is OrganizationEvent && event is OrganizationEvent) {
+            if (organization().id != event.organization().id) return@EventMatcher false
+        }
+        
+        if (this is UserEvent && event is UserEvent) {
+            if (user().id != event.user().id) return@EventMatcher false
+        }
+        
+        if (this is MessageEvent && event is MessageEvent) {
+            if (source().id != event.source().id) return@EventMatcher false
+            
+            // chatRoom message
+            if (this is ChatRoomMessageEvent && event is ChatRoomMessageEvent) {
+                if (author().id != event.author().id) return@EventMatcher false
+            }
+        }
+        
+        
+        true
     }
 }
 
@@ -795,6 +1367,7 @@ public interface ContinuousSessionReceiver<T> {
      */
     public fun asFuture(): Future<T>
 }
+
 
 /**
  * 持续会话的结果提供者，通过 [ContinuousSessionContext.getReceiver] 构建获取，向目标会话推送一个结果。
