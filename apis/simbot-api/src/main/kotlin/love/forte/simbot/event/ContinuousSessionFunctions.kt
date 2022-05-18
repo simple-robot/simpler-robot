@@ -1,3 +1,19 @@
+/*
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ *
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *
+ *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ *
+ *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
+ *
+ *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ *  https://www.gnu.org/licenses
+ *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
+ */
+
 package love.forte.simbot.event
 
 import kotlinx.coroutines.CancellationException
@@ -13,8 +29,6 @@ import love.forte.simbot.utils.runWithInterruptible
  * 对于Java使用者可以考虑使用 [BlockingResumeListener]。
  *
  * @see BlockingResumeListener
- * @see ClearTargetResumeListener
- * @see BlockingClearTargetResumeListener
  */
 public fun interface ResumeListener<T> {
     public suspend operator fun EventProcessingContext.invoke(provider: ContinuousSessionProvider<T>)
@@ -92,7 +106,7 @@ public fun interface BlockingEventMatcher<in E : Event> {
 @OptIn(Api4J::class)
 internal fun <E : Event> BlockingEventMatcher<E>.parse(): EventMatcher<E> {
     return if (this === BlockingEventMatcher.AlwaysTrue) {
-        EventMatcher
+        EventMatcher.AlwaysTrue
     } else {
         EventMatcher { event -> runWithInterruptible { invoke(event) } }
     }
@@ -100,36 +114,3 @@ internal fun <E : Event> BlockingEventMatcher<E>.parse(): EventMatcher<E> {
 
 
 // endregion
-
-
-/**
- * 有着明确监听目标的 [ResumeListener]。
- *
- * @see BlockingClearTargetResumeListener
- */
-public fun interface ClearTargetResumeListener<E : Event, T> {
-    public suspend operator fun EventProcessingContext.invoke(
-        event: E,
-        provider: ContinuousSessionProvider<T>,
-    )
-}
-
-
-/**
- * 有着明确监听目标的 [ResumeListener]。需要考虑重写 [invoke] 来实现事件类型的准确转化。
- *
- * @see ClearTargetResumeListener
- * @see ResumeListener
- */
-@Api4J
-public fun interface BlockingClearTargetResumeListener<E : Event, T> {
-    public operator fun invoke(event: E, context: EventProcessingContext, provider: ContinuousSessionProvider<T>)
-    
-}
-
-
-@OptIn(Api4J::class)
-internal fun <E : Event, T> BlockingClearTargetResumeListener<E, T>.parse(): ClearTargetResumeListener<E, T> =
-    ClearTargetResumeListener { event, provider -> runWithInterruptible { this@parse(event, this, provider) } }
-
-

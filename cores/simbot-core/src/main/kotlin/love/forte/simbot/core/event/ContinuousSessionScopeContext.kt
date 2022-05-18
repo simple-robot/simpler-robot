@@ -27,15 +27,15 @@ import kotlin.coroutines.resumeWithException
 
 @ExperimentalSimbotApi
 internal class SimpleContinuousSessionContext(
-    override val coroutineScope: CoroutineScope,
+    private val coroutineScope: CoroutineScope,
     private val manager: ResumedListenerManager,
-) : BaseContinuousSessionContext() {
+) : ContinuousSessionContext() {
     
     companion object {
         private val logger = LoggerFactory.getLogger(SimpleContinuousSessionContext::class)
     }
     
-    private fun <T> waitingAsReceiver(
+    private fun <T> waiting0(
         continuation: CancellableContinuation<T>,
         id: ID,
         listener: ResumeListener<T>,
@@ -56,10 +56,8 @@ internal class SimpleContinuousSessionContext(
     
     override suspend fun <T> waiting(id: ID, listener: ResumeListener<T>): T {
         return suspendCancellableCoroutine { c ->
-            waitingAsReceiver(c, id, listener)
+            waiting0(c, id, listener)
         }
-        
-        
     }
     
     
