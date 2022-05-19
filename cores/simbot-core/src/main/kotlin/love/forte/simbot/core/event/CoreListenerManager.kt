@@ -21,8 +21,10 @@ import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
 import love.forte.simbot.event.*
+import love.forte.simbot.event.EventListener
 import love.forte.simbot.utils.view
 import java.lang.reflect.InvocationTargetException
+import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
@@ -135,7 +137,7 @@ internal class CoreListenerManagerImpl internal constructor(
     /**
      * 监听函数列表。ID唯一
      */
-    private val listeners: MutableMap<CharSequenceID, EventListener> // =
+    private val listeners: MutableMap<CharSequenceID, EventListener>
     
     
     /**
@@ -350,21 +352,108 @@ internal class CoreListenerManagerImpl internal constructor(
         val listener: EventListener,
     ) : suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult {
         val isAsync = listener.isAsync
-        private val listenerInterceptEntrance =
-            EventInterceptEntrance.eventListenerInterceptEntrance(listener, listenerIntercepts)
+    
+        // private val listenerInterceptEntranceWithPoint: Map<EventListenerInterceptor.Point, EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext>>
+        private val function: suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult
         
-        private val function: suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult =
-            if (isAsync) {
-                { scope, context ->
-                    val asyncDeferred = scope.async {
-                        listenerInterceptEntrance.doIntercept(context, listener::invoke)
+        init {
+            val listenerInterceptsPointMap =
+                EnumMap<EventListenerInterceptor.Point, EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext>>(
+                    EventListenerInterceptor.Point::class.java
+                )
+            
+            listenerIntercepts.groupBy { interceptor -> interceptor.point }
+                .mapValuesTo(listenerInterceptsPointMap) { (_, listenerInterceptsInCurrentPoint) ->
+                    EventInterceptEntrance.eventListenerInterceptEntrance(listener, listenerInterceptsInCurrentPoint)
+                }
+    
+            val listenerInterceptEntrance: EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext> = EventInterceptEntrance.eventListenerInterceptEntrance(listener, listenerIntercepts)
+            
+            suspend fun normalRunner(listener: EventListener, context: EventListenerProcessingContext): EventResult {
+                return listenerInterceptEntrance.doIntercept(context, listener::invoke)
+            }
+            
+            suspend fun matchableRunner(
+                listener: MatchableEventListener,
+                context: EventListenerProcessingContext,
+            ): EventResult {
+                val defaultEntrance = listenerInterceptsPointMap.getOrDefault(
+                    EventListenerInterceptor.Point.DEFAULT,
+                    EventInterceptEntrance.eventListenerInterceptEntrance()
+                )
+                val afterMatchEntrance = listenerInterceptsPointMap.getOrDefault(
+                    EventListenerInterceptor.Point.AFTER_MATCH,
+                    EventInterceptEntrance.eventListenerInterceptEntrance()
+                )
+    
+                return defaultEntrance.doIntercept(context) { innerContext ->
+                    if (listener.match(innerContext)) {
+                        afterMatchEntrance.doIntercept(innerContext) { afterInnerContext ->
+                            listener.directInvoke(afterInnerContext)
+                        }
+                    } else {
+                        EventResult.Invalid
                     }
-                    asyncDeferred.start()
-                    EventResult.async(asyncDeferred)
+                }
+            }
+            
+            suspend fun normalAsyncFunctionRunner(
+                listener: EventListener,
+                scope: CoroutineScope,
+                context: EventListenerProcessingContext,
+            ): EventResult {
+                val asyncDeferred = scope.async {
+                    normalRunner(listener, context)
+                }
+                asyncDeferred.start()
+                return EventResult.async(asyncDeferred)
+            }
+            
+            suspend fun matchableAsyncFunctionRunner(
+                listener: MatchableEventListener,
+                scope: CoroutineScope,
+                context: EventListenerProcessingContext,
+            ): EventResult {
+                val asyncDeferred = scope.async {
+                    matchableRunner(listener, context)
+                }
+                asyncDeferred.start()
+                return EventResult.async(asyncDeferred)
+            }
+            
+            
+            suspend fun normalSuspendFunctionRunner(
+                listener: EventListener,
+                context: EventListenerProcessingContext,
+            ): EventResult {
+                return normalRunner(listener, context)
+            }
+            
+            suspend fun matchableSuspendFunctionRunner(
+                listener: MatchableEventListener,
+                context: EventListenerProcessingContext,
+            ): EventResult {
+                return matchableRunner(listener, context)
+            }
+            
+            
+            val functionRunner: suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult = if (isAsync) {
+                if (listener is MatchableEventListener) {
+                    { s, c -> matchableAsyncFunctionRunner(listener, s, c) }
+                } else {
+                    { s, c -> normalAsyncFunctionRunner(listener, s, c) }
                 }
             } else {
-                { _, context -> listenerInterceptEntrance.doIntercept(context, listener::invoke) }
+                if (listener is MatchableEventListener) {
+                    { _, c -> matchableSuspendFunctionRunner(listener, c) }
+                } else {
+                    { _, c -> normalSuspendFunctionRunner(listener, c) }
+                }
             }
+            
+            function = functionRunner
+        }
+        
         
         override suspend fun invoke(scope: CoroutineScope, context: EventListenerProcessingContext): EventResult {
             return try {
@@ -507,9 +596,10 @@ internal class CoreEventProcessingContext(
     }
     
     override fun <T : Any> contains(attribute: Attribute<T>): Boolean {
-        return when(attribute) {
+        return when (attribute) {
             @Suppress("DEPRECATION")
-            EventProcessingContext.Scope.Instant -> true
+            EventProcessingContext.Scope.Instant,
+            -> true
             EventProcessingContext.Scope.Global -> true
             EventProcessingContext.Scope.ContinuousSession -> true
             else -> attribute in attributeMap

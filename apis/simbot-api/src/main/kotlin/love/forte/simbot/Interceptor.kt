@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot
@@ -26,7 +25,7 @@ import love.forte.simbot.utils.runInBlocking
  * @author ForteScarlet
  */
 public interface Interceptor<C : Interceptor.Context<R>, R> {
-
+    
     /**
      * 对当前指定的拦截内容进行处理。
      *
@@ -58,15 +57,25 @@ public interface Interceptor<C : Interceptor.Context<R>, R> {
      */
     @JvmSynthetic
     public suspend fun intercept(context: C): R
-
-
+    
+    
     /**
      * 拦截器的拦截对象。此对象可能是下一层拦截器，或者是真正的目标。
      */
     public interface Context<R> {
+        
+        /**
+         * 继续进行后续流程。
+         *
+         * 当执行了 [proceed], 即可理解为通常意义的“放行”。[proceed] 中会继续进行后续逻辑。
+         */
         @JvmSynthetic
         public suspend fun proceed(): R
-
+        
+        /**
+         * 阻塞的执行 [proceed]。
+         *
+         */
         @Api4J
         public fun proceedBlocking(): R = runInBlocking { proceed() }
     }

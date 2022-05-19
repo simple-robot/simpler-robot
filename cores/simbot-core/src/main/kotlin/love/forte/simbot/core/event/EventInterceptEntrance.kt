@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.core.event
@@ -40,6 +39,12 @@ public abstract class EventInterceptEntrance<C : EventInterceptor.Context<R>, R,
         }
         
         /**
+         * 得到事件流程拦截器入口。
+         */
+        public fun eventProcessingInterceptEntrance(): EventInterceptEntrance<EventProcessingInterceptor.Context, EventProcessingResult, EventProcessingContext> =
+            EventProcessingDirectInterceptEntrance
+        
+        /**
          * 得到监听函数拦截器入口。
          */
         public fun eventListenerInterceptEntrance(
@@ -49,6 +54,12 @@ public abstract class EventInterceptEntrance<C : EventInterceptor.Context<R>, R,
             return if (interceptors.isEmpty()) EventListenerDirectInterceptEntrance
             else EventListenerIteratorInterceptEntrance(listener, interceptors.toList())
         }
+        
+        /**
+         * 得到监听函数拦截器入口。
+         */
+        public fun eventListenerInterceptEntrance(): EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext> =
+            EventListenerDirectInterceptEntrance
     }
     
     public abstract class IteratorInterceptorContext<C : EventInterceptor.Context<R>, I : EventInterceptor<C, R>, R, EC : EventProcessingContext>(

@@ -19,6 +19,7 @@ package love.forte.simbot.event
 import love.forte.simbot.Api4J
 import love.forte.simbot.Interceptor
 import love.forte.simbot.PriorityConstant
+import love.forte.simbot.utils.runWithInterruptible
 
 /**
  * 与事件有关的拦截器。拦截器是一个包裹在目标前后的一道 “关卡”,  通过拦截器可以自由定义对目标逻辑前后以及异常的处理。
@@ -76,11 +77,14 @@ public interface EventProcessingInterceptor :
  */
 @Api4J
 public interface BlockingEventProcessingInterceptor : EventProcessingInterceptor {
+    /**
+     * 阻塞的执行拦截逻辑。
+     */
     public fun doIntercept(context: EventProcessingInterceptor.Context): EventProcessingResult
     
     @JvmSynthetic
     override suspend fun intercept(context: EventProcessingInterceptor.Context): EventProcessingResult =
-        doIntercept(context)
+        runWithInterruptible { doIntercept(context) }
 }
 
 
@@ -88,6 +92,8 @@ public interface BlockingEventProcessingInterceptor : EventProcessingInterceptor
  * 事件监听函数拦截器。与 [EventProcessingInterceptor] 不同，[EventListenerInterceptor] 则针对一次事件处理流程中的 **每一个** [监听函数][EventListener] 进行独立拦截。
  *
  * 事件监听器不建议对 [EventListenerProcessingContext.textContent] 进行操作，尤其是在(boot下)同时使用了 [love.forte.simboot.listener.EventListenerTextContentProcessor] 的情况下。
+ *
+ * 对于不支持挂起函数的实现方提供了 [BlockingEventListenerInterceptor]，以阻塞的 [BlockingEventListenerInterceptor.doIntercept] 来代替 [intercept].
  *
  * @see BlockingEventListenerInterceptor
  * @see love.forte.simboot.listener.EventListenerTextContentProcessor

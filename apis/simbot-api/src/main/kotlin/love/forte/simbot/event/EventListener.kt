@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.event
@@ -95,7 +94,11 @@ public interface EventListener : java.util.EventListener, AttributeContainer, Lo
     /**
      * 是否需要异步执行。
      *
-     * 异步执行的监听函数会被异步执行并立即返回一个 [Deferred], 并将其作为 [AsyncEventResult] 提供给当前的事件处理上下文中。
+     * 对于一个 [EventListener] 来说，[isAsync] 仅代表一个“标记”，不会影响 [invoke] 的实际执行效果。
+     * [isAsync] 的表现形式应当由持有当前监听函数的 [EventProcessor] 来做决定。
+     *
+     *
+     * 通常情况下来讲，异步执行的监听函数会被异步执行并立即返回一个 [Deferred], 并将其作为 [AsyncEventResult] 提供给当前的事件处理上下文中。
      *
      * 默认情况下，异步函数无法通过 [EventResult.isTruncated] 截断后续函数。
      *
@@ -125,6 +128,9 @@ public interface EventListener : java.util.EventListener, AttributeContainer, Lo
      * 监听函数的事件执行逻辑。
      *
      * 通过 [EventListenerProcessingContext] 处理事件，完成处理后返回 [处理结果][EventResult].
+     *
+     * 在执行 [invoke] 之前，必须要首先通过 [isTarget] 来判断当前监听函数是否允许此类型的事件。
+     * 否则可能会引发预期外的行为或错误。
      *
      */
     @JvmSynthetic
