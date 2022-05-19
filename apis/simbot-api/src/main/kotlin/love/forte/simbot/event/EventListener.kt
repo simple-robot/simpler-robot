@@ -168,7 +168,6 @@ public interface BlockingEventListener : EventListener, BlockingEventListenerFun
  * 那么 [invoke] 中真正的监听逻辑则不会被执行，而是返回 [EventResult.Invalid].
  *
  *
- *
  */
 public interface MatchableEventListener : EventListener {
     
