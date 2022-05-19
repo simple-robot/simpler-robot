@@ -40,7 +40,7 @@ public interface EventInterceptor<C : EventInterceptor.Context<R>, R> : Intercep
     /**
      * 事件拦截器所拦截的目标内容。
      */
-    public sealed interface Context<R> : Interceptor.Context<R> {
+    public interface Context<R> : Interceptor.Context<R> {
         
         /**
          * 事件处理流程的context。

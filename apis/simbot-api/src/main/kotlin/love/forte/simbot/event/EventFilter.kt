@@ -40,24 +40,26 @@ import love.forte.simbot.PriorityConstant
  * @author ForteScarlet
  */
 public interface EventFilter : Filter<EventListenerProcessingContext> {
-
+    
     /**
      * 优先级。
      */
     public val priority: Int get() = PriorityConstant.NORMAL
-
+    
     /**
      * 过滤器的检测函数。通过 [EventProcessingContext] 来验证是否需要处理当前事件。
      */
     @JvmSynthetic
     @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override suspend fun test(context: EventListenerProcessingContext): Boolean
-
+    
     /**
      * 如果过滤器匹配失败，可以通过此函数得到一个默认的返回值。
      * 默认情况下返回 [EventResult.Invalid].
      */
+    @Suppress("DeprecatedCallableAddReplaceWith")
     @JvmSynthetic
+    @Deprecated("不匹配情况下将永远返回EventResult.Invalid，不再支持自定义")
     public suspend fun defaultResult(context: EventProcessingContext): EventResult = EventResult.Invalid
 }
 
@@ -70,21 +72,21 @@ public interface EventFilter : Filter<EventListenerProcessingContext> {
  */
 @Api4J
 public interface BlockingEventFilter : EventFilter, BlockingFilter<EventListenerProcessingContext> {
-
+    
     /**
      * 过滤器的检测函数。通过 [EventProcessingContext] 来验证是否需要处理当前事件。
      */
     @Api4J
     override fun testBlocking(): Boolean
-
+    
     /**
      * 如果过滤器匹配失败，可以通过此函数得到一个默认的返回值。
      * 默认情况下返回 [EventResult.Invalid].
      */
     @Api4J
+    @Suppress("DeprecatedCallableAddReplaceWith")
+    @Deprecated("不匹配情况下将永远返回EventResult.Invalid，不再支持自定义")
     public fun defaultResultBlocking(context: EventProcessingContext): EventResult = EventResult.Invalid
-    
-    
     
     
     /**
@@ -92,17 +94,17 @@ public interface BlockingEventFilter : EventFilter, BlockingFilter<EventListener
      */
     @JvmSynthetic
     @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
-    override suspend fun test(context: EventListenerProcessingContext): Boolean= testBlocking()
+    override suspend fun test(context: EventListenerProcessingContext): Boolean = testBlocking()
     
     
     /**
      * 如果过滤器匹配失败，可以通过此函数得到一个默认的返回值。
      * 默认情况下返回 [EventResult.Invalid].
      */
+    @Suppress("OVERRIDE_DEPRECATION")
     @JvmSynthetic
+    @Deprecated("不匹配情况下将永远返回EventResult.Invalid，不再支持自定义")
     override suspend fun defaultResult(context: EventProcessingContext): EventResult = defaultResultBlocking(context)
-
-
-
-
+    
+    
 }

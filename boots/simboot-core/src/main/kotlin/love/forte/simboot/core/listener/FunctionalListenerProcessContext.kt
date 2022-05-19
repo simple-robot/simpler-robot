@@ -18,6 +18,7 @@ package love.forte.simboot.core.listener
 
 import love.forte.di.BeanContainer
 import love.forte.simboot.core.binder.BinderManager
+import love.forte.simboot.core.interceptor.FunctionalListenerInterceptor
 import kotlin.reflect.KFunction
 
 /**
@@ -54,5 +55,11 @@ public data class FunctionalListenerProcessContext(
      * Bean容器。
      */
     val beanContainer: BeanContainer,
+    
+    // TODO
+    /**
+     * 监听函数内部的call前拦截。
+     */
+    val functionCallInterceptors: List<FunctionalListenerInterceptor> = emptyList(), // TODO
 )
 

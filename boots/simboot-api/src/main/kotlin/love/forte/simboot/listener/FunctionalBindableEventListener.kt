@@ -47,7 +47,10 @@ public abstract class FunctionalBindableEventListener<R>(
     /**
      * 当前监听函数所对应的执行器。
      */
-    protected final override val caller: KFunction<R>,
+    public final override val caller: KFunction<R>,
+    
+    
+    
 ) : FunctionalEventListener<R>(), GenericBootEventListener {
     
     
@@ -82,7 +85,7 @@ public abstract class FunctionalBindableEventListener<R>(
     /**
      * 函数执行。
      */
-    final override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         val parameters = caller.parameters
         return if (isOptional) {
             invokeCallBy(context, parameters)

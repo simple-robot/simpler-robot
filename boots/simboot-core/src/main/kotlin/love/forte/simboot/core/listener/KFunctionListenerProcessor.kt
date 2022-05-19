@@ -108,7 +108,7 @@ public class KFunctionListenerProcessor(
         val groupByIsBeforeFilter = interceptors.groupBy { it.annotation.beforeFilter }
         
         var resolvedListener: EventListener = listener
-    
+        
         val beforeFilterInterceptors = groupByIsBeforeFilter[true] ?: emptyList()
         if (beforeFilterInterceptors.isNotEmpty()) {
             resolvedListener += (beforeFilterInterceptors.map { it.interceptor }.sortedBy { it.priority })
@@ -117,12 +117,12 @@ public class KFunctionListenerProcessor(
         if (filters.isNotEmpty()) {
             resolvedListener += filters
         }
-    
+        
         val afterFilterInterceptors = groupByIsBeforeFilter[false] ?: emptyList()
-    
+        
         if (afterFilterInterceptors.isNotEmpty()) {
             resolvedListener += (afterFilterInterceptors.map { it.interceptor }.sortedBy { it.priority })
-    
+            
         }
         
         return resolvedListener
@@ -433,12 +433,11 @@ public class KFunctionListenerProcessor(
     }
     
     
-    
 }
 
 private data class EventListenerInterceptorRelativeToFilter(
     val interceptor: AnnotatedEventListenerInterceptor,
-    val annotation: InterceptorAnnotation
+    val annotation: InterceptorAnnotation,
 )
 
 

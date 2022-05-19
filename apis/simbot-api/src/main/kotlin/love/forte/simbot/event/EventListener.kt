@@ -31,13 +31,13 @@ import org.slf4j.Logger
  * @see BlockingEventListenerFunction
  */
 public fun interface EventListenerFunction : suspend (EventListenerProcessingContext) -> EventResult {
-
+    
     /**
      * 执行监听处理流程。
      */
     @JvmSynthetic
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult
-
+    
 }
 
 
@@ -51,7 +51,7 @@ public fun interface EventListenerFunction : suspend (EventListenerProcessingCon
 public fun interface BlockingEventListenerFunction : EventListenerFunction {
     @Api4J
     public fun invokeBlocking(context: EventListenerProcessingContext): EventResult
-
+    
     @JvmSynthetic
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult =
         runWithInterruptible { invokeBlocking(context) }
@@ -71,24 +71,25 @@ public fun interface BlockingEventListenerFunction : EventListenerFunction {
  *
  * @author ForteScarlet
  */
-public interface EventListener : java.util.EventListener, AttributeContainer, LoggerContainer, IDContainer, EventListenerFunction {
-
+public interface EventListener : java.util.EventListener, AttributeContainer, LoggerContainer, IDContainer,
+    EventListenerFunction {
+    
     /**
      * 监听器必须是唯一的. 通过 [id] 进行唯一性确认。
      */
     override val id: ID
-
+    
     /**
      * 当前监听函数内部存在的日志对象。
      */
     override val logger: Logger
-
+    
     /**
      * 优先级。对于一次事件处理流程，所有监听函数会根据此优先级进行顺序处理。
      * 整个流程下的所有监听函数中，[isAsync] == true 的监听函数会比普通函数有更高的优先级。
      */
     public val priority: Int get() = PriorityConstant.NORMAL
-
+    
     /**
      * 是否需要异步执行。
      *
@@ -104,20 +105,20 @@ public interface EventListener : java.util.EventListener, AttributeContainer, Lo
      *
      */
     public val isAsync: Boolean
-
+    
     /**
      * 判断当前监听函数是否对可以对指定的事件进行监听。
      *
      */
     public fun isTarget(eventType: Event.Key<*>): Boolean
-
-
+    
+    
     /**
      * 监听函数可以允许存在其独特的属性。
      */
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T? = null
-
-
+    
+    
     /**
      * 监听函数的事件执行逻辑。
      *
@@ -142,13 +143,49 @@ public interface BlockingEventListener : EventListener, BlockingEventListenerFun
     override val logger: Logger
     override val isAsync: Boolean
     override fun isTarget(eventType: Event.Key<*>): Boolean
+    
     @JvmSynthetic
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult =
         runWithInterruptible { invokeBlocking(context) }
-
+    
     /**
      * 非挂起的执行事件监听逻辑。
      */
     override fun invokeBlocking(context: EventListenerProcessingContext): EventResult
-
 }
+
+
+// TODO
+/**
+ * 一个可以 [匹配][match] 的 [EventListener].
+ *
+ * [match] 允许在进行 [invoke] 之前优先检测参数 [EventListenerProcessingContext]
+ * 是否允许被使用。这很类似于 "过滤器" 的概念。
+ *
+ *
+ * 在 [MatchableEventListener] 中，[invoke] 相当于 先执行 [match],
+ * 当得到 `true` 的时候去执行 [directInvoke]. 假如 [match] 得到了 `false`，
+ * 那么 [invoke] 中真正的监听逻辑则不会被执行，而是返回 [EventResult.Invalid].
+ *
+ *
+ *
+ */
+public interface MatchableEventListener : EventListener {
+    
+    /**
+     * 判断目标 [EventListenerProcessingContext] 是否符合当前监听函数的预期。
+     *
+     * @return 是否符合预期
+     */
+    public suspend fun match(context: EventListenerProcessingContext): Boolean
+    
+    
+    /**
+     * 直接执行目标逻辑。
+     *
+     */
+    public suspend fun directInvoke(context: EventListenerProcessingContext): EventResult
+    
+    
+}
+

@@ -42,9 +42,12 @@ public class KFunctionEventListener<R>(
     override val binders: Array<ParameterBinder>,
     private val attributeMap: AttributeMutableMap,
 ) : FunctionalBindableEventListener<R>(caller) {
+    // private val functionalEntrance: EventInterceptEntrance<FunctionalListenerInterceptor.Context, EventResult, EventListenerProcessingContext>
     
     override fun toString(): String {
-        return "KFunctionEventListener(id=$id, priority=$priority, isAsync=$isAsync, isSuspend=${caller.isSuspend}, targets=${targets.takeIf { it.isNotEmpty() }?.joinToString(", ", "[", "]") ?: "[<ALL>]"}, binders=${binders.joinToString(separator = ", ", "[", "]")}, caller=$caller)"
+        return "KFunctionEventListener(id=$id, priority=$priority, isAsync=$isAsync, isSuspend=${caller.isSuspend}, targets=${
+            targets.takeIf { it.isNotEmpty() }?.joinToString(", ", "[", "]") ?: "[<ALL>]"
+        }, binders=${binders.joinToString(separator = ", ", "[", "]")}, caller=$caller)"
     }
     
     private lateinit var targetCaches: MutableSet<Event.Key<*>>
@@ -56,6 +59,8 @@ public class KFunctionEventListener<R>(
             targetCaches = mutableSetOf()
             notTargetCaches = mutableSetOf()
         }
+        
+        // functionalEntrance = FunctionalListenerInterceptor.entrance(this, interceptors)
     }
     
     override fun isTarget(eventType: Event.Key<*>): Boolean {
