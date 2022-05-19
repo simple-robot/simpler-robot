@@ -22,6 +22,7 @@ import org.springframework.aop.support.AopUtils
 import org.springframework.beans.factory.ListableBeanFactory
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException
+import org.springframework.util.ClassUtils
 import kotlin.reflect.KClass
 
 // region bean container
@@ -157,7 +158,7 @@ public open class SpringBeanContainer(override val listableBeanFactory: Listable
     @Api4J
     override fun getTypeClassOrNull(name: String): Class<*>? {
         return try {
-            listableBeanFactory.getType(name)?.resolveIfProxy()
+            listableBeanFactory.getType(name)?.resolveProxy()
         } catch (e: NoSuchBeanDefinitionException) {
             null
         }
@@ -166,18 +167,40 @@ public open class SpringBeanContainer(override val listableBeanFactory: Listable
     @Api4J
     override fun getTypeClass(name: String): Class<*> {
         return try {
-            listableBeanFactory.getType(name)?.resolveIfProxy() ?: noSuchBeanDefine { name }
+            listableBeanFactory.getType(name)?.resolveProxy() ?: noSuchBeanDefine { name }
         } catch (e: NoSuchBeanDefinitionException) {
             noSuchBeanDefine(e) { name }
         }
     }
     
-    private fun Class<*>.resolveIfProxy(): Class<*> {
-        if (AopUtils.isAopProxy(this)) {
-            return AopUtils.getTargetClass(this)
+    
+    /**
+     * @see AopUtils.isAopProxy
+     * @see AopUtils.getTargetClass
+     */
+    private fun Class<*>.resolveProxy(): Class<*> {
+        if (isCgLibProxyClass()) {
+            return cglibProxyTargetClass().resolveProxy()
         }
         
         return this
     }
+    
+    
+    private fun Class<*>.isCgLibProxyClass(): Boolean {
+        return this.name.contains(ClassUtils.CGLIB_CLASS_SEPARATOR)
+    }
+    
+    private fun Class<*>.cglibProxyTargetClass(): Class<*> {
+        return superclass
+    }
+    
+    // private fun Class<*>.isJdkProxy(): Boolean {
+    //     return Proxy.isProxyClass(this)
+    // }
+    //
+    // private fun Class<*>.jdkProxyTargetClass(): Class<*> {
+    //     // cannot get from jdk proxy instance.
+    // }
 }
 // endregion
