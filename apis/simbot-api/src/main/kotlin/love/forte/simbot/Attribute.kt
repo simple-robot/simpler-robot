@@ -19,9 +19,9 @@
 
 package love.forte.simbot
 
-import kotlinx.serialization.*
-import kotlin.reflect.*
-import kotlin.reflect.jvm.*
+import kotlinx.serialization.Serializable
+import kotlin.reflect.KClass
+import kotlin.reflect.jvm.jvmName
 
 
 /*
@@ -44,7 +44,7 @@ import kotlin.reflect.jvm.*
 /**
  * 一个属性。
  *
- * 此类型通常使用在 [Component2.attributes], 或者作为事件处理中的上下文使用。
+ * 此类型通常使用在事件处理中的上下文使用。
  * [Attribute] 拥有一个 [属性名][name], 而不会真实保留 [T] 类型信息。
  *
  * [Attribute] 的 [Attribute.hashcode] 将会直接与 [name] 一致，因此可以直接将 [Attribute] 作为一个 [Map] 的 Key,
@@ -61,22 +61,22 @@ import kotlin.reflect.jvm.*
  */
 @Serializable
 public class Attribute<T : Any> private constructor(
-    public val name: String
+    public val name: String,
 ) {
     private val hashcode: Int get() = name.hashCode()
-
+    
     override fun hashCode(): Int = hashcode
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Attribute<*>) return false
-
+        
         return name == other.name
     }
-
+    
     override fun toString(): String = name
-
+    
     public companion object {
-
+        
         /**
          * 构建一个 [Attribute] 实例。
          */
@@ -84,14 +84,14 @@ public class Attribute<T : Any> private constructor(
         @JvmStatic
         @Suppress("UNUSED_PARAMETER")
         public fun <T : Any> of(name: String, type: Class<T>): Attribute<T> = of(name)
-
-
+        
+        
         @Suppress("UNUSED_PARAMETER")
         @Deprecated("Use of(name)", ReplaceWith("of(name)"))
         @JvmSynthetic
         public fun <T : Any> of(name: String, type: KClass<T>): Attribute<T> = of(name)
-
-
+        
+        
         /**
          * 构建一个 [Attribute] 实例。
          *
@@ -110,10 +110,10 @@ public class Attribute<T : Any> private constructor(
          */
         @JvmStatic
         public fun <T : Any> of(name: String): Attribute<T> = Attribute(name)
-
+        
     }
-
-
+    
+    
 }
 
 @Suppress("UNUSED_PARAMETER")
@@ -166,30 +166,30 @@ public inline fun <reified T : Any> attribute(): Attribute<T> =
  * @see AttributeMutableMap
  */
 public interface AttributeMap : AttributeContainer {
-
+    
     /**
      * 通过 [attribute] 得到对应的数据。
      *
      * @throws ClassCastException 如果存在对应名称但是类型不匹配的键与值。
      */
     public operator fun <T : Any> get(attribute: Attribute<T>): T?
-
+    
     /**
      * 获取指定值。
      * @see get
      */
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T? = get(attribute)
-
+    
     /**
      * 判断是否存在对应键名与类型的键。
      */
-    public fun <T : Any> contains(attribute: Attribute<T>): Boolean
-
+    public operator fun <T : Any> contains(attribute: Attribute<T>): Boolean
+    
     /**
      * 数量
      */
     public fun size(): Int
-
+    
     public object Empty : AttributeMap {
         override fun <T : Any> get(attribute: Attribute<T>): T? = null
         override fun <T : Any> contains(attribute: Attribute<T>): Boolean = false
@@ -202,7 +202,7 @@ public interface AttributeMap : AttributeContainer {
  * [MutableAttributeMap] 是 [AttributeMap] 的子类型，代表一个允许变化的 [AttributeMap], 类似于 [Map] 与 [MutableMap] 之间的关系。
  */
 public interface MutableAttributeMap : AttributeMap {
-
+    
     /**
      * 存入一个值。
      *
@@ -212,25 +212,25 @@ public interface MutableAttributeMap : AttributeMap {
      * @return 返回被顶替的结果. 如果没有被顶替内容, 得到null。
      */
     public fun <T : Any> put(attribute: Attribute<T>, value: T): T?
-
-
+    
+    
     /**
      * 存入值，当值已经存在的时候进行合并处理。
      *
      */
     public fun <T : Any> merge(attribute: Attribute<T>, value: T, remapping: (T, T) -> T): T
-
-
+    
+    
     /**
      * 如果不存在，则计算并存入。
      */
     public fun <T : Any> computeIfAbsent(attribute: Attribute<T>, mappingFunction: (Attribute<T>) -> T): T
-
+    
     /**
      * 如果存在，则计算。如果计算函数中返回null，则为移除对应结果。
      */
     public fun <T : Any> computeIfPresent(attribute: Attribute<T>, remappingFunction: (Attribute<T>, T) -> T?): T?
-
+    
     /**
      * 移除对应键名的值。
      *
@@ -247,25 +247,25 @@ public operator fun <T : Any> MutableAttributeMap.set(attribute: Attribute<T>, v
 
 public class AttributeMutableMap(private val values: MutableMap<Attribute<*>, Any> = mutableMapOf()) :
     MutableAttributeMap {
-
-
+    
+    
     public val entries: MutableSet<MutableMap.MutableEntry<Attribute<*>, Any>>
         get() = values.entries
-
+    
     override fun size(): Int = values.size
-
+    
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> get(attribute: Attribute<T>): T? {
         val got = values[attribute] ?: return null
         return got as T
         // return attribute.type.cast(got)
     }
-
+    
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> put(attribute: Attribute<T>, value: T): T? {
         return values.put(attribute, value)?.let { it as T }
     }
-
+    
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> merge(attribute: Attribute<T>, value: T, remapping: (T, T) -> T): T {
         val newValue = values.merge(attribute, value) { old, now ->
@@ -275,7 +275,7 @@ public class AttributeMutableMap(private val values: MutableMap<Attribute<*>, An
         }
         return newValue as T
     }
-
+    
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> computeIfAbsent(attribute: Attribute<T>, mappingFunction: (Attribute<T>) -> T): T {
         val value = values.computeIfAbsent(attribute) { k ->
@@ -283,7 +283,7 @@ public class AttributeMutableMap(private val values: MutableMap<Attribute<*>, An
         }
         return value as T
     }
-
+    
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> computeIfPresent(attribute: Attribute<T>, remappingFunction: (Attribute<T>, T) -> T?): T? {
         val value = values.computeIfPresent(attribute) { k, old ->
@@ -292,17 +292,17 @@ public class AttributeMutableMap(private val values: MutableMap<Attribute<*>, An
         }
         return value?.let { it as T }
     }
-
+    
     override fun <T : Any> contains(attribute: Attribute<T>): Boolean {
         return attribute in values
     }
-
-
+    
+    
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> remove(attribute: Attribute<T>): T? {
         return values.remove(attribute)?.let { it as T }
     }
-
+    
     override fun toString(): String = values.toString()
 }
 
@@ -311,10 +311,10 @@ public class AttributeMutableMap(private val values: MutableMap<Attribute<*>, An
  * 一个 [Attribute] 容器，标记其允许获取属性。
  */
 public interface AttributeContainer {
-
+    
     /**
      * 通过 [attribute] 尝试获取指定属性。
      */
     public fun <T : Any> getAttribute(attribute: Attribute<T>): T?
-
+    
 }

@@ -90,7 +90,7 @@ public object SimbootApp {
             } ?: throw SimbootApplicationException("cannot resolve the scan package.")
         
         
-        val configs = resolveToConfig(appAnnotation, scanPackage)
+        val configs = resolveToConfig(entrance?.java?.classLoader, appAnnotation, scanPackage)
         val initialConfigurator = configToInitialConfigurator(args.toList(), scanPackage, configs, configurator)
         
         
@@ -140,7 +140,7 @@ public object SimbootApp {
                     }
             } ?: throw SimbootApplicationException("cannot resolve the scan package.")
         
-        val configs = resolveToConfig(appAnnotation, scanPackage)
+        val configs = resolveToConfig(entrance?.classLoader, appAnnotation, scanPackage)
         val initialConfigurator = configToInitialConfigurator(args.toList(), scanPackage, configs)
         
         return applicationLauncher {
@@ -155,12 +155,13 @@ public object SimbootApp {
     
     
     private data class Configs(
+        val classLoader: ClassLoader?,
         val topListenerScanPackage: List<String>,
         val topBinderScanPackage: List<String>,
         val botScanResources: List<String>?,
     )
     
-    private fun resolveToConfig(appAnnotation: SimbootApplication?, scanPackage: List<String>): Configs {
+    private fun resolveToConfig(classLoader: ClassLoader?, appAnnotation: SimbootApplication?, scanPackage: List<String>): Configs {
         val topListenerScanPackage = appAnnotation?.topListenerPackages?.ifEmpty { null }?.toList()
             ?: (if (appAnnotation?.classesPackagesForTopListener == true) scanPackage else null) ?: emptyList()
         
@@ -169,7 +170,7 @@ public object SimbootApp {
         
         val botScanResources = appAnnotation?.botResources?.ifEmpty { null }?.toList()
         
-        return Configs(topListenerScanPackage, topBinderScanPackage, botScanResources)
+        return Configs(classLoader, topListenerScanPackage, topBinderScanPackage, botScanResources)
     }
     
     private fun configToInitialConfigurator(
@@ -180,6 +181,7 @@ public object SimbootApp {
     ): BootApplicationConfiguration.() -> Unit {
         return {
             this.args = args.toList()
+            this.classLoader = classLoader
             classesScanPackage = scanPackage
             topLevelListenerScanPackage = config.topListenerScanPackage
             topLevelBinderScanPackage = config.topBinderScanPackage

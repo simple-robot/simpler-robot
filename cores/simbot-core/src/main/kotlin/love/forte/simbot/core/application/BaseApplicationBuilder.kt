@@ -130,10 +130,14 @@ public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuild
         }
     }
     
+    protected fun componentFactoriesSize(): Int = componentFactories.size
+    
     
     protected suspend fun buildComponents(): List<Component> {
         return componentFactories.values.map { it() }
     }
+    
+    protected fun eventProviderFactoriesSize(): Int = eventProviderFactories.size
     
     
     protected suspend fun buildProviders(

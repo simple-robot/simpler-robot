@@ -25,7 +25,6 @@ import love.forte.simbot.application.ApplicationBuilderDsl
 import love.forte.simbot.definition.Container
 import love.forte.simbot.definition.IDContainer
 import love.forte.simbot.event.EventListenerManager
-import love.forte.simbot.utils.currentClassLoader
 import java.util.*
 
 
@@ -120,7 +119,7 @@ public interface ComponentAutoRegistrarFactory<C : Component, out Config : Any> 
  */
 @ApplicationBuilderDsl
 public fun <A : Application> ApplicationBuilder<A>.installAllComponents(
-    classLoader: ClassLoader = this.currentClassLoader,
+    classLoader: ClassLoader = ComponentAutoRegistrarFactory::class.java.classLoader,
 ) {
     val factories = ServiceLoader.load(ComponentAutoRegistrarFactory::class.java, classLoader)
     factories.forEach {

@@ -25,9 +25,12 @@ import love.forte.simboot.annotation.TargetFilter
 import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simboot.filter.EmptyKeyword
 import love.forte.simboot.filter.MatchType
-import love.forte.simbot.*
+import love.forte.simbot.LoggerFactory
+import love.forte.simbot.MutableAttributeMap
+import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.core.event.coreFilter
 import love.forte.simbot.event.*
+import love.forte.simbot.literal
 import love.forte.simbot.message.At
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.reflect.KAnnotatedElement
@@ -199,7 +202,7 @@ private fun Filters.process(context: FiltersAnnotationProcessContext): EventFilt
  * @see TargetFilter
  */
 private data class FilterTarget(
-    val components: Set<CharSequenceID>,
+    val components: Set<String>,
     val bots: Set<String>,
     val authors: Set<String>,
     val groups: Set<String>,
@@ -223,7 +226,7 @@ private fun TargetFilter.box(): FilterTarget? {
     }
     
     return FilterTarget(
-        components.map { it.ID }.toSet(),
+        components.toSet(),
         bots.toSet(),
         authors.toSet(),
         groups.toSet(),
@@ -277,7 +280,7 @@ private class AnnotationFilter(
 private fun FilterTarget.toMatcher(): suspend (Event) -> Boolean {
     return M@{ event ->
         if (components.isNotEmpty()) {
-            if (event.component.id !in components) {
+            if (event.component.id.literal !in components) {
                 return@M false
             }
         }
@@ -321,7 +324,7 @@ private fun FilterTarget.toMatcher(): suspend (Event) -> Boolean {
         
         // atBot
         if (atBot && event is ChatRoomMessageEvent) {
-            if (event.messageContent.messages.none { it is At && !event.bot.isMe(it.target) }) {
+            if (event.messageContent.messages.none { it is At && event.bot.isMe(it.target) }) {
                 return@M false
             }
         }

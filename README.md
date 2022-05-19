@@ -256,7 +256,11 @@ suspend fun GroupMessageEvent.listen() {
 
 ## 贡献你的星星！
 
-[![Stargazers over time](https://starchart.cc/ForteScarlet/simpler-robot.svg)](https://starchart.cc/ForteScarlet/simpler-robot)
+[//]: # ([![Stargazers over time]&#40;https://starchart.cc/ForteScarlet/simpler-robot.svg&#41;]&#40;https://starchart.cc/ForteScarlet/simpler-robot&#41;)
+
+[![Star History Chart](https://api.star-history.com/svg?repos=ForteScarlet/simpler-robot&type=Date)](https://star-history.com/#ForteScarlet/simpler-robot&Date)
+
+> powered by [Star History](https://star-history.com)
 
 ## 开源协议
 
