@@ -18,16 +18,15 @@
 package love.forte.simbot.utils
 
 import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import kotlin.coroutines.CoroutineContext
 
 @PublishedApi
 internal val RunWithInterruptibleDefaultCoroutineContext: CoroutineContext =
-    Dispatchers.IO + CoroutineName("runWithInterruptible")
+    DefaultBlockingDispatcher + CoroutineName("runWithInterruptible")
 
 /**
- * 默认使用 [Dispatchers.IO] 作为调度器的可中断执行函数。
+ * 默认使用 [DefaultBlockingDispatcher] 作为调度器的可中断执行函数。
  *
  * @see runInterruptible
  */

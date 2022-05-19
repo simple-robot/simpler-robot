@@ -16,13 +16,13 @@
 
 package love.forte.simbot.event
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.future.*
-import love.forte.simbot.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.future.asCompletableFuture
+import love.forte.simbot.Api4J
 import love.forte.simbot.event.EventResult.Default.NormalEmpty
 import love.forte.simbot.event.EventResult.Default.Truncated
 import love.forte.simbot.event.EventResult.Invalid
-import java.util.concurrent.*
+import java.util.concurrent.Future
 
 
 /**
@@ -140,7 +140,7 @@ public interface EventResult {
     }
 
     /**
-     * 代表着 **无效** 的 [EventResult] 实例，是一个具有特殊意义的类型。事件处理器不应对此结果进行保留或处理。
+     * 代表着 **无效** 的 [EventResult] 实例，是一个具有特殊意义的类型。[事件处理器][EventProcessor] 不应对此结果进行保留或处理。
      */
     public object Invalid : EventResult {
         override val content: Any?

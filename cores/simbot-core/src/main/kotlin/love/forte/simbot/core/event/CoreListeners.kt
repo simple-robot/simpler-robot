@@ -70,11 +70,6 @@ internal class EventListenerHandle(
 ) : EventListener by listener {
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         return context.handle(listener)
-        // for (filter in filters) {
-        //     if (!filter.test(context)) return filter.defaultResult(context)
-        // }
-        //
-        // return listener.invoke(context)
     }
 
 

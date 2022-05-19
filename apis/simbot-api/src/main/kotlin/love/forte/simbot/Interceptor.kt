@@ -31,6 +31,30 @@ public interface Interceptor<C : Interceptor.Context<R>, R> {
      * 对当前指定的拦截内容进行处理。
      *
      * 想要继续流程则使用 [Context.proceed] 进入到下一个拦截器，或者进入正常流程。
+     *
+     * 例如放行:
+     * ```kotlin
+     * override suspend fun intercept(context: FooContext): FooResult {
+     *    // do something...?
+     *
+     *    // 执行 context.proceed() 就是放行。
+     *    val result = context.proceed()
+     *    // and do something...?
+     *
+     *    return result
+     * }
+     * ```
+     * 例如拦截:
+     * ```kotlin
+     * override suspend fun intercept(context: BarContext): BarResult {
+     *    // 不执行 context.proceed() 就是拦截。
+     *    // 自行构建一个result实例
+     *    return BarResult(...)
+     *
+     * }
+     * ```
+     *
+     *
      */
     @JvmSynthetic
     public suspend fun intercept(context: C): R
