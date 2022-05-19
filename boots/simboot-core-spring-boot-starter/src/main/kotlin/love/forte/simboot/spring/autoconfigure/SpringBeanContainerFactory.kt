@@ -176,6 +176,7 @@ public open class SpringBeanContainer(override val listableBeanFactory: Listable
         if (AopUtils.isAopProxy(this)) {
             return AopUtils.getTargetClass(this)
         }
+        
         return this
     }
 }
