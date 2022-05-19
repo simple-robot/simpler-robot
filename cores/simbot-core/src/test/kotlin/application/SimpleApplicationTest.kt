@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.core.application.createSimpleApplication
 import love.forte.simbot.core.application.listeners
+import love.forte.simbot.event.EventResult.Companion.defaults
 import love.forte.simbot.event.FriendMessageEvent
 import kotlin.time.Duration.Companion.seconds
 
@@ -30,7 +31,9 @@ suspend fun main() {
     val app = createSimpleApplication {
         listeners {
             FriendMessageEvent {event ->
-            
+                delay(1234)
+                
+                defaults()
             }
             
             

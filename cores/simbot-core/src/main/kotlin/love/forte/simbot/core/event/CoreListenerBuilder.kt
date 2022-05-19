@@ -22,6 +22,7 @@ import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerProcessingContext
+import love.forte.simbot.event.EventResult
 import love.forte.simbot.randomID
 import org.slf4j.Logger
 
@@ -34,25 +35,43 @@ import org.slf4j.Logger
 @Suppress("MemberVisibilityCanBePrivate")
 public class CoreListenerBuilder<E : Event>(private val eventKey: Event.Key<E>) {
     public var id: ID? = null
-    public var isAlwaysBlockNext: Boolean = false
     public var isAsync: Boolean = false
-
-    private val logger: Logger? = null //LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    private var handle: (suspend EventListenerProcessingContext.(E) -> Any?)? = null
-
+    
+    private val logger: Logger? = null
+    private var matcher: (suspend EventListenerProcessingContext.(E) -> Boolean)? = null
+    
+    /**
+     *
+     */
+    public fun match(matcher: suspend EventListenerProcessingContext.(E) -> Boolean) {
+        this.matcher.also { old ->
+            if (old == null) {
+                this.matcher = matcher
+            } else {
+                this.matcher = {
+                    old(it)
+                    matcher(it)
+                }
+            }
+        }
+    }
+    
+    
+    private var handle: (suspend EventListenerProcessingContext.(E) -> EventResult)? = null
+    
     /**
      * 注册一个事件处理函数。只有一个生效，重复调用会覆盖前者。
      */
-    public fun handle(handleFunction: suspend EventListenerProcessingContext.(E) -> Any?) {
+    public fun handle(handleFunction: suspend EventListenerProcessingContext.(E) -> EventResult) {
         handle = handleFunction
     }
-
-
+    
+    
     public fun build(): EventListener {
         val id0 = id ?: randomID()
         val logger0 = logger ?: LoggerFactory.getLogger("love.forte.core.listener.$id0")
         val handle0 = handle ?: throw SimbotIllegalStateException("Handle function for Listener is required.")
-        return coreListener(eventKey, id0, isAlwaysBlockNext, isAsync, logger0, handle0)
+        return simpleListener(eventKey, id0, isAsync, logger0, matcher ?: { true }, handle0)
     }
-
+    
 }

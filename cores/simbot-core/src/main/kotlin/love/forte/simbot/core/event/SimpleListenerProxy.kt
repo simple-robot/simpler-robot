@@ -27,8 +27,10 @@ import org.slf4j.Logger
  *
  * e.g.
  * ```kotlin
- * listener.withMatcher {
+ * listener.withMatcher { // this: EventListenerProcessingContext
+ *    // do something...
  *
+ *    true // or false?
  * }
  * ```
  *
@@ -56,16 +58,43 @@ public fun EventListener.withMatcher(matcher: suspend EventListenerProcessingCon
 // region proxy and delegate
 /**
  * 提供一层包装来代理目标监听函数。
+ *
+ * 如果 [E] 为 [MatchableEventListener], 则返回值也同样为 [MatchableEventListener] 类型。
+ * 但是如果不是则返回值类型为普通的 [EventListener] 代理实现。
  */
-public fun EventListener.proxy(delegate: suspend EventListenerProcessingContext.(EventListener) -> EventResult): EventListener {
-    return if (this is MatchableEventListener) return MatchableEventListenerProxy(this, delegate)
-    else MatchableEventListenerProxy(this.withMatcher { true }, delegate)
+public fun <E : EventListener> E.proxy(delegate: suspend EventListenerProcessingContext.(E) -> EventResult): EventListener {
+    if (this is MatchableEventListener) return MatchableEventListenerProxy(this, delegate)
+    
+    return EventListenerProxy(this, delegate)
 }
 
 
-private class MatchableEventListenerProxy(
-    val listener: MatchableEventListener,
-    val handle: suspend EventListenerProcessingContext.(EventListener) -> EventResult,
+/**
+ * 提供一层包装来代理目标监听函数。
+ */
+public fun <E : MatchableEventListener> E.proxy(delegate: suspend EventListenerProcessingContext.(E) -> EventResult): MatchableEventListener {
+    return MatchableEventListenerProxy(this, delegate)
+}
+
+
+private class EventListenerProxy<E : EventListener>(
+    val listener: E,
+    val handle: suspend EventListenerProcessingContext.(E) -> EventResult,
+) : EventListener by listener {
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
+        return context.handle(listener)
+    }
+    
+    
+    override fun toString(): String {
+        return "ProxiedEventListener($listener)"
+    }
+}
+
+
+private class MatchableEventListenerProxy<E : MatchableEventListener>(
+    val listener: E,
+    val handle: suspend EventListenerProcessingContext.(E) -> EventResult,
 ) : MatchableEventListener by listener {
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         return context.handle(listener)
@@ -73,7 +102,7 @@ private class MatchableEventListenerProxy(
     
     
     override fun toString(): String {
-        return "ProxiedListener($listener)"
+        return "ProxiedMatchableEventListener($listener)"
     }
 }
 

@@ -85,10 +85,11 @@ public class KFunctionListenerProcessor(
             priority = context.priority,
             isAsync = context.isAsync,
             targets = listenTargets.toSet(),
-            caller = function,
             logger = functionLogger,
             binders = binders.toTypedArray(),
             attributeMap = listenerAttributeMap,
+            matcher = { true },
+            caller = function,
         )
         
         // filters

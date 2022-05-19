@@ -12,16 +12,15 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.listener
 
 import love.forte.simbot.ID
 import love.forte.simbot.event.Event
-import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerProcessingContext
 import love.forte.simbot.event.EventResult
+import love.forte.simbot.event.MatchableEventListener
 import love.forte.simbot.utils.runWithInterruptible
 
 /**
@@ -35,10 +34,11 @@ import love.forte.simbot.utils.runWithInterruptible
  *
  * @author ForteScarlet
  */
-public interface GenericBootEventListener : EventListener {
+public interface GenericBootEventListener : MatchableEventListener {
     override val id: ID
     override val isAsync: Boolean
     override fun isTarget(eventType: Event.Key<*>): Boolean
-    override suspend fun invoke(context: EventListenerProcessingContext): EventResult
+    override suspend fun match(context: EventListenerProcessingContext): Boolean
+    override suspend fun directInvoke(context: EventListenerProcessingContext): EventResult
 }
 
