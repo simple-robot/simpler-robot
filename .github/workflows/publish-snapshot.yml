@@ -3,6 +3,7 @@ on: # push
   push:
     branches:
       - v3-dev
+      - v3-dev-snapshot**
     paths:
       - '**src/**/kotlin/**.kt'
       - '**src/**/java/**.java'
