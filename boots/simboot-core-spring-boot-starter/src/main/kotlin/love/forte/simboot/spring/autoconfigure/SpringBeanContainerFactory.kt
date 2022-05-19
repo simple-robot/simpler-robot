@@ -18,6 +18,7 @@ package love.forte.simboot.spring.autoconfigure
 
 import love.forte.di.*
 import love.forte.simboot.factory.BeanContainerFactory
+import org.springframework.aop.support.AopUtils
 import org.springframework.beans.factory.ListableBeanFactory
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException
@@ -156,7 +157,7 @@ public open class SpringBeanContainer(override val listableBeanFactory: Listable
     @Api4J
     override fun getTypeClassOrNull(name: String): Class<*>? {
         return try {
-            listableBeanFactory.getType(name)
+            listableBeanFactory.getType(name)?.resolveIfProxy()
         } catch (e: NoSuchBeanDefinitionException) {
             null
         }
@@ -165,10 +166,17 @@ public open class SpringBeanContainer(override val listableBeanFactory: Listable
     @Api4J
     override fun getTypeClass(name: String): Class<*> {
         return try {
-            listableBeanFactory.getType(name) ?: noSuchBeanDefine { name }
+            listableBeanFactory.getType(name)?.resolveIfProxy() ?: noSuchBeanDefine { name }
         } catch (e: NoSuchBeanDefinitionException) {
             noSuchBeanDefine(e) { name }
         }
+    }
+    
+    private fun Class<*>.resolveIfProxy(): Class<*> {
+        if (AopUtils.isAopProxy(this)) {
+            return AopUtils.getTargetClass(this)
+        }
+        return this
     }
 }
 // endregion
