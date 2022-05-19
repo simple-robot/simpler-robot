@@ -30,6 +30,11 @@ suspend fun main() {
     LoggerFactory.getLogger("Main").debug("Debug enabled.")
     val app = createSimpleApplication {
         listeners {
+            listen(FriendMessageEvent) {
+                match { true }
+                handle { defaults() }
+            }
+            
             FriendMessageEvent {event ->
                 delay(1234)
                 

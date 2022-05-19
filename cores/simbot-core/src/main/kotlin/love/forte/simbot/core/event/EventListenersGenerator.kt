@@ -43,7 +43,12 @@ internal annotation class EventListenersGeneratorDSL
  *     +simpleListener(FooEvent) { /* Nothing here. */ }
  *
  *     // listener of EventListenersGenerator
- *     listener(FooEvent) {
+ *     listen(FooEvent) {
+ *         match { event -> // this: EventListenerProcessingContext
+ *            // ...
+ *            true
+ *         }
+ *
  *         // handle of `listener`
  *         handle { event -> // this: EventListenerProcessingContext
  *             // do..
@@ -73,7 +78,13 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * 构建一个监听函数。
      *
      * ```kotlin
-     * listener(FooEvent) {
+     * listen(FooEvent) {
+     *      // 监听函数匹配逻辑
+     *      match { event -> // this: EventListenerProcessingContext
+     *         // ...
+     *         true
+     *      }
+     *
      *      // 监听函数的处理逻辑
      *      handle { event -> // this: EventListenerProcessingContext
      *          event.friend().send("Context: $context")
@@ -84,13 +95,21 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * ```
      */
     @EventListenersGeneratorDSL
-    public fun <E : Event> listener(
+    public fun <E : Event> listen(
         eventKey: Event.Key<E>,
         block: ListenerGenerator<E>.() -> Unit,
     ): EventListenersGenerator = also {
         val listener = ListenerGenerator(eventKey).also(block).build()
         listeners.add(listener)
     }
+    
+    
+    
+    @Deprecated("Use listen(Event.Key){ ... }", ReplaceWith("listen(eventKey, block)"))
+    public fun <E : Event> listener(
+        eventKey: Event.Key<E>,
+        block: ListenerGenerator<E>.() -> Unit,
+    ): EventListenersGenerator = listen(eventKey, block)
     
     
     /**
@@ -132,7 +151,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      *
      * 相当于：
      * ```kotlin
-     * listener(FooEvent) {
+     * listen(FooEvent) {
      *     handle { event -> // this: EventListenerProcessingContext
      *        // do handle
      *
@@ -146,7 +165,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      */
     @EventListenersGeneratorDSL
     public operator fun <E : Event> Event.Key<E>.invoke(handle: suspend EventListenerProcessingContext.(E) -> EventResult) {
-        listener(this) {
+        listen(this) {
             handle(handle)
         }
     }
