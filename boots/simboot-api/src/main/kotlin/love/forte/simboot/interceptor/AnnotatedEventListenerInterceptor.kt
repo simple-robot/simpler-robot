@@ -27,7 +27,9 @@ import love.forte.simbot.event.EventResult
  *
  * 一个应当仅用于 [@Interceptor][love.forte.simboot.annotation.Interceptor] 注解使用的标记性 [EventListenerInterceptor] 类型。
  *
- * 在 `boot` 下，实现了 [AnnotatedEventListenerInterceptor] 的拦截器将不会被自动加入到 **全局所有** 的监听函数中，而是通过 `@Interceptor(...)` 配合 `@Listener` 进行使用。
+ * 在 `boot` 下，实现了 [AnnotatedEventListenerInterceptor] 的拦截器将不会被自动加入到 **全局所有** 的监听函数中，
+ * 而是通过 [@Interceptor(...)][love.forte.simboot.annotation.Interceptor]
+ * 配合 [@Listener][love.forte.simboot.annotation.Listener] 进行使用。
  *
  *
  * @see love.forte.simboot.annotation.Interceptor
