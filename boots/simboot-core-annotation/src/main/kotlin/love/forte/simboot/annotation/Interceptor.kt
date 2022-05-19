@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.annotation
@@ -100,14 +99,14 @@ public annotation class Interceptor(
      */
     val priority: Int = PriorityConstant.NORMAL,
     
-    /**
-     * 是否优先于 Filter。
-     *
-     * 一个监听函数通常会配合 [Filter] 注解一同使用,
-     * 当 [Interceptor] 与 [Filter] 同时存在在同一个监听函数上时，
-     * 通过 [beforeFilter] 来决定当前拦截器是否优先于当前的过滤器。
-     */
-    val beforeFilter: Boolean = true,
+    // /**
+    //  * 是否优先于 Filter。
+    //  *
+    //  * 一个监听函数通常会配合 [Filter] 注解一同使用,
+    //  * 当 [Interceptor] 与 [Filter] 同时存在在同一个监听函数上时，
+    //  * 通过 [beforeFilter] 来决定当前拦截器是否优先于当前的过滤器。
+    //  */
+    // val beforeFilter: Boolean = true,
 )
 
 

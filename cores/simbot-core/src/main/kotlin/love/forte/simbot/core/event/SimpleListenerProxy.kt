@@ -63,17 +63,20 @@ public fun EventListener.withMatcher(matcher: suspend EventListenerProcessingCon
  * 但是如果不是则返回值类型为普通的 [EventListener] 代理实现。
  */
 public fun <E : EventListener> E.proxy(delegate: suspend EventListenerProcessingContext.(E) -> EventResult): EventListener {
-    if (this is MatchableEventListener) return MatchableEventListenerProxy(this, delegate)
+    // if (this is MatchableEventListener) return MatchableEventListenerProxy(this, delegate)
     
     return EventListenerProxy(this, delegate)
 }
 
-
+// TODO
 /**
  * 提供一层包装来代理目标监听函数。
  */
-public fun <E : MatchableEventListener> E.proxy(delegate: suspend EventListenerProcessingContext.(E) -> EventResult): MatchableEventListener {
-    return MatchableEventListenerProxy(this, delegate)
+public fun <E : MatchableEventListener> E.proxy(
+    handleMatch: suspend EventListenerProcessingContext.(E) -> Boolean,
+    handleInvoke: suspend EventListenerProcessingContext.(E) -> EventResult,
+): MatchableEventListener {
+    return MatchableEventListenerProxy(this, handleMatch, handleInvoke)
 }
 
 
@@ -94,10 +97,16 @@ private class EventListenerProxy<E : EventListener>(
 
 private class MatchableEventListenerProxy<E : MatchableEventListener>(
     val listener: E,
-    val handle: suspend EventListenerProcessingContext.(E) -> EventResult,
+    val handleMatch: suspend EventListenerProcessingContext.(E) -> Boolean,
+    val handleInvoke: suspend EventListenerProcessingContext.(E) -> EventResult,
 ) : MatchableEventListener by listener {
-    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
-        return context.handle(listener)
+    
+    override suspend fun match(context: EventListenerProcessingContext): Boolean {
+        return context.run { handleMatch(this@MatchableEventListenerProxy.listener) }
+    }
+    
+    override suspend fun directInvoke(context: EventListenerProcessingContext): EventResult {
+        return context.run { handleInvoke(this@MatchableEventListenerProxy.listener) }
     }
     
     

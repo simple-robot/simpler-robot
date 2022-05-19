@@ -273,10 +273,10 @@ internal class CoreListenerManagerImpl internal constructor(
         
         return withContext(managerCoroutineContext + context) {
             kotlin.runCatching {
-                processingInterceptEntrance.doIntercept(context) {
+                processingInterceptEntrance.doIntercept(context) { processingContext ->
                     // do invoke with intercept
                     for (invoker in invokers) {
-                        val listenerContext = context.withListener(invoker.listener)
+                        val listenerContext = processingContext.withListener(invoker.listener)
                         val handleResult = runForEventResultWithHandler {
                             // maybe scope use bot?
                             invoker(managerScope, listenerContext)
@@ -364,10 +364,12 @@ internal class CoreListenerManagerImpl internal constructor(
             
             listenerIntercepts.groupBy { interceptor -> interceptor.point }
                 .mapValuesTo(listenerInterceptsPointMap) { (_, listenerInterceptsInCurrentPoint) ->
-                    EventInterceptEntrance.eventListenerInterceptEntrance(listener, listenerInterceptsInCurrentPoint)
+                    EventInterceptEntrance.eventListenerInterceptEntrance(listenerInterceptsInCurrentPoint)
                 }
     
-            val listenerInterceptEntrance: EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext> = EventInterceptEntrance.eventListenerInterceptEntrance(listener, listenerIntercepts)
+            val listenerInterceptEntrance: EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext> = EventInterceptEntrance.eventListenerInterceptEntrance(
+                listenerIntercepts
+            )
             
             suspend fun normalRunner(listener: EventListener, context: EventListenerProcessingContext): EventResult {
                 return listenerInterceptEntrance.doIntercept(context, listener::invoke)

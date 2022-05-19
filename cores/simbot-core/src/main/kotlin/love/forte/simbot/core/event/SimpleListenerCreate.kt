@@ -24,6 +24,18 @@ import love.forte.simbot.event.EventListener
 import org.slf4j.Logger
 import java.util.*
 
+/*
+ * 消除编译异常:
+ * Caused by: java.lang.IllegalArgumentException: suspend default lambda love/forte/simbot/core/event/CoreListeners__SimpleListenerCreateKt$simpleListener$1 cannot be inlined; use a function reference instead
+ *
+ */
+
+@PublishedApi
+@Suppress("RedundantSuspendModifier", "unused", "UNUSED_PARAMETER")
+internal suspend fun <E : Event> EventListenerProcessingContext.defaultMatcher(event: E): Boolean = true
+
+
+
 /**
  * 构建一个监听指定的类型的监听函数。
  *
@@ -44,7 +56,7 @@ public inline fun <E : Event> simpleListener(
     id: ID = UUID.randomUUID().ID,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
+    crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
     crossinline function: suspend EventListenerProcessingContext.(E) -> EventResult,
 ): EventListener {
     return SimpleListener(id, logger, isAsync, setOf(target), {

@@ -44,7 +44,7 @@ public operator fun EventListener.plus(filter: EventFilter): EventListener {
  *
  * @see withMatcher
  */
-public operator fun EventListener.plus(filters: Iterable<EventFilter>): EventListener {
+public operator fun EventListener.plus(filters: Iterable<EventFilter>): MatchableEventListener {
     val sortedFilters = filters.sortedBy { it.priority }
     return withMatcher {
         sortedFilters.all { filter -> filter.test(this) }
@@ -59,7 +59,7 @@ public operator fun EventListener.plus(filters: Iterable<EventFilter>): EventLis
 @Deprecated("Use simpleListener")
 public fun <E : Event> coreListener(
     eventKey: Event.Key<E>,
-    id: ID = UUID.randomUUID().ID,
+    id: ID = randomID(),
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
@@ -83,27 +83,18 @@ public fun <E : Event> coreListener(
  * ### Fragile API: [E]::class
  * 此内联函数使用了 `reified` 枚举并通过反射获取对应类型的 [Event.Key]. simbot核心模块中更建议你尽可能的减少对存在反射的API的使用。
  */
-@Suppress("DeprecatedCallableAddReplaceWith")
+@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
 @JvmSynthetic
 @FragileSimbotApi
 @Deprecated("Use simpleListener")
 public inline fun <reified E : Event> coreListener(
-    id: ID = UUID.randomUUID().ID,
+    id: ID = randomID(),
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    crossinline func: suspend EventListenerProcessingContext.(E) -> Any?,
+    noinline func: suspend EventListenerProcessingContext.(E) -> Any?,
 ): EventListener {
-    return if (blockNext) {
-        simpleListener(E::class.getKey(), id, isAsync, logger) {
-            val result = func(it)
-            EventResult.of(result, isTruncated = true)
-        }
-    } else {
-        simpleListener(E::class.getKey(), id, isAsync, logger) {
-            EventResult.of(func(it))
-        }
-    }
+    return coreListener(E::class.getKey(), id, blockNext, isAsync, logger, func)
 }
 
 

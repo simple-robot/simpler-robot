@@ -48,11 +48,10 @@ public abstract class EventInterceptEntrance<C : EventInterceptor.Context<R>, R,
          * 得到监听函数拦截器入口。
          */
         public fun eventListenerInterceptEntrance(
-            listener: EventListener,
             interceptors: Collection<EventListenerInterceptor>,
         ): EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext> {
             return if (interceptors.isEmpty()) EventListenerDirectInterceptEntrance
-            else EventListenerIteratorInterceptEntrance(listener, interceptors.toList())
+            else EventListenerIteratorInterceptEntrance(interceptors.toList())
         }
         
         /**
@@ -128,7 +127,6 @@ internal object EventProcessingDirectInterceptEntrance
  *
  */
 internal class EventListenerIteratorInterceptEntrance(
-    internal val listener: EventListener,
     internal val interceptorsIterable: Iterable<EventListenerInterceptor>,
 ) : EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext>() {
     
@@ -139,9 +137,9 @@ internal class EventListenerIteratorInterceptEntrance(
         return IteratorInterceptorContext(context, processing).proceed()
     }
     
-    suspend fun doIntercept(context: EventListenerProcessingContext): EventResult {
-        return doIntercept(context, listener::invoke)
-    }
+    // suspend fun doIntercept(context: EventListenerProcessingContext): EventResult {
+    //     return doIntercept(context, listener::invoke)
+    // }
     
     
     internal inner class IteratorInterceptorContext(

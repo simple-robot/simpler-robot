@@ -38,7 +38,7 @@ class IDTest {
             }
         }
         println(time)
-        repeat(10) {
+        repeat(5) {
             println(RandomIDUtil.randomID())
         }
     }
@@ -55,7 +55,7 @@ class IDTest {
             }
         }
         println(time)
-        repeat(10) {
+        repeat(5) {
             println(UUID.randomUUID())
         }
     }

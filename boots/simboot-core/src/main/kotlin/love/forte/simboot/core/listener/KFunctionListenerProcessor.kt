@@ -106,25 +106,16 @@ public class KFunctionListenerProcessor(
             logger.debug("Resolved listener interceptors: {}", interceptors)
         }
         
-        val groupByIsBeforeFilter = interceptors.groupBy { it.annotation.beforeFilter }
-        
-        var resolvedListener: EventListener = listener
-        
-        val beforeFilterInterceptors = groupByIsBeforeFilter[true] ?: emptyList()
-        if (beforeFilterInterceptors.isNotEmpty()) {
-            resolvedListener += (beforeFilterInterceptors.map { it.interceptor }.sortedBy { it.priority })
-        }
+        var resolvedListener: MatchableEventListener = listener
         
         if (filters.isNotEmpty()) {
             resolvedListener += filters
         }
         
-        val afterFilterInterceptors = groupByIsBeforeFilter[false] ?: emptyList()
+        TODO()
         
-        if (afterFilterInterceptors.isNotEmpty()) {
-            resolvedListener += (afterFilterInterceptors.map { it.interceptor }.sortedBy { it.priority })
-            
-        }
+        resolvedListener += interceptors.map { it.interceptor }
+        
         
         return resolvedListener
     }
