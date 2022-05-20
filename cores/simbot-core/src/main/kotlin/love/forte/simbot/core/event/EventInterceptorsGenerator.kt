@@ -186,10 +186,11 @@ public class EventInterceptorsGenerator @InternalSimbotApi constructor() {
     @EventInterceptorsGeneratorDSL
     public fun listenerIntercept(
         id: ID = randomID(),
+        point: EventListenerInterceptor.Point = EventListenerInterceptor.Point.DEFAULT,
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult,
     ): EventInterceptorsGenerator = also {
-        listenerIntercept(id, coreListenerInterceptor(priority, interceptFunction))
+        listenerIntercept(id, coreListenerInterceptor(point, priority, interceptFunction))
     }
     
     /**
@@ -200,43 +201,12 @@ public class EventInterceptorsGenerator @InternalSimbotApi constructor() {
     @EventInterceptorsGeneratorDSL
     public fun listenerIntercept(
         id: String,
+        point: EventListenerInterceptor.Point = EventListenerInterceptor.Point.DEFAULT,
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult,
-    ): EventInterceptorsGenerator = also { listenerIntercept(id.ID, priority, interceptFunction) }
+    ): EventInterceptorsGenerator = also { listenerIntercept(id.ID, point, priority, interceptFunction) }
     
     
-    // /**
-    //  * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
-    //  * 得到一个流程拦截器 [EventListenerInterceptor].
-    //  */
-    // @JvmOverloads
-    // @Api4J
-    // public fun listenerIntercept(
-    //     id: ID = randomID(),
-    //     priority: Int = PriorityConstant.NORMAL,
-    //     interceptFunction: Function<EventListenerInterceptor.Context, EventResult>
-    // ): EventInterceptorsGenerator = also {
-    //     listenerIntercept(id, priority) {
-    //         runWithInterruptible { interceptFunction.apply(it) }
-    //     }
-    // }
-    //
-    //
-    // /**
-    //  * 提供一个 [id], [优先级][priority] 和 [拦截函数][interceptFunction],
-    //  * 得到一个流程拦截器 [EventListenerInterceptor].
-    //  */
-    // @JvmOverloads
-    // @Api4J
-    // public fun listenerIntercept(
-    //     id: String,
-    //     priority: Int = PriorityConstant.NORMAL,
-    //     interceptFunction: Function<EventListenerInterceptor.Context, EventResult>
-    // ): EventInterceptorsGenerator = also {
-    //     listenerIntercept(id, priority) {
-    //         runWithInterruptible { interceptFunction.apply(it) }
-    //     }
-    // }
     
     internal fun build(
         useListenerIterators: (Map<ID, EventListenerInterceptor>) -> Unit,
