@@ -18,6 +18,7 @@ package love.forte.simboot.core.listener
 
 import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.annotationtool.core.getAnnotation
+import love.forte.annotationtool.core.getAnnotations
 import love.forte.di.BeanContainer
 import love.forte.simboot.annotation.*
 import love.forte.simboot.annotation.Filter
@@ -25,12 +26,15 @@ import love.forte.simboot.core.filter.CoreFiltersAnnotationProcessor
 import love.forte.simboot.core.filter.FiltersAnnotationProcessContext
 import love.forte.simboot.filter.MultiFilterMatchType
 import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
+import love.forte.simboot.interceptor.ListenerPreparator
 import love.forte.simboot.listener.BindException
 import love.forte.simboot.listener.ParameterBinder
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.listener.ParameterBinderResult
 import love.forte.simbot.*
+import love.forte.simbot.core.event.EventInterceptEntrance
 import love.forte.simbot.core.event.plus
+import love.forte.simbot.core.event.proxy
 import love.forte.simbot.event.*
 import org.slf4j.Logger
 import java.util.concurrent.ConcurrentHashMap
@@ -85,10 +89,11 @@ public class KFunctionListenerProcessor(
             priority = context.priority,
             isAsync = context.isAsync,
             targets = listenTargets.toSet(),
-            caller = function,
             logger = functionLogger,
             binders = binders.toTypedArray(),
             attributeMap = listenerAttributeMap,
+            matcher = { true },
+            caller = function,
         )
         
         // filters
@@ -99,10 +104,17 @@ public class KFunctionListenerProcessor(
         }
         
         // interceptors
-        val interceptors = function.interceptors(context)
+        val interceptors: List<EventListenerInterceptorRelativeToFilter> = function.interceptors(context)
         logger.debug("Size of resolved listener interceptors: {}", interceptors.size)
         if (interceptors.isNotEmpty()) {
             logger.debug("Resolved listener interceptors: {}", interceptors)
+        }
+        
+        // preparators
+        val preparators = function.preparators(context)
+        logger.debug("Size of resolved listener preparators: {}", preparators.size)
+        if (preparators.isNotEmpty()) {
+            logger.debug("Resolved listener preparators: {}", preparators)
         }
         
         var resolvedListener: EventListener = listener
@@ -111,9 +123,21 @@ public class KFunctionListenerProcessor(
             resolvedListener += filters
         }
         
-        if (interceptors.isNotEmpty()) {
-            resolvedListener += interceptors
+        if (preparators.isNotEmpty() || interceptors.isNotEmpty()) {
+            val entrance = EventInterceptEntrance.eventListenerInterceptEntrance(interceptors.map { it.interceptor })
+            resolvedListener = resolvedListener.proxy({ eventListener ->
+                preparators.forEach { preparator -> preparator.prepareMatch(this) }
+                eventListener.match(this)
+            }) { eventListener ->
+                preparators.forEach { preparator -> preparator.prepareInvoke(this) }
+                entrance.doIntercept(this) { context0 ->
+                    eventListener(context0)
+                }
+            }
+            
+            
         }
+        
         
         return resolvedListener
     }
@@ -377,46 +401,97 @@ public class KFunctionListenerProcessor(
     }
     
     
-    private fun KFunction<*>.interceptors(context: FunctionalListenerProcessContext): List<EventListenerInterceptor> {
+    private fun KFunction<*>.interceptors(context: FunctionalListenerProcessContext): List<EventListenerInterceptorRelativeToFilter> {
+        // global interceptors?
+        
         val annotations = annotationTool.getAnnotations(this, InterceptorAnnotation::class)
         if (annotations.isEmpty()) return emptyList()
         
-        return annotations.map { it.toInterceptor(context) }.sortedBy { it.priority }
+        return annotations.map { it.toInterceptor(context) } //.sortedBy { it.interceptor.priority }
     }
     
     
-    private fun InterceptorAnnotation.toInterceptor(context: FunctionalListenerProcessContext): EventListenerInterceptor {
-        return when {
+    private fun InterceptorAnnotation.toInterceptor(context: FunctionalListenerProcessContext): EventListenerInterceptorRelativeToFilter {
+        val interceptor: AnnotatedEventListenerInterceptor = when {
             value.isNotEmpty() -> {
                 context.beanContainer[value, AnnotatedEventListenerInterceptor::class]
             }
             type != AnnotatedEventListenerInterceptor::class -> {
                 val obj = type.objectInstance
-                if (obj != null) return obj
                 
-                val beanContainer = context.beanContainer
-                val allNamed = beanContainer.getAll(type)
-                if (allNamed.isNotEmpty()) {
-                    beanContainer[type]
-                } else {
-                    // try instance.
-                    kotlin.runCatching {
-                        instanceCache.computeIfAbsent(type) { type.createInstance() } as AnnotatedEventListenerInterceptor
-                    }.getOrElse {
-                        throw SimbotIllegalStateException(
-                            "Cannot get an interceptor instance of type [$type]: does not exist in the bean container and cannot be instantiated directly: ${it.localizedMessage}",
-                            it
-                        )
+                fun tryCreate(): AnnotatedEventListenerInterceptor {
+                    val beanContainer = context.beanContainer
+                    val allNamed = beanContainer.getAll(type)
+                    return if (allNamed.isNotEmpty()) {
+                        beanContainer[type]
+                    } else {
+                        // try instance.
+                        kotlin.runCatching {
+                            instanceCache.computeIfAbsent(type) { type.createInstance() } as AnnotatedEventListenerInterceptor
+                        }.getOrElse {
+                            throw SimbotIllegalStateException(
+                                "Cannot get an interceptor instance of type [$type]: does not exist in the bean container and cannot be instantiated directly: ${it.localizedMessage}",
+                                it
+                            )
+                        }
                     }
                 }
+                
+                obj ?: tryCreate()
             }
             else ->
                 throw SimbotIllegalStateException("@Interceptor needs to specify [value] or [type], and [value] cannot be empty or type cannot be equal to [AnnotatedEventListenerInterceptor.class] type self. But now the value is empty and the type is [AnnotatedEventListenerInterceptor.class].")
         }
+        
+        return EventListenerInterceptorRelativeToFilter(interceptor, this)
     }
     
     
+    /**
+     * 尝试解析并获取所有的 [ListenerPreparator].
+     */
+    private fun KFunction<*>.preparators(context: FunctionalListenerProcessContext): List<ListenerPreparator> {
+        return annotationTool.getAnnotations<Preparator>(this)
+            .asSequence()
+            .map { annotation ->
+                annotation to annotation.toListenerPreparator(context)
+            }.sortedBy { (a, _) -> a.priority }
+            .map { (_, p) -> p }
+            .toList()
+    }
+    
+    
+    private fun Preparator.toListenerPreparator(context: FunctionalListenerProcessContext): ListenerPreparator {
+        val type = value
+        val objectInstance = type.objectInstance
+        if (objectInstance != null) return objectInstance
+        
+        val name = name.takeIf { it.isNotEmpty() }
+        val foundInstance = if (name != null) {
+            context.beanContainer.getOrNull(name, type)
+        } else {
+            context.beanContainer.getOrNull(type)
+        }
+        
+        if (foundInstance != null) return foundInstance
+        
+        return kotlin.runCatching {
+            instanceCache.computeIfAbsent(type) { type.createInstance() } as ListenerPreparator
+        }.getOrElse {
+            throw SimbotIllegalStateException(
+                "Cannot get ListenerPreparator instance of type [$type]: does not exist in the bean container and cannot be instantiated directly: ${it.localizedMessage}",
+                it
+            )
+        }
+        
+    }
 }
+
+
+private data class EventListenerInterceptorRelativeToFilter(
+    val interceptor: AnnotatedEventListenerInterceptor,
+    val annotation: InterceptorAnnotation,
+)
 
 
 private data class ParameterBinderFactoryContextImpl(

@@ -18,7 +18,10 @@ package love.forte.simboot.spring.autoconfigure
 
 import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.annotationtool.core.getAnnotation
+import love.forte.di.Api4J
 import love.forte.di.BeanContainer
+import love.forte.di.all
+import love.forte.di.allInstance
 import love.forte.simboot.annotation.Binder
 import love.forte.simboot.annotation.Listener
 import love.forte.simboot.annotation.scopeIfDefault
@@ -59,13 +62,12 @@ import kotlin.reflect.jvm.kotlinFunction
  */
 public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpringBootApplicationBuildConfigure,
     ApplicationContextAware {
-    private lateinit var _applicationContext: ApplicationContext
     private lateinit var beanContainer: BeanContainer
     
     
     override fun setApplicationContext(applicationContext: ApplicationContext) {
-        _applicationContext = applicationContext
-        beanContainer = applicationContext.asBeanContainer()
+        // _applicationContext = applicationContext
+        beanContainer = SpringBeanContainer(applicationContext)
     }
     
     override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
@@ -94,11 +96,12 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
     }
     
     
+    @OptIn(Api4J::class)
     private fun resolveBinderManager(
         tool: KAnnotationTool,
         configuration: SpringBootApplicationConfiguration,
     ): BinderManager {
-        val applicationContext = _applicationContext
+        // val applicationContext = _applicationContext
         
         val globalBinderFactories: MutableList<ParameterBinderFactory> = mutableListOf()
         val idBinderFactories: MutableMap<String, ParameterBinderFactory> = mutableMapOf()
@@ -106,22 +109,22 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         val binderManager = CoreBinderManager(globalBinderFactories, idBinderFactories)
         
         // region instance binders
-        val binderInstanceNames = applicationContext.getBeanNamesForType(ParameterBinderFactory::class.java)
+        val binderInstanceNames = beanContainer.all<ParameterBinderFactory>()
         
         
         binderInstanceNames.forEach { name ->
             // annotation
-            val type = kotlin.runCatching { applicationContext.getType(name)?.kotlin }.getOrNull() ?: return@forEach
+            val type = kotlin.runCatching { beanContainer.getTypeOrNull(name) }.getOrNull() ?: return@forEach
             val binderAnnotation = tool.getAnnotation<Binder>(type)
             val id = binderAnnotation?.value?.firstOrNull() ?: name
             
             fun global() {
-                val globalBinderFactory = applicationContext.getBean(name, ParameterBinderFactory::class.java)
+                val globalBinderFactory = beanContainer[name, ParameterBinderFactory::class.java]
                 globalBinderFactories.add(globalBinderFactory)
             }
             
             fun specify() {
-                val specifyBinderFactory = applicationContext.getBean(name, ParameterBinderFactory::class.java)
+                val specifyBinderFactory = beanContainer[name, ParameterBinderFactory::class.java]
                 idBinderFactories.merge(id, specifyBinderFactory) { old, curr ->
                     throw SimbotIllegalStateException("Duplicate binder factory id [$id]: old [$old] vs current [$curr]")
                 }
@@ -146,8 +149,8 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         // endregion
         
         // region functional binders
-        applicationContext.beanDefinitionNames.asSequence().flatMap { name ->
-            val kClass = kotlin.runCatching { applicationContext.getType(name)?.kotlin }.getOrNull()
+        beanContainer.all.asSequence().flatMap { name ->
+            val kClass = kotlin.runCatching { beanContainer.getTypeOrNull(name) }.getOrNull()
                 ?: return@flatMap emptySequence()
             
             kClass.allFunctions.asSequence().mapNotNull { function ->
@@ -167,13 +170,13 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
             
             fun global() {
                 globalBinderFactories.add(binderManager.resolveFunctionToBinderFactory(function) {
-                    applicationContext.getBean(name)
+                    beanContainer[name]
                 })
             }
             
             fun specify(id: String) {
                 val binderFactory = binderManager.resolveFunctionToBinderFactory(function) {
-                    applicationContext.getBean(name)
+                    beanContainer[name]
                 }
                 idBinderFactories.merge(id, binderFactory) { old, curr ->
                     throw SimbotIllegalStateException("Duplicate binder factory id [$id]: old [$old] vs current [$curr]")
@@ -275,49 +278,50 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         binderManager: BinderManager,
         configuration: SpringBootApplicationConfiguration,
     ): List<EventListener> {
-        val applicationContext = _applicationContext
         
         // find instances for init
-        val instances = applicationContext.getBeansOfType(EventListener::class.java).values
+        val instances = beanContainer.allInstance<EventListener>()
         val listeners = instances.toMutableList()
         
         // scan functions
-        applicationContext.beanDefinitionNames.asSequence().map { name -> name to applicationContext.getType(name) }
-            .flatMap { (name, type) ->
-                val kClass = kotlin.runCatching { type?.kotlin }.getOrElse {
-                    logger.debug("Cannot resolve type {} to kotlin, skip it.", type)
-                    return@flatMap emptySequence()
-                }
-                kClass?.allDeclaredFunctions?.asSequence()?.map { function -> Triple(name, kClass, function) }
-                    ?: emptySequence()
-            }.mapNotNullTo(listeners) { (name, _, function) ->
-                // check @Listener
-                val listenerAnnotation = tool.getAnnotation<Listener>(function) ?: return@mapNotNullTo null
-                
-                if (function.visibility != KVisibility.PUBLIC) {
-                    logger.warn("Function [$function] is annotated with @Listener, so visibility of it must be PUBLIC, but is ${function.visibility}")
-                    return@mapNotNullTo null
-                }
-                
-                val functionSign = function.sign()
-                val listenerId = "$name#$functionSign"
-                
-                
-                val resolvedListener = listenerProcessor.process(
-                    FunctionalListenerProcessContext(
-                        id = listenerId,
-                        function = function,
-                        priority = listenerAnnotation.priority,
-                        isAsync = listenerAnnotation.async,
-                        binderManager = binderManager,
-                        beanContainer = beanContainer,
-                    )
-                )
-                
-                logger.debug("Resolved listener [{}] by processor [{}]", resolvedListener, listenerProcessor)
-                
-                resolvedListener
+        beanContainer.all.asSequence().mapNotNull { name ->
+            val kClass = kotlin.runCatching { beanContainer.getTypeOrNull(name) }.getOrElse {
+                logger.debug("Cannot resolve bean type named {} to kotlin, skip it.", name)
+                return@mapNotNull null
             }
+            
+            name to kClass
+        }.flatMap { (name, type) ->
+            type?.allDeclaredFunctions?.asSequence()?.map { function -> Triple(name, type, function) }
+                ?: emptySequence()
+        }.mapNotNullTo(listeners) { (name, _, function) ->
+            // check @Listener
+            val listenerAnnotation = tool.getAnnotation<Listener>(function) ?: return@mapNotNullTo null
+            
+            if (function.visibility != KVisibility.PUBLIC) {
+                logger.warn("Function [$function] is annotated with @Listener, so visibility of it must be PUBLIC, but is ${function.visibility}")
+                return@mapNotNullTo null
+            }
+            
+            val functionSign = function.sign()
+            val listenerId = "$name#$functionSign"
+            
+            
+            val resolvedListener = listenerProcessor.process(
+                FunctionalListenerProcessContext(
+                    id = listenerId,
+                    function = function,
+                    priority = listenerAnnotation.priority,
+                    isAsync = listenerAnnotation.async,
+                    binderManager = binderManager,
+                    beanContainer = beanContainer,
+                )
+            )
+            
+            logger.debug("Resolved listener [{}] by processor [{}]", resolvedListener, listenerProcessor)
+            
+            resolvedListener
+        }
         
         val topLevelPackages = configuration.topLevelListenerScanPackage
         if (topLevelPackages.isNotEmpty()) {
@@ -380,10 +384,6 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
     }
 }
 
-
-private fun ApplicationContext.asBeanContainer(): BeanContainer {
-    return SpringBeanContainer(this)
-}
 
 private inline val KClass<*>.allFunctions: List<KFunction<*>>
     get() = kotlin.runCatching {

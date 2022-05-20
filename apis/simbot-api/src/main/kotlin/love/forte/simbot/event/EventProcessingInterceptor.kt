@@ -19,29 +19,30 @@ package love.forte.simbot.event
 import love.forte.simbot.Api4J
 import love.forte.simbot.Interceptor
 import love.forte.simbot.PriorityConstant
+import love.forte.simbot.utils.runWithInterruptible
 
 /**
  * 与事件有关的拦截器。拦截器是一个包裹在目标前后的一道 “关卡”,  通过拦截器可以自由定义对目标逻辑前后以及异常的处理。
  *
- * 比较常见与相似的概念，比如动态代理. 动态代理在逻辑上基本与拦截器一致。
+ * 比较常见与相似的概念比如动态代理在逻辑上是类似的。
  *
  *
  *
  * @see EventProcessingInterceptor
  * @see EventListenerInterceptor
  */
-public sealed interface EventInterceptor<C : EventInterceptor.Context<R>, R> : Interceptor<C, R> {
+public interface EventInterceptor<C : EventInterceptor.Context<R>, R> : Interceptor<C, R> {
     /**
      * 优先级。
      */
     public val priority: Int get() = PriorityConstant.NORMAL
-
-
+    
+    
     /**
      * 事件拦截器所拦截的目标内容。
      */
-    public sealed interface Context<R> : Interceptor.Context<R> {
-
+    public interface Context<R> : Interceptor.Context<R> {
+        
         /**
          * 事件处理流程的context。
          */
@@ -60,7 +61,7 @@ public interface EventProcessingInterceptor :
     EventInterceptor<EventProcessingInterceptor.Context, EventProcessingResult> {
     @JvmSynthetic
     override suspend fun intercept(context: Context): EventProcessingResult
-
+    
     /**
      * [EventProcessingInterceptor] 的传递上下文。
      */
@@ -76,11 +77,14 @@ public interface EventProcessingInterceptor :
  */
 @Api4J
 public interface BlockingEventProcessingInterceptor : EventProcessingInterceptor {
+    /**
+     * 阻塞的执行拦截逻辑。
+     */
     public fun doIntercept(context: EventProcessingInterceptor.Context): EventProcessingResult
-
+    
     @JvmSynthetic
     override suspend fun intercept(context: EventProcessingInterceptor.Context): EventProcessingResult =
-        doIntercept(context)
+        runWithInterruptible { doIntercept(context) }
 }
 
 
@@ -89,13 +93,21 @@ public interface BlockingEventProcessingInterceptor : EventProcessingInterceptor
  *
  * 事件监听器不建议对 [EventListenerProcessingContext.textContent] 进行操作，尤其是在(boot下)同时使用了 [love.forte.simboot.listener.EventListenerTextContentProcessor] 的情况下。
  *
+ * 对于不支持挂起函数的实现方提供了 [BlockingEventListenerInterceptor]，以阻塞的 [BlockingEventListenerInterceptor.doIntercept] 来代替 [intercept].
+ *
  * @see BlockingEventListenerInterceptor
- * @see love.forte.simboot.listener.EventListenerTextContentProcessor
  */
 public interface EventListenerInterceptor : EventInterceptor<EventListenerInterceptor.Context, EventResult> {
+    /**
+     * 监听函数拦截器的拦截点.
+     *
+     * @see Point
+     */
+    public val point: Point get() = Point.DEFAULT
+    
     @JvmSynthetic
     override suspend fun intercept(context: Context): EventResult
-
+    
     /**
      * [EventListenerInterceptor] 的context。
      */
@@ -104,13 +116,41 @@ public interface EventListenerInterceptor : EventInterceptor<EventListenerInterc
          * 当前被拦截的监听函数实例。
          */
         override val eventContext: EventListenerProcessingContext
-
-
+        
+        
         /**
          * 被拦截的监听函数本身。
          */
         public val listener: EventListener get() = eventContext.listener
     }
+    
+    
+    /**
+     * [EventListenerInterceptor] 针对于监听函数执行的拦截点。
+     *
+     * [Point] 中所有的模式的具体行为的最终解释权都归 [EventProcessor] 的具体实现所有。
+     */
+    public enum class Point {
+        /**
+         * 默认拦截点。通常情况下来讲就是监听函数被执行前的位置。
+         *
+         * 默认情况下，[DEFAULT] 代表会拦截整个监听器的执行过程，包括
+         * [EventListener.match] 和 [EventListener.invoke].
+         *
+         */
+        DEFAULT,
+        
+        /**
+         * 在 [EventListener.match] 匹配成功后拦截。
+         *
+         * 如果拦截目标是一个 [EventListener] 类型的监听函数，
+         * 那么当前监听函数会在 [EventListener.match] 匹配通过后才被执行。
+         *
+         */
+        AFTER_MATCH
+    }
+    
+    
 }
 
 /**
@@ -120,10 +160,20 @@ public interface EventListenerInterceptor : EventInterceptor<EventListenerInterc
  */
 @Api4J
 public interface BlockingEventListenerInterceptor : EventListenerInterceptor {
-
+    
+    /**
+     * 阻塞的拦截函数。
+     */
     public fun doIntercept(context: EventListenerInterceptor.Context): EventResult
-
+    
     @JvmSynthetic
     override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult = doIntercept(context)
+    
+    
+    override val priority: Int
+        get() = super.priority
+    
+    override val point: EventListenerInterceptor.Point
+        get() = super.point
 }
 

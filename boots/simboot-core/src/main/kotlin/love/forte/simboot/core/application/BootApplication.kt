@@ -36,6 +36,7 @@ import love.forte.simboot.core.utils.isFinal
 import love.forte.simboot.core.utils.isStatic
 import love.forte.simboot.core.utils.scanResources
 import love.forte.simboot.core.utils.scanTopClass
+import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simbot.*
 import love.forte.simbot.application.*
@@ -43,8 +44,11 @@ import love.forte.simbot.application.BotRegistrar
 import love.forte.simbot.core.application.*
 import love.forte.simbot.core.event.CoreListenerManager
 import love.forte.simbot.core.event.CoreListenerManagerConfiguration
+import love.forte.simbot.core.event.EventInterceptorsGenerator
 import love.forte.simbot.core.event.EventListenersGenerator
 import love.forte.simbot.event.EventListener
+import love.forte.simbot.event.EventListenerInterceptor
+import love.forte.simbot.event.EventProcessingInterceptor
 import love.forte.simbot.resources.Resource
 import love.forte.simbot.utils.runInBlocking
 import love.forte.simbot.utils.view
@@ -474,8 +478,15 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreAppli
         // region build listeners
         val processor = KFunctionListenerProcessor()
         
+        eventProcessor {
+            interceptors {
+                autoConfigInterceptors(beanContainer)
+            }
+        }
+        
         // auto scan listeners.
         listeners {
+            
             autoConfigFromBeanContainer(logger, binderManager, beanContainer, processor, tool)
             autoScanTopFunction(
                 classLoader, logger, binderManager,
@@ -725,6 +736,46 @@ private fun ParameterBinderBuilder.includeDefaults() {
     binder(binderFactory = EventParameterBinderFactory)
     binder(binderFactory = KeywordBinderFactory)
     binder(binderFactory = AutoInjectBinderFactory)
+}
+
+
+/**
+ * 根据bean容器寻找并自动注册拦截器实例。
+ */
+private fun EventInterceptorsGenerator.autoConfigInterceptors(beanContainer: BeanContainer) {
+    autoConfigProcessingInterceptors(beanContainer)
+    
+    TODO()
+}
+
+
+private fun EventInterceptorsGenerator.autoConfigProcessingInterceptors(beanContainer: BeanContainer) {
+    beanContainer.all<EventProcessingInterceptor>().forEach { name ->
+        val type = beanContainer.getType(name)
+        if (!type.isSubclassOf(EventProcessingInterceptor::class)) {
+            return@forEach
+        }
+        
+        val instance = beanContainer[name, type] as EventProcessingInterceptor
+        processingIntercept(name, instance)
+    }
+}
+
+private fun EventInterceptorsGenerator.autoConfigListenerInterceptors(beanContainer: BeanContainer) {
+    beanContainer.all<EventListenerInterceptor>().forEach { name ->
+        val type = beanContainer.getType(name)
+        if (!type.isSubclassOf(EventListenerInterceptor::class)) {
+            return@forEach
+        }
+        
+        if (type.isSubclassOf(AnnotatedEventListenerInterceptor::class)) {
+            // 不使用 AnnotatedEventListenerInterceptor
+            return@forEach
+        }
+        
+        val instance = beanContainer[name, type] as EventListenerInterceptor
+        listenerIntercept(name, instance)
+    }
 }
 
 

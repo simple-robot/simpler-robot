@@ -54,5 +54,6 @@ public data class FunctionalListenerProcessContext(
      * Bean容器。
      */
     val beanContainer: BeanContainer,
+    
 )
 

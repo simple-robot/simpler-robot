@@ -29,5 +29,7 @@ import org.springframework.context.annotation.Import
     SimbotSpringBootBotAutoRegisterBuildConfigure::class,
     SimbotSpringBootComponentAutoInstallBuildConfigure::class,
     SimbotSpringBootEventProviderAutoInstallBuildConfigure::class,
+    SimbotSpringBootInterceptorsAutoConfigure::class,
+    SimbotSpringBootListenerAutoRegisterBuildConfigure::class,
 )
 public open class SimbotSpringBootDefaultConfigures

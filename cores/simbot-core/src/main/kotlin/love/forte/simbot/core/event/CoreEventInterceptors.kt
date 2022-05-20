@@ -20,7 +20,9 @@
 
 package love.forte.simbot.core.event
 
-import love.forte.simbot.*
+import love.forte.simbot.Api4J
+import love.forte.simbot.Interceptor
+import love.forte.simbot.PriorityConstant
 import love.forte.simbot.event.*
 import java.util.function.Function
 
@@ -46,14 +48,15 @@ public sealed class CoreFunctionalEventInterceptor<C : EventInterceptor.Context<
 
 public class CoreFunctionalEventProcessingInterceptor(
     override val priority: Int = PriorityConstant.NORMAL,
-    override val interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
+    override val interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult,
 ) : EventProcessingInterceptor,
     CoreFunctionalEventInterceptor<EventProcessingInterceptor.Context, EventProcessingResult>()
 
 
 public class CoreFunctionalEventListenerInterceptor(
+    override val point: EventListenerInterceptor.Point,
     override val priority: Int = PriorityConstant.NORMAL,
-    override val interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
+    override val interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult,
 ) : EventListenerInterceptor, CoreFunctionalEventInterceptor<EventListenerInterceptor.Context, EventResult>()
 
 
@@ -65,7 +68,7 @@ public class CoreFunctionalEventListenerInterceptor(
 @CoreFunctionalProcessingInterceptorDSL
 public fun coreProcessingInterceptor(
     priority: Int = PriorityConstant.NORMAL,
-    interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult
+    interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult,
 ): EventProcessingInterceptor =
     CoreFunctionalEventProcessingInterceptor(priority = priority, interceptFunction = interceptFunction)
 
@@ -77,10 +80,11 @@ public fun coreProcessingInterceptor(
 @JvmSynthetic
 @CoreFunctionalListenerInterceptorDSL
 public fun coreListenerInterceptor(
+    point: EventListenerInterceptor.Point = EventListenerInterceptor.Point.DEFAULT,
     priority: Int = PriorityConstant.NORMAL,
-    interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult
+    interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult,
 ): EventListenerInterceptor =
-    CoreFunctionalEventListenerInterceptor(priority = priority, interceptFunction = interceptFunction)
+    CoreFunctionalEventListenerInterceptor(point = point, priority = priority, interceptFunction = interceptFunction)
 
 
 ////// 4j
@@ -94,7 +98,7 @@ public fun coreListenerInterceptor(
 @JvmName("coreProcessingInterceptor")
 public fun processingInterceptor4J(
     priority: Int = PriorityConstant.NORMAL,
-    interceptFunction: Function<EventProcessingInterceptor.Context, EventProcessingResult>
+    interceptFunction: Function<EventProcessingInterceptor.Context, EventProcessingResult>,
 ): EventProcessingInterceptor =
     coreProcessingInterceptor(priority = priority) { interceptFunction.apply(it) }
 
@@ -107,8 +111,9 @@ public fun processingInterceptor4J(
 @JvmOverloads
 @JvmName("coreListenerInterceptor")
 public fun listenerInterceptor4J(
+    point: EventListenerInterceptor.Point = EventListenerInterceptor.Point.DEFAULT,
     priority: Int = PriorityConstant.NORMAL,
-    interceptFunction: Function<EventListenerInterceptor.Context, EventResult>
+    interceptFunction: Function<EventListenerInterceptor.Context, EventResult>,
 ): EventListenerInterceptor =
-    coreListenerInterceptor(priority) { interceptFunction.apply(it) }
+    coreListenerInterceptor(point, priority) { interceptFunction.apply(it) }
 

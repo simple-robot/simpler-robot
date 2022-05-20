@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.listener
@@ -39,6 +38,7 @@ public interface GenericBootEventListener : EventListener {
     override val id: ID
     override val isAsync: Boolean
     override fun isTarget(eventType: Event.Key<*>): Boolean
+    override suspend fun match(context: EventListenerProcessingContext): Boolean
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult
 }
 

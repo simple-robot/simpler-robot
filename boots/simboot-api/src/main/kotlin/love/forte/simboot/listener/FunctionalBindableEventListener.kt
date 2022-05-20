@@ -44,12 +44,13 @@ import kotlin.reflect.full.callSuspendBy
  *
  */
 public abstract class FunctionalBindableEventListener<R>(
+    private val matcher: suspend (EventListenerProcessingContext) -> Boolean,
+    
     /**
      * 当前监听函数所对应的执行器。
      */
-    protected final override val caller: KFunction<R>,
+    public final override val caller: KFunction<R>,
 ) : FunctionalEventListener<R>(), GenericBootEventListener {
-    
     
     /**
      * binder数组，其索引下标应当与 [KCallable.parameters] 的 [KParameter.index] 相对应。
@@ -79,10 +80,14 @@ public abstract class FunctionalBindableEventListener<R>(
     private val isOptional = caller.parameters.any { it.isOptional }
     private val initialSize = if (isOptional) 0 else caller.parameters.size.initialSize
     
+    override suspend fun match(context: EventListenerProcessingContext): Boolean {
+        return true
+    }
+    
     /**
      * 函数执行。
      */
-    final override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         val parameters = caller.parameters
         return if (isOptional) {
             invokeCallBy(context, parameters)
