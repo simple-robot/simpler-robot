@@ -23,6 +23,8 @@ import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
 import org.slf4j.Logger
 import java.util.*
+import java.util.function.BiFunction
+import java.util.function.BiPredicate
 
 /*
  * 消除编译异常:
@@ -33,7 +35,6 @@ import java.util.*
 @PublishedApi
 @Suppress("RedundantSuspendModifier", "unused", "UNUSED_PARAMETER")
 internal suspend fun <E : Event> EventListenerProcessingContext.defaultMatcher(event: E): Boolean = true
-
 
 
 /**
@@ -98,6 +99,21 @@ public inline fun simpleListener(
     }) a@{
         function()
     }
+}
+
+
+@Api4J
+@JvmOverloads
+public fun <E : Event> simpleListener(
+    target: Event.Key<E>,
+    id: ID = UUID.randomUUID().ID,
+    isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    matcher: BiPredicate<EventListenerProcessingContext, E> = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
+    function: BiFunction<EventListenerProcessingContext, E, EventResult>,
+): EventListener {
+    
+    TODO()
 }
 
 
