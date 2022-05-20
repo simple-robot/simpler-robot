@@ -38,7 +38,7 @@ import love.forte.simbot.event.EventListenerProcessingContext
 @Preparator(StandardTextContentProcessor.Trim::class, priority = PriorityConstant.FIRST)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
-@AnnotationMapper(Preparator::class)
+// @AnnotationMapper(Preparator::class) // bug in KAnnotationTool
 public annotation class ContentTrim(
     @get:AnnotationMapper.Property(value = "priority", target = Preparator::class)
     val priority: Int = PriorityConstant.FIRST,
@@ -57,7 +57,7 @@ public annotation class ContentTrim(
 @Preparator(StandardTextContentProcessor.Null::class, priority = PriorityConstant.FIRST)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
-@AnnotationMapper(Preparator::class)
+// @AnnotationMapper(Preparator::class) // bug in KAnnotationTool
 public annotation class ContentToNull(
     @get:AnnotationMapper.Property(value = "priority", target = Preparator::class)
     val priority: Int = PriorityConstant.FIRST,
