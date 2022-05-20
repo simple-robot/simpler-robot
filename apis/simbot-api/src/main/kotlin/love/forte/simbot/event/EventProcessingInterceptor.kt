@@ -96,7 +96,6 @@ public interface BlockingEventProcessingInterceptor : EventProcessingInterceptor
  * 对于不支持挂起函数的实现方提供了 [BlockingEventListenerInterceptor]，以阻塞的 [BlockingEventListenerInterceptor.doIntercept] 来代替 [intercept].
  *
  * @see BlockingEventListenerInterceptor
- * @see love.forte.simboot.listener.EventListenerTextContentProcessor
  */
 public interface EventListenerInterceptor : EventInterceptor<EventListenerInterceptor.Context, EventResult> {
     /**
@@ -134,18 +133,18 @@ public interface EventListenerInterceptor : EventInterceptor<EventListenerInterc
     public enum class Point {
         /**
          * 默认拦截点。通常情况下来讲就是监听函数被执行前的位置。
+         *
+         * 默认情况下，[DEFAULT] 代表会拦截整个监听器的执行过程，包括
+         * [EventListener.match] 和 [EventListener.invoke].
+         *
          */
         DEFAULT,
         
         /**
-         * 在 [MatchableEventListener.match] 匹配成功后拦截。
+         * 在 [EventListener.match] 匹配成功后拦截。
          *
-         * 如果拦截目标是一个 [MatchableEventListener] 类型的监听函数，
-         * 那么当前监听函数会在 [MatchableEventListener.match] 匹配通过后才被执行。
-         *
-         * 假如拦截器的拦截目标不属于 [MatchableEventListener] 类型，那么 [AFTER_MATCH]
-         * 的预期行为将与 [DEFAULT] 一致，即直接拦截监听函数的执行。
-         *
+         * 如果拦截目标是一个 [EventListener] 类型的监听函数，
+         * 那么当前监听函数会在 [EventListener.match] 匹配通过后才被执行。
          *
          */
         AFTER_MATCH
@@ -162,9 +161,19 @@ public interface EventListenerInterceptor : EventInterceptor<EventListenerInterc
 @Api4J
 public interface BlockingEventListenerInterceptor : EventListenerInterceptor {
     
+    /**
+     * 阻塞的拦截函数。
+     */
     public fun doIntercept(context: EventListenerInterceptor.Context): EventResult
     
     @JvmSynthetic
     override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult = doIntercept(context)
+    
+    
+    override val priority: Int
+        get() = super.priority
+    
+    override val point: EventListenerInterceptor.Point
+        get() = super.point
 }
 
