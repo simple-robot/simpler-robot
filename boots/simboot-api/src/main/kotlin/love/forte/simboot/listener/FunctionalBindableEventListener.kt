@@ -87,7 +87,7 @@ public abstract class FunctionalBindableEventListener<R>(
     /**
      * 函数执行。
      */
-    override suspend fun directInvoke(context: EventListenerProcessingContext): EventResult {
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         val parameters = caller.parameters
         return if (isOptional) {
             invokeCallBy(context, parameters)

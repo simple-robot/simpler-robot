@@ -70,7 +70,6 @@ import kotlin.reflect.KClass
 @Repeatable
 @JvmRepeatable(Interceptors::class)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
-@MustBeDocumented
 public annotation class Interceptor(
     /**
      * 通过 **唯一标识** 获取所需拦截器。这个唯一标识一般为注入到bean容器中的唯一标识名称，
@@ -93,20 +92,8 @@ public annotation class Interceptor(
     
     /**
      * 此拦截器在所有标记的注解拦截器中的优先级。
-     *
-     * 根据 [beforeFilter] 的不同会分开计算。
-     *
      */
     val priority: Int = PriorityConstant.NORMAL,
-    
-    // /**
-    //  * 是否优先于 Filter。
-    //  *
-    //  * 一个监听函数通常会配合 [Filter] 注解一同使用,
-    //  * 当 [Interceptor] 与 [Filter] 同时存在在同一个监听函数上时，
-    //  * 通过 [beforeFilter] 来决定当前拦截器是否优先于当前的过滤器。
-    //  */
-    // val beforeFilter: Boolean = true,
 )
 
 
@@ -117,5 +104,4 @@ public annotation class Interceptor(
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
-@MustBeDocumented
 public annotation class Interceptors(vararg val value: Interceptor)

@@ -32,9 +32,6 @@ import love.forte.simbot.PriorityConstant
  * 通常情况下，一个 [EventListener] 内可能有隐式的多个filter，并在filter流程任意节点出现false的时候得到一个默认返回值.
  * 对于此接口的直接运用，常见的为在匹配失败的时候直接返回一个 [无效响应][EventResult.Invalid]。
  *
- * 假若在过滤匹配失败后，你希望返回一个其他的自定义结果，可以重写 [defaultResult] 进行自定义实现。
- * 默认情况下，[defaultResult] 返回 [EventResult] 的无效化实例 [EventResult.Invalid].
- *
  * 过滤器存在 [优先级][priority], 默认情况下的优先级为 [PriorityConstant.NORMAL].
  *
  * @author ForteScarlet
@@ -53,14 +50,6 @@ public interface EventFilter : Filter<EventListenerProcessingContext> {
     @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override suspend fun test(context: EventListenerProcessingContext): Boolean
     
-    /**
-     * 如果过滤器匹配失败，可以通过此函数得到一个默认的返回值。
-     * 默认情况下返回 [EventResult.Invalid].
-     */
-    @Suppress("DeprecatedCallableAddReplaceWith")
-    @JvmSynthetic
-    @Deprecated("不匹配情况下将永远返回EventResult.Invalid，不再支持自定义")
-    public suspend fun defaultResult(context: EventProcessingContext): EventResult = EventResult.Invalid
 }
 
 
@@ -80,31 +69,10 @@ public interface BlockingEventFilter : EventFilter, BlockingFilter<EventListener
     override fun testBlocking(): Boolean
     
     /**
-     * 如果过滤器匹配失败，可以通过此函数得到一个默认的返回值。
-     * 默认情况下返回 [EventResult.Invalid].
-     */
-    @Api4J
-    @Suppress("DeprecatedCallableAddReplaceWith")
-    @Deprecated("不匹配情况下将永远返回EventResult.Invalid，不再支持自定义")
-    public fun defaultResultBlocking(context: EventProcessingContext): EventResult = EventResult.Invalid
-    
-    
-    /**
      * 过滤器的检测函数。通过 [EventProcessingContext] 来验证是否需要处理当前事件。
      */
     @JvmSynthetic
     @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
     override suspend fun test(context: EventListenerProcessingContext): Boolean = testBlocking()
-    
-    
-    /**
-     * 如果过滤器匹配失败，可以通过此函数得到一个默认的返回值。
-     * 默认情况下返回 [EventResult.Invalid].
-     */
-    @Suppress("OVERRIDE_DEPRECATION")
-    @JvmSynthetic
-    @Deprecated("不匹配情况下将永远返回EventResult.Invalid，不再支持自定义")
-    override suspend fun defaultResult(context: EventProcessingContext): EventResult = defaultResultBlocking(context)
-    
     
 }

@@ -17,8 +17,11 @@
 package love.forte.simbot.core.event
 
 import love.forte.simbot.ID
-import love.forte.simbot.event.*
+import love.forte.simbot.event.Event
 import love.forte.simbot.event.Event.Key.Companion.isSub
+import love.forte.simbot.event.EventListener
+import love.forte.simbot.event.EventListenerProcessingContext
+import love.forte.simbot.event.EventResult
 import org.slf4j.Logger
 
 
@@ -26,7 +29,7 @@ import org.slf4j.Logger
  *
  * 核心模块中所提供的最基础的 [EventListener] 实现。
  *
- * [SimpleListener] 实现 [EventListener] 所有的基础功能，并支持 [MatchableEventListener] 的特性。
+ * [SimpleListener] 实现 [EventListener] 所有的基础功能。
  *
  * @author ForteScarlet
  */
@@ -50,13 +53,13 @@ public class SimpleListener(
      */
     internal val function: suspend EventListenerProcessingContext.() -> EventResult,
     
-    ) : EventListener, MatchableEventListener {
+    ) : EventListener {
     private val targetMatcher = targets.toTargetMatcher()
     override fun isTarget(eventType: Event.Key<*>): Boolean = targetMatcher(eventType)
     
     override suspend fun match(context: EventListenerProcessingContext): Boolean = context.matcher()
     
-    override suspend fun directInvoke(context: EventListenerProcessingContext): EventResult = context.function()
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult = context.function()
     
     override fun toString(): String {
         return "SimpleListener(id=$id, isAsync=$isAsync, targets=$targets)"
@@ -71,7 +74,7 @@ public class SimpleListener(
         isAsync: Boolean = this.isAsync,
         targets: Set<Event.Key<*>> = this.targets.toSet(),
         matcher: suspend EventListenerProcessingContext.() -> Boolean = this.matcher,
-        function: suspend EventListenerProcessingContext.() -> EventResult = this.function
+        function: suspend EventListenerProcessingContext.() -> EventResult = this.function,
     ): SimpleListener {
         return SimpleListener(id, logger, isAsync, targets, matcher, function)
     }

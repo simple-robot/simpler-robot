@@ -87,8 +87,8 @@ public interface AnnotationEventFilter : EventFilter {
          * 指此 [AnnotationEventFilter] 初始化将会自行处理 [Filter] 注解中，
          * **除了** [Filter.and] 和 [Filter.or] 参数以外的内容。
          *
-         * 此过滤器会在初始化完成后，尝试继续于 [Filter.and] 和 [Filter.or]
-         * 中可能解析的结果进行合并处理。
+         * 此过滤器会在初始化完成后，尝试继续与 [Filter.and] 和 [Filter.or]
+         * 的自动解析结果进行合并处理。
          *
          */
         UNITED
@@ -122,22 +122,12 @@ public interface BlockingAnnotationEventFilter : AnnotationEventFilter, Blocking
     @Api4J
     override fun testBlocking(): Boolean
     
-    /**
-     * 如果过滤器匹配失败，可以通过此函数得到一个默认的返回值。
-     * 默认情况下返回 [EventResult.Invalid].
-     */
-    @Api4J
-    override fun defaultResultBlocking(context: EventProcessingContext): EventResult = EventResult.Invalid
-    
     
     /**
      * 过滤器的检测函数。通过 [EventProcessingContext] 来验证是否需要处理当前事件。
      */
     @JvmSynthetic
     override suspend fun test(context: EventListenerProcessingContext): Boolean = testBlocking()
-    
-    @JvmSynthetic
-    override suspend fun defaultResult(context: EventProcessingContext): EventResult = defaultResultBlocking(context)
     
     
 }

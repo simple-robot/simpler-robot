@@ -65,11 +65,6 @@ public fun interface BlockingEventListenerFunction : EventListenerFunction {
  * 事件监听器存在 [优先级][priority]，默认优先级为 [PriorityConstant.NORMAL].
  *
  *
- * 通常情况下，你可以使用 [MatchableEventListener] 来为监听函数额外提供 "匹配"（或者说"过滤"）函数 [match(...)][MatchableEventListener.match].
- *
- *
- * @see MatchableEventListener
- *
  * @author ForteScarlet
  */
 public interface EventListener : java.util.EventListener, AttributeContainer, LoggerContainer, IDContainer,
@@ -125,11 +120,31 @@ public interface EventListener : java.util.EventListener, AttributeContainer, Lo
     
     
     /**
+     * 判断目标 [EventListenerProcessingContext] 是否符合当前监听函数的预期。
+     *
+     * 与 [isTarget] 不同，[match] 中可能包含业务逻辑。但是与 [isTarget] 相同的是，
+     * 它们都需要在 [invoke] 执行前进行判断。
+     *
+     * @return 是否符合预期
+     */
+    public suspend fun match(context: EventListenerProcessingContext): Boolean
+    
+    
+    /**
      * 监听函数的事件执行逻辑。
      *
      * 通过 [EventListenerProcessingContext] 处理事件，完成处理后返回 [处理结果][EventResult].
      *
-     * 在执行 [invoke] 之前，必须要首先通过 [isTarget] 来判断当前监听函数是否允许此类型的事件。
+     * 在执行 [invoke] 之前，必须要首先通过 [isTarget] 来判断当前监听函数是否允许此类型的事件，然后通过 [match] 匹配。
+     *
+     * e.g.
+     * ```kotlin
+     * if (isTarget(context.event.key) && match(context)) {
+     *     // do invoke
+     *     invoke(context)
+     * }
+     * ```
+     *
      * 否则可能会引发预期外的行为或错误。
      *
      */
@@ -162,121 +177,121 @@ public interface BlockingEventListener : EventListener, BlockingEventListenerFun
     override fun invokeBlocking(context: EventListenerProcessingContext): EventResult
 }
 
-
-// TODO
-/**
- * 一个可以 [匹配][match] 的 [EventListener].
- *
- * [match] 允许在进行 [invoke] 之前优先检测参数 [EventListenerProcessingContext]
- * 是否允许被使用。这很类似于 "过滤器" 的概念。
- *
- *
- * 在 [MatchableEventListener] 中，[invoke] 相当于 先执行 [match],
- * 当得到 `true` 的时候去执行 [directInvoke]. 假如 [match] 得到了 `false`，
- * 那么 [invoke] 中真正的监听逻辑则不会被执行，而是返回 [EventResult.Invalid].
- *
- * ## 支持
- * 在 [EventListenerInterceptor] 中存在对 [MatchableEventListener] 的支持，
- * 也因此 [EventProcessor] 也应当在内部提供针对于 [MatchableEventListener] 的支持。
- *
- * 官方提供的针对 [EventListener] 的所有实现理论上都应是支持 [MatchableEventListener] 的。
- *
- */
-public interface MatchableEventListener : EventListener {
-    
-    /**
-     * 判断目标 [EventListenerProcessingContext] 是否符合当前监听函数的预期。
-     *
-     * @return 是否符合预期
-     */
-    public suspend fun match(context: EventListenerProcessingContext): Boolean
-    
-    
-    /**
-     * 直接执行目标逻辑。
-     *
-     * 通常应该在 [match] 匹配结果为 `true` 的时候被执行，否则可能会存在对于逻辑来讲预期外的异常。
-     *
-     * e.g.
-     * ```kotlin
-     * if (match(context)) {
-     *    return directInvoke(context)
-     * }
-     * // or ...
-     * ```
-     *
-     */
-    public suspend fun directInvoke(context: EventListenerProcessingContext): EventResult
-    
-    
-    /**
-     * 执行监听函数。
-     *
-     * [invoke] 的行为相当于先通过 [match] 匹配，然后在匹配通过的时候执行 [directInvoke],
-     * 不通过的时候直接返回 [EventResult.Invalid].
-     *
-     */
-    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
-        if (match(context)) {
-            return directInvoke(context)
-        }
-        return EventResult.Invalid
-    }
-    
-}
-
-
-/**
- * [MatchableEventListener] 的阻塞类型。
- *
- * 通常服务于不支持挂起行为的实现方。
- *
- * @see MatchableEventListener
- */
-@Api4J
-public interface BlockingMatchableEventListener : MatchableEventListener, BlockingEventListenerFunction {
-    
-    
-    /**
-     * 阻塞的执行 [MatchableEventListener.match]，判断目标 [context] 是否符合预期。
-     *
-     * @return 目标是否符合预期
-     * @see MatchableEventListener.match
-     */
-    @Api4J
-    public fun matchBlocking(context: EventListenerProcessingContext): Boolean
-    
-    /**
-     * 阻塞的执行 [MatchableEventListener.directInvoke]。
-     *
-     * @see MatchableEventListener.directInvoke
-     */
-    @Api4J
-    public fun directInvokeBlocking(context: EventListenerProcessingContext): EventResult
-    
-    
-    @JvmSynthetic
-    override suspend fun match(context: EventListenerProcessingContext): Boolean {
-        return runWithInterruptible { matchBlocking(context) }
-    }
-    
-    @JvmSynthetic
-    override suspend fun directInvoke(context: EventListenerProcessingContext): EventResult {
-        return runWithInterruptible { directInvokeBlocking(context) }
-    }
-    
-    @JvmSynthetic
-    override suspend fun invoke(context: EventListenerProcessingContext): EventResult =
-        runWithInterruptible { invokeBlocking(context) }
-    
-    /**
-     * 非挂起的执行事件监听逻辑。
-     */
-    override fun invokeBlocking(context: EventListenerProcessingContext): EventResult {
-        if (matchBlocking(context)) {
-            return directInvokeBlocking(context)
-        }
-        
-        return EventResult.Invalid
-    }
-}
+//
+// // TODO
+// /**
+//  * 一个可以 [匹配][match] 的 [EventListener].
+//  *
+//  * [match] 允许在进行 [invoke] 之前优先检测参数 [EventListenerProcessingContext]
+//  * 是否允许被使用。这很类似于 "过滤器" 的概念。
+//  *
+//  *
+//  * 在 [MatchableEventListener] 中，[invoke] 相当于 先执行 [match],
+//  * 当得到 `true` 的时候去执行 [directInvoke]. 假如 [match] 得到了 `false`，
+//  * 那么 [invoke] 中真正的监听逻辑则不会被执行，而是返回 [EventResult.Invalid].
+//  *
+//  * ## 支持
+//  * 在 [EventListenerInterceptor] 中存在对 [MatchableEventListener] 的支持，
+//  * 也因此 [EventProcessor] 也应当在内部提供针对于 [MatchableEventListener] 的支持。
+//  *
+//  * 官方提供的针对 [EventListener] 的所有实现理论上都应是支持 [MatchableEventListener] 的。
+//  *
+//  */
+// public interface MatchableEventListener : EventListener {
+//
+//     /**
+//      * 判断目标 [EventListenerProcessingContext] 是否符合当前监听函数的预期。
+//      *
+//      * @return 是否符合预期
+//      */
+//     public suspend fun match(context: EventListenerProcessingContext): Boolean
+//
+//
+//     /**
+//      * 直接执行目标逻辑。
+//      *
+//      * 通常应该在 [match] 匹配结果为 `true` 的时候被执行，否则可能会存在对于逻辑来讲预期外的异常。
+//      *
+//      * e.g.
+//      * ```kotlin
+//      * if (match(context)) {
+//      *    return directInvoke(context)
+//      * }
+//      * // or ...
+//      * ```
+//      *
+//      */
+//     public suspend fun directInvoke(context: EventListenerProcessingContext): EventResult
+//
+//
+//     /**
+//      * 执行监听函数。
+//      *
+//      * [invoke] 的行为相当于先通过 [match] 匹配，然后在匹配通过的时候执行 [directInvoke],
+//      * 不通过的时候直接返回 [EventResult.Invalid].
+//      *
+//      */
+//     override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
+//         if (match(context)) {
+//             return directInvoke(context)
+//         }
+//         return EventResult.Invalid
+//     }
+//
+// }
+//
+//
+// /**
+//  * [MatchableEventListener] 的阻塞类型。
+//  *
+//  * 通常服务于不支持挂起行为的实现方。
+//  *
+//  * @see MatchableEventListener
+//  */
+// @Api4J
+// public interface BlockingMatchableEventListener : MatchableEventListener, BlockingEventListenerFunction {
+//
+//
+//     /**
+//      * 阻塞的执行 [MatchableEventListener.match]，判断目标 [context] 是否符合预期。
+//      *
+//      * @return 目标是否符合预期
+//      * @see MatchableEventListener.match
+//      */
+//     @Api4J
+//     public fun matchBlocking(context: EventListenerProcessingContext): Boolean
+//
+//     /**
+//      * 阻塞的执行 [MatchableEventListener.directInvoke]。
+//      *
+//      * @see MatchableEventListener.directInvoke
+//      */
+//     @Api4J
+//     public fun directInvokeBlocking(context: EventListenerProcessingContext): EventResult
+//
+//
+//     @JvmSynthetic
+//     override suspend fun match(context: EventListenerProcessingContext): Boolean {
+//         return runWithInterruptible { matchBlocking(context) }
+//     }
+//
+//     @JvmSynthetic
+//     override suspend fun directInvoke(context: EventListenerProcessingContext): EventResult {
+//         return runWithInterruptible { directInvokeBlocking(context) }
+//     }
+//
+//     @JvmSynthetic
+//     override suspend fun invoke(context: EventListenerProcessingContext): EventResult =
+//         runWithInterruptible { invokeBlocking(context) }
+//
+//     /**
+//      * 非挂起的执行事件监听逻辑。
+//      */
+//     override fun invokeBlocking(context: EventListenerProcessingContext): EventResult {
+//         if (matchBlocking(context)) {
+//             return directInvokeBlocking(context)
+//         }
+//
+//         return EventResult.Invalid
+//     }
+// }

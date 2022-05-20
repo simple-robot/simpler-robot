@@ -17,21 +17,20 @@
 
 package love.forte.simboot.annotation
 
-import love.forte.simboot.listener.EventListenerTextContentProcessor
 import love.forte.simbot.PriorityConstant
 
 
 /**
  * 标记一个函数为监听器/监听函数，并尝试自动检测其监听类型。
  *
- * 当标记在一个kotlin扩展函数上的时候，此函数的 receiver 应当是你想要监听的事件类型，eg：
+ * 当标记在一个函数上的时候，应当提供一个事件类型的参数作为你需要监听的事件类型。eg：
  * ```kotlin
  *
  * @Listener
  * suspend fun ChannelMessageEvent.myListener() { ... }
  *
  * ```
- * 默认情况下，此函数的ID为其全限定名，你可以通过 [Listener.id] 指定一个ID。
+ * 默认情况下，此函数的ID为其全限定名，你可以通过 [@Listener(id="...")][Listener.id] 指定一个ID。
  * 当不指定的时候默认为当前标记对象的全限定二进制名称。
  *
  *
@@ -43,8 +42,6 @@ import love.forte.simbot.PriorityConstant
  * @see Filter
  * @see Interceptor
  * @see love.forte.simbot.event.EventListener
- * @see EventListenerTextContentProcessor
- * @see love.forte.simboot.listener.StandardTextContentProcessor
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)

@@ -21,7 +21,6 @@ package love.forte.simbot.core.event
 
 import love.forte.simbot.*
 import love.forte.simbot.event.*
-import love.forte.simbot.event.Event.Key.Companion.isSub
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
@@ -44,7 +43,7 @@ public operator fun EventListener.plus(filter: EventFilter): EventListener {
  *
  * @see withMatcher
  */
-public operator fun EventListener.plus(filters: Iterable<EventFilter>): MatchableEventListener {
+public operator fun EventListener.plus(filters: Iterable<EventFilter>): EventListener {
     val sortedFilters = filters.sortedBy { it.priority }
     return withMatcher {
         sortedFilters.all { filter -> filter.test(this) }
@@ -98,42 +97,6 @@ public inline fun <reified E : Event> coreListener(
 }
 
 
-@Deprecated("Use love.forte.simbot.core.event.SimpleListener")
-private class CoreListener<E : Event>(
-    override val id: ID,
-    private val key: Event.Key<E>,
-    private val blockNext: Boolean,
-    override val isAsync: Boolean,
-    override val logger: Logger,
-    private val func: suspend (EventListenerProcessingContext, E) -> Any?,
-) : EventListener {
-    
-    override fun isTarget(eventType: Event.Key<*>): Boolean = eventType isSub key
-    
-    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
-        val result = func(context, key.safeCast(context.event)!!)
-        return if (result is EventResult) result else EventResult.of(result, blockNext)
-    }
-    
-}
-
-private class BlockingCoreListener<E : Event>(
-    override val id: ID,
-    private val key: Event.Key<E>,
-    private val blockNext: Boolean,
-    override val isAsync: Boolean,
-    override val logger: Logger,
-    private val func: BiFunction<EventListenerProcessingContext, E, Any?>, // (EventListenerProcessingContext, E) -> Any?
-) : EventListener {
-    
-    override fun isTarget(eventType: Event.Key<*>): Boolean = eventType isSub key
-    
-    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
-        val result = runWithInterruptible { func.apply(context, key.safeCast(context.event)!!) }
-        return if (result is EventResult) result else EventResult.of(result, blockNext)
-    }
-    
-}
 
 
 ////// create for java
@@ -147,6 +110,7 @@ private class BlockingCoreListener<E : Event>(
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
+@Deprecated("use simpleListener")
 public fun <E : Event> blockingCoreListener(
     eventKey: Event.Key<E>,
     id: ID = UUID.randomUUID().ID,
@@ -154,8 +118,8 @@ public fun <E : Event> blockingCoreListener(
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: BiFunction<EventListenerProcessingContext, E, Any?>,
-): EventListener =
-    BlockingCoreListener(id, eventKey, blockNext, isAsync, logger, func)
+): EventListener = TODO()
+    // BlockingCoreListener(id, eventKey, blockNext, isAsync, logger, func)
 
 
 /**
@@ -167,6 +131,7 @@ public fun <E : Event> blockingCoreListener(
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
+@Deprecated("use simpleListener")
 public fun <E : Event> blockingCoreListener(
     eventKey: Event.Key<E>,
     id: ID = randomID(),
@@ -174,13 +139,13 @@ public fun <E : Event> blockingCoreListener(
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: BiConsumer<EventListenerProcessingContext, E>,
-): EventListener =
-    BlockingCoreListener(
-        id, eventKey, blockNext, isAsync, logger
-    ) { c, e ->
-        func.accept(c, e)
-        null
-    }
+): EventListener = TODO()
+    // BlockingCoreListener(
+    //     id, eventKey, blockNext, isAsync, logger
+    // ) { c, e ->
+    //     func.accept(c, e)
+    //     null
+    // }
 
 
 /**
