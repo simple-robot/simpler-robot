@@ -1126,6 +1126,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @see Event.next
      * @see EventProcessingContext.nextMessages
      */
+    @JvmSynthetic
     public suspend fun Event.nextMessages(
         id: ID = randomID(),
         key: Event.Key<out MessageEvent>,
@@ -1145,6 +1146,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @see EventProcessingContext.next
      * @see Event.nextMessages
      */
+    @JvmSynthetic
     public suspend fun EventProcessingContext.nextMessages(
         id: ID = randomID(),
         key: Event.Key<out MessageEvent>,
@@ -1175,7 +1177,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("nextMessages")
     public fun Event.nextMessagesBlocking(
-        id: ID = randomID(),
+        id: ID,
         key: Event.Key<out MessageEvent>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
@@ -1190,8 +1192,91 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         }
         
         return runInBlocking { doWait() }
-        
     }
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 中的 [消息链][Messages] 。
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 具体说明参考 [EventProcessingContext.nextMessages].
+     *
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param key 目标事件类型
+     * @param timeout 超时时间。大于0时生效
+     * @param timeUnit [timeout] 的时间类型
+     *
+     * @see Event.nextMessages
+     * @see Event.next
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("nextMessages")
+    public fun Event.nextMessagesBlocking(
+        key: Event.Key<out MessageEvent>,
+        timeout: Long = 0,
+        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+    ): Messages = nextMessagesBlocking(id = randomID(), key = key, timeout = timeout, timeUnit = timeUnit)
+    
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 中的 [消息链][Messages] 。
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 具体说明参考 [EventProcessingContext.nextMessages].
+     *
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param id 临时监听函数的id
+     * @param timeout 超时时间。大于0时生效
+     * @param timeUnit [timeout] 的时间类型
+     *
+     * @see Event.nextMessages
+     * @see Event.next
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("nextMessages")
+    public fun Event.nextMessagesBlocking(
+        id: ID,
+        timeout: Long = 0,
+        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+    ): Messages = nextMessagesBlocking(id = id, key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
+    
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 中的 [消息链][Messages] 。
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 具体说明参考 [EventProcessingContext.nextMessages].
+     *
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param timeout 超时时间。大于0时生效
+     * @param timeUnit [timeout] 的时间类型
+     *
+     * @see Event.nextMessages
+     * @see Event.next
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("nextMessages")
+    public fun Event.nextMessagesBlocking(
+        timeout: Long = 0,
+        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+    ): Messages = nextMessagesBlocking(id = randomID(), key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
     
     
     /**
@@ -1218,12 +1303,100 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("nextMessages")
     public fun EventProcessingContext.nextMessagesBlocking(
-        id: ID = randomID(),
+        id: ID,
         key: Event.Key<out MessageEvent>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
     ): Messages {
         return event.nextMessagesBlocking(id, key, timeout, timeUnit)
+    }
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 中的 [消息链][Messages] 。
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 具体说明参考 [EventProcessingContext.nextMessages].
+     *
+     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param key 目标事件类型
+     * @param timeout 超时时间。大于0时生效
+     * @param timeUnit [timeout] 的时间类型
+     *
+     * @see EventProcessingContext.next
+     * @see EventProcessingContext.nextMessages
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("nextMessages")
+    public fun EventProcessingContext.nextMessagesBlocking(
+        key: Event.Key<out MessageEvent>,
+        timeout: Long = 0,
+        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+    ): Messages {
+        return event.nextMessagesBlocking(randomID(), key, timeout, timeUnit)
+    }
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 中的 [消息链][Messages] 。
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 具体说明参考 [EventProcessingContext.nextMessages].
+     *
+     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param id 临时监听函数唯一标识
+     * @param timeout 超时时间。大于0时生效
+     * @param timeUnit [timeout] 的时间类型
+     *
+     * @see EventProcessingContext.next
+     * @see EventProcessingContext.nextMessages
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("nextMessages")
+    public fun EventProcessingContext.nextMessagesBlocking(
+        id: ID,
+        timeout: Long = 0,
+        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+    ): Messages {
+        return event.nextMessagesBlocking(id, MessageEvent, timeout, timeUnit)
+    }
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 中的 [消息链][Messages] 。
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 具体说明参考 [EventProcessingContext.nextMessages].
+     *
+     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param timeout 超时时间。大于0时生效
+     * @param timeUnit [timeout] 的时间类型
+     *
+     * @see EventProcessingContext.next
+     * @see EventProcessingContext.nextMessages
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("nextMessages")
+    public fun EventProcessingContext.nextMessagesBlocking(
+        timeout: Long = 0,
+        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+    ): Messages {
+        return event.nextMessagesBlocking(randomID(), MessageEvent, timeout, timeUnit)
     }
     
     // endregion
