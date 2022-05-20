@@ -38,10 +38,8 @@ public open class SimbotSpringBootInterceptorsAutoConfigure : SimbotSpringBootAp
     
     private fun EventInterceptorsGenerator.processingInterceptors() {
         beanContainer.all<EventProcessingInterceptor>().forEach { name ->
-            processingIntercept(name) {
-                val instance = beanContainer[name] as EventProcessingInterceptor
-                instance.intercept(it)
-            }
+            val instance = beanContainer[name] as EventProcessingInterceptor
+            processingIntercept(name, instance)
         }
     }
     
@@ -52,10 +50,8 @@ public open class SimbotSpringBootInterceptorsAutoConfigure : SimbotSpringBootAp
                 // 不使用 AnnotatedEventListenerInterceptor
                 return@forEach
             }
-            listenerIntercept(name) {
-                val instance = beanContainer[name, type] as EventListenerInterceptor
-                instance.intercept(it)
-            }
+            val instance = beanContainer[name, type] as EventListenerInterceptor
+            listenerIntercept(id = name, instance)
         }
     }
     

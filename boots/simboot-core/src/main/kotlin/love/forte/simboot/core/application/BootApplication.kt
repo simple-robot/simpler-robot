@@ -756,11 +756,8 @@ private fun EventInterceptorsGenerator.autoConfigProcessingInterceptors(beanCont
             return@forEach
         }
         
-        // proxy it.
-        processingIntercept(name) {
-            val instance = beanContainer[name, type] as EventProcessingInterceptor
-            instance.intercept(it)
-        }
+        val instance = beanContainer[name, type] as EventProcessingInterceptor
+        processingIntercept(name, instance)
     }
 }
 
@@ -776,11 +773,8 @@ private fun EventInterceptorsGenerator.autoConfigListenerInterceptors(beanContai
             return@forEach
         }
         
-        // proxy
-        listenerIntercept(name) {
-            val instance = beanContainer[name, type] as EventListenerInterceptor
-            instance.intercept(it)
-        }
+        val instance = beanContainer[name, type] as EventListenerInterceptor
+        listenerIntercept(name, instance)
     }
 }
 
