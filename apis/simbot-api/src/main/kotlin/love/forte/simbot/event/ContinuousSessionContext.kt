@@ -22,7 +22,6 @@ import kotlinx.coroutines.*
 import love.forte.simbot.*
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.message.Messages
 import love.forte.simbot.utils.runInBlocking
 import love.forte.simbot.utils.runInTimeoutBlocking
 import java.util.concurrent.Future
@@ -888,7 +887,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * 挂起并等待下一个符合条件的 [消息事件][MessageEvent] 中的消息体。
      *
      * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [E]
-     * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
      *
      * **_更多内容参考 [waitingForNext] 文档注释。_**
      *
@@ -898,15 +897,12 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * val session: ContinuousSessionContext = ...
      *
      * withTimeout(5.seconds) {
-     *    session.waitingForNextMessages(id, FooEvent) { event -> // this: EventProcessingContext
+     *    session.waitingForNextMessage(id, FooEvent) { event -> // this: EventProcessingContext
      *       // ...
      *       true
      *    }
      * }
      * ```
-     *
-     * ## 获取 [MessageContent] ?
-     * 如果你需要获取并使用 [MessageContent], 则考虑选择通过 [waitingForNext] 来得到事件本体并获取他。
      *
      * ## 具体的 [Message.Element] ?
      * 当你想要得到一个具体的 [Message.Element] 对象，那么你需要想明白：
@@ -935,10 +931,10 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     }
     
     /**
-     * 挂起并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
+     * 挂起并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
      *
      * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [MessageEvent]
-     * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
      *
      * **_更多内容参考 [waitingForNext] 文档注释。_**
      *
@@ -948,15 +944,12 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * val session: ContinuousSessionContext = ...
      *
      * withTimeout(5.seconds) {
-     *    session.waitingForNextMessages(id, FooEvent) { event -> // this: EventProcessingContext
+     *    session.waitingForNextMessage(id, FooEvent) { event -> // this: EventProcessingContext
      *       // ...
      *       true
      *    }
      * }
      * ```
-     *
-     * ## 获取 [MessageContent] ?
-     * 如果你需要获取并使用 [MessageContent], 则考虑选择通过 [waitingForNext] 来得到事件本体并获取他。
      *
      * ## 具体的 [Message.Element] ?
      * 当你想要得到一个具体的 [Message.Element] 对象，那么你需要想明白：
@@ -984,10 +977,10 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     }
     
     /**
-     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
      *
      * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [E]
-     * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
      *
      *
      * 更多说明参考 [waitingForNextMessage] 文档注释。
@@ -1006,8 +999,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @Api4J
     @JvmOverloads
-    @JvmName("waitingForNextMessages")
-    public fun <E : MessageEvent> waitForNextMessagesBlocking(
+    @JvmName("waitingForNextMessage")
+    public fun <E : MessageEvent> waitForNextMessageBlocking(
         id: ID = randomID(),
         key: Event.Key<E>,
         timeout: Long = 0,
@@ -1026,10 +1019,10 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     }
     
     /**
-     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
      *
      * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [MessageEvent]
-     * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
      *
      *
      * 更多说明参考 [waitingForNextMessage] 文档注释。
@@ -1047,21 +1040,21 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @Api4J
     @JvmOverloads
-    @JvmName("waitingForNextMessages")
-    public fun waitForNextMessagesBlocking(
+    @JvmName("waitingForNextMessage")
+    public fun waitForNextMessageBlocking(
         id: ID = randomID(),
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
         matcher: BlockingEventMatcher<MessageEvent> = BlockingEventMatcher,
     ): MessageContent {
-        return waitForNextMessagesBlocking(id, MessageEvent, timeout, timeUnit, matcher)
+        return waitForNextMessageBlocking(id, MessageEvent, timeout, timeUnit, matcher)
     }
     
     /**
-     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
      *
      * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [MessageEvent]
-     * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
      *
      *
      * 更多说明参考 [waitingForNextMessage] 文档注释。
@@ -1076,19 +1069,19 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @Api4J
     @JvmOverloads
-    @JvmName("waitingForNextMessages")
-    public fun waitForNextMessagesBlocking(
+    @JvmName("waitingForNextMessage")
+    public fun waitForNextMessageBlocking(
         id: ID = randomID(),
         matcher: BlockingEventMatcher<MessageEvent>,
     ): MessageContent {
-        return waitForNextMessagesBlocking(id = id, key = MessageEvent, timeout = 0, matcher = matcher)
+        return waitForNextMessageBlocking(id = id, key = MessageEvent, timeout = 0, matcher = matcher)
     }
     
     /**
-     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
      *
      * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [MessageEvent]
-     * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
      *
      *
      * 更多说明参考 [waitingForNextMessage] 文档注释。
@@ -1102,22 +1095,22 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      */
     @Api4J
-    @JvmName("waitingForNextMessages")
-    public fun <E : MessageEvent> waitForNextMessagesBlocking(
+    @JvmName("waitingForNextMessage")
+    public fun <E : MessageEvent> waitForNextMessageBlocking(
         key: Event.Key<E>,
         matcher: BlockingEventMatcher<MessageEvent>,
     ): MessageContent {
-        return waitForNextMessagesBlocking(id = randomID(), key = key, timeout = 0, matcher = matcher)
+        return waitForNextMessageBlocking(id = randomID(), key = key, timeout = 0, matcher = matcher)
     }
     // endregion
     
     // region Context.nextMessage
     
     /**
-     * 挂起并等待符合当前 [Event] 作用域下的下一个消息事件的 [消息链][Messages].
+     * 挂起并等待符合当前 [Event] 作用域下的下一个消息事件的 [消息内容][MessageContent].
      *
      * 行为类似于 [next][Event.next], 区别在于 [nextMessage] 只允许目标为 [消息事件][MessageEvent]
-     * 且返回值为 [Messages].
+     * 且返回值为 [MessageContent].
      *
      * 对于作用域下的事件匹配机制的说明参考 [next][Event.next] 文档注释。
      *
@@ -1134,10 +1127,10 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     
     
     /**
-     * 挂起并等待符合当前 [Event] 作用域下的下一个消息事件的 [消息链][Messages].
+     * 挂起并等待符合当前 [Event] 作用域下的下一个消息事件的 [消息内容][MessageContent].
      *
      * 行为类似于 [next][EventProcessingContext.next], 区别在于 [nextMessage] 只允许目标为 [消息事件][MessageEvent]
-     * 且返回值为 [Messages].
+     * 且返回值为 [MessageContent].
      *
      * 对于作用域下的事件匹配机制的说明参考 [next][EventProcessingContext.next] 文档注释。
      *
@@ -1155,7 +1148,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     
     /**
      * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
-     * 中的 [消息链][Messages] 。
+     * 中的 [消息内容][MessageContent] 。
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
@@ -1175,8 +1168,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @Api4J
     @JvmOverloads
-    @JvmName("nextMessages")
-    public fun Event.nextMessagesBlocking(
+    @JvmName("nextMessage")
+    public fun Event.nextMessageBlocking(
         id: ID,
         key: Event.Key<out MessageEvent>,
         timeout: Long = 0,
@@ -1196,7 +1189,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     
     /**
      * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
-     * 中的 [消息链][Messages] 。
+     * 中的 [消息内容][MessageContent] 。
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
@@ -1215,17 +1208,17 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @Api4J
     @JvmOverloads
-    @JvmName("nextMessages")
-    public fun Event.nextMessagesBlocking(
+    @JvmName("nextMessage")
+    public fun Event.nextMessageBlocking(
         key: Event.Key<out MessageEvent>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): MessageContent = nextMessagesBlocking(id = randomID(), key = key, timeout = timeout, timeUnit = timeUnit)
+    ): MessageContent = nextMessageBlocking(id = randomID(), key = key, timeout = timeout, timeUnit = timeUnit)
     
     
     /**
      * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
-     * 中的 [消息链][Messages] 。
+     * 中的 [消息内容][MessageContent] 。
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
@@ -1244,17 +1237,17 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @Api4J
     @JvmOverloads
-    @JvmName("nextMessages")
-    public fun Event.nextMessagesBlocking(
+    @JvmName("nextMessage")
+    public fun Event.nextMessageBlocking(
         id: ID,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): MessageContent = nextMessagesBlocking(id = id, key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
+    ): MessageContent = nextMessageBlocking(id = id, key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
     
     
     /**
      * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
-     * 中的 [消息链][Messages] 。
+     * 中的 [消息内容][MessageContent] 。
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
@@ -1272,16 +1265,16 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @Api4J
     @JvmOverloads
-    @JvmName("nextMessages")
-    public fun Event.nextMessagesBlocking(
+    @JvmName("nextMessage")
+    public fun Event.nextMessageBlocking(
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): MessageContent = nextMessagesBlocking(id = randomID(), key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
+    ): MessageContent = nextMessageBlocking(id = randomID(), key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
     
     
     /**
      * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
-     * 中的 [消息链][Messages] 。
+     * 中的 [消息内容][MessageContent] 。
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
@@ -1301,19 +1294,19 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @Api4J
     @JvmOverloads
-    @JvmName("nextMessages")
-    public fun EventProcessingContext.nextMessagesBlocking(
+    @JvmName("nextMessage")
+    public fun EventProcessingContext.nextMessageBlocking(
         id: ID,
         key: Event.Key<out MessageEvent>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
     ): MessageContent {
-        return event.nextMessagesBlocking(id, key, timeout, timeUnit)
+        return event.nextMessageBlocking(id, key, timeout, timeUnit)
     }
     
     /**
      * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
-     * 中的 [消息链][Messages] 。
+     * 中的 [消息内容][MessageContent] 。
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
@@ -1332,18 +1325,18 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @Api4J
     @JvmOverloads
-    @JvmName("nextMessages")
-    public fun EventProcessingContext.nextMessagesBlocking(
+    @JvmName("nextMessage")
+    public fun EventProcessingContext.nextMessageBlocking(
         key: Event.Key<out MessageEvent>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
     ): MessageContent {
-        return event.nextMessagesBlocking(randomID(), key, timeout, timeUnit)
+        return event.nextMessageBlocking(randomID(), key, timeout, timeUnit)
     }
     
     /**
      * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
-     * 中的 [消息链][Messages] 。
+     * 中的 [消息内容][MessageContent] 。
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
@@ -1362,18 +1355,18 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @Api4J
     @JvmOverloads
-    @JvmName("nextMessages")
-    public fun EventProcessingContext.nextMessagesBlocking(
+    @JvmName("nextMessage")
+    public fun EventProcessingContext.nextMessageBlocking(
         id: ID,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
     ): MessageContent {
-        return event.nextMessagesBlocking(id, MessageEvent, timeout, timeUnit)
+        return event.nextMessageBlocking(id, MessageEvent, timeout, timeUnit)
     }
     
     /**
      * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
-     * 中的 [消息链][Messages] 。
+     * 中的 [消息内容][MessageContent] 。
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
@@ -1391,12 +1384,12 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @Api4J
     @JvmOverloads
-    @JvmName("nextMessages")
-    public fun EventProcessingContext.nextMessagesBlocking(
+    @JvmName("nextMessage")
+    public fun EventProcessingContext.nextMessageBlocking(
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
     ): MessageContent {
-        return event.nextMessagesBlocking(randomID(), MessageEvent, timeout, timeUnit)
+        return event.nextMessageBlocking(randomID(), MessageEvent, timeout, timeUnit)
     }
     
     // endregion
