@@ -7,6 +7,6 @@ import love.forte.simbot.event.FriendMessageEvent;
 public class SessionTest4J {
 
     public void run(FriendMessageEvent event, ContinuousSessionContext session) {
-        session.nextMessages(event);
+        session.nextMessage(event);
     }
 }

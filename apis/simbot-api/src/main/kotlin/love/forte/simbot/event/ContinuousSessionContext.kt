@@ -592,7 +592,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * [next] 对事件类型进行的对应的匹配规则对照表如下:
      *
-     * | 当前事件类型 |  [目标类型][key]同类型 | [目标类型][key]不同类型 |
+     * | 当前事件类型 |  [目标事件][key]同类型 | [目标事件][key]不同类型 |
      * | :------------------------------------------ | ------------------- | --------------------: |
      * | [Event]                | [bot][Event.bot] 的ID要相同                               | _不会出现不同类型_ |
      * | [OrganizationEvent]    | [organization][OrganizationEvent.organization] 的ID要相同 | 放行 |
@@ -666,7 +666,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * [next] 对事件类型进行的对应的匹配规则对照表如下:
      *
-     * | 当前事件类型 |  [目标类型][key]同类型 | [目标类型][key]不同类型 |
+     * | 当前事件类型 |  [目标事件][key]同类型 | [目标事件][key]不同类型 |
      * | :------------------------------------------ | ------------------- | --------------------: |
      * | [Event]                | [bot][Event.bot] 的ID要相同                               | _不会出现不同类型_ |
      * | [OrganizationEvent]    | [organization][OrganizationEvent.organization] 的ID要相同 | 放行             |
@@ -749,7 +749,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * [next] 对事件类型进行的对应的匹配规则对照表如下:
      *
-     * | 当前事件类型 |  目标类型同类型 | 目标类型不同类型 |
+     * | 当前事件类型 |  目标事件同类型 | 目标事件不同类型 |
      * | :------------------------------------------ | ------------------- | --------------------: |
      * | [OrganizationEvent]    | [organization][OrganizationEvent.organization] 的ID要相同 | 放行 |
      * | [UserEvent]            | [user][UserEvent.user] 的ID要相同                         | 放行 |
@@ -820,7 +820,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * [next] 对事件类型进行的对应的匹配规则对照表如下:
      *
-     * | 当前事件类型 |  目标类型同类型 | 目标类型不同类型 |
+     * | 当前事件类型 |  目标事件同类型 | 目标事件不同类型 |
      * | :------------------------------------------ | ------------------- | --------------------: |
      * | [Event]                | [bot][Event.bot] 的ID要相同                               | _不会出现不同类型_ |
      * | [OrganizationEvent]    | [organization][OrganizationEvent.organization] 的ID要相同 | 放行             |
