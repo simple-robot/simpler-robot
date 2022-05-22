@@ -17,8 +17,8 @@
 package love.forte.simbot.ability
 
 import kotlinx.coroutines.CompletionHandler
-import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
+import love.forte.simbot.utils.runInBlocking
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
@@ -56,7 +56,7 @@ public interface Survivable : Switchable {
     @Api4J
     @Throws(InterruptedException::class)
     public fun waiting() {
-        runBlocking { join() }
+        runInBlocking { join() }
     }
 
     /**

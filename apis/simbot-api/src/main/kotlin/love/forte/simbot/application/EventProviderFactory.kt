@@ -24,7 +24,6 @@ import love.forte.simbot.Component
 import love.forte.simbot.ComponentAutoRegistrarFactory
 import love.forte.simbot.ability.Survivable
 import love.forte.simbot.event.EventProcessor
-import love.forte.simbot.utils.currentClassLoader
 import java.util.*
 
 
@@ -84,7 +83,7 @@ public interface EventProviderAutoRegistrarFactory<P : EventProvider, Config : A
  * 尝试加载所有的 [ComponentAutoRegistrarFactory] 并注册到 [ApplicationBuilder] 中。
  */
 @ApplicationBuilderDsl
-public fun <A : Application> ApplicationBuilder<A>.installAllEventProviders(classLoader: ClassLoader = this.currentClassLoader) {
+public fun <A : Application> ApplicationBuilder<A>.installAllEventProviders(classLoader: ClassLoader = EventProviderAutoRegistrarFactory::class.java.classLoader) {
     val factories = ServiceLoader.load(EventProviderAutoRegistrarFactory::class.java, classLoader)
     factories.forEach {
         install(it.registrar)

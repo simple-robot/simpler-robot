@@ -18,19 +18,137 @@
 package love.forte.simbot.utils
 
 import kotlinx.coroutines.*
+import love.forte.simbot.InternalSimbotApi
+import love.forte.simbot.LoggerFactory
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+import java.util.concurrent.atomic.AtomicLong
 import kotlin.coroutines.CoroutineContext
 
-// private val DefaultBlockingContext: CoroutineContext = Dispatchers.IO + CoroutineName("runInBlocking")
-private val DefaultBlockingContext: CoroutineContext = CoroutineName("runInBlocking")
+private fun createDefaultDispatcher(
+    coreSize: Int?,
+    maxSize: Int?,
+    keepAliveTime: Long?,
+): CoroutineDispatcher {
+    // cpu-1 or 1
+    val coreSize0 = coreSize ?: (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(0)
+    val maxSize0 = maxSize?.coerceAtLeast(coreSize0) ?: Int.MAX_VALUE
+    val keepAliveTime0 = keepAliveTime ?: TimeUnit.SECONDS.toMillis(60L)
+    
+    val num = AtomicLong(0)
+    val group = ThreadGroup("runInBlocking")
+    val logger = LoggerFactory.getLogger("love.forte.simbot.utils.DefaultDispatcher")
+    val executor = ThreadPoolExecutor(
+        coreSize0,
+        maxSize0,
+        keepAliveTime0,
+        TimeUnit.MILLISECONDS,
+        LinkedBlockingQueue(),
+        { r ->
+            Thread(group, r, "${group.name}-${num.incrementAndGet()}").also {
+                it.isDaemon = true
+            }
+        }
+    ) { runnable, executor ->
+        logger.error("The blocking task {} is rejected by blocking task executor {}", runnable, executor)
+    }
+    
+    return executor.asCoroutineDispatcher()
+}
+
+
+private const val DISPATCHER_BASE_PROPERTY = "simbot.runInBlocking.dispatcher"
+
+private const val DISPATCHER_USE_IO_PROPERTY = "io"
+private const val DISPATCHER_USE_DEFAULT_PROPERTY = "default"
+
+private const val DISPATCHER_CORE_SIZE_PROPERTY = "$DISPATCHER_BASE_PROPERTY.coreSize"
+private const val DISPATCHER_MAX_SIZE_PROPERTY = "$DISPATCHER_BASE_PROPERTY.maxSize"
+private const val DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$DISPATCHER_BASE_PROPERTY.keepAliveTime"
+
 
 /**
+ * 使用在 [runInBlocking] 中的调度器实现。
+ * 会在首次被获取的时候进行实例化。
+ *
+ * 默认情况下，[DefaultBlockingDispatcher] 会构建一个默认的线程池作为调度器：
+ * ```kotlin
+ * ThreadPoolExecutor(
+ *     coreSize,
+ *     maxSize,
+ *     keepAliveTime,
+ *     TimeUnit.MILLISECONDS,
+ *     LinkedBlockingQueue(),
+ *     { r -> ... } // isDaemon = true
+ * ) { runnable, executor -> logger.error(...) }
+ * ```
+ * 其中存在部分可配置内容：
+ *
+ * | 属性 | JVM参数 | 默认值 |
+ * | --- | :----: | -----: |
+ * | [核心线程数][ThreadPoolExecutor.corePoolSize] | `simbot.runInBlocking.dispatcher.coreSize` | [availableProcessors][Runtime.availableProcessors] - 1 |
+ * | [最大线程数][ThreadPoolExecutor.maximumPoolSize] | `simbot.runInBlocking.dispatcher.maxSize` | [Int.MAX_VALUE] |
+ * |[ 维持时间][ThreadPoolExecutor.keepAliveTime]（毫秒） | `simbot.runInBlocking.dispatcher.keepAliveTime` | `60*1000` |
+ *
+ * 除了提供调度器的使用，你也可以指定一个从 [Dispatchers] 中存在的属性。使用如下JVM参数可以覆盖调度器的使用：
+ * _(参数值不区分大小写)_
+ *
+ * | JVM参数 | 对应值 |
+ * | ------ | -----: |
+ * | `simbot.runInBlocking.dispatcher=io` | [Dispatchers.IO] |
+ * | `simbot.runInBlocking.dispatcher=default` | [Dispatchers.Default] |
+ *
+ *
+ */
+public val DefaultBlockingDispatcher: CoroutineDispatcher by lazy {
+    runCatching {
+        val dispatcher: String? = System.getProperty(DISPATCHER_BASE_PROPERTY)
+        if (dispatcher != null) {
+            when {
+                dispatcher.equals(DISPATCHER_USE_IO_PROPERTY, ignoreCase = false) -> return@lazy Dispatchers.IO
+                dispatcher.equals(DISPATCHER_USE_DEFAULT_PROPERTY, ignoreCase = false) -> return@lazy Dispatchers.Default
+            }
+        }
+    
+        val coreSize = System.getProperty(DISPATCHER_CORE_SIZE_PROPERTY)?.toIntOrNull()?.coerceAtLeast(0)
+        val maxSize = System.getProperty(DISPATCHER_MAX_SIZE_PROPERTY)?.toIntOrNull()?.coerceAtLeast(0)
+        val keepAliveTime = System.getProperty(DISPATCHER_KEEP_ALIVE_TIME_PROPERTY)?.toLongOrNull()?.coerceAtLeast(0)
+    
+        createDefaultDispatcher(coreSize, maxSize, keepAliveTime)
+    }.getOrElse {
+        createDefaultDispatcher(null, null, null)
+    }
+}
+
+/**
+ * 在 [runInBlocking] 中使用的默认上下文实例。
+ *
+ * 默认情况下，[DefaultBlockingContext] 的内容如下：
+ * - 名称为 `"runInBlocking"` 的 [CoroutineName].
+ * - 默认调度器 [DefaultBlockingDispatcher].
+ *
+ */
+@InternalSimbotApi
+public val DefaultBlockingContext: CoroutineContext by lazy {
+    DefaultBlockingDispatcher + CoroutineName("runInBlocking")
+}
+
+/**
+ *
+ * 在simbot中提供的 [runBlocking] 包装。
+ *
+ * 在默认未提供上下文的情况下，[runInBlocking] 所使用的 [context] 为 [DefaultBlockingContext].
+ *
+ * @see DefaultBlockingContext
  * @see runBlocking
  */
+@OptIn(InternalSimbotApi::class)
 @Throws(InterruptedException::class)
 public fun <T> runInBlocking(
     context: CoroutineContext = DefaultBlockingContext,
-    block: suspend CoroutineScope.() -> T
+    block: suspend CoroutineScope.() -> T,
 ): T = runBlocking(context, block)
 
 /**
@@ -38,11 +156,12 @@ public fun <T> runInBlocking(
  * @see runInBlocking
  * @see withTimeout
  */
+@OptIn(InternalSimbotApi::class)
 @Throws(InterruptedException::class, TimeoutException::class)
 public fun <T> runInTimeoutBlocking(
     timeout: Long,
     context: CoroutineContext = DefaultBlockingContext,
-    block: suspend CoroutineScope.() -> T
+    block: suspend CoroutineScope.() -> T,
 ): T = runInBlocking(context) {
     try {
         withTimeout(timeout, block)

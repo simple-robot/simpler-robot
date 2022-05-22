@@ -210,7 +210,7 @@ public interface ChatRoomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
 
 
     public companion object Key : BaseEventKey<ChatRoomMessageEvent>(
-        "api.privateMessage", MessageEvent.Key
+        "api.chat_room_message", MessageEvent.Key
     ) {
         override fun safeCast(value: Any): ChatRoomMessageEvent? = doSafeCast(value)
     }

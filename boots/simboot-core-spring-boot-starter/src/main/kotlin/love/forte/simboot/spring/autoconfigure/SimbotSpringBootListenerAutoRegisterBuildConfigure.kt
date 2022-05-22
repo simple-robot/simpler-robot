@@ -62,13 +62,12 @@ import kotlin.reflect.jvm.kotlinFunction
  */
 public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpringBootApplicationBuildConfigure,
     ApplicationContextAware {
-    // private lateinit var _applicationContext: ApplicationContext
     private lateinit var beanContainer: BeanContainer
     
     
     override fun setApplicationContext(applicationContext: ApplicationContext) {
         // _applicationContext = applicationContext
-        beanContainer = applicationContext.asBeanContainer()
+        beanContainer = SpringBeanContainer(applicationContext)
     }
     
     override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
@@ -385,10 +384,6 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
     }
 }
 
-
-private fun ApplicationContext.asBeanContainer(): BeanContainer {
-    return SpringBeanContainer(this)
-}
 
 private inline val KClass<*>.allFunctions: List<KFunction<*>>
     get() = kotlin.runCatching {

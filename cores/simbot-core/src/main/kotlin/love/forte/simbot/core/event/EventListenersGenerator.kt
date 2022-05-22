@@ -25,6 +25,7 @@ import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
 import java.util.function.BiConsumer
 import java.util.function.BiFunction
+import java.util.function.BiPredicate
 
 @DslMarker
 internal annotation class EventListenersGeneratorDSL
@@ -39,21 +40,30 @@ internal annotation class EventListenersGeneratorDSL
  * // 假设在 CoreListenerManagerConfiguration 中
  * listeners {
  *     // plus listener of EventListenersGenerator
- *     +coreListener(FooEvent) { /* Nothing here. */ }
+ *     +simpleListener(FooEvent) { /* Nothing here. */ }
  *
  *     // listener of EventListenersGenerator
- *     listener(FooEvent) {
+ *     listen(FooEvent) {
+ *         match { event -> // this: EventListenerProcessingContext
+ *            // ...
+ *            true
+ *         }
+ *
  *         // handle of `listener`
  *         handle { event -> // this: EventListenerProcessingContext
  *             // do..
  *             delay(200) // suspend support
  *             event.friend().send("Hello!")
+ *
+ *             EventResult.defaults()
  *         }
  *     }
  *
  *     // use invoke handle function
  *     FooEvent { // Same as: FooEvent.Key.invoke { ... }
  *        // do...
+ *
+ *        EventResult.of(...)
  *     }
  * }
  * ```
@@ -68,22 +78,38 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * 构建一个监听函数。
      *
      * ```kotlin
-     * listener(FooEvent) {
+     * listen(FooEvent) {
+     *      // 监听函数匹配逻辑
+     *      match { event -> // this: EventListenerProcessingContext
+     *         // ...
+     *         true
+     *      }
+     *
      *      // 监听函数的处理逻辑
      *      handle { event -> // this: EventListenerProcessingContext
      *          event.friend().send("Context: $context")
+     *
+     *          EventResult.defaults()
      *      }
      * }
      * ```
      */
     @EventListenersGeneratorDSL
-    public fun <E : Event> listener(
+    public fun <E : Event> listen(
         eventKey: Event.Key<E>,
         block: ListenerGenerator<E>.() -> Unit,
     ): EventListenersGenerator = also {
         val listener = ListenerGenerator(eventKey).also(block).build()
         listeners.add(listener)
     }
+    
+    
+    
+    @Deprecated("Use listen(Event.Key){ ... }", ReplaceWith("listen(eventKey, block)"))
+    public fun <E : Event> listener(
+        eventKey: Event.Key<E>,
+        block: ListenerGenerator<E>.() -> Unit,
+    ): EventListenersGenerator = listen(eventKey, block)
     
     
     /**
@@ -118,14 +144,18 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * ```kotlin
      * FooEvent { event -> // this: EventListenerProcessingContext
      *     // do handle
+     *
+     *     EventResult.defaults() // result
      * }
      * ```
      *
      * 相当于：
      * ```kotlin
-     * listener(FooEvent) {
+     * listen(FooEvent) {
      *     handle { event -> // this: EventListenerProcessingContext
      *        // do handle
+     *
+     *        EventResult.of(...) // result
      *     }
      * }
      * ```
@@ -134,8 +164,8 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      *
      */
     @EventListenersGeneratorDSL
-    public operator fun <E : Event> Event.Key<E>.invoke(handle: suspend EventListenerProcessingContext.(E) -> Any?) {
-        listener(this) {
+    public operator fun <E : Event> Event.Key<E>.invoke(handle: suspend EventListenerProcessingContext.(E) -> EventResult) {
+        listen(this) {
             handle(handle)
         }
     }
@@ -179,28 +209,65 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
     public var logger: Logger? = null
     
     /**
-     * 当处理函数的响应值不是 [EventResult] 类型的时候，是否默认阻止下一个函数的执行。
-     */
-    @ListenerGeneratorDSL
-    public var blockNext: Boolean = false
-    
-    /**
      * 是否标记为异步函数。
      */
     @ListenerGeneratorDSL
     public var isAsync: Boolean = false
     
     
-    private var func: suspend EventListenerProcessingContext.(E) -> Any? = { null }
+    private var matcher: (suspend EventListenerProcessingContext.(E) -> Boolean)? = null
+    private fun setMatcher(m: suspend EventListenerProcessingContext.(E) -> Boolean) {
+        val old = matcher
+        matcher = if (old == null) {
+            m
+        } else {
+            {
+                old(it)
+                m(it)
+            }
+        }
+    }
+    
+    /**
+     * 配置当前监听函数的匹配函数。
+     */
+    @JvmSynthetic
+    @ListenerGeneratorDSL
+    public fun match(matcher: suspend EventListenerProcessingContext.(E) -> Boolean) {
+        setMatcher(matcher)
+    }
+    
+    /**
+     * 匹配函数
+     */
+    @Api4J
+    @JvmName("match")
+    @Suppress("FunctionName")
+    public fun _match(matcher: BiPredicate<EventListenerProcessingContext, E>): ListenerGenerator<E> = also {
+        setMatcher { e -> runWithInterruptible { matcher.test(this, e) } }
+    }
+    
+    
+    
+    private var func: (suspend EventListenerProcessingContext.(E) -> EventResult)? = null
+    
+    private fun setFunc(f: suspend EventListenerProcessingContext.(E) -> EventResult) {
+        if (this.func != null) {
+            throw SimbotIllegalStateException("handle can and can only be configured once")
+        }
+        
+        func = f
+    }
     
     /**
      * 监听函数。
      */
     @JvmSynthetic
     @ListenerGeneratorDSL
-    public fun handle(func: suspend EventListenerProcessingContext.(E) -> Any?) {
-        this.func = func
+    public fun handle(func: suspend EventListenerProcessingContext.(E) -> EventResult) {
+        setFunc(func)
     }
+    
     
     /**
      * 监听函数。
@@ -209,9 +276,9 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
     @JvmName("handle")
     @Suppress("FunctionName")
     public fun _handle(func: BiConsumer<EventListenerProcessingContext, E>): ListenerGenerator<E> = also {
-        this.func = { e ->
+        setFunc { e ->
             runWithInterruptible { func.accept(this, e) }
-            null
+            EventResult.defaults()
         }
     }
     
@@ -221,19 +288,19 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
     @Api4J
     @JvmName("handle")
     @Suppress("FunctionName")
-    public fun _handle(func: BiFunction<EventListenerProcessingContext, E, Any?>): ListenerGenerator<E> = also {
-        this.func = { e -> runWithInterruptible { func.apply(this, e) } }
+    public fun _handle(func: BiFunction<EventListenerProcessingContext, E, EventResult>): ListenerGenerator<E> = also {
+        setFunc { e -> runWithInterruptible { func.apply(this, e) } }
     }
     
     internal fun build(): EventListener {
         val id0 = id ?: randomID()
-        return coreListener(
-            eventKey = eventKey,
+        return simpleListener(
+            target = eventKey,
             id = id0,
-            blockNext = blockNext,
             isAsync = isAsync,
             logger = logger ?: LoggerFactory.getLogger("love.forte.core.listener.$id0"),
-            func = func
+            matcher = matcher ?: { true },
+            function = func ?: throw SimbotIllegalStateException("The handle function must be configured")
         )
     }
     

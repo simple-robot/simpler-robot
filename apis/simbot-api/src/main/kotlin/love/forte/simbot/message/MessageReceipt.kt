@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.message
@@ -52,7 +51,7 @@ public interface MessageReceipt : IDContainer {
      * @return 删除成功为true，失败或不可删除均为null。
      */
     @Api4J
-    public fun deleteIfSupportBlocking(): Boolean = runInBlocking { if (this is DeleteSupport) delete() else false }
+    public fun deleteIfSupportBlocking(): Boolean = if (this is DeleteSupport) runInBlocking { delete() } else false
 }
 
 

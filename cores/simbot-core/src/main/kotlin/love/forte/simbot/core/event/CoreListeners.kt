@@ -15,12 +15,12 @@
  */
 
 @file:JvmName("CoreListeners")
+@file:JvmMultifileClass
 
 package love.forte.simbot.core.event
 
 import love.forte.simbot.*
 import love.forte.simbot.event.*
-import love.forte.simbot.event.Event.Key.Companion.isSub
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
@@ -31,158 +31,72 @@ import java.util.function.BiFunction
 
 /**
  * 向目标 [EventListener] 外层包装 [EventFilter].
+ *
+ * @see withMatcher
  */
 public operator fun EventListener.plus(filter: EventFilter): EventListener {
-    return proxy { listener ->
-        if (!filter.test(this)) return@proxy filter.defaultResult(this)
-        listener(this)
-    }
+    return withMatcher(filter::test)
 }
 
 /**
  * 向目标 [EventListener] 外层包装多个 [EventFilter].
+ *
+ * @see withMatcher
  */
 public operator fun EventListener.plus(filters: Iterable<EventFilter>): EventListener {
-    val sorted = filters.sortedBy { it.priority }
-    return proxy { listener ->
-        for (filter in sorted) {
-            if (!filter.test(this)) return@proxy filter.defaultResult(this)
-        }
-
-        listener(this)
+    val sortedFilters = filters.sortedBy { it.priority }
+    return withMatcher {
+        sortedFilters.all { filter -> filter.test(this) }
     }
-}
-
-/**
- * 提供一层包装来代理目标监听函数。
- */
-public fun EventListener.proxy(delegate: suspend EventListenerProcessingContext.(EventListener) -> EventResult): EventListener {
-    return EventListenerHandle(this, delegate)
 }
 
 
 /**
- * 通过提供一组过滤器来得到一个 [Listener][EventListener].
- */
-internal class EventListenerHandle(
-    internal val listener: EventListener,
-    internal val handle: suspend EventListenerProcessingContext.(EventListener) -> EventResult,
-) : EventListener by listener {
-    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
-        return context.handle(listener)
-        // for (filter in filters) {
-        //     if (!filter.test(context)) return filter.defaultResult(context)
-        // }
-        //
-        // return listener.invoke(context)
-    }
-
-
-    override fun toString(): String {
-        return "Delegate($listener)"
-    }
-}
-
-/**
- * 向 [EventListenerManager] 中注册一个监听器。
- *
- * ### Fragile API: [EventListenerRegistrar.register]
+ * 构建一个监听函数。
  */
 @JvmSynthetic
-@FragileSimbotApi
-public fun <E : Event> EventListenerRegistrar.listen(
+@Deprecated("Use simpleListener")
+public fun <E : Event> coreListener(
     eventKey: Event.Key<E>,
-    id: ID = UUID.randomUUID().ID,
+    id: ID = randomID(),
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: suspend EventListenerProcessingContext.(E) -> Any?,
-): EventListener = coreListener(eventKey, id, blockNext, isAsync, logger, func).also(::register)
+): EventListener {
+    return if (blockNext) {
+        simpleListener(eventKey, id, isAsync, logger) {
+            val result = func(it)
+            EventResult.of(result, isTruncated = true)
+        }
+    } else {
+        simpleListener(eventKey, id, isAsync, logger) {
+            EventResult.of(func(it))
+        }
+    }
+}
 
 /**
- * 向 [EventListenerManager] 中注册一个监听器。
+ * 构建一个监听函数。
  *
  * ### Fragile API: [E]::class
  * 此内联函数使用了 `reified` 枚举并通过反射获取对应类型的 [Event.Key]. simbot核心模块中更建议你尽可能的减少对存在反射的API的使用。
- *
- * ### Fragile API: [EventListenerRegistrar.register]
  */
+@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
 @JvmSynthetic
 @FragileSimbotApi
-public inline fun <reified E : Event> EventListenerRegistrar.listen(
+@Deprecated("Use simpleListener")
+public inline fun <reified E : Event> coreListener(
     id: ID = randomID(),
     blockNext: Boolean = false,
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     noinline func: suspend EventListenerProcessingContext.(E) -> Any?,
-): EventListener = listen(E::class.getKey(), id, blockNext, isAsync, logger, func)
-
-
-/**
- * 构建一个监听函数。
- */
-@JvmSynthetic
-public fun <E : Event> coreListener(
-    eventKey: Event.Key<E>,
-    id: ID = UUID.randomUUID().ID,
-    blockNext: Boolean = false,
-    isAsync: Boolean = false,
-    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    func: suspend EventListenerProcessingContext.(E) -> Any?,
-): EventListener = CoreListener(id, eventKey, blockNext, isAsync, logger, func)
-
-/**
- * 构建一个监听函数。
- *
- * ### Fragile API: [E]::class
- * 此内联函数使用了 `reified` 枚举并通过反射获取对应类型的 [Event.Key]. simbot核心模块中更建议你尽可能的减少对存在反射的API的使用。
- */
-@JvmSynthetic
-@FragileSimbotApi
-public inline fun <reified E : Event> coreListener(
-    id: ID = UUID.randomUUID().ID,
-    blockNext: Boolean = false,
-    isAsync: Boolean = false,
-    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    noinline func: suspend EventListenerProcessingContext.(E) -> Any?,
-): EventListener = coreListener(E::class.getKey(), id, blockNext, isAsync, logger, func)
-
-
-private class CoreListener<E : Event>(
-    override val id: ID,
-    private val key: Event.Key<E>,
-    private val blockNext: Boolean,
-    override val isAsync: Boolean,
-    override val logger: Logger,
-    private val func: suspend (EventListenerProcessingContext, E) -> Any?,
-) : EventListener {
-
-    override fun isTarget(eventType: Event.Key<*>): Boolean = eventType isSub key
-
-    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
-        val result = func(context, key.safeCast(context.event)!!)
-        return if (result is EventResult) result else EventResult.of(result, blockNext)
-    }
-
+): EventListener {
+    return coreListener(E::class.getKey(), id, blockNext, isAsync, logger, func)
 }
 
-private class BlockingCoreListener<E : Event>(
-    override val id: ID,
-    private val key: Event.Key<E>,
-    private val blockNext: Boolean,
-    override val isAsync: Boolean,
-    override val logger: Logger,
-    private val func: BiFunction<EventListenerProcessingContext, E, Any?>, // (EventListenerProcessingContext, E) -> Any?
-) : EventListener {
 
-    override fun isTarget(eventType: Event.Key<*>): Boolean = eventType isSub key
-
-    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
-        val result = runWithInterruptible { func.apply(context, key.safeCast(context.event)!!) }
-        return if (result is EventResult) result else EventResult.of(result, blockNext)
-    }
-
-}
 
 
 ////// create for java
@@ -196,6 +110,7 @@ private class BlockingCoreListener<E : Event>(
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
+@Deprecated("use simpleListener")
 public fun <E : Event> blockingCoreListener(
     eventKey: Event.Key<E>,
     id: ID = UUID.randomUUID().ID,
@@ -203,8 +118,8 @@ public fun <E : Event> blockingCoreListener(
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: BiFunction<EventListenerProcessingContext, E, Any?>,
-): EventListener =
-    BlockingCoreListener(id, eventKey, blockNext, isAsync, logger, func)
+): EventListener = TODO()
+    // BlockingCoreListener(id, eventKey, blockNext, isAsync, logger, func)
 
 
 /**
@@ -216,6 +131,7 @@ public fun <E : Event> blockingCoreListener(
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
+@Deprecated("use simpleListener")
 public fun <E : Event> blockingCoreListener(
     eventKey: Event.Key<E>,
     id: ID = randomID(),
@@ -223,13 +139,13 @@ public fun <E : Event> blockingCoreListener(
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: BiConsumer<EventListenerProcessingContext, E>,
-): EventListener =
-    BlockingCoreListener(
-        id, eventKey, blockNext, isAsync, logger
-    ) { c, e ->
-        func.accept(c, e)
-        null
-    }
+): EventListener = TODO()
+    // BlockingCoreListener(
+    //     id, eventKey, blockNext, isAsync, logger
+    // ) { c, e ->
+    //     func.accept(c, e)
+    //     null
+    // }
 
 
 /**

@@ -76,7 +76,7 @@ public open class SimbotSpringBootComponentAutoInstallBuildConfigure(
 ) : SimbotSpringBootApplicationBuildConfigure {
     override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
         if (factories.isEmpty()) {
-            installAllComponents()
+            installAllComponents(configuration.classLoader)
         } else {
             factories.forEach {
                 install(it)

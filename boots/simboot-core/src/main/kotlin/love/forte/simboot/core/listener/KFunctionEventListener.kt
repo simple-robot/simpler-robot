@@ -24,6 +24,7 @@ import love.forte.simbot.AttributeMutableMap
 import love.forte.simbot.ID
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.Event.Key.Companion.isSub
+import love.forte.simbot.event.EventListenerProcessingContext
 import org.slf4j.Logger
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -37,14 +38,17 @@ public class KFunctionEventListener<R>(
     override val priority: Int,
     override val isAsync: Boolean,
     private val targets: Set<Event.Key<*>>,
-    caller: KFunction<R>,
     override val logger: Logger,
     override val binders: Array<ParameterBinder>,
     private val attributeMap: AttributeMutableMap,
-) : FunctionalBindableEventListener<R>(caller) {
+    matcher: suspend (EventListenerProcessingContext) -> Boolean,
+    caller: KFunction<R>,
+) : FunctionalBindableEventListener<R>(matcher, caller) {
     
     override fun toString(): String {
-        return "KFunctionEventListener(id=$id, priority=$priority, isAsync=$isAsync, isSuspend=${caller.isSuspend}, targets=${targets.takeIf { it.isNotEmpty() }?.joinToString(", ", "[", "]") ?: "[<ALL>]"}, binders=${binders.joinToString(separator = ", ", "[", "]")}, caller=$caller)"
+        return "KFunctionEventListener(id=$id, priority=$priority, isAsync=$isAsync, isSuspend=${caller.isSuspend}, targets=${
+            targets.takeIf { it.isNotEmpty() }?.joinToString(", ", "[", "]") ?: "[<ALL>]"
+        }, binders=${binders.joinToString(separator = ", ", "[", "]")}, caller=$caller)"
     }
     
     private lateinit var targetCaches: MutableSet<Event.Key<*>>
@@ -56,6 +60,8 @@ public class KFunctionEventListener<R>(
             targetCaches = mutableSetOf()
             notTargetCaches = mutableSetOf()
         }
+        
+        // functionalEntrance = FunctionalListenerInterceptor.entrance(this, interceptors)
     }
     
     override fun isTarget(eventType: Event.Key<*>): Boolean {

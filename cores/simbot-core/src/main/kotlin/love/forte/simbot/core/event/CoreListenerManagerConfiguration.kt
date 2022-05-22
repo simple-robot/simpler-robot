@@ -183,9 +183,11 @@ public class CoreListenerManagerConfiguration {
     /**
      * 直接添加一个监听函数。
      * ```kotlin
-     * addListener(coreListener(FriendMessageEvent) { context, event ->
+     * addListener(simpleListener(FriendMessageEvent) { event -> // this: EventListenerProcessingContext
      *     delay(200)
      *     event.friend().send("Hi! context: $context")
+     *
+     *     EventResult.defaults() // result
      * })
      * ```
      */

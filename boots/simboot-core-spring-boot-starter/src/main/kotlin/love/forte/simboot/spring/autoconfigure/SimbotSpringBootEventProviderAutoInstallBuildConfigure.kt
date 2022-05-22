@@ -76,7 +76,7 @@ public open class SimbotSpringBootEventProviderAutoInstallBuildConfigure(
 ) : SimbotSpringBootApplicationBuildConfigure {
     override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
         if (factories.isEmpty()) {
-            installAllEventProviders()
+            installAllEventProviders(configuration.classLoader)
         } else {
             factories.forEach {
                 install(it)

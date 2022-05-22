@@ -26,11 +26,11 @@ import love.forte.simbot.event.EventListenerProcessingContext
 import love.forte.simbot.event.EventProcessingContext
 import love.forte.simbot.event.EventResult
 import love.forte.simbot.utils.runWithInterruptible
-import kotlin.reflect.KCallable
-import kotlin.reflect.KFunction
-import kotlin.reflect.KParameter
+import java.lang.reflect.Method
+import kotlin.reflect.*
 import kotlin.reflect.full.callSuspend
 import kotlin.reflect.full.callSuspendBy
+import kotlin.reflect.jvm.javaMethod
 
 
 /**
@@ -44,12 +44,13 @@ import kotlin.reflect.full.callSuspendBy
  *
  */
 public abstract class FunctionalBindableEventListener<R>(
+    private val matcher: suspend (EventListenerProcessingContext) -> Boolean,
+    
     /**
      * 当前监听函数所对应的执行器。
      */
-    protected final override val caller: KFunction<R>,
+    public final override val caller: KFunction<R>,
 ) : FunctionalEventListener<R>(), GenericBootEventListener {
-    
     
     /**
      * binder数组，其索引下标应当与 [KCallable.parameters] 的 [KParameter.index] 相对应。
@@ -79,10 +80,14 @@ public abstract class FunctionalBindableEventListener<R>(
     private val isOptional = caller.parameters.any { it.isOptional }
     private val initialSize = if (isOptional) 0 else caller.parameters.size.initialSize
     
+    override suspend fun match(context: EventListenerProcessingContext): Boolean {
+        return true
+    }
+    
     /**
      * 函数执行。
      */
-    final override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
+    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
         val parameters = caller.parameters
         return if (isOptional) {
             invokeCallBy(context, parameters)
@@ -177,9 +182,9 @@ public interface ParameterBinder {
 public interface ParameterBlockingBinder : ParameterBinder {
     
     /**
-     * 根据当前事件处理上下文得到参数值。
+     * 阻塞的根据当前事件处理上下文得到参数值。
      *
-     * 如果出现无法为当前参数提供注入的情况，通过返回 [Result.Failure] 或抛出异常来提示处理器使用下一个顺序的处理器。
+     * 如果出现无法为当前参数提供注入的情况，通过抛出异常来提示处理器使用下一个顺序的处理器。
      *
      * 如果参数为可选的，可以返回标记类型 [Ignore] 来代表本次忽略参数值。
      *
@@ -192,7 +197,7 @@ public interface ParameterBlockingBinder : ParameterBinder {
     
     @JvmSynthetic
     override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
-        return kotlin.runCatching { getArg(context) }
+        return kotlin.runCatching { runWithInterruptible { getArg(context) } }
     }
 }
 
@@ -240,6 +245,30 @@ public interface ParameterBinderFactory {
          */
         public val parameter: KParameter
         
+        /**
+         * 获取 [parameter] 中的 [type.classifier][KClassifier], 并尝试将其转化为 [Java Class][Class].
+         * 如果 [classifier][KClassifier] 不是 [KClass] 类型或转化失败，则得到null。
+         *
+         * _Tips: 如果希望Java中将 [Kotlin Class][KClass] 转化为 [Java Class][Class], 或许可以使用 `JvmClassMappingKt`_
+         *
+         * @see parameter
+         * @see KClassifier
+         */
+        @Api4J
+        public val parameterType: Class<*>?
+            get() = (parameter.type.classifier as? KClass<*>)?.java
+    
+        /**
+         * 获取 [source] 并尝试将其转化为 [Java Method][Method]. 无法转化的情况下得到null。
+         *
+         * _Tips: 如果希望Java中将 [Kotlin Function][KFunction] 转化为 [Java Method][Method], 或许可以使用 `ReflectJvmMapping`_
+         *
+         * @see source
+         * @see KFunction.javaMethod
+         */
+        @Api4J
+        public val sourceMethod: Method?
+            get() = source.javaMethod
         
     }
     

@@ -27,7 +27,6 @@ import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.ApplicationContext
-import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.context.annotation.Bean
 
 
@@ -73,7 +72,6 @@ public open class SimbotSpringBootApplicationConfiguration {
         configurationConfigures: List<SimbotSpringBootApplicationConfigurationConfigure>,
         applicationConfigures: List<SimbotSpringBootApplicationBuildConfigure>,
         coroutineDispatcherContainer: CoroutineDispatcherContainer,
-        configurableApplicationContext: ConfigurableApplicationContext,
     ): SpringBootApplication {
         // check application context init.
         initialConfiguration.applicationContext
