@@ -887,7 +887,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     /**
      * 挂起并等待下一个符合条件的 [消息事件][MessageEvent] 中的消息体。
      *
-     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessages] 限制了等待的消息类型 [E]
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [E]
      * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
      *
      * **_更多内容参考 [waitingForNext] 文档注释。_**
@@ -916,7 +916,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * - 你是否对需要的消息元素中的 _属性_ 有所要求？
      * - ...
      *
-     * 对于直接获取一个 [Message.Element] 的情况太过纷杂，如果你无法通过 [waitingForNextMessages] 或者 [nextMessages] 来满足需求，
+     * 对于直接获取一个 [Message.Element] 的情况太过纷杂，如果你无法通过 [waitingForNextMessage] 或者 [nextMessage] 来满足需求，
      * 那么请考虑使用 [waiting] 或 [waitingForNext] 等更细致的函数。
      *
      *
@@ -926,18 +926,18 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      */
     @JvmSynthetic
-    public suspend fun <E : MessageEvent> waitingForNextMessages(
+    public suspend fun <E : MessageEvent> waitingForNextMessage(
         id: ID = randomID(),
         key: Event.Key<E>,
         matcher: EventMatcher<E> = EventMatcher,
-    ): Messages {
-        return waitingForNext(id, key, matcher).messageContent.messages
+    ): MessageContent {
+        return waitingForNext(id, key, matcher).messageContent
     }
     
     /**
      * 挂起并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
      *
-     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessages] 限制了等待的消息类型 [MessageEvent]
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [MessageEvent]
      * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
      *
      * **_更多内容参考 [waitingForNext] 文档注释。_**
@@ -966,7 +966,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * - 你是否对需要的消息元素中的 _属性_ 有所要求？
      * - ...
      *
-     * 对于直接获取一个 [Message.Element] 的情况太过纷杂，如果你无法通过 [waitingForNextMessages] 或者 [nextMessages] 来满足需求，
+     * 对于直接获取一个 [Message.Element] 的情况太过纷杂，如果你无法通过 [waitingForNextMessage] 或者 [nextMessage] 来满足需求，
      * 那么请考虑使用 [waiting] 或 [waitingForNext] 等更细致的函数。
      *
      *
@@ -976,21 +976,21 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      */
     @JvmSynthetic
-    public suspend fun waitingForNextMessages(
+    public suspend fun waitingForNextMessage(
         id: ID = randomID(),
         matcher: EventMatcher<MessageEvent> = EventMatcher,
-    ): Messages {
-        return waitingForNext(id, MessageEvent, matcher).messageContent.messages
+    ): MessageContent {
+        return waitingForNext(id, MessageEvent, matcher).messageContent
     }
     
     /**
      * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
      *
-     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessages] 限制了等待的消息类型 [E]
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [E]
      * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
      *
      *
-     * 更多说明参考 [waitingForNextMessages] 文档注释。
+     * 更多说明参考 [waitingForNextMessage] 文档注释。
      *
      * @throws TimeoutCancellationException 当超时
      * @throws CancellationException 被终止时
@@ -1001,7 +1001,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @param timeUnit [timeout] 时间单位。默认为 [毫秒][TimeUnit.MILLISECONDS]
      * @param matcher 匹配函数
      *
-     * @see waitingForNextMessages
+     * @see waitingForNextMessage
      *
      */
     @Api4J
@@ -1013,8 +1013,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
         matcher: BlockingEventMatcher<E> = BlockingEventMatcher,
-    ): Messages {
-        suspend fun doWait() = waitingForNextMessages(id, key, matcher.parse())
+    ): MessageContent {
+        suspend fun doWait() = waitingForNextMessage(id, key, matcher.parse())
         val mill = timeUnit.toMillis(timeout)
         if (mill > 0) {
             return runInBlocking {
@@ -1028,11 +1028,11 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     /**
      * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
      *
-     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessages] 限制了等待的消息类型 [MessageEvent]
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [MessageEvent]
      * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
      *
      *
-     * 更多说明参考 [waitingForNextMessages] 文档注释。
+     * 更多说明参考 [waitingForNextMessage] 文档注释。
      *
      * @throws TimeoutCancellationException 当超时
      * @throws CancellationException 被终止时
@@ -1042,7 +1042,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @param timeUnit [timeout] 时间单位。默认为 [毫秒][TimeUnit.MILLISECONDS]
      * @param matcher 匹配函数
      *
-     * @see waitingForNextMessages
+     * @see waitingForNextMessage
      *
      */
     @Api4J
@@ -1053,25 +1053,25 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
         matcher: BlockingEventMatcher<MessageEvent> = BlockingEventMatcher,
-    ): Messages {
+    ): MessageContent {
         return waitForNextMessagesBlocking(id, MessageEvent, timeout, timeUnit, matcher)
     }
     
     /**
      * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
      *
-     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessages] 限制了等待的消息类型 [MessageEvent]
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [MessageEvent]
      * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
      *
      *
-     * 更多说明参考 [waitingForNextMessages] 文档注释。
+     * 更多说明参考 [waitingForNextMessage] 文档注释。
      *
      * @throws CancellationException 被终止时
      *
      * @param id 临时监听函数唯一标识
      * @param matcher 匹配函数
      *
-     * @see waitingForNextMessages
+     * @see waitingForNextMessage
      *
      */
     @Api4J
@@ -1080,25 +1080,25 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     public fun waitForNextMessagesBlocking(
         id: ID = randomID(),
         matcher: BlockingEventMatcher<MessageEvent>,
-    ): Messages {
+    ): MessageContent {
         return waitForNextMessagesBlocking(id = id, key = MessageEvent, timeout = 0, matcher = matcher)
     }
     
     /**
      * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息链][Messages] 。
      *
-     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessages] 限制了等待的消息类型 [MessageEvent]
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [MessageEvent]
      * 必须为 [消息事件][MessageEvent], 且返回值为 [Messages] 。
      *
      *
-     * 更多说明参考 [waitingForNextMessages] 文档注释。
+     * 更多说明参考 [waitingForNextMessage] 文档注释。
      *
      * @throws CancellationException 被终止时
      *
      * @param key 目标事件类型
      * @param matcher 匹配函数
      *
-     * @see waitingForNextMessages
+     * @see waitingForNextMessage
      *
      */
     @Api4J
@@ -1106,7 +1106,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     public fun <E : MessageEvent> waitForNextMessagesBlocking(
         key: Event.Key<E>,
         matcher: BlockingEventMatcher<MessageEvent>,
-    ): Messages {
+    ): MessageContent {
         return waitForNextMessagesBlocking(id = randomID(), key = key, timeout = 0, matcher = matcher)
     }
     // endregion
@@ -1116,7 +1116,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     /**
      * 挂起并等待符合当前 [Event] 作用域下的下一个消息事件的 [消息链][Messages].
      *
-     * 行为类似于 [next][Event.next], 区别在于 [nextMessages] 只允许目标为 [消息事件][MessageEvent]
+     * 行为类似于 [next][Event.next], 区别在于 [nextMessage] 只允许目标为 [消息事件][MessageEvent]
      * 且返回值为 [Messages].
      *
      * 对于作用域下的事件匹配机制的说明参考 [next][Event.next] 文档注释。
@@ -1124,19 +1124,19 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @throws CancellationException 被终止时
      *
      * @see Event.next
-     * @see EventProcessingContext.nextMessages
+     * @see EventProcessingContext.nextMessage
      */
     @JvmSynthetic
-    public suspend fun Event.nextMessages(
+    public suspend fun Event.nextMessage(
         id: ID = randomID(),
         key: Event.Key<out MessageEvent>,
-    ): Messages = next(id, key).messageContent.messages
+    ): MessageContent = next(id, key).messageContent
     
     
     /**
      * 挂起并等待符合当前 [Event] 作用域下的下一个消息事件的 [消息链][Messages].
      *
-     * 行为类似于 [next][EventProcessingContext.next], 区别在于 [nextMessages] 只允许目标为 [消息事件][MessageEvent]
+     * 行为类似于 [next][EventProcessingContext.next], 区别在于 [nextMessage] 只允许目标为 [消息事件][MessageEvent]
      * 且返回值为 [Messages].
      *
      * 对于作用域下的事件匹配机制的说明参考 [next][EventProcessingContext.next] 文档注释。
@@ -1144,13 +1144,13 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @throws CancellationException 被终止时
      *
      * @see EventProcessingContext.next
-     * @see Event.nextMessages
+     * @see Event.nextMessage
      */
     @JvmSynthetic
-    public suspend fun EventProcessingContext.nextMessages(
+    public suspend fun EventProcessingContext.nextMessage(
         id: ID = randomID(),
         key: Event.Key<out MessageEvent>,
-    ): Messages = next(id, key).messageContent.messages
+    ): MessageContent = next(id, key).messageContent
     
     
     /**
@@ -1159,7 +1159,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
-     * 具体说明参考 [EventProcessingContext.nextMessages].
+     * 具体说明参考 [EventProcessingContext.nextMessage].
      *
      * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
@@ -1168,7 +1168,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
      *
-     * @see Event.nextMessages
+     * @see Event.nextMessage
      * @see Event.next
      *
      * @receiver 当前所处的事件环境
@@ -1181,8 +1181,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         key: Event.Key<out MessageEvent>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): Messages {
-        suspend fun doWait() = nextMessages(id, key)
+    ): MessageContent {
+        suspend fun doWait() = nextMessage(id, key)
         
         val mill = timeUnit.toMillis(timeout)
         if (mill > 0) {
@@ -1200,7 +1200,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
-     * 具体说明参考 [EventProcessingContext.nextMessages].
+     * 具体说明参考 [EventProcessingContext.nextMessage].
      *
      * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
@@ -1208,7 +1208,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
      *
-     * @see Event.nextMessages
+     * @see Event.nextMessage
      * @see Event.next
      *
      * @receiver 当前所处的事件环境
@@ -1220,7 +1220,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         key: Event.Key<out MessageEvent>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): Messages = nextMessagesBlocking(id = randomID(), key = key, timeout = timeout, timeUnit = timeUnit)
+    ): MessageContent = nextMessagesBlocking(id = randomID(), key = key, timeout = timeout, timeUnit = timeUnit)
     
     
     /**
@@ -1229,7 +1229,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
-     * 具体说明参考 [EventProcessingContext.nextMessages].
+     * 具体说明参考 [EventProcessingContext.nextMessage].
      *
      * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
@@ -1237,7 +1237,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
      *
-     * @see Event.nextMessages
+     * @see Event.nextMessage
      * @see Event.next
      *
      * @receiver 当前所处的事件环境
@@ -1249,7 +1249,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         id: ID,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): Messages = nextMessagesBlocking(id = id, key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
+    ): MessageContent = nextMessagesBlocking(id = id, key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
     
     
     /**
@@ -1258,14 +1258,14 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
-     * 具体说明参考 [EventProcessingContext.nextMessages].
+     * 具体说明参考 [EventProcessingContext.nextMessage].
      *
      * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
      *
-     * @see Event.nextMessages
+     * @see Event.nextMessage
      * @see Event.next
      *
      * @receiver 当前所处的事件环境
@@ -1276,7 +1276,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     public fun Event.nextMessagesBlocking(
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): Messages = nextMessagesBlocking(id = randomID(), key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
+    ): MessageContent = nextMessagesBlocking(id = randomID(), key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
     
     
     /**
@@ -1285,7 +1285,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
-     * 具体说明参考 [EventProcessingContext.nextMessages].
+     * 具体说明参考 [EventProcessingContext.nextMessage].
      *
      * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
@@ -1295,7 +1295,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @param timeUnit [timeout] 的时间类型
      *
      * @see EventProcessingContext.next
-     * @see EventProcessingContext.nextMessages
+     * @see EventProcessingContext.nextMessage
      *
      * @receiver 当前所处的事件环境
      */
@@ -1307,7 +1307,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         key: Event.Key<out MessageEvent>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): Messages {
+    ): MessageContent {
         return event.nextMessagesBlocking(id, key, timeout, timeUnit)
     }
     
@@ -1317,7 +1317,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
-     * 具体说明参考 [EventProcessingContext.nextMessages].
+     * 具体说明参考 [EventProcessingContext.nextMessage].
      *
      * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
@@ -1326,7 +1326,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @param timeUnit [timeout] 的时间类型
      *
      * @see EventProcessingContext.next
-     * @see EventProcessingContext.nextMessages
+     * @see EventProcessingContext.nextMessage
      *
      * @receiver 当前所处的事件环境
      */
@@ -1337,7 +1337,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         key: Event.Key<out MessageEvent>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): Messages {
+    ): MessageContent {
         return event.nextMessagesBlocking(randomID(), key, timeout, timeUnit)
     }
     
@@ -1347,7 +1347,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
-     * 具体说明参考 [EventProcessingContext.nextMessages].
+     * 具体说明参考 [EventProcessingContext.nextMessage].
      *
      * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
@@ -1356,7 +1356,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @param timeUnit [timeout] 的时间类型
      *
      * @see EventProcessingContext.next
-     * @see EventProcessingContext.nextMessages
+     * @see EventProcessingContext.nextMessage
      *
      * @receiver 当前所处的事件环境
      */
@@ -1367,7 +1367,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         id: ID,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): Messages {
+    ): MessageContent {
         return event.nextMessagesBlocking(id, MessageEvent, timeout, timeUnit)
     }
     
@@ -1377,7 +1377,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
-     * 具体说明参考 [EventProcessingContext.nextMessages].
+     * 具体说明参考 [EventProcessingContext.nextMessage].
      *
      * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
@@ -1385,7 +1385,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @param timeUnit [timeout] 的时间类型
      *
      * @see EventProcessingContext.next
-     * @see EventProcessingContext.nextMessages
+     * @see EventProcessingContext.nextMessage
      *
      * @receiver 当前所处的事件环境
      */
@@ -1395,7 +1395,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     public fun EventProcessingContext.nextMessagesBlocking(
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): Messages {
+    ): MessageContent {
         return event.nextMessagesBlocking(randomID(), MessageEvent, timeout, timeUnit)
     }
     
@@ -1425,7 +1425,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
 /**
  * 进入到 [ContinuousSessionContext] 上下文中。
  *
- * 主要作用为可以更方便的使用 [ContinuousSessionContext.next] 、[ContinuousSessionContext.nextMessages] 等需要事件上下文环境的情况。
+ * 主要作用为可以更方便的使用 [ContinuousSessionContext.next] 、[ContinuousSessionContext.nextMessage] 等需要事件上下文环境的情况。
  *
  * e.g.
  * ```kotlin
