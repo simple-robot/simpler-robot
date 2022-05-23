@@ -71,7 +71,7 @@ public class CoreListenerBuilder<E : Event>(private val eventKey: Event.Key<E>) 
         val id0 = id ?: randomID()
         val logger0 = logger ?: LoggerFactory.getLogger("love.forte.core.listener.$id0")
         val handle0 = handle ?: throw SimbotIllegalStateException("Handle function for Listener is required.")
-        return simpleListener(eventKey, id0, isAsync, logger0, matcher ?: { true }, handle0)
+        return simpleListener(eventKey, id0, isAsync, logger0, null, matcher ?: { true }, handle0)
     }
     
 }

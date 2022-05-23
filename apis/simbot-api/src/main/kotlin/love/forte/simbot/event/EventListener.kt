@@ -116,7 +116,7 @@ public interface EventListener : java.util.EventListener, AttributeContainer, Lo
     /**
      * 监听函数可以允许存在其独特的属性。
      */
-    override fun <T : Any> getAttribute(attribute: Attribute<T>): T? = null
+    override fun <T : Any> getAttribute(attribute: Attribute<T>): T?
     
     
     /**

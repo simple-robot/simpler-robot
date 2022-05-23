@@ -15,6 +15,7 @@
  */
 
 @file:JvmName("SimpleListeners")
+@file:JvmMultifileClass
 
 package love.forte.simbot.core.event
 
@@ -57,16 +58,19 @@ public inline fun <E : Event> simpleListener(
     id: ID = randomID(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
     crossinline function: suspend EventListenerProcessingContext.(E) -> EventResult,
 ): EventListener {
-    return SimpleListener(id, logger, isAsync, setOf(target), {
+    return SimpleListener(id, logger, isAsync, setOf(target), attributes, matcher = {
         val event: E = target.safeCast(event)
-            ?: throw SimbotIllegalArgumentException("事件类型[${event.key}]不在当前监听函数(${id})的目标中: [$target]")
+            // 事件类型[${event.key}]不在当前监听函数(${id})的目标中:
+            // The event type [{event.key}] is not in the target of the current listener function ({id}):
+            ?: throw SimbotIllegalArgumentException("The event type [${event.key}] is not in the target of the current listener function ({id}): [$target]")
         matcher(event)
     }) {
         val event = target.safeCast(event)
-            ?: throw SimbotIllegalArgumentException("事件类型[${event.key}]不在当前监听函数(${id})的目标中: [$target]")
+            ?: throw SimbotIllegalArgumentException("The event type [${event.key}] is not in the target of the current listener function ({id}): [$target]")
         function(event)
     }
 }
@@ -91,10 +95,11 @@ public inline fun simpleListener(
     id: ID = randomID(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.() -> Boolean = { true },
     crossinline function: suspend EventListenerProcessingContext.() -> EventResult,
 ): EventListener {
-    return SimpleListener(id, logger, isAsync, targets.toSet(), {
+    return SimpleListener(id, logger, isAsync, targets.toSet(), attributes, matcher = {
         matcher()
     }) {
         function()
@@ -133,10 +138,11 @@ public inline fun <reified E : Event> simpleListener(
     id: ID = randomID(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
     crossinline function: suspend EventListenerProcessingContext.(E) -> EventResult,
 ): EventListener {
-    return simpleListener(target = E::class.getKey(), id, isAsync, logger, { e ->
+    return simpleListener(target = E::class.getKey(), id, isAsync, logger, attributes, { e ->
         matcher(e)
     }) { e ->
         function(e)
@@ -156,9 +162,10 @@ public inline fun <E : Event> EventListenerRegistrar.listen(
     id: ID = randomID(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
     crossinline func: suspend EventListenerProcessingContext.(E) -> EventResult,
-): EventListener = simpleListener(target = eventKey, id, isAsync, logger, matcher, func).also(::register)
+): EventListener = simpleListener(target = eventKey, id, isAsync, logger, attributes, matcher, func).also(::register)
 
 
 /**
@@ -184,9 +191,10 @@ public inline fun <reified E : Event> EventListenerRegistrar.listen(
     id: ID = randomID(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
     crossinline func: suspend EventListenerProcessingContext.(E) -> EventResult,
-): EventListener = listen(E::class.getKey(), id, isAsync, logger, matcher, func)
+): EventListener = listen(E::class.getKey(), id, isAsync, logger, attributes, matcher, func)
 
 
 // region blocking listener
