@@ -64,7 +64,7 @@ public inline fun <E : Event> simpleListener(
         val event: E = target.safeCast(event)
             ?: throw SimbotIllegalArgumentException("事件类型[${event.key}]不在当前监听函数(${id})的目标中: [$target]")
         matcher(event)
-    }) a@{
+    }) {
         val event = target.safeCast(event)
             ?: throw SimbotIllegalArgumentException("事件类型[${event.key}]不在当前监听函数(${id})的目标中: [$target]")
         function(event)
@@ -96,8 +96,50 @@ public inline fun simpleListener(
 ): EventListener {
     return SimpleListener(id, logger, isAsync, targets.toSet(), {
         matcher()
-    }) a@{
+    }) {
         function()
+    }
+}
+
+/**
+ * 构建一个监听指定类型的监听函数。
+ *
+ * e.g.
+ *
+ * ```kotlin
+ * simpleListener<FooEvent> { event -> // this: EventListenerProcessingContext
+ *      // do something...
+ *
+ *      EventResult.defaults() // return type: EventResult
+ * }
+ * ```
+ *
+ * ## FragileSimbotApi
+ * 更建议使用
+ *
+ * ```kotlin
+ * simpleListener(FooEvent) {
+ *    // ...
+ *    EventResult.defaults()
+ * }
+ * ```
+ *
+ *
+ *
+ */
+@JvmSynthetic
+@FragileSimbotApi
+public inline fun <reified E : Event> simpleListener(
+    id: ID = randomID(),
+    isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
+    crossinline function: suspend EventListenerProcessingContext.(E) -> EventResult,
+): EventListener {
+    return simpleListener(target = E::class.getKey(), id, isAsync, logger, { e ->
+        matcher(e)
+    }) { e ->
+        function(e)
     }
 }
 
@@ -147,8 +189,7 @@ public inline fun <reified E : Event> EventListenerRegistrar.listen(
 ): EventListener = listen(E::class.getKey(), id, isAsync, logger, matcher, func)
 
 
-
-//region blocking listener
+// region blocking listener
 /**
  * 构建一个 [EventListener] 实例。
  * 为不支持挂起函数的使用者准备，例如 Java 。
@@ -217,4 +258,4 @@ public fun <E : Event> blockingSimpleListenerWithoutResult(
         EventResult.defaults()
     }
 }
-//endregion
+// endregion

@@ -21,7 +21,6 @@ package love.forte.simbot.core.event
 import love.forte.simbot.*
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
-import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
 import java.util.*
 import java.util.function.BiConsumer
@@ -52,9 +51,18 @@ public operator fun EventListener.plus(filters: Iterable<EventFilter>): EventLis
 
 /**
  * 构建一个监听函数。
+ *
+ * **Deprecated**: 使用 [simpleListener]
+ *
+ * ```kotlin
+ * simpleListener(Key) { ... }
+ * simpleListener<Key> { ... }
+ * ```
+ *
+ * @see simpleListener
  */
 @JvmSynthetic
-@Deprecated("Use simpleListener")
+@Deprecated("Use simpleListener(...)")
 public fun <E : Event> coreListener(
     eventKey: Event.Key<E>,
     id: ID = randomID(),
@@ -79,13 +87,19 @@ public fun <E : Event> coreListener(
 /**
  * 构建一个监听函数。
  *
- * ### Fragile API: [E]::class
- * 此内联函数使用了 `reified` 枚举并通过反射获取对应类型的 [Event.Key]. simbot核心模块中更建议你尽可能的减少对存在反射的API的使用。
+ * **Deprecated**: 使用 [simpleListener]
+ *
+ * ```kotlin
+ * simpleListener(Key) { ... }
+ * simpleListener<Key> { ... }
+ * ```
+ *
+ * @see simpleListener
  */
 @Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
 @JvmSynthetic
 @FragileSimbotApi
-@Deprecated("Use simpleListener")
+@Deprecated("Use simpleListener(...)")
 public inline fun <reified E : Event> coreListener(
     id: ID = randomID(),
     blockNext: Boolean = false,
@@ -97,18 +111,23 @@ public inline fun <reified E : Event> coreListener(
 }
 
 
-////// create for java
-
+// region blocking listeners
 /**
  * 创建一个监听函数。
  *
- * [func] 会在 [runWithInterruptible] 中以 [kotlinx.coroutines.Dispatchers.IO] 作为默认调度器被执行。
+ * **Deprecated**: Java中使用：
+ * ```java
+ * SimpleListeners.listener(...)
+ * ```
+ *
+ * @see blockingSimpleListener
+ * @see blockingSimpleListenerWithoutResult
  *
  */
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
-@Deprecated("use simpleListener")
+@Deprecated("use simpleListener(...)")
 public fun <E : Event> blockingCoreListener(
     eventKey: Event.Key<E>,
     id: ID = UUID.randomUUID().ID,
@@ -138,14 +157,19 @@ public fun <E : Event> blockingCoreListener(
 /**
  * 创建一个监听函数。
  *
- * [func] 会在 [runWithInterruptible] 中以 [kotlinx.coroutines.Dispatchers.IO] 作为默认调度器被执行。
+ * **Deprecated**: Java中使用：
+ * ```java
+ * SimpleListeners.listener(...)
+ * ```
  *
+ * @see blockingSimpleListener
+ * @see blockingSimpleListenerWithoutResult
  */
 @Suppress("UNUSED_PARAMETER")
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
-@Deprecated("use simpleListener")
+@Deprecated("use simpleListener(...)")
 public fun <E : Event> blockingCoreListener(
     eventKey: Event.Key<E>,
     id: ID = randomID(),
@@ -167,12 +191,19 @@ public fun <E : Event> blockingCoreListener(
 /**
  * 创建一个监听函数。
  *
- * [func] 会在 [runWithInterruptible] 中以 [kotlinx.coroutines.Dispatchers.IO] 作为默认调度器被执行。
+ * **Deprecated**: Java中使用：
+ * ```java
+ * SimpleListeners.listener(...)
+ * ```
+ *
+ * @see blockingSimpleListener
+ * @see blockingSimpleListenerWithoutResult
  */
 @Suppress("UNUSED_PARAMETER")
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
+@Deprecated("use simpleListener(...)")
 public fun <E : Event> blockingCoreListener(
     eventType: Class<E>,
     id: ID = randomID(),
@@ -193,12 +224,19 @@ public fun <E : Event> blockingCoreListener(
 /**
  * 创建一个监听函数。
  *
- * [func] 会在 [runWithInterruptible] 中以 [kotlinx.coroutines.Dispatchers.IO] 作为默认调度器被执行。
+ * **Deprecated**: Java中使用：
+ * ```java
+ * SimpleListeners.listener(...)
+ * ```
+ *
+ * @see blockingSimpleListener
+ * @see blockingSimpleListenerWithoutResult
  */
 @Suppress("UNUSED_PARAMETER")
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
+@Deprecated("use simpleListener(...)")
 public fun <E : Event> blockingCoreListener(
     eventType: Class<E>,
     id: ID = UUID.randomUUID().ID,
@@ -215,3 +253,4 @@ public fun <E : Event> blockingCoreListener(
     func.accept(t, u)
     EventResult.defaults(blockNext)
 }
+// endregion
