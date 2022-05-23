@@ -15,14 +15,12 @@
  */
 
 @file:JvmName("CoreListeners")
-@file:JvmMultifileClass
 
 package love.forte.simbot.core.event
 
 import love.forte.simbot.*
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
-import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
 import java.util.*
 import java.util.function.BiConsumer
@@ -53,9 +51,18 @@ public operator fun EventListener.plus(filters: Iterable<EventFilter>): EventLis
 
 /**
  * 构建一个监听函数。
+ *
+ * **Deprecated**: 使用 [simpleListener]
+ *
+ * ```kotlin
+ * simpleListener(Key) { ... }
+ * simpleListener<Key> { ... }
+ * ```
+ *
+ * @see simpleListener
  */
 @JvmSynthetic
-@Deprecated("Use simpleListener")
+@Deprecated("Use simpleListener(...)")
 public fun <E : Event> coreListener(
     eventKey: Event.Key<E>,
     id: ID = randomID(),
@@ -67,11 +74,12 @@ public fun <E : Event> coreListener(
     return if (blockNext) {
         simpleListener(eventKey, id, isAsync, logger) {
             val result = func(it)
-            EventResult.of(result, isTruncated = true)
+            if (result is EventResult) result else EventResult.of(result, isTruncated = true)
         }
     } else {
         simpleListener(eventKey, id, isAsync, logger) {
-            EventResult.of(func(it))
+            val result = func(it)
+            if (result is EventResult) result else EventResult.of(result)
         }
     }
 }
@@ -79,13 +87,19 @@ public fun <E : Event> coreListener(
 /**
  * 构建一个监听函数。
  *
- * ### Fragile API: [E]::class
- * 此内联函数使用了 `reified` 枚举并通过反射获取对应类型的 [Event.Key]. simbot核心模块中更建议你尽可能的减少对存在反射的API的使用。
+ * **Deprecated**: 使用 [simpleListener]
+ *
+ * ```kotlin
+ * simpleListener(Key) { ... }
+ * simpleListener<Key> { ... }
+ * ```
+ *
+ * @see simpleListener
  */
 @Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
 @JvmSynthetic
 @FragileSimbotApi
-@Deprecated("Use simpleListener")
+@Deprecated("Use simpleListener(...)")
 public inline fun <reified E : Event> coreListener(
     id: ID = randomID(),
     blockNext: Boolean = false,
@@ -97,20 +111,23 @@ public inline fun <reified E : Event> coreListener(
 }
 
 
-
-
-////// create for java
-
+// region blocking listeners
 /**
  * 创建一个监听函数。
  *
- * [func] 会在 [runWithInterruptible] 中以 [kotlinx.coroutines.Dispatchers.IO] 作为默认调度器被执行。
+ * **Deprecated**: Java中使用：
+ * ```java
+ * SimpleListeners.listener(...)
+ * ```
+ *
+ * @see blockingSimpleListener
+ * @see blockingSimpleListenerWithoutResult
  *
  */
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
-@Deprecated("use simpleListener")
+@Deprecated("use simpleListener(...)")
 public fun <E : Event> blockingCoreListener(
     eventKey: Event.Key<E>,
     id: ID = UUID.randomUUID().ID,
@@ -118,20 +135,41 @@ public fun <E : Event> blockingCoreListener(
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: BiFunction<EventListenerProcessingContext, E, Any?>,
-): EventListener = TODO()
-    // BlockingCoreListener(id, eventKey, blockNext, isAsync, logger, func)
+): EventListener = blockingSimpleListener(
+    target = eventKey,
+    id = id,
+    isAsync = isAsync,
+    logger = logger,
+) { t, u ->
+    val result = func.apply(t, u)
+    
+    if (result is EventResult) {
+        result
+    } else {
+        EventResult.of(
+            result,
+            isTruncated = blockNext
+        )
+    }
+}
 
 
 /**
  * 创建一个监听函数。
  *
- * [func] 会在 [runWithInterruptible] 中以 [kotlinx.coroutines.Dispatchers.IO] 作为默认调度器被执行。
+ * **Deprecated**: Java中使用：
+ * ```java
+ * SimpleListeners.listener(...)
+ * ```
  *
+ * @see blockingSimpleListener
+ * @see blockingSimpleListenerWithoutResult
  */
+@Suppress("UNUSED_PARAMETER")
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
-@Deprecated("use simpleListener")
+@Deprecated("use simpleListener(...)")
 public fun <E : Event> blockingCoreListener(
     eventKey: Event.Key<E>,
     id: ID = randomID(),
@@ -139,23 +177,33 @@ public fun <E : Event> blockingCoreListener(
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: BiConsumer<EventListenerProcessingContext, E>,
-): EventListener = TODO()
-    // BlockingCoreListener(
-    //     id, eventKey, blockNext, isAsync, logger
-    // ) { c, e ->
-    //     func.accept(c, e)
-    //     null
-    // }
+): EventListener = blockingSimpleListener(
+    target = eventKey,
+    id = id,
+    isAsync = isAsync,
+    logger = logger,
+) { t, u ->
+    func.accept(t, u)
+    EventResult.defaults(blockNext)
+}
 
 
 /**
  * 创建一个监听函数。
  *
- * [func] 会在 [runWithInterruptible] 中以 [kotlinx.coroutines.Dispatchers.IO] 作为默认调度器被执行。
+ * **Deprecated**: Java中使用：
+ * ```java
+ * SimpleListeners.listener(...)
+ * ```
+ *
+ * @see blockingSimpleListener
+ * @see blockingSimpleListenerWithoutResult
  */
+@Suppress("UNUSED_PARAMETER")
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
+@Deprecated("use simpleListener(...)")
 public fun <E : Event> blockingCoreListener(
     eventType: Class<E>,
     id: ID = randomID(),
@@ -163,16 +211,32 @@ public fun <E : Event> blockingCoreListener(
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: BiFunction<EventListenerProcessingContext, E, Any?>,
-): EventListener = blockingCoreListener(Event.Key.getKey(eventType), id, blockNext, isAsync, logger, func)
+): EventListener = blockingSimpleListener(
+    target = Event.Key.getKey(eventType),
+    id = id,
+    isAsync = isAsync,
+    logger = logger
+) { t, u ->
+    val result = func.apply(t, u)
+    if (result is EventResult) result else EventResult.of(result, isTruncated = blockNext)
+}
 
 /**
  * 创建一个监听函数。
  *
- * [func] 会在 [runWithInterruptible] 中以 [kotlinx.coroutines.Dispatchers.IO] 作为默认调度器被执行。
+ * **Deprecated**: Java中使用：
+ * ```java
+ * SimpleListeners.listener(...)
+ * ```
+ *
+ * @see blockingSimpleListener
+ * @see blockingSimpleListenerWithoutResult
  */
+@Suppress("UNUSED_PARAMETER")
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
+@Deprecated("use simpleListener(...)")
 public fun <E : Event> blockingCoreListener(
     eventType: Class<E>,
     id: ID = UUID.randomUUID().ID,
@@ -180,4 +244,13 @@ public fun <E : Event> blockingCoreListener(
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     func: BiConsumer<EventListenerProcessingContext, E>,
-): EventListener = blockingCoreListener(Event.Key.getKey(eventType), id, blockNext, isAsync, logger, func)
+): EventListener = blockingSimpleListener(
+    target = Event.Key.getKey(eventType),
+    id = id,
+    isAsync = isAsync,
+    logger = logger
+) { t, u ->
+    func.accept(t, u)
+    EventResult.defaults(blockNext)
+}
+// endregion

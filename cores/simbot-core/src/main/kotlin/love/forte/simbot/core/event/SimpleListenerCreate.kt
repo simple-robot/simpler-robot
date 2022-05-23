@@ -14,15 +14,15 @@
  *
  */
 
-@file:JvmName("CoreListeners") @file:JvmMultifileClass
+@file:JvmName("SimpleListeners")
 
 package love.forte.simbot.core.event
 
 import love.forte.simbot.*
 import love.forte.simbot.event.*
-import love.forte.simbot.event.EventListener
+import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
-import java.util.*
+import java.util.function.BiConsumer
 import java.util.function.BiFunction
 import java.util.function.BiPredicate
 
@@ -54,7 +54,7 @@ internal suspend fun <E : Event> EventListenerProcessingContext.defaultMatcher(e
 @JvmSynthetic
 public inline fun <E : Event> simpleListener(
     target: Event.Key<E>,
-    id: ID = UUID.randomUUID().ID,
+    id: ID = randomID(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
@@ -64,7 +64,7 @@ public inline fun <E : Event> simpleListener(
         val event: E = target.safeCast(event)
             ?: throw SimbotIllegalArgumentException("事件类型[${event.key}]不在当前监听函数(${id})的目标中: [$target]")
         matcher(event)
-    }) a@{
+    }) {
         val event = target.safeCast(event)
             ?: throw SimbotIllegalArgumentException("事件类型[${event.key}]不在当前监听函数(${id})的目标中: [$target]")
         function(event)
@@ -88,7 +88,7 @@ public inline fun <E : Event> simpleListener(
 @JvmSynthetic
 public inline fun simpleListener(
     targets: Collection<Event.Key<*>>,
-    id: ID = UUID.randomUUID().ID,
+    id: ID = randomID(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     crossinline matcher: suspend EventListenerProcessingContext.() -> Boolean = { true },
@@ -96,24 +96,51 @@ public inline fun simpleListener(
 ): EventListener {
     return SimpleListener(id, logger, isAsync, targets.toSet(), {
         matcher()
-    }) a@{
+    }) {
         function()
     }
 }
 
-
-@Api4J
-@JvmOverloads
-public fun <E : Event> simpleListener(
-    target: Event.Key<E>,
-    id: ID = UUID.randomUUID().ID,
+/**
+ * 构建一个监听指定类型的监听函数。
+ *
+ * e.g.
+ *
+ * ```kotlin
+ * simpleListener<FooEvent> { event -> // this: EventListenerProcessingContext
+ *      // do something...
+ *
+ *      EventResult.defaults() // return type: EventResult
+ * }
+ * ```
+ *
+ * ## FragileSimbotApi
+ * 更建议使用
+ *
+ * ```kotlin
+ * simpleListener(FooEvent) {
+ *    // ...
+ *    EventResult.defaults()
+ * }
+ * ```
+ *
+ *
+ *
+ */
+@JvmSynthetic
+@FragileSimbotApi
+public inline fun <reified E : Event> simpleListener(
+    id: ID = randomID(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    matcher: BiPredicate<EventListenerProcessingContext, E> = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
-    function: BiFunction<EventListenerProcessingContext, E, EventResult>,
+    crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
+    crossinline function: suspend EventListenerProcessingContext.(E) -> EventResult,
 ): EventListener {
-    
-    TODO()
+    return simpleListener(target = E::class.getKey(), id, isAsync, logger, { e ->
+        matcher(e)
+    }) { e ->
+        function(e)
+    }
 }
 
 
@@ -126,7 +153,7 @@ public fun <E : Event> simpleListener(
 @FragileSimbotApi
 public inline fun <E : Event> EventListenerRegistrar.listen(
     eventKey: Event.Key<E>,
-    id: ID = UUID.randomUUID().ID,
+    id: ID = randomID(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
@@ -161,3 +188,78 @@ public inline fun <reified E : Event> EventListenerRegistrar.listen(
     crossinline func: suspend EventListenerProcessingContext.(E) -> EventResult,
 ): EventListener = listen(E::class.getKey(), id, isAsync, logger, matcher, func)
 
+
+// region blocking listener
+/**
+ * 构建一个 [EventListener] 实例。
+ * 为不支持挂起函数的使用者准备，例如 Java 。
+ *
+ * ```java
+ * EventListener listener = SimpleListeners.listener(FooEvent.Key, /* 其他参数, */ (context, event) -> {
+ *      // ...
+ *      return EventResult.defaults();
+ * });
+ * ```
+ *
+ */
+@Api4J
+@JvmName("listener")
+@JvmOverloads
+public fun <E : Event> blockingSimpleListener(
+    target: Event.Key<E>,
+    id: ID = randomID(),
+    isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    matcher: BiPredicate<EventListenerProcessingContext, E>? = null, // = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
+    function: BiFunction<EventListenerProcessingContext, E, EventResult>,
+): EventListener {
+    return simpleListener(target = target,
+        id = id,
+        isAsync = isAsync,
+        logger = logger,
+        matcher = if (matcher == null) {
+            { true }
+        } else {
+            { e -> runWithInterruptible { matcher.test(this, e) } }
+        }) { e ->
+        runWithInterruptible { function.apply(this, e) }
+    }
+}
+
+
+/**
+ * 构建一个 [EventListener] 实例。
+ * 为不支持挂起函数的使用者准备，例如 Java 。
+ *
+ * ```java
+ * EventListener listener = SimpleListeners.listener(FooEvent.Key, /* 其他参数, */ (context, event) -> {
+ *      // ...
+ * });
+ * ```
+ *
+ */
+@Api4J
+@JvmName("listener")
+@JvmOverloads
+public fun <E : Event> blockingSimpleListenerWithoutResult(
+    target: Event.Key<E>,
+    id: ID = randomID(),
+    isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    matcher: BiPredicate<EventListenerProcessingContext, E>? = null, // = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
+    function: BiConsumer<EventListenerProcessingContext, E>,
+): EventListener {
+    return simpleListener(target = target,
+        id = id,
+        isAsync = isAsync,
+        logger = logger,
+        matcher = if (matcher == null) {
+            { true }
+        } else {
+            { e -> runWithInterruptible { matcher.test(this, e) } }
+        }) { e ->
+        runWithInterruptible { function.accept(this, e) }
+        EventResult.defaults()
+    }
+}
+// endregion
