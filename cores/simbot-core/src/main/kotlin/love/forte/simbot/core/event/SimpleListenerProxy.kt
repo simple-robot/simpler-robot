@@ -14,16 +14,14 @@
  *
  */
 
-@file:JvmName("CoreListeners") @file:JvmMultifileClass
+@file:JvmName("SimpleListeners")
+@file:JvmMultifileClass
 
 package love.forte.simbot.core.event
 
-import love.forte.simbot.ID
-import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerProcessingContext
 import love.forte.simbot.event.EventResult
-import org.slf4j.Logger
 
 /**
  * 提供一个匹配函数，将当前监听函数根据新的匹配函数转化为一个新的 [EventListener].
@@ -87,23 +85,12 @@ private class EventListenerProxy<E : EventListener>(
 private class DelegatedEventListener(
     val delegate: EventListener,
     val matcher: suspend EventListenerProcessingContext.() -> Boolean,
-) : EventListener {
-    override val id: ID
-        get() = delegate.id
-    override val logger: Logger
-        get() = delegate.logger
-    override val isAsync: Boolean
-        get() = delegate.isAsync
-    
-    override fun isTarget(eventType: Event.Key<*>): Boolean = delegate.isTarget(eventType)
+) : EventListener by delegate {
     
     override suspend fun match(context: EventListenerProcessingContext): Boolean {
         return delegate.match(context) && matcher(context)
     }
     
-    override suspend fun invoke(context: EventListenerProcessingContext): EventResult {
-        return delegate(context)
-    }
     
     override fun toString(): String {
         return "DelegatedListener($delegate)"

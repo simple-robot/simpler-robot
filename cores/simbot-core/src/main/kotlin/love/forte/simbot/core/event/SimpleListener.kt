@@ -16,6 +16,8 @@
 
 package love.forte.simbot.core.event
 
+import love.forte.simbot.Attribute
+import love.forte.simbot.AttributeContainer
 import love.forte.simbot.ID
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.Event.Key.Companion.isSub
@@ -42,6 +44,11 @@ public class SimpleListener(
      * 当前监听函数所需的事件目标类型集。当 [targets] 的元素为空时，视为监听全部。
      */
     private val targets: Set<Event.Key<*>>,
+
+    /**
+     * 内部使用的属性容器。
+     */
+    private val attributes: AttributeContainer? = null,
     
     /**
      * 过滤匹配函数。默认为始终放行。
@@ -55,6 +62,9 @@ public class SimpleListener(
     
     ) : EventListener {
     private val targetMatcher = targets.toTargetMatcher()
+    
+    override fun <T : Any> getAttribute(attribute: Attribute<T>): T? = attributes?.getAttribute(attribute)
+    
     override fun isTarget(eventType: Event.Key<*>): Boolean = targetMatcher(eventType)
     
     override suspend fun match(context: EventListenerProcessingContext): Boolean = context.matcher()
@@ -73,10 +83,11 @@ public class SimpleListener(
         logger: Logger = this.logger,
         isAsync: Boolean = this.isAsync,
         targets: Set<Event.Key<*>> = this.targets.toSet(),
+        attributes: AttributeContainer? = null,
         matcher: suspend EventListenerProcessingContext.() -> Boolean = this.matcher,
         function: suspend EventListenerProcessingContext.() -> EventResult = this.function,
     ): SimpleListener {
-        return SimpleListener(id, logger, isAsync, targets, matcher, function)
+        return SimpleListener(id, logger, isAsync, targets, attributes, matcher, function)
     }
     
     public companion object
