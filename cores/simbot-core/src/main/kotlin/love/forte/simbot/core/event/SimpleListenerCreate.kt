@@ -210,17 +210,19 @@ public fun <E : Event> blockingSimpleListener(
     id: ID = randomID(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    matcher: BiPredicate<EventListenerProcessingContext, E> = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
+    matcher: BiPredicate<EventListenerProcessingContext, E>? = null, // = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
     function: BiFunction<EventListenerProcessingContext, E, EventResult>,
 ): EventListener {
     return simpleListener(target = target,
         id = id,
         isAsync = isAsync,
         logger = logger,
-        matcher = { e ->
-            runWithInterruptible { matcher.test(this, e) }
+        matcher = if (matcher == null) {
+            { true }
+        } else {
+            { e -> runWithInterruptible { matcher.test(this, e) } }
         }) { e ->
-        function.apply(this, e)
+        runWithInterruptible { function.apply(this, e) }
     }
 }
 
@@ -244,17 +246,19 @@ public fun <E : Event> blockingSimpleListenerWithoutResult(
     id: ID = randomID(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
-    matcher: BiPredicate<EventListenerProcessingContext, E> = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
+    matcher: BiPredicate<EventListenerProcessingContext, E>? = null, // = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
     function: BiConsumer<EventListenerProcessingContext, E>,
 ): EventListener {
     return simpleListener(target = target,
         id = id,
         isAsync = isAsync,
         logger = logger,
-        matcher = { e ->
-            runWithInterruptible { matcher.test(this, e) }
+        matcher = if (matcher == null) {
+            { true }
+        } else {
+            { e -> runWithInterruptible { matcher.test(this, e) } }
         }) { e ->
-        function.accept(this, e)
+        runWithInterruptible { function.accept(this, e) }
         EventResult.defaults()
     }
 }
