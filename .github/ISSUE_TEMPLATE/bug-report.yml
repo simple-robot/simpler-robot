@@ -5,7 +5,16 @@ labels: [ "bug?" ]
 assignees: [ "ForteScarlet" ]
 # https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
 body:
-
+  - type: markdown
+    attributes:
+      value: |
+         在进行问题反馈前，请确认以下内容：
+         1. 我已参阅过相关文档、注释。
+         2. 我已确认 [issues](https://github.com/ForteScarlet/simpler-robot/issues) 没有类似/重复问题。
+         
+         请知悉以下内容：
+         1. 当问题反馈未被完全确认或等待发起者回复的情况下，发起者如果超过一周未作应道，则会视为「无效」并做关闭处理。
+         
   - type: textarea
     id: description
     attributes:
