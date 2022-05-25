@@ -16,6 +16,8 @@ body:
          请知悉以下内容：
          1. 当问题反馈未被完全确认或等待发起者回复的情况下，发起者如果超过一周未作应答，则会视为「无效」并做关闭处理。
          
+         <hr />
+         
   - type: textarea
     id: description
     attributes:
