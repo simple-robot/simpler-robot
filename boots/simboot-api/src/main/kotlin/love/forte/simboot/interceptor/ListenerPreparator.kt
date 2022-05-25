@@ -19,8 +19,10 @@ import kotlin.coroutines.cancellation.CancellationException
  *
  * ## 顺序
  * [ListenerPreparator] 直接作用于监听函数上，因此 [ListenerPreparator] 的执行将始终**晚于**全局性的 [监听拦截器][EventListenerInterceptor]
- * （[point][EventListenerInterceptor.point] 为 [AFTER_MATCH][EventListenerInterceptor.Point.AFTER_MATCH] 的全局函数拦截器除外, [prepareMatch] 将会早于这些拦截器 ），且优先于
+ * （ [point][EventListenerInterceptor.point] 为 [AFTER_MATCH][EventListenerInterceptor.Point.AFTER_MATCH] 的全局函数拦截器除外, [prepareMatch] 将会早于这些拦截器 ），且优先于
  * [AnnotatedEventListenerInterceptor].
+ *
+ * <br />
  *
  * 对于不支持挂起函数的实现方，使用 [BlockingListenerPreparator]
  *
