@@ -18,6 +18,16 @@ body:
          
          <hr />
          
+  
+  - type: input
+    id: version
+    attributes:
+      label: 版本号
+      description: 反馈所涉及的版本
+      placeholder: "例如: v3.0.0"
+    validations:
+      required: true       
+         
   - type: textarea
     id: description
     attributes:
@@ -27,18 +37,6 @@ body:
     validations:
       required: true
 
-  - type: markdown
-    attributes:
-      value: "### 版本信息"
-
-  - type: input
-    id: version
-    attributes:
-      label: 版本号
-      description: 你所使用的simbot版本信息
-      placeholder: "例如: v3.0.0"
-    validations:
-      required: true
 
   - type: textarea
     id: otherVersion
