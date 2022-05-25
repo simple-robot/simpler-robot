@@ -29,6 +29,14 @@ body:
       required: true       
          
   - type: textarea
+    id: otherVersion
+    attributes:
+      label: 附加版本
+      description: 如果有需要补充的其他版本信息，可以在此补充
+      placeholder: "例如: simbot-component-tencentguild: v3.0.0-0.1"
+
+         
+  - type: textarea
     id: description
     attributes:
       label: 问题描述
@@ -38,19 +46,15 @@ body:
       required: true
 
 
-  - type: textarea
-    id: otherVersion
-    attributes:
-      label: 附加版本
-      description: 如果有需要补充的其他版本信息，可以在此补充
-      placeholder: "例如: simbot-component-tencentguild: v3.0.0-0.1"
 
   - type: textarea
     id: recurrent
     attributes:
       label: 复现方式
       description: 提供可行的问题复现方式
-
+    validations:
+      required: true
+      
   - type: textarea
     id: log
     attributes:
