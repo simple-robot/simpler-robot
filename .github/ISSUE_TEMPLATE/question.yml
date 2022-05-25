@@ -1,6 +1,5 @@
 name: "🤔️疑问"
-description: "提出一些你的疑问"
-title: "Q: "
+description: "提出你的疑问"
 labels: [ "疑问" ]
 assignees: [ "ForteScarlet" ]
 # https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
