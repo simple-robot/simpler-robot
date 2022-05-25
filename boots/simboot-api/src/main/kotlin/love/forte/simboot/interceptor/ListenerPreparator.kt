@@ -18,8 +18,8 @@ import kotlin.coroutines.cancellation.CancellationException
  * 通常情况下 [ListenerPreparator] 不能也不应该对监听函数的流程造成硬影响，且准备工作应当是迅速的。在实现时需尽可能避免异常的产生和长时间的操作。
  *
  * ## 顺序
- * [ListenerPreparator] 直接作用于监听函数上，因此 [ListenerPreparator] 将始终晚于全局性的监听函数
- * （point 为 [AFTER_MATCH][EventListenerInterceptor.Point.AFTER_MATCH]的全局函数拦截器除外），且优先于
+ * [ListenerPreparator] 直接作用于监听函数上，因此 [ListenerPreparator] 的执行将始终**晚于**全局性的 [监听拦截器][EventListenerInterceptor]
+ * （[point][EventListenerInterceptor.point] 为 [AFTER_MATCH][EventListenerInterceptor.Point.AFTER_MATCH] 的全局函数拦截器除外, [prepareMatch] 将会早于这些拦截器 ），且优先于
  * [AnnotatedEventListenerInterceptor].
  *
  * 对于不支持挂起函数的实现方，使用 [BlockingListenerPreparator]
