@@ -8,7 +8,6 @@ import kotlin.reflect.KClass
  * 配合 [@Listener][Listener] 注解使用，标记需要在监听函数执行前进行的准备函数。
  *
  * 概念与 [拦截器][Interceptor] 类似，但是 [Preparator] 代表"准备"，无法对流程造成影响（除非产生异常）。
- * 更多说明参考 [ListenerPreparator].
  *
  * @see ListenerPreparator
  */
@@ -24,12 +23,16 @@ public annotation class Preparator(
      * 否则首先尝试通过 bean 容器获取，如果始终无法获取，则会尝试通过其 **无参公开构造**
      * 来获取其实例。
      *
+     * @see ListenerPreparator
+     *
      */
     val value: KClass<out ListenerPreparator>,
     
     /**
      * 假如提供的 [value] 能够从 bean 容器中获取，
      * 可以通过 [name] 指定此 bean 在容器中的唯一标识。
+     *
+     * 不为空才生效。
      *
      */
     val name: String = "",
@@ -42,7 +45,7 @@ public annotation class Preparator(
 
 
 /**
- * [@Preparator][Preparator] 的容器接口
+ * [Preparator] 的容器
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
