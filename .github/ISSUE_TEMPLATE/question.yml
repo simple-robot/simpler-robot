@@ -5,7 +5,7 @@ labels: [ "疑问" ]
 assignees: [ "ForteScarlet" ]
 # https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
 body:
-    - type: markdown
+  - type: markdown
     attributes:
       value: |
          ## 须知
