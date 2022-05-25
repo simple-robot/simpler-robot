@@ -5,7 +5,20 @@ labels: [ "疑问" ]
 assignees: [ "ForteScarlet" ]
 # https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
 body:
-
+    - type: markdown
+    attributes:
+      value: |
+         ## 须知
+         在提出疑问前，请确认以下内容：
+         1. 我已参阅过相关文档、注释，并确认未寻得问题答案。
+         2. 我已确认 [issues](https://github.com/ForteScarlet/simpler-robot/issues) 没有类似/重复问题。
+         
+         请知悉以下内容：
+         1. 当疑问未被完全确认或等待发起者回复的情况下，发起者如果超过一周未作应答，则会视为发起者已经不需要进一步解答并做关闭处理。
+         2. 仅接受针对于框架本身在使用上未明确表述、文档注释晦涩不全或文档尚未完善到的问题。对于编程技术、业务逻辑或其他与框架无关问题将视为「无效」并不予解答。
+         
+         <hr />
+         
   - type: textarea
     id: question
     attributes:
