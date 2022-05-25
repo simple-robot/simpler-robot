@@ -1,0 +1,28 @@
+custom:
+  - location: title
+    keywords:
+      - 'mirai'
+    labels:
+      - '组件:mirai'
+  - location: title
+    keywords:
+      - '开黑啦'
+    labels:
+      - '组件:开黑啦'
+  - location: title
+    keywords:
+      - '腾讯频道'
+      - 'QQ频道'
+    labels:
+      - '组件:QQ频道'
+      
+  - location: body
+    keywords:
+      - 'v2.'
+    labels:
+      - v2
+   - location: body
+    keywords:
+      - 'v3.'
+    labels:
+      - v3    
