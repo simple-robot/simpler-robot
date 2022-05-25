@@ -18,7 +18,17 @@ body:
          2. 仅接受针对于框架本身在使用上未明确表述、文档注释晦涩不全或文档尚未完善到的问题。对于编程技术、业务逻辑或其他与框架无关问题将视为「无效」并不予解答。
          
          <hr />
-         
+ 
+ 
+  - type: input
+    id: version
+    attributes:
+      label: 版本号
+      description: 疑问所涉及的版本
+      placeholder: "例如: v3.0.0"
+    validations:
+      required: true
+ 
   - type: textarea
     id: question
     attributes:
