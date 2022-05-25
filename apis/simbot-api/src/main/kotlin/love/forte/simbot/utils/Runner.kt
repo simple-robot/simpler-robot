@@ -17,6 +17,7 @@
 
 package love.forte.simbot.utils
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.runInterruptible
 import kotlin.coroutines.CoroutineContext
@@ -28,11 +29,12 @@ internal val RunWithInterruptibleDefaultCoroutineContext: CoroutineContext =
 /**
  * 默认使用 [DefaultBlockingDispatcher] 作为调度器的可中断执行函数。
  *
+ * @throws CancellationException May be thrown by [runInterruptible]
  * @see runInterruptible
  */
 public suspend inline fun <T> runWithInterruptible(
     context: CoroutineContext = RunWithInterruptibleDefaultCoroutineContext,
-    crossinline block: () -> T
+    crossinline block: () -> T,
 ): T {
     return runInterruptible(context) { block() }
 }
