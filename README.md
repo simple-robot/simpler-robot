@@ -86,19 +86,18 @@ simbot3的文档与simbot2的文档在一起，都在 [语雀文档](https://www
 <br>
 simbot3目前已经实现的组件以及计划中的组件会列举于此，且不定期更新：
 
-|                  对接目标                   |     作者      |                              组件仓库地址                              |  状态   |
-|:---------------------------------------:|:-----------:|:----------------------------------------------------------------:|:-----:|
-|                  腾讯频道                   | simbot team | <https://github.com/simple-robot/simbot-component-tencent-guild> |  维护中  |
-| [Mirai](https://github.com/mamoe/mirai) | simbot team |     <https://github.com/simple-robot/simbot-component-mirai>     |  维护中  |
-| [开黑啦](https://www.kaiheila.cn/)       | simbot team |   <https://github.com/simple-robot/simbot-component-kaiheila>    | **开发中** |
+|                  组件目标                   |     作者      |                                                     组件仓库                                                      | 状态  |
+|:---------------------------------------:|:-----------:|:-------------------------------------------------------------------------------------------------------------:|:---:|
+|                  腾讯频道                   | simbot team | [simple-robot/simbot-component-tencent-guild](https://github.com/simple-robot/simbot-component-tencent-guild) | 维护中 |
+| [Mirai](https://github.com/mamoe/mirai) | simbot team |         [simple-robot/simbot-component-mirai](https://github.com/simple-robot/simbot-component-mirai)         | 维护中 |
+|     [开黑啦](https://www.kaiheila.cn/)     | simbot team |      [simple-robot/simbot-component-kaiheila](https://github.com/simple-robot/simbot-component-kaiheila)      | 维护中 |
 
-腾讯频道组件：
 
-Mirai组件：
 
 ## 使用
 
-> Warn: 对于组件, 你需要去上面提及的组件仓库中选择你需要使用的.
+> **Warn: 对于组件, 你需要去上面提及的组件仓库中选择你需要使用的.**
+> 
 > 一个普通的simbot依赖不会有任何实现, 因此下述提及的依赖使用**不能**独立使用。
 >
 
