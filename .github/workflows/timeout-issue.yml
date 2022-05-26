@@ -1,0 +1,26 @@
+name: Close timeout Issues
+on: 
+  schedule:
+    - cron: "0 4 * * *"
+    
+jobs:
+  close-timeout-issues:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/stale@v5
+        with: 
+          repo-token: ${{ secrets.FORLIY_ACCESS_TOKEN }}
+          days-before-issue-stale: 7
+          days-before-issue-close: 7
+          stale-issue-label: '陈旧'
+
+          days-before-pr-close: -1
+          days-before-pr-close: -1
+          
+          stale-issue-message: "此issue已经在‘等待反馈’状态下7日未更新。如果在‘陈旧’状态下逾期7日将会被视为无效过期并关闭。"
+          close-issue-message: "此issue已经在‘陈旧’状态下逾期7日未更新, 视为无效过期并关闭。"
+          
+          close-issue-label: '无效'
+          only-labels: '等待反馈'
+          
