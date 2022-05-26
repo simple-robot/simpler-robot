@@ -51,7 +51,7 @@ public interface MuteSupport {
      *
      * [duration] 代表禁言时长。[duration] 并不能保证其存在效果与稳定性。绝大多数情况下，[duration] 有效值都应**大于0**。
      *
-     * 当 [duration] 的值小于等于0的时候，通常情况下代表**无限期**的，或者视为 **忽略参数**。在默认情况下，[duration] 的值即为0。
+     * 当 [duration] 的值小于等于0的时候，通常情况下代表**无限期**的，或者视为 **无效参数** 。在默认情况下，[duration] 的值为 [0][Duration.ZERO] 。
      * 对于一个必须提供时间的组件来讲，它可能会使用一个默认值，或者直接抛出异常。
      *
      * 当组件支持 [duration] 的时候，它们绝大多数情况下都会 **至少以秒** 为单位，除非你明确的知道当前实现能够支持更低量级，否则请尽可能使用秒或更高的单位。
@@ -86,8 +86,8 @@ public interface MuteSupport {
      * @see mute
      */
     @Api4J
-    public fun muteBlocking(time: Long, unit: TimeUnit): Boolean = runInBlocking {
-        mute(unit.toMillis(time).microseconds)
+    public fun muteBlocking(duration: Long, unit: TimeUnit): Boolean = runInBlocking {
+        mute(unit.toMillis(duration).microseconds)
     }
 
     /**
