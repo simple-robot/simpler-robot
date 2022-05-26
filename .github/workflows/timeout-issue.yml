@@ -15,7 +15,7 @@ jobs:
           days-before-issue-close: 7
           stale-issue-label: '陈旧'
 
-          days-before-pr-close: -1
+          days-before-pr-stale: -1
           days-before-pr-close: -1
           
           stale-issue-message: "此issue已经在‘等待反馈’状态下7日未更新。如果在‘陈旧’状态下逾期7日将会被视为无效过期并关闭。"
