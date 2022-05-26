@@ -9,13 +9,20 @@ jobs:
     if: ${{ (github.event.author == github.event.issue.author) && contains(github.event.issue.labels.*.name, '等待反馈') }}
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - name: debug
+        run: |
           echo "::debug::${{ github.event }}"
           echo "::debug::${{ github.event.author == github.event.issue.author }}"
-          echo "::debug::${{ github.event.author }}"
-          echo "::debug::${{ github.event.issue.author }}"
+          echo "::debug::${{ github.event.author.login == github.event.issue.author.login }}"
+          echo "::debug::${{ github.event.author.login }}"
+          echo "::debug::${{ github.event.issue.author.login }}"
           echo "::debug::https://api.github.com/repos/ForteScarlet/simpler-robot/issues/${{ github.event.issue.number }}"
           echo "::debug::${{ github.event.issue.labels.*.name }}"
+          
+      - name: Issue Labeler
+        uses: andymckay/labeler@1.0.4
+        with: 
+          remove-labels: "等待反馈"
 
       # - run: echo ${{ github.event.issue.labels.*.name }}
       # - run: |
