@@ -11,7 +11,7 @@ jobs:
     steps:
       - run: echo "https://api.github.com/repos/ForteScarlet/simpler-robot/issues/${{ github.event.issue.number }}"
       - run: echo ${{ github.event.issue.labels.*.name }}
-      - run: echo ${{ github.event.issue.labels.*.name.remove('等待反馈') }}
+      - run: echo ${{ github.event.issue.labels.(!等待反馈).name }}
       # - run: |
       #     curl -X PATCH -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/ForteScarlet/simpler-robot/issues/${{  }} -d '{"labels":["bug"]}'
     
