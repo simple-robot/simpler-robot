@@ -1,0 +1,17 @@
+name: Issue Waiting Report
+on: 
+  issue_comment: 
+    types: [created]
+    
+jobs: 
+  issue-report:
+    name: Issue Report
+    if: ${{ (github.event.author == github.event.issue.author) && contains(github.event.issue.labels.*.name, '等待反馈') }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "https://api.github.com/repos/ForteScarlet/simpler-robot/issues/${{ github.event.issue.number }}"
+      - run: echo "${{ github.event.issue.labels.!等待反馈.name }}"
+      - run: echo ${{ github.event.issue.labels.!等待反馈.name }}
+      # - run: |
+      #     curl -X PATCH -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/ForteScarlet/simpler-robot/issues/${{  }} -d '{"labels":["bug"]}'
+    
