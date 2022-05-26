@@ -6,23 +6,13 @@ on:
 jobs: 
   issue-report:
     name: Issue Report
-    if: ${{ (github.event.author == github.event.issue.author) && contains(github.event.issue.labels.*.name, '等待反馈') }}
+    if: ${{ (github.event.sender.login == github.event.issue.user.login) && contains(github.event.issue.labels.*.name, '等待反馈') }}
     runs-on: ubuntu-latest
     steps:
-      - name: debug
-        run: |
-          echo "::debug::github.event.sender.login=${{ github.event.sender.login }}"
-          echo "::debug::github.event.issue.user.login=${{ github.event.issue.user.login }}"
-          echo "::debug::github.event.sender == github.event.issue.user=${{ github.event.sender == github.event.issue.user }}"
-          echo "::debug::github.event.sender.login == github.event.issue.user.login=${{ github.event.sender.login == github.event.issue.user.login }}"
-          
-          
-#       - name: Issue Labeler
-#         uses: andymckay/labeler@1.0.4
-#         with: 
-#           remove-labels: "等待反馈"
-
-      # - run: echo ${{ github.event.issue.labels.*.name }}
-      # - run: |
-      #     curl -X PATCH -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/ForteScarlet/simpler-robot/issues/${{  }} -d '{"labels":["bug"]}'
-    
+      # https://github.com/marketplace/actions/simple-issue-labeler
+      - name: Issue Labeler
+        uses: andymckay/labeler@1.0.4
+        with: 
+          remove-labels: "等待反馈"
+          add-labels: "等待确认"
+          repo-token: ${{ secrets.FORLIY_ACCESS_TOKEN }}
