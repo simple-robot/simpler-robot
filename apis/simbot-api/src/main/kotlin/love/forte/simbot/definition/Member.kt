@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.definition
@@ -58,6 +57,9 @@ public interface Member : User, MemberInfo, MuteSupport, SendSupport {
      * 在客观条件允许的情况下，对其进行禁言。
      * 此行为不会捕获异常。
      *
+     * @param duration 禁言时长. 大于0时有效。
+     *
+     * @see MuteSupport.mute
      */
     @JvmSynthetic
     override suspend fun mute(duration: Duration): Boolean
