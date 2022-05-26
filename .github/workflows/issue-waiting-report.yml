@@ -11,13 +11,10 @@ jobs:
     steps:
       - name: debug
         run: |
-          echo "::debug::${{ github.event }}"
-          echo "::debug::${{ github.event.author == github.event.issue.author }}"
-          echo "::debug::${{ github.event.author.login == github.event.issue.author.login }}"
-          echo "::debug::${{ github.event.author.login }}"
-          echo "::debug::${{ github.event.issue.author.login }}"
-          echo "::debug::https://api.github.com/repos/ForteScarlet/simpler-robot/issues/${{ github.event.issue.number }}"
-          echo "::debug::${{ github.event.issue.labels.*.name }}"
+          echo "::debug::${{ github.event.user == github.event.issue.user }}"
+          echo "::debug::${{ github.event.user.login == github.event.issue.user.login }}"
+          echo "::debug::${{ github.event.user.login }}"
+          echo "::debug::${{ github.event.issue.user.login }}"
           
       - name: Issue Labeler
         uses: andymckay/labeler@1.0.4
