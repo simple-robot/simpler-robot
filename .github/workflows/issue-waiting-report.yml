@@ -11,15 +11,16 @@ jobs:
     steps:
       - name: debug
         run: |
-          echo "::debug::${{ github.event.user == github.event.issue.user }}"
-          echo "::debug::${{ github.event.user.login == github.event.issue.user.login }}"
-          echo "::debug::${{ github.event.user.login }}"
-          echo "::debug::${{ github.event.issue.user.login }}"
+          echo "::debug::github.event.sender.login=${{ github.event.sender.login }}"
+          echo "::debug::github.event.issue.user.login=${{ github.event.issue.user.login }}"
+          echo "::debug::github.event.sender == github.event.issue.user=${{ github.event.sender == github.event.issue.user }}"
+          echo "::debug::github.event.sender.login == github.event.issue.user.login=${{ github.event.sender.login == github.event.issue.user.login }}"
           
-      - name: Issue Labeler
-        uses: andymckay/labeler@1.0.4
-        with: 
-          remove-labels: "等待反馈"
+          
+#       - name: Issue Labeler
+#         uses: andymckay/labeler@1.0.4
+#         with: 
+#           remove-labels: "等待反馈"
 
       # - run: echo ${{ github.event.issue.labels.*.name }}
       # - run: |
