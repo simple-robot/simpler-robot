@@ -21,7 +21,6 @@ import love.forte.simbot.utils.runInBlocking
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.microseconds
-import kotlin.time.Duration.Companion.nanoseconds
 
 
 /**
@@ -50,14 +49,21 @@ public interface MuteSupport {
     /**
      * 对当前目标进行 **禁言** 操作。
      *
-     * [duration] 代表禁言时长。[duration] 并不能保证其存在效果，对于一些不支持 [duration] 的场景下，
-     * 可能会由组件内部通过开启一个延时的异步任务来模拟 [duration] 的效果，但是无论如何，绝大多数情况下，[duration] 有效值都应**大于0**。
+     * [duration] 代表禁言时长。[duration] 并不能保证其存在效果与稳定性。绝大多数情况下，[duration] 有效值都应**大于0**。
      *
      * 当 [duration] 的值小于等于0的时候，通常情况下代表**无限期**的，或者视为 **忽略参数**。在默认情况下，[duration] 的值即为0。
-     * 对于一个必须提供时间的组件来讲，它可能会使用一个最大时间的默认值，或者直接抛出异常。
+     * 对于一个必须提供时间的组件来讲，它可能会使用一个默认值，或者直接抛出异常。
      *
-     * 当组件支持 [duration] 的时候，它们绝大多数情况下都会至少以 **秒** 为单位，除非你明确的知道当前实现能够支持更低量级，否则请尽可能使用秒或更高的单位。
-     * 同样的，很多情况下对于 [duration] 的上限也同样有限制，请自行斟酌数值，选取合理范围。
+     * 当组件支持 [duration] 的时候，它们绝大多数情况下都会 **至少以秒** 为单位，除非你明确的知道当前实现能够支持更低量级，否则请尽可能使用秒或更高的单位。
+     * 同样的，很多情况下对于 [duration] 的上限也同样有限制。因此对于 [duration] 请自行斟酌数值，选取合理范围。
+     *
+     * 当组件不支持 [duration] 的时候，可能会由组件在其内部启动一个异步的延时任务来 _模拟_ [duration] 的效果。这种情况下，[duration] 的表现将没有保障。因为
+     * 这个异步任务存在于当前应用程序的内存中，会伴随着程序的终止而消亡。如果这个异步任务是通过当前 bot 或者 bot 下某个子[任务][kotlinx.coroutines.Job]，则这个异步任务
+     * 便会伴随着这个协程作用域的完成而消逝。
+     * 除了通过异步任务实现 [duration] 的效果，在不支持的情况下也有可能会将其直接忽略。
+     *
+     * 当 [mute] 行为不被支持的时候，大多数情况下组件会选择直接返回 `false`, 但是并不排除可能会直接抛出异常的可能。
+     *
      *
      * @throws UnsupportedActionException 当此行为不被支持时
      *
@@ -102,7 +108,7 @@ public interface MuteSupport {
 
 
     public companion object {
-        internal val DEFAULT_DURATION = (-1L).nanoseconds
+        internal val DEFAULT_DURATION = Duration.ZERO // (-1L).nanoseconds
     }
 
 }
