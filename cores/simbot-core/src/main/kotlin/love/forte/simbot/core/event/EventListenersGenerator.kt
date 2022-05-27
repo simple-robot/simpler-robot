@@ -72,7 +72,7 @@ internal annotation class EventListenersGeneratorDSL
  */
 @EventListenersGeneratorDSL
 public class EventListenersGenerator @InternalSimbotApi constructor() {
-    private val listeners = mutableListOf<EventListener>()
+    private val listeners = mutableListOf<() -> EventListener>()
     
     /**
      * 构建一个监听函数。
@@ -99,8 +99,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
         eventKey: Event.Key<E>,
         block: ListenerGenerator<E>.() -> Unit,
     ): EventListenersGenerator = also {
-        val listener = ListenerGenerator(eventKey).also(block).build()
-        listeners.add(listener)
+        listeners.add { ListenerGenerator(eventKey).also(block).build() }
     }
     
     
@@ -118,7 +117,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      */
     @EventListenersGeneratorDSL
     public fun listener(listener: EventListener): EventListenersGenerator = also {
-        listeners.add(listener)
+        listeners.add { listener }
     }
     
     
@@ -134,7 +133,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      */
     @EventListenersGeneratorDSL
     public operator fun EventListener.unaryPlus() {
-        listeners.add(this)
+        listener(this)
     }
     
     /**
@@ -160,21 +159,116 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * }
      * ```
      *
+     * 可以在当前构建器上下文中配合 [onMatch] 为当前构建的监听函数提供匹配逻辑.
+     *
+     * e.g.
+     * ```kotlin
+     * FooEvent { event: FooEvent -> // this: EventListenerProcessingContext
+     *   // do handle
+     *
+     *   EventResult.defaults()
+     * } onMatch {
+     *    val condition1: Boolean = ...
+     *    condition1
+     * } onMatch {
+     *    val condition2: Boolean = ...
+     *    condition2
+     * }
+     * ```
+     *
      * @receiver 需要监听的 [事件类型][Event.Key] 对象实例。
      *
+     * @see onMatch
      */
     @EventListenersGeneratorDSL
-    public operator fun <E : Event> Event.Key<E>.invoke(handle: suspend EventListenerProcessingContext.(E) -> EventResult) {
-        listen(this) {
-            handle(handle)
-        }
+    public operator fun <E : Event> Event.Key<E>.invoke(handle: suspend EventListenerProcessingContext.(E) -> EventResult): EventHandling<E> {
+        val generator = ListenerGenerator(this)
+        generator.handle(handle)
+        listeners.add { generator.build() }
+        return EventHandling(generator)
+    }
+    
+    /**
+     * 通过 [Event.Key.invoke] 得到的 _处理过程_ 对象，用于进一步配置此事件的匹配逻辑。
+     */
+    @InternalSimbotApi
+    @JvmInline
+    public value class EventHandling<E : Event> internal constructor(@PublishedApi internal val generator: ListenerGenerator<E>)
+    
+    
+    /**
+     * 配合 [Event.Key.invoke] 为其提供对于匹配逻辑的构建。
+     *
+     * ```kotlin
+     * FooEvent { event: FooEvent -> // this: EventListenerProcessingContext
+     *   // do handle
+     *
+     *   EventResult.defaults()
+     * } onMatch {
+     *    val condition1: Boolean = ...
+     *    condition1
+     * } onMatch {
+     *    val condition2: Boolean = ...
+     *    condition2
+     * }
+     * ```
+     *
+     * 使用 [onMatch] 效果类似于使用 [ListenerGenerator.match], 当配置多层时相当于通过与(`&&`)连接。
+     *
+     * @see Event.Key.invoke
+     * @see ListenerGenerator.match
+     *
+     */
+    public inline infix fun <E : Event> EventHandling<E>.onMatch(crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean): EventHandling<E> = also {
+        generator.match { matcher(it) }
+    }
+    
+    /**
+     * 配合 [Event.Key.invoke] 并标记其构建的监听函数为异步的。
+     *
+     * ```kotlin
+     * FooEvent { event: FooEvent -> // this: EventListenerProcessingContext
+     *   // do handle
+     *
+     *   EventResult.defaults()
+     * }.async(true)
+     *
+     * // or
+     *
+     * FooEvent { event ->
+     *    // ...
+     *    eventResult()
+     * }.async() // default param: true
+     * ```
+     * 可以配合 [onMatch] 在其之前使用来指定当前函数的异步性。
+     *
+     * ```kotlin
+     * FooEvent { event ->
+     *    // ...
+     *    eventResult()
+     * }.async() onMatch {
+     *    // ...
+     *    true
+     * }
+     *
+     * ```
+     *
+     *
+     *
+     * @see Event.Key.invoke
+     * @see ListenerGenerator.match
+     *
+     */
+    @Suppress("NOTHING_TO_INLINE")
+    public inline fun <E : Event> EventHandling<E>.async(isAsync: Boolean = true): EventHandling<E> = also {
+        generator.isAsync = isAsync
     }
     
     /**
      * 得到当前构建的所有 listeners。
      */
     public fun build(): List<EventListener> {
-        return listeners
+        return listeners.map { it() }
     }
 }
 
@@ -229,6 +323,36 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
     
     /**
      * 配置当前监听函数的匹配函数。
+     *
+     * ```kotlin
+     * listen(FooEvent) {
+     *    match { condition } // return Boolean
+     *    handle { ... }
+     * }
+     * ```
+     *
+     * [match] 函数允许多次使用。当执行多次 [match] 时，其效果相当于每次配置的条件之间通过与(`&&`)相连接。
+     *
+     * 例如：
+     * ```kotlin
+     * listen(FooEvent) {
+     *    match { condition1 }
+     *    match { condition2 }
+     *    match { condition3 }
+     *
+     *    handle { ... }
+     * }
+     * ```
+     * 其效果等同于：
+     * ```kotlin
+     * listen(FooEvent) {
+     *    match { condition1 && condition2 && condition3 }
+     *
+     *    handle { ... }
+     * }
+     * ```
+     *
+     *
      */
     @JvmSynthetic
     @ListenerGeneratorDSL
@@ -237,7 +361,9 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
     }
     
     /**
-     * 匹配函数
+     * 配置当前监听函数的匹配函数。
+     *
+     * @see match
      */
     @Api4J
     @JvmName("match")
@@ -259,7 +385,23 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
     }
     
     /**
-     * 监听函数。
+     * 监听函数。处理监听到的事件的具体逻辑。
+     *
+     * ```kotlin
+     * listen(FooEvent) {
+     *    handle { event: FooEvent -> // this: EventListenerProcessingContext
+     *       // do handle
+     *
+     *       EventResult.of(...) // return
+     *    }
+     * }
+     * ```
+     *
+     * 对于同一个 [ListenerGenerator], [handle] 只能且必须配置 **一次**。如果配置次数超过一次会直接引发 [SimbotIllegalStateException]；
+     * 如果未进行配置则会在最终构建时引发 [SimbotIllegalStateException].
+     *
+     * @throws SimbotIllegalStateException 如果调用超过一次
+     *
      */
     @JvmSynthetic
     @ListenerGeneratorDSL
@@ -267,9 +409,15 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
         setFunc(func)
     }
     
+  
+    
     
     /**
-     * 监听函数。
+     * 监听函数。处理监听到的事件的具体逻辑。
+     *
+     * @see handle
+     *
+     * @throws SimbotIllegalStateException 如果调用超过一次
      */
     @Api4J
     @JvmName("handle")
@@ -282,7 +430,11 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
     }
     
     /**
-     * 监听函数。
+     * 监听函数。处理监听到的事件的具体逻辑。
+     *
+     * @see handle
+     *
+     * @throws SimbotIllegalStateException 如果调用超过一次
      */
     @Api4J
     @JvmName("handle")
@@ -303,6 +455,26 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
         )
     }
     
+    
+    /**
+     * 在 [ListenerGenerator] 环境中提供一个可以更简单快捷的为 [ListenerGenerator.handle] 提供 [事件结果][EventResult] 的内联函数，
+     * 其效果等同于使用 [EventResult.of].
+     *
+     * ```kotlin
+     * listen(FooEvent) {
+     *    handle {
+     *       // do handle...
+     *       eventResult() // return EventResult
+     *    }
+     * }
+     * ```
+     *
+     */
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    public inline fun EventListenerProcessingContext.eventResult(content: Any? = null, isTruncated: Boolean = false): EventResult = EventResult.of(content, isTruncated)
+
+    
 }
 // endregion
+
 
