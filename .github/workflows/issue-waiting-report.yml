@@ -13,6 +13,6 @@ jobs:
       - name: Issue Labeler
         uses: andymckay/labeler@1.0.4
         with: 
-          remove-labels: "等待反馈"
+          remove-labels: "等待反馈, 陈旧"
           add-labels: "等待确认"
           repo-token: ${{ secrets.FORLIY_ACCESS_TOKEN }}
