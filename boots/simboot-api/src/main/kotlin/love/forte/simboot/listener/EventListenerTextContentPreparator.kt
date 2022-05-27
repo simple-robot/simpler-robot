@@ -27,7 +27,7 @@ import love.forte.simbot.event.EventListenerProcessingContext
  * [StandardTextContentProcessor] 是对 [EventListenerProcessingContext.textContent] 的前置处理器，
  * 可以通过事件实体和context来决定目标监听函数所需要使用的content内容。
  *
- * 标准的前置处理器均为 [ListenerMatchPreparer], 因此它们只能使用于 [@Preparator][love.forte.simboot.annotation.Preparator] 中。
+ * 标准的前置处理器均为 [ListenerMatchPreparer], 因此它们只能使用于 [@Preparer][love.forte.simboot.annotation.Preparator] 中。
  *
  * @see ListenerMatchPreparer
  */

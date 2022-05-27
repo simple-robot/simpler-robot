@@ -479,7 +479,7 @@ public class KFunctionListenerProcessor(
             instanceCache.computeIfAbsent(type) { type.createInstance() } as ListenerPreparer
         }.getOrElse {
             throw SimbotIllegalStateException(
-                "Cannot get ListenerPreparator instance of type [$type]: does not exist in the bean container and cannot be instantiated directly: ${it.localizedMessage}",
+                "Cannot get ListenerPreparer instance of type [$type]: does not exist in the bean container and cannot be instantiated directly: ${it.localizedMessage}",
                 it
             )
         }
