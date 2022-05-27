@@ -32,13 +32,21 @@ suspend fun main() {
         listeners {
             listen(FriendMessageEvent) {
                 match { true }
-                handle { defaults() }
+                handle {
+                    
+                    eventResult()
+                }
             }
             
-            FriendMessageEvent {event ->
+            FriendMessageEvent { event ->
                 delay(1234)
-                
                 defaults()
+            } onMatch {
+               
+                true
+            } onMatch {
+                
+                true
             }
             
             
