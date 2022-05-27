@@ -270,6 +270,30 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     public fun build(): List<EventListener> {
         return listeners.map { it() }
     }
+    
+    
+    
+    /**
+     * 在 [EventListenersGenerator] 环境中提供一个可以更简单快捷的构建 [事件结果][EventResult] 的内联函数，
+     * 其效果等同于使用 [EventResult.of].
+     *
+     * e.g.
+     * ```kotlin
+     * listeners {
+     *   listen(FooEvent) {
+     *      handle {
+     *         // do handle...
+     *         eventResult() // return EventResult
+     *      }
+     *   }
+     * }
+     * ```
+     *
+     */
+    @Suppress("NOTHING_TO_INLINE", "unused")
+    public inline fun EventListenerProcessingContext.eventResult(content: Any? = null, isTruncated: Boolean = false): EventResult = EventResult.of(content, isTruncated)
+    
+    
 }
 
 
@@ -454,25 +478,7 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
             function = func ?: throw SimbotIllegalStateException("The handle function must be configured")
         )
     }
-    
-    
-    /**
-     * 在 [ListenerGenerator] 环境中提供一个可以更简单快捷的为 [ListenerGenerator.handle] 提供 [事件结果][EventResult] 的内联函数，
-     * 其效果等同于使用 [EventResult.of].
-     *
-     * ```kotlin
-     * listen(FooEvent) {
-     *    handle {
-     *       // do handle...
-     *       eventResult() // return EventResult
-     *    }
-     * }
-     * ```
-     *
-     */
-    @Suppress("NOTHING_TO_INLINE", "unused")
-    public inline fun EventListenerProcessingContext.eventResult(content: Any? = null, isTruncated: Boolean = false): EventResult = EventResult.of(content, isTruncated)
-
+ 
     
 }
 // endregion
