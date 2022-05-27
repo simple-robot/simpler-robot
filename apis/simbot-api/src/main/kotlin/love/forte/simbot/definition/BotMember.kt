@@ -55,6 +55,7 @@ public interface BotMember : Bot, Member {
  *
  * [BotGroupMember] 同时实现 [BotMember] 和 [GroupMember], 通过 [Group.bot] 获取并代表此bot在目标群中的成员身份。
  *
+ * @see GroupMember
  * @author ForteScarlet
  */
 public interface BotGroupMember : BotMember, GroupMember
@@ -65,6 +66,7 @@ public interface BotGroupMember : BotMember, GroupMember
  *
  * [BotGroupMember] 同时实现 [BotMember] 和 [GuildMember], 通过 [Guild.bot] 获取并代表此bot在目标频道服务器中的成员身份。
  *
+ * @see GuildMember
  * @author ForteScarlet
  */
 public interface BotGuildMember : BotMember, GuildMember

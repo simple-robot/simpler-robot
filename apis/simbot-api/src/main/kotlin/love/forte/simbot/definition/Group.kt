@@ -19,7 +19,10 @@ package love.forte.simbot.definition
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import love.forte.simbot.*
+import love.forte.simbot.Api4J
+import love.forte.simbot.ID
+import love.forte.simbot.Limiter
+import love.forte.simbot.Timestamp
 import love.forte.simbot.utils.runInBlocking
 import java.util.stream.Stream
 
@@ -35,7 +38,7 @@ public interface GroupInfo : OrganizationInfo
  */
 public interface Group : ChatRoom, GroupInfo {
 
-    override val bot: Bot
+    override val bot: BotGroupMember
     override val id: ID
     override val name: String
     override val icon: String
@@ -91,7 +94,7 @@ public interface Group : ChatRoom, GroupInfo {
  * 目前来看，大部分 guild 其本身是无法发送消息进行交流的。
  */
 public interface Guild : Organization, GuildInfo {
-    override val bot: Bot
+    override val bot: BotGuildMember
     override val id: ID
     override val name: String
     override val icon: String
@@ -174,7 +177,7 @@ public interface GuildInfo : OrganizationInfo {
  */
 public interface Channel : ChatRoom, ChannelInfo {
     override val guildId: ID
-    override val bot: Bot
+    override val bot: BotGuildMember
     override val id: ID
     override val name: String
     override val icon: String

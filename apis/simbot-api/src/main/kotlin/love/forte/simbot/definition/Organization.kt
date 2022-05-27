@@ -17,12 +17,15 @@
 
 package love.forte.simbot.definition
 
-import kotlinx.coroutines.flow.*
-import love.forte.simbot.*
-import love.forte.simbot.action.*
-import love.forte.simbot.utils.*
-import java.util.stream.*
-import kotlin.time.*
+import kotlinx.coroutines.flow.Flow
+import love.forte.simbot.Api4J
+import love.forte.simbot.ID
+import love.forte.simbot.Limiter
+import love.forte.simbot.Timestamp
+import love.forte.simbot.action.MuteSupport
+import love.forte.simbot.utils.runInBlocking
+import java.util.stream.Stream
+import kotlin.time.Duration
 
 
 /**
@@ -75,8 +78,10 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
 
     /**
      * 这个组织一定是属于某一个Bot之下的。
+     *
+     * 这个所属bot在当前组织中所扮演的角色。
      */
-    override val bot: Bot
+    override val bot: BotMember
 
     /**
      * 对于这个组织, 有一个唯一ID。
