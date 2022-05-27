@@ -41,7 +41,8 @@ suspend fun main() {
             FriendMessageEvent { event ->
                 delay(1234)
                 defaults()
-            }.generator
+            }
+            
             
             
         }
