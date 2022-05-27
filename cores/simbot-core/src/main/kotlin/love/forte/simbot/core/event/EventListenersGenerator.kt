@@ -190,7 +190,6 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     
     /**
      * 通过 [Event.Key.invoke] 得到的 _处理过程_ 对象，用于进一步配置此事件的匹配逻辑。
-     *
      */
     @InternalSimbotApi
     @JvmInline
