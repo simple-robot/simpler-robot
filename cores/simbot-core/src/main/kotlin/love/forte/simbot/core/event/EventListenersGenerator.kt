@@ -224,6 +224,28 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     }
     
     /**
+     * 配合 [Event.Key.invoke] 并标记其构建的监听函数为异步的。
+     *
+     * ```kotlin
+     * FooEvent { event: FooEvent -> // this: EventListenerProcessingContext
+     *   // do handle
+     *
+     *   EventResult.defaults()
+     * }.async()
+     * ```
+     *
+     * 使用 [onMatch] 效果类似于使用 [ListenerGenerator.match], 当配置多层时相当于通过与(`&&`)连接。
+     *
+     * @see Event.Key.invoke
+     * @see ListenerGenerator.match
+     *
+     */
+    // TODO
+    public fun <E : Event> EventHandling<E>.async(isAsync: Boolean = true): EventHandling<E> = also {
+        generator.isAsync = isAsync
+    }
+    
+    /**
      * 得到当前构建的所有 listeners。
      */
     public fun build(): List<EventListener> {
