@@ -231,17 +231,36 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      *   // do handle
      *
      *   EventResult.defaults()
-     * }.async()
+     * }.async(true)
+     *
+     * // or
+     *
+     * FooEvent { event ->
+     *    // ...
+     *    eventResult()
+     * }.async() // default param: true
+     * ```
+     * 可以配合 [onMatch] 在其之前使用来指定当前函数的异步性。
+     *
+     * ```kotlin
+     * FooEvent { event ->
+     *    // ...
+     *    eventResult()
+     * }.async() onMatch {
+     *    // ...
+     *    true
+     * }
+     *
      * ```
      *
-     * 使用 [onMatch] 效果类似于使用 [ListenerGenerator.match], 当配置多层时相当于通过与(`&&`)连接。
+     *
      *
      * @see Event.Key.invoke
      * @see ListenerGenerator.match
      *
      */
-    // TODO
-    public fun <E : Event> EventHandling<E>.async(isAsync: Boolean = true): EventHandling<E> = also {
+    @Suppress("NOTHING_TO_INLINE")
+    public inline fun <E : Event> EventHandling<E>.async(isAsync: Boolean = true): EventHandling<E> = also {
         generator.isAsync = isAsync
     }
     
