@@ -38,7 +38,7 @@ public interface GroupInfo : OrganizationInfo
  */
 public interface Group : ChatRoom, GroupInfo {
 
-    override val bot: BotGroupMember
+    override val bot: GroupMemberBot
     override val id: ID
     override val name: String
     override val icon: String
@@ -94,7 +94,7 @@ public interface Group : ChatRoom, GroupInfo {
  * 目前来看，大部分 guild 其本身是无法发送消息进行交流的。
  */
 public interface Guild : Organization, GuildInfo {
-    override val bot: BotGuildMember
+    override val bot: GuildMemberBot
     override val id: ID
     override val name: String
     override val icon: String
@@ -177,7 +177,7 @@ public interface GuildInfo : OrganizationInfo {
  */
 public interface Channel : ChatRoom, ChannelInfo {
     override val guildId: ID
-    override val bot: BotGuildMember
+    override val bot: GuildMemberBot
     override val id: ID
     override val name: String
     override val icon: String

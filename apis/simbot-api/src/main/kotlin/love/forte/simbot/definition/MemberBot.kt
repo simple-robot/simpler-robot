@@ -23,18 +23,18 @@ import love.forte.simbot.ID
 /**
  * 一个 [Bot] 在一个 [组织][Organization] 中所扮演的 [成员][Member] 对象。
  *
- * [BotMember] 同时实现 [Bot] 和 [Member], 通过 [Organization.bot] 获取并代表此bot在目标组织中的成员身份。
+ * [MemberBot] 同时实现 [Bot] 和 [Member], 通过 [Organization.bot] 获取并代表此bot在目标组织中的成员身份。
  *
  * @author ForteScarlet
  */
-public interface BotMember : Bot, Member {
+public interface MemberBot : Bot, Member {
     /**
      * 唯一标识。
      */
     override val id: ID
     
     /**
-     * [BotMember] 中包含的真正bot实例。
+     * [MemberBot] 中包含的真正bot实例。
      */
     override val bot: Bot
     
@@ -53,20 +53,20 @@ public interface BotMember : Bot, Member {
 /**
  * 一个 [Bot] 在一个 [群][Group] 中所扮演的 [成员][Member] 对象。
  *
- * [BotGroupMember] 同时实现 [BotMember] 和 [GroupMember], 通过 [Group.bot] 获取并代表此bot在目标群中的成员身份。
+ * [GroupMemberBot] 同时实现 [MemberBot] 和 [GroupMember], 通过 [Group.bot] 获取并代表此bot在目标群中的成员身份。
  *
  * @see GroupMember
  * @author ForteScarlet
  */
-public interface BotGroupMember : BotMember, GroupMember
+public interface GroupMemberBot : MemberBot, GroupMember
 
 
 /**
  * 一个 [Bot] 在一个 [频道服务器][Guild] 中所扮演的 [成员][Member] 对象。
  *
- * [BotGroupMember] 同时实现 [BotMember] 和 [GuildMember], 通过 [Guild.bot] 获取并代表此bot在目标频道服务器中的成员身份。
+ * [GroupMemberBot] 同时实现 [MemberBot] 和 [GuildMember], 通过 [Guild.bot] 获取并代表此bot在目标频道服务器中的成员身份。
  *
  * @see GuildMember
  * @author ForteScarlet
  */
-public interface BotGuildMember : BotMember, GuildMember
+public interface GuildMemberBot : MemberBot, GuildMember

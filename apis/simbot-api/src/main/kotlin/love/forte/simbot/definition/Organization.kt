@@ -81,7 +81,7 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
      *
      * 这个所属bot在当前组织中所扮演的角色。
      */
-    override val bot: BotMember
+    override val bot: MemberBot
 
     /**
      * 对于这个组织, 有一个唯一ID。
