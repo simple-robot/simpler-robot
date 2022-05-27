@@ -12,13 +12,12 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.listener
 
-import love.forte.simboot.interceptor.ListenerMatchPreparator
-import love.forte.simboot.interceptor.ListenerPreparator
+import love.forte.simboot.interceptor.ListenerMatchPreparer
+import love.forte.simboot.interceptor.ListenerPreparer
 import love.forte.simbot.event.EventListenerProcessingContext
 
 
@@ -28,11 +27,11 @@ import love.forte.simbot.event.EventListenerProcessingContext
  * [StandardTextContentProcessor] 是对 [EventListenerProcessingContext.textContent] 的前置处理器，
  * 可以通过事件实体和context来决定目标监听函数所需要使用的content内容。
  *
- * 标准的前置处理器均为 [ListenerMatchPreparator], 因此它们只能使用于 [@Preparator][love.forte.simboot.annotation.Preparator] 中。
+ * 标准的前置处理器均为 [ListenerMatchPreparer], 因此它们只能使用于 [@Preparator][love.forte.simboot.annotation.Preparator] 中。
  *
- * @see ListenerMatchPreparator
+ * @see ListenerMatchPreparer
  */
-public sealed class StandardTextContentProcessor : ListenerPreparator {
+public sealed class StandardTextContentProcessor : ListenerPreparer {
 
     /**
      * 当 [EventListenerProcessingContext.textContent] 不为 null 的时候，对其进行 trim 并重新设置。
@@ -40,7 +39,7 @@ public sealed class StandardTextContentProcessor : ListenerPreparator {
      * @see StandardTextContentProcessor
      * @see love.forte.simboot.annotation.ContentTrim
      */
-    public object Trim : StandardTextContentProcessor(), ListenerMatchPreparator {
+    public object Trim : StandardTextContentProcessor(), ListenerMatchPreparer {
         override suspend fun prepareMatch(context: EventListenerProcessingContext) {
             val text = context.textContent
             if (text != null) {
@@ -55,7 +54,7 @@ public sealed class StandardTextContentProcessor : ListenerPreparator {
      * @see StandardTextContentProcessor
      * @see love.forte.simboot.annotation.ContentToNull
      */
-    public object Null : StandardTextContentProcessor(), ListenerMatchPreparator {
+    public object Null : StandardTextContentProcessor(), ListenerMatchPreparer {
         override suspend fun prepareMatch(context: EventListenerProcessingContext) {
             context.textContent = null
         }

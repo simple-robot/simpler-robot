@@ -26,7 +26,7 @@ import love.forte.simboot.core.filter.CoreFiltersAnnotationProcessor
 import love.forte.simboot.core.filter.FiltersAnnotationProcessContext
 import love.forte.simboot.filter.MultiFilterMatchType
 import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
-import love.forte.simboot.interceptor.ListenerPreparator
+import love.forte.simboot.interceptor.ListenerPreparer
 import love.forte.simboot.listener.BindException
 import love.forte.simboot.listener.ParameterBinder
 import love.forte.simboot.listener.ParameterBinderFactory
@@ -110,11 +110,11 @@ public class KFunctionListenerProcessor(
             logger.debug("Resolved listener interceptors: {}", interceptors)
         }
         
-        // preparators
-        val preparators = function.preparators(context)
-        logger.debug("Size of resolved listener preparators: {}", preparators.size)
-        if (preparators.isNotEmpty()) {
-            logger.debug("Resolved listener preparators: {}", preparators)
+        // preparers
+        val preparers = function.preparers(context)
+        logger.debug("Size of resolved listener preparers: {}", preparers.size)
+        if (preparers.isNotEmpty()) {
+            logger.debug("Resolved listener preparers: {}", preparers)
         }
         
         var resolvedListener: EventListener = listener
@@ -123,13 +123,13 @@ public class KFunctionListenerProcessor(
             resolvedListener += filters
         }
         
-        if (preparators.isNotEmpty() || interceptors.isNotEmpty()) {
+        if (preparers.isNotEmpty() || interceptors.isNotEmpty()) {
             val entrance = EventInterceptEntrance.eventListenerInterceptEntrance(interceptors.map { it.interceptor })
             resolvedListener = resolvedListener.proxy({ eventListener ->
-                preparators.forEach { preparator -> preparator.prepareMatch(this) }
+                preparers.forEach { preparer -> preparer.prepareMatch(this) }
                 eventListener.match(this)
             }) { eventListener ->
-                preparators.forEach { preparator -> preparator.prepareInvoke(this) }
+                preparers.forEach { preparer -> preparer.prepareInvoke(this) }
                 entrance.doIntercept(this) { context0 ->
                     eventListener(context0)
                 }
@@ -448,20 +448,20 @@ public class KFunctionListenerProcessor(
     
     
     /**
-     * 尝试解析并获取所有的 [ListenerPreparator].
+     * 尝试解析并获取所有的 [ListenerPreparer].
      */
-    private fun KFunction<*>.preparators(context: FunctionalListenerProcessContext): List<ListenerPreparator> {
-        return annotationTool.getAnnotations<Preparator>(this)
+    private fun KFunction<*>.preparers(context: FunctionalListenerProcessContext): List<ListenerPreparer> {
+        return annotationTool.getAnnotations<Preparer>(this)
             .asSequence()
             .map { annotation ->
-                annotation to annotation.toListenerPreparator(context)
+                annotation to annotation.toListenerPreparer(context)
             }.sortedBy { (a, _) -> a.priority }
             .map { (_, p) -> p }
             .toList()
     }
     
     
-    private fun Preparator.toListenerPreparator(context: FunctionalListenerProcessContext): ListenerPreparator {
+    private fun Preparer.toListenerPreparer(context: FunctionalListenerProcessContext): ListenerPreparer {
         val type = value
         val objectInstance = type.objectInstance
         if (objectInstance != null) return objectInstance
@@ -476,7 +476,7 @@ public class KFunctionListenerProcessor(
         if (foundInstance != null) return foundInstance
         
         return kotlin.runCatching {
-            instanceCache.computeIfAbsent(type) { type.createInstance() } as ListenerPreparator
+            instanceCache.computeIfAbsent(type) { type.createInstance() } as ListenerPreparer
         }.getOrElse {
             throw SimbotIllegalStateException(
                 "Cannot get ListenerPreparator instance of type [$type]: does not exist in the bean container and cannot be instantiated directly: ${it.localizedMessage}",
