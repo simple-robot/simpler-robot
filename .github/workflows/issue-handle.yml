@@ -1,0 +1,30 @@
+name: Issue Handle
+on: 
+  issues:
+    types: [opened, closed]
+    
+    
+jobs:
+  issue-open-waiting-for-confirm:
+    name: Issue Open Waiting Confirm
+    if: github.event.action == 'opened' && github.event.sender.id != github.event.repository.owner.id
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/marketplace/actions/simple-issue-labeler
+      - name: Issue Labeler For Waiting Confirm
+        uses: andymckay/labeler@1.0.4
+        with: 
+          add-labels: "等待确认"
+          repo-token: ${{ secrets.FORLIY_ACCESS_TOKEN }}
+          
+  issue-close-remove-waiting-label:
+    name: Issue Close remove Waiting Label
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/marketplace/actions/simple-issue-labeler
+      - name: Issue Labeler For Waiting Confirm
+        uses: andymckay/labeler@1.0.4
+        with: 
+          remove-labels: "等待确认, 等待反馈"
+          repo-token: ${{ secrets.FORLIY_ACCESS_TOKEN }}
