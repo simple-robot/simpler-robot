@@ -222,8 +222,7 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
             m
         } else {
             {
-                old(it)
-                m(it)
+                old(it) && m(it)
             }
         }
     }
