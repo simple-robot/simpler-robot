@@ -41,13 +41,7 @@ suspend fun main() {
             FriendMessageEvent { event ->
                 delay(1234)
                 defaults()
-            } onMatch {
-               
-                true
-            } onMatch {
-                
-                true
-            }
+            }.generator
             
             
         }
