@@ -39,14 +39,13 @@ import java.util.concurrent.atomic.LongAdder
 
 /**
  * 唯一标识 [ID].
- * ID一般存在与各个元数据中，作为元数据的唯一标识。
  *
  * 一个 [ID]，其代表了两种数据：ID的类型，以及ID具体的值。
- * [ID] 的类型即为其自身，不同类型的ID无论如何也不应相同。而 [ID] 中具体的值千变万化，且不一定仅存一个，由实现者自行决定。
  *
  * 假若一个 [ID] 中实际存储的值仅有一个，则它的 [toString] 应当就是它的字面值。
+ * 通常情况下 [ID] 之间的相等判断即通过字面值进行。
  *
- * [ID] 是[可排序的][Comparable]。
+ * [ID] 是 [可排序的][Comparable]。
  *
  *
  * ## 序列化
@@ -621,7 +620,7 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
 
 
 /**
- * 以 [字符][CharSequence] 作为字面值的 [ID].
+ * 以 [字符序列][CharSequence] 作为字面值的 [ID].
  *
  * ```kotlin
  * // Kotlin
@@ -635,7 +634,7 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
  *
  * ### 可变字符序列
  * 注意，尽可能避免将 [StringBuilder] 等可变序列作为参数提供, 除非你明确的知道你在做什么。
- * [CharSequenceID] 的 [value][CharSequenceID.value] 目前将会直接使用其引用作为参数。
+ * [CharSequenceID] 的 [value][CharSequenceID.value] 目前将会直接使用其引用而非瞬时值作为属性。
  *
  * ### 转化
  * 所有的ID都拥有转化为字符序列ID的能力。

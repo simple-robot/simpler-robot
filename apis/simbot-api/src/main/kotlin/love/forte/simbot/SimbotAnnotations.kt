@@ -17,27 +17,27 @@
 package love.forte.simbot
 
 /**
- * 标记一个方法是提供给 Java 而方便使用的，对于Kotlin应存在其他更优的代替方法。
+ * 标记为供Java使用的阻塞API，不建议Kotlin使用。对于Kotlin应存在其他更优的代替方法。
  */
-@RequiresOptIn("为Java提供的阻塞API，不建议Kotlin使用", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn("Blocking API marked for Java use, not recommended for Kotlin.", level = RequiresOptIn.Level.WARNING)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 public annotation class Api4J
 
 /**
- * 标记一个函数为"阻塞"性的。一般用于可能同时存在同意义的挂起函数的api上。
+ * 标记为可能存在同含义的非阻塞API的阻塞API。应优先考虑使用同含义的非阻塞的API。
  */
-@RequiresOptIn("可能存在同意义非阻塞api的阻塞api，优先考虑使用非阻塞的api", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn("Blocking APIs marked as possibly having non-blocking APIs with the same meaning should be given preference over non-blocking APIs with the same meaning.", level = RequiresOptIn.Level.WARNING)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 public annotation class BlockingApi
 
 
 /**
- * 标记一个实验性质的相关内容。
+ * 标标记为实验性的API，不保证稳定性且可能会随时发生无提示的变更。
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION)
-@RequiresOptIn("实验性的API，可能会随时变更", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn("APIs marked as experimental are not guaranteed to be stable and may be subject to unprompted change at any time.", level = RequiresOptIn.Level.WARNING)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 public annotation class ExperimentalSimbotApi
@@ -46,7 +46,10 @@ public annotation class ExperimentalSimbotApi
 /**
  * 标记一个作为内部API所使用的相关内容。如无必要则不应该使用内部API。一个内部API可能会在没有任何通知的情况下发生变更、删除。
  */
-@RequiresOptIn(message = "内部API，其可用性不会被保证，也不会有任何变更通知。", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn(
+    message = "Marked as an internal API, its availability is not guaranteed and there will be no notification of changes.",
+    level = RequiresOptIn.Level.WARNING
+)
 @Retention(AnnotationRetention.BINARY)
 @Target(
     AnnotationTarget.CLASS,
@@ -66,9 +69,12 @@ public annotation class InternalSimbotApi
 
 
 /**
- * 表示可能存在使用限制、严格要求或者存在特殊规则的API，需要仔细阅读说明且谨慎使用。
+ * 标记为可能存在使用限制、严格要求或者存在特殊规则的API，需要仔细阅读说明且谨慎使用。
  */
-@RequiresOptIn(message = "可能存在使用限制、严格要求或者存在特殊规则的API，需要仔细阅读说明且谨慎使用。", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn(
+    message = "APIs marked as having possible usage restrictions, strict requirements or special rules need to be read carefully and used with caution.",
+    level = RequiresOptIn.Level.WARNING
+)
 @Retention(AnnotationRetention.BINARY)
 @Target(
     AnnotationTarget.CLASS,
@@ -88,11 +94,14 @@ public annotation class DiscreetSimbotApi
 
 
 /**
- * 表示十分脆弱的、存在性能瓶颈、限制或有更好替代品的API，应阅读相应的文档并选择更优方案，同时尽量避免使用相关API。
+ * 标记为十分脆弱的、存在性能瓶颈、限制或有更好替代品的API，应阅读相应的文档并选择更优方案，同时尽量避免使用相关API。
  *
  * 被标记的相关内容可能会在未来进行优化、变更或删除。
  */
-@RequiresOptIn(message = "十分脆弱的、存在性能瓶颈、限制或有更好替代品的API，应阅读相应的文档并选择更优方案，同时尽量避免使用相关API", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn(
+    message = "APIs that are marked as very vulnerable, have performance bottlenecks, limitations, or have better alternatives should be read in the appropriate documentation and chosen as the better solution, while avoiding the use of the API in question as much as possible.",
+    level = RequiresOptIn.Level.WARNING
+)
 @Retention(AnnotationRetention.BINARY)
 @Target(
     AnnotationTarget.CLASS,
@@ -135,6 +144,9 @@ public annotation class FragileSimbotApi
 public annotation class NotSuggestedEvent // todo?
 
 
-@RequiresOptIn(message = "You have found a bonus! But you're better off using something normal.", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn(
+    message = "You have found a bonus! But you're better off using something normal.",
+    level = RequiresOptIn.Level.WARNING
+)
 @Retention(AnnotationRetention.BINARY)
 public annotation class Bonus
