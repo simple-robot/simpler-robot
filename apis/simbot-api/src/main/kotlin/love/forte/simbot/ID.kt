@@ -218,6 +218,8 @@ public val UUID.ID: CharSequenceID
 
 /**
  * 取得一个随机ID。
+ *
+ * @see RandomIDUtil.randomID
  */
 public fun randomID(): ID = RandomIDUtil.randomID().ID
 
@@ -597,6 +599,9 @@ public val BigInteger.ID: BigIntegerID
         else -> BigIntegerID(this)
     }
 
+/**
+ * 将 [AtomicLong] 的瞬时值转化为 [LongID]。
+ */
 @Suppress("FunctionName")
 @get:JvmName("ID")
 public val AtomicLong.ID: LongID
