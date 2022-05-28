@@ -20,14 +20,10 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.action.DeleteSupport
-import love.forte.simbot.action.MessageReplyReceipt
 import love.forte.simbot.action.ReplySupport
 import love.forte.simbot.action.SendSupport
 import love.forte.simbot.definition.*
-import love.forte.simbot.message.Message
-import love.forte.simbot.message.ReceivedMessageContent
-import love.forte.simbot.message.RemoteMessageContainer
-import love.forte.simbot.message.doSafeCast
+import love.forte.simbot.message.*
 
 
 /**
@@ -82,7 +78,7 @@ public interface MessageEvent : Event, RemoteMessageContainer, ReplySupport {
      * @throws love.forte.simbot.action.UnsupportedActionException 当此消息事件不支持进行回复时
      *
      */
-    override suspend fun reply(message: Message): MessageReplyReceipt
+    override suspend fun reply(message: Message): MessageReceipt
     
     // Event key
     public companion object Key : BaseEventKey<MessageEvent>("api.message") {
