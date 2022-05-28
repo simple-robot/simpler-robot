@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.action
@@ -22,6 +21,7 @@ import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.definition.Objectives
+import love.forte.simbot.event.Event
 import love.forte.simbot.message.*
 import love.forte.simbot.utils.runInBlocking
 
@@ -289,9 +289,39 @@ public suspend fun MessageContainer.sendIfSupport(message: String): MessageRecei
 
 //region reply
 /**
+ * 如果此事件允许回复消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend fun Event.replyIfSupport(message: Message): MessageReplyReceipt? =
+    if (this is ReplySupport) reply(message) else null
+
+/**
+ * 如果此事件允许回复消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend fun Event.replyIfSupport(message: () -> Message): MessageReplyReceipt? =
+    if (this is ReplySupport) reply(message()) else null
+
+/**
+ * 如果此事件允许回复消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend fun Event.replyIfSupport(message: MessageContent): MessageReplyReceipt? =
+    if (this is ReplySupport) reply(message) else null
+
+/**
+ * 如果此事件允许回复消息，发送，否则得到null。
+ */
+@JvmSynthetic
+public suspend fun Event.replyIfSupport(message: String): MessageReplyReceipt? =
+    if (this is ReplySupport) reply(message) else null
+
+/**
  * 如果此目标允许回复消息，发送，否则得到null。
  */
 @JvmSynthetic
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("ReplySupport通常由Event类型实现")
 public suspend fun Objectives.replyIfSupport(message: Message): MessageReplyReceipt? =
     if (this is ReplySupport) reply(message) else null
 
@@ -300,6 +330,8 @@ public suspend fun Objectives.replyIfSupport(message: Message): MessageReplyRece
  * 如果此组织允许回复消息，发送，否则得到null。
  */
 @JvmSynthetic
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("ReplySupport通常由Event类型实现")
 public suspend fun MessageContainer.replyIfSupport(message: Message): MessageReplyReceipt? =
     if (this is ReplySupport) reply(message) else null
 
@@ -307,6 +339,8 @@ public suspend fun MessageContainer.replyIfSupport(message: Message): MessageRep
  * 如果此目标允许回复消息，发送，否则得到null。
  */
 @JvmSynthetic
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("ReplySupport通常由Event类型实现")
 public suspend inline fun Objectives.replyIfSupport(message: () -> Message): MessageReplyReceipt? =
     if (this is ReplySupport) reply(message()) else null
 
@@ -315,6 +349,8 @@ public suspend inline fun Objectives.replyIfSupport(message: () -> Message): Mes
  * 如果此组织允许回复消息，发送，否则得到null。
  */
 @JvmSynthetic
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("ReplySupport通常由Event类型实现")
 public suspend inline fun MessageContainer.replyIfSupport(message: () -> Message): MessageReplyReceipt? =
     if (this is ReplySupport) reply(message()) else null
 
@@ -323,6 +359,8 @@ public suspend inline fun MessageContainer.replyIfSupport(message: () -> Message
  * 如果此目标允许回复消息，发送，否则得到null。
  */
 @JvmSynthetic
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("ReplySupport通常由Event类型实现")
 public suspend fun Objectives.replyIfSupport(message: MessageContent): MessageReplyReceipt? =
     if (this is ReplySupport) reply(message) else null
 
@@ -331,6 +369,8 @@ public suspend fun Objectives.replyIfSupport(message: MessageContent): MessageRe
  * 如果此组织允许回复消息，发送，否则得到null。
  */
 @JvmSynthetic
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("ReplySupport通常由Event类型实现")
 public suspend fun MessageContainer.replyIfSupport(message: MessageContent): MessageReplyReceipt? =
     if (this is ReplySupport) reply(message) else null
 
@@ -339,6 +379,8 @@ public suspend fun MessageContainer.replyIfSupport(message: MessageContent): Mes
  * 如果此目标允许回复消息，发送，否则得到null。
  */
 @JvmSynthetic
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("ReplySupport通常由Event类型实现")
 public suspend fun Objectives.replyIfSupport(message: String): MessageReplyReceipt? =
     if (this is ReplySupport) reply(message) else null
 
@@ -347,6 +389,8 @@ public suspend fun Objectives.replyIfSupport(message: String): MessageReplyRecei
  * 如果此组织允许回复消息，发送，否则得到null。
  */
 @JvmSynthetic
+@Suppress("DeprecatedCallableAddReplaceWith")
+@Deprecated("ReplySupport通常由Event类型实现")
 public suspend fun MessageContainer.replyIfSupport(message: String): MessageReplyReceipt? =
     if (this is ReplySupport) reply(message) else null
 //endregion
