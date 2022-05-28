@@ -47,7 +47,7 @@ public interface MessageEvent : Event, RemoteMessageContainer, ReplySupport {
 
     /**
      * 当前消息事件所对应的事件源头. 如果是组织相关的，则可能是 [ChatRoom] 的子类型，
-     * 如果是私聊相关，则代表发送者。
+     * 如果是私聊相关，则代表发送者，即 [Contact] 或其子类型。
      *
      * 通常情况下，[source] 都是可以 [发送消息][SendSupport] 的。
      *
@@ -58,7 +58,7 @@ public interface MessageEvent : Event, RemoteMessageContainer, ReplySupport {
 
     /**
      * 当前消息事件所对应的事件源头. 如果是组织相关的，则可能是 [ChatRoom] 的子类型，
-     * 如果是私聊相关，则代表发送者。
+     * 如果是私聊相关，则代表发送者，即 [Contact] 或其子类型。
      *
      * 通常情况下，[source] 都是可以 [发送消息][SendSupport] 的。
      *
