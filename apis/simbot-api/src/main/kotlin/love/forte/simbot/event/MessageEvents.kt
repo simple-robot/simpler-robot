@@ -20,6 +20,7 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.action.DeleteSupport
+import love.forte.simbot.action.ReplySupport
 import love.forte.simbot.action.SendSupport
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.ReceivedMessageContent
@@ -30,12 +31,14 @@ import love.forte.simbot.message.doSafeCast
 /**
  * 一个存在消息内容的[事件][Event]。
  *
+ * 一个 [MessageEvent] 通常情况下都应支持 [ReplySupport].
+ *
  * @see ContactMessageEvent
  * @see ChatRoomMessageEvent
  *
  */
 @BaseEvent
-public interface MessageEvent : Event, RemoteMessageContainer {
+public interface MessageEvent : Event, RemoteMessageContainer, ReplySupport {
     override val id: ID
     override val bot: Bot
 
