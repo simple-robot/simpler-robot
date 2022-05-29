@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simboot.annotation
@@ -27,7 +26,7 @@ import love.forte.simbot.event.EventListenerProcessingContext
 /**
  * 对 [EventListenerProcessingContext.textContent] 进行前置处理, 清除前后空格（如果不为null的话）。
  *
- * [ContentTrim] 是 [Preparator] 的变体，且在默认情况下，[ContentTrim] 的优先级是 **最高** 的。
+ * [ContentTrim] 是 [Preparer] 的变体，且在默认情况下，[ContentTrim] 的优先级是 **最高** 的。
  *
  * 不建议 [ContentTrim] 与 [ContentToNull] 一起使用。
  *
@@ -35,12 +34,12 @@ import love.forte.simbot.event.EventListenerProcessingContext
  * @see StandardTextContentProcessor.Trim
  */
 @ExperimentalSimbotApi
-@Preparator(StandardTextContentProcessor.Trim::class, priority = PriorityConstant.FIRST)
+@Preparer(StandardTextContentProcessor.Trim::class, priority = PriorityConstant.FIRST)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
-// @AnnotationMapper(Preparator::class) // bug in KAnnotationTool
+// @AnnotationMapper(Preparer::class) // bug in KAnnotationTool
 public annotation class ContentTrim(
-    @get:AnnotationMapper.Property(value = "priority", target = Preparator::class)
+    @get:AnnotationMapper.Property(value = "priority", target = Preparer::class)
     val priority: Int = PriorityConstant.FIRST,
 )
 
@@ -54,12 +53,12 @@ public annotation class ContentTrim(
  * @see StandardTextContentProcessor.Null
  */
 @ExperimentalSimbotApi
-@Preparator(StandardTextContentProcessor.Null::class, priority = PriorityConstant.FIRST)
+@Preparer(StandardTextContentProcessor.Null::class, priority = PriorityConstant.FIRST)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
-// @AnnotationMapper(Preparator::class) // bug in KAnnotationTool
+// @AnnotationMapper(Preparer::class) // bug in KAnnotationTool
 public annotation class ContentToNull(
-    @get:AnnotationMapper.Property(value = "priority", target = Preparator::class)
+    @get:AnnotationMapper.Property(value = "priority", target = Preparer::class)
     val priority: Int = PriorityConstant.FIRST,
 )
 

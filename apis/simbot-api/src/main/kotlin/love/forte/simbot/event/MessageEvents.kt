@@ -20,29 +20,30 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.action.DeleteSupport
+import love.forte.simbot.action.ReplySupport
 import love.forte.simbot.action.SendSupport
 import love.forte.simbot.definition.*
-import love.forte.simbot.message.ReceivedMessageContent
-import love.forte.simbot.message.RemoteMessageContainer
-import love.forte.simbot.message.doSafeCast
+import love.forte.simbot.message.*
 
 
 /**
  * 一个存在消息内容的[事件][Event]。
+ *
+ * 一个 [MessageEvent] 通常情况下都应支持 [ReplySupport].
  *
  * @see ContactMessageEvent
  * @see ChatRoomMessageEvent
  *
  */
 @BaseEvent
-public interface MessageEvent : Event, RemoteMessageContainer {
+public interface MessageEvent : Event, RemoteMessageContainer, ReplySupport {
     override val id: ID
     override val bot: Bot
 
 
     /**
      * 当前消息事件所对应的事件源头. 如果是组织相关的，则可能是 [ChatRoom] 的子类型，
-     * 如果是私聊相关，则代表发送者。
+     * 如果是私聊相关，则代表发送者，即 [Contact] 或其子类型。
      *
      * 通常情况下，[source] 都是可以 [发送消息][SendSupport] 的。
      *
@@ -53,7 +54,7 @@ public interface MessageEvent : Event, RemoteMessageContainer {
 
     /**
      * 当前消息事件所对应的事件源头. 如果是组织相关的，则可能是 [ChatRoom] 的子类型，
-     * 如果是私聊相关，则代表发送者。
+     * 如果是私聊相关，则代表发送者，即 [Contact] 或其子类型。
      *
      * 通常情况下，[source] 都是可以 [发送消息][SendSupport] 的。
      *
@@ -66,8 +67,19 @@ public interface MessageEvent : Event, RemoteMessageContainer {
      * 当前消息事件的消息正文。
      */
     override val messageContent: ReceivedMessageContent
-
-
+    
+    /**
+     * 回复此事件。
+     *
+     * 一个 [MessageEvent] 通常都应支持 [ReplySupport].
+     * [reply] 代表对本次事件中涉及的目标对象进行**针对性**的回复。
+     * 通常表现形式会与直接进行 [send][SendSupport] 有一定区别，例如会自动携带一个 at 或者消息引用等。
+     *
+     * @throws love.forte.simbot.action.UnsupportedActionException 当此消息事件不支持进行回复时
+     *
+     */
+    override suspend fun reply(message: Message): MessageReceipt
+    
     // Event key
     public companion object Key : BaseEventKey<MessageEvent>("api.message") {
         override fun safeCast(value: Any): MessageEvent? = doSafeCast(value)

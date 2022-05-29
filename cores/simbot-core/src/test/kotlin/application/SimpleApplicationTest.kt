@@ -16,37 +16,33 @@
 
 package application
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import love.forte.simbot.LoggerFactory
 import love.forte.simbot.core.application.createSimpleApplication
 import love.forte.simbot.core.application.listeners
-import love.forte.simbot.event.EventResult.Companion.defaults
 import love.forte.simbot.event.FriendMessageEvent
-import kotlin.time.Duration.Companion.seconds
 
 
 suspend fun main() {
-    LoggerFactory.getLogger("Main").debug("Debug enabled.")
-    val app = createSimpleApplication {
+    createSimpleApplication {
         listeners {
             listen(FriendMessageEvent) {
-                match { true }
-                handle { defaults() }
+                handle {
+                    // ...
+                    // feat: listeners作用域中的扩展
+                    eventResult()
+                }
             }
             
-            FriendMessageEvent {event ->
-                delay(1234)
-                
-                defaults()
+            // invoker listener func
+            FriendMessageEvent { event: FriendMessageEvent ->
+                println(event)
+                // feat: listeners作用域中的扩展
+                eventResult()
+            }.async() onMatch {
+                // ...
+                true
             }
-            
-            
+            // feat: async() 支持为invoker的监听函数构建方式提供指定异步的方式
+            // feat: onMatch { ... } 支持为invoker的监听函数构建方式提供指定匹配函数的方式
         }
-    }
-    app.launch {
-        delay(30.seconds)
-        app.shutdown()
-    }
-    app.join()
+    }.join()
 }

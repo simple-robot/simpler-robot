@@ -219,7 +219,6 @@ tasks.create("createChangelog") {
                 - [simboot-core-annotation: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-annotation/$realVersion)
                 - [simboot-core-spring-boot-starter: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-spring-boot-starter/$realVersion)
 
-                ## 其他日志
                 
             """.trimIndent()
 

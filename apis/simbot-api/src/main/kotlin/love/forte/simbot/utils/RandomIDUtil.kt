@@ -12,15 +12,20 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.utils
 
 import kotlin.random.Random
 
+/**
+ * 一般为内部使用的随机ID工具。
+ */
 public object RandomIDUtil {
-
+    
+    /**
+     * 生成一个近似UUID的随机字符串。
+     */
     @JvmStatic
     public fun randomID(): String {
         // 还不知道 kotlin.Random 和 ThreadLocalRandom 之间的性能差距

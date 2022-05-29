@@ -12,11 +12,11 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.definition
 
+import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.action.SendSupport
 import love.forte.simbot.message.Message
@@ -47,6 +47,11 @@ public interface Contact : User, SendSupport, BotContainer {
      */
     @JvmSynthetic
     override suspend fun send(message: Message): MessageReceipt
+    
+    
+    @Api4J
+    @Deprecated("Just use sendBlocking.", ReplaceWith("sendBlocking(message)"))
+    override fun sendIfSupportBlocking(message: Message): MessageReceipt = sendBlocking(message)
     
 }
 
