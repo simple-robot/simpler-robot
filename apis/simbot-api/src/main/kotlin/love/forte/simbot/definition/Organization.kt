@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.definition
@@ -38,7 +37,7 @@ import kotlin.time.Duration
  *     2. 组织必须具有为本组织全体成员所认可并为之奋斗的共同目标。
  *     3. 组织必须保持一个明确的边界，以区别于其他组织和外部环境。上述三条，是组织存在的必要条件。
  *
- * ## 人
+ * ## 成员
  * 一个组织下，可以存在多个 [成员][Member]. 且成员中可能存在拥有一定程度权限的管理员。
  *
  * 查询所有管理员：
@@ -51,7 +50,7 @@ import kotlin.time.Duration
  * 在组织下，此组织可能存在一定程度的 "财产". 财产的表现形式是多样化的，例如在QQ群中保存的各种文库文件、相册图片等。应由实现者自行实现。
  *
  *
- * ## 职能 (?
+ * ## 职能
  * 一个组织可能存在各种职能，例如一个“文字频道”，其职能允许成员们在其中进行文字交流，而一个“语音频道”则可能允许其成员们在其中进行语音聊天。
  *
  * 对于能够交流的组织（下的成员），将其定义为一个 [聊天室][ChatRoom]。 聊天室应当实现于 [Organization] 下的接口并为其提供消息发送的能力。
@@ -159,22 +158,36 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
 
     //region member 列表
     /**
-     * 一个组织中，可能存在[成员][members].
+     * 获取当前组织中的成员列表。
      *
      * @param limiter 对于多条数据的限流器。
      */
     @JvmSynthetic
     public suspend fun members(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Member>
-
+    
+    /**
+     * 获取当前组织中的成员列表。
+     *
+     * @param limiter 对于多条数据的限流器。
+     */
     @Api4J
     public fun getMembers(groupingId: ID?, limiter: Limiter): Stream<out Member>
-
+    
+    /**
+     * 获取当前组织中的成员列表。
+     */
     @Api4J
     public fun getMembers(groupingId: ID?): Stream<out Member> = getMembers(groupingId, Limiter)
-
+    
+    /**
+     * 获取当前组织中的成员列表。
+     */
     @Api4J
     public fun getMembers(limiter: Limiter): Stream<out Member> = getMembers(null, limiter)
-
+    
+    /**
+     * 获取当前组织中的成员列表。
+     */
     @Api4J
     public fun getMembers(): Stream<out Member> = getMembers(null, Limiter)
     //endregion
@@ -186,7 +199,11 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
      */
     @JvmSynthetic
     public suspend fun member(id: ID): Member?
-
+    
+    /**
+     * 尝试通过ID获取一个成员，无法获取则得到null。
+     */
+    @Api4J
     public fun getMember(id: ID): Member? = runInBlocking { member(id) }
     //endregion
 
@@ -197,7 +214,10 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
      */
     @JvmSynthetic
     public suspend fun roles(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Role>
-
+    
+    /**
+     * 根据分组ID和限流器尝试获取当前组织下的所有角色。
+     */
     @Api4J
     public fun getRoles(groupingId: ID? = null, limiter: Limiter = Limiter): Stream<out Role>
 
