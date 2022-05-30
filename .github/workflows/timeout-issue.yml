@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+     # https://github.com/marketplace/actions/close-stale-issues
       - uses: actions/stale@v5
         with: 
           repo-token: ${{ secrets.FORLIY_ACCESS_TOKEN }}
