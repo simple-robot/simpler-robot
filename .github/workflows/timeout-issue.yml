@@ -12,15 +12,15 @@ jobs:
       - uses: actions/stale@v5
         with: 
           repo-token: ${{ secrets.FORLIY_ACCESS_TOKEN }}
-          days-before-issue-stale: 7
-          days-before-issue-close: 3
+          days-before-issue-stale: 5
+          days-before-issue-close: 2
           stale-issue-label: '陈旧'
 
           days-before-pr-stale: -1
           days-before-pr-close: -1
           
-          stale-issue-message: "此issue已经在‘等待反馈’状态下7日未应答。如果在‘陈旧’状态下逾期3日将会被视为无效过期并关闭。"
-          close-issue-message: "此issue已经在‘陈旧’状态下逾期3日未应答, 视为无效过期并关闭。"
+          stale-issue-message: "此issue已经在‘等待反馈’状态下5日未应答。如果在‘陈旧’状态下逾期2日将会被视为无效过期并关闭。"
+          close-issue-message: "此issue已经在‘陈旧’状态下逾期2日未应答, 视为无效过期并关闭。"
           
           close-issue-label: '无效'
           only-labels: '等待反馈'
