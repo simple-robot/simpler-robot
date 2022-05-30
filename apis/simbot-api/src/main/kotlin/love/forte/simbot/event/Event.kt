@@ -78,7 +78,7 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
     /**
      * 此时间发生的时间戳。
      *
-     * 如果平台API支持，则为对应时间，如果不支持则一般为构建时的瞬时时间戳。
+     * 如果相关组件支持，则为对应时间，如果不支持则一般为构建时的瞬时时间戳。
      */
     public val timestamp: Timestamp
 
@@ -130,15 +130,14 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
      * 因此在事件调度中，需要通过 [Key] 来判断事件类型与其之间的继承关系。
      *
      * 所有事件的 [Key.id] 必须尽可能保证唯一，因此建议对ID进行命名的时候使用较为特殊的命名方式以杜绝出现ID重复。
-     * id重复不一定会出现异常提示，但是在使用 [isSub] 等方法的时候，很有可能会出现缓存内容混乱导致无法预期的问题。
+     * id重复不一定会出现异常提示，但是在使用 [isSub] 等方法的时候，很有可能会出现缓存内容混乱进而导致引发预期外的异常。
      *
      * 事件类型可以继承，且允许多继承，实现方可以通过 [isSub] 来判断当前事件是否为某个类型的子类型。
      *
      * 比如
      * ```kotlin
      * val event: MessageEvent = ...
-     * val isSubFrom = MessageEvent.Key isSubFrom Event.Key
-     *
+     * val isSub: Boolean = MessageEvent.Key isSub Event.Key
      * ```
      * [Key] 的继承关系是单向传递的，因此你能够通过一个key找到它继承的所有父类型，但是无法反向查找。
 
@@ -147,7 +146,7 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
      * 如下所示：
      * ```kotlin
      * interface MyEvent : Event {
-     *      companion object Key: Key<MyEvent> {
+     *      companion object Key: Event.Key<MyEvent> {
      *          // ...
      *      }
      * }
@@ -254,8 +253,10 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
 
     /**
      * 消息事件的可见范围类型。
+     *
+     * _Deprecated: 含义不明确，缺少应用场景，未来可能会移除_
      */
-    @Deprecated("含义不明确，缺少应用场景，未来可能会移除")
+    @Deprecated("Ambiguous meaning, lack of application scenarios, may be removed in the future")
     public enum class VisibleScope {
 
         /**
