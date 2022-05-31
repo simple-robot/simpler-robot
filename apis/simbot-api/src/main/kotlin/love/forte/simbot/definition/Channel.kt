@@ -60,6 +60,7 @@ public interface Channel : ChatRoom, ChannelInfo {
     //region member
     override suspend fun member(id: ID): GuildMember?
 
+    @Api4J
     override fun getMember(id: ID): GuildMember? = runInBlocking { member(id) }
     //endregion
 }
