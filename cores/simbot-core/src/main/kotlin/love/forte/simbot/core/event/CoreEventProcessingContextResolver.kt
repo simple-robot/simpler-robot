@@ -55,8 +55,8 @@ internal class CoreEventProcessingContextResolver(
         MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
     
     
-    internal class InstantScopeContextImpl : InstantScopeContext,
-        MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
+    internal class InstantScopeContextImpl(private val attributeMap: AttributeMutableMap) : InstantScopeContext,
+        MutableAttributeMap by attributeMap
     
     /**
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
@@ -69,8 +69,6 @@ internal class CoreEventProcessingContextResolver(
             messagesSerializersModule = EmptySerializersModule,
             globalContext,
             continuousSessionContext,
-            { InstantScopeContextImpl() },
-            AttributeMutableMap(ConcurrentHashMap()),
             listenerSize
         )
         
@@ -90,7 +88,7 @@ internal class CoreEventProcessingContextResolver(
     ): ListenerInvokeType {
         if (result != EventResult.Invalid) {
             val newResult = tryCollect(result)
-            context._results.add(newResult)
+            context.addResult(newResult)
         }
         return if (result.isTruncated) ListenerInvokeType.TRUNCATED
         else ListenerInvokeType.CONTINUE

@@ -6,10 +6,12 @@ import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
+import love.forte.simbot.utils.ListView
 import love.forte.simbot.utils.view
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
@@ -378,17 +380,23 @@ internal class CoreEventProcessingContext(
     override val messagesSerializersModule: SerializersModule,
     private val globalScopeContext: GlobalScopeContext,
     private val continuousSessionContext: SimpleContinuousSessionContext,
-    private val instantScopeContextInitializer: () -> InstantScopeContext,
-    private val attributeMap: AttributeMap,
     resultInitSize: Int,
 ) : EventProcessingContext {
     
+    private val _results = ArrayList<EventResult>(resultInitSize)
+    @Volatile private var resultView: ListView<EventResult>? = null
     
-    @Suppress("PropertyName")
-    @JvmSynthetic
-    val _results = ArrayList<EventResult>(resultInitSize)
+    override val results: List<EventResult> // = _results.view()
+        get() {
+            // dont care sync
+            return resultView ?: _results.view().also {
+                resultView = it
+            }
+        }
     
-    override val results: List<EventResult> = _results.view()
+    internal fun addResult(result: EventResult) {
+        _results.add(result)
+    }
     
     private lateinit var instantScope0: InstantScopeContext
     private val instantScope: InstantScopeContext
@@ -400,7 +408,9 @@ internal class CoreEventProcessingContext(
                 if (::instantScope0.isInitialized) {
                     instantScope0
                 } else {
-                    instantScopeContextInitializer().also {
+                    CoreEventProcessingContextResolver.InstantScopeContextImpl(
+                        AttributeMutableMap(ConcurrentHashMap())
+                    ).also {
                         instantScope0 = it
                     }
                 }
@@ -412,10 +422,10 @@ internal class CoreEventProcessingContext(
         return when (attribute) {
             @Suppress("DEPRECATION")
             EventProcessingContext.Scope.Instant,
-            -> this as T
+            -> instantScope as T
             EventProcessingContext.Scope.Global -> globalScopeContext as T
             EventProcessingContext.Scope.ContinuousSession -> continuousSessionContext as T
-            else -> attributeMap[attribute]
+            else -> instantScope[attribute]
         }
     }
     
@@ -430,7 +440,7 @@ internal class CoreEventProcessingContext(
             -> true
             EventProcessingContext.Scope.Global -> true
             EventProcessingContext.Scope.ContinuousSession -> true
-            else -> attribute in attributeMap
+            else -> attribute in instantScope
         }
     }
     

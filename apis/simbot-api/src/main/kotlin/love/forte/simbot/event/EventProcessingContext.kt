@@ -61,7 +61,7 @@ public interface EventProcessingContext : CoroutineContext.Element, InstantScope
     /**
      * 根据一个 [Attribute] 得到一个属性。
      *
-     * 其中，除了 [Scope.Global] 和 [Scope.ContinuousSession] 以外的所有内容都是**瞬时的**, 只会存在与当前上下文。
+     * 其中，除了 [Scope.Global] 和 [Scope.ContinuousSession] 以外的所有内容都是**瞬时的**, 只会存在于当前上下文。
      *
      */
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T?

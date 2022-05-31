@@ -68,6 +68,7 @@ public interface Group : ChatRoom, GroupInfo {
     //region member
     override suspend fun member(id: ID): GroupMember?
 
+    @Api4J
     override fun getMember(id: ID): GroupMember? = runInBlocking { member(id) }
     //endregion
 
