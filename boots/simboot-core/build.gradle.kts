@@ -52,7 +52,7 @@ dependencies {
     testImplementation(V.Kotlin.Test.Junit.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)
     testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
-    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0.preview.5.0")
+    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0.preview.6.0")
 }
 
 kotlin {

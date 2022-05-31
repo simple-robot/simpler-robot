@@ -65,7 +65,7 @@ dependencies {
     //testImplementation(V.Log4j.Slf4jImpl.notation)
 
     testImplementation("org.springframework.boot:spring-boot-starter-webflux:2.6.7")
-    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0.preview.1.0") {
+    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0.preview.6.0") {
         exclude("love.forte.simbot","simbot-logger")
     }
     // testImplementation(V.Kotlinx.Coroutines.Reactor.notation)

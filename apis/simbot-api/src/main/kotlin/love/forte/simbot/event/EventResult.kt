@@ -52,7 +52,7 @@ public interface EventResult {
      *
      * 同样的，如果你返回的是 [kotlinx.coroutines.flow.Flow], 也会在函数返回后进行收集。
      *
-     * 值得注意的是, 这个行为会在返回值返回后立即执行, 而不是等待所有监听函数执行结束后。
+     * 值得注意的是, 收集行为会在返回值返回后立即执行, 而不是等待所有监听函数执行结束后。
      *
      * 支持的收集类型有：
      * - [kotlinx.coroutines.flow.Flow]
@@ -73,7 +73,6 @@ public interface EventResult {
      * - `io.reactivex.rxjava3.core.ObservableSource`
      * - `io.reactivex.rxjava3.core.Flowable`
      *
-     * 但是相对应的，
      *
      *
      * 详情请见 [kotlinx-coroutines-reactive](https://github.com/Kotlin/kotlinx.coroutines/blob/master/reactive/README.md) .
@@ -89,9 +88,6 @@ public interface EventResult {
     public val isTruncated: Boolean
 
 
-    /**
-     * 代表着 **无效** 的 [EventResult] 实例。事件处理器不应对此结果进行保留或处理。
-     */
     public companion object {
 
         /**
@@ -109,6 +105,7 @@ public interface EventResult {
 
         /**
          * 提供一个 [content] 得到一个 [EventResult] 的简易实例。
+         * 当 [content] 不为null时，得到的实例类型为 [SimpleEventResult].
          *
          * @param content 结果内容。
          * @param
@@ -207,7 +204,7 @@ public open class AsyncEventResult(override val content: Deferred<EventResult>) 
 }
 
 /**
- * [EventResult] 的基础实现类型，是通过 [EventResult.of] 得到的基本结果类型。
+ * [EventResult] 的基础实现类型，是通过 [EventResult.of] 可能得到的基本结果类型。
  *
  * [SimpleEventResult.content] 支持收集响应式数据，详情参见 [EventResult.content] 说明。
  *
