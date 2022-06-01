@@ -200,10 +200,20 @@ public interface Items<out T> {
          * 通过迭代器构建 [Items] 实例。
          */
         @JvmStatic
-        @JvmName("itemsBy")
+        @JvmName("of")
         public fun <T> blockingItemsBy(factory: (PreprocessingProperties) -> Iterator<T>): Items<T> {
             return SimpleBlockingItems(factory)
         }
+        
+        /**
+         * 使用 [List] 构建为 [Items]
+         */
+        @JvmStatic
+        @JvmName("of")
+        public fun <T> List<T>.asItems(): Items<T> {
+            return ListItems(this)
+        }
+        
     }
 }
 
@@ -301,10 +311,10 @@ public fun <T> itemsBy(factory: (Items.PreprocessingProperties) -> ChannelIterat
     return SimpleItems(factory)
 }
 
+
 /**
  * 在一个协程作用域环境下通过 [produce] 构建一个 [Items].
  */
-@JvmSynthetic
 @OptIn(ExperimentalCoroutinesApi::class)
 public inline fun <T> CoroutineScope.items(
     context: CoroutineContext = EmptyCoroutineContext,
@@ -316,6 +326,26 @@ public inline fun <T> CoroutineScope.items(
             block(pre)
         }.iterator()
     }
+}
+
+/**
+ * 提供 [CoroutineScope] 和构建 [Flow] 的函数 [flowFactory] 来构建 [Items].
+ */
+public inline fun <T> CoroutineScope.items(crossinline flowFactory: (Items.PreprocessingProperties) -> Flow<T>): Items<T> {
+    return FlowItems(this) {
+        flowFactory(it)
+    }
+}
+
+/**
+ * 以构建 flow 的方式构建 [Items].
+ */
+public inline fun <T> CoroutineScope.items(crossinline block: suspend FlowCollector<T>.(Items.PreprocessingProperties) -> Unit): Items<T> {
+    return items(flowFactory = { pre ->
+        flow {
+            block(pre)
+        }
+    })
 }
 
 
@@ -338,7 +368,6 @@ public suspend inline fun <T, C : MutableCollection<T>> Items<T>.toCollection(co
 public suspend inline fun <T> Items<T>.toList(): List<T> {
     return toCollection(mutableListOf())
 }
-
 
 
 internal class BlockingIterator<out T>(private val iterator: ChannelIterator<T>) : Iterator<T> {
