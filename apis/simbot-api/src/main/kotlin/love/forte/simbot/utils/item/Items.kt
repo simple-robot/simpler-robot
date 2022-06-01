@@ -213,7 +213,16 @@ public interface Items<out T> {
         public fun <T> Collection<T>.asItems(): Items<T> {
             return CollectionItems(this)
         }
+   
         
+        /**
+         * 转化一个 [Items] 中的元素类型并得到新的 [Items] 实例。
+         */
+        @JvmStatic
+        @JvmName("transform")
+        public fun <B, T> Items<B>.transformBlocking(transform: (B) -> T): Items<T> {
+            return transform { runWithInterruptible { transform(it) } }
+        }
     }
 }
 
@@ -367,6 +376,25 @@ public suspend inline fun <T, C : MutableCollection<T>> Items<T>.toCollection(co
  */
 public suspend inline fun <T> Items<T>.toList(): List<T> {
     return toCollection(mutableListOf())
+}
+
+
+/**
+ * 转化一个 [Items] 中的元素类型并得到新的 [Items] 实例。
+ */
+@JvmSynthetic
+public fun <B, T> Items<B>.transform(transform: suspend (B) -> T): Items<T> {
+    return TransformItems(this, transform)
+}
+
+/**
+ * 转化一个 [Items] 中的元素类型并得到新的 [Items] 实例。
+ *
+ * @see Items.transform
+ *
+ */
+public inline fun <B, T> Items<B>.map(crossinline transform: suspend (B) -> T): Items<T> {
+    return transform { transform(it) }
 }
 
 
