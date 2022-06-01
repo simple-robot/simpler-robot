@@ -211,11 +211,11 @@ public interface Items<out T> {
  * 将 [Items.PreprocessingProperties] 作用于目标 [Flow] 中。
  */
 @Suppress("DuplicatedCode")
-public fun <E> Flow<E>.effectByPreprocessingProperties(properties: Items.PreprocessingProperties): Flow<E> {
-    val offset = properties.offset
-    val limit = properties.limit
+public fun <E> Items.PreprocessingProperties.effectOn(flow: Flow<E>): Flow<E> {
+    val offset = offset
+    val limit = limit
     
-    return let { f ->
+    return flow.let { f ->
         if (offset > 0) f.drop(offset) else f
     }.let { f ->
         if (limit > 0) f.take(limit) else f
@@ -226,11 +226,11 @@ public fun <E> Flow<E>.effectByPreprocessingProperties(properties: Items.Preproc
  * 将 [Items.PreprocessingProperties] 作用于目标 [Sequence] 中。
  */
 @Suppress("DuplicatedCode")
-public fun <E> Sequence<E>.effectByPreprocessingProperties(properties: Items.PreprocessingProperties): Sequence<E> {
-    val offset = properties.offset
-    val limit = properties.limit
+public fun <E> Items.PreprocessingProperties.effectOn(sequence: Sequence<E>): Sequence<E> {
+    val offset = offset
+    val limit = limit
     
-    return let { s ->
+    return sequence.let { s ->
         if (offset > 0) s.drop(offset) else s
     }.let { s ->
         if (limit > 0) s.take(limit) else s
@@ -240,11 +240,11 @@ public fun <E> Sequence<E>.effectByPreprocessingProperties(properties: Items.Pre
 /**
  * 将 [Items.PreprocessingProperties] 作用于目标 [Stream] 中。
  */
-public fun <E> Stream<E>.effectByPreprocessingProperties(properties: Items.PreprocessingProperties): Stream<E> {
-    val offset = properties.offset
-    val limit = properties.limit
+public fun <E> Items.PreprocessingProperties.effectOn(stream: Stream<E>): Stream<E> {
+    val offset = offset
+    val limit = limit
     
-    return let { s ->
+    return stream.let { s ->
         if (offset > 0) s.skip(offset.toLong()) else s
     }.let { s ->
         if (limit > 0) s.limit(limit.toLong()) else s
@@ -337,4 +337,16 @@ public suspend inline fun <T, C : MutableCollection<T>> Items<T>.toCollection(co
  */
 public suspend inline fun <T> Items<T>.toList(): List<T> {
     return toCollection(mutableListOf())
+}
+
+
+
+internal class BlockingIterator<out T>(private val iterator: ChannelIterator<T>) : Iterator<T> {
+    override fun hasNext(): Boolean {
+        return runInBlocking { iterator.hasNext() }
+    }
+    
+    override fun next(): T {
+        return iterator.next()
+    }
 }

@@ -73,13 +73,3 @@ public class SimpleItems<out T>(
     
     
 }
-
-private class BlockingIterator<out T>(private val iterator: ChannelIterator<T>) : Iterator<T> {
-    override fun hasNext(): Boolean {
-        return runInBlocking { iterator.hasNext() }
-    }
-    
-    override fun next(): T {
-        return iterator.next()
-    }
-}

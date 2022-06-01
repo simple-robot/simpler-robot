@@ -41,15 +41,15 @@ public class ListItems<T>(private val list: List<T>) : BaseItems<T, ListItems<T>
     }
     
     override fun asFlow(): Flow<T> {
-        return list.asFlow().effectByPreprocessingProperties(preprocessingProperties)
+        return preprocessingProperties.effectOn(list.asFlow())
     }
     
     override fun asSequence(): Sequence<T> {
-        return list.asSequence().effectByPreprocessingProperties(preprocessingProperties)
+        return preprocessingProperties.effectOn(list.asSequence())
     }
     
     @Api4J
     override fun asStream(): Stream<out T> {
-        return list.stream().effectByPreprocessingProperties(preprocessingProperties)
+        return preprocessingProperties.effectOn(list.stream())
     }
 }
