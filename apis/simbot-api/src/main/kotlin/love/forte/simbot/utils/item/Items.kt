@@ -10,6 +10,7 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.Limiter
 import love.forte.simbot.Limiter.ZERO.limit
 import love.forte.simbot.Limiter.ZERO.offset
+import love.forte.simbot.utils.item.Items.Companion.items
 import love.forte.simbot.utils.runInBlocking
 import love.forte.simbot.utils.runWithInterruptible
 import java.util.function.Consumer
@@ -200,7 +201,7 @@ public interface Items<out T> {
          * 通过迭代器构建 [Items] 实例。
          */
         @JvmStatic
-        @JvmName("of")
+        @JvmName("by")
         public fun <T> blockingItemsBy(factory: (PreprocessingProperties) -> Iterator<T>): Items<T> {
             return SimpleBlockingItems(factory)
         }
@@ -209,11 +210,11 @@ public interface Items<out T> {
          * 使用 [List] 构建为 [Items]
          */
         @JvmStatic
-        @JvmName("of")
+        @JvmName("by")
         public fun <T> Collection<T>.asItems(): Items<T> {
             return CollectionItems(this)
         }
-   
+        
         
         /**
          * 转化一个 [Items] 中的元素类型并得到新的 [Items] 实例。
@@ -222,6 +223,19 @@ public interface Items<out T> {
         @JvmName("transform")
         public fun <B, T> Items<B>.transformBlocking(transform: (B) -> T): Items<T> {
             return transform { runWithInterruptible { transform(it) } }
+        }
+        
+        /**
+         * 将一些元素作为 [Items].
+         */
+        @JvmStatic
+        @JvmName("of")
+        public fun <T> items(vararg values: T): Items<T> {
+            return when {
+                values.isEmpty() -> emptyItems()
+                values.size == 1 -> SingleValueItems(values[0])
+                else -> values.asList().asItems()
+            }
         }
     }
 }
