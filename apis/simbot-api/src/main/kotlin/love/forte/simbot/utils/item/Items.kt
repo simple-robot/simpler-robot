@@ -210,8 +210,8 @@ public interface Items<out T> {
          */
         @JvmStatic
         @JvmName("of")
-        public fun <T> List<T>.asItems(): Items<T> {
-            return ListItems(this)
+        public fun <T> Collection<T>.asItems(): Items<T> {
+            return CollectionItems(this)
         }
         
     }

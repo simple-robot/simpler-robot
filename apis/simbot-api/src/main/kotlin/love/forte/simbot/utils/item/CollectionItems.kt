@@ -11,20 +11,31 @@ import java.util.stream.Stream
  *
  * @author ForteScarlet
  */
-public class ListItems<T>(private val list: List<T>) : BaseItems<T, ListItems<T>>() {
+public class CollectionItems<T>(private val collection: Collection<T>) : BaseItems<T, CollectionItems<T>>() {
     
-    override val self: ListItems<T>
+    override val self: CollectionItems<T>
         get() = this
     
     override suspend fun collect(collector: suspend (T) -> Unit) {
-        if (list.isEmpty()) {
+        if (collection.isEmpty()) {
             return
         }
         
         val (limit, offset, _) = preprocessingProperties
-        if (offset >= list.size) return
+        if (offset >= collection.size) return
         
-        val iter = if (offset > 0) list.listIterator(offset) else list.listIterator()
+        val iter: Iterator<T>
+        if (collection is List) {
+            iter = if (offset > 0) collection.listIterator(offset) else collection.listIterator()
+        } else {
+            iter = collection.iterator()
+            if (offset > 0) {
+                var count = 0
+                while (iter.hasNext() && count++ < offset) {
+                    iter.next()
+                }
+            }
+        }
         
         if (limit > 0) {
             var count = 0
@@ -41,15 +52,15 @@ public class ListItems<T>(private val list: List<T>) : BaseItems<T, ListItems<T>
     }
     
     override fun asFlow(): Flow<T> {
-        return preprocessingProperties.effectOn(list.asFlow())
+        return preprocessingProperties.effectOn(collection.asFlow())
     }
     
     override fun asSequence(): Sequence<T> {
-        return preprocessingProperties.effectOn(list.asSequence())
+        return preprocessingProperties.effectOn(collection.asSequence())
     }
     
     @Api4J
     override fun asStream(): Stream<out T> {
-        return preprocessingProperties.effectOn(list.stream())
+        return preprocessingProperties.effectOn(collection.stream())
     }
 }
