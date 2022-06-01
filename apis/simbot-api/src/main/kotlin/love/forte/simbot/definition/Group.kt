@@ -17,14 +17,11 @@
 
 package love.forte.simbot.definition
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
-import love.forte.simbot.Limiter
 import love.forte.simbot.Timestamp
+import love.forte.simbot.utils.item.Items
 import love.forte.simbot.utils.runInBlocking
-import java.util.stream.Stream
 
 
 /**
@@ -32,7 +29,7 @@ import java.util.stream.Stream
  * @author ForteScarlet
  */
 public interface Group : ChatRoom, GroupInfo {
-
+    
     override val bot: GroupMemberBot
     override val id: ID
     override val name: String
@@ -40,49 +37,37 @@ public interface Group : ChatRoom, GroupInfo {
     override val description: String
     override val createTime: Timestamp
     override val ownerId: ID
+    
+    @JvmSynthetic
     override suspend fun owner(): GroupMember
-
+    
     @Api4J
     override val owner: GroupMember
     override val maximumMember: Int
     override val currentMember: Int
-
-    //region members
-
-    override suspend fun members(groupingId: ID?, limiter: Limiter): Flow<GroupMember>
-
-    @Api4J
-    override fun getMembers(groupingId: ID?, limiter: Limiter): Stream<out GroupMember>
-
-    @Api4J
-    override fun getMembers(groupingId: ID?): Stream<out GroupMember> = getMembers(groupingId, Limiter)
-
-    @Api4J
-    override fun getMembers(limiter: Limiter): Stream<out GroupMember> = getMembers(null, limiter)
-
-    @Api4J
-    override fun getMembers(): Stream<out GroupMember> = getMembers(null, Limiter)
-    //endregion
-
-
-    //region member
+    
+    /**
+     * 获取当前群内的成员序列。
+     */
+    override val members: Items<GroupMember>
+    
+    
+    // region member
+    
+    /**
+     * 根据ID获取到指定的成员。
+     */
+    @JvmSynthetic
     override suspend fun member(id: ID): GroupMember?
-
+    
+    /**
+     * 根据ID获取到指定的成员。
+     */
     @Api4J
     override fun getMember(id: ID): GroupMember? = runInBlocking { member(id) }
-    //endregion
-
-    /**
-     * 一般来讲，群不存在子集。
-     */
-    override suspend fun children(groupingId: ID?, limiter: Limiter): Flow<Organization> {
-        return emptyFlow()
-    }
-
-    @OptIn(Api4J::class)
-    override fun getChildren(groupingId: ID?, limiter: Limiter): Stream<Organization> = Stream.empty()
+    // endregion
+    
 }
-
 
 
 /**

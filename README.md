@@ -177,9 +177,9 @@ suspend fun FriendMessageEvent.listen() {
 @Listener
 suspend fun GuildMessageEvent.listen() {
     // 频道的所有子频道
-    val channels: Flow<Channel> = children()
+    val channels: Items<Channel> = children()
     // bot的所有好友
-    val friends: Flow<Friend> = bot.friends()
+    val friends: Items<Friend> = bot.friends()
     // 获取指定群对象
     val group = bot.group(114514.ID)
 

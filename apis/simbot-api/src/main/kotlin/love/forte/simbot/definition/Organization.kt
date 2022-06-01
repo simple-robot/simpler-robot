@@ -16,14 +16,12 @@
 
 package love.forte.simbot.definition
 
-import kotlinx.coroutines.flow.Flow
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
-import love.forte.simbot.Limiter
 import love.forte.simbot.Timestamp
 import love.forte.simbot.action.MuteSupport
+import love.forte.simbot.utils.item.Items
 import love.forte.simbot.utils.runInBlocking
-import java.util.stream.Stream
 import kotlin.time.Duration
 
 
@@ -72,128 +70,86 @@ import kotlin.time.Duration
  *
  * @author ForteScarlet
  */
-public interface Organization : Objectives, OrganizationInfo, MuteSupport,
-    Structured<Organization?, Flow<Organization>>, BotContainer {
-
+public interface Organization : Objectives, OrganizationInfo, MuteSupport, BotContainer {
+    
     /**
      * 这个组织一定是属于某一个Bot之下的。
      *
      * 这个所属bot在当前组织中所扮演的角色。
      */
     override val bot: MemberBot
-
+    
     /**
      * 对于这个组织, 有一个唯一ID。
      */
     override val id: ID
-
-    //region from organization info
+    
+    // region from organization info
     override val name: String
     override val icon: String
     override val description: String
     override val createTime: Timestamp
     override val ownerId: ID
-    //endregion
-
+    // endregion
+    
     /**
      * 组织的拥有者信息。
      */
     @JvmSynthetic
     public suspend fun owner(): Member
-
+    
     /**
      * 对整个组织进行禁言。
      *
      */
     @JvmSynthetic
     override suspend fun mute(duration: Duration): Boolean
-
+    
     /**
      * 结束整个群的禁言。
      */
     @JvmSynthetic
     override suspend fun unmute(): Boolean
-
+    
     @Api4J
     public val owner: Member
         get() = runInBlocking { owner() }
-
+    
     override val maximumMember: Int
     override val currentMember: Int
-
+    
     /**
      * 上一级，或者说这个组织的上层。
      * 组织有可能是层级的，因此一个组织结构可能会有上一层的组织。
      * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
      */
     @JvmSynthetic
-    override suspend fun previous(): Organization?
-
-
+    public suspend fun previous(): Organization?
+    
+    
+    /**
+     * 上一级，或者说这个组织的上层。
+     * 组织有可能是层级的，因此一个组织结构可能会有上一层的组织。
+     * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
+     */
+    @Api4J
+    public val previous: Organization? get() = runInBlocking { previous() }
+    
+    
     /**
      * 得到下一级的数据内容。
      *
-     * 提供 grouping 查询分组信息。
-     *
      */
-    @JvmSynthetic
-    override suspend fun children(groupingId: ID?): Flow<Organization> = children(groupingId, Limiter)
-
-
-    /**
-     * 根据分组ID和限流器尝试获取此组织下的子集。
-     */
-    @JvmSynthetic
-    public suspend fun children(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Organization>
-
-
-    @Api4J
-    public fun getChildren(groupingId: ID?, limiter: Limiter): Stream<out Organization>
-
-    @Api4J
-    public fun getChildren(groupingId: ID? = null): Stream<out Organization> = getChildren(groupingId, Limiter)
-
-    @Api4J
-    public fun getChildren(): Stream<out Organization> = getChildren(null, Limiter)
-
-    //region member 列表
-    /**
-     * 获取当前组织中的成员列表。
-     *
-     * @param limiter 对于多条数据的限流器。
-     */
-    @JvmSynthetic
-    public suspend fun members(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Member>
+    public val children: Items<Organization>
     
-    /**
-     * 获取当前组织中的成员列表。
-     *
-     * @param limiter 对于多条数据的限流器。
-     */
-    @Api4J
-    public fun getMembers(groupingId: ID?, limiter: Limiter): Stream<out Member>
     
     /**
      * 获取当前组织中的成员列表。
      */
-    @Api4J
-    public fun getMembers(groupingId: ID?): Stream<out Member> = getMembers(groupingId, Limiter)
+    public val members: Items<Member>
     
-    /**
-     * 获取当前组织中的成员列表。
-     */
-    @Api4J
-    public fun getMembers(limiter: Limiter): Stream<out Member> = getMembers(null, limiter)
     
-    /**
-     * 获取当前组织中的成员列表。
-     */
-    @Api4J
-    public fun getMembers(): Stream<out Member> = getMembers(null, Limiter)
-    //endregion
-
-
-    //region member 获取
+    // region member 获取
     /**
      * 尝试通过ID获取一个成员，无法获取则得到null。
      */
@@ -205,23 +161,14 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
      */
     @Api4J
     public fun getMember(id: ID): Member? = runInBlocking { member(id) }
-    //endregion
-
-
-
-    /**
-     * 根据分组ID和限流器尝试获取当前组织下的所有角色。
-     */
-    @JvmSynthetic
-    public suspend fun roles(groupingId: ID? = null, limiter: Limiter = Limiter): Flow<Role>
+    // endregion
+    
     
     /**
      * 根据分组ID和限流器尝试获取当前组织下的所有角色。
      */
-    @Api4J
-    public fun getRoles(groupingId: ID? = null, limiter: Limiter = Limiter): Stream<out Role>
-
-
+    public val roles: Items<Role>
+    
 }
 
 /**
@@ -230,53 +177,53 @@ public interface Organization : Objectives, OrganizationInfo, MuteSupport,
  *
  */
 public interface OrganizationInfo : IDContainer {
-
+    
     /**
      * 此组织的唯一标识.
      */
     override val id: ID
-
+    
     /**
      * 组织的名称。
      */
     public val name: String
-
+    
     /**
      * 组织的图标/头像。
      */
     public val icon: String
-
+    
     /**
      * 组织的对外描述信息。
      */
     public val description: String
-
+    
     /**
      * 组织的创建时间。
      */
     public val createTime: Timestamp
-
+    
     /**
      * 组织的拥有者的ID。
      */
     public val ownerId: ID
-
-
+    
+    
     //// 上面的信息，大概率是可以得到的。
     //// 下面的信息均存在无法获取的可能。
-
+    
     /**
      * 当前组织内成员最大承载量。
      * 如果无法获取，得到-1.
      */
     public val maximumMember: Int
-
+    
     /**
      * 当前组织内已存在成员数量。
      * 如果无法获取，得到-1.
      */
     public val currentMember: Int
-
+    
 }
 
 

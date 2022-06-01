@@ -16,12 +16,11 @@
 
 package love.forte.simbot
 
-import kotlinx.coroutines.flow.Flow
 import love.forte.simbot.definition.Friend
 import love.forte.simbot.definition.Group
 import love.forte.simbot.definition.Guild
 import love.forte.simbot.definition.SuspendablePropertyContainer
-import java.util.stream.Stream
+import love.forte.simbot.utils.item.Items
 
 
 /**
@@ -50,49 +49,10 @@ public sealed interface BotSocialRelationsContainer : SuspendablePropertyContain
 public interface FriendsContainer : BotSocialRelationsContainer {
     
     /**
-     * 根据分组和限流信息得到此bot下的好友列表。
-     *
-     * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
-     *
-     * @param grouping 好友分组信息（如果支持的话。）
-     * @param limiter 数据限流
+     * 根据分组和限流信息得到此bot下的好友序列。
      *
      */
-    @JvmSynthetic
-    public suspend fun friends(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Friend>
-    
-    /**
-     * 根据分组和限流信息得到此bot下的好友列表。
-     *
-     * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
-     *
-     * @param grouping 好友分组信息（如果支持的话。）
-     * @param limiter 数据限流
-     *
-     * @see friends
-     */
-    @Api4J
-    public fun getFriends(grouping: Grouping, limiter: Limiter): Stream<out Friend>
-    
-    /**
-     * 根据分组和限流信息得到此bot下的好友列表。
-     *
-     * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
-     *
-     * @see friends
-     */
-    @Api4J
-    public fun getFriends(limiter: Limiter): Stream<out Friend>
-    
-    /**
-     * 根据分组和限流信息得到此bot下的好友列表。
-     *
-     * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
-     *
-     * @see friends
-     */
-    @Api4J
-    public fun getFriends(): Stream<out Friend>
+    public val friends: Items<Friend>
     
     
     /**
@@ -125,45 +85,10 @@ public interface FriendsContainer : BotSocialRelationsContainer {
 public interface GroupsContainer : BotSocialRelationsContainer {
     
     /**
-     * 获取群列表。
-     *
-     * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
-     *
-     * @param grouping 根据分组（如果支持的话）
-     * @param limiter 数据限流
+     * 获取当前bot所处的群序列。
      *
      */
-    @JvmSynthetic
-    public suspend fun groups(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Group>
-    
-    /**
-     * 获取群列表。
-     *
-     * @param grouping 根据分组（如果支持的话）
-     * @param limiter 数据限流
-     *
-     * @see groups
-     */
-    @Api4J
-    public fun getGroups(grouping: Grouping, limiter: Limiter): Stream<out Group>
-    
-    /**
-     * 获取群列表。
-     *
-     * @param limiter 数据限流
-     *
-     * @see groups
-     */
-    @Api4J
-    public fun getGroups(limiter: Limiter): Stream<out Group>
-    
-    /**
-     * 获取群列表。
-     *
-     * @see groups
-     */
-    @Api4J
-    public fun getGroups(): Stream<out Group>
+    public val groups: Items<Group>
     
     /**
      * 通过唯一标识获取这个bot对应的某个群，获取不到则为null。
@@ -193,50 +118,10 @@ public interface GroupsContainer : BotSocialRelationsContainer {
 public interface GuildsContainer : BotSocialRelationsContainer {
     
     /**
-     * 获取当前的所有频道服务器列表
-     *
-     * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
-     *
-     * @param grouping 频道服务器分组信息（如果支持的话）
-     * @param limiter 数据限流
+     * 获取当前的所有频道服务器序列。
      */
-    @JvmSynthetic
-    public suspend fun guilds(grouping: Grouping = Grouping.EMPTY, limiter: Limiter = Limiter): Flow<Guild>
+    public val guilds: Items<Guild>
     
-    /**
-     * 获取当前的所有频道服务器列表
-     *
-     * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
-     *
-     * @param grouping 频道服务器分组信息（如果支持的话）
-     * @param limiter 数据限流
-     *
-     * @see guilds
-     */
-    @Api4J
-    public fun getGuilds(grouping: Grouping, limiter: Limiter): Stream<out Guild>
-    
-    /**
-     * 获取当前的所有频道服务器列表
-     *
-     * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
-     *
-     * @param limiter 数据限流
-     *
-     * @see guilds
-     */
-    @Api4J
-    public fun getGuilds(limiter: Limiter): Stream<out Guild>
-    
-    /**
-     * 获取当前的所有频道服务器列表
-     *
-     * *分组不一定存在，限流器也不一定生效，这两个参数的有效情况取决于当前 [Bot] 的实现情况。*
-     *
-     * @see guilds
-     */
-    @Api4J
-    public fun getGuilds(): Stream<out Guild>
     
     /**
      * 通过唯一标识获取这个bot对应的某个频道，获取不到则为null。
