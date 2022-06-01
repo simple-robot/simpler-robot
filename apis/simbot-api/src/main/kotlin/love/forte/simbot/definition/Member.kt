@@ -16,7 +16,6 @@
 
 package love.forte.simbot.definition
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
@@ -24,8 +23,8 @@ import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.action.MuteSupport
 import love.forte.simbot.action.SendSupport
+import love.forte.simbot.utils.item.Items
 import love.forte.simbot.utils.runInBlocking
-import java.util.stream.Stream
 import kotlin.time.Duration
 
 
@@ -67,29 +66,24 @@ public interface Member : User, MemberInfo, MuteSupport, SendSupport {
     /**
      * 当前群成员在其所属组织内所扮演/拥有的角色。
      */
-    @JvmSynthetic
-    public suspend fun roles(): Flow<Role>
-
-    /**
-     * 当前群成员在其所属组织内所扮演/拥有的角色。
-     */
-    @Api4J
-    public val roles: Stream<out Role>
-
+    public val roles: Items<Role>
+    
 
     /**
      * 判断当前成员是否拥有"管理者"这样的角色。
      *
      * @see Role.isAdmin
      */
-    public suspend fun isAdmin(): Boolean = roles().firstOrNull { it.isAdmin } != null
+    @JvmSynthetic
+    public suspend fun isAdmin(): Boolean = roles.asFlow().firstOrNull { it.isAdmin } != null
 
     /**
      * 判断当前成员是否拥有"拥有者"这样的角色。
      *
      * @see Role.isOwner
      */
-    public suspend fun isOwner(): Boolean = roles().firstOrNull { it.isOwner } != null
+    @JvmSynthetic
+    public suspend fun isOwner(): Boolean = roles.asFlow().firstOrNull { it.isOwner } != null
 
     /**
      * 判断当前成员是否拥有"管理者"的权限。
@@ -98,7 +92,7 @@ public interface Member : User, MemberInfo, MuteSupport, SendSupport {
      */
     @Api4J
     public val isAdmin: Boolean
-        get() = roles.anyMatch { r -> r.isAdmin }
+        get() = roles.asSequence().any { r -> r.isAdmin }
 
     /**
      * 判断当前成员是否拥有"拥有者"的权限。
@@ -107,7 +101,7 @@ public interface Member : User, MemberInfo, MuteSupport, SendSupport {
      */
     @Api4J
     public val isOwner: Boolean
-        get() = roles.anyMatch { r -> r.isOwner }
+        get() = roles.asSequence().any { r -> r.isOwner }
 
 }
 

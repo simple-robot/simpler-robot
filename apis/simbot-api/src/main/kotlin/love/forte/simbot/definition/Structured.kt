@@ -18,16 +18,16 @@
 package love.forte.simbot.definition
 
 import love.forte.simbot.Api4J
-import love.forte.simbot.ID
 import love.forte.simbot.utils.runInBlocking
 
 /**
  * 一个非阻塞的 **结构化** 定义。
  *
- * 结构化的东西，可以有一个 [上级][previous]，以及多个 [下级][children]。
+ * 结构化的东西，可以有一个 [上级][previous] 和一个 [下级][children]。
  *
  * @author ForteScarlet
  */
+@Deprecated("No longer use")
 public interface Structured<P, N> {
 
     /**
@@ -42,10 +42,7 @@ public interface Structured<P, N> {
 
     /**
      * 下一级的内容。
-     *
-     * 结构化的东西下，其下层 *可能* 需要一个分组信息(分组ID)来得到特定的内容。
-     *
      */
     @JvmSynthetic
-    public suspend fun children(groupingId: ID? = null): N
+    public suspend fun children(): N
 }
