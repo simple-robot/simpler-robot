@@ -17,13 +17,9 @@
 
 package love.forte.simbot.definition
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
-import love.forte.simbot.Api4J
-import love.forte.simbot.ID
-import love.forte.simbot.Limiter
 import love.forte.simbot.action.SendSupport
-import java.util.stream.Stream
+import love.forte.simbot.utils.item.Items
+import love.forte.simbot.utils.item.Items.Companion.emptyItems
 
 
 /**
@@ -34,23 +30,12 @@ import java.util.stream.Stream
  * @author ForteScarlet
  */
 public interface ChatRoom : Organization, SendSupport {
-
+    
     /**
-     * 一般来讲，能够作为聊天室的组织不存在子集。
+     * 聊天室子集。
+     *
+     * 默认为空，通常情况下能够作为聊天室的组织不存在子集。
      */
-    override suspend fun children(groupingId: ID?): Flow<Organization> {
-        return emptyFlow()
-    }
-
-    /**
-     * 一般来讲，能够作为聊天室的组织不存在子集。
-     */
-    override suspend fun children(groupingId: ID?, limiter: Limiter): Flow<Organization> {
-        return emptyFlow()
-    }
-
-    @Api4J
-    override fun getChildren(groupingId: ID?, limiter: Limiter): Stream<Organization> {
-        return Stream.empty()
-    }
+    override val children: Items<Organization> get() = emptyItems()
+    
 }
