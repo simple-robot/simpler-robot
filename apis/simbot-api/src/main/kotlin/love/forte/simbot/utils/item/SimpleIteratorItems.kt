@@ -11,10 +11,10 @@ import java.util.stream.StreamSupport
  * [Items] 的基础阻塞实现，通过提供 [Iterator] 的工厂函数实现 [Items] 的基本约定。
  * @author ForteScarlet
  */
-public class SimpleBlockingItems<out T>(
+public class SimpleIteratorItems<out T>(
     private val iteratorFactory: (Items.PreprocessingProperties) -> Iterator<T>,
-) : BaseItems<T, SimpleBlockingItems<T>>() {
-    override val self: SimpleBlockingItems<T>
+) : BaseItems<T, SimpleIteratorItems<T>>() {
+    override val self: SimpleIteratorItems<T>
         get() = this
     
     private val iterator: Iterator<T> get() = iteratorFactory(preprocessingProperties)

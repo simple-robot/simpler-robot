@@ -15,16 +15,16 @@ import java.util.stream.StreamSupport
  *
  * @author ForteScarlet
  */
-public class SimpleItems<out T>(
+public class SimpleChannelIteratorItems<out T>(
     private val channelIteratorFactory: (Items.PreprocessingProperties) -> ChannelIterator<T>,
-) : BaseItems<T, SimpleItems<T>>() {
-    override val self: SimpleItems<T>
+) : BaseItems<T, SimpleChannelIteratorItems<T>>() {
+    override val self: SimpleChannelIteratorItems<T>
         get() = this
     
     private val iterator: ChannelIterator<T> get() = channelIteratorFactory(preprocessingProperties)
     
     /**
-     * 收集当前数据序列中的元素. [collect] 可能会产生挂起，会直到当前序列中的所有可能产生的元素收集完毕后结束挂起。
+     * 收集当前数据序列中的元素. [collectTo] 可能会产生挂起，会直到当前序列中的所有可能产生的元素收集完毕后结束挂起。
      */
     override suspend fun collect(collector: suspend (T) -> Unit) {
         val iter = iterator
