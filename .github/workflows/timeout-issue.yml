@@ -19,7 +19,7 @@ jobs:
           days-before-pr-stale: -1
           days-before-pr-close: -1
           
-          # stale-issue-message: "此issue已经在「等待反馈」状态下5日未应答。如果在「陈旧」状态下逾期2日将会被视为无效过期并关闭。"
+          stale-issue-message: "此issue已经在「等待反馈」状态下5日未应答。如果在「陈旧」状态下逾期2日将会被视为无效过期并关闭。"
           close-issue-message: "此issue已经在「陈旧」状态下逾期2日未应答, 视为无效过期并关闭。"
           
           close-issue-label: '无效'
