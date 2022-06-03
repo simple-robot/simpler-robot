@@ -481,35 +481,3 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
 }
 // endregion
 
-
-public inline fun <E : Event> ListenerGenerator<E>.match(
-    regex: Regex,
-    crossinline targetProcess: EventListenerProcessingContext.(E) -> String? = { textContent },
-    crossinline ifNull: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
-) {
-    match { event ->
-        targetProcess(event)?.let { regex.matches(it) } ?: ifNull(event)
-    }
-}
-
-
-public inline fun <E : Event> ListenerGenerator<E>.matchEquals(
-    text: String,
-    crossinline targetProcess: EventListenerProcessingContext.(E) -> String? = { textContent },
-    crossinline ifNull: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
-) {
-    match { event ->
-        targetProcess(event)?.equals(text) ?: ifNull(event)
-    }
-}
-
-
-public inline fun <E : Event> ListenerGenerator<E>.matchContains(
-    text: String,
-    crossinline targetProcess: EventListenerProcessingContext.(E) -> String? = { textContent },
-    crossinline ifNull: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
-) {
-    match { event ->
-        targetProcess(event)?.let { text in it } ?: ifNull(event)
-    }
-}
