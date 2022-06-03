@@ -103,7 +103,6 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     }
     
     
-    
     @Deprecated("Use listen(Event.Key){ ... }", ReplaceWith("listen(eventKey, block)"))
     public fun <E : Event> listener(
         eventKey: Event.Key<E>,
@@ -218,9 +217,10 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * @see ListenerGenerator.match
      *
      */
-    public inline infix fun <E : Event> EventHandling<E>.onMatch(crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean): EventHandling<E> = also {
-        generator.match { matcher(it) }
-    }
+    public inline infix fun <E : Event> EventHandling<E>.onMatch(crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean): EventHandling<E> =
+        also {
+            generator.match { matcher(it) }
+        }
     
     /**
      * 配合 [Event.Key.invoke] 并标记其构建的监听函数为异步的。
@@ -271,7 +271,6 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     }
     
     
-    
     /**
      * 在 [EventListenersGenerator] 环境中提供一个可以更简单快捷的构建 [事件结果][EventResult] 的内联函数，
      * 其效果等同于使用 [EventResult.of].
@@ -290,7 +289,10 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      *
      */
     @Suppress("NOTHING_TO_INLINE", "unused")
-    public inline fun EventListenerProcessingContext.eventResult(content: Any? = null, isTruncated: Boolean = false): EventResult = EventResult.of(content, isTruncated)
+    public inline fun EventListenerProcessingContext.eventResult(
+        content: Any? = null,
+        isTruncated: Boolean = false,
+    ): EventResult = EventResult.of(content, isTruncated)
     
     
 }
@@ -396,7 +398,6 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
     }
     
     
-    
     private var func: (suspend EventListenerProcessingContext.(E) -> EventResult)? = null
     
     private fun setFunc(f: suspend EventListenerProcessingContext.(E) -> EventResult) {
@@ -431,8 +432,6 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
     public fun handle(func: suspend EventListenerProcessingContext.(E) -> EventResult) {
         setFunc(func)
     }
-    
-  
     
     
     /**
@@ -477,9 +476,40 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
             function = func ?: throw SimbotIllegalStateException("The handle function must be configured")
         )
     }
- 
+    
     
 }
 // endregion
 
 
+public inline fun <E : Event> ListenerGenerator<E>.match(
+    regex: Regex,
+    crossinline targetProcess: EventListenerProcessingContext.(E) -> String? = { textContent },
+    crossinline ifNull: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
+) {
+    match { event ->
+        targetProcess(event)?.let { regex.matches(it) } ?: ifNull(event)
+    }
+}
+
+
+public inline fun <E : Event> ListenerGenerator<E>.matchEquals(
+    text: String,
+    crossinline targetProcess: EventListenerProcessingContext.(E) -> String? = { textContent },
+    crossinline ifNull: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
+) {
+    match { event ->
+        targetProcess(event)?.equals(text) ?: ifNull(event)
+    }
+}
+
+
+public inline fun <E : Event> ListenerGenerator<E>.matchContains(
+    text: String,
+    crossinline targetProcess: EventListenerProcessingContext.(E) -> String? = { textContent },
+    crossinline ifNull: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
+) {
+    match { event ->
+        targetProcess(event)?.let { text in it } ?: ifNull(event)
+    }
+}
