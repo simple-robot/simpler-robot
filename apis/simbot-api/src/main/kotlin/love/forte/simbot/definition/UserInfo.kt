@@ -17,6 +17,7 @@
 package love.forte.simbot.definition
 
 import love.forte.simbot.ID
+import love.forte.simbot.definition.UserStatus.Companion.refactor
 import java.util.*
 
 /**
@@ -83,14 +84,14 @@ public interface UserStatus {
     public val isBot: Boolean
     
     public companion object {
-    
+        
         /**
          * 得到一个用于构建 [UserStatus] 的构建器。
          */
         @JvmStatic
         public fun builder(): UserStatusBuilder = UserStatusBuilder()
-    
-    
+        
+        
         /**
          * 基于一个原始的 [UserStatusBuilder] 得到一个用于重构它的 [UserStatus] 构建器。
          */
@@ -120,6 +121,27 @@ public interface UserStatus {
         }
         
     }
+}
+
+@DslMarker
+@Retention(AnnotationRetention.BINARY)
+internal annotation class UserStatusBuilderDsl
+
+
+/**
+ * 通过DSL Builder构建一个 [UserStatus].
+ *
+ * ```kotlin
+ * val status = buildUserStatus {
+ *     bot()
+ *     fakeUser()
+ *     // ...
+ * }
+ * ```
+ */
+@UserStatusBuilderDsl
+public inline fun buildUserStatus(base: UserStatus? = null, block: UserStatusBuilder.() -> Unit): UserStatus {
+    return base?.refactor()?.also(block)?.build() ?: UserStatusBuilder().also(block).build()
 }
 
 
