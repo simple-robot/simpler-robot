@@ -7,6 +7,7 @@ import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.flow.*
 import love.forte.simbot.Api4J
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.Limiter
 import love.forte.simbot.Limiter.ZERO.limit
 import love.forte.simbot.Limiter.ZERO.offset
@@ -18,6 +19,7 @@ import java.util.stream.Stream
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.cancellation.CancellationException
+import kotlin.experimental.ExperimentalTypeInference
 
 /**
  *
@@ -50,7 +52,7 @@ import kotlin.coroutines.cancellation.CancellationException
  *
  * ## 收集
  *
- * [Items] 中存在部分 **收集** 函数：[Items.collect] 、[Items.collectToList] 等。
+ * [Items] 中存在部分 **收集** 函数：[Items.collectTo] 、[Items.collectToList] 等。
  *
  * **收集** 函数是一种 _终结_ 函数，它会将当前预处理信息的瞬时信息提供给内部的构建器，并进行真正的处理逻辑。
  *
@@ -122,7 +124,7 @@ public interface Items<out T> {
     
     
     /**
-     * 收集当前数据序列中的元素. [collect] 可能会产生挂起，会直到当前序列中的所有可能产生的元素收集完毕后结束挂起。
+     * 收集当前数据序列中的元素. [collectTo] 可能会产生挂起，会直到当前序列中的所有可能产生的元素收集完毕后结束挂起。
      */
     @JvmSynthetic
     public suspend fun collect(collector: suspend (T) -> Unit)
@@ -162,7 +164,7 @@ public interface Items<out T> {
      * @throws CancellationException 当被中断时
      */
     @Api4J
-    public fun <C : MutableCollection<in T>> collect(collector: C): C {
+    public fun <C : MutableCollection<in T>> collectTo(collector: C): C {
         runInBlocking { collect { collector.add(it) } }
         return collector
     }
@@ -174,7 +176,7 @@ public interface Items<out T> {
      */
     @Api4J
     public fun collectToList(): List<T> {
-        return collect(mutableListOf())
+        return collectTo(mutableListOf())
     }
     
     
@@ -203,7 +205,7 @@ public interface Items<out T> {
         @JvmStatic
         @JvmName("by")
         public fun <T> blockingItemsBy(factory: (PreprocessingProperties) -> Iterator<T>): Items<T> {
-            return SimpleBlockingItems(factory)
+            return SimpleIteratorItems(factory)
         }
         
         /**
@@ -256,6 +258,14 @@ public fun <E> Items.PreprocessingProperties.effectOn(flow: Flow<E>): Flow<E> {
 }
 
 /**
+ * 构建一个flow，并将当前 [Items.PreprocessingProperties] 作用于最终的 [Flow] 中。
+ */
+public fun <E> Items.PreprocessingProperties.effectedFlow(block: suspend FlowCollector<E>.() -> Unit): Flow<E> {
+    return effectOn(flow(block))
+}
+
+
+/**
  * 将 [Items.PreprocessingProperties] 作用于目标 [Sequence] 中。
  */
 @Suppress("DuplicatedCode")
@@ -281,6 +291,76 @@ public fun <E> Items.PreprocessingProperties.effectOn(stream: Stream<E>): Stream
         if (offset > 0) s.skip(offset.toLong()) else s
     }.let { s ->
         if (limit > 0) s.limit(limit.toLong()) else s
+    }
+}
+
+/**
+ * 将一个 [Items.PreprocessingProperties] 作用于目标 [ChannelIterator] 上。
+ */
+@ExperimentalSimbotApi
+public fun <E> Items.PreprocessingProperties.effectOn(iter: ChannelIterator<E>): ChannelIterator<E> {
+    return EffectedByPreprocessingPropertiesChannelIterator(iter, this)
+}
+
+// TODO
+private class EffectedByPreprocessingPropertiesChannelIterator<E>(
+    private val baseIterator: ChannelIterator<E>,
+    properties: Items.PreprocessingProperties,
+) : ChannelIterator<E> {
+    private val limit: Int = properties.limit
+    private val offset: Int = properties.offset
+    // private val batch: Int  = properties.batch
+    
+    private var limitCount: Int = 0
+    private var isOffsetInit = false
+    
+    override suspend fun hasNext(): Boolean {
+        if (!isOffsetInit) {
+            if (offset > 0) {
+                var count = 0
+                while (baseIterator.hasNext() && count++ < offset) {
+                    baseIterator.next()
+                }
+            }
+            isOffsetInit = true
+        }
+        
+        
+        
+        return if (limit > 0) {
+            if (limitCount < limit) {
+                baseIterator.hasNext().also {
+                    if (it) {
+                        limitCount += 1
+                    }
+                }
+            } else {
+                false
+            }
+        } else {
+            baseIterator.hasNext()
+        }
+        
+    }
+    
+    
+    override fun next(): E {
+        return baseIterator.next()
+    }
+    
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is EffectedByPreprocessingPropertiesChannelIterator<*>) return false
+        
+        return baseIterator == other.baseIterator
+    }
+    
+    override fun hashCode(): Int {
+        return baseIterator.hashCode()
+    }
+    
+    override fun toString(): String {
+        return baseIterator.toString()
     }
 }
 
@@ -328,18 +408,39 @@ private object EmptyItems : Items<Nothing> {
 
 /**
  * 提供构建 [ChannelIterator] 的函数来构建一个 [Items].
+ *
+ * 需要自行处理 [Items.PreprocessingProperties] 所提供的预处理参数。
  */
 @JvmSynthetic
 public fun <T> itemsBy(factory: (Items.PreprocessingProperties) -> ChannelIterator<T>): Items<T> {
-    return SimpleItems(factory)
+    return SimpleChannelIteratorItems(factory)
 }
 
 
 /**
  * 在一个协程作用域环境下通过 [produce] 构建一个 [Items].
+ *
+ * Deprecated.
+ *
+ * @see produceItems
+ */
+@Deprecated("Use produceItems", ReplaceWith("produceItems(context, capacity, block)"))
+public inline fun <T> CoroutineScope.items(
+    context: CoroutineContext = EmptyCoroutineContext,
+    capacity: Int = 0,
+    crossinline block: suspend ProducerScope<T>.(Items.PreprocessingProperties) -> Unit,
+): Items<T> = produceItems(context, capacity, block)
+
+/**
+ * 通过 [produce] 构建 [ChannelIterator] 来得到一个 [Items] 实例。
+ *
+ * 需要自行处理 [Items.PreprocessingProperties] 所提供的预处理参数。
+ *
+ * @see produce
+ * @see itemsBy
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-public inline fun <T> CoroutineScope.items(
+public inline fun <T> CoroutineScope.produceItems(
     context: CoroutineContext = EmptyCoroutineContext,
     capacity: Int = 0,
     crossinline block: suspend ProducerScope<T>.(Items.PreprocessingProperties) -> Unit,
@@ -351,24 +452,76 @@ public inline fun <T> CoroutineScope.items(
     }
 }
 
+
+/**
+ * _Deprecated._
+ *
+ * @see itemsByFlow
+ */
+@Deprecated("Use itemsByFlow(...)", ReplaceWith("itemsByFlow(flowFactory)"))
+public inline fun <T> CoroutineScope.items(crossinline flowFactory: (Items.PreprocessingProperties) -> Flow<T>): Items<T> {
+    return itemsByFlow(flowFactory)
+}
+
 /**
  * 提供 [CoroutineScope] 和构建 [Flow] 的函数 [flowFactory] 来构建 [Items].
+ *
+ * 需要自行处理 [Items.PreprocessingProperties] 所提供的预处理参数。
  */
-public inline fun <T> CoroutineScope.items(crossinline flowFactory: (Items.PreprocessingProperties) -> Flow<T>): Items<T> {
+public inline fun <T> CoroutineScope.itemsByFlow(crossinline flowFactory: (Items.PreprocessingProperties) -> Flow<T>): Items<T> {
     return FlowItems(this) {
         flowFactory(it)
     }
 }
 
 /**
+ * 提供 [CoroutineScope] 和构建 [Flow] 的函数 [flowFactory] 来构建 [Items].
+ *
+ * 不提供 [Items.PreprocessingProperties], 取而代之的是自动将 [Items.PreprocessingProperties] 作用于 [flowFactory]
+ * 所构建出来的 [Flow] 实例上。
+ *
+ * @see Items.PreprocessingProperties.effectOn
+ */
+public inline fun <T> CoroutineScope.effectedItemsByFlow(crossinline flowFactory: () -> Flow<T>): Items<T> {
+    return itemsByFlow { prop ->
+        prop.effectOn(flowFactory())
+    }
+}
+
+/**
+ * _Deprecated._
+ *
+ * @see flowItems
+ */
+@Deprecated("Use flowItems(...)", ReplaceWith("flowItems(block)"))
+public inline fun <T> CoroutineScope.items(crossinline block: suspend FlowCollector<T>.(Items.PreprocessingProperties) -> Unit): Items<T> {
+    return flowItems(block)
+}
+
+
+/**
  * 以构建 flow 的方式构建 [Items].
  */
-public inline fun <T> CoroutineScope.items(crossinline block: suspend FlowCollector<T>.(Items.PreprocessingProperties) -> Unit): Items<T> {
-    return items(flowFactory = { pre ->
+@OptIn(ExperimentalTypeInference::class)
+public inline fun <T> CoroutineScope.flowItems(@BuilderInference crossinline block: suspend FlowCollector<T>.(Items.PreprocessingProperties) -> Unit): Items<T> {
+    return itemsByFlow { pre ->
         flow {
             block(pre)
         }
-    })
+    }
+}
+
+/**
+ * 以构建 flow 的方式构建 [Items].
+ *
+ * 不提供 [Items.PreprocessingProperties], 取而代之的是自动将 [Items.PreprocessingProperties] 作用于 [block]
+ * 所构建出来的 [Flow] 实例上。
+ */
+@OptIn(ExperimentalTypeInference::class)
+public inline fun <T> CoroutineScope.effectedFlowItems(@BuilderInference crossinline block: suspend FlowCollector<T>.() -> Unit): Items<T> {
+    return itemsByFlow { prop ->
+        prop.effectedFlow { block() }
+    }
 }
 
 
