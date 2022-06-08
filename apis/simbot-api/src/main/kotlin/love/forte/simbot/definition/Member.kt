@@ -27,13 +27,13 @@ import love.forte.simbot.utils.item.Items
 import love.forte.simbot.utils.runInBlocking
 import kotlin.time.Duration
 
-
 /**
  * 一个组织下的成员.
  *
  * @see GuildMember
  * @see GroupMember
  */
+// 考虑实现 Contact
 public interface Member : User, MemberInfo, MuteSupport, SendSupport {
 
     override val id: ID
