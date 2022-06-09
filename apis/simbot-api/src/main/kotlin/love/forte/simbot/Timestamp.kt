@@ -28,6 +28,7 @@ import kotlinx.serialization.encoding.Encoder
 import java.time.Instant
 import java.time.temporal.Temporal
 import java.time.temporal.TemporalAdjuster
+import kotlin.time.Duration
 
 /**
  * 一个 **时间戳** 。
@@ -53,15 +54,11 @@ public sealed class Timestamp : Comparable<Timestamp> {
      */
     public abstract val millisecond: Long
 
-    /**
-     * 此时间戳中秒后的nano修正值。
-     */
-    public abstract val nano: Int
-
 
     /**
      * 此时间戳是否是一个被支持的真实时间戳。
-     * 如果得到false，则代表此时间戳本质上不存在。
+     * 如果得到false，则代表此时间戳本质上不存在，
+     * 且上述 [second] 和 [millisecond] 最终结果应为-1。
      */
     public abstract fun isSupport(): Boolean
 
@@ -74,7 +71,6 @@ public sealed class Timestamp : Comparable<Timestamp> {
     public object NotSupport : Timestamp() {
         override val second: Long get() = -1
         override val millisecond: Long get() = -1
-        override val nano: Int get() = 0
         override fun isSupport(): Boolean = false
         override fun toString(): String = "0000-01-01T00:00:00Z"
         override fun compareTo(other: Timestamp): Int {
@@ -109,7 +105,7 @@ public fun Instant.toTimestamp(): Timestamp = Timestamp.byInstant(this)
 
 /**
  * 基于 [Instant] 的 [Timestamp] 实现。
- * 如果希望作为一个毫秒时间戳进行序列号，请使用 [Timestamp] 的序列化器。
+ * 如果希望作为一个毫秒时间戳进行序列化，请使用 [Timestamp] 的序列化器 [TimestampSerializer]。
  */
 @Serializable
 @SerialName("tsi")
@@ -119,7 +115,6 @@ public data class InstantTimestamp(
     Temporal by instant, TemporalAdjuster by instant {
     override val second: Long get() = instant.epochSecond
     override val millisecond: Long get() = instant.toEpochMilli()
-    override val nano: Int get() = instant.nano
     override fun isSupport(): Boolean = true
     override fun toString(): String {
         return instant.toString()
@@ -135,9 +130,9 @@ public data class InstantTimestamp(
 
 
 /**
- * 如果 [Timestamp] 类型为 [InstantTimestamp], 获取 [instant][InstantTimestamp.instant] 实例。
+ * 将当前时间戳实例转化为 [Instant].
  */
-public inline val Timestamp.instantValue: Instant? get() = takeIf { it is InstantTimestamp }?.let { (it as InstantTimestamp).instant }
+public inline val Timestamp.instantValue: Instant get() = takeIf { it is InstantTimestamp }?.let { (it as InstantTimestamp).instant } ?: Instant.ofEpochMilli(millisecond)
 
 /**
  * 是否是不支持的 timestamp.
@@ -156,8 +151,12 @@ public object InstantSerializer : KSerializer<Instant> {
     }
 }
 
+/**
+ * 将 [Timestamp] 直接作为字面值进行序列化的序列化器。
+ */
 public object TimestampSerializer : KSerializer<Timestamp> {
     override fun deserialize(decoder: Decoder): Timestamp {
+        Duration.ZERO
         val instant = decoder.decodeLong()
         return if (instant < 0) Timestamp.NotSupport else Instant.ofEpochMilli(instant).toTimestamp()
     }
