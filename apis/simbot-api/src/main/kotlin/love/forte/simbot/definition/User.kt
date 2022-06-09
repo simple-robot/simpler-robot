@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 @file:JvmName("AccountUtil")
@@ -33,7 +32,7 @@ import love.forte.simbot.ID
  *
  * @author ForteScarlet
  */
-public interface User : Objectives, UserInfo {
+public interface User : Objective, UserInfo {
 
     /**
      * 这个账号的唯一ID。

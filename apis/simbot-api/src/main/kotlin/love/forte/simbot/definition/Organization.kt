@@ -70,7 +70,7 @@ import kotlin.time.Duration
  *
  * @author ForteScarlet
  */
-public interface Organization : Objectives, OrganizationInfo, MuteSupport, BotContainer {
+public interface Organization : Objective, OrganizationInfo, MuteSupport, BotContainer {
     
     /**
      * 这个组织一定是属于某一个Bot之下的。
