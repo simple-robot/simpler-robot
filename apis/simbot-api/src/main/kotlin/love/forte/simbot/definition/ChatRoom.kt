@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.definition
@@ -23,9 +22,9 @@ import love.forte.simbot.utils.item.Items.Companion.emptyItems
 
 
 /**
- * 一个 **聊天室**。 聊天室是组织的一个子集，代表其是一个存在多人且允许相互交流“发送消息”的组织。
+ * 一个 **聊天室**。 聊天室是 [组织][Organization] 的子类型，代表其是一个存在多人且允许相互交流“发送消息”的组织。
  *
- * 聊天室允许发送消息.
+ * 聊天室实现 [SendSupport] ，允许发送消息。
  *
  * @author ForteScarlet
  */

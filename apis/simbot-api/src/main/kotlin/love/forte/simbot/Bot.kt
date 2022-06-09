@@ -39,9 +39,16 @@ import kotlin.coroutines.CoroutineContext
  * [Bot] 是一个活动个体，通过 [BotManager] 构建而来。
  * 其作为一个 [CoroutineScope] 来持有自己的协程上下文。
  *
+ * ## 社交关系容器
+ * [Bot] 会默认实现部分 [社交关系容器][SocialRelationsContainer]：[ContactsContainer]、[GroupsContainer]、[GuildsContainer]。
+ * 有关它们的信息请参考对应的注释说明。
+ *
+ * 值得一提的是，[Bot] 不会默认实现 [FriendsContainer], 因为并非所有组件中的 bot 都存在“好友”的概念，取而代之的则是 [ContactsContainer]。
+ *
+ *
  * @see LoggerContainer
  * @see ComponentContainer
- * @see FriendsContainer
+ * @see ContactsContainer
  * @see GroupsContainer
  * @see GuildsContainer
  *
@@ -49,7 +56,7 @@ import kotlin.coroutines.CoroutineContext
  */
 public interface Bot : User, CoroutineScope, Survivable,
     LoggerContainer, ComponentContainer,
-    FriendsContainer, GroupsContainer, GuildsContainer {
+    ContactsContainer, GroupsContainer, GuildsContainer {
     override val coroutineContext: CoroutineContext
     
     /**

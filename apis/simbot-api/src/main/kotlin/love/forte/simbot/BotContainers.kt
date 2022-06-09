@@ -91,16 +91,18 @@ public interface FriendsContainer : SocialRelationsContainer {
  * 通常应用于 [Bot] 中为其提供获取 [Contact] 相关的属性api。
  *
  * [联系人][Contact] 通常代表为与当前容器存在"会话"的联系人，
- * 它们之间必须存在一种常驻关系（例如它们之间是 [好友][Friend] 关系）
+ * 它们之间必须存在一种硬性关系（例如它们之间是 [好友][Friend] 关系）
  * 或者存在一个被创建过的"会话"（例如某联系人主动与bot进行过交流或者
  * 与当前容器创建过与某个目标的会话）。
  *
- * 因上述约束，[ContactsContainer.contacts] 通常不具备检索诸如 [组织成员][Member]
- * 之类的间接联系人的能力 ———— 除非它们与当前容器存在可查会话。
+ * 因上述约束，[ContactsContainer.contacts] 通常不具备检索 组织成员 [Member]
+ * 这类间接联系人的能力, 尽管 [Member] 也属于 [Contact] 类型 ———— 除非它们与当前容器存在可查会话。
+ *
+ * 当一个bot中，所有可能的联系人都是与bot存在硬性关系（例如它们之间是 [好友][Friend] 关系）的时候，
+ * [ContactsContainer] 的表现将会与 [FriendsContainer] 类似。
  *
  */
 public interface ContactsContainer : SocialRelationsContainer {
-    // TODO impl for Bot
     
     /**
      * 得到当前容器中能够获取到的联系人序列。
