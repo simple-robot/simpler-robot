@@ -49,7 +49,7 @@ public interface MessageEvent : Event, RemoteMessageContainer, ReplySupport {
      *
      */
     @JvmSynthetic
-    public suspend fun source(): Objectives
+    public suspend fun source(): Objective
 
 
     /**
@@ -60,7 +60,7 @@ public interface MessageEvent : Event, RemoteMessageContainer, ReplySupport {
      *
      */
     @Api4J
-    public val source: Objectives
+    public val source: Objective
 
 
     /**

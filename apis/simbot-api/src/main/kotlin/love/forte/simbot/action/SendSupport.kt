@@ -20,7 +20,7 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.SimbotIllegalStateException
-import love.forte.simbot.definition.Objectives
+import love.forte.simbot.definition.Objective
 import love.forte.simbot.event.Event
 import love.forte.simbot.message.*
 import love.forte.simbot.utils.runInBlocking
@@ -235,14 +235,14 @@ public interface ReactReceipt : MessageReceipt {
  * 如果此目标允许发送消息，发送，否则得到null。
  */
 @JvmSynthetic
-public suspend fun Objectives.sendIfSupport(message: Message): MessageReceipt? =
+public suspend fun Objective.sendIfSupport(message: Message): MessageReceipt? =
     if (this is SendSupport) send(message) else null
 
 /**
  * 如果此目标允许发送消息，发送，否则得到null。
  */
 @JvmSynthetic
-public suspend inline fun Objectives.sendIfSupport(message: () -> Message): MessageReceipt? =
+public suspend inline fun Objective.sendIfSupport(message: () -> Message): MessageReceipt? =
     if (this is SendSupport) send(message()) else null
 
 /**
@@ -263,7 +263,7 @@ public suspend inline fun MessageContainer.sendIfSupport(message: () -> Message)
  * 如果此目标允许发送消息，发送，否则得到null。
  */
 @JvmSynthetic
-public suspend fun Objectives.sendIfSupport(message: MessageContent): MessageReceipt? =
+public suspend fun Objective.sendIfSupport(message: MessageContent): MessageReceipt? =
     if (this is SendSupport) send(message) else null
 
 /**
@@ -277,7 +277,7 @@ public suspend fun MessageContainer.sendIfSupport(message: MessageContent): Mess
  * 如果此目标允许发送消息，发送，否则得到null。
  */
 @JvmSynthetic
-public suspend fun Objectives.sendIfSupport(message: String): MessageReceipt? =
+public suspend fun Objective.sendIfSupport(message: String): MessageReceipt? =
     if (this is SendSupport) send(message) else null
 
 /**
@@ -324,7 +324,7 @@ public suspend fun Event.replyIfSupport(message: String): MessageReceipt? =
 @JvmSynthetic
 @Suppress("DeprecatedCallableAddReplaceWith")
 @Deprecated("ReplySupport通常由Event类型实现")
-public suspend fun Objectives.replyIfSupport(message: Message): MessageReceipt? =
+public suspend fun Objective.replyIfSupport(message: Message): MessageReceipt? =
     if (this is ReplySupport) reply(message) else null
 
 
@@ -343,7 +343,7 @@ public suspend fun MessageContainer.replyIfSupport(message: Message): MessageRec
 @JvmSynthetic
 @Suppress("DeprecatedCallableAddReplaceWith")
 @Deprecated("ReplySupport通常由Event类型实现")
-public suspend inline fun Objectives.replyIfSupport(message: () -> Message): MessageReceipt? =
+public suspend inline fun Objective.replyIfSupport(message: () -> Message): MessageReceipt? =
     if (this is ReplySupport) reply(message()) else null
 
 
@@ -363,7 +363,7 @@ public suspend inline fun MessageContainer.replyIfSupport(message: () -> Message
 @JvmSynthetic
 @Suppress("DeprecatedCallableAddReplaceWith")
 @Deprecated("ReplySupport通常由Event类型实现")
-public suspend fun Objectives.replyIfSupport(message: MessageContent): MessageReceipt? =
+public suspend fun Objective.replyIfSupport(message: MessageContent): MessageReceipt? =
     if (this is ReplySupport) reply(message) else null
 
 
@@ -383,7 +383,7 @@ public suspend fun MessageContainer.replyIfSupport(message: MessageContent): Mes
 @JvmSynthetic
 @Suppress("DeprecatedCallableAddReplaceWith")
 @Deprecated("ReplySupport通常由Event类型实现")
-public suspend fun Objectives.replyIfSupport(message: String): MessageReceipt? =
+public suspend fun Objective.replyIfSupport(message: String): MessageReceipt? =
     if (this is ReplySupport) reply(message) else null
 
 
@@ -403,7 +403,7 @@ public suspend fun MessageContainer.replyIfSupport(message: String): MessageRece
  * 如果此目标允许回复标记消息，发送，否则得到null。
  */
 @JvmSynthetic
-public suspend fun Objectives.reactIfSupport(message: Message): MessageReceipt? =
+public suspend fun Objective.reactIfSupport(message: Message): MessageReceipt? =
     if (this is MessageReactSupport) react(message) else null
 
 /**
@@ -417,7 +417,7 @@ public suspend fun MessageContainer.reactIfSupport(message: Message): MessageRec
  * 如果此目标允许回复标记消息，发送，否则得到null。
  */
 @JvmSynthetic
-public suspend inline fun Objectives.reactIfSupport(message: () -> Message): MessageReceipt? =
+public suspend inline fun Objective.reactIfSupport(message: () -> Message): MessageReceipt? =
     if (this is MessageReactSupport) react(message()) else null
 
 /**
