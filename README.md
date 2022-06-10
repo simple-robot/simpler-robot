@@ -77,6 +77,9 @@ simbot3支持多组件协同，但是这会给版本控制带来更大的挑战�
 simbot3的文档与simbot2的文档在一起，都在 [语雀文档](https://www.yuque.com/simpler-robot/simpler-robot-doc)
 中。但是这次simbot3中的源码注释相比以前更为丰富，因此我建议对api相关的内容优先查阅代码中的文档注释。
 
+不过，simbot3未来将会在 [**Simple Robot 3 文档站**](https://simbot.forte.love/) 处更新，语雀内视情况可能不会再更新 simbot3 相关内容。
+
+
 当然，你也可以去看看[API Doc](https://simple-robot-library.github.io/simbot3-main-apiDoc) ，API文档会在每次版本发布的时候更新。
 
 ## 组件
@@ -94,7 +97,7 @@ simbot3目前已经实现的组件以及计划中的组件会列举于此，且�
 
 
 
-## 使用
+## 安装
 
 > **Warn: 对于组件, 你需要去上面提及的组件仓库中选择你需要使用的.**
 > 
@@ -151,86 +154,128 @@ implementation "love.forte.simbot:simbot-core:$simbotVersion"
 
 ## 走马观花
 
-### 事件监听
+> 从core模块的应用程序，到boot模块的监听函数。总而言之，随意看看便好。
 
-> 下述以 simbot-boot模块中的注解监听形式为例
+**Application**
 
 ```kotlin
+suspend fun main() {
+    createSimpleApplication {
+        listeners {
+            FriendMessageEvent { event ->
+                val receipt = event.reply("喵!")
+                delay(3.seconds)
+                receipt.deleteIfSupport()
+                event.friend().send("喵喵喵~")
+                eventResult()
+            } onMatch { it.friend().id.literal == "1145141919" }
+            
+        }
+    }.join()
+}
+```
+
+**Listen Event**
+
+```kotlin
+suspend fun main() {
+    createSimpleApplication {
+        listeners {
+            // ===== way 1
+            FriendMessageEvent { event ->
+                // ...
+                
+                eventResult() // result
+            } onMatch {
+                // match ...
+                true
+            } onMatch {
+                // and match ...
+                true
+            }
+            
+            // ===== way 2
+            listen(FriendMessageEvent) {
+                match { true } // match ...
+                match { true } // and match ...
+                
+                handle { event ->
+                    // handle..
+                    
+                    eventResult()
+                }
+            }
+            
+            // ===== way 3
+            val listenerInstance: EventListener = createMyCustomListenerInstance()
+            
+            listener(listenerInstance)
+        }
+    }.join()
+}
+
+private fun createMyCustomListenerInstance(): EventListener {
+    // ...
+}
+```
+
+**Boot Application**
+
+```kotlin
+@SimbootApplication
+class App
+
+suspend fun main(vararg args: String) {
+    // import love.forte.simboot.core.invoke
+    SimbootApp<App>(args = args).join()
+}
+```
+
+**Boot Listener**
+```kotlin
 @Listener
-suspend fun GroupMessageEvent.listen() {
-    println("事件来源群: ${group().name}")
-    replyIfSupport { "你好！" }
+suspend fun FriendMessageEvent.onEvent() {
+    // ...
 }
 ```
 
 ```kotlin
-@Filter("你好")
 @Listener
-suspend fun FriendMessageEvent.listen() {
-    friend().send("你也好")
+@Filter("喵{1,3}") // match: 喵,喵喵,喵喵喵
+suspend fun FriendMessageEvent.onEvent() {
+  // ...
 }
 ```
 
-### 对象获取
-
 ```kotlin
 @Listener
-suspend fun GuildMessageEvent.listen() {
-    // 频道的所有子频道
-    val channels: Items<Channel> = children()
-    // bot的所有好友
-    val friends: Items<Friend> = bot.friends()
-    // 获取指定群对象
-    val group = bot.group(114514.ID)
-
-    val groupId = group.id
-    val groupName = group.name
-    val groupIcon = group.icon
+@ContentTrim // 匹配前trim
+@Filter("喵{1,3}") // match: 喵,喵喵,喵喵喵
+suspend fun FriendMessageEvent.onEvent() {
+  // ...
 }
 ```
 
-### 延时发送/动态参数
+**Message**
 
 ```kotlin
-@Filter("我叫{{name}}")
 @Listener
-suspend fun FriendMessageEvent.listen(@FilterValue("name") name: String) {
-    val friend = friend()
-    bot.launch {
-        delay(3000)
-        friend.send("Hello, $name")
+suspend fun GroupMessageEvent.onEvent() {
+    group().send(At(114.ID) + "喵!".toText() + Face(514.ID))
+}
+```
+
+**会话**
+```kotlin
+@Listener
+suspend fun FriendMessageEvent.onEvent(session: ContinuousSessionContext) {
+    // import love.forte.simbot.event.invoke
+    val nextEvent = session {
+        next(FriendMessageEvent)
     }
 }
 ```
 
-### 特殊消息
-
-#### 上传并发送图片
-
-```kotlin
-@Listener
-suspend fun FriendMessageEvent.listen() {
-    val img = Path("img/example.png")
-    val imgResource = Resource.of(img)
-
-    val imgForSend = bot.uploadImage(imgResource)
-
-    // send img to friend
-    friend().send(imgForSend)
-}
-```
-
-#### 群里at + 文本
-
-```kotlin
-@Listener
-suspend fun GroupMessageEvent.listen() {
-    val authorId = author().id
-    val at = At(authorId)
-
-    group().send(at + "你好?".toText())
-}
-```
 
 更多示例代码可以参考[3.x文档](https://www.yuque.com/simpler-robot/simpler-robot-doc/mudleb)中的《走马观花》相关内容.
 
