@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.definition
@@ -25,12 +24,11 @@ import love.forte.simbot.ID
  * 陌生人。
  * 一个并非好友或群成员的人。
  *
- * 陌生人并不一定就是一个 [联系人][Contact], 无法保证能够与其能够交流。
+ * 陌生人并不一定就是一个 [联系人][Contact], 无法保证能够与其能够交流/通信。
  *
  * @author ForteScarlet
  */
 public interface Stranger : User {
     override val id: ID
     override val bot: Bot
-
 }
