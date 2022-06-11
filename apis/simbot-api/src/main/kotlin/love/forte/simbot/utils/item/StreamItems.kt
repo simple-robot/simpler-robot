@@ -16,11 +16,70 @@
 
 package love.forte.simbot.utils.item
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.stream.consumeAsFlow
+import love.forte.simbot.Api4J
+import love.forte.simbot.utils.runInBlocking
+import java.util.stream.Stream
+import kotlin.streams.asSequence
+
 
 /**
+ * 使用 [Stream] 实现 [Items] 的基本约定。
  *
  * @author ForteScarlet
  */
-public class StreamItems {
-     // TODO
+@Api4J
+public class StreamItems<T> private constructor(private val streamFactory: (Items.PreprocessingProperties) -> Stream<T>) : BaseItems<T, StreamItems<T>>() {
+    override val self: StreamItems<T>
+        get() = this
+    
+    private val stream: Stream<T> get() = streamFactory(preprocessingProperties)
+    override suspend fun collect(collector: suspend (T) -> Unit) {
+        stream.forEach {
+            runInBlocking { collector(it) }
+        }
+    }
+    
+    override fun asFlow(): Flow<T> {
+        return stream.consumeAsFlow()
+    }
+    
+    override fun asSequence(): Sequence<T> {
+        return stream.asSequence()
+    }
+    
+    @Api4J
+    override fun asStream(): Stream<out T> {
+        return stream
+    }
+    
+    public companion object {
+    
+        /**
+         * 通过最基本的 [构建函数][streamFactory] 创建一个以 [Stream] 为目标的 [Items] 实例。
+         *
+         * 需要自行处理 [Items.PreprocessingProperties] 参数所提供的内容。或者参考 [newEffectedInstance].
+         *
+         */
+        @JvmStatic
+        public fun <T> newInstance(streamFactory: (Items.PreprocessingProperties) -> Stream<T>): Items<T> {
+            return StreamItems(streamFactory)
+        }
+    
+        /**
+         * 通过最基本的构建函数创建一个以 [Stream] 为目标的 [Items] 实例。
+         *
+         * [构建函数][streamFactory] 创建的 [Stream] 最终会被自动通过 [Items.PreprocessingProperties.effectOn] 所作用。
+         *
+         */
+        @JvmStatic
+        public fun <T> newEffectedInstance(streamFactory: () -> Stream<T>): Items<T> {
+            return newInstance { pre ->
+                pre.effectOn(streamFactory())
+            }
+        }
+    
+    }
+    
 }
