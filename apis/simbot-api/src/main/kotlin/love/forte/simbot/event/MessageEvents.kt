@@ -19,7 +19,6 @@ package love.forte.simbot.event
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
-import love.forte.simbot.action.DeleteSupport
 import love.forte.simbot.action.ReplySupport
 import love.forte.simbot.action.SendSupport
 import love.forte.simbot.definition.*
@@ -184,7 +183,7 @@ public interface FriendMessageEvent : ContactMessageEvent, FriendEvent {
  * @see ChannelMessageEvent
  *
  */
-public interface ChatRoomMessageEvent : MessageEvent, OrganizationEvent, DeleteSupport, RemoteMessageContainer {
+public interface ChatRoomMessageEvent : MessageEvent, OrganizationEvent, RemoteMessageContainer {
     override val id: ID
 
     /**
@@ -215,11 +214,26 @@ public interface ChatRoomMessageEvent : MessageEvent, OrganizationEvent, DeleteS
     /**
      * 预期内，假若当前bot拥有足够的权限则可以对消息进行删除（撤回）操作。
      *
-     * @see DeleteSupport
+     * Deprecated: 使用 [messageContent.delete][RemoteMessageContent.delete]。
+     *
+     * @see messageContent
      */
     @JvmSynthetic
-    override suspend fun delete(): Boolean
+    @Deprecated("Use messageContent.delete()", ReplaceWith("messageContent.delete()"))
+    public suspend fun delete(): Boolean = messageContent.delete()
 
+    /**
+     * 预期内，假若当前bot拥有足够的权限则可以对消息进行删除（撤回）操作。
+     *
+     * Deprecated: 使用 [messageContent.deleteBlocking][RemoteMessageContent.deleteBlocking]。
+     *
+     * @see messageContent
+     */
+    @Api4J
+    @Deprecated("Use getMessageContent().deleteBlocking()", ReplaceWith("messageContent.deleteBlocking()"))
+    public fun deleteBlocking(): Boolean = messageContent.deleteBlocking()
+
+    
 
     public companion object Key : BaseEventKey<ChatRoomMessageEvent>(
         "api.chat_room_message", MessageEvent.Key
