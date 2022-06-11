@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.definition
@@ -30,7 +29,7 @@ import love.forte.simbot.utils.runInBlocking
  */
 public interface Group : ChatRoom, GroupInfo {
     
-    override val bot: GroupMemberBot
+    override val bot: GroupBot
     override val id: ID
     override val name: String
     override val icon: String

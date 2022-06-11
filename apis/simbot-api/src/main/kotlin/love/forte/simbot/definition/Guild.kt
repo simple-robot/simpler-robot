@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -28,7 +28,7 @@ import love.forte.simbot.utils.runInBlocking
  * 目前来看，大部分 guild 其本身是无法发送消息进行交流的。
  */
 public interface Guild : Organization, GuildInfo {
-    override val bot: GuildMemberBot
+    override val bot: GuildBot
     override val id: ID
     override val name: String
     override val icon: String
