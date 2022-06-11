@@ -93,7 +93,11 @@ public interface Bot : User, CoroutineScope, Survivable,
     
     /**
      * 当前Bot的用户状态。
+     *
+     * **ExperimentalSimbotApi: see [UserStatus]**
+     *
      */
+    @ExperimentalSimbotApi
     override val status: UserStatus
     
     /**
