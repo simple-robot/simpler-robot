@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.action
@@ -23,7 +22,12 @@ import love.forte.simbot.utils.runInBlocking
 
 /**
  * 允许一种删除行为。
- * 标记一个消息为可删除的，通常可理解为是可撤回的。
+ * 标记一个消息为可删除的。
+ *
+ * 对于一种**删除行为**来讲，它最常见的含义就是**撤回**（针对于消息, 参考 [RemoteMessageContent][love.forte.simbot.message.RemoteMessageContent]）
+ * 和 **踢出/移除**（针对于好友、群成员等, 但是没有提供默认实现）。
+ *
+ * @see love.forte.simbot.message.RemoteMessageContent
  *
  * @author ForteScarlet
  */
@@ -37,20 +41,20 @@ public interface DeleteSupport {
      *
      * 如果是因为诸如权限、超时等限制条件导致的无法删除，则可能会抛出相应的异常。
      *
-     * @return 是否删除成功，不代表会捕获异常。
+     * @return 在支持的情况下代表是否删除成功，不支持的情况下可能恒返回 `false`。
      */
     @JvmSynthetic
     public suspend fun delete(): Boolean
-
+    
     /**
-     * 删除当前目标。
+     * 阻塞的删除当前目标。
      *
      * 如果因为组件自身特性而导致任何条件都无法满足任何对象的 `delete` 操作，
      * 则可能固定返回 `false`, 否则大多数情况下会返回 `true`.
      *
      * 如果是因为诸如权限、超时等限制条件导致的无法删除，则可能会抛出相应的异常。
      *
-     * @return 是否删除成功，不代表会捕获异常。
+     * @return 在支持的情况下代表是否删除成功，不支持的情况下可能恒返回 `false`。
      */
     @Api4J
     public fun deleteBlocking(): Boolean = runInBlocking { delete() }

@@ -20,14 +20,13 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.action.DeleteSupport
 import love.forte.simbot.definition.IDContainer
-import love.forte.simbot.utils.runInBlocking
 
 
 /**
  * 消息回执，当消息发出去后所得到的回执信息。
  * @author ForteScarlet
  */
-public interface MessageReceipt : IDContainer {
+public interface MessageReceipt : IDContainer, DeleteSupport {
 
     /**
      * 一个消息回执中存在一个ID.
@@ -46,19 +45,23 @@ public interface MessageReceipt : IDContainer {
     /**
      * 如果此回执单是可删除的, 执行删除。
      *
-     * 不会也不应捕获异常。
+     * Deprecated: [MessageReceipt] 已实现 [DeleteSupport], 可以直接使用 [MessageReceipt.delete].
      *
      * @return 删除成功为true，失败或不可删除均为null。
      */
     @Api4J
-    public fun deleteIfSupportBlocking(): Boolean = if (this is DeleteSupport) runInBlocking { delete() } else false
+    @Deprecated("Just use deleteBlocking()", ReplaceWith("deleteBlocking()"))
+    public fun deleteIfSupportBlocking(): Boolean = deleteBlocking() // if (this is DeleteSupport) runInBlocking { delete() } else false
 }
 
 
 /**
  * 如果此回执单是可删除的, 执行删除。
  *
+ * Deprecated: [MessageReceipt] 已实现 [DeleteSupport], 可以直接使用 [MessageReceipt.delete].
+ *
  * @return 删除成功为true，失败或不可删除均为null。
  */
 @JvmSynthetic
-public suspend fun MessageReceipt.deleteIfSupport(): Boolean = if (this is DeleteSupport) delete() else false
+@Deprecated("Just use delete()", ReplaceWith("delete()"))
+public suspend fun MessageReceipt.deleteIfSupport(): Boolean = delete()
