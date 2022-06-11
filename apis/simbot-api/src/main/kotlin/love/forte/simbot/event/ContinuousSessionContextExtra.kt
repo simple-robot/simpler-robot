@@ -59,17 +59,30 @@ public inline operator fun <T> ContinuousSessionContext.invoke(block: Continuous
 
 
 /**
- * 通过 [EventProcessingContext] 获取并进入 [ContinuousSessionContext] 的作用域中, 可以在 [EventProcessingContext] 作为receiver 时搭配使用：
+ * 通过 [EventProcessingContext] 获取并进入 [ContinuousSessionContext] 的作用域中, 可以在存在 [EventProcessingContext] 时搭配使用：
  *
  * ```kotlin
  * suspend fun EventProcessingContext.onEvent(event: FooMessageEvent) {
  *     inSession { // this: ContinuousSessionContext
- *         event.reply("Hello~")
+ *         event.reply("喵~")
  *         val nextMessage = event.nextMessage(FooMessageEvent)
  *         // ...
  *     }
  * }
  * ```
+ *
+ * 或
+ *
+ * ```kotlin
+ * suspend fun onEvent(context: EventProcessingContext, event: FooMessageEvent) {
+ *     context.inSession { // this: ContinuousSessionContext
+ *         event.reply("喵~")
+ *         val nextMessage = event.nextMessage(FooMessageEvent)
+ *         // ...
+ *     }
+ * }
+ * ```
+ *
  *
  * ## 超时
  * 如果想要控制整个作用域下的整体超时时间，可以直接通过 [withTimeout] 来包裹作用域：

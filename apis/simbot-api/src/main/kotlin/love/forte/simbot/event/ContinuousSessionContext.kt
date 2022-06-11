@@ -99,6 +99,10 @@ public interface BaseContinuousSessionContext {
  *                 + ---------------- +
  * ```
  *
+ * ⚠ ：这种行为未来可能会发生变更。
+ *
+ * ## provider & receiver
+ *
  * 在 [ContinuousSessionContext] 中，不论是 [provider][getProvider] 还是 [receiver][getReceiver],
  * 它们都会在一次会话结束（使用了能够导致 [ContinuousSessionProvider.isCompleted] == true 的函数 ）后被移除。
  * 因此当会话结束后，不论 [provider][getProvider] 还是 [receiver][getReceiver] 都会变为null。
