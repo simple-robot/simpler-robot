@@ -24,7 +24,7 @@ import love.forte.simbot.utils.runInBlocking
  * 允许一种删除行为。
  * 标记一个消息为可删除的。
  *
- * 对于一种**删除行为**来讲，它最常见的含义就是**撤回**（针对于消息, 参考 [RemoteMessageContent][love.forte.simbot.message.RemoteMessageContent]）
+ * 对于一种**删除行为**来讲，它最常见的含义就是**撤回**（针对于消息, 参考 [RemoteMessageContent][love.forte.simbot.message.RemoteMessageContent]、[MessageReceipt][love.forte.simbot.message.MessageReceipt]）
  * 和 **踢出/移除**（针对于好友、群成员等, 但是没有提供默认实现）。
  *
  * @see love.forte.simbot.message.RemoteMessageContent
