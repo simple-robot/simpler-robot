@@ -198,16 +198,18 @@ public object SimbootApp {
         }
     }
     
-    
-    private suspend fun runApp(
-        configurator: BootApplicationConfiguration.() -> Unit,
-        builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit,
-    ): BootApplication {
-        return createSimbotApplication(Boot, configurator = configurator, builder = builder)
-    }
+
     
 }
 
+private suspend fun runApp(
+    configurator: BootApplicationConfiguration.() -> Unit,
+    builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit,
+): BootApplication {
+    return runCatching {
+        createSimbotApplication(Boot, configurator = configurator, builder = builder)
+    }.getOrElse { throw SimbootApplicationException("Run boot app failure: ${it.localizedMessage}", it) }
+}
 
 private inline fun preStack(className: String, methodName: String, inlineMark: () -> Unit = {}): StackTraceElement? {
     inlineMark()
