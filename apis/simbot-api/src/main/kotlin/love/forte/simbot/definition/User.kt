@@ -19,6 +19,7 @@
 package love.forte.simbot.definition
 
 import love.forte.simbot.Bot
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.ID
 
 /**
@@ -47,7 +48,10 @@ public interface User : Objective, UserInfo {
 
     /**
      * 这个用户的状态属性。
+     *
+     * **ExperimentalSimbotApi: see [UserStatus]**
      */
+    @ExperimentalSimbotApi
     public val status: UserStatus
 
 }
