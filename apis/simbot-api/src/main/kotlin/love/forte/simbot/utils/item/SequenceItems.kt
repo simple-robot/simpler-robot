@@ -24,7 +24,6 @@ import kotlin.streams.asStream
 
 
 /**
- *
  * 使用 [Sequence] 实现 [Items] 的基本约定。
  *
  * @author ForteScarlet
