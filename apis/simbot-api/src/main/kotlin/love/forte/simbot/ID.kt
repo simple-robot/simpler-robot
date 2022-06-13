@@ -721,19 +721,37 @@ else try {
 /**
  * 尝试将当前ID转为一个 [LongID].
  *
- * 最终会尝试通过 [BigDecimal] 进行转化。
+ * 如果不是数字ID类型，则会尝试通过 [String.toLong] 进行转化。
  *
- * @throws IDException 无法进行转化时。
+ * @throws IDException 无法转化为数字（内部抛出 [NumberFormatException]）时。
  */
 public fun ID.tryToLongID(): LongID = when (this) {
     is LongID -> this
     is NumericalID<*> -> this.toLong().ID
     else -> try {
-        BigDecimal(toString()).toLong().ID
+        literal.toLong().ID
     } catch (nfe: NumberFormatException) {
         throw IDException("Unable to convert id [$this] to LongID", nfe)
     }
 }
+
+/**
+ * 尝试将当前ID转化为一个 [Long]。
+ *
+ * 如果不是数字ID类型，则会尝试通过 [String.toLong] 进行转化。
+ *
+ * @throws IDException 无法转化为数字（内部抛出 [NumberFormatException]）时。
+ */
+public fun ID.tryToLong(): Long = when (this) {
+    is LongID -> this.number
+    is NumericalID<*> -> this.toLong()
+    else -> try {
+        literal.toLong()
+    } catch (nfe: NumberFormatException) {
+        throw IDException("Unable to convert id [$this] to Long", nfe)
+    }
+}
+
 
 
 /**
