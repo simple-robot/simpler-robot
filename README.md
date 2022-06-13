@@ -43,7 +43,7 @@
 
 ## 简介
 
-`Simply Robot` 是一个通用机器人开发框架，是 **`Simple Robot`** 的 3.x 版本命名 (下文简称`simbot3`)。
+**`Simply Robot`** 是一个通用机器人开发框架，是 **`Simple Robot`** 的 3.x 版本命名 (下文简称`simbot3`)。
 
 `simbot3` 是一个JVM平台的通用机器人开发框架，基于simbot核心API并对接开发不同平台的机器人应用，你可以使用相同的代码风格来开发不同平台的机器人。
 
@@ -52,103 +52,41 @@
 simbot3相比较于simbot2时代，其(再一次的)完全重构了整体架构，使用全面异步的api提供更加高效更加流畅的使用体验。
 
 <br>
-
-### 模块差异
-
-simbot3中，`simbot-core`与`simbot-boot`(首先提醒，这里的boot指的**不是**springboot)之间的使用方式上会有较大的区别：
-
-在`simbot-core`上，你的使用方式会更加"原生"，其允许你在更加复杂的代码中拥有更强的控制能力与灵活度。这更适合较为小型的系统或者需要更加灵活控制代码的应用。
-
-而在`simbot-boot(simboot)`上，则提供了更多源于而优于simbot前代的注解开发与自动扫描机制，可以更快速高效的开发你的应用。
-
-### 组件协同
-
-simbot3支持多组件协同，但是这会给版本控制带来更大的挑战，因此如果你希望在你的应用里使用多组件，请仔细检查并测试各个组件之间的版本依赖关系。
-
-<br>
 <br>
 
-## 注意！！
+## ⚠ 注意！！
 
 目前simbot3仍然处于**前期阶段**，如果你想参考simbot2, 可以参考分支: [v2-dev](https://github.com/ForteScarlet/simpler-robot/tree/v2-dev)
 
 ## 文档
 
-simbot3的文档与simbot2的文档在一起，都在 [语雀文档](https://www.yuque.com/simpler-robot/simpler-robot-doc)
-中。但是这次simbot3中的源码注释相比以前更为丰富，因此我建议对api相关的内容优先查阅代码中的文档注释。
+对于使用文档，可以去看看 [**Simple Robot 3 使用文档**][doc-homepage] (尚在更新，并不完整)，
+而API文档则可以前往 [API doc](https://simple-robot-library.github.io/simbot3-main-apiDoc) 看看。API文档归根随着版本的发布而同步更新。
 
-不过，simbot3未来将会在 [**Simple Robot 3 文档站**](https://simbot.forte.love/) 处更新，语雀内视情况可能不会再更新 simbot3 相关内容。
+而这些内容，你都可以在 [**Simple Robot 图书馆**](http://github.com/simple-robot-library) 处找到。
 
-
-当然，你也可以去看看[API Doc](https://simple-robot-library.github.io/simbot3-main-apiDoc) ，API文档会在每次版本发布的时候更新。
+除了这些，还有一个可以简单作为参考的[路线图](Roadmap.md)，会简单记录计划中未来可能会进行的工作。
 
 ## 组件
 
 在simbot3相关的系列组件中，大部分需要依赖第三方库（也有可能是由simbot团队实现的）的组件，基本上都会使用独立的仓库进行管理，
 并且会尽量遵循simbot3的 [命名概述](https://www.yuque.com/simpler-robot/simpler-robot-doc/yqlxig) 中所约定的规则。
 <br>
-simbot3目前已经实现的组件以及计划中的组件会列举于此，且不定期更新：
+simbot3目前已经实现的组件有：
 
 |                  组件目标                   |     作者      |                                                     组件仓库                                                      | 状态  |
 |:---------------------------------------:|:-----------:|:-------------------------------------------------------------------------------------------------------------:|:---:|
-|                  腾讯频道                   | simbot team | [simple-robot/simbot-component-tencent-guild](https://github.com/simple-robot/simbot-component-tencent-guild) | 维护中 |
+|  [QQ频道机器人](https://bot.q.qq.com/wiki)   | simbot team | [simple-robot/simbot-component-tencent-guild](https://github.com/simple-robot/simbot-component-tencent-guild) | 维护中 |
 | [Mirai](https://github.com/mamoe/mirai) | simbot team |         [simple-robot/simbot-component-mirai](https://github.com/simple-robot/simbot-component-mirai)         | 维护中 |
 |     [开黑啦](https://www.kaiheila.cn/)     | simbot team |      [simple-robot/simbot-component-kaiheila](https://github.com/simple-robot/simbot-component-kaiheila)      | 维护中 |
 
+有关于这些组件等simbot附属内容的相关信息，你可以从 [**Simple Robot 附属组织库**](https://github.com/simple-robot) 处查看~
 
 
-## 安装
-
-> **Warn: 对于组件, 你需要去上面提及的组件仓库中选择你需要使用的.**
-> 
-> 一个普通的simbot依赖不会有任何实现, 因此下述提及的依赖使用**不能**独立使用。
->
-
-### simbot-core
-
-#### Maven
-
-版本参考：[![](https://img.shields.io/maven-central/v/love.forte.simbot/simbot-api)](https://repo1.maven.org/maven2/love/forte/simbot/simbot-api/)
-
-> 此处版本参考，需要版本在 v3.x.x 以上。如果显示为v2.x.x, 请前往 [releases](https://github.com/ForteScarlet/simpler-robot/releases) 寻找v3版本，或者查看 [v2](https://github.com/ForteScarlet/simpler-robot/tree/v2-dev) 版本说明。
-
-```xml
-<!-- 3.x中，大部分组件的版本维护独立于标准库，但是会在版本号中体现依赖标准库的版本号。 -->
-<properties>
-    <simbot.version>${version}</simbot.version>
-</properties>
-```
-
-```xml
-<!-- simbot核心标准库 -->
-<dependency>
-    <groupId>love.forte.simbot</groupId>
-    <artifactId>simbot-core</artifactId>
-    <version>${simbot.version}</version>
-</dependency>
-```
-
-#### Gradle Kotlin DSL
-
-```kotlin
-val simbotVersion = // $version
-
-// simbot核心标准库
-implementation("love.forte.simbot:simbot-core:$simbotVersion")
-```
-
-#### Gradle Groovy
-
-```groovy
-simbotVersion = // $version
-
-// simbot核心标准库
-implementation "love.forte.simbot:simbot-core:$simbotVersion"
-```
 
 ## 快速开始
 
-有关快速开始的相关内容，请参考文档中 [《快速开始》](https://www.yuque.com/simpler-robot/simpler-robot-doc/fvdmq1) 中的相关**子章节**。
+你可以前往 [**文档**][doc-homepage] 查看与快速开始有关的内容。
 
 <br>
 
@@ -160,56 +98,56 @@ implementation "love.forte.simbot:simbot-core:$simbotVersion"
 
 ```kotlin
 suspend fun main() {
-    createSimpleApplication {
-        listeners {
-            FriendMessageEvent { event ->
-                val receipt = event.reply("喵!")
-                delay(3.seconds)
-                receipt.deleteIfSupport()
-                event.friend().send("喵喵喵~")
-                eventResult()
-            } onMatch { it.friend().id.literal == "1145141919" }
+    createSimpleApplication {                           // 构建simbot application
+        listeners {                                     // 配置监听函数
+            FriendMessageEvent { event ->               // 监听 「好友消息」 事件
+                val receipt = event.reply("mua!")       // 回复一句「mua!」
+                delay(3.seconds)                        // 挂起等待3s
+                receipt.delete()                        // 撤回刚刚发送的那一句「mua!」
+                event.friend().send("I love you~")      // 向这个好友发送一句「I love you~」
+                eventResult()                           // 结束事件, 返回一个默认的事件处理结果
+            } onMatch { it.friend().id.literal == "1145141919" } // 事件只有当好友的id为「1149159218」的时候才会触发
             
         }
     }.join()
 }
 ```
 
-**Listen Event**
+**事件监听**
 
 ```kotlin
 suspend fun main() {
-    createSimpleApplication {
-        listeners {
+    createSimpleApplication {                          // 构建simbot application
+        listeners {                                    // 配置监听函数
             // ===== way 1
-            FriendMessageEvent { event ->
-                // ...
-                
-                eventResult() // result
-            } onMatch {
-                // match ...
-                true
-            } onMatch {
+            FriendMessageEvent { event ->              // 监听 「好友消息」 事件
+                // ...                                 // 处理逻辑
+                eventResult() // result                // 结束事件, 返回一个默认的事件处理结果
+            } onMatch {                                // 此事件触发前的匹配函数
+                // match ...                           // 匹配逻辑
+                true                                   // 匹配结果, 只有为true时才会触发事件
+            } onMatch {                                // 此事件触发前的匹配函数, 与上一个函数是「&&」(逻辑与)的关系
                 // and match ...
                 true
             }
             
             // ===== way 2
-            listen(FriendMessageEvent) {
-                match { true } // match ...
-                match { true } // and match ...
+            listen(FriendMessageEvent) {               // 监听 「好友消息」 事件
+                match { true } // match ...            // 此事件触发前的匹配函数
+                match { true } // and match ...        // 此事件触发前的匹配函数, 与上一个函数是「&&」(逻辑与)的关系
                 
-                handle { event ->
+                handle { event ->                      // 监听函数处理逻辑
                     // handle..
                     
-                    eventResult()
+                    eventResult()                      // 结束事件, 返回一个事件处理结果
                 }
             }
             
             // ===== way 3
+            
             val listenerInstance: EventListener = createMyCustomListenerInstance()
             
-            listener(listenerInstance)
+            listener(listenerInstance)                 // 直接注册一个监听函数类型的对象
         }
     }.join()
 }
@@ -219,7 +157,7 @@ private fun createMyCustomListenerInstance(): EventListener {
 }
 ```
 
-**Boot Application**
+**Boot模块下的Application**
 
 ```kotlin
 @SimbootApplication
@@ -227,11 +165,11 @@ class App
 
 suspend fun main(vararg args: String) {
     // import love.forte.simboot.core.invoke
-    SimbootApp<App>(args = args).join()
+    SimbootApp.run<App>(args = args).join()
 }
 ```
 
-**Boot Listener**
+**Boot模块下的事件监听**
 ```kotlin
 @Listener
 suspend fun FriendMessageEvent.onEvent() {
@@ -241,7 +179,7 @@ suspend fun FriendMessageEvent.onEvent() {
 
 ```kotlin
 @Listener
-@Filter("喵{1,3}") // match: 喵,喵喵,喵喵喵
+@Filter("喵{1,3}")   // match: 喵,喵喵,喵喵喵
 suspend fun FriendMessageEvent.onEvent() {
   // ...
 }
@@ -256,7 +194,7 @@ suspend fun FriendMessageEvent.onEvent() {
 }
 ```
 
-**Message**
+**消息发送**
 
 ```kotlin
 @Listener
@@ -270,27 +208,26 @@ suspend fun GroupMessageEvent.onEvent() {
 @Listener
 suspend fun FriendMessageEvent.onEvent(session: ContinuousSessionContext) {
     // import love.forte.simbot.event.invoke
-    val nextEvent = session {
-        next(FriendMessageEvent)
+    val nextEvent: FriendMessageEvent = session { next(FriendMessageEvent) }
+    session {
+        val next1: FriendMessageEvent = next(FriendMessageEvent)
+        val next2: FriendMessageEvent = next(FriendMessageEvent)
+        val next3: FriendMessageEvent = next(FriendMessageEvent)
+        // ...
     }
 }
 ```
 
 
-更多示例代码可以参考[3.x文档](https://www.yuque.com/simpler-robot/simpler-robot-doc/mudleb)中的《走马观花》相关内容.
+## 协助我们
+为我们点亮一个**✨star🌟**便是能够给予我们继续走下去的最大动力与支持！
 
-## 协助我
-
-- 你可以通过 [pr](https://github.com/ForteScarlet/simpler-robot/pulls "pull request") 为项目代码作出贡献。
-- 你可以通过 [issue](https://github.com/ForteScarlet/simpler-robot/issues "issues") 提出一个建议或者反馈一个问题。
-- 你可以通过 [讨论区](https://github.com/ForteScarlet/simpler-robot/discussions "discussions") 与其他人或者simbot开发团队相互友好交流。
-- 如果你通过此项目创建了一个很酷的项目，欢迎通过 [issue](https://github.com/ForteScarlet/simpler-robot/issues)
-  、[讨论区](https://github.com/ForteScarlet/simpler-robot/discussions)
+- 你可以通过 [**PR**](https://github.com/ForteScarlet/simpler-robot/pulls "pull request") 为项目代码作出贡献。
+- 你可以通过 [**ISSUES**](https://github.com/ForteScarlet/simpler-robot/issues "issues") 提出一个建议或者反馈一个问题。
+- 你可以通过 [**讨论区**](https://github.com/ForteScarlet/simpler-robot/discussions "discussions") 与其他人或者simbot开发团队相互友好交流。
+- 如果你通过此项目创建了一个很酷的项目，欢迎通过 [ISSUES](https://github.com/ForteScarlet/simpler-robot/issues)、[讨论区](https://github.com/ForteScarlet/simpler-robot/discussions)
   等方式联系团队开发人员，并将你酷酷的项目展示在作品展示区。
 
-## 捐助我
-
-如果你喜欢这个项目，不妨试着 [捐助](https://www.yuque.com/docs/share/43264d27-99a7-4287-97c0-b387f5b0947e) 一下我们，十分感谢。
 
 ## 特别鸣谢
 
@@ -299,8 +236,6 @@ suspend fun FriendMessageEvent.onEvent(session: ContinuousSessionContext) {
 感谢 [jetbrains](https://www.jetbrains.com/?from=simpler-robot "jetbrains") 为团队提供的免费授权，也希望大家能够支持jetbrains及其产品，支持正版。
 
 ## 贡献你的星星！
-
-[//]: # ([![Stargazers over time]&#40;https://starchart.cc/ForteScarlet/simpler-robot.svg&#41;]&#40;https://starchart.cc/ForteScarlet/simpler-robot&#41;)
 
 [![Star History Chart](https://api.star-history.com/svg?repos=ForteScarlet/simpler-robot&type=Date)](https://star-history.com/#ForteScarlet/simpler-robot&Date)
 
@@ -316,4 +251,7 @@ simbot3(当前仓库下相关内容)以 `LGPL 3.0` 协议开源。
 
 [COPYING.LESSER](COPYING.LESSER)
 
-文档持续优化中...
+
+
+
+[doc-homepage]: https://simbot.forte.love/
