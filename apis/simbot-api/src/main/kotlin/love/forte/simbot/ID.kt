@@ -91,7 +91,7 @@ import java.util.concurrent.atomic.LongAdder
  *
  * 此序列化其会永远将ID视为其字面值字符串作为序列化目标。
  *
-
+ 
  *
  * @see CharSequenceID
  * @see NumericalID
@@ -106,58 +106,77 @@ public sealed class ID : Comparable<ID>, Cloneable {
      * [ID] 的 [toString] 结果必须是当前ID所对应的字面值。
      */
     abstract override fun toString(): String
-
+    
     /**
      * ID之间应当是可以排序的。
      */
     abstract override fun compareTo(other: ID): Int
-
+    
     final override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is ID) return false
         if (doEquals(other)) return true
         return literal == other.literal
     }
-
+    
     protected abstract fun doEquals(other: ID): Boolean
     abstract override fun hashCode(): Int
-
+    
     @Suppress("FunctionName")
     public companion object {
-        @Bonus @JvmStatic
+        @Bonus
+        @JvmStatic
         public fun `$`(value: Int): ID = value.ID
-        @Bonus @JvmStatic
+        
+        @Bonus
+        @JvmStatic
         public fun `$`(value: Char): ID = value.ID
-        @Bonus @JvmStatic
+        
+        @Bonus
+        @JvmStatic
         public fun `$`(value: Long): ID = value.ID
-        @Bonus @JvmStatic
+        
+        @Bonus
+        @JvmStatic
         public fun `$`(value: Double): ID = value.ID
-        @Bonus @JvmStatic
+        
+        @Bonus
+        @JvmStatic
         public fun `$`(value: Float): ID = value.ID
-        @Bonus @JvmStatic
+        
+        @Bonus
+        @JvmStatic
         public fun `$`(value: CharSequence): ID = value.ID
-        @Bonus @JvmStatic
+        
+        @Bonus
+        @JvmStatic
         public fun `$`(value: UUID): ID = value.ID
-        @Bonus @JvmStatic
+        
+        @Bonus
+        @JvmStatic
         public fun `$`(value: AtomicInteger): ID = value.ID
-        @Bonus @JvmStatic
+        
+        @Bonus
+        @JvmStatic
         public fun `$`(value: LongAdder): ID = value.ID
-        @Bonus @JvmStatic
+        
+        @Bonus
+        @JvmStatic
         public fun `$`(value: LongAccumulator): ID = value.ID
     }
-
+    
     /**
      * 将一个 [ID] 视为一个 [CharSequenceID] 进行序列化。
      */
     public object AsCharSequenceIDSerializer : KSerializer<ID> {
         override fun deserialize(decoder: Decoder): ID = decoder.decodeString().ID
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("AsCharSequenceId", PrimitiveKind.STRING)
-
+        
         override fun serialize(encoder: Encoder, value: ID) {
             encoder.encodeString(value.toString())
         }
-
-
+        
+        
     }
 }
 
@@ -202,8 +221,10 @@ public val Float.ID: FloatID
     get() = FloatID(this)
 
 /**
+ * 将一个 [CharSequence] 作为 [ID]。
+ *
  * 注意，尽可能避免将 [StringBuilder] 等可变序列作为参数提供, 除非你明确的知道你在做什么。
- * [CharSequenceID] 的 [value][CharSequenceID.value] 目前将会直接使用其引用作为参数。
+ * [CharSequenceID] 的 [value][CharSequenceID.value] 会直接使用参数的引用，不会进行拷贝等操作。
  */
 @get:JvmName("ID")
 public val CharSequence.ID: CharSequenceID
@@ -291,12 +312,12 @@ public fun currentTimeMillisID(): LongID = System.currentTimeMillis().ID
 @SerialName("ID.Number")
 @Serializable
 public sealed class NumericalID<N : Number> : ID() {
-
+    
     /**
      * 此数字ID的值。
      */
     public abstract val value: N
-
+    
     override fun compareTo(other: ID): Int {
         if (other === this) return 0
         if (other is NumericalID<*>) {
@@ -325,51 +346,51 @@ public sealed class NumericalID<N : Number> : ID() {
         }
         return toString().compareTo(other.toString())
     }
-
-    //region from kotlin.Number
+    
+    // region from kotlin.Number
     /**
      * 将当前数字转为 [Double]. 同 [Number.toDouble].
      * @see Number.toDouble
      */
     public open fun toDouble(): Double = value.toDouble()
-
+    
     /**
      * 将当前数字转为 [Float]. 同 [Number.toFloat].
      * @see Number.toFloat
      */
     public open fun toFloat(): Float = value.toFloat()
-
+    
     /**
      * 将当前数字转为 [Long]. 同 [Number.toLong].
      * @see Number.toLong
      */
     public open fun toLong(): Long = value.toLong()
-
+    
     /**
      * 将当前数字转为 [Int]. 同 [Number.toInt].
      * @see Number.toInt
      */
     public open fun toInt(): Int = value.toInt()
-
+    
     /**
      * 将当前数字转为 [Char]. 同 [Number.toChar].
      * @see Number.toChar
      */
     public open fun toChar(): Char = value.toChar()
-
+    
     /**
      * 将当前数字转为 [Short]. 同 [Number.toShort].
      * @see Number.toShort
      */
     public open fun toShort(): Short = value.toShort()
-
+    
     /**
      * 将当前数字转为 [Byte]. 同 [Number.toByte].
      * @see Number.toByte
      */
     public open fun toByte(): Byte = value.toByte()
-
-    //endregion
+    
+    // endregion
     override fun doEquals(other: ID): Boolean {
         if (other is NumericalID<*>) {
             return when (other) {
@@ -381,28 +402,28 @@ public sealed class NumericalID<N : Number> : ID() {
                 is BigDecimalID -> this is BigDecimalID && (value == other.value)
             }
         }
-
+        
         return false
     }
-
+    
     override fun hashCode(): Int = value.hashCode()
     final override fun toString(): String = value.toString()
 }
 
-//region 标准的基础数据ID实现
+// region 标准的基础数据ID实现
 /** 使用 [Int] 或 [Char] 字面值的 [NumericalID] 实现。 */
 @SerialName("ID.Int")
 @Serializable(with = IntID.Serializer::class)
 public data class IntID(public val number: Int) : NumericalID<Int>() {
     override val value: Int
         get() = number
-
+    
     public constructor(char: Char) : this(char.code)
-
+    
     override fun toInt(): Int = number
     override fun toChar(): Char = number.toChar()
     override fun clone(): IntID = copy()
-
+    
     internal object Serializer : KSerializer<IntID> {
         override fun deserialize(decoder: Decoder): IntID = IntID(decoder.decodeInt())
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("IntID", PrimitiveKind.INT)
@@ -418,11 +439,11 @@ public data class IntID(public val number: Int) : NumericalID<Int>() {
 public data class LongID(public val number: Long) : NumericalID<Long>() {
     override val value: Long
         get() = number
-
+    
     override fun toLong(): Long = number
     override fun toInt(): Int = number.toInt()
     override fun clone(): LongID = copy()
-
+    
     internal object Serializer : KSerializer<LongID> {
         override fun deserialize(decoder: Decoder): LongID = LongID(decoder.decodeLong())
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("LongID", PrimitiveKind.LONG)
@@ -438,10 +459,10 @@ public data class LongID(public val number: Long) : NumericalID<Long>() {
 public data class DoubleID(public val number: Double) : NumericalID<Double>() {
     override val value: Double
         get() = number
-
+    
     override fun toDouble(): Double = number
     override fun clone(): DoubleID = copy()
-
+    
     internal object Serializer : KSerializer<DoubleID> {
         override fun deserialize(decoder: Decoder): DoubleID = DoubleID(decoder.decodeDouble())
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("DoubleID", PrimitiveKind.DOUBLE)
@@ -457,10 +478,10 @@ public data class DoubleID(public val number: Double) : NumericalID<Double>() {
 public data class FloatID(public val number: Float) : NumericalID<Float>() {
     override val value: Float
         get() = number
-
+    
     override fun toFloat(): Float = number
     override fun clone(): FloatID = copy()
-
+    
     internal object Serializer : KSerializer<FloatID> {
         override fun deserialize(decoder: Decoder): FloatID = FloatID(decoder.decodeFloat())
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("FloatID", PrimitiveKind.FLOAT)
@@ -469,7 +490,7 @@ public data class FloatID(public val number: Float) : NumericalID<Float>() {
         }
     }
 }
-//endregion
+// endregion
 
 
 /**
@@ -495,7 +516,7 @@ public sealed class ArbitraryNumericalID<N : Number> : NumericalID<N>()
 @Serializable(with = BigDecimalID.Serializer::class)
 public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID<BigDecimal>() {
     override fun clone(): BigDecimalID = BigDecimalID(value)
-
+    
     internal object Serializer : KSerializer<BigDecimalID> {
         override fun deserialize(decoder: Decoder): BigDecimalID = BigDecimalID(BigDecimal(decoder.decodeString()))
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BigDecimalID", PrimitiveKind.STRING)
@@ -503,8 +524,8 @@ public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID
             encoder.encodeString(value.value.toString())
         }
     }
-
-
+    
+    
     /**
      * 转为 [BigIntegerID].
      *
@@ -515,15 +536,15 @@ public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID
     @JvmOverloads
     public fun toBigIntegerID(exact: Boolean = false): BigIntegerID = if (exact) value.toBigIntegerExact().ID
     else value.toBigInteger().ID
-
-
+    
+    
     public companion object {
         @JvmStatic
         public val ZERO: BigDecimalID = BigDecimalID(BigDecimal.ZERO)
-
+        
         @JvmStatic
         public val ONE: BigDecimalID = BigDecimalID(BigDecimal.ONE)
-
+        
         @JvmStatic
         public val TEN: BigDecimalID = BigDecimalID(BigDecimal.TEN)
     }
@@ -539,7 +560,7 @@ public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID
 @Serializable(with = BigIntegerID.Serializer::class)
 public class BigIntegerID(override val value: BigInteger) : ArbitraryNumericalID<BigInteger>() {
     override fun clone(): BigIntegerID = BigIntegerID(value)
-
+    
     internal object Serializer : KSerializer<BigIntegerID> {
         override fun deserialize(decoder: Decoder): BigIntegerID = BigIntegerID(BigInteger(decoder.decodeString()))
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BigIntegerID", PrimitiveKind.STRING)
@@ -547,27 +568,27 @@ public class BigIntegerID(override val value: BigInteger) : ArbitraryNumericalID
             encoder.encodeString(value.value.toString())
         }
     }
-
+    
     /**
      * 转为 [BigDecimalID].
      */
     public fun toBigDecimalID(): BigDecimalID = value.toBigDecimal().ID
-
+    
     /**
      * 转为 [BigDecimalID].
      */
     @JvmOverloads
     public fun toBigDecimalID(scale: Int, mathContext: MathContext = MathContext.UNLIMITED): BigDecimalID =
         value.toBigDecimal(scale, mathContext).ID
-
-
+    
+    
     public companion object {
         @JvmStatic
         public val ZERO: BigIntegerID = BigIntegerID(BigInteger.ZERO)
-
+        
         @JvmStatic
         public val ONE: BigIntegerID = BigIntegerID(BigInteger.ONE)
-
+        
         @JvmStatic
         public val TEN: BigIntegerID = BigIntegerID(BigInteger.TEN)
     }
@@ -671,12 +692,12 @@ public data class CharSequenceID(val value: CharSequence) : ID() {
     override fun toString(): String = value.toString()
     override fun compareTo(other: ID): Int = if (other === this) 0 else toString().compareTo(other.toString())
     override fun clone(): CharSequenceID = copy()
-
+    
     /**
      * 当前字符序列长度。
      */
     public val length: Int get() = value.length
-
+    
     /**
      * [CharSequenceID] 的字面值序列化器。
      */
@@ -687,7 +708,7 @@ public data class CharSequenceID(val value: CharSequence) : ID() {
             encoder.encodeString(value.toString())
         }
     }
-
+    
     public companion object {
         @JvmStatic
         public val EMPTY: CharSequenceID = CharSequenceID("")
@@ -706,17 +727,51 @@ public fun ID.toCharSequenceID(): CharSequenceID = if (this is CharSequenceID) t
 
 
 /**
- * 尝试将当前ID转为一个 [NumericalID].
+ * 尝试将当前ID转为一个 [NumericalID]。
  *
- * @throws IDException 无法进行转化时。
+ * 如果当前ID不是一个 [NumericalID] 类型，则会尝试将其转化为合适的数字类型。
+ *
+ * @param intAsLong 如果为 `true`, 则当提供的ID字面值中的字符小于 `10` 个时，依旧将其作为 [Long] 处理。否则将会作为 [Int] 处理。
+ * @throws IDException 无法进行转化或内部抛出 [NumberFormatException] 时。
  */
-public fun ID.tryToNumericalID(): NumericalID<*> = if (this is NumericalID<*>) this
-else try {
-    BigDecimalID(BigDecimal(toString()))
-} catch (nfe: NumberFormatException) {
-    throw IDException("Unable to convert id [$this] to LongID", nfe)
+@JvmOverloads
+public fun ID.tryToNumericalID(intAsLong: Boolean = true): NumericalID<*> {
+    if (this is NumericalID<*>) return this
+    else {
+        try {
+            // Int MAX : 2147483647
+            // Long MAX: 9223372036854775807
+            val literal = this.literal
+            if (literal.isEmpty()) throw IDException("Unable to convert an empty string ('') to NumericalID.")
+            
+            fun bigDecimalID(): BigDecimalID = BigDecimal(literal).ID
+            
+            if (literal.length > 19) {
+                // > Long MAX
+                return bigDecimalID()
+            }
+            
+            val i1 = literal.indexOf('.')
+            if (i1 >= 0 && literal.lastIndexOf('.') == i1) {
+                // maybe double
+                return literal.toDouble().ID
+            }
+            
+            if (literal.length == 19) {
+                return literal.toLongOrNull()?.ID ?: bigDecimalID()
+            }
+            
+            
+            if (literal.length in 10 .. 18) {
+                return literal.toLong().ID
+            }
+            // less than 10, int value.
+            return if (intAsLong) literal.toLong().ID else literal.toInt().ID
+        } catch (nfe: NumberFormatException) {
+            throw IDException("Unable to convert id [$this] to NumericalID", nfe)
+        }
+    }
 }
-
 
 /**
  * 尝试将当前ID转为一个 [LongID].
@@ -751,7 +806,6 @@ public fun ID.tryToLong(): Long = when (this) {
         throw IDException("Unable to convert id [$this] to Long", nfe)
     }
 }
-
 
 
 /**
