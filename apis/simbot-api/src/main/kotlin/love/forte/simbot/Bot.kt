@@ -23,7 +23,6 @@ import kotlinx.coroutines.cancel
 import love.forte.simbot.ability.Survivable
 import love.forte.simbot.definition.User
 import love.forte.simbot.definition.UserInfo
-import love.forte.simbot.definition.UserStatus
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.message.Image
 import love.forte.simbot.resources.Resource
@@ -90,15 +89,6 @@ public interface Bot : User, CoroutineScope, Survivable,
      *
      */
     override val component: Component
-    
-    /**
-     * 当前Bot的用户状态。
-     *
-     * **ExperimentalSimbotApi: see [UserStatus]**
-     *
-     */
-    @ExperimentalSimbotApi
-    override val status: UserStatus
     
     /**
      * 用于检测一个 [ID] 是否属于当前BOT。一个bot可能会存在多个领域的ID，例如作为bot的client ID和作为user的普通ID。

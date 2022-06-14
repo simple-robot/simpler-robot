@@ -19,7 +19,6 @@
 package love.forte.simbot.definition
 
 import love.forte.simbot.Bot
-import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.ID
 
 /**
@@ -34,24 +33,8 @@ import love.forte.simbot.ID
  * @author ForteScarlet
  */
 public interface User : Objective, UserInfo {
-
-    /**
-     * 这个账号的唯一ID。
-     */
     override val id: ID
     override val bot: Bot
-
-    //region from user info
     override val username: String
     override val avatar: String
-    //endregion
-
-    /**
-     * 这个用户的状态属性。
-     *
-     * **ExperimentalSimbotApi: see [UserStatus]**
-     */
-    @ExperimentalSimbotApi
-    public val status: UserStatus
-
 }

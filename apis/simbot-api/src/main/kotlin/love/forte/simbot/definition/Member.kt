@@ -37,23 +37,23 @@ import kotlin.time.Duration
  */
 // 考虑实现 Contact
 public interface Member : Contact, MemberInfo, MuteSupport {
-
+    
     override val id: ID
     override val bot: Bot
-
+    
     /**
      * 这个成员所属的组织。一般来讲，一个 [Member] 实例不会同时存在于 [Group] 和 [Channel].
      */
     @JvmSynthetic
     public suspend fun organization(): Organization
-
+    
     /**
      * 这个成员所属的组织。一般来讲，一个 [Member] 实例不会同时存在于 [Group] 和 [Channel].
      */
     @Api4J
     public val organization: Organization
         get() = runInBlocking { organization() }
-
+    
     /**
      * 在客观条件允许的情况下，对其进行禁言。
      * 此行为不会捕获异常。
@@ -64,13 +64,13 @@ public interface Member : Contact, MemberInfo, MuteSupport {
      */
     @JvmSynthetic
     override suspend fun mute(duration: Duration): Boolean
-
+    
     /**
      * 当前群成员在其所属组织内所扮演/拥有的角色。
      */
     public val roles: Items<Role>
     
-
+    
     /**
      * 判断当前成员是否拥有"管理者"这样的角色。
      *
@@ -78,15 +78,15 @@ public interface Member : Contact, MemberInfo, MuteSupport {
      */
     @JvmSynthetic
     public suspend fun isAdmin(): Boolean = roles.asFlow().firstOrNull { it.isAdmin } != null
-
+    
     /**
      * 判断当前成员是否拥有"拥有者"这样的角色。
      *
-     * @see Role.isOwner
+     * @see Organization.ownerId
      */
     @JvmSynthetic
-    public suspend fun isOwner(): Boolean = roles.asFlow().firstOrNull { it.isOwner } != null
-
+    public suspend fun isOwner(): Boolean = organization().ownerId == id
+    
     /**
      * 判断当前成员是否拥有"管理者"的权限。
      *
@@ -95,16 +95,16 @@ public interface Member : Contact, MemberInfo, MuteSupport {
     @Api4J
     public val isAdmin: Boolean
         get() = roles.asSequence().any { r -> r.isAdmin }
-
+    
     /**
      * 判断当前成员是否拥有"拥有者"的权限。
      *
-     * @see Role.isOwner
+     * @see Organization.ownerId
      */
     @Api4J
     public val isOwner: Boolean
-        get() = roles.asSequence().any { r -> r.isOwner }
-
+        get() = organization.ownerId == id
+    
 }
 
 
@@ -117,20 +117,20 @@ public interface GuildMember : Member {
      */
     @JvmSynthetic
     public suspend fun guild(): Guild
-
+    
     /**
      * 这个成员所属的频道服务器。
      */
     @Api4J
     public val guild: Guild
-
-
+    
+    
     /**
      * 这个成员所属的频道服务器。
      */
     @JvmSynthetic
     override suspend fun organization(): Guild = guild()
-
+    
     /**
      * 这个成员所属的频道服务器。
      */
@@ -145,21 +145,21 @@ public interface GroupMember : Member {
      */
     @JvmSynthetic
     public suspend fun group(): Group
-
+    
     /**
      * 这个成员所属的群。
      */
     @Api4J
     public val group: Group
         get() = runInBlocking { group() }
-
-
+    
+    
     /**
      * 这个成员所属的群。
      */
     @JvmSynthetic
     override suspend fun organization(): Group = group()
-
+    
     /**
      * 这个成员所属的群。
      */
@@ -176,7 +176,7 @@ public interface MemberInfo : UserInfo {
     override val id: ID
     override val username: String
     override val avatar: String
-
+    
     /**
      * 此成员在当前组织下的昵称。
      * [nickname]不可为null，当一个群成员不存在群昵称的时候，[nickname] 为空字符串。
@@ -184,7 +184,7 @@ public interface MemberInfo : UserInfo {
      * @see nickOrUsername
      */
     public val nickname: String
-
+    
     /**
      * 此成员加入当前组织的时间。
      *
@@ -192,12 +192,12 @@ public interface MemberInfo : UserInfo {
      *
      */
     public val joinTime: Timestamp
-
+    
     /**
      * 优先尝试获取 [nickname], 如果 [nickname] 为空，则使用 [username].
      */
     public val nickOrUsername: String get() = nickname.ifEmpty { username }
-
+    
 }
 
 
