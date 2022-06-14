@@ -19,7 +19,7 @@ package love.forte.simbot.message
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
-import love.forte.simbot.message.Image.Key.asImage
+import love.forte.simbot.message.Image.Key.toImage
 import love.forte.simbot.resources.Resource
 
 /**
@@ -116,11 +116,11 @@ public class MessagesBuilder
     /**
      * 通过 [ResourceImage] 拼接一个 [Image] 消息到当前消息中。
      *
-     * @see Image.asImage
+     * @see Image.toImage
      */
     @JvmOverloads
     public fun image(resource: Resource, id: ID = resource.name.ID): MessagesBuilder =
-        appendElement(resource.asImage(id))
+        appendElement(resource.toImage(id))
     
     /**
      * 通过 [Bot.resolveImage] 获取并拼接一个 [Image] 消息到当前消息中。

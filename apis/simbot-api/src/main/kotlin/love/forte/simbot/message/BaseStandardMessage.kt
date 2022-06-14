@@ -270,7 +270,7 @@ public interface Image<E : Image<E>> : StandardMessage<E>, IDContainer, Resource
          */
         @JvmOverloads
         @JvmName("of")
-        public fun Resource.asImage(id: ID = name.ID): ResourceImage {
+        public fun Resource.toImage(id: ID = name.ID): ResourceImage {
             return ResourceImage(id, this)
         }
         
