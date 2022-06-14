@@ -322,25 +322,25 @@ public sealed class NumericalID<N : Number> : ID() {
         if (other === this) return 0
         if (other is NumericalID<*>) {
             return when (other) {
-                is IntID -> toInt().compareTo(other.value)
-                is LongID -> toLong().compareTo(other.value)
-                is DoubleID -> toDouble().compareTo(other.value)
-                is FloatID -> toFloat().compareTo(other.value)
+                is IntID -> toInt().compareTo(other.number)
+                is LongID -> toLong().compareTo(other.number)
+                is DoubleID -> toDouble().compareTo(other.number)
+                is FloatID -> toFloat().compareTo(other.number)
                 is BigIntegerID -> when (this) {
                     is BigIntegerID -> this.value.compareTo(other.value)
                     is BigDecimalID -> this.value.compareTo(other.value.toBigDecimal())
-                    is IntID -> toInt().compareTo(other.value.toInt())
-                    is LongID -> toLong().compareTo(other.value.toLong())
-                    is DoubleID -> toDouble().compareTo(other.value.toDouble())
-                    is FloatID -> toFloat().compareTo(other.value.toFloat())
+                    is IntID -> number.compareTo(other.value.toInt())
+                    is LongID -> number.compareTo(other.value.toLong())
+                    is DoubleID -> number.compareTo(other.value.toDouble())
+                    is FloatID -> number.compareTo(other.value.toFloat())
                 }
                 is BigDecimalID -> when (this) {
-                    is BigDecimalID -> this.value.compareTo(other.value)
-                    is BigIntegerID -> this.value.compareTo(other.value.toBigInteger())
-                    is IntID -> toInt().compareTo(other.value.toInt())
-                    is LongID -> toLong().compareTo(other.value.toLong())
-                    is DoubleID -> toDouble().compareTo(other.value.toDouble())
-                    is FloatID -> toFloat().compareTo(other.value.toFloat())
+                    is BigDecimalID -> value.compareTo(other.value)
+                    is BigIntegerID -> value.compareTo(other.value.toBigInteger())
+                    is IntID -> number.compareTo(other.value.toInt())
+                    is LongID -> number.compareTo(other.value.toLong())
+                    is DoubleID -> number.compareTo(other.value.toDouble())
+                    is FloatID -> number.compareTo(other.value.toFloat())
                 }
             }
         }
@@ -394,10 +394,10 @@ public sealed class NumericalID<N : Number> : ID() {
     override fun doEquals(other: ID): Boolean {
         if (other is NumericalID<*>) {
             return when (other) {
-                is IntID -> toInt() == other.value
-                is LongID -> toLong() == other.value
-                is DoubleID -> toDouble() == other.value
-                is FloatID -> toFloat() == other.value
+                is IntID -> toInt() == other.number
+                is LongID -> toLong() == other.number
+                is DoubleID -> toDouble() == other.number
+                is FloatID -> toFloat() == other.number
                 is BigIntegerID -> this is BigIntegerID && (value == other.value)
                 is BigDecimalID -> this is BigDecimalID && (value == other.value)
             }

@@ -25,6 +25,7 @@ import love.forte.simbot.definition.User
 import love.forte.simbot.definition.UserInfo
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.message.Image
+import love.forte.simbot.message.Image.Key.toImage
 import love.forte.simbot.resources.Resource
 import love.forte.simbot.utils.runInBlocking
 import org.slf4j.Logger
@@ -102,15 +103,23 @@ public interface Bot : User, CoroutineScope, Survivable,
      * 上传一个资源作为资源，并在预期内得到一个 [Image] 结果。
      * 这个 [Image] 不一定是真正已经上传后的结果，它有可能只是一个预处理类型。
      * 在执行 [uploadImage] 的过程中也不一定出现真正的挂起行为，具体细节请参考具体实现。
+     *
+     * _Deprecated: 直接通过 [Resource.asImage][Image.toImage] 构建 [Image] 实例即可。_
      */
     @JvmSynthetic
-    public suspend fun uploadImage(resource: Resource): Image<*>
+    @Deprecated("Just use Resource.asImage",
+        ReplaceWith("resource.asImage()", "love.forte.simbot.message.Image.Key.asImage")
+    )
+    public suspend fun uploadImage(resource: Resource): Image<*> = resource.toImage()
     
     /**
+     *
+     * Deprecated: 直接通过 [Resource.asImage][Image.toImage] 构建 [Image] 实例即可。
      * @see uploadImage
      */
     @Api4J
-    public fun uploadImageBlocking(resource: Resource): Image<*> = runInBlocking { uploadImage(resource) }
+    @Deprecated("Just use Image.of", ReplaceWith("resource.asImage()", "love.forte.simbot.message.Image.Key.asImage"))
+    public fun uploadImageBlocking(resource: Resource): Image<*> = resource.toImage()
     
     
     /**
@@ -120,9 +129,12 @@ public interface Bot : User, CoroutineScope, Survivable,
      */
     public suspend fun resolveImage(id: ID): Image<*>
     
-    
     /**
-     * @see resolveImage
+     *  尝试通过解析一个 [ID] 并得到对应的可用于发送的图片实例。
+     *  这个 [Image] 不一定是真正远端图片结果，它有可能只是一个预处理类型。
+     *  在执行 [resolveImage] 的过程中也不一定出现真正的挂起行为，具体细节请参考具体实现。
+     *
+     *  @see resolveImage
      */
     @Api4J
     public fun resolveImageBlocking(id: ID): Image<*> = runInBlocking { resolveImage(id) }
