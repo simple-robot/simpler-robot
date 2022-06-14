@@ -88,7 +88,33 @@ simbot3目前已经实现的组件有：
 
 你可以前往 [**文档**][doc-homepage] 查看与快速开始有关的内容。
 
-<br>
+## 信息资讯
+如果你想要时刻关注版本的发布信息，你可以通过GitHub的 **Watch** 功能来订阅包括 
+[**Releases**](https://github.com/ForteScarlet/simpler-robot/releases) 
+在内的各种仓库资讯。
+
+如果你感兴趣，可以时不时的去 [**Simple Robot Blog**](https://simbot.forte.love/blog) 看一看，
+那里会有基本上每周更新的 [**周报**](https://simbot.forte.love/blog/tags/%E5%91%A8%E6%8A%A5) 
+以及一些其他可能不定时更新发布的博客，或者碎碎念！
+
+## 协助我们
+为我们点亮一个**✨star🌟**便是能够给予我们继续走下去的最大动力与支持！
+
+- 你可以通过 [**PR**](https://github.com/ForteScarlet/simpler-robot/pulls "pull request") 为项目代码作出贡献。
+- 你可以通过 [**ISSUES**][issues] 提出一个建议或者反馈一个问题。
+- 你可以通过 [**讨论区**][discussions] 与其他人或者simbot开发团队相互友好交流。
+- 如果你通过此项目创建了一个很酷的项目，欢迎通过 [ISSUES](https://github.com/ForteScarlet/simpler-robot/issues)、[讨论区](https://github.com/ForteScarlet/simpler-robot/discussions)
+  等方式联系团队开发人员，并将你酷酷的项目展示在作品展示区。
+
+## 联系我们
+simbot不再拥有或推广任何官方管理的社交群聊（包括QQ群、TG群等诸如此类平台）。
+- 如果想要反馈问题、提出建议建议或提出问题，请通过 [**ISSUES**][issues]。
+- 如果想要与开发团队交流、与其他开发者交流，请前往[**讨论区**][discussions]。
+
+
+[issues]: https://github.com/ForteScarlet/simpler-robot/issues
+[discussions]: https://github.com/ForteScarlet/simpler-robot/discussions
+
 
 ## 走马观花
 
@@ -217,16 +243,6 @@ suspend fun FriendMessageEvent.onEvent(session: ContinuousSessionContext) {
     }
 }
 ```
-
-
-## 协助我们
-为我们点亮一个**✨star🌟**便是能够给予我们继续走下去的最大动力与支持！
-
-- 你可以通过 [**PR**](https://github.com/ForteScarlet/simpler-robot/pulls "pull request") 为项目代码作出贡献。
-- 你可以通过 [**ISSUES**](https://github.com/ForteScarlet/simpler-robot/issues "issues") 提出一个建议或者反馈一个问题。
-- 你可以通过 [**讨论区**](https://github.com/ForteScarlet/simpler-robot/discussions "discussions") 与其他人或者simbot开发团队相互友好交流。
-- 如果你通过此项目创建了一个很酷的项目，欢迎通过 [ISSUES](https://github.com/ForteScarlet/simpler-robot/issues)、[讨论区](https://github.com/ForteScarlet/simpler-robot/discussions)
-  等方式联系团队开发人员，并将你酷酷的项目展示在作品展示区。
 
 
 ## 特别鸣谢
