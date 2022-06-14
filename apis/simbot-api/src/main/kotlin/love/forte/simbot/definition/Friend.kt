@@ -17,7 +17,6 @@
 package love.forte.simbot.definition
 
 import love.forte.simbot.Bot
-import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.Grouping
 import love.forte.simbot.ID
 
@@ -28,21 +27,11 @@ import love.forte.simbot.ID
 public interface Friend : Contact, BotContainer, FriendInfo {
     override val id: ID
     override val bot: Bot
-
-    //region from friend info
+    
     override val remark: String?
     override val grouping: Grouping
     override val username: String
     override val avatar: String
-    
-    /**
-     *
-     * **ExperimentalSimbotApi: see [UserStatus]**
-     *
-     */
-    @ExperimentalSimbotApi
-    override val status: UserStatus
-    //endregion
 }
 
 
@@ -50,20 +39,20 @@ public interface FriendInfo : UserInfo {
     override val id: ID
     override val username: String
     override val avatar: String
-
+    
     /**
      * 在Bot眼中，一个好友可能存在一个备注。
      */
     public val remark: String?
-
+    
     /**
      * 对于Bot，好友可能存在于一个指定的分组中。
      */
     public val grouping: Grouping
-
+    
     /**
      * 优先尝试获取好友的 [remark], 如果 [remark] 为null，则取其 [username].
      */
     public val remarkOrUsername: String get() = remark ?: username
-
+    
 }
