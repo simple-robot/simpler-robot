@@ -1,8 +1,25 @@
+/*
+ *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ *
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *
+ *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ *
+ *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
+ *
+ *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ *  https://www.gnu.org/licenses
+ *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
+ */
+
 package love.forte.simbot.message
 
 import love.forte.simbot.Api4J
 import love.forte.simbot.Bot
 import love.forte.simbot.ID
+import love.forte.simbot.message.Image.Key.asImage
 import love.forte.simbot.resources.Resource
 
 /**
@@ -41,23 +58,23 @@ import love.forte.simbot.resources.Resource
  */
 public class MessagesBuilder
 @JvmOverloads constructor(private var messages: Messages = EmptyMessages) {
-
+    
     private fun appendElement(messageElement: Message.Element<*>): MessagesBuilder = also {
         messages += messageElement
     }
-
+    
     private fun appendElements(messageElements: Collection<Message.Element<*>>): MessagesBuilder = also {
         messages += messageElements
     }
-
-
-    //region 整合方法
+    
+    
+    // region 整合方法
     /**
      * 拼接一个字符串文本。
      * @see Text
      */
     public fun text(text: String): MessagesBuilder = appendElement(text.toText())
-
+    
     /**
      * 拼接一个 [at][At]。
      *
@@ -66,34 +83,45 @@ public class MessagesBuilder
     @JvmOverloads
     public fun at(target: ID, atType: String = "user", originContent: String = "@$target"): MessagesBuilder =
         appendElement(At(target, atType, originContent))
-
+    
     /**
      * 拼接一个 [atAll][AtAll]。
      */
     public fun atAll(): MessagesBuilder = appendElement(AtAll)
-
+    
     /**
      * 拼接一个[表情][Face]。
      *
      * @see Face
      */
     public fun face(id: ID): MessagesBuilder = appendElement(Face(id))
-
+    
     /**
      * 拼接一个[emoji][Emoji]。
      *
      * @see Emoji
      */
     public fun emoji(id: ID): MessagesBuilder = appendElement(Emoji(id))
-
+    
     /**
      * 通过 [Bot.uploadImage] 上传并拼接一个 [Image] 消息到当前消息中。
      *
      * @see Bot.uploadImage
      */
+    @Suppress("UNUSED_PARAMETER", "RedundantSuspendModifier")
     @JvmSynthetic
-    public suspend fun image(bot: Bot, resource: Resource): MessagesBuilder = appendElement(bot.uploadImage(resource))
-
+    @Deprecated("Just use image(resource, id)", ReplaceWith("image(resource)"))
+    public suspend fun image(bot: Bot, resource: Resource): MessagesBuilder = image(resource)
+    
+    /**
+     * 通过 [ResourceImage] 拼接一个 [Image] 消息到当前消息中。
+     *
+     * @see Image.asImage
+     */
+    @JvmOverloads
+    public fun image(resource: Resource, id: ID = resource.name.ID): MessagesBuilder =
+        appendElement(resource.asImage(id))
+    
     /**
      * 通过 [Bot.resolveImage] 获取并拼接一个 [Image] 消息到当前消息中。
      *
@@ -101,7 +129,7 @@ public class MessagesBuilder
      */
     @JvmSynthetic
     public suspend fun image(bot: Bot, id: ID): MessagesBuilder = appendElement(bot.resolveImage(id))
-
+    
     /**
      * 通过 [Bot.uploadImageBlocking] 上传并拼接一个 [Image] 消息到当前消息中。
      *
@@ -109,8 +137,10 @@ public class MessagesBuilder
      */
     @Api4J
     @JvmName("image")
-    public fun image4J(bot: Bot, resource: Resource): MessagesBuilder = appendElement(bot.uploadImageBlocking(resource))
-
+    @Deprecated("Just use image(resource, id)", ReplaceWith("image(resource)"))
+    public fun image4J(bot: Bot, resource: Resource): MessagesBuilder = image(resource)
+    
+    
     /**
      * 通过 [Bot.resolveImageBlocking] 获取并拼接一个 [Image] 消息到当前消息中。
      *
@@ -119,20 +149,20 @@ public class MessagesBuilder
     @Api4J
     @JvmName("image")
     public fun image4J(bot: Bot, id: ID): MessagesBuilder = appendElement(bot.resolveImageBlocking(id))
-    //endregion
-
-
+    // endregion
+    
+    
     /**
      * 拼接一个字符串文本。
      */
     public fun append(text: String): MessagesBuilder = text(text)
-
+    
     /**
      * 拼接一个任意消息。
      */
     public fun append(element: Message.Element<*>): MessagesBuilder = appendElement(element)
-
-
+    
+    
     /**
      * 拼接多个任意消息。
      */
@@ -142,30 +172,33 @@ public class MessagesBuilder
         }
         return this
     }
-
+    
     /**
      * 拼接多个任意消息。
      */
     public fun append(elements: Collection<Message.Element<*>>): MessagesBuilder = appendElements(elements)
-
-
+    
+    
     /**
      * 拼接一个字符串文本。
      */
+    @JvmSynthetic
     public operator fun String.unaryPlus(): MessagesBuilder = append(this)
-
+    
     /**
      * 拼接一个任意消息。
      */
+    @JvmSynthetic
     public operator fun Message.Element<*>.unaryPlus(): MessagesBuilder = appendElement(this)
-
-
+    
+    
     /**
      * 拼接多个任意消息。
      */
+    @JvmSynthetic
     public operator fun Collection<Message.Element<*>>.unaryPlus(): MessagesBuilder = appendElements(this)
-
-
+    
+    
     /**
      * 获取当前构建器中的 [Messages] 实例。
      */
