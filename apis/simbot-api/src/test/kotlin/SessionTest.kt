@@ -6,8 +6,12 @@ import love.forte.simbot.event.invoke
 @OptIn(ExperimentalSimbotApi::class)
 suspend fun FriendMessageEvent.testSession(session: ContinuousSessionContext) {
     
+    
+    
     session {
-        val e = waitingForNext()
+        // nextMessage(FriendMessageEvent)
+        nextMessage(FriendMessageEvent)
+        next(FriendMessageEvent)
     }
     
 }

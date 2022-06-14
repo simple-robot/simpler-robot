@@ -34,7 +34,7 @@ public annotation class BlockingApi
 
 
 /**
- * 标标记为实验性的API，不保证稳定性且可能会随时发生无提示的变更。
+ * 标标记为实验性的API，不保证稳定性且可能会随时发生无提示的变更或被删除。
  */
 @Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION)
 @RequiresOptIn("APIs marked as experimental are not guaranteed to be stable and may be subject to unprompted change at any time.", level = RequiresOptIn.Level.WARNING)

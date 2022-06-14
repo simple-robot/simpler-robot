@@ -16,6 +16,7 @@
 
 package love.forte.simbot.definition
 
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.ID
 import love.forte.simbot.definition.UserStatus.Companion.refactor
 import java.util.*
@@ -50,7 +51,12 @@ public interface UserInfo : IDContainer {
 
 /**
  * 一个用户的状态属性。
+ *
+ * ## ExperimentalSimbotApi
+ * [UserStatus] 目前来看实际作用不大，很可能属于过度设计的副产物。考虑后续弃用或移除。
+ *
  */
+@ExperimentalSimbotApi
 public interface UserStatus {
     
     /**
@@ -138,13 +144,18 @@ internal annotation class UserStatusBuilderDsl
  *     // ...
  * }
  * ```
+ *
+ * @see UserStatus
+ *
  */
 @UserStatusBuilderDsl
+@ExperimentalSimbotApi
 public inline fun buildUserStatus(base: UserStatus? = null, block: UserStatusBuilder.() -> Unit): UserStatus {
     return base?.refactor()?.also(block)?.build() ?: UserStatusBuilder().also(block).build()
 }
 
 
+@ExperimentalSimbotApi
 public class UserStatusBuilder(private val status: BitSet = BitSet()) {
     
     @JvmOverloads
@@ -202,6 +213,7 @@ public class UserStatusBuilder(private val status: BitSet = BitSet()) {
 }
 
 
+@ExperimentalSimbotApi
 private class UserStatusImpl(private val status: BitSet) : UserStatus {
     
     companion object {

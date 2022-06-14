@@ -12,12 +12,12 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.definition
 
 import love.forte.simbot.Bot
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.Grouping
 import love.forte.simbot.ID
 
@@ -34,6 +34,13 @@ public interface Friend : Contact, BotContainer, FriendInfo {
     override val grouping: Grouping
     override val username: String
     override val avatar: String
+    
+    /**
+     *
+     * **ExperimentalSimbotApi: see [UserStatus]**
+     *
+     */
+    @ExperimentalSimbotApi
     override val status: UserStatus
     //endregion
 }

@@ -58,6 +58,12 @@ public object SimbootApp {
     /**
      * 使用 [Boot] 作为 simbot 应用工厂来构建一个 [BootApplication].
      *
+     * ## 扫描路径
+     * 当 [entrance] 不为 `null` 时，会尝试直接通过 [entrance.package][Class.getPackage] 获取需要扫描的主要路径。
+     * 如果 [entrance] 为 `null`，则会 **尽量尝试** 在本次调用 [run] 的调用栈中寻找最近调用run的位置来作为扫描的主要路径。
+     *
+     * 推荐指定一个具体的、携带 [SimbootApplication] 注解的 [entrance]，而不是使用 `null` 来忽略它。
+     *
      * @throws SimbootApplicationException 在启动准备过程中出现的异常, 例如提供的 [entrance] 不存在包路径等情况。
      */
     @JvmSynthetic
@@ -77,7 +83,7 @@ public object SimbootApp {
                     
                 }.getOrNull()
             }
-            ?: preStack("love.forte.simboot.core.SimbootApp", "invoke")?.let { stack ->
+            ?: preStack("love.forte.simboot.core.SimbootApp", "run")?.let { stack ->
                 stack.className.substringBeforeLast(delimiter = ".", missingDelimiterValue = "")
                     .takeIf { it.isNotEmpty() }?.let { pkg ->
                         listOf(pkg).also {
@@ -87,7 +93,7 @@ public object SimbootApp {
                             )
                         }
                     }
-            } ?: throw SimbootApplicationException("cannot resolve the scan package.")
+            } ?: throw SimbootApplicationException("Cannot resolve the scan package.")
         
         
         val configs = resolveToConfig(entrance?.java?.classLoader, appAnnotation, scanPackage)
@@ -192,16 +198,18 @@ public object SimbootApp {
         }
     }
     
-    
-    private suspend fun runApp(
-        configurator: BootApplicationConfiguration.() -> Unit,
-        builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit,
-    ): BootApplication {
-        return createSimbotApplication(Boot, configurator = configurator, builder = builder)
-    }
+
     
 }
 
+private suspend fun runApp(
+    configurator: BootApplicationConfiguration.() -> Unit,
+    builder: BootApplicationBuilder.(BootApplicationConfiguration) -> Unit,
+): BootApplication {
+    return runCatching {
+        createSimbotApplication(Boot, configurator = configurator, builder = builder)
+    }.getOrElse { throw SimbootApplicationException("Run boot app failure: ${it.localizedMessage}", it) }
+}
 
 private inline fun preStack(className: String, methodName: String, inlineMark: () -> Unit = {}): StackTraceElement? {
     inlineMark()
@@ -222,12 +230,30 @@ private inline fun preStack(className: String, methodName: String, inlineMark: (
 
 
 /**
- * 使用 [Boot] 作为 simbot 应用工厂来构建一个 [BootApplication].
+ * @see simbootApp
  */
+@Deprecated("Use top-level fun simbootApp(...)", ReplaceWith("simbootApp<T>(args = args, configurator)"))
 public suspend inline operator fun <reified T> SimbootApp.invoke(
     vararg args: String,
     crossinline configurator: BootApplicationConfiguration.() -> Unit = {},
-): BootApplication = run(T::class, args = args) { configurator() }
+): BootApplication = simbootApp<T>(args = args, configurator)
+
+
+/**
+ * 使用 [Boot] 作为 simbot 应用工厂来构建一个 [BootApplication].
+ *
+ * ```kotlin
+ * @SimbootApplication
+ * class Foo
+ *
+ * simbootApp<Foo>(args = args) { /* ... */ }
+ * ```
+ *
+ */
+public suspend inline fun <reified T> simbootApp(
+    vararg args: String,
+    crossinline configurator: BootApplicationConfiguration.() -> Unit = {},
+): BootApplication = SimbootApp.run(T::class, args = args) { configurator() }
 
 
 /**

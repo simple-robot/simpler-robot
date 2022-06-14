@@ -22,19 +22,21 @@ import love.forte.simbot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.action.MuteSupport
-import love.forte.simbot.action.SendSupport
 import love.forte.simbot.utils.item.Items
 import love.forte.simbot.utils.runInBlocking
 import kotlin.time.Duration
 
-
 /**
- * 一个组织下的成员.
+ * 一个组织下的成员。
+ *
+ * [Member] 作为 _联系人_ 的一种，实现 [Contact],
+ * 但是 [Member] 可能无法被 [ContactsContainer][love.forte.simbot.ContactsContainer] 直接检索。
  *
  * @see GuildMember
  * @see GroupMember
  */
-public interface Member : User, MemberInfo, MuteSupport, SendSupport {
+// 考虑实现 Contact
+public interface Member : Contact, MemberInfo, MuteSupport {
 
     override val id: ID
     override val bot: Bot

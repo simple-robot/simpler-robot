@@ -12,11 +12,11 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.definition
 
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.ID
 import java.util.*
 
@@ -171,9 +171,10 @@ private class PermissionStatusImpl(val status: BitSet) : PermissionStatus {
  * 一个**权限**信息，通常 存在于 [Role] 并使用在 [Organization] 与 [Member] 中，为组织和其成员限定权限。
  */
 @Suppress("DEPRECATION")
-@Deprecated("Unused")
+@ExperimentalSimbotApi
 public interface Permission : IDContainer {
-
+    // TODO 待议
+    
     /**
      * 权限
      */
@@ -220,50 +221,5 @@ public interface Role : IDContainer {
      * 是否能够代表一个*拥有者*。
      */
     public val isOwner: Boolean
-
-    //
-    // /**
-    //  * 角色所属权限集。
-    //  */
-    // @JvmSynthetic
-    // public suspend fun permissions(): Flow<Permission>
-    //
-    //
-    // @Api4J
-    // public val permissions: List<Permission> get() = runInBlocking { permissions().toList() }
-    //
-    // /**
-    //  * 判断当前角色是否存在某个指定权限。
-    //  */
-    // @Api4J
-    // public operator fun contains(permission: Permission): Boolean =
-    //     permissions.any { it == permission }
-    //
-    // /**
-    //  * 此角色中是否包含管理者权限。
-    //  *
-    //  * @see PermissionStatus.isAdmin
-    //  */
-    // public suspend fun isAdmin(): Boolean = permissions().firstOrNull { it.status.isAdmin } != null
-    //
-    // /**
-    //  * 此角色中是否包含所有者权限。
-    //  *
-    //  * @see PermissionStatus.isOwner
-    //  */
-    // public suspend fun isOwner(): Boolean = permissions().firstOrNull { it.status.isOwner } != null
-    //
-    // /**
-    //  * 此角色中是否包含管理员权限。
-    //  */
-    // @Api4J
-    // public val isAdmin: Boolean get() = permissions.any { it.status.isAdmin }
-    //
-    //
-    // /**
-    //  * 此角色中是否包含所有者权限。
-    //  */
-    // @Api4J
-    // public val isOwner: Boolean get() = permissions.any { it.status.isOwner }
 
 }

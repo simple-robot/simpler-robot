@@ -14,8 +14,6 @@
  *
  */
 
-@file:JvmName("ContinuousSessionScopeContextUtil")
-
 package love.forte.simbot.event
 
 import kotlinx.coroutines.*
@@ -100,6 +98,10 @@ public interface BaseContinuousSessionContext {
  *                 |  临时监听函数处理  | <------ +
  *                 + ---------------- +
  * ```
+ *
+ * ⚠ ：这种行为未来可能会发生变更。
+ *
+ * ## provider & receiver
  *
  * 在 [ContinuousSessionContext] 中，不论是 [provider][getProvider] 还是 [receiver][getReceiver],
  * 它们都会在一次会话结束（使用了能够导致 [ContinuousSessionProvider.isCompleted] == true 的函数 ）后被移除。
@@ -315,7 +317,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * ```
      *
      * ## 目标类型
-     * 当使用事件类型参数 [key] 的时候，建议使用明确的类型对象，比如事件的伴生对象，如下示例：
+     * 当使用事件类型参数 [key] 的时候，建议使用**明确、具体的**类型对象，如下示例：
      * ```kotlin
      * session.waitingForNext(id, FriendMessageEvent) { ... }
      * ```
@@ -636,10 +638,27 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @receiver 当前所处的事件环境
      */
     @JvmSynthetic
-    public suspend fun <E : Event> Event.next(id: ID = randomID(), key: Event.Key<E>): E {
+    public suspend fun <E : Event> Event.next(id: ID, key: Event.Key<E>): E {
         val currentEvent = this
         return waitingForNext(id, key, currentEvent.toMatcher())
     }
+    
+    
+    /**
+     * 挂起并等待在具体的事件 [Event] 环境下根据条件获取下一个匹配的 [事件][Event].
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [Event] 的类型进行匹配。
+     *
+     * 更多说明请参考 [Event.next].
+     *
+     * @see Event.next
+     */
+    @JvmSynthetic
+    public suspend fun <E : Event> Event.next(key: Event.Key<E>): E {
+        return next(randomID(), key)
+    }
+    
+    
     
     
     /**
@@ -653,8 +672,25 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @see Event.next
      */
     @JvmSynthetic
-    public suspend fun <E : Event> EventProcessingContext.next(id: ID = randomID(), key: Event.Key<E>): E {
+    public suspend fun <E : Event> EventProcessingContext.next(id: ID, key: Event.Key<E>): E {
         return event.next(id, key)
+    }
+    
+    
+    /**
+     * 挂起并等待在当前的事件处理上下文 [EventProcessingContext] 中根据条件获取下一个匹配的 [事件][Event].
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 更多说明参考 [Event.next].
+     *
+     * @receiver 当前的事件处理上下文环境
+     *
+     * @see Event.next
+     */
+    @JvmSynthetic
+    public suspend fun <E : Event> EventProcessingContext.next(key: Event.Key<E>): E {
+        return next(randomID(), key)
     }
     
     
@@ -923,7 +959,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @JvmSynthetic
     public suspend fun <E : MessageEvent> waitingForNextMessage(
-        id: ID = randomID(),
+        id: ID,
         key: Event.Key<E>,
         matcher: EventMatcher<E> = EventMatcher,
     ): MessageContent {
@@ -1121,7 +1157,45 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @JvmSynthetic
     public suspend fun Event.nextMessage(
-        id: ID = randomID(),
+        id: ID,
+        key: Event.Key<out MessageEvent>,
+    ): MessageContent = next(id, key).messageContent
+    
+    /**
+     * 挂起并等待符合当前 [Event] 作用域下的下一个消息事件的 [消息内容][MessageContent].
+     *
+     * 行为类似于 [next][Event.next], 区别在于 [nextMessage] 只允许目标为 [消息事件][MessageEvent]
+     * 且返回值为 [MessageContent].
+     *
+     * 对于作用域下的事件匹配机制的说明参考 [next][Event.next] 文档注释。
+     *
+     * @throws CancellationException 被终止时
+     *
+     * @see Event.next
+     * @see EventProcessingContext.nextMessage
+     */
+    @JvmSynthetic
+    public suspend fun Event.nextMessage(
+        key: Event.Key<out MessageEvent>,
+    ): MessageContent = nextMessage(randomID(), key)
+    
+    
+    /**
+     * 挂起并等待符合当前 [Event] 作用域下的下一个消息事件的 [消息内容][MessageContent].
+     *
+     * 行为类似于 [next][EventProcessingContext.next], 区别在于 [nextMessage] 只允许目标为 [消息事件][MessageEvent]
+     * 且返回值为 [MessageContent].
+     *
+     * 对于作用域下的事件匹配机制的说明参考 [next][EventProcessingContext.next] 文档注释。
+     *
+     * @throws CancellationException 被终止时
+     *
+     * @see EventProcessingContext.next
+     * @see Event.nextMessage
+     */
+    @JvmSynthetic
+    public suspend fun EventProcessingContext.nextMessage(
+        id: ID,
         key: Event.Key<out MessageEvent>,
     ): MessageContent = next(id, key).messageContent
     
@@ -1141,9 +1215,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @JvmSynthetic
     public suspend fun EventProcessingContext.nextMessage(
-        id: ID = randomID(),
         key: Event.Key<out MessageEvent>,
-    ): MessageContent = next(id, key).messageContent
+    ): MessageContent = nextMessage(randomID(), key)
     
     
     /**
@@ -1415,35 +1488,6 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
 }
 
 
-/**
- * 进入到 [ContinuousSessionContext] 上下文中。
- *
- * 主要作用为可以更方便的使用 [ContinuousSessionContext.next] 、[ContinuousSessionContext.nextMessage] 等需要事件上下文环境的情况。
- *
- * e.g.
- * ```kotlin
- * suspend fun EventProcessingContext.barListener(event: BarEvent, session: ContinuousSessionContext) {
- *    session { // this: session
- *       next(...)
- *    }
- * }
- *
- * // ---------------------------------------
- *
- * suspend fun FooMessageEvent.fooListener(session: ContinuousSessionContext) {
- *    session { // this: session
- *        nextMessages(...)
- *    }
- * }
- * ```
- *
- * 这种行为类似于 [run] 或 [apply]。 你也可以使用它们来代替当前函数。
- *
- * @receiver [ContinuousSessionContext] 实例
- * @return [block] 函数的最终返回值
- */
-@ExperimentalSimbotApi
-public inline operator fun <T> ContinuousSessionContext.invoke(block: ContinuousSessionContext.() -> T): T = block()
 
 
 /**

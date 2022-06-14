@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.event
@@ -24,7 +23,7 @@ import love.forte.simbot.message.doSafeCast
 
 
 /**
- * 一个与 [Objectives] 相关的事件。
+ * 一个与 [Objective] 相关的事件。
  * 可能是与联系人（好友、成员等）或者与组织（群、频道等）相关的事件。
  *
  * [ObjectiveEvent] 是一个标记用事件类型，不存在 Key, 不允许被直接监听。

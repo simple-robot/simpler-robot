@@ -12,12 +12,12 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.message
 
 import love.forte.simbot.ID
+import love.forte.simbot.action.DeleteSupport
 
 /**
  * 一个消息内容，其中存在一个[消息链][Messages]。
@@ -49,13 +49,28 @@ public abstract class MessageContent {
 
 /**
  * 一个远端消息主体，一般代表通过事件或者查询而得的事件主体。
+ *
+ * [RemoteMessageContent] 实现 [DeleteSupport], 代表 [RemoteMessageContent] **可能允许** 被删除。
+ *
+ * @see DeleteSupport
  */
-public sealed class RemoteMessageContent : MessageContent() {
+public sealed class RemoteMessageContent : MessageContent(), DeleteSupport {
 
     /**
      * 此消息的唯一标识。
      */
     abstract override val messageId: ID
+    
+    /**
+     * 尝试删除当前消息。
+     *
+     * 如果此消息的实现不支持这种删除行为，则可能直接返回固定值 `false`；
+     * 如果此消息由于诸如**权限**等原因而导致无法删除，则可能会导致对应的异常。
+     *
+     */
+    @JvmSynthetic
+    abstract override suspend fun delete(): Boolean
+ 
 }
 
 
