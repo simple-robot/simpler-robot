@@ -288,7 +288,7 @@ public interface Image<E : Image<E>> : StandardMessage<E>, IDContainer, Resource
  *
  */
 @SerialName("m.std.img.resource")
-public data class ResourceImage @OptIn(Api4J::class) constructor(override val id: ID, override val resource: Resource) :
+public data class ResourceImage(override val id: ID, @OptIn(Api4J::class) override val resource: Resource) :
     Image<ResourceImage> {
     
     @JvmSynthetic
