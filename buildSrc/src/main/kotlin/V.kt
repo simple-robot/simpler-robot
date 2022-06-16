@@ -67,7 +67,7 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
     sealed class Kotlin(id: String) :
         V("org.jetbrains.kotlin", "kotlin-$id", VERSION) {
         companion object {
-            const val VERSION = "1.6.10"
+            const val VERSION = "1.6.21"
         }
 
         sealed class Stdlib(id: String) : Kotlin(id = "stdlib-$id") {
@@ -81,6 +81,7 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
             object Common : Test("common")
             object Junit : Test("junit")
             object Junit5 : Test("junit5")
+            object Testng : Test("testng")
             object Js : Test("js")
             object AnnotationsCommon : Test("annotations-common")
         }
