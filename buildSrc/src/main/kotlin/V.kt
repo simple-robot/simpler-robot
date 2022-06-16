@@ -138,7 +138,7 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
         // https://github.com/Kotlin/kotlinx.serialization
         sealed class Serialization(id: String) : Kotlinx(id = "serialization-$id", VERSION, true) {
             companion object {
-                const val VERSION = "1.3.1"
+                const val VERSION = "1.3.3"
             }
 
             object Core : Serialization("core")
