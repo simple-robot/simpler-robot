@@ -35,6 +35,8 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.LongAccumulator
 import java.util.concurrent.atomic.LongAdder
+import kotlin.random.Random
+import kotlin.random.asKotlinRandom
 
 
 /**
@@ -242,7 +244,19 @@ public val UUID.ID: CharSequenceID
  *
  * @see RandomIDUtil.randomID
  */
-public fun randomID(): ID = RandomIDUtil.randomID().ID
+@JvmOverloads
+public fun randomID(random: Random = Random): ID = RandomIDUtil.randomID(random).ID
+
+
+
+/**
+ * 取得一个随机ID。
+ *
+ * @see RandomIDUtil.randomID
+ */
+public fun randomID(random: java.util.Random): ID = RandomIDUtil.randomID(random.asKotlinRandom()).ID
+
+
 
 
 /**

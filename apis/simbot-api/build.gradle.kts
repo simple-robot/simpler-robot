@@ -20,7 +20,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
-
+    id("kotlin-kapt")
 }
 
 dependencies {
@@ -30,22 +30,29 @@ dependencies {
     api(V.Kotlinx.Serialization.Core.notation)
     api(V.Slf4j.Api.notation)
     compileOnly(V.Jetbrains.Annotations.notation)
-
+    
     compileOnly(V.Kotlinx.Serialization.Json.notation)
     compileOnly(V.Kotlinx.Serialization.Properties.notation)
     compileOnly(V.Kotlinx.Serialization.Yaml.notation)
     compileOnly(V.Kotlinx.Serialization.Protobuf.notation)
-
-    testImplementation(V.Kotlin.Reflect.notation)
-    testImplementation(V.Kotlin.Test.Junit5.notation)
+    
     testImplementation(V.Kotlinx.Serialization.Json.notation)
     testImplementation(V.Kotlinx.Serialization.Yaml.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)
     testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
+    
+    testImplementation(V.Kotlin.Test.Testng.notation)
+    
+    testImplementation("org.openjdk.jmh:jmh-core:1.33")
+    testImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.33")
+    kaptTest("org.openjdk.jmh:jmh-generator-annprocess:1.33")
 }
 
+
+
 tasks.getByName<Test>("test") {
-    useJUnitPlatform()
+    // useJUnitPlatform()
+    useTestNG()
 }
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
@@ -66,8 +73,8 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
 kotlin {
     // 严格模式
     explicitApiWarning()
-
-
+    
+    
     sourceSets.all {
         languageSettings {
             optIn("kotlin.RequiresOptIn")

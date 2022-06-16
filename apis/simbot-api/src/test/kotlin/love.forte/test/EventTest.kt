@@ -16,17 +16,15 @@
 
 package love.forte.test
 
-import love.forte.simbot.event.Event
+import love.forte.simbot.event.*
 import love.forte.simbot.event.Event.Key.Companion.isSub
-import love.forte.simbot.event.MessageEvent
-import love.forte.simbot.event.RequestEvent
 import kotlin.test.Test
 
 /**
  *
  * @author ForteScarlet
  */
-class EventTypeTest {
+class EventTest {
 
     @Test
     fun test() {
@@ -34,5 +32,15 @@ class EventTypeTest {
         assert(key isSub Event)
         assert(!(key isSub MessageEvent))
 
+    }
+    
+    
+    @Test
+    fun findTest() {
+        val want = MessageEvent.id
+        
+        assert(want.toString() in GroupMessageEvent)
+        assert(GroupMessageEvent isSub MessageEvent)
+        
     }
 }

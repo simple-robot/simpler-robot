@@ -20,13 +20,12 @@ import love.forte.simbot.message.At;
 import love.forte.simbot.message.MessageSerializationUtil;
 import love.forte.simbot.message.Messages;
 import love.forte.simbot.message.Text;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
 /**
  * @author ForteScarlet
  */
-@DisplayName("Java消息序列化")
+// @DisplayName("Java消息序列化")
 public class JavaMessageSerializerTest {
 
     @Test

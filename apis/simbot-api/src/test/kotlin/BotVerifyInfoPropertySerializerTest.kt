@@ -39,7 +39,7 @@ import kotlin.test.Test
 
 class BotVerifyInfoPropertySerializerTest {
 
-    @Test
+    @Test(description = "BotVerifyInfo序列化测试")
     fun test() {
         val info = configValue.byteInputStream().toBotVerifyInfo(StandardBotVerifyInfoDecoderFactory.Json, "my-test-bot.bot.json")
         assert(info.componentId == COMPONENT)

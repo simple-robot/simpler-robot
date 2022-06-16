@@ -24,6 +24,8 @@ plugins {
     // see https://github.com/gradle-nexus/publish-plugin
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
     idea
+    // https://github.com/melix/jmh-gradle-plugin
+    // id("me.champeau.jmh") version "0.6.6" apply false
 }
 
 group = P.Simbot.GROUP

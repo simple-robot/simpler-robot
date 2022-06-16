@@ -19,7 +19,6 @@ package love.forte.test
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.properties.Properties
 import kotlinx.serialization.protobuf.ProtoBuf
 import love.forte.simbot.ID
@@ -27,7 +26,6 @@ import love.forte.simbot.message.At
 import love.forte.simbot.message.Messages
 import love.forte.simbot.message.Text
 import love.forte.simbot.message.messages
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 
 
@@ -40,16 +38,7 @@ class MessageSerializerTest {
     private val a2 = At(1149159218.ID)
     private val t1 = Text { "hi" }
     private val messages = messages(a1, t1, a2)
-
-    @BeforeTest
-    fun pre() {
-        Messages.registrar {
-            subclass(At.serializer())
-        }
-
-        println(messages)
-    }
-
+    
     @Test
     fun messageJsonTest() {
         val json = Json { serializersModule = Messages.serializersModule }
@@ -58,7 +47,7 @@ class MessageSerializerTest {
         val messagesDecoded: Messages = json.decodeFromString(Messages.serializer, jsonStr)
         println(messagesDecoded)
     }
-
+    
     @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun messagePropertiesTest() {
@@ -68,7 +57,7 @@ class MessageSerializerTest {
         val messagesDecoded: Messages = prop.decodeFromMap(Messages.serializer, map)
         println(messagesDecoded)
     }
-
+    
     @OptIn(ExperimentalSerializationApi::class)
     @Test
     fun messageProtobufTest() {
@@ -77,9 +66,9 @@ class MessageSerializerTest {
         }
         val byteArray = pb.encodeToByteArray(Messages.serializer, messages)
         println(byteArray)
-
+        
         val messagesDecoded: Messages = pb.decodeFromByteArray(Messages.serializer, byteArray)
         println(messagesDecoded)
     }
-
+    
 }

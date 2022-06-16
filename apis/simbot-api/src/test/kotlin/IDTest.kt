@@ -18,45 +18,24 @@
 import love.forte.simbot.utils.RandomIDUtil
 import java.util.*
 import kotlin.test.Test
-import kotlin.time.ExperimentalTime
-import kotlin.time.measureTime
 
 /**
  *
  * @author ForteScarlet
  */
 class IDTest {
-    @OptIn(ExperimentalTime::class)
-    @Test
-    fun test() {
-        repeat(50_000) {
+    
+    @Test(groups = [""])
+    fun randomIdTest() {
+        repeat(5_000_000) {
             RandomIDUtil.randomID()
         }
-        val time = measureTime {
-            repeat(1_000_000) {
-                RandomIDUtil.randomID()
-            }
-        }
-        println(time)
-        repeat(5) {
-            println(RandomIDUtil.randomID())
-        }
     }
-
-    @OptIn(ExperimentalTime::class)
-    @Test
-    fun test2() {
-        repeat(50_000) {
+    
+    @Test(groups = [""])
+    fun uuidTest() {
+        repeat(5_000_000) {
             UUID.randomUUID()
-        }
-        val time = measureTime {
-            repeat(1_000_000) {
-                UUID.randomUUID()
-            }
-        }
-        println(time)
-        repeat(5) {
-            println(UUID.randomUUID())
         }
     }
 }

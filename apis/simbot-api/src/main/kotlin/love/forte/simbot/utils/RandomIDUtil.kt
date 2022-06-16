@@ -27,29 +27,30 @@ public object RandomIDUtil {
      * 生成一个近似UUID的随机字符串。
      */
     @JvmStatic
-    public fun randomID(): String {
-        // 还不知道 kotlin.Random 和 ThreadLocalRandom 之间的性能差距
-        val lsb = Random.nextLong()
-        val msb = Random.nextLong()
-        val buf = ByteArray(32)
-        formatUnsignedLong(lsb, buf, 20, 12)
-        formatUnsignedLong(lsb ushr 48, buf, 16, 4)
-        formatUnsignedLong(msb, buf, 12, 4)
-        formatUnsignedLong(msb ushr 16, buf, 8, 4)
-        formatUnsignedLong(msb ushr 32, buf, 0, 8)
+    @JvmOverloads
+    public fun randomID(random: Random = Random): String {
+        val lsb = random.nextLong()
+        val msb = random.nextLong()
+        val buf = ByteArray(32).apply {
+            formatUnsignedLong(lsb, 20, 12)
+            formatUnsignedLong(lsb ushr 48, 16, 4)
+            formatUnsignedLong(msb, 12, 4)
+            formatUnsignedLong(msb ushr 16, 8, 4)
+            formatUnsignedLong(msb ushr 32, 0, 8)
+        }
         return String(buf, Charsets.UTF_8)
     }
-
-    private fun formatUnsignedLong(value: Long, buf: ByteArray, offset: Int, len: Int) {
+    
+    private fun ByteArray.formatUnsignedLong(value: Long, offset: Int, len: Int) {
         var v = value
         var charPos = offset + len
         val mask = (1 shl 4) - 1
         do {
-            buf[--charPos] = D[v.toInt() and mask].code.toByte()
+            this[--charPos] = D[v.toInt() and mask].code.toByte()
             v = v ushr 4
         } while (charPos > offset)
     }
-
+    
     private val D = charArrayOf(
         '1',
         '9',
@@ -68,5 +69,5 @@ public object RandomIDUtil {
         'A',
         'L',
     )
-
+    
 }
