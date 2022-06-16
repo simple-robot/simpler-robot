@@ -42,7 +42,7 @@ dependencies {
     // compileOnly(project(":simbot-annotation"))
     compileOnly("javax.annotation:javax.annotation-api:1.3.2")
 
-    testImplementation(V.Kotlin.Test.Junit.notation)
+    testImplementation(V.Kotlin.Test.Testng.notation)
     testImplementation(V.Kotlinx.Serialization.Json.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)
     testImplementation(V.Kotlinx.Serialization.Protobuf.notation)

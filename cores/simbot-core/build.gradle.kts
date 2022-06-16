@@ -42,7 +42,7 @@ dependencies {
     compileOnly(V.Kotlinx.Coroutines.Rx2.notation)
     compileOnly(V.Kotlinx.Coroutines.Rx3.notation)
 
-    testImplementation(V.Kotlin.Test.Junit.notation)
+    testImplementation(V.Kotlin.Test.Testng.notation)
     testImplementation(V.Kotlinx.Serialization.Json.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)
     testImplementation(V.Kotlinx.Serialization.Protobuf.notation)

@@ -55,7 +55,7 @@ dependencies {
 
     compileOnly(V.Javax.AnnotationApi.notation)
     compileOnly(P.AnnotationTool.Api.notation)
-    testImplementation(V.Kotlin.Test.Junit.notation)
+    testImplementation(V.Kotlin.Test.Testng.notation)
     testImplementation(V.Kotlinx.Serialization.Json.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)
     testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
@@ -64,10 +64,10 @@ dependencies {
     //testImplementation(V.Log4j.Core.notation)
     //testImplementation(V.Log4j.Slf4jImpl.notation)
 
-    testImplementation("org.springframework.boot:spring-boot-starter-webflux:2.6.7")
-    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0.preview.6.0") {
-        exclude("love.forte.simbot","simbot-logger")
-    }
+    testImplementation("org.springframework.boot:spring-boot-starter-webflux:2.7.0")
+    
+    @Suppress("VulnerableLibrariesLocal")
+    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0.preview.9.0")
     // testImplementation(V.Kotlinx.Coroutines.Reactor.notation)
 }
 repositories {

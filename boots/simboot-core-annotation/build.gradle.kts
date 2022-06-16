@@ -39,7 +39,7 @@ dependencies {
     compileOnly(V.Javax.AnnotationApi.notation)
     compileOnly(P.AnnotationTool.Api.notation)
     compileOnly(V.Spring.Boot.Autoconfigure.notation)
-    testImplementation(V.Kotlin.Test.Junit.notation)
+    testImplementation(V.Kotlin.Test.Testng.notation)
     testImplementation(V.Kotlinx.Serialization.Json.notation)
     testImplementation(V.Kotlinx.Serialization.Properties.notation)
     testImplementation(V.Kotlinx.Serialization.Protobuf.notation)

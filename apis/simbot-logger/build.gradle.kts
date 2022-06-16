@@ -29,11 +29,11 @@ dependencies {
 
     compileOnly(V.Jetbrains.Annotations.notation)
 
-    testImplementation(V.Kotlin.Test.Junit5.notation)
+    testImplementation(V.Kotlin.Test.Testng.notation)
 }
 
 tasks.getByName<Test>("test") {
-    useJUnitPlatform()
+    useTestNG()
 }
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
