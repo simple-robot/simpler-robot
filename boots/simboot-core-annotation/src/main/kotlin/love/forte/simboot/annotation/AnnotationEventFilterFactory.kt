@@ -5,6 +5,13 @@ import love.forte.simbot.event.*
 import javax.inject.Singleton
 
 /**
+ *
+ */
+public interface AnnotationEventFilterFactory {
+    // TODO
+}
+
+/**
  * 应用于 [love.forte.simboot.annotation.Filter] 注解上用来直接处理对应注解的函数。
  *
  * 非挂起的阻塞实现参考 [BlockingAnnotationEventFilter].
@@ -12,6 +19,7 @@ import javax.inject.Singleton
  * @see BlockingAnnotationEventFilter
  * @author ForteScarlet
  */
+@Deprecated("Unused")
 @Suppress("KDocUnresolvedReference")
 public interface AnnotationEventFilter : EventFilter {
     
@@ -63,7 +71,7 @@ public interface AnnotationEventFilter : EventFilter {
      * @see InitType
      *
      */
-    public fun init(listener: EventListener, filter: Filter, filters: Filters): InitType
+    public fun init(listener: EventListener, filter: Filter, filters: Filters)
     
     
     /**
@@ -71,29 +79,10 @@ public interface AnnotationEventFilter : EventFilter {
      *
      * @see AnnotationEventFilter.init
      */
+    @Deprecated("Unused")
     public enum class InitType {
-        /**
-         * 完全独立的。
-         *
-         * 指此 [AnnotationEventFilter] 将不会自动解析任何内容，
-         * 包括针对于 [Filter.and] 和 [Filter.or]，注解的一切操作都将完全交给
-         * [AnnotationEventFilter] 的实现来完成。
-         */
         INDEPENDENT,
-        
-        /**
-         * 联合的。
-         *
-         * 指此 [AnnotationEventFilter] 初始化将会自行处理 [Filter] 注解中，
-         * **除了** [Filter.and] 和 [Filter.or] 参数以外的内容。
-         *
-         * 此过滤器会在初始化完成后，尝试继续与 [Filter.and] 和 [Filter.or]
-         * 的自动解析结果进行合并处理。
-         *
-         */
         UNITED
-        
-        
     }
     
     
@@ -113,6 +102,8 @@ public interface AnnotationEventFilter : EventFilter {
  * @see AnnotationEventFilter
  *
  */
+@Suppress("DEPRECATION")
+@Deprecated("Unused")
 @Api4J
 public interface BlockingAnnotationEventFilter : AnnotationEventFilter, BlockingEventFilter {
     

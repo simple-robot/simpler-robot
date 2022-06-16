@@ -26,45 +26,55 @@ import kotlin.reflect.KClass
 
 
 /**
- * 与 [Listener] 配合使用，会被解析为对应监听函数的通用属性过滤器。
- * e.g.
+ * 与 [@Listener][Listener] 配合使用，会被解析为对应监听函数的通用属性过滤器。
+ *
  * ```kotlin
+ * // Kotlin
  * // 默认情况下, 多个 @Filter 存在的时候匹配模式为 ANY, 即其中任意一个匹配即可。
  * @Filter("example1", matchType = MatchType.REGEX_MATCHES)
  * @Filter("example2", target = TargetFilter(authors = ["id1", "id2"]))
  * suspend fun FooEvent.bar() {
- *  // ...
+ *     // ...
+ * }
+ * ```
+ *
+ * ```java
+ * // Java
+ * // 默认情况下, 多个 @Filter 存在的时候匹配模式为 ANY, 即其中任意一个匹配即可。
+ * @Filter(value = "example1", matchType = MatchType.REGEX_MATCHES)
+ * @Filter(value = "example2", target = @TargetFilter(authors = {"id1", "id2"}))
+ * public void bar(FooEvent event) {
+ *     // ...
+ * }
+ * ```
+ *
+ * 你可以通过显示指定 [@Filters][Filters] 来自定义多个 [@Filter][Filter] 的匹配规则。
+ * ```kotlin
+ * // Kotlin
+ * @Filters(
+ *     value = [
+ *         Filter(...),
+ *         Filter(...)
+ *     ],
+ *     multiMatchType = MultiFilterMatchType.ALL
+ * )
+ * suspend fun FooEvent.bar() {
+ *    // ...
+ * }
+ * ```
+ *
+ * ```java
+ * // Java
+ * @Filters(value = {
+ *         @Filter(...),
+ *         @Filter(...)
+ * }, multiMatchType = MultiFilterMatchType.ALL)
+ * public void onEvent() {
+ *    // ...
  * }
  *
  * ```
- * <br>
  *
- * ### Spring的堆栈溢出
- * 如果你要在 [Spring](https://spring.io/) 中使用此注解，那么你必须保证你项目中的 [Spring Framework](https://spring.io/projects/spring-framework) 的版本大于等于 **`5.3.16`**。
- * (**注: SpringBoot应当至少为 `2.6.6`。**)
- *
- * 具体原因请参考 [Spring Framework#28012](https://github.com/spring-projects/spring-framework/issues/28012) .
- *
- * 在Spring Boot中更新 Spring Framework的方式可参考 [Dependency Versions](https://docs.spring.io/spring-boot/docs/current/reference/html/dependency-versions.html).
- *
- * **Maven**
- * ```properties
- * <properties>
- *      <spring-framework.version>5.3.16</spring-framework.version>
- * </properties>
- * ```
- *
- * **Gradle Groovy**
- * ```groovy
- *  ext['spring-framework.version'] = '5.3.16'
- * ```
- *
- * **Gradle Kotlin DSL**
- * ```kotlin
- * ext["spring-framework.version"] = "5.3.16"
- * ```
- *
- 
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
@@ -100,71 +110,20 @@ public annotation class Filter(
      * @see [TargetFilter]
      */
     val target: TargetFilter = TargetFilter(),
-    
-    /**
-     * 可以再提供一个 `&&` (与关系)的子过滤器，最终结果为 `当前filter && and-filters` .
-     * ### Kotlin
-     * ```kotlin
-     * @Filter("Foo1")
-     * @Filter("Foo2", and = Filters(
-     *      Filter("Foo3"),
-     *      Filter("Foo4"),
-     * ))
-     * @Listener
-     * suspend fun Event.test(){ ... }
-     * ```
-     *
-     * ### Java
-     * ```java
-     * @Filter("Foo1")
-     * @Filter(value = "Foo2", and = @Filters(value = {
-     *       @Filter("Foo3"),
-     *       @Filter("Foo4")
-     * }))
-     * @Listener
-     * public void listen() {
-     * }
-     *
-     * ```
-     *
-     *
-     * 与 [or] 同时存在时候，匹配效果则如：`this-filter && and-filters || or-filters`
-     *
-     * 不建议在注解中存在过多的filter嵌套，假如有需要，考虑使用 [by] 指定具体的过滤器实现。
-     *
-     */
-    val and: Filters = Filters(),
-    
-    /**
-     * 可以再提供一个 `||` (或关系)的子过滤器，最终结果为 `当前filter || and-filters`.
-     * ### Kotlin
-     * ```kotlin
-     * @Filter("Foo1")
-     * @Filter("Foo2", or = Filters(
-     *      Filter("Foo3"),
-     *      Filter("Foo4"),
-     * ))
-     * @Listener
-     * suspend fun Event.test(){ ... }
-     * ```
-     *
-     * ### Java
-     * ```java
-     * @Filter("Foo1")
-     * @Filter(value = "Foo2", or = @Filters(value = {
-     *       @Filter("Foo3"),
-     *       @Filter("Foo4")
-     * }))
-     * @Listener
-     * public void listen() {
-     * }
-     *
-     * ```
-     *
-     * 与 [and] 同时存在时候，匹配效果则如：`this-filter && and-filters || or-filters`
-     *
-     */
-    val or: Filters = Filters(),
+
+    /*
+        val and: Filters = Filters(),
+        val or: Filters = Filters(),
+        
+        since: 3.0.0.preview.15.0
+        不再支持上述 `and` 和 `or` 的嵌套注解。这个特性将会在Kotlin 1.7 中发出警告、在Kotlin 1.9 中被视为错误。
+        不过移除后，SpringFramework 的版本将不再受到限制。
+        
+        参考:
+        - [Spring Framework#28012#issuecomment-1154964509](https://github.com/spring-projects/spring-framework/issues/28012#issuecomment-1154964509)
+        - [KT-47932](https://youtrack.jetbrains.com/issue/KT-47932)
+    */
+
 
     /**
      * 指定一个对当前 [Filter] 的处理过滤器。当 [by] 指定了任意一个不直接等同于 [AnnotationEventFilter]
@@ -177,7 +136,7 @@ public annotation class Filter(
      * ```
      *
      */
-    val by: KClass<out AnnotationEventFilter> = AnnotationEventFilter::class
+    val by: KClass<out AnnotationEventFilter> = AnnotationEventFilter::class,
     
     )
 

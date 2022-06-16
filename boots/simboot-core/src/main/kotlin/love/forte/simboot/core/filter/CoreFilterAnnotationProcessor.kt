@@ -17,8 +17,6 @@
 package love.forte.simboot.core.filter
 
 import love.forte.simboot.annotation.AnnotationEventFilter
-import love.forte.simboot.annotation.AnnotationEventFilter.InitType.INDEPENDENT
-import love.forte.simboot.annotation.AnnotationEventFilter.InitType.UNITED
 import love.forte.simboot.annotation.Filter
 import love.forte.simboot.annotation.Filters
 import love.forte.simboot.annotation.TargetFilter
@@ -50,10 +48,10 @@ public object CoreFilterAnnotationProcessor {
         
         val value = filter.value
         val target = filter.target.box()
-        val and = filter.and.takeIf { it.value.isNotEmpty() }
-        val or = filter.or.takeIf { it.value.isNotEmpty() }
+        // val and = filter.and.takeIf { it.value.isNotEmpty() }
+        // val or = filter.or.takeIf { it.value.isNotEmpty() }
         
-        if (value.isEmpty() && target == null && and == null && or == null) {
+        if (value.isEmpty() && target == null) {
             return null
         }
         
@@ -69,7 +67,7 @@ public object CoreFilterAnnotationProcessor {
         context.listenerAttributes.computeIfAbsent(KeywordsAttribute) { CopyOnWriteArrayList() }
             .add(currentFilter.keyword)
         
-        return currentFilter.processOrAnd(context, and, or)
+        return currentFilter //.processOrAnd(context, and, or)
     }
     
     
@@ -84,7 +82,7 @@ public object CoreFilterAnnotationProcessor {
             // from bean container
             val beanContainer = context.context.beanContainer
             val beanNames = beanContainer.getAll(type)
-    
+            
             val fromContainer = kotlin.runCatching {
                 when {
                     beanNames.size > 1 -> {
@@ -102,16 +100,16 @@ public object CoreFilterAnnotationProcessor {
                 logger.debug("Cannot get the instance of type [$type] in beanContainers by names [$beanNames]", e)
                 null
             }
-    
+            
             if (fromContainer != null) {
                 return@run fromContainer
             }
-    
+            
             // try to create instance.
             return@run kotlin.runCatching {
                 val constructor = type.constructors.find { it.parameters.isEmpty() }
                     ?: throw NoSuchElementException("Public, no-argument constructor for type [$type]")
-        
+                
                 constructor.call()
             }.getOrElse { e ->
                 throw SimbotIllegalStateException("Cannot create instance for type [$type]", e)
@@ -119,62 +117,13 @@ public object CoreFilterAnnotationProcessor {
         }
         
         // init it.
-        val initType = annotationEventFilter.init(context.listener, filter, filters)
+        annotationEventFilter.init(context.listener, filter, filters)
         
-        logger.debug("Init annotation event filter: [{}], init type: {}", annotationEventFilter, initType)
+        logger.debug("Init annotation event filter: [{}]", annotationEventFilter)
         
-        return when (initType) {
-            INDEPENDENT -> {
-                // just return
-                annotationEventFilter
-            }
-            UNITED -> {
-                // andOr
-                val and = filter.and.takeIf { it.value.isNotEmpty() }
-                val or = filter.or.takeIf { it.value.isNotEmpty() }
-                annotationEventFilter.processOrAnd(context, and, or)
-            }
-        }
-        
+        return annotationEventFilter
     }
     
-    private fun EventFilter.processOrAnd(
-        context: FiltersAnnotationProcessContext,
-        and: Filters?,
-        or: Filters?,
-    ): EventFilter {
-        val andFilter = and?.process(context)
-        val orFilter = or?.process(context)
-        
-        // 预解析
-        when {
-            andFilter == null && orFilter == null -> {
-                return this
-            }
-            
-            // both
-            andFilter != null && orFilter != null -> {
-                return coreFilter { filterContext ->
-                    this.test(filterContext)
-                            && andFilter.test(filterContext)
-                            || orFilter.test(filterContext)
-                }
-            }
-            // only and
-            andFilter != null -> {
-                return coreFilter { filterContext ->
-                    this.test(filterContext) && andFilter.test(filterContext)
-                }
-            }
-            // only or
-            else -> {
-                val orFilter0 = orFilter!!
-                return coreFilter { filterContext ->
-                    this.test(filterContext) || orFilter0.test(filterContext)
-                }
-            }
-        }
-    }
 }
 
 private fun Filters.process(context: FiltersAnnotationProcessContext): EventFilter? {
