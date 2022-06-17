@@ -29,11 +29,18 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 
+@Deprecated(
+    "Just use SimpleListenerManagerConfiguration",
+    ReplaceWith("SimpleListenerManagerConfiguration", "love.forte.simbot.core.event.SimpleListenerManagerConfiguration")
+)
+public class CoreListenerManagerConfiguration : SimpleListenerManagerConfiguration()
+
+
 @DslMarker
-internal annotation class CoreEventManagerConfigDSL
+internal annotation class SimpleEventManagerConfigDSL
 
 /**
- * [CoreListenerManager] 的配置文件.
+ * [SimpleEventListenerManager] 的配置文件.
  * 当配置文件作为构建参数的时候，他会被立即使用。
  *
  * ### 拦截器
@@ -43,21 +50,20 @@ internal annotation class CoreEventManagerConfigDSL
  *
  * }
  * ```
- * ### 监听函数
  *
  *
- * @see CoreListenerManager.newInstance
- * @see coreListenerManager
+ * @see SimpleEventListenerManager.newInstance
+ * @see simpleListenerManager
  */
-@CoreEventManagerConfigDSL
-public class CoreListenerManagerConfiguration {
+@SimpleEventManagerConfigDSL
+public open class SimpleListenerManagerConfiguration {
     
     
     /**
      * 事件管理器的上下文. 可以基于此提供调度器。
-     * 但是 [CoreListenerManager] 并不是一个作用域，因此不可以提供 `Job`.
+     * 但是 [SimpleEventListenerManager] 并不是一个作用域，因此不可以提供 `Job`.
      */
-    @CoreEventManagerConfigDSL
+    @SimpleEventManagerConfigDSL
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext
     
     /**
@@ -89,10 +95,11 @@ public class CoreListenerManagerConfiguration {
      */
     @JvmSynthetic
     @ExperimentalSimbotApi
-    @CoreEventManagerConfigDSL
-    public fun listenerExceptionHandler(handler: (Throwable) -> EventResult): CoreListenerManagerConfiguration = also {
-        listenerExceptionHandler = handler
-    }
+    @SimpleEventManagerConfigDSL
+    public fun listenerExceptionHandler(handler: (Throwable) -> EventResult): SimpleListenerManagerConfiguration =
+        also {
+            listenerExceptionHandler = handler
+        }
     
     /**
      * 自定义的监听函数异常处理器。
@@ -100,7 +107,7 @@ public class CoreListenerManagerConfiguration {
      */
     @Api4J
     @ExperimentalSimbotApi
-    public fun listenerExceptionHandler(handler: Function<Throwable, EventResult>): CoreListenerManagerConfiguration =
+    public fun listenerExceptionHandler(handler: Function<Throwable, EventResult>): SimpleListenerManagerConfiguration =
         also {
             listenerExceptionHandler = handler::apply
         }
@@ -113,8 +120,8 @@ public class CoreListenerManagerConfiguration {
      *
      * @throws IllegalStateException 如果出现重复ID
      */
-    @CoreEventManagerConfigDSL
-    public fun addProcessingInterceptors(interceptors: Map<ID, EventProcessingInterceptor>): CoreListenerManagerConfiguration =
+    @SimpleEventManagerConfigDSL
+    public fun addProcessingInterceptors(interceptors: Map<ID, EventProcessingInterceptor>): SimpleListenerManagerConfiguration =
         also {
             if (interceptors.isEmpty()) return this
             
@@ -134,8 +141,8 @@ public class CoreListenerManagerConfiguration {
      *
      * @throws IllegalStateException 如果出现重复ID
      */
-    @CoreEventManagerConfigDSL
-    public fun addListenerInterceptors(interceptors: Map<ID, EventListenerInterceptor>): CoreListenerManagerConfiguration =
+    @SimpleEventManagerConfigDSL
+    public fun addListenerInterceptors(interceptors: Map<ID, EventListenerInterceptor>): SimpleListenerManagerConfiguration =
         also {
             if (interceptors.isEmpty()) return this
             
@@ -159,8 +166,8 @@ public class CoreListenerManagerConfiguration {
      * }
      * ```
      */
-    @CoreEventManagerConfigDSL
-    public fun interceptors(block: EventInterceptorsGenerator.() -> Unit): CoreListenerManagerConfiguration =
+    @SimpleEventManagerConfigDSL
+    public fun interceptors(block: EventInterceptorsGenerator.() -> Unit): SimpleListenerManagerConfiguration =
         also {
             interceptors().also(block).build({ ls ->
                 addListenerInterceptors(ls)
@@ -191,21 +198,21 @@ public class CoreListenerManagerConfiguration {
      * })
      * ```
      */
-    public fun addListener(listener: EventListener): CoreListenerManagerConfiguration = also {
+    public fun addListener(listener: EventListener): SimpleListenerManagerConfiguration = also {
         listeners.add(listener)
     }
     
     /**
      * 添接加多个监听函数。
      */
-    public fun addListeners(listeners: Collection<EventListener>): CoreListenerManagerConfiguration = also {
+    public fun addListeners(listeners: Collection<EventListener>): SimpleListenerManagerConfiguration = also {
         this.listeners.addAll(listeners)
     }
     
     /**
      * 直接添加多个监听函数。
      */
-    public fun addListeners(vararg listeners: EventListener): CoreListenerManagerConfiguration = also {
+    public fun addListeners(vararg listeners: EventListener): SimpleListenerManagerConfiguration = also {
         this.listeners.addAll(listeners)
     }
     
@@ -215,7 +222,7 @@ public class CoreListenerManagerConfiguration {
      *  @see EventListenersGenerator
      */
     @EventListenersGeneratorDSL
-    public fun listeners(block: EventListenersGenerator.() -> Unit): CoreListenerManagerConfiguration =
+    public fun listeners(block: EventListenersGenerator.() -> Unit): SimpleListenerManagerConfiguration =
         also {
             val listeners = listeners().also(block).build()
             addListeners(listeners)
@@ -231,8 +238,8 @@ public class CoreListenerManagerConfiguration {
     
     
     @OptIn(ExperimentalSerializationApi::class)
-    internal fun build(serializersModule: SerializersModule = EmptySerializersModule): CoreListenerManagerConfig {
-        return CoreListenerManagerConfig(
+    internal fun build(serializersModule: SerializersModule = EmptySerializersModule): SimpleListenerManagerConfig {
+        return SimpleListenerManagerConfig(
             coroutineContext,
             exceptionHandler = listenerExceptionHandler,
             processingInterceptors = idMapOf(processingInterceptors),
@@ -244,15 +251,15 @@ public class CoreListenerManagerConfiguration {
     
     
     public companion object {
-        public inline operator fun invoke(block: CoreListenerManagerConfiguration.() -> Unit): CoreListenerManagerConfiguration {
-            return CoreListenerManagerConfiguration().also(block)
+        public inline operator fun invoke(block: SimpleListenerManagerConfiguration.() -> Unit): SimpleListenerManagerConfiguration {
+            return SimpleListenerManagerConfiguration().also(block)
         }
     }
     
 }
 
 
-public data class CoreListenerManagerConfig(
+public data class SimpleListenerManagerConfig(
     internal val coroutineContext: CoroutineContext,
     internal val exceptionHandler: ((Throwable) -> EventResult)? = null,
     internal val processingInterceptors: IDMaps<EventProcessingInterceptor>,

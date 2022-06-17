@@ -26,22 +26,22 @@ import love.forte.simbot.utils.runWithInterruptible
  *
  * 相当于函数 `EventProcessingContext.(ContinuousSessionProvider<T>) -> Unit`。
  *
- * 对于Java使用者可以考虑使用 [BlockingResumeListener]。
+ * 对于Java使用者可以考虑使用 [BlockingContinuousSessionSelector]。
  *
- * @see BlockingResumeListener
+ * @see BlockingContinuousSessionSelector
  */
-public fun interface ResumeListener<T> {
+public fun interface ContinuousSessionSelector<T> {
     public suspend operator fun EventProcessingContext.invoke(provider: ContinuousSessionProvider<T>)
 }
 
 /**
- * 阻塞的 [ResumeListener].
+ * 阻塞的 [ContinuousSessionSelector].
  */
 @Api4J
-public fun interface BlockingResumeListener<T> {
+public fun interface BlockingContinuousSessionSelector<T> {
     
     /**
-     * 执行一个含义等同于 [ResumeListener.invoke] 的阻塞函数。
+     * 执行一个含义等同于 [ContinuousSessionSelector.invoke] 的阻塞函数。
      *
      * @throws CancellationException 执行被终止
      */
@@ -50,8 +50,8 @@ public fun interface BlockingResumeListener<T> {
 
 
 @OptIn(Api4J::class)
-internal fun <T> BlockingResumeListener<T>.parse(): ResumeListener<T> =
-    ResumeListener { provider -> runWithInterruptible { this@parse(this, provider) } }
+internal fun <T> BlockingContinuousSessionSelector<T>.parse(): ContinuousSessionSelector<T> =
+    ContinuousSessionSelector { provider -> runWithInterruptible { this@parse(this, provider) } }
 // endregion
 
 // region event matcher
@@ -60,10 +60,10 @@ internal fun <T> BlockingResumeListener<T>.parse(): ResumeListener<T> =
  *
  * 提供一个 [Event] 来判断其是否符合条件。
  *
- * 阻塞实现参考 [BlockingEventMatcher].
+ * 阻塞实现参考 [BlockingContinuousSessionEventMatcher].
  *
  */
-public fun interface EventMatcher<in E : Event> {
+public fun interface ContinuousSessionEventMatcher<in E : Event> {
     
     /**
      * 根据条件判断结果。
@@ -72,7 +72,7 @@ public fun interface EventMatcher<in E : Event> {
     public suspend operator fun EventProcessingContext.invoke(event: E): Boolean
     
     
-    public companion object AlwaysTrue : EventMatcher<Event> {
+    public companion object AlwaysTrue : ContinuousSessionEventMatcher<Event> {
         override suspend fun EventProcessingContext.invoke(event: Event): Boolean {
             return true
         }
@@ -87,7 +87,7 @@ public fun interface EventMatcher<in E : Event> {
  *
  */
 @Api4J
-public fun interface BlockingEventMatcher<in E : Event> {
+public fun interface BlockingContinuousSessionEventMatcher<in E : Event> {
     
     /**
      * 根据条件判断结果。
@@ -95,7 +95,7 @@ public fun interface BlockingEventMatcher<in E : Event> {
     public operator fun EventProcessingContext.invoke(event: E): Boolean
     
     
-    public companion object AlwaysTrue : BlockingEventMatcher<Event> {
+    public companion object AlwaysTrue : BlockingContinuousSessionEventMatcher<Event> {
         override fun EventProcessingContext.invoke(event: Event): Boolean {
             return true
         }
@@ -104,11 +104,11 @@ public fun interface BlockingEventMatcher<in E : Event> {
 }
 
 @OptIn(Api4J::class)
-internal fun <E : Event> BlockingEventMatcher<E>.parse(): EventMatcher<E> {
-    return if (this === BlockingEventMatcher.AlwaysTrue) {
-        EventMatcher.AlwaysTrue
+internal fun <E : Event> BlockingContinuousSessionEventMatcher<E>.parse(): ContinuousSessionEventMatcher<E> {
+    return if (this === BlockingContinuousSessionEventMatcher.AlwaysTrue) {
+        ContinuousSessionEventMatcher.AlwaysTrue
     } else {
-        EventMatcher { event -> runWithInterruptible { invoke(event) } }
+        ContinuousSessionEventMatcher { event -> runWithInterruptible { invoke(event) } }
     }
 }
 

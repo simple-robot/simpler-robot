@@ -42,10 +42,10 @@ import love.forte.simbot.*
 import love.forte.simbot.application.*
 import love.forte.simbot.application.BotRegistrar
 import love.forte.simbot.core.application.*
-import love.forte.simbot.core.event.CoreListenerManager
-import love.forte.simbot.core.event.CoreListenerManagerConfiguration
 import love.forte.simbot.core.event.EventInterceptorsGenerator
 import love.forte.simbot.core.event.EventListenersGenerator
+import love.forte.simbot.core.event.SimpleEventListenerManager
+import love.forte.simbot.core.event.SimpleListenerManagerConfiguration
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerInterceptor
 import love.forte.simbot.event.EventProcessingInterceptor
@@ -236,7 +236,7 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
     /**
      * 是否在bot注册后，在 application 构建完毕的时候自动执行 `Bot.start`。
      *
-     * 这一行为会注册到 [ApplicationBuilder.onCompletion] 中.
+     * 这一行为会注册到 [StandardApplicationBuilder.onCompletion] 中.
      *
      * 如果设置为 `true`，效果类似于：
      * ```kotlin
@@ -262,13 +262,14 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
 /**
  * 用于构建 [BootApplication] 的构建器。
  */
-public interface BootApplicationBuilder : CoreApplicationBuilder<BootApplication> {
+public interface BootApplicationBuilder :
+    StandardApplicationBuilder<BootApplication> {
     
     /**
      * 事件处理器。
      */
     @ApplicationBuilderDsl
-    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
+    override fun eventProcessor(configurator: SimpleListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
     
     
     /**
@@ -354,7 +355,7 @@ public interface BootApplication : SimpleApplication, SimbootContext {
 private class BootApplicationImpl(
     override val configuration: ApplicationConfiguration,
     override val environment: BootEnvironment,
-    override val eventListenerManager: CoreListenerManager,
+    override val eventListenerManager: SimpleEventListenerManager,
     override val beanContainer: BeanContainer,
     providerList: List<EventProvider>,
 ) : BootApplication, BaseApplication() {
@@ -391,7 +392,7 @@ private class BootApplicationImpl(
 /**
  * [BootApplicationBuilder] 的实现。
  */
-private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseCoreApplicationBuilder<BootApplication>() {
+private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardApplicationBuilder<BootApplication>() {
     private var beanContainerBuilderConfig: (BeanContainerBuilder.() -> Unit) = {}
     override fun beans(beanContainerBuilder: BeanContainerBuilder.() -> Unit) {
         beanContainerBuilderConfig.also { old ->
@@ -744,8 +745,7 @@ private fun ParameterBinderBuilder.includeDefaults() {
  */
 private fun EventInterceptorsGenerator.autoConfigInterceptors(beanContainer: BeanContainer) {
     autoConfigProcessingInterceptors(beanContainer)
-    
-    TODO()
+    autoConfigListenerInterceptors(beanContainer)
 }
 
 

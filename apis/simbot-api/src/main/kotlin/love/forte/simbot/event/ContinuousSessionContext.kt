@@ -17,9 +17,12 @@
 package love.forte.simbot.event
 
 import kotlinx.coroutines.*
-import love.forte.simbot.*
+import love.forte.simbot.Api4J
+import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.isNotMe
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
+import love.forte.simbot.utils.randomIdStr
 import love.forte.simbot.utils.runInBlocking
 import love.forte.simbot.utils.runInTimeoutBlocking
 import java.util.concurrent.Future
@@ -70,8 +73,8 @@ public interface BaseContinuousSessionContext {
      */
     @JvmSynthetic
     public suspend fun <T> waiting(
-        id: ID = randomID(),
-        listener: ResumeListener<T>,
+        id: String = randomIdStr(),
+        listener: ContinuousSessionSelector<T>,
     ): T
     
 }
@@ -81,11 +84,8 @@ public interface BaseContinuousSessionContext {
  *
  * 持续会话的作用域, 通过此作用域在监听函数监听过程中进行会话嵌套。
  *
- * **注: [ContinuousSessionContext] 尚处于实验阶段, 且目前对Java的友好度一般。如果是Java开发者目前请不要过度依赖此功能。**
- *
- * [waiting] 中注册的临时listener将会在所有监听函数被**触发前**, 依次作为一个各自独立的**异步任务**执行，
- * 并且因为 [ResumeListener.invoke] 不存在返回值, 因此所有的临时会话监听函数均**无法**对任何正常的监听流程产生影响，也**无法**参与到正常流程中的结果返回中。
- *
+ * [waiting] 中注册的临时listener将会在所有监听函数被**触发前**, 整体性的作为一个独立的**异步任务**执行，
+ * 并且因为 [ContinuousSessionSelector.invoke] 不存在返回值, 因此所有的临时会话监听函数均**无法**对任何正常的监听流程产生影响，也**无法**参与到正常流程中的结果返回中。
  *
  * 在事件处理流程中，包含了临时监听函数的情况大概如下所示：
  * ```
@@ -100,6 +100,26 @@ public interface BaseContinuousSessionContext {
  * ```
  *
  * ⚠ ：这种行为未来可能会发生变更。
+ *
+ * ## 仅获取
+ * 对于持续会话的使用，你应该尽可能的避免在 [ContinuousSessionSelector] 中执行**逻辑** ————
+ * 你应当在 [ContinuousSessionSelector] 更多的做**选择与获取**，而不是做**逻辑处理**。
+ *
+ * 如下示例：
+ *
+ * ```kotlin
+ * val value = session.waitingFor(FooEvent) { provider ->
+ *    if (... && ... && ...) {
+ *        provider.push(...)
+ *    }
+ * }
+ *
+ * // 逻辑处理
+ * useValue(value)
+ * ```
+ *
+ * 你应当通过持续会话来**获取**值，然后在你的监听主流程中进行业务逻辑。
+ *
  *
  * ## provider & receiver
  *
@@ -220,8 +240,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @JvmSynthetic
     abstract override suspend fun <T> waiting(
-        id: ID,
-        listener: ResumeListener<T>,
+        id: String,
+        listener: ContinuousSessionSelector<T>,
     ): T
     
     
@@ -245,10 +265,10 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("waiting")
     public fun <T> waitBlocking(
-        id: ID = randomID(),
+        id: String = randomIdStr(),
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-        blockingListener: BlockingResumeListener<T>,
+        blockingListener: BlockingContinuousSessionSelector<T>,
     ): T {
         suspend fun doWait() = waiting(id, blockingListener.parse())
         
@@ -280,9 +300,9 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     public fun <T> waitBlocking(
         timeout: Long,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-        blockingListener: BlockingResumeListener<T>,
+        blockingListener: BlockingContinuousSessionSelector<T>,
     ): T =
-        waitBlocking(id = randomID(), timeout = timeout, timeUnit = timeUnit, blockingListener = blockingListener)
+        waitBlocking(id = randomIdStr(), timeout = timeout, timeUnit = timeUnit, blockingListener = blockingListener)
     
     
     // endregion
@@ -359,9 +379,9 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @JvmSynthetic
     public suspend fun <E : Event> waitingForNext(
-        id: ID = randomID(),
+        id: String = randomIdStr(),
         key: Event.Key<E>,
-        matcher: EventMatcher<E> = EventMatcher,
+        matcher: ContinuousSessionEventMatcher<E> = ContinuousSessionEventMatcher,
     ): E {
         return waiting(id) { provider ->
             val event = key.safeCast(this.event) ?: return@waiting
@@ -393,11 +413,11 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("waitingForNext")
     public fun <E : Event> waitForNextBlocking(
-        id: ID,
+        id: String,
         key: Event.Key<E>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-        matcher: BlockingEventMatcher<E> = BlockingEventMatcher,
+        matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
     ): E {
         suspend fun doWait() = waitingForNext(id, key, matcher.parse())
         
@@ -433,8 +453,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         key: Event.Key<E>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-        matcher: BlockingEventMatcher<E> = BlockingEventMatcher,
-    ): E = waitForNextBlocking(id = randomID(), key, timeout, timeUnit, matcher)
+        matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
+    ): E = waitForNextBlocking(id = randomIdStr(), key, timeout, timeUnit, matcher)
     
     
     /**
@@ -453,9 +473,9 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmName("waitingForNext")
     public fun <E : Event> waitForNextBlocking(
         key: Event.Key<E>,
-        matcher: BlockingEventMatcher<E> = BlockingEventMatcher,
+        matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
     ): E =
-        waitForNextBlocking(id = randomID(), key = key, matcher = matcher)
+        waitForNextBlocking(id = randomIdStr(), key = key, matcher = matcher)
     
     
     // endregion
@@ -476,8 +496,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @JvmSynthetic
     public suspend fun waitingForNext(
-        id: ID = randomID(),
-        matcher: EventMatcher<Event> = EventMatcher,
+        id: String = randomIdStr(),
+        matcher: ContinuousSessionEventMatcher<Event> = ContinuousSessionEventMatcher,
     ): Event {
         return waitingForNext(id, Event.Root, matcher)
     }
@@ -503,10 +523,10 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("waitingForNext")
     public fun waitForNextBlocking(
-        id: ID = randomID(),
+        id: String = randomIdStr(),
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-        matcher: BlockingEventMatcher<Event> = BlockingEventMatcher,
+        matcher: BlockingContinuousSessionEventMatcher<Event> = BlockingContinuousSessionEventMatcher,
     ): Event {
         suspend fun doWait() = waitingForNext(id, matcher.parse())
         
@@ -539,9 +559,9 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     public fun waitForNextBlocking(
         timeout: Long,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-        matcher: BlockingEventMatcher<Event> = BlockingEventMatcher,
+        matcher: BlockingContinuousSessionEventMatcher<Event> = BlockingContinuousSessionEventMatcher,
     ): Event =
-        waitForNextBlocking(randomID(), timeout, timeUnit, matcher)
+        waitForNextBlocking(randomIdStr(), timeout, timeUnit, matcher)
     
     /**
      * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
@@ -559,7 +579,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @Api4J
     @JvmName("waitingForNext")
-    public fun waitForNextBlocking(timeout: Long, matcher: BlockingEventMatcher<Event>): Event =
+    public fun waitForNextBlocking(timeout: Long, matcher: BlockingContinuousSessionEventMatcher<Event>): Event =
         waitForNextBlocking(timeout, TimeUnit.MILLISECONDS, matcher)
     
     
@@ -578,7 +598,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @Api4J
     @JvmOverloads
     @JvmName("waitingForNext")
-    public fun waitForNextBlocking(id: ID = randomID(), matcher: BlockingEventMatcher<Event>): Event =
+    public fun waitForNextBlocking(id: String = randomIdStr(), matcher: BlockingContinuousSessionEventMatcher<Event>): Event =
         waitForNextBlocking(id = id, timeout = 0, matcher = matcher)
     
     // endregion
@@ -638,7 +658,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @receiver 当前所处的事件环境
      */
     @JvmSynthetic
-    public suspend fun <E : Event> Event.next(id: ID, key: Event.Key<E>): E {
+    public suspend fun <E : Event> Event.next(id: String, key: Event.Key<E>): E {
         val currentEvent = this
         return waitingForNext(id, key, currentEvent.toMatcher())
     }
@@ -655,10 +675,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @JvmSynthetic
     public suspend fun <E : Event> Event.next(key: Event.Key<E>): E {
-        return next(randomID(), key)
+        return next(randomIdStr(), key)
     }
-    
-    
     
     
     /**
@@ -672,7 +690,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @see Event.next
      */
     @JvmSynthetic
-    public suspend fun <E : Event> EventProcessingContext.next(id: ID, key: Event.Key<E>): E {
+    public suspend fun <E : Event> EventProcessingContext.next(id: String, key: Event.Key<E>): E {
         return event.next(id, key)
     }
     
@@ -690,7 +708,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @JvmSynthetic
     public suspend fun <E : Event> EventProcessingContext.next(key: Event.Key<E>): E {
-        return next(randomID(), key)
+        return next(randomIdStr(), key)
     }
     
     
@@ -727,7 +745,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("next")
     public fun <E : Event> Event.nextBlocking(
-        id: ID = randomID(),
+        id: String = randomIdStr(),
         key: Event.Key<E>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
@@ -767,7 +785,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("next")
     public fun <E : Event> EventProcessingContext.nextBlocking(
-        id: ID = randomID(),
+        id: String = randomIdStr(),
         key: Event.Key<E>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
@@ -827,7 +845,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @receiver 当前所处的事件环境
      */
     @JvmSynthetic
-    public suspend fun Event.next(id: ID = randomID()): Event {
+    public suspend fun Event.next(id: String = randomIdStr()): Event {
         return next(id, Event.Root)
     }
     
@@ -843,7 +861,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @see Event.next
      */
     @JvmSynthetic
-    public suspend fun EventProcessingContext.next(id: ID = randomID()): Event {
+    public suspend fun EventProcessingContext.next(id: String = randomIdStr()): Event {
         return event.next(id)
     }
     
@@ -880,7 +898,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("next")
     public fun Event.nextBlocking(
-        id: ID = randomID(),
+        id: String = randomIdStr(),
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
     ): Event {
@@ -907,7 +925,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("next")
     public fun EventProcessingContext.nextBlocking(
-        id: ID = randomID(),
+        id: String = randomIdStr(),
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
     ): Event {
@@ -959,9 +977,9 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @JvmSynthetic
     public suspend fun <E : MessageEvent> waitingForNextMessage(
-        id: ID,
+        id: String,
         key: Event.Key<E>,
-        matcher: EventMatcher<E> = EventMatcher,
+        matcher: ContinuousSessionEventMatcher<E> = ContinuousSessionEventMatcher,
     ): MessageContent {
         return waitingForNext(id, key, matcher).messageContent
     }
@@ -1006,8 +1024,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @JvmSynthetic
     public suspend fun waitingForNextMessage(
-        id: ID = randomID(),
-        matcher: EventMatcher<MessageEvent> = EventMatcher,
+        id: String = randomIdStr(),
+        matcher: ContinuousSessionEventMatcher<MessageEvent> = ContinuousSessionEventMatcher,
     ): MessageContent {
         return waitingForNext(id, MessageEvent, matcher).messageContent
     }
@@ -1037,11 +1055,11 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("waitingForNextMessage")
     public fun <E : MessageEvent> waitForNextMessageBlocking(
-        id: ID = randomID(),
+        id: String = randomIdStr(),
         key: Event.Key<E>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-        matcher: BlockingEventMatcher<E> = BlockingEventMatcher,
+        matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
     ): MessageContent {
         suspend fun doWait() = waitingForNextMessage(id, key, matcher.parse())
         val mill = timeUnit.toMillis(timeout)
@@ -1078,10 +1096,10 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("waitingForNextMessage")
     public fun waitForNextMessageBlocking(
-        id: ID = randomID(),
+        id: String = randomIdStr(),
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-        matcher: BlockingEventMatcher<MessageEvent> = BlockingEventMatcher,
+        matcher: BlockingContinuousSessionEventMatcher<MessageEvent> = BlockingContinuousSessionEventMatcher,
     ): MessageContent {
         return waitForNextMessageBlocking(id, MessageEvent, timeout, timeUnit, matcher)
     }
@@ -1107,8 +1125,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("waitingForNextMessage")
     public fun waitForNextMessageBlocking(
-        id: ID = randomID(),
-        matcher: BlockingEventMatcher<MessageEvent>,
+        id: String = randomIdStr(),
+        matcher: BlockingContinuousSessionEventMatcher<MessageEvent>,
     ): MessageContent {
         return waitForNextMessageBlocking(id = id, key = MessageEvent, timeout = 0, matcher = matcher)
     }
@@ -1134,9 +1152,9 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmName("waitingForNextMessage")
     public fun <E : MessageEvent> waitForNextMessageBlocking(
         key: Event.Key<E>,
-        matcher: BlockingEventMatcher<MessageEvent>,
+        matcher: BlockingContinuousSessionEventMatcher<MessageEvent>,
     ): MessageContent {
-        return waitForNextMessageBlocking(id = randomID(), key = key, timeout = 0, matcher = matcher)
+        return waitForNextMessageBlocking(id = randomIdStr(), key = key, timeout = 0, matcher = matcher)
     }
     // endregion
     
@@ -1157,7 +1175,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @JvmSynthetic
     public suspend fun Event.nextMessage(
-        id: ID,
+        id: String,
         key: Event.Key<out MessageEvent>,
     ): MessageContent = next(id, key).messageContent
     
@@ -1177,7 +1195,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmSynthetic
     public suspend fun Event.nextMessage(
         key: Event.Key<out MessageEvent>,
-    ): MessageContent = nextMessage(randomID(), key)
+    ): MessageContent = nextMessage(randomIdStr(), key)
     
     
     /**
@@ -1195,7 +1213,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      */
     @JvmSynthetic
     public suspend fun EventProcessingContext.nextMessage(
-        id: ID,
+        id: String,
         key: Event.Key<out MessageEvent>,
     ): MessageContent = next(id, key).messageContent
     
@@ -1216,7 +1234,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmSynthetic
     public suspend fun EventProcessingContext.nextMessage(
         key: Event.Key<out MessageEvent>,
-    ): MessageContent = nextMessage(randomID(), key)
+    ): MessageContent = nextMessage(randomIdStr(), key)
     
     
     /**
@@ -1243,7 +1261,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("nextMessage")
     public fun Event.nextMessageBlocking(
-        id: ID,
+        id: String,
         key: Event.Key<out MessageEvent>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
@@ -1286,7 +1304,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         key: Event.Key<out MessageEvent>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): MessageContent = nextMessageBlocking(id = randomID(), key = key, timeout = timeout, timeUnit = timeUnit)
+    ): MessageContent = nextMessageBlocking(id = randomIdStr(), key = key, timeout = timeout, timeUnit = timeUnit)
     
     
     /**
@@ -1312,7 +1330,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("nextMessage")
     public fun Event.nextMessageBlocking(
-        id: ID,
+        id: String,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
     ): MessageContent = nextMessageBlocking(id = id, key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
@@ -1342,7 +1360,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     public fun Event.nextMessageBlocking(
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): MessageContent = nextMessageBlocking(id = randomID(), key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
+    ): MessageContent =
+        nextMessageBlocking(id = randomIdStr(), key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
     
     
     /**
@@ -1369,7 +1388,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("nextMessage")
     public fun EventProcessingContext.nextMessageBlocking(
-        id: ID,
+        id: String,
         key: Event.Key<out MessageEvent>,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
@@ -1404,7 +1423,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
     ): MessageContent {
-        return event.nextMessageBlocking(randomID(), key, timeout, timeUnit)
+        return event.nextMessageBlocking(randomIdStr(), key, timeout, timeUnit)
     }
     
     /**
@@ -1430,7 +1449,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("nextMessage")
     public fun EventProcessingContext.nextMessageBlocking(
-        id: ID,
+        id: String,
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
     ): MessageContent {
@@ -1462,7 +1481,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
     ): MessageContent {
-        return event.nextMessageBlocking(randomID(), MessageEvent, timeout, timeUnit)
+        return event.nextMessageBlocking(randomIdStr(), MessageEvent, timeout, timeUnit)
     }
     
     // endregion
@@ -1475,7 +1494,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * @see ContinuousSessionProvider
      */
-    public abstract fun <T> getProvider(id: ID): ContinuousSessionProvider<T>?
+    public abstract fun <T> getProvider(id: String): ContinuousSessionProvider<T>?
     
     
     /**
@@ -1483,11 +1502,9 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * @see ContinuousSessionReceiver
      */
-    public abstract fun <T> getReceiver(id: ID): ContinuousSessionReceiver<T>?
+    public abstract fun <T> getReceiver(id: String): ContinuousSessionReceiver<T>?
     
 }
-
-
 
 
 /**
@@ -1498,27 +1515,27 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
  * | [MessageEvent]         |  [source][MessageEvent.source] 的ID要相同                 | 放行 |
  * | [ChatRoomMessageEvent] |  [author][ChatRoomMessageEvent.author] 的ID要相同         | 放行 |
  */
-private fun <E : Event> Event.toMatcher(): EventMatcher<E> {
-    return EventMatcher { event ->
+private fun <E : Event> Event.toMatcher(): ContinuousSessionEventMatcher<E> {
+    return ContinuousSessionEventMatcher { event ->
         val eventBot = event.bot
         if (bot !== eventBot && bot.isNotMe(eventBot.id)) {
-            return@EventMatcher false
+            return@ContinuousSessionEventMatcher false
         }
         
         if (this is OrganizationEvent && event is OrganizationEvent) {
-            if (organization().id != event.organization().id) return@EventMatcher false
+            if (organization().id != event.organization().id) return@ContinuousSessionEventMatcher false
         }
         
         if (this is UserEvent && event is UserEvent) {
-            if (user().id != event.user().id) return@EventMatcher false
+            if (user().id != event.user().id) return@ContinuousSessionEventMatcher false
         }
         
         if (this is MessageEvent && event is MessageEvent) {
-            if (source().id != event.source().id) return@EventMatcher false
+            if (source().id != event.source().id) return@ContinuousSessionEventMatcher false
             
             // chatRoom message
             if (this is ChatRoomMessageEvent && event is ChatRoomMessageEvent) {
-                if (author().id != event.author().id) return@EventMatcher false
+                if (author().id != event.author().id) return@ContinuousSessionEventMatcher false
             }
         }
         

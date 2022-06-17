@@ -23,7 +23,7 @@ import love.forte.simbot.event.*
 /**
  *
  * 监听函数执行的异常处理器。
- * 当 [CoreListenerManager] 中的某一个 [EventListener] 执行过程中出现了异常（包括其过程中所经过的拦截器或过滤器），
+ * 当 [SimpleEventListenerManager] 中的某一个 [EventListener] 执行过程中出现了异常（包括其过程中所经过的拦截器或过滤器），
  * 则本次执行内容与对应异常将会交由一个 **唯一** 的一场管理器进行处理，并得到一个应得的结果。
  *
  * 原则上异常处理器内部应当尽可能避免再次出现异常。
@@ -33,22 +33,26 @@ import love.forte.simbot.event.*
 public typealias EventListenerExceptionHandler = suspend (EventListenerProcessingContext, Throwable) -> EventResult
 
 
+@Deprecated("Use SimpleListenerManager")
+public interface CoreListenerManager : SimpleEventListenerManager
+
+
 /**
  * 核心监听函数管理器。
  *
  * ## 调度
- * [CoreListenerManager] 遵守 [EventProcessor] 接口描述，通过当前事件中的 [bot][Event.bot] 所提供的作用域进行事件调度。
+ * [SimpleEventListenerManager] 遵守 [EventProcessor] 接口描述，通过当前事件中的 [bot][Event.bot] 所提供的作用域进行事件调度。
  *
  *
  * ## 异步函数
- * [CoreListenerManager] 中，对于一个异步函数 ([EventListener.isAsync] == true 的函数) 的处理方式与其接口定义的描述相同，
+ * [SimpleEventListenerManager] 中，对于一个异步函数 ([EventListener.isAsync] == true 的函数) 的处理方式与其接口定义的描述相同，
  * 对于这个异步函数的拦截器会与当前异步函数共同进入一个由当前事件管理器所提供的异步任务中，并对当前的 [EventProcessingContext]
  * 立即返回一个 [AsyncEventResult].
  *
  *
  *
  * ## 监听函数的解析、缓存与获取
- * 在 [CoreListenerManager] 中，真正被执行的监听函数是经过缓存与转化的，它们只会在遇到一个目前缓存中未知的事件类型的时候进行同步转化缓存。
+ * 在 [SimpleEventListenerManager] 中，真正被执行的监听函数是经过缓存与转化的，它们只会在遇到一个目前缓存中未知的事件类型的时候进行同步转化缓存。
  *
  * 因此先通过 [isProcessable] 判断是否支持当前事件类型，再进行事件的构建是个不错的优化方案：
  * ```kotlin
@@ -72,8 +76,36 @@ public typealias EventListenerExceptionHandler = suspend (EventListenerProcessin
  *
  *
  */
-public interface CoreListenerManager : EventListenerManager {
+public interface SimpleEventListenerManager : EventListenerManager {
     
+    /**
+     * 获取当前监听函数管理器中所使用的全局作用域的context。
+     * 其获取结果相当于在监听函数中使用 [SimpleScope.Global][love.forte.simbot.core.scope.SimpleScope.Global] 进行获取而得到的作用域。
+     *
+     * 全局作用域上下文与每一个独立的事件处理流程无关，理应能够直接通过当前 [SimpleEventListenerManager] 进行获取。
+     *
+     */
+    @ExperimentalSimbotApi
+    public val globalScopeContext: ScopeContext
+    
+    
+    /**
+     * 获取当前监听函数管理器中所使用的持续会话context。
+     * 其获取结果相当于在监听函数中使用 [SimpleScope.ContinuousSession][love.forte.simbot.core.scope.SimpleScope.ContinuousSession] 进行获取而得到的作用域。
+     *
+     * 持续会话上下文与每一个独立的事件流程无关，其生命周期应该与当前监听函数管理器有关，理应能够直接通过当前 [EventListenerManager] 进行获取以便在监听流程之外进行会话触发。
+     *
+     * ```kotlin
+     * fun process(listenerManager: EventListenerManager) {
+     *      // 取得一个provider
+     *      val provider = listenerManager.continuousSessionContext.getProvider<Int>(123.ID)
+     *      provider?.push(666)
+     * }
+     * ```
+     *
+     */
+    @ExperimentalSimbotApi
+    public val continuousSessionContext: ContinuousSessionContext
     
     /**
      * 判断指定事件类型在当前事件管理器中是否能够被执行（存在任意对应的监听函数）。
@@ -88,20 +120,20 @@ public interface CoreListenerManager : EventListenerManager {
     
     public companion object {
         /**
-         * 通过配置信息构建一个 [CoreListenerManager] 实例。
+         * 通过配置信息构建一个 [SimpleEventListenerManager] 实例。
          */
         @JvmStatic
-        public fun newInstance(configuration: CoreListenerManagerConfiguration): CoreListenerManager =
-            CoreListenerManagerImpl(configuration)
+        public fun newInstance(configuration: SimpleListenerManagerConfiguration): SimpleEventListenerManager =
+            SimpleEventListenerManagerImpl(configuration)
         
     }
 }
 
 
 /**
- * 事件流程上下文的管理器，[CoreListenerManager] 通过此接口实例完成对 [EventProcessingContext] 的统一管理。
+ * 事件流程上下文的管理器，[SimpleEventListenerManager] 通过此接口实例完成对 [EventProcessingContext] 的统一管理。
  *
- *  在 [CoreListenerManager] 中仅会使用同一个 [EventProcessingContextResolver] 实例。
+ *  在 [SimpleEventListenerManager] 中仅会使用同一个 [EventProcessingContextResolver] 实例。
  *
  */
 public interface EventProcessingContextResolver<C : EventProcessingContext> {
@@ -137,7 +169,7 @@ public interface EventProcessingContextResolver<C : EventProcessingContext> {
     /**
      * 向提供的上下文 [C] 的 [EventProcessingContext.results] 中追加一个 [EventResult].
      *
-     * [CoreListenerManager] 会对所有得到的结果进行尝试推送，包括 [EventResult.Invalid],
+     * [SimpleEventListenerManager] 会对所有得到的结果进行尝试推送，包括 [EventResult.Invalid],
      * 但是建议不会真正的添加 [EventResult.Invalid].
      *
      *

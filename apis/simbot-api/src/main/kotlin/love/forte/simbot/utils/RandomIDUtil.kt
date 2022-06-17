@@ -71,3 +71,6 @@ public object RandomIDUtil {
     )
     
 }
+
+@JvmSynthetic
+public fun randomIdStr(random: Random = Random): String = RandomIDUtil.randomID(random)

@@ -19,28 +19,29 @@ package love.forte.simbot.core.application
 import love.forte.simbot.application.Application
 import love.forte.simbot.application.ApplicationBuilder
 import love.forte.simbot.application.ApplicationBuilderDsl
-import love.forte.simbot.core.event.CoreListenerManagerConfiguration
 import love.forte.simbot.core.event.EventListenersGenerator
+import love.forte.simbot.core.event.SimpleListenerManagerConfiguration
 
 
 /**
  * 允许进行事件处理器的配置的 [ApplicationBuilder].
  * @author ForteScarlet
  */
-public interface CoreEventProcessableApplicationBuilder<A : Application> : ApplicationBuilder<A> {
-
+public interface EventProcessableApplicationBuilder<A : Application> :
+    ApplicationBuilder<A> {
+    
     /**
      * 配置内部的 core listener manager.
      *
      */
     @ApplicationBuilderDsl
-    public fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
-
+    public fun eventProcessor(configurator: SimpleListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
+    
 }
 
 
 /**
- * 配置 [CoreEventProcessableApplicationBuilder.eventProcessor] 的 `listeners`.
+ * 配置 [EventProcessableApplicationBuilder.eventProcessor] 的 `listeners`.
  *
  * 相当于
  * ```kotlin
@@ -52,7 +53,7 @@ public interface CoreEventProcessableApplicationBuilder<A : Application> : Appli
  * ```
  */
 @ApplicationBuilderDsl
-public inline fun CoreEventProcessableApplicationBuilder<*>.listeners(crossinline block: EventListenersGenerator.(environment: Application.Environment) -> Unit) {
+public inline fun EventProcessableApplicationBuilder<*>.listeners(crossinline block: EventListenersGenerator.(environment: Application.Environment) -> Unit) {
     eventProcessor { env ->
         listeners {
             block(env)

@@ -15,12 +15,12 @@
  */
 
 @file:JvmName("ContinuousSessionScopeContextUtil")
+
 package love.forte.simbot.event
 
-import kotlinx.coroutines.withTimeout
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.message.MessageContent
-import love.forte.simbot.randomID
+import love.forte.simbot.utils.randomIdStr
 
 
 /**
@@ -47,73 +47,12 @@ import love.forte.simbot.randomID
  *
  * 这种行为类似于 [run] 或 [apply]。 你也可以使用它们来代替当前函数。
  *
- * 如果你的函数中接收者为 [EventProcessingContext], 那么你可以尝试使用 [inSession].
- *
  *
  * @receiver [ContinuousSessionContext] 实例
  * @return [block] 函数的最终返回值
  */
 @ExperimentalSimbotApi
 public inline operator fun <T> ContinuousSessionContext.invoke(block: ContinuousSessionContext.() -> T): T = block()
-
-
-
-/**
- * 通过 [EventProcessingContext] 获取并进入 [ContinuousSessionContext] 的作用域中, 可以在存在 [EventProcessingContext] 时搭配使用：
- *
- * ```kotlin
- * suspend fun EventProcessingContext.onEvent(event: FooMessageEvent) {
- *     inSession { // this: ContinuousSessionContext
- *         event.reply("喵~")
- *         val nextMessage = event.nextMessage(FooMessageEvent)
- *         // ...
- *     }
- * }
- * ```
- *
- * 或
- *
- * ```kotlin
- * suspend fun onEvent(context: EventProcessingContext, event: FooMessageEvent) {
- *     context.inSession { // this: ContinuousSessionContext
- *         event.reply("喵~")
- *         val nextMessage = event.nextMessage(FooMessageEvent)
- *         // ...
- *     }
- * }
- * ```
- *
- *
- * ## 超时
- * 如果想要控制整个作用域下的整体超时时间，可以直接通过 [withTimeout] 来包裹作用域：
- * ```kotlin
- * withTimeout(...) {
- *    inSession { // this: ContinuousSessionContext
- *       // ...
- *    }
- * }
- * ```
- *
- * ## 值传递
- * [inSession] 可以向外传递返回值：
- * ```
- * val value: Int = inSession {
- *     // ...
- *     114
- * }
- * ```
- *
- *
- * @throws NullPointerException 当 [EventProcessingContext] 中无法获取 [ContinuousSessionContext] 时。
- *
- */
-@ExperimentalSimbotApi
-public inline fun <R> EventProcessingContext.inSession(block: ContinuousSessionContext.() -> R): R {
-    val session = this[EventProcessingContext.Scope.ContinuousSession] ?: throw NullPointerException("Cannot get ContinuousSessionContext from current EventProcessingContext [$this].")
-    return session.block()
-}
-
-
 
 
 /**
@@ -124,7 +63,10 @@ public inline fun <R> EventProcessingContext.inSession(block: ContinuousSessionC
  * @see ContinuousSessionContext.waitingForNext
  */
 @ExperimentalSimbotApi
-public suspend fun <E : Event>  ContinuousSessionContext.waitingForNext(k: Event.Key<E>, matcher: EventMatcher<E> = EventMatcher): E {
+public suspend fun <E : Event> ContinuousSessionContext.waitingForNext(
+    k: Event.Key<E>,
+    matcher: ContinuousSessionEventMatcher<E> = ContinuousSessionEventMatcher,
+): E {
     return waitingForNext(key = k, matcher = matcher)
 }
 
@@ -139,8 +81,8 @@ public suspend fun <E : Event>  ContinuousSessionContext.waitingForNext(k: Event
 @ExperimentalSimbotApi
 public suspend fun <E : MessageEvent> ContinuousSessionContext.waitingForNextMessage(
     key: Event.Key<E>,
-    matcher: EventMatcher<E> = EventMatcher,
+    matcher: ContinuousSessionEventMatcher<E> = ContinuousSessionEventMatcher,
 ): MessageContent {
-    return waitingForNext(randomID(), key, matcher).messageContent
+    return waitingForNext(randomIdStr(), key, matcher).messageContent
 }
 

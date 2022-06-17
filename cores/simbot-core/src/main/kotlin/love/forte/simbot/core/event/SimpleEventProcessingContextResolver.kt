@@ -39,16 +39,17 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * 核心默认的事件上下文处理器。
  */
-internal class CoreEventProcessingContextResolver(
+internal class SimpleEventProcessingContextResolver(
     private val coroutineScope: CoroutineScope,
-) : EventProcessingContextResolver<CoreEventProcessingContext> {
-    private val resumedListenerManager = ResumedListenerManager()
+) : EventProcessingContextResolver<SimpleEventProcessingContext> {
+    private val continuousSessionListenerManager = ContinuousSessionListenerManager()
     
     @ExperimentalSimbotApi
     override val globalContext = GlobalScopeContextImpl()
     
     @ExperimentalSimbotApi
-    override val continuousSessionContext = SimpleContinuousSessionContext(coroutineScope, resumedListenerManager)
+    override val continuousSessionContext =
+        SimpleContinuousSessionContext(coroutineScope, continuousSessionListenerManager)
     
     
     internal class GlobalScopeContextImpl : GlobalScopeContext,
@@ -62,9 +63,9 @@ internal class CoreEventProcessingContextResolver(
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
      */
     @OptIn(ExperimentalSimbotApi::class, ExperimentalSerializationApi::class)
-    override suspend fun resolveEventToContext(event: Event, listenerSize: Int): CoreEventProcessingContext {
+    override suspend fun resolveEventToContext(event: Event, listenerSize: Int): SimpleEventProcessingContext {
         
-        val context = CoreEventProcessingContext(
+        val context = SimpleEventProcessingContext(
             event,
             messagesSerializersModule = EmptySerializersModule,
             globalContext,
@@ -73,7 +74,7 @@ internal class CoreEventProcessingContextResolver(
         )
         
         coroutineScope.launch {
-            resumedListenerManager.process(context, this)
+            continuousSessionListenerManager.process(context)
         }
         
         return context
@@ -84,7 +85,7 @@ internal class CoreEventProcessingContextResolver(
      * 将一次事件结果拼接到当前上下文结果集中。
      */
     override suspend fun appendResultIntoContext(
-        context: CoreEventProcessingContext, result: EventResult,
+        context: SimpleEventProcessingContext, result: EventResult,
     ): ListenerInvokeType {
         if (result != EventResult.Invalid) {
             val newResult = tryCollect(result)
@@ -98,11 +99,11 @@ internal class CoreEventProcessingContextResolver(
      * 只要存在任意会话监听函数，则都需要进行监听事件推送。
      */
     override fun isProcessable(eventKey: Event.Key<*>): Boolean {
-        return !resumedListenerManager.isEmpty()
+        return !continuousSessionListenerManager.isEmpty()
     }
     
     private companion object {
-        private val logger = LoggerFactory.getLogger(CoreEventProcessingContextResolver::class.java)
+        private val logger = LoggerFactory.getLogger(SimpleEventProcessingContextResolver::class.java)
         
         private val reactiveSupport: Boolean by lazy {
             kotlin.runCatching {

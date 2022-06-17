@@ -4,6 +4,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
+import love.forte.simbot.core.scope.SimpleScope
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.utils.ListView
@@ -15,9 +16,9 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
-internal class CoreListenerManagerImpl internal constructor(
-    configuration: CoreListenerManagerConfiguration,
-) : CoreListenerManager {
+internal class SimpleEventListenerManagerImpl internal constructor(
+    configuration: SimpleListenerManagerConfiguration,
+) : SimpleEventListenerManager {
     private companion object {
         private val counter: AtomicInteger = AtomicInteger(0)
     }
@@ -54,24 +55,24 @@ internal class CoreListenerManagerImpl internal constructor(
     
     
     init {
-        val coreListenerManagerConfig: CoreListenerManagerConfig = configuration.build()
-        val context = coreListenerManagerConfig.coroutineContext
+        val simpleListenerManagerConfig: SimpleListenerManagerConfig = configuration.build()
+        val context = simpleListenerManagerConfig.coroutineContext
         // TODO Job?
         // context.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
         
         managerCoroutineContext =
-            context.minusKey(Job) + CoroutineName("CoreListenerManager#${counter.getAndIncrement()}")
+            context.minusKey(Job) + CoroutineName("SimpleListenerManager#${counter.getAndIncrement()}")
         
         managerScope = CoroutineScope(managerCoroutineContext)
         
-        listenerExceptionHandler = coreListenerManagerConfig.exceptionHandler
+        listenerExceptionHandler = simpleListenerManagerConfig.exceptionHandler
         
         processingInterceptEntrance =
-            EventInterceptEntrance.eventProcessingInterceptEntrance(coreListenerManagerConfig.processingInterceptors.values.sortedBy { it.priority })
+            EventInterceptEntrance.eventProcessingInterceptEntrance(simpleListenerManagerConfig.processingInterceptors.values.sortedBy { it.priority })
         
-        listenerIntercepts = coreListenerManagerConfig.listenerInterceptors.values.sortedBy { it.priority }
+        listenerIntercepts = simpleListenerManagerConfig.listenerInterceptors.values.sortedBy { it.priority }
         
-        listeners = coreListenerManagerConfig.listeners.associateByTo(mutableMapOf()) { it.id.toCharSequenceID() }
+        listeners = simpleListenerManagerConfig.listeners.associateByTo(mutableMapOf()) { it.id.toCharSequenceID() }
     }
     
     
@@ -172,7 +173,7 @@ internal class CoreListenerManagerImpl internal constructor(
      * 切换到当前管理器中的调度器并触发对应事件的内容。
      */
     private suspend fun doInvoke(
-        context: CoreEventProcessingContext,
+        context: SimpleEventProcessingContext,
         invokers: List<ListenerInvoker>,
     ): EventProcessingResult {
         val currentBot = context.event.bot
@@ -198,16 +199,16 @@ internal class CoreListenerManagerImpl internal constructor(
                         } else {
                             handleResult.getOrNull()!!
                         }
-                
+                        
                         // append result
                         val type = appendResult(context, result)
                         if (type == ListenerInvokeType.TRUNCATED) {
                             break
                         }
                     }
-            
+                    
                     // resolve to processing result
-                    CoreEventProcessingResult(context.results)
+                    SimpleEventProcessingResult(context.results)
                 }
             }.getOrElse {
                 currentBot.logger.error("Event process failed.", it)
@@ -232,7 +233,7 @@ internal class CoreListenerManagerImpl internal constructor(
     }
     
     
-    private val resolver: CoreEventProcessingContextResolver = CoreEventProcessingContextResolver(managerScope)
+    private val resolver: SimpleEventProcessingContextResolver = SimpleEventProcessingContextResolver(managerScope)
     
     
     @ExperimentalSimbotApi
@@ -246,11 +247,11 @@ internal class CoreListenerManagerImpl internal constructor(
     /**
      * 通过 [Event] 得到一个 [EventProcessingContext].
      */
-    private suspend fun resolveToContext(event: Event, listenerSize: Int): CoreEventProcessingContext {
+    private suspend fun resolveToContext(event: Event, listenerSize: Int): SimpleEventProcessingContext {
         return resolver.resolveEventToContext(event, listenerSize)
     }
     
-    private suspend fun appendResult(context: CoreEventProcessingContext, result: EventResult): ListenerInvokeType {
+    private suspend fun appendResult(context: SimpleEventProcessingContext, result: EventResult): ListenerInvokeType {
         return resolver.appendResultIntoContext(context, result)
     }
     
@@ -259,7 +260,7 @@ internal class CoreListenerManagerImpl internal constructor(
         val listener: EventListener,
     ) : suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult {
         val isAsync = listener.isAsync
-    
+        
         // private val listenerInterceptEntranceWithPoint: Map<EventListenerInterceptor.Point, EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext>>
         private val function: suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult
         
@@ -273,8 +274,8 @@ internal class CoreListenerManagerImpl internal constructor(
                 .mapValuesTo(listenerInterceptsPointMap) { (_, listenerInterceptsInCurrentPoint) ->
                     EventInterceptEntrance.eventListenerInterceptEntrance(listenerInterceptsInCurrentPoint)
                 }
-    
-    
+            
+            
             suspend fun runner(
                 listener: EventListener,
                 context: EventListenerProcessingContext,
@@ -287,7 +288,7 @@ internal class CoreListenerManagerImpl internal constructor(
                     EventListenerInterceptor.Point.AFTER_MATCH,
                     EventInterceptEntrance.eventListenerInterceptEntrance()
                 )
-    
+                
                 return defaultEntrance.doIntercept(context) { innerContext ->
                     if (listener.match(innerContext)) {
                         afterMatchEntrance.doIntercept(innerContext) { afterInnerContext ->
@@ -298,7 +299,7 @@ internal class CoreListenerManagerImpl internal constructor(
                     }
                 }
             }
-    
+            
             suspend fun asyncFunctionRunner(
                 listener: EventListener,
                 scope: CoroutineScope,
@@ -310,8 +311,8 @@ internal class CoreListenerManagerImpl internal constructor(
                 asyncDeferred.start()
                 return EventResult.async(asyncDeferred)
             }
-    
-    
+            
+            
             suspend fun suspendFunctionRunner(
                 listener: EventListener,
                 context: EventListenerProcessingContext,
@@ -347,8 +348,7 @@ internal class CoreListenerManagerImpl internal constructor(
 }
 
 
-
-private data class CoreEventProcessingResult(override val results: List<EventResult>) : EventProcessingResult
+private data class SimpleEventProcessingResult(override val results: List<EventResult>) : EventProcessingResult
 
 
 /**
@@ -372,10 +372,8 @@ private class CoreEventListenerProcessingContext(
 }
 
 
-
-
 @OptIn(ExperimentalSimbotApi::class)
-internal class CoreEventProcessingContext(
+internal class SimpleEventProcessingContext(
     override val event: Event,
     override val messagesSerializersModule: SerializersModule,
     private val globalScopeContext: GlobalScopeContext,
@@ -384,7 +382,9 @@ internal class CoreEventProcessingContext(
 ) : EventProcessingContext {
     
     private val _results = ArrayList<EventResult>(resultInitSize)
-    @Volatile private var resultView: ListView<EventResult>? = null
+    
+    @Volatile
+    private var resultView: ListView<EventResult>? = null
     
     override val results: List<EventResult> // = _results.view()
         get() {
@@ -408,7 +408,7 @@ internal class CoreEventProcessingContext(
                 if (::instantScope0.isInitialized) {
                     instantScope0
                 } else {
-                    CoreEventProcessingContextResolver.InstantScopeContextImpl(
+                    SimpleEventProcessingContextResolver.InstantScopeContextImpl(
                         AttributeMutableMap(ConcurrentHashMap())
                     ).also {
                         instantScope0 = it
@@ -420,11 +420,8 @@ internal class CoreEventProcessingContext(
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T? {
         return when (attribute) {
-            @Suppress("DEPRECATION")
-            EventProcessingContext.Scope.Instant,
-            -> instantScope as T
-            EventProcessingContext.Scope.Global -> globalScopeContext as T
-            EventProcessingContext.Scope.ContinuousSession -> continuousSessionContext as T
+            SimpleScope.Global -> globalScopeContext as T
+            SimpleScope.ContinuousSession -> continuousSessionContext as T
             else -> instantScope[attribute]
         }
     }
@@ -435,11 +432,8 @@ internal class CoreEventProcessingContext(
     
     override fun <T : Any> contains(attribute: Attribute<T>): Boolean {
         return when (attribute) {
-            @Suppress("DEPRECATION")
-            EventProcessingContext.Scope.Instant,
-            -> true
-            EventProcessingContext.Scope.Global -> true
-            EventProcessingContext.Scope.ContinuousSession -> true
+            SimpleScope.Global -> true
+            SimpleScope.ContinuousSession -> true
             else -> attribute in instantScope
         }
     }

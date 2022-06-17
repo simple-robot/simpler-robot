@@ -22,6 +22,7 @@ import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.listener.ParameterBinderResult
 import love.forte.simbot.Attribute
 import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.core.scope.SimpleScope
 import love.forte.simbot.event.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
@@ -65,13 +66,13 @@ public object EventParameterBinderFactory : ParameterBinderFactory {
             
             classifier.isSubclassOf(GlobalScopeContext::class) -> {
                 return ParameterBinderResult.normal(attributeBinder(nullable,
-                    EventProcessingContext.Scope.Global) { "Scope [Global] in current context is null." })
+                    SimpleScope.Global) { "SimpleScope [Global] in current context is null." })
             }
             
             
             classifier.isSubclassOf(ContinuousSessionContext::class) -> {
                 return ParameterBinderResult.normal(attributeBinder(nullable,
-                    EventProcessingContext.Scope.ContinuousSession) { "Scope [ContinuousSession] in current context is null." })
+                    SimpleScope.ContinuousSession) { "SimpleScope [ContinuousSession] in current context is null." })
             }
             
             

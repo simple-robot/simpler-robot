@@ -16,7 +16,6 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.FragileSimbotApi
 import love.forte.simbot.ID
 
@@ -28,12 +27,12 @@ import love.forte.simbot.ID
  * @author ForteScarlet
  */
 public interface EventListenerContainer {
-
+    
     /**
      * 通过一个ID得到一个当前监听函数下的对应函数。
      */
     public operator fun get(id: ID): EventListener?
-
+    
 }
 
 
@@ -41,7 +40,7 @@ public interface EventListenerContainer {
  * 监听函数注册器
  */
 public interface EventListenerRegistrar {
-
+    
     /**
      * 注册一个监听函数。
      *
@@ -65,7 +64,7 @@ public interface EventListenerRegistrar {
      */
     @FragileSimbotApi
     public fun register(listener: EventListener)
-
+    
 }
 
 
@@ -75,36 +74,4 @@ public interface EventListenerRegistrar {
  *
  */
 public interface EventListenerManager :
-    EventProcessor, EventListenerContainer, EventListenerRegistrar {
-
-    /**
-     * 获取当前监听函数管理器中所使用的全局作用域的context。
-     * 其获取结果相当于在监听函数中使用 [EventProcessingContext.Scope.Global] 进行获取而得到的作用域。
-     *
-     * 全局作用域上下文与每一个独立的事件处理流程无关，理应能够直接通过当前 [EventListenerManager] 进行获取。
-     *
-     */
-    @ExperimentalSimbotApi
-    public val globalScopeContext: ScopeContext
-
-
-    /**
-     * 获取当前监听函数管理器中所使用的持续会话context。
-     * 其获取结果相当于在监听函数中使用 [EventProcessingContext.Scope.ContinuousSession] 进行获取而得到的作用域。
-     *
-     * 持续会话上下文与每一个独立的事件流程无关，其生命周期应该与当前监听函数管理器有关，理应能够直接通过当前 [EventListenerManager] 进行获取以便在监听流程之外进行会话触发。
-     *
-     * ```kotlin
-     * fun process(listenerManager: EventListenerManager) {
-     *      // 取得一个provider
-     *      val provider = listenerManager.continuousSessionContext.getProvider<Int>(123.ID)
-     *      provider?.push(666)
-     * }
-     * ```
-     *
-     */
-    @ExperimentalSimbotApi
-    public val continuousSessionContext: ContinuousSessionContext
-
-
-}
+    EventProcessor, EventListenerContainer, EventListenerRegistrar

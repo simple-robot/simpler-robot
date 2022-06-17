@@ -18,7 +18,9 @@ package love.forte.simbot.core.event
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
-import love.forte.simbot.*
+import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.LoggerFactory
+import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Future
@@ -28,7 +30,7 @@ import kotlin.coroutines.resumeWithException
 @ExperimentalSimbotApi
 internal class SimpleContinuousSessionContext(
     private val coroutineScope: CoroutineScope,
-    private val manager: ResumedListenerManager,
+    private val manager: ContinuousSessionListenerManager,
 ) : ContinuousSessionContext() {
     
     companion object {
@@ -37,44 +39,46 @@ internal class SimpleContinuousSessionContext(
     
     private fun <T> waiting0(
         continuation: CancellableContinuation<T>,
-        id: ID,
-        listener: ResumeListener<T>,
+        id: String,
+        listener: ContinuousSessionSelector<T>,
     ) {
         val deferred = CompletableDeferred<T>(coroutineScope.coroutineContext[Job])
         val receiver = deferred.asReceiver(continuation)
         val provider = continuation.asProvider(deferred)
         
-        manager.set(id, listener, deferred, provider, receiver)
+        manager[id, deferred, provider, receiver] = listener
         
         continuation.invokeOnCancellation {
             val cause = if (it == null) null
             else it as? CancellationException ?: CancellationException(it.localizedMessage, it)
-            logger.debug("Deferred cancel by cause: {}", cause.toString())
+            if (logger.isDebugEnabled) {
+                logger.debug("ContinuousSessionSelector continuation cancelled by cause: {}", cause.toString())
+            }
             deferred.cancel(cause)
         }
     }
     
-    override suspend fun <T> waiting(id: ID, listener: ResumeListener<T>): T {
+    override suspend fun <T> waiting(id: String, listener: ContinuousSessionSelector<T>): T {
         return suspendCancellableCoroutine { c ->
             waiting0(c, id, listener)
         }
     }
     
     
-    override fun <T> getProvider(id: ID): ContinuousSessionProvider<T>? {
+    override fun <T> getProvider(id: String): ContinuousSessionProvider<T>? {
         return manager.getProvider(id)
     }
     
-    override fun <T> getReceiver(id: ID): ContinuousSessionReceiver<T>? {
+    override fun <T> getReceiver(id: String): ContinuousSessionReceiver<T>? {
         return manager.getReceiver(id)
     }
 }
 
-internal fun <T> Deferred<T>.asReceiver(continuation: CancellableContinuation<T>? = null): CoreContinuousSessionReceiver<T> =
-    CoreContinuousSessionReceiver(continuation, this)
+internal fun <T> Deferred<T>.asReceiver(continuation: CancellableContinuation<T>? = null): SimpleContinuousSessionReceiver<T> =
+    SimpleContinuousSessionReceiver(continuation, this)
 
 
-internal class CoreContinuousSessionReceiver<T>(
+internal class SimpleContinuousSessionReceiver<T>(
     private val continuation: CancellableContinuation<T>?,
     private val deferred: Deferred<T>,
 ) : ContinuousSessionReceiver<T> {
@@ -101,11 +105,11 @@ internal class CoreContinuousSessionReceiver<T>(
 }
 
 
-internal fun <T> CancellableContinuation<T>.asProvider(deferred: CompletableDeferred<T>): CoreContinuousSessionProvider<T> =
-    CoreContinuousSessionProvider(this, deferred)
+internal fun <T> CancellableContinuation<T>.asProvider(deferred: CompletableDeferred<T>): SimpleContinuousSessionProvider<T> =
+    SimpleContinuousSessionProvider(this, deferred)
 
 
-internal class CoreContinuousSessionProvider<T>(
+internal class SimpleContinuousSessionProvider<T>(
     private val continuation: CancellableContinuation<T>,
     private val deferred: CompletableDeferred<T>,
 ) : ContinuousSessionProvider<T> {
@@ -147,18 +151,21 @@ internal class CoreContinuousSessionProvider<T>(
         get() = completed.get() // continuation.isCompleted
 }
 
-
-internal data class WaitingListener<T>(
-    val listener: ResumeListener<T>,
+/**
+ * 持续会话监听函数。
+ */
+internal data class ContinuousSessionListener<T>(
+    val selector: ContinuousSessionSelector<T>,
     val listenerJob: Job,
-    val provider: CoreContinuousSessionProvider<T>,
-    val receiver: CoreContinuousSessionReceiver<T>,
+    val provider: SimpleContinuousSessionProvider<T>,
+    val receiver: SimpleContinuousSessionReceiver<T>,
 ) {
     suspend operator fun invoke(context: EventProcessingContext) {
+        // TODO 实现sessionType？
         if (!provider.isCompleted) {
             withContext(listenerJob) {
                 context.run {
-                    listener.run { invoke(provider) }
+                    selector.run { invoke(provider) }
                 }
             }
         }
@@ -170,63 +177,60 @@ internal data class WaitingListener<T>(
     }
 }
 
-internal class ResumedListenerManager {
+internal class ContinuousSessionListenerManager {
     companion object {
-        private val logger = LoggerFactory.getLogger(ResumedListenerManager::class)
+        private val logger = LoggerFactory.getLogger<ContinuousSessionListenerManager>()
     }
     
-    private val listeners = ConcurrentHashMap<String, WaitingListener<*>>()
+    private val listeners = ConcurrentHashMap<String, ContinuousSessionListener<*>>()
     
     /**
      * 会 cancel 被顶替的旧值。
      */
-    fun <T> set(
-        id: ID,
-        listener: ResumeListener<T>,
+    operator fun <T> set(
+        id: String,
         listenerJob: Job,
-        provider: CoreContinuousSessionProvider<T>,
-        receiver: CoreContinuousSessionReceiver<T>,
+        provider: SimpleContinuousSessionProvider<T>,
+        receiver: SimpleContinuousSessionReceiver<T>,
+        listener: ContinuousSessionSelector<T>,
     ) {
-        val cid = id.literal
-        val current = WaitingListener(listener, listenerJob, provider, receiver)
-        listeners.merge(cid, current) { old, now ->
-            logger.debug("Merge waiting listener with save id {}", cid)
-            old.cancel(SimbotIllegalStateException("Replaced by the same ID listener. id = $cid"))
+        val current = ContinuousSessionListener(listener, listenerJob, provider, receiver)
+        listeners.merge(id, current) { old, now ->
+            logger.debug("Merge waiting listener with save id {}", id)
+            old.cancel(SimbotIllegalStateException("Replaced by the same ID listener. id = $id"))
             now
         }
         
         listenerJob.invokeOnCompletion {
-            listeners.remove(cid)?.cancel()
-            logger.debug("Remove completed resume listener. id: {}", cid)
+            listeners.remove(id)?.cancel()
+            logger.debug("Remove completed resume listener. id: {}", id)
         }
     }
     
     @Suppress("UNCHECKED_CAST")
-    fun <T> getProvider(id: ID): ContinuousSessionProvider<T>? {
-        return listeners[id.literal]?.provider as? ContinuousSessionProvider<T>
+    fun <T> getProvider(id: String): ContinuousSessionProvider<T>? {
+        return listeners[id]?.provider as? ContinuousSessionProvider<T>
     }
     
     @Suppress("UNCHECKED_CAST")
-    fun <T> getReceiver(id: ID): ContinuousSessionReceiver<T>? {
-        return listeners[id.literal]?.receiver as? ContinuousSessionReceiver<T>
+    fun <T> getReceiver(id: String): ContinuousSessionReceiver<T>? {
+        return listeners[id]?.receiver as? ContinuousSessionReceiver<T>
     }
     
     fun isEmpty(): Boolean = listeners.isEmpty()
     
-    suspend fun process(context: CoreEventProcessingContext, scope: CoroutineScope) {
+    suspend fun process(context: SimpleEventProcessingContext) {
         listeners.forEach { (id, listener) ->
-            scope.launch {
-                try {
-                    logger.trace("Launch resumed listener: {} of id {} by event {}", listener, id, context.event)
-                    listener(context)
-                } catch (e: CancellationException) {
-                    if (logger.isDebugEnabled) {
-                        logger.debug("ResumeListener(id=$id) invoke failed: ${e.localizedMessage}", e)
-                    }
-                } catch (e: Throwable) {
-                    if (logger.isErrorEnabled) {
-                        logger.error("ResumedListener(id=$id) invoke failed: ${e.localizedMessage}", e)
-                    }
+            try {
+                logger.trace("Launch resumed listener: {} of id {} by event {}", listener, id, context.event)
+                listener(context)
+            } catch (e: CancellationException) {
+                if (logger.isDebugEnabled) {
+                    logger.debug("ResumeListener(id=$id) invoke failed: ${e.localizedMessage}", e)
+                }
+            } catch (e: Throwable) {
+                if (logger.isErrorEnabled) {
+                    logger.error("ResumedListener(id=$id) invoke failed: ${e.localizedMessage}", e)
                 }
             }
         }

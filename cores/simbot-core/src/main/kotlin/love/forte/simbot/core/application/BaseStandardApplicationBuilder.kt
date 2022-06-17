@@ -20,36 +20,38 @@ import love.forte.simbot.application.Application
 import love.forte.simbot.application.ApplicationBuilder
 import love.forte.simbot.application.ApplicationBuilderDsl
 import love.forte.simbot.application.ApplicationConfiguration
-import love.forte.simbot.core.event.CoreListenerManager
-import love.forte.simbot.core.event.CoreListenerManagerConfiguration
-import love.forte.simbot.core.event.coreListenerManager
+import love.forte.simbot.core.event.SimpleEventListenerManager
+import love.forte.simbot.core.event.SimpleListenerManagerConfiguration
+import love.forte.simbot.core.event.simpleListenerManager
 
+// public interface CoreApplicationBuilder<A : Application>
 
 /**
- * 约定使用 [CoreListenerManager] 作为事件处理器的 [ApplicationBuilder] 类型。
+ * 约定使用 [SimpleEventListenerManager] 作为事件处理器的 [ApplicationBuilder] 类型。
  */
-public interface CoreApplicationBuilder<A : Application> : CoreEventProcessableApplicationBuilder<A> {
+public interface StandardApplicationBuilder<A : Application> : EventProcessableApplicationBuilder<A> {
     
     /**
      * 配置当前的构建器内的事件处理器。
      */
     @ApplicationBuilderDsl
-    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
+    override fun eventProcessor(configurator: SimpleListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
 }
 
 
 /**
  *
- * 提供一个使用 [CoreListenerManager] 作为内部事件处理器的 [ApplicationBuilder] 抽象类。
+ * 提供一个使用 [SimpleEventListenerManager] 作为内部事件处理器的 [ApplicationBuilder] 抽象类。
  *
  * @author ForteScarlet
  */
-public abstract class BaseCoreApplicationBuilder<A : Application> : BaseApplicationBuilder<A>(),
-    CoreApplicationBuilder<A> {
-    // protected open var listenerManagerConfigurations: ConcurrentLinkedQueue<CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit> = ConcurrentLinkedQueue()
-    private var listenerManagerConfig: (CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) = {}
+public abstract class BaseStandardApplicationBuilder<A : Application> : BaseApplicationBuilder<A>(),
+    StandardApplicationBuilder<A> {
     
-    protected open fun addListenerManagerConfig(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
+    private var listenerManagerConfig: (SimpleListenerManagerConfiguration.(environment: Application.Environment) -> Unit) =
+        {}
+    
+    protected open fun addListenerManagerConfig(configurator: SimpleListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
         listenerManagerConfig.also { old ->
             listenerManagerConfig = {
                 old(it)
@@ -61,22 +63,22 @@ public abstract class BaseCoreApplicationBuilder<A : Application> : BaseApplicat
     /**
      * 配置当前的构建器内的事件处理器。
      */
-    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
+    override fun eventProcessor(configurator: SimpleListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
         addListenerManagerConfig(configurator)
     }
     
     /**
-     * 构建并得到目标 [CoreListenerManager].
+     * 构建并得到目标 [SimpleEventListenerManager].
      */
     protected open fun buildListenerManager(
         appConfig: ApplicationConfiguration,
         environment: Application.Environment,
-    ): CoreListenerManager {
-        val initial = CoreListenerManagerConfiguration {
+    ): SimpleEventListenerManager {
+        val initial = SimpleListenerManagerConfiguration {
             coroutineContext = appConfig.coroutineContext
         }
         
-        return coreListenerManager(initial = initial, block = {
+        return simpleListenerManager(initial = initial, block = fun SimpleListenerManagerConfiguration.() {
             listenerManagerConfig(environment)
         })
     }
