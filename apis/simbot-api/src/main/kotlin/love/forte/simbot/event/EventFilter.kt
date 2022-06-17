@@ -21,6 +21,7 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.BlockingFilter
 import love.forte.simbot.Filter
 import love.forte.simbot.PriorityConstant
+import love.forte.simbot.utils.runWithInterruptible
 
 /**
  * 事件过滤器。
@@ -33,6 +34,8 @@ import love.forte.simbot.PriorityConstant
  * 对于此接口的直接运用，常见的为在匹配失败的时候直接返回一个 [无效响应][EventResult.Invalid]。
  *
  * 过滤器存在 [优先级][priority], 默认情况下的优先级为 [PriorityConstant.NORMAL].
+ *
+ * 对于不支持挂起函数的实现者，可参考 [BlockingEventFilter]。
  *
  * @author ForteScarlet
  */
@@ -73,6 +76,6 @@ public interface BlockingEventFilter : EventFilter, BlockingFilter<EventListener
      */
     @JvmSynthetic
     @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
-    override suspend fun test(context: EventListenerProcessingContext): Boolean = testBlocking()
+    override suspend fun test(context: EventListenerProcessingContext): Boolean = runWithInterruptible { testBlocking() }
     
 }
