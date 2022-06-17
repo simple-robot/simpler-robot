@@ -12,7 +12,7 @@ internal annotation class EventInterceptorsGeneratorDSL
 
 
 /**
- * 事件拦截器的生成/构建器，用于 [CoreListenerManagerConfiguration] 中。
+ * 事件拦截器的生成/构建器，用于 [SimpleListenerManagerConfiguration] 中。
  *
  * ### 事件流程拦截器
  * 你可以通过 [processingIntercept] 等相关函数提供针对整个事件流程的拦截器.
@@ -141,7 +141,7 @@ public class EventInterceptorsGenerator @InternalSimbotApi constructor() {
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult,
     ): EventInterceptorsGenerator = also {
-        coreProcessingInterceptor(priority, interceptFunction).also {
+        simpleProcessingInterceptor(priority, interceptFunction).also {
             addPro(id, it)
         }
     }
@@ -190,7 +190,7 @@ public class EventInterceptorsGenerator @InternalSimbotApi constructor() {
         priority: Int = PriorityConstant.NORMAL,
         interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult,
     ): EventInterceptorsGenerator = also {
-        listenerIntercept(id, coreListenerInterceptor(point, priority, interceptFunction))
+        listenerIntercept(id, simpleListenerInterceptor(point, priority, interceptFunction))
     }
     
     /**
@@ -221,17 +221,17 @@ public class EventInterceptorsGenerator @InternalSimbotApi constructor() {
 
 
 /**
- * 针对 [CoreListenerManagerConfiguration.addProcessingInterceptors] 的扩展函数。
+ * 针对 [SimpleListenerManagerConfiguration.addProcessingInterceptors] 的扩展函数。
  * ```
  * addProcessingInterceptors(
- *    randomID() to coreProcessingInterceptor { ... },
- *    randomID() to coreProcessingInterceptor { ... },
- *    randomID() to coreProcessingInterceptor { ... },
- *    randomID() to coreProcessingInterceptor { ... },
+ *    randomID() to simpleProcessingInterceptor { ... },
+ *    randomID() to simpleProcessingInterceptor { ... },
+ *    randomID() to simpleProcessingInterceptor { ... },
+ *    randomID() to simpleProcessingInterceptor { ... },
  * )
  * ```
  */
-public fun CoreListenerManagerConfiguration.addProcessingInterceptors(vararg interceptors: Pair<ID, EventProcessingInterceptor>) {
+public fun SimpleListenerManagerConfiguration.addProcessingInterceptors(vararg interceptors: Pair<ID, EventProcessingInterceptor>) {
     if (interceptors.isNotEmpty()) {
         addProcessingInterceptors(interceptors.toMap())
     }
@@ -239,17 +239,17 @@ public fun CoreListenerManagerConfiguration.addProcessingInterceptors(vararg int
 
 
 /**
- * 针对 [CoreListenerManagerConfiguration.addListenerInterceptors] 的扩展函数。
+ * 针对 [SimpleListenerManagerConfiguration.addListenerInterceptors] 的扩展函数。
  * ```
  * addListenerInterceptors(
- *    randomID() to coreListenerInterceptor { ... },
- *    randomID() to coreListenerInterceptor { ... },
- *    randomID() to coreListenerInterceptor { ... },
- *    randomID() to coreListenerInterceptor { ... },
+ *    randomID() to simpleListenerInterceptor { ... },
+ *    randomID() to simpleListenerInterceptor { ... },
+ *    randomID() to simpleListenerInterceptor { ... },
+ *    randomID() to simpleListenerInterceptor { ... },
  * )
  * ```
  */
-public fun CoreListenerManagerConfiguration.addListenerInterceptors(vararg interceptors: Pair<ID, EventListenerInterceptor>) {
+public fun SimpleListenerManagerConfiguration.addListenerInterceptors(vararg interceptors: Pair<ID, EventListenerInterceptor>) {
     if (interceptors.isNotEmpty()) {
         addListenerInterceptors(interceptors.toMap())
     }

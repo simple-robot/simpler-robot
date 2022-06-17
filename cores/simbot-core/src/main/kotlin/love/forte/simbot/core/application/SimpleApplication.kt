@@ -21,7 +21,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.application.*
-import love.forte.simbot.core.event.CoreListenerManager
+import love.forte.simbot.core.event.SimpleListenerManager
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
@@ -86,9 +86,9 @@ public open class SimpleApplicationConfiguration : ApplicationConfiguration()
 public interface SimpleApplication : Application {
     
     /**
-     * [SimpleApplication] 使用 [CoreListenerManager] 作为事件管理器。
+     * [SimpleApplication] 使用 [SimpleListenerManager] 作为事件管理器。
      */
-    override val eventListenerManager: CoreListenerManager
+    override val eventListenerManager: SimpleListenerManager
     
     
     /**
@@ -101,7 +101,8 @@ public interface SimpleApplication : Application {
 /**
  * 用于构建 [SimpleApplication] 的构建器类型。
  */
-public interface SimpleApplicationBuilder : CoreApplicationBuilder<SimpleApplication>
+public interface SimpleApplicationBuilder :
+    StandardApplicationBuilder<SimpleApplication>
 
 
 /**
@@ -110,7 +111,7 @@ public interface SimpleApplicationBuilder : CoreApplicationBuilder<SimpleApplica
 private class SimpleApplicationImpl(
     override val configuration: ApplicationConfiguration,
     override val environment: SimpleEnvironment,
-    override val eventListenerManager: CoreListenerManager,
+    override val eventListenerManager: SimpleListenerManager,
     providerList: List<EventProvider>,
 ) : SimpleApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
@@ -131,7 +132,7 @@ private class SimpleApplicationImpl(
 /**
  * [SimpleApplication]所使用的构建器。
  */
-private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseCoreApplicationBuilder<SimpleApplication>() {
+private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseStandardApplicationBuilder<SimpleApplication>() {
     
     
     suspend fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {

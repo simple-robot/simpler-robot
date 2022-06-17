@@ -18,13 +18,25 @@ package love.forte.simbot.core.event
 
 
 /**
- * 构建一个 [CoreListenerManager].
+ * 构建一个 [SimpleListenerManager].
  *
- * 可以选择提供一个初始的 [CoreListenerManagerConfiguration]。
+ * 可以选择提供一个初始的 [SimpleListenerManagerConfiguration]。
  */
+@Deprecated("Just use simpleListenerManager", ReplaceWith("simpleListenerManager(initial, block)"))
 public inline fun coreListenerManager(
-    initial: CoreListenerManagerConfiguration = CoreListenerManagerConfiguration(),
-    block: CoreListenerManagerConfiguration.() -> Unit,
-): CoreListenerManager {
-    return CoreListenerManager.newInstance(initial.also(block))
+    initial: SimpleListenerManagerConfiguration = SimpleListenerManagerConfiguration(),
+    block: SimpleListenerManagerConfiguration.() -> Unit,
+): SimpleListenerManager = simpleListenerManager(initial, block)
+
+
+/**
+ * 构建一个 [SimpleListenerManager].
+ *
+ * 可以选择提供一个初始的 [SimpleListenerManagerConfiguration]。
+ */
+public inline fun simpleListenerManager(
+    initial: SimpleListenerManagerConfiguration = SimpleListenerManagerConfiguration(),
+    block: SimpleListenerManagerConfiguration.() -> Unit,
+): SimpleListenerManager {
+    return SimpleListenerManager.newInstance(initial.also(block))
 }

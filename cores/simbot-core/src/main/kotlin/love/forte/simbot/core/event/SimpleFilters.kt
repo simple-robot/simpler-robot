@@ -14,22 +14,37 @@
  *
  *
  */
-@file:JvmName("CoreFilterUtil")
+@file:JvmName("SimpleFilterUtil")
 
 package love.forte.simbot.core.event
 
-import love.forte.simbot.*
+import love.forte.simbot.Api4J
+import love.forte.simbot.PriorityConstant
 import love.forte.simbot.event.EventFilter
 import love.forte.simbot.event.EventListenerProcessingContext
 import love.forte.simbot.utils.runWithInterruptible
 import java.util.function.Predicate
 
+@Deprecated("Just use SimpleFilterUtil for java")
+public object CoreFilterUtil
+
 /**
  * 构建一个 [EventFilter].
  */
 @JvmSynthetic
-public fun coreFilter(priority: Int = PriorityConstant.NORMAL, tester: suspend (context: EventListenerProcessingContext) -> Boolean): EventFilter =
-    CoreFilter(priority, tester)
+public fun simpleFilter(
+    priority: Int = PriorityConstant.NORMAL,
+    tester: suspend (context: EventListenerProcessingContext) -> Boolean,
+): EventFilter =
+    SimpleFilter(priority, tester)
+
+
+@Deprecated("Just use simpleFilter", ReplaceWith("simpleFilter(priority, tester)"))
+public fun coreFilter(
+    priority: Int = PriorityConstant.NORMAL,
+    tester: suspend (context: EventListenerProcessingContext) -> Boolean,
+): EventFilter =
+    simpleFilter(priority, tester)
 
 
 /**
@@ -37,22 +52,26 @@ public fun coreFilter(priority: Int = PriorityConstant.NORMAL, tester: suspend (
  *
  * [tester] 会在 [runWithInterruptible] 中默认以 [kotlinx.coroutines.Dispatchers.IO] 作为调度器执行。
  *
- * @see coreFilter
+ * @see simpleFilter
  * @see EventFilter
  */
 @Api4J
 @JvmOverloads
-public fun blockingCoreFilter(priority: Int = PriorityConstant.NORMAL, tester: Predicate<EventListenerProcessingContext>): EventFilter =
-    coreFilter(priority) {
+@JvmName("simpleFilter")
+public fun blockingSimpleFilter(
+    priority: Int = PriorityConstant.NORMAL,
+    tester: Predicate<EventListenerProcessingContext>,
+): EventFilter =
+    simpleFilter(priority) {
         runWithInterruptible { tester.test(it) }
     }
 
 
-private class CoreFilter(
+private class SimpleFilter(
     override val priority: Int,
-    private val func: suspend (EventListenerProcessingContext) -> Boolean
+    private val func: suspend (EventListenerProcessingContext) -> Boolean,
 ) : EventFilter {
-
+    
     override suspend fun test(context: EventListenerProcessingContext): Boolean = func(context)
 }
 

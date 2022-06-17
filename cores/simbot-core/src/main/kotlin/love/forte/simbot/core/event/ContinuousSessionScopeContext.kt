@@ -72,11 +72,11 @@ internal class SimpleContinuousSessionContext(
     }
 }
 
-internal fun <T> Deferred<T>.asReceiver(continuation: CancellableContinuation<T>? = null): CoreContinuousSessionReceiver<T> =
-    CoreContinuousSessionReceiver(continuation, this)
+internal fun <T> Deferred<T>.asReceiver(continuation: CancellableContinuation<T>? = null): SimpleContinuousSessionReceiver<T> =
+    SimpleContinuousSessionReceiver(continuation, this)
 
 
-internal class CoreContinuousSessionReceiver<T>(
+internal class SimpleContinuousSessionReceiver<T>(
     private val continuation: CancellableContinuation<T>?,
     private val deferred: Deferred<T>,
 ) : ContinuousSessionReceiver<T> {
@@ -103,11 +103,11 @@ internal class CoreContinuousSessionReceiver<T>(
 }
 
 
-internal fun <T> CancellableContinuation<T>.asProvider(deferred: CompletableDeferred<T>): CoreContinuousSessionProvider<T> =
-    CoreContinuousSessionProvider(this, deferred)
+internal fun <T> CancellableContinuation<T>.asProvider(deferred: CompletableDeferred<T>): SimpleContinuousSessionProvider<T> =
+    SimpleContinuousSessionProvider(this, deferred)
 
 
-internal class CoreContinuousSessionProvider<T>(
+internal class SimpleContinuousSessionProvider<T>(
     private val continuation: CancellableContinuation<T>,
     private val deferred: CompletableDeferred<T>,
 ) : ContinuousSessionProvider<T> {
@@ -155,8 +155,8 @@ internal class CoreContinuousSessionProvider<T>(
 internal data class ContinuousSessionListener<T>(
     val selector: ContinuousSessionSelector<T>,
     val listenerJob: Job,
-    val provider: CoreContinuousSessionProvider<T>,
-    val receiver: CoreContinuousSessionReceiver<T>,
+    val provider: SimpleContinuousSessionProvider<T>,
+    val receiver: SimpleContinuousSessionReceiver<T>,
 ) {
     suspend operator fun invoke(context: EventProcessingContext) {
         // TODO 实现sessionType？
@@ -189,8 +189,8 @@ internal class ResumedListenerManager {
         id: ID,
         listener: ContinuousSessionSelector<T>,
         listenerJob: Job,
-        provider: CoreContinuousSessionProvider<T>,
-        receiver: CoreContinuousSessionReceiver<T>,
+        provider: SimpleContinuousSessionProvider<T>,
+        receiver: SimpleContinuousSessionReceiver<T>,
     ) {
         val cid = id.literal
         val current = ContinuousSessionListener(listener, listenerJob, provider, receiver)
@@ -218,7 +218,7 @@ internal class ResumedListenerManager {
     
     fun isEmpty(): Boolean = listeners.isEmpty()
     
-    suspend fun process(context: CoreEventProcessingContext, scope: CoroutineScope) {
+    suspend fun process(context: SimpleEventProcessingContext, scope: CoroutineScope) {
         listeners.forEach { (id, listener) ->
             scope.launch {
                 try {

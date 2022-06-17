@@ -22,11 +22,11 @@ import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.application.*
 import love.forte.simbot.core.application.BaseApplication
 import love.forte.simbot.core.application.BaseApplicationBuilder
-import love.forte.simbot.core.application.CoreEventProcessableApplicationBuilder
+import love.forte.simbot.core.application.EventProcessableApplicationBuilder
 import love.forte.simbot.core.application.SimpleApplicationBuilder
-import love.forte.simbot.core.event.CoreListenerManager
-import love.forte.simbot.core.event.CoreListenerManagerConfiguration
-import love.forte.simbot.core.event.coreListenerManager
+import love.forte.simbot.core.event.SimpleListenerManager
+import love.forte.simbot.core.event.SimpleListenerManagerConfiguration
+import love.forte.simbot.core.event.simpleListenerManager
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
@@ -116,14 +116,14 @@ public interface SpringBootApplication : Application
  * 用于 [SpringBoot] 进行构建的Builder。行为与 [SimpleApplicationBuilder] 类似。
  */
 public interface SpringBootApplicationBuilder : ApplicationBuilder<SpringBootApplication>,
-    CoreEventProcessableApplicationBuilder<SpringBootApplication> {
+    EventProcessableApplicationBuilder<SpringBootApplication> {
     
     /**
      * 配置内部的 core listener manager.
      *
      */
     @ApplicationBuilderDsl
-    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
+    override fun eventProcessor(configurator: SimpleListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
 }
 
 
@@ -132,14 +132,14 @@ public interface SpringBootApplicationBuilder : ApplicationBuilder<SpringBootApp
 
 private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
     BaseApplicationBuilder<SpringBootApplication>() {
-    private var listenerManagerConfigurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit =
+    private var listenerManagerConfigurator: SimpleListenerManagerConfiguration.(environment: Application.Environment) -> Unit =
         {}
     
     
     /**
      * 配置内部的 listener manager.
      */
-    override fun eventProcessor(configurator: CoreListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
+    override fun eventProcessor(configurator: SimpleListenerManagerConfiguration.(environment: Application.Environment) -> Unit) {
         val old = listenerManagerConfigurator
         listenerManagerConfigurator = { env -> old(env); configurator(env) }
     }
@@ -147,13 +147,15 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
     private fun buildListenerManager(
         appConfig: SpringBootApplicationConfiguration,
         environment: Application.Environment,
-    ): CoreListenerManager {
-        val initial = CoreListenerManagerConfiguration {
+    ): SimpleListenerManager {
+        val initial = SimpleListenerManagerConfiguration {
             // TODO job?
             coroutineContext = appConfig.coroutineContext
         }
         
-        return coreListenerManager(initial = initial, block = { listenerManagerConfigurator(environment) })
+        return simpleListenerManager(initial = initial, block = fun SimpleListenerManagerConfiguration.() {
+            listenerManagerConfigurator(environment)
+        })
     }
     
     
@@ -218,7 +220,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
 private class SpringBootApplicationImpl(
     override val configuration: ApplicationConfiguration,
     override val environment: SpringBootEnvironment,
-    override val eventListenerManager: CoreListenerManager,
+    override val eventListenerManager: SimpleListenerManager,
     providerList: List<EventProvider>,
 ) : SpringBootApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
