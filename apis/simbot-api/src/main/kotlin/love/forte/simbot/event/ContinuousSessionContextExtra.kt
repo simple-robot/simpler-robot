@@ -65,7 +65,7 @@ public inline operator fun <T> ContinuousSessionContext.invoke(block: Continuous
 @ExperimentalSimbotApi
 public suspend fun <E : Event> ContinuousSessionContext.waitingForNext(
     k: Event.Key<E>,
-    matcher: EventMatcher<E> = EventMatcher,
+    matcher: ContinuousSessionEventMatcher<E> = ContinuousSessionEventMatcher,
 ): E {
     return waitingForNext(key = k, matcher = matcher)
 }
@@ -81,7 +81,7 @@ public suspend fun <E : Event> ContinuousSessionContext.waitingForNext(
 @ExperimentalSimbotApi
 public suspend fun <E : MessageEvent> ContinuousSessionContext.waitingForNextMessage(
     key: Event.Key<E>,
-    matcher: EventMatcher<E> = EventMatcher,
+    matcher: ContinuousSessionEventMatcher<E> = ContinuousSessionEventMatcher,
 ): MessageContent {
     return waitingForNext(randomIdStr(), key, matcher).messageContent
 }
