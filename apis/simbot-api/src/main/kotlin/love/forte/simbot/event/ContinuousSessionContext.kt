@@ -71,7 +71,7 @@ public interface BaseContinuousSessionContext {
     @JvmSynthetic
     public suspend fun <T> waiting(
         id: ID = randomID(),
-        listener: ResumeListener<T>,
+        listener: ContinuousSessionSelector<T>,
     ): T
     
 }
@@ -84,7 +84,7 @@ public interface BaseContinuousSessionContext {
  * **注: [ContinuousSessionContext] 尚处于实验阶段, 且目前对Java的友好度一般。如果是Java开发者目前请不要过度依赖此功能。**
  *
  * [waiting] 中注册的临时listener将会在所有监听函数被**触发前**, 依次作为一个各自独立的**异步任务**执行，
- * 并且因为 [ResumeListener.invoke] 不存在返回值, 因此所有的临时会话监听函数均**无法**对任何正常的监听流程产生影响，也**无法**参与到正常流程中的结果返回中。
+ * 并且因为 [ContinuousSessionSelector.invoke] 不存在返回值, 因此所有的临时会话监听函数均**无法**对任何正常的监听流程产生影响，也**无法**参与到正常流程中的结果返回中。
  *
  *
  * 在事件处理流程中，包含了临时监听函数的情况大概如下所示：
@@ -221,7 +221,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmSynthetic
     abstract override suspend fun <T> waiting(
         id: ID,
-        listener: ResumeListener<T>,
+        listener: ContinuousSessionSelector<T>,
     ): T
     
     
@@ -248,7 +248,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         id: ID = randomID(),
         timeout: Long = 0,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-        blockingListener: BlockingResumeListener<T>,
+        blockingListener: BlockingContinuousSessionSelector<T>,
     ): T {
         suspend fun doWait() = waiting(id, blockingListener.parse())
         
@@ -280,7 +280,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     public fun <T> waitBlocking(
         timeout: Long,
         timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-        blockingListener: BlockingResumeListener<T>,
+        blockingListener: BlockingContinuousSessionSelector<T>,
     ): T =
         waitBlocking(id = randomID(), timeout = timeout, timeUnit = timeUnit, blockingListener = blockingListener)
     

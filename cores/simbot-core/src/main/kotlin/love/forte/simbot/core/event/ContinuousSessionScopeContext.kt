@@ -38,7 +38,7 @@ internal class SimpleContinuousSessionContext(
     private fun <T> waiting0(
         continuation: CancellableContinuation<T>,
         id: ID,
-        listener: ResumeListener<T>,
+        listener: ContinuousSessionSelector<T>,
     ) {
         val deferred = CompletableDeferred<T>(coroutineScope.coroutineContext[Job])
         val receiver = deferred.asReceiver(continuation)
@@ -49,19 +49,21 @@ internal class SimpleContinuousSessionContext(
         continuation.invokeOnCancellation {
             val cause = if (it == null) null
             else it as? CancellationException ?: CancellationException(it.localizedMessage, it)
-            logger.debug("Deferred cancel by cause: {}", cause.toString())
+            if (logger.isDebugEnabled) {
+                logger.debug("ContinuousSessionSelector continuation cancelled by cause: {}", cause.toString())
+            }
             deferred.cancel(cause)
         }
     }
     
-    override suspend fun <T> waiting(id: ID, listener: ResumeListener<T>): T {
+    override suspend fun <T> waiting(id: ID, listener: ContinuousSessionSelector<T>): T {
         return suspendCancellableCoroutine { c ->
             waiting0(c, id, listener)
         }
     }
     
     
-    override fun <T> getProvider(id: ID): ContinuousSessionProvider<T>? {
+    overrideπ fun <T> getProvider(id: ID): ContinuousSessionProvider<T>? {
         return manager.getProvider(id)
     }
     
@@ -147,18 +149,21 @@ internal class CoreContinuousSessionProvider<T>(
         get() = completed.get() // continuation.isCompleted
 }
 
-
-internal data class WaitingListener<T>(
-    val listener: ResumeListener<T>,
+/**
+ * 持续会话监听函数。
+ */
+internal data class ContinuousSessionListener<T>(
+    val selector: ContinuousSessionSelector<T>,
     val listenerJob: Job,
     val provider: CoreContinuousSessionProvider<T>,
     val receiver: CoreContinuousSessionReceiver<T>,
 ) {
     suspend operator fun invoke(context: EventProcessingContext) {
+        // TODO 实现sessionType？
         if (!provider.isCompleted) {
             withContext(listenerJob) {
                 context.run {
-                    listener.run { invoke(provider) }
+                    selector.run { invoke(provider) }
                 }
             }
         }
@@ -175,20 +180,20 @@ internal class ResumedListenerManager {
         private val logger = LoggerFactory.getLogger(ResumedListenerManager::class)
     }
     
-    private val listeners = ConcurrentHashMap<String, WaitingListener<*>>()
+    private val listeners = ConcurrentHashMap<String, ContinuousSessionListener<*>>()
     
     /**
      * 会 cancel 被顶替的旧值。
      */
     fun <T> set(
         id: ID,
-        listener: ResumeListener<T>,
+        listener: ContinuousSessionSelector<T>,
         listenerJob: Job,
         provider: CoreContinuousSessionProvider<T>,
         receiver: CoreContinuousSessionReceiver<T>,
     ) {
         val cid = id.literal
-        val current = WaitingListener(listener, listenerJob, provider, receiver)
+        val current = ContinuousSessionListener(listener, listenerJob, provider, receiver)
         listeners.merge(cid, current) { old, now ->
             logger.debug("Merge waiting listener with save id {}", cid)
             old.cancel(SimbotIllegalStateException("Replaced by the same ID listener. id = $cid"))

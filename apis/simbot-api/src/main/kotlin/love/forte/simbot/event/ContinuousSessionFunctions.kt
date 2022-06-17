@@ -26,22 +26,22 @@ import love.forte.simbot.utils.runWithInterruptible
  *
  * 相当于函数 `EventProcessingContext.(ContinuousSessionProvider<T>) -> Unit`。
  *
- * 对于Java使用者可以考虑使用 [BlockingResumeListener]。
+ * 对于Java使用者可以考虑使用 [BlockingContinuousSessionSelector]。
  *
- * @see BlockingResumeListener
+ * @see BlockingContinuousSessionSelector
  */
-public fun interface ResumeListener<T> {
+public fun interface ContinuousSessionSelector<T> {
     public suspend operator fun EventProcessingContext.invoke(provider: ContinuousSessionProvider<T>)
 }
 
 /**
- * 阻塞的 [ResumeListener].
+ * 阻塞的 [ContinuousSessionSelector].
  */
 @Api4J
-public fun interface BlockingResumeListener<T> {
+public fun interface BlockingContinuousSessionSelector<T> {
     
     /**
-     * 执行一个含义等同于 [ResumeListener.invoke] 的阻塞函数。
+     * 执行一个含义等同于 [ContinuousSessionSelector.invoke] 的阻塞函数。
      *
      * @throws CancellationException 执行被终止
      */
@@ -50,8 +50,8 @@ public fun interface BlockingResumeListener<T> {
 
 
 @OptIn(Api4J::class)
-internal fun <T> BlockingResumeListener<T>.parse(): ResumeListener<T> =
-    ResumeListener { provider -> runWithInterruptible { this@parse(this, provider) } }
+internal fun <T> BlockingContinuousSessionSelector<T>.parse(): ContinuousSessionSelector<T> =
+    ContinuousSessionSelector { provider -> runWithInterruptible { this@parse(this, provider) } }
 // endregion
 
 // region event matcher
