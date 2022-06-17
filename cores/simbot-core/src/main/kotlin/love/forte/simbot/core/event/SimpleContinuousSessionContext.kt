@@ -30,7 +30,7 @@ import kotlin.coroutines.resumeWithException
 @ExperimentalSimbotApi
 internal class SimpleContinuousSessionContext(
     private val coroutineScope: CoroutineScope,
-    private val manager: ResumedListenerManager,
+    private val manager: ContinuousSessionListenerManager,
 ) : ContinuousSessionContext() {
     
     companion object {
@@ -46,7 +46,7 @@ internal class SimpleContinuousSessionContext(
         val receiver = deferred.asReceiver(continuation)
         val provider = continuation.asProvider(deferred)
         
-        manager.set(id, listener, deferred, provider, receiver)
+        manager[id, deferred, provider, receiver] = listener
         
         continuation.invokeOnCancellation {
             val cause = if (it == null) null
@@ -177,9 +177,9 @@ internal data class ContinuousSessionListener<T>(
     }
 }
 
-internal class ResumedListenerManager {
+internal class ContinuousSessionListenerManager {
     companion object {
-        private val logger = LoggerFactory.getLogger(ResumedListenerManager::class)
+        private val logger = LoggerFactory.getLogger<ContinuousSessionListenerManager>()
     }
     
     private val listeners = ConcurrentHashMap<String, ContinuousSessionListener<*>>()
@@ -187,12 +187,12 @@ internal class ResumedListenerManager {
     /**
      * 会 cancel 被顶替的旧值。
      */
-    fun <T> set(
+    operator fun <T> set(
         id: String,
-        listener: ContinuousSessionSelector<T>,
         listenerJob: Job,
         provider: SimpleContinuousSessionProvider<T>,
         receiver: SimpleContinuousSessionReceiver<T>,
+        listener: ContinuousSessionSelector<T>,
     ) {
         val current = ContinuousSessionListener(listener, listenerJob, provider, receiver)
         listeners.merge(id, current) { old, now ->
@@ -219,20 +219,18 @@ internal class ResumedListenerManager {
     
     fun isEmpty(): Boolean = listeners.isEmpty()
     
-    suspend fun process(context: SimpleEventProcessingContext, scope: CoroutineScope) {
+    suspend fun process(context: SimpleEventProcessingContext) {
         listeners.forEach { (id, listener) ->
-            scope.launch {
-                try {
-                    logger.trace("Launch resumed listener: {} of id {} by event {}", listener, id, context.event)
-                    listener(context)
-                } catch (e: CancellationException) {
-                    if (logger.isDebugEnabled) {
-                        logger.debug("ResumeListener(id=$id) invoke failed: ${e.localizedMessage}", e)
-                    }
-                } catch (e: Throwable) {
-                    if (logger.isErrorEnabled) {
-                        logger.error("ResumedListener(id=$id) invoke failed: ${e.localizedMessage}", e)
-                    }
+            try {
+                logger.trace("Launch resumed listener: {} of id {} by event {}", listener, id, context.event)
+                listener(context)
+            } catch (e: CancellationException) {
+                if (logger.isDebugEnabled) {
+                    logger.debug("ResumeListener(id=$id) invoke failed: ${e.localizedMessage}", e)
+                }
+            } catch (e: Throwable) {
+                if (logger.isErrorEnabled) {
+                    logger.error("ResumedListener(id=$id) invoke failed: ${e.localizedMessage}", e)
                 }
             }
         }

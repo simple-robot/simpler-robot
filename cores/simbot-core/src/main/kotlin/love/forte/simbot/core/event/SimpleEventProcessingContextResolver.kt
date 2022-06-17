@@ -42,13 +42,14 @@ import java.util.concurrent.ConcurrentHashMap
 internal class SimpleEventProcessingContextResolver(
     private val coroutineScope: CoroutineScope,
 ) : EventProcessingContextResolver<SimpleEventProcessingContext> {
-    private val resumedListenerManager = ResumedListenerManager()
+    private val continuousSessionListenerManager = ContinuousSessionListenerManager()
     
     @ExperimentalSimbotApi
     override val globalContext = GlobalScopeContextImpl()
     
     @ExperimentalSimbotApi
-    override val continuousSessionContext = SimpleContinuousSessionContext(coroutineScope, resumedListenerManager)
+    override val continuousSessionContext =
+        SimpleContinuousSessionContext(coroutineScope, continuousSessionListenerManager)
     
     
     internal class GlobalScopeContextImpl : GlobalScopeContext,
@@ -73,7 +74,7 @@ internal class SimpleEventProcessingContextResolver(
         )
         
         coroutineScope.launch {
-            resumedListenerManager.process(context, this)
+            continuousSessionListenerManager.process(context)
         }
         
         return context
@@ -98,7 +99,7 @@ internal class SimpleEventProcessingContextResolver(
      * 只要存在任意会话监听函数，则都需要进行监听事件推送。
      */
     override fun isProcessable(eventKey: Event.Key<*>): Boolean {
-        return !resumedListenerManager.isEmpty()
+        return !continuousSessionListenerManager.isEmpty()
     }
     
     private companion object {
