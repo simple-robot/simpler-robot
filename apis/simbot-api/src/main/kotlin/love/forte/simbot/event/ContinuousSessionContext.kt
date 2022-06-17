@@ -84,11 +84,8 @@ public interface BaseContinuousSessionContext {
  *
  * 持续会话的作用域, 通过此作用域在监听函数监听过程中进行会话嵌套。
  *
- * **注: [ContinuousSessionContext] 尚处于实验阶段, 且目前对Java的友好度一般。如果是Java开发者目前请不要过度依赖此功能。**
- *
- * [waiting] 中注册的临时listener将会在所有监听函数被**触发前**, 依次作为一个各自独立的**异步任务**执行，
+ * [waiting] 中注册的临时listener将会在所有监听函数被**触发前**, 整体性的作为一个独立的**异步任务**执行，
  * 并且因为 [ContinuousSessionSelector.invoke] 不存在返回值, 因此所有的临时会话监听函数均**无法**对任何正常的监听流程产生影响，也**无法**参与到正常流程中的结果返回中。
- *
  *
  * 在事件处理流程中，包含了临时监听函数的情况大概如下所示：
  * ```
@@ -103,6 +100,26 @@ public interface BaseContinuousSessionContext {
  * ```
  *
  * ⚠ ：这种行为未来可能会发生变更。
+ *
+ * ## 仅获取
+ * 对于持续会话的使用，你应该尽可能的避免在 [ContinuousSessionSelector] 中执行**逻辑** ————
+ * 你应当在 [ContinuousSessionSelector] 更多的做**选择与获取**，而不是做**逻辑处理**。
+ *
+ * 如下示例：
+ *
+ * ```kotlin
+ * val value = session.waitingFor(FooEvent) { provider ->
+ *    if (... && ... && ...) {
+ *        provider.push(...)
+ *    }
+ * }
+ *
+ * // 逻辑处理
+ * useValue(value)
+ * ```
+ *
+ * 你应当通过持续会话来**获取**值，然后在你的监听主流程中进行业务逻辑。
+ *
  *
  * ## provider & receiver
  *
