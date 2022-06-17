@@ -36,45 +36,51 @@ import kotlin.coroutines.CoroutineContext
  */
 public interface EventProcessingContext : CoroutineContext.Element, InstantScopeContext {
     public companion object Key : CoroutineContext.Key<EventProcessingContext>
+    
     override val key: CoroutineContext.Key<*> get() = Key
-
-
+    
+    
     /**
      * 本次监听流程中的事件主题。
      */
     public val event: Event
-
+    
     /**
      * 已经执行过的所有监听函数的结果。
      *
      * 此列表仅由事件处理器内部操作，是一个对外不可变视图。
      */
     public val results: @UnmodifiableView List<EventResult>
-
-
+    
+    
     /**
      * 当前事件所处环境中所能够提供的消息序列化模块信息。
      */
     public val messagesSerializersModule: SerializersModule
-
-
+    
+    
     /**
      * 根据一个 [Attribute] 得到一个属性。
      *
-     * 其中，除了 [Scope.Global] 和 [Scope.ContinuousSession] 以外的所有内容都是**瞬时的**, 只会存在于当前上下文。
+     * 其中，除了具有特殊规则的属性
+     * （ 例如 [SimpleScope][love.forte.simbot.core.scope.SimpleScope] 中的部分作用域属性 ）
+     * 以外的所有内容都是**瞬时的**, 只会存在于当前上下文。
      *
      */
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T?
-
-
-
-
+    
+    
     /**
      * 事件流程上下文的部分作用域。 [Scope] 中的所有作用域应该按照约定由 [EventProcessingContext] 的产生者进行实现与提供。
      *
      * 通过 [getAttribute] 获取对应作用域结果。
      *
+     * _Deprecated: Scope将作为核心模块（`simbot-core`）的SimpleApplication特性，不再属于api模块中的标准类型。_
      */
+    @Deprecated(
+        "Just use love.forte.simbot.core.scope.SimpleScope",
+        ReplaceWith("SimpleScope", "love.forte.simbot.core.scope.SimpleScope")
+    )
     public object Scope {
         /**
          * 全局作用域。 一个 [ScopeContext], 此作用域下的内容应当保持.
@@ -82,23 +88,24 @@ public interface EventProcessingContext : CoroutineContext.Element, InstantScope
          */
         @JvmField
         public val Global: Attribute<ScopeContext> = attribute("context.scope.global")
-
+        
         /**
-         * 瞬时作用域，每一次的事件处理流程都是一个新的 [ScopeContext].
+         * 无效属性
          */
         @JvmField
-        @Deprecated("Just use EventProcessingContext")
+        @Deprecated("Just use EventProcessingContext itself", level = DeprecationLevel.ERROR)
         public val Instant: Attribute<ScopeContext> = attribute("context.scope.instant")
-
-
+        
+        
         /**
          * 持续会话作用域. 可以通过持续会话作用域来达成监听函数之间的信息通讯的目的。
          */
         @JvmField
         @ExperimentalSimbotApi
-        public val ContinuousSession: Attribute<ContinuousSessionContext> = attribute("context.scope.continuous.session")
+        public val ContinuousSession: Attribute<ContinuousSessionContext> =
+            attribute("context.scope.continuous.session")
     }
-
+    
 }
 
 
@@ -120,7 +127,6 @@ public interface GlobalScopeContext : ScopeContext
 public interface InstantScopeContext : ScopeContext
 
 
-
 /**
  *
  * 每一个 [EventListener] 在事件处理流程中所对应的上下文类型。
@@ -133,12 +139,12 @@ public interface EventListenerProcessingContext : EventProcessingContext {
     override val event: Event
     override val results: List<EventResult>
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T?
-
+    
     /**
      * 当前（将要）被执行的监听函数。
      */
     public val listener: EventListener
-
+    
     /**
      * 当前监听函数的主要文本内容，一般可用于在拦截器、过滤器、监听函数相互组合时进行一些过滤内容匹配。
      *
@@ -147,5 +153,5 @@ public interface EventListenerProcessingContext : EventProcessingContext {
      *
      */
     public var textContent: String?
-
+    
 }

@@ -4,6 +4,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
+import love.forte.simbot.core.scope.SimpleScope
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.utils.ListView
@@ -15,9 +16,9 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
-internal class SimpleListenerManagerImpl internal constructor(
+internal class SimpleEventListenerManagerImpl internal constructor(
     configuration: SimpleListenerManagerConfiguration,
-) : SimpleListenerManager {
+) : SimpleEventListenerManager {
     private companion object {
         private val counter: AtomicInteger = AtomicInteger(0)
     }
@@ -198,14 +199,14 @@ internal class SimpleListenerManagerImpl internal constructor(
                         } else {
                             handleResult.getOrNull()!!
                         }
-                
+                        
                         // append result
                         val type = appendResult(context, result)
                         if (type == ListenerInvokeType.TRUNCATED) {
                             break
                         }
                     }
-            
+                    
                     // resolve to processing result
                     SimpleEventProcessingResult(context.results)
                 }
@@ -259,7 +260,7 @@ internal class SimpleListenerManagerImpl internal constructor(
         val listener: EventListener,
     ) : suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult {
         val isAsync = listener.isAsync
-    
+        
         // private val listenerInterceptEntranceWithPoint: Map<EventListenerInterceptor.Point, EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext>>
         private val function: suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult
         
@@ -273,8 +274,8 @@ internal class SimpleListenerManagerImpl internal constructor(
                 .mapValuesTo(listenerInterceptsPointMap) { (_, listenerInterceptsInCurrentPoint) ->
                     EventInterceptEntrance.eventListenerInterceptEntrance(listenerInterceptsInCurrentPoint)
                 }
-    
-    
+            
+            
             suspend fun runner(
                 listener: EventListener,
                 context: EventListenerProcessingContext,
@@ -287,7 +288,7 @@ internal class SimpleListenerManagerImpl internal constructor(
                     EventListenerInterceptor.Point.AFTER_MATCH,
                     EventInterceptEntrance.eventListenerInterceptEntrance()
                 )
-    
+                
                 return defaultEntrance.doIntercept(context) { innerContext ->
                     if (listener.match(innerContext)) {
                         afterMatchEntrance.doIntercept(innerContext) { afterInnerContext ->
@@ -298,7 +299,7 @@ internal class SimpleListenerManagerImpl internal constructor(
                     }
                 }
             }
-    
+            
             suspend fun asyncFunctionRunner(
                 listener: EventListener,
                 scope: CoroutineScope,
@@ -310,8 +311,8 @@ internal class SimpleListenerManagerImpl internal constructor(
                 asyncDeferred.start()
                 return EventResult.async(asyncDeferred)
             }
-    
-    
+            
+            
             suspend fun suspendFunctionRunner(
                 listener: EventListener,
                 context: EventListenerProcessingContext,
@@ -347,7 +348,6 @@ internal class SimpleListenerManagerImpl internal constructor(
 }
 
 
-
 private data class SimpleEventProcessingResult(override val results: List<EventResult>) : EventProcessingResult
 
 
@@ -372,8 +372,6 @@ private class CoreEventListenerProcessingContext(
 }
 
 
-
-
 @OptIn(ExperimentalSimbotApi::class)
 internal class SimpleEventProcessingContext(
     override val event: Event,
@@ -384,7 +382,9 @@ internal class SimpleEventProcessingContext(
 ) : EventProcessingContext {
     
     private val _results = ArrayList<EventResult>(resultInitSize)
-    @Volatile private var resultView: ListView<EventResult>? = null
+    
+    @Volatile
+    private var resultView: ListView<EventResult>? = null
     
     override val results: List<EventResult> // = _results.view()
         get() {
@@ -420,11 +420,8 @@ internal class SimpleEventProcessingContext(
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T? {
         return when (attribute) {
-            @Suppress("DEPRECATION")
-            EventProcessingContext.Scope.Instant,
-            -> instantScope as T
-            EventProcessingContext.Scope.Global -> globalScopeContext as T
-            EventProcessingContext.Scope.ContinuousSession -> continuousSessionContext as T
+            SimpleScope.Global -> globalScopeContext as T
+            SimpleScope.ContinuousSession -> continuousSessionContext as T
             else -> instantScope[attribute]
         }
     }
@@ -435,11 +432,8 @@ internal class SimpleEventProcessingContext(
     
     override fun <T : Any> contains(attribute: Attribute<T>): Boolean {
         return when (attribute) {
-            @Suppress("DEPRECATION")
-            EventProcessingContext.Scope.Instant,
-            -> true
-            EventProcessingContext.Scope.Global -> true
-            EventProcessingContext.Scope.ContinuousSession -> true
+            SimpleScope.Global -> true
+            SimpleScope.ContinuousSession -> true
             else -> attribute in instantScope
         }
     }

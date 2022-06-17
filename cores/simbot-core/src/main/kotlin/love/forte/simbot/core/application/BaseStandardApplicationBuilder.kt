@@ -20,14 +20,14 @@ import love.forte.simbot.application.Application
 import love.forte.simbot.application.ApplicationBuilder
 import love.forte.simbot.application.ApplicationBuilderDsl
 import love.forte.simbot.application.ApplicationConfiguration
-import love.forte.simbot.core.event.SimpleListenerManager
+import love.forte.simbot.core.event.SimpleEventListenerManager
 import love.forte.simbot.core.event.SimpleListenerManagerConfiguration
 import love.forte.simbot.core.event.simpleListenerManager
 
 // public interface CoreApplicationBuilder<A : Application>
 
 /**
- * 约定使用 [SimpleListenerManager] 作为事件处理器的 [ApplicationBuilder] 类型。
+ * 约定使用 [SimpleEventListenerManager] 作为事件处理器的 [ApplicationBuilder] 类型。
  */
 public interface StandardApplicationBuilder<A : Application> : EventProcessableApplicationBuilder<A> {
     
@@ -41,7 +41,7 @@ public interface StandardApplicationBuilder<A : Application> : EventProcessableA
 
 /**
  *
- * 提供一个使用 [SimpleListenerManager] 作为内部事件处理器的 [ApplicationBuilder] 抽象类。
+ * 提供一个使用 [SimpleEventListenerManager] 作为内部事件处理器的 [ApplicationBuilder] 抽象类。
  *
  * @author ForteScarlet
  */
@@ -68,12 +68,12 @@ public abstract class BaseStandardApplicationBuilder<A : Application> : BaseAppl
     }
     
     /**
-     * 构建并得到目标 [SimpleListenerManager].
+     * 构建并得到目标 [SimpleEventListenerManager].
      */
     protected open fun buildListenerManager(
         appConfig: ApplicationConfiguration,
         environment: Application.Environment,
-    ): SimpleListenerManager {
+    ): SimpleEventListenerManager {
         val initial = SimpleListenerManagerConfiguration {
             coroutineContext = appConfig.coroutineContext
         }

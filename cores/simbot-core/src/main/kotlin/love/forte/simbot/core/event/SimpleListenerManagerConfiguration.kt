@@ -40,7 +40,7 @@ public class CoreListenerManagerConfiguration : SimpleListenerManagerConfigurati
 internal annotation class SimpleEventManagerConfigDSL
 
 /**
- * [SimpleListenerManager] 的配置文件.
+ * [SimpleEventListenerManager] 的配置文件.
  * 当配置文件作为构建参数的时候，他会被立即使用。
  *
  * ### 拦截器
@@ -52,7 +52,7 @@ internal annotation class SimpleEventManagerConfigDSL
  * ```
  *
  *
- * @see SimpleListenerManager.newInstance
+ * @see SimpleEventListenerManager.newInstance
  * @see simpleListenerManager
  */
 @SimpleEventManagerConfigDSL
@@ -61,7 +61,7 @@ public open class SimpleListenerManagerConfiguration {
     
     /**
      * 事件管理器的上下文. 可以基于此提供调度器。
-     * 但是 [SimpleListenerManager] 并不是一个作用域，因此不可以提供 `Job`.
+     * 但是 [SimpleEventListenerManager] 并不是一个作用域，因此不可以提供 `Job`.
      */
     @SimpleEventManagerConfigDSL
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext

@@ -21,7 +21,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.application.*
-import love.forte.simbot.core.event.SimpleListenerManager
+import love.forte.simbot.core.event.SimpleEventListenerManager
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
@@ -86,9 +86,9 @@ public open class SimpleApplicationConfiguration : ApplicationConfiguration()
 public interface SimpleApplication : Application {
     
     /**
-     * [SimpleApplication] 使用 [SimpleListenerManager] 作为事件管理器。
+     * [SimpleApplication] 使用 [SimpleEventListenerManager] 作为事件管理器。
      */
-    override val eventListenerManager: SimpleListenerManager
+    override val eventListenerManager: SimpleEventListenerManager
     
     
     /**
@@ -111,7 +111,7 @@ public interface SimpleApplicationBuilder :
 private class SimpleApplicationImpl(
     override val configuration: ApplicationConfiguration,
     override val environment: SimpleEnvironment,
-    override val eventListenerManager: SimpleListenerManager,
+    override val eventListenerManager: SimpleEventListenerManager,
     providerList: List<EventProvider>,
 ) : SimpleApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()

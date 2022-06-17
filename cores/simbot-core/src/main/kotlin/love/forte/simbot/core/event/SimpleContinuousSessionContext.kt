@@ -18,7 +18,9 @@ package love.forte.simbot.core.event
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
-import love.forte.simbot.*
+import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.LoggerFactory
+import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Future
@@ -37,7 +39,7 @@ internal class SimpleContinuousSessionContext(
     
     private fun <T> waiting0(
         continuation: CancellableContinuation<T>,
-        id: ID,
+        id: String,
         listener: ContinuousSessionSelector<T>,
     ) {
         val deferred = CompletableDeferred<T>(coroutineScope.coroutineContext[Job])
@@ -56,18 +58,18 @@ internal class SimpleContinuousSessionContext(
         }
     }
     
-    override suspend fun <T> waiting(id: ID, listener: ContinuousSessionSelector<T>): T {
+    override suspend fun <T> waiting(id: String, listener: ContinuousSessionSelector<T>): T {
         return suspendCancellableCoroutine { c ->
             waiting0(c, id, listener)
         }
     }
     
     
-    override fun <T> getProvider(id: ID): ContinuousSessionProvider<T>? {
+    override fun <T> getProvider(id: String): ContinuousSessionProvider<T>? {
         return manager.getProvider(id)
     }
     
-    override fun <T> getReceiver(id: ID): ContinuousSessionReceiver<T>? {
+    override fun <T> getReceiver(id: String): ContinuousSessionReceiver<T>? {
         return manager.getReceiver(id)
     }
 }
@@ -186,34 +188,33 @@ internal class ResumedListenerManager {
      * 会 cancel 被顶替的旧值。
      */
     fun <T> set(
-        id: ID,
+        id: String,
         listener: ContinuousSessionSelector<T>,
         listenerJob: Job,
         provider: SimpleContinuousSessionProvider<T>,
         receiver: SimpleContinuousSessionReceiver<T>,
     ) {
-        val cid = id.literal
         val current = ContinuousSessionListener(listener, listenerJob, provider, receiver)
-        listeners.merge(cid, current) { old, now ->
-            logger.debug("Merge waiting listener with save id {}", cid)
-            old.cancel(SimbotIllegalStateException("Replaced by the same ID listener. id = $cid"))
+        listeners.merge(id, current) { old, now ->
+            logger.debug("Merge waiting listener with save id {}", id)
+            old.cancel(SimbotIllegalStateException("Replaced by the same ID listener. id = $id"))
             now
         }
         
         listenerJob.invokeOnCompletion {
-            listeners.remove(cid)?.cancel()
-            logger.debug("Remove completed resume listener. id: {}", cid)
+            listeners.remove(id)?.cancel()
+            logger.debug("Remove completed resume listener. id: {}", id)
         }
     }
     
     @Suppress("UNCHECKED_CAST")
-    fun <T> getProvider(id: ID): ContinuousSessionProvider<T>? {
-        return listeners[id.literal]?.provider as? ContinuousSessionProvider<T>
+    fun <T> getProvider(id: String): ContinuousSessionProvider<T>? {
+        return listeners[id]?.provider as? ContinuousSessionProvider<T>
     }
     
     @Suppress("UNCHECKED_CAST")
-    fun <T> getReceiver(id: ID): ContinuousSessionReceiver<T>? {
-        return listeners[id.literal]?.receiver as? ContinuousSessionReceiver<T>
+    fun <T> getReceiver(id: String): ContinuousSessionReceiver<T>? {
+        return listeners[id]?.receiver as? ContinuousSessionReceiver<T>
     }
     
     fun isEmpty(): Boolean = listeners.isEmpty()

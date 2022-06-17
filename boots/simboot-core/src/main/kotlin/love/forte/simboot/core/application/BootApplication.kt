@@ -44,7 +44,7 @@ import love.forte.simbot.application.BotRegistrar
 import love.forte.simbot.core.application.*
 import love.forte.simbot.core.event.EventInterceptorsGenerator
 import love.forte.simbot.core.event.EventListenersGenerator
-import love.forte.simbot.core.event.SimpleListenerManager
+import love.forte.simbot.core.event.SimpleEventListenerManager
 import love.forte.simbot.core.event.SimpleListenerManagerConfiguration
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerInterceptor
@@ -355,7 +355,7 @@ public interface BootApplication : SimpleApplication, SimbootContext {
 private class BootApplicationImpl(
     override val configuration: ApplicationConfiguration,
     override val environment: BootEnvironment,
-    override val eventListenerManager: SimpleListenerManager,
+    override val eventListenerManager: SimpleEventListenerManager,
     override val beanContainer: BeanContainer,
     providerList: List<EventProvider>,
 ) : BootApplication, BaseApplication() {

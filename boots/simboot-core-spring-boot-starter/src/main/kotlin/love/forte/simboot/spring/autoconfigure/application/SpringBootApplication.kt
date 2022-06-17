@@ -24,7 +24,7 @@ import love.forte.simbot.core.application.BaseApplication
 import love.forte.simbot.core.application.BaseApplicationBuilder
 import love.forte.simbot.core.application.EventProcessableApplicationBuilder
 import love.forte.simbot.core.application.SimpleApplicationBuilder
-import love.forte.simbot.core.event.SimpleListenerManager
+import love.forte.simbot.core.event.SimpleEventListenerManager
 import love.forte.simbot.core.event.SimpleListenerManagerConfiguration
 import love.forte.simbot.core.event.simpleListenerManager
 import love.forte.simbot.utils.view
@@ -147,7 +147,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
     private fun buildListenerManager(
         appConfig: SpringBootApplicationConfiguration,
         environment: Application.Environment,
-    ): SimpleListenerManager {
+    ): SimpleEventListenerManager {
         val initial = SimpleListenerManagerConfiguration {
             // TODO job?
             coroutineContext = appConfig.coroutineContext
@@ -220,7 +220,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
 private class SpringBootApplicationImpl(
     override val configuration: ApplicationConfiguration,
     override val environment: SpringBootEnvironment,
-    override val eventListenerManager: SimpleListenerManager,
+    override val eventListenerManager: SimpleEventListenerManager,
     providerList: List<EventProvider>,
 ) : SpringBootApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
