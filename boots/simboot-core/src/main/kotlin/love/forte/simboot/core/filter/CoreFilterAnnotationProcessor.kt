@@ -24,7 +24,7 @@ import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.SimbotIllegalStateException
-import love.forte.simbot.core.event.coreFilter
+import love.forte.simbot.core.event.simpleFilter
 import love.forte.simbot.event.EventFilter
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerProcessingContext
@@ -181,7 +181,7 @@ public object CoreFiltersAnnotationProcessor {
         @Suppress("SuspiciousCallableReferenceInLambda") val matcherList: List<suspend (EventListenerProcessingContext) -> Boolean> =
             eventFilterList.sortedBy { it.priority }.map { f -> f::test }
         
-        val filter = coreFilter {
+        val filter = simpleFilter {
             multiMatchType.match(it, matcherList)
         }
         

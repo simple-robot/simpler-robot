@@ -14,7 +14,7 @@
  *
  */
 
-@file:JvmName("CoreListeners")
+@file:JvmName("SimpleListeners")
 
 package love.forte.simbot.core.event
 
@@ -25,6 +25,9 @@ import org.slf4j.Logger
 import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.BiFunction
+
+@Deprecated("Just use 'SimpleListeners' for java")
+public object CoreListeners
 
 
 /**

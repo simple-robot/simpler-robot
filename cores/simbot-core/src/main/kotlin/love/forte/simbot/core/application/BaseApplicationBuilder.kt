@@ -34,7 +34,8 @@ import kotlin.concurrent.write
  *
  * @author ForteScarlet
  */
-public abstract class BaseApplicationBuilder<A : Application> : ApplicationBuilder<A> {
+public abstract class BaseApplicationBuilder<A : Application> :
+    ApplicationBuilder<A> {
     private val componentConfigurations = mutableMapOf<Attribute<*>, Any.() -> Unit>()
     private val componentFactories = mutableMapOf<Attribute<*>, suspend () -> Component>()
     

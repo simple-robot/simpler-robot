@@ -15,7 +15,7 @@
  *
  */
 
-@file:JvmName("CoreInterceptUtil")
+@file:JvmName("SimpleInterceptUtil")
 @file:JvmMultifileClass
 
 package love.forte.simbot.core.event
@@ -26,38 +26,41 @@ import love.forte.simbot.PriorityConstant
 import love.forte.simbot.event.*
 import java.util.function.Function
 
-@DslMarker
-@Retention(AnnotationRetention.BINARY)
-internal annotation class CoreFunctionalProcessingInterceptorDSL
+@Deprecated("Just use SimpleInterceptUtil for java")
+public object CoreInterceptUtil
 
 @DslMarker
 @Retention(AnnotationRetention.BINARY)
-internal annotation class CoreFunctionalListenerInterceptorDSL
+internal annotation class SimpleFunctionalProcessingInterceptorDSL
+
+@DslMarker
+@Retention(AnnotationRetention.BINARY)
+internal annotation class SimpleFunctionalListenerInterceptorDSL
 
 /**
  * 核心提供的事件拦截器实现, 基于函数提供外部事件逻辑。
  *
- * @see CoreFunctionalEventProcessingInterceptor
+ * @see SimpleFunctionalEventProcessingInterceptor
  *
  */
-public sealed class CoreFunctionalEventInterceptor<C : EventInterceptor.Context<R>, R> : Interceptor<C, R> {
+public sealed class SimpleFunctionalEventInterceptor<C : EventInterceptor.Context<R>, R> : Interceptor<C, R> {
     public abstract val interceptFunction: suspend (C) -> R
     override suspend fun intercept(context: C): R = interceptFunction(context)
 }
 
 
-public class CoreFunctionalEventProcessingInterceptor(
+public class SimpleFunctionalEventProcessingInterceptor(
     override val priority: Int = PriorityConstant.NORMAL,
     override val interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult,
 ) : EventProcessingInterceptor,
-    CoreFunctionalEventInterceptor<EventProcessingInterceptor.Context, EventProcessingResult>()
+    SimpleFunctionalEventInterceptor<EventProcessingInterceptor.Context, EventProcessingResult>()
 
 
-public class CoreFunctionalEventListenerInterceptor(
+public class SimpleFunctionalEventListenerInterceptor(
     override val point: EventListenerInterceptor.Point,
     override val priority: Int = PriorityConstant.NORMAL,
     override val interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult,
-) : EventListenerInterceptor, CoreFunctionalEventInterceptor<EventListenerInterceptor.Context, EventResult>()
+) : EventListenerInterceptor, SimpleFunctionalEventInterceptor<EventListenerInterceptor.Context, EventResult>()
 
 
 /**
@@ -65,12 +68,24 @@ public class CoreFunctionalEventListenerInterceptor(
  * 得到一个流程拦截器 [EventProcessingInterceptor].
  */
 @JvmSynthetic
-@CoreFunctionalProcessingInterceptorDSL
+@SimpleFunctionalProcessingInterceptorDSL
+public fun simpleProcessingInterceptor(
+    priority: Int = PriorityConstant.NORMAL,
+    interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult,
+): EventProcessingInterceptor =
+    SimpleFunctionalEventProcessingInterceptor(priority = priority, interceptFunction = interceptFunction)
+
+
+@Deprecated(
+    "Just use simpleProcessingInterceptor",
+    ReplaceWith("simpleProcessingInterceptor(priority, interceptFunction)")
+)
+@SimpleFunctionalProcessingInterceptorDSL
 public fun coreProcessingInterceptor(
     priority: Int = PriorityConstant.NORMAL,
     interceptFunction: suspend (EventProcessingInterceptor.Context) -> EventProcessingResult,
 ): EventProcessingInterceptor =
-    CoreFunctionalEventProcessingInterceptor(priority = priority, interceptFunction = interceptFunction)
+    simpleProcessingInterceptor(priority, interceptFunction)
 
 
 /**
@@ -78,13 +93,25 @@ public fun coreProcessingInterceptor(
  * 得到一个流程拦截器 [EventListenerInterceptor].
  */
 @JvmSynthetic
-@CoreFunctionalListenerInterceptorDSL
+@SimpleFunctionalListenerInterceptorDSL
+public fun simpleListenerInterceptor(
+    point: EventListenerInterceptor.Point = EventListenerInterceptor.Point.DEFAULT,
+    priority: Int = PriorityConstant.NORMAL,
+    interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult,
+): EventListenerInterceptor =
+    SimpleFunctionalEventListenerInterceptor(point = point, priority = priority, interceptFunction = interceptFunction)
+
+
+@Deprecated("Just use simpleListenerInterceptor",
+    ReplaceWith("simpleListenerInterceptor(point, priority, interceptFunction)")
+)
+@SimpleFunctionalListenerInterceptorDSL
 public fun coreListenerInterceptor(
     point: EventListenerInterceptor.Point = EventListenerInterceptor.Point.DEFAULT,
     priority: Int = PriorityConstant.NORMAL,
     interceptFunction: suspend (EventListenerInterceptor.Context) -> EventResult,
 ): EventListenerInterceptor =
-    CoreFunctionalEventListenerInterceptor(point = point, priority = priority, interceptFunction = interceptFunction)
+    simpleListenerInterceptor(point, priority, interceptFunction)
 
 
 ////// 4j
@@ -95,12 +122,12 @@ public fun coreListenerInterceptor(
  */
 @Api4J
 @JvmOverloads
-@JvmName("coreProcessingInterceptor")
+@JvmName("simpleProcessingInterceptor")
 public fun processingInterceptor4J(
     priority: Int = PriorityConstant.NORMAL,
     interceptFunction: Function<EventProcessingInterceptor.Context, EventProcessingResult>,
 ): EventProcessingInterceptor =
-    coreProcessingInterceptor(priority = priority) { interceptFunction.apply(it) }
+    simpleProcessingInterceptor(priority = priority) { interceptFunction.apply(it) }
 
 
 /**
@@ -109,11 +136,11 @@ public fun processingInterceptor4J(
  */
 @Api4J
 @JvmOverloads
-@JvmName("coreListenerInterceptor")
+@JvmName("simpleListenerInterceptor")
 public fun listenerInterceptor4J(
     point: EventListenerInterceptor.Point = EventListenerInterceptor.Point.DEFAULT,
     priority: Int = PriorityConstant.NORMAL,
     interceptFunction: Function<EventListenerInterceptor.Context, EventResult>,
 ): EventListenerInterceptor =
-    coreListenerInterceptor(point, priority) { interceptFunction.apply(it) }
+    simpleListenerInterceptor(point, priority) { interceptFunction.apply(it) }
 
