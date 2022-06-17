@@ -16,7 +16,7 @@
  */
 
 import love.forte.simboot.filter.RegexMatcherValue
-import org.junit.Test
+import kotlin.test.Test
 
 
 /**

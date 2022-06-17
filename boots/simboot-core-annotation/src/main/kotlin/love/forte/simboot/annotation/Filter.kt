@@ -126,17 +126,17 @@ public annotation class Filter(
 
 
     /**
-     * 指定一个对当前 [Filter] 的处理过滤器。当 [by] 指定了任意一个不直接等同于 [AnnotationEventFilter]
+     * 指定一个对当前 [Filter] 的处理过滤器。当 [by] 指定了任意一个不直接等同于 [AnnotationEventFilterFactory]
      * 的类型时，此注解的上述其他参数将不再继续被解析，而是直接交由指定目标进行处理。
      *
      *
      * ```kotlin
-     * @Filter(by = FooAnnotationEventFilter::class)
+     * @Filter(by = FooAnnotationEventFilterFactory::class)
      * suspend fun Event.onEvent() { ... }
      * ```
      *
      */
-    val by: KClass<out AnnotationEventFilter> = AnnotationEventFilter::class,
+    val by: KClass<out AnnotationEventFilterFactory> = AnnotationEventFilterFactory::class,
     
     )
 
