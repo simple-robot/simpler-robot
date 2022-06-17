@@ -13,6 +13,11 @@ import java.util.concurrent.TimeUnit
 @Measurement(timeUnit = TimeUnit.MILLISECONDS)
 @Threads(8)
 open class TimestampCreateTest {
+    /*
+        Benchmark                                   Mode  Cnt          Score         Error  Units
+        TimestampCreateTest.timestampByInstantNow  thrpt   25  237486404.132 ± 2671045.055  ops/s
+        TimestampCreateTest.timestampByNow         thrpt   25  258600996.469 ± 2419138.248  ops/s
+     */
     
     @Benchmark
     fun timestampByNow() {
