@@ -19,9 +19,9 @@
 # Threads: 8 threads, will synchronize iterations
 
 Benchmark                                    Mode  Cnt         Score         Error  Units
-IdTest.randomIdByDefaultGenerate            thrpt    5  21491308.108 ± 2497554.041  ops/s
-IdTest.randomIdByThreadLocalRandomGenerate  thrpt    5  15683417.337 ±  211902.295  ops/s
-IdTest.randomUUIDGenerate                   thrpt    5   1706539.656 ±  237828.282  ops/s
+IdTest.randomIdByDefaultGenerate            thrpt   25  70801412.214 ± 1498689.005  ops/s
+IdTest.randomIdByThreadLocalRandomGenerate  thrpt   25  66505118.175 ±  730902.232  ops/s
+IdTest.randomUUIDGenerate                   thrpt   25   1435474.691 ±   39339.236  ops/s
 ```
 
 ## Timestamp.now()
@@ -29,13 +29,12 @@ IdTest.randomUUIDGenerate                   thrpt    5   1706539.656 ±  237828.
 
 针对 `Timestamp` 对当前时间的实例获取。
 
-```
+```   
 # JMH version: 1.33
 # VM version: JDK 1.8.0_332, OpenJDK 64-Bit Server VM, 25.332-b09
 # Threads: 8 threads, will synchronize iterations
 
-Benchmark                                    Mode  Cnt         Score         Error  Units
-IdTest.randomIdByDefaultGenerate            thrpt   25  70801412.214 ± 1498689.005  ops/s
-IdTest.randomIdByThreadLocalRandomGenerate  thrpt   25  66505118.175 ±  730902.232  ops/s
-IdTest.randomUUIDGenerate                   thrpt   25   1435474.691 ±   39339.236  ops/s
+Benchmark                                   Mode  Cnt          Score         Error  Units
+TimestampCreateTest.timestampByInstantNow  thrpt   25  237486404.132 ± 2671045.055  ops/s
+TimestampCreateTest.timestampByNow         thrpt   25  258600996.469 ± 2419138.248  ops/s
 ```
