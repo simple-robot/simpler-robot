@@ -161,7 +161,6 @@ internal data class ContinuousSessionListener<T>(
     val receiver: SimpleContinuousSessionReceiver<T>,
 ) {
     suspend operator fun invoke(context: EventProcessingContext) {
-        // TODO 实现sessionType？
         if (!provider.isCompleted) {
             withContext(listenerJob) {
                 context.run {

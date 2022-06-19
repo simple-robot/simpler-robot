@@ -61,7 +61,7 @@ public open class SimpleListenerManagerConfiguration {
     
     /**
      * 事件管理器的上下文. 可以基于此提供调度器。
-     * 但是 [SimpleEventListenerManager] 并不是一个作用域，因此不可以提供 `Job`.
+     * 但是 [SimpleEventListenerManager] 并不是一个作用域，因此不可以提供 [Job][kotlinx.coroutines.Job].
      */
     @SimpleEventManagerConfigDSL
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext

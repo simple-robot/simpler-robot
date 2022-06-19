@@ -26,7 +26,6 @@ import java.util.concurrent.Future
  * 可存活的。
  * 此接口提供 [join]、[invokeOnCompletion] 等函数来对生命周期提供一定操作。
  *
- * TODO 转移到 [love.forte.simbot.ability] 包下
  * @author ForteScarlet
  */
 public interface Survivable : Switchable {

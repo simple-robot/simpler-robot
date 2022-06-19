@@ -29,7 +29,6 @@ import love.forte.simbot.utils.runInBlocking
  *
  * 对于开关操作，在执行了 [cancel] 之后将不允许二次开启。
  *
- * TODO 转移到 [love.forte.simbot.ability] 包下
  * @author ForteScarlet
  */
 public interface Switchable : CoroutineScope {
