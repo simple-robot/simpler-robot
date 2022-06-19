@@ -206,7 +206,7 @@ tasks.create("createChangelog") {
                 
 
                 ## 组件更新
-                相关组件会在后续跟进更新
+                相关组件会在后续三日内跟进更新
                 - [mirai组件](https://github.com/simple-robot/simbot-component-mirai/releases)
                 - [腾讯频道组件](https://github.com/simple-robot/simbot-component-tencent-guild/releases)
                 - [开黑啦组件](https://github.com/simple-robot/simbot-component-kaiheila/releases)
