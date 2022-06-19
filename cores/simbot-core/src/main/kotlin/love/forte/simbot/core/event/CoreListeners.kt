@@ -61,6 +61,7 @@ public operator fun EventListener.plus(filters: Iterable<EventFilter>): EventLis
  *
  * @see simpleListener
  */
+@Suppress("UNUSED_PARAMETER")
 @JvmSynthetic
 @Deprecated("Use simpleListener(...)")
 public fun <E : Event> coreListener(
@@ -72,12 +73,12 @@ public fun <E : Event> coreListener(
     func: suspend EventListenerProcessingContext.(E) -> Any?,
 ): EventListener {
     return if (blockNext) {
-        simpleListener(eventKey, id.literal, isAsync, logger) {
+        simpleListener(eventKey, id.literal, isAsync) {
             val result = func(it)
             if (result is EventResult) result else EventResult.of(result, isTruncated = true)
         }
     } else {
-        simpleListener(eventKey, id.literal, isAsync, logger) {
+        simpleListener(eventKey, id.literal, isAsync) {
             val result = func(it)
             if (result is EventResult) result else EventResult.of(result)
         }
@@ -139,7 +140,6 @@ public fun <E : Event> blockingCoreListener(
     target = eventKey,
     id = id.literal,
     isAsync = isAsync,
-    logger = logger,
 ) { t, u ->
     val result = func.apply(t, u)
     
@@ -181,7 +181,6 @@ public fun <E : Event> blockingCoreListener(
     target = eventKey,
     id = id.literal,
     isAsync = isAsync,
-    logger = logger,
 ) { t, u ->
     func.accept(t, u)
     EventResult.defaults(blockNext)
@@ -214,8 +213,7 @@ public fun <E : Event> blockingCoreListener(
 ): EventListener = blockingSimpleListener(
     target = Event.Key.getKey(eventType),
     id = id.literal,
-    isAsync = isAsync,
-    logger = logger
+    isAsync = isAsync
 ) { t, u ->
     val result = func.apply(t, u)
     if (result is EventResult) result else EventResult.of(result, isTruncated = blockNext)
@@ -247,8 +245,7 @@ public fun <E : Event> blockingCoreListener(
 ): EventListener = blockingSimpleListener(
     target = Event.Key.getKey(eventType),
     id = id.literal,
-    isAsync = isAsync,
-    logger = logger
+    isAsync = isAsync
 ) { t, u ->
     func.accept(t, u)
     EventResult.defaults(blockNext)

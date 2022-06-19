@@ -25,6 +25,7 @@ import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.utils.ListView
 import love.forte.simbot.utils.view
+import org.slf4j.Logger
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -37,6 +38,8 @@ internal class SimpleEventListenerManagerImpl internal constructor(
 ) : SimpleEventListenerManager {
     private companion object {
         private val counter: AtomicInteger = AtomicInteger(0)
+        private val logger: Logger =
+            LoggerFactory.getLogger("love.forte.simbot.core.event.SimpleEventListenerManagerImpl")
     }
     
     private val managerCoroutineContext: CoroutineContext
@@ -204,11 +207,13 @@ internal class SimpleEventListenerManagerImpl internal constructor(
                             invoker(managerScope, listenerContext)
                         }
                         val result = if (handleResult.isFailure) {
-                            val err = handleResult.exceptionOrNull()
-                            invoker.listener.logger.error(
-                                "Listener process failed: $err",
-                                err!!
-                            )
+                            if (logger.isErrorEnabled) {
+                                val err = handleResult.exceptionOrNull()
+                                logger.error(
+                                    "Listener [${invoker.listener.id}] process failed: $err",
+                                    err!!
+                                )
+                            }
                             EventResult.invalid()
                         } else {
                             handleResult.getOrNull()!!

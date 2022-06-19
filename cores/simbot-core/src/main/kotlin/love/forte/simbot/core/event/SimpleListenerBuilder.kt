@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -51,7 +51,6 @@ import java.util.function.BiPredicate
 public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) {
     private var id: String? = null
     private var isAsync: Boolean = false
-    private var logger: Logger? = null
     private var matcher: BiPredicate<EventListenerProcessingContext, E>? = null
     private var handler: BiFunction<EventListenerProcessingContext, E, EventResult>? = null
     
@@ -81,9 +80,9 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) {
      *
      * @see EventListener.logger
      */
-    public fun logger(logger: Logger): SimpleListenerBuilder<E> = also {
-        this.logger = logger
-    }
+    @Suppress("UNUSED_PARAMETER")
+    @Deprecated("Will be remove", ReplaceWith("this"))
+    public fun logger(logger: Logger): SimpleListenerBuilder<E> = this
     
     /**
      * 配置监听函数的匹配逻辑。

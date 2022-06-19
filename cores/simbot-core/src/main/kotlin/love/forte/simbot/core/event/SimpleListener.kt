@@ -23,7 +23,6 @@ import love.forte.simbot.event.Event.Key.Companion.isSub
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerProcessingContext
 import love.forte.simbot.event.EventResult
-import org.slf4j.Logger
 
 
 /**
@@ -36,14 +35,13 @@ import org.slf4j.Logger
  */
 public class SimpleListener(
     override val id: String,
-    override val logger: Logger,
     override val isAsync: Boolean,
     
     /**
      * 当前监听函数所需的事件目标类型集。当 [targets] 的元素为空时，视为监听全部。
      */
     private val targets: Set<Event.Key<*>>,
-
+    
     /**
      * 内部使用的属性容器。
      */
@@ -79,14 +77,13 @@ public class SimpleListener(
      */
     public fun copy(
         id: String = this.id,
-        logger: Logger = this.logger,
         isAsync: Boolean = this.isAsync,
         targets: Set<Event.Key<*>> = this.targets.toSet(),
         attributes: AttributeContainer? = null,
         matcher: suspend EventListenerProcessingContext.() -> Boolean = this.matcher,
         function: suspend EventListenerProcessingContext.() -> EventResult = this.function,
     ): SimpleListener {
-        return SimpleListener(id, logger, isAsync, targets, attributes, matcher, function)
+        return SimpleListener(id, isAsync, targets, attributes, matcher, function)
     }
     
     public companion object

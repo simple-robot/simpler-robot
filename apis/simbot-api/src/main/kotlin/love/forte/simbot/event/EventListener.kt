@@ -56,6 +56,8 @@ public fun interface BlockingEventListenerFunction : EventListenerFunction {
 }
 
 
+private val temporaryLogger = LoggerFactory.getLogger("love.forte.simbot.event.EventListener")
+
 /**
  *
  * 一个事件的事件监听器。
@@ -77,7 +79,8 @@ public interface EventListener : java.util.EventListener, AttributeContainer, Lo
     /**
      * 当前监听函数内部存在的日志对象。
      */
-    override val logger: Logger
+    @Deprecated("Will be remove", level = DeprecationLevel.ERROR)
+    override val logger: Logger get() = temporaryLogger
     
     /**
      * 优先级。对于一次事件处理流程，所有监听函数会根据此优先级进行顺序处理。
@@ -162,7 +165,6 @@ public interface EventListener : java.util.EventListener, AttributeContainer, Lo
 @Api4J
 public interface BlockingEventListener : EventListener, BlockingEventListenerFunction {
     override val id: String
-    override val logger: Logger
     override val isAsync: Boolean
     override fun isTarget(eventType: Event.Key<*>): Boolean
     
