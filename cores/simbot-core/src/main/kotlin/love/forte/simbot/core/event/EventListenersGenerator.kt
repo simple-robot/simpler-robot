@@ -18,7 +18,6 @@ package love.forte.simbot.core.event
 
 import love.forte.simbot.Api4J
 import love.forte.simbot.InternalSimbotApi
-import love.forte.simbot.LoggerFactory
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventListener
@@ -475,7 +474,6 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
             target = eventKey,
             id = id0,
             isAsync = isAsync,
-            logger = logger ?: LoggerFactory.getLogger("love.forte.core.listener.$id0"),
             matcher = matcher ?: { true },
             function = func ?: throw SimbotIllegalStateException("The handle function must be configured")
         )

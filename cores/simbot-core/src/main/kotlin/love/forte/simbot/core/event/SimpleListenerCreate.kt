@@ -58,12 +58,11 @@ public inline fun <E : Event> simpleListener(
     target: Event.Key<E>,
     id: String = randomIdStr(),
     isAsync: Boolean = false,
-    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
     crossinline function: suspend EventListenerProcessingContext.(E) -> EventResult,
 ): EventListener {
-    return SimpleListener(id, logger, isAsync, setOf(target), attributes, matcher = {
+    return SimpleListener(id, isAsync, setOf(target), attributes, matcher = {
         val event: E = target.safeCast(event)
             ?: throw SimbotIllegalArgumentException("The event type [${event.key}] is not in the target of the current listener function ({id}): [$target]")
         matcher(event)
@@ -93,12 +92,11 @@ public inline fun simpleListener(
     targets: Collection<Event.Key<*>>,
     id: String = randomIdStr(),
     isAsync: Boolean = false,
-    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.() -> Boolean = { true },
     crossinline function: suspend EventListenerProcessingContext.() -> EventResult,
 ): EventListener {
-    return SimpleListener(id, logger, isAsync, targets.toSet(), attributes, matcher = {
+    return SimpleListener(id, isAsync, targets.toSet(), attributes, matcher = {
         matcher()
     }) {
         function()
@@ -136,12 +134,11 @@ public inline fun simpleListener(
 public inline fun <reified E : Event> simpleListener(
     id: String = randomIdStr(),
     isAsync: Boolean = false,
-    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
     crossinline function: suspend EventListenerProcessingContext.(E) -> EventResult,
 ): EventListener {
-    return simpleListener(target = E::class.getKey(), id, isAsync, logger, attributes, { e ->
+    return simpleListener(target = E::class.getKey(), id, isAsync, attributes, { e ->
         matcher(e)
     }) { e ->
         function(e)
@@ -160,11 +157,10 @@ public inline fun <E : Event> EventListenerRegistrar.listen(
     eventKey: Event.Key<E>,
     id: String = randomIdStr(),
     isAsync: Boolean = false,
-    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
     crossinline func: suspend EventListenerProcessingContext.(E) -> EventResult,
-): EventListener = simpleListener(target = eventKey, id, isAsync, logger, attributes, matcher, func).also(::register)
+): EventListener = simpleListener(target = eventKey, id, isAsync, attributes, matcher, func).also(::register)
 
 
 /**
@@ -189,11 +185,10 @@ public inline fun <E : Event> EventListenerRegistrar.listen(
 public inline fun <reified E : Event> EventListenerRegistrar.listen(
     id: String = randomIdStr(),
     isAsync: Boolean = false,
-    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
     crossinline func: suspend EventListenerProcessingContext.(E) -> EventResult,
-): EventListener = listen(E::class.getKey(), id, isAsync, logger, attributes, matcher, func)
+): EventListener = listen(E::class.getKey(), id, isAsync, attributes, matcher, func)
 
 
 // region blocking listener
@@ -216,14 +211,12 @@ public fun <E : Event> blockingSimpleListener(
     target: Event.Key<E>,
     id: String = randomIdStr(),
     isAsync: Boolean = false,
-    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     matcher: BiPredicate<EventListenerProcessingContext, E>? = null, // = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
     function: BiFunction<EventListenerProcessingContext, E, EventResult>,
 ): EventListener {
     return simpleListener(target = target,
         id = id,
         isAsync = isAsync,
-        logger = logger,
         matcher = if (matcher == null) {
             { true }
         } else {
@@ -252,14 +245,12 @@ public fun <E : Event> blockingSimpleListenerWithoutResult(
     target: Event.Key<E>,
     id: String = randomIdStr(),
     isAsync: Boolean = false,
-    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     matcher: BiPredicate<EventListenerProcessingContext, E>? = null, // = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
     function: BiConsumer<EventListenerProcessingContext, E>,
 ): EventListener {
     return simpleListener(target = target,
         id = id,
         isAsync = isAsync,
-        logger = logger,
         matcher = if (matcher == null) {
             { true }
         } else {
@@ -274,6 +265,7 @@ public fun <E : Event> blockingSimpleListenerWithoutResult(
 
 // region deprecated functions
 
+@Suppress("UNUSED_PARAMETER")
 @Deprecated(
     "Just use simpleListener(..., id: String, ...)", ReplaceWith(
         "simpleListener(target, id.literal, isAsync, logger, attributes, matcher, function)",
@@ -289,7 +281,7 @@ public inline fun <E : Event> simpleListener(
     attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
     crossinline function: suspend EventListenerProcessingContext.(E) -> EventResult,
-): EventListener = simpleListener(target, id.literal, isAsync, logger, attributes, matcher, function)
+): EventListener = simpleListener(target, id.literal, isAsync, attributes, matcher, function)
 
 @Deprecated(
     "Just use simpleListener(..., id: String, ...)", ReplaceWith(
@@ -297,6 +289,7 @@ public inline fun <E : Event> simpleListener(
         "love.forte.simbot.literal"
     )
 )
+@Suppress("UNUSED_PARAMETER")
 @JvmSynthetic
 public inline fun simpleListener(
     targets: Collection<Event.Key<*>>,
@@ -306,11 +299,12 @@ public inline fun simpleListener(
     attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.() -> Boolean = { true },
     crossinline function: suspend EventListenerProcessingContext.() -> EventResult,
-): EventListener = simpleListener(targets, id.literal, isAsync, logger, attributes, matcher, function)
+): EventListener = simpleListener(targets, id.literal, isAsync, attributes, matcher, function)
 
 
 @JvmSynthetic
 @FragileSimbotApi
+@Suppress("UNUSED_PARAMETER")
 @Deprecated(
     "Just use simpleListener(..., id: String, ...)", ReplaceWith(
         "simpleListener(id.literal, isAsync, logger, attributes, matcher, function)",
@@ -324,11 +318,12 @@ public inline fun <reified E : Event> simpleListener(
     attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
     crossinline function: suspend EventListenerProcessingContext.(E) -> EventResult,
-): EventListener = simpleListener(id.literal, isAsync, logger, attributes, matcher, function)
+): EventListener = simpleListener(id.literal, isAsync, attributes, matcher, function)
 
 
 @JvmSynthetic
 @FragileSimbotApi
+@Suppress("UNUSED_PARAMETER")
 @Deprecated(
     "Just use EventListenerRegistrar.listen(..., id: String, ...)", ReplaceWith(
         "listen(eventKey, id.literal, isAsync, logger, attributes, matcher, func).also(::register)",
@@ -343,10 +338,11 @@ public inline fun <E : Event> EventListenerRegistrar.listen(
     attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
     crossinline func: suspend EventListenerProcessingContext.(E) -> EventResult,
-): EventListener = listen(eventKey, id.literal, isAsync, logger, attributes, matcher, func).also(::register)
+): EventListener = listen(eventKey, id.literal, isAsync, attributes, matcher, func).also(::register)
 
 @JvmSynthetic
 @FragileSimbotApi
+@Suppress("UNUSED_PARAMETER")
 @Deprecated(
     "Just use EventListenerRegistrar.listen(..., id: String, ...)", ReplaceWith(
         "listen(id.literal, isAsync, logger, attributes, matcher, func)",
@@ -360,11 +356,12 @@ public inline fun <reified E : Event> EventListenerRegistrar.listen(
     attributes: AttributeContainer? = null,
     crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
     crossinline func: suspend EventListenerProcessingContext.(E) -> EventResult,
-): EventListener = listen(id.literal, isAsync, logger, attributes, matcher, func)
+): EventListener = listen(id.literal, isAsync, attributes, matcher, func)
 
 @Api4J
 @JvmName("listener")
 @JvmOverloads
+@Suppress("UNUSED_PARAMETER")
 @Deprecated(
     "Just use blockingSimpleListener(..., id: String, ...)", ReplaceWith(
         "blockingSimpleListener(target, id.literal, isAsync, logger, matcher, function)",
@@ -378,12 +375,13 @@ public fun <E : Event> blockingSimpleListener(
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     matcher: BiPredicate<EventListenerProcessingContext, E>? = null, // = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
     function: BiFunction<EventListenerProcessingContext, E, EventResult>,
-): EventListener = blockingSimpleListener(target, id.literal, isAsync, logger, matcher, function)
+): EventListener = blockingSimpleListener(target, id.literal, isAsync, matcher, function)
 
 
 @Api4J
 @JvmName("listener")
 @JvmOverloads
+@Suppress("UNUSED_PARAMETER")
 @Deprecated(
     "Just use blockingSimpleListenerWithoutResult(..., id: String, ...)", ReplaceWith(
         "blockingSimpleListenerWithoutResult(target, id.literal, isAsync, logger, matcher, function)",
@@ -397,5 +395,5 @@ public fun <E : Event> blockingSimpleListenerWithoutResult(
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     matcher: BiPredicate<EventListenerProcessingContext, E>? = null, // = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
     function: BiConsumer<EventListenerProcessingContext, E>,
-): EventListener = blockingSimpleListenerWithoutResult(target, id.literal, isAsync, logger, matcher, function)
+): EventListener = blockingSimpleListenerWithoutResult(target, id.literal, isAsync, matcher, function)
 // endregion

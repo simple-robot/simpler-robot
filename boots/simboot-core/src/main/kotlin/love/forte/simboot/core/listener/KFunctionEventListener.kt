@@ -24,7 +24,6 @@ import love.forte.simbot.AttributeMutableMap
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.Event.Key.Companion.isSub
 import love.forte.simbot.event.EventListenerProcessingContext
-import org.slf4j.Logger
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
@@ -37,7 +36,6 @@ public class KFunctionEventListener<R>(
     override val priority: Int,
     override val isAsync: Boolean,
     private val targets: Set<Event.Key<*>>,
-    override val logger: Logger,
     override val binders: Array<ParameterBinder>,
     private val attributeMap: AttributeMutableMap,
     matcher: suspend (EventListenerProcessingContext) -> Boolean,
