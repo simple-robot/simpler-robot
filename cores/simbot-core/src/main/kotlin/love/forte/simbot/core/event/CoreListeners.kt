@@ -72,12 +72,12 @@ public fun <E : Event> coreListener(
     func: suspend EventListenerProcessingContext.(E) -> Any?,
 ): EventListener {
     return if (blockNext) {
-        simpleListener(eventKey, id, isAsync, logger) {
+        simpleListener(eventKey, id.literal, isAsync, logger) {
             val result = func(it)
             if (result is EventResult) result else EventResult.of(result, isTruncated = true)
         }
     } else {
-        simpleListener(eventKey, id, isAsync, logger) {
+        simpleListener(eventKey, id.literal, isAsync, logger) {
             val result = func(it)
             if (result is EventResult) result else EventResult.of(result)
         }
@@ -137,7 +137,7 @@ public fun <E : Event> blockingCoreListener(
     func: BiFunction<EventListenerProcessingContext, E, Any?>,
 ): EventListener = blockingSimpleListener(
     target = eventKey,
-    id = id,
+    id = id.literal,
     isAsync = isAsync,
     logger = logger,
 ) { t, u ->
@@ -179,7 +179,7 @@ public fun <E : Event> blockingCoreListener(
     func: BiConsumer<EventListenerProcessingContext, E>,
 ): EventListener = blockingSimpleListener(
     target = eventKey,
-    id = id,
+    id = id.literal,
     isAsync = isAsync,
     logger = logger,
 ) { t, u ->
@@ -213,7 +213,7 @@ public fun <E : Event> blockingCoreListener(
     func: BiFunction<EventListenerProcessingContext, E, Any?>,
 ): EventListener = blockingSimpleListener(
     target = Event.Key.getKey(eventType),
-    id = id,
+    id = id.literal,
     isAsync = isAsync,
     logger = logger
 ) { t, u ->
@@ -246,7 +246,7 @@ public fun <E : Event> blockingCoreListener(
     func: BiConsumer<EventListenerProcessingContext, E>,
 ): EventListener = blockingSimpleListener(
     target = Event.Key.getKey(eventType),
-    id = id,
+    id = id.literal,
     isAsync = isAsync,
     logger = logger
 ) { t, u ->

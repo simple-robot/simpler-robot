@@ -16,7 +16,6 @@
 
 package love.forte.simboot.listener
 
-import love.forte.simbot.ID
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerProcessingContext
@@ -35,7 +34,7 @@ import love.forte.simbot.utils.runWithInterruptible
  * @author ForteScarlet
  */
 public interface GenericBootEventListener : EventListener {
-    override val id: ID
+    override val id: String
     override val isAsync: Boolean
     override fun isTarget(eventType: Event.Key<*>): Boolean
     override suspend fun match(context: EventListenerProcessingContext): Boolean

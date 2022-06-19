@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -61,7 +61,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
     /**
      * 监听函数列表。ID唯一
      */
-    private val listeners: MutableMap<CharSequenceID, EventListener>
+    private val listeners: MutableMap<String, EventListener>
     
     
     /**
@@ -86,7 +86,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
         
         listenerIntercepts = simpleListenerManagerConfig.listenerInterceptors.values.sortedBy { it.priority }
         
-        listeners = simpleListenerManagerConfig.listeners.associateByTo(mutableMapOf()) { it.id.toCharSequenceID() }
+        listeners = simpleListenerManagerConfig.listeners.associateByTo(mutableMapOf()) { it.id }
     }
     
     
@@ -122,7 +122,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
     @FragileSimbotApi
     override fun register(listener: EventListener) {
         synchronized(this) {
-            val id = listener.id.toCharSequenceID()
+            val id = listener.id
             listeners.compute(id) { _, old ->
                 if (old != null) throw IllegalStateException("The event listener with ID $id already exists")
                 listener.also {
@@ -135,7 +135,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
     /**
      * 获取一个监听函数。
      */
-    override fun get(id: ID): EventListener? = synchronized(this) { listeners[id.toCharSequenceID()] }
+    override fun get(id: String): EventListener? = synchronized(this) { listeners[id] }
     
     /**
      * 判断指定事件类型在当前事件管理器中是否能够被执行（存在任意对应的监听函数）。

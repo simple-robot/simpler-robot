@@ -21,6 +21,7 @@ package love.forte.simbot.core.event
 
 import love.forte.simbot.*
 import love.forte.simbot.event.*
+import love.forte.simbot.utils.randomIdStr
 import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
 import java.util.function.BiConsumer
@@ -55,7 +56,7 @@ internal suspend fun <E : Event> EventListenerProcessingContext.defaultMatcher(e
 @JvmSynthetic
 public inline fun <E : Event> simpleListener(
     target: Event.Key<E>,
-    id: ID = randomID(),
+    id: String = randomIdStr(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     attributes: AttributeContainer? = null,
@@ -64,8 +65,6 @@ public inline fun <E : Event> simpleListener(
 ): EventListener {
     return SimpleListener(id, logger, isAsync, setOf(target), attributes, matcher = {
         val event: E = target.safeCast(event)
-            // 事件类型[${event.key}]不在当前监听函数(${id})的目标中:
-            // The event type [{event.key}] is not in the target of the current listener function ({id}):
             ?: throw SimbotIllegalArgumentException("The event type [${event.key}] is not in the target of the current listener function ({id}): [$target]")
         matcher(event)
     }) {
@@ -92,7 +91,7 @@ public inline fun <E : Event> simpleListener(
 @JvmSynthetic
 public inline fun simpleListener(
     targets: Collection<Event.Key<*>>,
-    id: ID = randomID(),
+    id: String = randomIdStr(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     attributes: AttributeContainer? = null,
@@ -135,7 +134,7 @@ public inline fun simpleListener(
 @JvmSynthetic
 @FragileSimbotApi
 public inline fun <reified E : Event> simpleListener(
-    id: ID = randomID(),
+    id: String = randomIdStr(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     attributes: AttributeContainer? = null,
@@ -159,7 +158,7 @@ public inline fun <reified E : Event> simpleListener(
 @FragileSimbotApi
 public inline fun <E : Event> EventListenerRegistrar.listen(
     eventKey: Event.Key<E>,
-    id: ID = randomID(),
+    id: String = randomIdStr(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     attributes: AttributeContainer? = null,
@@ -188,7 +187,7 @@ public inline fun <E : Event> EventListenerRegistrar.listen(
 @JvmSynthetic
 @FragileSimbotApi
 public inline fun <reified E : Event> EventListenerRegistrar.listen(
-    id: ID = randomID(),
+    id: String = randomIdStr(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     attributes: AttributeContainer? = null,
@@ -215,7 +214,7 @@ public inline fun <reified E : Event> EventListenerRegistrar.listen(
 @JvmOverloads
 public fun <E : Event> blockingSimpleListener(
     target: Event.Key<E>,
-    id: ID = randomID(),
+    id: String = randomIdStr(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     matcher: BiPredicate<EventListenerProcessingContext, E>? = null, // = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
@@ -251,7 +250,7 @@ public fun <E : Event> blockingSimpleListener(
 @JvmOverloads
 public fun <E : Event> blockingSimpleListenerWithoutResult(
     target: Event.Key<E>,
-    id: ID = randomID(),
+    id: String = randomIdStr(),
     isAsync: Boolean = false,
     logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
     matcher: BiPredicate<EventListenerProcessingContext, E>? = null, // = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
@@ -270,4 +269,133 @@ public fun <E : Event> blockingSimpleListenerWithoutResult(
         EventResult.defaults()
     }
 }
+// endregion
+
+
+// region deprecated functions
+
+@Deprecated(
+    "Just use simpleListener(..., id: String, ...)", ReplaceWith(
+        "simpleListener(target, id.literal, isAsync, logger, attributes, matcher, function)",
+        "love.forte.simbot.literal"
+    )
+)
+@JvmSynthetic
+public inline fun <E : Event> simpleListener(
+    target: Event.Key<E>,
+    id: ID = randomID(),
+    isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    attributes: AttributeContainer? = null,
+    crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
+    crossinline function: suspend EventListenerProcessingContext.(E) -> EventResult,
+): EventListener = simpleListener(target, id.literal, isAsync, logger, attributes, matcher, function)
+
+@Deprecated(
+    "Just use simpleListener(..., id: String, ...)", ReplaceWith(
+        "simpleListener(targets, id.literal, isAsync, logger, attributes, matcher, function)",
+        "love.forte.simbot.literal"
+    )
+)
+@JvmSynthetic
+public inline fun simpleListener(
+    targets: Collection<Event.Key<*>>,
+    id: ID = randomID(),
+    isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    attributes: AttributeContainer? = null,
+    crossinline matcher: suspend EventListenerProcessingContext.() -> Boolean = { true },
+    crossinline function: suspend EventListenerProcessingContext.() -> EventResult,
+): EventListener = simpleListener(targets, id.literal, isAsync, logger, attributes, matcher, function)
+
+
+@JvmSynthetic
+@FragileSimbotApi
+@Deprecated(
+    "Just use simpleListener(..., id: String, ...)", ReplaceWith(
+        "simpleListener(id.literal, isAsync, logger, attributes, matcher, function)",
+        "love.forte.simbot.literal"
+    )
+)
+public inline fun <reified E : Event> simpleListener(
+    id: ID = randomID(),
+    isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    attributes: AttributeContainer? = null,
+    crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
+    crossinline function: suspend EventListenerProcessingContext.(E) -> EventResult,
+): EventListener = simpleListener(id.literal, isAsync, logger, attributes, matcher, function)
+
+
+@JvmSynthetic
+@FragileSimbotApi
+@Deprecated(
+    "Just use EventListenerRegistrar.listen(..., id: String, ...)", ReplaceWith(
+        "listen(eventKey, id.literal, isAsync, logger, attributes, matcher, func).also(::register)",
+        "love.forte.simbot.literal"
+    )
+)
+public inline fun <E : Event> EventListenerRegistrar.listen(
+    eventKey: Event.Key<E>,
+    id: ID = randomID(),
+    isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    attributes: AttributeContainer? = null,
+    crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
+    crossinline func: suspend EventListenerProcessingContext.(E) -> EventResult,
+): EventListener = listen(eventKey, id.literal, isAsync, logger, attributes, matcher, func).also(::register)
+
+@JvmSynthetic
+@FragileSimbotApi
+@Deprecated(
+    "Just use EventListenerRegistrar.listen(..., id: String, ...)", ReplaceWith(
+        "listen(id.literal, isAsync, logger, attributes, matcher, func)",
+        "love.forte.simbot.literal"
+    )
+)
+public inline fun <reified E : Event> EventListenerRegistrar.listen(
+    id: ID = randomID(),
+    isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    attributes: AttributeContainer? = null,
+    crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean = { true },
+    crossinline func: suspend EventListenerProcessingContext.(E) -> EventResult,
+): EventListener = listen(id.literal, isAsync, logger, attributes, matcher, func)
+
+@Api4J
+@JvmName("listener")
+@JvmOverloads
+@Deprecated(
+    "Just use blockingSimpleListener(..., id: String, ...)", ReplaceWith(
+        "blockingSimpleListener(target, id.literal, isAsync, logger, matcher, function)",
+        "love.forte.simbot.literal"
+    )
+)
+public fun <E : Event> blockingSimpleListener(
+    target: Event.Key<E>,
+    id: ID,
+    isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    matcher: BiPredicate<EventListenerProcessingContext, E>? = null, // = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
+    function: BiFunction<EventListenerProcessingContext, E, EventResult>,
+): EventListener = blockingSimpleListener(target, id.literal, isAsync, logger, matcher, function)
+
+
+@Api4J
+@JvmName("listener")
+@JvmOverloads
+@Deprecated(
+    "Just use blockingSimpleListenerWithoutResult(..., id: String, ...)", ReplaceWith(
+        "blockingSimpleListenerWithoutResult(target, id.literal, isAsync, logger, matcher, function)",
+        "love.forte.simbot.literal"
+    )
+)
+public fun <E : Event> blockingSimpleListenerWithoutResult(
+    target: Event.Key<E>,
+    id: ID,
+    isAsync: Boolean = false,
+    logger: Logger = LoggerFactory.getLogger("love.forte.core.listener.$id"),
+    matcher: BiPredicate<EventListenerProcessingContext, E>? = null, // = BiPredicate { _, _ -> true }, // EventListenerProcessingContext.(E) -> Boolean = EventListenerProcessingContext::defaultMatcher, // 必须使用函数引用方式。
+    function: BiConsumer<EventListenerProcessingContext, E>,
+): EventListener = blockingSimpleListenerWithoutResult(target, id.literal, isAsync, logger, matcher, function)
 // endregion

@@ -18,6 +18,7 @@ package love.forte.simbot.event
 
 import love.forte.simbot.FragileSimbotApi
 import love.forte.simbot.ID
+import love.forte.simbot.literal
 
 
 /**
@@ -31,7 +32,10 @@ public interface EventListenerContainer {
     /**
      * 通过一个ID得到一个当前监听函数下的对应函数。
      */
-    public operator fun get(id: ID): EventListener?
+    public operator fun get(id: String): EventListener?
+    
+    @Deprecated("Just use get(String)", ReplaceWith("get(id.literal)", "love.forte.simbot.literal"))
+    public operator fun get(id: ID): EventListener? = get(id.literal)
     
 }
 

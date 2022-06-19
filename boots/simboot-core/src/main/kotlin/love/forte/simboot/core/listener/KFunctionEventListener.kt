@@ -21,7 +21,6 @@ import love.forte.simboot.listener.FunctionalBindableEventListener
 import love.forte.simboot.listener.ParameterBinder
 import love.forte.simbot.Attribute
 import love.forte.simbot.AttributeMutableMap
-import love.forte.simbot.ID
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.Event.Key.Companion.isSub
 import love.forte.simbot.event.EventListenerProcessingContext
@@ -34,7 +33,7 @@ import kotlin.reflect.KParameter
  * 使用 [KFunction] 并可提供 [binders] 的 [FunctionalBindableEventListener] 实现。
  */
 public class KFunctionEventListener<R>(
-    override val id: ID,
+    override val id: String,
     override val priority: Int,
     override val isAsync: Boolean,
     private val targets: Set<Event.Key<*>>,

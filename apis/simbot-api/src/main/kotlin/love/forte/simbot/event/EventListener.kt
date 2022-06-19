@@ -18,7 +18,6 @@ package love.forte.simbot.event
 
 import kotlinx.coroutines.Deferred
 import love.forte.simbot.*
-import love.forte.simbot.definition.IDContainer
 import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
 
@@ -67,13 +66,13 @@ public fun interface BlockingEventListenerFunction : EventListenerFunction {
  *
  * @author ForteScarlet
  */
-public interface EventListener : java.util.EventListener, AttributeContainer, LoggerContainer, IDContainer,
+public interface EventListener : java.util.EventListener, AttributeContainer, LoggerContainer,
     EventListenerFunction {
     
     /**
      * 监听器必须是唯一的. 通过 [id] 进行唯一性确认。
      */
-    override val id: ID
+    public val id: String
     
     /**
      * 当前监听函数内部存在的日志对象。
@@ -162,7 +161,7 @@ public interface EventListener : java.util.EventListener, AttributeContainer, Lo
  */
 @Api4J
 public interface BlockingEventListener : EventListener, BlockingEventListenerFunction {
-    override val id: ID
+    override val id: String
     override val logger: Logger
     override val isAsync: Boolean
     override fun isTarget(eventType: Event.Key<*>): Boolean

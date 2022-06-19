@@ -18,7 +18,6 @@ package love.forte.simbot.core.event
 
 import love.forte.simbot.Attribute
 import love.forte.simbot.AttributeContainer
-import love.forte.simbot.ID
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.Event.Key.Companion.isSub
 import love.forte.simbot.event.EventListener
@@ -36,7 +35,7 @@ import org.slf4j.Logger
  * @author ForteScarlet
  */
 public class SimpleListener(
-    override val id: ID,
+    override val id: String,
     override val logger: Logger,
     override val isAsync: Boolean,
     
@@ -79,7 +78,7 @@ public class SimpleListener(
      * 提供一个新的 [id], 以及其他可选参数，并构建一个新的 [SimpleListener].
      */
     public fun copy(
-        id: ID = this.id,
+        id: String = this.id,
         logger: Logger = this.logger,
         isAsync: Boolean = this.isAsync,
         targets: Set<Event.Key<*>> = this.targets.toSet(),

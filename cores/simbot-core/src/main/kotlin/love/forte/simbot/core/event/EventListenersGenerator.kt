@@ -16,11 +16,15 @@
 
 package love.forte.simbot.core.event
 
-import love.forte.simbot.*
+import love.forte.simbot.Api4J
+import love.forte.simbot.InternalSimbotApi
+import love.forte.simbot.LoggerFactory
+import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerProcessingContext
 import love.forte.simbot.event.EventResult
+import love.forte.simbot.utils.randomIdStr
 import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
 import java.util.function.BiConsumer
@@ -318,7 +322,7 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
      * 设置listener的ID
      */
     @ListenerGeneratorDSL
-    public var id: ID? = null
+    public var id: String? = null
     
     
     /**
@@ -466,7 +470,7 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
     }
     
     internal fun build(): EventListener {
-        val id0 = id ?: randomID()
+        val id0 = id ?: randomIdStr()
         return simpleListener(
             target = eventKey,
             id = id0,
