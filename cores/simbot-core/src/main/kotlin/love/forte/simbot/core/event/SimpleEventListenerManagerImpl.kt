@@ -207,11 +207,13 @@ internal class SimpleEventListenerManagerImpl internal constructor(
                             invoker(managerScope, listenerContext)
                         }
                         val result = if (handleResult.isFailure) {
-                            val err = handleResult.exceptionOrNull()
-                            logger.error(
-                                "Listener process failed: $err",
-                                err!!
-                            )
+                            if (logger.isErrorEnabled) {
+                                val err = handleResult.exceptionOrNull()
+                                logger.error(
+                                    "Listener [${invoker.listener.id}] process failed: $err",
+                                    err!!
+                                )
+                            }
                             EventResult.invalid()
                         } else {
                             handleResult.getOrNull()!!
