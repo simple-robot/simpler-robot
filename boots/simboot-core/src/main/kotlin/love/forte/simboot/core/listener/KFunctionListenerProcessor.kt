@@ -85,7 +85,7 @@ public class KFunctionListenerProcessor(
         listenerAttributeMap[RAW_LISTEN_TARGETS] = listenTargets
         
         val listener = KFunctionEventListener(
-            id = functionId.ID,
+            id = functionId,
             priority = context.priority,
             isAsync = context.isAsync,
             targets = listenTargets.toSet(),
