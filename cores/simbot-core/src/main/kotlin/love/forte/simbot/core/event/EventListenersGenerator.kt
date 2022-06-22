@@ -100,16 +100,16 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     @EventListenersGeneratorDSL
     public fun <E : Event> listen(
         eventKey: Event.Key<E>,
-        block: ListenerGenerator<E>.() -> Unit,
+        block: SimpleListenerBuilder<E>.() -> Unit,
     ): EventListenersGenerator = also {
-        listeners.add { ListenerGenerator(eventKey).also(block).build() }
+        listeners.add { SimpleListenerBuilder(eventKey).also(block).build() }
     }
     
     
     @Deprecated("Use listen(Event.Key){ ... }", ReplaceWith("listen(eventKey, block)"))
     public fun <E : Event> listener(
         eventKey: Event.Key<E>,
-        block: ListenerGenerator<E>.() -> Unit,
+        block: SimpleListenerBuilder<E>.() -> Unit,
     ): EventListenersGenerator = listen(eventKey, block)
     
     
@@ -184,17 +184,17 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      */
     @EventListenersGeneratorDSL
     public operator fun <E : Event> Event.Key<E>.invoke(handle: suspend EventListenerProcessingContext.(E) -> EventResult): EventHandling<E> {
-        val generator = ListenerGenerator(this)
-        generator.handle(handle)
-        listeners.add { generator.build() }
-        return EventHandling(generator)
+        val builder = SimpleListenerBuilder(this)
+        builder.handle(handle)
+        listeners.add { builder.build() }
+        return EventHandling(builder)
     }
     
     /**
      * 通过 [Event.Key.invoke] 得到的 _处理过程_ 对象，用于进一步配置此事件的匹配逻辑。
      */
     @JvmInline
-    public value class EventHandling<E : Event> @InternalSimbotApi internal constructor(@PublishedApi internal val generator: ListenerGenerator<E>)
+    public value class EventHandling<E : Event> @InternalSimbotApi internal constructor(@PublishedApi internal val generator: SimpleListenerBuilder<E>)
     
     
     /**
@@ -291,7 +291,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * ```
      *
      */
-    @Suppress("NOTHING_TO_INLINE", "unused")
+    @Suppress("NOTHING_TO_INLINE", "unused", "UnusedReceiverParameter")
     public inline fun EventListenerProcessingContext.eventResult(
         content: Any? = null,
         isTruncated: Boolean = false,
@@ -302,8 +302,6 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
 
 
 // region listener generator
-@DslMarker
-internal annotation class ListenerGeneratorDSL
 
 
 /**
@@ -313,27 +311,29 @@ internal annotation class ListenerGeneratorDSL
  *
  * @author ForteScarlet
  */
-@ListenerGeneratorDSL
+@Suppress("DEPRECATION")
+@SimpleListenerBuilderDSL
+@Deprecated("Just use SimpleListenerBuilder", ReplaceWith("SimpleListenerBuilder<E>", "love.forte.simbot.core.event.SimpleListenerBuilder"))
 public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private val eventKey: Event.Key<E>) {
     
     
     /**
      * 设置listener的ID
      */
-    @ListenerGeneratorDSL
+    @SimpleListenerBuilderDSL
     public var id: String? = null
     
     
     /**
      * 使用的日志
      */
-    @ListenerGeneratorDSL
+    @SimpleListenerBuilderDSL
     public var logger: Logger? = null
     
     /**
      * 是否标记为异步函数。
      */
-    @ListenerGeneratorDSL
+    @SimpleListenerBuilderDSL
     public var isAsync: Boolean = false
     
     
@@ -383,7 +383,7 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
      *
      */
     @JvmSynthetic
-    @ListenerGeneratorDSL
+    @SimpleListenerBuilderDSL
     public fun match(matcher: suspend EventListenerProcessingContext.(E) -> Boolean) {
         setMatcher(matcher)
     }
@@ -431,7 +431,7 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
      *
      */
     @JvmSynthetic
-    @ListenerGeneratorDSL
+    @SimpleListenerBuilderDSL
     public fun handle(func: suspend EventListenerProcessingContext.(E) -> EventResult) {
         setFunc(func)
     }
@@ -478,8 +478,6 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
             function = func ?: throw SimbotIllegalStateException("The handle function must be configured")
         )
     }
-    
-    
 }
 // endregion
 

@@ -17,23 +17,23 @@
 package love.forte.simbot.core.event
 
 import love.forte.simbot.Api4J
-import love.forte.simbot.event.Event
-import love.forte.simbot.event.EventListener
-import love.forte.simbot.event.EventListenerProcessingContext
-import love.forte.simbot.event.EventResult
+import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.SimbotIllegalStateException
+import love.forte.simbot.event.*
+import love.forte.simbot.utils.randomIdStr
+import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
+import java.util.function.BiConsumer
 import java.util.function.BiFunction
 import java.util.function.BiPredicate
+
+@DslMarker
+internal annotation class SimpleListenerBuilderDSL
 
 /**
  * 用于构建一个 [SimpleListener] 监听函数。
  *
- * 主要服务于不支持使用挂起函数的使用方，使用链式风格构建 [EventListener].
- *
- * kotlin中可以直接使用 [simpleListener] 等函数。
- *
  * [SimpleListenerBuilder] 只能用于配置生成一个具体的事件目标，即只能指定一个具体的 [Event.Key].
- *
  *
  * ```java
  * new SimpleListenerBuilder<>(FooEvent.Key)
@@ -45,14 +45,45 @@ import java.util.function.BiPredicate
  *     .build();
  * ```
  *
+ * 对于 Kotlin 开发者，可以通过 [buildSimpleListener] 来使用DSL函数构建 [EventListener] 实例。
+ * ```kotlin
+ * buildSimpleListener(FooEvent.Key) {
+ *    match { ... }
+ *    match { ... }
+ *    handle {
+ *       ...
+ *       ...
+ *       EventResult.of(...)
+ *    }
+ * }
+ * ```
+ *
+ * @see buildSimpleListener
+ *
+ *
  * @author ForteScarlet
  */
-@Api4J
 public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) {
-    private var id: String? = null
-    private var isAsync: Boolean = false
-    private var matcher: BiPredicate<EventListenerProcessingContext, E>? = null
-    private var handler: BiFunction<EventListenerProcessingContext, E, EventResult>? = null
+    
+    /**
+     * 设置listener的ID
+     */
+    @SimpleListenerBuilderDSL
+    public var id: String? = null
+    
+    
+    /**
+     * 使用的日志
+     */
+    @SimpleListenerBuilderDSL
+    @Deprecated("Will be remove", ReplaceWith("this"))
+    public var logger: Logger? = null
+    
+    /**
+     * 是否标记为异步函数。
+     */
+    @SimpleListenerBuilderDSL
+    public var isAsync: Boolean = false
     
     /**
      * 配置当前id。
@@ -75,6 +106,139 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) {
         this.isAsync = isAsync
     }
     
+    private var matcher: (suspend EventListenerProcessingContext.(E) -> Boolean)? = null
+    
+    private fun setMatcher(m: suspend EventListenerProcessingContext.(E) -> Boolean) {
+        val old = matcher
+        matcher = if (old == null) {
+            m
+        } else {
+            {
+                old(it) && m(it)
+            }
+        }
+    }
+    
+    /**
+     * 配置当前监听函数的匹配函数。
+     *
+     * ```kotlin
+     * listen(FooEvent) {
+     *    match { condition } // return Boolean
+     *    handle { ... }
+     * }
+     * ```
+     *
+     * [match] 函数允许多次使用。当执行多次 [match] 时，其效果相当于每次配置的条件之间通过与(`&&`)相连接。
+     *
+     * 例如：
+     * ```kotlin
+     * listen(FooEvent) {
+     *    match { condition1 }
+     *    match { condition2 }
+     *    match { condition3 }
+     *
+     *    handle { ... }
+     * }
+     * ```
+     * 其效果等同于：
+     * ```kotlin
+     * listen(FooEvent) {
+     *    match { condition1 && condition2 && condition3 }
+     *
+     *    handle { ... }
+     * }
+     * ```
+     *
+     *
+     */
+    @JvmSynthetic
+    @SimpleListenerBuilderDSL
+    public fun match(matcher: suspend EventListenerProcessingContext.(E) -> Boolean) {
+        setMatcher(matcher)
+    }
+    
+    /**
+     * 配置当前监听函数的匹配函数。
+     *
+     * @see match
+     */
+    @Api4J
+    @JvmName("match")
+    @Suppress("FunctionName")
+    public fun _match(matcher: BiPredicate<EventListenerProcessingContext, E>): SimpleListenerBuilder<E> = also {
+        setMatcher { e -> runWithInterruptible { matcher.test(this, e) } }
+    }
+    
+    private var func: (suspend EventListenerProcessingContext.(E) -> EventResult)? = null
+    
+    private fun setFunc(f: suspend EventListenerProcessingContext.(E) -> EventResult) {
+        if (this.func != null) {
+            throw SimbotIllegalStateException("Event handle can and can only be configured once")
+        }
+        
+        func = f
+    }
+    
+    /**
+     * 监听函数。处理监听到的事件的具体逻辑。
+     *
+     * ```kotlin
+     * listen(FooEvent) {
+     *    handle { event: FooEvent -> // this: EventListenerProcessingContext
+     *       // do handle
+     *
+     *       EventResult.of(...) // return
+     *    }
+     * }
+     * ```
+     *
+     * 对于同一个 [ListenerGenerator], [handle] 只能且必须配置 **一次**。如果配置次数超过一次会直接引发 [SimbotIllegalStateException]；
+     * 如果未进行配置则会在最终构建时引发 [SimbotIllegalStateException].
+     *
+     * @throws SimbotIllegalStateException 如果调用超过一次
+     *
+     */
+    @JvmSynthetic
+    @SimpleListenerBuilderDSL
+    public fun handle(func: suspend EventListenerProcessingContext.(E) -> EventResult) {
+        setFunc(func)
+    }
+    
+    
+    /**
+     * 监听函数。处理监听到的事件的具体逻辑。
+     *
+     * @see handle
+     *
+     * @throws SimbotIllegalStateException 如果调用超过一次
+     */
+    @Api4J
+    @JvmName("handle")
+    @Suppress("FunctionName")
+    public fun _handle(func: BiConsumer<EventListenerProcessingContext, E>): SimpleListenerBuilder<E> = also {
+        setFunc { e ->
+            runWithInterruptible { func.accept(this, e) }
+            EventResult.defaults()
+        }
+    }
+    
+    /**
+     * 监听函数。处理监听到的事件的具体逻辑。
+     *
+     * @see handle
+     *
+     * @throws SimbotIllegalStateException 如果调用超过一次
+     */
+    @Api4J
+    @JvmName("handle")
+    @Suppress("FunctionName")
+    public fun _handle(func: BiFunction<EventListenerProcessingContext, E, EventResult>): SimpleListenerBuilder<E> =
+        also {
+            setFunc { e -> runWithInterruptible { func.apply(this, e) } }
+        }
+    
+    
     /**
      * 配置 [EventListener.logger].
      *
@@ -84,43 +248,62 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) {
     @Deprecated("Will be remove", ReplaceWith("this"))
     public fun logger(logger: Logger): SimpleListenerBuilder<E> = this
     
-    /**
-     * 配置监听函数的匹配逻辑。
-     *
-     * @see EventListener.match
-     */
-    public fun match(matcher: BiPredicate<EventListenerProcessingContext, E>): SimpleListenerBuilder<E> = also {
-        this.matcher.also { old ->
-            this.matcher = if (old == null) {
-                matcher
-            } else {
-                old.and(matcher)
-            }
-        }
-    }
-    
-    /**
-     * 配置监听函数的执行逻辑。只能被配置一次，重复配置会导致 [IllegalStateException].
-     *
-     * @throws IllegalStateException 如果已经被配置过
-     *
-     * @see EventListener.invoke
-     */
-    public fun handle(handler: BiFunction<EventListenerProcessingContext, E, EventResult>): SimpleListenerBuilder<E> =
-        also {
-            if (this.handler != null) {
-                throw IllegalStateException("handle has been configured")
-            }
-            this.handler = handler
-        }
-    
     
     /**
      * 构建并得到目标结果。
      */
     public fun build(): EventListener {
-        // return simpleListener(id = id.ID, )
-        TODO()
-        // return simpleListener()
+        val id0 = id ?: randomIdStr()
+        return simpleListener(
+            target = target,
+            id = id0,
+            isAsync = isAsync,
+            matcher = matcher ?: { true },
+            function = func ?: throw SimbotIllegalStateException("The handle function must be configured")
+        )
     }
+}
+
+
+/**
+ * 通过 [SimpleListenerBuilder] 构建一个 [EventListener] 实例。
+ * ```kotlin
+ * buildSimpleListener(FooEvent) {
+ *     match { true }
+ *     match { true }
+ *     handle {
+ *         // handle..
+ *
+ *         EventResult.defaults()
+ *     }
+ * }
+ * ```
+ *
+ *
+ */
+public inline fun <E : Event> buildSimpleListener(target: Event.Key<E>, block: SimpleListenerBuilder<E>.() -> Unit): EventListener {
+    return SimpleListenerBuilder(target).also(block).build()
+}
+
+
+/**
+ * 通过 [SimpleListenerBuilder] 构建一个 [EventListener] 实例。
+ * ```kotlin
+ * buildSimpleListener<FooEvent> {
+ *     match { true }
+ *     match { true }
+ *     handle {
+ *         // handle..
+ *
+ *         EventResult.defaults()
+ *     }
+ * }
+ * ```
+ *
+ * 更建议使用 `buildSimpleListener(FooEvent) { ... }` 的显示指定 target key 的形式。
+ *
+ */
+@ExperimentalSimbotApi
+public inline fun <reified E : Event> buildSimpleListener(block: SimpleListenerBuilder<E>.() -> Unit): EventListener {
+    return SimpleListenerBuilder(E::class.getKey()).also(block).build()
 }
