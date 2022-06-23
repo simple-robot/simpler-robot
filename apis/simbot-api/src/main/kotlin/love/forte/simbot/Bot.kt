@@ -20,6 +20,7 @@ import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import love.forte.simbot.ability.DelayableCoroutineScope
 import love.forte.simbot.ability.Survivable
 import love.forte.simbot.definition.User
 import love.forte.simbot.definition.UserInfo
@@ -31,7 +32,7 @@ import love.forte.simbot.utils.runInBlocking
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
 
-
+// Delayable // 可延迟的
 /**
  *
  * 一个 [Bot]. 同时, [Bot] 也属于一个用户 [User]。
@@ -54,7 +55,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * @author ForteScarlet
  */
-public interface Bot : User, CoroutineScope, Survivable,
+public interface Bot : User, DelayableCoroutineScope, Survivable,
     LoggerContainer, ComponentContainer,
     ContactsContainer, GroupsContainer, GuildsContainer {
     override val coroutineContext: CoroutineContext
@@ -107,7 +108,8 @@ public interface Bot : User, CoroutineScope, Survivable,
      * _Deprecated: 直接通过 [Resource.asImage][Image.toImage] 构建 [Image] 实例即可。_
      */
     @JvmSynthetic
-    @Deprecated("Just use Resource.asImage",
+    @Deprecated(
+        "Just use Resource.asImage",
         ReplaceWith("resource.asImage()", "love.forte.simbot.message.Image.Key.asImage")
     )
     public suspend fun uploadImage(resource: Resource): Image<*> = resource.toImage()
