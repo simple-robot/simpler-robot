@@ -4,7 +4,6 @@ import love.forte.simbot.Bot;
 import love.forte.simbot.ability.DelayableCompletableFuture;
 import love.forte.simbot.ability.DelayableCoroutineScope;
 import org.jetbrains.annotations.NotNull;
-import org.testng.annotations.Test;
 
 import java.time.LocalTime;
 import java.util.concurrent.ExecutionException;
@@ -15,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DelayScopeTest {
 
-    @Test
+    // @Test
     public void test() throws ExecutionException, InterruptedException {
         final FooDelayableCoroutineScope scope = new FooDelayableCoroutineScope();
         final DelayableCompletableFuture<LocalTime> whole = scope.delay(5, TimeUnit.SECONDS, () -> {
