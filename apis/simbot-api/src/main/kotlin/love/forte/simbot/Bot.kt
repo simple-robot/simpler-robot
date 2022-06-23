@@ -20,7 +20,6 @@ import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import love.forte.simbot.ability.DelayableCoroutineScope
 import love.forte.simbot.ability.Survivable
 import love.forte.simbot.definition.User
 import love.forte.simbot.definition.UserInfo
@@ -55,7 +54,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * @author ForteScarlet
  */
-public interface Bot : User, DelayableCoroutineScope, Survivable,
+public interface Bot : User, Survivable,
     LoggerContainer, ComponentContainer,
     ContactsContainer, GroupsContainer, GuildsContainer {
     override val coroutineContext: CoroutineContext
