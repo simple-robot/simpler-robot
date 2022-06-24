@@ -19,6 +19,7 @@ package love.forte.simbot.core.application
 import love.forte.simbot.Attribute
 import love.forte.simbot.application.Application
 import love.forte.simbot.attribute
+import love.forte.simbot.core.application.ApplicationAttributes.application
 import love.forte.simbot.core.scope.SimpleScope
 import love.forte.simbot.event.EventProcessingContext
 
@@ -31,7 +32,7 @@ public object ApplicationAttributes {
     /**
      * [Application] 的属性名。
      */
-    private const val APPLICATION_NAME: String = "\$simple-application$"
+    public const val APPLICATION_NAME: String = "\$simple-application$"
     
     /**
      * 获取当前环境下的 [love.forte.simbot.application.Application]。
@@ -53,6 +54,23 @@ public object ApplicationAttributes {
      */
     @JvmField
     public val Application: Attribute<Application> = attribute(APPLICATION_NAME)
+    
+    /**
+     * 尝试从 [EventProcessingContext] 的全局属性中获取 [Application]。
+     *
+     * 因为 [ApplicationAttributes.Application] 属性在simbot标准库的默认实现中均达成了约定，因此如果不使用第三方实现的话，
+     * 理论上是可以保证能够得到 [Application] 的。
+     *
+     * 如果因为以外情况而导致 [EventProcessingContext.application] 无法取到 [Application] 的值，则会抛出 [NoSuchElementException] 异常。
+     * 此情况在使用simbot标准库中所提供的各个实现中均不应会出现。
+     *
+     */
+    @JvmStatic
+    public val EventProcessingContext.application: Application get() = this[SimpleScope.Global]?.get(Application) ?: throw NoSuchElementException("""ApplicationAttributes.Application("$APPLICATION_NAME")""")
+}
+
+public fun EventProcessingContext.a() {
+    println(application)
 }
 
 

@@ -21,15 +21,27 @@ import love.forte.simboot.listener.ParameterBinder
 import love.forte.simbot.Attribute
 import love.forte.simbot.attribute
 import love.forte.simbot.event.Event
+import love.forte.simbot.event.EventListener
 import kotlin.reflect.KFunction
 
+/**
+ * 提供部分在 boot 相关模块（包括SpringBoot相关）下所可能提供的监听函数属性。
+ */
+@Suppress("MemberVisibilityCanBePrivate")
 public object BootListenerAttributes {
     
-    private const val RAW_FUNCTION_NAME = "\$boot.raw_function$"
+    // region raw function
+    /**
+     * [RawFunction] 的属性名。
+     */
+    public const val RAW_FUNCTION_NAME: String = "\$boot.raw_function$"
     
     /**
      * 由 [Boot] 启动器 （中使用的 [KFunctionListenerProcessor] 解析器） 所提供，
      * 为其解析的监听函数提供此监听函数中所使用的原始的 [KFunction] 对象。
+     *
+     * [RawFunction] 属性值会被保存在 [EventListener] 中，
+     * 可以通过 [EventListener.getAttribute] 获取。
      *
      * **Kotlin**
      * ```kotlin
@@ -47,15 +59,50 @@ public object BootListenerAttributes {
      * }
      * ```
      *
+     * @see EventListener.rawFunction
+     * @see EventListener.rawFunctionOrNull
+     *
      */
     @JvmField
     public val RawFunction: Attribute<KFunction<*>> = attribute(RAW_FUNCTION_NAME)
     
-    private const val RAW_BINDERS_NAME = "\$boot.raw_binders$"
+    /**
+     * 尝试从一个 [EventListener] 中获取 [RawFunction] 属性。
+     * 如果使用的是simbot标准库中提供的boot相关实现（包括SpringBoot相关）则能够获取到此值，否则可能会无法得到。
+     *
+     * 当无法得到的时候会抛出 [NoSuchElementException] 异常。
+     *
+     * @throws NoSuchElementException 当无法得到时
+     *
+     */
+    @JvmStatic
+    public val EventListener.rawFunction: KFunction<*>
+        get() = getAttribute(RawFunction)
+            ?: throw NoSuchElementException("""BootListenerAttributes.RawFunction("$RAW_FUNCTION_NAME")""")
+    
+    
+    /**
+     * 尝试从一个 [EventListener] 中获取 [RawFunction] 属性。
+     * 如果使用的是simbot标准库中提供的boot相关实现（包括SpringBoot相关）则能够获取到此值，否则可能会无法得到。
+     *
+     * 当无法得到的时候会得到 null。
+     *
+     */
+    @JvmStatic
+    public val EventListener.rawFunctionOrNull: KFunction<*>? get() = getAttribute(RawFunction)
+    // endregion
+    
+    /**
+     * [RawBinders] 的属性名。
+     */
+    public const val RAW_BINDERS_NAME: String = "\$boot.raw_binders$"
     
     /**
      * 由 [Boot] 启动器 （中使用的 [KFunctionListenerProcessor] 解析器） 所提供，
      * 为其解析的监听函数提供此监听函数中所使用的原始的 [参数绑定器][ParameterBinder] 集合。
+     *
+     * [RawBinders] 属性值会被保存在 [EventListener] 中，
+     * 可以通过 [EventListener.getAttribute] 获取。
      *
      * **Kotlin**
      * ```kotlin
@@ -81,11 +128,42 @@ public object BootListenerAttributes {
     @JvmField
     public val RawBinders: Attribute<Collection<ParameterBinder>> = attribute(RAW_BINDERS_NAME)
     
-    private const val RAW_LISTEN_TARGETS_NAME = "\$BOOT.raw_listen_targets$"
+    /**
+     * 尝试从一个 [EventListener] 中获取 [RawBinders] 属性。
+     * 如果使用的是simbot标准库中提供的boot相关实现（包括SpringBoot相关）则能够获取到此值，否则可能会无法得到。
+     *
+     * 当无法得到的时候会抛出 [NoSuchElementException] 异常。
+     *
+     * @throws NoSuchElementException 当无法得到时
+     *
+     */
+    @JvmStatic
+    public val EventListener.rawBinders: Collection<ParameterBinder>
+        get() = getAttribute(RawBinders)
+            ?: throw NoSuchElementException("""BootListenerAttributes.RawBinders("$RAW_BINDERS_NAME")""")
+    
+    
+    /**
+     * 尝试从一个 [EventListener] 中获取 [RawBinders] 属性。
+     * 如果使用的是simbot标准库中提供的boot相关实现（包括SpringBoot相关）则能够获取到此值，否则可能会无法得到。
+     *
+     * 当无法得到的时候会得到 null。
+     */
+    @JvmStatic
+    public val EventListener.rawBindersOrNull: Collection<ParameterBinder>?
+        get() = getAttribute(RawBinders)
+    
+    /**
+     * [RawListenTargets] 的属性名。
+     */
+    public const val RAW_LISTEN_TARGETS_NAME: String = "\$BOOT.raw_listen_targets$"
     
     /**
      * 由 [Boot] 启动器 （中使用的 [KFunctionListenerProcessor] 解析器） 所提供，
      * 为其解析的监听函数提供此监听函数中所使用的原始的 [监听事件类型][Event.Key] 集合。
+     *
+     * [RawListenTargets] 属性值会被保存在 [EventListener] 中，
+     * 可以通过 [EventListener.getAttribute] 获取。
      *
      * **Kotlin**
      * ```kotlin
@@ -109,6 +187,31 @@ public object BootListenerAttributes {
      */
     @JvmField
     public val RawListenTargets: Attribute<Collection<Event.Key<*>>> = attribute(RAW_LISTEN_TARGETS_NAME)
+    
+    /**
+     * 尝试从一个 [EventListener] 中获取 [RawListenTargets] 属性。
+     * 如果使用的是simbot标准库中提供的boot相关实现（包括SpringBoot相关）则能够获取到此值，否则可能会无法得到。
+     *
+     * 当无法得到的时候会抛出 [NoSuchElementException] 异常。
+     *
+     * @throws NoSuchElementException 当无法得到时
+     *
+     */
+    @JvmStatic
+    public val EventListener.rawListenTargets: Collection<Event.Key<*>>
+        get() = getAttribute(RawListenTargets)
+            ?: throw NoSuchElementException("""BootListenerAttributes.RawListenTargets("$RAW_LISTEN_TARGETS_NAME")""")
+    
+    
+    /**
+     * 尝试从一个 [EventListener] 中获取 [RawListenTargets] 属性。
+     * 如果使用的是simbot标准库中提供的boot相关实现（包括SpringBoot相关）则能够获取到此值，否则可能会无法得到。
+     *
+     * 当无法得到的时候会得到 null。
+     */
+    @JvmStatic
+    public val EventListener.rawListenTargetsOrNull: Collection<Event.Key<*>>?
+        get() = getAttribute(RawListenTargets)
     
     
 }
