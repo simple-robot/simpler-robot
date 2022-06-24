@@ -815,7 +815,7 @@ private fun EventListenersGenerator.autoConfigFromBeanContainer(
                     val listener = tool.getAnnotation(function, Listener::class) ?: continue
                     val returnType = function.returnType.classifier as? KClass<*>?
                     if (returnType?.isSubclassOf(EventListenerBuilder::class) == true) {
-                        resolveEventListenerBuilderFunction(
+                        resolveEventListenerOrBuilderFunction(
                             type,
                             function,
                             logger,
@@ -876,7 +876,7 @@ private fun EventListenersGenerator.resolveEventListenerFunction(
     listener(resolvedListener)
 }
 
-private fun EventListenersGenerator.resolveEventListenerBuilderFunction(
+private fun EventListenersGenerator.resolveEventListenerOrBuilderFunction(
     type: KClass<*>?,
     function: KFunction<*>,
     logger: Logger,
@@ -890,26 +890,30 @@ private fun EventListenersGenerator.resolveEventListenerBuilderFunction(
         )
     }
     val parameters = kParameters.associateWith { beanContainer.getByKParameter(it) }
-    val builder = function.callBy(parameters) as EventListenerBuilder
+    val result = function.callBy(parameters)
+    val resultListener = when (result) {
+        is EventListenerBuilder -> result.build()
+        is EventListener -> result
+        else -> null
+    } ?: return
     
-    val builtListener = builder.build()
     
     if (type == null) {
         logger.debug(
-            "Resolved top-level listener: [{}] by builder [{}]",
-            builtListener,
-            builder
+            "Resolved top-level listener: [{}] by [{}]",
+            resultListener,
+            result
         )
     } else {
         logger.debug(
-            "Resolved listener: [{}] from [{}] by builder [{}]",
-            builtListener,
+            "Resolved listener: [{}] from [{}] by [{}]",
+            resultListener,
             type,
-            builder
+            result
         )
     }
     
-    listener(builtListener)
+    listener(resultListener)
 }
 
 
@@ -972,7 +976,7 @@ private fun EventListenersGenerator.autoScanTopFunction(
                         // 没有参数、且返回值为 EventListenerBuilder, 则使用EventListenerBuilder返回值。
                         val returnType = function.returnType.classifier as? KClass<*>?
                         if (returnType?.isSubclassOf(EventListenerBuilder::class) == true) {
-                            resolveEventListenerBuilderFunction(
+                            resolveEventListenerOrBuilderFunction(
                                 null,
                                 function,
                                 logger,
@@ -1084,6 +1088,7 @@ private val KClass<*>.allFunctions: List<KFunction<*>>
     }.getOrDefault(emptyList())
 
 
+@Suppress("DuplicatedCode")
 private fun BeanContainer.getByKParameter(parameter: KParameter): Any {
     val name = parameter.findAnnotation<Named>()?.value?.let { n ->
         n.ifEmpty {
