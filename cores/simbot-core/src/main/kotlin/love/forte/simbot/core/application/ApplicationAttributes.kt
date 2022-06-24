@@ -21,6 +21,7 @@ import love.forte.simbot.application.Application
 import love.forte.simbot.attribute
 import love.forte.simbot.core.application.ApplicationAttributes.application
 import love.forte.simbot.core.scope.SimpleScope
+import love.forte.simbot.core.scope.SimpleScope.globalOrNull
 import love.forte.simbot.event.EventProcessingContext
 
 /**
@@ -64,9 +65,29 @@ public object ApplicationAttributes {
      * 如果因为以外情况而导致 [EventProcessingContext.application] 无法取到 [Application] 的值，则会抛出 [NoSuchElementException] 异常。
      * 此情况在使用simbot标准库中所提供的各个实现中均不应会出现。
      *
+     * @throws NoSuchElementException 当属性不存在时
      */
     @JvmStatic
-    public val EventProcessingContext.application: Application get() = this[SimpleScope.Global]?.get(Application) ?: throw NoSuchElementException("""ApplicationAttributes.Application("$APPLICATION_NAME")""")
+    public val EventProcessingContext.application: Application
+        get() = applicationOrNull
+            ?: throw NoSuchElementException("""ApplicationAttributes.Application("$APPLICATION_NAME")""")
+    
+    
+    /**
+     * 尝试从 [EventProcessingContext] 的全局属性中获取 [Application]。
+     *
+     * 因为 [ApplicationAttributes.Application] 属性在simbot标准库的默认实现中均达成了约定，因此如果不使用第三方实现的话，
+     * 理论上是可以保证能够得到 [Application] 的。
+     *
+     * 如果因为以外情况而导致 [EventProcessingContext.application] 无法取到 [Application] 的值，则会得到 null。
+     * 此情况在使用simbot标准库中所提供的各个实现中均不应会出现。
+     *
+     */
+    @JvmStatic
+    public val EventProcessingContext.applicationOrNull: Application?
+        get() = globalOrNull?.get(Application)
+    
+    
 }
 
 public fun EventProcessingContext.a() {

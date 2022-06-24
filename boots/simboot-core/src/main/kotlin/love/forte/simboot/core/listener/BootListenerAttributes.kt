@@ -77,7 +77,7 @@ public object BootListenerAttributes {
      */
     @JvmStatic
     public val EventListener.rawFunction: KFunction<*>
-        get() = getAttribute(RawFunction)
+        get() = rawFunctionOrNull
             ?: throw NoSuchElementException("""BootListenerAttributes.RawFunction("$RAW_FUNCTION_NAME")""")
     
     
@@ -92,6 +92,7 @@ public object BootListenerAttributes {
     public val EventListener.rawFunctionOrNull: KFunction<*>? get() = getAttribute(RawFunction)
     // endregion
     
+    // region raw binders
     /**
      * [RawBinders] 的属性名。
      */
@@ -139,7 +140,7 @@ public object BootListenerAttributes {
      */
     @JvmStatic
     public val EventListener.rawBinders: Collection<ParameterBinder>
-        get() = getAttribute(RawBinders)
+        get() = rawBindersOrNull
             ?: throw NoSuchElementException("""BootListenerAttributes.RawBinders("$RAW_BINDERS_NAME")""")
     
     
@@ -152,7 +153,9 @@ public object BootListenerAttributes {
     @JvmStatic
     public val EventListener.rawBindersOrNull: Collection<ParameterBinder>?
         get() = getAttribute(RawBinders)
+    // endregion
     
+    // region raw listen targets
     /**
      * [RawListenTargets] 的属性名。
      */
@@ -199,7 +202,7 @@ public object BootListenerAttributes {
      */
     @JvmStatic
     public val EventListener.rawListenTargets: Collection<Event.Key<*>>
-        get() = getAttribute(RawListenTargets)
+        get() = rawListenTargetsOrNull
             ?: throw NoSuchElementException("""BootListenerAttributes.RawListenTargets("$RAW_LISTEN_TARGETS_NAME")""")
     
     
@@ -212,8 +215,7 @@ public object BootListenerAttributes {
     @JvmStatic
     public val EventListener.rawListenTargetsOrNull: Collection<Event.Key<*>>?
         get() = getAttribute(RawListenTargets)
-    
-    
+    // endregion
 }
 
 /**
