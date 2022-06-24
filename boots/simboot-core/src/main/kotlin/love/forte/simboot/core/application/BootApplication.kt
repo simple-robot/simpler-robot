@@ -16,10 +16,8 @@
 
 package love.forte.simboot.core.application
 
-import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.ExperimentalSerializationApi
 import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.annotationtool.core.getAnnotation
@@ -54,7 +52,6 @@ import org.slf4j.Logger
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Named
-import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
@@ -361,22 +358,17 @@ private class BootApplicationImpl(
 ) : BootApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
     
-    override val coroutineContext: CoroutineContext
-    override val job: CompletableJob
-    override val logger: Logger
+    override val coroutineContext = environment.coroutineContext
+    override val logger = environment.logger
     
-    init {
-        val currentCoroutineContext = environment.coroutineContext
-        job = SupervisorJob(currentCoroutineContext[Job])
-        coroutineContext = currentCoroutineContext + job
-        logger = environment.logger
-    }
+    private val job: Job? get() = coroutineContext[Job]
     
     override val isActive: Boolean
-        get() = job.isActive
+        get() = job?.isActive ?: true
     
     override val isCancelled: Boolean
-        get() = job.isCancelled
+        get() = job?.isCancelled ?: false
+    
     
     override suspend fun cancel(reason: Throwable?): Boolean {
         shutdown(reason)
@@ -384,7 +376,7 @@ private class BootApplicationImpl(
     }
     
     override fun invokeOnCompletion(handler: CompletionHandler) {
-        job.invokeOnCompletion(handler)
+        job?.invokeOnCompletion(handler) ?: handler.invoke(null)
     }
 }
 
@@ -996,14 +988,14 @@ private fun BotRegistrar.autoRegisterBots(
 ) {
     val botVerifyInfoList = scanResources(classLoader, scanResources) {
         plus(botResources).mapNotNull { r ->
-                val decoder = decoderFactories.find { it.factory.match(r.name) }?.create()
-                if (decoder == null) {
-                    logger.warn("No decoder factories match resource [{}] named [{}], skip.", r, r.name)
-                    return@mapNotNull null
-                }
-                
-                r.toBotVerifyInfo(decoder)
+            val decoder = decoderFactories.find { it.factory.match(r.name) }?.create()
+            if (decoder == null) {
+                logger.warn("No decoder factories match resource [{}] named [{}], skip.", r, r.name)
+                return@mapNotNull null
             }
+            
+            r.toBotVerifyInfo(decoder)
+        }
     }
     
     // TODO log?
