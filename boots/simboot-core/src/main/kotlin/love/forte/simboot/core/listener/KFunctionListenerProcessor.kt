@@ -80,9 +80,9 @@ public class KFunctionListenerProcessor(
         val listenerAttributeMap = AttributeMutableMap(ConcurrentHashMap())
         
         // attributes
-        listenerAttributeMap[RAW_FUNCTION] = function
-        listenerAttributeMap[RAW_BINDERS] = binders
-        listenerAttributeMap[RAW_LISTEN_TARGETS] = listenTargets
+        listenerAttributeMap[BootListenerAttributes.RawFunction] = function
+        listenerAttributeMap[BootListenerAttributes.RawBinders] = binders
+        listenerAttributeMap[BootListenerAttributes.RawListenTargets] = listenTargets
         
         val listener = KFunctionEventListener(
             id = functionId,

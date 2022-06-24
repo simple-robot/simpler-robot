@@ -19,14 +19,13 @@ package love.forte.simboot.spring.autoconfigure.application
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.application.*
-import love.forte.simbot.core.application.BaseApplication
-import love.forte.simbot.core.application.BaseApplicationBuilder
-import love.forte.simbot.core.application.EventProcessableApplicationBuilder
-import love.forte.simbot.core.application.SimpleApplicationBuilder
+import love.forte.simbot.core.application.*
 import love.forte.simbot.core.event.SimpleEventListenerManager
 import love.forte.simbot.core.event.SimpleListenerManagerConfiguration
 import love.forte.simbot.core.event.simpleListenerManager
+import love.forte.simbot.set
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
@@ -159,6 +158,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
     }
     
     
+    @OptIn(ExperimentalSimbotApi::class)
     @Suppress("DuplicatedCode")
     suspend fun build(configuration: SpringBootApplicationConfiguration): SpringBootApplication {
         val components = buildComponents()
@@ -184,7 +184,9 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
         }
         
         val application = SpringBootApplicationImpl(configuration, environment, listenerManager, providers)
-        
+        // set application attribute
+        listenerManager.globalScopeContext[ApplicationAttributes.Application] = application
+    
         // complete.
         complete(application)
     
