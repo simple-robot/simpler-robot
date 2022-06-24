@@ -99,13 +99,42 @@ public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> 
 
 
 /**
+ * 应用于 [ApplicationBuilder.bots] 中的bot注册函数,
+ * 提供一个通过 [BotVerifyInfo] 注册的通用bot注册函数。
  *
- * TODO 补注释
+ * [BotRegistrar] 会通过 [BotVerifyInfo] 中的 [组件id][BotVerifyInfo.componentId]
+ * 去当前环境中寻找对应组件的、实现了 [Bot注册器][love.forte.simbot.BotRegistrar] 的 [事件提供者][EventProvider],
+ * 并尝试注册此bot。
+ *
  */
 public interface BotRegistrar {
     
     /**
-     * TODO 补注释
+     * 当前环境中的所有事件提供者。
+     *
+     * 你可以通过 [providers] 寻找你所需要的指定 [Bot注册器][love.forte.simbot.BotRegistrar]。
+     *
+     * ```kotlin
+     * providers.filterIsInstance<FooBotRegistrar>().forEach {
+     *    // ...
+     * }
+     * ```
+     *
+     * 当然，根据组件和事件提供者的注册机制来讲，通常情况下同一个类型的注册器环境中只会存在一个。
+     * ```kotlin
+     * providers.firstOrNull { it is FooBotRegistrar } as FooBotRegistrar?
+     * ```
+     *
+     */
+    public val providers: List<EventProvider>
+    
+    
+    /**
+     * 通过 [BotVerifyInfo] 中的 [组件信息][BotVerifyInfo.componentId]
+     * 去当前环境中寻找对应组件的、实现了 [Bot注册器][love.forte.simbot.BotRegistrar] 的 [事件提供者][EventProvider],
+     * 并尝试注册此bot。
+     *
+     * 如果没有找到符合组件id的 [Bot注册器][love.forte.simbot.BotRegistrar] 存在，则返回null。
      */
     public fun register(botVerifyInfo: BotVerifyInfo): Bot?
 }

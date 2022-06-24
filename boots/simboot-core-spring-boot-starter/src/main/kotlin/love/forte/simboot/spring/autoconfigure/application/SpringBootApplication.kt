@@ -183,9 +183,16 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
             logger.debug("The built providers: {}", providers)
         }
         
-        logger.debug("Registering bots...")
-        val bots = registerBots(providers.filterIsInstance<love.forte.simbot.BotRegistrar>())
+        val application = SpringBootApplicationImpl(configuration, environment, listenerManager, providers)
         
+        // complete.
+        complete(application)
+    
+        //region register bots
+        // after complete.
+        logger.debug("Registering bots...")
+        val bots = registerBots(providers)
+    
         logger.info("Bots all registered. The size of bots: {}", bots.size)
         if (bots.isNotEmpty()) {
             logger.debug("The all registered bots: {}", bots)
@@ -205,11 +212,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
         if (isAutoStartBots && bots.isEmpty()) {
             logger.debug("But the registered bots are empty.")
         }
-        
-        val application = SpringBootApplicationImpl(configuration, environment, listenerManager, providers)
-        
-        // complete.
-        complete(application)
+        //endregion
         
         return application
     }
