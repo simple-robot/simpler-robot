@@ -157,6 +157,9 @@ public open class ApplicationConfiguration {
     /**
      * 当前application内所使用的协程上下文。
      *
+     * [ApplicationFactory] 应当考虑 [ApplicationConfiguration]
+     * 配置完成后依旧不存在 [kotlinx.coroutines.Job] 时候进行主动分配。
+     *
      */
     public open var coroutineContext: CoroutineContext = EmptyCoroutineContext
     

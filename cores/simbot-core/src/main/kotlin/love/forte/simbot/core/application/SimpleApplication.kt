@@ -32,8 +32,7 @@ import kotlin.time.Duration.Companion.nanoseconds
 /**
  * 由核心所提供的最基础的 [ApplicationFactory] 实现。
  */
-public object Simple :
-    ApplicationFactory<SimpleApplicationConfiguration, SimpleApplicationBuilder, SimpleApplication> {
+public object Simple : ApplicationFactory<SimpleApplicationConfiguration, SimpleApplicationBuilder, SimpleApplication> {
     private val logger = LoggerFactory.getLogger<Simple>()
     
     override suspend fun create(
@@ -43,7 +42,10 @@ public object Simple :
         // init configurator
         val config = SimpleApplicationConfiguration().also {
             it.logger = this.logger
-        }.also(configurator)
+        }.also(configurator).also {
+            it.initJob()
+        }
+        
         val logger = config.logger
         logger.debug("Configuration init: {}", config)
         val startTime = System.nanoTime()
@@ -81,7 +83,13 @@ public suspend fun createSimpleApplication(
 /**
  * [SimpleApplication] 的配置类。
  */
-public open class SimpleApplicationConfiguration : ApplicationConfiguration()
+public open class SimpleApplicationConfiguration : ApplicationConfiguration() {
+    public open fun initJob() {
+        if (coroutineContext[Job] == null) {
+            coroutineContext += SupervisorJob()
+        }
+    }
+}
 
 
 /**
@@ -105,8 +113,7 @@ public interface SimpleApplication : Application {
 /**
  * 用于构建 [SimpleApplication] 的构建器类型。
  */
-public interface SimpleApplicationBuilder :
-    StandardApplicationBuilder<SimpleApplication>
+public interface SimpleApplicationBuilder : StandardApplicationBuilder<SimpleApplication>
 
 
 /**
@@ -150,9 +157,7 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder,
         logger.info("The size of components built is {}", components.size)
         
         val environment = SimpleEnvironment(
-            components,
-            logger,
-            appConfig.coroutineContext
+            components, logger, appConfig.coroutineContext
         )
         logger.debug("Init SimpleEnvironment: {}", environment)
         
@@ -166,7 +171,7 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder,
         logger.info("The size of providers built is {}", providers.size)
         
         val application = SimpleApplicationImpl(appConfig, environment, listenerManager, providers)
-    
+        
         // set application attribute
         listenerManager.globalScopeContext[ApplicationAttributes.Application] = application
         
