@@ -16,7 +16,6 @@
 
 package love.forte.simbot.core.application
 
-import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.ExperimentalSimbotApi
@@ -25,8 +24,6 @@ import love.forte.simbot.application.*
 import love.forte.simbot.core.event.SimpleEventListenerManager
 import love.forte.simbot.set
 import love.forte.simbot.utils.view
-import org.slf4j.Logger
-import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.nanoseconds
 
 /**
@@ -127,16 +124,8 @@ private class SimpleApplicationImpl(
 ) : SimpleApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
     
-    override val coroutineContext: CoroutineContext
-    override val job: CompletableJob
-    override val logger: Logger
-    
-    init {
-        val currentCoroutineContext = environment.coroutineContext
-        job = SupervisorJob(currentCoroutineContext[Job])
-        coroutineContext = currentCoroutineContext + job
-        logger = environment.logger
-    }
+    override val coroutineContext = environment.coroutineContext
+    override val logger = environment.logger
 }
 
 

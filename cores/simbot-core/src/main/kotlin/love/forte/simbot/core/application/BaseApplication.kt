@@ -16,7 +16,7 @@
 
 package love.forte.simbot.core.application
 
-import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.Job
 import love.forte.simbot.application.Application
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
@@ -29,24 +29,22 @@ import kotlin.coroutines.cancellation.CancellationException
  */
 public abstract class BaseApplication : Application {
     abstract override val coroutineContext: CoroutineContext
-    protected abstract val job: CompletableJob
     protected abstract val logger: Logger
-
+    private val job: Job? get() = coroutineContext[Job]
+    
     override suspend fun join() {
-        job.join()
+        job?.join()
     }
-
-    // TODO sync.
 
     override suspend fun shutdown(reason: Throwable?) {
-        job.cancel(reason?.let { CancellationException(reason) })
-        stopAll()
+        job?.cancel(reason?.let { CancellationException(reason) })
+        stopAll(reason)
     }
 
-    protected open suspend fun stopAll() {
+    protected open suspend fun stopAll(reason: Throwable?) {
         providers.forEach {
             kotlin.runCatching {
-                it.cancel()
+                it.cancel(reason)
             }.getOrElse { e ->
                 logger.error("Event provider $it cancel failure.", e)
             }
