@@ -19,9 +19,11 @@ package love.forte.simbot.core.application
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.application.*
 import love.forte.simbot.core.event.SimpleEventListenerManager
+import love.forte.simbot.set
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
@@ -138,6 +140,7 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder,
     BaseStandardApplicationBuilder<SimpleApplication>() {
     
     
+    @OptIn(ExperimentalSimbotApi::class)
     suspend fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {
         val logger = appConfig.logger
         
@@ -163,6 +166,9 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder,
         logger.info("The size of providers built is {}", providers.size)
         
         val application = SimpleApplicationImpl(appConfig, environment, listenerManager, providers)
+    
+        // set application attribute
+        listenerManager.globalScopeContext[ApplicationAttributes.Application] = application
         
         // complete.
         complete(application)

@@ -415,6 +415,7 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
     }
     
     
+    @OptIn(ExperimentalSimbotApi::class)
     @Suppress("DuplicatedCode")
     suspend fun build(configuration: BootApplicationConfiguration): BootApplication {
         val logger = configuration.logger
@@ -548,7 +549,9 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
         
         // create application
         val application = BootApplicationImpl(configuration, environment, listenerManager, beanContainer, providers)
-        
+        // set application attribute
+        listenerManager.globalScopeContext[ApplicationAttributes.Application] = application
+    
         // complete.
         complete(application)
         
