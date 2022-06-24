@@ -30,6 +30,7 @@ import love.forte.simboot.core.binder.CoreBinderManager
 import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simboot.core.listener.KFunctionListenerProcessor
 import love.forte.simboot.core.utils.isTopClass
+import love.forte.simboot.core.utils.sign
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
@@ -39,13 +40,16 @@ import love.forte.simbot.LoggerFactory
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.core.application.listeners
 import love.forte.simbot.event.EventListener
+import love.forte.simbot.event.EventListenerBuilder
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.core.type.AnnotationMetadata
 import org.springframework.core.type.classreading.SimpleMetadataReaderFactory
+import javax.inject.Named
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
+import kotlin.reflect.KParameter
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.kotlinFunction
@@ -150,8 +154,8 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         
         // region functional binders
         beanContainer.all.asSequence().flatMap { name ->
-            val kClass = kotlin.runCatching { beanContainer.getTypeOrNull(name) }.getOrNull()
-                ?: return@flatMap emptySequence()
+            val kClass =
+                kotlin.runCatching { beanContainer.getTypeOrNull(name) }.getOrNull() ?: return@flatMap emptySequence()
             
             kClass.allFunctions.asSequence().mapNotNull { function ->
                 val binderAnnotation = tool.getAnnotation<Binder>(function) ?: return@mapNotNull null
@@ -281,6 +285,10 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         val instances = beanContainer.allInstance<EventListener>()
         val listeners = instances.toMutableList()
         
+        // find EventBuilders
+        val builders = beanContainer.allInstance<EventListenerBuilder>()
+        listeners.addAll(builders.map { it.build() })
+        
         // scan functions
         beanContainer.all.asSequence().mapNotNull { name ->
             val kClass = kotlin.runCatching { beanContainer.getTypeOrNull(name) }.getOrElse {
@@ -297,7 +305,21 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
             val listenerAnnotation = tool.getAnnotation<Listener>(function) ?: return@mapNotNullTo null
             
             if (function.visibility != KVisibility.PUBLIC) {
-                logger.warn("Function [$function] is annotated with @Listener, so visibility of it must be PUBLIC, but is ${function.visibility}")
+                logger.warn(
+                    "Function [{}] is annotated with @Listener, so visibility of it must be PUBLIC, but is {}",
+                    function,
+                    function.visibility
+                )
+                return@mapNotNullTo null
+            }
+            
+            if ((function.returnType.classifier as? KClass<*>?)?.isSubclassOf(EventListenerBuilder::class) == true) {
+                logger.trace("Function [{}]'s return type is subclass of EventListenerBuilder, skip.", function)
+                return@mapNotNullTo null
+            }
+            
+            if ((function.returnType.classifier as? KClass<*>?)?.isSubclassOf(EventListener::class) == true) {
+                logger.trace("Function [{}]'s return type is subclass of EventListener, skip.", function)
                 return@mapNotNullTo null
             }
             
@@ -357,19 +379,43 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
             Quadruple(metadata, kc, func, listenerAnnotation)
         }.mapNotNullTo(listeners) { (_, _, func, annotation) ->
             kotlin.runCatching {
-                val id = annotation.id.ifEmpty { "TOP#${func.sign()}" }
-                val resolvedListener = listenerProcessor.process(
-                    FunctionalListenerProcessContext(
-                        id = id,
-                        function = func,
-                        priority = annotation.priority,
-                        isAsync = annotation.async,
-                        binderManager = binderManager,
-                        beanContainer = beanContainer,
-                    )
-                )
-                
-                logger.debug("Resolved top-level listener: [{}] by processor [{}]", resolvedListener, listenerProcessor)
+                val returnType = func.returnType.classifier as? KClass<*>?
+                val resolvedListener: EventListener? = when {
+                    returnType?.isSubclassOf(EventListener::class) == true || returnType?.isSubclassOf(
+                        EventListenerBuilder::class
+                    ) == true -> {
+                        val callParameters = func.parameters.associateWith { beanContainer.getByKParameter(it) }
+                        when (val result = func.callBy(callParameters)) {
+                            is EventListenerBuilder -> {
+                                if (result.id.isEmpty()) {
+                                    // 生成id
+                                    result.id = annotation.id.ifEmpty { func.sign() }
+                                }
+                                result.build()
+                            }
+                            is EventListener -> result
+                            else -> null // print log?
+                        }
+                    }
+                    else -> {
+                        val id = annotation.id.ifEmpty { "\$TOP#${func.sign()}" }
+                        val processedListener = listenerProcessor.process(
+                            FunctionalListenerProcessContext(
+                                id = id,
+                                function = func,
+                                priority = annotation.priority,
+                                isAsync = annotation.async,
+                                binderManager = binderManager,
+                                beanContainer = beanContainer,
+                            )
+                        )
+                        
+                        logger.debug(
+                            "Resolved top-level listener: [{}] by processor [{}]", processedListener, listenerProcessor
+                        )
+                        processedListener
+                    }
+                }
                 
                 resolvedListener
             }.getOrNull()
@@ -392,23 +438,6 @@ private inline val KClass<*>.allDeclaredFunctions: List<KFunction<*>>
     get() = kotlin.runCatching {
         declaredMemberFunctions + declaredMemberExtensionFunctions
     }.getOrDefault(emptyList())
-
-private fun KFunction<*>.sign(): String {
-    return buildString {
-        append(name)
-        if (parameters.isNotEmpty()) {
-            append('(')
-            parameters.joinTo(this, separator = ",") {
-                it.name?.also { n ->
-                    append(n).append(":")
-                }
-                
-                it.type.toString()
-            }
-            append(')')
-        }
-    }
-}
 
 
 @OptIn(InternalSimbotApi::class)
@@ -444,20 +473,48 @@ private fun topFunctions(
     }.flatMap { (metadata, c) ->
         // metadata, class, function, annotation
         runCatching {
-            c.methods.asSequence()
-                .mapNotNull { it.kotlinFunction?.let { f -> c to f } }
-                .mapNotNull { (c, func) ->
-                    if (func.visibility != KVisibility.PUBLIC) {
-                        println("func.visibility != KVisibility.PUBLIC")
-                        return@mapNotNull null
-                    }
-                    
-                    if (func.instanceParameter != null) {
-                        return@mapNotNull null
-                    }
-                    
-                    Triple(metadata, c, func)
+            c.methods.asSequence().mapNotNull { it.kotlinFunction?.let { f -> c to f } }.mapNotNull { (c, func) ->
+                if (func.visibility != KVisibility.PUBLIC) {
+                    println("func.visibility != KVisibility.PUBLIC")
+                    return@mapNotNull null
                 }
+                
+                if (func.instanceParameter != null) {
+                    return@mapNotNull null
+                }
+                
+                Triple(metadata, c, func)
+            }
         }.getOrElse { emptySequence() }
     }
+}
+
+
+@Suppress("DuplicatedCode")
+private fun BeanContainer.getByKParameter(parameter: KParameter): Any {
+    val name = parameter.findAnnotation<Named>()?.value?.let { n ->
+        n.ifEmpty {
+            kotlin.runCatching { parameter.name }.getOrNull()
+        }
+    }
+    val type = parameter.type.classifier as? KClass<*>?
+    val value = when {
+        name == null && type == null -> {
+            throw IllegalStateException("The name and type of parameter [$parameter] are both null")
+        }
+        name == null && type != null -> {
+            // only type
+            get(type)
+        }
+        type == null && name != null -> {
+            // only name
+            get(name)
+        }
+        else -> {
+            // both not null
+            get(name!!, type!!)
+        }
+    }
+    
+    return value
 }

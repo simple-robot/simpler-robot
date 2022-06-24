@@ -32,10 +32,7 @@ import love.forte.simboot.annotation.Listener
 import love.forte.simboot.core.binder.*
 import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simboot.core.listener.KFunctionListenerProcessor
-import love.forte.simboot.core.utils.isFinal
-import love.forte.simboot.core.utils.isStatic
-import love.forte.simboot.core.utils.scanResources
-import love.forte.simboot.core.utils.scanTopClass
+import love.forte.simboot.core.utils.*
 import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simbot.*
@@ -47,6 +44,7 @@ import love.forte.simbot.core.event.EventListenersGenerator
 import love.forte.simbot.core.event.SimpleEventListenerManager
 import love.forte.simbot.core.event.SimpleListenerManagerConfiguration
 import love.forte.simbot.event.EventListener
+import love.forte.simbot.event.EventListenerBuilder
 import love.forte.simbot.event.EventListenerInterceptor
 import love.forte.simbot.event.EventProcessingInterceptor
 import love.forte.simbot.resources.Resource
@@ -55,14 +53,13 @@ import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
+import javax.inject.Named
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
+import kotlin.reflect.KParameter
 import kotlin.reflect.KVisibility
-import kotlin.reflect.full.instanceParameter
-import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.memberExtensionFunctions
-import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.full.*
 import kotlin.reflect.jvm.kotlinFunction
 import kotlin.time.Duration.Companion.nanoseconds
 
@@ -554,7 +551,7 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
         
         // complete.
         complete(application)
-    
+        
         // region register bots
         // after complete.
         logger.debug("Registing bots...")
@@ -579,8 +576,8 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
             logger.debug("But the registered bots are empty.")
         }
         // endregion
-    
-    
+        
+        
         return application
     }
     
@@ -798,38 +795,144 @@ private fun EventListenersGenerator.autoConfigFromBeanContainer(
     beanContainer.all.forEach { name ->
         val type = beanContainer.getType(name)
         // if is listener
-        if (type.isSubclassOf(EventListener::class)) {
-            val listener = beanContainer[name, type] as EventListener
-            logger.debug("Load event listener instance [{}] by type [{}] named [{}]", listener, type, name)
-            listener(listener)
-            
-        } else {
-            for (func in type.allFunctions) {
-                val listener = tool.getAnnotation(func, Listener::class) ?: continue
+        when {
+            type.isSubclassOf(EventListener::class) -> {
+                val listener = beanContainer[name, type] as EventListener
+                logger.debug("Load event listener instance [{}] by type [{}] named [{}]", listener, type, name)
+                listener(listener)
                 
-                logger.debug("Resolving listener function [{}] from type [{}]", func, type)
-                
-                val resolvedListener = listenerProcessor.process(
-                    FunctionalListenerProcessContext(
-                        id = listener.id.takeIf { it.isNotEmpty() },
-                        function = func,
-                        priority = listener.priority,
-                        isAsync = listener.async,
-                        binderManager = binderManager,
-                        beanContainer = beanContainer,
-                    )
-                )
-                
-                logger.debug("Resolved listener: [{}] by processor [{}]", resolvedListener, listenerProcessor)
-                
-                // include listener.
-                listener(resolvedListener)
+            }
+            type.isSubclassOf(EventListenerBuilder::class) -> {
+                val builder = beanContainer[name, type] as EventListenerBuilder
+                logger.debug("Load event listener builder instance [{}] by type [{}] named [{}]", builder, type, name)
+                listener(builder.build())
+            }
+            else -> {
+                for (function in type.allFunctions) {
+                    val listener = tool.getAnnotation(function, Listener::class) ?: continue
+                    val returnType = function.returnType.classifier as? KClass<*>?
+                    if (returnType?.isSubclassOf(EventListenerBuilder::class) == true) {
+                        resolveEventListenerOrBuilderFunction(
+                            type,
+                            function,
+                            logger,
+                            beanContainer,
+                            listener
+                        )
+                    } else {
+                        resolveEventListenerFunction(
+                            type,
+                            function,
+                            logger,
+                            binderManager,
+                            beanContainer,
+                            listenerProcessor,
+                            listener
+                        )
+                    }
+                    
+                }
             }
         }
         
     }
 }
 
+private fun EventListenersGenerator.resolveEventListenerFunction(
+    type: KClass<*>?,
+    function: KFunction<*>,
+    logger: Logger,
+    binderManager: BinderManager,
+    beanContainer: BeanContainer,
+    listenerProcessor: KFunctionListenerProcessor,
+    listener: Listener,
+) {
+    if (type == null) {
+        logger.debug("Resolving top-level listener function [{}] from top", function)
+    } else {
+        logger.debug("Resolving listener function [{}] from type [{}]", function, type)
+    }
+    
+    val resolvedListener = listenerProcessor.process(
+        FunctionalListenerProcessContext(
+            id = listener.id.takeIf { it.isNotEmpty() },
+            function = function,
+            priority = listener.priority,
+            isAsync = listener.async,
+            binderManager = binderManager,
+            beanContainer = beanContainer,
+        )
+    )
+    
+    if (type == null) {
+        logger.debug("Resolved top-level listener: [{}] by processor [{}]", resolvedListener, listenerProcessor)
+    } else {
+        logger.debug("Resolved listener: [{}] by processor [{}]", resolvedListener, listenerProcessor)
+    }
+    
+    // include listener.
+    listener(resolvedListener)
+}
+
+private fun EventListenersGenerator.resolveEventListenerOrBuilderFunction(
+    type: KClass<*>?,
+    function: KFunction<*>,
+    logger: Logger,
+    beanContainer: BeanContainer,
+    listener: Listener,
+) {
+    val kParameters = function.parameters
+    if (kParameters.any { it.kind != KParameter.Kind.INSTANCE }) {
+        logger.warn(
+            "It is not recommended to have parameters in the function that registers the Event Listener Builder, but function: {}",
+            function
+        )
+    }
+    val parameters = kParameters.associateWith { beanContainer.getByKParameter(it) }
+    val result = function.callBy(parameters)
+    val resultListener = when (result) {
+        is EventListenerBuilder -> {
+            if (result.id.isEmpty()) {
+                // 生成id
+                result.id = listener.id.ifEmpty { function.sign() }
+            }
+            result.build()
+        }
+        is EventListener -> result
+        else -> null
+    } ?: return
+    
+    
+    if (type == null) {
+        logger.debug(
+            "Resolved top-level listener: [{}] by [{}]",
+            resultListener,
+            result
+        )
+    } else {
+        logger.debug(
+            "Resolved listener: [{}] from [{}] by [{}]",
+            resultListener,
+            type,
+            result
+        )
+    }
+    
+    listener(resultListener)
+}
+
+
+private var topLevelEventListenerBuilderWarn: Any? = Any()
+private inline fun doTopLevelEventListenerBuilderWarn(block: () -> Unit) {
+    topLevelEventListenerBuilderWarn?.also { mark ->
+        synchronized(mark) {
+            if (topLevelEventListenerBuilderWarn != null) {
+                block()
+                topLevelEventListenerBuilderWarn = null
+            }
+        }
+    }
+}
 
 private fun EventListenersGenerator.autoScanTopFunction(
     classLoader: ClassLoader,
@@ -875,33 +978,35 @@ private fun EventListenersGenerator.autoScanTopFunction(
                     kotlin.runCatching {
                         val listener = tool.getAnnotation<Listener>(function) ?: return@runCatching
                         
-                        logger.debug("Resolving top-level listener function [{}]", function)
-                        
-                        val resolvedListener = listenerProcessor.process(
-                            FunctionalListenerProcessContext(
-                                id = listener.id.takeIf { it.isNotEmpty() },
-                                function = function,
-                                priority = listener.priority,
-                                isAsync = listener.async,
-                                binderManager = binderManager,
-                                beanContainer = beanContainer,
+                        // 没有参数、且返回值为 EventListenerBuilder, 则使用EventListenerBuilder返回值。
+                        val returnType = function.returnType.classifier as? KClass<*>?
+                        if (returnType?.isSubclassOf(EventListenerBuilder::class) == true) {
+                            resolveEventListenerOrBuilderFunction(
+                                null,
+                                function,
+                                logger,
+                                beanContainer,
+                                listener
                             )
-                        )
+                            doTopLevelEventListenerBuilderWarn {
+                                logger.warn("Using the top-level function to register the Event Listener Builder is still experimental.")
+                            }
+                        } else {
+                            resolveEventListenerFunction(
+                                null,
+                                function,
+                                logger,
+                                binderManager,
+                                beanContainer,
+                                listenerProcessor,
+                                listener
+                            )
+                        }
                         
-                        logger.debug(
-                            "Resolved top-level listener: [{}] by processor [{}]",
-                            resolvedListener,
-                            listenerProcessor
-                        )
                         
-                        listener(resolvedListener)
                     }
-                    
                 }
-                
-                
             }
-            
         }
     }
     
@@ -929,7 +1034,7 @@ private fun BotRegistrar.autoRegisterBots(
             }
     }
     
-    // TODO logger
+    // TODO log?
     
     
     botVerifyInfoList.forEach { botInfo ->
@@ -944,3 +1049,33 @@ private val KClass<*>.allFunctions: List<KFunction<*>>
     get() = kotlin.runCatching {
         memberFunctions + memberExtensionFunctions
     }.getOrDefault(emptyList())
+
+
+@Suppress("DuplicatedCode")
+private fun BeanContainer.getByKParameter(parameter: KParameter): Any {
+    val name = parameter.findAnnotation<Named>()?.value?.let { n ->
+        n.ifEmpty {
+            kotlin.runCatching { parameter.name }.getOrNull()
+        }
+    }
+    val type = parameter.type.classifier as? KClass<*>?
+    val value = when {
+        name == null && type == null -> {
+            throw IllegalStateException("The name and type of parameter [$parameter] are both null")
+        }
+        name == null && type != null -> {
+            // only type
+            get(type)
+        }
+        type == null && name != null -> {
+            // only name
+            get(name)
+        }
+        else -> {
+            // both not null
+            get(name!!, type!!)
+        }
+    }
+    
+    return value
+}

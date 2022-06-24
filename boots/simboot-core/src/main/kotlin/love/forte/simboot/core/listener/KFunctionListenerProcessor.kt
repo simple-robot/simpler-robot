@@ -24,6 +24,7 @@ import love.forte.simboot.annotation.*
 import love.forte.simboot.annotation.Filter
 import love.forte.simboot.core.filter.CoreFiltersAnnotationProcessor
 import love.forte.simboot.core.filter.FiltersAnnotationProcessContext
+import love.forte.simboot.core.utils.sign
 import love.forte.simboot.filter.MultiFilterMatchType
 import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
 import love.forte.simboot.interceptor.ListenerPreparer
@@ -152,27 +153,6 @@ public class KFunctionListenerProcessor(
         
         if (isAbstract) {
             throw SimbotIllegalStateException("The listener function [$this] must not be abstract, but it is.")
-        }
-    }
-    
-    /**
-     * 构建一个此监听函数的签名。一般类似于全限定名。
-     */
-    private fun KFunction<*>.sign(): String {
-        return buildString {
-            instanceParameter?.type?.also {
-                append(it.toString())
-                append('.')
-            }
-            append(name)
-            val pms = parameters.filter { it.kind != KParameter.Kind.INSTANCE }
-            if (pms.isNotEmpty()) {
-                append('(')
-                pms.joinTo(this, separator = ",") {
-                    it.type.toString()
-                }
-                append(')')
-            }
         }
     }
     

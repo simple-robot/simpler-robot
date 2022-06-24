@@ -18,11 +18,9 @@ package love.forte.simbot.core.event
 
 import love.forte.simbot.Api4J
 import love.forte.simbot.InternalSimbotApi
+import love.forte.simbot.PriorityConstant
 import love.forte.simbot.SimbotIllegalStateException
-import love.forte.simbot.event.Event
-import love.forte.simbot.event.EventListener
-import love.forte.simbot.event.EventListenerProcessingContext
-import love.forte.simbot.event.EventResult
+import love.forte.simbot.event.*
 import love.forte.simbot.utils.randomIdStr
 import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
@@ -309,19 +307,31 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
  *
  * 应用于 [EventListenersGenerator] 中。
  *
+ * 使用 [SimpleListenerBuilder].
+ *
+ * @see SimpleListenerBuilder
  * @author ForteScarlet
  */
 @Suppress("DEPRECATION")
 @SimpleListenerBuilderDSL
-@Deprecated("Just use SimpleListenerBuilder", ReplaceWith("SimpleListenerBuilder<E>", "love.forte.simbot.core.event.SimpleListenerBuilder"))
-public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private val eventKey: Event.Key<E>) {
+@Deprecated(
+    "Just use SimpleListenerBuilder",
+    ReplaceWith("SimpleListenerBuilder<E>", "love.forte.simbot.core.event.SimpleListenerBuilder")
+)
+public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private val eventKey: Event.Key<E>) :
+    EventListenerBuilder {
     
+    private var _id: String? = null
     
     /**
      * 设置listener的ID
      */
     @SimpleListenerBuilderDSL
-    public var id: String? = null
+    override var id: String
+        get() = _id ?: ""
+        set(value) {
+            _id = value
+        }
     
     
     /**
@@ -334,7 +344,13 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
      * 是否标记为异步函数。
      */
     @SimpleListenerBuilderDSL
-    public var isAsync: Boolean = false
+    override var isAsync: Boolean = false
+    
+    /**
+     * 优先级。
+     */
+    @SimpleListenerBuilderDSL
+    override var priority: Int = PriorityConstant.NORMAL
     
     
     private var matcher: (suspend EventListenerProcessingContext.(E) -> Boolean)? = null
@@ -468,8 +484,8 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
         setFunc { e -> runWithInterruptible { func.apply(this, e) } }
     }
     
-    internal fun build(): EventListener {
-        val id0 = id ?: randomIdStr()
+    override fun build(): EventListener {
+        val id0 = _id ?: randomIdStr()
         return simpleListener(
             target = eventKey,
             id = id0,

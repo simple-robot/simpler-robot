@@ -44,8 +44,8 @@ dependencies {
     testImplementation(V.Kotlin.Test.Testng.notation)
     
     testImplementation("org.openjdk.jmh:jmh-core:1.33")
-    testImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.33")
-    kaptTest("org.openjdk.jmh:jmh-generator-annprocess:1.33")
+    testImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.35")
+    kaptTest("org.openjdk.jmh:jmh-generator-annprocess:1.35")
 }
 
 
