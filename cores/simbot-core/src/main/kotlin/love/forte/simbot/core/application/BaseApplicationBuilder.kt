@@ -157,7 +157,7 @@ public abstract class BaseApplicationBuilder<A : Application> :
     protected suspend fun registerBots(providers: List<EventProvider>): List<Bot> {
         val registrar = BotRegistrarImpl(providers)
         botRegisterConfig(registrar)
-        return registrar.bots
+        return providers.flatMap { if (it is BotManager<*>) it.all() else emptyList() }
     }
     
     
@@ -206,7 +206,6 @@ public abstract class BaseApplicationBuilder<A : Application> :
     
     private class BotRegistrarImpl(providers: List<EventProvider>) : BotRegistrar {
         override val providers: List<EventProvider> = providers.view()
-        val bots = mutableListOf<Bot>()
         
         override fun register(botVerifyInfo: BotVerifyInfo): Bot? {
             logger.info("Registering bot with verify info [{}]", botVerifyInfo)
@@ -223,7 +222,6 @@ public abstract class BaseApplicationBuilder<A : Application> :
                             bot,
                             manager
                         )
-                        bots.add(bot)
                     }
                 } catch (ignore: ComponentMismatchException) {
                     logger.debug("Bot verify info [{}] is not matched by manager {}, try next.", botVerifyInfo, manager)

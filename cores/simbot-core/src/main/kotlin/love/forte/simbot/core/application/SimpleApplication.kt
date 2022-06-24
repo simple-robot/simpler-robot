@@ -182,7 +182,7 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder,
         // region register bots
         // registing bot after complete.
         
-        logger.debug("Registing bots...")
+        logger.debug("Registering bots...")
         val bots = registerBots(providers)
         logger.debug("All bot registers: {}", bots)
         logger.info("The size of bots registered: {}", bots.size)
