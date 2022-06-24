@@ -19,10 +19,7 @@ package love.forte.simbot.core.event
 import love.forte.simbot.Api4J
 import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.SimbotIllegalStateException
-import love.forte.simbot.event.Event
-import love.forte.simbot.event.EventListener
-import love.forte.simbot.event.EventListenerProcessingContext
-import love.forte.simbot.event.EventResult
+import love.forte.simbot.event.*
 import love.forte.simbot.utils.randomIdStr
 import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
@@ -314,7 +311,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
 @Suppress("DEPRECATION")
 @SimpleListenerBuilderDSL
 @Deprecated("Just use SimpleListenerBuilder", ReplaceWith("SimpleListenerBuilder<E>", "love.forte.simbot.core.event.SimpleListenerBuilder"))
-public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private val eventKey: Event.Key<E>) {
+public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private val eventKey: Event.Key<E>) : EventListenerBuilder {
     
     
     /**
@@ -468,7 +465,7 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
         setFunc { e -> runWithInterruptible { func.apply(this, e) } }
     }
     
-    internal fun build(): EventListener {
+    override fun build(): EventListener {
         val id0 = id ?: randomIdStr()
         return simpleListener(
             target = eventKey,

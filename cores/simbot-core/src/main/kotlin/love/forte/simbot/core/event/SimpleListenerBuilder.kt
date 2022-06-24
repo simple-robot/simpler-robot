@@ -63,7 +63,7 @@ internal annotation class SimpleListenerBuilderDSL
  *
  * @author ForteScarlet
  */
-public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) {
+public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) : EventListenerBuilder {
     
     /**
      * 设置listener的ID
@@ -252,7 +252,7 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) {
     /**
      * 构建并得到目标结果。
      */
-    public fun build(): EventListener {
+    override fun build(): EventListener {
         val id0 = id ?: randomIdStr()
         return simpleListener(
             target = target,
@@ -281,7 +281,10 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) {
  *
  *
  */
-public inline fun <E : Event> buildSimpleListener(target: Event.Key<E>, block: SimpleListenerBuilder<E>.() -> Unit): EventListener {
+public inline fun <E : Event> buildSimpleListener(
+    target: Event.Key<E>,
+    block: SimpleListenerBuilder<E>.() -> Unit,
+): EventListener {
     return SimpleListenerBuilder(target).also(block).build()
 }
 
@@ -300,10 +303,11 @@ public inline fun <E : Event> buildSimpleListener(target: Event.Key<E>, block: S
  * }
  * ```
  *
- * 更建议使用 `buildSimpleListener(FooEvent) { ... }` 的显示指定 target key 的形式。
+ * 更建议使用 [`buildSimpleListener(FooEvent) { ... }`][buildSimpleListener] 这种显示指定 `target key` 的形式。
  *
+ * @see buildSimpleListener
  */
 @ExperimentalSimbotApi
 public inline fun <reified E : Event> buildSimpleListener(block: SimpleListenerBuilder<E>.() -> Unit): EventListener {
-    return SimpleListenerBuilder(E::class.getKey()).also(block).build()
+    return buildSimpleListener(E::class.getKey(), block)
 }
