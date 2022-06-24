@@ -916,7 +916,6 @@ private fun BotRegistrar.autoRegisterBots(
             .mapNotNull { r ->
                 val decoder = decoderFactories.find { it.factory.match(r.name) }?.create()
                 if (decoder == null) {
-                    // 没有任何工厂与r匹配，跳过。
                     logger.warn("No decoder factories match resource [{}] named [{}], skip.", r, r.name)
                     return@mapNotNull null
                 }
