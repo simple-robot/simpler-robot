@@ -53,6 +53,7 @@ import love.forte.simbot.resources.Resource
 import love.forte.simbot.utils.runInBlocking
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
@@ -322,21 +323,24 @@ public interface BootApplication : SimpleApplication, SimbootContext {
     }
     
     /**
-     * [BootApplication] 不需要执行 [start].
+     * [BootApplication] 不需要执行 [start], 将会始终返回 `true`。
      */
     override suspend fun start(): Boolean = true
     
     /**
-     * [BootApplication] 不需要 `start`.
+     * [BootApplication] 不需要执行 [start], 将会始终返回 `true`。
      */
     @OptIn(Api4J::class)
     override fun startBlocking(): Boolean = true
     
     /**
-     * [BootApplication] 不需要 `start`.
+     * [BootApplication] 不需要执行 [start], 将会始终返回 `true`。
      */
     @OptIn(Api4J::class)
-    override fun startAsync() {
+    override fun startAsync(): CompletableFuture<Boolean> {
+        return CompletableFuture<Boolean>().also {
+            it.complete(true)
+        }
     }
     
     /**
