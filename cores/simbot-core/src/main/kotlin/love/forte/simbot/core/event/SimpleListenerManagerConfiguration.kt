@@ -43,14 +43,6 @@ internal annotation class SimpleEventManagerConfigDSL
  * [SimpleEventListenerManager] 的配置文件.
  * 当配置文件作为构建参数的时候，他会被立即使用。
  *
- * ### 拦截器
- * 通过 [interceptors] [addListenerInterceptors] [addListenerInterceptors] 等相关函数来向配置中追加对应作用域的拦截器。
- * ```kotlin
- * coreListenerManager {
- *
- * }
- * ```
- *
  *
  * @see SimpleEventListenerManager.newInstance
  * @see simpleListenerManager

@@ -525,8 +525,8 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
         
         // endregion
         
-        // region register bots
-        logger.debug("Registering bots...")
+        // region scan bots verify info and decoders
+        logger.debug("Resolving bot verify infos and bot verify decoders...")
         // scan and auto register bot
         
         val botVerifyDecoderFactories = configuration.botVerifyDecodersOrDefaultStandards()
@@ -547,8 +547,18 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
                 )
             }
         }
+        // endregion
         
-        val bots = registerBots(providers.filterIsInstance<love.forte.simbot.BotRegistrar>())
+        // create application
+        val application = BootApplicationImpl(configuration, environment, listenerManager, beanContainer, providers)
+        
+        // complete.
+        complete(application)
+    
+        // region register bots
+        // after complete.
+        logger.debug("Registing bots...")
+        val bots = registerBots(providers)
         logger.info("Bots all registered. The size of bots: {}", bots.size)
         if (bots.isNotEmpty()) {
             logger.debug("The all registered bots: {}", bots)
@@ -569,13 +579,8 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
             logger.debug("But the registered bots are empty.")
         }
         // endregion
-        
-        // create application
-        val application = BootApplicationImpl(configuration, environment, listenerManager, beanContainer, providers)
-        
-        // complete.
-        complete(application)
-        
+    
+    
         return application
     }
     

@@ -22,6 +22,7 @@ import love.forte.simbot.ability.CompletionPerceivable
 import love.forte.simbot.application.*
 import love.forte.simbot.application.BotRegistrar
 import love.forte.simbot.event.EventProcessor
+import love.forte.simbot.utils.view
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
@@ -39,8 +40,7 @@ public abstract class BaseApplicationBuilder<A : Application> :
     private val componentConfigurations = mutableMapOf<Attribute<*>, Any.() -> Unit>()
     private val componentFactories = mutableMapOf<Attribute<*>, suspend () -> Component>()
     
-    // private val botRegisterConfig = mutableListOf<suspend BotRegistrar.() -> Unit>()
-    private var botRegisterConfig: (suspend BotRegistrar.() -> Unit) = {}
+    private var botRegisterConfig: (suspend BotRegistrarImpl.() -> Unit) = {}
     
     private val applicationLock = ReentrantReadWriteLock()
     
@@ -154,8 +154,8 @@ public abstract class BaseApplicationBuilder<A : Application> :
      *
      * @return 被注册的bot数量
      */
-    protected suspend fun registerBots(botManagers: List<love.forte.simbot.BotRegistrar>): List<Bot> {
-        val registrar = BotRegistrarImpl(botManagers)
+    protected suspend fun registerBots(providers: List<EventProvider>): List<Bot> {
+        val registrar = BotRegistrarImpl(providers)
         botRegisterConfig(registrar)
         return registrar.bots
     }
@@ -204,12 +204,17 @@ public abstract class BaseApplicationBuilder<A : Application> :
     }
     
     
-    private class BotRegistrarImpl(private val registrars: List<love.forte.simbot.BotRegistrar>) : BotRegistrar {
+    private class BotRegistrarImpl(providers: List<EventProvider>) : BotRegistrar {
+        override val providers: List<EventProvider> = providers.view()
         val bots = mutableListOf<Bot>()
         
         override fun register(botVerifyInfo: BotVerifyInfo): Bot? {
             logger.info("Registering bot with verify info [{}]", botVerifyInfo)
-            for (manager in registrars) {
+            for (manager in providers) {
+                if (manager !is love.forte.simbot.BotRegistrar) {
+                    continue
+                }
+                
                 try {
                     return manager.register(botVerifyInfo).also { bot ->
                         logger.debug(
@@ -229,7 +234,7 @@ public abstract class BaseApplicationBuilder<A : Application> :
         }
         
         override fun toString(): String {
-            return "BotRegistrarImpl(registrars=$registrars)"
+            return "BotRegistrarImpl(providers=$providers)"
         }
         
         private companion object {

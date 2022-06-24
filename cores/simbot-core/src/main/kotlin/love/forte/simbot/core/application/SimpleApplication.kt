@@ -30,7 +30,8 @@ import kotlin.time.Duration.Companion.nanoseconds
 /**
  * 由核心所提供的最基础的 [ApplicationFactory] 实现。
  */
-public object Simple : ApplicationFactory<SimpleApplicationConfiguration, SimpleApplicationBuilder, SimpleApplication> {
+public object Simple :
+    ApplicationFactory<SimpleApplicationConfiguration, SimpleApplicationBuilder, SimpleApplication> {
     private val logger = LoggerFactory.getLogger<Simple>()
     
     override suspend fun create(
@@ -47,10 +48,11 @@ public object Simple : ApplicationFactory<SimpleApplicationConfiguration, Simple
         val appBuilder = SimpleApplicationBuilderImpl().apply {
             builder(config)
         }
-        
         return appBuilder.build(config).also {
             val duration = (System.nanoTime() - startTime).nanoseconds
-            logger.info("Simple Application built in {}", duration.toString())
+            if (logger.isInfoEnabled) {
+                logger.info("Simple Application built in {}", duration.toString())
+            }
         }
     }
 }
@@ -132,7 +134,8 @@ private class SimpleApplicationImpl(
 /**
  * [SimpleApplication]所使用的构建器。
  */
-private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseStandardApplicationBuilder<SimpleApplication>() {
+private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder,
+    BaseStandardApplicationBuilder<SimpleApplication>() {
     
     
     suspend fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {
@@ -159,16 +162,21 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder, BaseStand
         logger.debug("Providers are built: {}", providers)
         logger.info("The size of providers built is {}", providers.size)
         
-        // register bots
-        logger.debug("Registing bots...")
-        val bots = registerBots(providers.filterIsInstance<love.forte.simbot.BotRegistrar>())
-        logger.debug("All bot registers: {}", bots)
-        logger.info("The size of bots registered: {}", bots.size)
-        
         val application = SimpleApplicationImpl(appConfig, environment, listenerManager, providers)
         
         // complete.
         complete(application)
+        logger.info("Application [{}] is built and completed.", application)
+        
+        // region register bots
+        // registing bot after complete.
+        
+        logger.debug("Registing bots...")
+        val bots = registerBots(providers)
+        logger.debug("All bot registers: {}", bots)
+        logger.info("The size of bots registered: {}", bots.size)
+        // endregion
+        
         
         return application
     }
