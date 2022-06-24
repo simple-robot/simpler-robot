@@ -70,8 +70,7 @@ public object SpringBoot :
             builder(configuration)
         }.build(configuration).also {
             logger.info(
-                "Simbot Spring Boot Application built in {}",
-                (System.nanoTime() - startTime).nanoseconds.toString()
+                "Simbot Spring Boot Application built in {}", (System.nanoTime() - startTime).nanoseconds.toString()
             )
         }
     }
@@ -90,7 +89,9 @@ public fun springBootApplication(
     configurator: SpringBootApplicationConfiguration.() -> Unit = {},
     builder: SpringBootApplicationBuilder.(SpringBootApplicationConfiguration) -> Unit = {},
 ): ApplicationLauncher<SpringBootApplication> {
-    val configuration = initialConfiguration.also(configurator)
+    val configuration = initialConfiguration.also(configurator).also {
+        it.initJob()
+    }
     return applicationLauncher { SpringBoot.create(configuration, builder) }
 }
 
@@ -166,9 +167,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
         val logger = configuration.logger
         
         val environment = SpringBootEnvironment(
-            components,
-            logger,
-            configuration.coroutineContext
+            components, logger, configuration.coroutineContext
         )
         
         logger.debug("Building listener manager...")
@@ -186,15 +185,15 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
         val application = SpringBootApplicationImpl(configuration, environment, listenerManager, providers)
         // set application attribute
         listenerManager.globalScopeContext[ApplicationAttributes.Application] = application
-    
+        
         // complete.
         complete(application)
-    
-        //region register bots
+        
+        // region register bots
         // after complete.
         logger.debug("Registering bots...")
         val bots = registerBots(providers)
-    
+        
         logger.info("Bots all registered. The size of bots: {}", bots.size)
         if (bots.isNotEmpty()) {
             logger.debug("The all registered bots: {}", bots)
@@ -214,7 +213,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
         if (isAutoStartBots && bots.isEmpty()) {
             logger.debug("But the registered bots are empty.")
         }
-        //endregion
+        // endregion
         
         return application
     }

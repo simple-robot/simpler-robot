@@ -84,6 +84,8 @@ public open class SimbotSpringBootApplicationConfiguration {
                 configurationConfigures.forEach { configure ->
                     configure.run { config() }
                 }
+                
+                
             }) { configuration ->
             applicationConfigures.forEach { configure ->
                 configure.run { config(configuration) }
