@@ -18,6 +18,13 @@
 package love.forte.simboot.annotation
 
 import love.forte.simbot.PriorityConstant
+import love.forte.simbot.event.EventListenerBuilder
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Condition
+import org.springframework.context.annotation.ConditionContext
+import org.springframework.context.annotation.Conditional
+import org.springframework.core.type.AnnotatedTypeMetadata
+import java.lang.reflect.Method
 
 
 /**
@@ -33,6 +40,37 @@ import love.forte.simbot.PriorityConstant
  * 默认情况下，此函数的ID为其全限定名，你可以通过 [@Listener(id="...")][Listener.id] 指定一个ID。
  * 当不指定的时候默认为当前标记对象的全限定二进制名称。
  *
+ * 在 Spring 环境下，[@Listener][Listener] 会检测标记函数的返回值类型。如果返回值类型为 [EventListenerBuilder],
+ * 则会将当前函数作为一个 Spring Bean 出处理，相当于标记了 [@Bean][Bean], 并不会再作为监听函数注册。
+ *
+ * 需要注意的是，如果作为一个 [EventListenerBuilder] Bean 注册的话，被标记函数不可为挂起函数。
+ *
+ * ```kotlin
+ * @Component
+ * class Foo {
+ *    @Listener
+ *    suspend fun EventProcessingContext.listener(event: FooEvent) {
+ *      // 此函数为普通的监听函数
+ *    }
+ *
+ *    @Listener
+ *    fun fooListenerBuilder(): EventListenerBuilder {
+ *       // 此函数的返回值会作为Bean注册，不会被作为监听函数。
+ *       return ...
+ *    }
+ *
+ *    @Bean
+ *    fun barListenerBuilder(): EventListenerBuilder {
+ *       // 更推荐养成使用明确区分二者注解的标准写法的习惯。
+ *       return ...
+ *    }
+ * }
+ * ```
+ *
+ * **⚠️注意:** 与在 spring 环境下不同，在 boot 模块中支持通过 [@Listener][Listener] 注册一个 [EventListenerBuilder], 但是不支持这个被标记的函数**存在参数**。
+ * 这也是为什么建议在任何环境下都使用明确的注解：如果是注册 [EventListenerBuilder]，就使用明确的 `@Beans` 或者 `@Bean`,
+ * 而不是统一使用 [@Listener][Listener]。
+ *
  *
  * @param id 监听函数ID。
  * @param priority 此事件的优先级。
@@ -46,8 +84,25 @@ import love.forte.simbot.PriorityConstant
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
+@Bean
+@Conditional(OnEventListenerBuilderCondition::class)
 public annotation class Listener(
     val id: String = "",
     val priority: Int = PriorityConstant.NORMAL,
     val async: Boolean = false, // TODO 存在未知问题会导致此事件无法被触发
 )
+
+
+/**
+ * 只有当 [Listener] 标记的监听函数其返回值为 [EventListenerBuilder],
+ * 才会被作为 [EventListenerBuilder] 构建器加入到当前依赖环境中。
+ *
+ */
+public class OnEventListenerBuilderCondition : Condition {
+    override fun matches(context: ConditionContext, metadata: AnnotatedTypeMetadata): Boolean {
+        val source = metadata.annotations[Listener::class.java].source
+        if (source !is Method) return false
+        
+        return EventListenerBuilder::class.java.isAssignableFrom(source.returnType)
+    }
+}

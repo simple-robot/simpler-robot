@@ -33,6 +33,10 @@ package love.forte.simbot.event
  * 注意：这种情况下，你不能使用 [@Listener][love.forte.simboot.annotation.Listener] 注解，
  * 而是应该使用对应IOC框架中的注入注解，例如springboot中的 `@Bean` 或者 boot 模块中的 `@Beans`。
  *
+ * 在 spring 环境下，[@Listener][love.forte.simboot.annotation.Listener] 注解支持判断当前函数的类型。
+ * 如果 [@Listener][love.forte.simboot.annotation.Listener] 标记的函数返回值为 [EventListenerBuilder] 类型，
+ * 则当前函数将会作为构建器被加入依赖环境，而不会被作为监听函数解析。
+ *
  * @author ForteScarlet
  */
 public interface EventListenerBuilder {
