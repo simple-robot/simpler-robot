@@ -1,5 +1,7 @@
 package love.forte.simbot.event
 
+import love.forte.simbot.PriorityConstant
+
 /**
  *
  * 一个 [EventListener] 的标准构建器接口。
@@ -40,6 +42,25 @@ package love.forte.simbot.event
  * @author ForteScarlet
  */
 public interface EventListenerBuilder {
+    
+    /**
+     * 当前监听函数的ID.
+     * 如果尚未初始化，则获取会得到空字符串。
+     */
+    public var id: String
+    
+    /**
+     * 监听函数的优先级。
+     *
+     * 通常情况下默认值为 [PriorityConstant.NORMAL]。
+     */
+    public var priority: Int
+    
+    /**
+     * 异步标记。通常情况下默认值为 `false`。
+     */
+    public var isAsync: Boolean
+    
     
     /**
      * 构建得到当前构建器中所描述的 [EventListener] 实例。

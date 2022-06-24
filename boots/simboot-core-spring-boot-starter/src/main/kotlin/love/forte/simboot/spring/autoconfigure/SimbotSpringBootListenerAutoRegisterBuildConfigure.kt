@@ -30,6 +30,7 @@ import love.forte.simboot.core.binder.CoreBinderManager
 import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simboot.core.listener.KFunctionListenerProcessor
 import love.forte.simboot.core.utils.isTopClass
+import love.forte.simboot.core.utils.sign
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
@@ -385,7 +386,13 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
                     ) == true -> {
                         val callParameters = func.parameters.associateWith { beanContainer.getByKParameter(it) }
                         when (val result = func.callBy(callParameters)) {
-                            is EventListenerBuilder -> result.build()
+                            is EventListenerBuilder -> {
+                                if (result.id.isEmpty()) {
+                                    // 生成id
+                                    result.id = annotation.id.ifEmpty { func.sign() }
+                                }
+                                result.build()
+                            }
                             is EventListener -> result
                             else -> null // print log?
                         }
@@ -431,23 +438,6 @@ private inline val KClass<*>.allDeclaredFunctions: List<KFunction<*>>
     get() = kotlin.runCatching {
         declaredMemberFunctions + declaredMemberExtensionFunctions
     }.getOrDefault(emptyList())
-
-private fun KFunction<*>.sign(): String {
-    return buildString {
-        append(name)
-        if (parameters.isNotEmpty()) {
-            append('(')
-            parameters.joinTo(this, separator = ",") {
-                it.name?.also { n ->
-                    append(n).append(":")
-                }
-                
-                it.type.toString()
-            }
-            append(')')
-        }
-    }
-}
 
 
 @OptIn(InternalSimbotApi::class)

@@ -32,10 +32,7 @@ import love.forte.simboot.annotation.Listener
 import love.forte.simboot.core.binder.*
 import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simboot.core.listener.KFunctionListenerProcessor
-import love.forte.simboot.core.utils.isFinal
-import love.forte.simboot.core.utils.isStatic
-import love.forte.simboot.core.utils.scanResources
-import love.forte.simboot.core.utils.scanTopClass
+import love.forte.simboot.core.utils.*
 import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simbot.*
@@ -820,6 +817,7 @@ private fun EventListenersGenerator.autoConfigFromBeanContainer(
                             function,
                             logger,
                             beanContainer,
+                            listener
                         )
                     } else {
                         resolveEventListenerFunction(
@@ -881,6 +879,7 @@ private fun EventListenersGenerator.resolveEventListenerOrBuilderFunction(
     function: KFunction<*>,
     logger: Logger,
     beanContainer: BeanContainer,
+    listener: Listener,
 ) {
     val kParameters = function.parameters
     if (kParameters.any { it.kind != KParameter.Kind.INSTANCE }) {
@@ -892,7 +891,13 @@ private fun EventListenersGenerator.resolveEventListenerOrBuilderFunction(
     val parameters = kParameters.associateWith { beanContainer.getByKParameter(it) }
     val result = function.callBy(parameters)
     val resultListener = when (result) {
-        is EventListenerBuilder -> result.build()
+        is EventListenerBuilder -> {
+            if (result.id.isEmpty()) {
+                // 生成id
+                result.id = listener.id.ifEmpty { function.sign() }
+            }
+            result.build()
+        }
         is EventListener -> result
         else -> null
     } ?: return
@@ -980,34 +985,12 @@ private fun EventListenersGenerator.autoScanTopFunction(
                                 null,
                                 function,
                                 logger,
-                                beanContainer
+                                beanContainer,
+                                listener
                             )
                             doTopLevelEventListenerBuilderWarn {
                                 logger.warn("Using the top-level function to register the Event Listener Builder is still experimental.")
                             }
-                            // val kParameters = function.parameters
-                            // if (kParameters.any { it.kind != KParameter.Kind.INSTANCE }) {
-                            //     logger.warn(
-                            //         "It is not recommended to have parameters in the function that registers the Event Listener Builder, but function: {}",
-                            //         function
-                            //     )
-                            // }
-                            // val parameters = kParameters.associateWith { beanContainer.getByKParameter(it) }
-                            // val builder = function.callBy(parameters) as EventListenerBuilder
-                            //
-                            // val builtListener = builder.build()
-                            //
-                            // logger.debug(
-                            //     "Resolved top-level listener: [{}] by builder [{}]",
-                            //     builtListener,
-                            //     builder
-                            // )
-                            //
-                            // doTopLevelEventListenerBuilderWarn {
-                            //     logger.warn("Using the top-level function to register the Event Listener Builder is still experimental.")
-                            // }
-                            //
-                            // listener(builtListener)
                         } else {
                             resolveEventListenerFunction(
                                 null,
@@ -1018,26 +1001,6 @@ private fun EventListenersGenerator.autoScanTopFunction(
                                 listenerProcessor,
                                 listener
                             )
-                            // logger.debug("Resolving top-level listener function [{}]", function)
-                            //
-                            // val resolvedListener = listenerProcessor.process(
-                            //     FunctionalListenerProcessContext(
-                            //         id = listener.id.takeIf { it.isNotEmpty() },
-                            //         function = function,
-                            //         priority = listener.priority,
-                            //         isAsync = listener.async,
-                            //         binderManager = binderManager,
-                            //         beanContainer = beanContainer,
-                            //     )
-                            // )
-                            //
-                            // logger.debug(
-                            //     "Resolved top-level listener: [{}] by processor [{}]",
-                            //     resolvedListener,
-                            //     listenerProcessor
-                            // )
-                            //
-                            // listener(resolvedListener)
                         }
                         
                         
@@ -1071,7 +1034,7 @@ private fun BotRegistrar.autoRegisterBots(
             }
     }
     
-    // TODO logger
+    // TODO log?
     
     
     botVerifyInfoList.forEach { botInfo ->

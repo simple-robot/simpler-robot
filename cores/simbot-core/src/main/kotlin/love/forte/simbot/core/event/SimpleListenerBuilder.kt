@@ -18,6 +18,7 @@ package love.forte.simbot.core.event
 
 import love.forte.simbot.Api4J
 import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.PriorityConstant
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.*
 import love.forte.simbot.utils.randomIdStr
@@ -64,12 +65,17 @@ internal annotation class SimpleListenerBuilderDSL
  * @author ForteScarlet
  */
 public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) : EventListenerBuilder {
+    private var _id: String? = null
     
     /**
      * 设置listener的ID
      */
     @SimpleListenerBuilderDSL
-    public var id: String? = null
+    override var id: String
+        get() = _id ?: ""
+        set(value) {
+            _id = value
+        }
     
     
     /**
@@ -83,7 +89,13 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
      * 是否标记为异步函数。
      */
     @SimpleListenerBuilderDSL
-    public var isAsync: Boolean = false
+    override var isAsync: Boolean = false
+    
+    /**
+     * 当前监听函数的优先级。
+     */
+    @SimpleListenerBuilderDSL
+    override var priority: Int = PriorityConstant.NORMAL
     
     /**
      * 配置当前id。
@@ -253,11 +265,12 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
      * 构建并得到目标结果。
      */
     override fun build(): EventListener {
-        val id0 = id ?: randomIdStr()
+        val id0 = _id ?: randomIdStr()
         return simpleListener(
             target = target,
             id = id0,
             isAsync = isAsync,
+            priority = priority,
             matcher = matcher ?: { true },
             function = func ?: throw SimbotIllegalStateException("The handle function must be configured")
         )

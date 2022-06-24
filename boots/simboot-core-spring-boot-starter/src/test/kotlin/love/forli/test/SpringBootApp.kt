@@ -19,6 +19,9 @@ package love.forli.test
 
 import love.forte.simboot.annotation.Listener
 import love.forte.simboot.spring.autoconfigure.EnableSimbot
+import love.forte.simbot.core.event.buildSimpleListener
+import love.forte.simbot.event.EventResult
+import love.forte.simbot.event.FriendEvent
 import love.forte.simbot.event.MessageEvent
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -32,9 +35,13 @@ open class SpringBootApp
 
 
 fun main(vararg args: String) {
-    runApplication<SpringBootApp>(*args)
+    runApplication<SpringBootApp>(*args).also { context ->
+        context
+    }
 }
 
+@Component
+open class MyBean
 
 @Component
 open class MyListeners {
@@ -43,8 +50,10 @@ open class MyListeners {
     suspend fun MessageEvent.myLis() {
         println(source())
     }
-    
-    
 }
 
-
+@Listener
+fun listener() = buildSimpleListener(FriendEvent) {
+    match { false }
+    handle { EventResult.defaults() }
+}
