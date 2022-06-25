@@ -12,7 +12,6 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.definition
@@ -44,6 +43,17 @@ public interface IDContainer : Container {
      * 唯一标识。
      */
     public val id: ID
+}
+
+/**
+ * 一个存在字符串类型唯一标识的容器。
+ */
+public interface IdValueContainer : Container {
+
+    /**
+     * 唯一标识字符串。
+     */
+    public val id: String
 }
 
 /**

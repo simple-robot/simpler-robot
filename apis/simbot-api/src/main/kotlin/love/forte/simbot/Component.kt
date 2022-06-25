@@ -23,7 +23,7 @@ import love.forte.simbot.application.Application
 import love.forte.simbot.application.ApplicationBuilder
 import love.forte.simbot.application.ApplicationBuilderDsl
 import love.forte.simbot.definition.Container
-import love.forte.simbot.definition.IDContainer
+import love.forte.simbot.definition.IdValueContainer
 import love.forte.simbot.event.EventListenerManager
 import java.util.*
 
@@ -34,7 +34,11 @@ import java.util.*
  * 一个组件应该有一个[id]作为唯一标识，用于与其他组件进行区分。
  *
  */
-public interface Component : IDContainer {
+public interface Component : IdValueContainer {
+    /**
+     * 组件的唯一标识。
+     */
+    override val id: String
     
     /**
      * 此组件所提供的所有消息序列化信息。

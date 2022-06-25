@@ -53,10 +53,10 @@ public object OriginBotManager : Set<BotManager<*>> {
     private val logger = LoggerFactory.getLogger(OriginBotManager::class)
     private val lock = ReentrantReadWriteLock()
     private val managers: MutableMap<BotManager<*>, Unit> = WeakHashMap()
-
+    
     @Volatile
     private var shutdown = false
-
+    
     /**
      * 关闭 [OriginBotManager]. 如果没有特殊需求，此方法不需要也不应该被手动调用。[cancel] 通常使用在 shutdown hook 等系统终止的相关回调中。
      *
@@ -70,7 +70,7 @@ public object OriginBotManager : Set<BotManager<*>> {
                 logger.debug("OriginBotManager has been shutdown, reject this call.")
                 return
             }
-
+            
             shutdown = true
             logger.debug("OriginBotManager shutdown...")
             var err: Throwable? = null
@@ -107,26 +107,26 @@ public object OriginBotManager : Set<BotManager<*>> {
             }
         }
     }
-
+    
     private inline fun checkShutdown(message: () -> String = { "OriginBotManager has already shutdown!" }) {
         if (shutdown) {
             throw IllegalStateException(message())
         }
     }
-
+    
     internal fun register(manager: BotManager<*>) {
         lock.write {
             checkShutdown()
             managers[manager] = Unit
         }
     }
-
+    
     internal fun remove(manager: BotManager<*>): Boolean {
         lock.write {
             return managers.remove(manager) != null
         }
     }
-
+    
     /**
      * 通过一个 [Component] 获取对应组件下的BotManager序列。
      *
@@ -157,18 +157,27 @@ public object OriginBotManager : Set<BotManager<*>> {
             return filter { it.component == component }
         }
     }
-
+    
     /**
      * 根据指定ID查询组件ID与其相等的 [BotManager].
      */
-    public fun getManagers(componentId: ID): List<BotManager<*>> {
+    @Deprecated(
+        "Use getManagers(String)",
+        ReplaceWith("getManagers(componentId.literal)", "love.forte.simbot.OriginBotManager.getManagers")
+    )
+    public fun getManagers(componentId: ID): List<BotManager<*>> = getManagers(componentId.literal)
+    
+    /**
+     * 根据指定ID查询组件ID与其相等的 [BotManager].
+     */
+    public fun getManagers(componentId: String): List<BotManager<*>> {
         lock.read {
             checkShutdown()
             return filter { it.component.id == componentId }
         }
     }
-
-
+    
+    
     /**
      * 获取某个指定组件下的第一个能够得到的 [BotManager], 如果找不到则返回null。
      *
@@ -179,18 +188,42 @@ public object OriginBotManager : Set<BotManager<*>> {
         checkShutdown()
         managers.keys.firstOrNull { it.component == component }
     }
-
+    
     /**
      * 获取某个指定组件下的第一个能够得到的 [BotManager], 如果找不到则返回null。
      *
      * @param componentId component的id。
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    public fun getFirstManager(componentId: ID): BotManager<*>? = lock.read {
+    @Deprecated(
+        "Use getFirstManagerOrNull(String)", ReplaceWith(
+            "getFirstManagerOrNull(componentId.literal)",
+            "love.forte.simbot.OriginBotManager.getFirstManagerOrNull"
+        )
+    )
+    public fun getFirstManager(componentId: ID): BotManager<*>? = getFirstManagerOrNull(componentId.literal)
+    
+    /**
+     * 获取某个指定组件下的第一个能够得到的 [BotManager], 如果找不到则抛出 [NoSuchElementException]。
+     *
+     * @param componentId component的id。
+     * @throws NoSuchElementException 找不到时
+     */
+    public fun getFirstManager(componentId: String): BotManager<*> = lock.read {
+        checkShutdown()
+        managers.keys.first { it.component.id == componentId }
+    }
+    
+    /**
+     * 获取某个指定组件下的第一个能够得到的 [BotManager], 如果找不到则返回null。
+     *
+     * @param componentId component的id。
+     */
+    public fun getFirstManagerOrNull(componentId: String): BotManager<*>? = lock.read {
         checkShutdown()
         managers.keys.firstOrNull { it.component.id == componentId }
     }
-
+    
     /**
      * 根据一个Bot的id以及对应的组件对象来得到一个此组件下指定ID的bot。如果manager不存在或者没有这个id的bot，则会得到null。
      *
@@ -202,7 +235,49 @@ public object OriginBotManager : Set<BotManager<*>> {
             it.component == component
         }?.get(id)
     }
-
+    
+    /**
+     * 根据一个Bot的id以及对应的组件ID来得到一个此组件下指定ID的bot。如果manager不存在或者没有这个id的bot，则会得到null。
+     *
+     * 如果提供的 [组件ID][componentId] 为null，则会尝试寻找第一个id匹配的bot。
+     *
+     * @param id Bot的id
+     * @param componentId [Component.id]
+     */
+    @Deprecated(
+        "Use getBot(ID, String?)", ReplaceWith(
+            "getBotOrNull(id, componentId?.literal)",
+            "love.forte.simbot.OriginBotManager.getBotOrNull"
+        )
+    )
+    public fun getBot(id: ID, componentId: ID? = null): Bot? = getBotOrNull(id, componentId?.literal)
+    
+    /**
+     * 根据一个Bot的id以及对应的组件ID来得到一个此组件下指定ID的bot。如果manager不存在或者没有这个id的bot，则会抛出 [NoSuchElementException] 。
+     *
+     * 如果提供的 [组件ID][componentId] 为null，则会尝试寻找第一个id匹配的bot。
+     *
+     * @param id Bot的id
+     * @param componentId [Component.id]
+     *
+     * @throws NoSuchElementException 找不到时
+     */
+    @JvmOverloads
+    public fun getBot(id: ID, componentId: String? = null): Bot {
+        if (componentId == null) {
+            val managers = managers.keys
+            for (manager in managers) {
+                val bot = manager[id]
+                if (bot != null) return bot
+            }
+            throw NoSuchElementException("Bot(id=$id) from any component")
+        }
+        
+        return managers.keys.firstOrNull {
+            it.component.id == componentId
+        }?.get(id) ?: throw NoSuchElementException("Bot(id=$id) from component(id=$componentId)")
+    }
+    
     /**
      * 根据一个Bot的id以及对应的组件ID来得到一个此组件下指定ID的bot。如果manager不存在或者没有这个id的bot，则会得到null。
      *
@@ -212,72 +287,99 @@ public object OriginBotManager : Set<BotManager<*>> {
      * @param componentId [Component.id]
      */
     @JvmOverloads
-    public fun getBot(id: ID, componentId: ID? = null): Bot? {
+    public fun getBotOrNull(id: ID, componentId: String? = null): Bot? {
         if (componentId == null) {
             val managers = managers.keys
             for (manager in managers) {
-                val bot = manager.get(id)
+                val bot = manager[id]
                 if (bot != null) return bot
             }
             return null
         }
-
+        
         return managers.keys.firstOrNull {
             it.component.id == componentId
         }?.get(id)
     }
-
-
+    
+    
+    /**
+     * 尝试获取任意一个 [BotManager] 下的任意一个 [Bot]。如果无法获得任何元素则抛出 [NoSuchElementException]。
+     *
+     * @param component 可以提供一个组件信息。默认为null
+     *
+     * @throws NoSuchElementException 如果无法获得任何元素
+     */
+    @JvmOverloads
+    public fun getAnyBot(component: Component? = null): Bot {
+        return (component?.let { getManagers(component) } ?: this).firstNotNullOf {
+            it.all().firstOrNull()
+        }
+    }
+    
+    
     /**
      * 尝试获取任意一个 [BotManager] 下的任意一个 [Bot]。如果当前元素为空则会得到null。
      *
      * @param component 可以提供一个组件信息。默认为null
      */
     @JvmOverloads
-    public fun getAnyBot(component: Component? = null): Bot? {
-        fun Iterable<BotManager<*>>.firstBotOrNull() = firstOrNull()?.all()?.firstOrNull()
-
-        return (component?.let { getManagers(component) } ?: this).firstBotOrNull()
+    public fun getAnyBotOrNull(component: Component? = null): Bot? {
+        return (component?.let { getManagers(component) } ?: this).firstNotNullOfOrNull {
+            it.all().firstOrNull()
+        }
     }
-
+    
+    /**
+     * 尝试获取任意一个manager。如果当前元素为空则会抛出 [NoSuchElementException]。
+     *
+     * @param component 可以提供一个组件信息。默认为null
+     */
+    @JvmOverloads
+    public fun getAny(component: Component? = null): BotManager<*> {
+        if (component == null) return first()
+        
+        return getManagers(component).first()
+    }
+    
     /**
      * 尝试获取任意一个manager。如果当前元素为空则会得到null。
      *
      * @param component 可以提供一个组件信息。默认为null
      */
     @JvmOverloads
-    public fun getAny(component: Component? = null): BotManager<*>? {
+    public fun getAnyOrNull(component: Component? = null): BotManager<*>? {
         if (component == null) return firstOrNull()
-
+        
         return getManagers(component).firstOrNull()
     }
-
-
+    
+    
     //// set
-
+    
     /**
      * 得到当前被管理的manager数量。
      */
     override val size: Int
         get() = managers.size
-
+    
     /**
      * 判断是否存在某个BotManager。
      */
     override fun contains(element: BotManager<*>): Boolean = managers.containsKey(element)
-
+    
     /**
      * 判断是否包含提供的所有manager。
      */
     override fun containsAll(elements: Collection<BotManager<*>>): Boolean {
         return elements.all { contains(it) }
     }
-
+    
     /**
      * 是否为空
      */
     override fun isEmpty(): Boolean = managers.isEmpty()
-
+    
     /**
      * 获取迭代器。
      */
