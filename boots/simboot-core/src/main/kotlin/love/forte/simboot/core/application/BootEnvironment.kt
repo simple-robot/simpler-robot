@@ -18,10 +18,8 @@ package love.forte.simboot.core.application
 
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.Component
-import love.forte.simbot.ID
 import love.forte.simbot.NoSuchComponentException
 import love.forte.simbot.application.Application
-import love.forte.simbot.literal
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
 
@@ -35,8 +33,8 @@ internal class BootEnvironment(
     val logger: Logger,
     val coroutineContext: CoroutineContext,
 ) : Application.Environment {
-    override fun getComponent(id: ID): Component = getComponentOrNull(id) ?: throw NoSuchComponentException(id.literal)
-    override fun getComponentOrNull(id: ID): Component? = components.firstOrNull { it.id == id }
+    override fun getComponent(id: String): Component = getComponentOrNull(id) ?: throw NoSuchComponentException(id)
+    override fun getComponentOrNull(id: String): Component? = components.firstOrNull { it.id == id }
     override val serializersModule: SerializersModule = SerializersModule {
         components.forEach {
             include(it.componentSerializersModule)

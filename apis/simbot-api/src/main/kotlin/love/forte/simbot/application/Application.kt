@@ -63,12 +63,32 @@ public interface Application : CoroutineScope {
          *
          * @throws NoSuchComponentException 当没有找到目标ID的组件时
          */
-        public fun getComponent(id: ID): Component
+        @Deprecated(
+            "Use getComponentOrNull(String)",
+            ReplaceWith("getComponent(id.literal)", "love.forte.simbot.literal")
+        )
+        public fun getComponent(id: ID): Component = getComponent(id.literal)
         
         /**
          * 尝试根据ID获取一个指定的组件对象。如果未找到则会返回null。
          */
-        public fun getComponentOrNull(id: ID): Component?
+        @Deprecated(
+            "Use getComponentOrNull(String)",
+            ReplaceWith("getComponentOrNull(id.literal)", "love.forte.simbot.literal")
+        )
+        public fun getComponentOrNull(id: ID): Component? = getComponentOrNull(id.literal)
+        
+        /**
+         * 尝试根据ID获取一个指定的组件对象。如果未找到则会抛出 [NoSuchComponentException].
+         *
+         * @throws NoSuchComponentException 当没有找到目标ID的组件时
+         */
+        public fun getComponent(id: String): Component
+        
+        /**
+         * 尝试根据ID获取一个指定的组件对象。如果未找到则会返回null。
+         */
+        public fun getComponentOrNull(id: String): Component?
         
         
         /**
