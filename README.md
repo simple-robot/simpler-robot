@@ -88,6 +88,8 @@ simbot3目前已经实现的组件有：
 
 你可以前往 [**文档**][doc-homepage] 查看与快速开始有关的内容。
 
+> 文档尚在编撰完善中...
+
 ## 信息资讯
 如果你想要时刻关注版本的发布信息，你可以通过GitHub的 **Watch** 功能来订阅包括 
 [**Releases**](https://github.com/ForteScarlet/simpler-robot/releases) 
