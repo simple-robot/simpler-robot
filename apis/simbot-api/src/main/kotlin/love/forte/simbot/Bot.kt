@@ -104,12 +104,12 @@ public interface Bot : User, Survivable,
      * 这个 [Image] 不一定是真正已经上传后的结果，它有可能只是一个预处理类型。
      * 在执行 [uploadImage] 的过程中也不一定出现真正的挂起行为，具体细节请参考具体实现。
      *
-     * _Deprecated: 直接通过 [Resource.asImage][Image.toImage] 构建 [Image] 实例即可。_
+     * _Deprecated: 直接通过 [Resource.toImage][Image.toImage] 构建 [Image] 实例即可。_
      */
     @JvmSynthetic
     @Deprecated(
-        "Just use Resource.asImage",
-        ReplaceWith("resource.asImage()", "love.forte.simbot.message.Image.Key.asImage")
+        "Just use Resource.toImage",
+        ReplaceWith("resource.toImage()", "love.forte.simbot.message.Image.Key.toImage")
     )
     public suspend fun uploadImage(resource: Resource): Image<*> = resource.toImage()
     
@@ -119,7 +119,7 @@ public interface Bot : User, Survivable,
      * @see uploadImage
      */
     @Api4J
-    @Deprecated("Just use Image.of", ReplaceWith("resource.asImage()", "love.forte.simbot.message.Image.Key.asImage"))
+    @Deprecated("Just use Image.of(Resource)", ReplaceWith("resource.toImage()", "love.forte.simbot.message.Image.Key.toImage"))
     public fun uploadImageBlocking(resource: Resource): Image<*> = resource.toImage()
     
     
