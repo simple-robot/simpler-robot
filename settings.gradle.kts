@@ -14,7 +14,6 @@
  *
  *
  */
-
 pluginManagement {
     repositories {
         mavenCentral()
@@ -25,6 +24,16 @@ pluginManagement {
     }
 }
 rootProject.name = "simply-robot"
+
+enableFeaturePreview("VERSION_CATALOGS")
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            from(files(File(rootProject.projectDir, "libs.versions.toml")))
+        }
+    }
+}
 
 includePro(":simbot-apis:simbot-api")
 includePro(":simbot-apis:simbot-logger")
@@ -37,7 +46,7 @@ includePro(":simbot-boots:simboot-core-spring-boot-starter")
 
 
 
-fun includePro(path: String, dir: String? = null, name: String? = null): String {
+inline fun includePro(path: String, dir: String? = null, name: String? = null): String {
     include(path)
     if (dir != null) {
         if (File(rootDir, "$dir/build.gradle.kts").exists()) {
@@ -56,3 +65,4 @@ fun includePro(path: String, dir: String? = null, name: String? = null): String 
 rootProject.children.forEach {
     println(it)
 }
+

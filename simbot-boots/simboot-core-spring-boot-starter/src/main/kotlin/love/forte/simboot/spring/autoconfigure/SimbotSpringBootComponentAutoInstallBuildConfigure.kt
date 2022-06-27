@@ -21,6 +21,7 @@ import love.forte.simboot.spring.autoconfigure.application.SpringBootApplication
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentFactory
 import love.forte.simbot.installAllComponents
+import org.springframework.beans.factory.annotation.Autowired
 
 
 /**
@@ -72,8 +73,10 @@ import love.forte.simbot.installAllComponents
  * @author ForteScarlet
  */
 public open class SimbotSpringBootComponentAutoInstallBuildConfigure(
-    private val factories: List<ComponentFactory<*, *>>,
+    @Autowired(required = false) factories: List<ComponentFactory<*, *>>? = null,
 ) : SimbotSpringBootApplicationBuildConfigure {
+    private val factories: List<ComponentFactory<*, *>> = factories ?: emptyList()
+    
     override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
         if (factories.isEmpty()) {
             installAllComponents(configuration.classLoader)

@@ -23,11 +23,14 @@ import love.forte.simboot.spring.autoconfigure.application.springBootApplication
 import love.forte.simbot.Api4J
 import love.forte.simbot.application.Application
 import love.forte.simbot.event.EventListenerManager
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.ApplicationContext
+import org.springframework.context.ResourceLoaderAware
 import org.springframework.context.annotation.Bean
+import org.springframework.core.io.ResourceLoader
 
 
 /**
@@ -36,7 +39,11 @@ import org.springframework.context.annotation.Bean
  *
  * @author ForteScarlet
  */
-public open class SimbotSpringBootApplicationConfiguration {
+public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware {
+    private var resourceLoader: ResourceLoader? = null
+    override fun setResourceLoader(resourceLoader: ResourceLoader) {
+        this.resourceLoader = resourceLoader
+    }
     
     @Bean
     @ConditionalOnMissingBean(SpringBootApplicationConfigurationProperties::class)
@@ -57,7 +64,12 @@ public open class SimbotSpringBootApplicationConfiguration {
         return applicationConfigurationProperties.toConfiguration(
             applicationArguments,
             applicationContext
-        )
+        ).also {
+            val resourceClassLoader = resourceLoader?.classLoader
+            if (resourceClassLoader != null) {
+                it.classLoader = resourceClassLoader
+            }
+        }
     }
     
     
@@ -69,8 +81,8 @@ public open class SimbotSpringBootApplicationConfiguration {
     @ConditionalOnMissingBean(Application::class)
     public fun simbotSpringBootApplication(
         initialConfiguration: SpringBootApplicationConfiguration,
-        configurationConfigures: List<SimbotSpringBootApplicationConfigurationConfigure>,
-        applicationConfigures: List<SimbotSpringBootApplicationBuildConfigure>,
+        @Autowired(required = false) configurationConfigures: List<SimbotSpringBootApplicationConfigurationConfigure>? = null,
+        @Autowired(required = false) applicationConfigures: List<SimbotSpringBootApplicationBuildConfigure>? = null,
         coroutineDispatcherContainer: CoroutineDispatcherContainer,
     ): SpringBootApplication {
         // check application context init.
@@ -81,13 +93,13 @@ public open class SimbotSpringBootApplicationConfiguration {
                 // initial
                 coroutineContext += coroutineDispatcherContainer.dispatcher
                 
-                configurationConfigures.forEach { configure ->
+                configurationConfigures?.forEach { configure ->
                     configure.run { config() }
                 }
                 
                 
             }) { configuration ->
-            applicationConfigures.forEach { configure ->
+            applicationConfigures?.forEach { configure ->
                 configure.run { config(configuration) }
             }
             // TODO..?

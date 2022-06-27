@@ -24,12 +24,15 @@ import org.springframework.context.annotation.Import
  * @author ForteScarlet
  */
 @Import(
+    // 监听函数bean注册
+    EventListenerRegistryPostProcessor::class,
+    // default binders
     DefaultBinderFactoryConfigure::class,
+    //
     SimbotSpringBootListenerAutoRegisterBuildConfigure::class,
     SimbotSpringBootBotAutoRegisterBuildConfigure::class,
     SimbotSpringBootComponentAutoInstallBuildConfigure::class,
     SimbotSpringBootEventProviderAutoInstallBuildConfigure::class,
     SimbotSpringBootInterceptorsAutoConfigure::class,
-    SimbotSpringBootListenerAutoRegisterBuildConfigure::class,
-)
+    )
 public open class SimbotSpringBootDefaultConfigures

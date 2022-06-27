@@ -26,7 +26,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 /**
  * 在 `spring-boot-starter` 中提供事件调度器 [CoroutineDispatcher] 的容器。
  */
-public open class CoroutineDispatcherContainer(public val dispatcher: CoroutineDispatcher)
+public open class CoroutineDispatcherContainer(public open val dispatcher: CoroutineDispatcher)
 
 
 /**
