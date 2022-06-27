@@ -63,12 +63,32 @@ public interface Application : CoroutineScope {
          *
          * @throws NoSuchComponentException 当没有找到目标ID的组件时
          */
-        public fun getComponent(id: ID): Component
+        @Deprecated(
+            "Use getComponentOrNull(String)",
+            ReplaceWith("getComponent(id.literal)", "love.forte.simbot.literal")
+        )
+        public fun getComponent(id: ID): Component = getComponent(id.literal)
         
         /**
          * 尝试根据ID获取一个指定的组件对象。如果未找到则会返回null。
          */
-        public fun getComponentOrNull(id: ID): Component?
+        @Deprecated(
+            "Use getComponentOrNull(String)",
+            ReplaceWith("getComponentOrNull(id.literal)", "love.forte.simbot.literal")
+        )
+        public fun getComponentOrNull(id: ID): Component? = getComponentOrNull(id.literal)
+        
+        /**
+         * 尝试根据ID获取一个指定的组件对象。如果未找到则会抛出 [NoSuchComponentException].
+         *
+         * @throws NoSuchComponentException 当没有找到目标ID的组件时
+         */
+        public fun getComponent(id: String): Component
+        
+        /**
+         * 尝试根据ID获取一个指定的组件对象。如果未找到则会返回null。
+         */
+        public fun getComponentOrNull(id: String): Component?
         
         
         /**
@@ -83,9 +103,14 @@ public interface Application : CoroutineScope {
     public val eventListenerManager: EventListenerManager
     
     /**
-     * 当前应用下的 [事件提供者][EventProvider] 的 **列表视图**。
+     * 当前应用下的所有 [事件提供者][EventProvider]。
      */
     public val providers: List<EventProvider>
+    
+    /**
+     * 当前应用下的所有 [bot管理器][BotManager]。
+     */
+    public val botManagers: List<BotManager<*>> get() = providers.filterIsInstance<BotManager<*>>()
     
     /**
      * 挂起此应用直至其被终止。
@@ -129,11 +154,6 @@ public interface Application : CoroutineScope {
     public fun shutdownBlocking(): Unit = runInBlocking { shutdown() }
 }
 
-
-/**
- * 得到目标环境参数中的所有 [BotManager] 实例。
- */
-public inline val Application.botManagers: List<BotManager<*>> get() = providers.filterIsInstance<BotManager<*>>()
 
 
 

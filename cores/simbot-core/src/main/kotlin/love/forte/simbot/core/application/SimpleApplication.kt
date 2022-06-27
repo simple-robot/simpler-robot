@@ -16,22 +16,20 @@
 
 package love.forte.simbot.core.application
 
-import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.application.*
 import love.forte.simbot.core.event.SimpleEventListenerManager
+import love.forte.simbot.set
 import love.forte.simbot.utils.view
-import org.slf4j.Logger
-import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.nanoseconds
 
 /**
  * 由核心所提供的最基础的 [ApplicationFactory] 实现。
  */
-public object Simple :
-    ApplicationFactory<SimpleApplicationConfiguration, SimpleApplicationBuilder, SimpleApplication> {
+public object Simple : ApplicationFactory<SimpleApplicationConfiguration, SimpleApplicationBuilder, SimpleApplication> {
     private val logger = LoggerFactory.getLogger<Simple>()
     
     override suspend fun create(
@@ -41,7 +39,10 @@ public object Simple :
         // init configurator
         val config = SimpleApplicationConfiguration().also {
             it.logger = this.logger
-        }.also(configurator)
+        }.also(configurator).also {
+            it.initJob()
+        }
+        
         val logger = config.logger
         logger.debug("Configuration init: {}", config)
         val startTime = System.nanoTime()
@@ -79,7 +80,13 @@ public suspend fun createSimpleApplication(
 /**
  * [SimpleApplication] 的配置类。
  */
-public open class SimpleApplicationConfiguration : ApplicationConfiguration()
+public open class SimpleApplicationConfiguration : ApplicationConfiguration() {
+    public open fun initJob() {
+        if (coroutineContext[Job] == null) {
+            coroutineContext += SupervisorJob()
+        }
+    }
+}
 
 
 /**
@@ -103,8 +110,7 @@ public interface SimpleApplication : Application {
 /**
  * 用于构建 [SimpleApplication] 的构建器类型。
  */
-public interface SimpleApplicationBuilder :
-    StandardApplicationBuilder<SimpleApplication>
+public interface SimpleApplicationBuilder : StandardApplicationBuilder<SimpleApplication>
 
 
 /**
@@ -118,16 +124,8 @@ private class SimpleApplicationImpl(
 ) : SimpleApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
     
-    override val coroutineContext: CoroutineContext
-    override val job: CompletableJob
-    override val logger: Logger
-    
-    init {
-        val currentCoroutineContext = environment.coroutineContext
-        job = SupervisorJob(currentCoroutineContext[Job])
-        coroutineContext = currentCoroutineContext + job
-        logger = environment.logger
-    }
+    override val coroutineContext = environment.coroutineContext
+    override val logger = environment.logger
 }
 
 
@@ -138,6 +136,7 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder,
     BaseStandardApplicationBuilder<SimpleApplication>() {
     
     
+    @OptIn(ExperimentalSimbotApi::class)
     suspend fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {
         val logger = appConfig.logger
         
@@ -147,9 +146,7 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder,
         logger.info("The size of components built is {}", components.size)
         
         val environment = SimpleEnvironment(
-            components,
-            logger,
-            appConfig.coroutineContext
+            components, logger, appConfig.coroutineContext
         )
         logger.debug("Init SimpleEnvironment: {}", environment)
         
@@ -164,6 +161,9 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder,
         
         val application = SimpleApplicationImpl(appConfig, environment, listenerManager, providers)
         
+        // set application attribute
+        listenerManager.globalScopeContext[ApplicationAttributes.Application] = application
+        
         // complete.
         complete(application)
         logger.info("Application [{}] is built and completed.", application)
@@ -171,7 +171,7 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder,
         // region register bots
         // registing bot after complete.
         
-        logger.debug("Registing bots...")
+        logger.debug("Registering bots...")
         val bots = registerBots(providers)
         logger.debug("All bot registers: {}", bots)
         logger.info("The size of bots registered: {}", bots.size)

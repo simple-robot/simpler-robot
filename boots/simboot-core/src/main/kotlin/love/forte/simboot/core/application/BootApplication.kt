@@ -16,10 +16,8 @@
 
 package love.forte.simboot.core.application
 
-import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.ExperimentalSerializationApi
 import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.annotationtool.core.getAnnotation
@@ -54,7 +52,6 @@ import org.slf4j.Logger
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Named
-import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
@@ -78,7 +75,9 @@ public object Boot : ApplicationFactory<BootApplicationConfiguration, BootApplic
         builder: suspend BootApplicationBuilder.(BootApplicationConfiguration) -> Unit,
     ): BootApplication {
         // init configurator
-        val config = BootApplicationConfiguration().also(configurator)
+        val config = BootApplicationConfiguration().also(configurator).also {
+            it.initJob()
+        }
         val logger = config.logger
         val startTime = System.nanoTime()
         val appBuilder = BootApplicationBuilderImpl().apply {
@@ -168,8 +167,7 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
     ) {
         val oldConfig = botVerifyInfoDecoderConfigurations[factory] as? C.() -> Unit
         
-        @Suppress("UNCHECKED_CAST")
-        val newConfig: Any.() -> Unit = if (oldConfig == null) {
+        @Suppress("UNCHECKED_CAST") val newConfig: Any.() -> Unit = if (oldConfig == null) {
             {
                 this as C
                 configurator()
@@ -188,8 +186,7 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
             factory.create(newConfig)
         }
         
-        @Suppress("UNCHECKED_CAST")
-        botVerifyInfoDecoderFactories.merge(factory, createFactory) { _, curr ->
+        @Suppress("UNCHECKED_CAST") botVerifyInfoDecoderFactories.merge(factory, createFactory) { _, curr ->
             curr
         }
     }
@@ -260,8 +257,7 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
 /**
  * 用于构建 [BootApplication] 的构建器。
  */
-public interface BootApplicationBuilder :
-    StandardApplicationBuilder<BootApplication> {
+public interface BootApplicationBuilder : StandardApplicationBuilder<BootApplication> {
     
     /**
      * 事件处理器。
@@ -362,22 +358,17 @@ private class BootApplicationImpl(
 ) : BootApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
     
-    override val coroutineContext: CoroutineContext
-    override val job: CompletableJob
-    override val logger: Logger
+    override val coroutineContext = environment.coroutineContext
+    override val logger = environment.logger
     
-    init {
-        val currentCoroutineContext = environment.coroutineContext
-        job = SupervisorJob(currentCoroutineContext[Job])
-        coroutineContext = currentCoroutineContext + job
-        logger = environment.logger
-    }
+    private val job: Job? get() = coroutineContext[Job]
     
     override val isActive: Boolean
-        get() = job.isActive
+        get() = job?.isActive ?: true
     
     override val isCancelled: Boolean
-        get() = job.isCancelled
+        get() = job?.isCancelled ?: false
+    
     
     override suspend fun cancel(reason: Throwable?): Boolean {
         shutdown(reason)
@@ -385,7 +376,7 @@ private class BootApplicationImpl(
     }
     
     override fun invokeOnCompletion(handler: CompletionHandler) {
-        job.invokeOnCompletion(handler)
+        job?.invokeOnCompletion(handler) ?: handler.invoke(null)
     }
 }
 
@@ -415,6 +406,7 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
     }
     
     
+    @OptIn(ExperimentalSimbotApi::class)
     @Suppress("DuplicatedCode")
     suspend fun build(configuration: BootApplicationConfiguration): BootApplication {
         val logger = configuration.logger
@@ -435,9 +427,7 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
         
         logger.debug("Creating boot environment...")
         val environment = BootEnvironment(
-            components,
-            logger,
-            configuration.coroutineContext
+            components, logger, configuration.coroutineContext
         )
         logger.debug("Boot environment created: {}", environment)
         
@@ -465,10 +455,7 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
         // Binder containers.
         resolvedBinderContainerFromBeanContainer(binderBuilder, beanContainer, tool)
         resolvedBinderContainerFromScanTopLevelFunctions(
-            binderBuilder,
-            classLoader,
-            configuration.topLevelBinderScanPackage,
-            tool
+            binderBuilder, classLoader, configuration.topLevelBinderScanPackage, tool
         )
         
         // include default global binders
@@ -491,7 +478,9 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
             
             autoConfigFromBeanContainer(logger, binderManager, beanContainer, processor, tool)
             autoScanTopFunction(
-                classLoader, logger, binderManager,
+                classLoader,
+                logger,
+                binderManager,
                 beanContainer,
                 processor,
                 tool,
@@ -548,6 +537,8 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
         
         // create application
         val application = BootApplicationImpl(configuration, environment, listenerManager, beanContainer, providers)
+        // set application attribute
+        listenerManager.globalScopeContext[ApplicationAttributes.Application] = application
         
         // complete.
         complete(application)
@@ -813,21 +804,11 @@ private fun EventListenersGenerator.autoConfigFromBeanContainer(
                     val returnType = function.returnType.classifier as? KClass<*>?
                     if (returnType?.isSubclassOf(EventListenerBuilder::class) == true) {
                         resolveEventListenerOrBuilderFunction(
-                            type,
-                            function,
-                            logger,
-                            beanContainer,
-                            listener
+                            type, function, logger, beanContainer, listener
                         )
                     } else {
                         resolveEventListenerFunction(
-                            type,
-                            function,
-                            logger,
-                            binderManager,
-                            beanContainer,
-                            listenerProcessor,
-                            listener
+                            type, function, logger, binderManager, beanContainer, listenerProcessor, listener
                         )
                     }
                     
@@ -905,16 +886,11 @@ private fun EventListenersGenerator.resolveEventListenerOrBuilderFunction(
     
     if (type == null) {
         logger.debug(
-            "Resolved top-level listener: [{}] by [{}]",
-            resultListener,
-            result
+            "Resolved top-level listener: [{}] by [{}]", resultListener, result
         )
     } else {
         logger.debug(
-            "Resolved listener: [{}] from [{}] by [{}]",
-            resultListener,
-            type,
-            result
+            "Resolved listener: [{}] from [{}] by [{}]", resultListener, type, result
         )
     }
     
@@ -968,8 +944,7 @@ private fun EventListenersGenerator.autoScanTopFunction(
                     }.getOrElse { e ->
                         if (logger.isDebugEnabled) {
                             logger.debug(
-                                "The method [$m] of class [$c] cannot be resolved to KFunction. Skip for now.",
-                                e
+                                "The method [$m] of class [$c] cannot be resolved to KFunction. Skip for now.", e
                             )
                         }
                         null
@@ -982,24 +957,14 @@ private fun EventListenersGenerator.autoScanTopFunction(
                         val returnType = function.returnType.classifier as? KClass<*>?
                         if (returnType?.isSubclassOf(EventListenerBuilder::class) == true) {
                             resolveEventListenerOrBuilderFunction(
-                                null,
-                                function,
-                                logger,
-                                beanContainer,
-                                listener
+                                null, function, logger, beanContainer, listener
                             )
                             doTopLevelEventListenerBuilderWarn {
                                 logger.warn("Using the top-level function to register the Event Listener Builder is still experimental.")
                             }
                         } else {
                             resolveEventListenerFunction(
-                                null,
-                                function,
-                                logger,
-                                binderManager,
-                                beanContainer,
-                                listenerProcessor,
-                                listener
+                                null, function, logger, binderManager, beanContainer, listenerProcessor, listener
                             )
                         }
                         
@@ -1022,16 +987,15 @@ private fun BotRegistrar.autoRegisterBots(
     botResources: List<Resource>,
 ) {
     val botVerifyInfoList = scanResources(classLoader, scanResources) {
-        plus(botResources)
-            .mapNotNull { r ->
-                val decoder = decoderFactories.find { it.factory.match(r.name) }?.create()
-                if (decoder == null) {
-                    logger.warn("No decoder factories match resource [{}] named [{}], skip.", r, r.name)
-                    return@mapNotNull null
-                }
-                
-                r.toBotVerifyInfo(decoder)
+        plus(botResources).mapNotNull { r ->
+            val decoder = decoderFactories.find { it.factory.match(r.name) }?.create()
+            if (decoder == null) {
+                logger.warn("No decoder factories match resource [{}] named [{}], skip.", r, r.name)
+                return@mapNotNull null
             }
+            
+            r.toBotVerifyInfo(decoder)
+        }
     }
     
     // TODO log?

@@ -16,20 +16,15 @@
 
 package love.forte.simboot.spring.autoconfigure.application
 
-import kotlinx.coroutines.CompletableJob
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.application.*
-import love.forte.simbot.core.application.BaseApplication
-import love.forte.simbot.core.application.BaseApplicationBuilder
-import love.forte.simbot.core.application.EventProcessableApplicationBuilder
-import love.forte.simbot.core.application.SimpleApplicationBuilder
+import love.forte.simbot.core.application.*
 import love.forte.simbot.core.event.SimpleEventListenerManager
 import love.forte.simbot.core.event.SimpleListenerManagerConfiguration
 import love.forte.simbot.core.event.simpleListenerManager
+import love.forte.simbot.set
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
-import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration.Companion.nanoseconds
 
 
@@ -71,8 +66,7 @@ public object SpringBoot :
             builder(configuration)
         }.build(configuration).also {
             logger.info(
-                "Simbot Spring Boot Application built in {}",
-                (System.nanoTime() - startTime).nanoseconds.toString()
+                "Simbot Spring Boot Application built in {}", (System.nanoTime() - startTime).nanoseconds.toString()
             )
         }
     }
@@ -91,7 +85,9 @@ public fun springBootApplication(
     configurator: SpringBootApplicationConfiguration.() -> Unit = {},
     builder: SpringBootApplicationBuilder.(SpringBootApplicationConfiguration) -> Unit = {},
 ): ApplicationLauncher<SpringBootApplication> {
-    val configuration = initialConfiguration.also(configurator)
+    val configuration = initialConfiguration.also(configurator).also {
+        it.initJob()
+    }
     return applicationLauncher { SpringBoot.create(configuration, builder) }
 }
 
@@ -159,6 +155,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
     }
     
     
+    @OptIn(ExperimentalSimbotApi::class)
     @Suppress("DuplicatedCode")
     suspend fun build(configuration: SpringBootApplicationConfiguration): SpringBootApplication {
         val components = buildComponents()
@@ -166,9 +163,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
         val logger = configuration.logger
         
         val environment = SpringBootEnvironment(
-            components,
-            logger,
-            configuration.coroutineContext
+            components, logger, configuration.coroutineContext
         )
         
         logger.debug("Building listener manager...")
@@ -184,15 +179,17 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
         }
         
         val application = SpringBootApplicationImpl(configuration, environment, listenerManager, providers)
+        // set application attribute
+        listenerManager.globalScopeContext[ApplicationAttributes.Application] = application
         
         // complete.
         complete(application)
-    
-        //region register bots
+        
+        // region register bots
         // after complete.
         logger.debug("Registering bots...")
         val bots = registerBots(providers)
-    
+        
         logger.info("Bots all registered. The size of bots: {}", bots.size)
         if (bots.isNotEmpty()) {
             logger.debug("The all registered bots: {}", bots)
@@ -212,7 +209,7 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
         if (isAutoStartBots && bots.isEmpty()) {
             logger.debug("But the registered bots are empty.")
         }
-        //endregion
+        // endregion
         
         return application
     }
@@ -228,16 +225,8 @@ private class SpringBootApplicationImpl(
 ) : SpringBootApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
     
-    override val coroutineContext: CoroutineContext
-    override val job: CompletableJob
-    override val logger: Logger
-    
-    init {
-        val currentCoroutineContext = environment.coroutineContext
-        job = SupervisorJob(currentCoroutineContext[Job])
-        coroutineContext = currentCoroutineContext + job
-        logger = environment.logger
-    }
+    override val coroutineContext = environment.coroutineContext
+    override val logger: Logger = environment.logger
 }
 // endregion
 
