@@ -1,0 +1,16 @@
+changelog:
+  exclude:
+    labels:
+      - 'for-release'
+  categories:
+    - title: '🔧 Bug Fix'
+      labels:
+        - 'bug'
+    - title: '🎉 新特性'
+      labels:
+        - '特性'
+    - title: '✨ 优化'
+      labels:
+        - '优化'
+    - title: '👀 其他变更'
+        - '*'
