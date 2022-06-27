@@ -13,4 +13,5 @@ changelog:
       labels:
         - '优化'
     - title: '👀 其他变更'
+      labels:
         - '*'
