@@ -20,6 +20,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
 import love.forte.simbot.*
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import java.io.FileNotFoundException
 
@@ -29,9 +30,9 @@ import java.io.FileNotFoundException
  * @author ForteScarlet
  */
 public open class SimbotSpringBootBotAutoRegisterBuildConfigure(
-    private val customDecoderFactories: List<BotVerifyInfoDecoderFactory<*, *>>,
-) :
-    SimbotSpringBootApplicationBuildConfigure {
+    @Autowired(required = false) customDecoderFactories: List<BotVerifyInfoDecoderFactory<*, *>>? = null,
+) : SimbotSpringBootApplicationBuildConfigure {
+    private val customDecoderFactories: List<BotVerifyInfoDecoderFactory<*, *>> = customDecoderFactories ?: emptyList()
     
     @OptIn(ExperimentalSerializationApi::class, ExperimentalSimbotApi::class)
     override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
@@ -64,7 +65,7 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure(
             .mapNotNull {
                 configuration.logger.debug("Resolved bot register resource: {}", it)
                 val decoderFactory = decoderList.findLast { decoder -> decoder.match(it.filename!!) }
-                    // ?: null // err? warn?
+                // ?: null // err? warn?
                 
                 if (decoderFactory == null) {
                     // 没有任何解码器能匹配此资源。

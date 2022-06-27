@@ -49,7 +49,9 @@ import org.springframework.context.annotation.Import
  */
 @Target(AnnotationTarget.CLASS)
 @Import(
+    // 兼容 simbot.factories
     SimbotIncludesSelector::class,
+    // 调度器
     CoroutineDispatcherConfiguration::class,
     // configures
     SimbotSpringBootDefaultConfigures::class,

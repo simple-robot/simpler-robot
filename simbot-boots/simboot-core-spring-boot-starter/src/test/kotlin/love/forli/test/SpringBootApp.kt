@@ -50,6 +50,12 @@ open class MyListeners {
     suspend fun MessageEvent.myLis() {
         println(source())
     }
+    
+    @Listener
+    
+    fun MessageEvent.myLis2(): EventResult {
+        return EventResult.defaults()
+    }
 }
 
 @Listener

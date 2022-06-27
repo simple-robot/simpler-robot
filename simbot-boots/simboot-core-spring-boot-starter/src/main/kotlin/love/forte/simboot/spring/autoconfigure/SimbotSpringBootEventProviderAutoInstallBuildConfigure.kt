@@ -18,9 +18,11 @@ package love.forte.simboot.spring.autoconfigure
 
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
+import love.forte.simbot.LoggerFactory
 import love.forte.simbot.application.EventProvider
 import love.forte.simbot.application.EventProviderFactory
 import love.forte.simbot.application.installAllEventProviders
+import org.springframework.beans.factory.annotation.Autowired
 
 
 /**
@@ -72,15 +74,22 @@ import love.forte.simbot.application.installAllEventProviders
  * @author ForteScarlet
  */
 public open class SimbotSpringBootEventProviderAutoInstallBuildConfigure(
-    private val factories: List<EventProviderFactory<*, *>>,
+    @Autowired(required = false) factories: List<EventProviderFactory<*, *>>? = null,
 ) : SimbotSpringBootApplicationBuildConfigure {
+    private val factories: List<EventProviderFactory<*, *>> = factories ?: emptyList()
     override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
+        logger.info("The number of Installable Event Provider Factory is {}", factories.size)
         if (factories.isEmpty()) {
+            logger.info("Install Event Providers by [installAllEventProviders]")
             installAllEventProviders(configuration.classLoader)
         } else {
             factories.forEach {
                 install(it)
             }
         }
+    }
+    
+    public companion object {
+        private val logger = LoggerFactory.getLogger<SimbotSpringBootEventProviderAutoInstallBuildConfigure>()
     }
 }
