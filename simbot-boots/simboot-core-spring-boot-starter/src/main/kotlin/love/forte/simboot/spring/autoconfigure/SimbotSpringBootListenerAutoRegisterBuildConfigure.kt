@@ -324,7 +324,7 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
             }
             
             val functionSign = function.sign()
-            val listenerId = "$name#$functionSign"
+            val listenerId = listenerAnnotation.id.ifEmpty { "$name#$functionSign" }
             
             
             val resolvedListener = listenerProcessor.process(
