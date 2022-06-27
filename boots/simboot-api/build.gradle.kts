@@ -49,8 +49,7 @@ dependencies {
 }
 
 kotlin {
-    // 严格模式
-    explicitApiWarning()
+        explicitApi()
 
 
     sourceSets.all {

@@ -54,8 +54,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 }
 
 kotlin {
-    // 严格模式
-    explicitApiWarning()
+        explicitApi()
 
 
     sourceSets.all {

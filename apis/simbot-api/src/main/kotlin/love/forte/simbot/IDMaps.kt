@@ -17,8 +17,10 @@
 
 package love.forte.simbot
 
-import java.util.concurrent.*
-import java.util.function.*
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
+import java.util.function.BiConsumer
+import java.util.function.BiFunction
 import java.util.function.Function
 
 
@@ -176,6 +178,7 @@ private class CharSequenceIDMap<V>(private val delegate: MutableMap<ID, V>) : Mu
         return delegate.computeIfAbsent(key, mappingFunction)
     }
 
+    @Suppress("WRONG_TYPE_PARAMETER_NULLABILITY_FOR_JAVA_OVERRIDE")
     override fun computeIfPresent(key: ID, remappingFunction: BiFunction<in ID, in V, out V?>): V? {
         return delegate.computeIfPresent(key, remappingFunction)
     }

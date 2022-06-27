@@ -70,8 +70,7 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
 
 
 kotlin {
-    // 严格模式
-    explicitApiWarning()
+        explicitApi()
     
     
     sourceSets.all {
