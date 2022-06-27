@@ -67,7 +67,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-webflux:2.7.0")
     
     @Suppress("VulnerableLibrariesLocal")
-    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0.preview.9.0")
+    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0.preview.10.0")
     // testImplementation(V.Kotlinx.Coroutines.Reactor.notation)
 }
 repositories {

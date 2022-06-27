@@ -31,6 +31,7 @@ import love.forte.simbot.utils.runWithInterruptible
  * @see BlockingContinuousSessionSelector
  */
 public fun interface ContinuousSessionSelector<T> {
+    @JvmSynthetic
     public suspend operator fun EventProcessingContext.invoke(provider: ContinuousSessionProvider<T>)
 }
 

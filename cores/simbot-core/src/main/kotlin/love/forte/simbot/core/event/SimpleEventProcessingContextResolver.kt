@@ -18,7 +18,6 @@ package love.forte.simbot.core.event
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.rx2.asFlow
@@ -40,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap
  * 核心默认的事件上下文处理器。
  */
 internal class SimpleEventProcessingContextResolver(
-    private val coroutineScope: CoroutineScope,
+    coroutineScope: CoroutineScope,
 ) : EventProcessingContextResolver<SimpleEventProcessingContext> {
     private val continuousSessionListenerManager = ContinuousSessionListenerManager()
     
@@ -63,7 +62,7 @@ internal class SimpleEventProcessingContextResolver(
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
      */
     @OptIn(ExperimentalSimbotApi::class, ExperimentalSerializationApi::class)
-    override suspend fun resolveEventToContext(event: Event, listenerSize: Int): SimpleEventProcessingContext {
+    override suspend fun resolveEventToContext(event: Event, listenerSize: Int): SimpleEventProcessingContext? {
         
         val context = SimpleEventProcessingContext(
             event,
@@ -72,9 +71,12 @@ internal class SimpleEventProcessingContextResolver(
             continuousSessionContext,
             listenerSize
         )
+        // coroutineScope.launch {
+        //     continuousSessionListenerManager.process(context)
+        // }
         
-        coroutineScope.launch {
-            continuousSessionListenerManager.process(context)
+        if (continuousSessionListenerManager.process(context)) {
+            return null
         }
         
         return context

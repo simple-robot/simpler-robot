@@ -162,9 +162,11 @@ public interface EventProcessingContextResolver<C : EventProcessingContext> {
     /**
      * 根据一个事件得到对应的流程上下文。
      * 只有在对应事件存在至少一个对应的监听函数的时候才会被触发。
+     *
+     * @return 如果结果为null，则代表跳过本次推送
      */
     @JvmSynthetic
-    public suspend fun resolveEventToContext(event: Event, listenerSize: Int): C
+    public suspend fun resolveEventToContext(event: Event, listenerSize: Int): C?
     
     /**
      * 向提供的上下文 [C] 的 [EventProcessingContext.results] 中追加一个 [EventResult].
