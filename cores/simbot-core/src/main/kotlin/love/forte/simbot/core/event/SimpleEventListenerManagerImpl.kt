@@ -163,7 +163,10 @@ internal class SimpleEventListenerManagerImpl internal constructor(
             return EventProcessingResult
         }
         
-        return doInvoke(resolveToContext(event, invokers.size), invokers)
+        return resolveToContext(event, invokers.size)?.let {
+            doInvoke(it, invokers)
+        } ?: EventProcessingResult
+        
     }
     
     @Api4J
@@ -181,7 +184,12 @@ internal class SimpleEventListenerManagerImpl internal constructor(
         }
         
         
-        val deferred = managerScope.async { doInvoke(resolveToContext(event, invokers.size), invokers) }
+        val deferred = managerScope.async {
+            resolveToContext(event, invokers.size)?.let { context ->
+                doInvoke(context, invokers)
+            } ?: EventProcessingResult
+        }
+        
         return deferred.asCompletableFuture()
     }
     
@@ -266,7 +274,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
     /**
      * 通过 [Event] 得到一个 [EventProcessingContext].
      */
-    private suspend fun resolveToContext(event: Event, listenerSize: Int): SimpleEventProcessingContext {
+    private suspend fun resolveToContext(event: Event, listenerSize: Int): SimpleEventProcessingContext? {
         return resolver.resolveEventToContext(event, listenerSize)
     }
     

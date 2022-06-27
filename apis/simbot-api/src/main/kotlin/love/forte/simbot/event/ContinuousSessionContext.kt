@@ -44,7 +44,7 @@ import java.util.concurrent.TimeoutException
 public interface BaseContinuousSessionContext {
     
     /**
-     * 注册一个临时监听函数并挂起等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+     * 注册一个持续会话监听函数并挂起等待. 如果注册时发现存在 [id] 冲突的持续会话监听函数，则上一个函数将会被立即关闭处理。
      *
      * ```kotlin
      * val session: ContinuousSessionContext = ...
@@ -84,22 +84,41 @@ public interface BaseContinuousSessionContext {
  *
  * 持续会话的作用域, 通过此作用域在监听函数监听过程中进行会话嵌套。
  *
- * [waiting] 中注册的临时listener将会在所有监听函数被**触发前**, 整体性的作为一个独立的**异步任务**执行，
+ * [waiting] 中注册的持续会话监听函数将会在所有监听函数被**触发前**, 整体性的**依次执行**。
  * 并且因为 [ContinuousSessionSelector.invoke] 不存在返回值, 因此所有的临时会话监听函数均**无法**对任何正常的监听流程产生影响，也**无法**参与到正常流程中的结果返回中。
  *
- * 在事件处理流程中，包含了临时监听函数的情况大概如下所示：
+ * 在事件处理流程中，包含了持续会话监听函数的情况大概如下所示：
  * ```
- * + ----- +   push    + -------------- + 构建Context  + ---------- +
- * | Event | --------> | EventProcessor | -----+----> | 正常处理流程 |
- * + ------+           + ---------------+      |      + ---------- +
- *                                             |
- *                                             | async launch
- *                 + ---------------- +        |
- *                 |  临时监听函数处理  | <------ +
- *                 + ---------------- +
- * ```
+ *          + ----- +
+ *          | Event |
+ *          + ------+
+ *              ｜
+ *              ｜ push
+ *              ｜
+ *              ｜
+ *      + -------------- +
+ *      | EventProcessor |
+ *      + ---------------+
+ *              |
+ *              | 构建Context
+ *              |
+ *    + ---------------- +
+ *    |  持续会话监听函数   | （如果有的话）
+ *    + ---------------- +
+ *              |
+ *              | （如果没有被使用）
+ *              |
+ *       + ---------- +
+ *       | 正常处理流程 |
+ *       + ---------- +
  *
- * ⚠ ：这种行为未来可能会发生变更。
+ *
+ *
+ * ```
+ * ## 一次性
+ * 在持续会话中，事件的使用是**一次性**的。也就是说当一个事件被通过 [ContinuousSessionProvider.push] 推送后，
+ * 将不会被其他持续会话或后续的普通监听函数使用。因为这个事件已经被当前这个持续会话所 **取用** 了。
+ *
  *
  * ## 仅获取
  * 对于持续会话的使用，你应该尽可能的避免在 [ContinuousSessionSelector] 中执行**逻辑** ————
@@ -119,6 +138,7 @@ public interface BaseContinuousSessionContext {
  * ```
  *
  * 你应当通过持续会话来**获取**值，然后在你的监听主流程中进行业务逻辑。
+ * 同样的原因，你也不应该在持续会话中执行任何异步任务。
  *
  *
  * ## provider & receiver
@@ -136,7 +156,7 @@ public interface BaseContinuousSessionContext {
  *          // 获取 session context. 正常情况下不可能为null
  *          val sessionContext = context.getAttribute(EventProcessingContext.Scope.ContinuousSession) ?: error("不支持会话！")
  *
- *          // 注册并等待一个临时监听函数提供结果. 此处挂起并等待
+ *          // 注册并等待一个持续会话监听函数提供结果. 此处挂起并等待
  *          val num: Int = sessionContext.waiting { provider -> // this: EventProcessingContext
  *              // 这里使用的是 Event.Key 作为判断方式。
  *              // 当然，也可以用 is 判断: if (event is ChannelEvent)
@@ -195,7 +215,7 @@ public interface BaseContinuousSessionContext {
  *
  *
  * ## 会话清除
- * 当你通过 [waiting] 或者其他相关函数注册了一个临时监听函数之后，在出现以下情况后，他们会被清除：
+ * 当你通过 [waiting] 或者其他相关函数注册了一个持续会话监听函数之后，在出现以下情况后，他们会被清除：
  * - 通过 [withTimeout] (或者Java中使用参数 `timeout`) 指定了超时时间，且到达了超时时间。
  * - 通过 [ContinuousSessionProvider.push] 推送了结果或 [ContinuousSessionProvider.pushException] 推送了异常。
  * - 通过 [ContinuousSessionProvider.cancel] 或者 [ContinuousSessionReceiver.cancel] 进行了关闭操作。
@@ -211,7 +231,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     
     // region waiting
     /**
-     * 注册一个临时监听函数并挂起等待. 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+     * 注册一个持续会话监听函数并挂起等待. 如果注册时发现存在 [id] 冲突的持续会话监听函数，则上一个函数将会被立即关闭处理。
      *
      * ```kotlin
      * val session: ContinuousSessionContext = ...
@@ -246,11 +266,11 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     
     
     /**
-     * 注册一个临时监听函数并阻塞的等待.
+     * 注册一个持续会话监听函数并阻塞的等待.
      *
-     * 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+     * 如果注册时发现存在 [id] 冲突的持续会话监听函数，则上一个函数将会被立即关闭处理。
      *
-     * @param id 注册的临时监听函数的唯一ID
+     * @param id 注册的持续会话监听函数的唯一ID
      * @param timeout 超时时间。大于0的时候生效
      * @param timeUnit [timeout] 的时间单位。默认为毫秒
      * @param blockingListener 用于java的阻塞监听函数。是 `(EventProcessingContext, ContinuousSessionProvider) -> {}` 类型的函数接口
@@ -284,7 +304,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     
     
     /**
-     * 注册一个临时监听函数并阻塞的等待, id随机。
+     * 注册一个持续会话监听函数并阻塞的等待, id随机。
      *
      * @param timeout 超时时间，毫秒为单位。大于0的时候生效
      * @param blockingListener 用于java的阻塞监听函数。是 `(EventProcessingContext, ContinuousSessionProvider) -> {}` 类型的函数接口
@@ -321,7 +341,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * }
      * ```
      *
-     * 如果注册时发现存在 [id] 冲突的临时函数，则上一个函数将会被立即关闭处理。
+     * 如果注册时发现存在 [id] 冲突的持续会话监听函数，则上一个函数将会被立即关闭处理。
      *
      * ## 超时处理
      * 使用 [withTimeout] 或其衍生函数来进行超时控制。
@@ -373,7 +393,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * @throws CancellationException 被终止关闭时
      *
-     * @param id 临时监听函数的唯一标识。
+     * @param id 持续会话监听函数的唯一标识。
      * @param key 所需监听函数的类型。
      *
      */
@@ -397,7 +417,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
      *
      *
-     * @param id 临时监听函数的唯一ID
+     * @param id 持续会话监听函数的唯一ID
      * @param key 事件类型 [Event.Key]
      * @param timeout 超时时间，大于0时生效。
      * @param timeUnit [timeout] 时间单位
@@ -508,7 +528,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
      *
      *
-     * @param id 临时监听函数的唯一ID
+     * @param id 持续会话监听函数的唯一ID
      * @param timeout 超时时间，大于0时生效。
      * @param timeUnit [timeout] 时间单位
      * @param matcher 匹配函数。相当于 `(EventProcessingContext, Event) -> Boolean`
@@ -587,7 +607,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
      *
      *
-     * @param id 临时监听函数的唯一ID
+     * @param id 持续会话监听函数的唯一ID
      * @param matcher 匹配函数。相当于 `(EventProcessingContext, Event) -> Boolean`
      *
      * @throws CancellationException 被终止
@@ -598,7 +618,10 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @Api4J
     @JvmOverloads
     @JvmName("waitingForNext")
-    public fun waitForNextBlocking(id: String = randomIdStr(), matcher: BlockingContinuousSessionEventMatcher<Event>): Event =
+    public fun waitForNextBlocking(
+        id: String = randomIdStr(),
+        matcher: BlockingContinuousSessionEventMatcher<Event>,
+    ): Event =
         waitForNextBlocking(id = id, timeout = 0, matcher = matcher)
     
     // endregion
@@ -650,7 +673,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * 这是通过扩展函数 [ContinuousSessionContext.invoke] 所提供的，旨在简化 [next] 这类函数的使用。
      *
      *
-     * @param id 临时监听函数的唯一标识
+     * @param id 持续会话监听函数的唯一标识
      * @param key 所需目标函数类型
      *
      * @see ContinuousSessionContext.invoke
@@ -731,7 +754,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
-     * @param id 临时监听函数唯一标识
+     * @param id 持续会话监听函数唯一标识
      * @param key 目标事件类型
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
@@ -772,7 +795,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
-     * @param id 临时监听函数唯一标识
+     * @param id 持续会话监听函数唯一标识
      * @param key 目标事件类型
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
@@ -838,7 +861,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * 这是通过扩展函数 [ContinuousSessionContext.invoke] 所提供的，旨在简化 [next] 这类函数的使用。
      *
      *
-     * @param id 临时监听函数的唯一标识
+     * @param id 持续会话监听函数的唯一标识
      *
      * @see ContinuousSessionContext.invoke
      *
@@ -885,7 +908,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
-     * @param id 临时监听函数唯一标识
+     * @param id 持续会话监听函数唯一标识
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
      *
@@ -913,7 +936,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
-     * @param id 临时监听函数唯一标识
+     * @param id 持续会话监听函数唯一标识
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
      *
@@ -1042,7 +1065,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @throws TimeoutCancellationException 当超时
      * @throws CancellationException 被终止时
      *
-     * @param id 临时监听函数唯一标识
+     * @param id 持续会话监听函数唯一标识
      * @param key 目标函数类型
      * @param timeout 超时时间。大于0时生效。
      * @param timeUnit [timeout] 时间单位。默认为 [毫秒][TimeUnit.MILLISECONDS]
@@ -1084,7 +1107,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @throws TimeoutCancellationException 当超时
      * @throws CancellationException 被终止时
      *
-     * @param id 临时监听函数唯一标识
+     * @param id 持续会话监听函数唯一标识
      * @param timeout 超时时间。大于0时生效。
      * @param timeUnit [timeout] 时间单位。默认为 [毫秒][TimeUnit.MILLISECONDS]
      * @param matcher 匹配函数
@@ -1115,7 +1138,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * @throws CancellationException 被终止时
      *
-     * @param id 临时监听函数唯一标识
+     * @param id 持续会话监听函数唯一标识
      * @param matcher 匹配函数
      *
      * @see waitingForNextMessage
@@ -1247,7 +1270,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
-     * @param id 临时监听函数唯一标识
+     * @param id 持续会话监听函数唯一标识
      * @param key 目标事件类型
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
@@ -1317,7 +1340,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
-     * @param id 临时监听函数的id
+     * @param id 持续会话监听函数的id
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
      *
@@ -1374,7 +1397,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
-     * @param id 临时监听函数唯一标识
+     * @param id 持续会话监听函数唯一标识
      * @param key 目标事件类型
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
@@ -1436,7 +1459,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
-     * @param id 临时监听函数唯一标识
+     * @param id 持续会话监听函数唯一标识
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
      *

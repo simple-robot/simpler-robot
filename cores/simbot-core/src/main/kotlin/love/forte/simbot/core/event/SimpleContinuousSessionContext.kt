@@ -156,13 +156,13 @@ internal class SimpleContinuousSessionProvider<T>(
  */
 internal data class ContinuousSessionListener<T>(
     val selector: ContinuousSessionSelector<T>,
-    val listenerJob: Job,
+    val listenerDeferred: CompletableDeferred<T>,
     val provider: SimpleContinuousSessionProvider<T>,
     val receiver: SimpleContinuousSessionReceiver<T>,
 ) {
     suspend operator fun invoke(context: EventProcessingContext) {
         if (!provider.isCompleted) {
-            withContext(listenerJob) {
+            withContext(listenerDeferred) {
                 context.run {
                     selector.run { invoke(provider) }
                 }
@@ -188,19 +188,19 @@ internal class ContinuousSessionListenerManager {
      */
     operator fun <T> set(
         id: String,
-        listenerJob: Job,
+        listenerDeferred: CompletableDeferred<T>,
         provider: SimpleContinuousSessionProvider<T>,
         receiver: SimpleContinuousSessionReceiver<T>,
         listener: ContinuousSessionSelector<T>,
     ) {
-        val current = ContinuousSessionListener(listener, listenerJob, provider, receiver)
+        val current = ContinuousSessionListener(listener, listenerDeferred, provider, receiver)
         listeners.merge(id, current) { old, now ->
             logger.debug("Merge waiting listener with save id {}", id)
             old.cancel(SimbotIllegalStateException("Replaced by the same ID listener. id = $id"))
             now
         }
         
-        listenerJob.invokeOnCompletion {
+        listenerDeferred.invokeOnCompletion {
             listeners.remove(id)?.cancel()
             logger.debug("Remove completed resume listener. id: {}", id)
         }
@@ -218,11 +218,21 @@ internal class ContinuousSessionListenerManager {
     
     fun isEmpty(): Boolean = listeners.isEmpty()
     
-    suspend fun process(context: SimpleEventProcessingContext) {
-        listeners.forEach { (id, listener) ->
+    /**
+     *
+     * @return [context] 是否被使用
+     */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun process(context: SimpleEventProcessingContext): Boolean {
+        for ((id, listener) in listeners) {
             try {
+                val deferred = listener.listenerDeferred
                 logger.trace("Launch resumed listener: {} of id {} by event {}", listener, id, context.event)
                 listener(context)
+                if (deferred.isCompleted && deferred.getCompletionExceptionOrNull() == null) {
+                    logger.debug("Event context {} is used by ResumeListener(id={})", context, id)
+                    return true
+                }
             } catch (e: CancellationException) {
                 if (logger.isDebugEnabled) {
                     logger.debug("ResumeListener(id=$id) invoke failed: ${e.localizedMessage}", e)
@@ -233,6 +243,7 @@ internal class ContinuousSessionListenerManager {
                 }
             }
         }
+        return false
     }
 }
 
