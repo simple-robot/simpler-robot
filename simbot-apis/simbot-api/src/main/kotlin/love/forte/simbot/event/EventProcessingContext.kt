@@ -41,7 +41,7 @@ public interface EventProcessingContext : CoroutineContext.Element, InstantScope
     
     
     /**
-     * 本次监听流程中的事件主题。
+     * 本次监听流程中的事件主体。
      */
     public val event: Event
     
