@@ -19,7 +19,6 @@ package love.forte.simbot.core.application
 import love.forte.simbot.Attribute
 import love.forte.simbot.application.Application
 import love.forte.simbot.attribute
-import love.forte.simbot.core.application.ApplicationAttributes.application
 import love.forte.simbot.core.scope.SimpleScope
 import love.forte.simbot.core.scope.SimpleScope.globalOrNull
 import love.forte.simbot.event.EventProcessingContext
@@ -88,10 +87,6 @@ public object ApplicationAttributes {
         get() = globalOrNull?.get(Application)
     
     
-}
-
-public fun EventProcessingContext.a() {
-    println(application)
 }
 
 
