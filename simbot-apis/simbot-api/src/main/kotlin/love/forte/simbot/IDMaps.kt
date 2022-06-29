@@ -44,14 +44,14 @@ public fun <V> emptyIDMap(): IDMaps<V> = EmptyIDMap as IDMaps<V>
 
 public fun <V> idMapOf(): IDMaps<V> = emptyIDMap()
 
-public fun <V> idMapOf(vararg pairs: Pair<ID, V>): IDMaps<V> =
+public fun <V : Any> idMapOf(vararg pairs: Pair<ID, V>): IDMaps<V> =
     when {
         pairs.isEmpty() -> emptyIDMap()
         pairs.size == 1 -> SignalPairIDMap(pairs[0].first, pairs[0].second)
         else -> CharSequenceIDMap(pairs.toMap(mutableMapOf()))
     }
 
-public fun <V> idMapOf(map: Map<ID, V>): IDMaps<V> =
+public fun <V : Any> idMapOf(map: Map<ID, V>): IDMaps<V> =
     when {
         map.isEmpty() -> emptyIDMap()
         map.size == 1 -> map.entries.first().let { SignalPairIDMap(it.key, it.value) }
@@ -59,11 +59,11 @@ public fun <V> idMapOf(map: Map<ID, V>): IDMaps<V> =
     }
 
 
-public fun <V> mutableIDMapOf(): MutableIDMaps<V> = CharSequenceIDMap(mutableMapOf())
+public fun <V : Any> mutableIDMapOf(): MutableIDMaps<V> = CharSequenceIDMap(mutableMapOf())
 
-public fun <V> mutableIDMapOf(vararg pairs: Pair<ID, V>): MutableIDMaps<V> = CharSequenceIDMap(pairs.toMap(mutableMapOf()))
+public fun <V : Any> mutableIDMapOf(vararg pairs: Pair<ID, V>): MutableIDMaps<V> = CharSequenceIDMap(pairs.toMap(mutableMapOf()))
 
-public fun <V> mutableIDMapOf(map: Map<ID, V>): MutableIDMaps<V> = CharSequenceIDMap(map.toMutableMap())
+public fun <V : Any> mutableIDMapOf(map: Map<ID, V>): MutableIDMaps<V> = CharSequenceIDMap(map.toMutableMap())
 
 
 /**
@@ -112,7 +112,7 @@ private class SignalPairIDMap<V>(val id: ID, val value: V) : IDMaps<V> {
 }
 
 
-private class CharSequenceIDMap<V>(private val delegate: MutableMap<ID, V>) : MutableIDMaps<V> {
+private class CharSequenceIDMap<V : Any>(private val delegate: MutableMap<ID, V>) : MutableIDMaps<V> {
     override val entries: MutableSet<MutableMap.MutableEntry<ID, V>>
         get() = delegate.entries.toMutableSet()
 
@@ -177,7 +177,6 @@ private class CharSequenceIDMap<V>(private val delegate: MutableMap<ID, V>) : Mu
         return delegate.computeIfAbsent(key, mappingFunction)
     }
 
-    @Suppress("WRONG_TYPE_PARAMETER_NULLABILITY_FOR_JAVA_OVERRIDE")
     override fun computeIfPresent(key: ID, remappingFunction: BiFunction<in ID, in V, out V?>): V? {
         return delegate.computeIfPresent(key, remappingFunction)
     }
