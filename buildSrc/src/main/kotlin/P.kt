@@ -63,31 +63,6 @@ sealed class P : SimbotProject() {
 
     }
 
-    sealed class ForteDI(id: String) : Dep(GROUP, "di-$id", VERSION) {
-        companion object {
-            const val GROUP = "love.forte.di"
-            const val VERSION = "0.0.3"
-        }
-
-        object Api : ForteDI("api")
-        object Core : ForteDI("core")
-        object Spring : ForteDI("spring")
-
-    }
-
-    // "love.forte.annotation-tool:api:0.6.1"
-    sealed class AnnotationTool(id: String) : Dep(GROUP, id, VERSION) {
-        companion object {
-            const val GROUP = "love.forte.annotation-tool"
-            const val VERSION = "0.6.3"
-        }
-
-        object Api : AnnotationTool("api")
-        object Core : AnnotationTool("core")
-        object KCore : AnnotationTool("kcore")
-
-    }
-
 
 }
 
