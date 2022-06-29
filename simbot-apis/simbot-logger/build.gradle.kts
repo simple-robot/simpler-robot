@@ -23,13 +23,12 @@ plugins {
 }
 
 dependencies {
-    api(V.Kotlinx.Coroutines.Core.Jvm.notation)
-    api(V.Slf4j.Api.notation)
-    api("com.lmax:disruptor:3.4.4")
+    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.slf4j.api)
+    api(libs.lmax.disruptor)
 
-    compileOnly(V.Jetbrains.Annotations.notation)
-
-    testImplementation(V.Kotlin.Test.Testng.notation)
+    compileOnly(libs.jetbrains.annotations)
+    testImplementation(kotlin("test-testng"))
 }
 
 tasks.getByName<Test>("test") {
