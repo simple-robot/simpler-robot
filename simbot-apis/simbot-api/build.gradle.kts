@@ -24,28 +24,29 @@ plugins {
 }
 
 dependencies {
-    api(V.Kotlin.Reflect.notation)
-    api(V.Kotlinx.Coroutines.Core.Jvm.notation)
-    api(V.Kotlinx.Coroutines.J8.notation)
-    api(V.Kotlinx.Serialization.Core.notation)
-    api(V.Slf4j.Api.notation)
-    compileOnly(V.Jetbrains.Annotations.notation)
+    api(kotlin("reflect"))
     
-    compileOnly(V.Kotlinx.Serialization.Json.notation)
-    compileOnly(V.Kotlinx.Serialization.Properties.notation)
-    compileOnly(V.Kotlinx.Serialization.Yaml.notation)
-    compileOnly(V.Kotlinx.Serialization.Protobuf.notation)
+    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.kotlinx.coroutines.jdk8)
+    api(libs.kotlinx.serialization.core)
     
-    testImplementation(V.Kotlinx.Serialization.Json.notation)
-    testImplementation(V.Kotlinx.Serialization.Yaml.notation)
-    testImplementation(V.Kotlinx.Serialization.Properties.notation)
-    testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
     
-    testImplementation(V.Kotlin.Test.Testng.notation)
+    api(libs.slf4j.api)
+    compileOnly(libs.jetbrains.annotations)
     
-    testImplementation("org.openjdk.jmh:jmh-core:1.33")
-    testImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.35")
-    kaptTest("org.openjdk.jmh:jmh-generator-annprocess:1.35")
+    compileOnly(libs.kotlinx.serialization.json)
+    compileOnly(libs.kotlinx.serialization.properties)
+    compileOnly(libs.charleskorn.kaml)
+    compileOnly(libs.kotlinx.serialization.protobuf)
+    
+    testImplementation(kotlin("test-testng"))
+    testImplementation(libs.kotlinx.serialization.json)
+    testImplementation(libs.kotlinx.serialization.properties)
+    testImplementation(libs.charleskorn.kaml)
+    testImplementation(libs.kotlinx.serialization.protobuf)
+    testImplementation(libs.openjdk.jmh.core)
+    testImplementation(libs.openjdk.jmh.generator.annprocess)
+    kaptTest(libs.openjdk.jmh.generator.annprocess)
 }
 
 

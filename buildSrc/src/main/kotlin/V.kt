@@ -203,12 +203,6 @@ sealed class V(group: String?, id: String, version: String?) : Dep(group, id, ve
 
     }
 
-    object Jmh {
-        const val GROUP = "org.openjdk.jmh"
-        
-        
-    }
-    
     
 
 }

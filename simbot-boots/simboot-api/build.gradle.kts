@@ -20,7 +20,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     id("org.jetbrains.dokka")
-
+    
 }
 
 tasks.getByName<Test>("test") {
@@ -32,31 +32,31 @@ dependencies {
     api(project(":simbot-cores:simbot-core")) {
         exclude("love.forte.simbot", "simbot-logger")
     }
-    api(P.ForteDI.Api.notation)
-
-    api(V.Slf4j.Api.notation)
-    api(V.Kotlinx.Coroutines.Core.Jvm.notation)
-    api(V.Kotlinx.Coroutines.J8.notation)
-    api(V.Kotlinx.Serialization.Core.notation)
-
+    api(libs.forte.di.api)
+    
+    api(libs.slf4j.api)
+    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.kotlinx.coroutines.jdk8)
+    api(libs.kotlinx.serialization.core)
+    
     // compileOnly(project(":simbot-annotation"))
-    compileOnly("javax.annotation:javax.annotation-api:1.3.2")
-
-    testImplementation(V.Kotlin.Test.Testng.notation)
-    testImplementation(V.Kotlinx.Serialization.Json.notation)
-    testImplementation(V.Kotlinx.Serialization.Properties.notation)
-    testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
+    compileOnly(libs.javax.annotation.api)
+    
+    testImplementation(kotlin("test-testng"))
+    testImplementation(libs.kotlinx.serialization.json)
+    testImplementation(libs.kotlinx.serialization.properties)
+    testImplementation(libs.kotlinx.serialization.protobuf)
 }
 
 kotlin {
-        explicitApi()
-
-
+    explicitApi()
+    
+    
     sourceSets.all {
-            languageSettings {
-                optIn("kotlin.RequiresOptIn")
-            }
+        languageSettings {
+            optIn("kotlin.RequiresOptIn")
         }
+    }
 }
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
