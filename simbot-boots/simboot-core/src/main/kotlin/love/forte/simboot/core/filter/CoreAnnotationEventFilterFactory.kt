@@ -21,6 +21,7 @@ import love.forte.simboot.annotation.Filter
 import love.forte.simboot.annotation.Filters
 import love.forte.simboot.filter.EmptyKeyword
 import love.forte.simboot.filter.MatchType
+import love.forte.simbot.LoggerFactory
 import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.event.*
 import love.forte.simbot.literal
@@ -28,6 +29,8 @@ import love.forte.simbot.message.At
 import java.util.concurrent.CopyOnWriteArrayList
 
 public object CoreAnnotationEventFilterFactory : AnnotationEventFilterFactory {
+    private val logger = LoggerFactory.getLogger<CoreAnnotationEventFilterFactory>()
+    
     override fun resolveFilter(
         listener: EventListener,
         listenerAttributes: MutableAttributeMap,
@@ -35,7 +38,15 @@ public object CoreAnnotationEventFilterFactory : AnnotationEventFilterFactory {
         filters: Filters,
     ): EventFilter? {
         val value = filter.value
-        val target = filter.target.box()
+        var target = filter.targets.box()
+        if (target == null) {
+            @Suppress("DEPRECATION")
+            target = filter.target.box0()
+            if (target != null) {
+                logger.warn("The @Filter(target = TargetFilter(...)) is deprecated. please use the @Filter(targets = Filter.Targets(...)).")
+            }
+            
+        }
         
         if (value.isEmpty() && target == null) {
             return null
