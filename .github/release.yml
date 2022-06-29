@@ -2,6 +2,7 @@ changelog:
   exclude:
     labels:
       - 'for-release'
+      - 'ignore-in-release'
   categories:
     - title: '🔧 Bug Fix'
       labels:

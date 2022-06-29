@@ -63,7 +63,7 @@ public interface PlainText<out A : PlainText<A>> : StandardMessage<A> {
     public val text: String
     
     public companion object Key : Message.Key<PlainText<*>> {
-        override fun safeCast(value: Any): PlainText<*>? = safeCast(value)
+        override fun safeCast(value: Any): PlainText<*>? = doSafeCast(value)
     }
 }
 

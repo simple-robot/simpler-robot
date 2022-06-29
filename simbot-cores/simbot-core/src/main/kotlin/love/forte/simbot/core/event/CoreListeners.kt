@@ -142,7 +142,7 @@ public fun <E : Event> blockingCoreListener(
     isAsync = isAsync,
 ) { t, u ->
     val result = func.apply(t, u)
-    
+    logger.let {}
     if (result is EventResult) {
         result
     } else {

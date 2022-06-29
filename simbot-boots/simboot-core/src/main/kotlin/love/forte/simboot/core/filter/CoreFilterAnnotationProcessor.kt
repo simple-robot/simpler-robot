@@ -122,7 +122,7 @@ public object CoreFilterAnnotationProcessor {
 
 
 /**
- * @see TargetFilter
+ * @see Filter.Targets
  */
 internal data class FilterTarget(
     val components: Set<String>,
@@ -134,7 +134,20 @@ internal data class FilterTarget(
     val atBot: Boolean,
 )
 
-internal fun TargetFilter.box(): FilterTarget? {
+internal fun Filter.Targets.box(): FilterTarget? {
+    if (components.isEmpty() && bots.isEmpty() && authors.isEmpty() && groups.isEmpty() && channels.isEmpty() && guilds.isEmpty() && !atBot) {
+        return null
+    }
+    
+    return FilterTarget(
+        components.toSet(), bots.toSet(), authors.toSet(), groups.toSet(), channels.toSet(), guilds.toSet(), atBot
+    )
+    
+}
+
+
+@Suppress("DEPRECATION")
+internal fun TargetFilter.box0(): FilterTarget? {
     if (components.isEmpty() && bots.isEmpty() && authors.isEmpty() && groups.isEmpty() && channels.isEmpty() && guilds.isEmpty() && !atBot) {
         return null
     }

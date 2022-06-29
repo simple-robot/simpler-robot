@@ -61,6 +61,7 @@ open class Listeners {
     fun myListener2(foo: Foo) = buildSimpleListener(FriendMessageEvent) {
         match { true }
         handle {
+            println(foo)
             EventResult.defaults()
         }
     }

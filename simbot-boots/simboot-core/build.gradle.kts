@@ -41,20 +41,19 @@ dependencies {
     api(project(":simbot-boots:simboot-api"))
     api(project(":simbot-boots:simboot-core-annotation"))
 
-    api(V.Slf4j.Api.notation)
-    api(V.Kotlinx.Coroutines.Core.Jvm.notation)
-    api(V.Kotlinx.Serialization.Core.notation)
+    api(libs.slf4j.api)
+    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.kotlinx.serialization.core)
+    api(libs.kotlinx.serialization.json)
+    api(libs.forte.di.core)
+    api(libs.forte.annotationTool.kcore)
 
-    api(V.Kotlinx.Serialization.Json.notation)
-    api(P.ForteDI.Core.notation)
-    api(P.AnnotationTool.KCore.notation)
-
-    testImplementation(V.Kotlin.Test.Testng.notation)
-    testImplementation(V.Kotlinx.Serialization.Properties.notation)
-    testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
+    testImplementation(kotlin("test-testng"))
+    testImplementation(libs.kotlinx.serialization.properties)
+    testImplementation(libs.kotlinx.serialization.protobuf)
     
-    @Suppress("VulnerableLibrariesLocal")
-    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0.preview.9.0")
+    // @Suppress("VulnerableLibrariesLocal")
+    // testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0.preview.9.0")
 }
 
 kotlin {

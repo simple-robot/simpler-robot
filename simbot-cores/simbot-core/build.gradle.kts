@@ -32,20 +32,20 @@ dependencies {
     // simbot-core 使用 logger
     api(project(":simbot-apis:simbot-logger"))
     api(project(":simbot-apis:simbot-api"))
-    api(V.Slf4j.Api.notation)
-    api(V.Kotlinx.Coroutines.Core.Jvm.notation)
-    api(V.Kotlinx.Coroutines.J8.notation)
-    api(V.Kotlinx.Serialization.Core.notation)
+    api(libs.slf4j.api)
+    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.kotlinx.coroutines.jdk8)
+    api(libs.kotlinx.serialization.core)
 
-    compileOnly(V.Kotlinx.Coroutines.Reactive.notation)
-    compileOnly(V.Kotlinx.Coroutines.Reactor.notation)
-    compileOnly(V.Kotlinx.Coroutines.Rx2.notation)
-    compileOnly(V.Kotlinx.Coroutines.Rx3.notation)
+    compileOnly(libs.kotlinx.coroutines.reactive)
+    compileOnly(libs.kotlinx.coroutines.reactor)
+    compileOnly(libs.kotlinx.coroutines.rx2)
+    compileOnly(libs.kotlinx.coroutines.rx3)
 
-    testImplementation(V.Kotlin.Test.Testng.notation)
-    testImplementation(V.Kotlinx.Serialization.Json.notation)
-    testImplementation(V.Kotlinx.Serialization.Properties.notation)
-    testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
+    testImplementation(kotlin("test-testng"))
+    testImplementation(libs.kotlinx.serialization.json)
+    testImplementation(libs.kotlinx.serialization.properties)
+    testImplementation(libs.kotlinx.serialization.protobuf)
 
 }
 

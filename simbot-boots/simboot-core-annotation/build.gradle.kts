@@ -32,20 +32,18 @@ tasks.getByName<Test>("test") {
 
 dependencies {
     api(project(":simbot-boots:simboot-api"))
-    api("javax.inject:javax.inject:1")
+    api(libs.javax.inject)
 
-    // compileOnly(project(":simbot-annotation"))
-
-    compileOnly(V.Javax.AnnotationApi.notation)
-    compileOnly(P.AnnotationTool.Api.notation)
-    compileOnly(V.Spring.Boot.Autoconfigure.notation)
-    testImplementation(V.Kotlin.Test.Testng.notation)
-    testImplementation(V.Kotlinx.Serialization.Json.notation)
-    testImplementation(V.Kotlinx.Serialization.Properties.notation)
-    testImplementation(V.Kotlinx.Serialization.Protobuf.notation)
-    testImplementation(V.Javax.AnnotationApi.notation)
-    testImplementation(P.AnnotationTool.Api.notation)
-    testImplementation(V.Spring.Boot.Autoconfigure.notation)
+    compileOnly(libs.javax.annotation.api)
+    compileOnly(libs.forte.annotationTool.api)
+    compileOnly(libs.spring.boot.autoconfigure)
+    testImplementation(kotlin("test-testng"))
+    testImplementation(libs.kotlinx.serialization.json)
+    testImplementation(libs.kotlinx.serialization.properties)
+    testImplementation(libs.kotlinx.serialization.protobuf)
+    testImplementation(libs.javax.annotation.api)
+    testImplementation(libs.forte.annotationTool.api)
+    testImplementation(libs.spring.boot.autoconfigure)
     
 }
 repositories {

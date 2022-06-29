@@ -19,13 +19,12 @@ plugins {
     kotlin("jvm") version V.Kotlin.VERSION apply false
     kotlin("plugin.serialization") version V.Kotlin.VERSION apply false
     id("org.jetbrains.dokka")
-    `maven-publish`
     signing
+    `maven-publish`
     // see https://github.com/gradle-nexus/publish-plugin
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("simbot.changelog-generator")
     idea
-    // https://github.com/melix/jmh-gradle-plugin
-    // id("me.champeau.jmh") version "0.6.6" apply false
 }
 
 group = P.Simbot.GROUP
@@ -91,7 +90,8 @@ subprojects {
             }
         }
     }
-
+    
+    
     if (isPublishConfigurable && name in publishNeed) {
         apply(plugin = "maven-publish")
         apply(plugin = "signing")
@@ -189,48 +189,6 @@ if (isPublishConfigurable) {
 }
 
 
-tasks.create("createChangelog") {
-    group = "build"
-    doFirst {
-        val realVersion = rootProject.version
-        val version = "v$realVersion"
-        println("Generate change log for $version ...")
-        // configurations.runtimeClasspath
-        val changelogDir = rootProject.file(".changelog").also {
-            it.mkdirs()
-        }
-        val file = File(changelogDir, "$version.md")
-        if (!file.exists()) {
-            file.createNewFile()
-            val autoGenerateText = """
-                
-
-                ## 组件更新
-                相关组件会在后续三日内跟进更新
-                - [mirai组件](https://github.com/simple-robot/simbot-component-mirai/releases)
-                - [腾讯频道组件](https://github.com/simple-robot/simbot-component-tencent-guild/releases)
-                - [开黑啦组件](https://github.com/simple-robot/simbot-component-kaiheila/releases)
-
-                ## 仓库参考
-                
-                - [simbot-api: $version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-api/$realVersion)
-                - [simbot-core: $version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-core/$realVersion)
-                - [simbot-logger: $version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-logger/$realVersion)
-                - [simboot-api: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-api/$realVersion)
-                - [simboot-core: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core/$realVersion)
-                - [simboot-core-annotation: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-annotation/$realVersion)
-                - [simboot-core-spring-boot-starter: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-spring-boot-starter/$realVersion)
-
-                
-            """.trimIndent()
-
-
-            file.writeText(autoGenerateText)
-        }
-
-
-    }
-}
 
 // idea
 idea {
