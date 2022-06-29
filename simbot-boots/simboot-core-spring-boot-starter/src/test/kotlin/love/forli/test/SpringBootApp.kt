@@ -36,7 +36,7 @@ open class SpringBootApp
 
 fun main(vararg args: String) {
     runApplication<SpringBootApp>(*args).also { context ->
-        context
+        println(context)
     }
 }
 
