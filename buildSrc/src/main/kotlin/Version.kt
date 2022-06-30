@@ -69,12 +69,14 @@ data class PVS(
      * 状态名称。例如 [PREVIEW_STATUS] 、 [BETA_STATUS]。
      */
     val status: String,
+    
     /**
-     * 次版号。
+     * 次版号。不为null时才会被拼接。应当 >= 0。
      */
     val minor: Int?,
+    
     /**
-     * 修订号。只有 [minor] 不为null的时候才会被检测。
+     * 修订号。只有 [minor] 不为null的时候才会被检测。应当 >= 0。
      */
     val patch: Int?,
     
