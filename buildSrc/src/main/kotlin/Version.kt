@@ -18,7 +18,7 @@ data class Version(
     
     /**
      * 状态号。状态号会追加在 [major].[minor].[patch] 之后，由 PVS 拼接，
-     * 变为 [major].[minor].[patch].[PVS.status].[PVS.minor].[PVS.patch].
+     * 变为 [major].[minor].[patch].[VersionStatus.status].[VersionStatus.minor].[VersionStatus.patch].
      *
      * 例如：
      * ```
@@ -26,7 +26,7 @@ data class Version(
      * ```
      *
      */
-    val status: PVS? = null,
+    val status: VersionStatus? = null,
     
     /**
      * 是否快照。如果是，将会在版本号结尾处拼接 [-SNAPSHOT][SNAPSHOT_SUFFIX]。
@@ -64,7 +64,7 @@ data class Version(
  * **P**roject **V**ersion **S**tatus.
  */
 @Suppress("SpellCheckingInspection")
-data class PVS(
+data class VersionStatus(
     /**
      * 状态名称。例如 [PREVIEW_STATUS] 、 [BETA_STATUS]。
      */
@@ -106,6 +106,6 @@ data class PVS(
 }
 
 
-internal fun preview(minor: Int?, patch: Int?) = PVS(PVS.PREVIEW_STATUS, minor, patch, ".")
+internal fun VersionStatus.Companion.preview(minor: Int?, patch: Int?) = VersionStatus(PREVIEW_STATUS, minor, patch, ".")
 
-internal fun beta(minor: Int?, patch: Int?) = PVS(PVS.BETA_STATUS, minor, patch, "-")
+internal fun VersionStatus.Companion.beta(minor: Int?, patch: Int?) = VersionStatus(BETA_STATUS, minor, patch, "-")

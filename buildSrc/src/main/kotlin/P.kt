@@ -33,7 +33,6 @@
 
 
 abstract class SimbotProject {
-
     abstract val group: String
     abstract val version: String
 }
@@ -42,7 +41,7 @@ abstract class SimbotProject {
 /**
  * Project versions.
  */
-sealed class P : SimbotProject() {
+object P {
     @Suppress("MemberVisibilityCanBePrivate")
     object Simbot {
         init {
@@ -53,7 +52,7 @@ sealed class P : SimbotProject() {
 
         val version = Version(
             "3", 0, 0,
-            status = preview(18, 0),
+            status = VersionStatus.preview(18, 0),
             isSnapshot = System.getProperty("isSnapshot")?.equals("true", true) ?: false
         )
  
@@ -62,6 +61,4 @@ sealed class P : SimbotProject() {
         val VERSION = version.fullVersion(true)
 
     }
-
-
 }
