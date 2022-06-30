@@ -4,6 +4,9 @@ changelog:
       - 'for-release'
       - 'ignore-in-release'
   categories:
+    - title: '⚠️ 不兼容变更'
+      labels:
+        - '不兼容'
     - title: '🔧 Bug Fix'
       labels:
         - 'bug'
