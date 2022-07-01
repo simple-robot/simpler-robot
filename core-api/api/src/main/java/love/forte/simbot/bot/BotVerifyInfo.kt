@@ -18,6 +18,9 @@
 package love.forte.simbot.bot
 
 import love.forte.simbot.SimbotIllegalStateException
+import love.forte.simbot.bot.BotVerifyInfo.Companion.withCode
+import love.forte.simbot.bot.BotVerifyInfo.Companion.withCodeVerification
+import love.forte.simbot.bot.BotVerifyInfo.Companion.withToken
 import love.forte.simbot.mark.Since
 import java.util.*
 

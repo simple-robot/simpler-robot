@@ -18,7 +18,6 @@ import love.forte.common.ioc.annotation.ConfigBeans
 import love.forte.common.ioc.annotation.Depend
 import love.forte.common.ioc.annotation.PostPass
 import love.forte.simbot.bot.BotManager
-import love.forte.simbot.bot.BotVerifyException
 import love.forte.simbot.bot.BotVerifyInfoConfiguration
 import love.forte.simbot.bot.code
 import love.forte.simbot.core.TypedCompLogger

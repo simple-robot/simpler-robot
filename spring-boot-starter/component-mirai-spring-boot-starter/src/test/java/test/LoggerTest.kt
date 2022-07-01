@@ -1,12 +1,8 @@
 package test
 
-import io.netty.util.internal.ThrowableUtil.addSuppressed
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.bot.BotVerifyException
 import net.mamoe.mirai.BotFactory
-import net.mamoe.mirai.utils.withExceptionCollector
 import org.slf4j.LoggerFactory
 
 class MyEx(message: String?, cause: Throwable?) : RuntimeException(message, cause)

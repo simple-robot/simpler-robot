@@ -14,7 +14,6 @@
 
 package love.forte.simbot.spring.autoconfigure.properties;
 
-import love.forte.common.configuration.annotation.ConfigInject;
 import net.mamoe.mirai.utils.BotConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

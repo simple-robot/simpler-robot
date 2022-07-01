@@ -19,7 +19,10 @@ import catcode.Neko
 import cn.hutool.core.lang.UUID
 import love.forte.simbot.component.mirai.utils.toNeko
 import net.mamoe.mirai.contact.Contact
-import net.mamoe.mirai.message.data.*
+import net.mamoe.mirai.message.data.ForwardMessage
+import net.mamoe.mirai.message.data.ForwardMessageBuilder
+import net.mamoe.mirai.message.data.Message
+import net.mamoe.mirai.message.data.buildForwardMessage
 import net.mamoe.mirai.utils.MiraiExperimentalApi
 
 /**
@@ -108,8 +111,5 @@ public class MiraiForwardMessage(
     override fun equals(other: Any?): Boolean {
         return this === other
     }
-
-    override fun hashCode(): Int {
-        return super.hashCode()
-    }
+    
 }
