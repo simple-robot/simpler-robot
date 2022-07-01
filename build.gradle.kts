@@ -16,183 +16,32 @@
 
 
 plugins {
-    kotlin("jvm") version V.Kotlin.VERSION apply false
-    kotlin("plugin.serialization") version V.Kotlin.VERSION apply false
     id("org.jetbrains.dokka")
-    signing
-    `maven-publish`
-    // see https://github.com/gradle-nexus/publish-plugin
-    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
     id("simbot.changelog-generator")
+    id("simbot.nexus-publish")
+    id("simbot.dokka-multi-module")
     idea
 }
 
 group = P.Simbot.GROUP
 version = P.Simbot.VERSION
+description = P.Simbot.DESCRIPTION
 
 repositories {
     mavenLocal()
     mavenCentral()
-}
-
-val isSnapshotOnly = System.getProperty("snapshotOnly") != null
-val isReleaseOnly = System.getProperty("releaseOnly") != null
-
-val isPublishConfigurable = when {
-    isSnapshotOnly -> P.Simbot.isSnapshot
-    isReleaseOnly -> !P.Simbot.isSnapshot
-    else -> true
-}
-
-println("isSnapshotOnly: $isSnapshotOnly")
-println("isReleaseOnly: $isReleaseOnly")
-println("isPublishConfigurable: $isPublishConfigurable")
-
-
-val secretKeyRingFileKey = "signing.secretKeyRingFile"
-
-
-
-subprojects {
-    group = P.Simbot.GROUP
-    version = P.Simbot.VERSION
-    apply(plugin = "java")
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-    }
-
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = "1.8"
-            javaParameters = true
-            freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
-
+    maven {
+        url = uri(Sonatype.Snapshot.URL)
+        mavenContent {
+            snapshotsOnly()
         }
     }
-
-    tasks.withType<JavaCompile>().configureEach {
-        sourceCompatibility = "1.8"
-        targetCompatibility = "1.8"
-    }
-
-    tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
-        dokkaSourceSets {
-            configureEach {
-                skipEmptyPackages.set(true)
-                jdkVersion.set(8)
-                reportUndocumented.set(true)
-                perPackageOption {
-                    matchingRegex.set(""".*\.internal.*""") // will match all .internal packages and sub-packages
-                    suppress.set(true)
-                }
-            }
-        }
-    }
-    
-    
-    if (isPublishConfigurable && name in publishNeed) {
-        apply(plugin = "maven-publish")
-        apply(plugin = "signing")
-        afterEvaluate {
-            configurePublishing(name)
-            println("[publishing-configure] - [$name] configured.")
-
-            signing {
-                val secretRingFile = rootProject.file("ForteScarlet.gpg")
-                extra[secretKeyRingFileKey] = secretRingFile
-                setProperty(secretKeyRingFileKey, secretRingFile)
-
-                sign(publishing.publications)
-            }
-        }
-    }
-
-
 }
 
 
-
-fun org.jetbrains.dokka.gradle.AbstractDokkaTask.configOutput(format: String) {
-    moduleName.set("simple-robot")
-    outputDirectory.set(rootProject.file("dokka/$format/v$version"))
-}
-
-tasks.dokkaHtmlMultiModule.configure {
-    configOutput("html")
-}
-tasks.dokkaGfmMultiModule.configure {
-    configOutput("gfm")
-}
-
-tasks.register("dokkaHtmlMultiModuleAndPost") {
-    group = JavaBasePlugin.DOCUMENTATION_GROUP
-    dependsOn("dokkaHtmlMultiModule")
-    doLast {
-        val outDir = rootProject.file("dokka/html")
-        val indexFile = File(outDir, "index.html")
-        indexFile.createNewFile()
-        indexFile.writeText(
-            """
-            <html xmlns="http://www.w3.org/1999/xhtml">
-            <head>
-                <meta http-equiv="refresh" content="0;URL='v$version'" />
-            </head>
-            <body>
-            </body>
-            </html>
-        """.trimIndent()
-        )
-
-        // TODO readme
-    }
-}
-
-// nexus staging
-
-if (isPublishConfigurable) {
-
-    val sonatypeUsername: String? =
-        extra.getIfHas("sonatype.username")?.toString() ?: System.getProperty("sonatype.username")
-        ?: System.getenv("SONATYPE_USERNAME")
-
-    val sonatypePassword: String? =
-        extra.getIfHas("sonatype.password")?.toString() ?: System.getProperty("sonatype.password")
-        ?: System.getenv("SONATYPE_PASSWORD")
-
-    println("sonatypeUsername: $sonatypeUsername")
-
-    if (sonatypeUsername != null && sonatypePassword != null) {
-        nexusPublishing {
-            packageGroup.set(P.Simbot.GROUP)
-
-            useStaging.set(
-                project.provider { !project.version.toString().endsWith("SNAPSHOT", ignoreCase = true) }
-            )
-
-            transitionCheckOptions {
-                maxRetries.set(20)
-                delayBetween.set(java.time.Duration.ofSeconds(5))
-            }
-            repositories {
-                sonatype {
-                    snapshotRepositoryUrl.set(uri(Sonatype.`snapshot-oss`.URL))
-                    username.set(sonatypeUsername)
-                    password.set(sonatypePassword)
-                }
-            }
-        }
-    } else {
-        println("[WARN] - sonatype.username or sonatype.password is null, cannot config nexus publishing.")
-    }
-}
-
-
-
-// idea
 idea {
     module {
         isDownloadSources = true
+        isDownloadJavadoc = true
     }
 }
