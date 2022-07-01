@@ -51,6 +51,7 @@ import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.LongAdder
 import javax.inject.Named
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -475,7 +476,6 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
         
         // auto scan listeners.
         listeners {
-            
             autoConfigFromBeanContainer(logger, binderManager, beanContainer, processor, tool)
             autoScanTopFunction(
                 classLoader,
@@ -783,6 +783,7 @@ private fun EventListenersGenerator.autoConfigFromBeanContainer(
     listenerProcessor: KFunctionListenerProcessor,
     tool: KAnnotationTool,
 ) {
+    val count = LongAdder()
     beanContainer.all.forEach { name ->
         val type = beanContainer.getType(name)
         // if is listener
@@ -791,12 +792,13 @@ private fun EventListenersGenerator.autoConfigFromBeanContainer(
                 val listener = beanContainer[name, type] as EventListener
                 logger.debug("Load event listener instance [{}] by type [{}] named [{}]", listener, type, name)
                 listener(listener)
-                
+                count.increment()
             }
             type.isSubclassOf(EventListenerBuilder::class) -> {
                 val builder = beanContainer[name, type] as EventListenerBuilder
                 logger.debug("Load event listener builder instance [{}] by type [{}] named [{}]", builder, type, name)
                 listener(builder.build())
+                count.increment()
             }
             else -> {
                 for (function in type.allFunctions) {
@@ -804,19 +806,19 @@ private fun EventListenersGenerator.autoConfigFromBeanContainer(
                     val returnType = function.returnType.classifier as? KClass<*>?
                     if (returnType?.isSubclassOf(EventListenerBuilder::class) == true) {
                         resolveEventListenerOrBuilderFunction(
-                            type, function, logger, beanContainer, listener
+                            type, function, logger, beanContainer, listener, count
                         )
                     } else {
                         resolveEventListenerFunction(
-                            type, function, logger, binderManager, beanContainer, listenerProcessor, listener
+                            type, function, logger, binderManager, beanContainer, listenerProcessor, listener, count
                         )
                     }
-                    
                 }
             }
         }
-        
     }
+    // TODO log listener count
+    
 }
 
 private fun EventListenersGenerator.resolveEventListenerFunction(
@@ -827,6 +829,7 @@ private fun EventListenersGenerator.resolveEventListenerFunction(
     beanContainer: BeanContainer,
     listenerProcessor: KFunctionListenerProcessor,
     listener: Listener,
+    count: LongAdder
 ) {
     if (type == null) {
         logger.debug("Resolving top-level listener function [{}] from top", function)
@@ -852,6 +855,7 @@ private fun EventListenersGenerator.resolveEventListenerFunction(
     }
     
     // include listener.
+    count.increment()
     listener(resolvedListener)
 }
 
@@ -861,6 +865,7 @@ private fun EventListenersGenerator.resolveEventListenerOrBuilderFunction(
     logger: Logger,
     beanContainer: BeanContainer,
     listener: Listener,
+    count: LongAdder
 ) {
     val kParameters = function.parameters
     if (kParameters.any { it.kind != KParameter.Kind.INSTANCE }) {
@@ -894,6 +899,7 @@ private fun EventListenersGenerator.resolveEventListenerOrBuilderFunction(
         )
     }
     
+    count.increment()
     listener(resultListener)
 }
 
@@ -919,6 +925,7 @@ private fun EventListenersGenerator.autoScanTopFunction(
     tool: KAnnotationTool,
     targets: List<String>,
 ) {
+    val count = LongAdder()
     // 扫描所有的 final 且没有标记named注解的类。
     if (targets.isNotEmpty()) {
         scanTopClass(classLoader, targets, { e, className ->
@@ -957,24 +964,22 @@ private fun EventListenersGenerator.autoScanTopFunction(
                         val returnType = function.returnType.classifier as? KClass<*>?
                         if (returnType?.isSubclassOf(EventListenerBuilder::class) == true) {
                             resolveEventListenerOrBuilderFunction(
-                                null, function, logger, beanContainer, listener
+                                null, function, logger, beanContainer, listener, count
                             )
                             doTopLevelEventListenerBuilderWarn {
                                 logger.warn("Using the top-level function to register the Event Listener Builder is still experimental.")
                             }
                         } else {
                             resolveEventListenerFunction(
-                                null, function, logger, binderManager, beanContainer, listenerProcessor, listener
+                                null, function, logger, binderManager, beanContainer, listenerProcessor, listener, count
                             )
                         }
-                        
-                        
                     }
                 }
             }
         }
     }
-    
+    // TODO log listener count
     
 }
 
