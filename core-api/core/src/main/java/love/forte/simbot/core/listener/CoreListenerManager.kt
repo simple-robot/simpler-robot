@@ -15,7 +15,10 @@
 
 package love.forte.simbot.core.listener
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import love.forte.common.collections.concurrentSortedQueueOf
 import love.forte.common.ioc.DependCenter
 import love.forte.common.ioc.annotation.Depend
@@ -23,7 +26,6 @@ import love.forte.common.ioc.annotation.SpareBeans
 import love.forte.common.sequences.distinctByMerger
 import love.forte.simbot.LogAble
 import love.forte.simbot.api.SimbotExperimentalApi
-import love.forte.simbot.api.SimbotInternalApi
 import love.forte.simbot.api.message.events.MsgGet
 import love.forte.simbot.api.sender.DefaultMsgSenderFactories
 import love.forte.simbot.api.sender.MsgSender
@@ -112,9 +114,8 @@ private data class ListenerFunctionGroups(
  * @property exceptionManager 异常处理器
  *
  */
-@OptIn(SimbotInternalApi::class, ExperimentalCoroutinesApi::class)
 @SpareBeans("coreListenerManager")
-public class CoreListenerManager @OptIn(SimbotExperimentalApi::class) constructor(
+public class CoreListenerManager(
     eventDispatcherFactory: EventDispatcherFactory,
     // private val listenerGroupManager: ListenerGroupManager,
 

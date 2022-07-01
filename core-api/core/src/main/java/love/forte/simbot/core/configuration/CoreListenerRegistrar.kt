@@ -57,7 +57,6 @@ public class CoreListenerRegistrar {
 
         logger.debug("Listeners registered.")
 
-        // do done.
         dependBeanFactory.allBeans.mapNotNull {
             if (ListenerRegistered::class.java.isAssignableFrom(dependBeanFactory.getType(it))) {
                 dependBeanFactory[it] as ListenerRegistered

@@ -28,10 +28,7 @@ import love.forte.simbot.core.TypedCompLogger
 import love.forte.simbot.core.listener.FunctionFromClassListenerFunction
 import love.forte.simbot.core.strict.StrictManager
 import love.forte.simbot.filter.FilterManager
-import love.forte.simbot.listener.ListenerGroupManager
-import love.forte.simbot.listener.ListenerRegistrar
-import love.forte.simbot.listener.ListenerResultFactory
-import love.forte.simbot.listener.PostListenerRegistrar
+import love.forte.simbot.listener.*
 import love.forte.simbot.utils.containsAnnotation
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.functions
@@ -95,11 +92,19 @@ public class CoreMethodPostListenerRegistrar : PostListenerRegistrar {
             if (type == Void.TYPE) {
                 return@flatMap emptyList()
             }
+    
+            if (ListenerFunction::class.java.isAssignableFrom(type)) {
+                val instance = dependBeanFactory[type, name] as? ListenerFunction
+                if (instance != null) {
+                    return@flatMap listOf(instance)
+                }
+            }
+            
             val kType = type.kotlin
             if (kType == Any::class) {
                 return@flatMap emptyList()
             }
-
+            
             kotlin.runCatching { kType.functions }.getOrElse { e1 ->
                 logger.debug("Cannot get type $kType functions, skip.", e1)
                 return@flatMap emptyList()
