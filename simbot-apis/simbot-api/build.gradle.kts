@@ -15,12 +15,11 @@
  */
 
 plugins {
-    `java-library`
-    `maven-publish`
-    kotlin("jvm")
+    id("simbot.module-conventions")
+    id("simbot.maven-publish")
     kotlin("plugin.serialization")
-    id("org.jetbrains.dokka")
-    id("kotlin-kapt")
+    // id("kotlin-kapt")
+    kotlin("kapt")
 }
 
 dependencies {
@@ -39,7 +38,6 @@ dependencies {
     compileOnly(libs.charleskorn.kaml)
     compileOnly(libs.kotlinx.serialization.protobuf)
     
-    testImplementation(kotlin("test-testng"))
     testImplementation(libs.kotlinx.serialization.json)
     testImplementation(libs.kotlinx.serialization.properties)
     testImplementation(libs.charleskorn.kaml)
@@ -47,36 +45,5 @@ dependencies {
     testImplementation(libs.openjdk.jmh.core)
     testImplementation(libs.openjdk.jmh.generator.annprocess)
     kaptTest(libs.openjdk.jmh.generator.annprocess)
-}
-
-
-
-tasks.getByName<Test>("test") {
-    useTestNG()
-}
-
-tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
-    dokkaSourceSets {
-        configureEach {
-            skipEmptyPackages.set(true)
-            includes.from("Module.md")
-            displayName.set("api")
-            perPackageOption {
-                // this.
-            }
-        }
-    }
-}
-
-
-
-kotlin {
-        explicitApi()
-    
-    
-    sourceSets.all {
-        languageSettings {
-            optIn("kotlin.RequiresOptIn")
-        }
-    }
+    testAnnotationProcessor(libs.openjdk.jmh.generator.annprocess)
 }

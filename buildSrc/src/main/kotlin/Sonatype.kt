@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -15,23 +15,25 @@
  */
 
 import org.gradle.api.Project
-import org.gradle.api.plugins.ExtraPropertiesExtension
-import java.io.File
-import java.util.*
+import java.net.URI
 
-internal lateinit var prop: Properties
-
-fun Project.local(): Properties {
-    if (::prop.isInitialized) return prop
-    val f = File(rootDir, "local.properties")
-    val properties = Properties().also {
-        java.io.FileInputStream(f).use(it::load)
+@Suppress("ClassName")
+sealed class Sonatype {
+    abstract val name: String
+    abstract val url: String
+    fun Project.uri(): URI = uri(url)
+    
+    object Central : Sonatype() {
+        const val NAME = "central"
+        const val URL = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        override val name: String get() = NAME
+        override val url: String get() = URL
     }
-    prop = properties
-    return prop
-}
-
-
-fun ExtraPropertiesExtension.getIfHas(key: String): Any? {
-    return if (has(key)) get(key) else null
+    
+    object Snapshot : Sonatype() {
+        const val NAME = "snapshot"
+        const val URL = "https://oss.sonatype.org/content/repositories/snapshots/"
+        override val name: String get() = NAME
+        override val url get() = URL
+    }
 }

@@ -19,24 +19,25 @@ import love.forte.simbot.toBotVerifyInfo
 import kotlin.test.Test
 
 
-
 class BotVerifyInfoPropertySerializerTest {
-
-    @Test(description = "BotVerifyInfo序列化测试")
+    
+    @Test
     fun test() {
-        val info = configValue.byteInputStream().toBotVerifyInfo(StandardBotVerifyInfoDecoderFactory.Json, "my-test-bot.bot.json")
+        val info = configValue.byteInputStream()
+            .toBotVerifyInfo(StandardBotVerifyInfoDecoderFactory.Json, "my-test-bot.bot.json")
         assert(info.componentId == COMPONENT)
         val config = info.decode(Config.serializer())
-
+        
         println(config)
         assert(config.name == NAME)
         assert(config.age == AGE)
-
-
+        
+        
     }
-
-
+    
+    
 }
+
 private const val COMPONENT = "simbot.test"
 private const val NAME = "forte"
 private const val AGE = 16
@@ -44,6 +45,4 @@ private const val AGE = 16
 @kotlinx.serialization.Serializable
 private data class Config(val name: String, val age: Int)
 
-private val configValue = """
-    {"component": "$COMPONENT", "name": "$NAME", "age": $AGE}
-""".trimIndent()
+private const val configValue = """{"component": "$COMPONENT", "name": "$NAME", "age": $AGE}"""
