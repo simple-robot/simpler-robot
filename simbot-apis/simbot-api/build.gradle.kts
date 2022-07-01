@@ -18,7 +18,8 @@ plugins {
     id("simbot.module-conventions")
     id("simbot.maven-publish")
     kotlin("plugin.serialization")
-    id("kotlin-kapt")
+    // id("kotlin-kapt")
+    kotlin("kapt")
 }
 
 dependencies {
@@ -44,4 +45,5 @@ dependencies {
     testImplementation(libs.openjdk.jmh.core)
     testImplementation(libs.openjdk.jmh.generator.annprocess)
     kaptTest(libs.openjdk.jmh.generator.annprocess)
+    testAnnotationProcessor(libs.openjdk.jmh.generator.annprocess)
 }

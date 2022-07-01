@@ -7,13 +7,13 @@ import love.forte.simbot.core.event.buildSimpleListener
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventResult
 import love.forte.simbot.event.FriendMessageEvent
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import kotlin.test.Test
 
 
@@ -21,7 +21,8 @@ import kotlin.test.Test
  *
  * @author ForteScarlet
  */
-@RunWith(SpringRunner::class)
+// @RunWith(SpringRunner::class)
+@ExtendWith(SpringExtension::class)
 @SpringBootTest
 @SpringBootApplication
 @EnableSimbot
