@@ -14,18 +14,6 @@
  *
  */
 
-@file:Suppress("unused")
-
-import org.gradle.api.artifacts.DependencyConstraint
-import kotlin.reflect.KClass
-
-
-val publishNeed = setOf(
-    "simbot-core", "simbot-api", "simbot-logger",
-    "simboot-api", "simboot-core",
-    "simboot-core-annotation", "simboot-core-spring-boot-starter"
-)
-
 
 object V {
     
