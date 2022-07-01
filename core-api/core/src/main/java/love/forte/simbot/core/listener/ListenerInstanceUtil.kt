@@ -46,7 +46,7 @@ public inline fun <T : MsgGet> buildListenerFunction(
     id: String,
     vararg listenTypes: KClass<out T>,
     block: ListenerFunctionBuilder<T>.() -> Unit,
-): ListenerFunction = buildListenerFunction(id = id, name = id, *listenTypes, block = block)
+): ListenerFunction = buildListenerFunction(id = id, name = id, listenTypes = listenTypes, block = block)
 
 
 /**
@@ -58,7 +58,9 @@ public inline fun <T : MsgGet> buildListenerFunction(
     id: String,
     name: String,
     vararg listenTypes: KClass<out T>, block: ListenerFunctionBuilder<T>.() -> Unit,
-): ListenerFunction = ListenerFunctionBuilder(id, name, *listenTypes.map { kc -> kc.java }.toTypedArray()).apply(block).build()
+): ListenerFunction =
+    ListenerFunctionBuilder(id, name, listenTypes = listenTypes.map { kc -> kc.java }.toTypedArray()).apply(block)
+        .build()
 
 /**
  * 构建一个 [ListenerFunction].
@@ -69,7 +71,7 @@ public fun <T : MsgGet> listenerFunction(
     id: String,
     vararg listenTypes: KClass<out T>,
     invoker: suspend (data: ListenerFunctionInvokeData) -> ListenResult<*>,
-): ListenerFunction = buildListenerFunction(id = id, name = id, *listenTypes) {
+): ListenerFunction = buildListenerFunction(id = id, name = id, listenTypes = listenTypes) {
     invoker(invoker)
 }
 
@@ -84,7 +86,7 @@ public fun <T : MsgGet> listenerFunction(
     name: String,
     vararg listenTypes: KClass<out T>,
     invoker: suspend (data: ListenerFunctionInvokeData) -> ListenResult<*>,
-): ListenerFunction = buildListenerFunction(id = id, name = name, *listenTypes) {
+): ListenerFunction = buildListenerFunction(id = id, name = name, listenTypes = listenTypes) {
     invoker(invoker)
 }
 
@@ -97,7 +99,7 @@ public fun <T : MsgGet> listenerFunction(
     id: String,
     vararg listenTypes: KClass<out T>,
     invoker: suspend (msg: T, sender: MsgSender, atDetection: AtDetection) -> ListenResult<*>,
-): ListenerFunction = buildListenerFunction(id = id, name = id, *listenTypes) {
+): ListenerFunction = buildListenerFunction(id = id, name = id, listenTypes = listenTypes) {
     invoker(invoker)
 }
 
@@ -112,7 +114,7 @@ public fun <T : MsgGet> listenerFunction(
     name: String,
     vararg listenTypes: KClass<out T>,
     invoker: suspend (msg: T, sender: MsgSender, atDetection: AtDetection) -> ListenResult<*>,
-): ListenerFunction = buildListenerFunction(id = id, name = name, *listenTypes) {
+): ListenerFunction = buildListenerFunction(id = id, name = name, listenTypes = listenTypes) {
     invoker(invoker)
 }
 
@@ -123,68 +125,108 @@ annotation class ListenerFunctionBuilderDSL
 
 
 /**
- * 构建一个 [ListenerFunction] 实例.
+ * 构建一个 [ListenerFunction] 实例。
+ *
+ * e.g. Java:
+ * ```java
+ * final ListenerFunctionBuilder<PrivateMsg> builder = new ListenerFunctionBuilder<>("ID", PrivateMsg.class);
+ * // 追加过滤匹配函数
+ * // 行为类似于 ListenerFilter
+ * builder.filter((FilterData data) -> {
+ *     final MsgGet event = data.getMsgGet();
+ *     System.out.println(event);
+ *     if (event instanceof PrivateMsg) {
+ *         // do...?
+ *     }
+ *     return true;
+ * });
+ * builder.listenerFunction((event, sender, at) -> {
+ *     // do ... ?
+ *     // 必须返回非null的 ListenResult 类型
+ *     return ListenResult.Default;
+ * });
+ *
+ * // 以及其他...
+ *
+ * ```
+ *
+ * Kotlin可以参考 [buildListenerFunction] .
  *
  *
  */
 public class ListenerFunctionBuilder<T : MsgGet> @JvmOverloads constructor(
+    /**
+     * 目标监听函数的唯一ID。必填
+     */
     val id: String,
+    /**
+     * 目标监听函数的名称。一般可与 [id] 一致。
+     */
     val name: String = id,
+    /**
+     * 要监听的事件的类型集，不可为空。
+     * 默认为监听 [MsgGet] 本身，即监听所有事件。
+     */
     listenTypes: Collection<Class<out T>>,
 ) {
-
+    
     init {
         check(listenTypes.isNotEmpty()) { "Listen types cannot be empty." }
     }
-
+    
     @JvmOverloads
-    constructor(id: String,
-                name: String = id,
-                vararg listenTypes: Class<out T>): this(id, name, listenTypes.toSet())
+    constructor(
+        id: String,
+        name: String = id,
+        vararg listenTypes: Class<out T>,
+    ) : this(id, name, listenTypes.toSet())
+    
     @JvmOverloads
-    constructor(id: String,
-                name: String = id,
-                listenType: Class<out T>): this(id, name, setOf(listenType))
-
-
+    constructor(
+        id: String,
+        name: String = id,
+        listenType: Class<out T>,
+    ) : this(id, name, setOf(listenType))
+    
+    
     private val listenTypesSet = listenTypes.toSet()
-
+    
     private lateinit var invokeFunction: suspend (data: ListenerFunctionInvokeData) -> ListenResult<*>
-
-    /////////// Common   //////////////
-
+    
+    /////////// Common //////////////
+    
     /**
      * 是否为 [备用函数][ListenerFunction.spare]
      */
     @ListenerFunctionBuilderDSL
     var isSpare = false
-
+    
     /**
      * 是否为 [异步函数][love.forte.simbot.annotation.Async]
      */
     @ListenerFunctionBuilderDSL
     var isAsync = false
-
+    
     /**
      * 监听函数的优先级。
      */
     @ListenerFunctionBuilderDSL
     var priority = Listens.DEFAULT_PRIORITY
-
+    
     /**
      * 所属载体。
      */
     @ListenerFunctionBuilderDSL
     var type: Type = Any::class.java
-
-
+    
+    
     @OptIn(SimbotExperimentalApi::class)
     private var groups: List<String> = emptyList()
-
-
+    
+    
     @OptIn(SimbotExperimentalApi::class)
     private var groupManager: ListenerGroupManager? = null
-
+    
     /**
      * 为当前监听函数分配监听分组。
      * 进行分组需要提供 [ListenerGroupManager] 实例。
@@ -196,15 +238,15 @@ public class ListenerFunctionBuilder<T : MsgGet> @JvmOverloads constructor(
         this.groups = groups.toList()
         return this
     }
-
-
+    
+    
     /**
      * 注解获取器。默认无法获取任何注解。
      *
      */
     private var annotationGetter: (type: Class<out Annotation>) -> Annotation? = { null }
-
-
+    
+    
     /**
      * 设置一个注解获取器。
      */
@@ -213,7 +255,7 @@ public class ListenerFunctionBuilder<T : MsgGet> @JvmOverloads constructor(
         this.annotationGetter = block
         return this
     }
-
+    
     /**
      * 提供可以获取的注解列表。
      *
@@ -225,7 +267,7 @@ public class ListenerFunctionBuilder<T : MsgGet> @JvmOverloads constructor(
                 annotationGetter = { null }
                 return this
             }
-
+            
             annotations.size == 1 -> {
                 val single = annotations[0]
                 val type = single.annotationClass.java
@@ -233,7 +275,7 @@ public class ListenerFunctionBuilder<T : MsgGet> @JvmOverloads constructor(
                     if (it == type) single else null
                 }
             }
-
+            
             else -> {
                 val map = mutableMapOf<Class<out Annotation>, Annotation>()
                 for (annotation in annotations) {
@@ -241,36 +283,39 @@ public class ListenerFunctionBuilder<T : MsgGet> @JvmOverloads constructor(
                 }
                 return annotationGetter { map[it] }
             }
-
+            
         }
     }
-
+    
     /**
      * 此监听函数的过滤器。
      */
     private var filter: ListenerFilter? = null
-
+    
     @JvmOverloads
     @ListenerFunctionBuilderDSL
-    fun filter(priority: Int = PriorityConstant.LAST, block: (data: FilterData) -> Boolean): ListenerFunctionBuilder<T> {
+    fun filter(
+        priority: Int = PriorityConstant.LAST,
+        block: (data: FilterData) -> Boolean,
+    ): ListenerFunctionBuilder<T> {
         this.filter = buildListenerFilter {
             this.priority = priority
             filter(block)
         }
         return this
     }
-
-
+    
+    
     ///////////  For kt  //////////////
-
+    
     @JvmSynthetic
     @ListenerFunctionBuilderDSL
     fun buildFilter(filter: ListenerFilterBuilder.() -> Unit): ListenerFunctionBuilder<T> {
         this.filter = buildListenerFilter(filter)
         return this
     }
-
-
+    
+    
     /**
      * 监听函数实际的执行函数. 提供完整的事件参数。
      *
@@ -281,7 +326,7 @@ public class ListenerFunctionBuilder<T : MsgGet> @JvmOverloads constructor(
         invokeFunction = block
         return this
     }
-
+    
     /**
      * 监听函数实际的执行函数, 仅提供 [当前事件][T] 与 [送信器][MsgSender] 实例.
      *
@@ -298,10 +343,10 @@ public class ListenerFunctionBuilder<T : MsgGet> @JvmOverloads constructor(
         }
         return this
     }
-
-
+    
+    
     ///////////  For Java  //////////////
-
+    
     @Suppress("FunctionName")
     @ListenerFunctionBuilderDSL
     @JvmName("listenerFilter")
@@ -309,7 +354,7 @@ public class ListenerFunctionBuilder<T : MsgGet> @JvmOverloads constructor(
         this.filter = buildListenerFilter(filter)
         return this
     }
-
+    
     /**
      * 监听函数实际的执行函数. 提供完整的事件参数。
      */
@@ -318,7 +363,7 @@ public class ListenerFunctionBuilder<T : MsgGet> @JvmOverloads constructor(
     fun _listenerFunction4j(block: (data: ListenerFunctionInvokeData) -> ListenResult<*>): ListenerFunctionBuilder<T> {
         return invoker { d -> block(d) }
     }
-
+    
     /**
      * 监听函数实际的执行函数, 仅提供 [当前事件][T] 与 [送信器][MsgSender] 实例.
      */
@@ -327,8 +372,8 @@ public class ListenerFunctionBuilder<T : MsgGet> @JvmOverloads constructor(
     fun _listenerFunction4j(block: (msg: T, sender: MsgSender, atDetection: AtDetection) -> ListenResult<*>): ListenerFunctionBuilder<T> {
         return invoker { msg, sender, atDetection -> block(msg, sender, atDetection) }
     }
-
-
+    
+    
     @OptIn(SimbotExperimentalApi::class)
     fun build(): ListenerFunction = FunctionListenerFunction(
         id = id,
