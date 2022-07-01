@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -12,27 +12,16 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 plugins {
-    id("simbot.boot-module-conventions")
-    id("simbot.maven-publish")
-    kotlin("plugin.serialization")
+    id("simbot.base-module-conventions")
 }
 
-dependencies {
-    api(project(":simbot-boots:simboot-api"))
-    api(libs.javax.inject)
-    
-    compileOnly(libs.javax.annotation.api)
-    compileOnly(libs.forte.annotationTool.api)
-    compileOnly(libs.spring.boot.autoconfigure)
-    testImplementation(libs.kotlinx.serialization.json)
-    testImplementation(libs.kotlinx.serialization.properties)
-    testImplementation(libs.kotlinx.serialization.protobuf)
-    testImplementation(libs.javax.annotation.api)
-    testImplementation(libs.forte.annotationTool.api)
-    testImplementation(libs.spring.boot.autoconfigure)
-    
+group = P.Simbot.TEST_GROUP
+version = P.Simbot.VERSION
+description = P.Simbot.DESCRIPTION
+
+kotlin {
+    explicitApi = null
 }

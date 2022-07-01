@@ -15,7 +15,7 @@
  */
 
 plugins {
-    id("simbot.module-conventions")
+    id("simbot.simple-module-conventions")
     id("simbot.maven-publish")
 }
 

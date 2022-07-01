@@ -35,32 +35,18 @@ dependencyResolutionManagement {
     }
 }
 
-includePro(":simbot-apis:simbot-api")
-includePro(":simbot-apis:simbot-logger")
-includePro(":simbot-cores:simbot-core")
+include(":simbot-apis:simbot-api")
+include(":simbot-apis:simbot-logger")
+include(":simbot-cores:simbot-core")
 
-includePro(":simbot-boots:simboot-api")
-includePro(":simbot-boots:simboot-core-annotation")
-includePro(":simbot-boots:simboot-core")
-includePro(":simbot-boots:simboot-core-spring-boot-starter")
+include(":simbot-boots:simboot-api")
 
+include(":simbot-boots:simboot-core-annotation")
+include(":simbot-boots:simboot-core")
+include(":simbot-boots:simboot-core-spring-boot-starter")
 
-
-inline fun includePro(path: String, dir: String? = null, name: String? = null): String {
-    include(path)
-    if (dir != null) {
-        if (File(rootDir, "$dir/build.gradle.kts").exists()) {
-            project(path).projectDir = file(dir)
-        } else {
-            println("$rootDir/$dir/build.gradle.kts 不存在")
-        }
-    }
-    if (name != null) {
-        project(path).name = name
-        return name
-    }
-    return path
-}
+// project test
+include(":simbot-project-tests:simbot-project-boot-test")
 
 rootProject.children.forEach {
     println(it)
