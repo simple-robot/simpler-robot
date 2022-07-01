@@ -74,7 +74,7 @@ simbot3相比较于simbot2时代，其(再一次的)完全重构了整体架构�
 <br>
 simbot3目前已经实现的组件有：
 
-|                  组件目标                   |     作者      |                                                     组件仓库                                                      | 状态  |
+|                  组件目标                   |    作者/团队    |                                                     仓库地址                                                      | 状态  |
 |:---------------------------------------:|:-----------:|:-------------------------------------------------------------------------------------------------------------:|:---:|
 |  [QQ频道机器人](https://bot.q.qq.com/wiki)   | simbot team | [simple-robot/simbot-component-tencent-guild](https://github.com/simple-robot/simbot-component-tencent-guild) | 维护中 |
 | [Mirai](https://github.com/mamoe/mirai) | simbot team |         [simple-robot/simbot-component-mirai](https://github.com/simple-robot/simbot-component-mirai)         | 维护中 |
