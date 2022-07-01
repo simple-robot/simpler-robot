@@ -32,9 +32,16 @@
 */
 
 
-abstract class SimbotProject {
-    abstract val group: String
-    abstract val version: String
+
+inline fun isSnapshot(b: () -> Unit = {}): Boolean {
+    b()
+    val snapProp = System.getProperty("isSnapshot")?.equals("true", true) ?: false
+    val snapEnv = System.getenv(Env.IS_SNAPSHOT)?.equals("true", true) ?: false
+    
+    println("IsSnapshot from system.property: $snapProp")
+    println("IsSnapshot from system.env:      $snapEnv")
+    
+    return snapProp || snapEnv
 }
 
 
@@ -44,21 +51,19 @@ abstract class SimbotProject {
 object P {
     @Suppress("MemberVisibilityCanBePrivate")
     object Simbot {
-        init {
-            println("System.getProperty(\"isSnapshot\"): ${System.getProperty("isSnapshot")}")
-        }
         const val GROUP = "love.forte.simbot"
         const val BOOT_GROUP = "love.forte.simbot.boot"
-
+        const val DESCRIPTION = "Simple Robot，一个通用的bot风格事件调度框架，以灵活的统一标准来编写bot应用。"
+        
         val version = Version(
             "3", 0, 0,
             status = VersionStatus.beta(null, null, "-M1"),
-            isSnapshot = System.getProperty("isSnapshot")?.equals("true", true) ?: false
+            isSnapshot = isSnapshot()
         )
- 
-        val isSnapshot get() = version.isSnapshot
-
+        
+        val isSnapshot: Boolean get() = version.isSnapshot
+        
         val VERSION = version.fullVersion(true)
-
+        
     }
 }

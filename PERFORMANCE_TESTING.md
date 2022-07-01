@@ -7,7 +7,7 @@
 这些测试内容都应可以从相关的测试模块中找到。
 
 ## randomID(Random)
-> [IDTest.kt](apis/simbot-api/src/test/kotlin/jmh/IdTest.kt)
+> [IDTest.kt](simbot-apis/simbot-api/src/test/kotlin/jmh/IdTest.kt)
 
 针对内容：
 - `randomID()` 对比 `UUID.randomUUID`

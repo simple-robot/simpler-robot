@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -12,30 +12,12 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
-
-import love.forte.simbot.utils.RandomIDUtil
-import java.util.*
-import kotlin.test.Test
 
 /**
- *
- * @author ForteScarlet
+ * 尝试从 [System.getProperty] 和 [System.getenv] 中获取指定属性。
+ * 优先使用 [System.getProperty]。
  */
-class IDTest {
-    
-    @Test(groups = [""])
-    fun randomIdTest() {
-        repeat(5_000_000) {
-            RandomIDUtil.randomID()
-        }
-    }
-    
-    @Test(groups = [""])
-    fun uuidTest() {
-        repeat(5_000_000) {
-            UUID.randomUUID()
-        }
-    }
-}
+fun systemProp(propKey: String, envKey: String = propKey): String? =
+    System.getProperty(propKey) ?: System.getenv(envKey)
+
