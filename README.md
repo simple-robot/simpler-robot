@@ -102,10 +102,10 @@ simbot3目前已经实现的组件有：
 ## 协助我们
 为我们点亮一个**✨star🌟**便是能够给予我们继续走下去的最大动力与支持！
 
-- 你可以通过 [**PR**](https://github.com/ForteScarlet/simpler-robot/pulls "pull request") 为项目代码作出贡献。
+- 你可以通过 [**PR**][pr] 为项目代码作出贡献。
 - 你可以通过 [**ISSUES**][issues] 提出一个建议或者反馈一个问题。
 - 你可以通过 [**讨论区**][discussions] 与其他人或者simbot开发团队相互友好交流。
-- 如果你通过此项目创建了一个很酷的项目，欢迎通过 [ISSUES](https://github.com/ForteScarlet/simpler-robot/issues)、[讨论区](https://github.com/ForteScarlet/simpler-robot/discussions)
+- 如果你通过此项目创建了一个很酷的项目，欢迎通过 [ISSUES][issues]、[讨论区][discussions]
   等方式联系团队开发人员，并将你酷酷的项目展示在作品展示区。
 
 ## 联系我们
@@ -114,6 +114,7 @@ simbot不再拥有或推广任何官方管理的社交群聊（包括QQ群、TG�
 - 如果想要与开发团队交流、与其他开发者交流，请前往[**讨论区**][discussions]。
 
 
+[pr]: https://github.com/ForteScarlet/simpler-robot/pulls
 [issues]: https://github.com/ForteScarlet/simpler-robot/issues
 [discussions]: https://github.com/ForteScarlet/simpler-robot/discussions
 
@@ -251,7 +252,9 @@ suspend fun FriendMessageEvent.onEvent(session: ContinuousSessionContext) {
 
 [<img src=".simbot/jetbrains.png" width="200" alt="jetbrains" />](https://www.jetbrains.com/?from=simpler-robot)
 
-感谢 [jetbrains](https://www.jetbrains.com/?from=simpler-robot "jetbrains") 为团队提供的免费授权，也希望大家能够支持jetbrains及其产品，支持正版。
+感谢 [Jetbrains][jetbrains] 为团队提供的免费授权，也希望大家能够支持 [Jetbrains][jetbrains] 及其产品，支持正版。
+
+[jetbrains]: https://www.jetbrains.com/?from=simpler-robot
 
 ## 贡献你的星星！
 
@@ -261,14 +264,9 @@ suspend fun FriendMessageEvent.onEvent(session: ContinuousSessionContext) {
 
 ## 开源协议
 
-simbot3(当前仓库下相关内容)以 `LGPL 3.0` 协议开源。
-
-详细参见：
-
-[COPYING](COPYING)
-
-[COPYING.LESSER](COPYING.LESSER)
-
+**Simple Robot 3** 以 `LGPL 3.0` 协议开源。详细参见：
+* [COPYING](COPYING)
+* [COPYING.LESSER](COPYING.LESSER)
 
 
 
