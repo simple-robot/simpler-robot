@@ -1,3 +1,5 @@
+// https://semver.org/lang/zh-CN/
+
 /**
  * **P**roject **V**ersion。
  */
@@ -71,6 +73,11 @@ data class VersionStatus(
     val status: String,
     
     /**
+     * 版本到状态之间的连接符。比如 `1.0-beta` 中间的 `-`。
+     */
+    val joiner: String,
+    
+    /**
      * 次版号。不为null时才会被拼接。应当 >= 0。
      */
     val minor: Int?,
@@ -81,9 +88,9 @@ data class VersionStatus(
     val patch: Int?,
     
     /**
-     * 版本到状态之间的连接符。比如 `1.0-beta` 中间的 `-`。
+     * 版本额外后缀，例如 `-M1`、`-RC`。
      */
-    val joiner: String,
+    val suffix: String?,
 ) {
     
     fun joinToVersion(builder: StringBuilder) {
@@ -94,6 +101,9 @@ data class VersionStatus(
                 if (patch != null) {
                     append('.').append(patch)
                 }
+            }
+            if (suffix != null) {
+                append(suffix)
             }
         }
     }
@@ -106,6 +116,8 @@ data class VersionStatus(
 }
 
 
-internal fun VersionStatus.Companion.preview(minor: Int?, patch: Int?) = VersionStatus(PREVIEW_STATUS, minor, patch, ".")
+internal fun VersionStatus.Companion.preview(minor: Int?, patch: Int?, suffix: String? = null) =
+    VersionStatus(PREVIEW_STATUS, ".", minor, patch, suffix)
 
-internal fun VersionStatus.Companion.beta(minor: Int?, patch: Int?) = VersionStatus(BETA_STATUS, minor, patch, "-")
+internal fun VersionStatus.Companion.beta(minor: Int?, patch: Int?, suffix: String? = null) =
+    VersionStatus(BETA_STATUS, "-", minor, patch, suffix)

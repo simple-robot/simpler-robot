@@ -76,9 +76,9 @@ simbot3目前已经实现的组件有：
 
 |                  组件目标                   |    作者/团队    |                                                     仓库地址                                                      | 状态  |
 |:---------------------------------------:|:-----------:|:-------------------------------------------------------------------------------------------------------------:|:---:|
-|  [QQ频道机器人](https://bot.q.qq.com/wiki)   | simbot team | [simple-robot/simbot-component-tencent-guild](https://github.com/simple-robot/simbot-component-tencent-guild) | 维护中 |
 | [Mirai](https://github.com/mamoe/mirai) | simbot team |         [simple-robot/simbot-component-mirai](https://github.com/simple-robot/simbot-component-mirai)         | 维护中 |
-|     [开黑啦](https://www.kaiheila.cn/)     | simbot team |      [simple-robot/simbot-component-kaiheila](https://github.com/simple-robot/simbot-component-kaiheila)      | 维护中 |
+|  [Kook(开黑啦)](https://www.kookapp.cn/)   | simbot team |          [simple-robot/simbot-component-kook](https://github.com/simple-robot/simbot-component-kook)          | 维护中 |
+|  [QQ频道机器人](https://bot.q.qq.com/wiki)   | simbot team | [simple-robot/simbot-component-tencent-guild](https://github.com/simple-robot/simbot-component-tencent-guild) | 维护中 |
 
 有关于这些组件等simbot附属内容的相关信息，你可以从 [**Simple Robot 附属组织库**](https://github.com/simple-robot) 处查看~
 
@@ -111,7 +111,7 @@ simbot3目前已经实现的组件有：
 ## 联系我们
 simbot不再拥有或推广任何官方管理的社交群聊（包括QQ群、TG群等诸如此类平台）。
 - 如果想要反馈问题、提出建议建议或提出问题，请通过 [**ISSUES**][issues]。
-- 如果想要与开发团队交流、与其他开发者交流，请前往[**讨论区**][discussions]。
+- 如果想要与开发团队交流、与其他开发者交流，请前往 [**讨论区**][discussions]。
 
 
 [pr]: https://github.com/ForteScarlet/simpler-robot/pulls
