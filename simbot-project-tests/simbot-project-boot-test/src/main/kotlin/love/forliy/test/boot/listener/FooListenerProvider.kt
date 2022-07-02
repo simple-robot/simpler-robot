@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -14,13 +14,23 @@
  *
  */
 
+package love.forliy.test.boot.listener
 
-object V {
+import love.forte.di.annotation.Beans
+import love.forte.simboot.annotation.Listener
+import love.forte.simbot.event.FriendMessageEvent
+
+
+/**
+ *
+ * @author ForteScarlet
+ */
+@Beans
+class FooListenerProvider {
     
-    /**
-     * Kotlin相关依赖项
-     */
-    object Kotlin {
-        const val VERSION = "1.6.21"
+    @Listener
+    fun FriendMessageEvent.myListener() {
+        println(this)
     }
+    
 }

@@ -29,24 +29,15 @@ tasks.create("createChangelog") {
         if (!file.exists()) {
             file.createNewFile()
             val autoGenerateText = """
+                **仓库参考:**
                 
-
-                ## 组件更新
-                相关组件会在后续三日内跟进更新
-                - [mirai组件](https://github.com/simple-robot/simbot-component-mirai/releases)
-                - [腾讯频道组件](https://github.com/simple-robot/simbot-component-tencent-guild/releases)
-                - [开黑啦组件](https://github.com/simple-robot/simbot-component-kaiheila/releases)
-
-                ## 仓库参考
-                
-                - [simbot-api: $version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-api/$realVersion)
-                - [simbot-core: $version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-core/$realVersion)
-                - [simbot-logger: $version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-logger/$realVersion)
-                - [simboot-api: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-api/$realVersion)
-                - [simboot-core: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core/$realVersion)
-                - [simboot-core-annotation: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-annotation/$realVersion)
-                - [simboot-core-spring-boot-starter: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-spring-boot-starter/$realVersion)
-
+                * [simbot-api: $version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-api/$realVersion)
+                * [simbot-core: $version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-core/$realVersion)
+                * [simbot-logger: $version](https://repo1.maven.org/maven2/love/forte/simbot/simbot-logger/$realVersion)
+                * [simboot-api: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-api/$realVersion)
+                * [simboot-core: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core/$realVersion)
+                * [simboot-core-annotation: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-annotation/$realVersion)
+                * [simboot-core-spring-boot-starter: $version](https://repo1.maven.org/maven2/love/forte/simbot/boot/simboot-core-spring-boot-starter/$realVersion)
                 
             """.trimIndent()
             
@@ -54,6 +45,11 @@ tasks.create("createChangelog") {
             file.writeText(autoGenerateText)
         }
         
+        //                 ## 组件更新
+        //                 相关组件会在后续三日内跟进更新
+        //                 - [mirai组件](https://github.com/simple-robot/simbot-component-mirai/releases)
+        //                 - [腾讯频道组件](https://github.com/simple-robot/simbot-component-tencent-guild/releases)
+        //                 - [开黑啦组件](https://github.com/simple-robot/simbot-component-kaiheila/releases)
         
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -13,25 +13,10 @@
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
  */
-
-import org.gradle.api.Project
-import org.gradle.api.plugins.ExtraPropertiesExtension
-import java.io.File
-import java.util.*
-
-internal lateinit var prop: Properties
-
-fun Project.local(): Properties {
-    if (::prop.isInitialized) return prop
-    val f = File(rootDir, "local.properties")
-    val properties = Properties().also {
-        java.io.FileInputStream(f).use(it::load)
-    }
-    prop = properties
-    return prop
+plugins {
+    id("simbot.base-module-conventions")
 }
 
-
-fun ExtraPropertiesExtension.getIfHas(key: String): Any? {
-    return if (has(key)) get(key) else null
-}
+group = P.Simbot.BOOT_GROUP
+version = P.Simbot.VERSION
+description = P.Simbot.DESCRIPTION

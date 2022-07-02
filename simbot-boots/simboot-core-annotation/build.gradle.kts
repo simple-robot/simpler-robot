@@ -16,28 +16,18 @@
  */
 
 plugins {
-    `java-library`
-    `maven-publish`
-    kotlin("jvm")
+    id("simbot.boot-module-conventions")
+    id("simbot.maven-publish")
     kotlin("plugin.serialization")
-    id("org.jetbrains.dokka")
-
 }
-
-tasks.getByName<Test>("test") {
-    useJUnit()
-}
-
-
 
 dependencies {
     api(project(":simbot-boots:simboot-api"))
     api(libs.javax.inject)
-
+    
     compileOnly(libs.javax.annotation.api)
     compileOnly(libs.forte.annotationTool.api)
     compileOnly(libs.spring.boot.autoconfigure)
-    testImplementation(kotlin("test-testng"))
     testImplementation(libs.kotlinx.serialization.json)
     testImplementation(libs.kotlinx.serialization.properties)
     testImplementation(libs.kotlinx.serialization.protobuf)
@@ -45,27 +35,4 @@ dependencies {
     testImplementation(libs.forte.annotationTool.api)
     testImplementation(libs.spring.boot.autoconfigure)
     
-}
-repositories {
-    mavenCentral()
-}
-
-kotlin {
-        explicitApi()
-
-
-    sourceSets.all {
-            languageSettings {
-                optIn("kotlin.RequiresOptIn")
-            }
-        }
-}
-
-tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
-    dokkaSourceSets {
-        configureEach {
-            skipEmptyPackages.set(true)
-            includes.from("Module.md")
-        }
-    }
 }

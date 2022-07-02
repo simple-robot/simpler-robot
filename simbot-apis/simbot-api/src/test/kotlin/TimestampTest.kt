@@ -3,8 +3,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import love.forte.simbot.Timestamp
 import love.forte.simbot.toTimestamp
-import org.testng.annotations.Test
 import java.time.Instant
+import kotlin.test.Test
 
 /**
  *
@@ -49,21 +49,4 @@ class TimestampTest {
         
         assert(newList.first() === Timestamp.NotSupport)
     }
-    
-    
-    @Test(groups = ["构建性能"], description = "通过Timestamp.now()构建实例测试")
-    fun currentTimestampByNowTest() {
-        repeat(5000_000) {
-            Timestamp.now()
-        }
-    }
-    
-    @Test(groups = ["构建性能"], description = "通过Instant.now().toTimestamp()构建实例测试")
-    fun currentTimestampByInstantTest() {
-        repeat(5000_000) {
-            Instant.now().toTimestamp()
-        }
-    }
-    
-    
 }

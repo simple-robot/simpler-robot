@@ -25,6 +25,7 @@ import love.forte.di.asBean
 import love.forte.di.core.*
 import love.forte.di.core.internal.AnnotationGetter
 import love.forte.simboot.core.utils.scanClass
+import love.forte.simbot.InternalSimbotApi
 import javax.inject.Named
 import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KClass
@@ -184,6 +185,7 @@ internal class BeanContainerBuilderImpl(
         scan(defaultClassLoader, targetPackages = targetPackages)
     }
     
+    @OptIn(InternalSimbotApi::class)
     override fun scan(classLoader: ClassLoader, targetPackages: List<String>) {
         val logger = configuration.logger
         classesScans.add {
@@ -213,7 +215,7 @@ internal class BeanContainerBuilderImpl(
         }
     }
     
-    fun build(): BeanContainer {
+    fun build(): CoreBeanManager {
         val manager = coreBeanManager {
             processors.addAll(this@BeanContainerBuilderImpl.processors)
             parentContainer = this@BeanContainerBuilderImpl.parentContainer

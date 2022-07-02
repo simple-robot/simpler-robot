@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -12,30 +12,28 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
-import love.forte.simbot.utils.RandomIDUtil
-import java.util.*
-import kotlin.test.Test
+import org.gradle.api.Project
+import java.net.URI
 
-/**
- *
- * @author ForteScarlet
- */
-class IDTest {
+@Suppress("ClassName")
+sealed class Sonatype {
+    abstract val name: String
+    abstract val url: String
+    fun Project.uri(): URI = uri(url)
     
-    @Test(groups = [""])
-    fun randomIdTest() {
-        repeat(5_000_000) {
-            RandomIDUtil.randomID()
-        }
+    object Central : Sonatype() {
+        const val NAME = "central"
+        const val URL = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        override val name: String get() = NAME
+        override val url: String get() = URL
     }
     
-    @Test(groups = [""])
-    fun uuidTest() {
-        repeat(5_000_000) {
-            UUID.randomUUID()
-        }
+    object Snapshot : Sonatype() {
+        const val NAME = "snapshot"
+        const val URL = "https://oss.sonatype.org/content/repositories/snapshots/"
+        override val name: String get() = NAME
+        override val url get() = URL
     }
 }

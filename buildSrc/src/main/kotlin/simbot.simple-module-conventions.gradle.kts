@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -14,12 +14,10 @@
  *
  */
 
-import org.gradle.api.attributes.Attribute
-
-object SimbotAttributes {
-
-    @JvmField
-    val MODULE_NAME = Attribute.of("simbot.module.name", String::class.java)
-
-
+plugins {
+    id("simbot.base-module-conventions")
 }
+
+group = P.Simbot.GROUP
+version = P.Simbot.VERSION
+description = P.Simbot.DESCRIPTION

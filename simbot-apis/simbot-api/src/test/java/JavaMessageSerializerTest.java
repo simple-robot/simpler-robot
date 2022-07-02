@@ -20,7 +20,7 @@ import love.forte.simbot.message.At;
 import love.forte.simbot.message.MessageSerializationUtil;
 import love.forte.simbot.message.Messages;
 import love.forte.simbot.message.Text;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author ForteScarlet

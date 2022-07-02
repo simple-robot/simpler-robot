@@ -78,9 +78,9 @@ public abstract class BaseStandardApplicationBuilder<A : Application> : BaseAppl
             coroutineContext = appConfig.coroutineContext
         }
         
-        return simpleListenerManager(initial = initial, block = fun SimpleListenerManagerConfiguration.() {
+        return simpleListenerManager(initial = initial) {
             listenerManagerConfig(environment)
-        })
+        }
     }
     
     

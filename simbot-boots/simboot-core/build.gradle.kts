@@ -15,23 +15,9 @@
  */
 
 plugins {
-    `java-library`
-    `maven-publish`
-    kotlin("jvm")
+    id("simbot.boot-module-conventions")
+    id("simbot.maven-publish")
     kotlin("plugin.serialization")
-    id("org.jetbrains.dokka")
-
-}
-
-tasks.getByName<Test>("test") {
-    useJUnit()
-}
-
-
-
-repositories {
-    mavenLocal()
-    mavenCentral()
 }
 
 
@@ -48,31 +34,7 @@ dependencies {
     api(libs.forte.di.core)
     api(libs.forte.annotationTool.kcore)
 
-    testImplementation(kotlin("test-testng"))
     testImplementation(libs.kotlinx.serialization.properties)
     testImplementation(libs.kotlinx.serialization.protobuf)
     
-    // @Suppress("VulnerableLibrariesLocal")
-    // testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0.preview.9.0")
-}
-
-kotlin {
-    explicitApi()
-
-
-    sourceSets.all {
-        languageSettings {
-            optIn("kotlin.RequiresOptIn")
-        }
-    }
-}
-
-tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
-    dokkaSourceSets {
-        configureEach {
-            skipEmptyPackages.set(true)
-            includes.from("Module.md")
-            displayName.set("boot-core")
-        }
-    }
 }

@@ -15,11 +15,8 @@
  */
 
 plugins {
-    `java-library`
-    `maven-publish`
-    kotlin("jvm")
-    id("org.jetbrains.dokka")
-
+    id("simbot.simple-module-conventions")
+    id("simbot.maven-publish")
 }
 
 dependencies {
@@ -28,37 +25,5 @@ dependencies {
     api(libs.lmax.disruptor)
 
     compileOnly(libs.jetbrains.annotations)
-    testImplementation(kotlin("test-testng"))
 }
 
-tasks.getByName<Test>("test") {
-    useTestNG()
-}
-
-tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
-    dokkaSourceSets {
-        configureEach {
-            skipEmptyPackages.set(true)
-            includes.from("Module.md")
-            displayName.set("logger")
-        }
-    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        javaParameters = true
-        jvmTarget = "1.8"
-    }
-}
-
-kotlin {
-        explicitApi()
-
-
-    sourceSets.all {
-        languageSettings {
-            optIn("kotlin.RequiresOptIn")
-        }
-    }
-}
