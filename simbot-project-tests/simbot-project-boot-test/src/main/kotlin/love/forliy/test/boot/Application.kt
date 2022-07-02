@@ -31,4 +31,3 @@ suspend fun main(vararg args: String) {
     val app = simbootApp<Application>(args = args)
     app.join()
 }
-

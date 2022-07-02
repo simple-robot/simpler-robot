@@ -23,6 +23,7 @@ import love.forte.annotationtool.core.KAnnotationTool
 import love.forte.annotationtool.core.getAnnotation
 import love.forte.di.BeanContainer
 import love.forte.di.all
+import love.forte.di.core.CoreBeanManager
 import love.forte.simboot.SimbootContext
 import love.forte.simboot.annotation.Binder
 import love.forte.simboot.annotation.Binder.Scope.*
@@ -445,8 +446,11 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
         logger.debug("Building bean container by builder: {}", beanContainerBuilder)
         beanContainerBuilder.beanContainerBuilderConfig()
         
-        val beanContainer: BeanContainer = beanContainerBuilder.build()
-        logger.debug("Bean container is built: {}", beanContainer)
+        val beanContainer: CoreBeanManager = beanContainerBuilder.build()
+        if (logger.isDebugEnabled) {
+            logger.debug("Bean container is built: {}, The size of beans: {}", beanContainer, beanContainer.all.size)
+        }
+        
         // endregion
         
         // region build binders
@@ -671,6 +675,7 @@ private fun resolvedBinderContainerFromBeanContainer(
 }
 
 
+@OptIn(InternalSimbotApi::class)
 private fun resolvedBinderContainerFromScanTopLevelFunctions(
     parameterBinderBuilder: ParameterBinderBuilder,
     classLoader: ClassLoader,
@@ -817,8 +822,7 @@ private fun EventListenersGenerator.autoConfigFromBeanContainer(
             }
         }
     }
-    // TODO log listener count
-    
+    logger.info("The size of resolved event listeners is {}", count.sum())
 }
 
 private fun EventListenersGenerator.resolveEventListenerFunction(
@@ -916,6 +920,7 @@ private inline fun doTopLevelEventListenerBuilderWarn(block: () -> Unit) {
     }
 }
 
+@OptIn(InternalSimbotApi::class)
 private fun EventListenersGenerator.autoScanTopFunction(
     classLoader: ClassLoader,
     logger: Logger,
@@ -979,8 +984,8 @@ private fun EventListenersGenerator.autoScanTopFunction(
             }
         }
     }
-    // TODO log listener count
     
+    logger.info("The size of resolved Top-Level event listeners is {}", count.sum())
 }
 
 
@@ -1001,10 +1006,9 @@ private fun BotRegistrar.autoRegisterBots(
             
             r.toBotVerifyInfo(decoder)
         }
-    }
+    }.toList()
     
-    // TODO log?
-    
+    logger.info("The size of resolved bot verify infos is {}", botVerifyInfoList.size)
     
     botVerifyInfoList.forEach { botInfo ->
         register(botInfo)
