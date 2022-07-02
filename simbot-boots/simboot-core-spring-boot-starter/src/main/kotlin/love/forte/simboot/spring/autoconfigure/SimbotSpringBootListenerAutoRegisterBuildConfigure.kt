@@ -35,6 +35,7 @@ import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
 import love.forte.simboot.spring.autoconfigure.utils.Quadruple
+import love.forte.simboot.spring.autoconfigure.utils.SpringAnnotationTool
 import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.SimbotIllegalStateException
@@ -43,9 +44,12 @@ import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerBuilder
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
+import org.springframework.core.annotation.AnnotationUtils
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.core.type.AnnotationMetadata
 import org.springframework.core.type.classreading.SimpleMetadataReaderFactory
+import java.lang.reflect.Method
+import java.lang.reflect.Modifier
 import javax.inject.Named
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -67,18 +71,19 @@ import kotlin.reflect.jvm.kotlinFunction
 public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpringBootApplicationBuildConfigure,
     ApplicationContextAware {
     private lateinit var beanContainer: BeanContainer
+    private lateinit var applicationContext: ApplicationContext
     
     
     override fun setApplicationContext(applicationContext: ApplicationContext) {
-        // _applicationContext = applicationContext
-        beanContainer = SpringBeanContainer(applicationContext)
+        this.applicationContext = applicationContext
+        this.beanContainer = SpringBeanContainer(applicationContext)
     }
     
     override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
-        val tool = KAnnotationTool()
+        val tool = SpringAnnotationTool()
         val listenerProcessor = KFunctionListenerProcessor(tool)
         logger.debug("Resolving binders...")
-        val binderManager = resolveBinderManager(tool, configuration)
+        val binderManager = resolveBinderManager(configuration)
         logger.debug(
             "The size of resolved binders is {} (normal: {}, global: {})",
             binderManager.normalBinderFactorySize + binderManager.globalBinderFactorySize,
@@ -92,7 +97,7 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         
         listeners {
             listeners.forEach { listener ->
-                logger.debug("Registing normal listener {}", listener)
+                logger.debug("Registering resolved listener {}", listener)
                 listener(listener)
             }
         }
@@ -102,11 +107,8 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
     
     @OptIn(Api4J::class)
     private fun resolveBinderManager(
-        tool: KAnnotationTool,
         configuration: SpringBootApplicationConfiguration,
     ): BinderManager {
-        // val applicationContext = _applicationContext
-        
         val globalBinderFactories: MutableList<ParameterBinderFactory> = mutableListOf()
         val idBinderFactories: MutableMap<String, ParameterBinderFactory> = mutableMapOf()
         
@@ -118,8 +120,10 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         
         binderInstanceNames.forEach { name ->
             // annotation
-            val type = kotlin.runCatching { beanContainer.getTypeOrNull(name) }.getOrNull() ?: return@forEach
-            val binderAnnotation = tool.getAnnotation<Binder>(type)
+            
+            val jType = kotlin.runCatching { applicationContext.getType(name) }.getOrNull() ?: return@forEach
+            // val binderAnnotation = tool.getAnnotation<Binder>(type)
+            val binderAnnotation = AnnotationUtils.findAnnotation(jType, Binder::class.java)
             val id = binderAnnotation?.value?.firstOrNull() ?: name
             
             fun global() {
@@ -140,7 +144,7 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
                 val scope = binderAnnotation.scopeIfDefault { Binder.Scope.SPECIFY }
                 if (scope == Binder.Scope.CURRENT) {
                     // 通过类直接实现的BinderFactory的scope不能为 CURRENT
-                    throw SimbotIllegalStateException("The scope of the BinderFactory directly implemented by the class cannot be CURRENT, but $binderAnnotation of type [$type] named [$name]")
+                    throw SimbotIllegalStateException("The scope of the BinderFactory directly implemented by the class cannot be CURRENT, but $binderAnnotation of type [$jType] named [$name]")
                 }
                 
                 if (scope == Binder.Scope.GLOBAL) {
@@ -154,19 +158,35 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         
         // region functional binders
         beanContainer.all.asSequence().flatMap { name ->
-            val kClass =
-                kotlin.runCatching { beanContainer.getTypeOrNull(name) }.getOrNull() ?: return@flatMap emptySequence()
-            
-            kClass.allFunctions.asSequence().mapNotNull { function ->
-                val binderAnnotation = tool.getAnnotation<Binder>(function) ?: return@mapNotNull null
+            val jClass =
+                kotlin.runCatching { applicationContext.getType(name) }.getOrNull() ?: return@flatMap emptySequence()
+            jClass.methods.asSequence().mapNotNull { method ->
+                val binderAnnotation =
+                    AnnotationUtils.findAnnotation(method, Binder::class.java) ?: return@mapNotNull null
+                
                 // skip if scope == CURRENT.
                 if (binderAnnotation.scope == Binder.Scope.CURRENT) {
                     return@mapNotNull null
                 }
                 
-                Quadruple(name, kClass, function, binderAnnotation)
+                Quadruple(name, jClass, method, binderAnnotation)
             }
-        }.forEach { (name, _, function, binder) ->
+            
+            // val kClass =
+            //     kotlin.runCatching { beanContainer.getTypeOrNull(name) }.getOrNull() ?: return@flatMap emptySequence()
+            //
+            // kClass.allFunctions.asSequence().mapNotNull { function ->
+            //     val binderAnnotation = tool.getAnnotation<Binder>(function) ?: return@mapNotNull null
+            //     // skip if scope == CURRENT.
+            //     if (binderAnnotation.scope == Binder.Scope.CURRENT) {
+            //         return@mapNotNull null
+            //     }
+            //
+            //     Quadruple(name, kClass, function, binderAnnotation)
+            // }
+        }.forEach { (name, _, method, binder) ->
+            val function = kotlin.runCatching { method.kotlinFunction }.getOrNull() ?: return@forEach
+            
             // not current
             val scope = binder.scope
             val id = binder.value.firstOrNull()
@@ -214,7 +234,6 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         if (topBinderPackages.isNotEmpty()) {
             logger.debug("Resolving top-level function binder in {}", topBinderPackages)
             resolveTopLevelManagerTo(
-                tool,
                 configuration.classLoader,
                 configuration.topLevelBinderScanPackage,
                 globalBinderFactories,
@@ -231,7 +250,6 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
     
     
     private fun resolveTopLevelManagerTo(
-        tool: KAnnotationTool,
         classLoader: ClassLoader,
         packages: List<String>,
         globalBinderFactories: MutableList<ParameterBinderFactory>,
@@ -241,12 +259,14 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         val globs = packages.mapTo(mutableSetOf()) { it.replace(".", "/") + "/**/*.class" }
         logger.debug("Scanning top-level binders in {}", globs)
         
-        topFunctions(classLoader, globs).mapNotNull { (metadata, kc, func) ->
-            val binderAnnotation = tool.getAnnotation<Binder>(func) ?: return@mapNotNull null
+        topFunctions(classLoader, globs).mapNotNull { (metadata, kc, method) ->
+            val binderAnnotation = AnnotationUtils.findAnnotation(method, Binder::class.java) ?: return@mapNotNull null
             
             
-            Quadruple(metadata, kc, func, binderAnnotation)
-        }.forEach { (_, _, func, annotation) ->
+            Quadruple(metadata, kc, method, binderAnnotation)
+        }.forEach { (_, _, method, annotation) ->
+            val func = kotlin.runCatching { method.kotlinFunction }.getOrNull() ?: return@forEach
+            
             val scope = annotation.scope
             if (scope == Binder.Scope.CURRENT) {
                 throw SimbotIllegalStateException("The binder scope of top-level binder function cannot be CURRENT, but $annotation")
@@ -257,7 +277,7 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
             when (scope) {
                 Binder.Scope.SPECIFY -> {
                     if (id == null) {
-                        throw SimbotIllegalStateException("")
+                        throw SimbotIllegalStateException("The required property [id] for specify binder is null")
                     }
                     idBinderFactories.merge(id, binderFactory) { old, curr ->
                         throw SimbotIllegalStateException("Duplicate binder ID [$id]: old [$old] vs current [$curr]")
@@ -346,7 +366,6 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         val topLevelPackages = configuration.topLevelListenerScanPackage
         if (topLevelPackages.isNotEmpty()) {
             resolveTopLevelListenersTo(
-                tool,
                 listenerProcessor,
                 binderManager,
                 configuration.classLoader,
@@ -363,7 +382,6 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
     
     
     private fun resolveTopLevelListenersTo(
-        tool: KAnnotationTool,
         listenerProcessor: KFunctionListenerProcessor,
         binderManager: BinderManager,
         classLoader: ClassLoader,
@@ -373,11 +391,15 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         val globs = packages.mapTo(mutableSetOf()) { it.replace(".", "/") + "/**/*.class" }
         logger.debug("Scanning top-level listeners in {}", globs)
         
-        topFunctions(classLoader, globs).mapNotNull { (metadata, kc, func) ->
-            val listenerAnnotation = tool.getAnnotation<Listener>(func) ?: return@mapNotNull null
+        topFunctions(classLoader, globs).mapNotNull { (metadata, kc, method) ->
+            val listenerAnnotation =
+                AnnotationUtils.findAnnotation(method, Listener::class.java) ?: return@mapNotNull null
+            // val listenerAnnotation = tool.getAnnotation<Listener>(func) ?: return@mapNotNull null
             
-            Quadruple(metadata, kc, func, listenerAnnotation)
-        }.mapNotNullTo(listeners) { (_, _, func, annotation) ->
+            Quadruple(metadata, kc, method, listenerAnnotation)
+        }.mapNotNullTo(listeners) { (_, _, method, annotation) ->
+            val func = kotlin.runCatching { method.kotlinFunction }.getOrNull() ?: return@mapNotNullTo null
+            
             kotlin.runCatching {
                 val returnType = func.returnType.classifier as? KClass<*>?
                 val resolvedListener: EventListener? = when {
@@ -429,10 +451,10 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
 }
 
 
-private inline val KClass<*>.allFunctions: List<KFunction<*>>
-    get() = kotlin.runCatching {
-        memberFunctions + memberExtensionFunctions
-    }.getOrDefault(emptyList())
+// private inline val KClass<*>.allFunctions: List<KFunction<*>>
+//     get() = kotlin.runCatching {
+//         memberFunctions + memberExtensionFunctions
+//     }.getOrDefault(emptyList())
 
 private inline val KClass<*>.allDeclaredFunctions: List<KFunction<*>>
     get() = kotlin.runCatching {
@@ -444,7 +466,7 @@ private inline val KClass<*>.allDeclaredFunctions: List<KFunction<*>>
 private fun topFunctions(
     classLoader: ClassLoader,
     globs: Collection<String>,
-): Sequence<Triple<AnnotationMetadata, Class<*>, KFunction<*>>> {
+): Sequence<Triple<AnnotationMetadata, Class<*>, Method>> {
     val scanner = PathMatchingResourcePatternResolver(classLoader)
     val readerFactory = SimpleMetadataReaderFactory(classLoader)
     
@@ -473,17 +495,17 @@ private fun topFunctions(
     }.flatMap { (metadata, c) ->
         // metadata, class, function, annotation
         runCatching {
-            c.methods.asSequence().mapNotNull { it.kotlinFunction?.let { f -> c to f } }.mapNotNull { (c, func) ->
-                if (func.visibility != KVisibility.PUBLIC) {
-                    println("func.visibility != KVisibility.PUBLIC")
+            c.methods.asSequence().mapNotNull { c to it }.mapNotNull { (c, method) ->
+                val modifiers = method.modifiers
+                if (!Modifier.isPublic(modifiers)) {
                     return@mapNotNull null
                 }
                 
-                if (func.instanceParameter != null) {
+                if (!Modifier.isStatic(modifiers)) {
                     return@mapNotNull null
                 }
                 
-                Triple(metadata, c, func)
+                Triple(metadata, c, method)
             }
         }.getOrElse { emptySequence() }
     }

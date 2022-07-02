@@ -97,23 +97,25 @@ public class KFunctionListenerProcessor(
         
         // filters
         val filters = function.filters(listener, listenerAttributeMap, context)
-        logger.debug("Size of resolved listener filters: {}", filters.size)
-        if (filters.isNotEmpty()) {
-            logger.debug("Resolved listener filters: {}", filters)
-        }
         
         // interceptors
         val interceptors: List<EventListenerInterceptorRelativeToFilter> = function.interceptors(context)
-        logger.debug("Size of resolved listener interceptors: {}", interceptors.size)
-        if (interceptors.isNotEmpty()) {
-            logger.debug("Resolved listener interceptors: {}", interceptors)
-        }
         
         // preparers
         val preparers = function.preparers(context)
-        logger.debug("Size of resolved listener preparers: {}", preparers.size)
-        if (preparers.isNotEmpty()) {
-            logger.debug("Resolved listener preparers: {}", preparers)
+        
+        // logger
+        logger.debug("The size of resolved listener filters: {}, interceptors: {}, preparers: {}", filters.size, interceptors.size, preparers.size)
+        if (logger.isDebugEnabled) {
+            if (filters.isNotEmpty()) {
+                logger.debug("Resolved listener filters: {}", filters)
+            }
+            if (interceptors.isNotEmpty()) {
+                logger.debug("Resolved listener interceptors: {}", interceptors)
+            }
+            if (preparers.isNotEmpty()) {
+                logger.debug("Resolved listener preparers: {}", preparers)
+            }
         }
         
         var resolvedListener: EventListener = listener
@@ -318,13 +320,13 @@ public class KFunctionListenerProcessor(
             bindList.sortBy { it.priority }
             bindSpareList.sortBy { it.priority }
             
-            logger.debug(
+            logger.trace(
                 "There are actually {} normal binders bound to parameter [{}]. the binders: {}",
                 bindList.size,
                 parameter,
                 bindList
             )
-            logger.debug(
+            logger.trace(
                 "There are actually {} spare binders bound to parameter [{}]. the binders: {}",
                 bindSpareList.size,
                 parameter,
