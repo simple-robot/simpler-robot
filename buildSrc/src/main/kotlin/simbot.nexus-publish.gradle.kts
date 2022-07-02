@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -11,7 +11,6 @@
  *  https://www.gnu.org/licenses
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
  *
  */
 
@@ -38,6 +37,10 @@ plugins {
     id("io.github.gradle-nexus.publish-plugin")
 }
 
+group = P.Simbot.GROUP
+version = P.Simbot.VERSION
+description = P.Simbot.DESCRIPTION
+
 val isSnapshotOnly = systemProp("snapshotOnly", "simbot.snapshotOnly") != null
 val isReleaseOnly = systemProp("releaseOnly", "simbot.releaseOnly") != null
 
@@ -61,8 +64,11 @@ if (isPublishConfigurable) {
     }
     
     nexusPublishing {
+        println("[NEXUS] - project.group: ${project.group}")
+        println("[NEXUS] - project.version: ${project.version}")
         packageGroup.set(project.group.toString())
-
+        repositoryDescription.set(project.description)
+        
         useStaging.set(
             project.provider { !project.version.toString().endsWith("SNAPSHOT", ignoreCase = true) }
         )

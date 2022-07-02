@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -82,6 +82,8 @@ if (isPublishConfigurable) {
                 version = project.version.toString()
                 
                 pom {
+                    show()
+                    
                     name.set("${project.group}:${project.name}")
                     description.set(project.description ?: P.Simbot.DESCRIPTION)
                     url.set("https://github.com/ForteScarlet/simpler-robot")
@@ -167,3 +169,16 @@ fun MavenPom.setupDevelopers() {
     }
 }
 
+// afterEvaluate {
+//     show()
+// }
+
+fun show() {
+    //// show project info
+    println("========================================================")
+    println("== project.group:       $group")
+    println("== project.name:        $name")
+    println("== project.version:     $version")
+    println("== project.description: $description")
+    println("========================================================")
+}

@@ -101,16 +101,3 @@ idea {
 }
 
 
-afterEvaluate {
-    show()
-}
-
-fun show() {
-    //// show project info
-    println("========================================================")
-    println("== project.group:       $group")
-    println("== project.name:        $name")
-    println("== project.version:     $version")
-    println("== project.description: $description")
-    println("========================================================")
-}
