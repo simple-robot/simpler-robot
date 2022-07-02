@@ -63,7 +63,7 @@ jobs:
         env:
           SIMBOT_IS_SNAPSHOT: false
           SIMBOT_RELEASES_ONLY: true
-
+          SIMBOT_SNAPSHOT_ONLY: false
 
   create-release:
     name: Create release
@@ -111,6 +111,7 @@ jobs:
         env:
           SIMBOT_IS_SNAPSHOT: true
           SIMBOT_SNAPSHOT_ONLY: true
+          SIMBOT_RELEASES_ONLY: false
 
   deploy-doc:
     name: Deploy API Doc
