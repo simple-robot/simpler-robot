@@ -16,8 +16,6 @@
 
 package love.forte.simboot.spring.autoconfigure
 
-import love.forte.annotationtool.core.KAnnotationTool
-import love.forte.annotationtool.core.getAnnotation
 import love.forte.di.Api4J
 import love.forte.di.BeanContainer
 import love.forte.di.all
@@ -42,6 +40,7 @@ import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.core.application.listeners
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerBuilder
+import love.forte.simbot.utils.randomIdStr
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.springframework.core.annotation.AnnotationUtils
@@ -52,10 +51,9 @@ import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import javax.inject.Named
 import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
-import kotlin.reflect.KVisibility
-import kotlin.reflect.full.*
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.jvm.kotlinFunction
 
 
@@ -92,7 +90,7 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         )
         
         logger.debug("Resolving listeners...")
-        val listeners = resolveListeners(tool, listenerProcessor, binderManager, configuration)
+        val listeners = resolveListeners(listenerProcessor, binderManager, configuration)
         logger.debug("The size of resolved listeners is {}", listeners.size)
         
         listeners {
@@ -295,7 +293,6 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
     
     
     private fun resolveListeners(
-        tool: KAnnotationTool,
         listenerProcessor: KFunctionListenerProcessor,
         binderManager: BinderManager,
         configuration: SpringBootApplicationConfiguration,
@@ -307,39 +304,70 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
         
         // find EventBuilders
         val builders = beanContainer.allInstance<EventListenerBuilder>()
-        listeners.addAll(builders.map { it.build() })
+        listeners.addAll(builders.map {
+            if (it.id.isEmpty()) {
+                it.id = randomIdStr()
+            }
+            
+            it.build()
+        })
         
         // scan functions
         beanContainer.all.asSequence().mapNotNull { name ->
-            val kClass = kotlin.runCatching { beanContainer.getTypeOrNull(name) }.getOrElse {
-                logger.debug("Cannot resolve bean type named {} to kotlin, skip it.", name)
-                return@mapNotNull null
-            }
+            val jClass = kotlin.runCatching { applicationContext.getType(name) }.getOrNull() ?: return@mapNotNull null
+            // val jClass = kotlin.runCatching { beanContainer.getTypeOrNull(name) }.getOrElse {
+            //     return@mapNotNull null
+            // }
+//          logger.debug("Cannot resolve bean type named {} to kotlin, skip it.", name)
             
-            name to kClass
-        }.flatMap { (name, type) ->
-            type?.allDeclaredFunctions?.asSequence()?.map { function -> Triple(name, type, function) }
-                ?: emptySequence()
-        }.mapNotNullTo(listeners) { (name, _, function) ->
+            name to jClass
+        }.flatMap { (name, jType) ->
+            jType.declaredMethods.asSequence().map { method -> Triple(name, jType, method) }
+            // type?.allDeclaredFunctions?.asSequence()?.map { function -> Triple(name, type, function) }
+            //     ?: emptySequence()
+        }.mapNotNullTo(listeners) { (name, jType, method) ->
             // check @Listener
-            val listenerAnnotation = tool.getAnnotation<Listener>(function) ?: return@mapNotNullTo null
+            // val listenerAnnotation = tool.getAnnotation<Listener>(function) ?: return@mapNotNullTo null
+            val listenerAnnotation =
+                AnnotationUtils.findAnnotation(method, Listener::class.java) ?: return@mapNotNullTo null
             
-            if (function.visibility != KVisibility.PUBLIC) {
+            // if (function.visibility != KVisibility.PUBLIC) {
+            if (!Modifier.isPublic(method.modifiers)) {
                 logger.warn(
-                    "Function [{}] is annotated with @Listener, so visibility of it must be PUBLIC, but is {}",
-                    function,
-                    function.visibility
+                    "Method [{}] is annotated with @Listener, so the visibility of it must be PUBLIC, but is not.",
+                    method
                 )
                 return@mapNotNullTo null
             }
             
-            if ((function.returnType.classifier as? KClass<*>?)?.isSubclassOf(EventListenerBuilder::class) == true) {
-                logger.trace("Function [{}]'s return type is subclass of EventListenerBuilder, skip.", function)
+            // if ((method.returnType)?.isSubclassOf(EventListenerBuilder::class) == true) {
+            if (EventListenerBuilder::class.java.isAssignableFrom(method.returnType)) {
+                logger.trace("The return type of Method [{}] is subclass of EventListenerBuilder, skip.", method)
+                return@mapNotNullTo null
+            }
+            // if ((method.returnType.classifier as? KClass<*>?)?.isSubclassOf(EventListenerBuilder::class) == true) {
+            //     logger.trace("Function [{}]'s return type is subclass of EventListenerBuilder, skip.", function)
+            //     return@mapNotNullTo null
+            // }
+            
+            if (EventListener::class.java.isAssignableFrom(method.returnType)) {
+                logger.trace("The return type of Method [{}] is subclass of EventListener, skip.", method)
                 return@mapNotNullTo null
             }
             
-            if ((function.returnType.classifier as? KClass<*>?)?.isSubclassOf(EventListener::class) == true) {
-                logger.trace("Function [{}]'s return type is subclass of EventListener, skip.", function)
+            // if ((function.returnType.classifier as? KClass<*>?)?.isSubclassOf(EventListener::class) == true) {
+            //     logger.trace("Function [{}]'s return type is subclass of EventListener, skip.", function)
+            //     return@mapNotNullTo null
+            // }
+            
+            val function = kotlin.runCatching { method.kotlinFunction }.getOrNull()
+            if (function == null) {
+                logger.debug(
+                    "Cannot resolve Method [{}] of bean type [{}] named [{}] to kotlin, skip it.",
+                    method,
+                    jType,
+                    name
+                )
                 return@mapNotNullTo null
             }
             
@@ -456,10 +484,10 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : SimbotSpr
 //         memberFunctions + memberExtensionFunctions
 //     }.getOrDefault(emptyList())
 
-private inline val KClass<*>.allDeclaredFunctions: List<KFunction<*>>
-    get() = kotlin.runCatching {
-        declaredMemberFunctions + declaredMemberExtensionFunctions
-    }.getOrDefault(emptyList())
+// private inline val KClass<*>.allDeclaredFunctions: List<KFunction<*>>
+//     get() = kotlin.runCatching {
+//         declaredMemberFunctions + declaredMemberExtensionFunctions
+//     }.getOrDefault(emptyList())
 
 
 @OptIn(InternalSimbotApi::class)

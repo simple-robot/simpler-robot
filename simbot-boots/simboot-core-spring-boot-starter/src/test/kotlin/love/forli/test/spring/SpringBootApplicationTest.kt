@@ -1,5 +1,7 @@
 package love.forli.test.spring
 
+import love.forte.simboot.annotation.ContentTrim
+import love.forte.simboot.annotation.Filter
 import love.forte.simboot.annotation.Listener
 import love.forte.simboot.spring.autoconfigure.EnableSimbot
 import love.forte.simbot.application.Application
@@ -45,30 +47,62 @@ open class SpringBootApplicationTest {
 @Component
 open class Listeners {
     @Listener
-    suspend fun listener1(){}
-    @Listener
-    suspend fun FriendMessageEvent.listener2(){}
-    @Listener
-    suspend fun FriendMessageEvent.listener3(context: EventListenerProcessingContext){}
+    suspend fun listener1() {
+    }
     
     @Listener
-    fun listener4(){}
+    @ContentTrim
+    suspend fun FriendMessageEvent.listener2() {
+    }
+    
     @Listener
-    fun FriendMessageEvent.listener5(){}
+    @Filter("Hello")
+    @Filter("Hello World")
+    suspend fun FriendMessageEvent.listener3(context: EventListenerProcessingContext) {
+    }
+    
     @Listener
-    fun FriendMessageEvent.listener6(context: EventListenerProcessingContext){}
+    fun listener4() {
+    }
+    
+    @Listener
+    @ContentTrim
+    fun FriendMessageEvent.listener5() {
+    }
+    
+    @Listener
+    @Filter("Hello")
+    @Filter("Hello World")
+    fun FriendMessageEvent.listener6(context: EventListenerProcessingContext) {
+    }
 }
 
 @Listener
-suspend fun listener1(){}
-@Listener
-suspend fun FriendMessageEvent.listener2(){}
-@Listener
-suspend fun FriendMessageEvent.listener3(context: EventListenerProcessingContext){}
+suspend fun listener1() {
+}
 
 @Listener
-fun listener4(){}
+@ContentTrim
+suspend fun FriendMessageEvent.listener2() {
+}
+
 @Listener
-fun FriendMessageEvent.listener5(){}
+@Filter("Hello")
+@Filter("Hello World")
+suspend fun FriendMessageEvent.listener3(context: EventListenerProcessingContext) {
+}
+
 @Listener
-fun FriendMessageEvent.listener6(context: EventListenerProcessingContext){}
+fun listener4() {
+}
+
+@Listener
+@ContentTrim
+fun FriendMessageEvent.listener5() {
+}
+
+@Listener
+@Filter("Hello")
+@Filter("Hello World")
+fun FriendMessageEvent.listener6(context: EventListenerProcessingContext) {
+}

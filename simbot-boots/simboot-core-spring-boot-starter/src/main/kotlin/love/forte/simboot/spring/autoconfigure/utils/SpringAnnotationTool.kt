@@ -86,7 +86,10 @@ public class SpringAnnotationTool(private val tool: KAnnotationTool = KAnnotatio
         try {
             val annotatedElement = element.javaAnnotatedElement
             if (annotatedElement != null) {
-                return AnnotatedElementUtils.findAllMergedAnnotations(annotatedElement, annotationType.java).toList()
+                val repeatedResult = AnnotatedElementUtils.findMergedRepeatableAnnotations(annotatedElement, annotationType.java)
+                val directedResult = AnnotatedElementUtils.findAllMergedAnnotations(annotatedElement, annotationType.java)
+                return (repeatedResult + directedResult).toList()
+                // return AnnotatedElementUtils.findAllMergedAnnotations(annotatedElement, annotationType.java).toList()
             }
         } catch (ignore: Throwable) {
         }
