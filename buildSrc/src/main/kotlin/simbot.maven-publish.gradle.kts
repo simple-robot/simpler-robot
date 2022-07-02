@@ -80,6 +80,10 @@ if (isPublishConfigurable) {
                 groupId = project.group.toString()
                 artifactId = project.name
                 version = project.version.toString()
+    
+                println("[publication] - groupId:    $groupId")
+                println("[publication] - artifactId: $artifactId")
+                println("[publication] - version:    $version")
                 
                 pom {
                     show()
@@ -123,9 +127,9 @@ if (isPublishConfigurable) {
         val secretKey = System.getenv("GPG_SECRET_KEY")
         val password = System.getenv("GPG_PASSWORD")
         
-        setRequired {
-            !project.version.toString().endsWith("SNAPSHOT")
-        }
+        // setRequired {
+        //     !project.version.toString().endsWith("SNAPSHOT")
+        // }
         
         useInMemoryPgpKeys(keyId, secretKey, password)
         

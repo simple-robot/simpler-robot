@@ -64,7 +64,7 @@ if (isPublishConfigurable) {
     }
     
     nexusPublishing {
-        println("[NEXUS] - project.group: ${project.group}")
+        println("[NEXUS] - project.group:   ${project.group}")
         println("[NEXUS] - project.version: ${project.version}")
         packageGroup.set(project.group.toString())
         repositoryDescription.set(project.description)
@@ -80,7 +80,6 @@ if (isPublishConfigurable) {
 
         repositories {
             sonatype {
-                nexusUrl.set(uri(Sonatype.Central.URL))
                 snapshotRepositoryUrl.set(uri(Sonatype.Snapshot.URL))
                 username.set(sonatypeUsername)
                 password.set(sonatypePassword)
