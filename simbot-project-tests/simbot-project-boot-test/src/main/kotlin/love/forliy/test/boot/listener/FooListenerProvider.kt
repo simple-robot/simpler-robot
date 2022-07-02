@@ -30,7 +30,7 @@ class FooListenerProvider {
     
     @Listener
     fun FriendMessageEvent.myListener() {
-        //
+        println(this)
     }
     
 }

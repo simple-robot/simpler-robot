@@ -48,11 +48,12 @@ public class ResourcesScanner<T>(
         mutableListOf<(model: ResourceModel, resource: String, loader: ClassLoader, url: URL) -> Sequence<T>>()
     private val visitors = mutableListOf<(ResourceVisitValue<*>) -> Sequence<T>>()
     
+    @Deprecated("Unused")
     override fun close() {
-        clear()
+        // clear()
     }
     
-    private fun clear() {
+    public fun clear() {
         globs.clear()
         visitors.clear()
         scans.clear()
