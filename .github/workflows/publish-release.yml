@@ -67,7 +67,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.4.2
-          arguments: clean build publishToSonatype closeAndReleaseStagingRepository --warning-mode all --info
+          arguments: clean build publishToSonatype closeAndReleaseStagingRepository -Xmx4G -Xms4G -XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8 --warning-mode all --info
         env:
           SIMBOT_IS_SNAPSHOT: false
           SIMBOT_RELEASES_ONLY: true

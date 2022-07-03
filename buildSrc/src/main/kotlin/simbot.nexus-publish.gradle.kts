@@ -74,9 +74,10 @@ if (isPublishConfigurable) {
         )
 
         transitionCheckOptions {
-            maxRetries.set(60)
-            delayBetween.set(Duration.ofSeconds(30))
+            maxRetries.set(100)
+            delayBetween.set(Duration.ofSeconds(5))
         }
+        
 
         repositories {
             sonatype {

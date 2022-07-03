@@ -124,6 +124,8 @@ if (isPublishConfigurable) {
         }
     }
     
+    // https://stackoverflow.com/questions/57921325/gradle-signarchives-unable-to-read-secret-key
+    // https://github.com/gradle/gradle/issues/15718
     
     signing {
         val keyId = System.getenv("GPG_KEY_ID")
