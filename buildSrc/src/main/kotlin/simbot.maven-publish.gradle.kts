@@ -72,7 +72,7 @@ if (isPublishConfigurable) {
     
     publishing {
         publications {
-            create("simbotDist") {
+            create<MavenPublication>("simbotDist") {
                 from(components["java"])
                 artifact(jarSources)
                 artifact(jarJavadoc)
