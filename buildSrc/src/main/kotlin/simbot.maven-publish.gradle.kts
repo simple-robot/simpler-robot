@@ -72,7 +72,7 @@ if (isPublishConfigurable) {
     
     publishing {
         publications {
-            register<MavenPublication>("dist") {
+            create("simbotDist") {
                 from(components["java"])
                 artifact(jarSources)
                 artifact(jarJavadoc)
@@ -136,7 +136,7 @@ if (isPublishConfigurable) {
         
         useInMemoryPgpKeys(keyId, secretKey, password)
         
-        sign(publishing.publications)
+        sign(publishing.publications["simbotDist"])
     }
     
     
