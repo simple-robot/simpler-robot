@@ -115,8 +115,11 @@ if (isPublishConfigurable) {
             
             repositories {
                 mavenLocal()
-                configPublishMaven(Sonatype.Central, sonatypeUsername, sonatypePassword)
-                configPublishMaven(Sonatype.Snapshot, sonatypeUsername, sonatypePassword)
+                if (project.version.toString().contains("SNAPSHOT", true)) {
+                    configPublishMaven(Sonatype.Snapshot, sonatypeUsername, sonatypePassword)
+                } else {
+                    configPublishMaven(Sonatype.Central, sonatypeUsername, sonatypePassword)
+                }
             }
         }
     }
