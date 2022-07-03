@@ -67,7 +67,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.4.2
-          arguments: clean build publishToSonatype closeAndReleaseStagingRepository -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true -Psigning.secretKeyRingFile=${{ steps.decode-gpg-file.outputs.SEC_KEY_RING_FILE }}
+          arguments: clean build publishToSonatype closeAndReleaseStagingRepository --warning-mode all --info
         env:
           SIMBOT_IS_SNAPSHOT: false
           SIMBOT_RELEASES_ONLY: true
