@@ -16,6 +16,7 @@
  */
 
 import gradle.kotlin.dsl.accessors._ef8df8565a6e8c0564755ef1bcb196f5.sourceSets
+import utils.checkPublishConfigurable
 
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
@@ -40,14 +41,7 @@ plugins {
     id("maven-publish")
 }
 
-val isSnapshotOnly = (System.getProperty("snapshotOnly") ?: System.getenv(Env.SNAPSHOT_ONLY))?.equals("true", true) == true
-val isReleaseOnly = (System.getProperty("releaseOnly") ?: System.getenv(Env.RELEASES_ONLY))?.equals("true", true) == true
-
-val isPublishConfigurable = when {
-    isSnapshotOnly -> P.Simbot.isSnapshot
-    isReleaseOnly -> !P.Simbot.isSnapshot
-    else -> true
-}
+val (isSnapshotOnly, isReleaseOnly, isPublishConfigurable) = checkPublishConfigurable()
 
 println("isSnapshotOnly: $isSnapshotOnly")
 println("isReleaseOnly: $isReleaseOnly")
@@ -81,7 +75,7 @@ if (isPublishConfigurable) {
                 groupId = project.group.toString()
                 artifactId = project.name
                 version = project.version.toString()
-    
+                
                 println("[publication] - groupId:    $groupId")
                 println("[publication] - artifactId: $artifactId")
                 println("[publication] - version:    $version")
