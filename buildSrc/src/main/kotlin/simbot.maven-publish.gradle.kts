@@ -39,8 +39,8 @@ plugins {
     id("maven-publish")
 }
 
-val isSnapshotOnly = (System.getProperty("snapshotOnly") ?: System.getenv(Env.SNAPSHOT_ONLY))?.equals("true", true) != true
-val isReleaseOnly = (System.getProperty("releaseOnly") ?: System.getenv(Env.RELEASES_ONLY))?.equals("true", true) != true
+val isSnapshotOnly = (System.getProperty("snapshotOnly") ?: System.getenv(Env.SNAPSHOT_ONLY))?.equals("true", true) == true
+val isReleaseOnly = (System.getProperty("releaseOnly") ?: System.getenv(Env.RELEASES_ONLY))?.equals("true", true) == true
 
 val isPublishConfigurable = when {
     isSnapshotOnly -> P.Simbot.isSnapshot
@@ -72,7 +72,7 @@ if (isPublishConfigurable) {
     
     publishing {
         publications {
-            create<MavenPublication>("dist") {
+            create<MavenPublication>("simbotDist") {
                 from(components["java"])
                 artifact(jarSources)
                 artifact(jarJavadoc)
@@ -80,6 +80,10 @@ if (isPublishConfigurable) {
                 groupId = project.group.toString()
                 artifactId = project.name
                 version = project.version.toString()
+    
+                println("[publication] - groupId:    $groupId")
+                println("[publication] - artifactId: $artifactId")
+                println("[publication] - version:    $version")
                 
                 pom {
                     show()
@@ -111,12 +115,17 @@ if (isPublishConfigurable) {
             
             repositories {
                 mavenLocal()
-                configPublishMaven(Sonatype.Central, sonatypeUsername, sonatypePassword)
-                configPublishMaven(Sonatype.Snapshot, sonatypeUsername, sonatypePassword)
+                if (project.version.toString().contains("SNAPSHOT", true)) {
+                    configPublishMaven(Sonatype.Snapshot, sonatypeUsername, sonatypePassword)
+                } else {
+                    configPublishMaven(Sonatype.Central, sonatypeUsername, sonatypePassword)
+                }
             }
         }
     }
     
+    // https://stackoverflow.com/questions/57921325/gradle-signarchives-unable-to-read-secret-key
+    // https://github.com/gradle/gradle/issues/15718
     
     signing {
         val keyId = System.getenv("GPG_KEY_ID")
@@ -129,7 +138,7 @@ if (isPublishConfigurable) {
         
         useInMemoryPgpKeys(keyId, secretKey, password)
         
-        sign(publishing.publications["dist"])
+        sign(publishing.publications["simbotDist"])
     }
     
     

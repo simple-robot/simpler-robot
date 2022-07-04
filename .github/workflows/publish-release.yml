@@ -53,13 +53,21 @@ jobs:
           distribution: 'temurin'
           java-version: 8
 
+      # the gpg
+      - name: Decode gpg file
+        id: decode-gpg-file
+        run: |
+          mkdir -p ~/.gradle
+          echo "${{ secrets.GPG_B64 }}" > ~/.gradle/secring.gpg.b64
+          base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
+          echo "::set-output name=SEC_KEY_RING_FILE::$(echo ~/.gradle/secring.gpg)"
 
       # setup Gradle
       - name: Gradle Publish Release
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.4.2
-          arguments: clean build test publishToSonatype closeAndReleaseStagingRepository -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true
+          arguments: clean build publishToSonatype closeAndReleaseStagingRepository --warning-mode all --info -Porg.gradle.jvmargs="org.gradle.jvmargs=-Xmx4G -Xms4G -XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8"
         env:
           SIMBOT_IS_SNAPSHOT: false
           SIMBOT_RELEASES_ONLY: true
@@ -107,7 +115,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.4.2
-          arguments: clean build test publishToSonatype closeAndReleaseStagingRepository -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true
+          arguments: clean build publishToSonatype closeAndReleaseStagingRepository -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true
         env:
           SIMBOT_IS_SNAPSHOT: true
           SIMBOT_SNAPSHOT_ONLY: true
