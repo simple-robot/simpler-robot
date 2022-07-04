@@ -16,6 +16,7 @@
 
 
 plugins {
+    id("org.jetbrains.dokka")
     id("simbot.changelog-generator")
     id("simbot.nexus-publish")
     id("simbot.dokka-multi-module")
