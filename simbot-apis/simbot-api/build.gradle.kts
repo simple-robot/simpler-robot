@@ -24,7 +24,7 @@ plugins {
 dependencies {
     api(kotlin("reflect"))
     
-    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.jdk8)
     api(libs.kotlinx.serialization.core)
     
