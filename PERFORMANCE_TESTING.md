@@ -41,7 +41,7 @@ IdTest.randomUUIDGenerate                   thrpt   25   1435474.691 ±   39339.
 # JMH version: 1.35
 # VM version: JDK 17.0.3, OpenJDK 64-Bit Server VM, 17.0.3+7-LTS
 # VM invoker: /Users/forte/Library/Java/JavaVirtualMachines/azul-17.0.3/Contents/Home/bin/java
-# VM options: -Dvisualvm.id=6442126014700 -javaagent:/Users/forte/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/221.5921.22/IntelliJ IDEA 2022.1 EAP.app/Contents/lib/idea_rt.jar=51013:/Users/forte/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/221.5921.22/IntelliJ IDEA 2022.1 EAP.app/Contents/bin -Dfile.encoding=UTF-8
+# VM options: -Dvisualvm.id=6442126014700 -javaagent:JetBrains/Toolbox/apps/IDEA-U/ch-0/221.5921.22/IntelliJ IDEA 2022.1 EAP.app/Contents/lib/idea_rt.jar=51013:JetBrains/Toolbox/apps/IDEA-U/ch-0/221.5921.22/IntelliJ IDEA 2022.1 EAP.app/Contents/bin -Dfile.encoding=UTF-8
 # Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
 # Warmup: 2 iterations, 2 min each
 # Measurement: 2 iterations, 2 min each
@@ -68,7 +68,7 @@ DurationTest.SecondToMilli:timeUnitSecondToMilli      thrpt    2  288485.731    
 # JMH version: 1.35
 # VM version: JDK 1.8.0_332, OpenJDK 64-Bit Server VM, 25.332-b09
 # VM invoker: /Users/forte/Library/Java/JavaVirtualMachines/azul-1.8.0_332/Contents/Home/jre/bin/java
-# VM options: -Dvisualvm.id=9852521014808 -javaagent:/Users/forte/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/221.5921.22/IntelliJ IDEA 2022.1 EAP.app/Contents/lib/idea_rt.jar=52750:/Users/forte/Library/Application Support/JetBrains/Toolbox/apps/IDEA-U/ch-0/221.5921.22/IntelliJ IDEA 2022.1 EAP.app/Contents/bin -Dfile.encoding=UTF-8
+# VM options: -Dvisualvm.id=9852521014808 -javaagent:JetBrains/Toolbox/apps/IDEA-U/ch-0/221.5921.22/IntelliJ IDEA 2022.1 EAP.app/Contents/lib/idea_rt.jar=52750:JetBrains/Toolbox/apps/IDEA-U/ch-0/221.5921.22/IntelliJ IDEA 2022.1 EAP.app/Contents/bin -Dfile.encoding=UTF-8
 # Blackhole mode: full + dont-inline hint (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
 # Warmup: 2 iterations, 2 min each
 # Measurement: 2 iterations, 2 min each
@@ -86,4 +86,31 @@ DurationTest.SecondToMilli                            thrpt    2  536347.374    
 DurationTest.SecondToMilli:javaDurationSecondToMilli  thrpt    2  212098.647          ops/ms
 DurationTest.SecondToMilli:ktDurationSecondToMilli    thrpt    2  104243.386          ops/ms
 DurationTest.SecondToMilli:timeUnitSecondToMilli      thrpt    2  220005.341          ops/ms
+```
+
+
+## DurationConvert
+> [DurationConvertTest](simbot-apis/simbot-api/src/test/kotlin/jmh/DurationConvertTest.kt)
+
+针对内容：
+
+`java.time.Duration` 和 `TimeUnit` 向 `kotlin.time.Duration` 转化时的性能。
+
+```
+# JMH version: 1.35
+# VM version: JDK 1.8.0_332, OpenJDK 64-Bit Server VM, 25.332-b09
+# VM invoker: C:\Users\Administrator\.jdks\azul-1.8.0_332\jre\bin\java.exe
+# VM options: -Dvisualvm.id=91729287991200 -javaagent:jetbrains\apps\IDEA-U\ch-0\221.5921.22\lib\idea_rt.jar=11947:jetbrains\apps\IDEA-U\ch-0\221.5921.22\bin -Dfile.encoding=UTF-8
+# Blackhole mode: full + dont-inline hint (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 1 iterations, 1 min each
+# Measurement: 1 iterations, 30 s each
+# Timeout: 10 min per iteration
+# Threads: 2 threads, will synchronize iterations
+
+Benchmark                                                 Mode  Cnt       Score   Error   Units
+DurationConvertTest.kotlinMinutesDurationToJavaDuration  thrpt       195519.827          ops/ms
+DurationConvertTest.kotlinSecondsDurationToJavaDuration  thrpt       260752.775          ops/ms
+
+// TODO?
+
 ```
