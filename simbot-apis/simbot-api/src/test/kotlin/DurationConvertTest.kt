@@ -38,6 +38,8 @@ class DurationConvertTest {
         assert(Duration.ZERO.toJavaDuration() == JavaDuration.ZERO)
         assert(Duration.INFINITE.toJavaDurationOrNull() == null)
         assert(Duration.INFINITE.unaryMinus().toJavaDurationOrNull() == null)
+        assert(Duration.INFINITE.toJavaDuration { JavaDuration.ofSeconds(1) } == JavaDuration.ofSeconds(1))
+        assert(Duration.INFINITE.unaryMinus().toJavaDuration { JavaDuration.ofSeconds(1) } == JavaDuration.ofSeconds(1))
     }
     
 }
