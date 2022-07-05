@@ -17,5 +17,17 @@
 
 package love.forte.simbot
 
+import kotlin.time.Duration
+
 
 public typealias JavaDuration = java.time.Duration
+
+
+public fun JavaDuration.toKotlinDuration(): Duration {
+    TODO()
+}
+
+
+public fun Duration.toJavaDuration(): JavaDuration {
+    TODO()
+}

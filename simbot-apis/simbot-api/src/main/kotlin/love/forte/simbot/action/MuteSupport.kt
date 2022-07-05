@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -12,15 +12,17 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
+ *
  */
 
 package love.forte.simbot.action
 
 import love.forte.simbot.Api4J
+import love.forte.simbot.JavaDuration
+import love.forte.simbot.toKotlinDuration
 import love.forte.simbot.utils.runInBlocking
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.microseconds
 
 
 /**
@@ -45,7 +47,7 @@ import kotlin.time.Duration.Companion.microseconds
  * @author ForteScarlet
  */
 public interface MuteSupport {
-
+    
     /**
      * 对当前目标进行 **禁言** 操作。
      *
@@ -71,7 +73,7 @@ public interface MuteSupport {
      */
     @JvmSynthetic
     public suspend fun mute(duration: Duration = DEFAULT_DURATION): Boolean
-
+    
     /**
      * 对当前目标进行 **解除禁言** 操作。
      *
@@ -81,15 +83,28 @@ public interface MuteSupport {
      */
     @JvmSynthetic
     public suspend fun unmute(): Boolean
-
+    
     /**
      * @see mute
      */
     @Api4J
-    public fun muteBlocking(duration: Long, unit: TimeUnit): Boolean = runInBlocking {
-        mute(unit.toMillis(duration).microseconds)
+    @Deprecated(
+        "Use muteBlocking(Duration)", ReplaceWith(
+            "muteBlocking(Duration.ofNanos(timeUnit.toNanos(duration)))",
+            "java.time.Duration"
+        )
+    )
+    public fun muteBlocking(duration: Long, timeUnit: TimeUnit): Boolean =
+        muteBlocking(JavaDuration.ofNanos(timeUnit.toNanos(duration)))
+    
+    /**
+     * @see mute
+     */
+    @Api4J
+    public fun muteBlocking(duration: JavaDuration): Boolean = runInBlocking {
+        mute(duration.toKotlinDuration())
     }
-
+    
     /**
      * @see mute
      */
@@ -97,7 +112,7 @@ public interface MuteSupport {
     public fun muteBlocking(): Boolean = runInBlocking {
         mute()
     }
-
+    
     /**
      * @see unmute
      */
@@ -105,12 +120,12 @@ public interface MuteSupport {
     public fun unmuteBlocking(): Boolean = runInBlocking {
         unmute()
     }
-
-
+    
+    
     public companion object {
         internal val DEFAULT_DURATION = Duration.ZERO // (-1L).nanoseconds
     }
-
+    
 }
 
 
