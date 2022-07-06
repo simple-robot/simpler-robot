@@ -65,30 +65,23 @@ import java.util.function.Supplier
  */
 public interface DelayableCoroutineScope : CoroutineScope {
     
-    
-    @Api4J
-    @Deprecated(
-        "Use delay(Duration, Runnable)", ReplaceWith(
-            "delay(Duration.ofNanos(timeUnit.toNanos(time)), runnable)",
-            "java.time.Duration"
-        )
-    )
-    public fun delay(time: Long, timeUnit: TimeUnit, runnable: Runnable): DelayableCompletableFuture<Void?> =
-        delay(JavaDuration.ofNanos(timeUnit.toNanos(time)), runnable)
-    
     /**
-     * @param time 毫秒时间段
+     * 延迟 [timeUnit] 的 [time] 时长后执行 [runnable]，得到一个 [DelayableCompletableFuture]。
+     * 这个 [DelayableCompletableFuture] 的结果永远为null。
      */
     @Api4J
-    @Deprecated(
-        "Use delay(Duration, Runnable)", ReplaceWith(
-            "delay(Duration.ofNanos(TimeUnit.NANOSECONDS.toNanos(time)), runnable)",
-            "java.time.Duration",
-            "java.util.concurrent.TimeUnit"
-        )
-    )
-    public fun delay(time: Long, runnable: Runnable): DelayableCompletableFuture<Void?> =
-        delay(JavaDuration.ofNanos(TimeUnit.MILLISECONDS.toNanos(time)), runnable)
+    public fun delay(time: Long, timeUnit: TimeUnit, runnable: Runnable): DelayableCompletableFuture<Void?> =
+        delay(timeUnit.toMillis(time), runnable)
+    
+    /**
+     * 延迟 [millis] 毫秒后执行 [runnable]，得到一个 [DelayableCompletableFuture]。
+     * 这个 [DelayableCompletableFuture] 的结果永远为null。
+     *
+     * @param millis 毫秒级延迟时长
+     */
+    @Api4J
+    public fun delay(millis: Long, runnable: Runnable): DelayableCompletableFuture<Void?> =
+        delay0(TimeUnit.MILLISECONDS.toMillis(millis), runnable)
     
     /**
      * 延时 [duration] 时间后执行回调函数 [runnable]，得到一个 [DelayableCompletableFuture]。
@@ -96,32 +89,21 @@ public interface DelayableCoroutineScope : CoroutineScope {
      */
     @Api4J
     public fun delay(duration: JavaDuration, runnable: Runnable): DelayableCompletableFuture<Void?> =
-        delay0(duration, runnable)
+        delay(duration.toMillis(), runnable)
     
     
     @Api4J
-    @Deprecated("Use delayAndCompute(Duration, Supplier<V>)", ReplaceWith(
-        "delayAndCompute(Duration.ofNanos(timeUnit.toNanos(time)), supplier)",
-        "java.time.Duration"
-    )
-    )
     public fun <V> delayAndCompute(
         time: Long,
         timeUnit: TimeUnit,
         supplier: Supplier<V>,
     ): DelayableCompletableFuture<V> =
-        delayAndCompute(JavaDuration.ofNanos(timeUnit.toNanos(time)), supplier)
+        delayAndCompute0(timeUnit.toMillis(time), supplier)
     
     /**
      * @param time 毫秒时间段
      */
     @Api4J
-    @Deprecated("Use delayAndCompute(Duration, Supplier<V>)", ReplaceWith(
-        "delayAndCompute(Duration.ofNanos(TimeUnit.MILLISECONDS.toNanos(time)), supplier)",
-        "java.time.Duration",
-        "java.util.concurrent.TimeUnit"
-    )
-    )
     public fun <V> delayAndCompute(time: Long, supplier: Supplier<V>): DelayableCompletableFuture<V> =
         delayAndCompute(JavaDuration.ofNanos(TimeUnit.MILLISECONDS.toNanos(time)), supplier)
     
@@ -130,7 +112,7 @@ public interface DelayableCoroutineScope : CoroutineScope {
      */
     @Api4J
     public fun <V> delayAndCompute(duration: JavaDuration, supplier: Supplier<V>): DelayableCompletableFuture<V> =
-        delayAndCompute0(duration, supplier)
+        delayAndCompute0(duration.toMillis(), supplier)
     
     
 }
@@ -168,12 +150,12 @@ public fun <T> Deferred<T>.asDelayableFuture(scope: CoroutineScope): DelayableCo
 
 
 private fun CoroutineScope.delay0(
-    duration: JavaDuration,
+    millis: Long,
     runnable: Runnable,
 ): DelayableCompletableFuture<Void?> {
     return DelayableCompletableFutureImpl(
         async {
-            delay(duration.toMillis())
+            delay(millis)
             runInterruptible { runnable.run() }
             null
         }, this
@@ -181,12 +163,12 @@ private fun CoroutineScope.delay0(
 }
 
 private fun <V> CoroutineScope.delayAndCompute0(
-    duration: JavaDuration,
+    millis: Long,
     supplier: Supplier<V>,
 ): DelayableCompletableFuture<V> {
     return DelayableCompletableFutureImpl(
         async {
-            delay(duration.toMillis())
+            delay(millis)
             runInterruptible { supplier.get() }
         }, this
     )
