@@ -17,7 +17,7 @@
 package love.forte.simbot.message
 
 import love.forte.simbot.Api4J
-import love.forte.simbot.Bot
+import love.forte.simbot.bot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.message.Image.Key.toImage
 import love.forte.simbot.resources.Resource

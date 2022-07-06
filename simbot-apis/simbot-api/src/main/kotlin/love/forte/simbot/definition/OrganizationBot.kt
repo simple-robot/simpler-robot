@@ -17,7 +17,7 @@
 package love.forte.simbot.definition
 
 import love.forte.simbot.Api4J
-import love.forte.simbot.Bot
+import love.forte.simbot.bot.Bot
 
 
 /**

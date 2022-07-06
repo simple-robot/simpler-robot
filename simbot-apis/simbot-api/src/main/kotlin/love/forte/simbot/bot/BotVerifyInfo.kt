@@ -14,7 +14,7 @@
  *
  */
 
-package love.forte.simbot
+package love.forte.simbot.bot
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
@@ -23,6 +23,8 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonBuilder
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.properties.Properties
+import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.LoggerFactory
 import love.forte.simbot.resources.DeserializableResource
 import love.forte.simbot.resources.DeserializableResourceDecoder
 import love.forte.simbot.resources.SerialFormatDeserializableResourceDecoder
@@ -174,7 +176,7 @@ public sealed class StandardBotVerifyInfoDecoderFactory<C : Any, D : BotVerifyIn
     BotVerifyInfoDecoderFactory<C, D> {
 
     public companion object {
-        private val logger: Logger = LoggerFactory.getLogger("love.forte.simbot.StandardBotVerifyInfoDecoderFactory")
+        private val logger: Logger = LoggerFactory.getLogger("love.forte.simbot.bot.StandardBotVerifyInfoDecoderFactory")
 
         /**
          * 支持`Json`格式的bot配置文件。

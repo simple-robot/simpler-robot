@@ -20,6 +20,10 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
 import love.forte.simbot.*
+import love.forte.simbot.bot.BotVerifyInfo
+import love.forte.simbot.bot.BotVerifyInfoDecoderFactory
+import love.forte.simbot.bot.StandardBotVerifyInfoDecoderFactory
+import love.forte.simbot.bot.toBotVerifyInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import java.io.FileNotFoundException

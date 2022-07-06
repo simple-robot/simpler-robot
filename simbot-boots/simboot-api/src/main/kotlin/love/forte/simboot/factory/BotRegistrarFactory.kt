@@ -16,7 +16,7 @@
 
 package love.forte.simboot.factory
 
-import love.forte.simbot.BotRegistrar
+import love.forte.simbot.bot.BotRegistrar
 import love.forte.simbot.event.EventProcessor
 
 /**

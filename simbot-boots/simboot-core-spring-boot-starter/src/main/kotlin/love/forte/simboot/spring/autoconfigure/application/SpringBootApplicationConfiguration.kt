@@ -19,7 +19,7 @@ package love.forte.simboot.spring.autoconfigure.application
 import love.forte.simboot.core.application.BootApplicationConfiguration
 import love.forte.simboot.core.application.BootApplicationConfiguration.Companion.DEFAULT_BOT_VERIFY_GLOB
 import love.forte.simboot.listener.ParameterBinderFactory
-import love.forte.simbot.Bot
+import love.forte.simbot.bot.Bot
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
