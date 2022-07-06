@@ -1,7 +1,7 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -12,9 +12,11 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
+ *
  */
 
 import gradle.kotlin.dsl.accessors._ef8df8565a6e8c0564755ef1bcb196f5.sourceSets
+import utils.checkPublishConfigurable
 
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
@@ -39,14 +41,7 @@ plugins {
     id("maven-publish")
 }
 
-val isSnapshotOnly = (System.getProperty("snapshotOnly") ?: System.getenv(Env.IS_SNAPSHOT)) != null
-val isReleaseOnly = (System.getProperty("releaseOnly") ?: System.getenv(Env.RELEASES_ONLY)) != null
-
-val isPublishConfigurable = when {
-    isSnapshotOnly -> P.Simbot.isSnapshot
-    isReleaseOnly -> !P.Simbot.isSnapshot
-    else -> true
-}
+val (isSnapshotOnly, isReleaseOnly, isPublishConfigurable) = checkPublishConfigurable()
 
 println("isSnapshotOnly: $isSnapshotOnly")
 println("isReleaseOnly: $isReleaseOnly")
@@ -72,7 +67,7 @@ if (isPublishConfigurable) {
     
     publishing {
         publications {
-            create<MavenPublication>("dist") {
+            create<MavenPublication>("simbotDist") {
                 from(components["java"])
                 artifact(jarSources)
                 artifact(jarJavadoc)
@@ -81,7 +76,13 @@ if (isPublishConfigurable) {
                 artifactId = project.name
                 version = project.version.toString()
                 
+                println("[publication] - groupId:    $groupId")
+                println("[publication] - artifactId: $artifactId")
+                println("[publication] - version:    $version")
+                
                 pom {
+                    show()
+                    
                     name.set("${project.group}:${project.name}")
                     description.set(project.description ?: P.Simbot.DESCRIPTION)
                     url.set("https://github.com/ForteScarlet/simpler-robot")
@@ -109,12 +110,17 @@ if (isPublishConfigurable) {
             
             repositories {
                 mavenLocal()
-                configPublishMaven(Sonatype.Central, sonatypeUsername, sonatypePassword)
-                configPublishMaven(Sonatype.Snapshot, sonatypeUsername, sonatypePassword)
+                if (project.version.toString().contains("SNAPSHOT", true)) {
+                    configPublishMaven(Sonatype.Snapshot, sonatypeUsername, sonatypePassword)
+                } else {
+                    configPublishMaven(Sonatype.Central, sonatypeUsername, sonatypePassword)
+                }
             }
         }
     }
     
+    // https://stackoverflow.com/questions/57921325/gradle-signarchives-unable-to-read-secret-key
+    // https://github.com/gradle/gradle/issues/15718
     
     signing {
         val keyId = System.getenv("GPG_KEY_ID")
@@ -127,7 +133,7 @@ if (isPublishConfigurable) {
         
         useInMemoryPgpKeys(keyId, secretKey, password)
         
-        sign(publishing.publications["dist"])
+        sign(publishing.publications["simbotDist"])
     }
     
     
@@ -167,3 +173,12 @@ fun MavenPom.setupDevelopers() {
     }
 }
 
+fun show() {
+    //// show project info
+    println("========================================================")
+    println("== project.group:       $group")
+    println("== project.name:        $name")
+    println("== project.version:     $version")
+    println("== project.description: $description")
+    println("========================================================")
+}

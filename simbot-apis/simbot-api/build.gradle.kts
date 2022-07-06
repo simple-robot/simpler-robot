@@ -15,17 +15,16 @@
  */
 
 plugins {
-    id("simbot.module-conventions")
+    id("simbot.simple-module-conventions")
     id("simbot.maven-publish")
     kotlin("plugin.serialization")
-    // id("kotlin-kapt")
     kotlin("kapt")
 }
 
 dependencies {
     api(kotlin("reflect"))
     
-    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.jdk8)
     api(libs.kotlinx.serialization.core)
     

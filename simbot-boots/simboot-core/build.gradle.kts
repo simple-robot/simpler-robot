@@ -15,7 +15,7 @@
  */
 
 plugins {
-    id("simbot.module-conventions")
+    id("simbot.boot-module-conventions")
     id("simbot.maven-publish")
     kotlin("plugin.serialization")
 }
@@ -28,7 +28,7 @@ dependencies {
     api(project(":simbot-boots:simboot-core-annotation"))
 
     api(libs.slf4j.api)
-    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.serialization.core)
     api(libs.kotlinx.serialization.json)
     api(libs.forte.di.core)

@@ -16,6 +16,7 @@
  */
 
 import java.time.Duration
+import utils.checkPublishConfigurable
 
 /*
  *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
@@ -38,14 +39,11 @@ plugins {
     id("io.github.gradle-nexus.publish-plugin")
 }
 
-val isSnapshotOnly = systemProp("snapshotOnly", "simbot.snapshotOnly") != null
-val isReleaseOnly = systemProp("releaseOnly", "simbot.releaseOnly") != null
+group = P.Simbot.GROUP
+version = P.Simbot.VERSION
+description = P.Simbot.DESCRIPTION
 
-val isPublishConfigurable = when {
-    isSnapshotOnly -> P.Simbot.isSnapshot
-    isReleaseOnly -> !P.Simbot.isSnapshot
-    else -> true
-}
+val (isSnapshotOnly, isReleaseOnly, isPublishConfigurable) = checkPublishConfigurable()
 
 println("isSnapshotOnly: $isSnapshotOnly")
 println("isReleaseOnly: $isReleaseOnly")
@@ -61,20 +59,23 @@ if (isPublishConfigurable) {
     }
     
     nexusPublishing {
+        println("[NEXUS] - project.group:   ${project.group}")
+        println("[NEXUS] - project.version: ${project.version}")
         packageGroup.set(project.group.toString())
-
+        repositoryDescription.set(project.description)
+        
         useStaging.set(
             project.provider { !project.version.toString().endsWith("SNAPSHOT", ignoreCase = true) }
         )
 
         transitionCheckOptions {
-            maxRetries.set(60)
-            delayBetween.set(Duration.ofSeconds(30))
+            maxRetries.set(100)
+            delayBetween.set(Duration.ofSeconds(5))
         }
+        
 
         repositories {
             sonatype {
-                nexusUrl.set(uri(Sonatype.Central.URL))
                 snapshotRepositoryUrl.set(uri(Sonatype.Snapshot.URL))
                 username.set(sonatypeUsername)
                 password.set(sonatypePassword)

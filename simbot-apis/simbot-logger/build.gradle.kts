@@ -15,12 +15,12 @@
  */
 
 plugins {
-    id("simbot.module-conventions")
+    id("simbot.simple-module-conventions")
     id("simbot.maven-publish")
 }
 
 dependencies {
-    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.kotlinx.coroutines.core)
     api(libs.slf4j.api)
     api(libs.lmax.disruptor)
 

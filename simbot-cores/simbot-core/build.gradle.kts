@@ -15,7 +15,7 @@
  */
 
 plugins {
-    id("simbot.module-conventions")
+    id("simbot.simple-module-conventions")
     id("simbot.maven-publish")
     kotlin("plugin.serialization")
 }
@@ -26,7 +26,7 @@ dependencies {
     api(project(":simbot-apis:simbot-logger"))
     api(project(":simbot-apis:simbot-api"))
     api(libs.slf4j.api)
-    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.jdk8)
     api(libs.kotlinx.serialization.core)
 

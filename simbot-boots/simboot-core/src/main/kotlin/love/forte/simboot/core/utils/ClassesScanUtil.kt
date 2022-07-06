@@ -29,7 +29,8 @@ private val pathReplace = Regex("[/\\\\]")
 /**
  * 扫描所有的Class.
  */
-internal fun <T> scanClass(
+@InternalSimbotApi
+public fun <T> scanClass(
     classLoader: ClassLoader,
     targetPackages: List<String>,
     onFailure: (e: Throwable, className: String) -> Class<*>?,
@@ -62,8 +63,10 @@ internal fun <T> scanClass(
             sequenceOf(loadClass)
         }.collectSequence(true).collector()
     }
-    
 }
+
+
+
 
 /**
  * 扫描所有疑似为kotlin顶层函数的类，但是无法保证它**绝对是**kotlin所生成的类。
@@ -76,8 +79,8 @@ internal fun <T> scanClass(
  * - 不是抽象的。
  * - 不是枚举、不是注解、不是数组。
  */
-@OptIn(InternalSimbotApi::class)
-internal fun <T> scanTopClass(
+@InternalSimbotApi
+public fun <T> scanTopClass(
     classLoader: ClassLoader,
     targetPackages: List<String>,
     onFailure: (e: Throwable, className: String) -> Class<*>?,

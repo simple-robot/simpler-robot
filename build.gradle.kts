@@ -16,32 +16,8 @@
 
 
 plugins {
-    id("org.jetbrains.dokka")
     id("simbot.changelog-generator")
     id("simbot.nexus-publish")
     id("simbot.dokka-multi-module")
-    idea
 }
 
-group = P.Simbot.GROUP
-version = P.Simbot.VERSION
-description = P.Simbot.DESCRIPTION
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        url = uri(Sonatype.Snapshot.URL)
-        mavenContent {
-            snapshotsOnly()
-        }
-    }
-}
-
-
-idea {
-    module {
-        isDownloadSources = true
-        isDownloadJavadoc = true
-    }
-}

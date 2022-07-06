@@ -53,6 +53,9 @@ object P {
     object Simbot {
         const val GROUP = "love.forte.simbot"
         const val BOOT_GROUP = "love.forte.simbot.boot"
+        const val TEST_GROUP = "love.forte.simbot.test"
+        const val COMPONENT_GROUP = "love.forte.simbot.component"
+        
         const val DESCRIPTION = "Simple Robot，一个通用的bot风格事件调度框架，以灵活的统一标准来编写bot应用。"
         
         val version = Version(

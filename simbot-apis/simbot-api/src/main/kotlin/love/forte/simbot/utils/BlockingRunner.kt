@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -11,6 +11,7 @@
  *  https://www.gnu.org/licenses
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
  *
  */
 
@@ -34,7 +35,7 @@ private fun createDefaultDispatcher(
     // cpu-1 or 1
     val coreSize0 = coreSize ?: (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(0)
     val maxSize0 = maxSize?.coerceAtLeast(coreSize0) ?: Int.MAX_VALUE
-    val keepAliveTime0 = keepAliveTime ?: TimeUnit.SECONDS.toMillis(60L)
+    val keepAliveTime0 = keepAliveTime ?: 60_000 // ms -> 60s
     
     val num = AtomicLong(0)
     val group = ThreadGroup("runInBlocking")
@@ -107,14 +108,17 @@ public val DefaultBlockingDispatcher: CoroutineDispatcher by lazy {
         if (dispatcher != null) {
             when {
                 dispatcher.equals(DISPATCHER_USE_IO_PROPERTY, ignoreCase = false) -> return@lazy Dispatchers.IO
-                dispatcher.equals(DISPATCHER_USE_DEFAULT_PROPERTY, ignoreCase = false) -> return@lazy Dispatchers.Default
+                dispatcher.equals(
+                    DISPATCHER_USE_DEFAULT_PROPERTY,
+                    ignoreCase = false
+                ) -> return@lazy Dispatchers.Default
             }
         }
-    
+        
         val coreSize = System.getProperty(DISPATCHER_CORE_SIZE_PROPERTY)?.toIntOrNull()?.coerceAtLeast(0)
         val maxSize = System.getProperty(DISPATCHER_MAX_SIZE_PROPERTY)?.toIntOrNull()?.coerceAtLeast(0)
         val keepAliveTime = System.getProperty(DISPATCHER_KEEP_ALIVE_TIME_PROPERTY)?.toLongOrNull()?.coerceAtLeast(0)
-    
+        
         createDefaultDispatcher(coreSize, maxSize, keepAliveTime)
     }.getOrElse {
         createDefaultDispatcher(null, null, null)

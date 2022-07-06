@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -12,15 +12,19 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
+ *
  */
 
 package love.forte.simbot.action
 
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
+import love.forte.simbot.JavaDuration
+import love.forte.simbot.kotlin
 import love.forte.simbot.utils.runInBlocking
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.microseconds
+import kotlin.time.Duration.Companion.nanoseconds
 
 
 /**
@@ -45,7 +49,7 @@ import kotlin.time.Duration.Companion.microseconds
  * @author ForteScarlet
  */
 public interface MuteSupport {
-
+    
     /**
      * 对当前目标进行 **禁言** 操作。
      *
@@ -64,53 +68,80 @@ public interface MuteSupport {
      *
      * 当 [mute] 行为不被支持的时候，大多数情况下组件会选择直接返回 `false`, 但是并不排除可能会直接抛出异常的可能。
      *
+     * ```kotlin
+     * support.mute()
+     * support.mute(5.seconds)
+     * ```
      *
      * @throws UnsupportedActionException 当此行为不被支持时
      *
-     * @see unmute
+     * @param duration 持续时长
+     *
      */
     @JvmSynthetic
     public suspend fun mute(duration: Duration = DEFAULT_DURATION): Boolean
-
+    
+    
     /**
-     * 对当前目标进行 **解除禁言** 操作。
+     * 对当前目标进行 **禁言** 操作。
      *
-     * @throws UnsupportedActionException 当此行为不被支持时
+     * ```java
+     * support.muteBlocking(5, TimeUnit.SECONDS)
+     * ```
      *
-     * @see mute
-     */
-    @JvmSynthetic
-    public suspend fun unmute(): Boolean
-
-    /**
      * @see mute
      */
     @Api4J
-    public fun muteBlocking(duration: Long, unit: TimeUnit): Boolean = runInBlocking {
-        mute(unit.toMillis(duration).microseconds)
+    public fun muteBlocking(time: Long, timeUnit: TimeUnit): Boolean = runBlocking {
+        mute(timeUnit.toNanos(time).nanoseconds)
     }
-
+    
     /**
+     * 对当前目标进行 **禁言** 操作。
+     *
+     * ```java
+     * support.muteBlocking(Duration.ofSeconds(5))
+     * ```
+     *
+     * @see mute
+     */
+    @Api4J
+    public fun muteBlocking(duration: JavaDuration): Boolean = runInBlocking {
+        mute(duration.kotlin)
+    }
+    
+    /**
+     * 对当前目标进行 **禁言** 操作。
+     *
      * @see mute
      */
     @Api4J
     public fun muteBlocking(): Boolean = runInBlocking {
         mute()
     }
-
+    
     /**
+     * 对当前目标进行 **解除禁言** 操作。
+     *
+     * @throws UnsupportedActionException 当此行为不被支持时
+     */
+    @JvmSynthetic
+    public suspend fun unmute(): Boolean
+    
+    /**
+     * 对当前目标进行 **解除禁言** 操作。
      * @see unmute
      */
     @Api4J
     public fun unmuteBlocking(): Boolean = runInBlocking {
         unmute()
     }
-
-
+    
+    
     public companion object {
         internal val DEFAULT_DURATION = Duration.ZERO // (-1L).nanoseconds
     }
-
+    
 }
 
 

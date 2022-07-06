@@ -14,15 +14,6 @@
  *
  *
  */
-pluginManagement {
-    repositories {
-        mavenCentral()
-        maven { setUrl("https://plugins.gradle.org/m2/") }
-    }
-    plugins {
-        id("org.jetbrains.dokka") version "1.6.21"
-    }
-}
 rootProject.name = "simply-robot"
 
 enableFeaturePreview("VERSION_CATALOGS")
@@ -35,34 +26,38 @@ dependencyResolutionManagement {
     }
 }
 
-includePro(":simbot-apis:simbot-api")
-includePro(":simbot-apis:simbot-logger")
-includePro(":simbot-cores:simbot-core")
+include(
+    api("api"),
+    api("logger")
+)
 
-includePro(":simbot-boots:simboot-api")
-includePro(":simbot-boots:simboot-core-annotation")
-includePro(":simbot-boots:simboot-core")
-includePro(":simbot-boots:simboot-core-spring-boot-starter")
+include(core("core"))
 
+include(
+    boot("api"),
+    boot("core-annotation"),
+    boot("core"),
+    boot("core-spring-boot-starter"),
+)
 
-
-inline fun includePro(path: String, dir: String? = null, name: String? = null): String {
-    include(path)
-    if (dir != null) {
-        if (File(rootDir, "$dir/build.gradle.kts").exists()) {
-            project(path).projectDir = file(dir)
-        } else {
-            println("$rootDir/$dir/build.gradle.kts 不存在")
-        }
-    }
-    if (name != null) {
-        project(path).name = name
-        return name
-    }
-    return path
-}
+// project test
+include(
+    projectTest("boot"),
+    projectTest("jmh-duration"),
+)
 
 rootProject.children.forEach {
     println(it)
 }
 
+@Suppress("NOTHING_TO_INLINE")
+inline fun api(moduleName: String): String = ":simbot-apis:simbot-$moduleName"
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun core(moduleName: String): String = ":simbot-cores:simbot-$moduleName"
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun boot(moduleName: String): String = ":simbot-boots:simboot-$moduleName"
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun projectTest(moduleName: String): String = ":simbot-project-tests:simbot-project-test-$moduleName"
