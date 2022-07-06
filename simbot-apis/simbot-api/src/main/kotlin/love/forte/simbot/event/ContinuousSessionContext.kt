@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -12,6 +12,7 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
+ *
  */
 
 package love.forte.simbot.event
@@ -19,6 +20,7 @@ package love.forte.simbot.event
 import kotlinx.coroutines.*
 import love.forte.simbot.Api4J
 import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.JavaDuration
 import love.forte.simbot.isNotMe
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
@@ -264,6 +266,22 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         listener: ContinuousSessionSelector<T>,
     ): T
     
+    @Api4J
+    private fun <T> waitBlocking0(
+        id: String = randomIdStr(),
+        timeoutMillis: Long,
+        blockingListener: BlockingContinuousSessionSelector<T>,
+    ): T {
+        suspend fun doWait() = waiting(id, blockingListener.parse())
+        
+        if (timeoutMillis > 0) {
+            return runInBlocking {
+                withTimeout(timeoutMillis) { doWait() }
+            }
+        }
+        
+        return runInBlocking { doWait() }
+    }
     
     /**
      * 注册一个持续会话监听函数并阻塞的等待.
@@ -271,8 +289,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * 如果注册时发现存在 [id] 冲突的持续会话监听函数，则上一个函数将会被立即关闭处理。
      *
      * @param id 注册的持续会话监听函数的唯一ID
-     * @param timeout 超时时间。大于0的时候生效
-     * @param timeUnit [timeout] 的时间单位。默认为毫秒
+     * @param timeout 超时时间。大于0的时候生效, 最小有效单位为毫秒。
      * @param blockingListener 用于java的阻塞监听函数。是 `(EventProcessingContext, ContinuousSessionProvider) -> {}` 类型的函数接口
      *
      * @throws TimeoutCancellationException 如果超时
@@ -285,22 +302,57 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("waiting")
     public fun <T> waitBlocking(
-        id: String = randomIdStr(),
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+        id: String,
+        timeout: JavaDuration = JavaDuration.ZERO,
         blockingListener: BlockingContinuousSessionSelector<T>,
-    ): T {
-        suspend fun doWait() = waiting(id, blockingListener.parse())
-        
-        val mill = timeUnit.toMillis(timeout)
-        if (mill > 0) {
-            return runInBlocking {
-                withTimeout(mill) { doWait() }
-            }
-        }
-        
-        return runInBlocking { doWait() }
-    }
+    ): T = waitBlocking0(id, timeout.toMillis(), blockingListener)
+    
+    
+    /**
+     * 注册一个持续会话监听函数并阻塞的等待.
+     *
+     * @param timeout 超时时间。大于0的时候生效, 最小有效单位为毫秒。
+     * @param blockingListener 用于java的阻塞监听函数。是 `(EventProcessingContext, ContinuousSessionProvider) -> {}` 类型的函数接口
+     *
+     * @throws TimeoutCancellationException 如果超时
+     * @throws CancellationException 被终止时
+     *
+     * @see waiting
+     *
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waiting")
+    public fun <T> waitBlocking(
+        timeout: JavaDuration = JavaDuration.ZERO,
+        blockingListener: BlockingContinuousSessionSelector<T>,
+    ): T = waitBlocking0(timeoutMillis = timeout.toMillis(), blockingListener = blockingListener)
+    
+    
+    /**
+     * 注册一个持续会话监听函数并阻塞的等待.
+     *
+     * 如果注册时发现存在 [id] 冲突的持续会话监听函数，则上一个函数将会被立即关闭处理。
+     *
+     * @param id 注册的持续会话监听函数的唯一ID
+     * @param timeout 超时时间。大于0的时候生效
+     * @param timeUnit [timeout] 的时间单位。
+     * @param blockingListener 用于java的阻塞监听函数。是 `(EventProcessingContext, ContinuousSessionProvider) -> {}` 类型的函数接口
+     *
+     * @throws TimeoutCancellationException 如果超时
+     * @throws CancellationException 被终止时
+     *
+     * @see waiting
+     *
+     */
+    @Api4J
+    @JvmName("waiting")
+    public fun <T> waitBlocking(
+        id: String,
+        timeout: Long,
+        timeUnit: TimeUnit,
+        blockingListener: BlockingContinuousSessionSelector<T>,
+    ): T = waitBlocking0(id, timeUnit.toMillis(timeout), blockingListener)
     
     
     /**
@@ -315,14 +367,16 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @see waiting
      */
     @Api4J
-    @JvmOverloads
     @JvmName("waiting")
     public fun <T> waitBlocking(
         timeout: Long,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+        timeUnit: TimeUnit,
         blockingListener: BlockingContinuousSessionSelector<T>,
     ): T =
-        waitBlocking(id = randomIdStr(), timeout = timeout, timeUnit = timeUnit, blockingListener = blockingListener)
+        waitBlocking0(
+            timeoutMillis = timeUnit.toMillis(timeout),
+            blockingListener = blockingListener
+        )
     
     
     // endregion
@@ -413,6 +467,119 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     
     
     // region waitForNextBlocking with key
+    
+    
+    @Api4J
+    private fun <E : Event> waitForNextBlocking0(
+        id: String = randomIdStr(),
+        key: Event.Key<E>,
+        timeoutMillis: Long,
+        matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
+    ): E {
+        suspend fun doWait() = waitingForNext(id, key, matcher.parse())
+        
+        if (timeoutMillis > 0) {
+            return runInBlocking {
+                withTimeout(timeoutMillis) { doWait() }
+            }
+        }
+        
+        return runInBlocking { doWait() }
+    }
+    
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
+     *
+     *
+     * @param id 持续会话监听函数的唯一ID
+     * @param key 事件类型 [Event.Key]
+     * @param timeoutDuration 超时时间，大于0时生效。最小有效单位为毫秒。
+     * @param matcher 匹配函数。相当于 `(EventProcessingContext, Event) -> Boolean`
+     *
+     * @throws TimeoutCancellationException 如果超时
+     * @throws CancellationException 被终止
+     *
+     * @see waiting
+     * @see waitingForNext
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNext")
+    public fun <E : Event> waitForNextBlocking(
+        id: String,
+        key: Event.Key<E>,
+        timeoutDuration: JavaDuration = JavaDuration.ZERO,
+        matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
+    ): E = waitForNextBlocking0(id = id, key = key, timeoutMillis = timeoutDuration.toMillis(), matcher)
+    
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
+     *
+     *
+     * @param id 持续会话监听函数的唯一ID
+     * @param key 事件类型 [Event.Key]
+     * @param matcher 匹配函数。相当于 `(EventProcessingContext, Event) -> Boolean`
+     *
+     * @throws TimeoutCancellationException 如果超时
+     * @throws CancellationException 被终止
+     *
+     * @see waiting
+     * @see waitingForNext
+     */
+    @Api4J
+    @JvmName("waitingForNext")
+    public fun <E : Event> waitForNextBlocking(
+        id: String,
+        key: Event.Key<E>,
+        matcher: BlockingContinuousSessionEventMatcher<E>,
+    ): E = waitForNextBlocking0(id = id, key = key, timeoutMillis = 0, matcher = matcher)
+    
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
+     *
+     * @param key 事件类型 [Event.Key]
+     * @param timeoutDuration 超时时间，大于0时生效。最小有效单位为毫秒。
+     * @param matcher 匹配函数。相当于 `(EventProcessingContext, Event) -> Boolean`
+     *
+     * @throws TimeoutCancellationException 如果超时
+     * @throws CancellationException 被终止
+     *
+     * @see waiting
+     * @see waitingForNext
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNext")
+    public fun <E : Event> waitForNextBlocking(
+        key: Event.Key<E>,
+        timeoutDuration: JavaDuration = JavaDuration.ZERO,
+        matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
+    ): E = waitForNextBlocking0(key = key, timeoutMillis = timeoutDuration.toMillis(), matcher = matcher)
+    
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
+     *
+     * @param key 事件类型 [Event.Key]
+     * @param matcher 匹配函数。相当于 `(EventProcessingContext, Event) -> Boolean`
+     *
+     * @throws TimeoutCancellationException 如果超时
+     * @throws CancellationException 被终止
+     *
+     * @see waiting
+     * @see waitingForNext
+     */
+    @Api4J
+    @JvmName("waitingForNext")
+    public fun <E : Event> waitForNextBlocking(
+        key: Event.Key<E>,
+        matcher: BlockingContinuousSessionEventMatcher<E>,
+    ): E = waitForNextBlocking0(key = key, timeoutMillis = 0, matcher = matcher)
+    
+    
     /**
      * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
      *
@@ -435,21 +602,10 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     public fun <E : Event> waitForNextBlocking(
         id: String,
         key: Event.Key<E>,
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+        timeout: Long,
+        timeUnit: TimeUnit,
         matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
-    ): E {
-        suspend fun doWait() = waitingForNext(id, key, matcher.parse())
-        
-        val mill = timeUnit.toMillis(timeout)
-        if (mill > 0) {
-            return runInBlocking {
-                withTimeout(mill) { doWait() }
-            }
-        }
-        
-        return runInBlocking { doWait() }
-    }
+    ): E = waitForNextBlocking0(id = id, key = key, timeoutMillis = timeUnit.toMillis(timeout), matcher = matcher)
     
     /**
      * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
@@ -471,32 +627,10 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmName("waitingForNext")
     public fun <E : Event> waitForNextBlocking(
         key: Event.Key<E>,
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+        timeout: Long,
+        timeUnit: TimeUnit,
         matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
-    ): E = waitForNextBlocking(id = randomIdStr(), key, timeout, timeUnit, matcher)
-    
-    
-    /**
-     * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
-     *
-     *
-     * @param key 事件类型 [Event.Key]
-     * @param matcher 匹配函数。相当于 `(EventProcessingContext, Event) -> Boolean`
-     *
-     * @throws CancellationException 被终止
-     *
-     * @see waiting
-     * @see waitingForNext
-     */
-    @Api4J
-    @JvmName("waitingForNext")
-    public fun <E : Event> waitForNextBlocking(
-        key: Event.Key<E>,
-        matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
-    ): E =
-        waitForNextBlocking(id = randomIdStr(), key = key, matcher = matcher)
-    
+    ): E = waitForNextBlocking0(key = key, timeoutMillis = timeUnit.toMillis(timeout), matcher = matcher)
     
     // endregion
     
@@ -524,6 +658,70 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     
     
     // region waitForNextBlocking without key
+    
+    @Api4J
+    private fun waitForNextBlocking1(
+        id: String = randomIdStr(),
+        timeout: Long = 0,
+        matcher: BlockingContinuousSessionEventMatcher<Event> = BlockingContinuousSessionEventMatcher,
+    ): Event {
+        suspend fun doWait() = waitingForNext(id, matcher.parse())
+        
+        if (timeout > 0) {
+            return runInBlocking {
+                withTimeout(timeout) { doWait() }
+            }
+        }
+        
+        return runInBlocking { doWait() }
+    }
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
+     *
+     *
+     * @param id 持续会话监听函数的唯一ID
+     * @param timeoutDuration 超时时间，大于0时生效。
+     * @param matcher 匹配函数。相当于 `(EventProcessingContext, Event) -> Boolean`
+     *
+     * @throws TimeoutCancellationException 如果超时
+     * @throws CancellationException 被终止
+     *
+     * @see waiting
+     * @see waitingForNext
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNext")
+    public fun waitForNextBlocking(
+        id: String,
+        timeoutDuration: JavaDuration = JavaDuration.ZERO,
+        matcher: BlockingContinuousSessionEventMatcher<Event> = BlockingContinuousSessionEventMatcher,
+    ): Event = waitForNextBlocking1(id = id, timeout = timeoutDuration.toMillis(), matcher = matcher)
+    
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
+     *
+     *
+     * @param timeoutDuration 超时时间，大于0时生效。
+     * @param matcher 匹配函数。相当于 `(EventProcessingContext, Event) -> Boolean`
+     *
+     * @throws TimeoutCancellationException 如果超时
+     * @throws CancellationException 被终止
+     *
+     * @see waiting
+     * @see waitingForNext
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNext")
+    public fun waitForNextBlocking(
+        timeoutDuration: JavaDuration = JavaDuration.ZERO,
+        matcher: BlockingContinuousSessionEventMatcher<Event> = BlockingContinuousSessionEventMatcher,
+    ): Event = waitForNextBlocking1(timeout = timeoutDuration.toMillis(), matcher = matcher)
+    
+    
     /**
      * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
      *
@@ -543,28 +741,19 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("waitingForNext")
     public fun waitForNextBlocking(
-        id: String = randomIdStr(),
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+        id: String,
+        timeout: Long,
+        timeUnit: TimeUnit,
         matcher: BlockingContinuousSessionEventMatcher<Event> = BlockingContinuousSessionEventMatcher,
-    ): Event {
-        suspend fun doWait() = waitingForNext(id, matcher.parse())
-        
-        val mill = timeUnit.toMillis(timeout)
-        if (mill > 0) {
-            return runInBlocking {
-                withTimeout(mill) { doWait() }
-            }
-        }
-        
-        return runInBlocking { doWait() }
-    }
+    ): Event = waitForNextBlocking1(id = id, timeout = timeUnit.toMillis(timeout), matcher = matcher)
+    
     
     /**
      * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
      *
      *
-     * @param timeout 超时时间，单位毫秒，大于0时生效。
+     * @param timeout 超时时间，大于0时生效。
+     * @param timeUnit [timeout] 时间单位
      * @param matcher 匹配函数。相当于 `(EventProcessingContext, Event) -> Boolean`
      *
      * @throws TimeoutCancellationException 如果超时
@@ -578,29 +767,9 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmName("waitingForNext")
     public fun waitForNextBlocking(
         timeout: Long,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+        timeUnit: TimeUnit,
         matcher: BlockingContinuousSessionEventMatcher<Event> = BlockingContinuousSessionEventMatcher,
-    ): Event =
-        waitForNextBlocking(randomIdStr(), timeout, timeUnit, matcher)
-    
-    /**
-     * 阻塞并等待下一个符合条件的 [事件][Event] 对象。
-     *
-     * id随机。
-     *
-     * @param timeout 超时时间，单位毫秒，大于0时生效。
-     * @param matcher 匹配函数。相当于 `(EventProcessingContext, Event) -> Boolean`
-     *
-     * @throws TimeoutCancellationException 如果超时
-     * @throws CancellationException 被终止
-     *
-     * @see waiting
-     * @see waitingForNext
-     */
-    @Api4J
-    @JvmName("waitingForNext")
-    public fun waitForNextBlocking(timeout: Long, matcher: BlockingContinuousSessionEventMatcher<Event>): Event =
-        waitForNextBlocking(timeout, TimeUnit.MILLISECONDS, matcher)
+    ): Event = waitForNextBlocking1(timeout = timeUnit.toMillis(timeout), matcher = matcher)
     
     
     /**
@@ -622,7 +791,7 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         id: String = randomIdStr(),
         matcher: BlockingContinuousSessionEventMatcher<Event>,
     ): Event =
-        waitForNextBlocking(id = id, timeout = 0, matcher = matcher)
+        waitForNextBlocking1(id = id, matcher = matcher)
     
     // endregion
     // endregion
@@ -735,6 +904,99 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     }
     
     
+    @Api4J
+    private fun <E : Event> Event.nextBlocking0(
+        id: String = randomIdStr(),
+        key: Event.Key<E>,
+        timeout: Long = 0,
+    ): E {
+        val currentEvent = this
+        suspend fun doWait() = waitingForNext(id, key, currentEvent.toMatcher())
+        
+        if (timeout > 0) {
+            return runInBlocking {
+                withTimeout(timeout) { doWait() }
+            }
+        }
+        
+        return runInBlocking { doWait() }
+    }
+    
+    
+    /**
+     * 阻塞并等待在具体的事件 [Event] 环境下根据条件获取下一个匹配的 [事件][Event].
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [Event] 的类型进行匹配。
+     *
+     *
+     * [next] 对事件类型进行的对应的匹配规则对照表如下:
+     *
+     * | 当前事件类型 |  [目标事件][key]同类型 | [目标事件][key]不同类型 |
+     * | :------------------------------------------ | ------------------- | --------------------: |
+     * | [Event]                | [bot][Event.bot] 的ID要相同                               | _不会出现不同类型_ |
+     * | [OrganizationEvent]    | [organization][OrganizationEvent.organization] 的ID要相同 | 放行             |
+     * | [UserEvent]            | [user][UserEvent.user] 的ID要相同                         | 放行             |
+     * | [MessageEvent]         |  [source][MessageEvent.source] 的ID要相同                 | 放行             |
+     * | [ChatRoomMessageEvent] |  [author][ChatRoomMessageEvent.author] 的ID要相同         | 放行             |
+     *
+     *
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param id 持续会话监听函数唯一标识
+     * @param key 目标事件类型
+     * @param timeout 超时时间。大于0时生效
+     *
+     * @see waiting
+     * @see waitingForNext
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("next")
+    public fun <E : Event> Event.nextBlocking(
+        id: String,
+        key: Event.Key<E>,
+        timeout: JavaDuration = JavaDuration.ZERO,
+    ): E = nextBlocking0(id = id, key = key, timeout = timeout.toMillis())
+    
+    
+    /**
+     * 阻塞并等待在具体的事件 [Event] 环境下根据条件获取下一个匹配的 [事件][Event].
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [Event] 的类型进行匹配。
+     *
+     *
+     * [next] 对事件类型进行的对应的匹配规则对照表如下:
+     *
+     * | 当前事件类型 |  [目标事件][key]同类型 | [目标事件][key]不同类型 |
+     * | :------------------------------------------ | ------------------- | --------------------: |
+     * | [Event]                | [bot][Event.bot] 的ID要相同                               | _不会出现不同类型_ |
+     * | [OrganizationEvent]    | [organization][OrganizationEvent.organization] 的ID要相同 | 放行             |
+     * | [UserEvent]            | [user][UserEvent.user] 的ID要相同                         | 放行             |
+     * | [MessageEvent]         |  [source][MessageEvent.source] 的ID要相同                 | 放行             |
+     * | [ChatRoomMessageEvent] |  [author][ChatRoomMessageEvent.author] 的ID要相同         | 放行             |
+     *
+     *
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param key 目标事件类型
+     * @param timeout 超时时间。大于0时生效
+     *
+     * @see waiting
+     * @see waitingForNext
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("next")
+    public fun <E : Event> Event.nextBlocking(
+        key: Event.Key<E>,
+        timeout: JavaDuration = JavaDuration.ZERO,
+    ): E = nextBlocking0(key = key, timeout = timeout.toMillis())
+    
+    
     /**
      * 阻塞并等待在具体的事件 [Event] 环境下根据条件获取下一个匹配的 [事件][Event].
      *
@@ -770,23 +1032,55 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     public fun <E : Event> Event.nextBlocking(
         id: String = randomIdStr(),
         key: Event.Key<E>,
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): E {
-        val currentEvent = this
-        suspend fun doWait() = waitingForNext(id, key, currentEvent.toMatcher())
-        
-        val mill = timeUnit.toMillis(timeout)
-        if (mill > 0) {
-            return runInBlocking {
-                withTimeout(mill) { doWait() }
-            }
-        }
-        
-        return runInBlocking { doWait() }
-        
-    }
+        timeout: Long,
+        timeUnit: TimeUnit,
+    ): E = nextBlocking0(id = id, key = key, timeout = timeUnit.toMillis(timeout))
     
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [事件][Event].
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param id 持续会话监听函数唯一标识
+     * @param key 目标事件类型
+     * @param timeout 超时时间。大于0时生效
+     *
+     * @see Event.next
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("next")
+    public fun <E : Event> EventProcessingContext.nextBlocking(
+        id: String = randomIdStr(),
+        key: Event.Key<E>,
+        timeout: JavaDuration = JavaDuration.ZERO,
+    ): E = event.nextBlocking0(id, key, timeout.toMillis())
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [事件][Event].
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param key 目标事件类型
+     * @param timeout 超时时间。大于0时生效
+     *
+     * @see Event.next
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmName("next")
+    public fun <E : Event> EventProcessingContext.nextBlocking(
+        key: Event.Key<E>,
+        timeout: JavaDuration = JavaDuration.ZERO,
+    ): E = event.nextBlocking0(key = key, timeout = timeout.toMillis())
     
     /**
      * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [事件][Event].
@@ -810,13 +1104,10 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     public fun <E : Event> EventProcessingContext.nextBlocking(
         id: String = randomIdStr(),
         key: Event.Key<E>,
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): E {
-        return event.nextBlocking(id, key, timeout, timeUnit)
-    }
+        timeout: Long,
+        timeUnit: TimeUnit,
+    ): E = event.nextBlocking0(id, key, timeUnit.toMillis(timeout))
     // endregion
-    
     // region next without key
     /**
      * 挂起并等待在具体的事件 [Event] 环境下根据条件获取下一个匹配的 [事件][Event].
@@ -888,6 +1179,42 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         return event.next(id)
     }
     
+    /**
+     * 阻塞并等待在具体的事件 [Event] 环境下根据条件获取下一个匹配的 [事件][Event].
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [Event] 的类型进行匹配。
+     *
+     *
+     * [next] 对事件类型进行的对应的匹配规则对照表如下:
+     *
+     * | 当前事件类型 |  目标事件同类型 | 目标事件不同类型 |
+     * | :------------------------------------------ | ------------------- | --------------------: |
+     * | [Event]                | [bot][Event.bot] 的ID要相同                               | _不会出现不同类型_ |
+     * | [OrganizationEvent]    | [organization][OrganizationEvent.organization] 的ID要相同 | 放行             |
+     * | [UserEvent]            | [user][UserEvent.user] 的ID要相同                         | 放行             |
+     * | [MessageEvent]         |  [source][MessageEvent.source] 的ID要相同                 | 放行             |
+     * | [ChatRoomMessageEvent] |  [author][ChatRoomMessageEvent.author] 的ID要相同         | 放行             |
+     *
+     *
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param id 持续会话监听函数唯一标识
+     * @param timeout 超时时间。大于0时生效
+     *
+     * @see waiting
+     * @see waitingForNext
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("next")
+    public fun Event.nextBlocking(
+        id: String = randomIdStr(),
+        timeout: JavaDuration = JavaDuration.ZERO,
+    ): Event {
+        return nextBlocking(id = id, key = Event.Root, timeout = timeout)
+    }
     
     /**
      * 阻塞并等待在具体的事件 [Event] 环境下根据条件获取下一个匹配的 [事件][Event].
@@ -922,12 +1249,36 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmName("next")
     public fun Event.nextBlocking(
         id: String = randomIdStr(),
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+        timeout: Long,
+        timeUnit: TimeUnit,
     ): Event {
         return nextBlocking(id = id, key = Event.Root, timeout = timeout, timeUnit = timeUnit)
     }
     
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [事件][Event].
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param id 持续会话监听函数唯一标识
+     * @param timeout 超时时间。大于0时生效
+     *
+     * @see Event.next
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("next")
+    public fun EventProcessingContext.nextBlocking(
+        id: String = randomIdStr(),
+        timeout: JavaDuration = JavaDuration.ZERO,
+    ): Event {
+        return event.nextBlocking(id, Event.Root, timeout)
+    }
     
     /**
      * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [事件][Event].
@@ -949,8 +1300,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmName("next")
     public fun EventProcessingContext.nextBlocking(
         id: String = randomIdStr(),
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+        timeout: Long,
+        timeUnit: TimeUnit,
     ): Event {
         return event.nextBlocking(id, Event.Root, timeout, timeUnit)
     }
@@ -1053,6 +1404,23 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         return waitingForNext(id, MessageEvent, matcher).messageContent
     }
     
+    @Api4J
+    private fun <E : MessageEvent> waitForNextMessageBlocking0(
+        id: String = randomIdStr(),
+        key: Event.Key<E>,
+        timeout: Long = 0,
+        matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
+    ): MessageContent {
+        suspend fun doWait() = waitingForNextMessage(id, key, matcher.parse())
+        if (timeout > 0) {
+            return runInBlocking {
+                withTimeout(timeout) { doWait() }
+            }
+        }
+        
+        return runInBlocking { doWait() }
+    }
+    
     /**
      * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
      *
@@ -1068,7 +1436,64 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * @param id 持续会话监听函数唯一标识
      * @param key 目标函数类型
      * @param timeout 超时时间。大于0时生效。
-     * @param timeUnit [timeout] 时间单位。默认为 [毫秒][TimeUnit.MILLISECONDS]
+     * @param matcher 匹配函数
+     *
+     * @see waitingForNextMessage
+     *
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNextMessage")
+    public fun <E : MessageEvent> waitForNextMessageBlocking(
+        id: String,
+        key: Event.Key<E>,
+        timeout: JavaDuration = JavaDuration.ZERO,
+        matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
+    ): MessageContent = waitForNextMessageBlocking0(id = id, key = key, timeout = timeout.toMillis(), matcher)
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
+     *
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [E]
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
+     *
+     *
+     * 更多说明参考 [waitingForNextMessage] 文档注释。
+     *
+     * @throws TimeoutCancellationException 当超时
+     * @throws CancellationException 被终止时
+     *
+     * @param key 目标函数类型
+     * @param timeout 超时时间。大于0时生效。
+     * @param matcher 匹配函数
+     *
+     * @see waitingForNextMessage
+     *
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNextMessage")
+    public fun <E : MessageEvent> waitForNextMessageBlocking(
+        key: Event.Key<E>,
+        timeout: JavaDuration = JavaDuration.ZERO,
+        matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
+    ): MessageContent = waitForNextMessageBlocking0(key = key, timeout = timeout.toMillis(), matcher = matcher)
+    
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
+     *
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [E]
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
+     *
+     *
+     * 更多说明参考 [waitingForNextMessage] 文档注释。
+     *
+     * @throws TimeoutCancellationException 当超时
+     * @throws CancellationException 被终止时
+     *
+     * @param id 持续会话监听函数唯一标识
+     * @param key 目标函数类型
      * @param matcher 匹配函数
      *
      * @see waitingForNextMessage
@@ -1080,20 +1505,158 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     public fun <E : MessageEvent> waitForNextMessageBlocking(
         id: String = randomIdStr(),
         key: Event.Key<E>,
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+        matcher: BlockingContinuousSessionEventMatcher<E>,
+    ): MessageContent = waitForNextMessageBlocking0(id = id, key = key, matcher = matcher)
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
+     *
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [E]
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
+     *
+     *
+     * 更多说明参考 [waitingForNextMessage] 文档注释。
+     *
+     * @throws TimeoutCancellationException 当超时
+     * @throws CancellationException 被终止时
+     *
+     * @param id 持续会话监听函数唯一标识
+     * @param key 目标函数类型
+     * @param timeout 超时时间。大于0时生效。
+     * @param timeUnit [timeout] 时间单位。
+     * @param matcher 匹配函数
+     *
+     * @see waitingForNextMessage
+     *
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNextMessage")
+    public fun <E : MessageEvent> waitForNextMessageBlocking(
+        id: String,
+        key: Event.Key<E>,
+        timeout: Long,
+        timeUnit: TimeUnit,
         matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
+    ): MessageContent = waitForNextMessageBlocking0(id = id, key = key, timeout = timeUnit.toMillis(timeout), matcher)
+    
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
+     *
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [E]
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
+     *
+     *
+     * 更多说明参考 [waitingForNextMessage] 文档注释。
+     *
+     * @throws TimeoutCancellationException 当超时
+     * @throws CancellationException 被终止时
+     *
+     * @param key 目标函数类型
+     * @param timeout 超时时间。大于0时生效。
+     * @param timeUnit [timeout] 时间单位。
+     * @param matcher 匹配函数
+     *
+     * @see waitingForNextMessage
+     *
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNextMessage")
+    public fun <E : MessageEvent> waitForNextMessageBlocking(
+        key: Event.Key<E>,
+        timeout: Long,
+        timeUnit: TimeUnit,
+        matcher: BlockingContinuousSessionEventMatcher<E> = BlockingContinuousSessionEventMatcher,
+    ): MessageContent = waitForNextMessageBlocking0(key = key, timeout = timeUnit.toMillis(timeout), matcher = matcher)
+    
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
+     *
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [MessageEvent]
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
+     *
+     *
+     * 更多说明参考 [waitingForNextMessage] 文档注释。
+     *
+     * @throws TimeoutCancellationException 当超时
+     * @throws CancellationException 被终止时
+     *
+     * @param id 持续会话监听函数唯一标识
+     * @param timeout 超时时间。大于0时生效。
+     * @param matcher 匹配函数
+     *
+     * @see waitingForNextMessage
+     *
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNextMessage")
+    public fun waitForNextMessageBlocking(
+        id: String,
+        timeout: JavaDuration = JavaDuration.ZERO,
+        matcher: BlockingContinuousSessionEventMatcher<MessageEvent> = BlockingContinuousSessionEventMatcher,
     ): MessageContent {
-        suspend fun doWait() = waitingForNextMessage(id, key, matcher.parse())
-        val mill = timeUnit.toMillis(timeout)
-        if (mill > 0) {
-            return runInBlocking {
-                withTimeout(mill) { doWait() }
-            }
-        }
-        
-        return runInBlocking { doWait() }
+        return waitForNextMessageBlocking(id, MessageEvent, timeout, matcher)
     }
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
+     *
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [MessageEvent]
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
+     *
+     *
+     * 更多说明参考 [waitingForNextMessage] 文档注释。
+     *
+     * @throws TimeoutCancellationException 当超时
+     * @throws CancellationException 被终止时
+     *
+     * @param timeout 超时时间。大于0时生效。
+     * @param matcher 匹配函数
+     *
+     * @see waitingForNextMessage
+     *
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNextMessage")
+    public fun waitForNextMessageBlocking(
+        timeout: JavaDuration = JavaDuration.ZERO,
+        matcher: BlockingContinuousSessionEventMatcher<MessageEvent> = BlockingContinuousSessionEventMatcher,
+    ): MessageContent {
+        return waitForNextMessageBlocking(MessageEvent, timeout, matcher)
+    }
+    
+    /**
+     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
+     *
+     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [MessageEvent]
+     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
+     *
+     *
+     * 更多说明参考 [waitingForNextMessage] 文档注释。
+     *
+     * @throws TimeoutCancellationException 当超时
+     * @throws CancellationException 被终止时
+     *
+     * @param matcher 匹配函数
+     *
+     * @see waitingForNextMessage
+     *
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("waitingForNextMessage")
+    public fun waitForNextMessageBlocking(
+        id: String = randomIdStr(),
+        matcher: BlockingContinuousSessionEventMatcher<MessageEvent>,
+    ): MessageContent {
+        return waitForNextMessageBlocking(id = id, key = MessageEvent, timeout = JavaDuration.ZERO, matcher = matcher)
+    }
+    
     
     /**
      * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
@@ -1119,9 +1682,9 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("waitingForNextMessage")
     public fun waitForNextMessageBlocking(
-        id: String = randomIdStr(),
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
+        id: String,
+        timeout: Long,
+        timeUnit: TimeUnit,
         matcher: BlockingContinuousSessionEventMatcher<MessageEvent> = BlockingContinuousSessionEventMatcher,
     ): MessageContent {
         return waitForNextMessageBlocking(id, MessageEvent, timeout, timeUnit, matcher)
@@ -1136,9 +1699,11 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 更多说明参考 [waitingForNextMessage] 文档注释。
      *
+     * @throws TimeoutCancellationException 当超时
      * @throws CancellationException 被终止时
      *
-     * @param id 持续会话监听函数唯一标识
+     * @param timeout 超时时间。大于0时生效。
+     * @param timeUnit [timeout] 时间单位。默认为 [毫秒][TimeUnit.MILLISECONDS]
      * @param matcher 匹配函数
      *
      * @see waitingForNextMessage
@@ -1148,37 +1713,13 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("waitingForNextMessage")
     public fun waitForNextMessageBlocking(
-        id: String = randomIdStr(),
-        matcher: BlockingContinuousSessionEventMatcher<MessageEvent>,
+        timeout: Long,
+        timeUnit: TimeUnit,
+        matcher: BlockingContinuousSessionEventMatcher<MessageEvent> = BlockingContinuousSessionEventMatcher,
     ): MessageContent {
-        return waitForNextMessageBlocking(id = id, key = MessageEvent, timeout = 0, matcher = matcher)
+        return waitForNextMessageBlocking(MessageEvent, timeout, timeUnit, matcher)
     }
     
-    /**
-     * 阻塞并等待下一个符合条件的 [消息事件][MessageEvent] 中的 [消息内容][MessageContent] 。
-     *
-     * 与 [waitingForNext] 类似，只不过 [waitingForNextMessage] 限制了等待的消息类型 [MessageEvent]
-     * 必须为 [消息事件][MessageEvent], 且返回值为 [MessageContent] 。
-     *
-     *
-     * 更多说明参考 [waitingForNextMessage] 文档注释。
-     *
-     * @throws CancellationException 被终止时
-     *
-     * @param key 目标事件类型
-     * @param matcher 匹配函数
-     *
-     * @see waitingForNextMessage
-     *
-     */
-    @Api4J
-    @JvmName("waitingForNextMessage")
-    public fun <E : MessageEvent> waitForNextMessageBlocking(
-        key: Event.Key<E>,
-        matcher: BlockingContinuousSessionEventMatcher<MessageEvent>,
-    ): MessageContent {
-        return waitForNextMessageBlocking(id = randomIdStr(), key = key, timeout = 0, matcher = matcher)
-    }
     // endregion
     
     // region Context.nextMessage
@@ -1260,49 +1801,54 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     ): MessageContent = nextMessage(randomIdStr(), key)
     
     
-    /**
-     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
-     * 中的 [消息内容][MessageContent] 。
-     *
-     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
-     *
-     * 具体说明参考 [EventProcessingContext.nextMessage].
-     *
-     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
-     *
-     * @param id 持续会话监听函数唯一标识
-     * @param key 目标事件类型
-     * @param timeout 超时时间。大于0时生效
-     * @param timeUnit [timeout] 的时间类型
-     *
-     * @see Event.nextMessage
-     * @see Event.next
-     *
-     * @receiver 当前所处的事件环境
-     */
-    @Api4J
-    @JvmOverloads
-    @JvmName("nextMessage")
-    public fun Event.nextMessageBlocking(
-        id: String,
-        key: Event.Key<out MessageEvent>,
+    private fun Event.nextMessageBlocking0(
+        id: String = randomIdStr(),
+        key: Event.Key<out MessageEvent> = MessageEvent,
         timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
     ): MessageContent {
         suspend fun doWait() = nextMessage(id, key)
         
-        val mill = timeUnit.toMillis(timeout)
-        if (mill > 0) {
+        if (timeout > 0) {
             return runInBlocking {
-                withTimeout(mill) { doWait() }
+                withTimeout(timeout) { doWait() }
             }
         }
         
         return runInBlocking { doWait() }
     }
     
+    
     /**
-     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 阻塞并等待在具体的 [Event] 作用域下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 中的 [消息内容][MessageContent] 。
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 具体说明参考 [EventProcessingContext.nextMessage].
+     *
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param id 持续会话监听函数唯一标识
+     * @param key 目标事件类型
+     * @param timeout 超时时间。大于0时生效
+     *
+     * @see Event.nextMessage
+     * @see Event.next
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("nextMessage")
+    public fun Event.nextMessageBlocking(
+        id: String = randomIdStr(),
+        key: Event.Key<out MessageEvent> = MessageEvent,
+        timeout: JavaDuration = JavaDuration.ZERO,
+    ): MessageContent = nextMessageBlocking0(id, key, timeout.toMillis())
+    
+    
+    /**
+     * 阻塞并等待在具体的 [Event] 作用域下根据条件获取下一个匹配的 [消息事件][MessageEvent]
      * 中的 [消息内容][MessageContent] 。
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
@@ -1313,7 +1859,6 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * @param key 目标事件类型
      * @param timeout 超时时间。大于0时生效
-     * @param timeUnit [timeout] 的时间类型
      *
      * @see Event.nextMessage
      * @see Event.next
@@ -1325,13 +1870,12 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmName("nextMessage")
     public fun Event.nextMessageBlocking(
         key: Event.Key<out MessageEvent>,
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): MessageContent = nextMessageBlocking(id = randomIdStr(), key = key, timeout = timeout, timeUnit = timeUnit)
+        timeout: JavaDuration = JavaDuration.ZERO,
+    ): MessageContent = nextMessageBlocking0(key = key, timeout = timeout.toMillis())
     
     
     /**
-     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 阻塞并等待在具体的 [Event] 作用域下根据条件获取下一个匹配的 [消息事件][MessageEvent]
      * 中的 [消息内容][MessageContent] 。
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
@@ -1340,9 +1884,8 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
-     * @param id 持续会话监听函数的id
+     * @param id 持续会话监听函数唯一标识
      * @param timeout 超时时间。大于0时生效
-     * @param timeUnit [timeout] 的时间类型
      *
      * @see Event.nextMessage
      * @see Event.next
@@ -1353,14 +1896,13 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("nextMessage")
     public fun Event.nextMessageBlocking(
-        id: String,
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): MessageContent = nextMessageBlocking(id = id, key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
+        id: String = randomIdStr(),
+        timeout: JavaDuration,
+    ): MessageContent = nextMessageBlocking0(id = id, timeout = timeout.toMillis())
     
     
     /**
-     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 阻塞并等待在具体的 [Event] 作用域下根据条件获取下一个匹配的 [消息事件][MessageEvent]
      * 中的 [消息内容][MessageContent] 。
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
@@ -1368,73 +1910,100 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      * 具体说明参考 [EventProcessingContext.nextMessage].
      *
      * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
-     *
-     * @param timeout 超时时间。大于0时生效
-     * @param timeUnit [timeout] 的时间类型
-     *
-     * @see Event.nextMessage
-     * @see Event.next
-     *
-     * @receiver 当前所处的事件环境
-     */
-    @Api4J
-    @JvmOverloads
-    @JvmName("nextMessage")
-    public fun Event.nextMessageBlocking(
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): MessageContent =
-        nextMessageBlocking(id = randomIdStr(), key = MessageEvent, timeout = timeout, timeUnit = timeUnit)
-    
-    
-    /**
-     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
-     * 中的 [消息内容][MessageContent] 。
-     *
-     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
-     *
-     * 具体说明参考 [EventProcessingContext.nextMessage].
-     *
-     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
      * @param id 持续会话监听函数唯一标识
      * @param key 目标事件类型
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
      *
-     * @see EventProcessingContext.next
-     * @see EventProcessingContext.nextMessage
+     * @see Event.nextMessage
+     * @see Event.next
      *
      * @receiver 当前所处的事件环境
      */
     @Api4J
     @JvmOverloads
     @JvmName("nextMessage")
-    public fun EventProcessingContext.nextMessageBlocking(
-        id: String,
-        key: Event.Key<out MessageEvent>,
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): MessageContent {
-        return event.nextMessageBlocking(id, key, timeout, timeUnit)
-    }
+    public fun Event.nextMessageBlocking(
+        id: String = randomIdStr(),
+        key: Event.Key<out MessageEvent> = MessageEvent,
+        timeout: Long,
+        timeUnit: TimeUnit,
+    ): MessageContent = nextMessageBlocking0(id, key, timeUnit.toMillis(timeout))
+    
     
     /**
-     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 阻塞并等待在具体的 [Event] 作用域下根据条件获取下一个匹配的 [消息事件][MessageEvent]
      * 中的 [消息内容][MessageContent] 。
      *
      * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
      *
      * 具体说明参考 [EventProcessingContext.nextMessage].
      *
-     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
      * @param key 目标事件类型
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
      *
-     * @see EventProcessingContext.next
-     * @see EventProcessingContext.nextMessage
+     * @see Event.nextMessage
+     * @see Event.next
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmName("nextMessage")
+    public fun Event.nextMessageBlocking(
+        key: Event.Key<out MessageEvent>,
+        timeout: Long,
+        timeUnit: TimeUnit,
+    ): MessageContent = nextMessageBlocking0(key = key, timeout = timeUnit.toMillis(timeout))
+    
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 中的 [消息内容][MessageContent] 。
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 具体说明参考 [EventProcessingContext.nextMessage].
+     *
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param id 持续会话监听函数唯一标识
+     * @param key 目标事件类型
+     * @param timeout 超时时间。大于0时生效
+     *
+     * @see Event.nextMessage
+     * @see Event.next
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmOverloads
+    @JvmName("nextMessage")
+    public fun EventProcessingContext.nextMessageBlocking(
+        id: String = randomIdStr(),
+        key: Event.Key<out MessageEvent> = MessageEvent,
+        timeout: JavaDuration = JavaDuration.ZERO,
+    ): MessageContent = event.nextMessageBlocking(id, key, timeout)
+    
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 中的 [消息内容][MessageContent] 。
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 具体说明参考 [EventProcessingContext.nextMessage].
+     *
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param key 目标事件类型
+     * @param timeout 超时时间。大于0时生效
+     *
+     * @see Event.nextMessage
+     * @see Event.next
      *
      * @receiver 当前所处的事件环境
      */
@@ -1443,11 +2012,9 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmName("nextMessage")
     public fun EventProcessingContext.nextMessageBlocking(
         key: Event.Key<out MessageEvent>,
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): MessageContent {
-        return event.nextMessageBlocking(randomIdStr(), key, timeout, timeUnit)
-    }
+        timeout: JavaDuration = JavaDuration.ZERO,
+    ): MessageContent = event.nextMessageBlocking(key, timeout)
+    
     
     /**
      * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
@@ -1457,14 +2024,13 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 具体说明参考 [EventProcessingContext.nextMessage].
      *
-     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
      * @param id 持续会话监听函数唯一标识
      * @param timeout 超时时间。大于0时生效
-     * @param timeUnit [timeout] 的时间类型
      *
-     * @see EventProcessingContext.next
-     * @see EventProcessingContext.nextMessage
+     * @see Event.nextMessage
+     * @see Event.next
      *
      * @receiver 当前所处的事件环境
      */
@@ -1472,12 +2038,10 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("nextMessage")
     public fun EventProcessingContext.nextMessageBlocking(
-        id: String,
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): MessageContent {
-        return event.nextMessageBlocking(id, MessageEvent, timeout, timeUnit)
-    }
+        id: String = randomIdStr(),
+        timeout: JavaDuration,
+    ): MessageContent = event.nextMessageBlocking(id, timeout)
+    
     
     /**
      * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
@@ -1487,13 +2051,15 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
      *
      * 具体说明参考 [EventProcessingContext.nextMessage].
      *
-     * 如果你希望使用更复杂是匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
      *
+     * @param id 持续会话监听函数唯一标识
+     * @param key 目标事件类型
      * @param timeout 超时时间。大于0时生效
      * @param timeUnit [timeout] 的时间类型
      *
-     * @see EventProcessingContext.next
-     * @see EventProcessingContext.nextMessage
+     * @see Event.nextMessage
+     * @see Event.next
      *
      * @receiver 当前所处的事件环境
      */
@@ -1501,11 +2067,39 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     @JvmOverloads
     @JvmName("nextMessage")
     public fun EventProcessingContext.nextMessageBlocking(
-        timeout: Long = 0,
-        timeUnit: TimeUnit = TimeUnit.MILLISECONDS,
-    ): MessageContent {
-        return event.nextMessageBlocking(randomIdStr(), MessageEvent, timeout, timeUnit)
-    }
+        id: String = randomIdStr(),
+        key: Event.Key<out MessageEvent> = MessageEvent,
+        timeout: Long,
+        timeUnit: TimeUnit,
+    ): MessageContent = event.nextMessageBlocking(id, key, timeout, timeUnit)
+    
+    
+    /**
+     * 阻塞并等待在具体的事件处理上下文 [EventProcessingContext] 环境下根据条件获取下一个匹配的 [消息事件][MessageEvent]
+     * 中的 [消息内容][MessageContent] 。
+     *
+     * 通过 [next] 进行匹配的事件，会根据对应的事件类型结合当前的 [EventProcessingContext.event] 的类型进行匹配。
+     *
+     * 具体说明参考 [EventProcessingContext.nextMessage].
+     *
+     * 如果你希望使用更复杂的匹配逻辑，请通过 [waitingForNext] 来自行编写逻辑。
+     *
+     * @param key 目标事件类型
+     * @param timeout 超时时间。大于0时生效
+     * @param timeUnit [timeout] 的时间类型
+     *
+     * @see Event.nextMessage
+     * @see Event.next
+     *
+     * @receiver 当前所处的事件环境
+     */
+    @Api4J
+    @JvmName("nextMessage")
+    public fun EventProcessingContext.nextMessageBlocking(
+        key: Event.Key<out MessageEvent>,
+        timeout: Long,
+        timeUnit: TimeUnit,
+    ): MessageContent = event.nextMessageBlocking(key, timeout, timeUnit)
     
     // endregion
     // region Event.nextMessage
