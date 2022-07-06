@@ -20,11 +20,11 @@ package love.forte.simbot.action
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.JavaDuration
+import love.forte.simbot.kotlin
 import love.forte.simbot.utils.runInBlocking
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
-import kotlin.time.toKotlinDuration
 
 
 /**
@@ -92,8 +92,8 @@ public interface MuteSupport {
      * @see mute
      */
     @Api4J
-    public fun muteBlocking(duration: Long, timeUnit: TimeUnit): Boolean = runBlocking {
-        mute(timeUnit.toNanos(duration).nanoseconds)
+    public fun muteBlocking(time: Long, timeUnit: TimeUnit): Boolean = runBlocking {
+        mute(timeUnit.toNanos(time).nanoseconds)
     }
     
     /**
@@ -107,7 +107,7 @@ public interface MuteSupport {
      */
     @Api4J
     public fun muteBlocking(duration: JavaDuration): Boolean = runInBlocking {
-        mute(duration.toKotlinDuration())
+        mute(duration.kotlin)
     }
     
     /**
