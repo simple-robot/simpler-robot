@@ -17,12 +17,14 @@
 
 package love.forte.simbot.action
 
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.JavaDuration
-import love.forte.simbot.toKotlinDuration
 import love.forte.simbot.utils.runInBlocking
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.toKotlinDuration
 
 
 /**
@@ -66,38 +68,41 @@ public interface MuteSupport {
      *
      * 当 [mute] 行为不被支持的时候，大多数情况下组件会选择直接返回 `false`, 但是并不排除可能会直接抛出异常的可能。
      *
+     * ```kotlin
+     * support.mute()
+     * support.mute(5.seconds)
+     * ```
      *
      * @throws UnsupportedActionException 当此行为不被支持时
      *
-     * @see unmute
+     * @param duration 持续时长
+     *
      */
     @JvmSynthetic
     public suspend fun mute(duration: Duration = DEFAULT_DURATION): Boolean
     
-    /**
-     * 对当前目标进行 **解除禁言** 操作。
-     *
-     * @throws UnsupportedActionException 当此行为不被支持时
-     *
-     * @see mute
-     */
-    @JvmSynthetic
-    public suspend fun unmute(): Boolean
     
     /**
+     * 对当前目标进行 **禁言** 操作。
+     *
+     * ```java
+     * support.muteBlocking(5, TimeUnit.SECONDS)
+     * ```
+     *
      * @see mute
      */
     @Api4J
-    @Deprecated(
-        "Use muteBlocking(Duration)", ReplaceWith(
-            "muteBlocking(Duration.ofNanos(timeUnit.toNanos(duration)))",
-            "java.time.Duration"
-        )
-    )
-    public fun muteBlocking(duration: Long, timeUnit: TimeUnit): Boolean =
-        muteBlocking(JavaDuration.ofNanos(timeUnit.toNanos(duration)))
+    public fun muteBlocking(duration: Long, timeUnit: TimeUnit): Boolean = runBlocking {
+        mute(timeUnit.toNanos(duration).nanoseconds)
+    }
     
     /**
+     * 对当前目标进行 **禁言** 操作。
+     *
+     * ```java
+     * support.muteBlocking(Duration.ofSeconds(5))
+     * ```
+     *
      * @see mute
      */
     @Api4J
@@ -106,6 +111,8 @@ public interface MuteSupport {
     }
     
     /**
+     * 对当前目标进行 **禁言** 操作。
+     *
      * @see mute
      */
     @Api4J
@@ -114,6 +121,15 @@ public interface MuteSupport {
     }
     
     /**
+     * 对当前目标进行 **解除禁言** 操作。
+     *
+     * @throws UnsupportedActionException 当此行为不被支持时
+     */
+    @JvmSynthetic
+    public suspend fun unmute(): Boolean
+    
+    /**
+     * 对当前目标进行 **解除禁言** 操作。
      * @see unmute
      */
     @Api4J

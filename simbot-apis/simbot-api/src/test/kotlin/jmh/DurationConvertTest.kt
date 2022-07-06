@@ -1,66 +1,63 @@
 package jmh
 
 import love.forte.simbot.JavaDuration
-import love.forte.simbot.toJavaDurationDirect
-import love.forte.simbot.toKotlinDuration
+import love.forte.simbot.kotlin
 import org.openjdk.jmh.annotations.*
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.nanoseconds
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toKotlinDuration
 
+private inline val randomMinutes: Int get() = Random.nextInt(0, 30000)
+private inline val randomSeconds: Int get() = Random.nextInt(0, 180000)
 
 /**
- *
+ * 不同时间单位类型转化间的差距。
  * @author ForteScarlet
  */
 @BenchmarkMode(Mode.Throughput)
-@Measurement(iterations = 1, time = 30, timeUnit = TimeUnit.SECONDS)
-@Warmup(iterations = 1, time = 1, timeUnit = TimeUnit.MINUTES)
+@Measurement(iterations = 1, time = 3, timeUnit = TimeUnit.MINUTES)
+@Warmup(iterations = 3, time = 10, timeUnit = TimeUnit.SECONDS)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Fork(1)
-@Threads(2)
 open class DurationConvertTest {
     
-    private inline val randomMinutes: Int get() = Random.nextInt(0, 30000)
     
     @Benchmark
-    // @Group("MinutesDuration")
-    fun minutesTimeUnitToKotlinDuration() = TimeUnit.MINUTES.toNanos(randomMinutes.toLong()).nanoseconds
+    @Group("MinutesDuration")
+    fun javaMinutesDuration() {
+        JavaDuration.ofMinutes(randomMinutes.toLong()).toKotlinDuration()
+    }
     
     @Benchmark
-    // @Group("MinutesDuration")
-    fun kotlinMinutesDurationToJavaDuration() = randomMinutes.minutes.toJavaDurationDirect()
+    @Group("MinutesDuration")
+    fun javaMinutesDurationSimbot() {
+        JavaDuration.ofMinutes(randomMinutes.toLong()).kotlin
+    }
     
     @Benchmark
-    // @Group("MinutesDuration")
-    fun javaMinutesDurationToKotlinDuration(): Duration = JavaDuration.ofMinutes(randomMinutes.toLong()).toKotlinDuration()
-    
-    
-    private inline val randomSeconds: Int get() = Random.nextInt(0, 180000)
-    
+    @Group("MinutesDuration")
+    fun minutesTimeUnit() {
+        TimeUnit.MINUTES.toNanos(randomMinutes.toLong()).nanoseconds
+    }
     
     @Benchmark
-    // @Group("SecondsDuration")
-    fun kotlinSecondsDurationToJavaDuration() = randomSeconds.seconds.toJavaDurationDirect()
+    @Group("SecondsDuration")
+    fun javaSecondsDuration() {
+        JavaDuration.ofSeconds(randomSeconds.toLong()).toKotlinDuration()
+    }
     
     @Benchmark
-    // @Group("SecondsDuration")
-    fun javaSecondsDurationToKotlinDuration() = JavaDuration.ofSeconds(randomSeconds.toLong()).toKotlinDuration()
+    @Group("SecondsDuration")
+    fun javaSecondsDurationSimbot() {
+        JavaDuration.ofSeconds(randomSeconds.toLong()).kotlin
+    }
     
     @Benchmark
-    // @Group("SecondsDuration")
-    fun secondsTimeUnitToKotlinDuration() = TimeUnit.SECONDS.toNanos(randomSeconds.toLong()).nanoseconds
-
-    /*
-        @Measurement(iterations = 2, time = 2, timeUnit = TimeUnit.MINUTES)
-        @Warmup(iterations = 2, time = 1, timeUnit = TimeUnit.MINUTES)
-    
-        Benchmark                             Mode  Cnt       Score   Error   Units
-        DurationConvertTest.MinutesDuration  thrpt    2  180193.034          ops/ms
-        DurationConvertTest.SecondsDuration  thrpt    2  259193.630          ops/ms
-     */
+    @Group("SecondsDuration")
+    fun secondsTimeUnit() {
+        TimeUnit.SECONDS.toNanos(randomSeconds.toLong()).nanoseconds
+    }
     
 }
+
