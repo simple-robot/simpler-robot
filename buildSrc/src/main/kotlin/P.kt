@@ -60,7 +60,7 @@ object P {
         
         val version = Version(
             "3", 0, 0,
-            status = VersionStatus.beta(null, null, "-M2"),
+            status = VersionStatus.beta(null, null, "-M3"),
             isSnapshot = isSnapshot()
         )
         
