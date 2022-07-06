@@ -16,9 +16,10 @@
 
 @file:JvmName("BotVerifyInfos")
 
-package love.forte.simbot
+package love.forte.simbot.bot
 
 import kotlinx.serialization.DeserializationStrategy
+import love.forte.simbot.NoSuchComponentException
 import love.forte.simbot.resources.Resource
 import java.io.InputStream
 import java.net.URL

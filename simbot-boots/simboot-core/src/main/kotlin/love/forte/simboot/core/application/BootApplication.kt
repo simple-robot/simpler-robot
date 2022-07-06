@@ -37,6 +37,10 @@ import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simbot.*
 import love.forte.simbot.application.*
 import love.forte.simbot.application.BotRegistrar
+import love.forte.simbot.bot.BotVerifyInfoDecoder
+import love.forte.simbot.bot.BotVerifyInfoDecoderFactory
+import love.forte.simbot.bot.StandardBotVerifyInfoDecoderFactory
+import love.forte.simbot.bot.toBotVerifyInfo
 import love.forte.simbot.core.application.*
 import love.forte.simbot.core.event.EventInterceptorsGenerator
 import love.forte.simbot.core.event.EventListenersGenerator

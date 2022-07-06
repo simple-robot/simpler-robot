@@ -16,8 +16,8 @@
 
 package love.forte.simbot.application
 
-import love.forte.simbot.Bot
-import love.forte.simbot.BotVerifyInfo
+import love.forte.simbot.bot.Bot
+import love.forte.simbot.bot.BotVerifyInfo
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentFactory
 import love.forte.simbot.ability.CompletionPerceivable

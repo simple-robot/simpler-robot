@@ -1,6 +1,6 @@
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
-import love.forte.simbot.Bot;
+import love.forte.simbot.bot.Bot;
 import love.forte.simbot.ability.DelayableCompletableFuture;
 import love.forte.simbot.ability.DelayableCoroutineScope;
 import org.jetbrains.annotations.NotNull;

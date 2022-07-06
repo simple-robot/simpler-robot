@@ -16,7 +16,7 @@
 
 package love.forte.simbot.event.internal
 
-import love.forte.simbot.Bot
+import love.forte.simbot.bot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.definition.BotContainer
 import love.forte.simbot.message.doSafeCast

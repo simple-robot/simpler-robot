@@ -18,8 +18,8 @@ package love.forte.simboot.factory
 
 import love.forte.di.BeanContainer
 import love.forte.simboot.Configuration
-import love.forte.simbot.Bot
-import love.forte.simbot.BotManager
+import love.forte.simbot.bot.Bot
+import love.forte.simbot.bot.BotManager
 
 /**
  *

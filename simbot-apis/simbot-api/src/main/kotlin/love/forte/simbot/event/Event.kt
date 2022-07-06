@@ -18,6 +18,7 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.*
+import love.forte.simbot.bot.Bot
 import love.forte.simbot.definition.BotContainer
 import love.forte.simbot.definition.IDContainer
 import love.forte.simbot.event.Event.Key.Companion.getKey

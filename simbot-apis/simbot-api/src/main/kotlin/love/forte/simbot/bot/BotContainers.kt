@@ -14,8 +14,10 @@
  *
  */
 
-package love.forte.simbot
+package love.forte.simbot.bot
 
+import love.forte.simbot.Api4J
+import love.forte.simbot.ID
 import love.forte.simbot.definition.*
 import love.forte.simbot.utils.item.Items
 
