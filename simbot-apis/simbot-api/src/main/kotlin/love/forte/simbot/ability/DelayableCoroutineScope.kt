@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -12,12 +12,14 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
+ *
  */
 package love.forte.simbot.ability
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
 import love.forte.simbot.Api4J
+import love.forte.simbot.JavaDuration
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
@@ -37,17 +39,17 @@ import java.util.function.Supplier
  * Java 开发者可以通过链式风格使用这些延时函数：
  * ```java
  * public void foo(Bot bot) { // Bot 间接实现了 DelayableCoroutineScope
- * final DelayableFuture<LocalTime> whole = bot
+ * DelayableFuture<LocalTime> whole = bot
  *         // (1). 延时5秒，打印当前时间
- *         .delay(5, TimeUnit.SECONDS, () -> {
+ *         .delay(Duration.ofSeconds(5), () -> {
  *             System.out.println(LocalTime.now());
  *         })
  *         // (2). 流程(1)结束后，再延时5秒，打印当前时间
- *         .delay(5, TimeUnit.SECONDS, () -> {
+ *         .delay(Duration.ofSeconds(5), () -> {
  *             System.out.println(LocalTime.now());
  *         })
  *         // (3). 流程(2)结束后，再延时5秒，返回当前时间
- *         .delayAndCompute(5, TimeUnit.SECONDS, (v) -> LocalTime.now());
+ *         .delayAndCompute(Duration.ofSeconds(5), (v) -> LocalTime.now());
  * }
  * ```
  * 上述示例中，函数内通过 `bot` 总共创建了3个延时函数，他们将在 **异步** 中按照顺序分别延时5秒。
@@ -63,13 +65,31 @@ import java.util.function.Supplier
  */
 public interface DelayableCoroutineScope : CoroutineScope {
     
+    /**
+     * 延迟 [timeUnit] 的 [time] 时长后执行 [runnable]，得到一个 [DelayableCompletableFuture]。
+     * 这个 [DelayableCompletableFuture] 的结果永远为null。
+     */
     @Api4J
     public fun delay(time: Long, timeUnit: TimeUnit, runnable: Runnable): DelayableCompletableFuture<Void?> =
-        delay0(time, timeUnit, runnable)
+        delay(timeUnit.toMillis(time), runnable)
     
+    /**
+     * 延迟 [millis] 毫秒后执行 [runnable]，得到一个 [DelayableCompletableFuture]。
+     * 这个 [DelayableCompletableFuture] 的结果永远为null。
+     *
+     * @param millis 毫秒级延迟时长
+     */
     @Api4J
-    public fun delay(time: Long, runnable: Runnable): DelayableCompletableFuture<Void?> =
-        delay(time, TimeUnit.MILLISECONDS, runnable)
+    public fun delay(millis: Long, runnable: Runnable): DelayableCompletableFuture<Void?> =
+        delay0(TimeUnit.MILLISECONDS.toMillis(millis), runnable)
+    
+    /**
+     * 延时 [duration] 时间后执行回调函数 [runnable]，得到一个 [DelayableCompletableFuture]。
+     * 这个 [DelayableCompletableFuture] 的结果永远为null。
+     */
+    @Api4J
+    public fun delay(duration: JavaDuration, runnable: Runnable): DelayableCompletableFuture<Void?> =
+        delay(duration.toMillis(), runnable)
     
     
     @Api4J
@@ -78,11 +98,22 @@ public interface DelayableCoroutineScope : CoroutineScope {
         timeUnit: TimeUnit,
         supplier: Supplier<V>,
     ): DelayableCompletableFuture<V> =
-        delayAndCompute0(time, timeUnit, supplier)
+        delayAndCompute0(timeUnit.toMillis(time), supplier)
     
+    /**
+     * @param time 毫秒时间段
+     */
     @Api4J
     public fun <V> delayAndCompute(time: Long, supplier: Supplier<V>): DelayableCompletableFuture<V> =
-        delayAndCompute(time, TimeUnit.MILLISECONDS, supplier)
+        delayAndCompute(JavaDuration.ofNanos(TimeUnit.MILLISECONDS.toNanos(time)), supplier)
+    
+    /**
+     * 延迟 [duration] 时间后，执行 [supplier] 并得到 [DelayableCompletableFuture]。
+     */
+    @Api4J
+    public fun <V> delayAndCompute(duration: JavaDuration, supplier: Supplier<V>): DelayableCompletableFuture<V> =
+        delayAndCompute0(duration.toMillis(), supplier)
+    
     
 }
 
@@ -119,13 +150,12 @@ public fun <T> Deferred<T>.asDelayableFuture(scope: CoroutineScope): DelayableCo
 
 
 private fun CoroutineScope.delay0(
-    time: Long,
-    timeUnit: TimeUnit,
+    millis: Long,
     runnable: Runnable,
 ): DelayableCompletableFuture<Void?> {
     return DelayableCompletableFutureImpl(
         async {
-            delay(timeUnit.toMillis(time))
+            delay(millis)
             runInterruptible { runnable.run() }
             null
         }, this
@@ -133,13 +163,12 @@ private fun CoroutineScope.delay0(
 }
 
 private fun <V> CoroutineScope.delayAndCompute0(
-    time: Long,
-    timeUnit: TimeUnit,
+    millis: Long,
     supplier: Supplier<V>,
 ): DelayableCompletableFuture<V> {
     return DelayableCompletableFutureImpl(
         async {
-            delay(timeUnit.toMillis(time))
+            delay(millis)
             runInterruptible { supplier.get() }
         }, this
     )

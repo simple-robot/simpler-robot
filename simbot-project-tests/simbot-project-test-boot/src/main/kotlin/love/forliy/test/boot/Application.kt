@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -12,25 +12,23 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
+ *
  */
 
-package love.forliy.test.boot.listener
+package love.forliy.test.boot
 
-import love.forte.di.annotation.Beans
-import love.forte.simboot.annotation.Listener
-import love.forte.simbot.event.FriendMessageEvent
+import love.forte.simboot.core.SimbootApplication
+import love.forte.simboot.core.simbootApp
 
 
 /**
  *
  * @author ForteScarlet
  */
-@Beans
-class FooListenerProvider {
-    
-    @Listener
-    fun FriendMessageEvent.myListener() {
-        println(this)
-    }
-    
+@SimbootApplication
+class Application
+
+suspend fun main(vararg args: String) {
+    val app = simbootApp<Application>(args = args)
+    app.join()
 }

@@ -28,7 +28,7 @@ dependencies {
     api(libs.forte.di.api)
     
     api(libs.slf4j.api)
-    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.jdk8)
     api(libs.kotlinx.serialization.core)
     
