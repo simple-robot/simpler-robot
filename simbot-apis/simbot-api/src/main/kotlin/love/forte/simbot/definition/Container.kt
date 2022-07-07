@@ -17,8 +17,8 @@
 package love.forte.simbot.definition
 
 import love.forte.simbot.Api4J
-import love.forte.simbot.bot.Bot
 import love.forte.simbot.ID
+import love.forte.simbot.bot.Bot
 import love.forte.simbot.resources.Resource
 
 /**
@@ -38,7 +38,7 @@ public interface SuspendablePropertyContainer : Container
  * 一个存在唯一标识的容器。
  */
 public interface IDContainer : Container {
-
+    
     /**
      * 唯一标识。
      */
@@ -46,10 +46,21 @@ public interface IDContainer : Container {
 }
 
 /**
+ * 比较两个 [IDContainer] 的 [IDContainer.id] 是否一致。
+ *
+ * ```kotlin
+ * container1 sameIdWith container2
+ * ```
+ *
+ */
+public infix fun IDContainer.sameIdWith(other: IDContainer): Boolean = id == other.id
+
+
+/**
  * 一个存在字符串类型唯一标识的容器。
  */
 public interface IdValueContainer : Container {
-
+    
     /**
      * 唯一标识字符串。
      */
@@ -57,12 +68,23 @@ public interface IdValueContainer : Container {
 }
 
 /**
+ * 比较两个 [IdValueContainer] 的 [IdValueContainer.id] 是否一致。
+ *
+ * ```kotlin
+ * container1 sameIdWith container2
+ * ```
+ *
+ */
+public infix fun IdValueContainer.sameIdWith(other: IdValueContainer): Boolean = id == other.id
+
+
+/**
  * 一个 **Bot容器**.
  * 一般代表可以得到 [Bot] 的对象，例如非 [Bot] 的 [User]，比如 [Friend]，一个Bot所提供的事件，或者一个BOT所在的组织集会。
  *
  */
 public interface BotContainer : Container {
-
+    
     /**
      * 当前bot
      */
@@ -78,13 +100,24 @@ public interface ChannelInfoContainer : SuspendablePropertyContainer {
      */
     @JvmSynthetic
     public suspend fun channel(): ChannelInfo
-
+    
     /**
      * 当前 [channel][ChannelInfo].
      */
     @Api4J
     public val channel: ChannelInfo
 }
+
+/**
+ * 将 [ChannelInfoContainer] 中的 [channel][ChannelInfoContainer.channel] 作为 [block] 中的接收者使用。
+ */
+public suspend inline fun <R> ChannelInfoContainer.inChannelInfo(block: ChannelInfo.() -> R): R = channel().let(block)
+
+/**
+ * 将 [ChannelInfoContainer] 中的 [channel][ChannelInfoContainer.channel] 作为 [block] 中的参数使用。
+ */
+public suspend inline fun <R> ChannelInfoContainer.useChannelInfo(block: (ChannelInfo) -> R): R = channel().let(block)
+
 
 /**
  * 存在 [ChannelInfo] 的容器。
@@ -95,13 +128,24 @@ public interface GuildInfoContainer : SuspendablePropertyContainer {
      */
     @JvmSynthetic
     public suspend fun guild(): GuildInfo
-
+    
     /**
      * 当前 [guild][GuildInfo].
      */
     @Api4J
     public val guild: GuildInfo
 }
+
+/**
+ * 将 [GuildInfoContainer] 中的 [guild][GuildInfoContainer.guild] 作为 [block] 中的接收者使用。
+ */
+public suspend inline fun <R> GuildInfoContainer.inGuildInfo(block: GuildInfo.() -> R): R = guild().let(block)
+
+/**
+ * 将 [GuildInfoContainer] 中的 [guild][GuildInfoContainer.guild] 作为 [block] 中的参数使用。
+ */
+public suspend inline fun <R> GuildInfoContainer.useGuildInfo(block: (GuildInfo) -> R): R = guild().let(block)
+
 
 /**
  * 存在 [GroupInfo] 的容器。
@@ -112,7 +156,7 @@ public interface GroupInfoContainer : SuspendablePropertyContainer {
      */
     @JvmSynthetic
     public suspend fun group(): GroupInfo
-
+    
     /**
      * 当前 [group][GroupInfo].
      */
@@ -121,23 +165,45 @@ public interface GroupInfoContainer : SuspendablePropertyContainer {
 }
 
 /**
+ * 将 [GroupInfoContainer] 中的 [group][GroupInfoContainer.group] 作为 [block] 中的接收者使用。
+ */
+public suspend inline fun <R> GroupInfoContainer.inGroupInfo(block: GroupInfo.() -> R): R = group().let(block)
+
+/**
+ * 将 [GroupInfoContainer] 中的 [group][GroupInfoContainer.group] 作为 [block] 中的参数使用。
+ */
+public suspend inline fun <R> GroupInfoContainer.useGroupInfo(block: (GroupInfo) -> R): R = group().let(block)
+
+
+/**
  * 存在 [UserInfo] 的容器。
  */
 public interface UserInfoContainer : SuspendablePropertyContainer {
-
+    
     /**
      * 当前 [user][UserInfo]
      */
     @JvmSynthetic
     public suspend fun user(): UserInfo
-
-
+    
+    
     /**
      * 当前 [user][UserInfo]
      */
     @Api4J
     public val user: UserInfo
 }
+
+/**
+ * 将 [UserInfoContainer] 中的 [user][UserInfoContainer.user] 作为 [block] 中的接收者使用。
+ */
+public suspend inline fun <R> UserInfoContainer.inUserInfo(block: UserInfo.() -> R): R = user().let(block)
+
+/**
+ * 将 [UserInfoContainer] 中的 [user][UserInfoContainer.user] 作为 [block] 中的参数使用。
+ */
+public suspend inline fun <R> UserInfoContainer.useUserInfo(block: (UserInfo) -> R): R = user().let(block)
+
 
 /**
  * 存在 [MemberInfo] 的容器。
@@ -148,13 +214,24 @@ public interface MemberInfoContainer : SuspendablePropertyContainer {
      */
     @JvmSynthetic
     public suspend fun member(): MemberInfo
-
+    
     /**
      * 当前 [member][MemberInfo].
      */
     @Api4J
     public val member: MemberInfo
 }
+
+/**
+ * 将 [MemberInfoContainer] 中的 [member][MemberInfoContainer.member] 作为 [block] 中的接收者使用。
+ */
+public suspend inline fun <R> MemberInfoContainer.inMemberInfo(block: MemberInfo.() -> R): R = member().let(block)
+
+/**
+ * 将 [MemberInfoContainer] 中的 [member][MemberInfoContainer.member] 作为 [block] 中的参数使用。
+ */
+public suspend inline fun <R> MemberInfoContainer.useMemberInfo(block: (MemberInfo) -> R): R = member().let(block)
+
 
 /**
  * 存在 [FriendInfo] 的容器。
@@ -165,7 +242,7 @@ public interface FriendInfoContainer : SuspendablePropertyContainer {
      */
     @JvmSynthetic
     public suspend fun friend(): FriendInfo
-
+    
     /**
      * 当前 [friend][FriendInfo].
      */
@@ -173,23 +250,39 @@ public interface FriendInfoContainer : SuspendablePropertyContainer {
     public val friend: FriendInfo
 }
 
+/**
+ * 将 [FriendInfoContainer] 中的 [friend][FriendInfoContainer.friend] 作为 [block] 中的接收者使用。
+ */
+public suspend inline fun <R> FriendInfoContainer.inFriendInfo(block: FriendInfo.() -> R): R = friend().let(block)
+
+/**
+ * 将 [FriendInfoContainer] 中的 [friend][FriendInfoContainer.friend] 作为 [block] 中的参数使用。
+ */
+public suspend inline fun <R> FriendInfoContainer.useFriendInfo(block: (FriendInfo) -> R): R = friend().let(block)
+
 
 /**
  * 存在 [Resource] 的容器。
  */
 public interface ResourceContainer : SuspendablePropertyContainer {
-
+    
     /**
      * 得到当前容器中的 [资源][Resource].
      */
     @JvmSynthetic
     public suspend fun resource(): Resource
-
-
+    
+    
     /**
      * 得到当前容器中的 [资源][Resource].
      */
     @Api4J
     public val resource: Resource
-
+    
 }
+
+/**
+ * 使用 [ResourceContainer] 中的 [ResourceContainer.resource], 并在 [block] 结束后关闭它。
+ *
+ */
+public suspend inline fun <R> ResourceContainer.useResource(block: (Resource) -> R): R = resource().use(block)
