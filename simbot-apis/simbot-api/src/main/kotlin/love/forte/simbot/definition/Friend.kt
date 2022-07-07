@@ -16,9 +16,8 @@
 
 package love.forte.simbot.definition
 
-import love.forte.simbot.bot.Bot
-import love.forte.simbot.Grouping
 import love.forte.simbot.ID
+import love.forte.simbot.bot.Bot
 
 
 /**
@@ -29,7 +28,6 @@ public interface Friend : Contact, BotContainer, FriendInfo {
     override val bot: Bot
     
     override val remark: String?
-    override val grouping: Grouping
     override val username: String
     override val avatar: String
 }
@@ -47,8 +45,15 @@ public interface FriendInfo : UserInfo {
     
     /**
      * 对于Bot，好友可能存在于一个指定的分组中。
+     *
+     * @see category
      */
-    public val grouping: Grouping
+    @Suppress("DEPRECATION")
+    @Deprecated(
+        "No longer used and will be removed. Please refer to 'love.forte.simbot.definition.Category'",
+        ReplaceWith("category", "love.forte.simbot.definition.Category")
+    )
+    public val grouping: love.forte.simbot.Grouping get() = love.forte.simbot.Grouping.EMPTY
     
     /**
      * 优先尝试获取好友的 [remark], 如果 [remark] 为null，则取其 [username].

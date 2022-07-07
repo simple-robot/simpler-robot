@@ -213,6 +213,16 @@ public interface OrganizationInfo : IDContainer {
     //// 下面的信息均存在无法获取的可能。
     
     /**
+     * 此组织的"分组"。
+     *
+     * 通常情况下，只有 [GroupInfo] 或 [ChannelInfo] 存在 "分组" 概念的概率会大一些，
+     * 但是无法保证组件存在分组概念或支持分组的获取。
+     *
+     * 因此当不支持获取分组、不存在分组等情况下，[category] 将会得到null。
+     */
+    public val category: Category? get() = null
+    
+    /**
      * 当前组织内成员最大承载量。
      * 如果无法获取，得到-1.
      */

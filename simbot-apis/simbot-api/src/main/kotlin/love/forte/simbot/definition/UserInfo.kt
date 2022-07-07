@@ -44,4 +44,12 @@ public interface UserInfo : IDContainer {
      */
     public val avatar: String
     
+    /**
+     * 此用户（对于bot来讲）的"分组"。
+     * 通常情况下，[FriendInfo] 能够支持 "分组" 概念的概率会更大一些，
+     * 但是无法保证存在分组概念或支持分组的获取。
+     *
+     * 因此当不支持获取分组、不存在分组等情况下，[category] 将会得到 `null`。
+     */
+    public val category: Category? get() = null
 }
