@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -11,6 +11,7 @@
  *  https://www.gnu.org/licenses
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
  *
  */
 
@@ -47,6 +48,7 @@ public interface Scope : IDContainer {
     /**
      * 判断提供的 [作用域][scope] 是否囊括在当前作用域范围内。
      */
+    @Suppress("DEPRECATION")
     public operator fun contains(scope: Scope): Boolean
     
 }
@@ -62,6 +64,7 @@ public interface Scope : IDContainer {
  *
  * @see love.forte.simbot.definition.Category
  */
+@Suppress("DEPRECATION")
 @Serializable
 @Deprecated("No longer used, function replaced by Category", ReplaceWith("Category", "love.forte.simbot.definition.Category"))
 public open class Grouping(
@@ -91,7 +94,9 @@ public open class Grouping(
      * 代表一个全部内容都是空字符的 [Grouping].
      */
     public companion object {
+        
+        @Suppress("DEPRECATION")
         @JvmField
-        public val EMPTY: Category = Category("".ID, "")
+        public val EMPTY: Grouping = Grouping("".ID, "")
     }
 }
