@@ -20,7 +20,6 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.utils.item.Items
-import love.forte.simbot.utils.runInBlocking
 
 /**
  * 一个频道服务器，或者说一个集会。
@@ -59,13 +58,56 @@ public interface Guild : Organization, GuildInfo {
      * 根据ID查询指定的成员对象。
      */
     @Api4J
-    override fun getMember(id: ID): GuildMember? = runInBlocking { member(id) }
-    
+    override fun getMember(id: ID): GuildMember?
     
     /**
      * 频道服务器的子集为 [子频道][Channel] 序列。
      */
+    public val channels: Items<Channel>
+    
+    /**
+     * 尝试根据指定ID获取匹配的[子频道][Channel]。
+     *
+     * 未找到时得到null。
+     */
+    @JvmSynthetic
+    public suspend fun channel(id: ID): Channel?
+    
+    /**
+     * 尝试根据指定ID阻塞的获取匹配的[子频道][Channel]。
+     *
+     * 未找到时得到null。
+     */
+    @Api4J
+    public fun getChannel(id: ID): Channel?
+    
+    
+    /**
+     * 频道服务器的子集为 [子频道][Channel] 序列。
+     *
+     * @see channels
+     */
     override val children: Items<Channel>
+    
+    /**
+     * 尝试根据指定ID获取匹配的[子频道][Channel]。
+     *
+     * 未找到时得到null。
+     *
+     * @see channel
+     */
+    @JvmSynthetic
+    override suspend fun child(id: ID): Channel?
+    
+    /**
+     * 尝试根据指定ID阻塞的获取匹配的[子频道][Channel]。
+     *
+     * 未找到时得到null。
+     *
+     * @see getChannel
+     */
+    @Api4J
+    override fun getChild(id: ID): Channel?
 }
 
 
