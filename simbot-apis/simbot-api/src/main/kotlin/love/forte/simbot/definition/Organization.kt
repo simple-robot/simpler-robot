@@ -133,7 +133,7 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
      */
     @Api4J
-    public val previous: Organization? get() = runInBlocking { previous() }
+    public val previous: Organization?
     
     
     /**
@@ -142,6 +142,21 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      */
     public val children: Items<Organization>
     
+    /**
+     * 根据指定ID尝试获取一个匹配的下级[组织][Organization]。
+     *
+     * 当无法获取时得到null。
+     */
+    @JvmSynthetic
+    public suspend fun child(id: ID): Organization?
+    
+    /**
+     * 根据指定ID尝试阻塞的获取一个匹配的下级[组织][Organization]。
+     *
+     * 当无法获取时得到null。
+     */
+    @Api4J
+    public fun getChild(id: ID): Organization?
     
     /**
      * 获取当前组织中的成员列表。
@@ -160,7 +175,7 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      * 尝试通过ID获取一个成员，无法获取则得到null。
      */
     @Api4J
-    public fun getMember(id: ID): Member? = runInBlocking { member(id) }
+    public fun getMember(id: ID): Member?
     // endregion
     
     
