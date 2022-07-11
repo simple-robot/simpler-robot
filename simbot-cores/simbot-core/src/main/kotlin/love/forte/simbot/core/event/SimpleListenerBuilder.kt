@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -11,6 +11,7 @@
  *  https://www.gnu.org/licenses
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
  *
  */
 
@@ -198,7 +199,7 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
      * ```kotlin
      * listen(FooEvent) {
      *    handle { event: FooEvent -> // this: EventListenerProcessingContext
-     *       // do handle
+     *       // handle
      *
      *       EventResult.of(...) // return
      *    }
@@ -208,8 +209,11 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
      * 对于同一个 [ListenerGenerator], [handle] 只能且必须配置 **一次**。如果配置次数超过一次会直接引发 [SimbotIllegalStateException]；
      * 如果未进行配置则会在最终构建时引发 [SimbotIllegalStateException].
      *
+     * 如果你不希望总是手动为每个监听函数提供返回值，请参考 [process]。
+     *
      * @throws SimbotIllegalStateException 如果调用超过一次
      *
+     * @see process
      */
     @JvmSynthetic
     @SimpleListenerBuilderDSL
@@ -217,20 +221,47 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
         setFunc(func)
     }
     
-    
     /**
      * 监听函数。处理监听到的事件的具体逻辑。
      *
-     * @see handle
+     *
+     * ```kotlin
+     * listen(FooEvent) {
+     *    process { event: FooEvent -> // this: EventListenerProcessingContext
+     *       // process
+     *
+     *      // no need to return
+     *    }
+     * }
+     * ```
+     * 与 [handle] 不同的是，[process] 函数体内不需要提供返回值。
+     * 通过 [process] 注册的逻辑会在最终返回监听默认值 [EventResult.Default]。
+     *
+     * 上述使用 [process] 的示例代码等同于：
+     * ```kotlin
+     * listen(FooEvent) {
+     *    handle { event: FooEvent -> // this: EventListenerProcessingContext
+     *       process() // process function
+     *
+     *       EventResult.defaults() // return default
+     *    }
+     * }
+     * ```
+     *
+     * 对于同一个 [ListenerGenerator], [process] 或者 [handle] 只能且必须配置 **一次**。
+     * 如果配置次数超过一次会直接引发 [SimbotIllegalStateException]；
+     * 如果未进行配置则会在最终构建时引发 [SimbotIllegalStateException].
      *
      * @throws SimbotIllegalStateException 如果调用超过一次
+     *
+     * @see handle
+     *
      */
-    @Api4J
-    @JvmName("handle")
-    @Suppress("FunctionName")
-    public fun _handle(func: BiConsumer<EventListenerProcessingContext, E>): SimpleListenerBuilder<E> = also {
-        setFunc { e ->
-            runWithInterruptible { func.accept(this, e) }
+    @JvmSynthetic
+    @SimpleListenerBuilderDSL
+    public inline fun process(crossinline func: suspend EventListenerProcessingContext.(E) -> Unit) {
+        handle {
+            func(it)
             EventResult.defaults()
         }
     }
@@ -238,16 +269,49 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
     /**
      * 监听函数。处理监听到的事件的具体逻辑。
      *
+     *
+     * ```java
+     * listen(FooEvent.Key, (builder) -> {
+     *     builder.process((context, event) -> {
+     *        // process..
+     *     });
+     * });
+     * ```
+     * 与 [handle] 不同的是，[process] 函数体内不需要提供返回值。
+     * 通过 [process] 注册的逻辑会在最终返回监听默认值 [EventResult.Default]。
+     *
+     *
+     * 对于同一个 [ListenerGenerator], [process] 或者 [handle] 只能且必须配置 **一次**。
+     * 如果配置次数超过一次会直接引发 [SimbotIllegalStateException]；
+     * 如果未进行配置则会在最终构建时引发 [SimbotIllegalStateException].
+     *
+     * @throws SimbotIllegalStateException 如果调用超过一次
+     *
+     * @see handle
+     *
+     */
+    @Api4J
+    @JvmName("process")
+    public fun process4J(processFunction: BiConsumer<EventListenerProcessingContext, E>): SimpleListenerBuilder<E> =
+        apply {
+            process { event ->
+                runWithInterruptible { processFunction.accept(this, event) }
+            }
+        }
+    
+    
+    /**
+     * 监听函数。处理监听到的事件的具体逻辑。
+     *
      * @see handle
      *
      * @throws SimbotIllegalStateException 如果调用超过一次
      */
     @Api4J
     @JvmName("handle")
-    @Suppress("FunctionName")
-    public fun _handle(func: BiFunction<EventListenerProcessingContext, E, EventResult>): SimpleListenerBuilder<E> =
-        also {
-            setFunc { e -> runWithInterruptible { func.apply(this, e) } }
+    public fun handle4J(handleFunction: BiFunction<EventListenerProcessingContext, E, EventResult>): SimpleListenerBuilder<E> =
+        apply {
+            setFunc { e -> runWithInterruptible { handleFunction.apply(this, e) } }
         }
     
     
@@ -288,6 +352,19 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
  *         // handle..
  *
  *         EventResult.defaults()
+ *     }
+ * }
+ * ```
+ *
+ * 或
+ *
+ *
+ * ```kotlin
+ * buildSimpleListener(FooEvent) {
+ *     match { true }
+ *     match { true }
+ *     process {
+ *         // handle..
  *     }
  * }
  * ```
