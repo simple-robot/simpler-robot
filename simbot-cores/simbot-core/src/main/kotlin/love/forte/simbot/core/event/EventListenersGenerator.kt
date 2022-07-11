@@ -61,11 +61,21 @@ internal annotation class EventListenersGeneratorDSL
  *         }
  *     }
  *
- *     // use invoke handle function
- *     FooEvent { // Same as: FooEvent.Key.invoke { ... }
+ *     // use handle function
+ *     FooEvent.handle {
  *        // do...
- *
  *        EventResult.of(...)
+ *     }
+ *
+ *     // use process function
+ *     FooEvent.process {
+ *        // do...
+ *     }
+ *
+ *     // use invoke handle function
+ *     // same as FooEvent.process { ... }
+ *     FooEvent { // Same as: FooEvent.Key.process { ... }
+ *        // do...
  *     }
  * }
  * ```
@@ -99,9 +109,13 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     @EventListenersGeneratorDSL
     public fun <E : Event> listen(
         eventKey: Event.Key<E>,
-        block: SimpleListenerBuilder<E>.() -> Unit,
+        block: SimpleListenerBuilderDslFunction<E>,
     ): EventListenersGenerator = also {
-        listeners.add { SimpleListenerBuilder(eventKey).also(block).build() }
+        listeners.add {
+            SimpleListenerBuilder(eventKey).also {
+                it.apply { block.apply { invoke() } }
+            }.build()
+        }
     }
     
     
@@ -140,9 +154,56 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     /**
      * 监听指定的事件类型并直接进行事件处理。
      *
+     * 等同于使用 [Event.Key.process]。
+     *
      * e.g.
      * ```kotlin
      * FooEvent { event -> // this: EventListenerProcessingContext
+     *     // process
+     * }
+     * ```
+     *
+     * 相当于：
+     * ```kotlin
+     * listen(FooEvent) {
+     *     process { event -> // this: EventListenerProcessingContext
+     *        // process
+     *     }
+     * }
+     * ```
+     *
+     * 可以在当前构建器上下文中配合 [onMatch] 为当前构建的监听函数提供匹配逻辑.
+     *
+     * e.g.
+     * ```kotlin
+     * FooEvent { event: FooEvent -> // this: EventListenerProcessingContext
+     *   // process
+     * } onMatch {
+     *    val condition1: Boolean = ...
+     *    condition1
+     * } onMatch {
+     *    val condition2: Boolean = ...
+     *    condition2
+     * }
+     * ```
+     *
+     * @receiver 需要监听的 [事件类型][Event.Key] 对象实例。
+     *
+     * @see onMatch
+     */
+    @EventListenersGeneratorDSL
+    public inline operator fun <E : Event> Event.Key<E>.invoke(crossinline processFunction: suspend EventListenerProcessingContext.(E) -> Unit): EventHandling<E> {
+        return process {event ->
+            processFunction(event)
+        }
+    }
+    
+    /**
+     * 监听指定的事件类型并直接进行事件处理。
+     *
+     * e.g.
+     * ```kotlin
+     * FooEvent.handle { event -> // this: EventListenerProcessingContext
      *     // do handle
      *
      *     EventResult.defaults() // result
@@ -164,7 +225,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      *
      * e.g.
      * ```kotlin
-     * FooEvent { event: FooEvent -> // this: EventListenerProcessingContext
+     * FooEvent.handle { event: FooEvent -> // this: EventListenerProcessingContext
      *   // do handle
      *
      *   EventResult.defaults()
@@ -183,9 +244,61 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      */
     @OptIn(InternalSimbotApi::class)
     @EventListenersGeneratorDSL
-    public operator fun <E : Event> Event.Key<E>.invoke(handle: suspend EventListenerProcessingContext.(E) -> EventResult): EventHandling<E> {
+    @JvmSynthetic
+    public fun <E : Event> Event.Key<E>.handle(handle: suspend EventListenerProcessingContext.(E) -> EventResult): EventHandling<E> {
         val builder = SimpleListenerBuilder(this)
         builder.handle(handle)
+        listeners.add { builder.build() }
+        return EventHandling(builder)
+    }
+    
+    /**
+     * 监听指定的事件类型并直接进行事件处理。
+     *
+     * e.g.
+     * ```kotlin
+     * FooEvent.process { event -> // this: EventListenerProcessingContext
+     *     // process
+     *
+     * }
+     * ```
+     *
+     * 相当于：
+     * ```kotlin
+     * listen(FooEvent) {
+     *     process { event -> // this: EventListenerProcessingContext
+     *        // process
+     *
+     *     }
+     * }
+     * ```
+     *
+     * 可以在当前构建器上下文中配合 [onMatch] 为当前构建的监听函数提供匹配逻辑.
+     *
+     * e.g.
+     * ```kotlin
+     * FooEvent.process { event: FooEvent -> // this: EventListenerProcessingContext
+     *   // process
+     *
+     * } onMatch {
+     *    val condition1: Boolean = ...
+     *    condition1
+     * } onMatch {
+     *    val condition2: Boolean = ...
+     *    condition2
+     * }
+     * ```
+     *
+     * @receiver 需要监听的 [事件类型][Event.Key] 对象实例。
+     *
+     * @see onMatch
+     */
+    @OptIn(InternalSimbotApi::class)
+    @EventListenersGeneratorDSL
+    @JvmSynthetic
+    public fun <E : Event> Event.Key<E>.process(handle: suspend EventListenerProcessingContext.(E) -> Unit): EventHandling<E> {
+        val builder = SimpleListenerBuilder(this)
+        builder.process(handle)
         listeners.add { builder.build() }
         return EventHandling(builder)
     }
@@ -499,3 +612,10 @@ public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private
 }
 // endregion
 
+
+/**
+ * 使用于 [EventListenersGenerator.listen], 用于兼容Kotlin和Java的函数接口差异。
+ */
+public fun interface SimpleListenerBuilderDslFunction<E : Event> {
+    public operator fun SimpleListenerBuilder<E>.invoke()
+}
