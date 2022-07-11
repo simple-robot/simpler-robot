@@ -35,8 +35,8 @@
 
 inline fun isSnapshot(b: () -> Unit = {}): Boolean {
     b()
-    val snapProp = System.getProperty("isSnapshot")?.equals("true", true) ?: false
-    val snapEnv = System.getenv(Env.IS_SNAPSHOT)?.equals("true", true) ?: false
+    val snapProp = System.getProperty("isSnapshot")?.toBoolean() ?: false
+    val snapEnv = System.getenv(Env.IS_SNAPSHOT)?.toBoolean() ?: false
     
     println("IsSnapshot from system.property: $snapProp")
     println("IsSnapshot from system.env:      $snapEnv")
