@@ -15,7 +15,6 @@
  *
  */
 
-import gradle.kotlin.dsl.accessors._ef8df8565a6e8c0564755ef1bcb196f5.sourceSets
 import utils.checkPublishConfigurable
 
 /*
@@ -182,3 +181,7 @@ fun show() {
     println("== project.description: $description")
     println("========================================================")
 }
+
+
+inline val Project.sourceSets: SourceSetContainer
+    get() = extensions.getByName("sourceSets") as SourceSetContainer
