@@ -14,9 +14,10 @@
  *
  */
 
-package love.forte.simbot
+package love.forte.simbot.bot
 
-import love.forte.simbot.OriginBotManager.cancel
+import love.forte.simbot.*
+import love.forte.simbot.bot.OriginBotManager.cancel
 import love.forte.simbot.utils.runInBlocking
 import java.util.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
@@ -163,7 +164,7 @@ public object OriginBotManager : Set<BotManager<*>> {
      */
     @Deprecated(
         "Use getManagers(String)",
-        ReplaceWith("getManagers(componentId.literal)", "love.forte.simbot.OriginBotManager.getManagers")
+        ReplaceWith("getManagers(componentId.literal)", "love.forte.simbot.bot.OriginBotManager.getManagers")
     )
     public fun getManagers(componentId: ID): List<BotManager<*>> = getManagers(componentId.literal)
     
@@ -198,7 +199,7 @@ public object OriginBotManager : Set<BotManager<*>> {
     @Deprecated(
         "Use getFirstManagerOrNull(String)", ReplaceWith(
             "getFirstManagerOrNull(componentId.literal)",
-            "love.forte.simbot.OriginBotManager.getFirstManagerOrNull"
+            "love.forte.simbot.bot.OriginBotManager.getFirstManagerOrNull"
         )
     )
     public fun getFirstManager(componentId: ID): BotManager<*>? = getFirstManagerOrNull(componentId.literal)
@@ -247,7 +248,7 @@ public object OriginBotManager : Set<BotManager<*>> {
     @Deprecated(
         "Use getBot(ID, String?)", ReplaceWith(
             "getBotOrNull(id, componentId?.literal)",
-            "love.forte.simbot.OriginBotManager.getBotOrNull"
+            "love.forte.simbot.bot.OriginBotManager.getBotOrNull"
         )
     )
     public fun getBot(id: ID, componentId: ID? = null): Bot? = getBotOrNull(id, componentId?.literal)

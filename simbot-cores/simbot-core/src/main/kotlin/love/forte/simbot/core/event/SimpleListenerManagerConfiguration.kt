@@ -171,6 +171,7 @@ public open class SimpleListenerManagerConfiguration {
     /**
      * 进入到拦截器配置域。
      */
+    @OptIn(InternalSimbotApi::class)
     @Suppress("MemberVisibilityCanBePrivate")
     public fun interceptors(): EventInterceptorsGenerator = EventInterceptorsGenerator()
     
@@ -224,6 +225,7 @@ public open class SimpleListenerManagerConfiguration {
     /**
      * 进入到监听函数配置域。
      */
+    @OptIn(InternalSimbotApi::class)
     private fun listeners(): EventListenersGenerator = EventListenersGenerator()
     
     // endregion

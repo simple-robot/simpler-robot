@@ -19,6 +19,7 @@ package love.forte.simbot.application
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
+import love.forte.simbot.bot.BotManager
 import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.utils.runInBlocking
 

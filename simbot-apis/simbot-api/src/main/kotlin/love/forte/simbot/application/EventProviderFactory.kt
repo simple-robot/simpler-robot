@@ -19,7 +19,7 @@
 package love.forte.simbot.application
 
 import love.forte.simbot.Attribute
-import love.forte.simbot.BotManager
+import love.forte.simbot.bot.BotManager
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentAutoRegistrarFactory
 import love.forte.simbot.ability.Survivable

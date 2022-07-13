@@ -29,7 +29,7 @@ repositories {
 
 fun org.jetbrains.dokka.gradle.AbstractDokkaTask.configOutput(format: String) {
     moduleName.set("simple-robot")
-    outputDirectory.set(rootProject.file("dokka/$format/v$version"))
+    outputDirectory.set(rootProject.file("build/dokka/$format/v$version"))
 }
 
 tasks.named<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>("dokkaHtmlMultiModule") {
@@ -38,10 +38,11 @@ tasks.named<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>("dokkaHtmlMultiModu
 
 
 tasks.register("dokkaHtmlMultiModuleAndPost") {
+    // TODO doc version
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     dependsOn("dokkaHtmlMultiModule")
     doLast {
-        val outDir = rootProject.file("dokka/html")
+        val outDir = rootProject.file("build/dokka/html")
         val indexFile = File(outDir, "index.html")
         indexFile.createNewFile()
         indexFile.writeText(

@@ -14,15 +14,15 @@
  *
  */
 
-package love.forte.simbot
+package love.forte.simbot.bot
 
 import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import love.forte.simbot.*
 import love.forte.simbot.ability.Survivable
-import love.forte.simbot.definition.User
-import love.forte.simbot.definition.UserInfo
+import love.forte.simbot.definition.*
 import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.message.Image
 import love.forte.simbot.message.Image.Key.toImage

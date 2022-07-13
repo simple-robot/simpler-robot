@@ -133,7 +133,7 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
      */
     @Api4J
-    public val previous: Organization? get() = runInBlocking { previous() }
+    public val previous: Organization?
     
     
     /**
@@ -142,6 +142,21 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      */
     public val children: Items<Organization>
     
+    /**
+     * 根据指定ID尝试获取一个匹配的下级[组织][Organization]。
+     *
+     * 当无法获取时得到null。
+     */
+    @JvmSynthetic
+    public suspend fun child(id: ID): Organization?
+    
+    /**
+     * 根据指定ID尝试阻塞的获取一个匹配的下级[组织][Organization]。
+     *
+     * 当无法获取时得到null。
+     */
+    @Api4J
+    public fun getChild(id: ID): Organization?
     
     /**
      * 获取当前组织中的成员列表。
@@ -160,7 +175,7 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      * 尝试通过ID获取一个成员，无法获取则得到null。
      */
     @Api4J
-    public fun getMember(id: ID): Member? = runInBlocking { member(id) }
+    public fun getMember(id: ID): Member?
     // endregion
     
     
@@ -211,6 +226,16 @@ public interface OrganizationInfo : IDContainer {
     
     //// 上面的信息，大概率是可以得到的。
     //// 下面的信息均存在无法获取的可能。
+    
+    /**
+     * 此组织的"分组"。
+     *
+     * 通常情况下，只有 [GroupInfo] 或 [ChannelInfo] 存在 "分组" 概念的概率会大一些，
+     * 但是无法保证组件存在分组概念或支持分组的获取。
+     *
+     * 因此当不支持获取分组、不存在分组等情况下，[category] 将会得到null。
+     */
+    public val category: Category? get() = null
     
     /**
      * 当前组织内成员最大承载量。

@@ -18,7 +18,7 @@
 
 package love.forte.simbot.definition
 
-import love.forte.simbot.Bot
+import love.forte.simbot.bot.Bot
 import love.forte.simbot.ID
 
 /**

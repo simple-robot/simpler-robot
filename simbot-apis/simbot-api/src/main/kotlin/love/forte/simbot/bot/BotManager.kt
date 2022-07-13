@@ -14,8 +14,9 @@
  *
  */
 
-package love.forte.simbot
+package love.forte.simbot.bot
 
+import love.forte.simbot.*
 import love.forte.simbot.application.EventProvider
 
 

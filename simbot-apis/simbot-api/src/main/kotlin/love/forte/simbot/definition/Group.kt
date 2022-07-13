@@ -20,7 +20,6 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.utils.item.Items
-import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -63,7 +62,7 @@ public interface Group : ChatRoom, GroupInfo {
      * 根据ID获取到指定的成员。
      */
     @Api4J
-    override fun getMember(id: ID): GroupMember? = runInBlocking { member(id) }
+    override fun getMember(id: ID): GroupMember?
     // endregion
     
 }

@@ -14,8 +14,8 @@
  *
  */
 
-import love.forte.simbot.StandardBotVerifyInfoDecoderFactory
-import love.forte.simbot.toBotVerifyInfo
+import love.forte.simbot.bot.StandardBotVerifyInfoDecoderFactory
+import love.forte.simbot.bot.toBotVerifyInfo
 import kotlin.test.Test
 
 

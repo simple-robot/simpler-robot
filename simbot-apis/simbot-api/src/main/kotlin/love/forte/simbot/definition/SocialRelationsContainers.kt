@@ -14,11 +14,12 @@
  *
  */
 
-package love.forte.simbot
+package love.forte.simbot.definition
 
-import love.forte.simbot.definition.*
+import love.forte.simbot.Api4J
+import love.forte.simbot.ID
 import love.forte.simbot.utils.item.Items
-
+import love.forte.simbot.bot.Bot
 
 /**
  * 社交关系容器。
