@@ -169,7 +169,7 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder,
         logger.info("Application [{}] is built and completed.", application)
         
         // region register bots
-        // registing bot after complete.
+        // registering bot after complete.
         
         logger.debug("Registering bots...")
         val bots = registerBots(providers)
