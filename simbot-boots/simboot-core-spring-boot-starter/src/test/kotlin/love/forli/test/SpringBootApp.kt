@@ -19,47 +19,37 @@ package love.forli.test
 
 import love.forte.simboot.annotation.Listener
 import love.forte.simboot.spring.autoconfigure.EnableSimbot
+import love.forte.simbot.bot.OriginBotManager
 import love.forte.simbot.core.event.buildSimpleListener
 import love.forte.simbot.event.EventResult
 import love.forte.simbot.event.FriendEvent
 import love.forte.simbot.event.MessageEvent
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.stereotype.Component
 
 @EnableSimbot
 @SpringBootApplication
-@EnableAspectJAutoProxy
 open class SpringBootApp
 
 
 fun main(vararg args: String) {
-    runApplication<SpringBootApp>(*args).also { context ->
-        println(context)
+    val app = runApplication<SpringBootApp>(args = args)
+    
+    OriginBotManager.getAnyBot().contacts.collectToList().forEach {
+        println(it)
     }
+    println("====end")
+    
+    app.close()
 }
 
-@Component
-open class MyBean
-
-@Component
-open class MyListeners {
+@Configuration
+open class RegConfig {
     
-    @Listener
-    suspend fun MessageEvent.myLis() {
-        println(source())
+    fun useMirai() {
+    
     }
-    
-    @Listener
-    
-    fun MessageEvent.myLis2(): EventResult {
-        return EventResult.defaults()
-    }
-}
-
-@Listener
-fun listener() = buildSimpleListener(FriendEvent) {
-    match { false }
-    handle { EventResult.defaults() }
 }
