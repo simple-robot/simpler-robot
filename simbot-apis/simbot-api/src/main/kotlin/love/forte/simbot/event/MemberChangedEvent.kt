@@ -18,9 +18,7 @@ package love.forte.simbot.event
 
 import love.forte.simbot.Api4J
 import love.forte.simbot.action.ActionType
-import love.forte.simbot.definition.Member
-import love.forte.simbot.definition.MemberInfo
-import love.forte.simbot.definition.Organization
+import love.forte.simbot.definition.*
 import love.forte.simbot.message.doSafeCast
 
 
@@ -33,7 +31,7 @@ import love.forte.simbot.message.doSafeCast
 @BaseEvent
 public interface MemberChangedEvent :
     ChangedEvent, OrganizationEvent, MemberEvent {
-
+    
     /**
      * 这次组织成员变动的**操作者**。
      *
@@ -48,7 +46,7 @@ public interface MemberChangedEvent :
      */
     @JvmSynthetic
     public suspend fun operator(): MemberInfo?
-
+    
     /**
      * 这次组织成员变动的**操作者**。
      *
@@ -56,11 +54,12 @@ public interface MemberChangedEvent :
      */
     @Api4J
     public val operator: MemberInfo?
-
+    
     public companion object Key :
         BaseEventKey<MemberChangedEvent>(
             "api.member_changed",
-            ChangedEvent, OrganizationEvent, MemberEvent) {
+            ChangedEvent, OrganizationEvent, MemberEvent
+        ) {
         override fun safeCast(value: Any): MemberChangedEvent? = doSafeCast(value)
     }
 }
@@ -76,41 +75,43 @@ public interface MemberChangedEvent :
 public interface MemberIncreaseEvent :
     IncreaseEvent,
     MemberChangedEvent {
-
+    
     /**
      * 成员增加事件发生所在的组织。
      */
     @JvmSynthetic
     override suspend fun source(): Organization
-
+    
     /**
      * 成员增加事件发生所在的组织。
      */
     @Api4J
     override val source: Organization
-
-
+    
+    
     /**
      * 增加的[成员][Member]。
      */
     @JvmSynthetic
     override suspend fun after(): Member
-
+    
     /**
      * 增加的[成员][Member]。
      */
     @Api4J
     override val after: Member
-
+    
+    
     /**
      * 行为类型。主动/被动
      */
     public val actionType: ActionType
-
+    
     public companion object Key :
         BaseEventKey<MemberIncreaseEvent>(
             "api.member_increase",
-            IncreaseEvent, MemberChangedEvent) {
+            IncreaseEvent, MemberChangedEvent
+        ) {
         override fun safeCast(value: Any): MemberIncreaseEvent? = doSafeCast(value)
     }
 }
@@ -125,60 +126,303 @@ public interface MemberIncreaseEvent :
 public interface MemberDecreaseEvent :
     DecreaseEvent,
     MemberChangedEvent {
-
-
+    
+    
     /**
      * 离开的[成员][Member]
      */
     @JvmSynthetic
     override suspend fun before(): Member
-
+    
     /**
      * 离开的[成员][Member]
      */
     @Api4J
     override val before: Member
-
+    
     /**
      * 行为类型。主动/被动
      */
     public val actionType: ActionType
-
+    
     public companion object Key :
         BaseEventKey<MemberDecreaseEvent>(
             "api.member_decrease",
-            DecreaseEvent, MemberChangedEvent) {
+            DecreaseEvent, MemberChangedEvent
+        ) {
         override fun safeCast(value: Any): MemberDecreaseEvent? = doSafeCast(value)
     }
 }
 
-// TODO
-//  群、频道成员变动事件实现
-
 
 /**
+ *
+ * [MemberIncreaseEvent] 事件类型的子集，代表为一个发生于 [Group] 的成员增加事件。
+ *
  * @see MemberIncreaseEvent
  */
-@Deprecated("尚未实现")
-public interface GroupMemberIncreaseEvent
+public interface GroupMemberIncreaseEvent : MemberIncreaseEvent, GroupEvent {
+    
+    /**
+     * 成员增加事件发生所在的[群][Group]。
+     */
+    @Api4J
+    override val group: Group
+    
+    /**
+     * 成员增加事件发生所在的[群][Group]。
+     */
+    @JvmSynthetic
+    override suspend fun group(): Group
+    
+    /**
+     * 成员增加事件发生所在的[群][Group]。
+     */
+    @Api4J
+    override val source: Group
+    
+    /**
+     * 成员增加事件发生所在的[群][Group]。
+     */
+    @JvmSynthetic
+    override suspend fun source(): Group
+    
+    /**
+     * 增加的[群成员][GroupMember]。
+     */
+    @Api4J
+    override val after: GroupMember
+    
+    /**
+     * 增加的[群成员][GroupMember]。
+     */
+    @JvmSynthetic
+    override suspend fun after(): GroupMember
+    
+    /**
+     * 增加的[群成员][GroupMember]。
+     */
+    @Api4J
+    override val member: GroupMember
+    
+    /**
+     * 增加的[群成员][GroupMember]。
+     */
+    @JvmSynthetic
+    override suspend fun member(): GroupMember
+    
+    
+    override val key: Event.Key<out GroupMemberIncreaseEvent>
+    
+    public companion object Key : BaseEventKey<GroupMemberIncreaseEvent>(
+        "api.group_member_increase",
+        MemberIncreaseEvent, GroupEvent
+    ) {
+        override fun safeCast(value: Any): GroupMemberIncreaseEvent? = doSafeCast(value)
+    }
+    
+}
 
 /**
+ *
+ * [MemberIncreaseEvent] 事件类型的子集，代表为一个发生于 [Guild] 的成员增加事件。
+ *
  * @see MemberIncreaseEvent
  */
-@Deprecated("尚未实现")
-public interface GuildMemberIncreaseEvent
+public interface GuildMemberIncreaseEvent : MemberIncreaseEvent, GuildEvent {
+    /**
+     * 成员增加事件发生所在的[频道服务器][Guild]。
+     */
+    @Api4J
+    override val guild: Guild
+    
+    /**
+     * 成员增加事件发生所在的[频道服务器][Guild]。
+     */
+    @JvmSynthetic
+    override suspend fun guild(): Guild
+    
+    /**
+     * 成员增加事件发生所在的[频道服务器][Guild]。
+     */
+    @Api4J
+    override val source: Guild
+    
+    /**
+     * 成员增加事件发生所在的[频道服务器][Guild]。
+     */
+    @JvmSynthetic
+    override suspend fun source(): Guild
+    
+    /**
+     * 增加的[频道成员][GuildMember]。
+     */
+    @Api4J
+    override val after: GuildMember
+    
+    /**
+     * 增加的[频道成员][GuildMember]。
+     */
+    @JvmSynthetic
+    override suspend fun after(): GuildMember
+    
+    /**
+     * 增加的[频道成员][GuildMember]。
+     */
+    @Api4J
+    override val member: GuildMember
+    
+    /**
+     * 增加的[频道成员][GuildMember]。
+     */
+    @JvmSynthetic
+    override suspend fun member(): GuildMember
+    
+    
+    override val key: Event.Key<out GuildMemberIncreaseEvent>
+    
+    public companion object Key : BaseEventKey<GuildMemberIncreaseEvent>(
+        "api.guild_member_increase",
+        MemberIncreaseEvent, GuildEvent
+    ) {
+        override fun safeCast(value: Any): GuildMemberIncreaseEvent? = doSafeCast(value)
+    }
+}
 
 /**
+ *
+ * [MemberDecreaseEvent] 的子类型事件，代表为一个发生于 [Group] 的成员减少事件。
+ *
  * @see MemberDecreaseEvent
  */
-@Deprecated("尚未实现")
-public interface GroupMemberDecreaseEvent
+public interface GroupMemberDecreaseEvent : MemberDecreaseEvent, GroupEvent {
+    
+    /**
+     * 成员减少事件发生所在的[群][Group]。
+     */
+    @Api4J
+    override val group: Group
+    
+    /**
+     * 成员减少事件发生所在的[群][Group]。
+     */
+    @JvmSynthetic
+    override suspend fun group(): Group
+    
+    /**
+     * 成员减少事件发生所在的[群][Group]。
+     */
+    @Api4J
+    override val source: Group
+    
+    /**
+     * 成员减少事件发生所在的[群][Group]。
+     */
+    @JvmSynthetic
+    override suspend fun source(): Group
+    
+    /**
+     * 减少的[群成员][GroupMember]。
+     */
+    @Api4J
+    override val before: GroupMember
+    
+    /**
+     * 减少的[群成员][GroupMember]。
+     */
+    @JvmSynthetic
+    override suspend fun before(): GroupMember
+    
+    /**
+     * 减少的[群成员][GroupMember]。
+     */
+    @Api4J
+    override val member: GroupMember
+    
+    /**
+     * 减少的[群成员][GroupMember]。
+     */
+    @JvmSynthetic
+    override suspend fun member(): GroupMember
+    
+    
+    override val key: Event.Key<out GroupMemberDecreaseEvent>
+    
+    public companion object Key : BaseEventKey<GroupMemberDecreaseEvent>(
+        "api.group_member_decrease",
+        MemberDecreaseEvent, GroupEvent
+    ) {
+        override fun safeCast(value: Any): GroupMemberDecreaseEvent? = doSafeCast(value)
+    }
+    
+}
 
 /**
+ *
+ * [MemberDecreaseEvent] 的子类型事件，代表一个发生在 [Guild] 中的事件。
+ *
  * @see MemberDecreaseEvent
  */
-@Deprecated("尚未实现")
-public interface GuildMemberDecreaseEvent
+public interface GuildMemberDecreaseEvent : MemberDecreaseEvent, GuildEvent {
+    /**
+     * 成员减少事件发生所在的[频道服务器][Guild]。
+     */
+    @Api4J
+    override val guild: Guild
+    
+    /**
+     * 成员减少事件发生所在的[频道服务器][Guild]。
+     */
+    @JvmSynthetic
+    override suspend fun guild(): Guild
+    
+    /**
+     * 成员减少事件发生所在的[频道服务器][Guild]。
+     */
+    @Api4J
+    override val source: Guild
+    
+    /**
+     * 成员减少事件发生所在的[频道服务器][Guild]。
+     */
+    @JvmSynthetic
+    override suspend fun source(): Guild
+    
+    /**
+     * 减少的[频道成员][GuildMember]。
+     */
+    @Api4J
+    override val before: GuildMember
+    
+    /**
+     * 减少的[频道成员][GuildMember]。
+     */
+    @JvmSynthetic
+    override suspend fun before(): GuildMember
+    
+    /**
+     * 减少的[频道成员][GuildMember]。
+     */
+    @Api4J
+    override val member: GuildMember
+    
+    /**
+     * 减少的[频道成员][GuildMember]。
+     */
+    @JvmSynthetic
+    override suspend fun member(): GuildMember
+    
+    
+    override val key: Event.Key<out GuildMemberDecreaseEvent>
+    
+    public companion object Key : BaseEventKey<GuildMemberDecreaseEvent>(
+        "api.guild_member_decrease",
+        MemberDecreaseEvent, GuildEvent
+    ) {
+        override fun safeCast(value: Any): GuildMemberDecreaseEvent? = doSafeCast(value)
+    }
+}
+
 
 
 
