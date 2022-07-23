@@ -86,7 +86,7 @@ public class Attribute<T : Any> private constructor(
         
         
         @Suppress("UNUSED_PARAMETER")
-        @Deprecated("Use of(name)", ReplaceWith("of(name)"))
+        @Deprecated("Use of(name)", ReplaceWith("of(name)"), level = DeprecationLevel.ERROR)
         @JvmSynthetic
         public fun <T : Any> of(name: String, type: KClass<T>): Attribute<T> = of(name)
         
@@ -117,7 +117,7 @@ public class Attribute<T : Any> private constructor(
 
 @Suppress("UNUSED_PARAMETER")
 @JvmSynthetic
-@Deprecated("Use attribute(name)", ReplaceWith("attribute(name)"))
+@Deprecated("Use attribute(name)", ReplaceWith("attribute(name)"), level = DeprecationLevel.ERROR)
 public fun <T : Any> attribute(name: String, type: KClass<T>): Attribute<T> = attribute(name)
 
 /**
@@ -130,7 +130,7 @@ public fun <T : Any> attribute(name: String, type: KClass<T>): Attribute<T> = at
  */
 public fun <T : Any> attribute(name: String): Attribute<T> = Attribute.of(name)
 
-@Deprecated("Use attribute(name)", ReplaceWith("attribute(name)"))
+@Deprecated("Use attribute(name)", ReplaceWith("attribute(name)"), level = DeprecationLevel.ERROR)
 public inline fun <reified T : Any> attribute(): Attribute<T> =
     with(T::class) { Attribute.of(this.qualifiedName ?: this.simpleName ?: this.jvmName) }
 

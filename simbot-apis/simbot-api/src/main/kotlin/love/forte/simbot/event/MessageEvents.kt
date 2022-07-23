@@ -219,7 +219,7 @@ public interface ChatRoomMessageEvent : MessageEvent, OrganizationEvent, RemoteM
      * @see messageContent
      */
     @JvmSynthetic
-    @Deprecated("Use messageContent.delete()", ReplaceWith("messageContent.delete()"))
+    @Deprecated("Use messageContent.delete()", ReplaceWith("messageContent.delete()"), level = DeprecationLevel.ERROR)
     public suspend fun delete(): Boolean = messageContent.delete()
 
     /**
@@ -230,7 +230,7 @@ public interface ChatRoomMessageEvent : MessageEvent, OrganizationEvent, RemoteM
      * @see messageContent
      */
     @Api4J
-    @Deprecated("Use getMessageContent().deleteBlocking()", ReplaceWith("messageContent.deleteBlocking()"))
+    @Deprecated("Use getMessageContent().deleteBlocking()", ReplaceWith("messageContent.deleteBlocking()"), level = DeprecationLevel.ERROR)
     public fun deleteBlocking(): Boolean = messageContent.deleteBlocking()
 
     

@@ -109,7 +109,8 @@ public interface Bot : User, Survivable,
     @JvmSynthetic
     @Deprecated(
         "Just use Resource.toImage",
-        ReplaceWith("resource.toImage()", "love.forte.simbot.message.Image.Key.toImage")
+        ReplaceWith("resource.toImage()", "love.forte.simbot.message.Image.Key.toImage"),
+        level = DeprecationLevel.ERROR
     )
     public suspend fun uploadImage(resource: Resource): Image<*> = resource.toImage()
     
@@ -119,7 +120,11 @@ public interface Bot : User, Survivable,
      * @see uploadImage
      */
     @Api4J
-    @Deprecated("Just use Image.of(Resource)", ReplaceWith("resource.toImage()", "love.forte.simbot.message.Image.Key.toImage"))
+    @Deprecated(
+        "Just use Image.of(Resource)",
+        ReplaceWith("resource.toImage()", "love.forte.simbot.message.Image.Key.toImage"),
+        level = DeprecationLevel.ERROR
+    )
     public fun uploadImageBlocking(resource: Resource): Image<*> = resource.toImage()
     
     

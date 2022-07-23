@@ -61,14 +61,14 @@ public interface AnnotationEventFilterFactory {
  * @see BlockingAnnotationEventFilter
  * @author ForteScarlet
  */
-@Deprecated("Unused")
+@Deprecated("TODO")
 @Suppress("KDocUnresolvedReference")
 public interface AnnotationEventFilter : EventFilter {
     
     public fun init(listener: EventListener, filter: Filter, filters: Filters)
     
     
-    @Deprecated("Unused")
+    @Deprecated("TODO")
     public enum class InitType {
         INDEPENDENT,
         UNITED
@@ -89,7 +89,7 @@ public interface AnnotationEventFilter : EventFilter {
  *
  */
 @Suppress("DEPRECATION")
-@Deprecated("Unused")
+@Deprecated("TODO")
 @Api4J
 public interface BlockingAnnotationEventFilter : AnnotationEventFilter, BlockingEventFilter {
     

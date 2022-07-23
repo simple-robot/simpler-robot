@@ -26,7 +26,7 @@ import love.forte.simbot.utils.runInBlocking
  *
  * @author ForteScarlet
  */
-@Deprecated("No longer use")
+@Deprecated("No longer use", level = DeprecationLevel.ERROR)
 public interface Structured<P, N> {
 
     /**

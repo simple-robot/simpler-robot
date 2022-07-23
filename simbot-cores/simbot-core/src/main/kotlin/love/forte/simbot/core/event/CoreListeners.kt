@@ -63,7 +63,7 @@ public operator fun EventListener.plus(filters: Iterable<EventFilter>): EventLis
  */
 @Suppress("UNUSED_PARAMETER")
 @JvmSynthetic
-@Deprecated("Use simpleListener(...)")
+@Deprecated("Use simpleListener(...)", level = DeprecationLevel.ERROR)
 public fun <E : Event> coreListener(
     eventKey: Event.Key<E>,
     id: ID = randomID(),
@@ -97,10 +97,10 @@ public fun <E : Event> coreListener(
  *
  * @see simpleListener
  */
-@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION")
+@Suppress("DeprecatedCallableAddReplaceWith", "DEPRECATION_ERROR")
 @JvmSynthetic
 @FragileSimbotApi
-@Deprecated("Use simpleListener(...)")
+@Deprecated("Use simpleListener(...)", level = DeprecationLevel.ERROR)
 public inline fun <reified E : Event> coreListener(
     id: ID = randomID(),
     blockNext: Boolean = false,
@@ -128,7 +128,7 @@ public inline fun <reified E : Event> coreListener(
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
-@Deprecated("use simpleListener(...)")
+@Deprecated("use simpleListener(...)", level = DeprecationLevel.ERROR)
 public fun <E : Event> blockingCoreListener(
     eventKey: Event.Key<E>,
     id: ID = UUID.randomUUID().ID,
@@ -169,7 +169,7 @@ public fun <E : Event> blockingCoreListener(
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
-@Deprecated("use simpleListener(...)")
+@Deprecated("use simpleListener(...)", level = DeprecationLevel.ERROR)
 public fun <E : Event> blockingCoreListener(
     eventKey: Event.Key<E>,
     id: ID = randomID(),
@@ -202,7 +202,7 @@ public fun <E : Event> blockingCoreListener(
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
-@Deprecated("use simpleListener(...)")
+@Deprecated("use simpleListener(...)", level = DeprecationLevel.ERROR)
 public fun <E : Event> blockingCoreListener(
     eventType: Class<E>,
     id: ID = randomID(),
@@ -234,7 +234,7 @@ public fun <E : Event> blockingCoreListener(
 @Api4J
 @JvmOverloads
 @JvmName("newCoreListener")
-@Deprecated("use simpleListener(...)")
+@Deprecated("use simpleListener(...)", level = DeprecationLevel.ERROR)
 public fun <E : Event> blockingCoreListener(
     eventType: Class<E>,
     id: ID = UUID.randomUUID().ID,

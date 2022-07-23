@@ -40,10 +40,10 @@ public object CoreAnnotationEventFilterFactory : AnnotationEventFilterFactory {
         val value = filter.value
         var target = filter.targets.box()
         if (target == null) {
-            @Suppress("DEPRECATION")
+            @Suppress("DEPRECATION_ERROR")
             target = filter.target.box0()
             if (target != null) {
-                logger.warn("The @Filter(target = TargetFilter(...)) is deprecated. please use the @Filter(targets = Filter.Targets(...)).")
+                throw UnsupportedOperationException("The @Filter(target = TargetFilter(...)) is deprecated(level=ERROR). please use the @Filter(targets = Filter.Targets(...)) on your listener: $listener")
             }
             
         }

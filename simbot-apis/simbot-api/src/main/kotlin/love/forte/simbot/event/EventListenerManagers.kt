@@ -34,7 +34,7 @@ public interface EventListenerContainer {
      */
     public operator fun get(id: String): EventListener?
     
-    @Deprecated("Just use get(String)", ReplaceWith("get(id.literal)", "love.forte.simbot.literal"))
+    @Deprecated("Just use get(String)", ReplaceWith("get(id.literal)", "love.forte.simbot.literal"), level = DeprecationLevel.ERROR)
     public operator fun get(id: ID): EventListener? = get(id.literal)
     
 }

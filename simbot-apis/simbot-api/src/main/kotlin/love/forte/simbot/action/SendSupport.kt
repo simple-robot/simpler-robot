@@ -174,7 +174,7 @@ public interface ReplySupport {
 /**
  * “回复”回执。
  */
-@Deprecated("No longer use")
+@Deprecated("No longer use", level = DeprecationLevel.ERROR)
 public interface MessageReplyReceipt : MessageReceipt {
     override val id: ID
     override val isSuccess: Boolean
@@ -223,7 +223,7 @@ public interface MessageReactSupport {
  * 对于标记回执的 [id][ReactReceipt.id]，有可能是这个回执所属ID，也有可能是被标记消息的ID。
  *
  */
-@Deprecated("No longer use")
+@Deprecated("No longer use", level = DeprecationLevel.ERROR)
 public interface ReactReceipt : MessageReceipt {
     override val id: ID
     override val isSuccess: Boolean
@@ -323,7 +323,7 @@ public suspend fun Event.replyIfSupport(message: String): MessageReceipt? =
  */
 @JvmSynthetic
 @Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated("ReplySupport通常由Event类型实现")
+@Deprecated("ReplySupport通常由Event类型实现", level = DeprecationLevel.ERROR)
 public suspend fun Objective.replyIfSupport(message: Message): MessageReceipt? =
     if (this is ReplySupport) reply(message) else null
 
@@ -333,7 +333,7 @@ public suspend fun Objective.replyIfSupport(message: Message): MessageReceipt? =
  */
 @JvmSynthetic
 @Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated("ReplySupport通常由Event类型实现")
+@Deprecated("ReplySupport通常由Event类型实现", level = DeprecationLevel.ERROR)
 public suspend fun MessageContainer.replyIfSupport(message: Message): MessageReceipt? =
     if (this is ReplySupport) reply(message) else null
 
@@ -342,7 +342,7 @@ public suspend fun MessageContainer.replyIfSupport(message: Message): MessageRec
  */
 @JvmSynthetic
 @Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated("ReplySupport通常由Event类型实现")
+@Deprecated("ReplySupport通常由Event类型实现", level = DeprecationLevel.ERROR)
 public suspend inline fun Objective.replyIfSupport(message: () -> Message): MessageReceipt? =
     if (this is ReplySupport) reply(message()) else null
 
@@ -352,7 +352,7 @@ public suspend inline fun Objective.replyIfSupport(message: () -> Message): Mess
  */
 @JvmSynthetic
 @Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated("ReplySupport通常由Event类型实现")
+@Deprecated("ReplySupport通常由Event类型实现", level = DeprecationLevel.ERROR)
 public suspend inline fun MessageContainer.replyIfSupport(message: () -> Message): MessageReceipt? =
     if (this is ReplySupport) reply(message()) else null
 
@@ -362,7 +362,7 @@ public suspend inline fun MessageContainer.replyIfSupport(message: () -> Message
  */
 @JvmSynthetic
 @Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated("ReplySupport通常由Event类型实现")
+@Deprecated("ReplySupport通常由Event类型实现", level = DeprecationLevel.ERROR)
 public suspend fun Objective.replyIfSupport(message: MessageContent): MessageReceipt? =
     if (this is ReplySupport) reply(message) else null
 
@@ -372,7 +372,7 @@ public suspend fun Objective.replyIfSupport(message: MessageContent): MessageRec
  */
 @JvmSynthetic
 @Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated("ReplySupport通常由Event类型实现")
+@Deprecated("ReplySupport通常由Event类型实现", level = DeprecationLevel.ERROR)
 public suspend fun MessageContainer.replyIfSupport(message: MessageContent): MessageReceipt? =
     if (this is ReplySupport) reply(message) else null
 
@@ -382,7 +382,7 @@ public suspend fun MessageContainer.replyIfSupport(message: MessageContent): Mes
  */
 @JvmSynthetic
 @Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated("ReplySupport通常由Event类型实现")
+@Deprecated("ReplySupport通常由Event类型实现", level = DeprecationLevel.ERROR)
 public suspend fun Objective.replyIfSupport(message: String): MessageReceipt? =
     if (this is ReplySupport) reply(message) else null
 
@@ -392,7 +392,7 @@ public suspend fun Objective.replyIfSupport(message: String): MessageReceipt? =
  */
 @JvmSynthetic
 @Suppress("DeprecatedCallableAddReplaceWith")
-@Deprecated("ReplySupport通常由Event类型实现")
+@Deprecated("ReplySupport通常由Event类型实现", level = DeprecationLevel.ERROR)
 public suspend fun MessageContainer.replyIfSupport(message: String): MessageReceipt? =
     if (this is ReplySupport) reply(message) else null
 //endregion

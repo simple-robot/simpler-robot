@@ -38,7 +38,7 @@ import love.forte.simbot.message.Message.Element as MsgElement
  *
  * @see Messages
  */
-@Deprecated("将会被弃用")
+@Deprecated("将会被弃用", level = DeprecationLevel.ERROR)
 public interface MessageElementPolymorphicRegistrar {
     public fun registrar(builderAction: PolymorphicModuleBuilder<MsgElement<*>>.() -> Unit)
 }
@@ -88,7 +88,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
     
     /**
      */
-    @Suppress("DEPRECATION")
+    @Suppress("DEPRECATION_ERROR")
     public companion object : MessageElementPolymorphicRegistrar {
         
         @JvmSynthetic
@@ -128,7 +128,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          * 将 [Messages.serializersModule] 与目标 [serializersModule] 进行合并。
          */
         @Synchronized
-        @Deprecated("此方式的序列化将会被弃用")
+        @Deprecated("此方式的序列化将会被弃用", level = DeprecationLevel.ERROR)
         public fun mergeSerializersModule(serializersModule: SerializersModule) {
             _serializersModule += serializersModule
             setJson()
@@ -138,7 +138,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          * 将 [Messages.serializersModule] 与目标 [serializersModule] 进行合并。
          */
         @Suppress("MemberVisibilityCanBePrivate")
-        @Deprecated("此方式的序列化将会被弃用")
+        @Deprecated("此方式的序列化将会被弃用", level = DeprecationLevel.ERROR)
         public fun mergeSerializersModule(builderAction: SerializersModuleBuilder.() -> Unit) {
             mergeSerializersModule(SerializersModule(builderAction))
         }
@@ -146,7 +146,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
         /**
          * 向 [serializersModule] 中注册一个 [MsgElement] 的多态信息。
          */
-        @Deprecated("此方式的序列化将会被弃用")
+        @Deprecated("此方式的序列化将会被弃用", level = DeprecationLevel.ERROR)
         public override fun registrar(builderAction: PolymorphicModuleBuilder<MsgElement<*>>.() -> Unit) {
             registrarPolymorphic(builderAction)
         }
@@ -216,7 +216,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          */
         @Api4J
         @JvmStatic
-        @Deprecated("Use MessageSerializationUtil.")
+        @Deprecated("Use MessageSerializationUtil.", level = DeprecationLevel.ERROR)
         public fun toJsonString(messages: Messages): String {
             return json.encodeToString(serializer, messages)
         }
@@ -228,7 +228,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
          */
         @Api4J
         @JvmStatic
-        @Deprecated("Use MessageSerializationUtil.")
+        @Deprecated("Use MessageSerializationUtil.", level = DeprecationLevel.ERROR)
         public fun fromJsonString(jsonString: String): Messages {
             return json.decodeFromString(serializer, jsonString)
         }
