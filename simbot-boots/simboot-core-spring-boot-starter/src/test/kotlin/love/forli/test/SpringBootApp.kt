@@ -19,6 +19,8 @@ package love.forli.test
 
 import love.forte.simboot.annotation.Listener
 import love.forte.simboot.spring.autoconfigure.EnableSimbot
+import love.forte.simbot.Api4J
+import love.forte.simbot.FragileSimbotApi
 import love.forte.simbot.bot.OriginBotManager
 import love.forte.simbot.core.event.buildSimpleListener
 import love.forte.simbot.event.EventResult
@@ -35,6 +37,7 @@ import org.springframework.stereotype.Component
 open class SpringBootApp
 
 
+@OptIn(FragileSimbotApi::class, Api4J::class)
 fun main(vararg args: String) {
     val app = runApplication<SpringBootApp>(args = args)
     
