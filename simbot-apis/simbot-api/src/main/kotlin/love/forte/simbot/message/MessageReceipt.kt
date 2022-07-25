@@ -50,7 +50,7 @@ public interface MessageReceipt : IDContainer, DeleteSupport {
      * @return 删除成功为true，失败或不可删除均为null。
      */
     @Api4J
-    @Deprecated("Just use deleteBlocking()", ReplaceWith("deleteBlocking()"))
+    @Deprecated("Just use deleteBlocking()", ReplaceWith("deleteBlocking()"), level = DeprecationLevel.ERROR)
     public fun deleteIfSupportBlocking(): Boolean = deleteBlocking() // if (this is DeleteSupport) runInBlocking { delete() } else false
 }
 
@@ -63,5 +63,5 @@ public interface MessageReceipt : IDContainer, DeleteSupport {
  * @return 删除成功为true，失败或不可删除均为null。
  */
 @JvmSynthetic
-@Deprecated("Just use delete()", ReplaceWith("delete()"))
+@Deprecated("Just use delete()", ReplaceWith("delete()"), level = DeprecationLevel.ERROR)
 public suspend fun MessageReceipt.deleteIfSupport(): Boolean = delete()

@@ -112,8 +112,8 @@ public annotation class Filter(
      *
      * @see [targets]
      */
-    @Suppress("DEPRECATION")
-    @Deprecated("Use targets", ReplaceWith("targets"))
+    @Suppress("DEPRECATION_ERROR")
+    @Deprecated("Use targets", ReplaceWith("targets"), level = DeprecationLevel.ERROR)
     val target: TargetFilter = TargetFilter(),
     
     /*
@@ -259,7 +259,7 @@ public annotation class Filter(
 @Target(allowedTargets = [])
 @Deprecated(
     "Use @Filter.Target",
-    ReplaceWith("Filter.Targets", "love.forte.simboot.annotation.Filter.Targets")
+    ReplaceWith("Filter.Targets", "love.forte.simboot.annotation.Filter.Targets"), level = DeprecationLevel.ERROR
 )
 public annotation class TargetFilter(
     /**

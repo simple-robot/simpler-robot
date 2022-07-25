@@ -48,10 +48,10 @@ public interface FriendInfo : UserInfo {
      *
      * @see category
      */
-    @Suppress("DEPRECATION")
+    @Suppress("DEPRECATION_ERROR")
     @Deprecated(
         "No longer used and will be removed. Please refer to 'love.forte.simbot.definition.Category'",
-        ReplaceWith("category", "love.forte.simbot.definition.Category")
+        ReplaceWith("category", "love.forte.simbot.definition.Category"), level = DeprecationLevel.ERROR
     )
     public val grouping: love.forte.simbot.Grouping get() = love.forte.simbot.Grouping.EMPTY
     

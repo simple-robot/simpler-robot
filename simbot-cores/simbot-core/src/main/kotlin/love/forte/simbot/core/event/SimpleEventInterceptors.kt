@@ -25,7 +25,7 @@ import love.forte.simbot.PriorityConstant
 import love.forte.simbot.event.*
 import java.util.function.Function
 
-@Deprecated("Just use SimpleInterceptUtil for java")
+@Deprecated("Just use SimpleInterceptUtil for java", level = DeprecationLevel.ERROR)
 public object CoreInterceptUtil
 
 @DslMarker
@@ -77,7 +77,7 @@ public fun simpleProcessingInterceptor(
 
 @Deprecated(
     "Just use simpleProcessingInterceptor",
-    ReplaceWith("simpleProcessingInterceptor(priority, interceptFunction)")
+    ReplaceWith("simpleProcessingInterceptor(priority, interceptFunction)"), level = DeprecationLevel.ERROR
 )
 @SimpleFunctionalProcessingInterceptorDSL
 public fun coreProcessingInterceptor(
@@ -102,7 +102,7 @@ public fun simpleListenerInterceptor(
 
 
 @Deprecated("Just use simpleListenerInterceptor",
-    ReplaceWith("simpleListenerInterceptor(point, priority, interceptFunction)")
+    ReplaceWith("simpleListenerInterceptor(point, priority, interceptFunction)"), level = DeprecationLevel.ERROR
 )
 @SimpleFunctionalListenerInterceptorDSL
 public fun coreListenerInterceptor(

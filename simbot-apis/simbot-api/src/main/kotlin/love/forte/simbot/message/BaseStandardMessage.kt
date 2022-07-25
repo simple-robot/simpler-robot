@@ -180,7 +180,7 @@ public data class At @JvmOverloads constructor(
     override val key: Message.Key<At> get() = Key
     
     
-    @Deprecated("Please use type", ReplaceWith("type"))
+    @Deprecated("Please use type", ReplaceWith("type"), level = DeprecationLevel.ERROR)
     public val atType: String get() = type
     
     override fun equals(other: Any?): Boolean {
@@ -357,8 +357,8 @@ public data class Face(
  * [RemoteResource] 代表一个携带 [url] 信息的远程资源。常见为文件或图片等形式。
  *
  */
-@Suppress("DEPRECATION")
-@Deprecated("Unused type")
+@Suppress("DEPRECATION_ERROR")
+@Deprecated("Unused type", level = DeprecationLevel.ERROR)
 public interface RemoteResource<E : RemoteResource<E>> : StandardMessage<E>, IDContainer {
     
     /**

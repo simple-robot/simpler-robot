@@ -232,7 +232,7 @@ private inline fun preStack(className: String, methodName: String, inlineMark: (
 /**
  * @see simbootApp
  */
-@Deprecated("Use top-level fun simbootApp(...)", ReplaceWith("simbootApp<T>(args = args, configurator)"))
+@Deprecated("Use top-level fun simbootApp(...)", ReplaceWith("simbootApp<T>(args = args, configurator)"), level = DeprecationLevel.ERROR)
 public suspend inline operator fun <reified T> SimbootApp.invoke(
     vararg args: String,
     crossinline configurator: BootApplicationConfiguration.() -> Unit = {},

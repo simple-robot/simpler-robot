@@ -33,7 +33,7 @@ import kotlin.experimental.ExperimentalTypeInference
  *
  * @see itemsByFlow
  */
-@Deprecated("Use itemsByFlow(...)", ReplaceWith("itemsByFlow(flowFactory)"))
+@Deprecated("Use itemsByFlow(...)", ReplaceWith("itemsByFlow(flowFactory)"), level = DeprecationLevel.ERROR)
 public inline fun <T> CoroutineScope.items(crossinline flowFactory: (Items.PreprocessingProperties) -> Flow<T>): Items<T> {
     return itemsByFlow(flowFactory)
 }
@@ -43,7 +43,7 @@ public inline fun <T> CoroutineScope.items(crossinline flowFactory: (Items.Prepr
  *
  * @see flowItems
  */
-@Deprecated("Use flowItems(...)", ReplaceWith("flowItems(block)"))
+@Deprecated("Use flowItems(...)", ReplaceWith("flowItems(block)"), level = DeprecationLevel.ERROR)
 public inline fun <T> CoroutineScope.items(crossinline block: suspend FlowCollector<T>.(Items.PreprocessingProperties) -> Unit): Items<T> {
     return flowItems(block)
 }
@@ -68,7 +68,7 @@ public fun <T> itemsBy(factory: (Items.PreprocessingProperties) -> ChannelIterat
  *
  * @see produceItems
  */
-@Deprecated("Use produceItems", ReplaceWith("produceItems(context, capacity, block)"))
+@Deprecated("Use produceItems", ReplaceWith("produceItems(context, capacity, block)"), level = DeprecationLevel.ERROR)
 public inline fun <T> CoroutineScope.items(
     context: CoroutineContext = EmptyCoroutineContext,
     capacity: Int = 0,

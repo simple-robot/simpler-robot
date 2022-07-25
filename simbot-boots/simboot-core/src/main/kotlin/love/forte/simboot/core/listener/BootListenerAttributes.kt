@@ -221,21 +221,21 @@ public object BootListenerAttributes {
 /**
  * @see BootListenerAttributes.RawFunction
  */
-@Deprecated("Use BootListenerAttributes.rawFunction", ReplaceWith("BootListenerAttributes.RawFunction"))
+@Deprecated("Use BootListenerAttributes.rawFunction", ReplaceWith("BootListenerAttributes.RawFunction"), level = DeprecationLevel.ERROR)
 public inline val RAW_FUNCTION: Attribute<KFunction<*>> get() = BootListenerAttributes.RawFunction
 
 
 /**
  * @see BootListenerAttributes.RawBinders
  */
-@Deprecated("Use BootListenerAttributes.rawBinders", ReplaceWith("BootListenerAttributes.RawBinders"))
+@Deprecated("Use BootListenerAttributes.rawBinders", ReplaceWith("BootListenerAttributes.RawBinders"), level = DeprecationLevel.ERROR)
 public inline val RAW_BINDERS: Attribute<Collection<ParameterBinder>> get() = BootListenerAttributes.RawBinders
 
 
 /**
  * @see BootListenerAttributes.RawListenTargets
  */
-@Deprecated("Use BootListenerAttributes.RawListenTargets", ReplaceWith("BootListenerAttributes.RawListenTargets"))
+@Deprecated("Use BootListenerAttributes.RawListenTargets", ReplaceWith("BootListenerAttributes.RawListenTargets"), level = DeprecationLevel.ERROR)
 public val RAW_LISTEN_TARGETS: Attribute<Collection<Event.Key<*>>> get() = BootListenerAttributes.RawListenTargets
 
 

@@ -79,7 +79,7 @@ public interface EventProcessingContext : CoroutineContext.Element, InstantScope
      */
     @Deprecated(
         "Just use love.forte.simbot.core.scope.SimpleScope",
-        ReplaceWith("SimpleScope", "love.forte.simbot.core.scope.SimpleScope")
+        ReplaceWith("SimpleScope", "love.forte.simbot.core.scope.SimpleScope"), level = DeprecationLevel.ERROR
     )
     public object Scope {
         /**
