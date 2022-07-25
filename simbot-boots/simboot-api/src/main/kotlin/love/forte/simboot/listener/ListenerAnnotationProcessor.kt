@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -11,6 +11,7 @@
  *  https://www.gnu.org/licenses
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
  *
  */
 
@@ -36,6 +37,7 @@ import kotlin.reflect.KClass
  *
  * @author ForteScarlet
  */
+@Deprecated("TODO")
 public interface ListenerAnnotationProcessor {
 
     /**
@@ -60,6 +62,7 @@ public interface ListenerAnnotationProcessor {
  *
  * TODO
  */
+@Deprecated("TODO")
 public interface ListenerAnnotationPostRegisteredProcessor {
 
 
@@ -75,6 +78,7 @@ public interface ListenerAnnotationPostRegisteredProcessor {
  * [love.forte.simboot.annotation.Listen] 对应的数据类。
  * @see love.forte.simboot.annotation.Listen
  */
+@Deprecated("TODO")
 public data class ListenData(
     val value: KClass<out Event>
 )
@@ -83,6 +87,7 @@ public data class ListenData(
  * [love.forte.simboot.annotation.Listens] 对应的数据类。
  * @see love.forte.simboot.annotation.Listens
  */
+@Deprecated("TODO")
 public data class ListensData(
     val value: List<ListenData>
 )
@@ -92,6 +97,7 @@ public data class ListensData(
  * [love.forte.simboot.annotation.Listener] 对应的数据类。
  * @see love.forte.simboot.annotation.Listener
  */
+@Deprecated("TODO")
 public data class ListenerData(
     val id: String, // empty able
     val priority: Int,

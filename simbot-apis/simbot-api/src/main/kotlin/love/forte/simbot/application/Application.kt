@@ -66,7 +66,8 @@ public interface Application : CoroutineScope {
          */
         @Deprecated(
             "Use getComponentOrNull(String)",
-            ReplaceWith("getComponent(id.literal)", "love.forte.simbot.literal")
+            ReplaceWith("getComponent(id.literal)", "love.forte.simbot.literal"),
+            level = DeprecationLevel.ERROR
         )
         public fun getComponent(id: ID): Component = getComponent(id.literal)
         
@@ -75,7 +76,8 @@ public interface Application : CoroutineScope {
          */
         @Deprecated(
             "Use getComponentOrNull(String)",
-            ReplaceWith("getComponentOrNull(id.literal)", "love.forte.simbot.literal")
+            ReplaceWith("getComponentOrNull(id.literal)", "love.forte.simbot.literal"),
+            level = DeprecationLevel.ERROR
         )
         public fun getComponentOrNull(id: ID): Component? = getComponentOrNull(id.literal)
         

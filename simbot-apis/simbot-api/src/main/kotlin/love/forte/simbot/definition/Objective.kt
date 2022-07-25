@@ -79,7 +79,7 @@ public sealed interface Objective : BotContainer, IDContainer {
             "if (this is SendSupport) runInBlocking { send(message) } else null",
             "love.forte.simbot.action.SendSupport",
             "love.forte.simbot.utils.runInBlocking"
-        )
+        ), level = DeprecationLevel.ERROR
     )
     public fun sendIfSupportBlocking(message: Message): MessageReceipt? =
         if (this is SendSupport) runInBlocking { send(message) } else null

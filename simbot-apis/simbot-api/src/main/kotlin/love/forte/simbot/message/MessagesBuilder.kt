@@ -110,7 +110,7 @@ public class MessagesBuilder
      */
     @Suppress("UNUSED_PARAMETER", "RedundantSuspendModifier")
     @JvmSynthetic
-    @Deprecated("Just use image(resource, id)", ReplaceWith("image(resource)"))
+    @Deprecated("Just use image(resource, id)", ReplaceWith("image(resource)"), level = DeprecationLevel.ERROR)
     public suspend fun image(bot: Bot, resource: Resource): MessagesBuilder = image(resource)
     
     /**
@@ -138,7 +138,7 @@ public class MessagesBuilder
     @Api4J
     @JvmName("image")
     @Suppress("UNUSED_PARAMETER")
-    @Deprecated("Just use image(resource, id)", ReplaceWith("image(resource)"))
+    @Deprecated("Just use image(resource, id)", ReplaceWith("image(resource)"), level = DeprecationLevel.ERROR)
     public fun image4J(bot: Bot, resource: Resource): MessagesBuilder = image(resource)
     
     

@@ -553,7 +553,7 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
         
         // region register bots
         // after complete.
-        logger.debug("Registing bots...")
+        logger.debug("Registering bots...")
         val bots = registerBots(providers)
         logger.info("Bots all registered. The size of bots: {}", bots.size)
         if (bots.isNotEmpty()) {
@@ -562,14 +562,11 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
         val isAutoStartBots = configuration.isAutoStartBots
         logger.debug("Auto start bots: {}", isAutoStartBots)
         if (isAutoStartBots && bots.isNotEmpty()) {
-            onCompletion {
-                bots.forEach { bot ->
-                    logger.info("Starting bot {}", bot)
-                    val started = bot.start()
-                    logger.info("Bot [{}] started: {}", bot, started)
-                }
+            bots.forEach { bot ->
+                logger.info("Starting bot {}", bot)
+                val started = bot.start()
+                logger.info("Bot [{}] started: {}", bot, started)
             }
-            logger.debug("Registered on completion function for start bots.")
         }
         if (isAutoStartBots && bots.isEmpty()) {
             logger.debug("But the registered bots are empty.")
@@ -837,7 +834,7 @@ private fun EventListenersGenerator.resolveEventListenerFunction(
     beanContainer: BeanContainer,
     listenerProcessor: KFunctionListenerProcessor,
     listener: Listener,
-    count: LongAdder
+    count: LongAdder,
 ) {
     if (type == null) {
         logger.debug("Resolving top-level listener function [{}] from top", function)
@@ -873,7 +870,7 @@ private fun EventListenersGenerator.resolveEventListenerOrBuilderFunction(
     logger: Logger,
     beanContainer: BeanContainer,
     listener: Listener,
-    count: LongAdder
+    count: LongAdder,
 ) {
     val kParameters = function.parameters
     if (kParameters.any { it.kind != KParameter.Kind.INSTANCE }) {

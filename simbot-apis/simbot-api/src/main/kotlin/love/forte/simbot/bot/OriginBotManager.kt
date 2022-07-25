@@ -164,7 +164,8 @@ public object OriginBotManager : Set<BotManager<*>> {
      */
     @Deprecated(
         "Use getManagers(String)",
-        ReplaceWith("getManagers(componentId.literal)", "love.forte.simbot.bot.OriginBotManager.getManagers")
+        ReplaceWith("getManagers(componentId.literal)", "love.forte.simbot.bot.OriginBotManager.getManagers"),
+        level = DeprecationLevel.ERROR
     )
     public fun getManagers(componentId: ID): List<BotManager<*>> = getManagers(componentId.literal)
     
@@ -200,7 +201,8 @@ public object OriginBotManager : Set<BotManager<*>> {
         "Use getFirstManagerOrNull(String)", ReplaceWith(
             "getFirstManagerOrNull(componentId.literal)",
             "love.forte.simbot.bot.OriginBotManager.getFirstManagerOrNull"
-        )
+        ),
+        level = DeprecationLevel.ERROR
     )
     public fun getFirstManager(componentId: ID): BotManager<*>? = getFirstManagerOrNull(componentId.literal)
     
@@ -249,7 +251,7 @@ public object OriginBotManager : Set<BotManager<*>> {
         "Use getBot(ID, String?)", ReplaceWith(
             "getBotOrNull(id, componentId?.literal)",
             "love.forte.simbot.bot.OriginBotManager.getBotOrNull"
-        )
+        ), level = DeprecationLevel.ERROR
     )
     public fun getBot(id: ID, componentId: ID? = null): Bot? = getBotOrNull(id, componentId?.literal)
     

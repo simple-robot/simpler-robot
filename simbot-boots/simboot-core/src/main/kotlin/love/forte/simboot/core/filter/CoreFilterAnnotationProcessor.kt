@@ -19,7 +19,6 @@ package love.forte.simboot.core.filter
 import love.forte.simboot.annotation.AnnotationEventFilterFactory
 import love.forte.simboot.annotation.Filter
 import love.forte.simboot.annotation.Filters
-import love.forte.simboot.annotation.TargetFilter
 import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.MutableAttributeMap
@@ -146,8 +145,8 @@ internal fun Filter.Targets.box(): FilterTarget? {
 }
 
 
-@Suppress("DEPRECATION")
-internal fun TargetFilter.box0(): FilterTarget? {
+@Suppress("DEPRECATION_ERROR")
+internal fun love.forte.simboot.annotation.TargetFilter.box0(): FilterTarget? {
     if (components.isEmpty() && bots.isEmpty() && authors.isEmpty() && groups.isEmpty() && channels.isEmpty() && guilds.isEmpty() && !atBot) {
         return null
     }

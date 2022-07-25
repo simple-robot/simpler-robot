@@ -21,7 +21,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import love.forte.simbot.DoubleID
-import love.forte.simbot.Grouping
 import love.forte.simbot.ID
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -40,7 +39,7 @@ data class User(
  */
 // @Suppress("UNUSED_VARIABLE")
 class IDTest {
-
+    
     @Test
     fun test() {
         assert(123.ID.number == 123)
@@ -49,73 +48,65 @@ class IDTest {
         assert(123.456F.ID.number == 123.456F)
         assert(BigDecimal("123.456").ID.value == BigDecimal("123.456"))
         assert(BigInteger.valueOf(123456).ID.value == BigInteger.valueOf(123456))
-
+        
     }
-
+    
     @Test
     fun idSerializerTest() {
         // val user = User(100L.ID, 24)
         val user = User(5.2355.ID, 24)
-
+        
         println(user)
-
+        
         val json = Json
         println(json.encodeToString(user))
-
-
+        
+        
     }
-
+    
     @Test
     fun idEqualsTest() {
         val id: ID = 123.ID
         val id1: ID = "123".ID
         assert(id == id1)
     }
-
-
-    @Test
-    fun groupingTest() {
-        val group1 = Grouping("abc".ID, "好友")
-        val j1 = Json.encodeToString(group1)
-        assert(Json.decodeFromString<Grouping>(j1).id == "abc".ID)
-    }
-
+    
     @Test
     fun idSerializerTest2() {
         val id1 = 10.ID
         val id2 = 1.2.ID
-
+        
         val role1 = Role(id1, "admin")
         val role2 = Role(id2, "user")
-
+        
         println(role1)
         println(role2)
         println()
-
+        
         val json = Json
-
+        
         val j1 = json.encodeToString(role1)
         val j2 = json.encodeToString(role2)
-
+        
         println(j1)
         println(j2)
-
+        
         val r1 = json.decodeFromString<Role>(j1)
         val r2 = json.decodeFromString<Role>(j2)
-
+        
         println()
         println(r1)
         println(r2)
-
+        
         println(r1 == role1)
         println(r2 == role2)
     }
-
+    
 }
 
 @Serializable
 private data class Role(
     @Serializable(ID.AsCharSequenceIDSerializer::class)
     val id: ID,
-    val name: String
+    val name: String,
 )

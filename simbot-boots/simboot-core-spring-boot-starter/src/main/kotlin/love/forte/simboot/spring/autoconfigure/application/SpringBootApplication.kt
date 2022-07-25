@@ -197,15 +197,13 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
         val isAutoStartBots = configuration.isAutoStartBots
         logger.debug("Auto start bots: {}", isAutoStartBots)
         if (isAutoStartBots && bots.isNotEmpty()) {
-            onCompletion {
                 bots.forEach { bot ->
                     logger.info("Starting bot {}", bot)
                     val started = bot.start()
                     logger.info("Bot [{}] started: {}", bot, started)
                 }
-            }
-            logger.debug("Registered on completion function for start bots.")
         }
+        
         if (isAutoStartBots && bots.isEmpty()) {
             logger.debug("But the registered bots are empty.")
         }

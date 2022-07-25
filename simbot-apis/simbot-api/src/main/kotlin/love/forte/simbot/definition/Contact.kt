@@ -52,7 +52,7 @@ public interface Contact : User, SendSupport, BotContainer {
      * 直接使用 [sendBlocking].
      */
     @Api4J
-    @Deprecated("Just use sendBlocking.", ReplaceWith("sendBlocking(message)"))
+    @Deprecated("Just use sendBlocking.", ReplaceWith("sendBlocking(message)"), level = DeprecationLevel.ERROR)
     override fun sendIfSupportBlocking(message: Message): MessageReceipt = sendBlocking(message)
     
 }

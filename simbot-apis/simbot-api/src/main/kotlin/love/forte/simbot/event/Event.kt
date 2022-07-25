@@ -88,8 +88,8 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
      * 此属性意义不大，未来可能会移除。
      *
      */
-    @Suppress("DEPRECATION")
-    @Deprecated("此属性意义不大，未来可能会移除。", ReplaceWith("VisibleScope.PUBLIC", "love.forte.simbot.event.Event.VisibleScope"))
+    @Suppress("DEPRECATION_ERROR")
+    @Deprecated("此属性意义不大，未来可能会移除。", ReplaceWith("VisibleScope.PUBLIC", "love.forte.simbot.event.Event.VisibleScope"), level = DeprecationLevel.ERROR)
     public val visibleScope: VisibleScope get() = VisibleScope.PUBLIC
 
 
@@ -256,7 +256,7 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
      *
      * _Deprecated: 含义不明确，缺少应用场景，未来可能会移除_
      */
-    @Deprecated("Ambiguous meaning, lack of application scenarios, may be removed in the future")
+    @Deprecated("Ambiguous meaning, lack of application scenarios, may be removed in the future", level = DeprecationLevel.ERROR)
     public enum class VisibleScope {
 
         /**
@@ -365,7 +365,7 @@ public fun <T : Event> KClass<T>.getKey(): Event.Key<T> = Event.Key.getKey(this)
  *
  */
 @Deprecated("Just use '... isSub ...'",
-    ReplaceWith("this isSub parentMaybe", "love.forte.simbot.event.Event.Key.Companion.isSub"))
+    ReplaceWith("this isSub parentMaybe", "love.forte.simbot.event.Event.Key.Companion.isSub"), level = DeprecationLevel.ERROR)
 public infix fun Event.Key<*>.isSubFrom(parentMaybe: Event.Key<*>): Boolean {
     return this isSub parentMaybe
 }
