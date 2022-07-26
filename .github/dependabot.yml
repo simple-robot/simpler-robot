@@ -2,5 +2,6 @@ version: 2
 updates:
   - package-ecosystem: gradle
     directory: /
+    target-branch: "v3-dev"
     schedule:
       interval: daily
