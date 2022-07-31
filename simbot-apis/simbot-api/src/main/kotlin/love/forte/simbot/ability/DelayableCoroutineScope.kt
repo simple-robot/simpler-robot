@@ -21,10 +21,12 @@ import kotlinx.coroutines.future.asCompletableFuture
 import love.forte.simbot.Api4J
 import love.forte.simbot.JavaDuration
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.CompletionStage
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import java.util.function.Function
 import java.util.function.Supplier
+
 
 /**
  *
@@ -39,7 +41,7 @@ import java.util.function.Supplier
  * Java 开发者可以通过链式风格使用这些延时函数：
  * ```java
  * public void foo(Bot bot) { // Bot 间接实现了 DelayableCoroutineScope
- * DelayableFuture<LocalTime> whole = bot
+ * DelayableCompletableFuture<LocalTime> whole = bot
  *         // (1). 延时5秒，打印当前时间
  *         .delay(Duration.ofSeconds(5), () -> {
  *             System.out.println(LocalTime.now());
@@ -60,38 +62,45 @@ import java.util.function.Supplier
  *
  * 如果流程中某个节点出现了异常，则后续延时任务会受到上游任务的影响而无法抵达。
  *
- *
+ * @see DelayableCompletableFuture
  * @author ForteScarlet
  */
 public interface DelayableCoroutineScope : CoroutineScope {
     
     /**
-     * 延迟 [timeUnit] 的 [time] 时长后执行 [runnable]，得到一个 [DelayableCompletableFuture]。
-     * 这个 [DelayableCompletableFuture] 的结果永远为null。
+     * 延迟时间单位为 [timeUnit] 的 [time] 时长后执行 [runnable]，得到一个 [DelayableCompletableFuture]。
+     *
+     * 这个 [DelayableCompletableFuture] 的计算结果**永远为null**。
      */
     @Api4J
     public fun delay(time: Long, timeUnit: TimeUnit, runnable: Runnable): DelayableCompletableFuture<Void?> =
-        delay(timeUnit.toMillis(time), runnable)
+        delay0(timeUnit.toMillis(time), runnable)
     
     /**
      * 延迟 [millis] 毫秒后执行 [runnable]，得到一个 [DelayableCompletableFuture]。
-     * 这个 [DelayableCompletableFuture] 的结果永远为null。
+     *
+     * 这个 [DelayableCompletableFuture] 的计算结果**永远为null**。
      *
      * @param millis 毫秒级延迟时长
      */
     @Api4J
     public fun delay(millis: Long, runnable: Runnable): DelayableCompletableFuture<Void?> =
-        delay0(TimeUnit.MILLISECONDS.toMillis(millis), runnable)
+        delay0(millis, runnable)
     
     /**
      * 延时 [duration] 时间后执行回调函数 [runnable]，得到一个 [DelayableCompletableFuture]。
-     * 这个 [DelayableCompletableFuture] 的结果永远为null。
+     *
+     * 这个 [DelayableCompletableFuture] 的计算结果**永远为null**。
      */
     @Api4J
     public fun delay(duration: JavaDuration, runnable: Runnable): DelayableCompletableFuture<Void?> =
-        delay(duration.toMillis(), runnable)
+        delay0(duration.toMillis(), runnable)
     
-    
+    /**
+     * 延迟时间单位为 [timeUnit] 的 [time] 时长后执行 [supplier]，
+     * 并将 [supplier] 得到结果通过得到的 [DelayableCompletableFuture]
+     * 向下传递。
+     */
     @Api4J
     public fun <V> delayAndCompute(
         time: Long,
@@ -101,14 +110,18 @@ public interface DelayableCoroutineScope : CoroutineScope {
         delayAndCompute0(timeUnit.toMillis(time), supplier)
     
     /**
-     * @param time 毫秒时间段
+     * 延迟 [millis] 毫秒的时长后执行 [supplier]，
+     * 并将 [supplier] 得到结果通过得到的 [DelayableCompletableFuture]
+     * 向下传递。
      */
     @Api4J
-    public fun <V> delayAndCompute(time: Long, supplier: Supplier<V>): DelayableCompletableFuture<V> =
-        delayAndCompute(JavaDuration.ofNanos(TimeUnit.MILLISECONDS.toNanos(time)), supplier)
+    public fun <V> delayAndCompute(millis: Long, supplier: Supplier<V>): DelayableCompletableFuture<V> =
+        delayAndCompute0(millis, supplier)
     
     /**
-     * 延迟 [duration] 时间后，执行 [supplier] 并得到 [DelayableCompletableFuture]。
+     * 延迟 [duration] 时间后，执行 [supplier]，
+     * 并将 [supplier] 得到结果通过得到的 [DelayableCompletableFuture]
+     * 向下传递。
      */
     @Api4J
     public fun <V> delayAndCompute(duration: JavaDuration, supplier: Supplier<V>): DelayableCompletableFuture<V> =
@@ -119,19 +132,92 @@ public interface DelayableCoroutineScope : CoroutineScope {
 
 
 /**
- * 可以链式调用延迟函数的 [Future] 函数实现。
+ * 可以链式调用延迟函数的 [CompletableFuture] 函数实现。
+ *
+ * [DelayableCompletableFuture] 由 [DelayableCoroutineScope]
+ * 的相关api得到，实现 [Future] 和 [CompletionStage]，提供与 [CompletableFuture]
+ * 基本一致的使用方式（但不直接实现 [CompletableFuture]），且允许通过 [DelayableCompletableFuture.asCompletableFuture]
+ * 得到一个行为一致的 [CompletableFuture] 对象。
+ *
  *
  */
-public interface DelayableCompletableFuture<V> : Future<V> {
-    // support CompletionStage<V>?
+public interface DelayableCompletableFuture<V> : Future<V>, CompletionStage<V> {
     
+    /**
+     * 得到用于描述当前 [DelayableCompletableFuture] 的 [CompletableFuture] 对象。
+     */
+    public fun asCompletableFuture(): CompletableFuture<V>
+    
+    /**
+     * 当前 [DelayableCompletableFuture] 中等待的计算结果（通过 [get] 可以得到的结果 ）计算完成后，
+     * 延迟指定时间周期 [duration]，并执行 [runnable] 函数。
+     *
+     * [delay] 与 [CompletionStage] 中所提供的其他函数不同的是，
+     * [delay] 使用的是某个构建者提供的 [协程作用域][CoroutineScope]
+     * 来进行延迟，其生命周期与此作用域一致，而 [CompletionStage]
+     * 中其他异步函数则由 [CompletableFuture] 中实现的情况为准，
+     * 与 [delay] 所使用的作用域无关。
+     */
+    @Api4J
+    public fun delay(duration: JavaDuration, runnable: Runnable): DelayableCompletableFuture<V>
+    
+    
+    /**
+     * 当前 [DelayableCompletableFuture] 中等待的计算结果（通过 [get] 可以得到的结果 ）计算完成后，
+     * 延迟指定时间单位为 [timeUnit] 的时间周期 [time]，并执行 [runnable] 函数。
+     *
+     * [delay] 与 [CompletionStage] 中所提供的其他函数不同的是，
+     * [delay] 使用的是某个构建者提供的 [协程作用域][CoroutineScope]
+     * 来进行延迟，其生命周期与此作用域一致，而 [CompletionStage]
+     * 中其他异步函数则由 [CompletableFuture] 中实现的情况为准，
+     * 与 [delay] 所使用的作用域无关。
+     */
     @Api4J
     public fun delay(time: Long, timeUnit: TimeUnit, runnable: Runnable): DelayableCompletableFuture<V>
     
+    /**
+     * 当前 [DelayableCompletableFuture] 中等待的计算结果（通过 [get] 可以得到的结果 ）计算完成后，
+     * 延迟指定时间单位为 [TimeUnit.MILLISECONDS] 的时间周期 [time]，并执行 [runnable] 函数。
+     *
+     * [delay] 与 [CompletionStage] 中所提供的其他函数不同的是，
+     * [delay] 使用的是某个构建者提供的 [协程作用域][CoroutineScope]
+     * 来进行延迟，其生命周期与此作用域一致，而 [CompletionStage]
+     * 中其他异步函数则由 [CompletableFuture] 中实现的情况为准，
+     * 与 [delay] 所使用的作用域无关。
+     */
     @Api4J
-    public fun delay(time: Long, runnable: Runnable): DelayableCompletableFuture<V> =
-        delay(time, TimeUnit.MILLISECONDS, runnable)
+    public fun delay(time: Long, runnable: Runnable): DelayableCompletableFuture<V>
     
+    /**
+     * 当前 [DelayableCompletableFuture] 中等待的计算结果（通过 [get] 可以得到的结果 ）计算完成后，
+     * 延迟指定时间周期 [duration]，并执行 [function] 函数。
+     *
+     * [function] 函数的参数即为当前 [DelayableCompletableFuture] 的计算结果。
+     *
+     * [delayAndCompute] 与 [CompletionStage] 中所提供的其他函数不同的是，
+     * [delayAndCompute] 使用的是某个构建者提供的 [协程作用域][CoroutineScope]
+     * 来进行延迟，其生命周期与此作用域一致，而 [CompletionStage]
+     * 中其他异步函数则由 [CompletableFuture] 中实现的情况为准，
+     * 与 [delayAndCompute] 所使用的作用域无关。
+     */
+    @Api4J
+    public fun <T> delayAndCompute(
+        duration: JavaDuration,
+        function: Function<V, T>,
+    ): DelayableCompletableFuture<T>
+    
+    /**
+     * 当前 [DelayableCompletableFuture] 中等待的计算结果（通过 [get] 可以得到的结果 ）计算完成后，
+     * 延迟指定时间单位为 [TimeUnit.MILLISECONDS] 的时间周期 [time]，并执行 [function] 函数。
+     *
+     * [function] 函数的参数即为当前 [DelayableCompletableFuture] 的计算结果。
+     *
+     * [delayAndCompute] 与 [CompletionStage] 中所提供的其他函数不同的是，
+     * [delayAndCompute] 使用的是某个构建者提供的 [协程作用域][CoroutineScope]
+     * 来进行延迟，其生命周期与此作用域一致，而 [CompletionStage]
+     * 中其他异步函数则由 [CompletableFuture] 中实现的情况为准，
+     * 与 [delayAndCompute] 所使用的作用域无关。
+     */
     @Api4J
     public fun <T> delayAndCompute(
         time: Long,
@@ -139,12 +225,28 @@ public interface DelayableCompletableFuture<V> : Future<V> {
         function: Function<V, T>,
     ): DelayableCompletableFuture<T>
     
+    /**
+     * 当前 [DelayableCompletableFuture] 中等待的计算结果（通过 [get] 可以得到的结果 ）计算完成后，
+     * 延迟指定时间单位为 [TimeUnit.MILLISECONDS] 的时间周期 [time]，并执行 [function] 函数。
+     *
+     * [function] 函数的参数即为当前 [DelayableCompletableFuture] 的计算结果。
+     *
+     * [delayAndCompute] 与 [CompletionStage] 中所提供的其他函数不同的是，
+     * [delayAndCompute] 使用的是某个构建者提供的 [协程作用域][CoroutineScope]
+     * 来进行延迟，其生命周期与此作用域一致，而 [CompletionStage]
+     * 中其他异步函数则由 [CompletableFuture] 中实现的情况为准，
+     * 与 [delayAndCompute] 所使用的作用域无关。
+     */
     @Api4J
-    public fun <T> delayAndCompute(time: Long, function: Function<V, T>): DelayableCompletableFuture<T> =
-        delayAndCompute(time, TimeUnit.MILLISECONDS, function)
+    public fun <T> delayAndCompute(time: Long, function: Function<V, T>): DelayableCompletableFuture<T>
+    
+    
 }
 
 
+/**
+ * 提供一个 [CoroutineScope], 将一个 [Deferred] 转化为 [DelayableCompletableFuture]。
+ */
 public fun <T> Deferred<T>.asDelayableFuture(scope: CoroutineScope): DelayableCompletableFuture<T> =
     DelayableCompletableFutureImpl(this, scope)
 
@@ -179,37 +281,63 @@ private class DelayableCompletableFutureImpl<V> private constructor(
     private val deferred: Deferred<V>,
     private val future: CompletableFuture<V>,
     private val scope: CoroutineScope,
-) : DelayableCompletableFuture<V>, Future<V> by future {
+) : DelayableCompletableFuture<V>, Future<V> by future, CompletionStage<V> by future {
     constructor(deferred: Deferred<V>, scope: CoroutineScope) : this(deferred, deferred.asCompletableFuture(), scope)
     
-    @Api4J
-    override fun delay(time: Long, timeUnit: TimeUnit, runnable: Runnable): DelayableCompletableFuture<V> {
-        return DelayableCompletableFutureImpl(
-            scope.async {
-                deferred.await().also {
-                    delay(timeUnit.toMillis(time))
-                    runInterruptible { runnable.run() }
-                }
-            }, scope
-        )
+    override fun asCompletableFuture(): CompletableFuture<V> {
+        return future
     }
+    
+    @Api4J
+    override fun delay(duration: JavaDuration, runnable: Runnable): DelayableCompletableFuture<V> =
+        delay0(duration.toMillis(), runnable)
+    
+    @Api4J
+    override fun delay(time: Long, runnable: Runnable): DelayableCompletableFuture<V> =
+        delay0(time, runnable)
+    
+    @Api4J
+    override fun delay(time: Long, timeUnit: TimeUnit, runnable: Runnable): DelayableCompletableFuture<V> =
+        delay0(timeUnit.toMillis(time), runnable)
+    
+    
+    @Api4J
+    override fun <T> delayAndCompute(duration: JavaDuration, function: Function<V, T>): DelayableCompletableFuture<T> =
+        delayAndCompute0(duration.toMillis(), function)
+    
+    @Api4J
+    override fun <T> delayAndCompute(time: Long, function: Function<V, T>): DelayableCompletableFuture<T> =
+        delayAndCompute0(time, function)
     
     @Api4J
     override fun <T> delayAndCompute(
         time: Long,
         timeUnit: TimeUnit,
         function: Function<V, T>,
-    ): DelayableCompletableFuture<T> {
-        return DelayableCompletableFutureImpl(
+    ): DelayableCompletableFuture<T> = delayAndCompute0(timeUnit.toMillis(time), function)
+    
+    
+    private fun delay0(millis: Long, runnable: Runnable) =
+        DelayableCompletableFutureImpl(
             scope.async {
-                deferred.await().let { v ->
-                    delay(timeUnit.toMillis(time))
-                    runInterruptible { function.apply(v) }
+                deferred.await().also {
+                    delay(millis)
+                    runInterruptible { runnable.run() }
                 }
             }, scope
         )
-    }
     
+    private fun <T> delayAndCompute0(
+        millis: Long,
+        function: Function<V, T>,
+    ): DelayableCompletableFuture<T> = DelayableCompletableFutureImpl(
+        scope.async {
+            deferred.await().let { v ->
+                delay(millis)
+                runInterruptible { function.apply(v) }
+            }
+        }, scope
+    )
 }
 
 
