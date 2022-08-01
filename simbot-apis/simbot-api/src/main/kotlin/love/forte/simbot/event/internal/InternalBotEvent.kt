@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -11,7 +11,6 @@
  *  https://www.gnu.org/licenses
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
  *
  */
 
@@ -62,10 +61,7 @@ public abstract class BotRegisteredEvent : InternalBotEvent(), BotContainer {
  *
  * 某个Bot执行了 [Bot.start].
  *
- * 因为 [Bot.start] 本质上是可挂起的，因此通常情况下bot执行`start`后，
- * 会推送并等待针对事件[BotStartedEvent]的整个处理流程完成后才会结束挂起。
- *
- * 因此对于 [BotStartedEvent] 的处理中，需要尽量避免过长时间的挂起或阻塞，且尽量避免嵌套执行start。
+ * [BotStartedEvent] 事件的推送应当是**异步**的，不应影响到bot正常的启动流程。
  *
  *
  * @see Bot.start
