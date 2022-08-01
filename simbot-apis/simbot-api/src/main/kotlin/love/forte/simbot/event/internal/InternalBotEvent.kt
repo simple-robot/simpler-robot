@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -12,12 +12,13 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
+ *
  */
 
 package love.forte.simbot.event.internal
 
-import love.forte.simbot.bot.Bot
 import love.forte.simbot.ID
+import love.forte.simbot.bot.Bot
 import love.forte.simbot.definition.BotContainer
 import love.forte.simbot.message.doSafeCast
 
@@ -37,18 +38,18 @@ public abstract class InternalBotEvent : InternalEvent() {
 /**
  * 一个被注册的bot。只要被注册就应触发。
  *
- * 由于 [love.forte.simbot.BotManager.register] 并非可挂起函数，
+ * 由于 [love.forte.simbot.bot.BotManager.register] 并非可挂起函数，
  * 因此通常情况下BotManager在完成bot注册逻辑后会立即返回，而对于 [BotRegisteredEvent] 事件的推送会异步的进行.
  *
  * 在对 [BotRegisteredEvent] 的处理时，请注意你处理的bot是 有概率已经启动、关闭甚至被清除了的，
  * 且尽量避免在此事件中对bot进行 `start` 等相关操作。
  *
- * @see love.forte.simbot.BotManager
- * @see love.forte.simbot.BotManager.register
+ * @see love.forte.simbot.bot.BotManager
+ * @see love.forte.simbot.bot.BotManager.register
  *
  * @author ForteScarlet
  */
-public abstract class BotRegisteredEvent : InternalEvent(), BotContainer {
+public abstract class BotRegisteredEvent : InternalBotEvent(), BotContainer {
     abstract override val id: ID
     abstract override val bot: Bot
 
@@ -71,7 +72,7 @@ public abstract class BotRegisteredEvent : InternalEvent(), BotContainer {
  *
  * @author ForteScarlet
  */
-public abstract class BotStartedEvent : InternalEvent(), BotContainer {
+public abstract class BotStartedEvent : InternalBotEvent(), BotContainer {
     abstract override val id: ID
     abstract override val bot: Bot
 
