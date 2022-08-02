@@ -35,18 +35,20 @@ import org.springframework.aop.framework.autoproxy.AutoProxyUtils
 import org.springframework.aop.scope.ScopedObject
 import org.springframework.aop.scope.ScopedProxyUtils
 import org.springframework.beans.factory.config.BeanDefinition
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.beans.factory.getBean
 import org.springframework.beans.factory.getBeanNamesForType
 import org.springframework.beans.factory.support.BeanDefinitionBuilder
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor
+import org.springframework.beans.factory.support.BeanNameGenerator
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
+import org.springframework.context.annotation.ImportBeanDefinitionRegistrar
 import org.springframework.core.MethodIntrospector
 import org.springframework.core.annotation.AnnotatedElementUtils
 import org.springframework.core.annotation.AnnotationUtils
+import org.springframework.core.type.AnnotationMetadata
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import kotlin.reflect.KFunction
@@ -57,12 +59,16 @@ import kotlin.reflect.jvm.kotlinFunction
  *
  * @author ForteScarlet
  */
-public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanFactoryPostProcessor,
-    BeanDefinitionRegistryPostProcessor {
+public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefinitionRegistryPostProcessor, ImportBeanDefinitionRegistrar {
     private lateinit var applicationContext: ApplicationContext
     private lateinit var beanContainer: SpringBeanContainer
     private lateinit var binderManager: BinderManager
     private lateinit var registry: BeanDefinitionRegistry
+    
+    private val globalBinderFactories: MutableList<ParameterBinderFactory> = mutableListOf()
+    private val idBinderFactories: MutableMap<String, ParameterBinderFactory> = mutableMapOf()
+    
+    
     private val logger = LoggerFactory.getLogger<SimbotListenerMethodProcessor>()
     
     override fun setApplicationContext(applicationContext: ApplicationContext) {
@@ -72,6 +78,15 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanFactor
     
     override fun postProcessBeanDefinitionRegistry(registry: BeanDefinitionRegistry) {
         this.registry = registry
+    }
+    
+    override fun registerBeanDefinitions(
+        importingClassMetadata: AnnotationMetadata,
+        registry: BeanDefinitionRegistry,
+        importBeanNameGenerator: BeanNameGenerator
+    ) {
+        // TODO scan top level binders and listeners.
+        
     }
     
     override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
@@ -93,9 +108,6 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanFactor
     }
     
     private fun resolveBinderManager(beanFactory: ConfigurableListableBeanFactory): BinderManager {
-        val globalBinderFactories: MutableList<ParameterBinderFactory> = mutableListOf()
-        val idBinderFactories: MutableMap<String, ParameterBinderFactory> = mutableMapOf()
-        
         instanceBinders(beanFactory, globalBinderFactories, idBinderFactories)
         functionalBinders(beanFactory, globalBinderFactories, idBinderFactories)
         
@@ -236,6 +248,14 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanFactor
     }
     
     
+    private fun topLevelBinders(
+        
+        globalBinderFactories: MutableList<ParameterBinderFactory>,
+        idBinderFactories: MutableMap<String, ParameterBinderFactory>,
+    ) {
+        // TODO()
+    }
+    
     private fun processListener(beanName: String, beanType: Class<*>) {
         if (!AnnotationUtils.isCandidateClass(beanType, Listener::class.java)) {
             return
@@ -309,6 +329,9 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanFactor
         )
     }
     
+    private fun resolveTopLevelListeners() {
+        TODO()
+    }
     
     private fun EventListener.resolveToBeanDefinition(
         beanName: String,
