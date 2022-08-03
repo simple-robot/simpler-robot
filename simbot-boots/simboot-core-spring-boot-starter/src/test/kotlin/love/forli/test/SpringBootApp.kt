@@ -21,6 +21,8 @@ import love.forte.simboot.annotation.ContentTrim
 import love.forte.simboot.annotation.Filter
 import love.forte.simboot.annotation.Listener
 import love.forte.simboot.spring.autoconfigure.EnableSimbot
+import love.forte.simboot.spring.autoconfigure.SimbotTopLevelBinderScan
+import love.forte.simboot.spring.autoconfigure.SimbotTopLevelListenerScan
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.ID
 import love.forte.simbot.application.Application
@@ -40,6 +42,7 @@ import org.springframework.stereotype.Component
 
 @EnableSimbot
 @SpringBootApplication
+@SimbotTopLevelListenerScan(["love.forli.test"])
 open class SpringBootApp
 
 
@@ -50,6 +53,7 @@ fun main(vararg args: String) {
             println(it)
         }
         println("END.")
+        context.close()
     }
 }
 
@@ -59,6 +63,13 @@ class Runner(val manager: EventListenerManager) : CommandLineRunner {
         println(" === Runner. manager: $manager")
     }
 }
+
+@Listener
+fun myTopListener1() = buildSimpleListener(FriendMessageEvent) {
+    process {  }
+}
+@Listener
+fun myTopListener1(event: FriendMessageEvent){}
 
 @Component
 open class MyListener {
