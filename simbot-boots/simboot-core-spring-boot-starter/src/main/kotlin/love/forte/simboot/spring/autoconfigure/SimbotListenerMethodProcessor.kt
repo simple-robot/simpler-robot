@@ -26,6 +26,7 @@ import love.forte.simboot.core.listener.KFunctionListenerProcessor
 import love.forte.simboot.core.utils.sign
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.spring.autoconfigure.utils.SpringAnnotationTool
+import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.EventListener
@@ -41,14 +42,11 @@ import org.springframework.beans.factory.getBeanNamesForType
 import org.springframework.beans.factory.support.BeanDefinitionBuilder
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor
-import org.springframework.beans.factory.support.BeanNameGenerator
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar
 import org.springframework.core.MethodIntrospector
 import org.springframework.core.annotation.AnnotatedElementUtils
 import org.springframework.core.annotation.AnnotationUtils
-import org.springframework.core.type.AnnotationMetadata
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import kotlin.reflect.KFunction
@@ -59,11 +57,14 @@ import kotlin.reflect.jvm.kotlinFunction
  *
  * @author ForteScarlet
  */
-public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefinitionRegistryPostProcessor, ImportBeanDefinitionRegistrar {
+public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefinitionRegistryPostProcessor {
     private lateinit var applicationContext: ApplicationContext
     private lateinit var beanContainer: SpringBeanContainer
     private lateinit var binderManager: BinderManager
     private lateinit var registry: BeanDefinitionRegistry
+    
+    private val tool = SpringAnnotationTool()
+    private val listenerProcessor = KFunctionListenerProcessor(tool)
     
     private val globalBinderFactories: MutableList<ParameterBinderFactory> = mutableListOf()
     private val idBinderFactories: MutableMap<String, ParameterBinderFactory> = mutableMapOf()
@@ -80,15 +81,6 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefini
         this.registry = registry
     }
     
-    override fun registerBeanDefinitions(
-        importingClassMetadata: AnnotationMetadata,
-        registry: BeanDefinitionRegistry,
-        importBeanNameGenerator: BeanNameGenerator
-    ) {
-        // TODO scan top level binders and listeners.
-        
-    }
-    
     override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
         this.binderManager = resolveBinderManager(beanFactory)
         val beanNames = beanFactory.getBeanNamesForType(Any::class.java)
@@ -100,38 +92,17 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefini
             val beanType = beanFactory.getTargetTypeSafely(beanName) ?: continue
             
             kotlin.runCatching {
-                processListener(beanName, beanType)
+                beanFactory.processListener(beanName, beanType)
             }
         }
-        
-        // Top level listener?
     }
     
     private fun resolveBinderManager(beanFactory: ConfigurableListableBeanFactory): BinderManager {
         instanceBinders(beanFactory, globalBinderFactories, idBinderFactories)
         functionalBinders(beanFactory, globalBinderFactories, idBinderFactories)
         
-        val binderManager = CoreBinderManager(globalBinderFactories, idBinderFactories)
         
-        // TODO..?
-        // val topBinderPackages = configuration.topLevelBinderScanPackage
-        // if (topBinderPackages.isNotEmpty()) {
-        //     SimbotSpringBootListenerAutoRegisterBuildConfigure.logger.debug(
-        //         "Resolving top-level function binder in {}", topBinderPackages
-        //     )
-        //     resolveTopLevelManagerTo(
-        //         configuration.classLoader,
-        //         configuration.topLevelBinderScanPackage,
-        //         globalBinderFactories,
-        //         idBinderFactories,
-        //         binderManager
-        //     )
-        // } else {
-        //     SimbotSpringBootListenerAutoRegisterBuildConfigure.logger.debug("Top-level binder package scan target is empty.")
-        // }
-        
-        
-        return binderManager
+        return CoreBinderManager(globalBinderFactories, idBinderFactories)
     }
     
     
@@ -248,23 +219,23 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefini
     }
     
     
-    private fun topLevelBinders(
+    @OptIn(InternalSimbotApi::class)
+    private fun ConfigurableListableBeanFactory.processListener(beanName: String, beanType: Class<*>) {
+        if (TopLevelEventListenerBuilder::class.java.isAssignableFrom(beanType)) {
+            val eventListener = getBean<TopLevelEventListenerBuilder>(beanName)
+                .build(listenerProcessor, binderManager, beanContainer)
+            
+            val beanDefinition = eventListener.resolveToBeanDefinition()
+            registry.registerBeanDefinition("$beanName#BUILT_LISTENER", beanDefinition)
+        }
         
-        globalBinderFactories: MutableList<ParameterBinderFactory>,
-        idBinderFactories: MutableMap<String, ParameterBinderFactory>,
-    ) {
-        // TODO()
-    }
-    
-    private fun processListener(beanName: String, beanType: Class<*>) {
         if (!AnnotationUtils.isCandidateClass(beanType, Listener::class.java)) {
             return
         }
         
         val annotatedMethods: Map<Method, Listener> = beanType.selectMethodsSafely() ?: return
         
-        val tool = SpringAnnotationTool()
-        val listenerProcessor = KFunctionListenerProcessor(tool)
+        
         
         
         annotatedMethods.forEach { (method, listenerAnnotation) ->
@@ -272,7 +243,7 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefini
                 resolveMethodToListener(beanName, method, listenerAnnotation, listenerProcessor, logger)
                     ?: return@forEach
             
-            val beanDefinition = eventListener.resolveToBeanDefinition(beanName)
+            val beanDefinition = eventListener.resolveToBeanDefinition()
             
             registry.registerBeanDefinition(eventListener.beanName(beanName), beanDefinition)
         }
@@ -329,17 +300,9 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefini
         )
     }
     
-    private fun resolveTopLevelListeners() {
-        TODO()
-    }
-    
-    private fun EventListener.resolveToBeanDefinition(
-        beanName: String,
-    ): BeanDefinition {
+    private fun EventListener.resolveToBeanDefinition(): BeanDefinition {
         return BeanDefinitionBuilder.genericBeanDefinition(EventListener::class.java) { this }
-            // .addDependsOn(beanName)
-            .setPrimary(false)
-            .beanDefinition
+            .setPrimary(false).beanDefinition
     }
     
     
@@ -363,13 +326,13 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefini
     
     private inline fun <reified A : Annotation> Class<*>.selectMethodsSafely(): Map<Method, A>? {
         return runCatching {
-            MethodIntrospector.selectMethods(this, MethodIntrospector.MetadataLookup<A> { method ->
+            MethodIntrospector.selectMethods(this, MethodIntrospector.MetadataLookup { method ->
                 AnnotatedElementUtils.findMergedAnnotation(method, A::class.java)
             })
         }.getOrNull()
     }
     
-    private fun EventListener.beanName(beanName: String): String = "simbot.listener.$beanName#$id"
+    private fun EventListener.beanName(beanName: String): String = "$beanName#$id#GENERATED_LISTENER"
     
 }
 

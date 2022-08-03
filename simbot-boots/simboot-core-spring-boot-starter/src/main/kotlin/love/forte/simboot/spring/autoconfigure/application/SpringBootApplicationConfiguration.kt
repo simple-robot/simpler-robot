@@ -19,6 +19,7 @@ package love.forte.simboot.spring.autoconfigure.application
 import love.forte.simboot.core.application.BootApplicationConfiguration
 import love.forte.simboot.core.application.BootApplicationConfiguration.Companion.DEFAULT_BOT_VERIFY_GLOB
 import love.forte.simboot.listener.ParameterBinderFactory
+import love.forte.simboot.spring.autoconfigure.EnableSimbot
 import love.forte.simbot.bot.Bot
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -40,14 +41,16 @@ public class SpringBootApplicationConfigurationProperties {
     
     
     /**
-     * 需要进行顶层监听函数扫描的包路径。为空时不扫描。默认为空。
+     * Deprecated: @see [love.forte.simboot.spring.autoconfigure.SimbotTopLevelListenerScan]
      */
+    @Deprecated("Use @SimbotTopLevelListenerScan(...)")
     public var topLevelListenerScanPackage: List<String> = emptyList()
     
     
     /**
-     * 需要进行顶层 [Binder][ParameterBinderFactory] 函数扫描的包路径。为空时不扫描。默认为空。
+     * Deprecated: @see [love.forte.simboot.spring.autoconfigure.SimbotTopLevelBinderScan]
      */
+    @Deprecated("Use @SimbotTopLevelBinderScan(...)")
     public var topLevelBinderScanPackage: List<String> = emptyList()
     
     /**
@@ -71,9 +74,13 @@ public class SpringBootApplicationConfigurationProperties {
             applicationContext.classLoader?.also {
                 config.classLoader = it
             }
-            config.topLevelListenerScanPackage = this.topLevelListenerScanPackage
-            config.topLevelBinderScanPackage = this.topLevelBinderScanPackage
             config.isAutoStartBots = this.isAutoStartBots
+    
+            
+            @Suppress("DEPRECATION")
+            config.topLevelListenerScanPackage = this.topLevelListenerScanPackage
+            @Suppress("DEPRECATION")
+            config.topLevelBinderScanPackage = this.topLevelBinderScanPackage
         }
     }
 }
@@ -92,4 +99,10 @@ public open class SpringBootApplicationConfiguration : BootApplicationConfigurat
     
     override var logger: Logger = LoggerFactory.getLogger(SpringBootApplicationConfiguration::class.java)
     override var classLoader: ClassLoader = SpringBootApplicationConfiguration::class.java.classLoader
+    
+    @Deprecated("Use @SimbotTopLevelListenerScan(...) in spring")
+    override var topLevelBinderScanPackage: List<String> = emptyList()
+    
+    @Deprecated("Use @SimbotTopLevelBinderScan(...) in spring")
+    override var topLevelListenerScanPackage: List<String> = emptyList()
 }

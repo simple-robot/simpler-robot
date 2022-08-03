@@ -82,10 +82,7 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure :
     @Autowired(required = false)
     private var listenerBuilders: Map<String, EventListenerBuilder>? = null
     
-    // override fun setApplicationContext(applicationContext: ApplicationContext) {
-    //     this.applicationContext = applicationContext
-    //     this.beanContainer = SpringBeanContainer(applicationContext)
-    // }
+    @OptIn(InternalSimbotApi::class)
     override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
         logger.debug("The size of resolved listeners is {}", listeners?.size ?: -1)
         logger.debug("The size of resolved listener builders is {}", listenerBuilders?.size ?: -1)

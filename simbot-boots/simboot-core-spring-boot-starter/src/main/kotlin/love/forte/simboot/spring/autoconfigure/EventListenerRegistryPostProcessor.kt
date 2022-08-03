@@ -84,7 +84,6 @@ public open class EventListenerRegistryPostProcessor : BeanDefinitionRegistryPos
                 if (isCompliant(returnTypeName)) {
                     try {
                         val newDefinition = AnnotatedGenericBeanDefinition(metadata, methodMetadata).apply {
-                            this.originatingBeanDefinition
                             autowireMode = AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR
                             factoryBeanName = beanName
                         }
