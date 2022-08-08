@@ -53,6 +53,12 @@ import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 import kotlin.reflect.jvm.kotlinFunction
 
+/**
+ * 顶层函数的扫描、处理器。用于扫描并处理各种指定类型的Kotlin顶层函数。
+ *
+ * @see SimbotTopLevelBinderScanProcessor
+ * @see SimbotTopLevelListenerScanProcessor
+ */
 @InternalSimbotApi
 public sealed class AbstractSimbotTopLevelScanProcessor : ImportBeanDefinitionRegistrar, EnvironmentAware,
     ResourceLoaderAware {
@@ -103,7 +109,23 @@ public sealed class AbstractSimbotTopLevelScanProcessor : ImportBeanDefinitionRe
     protected abstract fun process(context: Context)
 }
 
-
+/**
+ * 标记配置需要进行扫描的顶层监听函数。
+ *
+ * ```java
+ * @SimbotTopLevelListenerScan({"com.example.foo", "com.example.bar"})
+ * public class FooConfiguration {
+ *    // ...
+ * }
+ * ```
+ *
+ * ```kotlin
+ * @SimbotTopLevelListenerScan(["com.example.foo", "com.example.bar"])
+ * open class FooConfiguration
+ * ```
+ *
+ *
+ */
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 @Import(SimbotTopLevelListenerScanProcessor::class)
@@ -113,7 +135,7 @@ public annotation class SimbotTopLevelListenerScan(
 
 
 /**
- * 顶层listener扫描处理器
+ * 顶层listener扫描处理器。
  *
  */
 @OptIn(InternalSimbotApi::class)
@@ -278,7 +300,11 @@ public class SimbotTopLevelListenerScanProcessor : AbstractSimbotTopLevelScanPro
     }
 }
 
-
+/**
+ * 顶层监听函数解析后向容器中注册的构建函数。
+ *
+ * 用于后续的配置类提供进一步所需信息并进行最终构建。
+ */
 @InternalSimbotApi
 public fun interface TopLevelEventListenerBuilder {
     public fun build(
@@ -288,7 +314,23 @@ public fun interface TopLevelEventListenerBuilder {
     ): EventListener
 }
 
-
+/**
+ * 标记配置需要进行扫描的顶层binder函数。
+ *
+ * ```java
+ * @SimbotTopLevelBinderScan({"com.example.foo", "com.example.bar"})
+ * public class FooConfiguration {
+ *    // ...
+ * }
+ * ```
+ *
+ * ```kotlin
+ * @SimbotTopLevelBinderScan(["com.example.foo", "com.example.bar"])
+ * open class FooConfiguration
+ * ```
+ *
+ *
+ */
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 @Import(SimbotTopLevelBinderScanProcessor::class)
