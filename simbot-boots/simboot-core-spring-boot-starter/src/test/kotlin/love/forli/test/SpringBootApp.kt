@@ -21,22 +21,24 @@ import love.forte.simboot.annotation.ContentTrim
 import love.forte.simboot.annotation.Filter
 import love.forte.simboot.annotation.Listener
 import love.forte.simboot.spring.autoconfigure.EnableSimbot
-import love.forte.simboot.spring.autoconfigure.SimbotTopLevelBinderScan
 import love.forte.simboot.spring.autoconfigure.SimbotTopLevelListenerScan
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.ID
 import love.forte.simbot.application.Application
 import love.forte.simbot.core.event.buildSimpleListener
+import love.forte.simbot.core.event.simpleListener
 import love.forte.simbot.event.EventListenerManager
+import love.forte.simbot.event.EventResult
 import love.forte.simbot.event.FriendMessageEvent
 import love.forte.simbot.event.internal.BotRegisteredEvent
 import love.forte.simbot.event.internal.BotStartedEvent
+import love.forte.simbot.utils.randomIdStr
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Lazy
+import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 
 
@@ -48,7 +50,7 @@ open class SpringBootApp
 
 fun main(vararg args: String) {
     runApplication<SpringBootApp>(args = args).also { context ->
-        val listeners = context.getBeanNamesForType(love.forte.simbot.event.EventListener::class.java)
+        val listeners = context.getBeansOfType(love.forte.simbot.event.EventListener::class.java)
         listeners.forEach {
             println(it)
         }
@@ -66,25 +68,18 @@ class Runner(val manager: EventListenerManager) : CommandLineRunner {
 
 @Listener
 fun myTopListener1() = buildSimpleListener(FriendMessageEvent) {
-    process {  }
+    process { }
 }
+
 @Listener
-fun myTopListener1(event: FriendMessageEvent){}
+fun myTopListener1(event: FriendMessageEvent) {
+}
 
 @Component
 open class MyListener {
     
     @Autowired
     lateinit var application: Application
-    
-    // fun customListener(): love.forte.simbot.event.EventListener {
-    //     println("APPLICATION?: $application")
-    //     return buildSimpleListener(FriendMessageEvent) {
-    //         process {
-    //             println("Hello~")
-    //         }
-    //     }
-    // }
     
     @OptIn(ExperimentalSimbotApi::class)
     @Listener
@@ -102,5 +97,21 @@ open class MyListener {
         println("hi~")
     }
     
+    
+}
+
+@Configuration(proxyBeanMethods = false)
+open class MyListenerConfiguration2 {
+    
+    @Bean
+    open fun myListener2() = buildSimpleListener(FriendMessageEvent) {
+        process {}
+    }
+    
+    @Bean
+    open fun myListener3() = simpleListener(target = FriendMessageEvent, randomIdStr()) { e ->
+        
+        EventResult.defaults()
+    }
     
 }
