@@ -16,6 +16,7 @@
 
 package love.forte.simboot.spring.autoconfigure
 
+import love.forte.simboot.listener.ParameterBinderFactory
 import org.springframework.context.annotation.Import
 
 /**

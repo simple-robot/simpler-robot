@@ -17,42 +17,101 @@
 
 package love.forli.test
 
+import love.forte.simboot.annotation.ContentTrim
+import love.forte.simboot.annotation.Filter
 import love.forte.simboot.annotation.Listener
 import love.forte.simboot.spring.autoconfigure.EnableSimbot
-import love.forte.simbot.Api4J
-import love.forte.simbot.FragileSimbotApi
-import love.forte.simbot.bot.OriginBotManager
+import love.forte.simboot.spring.autoconfigure.SimbotTopLevelListenerScan
+import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.ID
+import love.forte.simbot.application.Application
 import love.forte.simbot.core.event.buildSimpleListener
+import love.forte.simbot.core.event.simpleListener
+import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.event.EventResult
-import love.forte.simbot.event.FriendEvent
-import love.forte.simbot.event.MessageEvent
+import love.forte.simbot.event.FriendMessageEvent
+import love.forte.simbot.event.internal.BotRegisteredEvent
+import love.forte.simbot.event.internal.BotStartedEvent
+import love.forte.simbot.utils.randomIdStr
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.EnableAspectJAutoProxy
 import org.springframework.stereotype.Component
+
 
 @EnableSimbot
 @SpringBootApplication
+@SimbotTopLevelListenerScan(["love.forli.test"])
 open class SpringBootApp
 
 
-@OptIn(FragileSimbotApi::class, Api4J::class)
 fun main(vararg args: String) {
-    val app = runApplication<SpringBootApp>(args = args)
-    
-    OriginBotManager.getAnyBot().contacts.collectToList().forEach {
-        println(it)
+    runApplication<SpringBootApp>(args = args).also { context ->
+        val listeners = context.getBeansOfType(love.forte.simbot.event.EventListener::class.java)
+        listeners.forEach {
+            println(it)
+        }
+        println("END.")
+        context.close()
     }
-    println("====end")
-    
-    app.close()
 }
 
-@Configuration
-open class RegConfig {
-    
-    fun useMirai() {
-    
+@Component
+class Runner(val manager: EventListenerManager) : CommandLineRunner {
+    override fun run(vararg args: String?) {
+        println(" === Runner. manager: $manager")
     }
+}
+
+@Listener
+fun myTopListener1() = buildSimpleListener(FriendMessageEvent) {
+    process { }
+}
+
+@Listener
+fun myTopListener1(event: FriendMessageEvent) {
+}
+
+@Component
+open class MyListener {
+    
+    @Autowired
+    lateinit var application: Application
+    
+    @OptIn(ExperimentalSimbotApi::class)
+    @Listener
+    @ContentTrim
+    @Filter("hello")
+    suspend fun BotRegisteredEvent.onReg() {
+        println(this)
+        println(bot.id)
+        bot.contact(1149159218.ID)?.send("hi!")
+    }
+    
+    @Listener
+    fun BotStartedEvent.onStart() {
+        println("Application: $application")
+        println("hi~")
+    }
+    
+    
+}
+
+@Configuration(proxyBeanMethods = false)
+open class MyListenerConfiguration2 {
+    
+    @Bean
+    open fun myListener2() = buildSimpleListener(FriendMessageEvent) {
+        process {}
+    }
+    
+    @Bean
+    open fun myListener3() = simpleListener(target = FriendMessageEvent, randomIdStr()) { e ->
+        
+        EventResult.defaults()
+    }
+    
 }

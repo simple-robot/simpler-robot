@@ -28,8 +28,10 @@ import org.springframework.context.annotation.Import
     EventListenerRegistryPostProcessor::class,
     // default binders
     DefaultBinderFactoryConfigure::class,
-    //
+    // listeners
+    SimbotListenerMethodProcessor::class,
     SimbotSpringBootListenerAutoRegisterBuildConfigure::class,
+    //
     SimbotSpringBootBotAutoRegisterBuildConfigure::class,
     SimbotSpringBootComponentAutoInstallBuildConfigure::class,
     SimbotSpringBootEventProviderAutoInstallBuildConfigure::class,
