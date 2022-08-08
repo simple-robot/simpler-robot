@@ -16,8 +16,8 @@
 
 package love.forte.simbot.event.internal
 
-import love.forte.simbot.bot.Bot
 import love.forte.simbot.ID
+import love.forte.simbot.bot.Bot
 import love.forte.simbot.definition.BotContainer
 import love.forte.simbot.message.doSafeCast
 
@@ -37,18 +37,18 @@ public abstract class InternalBotEvent : InternalEvent() {
 /**
  * 一个被注册的bot。只要被注册就应触发。
  *
- * 由于 [love.forte.simbot.BotManager.register] 并非可挂起函数，
+ * 由于 [love.forte.simbot.bot.BotManager.register] 并非可挂起函数，
  * 因此通常情况下BotManager在完成bot注册逻辑后会立即返回，而对于 [BotRegisteredEvent] 事件的推送会异步的进行.
  *
  * 在对 [BotRegisteredEvent] 的处理时，请注意你处理的bot是 有概率已经启动、关闭甚至被清除了的，
  * 且尽量避免在此事件中对bot进行 `start` 等相关操作。
  *
- * @see love.forte.simbot.BotManager
- * @see love.forte.simbot.BotManager.register
+ * @see love.forte.simbot.bot.BotManager
+ * @see love.forte.simbot.bot.BotManager.register
  *
  * @author ForteScarlet
  */
-public abstract class BotRegisteredEvent : InternalEvent(), BotContainer {
+public abstract class BotRegisteredEvent : InternalBotEvent(), BotContainer {
     abstract override val id: ID
     abstract override val bot: Bot
 
@@ -61,17 +61,14 @@ public abstract class BotRegisteredEvent : InternalEvent(), BotContainer {
  *
  * 某个Bot执行了 [Bot.start].
  *
- * 因为 [Bot.start] 本质上是可挂起的，因此通常情况下bot执行`start`后，
- * 会推送并等待针对事件[BotStartedEvent]的整个处理流程完成后才会结束挂起。
- *
- * 因此对于 [BotStartedEvent] 的处理中，需要尽量避免过长时间的挂起或阻塞，且尽量避免嵌套执行start。
+ * [BotStartedEvent] 事件的推送应当是**异步**的，不应影响到bot正常的启动流程。
  *
  *
  * @see Bot.start
  *
  * @author ForteScarlet
  */
-public abstract class BotStartedEvent : InternalEvent(), BotContainer {
+public abstract class BotStartedEvent : InternalBotEvent(), BotContainer {
     abstract override val id: ID
     abstract override val bot: Bot
 
