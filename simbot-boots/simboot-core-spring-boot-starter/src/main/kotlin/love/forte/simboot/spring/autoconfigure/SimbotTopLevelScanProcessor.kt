@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -11,6 +11,7 @@
  *  https://www.gnu.org/licenses
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
+ *
  *
  */
 
@@ -124,7 +125,7 @@ public class SimbotTopLevelListenerScanProcessor : AbstractSimbotTopLevelScanPro
     
     @OptIn(InternalSimbotApi::class)
     override fun process(context: Context) {
-        val (_, registry, importBeanNameGenerator, topFunctionSequence) = context
+        val (_, registry, beanNameGenerator, topFunctionSequence) = context
         
         val eventListenerTypeName = EventListener::class.jvmName
         val eventListenerBuilderTypeName = EventListenerBuilder::class.jvmName
@@ -172,7 +173,7 @@ public class SimbotTopLevelListenerScanProcessor : AbstractSimbotTopLevelScanPro
                     } catch (be: BeansException) {
                         logger.error(
                             "Could not resolve and register the top-level EventListener function bean. metadata={}",
-                            annotationMetadata
+                            annotationMetadata, be
                         )
                     }
                 } else {
@@ -190,7 +191,7 @@ public class SimbotTopLevelListenerScanProcessor : AbstractSimbotTopLevelScanPro
                         
                         val beanDefinition =
                             BeanDefinitionBuilder.genericBeanDefinition(TopLevelEventListenerBuilder::class.java) { listenerBuilder }.beanDefinition
-                        val beanName = DefaultBeanNameGenerator.INSTANCE.generateBeanName(
+                        val beanName = beanNameGenerator.generateBeanName(
                             beanDefinition,
                             registry
                         ) + "#GENERATED_TOP_LISTENER_FUNCTION"
@@ -308,7 +309,7 @@ public class SimbotTopLevelBinderScanProcessor : AbstractSimbotTopLevelScanProce
     override val annotationPackageAttributeName: String get() = "value"
     
     override fun process(context: Context) {
-        val (importingClassMetadata, registry, importBeanNameGenerator, topFunctionSequence) = context
+        val (_, registry, beanNameGenerator, topFunctionSequence) = context
         
         topFunctionSequence.forEach { annotationMetadata ->
             annotationMetadata.getAnnotatedMethods(methodAnnotationType.jvmName).forEach f@{ methodMetadata ->
@@ -339,7 +340,7 @@ public class SimbotTopLevelBinderScanProcessor : AbstractSimbotTopLevelScanProce
                         val beanDefinition = AnnotatedGenericBeanDefinition(annotationMetadata, methodMetadata).apply {
                             autowireMode = AbstractBeanDefinition.AUTOWIRE_CONSTRUCTOR
                         }
-                        val beanName = DefaultBeanNameGenerator.INSTANCE.generateBeanName(
+                        val beanName = beanNameGenerator.generateBeanName(
                             beanDefinition,
                             registry
                         ) + "#GENERATED_TOP_BINDER_FACTORY"
@@ -352,7 +353,8 @@ public class SimbotTopLevelBinderScanProcessor : AbstractSimbotTopLevelScanProce
                     } catch (be: BeansException) {
                         logger.error(
                             "Could not resolve and register the top-level ParameterBinderFactory function bean. metadata={}",
-                            annotationMetadata
+                            annotationMetadata,
+                            be
                         )
                     }
                 }
