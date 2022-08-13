@@ -51,24 +51,8 @@ public object RandomIDUtil {
         } while (charPos > offset)
     }
     
-    private val D = charArrayOf(
-        '1',
-        '9',
-        '0',
-        '8',
-        '3',
-        '5',
-        '6',
-        'F',
-        'O',
-        'R',
-        'T',
-        'E',
-        'S',
-        'C',
-        'A',
-        'L',
-    )
+    private const val D = "1908356FORTESCAL"
+    
     
 }
 
