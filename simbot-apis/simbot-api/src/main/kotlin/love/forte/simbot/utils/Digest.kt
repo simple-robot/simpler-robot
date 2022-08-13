@@ -62,3 +62,18 @@ public fun ByteArray.toHex(): String {
         }
     }
 }
+
+/**
+ * 将一个16进制的字符串转化为字节数组。
+ */
+public fun String.toHex(): ByteArray {
+    val result = ByteArray(length / 2)
+    for (idx in result.indices) {
+        val srcIdx = idx * 2
+        val high = this[srcIdx].toString().toInt(16) shl 4
+        val low = this[srcIdx + 1].toString().toInt(16)
+        result[idx] = (high or low).toByte()
+    }
+    
+    return result
+}
