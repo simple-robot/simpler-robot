@@ -23,6 +23,12 @@ import love.forte.simbot.ID
  *
  * 此处仅代表普通的通用信息。
  *
+ * [UserInfo] 支持解构：
+ *
+ * ```kotlin
+ * val (id, username, avatar) = userInfo
+ * ```
+ *
  * @author ForteScarlet
  */
 public interface UserInfo : IDContainer {
@@ -53,3 +59,40 @@ public interface UserInfo : IDContainer {
      */
     public val category: Category? get() = null
 }
+
+// region 解构声明
+
+/**
+ * 对 [UserInfo] 的结构解构, 第1个值。相当于 [UserInfo.id]。
+ *
+ * ```kotlin
+ * val (id, username, avatar) = user
+ * ```
+ *
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun UserInfo.component1(): ID = id
+
+/**
+ * 对 [UserInfo] 的结构解构, 第2个值。相当于 [UserInfo.username]。
+ *
+ * ```kotlin
+ * val (id, username, avatar) = user
+ * ```
+ *
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun UserInfo.component2(): String = username
+
+/**
+ * 对 [UserInfo] 的结构解构, 第3个值。相当于 [UserInfo.avatar]。
+ *
+ * ```kotlin
+ * val (id, username, avatar) = user
+ * ```
+ *
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun UserInfo.component3(): String = avatar
+
+// endregion

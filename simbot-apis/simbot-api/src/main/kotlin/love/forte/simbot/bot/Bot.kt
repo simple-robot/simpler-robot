@@ -215,41 +215,5 @@ public interface BotInfo : UserInfo {
 public infix fun Bot.isNotMe(id: ID): Boolean = !isMe(id)
 
 
-// region 解构声明
-
-/**
- * 对 [BotInfo] 的结构解构, 第1个值。相当于 [BotInfo.id]。
- *
- * ```kotlin
- * val (id, username, avatar) = bot
- * ```
- *
- */
-@Suppress("NOTHING_TO_INLINE")
-public inline operator fun BotInfo.component1(): ID = id
-
-/**
- * 对 [BotInfo] 的结构解构, 第2个值。相当于 [BotInfo.username]。
- *
- * ```kotlin
- * val (id, username, avatar) = bot
- * ```
- *
- */
-@Suppress("NOTHING_TO_INLINE")
-public inline operator fun BotInfo.component2(): String = username
-
-/**
- * 对 [BotInfo] 的结构解构, 第3个值。相当于 [BotInfo.avatar]。
- *
- * ```kotlin
- * val (id, username, avatar) = bot
- * ```
- *
- */
-@Suppress("NOTHING_TO_INLINE")
-public inline operator fun BotInfo.component3(): String = avatar
-
-// endregion
 
 
