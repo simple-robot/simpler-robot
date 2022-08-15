@@ -253,7 +253,3 @@ public inline operator fun BotInfo.component3(): String = avatar
 //endregion
 
 
-private fun a(bot: BotInfo) {
-    val (id, username, avatar) = bot
-}
-
