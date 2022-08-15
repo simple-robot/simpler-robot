@@ -32,7 +32,17 @@ public interface Friend : Contact, BotContainer, FriendInfo {
     override val avatar: String
 }
 
-
+/**
+ * 一个好友基本信息。
+ *
+ * 支持解构：
+ * ```kotlin
+ * val (id, username, avatar, remark) = friendInfo
+ * ```
+ *
+ * 解构结果前三个属性来自 [UserInfo]。
+ *
+ */
 public interface FriendInfo : UserInfo {
     override val id: ID
     override val username: String
@@ -61,3 +71,17 @@ public interface FriendInfo : UserInfo {
     public val remarkOrUsername: String get() = remark ?: username
     
 }
+
+/**
+ * [FriendInfo] 的解构扩展第4个属性，相当于 [FriendInfo.remark]。
+ *
+ * 前三个属性来自于 [UserInfo]。
+ *
+ * ```kotlin
+ * val (id, username, avatar, remark) = friendInfo
+ * ```
+ *
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun FriendInfo.component4(): String? = remark
+
