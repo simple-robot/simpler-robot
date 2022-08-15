@@ -7,12 +7,10 @@ changelog:
     - title: '⚠️ 不兼容变更'
       labels:
         - '不兼容'
-    - title: '🔧 修补缺陷'
-      labels:
-        - '缺陷'
     - title: '🔧 Bug Fix'
       labels:
         - 'bug'
+        - '缺陷'
     - title: '🎉 新特性'
       labels:
         - '特性'
