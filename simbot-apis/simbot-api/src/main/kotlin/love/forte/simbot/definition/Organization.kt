@@ -190,6 +190,11 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
  *
  * 一个组织的部分最基础的信息。
  *
+ * [OrganizationInfo] 支持解构：
+ * ```kotlin
+ * val (id, name, icon) = organizationInfo
+ * ```
+ *
  */
 public interface OrganizationInfo : IDContainer {
     

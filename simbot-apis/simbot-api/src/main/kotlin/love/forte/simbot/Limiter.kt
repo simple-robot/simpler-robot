@@ -60,6 +60,13 @@ import kotlin.experimental.ExperimentalTypeInference
  * val flow2 = flow { ... }.withLimiter(limiter)
  * ```
  *
+ * ## 解构
+ * [Limiter] 支持对 [offset]、[limit]、[batchSize] 进行解构：
+ *
+ * ```kotlin
+ * val (offset, limit, batchSize) = limiter
+ * ```
+ *
  * @see ZERO
  * @see limiter
  *
@@ -75,7 +82,7 @@ public interface Limiter {
      * 偏移量预期中的基数为 `0`, 即如果为 `0` 或者小于 `0`, 则代表从第一条数据开始获取。
      */
     public val offset: Int
-
+    
     /**
      * 限流数量，即本次所得数据量最大不应超过此限制。
      * 例如 `limit = 10`, 那么返回值结果中的最终元素数量应当 `<= 10`.
@@ -86,7 +93,7 @@ public interface Limiter {
      *
      */
     public val limit: Int
-
+    
     /**
      * 对于部分平台的实现中，很有可能是分批次查询来获取结果的。
      * 当平台支持的时候，可以通过 [batchSize] 来指定一个批次大小来限制其内部每次对于API的请求数量。
@@ -94,7 +101,7 @@ public interface Limiter {
      * 正常情况下，此值只有在 >0 的时候生效。
      */
     public val batchSize: Int
-
+    
     /**
      * [Limiter] 的默认值实现，[offset][ZERO.offset] 与 [limit][ZERO.limit] 均恒等于 `0`。
      *
@@ -103,7 +110,7 @@ public interface Limiter {
         override val offset: Int get() = 0
         override val limit: Int get() = 0
         override val batchSize: Int get() = 0
-
+        
         /**
          * 根据参数得到 [Limiter] 实例。
          *
@@ -116,7 +123,7 @@ public interface Limiter {
         @JvmOverloads
         public fun of(offset: Int = ZERO.offset, limit: Int = ZERO.limit, batchSize: Int = ZERO.batchSize): Limiter =
             if (offset <= 0 && limit <= 0 && batchSize <= 0) ZERO else LimiterImpl(offset, limit, batchSize)
-
+        
         /**
          * 根据分页信息计算得到limiter。
          *
@@ -130,6 +137,36 @@ public interface Limiter {
         }
     }
 }
+
+//region 解构扩展
+/**
+ * [Limiter] 解构扩展，第1个属性，相当于 [Limiter.offset]。
+ * ```kotlin
+ * val (offset, limit, batchSize) = limiter
+ * ```
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun Limiter.component1(): Int = offset
+
+/**
+ * [Limiter] 解构扩展，第2个属性，相当于 [Limiter.limit]。
+ * ```kotlin
+ * val (offset, limit, batchSize) = limiter
+ * ```
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun Limiter.component2(): Int = limit
+
+/**
+ * [Limiter] 解构扩展，第3个属性，相当于 [Limiter.batchSize]。
+ * ```kotlin
+ * val (offset, limit, batchSize) = limiter
+ * ```
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun Limiter.component3(): Int = batchSize
+//endregion
+
 
 /**
  * 得到一个 [Limiter] 的默认实现。
