@@ -22,6 +22,9 @@ import love.forte.simbot.bot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.action.MuteSupport
+import love.forte.simbot.event.GroupMessageEvent
+import love.forte.simbot.event.inAuthor
+import love.forte.simbot.event.useAuthor
 import love.forte.simbot.utils.item.Items
 import love.forte.simbot.utils.runInBlocking
 import kotlin.time.Duration
@@ -171,6 +174,14 @@ public interface GroupMember : Member {
 
 /**
  * 一个成员信息。
+ *
+ * [MemberInfo] 支持解构：
+ * ```kotlin
+ * val (id, username, avatar, nickname) = memberInfo
+ * ```
+ *
+ * > 前三个属性的解构扩展来自于 [UserInfo]。
+ *
  */
 public interface MemberInfo : UserInfo {
     override val id: ID
@@ -212,3 +223,15 @@ public inline val MemberInfo.validName: String? get() = nickOrUsername.ifEmpty {
  * 如果最终的结果依旧仅为空白字符串，得到null。
  */
 public inline val MemberInfo.notBlankValidName: String? get() = nickname.ifBlank { username.ifBlank { null } }
+
+
+/**
+ * [MemberInfo] 属性解构扩展，第4个属性，相当于 [MemberInfo.nickname]。
+ * ```kotlin
+ * val (id, username, avatar, nickname) = memberInfo
+ * ```
+ *
+ * > 前三个属性的解构扩展来自于 [UserInfo]。
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun MemberInfo.component4(): String = nickname
