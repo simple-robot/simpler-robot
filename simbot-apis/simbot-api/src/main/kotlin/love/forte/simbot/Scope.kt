@@ -94,7 +94,7 @@ public open class Grouping(
      */
     public companion object {
         
-        @Suppress("DEPRECATION")
+        @Suppress("DEPRECATION_ERROR")
         @JvmField
         public val EMPTY: Grouping = Grouping("".ID, "")
     }
