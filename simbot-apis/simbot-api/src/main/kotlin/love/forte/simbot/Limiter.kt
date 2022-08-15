@@ -60,6 +60,13 @@ import kotlin.experimental.ExperimentalTypeInference
  * val flow2 = flow { ... }.withLimiter(limiter)
  * ```
  *
+ * ## 解构
+ * [Limiter] 支持对 [offset]、[limit]、[batchSize] 进行解构：
+ *
+ * ```kotlin
+ * val (offset, limit, batchSize) = limiter
+ * ```
+ *
  * @see ZERO
  * @see limiter
  *
