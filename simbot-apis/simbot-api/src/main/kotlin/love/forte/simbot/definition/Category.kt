@@ -87,6 +87,24 @@ public interface Category : IDContainer {
     }
 }
 
+/**
+ * 提供 [Category] 的解构扩展。第1个参数，代表 [Category.id]。
+ * ```kotlin
+ * val (id, name) = category
+ * ```
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun Category.component1(): ID = id
+
+/**
+ * 提供 [Category] 的解构扩展。第2个参数，代表 [Category.name]。
+ * ```kotlin
+ * val (id, name) = category
+ * ```
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun Category.component2(): String = name
+
 
 /**
  * [Category] 的最低限度基础实现。
