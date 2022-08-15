@@ -54,7 +54,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * @author ForteScarlet
  */
-public interface Bot : User, Survivable,
+public interface Bot : User, BotInfo, Survivable,
     LoggerContainer, ComponentContainer,
     ContactsContainer, GroupsContainer, GuildsContainer {
     override val coroutineContext: CoroutineContext
@@ -215,7 +215,7 @@ public interface BotInfo : UserInfo {
 public infix fun Bot.isNotMe(id: ID): Boolean = !isMe(id)
 
 
-//region 解构声明
+// region 解构声明
 
 /**
  * 对 [BotInfo] 的结构解构, 第1个值。相当于 [BotInfo.id]。
@@ -250,6 +250,6 @@ public inline operator fun BotInfo.component2(): String = username
 @Suppress("NOTHING_TO_INLINE")
 public inline operator fun BotInfo.component3(): String = avatar
 
-//endregion
+// endregion
 
 
