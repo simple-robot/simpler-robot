@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -11,7 +11,6 @@
  *  https://www.gnu.org/licenses
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
  *
  */
 
@@ -95,7 +94,7 @@ public interface Bot : User, Survivable,
     /**
      * 用于检测一个 [ID] 是否属于当前BOT。一个bot可能会存在多个领域的ID，例如作为bot的client ID和作为user的普通ID。
      */
-    public fun isMe(id: ID): Boolean
+    public infix fun isMe(id: ID): Boolean
     
     
     //// image api
@@ -213,4 +212,48 @@ public interface BotInfo : UserInfo {
  *
  * @see Bot.isMe
  */
-public fun Bot.isNotMe(id: ID): Boolean = !isMe(id)
+public infix fun Bot.isNotMe(id: ID): Boolean = !isMe(id)
+
+
+//region 解构声明
+
+/**
+ * 对 [BotInfo] 的结构解构, 第1个值。相当于 [BotInfo.id]。
+ *
+ * ```kotlin
+ * val (id, username, avatar) = bot
+ * ```
+ *
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun BotInfo.component1(): ID = id
+
+/**
+ * 对 [BotInfo] 的结构解构, 第2个值。相当于 [BotInfo.username]。
+ *
+ * ```kotlin
+ * val (id, username, avatar) = bot
+ * ```
+ *
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun BotInfo.component2(): String = username
+
+/**
+ * 对 [BotInfo] 的结构解构, 第3个值。相当于 [BotInfo.avatar]。
+ *
+ * ```kotlin
+ * val (id, username, avatar) = bot
+ * ```
+ *
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun BotInfo.component3(): String = avatar
+
+//endregion
+
+
+private fun a(bot: BotInfo) {
+    val (id, username, avatar) = bot
+}
+
