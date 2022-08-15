@@ -252,4 +252,33 @@ public interface OrganizationInfo : IDContainer {
 }
 
 
+/**
+ * [OrganizationInfo] 解构扩展。第1个参数，相当于 [OrganizationInfo.id]
+ * ```kotlin
+ * val (id, name, icon) = organizationInfo
+ * ```
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun OrganizationInfo.component1(): ID = id
+
+/**
+ * [OrganizationInfo] 解构扩展。第2个参数，相当于 [OrganizationInfo.name]
+ * ```kotlin
+ * val (id, name, icon) = organizationInfo
+ * ```
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun OrganizationInfo.component2(): String = name
+
+/**
+ * [OrganizationInfo] 解构扩展。第3个参数，相当于 [OrganizationInfo.icon]
+ * ```kotlin
+ * val (id, name, icon) = organizationInfo
+ * ```
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun OrganizationInfo.component3(): String = icon
+
+
+
 ////
