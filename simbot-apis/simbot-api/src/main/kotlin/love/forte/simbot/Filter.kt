@@ -16,6 +16,8 @@
 
 package love.forte.simbot
 
+import love.forte.simbot.utils.runWithInterruptible
+
 
 /**
  *
@@ -28,14 +30,14 @@ package love.forte.simbot
  * @author ForteScarlet
  */
 public interface Filter<T> {
-
+    
     /**
      * 通过匹配目标进行检测，得到匹配结果。
      *
      */
     @JvmSynthetic
     public suspend fun test(t: T): Boolean
-
+    
 }
 
 
@@ -53,7 +55,7 @@ public interface BlockingFilter<T> : Filter<T> {
      */
     @JvmSynthetic
     override suspend fun test(t: T): Boolean {
-        return testBlocking()
+        return runWithInterruptible { testBlocking(t) }
     }
     
     /**
@@ -61,5 +63,15 @@ public interface BlockingFilter<T> : Filter<T> {
      *
      */
     @Api4J
-    public fun testBlocking(): Boolean
+    @Deprecated("Use testBlocking(T) plz", ReplaceWith("testBlocking(T)"))
+    public fun testBlocking(): Boolean = true
+    
+    /**
+     * 通过匹配目标进行阻塞的检测，得到匹配结果。
+     *
+     */
+    @Api4J
+    public fun testBlocking(t: T): Boolean
+    
+    
 }
