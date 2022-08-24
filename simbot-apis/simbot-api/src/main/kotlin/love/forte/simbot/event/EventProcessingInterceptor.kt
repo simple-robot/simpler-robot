@@ -80,6 +80,7 @@ public interface BlockingEventProcessingInterceptor : EventProcessingInterceptor
     /**
      * 阻塞的执行拦截逻辑。
      */
+    @Api4J
     public fun doIntercept(context: EventProcessingInterceptor.Context): EventProcessingResult
     
     @JvmSynthetic
@@ -164,10 +165,11 @@ public interface BlockingEventListenerInterceptor : EventListenerInterceptor {
     /**
      * 阻塞的拦截函数。
      */
+    @Api4J
     public fun doIntercept(context: EventListenerInterceptor.Context): EventResult
     
     @JvmSynthetic
-    override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult = doIntercept(context)
+    override suspend fun intercept(context: EventListenerInterceptor.Context): EventResult = runWithInterruptible { doIntercept(context) }
     
     
     override val priority: Int
