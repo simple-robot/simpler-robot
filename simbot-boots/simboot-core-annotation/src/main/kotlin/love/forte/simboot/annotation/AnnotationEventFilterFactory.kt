@@ -19,6 +19,7 @@ package love.forte.simboot.annotation
 import love.forte.simbot.Api4J
 import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.event.*
+import love.forte.simbot.utils.runWithInterruptible
 
 /**
  * 应用于 [@Filter][love.forte.simboot.annotation.Filter] 注解上的
@@ -62,7 +63,6 @@ public interface AnnotationEventFilterFactory {
  * @author ForteScarlet
  */
 @Deprecated("TODO")
-@Suppress("KDocUnresolvedReference")
 public interface AnnotationEventFilter : EventFilter {
     
     public fun init(listener: EventListener, filter: Filter, filters: Filters)
@@ -94,17 +94,27 @@ public interface AnnotationEventFilter : EventFilter {
 public interface BlockingAnnotationEventFilter : AnnotationEventFilter, BlockingEventFilter {
     
     /**
+     * @suppress 使用 `testBlocking(EventListenerProcessingContext)`
+     */
+    @Api4J
+    @Deprecated(
+        "Use testBlocking(EventListenerProcessingContext)",
+        ReplaceWith("testBlocking(context: EventListenerProcessingContext)")
+    )
+    override fun testBlocking(): Boolean = true
+    
+    /**
      * 过滤器的检测函数。通过 [EventProcessingContext] 来验证是否需要处理当前事件。
      */
     @Api4J
-    override fun testBlocking(): Boolean
-    
+    override fun testBlocking(context: EventListenerProcessingContext): Boolean
     
     /**
      * 过滤器的检测函数。通过 [EventProcessingContext] 来验证是否需要处理当前事件。
      */
     @JvmSynthetic
-    override suspend fun test(context: EventListenerProcessingContext): Boolean = testBlocking()
+    override suspend fun test(context: EventListenerProcessingContext): Boolean =
+        runWithInterruptible { testBlocking(context) }
     
     
 }
