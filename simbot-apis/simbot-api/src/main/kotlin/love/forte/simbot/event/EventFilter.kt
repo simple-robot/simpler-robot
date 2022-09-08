@@ -65,16 +65,28 @@ public interface EventFilter : Filter<EventListenerProcessingContext> {
 public interface BlockingEventFilter : EventFilter, BlockingFilter<EventListenerProcessingContext> {
     
     /**
+     * @suppress 使用 `testBlocking(EventListenerProcessingContext)`
+     */
+    @Api4J
+    @Deprecated(
+        "Use testBlocking(EventListenerProcessingContext)",
+        ReplaceWith("testBlocking(context: EventListenerProcessingContext)")
+    )
+    override fun testBlocking(): Boolean = true
+    
+    /**
      * 过滤器的检测函数。通过 [EventProcessingContext] 来验证是否需要处理当前事件。
      */
     @Api4J
-    override fun testBlocking(): Boolean
+    @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
+    override fun testBlocking(context: EventListenerProcessingContext): Boolean
     
     /**
      * 过滤器的检测函数。通过 [EventProcessingContext] 来验证是否需要处理当前事件。
      */
     @JvmSynthetic
     @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
-    override suspend fun test(context: EventListenerProcessingContext): Boolean = runWithInterruptible { testBlocking() }
+    override suspend fun test(context: EventListenerProcessingContext): Boolean =
+        runWithInterruptible { testBlocking(context) }
     
 }

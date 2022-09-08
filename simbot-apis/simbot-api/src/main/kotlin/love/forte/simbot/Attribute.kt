@@ -50,7 +50,7 @@ import kotlin.reflect.jvm.jvmName
  * 并且在进行 [Attribute.equals] 比较的时候，会对 [name] 进行比较。
  *
  *
- * **Note: 由于 [Attribute] 不保留任何类型信息，因此在使用 [Attribute] 进行类型转化的时候均为非检转化，因此你需要更严谨的使用此类型以避免出现类型转化异常。**
+ * **Note: 由于 [Attribute] 不保留任何类型信息，因此在使用 [Attribute] 进行类型转化的时候均为非检转化。你需要更严谨的使用此类型以避免出现类型转化异常。**
  *
  *
  * @see AttributeMap

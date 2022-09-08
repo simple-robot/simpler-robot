@@ -103,6 +103,7 @@ import kotlin.random.asKotlinRandom
  */
 @Serializable
 @SerialName("ID")
+@Suppress("EqualsOrHashCode")
 public sealed class ID : Comparable<ID>, Cloneable {
     /**
      * [ID] 的 [toString] 结果必须是当前ID所对应的字面值。
@@ -122,6 +123,7 @@ public sealed class ID : Comparable<ID>, Cloneable {
     }
     
     protected abstract fun doEquals(other: ID): Boolean
+    
     abstract override fun hashCode(): Int
     
     @Suppress("FunctionName")
@@ -262,7 +264,6 @@ public fun randomID(random: java.util.Random): ID = RandomIDUtil.randomID(random
 /**
  * 将一个 [AtomicInteger] 当前的**瞬时值**作为ID。
  */
-@Suppress("FunctionName")
 @get:JvmName("ID")
 public val AtomicInteger.ID: IntID
     get() = this.get().ID
@@ -270,7 +271,6 @@ public val AtomicInteger.ID: IntID
 /**
  * 将一个 [LongAdder] 当前的**瞬时值**作为ID。
  */
-@Suppress("FunctionName")
 @get:JvmName("ID")
 public val LongAdder.ID: LongID
     get() = this.sum().ID
@@ -278,7 +278,6 @@ public val LongAdder.ID: LongID
 /**
  * 将一个 [LongAccumulator] 当前的**瞬时值**作为ID。
  */
-@Suppress("FunctionName")
 @get:JvmName("ID")
 public val LongAccumulator.ID: LongID
     get() = this.get().ID
@@ -515,7 +514,6 @@ public data class FloatID(public val number: Float) : NumericalID<Float>() {
  * @see BigIntegerID
  *
  */
-@Suppress("CanBeParameter")
 @SerialName("ID.ArbitraryNumerical")
 @Serializable
 public sealed class ArbitraryNumericalID<N : Number> : NumericalID<N>()
@@ -611,7 +609,6 @@ public class BigIntegerID(override val value: BigInteger) : ArbitraryNumericalID
 /**
  * 得到一个字面值为 [BigDecimal] 的 [NumericalID].
  */
-@Suppress("FunctionName")
 @get:JvmName("ID")
 public val BigDecimal.ID: BigDecimalID
     get() = when (this) {
@@ -624,7 +621,6 @@ public val BigDecimal.ID: BigDecimalID
 /**
  * 得到一个字面值为 [BigInteger] 的 [NumericalID].
  */
-@Suppress("FunctionName")
 @get:JvmName("ID")
 public val BigInteger.ID: BigIntegerID
     get() = when (this) {
@@ -637,7 +633,6 @@ public val BigInteger.ID: BigIntegerID
 /**
  * 将 [AtomicLong] 的瞬时值转化为 [LongID]。
  */
-@Suppress("FunctionName")
 @get:JvmName("ID")
 public val AtomicLong.ID: LongID
     get() = this.toLong().ID

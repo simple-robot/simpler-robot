@@ -54,7 +54,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * @author ForteScarlet
  */
-public interface Bot : User, Survivable,
+public interface Bot : User, BotInfo, Survivable,
     LoggerContainer, ComponentContainer,
     ContactsContainer, GroupsContainer, GuildsContainer {
     override val coroutineContext: CoroutineContext
@@ -94,7 +94,7 @@ public interface Bot : User, Survivable,
     /**
      * 用于检测一个 [ID] 是否属于当前BOT。一个bot可能会存在多个领域的ID，例如作为bot的client ID和作为user的普通ID。
      */
-    public fun isMe(id: ID): Boolean
+    public infix fun isMe(id: ID): Boolean
     
     
     //// image api
@@ -116,8 +116,8 @@ public interface Bot : User, Survivable,
     
     /**
      *
-     * Deprecated: 直接通过 [Resource.asImage][Image.toImage] 构建 [Image] 实例即可。
-     * @see uploadImage
+     * Deprecated: 直接通过 [Image.of(Resource)][Image.toImage] 构建 [Image] 实例即可。
+     * @see Image.toImage
      */
     @Api4J
     @Deprecated(
@@ -212,4 +212,8 @@ public interface BotInfo : UserInfo {
  *
  * @see Bot.isMe
  */
-public fun Bot.isNotMe(id: ID): Boolean = !isMe(id)
+public infix fun Bot.isNotMe(id: ID): Boolean = !isMe(id)
+
+
+
+

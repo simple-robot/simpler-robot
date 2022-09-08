@@ -65,7 +65,19 @@ public interface EventProcessor {
 
 }
 
-
+/**
+ * 当 [eventKey] 在当前事件处理器中能够被处理时（ [EventProcessor.isProcessable] == true ），
+ * 通过 [block] 计算一个目标事件类型。
+ *
+ * [block] 计算的事件类型不做限制，但是应当尽量保证结果类型与 [eventKey] 类型一致
+ *
+ * ```kotlin
+ * eventProcessor(FooEvent) {
+ *    FooEventImpl()
+ * }
+ * ```
+ *
+ */
 public suspend inline fun EventProcessor.pushIfProcessable(
     eventKey: Event.Key<*>,
     block: () -> Event
@@ -76,7 +88,21 @@ public suspend inline fun EventProcessor.pushIfProcessable(
     return null
 }
 
-
+/**
+ * 当 [E] 在当前事件处理器中能够被处理时（ [EventProcessor.isProcessable] == true ），
+ * 通过 [block] 计算一个目标事件类型。
+ *
+ * [E] 的 [Event.Key] 通过 [Event.Key.getKey] 获取。
+ *
+ * ```kotlin
+ * eventProcessor<FooEvent> {
+ *    FooEventImpl()
+ * }
+ * ```
+ *
+ * 如果可以明确事件类型，更推荐使用 `pushIfProcessable(EventKey) { EventImpl() }` 的方式来避免反射可能导致的未知问题。
+ *
+ */
 public suspend inline fun <reified E : Event> EventProcessor.pushIfProcessable(block: () -> E): EventProcessingResult? {
     if (isProcessable(Event.Key.getKey<E>())) {
         return push(block())
