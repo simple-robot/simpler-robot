@@ -17,11 +17,10 @@
 
 package love.forte.simbot.core.event
 
-import love.forte.simbot.Api4J
-import love.forte.simbot.ExperimentalSimbotApi
-import love.forte.simbot.PriorityConstant
-import love.forte.simbot.SimbotIllegalStateException
+import love.forte.simbot.*
 import love.forte.simbot.event.*
+import love.forte.simbot.message.At
+import love.forte.simbot.message.Message
 import love.forte.simbot.utils.randomIdStr
 import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
@@ -400,4 +399,70 @@ public inline fun <E : Event> buildSimpleListener(
 @ExperimentalSimbotApi
 public inline fun <reified E : Event> buildSimpleListener(block: SimpleListenerBuilder<E>.() -> Unit): EventListener {
     return buildSimpleListener(E::class.getKey(), block)
+}
+
+// extra
+
+/**
+ * 对一个消息事件 [E] 的 [文本内容][love.forte.simbot.message.MessageContent.plainText] 进行匹配。
+ *
+ * ```kotlin
+ * buildSimpleListener(FooMessageEvent) {
+ *    matchText { event: FooMessageEvent -> // this: EventListenerProcessingContext
+ *        // ...
+ *
+ *        "MATCH-TEXT" // 需要被匹配的文本
+ *    }
+ * }
+ * ```
+ *
+ */
+public inline fun <E : MessageEvent> SimpleListenerBuilder<E>.matchText(crossinline textProvider: suspend EventListenerProcessingContext.(E) -> String) {
+    match { event ->
+        event.messageContent.plainText == textProvider(event)
+    }
+}
+
+
+/**
+ * 对一个消息事件 [E] 的 [消息元素][love.forte.simbot.message.MessageContent.messages] 中指定的类型进行校验。
+ *
+ * ```kotlin
+ * buildSimpleListener(FooMessageEvent) {
+ *   matchMessage(At, require = false) { event: FooMessageEvent, at: At, index: Int -> // this: EventListenerProcessingContext
+ *      // ...
+ *
+ *      at.target.literal != "123"
+ *   }
+ *  }
+ * ```
+ *
+ */
+public inline fun <E : MessageEvent, reified M : Message.Element<M>> SimpleListenerBuilder<E>.matchMessage(
+    messageKey: Message.Key<M>,
+    require: Boolean = true,
+    crossinline matcher: suspend EventListenerProcessingContext.(E, M, index: Int) -> Boolean,
+) {
+    match { event ->
+        var index = -1
+        event.messageContent.messages.forEach { m ->
+            messageKey.safeCast(m)?.also { targetMsg ->
+                index += 1
+                if (!matcher(event, targetMsg, index)) {
+                    return@match false
+                }
+            }
+        }
+        
+        !require || index >= 0
+    }
+}
+
+public fun a() {
+    buildSimpleListener(MessageEvent) {
+        matchMessage(At) { e, m, i ->
+            m.target.literal != "123"
+            true
+        }
+    }
 }
