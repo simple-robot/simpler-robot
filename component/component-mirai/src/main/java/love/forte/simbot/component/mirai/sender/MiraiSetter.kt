@@ -15,7 +15,8 @@
 package love.forte.simbot.component.mirai.sender
 
 import kotlinx.coroutines.CoroutineScope
-import love.forte.common.utils.*
+import love.forte.common.utils.Carrier
+import love.forte.common.utils.toCarrier
 import love.forte.simbot.api.message.assists.Flag
 import love.forte.simbot.api.message.containers.AccountCodeContainer
 import love.forte.simbot.api.message.containers.BotContainer
@@ -61,9 +62,8 @@ public class MiraiSetter(
     private val bot: Bot,
     private val defSetter: Setter,
 ) : Setter, CoroutineScope by bot {
-    private companion object : TypedCompLogger(MiraiSetter::class.java) {
-    }
-
+    private companion object : TypedCompLogger(MiraiSetter::class.java);
+    
     private lateinit var _setterInfo: SetterInfo
     private val setterInfo: SetterInfo
         get() {
@@ -181,10 +181,11 @@ public class MiraiSetter(
         timeUnit: TimeUnit,
     ): Carrier<Boolean> {
         bot.member(groupCode, memberCode).apply {
-            time.takeIf { time > 0 }?.let { t ->
-                val muteTime: Long = t timeBy timeUnit timeAs Seconds
-                this@apply.mute(muteTime.toInt())
-            } ?: this@apply.unmute()
+            if (time <= 0) {
+                unmute()
+            } else {
+                mute(timeUnit.toSeconds(time).toInt())
+            }
         }
         return true.toCarrier()
     }
