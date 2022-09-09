@@ -164,13 +164,13 @@ public interface EventResult {
      *
      * @see Truncated
      */
-    public sealed class Default : EventResult {
-        public object Truncated : Default() {
+    private sealed class Default : EventResult {
+        object Truncated : Default() {
             override val content: Any? get() = null
             override val isTruncated: Boolean get() = true
         }
-
-        public object NormalEmpty : Default() {
+    
+        object NormalEmpty : Default() {
             override val content: Any? get() = null
             override val isTruncated: Boolean get() = false
         }
