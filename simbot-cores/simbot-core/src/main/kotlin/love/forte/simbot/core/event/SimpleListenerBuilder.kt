@@ -16,9 +16,11 @@
 
 package love.forte.simbot.core.event
 
-import love.forte.simbot.*
+import love.forte.simbot.Api4J
+import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.PriorityConstant
+import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.*
-import love.forte.simbot.message.At
 import love.forte.simbot.message.Message
 import love.forte.simbot.utils.randomIdStr
 import love.forte.simbot.utils.runWithInterruptible
@@ -454,14 +456,5 @@ public inline fun <E : MessageEvent, reified M : Message.Element<M>> SimpleListe
         }
         
         !require || index >= 0
-    }
-}
-
-public fun a() {
-    buildSimpleListener(MessageEvent) {
-        matchMessage(At) { e, m, i ->
-            m.target.literal != "123"
-            true
-        }
     }
 }
