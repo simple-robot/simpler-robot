@@ -37,6 +37,11 @@ dependencies {
     compileOnly(libs.charleskorn.kaml)
     compileOnly(libs.kotlinx.serialization.protobuf)
     
+    compileOnly(libs.kotlinx.coroutines.reactive)
+    compileOnly(libs.kotlinx.coroutines.reactor)
+    compileOnly(libs.kotlinx.coroutines.rx2)
+    compileOnly(libs.kotlinx.coroutines.rx3)
+    
     testImplementation(libs.kotlinx.serialization.json)
     testImplementation(libs.kotlinx.serialization.properties)
     testImplementation(libs.charleskorn.kaml)

@@ -56,22 +56,19 @@ public interface EventResult {
      *
      * 支持的收集类型有：
      * - [kotlinx.coroutines.flow.Flow]
-     *
-     * - `org.reactivestreams.Publisher`
-     * - `reactor.core.publisher.Flux`
-     * - `reactor.core.publisher.Mono`
-     *
-     * - `io.reactivex.CompletableSource`
-     * - `io.reactivex.SingleSource`
-     * - `io.reactivex.MaybeSource`
-     * - `io.reactivex.ObservableSource`
-     * - `io.reactivex.Flowable`
-     *
-     * - `io.reactivex.rxjava3.core.CompletableSource`
-     * - `io.reactivex.rxjava3.core.SingleSource`
-     * - `io.reactivex.rxjava3.core.MaybeSource`
-     * - `io.reactivex.rxjava3.core.ObservableSource`
-     * - `io.reactivex.rxjava3.core.Flowable`
+     * - [org.reactivestreams.Publisher]
+     * - [reactor.core.publisher.Flux]
+     * - [reactor.core.publisher.Mono]
+     * - [io.reactivex.CompletableSource]
+     * - [io.reactivex.SingleSource]
+     * - [io.reactivex.MaybeSource]
+     * - [io.reactivex.ObservableSource]
+     * - [io.reactivex.Flowable]
+     * - [io.reactivex.rxjava3.core.CompletableSource]
+     * - [io.reactivex.rxjava3.core.SingleSource]
+     * - [io.reactivex.rxjava3.core.MaybeSource]
+     * - [io.reactivex.rxjava3.core.ObservableSource]
+     * - [io.reactivex.rxjava3.core.Flowable]
      *
      *
      *
