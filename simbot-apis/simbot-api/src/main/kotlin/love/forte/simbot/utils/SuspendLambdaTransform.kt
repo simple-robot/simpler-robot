@@ -31,13 +31,13 @@ import java.util.function.Function
  * Kotlin api:
  * ```kotlin
  * fun foo(block: suspend (T) -> Unit) {  }
- * fun bar(block: suspend (T) -> Unit) {  }
+ * fun bar(block: suspend T.() -> Unit) {  }
  * ```
  *
  * Use it in Java:
  * ```java
- * foo(Lambdas.toSuspend(t -> {}));
- * bar(Lambdas.toSuspend(t -> {}));
+ * foo(Lambdas.suspendConsumer(t -> {}));
+ * bar(Lambdas.suspendConsumer(t -> {}));
  * ```
  *
  *
@@ -45,7 +45,7 @@ import java.util.function.Function
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <T> toSuspend(function: Consumer<T>, isRunWithInterruptible: Boolean = true): suspend (T) -> Unit =
+public fun <T> suspendConsumer(function: Consumer<T>, isRunWithInterruptible: Boolean = true): suspend (T) -> Unit =
     if (isRunWithInterruptible) {
         { runWithInterruptible { function.accept(it) } }
     } else {
@@ -56,7 +56,7 @@ public fun <T> toSuspend(function: Consumer<T>, isRunWithInterruptible: Boolean 
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <T1, T2> toSuspend(
+public fun <T1, T2> suspendConsumer(
     function: BiConsumer<T1, T2>,
     isRunWithInterruptible: Boolean = true,
 ): suspend (T1, T2) -> Unit = if (isRunWithInterruptible) {
@@ -68,7 +68,7 @@ public fun <T1, T2> toSuspend(
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <T1, T2, T3> toSuspend(
+public fun <T1, T2, T3> suspendConsumer(
     function: Consumer3<T1, T2, T3>,
     isRunWithInterruptible: Boolean = true,
 ): suspend (T1, T2, T3) -> Unit = if (isRunWithInterruptible) {
@@ -80,7 +80,7 @@ public fun <T1, T2, T3> toSuspend(
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <T1, T2, T3, T4> toSuspend(
+public fun <T1, T2, T3, T4> suspendConsumer(
     function: Consumer4<T1, T2, T3, T4>,
     isRunWithInterruptible: Boolean = true,
 ): suspend (T1, T2, T3, T4) -> Unit = if (isRunWithInterruptible) {
@@ -92,7 +92,7 @@ public fun <T1, T2, T3, T4> toSuspend(
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <T1, T2, T3, T4, T5> toSuspend(
+public fun <T1, T2, T3, T4, T5> suspendConsumer(
     function: Consumer5<T1, T2, T3, T4, T5>,
     isRunWithInterruptible: Boolean = true,
 ): suspend (T1, T2, T3, T4, T5) -> Unit = if (isRunWithInterruptible) {
@@ -100,6 +100,50 @@ public fun <T1, T2, T3, T4, T5> toSuspend(
 } else {
     { a, b, c, d, e -> function.accept(a, b, c, d, e) }
 }
+
+/**
+ * Kotlin api:
+ * ```kotlin
+ * fun foo(block: (T) -> Unit) {  }
+ * fun bar(block: T.() -> Unit) {  }
+ * ```
+ *
+ * Use it in Java:
+ * ```java
+ * foo(Lambdas.eliminateUnit(t -> {}));
+ * bar(Lambdas.eliminateUnit(t -> {}));
+ * ```
+ *
+ *
+ */
+@Api4J
+@ExperimentalSimbotApi
+public fun <T> eliminateUnit(function: Consumer<T>): (T) -> Unit = function::accept
+
+
+@Api4J
+@ExperimentalSimbotApi
+public fun <T1, T2> eliminateUnit(
+    function: BiConsumer<T1, T2>,
+): (T1, T2) -> Unit = function::accept
+
+@Api4J
+@ExperimentalSimbotApi
+public fun <T1, T2, T3> eliminateUnit(
+    function: Consumer3<T1, T2, T3>,
+): (T1, T2, T3) -> Unit = function::accept
+
+@Api4J
+@ExperimentalSimbotApi
+public fun <T1, T2, T3, T4> eliminateUnit(
+    function: Consumer4<T1, T2, T3, T4>,
+): (T1, T2, T3, T4) -> Unit = function::accept
+
+@Api4J
+@ExperimentalSimbotApi
+public fun <T1, T2, T3, T4, T5> eliminateUnit(
+    function: Consumer5<T1, T2, T3, T4, T5>,
+): (T1, T2, T3, T4, T5) -> Unit = function::accept
 
 @Api4J
 @ExperimentalSimbotApi
@@ -130,8 +174,8 @@ public fun interface Consumer5<T1, T2, T3, T4, T5> {
  *
  * Use it in Java:
  * ```java
- * foo(Lambdas.toSuspend(() -> new T()));
- * foo(Lambdas.toSuspend(T::new));
+ * foo(Lambdas.suspendSupplier(() -> new T()));
+ * foo(Lambdas.suspendSupplier(T::new));
  * ```
  *
  *
@@ -139,7 +183,7 @@ public fun interface Consumer5<T1, T2, T3, T4, T5> {
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <R> toSuspend(function: Supplier<R>, isRunWithInterruptible: Boolean = true): suspend () -> R =
+public fun <R> suspendSupplier(function: Supplier<R>, isRunWithInterruptible: Boolean = true): suspend () -> R =
     if (isRunWithInterruptible) {
         { runWithInterruptible { function.get() } }
     } else {
@@ -150,11 +194,13 @@ public fun <R> toSuspend(function: Supplier<R>, isRunWithInterruptible: Boolean 
  * Kotlin api:
  * ```kotlin
  * fun foo(block: suspend (T) -> R) {  }
+ * fun bar(block: suspend T.() -> R) {  }
  * ```
  *
  * Use it in Java:
  * ```java
- * foo(Lambdas.toSuspend(t -> new R()));
+ * foo(Lambdas.suspendFunction(t -> new R()));
+ * bar(Lambdas.suspendFunction(t -> new R()));
  * ```
  *
  *
@@ -162,7 +208,7 @@ public fun <R> toSuspend(function: Supplier<R>, isRunWithInterruptible: Boolean 
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <T, R> toSuspend(function: Function<T, R>, isRunWithInterruptible: Boolean = true): suspend (T) -> R =
+public fun <T, R> suspendFunction(function: Function<T, R>, isRunWithInterruptible: Boolean = true): suspend (T) -> R =
     if (isRunWithInterruptible) {
         { runWithInterruptible { function.apply(it) } }
     } else {
@@ -173,7 +219,7 @@ public fun <T, R> toSuspend(function: Function<T, R>, isRunWithInterruptible: Bo
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <T1, T2, R> toSuspend(
+public fun <T1, T2, R> suspendFunction(
     function: BiFunction<T1, T2, R>,
     isRunWithInterruptible: Boolean = true,
 ): suspend (T1, T2) -> R =
@@ -187,7 +233,7 @@ public fun <T1, T2, R> toSuspend(
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <T1, T2, T3, R> toSuspend(
+public fun <T1, T2, T3, R> suspendFunction(
     function: (T1, T2, T3) -> R,
     isRunWithInterruptible: Boolean = true,
 ): suspend (T1, T2, T3) -> R =
@@ -200,7 +246,7 @@ public fun <T1, T2, T3, R> toSuspend(
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <T1, T2, T3, T4, R> toSuspend(
+public fun <T1, T2, T3, T4, R> suspendFunction(
     function: (T1, T2, T3, T4) -> R,
     isRunWithInterruptible: Boolean = true,
 ): suspend (T1, T2, T3, T4) -> R =
@@ -214,7 +260,7 @@ public fun <T1, T2, T3, T4, R> toSuspend(
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <T1, T2, T3, T4, T5, R> toSuspend(
+public fun <T1, T2, T3, T4, T5, R> suspendFunction(
     function: (T1, T2, T3, T4, T5) -> R,
     isRunWithInterruptible: Boolean = true,
 ): suspend (T1, T2, T3, T4, T5) -> R =
@@ -223,6 +269,8 @@ public fun <T1, T2, T3, T4, T5, R> toSuspend(
     } else {
         { a, b, c, d, e -> function(a, b, c, d, e) }
     }
+
+
 // endregion
 
 
