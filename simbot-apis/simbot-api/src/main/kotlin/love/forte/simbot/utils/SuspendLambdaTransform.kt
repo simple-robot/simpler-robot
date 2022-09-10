@@ -45,7 +45,7 @@ import java.util.function.Function
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <T> suspendConsumer(function: Consumer<T>, isRunWithInterruptible: Boolean = true): suspend (T) -> Unit =
+public fun <T> suspendConsumer(isRunWithInterruptible: Boolean = true, function: Consumer<T>): suspend (T) -> Unit =
     if (isRunWithInterruptible) {
         { runWithInterruptible { function.accept(it) } }
     } else {
@@ -57,8 +57,8 @@ public fun <T> suspendConsumer(function: Consumer<T>, isRunWithInterruptible: Bo
 @Api4J
 @ExperimentalSimbotApi
 public fun <T1, T2> suspendConsumer(
-    function: BiConsumer<T1, T2>,
     isRunWithInterruptible: Boolean = true,
+    function: BiConsumer<T1, T2>,
 ): suspend (T1, T2) -> Unit = if (isRunWithInterruptible) {
     { a, b -> runWithInterruptible { function.accept(a, b) } }
 } else {
@@ -69,8 +69,8 @@ public fun <T1, T2> suspendConsumer(
 @Api4J
 @ExperimentalSimbotApi
 public fun <T1, T2, T3> suspendConsumer(
-    function: Consumer3<T1, T2, T3>,
     isRunWithInterruptible: Boolean = true,
+    function: Consumer3<T1, T2, T3>,
 ): suspend (T1, T2, T3) -> Unit = if (isRunWithInterruptible) {
     { a, b, c -> runWithInterruptible { function.accept(a, b, c) } }
 } else {
@@ -81,8 +81,8 @@ public fun <T1, T2, T3> suspendConsumer(
 @Api4J
 @ExperimentalSimbotApi
 public fun <T1, T2, T3, T4> suspendConsumer(
-    function: Consumer4<T1, T2, T3, T4>,
     isRunWithInterruptible: Boolean = true,
+    function: Consumer4<T1, T2, T3, T4>,
 ): suspend (T1, T2, T3, T4) -> Unit = if (isRunWithInterruptible) {
     { a, b, c, d -> runWithInterruptible { function.accept(a, b, c, d) } }
 } else {
@@ -93,8 +93,8 @@ public fun <T1, T2, T3, T4> suspendConsumer(
 @Api4J
 @ExperimentalSimbotApi
 public fun <T1, T2, T3, T4, T5> suspendConsumer(
-    function: Consumer5<T1, T2, T3, T4, T5>,
     isRunWithInterruptible: Boolean = true,
+    function: Consumer5<T1, T2, T3, T4, T5>,
 ): suspend (T1, T2, T3, T4, T5) -> Unit = if (isRunWithInterruptible) {
     { a, b, c, d, e -> runWithInterruptible { function.accept(a, b, c, d, e) } }
 } else {
@@ -183,7 +183,7 @@ public fun interface Consumer5<T1, T2, T3, T4, T5> {
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <R> suspendSupplier(function: Supplier<R>, isRunWithInterruptible: Boolean = true): suspend () -> R =
+public fun <R> suspendSupplier(isRunWithInterruptible: Boolean = true, function: Supplier<R>): suspend () -> R =
     if (isRunWithInterruptible) {
         { runWithInterruptible { function.get() } }
     } else {
@@ -208,7 +208,7 @@ public fun <R> suspendSupplier(function: Supplier<R>, isRunWithInterruptible: Bo
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
-public fun <T, R> suspendFunction(function: Function<T, R>, isRunWithInterruptible: Boolean = true): suspend (T) -> R =
+public fun <T, R> suspendFunction(isRunWithInterruptible: Boolean = true, function: Function<T, R>): suspend (T) -> R =
     if (isRunWithInterruptible) {
         { runWithInterruptible { function.apply(it) } }
     } else {
@@ -220,8 +220,8 @@ public fun <T, R> suspendFunction(function: Function<T, R>, isRunWithInterruptib
 @Api4J
 @ExperimentalSimbotApi
 public fun <T1, T2, R> suspendFunction(
-    function: BiFunction<T1, T2, R>,
     isRunWithInterruptible: Boolean = true,
+    function: BiFunction<T1, T2, R>,
 ): suspend (T1, T2) -> R =
     if (isRunWithInterruptible) {
         { a, b -> runWithInterruptible { function.apply(a, b) } }
@@ -234,8 +234,8 @@ public fun <T1, T2, R> suspendFunction(
 @Api4J
 @ExperimentalSimbotApi
 public fun <T1, T2, T3, R> suspendFunction(
-    function: (T1, T2, T3) -> R,
     isRunWithInterruptible: Boolean = true,
+    function: (T1, T2, T3) -> R,
 ): suspend (T1, T2, T3) -> R =
     if (isRunWithInterruptible) {
         { a, b, c -> runWithInterruptible { function(a, b, c) } }
@@ -247,8 +247,8 @@ public fun <T1, T2, T3, R> suspendFunction(
 @Api4J
 @ExperimentalSimbotApi
 public fun <T1, T2, T3, T4, R> suspendFunction(
-    function: (T1, T2, T3, T4) -> R,
     isRunWithInterruptible: Boolean = true,
+    function: (T1, T2, T3, T4) -> R,
 ): suspend (T1, T2, T3, T4) -> R =
     if (isRunWithInterruptible) {
         { a, b, c, d -> runWithInterruptible { function(a, b, c, d) } }
@@ -261,8 +261,8 @@ public fun <T1, T2, T3, T4, R> suspendFunction(
 @Api4J
 @ExperimentalSimbotApi
 public fun <T1, T2, T3, T4, T5, R> suspendFunction(
-    function: (T1, T2, T3, T4, T5) -> R,
     isRunWithInterruptible: Boolean = true,
+    function: (T1, T2, T3, T4, T5) -> R,
 ): suspend (T1, T2, T3, T4, T5) -> R =
     if (isRunWithInterruptible) {
         { a, b, c, d, e -> runWithInterruptible { function(a, b, c, d, e) } }
