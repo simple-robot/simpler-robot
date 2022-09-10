@@ -122,6 +122,20 @@ public fun interface Consumer5<T1, T2, T3, T4, T5> {
 
 // region providers & functions
 
+/**
+ * Kotlin api:
+ * ```kotlin
+ * fun foo(block: suspend () -> T) {  }
+ * ```
+ *
+ * Use it in Java:
+ * ```java
+ * foo(Lambdas.toSuspend(() -> new T()));
+ * foo(Lambdas.toSuspend(T::new));
+ * ```
+ *
+ *
+ */
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
@@ -132,7 +146,19 @@ public fun <R> toSuspend(function: Supplier<R>, isRunWithInterruptible: Boolean 
         { function.get() }
     }
 
-
+/**
+ * Kotlin api:
+ * ```kotlin
+ * fun foo(block: suspend (T) -> R) {  }
+ * ```
+ *
+ * Use it in Java:
+ * ```java
+ * foo(Lambdas.toSuspend(t -> new R()));
+ * ```
+ *
+ *
+ */
 @JvmOverloads
 @Api4J
 @ExperimentalSimbotApi
