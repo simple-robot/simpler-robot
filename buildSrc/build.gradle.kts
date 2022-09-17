@@ -5,6 +5,7 @@ plugins {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     gradlePluginPortal()
 }
@@ -21,7 +22,7 @@ dependencies {
     
     // see https://github.com/gradle-nexus/publish-plugin
     implementation("io.github.gradle-nexus:publish-plugin:1.1.0")
-    implementation("love.forte.plugin.suspend-transform:suspend-transform-plugin-gradle:0.0.1")
+    implementation("love.forte.plugin.suspend-transform:suspend-transform-plugin-gradle:0.0.2")
 }
 
 val compileKotlin: KotlinCompile by tasks

@@ -1,3 +1,5 @@
+import love.forte.plugin.suspendtrans.SuspendTransformConfiguration
+
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
@@ -19,6 +21,7 @@ plugins {
     id("simbot.maven-publish")
     kotlin("plugin.serialization")
     kotlin("kapt")
+    id("love.forte.plugin.suspend-transform")
 }
 
 dependencies {
@@ -28,6 +31,8 @@ dependencies {
     api(libs.kotlinx.coroutines.jdk8)
     api(libs.kotlinx.serialization.core)
     
+    // todo
+    api("love.forte.plugin.suspend-transform:suspend-transform-runtime:0.0.2")
     
     api(libs.slf4j.api)
     compileOnly(libs.jetbrains.annotations)
@@ -36,7 +41,6 @@ dependencies {
     compileOnly(libs.kotlinx.serialization.properties)
     compileOnly(libs.charleskorn.kaml)
     compileOnly(libs.kotlinx.serialization.protobuf)
-    
     compileOnly(libs.kotlinx.coroutines.reactive)
     compileOnly(libs.kotlinx.coroutines.reactor)
     compileOnly(libs.kotlinx.coroutines.rx2)
@@ -52,4 +56,15 @@ dependencies {
     testImplementation(libs.openjdk.jmh.generator.annprocess)
     kaptTest(libs.openjdk.jmh.generator.annprocess)
     testAnnotationProcessor(libs.openjdk.jmh.generator.annprocess)
+}
+
+suspendTransform {
+    //includeRuntime = false
+    jvm {
+        val api4JIncludeAnnotation = SuspendTransformConfiguration.IncludeAnnotation("love.forte.simbot.Api4J")
+        syntheticBlockingFunctionIncludeAnnotations = listOf(api4JIncludeAnnotation)
+        syntheticAsyncFunctionIncludeAnnotations = listOf(api4JIncludeAnnotation)
+        jvmBlockingFunctionName = "love.forte.simbot.utils.$\$runInBlocking"
+        jvmAsyncFunctionName = "love.forte.simbot.utils.$\$runInAsync"
+    }
 }

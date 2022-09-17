@@ -21,6 +21,7 @@ import love.forte.simbot.bot.Bot
 import love.forte.simbot.action.SendSupport
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageReceipt
+import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -53,7 +54,7 @@ public interface Contact : User, SendSupport, BotContainer {
      */
     @Api4J
     @Deprecated("Just use sendBlocking.", ReplaceWith("sendBlocking(message)"), level = DeprecationLevel.ERROR)
-    override fun sendIfSupportBlocking(message: Message): MessageReceipt = sendBlocking(message)
+    override fun sendIfSupportBlocking(message: Message): MessageReceipt = runInBlocking { send(message) }
     
 }
 

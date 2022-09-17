@@ -17,6 +17,8 @@
 package love.forte.simbot.ability
 
 import kotlinx.coroutines.CompletionHandler
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.utils.runInBlocking
 import java.util.concurrent.CompletableFuture
@@ -28,24 +30,21 @@ import java.util.concurrent.Future
  *
  * @author ForteScarlet
  */
+@JvmBlocking
+@JvmAsync
 public interface Survivable : Switchable {
-
+    
     /**
      * 挂起, 直到当前实例被 [cancel] 或完成.
-     *
-     * Java中考虑使用 [waiting] 或者通过 [toAsync] 得到 [Future] 来更灵活的操作。
-     *
-     * @see waiting
-     * @see toAsync
      */
-    @JvmSynthetic
+    // @JvmSynthetic
     public suspend fun join()
-
+    
     /**
      * 当完成（或被cancel）时执行一段处理。
      */
     public fun invokeOnCompletion(handler: CompletionHandler)
-
+    
     /**
      * 阻塞当前线程并等待 [join] 的挂起结束。
      *
@@ -57,7 +56,7 @@ public interface Survivable : Switchable {
     public fun waiting() {
         runInBlocking { join() }
     }
-
+    
     /**
      * 得到一个 [Future], 其结果会在当前 [Survivable] 被终止后被推送。
      *
@@ -65,7 +64,7 @@ public interface Survivable : Switchable {
      *
      */
     @Api4J
-    public fun toAsync(): Future<Unit> {
+    public fun toAsync0(): Future<Unit> {
         val future = CompletableFuture<Unit>()
         invokeOnCompletion { e ->
             if (e != null) {
@@ -76,14 +75,13 @@ public interface Survivable : Switchable {
         }
         return future
     }
-
-    @JvmSynthetic
+    
+    // @JvmSynthetic
     override suspend fun start(): Boolean
-
-    @JvmSynthetic
+    
+    // @JvmSynthetic
     override suspend fun cancel(reason: Throwable?): Boolean
-
-
+    
+    
 }
-
 

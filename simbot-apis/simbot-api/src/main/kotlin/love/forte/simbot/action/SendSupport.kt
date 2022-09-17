@@ -16,10 +16,9 @@
 
 package love.forte.simbot.action
 
-import love.forte.simbot.Api4J
-import love.forte.simbot.ID
-import love.forte.simbot.SimbotIllegalArgumentException
-import love.forte.simbot.SimbotIllegalStateException
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
+import love.forte.simbot.*
 import love.forte.simbot.definition.Objective
 import love.forte.simbot.event.Event
 import love.forte.simbot.message.*
@@ -51,7 +50,9 @@ public interface SendSupport {
      * @throws UnsupportedActionException 当不允许向成员发送消息时
      *
      */
-    @JvmSynthetic
+    // @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync
     public suspend fun send(message: Message): MessageReceipt
 
 
@@ -60,7 +61,7 @@ public interface SendSupport {
      * @see send
      */
     @Api4J
-    public fun sendBlocking(message: Message): MessageReceipt = runInBlocking { send(message) }
+    public fun sendBlocking0(message: Message): MessageReceipt = runInBlocking { send(message) }
 
     /**
      * 发送消息，并得到一个回执单。
@@ -71,7 +72,9 @@ public interface SendSupport {
      * @throws SimbotIllegalStateException 如果当前状态存在异常
      *
      */
-    @JvmSynthetic
+    // @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync
     public suspend fun send(message: MessageContent): MessageReceipt = send(message.messages)
 
 
@@ -81,13 +84,15 @@ public interface SendSupport {
      * @see send
      */
     @Api4J
-    public fun sendBlocking(message: MessageContent): MessageReceipt = runInBlocking { send(message) }
+    public fun sendBlocking0(message: MessageContent): MessageReceipt = runInBlocking { send(message) }
 
     /**
      * 发送一段纯文本消息。
      * @see send
      */
-    @JvmSynthetic
+    // @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync
     public suspend fun send(text: String): MessageReceipt = send(Text.of(text))
 
     /**
@@ -95,7 +100,7 @@ public interface SendSupport {
      * @see send
      */
     @Api4J
-    public fun sendBlocking(text: String): MessageReceipt = runInBlocking { send(text) }
+    public fun sendBlocking0(text: String): MessageReceipt = runInBlocking { send(text) }
 
 
 }

@@ -95,7 +95,7 @@ public interface SimbootContext : Survivable {
     @Api4J
     @Throws(InterruptedException::class, ExecutionException::class)
     public fun joinBlocking() {
-        toAsync().get()
+        toAsync0().get()
     }
 
     /**
@@ -106,7 +106,7 @@ public interface SimbootContext : Survivable {
      *
      */
     @Api4J
-    override fun toAsync(): Future<Unit> {
+    override fun toAsync0(): Future<Unit> {
         val future = CompletableFuture<Unit>()
         invokeOnCompletion { reason ->
             if (reason != null) {

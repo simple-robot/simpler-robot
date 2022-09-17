@@ -18,6 +18,8 @@ package love.forte.simbot.definition
 
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
+import love.forte.simbot.JB
+import love.forte.simbot.JA
 import love.forte.simbot.Timestamp
 import love.forte.simbot.action.MuteSupport
 import love.forte.simbot.utils.item.Items
@@ -25,51 +27,7 @@ import love.forte.simbot.utils.runInBlocking
 import kotlin.time.Duration
 
 
-/**
- * 一个 **组织** 结构（中的一员）。
- *
- *
- * [组织-百度百科](https://baike.baidu.com/item/组织/5105529):
- *
- *     1. 组织必须是以人为中心，把人、财、物合理配合为一体，并保持相对稳定而形成的一个社会实体。
- *     2. 组织必须具有为本组织全体成员所认可并为之奋斗的共同目标。
- *     3. 组织必须保持一个明确的边界，以区别于其他组织和外部环境。上述三条，是组织存在的必要条件。
- *
- * ## 成员
- * 一个组织下，可以存在多个 [成员][Member]. 且成员中可能存在拥有一定程度权限的管理员。
- *
- * 查询所有管理员：
- * ```kotlin
- *    organization.members().filter { it.isAdmin() }
- * ```
- *
- *
- * ## 财产
- * 在组织下，此组织可能存在一定程度的 "财产". 财产的表现形式是多样化的，例如在QQ群中保存的各种文库文件、相册图片等。应由实现者自行实现。
- *
- *
- * ## 职能
- * 一个组织可能存在各种职能，例如一个“文字频道”，其职能允许成员们在其中进行文字交流，而一个“语音频道”则可能允许其成员们在其中进行语音聊天。
- *
- * 对于能够交流的组织（下的成员），将其定义为一个 [聊天室][ChatRoom]。 聊天室应当实现于 [Organization] 下的接口并为其提供消息发送的能力。
- *
- *
- * _有关职能的约定仍需考虑。_
- *
- *
- *
- * 在一些常见场景下，组织可以表示为一个群聊，或者一个频道。群聊是没有上下级的，但是频道会有。
- * 需要考虑的是，不同类型的组织可能所拥有的权能不同。有可能能够发送消息，有可能不能。
- *
- * 你可以参考 [组织概述](https://www.yuque.com/simpler-robot/simpler-robot-doc/dt3ukr) 中的相关对比图。
- *
- * @see ChatRoom
- * @see Group
- * @see Guild
- * @see Channel
- *
- * @author ForteScarlet
- */
+
 public interface Organization : Objective, OrganizationInfo, MuteSupport, BotContainer {
     
     /**
@@ -95,7 +53,7 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
     /**
      * 组织的拥有者信息。
      */
-    @JvmSynthetic
+    // @JvmSynthetic
     public suspend fun owner(): Member
     
     /**

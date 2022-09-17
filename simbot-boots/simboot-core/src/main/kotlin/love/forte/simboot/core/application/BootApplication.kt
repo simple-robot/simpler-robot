@@ -330,13 +330,13 @@ public interface BootApplication : SimpleApplication, SimbootContext {
      * [BootApplication] 不需要执行 [start], 将会始终返回 `true`。
      */
     @OptIn(Api4J::class)
-    override fun startBlocking(): Boolean = true
+    override fun startBlocking0(): Boolean = true
     
     /**
      * [BootApplication] 不需要执行 [start], 将会始终返回 `true`。
      */
     @OptIn(Api4J::class)
-    override fun startAsync(): CompletableFuture<Boolean> {
+    override fun startAsync0(): CompletableFuture<Boolean> {
         return CompletableFuture<Boolean>().also {
             it.complete(true)
         }

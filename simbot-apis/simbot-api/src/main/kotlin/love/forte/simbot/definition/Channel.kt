@@ -37,7 +37,6 @@ public interface Channel : ChatRoom, ChannelInfo {
     override val createTime: Timestamp
     override val ownerId: ID
     
-    @JvmSynthetic
     override suspend fun owner(): Member
     
     @Api4J
