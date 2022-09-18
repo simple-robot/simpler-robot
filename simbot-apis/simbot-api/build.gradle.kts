@@ -32,7 +32,7 @@ dependencies {
     api(libs.kotlinx.serialization.core)
     
     // todo
-    api("love.forte.plugin.suspend-transform:suspend-transform-runtime:0.0.2")
+    //api("love.forte.plugin.suspend-transform:suspend-transform-runtime:0.0.2")
     
     api(libs.slf4j.api)
     compileOnly(libs.jetbrains.annotations)
@@ -59,7 +59,7 @@ dependencies {
 }
 
 suspendTransform {
-    //includeRuntime = false
+    includeRuntime = false
     jvm {
         val api4JIncludeAnnotation = SuspendTransformConfiguration.IncludeAnnotation("love.forte.simbot.Api4J")
         syntheticBlockingFunctionIncludeAnnotations = listOf(api4JIncludeAnnotation)
