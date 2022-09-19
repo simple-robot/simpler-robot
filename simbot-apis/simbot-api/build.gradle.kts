@@ -21,7 +21,7 @@ plugins {
     id("simbot.maven-publish")
     kotlin("plugin.serialization")
     kotlin("kapt")
-    id("love.forte.plugin.suspend-transform")
+    id("simbot.suspend-transform-configure")
 }
 
 dependencies {
@@ -30,9 +30,6 @@ dependencies {
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.jdk8)
     api(libs.kotlinx.serialization.core)
-    
-    // todo
-    //api("love.forte.plugin.suspend-transform:suspend-transform-runtime:0.0.2")
     
     api(libs.slf4j.api)
     compileOnly(libs.jetbrains.annotations)
@@ -58,13 +55,3 @@ dependencies {
     testAnnotationProcessor(libs.openjdk.jmh.generator.annprocess)
 }
 
-suspendTransform {
-    includeRuntime = false
-    jvm {
-        val api4JIncludeAnnotation = SuspendTransformConfiguration.IncludeAnnotation("love.forte.simbot.Api4J")
-        syntheticBlockingFunctionIncludeAnnotations = listOf(api4JIncludeAnnotation)
-        syntheticAsyncFunctionIncludeAnnotations = listOf(api4JIncludeAnnotation)
-        jvmBlockingFunctionName = "love.forte.simbot.utils.$\$runInBlocking"
-        jvmAsyncFunctionName = "love.forte.simbot.utils.$\$runInAsync"
-    }
-}

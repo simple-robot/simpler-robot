@@ -42,44 +42,23 @@ public interface Switchable : DelayableCoroutineScope {
      * 启动操作.
      * @return 从未启动且尚未关闭的情况下启动成功则返回true。
      */
-    @JvmSynthetic
     public suspend fun start(): Boolean
-    
-    @Api4J
-    @Throws(InterruptedException::class)
-    public fun startBlocking0(): Boolean = runInBlocking { start() }
-    
-    @Api4J
-    public fun startAsync0(): CompletableFuture<Boolean> {
-        return async { start() }.asCompletableFuture()
-    }
     
     /**
      * 关闭操作.
      *
      * @return 尚未关闭且关闭成功时返回true。
      */
-    @JvmSynthetic
     public suspend fun cancel(reason: Throwable? = null): Boolean
     
     @Api4J
     @Throws(InterruptedException::class)
-    public fun cancelBlocking0(reason: Throwable?): Boolean = runInBlocking { cancel(reason) }
+    public fun cancelBlocking(): Boolean = runInBlocking { cancel() }
     
     @Api4J
-    @Throws(InterruptedException::class)
-    public fun cancelBlocking0(): Boolean = runInBlocking { cancel() }
-    
-    @Api4J
-    public fun cancelAsync0(): CompletableFuture<Boolean> {
+    public fun cancelAsync(): CompletableFuture<Boolean> {
         return async { cancel() }.asCompletableFuture()
     }
-    
-    @Api4J
-    public fun cancelAsync0(reason: Throwable?): CompletableFuture<Boolean> {
-        return async { cancel(reason) }.asCompletableFuture()
-    }
-    
     
     /**
      * 是否已经启动过了。

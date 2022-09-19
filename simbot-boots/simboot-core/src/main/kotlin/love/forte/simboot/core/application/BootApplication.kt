@@ -316,31 +316,10 @@ public interface BootApplication : SimpleApplication, SimbootContext {
      */
     public val beanContainer: BeanContainer
     
-    @Api4J
-    override fun joinBlocking() {
-        runInBlocking { join() }
-    }
-    
     /**
      * [BootApplication] 不需要执行 [start], 将会始终返回 `true`。
      */
     override suspend fun start(): Boolean = true
-    
-    /**
-     * [BootApplication] 不需要执行 [start], 将会始终返回 `true`。
-     */
-    @OptIn(Api4J::class)
-    override fun startBlocking0(): Boolean = true
-    
-    /**
-     * [BootApplication] 不需要执行 [start], 将会始终返回 `true`。
-     */
-    @OptIn(Api4J::class)
-    override fun startAsync0(): CompletableFuture<Boolean> {
-        return CompletableFuture<Boolean>().also {
-            it.complete(true)
-        }
-    }
     
     /**
      * [BootApplication] 从一开始就是启用状态。
