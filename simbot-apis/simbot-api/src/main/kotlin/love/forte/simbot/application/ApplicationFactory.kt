@@ -16,6 +16,7 @@
 
 package love.forte.simbot.application
 
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotVerifyInfo
 import love.forte.simbot.Component
@@ -41,6 +42,7 @@ public interface ApplicationFactory<
     /**
      * 提供配置函数和构建器函数，构建一个 [Application] 实例。
      */
+    @JvmBlocking
     public suspend fun create(configurator: Config.() -> Unit, builder: suspend Builder.(Config) -> Unit): A
 }
 

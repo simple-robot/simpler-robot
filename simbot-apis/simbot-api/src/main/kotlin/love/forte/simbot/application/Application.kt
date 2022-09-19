@@ -18,6 +18,8 @@ package love.forte.simbot.application
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.modules.SerializersModule
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.*
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.event.EventListenerManager
@@ -118,34 +120,20 @@ public interface Application : CoroutineScope {
     /**
      * 挂起此应用直至其被终止。
      */
-    @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync(baseName = "toFuture", suffix = "")
     public suspend fun join()
     
     
     /**
-     * 阻塞的 [join] 当前应用直到其被关闭。
-     */
-    @Api4J
-    public fun joinBlocking(): Unit = runInBlocking { join() }
-    
-    
-    /**
      * 终止当前应用，并关闭其中所有可能的资源。
      *
      * [Application] 被终止后将不能再次启动。
      *
      */
-    @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync
     public suspend fun shutdown(reason: Throwable? = null)
-    
-    /**
-     * 终止当前应用，并关闭其中所有可能的资源。
-     *
-     * [Application] 被终止后将不能再次启动。
-     *
-     */
-    @Api4J
-    public fun shutdownBlocking(reason: Throwable?): Unit = runInBlocking { shutdown(reason) }
     
     /**
      * 终止当前应用，并关闭其中所有可能的资源。
