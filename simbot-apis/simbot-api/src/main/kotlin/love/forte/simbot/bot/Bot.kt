@@ -20,6 +20,8 @@ import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.*
 import love.forte.simbot.ability.Survivable
 import love.forte.simbot.definition.*
@@ -133,17 +135,9 @@ public interface Bot : User, BotInfo, Survivable,
      *  这个 [Image] 不一定是真正远端图片结果，它有可能只是一个预处理类型。
      *  在执行 [resolveImage] 的过程中也不一定出现真正的挂起行为，具体细节请参考具体实现。
      */
+    @JvmBlocking
+    @JvmAsync
     public suspend fun resolveImage(id: ID): Image<*>
-    
-    /**
-     *  尝试通过解析一个 [ID] 并得到对应的可用于发送的图片实例。
-     *  这个 [Image] 不一定是真正远端图片结果，它有可能只是一个预处理类型。
-     *  在执行 [resolveImage] 的过程中也不一定出现真正的挂起行为，具体细节请参考具体实现。
-     *
-     *  @see resolveImage
-     */
-    @Api4J
-    public fun resolveImageBlocking(id: ID): Image<*> = runInBlocking { resolveImage(id) }
     
     
     // self
@@ -174,8 +168,9 @@ public interface Bot : User, BotInfo, Survivable,
     @JvmSynthetic
     override suspend fun cancel(reason: Throwable?): Boolean
     
+    
     override fun invokeOnCompletion(handler: CompletionHandler) {
-        coroutineContext[Job]?.invokeOnCompletion(handler) ?: throw IllegalStateException("No Job in here.")
+        coroutineContext[Job]?.invokeOnCompletion(handler) ?: throw IllegalStateException("No Job here.")
     }
     
     /**
