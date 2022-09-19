@@ -16,7 +16,8 @@
 
 package love.forte.simbot.definition
 
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.utils.item.Items
@@ -34,10 +35,10 @@ public interface Guild : Organization, GuildInfo {
     override val description: String
     override val createTime: Timestamp
     override val ownerId: ID
-    override suspend fun owner(): Member
     
-    @Api4J
-    override val owner: Member
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true, suffix = "")
+    override suspend fun owner(): GuildMember
     override val maximumMember: Int
     override val currentMember: Int
     
@@ -51,14 +52,9 @@ public interface Guild : Organization, GuildInfo {
     /**
      * 根据ID查询指定的成员对象。
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "getMember", suffix = "")
+    @JvmAsync(baseName = "getMember", suffix = "")
     override suspend fun member(id: ID): GuildMember?
-    
-    /**
-     * 根据ID查询指定的成员对象。
-     */
-    @Api4J
-    override fun getMember(id: ID): GuildMember?
     
     /**
      * 频道服务器的子集为 [子频道][Channel] 序列。
@@ -70,16 +66,9 @@ public interface Guild : Organization, GuildInfo {
      *
      * 未找到时得到null。
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "getChannel", suffix = "")
+    @JvmAsync(baseName = "getChannel", suffix = "")
     public suspend fun channel(id: ID): Channel?
-    
-    /**
-     * 尝试根据指定ID阻塞的获取匹配的[子频道][Channel]。
-     *
-     * 未找到时得到null。
-     */
-    @Api4J
-    public fun getChannel(id: ID): Channel?
     
     
     /**
@@ -96,18 +85,9 @@ public interface Guild : Organization, GuildInfo {
      *
      * @see channel
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "getChild", suffix = "")
+    @JvmAsync(baseName = "getChild", suffix = "")
     override suspend fun child(id: ID): Channel?
-    
-    /**
-     * 尝试根据指定ID阻塞的获取匹配的[子频道][Channel]。
-     *
-     * 未找到时得到null。
-     *
-     * @see getChannel
-     */
-    @Api4J
-    override fun getChild(id: ID): Channel?
 }
 
 

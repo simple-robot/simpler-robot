@@ -39,6 +39,8 @@ import love.forte.simbot.utils.runInBlocking
  *
  * @author ForteScarlet
  */
+@JvmBlocking
+@JvmAsync
 public interface SendSupport {
 
     /**
@@ -50,18 +52,7 @@ public interface SendSupport {
      * @throws UnsupportedActionException 当不允许向成员发送消息时
      *
      */
-    // @JvmSynthetic
-    @JvmBlocking
-    @JvmAsync
     public suspend fun send(message: Message): MessageReceipt
-
-
-    /**
-     * 非挂起的发送消息，并得到一个回执单。
-     * @see send
-     */
-    @Api4J
-    public fun sendBlocking0(message: Message): MessageReceipt = runInBlocking { send(message) }
 
     /**
      * 发送消息，并得到一个回执单。
@@ -72,37 +63,18 @@ public interface SendSupport {
      * @throws SimbotIllegalStateException 如果当前状态存在异常
      *
      */
-    // @JvmSynthetic
     @JvmBlocking
     @JvmAsync
     public suspend fun send(message: MessageContent): MessageReceipt = send(message.messages)
-
-
-    /**
-     * 非挂起的发送消息，并得到一个回执单。
-     *
-     * @see send
-     */
-    @Api4J
-    public fun sendBlocking0(message: MessageContent): MessageReceipt = runInBlocking { send(message) }
-
+    
     /**
      * 发送一段纯文本消息。
      * @see send
      */
-    // @JvmSynthetic
     @JvmBlocking
     @JvmAsync
     public suspend fun send(text: String): MessageReceipt = send(Text.of(text))
-
-    /**
-     * 非挂起的发送一段纯文本消息。
-     * @see send
-     */
-    @Api4J
-    public fun sendBlocking0(text: String): MessageReceipt = runInBlocking { send(text) }
-
-
+    
 }
 
 

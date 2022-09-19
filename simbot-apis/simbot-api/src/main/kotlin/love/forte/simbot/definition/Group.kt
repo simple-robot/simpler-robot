@@ -16,7 +16,8 @@
 
 package love.forte.simbot.definition
 
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.utils.item.Items
@@ -36,11 +37,10 @@ public interface Group : ChatRoom, GroupInfo {
     override val createTime: Timestamp
     override val ownerId: ID
     
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true, suffix = "")
     override suspend fun owner(): GroupMember
     
-    @Api4J
-    override val owner: GroupMember
     override val maximumMember: Int
     override val currentMember: Int
     
@@ -55,14 +55,9 @@ public interface Group : ChatRoom, GroupInfo {
     /**
      * 根据ID获取到指定的成员。
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "getMember", suffix = "")
+    @JvmAsync(baseName = "getMember", suffix = "")
     override suspend fun member(id: ID): GroupMember?
-    
-    /**
-     * 根据ID获取到指定的成员。
-     */
-    @Api4J
-    override fun getMember(id: ID): GroupMember?
     // endregion
     
 }

@@ -44,16 +44,16 @@ public interface Contact : User, SendSupport, BotContainer {
     /**
      * 向此联系目标发送消息。
      *
-     * @throws love.forte.simbot.action.UnsupportedActionException 当此对象不支持发生消息时
+     * @throws love.forte.simbot.action.UnsupportedActionException 当此对象不支持发送消息时
      */
     @JvmSynthetic
     override suspend fun send(message: Message): MessageReceipt
     
     /**
-     * 直接使用 [sendBlocking].
+     * 直接使用 [sendBlocking][send]。
      */
     @Api4J
-    @Deprecated("Just use sendBlocking.", ReplaceWith("sendBlocking(message)"), level = DeprecationLevel.ERROR)
+    @Deprecated("Just use sendBlocking(for Java).", ReplaceWith("send(message)"), level = DeprecationLevel.ERROR)
     override fun sendIfSupportBlocking(message: Message): MessageReceipt = runInBlocking { send(message) }
     
 }

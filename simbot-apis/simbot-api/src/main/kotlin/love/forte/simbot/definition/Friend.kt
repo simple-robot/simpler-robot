@@ -26,7 +26,6 @@ import love.forte.simbot.bot.Bot
 public interface Friend : Contact, BotContainer, FriendInfo {
     override val id: ID
     override val bot: Bot
-    
     override val remark: String?
     override val username: String
     override val avatar: String

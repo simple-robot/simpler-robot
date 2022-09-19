@@ -16,6 +16,8 @@
 
 package love.forte.simbot.definition
 
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.JB
@@ -53,25 +55,25 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
     /**
      * 组织的拥有者信息。
      */
-    // @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true, suffix = "")
     public suspend fun owner(): Member
     
     /**
      * 对整个组织进行禁言。
      *
      */
-    @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync
     override suspend fun mute(duration: Duration): Boolean
     
     /**
      * 结束整个群的禁言。
      */
-    @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync
     override suspend fun unmute(): Boolean
     
-    @Api4J
-    public val owner: Member
-        get() = runInBlocking { owner() }
     
     override val maximumMember: Int
     override val currentMember: Int
@@ -81,17 +83,9 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      * 组织有可能是层级的，因此一个组织结构可能会有上一层的组织。
      * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true, suffix = "")
     public suspend fun previous(): Organization?
-    
-    
-    /**
-     * 上一级，或者说这个组织的上层。
-     * 组织有可能是层级的，因此一个组织结构可能会有上一层的组织。
-     * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
-     */
-    @Api4J
-    public val previous: Organization?
     
     
     /**
@@ -105,16 +99,9 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      *
      * 当无法获取时得到null。
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "getChild", suffix = "")
+    @JvmAsync(baseName = "getChild", suffix = "")
     public suspend fun child(id: ID): Organization?
-    
-    /**
-     * 根据指定ID尝试阻塞的获取一个匹配的下级[组织][Organization]。
-     *
-     * 当无法获取时得到null。
-     */
-    @Api4J
-    public fun getChild(id: ID): Organization?
     
     /**
      * 获取当前组织中的成员列表。
@@ -122,19 +109,12 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
     public val members: Items<Member>
     
     
-    // region member 获取
     /**
      * 尝试通过ID获取一个成员，无法获取则得到null。
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "getMember", suffix = "")
+    @JvmAsync(baseName = "getMember", suffix = "")
     public suspend fun member(id: ID): Member?
-    
-    /**
-     * 尝试通过ID获取一个成员，无法获取则得到null。
-     */
-    @Api4J
-    public fun getMember(id: ID): Member?
-    // endregion
     
     
     /**
