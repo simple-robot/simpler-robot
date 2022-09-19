@@ -21,8 +21,6 @@ import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.utils.runInBlocking
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Future
 
 /**
  * 可存活的。
@@ -55,25 +53,6 @@ public interface Survivable : Switchable {
     @Throws(InterruptedException::class)
     public fun waiting() {
         runInBlocking { join() }
-    }
-    
-    /**
-     * 得到一个 [Future], 其结果会在当前 [Survivable] 被终止后被推送。
-     *
-     * 返回值的 [Future.get] 得到的最终结果恒为 `0`。
-     *
-     */
-    @Api4J
-    public fun toAsync0(): Future<Unit> {
-        val future = CompletableFuture<Unit>()
-        invokeOnCompletion { e ->
-            if (e != null) {
-                future.completeExceptionally(e)
-            } else {
-                future.complete(Unit)
-            }
-        }
-        return future
     }
     
     override suspend fun start(): Boolean
