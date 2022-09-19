@@ -37,7 +37,7 @@ public interface Survivable : Switchable {
     /**
      * 挂起, 直到当前实例被 [cancel] 或完成.
      */
-    // @JvmSynthetic
+    @JvmAsync(baseName = "toFuture", suffix = "")
     public suspend fun join()
     
     /**
@@ -76,12 +76,9 @@ public interface Survivable : Switchable {
         return future
     }
     
-    // @JvmSynthetic
     override suspend fun start(): Boolean
     
-    // @JvmSynthetic
+    
     override suspend fun cancel(reason: Throwable?): Boolean
-    
-    
 }
 
