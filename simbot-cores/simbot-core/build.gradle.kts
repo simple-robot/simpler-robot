@@ -17,6 +17,7 @@
 plugins {
     id("simbot.simple-module-conventions")
     id("simbot.maven-publish")
+    id("simbot.suspend-transform-configure")
     kotlin("plugin.serialization")
 }
 
@@ -34,6 +35,7 @@ dependencies {
     compileOnly(libs.kotlinx.coroutines.reactor)
     compileOnly(libs.kotlinx.coroutines.rx2)
     compileOnly(libs.kotlinx.coroutines.rx3)
+    compileOnly(libs.jetbrains.annotations)
 
     testImplementation(libs.kotlinx.serialization.json)
     testImplementation(libs.kotlinx.serialization.properties)
