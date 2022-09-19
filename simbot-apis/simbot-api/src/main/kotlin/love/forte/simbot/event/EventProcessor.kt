@@ -16,6 +16,8 @@
 
 package love.forte.simbot.event
 
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.EventProcessingResult.Empty
@@ -39,24 +41,9 @@ public interface EventProcessor {
      * 事件处理器会按照流程触发所有应被触发的事件，并将所有 [EventListener] 的执行结果汇总为 [EventProcessingResult] 并返回。
      *
      */
-    @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync
     public suspend fun push(event: Event): EventProcessingResult
-
-
-    /**
-     * 推送一个事件，并阻塞的等待结果。
-     *
-     * *不被推荐的使用方法。*
-     */
-    @Api4J
-    public fun pushBlocking(event: Event): EventProcessingResult = runInBlocking { push(event) }
-
-
-    /**
-     * 推送一个事件，并异步的执行。返回一个 [Future].
-     */
-    @Api4J
-    public fun pushAsync(event: Event): Future<EventProcessingResult>
 
     /**
      * 判断是否存在对应的事件监听器。

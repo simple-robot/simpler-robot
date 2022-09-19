@@ -16,7 +16,8 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.definition.Friend
 import love.forte.simbot.message.doSafeCast
@@ -27,39 +28,30 @@ import love.forte.simbot.message.doSafeCast
  */
 @BaseEvent
 public interface FriendChangedEvent : ChangedEvent, FriendEvent {
-
+    
     /**
      * 发生好友变更的[Bot]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true, suffix = "")
     override suspend fun source(): Bot
-
-    /**
-     * 发生好友变更的[Bot]。
-     */
-    @Api4J
-    override val source: Bot
-
+    
+    
     /**
      * 涉及到的[好友][Friend]。
      */
     @JvmSynthetic
     override suspend fun friend(): Friend
-
-    /**
-     * 涉及到的[好友][Friend]。
-     */
-    @Api4J
-    override val friend: Friend
-
-
+    
+    
     public companion object Key : BaseEventKey<FriendChangedEvent>(
         "api.friend_changed",
-        ChangedEvent, FriendEvent) {
+        ChangedEvent, FriendEvent
+    ) {
         override fun safeCast(value: Any): FriendChangedEvent? = doSafeCast(value)
     }
-
-
+    
+    
 }
 
 
@@ -72,16 +64,11 @@ public interface FriendIncreaseEvent : IncreaseEvent, FriendChangedEvent {
     /**
      * 增加的[好友][Friend]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true, suffix = "")
     override suspend fun after(): Friend
-
-    /**
-     * 增加的[好友][Friend]。
-     */
-    @Api4J
-    override val after: Friend
-
-
+    
+    
     public companion object Key : BaseEventKey<FriendIncreaseEvent>(
         "api.friend_increase", IncreaseEvent, FriendChangedEvent
     ) {
@@ -96,22 +83,15 @@ public interface FriendIncreaseEvent : IncreaseEvent, FriendChangedEvent {
  * 这代表的是好友 **已经** 被移除的事件。
  */
 public interface FriendDecreaseEvent : DecreaseEvent, FriendChangedEvent {
-
-
+    
     /**
      * 减少的 [好友][Friend].
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true, suffix = "")
     override suspend fun before(): Friend
-
-    /**
-     * 减少的 [好友][Friend].
-     */
-    @Api4J
-    override val before: Friend
-
-
-
+    
+    
     public companion object Key : BaseEventKey<FriendDecreaseEvent>(
         "api.friend_decrease", DecreaseEvent, FriendChangedEvent
     ) {
