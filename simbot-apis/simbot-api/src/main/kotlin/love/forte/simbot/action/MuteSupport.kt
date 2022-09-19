@@ -17,6 +17,8 @@
 package love.forte.simbot.action
 
 import kotlinx.coroutines.runBlocking
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.JavaDuration
 import love.forte.simbot.kotlin
@@ -80,20 +82,19 @@ public interface MuteSupport {
     @JvmSynthetic
     public suspend fun mute(duration: Duration = DEFAULT_DURATION): Boolean
     
-    
     /**
      * 对当前目标进行 **禁言** 操作。
      *
      * ```java
-     * support.muteBlocking(5, TimeUnit.SECONDS)
+     * support.mute(5, TimeUnit.SECONDS)
      * ```
      *
      * @see mute
      */
-    @Api4J
-    public fun muteBlocking(time: Long, timeUnit: TimeUnit): Boolean = runBlocking {
-        mute(timeUnit.toNanos(time).nanoseconds)
-    }
+    @JvmBlocking
+    @JvmAsync
+    public suspend fun mute(time: Long, timeUnit: TimeUnit): Boolean = mute(timeUnit.toNanos(time).nanoseconds)
+    
     
     /**
      * 对当前目标进行 **禁言** 操作。
@@ -124,21 +125,12 @@ public interface MuteSupport {
      *
      * @throws UnsupportedActionException 当此行为不被支持时
      */
-    @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync
     public suspend fun unmute(): Boolean
     
-    /**
-     * 对当前目标进行 **解除禁言** 操作。
-     * @see unmute
-     */
-    @Api4J
-    public fun unmuteBlocking(): Boolean = runInBlocking {
-        unmute()
-    }
-    
-    
     public companion object {
-        internal val DEFAULT_DURATION = Duration.ZERO // (-1L).nanoseconds
+        internal val DEFAULT_DURATION = Duration.ZERO
     }
     
 }

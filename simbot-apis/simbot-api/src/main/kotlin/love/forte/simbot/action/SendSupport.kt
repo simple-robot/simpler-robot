@@ -148,31 +148,24 @@ public interface SendSupport {
  * @see replyIfSupport
  *
  */
+@JvmBlocking
+@JvmAsync
 public interface ReplySupport {
 
     /**
      * 回复当前目标，并得到一个 [回复回执][MessageReceipt]
      */
-    @JvmSynthetic
     public suspend fun reply(message: Message): MessageReceipt
-
-    @Api4J
-    public fun replyBlocking(message: Message): MessageReceipt = runInBlocking { reply(message) }
 
     /**
      * 回复当前目标，并得到一个 [回复回执][MessageReceipt]
      */
-    @JvmSynthetic
     public suspend fun reply(message: MessageContent): MessageReceipt = reply(message.messages)
-
-    @Api4J
-    public fun replyBlocking(message: MessageContent): MessageReceipt = runInBlocking { reply(message) }
-
-    @JvmSynthetic
+    
+    /**
+     * 回复当前目标，并得到一个 [回复回执][MessageReceipt]
+     */
     public suspend fun reply(text: String): MessageReceipt = reply(Text.of(text))
-
-    @Api4J
-    public fun replyBlocking(text: String): MessageReceipt = runInBlocking { reply(text) }
 }
 
 
@@ -212,14 +205,11 @@ public interface MessageReplyReceipt : MessageReceipt {
  * 而回应则更多的是对于一个消息"作出回应"，通产情况下不会产生新的消息，一般会表现为标记一个表情。
  *
  */
+@JvmBlocking
+@JvmAsync
 public interface MessageReactSupport {
 
-    @JvmSynthetic
     public suspend fun react(message: Message): MessageReceipt
-
-    @Api4J
-    public fun reactBlocking(message: Message): MessageReceipt = runInBlocking { react(message) }
-
 }
 
 /**
