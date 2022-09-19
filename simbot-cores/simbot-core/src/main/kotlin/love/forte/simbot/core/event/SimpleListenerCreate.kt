@@ -35,7 +35,7 @@ import java.util.function.BiPredicate
  */
 
 @PublishedApi
-@Suppress("RedundantSuspendModifier", "unused", "UNUSED_PARAMETER")
+@Suppress("RedundantSuspendModifier", "unused", "UNUSED_PARAMETER", "UnusedReceiverParameter")
 internal suspend fun <E : Event> EventListenerProcessingContext.defaultMatcher(event: E): Boolean = true
 
 
