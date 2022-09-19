@@ -18,16 +18,11 @@ package love.forte.simbot.definition
 
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
-import love.forte.simbot.Api4J
 import love.forte.simbot.ID
-import love.forte.simbot.JB
-import love.forte.simbot.JA
 import love.forte.simbot.Timestamp
 import love.forte.simbot.action.MuteSupport
 import love.forte.simbot.utils.item.Items
-import love.forte.simbot.utils.runInBlocking
 import kotlin.time.Duration
-
 
 
 public interface Organization : Objective, OrganizationInfo, MuteSupport, BotContainer {
@@ -63,8 +58,7 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      * 对整个组织进行禁言。
      *
      */
-    @JvmBlocking
-    @JvmAsync
+    @JvmSynthetic
     override suspend fun mute(duration: Duration): Boolean
     
     /**
@@ -221,7 +215,6 @@ public inline operator fun OrganizationInfo.component2(): String = name
  */
 @Suppress("NOTHING_TO_INLINE")
 public inline operator fun OrganizationInfo.component3(): String = icon
-
 
 
 ////

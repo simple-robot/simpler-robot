@@ -18,8 +18,6 @@ package love.forte.simbot.action
 
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
-import love.forte.simbot.Api4J
-import love.forte.simbot.utils.runInBlocking
 
 
 /**

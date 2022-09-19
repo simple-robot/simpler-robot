@@ -29,7 +29,6 @@ import love.forte.simbot.event.EventProcessor
 import love.forte.simbot.message.Image
 import love.forte.simbot.message.Image.Key.toImage
 import love.forte.simbot.resources.Resource
-import love.forte.simbot.utils.runInBlocking
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
 

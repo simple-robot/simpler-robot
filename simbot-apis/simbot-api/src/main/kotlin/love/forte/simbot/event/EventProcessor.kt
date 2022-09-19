@@ -18,12 +18,9 @@ package love.forte.simbot.event
 
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
-import love.forte.simbot.Api4J
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.EventProcessingResult.Empty
-import love.forte.simbot.utils.runInBlocking
 import org.jetbrains.annotations.UnmodifiableView
-import java.util.concurrent.Future
 
 
 /**

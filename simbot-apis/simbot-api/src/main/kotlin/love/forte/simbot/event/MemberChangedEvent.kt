@@ -18,7 +18,6 @@ package love.forte.simbot.event
 
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
-import love.forte.simbot.Api4J
 import love.forte.simbot.action.ActionType
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.doSafeCast
