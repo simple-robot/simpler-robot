@@ -17,7 +17,6 @@
 plugins {
     id("simbot.simple-module-conventions")
     id("simbot.maven-publish")
-    id("simbot.suspend-transform-configure")
     kotlin("plugin.serialization")
 }
 
