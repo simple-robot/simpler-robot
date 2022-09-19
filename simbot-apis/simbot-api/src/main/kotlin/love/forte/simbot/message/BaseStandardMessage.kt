@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -12,14 +12,14 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.message
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ID
 import love.forte.simbot.definition.IDContainer
 import love.forte.simbot.definition.ResourceContainer
@@ -162,7 +162,7 @@ public inline fun Text(block: () -> String): Text = block().toText()
 public data class At @JvmOverloads constructor(
     @Serializable(with = ID.AsCharSequenceIDSerializer::class)
     public val target: ID,
-
+    
     /**
      * at的类型，默认情况下是针对一个 "用户"(`user`) 的 at。
      *
@@ -246,15 +246,9 @@ public interface Image<E : Image<E>> : StandardMessage<E>, IDContainer, Resource
     /**
      * 得到这个图片的数据资源。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true, suffix = "")
     override suspend fun resource(): Resource
-    
-    
-    /**
-     * 得到这个图片的数据资源。
-     */
-    @Api4J
-    override val resource: Resource
     
     
     public companion object Key : Message.Key<Image<*>> {
@@ -290,11 +284,11 @@ public interface Image<E : Image<E>> : StandardMessage<E>, IDContainer, Resource
  *
  */
 @SerialName("m.std.img.resource")
-public data class ResourceImage(override val id: ID, @OptIn(Api4J::class) override val resource: Resource) :
+public data class ResourceImage(override val id: ID, @SerialName("resource") private val _resource: Resource) :
     Image<ResourceImage> {
     
     @JvmSynthetic
-    override suspend fun resource(): Resource = resource
+    override suspend fun resource(): Resource = _resource
     
     override val key: Message.Key<ResourceImage>
         get() = Key

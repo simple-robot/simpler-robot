@@ -16,6 +16,7 @@
 
 package love.forte.simbot.message
 
+import kotlinx.coroutines.runBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.ID
@@ -149,7 +150,7 @@ public class MessagesBuilder
      */
     @Api4J
     @JvmName("image")
-    public fun image4J(bot: Bot, id: ID): MessagesBuilder = appendElement(bot.resolveImageBlocking(id))
+    public fun image4J(bot: Bot, id: ID): MessagesBuilder = runBlocking { image(bot, id) }
     // endregion
     
     
