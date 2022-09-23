@@ -24,6 +24,8 @@ import love.forte.annotationtool.core.getAnnotation
 import love.forte.di.BeanContainer
 import love.forte.di.all
 import love.forte.di.core.CoreBeanManager
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simboot.SimbootContext
 import love.forte.simboot.annotation.Binder
 import love.forte.simboot.annotation.Binder.Scope.*
@@ -36,7 +38,6 @@ import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simbot.*
 import love.forte.simbot.application.*
-import love.forte.simbot.application.BotRegistrar
 import love.forte.simbot.bot.BotVerifyInfoDecoder
 import love.forte.simbot.bot.BotVerifyInfoDecoderFactory
 import love.forte.simbot.bot.StandardBotVerifyInfoDecoderFactory
@@ -51,10 +52,8 @@ import love.forte.simbot.event.EventListenerBuilder
 import love.forte.simbot.event.EventListenerInterceptor
 import love.forte.simbot.event.EventProcessingInterceptor
 import love.forte.simbot.resources.Resource
-import love.forte.simbot.utils.runInBlocking
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.LongAdder
 import javax.inject.Named
@@ -327,6 +326,11 @@ public interface BootApplication : SimpleApplication, SimbootContext {
     override val isStarted: Boolean
         get() = true
     
+    
+    @JvmBlocking
+    @JvmAsync(baseName = "asFuture", suffix = "")
+    @JvmSynthetic
+    override suspend fun join()
     
 }
 

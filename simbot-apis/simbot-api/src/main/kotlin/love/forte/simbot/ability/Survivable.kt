@@ -17,10 +17,12 @@
 package love.forte.simbot.ability
 
 import kotlinx.coroutines.CompletionHandler
+import kotlinx.coroutines.future.future
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.utils.runInBlocking
+import java.util.concurrent.CompletableFuture
 
 /**
  * 可存活的。
@@ -35,8 +37,15 @@ public interface Survivable : Switchable {
     /**
      * 挂起, 直到当前实例被 [cancel] 或完成.
      */
-    @JvmAsync(baseName = "toFuture", suffix = "")
+    @JvmAsync(baseName = "asFuture", suffix = "")
     public suspend fun join()
+    
+    
+    @Api4J
+    @Deprecated("Just use join() or asFuture() for java", level = DeprecationLevel.ERROR,
+        replaceWith = ReplaceWith("future { join() }")
+    )
+    public fun toFuture(): CompletableFuture<Unit> = future { join() }
     
     /**
      * 当完成（或被cancel）时执行一段处理。
@@ -46,18 +55,13 @@ public interface Survivable : Switchable {
     /**
      * 阻塞当前线程并等待 [join] 的挂起结束。
      *
-     * 应当谨慎使用会造成阻塞的api，且在Kotlin中避免使用。
-     *
+     * 等同于 `joinBlocking`。目前来看唯一的区别是 [waiting] 显示通过 [Throws] 指定了受检异常 [InterruptedException],
+     * 而 joinBlocking 目前不会产生受检异常。
      */
     @Api4J
     @Throws(InterruptedException::class)
     public fun waiting() {
         runInBlocking { join() }
     }
-    
-    override suspend fun start(): Boolean
-    
-    
-    override suspend fun cancel(reason: Throwable?): Boolean
 }
 

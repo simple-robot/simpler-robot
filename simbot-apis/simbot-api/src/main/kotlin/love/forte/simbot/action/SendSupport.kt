@@ -64,16 +64,12 @@ public interface SendSupport {
      * @throws SimbotIllegalStateException 如果当前状态存在异常
      *
      */
-    @JvmBlocking
-    @JvmAsync
     public suspend fun send(message: MessageContent): MessageReceipt = send(message.messages)
     
     /**
      * 发送一段纯文本消息。
      * @see send
      */
-    @JvmBlocking
-    @JvmAsync
     public suspend fun send(text: String): MessageReceipt = send(Text.of(text))
     
 }

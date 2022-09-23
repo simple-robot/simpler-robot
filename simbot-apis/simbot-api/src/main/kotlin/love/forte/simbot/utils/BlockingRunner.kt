@@ -170,6 +170,8 @@ public fun <T> runInTimeoutBlocking(
     }
 }
 
+@InternalSimbotApi
+public fun <T> runInAsync(block: suspend () -> T): CompletableFuture<T> = `$$DefaultScope`.future(DefaultBlockingContext) { block() }
 
 @Suppress("FunctionName")
 @InternalSimbotApi
@@ -184,5 +186,5 @@ private val `$$DefaultScope` by lazy { CoroutineScope(DefaultBlockingContext) }
 @Deprecated("Just used by auto-generate", level = DeprecationLevel.HIDDEN)
 @Suppress("FunctionName")
 public fun <T> `$$runInAsync`(block: suspend () -> T): CompletableFuture<T> {
-    return `$$DefaultScope`.future(DefaultBlockingContext) { block() }
+    return runInAsync(block)
 }

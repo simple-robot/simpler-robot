@@ -121,7 +121,7 @@ public interface Application : CoroutineScope {
      * 挂起此应用直至其被终止。
      */
     @JvmBlocking
-    @JvmAsync(baseName = "toFuture", suffix = "")
+    @JvmAsync(baseName = "asFuture", suffix = "")
     public suspend fun join()
     
     
