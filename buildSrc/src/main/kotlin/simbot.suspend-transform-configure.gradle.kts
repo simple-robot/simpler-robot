@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -40,6 +40,8 @@ plugins {
 suspendTransform {
     includeRuntime = false
     jvm {
+        // jvmBlockingMarkAnnotation.functionInheritable = true
+        // jvmAsyncMarkAnnotation.functionInheritable = true
         // api and annotation comes from :apis:simbot-api
         val api4JIncludeAnnotation = SuspendTransformConfiguration.IncludeAnnotation("love.forte.simbot.Api4J")
         syntheticBlockingFunctionIncludeAnnotations = listOf(api4JIncludeAnnotation)
