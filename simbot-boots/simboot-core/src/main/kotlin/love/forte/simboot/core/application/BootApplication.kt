@@ -190,8 +190,8 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
         val createFactory: () -> BotVerifyInfoDecoder = {
             factory.create(newConfig)
         }
-        
-        @Suppress("UNCHECKED_CAST") botVerifyInfoDecoderFactories.merge(factory, createFactory) { _, curr ->
+    
+        botVerifyInfoDecoderFactories.merge(factory, createFactory) { _, curr ->
             curr
         }
     }
@@ -329,7 +329,6 @@ public interface BootApplication : SimpleApplication, SimbootContext {
     
     @JvmBlocking
     @JvmAsync(baseName = "asFuture", suffix = "")
-    @JvmSynthetic
     override suspend fun join()
     
 }

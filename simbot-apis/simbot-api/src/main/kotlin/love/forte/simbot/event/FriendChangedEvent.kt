@@ -33,7 +33,7 @@ public interface FriendChangedEvent : ChangedEvent, FriendEvent {
      * 发生好友变更的[Bot]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Bot
     
     
@@ -65,7 +65,7 @@ public interface FriendIncreaseEvent : IncreaseEvent, FriendChangedEvent {
      * 增加的[好友][Friend]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun after(): Friend
     
     
@@ -88,7 +88,7 @@ public interface FriendDecreaseEvent : DecreaseEvent, FriendChangedEvent {
      * 减少的 [好友][Friend].
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun before(): Friend
     
     

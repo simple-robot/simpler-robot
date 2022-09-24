@@ -35,7 +35,7 @@ public interface StartPointEvent : ChangedEvent {
      * 开端事件, before通常为null。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun before(): Any? = null
 
 
@@ -62,7 +62,7 @@ public interface EndPointEvent : ChangedEvent {
      * 终端事件，[after] 通常为null。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun after(): Any? = null
 
 

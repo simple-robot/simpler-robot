@@ -30,7 +30,7 @@ import kotlin.time.Duration
  * 一个组织下的成员。
  *
  * [Member] 作为 _联系人_ 的一种，实现 [Contact],
- * 但是 [Member] 可能无法被 [ContactsContainer][love.forte.simbot.ContactsContainer] 直接检索。
+ * 但是 [Member] 可能无法被 [ContactsContainer] 直接检索。
  *
  * @see GuildMember
  * @see GroupMember
@@ -45,7 +45,7 @@ public interface Member : Contact, MemberInfo, MuteSupport {
      * 这个成员所属的组织。一般来讲，一个 [Member] 实例不会同时存在于 [Group] 和 [Channel].
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun organization(): Organization
     
     /**
@@ -71,7 +71,7 @@ public interface Member : Contact, MemberInfo, MuteSupport {
      * @see Role.isAdmin
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun isAdmin(): Boolean = roles.asFlow().firstOrNull { it.isAdmin } != null
     
     /**
@@ -80,7 +80,7 @@ public interface Member : Contact, MemberInfo, MuteSupport {
      * @see Organization.ownerId
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun isOwner(): Boolean = organization().ownerId == id
     
 }
@@ -94,7 +94,7 @@ public interface GuildMember : Member {
      * 这个成员所属的频道服务器。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun guild(): Guild
     
     
@@ -102,7 +102,7 @@ public interface GuildMember : Member {
      * 这个成员所属的频道服务器。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun organization(): Guild = guild()
 }
 
@@ -112,7 +112,7 @@ public interface GroupMember : Member {
      * 这个成员所属的群。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun group(): Group
     
     
@@ -120,7 +120,7 @@ public interface GroupMember : Member {
      * 这个成员所属的群。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun organization(): Group = group()
 }
 

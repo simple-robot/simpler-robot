@@ -45,7 +45,7 @@ public interface UserEvent : ObjectiveEvent, UserInfoContainer {
      * 这个[用户][User]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun user(): User
     
     public companion object Key : BaseEventKey<UserEvent>("api.user") {
@@ -68,7 +68,7 @@ public interface MemberEvent : UserEvent, MemberInfoContainer {
      * 这个[成员][Member]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun member(): Member
     
     
@@ -76,7 +76,7 @@ public interface MemberEvent : UserEvent, MemberInfoContainer {
      * 这个[成员][Member]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun user(): Member
     
     
@@ -99,14 +99,14 @@ public interface FriendEvent : UserEvent, FriendInfoContainer {
      * 这个[好友][Friend]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun friend(): Friend
     
     /**
      * 这个[好友][Friend]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun user(): Friend
     
     public companion object Key : BaseEventKey<FriendEvent>("api.friend", UserEvent) {
@@ -132,7 +132,7 @@ public interface OrganizationEvent : ObjectiveEvent {
      * 这个[组织][Organization]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun organization(): Organization
     
     public companion object Key : BaseEventKey<OrganizationEvent>("api.organization") {
@@ -158,14 +158,14 @@ public interface GroupEvent : OrganizationEvent, GroupInfoContainer {
      * 这个[群][Group]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun group(): Group
     
     /**
      * 这个[群][Group]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun organization(): Group
     
     
@@ -188,14 +188,14 @@ public interface GuildEvent : OrganizationEvent {
      * 这个[频道服务器][Guild]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun guild(): Guild
     
     /**
      * 这个[频道服务器][Guild]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun organization(): Guild
     
     
@@ -219,7 +219,7 @@ public interface ChannelEvent : OrganizationEvent {
      * 这个[频道][Channel]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun channel(): Channel
     
     
@@ -227,7 +227,7 @@ public interface ChannelEvent : OrganizationEvent {
      * 这个[频道][Channel]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun organization(): Channel
     
     public companion object Key : BaseEventKey<ChannelEvent>("api.channel", OrganizationEvent) {

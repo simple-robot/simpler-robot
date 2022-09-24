@@ -38,7 +38,7 @@ public interface Group : ChatRoom, GroupInfo {
     override val ownerId: ID
     
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun owner(): GroupMember
     
     override val maximumMember: Int
@@ -56,7 +56,7 @@ public interface Group : ChatRoom, GroupInfo {
      * 根据ID获取到指定的成员。
      */
     @JvmBlocking(baseName = "getMember", suffix = "")
-    @JvmAsync(baseName = "getMember", suffix = "")
+    @JvmAsync(baseName = "getMember")
     override suspend fun member(id: ID): GroupMember?
     // endregion
     

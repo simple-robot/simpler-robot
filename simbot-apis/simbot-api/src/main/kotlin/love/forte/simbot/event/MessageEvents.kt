@@ -51,7 +51,7 @@ public interface MessageEvent : Event, RemoteMessageContainer, ReplySupport {
      *
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun source(): Objective
     
     
@@ -92,7 +92,7 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
      * 消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun user(): Contact
     
     
@@ -100,7 +100,7 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
      * 消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Contact
     
     
@@ -130,14 +130,14 @@ public interface FriendMessageEvent : ContactMessageEvent, FriendEvent {
      * 消息的信息来源是一个可以进行信息交互的 [好友][Friend]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun user(): Friend
     
     /**
      * 消息的信息来源是一个可以进行信息交互的 [好友][Friend]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Friend
     
     
@@ -164,14 +164,14 @@ public interface ChatRoomMessageEvent : MessageEvent, OrganizationEvent, RemoteM
      * 来自的聊天室，通常是一个[群][Group]或者一个[频道][Channel]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): ChatRoom
     
     /**
      * 这个消息的发送者.
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun author(): Member
     
     
@@ -239,7 +239,7 @@ public interface GroupMessageEvent : ChatRoomMessageEvent, GroupEvent {
      * 消息来自的[群][Group]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Group
     
     
@@ -262,7 +262,7 @@ public interface ChannelMessageEvent : ChatRoomMessageEvent, ChannelEvent {
      * 消息事件来源的[频道][Channel].
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Channel
     
     public companion object Key : BaseEventKey<ChannelMessageEvent>(

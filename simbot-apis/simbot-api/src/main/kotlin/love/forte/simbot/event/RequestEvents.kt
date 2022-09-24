@@ -65,7 +65,7 @@ public interface RequestEvent : Event, UserInfoContainer {
      * @see JoinRequestEvent.requester
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun requester(): UserInfo
     
     
@@ -73,7 +73,7 @@ public interface RequestEvent : Event, UserInfoContainer {
      * 通常情况下, [user] 等同于 [requester].
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun user(): UserInfo
     
     /**
@@ -146,14 +146,14 @@ public interface JoinRequestEvent : RequestEvent {
      *
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun requester(): UserInfo
     
     /**
      * 邀请人。当无法获取或不存在时得到null。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun inviter(): UserInfo?
     
     
@@ -186,7 +186,7 @@ public interface GuildJoinRequestEvent : JoinRequestEvent, GuildRequestEvent {
      * 想要申请加入的人的信息。假如这是一个BOT被邀请的事件，则此信息可能等于 [bot].
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun requester(): UserInfo
     
     
@@ -222,7 +222,7 @@ public interface GroupJoinRequestEvent : GroupRequestEvent, JoinRequestEvent {
      * 想要加入目标群的人的信息。假如是BOT被邀请的事件，则此值可能等同于 [bot].
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun requester(): UserInfo
     
     public companion object Key : BaseEventKey<GroupJoinRequestEvent>(

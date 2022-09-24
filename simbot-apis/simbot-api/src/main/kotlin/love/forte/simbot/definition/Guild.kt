@@ -37,7 +37,7 @@ public interface Guild : Organization, GuildInfo {
     override val ownerId: ID
     
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun owner(): GuildMember
     override val maximumMember: Int
     override val currentMember: Int
@@ -53,7 +53,7 @@ public interface Guild : Organization, GuildInfo {
      * 根据ID查询指定的成员对象。
      */
     @JvmBlocking(baseName = "getMember", suffix = "")
-    @JvmAsync(baseName = "getMember", suffix = "")
+    @JvmAsync(baseName = "getMember")
     override suspend fun member(id: ID): GuildMember?
     
     /**
@@ -67,7 +67,7 @@ public interface Guild : Organization, GuildInfo {
      * 未找到时得到null。
      */
     @JvmBlocking(baseName = "getChannel", suffix = "")
-    @JvmAsync(baseName = "getChannel", suffix = "")
+    @JvmAsync(baseName = "getChannel")
     public suspend fun channel(id: ID): Channel?
     
     
@@ -86,7 +86,7 @@ public interface Guild : Organization, GuildInfo {
      * @see channel
      */
     @JvmBlocking(baseName = "getChild", suffix = "")
-    @JvmAsync(baseName = "getChild", suffix = "")
+    @JvmAsync(baseName = "getChild")
     override suspend fun child(id: ID): Channel?
 }
 

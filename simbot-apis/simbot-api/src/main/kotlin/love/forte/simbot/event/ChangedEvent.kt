@@ -55,14 +55,14 @@ public interface ChangeEvent : Event {
      *
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun source(): Any
     
     /**
      * 变更行为前的内容。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun before(): Any?
 
 
@@ -70,7 +70,7 @@ public interface ChangeEvent : Event {
      * 变更行为后的内容。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun after(): Any?
 
 

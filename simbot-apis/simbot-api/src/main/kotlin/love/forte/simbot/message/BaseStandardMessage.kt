@@ -247,7 +247,7 @@ public interface Image<E : Image<E>> : StandardMessage<E>, IDContainer, Resource
      * 得到这个图片的数据资源。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun resource(): Resource
     
     

@@ -70,7 +70,7 @@ public interface FriendsContainer : SocialRelationsContainer {
      * @param id 好友的唯一标识
      */
     @JvmBlocking(baseName = "getFriend", suffix = "")
-    @JvmAsync(baseName = "getFriend", suffix = "")
+    @JvmAsync(baseName = "getFriend")
     public suspend fun friend(id: ID): Friend?
     
 }
@@ -123,7 +123,7 @@ public interface ContactsContainer : SocialRelationsContainer {
      * @param id 目标唯一标识
      */
     @JvmBlocking(baseName = "getContact", suffix = "")
-    @JvmAsync(baseName = "getContact", suffix = "")
+    @JvmAsync(baseName = "getContact")
     public suspend fun contact(id: ID): Contact?
 }
 
@@ -148,7 +148,7 @@ public interface GroupsContainer : SocialRelationsContainer {
      * @param id 目标群唯一标识
      */
     @JvmBlocking(baseName = "getGroup", suffix = "")
-    @JvmAsync(baseName = "getGroup", suffix = "")
+    @JvmAsync(baseName = "getGroup")
     public suspend fun group(id: ID): Group?
 }
 
@@ -173,7 +173,7 @@ public interface GuildsContainer : SocialRelationsContainer {
      * @param id 频道服务器唯一标识
      */
     @JvmBlocking(baseName = "getGuild", suffix = "")
-    @JvmAsync(baseName = "getGuild", suffix = "")
+    @JvmAsync(baseName = "getGuild")
     public suspend fun guild(id: ID): Guild?
 }
 

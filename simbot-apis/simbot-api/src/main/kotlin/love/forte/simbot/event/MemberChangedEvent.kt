@@ -46,7 +46,7 @@ public interface MemberChangedEvent :
      *
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun operator(): MemberInfo?
     
     
@@ -75,14 +75,14 @@ public interface MemberIncreaseEvent :
      * 成员增加事件发生所在的组织。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Organization
     
     /**
      * 增加的[成员][Member]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun after(): Member
     
     
@@ -116,7 +116,7 @@ public interface MemberDecreaseEvent :
      * 离开的[成员][Member]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun before(): Member
     
     /**
@@ -153,21 +153,21 @@ public interface GroupMemberIncreaseEvent : MemberIncreaseEvent, GroupEvent {
      * 成员增加事件发生所在的[群][Group]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Group
     
     /**
      * 增加的[群成员][GroupMember]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun after(): GroupMember
     
     /**
      * 增加的[群成员][GroupMember]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun member(): GroupMember
     
     
@@ -201,7 +201,7 @@ public interface GuildMemberIncreaseEvent : MemberIncreaseEvent, GuildEvent {
      * 成员增加事件发生所在的[频道服务器][Guild]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Guild
     
     
@@ -209,7 +209,7 @@ public interface GuildMemberIncreaseEvent : MemberIncreaseEvent, GuildEvent {
      * 增加的[频道成员][GuildMember]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun after(): GuildMember
     
     
@@ -217,7 +217,7 @@ public interface GuildMemberIncreaseEvent : MemberIncreaseEvent, GuildEvent {
      * 增加的[频道成员][GuildMember]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun member(): GuildMember
     
     
@@ -251,7 +251,7 @@ public interface GroupMemberDecreaseEvent : MemberDecreaseEvent, GroupEvent {
      * 成员减少事件发生所在的[群][Group]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Group
     
     
@@ -259,7 +259,7 @@ public interface GroupMemberDecreaseEvent : MemberDecreaseEvent, GroupEvent {
      * 减少的[群成员][GroupMember]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun before(): GroupMember
     
     
@@ -267,7 +267,7 @@ public interface GroupMemberDecreaseEvent : MemberDecreaseEvent, GroupEvent {
      * 减少的[群成员][GroupMember]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun member(): GroupMember
     
     
@@ -301,7 +301,7 @@ public interface GuildMemberDecreaseEvent : MemberDecreaseEvent, GuildEvent {
      * 成员减少事件发生所在的[频道服务器][Guild]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Guild
     
     
@@ -309,7 +309,7 @@ public interface GuildMemberDecreaseEvent : MemberDecreaseEvent, GuildEvent {
      * 减少的[频道成员][GuildMember]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun before(): GuildMember
     
     
@@ -317,7 +317,7 @@ public interface GuildMemberDecreaseEvent : MemberDecreaseEvent, GuildEvent {
      * 减少的[频道成员][GuildMember]。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun member(): GuildMember
     
     

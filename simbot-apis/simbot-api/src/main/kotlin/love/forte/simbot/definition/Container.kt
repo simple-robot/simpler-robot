@@ -100,7 +100,7 @@ public interface ChannelInfoContainer : SuspendablePropertyContainer {
      * 当前 [channel][ChannelInfo].
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun channel(): ChannelInfo
 }
 
@@ -123,7 +123,7 @@ public interface GuildInfoContainer : SuspendablePropertyContainer {
      * 当前 [guild][GuildInfo].
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun guild(): GuildInfo
 }
 
@@ -146,7 +146,7 @@ public interface GroupInfoContainer : SuspendablePropertyContainer {
      * 当前 [group][GroupInfo].
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun group(): GroupInfo
 }
 
@@ -170,7 +170,7 @@ public interface UserInfoContainer : SuspendablePropertyContainer {
      * 当前 [user][UserInfo]
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun user(): UserInfo
 }
 
@@ -193,7 +193,7 @@ public interface MemberInfoContainer : SuspendablePropertyContainer {
      * 当前 [member][MemberInfo].
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun member(): MemberInfo
 }
 
@@ -216,7 +216,7 @@ public interface FriendInfoContainer : SuspendablePropertyContainer {
      * 当前 [friend][FriendInfo].
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun friend(): FriendInfo
 }
 
@@ -240,7 +240,7 @@ public interface ResourceContainer : SuspendablePropertyContainer {
      * 得到当前容器中的 [资源][Resource].
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun resource(): Resource
 }
 

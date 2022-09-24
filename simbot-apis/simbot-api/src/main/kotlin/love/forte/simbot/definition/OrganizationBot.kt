@@ -44,7 +44,7 @@ public interface OrganizationBot : Bot {
      * 将当前bot转化为此组织中的成员。
      */
     @JvmBlocking(baseName = "toMember", suffix = "")
-    @JvmAsync(baseName = "toMember", suffix = "")
+    @JvmAsync(baseName = "toMember")
     public suspend fun asMember(): Member
 }
 
@@ -63,7 +63,7 @@ public interface GroupBot : OrganizationBot {
      * 将当前bot转化为此组织中的成员。
      */
     @JvmBlocking(baseName = "toMember", suffix = "")
-    @JvmAsync(baseName = "toMember", suffix = "")
+    @JvmAsync(baseName = "toMember")
     override suspend fun asMember(): GroupMember
 }
 
@@ -82,6 +82,6 @@ public interface GuildBot : OrganizationBot {
      * 将当前bot转化为此组织中的成员。
      */
     @JvmBlocking(baseName = "toMember", suffix = "")
-    @JvmAsync(baseName = "toMember", suffix = "")
+    @JvmAsync(baseName = "toMember")
     override suspend fun asMember(): GuildMember
 }

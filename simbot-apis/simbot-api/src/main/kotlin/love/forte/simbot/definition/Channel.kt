@@ -38,7 +38,7 @@ public interface Channel : ChatRoom, ChannelInfo {
     override val ownerId: ID
     
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun owner(): GuildMember
     
     override val maximumMember: Int
@@ -49,7 +49,7 @@ public interface Channel : ChatRoom, ChannelInfo {
      * 得到这个频道对应的guild。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun guild(): Guild
     
     
@@ -62,7 +62,7 @@ public interface Channel : ChatRoom, ChannelInfo {
      * 根据ID查询指定成员。
      */
     @JvmBlocking(baseName = "getMember", suffix = "")
-    @JvmAsync(baseName = "getMember", suffix = "")
+    @JvmAsync(baseName = "getMember")
     override suspend fun member(id: ID): GuildMember?
 }
 

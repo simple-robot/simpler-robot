@@ -51,7 +51,7 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      * 组织的拥有者信息。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun owner(): Member
     
     /**
@@ -78,7 +78,7 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
      */
     @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun previous(): Organization?
     
     
@@ -94,7 +94,7 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      * 当无法获取时得到null。
      */
     @JvmBlocking(baseName = "getChild", suffix = "")
-    @JvmAsync(baseName = "getChild", suffix = "")
+    @JvmAsync(baseName = "getChild")
     public suspend fun child(id: ID): Organization?
     
     /**
@@ -107,7 +107,7 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      * 尝试通过ID获取一个成员，无法获取则得到null。
      */
     @JvmBlocking(baseName = "getMember", suffix = "")
-    @JvmAsync(baseName = "getMember", suffix = "")
+    @JvmAsync(baseName = "getMember")
     public suspend fun member(id: ID): Member?
     
     
