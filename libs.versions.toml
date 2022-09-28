@@ -1,10 +1,11 @@
 [versions]
-kotlinx-coroutines = "1.6.2"
-kotlinx-serialization = "1.3.3"
+kotlinx-coroutines = "1.6.4"
+kotlinx-serialization = "1.4.0"
 spring-boot = "2.7.2"
 openjdk-jmh = "1.35"
 forte-di = "0.0.3"
 forte-annotationTool = "0.6.3"
+ktor = "2.1.1"
 
 [libraries]
 # jetbrains-annotation
@@ -63,3 +64,7 @@ forte-di-spring = { group = "love.forte.di", name = "di-spring", version.ref = "
 forte-annotationTool-api = { group = "love.forte.annotation-tool", name = "api", version.ref = "forte-annotationTool" }
 forte-annotationTool-core = { group = "love.forte.annotation-tool", name = "core", version.ref = "forte-annotationTool" }
 forte-annotationTool-kcore = { group = "love.forte.annotation-tool", name = "kcore", version.ref = "forte-annotationTool" }
+
+# ktor
+ktor-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
+ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }

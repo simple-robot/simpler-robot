@@ -40,7 +40,7 @@ jobs:
       - name: Gradle publish snapshot
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.4.2
+          gradle-version: 7.5.1
           arguments: clean build test publishToSonatype closeAndReleaseStagingRepository -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true
 
 
