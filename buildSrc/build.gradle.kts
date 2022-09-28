@@ -12,6 +12,7 @@ repositories {
 
 val kotlinVersion = "1.7.10"
 val dokkaPluginVersion = "1.7.10"
+val suspendTransformVersion = "0.0.3"
 
 dependencies {
     // kotlin("jvm") apply false
@@ -22,7 +23,7 @@ dependencies {
     
     // see https://github.com/gradle-nexus/publish-plugin
     implementation("io.github.gradle-nexus:publish-plugin:1.1.0")
-    implementation("love.forte.plugin.suspend-transform:suspend-transform-plugin-gradle:0.0.2")
+    implementation("love.forte.plugin.suspend-transform:suspend-transform-plugin-gradle:$suspendTransformVersion")
 }
 
 val compileKotlin: KotlinCompile by tasks
