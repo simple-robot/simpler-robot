@@ -16,7 +16,8 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.message.doSafeCast
 
 
@@ -33,14 +34,10 @@ public interface StartPointEvent : ChangedEvent {
     /**
      * 开端事件, before通常为null。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun before(): Any? = null
 
-    /**
-     * 开端事件, before通常为null。
-     */
-    @Api4J
-    override val before: Any? get() = null
 
 
     public companion object Key : BaseEventKey<StartPointEvent>("api.start_point", ChangedEvent) {
@@ -64,14 +61,10 @@ public interface EndPointEvent : ChangedEvent {
     /**
      * 终端事件，[after] 通常为null。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun after(): Any? = null
 
-    /**
-     * 终端事件，[after] 通常为null。
-     */
-    @Api4J
-    override val after: Any? get() = null
 
     public companion object Key : BaseEventKey<EndPointEvent>("api.end_point", ChangedEvent) {
         override fun safeCast(value: Any): EndPointEvent? = doSafeCast(value)

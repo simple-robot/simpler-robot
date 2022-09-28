@@ -18,6 +18,8 @@ package love.forte.simbot.ability
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.utils.runInBlocking
 import java.util.concurrent.CompletableFuture
@@ -32,35 +34,22 @@ import java.util.concurrent.CompletableFuture
  *
  * @author ForteScarlet
  */
+@JvmBlocking
+@JvmAsync
 public interface Switchable : DelayableCoroutineScope {
     
     /**
      * 启动操作.
      * @return 从未启动且尚未关闭的情况下启动成功则返回true。
      */
-    @JvmSynthetic
     public suspend fun start(): Boolean
-    
-    @Api4J
-    @Throws(InterruptedException::class)
-    public fun startBlocking(): Boolean = runInBlocking { start() }
-    
-    @Api4J
-    public fun startAsync(): CompletableFuture<Boolean> {
-        return async { start() }.asCompletableFuture()
-    }
     
     /**
      * 关闭操作.
      *
      * @return 尚未关闭且关闭成功时返回true。
      */
-    @JvmSynthetic
     public suspend fun cancel(reason: Throwable? = null): Boolean
-    
-    @Api4J
-    @Throws(InterruptedException::class)
-    public fun cancelBlocking(reason: Throwable?): Boolean = runInBlocking { cancel(reason) }
     
     @Api4J
     @Throws(InterruptedException::class)
@@ -70,12 +59,6 @@ public interface Switchable : DelayableCoroutineScope {
     public fun cancelAsync(): CompletableFuture<Boolean> {
         return async { cancel() }.asCompletableFuture()
     }
-    
-    @Api4J
-    public fun cancelAsync(reason: Throwable?): CompletableFuture<Boolean> {
-        return async { cancel(reason) }.asCompletableFuture()
-    }
-    
     
     /**
      * 是否已经启动过了。

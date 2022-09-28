@@ -52,10 +52,15 @@ public class SimbotLogger(
         } else {
             fullyQualifiedCallerName
         }
-        
-        if (simpleName0.length < MAX_NAME_SIZE) {
-            simpleName0 = " ".repeat(MAX_NAME_SIZE - simpleName0.length) + simpleName0
+        when {
+            simpleName0.length < MAX_NAME_SIZE -> {
+                simpleName0 = " ".repeat(MAX_NAME_SIZE - simpleName0.length) + simpleName0
+            }
+            simpleName0.length > MAX_NAME_SIZE -> {
+                simpleName0 = simpleName0.substring(simpleName0.length - MAX_NAME_SIZE, simpleName0.length)
+            }
         }
+        
         simpleName = simpleName0
     }
     

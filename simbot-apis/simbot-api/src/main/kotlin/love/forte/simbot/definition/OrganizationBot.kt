@@ -16,7 +16,8 @@
 
 package love.forte.simbot.definition
 
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.bot.Bot
 
 
@@ -42,15 +43,9 @@ public interface OrganizationBot : Bot {
     /**
      * 将当前bot转化为此组织中的成员。
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "toMember", suffix = "")
+    @JvmAsync(baseName = "toMember")
     public suspend fun asMember(): Member
-    
-    /**
-     * 将当前bot转化为此组织中的成员。
-     */
-    @Api4J
-    public fun toMember(): Member
-    
 }
 
 
@@ -67,14 +62,9 @@ public interface GroupBot : OrganizationBot {
     /**
      * 将当前bot转化为此组织中的成员。
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "toMember", suffix = "")
+    @JvmAsync(baseName = "toMember")
     override suspend fun asMember(): GroupMember
-    
-    /**
-     * 将当前bot转化为此组织中的成员。
-     */
-    @Api4J
-    override fun toMember(): GroupMember
 }
 
 
@@ -91,12 +81,7 @@ public interface GuildBot : OrganizationBot {
     /**
      * 将当前bot转化为此组织中的成员。
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "toMember", suffix = "")
+    @JvmAsync(baseName = "toMember")
     override suspend fun asMember(): GuildMember
-    
-    /**
-     * 将当前bot转化为此组织中的成员。
-     */
-    @Api4J
-    override fun toMember(): GuildMember
 }

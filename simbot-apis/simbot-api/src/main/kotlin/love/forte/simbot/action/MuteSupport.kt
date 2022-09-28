@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -12,12 +12,12 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.action
 
-import kotlinx.coroutines.runBlocking
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.JavaDuration
 import love.forte.simbot.kotlin
@@ -81,20 +81,19 @@ public interface MuteSupport {
     @JvmSynthetic
     public suspend fun mute(duration: Duration = DEFAULT_DURATION): Boolean
     
-    
     /**
      * 对当前目标进行 **禁言** 操作。
      *
      * ```java
-     * support.muteBlocking(5, TimeUnit.SECONDS)
+     * support.mute(5, TimeUnit.SECONDS)
      * ```
      *
      * @see mute
      */
-    @Api4J
-    public fun muteBlocking(time: Long, timeUnit: TimeUnit): Boolean = runBlocking {
-        mute(timeUnit.toNanos(time).nanoseconds)
-    }
+    @JvmBlocking
+    @JvmAsync
+    public suspend fun mute(time: Long, timeUnit: TimeUnit): Boolean = mute(timeUnit.toNanos(time).nanoseconds)
+    
     
     /**
      * 对当前目标进行 **禁言** 操作。
@@ -125,21 +124,12 @@ public interface MuteSupport {
      *
      * @throws UnsupportedActionException 当此行为不被支持时
      */
-    @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync
     public suspend fun unmute(): Boolean
     
-    /**
-     * 对当前目标进行 **解除禁言** 操作。
-     * @see unmute
-     */
-    @Api4J
-    public fun unmuteBlocking(): Boolean = runInBlocking {
-        unmute()
-    }
-    
-    
     public companion object {
-        internal val DEFAULT_DURATION = Duration.ZERO // (-1L).nanoseconds
+        internal val DEFAULT_DURATION = Duration.ZERO
     }
     
 }

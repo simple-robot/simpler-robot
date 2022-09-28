@@ -21,7 +21,7 @@ package love.forte.simbot.logger.color
  */
 public interface Color {
     public val colorIndex: Int
-    public val isBackGround: Boolean get() = this is BackGroundColor
+    public val isBackGround: Boolean get() = this is BackgroundColor
     public val isFont: Boolean get() = this is FontColor
     public val prefix: String
     public val suffix: String

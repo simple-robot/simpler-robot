@@ -120,22 +120,26 @@ if (isPublishConfigurable) {
     // https://stackoverflow.com/questions/57921325/gradle-signarchives-unable-to-read-secret-key
     // https://github.com/gradle/gradle/issues/15718
     
-    signing {
-        val keyId = System.getenv("GPG_KEY_ID")
-        val secretKey = System.getenv("GPG_SECRET_KEY")
-        val password = System.getenv("GPG_PASSWORD")
-        
-        setRequired {
-            !project.version.toString().endsWith("SNAPSHOT")
+    val keyId = System.getenv("GPG_KEY_ID")
+    val secretKey = System.getenv("GPG_SECRET_KEY")
+    val password = System.getenv("GPG_PASSWORD")
+    
+    if (keyId != null) {
+        signing {
+            setRequired {
+                !project.version.toString().endsWith("SNAPSHOT")
+            }
+    
+            useInMemoryPgpKeys(keyId, secretKey, password)
+    
+            sign(publishing.publications)
         }
-        
-        useInMemoryPgpKeys(keyId, secretKey, password)
-        
-        sign(publishing.publications["simbotDist"])
+    } else {
+        logger.warn("Signing property [keyId] (from system env [GPG_KEY_ID]) is null.")
     }
     
     
-    println("[publishing-configure] - [$name] configured.")
+    logger.info("[publishing-configure] - [{}] configured.", name)
 }
 
 

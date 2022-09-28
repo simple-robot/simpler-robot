@@ -76,7 +76,7 @@ public interface Category : IDContainer {
         /**
          * 根据参数构建一个 [SimpleCategory] 实例。
          *
-         * @param name 此分类的名称和唯一标识。
+         * @param nameAlsoId 此分类的名称和唯一标识。
          */
         @JvmStatic
         @JvmName("of")

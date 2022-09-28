@@ -18,10 +18,12 @@
 
 package love.forte.simbot.utils
 
+import org.jetbrains.annotations.UnmodifiableView
+
 /**
  * 将目标列表实例转化为一个 [列表视图][ListView].
  */
-public fun <T> List<T>.view(): ListView<T> = ListView(this)
+public fun <T> List<T>.view(): @UnmodifiableView ListView<T> = ListView(this)
 
 
 

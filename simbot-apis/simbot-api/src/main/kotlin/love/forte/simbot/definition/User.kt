@@ -18,8 +18,8 @@
 
 package love.forte.simbot.definition
 
-import love.forte.simbot.bot.Bot
 import love.forte.simbot.ID
+import love.forte.simbot.bot.Bot
 
 /**
  * 一个 **用户**。

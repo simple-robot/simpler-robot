@@ -49,6 +49,7 @@ package love.forte.simbot.application
  * ```
  *
  */
+@JvmSynthetic
 public suspend fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, A : Application> createSimbotApplication(
     factory: ApplicationFactory<Config, Builder, A>,
     configurator: Config.() -> Unit = {},

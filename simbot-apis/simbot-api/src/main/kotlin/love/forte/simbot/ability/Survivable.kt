@@ -17,10 +17,12 @@
 package love.forte.simbot.ability
 
 import kotlinx.coroutines.CompletionHandler
+import kotlinx.coroutines.future.future
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.utils.runInBlocking
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Future
 
 /**
  * 可存活的。
@@ -28,62 +30,38 @@ import java.util.concurrent.Future
  *
  * @author ForteScarlet
  */
+@JvmBlocking
+@JvmAsync
 public interface Survivable : Switchable {
-
+    
     /**
      * 挂起, 直到当前实例被 [cancel] 或完成.
-     *
-     * Java中考虑使用 [waiting] 或者通过 [toAsync] 得到 [Future] 来更灵活的操作。
-     *
-     * @see waiting
-     * @see toAsync
      */
-    @JvmSynthetic
+    @JvmAsync(baseName = "asFuture", suffix = "")
     public suspend fun join()
-
+    
+    
+    @Api4J
+    @Deprecated("Just use join() or asFuture() for java", level = DeprecationLevel.ERROR,
+        replaceWith = ReplaceWith("future { join() }")
+    )
+    public fun toFuture(): CompletableFuture<Unit> = future { join() }
+    
     /**
      * 当完成（或被cancel）时执行一段处理。
      */
     public fun invokeOnCompletion(handler: CompletionHandler)
-
+    
     /**
      * 阻塞当前线程并等待 [join] 的挂起结束。
      *
-     * 应当谨慎使用会造成阻塞的api，且在Kotlin中避免使用。
-     *
+     * 等同于 `joinBlocking`。目前来看唯一的区别是 [waiting] 显示通过 [Throws] 指定了受检异常 [InterruptedException],
+     * 而 joinBlocking 目前不会产生受检异常。
      */
     @Api4J
     @Throws(InterruptedException::class)
     public fun waiting() {
         runInBlocking { join() }
     }
-
-    /**
-     * 得到一个 [Future], 其结果会在当前 [Survivable] 被终止后被推送。
-     *
-     * 返回值的 [Future.get] 得到的最终结果恒为 `0`。
-     *
-     */
-    @Api4J
-    public fun toAsync(): Future<Unit> {
-        val future = CompletableFuture<Unit>()
-        invokeOnCompletion { e ->
-            if (e != null) {
-                future.completeExceptionally(e)
-            } else {
-                future.complete(Unit)
-            }
-        }
-        return future
-    }
-
-    @JvmSynthetic
-    override suspend fun start(): Boolean
-
-    @JvmSynthetic
-    override suspend fun cancel(reason: Throwable?): Boolean
-
-
 }
-
 

@@ -16,7 +16,8 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.doSafeCast
@@ -43,14 +44,9 @@ public interface UserEvent : ObjectiveEvent, UserInfoContainer {
     /**
      * 这个[用户][User]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun user(): User
-    
-    /**
-     * 这个[用户][User]。
-     */
-    @Api4J
-    override val user: User
     
     public companion object Key : BaseEventKey<UserEvent>("api.user") {
         override fun safeCast(value: Any): UserEvent? = doSafeCast(value)
@@ -71,29 +67,19 @@ public interface MemberEvent : UserEvent, MemberInfoContainer {
     /**
      * 这个[成员][Member]
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun member(): Member
     
-    /**
-     * 这个[成员][Member]
-     */
-    @Api4J
-    override val member: Member
-    
     
     /**
      * 这个[成员][Member]
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun user(): Member
     
-    /**
-     * 这个[成员][Member]
-     */
-    @Api4J
-    override val user: Member
-
-
+    
     public companion object Key : BaseEventKey<MemberEvent>("api.member", UserEvent) {
         override fun safeCast(value: Any): MemberEvent? = doSafeCast(value)
     }
@@ -112,28 +98,16 @@ public interface FriendEvent : UserEvent, FriendInfoContainer {
     /**
      * 这个[好友][Friend]
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun friend(): Friend
     
     /**
      * 这个[好友][Friend]
      */
-    @Api4J
-    override val friend: Friend
-    
-    
-    /**
-     * 这个[好友][Friend]
-     */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun user(): Friend
-    
-    /**
-     * 这个[好友][Friend]
-     */
-    @Api4J
-    override val user: Friend
-    
     
     public companion object Key : BaseEventKey<FriendEvent>("api.friend", UserEvent) {
         override fun safeCast(value: Any): FriendEvent? = doSafeCast(value)
@@ -157,15 +131,9 @@ public interface OrganizationEvent : ObjectiveEvent {
     /**
      * 这个[组织][Organization]
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun organization(): Organization
-    
-    /**
-     * 这个[组织][Organization]
-     */
-    @Api4J
-    public val organization: Organization
-    
     
     public companion object Key : BaseEventKey<OrganizationEvent>("api.organization") {
         override fun safeCast(value: Any): OrganizationEvent? = doSafeCast(value)
@@ -189,28 +157,17 @@ public interface GroupEvent : OrganizationEvent, GroupInfoContainer {
     /**
      * 这个[群][Group]
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun group(): Group
     
     /**
      * 这个[群][Group]
      */
-    @Api4J
-    override val group: Group
-    
-    
-    /**
-     * 这个[群][Group]
-     */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun organization(): Group
     
-    /**
-     *
-     * 这个[群][Group]
-     */
-    @Api4J
-    override val organization: Group
     
     public companion object Key : BaseEventKey<GroupEvent>("api.group", OrganizationEvent) {
         override fun safeCast(value: Any): GroupEvent? = doSafeCast(value)
@@ -230,28 +187,17 @@ public interface GuildEvent : OrganizationEvent {
     /**
      * 这个[频道服务器][Guild]
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun guild(): Guild
     
-    
     /**
      * 这个[频道服务器][Guild]
      */
-    @Api4J
-    public val guild: Guild
-    
-    
-    /**
-     * 这个[频道服务器][Guild]
-     */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun organization(): Guild
     
-    /**
-     * 这个[频道服务器][Guild]
-     */
-    @Api4J
-    override val organization: Guild
     
     public companion object Key : BaseEventKey<GuildEvent>("api.guild", OrganizationEvent) {
         override fun safeCast(value: Any): GuildEvent? = doSafeCast(value)
@@ -272,27 +218,17 @@ public interface ChannelEvent : OrganizationEvent {
     /**
      * 这个[频道][Channel]
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun channel(): Channel
     
-    /**
-     * 这个[频道][Channel]
-     */
-    @Api4J
-    public val channel: Channel
-    
     
     /**
      * 这个[频道][Channel]
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun organization(): Channel
-    
-    /**
-     * 这个[频道][Channel]
-     */
-    @Api4J
-    override val organization: Channel
     
     public companion object Key : BaseEventKey<ChannelEvent>("api.channel", OrganizationEvent) {
         override fun safeCast(value: Any): ChannelEvent? = doSafeCast(value)

@@ -16,7 +16,8 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.message.doSafeCast
@@ -53,43 +54,24 @@ public interface ChangeEvent : Event {
      * 而变更源（[source]）就是这个用户。
      *
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun source(): Any
-
-    /**
-     * 变更载体，或者说变更内容的源。
-     *
-     * [source] 代表了当前的变更事件中，变更内容所发生的地方。
-     * 比如说，用户名变更，变更内容（[before], [after]）就是用户名，
-     * 而变更源（[source]）就是这个用户。
-     *
-     */
-    @Api4J
-    public val source: Any
-
+    
     /**
      * 变更行为前的内容。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun before(): Any?
 
-    /**
-     * 变更行为前的内容。
-     */
-    @Api4J
-    public val before: Any?
 
     /**
      * 变更行为后的内容。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun after(): Any?
-
-    /**
-     * 变更行为后的内容。
-     */
-    @Api4J
-    public val after: Any?
 
 
     public companion object Key : BaseEventKey<ChangeEvent>("api.change") {

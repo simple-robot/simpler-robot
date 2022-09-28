@@ -21,6 +21,6 @@ object V {
      * Kotlin相关依赖项
      */
     object Kotlin {
-        const val VERSION = "1.6.21"
+        const val VERSION = "1.7.10"
     }
 }
