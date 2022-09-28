@@ -29,8 +29,8 @@ private fun createDefaultDispatcher(
     maxSize: Int?,
     keepAliveTime: Long?,
 ): ExecutorCoroutineDispatcher {
-    // cpu-1 or 1
-    val coreSize0 = coreSize ?: (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(0)
+    // cpu / 2 or 1
+    val coreSize0 = (coreSize ?: (Runtime.getRuntime().availableProcessors() / 2)).coerceAtLeast(1)
     val maxSize0 = maxSize?.coerceAtLeast(coreSize0) ?: Int.MAX_VALUE
     val keepAliveTime0 = keepAliveTime ?: 60_000 // ms -> 60s
     
