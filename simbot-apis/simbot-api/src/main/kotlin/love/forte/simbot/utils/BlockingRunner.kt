@@ -28,14 +28,14 @@ private fun createDefaultDispatcher(
     coreSize: Int?,
     maxSize: Int?,
     keepAliveTime: Long?,
-): CoroutineDispatcher {
+): ExecutorCoroutineDispatcher {
     // cpu-1 or 1
     val coreSize0 = coreSize ?: (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(0)
     val maxSize0 = maxSize?.coerceAtLeast(coreSize0) ?: Int.MAX_VALUE
     val keepAliveTime0 = keepAliveTime ?: 60_000 // ms -> 60s
     
     val num = AtomicLong(0)
-    val group = ThreadGroup("runInBlocking")
+    val group = ThreadGroup("run4JDispatcher")
     val logger = LoggerFactory.getLogger("love.forte.simbot.utils.DefaultDispatcher")
     val executor = ThreadPoolExecutor(
         coreSize0,
@@ -49,7 +49,7 @@ private fun createDefaultDispatcher(
             }
         }
     ) { runnable, executor ->
-        logger.error("The blocking task {} is rejected by blocking task executor {}", runnable, executor)
+        logger.error("The task {} is rejected by blocking task executor {}", runnable, executor)
     }
     
     return executor.asCoroutineDispatcher()
