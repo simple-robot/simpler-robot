@@ -26,7 +26,6 @@ import kotlinx.coroutines.rx2.awaitSingleOrNull
 import kotlinx.coroutines.rx3.asFlow
 import kotlinx.coroutines.rx3.await
 import kotlinx.coroutines.rx3.awaitSingleOrNull
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.modules.EmptySerializersModule
 import love.forte.simbot.AttributeMutableMap
 import love.forte.simbot.ExperimentalSimbotApi
@@ -61,12 +60,12 @@ internal class SimpleEventProcessingContextResolver(
     /**
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
      */
-    @OptIn(ExperimentalSimbotApi::class, ExperimentalSerializationApi::class)
+    @OptIn(ExperimentalSimbotApi::class)
     override suspend fun resolveEventToContext(event: Event, listenerSize: Int): SimpleEventProcessingContext? {
         
         val context = SimpleEventProcessingContext(
             event,
-            messagesSerializersModule = EmptySerializersModule,
+            messagesSerializersModule = EmptySerializersModule(),
             globalContext,
             continuousSessionContext,
             listenerSize
