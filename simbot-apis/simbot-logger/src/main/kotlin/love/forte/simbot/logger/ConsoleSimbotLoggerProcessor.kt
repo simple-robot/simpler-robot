@@ -17,6 +17,7 @@
 package love.forte.simbot.logger
 
 import love.forte.simbot.logger.ConsoleSimbotLoggerProcessor.Companion.SIMBOT_LEVEL_PROPERTY_KEY
+import love.forte.simbot.logger.color.BackgroundColor
 import love.forte.simbot.logger.color.Color
 import love.forte.simbot.logger.color.FontColor
 import love.forte.simbot.logger.color.appendColor
@@ -47,22 +48,25 @@ public class ConsoleSimbotLoggerProcessor(level: Level?) : SimbotLoggerProcessor
 
     private fun printLog(info: LogInfo) {
         val printer: PrintStream = if (info.level == Level.ERROR) System.err else System.out
-
+        val levelColor = info.level.color
+        
         val printMsg = buildString(info.formattedMsg.length + 80) {
+            appendColor(info.level.backgroundColor, ' ').append(' ')
             appendColor(FontColor.BLUE, Instant.ofEpochMilli(info.timestamp).toString()).append(' ')
 
             if (info.level.toString().length <= 4) {
                 append(' ')
             }
-            appendColor(info.level.color, info.level.toString()).append(' ').append(" --- [")
+            appendColor(levelColor, info.level.toString())
+            appendColor(levelColor, " --- [")
             val threadName = info.thread.name.getOnMax(20)
             if (threadName.length < 20) {
                 repeat(20 - threadName.length) {
                     append(' ')
                 }
             }
-            append(threadName).append("] ")
-            appendColor(FontColor.BLUE, info.name).append("  : ").append(info.formattedMsg)
+            append(threadName).appendColor(levelColor, "] ")
+            appendColor(FontColor.BLUE, info.name).appendColor(levelColor, " :  ").append(info.formattedMsg)
         }
 
         printer.println(printMsg)
@@ -101,4 +105,13 @@ internal val Level.color: Color
         Level.WARN -> FontColor.YELLOW
         Level.DEBUG -> FontColor.PURPLE
         Level.TRACE -> FontColor.BLUE
+    }
+
+internal val Level.backgroundColor: Color
+    get() = when (this) {
+        Level.INFO -> BackgroundColor.GREEN
+        Level.ERROR -> BackgroundColor.DARK_RED
+        Level.WARN -> BackgroundColor.YELLOW
+        Level.DEBUG -> BackgroundColor.PURPLE
+        Level.TRACE -> BackgroundColor.BLUE
     }

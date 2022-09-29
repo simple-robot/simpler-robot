@@ -16,11 +16,12 @@
 
 package love.forte.simbot.application
 
-import love.forte.simbot.bot.Bot
-import love.forte.simbot.bot.BotVerifyInfo
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentFactory
 import love.forte.simbot.ability.CompletionPerceivable
+import love.forte.simbot.bot.Bot
+import love.forte.simbot.bot.BotVerifyInfo
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
@@ -41,6 +42,7 @@ public interface ApplicationFactory<
     /**
      * 提供配置函数和构建器函数，构建一个 [Application] 实例。
      */
+    @JvmBlocking
     public suspend fun create(configurator: Config.() -> Unit, builder: suspend Builder.(Config) -> Unit): A
 }
 

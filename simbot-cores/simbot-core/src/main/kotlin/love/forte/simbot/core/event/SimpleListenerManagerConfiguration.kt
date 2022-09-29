@@ -16,7 +16,6 @@
 
 package love.forte.simbot.core.event
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
@@ -231,8 +230,7 @@ public open class SimpleListenerManagerConfiguration {
     // endregion
     
     
-    @OptIn(ExperimentalSerializationApi::class)
-    internal fun build(serializersModule: SerializersModule = EmptySerializersModule): SimpleListenerManagerConfig {
+    internal fun build(serializersModule: SerializersModule = EmptySerializersModule()): SimpleListenerManagerConfig {
         return SimpleListenerManagerConfig(
             coroutineContext,
             exceptionHandler = listenerExceptionHandler,

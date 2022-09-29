@@ -16,7 +16,8 @@
 
 package love.forte.simbot.definition
 
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ID
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.resources.Resource
@@ -98,14 +99,9 @@ public interface ChannelInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [channel][ChannelInfo].
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun channel(): ChannelInfo
-    
-    /**
-     * 当前 [channel][ChannelInfo].
-     */
-    @Api4J
-    public val channel: ChannelInfo
 }
 
 /**
@@ -126,14 +122,9 @@ public interface GuildInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [guild][GuildInfo].
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun guild(): GuildInfo
-    
-    /**
-     * 当前 [guild][GuildInfo].
-     */
-    @Api4J
-    public val guild: GuildInfo
 }
 
 /**
@@ -154,14 +145,9 @@ public interface GroupInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [group][GroupInfo].
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun group(): GroupInfo
-    
-    /**
-     * 当前 [group][GroupInfo].
-     */
-    @Api4J
-    public val group: GroupInfo
 }
 
 /**
@@ -183,15 +169,9 @@ public interface UserInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [user][UserInfo]
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun user(): UserInfo
-    
-    
-    /**
-     * 当前 [user][UserInfo]
-     */
-    @Api4J
-    public val user: UserInfo
 }
 
 /**
@@ -212,14 +192,9 @@ public interface MemberInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [member][MemberInfo].
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun member(): MemberInfo
-    
-    /**
-     * 当前 [member][MemberInfo].
-     */
-    @Api4J
-    public val member: MemberInfo
 }
 
 /**
@@ -240,14 +215,9 @@ public interface FriendInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [friend][FriendInfo].
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun friend(): FriendInfo
-    
-    /**
-     * 当前 [friend][FriendInfo].
-     */
-    @Api4J
-    public val friend: FriendInfo
 }
 
 /**
@@ -269,16 +239,9 @@ public interface ResourceContainer : SuspendablePropertyContainer {
     /**
      * 得到当前容器中的 [资源][Resource].
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun resource(): Resource
-    
-    
-    /**
-     * 得到当前容器中的 [资源][Resource].
-     */
-    @Api4J
-    public val resource: Resource
-    
 }
 
 /**

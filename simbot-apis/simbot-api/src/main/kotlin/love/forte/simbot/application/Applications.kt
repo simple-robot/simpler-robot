@@ -18,6 +18,9 @@
 
 package love.forte.simbot.application
 
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
+
 
 /**
  * 构建并启用一个 [Application].
@@ -49,6 +52,7 @@ package love.forte.simbot.application
  * ```
  *
  */
+@JvmSynthetic
 public suspend fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, A : Application> createSimbotApplication(
     factory: ApplicationFactory<Config, Builder, A>,
     configurator: Config.() -> Unit = {},
@@ -234,6 +238,8 @@ public interface ApplicationDslBuilder<Config : ApplicationConfiguration, Builde
     /**
      * 根据配置的函数构建目标 [Application][A].
      */
+    @JvmBlocking
+    @JvmAsync
     public suspend fun create(): A
     
 }

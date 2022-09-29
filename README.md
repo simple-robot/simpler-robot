@@ -92,7 +92,7 @@ simbot3目前已经实现的组件有：
 
 ## 信息资讯
 如果你想要时刻关注版本的发布信息，你可以通过GitHub的 **Watch** 功能来订阅包括 
-[**Releases**](https://github.com/ForteScarlet/simpler-robot/releases) 
+[**Releases**](https://github.com/simple-robot/simpler-robot/releases) 
 在内的各种仓库资讯。
 
 如果你感兴趣，可以时不时的去 [**Simple Robot Blog**](https://simbot.forte.love/blog) 看一看，
@@ -114,9 +114,9 @@ simbot不再拥有或推广任何官方管理的社交群聊（包括QQ群、TG�
 - 如果想要与开发团队交流、与其他开发者交流，请前往 [**讨论区**][discussions]。
 
 
-[pr]: https://github.com/ForteScarlet/simpler-robot/pulls
-[issues]: https://github.com/ForteScarlet/simpler-robot/issues
-[discussions]: https://github.com/ForteScarlet/simpler-robot/discussions
+[pr]: https://github.com/simple-robot/simpler-robot/pulls
+[issues]: https://github.com/simple-robot/simpler-robot/issues
+[discussions]: https://github.com/orgs/simple-robot/discussions
 
 
 ## 走马观花
@@ -131,10 +131,12 @@ suspend fun main() {
         listeners {                                     // 配置监听函数
             FriendMessageEvent { event ->               // 监听 「好友消息」 事件
                 val receipt = event.reply("mua!")       // 回复一句「mua!」
+              
                 delay(3.seconds)                        // 挂起等待3s
+              
                 receipt.delete()                        // 撤回刚刚发送的那一句「mua!」
                 event.friend().send("I love you~")      // 向这个好友发送一句「I love you~」
-                eventResult()                           // 结束事件, 返回一个默认的事件处理结果
+              
             } onMatch { it.friend().id.literal == "1145141919" } // 事件只有当好友的id为「1149159218」的时候才会触发
             
         }
@@ -151,7 +153,7 @@ suspend fun main() {
             // ===== way 1
             FriendMessageEvent { event ->              // 监听 「好友消息」 事件
                 // ...                                 // 处理逻辑
-                eventResult() // result                // 结束事件, 返回一个默认的事件处理结果
+              
             } onMatch {                                // 此事件触发前的匹配函数
                 // match ...                           // 匹配逻辑
                 true                                   // 匹配结果, 只有为true时才会触发事件
@@ -258,7 +260,7 @@ suspend fun FriendMessageEvent.onEvent(session: ContinuousSessionContext) {
 
 ## 贡献你的星星！
 
-[![Star History Chart](https://api.star-history.com/svg?repos=ForteScarlet/simpler-robot&type=Date)](https://star-history.com/#ForteScarlet/simpler-robot&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=simple-robot/simpler-robot&type=Date)](https://star-history.com/#simple-robot/simpler-robot&Date)
 
 > powered by [Star History](https://star-history.com)
 

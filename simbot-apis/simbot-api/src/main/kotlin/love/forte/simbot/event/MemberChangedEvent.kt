@@ -16,7 +16,8 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.action.ActionType
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.doSafeCast
@@ -44,16 +45,10 @@ public interface MemberChangedEvent :
      * 无法保证当前事件能够获取到 [operator] 的信息，当不支持对此信息进行获取的时候，将会得到 `null`。
      *
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun operator(): MemberInfo?
     
-    /**
-     * 这次组织成员变动的**操作者**。
-     *
-     * @see operator
-     */
-    @Api4J
-    public val operator: MemberInfo?
     
     public companion object Key :
         BaseEventKey<MemberChangedEvent>(
@@ -79,27 +74,16 @@ public interface MemberIncreaseEvent :
     /**
      * 成员增加事件发生所在的组织。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Organization
     
     /**
-     * 成员增加事件发生所在的组织。
-     */
-    @Api4J
-    override val source: Organization
-    
-    
-    /**
      * 增加的[成员][Member]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun after(): Member
-    
-    /**
-     * 增加的[成员][Member]。
-     */
-    @Api4J
-    override val after: Member
     
     
     /**
@@ -131,14 +115,9 @@ public interface MemberDecreaseEvent :
     /**
      * 离开的[成员][Member]
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun before(): Member
-    
-    /**
-     * 离开的[成员][Member]
-     */
-    @Api4J
-    override val before: Member
     
     /**
      * 行为类型。主动/被动
@@ -166,49 +145,29 @@ public interface GroupMemberIncreaseEvent : MemberIncreaseEvent, GroupEvent {
     /**
      * 成员增加事件发生所在的[群][Group]。
      */
-    @Api4J
-    override val group: Group
-    
-    /**
-     * 成员增加事件发生所在的[群][Group]。
-     */
     @JvmSynthetic
     override suspend fun group(): Group
     
-    /**
-     * 成员增加事件发生所在的[群][Group]。
-     */
-    @Api4J
-    override val source: Group
     
     /**
      * 成员增加事件发生所在的[群][Group]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Group
     
     /**
      * 增加的[群成员][GroupMember]。
      */
-    @Api4J
-    override val after: GroupMember
-    
-    /**
-     * 增加的[群成员][GroupMember]。
-     */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun after(): GroupMember
     
     /**
      * 增加的[群成员][GroupMember]。
      */
-    @Api4J
-    override val member: GroupMember
-    
-    /**
-     * 增加的[群成员][GroupMember]。
-     */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun member(): GroupMember
     
     
@@ -230,11 +189,6 @@ public interface GroupMemberIncreaseEvent : MemberIncreaseEvent, GroupEvent {
  * @see MemberIncreaseEvent
  */
 public interface GuildMemberIncreaseEvent : MemberIncreaseEvent, GuildEvent {
-    /**
-     * 成员增加事件发生所在的[频道服务器][Guild]。
-     */
-    @Api4J
-    override val guild: Guild
     
     /**
      * 成员增加事件发生所在的[频道服务器][Guild]。
@@ -242,40 +196,28 @@ public interface GuildMemberIncreaseEvent : MemberIncreaseEvent, GuildEvent {
     @JvmSynthetic
     override suspend fun guild(): Guild
     
-    /**
-     * 成员增加事件发生所在的[频道服务器][Guild]。
-     */
-    @Api4J
-    override val source: Guild
     
     /**
      * 成员增加事件发生所在的[频道服务器][Guild]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Guild
     
-    /**
-     * 增加的[频道成员][GuildMember]。
-     */
-    @Api4J
-    override val after: GuildMember
     
     /**
      * 增加的[频道成员][GuildMember]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun after(): GuildMember
     
-    /**
-     * 增加的[频道成员][GuildMember]。
-     */
-    @Api4J
-    override val member: GuildMember
     
     /**
      * 增加的[频道成员][GuildMember]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun member(): GuildMember
     
     
@@ -297,11 +239,6 @@ public interface GuildMemberIncreaseEvent : MemberIncreaseEvent, GuildEvent {
  */
 public interface GroupMemberDecreaseEvent : MemberDecreaseEvent, GroupEvent {
     
-    /**
-     * 成员减少事件发生所在的[群][Group]。
-     */
-    @Api4J
-    override val group: Group
     
     /**
      * 成员减少事件发生所在的[群][Group]。
@@ -309,40 +246,28 @@ public interface GroupMemberDecreaseEvent : MemberDecreaseEvent, GroupEvent {
     @JvmSynthetic
     override suspend fun group(): Group
     
-    /**
-     * 成员减少事件发生所在的[群][Group]。
-     */
-    @Api4J
-    override val source: Group
     
     /**
      * 成员减少事件发生所在的[群][Group]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Group
     
-    /**
-     * 减少的[群成员][GroupMember]。
-     */
-    @Api4J
-    override val before: GroupMember
     
     /**
      * 减少的[群成员][GroupMember]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun before(): GroupMember
     
-    /**
-     * 减少的[群成员][GroupMember]。
-     */
-    @Api4J
-    override val member: GroupMember
     
     /**
      * 减少的[群成员][GroupMember]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun member(): GroupMember
     
     
@@ -364,11 +289,6 @@ public interface GroupMemberDecreaseEvent : MemberDecreaseEvent, GroupEvent {
  * @see MemberDecreaseEvent
  */
 public interface GuildMemberDecreaseEvent : MemberDecreaseEvent, GuildEvent {
-    /**
-     * 成员减少事件发生所在的[频道服务器][Guild]。
-     */
-    @Api4J
-    override val guild: Guild
     
     /**
      * 成员减少事件发生所在的[频道服务器][Guild]。
@@ -376,40 +296,28 @@ public interface GuildMemberDecreaseEvent : MemberDecreaseEvent, GuildEvent {
     @JvmSynthetic
     override suspend fun guild(): Guild
     
-    /**
-     * 成员减少事件发生所在的[频道服务器][Guild]。
-     */
-    @Api4J
-    override val source: Guild
     
     /**
      * 成员减少事件发生所在的[频道服务器][Guild]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Guild
     
-    /**
-     * 减少的[频道成员][GuildMember]。
-     */
-    @Api4J
-    override val before: GuildMember
     
     /**
      * 减少的[频道成员][GuildMember]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun before(): GuildMember
     
-    /**
-     * 减少的[频道成员][GuildMember]。
-     */
-    @Api4J
-    override val member: GuildMember
     
     /**
      * 减少的[频道成员][GuildMember]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun member(): GuildMember
     
     

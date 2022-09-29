@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -12,14 +12,15 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.core.event
 
-import love.forte.simbot.*
+import love.forte.simbot.Api4J
+import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.PriorityConstant
+import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.*
-import love.forte.simbot.message.At
 import love.forte.simbot.message.Message
 import love.forte.simbot.utils.randomIdStr
 import love.forte.simbot.utils.runWithInterruptible
@@ -186,7 +187,7 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
     
     private fun setFunc(f: suspend EventListenerProcessingContext.(E) -> EventResult) {
         if (this.func != null) {
-            throw SimbotIllegalStateException("Event handle can and can only be configured once")
+            throw SimbotIllegalStateException("Event handle must and must only be configured once")
         }
         
         func = f
@@ -242,7 +243,7 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
      *    handle { event: FooEvent -> // this: EventListenerProcessingContext
      *       process() // process function
      *
-     *       EventResult.defaults() // return default
+     *       EventResult.invalid() // return default
      *    }
      * }
      * ```
@@ -261,7 +262,7 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
     public inline fun process(crossinline func: suspend EventListenerProcessingContext.(E) -> Unit) {
         handle {
             func(it)
-            EventResult.defaults()
+            EventResult.invalid()
         }
     }
     
@@ -455,14 +456,5 @@ public inline fun <E : MessageEvent, reified M : Message.Element<M>> SimpleListe
         }
         
         !require || index >= 0
-    }
-}
-
-public fun a() {
-    buildSimpleListener(MessageEvent) {
-        matchMessage(At) { e, m, i ->
-            m.target.literal != "123"
-            true
-        }
     }
 }

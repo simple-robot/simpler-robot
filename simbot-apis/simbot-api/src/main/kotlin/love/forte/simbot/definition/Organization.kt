@@ -16,60 +16,15 @@
 
 package love.forte.simbot.definition
 
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.action.MuteSupport
 import love.forte.simbot.utils.item.Items
-import love.forte.simbot.utils.runInBlocking
 import kotlin.time.Duration
 
 
-/**
- * 一个 **组织** 结构（中的一员）。
- *
- *
- * [组织-百度百科](https://baike.baidu.com/item/组织/5105529):
- *
- *     1. 组织必须是以人为中心，把人、财、物合理配合为一体，并保持相对稳定而形成的一个社会实体。
- *     2. 组织必须具有为本组织全体成员所认可并为之奋斗的共同目标。
- *     3. 组织必须保持一个明确的边界，以区别于其他组织和外部环境。上述三条，是组织存在的必要条件。
- *
- * ## 成员
- * 一个组织下，可以存在多个 [成员][Member]. 且成员中可能存在拥有一定程度权限的管理员。
- *
- * 查询所有管理员：
- * ```kotlin
- *    organization.members().filter { it.isAdmin() }
- * ```
- *
- *
- * ## 财产
- * 在组织下，此组织可能存在一定程度的 "财产". 财产的表现形式是多样化的，例如在QQ群中保存的各种文库文件、相册图片等。应由实现者自行实现。
- *
- *
- * ## 职能
- * 一个组织可能存在各种职能，例如一个“文字频道”，其职能允许成员们在其中进行文字交流，而一个“语音频道”则可能允许其成员们在其中进行语音聊天。
- *
- * 对于能够交流的组织（下的成员），将其定义为一个 [聊天室][ChatRoom]。 聊天室应当实现于 [Organization] 下的接口并为其提供消息发送的能力。
- *
- *
- * _有关职能的约定仍需考虑。_
- *
- *
- *
- * 在一些常见场景下，组织可以表示为一个群聊，或者一个频道。群聊是没有上下级的，但是频道会有。
- * 需要考虑的是，不同类型的组织可能所拥有的权能不同。有可能能够发送消息，有可能不能。
- *
- * 你可以参考 [组织概述](https://www.yuque.com/simpler-robot/simpler-robot-doc/dt3ukr) 中的相关对比图。
- *
- * @see ChatRoom
- * @see Group
- * @see Guild
- * @see Channel
- *
- * @author ForteScarlet
- */
 public interface Organization : Objective, OrganizationInfo, MuteSupport, BotContainer {
     
     /**
@@ -95,7 +50,8 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
     /**
      * 组织的拥有者信息。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun owner(): Member
     
     /**
@@ -108,12 +64,10 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
     /**
      * 结束整个群的禁言。
      */
-    @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync
     override suspend fun unmute(): Boolean
     
-    @Api4J
-    public val owner: Member
-        get() = runInBlocking { owner() }
     
     override val maximumMember: Int
     override val currentMember: Int
@@ -123,17 +77,9 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      * 组织有可能是层级的，因此一个组织结构可能会有上一层的组织。
      * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun previous(): Organization?
-    
-    
-    /**
-     * 上一级，或者说这个组织的上层。
-     * 组织有可能是层级的，因此一个组织结构可能会有上一层的组织。
-     * 当然，也有可能不存在。不存在的时候，那么这个组织就是顶层。
-     */
-    @Api4J
-    public val previous: Organization?
     
     
     /**
@@ -147,16 +93,9 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
      *
      * 当无法获取时得到null。
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "getChild", suffix = "")
+    @JvmAsync(baseName = "getChild")
     public suspend fun child(id: ID): Organization?
-    
-    /**
-     * 根据指定ID尝试阻塞的获取一个匹配的下级[组织][Organization]。
-     *
-     * 当无法获取时得到null。
-     */
-    @Api4J
-    public fun getChild(id: ID): Organization?
     
     /**
      * 获取当前组织中的成员列表。
@@ -164,19 +103,12 @@ public interface Organization : Objective, OrganizationInfo, MuteSupport, BotCon
     public val members: Items<Member>
     
     
-    // region member 获取
     /**
      * 尝试通过ID获取一个成员，无法获取则得到null。
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "getMember", suffix = "")
+    @JvmAsync(baseName = "getMember")
     public suspend fun member(id: ID): Member?
-    
-    /**
-     * 尝试通过ID获取一个成员，无法获取则得到null。
-     */
-    @Api4J
-    public fun getMember(id: ID): Member?
-    // endregion
     
     
     /**
@@ -283,7 +215,6 @@ public inline operator fun OrganizationInfo.component2(): String = name
  */
 @Suppress("NOTHING_TO_INLINE")
 public inline operator fun OrganizationInfo.component3(): String = icon
-
 
 
 ////

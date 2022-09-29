@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -11,7 +11,6 @@
  *  https://www.gnu.org/licenses
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
  *
  */
 
@@ -72,10 +71,12 @@ public abstract class FunctionalBindableEventListener<R>(
      *
      * 默认情况下，如果结果是 [EventResult] 类型，则会直接返回, 否则通过 [EventResult.of] 转化为 [EventResult].
      *
+     * 当 [result] == [Unit] 时，将其视为 `null`。
+     *
      */
     protected open suspend fun resultProcess(result: R): EventResult {
         return if (result is EventResult) result
-        else EventResult.of(result)
+        else EventResult.of(result.takeIf { it != Unit })
     }
     
     private val isOptional = caller.parameters.any { it.isOptional }

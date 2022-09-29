@@ -16,8 +16,8 @@
 
 package love.forte.simbot.action
 
-import love.forte.simbot.Api4J
-import love.forte.simbot.utils.runInBlocking
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 
 
 /**
@@ -31,6 +31,8 @@ import love.forte.simbot.utils.runInBlocking
  *
  * @author ForteScarlet
  */
+@JvmBlocking
+@JvmAsync
 public interface DeleteSupport {
 
     /**
@@ -43,19 +45,5 @@ public interface DeleteSupport {
      *
      * @return 在支持的情况下代表是否删除成功，不支持的情况下可能恒返回 `false`。
      */
-    @JvmSynthetic
     public suspend fun delete(): Boolean
-    
-    /**
-     * 阻塞的删除当前目标。
-     *
-     * 如果因为组件自身特性而导致任何条件都无法满足任何对象的 `delete` 操作，
-     * 则可能固定返回 `false`, 否则大多数情况下会返回 `true`.
-     *
-     * 如果是因为诸如权限、超时等限制条件导致的无法删除，则可能会抛出相应的异常。
-     *
-     * @return 在支持的情况下代表是否删除成功，不支持的情况下可能恒返回 `false`。
-     */
-    @Api4J
-    public fun deleteBlocking(): Boolean = runInBlocking { delete() }
 }

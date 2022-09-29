@@ -16,14 +16,13 @@
 
 package love.forte.simbot.event
 
-import kotlinx.coroutines.launch
-import love.forte.simbot.Api4J
-import love.forte.simbot.bot.Bot
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.ID
+import love.forte.simbot.bot.Bot
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.doSafeCast
-import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -49,104 +48,56 @@ public interface RequestEvent : Event, UserInfoContainer {
      * 事件标识。
      */
     override val id: ID
-
+    
     /**
      * 当前[Bot]。
      */
     override val bot: Bot
-
+    
     /**
      * 一个申请事件可能会存在附加的文本消息。
      */
     public val message: String?
-
+    
     /**
      * 这个请求的 **申请人**。
      *
      * @see JoinRequestEvent.requester
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun requester(): UserInfo
-
-    // Impl
-
-    /**
-     * 这个请求的 **申请人**。
-     *
-     * @see JoinRequestEvent.requester
-     */
-    @Api4J
-    public val requester: UserInfo
-
-
+    
+    
     /**
      * 通常情况下, [user] 等同于 [requester].
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun user(): UserInfo
-
-    /**
-     * 通常情况下, [user] 等同于 [requester].
-     */
-    @Api4J
-    override val user: UserInfo
-
+    
     /**
      * 此申请的类型。
      */
     public val type: Type
-
+    
     /**
      * 同意/接受此次请求。
      */
-    @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync
     @ExperimentalSimbotApi
     public suspend fun accept(): Boolean
-
-    /**
-     * 同意/接受此次请求。
-     */
-    @Api4J
-    @JvmSynthetic
-    @ExperimentalSimbotApi
-    public fun acceptBlocking(): Boolean = runInBlocking { accept() }
-
-    /**
-     * 异步的执行 [accept],并忽略结果。
-     *
-     * 异步中不会捕获异常。
-     */
-    @Api4J
-    @ExperimentalSimbotApi
-    public fun acceptAsync() {
-        bot.launch { accept() }
-    }
-
+    
     /**
      * 拒绝/回绝此次请求。
      */
-    @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync
     @ExperimentalSimbotApi
     public suspend fun reject(): Boolean
-
-    /**
-     * 拒绝/回绝此次请求。
-     */
-    @Api4J
-    @ExperimentalSimbotApi
-    public fun rejectBlocking(): Boolean = runInBlocking { reject() }
-
-    /**
-     * 异步的执行 [reject], 并且忽略结果。
-     *
-     * 异步中不会捕获异常。
-     */
-    @Api4J
-    @ExperimentalSimbotApi
-    public fun rejectAsync() {
-        bot.launch { reject() }
-    }
-
+    
+    
     /**
      * [RequestEvent] 的类型。
      */
@@ -155,15 +106,15 @@ public interface RequestEvent : Event, UserInfoContainer {
          * 主动申请。
          */
         APPLICATION,
-
+        
         /**
          * 邀请/被邀请。
          */
         INVITATION
-
+        
     }
-
-
+    
+    
     public companion object Key : BaseEventKey<RequestEvent>("api.request") {
         override fun safeCast(value: Any): RequestEvent? = doSafeCast(value)
     }
@@ -187,36 +138,25 @@ public interface RequestEvent : Event, UserInfoContainer {
  */
 @BaseEvent
 public interface JoinRequestEvent : RequestEvent {
-
+    
     /**
      * 这个添加请求的 **申请人**。
      *
      * 假如BOT是被邀请者，则此值可能代表 [bot], 而邀请的人则为 [inviter]。
      *
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun requester(): UserInfo
-
-    /**
-     * 这个添加请求的 **申请人**。
-     *
-     * 假如BOT是被邀请者，则此值可能代表 [bot], 而邀请的人则为 [inviter]。
-     *
-     */
-    @Api4J
-    override val requester: UserInfo
-
+    
     /**
      * 邀请人。当无法获取或不存在时得到null。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun inviter(): UserInfo?
-
-    /**
-     * 邀请人。当无法获取或不存在时得到null。
-     */
-    public val inviter: UserInfo?
-
+    
+    
     public companion object Key : BaseEventKey<JoinRequestEvent>("api.join_request", RequestEvent) {
         override fun safeCast(value: Any): JoinRequestEvent? = doSafeCast(value)
     }
@@ -241,19 +181,15 @@ public interface GuildRequestEvent : RequestEvent, GuildInfoContainer {
  * @see JoinRequestEvent
  */
 public interface GuildJoinRequestEvent : JoinRequestEvent, GuildRequestEvent {
-
+    
     /**
      * 想要申请加入的人的信息。假如这是一个BOT被邀请的事件，则此信息可能等于 [bot].
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun requester(): UserInfo
-
-    /**
-     * 想要申请加入的人的信息。假如这是一个BOT被邀请的事件，则此信息可能等于 [bot].
-     */
-    @Api4J
-    override val requester: UserInfo
-
+    
+    
     public companion object Key : BaseEventKey<GuildJoinRequestEvent>(
         "api.guild_join_request", JoinRequestEvent, GuildRequestEvent
     ) {
@@ -281,19 +217,14 @@ public interface GroupRequestEvent : RequestEvent, GroupInfoContainer {
  * @see JoinRequestEvent
  */
 public interface GroupJoinRequestEvent : GroupRequestEvent, JoinRequestEvent {
-
+    
     /**
      * 想要加入目标群的人的信息。假如是BOT被邀请的事件，则此值可能等同于 [bot].
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun requester(): UserInfo
-
-    /**
-     * 想要加入目标群的人的信息。假如是BOT被邀请的事件，则此值可能等同于 [bot].
-     */
-    @Api4J
-    override val requester: UserInfo
-
+    
     public companion object Key : BaseEventKey<GroupJoinRequestEvent>(
         "api.group_join_request", GroupRequestEvent, JoinRequestEvent
     ) {
@@ -306,7 +237,7 @@ public interface GroupJoinRequestEvent : GroupRequestEvent, JoinRequestEvent {
  * 一个与频道相关的请求事件。
  */
 public interface ChannelRequestEvent : RequestEvent, ChannelInfoContainer {
-
+    
     public companion object Key : BaseEventKey<ChannelRequestEvent>(
         "api.channel_request", RequestEvent
     ) {

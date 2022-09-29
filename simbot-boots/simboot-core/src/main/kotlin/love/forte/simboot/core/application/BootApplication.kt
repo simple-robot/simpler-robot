@@ -24,6 +24,8 @@ import love.forte.annotationtool.core.getAnnotation
 import love.forte.di.BeanContainer
 import love.forte.di.all
 import love.forte.di.core.CoreBeanManager
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simboot.SimbootContext
 import love.forte.simboot.annotation.Binder
 import love.forte.simboot.annotation.Binder.Scope.*
@@ -36,7 +38,6 @@ import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simbot.*
 import love.forte.simbot.application.*
-import love.forte.simbot.application.BotRegistrar
 import love.forte.simbot.bot.BotVerifyInfoDecoder
 import love.forte.simbot.bot.BotVerifyInfoDecoderFactory
 import love.forte.simbot.bot.StandardBotVerifyInfoDecoderFactory
@@ -51,10 +52,8 @@ import love.forte.simbot.event.EventListenerBuilder
 import love.forte.simbot.event.EventListenerInterceptor
 import love.forte.simbot.event.EventProcessingInterceptor
 import love.forte.simbot.resources.Resource
-import love.forte.simbot.utils.runInBlocking
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.LongAdder
 import javax.inject.Named
@@ -191,8 +190,8 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
         val createFactory: () -> BotVerifyInfoDecoder = {
             factory.create(newConfig)
         }
-        
-        @Suppress("UNCHECKED_CAST") botVerifyInfoDecoderFactories.merge(factory, createFactory) { _, curr ->
+    
+        botVerifyInfoDecoderFactories.merge(factory, createFactory) { _, curr ->
             curr
         }
     }
@@ -316,31 +315,10 @@ public interface BootApplication : SimpleApplication, SimbootContext {
      */
     public val beanContainer: BeanContainer
     
-    @Api4J
-    override fun joinBlocking() {
-        runInBlocking { join() }
-    }
-    
     /**
      * [BootApplication] 不需要执行 [start], 将会始终返回 `true`。
      */
     override suspend fun start(): Boolean = true
-    
-    /**
-     * [BootApplication] 不需要执行 [start], 将会始终返回 `true`。
-     */
-    @OptIn(Api4J::class)
-    override fun startBlocking(): Boolean = true
-    
-    /**
-     * [BootApplication] 不需要执行 [start], 将会始终返回 `true`。
-     */
-    @OptIn(Api4J::class)
-    override fun startAsync(): CompletableFuture<Boolean> {
-        return CompletableFuture<Boolean>().also {
-            it.complete(true)
-        }
-    }
     
     /**
      * [BootApplication] 从一开始就是启用状态。
@@ -348,6 +326,10 @@ public interface BootApplication : SimpleApplication, SimbootContext {
     override val isStarted: Boolean
         get() = true
     
+    
+    @JvmBlocking
+    @JvmAsync(baseName = "asFuture", suffix = "")
+    override suspend fun join()
     
 }
 

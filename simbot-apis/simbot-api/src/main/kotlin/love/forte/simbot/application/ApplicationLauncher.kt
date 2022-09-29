@@ -17,12 +17,10 @@
 package love.forte.simbot.application
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.launch
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
-import love.forte.simbot.utils.runInBlocking
-import java.util.concurrent.Future
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -42,14 +40,10 @@ public interface ApplicationLauncher<out A : Application> {
     /**
      * 开始启动当前应用程序，并在内部应用程序启动成功后得到目标应用程序实例 [A].
      */
-    @JvmSynthetic
+    @JvmBlocking
+    @JvmAsync
     public suspend fun launch(): A
     
-    /**
-     * 阻塞的启动当前应用程序，并在内部应用程序启动成功后得到目标应用程序实例 [A].
-     */
-    @Api4J
-    public fun launchBlocking(): A
     
     /**
      * 异步的启动当前应用程序，并在内部应用程序启动成功后将目标应用程序实例 [A] 应用于回调函数 [onCompletion] .
@@ -57,13 +51,6 @@ public interface ApplicationLauncher<out A : Application> {
      */
     @Api4J
     public fun launchAsync(onCompletion: OnCompletion<A>)
-    
-    /**
-     * 异步的启动当前应用程序，并得到一个异步的 [Future].
-     *
-     */
-    @Api4J
-    public fun launchAsync(): Future<out A>
     
 }
 
@@ -102,18 +89,9 @@ private class ApplicationLauncherImpl<out A : Application>(
     override suspend fun launch(): A = create()
     
     @Api4J
-    override fun launchBlocking(): A = runInBlocking(coroutineContext) { launch() }
-    
-    @Api4J
     override fun launchAsync(onCompletion: OnCompletion<A>) {
         launch {
-            val app = launch()
-            onCompletion.invoke(app)
+            onCompletion(launch())
         }
-    }
-    
-    @Api4J
-    override fun launchAsync(): Future<out A> {
-        return async { launch() }.asCompletableFuture()
     }
 }

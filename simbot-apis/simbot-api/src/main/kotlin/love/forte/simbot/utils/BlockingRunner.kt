@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -12,18 +12,15 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 package love.forte.simbot.utils
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.future.future
 import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.LoggerFactory
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
+import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.coroutines.CoroutineContext
 
@@ -31,14 +28,14 @@ private fun createDefaultDispatcher(
     coreSize: Int?,
     maxSize: Int?,
     keepAliveTime: Long?,
-): CoroutineDispatcher {
-    // cpu-1 or 1
-    val coreSize0 = coreSize ?: (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(0)
+): ExecutorCoroutineDispatcher {
+    // cpu / 2 or 1
+    val coreSize0 = (coreSize ?: (Runtime.getRuntime().availableProcessors() / 2)).coerceAtLeast(1)
     val maxSize0 = maxSize?.coerceAtLeast(coreSize0) ?: Int.MAX_VALUE
     val keepAliveTime0 = keepAliveTime ?: 60_000 // ms -> 60s
     
     val num = AtomicLong(0)
-    val group = ThreadGroup("runInBlocking")
+    val group = ThreadGroup("run4JDispatcher")
     val logger = LoggerFactory.getLogger("love.forte.simbot.utils.DefaultDispatcher")
     val executor = ThreadPoolExecutor(
         coreSize0,
@@ -52,7 +49,7 @@ private fun createDefaultDispatcher(
             }
         }
     ) { runnable, executor ->
-        logger.error("The blocking task {} is rejected by blocking task executor {}", runnable, executor)
+        logger.error("The task {} is rejected by blocking task executor {}", runnable, executor)
     }
     
     return executor.asCoroutineDispatcher()
@@ -171,4 +168,23 @@ public fun <T> runInTimeoutBlocking(
     } catch (timeout: TimeoutCancellationException) {
         throw TimeoutException(timeout.localizedMessage).initCause(timeout)
     }
+}
+
+@InternalSimbotApi
+public fun <T> runInAsync(block: suspend () -> T): CompletableFuture<T> = `$$DefaultScope`.future(DefaultBlockingContext) { block() }
+
+@Suppress("FunctionName")
+@InternalSimbotApi
+@Deprecated("Just used by auto-generate", level = DeprecationLevel.HIDDEN)
+public fun <T> `$$runInBlocking`(block: suspend () -> T): T = runInBlocking { block() }
+
+@Suppress("unused", "ObjectPropertyName")
+@InternalSimbotApi
+private val `$$DefaultScope` by lazy { CoroutineScope(DefaultBlockingContext) }
+
+@InternalSimbotApi
+@Deprecated("Just used by auto-generate", level = DeprecationLevel.HIDDEN)
+@Suppress("FunctionName")
+public fun <T> `$$runInAsync`(block: suspend () -> T): CompletableFuture<T> {
+    return runInAsync(block)
 }

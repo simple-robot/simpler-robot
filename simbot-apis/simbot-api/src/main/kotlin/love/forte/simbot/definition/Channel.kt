@@ -16,11 +16,11 @@
 
 package love.forte.simbot.definition
 
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ID
 import love.forte.simbot.Timestamp
 import love.forte.simbot.utils.item.Items
-import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -37,11 +37,10 @@ public interface Channel : ChatRoom, ChannelInfo {
     override val createTime: Timestamp
     override val ownerId: ID
     
-    @JvmSynthetic
-    override suspend fun owner(): Member
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
+    override suspend fun owner(): GuildMember
     
-    @Api4J
-    override val owner: GuildMember
     override val maximumMember: Int
     override val currentMember: Int
     
@@ -49,11 +48,9 @@ public interface Channel : ChatRoom, ChannelInfo {
     /**
      * 得到这个频道对应的guild。
      */
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun guild(): Guild
-    
-    @Api4J
-    public val guild: Guild
-        get() = runInBlocking { guild() }
     
     
     /**
@@ -64,14 +61,9 @@ public interface Channel : ChatRoom, ChannelInfo {
     /**
      * 根据ID查询指定成员。
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "getMember", suffix = "")
+    @JvmAsync(baseName = "getMember")
     override suspend fun member(id: ID): GuildMember?
-    
-    /**
-     * 根据ID查询指定成员。
-     */
-    @Api4J
-    override fun getMember(id: ID): GuildMember? = runInBlocking { member(id) }
 }
 
 
@@ -83,6 +75,4 @@ public interface ChannelInfo : OrganizationInfo {
      * 这个频道对应的guild的ID
      */
     public val guildId: ID
-    
-    
 }

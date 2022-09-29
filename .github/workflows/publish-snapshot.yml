@@ -30,17 +30,17 @@ jobs:
         uses: actions/checkout@v2
 
       # setup Java
-      - name: Setup java
+      - name: Setup java 11
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
-          java-version: 8
+          java-version: 11
 
       # setup Gradle
       - name: Gradle publish snapshot
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.4.2
+          gradle-version: 7.5.1
           arguments: clean build test publishToSonatype closeAndReleaseStagingRepository -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true
 
 

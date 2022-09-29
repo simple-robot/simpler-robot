@@ -16,14 +16,14 @@
 
 package love.forte.simbot.action
 
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.definition.Objective
 import love.forte.simbot.event.Event
 import love.forte.simbot.message.*
-import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -40,6 +40,8 @@ import love.forte.simbot.utils.runInBlocking
  *
  * @author ForteScarlet
  */
+@JvmBlocking
+@JvmAsync
 public interface SendSupport {
 
     /**
@@ -51,16 +53,7 @@ public interface SendSupport {
      * @throws UnsupportedActionException 当不允许向成员发送消息时
      *
      */
-    @JvmSynthetic
     public suspend fun send(message: Message): MessageReceipt
-
-
-    /**
-     * 非挂起的发送消息，并得到一个回执单。
-     * @see send
-     */
-    @Api4J
-    public fun sendBlocking(message: Message): MessageReceipt = runInBlocking { send(message) }
 
     /**
      * 发送消息，并得到一个回执单。
@@ -71,33 +64,14 @@ public interface SendSupport {
      * @throws SimbotIllegalStateException 如果当前状态存在异常
      *
      */
-    @JvmSynthetic
     public suspend fun send(message: MessageContent): MessageReceipt = send(message.messages)
-
-
-    /**
-     * 非挂起的发送消息，并得到一个回执单。
-     *
-     * @see send
-     */
-    @Api4J
-    public fun sendBlocking(message: MessageContent): MessageReceipt = runInBlocking { send(message) }
-
+    
     /**
      * 发送一段纯文本消息。
      * @see send
      */
-    @JvmSynthetic
     public suspend fun send(text: String): MessageReceipt = send(Text.of(text))
-
-    /**
-     * 非挂起的发送一段纯文本消息。
-     * @see send
-     */
-    @Api4J
-    public fun sendBlocking(text: String): MessageReceipt = runInBlocking { send(text) }
-
-
+    
 }
 
 
@@ -143,31 +117,24 @@ public interface SendSupport {
  * @see replyIfSupport
  *
  */
+@JvmBlocking
+@JvmAsync
 public interface ReplySupport {
 
     /**
      * 回复当前目标，并得到一个 [回复回执][MessageReceipt]
      */
-    @JvmSynthetic
     public suspend fun reply(message: Message): MessageReceipt
-
-    @Api4J
-    public fun replyBlocking(message: Message): MessageReceipt = runInBlocking { reply(message) }
 
     /**
      * 回复当前目标，并得到一个 [回复回执][MessageReceipt]
      */
-    @JvmSynthetic
     public suspend fun reply(message: MessageContent): MessageReceipt = reply(message.messages)
-
-    @Api4J
-    public fun replyBlocking(message: MessageContent): MessageReceipt = runInBlocking { reply(message) }
-
-    @JvmSynthetic
+    
+    /**
+     * 回复当前目标，并得到一个 [回复回执][MessageReceipt]
+     */
     public suspend fun reply(text: String): MessageReceipt = reply(Text.of(text))
-
-    @Api4J
-    public fun replyBlocking(text: String): MessageReceipt = runInBlocking { reply(text) }
 }
 
 
@@ -207,14 +174,11 @@ public interface MessageReplyReceipt : MessageReceipt {
  * 而回应则更多的是对于一个消息"作出回应"，通产情况下不会产生新的消息，一般会表现为标记一个表情。
  *
  */
+@JvmBlocking
+@JvmAsync
 public interface MessageReactSupport {
 
-    @JvmSynthetic
     public suspend fun react(message: Message): MessageReceipt
-
-    @Api4J
-    public fun reactBlocking(message: Message): MessageReceipt = runInBlocking { react(message) }
-
 }
 
 /**

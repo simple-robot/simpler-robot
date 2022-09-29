@@ -16,13 +16,16 @@
 
 package love.forte.simbot.event
 
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
-import love.forte.simbot.bot.Bot
 import love.forte.simbot.ID
 import love.forte.simbot.action.ReplySupport
 import love.forte.simbot.action.SendSupport
+import love.forte.simbot.bot.Bot
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.*
+import love.forte.simbot.utils.runInBlocking
 
 
 /**
@@ -38,8 +41,8 @@ import love.forte.simbot.message.*
 public interface MessageEvent : Event, RemoteMessageContainer, ReplySupport {
     override val id: ID
     override val bot: Bot
-
-
+    
+    
     /**
      * 当前消息事件所对应的事件源头. 如果是组织相关的，则可能是 [ChatRoom] 的子类型，
      * 如果是私聊相关，则代表发送者，即 [Contact] 或其子类型。
@@ -47,21 +50,11 @@ public interface MessageEvent : Event, RemoteMessageContainer, ReplySupport {
      * 通常情况下，[source] 都是可以 [发送消息][SendSupport] 的。
      *
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun source(): Objective
-
-
-    /**
-     * 当前消息事件所对应的事件源头. 如果是组织相关的，则可能是 [ChatRoom] 的子类型，
-     * 如果是私聊相关，则代表发送者，即 [Contact] 或其子类型。
-     *
-     * 通常情况下，[source] 都是可以 [发送消息][SendSupport] 的。
-     *
-     */
-    @Api4J
-    public val source: Objective
-
-
+    
+    
     /**
      * 当前消息事件的消息正文。
      */
@@ -77,6 +70,7 @@ public interface MessageEvent : Event, RemoteMessageContainer, ReplySupport {
      * @throws love.forte.simbot.action.UnsupportedActionException 当此消息事件不支持进行回复时
      *
      */
+    @JvmSynthetic
     override suspend fun reply(message: Message): MessageReceipt
     
     // Event key
@@ -92,34 +86,24 @@ public interface MessageEvent : Event, RemoteMessageContainer, ReplySupport {
  */
 public interface ContactMessageEvent : MessageEvent, UserEvent {
     override val id: ID
-
-
+    
+    
     /**
      * 消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun user(): Contact
-
+    
+    
     /**
      * 消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
      */
-    @Api4J
-    override val user: Contact
-
-
-    /**
-     * 消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
-     */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Contact
-
-    /**
-     * 消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
-     */
-    @Api4J
-    override val source: Contact
-
-
+    
+    
     public companion object Key : BaseEventKey<ContactMessageEvent>(
         "api.contact_message", MessageEvent, UserEvent
     ) {
@@ -134,39 +118,29 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
  * @see ContactMessageEvent
  */
 public interface FriendMessageEvent : ContactMessageEvent, FriendEvent {
-
+    
     /**
      * 消息的信息来源是一个可以进行信息交互的 [好友][Friend]
      */
     @JvmSynthetic
     override suspend fun friend(): Friend
-
-
+    
+    
     /**
      * 消息的信息来源是一个可以进行信息交互的 [好友][Friend]
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun user(): Friend
-
+    
     /**
      * 消息的信息来源是一个可以进行信息交互的 [好友][Friend]
      */
-    @Api4J
-    override val user: Friend
-
-    /**
-     * 消息的信息来源是一个可以进行信息交互的 [好友][Friend]
-     */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Friend
-
-    /**
-     * 消息的信息来源是一个可以进行信息交互的 [好友][Friend]
-     */
-    @Api4J
-    override val source: Friend
-
-
+    
+    
     public companion object Key : BaseEventKey<FriendMessageEvent>(
         "api.friend_message", ContactMessageEvent, FriendEvent
     ) {
@@ -185,32 +159,22 @@ public interface FriendMessageEvent : ContactMessageEvent, FriendEvent {
  */
 public interface ChatRoomMessageEvent : MessageEvent, OrganizationEvent, RemoteMessageContainer {
     override val id: ID
-
+    
     /**
      * 来自的聊天室，通常是一个[群][Group]或者一个[频道][Channel]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): ChatRoom
-
-    /**
-     * 来自的聊天室，通常是一个[群][Group]或者一个[频道][Channel]。
-     */
-    @Api4J
-    override val source: ChatRoom
-
+    
     /**
      * 这个消息的发送者.
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     public suspend fun author(): Member
-
-    /**
-     * 这个消息的发送者.
-     */
-    @Api4J
-    public val author: Member
-
-
+    
+    
     /**
      * 预期内，假若当前bot拥有足够的权限则可以对消息进行删除（撤回）操作。
      *
@@ -221,26 +185,29 @@ public interface ChatRoomMessageEvent : MessageEvent, OrganizationEvent, RemoteM
     @JvmSynthetic
     @Deprecated("Use messageContent.delete()", ReplaceWith("messageContent.delete()"), level = DeprecationLevel.ERROR)
     public suspend fun delete(): Boolean = messageContent.delete()
-
+    
     /**
      * 预期内，假若当前bot拥有足够的权限则可以对消息进行删除（撤回）操作。
      *
-     * Deprecated: 使用 [messageContent.deleteBlocking][RemoteMessageContent.deleteBlocking]。
+     * Deprecated: 使用 [messageContent.deleteBlocking][RemoteMessageContent.delete]。
      *
      * @see messageContent
      */
     @Api4J
-    @Deprecated("Use getMessageContent().deleteBlocking()", ReplaceWith("messageContent.deleteBlocking()"), level = DeprecationLevel.ERROR)
-    public fun deleteBlocking(): Boolean = messageContent.deleteBlocking()
-
+    @Deprecated(
+        "Use getMessageContent().deleteBlocking()",
+        ReplaceWith("messageContent.deleteBlocking()"),
+        level = DeprecationLevel.ERROR
+    )
+    public fun deleteBlocking(): Boolean = runInBlocking { messageContent.delete() }
     
-
+    
     public companion object Key : BaseEventKey<ChatRoomMessageEvent>(
         "api.chat_room_message", MessageEvent.Key
     ) {
         override fun safeCast(value: Any): ChatRoomMessageEvent? = doSafeCast(value)
     }
-
+    
 }
 
 /**
@@ -267,27 +234,21 @@ public suspend inline fun <R> ChatRoomMessageEvent.inAuthor(block: Member.() -> 
  *
  */
 public interface GroupMessageEvent : ChatRoomMessageEvent, GroupEvent {
-
+    
     /**
      * 消息来自的[群][Group]。
      */
-    @JvmSynthetic
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Group
-
-
-    /**
-     * 消息来自的[群][Group]。
-     */
-    @Api4J
-    override val source: Group
-
-
+    
+    
     public companion object Key : BaseEventKey<GroupMessageEvent>(
         "api.group_message", ChatRoomMessageEvent, GroupEvent
     ) {
         override fun safeCast(value: Any): GroupMessageEvent? = doSafeCast(value)
     }
-
+    
 }
 
 /**
@@ -296,19 +257,14 @@ public interface GroupMessageEvent : ChatRoomMessageEvent, GroupEvent {
  *
  */
 public interface ChannelMessageEvent : ChatRoomMessageEvent, ChannelEvent {
-
+    
     /**
      * 消息事件来源的[频道][Channel].
      */
+    @JvmBlocking(asProperty = true, suffix = "")
+    @JvmAsync(asProperty = true)
     override suspend fun source(): Channel
-
-    /**
-     * 消息事件来源的[频道][Channel].
-     */
-    @Api4J
-    override val source: Channel
-
-
+    
     public companion object Key : BaseEventKey<ChannelMessageEvent>(
         "api.channel_message", ChatRoomMessageEvent, ChannelEvent
     ) {
@@ -331,11 +287,11 @@ public interface MessageReactedEvent : MessageEvent {
      * 但是对于此事件，应当至少存在一个被回应消息的ID。
      */
     public val reactedId: ID
-
-
+    
+    
     /**
      * 回应这条消息的回应者ID。
      */
     public val reactorId: ID
-
+    
 }

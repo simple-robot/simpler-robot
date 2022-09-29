@@ -16,10 +16,11 @@
 
 package love.forte.simbot.definition
 
-import love.forte.simbot.Api4J
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ID
-import love.forte.simbot.utils.item.Items
 import love.forte.simbot.bot.Bot
+import love.forte.simbot.utils.item.Items
 
 /**
  * 社交关系容器。
@@ -68,20 +69,9 @@ public interface FriendsContainer : SocialRelationsContainer {
      *
      * @param id 好友的唯一标识
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "getFriend", suffix = "")
+    @JvmAsync(baseName = "getFriend")
     public suspend fun friend(id: ID): Friend?
-    
-    
-    /**
-     * 通过唯一标识获取这个容器对应的某个好友，获取不到则为null。
-     *
-     * @param id 好友的唯一标识
-     *
-     * @see friend
-     */
-    @Api4J
-    public fun getFriend(id: ID): Friend?
-    
     
 }
 
@@ -132,21 +122,9 @@ public interface ContactsContainer : SocialRelationsContainer {
      *
      * @param id 目标唯一标识
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "getContact", suffix = "")
+    @JvmAsync(baseName = "getContact")
     public suspend fun contact(id: ID): Contact?
-    
-    /**
-     * 通过唯一标识获取对应的 [Contact] 实例。当且仅当因标识对应联系人不存在而导致无法获取时得到null。
-     *
-     * 在一些组件支持的情况下，[contact] 会在目标联系人会话不存在的时候尝试主动创建会话。
-     * 假若这个过程中发生了预期内的错误（例如网络请求错误、[id] 格式错误等）时，
-     * 不会视为"未找到联系人"，因此会抛出对应异常而不是返回null。
-     *
-     * @param id 目标唯一标识
-     */
-    @Api4J
-    public fun getContact(id: ID): Contact?
-    
 }
 
 
@@ -169,19 +147,9 @@ public interface GroupsContainer : SocialRelationsContainer {
      *
      * @param id 目标群唯一标识
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "getGroup", suffix = "")
+    @JvmAsync(baseName = "getGroup")
     public suspend fun group(id: ID): Group?
-    
-    /**
-     * 通过唯一标识获取这个bot对应的某个群，获取不到则为null。
-     *
-     * @param id 目标群唯一标识
-     *
-     * @see group
-     */
-    @Api4J
-    public fun getGroup(id: ID): Group?
-    
 }
 
 
@@ -204,19 +172,9 @@ public interface GuildsContainer : SocialRelationsContainer {
      *
      * @param id 频道服务器唯一标识
      */
-    @JvmSynthetic
+    @JvmBlocking(baseName = "getGuild", suffix = "")
+    @JvmAsync(baseName = "getGuild")
     public suspend fun guild(id: ID): Guild?
-    
-    /**
-     * 通过唯一标识获取这个bot对应的某个频道，获取不到则为null。
-     *
-     * @param id 频道服务器唯一标识
-     *
-     * @see guild
-     */
-    @Api4J
-    public fun getGuild(id: ID): Guild?
-    
 }
 
 

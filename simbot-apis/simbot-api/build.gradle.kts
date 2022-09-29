@@ -1,3 +1,5 @@
+import love.forte.plugin.suspendtrans.SuspendTransformConfiguration
+
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
@@ -19,6 +21,7 @@ plugins {
     id("simbot.maven-publish")
     kotlin("plugin.serialization")
     kotlin("kapt")
+    id("simbot.suspend-transform-configure")
 }
 
 dependencies {
@@ -28,7 +31,6 @@ dependencies {
     api(libs.kotlinx.coroutines.jdk8)
     api(libs.kotlinx.serialization.core)
     
-    
     api(libs.slf4j.api)
     compileOnly(libs.jetbrains.annotations)
     
@@ -36,6 +38,10 @@ dependencies {
     compileOnly(libs.kotlinx.serialization.properties)
     compileOnly(libs.charleskorn.kaml)
     compileOnly(libs.kotlinx.serialization.protobuf)
+    compileOnly(libs.kotlinx.coroutines.reactive)
+    compileOnly(libs.kotlinx.coroutines.reactor)
+    compileOnly(libs.kotlinx.coroutines.rx2)
+    compileOnly(libs.kotlinx.coroutines.rx3)
     
     testImplementation(libs.kotlinx.serialization.json)
     testImplementation(libs.kotlinx.serialization.properties)
@@ -48,3 +54,4 @@ dependencies {
     kaptTest(libs.openjdk.jmh.generator.annprocess)
     testAnnotationProcessor(libs.openjdk.jmh.generator.annprocess)
 }
+

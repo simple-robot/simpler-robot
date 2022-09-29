@@ -46,9 +46,10 @@ include(
     projectTest("jmh-duration"),
 )
 
-rootProject.children.forEach {
-    println(it)
-}
+include(
+    componentHttpServer("api")
+)
+
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun api(moduleName: String): String = ":simbot-apis:simbot-$moduleName"
@@ -61,3 +62,6 @@ inline fun boot(moduleName: String): String = ":simbot-boots:simboot-$moduleName
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun projectTest(moduleName: String): String = ":simbot-project-tests:simbot-project-test-$moduleName"
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun componentHttpServer(moduleName: String): String = ":simbot-components:http-server:simbot-component-http-server-$moduleName"

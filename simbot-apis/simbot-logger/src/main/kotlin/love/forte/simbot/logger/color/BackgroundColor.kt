@@ -20,7 +20,7 @@ package love.forte.simbot.logger.color
  * @author ForteScarlet <[163邮箱地址]ForteScarlet@163.com>
  * @since JDK1.8
  */
-public enum class BackGroundColor(
+public enum class BackgroundColor(
     /** 颜色代码  */
     override val colorIndex: Int,
     /**获取颜色代码  */
@@ -62,7 +62,7 @@ public enum class BackGroundColor(
     public companion object {
         /** 通过颜色代码获取字体颜色枚举  */
         @JvmStatic
-        public fun getColor(index: Int): BackGroundColor? {
+        public fun getColor(index: Int): BackgroundColor? {
             return values().find { it.colorIndex == index }
         }
     }
