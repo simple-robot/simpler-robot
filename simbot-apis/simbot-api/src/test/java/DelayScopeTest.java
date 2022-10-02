@@ -30,13 +30,14 @@ public class DelayScopeTest {
         either.get();
     }
 
-}
-
-
-class FooDelayableCoroutineScope implements DelayableCoroutineScope {
-    @NotNull
-    @Override
-    public CoroutineContext getCoroutineContext() {
-        return EmptyCoroutineContext.INSTANCE;
+    private static class FooDelayableCoroutineScope implements DelayableCoroutineScope {
+        @NotNull
+        @Override
+        public CoroutineContext getCoroutineContext() {
+            return EmptyCoroutineContext.INSTANCE;
+        }
     }
 }
+
+
+
