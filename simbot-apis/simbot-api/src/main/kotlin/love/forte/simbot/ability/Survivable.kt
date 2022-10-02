@@ -43,9 +43,9 @@ public interface Survivable : Switchable {
     
     @Api4J
     @Deprecated("Just use join() or asFuture() for java", level = DeprecationLevel.ERROR,
-        replaceWith = ReplaceWith("future { join() }")
+        replaceWith = ReplaceWith("asFuture()")
     )
-    public fun toFuture(): CompletableFuture<Unit> = future { join() }
+    public fun toAsync(): CompletableFuture<Unit> = future { join() }
     
     /**
      * 当完成（或被cancel）时执行一段处理。
