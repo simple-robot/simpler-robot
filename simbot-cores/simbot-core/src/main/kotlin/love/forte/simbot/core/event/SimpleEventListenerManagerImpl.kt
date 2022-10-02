@@ -17,7 +17,6 @@
 package love.forte.simbot.core.event
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
 import love.forte.simbot.core.scope.SimpleScope
@@ -28,7 +27,6 @@ import love.forte.simbot.utils.view
 import org.slf4j.Logger
 import java.lang.reflect.InvocationTargetException
 import java.util.*
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
@@ -122,8 +120,9 @@ internal class SimpleEventListenerManagerImpl internal constructor(
      * 每次注册监听函数都会直接清空缓存。
      *
      */
+    @OptIn(InternalSimbotApi::class)
     @FragileSimbotApi
-    override fun register(listener: EventListener) {
+    override fun register(listener: EventListener): EventListenerHandle {
         synchronized(this) {
             val id = listener.id
             listeners.compute(id) { _, old ->
@@ -133,12 +132,28 @@ internal class SimpleEventListenerManagerImpl internal constructor(
                 }
             }
         }
+        return InvalidEventListenerHandle // TODO
     }
+    
+    @InternalSimbotApi
+    private object InvalidEventListenerHandle : EventListenerHandle {
+        override fun dispose(): Boolean = false
+    
+        override val isExists: Boolean
+            get() = false
+    }
+    
     
     /**
      * 获取一个监听函数。
      */
     override fun get(id: String): EventListener? = synchronized(this) { listeners[id] }
+    
+    @OptIn(InternalSimbotApi::class)
+    override fun resolveHandle(id: String): EventListenerHandle = InvalidEventListenerHandle // TODO
+    
+    @OptIn(InternalSimbotApi::class)
+    override fun resolveHandle(listener: EventListener): EventListenerHandle = InvalidEventListenerHandle // TODO
     
     /**
      * 判断指定事件类型在当前事件管理器中是否能够被执行（存在任意对应的监听函数）。
@@ -169,29 +184,6 @@ internal class SimpleEventListenerManagerImpl internal constructor(
         
     }
     
-    @Api4J
-    override fun pushAsync(event: Event): CompletableFuture<EventProcessingResult> {
-        val invokers = getInvokers(event.key)
-        if (invokers.isEmpty()) {
-            managerScope.launch {
-                if (resolver.isProcessable(event.key)) {
-                    resolver.resolveEventToContext(event, 0)
-                }
-            }
-            return CompletableFuture<EventProcessingResult>().also {
-                it.complete(EventProcessingResult)
-            }
-        }
-        
-        
-        val deferred = managerScope.async {
-            resolveToContext(event, invokers.size)?.let { context ->
-                doInvoke(context, invokers)
-            } ?: EventProcessingResult
-        }
-        
-        return deferred.asCompletableFuture()
-    }
     
     
     /**
