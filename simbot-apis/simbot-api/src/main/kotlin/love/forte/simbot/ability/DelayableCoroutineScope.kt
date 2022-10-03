@@ -21,6 +21,7 @@ import kotlinx.coroutines.future.await
 import kotlinx.coroutines.selects.select
 import love.forte.simbot.Api4J
 import love.forte.simbot.JavaDuration
+import love.forte.simbot.utils.DefaultBlockingDispatcher
 import java.util.concurrent.*
 import java.util.function.*
 import java.util.function.Function
@@ -168,29 +169,15 @@ private class DelayableCompletableFutureImpl<T>(
 ) : DelayableCompletableFuture<T>() {
     
     companion object {
-        private val useCommonPool = ForkJoinPool.getCommonPoolParallelism() > 1
-        
         /**
-         * Default executor -- ForkJoinPool.commonPool() unless it cannot
-         * support parallelism.
+         * 默认使用的异步调度器.
          *
-         * @see CompletableFuture
+         * @see DefaultBlockingDispatcher
          */
-        private val asyncPool = (if (useCommonPool) ForkJoinPool.commonPool() else ThreadPerTaskExecutor())
-        
-        private val asyncPoolDispatcher = asyncPool.asCoroutineDispatcher()
+        private val asyncPoolDispatcher = DefaultBlockingDispatcher
         
         private val asyncPoolScope =
             CoroutineScope(asyncPoolDispatcher + CoroutineName("DelayableCompletableFutureCommon"))
-        
-        private class ThreadPerTaskExecutor : Executor {
-            override fun execute(r: java.lang.Runnable) {
-                Thread(r).apply {
-                    isDaemon = true
-                    start()
-                }
-            }
-        }
     }
     
     override fun toCompletableFuture(): DelayableCompletableFuture<T> = this
