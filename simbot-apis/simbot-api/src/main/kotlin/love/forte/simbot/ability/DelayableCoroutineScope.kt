@@ -16,7 +16,6 @@
 package love.forte.simbot.ability
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.asDeferred
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.selects.select
@@ -31,18 +30,19 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  *
- * 可延迟的 [CoroutineScope]。
- * [DelayableCoroutineScope] 继承并扩展 [CoroutineScope], 对外提供部分服务于 Java 开发者的“延迟”函数。
+ * 提供异步可延迟API的 [CoroutineScope]。
+ * [DelayableCoroutineScope] 继承并扩展 [CoroutineScope], 对外提供部分服务于 Java 开发者的异步延迟函数。
  *
  * 对外提供的这些延时函数本质上是通过当前作用域所构建的异步函数，并通过 [delay] 实现非阻塞的延时效果。
- * Java 开发者可以通过这些延时函数来更高效的通过异步回调手段类似于 [Thread.sleep] 的效果。
+ * Java 开发者可以通过这些延时函数来更高效的通过异步回调手段实现类似于 [Thread.sleep] 的效果。
  *
  * 需要注意的是，本质上这些延迟任务都是 **异步** 的，所以需要依靠回调函数进行进一步的逻辑。
+ * 它们继承 [CompletableFuture] , 额外的延迟api也具有与 [CompletableFuture] 相仿的使用方式.
  *
  * Java 开发者可以通过链式风格使用这些延时函数：
  * ```java
  * public void foo(Bot bot) { // Bot 间接实现了 DelayableCoroutineScope
- * DelayableCompletableFuture<LocalTime> whole = bot
+ *     DelayableCompletableFuture<LocalTime> whole = bot
  *         // (1). 延时5秒，打印当前时间
  *         .delay(Duration.ofSeconds(5), () -> {
  *             System.out.println(LocalTime.now());
@@ -162,12 +162,10 @@ private fun <V> CoroutineScope.delayAndCompute0(
     )
 }
 
-private class DelayableCompletableFutureImpl<T> constructor(
+private class DelayableCompletableFutureImpl<T>(
     private val deferred: Deferred<T>,
-    // private val future000: CompletableFuture<T>,
     private val scope: CoroutineScope,
-) : DelayableCompletableFuture<T>, Future<T>, CompletionStage<T> { //  by future
-    // constructor(deferred: Deferred<T>, scope: CoroutineScope) : this(deferred, deferred.asCompletableFuture(), scope)
+) : DelayableCompletableFuture<T>() {
     
     companion object {
         private val useCommonPool = ForkJoinPool.getCommonPoolParallelism() > 1
@@ -195,7 +193,7 @@ private class DelayableCompletableFutureImpl<T> constructor(
         }
     }
     
-    override fun toCompletableFuture(): CompletableFuture<T> = deferred.asCompletableFuture()
+    override fun toCompletableFuture(): DelayableCompletableFuture<T> = this
     
     override fun cancel(mayInterruptIfRunning: Boolean): Boolean = toCompletableFuture().cancel(mayInterruptIfRunning)
     
@@ -545,7 +543,7 @@ private class DelayableCompletableFutureImpl<T> constructor(
         other: CompletionStage<*>,
         action: java.lang.Runnable,
     ): Void? {
-        select<Unit> {
+        select {
             deferred.onJoin { }
             other.asDeferred().onJoin { }
         }
