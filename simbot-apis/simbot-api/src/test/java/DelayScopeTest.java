@@ -1,6 +1,6 @@
 import kotlin.coroutines.CoroutineContext;
 import kotlin.coroutines.EmptyCoroutineContext;
-import love.forte.simbot.ability.DelayCompletionFutureStage;
+import love.forte.simbot.ability.DelayableCompletableFuture;
 import love.forte.simbot.ability.DelayableCoroutineScope;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.RepeatedTest;
@@ -20,10 +20,10 @@ public class DelayScopeTest {
     public void completableApiTest() throws ExecutionException, InterruptedException {
         final long t1 = ThreadLocalRandom.current().nextLong(500);
         final long t2 = ThreadLocalRandom.current().nextLong(500);
-        final DelayCompletionFutureStage<Long> f1 = scope.delayAndCompute(t1, () -> t1);
-        final DelayCompletionFutureStage<Long> f2 = scope.delayAndCompute(t2, () -> t2);
+        final DelayableCompletableFuture<Long> f1 = scope.delayAndCompute(t1, () -> t1);
+        final DelayableCompletableFuture<Long> f2 = scope.delayAndCompute(t2, () -> t2);
 
-        final DelayCompletionFutureStage<Void> either = f1.acceptEitherAsync(f2, (v) -> {
+        final DelayableCompletableFuture<Void> either = f1.acceptEitherAsync(f2, (v) -> {
             assert v == Math.min(t1, t2);
         });
 
