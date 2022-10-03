@@ -27,17 +27,17 @@ import java.util.function.Function
 /**
  * 存在 **延时函数** 的 [CompletionStage] 扩展, 为 [DelayableCompletableFuture] 提供类型支持.
  *
- * [DelayCompletionFutureStage] 由 [DelayableCoroutineScope]
+ * [DelayCompletionStage] 由 [DelayableCoroutineScope]
  * 的相关api以 [DelayableCompletableFuture] 类型的形式得到，实现 [Future] 和 [CompletionStage]
  *
  * @see DelayableCoroutineScope
  * @see DelayableCompletableFuture
  *
  */
-public interface DelayCompletionFutureStage<T> : Future<T>, CompletionStage<T> {
+public interface DelayCompletionStage<T> : CompletionStage<T> {
     
     /**
-     * 得到用于描述当前 [DelayCompletionFutureStage] 的 [CompletableFuture] 对象。
+     * 得到用于描述当前 [DelayCompletionStage] 的 [CompletableFuture] 对象。
      */
     @Deprecated("Just use toCompletableFuture()", ReplaceWith("toCompletableFuture()"))
     public fun asCompletableFuture(): CompletableFuture<T> = toCompletableFuture()
@@ -58,7 +58,7 @@ public interface DelayCompletionFutureStage<T> : Future<T>, CompletionStage<T> {
      * 中其他异步函数则由 [CompletableFuture] 中实现的情况为准，
      * 与 [delay] 所使用的作用域无关。
      */
-    public fun delay(duration: JavaDuration, runnable: Runnable): DelayCompletionFutureStage<T>
+    public fun delay(duration: JavaDuration, runnable: Runnable): DelayCompletionStage<T>
     
     
     /**
@@ -71,7 +71,7 @@ public interface DelayCompletionFutureStage<T> : Future<T>, CompletionStage<T> {
      * 中其他异步函数则由 [CompletableFuture] 中实现的情况为准，
      * 与 [delay] 所使用的作用域无关。
      */
-    public fun delay(time: Long, timeUnit: TimeUnit, runnable: Runnable): DelayCompletionFutureStage<T>
+    public fun delay(time: Long, timeUnit: TimeUnit, runnable: Runnable): DelayCompletionStage<T>
     
     /**
      * 当等待的计算结果（通过 [get] 可以得到的结果 ）计算完成后，
@@ -83,13 +83,13 @@ public interface DelayCompletionFutureStage<T> : Future<T>, CompletionStage<T> {
      * 中其他异步函数则由 [CompletableFuture] 中实现的情况为准，
      * 与 [delay] 所使用的作用域无关。
      */
-    public fun delay(time: Long, runnable: Runnable): DelayCompletionFutureStage<T>
+    public fun delay(time: Long, runnable: Runnable): DelayCompletionStage<T>
     
     /**
      * 当等待的计算结果（通过 [get] 可以得到的结果 ）计算完成后，
      * 延迟指定时间周期 [duration]，并执行 [function] 函数。
      *
-     * [function] 函数的参数即为当前 [DelayCompletionFutureStage] 的计算结果。
+     * [function] 函数的参数即为当前 [DelayCompletionStage] 的计算结果。
      *
      * [delayAndCompute] 与 [CompletionStage] 中所提供的其他函数不同的是，
      * [delayAndCompute] 使用的是某个构建者提供的 [协程作用域][CoroutineScope]
@@ -100,13 +100,13 @@ public interface DelayCompletionFutureStage<T> : Future<T>, CompletionStage<T> {
     public fun <V> delayAndCompute(
         duration: JavaDuration,
         function: Function<T, V>,
-    ): DelayCompletionFutureStage<V>
+    ): DelayCompletionStage<V>
     
     /**
      * 当等待的计算结果（通过 [get] 可以得到的结果 ）计算完成后，
      * 延迟指定时间单位为 [TimeUnit.MILLISECONDS] 的时间周期 [time]，并执行 [function] 函数。
      *
-     * [function] 函数的参数即为当前 [DelayCompletionFutureStage] 的计算结果。
+     * [function] 函数的参数即为当前 [DelayCompletionStage] 的计算结果。
      *
      * [delayAndCompute] 与 [CompletionStage] 中所提供的其他函数不同的是，
      * [delayAndCompute] 使用的是某个构建者提供的 [协程作用域][CoroutineScope]
@@ -118,13 +118,13 @@ public interface DelayCompletionFutureStage<T> : Future<T>, CompletionStage<T> {
         time: Long,
         timeUnit: TimeUnit,
         function: Function<T, V>,
-    ): DelayCompletionFutureStage<V>
+    ): DelayCompletionStage<V>
     
     /**
      * 当等待的计算结果（通过 [get] 可以得到的结果 ）计算完成后，
      * 延迟指定时间单位为 [TimeUnit.MILLISECONDS] 的时间周期 [time]，并执行 [function] 函数。
      *
-     * [function] 函数的参数即为当前 [DelayCompletionFutureStage] 的计算结果。
+     * [function] 函数的参数即为当前 [DelayCompletionStage] 的计算结果。
      *
      * [delayAndCompute] 与 [CompletionStage] 中所提供的其他函数不同的是，
      * [delayAndCompute] 使用的是某个构建者提供的 [协程作用域][CoroutineScope]
@@ -135,161 +135,161 @@ public interface DelayCompletionFutureStage<T> : Future<T>, CompletionStage<T> {
     public fun <V> delayAndCompute(
         time: Long,
         function: Function<T, V>,
-    ): DelayCompletionFutureStage<V>
+    ): DelayCompletionStage<V>
     // endregion
     
     // region CompletionStage
-    override fun <U : Any?> thenApply(fn: Function<in T, out U>): DelayCompletionFutureStage<U>
+    override fun <U : Any?> thenApply(fn: Function<in T, out U>): DelayCompletionStage<U>
     
-    override fun <U : Any?> thenApplyAsync(fn: Function<in T, out U>): DelayCompletionFutureStage<U>
+    override fun <U : Any?> thenApplyAsync(fn: Function<in T, out U>): DelayCompletionStage<U>
     
     override fun <U : Any?> thenApplyAsync(
         fn: Function<in T, out U>,
         executor: Executor,
-    ): DelayCompletionFutureStage<U>
+    ): DelayCompletionStage<U>
     
-    override fun thenAccept(action: Consumer<in T>): DelayCompletionFutureStage<Void?>
+    override fun thenAccept(action: Consumer<in T>): DelayCompletionStage<Void?>
     
-    override fun thenAcceptAsync(action: Consumer<in T>): DelayCompletionFutureStage<Void?>
+    override fun thenAcceptAsync(action: Consumer<in T>): DelayCompletionStage<Void?>
     
-    override fun thenAcceptAsync(action: Consumer<in T>, executor: Executor): DelayCompletionFutureStage<Void?>
+    override fun thenAcceptAsync(action: Consumer<in T>, executor: Executor): DelayCompletionStage<Void?>
     
-    override fun thenRun(action: Runnable): DelayCompletionFutureStage<Void?>
+    override fun thenRun(action: Runnable): DelayCompletionStage<Void?>
     
-    override fun thenRunAsync(action: Runnable): DelayCompletionFutureStage<Void?>
+    override fun thenRunAsync(action: Runnable): DelayCompletionStage<Void?>
     
-    override fun thenRunAsync(action: Runnable, executor: Executor): DelayCompletionFutureStage<Void?>
+    override fun thenRunAsync(action: Runnable, executor: Executor): DelayCompletionStage<Void?>
     
     
     override fun <U : Any?> thenAcceptBoth(
         other: CompletionStage<out U>,
         action: BiConsumer<in T, in U>,
-    ): DelayCompletionFutureStage<Void?>
+    ): DelayCompletionStage<Void?>
     
     override fun <U : Any?> thenAcceptBothAsync(
         other: CompletionStage<out U>,
         action: BiConsumer<in T, in U>,
-    ): DelayCompletionFutureStage<Void?>
+    ): DelayCompletionStage<Void?>
     
     override fun <U : Any?> thenAcceptBothAsync(
         other: CompletionStage<out U>,
         action: BiConsumer<in T, in U>,
         executor: Executor,
-    ): DelayCompletionFutureStage<Void?>
+    ): DelayCompletionStage<Void?>
     
     override fun <U : Any?, V : Any?> thenCombine(
         other: CompletionStage<out U>,
         fn: BiFunction<in T, in U, out V>,
-    ): DelayCompletionFutureStage<V>
+    ): DelayCompletionStage<V>
     
     override fun <U : Any?, V : Any?> thenCombineAsync(
         other: CompletionStage<out U>,
         fn: BiFunction<in T, in U, out V>,
-    ): DelayCompletionFutureStage<V>
+    ): DelayCompletionStage<V>
     
     override fun <U : Any?, V : Any?> thenCombineAsync(
         other: CompletionStage<out U>,
         fn: BiFunction<in T, in U, out V>,
         executor: Executor,
-    ): DelayCompletionFutureStage<V>
+    ): DelayCompletionStage<V>
     
-    override fun runAfterBoth(other: CompletionStage<*>, action: Runnable): DelayCompletionFutureStage<Void?>
+    override fun runAfterBoth(other: CompletionStage<*>, action: Runnable): DelayCompletionStage<Void?>
     
     override fun runAfterBothAsync(
         other: CompletionStage<*>,
         action: Runnable,
-    ): DelayCompletionFutureStage<Void?>
+    ): DelayCompletionStage<Void?>
     
     override fun runAfterBothAsync(
         other: CompletionStage<*>,
         action: Runnable,
         executor: Executor,
-    ): DelayCompletionFutureStage<Void?>
+    ): DelayCompletionStage<Void?>
     
     override fun <U : Any?> applyToEither(
         other: CompletionStage<out T>,
         fn: Function<in T, U>,
-    ): DelayCompletionFutureStage<U>
+    ): DelayCompletionStage<U>
     
     override fun <U : Any?> applyToEitherAsync(
         other: CompletionStage<out T>,
         fn: Function<in T, U>,
-    ): DelayCompletionFutureStage<U>
+    ): DelayCompletionStage<U>
     
     override fun <U : Any?> applyToEitherAsync(
         other: CompletionStage<out T>,
         fn: Function<in T, U>,
         executor: Executor,
-    ): DelayCompletionFutureStage<U>
+    ): DelayCompletionStage<U>
     
     override fun acceptEither(
         other: CompletionStage<out T>,
         action: Consumer<in T>,
-    ): DelayCompletionFutureStage<Void?>
+    ): DelayCompletionStage<Void?>
     
     override fun acceptEitherAsync(
         other: CompletionStage<out T>,
         action: Consumer<in T>,
-    ): DelayCompletionFutureStage<Void?>
+    ): DelayCompletionStage<Void?>
     
     override fun acceptEitherAsync(
         other: CompletionStage<out T>,
         action: Consumer<in T>,
         executor: Executor,
-    ): DelayCompletionFutureStage<Void?>
+    ): DelayCompletionStage<Void?>
     
-    override fun runAfterEither(other: CompletionStage<*>, action: Runnable): DelayCompletionFutureStage<Void?>
+    override fun runAfterEither(other: CompletionStage<*>, action: Runnable): DelayCompletionStage<Void?>
     
     override fun runAfterEitherAsync(
         other: CompletionStage<*>,
         action: Runnable,
-    ): DelayCompletionFutureStage<Void?>
+    ): DelayCompletionStage<Void?>
     
     override fun runAfterEitherAsync(
         other: CompletionStage<*>,
         action: Runnable,
         executor: Executor,
-    ): DelayCompletionFutureStage<Void?>
+    ): DelayCompletionStage<Void?>
     
-    override fun <U : Any?> thenCompose(fn: Function<in T, out CompletionStage<U>>): DelayCompletionFutureStage<U>
+    override fun <U : Any?> thenCompose(fn: Function<in T, out CompletionStage<U>>): DelayCompletionStage<U>
     
-    override fun <U : Any?> thenComposeAsync(fn: Function<in T, out CompletionStage<U>>): DelayCompletionFutureStage<U>
+    override fun <U : Any?> thenComposeAsync(fn: Function<in T, out CompletionStage<U>>): DelayCompletionStage<U>
     
     override fun <U : Any?> thenComposeAsync(
         fn: Function<in T, out CompletionStage<U>>,
         executor: Executor,
-    ): DelayCompletionFutureStage<U>
+    ): DelayCompletionStage<U>
     
-    override fun exceptionally(fn: Function<Throwable, out T>): DelayCompletionFutureStage<T>
+    override fun exceptionally(fn: Function<Throwable, out T>): DelayCompletionStage<T>
     
-    override fun whenComplete(action: BiConsumer<in T?, in Throwable?>): DelayCompletionFutureStage<T>
+    override fun whenComplete(action: BiConsumer<in T?, in Throwable?>): DelayCompletionStage<T>
     
-    override fun whenCompleteAsync(action: BiConsumer<in T?, in Throwable?>): DelayCompletionFutureStage<T>
+    override fun whenCompleteAsync(action: BiConsumer<in T?, in Throwable?>): DelayCompletionStage<T>
     
     override fun whenCompleteAsync(
         action: BiConsumer<in T?, in Throwable?>,
         executor: Executor,
-    ): DelayCompletionFutureStage<T>
+    ): DelayCompletionStage<T>
     
-    override fun <U : Any?> handle(fn: BiFunction<in T?, Throwable?, out U>): DelayCompletionFutureStage<U>
+    override fun <U : Any?> handle(fn: BiFunction<in T?, Throwable?, out U>): DelayCompletionStage<U>
     
-    override fun <U : Any?> handleAsync(fn: BiFunction<in T?, Throwable?, out U>): DelayCompletionFutureStage<U>
+    override fun <U : Any?> handleAsync(fn: BiFunction<in T?, Throwable?, out U>): DelayCompletionStage<U>
     
     override fun <U : Any?> handleAsync(
         fn: BiFunction<in T?, Throwable?, out U>,
         executor: Executor,
-    ): DelayCompletionFutureStage<U>
+    ): DelayCompletionStage<U>
     // endregion
     
     
 }
 
 /**
- * 继承 [CompletableFuture] 并实现 [DelayCompletionFutureStage] 扩展的基本抽象类型, 提供 [CompletableFuture] 与 [DelayCompletionFutureStage] 的能力描述.
+ * 继承 [CompletableFuture] 并实现 [DelayCompletionStage] 扩展的基本抽象类型, 提供 [CompletableFuture] 与 [DelayCompletionStage] 的能力描述.
  *
  * @author ForteScarlet
  */
-public abstract class DelayableCompletableFuture<T> : DelayCompletionFutureStage<T>, CompletableFuture<T>() {
+public abstract class DelayableCompletableFuture<T> : DelayCompletionStage<T>, CompletableFuture<T>() {
     abstract override fun toCompletableFuture(): DelayableCompletableFuture<T>
     
     abstract override fun delay(duration: JavaDuration, runnable: Runnable): DelayableCompletableFuture<T>
