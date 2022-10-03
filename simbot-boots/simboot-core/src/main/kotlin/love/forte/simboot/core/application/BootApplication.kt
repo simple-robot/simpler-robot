@@ -44,13 +44,11 @@ import love.forte.simbot.bot.StandardBotVerifyInfoDecoderFactory
 import love.forte.simbot.bot.toBotVerifyInfo
 import love.forte.simbot.core.application.*
 import love.forte.simbot.core.event.EventInterceptorsGenerator
-import love.forte.simbot.core.event.EventListenersGenerator
+import love.forte.simbot.core.event.EventListenerRegistrationDescriptionsGenerator
 import love.forte.simbot.core.event.SimpleEventListenerManager
 import love.forte.simbot.core.event.SimpleListenerManagerConfiguration
-import love.forte.simbot.event.EventListener
-import love.forte.simbot.event.EventListenerBuilder
-import love.forte.simbot.event.EventListenerInterceptor
-import love.forte.simbot.event.EventProcessingInterceptor
+import love.forte.simbot.event.*
+import love.forte.simbot.event.EventListenerRegistrationDescription.Companion.toRegistrationDescription
 import love.forte.simbot.resources.Resource
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
@@ -190,7 +188,7 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
         val createFactory: () -> BotVerifyInfoDecoder = {
             factory.create(newConfig)
         }
-    
+        
         botVerifyInfoDecoderFactories.merge(factory, createFactory) { _, curr ->
             curr
         }
@@ -596,6 +594,7 @@ private fun resolvedBinderContainerFromBeanContainer(
                         }
                         specifyBinderFactory(id)
                     }
+                    
                     DEFAULT -> {
                         if (id == null) {
                             globalBinderFactory()
@@ -603,6 +602,7 @@ private fun resolvedBinderContainerFromBeanContainer(
                             specifyBinderFactory(id)
                         }
                     }
+                    
                     else -> {
                         // 通过类实现的ParameterBinderFactory不允许使用Binder.Scope.CURRENT
                         throw SimbotIllegalStateException("Parameter Binder Factory implemented by class does not allow Binder.Scope.CURRENT, but $binder")
@@ -646,6 +646,7 @@ private fun resolvedBinderContainerFromBeanContainer(
                             }
                             specifyBinderFactory(id, func)
                         }
+                        
                         else -> {
                             // is default, as global
                             globalBinderFactory(func)
@@ -699,6 +700,7 @@ private fun resolvedBinderContainerFromScanTopLevelFunctions(
                                 }
                                 specifyBinderFactory(id, func)
                             }
+                            
                             else -> {
                                 // default
                                 if (id == null) {
@@ -764,7 +766,7 @@ private fun EventInterceptorsGenerator.autoConfigListenerInterceptors(beanContai
 }
 
 
-private fun EventListenersGenerator.autoConfigFromBeanContainer(
+private fun EventListenerRegistrationDescriptionsGenerator.autoConfigFromBeanContainer(
     logger: Logger,
     binderManager: BinderManager,
     beanContainer: BeanContainer,
@@ -782,12 +784,14 @@ private fun EventListenersGenerator.autoConfigFromBeanContainer(
                 listener(listener)
                 count.increment()
             }
+            
             type.isSubclassOf(EventListenerBuilder::class) -> {
                 val builder = beanContainer[name, type] as EventListenerBuilder
                 logger.debug("Load event listener builder instance [{}] by type [{}] named [{}]", builder, type, name)
                 listener(builder.build())
                 count.increment()
             }
+            
             else -> {
                 for (function in type.allFunctions) {
                     val listener = tool.getAnnotation(function, Listener::class) ?: continue
@@ -808,7 +812,7 @@ private fun EventListenersGenerator.autoConfigFromBeanContainer(
     logger.info("The size of resolved event listeners is {}", count.sum())
 }
 
-private fun EventListenersGenerator.resolveEventListenerFunction(
+private fun EventListenerRegistrationDescriptionsGenerator.resolveEventListenerFunction(
     type: KClass<*>?,
     function: KFunction<*>,
     logger: Logger,
@@ -826,27 +830,26 @@ private fun EventListenersGenerator.resolveEventListenerFunction(
     
     val resolvedListener = listenerProcessor.process(
         FunctionalListenerProcessContext(
-            id = listener.id.takeIf { it.isNotEmpty() },
             function = function,
-            priority = listener.priority,
-            isAsync = listener.async,
             binderManager = binderManager,
             beanContainer = beanContainer,
         )
     )
     
+    val description = resolvedListener.toRegistrationDescription(priority = listener.priority, isAsync = listener.async)
+    
     if (type == null) {
-        logger.debug("Resolved top-level listener: [{}] by processor [{}]", resolvedListener, listenerProcessor)
+        logger.debug("Resolved top-level listener description: [{}] by processor [{}]", description, listenerProcessor)
     } else {
-        logger.debug("Resolved listener: [{}] by processor [{}]", resolvedListener, listenerProcessor)
+        logger.debug("Resolved listener description: [{}] by processor [{}]", description, listenerProcessor)
     }
     
     // include listener.
     count.increment()
-    listener(resolvedListener)
+    listener(description)
 }
 
-private fun EventListenersGenerator.resolveEventListenerOrBuilderFunction(
+private fun EventListenerRegistrationDescriptionsGenerator.resolveEventListenerOrBuilderFunction(
     type: KClass<*>?,
     function: KFunction<*>,
     logger: Logger,
@@ -862,32 +865,62 @@ private fun EventListenersGenerator.resolveEventListenerOrBuilderFunction(
         )
     }
     val parameters = kParameters.associateWith { beanContainer.getByKParameter(it) }
-    val result = function.callBy(parameters)
-    val resultListener = when (result) {
-        is EventListenerBuilder -> {
-            if (result.id.isEmpty()) {
-                // 生成id
-                result.id = listener.id.ifEmpty { function.sign() }
+    
+    when (val result = function.callBy(parameters)) {
+        is EventListenerRegistrationDescriptionBuilder -> {
+            val buildDescription = result.buildDescription()
+            listener(buildDescription)
+            if (type == null) {
+                logger.debug("Resolved top-level listener: [{}] by description builder [{}]", buildDescription, result)
+            } else {
+                logger.debug(
+                    "Resolved listener: [{}] from [{}] by description builder [{}]",
+                    buildDescription,
+                    type,
+                    result
+                )
             }
-            result.build()
         }
-        is EventListener -> result
-        else -> null
-    } ?: return
-    
-    
-    if (type == null) {
-        logger.debug(
-            "Resolved top-level listener: [{}] by [{}]", resultListener, result
-        )
-    } else {
-        logger.debug(
-            "Resolved listener: [{}] from [{}] by [{}]", resultListener, type, result
-        )
+        
+        is EventListenerBuilder -> {
+            val built = result.build()
+            val description = built.toRegistrationDescription(priority = listener.priority, isAsync = listener.async)
+            listener(description)
+            if (type == null) {
+                logger.debug(
+                    "Resolved top-level listener built [{}] with description: [{}] by builder [{}]",
+                    built,
+                    description,
+                    result
+                )
+            } else {
+                logger.debug(
+                    "Resolved listener built [{}] with description: [{}] from [{}] by builder [{}]",
+                    built,
+                    description,
+                    type,
+                    result
+                )
+            }
+        }
+        
+        is EventListener -> {
+            val description = result.toRegistrationDescription(priority = listener.priority, isAsync = listener.async)
+            listener(description)
+            if (type == null) {
+                logger.debug("Resolved top-level listener [{}] with description: [{}]", result, description)
+            } else {
+                logger.debug("Resolved listener [{}] with description: [{}] from [{}]", result, description, type)
+            }
+        }
+        
+        else -> return
     }
     
+    
+    
+    
     count.increment()
-    listener(resultListener)
 }
 
 
@@ -904,7 +937,7 @@ private inline fun doTopLevelEventListenerBuilderWarn(block: () -> Unit) {
 }
 
 @OptIn(InternalSimbotApi::class)
-private fun EventListenersGenerator.autoScanTopFunction(
+private fun EventListenerRegistrationDescriptionsGenerator.autoScanTopFunction(
     classLoader: ClassLoader,
     logger: Logger,
     binderManager: BinderManager,
@@ -1019,14 +1052,17 @@ private fun BeanContainer.getByKParameter(parameter: KParameter): Any {
         name == null && type == null -> {
             throw IllegalStateException("The name and type of parameter [$parameter] are both null")
         }
+        
         name == null && type != null -> {
             // only type
             get(type)
         }
+        
         type == null && name != null -> {
             // only name
             get(name)
         }
+        
         else -> {
             // both not null
             get(name!!, type!!)

@@ -16,17 +16,9 @@
 
 package love.forte.simbot.core.event
 
-import love.forte.simbot.Api4J
 import love.forte.simbot.InternalSimbotApi
-import love.forte.simbot.PriorityConstant
-import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.*
-import love.forte.simbot.utils.randomIdStr
-import love.forte.simbot.utils.runWithInterruptible
-import org.slf4j.Logger
-import java.util.function.BiConsumer
-import java.util.function.BiFunction
-import java.util.function.BiPredicate
+import love.forte.simbot.event.EventListenerRegistrationDescription.Companion.toRegistrationDescription
 
 @DslMarker
 internal annotation class EventListenersGeneratorDSL
@@ -38,7 +30,7 @@ internal annotation class EventListenersGeneratorDSL
  *
  * 结构示例：
  * ```kotlin
- * // 假设在 CoreListenerManagerConfiguration 中
+ * // 假设在 SimpleListenerManagerConfiguration 中
  * listeners {
  *     // plus listener of EventListenersGenerator
  *     +simpleListener(FooEvent) { /* Nothing here. */ }
@@ -82,8 +74,22 @@ internal annotation class EventListenersGeneratorDSL
  *  @author ForteScarlet
  */
 @EventListenersGeneratorDSL
-public class EventListenersGenerator @InternalSimbotApi constructor() {
-    private val listeners = mutableListOf<() -> EventListener>()
+public class EventListenerRegistrationDescriptionsGenerator @InternalSimbotApi constructor() {
+    private val listenerRegistrationDescriptions = mutableListOf<() -> EventListenerRegistrationDescription>()
+    
+    private inline fun add(crossinline block: () -> EventListenerRegistrationDescription): Boolean =
+        listenerRegistrationDescriptions.add {
+            block()
+        }
+    
+    private fun add(builder: SimpleListenerRegistrationDescriptionBuilder<*>): Boolean =
+        listenerRegistrationDescriptions.add {
+            builder.buildDescription()
+        }
+    
+    private fun add(description: EventListenerRegistrationDescription): Boolean =
+        listenerRegistrationDescriptions.add { description }
+    
     
     /**
      * 构建一个监听函数。
@@ -109,20 +115,13 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     public fun <E : Event> listen(
         eventKey: Event.Key<E>,
         block: SimpleListenerBuilderDslFunction<E>,
-    ): EventListenersGenerator = also {
-        listeners.add {
-            SimpleListenerBuilder(eventKey).also {
-                it.apply { block.apply { invoke() } }
-            }.build()
-        }
+    ): EventListenerRegistrationDescriptionsGenerator = apply {
+        add(
+            SimpleListenerRegistrationDescriptionBuilder(eventKey).apply {
+                apply { block.apply { invoke() } }
+            }
+        )
     }
-    
-    
-    @Deprecated("Use listen(Event.Key){ ... }", ReplaceWith("listen(eventKey, block)"), level = DeprecationLevel.ERROR)
-    public fun <E : Event> listener(
-        eventKey: Event.Key<E>,
-        block: SimpleListenerBuilder<E>.() -> Unit,
-    ): EventListenersGenerator = listen(eventKey, block)
     
     
     /**
@@ -130,8 +129,8 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      *
      */
     @EventListenersGeneratorDSL
-    public fun listener(listener: EventListener): EventListenersGenerator = also {
-        listeners.add { listener }
+    public fun listener(listener: EventListener): EventListenerRegistrationDescriptionsGenerator = apply {
+        add { listener.toRegistrationDescription() }
     }
     
     
@@ -149,6 +148,33 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     public operator fun EventListener.unaryPlus() {
         listener(this)
     }
+    
+    /**
+     * 直接提供一个 [EventListenerRegistrationDescription] 实例。
+     *
+     */
+    @EventListenersGeneratorDSL
+    public fun listener(listener: EventListenerRegistrationDescription): EventListenerRegistrationDescriptionsGenerator =
+        apply {
+            add(listener)
+        }
+    
+    
+    /**
+     * 通过 `+=` 的方式直接提供一个 [EventListenerRegistrationDescription] 实例。
+     *
+     * ```kotlin
+     * listeners {
+     *    +fooListenerRegistrationDescription
+     * }
+     * ```
+     *
+     */
+    @EventListenersGeneratorDSL
+    public operator fun EventListenerRegistrationDescription.unaryPlus() {
+        listener(this)
+    }
+    
     
     /**
      * 监听指定的事件类型并直接进行事件处理。
@@ -192,7 +218,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      */
     @EventListenersGeneratorDSL
     public inline operator fun <E : Event> Event.Key<E>.invoke(crossinline processFunction: suspend EventListenerProcessingContext.(E) -> Unit): EventHandling<E> {
-        return process {event ->
+        return process { event ->
             processFunction(event)
         }
     }
@@ -245,9 +271,9 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     @EventListenersGeneratorDSL
     @JvmSynthetic
     public fun <E : Event> Event.Key<E>.handle(handle: suspend EventListenerProcessingContext.(E) -> EventResult): EventHandling<E> {
-        val builder = SimpleListenerBuilder(this)
+        val builder = SimpleListenerRegistrationDescriptionBuilder(this)
         builder.handle(handle)
-        listeners.add { builder.build() }
+        add(builder)
         return EventHandling(builder)
     }
     
@@ -296,9 +322,9 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     @EventListenersGeneratorDSL
     @JvmSynthetic
     public fun <E : Event> Event.Key<E>.process(handle: suspend EventListenerProcessingContext.(E) -> Unit): EventHandling<E> {
-        val builder = SimpleListenerBuilder(this)
+        val builder = SimpleListenerRegistrationDescriptionBuilder(this)
         builder.process(handle)
-        listeners.add { builder.build() }
+        add(builder)
         return EventHandling(builder)
     }
     
@@ -306,7 +332,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * 通过 [Event.Key.invoke] 得到的 _处理过程_ 对象，用于进一步配置此事件的匹配逻辑。
      */
     @JvmInline
-    public value class EventHandling<E : Event> @InternalSimbotApi internal constructor(@PublishedApi internal val generator: SimpleListenerBuilder<E>)
+    public value class EventHandling<E : Event> @InternalSimbotApi internal constructor(@PublishedApi internal val generator: SimpleListenerRegistrationDescriptionBuilder<E>)
     
     
     /**
@@ -326,10 +352,10 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      * }
      * ```
      *
-     * 使用 [onMatch] 效果类似于使用 [ListenerGenerator.match], 当配置多层时相当于通过与(`&&`)连接。
+     * 使用 [onMatch] 效果类似于使用 [SimpleListenerRegistrationDescriptionBuilder.match], 当配置多层时相当于通过与(`&&`)连接。
      *
      * @see Event.Key.invoke
-     * @see ListenerGenerator.match
+     * @see SimpleListenerRegistrationDescriptionBuilder.match
      *
      */
     public inline infix fun <E : Event> EventHandling<E>.onMatch(crossinline matcher: suspend EventListenerProcessingContext.(E) -> Boolean): EventHandling<E> =
@@ -370,7 +396,7 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
      *
      *
      * @see Event.Key.invoke
-     * @see ListenerGenerator.match
+     * @see SimpleListenerRegistrationDescriptionBuilder.match
      *
      */
     @Suppress("NOTHING_TO_INLINE")
@@ -381,13 +407,13 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
     /**
      * 得到当前构建的所有 listeners。
      */
-    public fun build(): List<EventListener> {
-        return listeners.map { it() }
+    public fun build(): List<EventListenerRegistrationDescription> {
+        return listenerRegistrationDescriptions.map { it() }
     }
     
     
     /**
-     * 在 [EventListenersGenerator] 环境中提供一个可以更简单快捷的构建 [事件结果][EventResult] 的内联函数，
+     * 在 [EventListenerRegistrationDescriptionsGenerator] 环境中提供一个可以更简单快捷的构建 [事件结果][EventResult] 的内联函数，
      * 其效果等同于使用 [EventResult.of].
      *
      * e.g.
@@ -413,208 +439,9 @@ public class EventListenersGenerator @InternalSimbotApi constructor() {
 }
 
 
-// region listener generator
-
-
 /**
- * 监听函数构建器。
- *
- * 应用于 [EventListenersGenerator] 中。
- *
- * 使用 [SimpleListenerBuilder].
- *
- * @see SimpleListenerBuilder
- * @author ForteScarlet
- */
-@Suppress("DEPRECATION_ERROR")
-@SimpleListenerBuilderDSL
-@Deprecated(
-    "Just use SimpleListenerBuilder",
-    ReplaceWith("SimpleListenerBuilder<E>", "love.forte.simbot.core.event.SimpleListenerBuilder"), level = DeprecationLevel.ERROR
-)
-public class ListenerGenerator<E : Event> @InternalSimbotApi constructor(private val eventKey: Event.Key<E>) :
-    EventListenerBuilder {
-    
-    private var _id: String? = null
-    
-    /**
-     * 设置listener的ID
-     */
-    @SimpleListenerBuilderDSL
-    override var id: String
-        get() = _id ?: ""
-        set(value) {
-            _id = value
-        }
-    
-    
-    /**
-     * 使用的日志
-     */
-    @SimpleListenerBuilderDSL
-    public var logger: Logger? = null
-    
-    /**
-     * 是否标记为异步函数。
-     */
-    @SimpleListenerBuilderDSL
-    override var isAsync: Boolean = false
-    
-    /**
-     * 优先级。
-     */
-    @SimpleListenerBuilderDSL
-    override var priority: Int = PriorityConstant.NORMAL
-    
-    
-    private var matcher: (suspend EventListenerProcessingContext.(E) -> Boolean)? = null
-    private fun setMatcher(m: suspend EventListenerProcessingContext.(E) -> Boolean) {
-        val old = matcher
-        matcher = if (old == null) {
-            m
-        } else {
-            {
-                old(it) && m(it)
-            }
-        }
-    }
-    
-    /**
-     * 配置当前监听函数的匹配函数。
-     *
-     * ```kotlin
-     * listen(FooEvent) {
-     *    match { condition } // return Boolean
-     *    handle { ... }
-     * }
-     * ```
-     *
-     * [match] 函数允许多次使用。当执行多次 [match] 时，其效果相当于每次配置的条件之间通过与(`&&`)相连接。
-     *
-     * 例如：
-     * ```kotlin
-     * listen(FooEvent) {
-     *    match { condition1 }
-     *    match { condition2 }
-     *    match { condition3 }
-     *
-     *    handle { ... }
-     * }
-     * ```
-     * 其效果等同于：
-     * ```kotlin
-     * listen(FooEvent) {
-     *    match { condition1 && condition2 && condition3 }
-     *
-     *    handle { ... }
-     * }
-     * ```
-     *
-     *
-     */
-    @JvmSynthetic
-    @SimpleListenerBuilderDSL
-    public fun match(matcher: suspend EventListenerProcessingContext.(E) -> Boolean) {
-        setMatcher(matcher)
-    }
-    
-    /**
-     * 配置当前监听函数的匹配函数。
-     *
-     * @see match
-     */
-    @Api4J
-    @JvmName("match")
-    @Suppress("FunctionName")
-    public fun _match(matcher: BiPredicate<EventListenerProcessingContext, E>): ListenerGenerator<E> = also {
-        setMatcher { e -> runWithInterruptible { matcher.test(this, e) } }
-    }
-    
-    
-    private var func: (suspend EventListenerProcessingContext.(E) -> EventResult)? = null
-    
-    private fun setFunc(f: suspend EventListenerProcessingContext.(E) -> EventResult) {
-        if (this.func != null) {
-            throw SimbotIllegalStateException("handle can and can only be configured once")
-        }
-        
-        func = f
-    }
-    
-    /**
-     * 监听函数。处理监听到的事件的具体逻辑。
-     *
-     * ```kotlin
-     * listen(FooEvent) {
-     *    handle { event: FooEvent -> // this: EventListenerProcessingContext
-     *       // do handle
-     *
-     *       EventResult.of(...) // return
-     *    }
-     * }
-     * ```
-     *
-     * 对于同一个 [ListenerGenerator], [handle] 只能且必须配置 **一次**。如果配置次数超过一次会直接引发 [SimbotIllegalStateException]；
-     * 如果未进行配置则会在最终构建时引发 [SimbotIllegalStateException].
-     *
-     * @throws SimbotIllegalStateException 如果调用超过一次
-     *
-     */
-    @JvmSynthetic
-    @SimpleListenerBuilderDSL
-    public fun handle(func: suspend EventListenerProcessingContext.(E) -> EventResult) {
-        setFunc(func)
-    }
-    
-    
-    /**
-     * 监听函数。处理监听到的事件的具体逻辑。
-     *
-     * @see handle
-     *
-     * @throws SimbotIllegalStateException 如果调用超过一次
-     */
-    @Api4J
-    @JvmName("handle")
-    @Suppress("FunctionName")
-    public fun _handle(func: BiConsumer<EventListenerProcessingContext, E>): ListenerGenerator<E> = also {
-        setFunc { e ->
-            runWithInterruptible { func.accept(this, e) }
-            EventResult.defaults()
-        }
-    }
-    
-    /**
-     * 监听函数。处理监听到的事件的具体逻辑。
-     *
-     * @see handle
-     *
-     * @throws SimbotIllegalStateException 如果调用超过一次
-     */
-    @Api4J
-    @JvmName("handle")
-    @Suppress("FunctionName")
-    public fun _handle(func: BiFunction<EventListenerProcessingContext, E, EventResult>): ListenerGenerator<E> = also {
-        setFunc { e -> runWithInterruptible { func.apply(this, e) } }
-    }
-    
-    override fun build(): EventListener {
-        val id0 = _id ?: randomIdStr()
-        return simpleListener(
-            target = eventKey,
-            id = id0,
-            isAsync = isAsync,
-            matcher = matcher ?: { true },
-            function = func ?: throw SimbotIllegalStateException("The handle function must be configured")
-        )
-    }
-}
-// endregion
-
-
-/**
- * 使用于 [EventListenersGenerator.listen], 用于兼容Kotlin和Java的函数接口差异。
+ * 使用于 [EventListenerRegistrationDescriptionsGenerator.listen], 用于兼容Kotlin和Java的函数接口差异。
  */
 public fun interface SimpleListenerBuilderDslFunction<E : Event> {
-    public operator fun SimpleListenerBuilder<E>.invoke()
+    public operator fun SimpleListenerRegistrationDescriptionBuilder<E>.invoke()
 }

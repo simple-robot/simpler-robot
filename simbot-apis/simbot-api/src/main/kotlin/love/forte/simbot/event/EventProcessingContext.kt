@@ -146,6 +146,11 @@ public interface EventListenerProcessingContext : EventProcessingContext {
     public val listener: EventListener
     
     /**
+     * 当前 [listener] 在事件调度容器中的句柄.
+     */
+    public val listenerHandle: EventListenerHandle
+    
+    /**
      * 当前监听函数的主要文本内容，一般可用于在拦截器、过滤器、监听函数相互组合时进行一些过滤内容匹配。
      *
      * 正常来讲，[textContent] 在 [event] 为 [MessageEvent] 类型的时候，默认为 [MessageEvent.plainText][love.forte.simbot.message.MessageContent.plainText],

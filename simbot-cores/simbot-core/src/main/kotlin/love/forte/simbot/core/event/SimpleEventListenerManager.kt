@@ -133,7 +133,7 @@ public interface SimpleEventListenerManager : EventListenerManager {
 /**
  * 事件流程上下文的管理器，[SimpleEventListenerManager] 通过此接口实例完成对 [EventProcessingContext] 的统一管理。
  *
- *  在 [SimpleEventListenerManager] 中仅会使用同一个 [EventProcessingContextResolver] 实例。
+ * 在 [SimpleEventListenerManager] 中仅会使用同一个 [EventProcessingContextResolver] 实例。
  *
  */
 public interface EventProcessingContextResolver<C : EventProcessingContext> {

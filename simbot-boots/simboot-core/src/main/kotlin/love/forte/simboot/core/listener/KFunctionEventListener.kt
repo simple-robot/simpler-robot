@@ -32,9 +32,6 @@ import kotlin.reflect.KParameter
  * 使用 [KFunction] 并可提供 [binders] 的 [FunctionalBindableEventListener] 实现。
  */
 public class KFunctionEventListener<R>(
-    override val id: String,
-    override val priority: Int,
-    override val isAsync: Boolean,
     private val targets: Set<Event.Key<*>>,
     override val binders: Array<ParameterBinder>,
     private val attributeMap: AttributeMutableMap,
@@ -43,7 +40,7 @@ public class KFunctionEventListener<R>(
 ) : FunctionalBindableEventListener<R>(matcher, caller) {
     
     override fun toString(): String {
-        return "KFunctionEventListener(id=$id, priority=$priority, isAsync=$isAsync, isSuspend=${caller.isSuspend}, targets=${
+        return "KFunctionEventListener(isSuspend=${caller.isSuspend}, targets=${
             targets.takeIf { it.isNotEmpty() }?.joinToString(", ", "[", "]") ?: "[<ALL>]"
         }, binders=${binders.joinToString(separator = ", ", "[", "]")}, caller=$caller)"
     }

@@ -70,9 +70,6 @@ internal class SimpleEventProcessingContextResolver(
             continuousSessionContext,
             listenerSize
         )
-        // coroutineScope.launch {
-        //     continuousSessionListenerManager.process(context)
-        // }
         
         if (continuousSessionListenerManager.process(context)) {
             return null
