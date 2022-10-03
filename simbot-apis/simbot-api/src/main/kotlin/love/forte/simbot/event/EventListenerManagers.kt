@@ -16,10 +16,9 @@
 
 package love.forte.simbot.event
 
-import love.forte.simbot.FragileSimbotApi
-import love.forte.simbot.ID
-import love.forte.simbot.SimbotError
-import love.forte.simbot.literal
+import love.forte.simbot.*
+import java.util.stream.Stream
+import kotlin.streams.asStream
 
 
 /**
@@ -28,13 +27,6 @@ import love.forte.simbot.literal
 public interface EventListenerRegistrar {
     /**
      * 注册一个监听函数。
-     *
-     * 注册监听函数并不一定是原子的，可能会存在注册结果的滞后性（注册不一定会立即生效）。
-     *
-     * ## 滞后性
-     * 例如你在时间点A注册一个监听函数，而时间点B（=时间点A + 10ms）时推送了一个事件，
-     *
-     * 这时候无法保证在时间点A之后的这个事件能够触发此监听函数。
      *
      * ## 脆弱的
      * [register] 被标记为 [脆弱的API][FragileSimbotApi], 因为 [EventListenerRegistrar] 的行为是在 [EventListenerManager] 构建完成后的运行时期动态添加**额外的**监听函数。
@@ -47,7 +39,7 @@ public interface EventListenerRegistrar {
      *
      * @throws IllegalStateException 如果出现ID重复
      */
-    @FragileSimbotApi // TODO
+    @FragileSimbotApi // TODO?
     public fun register(listener: EventListener): EventListenerHandle
     
 }
@@ -75,11 +67,40 @@ public interface EventListenerContainer : EventListenerRegistrar {
     
     
     /**
+     * 得到当前容器中的所有监听函数序列.
+     *
+     * _Java see [getListeners]._
+     *
+     * **※ 实验性: 未来可能会产生任何不兼容变更或被移除, 请谨慎使用.**
+     *
+     */
+    @ExperimentalSimbotApi
+    @get:JvmSynthetic
+    public val listeners: Sequence<EventListener>
+    
+    
+    /**
+     * 得到当前容器中的所有监听函数序列.
+     *
+     * ## 实验性
+     *
+     * **※ 实验性: 未来可能会产生任何不兼容变更或被移除, 请谨慎使用.**
+     *
+     */
+    @ExperimentalSimbotApi
+    @Api4J
+    public fun getListeners(): Stream<EventListener> = listeners.asStream()
+    
+    
+    /**
      * 在当前容器中寻找 [id] 匹配的监听函数并得到一个描述它的 [EventListenerHandle].
      * 如果当前容器中不存在与 [id] 匹配的监听函数则会抛出 [NoSuchEventListenerException].
      *
+     * **※ 实验性: 未来可能会产生任何不兼容变更或被移除, 请谨慎使用.**
+     *
      * @throws NoSuchEventListenerException 当无法寻得匹配的监听函数时.
      */
+    @ExperimentalSimbotApi
     public fun resolveHandle(id: String): EventListenerHandle
     
     /**
@@ -87,9 +108,11 @@ public interface EventListenerContainer : EventListenerRegistrar {
      * 如果当前容器中不存在 [listener] 本身 (container .any { someone === [listener] })
      * 则会抛出 [NoSuchEventListenerException].
      *
+     * **※ 实验性: 未来可能会产生任何不兼容变更或被移除, 请谨慎使用.**
      *
      * @throws NoSuchEventListenerException 当无法寻得匹配的监听函数时.
      */
+    @ExperimentalSimbotApi
     public fun resolveHandle(listener: EventListener): EventListenerHandle
     
 }

@@ -28,6 +28,9 @@ import org.slf4j.Logger
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.ConcurrentMap
+import java.util.concurrent.ConcurrentSkipListMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 
@@ -44,7 +47,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
     private val managerScope: CoroutineScope
     
     /**
-     * 异常处理器。
+     * 异常处理器。 TODO
      */
     private val listenerExceptionHandler: ((Throwable) -> EventResult)?
     
@@ -62,7 +65,25 @@ internal class SimpleEventListenerManagerImpl internal constructor(
     /**
      * 监听函数列表。ID唯一
      */
-    private val listeners: MutableMap<String, EventListener>
+    private val _listeners: MutableMap<String, EventListener>
+    
+    /**
+     * 当前被注册的监听函数集.
+     *
+     */
+    private val invokers = PriorityListenerInvokers()
+    
+    private class PriorityListenerInvokers(private val map: ConcurrentSkipListMap<Int, ConcurrentLinkedQueue<ListenerInvoker>> = ConcurrentSkipListMap()) :
+        ConcurrentMap<Int, ConcurrentLinkedQueue<ListenerInvoker>> by map {
+            /** 保证唯一性的ID集 */
+            private val idSet = ConcurrentHashMap<String, Unit>()
+        
+            fun addInvoker(invoker: ListenerInvoker): Boolean {
+                return map.computeIfAbsent(invoker.listener.priority) { ConcurrentLinkedQueue() }.add(invoker)
+            }
+            
+            
+    }
     
     
     /**
@@ -87,7 +108,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
         
         listenerIntercepts = simpleListenerManagerConfig.listenerInterceptors.values.sortedBy { it.priority }
         
-        listeners = simpleListenerManagerConfig.listeners.associateByTo(mutableMapOf()) { it.id }
+        _listeners = simpleListenerManagerConfig.listeners.associateByTo(mutableMapOf()) { it.id }
     }
     
     
@@ -98,7 +119,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
             val entrant = resolvedInvokers[type]
             if (entrant != null) return entrant
             // 计算缓存
-            val compute = listeners.values
+            val compute = _listeners.values
                 .filter { it.isTarget(type) }
                 .map(::ListenerInvoker)
                 .sortedWith { o1, o2 ->
@@ -125,7 +146,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
     override fun register(listener: EventListener): EventListenerHandle {
         synchronized(this) {
             val id = listener.id
-            listeners.compute(id) { _, old ->
+            _listeners.compute(id) { _, old ->
                 if (old != null) throw IllegalStateException("The event listener with ID $id already exists")
                 listener.also {
                     resolvedInvokers.clear()
@@ -138,20 +159,26 @@ internal class SimpleEventListenerManagerImpl internal constructor(
     @InternalSimbotApi
     private object InvalidEventListenerHandle : EventListenerHandle {
         override fun dispose(): Boolean = false
-    
+        
         override val isExists: Boolean
             get() = false
     }
     
     
+    @ExperimentalSimbotApi
+    override val listeners: Sequence<EventListener>
+        get() = TODO("Not yet implemented")
+    
     /**
      * 获取一个监听函数。
      */
-    override fun get(id: String): EventListener? = synchronized(this) { listeners[id] }
+    override fun get(id: String): EventListener? = synchronized(this) { _listeners[id] }
     
+    @ExperimentalSimbotApi
     @OptIn(InternalSimbotApi::class)
     override fun resolveHandle(id: String): EventListenerHandle = InvalidEventListenerHandle // TODO
     
+    @ExperimentalSimbotApi
     @OptIn(InternalSimbotApi::class)
     override fun resolveHandle(listener: EventListener): EventListenerHandle = InvalidEventListenerHandle // TODO
     
@@ -183,7 +210,6 @@ internal class SimpleEventListenerManagerImpl internal constructor(
         } ?: EventProcessingResult
         
     }
-    
     
     
     /**
@@ -279,7 +305,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
         val listener: EventListener,
     ) : suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult {
         val isAsync = listener.isAsync
-        
+        val priority = listener.priority
         // private val listenerInterceptEntranceWithPoint: Map<EventListenerInterceptor.Point, EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext>>
         private val function: suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult
         
