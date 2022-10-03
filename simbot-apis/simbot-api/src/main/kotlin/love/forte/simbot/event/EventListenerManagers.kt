@@ -18,33 +18,14 @@ package love.forte.simbot.event
 
 import love.forte.simbot.FragileSimbotApi
 import love.forte.simbot.ID
+import love.forte.simbot.SimbotError
 import love.forte.simbot.literal
-
-
-/**
- *
- * 监听函数容器。
- *
- * @author ForteScarlet
- */
-public interface EventListenerContainer {
-    
-    /**
-     * 通过一个ID得到一个当前监听函数下的对应函数。
-     */
-    public operator fun get(id: String): EventListener?
-    
-    @Deprecated("Just use get(String)", ReplaceWith("get(id.literal)", "love.forte.simbot.literal"), level = DeprecationLevel.ERROR)
-    public operator fun get(id: ID): EventListener? = get(id.literal)
-    
-}
 
 
 /**
  * 监听函数注册器
  */
 public interface EventListenerRegistrar {
-    
     /**
      * 注册一个监听函数。
      *
@@ -66,8 +47,50 @@ public interface EventListenerRegistrar {
      *
      * @throws IllegalStateException 如果出现ID重复
      */
-    @FragileSimbotApi
-    public fun register(listener: EventListener)
+    @FragileSimbotApi // TODO
+    public fun register(listener: EventListener): EventListenerHandle
+    
+}
+
+
+/**
+ *
+ * 监听函数容器。
+ *
+ * @author ForteScarlet
+ */
+public interface EventListenerContainer : EventListenerRegistrar {
+    
+    /**
+     * 通过一个ID得到一个当前监听函数下的对应函数。
+     */
+    public operator fun get(id: String): EventListener?
+    
+    @Deprecated(
+        "Just use get(String)",
+        ReplaceWith("get(id.literal)", "love.forte.simbot.literal"),
+        level = DeprecationLevel.ERROR
+    )
+    public operator fun get(id: ID): EventListener? = get(id.literal)
+    
+    
+    /**
+     * 在当前容器中寻找 [id] 匹配的监听函数并得到一个描述它的 [EventListenerHandle].
+     * 如果当前容器中不存在与 [id] 匹配的监听函数则会抛出 [NoSuchEventListenerException].
+     *
+     * @throws NoSuchEventListenerException 当无法寻得匹配的监听函数时.
+     */
+    public fun resolveHandle(id: String): EventListenerHandle
+    
+    /**
+     * 直接使用一个具体的 [EventListener] 作为期望的监听函数句柄目标.
+     * 如果当前容器中不存在 [listener] 本身 (container .any { someone === [listener] })
+     * 则会抛出 [NoSuchEventListenerException].
+     *
+     *
+     * @throws NoSuchEventListenerException 当无法寻得匹配的监听函数时.
+     */
+    public fun resolveHandle(listener: EventListener): EventListenerHandle
     
 }
 
@@ -75,7 +98,14 @@ public interface EventListenerRegistrar {
 /**
  * 事件监听器管理器标准接口。
  *
- *
  */
-public interface EventListenerManager :
-    EventProcessor, EventListenerContainer, EventListenerRegistrar
+public interface EventListenerManager : EventProcessor, EventListenerContainer
+
+
+/**
+ * 无匹配监听函数异常.
+ *
+ * @param appellation 此监听函数的称呼
+ */
+public open class NoSuchEventListenerException(appellation: String) : SimbotError,
+    NoSuchElementException(appellation)
