@@ -16,6 +16,7 @@
 package love.forte.simbot.ability
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.asDeferred
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.selects.select
@@ -188,9 +189,9 @@ private class DelayableCompletableFutureImpl<T>(
     
     override fun isDone(): Boolean = deferred.isCompleted
     
-    override fun get(): T = toCompletableFuture().get()
+    override fun get(): T = deferred.asCompletableFuture().get()
     
-    override fun get(timeout: Long, unit: TimeUnit): T = toCompletableFuture().get(timeout, unit)
+    override fun get(timeout: Long, unit: TimeUnit): T = deferred.asCompletableFuture().get(timeout, unit)
     
     // region delay
     override fun delay(duration: JavaDuration, runnable: Runnable): DelayableCompletableFuture<T> =
