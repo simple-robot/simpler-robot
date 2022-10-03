@@ -285,7 +285,10 @@ public interface DelayCompletionStage<T> : CompletionStage<T> {
 }
 
 /**
- * 继承 [CompletableFuture] 并实现 [DelayCompletionStage] 扩展的基本抽象类型, 提供 [CompletableFuture] 与 [DelayCompletionStage] 的能力描述.
+ * 继承 [CompletableFuture] 并实现 [DelayCompletionStage], 提供 [CompletableFuture] 与 [DelayCompletionStage] 的能力.
+ *
+ * @see DelayCompletionStage
+ * @see CompletableFuture
  *
  * @author ForteScarlet
  */
