@@ -23,6 +23,7 @@ import love.forte.simboot.spring.autoconfigure.application.springBootApplication
 import love.forte.simbot.Api4J
 import love.forte.simbot.application.Application
 import love.forte.simbot.event.EventListenerManager
+import love.forte.simbot.utils.runInBlocking
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -85,25 +86,26 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
         @Autowired(required = false) applicationConfigures: List<SimbotSpringBootApplicationBuildConfigure>? = null,
         coroutineDispatcherContainer: CoroutineDispatcherContainer,
     ): SpringBootApplication {
-        // check application context init.
         initialConfiguration.applicationContext
         
-        return springBootApplication(initialConfiguration,
-            {
-                // initial
-                coroutineContext += coroutineDispatcherContainer.dispatcher
-                
-                configurationConfigures?.forEach { configure ->
-                    configure.run { config() }
+        return runInBlocking {
+            springBootApplication(initialConfiguration,
+                {
+                    // initial
+                    coroutineContext += coroutineDispatcherContainer.dispatcher
+            
+                    configurationConfigures?.forEach { configure ->
+                        configure.run { config() }
+                    }
+            
+            
+                }) { configuration ->
+                applicationConfigures?.forEach { configure ->
+                    configure.run { config(configuration) }
                 }
-                
-                
-            }) { configuration ->
-            applicationConfigures?.forEach { configure ->
-                configure.run { config(configuration) }
-            }
-            // TODO..?
-        }.launchBlocking()
+                // TODO..?
+            }.launch()
+        }
     }
     
     

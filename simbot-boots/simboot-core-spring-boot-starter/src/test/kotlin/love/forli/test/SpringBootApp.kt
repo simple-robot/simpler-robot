@@ -32,7 +32,6 @@ import love.forte.simbot.event.EventResult
 import love.forte.simbot.event.FriendMessageEvent
 import love.forte.simbot.event.internal.BotRegisteredEvent
 import love.forte.simbot.event.internal.BotStartedEvent
-import love.forte.simbot.utils.randomIdStr
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -48,13 +47,23 @@ import org.springframework.stereotype.Component
 open class SpringBootApp
 
 
+@OptIn(ExperimentalSimbotApi::class)
 fun main(vararg args: String) {
     runApplication<SpringBootApp>(args = args).also { context ->
         val listeners = context.getBeansOfType(love.forte.simbot.event.EventListener::class.java)
         listeners.forEach {
             println(it)
         }
-        println("END.")
+    
+        println("====")
+        
+        val application = context.getBean(Application::class.java)
+        application.eventListenerManager.listeners.forEach {
+            println(it)
+        }
+        
+        
+        
         context.close()
     }
 }
@@ -109,8 +118,7 @@ open class MyListenerConfiguration2 {
     }
     
     @Bean
-    open fun myListener3() = simpleListener(target = FriendMessageEvent, randomIdStr()) { e ->
-        
+    open fun myListener3() = simpleListener(target = FriendMessageEvent) { e ->
         EventResult.defaults()
     }
     

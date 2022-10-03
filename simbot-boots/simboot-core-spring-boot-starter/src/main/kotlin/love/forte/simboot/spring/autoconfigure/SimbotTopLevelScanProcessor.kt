@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -11,7 +11,6 @@
  *  https://www.gnu.org/licenses
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
  *
  */
 
@@ -23,12 +22,13 @@ import love.forte.simboot.annotation.Listener
 import love.forte.simboot.core.binder.BinderManager
 import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simboot.core.listener.KFunctionListenerProcessor
-import love.forte.simboot.core.utils.sign
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerBuilder
+import love.forte.simbot.event.EventListenerRegistrationDescription
+import love.forte.simbot.event.EventListenerRegistrationDescription.Companion.toRegistrationDescription
 import org.slf4j.Logger
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition
@@ -126,6 +126,7 @@ public sealed class AbstractSimbotTopLevelScanProcessor : ImportBeanDefinitionRe
  *
  *
  */
+// TODO
 @Target(AnnotationTarget.CLASS)
 @MustBeDocumented
 @Import(SimbotTopLevelListenerScanProcessor::class)
@@ -133,6 +134,8 @@ public annotation class SimbotTopLevelListenerScan(
     val value: Array<String> = [],
 )
 
+
+// TODO
 
 /**
  * 顶层listener扫描处理器。
@@ -150,6 +153,7 @@ public class SimbotTopLevelListenerScanProcessor : AbstractSimbotTopLevelScanPro
         val (_, registry, beanNameGenerator, topFunctionSequence) = context
         
         val eventListenerTypeName = EventListener::class.jvmName
+        val eventListenerRegistrationDescriptionTypeName = EventListenerRegistrationDescription::class.jvmName
         val eventListenerBuilderTypeName = EventListenerBuilder::class.jvmName
         val processedMethod = mutableSetOf<Method>()
         
@@ -174,6 +178,7 @@ public class SimbotTopLevelListenerScanProcessor : AbstractSimbotTopLevelScanPro
                 
                 if (
                     (returnTypeName == eventListenerTypeName || EventListener::class.java.isAssignableFrom(getType())) ||
+                    (returnTypeName == eventListenerRegistrationDescriptionTypeName || EventListenerRegistrationDescription::class.java.isAssignableFrom(getType())) ||
                     (returnTypeName == eventListenerBuilderTypeName || EventListenerBuilder::class.java.isAssignableFrom(
                         getType()
                     ))
@@ -283,19 +288,14 @@ public class SimbotTopLevelListenerScanProcessor : AbstractSimbotTopLevelScanPro
             return null
         }
         
-        val listenerId = listenerAnnotation.id.ifEmpty { "${function.sign()}#TOP_LISTENER" }
-        
         return TopLevelEventListenerBuilder { listenerProcessor, binderManager, beanContainer ->
             listenerProcessor.process(
                 FunctionalListenerProcessContext(
-                    id = listenerId,
                     function = function,
-                    priority = listenerAnnotation.priority,
-                    isAsync = listenerAnnotation.async,
                     binderManager = binderManager,
                     beanContainer = beanContainer,
                 )
-            )
+            ).toRegistrationDescription(priority = listenerAnnotation.priority, isAsync = listenerAnnotation.async)
         }
     }
 }
@@ -311,7 +311,7 @@ public fun interface TopLevelEventListenerBuilder {
         listenerProcessor: KFunctionListenerProcessor,
         binderManager: BinderManager,
         beanContainer: BeanContainer,
-    ): EventListener
+    ): EventListenerRegistrationDescription
 }
 
 /**

@@ -26,23 +26,122 @@ import kotlin.streams.asStream
  */
 public interface EventListenerRegistrar {
     /**
-     * 注册一个监听函数。
+     * 注册一个监听函数。对于注册的其他附加属性均采用默认值.
      *
-     * ## 脆弱的
-     * [register] 被标记为 [脆弱的API][FragileSimbotApi], 因为 [EventListenerRegistrar] 的行为是在 [EventListenerManager] 构建完成后的运行时期动态添加**额外的**监听函数。
-     *
-     * 在 [EventListenerManager] 中（以核心实现 [love.forte.simbot.core.event.CoreListenerManager]为例），会针对所有监听函数并根据他们所监听的事件类型进行解析与缓存，以改善提升每次事件触发时的响应速度。
-     * 也因由此，对监听函数的解析与缓存所代来的问题就是会在运行时额外添加的时候带来更大的性能损耗和更长的不一致延迟 —— 它会在收到注册请求后，清除所有的内部缓存并等待下一次的缓存构建。而这个行为会仅仅因为一次监听函数的注册而波及到**所有**的监听函数。
-     *
-     * 相关的动态追加*也许*未来会进行更多的优化，也有可能会将其废弃，但是当下节点，请尽量避免。
-     *
-     *
-     * @throws IllegalStateException 如果出现ID重复
+     * @return 被注册的 [listener] 在当前容器中的句柄.
      */
-    @FragileSimbotApi // TODO?
+    @ExperimentalSimbotApi
     public fun register(listener: EventListener): EventListenerHandle
     
+    /**
+     * 注册一个监听函数。
+     *
+     * @return 被注册的 [listener][EventListenerRegistrationDescription.listener] 在当前容器中的句柄.
+     */
+    @ExperimentalSimbotApi
+    public fun register(registrationDescription: EventListenerRegistrationDescription): EventListenerHandle
+    
 }
+
+
+/**
+ * 用于向 [EventListenerRegistrar] 中注册监听函数的信息描述. 可以在 [EventListener]
+ * 之外提供更多可能有效的附加信息.
+ *
+ * 除了 [listener] 以外, 其他的所有属性信息均**不保证**一定会被 [EventListenerRegistrar] 的具体实现所处理,
+ * 对于它们是否能够被应用, 需要查阅具体实现的说明.
+ *
+ */
+public abstract class EventListenerRegistrationDescription {
+    
+    /**
+     * 注册信息中的监听函数.
+     */
+    public abstract val listener: EventListener
+    
+    /**
+     * 此监听函数的优先级. 默认为 [DEFAULT_PRIORITY].
+     *
+     * @see PriorityConstant
+     */
+    public open var priority: Int = DEFAULT_PRIORITY
+    
+    /**
+     * 当前的监听函数是否要在异步环境中使用. 默认为 [DEFAULT_ASYNC].
+     */
+    public open var isAsync: Boolean = DEFAULT_ASYNC
+    
+    
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        
+        other as EventListenerRegistrationDescription
+        
+        if (listener != other.listener) return false
+        if (priority != other.priority) return false
+        if (isAsync != other.isAsync) return false
+        
+        return true
+    }
+    
+    override fun hashCode(): Int {
+        var result = listener.hashCode()
+        result = 31 * result + priority
+        result = 31 * result + isAsync.hashCode()
+        return result
+    }
+    
+    
+    override fun toString(): String {
+        return "EventListenerRegistrationDescription(listener=$listener, priority=$priority, isAsync=$isAsync)"
+    }
+    
+    public companion object {
+        public const val DEFAULT_PRIORITY: Int = PriorityConstant.NORMAL
+        public const val DEFAULT_ASYNC: Boolean = false
+        
+        /**
+         * 通过 [EventListener] 构建一个 [EventListenerRegistrationDescription].
+         * ```kotlin
+         * listener.toRegistrationDescription {
+         *     priority = PriorityConstant.FIRST
+         *     isAsync = true
+         * }
+         * ```
+         */
+        @JvmSynthetic
+        public fun EventListener.toRegistrationDescription(block: EventListenerRegistrationDescription.() -> Unit): EventListenerRegistrationDescription {
+            return SimpleEventListenerRegistrationDescription(this).also(block)
+        }
+        
+        /**
+         * 通过 [EventListener] 构建一个 [EventListenerRegistrationDescription].
+         * ```kotlin
+         * listener.toRegistrationDescription(priority = priority, isAsync = isAsync)
+         * ```
+         */
+        @JvmName("of")
+        @JvmOverloads
+        public fun EventListener.toRegistrationDescription(
+            priority: Int = DEFAULT_PRIORITY,
+            isAsync: Boolean = DEFAULT_ASYNC,
+        ): EventListenerRegistrationDescription {
+            return SimpleEventListenerRegistrationDescription(this).apply {
+                this.priority = priority
+                this.isAsync = isAsync
+            }
+        }
+    }
+    
+}
+
+
+private data class SimpleEventListenerRegistrationDescription(
+    override val listener: EventListener,
+    override var priority: Int = DEFAULT_PRIORITY,
+    override var isAsync: Boolean = DEFAULT_ASYNC,
+) : EventListenerRegistrationDescription()
 
 
 /**
@@ -52,19 +151,6 @@ public interface EventListenerRegistrar {
  * @author ForteScarlet
  */
 public interface EventListenerContainer : EventListenerRegistrar {
-    
-    /**
-     * 通过一个ID得到一个当前监听函数下的对应函数。
-     */
-    public operator fun get(id: String): EventListener?
-    
-    @Deprecated(
-        "Just use get(String)",
-        ReplaceWith("get(id.literal)", "love.forte.simbot.literal"),
-        level = DeprecationLevel.ERROR
-    )
-    public operator fun get(id: ID): EventListener? = get(id.literal)
-    
     
     /**
      * 得到当前容器中的所有监听函数序列.
@@ -82,8 +168,6 @@ public interface EventListenerContainer : EventListenerRegistrar {
     /**
      * 得到当前容器中的所有监听函数序列.
      *
-     * ## 实验性
-     *
      * **※ 实验性: 未来可能会产生任何不兼容变更或被移除, 请谨慎使用.**
      *
      */
@@ -92,29 +176,19 @@ public interface EventListenerContainer : EventListenerRegistrar {
     public fun getListeners(): Stream<EventListener> = listeners.asStream()
     
     
-    /**
-     * 在当前容器中寻找 [id] 匹配的监听函数并得到一个描述它的 [EventListenerHandle].
-     * 如果当前容器中不存在与 [id] 匹配的监听函数则会抛出 [NoSuchEventListenerException].
-     *
-     * **※ 实验性: 未来可能会产生任何不兼容变更或被移除, 请谨慎使用.**
-     *
-     * @throws NoSuchEventListenerException 当无法寻得匹配的监听函数时.
-     */
-    @ExperimentalSimbotApi
-    public fun resolveHandle(id: String): EventListenerHandle
+    @Deprecated(
+        "Find the expected event listener through listeners",
+        ReplaceWith("listeners.find {  }"),
+        level = DeprecationLevel.ERROR
+    )
+    public operator fun get(id: String): EventListener? = null
     
-    /**
-     * 直接使用一个具体的 [EventListener] 作为期望的监听函数句柄目标.
-     * 如果当前容器中不存在 [listener] 本身 (container .any { someone === [listener] })
-     * 则会抛出 [NoSuchEventListenerException].
-     *
-     * **※ 实验性: 未来可能会产生任何不兼容变更或被移除, 请谨慎使用.**
-     *
-     * @throws NoSuchEventListenerException 当无法寻得匹配的监听函数时.
-     */
-    @ExperimentalSimbotApi
-    public fun resolveHandle(listener: EventListener): EventListenerHandle
-    
+    @Deprecated(
+        "Find the expected event listener through listeners",
+        ReplaceWith("listeners.find {  }"),
+        level = DeprecationLevel.ERROR
+    )
+    public operator fun get(id: ID): EventListener? = null
 }
 
 

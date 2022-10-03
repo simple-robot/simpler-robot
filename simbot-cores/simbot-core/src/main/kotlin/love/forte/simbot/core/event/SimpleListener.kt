@@ -18,7 +18,6 @@ package love.forte.simbot.core.event
 
 import love.forte.simbot.Attribute
 import love.forte.simbot.AttributeContainer
-import love.forte.simbot.PriorityConstant
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.Event.Key.Companion.isSub
 import love.forte.simbot.event.EventListener
@@ -35,9 +34,6 @@ import love.forte.simbot.event.EventResult
  * @author ForteScarlet
  */
 public class SimpleListener(
-    override val id: String,
-    override val isAsync: Boolean,
-    override val priority: Int = PriorityConstant.NORMAL,
     /**
      * 当前监听函数所需的事件目标类型集。当 [targets] 的元素为空时，视为监听全部。
      */
@@ -70,22 +66,19 @@ public class SimpleListener(
     override suspend fun invoke(context: EventListenerProcessingContext): EventResult = context.function()
     
     override fun toString(): String {
-        return "SimpleListener(id=$id, isAsync=$isAsync, targets=$targets)"
+        return "SimpleListener(targets=$targets)@${hashCode()}"
     }
     
     /**
-     * 提供一个新的 [id], 以及其他可选参数，并构建一个新的 [SimpleListener].
+     * 并构建一个新的 [SimpleListener].
      */
     public fun copy(
-        id: String = this.id,
-        isAsync: Boolean = this.isAsync,
-        priority: Int = PriorityConstant.NORMAL,
         targets: Set<Event.Key<*>> = this.targets.toSet(),
         attributes: AttributeContainer? = null,
         matcher: suspend EventListenerProcessingContext.() -> Boolean = this.matcher,
         function: suspend EventListenerProcessingContext.() -> EventResult = this.function,
     ): SimpleListener {
-        return SimpleListener(id, isAsync, priority, targets, attributes, matcher, function)
+        return SimpleListener(targets, attributes, matcher, function)
     }
     
     public companion object
