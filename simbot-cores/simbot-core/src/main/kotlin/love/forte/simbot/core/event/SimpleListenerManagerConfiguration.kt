@@ -19,10 +19,8 @@ package love.forte.simbot.core.event
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
-import love.forte.simbot.event.EventListener
-import love.forte.simbot.event.EventListenerInterceptor
-import love.forte.simbot.event.EventProcessingInterceptor
-import love.forte.simbot.event.EventResult
+import love.forte.simbot.event.*
+import love.forte.simbot.event.EventListenerRegistrationDescription.Companion.toRegistrationDescription
 import java.util.function.Function
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -68,9 +66,9 @@ public open class SimpleListenerManagerConfiguration {
     private var listenerInterceptors = mutableIDMapOf<EventListenerInterceptor>()
     
     /**
-     * 监听函数的列表。
+     * 监听函数注册信息列表。
      */
-    private var listeners = mutableListOf<EventListener>()
+    private var listenerRegistrationDescriptions = mutableListOf<EventListenerRegistrationDescription>()
     
     /**
      * 自定义的监听函数异常处理器。
@@ -191,33 +189,65 @@ public open class SimpleListenerManagerConfiguration {
      * ```
      */
     public fun addListener(listener: EventListener): SimpleListenerManagerConfiguration = also {
-        listeners.add(listener)
+        listenerRegistrationDescriptions.add(listener.toRegistrationDescription { })
     }
     
     /**
      * 添接加多个监听函数。
      */
     public fun addListeners(listeners: Collection<EventListener>): SimpleListenerManagerConfiguration = also {
-        this.listeners.addAll(listeners)
+        listeners.mapTo(this.listenerRegistrationDescriptions) { it.toRegistrationDescription() }
     }
     
     /**
      * 直接添加多个监听函数。
      */
     public fun addListeners(vararg listeners: EventListener): SimpleListenerManagerConfiguration = also {
-        this.listeners.addAll(listeners)
+        addListeners(listeners.asList())
     }
+    
+    /**
+     * 直接添加一个监听函数。
+     * ```kotlin
+     * addListenerRegistrationDescription(simpleListener(FriendMessageEvent) { event -> // this: EventListenerProcessingContext
+     *     delay(200)
+     *     event.friend().send("Hi! context: $context")
+     *
+     *     EventResult.defaults() // result
+     * }.toRegistrationDescription())
+     * ```
+     */
+    public fun addListenerRegistrationDescription(description: EventListenerRegistrationDescription): SimpleListenerManagerConfiguration =
+        also {
+            listenerRegistrationDescriptions.add(description)
+        }
+    
+    /**
+     * 添接加多个监听函数。
+     */
+    public fun addListenerRegistrationDescriptions(descriptions: Collection<EventListenerRegistrationDescription>): SimpleListenerManagerConfiguration =
+        also {
+            listenerRegistrationDescriptions.addAll(descriptions)
+        }
+    
+    /**
+     * 直接添加多个监听函数。
+     */
+    public fun addListenerRegistrationDescriptions(vararg descriptions: EventListenerRegistrationDescription): SimpleListenerManagerConfiguration =
+        also {
+            listenerRegistrationDescriptions.addAll(descriptions)
+        }
     
     /**
      * 进入到拦截器配置域.
      *
-     *  @see EventListenersGenerator
+     *  @see EventListenerRegistrationDescriptionsGenerator
      */
     @EventListenersGeneratorDSL
-    public fun listeners(block: EventListenersGenerator.() -> Unit): SimpleListenerManagerConfiguration =
+    public fun listeners(block: EventListenerRegistrationDescriptionsGenerator.() -> Unit): SimpleListenerManagerConfiguration =
         also {
-            val listeners = listeners().also(block).build()
-            addListeners(listeners)
+            val descriptions = listeners().also(block).build()
+            addListenerRegistrationDescriptions(descriptions)
         }
     
     
@@ -225,7 +255,8 @@ public open class SimpleListenerManagerConfiguration {
      * 进入到监听函数配置域。
      */
     @OptIn(InternalSimbotApi::class)
-    private fun listeners(): EventListenersGenerator = EventListenersGenerator()
+    private fun listeners(): EventListenerRegistrationDescriptionsGenerator =
+        EventListenerRegistrationDescriptionsGenerator()
     
     // endregion
     
@@ -236,7 +267,7 @@ public open class SimpleListenerManagerConfiguration {
             exceptionHandler = listenerExceptionHandler,
             processingInterceptors = idMapOf(processingInterceptors),
             listenerInterceptors = idMapOf(listenerInterceptors),
-            listeners = listeners.toList(),
+            listeners = listenerRegistrationDescriptions.toList(),
             serializersModule // TODO
         )
     }
@@ -256,7 +287,7 @@ public data class SimpleListenerManagerConfig(
     internal val exceptionHandler: ((Throwable) -> EventResult)? = null,
     internal val processingInterceptors: IDMaps<EventProcessingInterceptor>,
     internal val listenerInterceptors: IDMaps<EventListenerInterceptor>,
-    internal val listeners: List<EventListener>,
+    internal val listeners: List<EventListenerRegistrationDescription>,
     internal val messageSerializersModule: SerializersModule,
     
     )

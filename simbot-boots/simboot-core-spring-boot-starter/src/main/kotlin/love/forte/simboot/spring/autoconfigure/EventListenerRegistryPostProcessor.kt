@@ -20,6 +20,7 @@ import love.forte.simboot.annotation.Listener
 import love.forte.simbot.LoggerFactory
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerBuilder
+import love.forte.simbot.event.EventListenerRegistrationDescription
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition
 import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition
@@ -35,7 +36,7 @@ import org.springframework.core.type.AnnotationMetadata
 import kotlin.reflect.jvm.jvmName
 
 /**
- * 扫描寻找所有返回值类型为 [EventListener] 或 [EventListenerBuilder] 类型，且标记了 [@Listener][Listener] 注解的函数，
+ * 扫描寻找所有返回值类型为 [EventListener] 或 [EventListenerRegistrationDescription] 或 [EventListenerBuilder] 类型，且标记了 [@Listener][Listener] 注解的函数，
  * 并将这些函数同样视为类似于标记了 [@Bean][org.springframework.context.annotation.Bean] 的效果 ———— 将它们追加当依赖环境中，
  * 而不是解析为普通的监听函数。
  *
@@ -116,12 +117,13 @@ public open class EventListenerRegistryPostProcessor : BeanDefinitionRegistryPos
     }
     
     /**
-     * 是否合规 —— 是常见的那几个类型，或者属于 [EventListener] 类型或 [EventListenerBuilder] 类型。
+     * 是否合规 —— 是常见的那几个类型，或者属于 [EventListener] 类型或 [EventListenerBuilder] 类型或 [EventListenerRegistrationDescription] 类型.
      */
     private fun isCompliant(returnTypeName: String): Boolean {
         return kotlin.runCatching {
             val returnType = classLoader.loadClass(returnTypeName)
             EventListener::class.java.isAssignableFrom(returnType)
+                    || EventListenerRegistrationDescription::class.java.isAssignableFrom(returnType)
                     || EventListenerBuilder::class.java.isAssignableFrom(returnType)
         }.getOrElse { e ->
             if (logger.isDebugEnabled) {

@@ -28,23 +28,30 @@ import org.slf4j.Logger
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.ConcurrentMap
+import java.util.concurrent.ConcurrentSkipListMap
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater
+import java.util.concurrent.atomic.LongAdder
 import kotlin.coroutines.CoroutineContext
 
 internal class SimpleEventListenerManagerImpl internal constructor(
     configuration: SimpleListenerManagerConfiguration,
 ) : SimpleEventListenerManager {
     private companion object {
-        private val counter: AtomicInteger = AtomicInteger(0)
         private val logger: Logger =
             LoggerFactory.getLogger("love.forte.simbot.core.event.SimpleEventListenerManagerImpl")
+        
+        private const val EVENT_KEY_PROCESSABLE_COUNTER_CLEAR_THRESHOLD = 83
+        
     }
     
     private val managerCoroutineContext: CoroutineContext
     private val managerScope: CoroutineScope
     
     /**
-     * 异常处理器。
+     * 异常处理器。 TODO
      */
     private val listenerExceptionHandler: ((Throwable) -> EventResult)?
     
@@ -60,15 +67,140 @@ internal class SimpleEventListenerManagerImpl internal constructor(
     private val listenerIntercepts: List<EventListenerInterceptor>
     
     /**
-     * 监听函数列表。ID唯一
+     * 当前被注册的监听函数集.
      */
-    private val listeners: MutableMap<String, EventListener>
-    
+    private val invokers = PriorityListenerInvokers()
     
     /**
-     * 完成缓存与处理的监听函数队列.
+     * 事件可用性计数器.
      */
-    private val resolvedInvokers: MutableMap<Event.Key<*>, List<ListenerInvoker>> = LinkedHashMap()
+    private val keyProcessableCounter = EventKeyProcessableCounter()
+    
+    /**
+     * 事件可用性计数器.
+     * 计数器只能提供一个粗略的统计数字, 无法保证绝对的强关联准确性, 用于为初始化context提供一个预期的容量或验证是否存在某个指定类型的事件.
+     */
+    private inner class EventKeyProcessableCounter {
+        private val cache = ConcurrentHashMap<Event.Key<*>, LongAdder>()
+        private val clearCount = AtomicInteger()
+        
+        /**
+         * 计算或获取某个事件类型在当前监听函数管理器中的命中数量. 如果当前所记录的命中数量不足1,
+         * 则本次计算会清理此条数据并等待下一次重新计算.
+         *
+         * 如果当前容器中没有此类型事件的已记录信息, 则会进行一次初始化计算.
+         *
+         */
+        fun count(key: Event.Key<*>): Long {
+            return cache.compute(key) { k, curr ->
+                computeAdder(k, curr)
+            }?.sum() ?: 0
+        }
+        
+        private fun computeAdder(key: Event.Key<*>, current: LongAdder?): LongAdder? {
+            if (current != null && current.sum() > 0) {
+                return current
+            }
+            var count = 0L
+            invokers.values.forEach { v ->
+                v.queue.forEach {
+                    if (it.listener.isTarget(key)) {
+                        count++
+                    }
+                }
+            }
+            return if (count > 0L) return LongAdder().apply { add(count) } else null
+        }
+        
+        private fun clearEmptyAdders() {
+            cache.values.removeIf { it.sum() <= 0 }
+        }
+        
+        private fun clearEmptyAddersDetection() {
+            val value =
+                clearCount.getAndUpdate { v -> if (v > EVENT_KEY_PROCESSABLE_COUNTER_CLEAR_THRESHOLD) 0 else v + 1 }
+            if (value > EVENT_KEY_PROCESSABLE_COUNTER_CLEAR_THRESHOLD) {
+                clearEmptyAdders()
+            }
+        }
+        
+        /**
+         * 当移除某个监听函数时, 为所有可命中的计数器递减.
+         * 不会检测递减后的结果是否已经不足1, 这会交给 [count] 进行.
+         */
+        fun removeCacheByListener(listener: EventListener) {
+            cache.forEach { (k, adder) ->
+                if (listener.isTarget(k)) {
+                    adder.decrement()
+                }
+            }
+            clearEmptyAddersDetection()
+        }
+    }
+    
+    private inner class QueueListenerInvokerContainer(val queue: ConcurrentLinkedQueue<ListenerInvoker>) :
+        ListenerInvokerContainer {
+        override fun remove(invoker: ListenerInvoker): Boolean {
+            return queue.remove(invoker).also {
+                keyProcessableCounter.removeCacheByListener(invoker.listener)
+            }
+        }
+        
+        override fun contains(invoker: ListenerInvoker): Boolean {
+            return invoker in queue
+        }
+    }
+    
+    
+    private inner class PriorityListenerInvokers(private val map: ConcurrentSkipListMap<Int, QueueListenerInvokerContainer> = ConcurrentSkipListMap()) :
+        ConcurrentMap<Int, QueueListenerInvokerContainer> by map {
+        private fun resolveQueue(priority: Int): QueueListenerInvokerContainer =
+            map.computeIfAbsent(priority) { QueueListenerInvokerContainer(ConcurrentLinkedQueue()) }
+        
+        private operator fun QueueListenerInvokerContainer.plusAssign(invoker: ListenerInvoker) {
+            queue.add(invoker)
+        }
+        
+        fun addListener(description: EventListenerRegistrationDescription): ListenerInvoker {
+            val container = resolveQueue(description.priority)
+            
+            return ListenerInvoker(
+                listener = description.listener,
+                isAsync = description.isAsync,
+                listenerIntercepts,
+                container,
+                this@SimpleEventListenerManagerImpl
+            ).also { container += it }
+        }
+        
+        fun addListener(listener: EventListener): ListenerInvoker {
+            val container = resolveQueue(EventListenerRegistrationDescription.DEFAULT_PRIORITY)
+            
+            return ListenerInvoker(
+                listener = listener,
+                isAsync = EventListenerRegistrationDescription.DEFAULT_ASYNC,
+                listenerIntercepts,
+                container,
+                this@SimpleEventListenerManagerImpl
+            ).also { container += it }
+        }
+        
+        fun invokerSequence(): Sequence<ListenerInvoker> = map.values.asSequence().flatMap { it.queue.asSequence() }
+        
+        /**
+         *
+         * @param block break if true.
+         */
+        inline fun forEach(filter: (ListenerInvoker) -> Boolean, block: (ListenerInvoker) -> Boolean) {
+            h@ for (container in map.values) {
+                for (invoker in container.queue) {
+                    if (filter(invoker) && block(invoker)) {
+                        break@h
+                    }
+                }
+            }
+        }
+    }
     
     
     init {
@@ -76,7 +208,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
         val context = simpleListenerManagerConfig.coroutineContext
         
         managerCoroutineContext =
-            context.minusKey(Job) + CoroutineName("SimpleListenerManager#${counter.getAndIncrement()}")
+            context.minusKey(Job) + CoroutineName("SimpleListenerManager@${hashCode()}")
         
         managerScope = CoroutineScope(managerCoroutineContext)
         
@@ -87,30 +219,12 @@ internal class SimpleEventListenerManagerImpl internal constructor(
         
         listenerIntercepts = simpleListenerManagerConfig.listenerInterceptors.values.sortedBy { it.priority }
         
-        listeners = simpleListenerManagerConfig.listeners.associateByTo(mutableMapOf()) { it.id }
+        initListener(simpleListenerManagerConfig.listeners)
     }
     
-    
-    private fun getInvokers(type: Event.Key<*>): List<ListenerInvoker> {
-        val cached = resolvedInvokers[type]
-        if (cached != null) return cached
-        synchronized(this) {
-            val entrant = resolvedInvokers[type]
-            if (entrant != null) return entrant
-            // 计算缓存
-            val compute = listeners.values
-                .filter { it.isTarget(type) }
-                .map(::ListenerInvoker)
-                .sortedWith { o1, o2 ->
-                    if (o1.isAsync == o2.isAsync) {
-                        o1.listener.priority.compareTo(o2.listener.priority)
-                    } else {
-                        if (o1.isAsync) 1 else 0
-                    }
-                }.ifEmpty { emptyList() }
-            resolvedInvokers[type] = compute
-            return compute
-        }
+    @OptIn(ExperimentalSimbotApi::class)
+    private fun initListener(listeners: List<EventListenerRegistrationDescription>) {
+        listeners.forEach(::register)
     }
     
     
@@ -120,70 +234,50 @@ internal class SimpleEventListenerManagerImpl internal constructor(
      * 每次注册监听函数都会直接清空缓存。
      *
      */
-    @OptIn(InternalSimbotApi::class)
-    @FragileSimbotApi
+    @ExperimentalSimbotApi
     override fun register(listener: EventListener): EventListenerHandle {
-        synchronized(this) {
-            val id = listener.id
-            listeners.compute(id) { _, old ->
-                if (old != null) throw IllegalStateException("The event listener with ID $id already exists")
-                listener.also {
-                    resolvedInvokers.clear()
-                }
-            }
-        }
-        return InvalidEventListenerHandle // TODO
+        return invokers.addListener(listener)
     }
     
-    @InternalSimbotApi
-    private object InvalidEventListenerHandle : EventListenerHandle {
-        override fun dispose(): Boolean = false
-    
-        override val isExists: Boolean
-            get() = false
+    @ExperimentalSimbotApi
+    override fun register(registrationDescription: EventListenerRegistrationDescription): EventListenerHandle {
+        return invokers.addListener(registrationDescription)
     }
     
     
-    /**
-     * 获取一个监听函数。
-     */
-    override fun get(id: String): EventListener? = synchronized(this) { listeners[id] }
+    @ExperimentalSimbotApi
+    override val listeners: Sequence<EventListener>
+        get() = invokers.invokerSequence().map { it.listener }
     
-    @OptIn(InternalSimbotApi::class)
-    override fun resolveHandle(id: String): EventListenerHandle = InvalidEventListenerHandle // TODO
-    
-    @OptIn(InternalSimbotApi::class)
-    override fun resolveHandle(listener: EventListener): EventListenerHandle = InvalidEventListenerHandle // TODO
     
     /**
      * 判断指定事件类型在当前事件管理器中是否能够被执行（存在任意对应的监听函数）。
      */
-    override operator fun contains(eventType: Event.Key<*>): Boolean {
-        return getInvokers(eventType).isNotEmpty()
-    }
+    override operator fun contains(eventType: Event.Key<*>): Boolean = count(eventType) > 0
+    
+    internal fun count(eventType: Event.Key<*>): Long = keyProcessableCounter.count(eventType)
     
     override fun isProcessable(eventKey: Event.Key<*>): Boolean {
-        return resolver.isProcessable(eventKey) || getInvokers(eventKey).isNotEmpty()
+        return resolver.isProcessable(eventKey) || eventKey in this
     }
     
     /**
      * 推送一个事件。
      */
     override suspend fun push(event: Event): EventProcessingResult {
-        val invokers = getInvokers(event.key)
-        if (invokers.isEmpty()) {
+        val count = keyProcessableCounter.count(event.key)
+        if (count <= 0) {
             if (resolver.isProcessable(event.key)) {
                 resolver.resolveEventToContext(event, 0)
             }
             return EventProcessingResult
         }
         
-        return resolveToContext(event, invokers.size)?.let {
-            doInvoke(it, invokers)
+        return resolveToContext(event, count.toInt())?.let {
+            doInvoke(it)
         } ?: EventProcessingResult
         
     }
-    
     
     
     /**
@@ -191,27 +285,23 @@ internal class SimpleEventListenerManagerImpl internal constructor(
      */
     private suspend fun doInvoke(
         context: SimpleEventProcessingContext,
-        invokers: List<ListenerInvoker>,
     ): EventProcessingResult {
         val currentBot = context.event.bot
-        // val dispatchContext = currentBot.coroutineContext + managerCoroutineContext
-        
         return withContext(managerCoroutineContext + context) {
             kotlin.runCatching {
                 processingInterceptEntrance.doIntercept(context) { processingContext ->
                     // do invoke with intercept
-                    for (invoker in invokers) {
-                        val listenerContext = processingContext.withListener(invoker.listener)
+                    this@SimpleEventListenerManagerImpl.invokers.forEach({ it.listener.isTarget(context.event.key) }) fe@{ invoker ->
+                        val listenerContext = processingContext.withListener(invoker.listener, invoker)
                         val handleResult = runForEventResultWithHandler {
                             // maybe scope use bot?
                             invoker(managerScope, listenerContext)
                         }
                         val result = if (handleResult.isFailure) {
                             if (logger.isErrorEnabled) {
-                                val err = handleResult.exceptionOrNull()
+                                val err = handleResult.exceptionOrNull() as Throwable
                                 logger.error(
-                                    "Listener [${invoker.listener.id}] process failed: $err",
-                                    err!!
+                                    "Listener [{}] process failed: {}", invoker.listener, err.localizedMessage, err
                                 )
                             }
                             EventResult.invalid()
@@ -220,10 +310,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
                         }
                         
                         // append result
-                        val type = appendResult(context, result)
-                        if (type == ListenerInvokeType.TRUNCATED) {
-                            break
-                        }
+                        appendResult(context, result) == ListenerInvokeType.TRUNCATED
                     }
                     
                     // resolve to processing result
@@ -275,95 +362,118 @@ internal class SimpleEventListenerManagerImpl internal constructor(
     }
     
     
-    internal inner class ListenerInvoker(
-        val listener: EventListener,
-    ) : suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult {
-        val isAsync = listener.isAsync
+}
+
+
+private class ListenerInvoker(
+    val listener: EventListener,
+    isAsync: Boolean,
+    listenerIntercepts: List<EventListenerInterceptor>,
+    @Volatile var invokerContainer: ListenerInvokerContainer?,
+    override val container: EventListenerContainer,
+) : suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult, EventListenerHandle {
+    private val function: suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult
+    
+    init {
+        val listenerInterceptsPointMap =
+            EnumMap<EventListenerInterceptor.Point, EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext>>(
+                EventListenerInterceptor.Point::class.java
+            )
         
-        // private val listenerInterceptEntranceWithPoint: Map<EventListenerInterceptor.Point, EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext>>
-        private val function: suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult
+        listenerIntercepts.groupBy { interceptor -> interceptor.point }
+            .mapValuesTo(listenerInterceptsPointMap) { (_, listenerInterceptsInCurrentPoint) ->
+                EventInterceptEntrance.eventListenerInterceptEntrance(listenerInterceptsInCurrentPoint)
+            }
         
-        init {
-            val listenerInterceptsPointMap =
-                EnumMap<EventListenerInterceptor.Point, EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext>>(
-                    EventListenerInterceptor.Point::class.java
-                )
-            
-            listenerIntercepts.groupBy { interceptor -> interceptor.point }
-                .mapValuesTo(listenerInterceptsPointMap) { (_, listenerInterceptsInCurrentPoint) ->
-                    EventInterceptEntrance.eventListenerInterceptEntrance(listenerInterceptsInCurrentPoint)
-                }
-            
-            
-            suspend fun runner(
-                listener: EventListener,
-                context: EventListenerProcessingContext,
-            ): EventResult {
-                val defaultEntrance = listenerInterceptsPointMap.getOrDefault(
-                    EventListenerInterceptor.Point.DEFAULT,
-                    EventInterceptEntrance.eventListenerInterceptEntrance()
-                )
-                val afterMatchEntrance = listenerInterceptsPointMap.getOrDefault(
-                    EventListenerInterceptor.Point.AFTER_MATCH,
-                    EventInterceptEntrance.eventListenerInterceptEntrance()
-                )
-                
-                return defaultEntrance.doIntercept(context) { innerContext ->
-                    if (listener.match(innerContext)) {
-                        afterMatchEntrance.doIntercept(innerContext) { afterInnerContext ->
-                            listener.invoke(afterInnerContext)
-                        }
-                    } else {
-                        EventResult.Invalid
-                    }
-                }
-            }
-            
-            suspend fun asyncFunctionRunner(
-                listener: EventListener,
-                scope: CoroutineScope,
-                context: EventListenerProcessingContext,
-            ): EventResult {
-                val asyncDeferred = scope.async {
-                    runner(listener, context)
-                }
-                asyncDeferred.start()
-                return EventResult.async(asyncDeferred)
-            }
-            
-            
-            suspend fun suspendFunctionRunner(
-                listener: EventListener,
-                context: EventListenerProcessingContext,
-            ): EventResult {
-                return runner(listener, context)
-            }
-            
-            
-            val functionRunner: suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult = if (isAsync) {
-                { s, c -> asyncFunctionRunner(listener, s, c) }
-            } else {
-                { _, c -> suspendFunctionRunner(listener, c) }
-            }
-            
-            function = functionRunner
+        
+        val functionRunner: suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult = if (isAsync) {
+            AsyncFunctionRunner(listenerInterceptsPointMap, listener)
+        } else {
+            SuspendFunctionRunner(listenerInterceptsPointMap, listener)
         }
         
-        
-        override suspend fun invoke(scope: CoroutineScope, context: EventListenerProcessingContext): EventResult {
-            return try {
-                function(scope, context)
-            } catch (listenerEx: EventListenerProcessingException) {
-                throw listenerEx
-            } catch (invocationEx: InvocationTargetException) {
-                throw EventListenerProcessingException(invocationEx.targetException)
-            } catch (anyEx: Throwable) {
-                throw EventListenerProcessingException(anyEx)
-            }
-        }
-        
+        function = functionRunner
     }
     
+    private abstract inner class AbstractFunctionRunner :
+        suspend (CoroutineScope, EventListenerProcessingContext) -> EventResult {
+        protected abstract val listenerInterceptsPointMap: EnumMap<EventListenerInterceptor.Point, EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext>>
+        protected suspend fun runner(
+            listener: EventListener,
+            context: EventListenerProcessingContext,
+        ): EventResult {
+            val defaultEntrance = listenerInterceptsPointMap.getOrDefault(
+                EventListenerInterceptor.Point.DEFAULT, EventInterceptEntrance.eventListenerInterceptEntrance()
+            )
+            val afterMatchEntrance = listenerInterceptsPointMap.getOrDefault(
+                EventListenerInterceptor.Point.AFTER_MATCH, EventInterceptEntrance.eventListenerInterceptEntrance()
+            )
+            
+            return defaultEntrance.doIntercept(context) { innerContext ->
+                if (listener.match(innerContext)) {
+                    afterMatchEntrance.doIntercept(innerContext) { afterInnerContext ->
+                        listener.invoke(afterInnerContext)
+                    }
+                } else {
+                    EventResult.Invalid
+                }
+            }
+        }
+    }
+    
+    private inner class AsyncFunctionRunner(
+        override val listenerInterceptsPointMap: EnumMap<EventListenerInterceptor.Point, EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext>>,
+        private val listener: EventListener,
+    ) : AbstractFunctionRunner() {
+        override suspend fun invoke(scope: CoroutineScope, context: EventListenerProcessingContext): EventResult {
+            return EventResult.async(scope.async(start = CoroutineStart.DEFAULT) {
+                runner(listener, context)
+            })
+        }
+    }
+    
+    private inner class SuspendFunctionRunner(
+        override val listenerInterceptsPointMap: EnumMap<EventListenerInterceptor.Point, EventInterceptEntrance<EventListenerInterceptor.Context, EventResult, EventListenerProcessingContext>>,
+        private val listener: EventListener,
+    ) : AbstractFunctionRunner() {
+        override suspend fun invoke(scope: CoroutineScope, context: EventListenerProcessingContext): EventResult {
+            return runner(listener, context)
+        }
+    }
+    
+    override suspend fun invoke(scope: CoroutineScope, context: EventListenerProcessingContext): EventResult {
+        return try {
+            function(scope, context)
+        } catch (listenerEx: EventListenerProcessingException) {
+            throw listenerEx
+        } catch (invocationEx: InvocationTargetException) {
+            throw EventListenerProcessingException(invocationEx.targetException)
+        } catch (anyEx: Throwable) {
+            throw EventListenerProcessingException(anyEx)
+        }
+    }
+    
+    override fun dispose(): Boolean {
+        return invokerContainer?.let { c ->
+            if (invokerContainerUpdater.compareAndSet(this, c, null)) c.remove(this)
+            else false
+        } ?: false
+    }
+    
+    override val isExists: Boolean
+        get() = invokerContainer?.contains(this) ?: false
+    
+    companion object {
+        private val invokerContainerUpdater: AtomicReferenceFieldUpdater<ListenerInvoker, ListenerInvokerContainer> =
+            AtomicReferenceFieldUpdater.newUpdater(
+                ListenerInvoker::class.java, ListenerInvokerContainer::class.java, "invokerContainer"
+            )
+    }
+}
+
+private interface ListenerInvokerContainer {
+    fun remove(invoker: ListenerInvoker): Boolean
+    fun contains(invoker: ListenerInvoker): Boolean
 }
 
 
@@ -377,13 +487,16 @@ private data class SimpleEventProcessingResult(override val results: List<EventR
  * @receiver 事件处理上下文
  * @return 监听函数处理上下文
  */
-private fun EventProcessingContext.withListener(listener: EventListener): EventListenerProcessingContext =
-    CoreEventListenerProcessingContext(this, listener)
+private fun EventProcessingContext.withListener(
+    listener: EventListener,
+    listenerHandle: EventListenerHandle,
+): EventListenerProcessingContext = CoreEventListenerProcessingContext(this, listener, listenerHandle)
 
 
 private class CoreEventListenerProcessingContext(
     processingContext: EventProcessingContext,
     override val listener: EventListener,
+    override val listenerHandle: EventListenerHandle,
 ) : EventListenerProcessingContext, EventProcessingContext by processingContext {
     override var textContent: String? = with(processingContext.event) {
         if (this is MessageEvent) messageContent.plainText else null
@@ -400,14 +513,13 @@ internal class SimpleEventProcessingContext(
     resultInitSize: Int,
 ) : EventProcessingContext {
     
-    private val _results = ArrayList<EventResult>(resultInitSize)
+    private val _results = ArrayList<EventResult>(resultInitSize.coerceAtLeast(1))
     
-    @Volatile
     private var resultView: ListView<EventResult>? = null
     
-    override val results: List<EventResult> // = _results.view()
+    override val results: List<EventResult>
         get() {
-            // dont care sync
+            // sync is not necessary, probably.
             return resultView ?: _results.view().also {
                 resultView = it
             }
@@ -473,7 +585,10 @@ internal class SimpleEventProcessingContext(
         return instantScope.computeIfAbsent(attribute, mappingFunction)
     }
     
-    override fun <T : Any> computeIfPresent(attribute: Attribute<T>, remappingFunction: (Attribute<T>, T) -> T?): T? {
+    override fun <T : Any> computeIfPresent(
+        attribute: Attribute<T>,
+        remappingFunction: (Attribute<T>, T) -> T?,
+    ): T? {
         return instantScope.computeIfPresent(attribute, remappingFunction)
     }
     

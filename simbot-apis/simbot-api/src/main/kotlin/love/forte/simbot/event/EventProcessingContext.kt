@@ -130,6 +130,7 @@ public interface InstantScopeContext : ScopeContext
 /**
  *
  * 每一个 [EventListener] 在事件处理流程中所对应的上下文类型。
+ *
  * 相比较于 [EventProcessingContext],
  * [EventListenerProcessingContext] 允许监听函数在执行流程中获取当前（将要）被执行的监听函数自身 [listener]。
  *
@@ -144,6 +145,11 @@ public interface EventListenerProcessingContext : EventProcessingContext {
      * 当前（将要）被执行的监听函数。
      */
     public val listener: EventListener
+    
+    /**
+     * 当前 [listener] 在事件调度容器中的句柄.
+     */
+    public val listenerHandle: EventListenerHandle
     
     /**
      * 当前监听函数的主要文本内容，一般可用于在拦截器、过滤器、监听函数相互组合时进行一些过滤内容匹配。

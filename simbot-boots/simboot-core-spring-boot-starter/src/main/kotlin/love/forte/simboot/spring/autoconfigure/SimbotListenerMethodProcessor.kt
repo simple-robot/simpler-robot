@@ -1,7 +1,7 @@
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (即 simple robot的v3版本，因此亦可称为 simple-robot v3 、simbot v3 等) 的一部分。
+ *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
  *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
  *
@@ -11,7 +11,6 @@
  *  https://www.gnu.org/licenses
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
  *
  */
 
@@ -24,7 +23,6 @@ import love.forte.simboot.core.binder.BinderManager
 import love.forte.simboot.core.binder.CoreBinderManager
 import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simboot.core.listener.KFunctionListenerProcessor
-import love.forte.simboot.core.utils.sign
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.spring.autoconfigure.utils.SpringAnnotationTool
 import love.forte.simbot.InternalSimbotApi
@@ -32,6 +30,8 @@ import love.forte.simbot.LoggerFactory
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerBuilder
+import love.forte.simbot.event.EventListenerRegistrationDescription
+import love.forte.simbot.event.EventListenerRegistrationDescription.Companion.toRegistrationDescription
 import org.slf4j.Logger
 import org.springframework.aop.framework.autoproxy.AutoProxyUtils
 import org.springframework.aop.scope.ScopedObject
@@ -223,10 +223,10 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefini
     @OptIn(InternalSimbotApi::class)
     private fun ConfigurableListableBeanFactory.processListener(beanName: String, beanType: Class<*>) {
         if (TopLevelEventListenerBuilder::class.java.isAssignableFrom(beanType)) {
-            val eventListener = getBean<TopLevelEventListenerBuilder>(beanName)
+            val eventListenerRegistrationDescription = getBean<TopLevelEventListenerBuilder>(beanName)
                 .build(listenerProcessor, binderManager, beanContainer)
             
-            val beanDefinition = eventListener.resolveToBeanDefinition()
+            val beanDefinition = eventListenerRegistrationDescription.resolveToBeanDefinition()
             registry.registerBeanDefinition("$beanName#BUILT_LISTENER", beanDefinition)
         }
         
@@ -240,13 +240,13 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefini
         
         
         annotatedMethods.forEach { (method, listenerAnnotation) ->
-            val eventListener =
+            val eventListenerRegistrationDescription =
                 resolveMethodToListener(beanName, method, listenerAnnotation, listenerProcessor, logger)
                     ?: return@forEach
             
-            val beanDefinition = eventListener.resolveToBeanDefinition()
+            val beanDefinition = eventListenerRegistrationDescription.resolveToBeanDefinition()
             
-            registry.registerBeanDefinition(eventListener.beanName(beanName), beanDefinition)
+            registry.registerBeanDefinition(eventListenerRegistrationDescription.beanName(beanName), beanDefinition)
         }
         
     }
@@ -254,7 +254,7 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefini
     private fun resolveMethodToListener(
         beanName: String, method: Method, listenerAnnotation: Listener,
         listenerProcessor: KFunctionListenerProcessor, logger: Logger,
-    ): EventListener? {
+    ): EventListenerRegistrationDescription? {
         if (!Modifier.isPublic(method.modifiers)) {
             logger.warn(
                 "The modifier of method [{}] is not PUBLIC. This method will not be resolved to EventListener instance.",
@@ -281,28 +281,32 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefini
             return null
         }
         
+        
+        if (EventListenerRegistrationDescription::class.java.isAssignableFrom(returnType)) {
+            logger.warn(
+                "The return type of method [{}] is subclass of [love.forte.simbot.event.EventListenerRegistrationDescription] and this method will not be resolved to EventListener instance. ",
+                method
+            )
+            return null
+        }
+        
         val function = method.getKotlinFunctionSafely()
         if (function == null) {
             logger.debug("Cannot resolve method [{}] of bean named [{}] to kotlin function. Skip it.", method, beanName)
             return null
         }
         
-        val listenerId = listenerAnnotation.id.ifEmpty { "$beanName#${function.sign()}" }
-        
         return listenerProcessor.process(
             FunctionalListenerProcessContext(
-                id = listenerId,
                 function = function,
-                priority = listenerAnnotation.priority,
-                isAsync = listenerAnnotation.async,
                 binderManager = binderManager,
                 beanContainer = beanContainer,
             )
-        )
+        ).toRegistrationDescription(priority = listenerAnnotation.priority, isAsync = listenerAnnotation.async)
     }
     
-    private fun EventListener.resolveToBeanDefinition(): BeanDefinition {
-        return BeanDefinitionBuilder.genericBeanDefinition(EventListener::class.java) { this }
+    private fun EventListenerRegistrationDescription.resolveToBeanDefinition(): BeanDefinition {
+        return BeanDefinitionBuilder.genericBeanDefinition(EventListenerRegistrationDescription::class.java) { this }
             .setPrimary(false).beanDefinition
     }
     
@@ -331,7 +335,8 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefini
         }.getOrNull()
     }
     
-    private fun EventListener.beanName(beanName: String): String = "$beanName#$id#GENERATED_LISTENER"
+    private fun EventListenerRegistrationDescription.beanName(beanName: String): String =
+        "$beanName#${this}#GENERATED_LISTENER"
     
 }
 
