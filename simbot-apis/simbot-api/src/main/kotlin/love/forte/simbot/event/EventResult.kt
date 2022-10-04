@@ -247,15 +247,14 @@ public abstract class ReactivelyCollectableEventResult : SpecialEventResult() {
     
     /**
      *
-     * 当 [content] 的返回值为 reactive api相关的内容，且当前 [EventResult] 实例为 **[ReactivelyCollectableEventResult]** 类型的时候，
-     * 处理器应当对 reactive 的相关api对其进行转化收集。这通常使用在Java使用者或者与其他reactive API配合使用的时候。
+     * 当 [content] 的返回值为 _reactive api_ 相关或异步结果相关的内容，且当前 [EventResult] 实例为 **[ReactivelyCollectableEventResult]** 类型的时候，
+     * 处理器应当对这类相关的api进行收集。这通常使用在Java使用者或者与其他reactive API配合使用的时候。
      *
      * 比如当你的函数返回了 [flux](https://projectreactor.io/docs/core/3.4.1/api/reactor/core/publisher/Flux.html),
-     * 那么它将会被收集为 [List] 后重新作为 [content] 构建为 EventResult.
-     *
+     * 那么它将会被收集为 [List] 后重新作为 [content] 并通过 [collected] 构建为一个新的 [EventResult].
      * 同样的，如果你返回的是 [kotlinx.coroutines.flow.Flow], 也会在函数返回后进行收集。
      *
-     * 值得注意的是, 收集行为会在返回值返回后立即执行, 而不是等待所有监听函数执行结束后。
+     * 收集行为会在返回值返回后(某个监听函数处理结束后, 下一个监听函数开始执行前)立即执行, 而不是等待所有监听函数执行结束后。
      *
      * 支持的收集类型有：
      * - [java.util.concurrent.CompletionStage] ([java.util.concurrent.CompletableFuture])
