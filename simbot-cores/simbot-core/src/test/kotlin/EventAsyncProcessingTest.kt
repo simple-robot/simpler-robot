@@ -1,5 +1,7 @@
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
+import kotlinx.coroutines.reactor.flux
+import kotlinx.coroutines.reactor.mono
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
@@ -34,6 +36,7 @@ class EventAsyncProcessingTest {
     private val botManager = TestBotManager(manager)
     private val bot = botManager.createBot()
     
+    @Suppress("ReactiveStreamsUnusedPublisher")
     @OptIn(ExperimentalSimbotApi::class)
     @Test
     fun reactivelyResultTest() {
@@ -55,14 +58,46 @@ class EventAsyncProcessingTest {
                 }.asCompletableFuture())
             }
         })
+        
+        
+        manager.register(buildSimpleListenerRegistrationDescription(TestEvent) {
+            priority = PriorityConstant.PRIORITIZED_3
+            handle {
+    
+    
+                EventResult.of(mono {
+                    delay(50)
+                    "Hello"
+                })
+            }
+        })
+        
+        manager.register(buildSimpleListenerRegistrationDescription(TestEvent) {
+            priority = PriorityConstant.PRIORITIZED_4
+            handle {
+                EventResult.of(flux {
+                    delay(20)
+                    channel.send(1)
+                    delay(20)
+                    channel.send(2)
+                    delay(20)
+                    channel.send(3)
+                })
+            }
+        })
     
         val resultContent = runBlocking {
             val results = manager.push(TestEvent(bot)).results
-            assertEquals(2, results.size, "result size")
-            results.joinToString(" ") { it.content.toString() }
+            assertEquals(4, results.size, "result size")
+            results.joinToString(" ") {
+                when (val c = it.content) {
+                    is Iterable<*> -> c.joinToString(" ") { e -> e.toString() }
+                    else -> c.toString()
+                }
+            }
         }
         
-        assertEquals("Hello World", resultContent, "result content")
+        assertEquals("Hello World Hello 1 2 3", resultContent, "result content")
     }
     
     @OptIn(ExperimentalSimbotApi::class)
