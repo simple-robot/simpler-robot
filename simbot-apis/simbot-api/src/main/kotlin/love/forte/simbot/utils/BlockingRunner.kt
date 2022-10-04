@@ -150,6 +150,13 @@ private fun initDefaultBlockingDispatcher(): CoroutineDispatcher {
 @InternalSimbotApi
 public val DefaultBlockingContext: CoroutineContext = DefaultBlockingDispatcher + CoroutineName("runInBlocking")
 
+
+
+@Suppress("unused", "ObjectPropertyName")
+@InternalSimbotApi
+private val `$$DefaultScope`: CoroutineScope = CoroutineScope(DefaultBlockingContext)
+
+
 /**
  *
  * 在simbot中提供的 [runBlocking] 包装。
@@ -193,10 +200,6 @@ public fun <T> runInAsync(block: suspend () -> T): CompletableFuture<T> =
 @InternalSimbotApi
 @Deprecated("Just used by auto-generate", level = DeprecationLevel.HIDDEN)
 public fun <T> `$$runInBlocking`(block: suspend () -> T): T = runInBlocking { block() }
-
-@Suppress("unused", "ObjectPropertyName")
-@InternalSimbotApi
-private val `$$DefaultScope` by lazy { CoroutineScope(DefaultBlockingContext) }
 
 @InternalSimbotApi
 @Deprecated("Just used by auto-generate", level = DeprecationLevel.HIDDEN)
