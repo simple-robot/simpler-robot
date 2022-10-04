@@ -259,6 +259,7 @@ public abstract class ReactivelyCollectableEventResult : SpecialEventResult() {
      *
      * 支持的收集类型有：
      * - [java.util.concurrent.CompletionStage] ([java.util.concurrent.CompletableFuture])
+     * - [kotlinx.coroutines.Deferred] (不支持 [kotlinx.coroutines.Job])
      * - [kotlinx.coroutines.flow.Flow]
      * - [org.reactivestreams.Publisher]
      * - [reactor.core.publisher.Flux]
