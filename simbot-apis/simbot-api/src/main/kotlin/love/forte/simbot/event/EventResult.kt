@@ -179,6 +179,9 @@ public interface EventResult {
 /**
  * [content] 作为 [Deferred] 的异步函数返回值。
  *
+ * [AsyncEventResult] 是特殊的 [EventResult] 之一, [content] 中的 [Deferred] 不会被作为非阻塞内容而被收集.
+ * 更多说明参考 [EventResult.content].
+ *
  * @property content 异步事件的结果内容。
  */
 public open class AsyncEventResult(override val content: Deferred<EventResult>) : EventResult {
