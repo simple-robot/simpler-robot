@@ -17,7 +17,8 @@ import kotlin.test.assertTrue
  * @author ForteScarlet
  */
 class EventManagerTest {
-    private val manager = SimpleEventListenerManager.newInstance(SimpleListenerManagerConfiguration()) as SimpleEventListenerManagerImpl
+    private val manager =
+        SimpleEventListenerManager.newInstance(SimpleListenerManagerConfiguration()) as SimpleEventListenerManagerImpl
     
     private val scope1 = CoroutineScope(Executors.newFixedThreadPool(4).asCoroutineDispatcher())
     private val scope2 = CoroutineScope(Executors.newFixedThreadPool(4).asCoroutineDispatcher())
@@ -64,11 +65,10 @@ class EventManagerTest {
         
         
         
-        
         runBlocking { job1.join() }
         job2.cancel()
         
-        assertTrue { manager.listeners.count() == 5 }
+        assertEquals(5, manager.listeners.count(), "manager listeners count")
         assertTrue { ChannelEvent in manager }
         assertFalse { RequestEvent in manager }
         
@@ -82,43 +82,35 @@ class EventManagerTest {
         val listener3 = buildSimpleListener(Event) { process { } }
         val listener4 = buildSimpleListener(Event) { process { } }
         
-        val job1 = scope1.launch {
-            repeat(5000) {
+        val baseTimes = 5000
+        
+        fun CoroutineScope.launchRegister(listener: EventListener, priorityRange: IntRange) {
+            repeat(baseTimes) {
                 launch {
                     val handle =
-                        manager.register(listener1.toRegistrationDescription(priority = Random.nextInt(100, 200)))
+                        manager.register(
+                            listener.toRegistrationDescription(
+                                priority = Random.nextInt(
+                                    priorityRange.first,
+                                    priorityRange.last
+                                )
+                            )
+                        )
                     delay(Random.nextLong(5))
                     if (it % 2 == 0) {
                         handle.dispose()
                     }
                 }
-            }
-            repeat(5000) {
                 launch {
                     val handle =
-                        manager.register(listener2.toRegistrationDescription(priority = Random.nextInt(300, 400)))
-                    delay(Random.nextLong(5))
-                    if (it % 2 == 0) {
-                        handle.dispose()
-                    }
-                }
-            }
-        }
-        val job2 = scope2.launch {
-            repeat(5000) {
-                launch {
-                    val handle =
-                        manager.register(listener3.toRegistrationDescription(priority = Random.nextInt(500, 600)))
-                    delay(Random.nextLong(5))
-                    if (it % 2 == 0) {
-                        handle.dispose()
-                    }
-                }
-            }
-            repeat(5000) {
-                launch {
-                    val handle =
-                        manager.register(listener4.toRegistrationDescription(priority = Random.nextInt(700, 800)))
+                        manager.register(
+                            listener.toRegistrationDescription(
+                                priority = Random.nextInt(
+                                    priorityRange.first,
+                                    priorityRange.last
+                                )
+                            )
+                        )
                     delay(Random.nextLong(5))
                     if (it % 2 == 0) {
                         handle.dispose()
@@ -127,6 +119,14 @@ class EventManagerTest {
             }
         }
         
+        val job1 = scope1.launch {
+            launchRegister(listener1, 100..200)
+            launchRegister(listener2, 300..400)
+        }
+        val job2 = scope2.launch {
+            launchRegister(listener3, 500..600)
+            launchRegister(listener4, 700..800)
+        }
         
         runBlocking {
             job1.join()
@@ -135,9 +135,9 @@ class EventManagerTest {
         
         val listeners = manager.listeners.toList()
         
-        assertTrue { listeners.size == 10000 }
-        val chunked = listeners.chunked(2500)
-        assertTrue { chunked.size == 4 }
+        assertEquals(baseTimes * 4, listeners.size, "listeners' size")
+        val chunked = listeners.chunked(baseTimes)
+        assertEquals(4, chunked.size, "chunked listeners' size")
         
         assertTrue { chunked[0].all { it == listener1 } }
         assertTrue { chunked[1].all { it == listener2 } }
@@ -153,61 +153,51 @@ class EventManagerTest {
         val listener3 = buildSimpleListener(FriendMessageEvent) { process { } }
         val listener4 = buildSimpleListener(GroupEvent) { process { } }
         
-        val job1 = scope1.launch {
-            repeat(5000) {
-                launch {
-                    val handle =
-                        manager.register(listener1)
-                    delay(Random.nextLong(5))
-                    if (it % 2 == 0) {
-                        handle.dispose()
-                    }
-                }
-            }
-            repeat(5000) {
-                launch {
-                    val handle =
-                        manager.register(listener2)
-                    delay(Random.nextLong(5))
-                    if (it % 2 == 0) {
-                        handle.dispose()
-                    }
-                }
-            }
-        }
-        val job2 = scope2.launch {
-            repeat(5000) {
-                launch {
-                    val handle =
-                        manager.register(listener3)
-                    delay(Random.nextLong(5))
-                    if (it % 2 == 0) {
-                        handle.dispose()
-                    }
-                }
-            }
-            repeat(5000) {
-                launch {
-                    val handle =
-                        manager.register(listener4)
-                    delay(Random.nextLong(5))
-                    if (it % 2 == 0) {
-                        handle.dispose()
+        val baseCount = 5000
+        
+        fun CoroutineScope.launchRegister(listener: EventListener) {
+            launch {
+                repeat(baseCount) {
+                    repeat(2) {
+                        launch {
+                            val handle =
+                                manager.register(listener)
+                            delay(Random.nextLong(5))
+                            if (it % 2 == 0) {
+                                handle.dispose()
+                            }
+                        }
                     }
                 }
             }
         }
         
+        val job1 = scope1.launch {
+            launchRegister(listener1)
+            launchRegister(listener2)
+        }
+        val job2 = scope2.launch {
+            launchRegister(listener3)
+            launchRegister(listener4)
+        }
         
         runBlocking {
             job1.join()
             job2.join()
         }
         
-        assertEquals(manager.count(Event), 10000L)
-        assertEquals(manager.count(FriendEvent), 5000L)
-        assertEquals(manager.count(FriendMessageEvent), 2500L)
-        assertEquals(manager.count(GroupEvent), 2500L)
+        // Event: only Event itSelf.
+        assertEquals(baseCount.toLong(), manager.count(Event), "manager Event count")
+        
+        // FriendEvent: process via Event, FriendEvent
+        assertEquals(baseCount * 2L, manager.count(FriendEvent), "manager FriendEvent count")
+        
+        // FriendMessageEvent: process via Event, FriendEvent, FriendMessageEvent
+        assertEquals(baseCount * 3L, manager.count(FriendMessageEvent), "manager FriendMessageEvent count")
+        
+        // FriendEvent: process via Event, GroupEvent
+        assertEquals(baseCount * 2L, manager.count(GroupEvent), "manager GroupEvent count")
     }
     
 }
+
