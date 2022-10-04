@@ -178,14 +178,14 @@ public interface EventListenerContainer : EventListenerRegistrar {
     
     @Deprecated(
         "Find the expected event listener through listeners",
-        ReplaceWith("listeners.find {  }"),
+        ReplaceWith("listeners.find { /* it == ? */ true }"),
         level = DeprecationLevel.ERROR
     )
     public operator fun get(id: String): EventListener? = null
     
     @Deprecated(
         "Find the expected event listener through listeners",
-        ReplaceWith("listeners.find {  }"),
+        ReplaceWith("listeners.find { /* it == ? */ true }"),
         level = DeprecationLevel.ERROR
     )
     public operator fun get(id: ID): EventListener? = null

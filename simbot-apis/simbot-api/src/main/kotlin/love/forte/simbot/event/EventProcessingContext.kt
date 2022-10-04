@@ -130,6 +130,7 @@ public interface InstantScopeContext : ScopeContext
 /**
  *
  * 每一个 [EventListener] 在事件处理流程中所对应的上下文类型。
+ *
  * 相比较于 [EventProcessingContext],
  * [EventListenerProcessingContext] 允许监听函数在执行流程中获取当前（将要）被执行的监听函数自身 [listener]。
  *

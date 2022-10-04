@@ -37,6 +37,11 @@ public interface EventListenerHandle {
      */
     public val isExists: Boolean
     
+    /**
+     * 此句柄所属的 [EventListenerContainer].
+     */
+    public val container: EventListenerContainer
+    
 }
 
 
