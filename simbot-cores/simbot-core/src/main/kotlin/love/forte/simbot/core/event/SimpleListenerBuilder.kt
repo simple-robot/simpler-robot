@@ -321,7 +321,7 @@ public class SimpleListenerRegistrationDescriptionBuilder<E : Event>(target: Eve
     }
     
     override fun buildDescription(): EventListenerRegistrationDescription {
-        return build().toRegistrationDescription()
+        return build().toRegistrationDescription(priority = priority, isAsync = isAsync)
     }
     
 }
