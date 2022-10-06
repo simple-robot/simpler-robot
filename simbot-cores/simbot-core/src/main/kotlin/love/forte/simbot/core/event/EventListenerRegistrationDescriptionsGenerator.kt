@@ -23,6 +23,34 @@ import love.forte.simbot.event.EventListenerRegistrationDescription.Companion.to
 @DslMarker
 internal annotation class EventListenersGeneratorDSL
 
+/**
+ * 用于构建监听函数的构建器。
+ *
+ * @see EventListenerRegistrationDescriptionsGenerator
+ */
+public interface EventListenersGenerator {
+    
+    /**
+     * 直接提供一个 [EventListener] 实例。
+     *
+     */
+    @EventListenersGeneratorDSL
+    public fun listener(listener: EventListener): EventListenersGenerator
+    
+    
+    /**
+     * 通过 `+=` 的方式直接提供一个 [EventListener] 实例。
+     *
+     * ```kotlin
+     * listeners {
+     *    +fooListener
+     * }
+     * ```
+     *
+     */
+    @EventListenersGeneratorDSL
+    public operator fun EventListener.unaryPlus()
+}
 
 /**
  *
@@ -74,7 +102,7 @@ internal annotation class EventListenersGeneratorDSL
  *  @author ForteScarlet
  */
 @EventListenersGeneratorDSL
-public class EventListenerRegistrationDescriptionsGenerator @InternalSimbotApi constructor() {
+public class EventListenerRegistrationDescriptionsGenerator @InternalSimbotApi constructor() : EventListenersGenerator {
     private val listenerRegistrationDescriptions = mutableListOf<() -> EventListenerRegistrationDescription>()
     
     private inline fun add(crossinline block: () -> EventListenerRegistrationDescription): Boolean =
@@ -129,7 +157,7 @@ public class EventListenerRegistrationDescriptionsGenerator @InternalSimbotApi c
      *
      */
     @EventListenersGeneratorDSL
-    public fun listener(listener: EventListener): EventListenerRegistrationDescriptionsGenerator = apply {
+    public override fun listener(listener: EventListener): EventListenerRegistrationDescriptionsGenerator = apply {
         add { listener.toRegistrationDescription() }
     }
     
@@ -145,7 +173,7 @@ public class EventListenerRegistrationDescriptionsGenerator @InternalSimbotApi c
      *
      */
     @EventListenersGeneratorDSL
-    public operator fun EventListener.unaryPlus() {
+    public override operator fun EventListener.unaryPlus() {
         listener(this)
     }
     
