@@ -44,8 +44,8 @@ suspendTransform {
         // jvmAsyncMarkAnnotation.functionInheritable = true
         // api and annotation comes from :apis:simbot-api
         val api4JIncludeAnnotation = SuspendTransformConfiguration.IncludeAnnotation("love.forte.simbot.Api4J")
-        syntheticBlockingFunctionIncludeAnnotations = syntheticBlockingFunctionIncludeAnnotations + listOf(api4JIncludeAnnotation)
-        syntheticAsyncFunctionIncludeAnnotations = syntheticAsyncFunctionIncludeAnnotations + listOf(api4JIncludeAnnotation)
+        syntheticBlockingFunctionIncludeAnnotations = listOf(api4JIncludeAnnotation)
+        syntheticAsyncFunctionIncludeAnnotations = listOf(api4JIncludeAnnotation)
         jvmBlockingFunctionName = "love.forte.simbot.utils.$\$runInBlocking"
         jvmAsyncFunctionName = "love.forte.simbot.utils.$\$runInAsync"
     }
