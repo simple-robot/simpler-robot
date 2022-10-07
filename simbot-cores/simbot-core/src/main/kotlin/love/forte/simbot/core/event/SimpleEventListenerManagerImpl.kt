@@ -291,7 +291,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
             kotlin.runCatching {
                 processingInterceptEntrance.doIntercept(context) { processingContext ->
                     // do invoke with intercept
-                    this@SimpleEventListenerManagerImpl.invokers.forEach({ it.listener.isTarget(context.event.key) }) fe@{ invoker ->
+                    this@SimpleEventListenerManagerImpl.invokers.forEach({ it.listener.isTarget(context.event.key) }) { invoker ->
                         val listenerContext = processingContext.withListener(invoker.listener, invoker)
                         val handleResult = runForEventResultWithHandler {
                             // maybe scope use bot?

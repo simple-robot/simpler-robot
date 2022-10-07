@@ -72,7 +72,7 @@ public interface EventResult {
          * [invalid] 与 [defaults] 得到结果的区别在于，[Invalid] 代表的是“无效的”，
          * 因此此结果不会被记录到 [EventProcessingResult.results] 中。
          *
-         * 当一个监听事件的结果为 [Invalid], 则代表它“没有真正地执行成功”。
+         * 当一个监听事件的结果为 [Invalid], 则代表它“没有真正地执行成功”，或者可以简单的理解为”忽略结果“。
          *
          * @see Invalid
          */
@@ -106,7 +106,7 @@ public interface EventResult {
         
         /**
          * 得到一个异步执行函数的 [AsyncEventResult],
-         * 其 [AsyncEventResult.content] 为一个预期返回 [EventResult] 的 [Deferred].
+         * 其 [AsyncEventResult.content] 为一个预期返回 [EventResult] 的 [Future].
          *
          * @see AsyncEventResult
          */
@@ -133,7 +133,7 @@ public interface EventResult {
      * [Invalid] 与其他的 [EventResult] 得到结果的区别在于，[Invalid] 代表的是“无效的”，
      * 因此此结果不会被记录到 [EventProcessingResult.results] 中。
      *
-     * 当一个监听事件的结果为 [Invalid], 则代表它“没有真正地执行成功”。
+     * 当一个监听事件的结果为 [Invalid], 则代表它“没有真正地执行成功”，或可以简单的理解为“忽略结果”。
      */
     public object Invalid : SpecialEventResult() {
         override val content: Any?
@@ -273,8 +273,6 @@ public abstract class ReactivelyCollectableEventResult : SpecialEventResult() {
      * - [io.reactivex.rxjava3.core.MaybeSource]
      * - [io.reactivex.rxjava3.core.ObservableSource]
      * - [io.reactivex.rxjava3.core.Flowable]
-     *
-     * _是否将[Future]也作为需要收集的类型仍待定。目前尚不支持_
      *
      * 其他详情请见 [kotlinx-coroutines-reactive](https://github.com/Kotlin/kotlinx.coroutines/blob/master/reactive/README.md) .
      */
