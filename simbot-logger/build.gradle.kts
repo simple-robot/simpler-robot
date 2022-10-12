@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetPreset
 
 plugins {
     kotlin("multiplatform")
@@ -71,7 +70,7 @@ kotlin {
 }
 
 fun org.jetbrains.kotlin.gradle.dsl.KotlinTargetContainerWithPresetFunctions.configureAllNativePlatforms() {
-    presets.withType<KotlinNativeTargetPreset> {
+    presets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeTargetPreset<*>> {
         configureOrCreate(this)
     }
     // iosArm32()
@@ -120,7 +119,7 @@ fun org.jetbrains.kotlin.gradle.dsl.KotlinTargetContainerWithPresetFunctions.con
 }
 
 fun org.jetbrains.kotlin.gradle.plugin.KotlinTargetsContainerWithPresets.configureOrCreate(
-    targetPreset: KotlinNativeTargetPreset,
+    targetPreset: org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeTargetPreset<*>,
     configure: (KotlinNativeTarget.() -> Unit)? = null,
 ): KotlinNativeTarget {
     val targetName = targetPreset.name.targetName()

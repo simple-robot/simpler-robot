@@ -9,8 +9,6 @@ public expect interface Logger {
     /**
      * 当前logger的名称。
      */
-    // public val name: String
-    
     public fun getName(): String
     
     // region Level: TRACE
