@@ -21,3 +21,9 @@ plugins {
     id("simbot.dokka-multi-module")
 }
 
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
