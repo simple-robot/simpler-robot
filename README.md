@@ -1,8 +1,8 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
-    <img src=".simbot/logo.png" alt="logo" style="width:230px; height:230px; border-radius:50%; " />
+    <a href="https://simbot.forte.love/"><img src=".simbot/logo.png" alt="logo" style="width:230px; height:230px; border-radius:50%; " /></a>
     <h2>
-        - Simply Robot -
+        - Simpler Robot -
     </h2>
     <small>
         ~ simbot v3 ~      
@@ -43,7 +43,7 @@
 
 ## 简介
 
-**`Simply Robot`** 是一个通用机器人开发框架，是 **`Simple Robot`** 的 3.x 版本命名 (下文简称`simbot3`)。
+**`Simpler Robot`** 是一个通用机器人开发框架，是 **`Simple Robot`** 的高版本（1.x之后的版本）命名，当前分支为 3.x 版本 (下文简称`simbot3`)。
 
 `simbot3` 是一个JVM平台的通用机器人开发框架，基于simbot核心API并对接开发不同平台的机器人应用，你可以使用相同的代码风格来开发不同平台的机器人。
 
@@ -56,11 +56,11 @@ simbot3相比较于simbot2时代，其(再一次的)完全重构了整体架构�
 
 ## ⚠ 注意！！
 
-目前simbot3仍然处于**前期阶段**，如果你想参考simbot2, 可以参考分支: [v2-dev](https://github.com/ForteScarlet/simpler-robot/tree/v2-dev)
+目前simbot3仍然处于**前期阶段**，如果你想参考simbot2, 可以参考分支: [v2-dev](https://github.com/simple-robot/simpler-robot/tree/v2-dev)
 
 ## 文档
 
-对于使用文档，可以去看看 [**Simple Robot 3 使用文档**][doc-homepage] (尚在更新，并不完整)，
+对于使用文档，可以去看看 [**Simple Robot 3 官方网站**][doc-homepage] (尚在更新，并不完整)，
 而API文档则可以前往 [API doc](https://simple-robot-library.github.io/simbot3-main-apiDoc) 看看。API文档归根随着版本的发布而同步更新。
 
 而这些内容，你都可以在 [**Simple Robot 图书馆**](http://github.com/simple-robot-library) 处找到。
@@ -86,7 +86,7 @@ simbot3目前已经实现的组件有：
 
 ## 快速开始
 
-你可以前往 [**文档**][doc-homepage] 查看与快速开始有关的内容。
+你可以前往 [**官方网站**][doc-homepage] 的**文档**内查看与快速开始有关的内容。
 
 > 文档尚在编撰完善中...
 
@@ -109,7 +109,6 @@ simbot3目前已经实现的组件有：
   等方式联系团队开发人员，并将你酷酷的项目展示在作品展示区。
 
 ## 联系我们
-simbot不再拥有或推广任何官方管理的社交群聊（包括QQ群、TG群等诸如此类平台）。
 - 如果想要反馈问题、提出建议建议或提出问题，请通过 [**ISSUES**][issues]。
 - 如果想要与开发团队交流、与其他开发者交流，请前往 [**讨论区**][discussions]。
 
@@ -266,7 +265,7 @@ suspend fun FriendMessageEvent.onEvent(session: ContinuousSessionContext) {
 
 ## 开源协议
 
-**Simple Robot 3** 以 `LGPL 3.0` 协议开源。详细参见：
+**Simple Robot 3** 以 `LGPL 3.0` 协议开源。
 * [COPYING](COPYING)
 * [COPYING.LESSER](COPYING.LESSER)
 
