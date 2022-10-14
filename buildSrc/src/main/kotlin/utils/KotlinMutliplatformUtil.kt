@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -13,14 +13,3 @@
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
  */
-
-
-object V {
-    
-    /**
-     * Kotlin相关依赖项
-     */
-    object Kotlin {
-        const val VERSION = "1.7.10"
-    }
-}
