@@ -4,6 +4,7 @@ import love.forte.gradle.common.publication.configure.multiplatformConfigPublish
 
 plugins {
     kotlin("multiplatform")
+    id("simbot.dokka-module-configuration")
     signing
     `maven-publish`
 }

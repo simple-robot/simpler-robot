@@ -16,12 +16,14 @@
 
 package utils
 
+import isSnapshot
+
 data class PublishConfigurableResult(
     val isSnapshotOnly: Boolean,
     val isReleaseOnly: Boolean,
     val isPublishConfigurable: Boolean = when {
-        isSnapshotOnly -> P.Simbot.isSnapshot
-        isReleaseOnly -> !P.Simbot.isSnapshot
+        isSnapshotOnly -> isSnapshot()
+        isReleaseOnly -> !isSnapshot()
         else -> true
     },
 )
