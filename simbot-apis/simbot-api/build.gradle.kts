@@ -1,5 +1,3 @@
-import love.forte.plugin.suspendtrans.SuspendTransformConfiguration
-
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
