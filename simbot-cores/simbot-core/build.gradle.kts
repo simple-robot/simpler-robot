@@ -23,7 +23,7 @@ plugins {
 
 dependencies {
     // simbot-core 使用 logger
-    api(project(":simbot-apis:simbot-logger"))
+    api(project(":simbot-logger"))
     api(project(":simbot-apis:simbot-api"))
     api(libs.slf4j.api)
     api(libs.kotlinx.coroutines.core)

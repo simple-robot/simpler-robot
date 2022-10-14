@@ -24,7 +24,7 @@ plugins {
 
 dependencies {
     // boot-core 使用 simbot-logger
-    api(project(":simbot-apis:simbot-logger"))
+    api(project(":simbot-logger"))
     api(project(":simbot-boots:simboot-api"))
     api(project(":simbot-boots:simboot-core-annotation"))
 
