@@ -1,4 +1,0 @@
-[submodule "buildSrc"]
-	path = buildSrc
-	url = git@github.com:simple-robot/simbot-buildSrc.git
-	branch = main

@@ -51,7 +51,7 @@ inline fun isSnapshot(b: () -> Unit = {}): Boolean {
 /**
  * Project versions.
  */
-sealed class P : ProjectDetail() {
+sealed class P(override val group: String) : ProjectDetail() {
     companion object {
         const val GROUP = "love.forte.simbot"
         const val BOOT_GROUP = "love.forte.simbot.boot"
@@ -61,26 +61,17 @@ sealed class P : ProjectDetail() {
         const val DESCRIPTION = "Simple Robot，一个通用的bot风格事件调度框架，以灵活的统一标准来编写bot应用。"
     }
     
-    val isSnapshot: Boolean get() = isSnapshot()
     
-    object Simbot : P() {
-        override val group: String get() = GROUP
-    }
-    
-    object SimbotBoot : P() {
-        override val group: String get() = BOOT_GROUP
-    }
-    
-    object SimbotTest : P() {
-        override val group: String get() = TEST_GROUP
-    }
+    object Simbot : P(GROUP)
+    object SimbotBoot : P(BOOT_GROUP)
+    object SimbotTest : P(TEST_GROUP)
     
     override val version: Version
     val versionWithoutSnapshot: Version
     
     init {
-        val mainVersion = version("3", "0", "0")
-        var status = version("beta", "3")
+        val mainVersion = version(3, 0, 0)
+        var status = version("beta", 3)
         versionWithoutSnapshot = mainVersion - status.copy()
         if (isSnapshot()) {
             status = status - Version.SNAPSHOT
@@ -117,7 +108,6 @@ sealed class P : ProjectDetail() {
         url = "https://github.com/ForteScarlet/simpler-robot"
         connection = "scm:git:https://github.com/simple-robot/simpler-robot.git"
         developerConnection = "scm:git:ssh://git@github.com/simple-robot/simpler-robot.git"
-        
     }
     
     

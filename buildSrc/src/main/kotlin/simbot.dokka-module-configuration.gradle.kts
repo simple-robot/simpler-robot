@@ -37,17 +37,6 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        url = uri(Repositories.Snapshot.URL)
-        mavenContent {
-            snapshotsOnly()
-        }
-    }
-}
-
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
     dokkaSourceSets {
         version = P.Simbot.versionWithoutSnapshot
@@ -58,23 +47,10 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
             if (project.file("Module.md").exists()) {
                 includes.from("Module.md")
             }
-            displayName.set(project.name)
             
             perPackageOption {
                 matchingRegex.set(""".*\.internal.*""") // will match all .internal packages and sub-packages
                 suppress.set(true)
-            }
-    
-            sourceLink {
-                // Unix based directory relative path to the root of the project (where you execute gradle respectively).
-                localDirectory.set(file("src/main/kotlin"))
-                val baseUrl = "https://github.com/forteScarlet/simpler-robot"
-                val modelPath = project.path.replace(":", "/")
-                // URL showing where the source code can be accessed through the web browser
-                remoteUrl.set(URL(
-                    "$baseUrl/tree/v3-dev$modelPath/src/main/kotlin"))
-                // Suffix which is used to append the line number to the URL. Use #L for GitHub
-                remoteLineSuffix.set("#L")
             }
         }
     }
