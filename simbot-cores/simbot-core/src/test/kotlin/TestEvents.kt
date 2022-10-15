@@ -3,7 +3,9 @@ import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.Job
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
-import love.forte.simbot.*
+import love.forte.simbot.Component
+import love.forte.simbot.ID
+import love.forte.simbot.Timestamp
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.bot.BotVerifyInfo
@@ -13,9 +15,12 @@ import love.forte.simbot.definition.Guild
 import love.forte.simbot.event.BaseEventKey
 import love.forte.simbot.event.Event
 import love.forte.simbot.event.EventProcessor
+import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.logger.logger
 import love.forte.simbot.message.Image
 import love.forte.simbot.message.Image.Key.toImage
 import love.forte.simbot.message.doSafeCast
+import love.forte.simbot.randomID
 import love.forte.simbot.resources.Resource.Companion.toResource
 import love.forte.simbot.utils.item.Items
 import org.slf4j.Logger
@@ -42,7 +47,7 @@ internal class TestBot(override val manager: TestBotManager, override val eventP
     override val id: ID = "forte".ID
     override val username: String = "forte"
     override val avatar: String = ""
-    override val logger: Logger = LoggerFactory.getLogger<TestBot>()
+    override val logger: Logger = LoggerFactory.logger<TestBot>()
     override val component: Component = TestComponent
     override fun isMe(id: ID): Boolean = id == this.id
     override suspend fun resolveImage(id: ID): Image<*> {

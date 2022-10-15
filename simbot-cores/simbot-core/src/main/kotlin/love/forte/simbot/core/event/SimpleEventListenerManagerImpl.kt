@@ -72,6 +72,9 @@ internal class SimpleEventListenerManagerImpl internal constructor(
      */
     private val invokers = PriorityListenerInvokers()
     
+    // @get:TestOnly
+    // internal val handlesInternal: Sequence<EventListenerHandle> get() = invokers.invokerSequence()
+    
     /**
      * 事件可用性计数器.
      */
