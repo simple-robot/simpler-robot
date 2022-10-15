@@ -20,10 +20,6 @@
 
 package love.forte.simbot
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import kotlin.reflect.KClass
-
 
 // /**
 //  * api模块下使用的 i18n内容。
@@ -54,41 +50,41 @@ import kotlin.reflect.KClass
  * 日志工厂, 用于得到一个日志实例.
  * @author ForteScarlet
  */
-public object LoggerFactory {
-    
-    /**
-     * 根据名称得到一个 [Logger].
-     *
-     * @see LoggerFactory.getLogger
-     */
-    @JvmStatic
-    public fun getLogger(name: String): Logger = LoggerFactory.getLogger(name)
-    
-    /**
-     * 根据 [KClass]（的全限定名称）构建一个 [Logger].
-     *
-     */
-    @JvmStatic
-    public fun getLogger(type: KClass<*>): Logger =
-        kotlin.runCatching { getLogger(type.java) }.getOrElse {
-            kotlin.runCatching { getLogger(type.qualifiedName ?: type.simpleName ?: type.toString()) }.getOrElse {
-                getLogger(type.toString())
-            }
-        }
-    
-    /**
-     * 根据 [T]（的全限定名称）构建一个 [Logger].
-     *
-     */
-    public inline fun <reified T : Any> getLogger(): Logger = getLogger(T::class)
-    
-    
-    /**
-     * 根据 [Class] 构建一个 [Logger].
-     *
-     * @see LoggerFactory.getLogger
-     */
-    @JvmStatic
-    public fun getLogger(type: Class<*>): Logger = LoggerFactory.getLogger(type)
-    
-}
+// public object LoggerFactory {
+//
+//     /**
+//      * 根据名称得到一个 [Logger].
+//      *
+//      * @see LoggerFactory.getLogger
+//      */
+//     @JvmStatic
+//     public fun getLogger(name: String): Logger = LoggerFactory.getLogger(name)
+//
+//     /**
+//      * 根据 [KClass]（的全限定名称）构建一个 [Logger].
+//      *
+//      */
+//     @JvmStatic
+//     public fun getLogger(type: KClass<*>): Logger =
+//         kotlin.runCatching { getLogger(type.java) }.getOrElse {
+//             kotlin.runCatching { getLogger(type.qualifiedName ?: type.simpleName ?: type.toString()) }.getOrElse {
+//                 getLogger(type.toString())
+//             }
+//         }
+//
+//     /**
+//      * 根据 [T]（的全限定名称）构建一个 [Logger].
+//      *
+//      */
+//     public inline fun <reified T : Any> getLogger(): Logger = getLogger(T::class)
+//
+//
+//     /**
+//      * 根据 [Class] 构建一个 [Logger].
+//      *
+//      * @see LoggerFactory.getLogger
+//      */
+//     @JvmStatic
+//     public fun getLogger(type: Class<*>): Logger = LoggerFactory.getLogger(type)
+//
+// }

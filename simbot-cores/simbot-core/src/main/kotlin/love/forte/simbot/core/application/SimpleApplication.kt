@@ -19,9 +19,10 @@ package love.forte.simbot.core.application
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.ExperimentalSimbotApi
-import love.forte.simbot.LoggerFactory
 import love.forte.simbot.application.*
 import love.forte.simbot.core.event.SimpleEventListenerManager
+import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.logger.logger
 import love.forte.simbot.set
 import love.forte.simbot.utils.view
 import kotlin.time.Duration.Companion.nanoseconds
@@ -30,7 +31,7 @@ import kotlin.time.Duration.Companion.nanoseconds
  * 由核心所提供的最基础的 [ApplicationFactory] 实现。
  */
 public object Simple : ApplicationFactory<SimpleApplicationConfiguration, SimpleApplicationBuilder, SimpleApplication> {
-    private val logger = LoggerFactory.getLogger<Simple>()
+    private val logger = LoggerFactory.logger<Simple>()
     
     override suspend fun create(
         configurator: SimpleApplicationConfiguration.() -> Unit,

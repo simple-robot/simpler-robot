@@ -17,6 +17,7 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.*
+import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
 

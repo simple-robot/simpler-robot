@@ -17,6 +17,9 @@
 import love.forte.gradle.common.core.Gpg
 import love.forte.gradle.common.core.property.systemProp
 import love.forte.gradle.common.publication.configure.jvmConfigPublishing
+import love.forte.gradle.common.publication.configure.multiplatformConfigPublishing
+import org.gradle.api.tasks.bundling.Jar
+import org.gradle.kotlin.dsl.*
 import utils.checkPublishConfigurable
 
 /*
@@ -38,49 +41,33 @@ import utils.checkPublishConfigurable
 
 
 plugins {
-    id("signing")
-    id("maven-publish")
+    kotlin("multiplatform")
+    signing
+    `maven-publish`
 }
 
-if (!isCi || isLinux) {
-    checkPublishConfigurable {
-        val sonatypeUsername: String? = systemProp("OSSRH_USER")
-        val sonatypePassword: String? = systemProp("OSSRH_PASSWORD")
-        
-        if (sonatypeUsername == null || sonatypePassword == null) {
-            logger.warn("[WARN] - sonatype.username or sonatype.password is null, cannot config nexus publishing.")
-        }
-        
-        val p = project
-        
-        jvmConfigPublishing {
-            val groupProject = P::class.sealedSubclasses.mapNotNull { it.objectInstance }.associateBy { obj -> obj.group }
-            project = groupProject[p.group] ?: error("unknown project group: ${p.group}")
-            
-            publicationName = "simbotDist"
-            
-            val jarSources by tasks.registering(Jar::class) {
-                archiveClassifier.set("sources")
-                from(sourceSets["main"].allSource)
-            }
-            
-            val jarJavadoc by tasks.registering(Jar::class) {
-                archiveClassifier.set("javadoc")
-            }
-            
-            artifact(jarSources)
-            artifact(jarJavadoc)
-            
-            isSnapshot = project.version.toString().contains("SNAPSHOT", true)
-            releasesRepository = ReleaseRepository
-            snapshotRepository = SnapshotRepository
-            gpg = Gpg.ofSystemPropOrNull()
-            
-            
-        }
-        show()
+val p = project
+
+multiplatformConfigPublishing {
+    
+    val groupProject = P::class.sealedSubclasses.mapNotNull { it.objectInstance }.associateBy { obj -> obj.group }
+    
+    project = groupProject[p.group] ?: error("unknown project group: ${p.group}")
+    
+    val jarJavadoc by tasks.registering(Jar::class) {
+        group = "documentation"
+        archiveClassifier.set("javadoc")
+        from(tasks.findByName("dokkaHtml"))
     }
+    
+    artifact(jarJavadoc)
+    isSnapshot = project.version.toString().contains("SNAPSHOT", true)
+    releasesRepository = ReleaseRepository
+    snapshotRepository = SnapshotRepository
+    gpg = Gpg.ofSystemPropOrNull()
 }
+
+show()
 
 fun show() {
     //// show project info

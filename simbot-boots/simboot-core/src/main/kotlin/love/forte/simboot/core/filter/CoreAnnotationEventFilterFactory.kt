@@ -21,15 +21,16 @@ import love.forte.simboot.annotation.Filter
 import love.forte.simboot.annotation.Filters
 import love.forte.simboot.filter.EmptyKeyword
 import love.forte.simboot.filter.MatchType
-import love.forte.simbot.LoggerFactory
 import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.event.*
 import love.forte.simbot.literal
+import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.logger.logger
 import love.forte.simbot.message.At
 import java.util.concurrent.CopyOnWriteArrayList
 
 public object CoreAnnotationEventFilterFactory : AnnotationEventFilterFactory {
-    private val logger = LoggerFactory.getLogger<CoreAnnotationEventFilterFactory>()
+    private val logger = LoggerFactory.logger<CoreAnnotationEventFilterFactory>()
     
     override fun resolveFilter(
         listener: EventListener,

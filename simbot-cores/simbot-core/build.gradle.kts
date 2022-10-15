@@ -16,7 +16,7 @@
 
 plugins {
     id("simbot.simple-module-conventions")
-    id("simbot.maven-publish")
+    `simbot-jvm-maven-publish`
     kotlin("plugin.serialization")
 }
 

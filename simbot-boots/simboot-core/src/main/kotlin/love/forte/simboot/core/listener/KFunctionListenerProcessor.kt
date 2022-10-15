@@ -36,6 +36,7 @@ import love.forte.simbot.core.event.EventInterceptEntrance
 import love.forte.simbot.core.event.plus
 import love.forte.simbot.core.event.proxy
 import love.forte.simbot.event.*
+import love.forte.simbot.logger.LoggerFactory
 import org.slf4j.Logger
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Named

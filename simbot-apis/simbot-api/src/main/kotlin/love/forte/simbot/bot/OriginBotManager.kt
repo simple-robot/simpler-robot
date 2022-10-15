@@ -18,6 +18,7 @@ package love.forte.simbot.bot
 
 import love.forte.simbot.*
 import love.forte.simbot.bot.OriginBotManager.cancel
+import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.utils.runInBlocking
 import java.util.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
