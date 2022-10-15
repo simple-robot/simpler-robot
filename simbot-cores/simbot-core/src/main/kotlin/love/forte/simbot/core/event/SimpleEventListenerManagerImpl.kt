@@ -22,6 +22,7 @@ import love.forte.simbot.*
 import love.forte.simbot.core.scope.SimpleScope
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
+import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.utils.ListView
 import love.forte.simbot.utils.view
 import org.slf4j.Logger

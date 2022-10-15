@@ -78,8 +78,8 @@ if (!isCi || isLinux) {
             
             
         }
-        show()
     }
+    show()
 }
 
 fun show() {

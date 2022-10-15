@@ -19,12 +19,13 @@ package love.forte.simboot.spring.autoconfigure
 import love.forte.simboot.annotation.Listener
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
-import love.forte.simbot.LoggerFactory
+// import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.core.application.listeners
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerBuilder
 import love.forte.simbot.event.EventListenerRegistrationDescription
 import love.forte.simbot.event.EventListenerRegistrationDescriptionBuilder
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 
 
@@ -83,6 +84,6 @@ public open class SimbotSpringBootListenerAutoRegisterBuildConfigure :
     }
     
     private companion object {
-        private val logger = LoggerFactory.getLogger(SimbotSpringBootListenerAutoRegisterBuildConfigure::class)
+        private val logger = LoggerFactory.getLogger(SimbotSpringBootListenerAutoRegisterBuildConfigure::class.java)
     }
 }

@@ -23,7 +23,6 @@ import love.forte.simbot.ability.CompletionPerceivable
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotVerifyInfo
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -168,6 +167,6 @@ public open class ApplicationConfiguration {
     /**
      * 提供一个用于Application内部的日志对象。
      */
-    public open var logger: Logger = LoggerFactory.getLogger("love.forte.simbot.application.ApplicationConfiguration")
+    public open var logger: Logger = love.forte.simbot.logger.LoggerFactory.getLogger("love.forte.simbot.application.ApplicationConfiguration")
     
 }

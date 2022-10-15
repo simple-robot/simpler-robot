@@ -26,13 +26,14 @@ import love.forte.simboot.core.listener.KFunctionListenerProcessor
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.spring.autoconfigure.utils.SpringAnnotationTool
 import love.forte.simbot.InternalSimbotApi
-import love.forte.simbot.LoggerFactory
+// import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerBuilder
 import love.forte.simbot.event.EventListenerRegistrationDescription
 import love.forte.simbot.event.EventListenerRegistrationDescription.Companion.toRegistrationDescription
 import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.aop.framework.autoproxy.AutoProxyUtils
 import org.springframework.aop.scope.ScopedObject
 import org.springframework.aop.scope.ScopedProxyUtils
@@ -71,7 +72,7 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefini
     private val idBinderFactories: MutableMap<String, ParameterBinderFactory> = mutableMapOf()
     
     
-    private val logger = LoggerFactory.getLogger<SimbotListenerMethodProcessor>()
+    private val logger = LoggerFactory.getLogger(SimbotListenerMethodProcessor::class.java)
     
     override fun setApplicationContext(applicationContext: ApplicationContext) {
         this.applicationContext = applicationContext
