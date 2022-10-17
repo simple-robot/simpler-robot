@@ -12,7 +12,7 @@ repositories {
 
 val kotlinVersion = "1.7.10"
 val dokkaPluginVersion = "1.7.10"
-val suspendTransformVersion = "0.0.4"
+val suspendTransformVersion = "0.0.5"
 
 dependencies {
     // kotlin("jvm") apply false
