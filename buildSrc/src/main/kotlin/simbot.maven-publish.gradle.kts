@@ -44,13 +44,6 @@ plugins {
 
 if (!isCi || isLinux) {
     checkPublishConfigurable {
-        val sonatypeUsername: String? = systemProp("OSSRH_USER")
-        val sonatypePassword: String? = systemProp("OSSRH_PASSWORD")
-        
-        if (sonatypeUsername == null || sonatypePassword == null) {
-            logger.warn("[WARN] - sonatype.username or sonatype.password is null, cannot config nexus publishing.")
-        }
-        
         val p = project
         
         jvmConfigPublishing {
