@@ -11,7 +11,7 @@ env:
   GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
   SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
   SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-  GRADLE_OPTS: "-Xmx8G -Xms4G -Dfile.encoding=UTF-8"
+  GRADLE_OPTS: "-Xmx8g -Xms2g -Dfile.encoding=UTF-8"
 
 jobs:
 #  run-test:
@@ -62,15 +62,6 @@ jobs:
           gradle-version: 7.5.1
           arguments: clean assemble test
 
-#      # the gpg
-#      - name: Decode gpg file
-#        id: decode-gpg-file
-#        run: |
-#          mkdir -p ~/.gradle
-#          echo "${{ secrets.GPG_B64 }}" > ~/.gradle/secring.gpg.b64
-#          base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
-#          echo "::set-output name=SEC_KEY_RING_FILE::$(echo ~/.gradle/secring.gpg)"
-
       # setup Gradle
       - name: Gradle Publish Release
         uses: gradle/gradle-build-action@v2
@@ -84,9 +75,9 @@ jobs:
             --warning-mode all
             -x test
             --build-cache
-            -Pkotlin.daemon.jvmargs="-Xmx8g -XX:MaxPermSize=2g -Dfile.encoding=UTF-8"
-            -Porg.gradle.jvmargs="-Xmx8g -Xms2g -Dfile.encoding=UTF-8" 
-            -Porg.gradle.workers.max=16 
+            -Pkotlin.daemon.jvmargs="-Xmx8g -XX:MaxPermSize=1g -Dfile.encoding=UTF-8"
+            -Porg.gradle.jvmargs="-Xmx8g -XX:MaxPermSize=1g -Dfile.encoding=UTF-8" 
+            -Porg.gradle.workers.max=8 
             -Porg.gradle.parallel=true
         env:
           SIMBOT_IS_SNAPSHOT: false
@@ -146,9 +137,9 @@ jobs:
             --warning-mode all
             -x test
             --build-cache
-            -Pkotlin.daemon.jvmargs="-Xmx8g -XX:MaxPermSize=2g -Dfile.encoding=UTF-8"
-            -Porg.gradle.jvmargs="-Xmx8g -Xms2g -Dfile.encoding=UTF-8" 
-            -Porg.gradle.workers.max=16 
+            -Pkotlin.daemon.jvmargs="-Xmx8g -XX:MaxPermSize=1g -Dfile.encoding=UTF-8"
+            -Porg.gradle.jvmargs="-Xmx8g -XX:MaxPermSize=1g -Dfile.encoding=UTF-8" 
+            -Porg.gradle.workers.max=8 
             -Porg.gradle.parallel=true
 
         env:
