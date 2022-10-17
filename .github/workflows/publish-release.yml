@@ -42,7 +42,7 @@ jobs:
     name: Publish Release
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     steps:
       # 检出仓库代码
@@ -109,7 +109,7 @@ jobs:
     name: Publish snapshot
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     needs: test-and-publish-release
     steps:

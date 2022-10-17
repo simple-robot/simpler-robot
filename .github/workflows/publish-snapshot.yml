@@ -26,7 +26,7 @@ jobs:
     name: Publish snapshot
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     steps:
       # 检出仓库代码
