@@ -11,7 +11,7 @@ env:
   GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
   SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
   SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-  GRADLE_OPTS: "-Xmx4G -Xms4G -XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8"
+  GRADLE_OPTS: "-Xmx8G -Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
 
 jobs:
 #  run-test:
@@ -76,7 +76,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.5.1
-          arguments: publishToSonatype closeAndReleaseStagingRepository --warning-mode all --info -Porg.gradle.jvmargs="org.gradle.jvmargs=-Xmx4G -Xms4G -XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8"
+          arguments: publishToSonatype closeAndReleaseStagingRepository --warning-mode all --info -Porg.gradle.jvmargs="org.gradle.jvmargs=-Xmx8G -Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
         env:
           SIMBOT_IS_SNAPSHOT: false
           SIMBOT_RELEASES_ONLY: true
@@ -105,7 +105,10 @@ jobs:
 
   publish-snapshot:
     name: Publish snapshot
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
     needs: test-and-publish-release
     steps:
       # 检出仓库代码
