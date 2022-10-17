@@ -8,7 +8,7 @@ import love.forte.simbot.logger.internal.toDisplayName
  *
  * @author ForteScarlet
  */
-public class ConsoleLogger(
+internal class ConsoleLogger(
     private val name: String,
     override val displayName: String = name.toDisplayName(),
     override val level: LogLevel = LogLevel.INFO

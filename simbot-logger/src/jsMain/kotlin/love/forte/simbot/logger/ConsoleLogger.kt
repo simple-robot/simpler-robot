@@ -1,76 +1,43 @@
 package love.forte.simbot.logger
 
+import love.forte.simbot.logger.internal.AbstractConsoleLogger
+import love.forte.simbot.logger.internal.toDisplayName
+
 
 /**
  *
  * @author ForteScarlet
  */
-public class ConsoleLogger(
+internal class ConsoleLogger(
     private val name: String,
-    private val displayName: String,
-    private val level: LogLevel
-) : Logger {
-    override fun getName(): String {
-        TODO("Not yet implemented")
+    override val displayName: String = name.toDisplayName(),
+    override val level: LogLevel,
+) : AbstractConsoleLogger() {
+    override fun getName(): String = name
+    
+    
+    override fun trace0(formattedLog: String, throwable: Throwable?) {
+        console.log("[trace]", "[$displayName]:", formattedLog)
+        throwable?.stackTraceToString()?.also { console.log(it) }
     }
     
-    override fun isTraceEnabled(): Boolean {
-        TODO("Not yet implemented")
+    override fun debug0(formattedLog: String, throwable: Throwable?) {
+        console.log("[debug]", "[$displayName]:", formattedLog)
+        throwable?.stackTraceToString()?.also { console.log(it) }
     }
     
-    override fun trace(log: String) {
-        TODO("Not yet implemented")
+    override fun info0(formattedLog: String, throwable: Throwable?) {
+        console.info("[$displayName]:", formattedLog)
+        throwable?.stackTraceToString()?.also { console.info(it) }
     }
     
-    override fun trace(log: String, vararg arg: Any?) {
-        TODO("Not yet implemented")
+    override fun warn0(formattedLog: String, throwable: Throwable?) {
+        console.warn("[$displayName]:", formattedLog)
+        throwable?.stackTraceToString()?.also { console.warn(it) }
     }
     
-    override fun isDebugEnabled(): Boolean {
-        TODO("Not yet implemented")
-    }
-    
-    override fun debug(log: String) {
-        TODO("Not yet implemented")
-    }
-    
-    override fun debug(log: String, vararg arg: Any?) {
-        TODO("Not yet implemented")
-    }
-    
-    override fun isInfoEnabled(): Boolean {
-        TODO("Not yet implemented")
-    }
-    
-    override fun info(log: String) {
-        TODO("Not yet implemented")
-    }
-    
-    override fun info(log: String, vararg arg: Any?) {
-        TODO("Not yet implemented")
-    }
-    
-    override fun isWarnEnabled(): Boolean {
-        TODO("Not yet implemented")
-    }
-    
-    override fun warn(log: String) {
-        TODO("Not yet implemented")
-    }
-    
-    override fun warn(log: String, vararg arg: Any?) {
-        TODO("Not yet implemented")
-    }
-    
-    override fun isErrorEnabled(): Boolean {
-        TODO("Not yet implemented")
-    }
-    
-    override fun error(log: String) {
-        TODO("Not yet implemented")
-    }
-    
-    override fun error(log: String, vararg arg: Any?) {
-        TODO("Not yet implemented")
+    override fun error0(formattedLog: String, throwable: Throwable?) {
+        console.error("[$displayName]:", formattedLog)
+        throwable?.stackTraceToString()?.also { console.error(it) }
     }
 }

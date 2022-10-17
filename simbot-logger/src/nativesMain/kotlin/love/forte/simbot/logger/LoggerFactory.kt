@@ -1,12 +1,12 @@
 package love.forte.simbot.logger
 
 
-private var globalLoggerLevel: LogLevel = LogLevel.INFO
+private var defaultLoggerLevel0: LogLevel = LogLevel.INFO
 
 /**
- * [LoggerFactory] 所使用的全局变量。
+ * [LoggerFactory] 所使用的全局默认日志等级。
  */
-public var LoggerFactory. globalLoggerLevel: LogLevel by ::globalLoggerLevel
+public var LoggerFactory.defaultLoggerLevel: LogLevel by ::defaultLoggerLevel0
 
 @Suppress("MemberVisibilityCanBePrivate")
 public actual object LoggerFactory {
@@ -14,7 +14,7 @@ public actual object LoggerFactory {
     /**
      * 根据名称获取一个 [Logger] 实例。
      */
-    public actual fun getLogger(name: String): Logger = getLogger(name, globalLoggerLevel)
+    public actual fun getLogger(name: String): Logger = getLogger(name, defaultLoggerLevel)
     
     /**
      * 根据名称和日志级别获取一个 [Logger] 实例。
