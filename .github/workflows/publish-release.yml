@@ -11,7 +11,7 @@ env:
   GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
   SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
   SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-  GRADLE_OPTS: "-Xmx8G -Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
+  GRADLE_OPTS: "-Xmx8G -Xms4G -Dfile.encoding=UTF-8"
 
 jobs:
 #  run-test:
@@ -76,7 +76,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.5.1
-          arguments: createChangelog publishToSonatype closeAndReleaseStagingRepository -x test --warning-mode all --info -Porg.gradle.jvmargs="org.gradle.jvmargs=-Xmx8G -Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8" -Porg.gradle.workers.max=4 -Porg.gradle.parallel=true
+          arguments: createChangelog publishToSonatype closeAndReleaseStagingRepository -x test --warning-mode all --info -Porg.gradle.jvmargs="org.gradle.jvmargs=-Xmx8G -Xms4G -Dfile.encoding=UTF-8" -Porg.gradle.workers.max=4 -Porg.gradle.parallel=true
         env:
           SIMBOT_IS_SNAPSHOT: false
           SIMBOT_RELEASES_ONLY: true
