@@ -2,9 +2,28 @@ package love.forte.simbot.logger
 
 
 /**
- * 日志。
+ * 日志对象类型，用于输出日志到目标处（例如控制台）。
+ *
+ * ## JVM
+ * 在JVM平台目标会将 [Logger] 作为 [org.slf4j.Logger] 使用。
+ *
+ * ## JS
+ * 在JS平台中会通过 [kotlin.js.console] 向控制台输出日志信息,
+ * 并会尝试为不同种类的api分配对应的 [console][kotlin.js.console] api.
+ * - [Logger.trace] 使用 [console.log][kotlin.js.console.log]
+ * - [Logger.debug] 使用 [console.log][kotlin.js.console.log]
+ * - [Logger.info] 使用 [console.info][kotlin.js.console.info]
+ * - [Logger.warn] 使用 [console.warn][kotlin.js.console.warn]
+ * - [Logger.error] 使用 [console.error][kotlin.js.console.error]
+ *
+ * ## Native
+ * 在native平台中则会直接使用 [println] 简单的向控制台输出日志信息。
+ *
+ *
+ *
  * @author ForteScarlet
  */
+@Suppress("KDocUnresolvedReference")
 public expect interface Logger {
     /**
      * 当前logger的名称。

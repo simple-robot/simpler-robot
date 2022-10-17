@@ -5,7 +5,8 @@ import love.forte.simbot.logger.Logger
 
 
 /**
- * 默认
+ * 针对 [Logger] 的简单抽象类，主要服务于JS平台和Native平台进行实现。
+ *
  * @author ForteScarlet
  */
 public abstract class AbstractSimpleLogger : Logger {
