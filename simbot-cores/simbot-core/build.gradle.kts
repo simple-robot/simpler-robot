@@ -16,14 +16,14 @@
 
 plugins {
     id("simbot.simple-module-conventions")
-    id("simbot.maven-publish")
+    `simbot-jvm-maven-publish`
     kotlin("plugin.serialization")
 }
 
 
 dependencies {
     // simbot-core 使用 logger
-    api(project(":simbot-apis:simbot-logger"))
+    api(project(":simbot-logger"))
     api(project(":simbot-apis:simbot-api"))
     api(libs.slf4j.api)
     api(libs.kotlinx.coroutines.core)
@@ -40,5 +40,6 @@ dependencies {
     testImplementation(libs.kotlinx.serialization.properties)
     testImplementation(libs.kotlinx.serialization.protobuf)
     testImplementation(libs.kotlinx.coroutines.reactor)
-    
+    testImplementation(libs.kotlinx.lincheck)
+    testImplementation(libs.slf4j.nop)
 }

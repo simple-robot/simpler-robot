@@ -1,5 +1,3 @@
-import love.forte.plugin.suspendtrans.SuspendTransformConfiguration
-
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
@@ -18,7 +16,7 @@ import love.forte.plugin.suspendtrans.SuspendTransformConfiguration
 
 plugins {
     id("simbot.simple-module-conventions")
-    id("simbot.maven-publish")
+    `simbot-jvm-maven-publish`
     kotlin("plugin.serialization")
     kotlin("kapt")
     id("simbot.suspend-transform-configure")
@@ -26,6 +24,7 @@ plugins {
 
 dependencies {
     api(kotlin("reflect"))
+    api(project(":simbot-logger"))
     
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.jdk8)

@@ -17,10 +17,10 @@
 package love.forte.simboot.spring.autoconfigure
 
 import love.forte.simboot.annotation.Listener
-import love.forte.simbot.LoggerFactory
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerBuilder
 import love.forte.simbot.event.EventListenerRegistrationDescription
+import org.slf4j.LoggerFactory
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition
 import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition
@@ -138,7 +138,7 @@ public open class EventListenerRegistryPostProcessor : BeanDefinitionRegistryPos
     }
     
     public companion object {
-        private val logger = LoggerFactory.getLogger<EventListenerRegistryPostProcessor>()
+        private val logger = LoggerFactory.getLogger(EventListenerRegistryPostProcessor::class.java)
         private const val NAME_SUFFIX = "#simbot#listener"
     }
 }

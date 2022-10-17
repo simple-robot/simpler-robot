@@ -20,12 +20,12 @@ import kotlinx.coroutines.launch
 import love.forte.simbot.*
 import love.forte.simbot.ability.CompletionPerceivable
 import love.forte.simbot.application.*
-import love.forte.simbot.application.BotRegistrar
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.bot.BotVerifyInfo
 import love.forte.simbot.bot.ComponentMismatchException
 import love.forte.simbot.event.EventProcessor
+import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.utils.view
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.locks.ReentrantReadWriteLock

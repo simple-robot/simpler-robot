@@ -35,6 +35,7 @@ charleskorn-kaml = "com.charleskorn.kaml:kaml:0.46.0"
 
 # slf4j
 slf4j-api = "org.slf4j:slf4j-api:1.7.36"
+slf4j-nop = "org.slf4j:slf4j-nop:1.7.36"
 
 # javax
 javax-inject = "javax.inject:javax.inject:1"
@@ -68,3 +69,7 @@ forte-annotationTool-kcore = { group = "love.forte.annotation-tool", name = "kco
 # ktor
 ktor-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }
 ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
+
+# Lincheck
+# https://kotlinlang.org/docs/lincheck-guide.html#associate-compiler-tasks
+kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.15"

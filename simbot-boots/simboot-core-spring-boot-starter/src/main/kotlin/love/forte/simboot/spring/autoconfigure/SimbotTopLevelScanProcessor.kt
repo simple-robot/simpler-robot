@@ -24,12 +24,13 @@ import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simboot.core.listener.KFunctionListenerProcessor
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simbot.InternalSimbotApi
-import love.forte.simbot.LoggerFactory
+// import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerBuilder
 import love.forte.simbot.event.EventListenerRegistrationDescription
 import love.forte.simbot.event.EventListenerRegistrationDescription.Companion.toRegistrationDescription
 import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition
 import org.springframework.beans.factory.support.*
@@ -143,7 +144,7 @@ public annotation class SimbotTopLevelListenerScan(
  */
 @OptIn(InternalSimbotApi::class)
 public class SimbotTopLevelListenerScanProcessor : AbstractSimbotTopLevelScanProcessor() {
-    private val logger = LoggerFactory.getLogger<SimbotTopLevelListenerScanProcessor>()
+    private val logger = LoggerFactory.getLogger(SimbotTopLevelListenerScanProcessor::class.java)
     override val annotationType: KClass<SimbotTopLevelListenerScan> get() = SimbotTopLevelListenerScan::class
     override val methodAnnotationType: KClass<Listener> get() = Listener::class
     override val annotationPackageAttributeName: String get() = "value"
@@ -345,7 +346,7 @@ public annotation class SimbotTopLevelBinderScan(
  */
 @OptIn(InternalSimbotApi::class)
 public class SimbotTopLevelBinderScanProcessor : AbstractSimbotTopLevelScanProcessor() {
-    private val logger = LoggerFactory.getLogger<SimbotTopLevelBinderScanProcessor>()
+    private val logger = LoggerFactory.getLogger(SimbotTopLevelBinderScanProcessor::class.java)
     override val annotationType: KClass<out Annotation> get() = SimbotTopLevelBinderScan::class
     override val methodAnnotationType: KClass<out Annotation> get() = Binder::class
     override val annotationPackageAttributeName: String get() = "value"

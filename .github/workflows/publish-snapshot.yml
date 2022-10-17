@@ -11,11 +11,12 @@ on: # push
       - 'buildSrc'
 
 env:
-  GPG_KEY_ID: ${{ secrets.SIGN_KEY_ID }}
-  GPG_SECRET_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  GPG_PASSWORD: ${{ secrets.SIGN_PASS }}
-  OSSRH_USER: ${{ secrets.OSS_USERNAME }}
-  OSSRH_PASSWORD: ${{ secrets.OSS_PASSWORD }}
+  IS_CI: true
+  GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+  GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+  GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
+  SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+  SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
   SIMBOT_IS_SNAPSHOT: true
   SIMBOT_SNAPSHOT_ONLY: true
   GRADLE_OPTS: "-Xmx4G -Xms4G -XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8"
@@ -23,15 +24,18 @@ env:
 jobs:
   publish-snapshot:
     name: Publish snapshot
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
     steps:
       # 检出仓库代码
       - name: Check out repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # setup Java
       - name: Setup java 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 11
@@ -41,7 +45,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.5.1
-          arguments: clean build test publishToSonatype closeAndReleaseStagingRepository -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true
+          arguments: clean assemble build allTests publishToSonatype closeAndReleaseStagingRepository -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true
 
 
 

@@ -16,10 +16,10 @@
 
 package love.forte.simboot
 
-import love.forte.simbot.LoggerFactory
 import love.forte.simbot.SimbotException
 import love.forte.simbot.SimbotIllegalStateException
 import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.util.*
 
 /**
@@ -40,7 +40,7 @@ public object SimbootApp {
      * A boot logger.
      */
     private val bootLogger = LoggerFactory.getLogger("love.forte.simboot.SimbootApp")
-    
+    // TODO logger fac
     
     /**
      * 通过加载当前 classpath 中的 [SimbootEntrance] 实例来启动一个BOOT。

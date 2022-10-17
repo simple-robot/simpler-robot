@@ -19,9 +19,10 @@ package love.forte.simbot.core.event
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.asCompletableFuture
 import love.forte.simbot.ExperimentalSimbotApi
-import love.forte.simbot.LoggerFactory
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.*
+import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.logger.logger
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Future
 import java.util.concurrent.atomic.AtomicBoolean
@@ -178,7 +179,7 @@ internal data class ContinuousSessionListener<T>(
 
 internal class ContinuousSessionListenerManager {
     companion object {
-        private val logger = LoggerFactory.getLogger<ContinuousSessionListenerManager>()
+        private val logger = LoggerFactory.logger<ContinuousSessionListenerManager>()
     }
     
     private val listeners = ConcurrentHashMap<String, ContinuousSessionListener<*>>()

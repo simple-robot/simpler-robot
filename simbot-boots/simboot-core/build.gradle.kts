@@ -16,7 +16,7 @@
 
 plugins {
     id("simbot.boot-module-conventions")
-    id("simbot.maven-publish")
+    `simbot-jvm-maven-publish`
     kotlin("plugin.serialization")
     id("simbot.suspend-transform-configure")
 }
@@ -24,7 +24,7 @@ plugins {
 
 dependencies {
     // boot-core 使用 simbot-logger
-    api(project(":simbot-apis:simbot-logger"))
+    api(project(":simbot-logger"))
     api(project(":simbot-boots:simboot-api"))
     api(project(":simbot-boots:simboot-core-annotation"))
 

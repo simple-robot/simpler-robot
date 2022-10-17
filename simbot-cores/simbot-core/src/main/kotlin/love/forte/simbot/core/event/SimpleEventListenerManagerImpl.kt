@@ -22,6 +22,7 @@ import love.forte.simbot.*
 import love.forte.simbot.core.scope.SimpleScope
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
+import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.utils.ListView
 import love.forte.simbot.utils.view
 import org.slf4j.Logger
@@ -70,6 +71,9 @@ internal class SimpleEventListenerManagerImpl internal constructor(
      * 当前被注册的监听函数集.
      */
     private val invokers = PriorityListenerInvokers()
+    
+    // @get:TestOnly
+    // internal val handlesInternal: Sequence<EventListenerHandle> get() = invokers.invokerSequence()
     
     /**
      * 事件可用性计数器.
