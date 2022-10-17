@@ -212,8 +212,8 @@ jobs:
         with:
           personal_token: ${{ secrets.PUSH_TOKEN }}
           external_repository: simple-robot-library/simbot3-main-apiDoc
-          publish_branch: gh-pages  # default: gh-pages
-          keep_files: true
-          publish_dir: ./dokka/html
+#          publish_branch: gh-pages  # default: gh-pages
+#          keep_files: true
+          publish_dir: ./build/dokka/html
 
 
