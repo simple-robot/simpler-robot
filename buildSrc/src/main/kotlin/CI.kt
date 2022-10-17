@@ -21,6 +21,6 @@ object CI {
     const val IS_CI = "IS_CI"
 }
 
-val isCi get() = systemProp(CI.IS_CI).toBoolean()
+val isCi = systemProp(CI.IS_CI).toBoolean()
 
-val isLinux: Boolean get() = "Linux" in System.getProperty("os.name")
+val isLinux: Boolean = systemProp("os.name")?.contains("linux", true) ?: false

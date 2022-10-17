@@ -78,9 +78,10 @@ fun show() {
         |= project.name:        {}
         |= project.version:     {}
         |= project.description: {}
+        |= os.name:             {}
         |=======================================================
     """.trimIndent(),
-        group, name, version, description
+        group, name, version, description, systemProp("os.name")
     )
 }
 
