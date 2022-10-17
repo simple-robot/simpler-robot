@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory
 
 val logger = LoggerFactory.getLogger("Sonatype Userinfo")
 
-val sonatypeUserInfo by lazy {
+private val sonatypeUserInfo by lazy {
     val userInfo = love.forte.gradle.common.publication.sonatypeUserInfoOrNull
     
     if (userInfo == null) {
@@ -32,8 +32,8 @@ val sonatypeUserInfo by lazy {
     userInfo
 }
 
-val sonatypeUsername: String? get() = sonatypeUserInfo?.username
-val sonatypePassword: String? get() = sonatypeUserInfo?.password
+private val sonatypeUsername: String? get() = sonatypeUserInfo?.username
+private val sonatypePassword: String? get() = sonatypeUserInfo?.password
 
 
 val ReleaseRepository by lazy {
