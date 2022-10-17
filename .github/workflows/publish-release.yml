@@ -60,7 +60,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.5.1
-          arguments: clean assemble build allTests
+          arguments: clean assemble test
 
 #      # the gpg
 #      - name: Decode gpg file
@@ -76,7 +76,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.5.1
-          arguments: publishToSonatype closeAndReleaseStagingRepository --warning-mode all --info -Porg.gradle.jvmargs="org.gradle.jvmargs=-Xmx8G -Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
+          arguments: publishToSonatype closeAndReleaseStagingRepository -x test --warning-mode all --info -Porg.gradle.jvmargs="org.gradle.jvmargs=-Xmx8G -Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
         env:
           SIMBOT_IS_SNAPSHOT: false
           SIMBOT_RELEASES_ONLY: true
@@ -127,7 +127,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.5.1
-          arguments: clean build createChangelog publishToSonatype closeAndReleaseStagingRepository -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true
+          arguments: createChangelog publishToSonatype closeAndReleaseStagingRepository -x test -Porg.gradle.workers.max=16 -Porg.gradle.parallel=true
         env:
           SIMBOT_IS_SNAPSHOT: true
           SIMBOT_SNAPSHOT_ONLY: true
