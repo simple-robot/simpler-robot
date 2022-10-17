@@ -5,10 +5,10 @@ import love.forte.simbot.logger.Logger
 
 
 /**
- *
+ * 默认
  * @author ForteScarlet
  */
-public abstract class AbstractConsoleLogger : Logger {
+public abstract class AbstractSimpleLogger : Logger {
     protected abstract val displayName: String
     protected abstract val level: LogLevel
     

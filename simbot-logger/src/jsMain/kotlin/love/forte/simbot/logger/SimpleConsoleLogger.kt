@@ -1,6 +1,6 @@
 package love.forte.simbot.logger
 
-import love.forte.simbot.logger.internal.AbstractConsoleLogger
+import love.forte.simbot.logger.internal.AbstractSimpleLogger
 import love.forte.simbot.logger.internal.toDisplayName
 
 
@@ -8,11 +8,11 @@ import love.forte.simbot.logger.internal.toDisplayName
  *
  * @author ForteScarlet
  */
-internal class ConsoleLogger(
+internal class SimpleConsoleLogger(
     private val name: String,
     override val displayName: String = name.toDisplayName(),
     override val level: LogLevel,
-) : AbstractConsoleLogger() {
+) : AbstractSimpleLogger() {
     override fun getName(): String = name
     
     

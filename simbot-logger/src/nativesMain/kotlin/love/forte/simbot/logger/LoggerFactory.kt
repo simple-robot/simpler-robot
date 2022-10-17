@@ -19,7 +19,7 @@ public actual object LoggerFactory {
     /**
      * 根据名称和日志级别获取一个 [Logger] 实例。
      */
-    public fun getLogger(name: String, level: LogLevel): Logger = ConsoleLogger(name = name, level = level)
+    public fun getLogger(name: String, level: LogLevel): Logger = SimpleConsoleLogger(name = name, level = level)
 }
 
 
