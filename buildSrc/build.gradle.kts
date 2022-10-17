@@ -20,6 +20,7 @@ dependencies {
    implementation(gradleApi())
    implementation(kotlin("gradle-plugin", kotlinVersion))
    implementation(kotlin("serialization", kotlinVersion))
+    implementation("org.jetbrains.kotlinx:atomicfu-gradle-plugin:0.18.4")
    implementation("org.jetbrains.dokka:dokka-gradle-plugin:$dokkaPluginVersion")
     
     // see https://github.com/gradle-nexus/publish-plugin
@@ -29,6 +30,8 @@ dependencies {
     implementation("love.forte.gradle.common:gradle-common-core:$gradleCommon")
     implementation("love.forte.gradle.common:gradle-common-kotlin-multiplatform:$gradleCommon")
     implementation("love.forte.gradle.common:gradle-common-publication:$gradleCommon")
+    
+    
 }
 
 val compileKotlin: KotlinCompile by tasks
