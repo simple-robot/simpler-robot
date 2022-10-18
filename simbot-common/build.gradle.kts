@@ -2,6 +2,7 @@ import love.forte.gradle.common.kotlin.multiplatform.defaultConfig
 
 
 plugins {
+    kotlin("plugin.serialization")
     kotlin("multiplatform")
     `simbot-simple-project-setup`
     //`simbot-multiplatform-maven-publish`
@@ -16,6 +17,7 @@ kotlin {
         sourceSetsConfig = {
             commonMain {
                 dependencies {
+                    api(libs.kotlinx.serialization.core)
                     //api("org.jetbrains.kotlinx:atomicfu:0.18.4")
                 }
             }
