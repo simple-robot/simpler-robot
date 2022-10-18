@@ -29,7 +29,8 @@ dependencyResolutionManagement {
 }
 
 include("simbot-logger")
-// project(":simbot-logger").name = "simbot-logger-multiplatform"
+include("simbot-api")
+project(":simbot-api").name = "simbot-api-multiplatform"
 
 include(
     api("api"),
