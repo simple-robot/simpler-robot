@@ -8,8 +8,8 @@ plugins {
 
 kotlin {
     defaultConfig {
-        nativeCommonMainName = "nativesMain"
-        nativeCommonTestName = "nativesTest"
+        nativeCommonMainName = "nativeMain"
+        nativeCommonTestName = "nativeTest"
         sourceSetsConfig = {
             commonTest {
                 dependencies {
