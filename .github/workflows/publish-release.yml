@@ -184,6 +184,7 @@ jobs:
           publish_dir: ./build/dokka/html
 
   create-release:
+    if: ${{ !contains(github.ref_name, 'dev') }}
     name: Create GitHub Release
     runs-on: ubuntu-latest
     needs: [ publish-snapshot, deploy-doc ]
