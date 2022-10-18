@@ -7,7 +7,7 @@ plugins {
     `simbot-simple-project-setup`
     //`simbot-multiplatform-maven-publish`
     id("simbot.dokka-module-configuration")
-    id("kotlinx-atomicfu")
+    // id("kotlinx-atomicfu")
 }
 
 kotlin {
