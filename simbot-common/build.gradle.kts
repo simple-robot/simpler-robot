@@ -11,10 +11,12 @@ plugins {
 
 kotlin {
     defaultConfig {
+        nativeCommonMainName = "nativeMain"
+        nativeCommonTestName = "nativeTest"
         sourceSetsConfig = {
             commonMain {
                 dependencies {
-                    api("org.jetbrains.kotlinx:atomicfu:0.18.4")
+                    //api("org.jetbrains.kotlinx:atomicfu:0.18.4")
                 }
             }
             commonTest {
