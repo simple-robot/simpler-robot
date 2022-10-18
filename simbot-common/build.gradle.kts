@@ -18,7 +18,7 @@ kotlin {
             commonMain {
                 dependencies {
                     api(libs.kotlinx.serialization.core)
-                    //api("org.jetbrains.kotlinx:atomicfu:0.18.4")
+                    api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
                 }
             }
             commonTest {
@@ -38,9 +38,19 @@ kotlin {
                     implementation(kotlin("test-junit5"))
                 }
             }
+            jsMain {
+                dependencies {
+                    api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+                }
+            }
             jsTest {
                 dependencies {
                     implementation(kotlin("test-js"))
+                }
+            }
+            nativeCommonMain {
+                dependencies {
+                    api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
                 }
             }
         }

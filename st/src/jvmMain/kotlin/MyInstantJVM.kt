@@ -1,0 +1,1 @@
+actual typealias MyInstant = java.time.Instant

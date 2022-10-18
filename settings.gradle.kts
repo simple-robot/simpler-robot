@@ -30,6 +30,7 @@ dependencyResolutionManagement {
 
 include("simbot-logger")
 include("simbot-common")
+// include("st")
 // project(":simbot-logger").name = "simbot-logger-multiplatform"
 
 include(
