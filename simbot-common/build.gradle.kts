@@ -18,7 +18,8 @@ kotlin {
             commonMain {
                 dependencies {
                     api(libs.kotlinx.serialization.core)
-                    api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+                    // api("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+                    compileOnly(libs.kotlinx.coroutines.core)
                 }
             }
             commonTest {
