@@ -34,7 +34,6 @@ import love.forte.plugin.suspendtrans.SuspendTransformConfiguration
 
 plugins {
     id("love.forte.plugin.suspend-transform")
-    
 }
 
 suspendTransform {

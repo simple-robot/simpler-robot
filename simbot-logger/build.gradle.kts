@@ -33,11 +33,6 @@ kotlin {
                     implementation(kotlin("test-js"))
                 }
             }
-            // nativeCommonMain {
-            //     dependencies {
-            //         implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
-            //     }
-            // }
         }
     }
 }
