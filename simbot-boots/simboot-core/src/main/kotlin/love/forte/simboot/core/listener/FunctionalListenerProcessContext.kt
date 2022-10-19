@@ -25,25 +25,25 @@ import kotlin.reflect.KFunction
  */
 public data class FunctionalListenerProcessContext(
     
-    /**
-     * 此监听函数所指定的特殊ID。
-     */
-    val id: String?,
+    // /**
+    //  * 此监听函数所指定的特殊ID。
+    //  */
+    // val id: String?,
     
     /**
      * 此监听函数对应的function。
      */
     val function: KFunction<*>,
     
-    /**
-     * 此监听函数的期望优先级。
-     */
-    val priority: Int,
+    // /**
+    //  * 此监听函数的期望优先级。
+    //  */
+    // val priority: Int,
     
-    /**
-     * 此监听函数期望中是否为异步。
-     */
-    val isAsync: Boolean,
+    // /**
+    //  * 此监听函数期望中是否为异步。
+    //  */
+    // val isAsync: Boolean,
     
     /**
      * binder factory的容器。

@@ -17,7 +17,9 @@
 package love.forte.simbot.core.event
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.future.await
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.rx2.asFlow
@@ -32,6 +34,7 @@ import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.event.*
 import org.slf4j.LoggerFactory
+import java.util.concurrent.CompletionStage
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -70,9 +73,6 @@ internal class SimpleEventProcessingContextResolver(
             continuousSessionContext,
             listenerSize
         )
-        // coroutineScope.launch {
-        //     continuousSessionListenerManager.process(context)
-        // }
         
         if (continuousSessionListenerManager.process(context)) {
             return null
@@ -88,10 +88,17 @@ internal class SimpleEventProcessingContextResolver(
     override suspend fun appendResultIntoContext(
         context: SimpleEventProcessingContext, result: EventResult,
     ): ListenerInvokeType {
-        if (result != EventResult.Invalid) {
-            val newResult = tryCollect(result)
-            context.addResult(newResult)
+        when (result) {
+            EventResult.Invalid -> {}
+            is AsyncEventResult -> {
+                context.addResult(result)
+            }
+            
+            else -> {
+                context.addResult(tryCollect(result))
+            }
         }
+        
         return if (result.isTruncated) ListenerInvokeType.TRUNCATED
         else ListenerInvokeType.CONTINUE
     }
@@ -198,65 +205,84 @@ internal class SimpleEventProcessingContextResolver(
         }
         
         private suspend fun tryCollect(result: EventResult): EventResult {
-            if (result !is SimpleEventResult) return result
+            if (result !is ReactivelyCollectableEventResult) return result
             val content = result.content ?: return result
             
-            if (content is kotlinx.coroutines.flow.Flow<*>) {
-                return result.copy(newContent = content.toList())
-            }
-            
-            if (reactorSupport) {
-                when (content) {
-                    is reactor.core.publisher.Flux<*> -> return if (reactiveKotlinSupport) result.copy(
-                        newContent = content.asFlow().toList()
-                    ) else result // else return itself
-                    
-                    is reactor.core.publisher.Mono<*> -> return if (reactorKotlinSupport) result.copy(newContent = content.awaitSingleOrNull()) else result
+            when {
+                content is kotlinx.coroutines.flow.Flow<*> -> {
+                    return result.collected(content.toList())
                 }
-            }
-            
-            if (rx2Support) {
-                when (content) {
-                    is io.reactivex.CompletableSource -> {
-                        content.await() // Just await
-                        return result.copy(newContent = null)
+                
+                content is CompletionStage<*> -> {
+                    return result.collected(content.await())
+                }
+                
+                content is Deferred<*> -> {
+                    return result.collected(content.await())
+                }
+                
+                reactorSupport -> {
+                    when (content) {
+                        is reactor.core.publisher.Flux<*> -> return if (reactiveKotlinSupport) result.collected(
+                            content.asFlow().toList()
+                        ) else result // else return itself
+                        
+                        is reactor.core.publisher.Mono<*> -> return if (reactorKotlinSupport) result.collected(content.awaitSingleOrNull()) else result
                     }
-                    is io.reactivex.SingleSource<*> -> return if (rx2KotlinSupport) result.copy(newContent = content.await()) else result
-                    is io.reactivex.MaybeSource<*> -> return if (rx2KotlinSupport) result.copy(newContent = content.awaitSingleOrNull()) else result
-                    is io.reactivex.ObservableSource<*> -> return if (reactiveKotlinSupport) result.copy(
-                        newContent = content.asFlow().toList()
-                    ) else result
-                    is io.reactivex.Flowable<*> -> return if (reactiveKotlinSupport) result.copy(
-                        newContent = content.asFlow().toList()
-                    ) else result
                 }
-            }
-            
-            if (rx3Support) {
-                when (content) {
-                    is io.reactivex.rxjava3.core.Completable -> {
-                        content.await()
-                        return result.copy(newContent = null)
+                
+                rx2Support -> {
+                    when (content) {
+                        is io.reactivex.CompletableSource -> {
+                            content.await() // Just await
+                            return result.collected(null)
+                        }
+                        
+                        is io.reactivex.SingleSource<*> -> return if (rx2KotlinSupport) result.collected(content.await()) else result
+                        is io.reactivex.MaybeSource<*> -> return if (rx2KotlinSupport) result.collected(content.awaitSingleOrNull()) else result
+                        is io.reactivex.ObservableSource<*> -> return if (reactiveKotlinSupport) result.collected(
+                            content.asFlow().toList()
+                        ) else result
+                        
+                        is io.reactivex.Flowable<*> -> return if (reactiveKotlinSupport) result.collected(
+                            content.asFlow().toList()
+                        ) else result
                     }
-                    is io.reactivex.rxjava3.core.SingleSource<*> -> return if (rx3KotlinSupport) result.copy(newContent = content.await()) else result
-                    is io.reactivex.rxjava3.core.MaybeSource<*> -> return if (rx3KotlinSupport) result.copy(newContent = content.awaitSingleOrNull()) else result
-                    is io.reactivex.rxjava3.core.ObservableSource<*> -> return result.copy(
-                        newContent = content.asFlow().toList()
-                    )
-                    is io.reactivex.rxjava3.core.Flowable<*> -> return result.copy(
-                        newContent = content.asFlow().toList()
-                    )
+                }
+                
+                rx3Support -> {
+                    when (content) {
+                        is io.reactivex.rxjava3.core.Completable -> {
+                            content.await()
+                            return result.collected(null)
+                        }
+                        
+                        is io.reactivex.rxjava3.core.SingleSource<*> -> return if (rx3KotlinSupport) result.collected(
+                            content.await()
+                        ) else result
+                        
+                        is io.reactivex.rxjava3.core.MaybeSource<*> -> return if (rx3KotlinSupport) result.collected(
+                            content.awaitSingleOrNull()
+                        ) else result
+                        
+                        is io.reactivex.rxjava3.core.ObservableSource<*> -> return result.collected(
+                            content.asFlow().toList()
+                        )
+                        
+                        is io.reactivex.rxjava3.core.Flowable<*> -> return result.collected(
+                            content.asFlow().toList()
+                        )
+                    }
+                }
+                
+                reactiveSupport -> {
+                    when (content) {
+                        is org.reactivestreams.Publisher<*> -> return if (reactiveKotlinSupport) result.collected(
+                            content.asFlow().toList()
+                        ) else result
+                    }
                 }
             }
-            
-            if (reactiveSupport) {
-                when (content) {
-                    is org.reactivestreams.Publisher<*> -> return if (reactiveKotlinSupport) result.copy(
-                        newContent = content.asFlow().toList()
-                    ) else result
-                }
-            }
-            
             
             return result
         }

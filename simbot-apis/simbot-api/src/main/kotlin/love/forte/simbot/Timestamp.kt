@@ -119,8 +119,8 @@ public sealed class Timestamp : Comparable<Timestamp> {
                 return notSupport()
             }
             
-            val secs = Math.floorDiv(epochMilli, 1000)
-            val mos = Math.floorMod(epochMilli, 1000).toInt()
+            val secs = Math.floorDiv(epochMilli, 1000.toLong())
+            val mos = Math.floorMod(epochMilli, 1000.toLong()).toInt()
             
             return bySecond(secs, mos * 1000_000)
         }

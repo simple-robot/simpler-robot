@@ -18,11 +18,10 @@ package love.forte.simbot.core.event
 
 import love.forte.simbot.Api4J
 import love.forte.simbot.ExperimentalSimbotApi
-import love.forte.simbot.PriorityConstant
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.*
+import love.forte.simbot.event.EventListenerRegistrationDescription.Companion.toRegistrationDescription
 import love.forte.simbot.message.Message
-import love.forte.simbot.utils.randomIdStr
 import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
 import java.util.function.BiConsumer
@@ -39,9 +38,6 @@ internal annotation class SimpleListenerBuilderDSL
  *
  * ```java
  * new SimpleListenerBuilder<>(FooEvent.Key)
- *     .id(...)
- *     .async(...)
- *     .logger(...)
  *     .match((context, event) -> {...})
  *     .handle((context, event) -> { ... })
  *     .build();
@@ -61,63 +57,11 @@ internal annotation class SimpleListenerBuilderDSL
  * ```
  *
  * @see buildSimpleListener
- *
+ * @see SimpleListenerRegistrationDescriptionBuilder
  *
  * @author ForteScarlet
  */
-public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) : EventListenerBuilder {
-    private var _id: String? = null
-    
-    /**
-     * 设置listener的ID
-     */
-    @SimpleListenerBuilderDSL
-    override var id: String
-        get() = _id ?: ""
-        set(value) {
-            _id = value
-        }
-    
-    
-    /**
-     * 使用的日志
-     */
-    @SimpleListenerBuilderDSL
-    @Deprecated("Will be remove", ReplaceWith("this"))
-    public var logger: Logger? = null
-    
-    /**
-     * 是否标记为异步函数。
-     */
-    @SimpleListenerBuilderDSL
-    override var isAsync: Boolean = false
-    
-    /**
-     * 当前监听函数的优先级。
-     */
-    @SimpleListenerBuilderDSL
-    override var priority: Int = PriorityConstant.NORMAL
-    
-    /**
-     * 配置当前id。
-     *
-     * 如果不配置则id随机。
-     *
-     * @see EventListener.id
-     */
-    public fun id(id: String): SimpleListenerBuilder<E> = also {
-        this.id = id
-    }
-    
-    /**
-     * 配置是否为异步函数。
-     *
-     * @see EventListener.isAsync
-     */
-    @JvmOverloads
-    public fun async(isAsync: Boolean = true): SimpleListenerBuilder<E> = also {
-        this.isAsync = isAsync
-    }
+public open class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) : EventListenerBuilder {
     
     private var matcher: (suspend EventListenerProcessingContext.(E) -> Boolean)? = null
     
@@ -206,7 +150,7 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
      * }
      * ```
      *
-     * 对于同一个 [ListenerGenerator], [handle] 只能且必须配置 **一次**。如果配置次数超过一次会直接引发 [SimbotIllegalStateException]；
+     * 对于同一个 [SimpleListenerBuilder], [handle] 只能且必须配置 **一次**。如果配置次数超过一次会直接引发 [SimbotIllegalStateException]；
      * 如果未进行配置则会在最终构建时引发 [SimbotIllegalStateException].
      *
      * 如果你不希望总是手动为每个监听函数提供返回值，请参考 [process]。
@@ -248,7 +192,7 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
      * }
      * ```
      *
-     * 对于同一个 [ListenerGenerator], [process] 或者 [handle] 只能且必须配置 **一次**。
+     * 对于同一个 [SimpleListenerBuilder], [process] 或者 [handle] 只能且必须配置 **一次**。
      * 如果配置次数超过一次会直接引发 [SimbotIllegalStateException]；
      * 如果未进行配置则会在最终构建时引发 [SimbotIllegalStateException].
      *
@@ -281,7 +225,7 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
      * 通过 [process] 注册的逻辑会在最终返回监听默认值 [EventResult.Default]。
      *
      *
-     * 对于同一个 [ListenerGenerator], [process] 或者 [handle] 只能且必须配置 **一次**。
+     * 对于同一个 [SimpleListenerBuilder], [process] 或者 [handle] 只能且必须配置 **一次**。
      * 如果配置次数超过一次会直接引发 [SimbotIllegalStateException]；
      * 如果未进行配置则会在最终构建时引发 [SimbotIllegalStateException].
      *
@@ -329,18 +273,58 @@ public class SimpleListenerBuilder<E : Event>(public val target: Event.Key<E>) :
      * 构建并得到目标结果。
      */
     override fun build(): EventListener {
-        val id0 = _id ?: randomIdStr()
         return simpleListener(
             target = target,
-            id = id0,
-            isAsync = isAsync,
-            priority = priority,
             matcher = matcher ?: { true },
             function = func ?: throw SimbotIllegalStateException("The handle function must be configured")
         )
     }
 }
 
+
+/**
+ * 基于 [SimpleListenerBuilder] 构建一个 [SimpleEventListenerRegistrationDescription].
+ *
+ * @see SimpleListenerBuilder
+ *
+ */
+public class SimpleListenerRegistrationDescriptionBuilder<E : Event>(target: Event.Key<E>) :
+    SimpleListenerBuilder<E>(target), EventListenerRegistrationDescriptionBuilder {
+    
+    /**
+     * 监听函数注册时的优先级.
+     */
+    @SimpleListenerBuilderDSL
+    public var priority: Int = EventListenerRegistrationDescription.DEFAULT_PRIORITY
+    
+    /**
+     * 监听函数注册时的优先级.
+     */
+    @SimpleListenerBuilderDSL
+    public fun priority(priority: Int): SimpleListenerRegistrationDescriptionBuilder<E> = apply {
+        this.priority = priority
+    }
+    
+    /**
+     * 监听函数注册时的异步标记.
+     */
+    @SimpleListenerBuilderDSL
+    public var isAsync: Boolean = EventListenerRegistrationDescription.DEFAULT_ASYNC
+    
+    /**
+     * 监听函数注册时的优先级.
+     */
+    @SimpleListenerBuilderDSL
+    @JvmOverloads
+    public fun async(async: Boolean = true): SimpleListenerRegistrationDescriptionBuilder<E> = apply {
+        this.isAsync = async
+    }
+    
+    override fun buildDescription(): EventListenerRegistrationDescription {
+        return build().toRegistrationDescription(priority = priority, isAsync = isAsync)
+    }
+    
+}
 
 /**
  * 通过 [SimpleListenerBuilder] 构建一个 [EventListener] 实例。
@@ -378,6 +362,46 @@ public inline fun <E : Event> buildSimpleListener(
     return SimpleListenerBuilder(target).also(block).build()
 }
 
+/**
+ * 通过 [SimpleListenerRegistrationDescriptionBuilder] 构建一个 [EventListenerRegistrationDescription] 实例。
+ * ```kotlin
+ * buildSimpleListenerRegistrationDescription(FooEvent) {
+ *     isAsync = true
+ *     priority = PriorityContact.FIRST
+ *     match { true }
+ *     match { true }
+ *     handle {
+ *         // handle..
+ *
+ *         EventResult.defaults()
+ *     }
+ * }
+ * ```
+ *
+ * 或
+ *
+ *
+ * ```kotlin
+ * buildSimpleListenerRegistrationDescription(FooEvent) {
+ *     isAsync = true
+ *     priority = PriorityContact.FIRST
+ *     match { true }
+ *     match { true }
+ *     process {
+ *         // handle..
+ *     }
+ * }
+ * ```
+ *
+ *
+ */
+public inline fun <E : Event> buildSimpleListenerRegistrationDescription(
+    target: Event.Key<E>,
+    block: SimpleListenerRegistrationDescriptionBuilder<E>.() -> Unit,
+): EventListenerRegistrationDescription {
+    return SimpleListenerRegistrationDescriptionBuilder(target).also(block).buildDescription()
+}
+
 
 /**
  * 通过 [SimpleListenerBuilder] 构建一个 [EventListener] 实例。
@@ -400,6 +424,31 @@ public inline fun <E : Event> buildSimpleListener(
 @ExperimentalSimbotApi
 public inline fun <reified E : Event> buildSimpleListener(block: SimpleListenerBuilder<E>.() -> Unit): EventListener {
     return buildSimpleListener(E::class.getKey(), block)
+}
+
+/**
+ * 通过 [SimpleListenerRegistrationDescriptionBuilder] 构建一个 [EventListenerRegistrationDescription] 实例。
+ * ```kotlin
+ * buildSimpleListenerRegistrationDescription<FooEvent> {
+ *     isAsync = true
+ *     priority = PriorityContact.FIRST
+ *     match { true }
+ *     match { true }
+ *     handle {
+ *         // handle..
+ *
+ *         EventResult.defaults()
+ *     }
+ * }
+ * ```
+ *
+ * 更建议使用 [`buildSimpleListener(FooEvent) { ... }`][buildSimpleListener] 这种显示指定 `target key` 的形式。
+ *
+ * @see buildSimpleListenerRegistrationDescription
+ */
+@ExperimentalSimbotApi
+public inline fun <reified E : Event> buildSimpleListenerRegistrationDescription(block: SimpleListenerRegistrationDescriptionBuilder<E>.() -> Unit): EventListenerRegistrationDescription {
+    return buildSimpleListenerRegistrationDescription(E::class.getKey(), block)
 }
 
 // extra

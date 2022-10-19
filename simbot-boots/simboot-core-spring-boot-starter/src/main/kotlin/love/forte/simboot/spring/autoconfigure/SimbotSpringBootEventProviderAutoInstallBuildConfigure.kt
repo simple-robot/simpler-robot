@@ -18,10 +18,11 @@ package love.forte.simboot.spring.autoconfigure
 
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
-import love.forte.simbot.LoggerFactory
+// import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.application.EventProvider
 import love.forte.simbot.application.EventProviderFactory
 import love.forte.simbot.application.installAllEventProviders
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 
 
@@ -90,6 +91,6 @@ public open class SimbotSpringBootEventProviderAutoInstallBuildConfigure(
     }
     
     public companion object {
-        private val logger = LoggerFactory.getLogger<SimbotSpringBootEventProviderAutoInstallBuildConfigure>()
+        private val logger = LoggerFactory.getLogger(SimbotSpringBootEventProviderAutoInstallBuildConfigure::class.java)
     }
 }

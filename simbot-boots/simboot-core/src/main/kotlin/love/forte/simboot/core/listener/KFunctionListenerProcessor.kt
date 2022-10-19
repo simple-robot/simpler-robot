@@ -24,7 +24,6 @@ import love.forte.simboot.annotation.*
 import love.forte.simboot.annotation.Filter
 import love.forte.simboot.core.filter.CoreFiltersAnnotationProcessor
 import love.forte.simboot.core.filter.FiltersAnnotationProcessContext
-import love.forte.simboot.core.utils.sign
 import love.forte.simboot.filter.MultiFilterMatchType
 import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
 import love.forte.simboot.interceptor.ListenerPreparer
@@ -37,6 +36,7 @@ import love.forte.simbot.core.event.EventInterceptEntrance
 import love.forte.simbot.core.event.plus
 import love.forte.simbot.core.event.proxy
 import love.forte.simbot.event.*
+import love.forte.simbot.logger.LoggerFactory
 import org.slf4j.Logger
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Named
@@ -74,7 +74,7 @@ public class KFunctionListenerProcessor(
     public fun process(context: FunctionalListenerProcessContext): EventListener {
         val function = context.function.also { it.checkLegal() }
         
-        val functionId = context.id ?: function.sign()
+        // val functionId = context.id ?: function.sign()
         val listenTargets = function.listenTargets()
         val binders = function.binders(context)
         val listenerAttributeMap = AttributeMutableMap(ConcurrentHashMap())
@@ -85,9 +85,6 @@ public class KFunctionListenerProcessor(
         listenerAttributeMap[BootListenerAttributes.RawListenTargets] = listenTargets
         
         val listener = KFunctionEventListener(
-            id = functionId,
-            priority = context.priority,
-            isAsync = context.isAsync,
             targets = listenTargets.toSet(),
             binders = binders.toTypedArray(),
             attributeMap = listenerAttributeMap,
@@ -105,7 +102,12 @@ public class KFunctionListenerProcessor(
         val preparers = function.preparers(context)
         
         // logger
-        logger.debug("The size of resolved listener filters: {}, interceptors: {}, preparers: {}", filters.size, interceptors.size, preparers.size)
+        logger.debug(
+            "The size of resolved listener filters: {}, interceptors: {}, preparers: {}",
+            filters.size,
+            interceptors.size,
+            preparers.size
+        )
         if (logger.isDebugEnabled) {
             if (filters.isNotEmpty()) {
                 logger.debug("Resolved listener filters: {}", filters)
@@ -300,6 +302,7 @@ public class KFunctionListenerProcessor(
                                     bindList.add(result)
                                 }
                             }
+                            
                             is ParameterBinderResult.Only -> {
                                 if (bindList.isNotEmpty() && bindList.first() is ParameterBinderResult.Only) {
                                     // 上一个也是Only.
@@ -309,6 +312,7 @@ public class KFunctionListenerProcessor(
                                     bindList.add(result)
                                 }
                             }
+                            
                             is ParameterBinderResult.Spare -> {
                                 bindSpareList.add(result)
                             }
@@ -338,10 +342,12 @@ public class KFunctionListenerProcessor(
                     // no binder.
                     EmptyBinder(parameter)
                 }
+                
                 bindList.isEmpty() -> {
                     // spare as normal.
                     MergedBinder(bindSpareList.map { it.binder }, emptyList(), parameter)
                 }
+                
                 else -> {
                     MergedBinder(
                         bindList.map { it.binder },
@@ -396,6 +402,7 @@ public class KFunctionListenerProcessor(
             value.isNotEmpty() -> {
                 context.beanContainer[value, AnnotatedEventListenerInterceptor::class]
             }
+            
             type != AnnotatedEventListenerInterceptor::class -> {
                 val obj = type.objectInstance
                 
@@ -419,6 +426,7 @@ public class KFunctionListenerProcessor(
                 
                 obj ?: tryCreate()
             }
+            
             else ->
                 throw SimbotIllegalStateException("@Interceptor needs to specify [value] or [type], and [value] cannot be empty or type cannot be equal to [AnnotatedEventListenerInterceptor.class] type self. But now the value is empty and the type is [AnnotatedEventListenerInterceptor.class].")
         }
@@ -492,10 +500,12 @@ private class EmptyBinder(
             val ignoreResult: Result<Any?> = Result.success(ParameterBinder.Ignore)
             ({ ignoreResult })
         }
+        
         parameter.type.isMarkedNullable -> {
             val nullResult: Result<Any?> = Result.success(null)
             ({ nullResult })
         }
+        
         else -> ({
             Result.failure(BindException("Parameter(#${parameter.index}) [$parameter] has no binder."))
         })
@@ -557,18 +567,18 @@ private class MergedBinder(
             }
             if (isOptional) {
                 if (logger.isTraceEnabled) {
-                    logger.debug("Nothing binder success for listener(id={}).", context.listener.id)
-                    logger.trace("Nothing binder success for listener(id=${context.listener.id})", err)
+                    logger.debug("Nothing binder success for listener {}", context.listener)
+                    logger.trace("Nothing binder success for listener {})", context.listener, err)
                 } else {
                     logger.debug(
-                        "Nothing binder success for listener(id={}). Enable trace level logging to view detailed reasons.",
-                        context.listener.id
+                        "Nothing binder success for listener {}. Enable trace level logging to view detailed reasons.",
+                        context.listener
                     )
                 }
                 return Result.success(ParameterBinder.Ignore)
             }
             
-            Result.failure<Any?>(BindException("Nothing binder success for listener(id=${context.listener.id})", err))
+            Result.failure<Any?>(BindException("Nothing binder success for listener ${context.listener}", err))
         }.getOrElse { binderInvokeException ->
             err?.also {
                 binderInvokeException.addSuppressed(it)

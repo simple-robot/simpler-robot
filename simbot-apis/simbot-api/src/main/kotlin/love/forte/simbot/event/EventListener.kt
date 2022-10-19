@@ -16,8 +16,8 @@
 
 package love.forte.simbot.event
 
-import kotlinx.coroutines.Deferred
 import love.forte.simbot.*
+import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.utils.runWithInterruptible
 import org.slf4j.Logger
 
@@ -56,7 +56,10 @@ public fun interface BlockingEventListenerFunction : EventListenerFunction {
 }
 
 
-private val temporaryLogger = LoggerFactory.getLogger("love.forte.simbot.event.EventListener")
+private val TEMPORARY_LOGGER = LoggerFactory.getLogger("love.forte.simbot.event.EventListener")
+private const val TEMPORARY_ID = ""
+private const val TEMPORARY_IS_ASYNC = false
+private const val TEMPORARY_IS_PRIORITY = PriorityConstant.NORMAL
 
 /**
  *
@@ -72,44 +75,33 @@ public interface EventListener : java.util.EventListener, AttributeContainer, Lo
     EventListenerFunction {
     
     /**
-     * 监听器必须是唯一的. 通过 [id] 进行唯一性确认。
+     * 监听函数本身不需要所谓的'唯一标识'.
      */
-    public val id: String
+    @Deprecated("No longer needed", level = DeprecationLevel.ERROR)
+    public val id: String get() = TEMPORARY_ID
     
     /**
-     * 当前监听函数内部存在的日志对象。
+     * 监听函数本身不需要所谓的'日志'.
      */
-    @Deprecated("Will be remove", level = DeprecationLevel.ERROR)
-    override val logger: Logger get() = temporaryLogger
+    @Deprecated("No longer needed", level = DeprecationLevel.ERROR)
+    override val logger: Logger get() = TEMPORARY_LOGGER
     
     /**
-     * 优先级。对于一次事件处理流程，所有监听函数会根据此优先级进行顺序处理。
-     * 整个流程下的所有监听函数中，[isAsync] == true 的监听函数会比普通函数有更高的优先级。
+     * 监听函数本身不持有'优先级'.
      */
-    public val priority: Int get() = PriorityConstant.NORMAL
+    @Deprecated("No longer needed", level = DeprecationLevel.ERROR)
+    public val priority: Int get() = TEMPORARY_IS_PRIORITY
     
     /**
-     * 是否需要异步执行。
      *
-     * 对于一个 [EventListener] 来说，[isAsync] 仅代表一个“标记”，不会影响 [invoke] 的实际执行效果。
-     * [isAsync] 的表现形式应当由持有当前监听函数的 [EventProcessor] 来做决定。
-     *
-     *
-     * 通常情况下来讲，异步执行的监听函数会被异步执行并立即返回一个 [Deferred], 并将其作为 [AsyncEventResult] 提供给当前的事件处理上下文中。
-     *
-     * 默认情况下，异步函数无法通过 [EventResult.isTruncated] 截断后续函数。
-     *
-     * 当 `isAsync == true` 时，当前监听函数在 [EventProcessor] 中被调度的实际顺序会高于 `isAsync == false` 的函数，
-     * 也就是说当一次事件被推送的时候，会优先启动所有的异步监听函数。
-     *
-     * 理所当然的, 当监听函数被标记为 [isAsync] 时，其对应的所有 [监听函数拦截器][EventListenerInterceptor] 也应当相同的被异步化，并会拦截真正的监听函数结果。
-     * 而 [监听事件拦截器][EventProcessingInterceptor] 不会受到影响。
+     * 监听函数本身不需要所谓的'异步标识'.
      *
      */
-    public val isAsync: Boolean
+    @Deprecated("No longer needed", level = DeprecationLevel.ERROR)
+    public val isAsync: Boolean get() = TEMPORARY_IS_ASYNC
     
     /**
-     * 判断当前监听函数是否对可以对指定的事件进行监听。
+     * 判断当前监听函数是否可以对指定的事件进行监听。
      *
      */
     public fun isTarget(eventType: Event.Key<*>): Boolean
@@ -164,8 +156,6 @@ public interface EventListener : java.util.EventListener, AttributeContainer, Lo
  */
 @Api4J
 public interface BlockingEventListener : EventListener, BlockingEventListenerFunction {
-    override val id: String
-    override val isAsync: Boolean
     override fun isTarget(eventType: Event.Key<*>): Boolean
     
     @JvmSynthetic

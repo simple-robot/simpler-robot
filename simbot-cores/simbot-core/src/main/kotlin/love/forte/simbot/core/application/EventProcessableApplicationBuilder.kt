@@ -19,7 +19,7 @@ package love.forte.simbot.core.application
 import love.forte.simbot.application.Application
 import love.forte.simbot.application.ApplicationBuilder
 import love.forte.simbot.application.ApplicationBuilderDsl
-import love.forte.simbot.core.event.EventListenersGenerator
+import love.forte.simbot.core.event.EventListenerRegistrationDescriptionsGenerator
 import love.forte.simbot.core.event.SimpleListenerManagerConfiguration
 
 
@@ -53,7 +53,7 @@ public interface EventProcessableApplicationBuilder<A : Application> :
  * ```
  */
 @ApplicationBuilderDsl
-public inline fun EventProcessableApplicationBuilder<*>.listeners(crossinline block: EventListenersGenerator.(environment: Application.Environment) -> Unit) {
+public inline fun EventProcessableApplicationBuilder<*>.listeners(crossinline block: EventListenerRegistrationDescriptionsGenerator.(environment: Application.Environment) -> Unit) {
     eventProcessor { env ->
         listeners {
             block(env)

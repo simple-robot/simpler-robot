@@ -14,13 +14,13 @@
  *
  */
 
-package love.forte.simboot.spring.autoconfigure
-//
-// /**
-//  * 使用在 [SimbotSpringBootListenerAutoRegisterBuildConfigure] 中。
-//  */
-//
-// internal fun resolveAllBinders(beans: Array<String>) {
-//
-// }
+import love.forte.gradle.common.core.property.systemProp
 
+
+object CI {
+    const val IS_CI = "IS_CI"
+}
+
+val isCi = systemProp(CI.IS_CI).toBoolean()
+
+val isLinux: Boolean = systemProp("os.name")?.contains("linux", true) ?: false

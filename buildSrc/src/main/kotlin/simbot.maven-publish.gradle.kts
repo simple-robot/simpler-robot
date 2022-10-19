@@ -14,6 +14,9 @@
  *
  */
 
+import love.forte.gradle.common.core.Gpg
+import love.forte.gradle.common.core.property.systemProp
+import love.forte.gradle.common.publication.configure.jvmConfigPublishing
 import utils.checkPublishConfigurable
 
 /*
@@ -39,150 +42,52 @@ plugins {
     id("maven-publish")
 }
 
-val (isSnapshotOnly, isReleaseOnly, isPublishConfigurable) = checkPublishConfigurable()
-
-println("isSnapshotOnly: $isSnapshotOnly")
-println("isReleaseOnly: $isReleaseOnly")
-println("isPublishConfigurable: $isPublishConfigurable")
-
-
-if (isPublishConfigurable) {
-    val sonatypeUsername: String? = systemProp("OSSRH_USER")
-    val sonatypePassword: String? = systemProp("OSSRH_PASSWORD")
-    
-    if (sonatypeUsername == null || sonatypePassword == null) {
-        println("[WARN] - sonatype.username or sonatype.password is null, cannot config nexus publishing.")
-    }
-    
-    val jarSources by tasks.registering(Jar::class) {
-        archiveClassifier.set("sources")
-        from(sourceSets["main"].allSource)
-    }
-    
-    val jarJavadoc by tasks.registering(Jar::class) {
-        archiveClassifier.set("javadoc")
-    }
-    
-    publishing {
-        publications {
-            create<MavenPublication>("simbotDist") {
-                from(components["java"])
-                artifact(jarSources)
-                artifact(jarJavadoc)
-                
-                groupId = project.group.toString()
-                artifactId = project.name
-                version = project.version.toString()
-                
-                println("[publication] - groupId:    $groupId")
-                println("[publication] - artifactId: $artifactId")
-                println("[publication] - version:    $version")
-                
-                pom {
-                    show()
-                    
-                    name.set("${project.group}:${project.name}")
-                    description.set(project.description ?: P.Simbot.DESCRIPTION)
-                    url.set("https://github.com/simple-robot/simpler-robot")
-                    licenses {
-                        license {
-                            name.set("GNU GENERAL PUBLIC LICENSE, Version 3")
-                            url.set("https://www.gnu.org/licenses/gpl-3.0-standalone.html")
-                        }
-                        license {
-                            name.set("GNU LESSER GENERAL PUBLIC LICENSE, Version 3")
-                            url.set("https://www.gnu.org/licenses/lgpl-3.0-standalone.html")
-                        }
-                    }
-                    scm {
-                        url.set("https://github.com/ForteScarlet/simpler-robot")
-                        connection.set("scm:git:https://github.com/simple-robot/simpler-robot.git")
-                        developerConnection.set("scm:git:ssh://git@github.com/simple-robot/simpler-robot.git")
-                    }
-                    
-                    setupDevelopers()
-                }
+if (!isCi || isLinux) {
+    checkPublishConfigurable {
+        val p = project
+        
+        jvmConfigPublishing {
+            val groupProject = P::class.sealedSubclasses.mapNotNull { it.objectInstance }.associateBy { obj -> obj.group }
+            project = groupProject[p.group] ?: error("unknown project group: ${p.group}")
+            
+            publicationName = "simbotDist"
+            
+            val jarSources by tasks.registering(Jar::class) {
+                archiveClassifier.set("sources")
+                from(sourceSets["main"].allSource)
             }
             
+            val jarJavadoc by tasks.registering(Jar::class) {
+                archiveClassifier.set("javadoc")
+            }
+            
+            artifact(jarSources)
+            artifact(jarJavadoc)
+            
+            isSnapshot = project.version.toString().contains("SNAPSHOT", true)
+            releasesRepository = ReleaseRepository
+            snapshotRepository = SnapshotRepository
+            gpg = Gpg.ofSystemPropOrNull()
             
             
-            repositories {
-                mavenLocal()
-                if (project.version.toString().contains("SNAPSHOT", true)) {
-                    configPublishMaven(Sonatype.Snapshot, sonatypeUsername, sonatypePassword)
-                } else {
-                    configPublishMaven(Sonatype.Central, sonatypeUsername, sonatypePassword)
-                }
-            }
         }
-    }
-    
-    // https://stackoverflow.com/questions/57921325/gradle-signarchives-unable-to-read-secret-key
-    // https://github.com/gradle/gradle/issues/15718
-    
-    val keyId = System.getenv("GPG_KEY_ID")
-    val secretKey = System.getenv("GPG_SECRET_KEY")
-    val password = System.getenv("GPG_PASSWORD")
-    
-    if (keyId != null) {
-        signing {
-            setRequired {
-                !project.version.toString().endsWith("SNAPSHOT")
-            }
-    
-            useInMemoryPgpKeys(keyId, secretKey, password)
-    
-            sign(publishing.publications)
-        }
-    } else {
-        logger.warn("Signing property [keyId] (from system env [GPG_KEY_ID]) is null.")
-    }
-    
-    
-    logger.info("[publishing-configure] - [{}] configured.", name)
-}
-
-
-fun RepositoryHandler.configPublishMaven(sonatype: Sonatype, username: String?, password: String?) {
-    maven {
-        name = sonatype.name
-        url = uri(sonatype.url)
-        credentials {
-            this.username = username
-            this.password = password
-        }
-    }
-}
-
-/**
- * 配置开发者/协作者信息。
- *
- */
-fun MavenPom.setupDevelopers() {
-    developers {
-        developer {
-            id.set("forte")
-            name.set("ForteScarlet")
-            email.set("ForteScarlet@163.com")
-            url.set("https://github.com/ForteScarlet")
-        }
-        developer {
-            id.set("forliy")
-            name.set("ForliyScarlet")
-            email.set("ForliyScarlet@163.com")
-            url.set("https://github.com/ForliyScarlet")
-        }
+        show()
     }
 }
 
 fun show() {
     //// show project info
-    println("========================================================")
-    println("== project.group:       $group")
-    println("== project.name:        $name")
-    println("== project.version:     $version")
-    println("== project.description: $description")
-    println("========================================================")
+    logger.info(
+        """
+        |=======================================================
+        |= project.group:       {}
+        |= project.name:        {}
+        |= project.version:     {}
+        |= project.description: {}
+        |=======================================================
+    """.trimIndent(),
+        group, name, version, description
+    )
 }
 
 

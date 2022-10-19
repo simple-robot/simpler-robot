@@ -25,7 +25,6 @@ import love.forte.simbot.event.Event.Key.Companion.getKey
 import love.forte.simbot.event.Event.Key.Companion.isSub
 import love.forte.simbot.message.doSafeCast
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentSkipListSet
 import kotlin.reflect.KClass
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.findAnnotation
@@ -179,9 +178,12 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
 
         public companion object {
             private val keyCache = ConcurrentHashMap<KClass<*>, Key<*>>()
-            private val subCache = ConcurrentHashMap<String, ConcurrentSkipListSet<String>>()
-            private val notSubCache = ConcurrentHashMap<String, ConcurrentSkipListSet<String>>()
-
+            private val subCache = ConcurrentHashMap<String, ConcurrentHashMap<String, Unit>>()
+            private val notSubCache = ConcurrentHashMap<String, ConcurrentHashMap<String, Unit>>()
+    
+            private fun getSubCache(id: String): ConcurrentHashMap<String, Unit> = subCache.computeIfAbsent(id) { ConcurrentHashMap() }
+            private fun getNotSubCache(id: String): ConcurrentHashMap<String, Unit> = notSubCache.computeIfAbsent(id) { ConcurrentHashMap() }
+            
             /**
              * 检测当前接收器是否为 [from] 的子类型。
              */
@@ -194,10 +196,10 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
 
                 val tid = target.id.literal
                 val fid = from.id.literal
-                if (subCache.computeIfAbsent(tid) { ConcurrentSkipListSet() }.contains(fid)) {
+                if (getSubCache(tid).containsKey(fid)) {
                     return true
                 }
-                if (notSubCache.computeIfAbsent(tid) { ConcurrentSkipListSet() }.contains(fid)) {
+                if (getNotSubCache(tid).containsKey(fid)) {
                     return false
                 }
 
@@ -206,9 +208,9 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
                     it isSub from
                 }
                 if (isSub) {
-                    subCache.computeIfAbsent(tid) { ConcurrentSkipListSet() }.add(fid)
+                    getSubCache(tid)[fid] = Unit
                 } else {
-                    notSubCache.computeIfAbsent(tid) { ConcurrentSkipListSet() }.add(fid)
+                    getNotSubCache(tid)[fid] = Unit
                 }
                 return isSub
             }

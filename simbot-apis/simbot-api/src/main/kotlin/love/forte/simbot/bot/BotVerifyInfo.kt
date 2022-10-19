@@ -24,7 +24,7 @@ import kotlinx.serialization.json.JsonBuilder
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.properties.Properties
 import love.forte.simbot.ExperimentalSimbotApi
-import love.forte.simbot.LoggerFactory
+import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.resources.DeserializableResource
 import love.forte.simbot.resources.DeserializableResourceDecoder
 import love.forte.simbot.resources.SerialFormatDeserializableResourceDecoder

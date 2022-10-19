@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -14,13 +14,34 @@
  *
  */
 
+package love.forte.simbot.event
 
-object V {
+
+/**
+ * 被注册后监听函数的句柄.
+ *
+ *
+ * @author ForteScarlet
+ */
+public interface EventListenerHandle {
     
     /**
-     * Kotlin相关依赖项
+     * 将当前监听函数移除于目标容器中.
+     *
+     * @return 是否移除成功. 如果目标容器中已经不存在当前句柄所描述的监听函数则会得到 `false`.
      */
-    object Kotlin {
-        const val VERSION = "1.7.10"
-    }
+    public fun dispose(): Boolean
+    
+    /**
+     * 判断当前句柄所描述的监听函数是否存在于目标容器中.
+     */
+    public val isExists: Boolean
+    
+    /**
+     * 此句柄所属的 [EventListenerContainer].
+     */
+    public val container: EventListenerContainer
+    
 }
+
+

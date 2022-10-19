@@ -23,7 +23,6 @@ import love.forte.simbot.ability.CompletionPerceivable
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotVerifyInfo
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -89,7 +88,7 @@ public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> 
      * [onCompletion] 的实现应当是**线程安全**的。因此你可以安全的在 [ApplicationBuilder]
      * 内的一些其他函数中并行的注册或使用 [handle] 函数。
      *
-     * [onCompletion] 在并行注册的情况下，不保证其最终的执行顺序。
+     * [onCompletion] 在并行注册的情况下，不保证其最终地执行顺序。
      *
      * 假如当前builder已经构建完毕，再调用此函数则会**异步的**立刻执行 [handle] 函数。
      * 此时执行 [handle] 使用的异步协程作用域为已经构建完毕的 [Application].
@@ -105,7 +104,7 @@ public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> 
  * 提供一个通过 [BotVerifyInfo] 注册的通用bot注册函数。
  *
  * [BotRegistrar] 会通过 [BotVerifyInfo] 中的 [组件id][BotVerifyInfo.componentId]
- * 去当前环境中寻找对应组件的、实现了 [Bot注册器][love.forte.simbot.BotRegistrar] 的 [事件提供者][EventProvider],
+ * 去当前环境中寻找对应组件的、实现了 [Bot注册器][love.forte.simbot.bot.BotRegistrar] 的 [事件提供者][EventProvider],
  * 并尝试注册此bot。
  *
  */
@@ -114,7 +113,7 @@ public interface BotRegistrar {
     /**
      * 当前环境中的所有事件提供者。
      *
-     * 你可以通过 [providers] 寻找你所需要的指定 [Bot注册器][love.forte.simbot.BotRegistrar]。
+     * 你可以通过 [providers] 寻找你所需要的指定 [Bot注册器][love.forte.simbot.bot.BotRegistrar]。
      *
      * ```kotlin
      * providers.filterIsInstance<FooBotRegistrar>().forEach {
@@ -133,10 +132,10 @@ public interface BotRegistrar {
     
     /**
      * 通过 [BotVerifyInfo] 中的 [组件信息][BotVerifyInfo.componentId]
-     * 去当前环境中寻找对应组件的、实现了 [Bot注册器][love.forte.simbot.BotRegistrar] 的 [事件提供者][EventProvider],
+     * 去当前环境中寻找对应组件的、实现了 [Bot注册器][love.forte.simbot.bot.BotRegistrar] 的 [事件提供者][EventProvider],
      * 并尝试注册此bot。
      *
-     * 如果没有找到符合组件id的 [Bot注册器][love.forte.simbot.BotRegistrar] 存在，则返回null。
+     * 如果没有找到符合组件id的 [Bot注册器][love.forte.simbot.bot.BotRegistrar] 存在，则返回null。
      */
     public fun register(botVerifyInfo: BotVerifyInfo): Bot?
 }
@@ -168,6 +167,6 @@ public open class ApplicationConfiguration {
     /**
      * 提供一个用于Application内部的日志对象。
      */
-    public open var logger: Logger = LoggerFactory.getLogger("love.forte.simbot.application.ApplicationConfiguration")
+    public open var logger: Logger = love.forte.simbot.logger.LoggerFactory.getLogger("love.forte.simbot.application.ApplicationConfiguration")
     
 }

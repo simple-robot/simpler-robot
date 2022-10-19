@@ -21,3 +21,16 @@ plugins {
     id("simbot.dokka-multi-module")
 }
 
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        love.forte.gradle.common.core.repository.Repositories.Snapshot.Default.apply {
+            configMaven {
+                mavenContent {
+                    snapshotsOnly()
+                }
+            }
+        }
+    }
+}

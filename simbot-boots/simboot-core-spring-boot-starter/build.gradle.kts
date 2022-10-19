@@ -16,9 +16,9 @@
 
 plugins {
     id("simbot.boot-module-conventions")
-    id("simbot.maven-publish")
+    `simbot-jvm-maven-publish`
     kotlin("plugin.serialization")
-    kotlin("kapt")
+    // kotlin("kapt")
 }
 
 
@@ -33,8 +33,8 @@ dependencies {
 
     implementation(libs.spring.boot.autoconfigure)
     implementation(libs.spring.boot.configuration.processor)
-    annotationProcessor(libs.spring.boot.configuration.processor)
-    kapt(libs.spring.boot.configuration.processor)
+    // annotationProcessor(libs.spring.boot.configuration.processor)
+    // kapt(libs.spring.boot.configuration.processor)
 
     compileOnly(libs.javax.annotation.api)
     compileOnly(libs.forte.annotationTool.api)
