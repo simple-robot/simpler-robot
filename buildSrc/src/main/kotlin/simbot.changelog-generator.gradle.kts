@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -193,10 +193,12 @@ fun StringBuilder.repoRowMulti(
     id: String,
     version: String,
 ) {
-    kotlin.targets.forEach {
-        if (it.platformType != KotlinPlatformType.common) {
-            repoRow("$moduleName-${it.targetName}", group, "$id-${it.targetName.toLowerCase()}", version)
-        }
+    kotlin.targets.filter {
+        it.platformType != KotlinPlatformType.common
+    }.sortedBy {
+        it.platformType
+    }.forEach {
+        repoRow("$moduleName-${it.targetName}", group, "$id-${it.targetName.toLowerCase()}", version)
     }
     
 }
