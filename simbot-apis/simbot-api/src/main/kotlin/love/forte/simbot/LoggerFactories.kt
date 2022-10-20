@@ -20,71 +20,50 @@
 
 package love.forte.simbot
 
-
-// /**
-//  * api模块下使用的 i18n内容。
-//  * TODO
-//  */
-// internal val
-//         @receiver:PropertyKey(resourceBundle = "lang.api-message")
-//         String.i18n: String
-//     get() = I18n[this]
-
-// TODO
-//
-// internal object I18n {
-//     private val resourceBundle = ResourceBundle.getBundle("lang/api-message")
-//     operator fun get(
-//         @PropertyKey(
-//             resourceBundle = "lang.api-message"
-//         )
-//         key: String,
-//     ): String = resourceBundle.getString(key)
-//
-//     val keys: Iterator<String> get() = resourceBundle.keys.iterator()
-//     val locale: String get() = resourceBundle.locale.displayName
-// }
-
+import love.forte.simbot.logger.Logger
+import love.forte.simbot.logger.logger
+import kotlin.reflect.KClass
 
 /**
  * 日志工厂, 用于得到一个日志实例.
  * @author ForteScarlet
  */
-// public object LoggerFactory {
-//
-//     /**
-//      * 根据名称得到一个 [Logger].
-//      *
-//      * @see LoggerFactory.getLogger
-//      */
-//     @JvmStatic
-//     public fun getLogger(name: String): Logger = LoggerFactory.getLogger(name)
-//
-//     /**
-//      * 根据 [KClass]（的全限定名称）构建一个 [Logger].
-//      *
-//      */
-//     @JvmStatic
-//     public fun getLogger(type: KClass<*>): Logger =
-//         kotlin.runCatching { getLogger(type.java) }.getOrElse {
-//             kotlin.runCatching { getLogger(type.qualifiedName ?: type.simpleName ?: type.toString()) }.getOrElse {
-//                 getLogger(type.toString())
-//             }
-//         }
-//
-//     /**
-//      * 根据 [T]（的全限定名称）构建一个 [Logger].
-//      *
-//      */
-//     public inline fun <reified T : Any> getLogger(): Logger = getLogger(T::class)
-//
-//
-//     /**
-//      * 根据 [Class] 构建一个 [Logger].
-//      *
-//      * @see LoggerFactory.getLogger
-//      */
-//     @JvmStatic
-//     public fun getLogger(type: Class<*>): Logger = LoggerFactory.getLogger(type)
-//
-// }
+@Deprecated(
+    "Use love.forte.simbot.logger.LoggerFactory",
+    ReplaceWith("love.forte.simbot.logger.LoggerFactory"),
+    DeprecationLevel.ERROR
+)
+public object LoggerFactory {
+    
+    /**
+     * 根据名称得到一个 [Logger].
+     *
+     * @see LoggerFactory.getLogger
+     */
+    @JvmStatic
+    public fun getLogger(name: String): Logger = love.forte.simbot.logger.LoggerFactory.getLogger(name)
+    
+    /**
+     * 根据 [KClass]（的全限定名称）构建一个 [Logger].
+     *
+     */
+    @JvmStatic
+    public fun getLogger(type: KClass<*>): Logger =
+        love.forte.simbot.logger.LoggerFactory.getLogger(type)
+    
+    /**
+     * 根据 [T]（的全限定名称）构建一个 [Logger].
+     *
+     */
+    public inline fun <reified T : Any> getLogger(): Logger = love.forte.simbot.logger.LoggerFactory.logger<T>()
+    
+    
+    /**
+     * 根据 [Class] 构建一个 [Logger].
+     *
+     * @see LoggerFactory.getLogger
+     */
+    @JvmStatic
+    public fun getLogger(type: Class<*>): Logger = love.forte.simbot.logger.LoggerFactory.getLogger(type)
+    
+}
