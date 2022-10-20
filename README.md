@@ -2,7 +2,7 @@
 <div align="center">
     <a href="https://simbot.forte.love/"><img src=".simbot/logo.png" alt="logo" style="width:230px; height:230px; border-radius:50%; " /></a>
     <h2>
-        - Simpler Robot -
+        - Simple Robot -
     </h2>
     <small>
         ~ simbot v3 ~      
@@ -37,19 +37,16 @@
 <a href="./COPYING"><img alt="copying" src="https://img.shields.io/github/license/ForteScarlet/simpler-robot" /></a>
 
 <br>
-    </div>
+
+</div>
 
 <!-- <img alt="lines" src="https://img.shields.io/tokei/lines/github/ForteScarlet/simpler-robot" /> -->
 
 ## 简介
 
-**`Simpler Robot`** 是一个通用机器人开发框架，是 **`Simple Robot`** 的高版本（1.x之后的版本）命名，当前分支为 3.x 版本 (下文简称`simbot3`)。
+**`Simple Robot`** 是一个JVM平台（和多平台）的bot风格事件调度框架（下文简称simbot），提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写bot风格的事件调度应用。目前主要应用于对接各种类型的bot应用平台/框架，并提供统一的API实现。
 
-`simbot3` 是一个JVM平台的通用机器人开发框架，基于simbot核心API并对接开发不同平台的机器人应用，你可以使用相同的代码风格来开发不同平台的机器人。
-
-它提供了丰富的api接口与各种模块以支持机器人开发者与组件开发者使用，对于机器人开发者，你可以通过功能丰富的注解来实现各种较为复杂的事件匹配逻辑。对于组件开发者，你拥有很高的可选择性与灵活性来针对一个平台进行对接。
-
-simbot3相比较于simbot2时代，其(再一次的)完全重构了整体架构，使用全面异步的api提供更加高效更加流畅的使用体验。
+**`simbot`** 通过 [Kotlin](https://kotlinlang.org/) 语言开发并兼容Java（jdk8+）等JVM平台语言，且提供Javaer最爱的Spring Boot Starter，协助你快速开发。
 
 <br>
 <br>
@@ -120,92 +117,22 @@ simbot3目前已经实现的组件有：
 
 ## 走马观花
 
-> 从core模块的应用程序，到boot模块的监听函数。总而言之，随意看看便好。
-
-**Application**
+**事件监听(核心)**
 
 ```kotlin
 suspend fun main() {
-    createSimpleApplication {                           // 构建simbot application
-        listeners {                                     // 配置监听函数
-            FriendMessageEvent { event ->               // 监听 「好友消息」 事件
-                val receipt = event.reply("mua!")       // 回复一句「mua!」
-              
-                delay(3.seconds)                        // 挂起等待3s
-              
-                receipt.delete()                        // 撤回刚刚发送的那一句「mua!」
-                event.friend().send("I love you~")      // 向这个好友发送一句「I love you~」
-              
-            } onMatch { it.friend().id.literal == "1145141919" } // 事件只有当好友的id为「1149159218」的时候才会触发
-            
-        }
-    }.join()
+   createSimpleApplication {
+      listeners {
+          // 事件监听
+          FriendMessageEvent { event -> // this: EventProcessingContext
+             event.reply("Hello, Simbot")
+          }
+      }
+   }.join()
 }
 ```
 
-**事件监听**
-
-```kotlin
-suspend fun main() {
-    createSimpleApplication {                          // 构建simbot application
-        listeners {                                    // 配置监听函数
-            // ===== way 1
-            FriendMessageEvent { event ->              // 监听 「好友消息」 事件
-                // ...                                 // 处理逻辑
-              
-            } onMatch {                                // 此事件触发前的匹配函数
-                // match ...                           // 匹配逻辑
-                true                                   // 匹配结果, 只有为true时才会触发事件
-            } onMatch {                                // 此事件触发前的匹配函数, 与上一个函数是「&&」(逻辑与)的关系
-                // and match ...
-                true
-            }
-            
-            // ===== way 2
-            listen(FriendMessageEvent) {               // 监听 「好友消息」 事件
-                match { true } // match ...            // 此事件触发前的匹配函数
-                match { true } // and match ...        // 此事件触发前的匹配函数, 与上一个函数是「&&」(逻辑与)的关系
-                
-                handle { event ->                      // 监听函数处理逻辑
-                    // handle..
-                    
-                    eventResult()                      // 结束事件, 返回一个事件处理结果
-                }
-            }
-            
-            // ===== way 3
-            
-            val listenerInstance: EventListener = createMyCustomListenerInstance()
-            
-            listener(listenerInstance)                 // 直接注册一个监听函数类型的对象
-        }
-    }.join()
-}
-
-private fun createMyCustomListenerInstance(): EventListener {
-    // ...
-}
-```
-
-**Boot模块下的Application**
-
-```kotlin
-@SimbootApplication
-class App
-
-suspend fun main(vararg args: String) {
-    // import love.forte.simboot.core.invoke
-    SimbootApp.run<App>(args = args).join()
-}
-```
-
-**Boot模块下的事件监听**
-```kotlin
-@Listener
-suspend fun FriendMessageEvent.onEvent() {
-    // ...
-}
-```
+**事件监听(BOOT)**
 
 ```kotlin
 @Listener
@@ -234,6 +161,7 @@ suspend fun GroupMessageEvent.onEvent() {
 ```
 
 **会话**
+
 ```kotlin
 @Listener
 suspend fun FriendMessageEvent.onEvent(session: ContinuousSessionContext) {
@@ -247,6 +175,27 @@ suspend fun FriendMessageEvent.onEvent(session: ContinuousSessionContext) {
     }
 }
 ```
+
+**Java(Spring Boot Starter)**
+
+```java
+@SpringBootApplication
+@EnableSimbot // 启用
+public class MyApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MyApplication.class, args);
+    }
+    
+    /** 事件监听 */
+    @Listener
+    public void onFriendMessage(FriendMessageEvent event) {
+        event.replyBlocking("Hello, ");
+        event.getFriend().sendAsync("Simbot");
+        // 阻塞或异步的不同风格的Java API
+    }
+}
+```
+
 
 
 ## 特别鸣谢
