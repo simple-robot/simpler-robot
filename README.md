@@ -51,9 +51,8 @@
 <br>
 <br>
 
-## ⚠ 注意！！
 
-目前simbot3仍然处于**前期阶段**，如果你想参考simbot2, 可以参考分支: [v2-dev](https://github.com/simple-robot/simpler-robot/tree/v2-dev)
+> _如果你想参考simbot2, 可以参考 [simple-robot-v2](https://github.com/simple-robot/simple-robot-v2)_
 
 ## 文档
 
