@@ -16,17 +16,21 @@
 
 package love.forte.simbot.event
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.future.asCompletableFuture
 import kotlinx.coroutines.future.await
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
-import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.event.EventResult.Default.NormalEmpty
 import love.forte.simbot.event.EventResult.Default.Truncated
 import love.forte.simbot.event.EventResult.Invalid
-import love.forte.simbot.utils.DefaultBlockingContext
-import java.util.concurrent.*
+import java.util.concurrent.CompletableFuture
+import java.util.concurrent.Future
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 
 /**
@@ -101,16 +105,43 @@ public interface EventResult {
          *
          * @see AsyncEventResult
          */
-        @JvmSynthetic
-        public fun async(content: Deferred<EventResult>): AsyncEventResult = DeferredAsyncEventResult(content)
+        public fun async(deferred: Deferred<EventResult>): AsyncEventResult = DeferredAsyncEventResult(deferred)
         
         /**
          * 得到一个异步执行函数的 [AsyncEventResult],
-         * 其 [AsyncEventResult.content] 为一个预期返回 [EventResult] 的 [Future].
+         * 其 [AsyncEventResult.content] 为一个预期返回 [EventResult] 的 [Deferred].
+         *
+         * @see AsyncEventResult
+         * @see CoroutineScope.async
+         */
+        @JvmSynthetic
+        public inline fun async(
+            scope: CoroutineScope,
+            context: CoroutineContext = EmptyCoroutineContext,
+            start: CoroutineStart = CoroutineStart.DEFAULT,
+            crossinline block: suspend CoroutineScope.() -> Any?,
+        ): AsyncEventResult = async(scope.async(context, start) {
+            of(block())
+        })
+        
+        /**
+         * 得到一个异步执行函数的 [AsyncEventResult],
+         * 其 [AsyncEventResult.content] 为一个预期返回 [EventResult] 的 [CompletableFuture].
          *
          * @see AsyncEventResult
          */
-        public fun async(content: Future<EventResult>): AsyncEventResult = FutureAsyncEventResult(content)
+        @JvmStatic
+        public fun async(future: CompletableFuture<EventResult>): AsyncEventResult = FutureAsyncEventResult(future)
+        
+        /**
+         * 得到一个异步执行函数的 [AsyncEventResult],
+         * 其 [AsyncEventResult.content] 为一个预期返回 [EventResult] 的 [CompletableFuture].
+         *
+         * @see AsyncEventResult
+         */
+        @JvmStatic
+        public fun asyncOf(future: CompletableFuture<*>): AsyncEventResult =
+            FutureAsyncEventResult(future.thenApply { of(it) })
         
         /**
          * 根据是否需要阻断后续监听 [isTruncated] 来得到一个默认的 [EventResult] 实例。
@@ -198,7 +229,7 @@ public abstract class AsyncEventResult : SpecialEventResult() {
      * 将结果转化为 [Future].
      */
     @Api4J
-    public abstract fun contentAsFuture(): Future<EventResult>
+    public abstract fun contentAsFuture(): CompletableFuture<EventResult>
     
     /**
      * 等待 [content] 的异步任务响应。
@@ -219,24 +250,11 @@ private class DeferredAsyncEventResult(override val content: Deferred<EventResul
 /**
  * 将一个 [Future] 类型的异步任务作为 [AsyncEventResult.content] 的实现。
  */
-private class FutureAsyncEventResult(override val content: Future<EventResult>) : AsyncEventResult() {
+private class FutureAsyncEventResult(override val content: CompletableFuture<EventResult>) : AsyncEventResult() {
     @Api4J
-    override fun contentAsFuture(): Future<EventResult> = content
+    override fun contentAsFuture(): CompletableFuture<EventResult> = content
     
-    override suspend fun awaitContent(): EventResult =
-        if (content is CompletionStage<*>) {
-            content.await() as EventResult
-        } else {
-            @OptIn(InternalSimbotApi::class)
-            withContext(DefaultBlockingContext) {
-                try {
-                    @Suppress("BlockingMethodInNonBlockingContext")
-                    content.get()
-                } catch (e: ExecutionException) {
-                    throw e.cause ?: e
-                }
-            }
-        }
+    override suspend fun awaitContent(): EventResult = content.await()
 }
 
 
