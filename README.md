@@ -9,11 +9,11 @@
 </small>
 <br>
     <span>
-        <a href="https://github.com/ForteScarlet/simpler-robot" target="_blank">github</a>
+        <a href="https://github.com/ForteScarlet/simpler-robot" target="_blank">GitHub</a>
     </span> 
     &nbsp;&nbsp; | &nbsp;&nbsp;
     <span>
-        <a href="https://gitee.com/ForteScarlet/simpler-robot" target="_blank">gitee</a>
+        <a href="https://gitee.com/ForteScarlet/simpler-robot" target="_blank">Gitee</a>
     </span> <br />
     <small> &gt; 感谢 <a href="https://github.com/ForteScarlet/CatCode" target="_blank">CatCode</a> 开发团队成员制作的simbot logo &lt; </small>
     <br>
