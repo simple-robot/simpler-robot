@@ -14,12 +14,15 @@
  *
  */
 
+@file:JvmName("BlockingRunnerKt")
+
 package love.forte.simbot.utils
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.future
 import love.forte.simbot.InternalSimbotApi
 import java.util.concurrent.*
+import java.util.concurrent.atomic.AtomicLong
 import kotlin.coroutines.CoroutineContext
 
 
@@ -31,15 +34,18 @@ private fun createDefaultDispatcher(
     coreSize: Int?,
     maxSize: Int?,
     keepAliveTime: Long?,
-): ExecutorCoroutineDispatcher {
+): ExecutorCoroutineDispatcher? {
+    if (coreSize == null && maxSize == null && keepAliveTime == null) {
+        return null
+    }
     // cpu / 2 or 1
     val coreSize = (coreSize ?: (Runtime.getRuntime().availableProcessors() / 2)).coerceAtLeast(1)
     val maxSize =
         maxSize?.coerceAtLeast(coreSize) ?: (Runtime.getRuntime().availableProcessors() * 4).coerceAtLeast(coreSize)
     val keepAliveTime = keepAliveTime?.takeIf { it >= 0L } ?: DEFAULT_KEEP_ALIVE_TIME
     
-    // val num = AtomicLong(0)
-    val group = ThreadGroup("defaultBlockingDispatcherThread")
+    val num = AtomicLong(0)
+    val group = ThreadGroup("defaultBlockingDispatcherThreadGroup")
     val executor = ThreadPoolExecutor(
         coreSize,
         maxSize,
@@ -47,7 +53,7 @@ private fun createDefaultDispatcher(
         TimeUnit.MILLISECONDS,
         LinkedBlockingQueue(),
         { r ->
-            Thread(group, r, group.name).also {
+            Thread(group, r, "defaultBlocking-${num.getAndIncrement()}").also {
                 it.isDaemon = true
             }
         }
@@ -70,6 +76,8 @@ private const val DISPATCHER_BASE_PROPERTY = "simbot.runInBlocking.dispatcher"
 
 private const val DISPATCHER_USE_IO_PROPERTY_VALUE = "io"
 private const val DISPATCHER_USE_DEFAULT_PROPERTY_VALUE = "default"
+private const val DISPATCHER_USE_MAIN_PROPERTY_VALUE = "main"
+private const val DISPATCHER_USE_UNCONFINED_PROPERTY_VALUE = "unconfined"
 private const val DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE = "forkJoinPool"
 
 private const val DISPATCHER_CORE_SIZE_PROPERTY = "$DISPATCHER_BASE_PROPERTY.coreSize"
@@ -81,19 +89,8 @@ private const val DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$DISPATCHER_BASE_PROPER
  * 使用在阻塞环境或非Java协程环境中的默认调度器实现。
  * 会在首次被获取的时候进行实例化。
  *
- * 默认情况下，[DefaultBlockingDispatcher] 会构建一个默认的线程池作为调度器：
- * ```kotlin
- * ThreadPoolExecutor(
- *     coreSize,
- *     maxSize,
- *     keepAliveTime,
- *     TimeUnit.MILLISECONDS,
- *     LinkedBlockingQueue(),
- *     { r -> ... } // isDaemon = true
- * ) { runnable, executor ->
- *        throw DefaultBlockingDispatcherTaskRejectedExecutionException(runnable, executor)
- *    }
- * ```
+ * 默认情况下，[DefaultBlockingDispatcher] 为 null，即不使用特别的调度器。
+ *
  * 其中存在部分可配置内容：
  *
  * | 属性 | JVM参数 | 默认值 |
@@ -109,14 +106,23 @@ private const val DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$DISPATCHER_BASE_PROPER
  * | ------ | -----: | ---- |
  * | `simbot.runInBlocking.dispatcher=io` | [Dispatchers.IO] | 使用 [Dispatchers.IO] 作为默认调度器. |
  * | `simbot.runInBlocking.dispatcher=default` | [Dispatchers.Default] | 使用 [Dispatchers.Default] 作为默认调度器. |
+ * | `simbot.runInBlocking.dispatcher=main` | [Dispatchers.Main] | 使用 [Dispatchers.Main] 作为默认调度器. |
+ * | `simbot.runInBlocking.dispatcher=unconfined` | [Dispatchers.Unconfined] | 使用 [Dispatchers.Unconfined] 作为默认调度器. |
  * | `simbot.runInBlocking.dispatcher=forkJoinPool` | [ForkJoinPool] | 使用 [ForkJoinPool] 作为默认调度器. |
  *
- *
  */
-public val DefaultBlockingDispatcher: CoroutineDispatcher = initDefaultBlockingDispatcher()
+@InternalSimbotApi
+public val DefaultBlockingDispatcherOrNull: CoroutineDispatcher? = initDefaultBlockingDispatcher()
+
+/**
+ * 如果 [DefaultBlockingDispatcherOrNull] 为 null，得到 [Dispatchers.Default], 否则得到 [DefaultBlockingDispatcherOrNull]的值。
+ * @see DefaultBlockingDispatcherOrNull
+ */
+@InternalSimbotApi
+public val DefaultBlockingDispatcher: CoroutineDispatcher = DefaultBlockingDispatcherOrNull ?: Dispatchers.Default
 
 
-private fun initDefaultBlockingDispatcher(): CoroutineDispatcher {
+private fun initDefaultBlockingDispatcher(): CoroutineDispatcher? {
     infix fun String.eq(other: String): Boolean = equals(other = other, ignoreCase = true)
     
     return runCatching {
@@ -125,7 +131,10 @@ private fun initDefaultBlockingDispatcher(): CoroutineDispatcher {
             when {
                 dispatcher eq DISPATCHER_USE_IO_PROPERTY_VALUE -> return Dispatchers.IO
                 dispatcher eq DISPATCHER_USE_DEFAULT_PROPERTY_VALUE -> return Dispatchers.Default
-                dispatcher eq DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE -> return ForkJoinPool.commonPool().asCoroutineDispatcher()
+                dispatcher eq DISPATCHER_USE_MAIN_PROPERTY_VALUE -> return Dispatchers.Main
+                dispatcher eq DISPATCHER_USE_UNCONFINED_PROPERTY_VALUE -> return Dispatchers.Unconfined
+                dispatcher eq DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE -> return ForkJoinPool.commonPool()
+                    .asCoroutineDispatcher()
             }
         }
         
@@ -148,13 +157,24 @@ private fun initDefaultBlockingDispatcher(): CoroutineDispatcher {
  *
  */
 @InternalSimbotApi
-public val DefaultBlockingContext: CoroutineContext = DefaultBlockingDispatcher + CoroutineName("runInBlocking")
+public val DefaultBlockingContext: CoroutineContext = CoroutineName("defaultBlocking").let { name ->
+    if (DefaultBlockingDispatcherOrNull == null) name else DefaultBlockingDispatcher + name
+}
 
+
+/**
+ * 默认的异步调用（Java异步，例如 [CompletableFuture] 或 [runInAsync]）上下文。
+ *
+ * 使用的上下文与 [DefaultBlockingContext] 一致。
+ *
+ */
+@InternalSimbotApi
+public val DefaultAsyncContext: CoroutineContext = DefaultBlockingContext + CoroutineName("defaultAsync")
 
 
 @Suppress("unused", "ObjectPropertyName")
 @InternalSimbotApi
-private val `$$DefaultScope`: CoroutineScope = CoroutineScope(DefaultBlockingContext)
+private val `$$DefaultScope`: CoroutineScope = CoroutineScope(DefaultAsyncContext)
 
 
 /**
@@ -193,17 +213,17 @@ public fun <T> runInTimeoutBlocking(
 }
 
 @InternalSimbotApi
-public fun <T> runInAsync(block: suspend () -> T): CompletableFuture<T> =
-    `$$DefaultScope`.future(DefaultBlockingContext) { block() }
+public fun <T> runInAsync(block: suspend () -> T, scope: CoroutineScope = `$$DefaultScope`): CompletableFuture<T> =
+    scope.future(DefaultBlockingContext) { block.invoke() }
 
 @Suppress("FunctionName")
 @InternalSimbotApi
-@Deprecated("Just used by auto-generate", level = DeprecationLevel.HIDDEN)
+@Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
 public fun <T> `$$runInBlocking`(block: suspend () -> T): T = runInBlocking { block() }
 
 @InternalSimbotApi
-@Deprecated("Just used by auto-generate", level = DeprecationLevel.HIDDEN)
+@Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
 @Suppress("FunctionName")
 public fun <T> `$$runInAsync`(block: suspend () -> T): CompletableFuture<T> {
-    return runInAsync(block)
+    return runInAsync(block = block)
 }
