@@ -16,8 +16,8 @@
 
 package love.forte.simbot.logger.slf4j
 
+import love.forte.simbot.logger.LogLevel
 import org.slf4j.Marker
-import org.slf4j.event.Level
 
 /**
  * 用于作为 [SimbotLogger] 中的日志处理器所使用的，通过 [SimbotLoggerProcessorsFactory] 进行加载，并取第一个有效工厂。
@@ -30,7 +30,7 @@ public interface SimbotLoggerProcessor {
     /**
      * 检测日志等级是否可用。
      */
-    public fun isLevelEnabled(level: Level, marker: Marker?): Boolean
+    public fun isLevelEnabled(level: LogLevel, marker: Marker?): Boolean
 
     /**
      * 处理日志。 [doHandle] 是当 [SimbotLoggerFactory] 中的异步处理通道尚未关闭的时候进行的处理函数。
@@ -50,7 +50,7 @@ public interface SimbotLoggerProcessorsFactory {
  * 一次日志所记录的信息。
  */
 public class LogInfo(
-    public val level: Level,
+    public val level: LogLevel,
     public val marker: Marker?,
     public val msg: String,
     public val args: Array<out Any?>,

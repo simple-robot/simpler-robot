@@ -16,12 +16,12 @@
 
 package love.forte.simbot.logger.slf4j
 
-import love.forte.simbot.logger.color.Color
-import love.forte.simbot.logger.color.FontColor
-import love.forte.simbot.logger.color.appendColor
+import love.forte.simbot.logger.LogLevel
 import love.forte.simbot.logger.slf4j.ConsoleSimbotLoggerProcessor.Companion.SIMBOT_LEVEL_PROPERTY_KEY
+import love.forte.simbot.logger.slf4j.color.Color
+import love.forte.simbot.logger.slf4j.color.FontColor
+import love.forte.simbot.logger.slf4j.color.appendColor
 import org.slf4j.Marker
-import org.slf4j.event.Level
 import java.io.PrintStream
 import java.time.Instant
 
@@ -37,20 +37,20 @@ import java.time.Instant
  *
  *
  */
-public class ConsoleSimbotLoggerProcessor(level: Level?) : SimbotLoggerProcessor {
+public class ConsoleSimbotLoggerProcessor(level: LogLevel?) : SimbotLoggerProcessor {
     // package prefix support?
-    private val level: Level = level ?: loadLevel()
-
-    override fun isLevelEnabled(level: Level, marker: Marker?): Boolean {
+    private val level: LogLevel = level ?: loadLevel()
+    
+    override fun isLevelEnabled(level: LogLevel, marker: Marker?): Boolean {
         return this.level.toInt() <= level.toInt()
     }
-
+    
     private fun printLog(info: LogInfo) {
-        val printer: PrintStream = if (info.level == Level.ERROR) System.err else System.out
-
+        val printer: PrintStream = if (info.level == LogLevel.ERROR) System.err else System.out
+        
         val printMsg = buildString(info.formattedMsg.length + 80) {
             appendColor(FontColor.BLUE, Instant.ofEpochMilli(info.timestamp).toString()).append(' ')
-
+            
             if (info.level.toString().length <= 4) {
                 append(' ')
             }
@@ -64,29 +64,28 @@ public class ConsoleSimbotLoggerProcessor(level: Level?) : SimbotLoggerProcessor
             append(threadName).append("] ")
             appendColor(FontColor.BLUE, info.name).append("  : ").append(info.formattedMsg)
         }
-
+        
         printer.println(printMsg)
         if (info.error != null) {
             info.error.printStackTrace(printer)
         }
     }
-
+    
     override fun doHandle(info: LogInfo) {
         printLog(info)
     }
-
-
-    private fun loadLevel(): Level {
-        val levelName = System.getProperty(SIMBOT_LEVEL_PROPERTY_KEY) ?: return Level.INFO
-        return Level.values().find { it.name.equals(levelName, true) } ?: Level.INFO
+    
+    
+    private fun loadLevel(): LogLevel {
+        val levelName = System.getProperty(SIMBOT_LEVEL_PROPERTY_KEY) ?: return LogLevel.INFO
+        return LogLevel.values().find { it.name.equals(levelName, true) } ?: LogLevel.INFO
     }
-
-
+    
+    
     public companion object {
         private const val SIMBOT_LEVEL_PROPERTY_KEY = "simbot.logger.level"
     }
 }
-
 
 
 internal fun String.getOnMax(max: Int): String {
@@ -94,11 +93,11 @@ internal fun String.getOnMax(max: Int): String {
     else this.substring(length - max)
 }
 
-internal val Level.color: Color
+internal val LogLevel.color: Color
     get() = when (this) {
-        Level.INFO -> FontColor.GREEN
-        Level.ERROR -> FontColor.RED
-        Level.WARN -> FontColor.YELLOW
-        Level.DEBUG -> FontColor.PURPLE
-        Level.TRACE -> FontColor.BLUE
+        LogLevel.INFO -> FontColor.GREEN
+        LogLevel.ERROR -> FontColor.RED
+        LogLevel.WARN -> FontColor.YELLOW
+        LogLevel.DEBUG -> FontColor.PURPLE
+        LogLevel.TRACE -> FontColor.BLUE
     }

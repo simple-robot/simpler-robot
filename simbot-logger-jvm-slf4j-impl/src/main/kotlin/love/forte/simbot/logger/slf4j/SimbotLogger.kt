@@ -16,9 +16,9 @@
 
 package love.forte.simbot.logger.slf4j
 
-import org.slf4j.Logger
+import love.forte.simbot.logger.LogLevel
+import love.forte.simbot.logger.Logger
 import org.slf4j.Marker
-import org.slf4j.event.Level
 
 
 /**
@@ -68,24 +68,24 @@ public class SimbotLogger(
         }
     }
 
-    override fun isTraceEnabled(): Boolean = isLevelEnabled(Level.TRACE)
-    override fun isTraceEnabled(marker: Marker?): Boolean = isLevelEnabled(Level.TRACE, marker)
-    override fun isDebugEnabled(): Boolean = isLevelEnabled(Level.DEBUG)
-    override fun isDebugEnabled(marker: Marker?): Boolean = isLevelEnabled(Level.DEBUG, marker)
-    override fun isInfoEnabled(): Boolean = isLevelEnabled(Level.INFO)
-    override fun isInfoEnabled(marker: Marker?): Boolean = isLevelEnabled(Level.INFO, marker)
-    override fun isWarnEnabled(): Boolean = isLevelEnabled(Level.WARN)
-    override fun isWarnEnabled(marker: Marker?): Boolean = isLevelEnabled(Level.WARN, marker)
-    override fun isErrorEnabled(): Boolean = isLevelEnabled(Level.ERROR)
-    override fun isErrorEnabled(marker: Marker?): Boolean = isLevelEnabled(Level.ERROR, marker)
+    override fun isTraceEnabled(): Boolean = isLevelEnabled(LogLevel.TRACE)
+    override fun isTraceEnabled(marker: Marker?): Boolean = isLevelEnabled(LogLevel.TRACE, marker)
+    override fun isDebugEnabled(): Boolean = isLevelEnabled(LogLevel.DEBUG)
+    override fun isDebugEnabled(marker: Marker?): Boolean = isLevelEnabled(LogLevel.DEBUG, marker)
+    override fun isInfoEnabled(): Boolean = isLevelEnabled(LogLevel.INFO)
+    override fun isInfoEnabled(marker: Marker?): Boolean = isLevelEnabled(LogLevel.INFO, marker)
+    override fun isWarnEnabled(): Boolean = isLevelEnabled(LogLevel.WARN)
+    override fun isWarnEnabled(marker: Marker?): Boolean = isLevelEnabled(LogLevel.WARN, marker)
+    override fun isErrorEnabled(): Boolean = isLevelEnabled(LogLevel.ERROR)
+    override fun isErrorEnabled(marker: Marker?): Boolean = isLevelEnabled(LogLevel.ERROR, marker)
 
-    private fun isLevelEnabled(level: Level, marker: Marker? = null): Boolean {
+    private fun isLevelEnabled(level: LogLevel, marker: Marker? = null): Boolean {
         return processors.any { it.isLevelEnabled(level, marker) }
     }
 
     public fun getFullyQualifiedCallerName(): String = fullyQualifiedCallerName
     private fun doLog(
-        level: Level?,
+        level: LogLevel?,
         marker: Marker?,
         msg: String?,
         arguments: Array<out Any?>?,
@@ -95,7 +95,7 @@ public class SimbotLogger(
         val timestamp = System.currentTimeMillis()
         sendLog(
             LogInfo(
-                level ?: Level.INFO,
+                level ?: LogLevel.INFO,
                 marker,
                 msg ?: "null",
                 arguments ?: EMPTY_ARGUMENTS,
@@ -112,202 +112,202 @@ public class SimbotLogger(
     override fun getName(): String = fullyQualifiedCallerName
 
     override fun trace(msg: String?) {
-        doLog(Level.TRACE, null, msg, EMPTY_ARGUMENTS, null)
+        doLog(LogLevel.TRACE, null, msg, EMPTY_ARGUMENTS, null)
     }
 
     override fun trace(format: String?, arg: Any?) {
-        doLog(Level.TRACE, null, format, arg.toArgArray(), null)
+        doLog(LogLevel.TRACE, null, format, arg.toArgArray(), null)
     }
 
     override fun trace(format: String?, arg1: Any?, arg2: Any?) {
-        doLog(Level.TRACE, null, format, arrayOf(arg1, arg2), null)
+        doLog(LogLevel.TRACE, null, format, arrayOf(arg1, arg2), null)
     }
 
     override fun trace(format: String?, vararg arguments: Any?) {
-        doLog(Level.TRACE, null, format, arguments, null)
+        doLog(LogLevel.TRACE, null, format, arguments, null)
     }
 
     override fun trace(msg: String?, t: Throwable?) {
-        doLog(Level.TRACE, null, msg, EMPTY_ARGUMENTS, t)
+        doLog(LogLevel.TRACE, null, msg, EMPTY_ARGUMENTS, t)
     }
 
     override fun trace(marker: Marker?, msg: String?) {
-        doLog(Level.TRACE, marker, msg, EMPTY_ARGUMENTS, null)
+        doLog(LogLevel.TRACE, marker, msg, EMPTY_ARGUMENTS, null)
     }
 
     override fun trace(marker: Marker?, format: String?, arg: Any?) {
-        doLog(Level.TRACE, marker, format, arg.toArgArray(), null)
+        doLog(LogLevel.TRACE, marker, format, arg.toArgArray(), null)
     }
 
     override fun trace(marker: Marker?, format: String?, arg1: Any?, arg2: Any?) {
-        doLog(Level.TRACE, marker, format, arrayOf(arg1, arg2), null)
+        doLog(LogLevel.TRACE, marker, format, arrayOf(arg1, arg2), null)
     }
 
     override fun trace(marker: Marker?, format: String?, vararg argArray: Any?) {
-        doLog(Level.TRACE, marker, format, argArray, null)
+        doLog(LogLevel.TRACE, marker, format, argArray, null)
     }
 
     override fun trace(marker: Marker?, msg: String?, t: Throwable?) {
-        doLog(Level.TRACE, marker, msg, EMPTY_ARGUMENTS, t)
+        doLog(LogLevel.TRACE, marker, msg, EMPTY_ARGUMENTS, t)
     }
 
     override fun debug(msg: String?) {
-        doLog(Level.DEBUG, null, msg, EMPTY_ARGUMENTS, null)
+        doLog(LogLevel.DEBUG, null, msg, EMPTY_ARGUMENTS, null)
     }
 
     override fun debug(format: String?, arg: Any?) {
-        doLog(Level.DEBUG, null, format, arg.toArgArray(), null)
+        doLog(LogLevel.DEBUG, null, format, arg.toArgArray(), null)
     }
 
     override fun debug(format: String?, arg1: Any?, arg2: Any?) {
-        doLog(Level.DEBUG, null, format, arrayOf(arg1, arg2), null)
+        doLog(LogLevel.DEBUG, null, format, arrayOf(arg1, arg2), null)
     }
 
     override fun debug(format: String?, vararg arguments: Any?) {
-        doLog(Level.DEBUG, null, format, arguments, null)
+        doLog(LogLevel.DEBUG, null, format, arguments, null)
     }
 
     override fun debug(msg: String?, t: Throwable?) {
-        doLog(Level.DEBUG, null, msg, EMPTY_ARGUMENTS, t)
+        doLog(LogLevel.DEBUG, null, msg, EMPTY_ARGUMENTS, t)
     }
 
     override fun debug(marker: Marker?, msg: String?) {
-        doLog(Level.DEBUG, marker, msg, EMPTY_ARGUMENTS, null)
+        doLog(LogLevel.DEBUG, marker, msg, EMPTY_ARGUMENTS, null)
     }
 
     override fun debug(marker: Marker?, format: String?, arg: Any?) {
-        doLog(Level.DEBUG, marker, format, arg.toArgArray(), null)
+        doLog(LogLevel.DEBUG, marker, format, arg.toArgArray(), null)
     }
 
     override fun debug(marker: Marker?, format: String?, arg1: Any?, arg2: Any?) {
-        doLog(Level.DEBUG, marker, format, arrayOf(arg1, arg2), null)
+        doLog(LogLevel.DEBUG, marker, format, arrayOf(arg1, arg2), null)
     }
 
     override fun debug(marker: Marker?, format: String?, vararg arguments: Any?) {
-        doLog(Level.DEBUG, marker, format, arguments, null)
+        doLog(LogLevel.DEBUG, marker, format, arguments, null)
     }
 
     override fun debug(marker: Marker?, msg: String?, t: Throwable?) {
-        doLog(Level.DEBUG, marker, msg, EMPTY_ARGUMENTS, t)
+        doLog(LogLevel.DEBUG, marker, msg, EMPTY_ARGUMENTS, t)
     }
 
     override fun info(msg: String?) {
-        doLog(Level.INFO, null, msg, EMPTY_ARGUMENTS, null)
+        doLog(LogLevel.INFO, null, msg, EMPTY_ARGUMENTS, null)
     }
 
     override fun info(format: String?, arg: Any?) {
-        doLog(Level.INFO, null, format, arg.toArgArray(), null)
+        doLog(LogLevel.INFO, null, format, arg.toArgArray(), null)
     }
 
     override fun info(format: String?, arg1: Any?, arg2: Any?) {
-        doLog(Level.INFO, null, format, arrayOf(arg1, arg2), null)
+        doLog(LogLevel.INFO, null, format, arrayOf(arg1, arg2), null)
     }
 
     override fun info(format: String?, vararg arguments: Any?) {
-        doLog(Level.INFO, null, format, arguments, null)
+        doLog(LogLevel.INFO, null, format, arguments, null)
     }
 
     override fun info(msg: String?, t: Throwable?) {
-        doLog(Level.INFO, null, msg, EMPTY_ARGUMENTS, t)
+        doLog(LogLevel.INFO, null, msg, EMPTY_ARGUMENTS, t)
     }
 
     override fun info(marker: Marker?, msg: String?) {
-        doLog(Level.INFO, marker, msg, EMPTY_ARGUMENTS, null)
+        doLog(LogLevel.INFO, marker, msg, EMPTY_ARGUMENTS, null)
     }
 
     override fun info(marker: Marker?, format: String?, arg: Any?) {
-        doLog(Level.INFO, marker, format, arg.toArgArray(), null)
+        doLog(LogLevel.INFO, marker, format, arg.toArgArray(), null)
     }
 
     override fun info(marker: Marker?, format: String?, arg1: Any?, arg2: Any?) {
-        doLog(Level.INFO, marker, format, arrayOf(arg1, arg2), null)
+        doLog(LogLevel.INFO, marker, format, arrayOf(arg1, arg2), null)
     }
 
     override fun info(marker: Marker?, format: String?, vararg arguments: Any?) {
-        doLog(Level.INFO, marker, format, arguments, null)
+        doLog(LogLevel.INFO, marker, format, arguments, null)
     }
 
     override fun info(marker: Marker?, msg: String?, t: Throwable?) {
-        doLog(Level.INFO, marker, msg, EMPTY_ARGUMENTS, t)
+        doLog(LogLevel.INFO, marker, msg, EMPTY_ARGUMENTS, t)
     }
 
     override fun warn(msg: String?) {
-        doLog(Level.WARN, null, msg, EMPTY_ARGUMENTS, null)
+        doLog(LogLevel.WARN, null, msg, EMPTY_ARGUMENTS, null)
     }
 
     override fun warn(format: String?, arg: Any?) {
-        doLog(Level.WARN, null, format, arg.toArgArray(), null)
+        doLog(LogLevel.WARN, null, format, arg.toArgArray(), null)
     }
 
     override fun warn(format: String?, vararg arguments: Any?) {
-        doLog(Level.WARN, null, format, arguments, null)
+        doLog(LogLevel.WARN, null, format, arguments, null)
     }
 
     override fun warn(format: String?, arg1: Any?, arg2: Any?) {
-        doLog(Level.WARN, null, format, arrayOf(arg1, arg2), null)
+        doLog(LogLevel.WARN, null, format, arrayOf(arg1, arg2), null)
     }
 
     override fun warn(msg: String?, t: Throwable?) {
-        doLog(Level.WARN, null, msg, EMPTY_ARGUMENTS, t)
+        doLog(LogLevel.WARN, null, msg, EMPTY_ARGUMENTS, t)
     }
 
     override fun warn(marker: Marker?, msg: String?) {
-        doLog(Level.WARN, marker, msg, EMPTY_ARGUMENTS, null)
+        doLog(LogLevel.WARN, marker, msg, EMPTY_ARGUMENTS, null)
     }
 
     override fun warn(marker: Marker?, format: String?, arg: Any?) {
-        doLog(Level.WARN, marker, format, arg.toArgArray(), null)
+        doLog(LogLevel.WARN, marker, format, arg.toArgArray(), null)
     }
 
     override fun warn(marker: Marker?, format: String?, arg1: Any?, arg2: Any?) {
-        doLog(Level.WARN, marker, format, arrayOf(arg1, arg2), null)
+        doLog(LogLevel.WARN, marker, format, arrayOf(arg1, arg2), null)
     }
 
     override fun warn(marker: Marker?, format: String?, vararg arguments: Any?) {
-        doLog(Level.WARN, marker, format, arguments, null)
+        doLog(LogLevel.WARN, marker, format, arguments, null)
     }
 
     override fun warn(marker: Marker?, msg: String?, t: Throwable?) {
-        doLog(Level.WARN, marker, msg, EMPTY_ARGUMENTS, t)
+        doLog(LogLevel.WARN, marker, msg, EMPTY_ARGUMENTS, t)
     }
 
     override fun error(msg: String?) {
-        doLog(Level.ERROR, null, msg, EMPTY_ARGUMENTS, null)
+        doLog(LogLevel.ERROR, null, msg, EMPTY_ARGUMENTS, null)
     }
 
     override fun error(format: String?, arg: Any?) {
-        doLog(Level.ERROR, null, format, arg.toArgArray(), null)
+        doLog(LogLevel.ERROR, null, format, arg.toArgArray(), null)
     }
 
     override fun error(format: String?, arg1: Any?, arg2: Any?) {
-        doLog(Level.ERROR, null, format, arrayOf(arg1, arg2), null)
+        doLog(LogLevel.ERROR, null, format, arrayOf(arg1, arg2), null)
     }
 
     override fun error(format: String?, vararg arguments: Any?) {
-        doLog(Level.ERROR, null, format, arguments, null)
+        doLog(LogLevel.ERROR, null, format, arguments, null)
     }
 
     override fun error(msg: String?, t: Throwable?) {
-        doLog(Level.ERROR, null, msg, EMPTY_ARGUMENTS, t)
+        doLog(LogLevel.ERROR, null, msg, EMPTY_ARGUMENTS, t)
     }
 
     override fun error(marker: Marker?, msg: String?) {
-        doLog(Level.ERROR, marker, msg, EMPTY_ARGUMENTS, null)
+        doLog(LogLevel.ERROR, marker, msg, EMPTY_ARGUMENTS, null)
     }
 
     override fun error(marker: Marker?, format: String?, arg: Any?) {
-        doLog(Level.ERROR, marker, format, arg.toArgArray(), null)
+        doLog(LogLevel.ERROR, marker, format, arg.toArgArray(), null)
     }
 
     override fun error(marker: Marker?, format: String?, arg1: Any?, arg2: Any?) {
-        doLog(Level.ERROR, marker, format, arrayOf(arg1, arg2), null)
+        doLog(LogLevel.ERROR, marker, format, arrayOf(arg1, arg2), null)
     }
 
     override fun error(marker: Marker?, format: String?, vararg arguments: Any?) {
-        doLog(Level.ERROR, marker, format, arguments, null)
+        doLog(LogLevel.ERROR, marker, format, arguments, null)
     }
 
     override fun error(marker: Marker?, msg: String?, t: Throwable?) {
-        doLog(Level.ERROR, marker, msg, EMPTY_ARGUMENTS, t)
+        doLog(LogLevel.ERROR, marker, msg, EMPTY_ARGUMENTS, t)
     }
 }

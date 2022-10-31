@@ -19,8 +19,8 @@ package love.forte.simbot.logger.slf4j
 import com.lmax.disruptor.*
 import com.lmax.disruptor.dsl.Disruptor
 import com.lmax.disruptor.dsl.ProducerType
+import love.forte.simbot.logger.Logger
 import org.slf4j.ILoggerFactory
-import org.slf4j.Logger
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
