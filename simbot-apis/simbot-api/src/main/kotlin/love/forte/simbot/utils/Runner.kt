@@ -19,11 +19,13 @@ package love.forte.simbot.utils
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.runInterruptible
+import love.forte.simbot.InternalSimbotApi
 import kotlin.coroutines.CoroutineContext
 
+@OptIn(InternalSimbotApi::class)
 @PublishedApi
 internal val RunWithInterruptibleDefaultCoroutineContext: CoroutineContext =
-    DefaultBlockingDispatcher + CoroutineName("runWithInterruptible")
+    DefaultBlockingContext + CoroutineName("runWithInterruptible")
 
 /**
  * 默认使用 [DefaultBlockingDispatcher] 作为调度器的可中断执行函数。
