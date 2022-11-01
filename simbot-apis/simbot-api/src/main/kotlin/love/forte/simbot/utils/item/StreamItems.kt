@@ -20,6 +20,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.stream.consumeAsFlow
 import love.forte.simbot.Api4J
 import love.forte.simbot.utils.runInBlocking
+import java.util.function.Consumer
+import java.util.stream.Collectors
 import java.util.stream.Stream
 import kotlin.streams.asSequence
 
@@ -35,16 +37,10 @@ public class StreamItems<T> private constructor(private val streamFactory: (Item
         get() = this
     
     private val stream: Stream<T> get() = streamFactory(preprocessingProperties)
-    override suspend fun collect(collector: suspend (T) -> Unit) {
-        stream.forEach {
-            runInBlocking { collector(it) }
-        }
-    }
     
     override fun asFlow(): Flow<T> {
         return stream.consumeAsFlow()
     }
-    
     override fun asSequence(): Sequence<T> {
         return stream.asSequence()
     }
@@ -52,6 +48,27 @@ public class StreamItems<T> private constructor(private val streamFactory: (Item
     @Api4J
     override fun asStream(): Stream<out T> {
         return stream
+    }
+    
+    override suspend fun collect(collector: suspend (T) -> Unit) {
+        stream.forEach {
+            runInBlocking { collector(it) }
+        }
+    }
+    
+    @Api4J
+    override fun collect(collector: Consumer<in T>) {
+        stream.forEach(collector)
+    }
+    
+    @Api4J
+    override fun <C : MutableCollection<in T>> collectTo(collector: C): C {
+        return stream.collect(Collectors.toCollection { collector })
+    }
+    
+    @Api4J
+    override fun collectToList(): List<T> {
+        return stream.collect(Collectors.toList())
     }
     
     public companion object {
