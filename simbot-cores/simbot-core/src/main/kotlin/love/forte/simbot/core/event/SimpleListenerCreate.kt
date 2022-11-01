@@ -237,7 +237,7 @@ public fun <E : Event> blockingSimpleListenerWithoutResult(
             { e -> runWithInterruptible { matcher.test(this, e) } }
         }) { e ->
         runWithInterruptible { function.accept(this, e) }
-        EventResult.defaults()
+        EventResult.invalid()
     }
 }
 // endregion
