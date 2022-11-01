@@ -21,6 +21,7 @@ package love.forte.simbot.utils
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.future
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.InternalSimbotApi
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicLong
@@ -181,40 +182,61 @@ public val DefaultAsyncContext: CoroutineContext = DefaultBlockingContext + Coro
 private val `$$DefaultScope`: CoroutineScope = CoroutineScope(DefaultAsyncContext)
 
 
-@InternalSimbotApi
+// region run in blocking strategy
+@ExperimentalSimbotApi
 public interface RunInBlockingStrategy {
     @kotlin.jvm.Throws(Exception::class)
     public operator fun <T> invoke(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T
 }
 
-@InternalSimbotApi
-public var runInBlockingStrategy: RunInBlockingStrategy = DefaultRunInBlockingStrategy
+@OptIn(ExperimentalSimbotApi::class)
+private var runInBlockingStrategy: RunInBlockingStrategy = DefaultRunInBlockingStrategy
 
 
-@InternalSimbotApi
-public object DefaultRunInBlockingStrategy : RunInBlockingStrategy {
+@OptIn(ExperimentalSimbotApi::class)
+private object DefaultRunInBlockingStrategy : RunInBlockingStrategy {
     override fun <T> invoke(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T {
         return runBlocking(context, block)
     }
 }
 
-@InternalSimbotApi
+/**
+ * 设置一个 [runInBlocking] 函数的实际调度逻辑。
+ */
+@ExperimentalSimbotApi
+public fun setRunInBlockingStrategy(strategy: RunInBlockingStrategy) {
+    runInBlockingStrategy = strategy
+}
+// endregion
+
+// region run in no scope blocking strategy
+@ExperimentalSimbotApi
 public interface RunInNoScopeBlockingStrategy {
     @kotlin.jvm.Throws(Exception::class)
     public operator fun <T> invoke(context: CoroutineContext, block: suspend () -> T): T
 }
 
-@InternalSimbotApi
-public var runInNoScopeBlockingStrategy: RunInNoScopeBlockingStrategy = DefaultRunInNoScopeBlockingStrategy
+@OptIn(ExperimentalSimbotApi::class)
+private var runInNoScopeBlockingStrategy: RunInNoScopeBlockingStrategy = DefaultRunInNoScopeBlockingStrategy
 
-@InternalSimbotApi
-public object DefaultRunInNoScopeBlockingStrategy : RunInNoScopeBlockingStrategy {
+@OptIn(ExperimentalSimbotApi::class)
+private object DefaultRunInNoScopeBlockingStrategy : RunInNoScopeBlockingStrategy {
     override fun <T> invoke(context: CoroutineContext, block: suspend () -> T): T {
         val runner = RunBlocking<T>(context)
         block.startCoroutine(runner)
         return runner.await()
     }
 }
+
+/**
+ * 设置一个 [runInNoScopeBlocking] 函数的实际调度逻辑。
+ */
+@OptIn(ExperimentalSimbotApi::class)
+public fun setRunInNoScopeBlockingStrategy(strategy: RunInNoScopeBlockingStrategy) {
+    runInNoScopeBlockingStrategy = strategy
+}
+
+// endregion
 
 /**
  *
@@ -225,7 +247,7 @@ public object DefaultRunInNoScopeBlockingStrategy : RunInNoScopeBlockingStrategy
  * @see DefaultBlockingContext
  * @see runBlocking
  */
-@OptIn(InternalSimbotApi::class)
+@OptIn(ExperimentalSimbotApi::class, InternalSimbotApi::class)
 @Throws(InterruptedException::class)
 public fun <T> runInBlocking(
     context: CoroutineContext = DefaultBlockingContext,
@@ -237,7 +259,7 @@ public fun <T> runInBlocking(
  * @see runInBlocking
  * @see withTimeout
  */
-@OptIn(InternalSimbotApi::class)
+@OptIn(InternalSimbotApi::class, ExperimentalSimbotApi::class)
 @Throws(InterruptedException::class, TimeoutException::class)
 public fun <T> runInTimeoutBlocking(
     timeout: Long,
@@ -250,6 +272,7 @@ public fun <T> runInTimeoutBlocking(
         throw TimeoutException(timeout.localizedMessage).initCause(timeout)
     }
 }
+
 /**
  *
  * 在simbot中提供的 [runBlocking] 包装。
@@ -259,7 +282,7 @@ public fun <T> runInTimeoutBlocking(
  * @see DefaultBlockingContext
  * @see runBlocking
  */
-@OptIn(InternalSimbotApi::class)
+@OptIn(InternalSimbotApi::class, ExperimentalSimbotApi::class)
 @Throws(InterruptedException::class)
 public fun <T> runInNoScopeBlocking(
     context: CoroutineContext = DefaultBlockingContext,
@@ -271,12 +294,12 @@ public fun <T> runInNoScopeBlocking(
  * @see runInBlocking
  * @see withTimeout
  */
-@OptIn(InternalSimbotApi::class)
+@OptIn(InternalSimbotApi::class, ExperimentalSimbotApi::class)
 @Throws(InterruptedException::class, TimeoutException::class)
-public inline fun <T> runInNoScopeTimeoutBlocking(
+public fun <T> runInNoScopeTimeoutBlocking(
     timeout: Long,
     context: CoroutineContext = DefaultBlockingContext,
-    crossinline block: suspend () -> T,
+    block: suspend () -> T,
 ): T = runInNoScopeBlockingStrategy(context) {
     try {
         withTimeout(timeout) { block() }
@@ -285,13 +308,23 @@ public inline fun <T> runInNoScopeTimeoutBlocking(
     }
 }
 
+/**
+ * 执行一个异步函数，得到 [CompletableFuture].
+ */
 @InternalSimbotApi
-public fun <T> runInAsync(scope: CoroutineScope, block: suspend () -> T): CompletableFuture<T> =
-    scope.future(DefaultBlockingContext) { block.invoke() }
+public fun <T> runInAsync(
+    scope: CoroutineScope,
+    context: CoroutineContext = EmptyCoroutineContext,
+    block: suspend () -> T,
+): CompletableFuture<T> =
+    scope.future(context) { block.invoke() }
 
+/**
+ * 执行一个异步函数，得到 [CompletableFuture].
+ */
 @InternalSimbotApi
 public fun <T> runInAsync(block: suspend () -> T): CompletableFuture<T> =
-    `$$DefaultScope`.future(DefaultBlockingContext) { block.invoke() }
+    runInAsync(scope = `$$DefaultScope`, context = EmptyCoroutineContext, block = block)
 
 @InternalSimbotApi
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
@@ -307,7 +340,6 @@ public fun <T> `$$runInAsync`(block: suspend () -> T): CompletableFuture<T> {
 @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 private class RunBlocking<T>(override val context: CoroutineContext = EmptyCoroutineContext) : Continuation<T> {
     var result: Result<T>? = null
-    
     
     override fun resumeWith(result: Result<T>) {
         synchronized(this) {
