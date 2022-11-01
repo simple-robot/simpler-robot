@@ -24,7 +24,10 @@ import kotlinx.coroutines.future.future
 import love.forte.simbot.InternalSimbotApi
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicLong
+import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.startCoroutine
 
 
 private const val DEFAULT_KEEP_ALIVE_TIME = 60_000L // 60s
@@ -178,6 +181,41 @@ public val DefaultAsyncContext: CoroutineContext = DefaultBlockingContext + Coro
 private val `$$DefaultScope`: CoroutineScope = CoroutineScope(DefaultAsyncContext)
 
 
+@InternalSimbotApi
+public interface RunInBlockingStrategy {
+    @kotlin.jvm.Throws(Exception::class)
+    public operator fun <T> invoke(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T
+}
+
+@InternalSimbotApi
+public var runInBlockingStrategy: RunInBlockingStrategy = DefaultRunInBlockingStrategy
+
+
+@InternalSimbotApi
+public object DefaultRunInBlockingStrategy : RunInBlockingStrategy {
+    override fun <T> invoke(context: CoroutineContext, block: suspend CoroutineScope.() -> T): T {
+        return runBlocking(context, block)
+    }
+}
+
+@InternalSimbotApi
+public interface RunInNoScopeBlockingStrategy {
+    @kotlin.jvm.Throws(Exception::class)
+    public operator fun <T> invoke(context: CoroutineContext, block: suspend () -> T): T
+}
+
+@InternalSimbotApi
+public var runInNoScopeBlockingStrategy: RunInNoScopeBlockingStrategy = DefaultRunInNoScopeBlockingStrategy
+
+@InternalSimbotApi
+public object DefaultRunInNoScopeBlockingStrategy : RunInNoScopeBlockingStrategy {
+    override fun <T> invoke(context: CoroutineContext, block: suspend () -> T): T {
+        val runner = RunBlocking<T>(context)
+        block.startCoroutine(runner)
+        return runner.await()
+    }
+}
+
 /**
  *
  * 在simbot中提供的 [runBlocking] 包装。
@@ -192,7 +230,7 @@ private val `$$DefaultScope`: CoroutineScope = CoroutineScope(DefaultAsyncContex
 public fun <T> runInBlocking(
     context: CoroutineContext = DefaultBlockingContext,
     block: suspend CoroutineScope.() -> T,
-): T = runBlocking(context, block)
+): T = runInBlockingStrategy(context, block)
 
 /**
  * 如果超时，则抛出 [TimeoutException].
@@ -205,9 +243,43 @@ public fun <T> runInTimeoutBlocking(
     timeout: Long,
     context: CoroutineContext = DefaultBlockingContext,
     block: suspend CoroutineScope.() -> T,
-): T = runInBlocking(context) {
+): T = runInBlockingStrategy(context) {
     try {
         withTimeout(timeout, block)
+    } catch (timeout: TimeoutCancellationException) {
+        throw TimeoutException(timeout.localizedMessage).initCause(timeout)
+    }
+}
+/**
+ *
+ * 在simbot中提供的 [runBlocking] 包装。
+ *
+ * 在默认未提供上下文的情况下，[runInBlocking] 所使用的 [context] 为 [DefaultBlockingContext].
+ *
+ * @see DefaultBlockingContext
+ * @see runBlocking
+ */
+@OptIn(InternalSimbotApi::class)
+@Throws(InterruptedException::class)
+public fun <T> runInNoScopeBlocking(
+    context: CoroutineContext = DefaultBlockingContext,
+    block: suspend () -> T,
+): T = runInNoScopeBlockingStrategy(context, block)
+
+/**
+ * 如果超时，则抛出 [TimeoutException].
+ * @see runInBlocking
+ * @see withTimeout
+ */
+@OptIn(InternalSimbotApi::class)
+@Throws(InterruptedException::class, TimeoutException::class)
+public inline fun <T> runInNoScopeTimeoutBlocking(
+    timeout: Long,
+    context: CoroutineContext = DefaultBlockingContext,
+    crossinline block: suspend () -> T,
+): T = runInNoScopeBlockingStrategy(context) {
+    try {
+        withTimeout(timeout) { block() }
     } catch (timeout: TimeoutCancellationException) {
         throw TimeoutException(timeout.localizedMessage).initCause(timeout)
     }
@@ -223,10 +295,38 @@ public fun <T> runInAsync(block: suspend () -> T): CompletableFuture<T> =
 
 @InternalSimbotApi
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
-public fun <T> `$$runInBlocking`(block: suspend () -> T): T = runInBlocking { block() }
+public fun <T> `$$runInBlocking`(block: suspend () -> T): T = runInNoScopeBlocking(block = block)
 
 @InternalSimbotApi
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
 public fun <T> `$$runInAsync`(block: suspend () -> T): CompletableFuture<T> {
     return runInAsync(block = block)
+}
+
+
+@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+private class RunBlocking<T>(override val context: CoroutineContext = EmptyCoroutineContext) : Continuation<T> {
+    var result: Result<T>? = null
+    
+    
+    override fun resumeWith(result: Result<T>) {
+        synchronized(this) {
+            this.result = result
+            (this as Object).notifyAll()
+        }
+    }
+    
+    @Suppress("BlockingMethodInNonBlockingContext")
+    fun await(): T {
+        synchronized(this) {
+            while (true) {
+                when (val result = this.result) {
+                    null -> (this as Object).wait()
+                    else -> {
+                        return result.getOrThrow()
+                    }
+                }
+            }
+        }
+    }
 }
