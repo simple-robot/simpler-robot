@@ -39,6 +39,8 @@ private fun createDefaultDispatcher(
     coreSize: Int?,
     maxSize: Int?,
     keepAliveTime: Long?,
+    threadGroupName: String,
+    threadNamePrefix: String,
 ): ExecutorCoroutineDispatcher? {
     if (coreSize == null && maxSize == null && keepAliveTime == null) {
         return null
@@ -50,7 +52,7 @@ private fun createDefaultDispatcher(
     val keepAliveTime = keepAliveTime?.takeIf { it >= 0L } ?: DEFAULT_KEEP_ALIVE_TIME
     
     val num = AtomicLong(0)
-    val group = ThreadGroup("defaultBlockingDispatcherThreadGroup")
+    val group = ThreadGroup(threadGroupName)
     val executor = ThreadPoolExecutor(
         coreSize,
         maxSize,
@@ -58,7 +60,7 @@ private fun createDefaultDispatcher(
         TimeUnit.MILLISECONDS,
         LinkedBlockingQueue(),
         { r ->
-            Thread(group, r, "defaultBlocking-${num.getAndIncrement()}").also {
+            Thread(group, r, "$threadNamePrefix-${num.getAndIncrement()}").also {
                 it.isDaemon = true
             }
         }
@@ -77,7 +79,8 @@ public open class DefaultBlockingDispatcherTaskRejectedExecutionException(
     public val runnable: java.lang.Runnable, public val executor: Executor,
 ) : RejectedExecutionException("The task $runnable is rejected by default blocking task executor $executor")
 
-private const val DISPATCHER_BASE_PROPERTY = "simbot.runInBlocking.dispatcher"
+private const val BLOCKING_DISPATCHER_BASE_PROPERTY = "simbot.runInBlocking.dispatcher"
+private const val ASYNC_DISPATCHER_BASE_PROPERTY = "simbot.runInAsync.dispatcher"
 
 private const val DISPATCHER_USE_IO_PROPERTY_VALUE = "io"
 private const val DISPATCHER_USE_DEFAULT_PROPERTY_VALUE = "default"
@@ -85,18 +88,26 @@ private const val DISPATCHER_USE_MAIN_PROPERTY_VALUE = "main"
 private const val DISPATCHER_USE_UNCONFINED_PROPERTY_VALUE = "unconfined"
 private const val DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE = "forkJoinPool"
 
-private const val DISPATCHER_CORE_SIZE_PROPERTY = "$DISPATCHER_BASE_PROPERTY.coreSize"
-private const val DISPATCHER_MAX_SIZE_PROPERTY = "$DISPATCHER_BASE_PROPERTY.maxSize"
-private const val DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$DISPATCHER_BASE_PROPERTY.keepAliveTime"
+// region blocking properties
+private const val BLOCKING_DISPATCHER_CORE_SIZE_PROPERTY = "$BLOCKING_DISPATCHER_BASE_PROPERTY.coreSize"
+private const val BLOCKING_DISPATCHER_MAX_SIZE_PROPERTY = "$BLOCKING_DISPATCHER_BASE_PROPERTY.maxSize"
+private const val BLOCKING_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$BLOCKING_DISPATCHER_BASE_PROPERTY.keepAliveTime"
+// endregion
+
+// region async properties
+private const val ASYNC_DISPATCHER_CORE_SIZE_PROPERTY = "$ASYNC_DISPATCHER_BASE_PROPERTY.coreSize"
+private const val ASYNC_DISPATCHER_MAX_SIZE_PROPERTY = "$ASYNC_DISPATCHER_BASE_PROPERTY.maxSize"
+private const val ASYNC_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$ASYNC_DISPATCHER_BASE_PROPERTY.keepAliveTime"
+// endregion
 
 
 /**
- * 使用在阻塞环境或非Java协程环境中的默认调度器实现。
+ * 使用在阻塞API（例如 [runInBlocking] ）或非Java协程环境中的默认调度器。
  * 会在首次被获取的时候进行实例化。
  *
- * 默认情况下，[DefaultBlockingDispatcher] 为 null，即不使用特别的调度器。
+ * 默认情况下，[DefaultBlockingDispatcherOrNull] 为 null，即不使用特别的调度器。
  *
- * 其中存在部分可配置内容：
+ * 存在部分可配置内容：
  *
  * | 属性 | JVM参数 | 默认值 |
  * | --- | :----: | -----: |
@@ -117,21 +128,45 @@ private const val DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$DISPATCHER_BASE_PROPER
  *
  */
 @InternalSimbotApi
-public val DefaultBlockingDispatcherOrNull: CoroutineDispatcher? = initDefaultBlockingDispatcher()
+public val DefaultBlockingDispatcherOrNull: CoroutineDispatcher? by lazy {
+    initDefaultBlockingDispatcher(
+        BLOCKING_DISPATCHER_BASE_PROPERTY,
+        BLOCKING_DISPATCHER_CORE_SIZE_PROPERTY,
+        BLOCKING_DISPATCHER_MAX_SIZE_PROPERTY,
+        BLOCKING_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY,
+        "defaultBlockingDispatcherThreadGroup",
+        "defaultBlocking"
+    )
+}
 
 /**
  * 如果 [DefaultBlockingDispatcherOrNull] 为 null，得到 [Dispatchers.Default], 否则得到 [DefaultBlockingDispatcherOrNull]的值。
  * @see DefaultBlockingDispatcherOrNull
  */
 @InternalSimbotApi
-public val DefaultBlockingDispatcher: CoroutineDispatcher = DefaultBlockingDispatcherOrNull ?: Dispatchers.Default
+public val DefaultBlockingDispatcher: CoroutineDispatcher
+    get() = DefaultBlockingDispatcherOrNull ?: Dispatchers.Default
 
+private infix fun String.eq(other: String): Boolean = equals(other = other, ignoreCase = true)
 
-private fun initDefaultBlockingDispatcher(): CoroutineDispatcher? {
-    infix fun String.eq(other: String): Boolean = equals(other = other, ignoreCase = true)
-    
+private inline fun initDefaultBlockingDispatcher(
+    dispatcherPropertyName: String,
+    coreSizePropertyName: String,
+    maxSizePropertyName: String,
+    keepAliveTimePropertyName: String,
+    threadGroupName: String,
+    threadNamePrefix: String,
+    onDefault: (
+        coreSize: Int?, maxSize: Int?, keepAliveTime: Long?,
+        threadGroupName: String, threadNamePrefix: String,
+        cause: Throwable?,
+    ) -> CoroutineDispatcher? =
+        { coreSize, maxSize, keepAliveTime, threadGroupName0, threadNamePrefix0, _ ->
+            createDefaultDispatcher(coreSize, maxSize, keepAliveTime, threadGroupName0, threadNamePrefix0)
+        },
+): CoroutineDispatcher? {
     return runCatching {
-        val dispatcher: String? = System.getProperty(DISPATCHER_BASE_PROPERTY)
+        val dispatcher: String? = System.getProperty(dispatcherPropertyName)
         if (dispatcher != null) {
             when {
                 dispatcher eq DISPATCHER_USE_IO_PROPERTY_VALUE -> return Dispatchers.IO
@@ -143,13 +178,13 @@ private fun initDefaultBlockingDispatcher(): CoroutineDispatcher? {
             }
         }
         
-        val coreSize = System.getProperty(DISPATCHER_CORE_SIZE_PROPERTY)?.toIntOrNull()
-        val maxSize = System.getProperty(DISPATCHER_MAX_SIZE_PROPERTY)?.toIntOrNull()
-        val keepAliveTime = System.getProperty(DISPATCHER_KEEP_ALIVE_TIME_PROPERTY)?.toLongOrNull()
+        val coreSize = System.getProperty(coreSizePropertyName)?.toIntOrNull()
+        val maxSize = System.getProperty(maxSizePropertyName)?.toIntOrNull()
+        val keepAliveTime = System.getProperty(keepAliveTimePropertyName)?.toLongOrNull()
         
-        createDefaultDispatcher(coreSize, maxSize, keepAliveTime)
+        onDefault(coreSize, maxSize, keepAliveTime, threadGroupName, threadNamePrefix, null)
     }.getOrElse {
-        createDefaultDispatcher(null, null, null)
+        onDefault(null, null, null, threadGroupName, threadNamePrefix, it)
     }
 }
 
@@ -162,10 +197,64 @@ private fun initDefaultBlockingDispatcher(): CoroutineDispatcher? {
  *
  */
 @InternalSimbotApi
-public val DefaultBlockingContext: CoroutineContext = CoroutineName("defaultBlocking").let { name ->
-    if (DefaultBlockingDispatcherOrNull == null) name else DefaultBlockingDispatcher + name
+public val DefaultBlockingContext: CoroutineContext by lazy {
+    CoroutineName("defaultBlocking").let { name ->
+        if (DefaultBlockingDispatcherOrNull == null) name else DefaultBlockingDispatcher + name
+    }
 }
 
+/**
+ * 使用在非协程环境下的异步API（例如 [runInAsync] ）中的默认调度器。
+ * 会在首次被获取的时候进行实例化。
+ *
+ * 默认情况下，[DefaultAsyncDispatcherOrNull] 等同于 [DefaultBlockingDispatcherOrNull].
+ *
+ * 存在部分可配置内容：
+ *
+ * | 属性 | JVM参数 | 默认值 |
+ * | --- | :----: | -----: |
+ * | [核心线程数][ThreadPoolExecutor.corePoolSize] | `simbot.runInAsync.dispatcher.coreSize` | [availableProcessors][Runtime.availableProcessors] / 2 |
+ * | [最大线程数][ThreadPoolExecutor.maximumPoolSize] | `simbot.runInAsync.dispatcher.maxSize` | [availableProcessors][Runtime.availableProcessors] * 4 |
+ * |[ 维持时间][ThreadPoolExecutor.keepAliveTime]（毫秒） | `simbot.runInAsync.dispatcher.keepAliveTime` | `60000` |
+ *
+ * 除了提供调度器的使用，你也可以指定一个从 [Dispatchers] 中存在的属性。使用如下JVM参数可以覆盖调度器的使用：
+ * _(参数值不区分大小写)_
+ *
+ * | JVM参数 | 对应值 | 描述 |
+ * | ------ | -----: | ---- |
+ * | `simbot.runInAsync.dispatcher=io` | [Dispatchers.IO] | 使用 [Dispatchers.IO] 作为默认调度器. |
+ * | `simbot.runInAsync.dispatcher=default` | [Dispatchers.Default] | 使用 [Dispatchers.Default] 作为默认调度器. |
+ * | `simbot.runInAsync.dispatcher=main` | [Dispatchers.Main] | 使用 [Dispatchers.Main] 作为默认调度器. |
+ * | `simbot.runInAsync.dispatcher=unconfined` | [Dispatchers.Unconfined] | 使用 [Dispatchers.Unconfined] 作为默认调度器. |
+ * | `simbot.runInAsync.dispatcher=forkJoinPool` | [ForkJoinPool] | 使用 [ForkJoinPool] 作为默认调度器. |
+ *
+ */
+@InternalSimbotApi
+public val DefaultAsyncDispatcherOrNull: CoroutineDispatcher? by lazy {
+    initDefaultBlockingDispatcher(
+        ASYNC_DISPATCHER_BASE_PROPERTY,
+        ASYNC_DISPATCHER_CORE_SIZE_PROPERTY,
+        ASYNC_DISPATCHER_MAX_SIZE_PROPERTY,
+        ASYNC_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY,
+        "defaultAsyncDispatcherThreadGroup",
+        "defaultAsync"
+    ) { coreSize, maxSize, keepAliveTime, threadGroupName, threadNamePrefix, cause ->
+        if (cause != null || (coreSize == null && maxSize == null && keepAliveTime == null)) {
+            // default.
+            DefaultBlockingDispatcherOrNull
+        } else {
+            createDefaultDispatcher(coreSize, maxSize, keepAliveTime, threadGroupName, threadNamePrefix)
+        }
+    }
+}
+
+/**
+ * 如果 [DefaultAsyncDispatcherOrNull] 为 null，得到 [Dispatchers.Default], 否则得到 [DefaultAsyncDispatcherOrNull]的值。
+ * @see DefaultAsyncDispatcherOrNull
+ */
+@InternalSimbotApi
+public val DefaultAsyncDispatcher: CoroutineDispatcher
+    get() = DefaultAsyncDispatcherOrNull ?: Dispatchers.Default
 
 /**
  * 默认的异步调用（Java异步，例如 [CompletableFuture] 或 [runInAsync]）上下文。
@@ -174,12 +263,21 @@ public val DefaultBlockingContext: CoroutineContext = CoroutineName("defaultBloc
  *
  */
 @InternalSimbotApi
-public val DefaultAsyncContext: CoroutineContext = DefaultBlockingContext + CoroutineName("defaultAsync")
+public val DefaultAsyncContext: CoroutineContext by lazy {
+    val asyncDispatcher = DefaultAsyncDispatcherOrNull
+    if (asyncDispatcher == null) {
+        CoroutineName("defaultAsync")
+    } else {
+        CoroutineName("defaultAsync") + asyncDispatcher
+    }
+}
 
 
 @Suppress("unused", "ObjectPropertyName")
 @InternalSimbotApi
-private val `$$DefaultScope`: CoroutineScope = CoroutineScope(DefaultAsyncContext)
+private val `$$DefaultScope`: CoroutineScope by lazy {
+    CoroutineScope(DefaultAsyncContext)
+}
 
 
 // region run in blocking strategy
