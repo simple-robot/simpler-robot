@@ -413,15 +413,15 @@ public fun <T> runInNoScopeTimeoutBlocking(
 public fun <T> runInAsync(
     scope: CoroutineScope,
     context: CoroutineContext = EmptyCoroutineContext,
-    block: suspend () -> T,
+    block: suspend CoroutineScope.() -> T,
 ): CompletableFuture<T> =
-    scope.future(context) { block.invoke() }
+    scope.future(context) { block() }
 
 /**
  * 执行一个异步函数，得到 [CompletableFuture].
  */
 @InternalSimbotApi
-public fun <T> runInAsync(block: suspend () -> T): CompletableFuture<T> =
+public fun <T> runInAsync(block: suspend CoroutineScope.() -> T): CompletableFuture<T> =
     runInAsync(scope = `$$DefaultScope`, context = EmptyCoroutineContext, block = block)
 
 @InternalSimbotApi
@@ -431,7 +431,9 @@ public fun <T> `$$runInBlocking`(block: suspend () -> T): T = runInNoScopeBlocki
 @InternalSimbotApi
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
 public fun <T> `$$runInAsync`(block: suspend () -> T): CompletableFuture<T> {
-    return runInAsync(block = block)
+    return runInAsync {
+        block()
+    }
 }
 
 
