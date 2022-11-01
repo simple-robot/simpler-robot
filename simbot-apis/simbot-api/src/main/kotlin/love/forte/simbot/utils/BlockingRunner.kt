@@ -15,6 +15,7 @@
  */
 
 @file:JvmName("BlockingRunnerKt")
+@file:Suppress("FunctionName")
 
 package love.forte.simbot.utils
 
@@ -213,17 +214,19 @@ public fun <T> runInTimeoutBlocking(
 }
 
 @InternalSimbotApi
-public fun <T> runInAsync(block: suspend () -> T, scope: CoroutineScope = `$$DefaultScope`): CompletableFuture<T> =
+public fun <T> runInAsync(scope: CoroutineScope, block: suspend () -> T): CompletableFuture<T> =
     scope.future(DefaultBlockingContext) { block.invoke() }
 
-@Suppress("FunctionName")
+@InternalSimbotApi
+public fun <T> runInAsync(block: suspend () -> T): CompletableFuture<T> =
+    `$$DefaultScope`.future(DefaultBlockingContext) { block.invoke() }
+
 @InternalSimbotApi
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
 public fun <T> `$$runInBlocking`(block: suspend () -> T): T = runInBlocking { block() }
 
 @InternalSimbotApi
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
-@Suppress("FunctionName")
 public fun <T> `$$runInAsync`(block: suspend () -> T): CompletableFuture<T> {
     return runInAsync(block = block)
 }

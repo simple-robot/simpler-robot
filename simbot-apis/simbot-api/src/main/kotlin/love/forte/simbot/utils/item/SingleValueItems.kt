@@ -19,6 +19,10 @@ package love.forte.simbot.utils.item
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import love.forte.simbot.Api4J
+import love.forte.simbot.InternalSimbotApi
+import love.forte.simbot.utils.runInAsync
+import java.util.concurrent.CompletableFuture
+import java.util.function.Consumer
 import java.util.stream.Stream
 
 /**
@@ -56,5 +60,38 @@ public class SingleValueItems<T>(private val value: T) : Items<T> {
     @Api4J
     override fun asStream(): Stream<out T> {
         return Stream.of(value)
+    }
+    
+    @Api4J
+    override fun collect(collector: Consumer<in T>) {
+        collector.accept(value)
+    }
+    
+    @OptIn(InternalSimbotApi::class)
+    @Api4J
+    override fun collectAsync(collector: Consumer<in T>): CompletableFuture<Unit> {
+        return runInAsync { collect(collector) }
+    }
+    
+    @Api4J
+    override fun <C : MutableCollection<in T>> collectTo(collector: C): C {
+        collector.add(value)
+        return collector
+    }
+    
+    @OptIn(InternalSimbotApi::class)
+    @Api4J
+    override fun <C : MutableCollection<in T>> collectToAsync(collector: C): CompletableFuture<out C> {
+        return runInAsync { collector.add(value) }.thenApply { collector }
+    }
+    
+    @Api4J
+    override fun collectToList(): List<T> {
+        return listOf(value)
+    }
+    
+    @Api4J
+    override fun collectToListAsync(): CompletableFuture<out List<T>> {
+        return CompletableFuture.completedFuture(listOf(value))
     }
 }
