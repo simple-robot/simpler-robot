@@ -35,7 +35,7 @@ internal class SimpleContinuousSessionContext(
 ) : ContinuousSessionContext() {
     
     companion object {
-        private val logger = LoggerFactory.getLogger(SimpleContinuousSessionContext::class)
+        private val logger = LoggerFactory.logger<SimpleContinuousSessionContext>()
     }
     
     private fun <T> waiting0(

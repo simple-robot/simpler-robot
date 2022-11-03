@@ -19,6 +19,7 @@ package love.forte.simbot.bot
 import love.forte.simbot.*
 import love.forte.simbot.bot.OriginBotManager.cancel
 import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.logger.logger
 import love.forte.simbot.utils.runInBlocking
 import java.util.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
@@ -52,7 +53,7 @@ import kotlin.concurrent.write
 @Suppress("MemberVisibilityCanBePrivate")
 @FragileSimbotApi
 public object OriginBotManager : Set<BotManager<*>> {
-    private val logger = LoggerFactory.getLogger(OriginBotManager::class)
+    private val logger = LoggerFactory.logger<OriginBotManager>()
     private val lock = ReentrantReadWriteLock()
     private val managers: MutableMap<BotManager<*>, Unit> = WeakHashMap()
     

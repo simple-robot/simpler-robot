@@ -27,6 +27,7 @@ import love.forte.simbot.event.EventFilter
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerProcessingContext
 import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.logger.logger
 import kotlin.reflect.KAnnotatedElement
 import kotlin.reflect.KClass
 
@@ -35,7 +36,7 @@ import kotlin.reflect.KClass
  *
  */
 public object CoreFilterAnnotationProcessor {
-    private val logger = LoggerFactory.getLogger(CoreFilterAnnotationProcessor::class)
+    private val logger = LoggerFactory.logger<CoreFilterAnnotationProcessor>()
     public fun process(filters: Filters, filter: Filter, context: FiltersAnnotationProcessContext): EventFilter? {
         if (filter.by != AnnotationEventFilterFactory::class) {
             return process(filter.by, filters, filter, context)
