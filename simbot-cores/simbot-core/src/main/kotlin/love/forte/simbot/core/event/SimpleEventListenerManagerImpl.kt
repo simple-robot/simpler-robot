@@ -209,10 +209,15 @@ internal class SimpleEventListenerManagerImpl internal constructor(
     
     init {
         val simpleListenerManagerConfig: SimpleListenerManagerConfig = configuration.build()
-        val context = simpleListenerManagerConfig.coroutineContext
+        var context = simpleListenerManagerConfig.coroutineContext.minusKey(Job) + CoroutineName("SimpleListenerManager@${hashCode()}")
+    
+        @OptIn(ExperimentalStdlibApi::class, ExperimentalCoroutinesApi::class)
+        if (context[CoroutineDispatcher] == null) {
+            // todo configurable
+            context += Dispatchers.Default.limitedParallelism(16)
+        }
         
-        managerCoroutineContext =
-            context.minusKey(Job) + CoroutineName("SimpleListenerManager@${hashCode()}")
+        managerCoroutineContext = context
         
         managerScope = CoroutineScope(managerCoroutineContext)
         

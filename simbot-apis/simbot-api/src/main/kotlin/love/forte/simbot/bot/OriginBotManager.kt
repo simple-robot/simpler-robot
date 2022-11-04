@@ -20,7 +20,7 @@ import love.forte.simbot.*
 import love.forte.simbot.bot.OriginBotManager.cancel
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 import java.util.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
@@ -79,7 +79,7 @@ public object OriginBotManager : Set<BotManager<*>> {
             var err: Throwable? = null
             for (manager in managers.keys.toList()) {
                 kotlin.runCatching {
-                    runInBlocking { manager.cancel(reason) }
+                    runInNoScopeBlocking { manager.cancel(reason) }
                 }.getOrElse { e ->
                     kotlin.runCatching {
                         val err0 = err

@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.produceIn
 import love.forte.simbot.Api4J
 import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.utils.runInAsync
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
@@ -61,7 +61,7 @@ public class FlowItems<T>(
     override fun asSequence(): Sequence<T> {
         val iter = flow.produceIn(produceScope).iterator()
         return sequence {
-            while (runInBlocking { iter.hasNext() }) {
+            while (runInNoScopeBlocking { iter.hasNext() }) {
                 yield(iter.next())
             }
         }

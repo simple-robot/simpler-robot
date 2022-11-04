@@ -26,7 +26,7 @@ import love.forte.simbot.Limiter.ZERO.limit
 import love.forte.simbot.Limiter.ZERO.offset
 import love.forte.simbot.utils.item.Items.Companion.items
 import love.forte.simbot.utils.runInAsync
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 import love.forte.simbot.utils.runWithInterruptible
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
@@ -166,7 +166,7 @@ public interface Items<out T> {
      */
     @Api4J
     public fun collect(collector: Consumer<in T>) {
-        runInBlocking { collect { collector.accept(it) } }
+        runInNoScopeBlocking { collect { collector.accept(it) } }
     }
     
     /**
@@ -188,7 +188,7 @@ public interface Items<out T> {
      */
     @Api4J
     public fun <C : MutableCollection<in T>> collectTo(collector: C): C {
-        runInBlocking { collect { collector.add(it) } }
+        runInNoScopeBlocking { collect { collector.add(it) } }
         return collector
     }
     
@@ -520,7 +520,7 @@ public inline fun <B, T> Items<B>.map(crossinline transform: suspend (B) -> T): 
 
 internal class BlockingIterator<out T>(private val iterator: ChannelIterator<T>) : Iterator<T> {
     override fun hasNext(): Boolean {
-        return runInBlocking { iterator.hasNext() }
+        return runInNoScopeBlocking { iterator.hasNext() }
     }
     
     override fun next(): T {

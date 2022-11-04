@@ -21,7 +21,7 @@ import kotlinx.coroutines.future.asCompletableFuture
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -53,7 +53,7 @@ public interface Switchable : DelayableCoroutineScope {
     
     @Api4J
     @Throws(InterruptedException::class)
-    public fun cancelBlocking(): Boolean = runInBlocking { cancel() }
+    public fun cancelBlocking(): Boolean = runInNoScopeBlocking { cancel() }
     
     @Api4J
     public fun cancelAsync(): CompletableFuture<Boolean> {

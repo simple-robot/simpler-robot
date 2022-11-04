@@ -23,6 +23,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.future.future
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.InternalSimbotApi
+import love.forte.simbot.logger.LoggerFactory
 import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.coroutines.Continuation
@@ -33,6 +34,7 @@ import kotlin.coroutines.startCoroutine
 
 private const val DEFAULT_KEEP_ALIVE_TIME = 60_000L // 60s
 
+private val logger by lazy { LoggerFactory.getLogger("love.forte.simbot.utils.BlockingRunner") }
 
 @Suppress("NAME_SHADOWING")
 private fun createDefaultDispatcher(
@@ -46,9 +48,10 @@ private fun createDefaultDispatcher(
         return null
     }
     // cpu / 2 or 1
-    val coreSize = (coreSize ?: (Runtime.getRuntime().availableProcessors() / 2)).coerceAtLeast(1)
+    val availableProcessors = Runtime.getRuntime().availableProcessors()
+    val coreSize = (coreSize ?: (availableProcessors / 2)).coerceAtLeast(8)
     val maxSize =
-        maxSize?.coerceAtLeast(coreSize) ?: (Runtime.getRuntime().availableProcessors() * 4).coerceAtLeast(coreSize)
+        maxSize?.coerceAtLeast(coreSize) ?: (availableProcessors * 4).coerceAtLeast(coreSize * 2)
     val keepAliveTime = keepAliveTime?.takeIf { it >= 0L } ?: DEFAULT_KEEP_ALIVE_TIME
     
     val num = AtomicLong(0)
@@ -88,13 +91,17 @@ private const val DISPATCHER_USE_MAIN_PROPERTY_VALUE = "main"
 private const val DISPATCHER_USE_UNCONFINED_PROPERTY_VALUE = "unconfined"
 private const val DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE = "forkJoinPool"
 
+private const val DISPATCHER_LIMITED_PARALLELISM = "limitedParallelism"
+
 // region blocking properties
+private const val BLOCKING_DISPATCHER_LIMITED_PARALLELISM_PROPERTY = "$BLOCKING_DISPATCHER_BASE_PROPERTY.$DISPATCHER_LIMITED_PARALLELISM"
 private const val BLOCKING_DISPATCHER_CORE_SIZE_PROPERTY = "$BLOCKING_DISPATCHER_BASE_PROPERTY.coreSize"
 private const val BLOCKING_DISPATCHER_MAX_SIZE_PROPERTY = "$BLOCKING_DISPATCHER_BASE_PROPERTY.maxSize"
 private const val BLOCKING_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$BLOCKING_DISPATCHER_BASE_PROPERTY.keepAliveTime"
 // endregion
 
 // region async properties
+private const val ASYNC_DISPATCHER_LIMITED_PARALLELISM_PROPERTY = "$ASYNC_DISPATCHER_BASE_PROPERTY.$DISPATCHER_LIMITED_PARALLELISM"
 private const val ASYNC_DISPATCHER_CORE_SIZE_PROPERTY = "$ASYNC_DISPATCHER_BASE_PROPERTY.coreSize"
 private const val ASYNC_DISPATCHER_MAX_SIZE_PROPERTY = "$ASYNC_DISPATCHER_BASE_PROPERTY.maxSize"
 private const val ASYNC_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$ASYNC_DISPATCHER_BASE_PROPERTY.keepAliveTime"
@@ -126,11 +133,16 @@ private const val ASYNC_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$ASYNC_DISPATCHER
  * | `simbot.runInBlocking.dispatcher=unconfined` | [Dispatchers.Unconfined] | 使用 [Dispatchers.Unconfined] 作为默认调度器. |
  * | `simbot.runInBlocking.dispatcher=forkJoinPool` | [ForkJoinPool] | 使用 [ForkJoinPool] 作为默认调度器. |
  *
+ * 如果选择了使用某个具体的调度器，那么你可以额外指定属性 `simbot.runInBlocking.dispatcher.limitedParallelism` 来通过 [CoroutineDispatcher.limitedParallelism]
+ * 来限制使用的最大并发数。更多说明（和警告）参考 [CoroutineDispatcher.limitedParallelism]。
+ *
+ *
  */
 @InternalSimbotApi
 public val DefaultBlockingDispatcherOrNull: CoroutineDispatcher? by lazy {
     initDefaultBlockingDispatcher(
         BLOCKING_DISPATCHER_BASE_PROPERTY,
+        BLOCKING_DISPATCHER_LIMITED_PARALLELISM_PROPERTY,
         BLOCKING_DISPATCHER_CORE_SIZE_PROPERTY,
         BLOCKING_DISPATCHER_MAX_SIZE_PROPERTY,
         BLOCKING_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY,
@@ -151,6 +163,7 @@ private infix fun String.eq(other: String): Boolean = equals(other = other, igno
 
 private inline fun initDefaultBlockingDispatcher(
     dispatcherPropertyName: String,
+    dispatcherLimitedParallelismPropertyName: String,
     coreSizePropertyName: String,
     maxSizePropertyName: String,
     keepAliveTimePropertyName: String,
@@ -168,13 +181,32 @@ private inline fun initDefaultBlockingDispatcher(
     return runCatching {
         val dispatcher: String? = System.getProperty(dispatcherPropertyName)
         if (dispatcher != null) {
-            when {
-                dispatcher eq DISPATCHER_USE_IO_PROPERTY_VALUE -> return Dispatchers.IO
-                dispatcher eq DISPATCHER_USE_DEFAULT_PROPERTY_VALUE -> return Dispatchers.Default
-                dispatcher eq DISPATCHER_USE_MAIN_PROPERTY_VALUE -> return Dispatchers.Main
-                dispatcher eq DISPATCHER_USE_UNCONFINED_PROPERTY_VALUE -> return Dispatchers.Unconfined
-                dispatcher eq DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE -> return ForkJoinPool.commonPool()
+            logger.debug("Dispatcher runner: {}={}", dispatcherPropertyName, dispatcher)
+    
+            var useDispatcher: CoroutineDispatcher? = when {
+                dispatcher eq DISPATCHER_USE_IO_PROPERTY_VALUE -> Dispatchers.IO
+                dispatcher eq DISPATCHER_USE_DEFAULT_PROPERTY_VALUE -> Dispatchers.Default
+                dispatcher eq DISPATCHER_USE_MAIN_PROPERTY_VALUE -> Dispatchers.Main
+                dispatcher eq DISPATCHER_USE_UNCONFINED_PROPERTY_VALUE -> Dispatchers.Unconfined
+                dispatcher eq DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE -> ForkJoinPool.commonPool()
                     .asCoroutineDispatcher()
+                
+                else -> null
+            }
+    
+            if (useDispatcher != null) {
+                val limitedParallelism = System.getProperty(dispatcherLimitedParallelismPropertyName).toIntOrNull()
+            
+                @OptIn(ExperimentalCoroutinesApi::class)
+                if (limitedParallelism != null) {
+                    logger.debug("Dispatcher runner limited parallelism: {}={}", dispatcherLimitedParallelismPropertyName, limitedParallelism)
+                    useDispatcher = useDispatcher.limitedParallelism(limitedParallelism)
+                }
+                
+                return useDispatcher
+            } else {
+                logger.debug("Unknown dispatcher runner: {}, ignore.", dispatcher)
+                
             }
         }
         
@@ -182,8 +214,10 @@ private inline fun initDefaultBlockingDispatcher(
         val maxSize = System.getProperty(maxSizePropertyName)?.toIntOrNull()
         val keepAliveTime = System.getProperty(keepAliveTimePropertyName)?.toLongOrNull()
         
+        logger.debug("Dispatcher properties: coreSize={}, maxSize={}, keepAliveTime={}", coreSize, maxSize, keepAliveTime)
         onDefault(coreSize, maxSize, keepAliveTime, threadGroupName, threadNamePrefix, null)
     }.getOrElse {
+        logger.debug("Dispatcher properties: coreSize=null, maxSize=null, keepAliveTime=null")
         onDefault(null, null, null, threadGroupName, threadNamePrefix, it)
     }
 }
@@ -233,6 +267,7 @@ public val DefaultBlockingContext: CoroutineContext by lazy {
 public val DefaultAsyncDispatcherOrNull: CoroutineDispatcher? by lazy {
     initDefaultBlockingDispatcher(
         ASYNC_DISPATCHER_BASE_PROPERTY,
+        ASYNC_DISPATCHER_LIMITED_PARALLELISM_PROPERTY,
         ASYNC_DISPATCHER_CORE_SIZE_PROPERTY,
         ASYNC_DISPATCHER_MAX_SIZE_PROPERTY,
         ASYNC_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY,

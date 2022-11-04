@@ -47,10 +47,11 @@ internal annotation class SimpleEventManagerConfigDSL
 @SimpleEventManagerConfigDSL
 public open class SimpleListenerManagerConfiguration {
     
-    
     /**
      * 事件管理器的上下文. 可以基于此提供调度器。
      * 但是 [SimpleEventListenerManager] 并不是一个作用域，因此不可以提供 [Job][kotlinx.coroutines.Job].
+     *
+     * 默认情况下，如果 [coroutineContext] 中不存在调度器，则在使用时会提供一个默认的调度器。
      */
     @SimpleEventManagerConfigDSL
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext

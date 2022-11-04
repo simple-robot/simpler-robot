@@ -24,7 +24,7 @@ import love.forte.simbot.bot.isNotMe
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.utils.randomIdStr
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 import love.forte.simbot.utils.runInTimeoutBlocking
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
@@ -274,12 +274,12 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         suspend fun doWait() = waiting(id, blockingListener.parse())
         
         if (timeoutMillis > 0) {
-            return runInBlocking {
+            return runInNoScopeBlocking {
                 withTimeout(timeoutMillis) { doWait() }
             }
         }
         
-        return runInBlocking { doWait() }
+        return runInNoScopeBlocking { doWait() }
     }
     
     /**
@@ -478,12 +478,12 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         suspend fun doWait() = waitingForNext(id, key, matcher.parse())
         
         if (timeoutMillis > 0) {
-            return runInBlocking {
+            return runInNoScopeBlocking {
                 withTimeout(timeoutMillis) { doWait() }
             }
         }
         
-        return runInBlocking { doWait() }
+        return runInNoScopeBlocking { doWait() }
     }
     
     
@@ -667,12 +667,12 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         suspend fun doWait() = waitingForNext(id, matcher.parse())
         
         if (timeout > 0) {
-            return runInBlocking {
+            return runInNoScopeBlocking {
                 withTimeout(timeout) { doWait() }
             }
         }
         
-        return runInBlocking { doWait() }
+        return runInNoScopeBlocking { doWait() }
     }
     
     /**
@@ -913,12 +913,12 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         suspend fun doWait() = waitingForNext(id, key, currentEvent.toMatcher())
         
         if (timeout > 0) {
-            return runInBlocking {
+            return runInNoScopeBlocking {
                 withTimeout(timeout) { doWait() }
             }
         }
         
-        return runInBlocking { doWait() }
+        return runInNoScopeBlocking { doWait() }
     }
     
     
@@ -1412,12 +1412,12 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
     ): MessageContent {
         suspend fun doWait() = waitingForNextMessage(id, key, matcher.parse())
         if (timeout > 0) {
-            return runInBlocking {
+            return runInNoScopeBlocking {
                 withTimeout(timeout) { doWait() }
             }
         }
         
-        return runInBlocking { doWait() }
+        return runInNoScopeBlocking { doWait() }
     }
     
     /**
@@ -1808,12 +1808,12 @@ public abstract class ContinuousSessionContext : BaseContinuousSessionContext {
         suspend fun doWait() = nextMessage(id, key)
         
         if (timeout > 0) {
-            return runInBlocking {
+            return runInNoScopeBlocking {
                 withTimeout(timeout) { doWait() }
             }
         }
         
-        return runInBlocking { doWait() }
+        return runInNoScopeBlocking { doWait() }
     }
     
     
@@ -2184,7 +2184,7 @@ public interface ContinuousSessionReceiver<T> {
      */
     @Api4J
     @Throws(InterruptedException::class)
-    public fun waiting(): T = runInBlocking { await() }
+    public fun waiting(): T = runInNoScopeBlocking { await() }
     
     
     /**

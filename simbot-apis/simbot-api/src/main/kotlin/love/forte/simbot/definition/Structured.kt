@@ -17,7 +17,7 @@
 package love.forte.simbot.definition
 
 import love.forte.simbot.Api4J
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 
 /**
  * 一个非阻塞的 **结构化** 定义。
@@ -37,7 +37,7 @@ public interface Structured<P, N> {
 
     @Api4J
     public val previous: P
-        get() = runInBlocking { previous() }
+        get() = runInNoScopeBlocking { previous() }
 
     /**
      * 下一级的内容。

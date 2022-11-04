@@ -23,7 +23,7 @@ import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.*
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.event.EventListenerManager
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 
 
 /**
@@ -142,7 +142,7 @@ public interface Application : CoroutineScope {
      *
      */
     @Api4J
-    public fun shutdownBlocking(): Unit = runInBlocking { shutdown() }
+    public fun shutdownBlocking(): Unit = runInNoScopeBlocking { shutdown() }
 }
 
 

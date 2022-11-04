@@ -19,7 +19,7 @@ package love.forte.simbot.utils.item
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.stream.consumeAsFlow
 import love.forte.simbot.Api4J
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 import java.util.function.Consumer
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -52,7 +52,7 @@ public class StreamItems<T> private constructor(private val streamFactory: (Item
     
     override suspend fun collect(collector: suspend (T) -> Unit) {
         stream.forEach {
-            runInBlocking { collector(it) }
+            runInNoScopeBlocking { collector(it) }
         }
     }
     

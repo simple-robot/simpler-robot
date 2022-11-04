@@ -23,7 +23,7 @@ import love.forte.simboot.spring.autoconfigure.application.springBootApplication
 import love.forte.simbot.Api4J
 import love.forte.simbot.application.Application
 import love.forte.simbot.event.EventListenerManager
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -88,7 +88,7 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
     ): SpringBootApplication {
         initialConfiguration.applicationContext
         
-        return runInBlocking {
+        return runInNoScopeBlocking {
             springBootApplication(initialConfiguration,
                 {
                     // initial

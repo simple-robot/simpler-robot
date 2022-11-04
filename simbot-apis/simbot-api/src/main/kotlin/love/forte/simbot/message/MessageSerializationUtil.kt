@@ -16,7 +16,6 @@
 
 package love.forte.simbot.message
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonBuilder
 import kotlinx.serialization.modules.SerializersModule
@@ -24,7 +23,7 @@ import kotlinx.serialization.modules.plus
 import love.forte.simbot.Api4J
 import love.forte.simbot.ComponentAutoRegistrarFactory
 import love.forte.simbot.event.EventProcessingContext
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 import org.slf4j.LoggerFactory
 import java.util.*
 
@@ -50,7 +49,7 @@ public object MessageSerializationUtil {
             isLenient = true
             ignoreUnknownKeys = true
             encodeDefaults = true
-            serializersModule = runInBlocking(Dispatchers.IO) { tryFindAllMessageSerializersModule() }
+            serializersModule = runInNoScopeBlocking { tryFindAllMessageSerializersModule() }
         }
     }
     

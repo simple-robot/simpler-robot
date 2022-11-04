@@ -20,7 +20,7 @@ import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.action.DeleteSupport
 import love.forte.simbot.definition.IDContainer
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 
 
 /**
@@ -52,7 +52,7 @@ public interface MessageReceipt : IDContainer, DeleteSupport {
      */
     @Api4J
     @Deprecated("Just use deleteBlocking()", ReplaceWith("deleteBlocking()"), level = DeprecationLevel.ERROR)
-    public fun deleteIfSupportBlocking(): Boolean = runInBlocking { delete() }
+    public fun deleteIfSupportBlocking(): Boolean = runInNoScopeBlocking { delete() }
 }
 
 

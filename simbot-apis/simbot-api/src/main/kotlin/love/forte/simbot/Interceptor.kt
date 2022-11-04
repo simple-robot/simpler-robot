@@ -16,7 +16,7 @@
 
 package love.forte.simbot
 
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 
 /**
  *
@@ -77,7 +77,7 @@ public interface Interceptor<C : Interceptor.Context<R>, R> {
          *
          */
         @Api4J
-        public fun proceedBlocking(): R = runInBlocking { proceed() }
+        public fun proceedBlocking(): R = runInNoScopeBlocking { proceed() }
     }
 }
 
