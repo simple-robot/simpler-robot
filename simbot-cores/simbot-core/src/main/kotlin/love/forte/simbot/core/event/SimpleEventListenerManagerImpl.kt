@@ -45,6 +45,11 @@ internal class SimpleEventListenerManagerImpl internal constructor(
             LoggerFactory.getLogger("love.forte.simbot.core.event.SimpleEventListenerManagerImpl")
         
         private const val EVENT_KEY_PROCESSABLE_COUNTER_CLEAR_THRESHOLD = 83
+    
+        /**
+         * 是否禁用产生内部使用的默认调度器。
+         */
+        private const val DISABLE_DEFAULT_DISPATCHER = "love.forte.simbot.core.SimpleListenerManager.disableDefaultDispatcher"
         
     }
     
@@ -213,8 +218,12 @@ internal class SimpleEventListenerManagerImpl internal constructor(
     
         @OptIn(ExperimentalStdlibApi::class, ExperimentalCoroutinesApi::class)
         if (context[CoroutineDispatcher] == null) {
-            // todo configurable
-            context += Dispatchers.Default.limitedParallelism(16)
+            if (System.getProperty(DISABLE_DEFAULT_DISPATCHER).toBoolean()) {
+                // todo configurable
+                context += Dispatchers.Default.limitedParallelism(Runtime.getRuntime().availableProcessors().coerceAtLeast(16))
+            } else {
+                logger.debug("No dispatcher for current simple listener manager, and default dispatcher is disabled.")
+            }
         }
         
         managerCoroutineContext = context
