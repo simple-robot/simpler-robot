@@ -214,7 +214,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
         @OptIn(ExperimentalStdlibApi::class, ExperimentalCoroutinesApi::class)
         if (context[CoroutineDispatcher] == null) {
             // todo configurable
-            context += Dispatchers.Default.limitedParallelism(16)
+            context += Dispatchers.Default.limitedParallelism(Runtime.getRuntime().availableProcessors().coerceAtLeast(16))
         }
         
         managerCoroutineContext = context
