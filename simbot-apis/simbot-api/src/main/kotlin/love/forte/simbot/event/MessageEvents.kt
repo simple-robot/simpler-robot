@@ -25,7 +25,7 @@ import love.forte.simbot.action.SendSupport
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.*
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 
 
 /**
@@ -199,7 +199,7 @@ public interface ChatRoomMessageEvent : MessageEvent, OrganizationEvent, RemoteM
         ReplaceWith("messageContent.deleteBlocking()"),
         level = DeprecationLevel.ERROR
     )
-    public fun deleteBlocking(): Boolean = runInBlocking { messageContent.delete() }
+    public fun deleteBlocking(): Boolean = runInNoScopeBlocking { messageContent.delete() }
     
     
     public companion object Key : BaseEventKey<ChatRoomMessageEvent>(

@@ -69,14 +69,20 @@ public abstract class FunctionalBindableEventListener<R>(
     /**
      * 对 [caller] 执行后的返回值进行处理并转化为 [EventResult]. 可覆盖并自定义结果逻辑。
      *
-     * 默认情况下，如果结果是 [EventResult] 类型，则会直接返回, 否则通过 [EventResult.of] 转化为 [EventResult].
+     * - 如果结果是 [EventResult] 类型，则会直接返回.
+     * - 如果返回值为 `null`, 则会返回 [EventResult.invalid].
      *
-     * 当 [result] == [Unit] 时，将其视为 `null`。
+     * 否则通过 [EventResult.of] 转化为 [EventResult].
+     *
+     * 当 [result] 为 [Unit] 时，将其视为 `null`。
      *
      */
     protected open suspend fun resultProcess(result: R): EventResult {
-        return if (result is EventResult) result
-        else EventResult.of(result.takeIf { it != Unit })
+        return when (result) {
+            is EventResult -> result
+            null, Unit -> EventResult.invalid()
+            else -> EventResult.of(result)
+        }
     }
     
     private val isOptional = caller.parameters.any { it.isOptional }

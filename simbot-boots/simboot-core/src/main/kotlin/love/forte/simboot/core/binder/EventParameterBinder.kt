@@ -42,8 +42,6 @@ import kotlin.reflect.safeCast
  *
  */
 public object EventParameterBinderFactory : ParameterBinderFactory {
-    // private val logger = LoggerFactory.getLogger(EventParameterBinderFactory::class.java)
-    
     @OptIn(ExperimentalSimbotApi::class)
     @Suppress("UNCHECKED_CAST")
     override fun resolveToBinder(context: ParameterBinderFactory.Context): ParameterBinderResult {

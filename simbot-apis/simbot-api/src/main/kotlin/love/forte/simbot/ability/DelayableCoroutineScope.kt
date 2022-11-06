@@ -21,8 +21,9 @@ import kotlinx.coroutines.future.asDeferred
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.selects.select
 import love.forte.simbot.Api4J
+import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.JavaDuration
-import love.forte.simbot.utils.DefaultBlockingDispatcher
+import love.forte.simbot.utils.DefaultAsyncContext
 import java.util.concurrent.*
 import java.util.function.*
 import java.util.function.Function
@@ -171,14 +172,11 @@ private class DelayableCompletableFutureImpl<T>(
     
     companion object {
         /**
-         * 默认使用的异步调度器.
-         *
-         * @see DefaultBlockingDispatcher
+         * 默认使用的异步调度作用域.
          */
-        private val asyncPoolDispatcher = DefaultBlockingDispatcher
-        
+        @OptIn(InternalSimbotApi::class)
         private val asyncPoolScope =
-            CoroutineScope(asyncPoolDispatcher + CoroutineName("DelayableCompletableFutureCommon"))
+            CoroutineScope(DefaultAsyncContext + CoroutineName("DelayableCompletableFutureCommon"))
     }
     
     override fun toCompletableFuture(): DelayableCompletableFuture<T> = this

@@ -20,15 +20,17 @@ import kotlinx.coroutines.channels.ChannelIterator
 import kotlinx.coroutines.flow.*
 import love.forte.simbot.Api4J
 import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.Limiter
 import love.forte.simbot.Limiter.ZERO.limit
 import love.forte.simbot.Limiter.ZERO.offset
 import love.forte.simbot.utils.item.Items.Companion.items
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInAsync
+import love.forte.simbot.utils.runInNoScopeBlocking
 import love.forte.simbot.utils.runWithInterruptible
+import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 import java.util.stream.Stream
-import kotlin.coroutines.cancellation.CancellationException
 
 /**
  *
@@ -56,9 +58,6 @@ import kotlin.coroutines.cancellation.CancellationException
  *
  * **转化** 函数是一种 _终结_ 函数，它会将当前预处理信息的瞬时信息提供给内部的构建器，并得到一个真正的序列对象。
  *
- * 当转化函数被调用的时候，内部的流实例才会根据上述的预处理api真正的被构建。在调用转化api之后，你不应再操作预处理函数了，
- * 因为这将不再影响到转化后的结果。
- *
  * ## 收集
  *
  * [Items] 中存在部分 **收集** 函数：[Items.collectTo] 、[Items.collectToList] 等。
@@ -67,6 +66,10 @@ import kotlin.coroutines.cancellation.CancellationException
  *
  * 与上述 **转化** 函数类似，收集函数被执行时才会根据预处理参数去真正的构建流实例并进行收集操作。
  * 因此在调用了 **收集** 函数后，你不应再对之前的 [Items] 实例进行任何操作。
+ *
+ * <br />
+ *
+ * 不论是转化函数还是收集函数，它们都是终结函数，每一个 [Items] 应当且只能执行一次终结函数，**不可复用**。
  *
  *
  * @author ForteScarlet
@@ -157,35 +160,69 @@ public interface Items<out T> {
     public fun asStream(): Stream<out T>
     
     /**
-     * 阻塞的收集当前序列中的元素。
+     * 阻塞地收集当前序列中的元素。
      *
-     * @throws CancellationException 当被中断时
+     * @throws InterruptedException 当被中断时
      */
     @Api4J
     public fun collect(collector: Consumer<in T>) {
-        runInBlocking { collect { runWithInterruptible { collector.accept(it) } } }
+        runInNoScopeBlocking { collect { collector.accept(it) } }
+    }
+    
+    /**
+     * 异步地收集当前序列中的元素。
+     */
+    @OptIn(InternalSimbotApi::class)
+    @Api4J
+    public fun collectAsync(collector: Consumer<in T>): CompletableFuture<Unit> {
+        return runInAsync {
+            collect { collector.accept(it) }
+        }
     }
     
     
     /**
-     * 阻塞的收集当前序列中的元素到目标 [collector] 中。
+     * 阻塞地收集当前序列中的元素到目标 [collector] 中。
      *
-     * @throws CancellationException 当被中断时
+     * @throws InterruptedException 当被中断时
      */
     @Api4J
     public fun <C : MutableCollection<in T>> collectTo(collector: C): C {
-        runInBlocking { collect { collector.add(it) } }
+        runInNoScopeBlocking { collect { collector.add(it) } }
         return collector
+    }
+    
+    /**
+     * 异步的将内容元素收集到 [collector] 中。
+     */
+    @OptIn(InternalSimbotApi::class)
+    @Api4J
+    public fun <C : MutableCollection<in T>> collectToAsync(collector: C): CompletableFuture<out C> {
+        val future = runInAsync {
+            collect { collector.add(it) }
+        }
+        
+        return future.thenApply { collector }
     }
     
     /**
      * 阻塞的收集当前序列中的元素到列表中。
      *
-     * @throws CancellationException 当被中断时
+     * @throws InterruptedException 当被中断时
+     * @return 收集而得到的**不可变**列表。
      */
     @Api4J
     public fun collectToList(): List<T> {
         return collectTo(mutableListOf())
+    }
+    
+    /**
+     * 异步收集当前序列中的元素到列表中。
+     * @return 收集而得到的不可变列表。
+     */
+    @Api4J
+    public fun collectToListAsync(): CompletableFuture<out List<T>> {
+        return collectToAsync(mutableListOf())
     }
     
     
@@ -419,6 +456,25 @@ private object EmptyItems : Items<Nothing> {
     override fun asStream(): Stream<out Nothing> {
         return Stream.empty()
     }
+    
+    @Api4J
+    override fun collect(collector: Consumer<in Nothing>) {
+    }
+    
+    @Api4J
+    override fun collectAsync(collector: Consumer<in Nothing>): CompletableFuture<Unit> {
+        return CompletableFuture.completedFuture(Unit)
+    }
+    
+    @Api4J
+    override fun <C : MutableCollection<in Nothing>> collectTo(collector: C): C {
+        return collector
+    }
+    
+    @Api4J
+    override fun collectToList(): List<Nothing> {
+        return emptyList()
+    }
 }
 
 
@@ -464,7 +520,7 @@ public inline fun <B, T> Items<B>.map(crossinline transform: suspend (B) -> T): 
 
 internal class BlockingIterator<out T>(private val iterator: ChannelIterator<T>) : Iterator<T> {
     override fun hasNext(): Boolean {
-        return runInBlocking { iterator.hasNext() }
+        return runInNoScopeBlocking { iterator.hasNext() }
     }
     
     override fun next(): T {

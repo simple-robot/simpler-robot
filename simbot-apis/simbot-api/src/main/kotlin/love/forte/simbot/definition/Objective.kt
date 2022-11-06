@@ -23,7 +23,7 @@ import love.forte.simbot.action.sendIfSupport
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageReceipt
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 
 
 /**
@@ -82,7 +82,7 @@ public sealed interface Objective : BotContainer, IDContainer {
         ), level = DeprecationLevel.ERROR
     )
     public fun sendIfSupportBlocking(message: Message): MessageReceipt? =
-        if (this is SendSupport) runInBlocking { send(message) } else null
+        if (this is SendSupport) runInNoScopeBlocking { send(message) } else null
     
     
 }

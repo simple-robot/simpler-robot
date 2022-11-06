@@ -21,7 +21,7 @@ import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.JavaDuration
 import love.forte.simbot.kotlin
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
@@ -105,7 +105,7 @@ public interface MuteSupport {
      * @see mute
      */
     @Api4J
-    public fun muteBlocking(duration: JavaDuration): Boolean = runInBlocking {
+    public fun muteBlocking(duration: JavaDuration): Boolean = runInNoScopeBlocking {
         mute(duration.kotlin)
     }
     
@@ -115,7 +115,7 @@ public interface MuteSupport {
      * @see mute
      */
     @Api4J
-    public fun muteBlocking(): Boolean = runInBlocking {
+    public fun muteBlocking(): Boolean = runInNoScopeBlocking {
         mute()
     }
     

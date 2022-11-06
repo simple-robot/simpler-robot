@@ -16,11 +16,7 @@
 
 import love.forte.gradle.common.core.Gpg
 import love.forte.gradle.common.core.property.systemProp
-import love.forte.gradle.common.publication.configure.jvmConfigPublishing
 import love.forte.gradle.common.publication.configure.multiplatformConfigPublishing
-import org.gradle.api.tasks.bundling.Jar
-import org.gradle.kotlin.dsl.*
-import utils.checkPublishConfigurable
 
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
@@ -65,6 +61,10 @@ multiplatformConfigPublishing {
     releasesRepository = ReleaseRepository
     snapshotRepository = SnapshotRepository
     gpg = Gpg.ofSystemPropOrNull()
+    
+    if (systemProp("SIMBOT_LOCAL").toBoolean()) {
+        mainHost = null
+    }
 }
 
 show()

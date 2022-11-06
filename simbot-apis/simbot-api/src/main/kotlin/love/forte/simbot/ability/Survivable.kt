@@ -21,7 +21,7 @@ import kotlinx.coroutines.future.future
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -61,7 +61,7 @@ public interface Survivable : Switchable {
     @Api4J
     @Throws(InterruptedException::class)
     public fun waiting() {
-        runInBlocking { join() }
+        runInNoScopeBlocking { join() }
     }
 }
 

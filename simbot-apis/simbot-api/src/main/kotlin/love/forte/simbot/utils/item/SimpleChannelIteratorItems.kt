@@ -20,7 +20,7 @@ import kotlinx.coroutines.channels.ChannelIterator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import love.forte.simbot.Api4J
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 import java.util.*
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
@@ -67,7 +67,7 @@ public class SimpleChannelIteratorItems<out T>(
     override fun asSequence(): Sequence<T> {
         val iter = iterator
         return sequence {
-            while (runInBlocking { iter.hasNext() }) {
+            while (runInNoScopeBlocking { iter.hasNext() }) {
                 yield(iter.next())
             }
         }

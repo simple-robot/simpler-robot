@@ -50,7 +50,6 @@ public interface CoreListenerManager : SimpleEventListenerManager
  * 立即返回一个 [AsyncEventResult].
  *
  *
- *
  * ## 监听函数的解析、缓存与获取
  * 在 [SimpleEventListenerManager] 中，真正被执行的监听函数是经过缓存与转化的，它们只会在遇到一个目前缓存中未知的事件类型的时候进行同步转化缓存。
  *
@@ -73,6 +72,8 @@ public interface CoreListenerManager : SimpleEventListenerManager
  *
  * 但是这存在例外：当存在任何通过 [ContinuousSessionContext] 而注册的持续会话监听函数的时候，[isProcessable] 将会始终得到 `true`。
  *
+ * 需要注意的是, [isProcessable] 的结果并不保证是 **"强可靠"** 的。由于对监听函数动态增删的支持，其内部持有的监听函数集应当保证线程安全，
+ * 但是不会保证**强一致性**。这可能会导致当一个监听函数被追加的这一**瞬间**，[isProcessable] 仍无法感知到它的存在。
  *
  *
  */

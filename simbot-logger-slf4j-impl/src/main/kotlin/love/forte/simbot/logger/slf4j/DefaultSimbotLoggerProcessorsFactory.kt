@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
  *
  *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
  *
@@ -14,34 +14,23 @@
  *
  */
 
-package love.forte.simbot.definition
+package love.forte.simbot.logger.slf4j
 
-import love.forte.simbot.Api4J
-import love.forte.simbot.utils.runInNoScopeBlocking
 
 /**
- * 一个非阻塞的 **结构化** 定义。
+ * 当无法加载任何 [SimbotLoggerProcessorsFactory] 时使用的默认工厂。
+ * 默认工厂中只有一个用于控制台输出的 [ConsoleSimbotLoggerProcessor].
  *
- * 结构化的东西，可以有一个 [上级][previous] 和一个 [下级][children]。
- *
- * @author ForteScarlet
  */
-@Deprecated("No longer use", level = DeprecationLevel.ERROR)
-public interface Structured<P, N> {
+public object DefaultSimbotLoggerProcessorsFactory : SimbotLoggerProcessorsFactory {
+    private val processors = listOf(
+        ConsoleSimbotLoggerProcessor(null) // use default value.
+    )
 
     /**
-     * 上一级的内容。
+     * 得到默认工厂中的处理器。
      */
-    @JvmSynthetic
-    public suspend fun previous(): P
-
-    @Api4J
-    public val previous: P
-        get() = runInNoScopeBlocking { previous() }
-
-    /**
-     * 下一级的内容。
-     */
-    @JvmSynthetic
-    public suspend fun children(): N
+    override fun getProcessors(): List<SimbotLoggerProcessor> {
+        return processors
+    }
 }

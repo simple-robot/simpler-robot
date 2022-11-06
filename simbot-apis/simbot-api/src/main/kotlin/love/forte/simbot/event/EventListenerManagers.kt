@@ -123,6 +123,7 @@ public abstract class EventListenerRegistrationDescription {
          */
         @JvmName("of")
         @JvmOverloads
+        @JvmStatic
         public fun EventListener.toRegistrationDescription(
             priority: Int = DEFAULT_PRIORITY,
             isAsync: Boolean = DEFAULT_ASYNC,

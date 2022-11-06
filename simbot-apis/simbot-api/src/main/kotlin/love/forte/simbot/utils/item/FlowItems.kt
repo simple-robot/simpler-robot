@@ -22,8 +22,12 @@ import kotlinx.coroutines.channels.ChannelIterator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.produceIn
 import love.forte.simbot.Api4J
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.InternalSimbotApi
+import love.forte.simbot.utils.runInAsync
+import love.forte.simbot.utils.runInNoScopeBlocking
 import java.util.*
+import java.util.concurrent.CompletableFuture
+import java.util.function.Consumer
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
 
@@ -38,8 +42,7 @@ import java.util.stream.StreamSupport
 public class FlowItems<T>(
     private val produceScope: CoroutineScope,
     private val flowFactory: (Items.PreprocessingProperties) -> Flow<T>,
-) :
-    BaseItems<T, FlowItems<T>>() {
+) : BaseItems<T, FlowItems<T>>() {
     override val self: FlowItems<T>
         get() = this
     
@@ -58,7 +61,7 @@ public class FlowItems<T>(
     override fun asSequence(): Sequence<T> {
         val iter = flow.produceIn(produceScope).iterator()
         return sequence {
-            while (runInBlocking { iter.hasNext() }) {
+            while (runInNoScopeBlocking { iter.hasNext() }) {
                 yield(iter.next())
             }
         }
@@ -73,5 +76,25 @@ public class FlowItems<T>(
             Spliterator.ORDERED,
             false
         )
+    }
+    
+    @OptIn(InternalSimbotApi::class)
+    @Api4J
+    override fun collectAsync(collector: Consumer<in T>): CompletableFuture<Unit> {
+        return runInAsync(produceScope) {
+            flow.collect {
+                collector.accept(it)
+            }
+        }
+    }
+    
+    @Api4J
+    @OptIn(InternalSimbotApi::class)
+    override fun <C : MutableCollection<in T>> collectToAsync(collector: C): CompletableFuture<out C> {
+        return runInAsync(produceScope) {
+            flow.collect {
+                collector.add(it)
+            }
+        }.thenApply { collector }
     }
 }

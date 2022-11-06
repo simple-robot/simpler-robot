@@ -31,7 +31,7 @@ kotlinx-serialization-hocon = { group = "org.jetbrains.kotlinx", name = "kotlinx
 kotlinx-serialization-protobuf = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-protobuf", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-cbor = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-properties = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-properties", version.ref = "kotlinx-serialization" }
-charleskorn-kaml = "com.charleskorn.kaml:kaml:0.46.0"
+charleskorn-kaml = "com.charleskorn.kaml:kaml:0.49.0"
 
 # slf4j
 slf4j-api = "org.slf4j:slf4j-api:1.7.36"

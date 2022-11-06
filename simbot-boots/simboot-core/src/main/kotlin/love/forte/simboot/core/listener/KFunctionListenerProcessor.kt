@@ -37,6 +37,7 @@ import love.forte.simbot.core.event.plus
 import love.forte.simbot.core.event.proxy
 import love.forte.simbot.event.*
 import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.logger.logger
 import org.slf4j.Logger
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Named
@@ -63,7 +64,7 @@ public class KFunctionListenerProcessor(
     private val instanceCache = ConcurrentHashMap<KClass<*>, Any>()
     
     private companion object {
-        private val logger = LoggerFactory.getLogger(KFunctionListenerProcessor::class)
+        private val logger = LoggerFactory.logger<KFunctionListenerProcessor>()
     }
     
     /**
@@ -526,7 +527,7 @@ private class MergedBinder(
     private val parameter: KParameter,
 ) : ParameterBinder {
     private companion object {
-        val logger = LoggerFactory.getLogger(MergedBinder::class)
+        val logger = LoggerFactory.logger<MergedBinder>()
     }
     
     init {

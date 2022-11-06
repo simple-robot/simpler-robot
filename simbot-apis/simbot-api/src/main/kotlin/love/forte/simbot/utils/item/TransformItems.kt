@@ -19,7 +19,7 @@ package love.forte.simbot.utils.item
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import love.forte.simbot.Api4J
-import love.forte.simbot.utils.runInBlocking
+import love.forte.simbot.utils.runInNoScopeBlocking
 import java.util.stream.Stream
 
 /**
@@ -56,11 +56,11 @@ public class TransformItems<B, T>(
     }
     
     override fun asSequence(): Sequence<T> {
-        return baseItems.asSequence().map { runInBlocking { transform(it) } }
+        return baseItems.asSequence().map { runInNoScopeBlocking { transform(it) } }
     }
     
     @Api4J
     override fun asStream(): Stream<out T> {
-        return baseItems.asStream().map { runInBlocking { transform(it) } }
+        return baseItems.asStream().map { runInNoScopeBlocking { transform(it) } }
     }
 }

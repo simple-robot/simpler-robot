@@ -14,34 +14,14 @@
  *
  */
 
-package love.forte.simbot.definition
+plugins {
+    id("simbot.simple-module-conventions")
+    `simbot-jvm-maven-publish`
+    kotlin("plugin.serialization")
+}
 
-import love.forte.simbot.Api4J
-import love.forte.simbot.utils.runInNoScopeBlocking
 
-/**
- * 一个非阻塞的 **结构化** 定义。
- *
- * 结构化的东西，可以有一个 [上级][previous] 和一个 [下级][children]。
- *
- * @author ForteScarlet
- */
-@Deprecated("No longer use", level = DeprecationLevel.ERROR)
-public interface Structured<P, N> {
-
-    /**
-     * 上一级的内容。
-     */
-    @JvmSynthetic
-    public suspend fun previous(): P
-
-    @Api4J
-    public val previous: P
-        get() = runInNoScopeBlocking { previous() }
-
-    /**
-     * 下一级的内容。
-     */
-    @JvmSynthetic
-    public suspend fun children(): N
+dependencies {
+    api(project(":simbot-logger"))
+    api("com.lmax:disruptor:3.4.4")
 }
