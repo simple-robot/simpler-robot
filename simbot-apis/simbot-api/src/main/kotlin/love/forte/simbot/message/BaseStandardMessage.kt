@@ -284,6 +284,7 @@ public interface Image<E : Image<E>> : StandardMessage<E>, IDContainer, Resource
  *
  */
 @SerialName("m.std.img.resource")
+@Serializable
 public data class ResourceImage(override val id: ID, @SerialName("resource") private val _resource: Resource) :
     Image<ResourceImage> {
     

@@ -100,6 +100,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
                 subclass(AtAll.serializer())
                 subclass(Emoji.serializer())
                 subclass(Face.serializer())
+                subclass(ResourceImage.serializer())
             }
         }
         
