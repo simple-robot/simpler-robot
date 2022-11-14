@@ -172,7 +172,7 @@ public interface EventProcessingContextResolver<C : EventProcessingContext> {
     public suspend fun resolveEventToContext(event: Event, listenerSize: Int): C?
     
     /**
-     * 向提供的上下文 [C] 的 [EventProcessingContext.results] 中追加一个 [EventResult].
+     * 向提供的上下文 [C] 的 [EventProcessingContext.resultsView] 中追加一个 [EventResult].
      *
      * [SimpleEventListenerManager] 会对所有得到的结果进行尝试推送，包括 [EventResult.Invalid],
      * 但是建议不会真正的添加 [EventResult.Invalid].

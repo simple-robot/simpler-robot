@@ -20,7 +20,8 @@ import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.EventProcessingResult.Empty
-import org.jetbrains.annotations.UnmodifiableView
+import love.forte.simbot.utils.view.IndexAccessView
+import love.forte.simbot.utils.view.emptyView
 
 
 /**
@@ -103,18 +104,29 @@ public suspend inline fun <reified E : Event> EventProcessor.pushIfProcessable(b
 public interface EventProcessingResult {
 
     /**
-     * 本次流程下执行后得到的所有响应结果。按照顺序计入。
+     * 本次流程下执行后得到的所有响应结果的视图的二次收集结果。
+     * 请使用 [resultsView], 此api会在适当时机被删除。
+     * @see resultsView
      */
-    public val results: @UnmodifiableView List<EventResult>
-
+    @Deprecated("Use 'resultsView'", replaceWith = ReplaceWith("resultsView"))
+    public val results: List<EventResult> get() = resultsView.toList()
+    
+    
+    /**
+     * 本次流程下执行后得到的所有响应结果的视图。按照顺序计入。
+     */
+    public val resultsView: IndexAccessView<EventResult>
 
     /**
      * [EventProcessingResult] 的特殊无效实现，一般使用在例如全局拦截器进行拦截的时候。
-     *
-     * [Empty] 的 [results][Empty.results] 永远得到空列表。
      */
     public companion object Empty : EventProcessingResult {
-        override val results: List<EventResult> get() = emptyList()
+        @Suppress("OVERRIDE_DEPRECATION")
+        override val results: List<EventResult>
+            get() = emptyList()
+        
+        override val resultsView: IndexAccessView<EventResult>
+            get() = emptyView()
 
     }
 }

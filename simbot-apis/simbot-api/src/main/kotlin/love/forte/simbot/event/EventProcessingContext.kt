@@ -21,6 +21,8 @@ import love.forte.simbot.Attribute
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.attribute
+import love.forte.simbot.event.EventProcessingResult.Empty.resultsView
+import love.forte.simbot.utils.view.IndexAccessView
 import org.jetbrains.annotations.UnmodifiableView
 import kotlin.coroutines.CoroutineContext
 
@@ -46,12 +48,19 @@ public interface EventProcessingContext : CoroutineContext.Element, InstantScope
     public val event: Event
     
     /**
-     * 已经执行过的所有监听函数的结果。
-     *
+     * 已经执行过的所有监听函数的结果视图的二次列表收集。
      * 此列表仅由事件处理器内部操作，是一个对外不可变视图。
+     *
+     * 请使用 [resultsView], 此api会在适当时机被删除。
+     * @see resultsView
      */
-    public val results: @UnmodifiableView List<EventResult>
+    @Deprecated("Use 'resultsView'", replaceWith = ReplaceWith("resultsView"))
+    public val results: @UnmodifiableView List<EventResult> get() = resultsView.toList()
     
+    /**
+     * 本次流程下执行后得到的所有响应结果的视图。按照顺序计入。
+     */
+    public val resultsView: IndexAccessView<EventResult>
     
     /**
      * 当前事件所处环境中所能够提供的消息序列化模块信息。
@@ -138,7 +147,6 @@ public interface InstantScopeContext : ScopeContext
  */
 public interface EventListenerProcessingContext : EventProcessingContext {
     override val event: Event
-    override val results: List<EventResult>
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T?
     
     /**
