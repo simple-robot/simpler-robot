@@ -70,3 +70,5 @@ public interface IndexAccessView<out T> : View<T> {
  */
 @Suppress("NOTHING_TO_INLINE")
 public inline fun <T> View<T>.isNotEmpty(): Boolean = !isEmpty()
+
+
