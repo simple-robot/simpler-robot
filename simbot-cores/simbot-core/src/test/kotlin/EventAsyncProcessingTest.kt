@@ -69,7 +69,7 @@ class EventAsyncProcessingTest {
         })
     
         val resultContent = runBlocking {
-            val results = manager.push(TestEvent(bot)).results
+            val results = manager.push(TestEvent(bot)).resultsView
             assertEquals(4, results.size, "result size")
             results.joinToString(" ") {
                 when (val c = it.content) {
@@ -103,7 +103,7 @@ class EventAsyncProcessingTest {
         })
     
         val resultContent = runBlocking {
-            val results = manager.push(TestEvent(bot)).results
+            val results = manager.push(TestEvent(bot)).resultsView
             assertEquals(2, results.size, "result size")
             results.joinToString(" ") {
                 it as AsyncEventResult

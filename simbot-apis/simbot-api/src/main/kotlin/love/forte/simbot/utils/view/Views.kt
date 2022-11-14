@@ -96,7 +96,7 @@ private class IterableView<out T>(private val iterable: Iterable<T>) : View<T> {
 /**
  * 得到一个永远不会有内容的 [View]。
  */
-public fun <T> emptyView(): View<T> = EmptyView
+public fun <T> emptyView(): IndexAccessView<T> = EmptyView
 
 /**
  * 得到一个永远不会存在内容的 [View] 实现。

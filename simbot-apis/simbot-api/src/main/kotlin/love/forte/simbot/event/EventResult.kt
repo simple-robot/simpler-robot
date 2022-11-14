@@ -74,7 +74,7 @@ public interface EventResult {
          * 得到一个无效的特殊默认值。
          *
          * [invalid] 与 [defaults] 得到结果的区别在于，[Invalid] 代表的是“无效的”，
-         * 因此此结果不会被记录到 [EventProcessingResult.results] 中。
+         * 因此此结果不会被记录到 [EventProcessingResult.resultsView] 中。
          *
          * 当一个监听事件的结果为 [Invalid], 则代表它“没有真正地执行成功”，或者可以简单的理解为”忽略结果“。
          *
@@ -162,7 +162,7 @@ public interface EventResult {
      * 代表着 **无效** 的 [EventResult] 实例，是一个具有[特殊意义][SpecialEventResult]的类型: [事件处理器][EventProcessor] 不应对此结果进行保留或处理。
      *
      * [Invalid] 与其他的 [EventResult] 得到结果的区别在于，[Invalid] 代表的是“无效的”，
-     * 因此此结果不会被记录到 [EventProcessingResult.results] 中。
+     * 因此此结果不会被记录到 [EventProcessingResult.resultsView] 中。
      *
      * 当一个监听事件的结果为 [Invalid], 则代表它“没有真正地执行成功”，或可以简单的理解为“忽略结果”。
      */
@@ -298,7 +298,7 @@ public abstract class ReactivelyCollectableEventResult : SpecialEventResult() {
     
     /**
      * 当响应式结果 [content] 被收集完毕后通过 [collected] 提供其收集的结果 [collectedContent],
-     * 并作为一个新的 [EventResult] 结果提供给 [EventProcessingResult.results].
+     * 并作为一个新的 [EventResult] 结果提供给 [EventProcessingResult.resultsView].
      *
      * [collected] 的结果不会再被二次收集, 因此假若 [collectedContent] 仍然为响应式类型, 则它们将会被忽略并直接作为结果返回.
      *
