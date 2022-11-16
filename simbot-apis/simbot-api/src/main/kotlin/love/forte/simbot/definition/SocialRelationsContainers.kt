@@ -96,6 +96,12 @@ public interface FriendsContainer : SocialRelationsContainer {
 public interface ContactsContainer : SocialRelationsContainer {
     
     /**
+     * 是否支持contacts相关的获取操作。当 [contacts] 和 [contact] 都不被支持时得到 `false`。
+     * 默认情况下视其为 `true`，即支持，是否真的支持需要由实现者决定。
+     */
+    public val isContactsSupported: Boolean get() = true
+    
+    /**
      * 得到当前容器中能够获取到的联系人序列。
      *
      * 联系人序列不能保证结果为 **_预期内的_ 全量** 序列，尤其是对于一个 [Bot] 而言。
