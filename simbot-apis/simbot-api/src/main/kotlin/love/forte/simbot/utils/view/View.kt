@@ -18,10 +18,12 @@ package love.forte.simbot.utils.view
 
 
 /**
- * 一个“视图”。试图的主要应用是对使用者提供一个只读的集合类型，类似于 [Collection]。
- * 但是它不直接实现 [Collection] 或相关接口，而是提供一些较为基础的、与 [Collection] 相似的方法。
+ * 一个“视图”。视图的主要应用是对使用者提供一个只读的集合类型，类似于 [Collection]。
+ * 但是它不实现 [Collection] 或相关接口，而是提供一些较为基础的、与 [Collection] **相似**的方法。
  *
- * 因此它不论面向什么平台（比如JVM平台）都是一种更安全的只读列表。
+ * [View] 中的元素可能是变化的，线程安全性也与其内部实际表示的原集合相关。
+ * 但是这些变化对外界不可见，它不论面向什么平台（比如JVM平台）都是一种更安全的只读集合。
+ *
  *
  * @author ForteScarlet
  */
@@ -58,11 +60,6 @@ public interface IndexAccessView<out T> : View<T> {
      *
      */
     public operator fun get(index: Int): T
-    
-    /*
-        toCollection() ?
-        asCollection() ?
-     */
 }
 
 /**
