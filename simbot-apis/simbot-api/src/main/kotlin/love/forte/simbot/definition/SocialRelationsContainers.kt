@@ -183,6 +183,17 @@ public interface GroupsContainer : SocialRelationsContainer {
 public interface GuildsContainer : SocialRelationsContainer {
     
     /**
+     * 是否支持guilds相关的获取操作。当 [guilds] 和 [guild] 都不被支持时得到 `false`。
+     * 默认情况下视其为 `true`，由实现者重写此属性来决定其可用性。
+     *
+     * 当不支持的情况下（[isGuildsSupported] == false）, [guilds] 和 [guild] 不可用。
+     * 不可用可能会表现为得到默认的[空序列][Items.emptyItems]（[guilds]）和 `null`（[guild]），
+     * 也有可能会表现为抛出异常。
+     *
+     */
+    public val isGuildsSupported: Boolean get() = true
+    
+    /**
      * 获取当前的所有频道服务器序列。
      */
     public val guilds: Items<Guild>
