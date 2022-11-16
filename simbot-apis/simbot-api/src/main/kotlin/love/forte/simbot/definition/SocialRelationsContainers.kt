@@ -97,10 +97,14 @@ public interface ContactsContainer : SocialRelationsContainer {
     
     /**
      * 是否支持contacts相关的获取操作。当 [contacts] 和 [contact] 都不被支持时得到 `false`。
-     * 默认情况下视其为 `true`，即支持，是否真的支持需要由实现者决定。
+     * 默认情况下视其为 `true`，即支持，由实现者重写此属性来决定其可用性。
+     *
+     * 当不支持的情况下（[isContactsSupported] == false）, [contacts] 和 [contact] 不可用。
+     * 不可用可能会表现为得到默认的[空序列][Items.emptyItems]（[contacts]）和 `null`（[contact]），
+     * 也有可能会表现为抛出异常。
+     *
      */
     public val isContactsSupported: Boolean get() = true
-    
     /**
      * 得到当前容器中能够获取到的联系人序列。
      *
