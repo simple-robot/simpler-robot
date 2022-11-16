@@ -28,6 +28,10 @@ import love.forte.simbot.utils.item.Items
  * 通常与 [Bot] 的社交关系相关，大部分子类型也都通过 [Bot] 默认实现。
  *
  * @see Bot
+ * @see FriendsContainer
+ * @see ContactsContainer
+ * @see GroupsContainer
+ * @see GuildsContainer
  */
 public sealed interface SocialRelationsContainer : SuspendablePropertyContainer
 
@@ -37,20 +41,20 @@ public sealed interface SocialRelationsContainer : SuspendablePropertyContainer
  *
  * 通常应用于 [Bot] 中为其提供获取 [Friend] 相关的属性api。
  *
- * [Bot] 或许会存在一些 "好友" 对象，但是默认情况下 [Bot] 不会默认实现 [FriendsContainer]，
+ * [Bot] 或许会存在一些 "好友" 对象，但是 [Bot] 不会默认实现 [FriendsContainer]，
  * 取而代之的是 [ContactsContainer]。当组件存在支持 [Friend] 相关操作的时候可以进行额外实现。
  *
- * "好友"并 _**不一定**_ 代表那些需要 "添加申请"、"同意" 后出现在好友列表中的好友 ——
- * 并非所有的组件都支持这种“好友”的概念。
+ * "好友"并 _**不一定**_ 代表那些需要 "添加申请"、"同意" 后出现在好友列表中的好友，
+ * 也并非所有的组件都支持“好友”的概念。
  *
- * 对于一个以"频道"概念为主的组件就是最常见的例子 —— 它们通常没有真正的"好友"概念，
+ * 对于一个以"频道"概念为主的组件就是最常见的例子（例如Kook） —— 它们通常没有真正的"好友"概念，
  * 至少对于bot来讲没有。取而代之的则通常是"频道成员"或者一个"会话"。
  *
  * 实际上，对于一个bot来讲"好友"的概念确实可有可无，它更需要"[联系人][Contact]"。
  *
  * 在一个容器同时支持 [FriendsContainer] 和 [ContactsContainer]
  * 的情况下，[FriendsContainer] 中能够得到的目标常常为 [ContactsContainer]
- * 的子集。
+ * 的**子集**。_但是这并不绝对。_
  *
  * @see ContactsContainer
  *
@@ -62,7 +66,6 @@ public interface FriendsContainer : SocialRelationsContainer {
      *
      */
     public val friends: Items<Friend>
-    
     
     /**
      * 通过唯一标识获取这个容器对应的某个好友，获取不到则为null。
@@ -81,13 +84,13 @@ public interface FriendsContainer : SocialRelationsContainer {
  *
  * 通常应用于 [Bot] 中为其提供获取 [Contact] 相关的属性api。
  *
- * [联系人][Contact] 通常代表为与当前容器存在"会话"的联系人，
+ * [联系人][Contact] 通常代表为与当前容器存在"会话"或可以建立会话的目标，
  * 它们之间必须存在一种硬性关系（例如它们之间是 [好友][Friend] 关系）
  * 或者存在一个被创建过的"会话"（例如某联系人主动与bot进行过交流或者
- * 与当前容器创建过与某个目标的会话）。
+ * 与当前容器（[Bot]）创建过与某个目标的会话）。
  *
  * 因上述约束，[ContactsContainer.contacts] 通常不具备检索 组织成员 [Member]
- * 这类间接联系人的能力, 尽管 [Member] 也属于 [Contact] 类型 ———— 除非它们与当前容器存在可查会话。
+ * 这类**间接**联系人的能力, 尽管 [Member] 也属于 [Contact] 类型 ———— 除非它们与当前容器存在**直接**会话。
  *
  * 当一个bot中，所有可能的联系人都是与bot存在硬性关系（例如它们之间是 [好友][Friend] 关系）的时候，
  * [ContactsContainer] 的表现将会与 [FriendsContainer] 类似。
@@ -105,6 +108,7 @@ public interface ContactsContainer : SocialRelationsContainer {
      *
      */
     public val isContactsSupported: Boolean get() = true
+    
     /**
      * 得到当前容器中能够获取到的联系人序列。
      *
@@ -121,7 +125,6 @@ public interface ContactsContainer : SocialRelationsContainer {
      *
      */
     public val contacts: Items<Contact>
-    
     
     /**
      * 通过唯一标识获取对应的 [Contact] 实例。当且仅当因标识对应联系人不存在而导致无法获取时得到null。
