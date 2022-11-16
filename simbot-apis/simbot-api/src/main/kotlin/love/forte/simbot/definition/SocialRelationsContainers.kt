@@ -97,7 +97,7 @@ public interface ContactsContainer : SocialRelationsContainer {
     
     /**
      * 是否支持contacts相关的获取操作。当 [contacts] 和 [contact] 都不被支持时得到 `false`。
-     * 默认情况下视其为 `true`，即支持，由实现者重写此属性来决定其可用性。
+     * 默认情况下视其为 `true`，由实现者重写此属性来决定其可用性。
      *
      * 当不支持的情况下（[isContactsSupported] == false）, [contacts] 和 [contact] 不可用。
      * 不可用可能会表现为得到默认的[空序列][Items.emptyItems]（[contacts]）和 `null`（[contact]），
@@ -147,7 +147,18 @@ public interface ContactsContainer : SocialRelationsContainer {
 public interface GroupsContainer : SocialRelationsContainer {
     
     /**
-     * 获取当前bot所处的群序列。
+     * 是否支持groups相关的获取操作。当 [groups] 和 [group] 都不被支持时得到 `false`。
+     * 默认情况下视其为 `true`，由实现者重写此属性来决定其可用性。
+     *
+     * 当不支持的情况下（[isGroupsSupported] == false）, [groups] 和 [group] 不可用。
+     * 不可用可能会表现为得到默认的[空序列][Items.emptyItems]（[groups]）和 `null`（[group]），
+     * 也有可能会表现为抛出异常。
+     *
+     */
+    public val isGroupsSupported: Boolean get() = true
+    
+    /**
+     * 获取当前bot所处的群聊序列。
      *
      */
     public val groups: Items<Group>
