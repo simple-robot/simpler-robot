@@ -21,6 +21,7 @@ import love.forte.simboot.spring.autoconfigure.application.SpringBootApplication
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentFactory
 import love.forte.simbot.installAllComponents
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 
 
@@ -78,12 +79,20 @@ public open class SimbotSpringBootComponentAutoInstallBuildConfigure(
     private val factories: List<ComponentFactory<*, *>> = factories ?: emptyList()
     
     override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
+        logger.info("The number of Installable Event Provider Factories is {}", factories.size)
         if (factories.isEmpty()) {
-            installAllComponents(configuration.classLoader)
+            val classLoader = configuration.classLoader
+            logger.info("Install components by [installAllComponents] via classLoader {}", classLoader)
+            installAllComponents(classLoader)
         } else {
+            logger.debug("Install components by: {}", factories)
             factories.forEach {
                 install(it)
             }
         }
+    }
+    
+    public companion object {
+        private val logger = LoggerFactory.getLogger(SimbotSpringBootComponentAutoInstallBuildConfigure::class.java)
     }
 }

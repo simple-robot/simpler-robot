@@ -79,11 +79,13 @@ public open class SimbotSpringBootEventProviderAutoInstallBuildConfigure(
 ) : SimbotSpringBootApplicationBuildConfigure {
     private val factories: List<EventProviderFactory<*, *>> = factories ?: emptyList()
     override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
-        logger.info("The number of Installable Event Provider Factory is {}", factories.size)
+        logger.info("The number of Installable event provider Factories is {}", factories.size)
         if (factories.isEmpty()) {
-            logger.info("Install Event Providers by [installAllEventProviders]")
-            installAllEventProviders(configuration.classLoader)
+            val classLoader = configuration.classLoader
+            logger.info("Install event providers by [installAllEventProviders] via classLoader {}", classLoader)
+            installAllEventProviders(classLoader)
         } else {
+            logger.debug("Install event providers by: {}", factories)
             factories.forEach {
                 install(it)
             }

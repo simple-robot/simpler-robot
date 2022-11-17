@@ -16,7 +16,6 @@
 
 package love.forte.simboot.spring.autoconfigure
 
-import love.forte.simboot.listener.ParameterBinderFactory
 import org.springframework.context.annotation.Import
 
 /**
@@ -58,5 +57,11 @@ import org.springframework.context.annotation.Import
     SimbotSpringBootDefaultConfigures::class,
     // app
     SimbotSpringBootApplicationConfiguration::class,
+    // after application
+    
+    // listener register
+    SimbotSpringBootListenerAutoRegisterBuildConfigure::class,
+    // bot register
+    SimbotSpringBootBotAutoRegisterBuildConfigure::class,
 )
 public annotation class EnableSimbot

@@ -30,11 +30,8 @@ import org.springframework.context.annotation.Import
     DefaultBinderFactoryConfigure::class,
     // listeners
     SimbotListenerMethodProcessor::class,
-    SimbotSpringBootListenerAutoRegisterBuildConfigure::class,
-    //
-    SimbotSpringBootBotAutoRegisterBuildConfigure::class,
     SimbotSpringBootComponentAutoInstallBuildConfigure::class,
     SimbotSpringBootEventProviderAutoInstallBuildConfigure::class,
     SimbotSpringBootInterceptorsAutoConfigure::class,
-    )
+)
 public open class SimbotSpringBootDefaultConfigures

@@ -113,7 +113,8 @@ open class MyListener {
 open class MyListenerConfiguration2 {
     
     @Bean
-    open fun myListener2() = buildSimpleListener(FriendMessageEvent) {
+    open fun myListener2(application: SpringBootApplication) = buildSimpleListener(FriendMessageEvent) {
+        println("APP: $application")
         process {}
     }
     
