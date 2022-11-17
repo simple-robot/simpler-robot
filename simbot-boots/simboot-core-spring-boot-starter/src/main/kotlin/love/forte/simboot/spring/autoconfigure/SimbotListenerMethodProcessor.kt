@@ -103,7 +103,6 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, BeanDefini
         instanceBinders(beanFactory, globalBinderFactories, idBinderFactories)
         functionalBinders(beanFactory, globalBinderFactories, idBinderFactories)
         
-        
         return CoreBinderManager(globalBinderFactories, idBinderFactories)
     }
     

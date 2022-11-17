@@ -17,14 +17,17 @@
 package love.forte.simboot.spring.autoconfigure
 
 import kotlinx.serialization.ExperimentalSerializationApi
-import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
-import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
-import love.forte.simbot.*
-import love.forte.simbot.bot.BotVerifyInfo
-import love.forte.simbot.bot.BotVerifyInfoDecoderFactory
-import love.forte.simbot.bot.StandardBotVerifyInfoDecoderFactory
-import love.forte.simbot.bot.toBotVerifyInfo
-import org.springframework.beans.factory.annotation.Autowired
+import love.forte.simboot.core.application.BootApplicationConfiguration
+import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.application.Application
+import love.forte.simbot.application.EventProvider
+import love.forte.simbot.bot.*
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
+import org.springframework.beans.factory.getBean
+import org.springframework.beans.factory.getBeansOfType
+import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import java.io.FileNotFoundException
 
@@ -33,24 +36,39 @@ import java.io.FileNotFoundException
  * 用于配置bot的扫描与自动注册的配置类。
  * @author ForteScarlet
  */
-public open class SimbotSpringBootBotAutoRegisterBuildConfigure(
-    @Autowired(required = false) customDecoderFactories: List<BotVerifyInfoDecoderFactory<*, *>>? = null,
-) : SimbotSpringBootApplicationBuildConfigure {
-    private val customDecoderFactories: List<BotVerifyInfoDecoderFactory<*, *>> = customDecoderFactories ?: emptyList()
+@AutoConfigureAfter(SimbotSpringBootListenerAutoRegisterBuildConfigure::class)
+public open class SimbotSpringBootBotAutoRegisterBuildConfigure : BeanFactoryPostProcessor {
+    override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
+        logger.debug("Start bot auto register...")
+        val application = try {
+            beanFactory.getBean<Application>()
+        } catch (nsbEx: Exception) {
+            // ignore?
+            logger.warn("No such bean (Application) definition, skip bot register.", nsbEx)
+            return
+        }
+        
+        val customDecoderFactories = beanFactory.getBeansOfType<BotVerifyInfoDecoderFactory<*, *>>()
+        
+        config(application, customDecoderFactories.values.toList())
+        
+    }
     
     @OptIn(ExperimentalSerializationApi::class, ExperimentalSimbotApi::class)
-    override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
+    private fun config(application: Application, customDecoderFactories: List<BotVerifyInfoDecoderFactory<*, *>>) {
         val resolver = PathMatchingResourcePatternResolver()
         
         val decoderList = customDecoderFactories + StandardBotVerifyInfoDecoderFactory.supportDecoderFactories()
         
-        val botConfigResources = configuration.botConfigurationResources
+        val configuration = application.configuration as? BootApplicationConfiguration
+        
+        val botConfigResources = (configuration?.botConfigurationResources ?: emptyList())
             .asSequence()
             .flatMap {
                 try {
                     resolver.getResources(it).asList()
                 } catch (fne: FileNotFoundException) {
-                    configuration.logger.warn(
+                    logger.warn(
                         "Can not resolve resource path 「{}」: {}, just use empty resources.",
                         it,
                         fne.localizedMessage
@@ -60,20 +78,20 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure(
             }
             .filter {
                 if (it.filename == null) {
-                    configuration.logger.warn("Resource [{}]'s filename is null, skip.", it)
+                    logger.warn("Resource [{}]'s filename is null, skip.", it)
                 }
                 
                 it.filename != null
             }
             .distinct()
             .mapNotNull {
-                configuration.logger.debug("Resolved bot register resource: {}", it)
+                logger.debug("Resolved bot register resource: {}", it)
                 val decoderFactory = decoderList.findLast { decoder -> decoder.match(it.filename!!) }
                 // ?: null // err? warn?
                 
                 if (decoderFactory == null) {
                     // 没有任何解码器能匹配此资源。
-                    configuration.logger.warn("No decoders match bot resource [{}] in {}.", it, decoderList)
+                    logger.warn("No decoders match bot resource [{}] in {}.", it, decoderList)
                     return@mapNotNull null
                 }
                 
@@ -91,20 +109,50 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure(
             }.toList()
         
         if (botConfigResources.isNotEmpty()) {
-            bots {
-                botConfigResources.forEach { res ->
-                    register(res).also { bot ->
-                        if (bot == null) {
-                            configuration.logger.warn(
-                                "Bot verify info [{}] not registered by any registrars, skip. The botRegistrar: {}",
-                                res,
-                                this
-                            )
-                        }
+            application.botManagers
+            
+            botConfigResources.forEach { res ->
+                register(application.providers, res).also { bot ->
+                    if (bot == null) {
+                        logger.warn(
+                            "Bot verify info [{}] not registered by any registrars, skip. The botRegistrar: {}",
+                            res,
+                            this
+                        )
                     }
                 }
             }
         }
         
+    }
+    
+    private fun register(providers: List<EventProvider>, botVerifyInfo: BotVerifyInfo): Bot? {
+        logger.info("Registering bot with verify info [{}]", botVerifyInfo)
+        for (manager in providers) {
+            if (manager !is BotRegistrar) {
+                continue
+            }
+            
+            try {
+                return manager.register(botVerifyInfo).also { bot ->
+                    logger.debug(
+                        "Bot verify info [{}] is registered as [{}] via manager [{}]",
+                        botVerifyInfo,
+                        bot,
+                        manager
+                    )
+                }
+            } catch (ignore: ComponentMismatchException) {
+                logger.debug("Bot verify info [{}] is not matched by manager {}, try next.", botVerifyInfo, manager)
+                // ignore this.
+            }
+        }
+        
+        logger.warn("Bot verify info [{}] is not matched by any manager, skip it.", botVerifyInfo)
+        return null
+    }
+    
+    public companion object {
+        private val logger = LoggerFactory.getLogger(SimbotSpringBootBotAutoRegisterBuildConfigure::class.java)
     }
 }
