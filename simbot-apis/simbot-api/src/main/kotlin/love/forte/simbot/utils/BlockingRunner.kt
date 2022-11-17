@@ -364,7 +364,7 @@ private object DefaultRunInNoScopeBlockingStrategy : RunInNoScopeBlockingStrateg
 /**
  * 设置一个 [runInNoScopeBlocking] 函数的实际调度逻辑。
  */
-@OptIn(ExperimentalSimbotApi::class)
+@ExperimentalSimbotApi
 public fun setRunInNoScopeBlockingStrategy(strategy: RunInNoScopeBlockingStrategy) {
     runInNoScopeBlockingStrategy = strategy
 }
