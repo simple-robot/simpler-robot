@@ -355,9 +355,9 @@ private var runInNoScopeBlockingStrategy: RunInNoScopeBlockingStrategy = Default
 @OptIn(ExperimentalSimbotApi::class)
 private object DefaultRunInNoScopeBlockingStrategy : RunInNoScopeBlockingStrategy {
     override fun <T> invoke(context: CoroutineContext, block: suspend () -> T): T {
-        val runner = RunBlocking<T>(context)
+        val runner = SuspendRunner<T>(context)
         block.startCoroutine(runner)
-        return runner.await()
+        return runner.await().getOrThrow()
     }
 }
 
@@ -473,8 +473,8 @@ public fun <T> `$$runInAsync`(block: suspend () -> T): CompletableFuture<T> {
 
 
 @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-private class RunBlocking<T>(override val context: CoroutineContext = EmptyCoroutineContext) : Continuation<T> {
-    var result: Result<T>? = null
+private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCoroutineContext) : Continuation<T> {
+    private var result: Result<T>? = null
     
     override fun resumeWith(result: Result<T>) {
         synchronized(this) {
@@ -484,13 +484,15 @@ private class RunBlocking<T>(override val context: CoroutineContext = EmptyCorou
     }
     
     @Suppress("BlockingMethodInNonBlockingContext")
-    fun await(): T {
+    fun await(): Result<T> {
         synchronized(this) {
             while (true) {
                 when (val result = this.result) {
-                    null -> (this as Object).wait()
+                    null -> {
+                        (this as Object).wait()
+                    }
                     else -> {
-                        return result.getOrThrow()
+                        return result
                     }
                 }
             }
