@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostP
 import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor
 
 
-private fun getMyAutowiredAnnotationBeanPostProcessor(): AutowiredAnnotationBeanPostProcessor =
+private fun getDependAnnotationBeanPostProcessor(): AutowiredAnnotationBeanPostProcessor =
     AutowiredAnnotationBeanPostProcessor().also {
         it.setAutowiredAnnotationType(Depend::class.java)
     }
@@ -32,4 +32,4 @@ private fun getMyAutowiredAnnotationBeanPostProcessor(): AutowiredAnnotationBean
  */
 public open class AutowiredConfig :
     SmartInstantiationAwareBeanPostProcessor
-    by getMyAutowiredAnnotationBeanPostProcessor()
+    by getDependAnnotationBeanPostProcessor()
