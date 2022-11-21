@@ -30,11 +30,14 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.*
 import love.forte.simbot.Api4J
 import love.forte.simbot.Simbot
+import love.forte.simbot.utils.view.IndexAccessView
+import love.forte.simbot.utils.view.View
+import love.forte.simbot.utils.view.emptyView
 import love.forte.simbot.message.Message.Element as MsgElement
 
 
 /**
- * 针对于 [Message.Element] 的多态序列化的注册器。
+ * 针对于 [MsgElement] 的多态序列化的注册器。
  *
  * @see Messages
  */
@@ -48,7 +51,7 @@ public interface MessageElementPolymorphicRegistrar {
  * 消息列表，代表为可能多条的 [MsgElement] 信息。
  *
  * ## 不可变
- * [Messages] 是不可变的，但是 [Messages] 中的元素并不一定。每次进行 [plus] 都应视为得到了一个新的 [Messages] 实例。
+ * [Messages] 是不可变的。每次进行 [plus] 都应视为得到了一个新的 [Messages] 实例。
  *
  * ## 序列化
  * 当你需要对 [Messages] 进行序列化的时候，你所使用的 [KSerializer] 必须为 [Messages.serializer].
@@ -61,12 +64,12 @@ public interface MessageElementPolymorphicRegistrar {
  * @see MessageList
  * @see MessagesBuilder
  */
-public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
+public sealed interface Messages : View<MsgElement<*>>, RandomAccess, Message {
     
     /**
-     * 根据 [Message.Element] 来获取当前消息链中的所有匹配消息。
+     * 根据 [MsgElement] 来获取当前消息链中的所有匹配消息。
      */
-    public operator fun <E : Message.Element<E>> get(key: Message.Key<E>): List<E>
+    public operator fun <E : MsgElement<E>> get(key: Message.Key<E>): List<E>
     
     
     /**
@@ -78,7 +81,13 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
     /**
      * 拼接 [MsgElement] 列表.
      */
-    public operator fun plus(messages: Collection<MsgElement<*>>): Messages
+    public operator fun plus(messages: Iterable<MsgElement<*>>): Messages
+    
+    
+    /**
+     * 拼接 [MsgElement] 列表.
+     */
+    public operator fun plus(messages: Messages): Messages
     
     
     /**
@@ -87,7 +96,10 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
     public operator fun plus(singleOnlyMessage: SingleOnlyMessage<*>): Messages = singleOnlyMessage
     
     /**
+     * 将当前 [Messages] 转化为不可变的消息链列表。
      */
+    public fun toList(): List<MsgElement<*>>
+    
     @Suppress("DEPRECATION_ERROR")
     public companion object : MessageElementPolymorphicRegistrar {
         
@@ -105,7 +117,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
         }
         
         @Volatile
-        private var json: Json = Json {
+        private var defaultJson: Json = Json {
             isLenient = true
             ignoreUnknownKeys = true
             serializersModule = _serializersModule
@@ -118,7 +130,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
         public val serializersModule: SerializersModule get() = _serializersModule
         
         private fun setJson() {
-            json = Json {
+            defaultJson = Json {
                 isLenient = true
                 ignoreUnknownKeys = true
                 serializersModule = _serializersModule
@@ -166,7 +178,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
             override fun deserialize(decoder: Decoder): Messages = delegate.deserialize(decoder).toMessages()
             override val descriptor: SerialDescriptor get() = delegate.descriptor
             override fun serialize(encoder: Encoder, value: Messages) {
-                delegate.serialize(encoder, value)
+                delegate.serialize(encoder, value.toList())
             }
         }
         
@@ -219,7 +231,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
         @JvmStatic
         @Deprecated("Use MessageSerializationUtil.", level = DeprecationLevel.ERROR)
         public fun toJsonString(messages: Messages): String {
-            return json.encodeToString(serializer, messages)
+            return defaultJson.encodeToString(serializer, messages)
         }
         
         /**
@@ -231,7 +243,7 @@ public sealed interface Messages : List<MsgElement<*>>, RandomAccess, Message {
         @JvmStatic
         @Deprecated("Use MessageSerializationUtil.", level = DeprecationLevel.ERROR)
         public fun fromJsonString(jsonString: String): Messages {
-            return json.decodeFromString(serializer, jsonString)
+            return defaultJson.decodeFromString(serializer, jsonString)
         }
         // endregion
         
@@ -251,20 +263,22 @@ public fun emptyMessages(): Messages = EmptyMessages
  * 没有任何元素的 [Messages]. 在追加列表时，总是会直接替换为后者。
  */
 @Serializable
-public object EmptyMessages : Messages, List<MsgElement<*>> by emptyList() {
-    override fun <E : Message.Element<E>> get(key: Message.Key<E>): List<E> = emptyList()
-    override fun plus(element: Message.Element<*>): Messages = element.toMessages()
-    override fun plus(messages: Collection<Message.Element<*>>): Messages = messages.toMessages()
-    override fun toString(): String = "E@Messages([])"
+public object EmptyMessages : Messages, View<MsgElement<*>> by emptyView() {
+    override fun toList(): List<MsgElement<*>> = emptyList()
+    override fun <E : MsgElement<E>> get(key: Message.Key<E>): List<E> = emptyList()
+    override fun plus(element: MsgElement<*>): Messages = element.toMessages()
+    override fun plus(messages: Iterable<MsgElement<*>>): Messages = messages.toMessages()
+    override fun plus(messages: Messages): Messages = messages
+    override fun toString(): String = "EmptyMessages"
 }
 
 
 /**
- * **仅** 允许一个单个元素的 [Messages]. 一般配合 [Message.Element] 进行实现，代表此消息只能独自存在。
+ * **仅** 允许一个单个元素的 [Messages]. 一般配合 [MsgElement] 进行实现，代表此消息只能独自存在。
  * 在追加其他任何元素的时候，会直接替换为后者。
  *
  */
-public abstract class SingleOnlyMessage<E : Message.Element<E>> : MsgElement<E>, Messages,
+public abstract class SingleOnlyMessage<E : MsgElement<E>> : MsgElement<E>, Messages,
     AbstractList<MsgElement<*>>() {
     abstract override val key: Message.Key<E>
     
@@ -275,20 +289,27 @@ public abstract class SingleOnlyMessage<E : Message.Element<E>> : MsgElement<E>,
     
     // List
     final override val size: Int get() = 1
-    override fun get(index: Int): Message.Element<*> =
-        if (index == 0) this else throw IndexOutOfBoundsException("Index in $index")
+    override fun get(index: Int): MsgElement<*> =
+        if (index == 0) this else throw IndexOutOfBoundsException("Index $index of size 1")
     
     
     /**
      * 拼接元素。
      */
-    override fun plus(element: Message.Element<*>): Messages = element.toMessages()
+    override fun plus(element: MsgElement<*>): Messages = element.toMessages()
     
     /**
      * 拼接元素。
      */
-    override fun plus(messages: Collection<Message.Element<*>>): Messages =
-        if (messages.isEmpty()) this else messages.toMessages()
+    override fun plus(messages: Iterable<MsgElement<*>>): Messages {
+        if (messages is Collection && messages.isEmpty()) {
+            return this
+        }
+        
+        val newMessages = messages.toMessages()
+        return if (newMessages.isEmpty()) this else newMessages
+    }
+    
     
     final override fun toString(): String {
         return "S@Messages([$this])"
@@ -324,6 +345,7 @@ public fun Iterable<MsgElement<*>>.toMessages(): Messages {
             isEmpty() -> return emptyMessages()
             size == 1 -> return first().toMessages()
         }
+        
         else -> {
             val iter = this.iterator()
             if (!iter.hasNext()) return emptyMessages()
@@ -333,7 +355,7 @@ public fun Iterable<MsgElement<*>>.toMessages(): Messages {
     }
     
     val iter = iterator()
-    val list = mutableListOf<Message.Element<*>>()
+    val list = mutableListOf<MsgElement<*>>()
     while (iter.hasNext()) {
         val next = iter.next()
         if (iter.hasNext()) {
@@ -353,9 +375,9 @@ public fun Iterable<MsgElement<*>>.toMessages(): Messages {
 
 
 /**
- * [Message.Element] 与另外一个 [Message.Element] 进行拼接并组合为 [Messages].
+ * [MsgElement] 与另外一个 [MsgElement] 进行拼接并组合为 [Messages].
  */
-public operator fun Message.Element<*>.plus(other: Message.Element<*>): Messages =
+public operator fun MsgElement<*>.plus(other: MsgElement<*>): Messages =
     when {
         // 当前为single only或者目标为single only, 都将导致直接保留后者.
         this is SingleOnlyMessage || other is SingleOnlyMessage -> other.toMessages()
@@ -363,11 +385,11 @@ public operator fun Message.Element<*>.plus(other: Message.Element<*>): Messages
     }
 
 /**
- * [Message.Element] 与另外一个 [Messages] 进行拼接并组合为 [Messages].
+ * [MsgElement] 与另外一个 [Messages] 进行拼接并组合为 [Messages].
  *
- * 作为 `receiver` 的 [Message.Element] 会尝试置于首位, 但如果 [other] 是 [SingleOnlyMessage], 则 `receiver` 将会被舍弃。
+ * 作为 `receiver` 的 [MsgElement] 会尝试置于首位, 但如果 [other] 是 [SingleOnlyMessage], 则 `receiver` 将会被舍弃。
  */
-public operator fun Message.Element<*>.plus(other: Messages): Messages =
+public operator fun MsgElement<*>.plus(other: Messages): Messages =
     // if (other is SingleOnlyMessage<*>) other else this.toMessages() + other
     when {
         other.isEmpty() -> this.toMessages()
@@ -379,7 +401,7 @@ public operator fun Message.Element<*>.plus(other: Messages): Messages =
 /**
  * 与一个 [SingleOnlyMessage] 进行拼接并得到 [Messages]. 将会直接舍弃 `receiver`。
  */
-public operator fun Message.Element<*>.plus(other: SingleOnlyMessage<*>): Messages = other
+public operator fun MsgElement<*>.plus(other: SingleOnlyMessage<*>): Messages = other
 
 
 /**
@@ -388,74 +410,59 @@ public operator fun Message.Element<*>.plus(other: SingleOnlyMessage<*>): Messag
  * [MessageList] 是不可变的。
  *
  */
-public sealed class MessageList : Messages, Collection<MsgElement<*>>
+public sealed class MessageList : Messages, IndexAccessView<MsgElement<*>>
 
 
 internal class SingleValueMessageList(private val value: MsgElement<*>) : MessageList() {
     override val size: Int get() = 1
-    override fun contains(element: Message.Element<*>): Boolean = value == element
-    override fun containsAll(elements: Collection<Message.Element<*>>): Boolean = elements.all(::contains)
-    override fun get(index: Int): Message.Element<*> {
+    override fun contains(element: MsgElement<*>): Boolean = value == element
+    override fun get(index: Int): MsgElement<*> {
         if (index == 0) return value else throw IndexOutOfBoundsException("Index $index out of last index: 0")
     }
     
-    override fun <E : Message.Element<E>> get(key: Message.Key<E>): List<E> {
+    override fun <E : MsgElement<E>> get(key: Message.Key<E>): List<E> {
         return key.safeCast(value)?.let { listOf(it) } ?: emptyList()
     }
     
-    override fun indexOf(element: Message.Element<*>): Int = if (element == value) 0 else -1
-    override fun lastIndexOf(element: Message.Element<*>): Int = indexOf(element)
     override fun isEmpty(): Boolean = false
-    override fun iterator(): Iterator<Message.Element<*>> = iterator { yield(value) }
-    override fun listIterator(): ListIterator<Message.Element<*>> = SingleValueListIterator(value)
-    override fun listIterator(index: Int): ListIterator<Message.Element<*>> = SingleValueListIterator(get(index))
-    override fun subList(fromIndex: Int, toIndex: Int): List<Message.Element<*>> {
-        if (fromIndex == 0) {
-            if (toIndex == 0) return emptyList()
-            if (toIndex == 1) return this
-        }
-        
-        throw IndexOutOfBoundsException("fromIndex: $fromIndex, toIndex: $toIndex, but lastIndex: 0")
-    }
+    override fun iterator(): Iterator<MsgElement<*>> = iterator { yield(value) }
     
-    override fun plus(element: Message.Element<*>): Messages {
+    override fun plus(element: MsgElement<*>): Messages {
         if (element is SingleOnlyMessage<*>) return element
         return MessageListImpl(listOf(value, element))
     }
     
-    override fun plus(messages: Collection<Message.Element<*>>): Messages {
+    override fun plus(messages: Iterable<MsgElement<*>>): Messages {
+        if (messages is Collection) {
+            if (messages.isEmpty()) return this
+            if (messages.size == 1) return plus(messages.first())
+        }
+        
+        if (messages is View) {
+            if (messages.isEmpty()) return this
+            if (messages.size == 1) return plus(messages.first())
+        }
+        
+        return buildList {
+            add(value)
+            addAll(messages)
+        }.toMessages()
+    }
+    
+    override fun plus(messages: Messages): Messages {
         if (messages.isEmpty()) return this
         if (messages.size == 1) return plus(messages.first())
         
-        val list = buildList {
+        return buildList {
             add(value)
             addAll(messages)
-        }
-        return list.toMessages()
+        }.toMessages()
     }
     
-    private class SingleValueListIterator(private val value: MsgElement<*>) : ListIterator<MsgElement<*>> {
-        private var next = false
-        override fun hasNext(): Boolean = !next
-        override fun hasPrevious(): Boolean = next
-        override fun next(): Message.Element<*> {
-            if (next) throw NoSuchElementException()
-            else return value.also {
-                next = true
-            }
-        }
-        
-        override fun previous(): Message.Element<*> {
-            if (next) return value.also { next = false }
-            else throw NoSuchElementException()
-        }
-        
-        override fun nextIndex(): Int = if (next) 1 else 0
-        override fun previousIndex(): Int = if (next) 0 else -1
-    }
+    override fun toList(): List<MsgElement<*>> = listOf(value)
     
     override fun toString(): String {
-        return "Messages([$value])"
+        return "SingleValueMessages(value=$value)"
     }
     
     override fun equals(other: Any?): Boolean {
@@ -471,20 +478,30 @@ internal class SingleValueMessageList(private val value: MsgElement<*>) : Messag
 }
 
 
-internal class MessageListImpl(private val delegate: List<MsgElement<*>>) : MessageList(),
-    List<MsgElement<*>> by delegate {
+internal class MessageListImpl(private val delegate: List<MsgElement<*>>) : MessageList() {
     init {
-        Simbot.check(delegate.isNotEmpty()) { "Messages init message list cannot be empty." }
+        Simbot.require(delegate.isNotEmpty()) { "Messages init message list cannot be empty." }
     }
     
-    override fun <E : Message.Element<E>> get(key: Message.Key<E>): List<E> {
+    override fun iterator(): Iterator<MsgElement<*>> = delegate.iterator()
+    
+    override val size: Int
+        get() = delegate.size
+    
+    override fun isEmpty(): Boolean = delegate.isEmpty()
+    
+    override fun contains(element: MsgElement<*>): Boolean = element in delegate
+    
+    override fun get(index: Int): MsgElement<*> = delegate[index]
+    
+    override fun <E : MsgElement<E>> get(key: Message.Key<E>): List<E> {
         return mapNotNull { key.safeCast(it) }
     }
     
     /**
      * 拼接元素。
      */
-    override fun plus(element: Message.Element<*>): Messages {
+    override fun plus(element: MsgElement<*>): Messages {
         if (element is SingleOnlyMessage<*>) return element
         
         return MessageListImpl(delegate + element)
@@ -493,11 +510,21 @@ internal class MessageListImpl(private val delegate: List<MsgElement<*>>) : Mess
     /**
      * 拼接元素。
      */
-    override fun plus(messages: Collection<Message.Element<*>>): Messages {
-        if (messages.isEmpty()) return this
-        if (messages.size == 1) {
-            val element = messages.first()
-            if (element is SingleOnlyMessage<*>) return element
+    override fun plus(messages: Iterable<MsgElement<*>>): Messages {
+        if (messages is Collection) {
+            if (messages.isEmpty()) return this
+            if (messages.size == 1) {
+                val element = messages.first()
+                if (element is SingleOnlyMessage<*>) return element
+            }
+        }
+        
+        if (messages is View) {
+            if (messages.isEmpty()) return this
+            if (messages.size == 1) {
+                val element = messages.first()
+                if (element is SingleOnlyMessage<*>) return element
+            }
         }
         
         val newList = delegate.toMutableList()
@@ -505,6 +532,23 @@ internal class MessageListImpl(private val delegate: List<MsgElement<*>>) : Mess
         
         return newList.toMessages()
     }
+    
+    override fun plus(messages: Messages): Messages {
+        if (messages.isEmpty()) return this
+        if (messages.size == 1) {
+            val element = messages.first()
+            if (element is SingleOnlyMessage<*>) return element
+        }
+    
+        val newList = delegate.toMutableList()
+        newList.addAll(messages)
+    
+        return newList.toMessages()
+    }
+    
+    override fun toList(): List<MsgElement<*>> = delegate.toList()
+    
+    
     
     override fun toString(): String = "Messages($delegate)"
     
