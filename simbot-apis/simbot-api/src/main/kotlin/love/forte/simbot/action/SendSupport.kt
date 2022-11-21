@@ -18,7 +18,6 @@ package love.forte.simbot.action
 
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
-import love.forte.simbot.ID
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.definition.Objective
@@ -137,28 +136,6 @@ public interface ReplySupport {
     public suspend fun reply(text: String): MessageReceipt = reply(Text.of(text))
 }
 
-
-/**
- * “回复”回执。
- */
-@Deprecated("No longer use", level = DeprecationLevel.ERROR)
-public interface MessageReplyReceipt : MessageReceipt {
-    override val id: ID
-    override val isSuccess: Boolean
-
-    /**
-     * 是否作为 **回复** 发送成功。
-     * 很多时候对于可回复事件来说，其只能 **回复一次**，因而在次数已经消耗的前提下，
-     * 假若平台允许，**或许** 会继续尝试使用普通消息进行发送（需要当前目标实现 [SendSupport]）。
-     *
-     * 并不代表所有平台都会这么做，或者说大多数情况下，在回复次数耗尽后会抛出异常。
-     *
-     * @throws UnsupportedActionException 当此行为不被支持时
-     */
-    public val isReplySuccess: Boolean
-}
-
-
 /**
  * 消息回应支持。
  *
@@ -179,18 +156,6 @@ public interface MessageReplyReceipt : MessageReceipt {
 public interface MessageReactSupport {
 
     public suspend fun react(message: Message): MessageReceipt
-}
-
-/**
- * 标记回执。
- *
- * 对于标记回执的 [id][ReactReceipt.id]，有可能是这个回执所属ID，也有可能是被标记消息的ID。
- *
- */
-@Deprecated("No longer use", level = DeprecationLevel.ERROR)
-public interface ReactReceipt : MessageReceipt {
-    override val id: ID
-    override val isSuccess: Boolean
 }
 
 
