@@ -16,11 +16,9 @@
 
 package love.forte.simbot.message
 
-import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.action.DeleteSupport
 import love.forte.simbot.definition.IDContainer
-import love.forte.simbot.utils.runInNoScopeBlocking
 
 
 /**
@@ -41,28 +39,15 @@ public interface MessageReceipt : IDContainer, DeleteSupport {
      * 假若 [isSuccess] 为 `false`, 那么 [id] 可能会是一个空值。
      */
     public val isSuccess: Boolean
-
-
+    
     /**
-     * 如果此回执单是可删除的, 执行删除。
+     * 删除此回执所代表的消息。这通常代表为'撤回'相关消息。
+     * 如果此回执不支持撤回则可能会恒定的得到 `false`。
      *
-     * Deprecated: [MessageReceipt] 已实现 [DeleteSupport], 可以直接使用 [MessageReceipt.delete].
+     * 进行删除的过程中通常不会捕获任何异常，因此可能抛出任何可能涉及的
+     * 业务或状态异常。
      *
-     * @return 删除成功为true，失败或不可删除均为null。
+     * @return 是否删除成功
      */
-    @Api4J
-    @Deprecated("Just use deleteBlocking()", ReplaceWith("deleteBlocking()"), level = DeprecationLevel.ERROR)
-    public fun deleteIfSupportBlocking(): Boolean = runInNoScopeBlocking { delete() }
+    override suspend fun delete(): Boolean
 }
-
-
-/**
- * 如果此回执单是可删除的, 执行删除。
- *
- * Deprecated: [MessageReceipt] 已实现 [DeleteSupport], 可以直接使用 [MessageReceipt.delete].
- *
- * @return 删除成功为true，失败或不可删除均为null。
- */
-@JvmSynthetic
-@Deprecated("Just use delete()", ReplaceWith("delete()"), level = DeprecationLevel.ERROR)
-public suspend fun MessageReceipt.deleteIfSupport(): Boolean = delete()
