@@ -14,9 +14,6 @@
  *
  */
 
-// @file:JvmMultifileClass
-@file:JvmSynthetic //("MessageUtil")
-
 package love.forte.simbot.message
 
 import kotlinx.serialization.KSerializer
@@ -26,26 +23,12 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.*
-import love.forte.simbot.Api4J
 import love.forte.simbot.Simbot
 import love.forte.simbot.utils.view.IndexAccessView
 import love.forte.simbot.utils.view.View
 import love.forte.simbot.utils.view.emptyView
 import love.forte.simbot.message.Message.Element as MsgElement
-
-
-/**
- * 针对于 [MsgElement] 的多态序列化的注册器。
- *
- * @see Messages
- */
-@Deprecated("将会被弃用", level = DeprecationLevel.ERROR)
-public interface MessageElementPolymorphicRegistrar {
-    public fun registrar(builderAction: PolymorphicModuleBuilder<MsgElement<*>>.() -> Unit)
-}
-
 
 /**
  * 消息列表，代表为可能多条的 [MsgElement] 信息。
@@ -101,7 +84,7 @@ public sealed interface Messages : View<MsgElement<*>>, RandomAccess, Message {
     public fun toList(): List<MsgElement<*>>
     
     @Suppress("DEPRECATION_ERROR")
-    public companion object : MessageElementPolymorphicRegistrar {
+    public companion object {
         
         @JvmSynthetic
         @Suppress("ObjectPropertyName")
@@ -116,62 +99,11 @@ public sealed interface Messages : View<MsgElement<*>>, RandomAccess, Message {
             }
         }
         
-        @Volatile
-        private var defaultJson: Json = Json {
-            isLenient = true
-            ignoreUnknownKeys = true
-            serializersModule = _serializersModule
-        }
-        
         /**
          * 当前 [Messages] 可用于序列化的 [SerializersModule]. 在组件加载完毕后，其中应包含了所有组件下注册的额外消息类型的多态信息。
          *
          */
         public val serializersModule: SerializersModule get() = _serializersModule
-        
-        private fun setJson() {
-            defaultJson = Json {
-                isLenient = true
-                ignoreUnknownKeys = true
-                serializersModule = _serializersModule
-            }
-        }
-        
-        /**
-         * 将 [Messages.serializersModule] 与目标 [serializersModule] 进行合并。
-         */
-        @Synchronized
-        @Deprecated("此方式的序列化将会被弃用", level = DeprecationLevel.ERROR)
-        public fun mergeSerializersModule(serializersModule: SerializersModule) {
-            _serializersModule += serializersModule
-            setJson()
-        }
-        
-        /**
-         * 将 [Messages.serializersModule] 与目标 [serializersModule] 进行合并。
-         */
-        @Suppress("MemberVisibilityCanBePrivate")
-        @Deprecated("此方式的序列化将会被弃用", level = DeprecationLevel.ERROR)
-        public fun mergeSerializersModule(builderAction: SerializersModuleBuilder.() -> Unit) {
-            mergeSerializersModule(SerializersModule(builderAction))
-        }
-        
-        /**
-         * 向 [serializersModule] 中注册一个 [MsgElement] 的多态信息。
-         */
-        @Deprecated("此方式的序列化将会被弃用", level = DeprecationLevel.ERROR)
-        public override fun registrar(builderAction: PolymorphicModuleBuilder<MsgElement<*>>.() -> Unit) {
-            registrarPolymorphic(builderAction)
-        }
-        
-        /**
-         * 向 [serializersModule] 中注册一个 [MsgElement] 的多态信息。
-         */
-        private inline fun <reified M : MsgElement<*>> registrarPolymorphic(crossinline builderAction: PolymorphicModuleBuilder<M>.() -> Unit) {
-            mergeSerializersModule {
-                polymorphic(baseClass = M::class, builderAction = builderAction)
-            }
-        }
         
         internal object MessagesSerializer : KSerializer<Messages> {
             private val delegate = ListSerializer(PolymorphicSerializer(MsgElement::class))
@@ -218,36 +150,6 @@ public sealed interface Messages : View<MsgElement<*>>, RandomAccess, Message {
          */
         @JvmStatic
         public fun toMessages(vararg messages: MsgElement<*>): Messages = messages.asList().toMessages()
-        
-        
-        // region serializer api for java
-        
-        /**
-         * 尝试将指定消息链转化为json字符串。
-         *
-         * 此函数为Java使用者提供，使用内置的 Json 序列化器。
-         */
-        @Api4J
-        @JvmStatic
-        @Deprecated("Use MessageSerializationUtil.", level = DeprecationLevel.ERROR)
-        public fun toJsonString(messages: Messages): String {
-            return defaultJson.encodeToString(serializer, messages)
-        }
-        
-        /**
-         * 尝试通过json字符串反序列化出 [Messages] 实例。
-         *
-         * 此函数为Java使用者提供，使用内置的 Json 序列化器。
-         */
-        @Api4J
-        @JvmStatic
-        @Deprecated("Use MessageSerializationUtil.", level = DeprecationLevel.ERROR)
-        public fun fromJsonString(jsonString: String): Messages {
-            return defaultJson.decodeFromString(serializer, jsonString)
-        }
-        // endregion
-        
-        
     }
     
 }
@@ -539,15 +441,14 @@ internal class MessageListImpl(private val delegate: List<MsgElement<*>>) : Mess
             val element = messages.first()
             if (element is SingleOnlyMessage<*>) return element
         }
-    
+        
         val newList = delegate.toMutableList()
         newList.addAll(messages)
-    
+        
         return newList.toMessages()
     }
     
     override fun toList(): List<MsgElement<*>> = delegate.toList()
-    
     
     
     override fun toString(): String = "Messages($delegate)"
