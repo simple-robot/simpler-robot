@@ -31,7 +31,7 @@ public fun <T> List<T>.asView(): IndexAccessView<T> {
 }
 
 
-private class ListView<out T>(private val list: List<T>) : IndexAccessView<T>, RandomAccess {
+private class ListView<out T>(val list: List<T>) : IndexAccessView<T>, RandomAccess {
     override fun iterator(): Iterator<T> = list.iterator()
     
     override val size: Int
@@ -53,7 +53,7 @@ public fun <T> Collection<T>.asView(): View<T> {
 }
 
 
-private class CollectionView<out T>(private val collection: Collection<T>) : View<T> {
+private class CollectionView<out T>(val collection: Collection<T>) : View<T> {
     override fun iterator(): Iterator<T> = collection.iterator()
     
     override val size: Int
@@ -78,6 +78,17 @@ public fun <T> Iterable<T>.asView(): View<T> {
         is List -> this.asView()
         is Collection -> this.asView()
         else -> IterableView(this)
+    }
+}
+
+/**
+ * 将 [View] 转化为 [List].
+ */
+public fun <T> View<T>.toList(): List<T> {
+    return when (this) {
+        is ListView -> list.toList()
+        is CollectionView -> collection.toList()
+        else -> (this as Iterable<T>).toList()
     }
 }
 
@@ -116,5 +127,6 @@ private object EmptyView : IndexAccessView<Nothing>, RandomAccess {
     
     override fun contains(element: Nothing): Boolean = false
     
-    override fun get(index: Int): Nothing = throw IndexOutOfBoundsException("Empty view doesn't contain element at index $index.")
+    override fun get(index: Int): Nothing =
+        throw IndexOutOfBoundsException("Empty view doesn't contain element at index $index.")
 }
