@@ -49,5 +49,6 @@ public interface MessageReceipt : IDContainer, DeleteSupport {
      *
      * @return 是否删除成功
      */
+    @JvmSynthetic
     override suspend fun delete(): Boolean
 }
