@@ -20,6 +20,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
+import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.ID
 import love.forte.simbot.definition.IDContainer
 import love.forte.simbot.definition.ResourceContainer
@@ -173,7 +174,7 @@ public data class At @JvmOverloads constructor(
     
     /**
      * 这个at在原始数据中或者原始事件中的样子。默认情况下，是字符串 '@[target]'。
-     * 此值将不会参与 [equals] 于 [hashCode] 的计算。
+     * 此值不会参与 [equals] 于 [hashCode] 的计算。
      */
     public val originContent: String = "@$target",
     
@@ -181,7 +182,7 @@ public data class At @JvmOverloads constructor(
     override val key: Message.Key<At> get() = Key
     
     
-    @Deprecated("Please use type", ReplaceWith("type"), level = DeprecationLevel.ERROR)
+    @Deprecated("Please use 'type'", ReplaceWith("type"), level = DeprecationLevel.ERROR)
     public val atType: String get() = type
     
     override fun equals(other: Any?): Boolean {
@@ -282,11 +283,26 @@ public interface Image<E : Image<E>> : StandardMessage<E>, IDContainer, Resource
  * [发送][love.forte.simbot.action.SendSupport.send] 的时候 [ResourceImage]
  * 中的资源才会被进行验证，而在那之前 [ResourceImage] 仅为一种资源携带体，无法验证资源的有效性。
  *
+ * ## 序列化
+ *
+ * [ResourceImage] 支持序列化，但是**不建议**使用其序列化，且对其进行序列化存在一定条件。
+ * [ResourceImage] 内部持有 [Resource], 当且仅当 [Resource] 类型为
+ * [StandardResource][love.forte.simbot.resources.StandardResource] 时才能序列化，
+ * 否则将会引发 [SerializationException][kotlinx.serialization.SerializationException]。
+ *
+ * 并且对 [Resource] 的序列化的不可靠的，具体描述参考 [Resource.AsStandardSerializer]。对于一个组件，
+ * 如果希望提供可靠的可序列化 [Image], 则考虑进行额外实现而不是直接使用 [ResourceImage]。
+ *
  */
 @SerialName("m.std.img.resource")
 @Serializable
-public data class ResourceImage(override val id: ID, @SerialName("resource") private val _resource: Resource) :
-    Image<ResourceImage> {
+public data class ResourceImage @OptIn(ExperimentalSimbotApi::class) constructor(
+    @Serializable(ID.AsCharSequenceIDSerializer::class)
+    override val id: ID,
+    @SerialName("resource")
+    @Serializable(Resource.AsStandardSerializer::class)
+    private val _resource: Resource,
+) : Image<ResourceImage> {
     
     @JvmSynthetic
     override suspend fun resource(): Resource = _resource
