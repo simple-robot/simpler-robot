@@ -57,15 +57,17 @@ import love.forte.simbot.resources.Resource
  * @see buildMessages
  * @see Messages
  */
-public class MessagesBuilder
-@JvmOverloads constructor(private var messages: Messages = EmptyMessages) {
+public class MessagesBuilder @JvmOverloads constructor(collection: MutableCollection<Message.Element<*>>? = null) {
+    public constructor(messages: Messages) : this(messages.toList().toMutableList())
+    
+    private val collection: MutableCollection<Message.Element<*>> = collection ?: mutableListOf()
     
     private fun appendElement(messageElement: Message.Element<*>): MessagesBuilder = also {
-        messages += messageElement
+        collection.add(messageElement)
     }
     
-    private fun appendElements(messageElements: Collection<Message.Element<*>>): MessagesBuilder = also {
-        messages += messageElements
+    private fun appendElements(messageElements: Iterable<Message.Element<*>>): MessagesBuilder = also {
+        collection.addAll(messageElements)
     }
     
     
@@ -178,7 +180,7 @@ public class MessagesBuilder
     /**
      * 拼接多个任意消息。
      */
-    public fun append(elements: Collection<Message.Element<*>>): MessagesBuilder = appendElements(elements)
+    public fun append(elements: Iterable<Message.Element<*>>): MessagesBuilder = appendElements(elements)
     
     
     /**
@@ -198,13 +200,13 @@ public class MessagesBuilder
      * 拼接多个任意消息。
      */
     @JvmSynthetic
-    public operator fun Collection<Message.Element<*>>.unaryPlus(): MessagesBuilder = appendElements(this)
+    public operator fun Iterable<Message.Element<*>>.unaryPlus(): MessagesBuilder = appendElements(this)
     
     
     /**
-     * 获取当前构建器中的 [Messages] 实例。
+     * 根据前构建器中的内容构建一个 [Messages] 实例。
      */
-    public fun build(): Messages = messages
+    public fun build(): Messages = collection.toMessages()
 }
 
 
@@ -221,8 +223,11 @@ public class MessagesBuilder
  * ```
  *
  */
-public inline fun buildMessages(block: MessagesBuilder.() -> Unit): Messages {
-    return MessagesBuilder().also(block).build()
+public inline fun buildMessages(
+    initial: MutableCollection<Message.Element<*>>? = null,
+    block: MessagesBuilder.() -> Unit,
+): Messages {
+    return MessagesBuilder(initial).also(block).build()
 }
 
 

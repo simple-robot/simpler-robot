@@ -37,7 +37,7 @@ internal annotation class SimpleListenerBuilderDSL
  * [SimpleListenerBuilder] 只能用于配置生成一个具体的事件目标，即只能指定一个具体的 [Event.Key].
  *
  * ```java
- * new SimpleListenerBuilder<>(FooEvent.Key)
+ * new SimpleListenerBuilder<>(FooEvent)
  *     .match((context, event) -> {...})
  *     .handle((context, event) -> { ... })
  *     .build();
@@ -45,7 +45,7 @@ internal annotation class SimpleListenerBuilderDSL
  *
  * 对于 Kotlin 开发者，可以通过 [buildSimpleListener] 来使用DSL函数构建 [EventListener] 实例。
  * ```kotlin
- * buildSimpleListener(FooEvent.Key) {
+ * buildSimpleListener(FooEvent) {
  *    match { ... }
  *    match { ... }
  *    handle {

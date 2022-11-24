@@ -191,7 +191,7 @@ public class SimbotTopLevelListenerScanProcessor : AbstractSimbotTopLevelScanPro
                         val beanName = DefaultBeanNameGenerator.INSTANCE.generateBeanName(
                             beanDefinition,
                             registry
-                        ) + "#GENERATED_TOP_LISTENER"
+                        ) + "#${methodMetadata.methodName}#GENERATED_TOP_LISTENER"
                         registry.registerBeanDefinition(beanName, beanDefinition)
                         logger.debug(
                             "Created new bean definition for top-level EventListener. beanName={}, definition={}",
@@ -222,7 +222,7 @@ public class SimbotTopLevelListenerScanProcessor : AbstractSimbotTopLevelScanPro
                         val beanName = beanNameGenerator.generateBeanName(
                             beanDefinition,
                             registry
-                        ) + "#GENERATED_TOP_LISTENER_FUNCTION"
+                        ) + "#${methodMetadata.methodName}#GENERATED_TOP_LISTENER_FUNCTION"
                         
                         registry.registerBeanDefinition(beanName, beanDefinition)
                         processedMethod.add(method)
@@ -256,7 +256,7 @@ public class SimbotTopLevelListenerScanProcessor : AbstractSimbotTopLevelScanPro
                             val beanName = DefaultBeanNameGenerator.INSTANCE.generateBeanName(
                                 beanDefinition,
                                 registry
-                            ) + "#GENERATED_TOP_LISTENER_FUNCTION"
+                            ) + "#${methodMetadata.methodName}#GENERATED_TOP_LISTENER_FUNCTION"
                             registry.registerBeanDefinition(beanName, beanDefinition)
                             processedMethod.add(method)
                             logger.debug(

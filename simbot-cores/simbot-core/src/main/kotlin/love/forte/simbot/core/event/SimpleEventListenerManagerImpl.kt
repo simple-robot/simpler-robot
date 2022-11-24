@@ -23,8 +23,8 @@ import love.forte.simbot.core.scope.SimpleScope
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.logger.LoggerFactory
-import love.forte.simbot.utils.ListView
-import love.forte.simbot.utils.view
+import love.forte.simbot.utils.view.IndexAccessView
+import love.forte.simbot.utils.view.asView
 import org.slf4j.Logger
 import java.lang.reflect.InvocationTargetException
 import java.util.*
@@ -332,7 +332,7 @@ internal class SimpleEventListenerManagerImpl internal constructor(
                     }
                     
                     // resolve to processing result
-                    SimpleEventProcessingResult(context.results)
+                    SimpleEventProcessingResult(context.resultsView)
                 }
             }.getOrElse {
                 currentBot.logger.error("Event process failed.", it)
@@ -495,7 +495,7 @@ private interface ListenerInvokerContainer {
 }
 
 
-private data class SimpleEventProcessingResult(override val results: List<EventResult>) : EventProcessingResult
+private data class SimpleEventProcessingResult(override val resultsView: IndexAccessView<EventResult>) : EventProcessingResult
 
 
 /**
@@ -533,14 +533,11 @@ internal class SimpleEventProcessingContext(
     
     private val _results = ArrayList<EventResult>(resultInitSize.coerceAtLeast(1))
     
-    private var resultView: ListView<EventResult>? = null
+    private var _resultsView: IndexAccessView<EventResult>? = null
     
-    override val results: List<EventResult>
-        get() {
-            // sync is not necessary, probably.
-            return resultView ?: _results.view().also {
-                resultView = it
-            }
+    override val resultsView: IndexAccessView<EventResult>
+        get() = _resultsView ?: _results.asView().also {
+            _resultsView = it
         }
     
     internal fun addResult(result: EventResult) {

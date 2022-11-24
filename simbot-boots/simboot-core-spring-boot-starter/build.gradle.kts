@@ -18,14 +18,13 @@ plugins {
     id("simbot.boot-module-conventions")
     `simbot-jvm-maven-publish`
     kotlin("plugin.serialization")
-    // kotlin("kapt")
+    kotlin("kapt")
 }
 
 
 dependencies {
-    api(project(":simbot-boots:simboot-core")) {
-        exclude("love.forte.simbot","simbot-logger")
-    }
+    api(project(":simbot-boots:simboot-core"))
+    
 
     api(libs.javax.inject)
     api(libs.forte.di.spring)
@@ -33,8 +32,8 @@ dependencies {
 
     implementation(libs.spring.boot.autoconfigure)
     implementation(libs.spring.boot.configuration.processor)
-    // annotationProcessor(libs.spring.boot.configuration.processor)
-    // kapt(libs.spring.boot.configuration.processor)
+    annotationProcessor(libs.spring.boot.configuration.processor)
+    kapt(libs.spring.boot.configuration.processor)
 
     compileOnly(libs.javax.annotation.api)
     compileOnly(libs.forte.annotationTool.api)

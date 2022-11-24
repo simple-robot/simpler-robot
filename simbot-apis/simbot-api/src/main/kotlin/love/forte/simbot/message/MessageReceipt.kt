@@ -16,53 +16,106 @@
 
 package love.forte.simbot.message
 
-import love.forte.simbot.Api4J
+import love.forte.simbot.CharSequenceID
 import love.forte.simbot.ID
 import love.forte.simbot.action.DeleteSupport
 import love.forte.simbot.definition.IDContainer
-import love.forte.simbot.utils.runInNoScopeBlocking
+import love.forte.simbot.randomID
 
 
 /**
  * 消息回执，当消息发出去后所得到的回执信息。
+ *
+ * @see SingleMessageReceipt
+ * @see AggregatedMessageReceipt
+ *
  * @author ForteScarlet
  */
-public interface MessageReceipt : IDContainer, DeleteSupport {
-
-    /**
-     * 一个消息回执中存在一个ID.
-     */
-    override val id: ID
-
+public sealed class MessageReceipt : DeleteSupport {
+    
     /**
      * 消息是否发送成功。此属性的 `false` 一般代表在排除其他所有的 **异常情况** 下，在正常流程中依然发送失败（例如发送的消息是空的）。
      * 不代表发送中出现了异常，仅代表在过程完全正常的情况下的发送结果。
-     *
-     * 假若 [isSuccess] 为 `false`, 那么 [id] 可能会是一个空值。
      */
-    public val isSuccess: Boolean
-
-
+    public abstract val isSuccess: Boolean
+    
     /**
-     * 如果此回执单是可删除的, 执行删除。
+     * 删除此回执所代表的消息。这通常代表为'撤回'相关消息。
+     * 如果此回执不支持撤回则可能会恒定的得到 `false`。
      *
-     * Deprecated: [MessageReceipt] 已实现 [DeleteSupport], 可以直接使用 [MessageReceipt.delete].
+     * 进行删除的过程中通常不会捕获任何异常，因此可能抛出任何可能涉及的
+     * 业务或状态异常。
      *
-     * @return 删除成功为true，失败或不可删除均为null。
+     * @return 是否删除成功
      */
-    @Api4J
-    @Deprecated("Just use deleteBlocking()", ReplaceWith("deleteBlocking()"), level = DeprecationLevel.ERROR)
-    public fun deleteIfSupportBlocking(): Boolean = runInNoScopeBlocking { delete() }
+    @JvmSynthetic
+    abstract override suspend fun delete(): Boolean
+}
+
+/**
+ * 明确代表为一个或零个（发送失败时）具体消息的消息回执，可以作为 [AggregatedMessageReceipt] 的元素进行聚合。
+ *
+ * @see MessageReceipt
+ * @see AggregatedMessageReceipt
+ */
+public abstract class SingleMessageReceipt : IDContainer, MessageReceipt() {
+    /**
+     * 一个消息回执中存在一个ID.
+     *
+     * [id] 不一定具有实际含义，也有可能是仅仅只是一个 [随机值][randomID] 或 [空值][CharSequenceID.EMPTY]。
+     * 当不具有实际意义时，[随机值][randomID] 通常出现在成功的回执中，
+     * 而 [空值][CharSequenceID.EMPTY] 通常出现在失败的回执中。
+     *
+     */
+    abstract override val id: ID
 }
 
 
 /**
- * 如果此回执单是可删除的, 执行删除。
+ * 聚合消息回执，代表多个 [SingleMessageReceipt] 的聚合体。
  *
- * Deprecated: [MessageReceipt] 已实现 [DeleteSupport], 可以直接使用 [MessageReceipt.delete].
- *
- * @return 删除成功为true，失败或不可删除均为null。
+ * @see MessageReceipt
+ * @see SingleMessageReceipt
  */
-@JvmSynthetic
-@Deprecated("Just use delete()", ReplaceWith("delete()"), level = DeprecationLevel.ERROR)
-public suspend fun MessageReceipt.deleteIfSupport(): Boolean = delete()
+public abstract class AggregatedMessageReceipt : MessageReceipt(), Iterable<SingleMessageReceipt> {
+    
+    /**
+     * 聚合消息中的 [isSuccess] 代表是否存在**任意**回执的 [MessageReceipt.isSuccess] 为 `true`。
+     */
+    abstract override val isSuccess: Boolean
+    
+    /**
+     * 当前聚合消息中包含的所有 [MessageReceipt] 的数量。
+     */
+    public abstract val size: Int
+    
+    /**
+     * 根据索引值获取到指定位置的 [SingleMessageReceipt]。
+     *
+     * @throws IndexOutOfBoundsException 索引越界时
+     */
+    public abstract fun get(index: Int): SingleMessageReceipt
+    
+    /**
+     * 删除其所代表的所有消息回执。
+     *
+     * @see deleteAll
+     * @return 是否存在**任意**内容删除成功
+     */
+    override suspend fun delete(): Boolean {
+        return deleteAll() > 0
+    }
+    
+    /**
+     * 删除其所代表的所有消息回执。
+     */
+    public suspend fun deleteAll(): Int {
+        var count = 0
+        for (receipt in this) {
+            if (receipt.delete()) {
+                count++
+            }
+        }
+        return count
+    }
+}

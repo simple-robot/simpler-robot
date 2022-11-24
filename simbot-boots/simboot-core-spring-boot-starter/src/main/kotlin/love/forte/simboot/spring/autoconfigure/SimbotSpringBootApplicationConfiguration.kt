@@ -20,9 +20,10 @@ import love.forte.simboot.spring.autoconfigure.application.SpringBootApplication
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfigurationProperties
 import love.forte.simboot.spring.autoconfigure.application.springBootApplication
-import love.forte.simbot.Api4J
 import love.forte.simbot.application.Application
 import love.forte.simbot.event.EventListenerManager
+import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.logger.logger
 import love.forte.simbot.utils.runInNoScopeBlocking
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.ApplicationArguments
@@ -77,7 +78,6 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
     /**
      * 构建 [simbot application][Application].
      */
-    @OptIn(Api4J::class)
     @Bean(destroyMethod = "shutdownBlocking")
     @ConditionalOnMissingBean(Application::class)
     public fun simbotSpringBootApplication(
@@ -86,9 +86,9 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
         @Autowired(required = false) applicationConfigures: List<SimbotSpringBootApplicationBuildConfigure>? = null,
         coroutineDispatcherContainer: CoroutineDispatcherContainer,
     ): SpringBootApplication {
-        initialConfiguration.applicationContext
-        
         return runInNoScopeBlocking {
+            logger.debug("Launching application...")
+    
             springBootApplication(initialConfiguration,
                 {
                     // initial
@@ -105,6 +105,8 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
                 }
                 // TODO..?
             }.launch()
+        }.also {
+            logger.debug("Application launched. {}", it)
         }
     }
     
@@ -126,4 +128,7 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
     // endregion
     
     
+    public companion object {
+        private val logger = LoggerFactory.logger<SimbotSpringBootApplicationConfiguration>()
+    }
 }
