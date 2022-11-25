@@ -26,12 +26,15 @@ import love.forte.simbot.randomID
 /**
  * 消息回执，当消息发出去后所得到的回执信息。
  *
- * @see SingleMessageReceipt
- * @see AggregatedMessageReceipt
+ * 大多数情况下，[MessageReceipt] 的实现类应该由
+ * [StandardMessageReceipt] 衍生而不是直接基于此类。
+ * 此类的实现主要用于进一步地抽象组件所需的 receipt 类型。
+ *
+ * @see StandardMessageReceipt
  *
  * @author ForteScarlet
  */
-public sealed class MessageReceipt : DeleteSupport {
+public abstract class MessageReceipt : DeleteSupport {
     
     /**
      * 消息是否发送成功。此属性的 `false` 一般代表在排除其他所有的 **异常情况** 下，在正常流程中依然发送失败（例如发送的消息是空的）。
@@ -51,6 +54,15 @@ public sealed class MessageReceipt : DeleteSupport {
     @JvmSynthetic
     abstract override suspend fun delete(): Boolean
 }
+
+/**
+ * 由 [MessageReceipt] 衍生的标准消息回执类型, 提供用于表示独立元素回执的 [SingleMessageReceipt]
+ * 和复合回执的 [AggregatedMessageReceipt].
+ *
+ * @see SingleMessageReceipt
+ * @see AggregatedMessageReceipt
+ */
+public sealed class StandardMessageReceipt : MessageReceipt()
 
 /**
  * 明确代表为一个或零个（发送失败时）具体消息的消息回执，可以作为 [AggregatedMessageReceipt] 的元素进行聚合。
