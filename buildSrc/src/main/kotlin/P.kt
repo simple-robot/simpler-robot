@@ -76,7 +76,7 @@ sealed class P(override val group: String) : ProjectDetail() {
     init {
         val mainVersion = version(3, 0, 0)
         //
-        var status = version("M3")
+        var status = version("M4")
         versionWithoutSnapshot = mainVersion - status.copy()
         if (isSnapshot()) {
             status = status - Version.SNAPSHOT
