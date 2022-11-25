@@ -68,7 +68,7 @@ public sealed class StandardMessageReceipt : MessageReceipt
 /**
  * 明确代表为一个或零个（发送失败时）具体消息的消息回执，可以作为 [AggregatedMessageReceipt] 的元素进行聚合。
  *
- * @see MessageReceipt
+ * @see StandardMessageReceipt
  * @see AggregatedMessageReceipt
  */
 public abstract class SingleMessageReceipt : IDContainer, StandardMessageReceipt() {
@@ -87,8 +87,9 @@ public abstract class SingleMessageReceipt : IDContainer, StandardMessageReceipt
 /**
  * 聚合消息回执，代表多个 [SingleMessageReceipt] 的聚合体。
  *
- * @see MessageReceipt
+ * @see StandardMessageReceipt
  * @see SingleMessageReceipt
+ * @see aggregation
  */
 public abstract class AggregatedMessageReceipt : StandardMessageReceipt(), Iterable<SingleMessageReceipt> {
     
