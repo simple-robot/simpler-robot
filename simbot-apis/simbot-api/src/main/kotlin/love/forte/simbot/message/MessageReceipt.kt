@@ -34,13 +34,13 @@ import love.forte.simbot.randomID
  *
  * @author ForteScarlet
  */
-public abstract class MessageReceipt : DeleteSupport {
+public interface MessageReceipt : DeleteSupport {
     
     /**
      * 消息是否发送成功。此属性的 `false` 一般代表在排除其他所有的 **异常情况** 下，在正常流程中依然发送失败（例如发送的消息是空的）。
      * 不代表发送中出现了异常，仅代表在过程完全正常的情况下的发送结果。
      */
-    public abstract val isSuccess: Boolean
+    public val isSuccess: Boolean
     
     /**
      * 删除此回执所代表的消息。这通常代表为'撤回'相关消息。
@@ -52,7 +52,7 @@ public abstract class MessageReceipt : DeleteSupport {
      * @return 是否删除成功
      */
     @JvmSynthetic
-    abstract override suspend fun delete(): Boolean
+    override suspend fun delete(): Boolean
 }
 
 /**
@@ -62,7 +62,8 @@ public abstract class MessageReceipt : DeleteSupport {
  * @see SingleMessageReceipt
  * @see AggregatedMessageReceipt
  */
-public sealed class StandardMessageReceipt : MessageReceipt()
+public sealed class StandardMessageReceipt : MessageReceipt
+
 
 /**
  * 明确代表为一个或零个（发送失败时）具体消息的消息回执，可以作为 [AggregatedMessageReceipt] 的元素进行聚合。
@@ -70,7 +71,7 @@ public sealed class StandardMessageReceipt : MessageReceipt()
  * @see MessageReceipt
  * @see AggregatedMessageReceipt
  */
-public abstract class SingleMessageReceipt : IDContainer, MessageReceipt() {
+public abstract class SingleMessageReceipt : IDContainer, StandardMessageReceipt() {
     /**
      * 一个消息回执中存在一个ID.
      *
@@ -89,7 +90,7 @@ public abstract class SingleMessageReceipt : IDContainer, MessageReceipt() {
  * @see MessageReceipt
  * @see SingleMessageReceipt
  */
-public abstract class AggregatedMessageReceipt : MessageReceipt(), Iterable<SingleMessageReceipt> {
+public abstract class AggregatedMessageReceipt : StandardMessageReceipt(), Iterable<SingleMessageReceipt> {
     
     /**
      * 聚合消息中的 [isSuccess] 代表是否存在**任意**回执的 [MessageReceipt.isSuccess] 为 `true`。
