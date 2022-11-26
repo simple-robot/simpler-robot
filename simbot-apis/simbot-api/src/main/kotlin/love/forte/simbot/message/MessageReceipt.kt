@@ -108,7 +108,7 @@ public abstract class AggregatedMessageReceipt : StandardMessageReceipt(), Itera
      *
      * @throws IndexOutOfBoundsException 索引越界时
      */
-    public abstract fun get(index: Int): SingleMessageReceipt
+    public abstract operator fun get(index: Int): SingleMessageReceipt
     
     /**
      * 删除其所代表的所有消息回执。
