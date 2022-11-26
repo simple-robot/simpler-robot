@@ -116,18 +116,21 @@ simbot3目前已经实现的组件有：
 
 ## 走马观花
 
-**事件监听(核心)**
+**事件监听(标准库)**
 
 ```kotlin
 suspend fun main() {
-   createSimpleApplication {
-      listeners {
-          // 事件监听
-          FriendMessageEvent { event -> // this: EventProcessingContext
-             event.reply("Hello, Simbot")
-          }
-      }
-   }.join()
+    // 构建Application
+    val app = createSimpleApplication {  }
+    // 注册监听函数
+    app.eventListenerManager.listeners {
+    // 注册一个 '好友消息' 事件
+    FriendMessageEvent { event ->
+        event.reply("你也好")
+      } onMatch { textContent == "你好" }
+    }
+    // 挂起并直到被关闭
+    app.join()
 }
 ```
 
