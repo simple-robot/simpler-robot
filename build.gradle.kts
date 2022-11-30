@@ -16,21 +16,23 @@
 
 
 plugins {
-    id("simbot.changelog-generator")
-    id("simbot.nexus-publish")
-    id("simbot.dokka-multi-module")
+    //kotlin("multiplatform") version "1.7.21" apply false //version "1.7.21"
+    //kotlin("jvm") version "1.7.21" apply false //version "1.7.21"
+    //id("simbot.changelog-generator")
+    //id("simbot.nexus-publish")
+    //id("simbot.dokka-multi-module")
 }
 
-allprojects {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        love.forte.gradle.common.core.repository.Repositories.Snapshot.Default.apply {
-            configMaven {
-                mavenContent {
-                    snapshotsOnly()
-                }
-            }
-        }
-    }
-}
+// allprojects {
+//     repositories {
+//         mavenLocal()
+//         mavenCentral()
+//         //love.forte.gradle.common.core.repository.Repositories.Snapshot.Default.apply {
+//         //    configMaven {
+//         //        mavenContent {
+//         //            snapshotsOnly()
+//         //        }
+//         //    }
+//         //}
+//     }
+// }
