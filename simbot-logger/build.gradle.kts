@@ -8,14 +8,12 @@ plugins {
 
 kotlin {
     defaultConfig {
-        nativeCommonMainName = "nativesMain"
-        nativeCommonTestName = "nativesTest"
+        nativeCommonMainName = "nativeMain"
+        nativeCommonTestName = "nativeTest"
         sourceSetsConfig = {
             commonTest {
                 dependencies {
-                    // implementation(kotlin("test"))
-                    implementation(kotlin("test-annotations-common"))
-                    implementation(kotlin("test-common"))
+                    implementation(kotlin("test"))
                 }
             }
             jvmMain {
@@ -26,11 +24,6 @@ kotlin {
             jvmTest {
                 dependencies {
                     implementation(kotlin("test-junit5"))
-                }
-            }
-            jsTest {
-                dependencies {
-                    implementation(kotlin("test-js"))
                 }
             }
         }
