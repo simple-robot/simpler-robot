@@ -28,6 +28,8 @@ dependencyResolutionManagement {
     }
 }
 
+include("simbot-utils:simbot-util-stage-loop")
+
 include("simbot-logger")
 include("simbot-logger-slf4j-impl")
 // project(":simbot-logger").name = "simbot-logger-multiplatform"

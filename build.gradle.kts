@@ -1,3 +1,5 @@
+import org.gradle.api.internal.artifacts.dsl.dependencies.DependencyAdderExtensionModule.module
+
 /*
  *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
@@ -16,14 +18,16 @@
 
 
 plugins {
+    //kotlin("multiplatform") version "1.7.21" apply false //version "1.7.21"
+    //kotlin("jvm") version "1.7.21" apply false //version "1.7.21"
     id("simbot.changelog-generator")
     id("simbot.nexus-publish")
     id("simbot.dokka-multi-module")
+    idea
 }
 
 allprojects {
     repositories {
-        mavenLocal()
         mavenCentral()
         love.forte.gradle.common.core.repository.Repositories.Snapshot.Default.apply {
             configMaven {
@@ -32,5 +36,12 @@ allprojects {
                 }
             }
         }
+//        mavenLocal()
+    }
+}
+
+idea {
+    module {
+        isDownloadSources = true
     }
 }

@@ -37,7 +37,7 @@ plugins {
     `java-library`
     kotlin("jvm")
     kotlin("plugin.serialization")
-    idea
+    //idea
 }
 
 repositories {
@@ -91,11 +91,11 @@ configurations.all {
 }
 
 
-idea {
-    module {
-        isDownloadSources = true
-        isDownloadJavadoc = true
-    }
-}
+// idea {
+//     module {
+//         isDownloadSources = true
+//         isDownloadJavadoc = true
+//     }
+// }
 
 
