@@ -30,11 +30,14 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
+import kotlin.time.Duration.Companion.milliseconds
 
 
 private const val DEFAULT_KEEP_ALIVE_TIME = 60_000L // 60s
 
-private val logger by lazy { LoggerFactory.getLogger("love.forte.simbot.utils.BlockingRunner") }
+private const val LOGGER_NAME = "love.forte.simbot.utils.BlockingRunner"
+
+private val logger by lazy { LoggerFactory.getLogger(LOGGER_NAME) }
 
 @Suppress("NAME_SHADOWING")
 private fun createDefaultDispatcher(
@@ -53,7 +56,7 @@ private fun createDefaultDispatcher(
     val maxSize =
         maxSize?.coerceAtLeast(coreSize) ?: (availableProcessors * 4).coerceAtLeast(coreSize * 2)
     val keepAliveTime = keepAliveTime?.takeIf { it >= 0L } ?: DEFAULT_KEEP_ALIVE_TIME
-    
+
     val num = AtomicLong(0)
     val group = ThreadGroup(threadGroupName)
     val executor = ThreadPoolExecutor(
@@ -70,7 +73,7 @@ private fun createDefaultDispatcher(
     ) { runnable, executor ->
         throw DefaultBlockingDispatcherTaskRejectedExecutionException(runnable, executor)
     }
-    
+
     return executor.asCoroutineDispatcher()
 }
 
@@ -94,14 +97,16 @@ private const val DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE = "forkJoinPool"
 private const val DISPATCHER_LIMITED_PARALLELISM = "limitedParallelism"
 
 // region blocking properties
-private const val BLOCKING_DISPATCHER_LIMITED_PARALLELISM_PROPERTY = "$BLOCKING_DISPATCHER_BASE_PROPERTY.$DISPATCHER_LIMITED_PARALLELISM"
+private const val BLOCKING_DISPATCHER_LIMITED_PARALLELISM_PROPERTY =
+    "$BLOCKING_DISPATCHER_BASE_PROPERTY.$DISPATCHER_LIMITED_PARALLELISM"
 private const val BLOCKING_DISPATCHER_CORE_SIZE_PROPERTY = "$BLOCKING_DISPATCHER_BASE_PROPERTY.coreSize"
 private const val BLOCKING_DISPATCHER_MAX_SIZE_PROPERTY = "$BLOCKING_DISPATCHER_BASE_PROPERTY.maxSize"
 private const val BLOCKING_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$BLOCKING_DISPATCHER_BASE_PROPERTY.keepAliveTime"
 // endregion
 
 // region async properties
-private const val ASYNC_DISPATCHER_LIMITED_PARALLELISM_PROPERTY = "$ASYNC_DISPATCHER_BASE_PROPERTY.$DISPATCHER_LIMITED_PARALLELISM"
+private const val ASYNC_DISPATCHER_LIMITED_PARALLELISM_PROPERTY =
+    "$ASYNC_DISPATCHER_BASE_PROPERTY.$DISPATCHER_LIMITED_PARALLELISM"
 private const val ASYNC_DISPATCHER_CORE_SIZE_PROPERTY = "$ASYNC_DISPATCHER_BASE_PROPERTY.coreSize"
 private const val ASYNC_DISPATCHER_MAX_SIZE_PROPERTY = "$ASYNC_DISPATCHER_BASE_PROPERTY.maxSize"
 private const val ASYNC_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$ASYNC_DISPATCHER_BASE_PROPERTY.keepAliveTime"
@@ -148,7 +153,13 @@ public val DefaultBlockingDispatcherOrNull: CoroutineDispatcher? by lazy {
         BLOCKING_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY,
         "defaultBlockingDispatcherThreadGroup",
         "defaultBlocking"
-    )
+    ).also {
+        if (it == null) {
+            logger.debug("Initialized default blocking dispatcher is null")
+        } else {
+            logger.debug("Initialized default blocking dispatcher: {}", it)
+        }
+    }
 }
 
 /**
@@ -182,7 +193,7 @@ private inline fun initDefaultBlockingDispatcher(
         val dispatcher: String? = System.getProperty(dispatcherPropertyName)
         if (dispatcher != null) {
             logger.debug("Dispatcher runner: {}={}", dispatcherPropertyName, dispatcher)
-    
+
             var useDispatcher: CoroutineDispatcher? = when {
                 dispatcher eq DISPATCHER_USE_IO_PROPERTY_VALUE -> Dispatchers.IO
                 dispatcher eq DISPATCHER_USE_DEFAULT_PROPERTY_VALUE -> Dispatchers.Default
@@ -190,31 +201,40 @@ private inline fun initDefaultBlockingDispatcher(
                 dispatcher eq DISPATCHER_USE_UNCONFINED_PROPERTY_VALUE -> Dispatchers.Unconfined
                 dispatcher eq DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE -> ForkJoinPool.commonPool()
                     .asCoroutineDispatcher()
-                
+
                 else -> null
             }
-    
+
             if (useDispatcher != null) {
-                val limitedParallelism = System.getProperty(dispatcherLimitedParallelismPropertyName).toIntOrNull()
-            
+                val limitedParallelism = systemInt(dispatcherLimitedParallelismPropertyName)
+
                 @OptIn(ExperimentalCoroutinesApi::class)
                 if (limitedParallelism != null) {
-                    logger.debug("Dispatcher runner limited parallelism: {}={}", dispatcherLimitedParallelismPropertyName, limitedParallelism)
+                    logger.debug(
+                        "Dispatcher runner limited parallelism: {}={}",
+                        dispatcherLimitedParallelismPropertyName,
+                        limitedParallelism
+                    )
                     useDispatcher = useDispatcher.limitedParallelism(limitedParallelism)
                 }
-                
+
                 return useDispatcher
             } else {
                 logger.debug("Unknown dispatcher runner: {}, ignore.", dispatcher)
-                
+
             }
         }
-        
-        val coreSize = System.getProperty(coreSizePropertyName)?.toIntOrNull()
-        val maxSize = System.getProperty(maxSizePropertyName)?.toIntOrNull()
-        val keepAliveTime = System.getProperty(keepAliveTimePropertyName)?.toLongOrNull()
-        
-        logger.debug("Dispatcher properties: coreSize={}, maxSize={}, keepAliveTime={}", coreSize, maxSize, keepAliveTime)
+
+        val coreSize = systemInt(coreSizePropertyName)
+        val maxSize = systemInt(maxSizePropertyName)
+        val keepAliveTime = systemLong(keepAliveTimePropertyName)
+
+        logger.debug(
+            "Dispatcher properties: coreSize={}, maxSize={}, keepAliveTime={}",
+            coreSize,
+            maxSize,
+            keepAliveTime
+        )
         onDefault(coreSize, maxSize, keepAliveTime, threadGroupName, threadNamePrefix, null)
     }.getOrElse {
         logger.debug("Dispatcher properties: coreSize=null, maxSize=null, keepAliveTime=null")
@@ -274,12 +294,31 @@ public val DefaultAsyncDispatcherOrNull: CoroutineDispatcher? by lazy {
         "defaultAsyncDispatcherThreadGroup",
         "defaultAsync"
     ) { coreSize, maxSize, keepAliveTime, threadGroupName, threadNamePrefix, cause ->
-        if (cause != null || (coreSize == null && maxSize == null && keepAliveTime == null)) {
+        val hasCause = cause != null
+        val useDefault = hasCause || (coreSize == null && maxSize == null && keepAliveTime == null)
+        val dispatcher = if (useDefault) {
             // default.
+            if (hasCause && cause != null) { // 消除nullable编译错误
+                logger.debug(
+                    "Default async dispatcher will use the default blocking dispatcher because an exception thrown duration initialization: {}",
+                    cause.localizedMessage,
+                    cause
+                )
+            } else {
+                logger.debug("Default async dispatcher will use the default blocking dispatcher because all initialization parameters are null")
+            }
             DefaultBlockingDispatcherOrNull
         } else {
             createDefaultDispatcher(coreSize, maxSize, keepAliveTime, threadGroupName, threadNamePrefix)
         }
+
+        if (dispatcher == null) {
+            logger.debug("Initialized default async dispatcher is null")
+        } else {
+            logger.debug("Initialized default async dispatcher: {}", dispatcher)
+        }
+
+        dispatcher
     }
 }
 
@@ -472,25 +511,55 @@ public fun <T> `$$runInAsync`(block: suspend () -> T): CompletableFuture<T> {
 }
 
 
+// Yes. I am the BlockingRunner.
 @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCoroutineContext) : Continuation<T> {
     private var result: Result<T>? = null
-    
+
     override fun resumeWith(result: Result<T>) {
         synchronized(this) {
             this.result = result
             (this as Object).notifyAll()
         }
     }
-    
+
     @Suppress("BlockingMethodInNonBlockingContext")
     fun await(): Result<T> {
         synchronized(this) {
+            @Suppress("UNUSED_VARIABLE") // emm?
+            var times = 0
             while (true) {
                 when (val result = this.result) {
                     null -> {
-                        (this as Object).wait()
+                        if (isWaitTimeoutEnabled) {
+                            if (times > 0) {
+                                val duration = (waitTimeout * times).milliseconds
+                                if (logger.isDebugEnabled) {
+                                    val durationString = duration.toString()
+                                    logger.warn("Blocking runner has been blocking for at least {}.", durationString)
+                                    logger.debug(
+                                        "Long time blocking duration at least {}",
+                                        durationString,
+                                        LongTimeBlockingException(durationString)
+                                    )
+                                } else {
+                                    logger.warn(
+                                        "Blocking runner has been blocking for at least {}. Enable debug logging for '{}' for more stack information.",
+                                        duration.toString(),
+                                        LOGGER_NAME
+                                    )
+                                }
+                            }
+                            (this as Object).wait(waitTimeout)
+                            times += 1
+
+                        } else {
+                            // just wait.
+                            (this as Object).wait()
+                        }
+
                     }
+
                     else -> {
                         return result
                     }
@@ -498,4 +567,34 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
             }
         }
     }
+
+    // for displaying the stack only
+    private class LongTimeBlockingException(message: String) : IllegalStateException(message)
+
+    companion object {
+        private const val BLOCKING_RUNNER_DEFAULT_WAIT_TIME_PROPERTY_NAME =
+            "simbot.blockingRunner.waitTimeoutMilliseconds"
+        private const val BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME = "simbot.blockingRunner.disableWaitTimeout"
+        private const val DEFAULT_WAIT_TIME = 60_000L // 60s
+        private val waitTimeout =
+            systemLong(BLOCKING_RUNNER_DEFAULT_WAIT_TIME_PROPERTY_NAME)?.takeIf { it > 0 } ?: DEFAULT_WAIT_TIME
+        private val isWaitTimeoutEnabled = !systemBool(BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME)
+
+        init {
+            if (isWaitTimeoutEnabled) {
+                logger.info(
+                    "Blocking runner wait timeout is enabled with wait timeout {}. You can enable debug logging for '{}' for more stack information or disable it with the JVM parameter '-D{}=true'.",
+                    waitTimeout.milliseconds.toString(),
+                    LOGGER_NAME,
+                    BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME
+                )
+            } else {
+                logger.debug("Blocking runner wait timeout is disabled.")
+            }
+        }
+    }
 }
+
+private fun systemLong(key: String): Long? = System.getProperty(key)?.toLongOrNull()
+private fun systemInt(key: String): Int? = System.getProperty(key)?.toIntOrNull()
+private fun systemBool(key: String): Boolean = System.getProperty(key)?.toBoolean() ?: false
