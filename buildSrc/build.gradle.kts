@@ -6,7 +6,6 @@ plugins {
 repositories {
     mavenCentral()
     gradlePluginPortal()
-//    mavenLocal()
 }
 
 val kotlinVersion = "1.7.20"
