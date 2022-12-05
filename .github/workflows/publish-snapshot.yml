@@ -56,7 +56,7 @@ jobs:
             --info 
             --warning-mode all
             -x test
-            -Porg.gradle.jvmargs="-Xmx16g -Xms2g -XX:MaxMetaspaceSize=4G -Dfile.encoding=UTF-8" 
+            -Porg.gradle.jvmargs="-Xmx8g -Dfile.encoding=UTF-8" 
             -Porg.gradle.workers.max=8 
             -Porg.gradle.parallel=true
 
