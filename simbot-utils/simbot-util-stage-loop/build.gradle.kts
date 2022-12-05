@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import org.jetbrains.kotlin.gradle.plugin.KotlinTargetPreset
 
 plugins {
     `simbot-multiplatform-maven-publish`
@@ -16,8 +15,11 @@ kotlin {
 
     jvm {
         compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
-            kotlinOptions.javaParameters = true
+            kotlinOptions {
+                jvmTarget = "1.8"
+                javaParameters = true
+                freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
+            }
         }
         withJava()
         testRuns["test"].executionTask.configure {

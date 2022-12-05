@@ -13,6 +13,7 @@ kotlin {
             kotlinOptions {
                 jvmTarget = "1.8"
                 javaParameters = true
+                freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
             }
         }
         withJava()

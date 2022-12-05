@@ -37,7 +37,7 @@ jobs:
       - name: Setup java 11
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
+          distribution: 'zulu'
           java-version: 11
 
       - name: Run All Tests
@@ -56,7 +56,6 @@ jobs:
             --info 
             --warning-mode all
             -x test
-            --build-cache
             -Porg.gradle.jvmargs="-Xmx16g -Xms2g -XX:MaxMetaspaceSize=4G -Dfile.encoding=UTF-8" 
             -Porg.gradle.workers.max=8 
             -Porg.gradle.parallel=true
