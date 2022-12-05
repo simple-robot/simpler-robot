@@ -35,14 +35,14 @@ jobs:
       - name: Run All Tests
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.5.1
+          gradle-version: 7.6
           arguments: clean assemble test
 
       # setup Gradle
       - name: Gradle Publish Release
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.5.1
+          gradle-version: 7.6
           arguments: | 
             publishToSonatype
             closeAndReleaseStagingRepository
@@ -82,7 +82,7 @@ jobs:
       - name: Gradle publish snapshot
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.5.1
+          gradle-version: 7.6
           arguments: |
             createChangelog
             publishToSonatype
@@ -131,7 +131,7 @@ jobs:
       - name: Gradle generate documentation
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.5.1
+          gradle-version: 7.6
           arguments: | 
             clean
             build
@@ -179,7 +179,7 @@ jobs:
       - name: Run All Tests
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.5.1
+          gradle-version: 7.6
           arguments: createChangelog
 
         # Create gitHub release
