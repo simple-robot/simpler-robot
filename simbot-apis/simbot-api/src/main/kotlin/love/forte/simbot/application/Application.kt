@@ -21,7 +21,9 @@ import kotlinx.serialization.modules.SerializersModule
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.*
+import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotManager
+import love.forte.simbot.bot.BotVerifyInfo
 import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.utils.runInNoScopeBlocking
 
@@ -37,30 +39,30 @@ import love.forte.simbot.utils.runInNoScopeBlocking
  * @author ForteScarlet
  */
 public interface Application : CoroutineScope {
-    
+
     /**
      * 当前 [Application] 的环境属性。
      */
     public val environment: Environment
-    
-    
+
+
     /**
      * 在进行构建时所使用的配置信息。
      * 构建完成后可以得到，但是尽可能不要进行修改操作。这可能没有意义，也可能会导致意外的错误。
      */
     public val configuration: ApplicationConfiguration
-    
-    
+
+
     /**
      * 当前应用的组件环境内容。
      */
     public interface Environment {
-        
+
         /**
          * 当前应用程序安装的所有组件的 **列表视图**。
          */
         public val components: List<Component>
-        
+
         /**
          * 尝试根据ID获取一个指定的组件对象。如果未找到则会抛出 [NoSuchComponentException].
          *
@@ -72,7 +74,7 @@ public interface Application : CoroutineScope {
             level = DeprecationLevel.ERROR
         )
         public fun getComponent(id: ID): Component = getComponent(id.literal)
-        
+
         /**
          * 尝试根据ID获取一个指定的组件对象。如果未找到则会返回null。
          */
@@ -82,49 +84,49 @@ public interface Application : CoroutineScope {
             level = DeprecationLevel.ERROR
         )
         public fun getComponentOrNull(id: ID): Component? = getComponentOrNull(id.literal)
-        
+
         /**
          * 尝试根据ID获取一个指定的组件对象。如果未找到则会抛出 [NoSuchComponentException].
          *
          * @throws NoSuchComponentException 当没有找到目标ID的组件时
          */
         public fun getComponent(id: String): Component
-        
+
         /**
          * 尝试根据ID获取一个指定的组件对象。如果未找到则会返回null。
          */
         public fun getComponentOrNull(id: String): Component?
-        
-        
+
+
         /**
          * 得到所有组件注册所最终汇总出来的 [SerializersModule] 实例，可用于构建序列化器。
          */
         public val serializersModule: SerializersModule
     }
-    
+
     /**
      * 得到当前 [Application] 最终的 [EventListenerManager].
      */
     public val eventListenerManager: EventListenerManager
-    
+
     /**
      * 当前应用下的所有 [事件提供者][EventProvider]。
      */
     public val providers: List<EventProvider>
-    
+
     /**
      * 当前应用下的所有 [bot管理器][BotManager]。
      */
-    public val botManagers: List<BotManager<*>> get() = providers.filterIsInstance<BotManager<*>>()
-    
+    public val botManagers: BotManagers
+
     /**
      * 挂起此应用直至其被终止。
      */
     @JvmBlocking
     @JvmAsync(baseName = "asFuture", suffix = "")
     public suspend fun join()
-    
-    
+
+
     /**
      * 终止当前应用，并关闭其中所有可能的资源。
      *
@@ -134,7 +136,7 @@ public interface Application : CoroutineScope {
     @JvmBlocking
     @JvmAsync
     public suspend fun shutdown(reason: Throwable? = null)
-    
+
     /**
      * 终止当前应用，并关闭其中所有可能的资源。
      *
@@ -147,11 +149,31 @@ public interface Application : CoroutineScope {
 
 
 
+/**
+ * [Application] 中注册完成的所有 [BotManager] 集。
+ *
+ */
+public interface BotManagers : List<BotManager<*>> {
+
+    /**
+     * 通过 [BotVerifyInfo] 中的 [组件信息][BotVerifyInfo.componentId]
+     * 去当前环境中寻找对应组件的、实现了 [Bot注册器][love.forte.simbot.bot.BotRegistrar] 的 [事件提供者][EventProvider],
+     * 并尝试注册此bot。
+     *
+     * 如果没有找到符合组件id的 [Bot注册器][love.forte.simbot.bot.BotRegistrar] 存在，则返回null。
+     */
+    public fun register(botVerifyInfo: BotVerifyInfo): Bot?
+}
 
 
 
-
-
+/**
+ * 使用 [Application.botManagers].
+ *
+ */
+public inline fun Application.bots(block: BotManagers.() -> Unit) {
+    botManagers.block()
+}
 
 
 
