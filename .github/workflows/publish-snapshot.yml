@@ -39,12 +39,13 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 11
+          cache: 'gradle'
 
-#      - name: Run All Tests
-#        uses: gradle/gradle-build-action@v2
-#        with:
-#          gradle-version: 7.6
-#          arguments: assemble allTests
+      - name: Run All Tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 7.6
+          arguments: assemble allTests
 
       - name: Gradle publish snapshot
         uses: gradle/gradle-build-action@v2
@@ -56,6 +57,7 @@ jobs:
             --info 
             --warning-mode all
             -x test
+            --build-cache
             -Porg.gradle.jvmargs="-Xmx8g -Dfile.encoding=UTF-8" 
             -Porg.gradle.workers.max=8 
             -Porg.gradle.parallel=true
