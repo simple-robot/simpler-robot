@@ -53,8 +53,7 @@ jobs:
             closeAndReleaseStagingRepository
             --info 
             --warning-mode all
-            -Pkotlin.daemon.jvmargs="-Xmx8g -XX:MaxPermSize=1g -Dfile.encoding=UTF-8"
-            -Porg.gradle.jvmargs="-Xmx8g -XX:MaxPermSize=1g -Dfile.encoding=UTF-8" 
+            -Porg.gradle.jvmargs="-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8" 
             -Porg.gradle.workers.max=8 
             -Porg.gradle.parallel=true
 
