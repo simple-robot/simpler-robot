@@ -20,6 +20,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.application.*
+import love.forte.simbot.bot.Bot
+import love.forte.simbot.bot.BotManager
+import love.forte.simbot.bot.BotVerifyInfo
+import love.forte.simbot.bot.ComponentMismatchException
 import love.forte.simbot.core.event.SimpleEventListenerManager
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
@@ -32,7 +36,7 @@ import kotlin.time.Duration.Companion.nanoseconds
  */
 public object Simple : ApplicationFactory<SimpleApplicationConfiguration, SimpleApplicationBuilder, SimpleApplication> {
     private val logger = LoggerFactory.logger<Simple>()
-    
+
     override suspend fun create(
         configurator: SimpleApplicationConfiguration.() -> Unit,
         builder: suspend SimpleApplicationBuilder.(SimpleApplicationConfiguration) -> Unit,
@@ -43,7 +47,7 @@ public object Simple : ApplicationFactory<SimpleApplicationConfiguration, Simple
         }.also(configurator).also {
             it.initJob()
         }
-        
+
         val logger = config.logger
         logger.debug("Configuration init: {}", config)
         val startTime = System.nanoTime()
@@ -94,13 +98,13 @@ public open class SimpleApplicationConfiguration : ApplicationConfiguration() {
  * 通过 [Simple] 构建而得到的 [Application] 实例。
  */
 public interface SimpleApplication : Application {
-    
+
     /**
      * [SimpleApplication] 使用 [SimpleEventListenerManager] 作为事件管理器。
      */
     override val eventListenerManager: SimpleEventListenerManager
-    
-    
+
+
     /**
      * 所有的事件提供者。
      */
@@ -124,7 +128,9 @@ private class SimpleApplicationImpl(
     providerList: List<EventProvider>,
 ) : SimpleApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
-    
+
+    override val botManagers: BotManagers = BotManagersImpl(providerList.filterIsInstance<BotManager<*>>())
+
     override val coroutineContext = environment.coroutineContext
     override val logger = environment.logger
 }
@@ -135,54 +141,84 @@ private class SimpleApplicationImpl(
  */
 private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder,
     BaseStandardApplicationBuilder<SimpleApplication>() {
-    
-    
+
+
     @OptIn(ExperimentalSimbotApi::class)
     suspend fun build(appConfig: SimpleApplicationConfiguration): SimpleApplication {
         val logger = appConfig.logger
-        
+
         logger.debug("Building components...")
         val components = buildComponents()
         logger.debug("Components are built: {}", components)
         logger.info("The size of components built is {}", components.size)
-        
+
         val environment = SimpleEnvironment(
             components, logger, appConfig.coroutineContext
         )
         logger.debug("Init SimpleEnvironment: {}", environment)
-        
+
         logger.debug("Building listeners...")
         val listenerManager = buildListenerManager(appConfig, environment)
         logger.debug("Listeners are built by listener manager: {}", listenerManager)
-        
+
         logger.debug("Building providers...")
         val providers = buildProviders(listenerManager, components, appConfig)
         logger.debug("Providers are built: {}", providers)
         logger.info("The size of providers built is {}", providers.size)
-        
+
         val application = SimpleApplicationImpl(appConfig, environment, listenerManager, providers)
-        
+
         // set application attribute
         listenerManager.globalScopeContext[ApplicationAttributes.Application] = application
-        
+
         // complete.
         complete(application)
         logger.info("Application [{}] is built and completed.", application)
-        
+
         // region register bots
         // registering bot after complete.
-        
+
         logger.debug("Registering bots...")
         val bots = registerBots(providers)
         logger.debug("All bot registers: {}", bots)
         logger.info("The size of bots registered: {}", bots.size)
         // endregion
-        
-        
+
+
         return application
     }
-    
-    
 }
 
+private class BotManagersImpl(private val botManagers: List<BotManager<*>>) : BotManagers,
+    List<BotManager<*>> by botManagers {
+
+    override fun register(botVerifyInfo: BotVerifyInfo): Bot? {
+        logger.info("Registering bot with verify info [{}]", botVerifyInfo)
+        for (manager in this) {
+            try {
+                return manager.register(botVerifyInfo).also { bot ->
+                    logger.debug(
+                        "Bot verify info [{}] is registered as [{}] via manager [{}]",
+                        botVerifyInfo,
+                        bot,
+                        manager
+                    )
+                }
+            } catch (ignore: ComponentMismatchException) {
+                logger.debug("Bot verify info [{}] is not matched by manager {}, try next.", botVerifyInfo, manager)
+
+            }
+        }
+
+        return null
+    }
+
+    override fun toString(): String {
+        return "BotManagersImpl(managers=$botManagers)"
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(BotManagersImpl::class)
+    }
+}
 
