@@ -20,10 +20,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.application.*
-import love.forte.simbot.bot.Bot
-import love.forte.simbot.bot.BotManager
-import love.forte.simbot.bot.BotVerifyInfo
-import love.forte.simbot.bot.ComponentMismatchException
 import love.forte.simbot.core.event.SimpleEventListenerManager
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
@@ -129,8 +125,6 @@ private class SimpleApplicationImpl(
 ) : SimpleApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
 
-    override val botManagers: BotManagers = BotManagersImpl(providerList.filterIsInstance<BotManager<*>>())
-
     override val coroutineContext = environment.coroutineContext
     override val logger = environment.logger
 }
@@ -189,36 +183,4 @@ private class SimpleApplicationBuilderImpl : SimpleApplicationBuilder,
     }
 }
 
-private class BotManagersImpl(private val botManagers: List<BotManager<*>>) : BotManagers,
-    List<BotManager<*>> by botManagers {
-
-    override fun register(botVerifyInfo: BotVerifyInfo): Bot? {
-        logger.info("Registering bot with verify info [{}]", botVerifyInfo)
-        for (manager in this) {
-            try {
-                return manager.register(botVerifyInfo).also { bot ->
-                    logger.debug(
-                        "Bot verify info [{}] is registered as [{}] via manager [{}]",
-                        botVerifyInfo,
-                        bot,
-                        manager
-                    )
-                }
-            } catch (ignore: ComponentMismatchException) {
-                logger.debug("Bot verify info [{}] is not matched by manager {}, try next.", botVerifyInfo, manager)
-
-            }
-        }
-
-        return null
-    }
-
-    override fun toString(): String {
-        return "BotManagersImpl(managers=$botManagers)"
-    }
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(BotManagersImpl::class)
-    }
-}
 

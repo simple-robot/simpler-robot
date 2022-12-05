@@ -51,6 +51,7 @@ include(
 // project test
 include(
     projectTest("boot"),
+    projectTest("spring-boot-starter"),
     projectTest("jmh-duration"),
 )
 

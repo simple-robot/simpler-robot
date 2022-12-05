@@ -26,7 +26,6 @@ import love.forte.simbot.event.EventListenerRegistrationDescription
 import love.forte.simbot.event.EventListenerRegistrationDescriptionBuilder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.beans.factory.getBean
@@ -45,59 +44,59 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter
 @Suppress("SpringJavaAutowiredMembersInspection")
 @AutoConfigureAfter(SimbotSpringBootApplicationConfiguration::class)
 public open class SimbotSpringBootListenerAutoRegisterBuildConfigure : BeanFactoryPostProcessor {
-    @Autowired(required = false)
-    private var listeners: List<EventListener>? = null
-    
-    @Autowired(required = false)
-    private var listenerRegistrationDescriptions: List<EventListenerRegistrationDescription>? = null
-    
-    @Autowired(required = false)
-    private var listenerBuilders: List<EventListenerBuilder>? = null
-    
     override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
         logger.debug("Start listener auto register")
         try {
             val application = beanFactory.getBean<Application>()
-            config(application)
+            config(application, beanFactory)
         } catch (nsbEx: NoSuchBeanDefinitionException) {
             // ignore?
             logger.warn("No such bean (Application) definition, skip listener register.", nsbEx)
         }
     }
-    
+
     @OptIn(ExperimentalSimbotApi::class)
-    private fun config(application: Application) {
-        logger.debug("The size of resolved listeners is {}", listeners?.size ?: -1)
-        logger.debug("The size of resolved listener builders is {}", listenerBuilders?.size ?: -1)
-        
+    private fun config(application: Application, beanFactory: ConfigurableListableBeanFactory) {
+        val listeners = beanFactory.getBeansOfType(EventListener::class.java)
+        val listenerRegistrationDescriptions =
+            beanFactory.getBeansOfType(EventListenerRegistrationDescription::class.java)
+        val listenerBuilders = beanFactory.getBeansOfType(EventListenerBuilder::class.java)
+        logger.debug("The size of resolved listeners is {}", listeners.size)
+        logger.debug(
+            "The size of resolved listenerRegistrationDescriptions is {}",
+            listenerRegistrationDescriptions.size
+        )
+        logger.debug("The size of resolved listener builders is {}", listenerBuilders.size)
+
         // listeners {
-        listeners?.forEach {
-            application.eventListenerManager.register(it)
-            logger.debug("Registered listener {}", it)
+        listeners.forEach { (name, listener) ->
+            application.eventListenerManager.register(listener)
+            logger.debug("Registered listener [{}] named {}", listener, name)
         }
-        listenerRegistrationDescriptions?.forEach {
-            application.eventListenerManager.register(it)
-            logger.debug("Registered listener description {}", it)
+        listenerRegistrationDescriptions.forEach { (name, listener) ->
+            application.eventListenerManager.register(listener)
+            logger.debug("Registered listener description [{}] named {}", listener, name)
         }
-        listenerBuilders?.forEach { builder ->
+        listenerBuilders.forEach { (name, builder) ->
             if (builder is EventListenerRegistrationDescriptionBuilder) {
                 val description = builder.buildDescription()
                 application.eventListenerManager.register(description)
                 logger.debug(
-                    "Registered listener registration description [{}] by builder [{}]",
+                    "Registered listener registration description [{}] by builder [{}] named {}",
                     description,
-                    builder
+                    builder,
+                    name
                 )
-                
+
             } else {
                 val listener = builder.build()
                 application.eventListenerManager.register(listener)
-                logger.debug("Registered listener [{}] by builder [{}]", listener, builder)
+                logger.debug("Registered listener [{}] by builder [{}] named {}", listener, builder, name)
             }
         }
         // }
     }
-    
+
     private companion object {
         private val logger = LoggerFactory.getLogger(SimbotSpringBootListenerAutoRegisterBuildConfigure::class.java)
     }
