@@ -4,10 +4,10 @@ changelog:
       - 'for-release'
       - 'ignore-in-release'
   categories:
-    - title: '⚠️ 不兼容变更'
+    - title: '⚠️ 不兼容'
       labels:
         - '不兼容'
-    - title: '🔧 Bug Fix'
+    - title: '🔧 修复'
       labels:
         - 'bug'
         - '缺陷'
