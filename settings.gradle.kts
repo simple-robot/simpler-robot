@@ -48,7 +48,7 @@ include(
 
 // project test
 // if not in CI workflows
-if (!System.getProperty("IS_CI").toBoolean()) {
+if (!System.getenv("IS_CI").toBoolean()) {
     include(
         projectTest("boot"),
         projectTest("spring-boot-starter"),
