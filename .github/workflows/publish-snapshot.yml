@@ -62,7 +62,4 @@ jobs:
             -Porg.gradle.daemon=false
 
 
-#            -Porg.gradle.parallel=true
-#            -Porg.gradle.workers.max=8
-# -Xmx8g -Xms2g -XX:MaxMetaspaceSize=1G
 

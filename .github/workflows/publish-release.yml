@@ -37,6 +37,7 @@ jobs:
         with:
           gradle-version: 7.6
           arguments: clean assemble test
+          cache: 'gradle'
 
       # setup Gradle
       - name: Gradle Publish Release
@@ -50,9 +51,7 @@ jobs:
             --warning-mode all
             -x test
             --build-cache
-            -Porg.gradle.jvmargs="-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8" 
-            -Porg.gradle.workers.max=8 
-            -Porg.gradle.parallel=true
+            -Porg.gradle.jvmargs="--XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8"
         env:
           SIMBOT_IS_SNAPSHOT: false
           SIMBOT_RELEASES_ONLY: true
@@ -77,6 +76,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 11
+          cache: 'gradle'
 
       # setup Gradle
       - name: Gradle publish snapshot
@@ -91,9 +91,7 @@ jobs:
             --warning-mode all
             -x test
             --build-cache
-            -Porg.gradle.jvmargs="-Xmx8g -Xms2g -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8" 
-            -Porg.gradle.workers.max=8 
-            -Porg.gradle.parallel=true
+            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8" 
 
         env:
           SIMBOT_IS_SNAPSHOT: true
@@ -120,13 +118,6 @@ jobs:
           java-version: 11
           cache: 'gradle'
 
-#      - name: Create gradle.properties
-#        run: |
-#          echo "org.gradle.parallel=true" > gradle.properties
-#          echo "org.gradle.workers.max=16" >> gradle.properties
-#          echo "org.gradle.daemon=false" >> gradle.properties
-#          echo "org.gradle.jvmargs=-Xmx8G -Xms2G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8" >> gradle.properties
-
       # setup Gradle
       - name: Gradle generate documentation
         uses: gradle/gradle-build-action@v2
@@ -141,8 +132,6 @@ jobs:
             -x test
             --build-cache
             -Porg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
-            -Porg.gradle.workers.max=8 
-            -Porg.gradle.parallel=true
             -Porg.gradle.daemon=false
         env:
           SIMBOT_IS_SNAPSHOT: false
