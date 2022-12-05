@@ -22,7 +22,7 @@ plugins {
     idea
 }
 
-subprojects {
+allprojects {
     repositories {
         mavenCentral()
         love.forte.gradle.common.core.repository.Repositories.Snapshot.Default.apply {
