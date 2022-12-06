@@ -19,7 +19,7 @@ env:
   SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
   SIMBOT_IS_SNAPSHOT: true
   SIMBOT_SNAPSHOT_ONLY: true
-  GRADLE_OPTS: "-Xmx8g -Xms2g -Dfile.encoding=UTF-8"
+  GRADLE_OPTS: "-Dfile.encoding=UTF-8"
 
 jobs:
   publish-snapshot:
@@ -58,7 +58,7 @@ jobs:
             --warning-mode all
             -x test
             --build-cache
-            -Porg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
+            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
             -Porg.gradle.daemon=false
 
 

@@ -11,7 +11,7 @@ env:
   GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
   SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
   SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-  GRADLE_OPTS: "-Xmx8g -Xms2g -Dfile.encoding=UTF-8"
+  GRADLE_OPTS: "-Dfile.encoding=UTF-8"
 
 jobs:
   test-and-publish-release:
@@ -51,12 +51,11 @@ jobs:
             --warning-mode all
             -x test
             --build-cache
-            -Porg.gradle.jvmargs="--XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8"
+            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
         env:
           SIMBOT_IS_SNAPSHOT: false
           SIMBOT_RELEASES_ONLY: true
           SIMBOT_SNAPSHOT_ONLY: false
-
 
   publish-snapshot:
     name: Publish snapshot
@@ -84,14 +83,13 @@ jobs:
         with:
           gradle-version: 7.6
           arguments: |
-            createChangelog
             publishToSonatype
             closeAndReleaseStagingRepository
             --info 
             --warning-mode all
             -x test
             --build-cache
-            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=512m -Dfile.encoding=UTF-8" 
+            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
 
         env:
           SIMBOT_IS_SNAPSHOT: true
@@ -124,14 +122,12 @@ jobs:
         with:
           gradle-version: 7.6
           arguments: | 
-            clean
-            build
             dokkaHtmlMultiModuleAndPost
             --info 
             --warning-mode all
             -x test
             --build-cache
-            -Porg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
+            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
             -Porg.gradle.daemon=false
         env:
           SIMBOT_IS_SNAPSHOT: false
