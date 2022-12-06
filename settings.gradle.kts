@@ -28,13 +28,13 @@ dependencyResolutionManagement {
     }
 }
 
+include("simbot-utils:simbot-util-stage-loop")
+
 include("simbot-logger")
 include("simbot-logger-slf4j-impl")
-// project(":simbot-logger").name = "simbot-logger-multiplatform"
 
 include(
     api("api"),
-    // api("logger")
 )
 
 include(core("core"))
@@ -47,14 +47,21 @@ include(
 )
 
 // project test
-include(
-    projectTest("boot"),
-    projectTest("jmh-duration"),
-)
+// if not in CI workflows
+if (!System.getenv("IS_CI").toBoolean()) {
+    include(
+        projectTest("boot"),
+        projectTest("spring-boot-starter"),
+        projectTest("jmh-duration"),
+    )
 
-include(
-    componentHttpServer("api")
-)
+    include(
+        componentHttpServer("api")
+    )
+}
+
+
+
 
 
 @Suppress("NOTHING_TO_INLINE")

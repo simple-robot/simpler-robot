@@ -1,12 +1,10 @@
-import kotlin.test.Test
-
 /**
  *
  * @author ForteScarlet
  */
 class ConsoleTest {
-    
-    @Test
+
+    //@Test
     fun consoleTest() {
         console.log("[trace]",  "[ConsoleTest]:", "Hello World")
         console.log("[debug]",  "[ConsoleTest]:", "Hello World")

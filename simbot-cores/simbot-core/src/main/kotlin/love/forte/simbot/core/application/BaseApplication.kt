@@ -18,6 +18,12 @@ package love.forte.simbot.core.application
 
 import kotlinx.coroutines.Job
 import love.forte.simbot.application.Application
+import love.forte.simbot.application.BotManagers
+import love.forte.simbot.bot.Bot
+import love.forte.simbot.bot.BotManager
+import love.forte.simbot.bot.BotVerifyInfo
+import love.forte.simbot.bot.ComponentMismatchException
+import love.forte.simbot.logger.LoggerFactory
 import org.slf4j.Logger
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.cancellation.CancellationException
@@ -30,8 +36,12 @@ import kotlin.coroutines.cancellation.CancellationException
 public abstract class BaseApplication : Application {
     abstract override val coroutineContext: CoroutineContext
     protected abstract val logger: Logger
+
+    override val botManagers: BotManagers by lazy { BotManagersImpl(providers.filterIsInstance<BotManager<*>>()) }
+
+
     private val job: Job? get() = coroutineContext[Job]
-    
+
     override suspend fun join() {
         job?.join()
     }
@@ -49,5 +59,39 @@ public abstract class BaseApplication : Application {
                 logger.error("Event provider $it cancel failure.", e)
             }
         }
+    }
+}
+
+
+private class BotManagersImpl(private val botManagers: List<BotManager<*>>) : BotManagers,
+    List<BotManager<*>> by botManagers {
+
+    override fun register(botVerifyInfo: BotVerifyInfo): Bot? {
+        logger.info("Registering bot with verify info [{}]", botVerifyInfo)
+        for (manager in this) {
+            try {
+                return manager.register(botVerifyInfo).also { bot ->
+                    logger.debug(
+                        "Bot verify info [{}] is registered as [{}] via manager [{}]",
+                        botVerifyInfo,
+                        bot,
+                        manager
+                    )
+                }
+            } catch (ignore: ComponentMismatchException) {
+                logger.debug("Bot verify info [{}] is not matched by manager {}, try next.", botVerifyInfo, manager)
+
+            }
+        }
+
+        return null
+    }
+
+    override fun toString(): String {
+        return "BotManagersImpl(managers=$botManagers)"
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(BotManagersImpl::class)
     }
 }

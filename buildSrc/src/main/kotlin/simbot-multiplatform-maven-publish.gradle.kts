@@ -16,7 +16,10 @@
 
 import love.forte.gradle.common.core.Gpg
 import love.forte.gradle.common.core.property.systemProp
+import love.forte.gradle.common.publication.configure.MavenMultiplatformPublishingConfigExtensions
 import love.forte.gradle.common.publication.configure.multiplatformConfigPublishing
+import org.jetbrains.kotlin.konan.target.HostManager
+import org.jetbrains.kotlin.konan.target.KonanTarget
 
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
@@ -45,26 +48,35 @@ plugins {
 val p = project
 
 multiplatformConfigPublishing {
-    
+
     val groupProject = P::class.sealedSubclasses.mapNotNull { it.objectInstance }.associateBy { obj -> obj.group }
-    
+
     project = groupProject[p.group] ?: error("unknown project group: ${p.group}")
-    
+
     val jarJavadoc by tasks.registering(Jar::class) {
         group = "documentation"
         archiveClassifier.set("javadoc")
         from(tasks.findByName("dokkaHtml"))
     }
-    
+
     artifact(jarJavadoc)
     isSnapshot = project.version.toString().contains("SNAPSHOT", true)
     releasesRepository = ReleaseRepository
     snapshotRepository = SnapshotRepository
     gpg = Gpg.ofSystemPropOrNull()
-    
+
     if (systemProp("SIMBOT_LOCAL").toBoolean()) {
         mainHost = null
     }
+//    else {
+//
+//        mainHostSupportedTargets = mainHost?.supports(hostManager) ?: emptySet()
+//    }
+
+}
+
+fun KonanTarget.supports(hostManager: HostManager): Set<String> {
+    return hostManager.enabledByHost[this]?.mapTo(mutableSetOf()) { target -> target.name } ?: emptySet()
 }
 
 show()

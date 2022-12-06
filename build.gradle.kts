@@ -19,11 +19,11 @@ plugins {
     id("simbot.changelog-generator")
     id("simbot.nexus-publish")
     id("simbot.dokka-multi-module")
+    idea
 }
 
 allprojects {
     repositories {
-        mavenLocal()
         mavenCentral()
         love.forte.gradle.common.core.repository.Repositories.Snapshot.Default.apply {
             configMaven {
@@ -32,5 +32,11 @@ allprojects {
                 }
             }
         }
+    }
+}
+
+idea {
+    module {
+        isDownloadSources = true
     }
 }

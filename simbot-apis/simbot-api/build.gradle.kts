@@ -25,14 +25,14 @@ plugins {
 dependencies {
     api(kotlin("reflect"))
     api(project(":simbot-logger"))
-    
+
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.jdk8)
     api(libs.kotlinx.serialization.core)
-    
+
     api(libs.slf4j.api)
     compileOnly(libs.jetbrains.annotations)
-    
+
     compileOnly(libs.kotlinx.serialization.json)
     compileOnly(libs.kotlinx.serialization.properties)
     compileOnly(libs.charleskorn.kaml)
@@ -41,7 +41,10 @@ dependencies {
     compileOnly(libs.kotlinx.coroutines.reactor)
     compileOnly(libs.kotlinx.coroutines.rx2)
     compileOnly(libs.kotlinx.coroutines.rx3)
-    
+
+    // logger
+    testImplementation(project(":simbot-logger-slf4j-impl"))
+
     testImplementation(libs.kotlinx.serialization.json)
     testImplementation(libs.kotlinx.serialization.properties)
     testImplementation(libs.charleskorn.kaml)

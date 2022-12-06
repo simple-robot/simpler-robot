@@ -37,20 +37,8 @@ plugins {
     `java-library`
     kotlin("jvm")
     kotlin("plugin.serialization")
-    idea
+    //idea
 }
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        url = uri(Repositories.Snapshot.URL)
-        mavenContent {
-            snapshotsOnly()
-        }
-    }
-}
-
 
 dependencies {
     testImplementation(kotlin("test-junit5"))
@@ -89,13 +77,4 @@ configurations.all {
     // check for updates every build
     resolutionStrategy.cacheChangingModulesFor(0, "seconds")
 }
-
-
-idea {
-    module {
-        isDownloadSources = true
-        isDownloadJavadoc = true
-    }
-}
-
 

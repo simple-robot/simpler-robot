@@ -27,30 +27,31 @@ import java.time.Instant
 
 /**
  * 将日志直接打印到控制台上的处理器。
- * 当参数 [level] 未指定日志等级的时候，会尝试加载系统参数 [SIMBOT_LEVEL_PROPERTY_KEY], 如果系统参数也找不到，则默认为 [Level.INFO] 级别。
+ * 当参数 [level] 未指定日志等级的时候，会尝试加载系统参数 [`simbot.logger.level`][SIMBOT_LEVEL_PROPERTY_KEY], 如果系统参数也找不到，则默认为 [LogLevel.INFO][love.forte.simbot.logger.LogLevel.INFO] 级别。
  *
- * 你可以通过参数
+ * 你可以通过JVM参数 [`simbot.logger.level`][SIMBOT_LEVEL_PROPERTY_KEY]
+ * 来指定一个控制台的日志等级而不需要直接提供一个新的 [SimbotLoggerProcessorsFactory] 实现,
+ * 例如
  * ```
  * -Dsimbot.logger.level=DEBUG
  * ```
- * 来指定一个控制台的日志等级而不需要直接提供一个新的 [SimbotLoggerProcessorsFactory] 实现。
  *
  *
  */
 public class ConsoleSimbotLoggerProcessor(level: LogLevel?) : SimbotLoggerProcessor {
     // package prefix support?
     private val level: LogLevel = level ?: loadLevel()
-    
+
     override fun isLevelEnabled(level: LogLevel, marker: Marker?): Boolean {
         return this.level.toInt() <= level.toInt()
     }
-    
+
     private fun printLog(info: LogInfo) {
         val printer: PrintStream = if (info.level == LogLevel.ERROR) System.err else System.out
-        
+
         val printMsg = buildString(info.formattedMsg.length + 80) {
             appendColor(FontColor.BLUE, Instant.ofEpochMilli(info.timestamp).toString()).append(' ')
-            
+
             if (info.level.toString().length <= 4) {
                 append(' ')
             }
@@ -64,24 +65,27 @@ public class ConsoleSimbotLoggerProcessor(level: LogLevel?) : SimbotLoggerProces
             append(threadName).append("] ")
             appendColor(FontColor.BLUE, info.name).append("  : ").append(info.formattedMsg)
         }
-        
+
         printer.println(printMsg)
         if (info.error != null) {
             info.error.printStackTrace(printer)
+        } else if (info.args.lastOrNull() is Throwable) {
+            val lastErr = info.args.last() as Throwable
+            lastErr.printStackTrace(printer)
         }
     }
-    
+
     override fun doHandle(info: LogInfo) {
         printLog(info)
     }
-    
-    
+
+
     private fun loadLevel(): LogLevel {
         val levelName = System.getProperty(SIMBOT_LEVEL_PROPERTY_KEY) ?: return LogLevel.INFO
         return LogLevel.values().find { it.name.equals(levelName, true) } ?: LogLevel.INFO
     }
-    
-    
+
+
     public companion object {
         private const val SIMBOT_LEVEL_PROPERTY_KEY = "simbot.logger.level"
     }

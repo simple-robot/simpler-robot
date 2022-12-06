@@ -19,7 +19,7 @@ env:
   SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
   SIMBOT_IS_SNAPSHOT: true
   SIMBOT_SNAPSHOT_ONLY: true
-  GRADLE_OPTS: "-Xmx8g -Xms2g -Dfile.encoding=UTF-8"
+  GRADLE_OPTS: "-Dfile.encoding=UTF-8"
 
 jobs:
   publish-snapshot:
@@ -37,27 +37,29 @@ jobs:
       - name: Setup java 11
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
+          distribution: 'zulu'
           java-version: 11
+          cache: 'gradle'
+
+      - name: Run All Tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 7.6
+          arguments: assemble allTests
 
       - name: Gradle publish snapshot
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.5.1
+          gradle-version: 7.6
           arguments: |
-            clean
-            assemble
-            build
-            allTests
             publishToSonatype
             closeAndReleaseStagingRepository
             --info 
             --warning-mode all
-            -Pkotlin.daemon.jvmargs="-Xmx8g -XX:MaxPermSize=1g -Dfile.encoding=UTF-8"
-            -Porg.gradle.jvmargs="-Xmx8g -XX:MaxPermSize=1g -Dfile.encoding=UTF-8" 
-            -Porg.gradle.workers.max=8 
-            -Porg.gradle.parallel=true
-
+            -x test
+            --build-cache
+            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
+            -Porg.gradle.daemon=false
 
 
 

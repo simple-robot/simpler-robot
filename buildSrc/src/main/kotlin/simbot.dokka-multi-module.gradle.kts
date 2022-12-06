@@ -23,10 +23,6 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
-repositories {
-    mavenCentral()
-}
-
 fun org.jetbrains.dokka.gradle.AbstractDokkaTask.configOutput(format: String) {
     moduleName.set("simple-robot")
     outputDirectory.set(rootProject.file("build/dokka/$format/v$version"))

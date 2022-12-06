@@ -20,6 +20,10 @@ package love.forte.simbot.application
 
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
+import love.forte.simbot.Api4J
+import love.forte.simbot.utils.runInNoScopeBlocking
+import java.util.function.BiConsumer
+import java.util.function.Consumer
 
 
 /**
@@ -61,6 +65,27 @@ public suspend fun <Config : ApplicationConfiguration, Builder : ApplicationBuil
     return factory.create(configurator, builder)
 }
 
+/**
+ * 构建并启用一个 [Application].
+ *
+ * [createSimbotApplication]  的非挂起兼容API, 并使用Java友好的函数接口代替Kotlin函数类型。
+ *
+ * @see createSimbotApplication
+ */
+@JvmOverloads
+@JvmName("createSimbotApplication")
+public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, A : Application> createSimbotApplication4J(
+    factory: ApplicationFactory<Config, Builder, A>,
+    configurator: Consumer<Config>? = null,
+    builder: BiConsumer<Builder, Config>? = null,
+): A {
+    return runInNoScopeBlocking {
+        createSimbotApplication(factory, { configurator?.accept(this) }) { config ->
+            builder?.accept(this, config)
+        }
+    }
+}
+
 
 /**
  * 构建一个 [ApplicationLauncher].
@@ -95,12 +120,36 @@ public suspend fun <Config : ApplicationConfiguration, Builder : ApplicationBuil
  * ```
  *
  */
+@JvmSynthetic
 public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, A : Application> simbotApplication(
     factory: ApplicationFactory<Config, Builder, A>,
     configurator: Config.() -> Unit = {},
     builder: suspend Builder.(Config) -> Unit = {},
 ): ApplicationLauncher<A> {
     return applicationLauncher { factory.create(configurator, builder) }
+}
+
+
+/**
+ * 构建一个 [ApplicationLauncher].
+ *
+ * [simbotApplication] 的非挂起兼容API, 并使用Java友好的函数接口代替Kotlin函数类型。
+ *
+ * @see simbotApplication
+ *
+ */
+@JvmOverloads
+@JvmName("simbotApplication")
+public fun <Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, A : Application> simbotApplication4J(
+    factory: ApplicationFactory<Config, Builder, A>,
+    configurator: Consumer<Config>? = null,
+    builder: BiConsumer<Builder, Config>? = null,
+): ApplicationLauncher<A> {
+    return applicationLauncher {
+        factory.create({ configurator?.accept(this) }) { config ->
+            builder?.accept(this, config)
+        }
+    }
 }
 
 
@@ -206,7 +255,7 @@ public annotation class ApplicationDslBuilderDsl
  * ```
  */
 public interface ApplicationDslBuilder<Config : ApplicationConfiguration, Builder : ApplicationBuilder<A>, A : Application> {
-    
+
     /**
      * 提供配置函数。
      *
@@ -220,8 +269,8 @@ public interface ApplicationDslBuilder<Config : ApplicationConfiguration, Builde
      *
      */
     @ApplicationDslBuilderDsl
-    public fun config(config: Config.() -> Unit): ApplicationDslBuilder<Config, Builder, A>
-    
+    public fun config(config: ConfigFunction<Config>): ApplicationDslBuilder<Config, Builder, A>
+
     /**
      * 提供构建函数。
      *
@@ -232,16 +281,38 @@ public interface ApplicationDslBuilder<Config : ApplicationConfiguration, Builde
      * ```
      */
     @ApplicationDslBuilderDsl
+    @JvmSynthetic
     public fun build(builder: suspend Builder.(Config) -> Unit): ApplicationDslBuilder<Config, Builder, A>
-    
-    
+
+    /**
+     * 提供构建函数。
+     *
+     * ```java
+     * builder.build((builder0, config) -> {});
+     * ```
+     */
+    @Api4J
+    public fun build(builder: BiConsumer<Builder, Config>): ApplicationDslBuilder<Config, Builder, A> {
+        return build { c ->
+            builder.accept(this, c)
+        }
+    }
+
+
     /**
      * 根据配置的函数构建目标 [Application][A].
      */
     @JvmBlocking
     @JvmAsync
     public suspend fun create(): A
-    
+
+
+    /**
+     * 用于 [build] 兼容 Kotlin 和 Java.
+     */
+    public fun interface ConfigFunction<T> {
+        public operator fun T.invoke()
+    }
 }
 
 
@@ -250,24 +321,24 @@ private class ApplicationDslBuilderImpl<Config : ApplicationConfiguration, Build
 ) : ApplicationDslBuilder<Config, Builder, A> {
     private val configs = mutableListOf<Config.() -> Unit>()
     private val builders = mutableListOf<suspend Builder.(Config) -> Unit>()
-    
-    override fun config(config: Config.() -> Unit): ApplicationDslBuilder<Config, Builder, A> =
+
+    override fun config(config: ApplicationDslBuilder.ConfigFunction<Config>): ApplicationDslBuilder<Config, Builder, A> =
         also {
-            configs.add(config)
+            configs.add { config.apply { invoke() } }
         }
-    
+
     override fun build(builder: suspend Builder.(Config) -> Unit): ApplicationDslBuilder<Config, Builder, A> =
         also {
             builders.add(builder)
         }
-    
+
     override suspend fun create(): A = createSimbotApplication(
         factory = factory,
         { configs.forEach { conf -> this.conf() } }
     ) { c ->
         builders.forEach { builder -> this.builder(c) }
     }
-    
+
 }
 
 

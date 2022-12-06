@@ -42,10 +42,10 @@ inline fun isSnapshot(b: () -> Unit = {}): Boolean {
     b()
     val snapProp = System.getProperty("isSnapshot")?.toBoolean() ?: false
     val snapEnv = System.getenv(Env.IS_SNAPSHOT)?.toBoolean() ?: false
-    
+
     println("IsSnapshot from system.property: $snapProp")
     println("IsSnapshot from system.env:      $snapEnv")
-    
+
     return snapProp || snapEnv
 }
 
@@ -58,32 +58,34 @@ sealed class P(override val group: String) : ProjectDetail() {
         const val GROUP = "love.forte.simbot"
         const val BOOT_GROUP = "love.forte.simbot.boot"
         const val TEST_GROUP = "love.forte.simbot.test"
-        
+        const val UTIL_GROUP = "love.forte.simbot.util"
+
         // const val COMPONENT_GROUP = "love.forte.simbot.component"
         const val DESCRIPTION = "Simple Robot，一个通用的bot风格事件调度框架，以灵活的统一标准来编写bot应用。"
         const val HOMEPAGE = "https://github.com/ForteScarlet/simpler-robot"
     }
-    
+
     override val homepage: String get() = HOMEPAGE
-    
+
     object Simbot : P(GROUP)
     object SimbotBoot : P(BOOT_GROUP)
     object SimbotTest : P(TEST_GROUP)
-    
+    object SimbotUtil : P(UTIL_GROUP)
+
     override val version: Version
     val versionWithoutSnapshot: Version
-    
+
     init {
-        val mainVersion = version(3, 0, 0)
         //
-        var status = version("M4")
+        val mainVersion = version(3, 0, 0)
+        var status = version("M5")
         versionWithoutSnapshot = mainVersion - status.copy()
         if (isSnapshot()) {
             status = status - Version.SNAPSHOT
         }
         version = mainVersion - status
     }
-    
+
     override val description: String get() = DESCRIPTION
     override val developers: List<Developer> = developers {
         developer {
@@ -114,6 +116,6 @@ sealed class P(override val group: String) : ProjectDetail() {
         connection = "scm:git:$HOMEPAGE.git"
         developerConnection = "scm:git:ssh://git@github.com/simple-robot/simpler-robot.git"
     }
-    
-    
+
+
 }
