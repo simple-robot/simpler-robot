@@ -1,7 +1,7 @@
 [versions]
 kotlinx-coroutines = "1.6.4"
 kotlinx-serialization = "1.4.0"
-spring-boot = "2.7.2"
+spring-boot = "2.7.6"
 openjdk-jmh = "1.35"
 forte-di = "0.0.3"
 forte-annotationTool = "0.6.3"
