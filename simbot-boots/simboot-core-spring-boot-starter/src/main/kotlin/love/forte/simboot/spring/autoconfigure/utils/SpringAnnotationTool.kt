@@ -1,26 +1,25 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simboot.spring.autoconfigure.utils
 
 import love.forte.annotationtool.core.KAnnotationTool
+import love.forte.simboot.annotation.*
 import org.springframework.core.annotation.AnnotatedElementUtils
 import org.springframework.core.annotation.AnnotationUtils
 import java.lang.reflect.AnnotatedElement
 import kotlin.reflect.*
+import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.javaConstructor
 import kotlin.reflect.jvm.javaField
 import kotlin.reflect.jvm.javaGetter
@@ -39,7 +38,7 @@ public class SpringAnnotationTool(private val tool: KAnnotationTool = KAnnotatio
         tool.clearCache()
         AnnotationUtils.clearCache()
     }
-    
+
     override fun <A : Annotation> createAnnotationInstance(
         annotationType: KClass<A>,
         properties: Map<String, Any>,
@@ -51,7 +50,7 @@ public class SpringAnnotationTool(private val tool: KAnnotationTool = KAnnotatio
         }
         return tool.createAnnotationInstance(annotationType, properties, base)
     }
-    
+
     override fun <A : Annotation> getAnnotation(
         fromElement: KAnnotatedElement,
         annotationType: KClass<A>,
@@ -65,19 +64,19 @@ public class SpringAnnotationTool(private val tool: KAnnotationTool = KAnnotatio
             }
         } catch (ignore: Throwable) {
         }
-        
+
         return tool.getAnnotation(fromElement, annotationType, excludes)
     }
-    
-    
+
+
     override fun getAnnotationPropertyTypes(annotationType: KClass<out Annotation>): Map<String, KType> {
         return tool.getAnnotationPropertyTypes(annotationType)
     }
-    
+
     override fun <A : Annotation> getAnnotationValues(annotation: A): Map<String, Any> {
         return AnnotationUtils.getAnnotationAttributes(annotation)
     }
-    
+
     override fun <A : Annotation> getAnnotations(
         element: KAnnotatedElement,
         annotationType: KClass<A>,
@@ -86,21 +85,43 @@ public class SpringAnnotationTool(private val tool: KAnnotationTool = KAnnotatio
         try {
             val annotatedElement = element.javaAnnotatedElement
             if (annotatedElement != null) {
-                val repeatedResult = AnnotatedElementUtils.findMergedRepeatableAnnotations(annotatedElement, annotationType.java)
-                val directedResult = AnnotatedElementUtils.findAllMergedAnnotations(annotatedElement, annotationType.java)
-                return (repeatedResult + directedResult).toList()
-                // return AnnotatedElementUtils.findAllMergedAnnotations(annotatedElement, annotationType.java).toList()
+                val containerType = annotationType.findContainerType()
+                val repeatedResult = AnnotatedElementUtils.findMergedRepeatableAnnotations(
+                    annotatedElement,
+                    annotationType.java,
+                    containerType
+                )
+//                val directedResult = AnnotatedElementUtils.findAllMergedAnnotations(annotatedElement, annotationType.java)
+                return repeatedResult.toList()
             }
         } catch (ignore: Throwable) {
         }
         return tool.getAnnotations(element, annotationType, excludes)
     }
-    
+
     override fun getPropertyNames(annotation: Annotation): Set<String> {
         return AnnotationUtils.getAnnotationAttributes(annotation).keys
     }
 }
 
+private fun KClass<out Annotation>.findContainerType(): Class<out Annotation>? {
+    return kotlin.runCatching {
+        when (this) {
+            Filter::class -> return Filters::class.java
+            Interceptor::class -> Interceptors::class.java
+            Listen::class -> Listens::class.java
+            Preparer::class -> Preparers::class.java
+            // known
+            Filters::class, Listens::class, Listener::class,
+            Binder::class, SpecifyBinder::class, CurrentBinder::class, GlobalBinder::class,
+            FilterValue::class, Interceptors::class, Preparers::class,
+            -> return null
+        }
+
+        // find repeatable annotation
+        return this.findAnnotation<JvmRepeatable>()?.value?.java
+    }.getOrNull()
+}
 
 private val KAnnotatedElement.javaAnnotatedElement: AnnotatedElement?
     get() {
@@ -110,6 +131,7 @@ private val KAnnotatedElement.javaAnnotatedElement: AnnotatedElement?
                 is KProperty<*> -> javaField ?: javaGetter
                 else -> null
             }
+
             is KClass<*> -> java
             is KType -> when (val classifier = classifier) {
                 is KClass<*> -> classifier.javaAnnotatedElement
