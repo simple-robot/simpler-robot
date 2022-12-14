@@ -83,7 +83,6 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
         initialConfiguration: SpringBootApplicationConfiguration,
         @Autowired(required = false) configurationConfigures: List<SimbotSpringBootApplicationConfigurationConfigure>? = null,
         @Autowired(required = false) applicationConfigures: List<SimbotSpringBootApplicationBuildConfigure>? = null,
-        @Autowired(required = false) applicationPostProcessors: List<ApplicationPostProcessor>? = null,
         coroutineDispatcherContainer: CoroutineDispatcherContainer,
     ): SpringBootApplication {
         return runInNoScopeBlocking {
@@ -102,9 +101,7 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
                 applicationConfigures?.forEach { configure ->
                     configure.run { config(configuration) }
                 }
-            }.launch().also { app ->
-                applicationPostProcessors?.forEach { processor -> processor.processApplication(app) }
-            }
+            }.launch()
         }.also {
             logger.debug("Application launched. {}", it)
         }
@@ -121,19 +118,43 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
 
 
     /**
+     * 当 [simbotSpringBootApplication] 配置完成后进行 [ApplicationPostProcessor] 的后置处理，
+     * 并返回一个标志用对象 [AutoConfigureMarker.AfterApplicationPostProcessor], 用来控制依赖顺序。
+     *
+     */
+    @Bean
+    public fun simbotApplicationAfterApplication(
+        application: Application,
+        @Autowired(required = false) applicationPostProcessors: List<ApplicationPostProcessor>? = null,
+    ): AutoConfigureMarker.AfterApplicationPostProcessor {
+        runInNoScopeBlocking {
+            applicationPostProcessors?.forEach { processor -> processor.processApplication(application) }
+        }
+        return AutoConfigureMarker.AfterApplicationPostProcessor
+    }
+
+    /**
      * 当 [Application] 构建完成后, 提供 [EventListenerManager]。
+     * 通过 [AutoConfigureMarker.AfterApplicationPostProcessor] 控制其流程在 [simbotApplicationAfterApplication] 之后。
      * @see Application.eventListenerManager
      */
     @Bean
-    public fun simbotApplicationBotManager(application: Application): EventListenerManager =
+    public fun simbotApplicationEventListenerManager(
+        application: Application,
+        marker: AutoConfigureMarker.AfterApplicationPostProcessor
+    ): EventListenerManager =
         application.eventListenerManager
 
     /**
      * 当 [Application] 构建完成后, 提供 [BotManagers]。
+     * 通过 [AutoConfigureMarker.AfterApplicationPostProcessor] 控制其流程在 [simbotApplicationAfterApplication] 之后。
      * @see Application.botManagers
      */
     @Bean
-    public fun simbotApplicationBotManagers(application: Application): BotManagers = application.botManagers
+    public fun simbotApplicationBotManagers(
+        application: Application,
+        marker: AutoConfigureMarker.AfterApplicationPostProcessor
+    ): BotManagers = application.botManagers
     // endregion
 
 
@@ -165,4 +186,15 @@ public interface BlockingApplicationPostProcessor : ApplicationPostProcessor {
     override suspend fun processApplication(application: Application) {
         processApplicationBlocking(application)
     }
+}
+
+/**
+ * 标记用类型，用于通过 @Bean 控制依赖加载（注入）顺序。
+ */
+public sealed class AutoConfigureMarker {
+    /**
+     * 当 [Application] 创建完成且完成了所有的 [ApplicationPostProcessor] 处理后的标记类。
+     *
+     */
+    public object AfterApplicationPostProcessor : AutoConfigureMarker()
 }
