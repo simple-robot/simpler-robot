@@ -1,17 +1,14 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simboot.spring.autoconfigure
@@ -20,7 +17,9 @@ import love.forte.simboot.spring.autoconfigure.application.SpringBootApplication
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
 import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfigurationProperties
 import love.forte.simboot.spring.autoconfigure.application.springBootApplication
+import love.forte.simbot.Api4J
 import love.forte.simbot.application.Application
+import love.forte.simbot.application.BotManagers
 import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
@@ -46,15 +45,15 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
     override fun setResourceLoader(resourceLoader: ResourceLoader) {
         this.resourceLoader = resourceLoader
     }
-    
+
     @Bean
     @ConditionalOnMissingBean(SpringBootApplicationConfigurationProperties::class)
     @ConfigurationProperties("simbot")
     public fun applicationConfigurationProperties(): SpringBootApplicationConfigurationProperties {
         return SpringBootApplicationConfigurationProperties()
     }
-    
-    
+
+
     @Bean
     @ConditionalOnMissingBean(SpringBootApplicationConfiguration::class)
     public fun applicationConfiguration(
@@ -62,7 +61,7 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
         applicationContext: ApplicationContext,
         applicationArguments: ApplicationArguments,
     ): SpringBootApplicationConfiguration {
-        
+
         return applicationConfigurationProperties.toConfiguration(
             applicationArguments,
             applicationContext
@@ -73,8 +72,8 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
             }
         }
     }
-    
-    
+
+
     /**
      * 构建 [simbot application][Application].
      */
@@ -84,51 +83,86 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
         initialConfiguration: SpringBootApplicationConfiguration,
         @Autowired(required = false) configurationConfigures: List<SimbotSpringBootApplicationConfigurationConfigure>? = null,
         @Autowired(required = false) applicationConfigures: List<SimbotSpringBootApplicationBuildConfigure>? = null,
+        @Autowired(required = false) applicationPostProcessors: List<ApplicationPostProcessor>? = null,
         coroutineDispatcherContainer: CoroutineDispatcherContainer,
     ): SpringBootApplication {
         return runInNoScopeBlocking {
             logger.debug("Launching application...")
-    
             springBootApplication(initialConfiguration,
                 {
                     // initial
                     coroutineContext += coroutineDispatcherContainer.dispatcher
-            
+
                     configurationConfigures?.forEach { configure ->
                         configure.run { config() }
                     }
-            
-            
+
+
                 }) { configuration ->
                 applicationConfigures?.forEach { configure ->
                     configure.run { config(configuration) }
                 }
-                // TODO..?
-            }.launch()
+            }.launch().also { app ->
+                applicationPostProcessors?.forEach { processor -> processor.processApplication(app) }
+            }
         }.also {
             logger.debug("Application launched. {}", it)
         }
     }
-    
-    
+
+
     // region after application
     /**
-     * 当 [Application] 构建完成后, 提供 [Application.Environment] 信息。
+     * 当 [Application] 构建完成后, 提供 [Application.Environment]。
+     * @see Application.environment
      */
     @Bean
     public fun simbotApplicationEnvironment(application: Application): Application.Environment = application.environment
-    
-    
+
+
     /**
-     * 当 [Application] 构建完成后, 提供 [EventListenerManager] 信息。
+     * 当 [Application] 构建完成后, 提供 [EventListenerManager]。
+     * @see Application.eventListenerManager
      */
     @Bean
     public fun simbotApplicationBotManager(application: Application): EventListenerManager =
         application.eventListenerManager
+
+    /**
+     * 当 [Application] 构建完成后, 提供 [BotManagers]。
+     * @see Application.botManagers
+     */
+    @Bean
+    public fun simbotApplicationBotManagers(application: Application): BotManagers = application.botManagers
     // endregion
-    
-    
+
+
     public companion object {
         private val logger = LoggerFactory.logger<SimbotSpringBootApplicationConfiguration>()
+    }
+}
+
+/**
+ * 当 [Application] 启动完成后的处理器。
+ *
+ *
+ *
+ * @see BlockingApplicationPostProcessor
+ */
+public interface ApplicationPostProcessor {
+    public suspend fun processApplication(application: Application)
+
+}
+
+
+/**
+ * 当 [Application] 启动完成后的阻塞式处理器。
+ */
+@Api4J
+public interface BlockingApplicationPostProcessor : ApplicationPostProcessor {
+    public fun processApplicationBlocking(application: Application)
+
+    override suspend fun processApplication(application: Application) {
+        processApplicationBlocking(application)
     }
 }
