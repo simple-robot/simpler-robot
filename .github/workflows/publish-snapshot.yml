@@ -5,8 +5,8 @@ on: # push
       - v3-dev
       - v3-dev-snapshot**
       - v*.*.**
-      - dev_
-      - dev-
+      - dev_**
+      - dev-**
     paths:
       - '**src/**/kotlin/**.kt'
       - '**src/**/java/**.java'
