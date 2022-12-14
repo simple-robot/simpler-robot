@@ -249,7 +249,7 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, Configurat
 //            val beanDefinition = eventListenerRegistrationDescription.resolveToBeanDefinition()
             val beanDefinition = resolveToBeanDefinition(eventListenerRegistrationDescription)
 
-            registry.registerBeanDefinition(generatedListenerBeanName(beanName), beanDefinition)
+            registry.registerBeanDefinition(generatedListenerBeanName(beanName, method), beanDefinition)
         }
 
     }
@@ -342,8 +342,8 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, Configurat
         }.getOrNull()
     }
 
-    private fun generatedListenerBeanName(beanName: String): String =
-        "$beanName#GENERATED_LISTENER"
+    private fun generatedListenerBeanName(beanName: String, method: Method): String =
+        "$beanName${method.toGenericString()}#GENERATED_LISTENER"
 
 }
 
