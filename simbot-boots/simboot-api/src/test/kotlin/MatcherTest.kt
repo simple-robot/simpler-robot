@@ -29,7 +29,7 @@ class MatcherTest {
     fun test() {
         val regex = "age={{age,\\d+}},num=(?<num>\\d+)"
 
-        val value = RegexMatcherValue(regex)
+        val value = RegexMatcherValue(regex, false)
 
         val parameters = value.getParameters("age=18,num=100")
 
