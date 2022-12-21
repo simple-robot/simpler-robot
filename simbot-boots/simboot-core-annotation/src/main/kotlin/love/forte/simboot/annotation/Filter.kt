@@ -1,17 +1,14 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simboot.annotation
@@ -78,7 +75,6 @@ import kotlin.reflect.KClass
  *
  */
 @Retention(AnnotationRetention.RUNTIME)
-@Repeatable
 @JvmRepeatable(Filters::class)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @MustBeDocumented
@@ -88,7 +84,7 @@ public annotation class Filter(
      * 如果此属性为空，则相当于不生效。
      */
     val value: String = "",
-    
+
     /**
      * 当 [value] 匹配的目标（[EventListenerProcessingContext.textContent][love.forte.simbot.event.EventListenerProcessingContext.textContent]）的值为 null 的时候，
      * 是否直接放行。如果为 `true`, 则代表匹配值为null的时候视为匹配通过，反之则为匹配失败。默认为 `false`。此参数只有当 [value] 不为空的时候有效。如果 [value] 为空，则不会进行匹配。
@@ -96,13 +92,13 @@ public annotation class Filter(
      *
      */
     val ifNullPass: Boolean = false,
-    
+
     /**
      * 针对匹配目标所使用的匹配规则。
      * 默认情况下使用 [正则完全匹配][MatchType.REGEX_MATCHES].
      */
     val matchType: MatchType = MatchType.REGEX_MATCHES,
-    
+
     /**
      * 目标过滤内容。
      *
@@ -115,12 +111,12 @@ public annotation class Filter(
     @Suppress("DEPRECATION_ERROR")
     @Deprecated("Use targets", ReplaceWith("targets"), level = DeprecationLevel.ERROR)
     val target: TargetFilter = TargetFilter(),
-    
+
     /*
         在 target 还存在的情况下，
         当使用了 targets, 则不会使用 target。
      */
-    
+
     /**
      * 目标过滤内容。
      *
@@ -129,8 +125,8 @@ public annotation class Filter(
      * @see [Targets]
      */
     val targets: Targets = Targets(),
-    
-    
+
+
     /**
      * 指定一个对当前 [Filter] 的处理过滤器。当 [by] 指定了任意一个不直接等同于 [AnnotationEventFilterFactory]
      * 的类型时，此注解的上述其他参数将不再继续被解析，而是直接交由指定目标进行处理。
@@ -143,9 +139,9 @@ public annotation class Filter(
      *
      */
     val by: KClass<out AnnotationEventFilterFactory> = AnnotationEventFilterFactory::class,
-    
+
     ) {
-    
+
     /**
      * 通用属性过滤规则。
      *
@@ -175,7 +171,7 @@ public annotation class Filter(
          * 除了通过此 [components] 作为组件的筛选条件，直接监听一个组件下特有的事件类型能够更好的起到组件过滤的作用。
          */
         val components: Array<String> = [],
-        
+
         /**
          * 对接收事件的botID匹配。
          *
@@ -185,7 +181,7 @@ public annotation class Filter(
          * ```
          */
         val bots: Array<String> = [],
-        
+
         /**
          * 对消息发送者的ID匹配。
          *
@@ -195,7 +191,7 @@ public annotation class Filter(
          * ```
          */
         val authors: Array<String> = [],
-        
+
         /**
          * 如果这是个[群相关事件][GroupEvent] ，则对群ID匹配。
          *
@@ -206,7 +202,7 @@ public annotation class Filter(
          *
          */
         val groups: Array<String> = [],
-        
+
         /**
          * 如果是个[子频道相关事件][ChannelEvent], 则对频道ID匹配。
          *
@@ -216,12 +212,12 @@ public annotation class Filter(
          * ```
          */
         val channels: Array<String> = [],
-        
+
         /**
          * 如果是个[频道服务器相关事件][GuildEvent], 则对频道服务器ID匹配。
          */
         val guilds: Array<String> = [],
-        
+
         /**
          * 只有当前消息中存在任意一个 [At.target][love.forte.simbot.message.At.target] == event.bot.id 的 [At][love.forte.simbot.message.At] 消息的时候才会通过匹配。
          *
@@ -273,7 +269,7 @@ public annotation class TargetFilter(
      * 除了通过此 [components] 作为组件的筛选条件，直接监听一个组件下特有的事件类型能够更好的起到组件过滤的作用。
      */
     val components: Array<String> = [],
-    
+
     /**
      * 对接收事件的botID匹配。
      *
@@ -283,7 +279,7 @@ public annotation class TargetFilter(
      * ```
      */
     val bots: Array<String> = [],
-    
+
     /**
      * 对消息发送者的ID匹配。
      *
@@ -293,7 +289,7 @@ public annotation class TargetFilter(
      * ```
      */
     val authors: Array<String> = [],
-    
+
     /**
      * 如果这是个[群相关事件][GroupEvent] ，则对群ID匹配。
      *
@@ -304,7 +300,7 @@ public annotation class TargetFilter(
      *
      */
     val groups: Array<String> = [],
-    
+
     /**
      * 如果是个[子频道相关事件][ChannelEvent], 则对频道ID匹配。
      *
@@ -314,12 +310,12 @@ public annotation class TargetFilter(
      * ```
      */
     val channels: Array<String> = [],
-    
+
     /**
      * 如果是个[频道服务器相关事件][GuildEvent], 则对频道服务器ID匹配。
      */
     val guilds: Array<String> = [],
-    
+
     /**
      * 只有当前消息中存在任意一个 [At.target][love.forte.simbot.message.At.target] == event.bot.id 的 [At][love.forte.simbot.message.At] 消息的时候才会通过匹配。
      *
@@ -357,7 +353,7 @@ public annotation class Filters(
      * 所有子过滤器。
      */
     vararg val value: Filter,
-    
+
     /**
      * 多个过滤器之间的匹配策略。默认情况下为 [any][MultiFilterMatchType.ANY] 匹配。
      */

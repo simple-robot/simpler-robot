@@ -1,17 +1,14 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simbot.message
@@ -48,7 +45,7 @@ import love.forte.simbot.message.Message.Element as MsgElement
  * @see MessagesBuilder
  */
 public sealed interface Messages : View<MsgElement<*>>, RandomAccess, Message {
-    
+
     /**
      * 根据 [MsgElement] 来获取当前消息链中的所有匹配消息。
      *
@@ -58,28 +55,28 @@ public sealed interface Messages : View<MsgElement<*>>, RandomAccess, Message {
      *
      */
     public operator fun <E : MsgElement<E>> get(key: Message.Key<E>): List<E>
-    
+
     /**
      * 通过索引访问目标位置的元素。
      * @throws IndexOutOfBoundsException 索引越界时
      */
     public operator fun get(index: Int): MsgElement<*>
-    
+
     /**
      * 拼接一个 [MsgElement]，得到一个新的 [Messages]。
      */
     public operator fun plus(element: MsgElement<*>): Messages
-    
+
     /**
      * 拼接 [MsgElement] 列表，得到一个新的 [Messages]。
      */
     public operator fun plus(messages: Iterable<MsgElement<*>>): Messages
-    
+
     /**
      * 将当前 [Messages] 转化为不可变的消息元素列表。
      */
     public fun toList(): List<MsgElement<*>>
-    
+
     @Suppress("DEPRECATION_ERROR")
     public companion object {
         @Suppress("ObjectPropertyName")
@@ -93,14 +90,15 @@ public sealed interface Messages : View<MsgElement<*>>, RandomAccess, Message {
                 subclass(ResourceImage.serializer())
             }
         }
-        
+
         /**
          * 当前 [Messages] 可用于序列化的 [SerializersModule]。其中包含 [StandardMessage] 各实现类型的序列化信息。
          *
          * @see StandardMessage
          */
+        @get:JvmStatic
         public val serializersModule: SerializersModule get() = _serializersModule
-        
+
         internal object MessagesSerializer : KSerializer<Messages> {
             private val delegate = ListSerializer(PolymorphicSerializer(MsgElement::class))
             override val descriptor: SerialDescriptor get() = delegate.descriptor
@@ -109,44 +107,44 @@ public sealed interface Messages : View<MsgElement<*>>, RandomAccess, Message {
                 delegate.serialize(encoder, value.toList())
             }
         }
-        
+
         /**
          * 可用于 [Messages] 进行序列化的 [KSerializer].
          */
         @JvmStatic
         public val serializer: KSerializer<Messages>
             get() = MessagesSerializer
-        
+
         /**
          * 得到一个空的消息列表。
          */
         @JvmStatic
         public fun emptyMessages(): Messages = EmptyMessages
-        
+
         /**
          * 得到一个空的消息列表。
          */
         @JvmStatic
         public fun messages(): Messages = emptyMessages()
-        
+
         /**
          * 将一个 [MsgElement] 作为一个 [Messages].
          */
         @JvmStatic
         public fun MsgElement<*>.elementToMessages(): Messages = toMessages()
-        
+
         /**
          * 将一个 [Iterable] 转为 [Messages].
          */
         @JvmStatic
         public fun Iterable<MsgElement<*>>.listToMessages(): Messages = toMessages()
-        
+
         /**
          * 得到一个消息列表。
          */
         @JvmStatic
         public fun toMessages(vararg messages: MsgElement<*>): Messages = messages.asList().toMessages()
-        
+
         /**
          * 判断两个 [Messages] 是否在元素内容上相同。[contentEquals] 会依次比较各个元素，
          * 当元素数量、内容、顺序都完全相同时得到 `true`。
@@ -190,7 +188,7 @@ public object EmptyMessages : Messages, View<MsgElement<*>> by emptyView() {
     override fun get(index: Int): Message.Element<*> {
         throw IndexOutOfBoundsException("'EmptyMessages' has no element.")
     }
-    
+
     override fun plus(element: MsgElement<*>): Messages = element.toMessages()
     override fun plus(messages: Iterable<MsgElement<*>>): Messages = messages.toMessages()
     override fun toString(): String = "EmptyMessages"
@@ -203,7 +201,7 @@ public object EmptyMessages : Messages, View<MsgElement<*>> by emptyView() {
 @Deprecated("Deprecated and will be removing in future", level = DeprecationLevel.ERROR)
 public abstract class SingleOnlyMessage<E : MsgElement<E>> : MsgElement<E>, Messages, IndexAccessView<MsgElement<*>> {
     abstract override val key: Message.Key<E>
-    
+
     /**
      * 用作 [toString] 展示信息的消息字符串结果。
      */
@@ -211,13 +209,13 @@ public abstract class SingleOnlyMessage<E : MsgElement<E>> : MsgElement<E>, Mess
     final override val size: Int get() = 1
     override fun get(index: Int): MsgElement<*> =
         if (index == 0) this else throw IndexOutOfBoundsException("Index $index of size 1")
-    
-    
+
+
     /**
      * 拼接元素。
      */
     override fun plus(element: MsgElement<*>): Messages = element.toMessages()
-    
+
     /**
      * 拼接元素。
      */
@@ -225,12 +223,12 @@ public abstract class SingleOnlyMessage<E : MsgElement<E>> : MsgElement<E>, Mess
         if (messages is Collection && messages.isEmpty()) {
             return this
         }
-        
+
         val newMessages = messages.toMessages()
         return if (newMessages.isEmpty()) this else newMessages
     }
-    
-    
+
+
     final override fun toString(): String {
         return "S@Messages([$this])"
     }
@@ -259,7 +257,7 @@ public fun messages(vararg messages: MsgElement<*>): Messages = messages.asList(
  */
 public fun Iterable<MsgElement<*>>.toMessages(): Messages {
     var initSize = -1
-    
+
     when (this) {
         is Messages -> return this
         is Collection -> when {
@@ -269,7 +267,7 @@ public fun Iterable<MsgElement<*>>.toMessages(): Messages {
                 initSize = size
             }
         }
-        
+
         is View -> when {
             isEmpty() -> return emptyMessages()
             else -> {
@@ -281,11 +279,11 @@ public fun Iterable<MsgElement<*>>.toMessages(): Messages {
             }
         }
     }
-    
+
     val list = buildList(if (initSize > 0) initSize else 8) {
         addAll(this@toMessages)
     }
-    
+
     return if (list.size == 1) SingleValueMessageList(list.first())
     else MessageListImpl(list)
 }
@@ -313,12 +311,12 @@ public operator fun MsgElement<*>.plus(other: Messages): Messages =
             add(this@plus)
             add(other.value)
         })
-        
+
         other is MessageListImpl -> MessageListImpl(buildList(other.size + 1) {
             add(this@plus)
             addAll(other.list)
         })
-        
+
         else -> CrossMessages(this, other)
     }
 
@@ -336,29 +334,29 @@ private class SingleValueMessageList(val value: MsgElement<*>) : MessageList() {
     override fun get(index: Int): MsgElement<*> {
         if (index == 0) return value else throw IndexOutOfBoundsException("Index $index of size 1")
     }
-    
+
     override fun <E : MsgElement<E>> get(key: Message.Key<E>): List<E> {
         return key.safeCast(value)?.let { listOf(it) } ?: emptyList()
     }
-    
+
     override fun isEmpty(): Boolean = false
     override fun iterator(): Iterator<MsgElement<*>> = iterator { yield(value) }
-    
+
     override fun plus(element: MsgElement<*>): Messages {
         return MessageListImpl(listOf(value, element))
     }
-    
+
     override fun plus(messages: Iterable<MsgElement<*>>): Messages {
         if (messages is Collection) {
             if (messages.isEmpty()) return this
             if (messages.size == 1) return plus(messages.first())
         }
-        
+
         if (messages is View) {
             if (messages.isEmpty()) return this
             if (messages.size == 1) return plus(messages.first())
         }
-        
+
         return buildList {
             add(value)
             if (messages is MessageListImpl) {
@@ -368,20 +366,20 @@ private class SingleValueMessageList(val value: MsgElement<*>) : MessageList() {
             }
         }.toMessages()
     }
-    
+
     override fun toList(): List<MsgElement<*>> = listOf(value)
-    
+
     override fun toString(): String {
         return "SingleValueMessages(value=$value)"
     }
-    
+
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is MessageList) return false
         if (other.size != 1) return false
         return value == other.first()
     }
-    
+
     override fun hashCode(): Int {
         return value.hashCode()
     }
@@ -394,29 +392,29 @@ private class MessageListImpl(val list: List<MsgElement<*>>) : MessageList() {
     init {
         Simbot.require(list.isNotEmpty()) { "Messages init message list cannot be empty." }
     }
-    
+
     override fun iterator(): Iterator<MsgElement<*>> = list.iterator()
-    
+
     override val size: Int
         get() = list.size
-    
+
     override fun isEmpty(): Boolean = list.isEmpty()
-    
+
     override fun contains(element: MsgElement<*>): Boolean = element in list
-    
+
     override fun get(index: Int): MsgElement<*> = list[index]
-    
+
     override fun <E : MsgElement<E>> get(key: Message.Key<E>): List<E> {
         return mapNotNull { key.safeCast(it) }
     }
-    
+
     /**
      * 拼接元素。
      */
     override fun plus(element: MsgElement<*>): Messages {
         return MessageListImpl(list.toMutableList().apply { add(element) })
     }
-    
+
     /**
      * 拼接元素。
      */
@@ -428,23 +426,23 @@ private class MessageListImpl(val list: List<MsgElement<*>>) : MessageList() {
             messages is MessageListImpl -> return MessageListImpl(list + messages.list)
             messages is Messages -> CrossMessages(this, messages)
         }
-        
+
         return MessageListImpl(list.toMutableList().apply { addAll(messages) })
     }
-    
+
     override fun toList(): List<MsgElement<*>> = list.toList()
-    
+
     override fun toString(): String = "Messages($list)"
-    
+
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is MessageListImpl) return false
-        
+
         return list == other.list
     }
-    
+
     override fun hashCode(): Int = list.hashCode()
-    
+
 }
 
 
@@ -462,43 +460,43 @@ private class CrossMessages(
                     key.safeCast(msg)?.also(::add)
                 }
             }
-            
+
             process(left)
             process(content)
         }
     }
-    
+
     private val leftSize = if (left is Messages) left.size else 1
     private val contentSize = if (content is Messages) content.size else 1
-    
+
     override val size: Int = leftSize + contentSize
-    
+
     override fun get(index: Int): MsgElement<*> {
         if (index !in 0 until size) {
             throw IndexOutOfBoundsException("Index $index of size $size")
         }
-        
+
         fun getByIndex(index: Int, msg: Message): MsgElement<*> {
             if (msg is MsgElement<*>) {
                 return msg
             }
             return (msg as Messages)[index]
         }
-        
+
         if (index in 0 until leftSize) {
             return getByIndex(index, left)
         }
         return getByIndex(index - leftSize, content)
     }
-    
+
     override fun plus(element: MsgElement<*>): Messages {
         return CrossMessages(this, element)
     }
-    
+
     override fun plus(messages: Iterable<MsgElement<*>>): Messages {
         return CrossMessages(this, messages.toMessages())
     }
-    
+
     override fun toList(): List<MsgElement<*>> {
         return buildList {
             fun process(msg: Message) {
@@ -506,7 +504,7 @@ private class CrossMessages(
                     is MsgElement<*> -> {
                         add(msg)
                     }
-                    
+
                     is Messages -> {
                         addAll(msg)
                     }
@@ -516,46 +514,46 @@ private class CrossMessages(
             process(content)
         }
     }
-    
+
     override fun iterator(): Iterator<MsgElement<*>> {
         return Itr(left, content)
     }
-    
+
     private class Itr(left: Message, private val content: Message) : Iterator<MsgElement<*>> {
         private var mark: Int = 0
         private var current: Any? = parse(left)
-        
+
         private fun parse(msg: Message): Any = when (msg) {
             is Messages -> msg.iterator()
             is MsgElement<*> -> msg
         }
-        
+
         override fun hasNext(): Boolean {
             val c = current
-            
+
             if (c == null) {
                 if (mark == 0) {
                     mark++
                     current = parse(content)
                     return hasNext()
                 }
-                
+
                 return false
             }
-            
+
             if (c is Iterator<*>) {
                 if (!c.hasNext()) {
                     current = null
                     return hasNext()
                 }
             }
-            
+
             return true
         }
-        
+
         override fun next(): MsgElement<*> {
             if (current == null) throw NoSuchElementException()
-            
+
             return when (val c = current) {
                 is Iterator<*> -> c.next() as MsgElement<*>
                 else -> {
@@ -566,15 +564,15 @@ private class CrossMessages(
             }
         }
     }
-    
+
     override fun isEmpty(): Boolean = false
-    
+
     override fun contains(element: MsgElement<*>): Boolean {
         fun ct(msg: Message): Boolean = if (msg is Messages) msg.contains(element) else element == msg
-        
+
         return ct(left) || ct(content)
     }
-    
+
     override fun toString(): String {
         return "CrossMessages($left, $content)"
     }

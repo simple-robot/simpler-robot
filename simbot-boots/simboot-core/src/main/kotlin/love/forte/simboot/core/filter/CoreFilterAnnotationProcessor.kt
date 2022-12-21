@@ -1,17 +1,14 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simboot.core.filter
@@ -41,29 +38,14 @@ public object CoreFilterAnnotationProcessor {
         if (filter.by != AnnotationEventFilterFactory::class) {
             return process(filter.by, filters, filter, context)
         }
-        
-        
+
+
         return CoreAnnotationEventFilterFactory.resolveFilter(
             context.listener, context.listenerAttributes, filter, filters
         )
-        
-        //
-        // // 当前的普通过滤器
-        // val currentFilter = AnnotationFilter(
-        //     target,
-        //     value,
-        //     filter.ifNullPass,
-        //     filter.matchType
-        // ) { it.textContent } // selector
-        //
-        // // put keyword.
-        // context.listenerAttributes.computeIfAbsent(KeywordsAttribute) { CopyOnWriteArrayList() }
-        //     .add(currentFilter.keyword)
-        //
-        // return currentFilter //.processOrAnd(context, and, or)
     }
-    
-    
+
+
     private fun process(
         type: KClass<out AnnotationEventFilterFactory>,
         filters: Filters,
@@ -75,49 +57,48 @@ public object CoreFilterAnnotationProcessor {
             // from bean container
             val beanContainer = context.context.beanContainer
             val beanNames = beanContainer.getAll(type)
-            
-            val fromContainer = kotlin.runCatching {
+
+            val fromContainer: AnnotationEventFilterFactory? =
                 when {
                     beanNames.size > 1 -> {
                         throw SimbotIllegalStateException("There is more than 1 event filter handler of type [$type] in the bean container: $beanNames")
                     }
                     beanNames.isEmpty() -> {
-                        return@runCatching null
+                        null
                     }
                     else -> {
-                        // get
-                        beanContainer[beanNames.first()] as? AnnotationEventFilterFactory
+                        beanContainer.getOrNull(beanNames.first()) as? AnnotationEventFilterFactory
                     }
                 }
-            }.getOrElse { e ->
-                logger.debug("Cannot get the instance of type [$type] in beanContainers by names [$beanNames]", e)
-                null
-            }
-            
+//            }.getOrElse { e ->
+//                logger.error("Cannot get the instance of type [$type] in beanContainers by names [$beanNames]", e)
+//                null
+//            }
+
             if (fromContainer != null) {
                 return@run fromContainer
             }
-            
+
             // try to create instance.
             return@run kotlin.runCatching {
                 val constructor = type.constructors.find { it.parameters.isEmpty() }
                     ?: throw NoSuchElementException("Public, no-argument constructor for type [$type]")
-                
+
                 constructor.call()
             }.getOrElse { e ->
                 throw SimbotIllegalStateException("Cannot create instance for type [$type]", e)
             }
         }
-        
+
         // init it.
         val eventFilter =
             annotationEventFilterFactory.resolveFilter(context.listener, context.listenerAttributes, filter, filters)
-        
+
         logger.debug("Init annotation event filter: [{}]", eventFilter)
-        
+
         return eventFilter
     }
-    
+
 }
 
 
@@ -138,11 +119,11 @@ internal fun Filter.Targets.box(): FilterTarget? {
     if (components.isEmpty() && bots.isEmpty() && authors.isEmpty() && groups.isEmpty() && channels.isEmpty() && guilds.isEmpty() && !atBot) {
         return null
     }
-    
+
     return FilterTarget(
         components.toSet(), bots.toSet(), authors.toSet(), groups.toSet(), channels.toSet(), guilds.toSet(), atBot
     )
-    
+
 }
 
 
@@ -151,11 +132,11 @@ internal fun love.forte.simboot.annotation.TargetFilter.box0(): FilterTarget? {
     if (components.isEmpty() && bots.isEmpty() && authors.isEmpty() && groups.isEmpty() && channels.isEmpty() && guilds.isEmpty() && !atBot) {
         return null
     }
-    
+
     return FilterTarget(
         components.toSet(), bots.toSet(), authors.toSet(), groups.toSet(), channels.toSet(), guilds.toSet(), atBot
     )
-    
+
 }
 
 
@@ -175,30 +156,30 @@ public object CoreFiltersAnnotationProcessor {
     public fun process(context: FiltersAnnotationProcessContext): List<EventFilter> {
         val filters = context.filters
         val allFilters = filters.value
-        
+
         if (allFilters.isEmpty()) return emptyList()
-        
+
         val eventFilterList = allFilters.mapNotNull { f ->
             CoreFilterAnnotationProcessor.process(filters, f, context)
         }
-        
+
         // only 1
         if (eventFilterList.size == 1) {
             return listOf(eventFilterList.first())
         }
-        
+
         // multi
-        
+
         val multiMatchType = filters.multiMatchType
-        
+
         @Suppress("SuspiciousCallableReferenceInLambda") val matcherList: List<suspend (EventListenerProcessingContext) -> Boolean> =
             eventFilterList.sortedBy { it.priority }.map { f -> f::test }
-        
+
         val filter = simpleFilter {
             multiMatchType.match(it, matcherList)
         }
-        
+
         return listOf(filter)
     }
-    
+
 }

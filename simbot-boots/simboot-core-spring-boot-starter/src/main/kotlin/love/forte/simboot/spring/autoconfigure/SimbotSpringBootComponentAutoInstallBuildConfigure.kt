@@ -1,28 +1,24 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simboot.spring.autoconfigure
 
-import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationBuilder
-import love.forte.simboot.spring.autoconfigure.application.SpringBootApplicationConfiguration
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentFactory
 import love.forte.simbot.installAllComponents
-import org.slf4j.LoggerFactory
+import love.forte.simbot.logger.logger
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Bean
 
 
 /**
@@ -73,26 +69,31 @@ import org.springframework.beans.factory.annotation.Autowired
  *
  * @author ForteScarlet
  */
-public open class SimbotSpringBootComponentAutoInstallBuildConfigure(
-    @Autowired(required = false) factories: List<ComponentFactory<*, *>>? = null,
-) : SimbotSpringBootApplicationBuildConfigure {
-    private val factories: List<ComponentFactory<*, *>> = factories ?: emptyList()
-    
-    override fun SpringBootApplicationBuilder.config(configuration: SpringBootApplicationConfiguration) {
-        logger.info("The number of Installable Event Provider Factories is {}", factories.size)
-        if (factories.isEmpty()) {
-            val classLoader = configuration.classLoader
-            logger.info("Install components by [installAllComponents] via classLoader {}", classLoader)
-            installAllComponents(classLoader)
-        } else {
-            logger.debug("Install components by: {}", factories)
-            factories.forEach {
-                install(it)
+public open class SimbotSpringBootComponentAutoInstallBuildConfigure {
+
+    @Bean
+    public fun simbotSpringBootComponentAutoInstallBuildConfigure(
+        @Autowired(required = false) factories: List<ComponentFactory<*, *>>? = null
+    ): SimbotSpringBootApplicationBuildConfigure {
+        val factories0 = factories ?: emptyList()
+        return SimbotSpringBootApplicationBuildConfigure { configuration ->
+            logger.info("The number of Installable Event Provider Factories is {}", factories0.size)
+            if (factories0.isEmpty()) {
+                val classLoader = configuration.classLoader
+                logger.info("Install components by [installAllComponents] via classLoader {}", classLoader)
+                installAllComponents(classLoader)
+            } else {
+                logger.debug("Install components by: {}", factories)
+                factories0.forEach {
+                    install(it)
+                }
             }
         }
     }
-    
+
+
     public companion object {
-        private val logger = LoggerFactory.getLogger(SimbotSpringBootComponentAutoInstallBuildConfigure::class.java)
+        private val logger =
+            love.forte.simbot.logger.LoggerFactory.logger<SimbotSpringBootComponentAutoInstallBuildConfigure>()
     }
 }
