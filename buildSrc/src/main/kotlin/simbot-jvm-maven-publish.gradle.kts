@@ -15,7 +15,6 @@
  */
 
 import love.forte.gradle.common.core.Gpg
-import love.forte.gradle.common.core.property.systemProp
 import love.forte.gradle.common.publication.configure.jvmConfigPublishing
 import utils.checkPublishConfigurable
 
@@ -47,8 +46,9 @@ if (!isCi || isLinux) {
         val p = project
         
         jvmConfigPublishing {
-            val groupProject = P::class.sealedSubclasses.mapNotNull { it.objectInstance }.associateBy { obj -> obj.group }
-            project = groupProject[p.group] ?: error("unknown project group: ${p.group}")
+//            val groupProject = P::class.sealedSubclasses.mapNotNull { it.objectInstance }.associateBy { obj -> obj.group }
+            project = P.findProjectDetailByGroup(p.group.toString()) ?: error("unknown project group: ${p.group}")
+//            groupProject[p.group] ?: error("unknown project group: ${p.group}")
             
             publicationName = "simbotDist"
             
