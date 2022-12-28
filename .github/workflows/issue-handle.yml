@@ -7,7 +7,7 @@ on:
 jobs:
   issue-open-waiting-for-confirm:
     name: Issue Open Waiting Confirm
-    if: github.event.action == 'opened' && contains(github.event.repository.collaborators.*.id, github.event.sender.id)
+    if: github.event.action == 'opened' && !contains(github.event.repository.collaborators.*.id, github.event.sender.id)
 #    github.event.sender.id != github.event.repository.owner.id
     runs-on: ubuntu-latest
     steps:
