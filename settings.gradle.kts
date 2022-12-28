@@ -28,7 +28,9 @@ dependencyResolutionManagement {
     }
 }
 
-include("simbot-utils:simbot-util-stage-loop")
+include(
+    util("stage-loop"),
+)
 
 include("simbot-logger")
 include("simbot-logger-slf4j-impl")
@@ -78,3 +80,6 @@ inline fun projectTest(moduleName: String): String = ":simbot-project-tests:simb
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun componentHttpServer(moduleName: String): String = ":simbot-components:http-server:simbot-component-http-server-$moduleName"
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun util(moduleName: String): String = ":simbot-utils:simbot-util-$moduleName"
