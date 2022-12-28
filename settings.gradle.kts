@@ -30,6 +30,8 @@ dependencyResolutionManagement {
 
 include(
     util("stage-loop"),
+    utilApiReq("api"),
+    utilApiReq("ktor"),
 )
 
 include("simbot-logger")
@@ -83,3 +85,6 @@ inline fun componentHttpServer(moduleName: String): String = ":simbot-components
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun util(moduleName: String): String = ":simbot-utils:simbot-util-$moduleName"
+
+@Suppress("NOTHING_TO_INLINE")
+inline fun utilApiReq(moduleName: String): String = ":simbot-utils:api-requestor:simbot-util-api-requestor-$moduleName"
