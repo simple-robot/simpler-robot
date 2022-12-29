@@ -76,8 +76,12 @@ package love.forte.simbot.util.api.requestor
 public interface API<in RQ : Requestor, out R> {
     
     /**
-     * 借助 [请求器][RQ] 向当前所表示的API发起请求，并得到结果 [R].
+     * 借助 [请求器][RQ] 向当前所表示的API发起请求, 并得到结果 [R].
+     *
+     * @throws Exception 请求过程中可能会产生任何异常, 包括但不限于网络、序列化、参数检验等
+     *
      */
+    @Throws(Exception::class)
     public suspend fun requestBy(requestor: RQ): R
     
 }
