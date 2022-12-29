@@ -30,7 +30,7 @@ dependencyResolutionManagement {
 
 include(
     util("stage-loop"),
-    utilApiReq("api"),
+    utilApiReq("core"),
     utilApiReq("ktor"),
 )
 

@@ -64,7 +64,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":simbot-utils:api-requestor:simbot-util-api-requestor-api"))
+                api(project(":simbot-utils:api-requestor:simbot-util-api-requestor-core"))
                 implementation(libs.ktor.client.core)
             }
         }
