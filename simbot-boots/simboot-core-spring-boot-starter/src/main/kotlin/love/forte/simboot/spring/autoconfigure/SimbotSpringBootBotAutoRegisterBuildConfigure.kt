@@ -127,11 +127,18 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure {
                                     startResult
                                 )
                             } else {
+                                // Why?
+                                val because: String = when (application.configuration) {
+                                    is BootApplicationConfiguration -> "the configuration property 'autoStartBots' is false"
+                                    else -> "the type of application configuration is not BootApplicationConfiguration"
+                                }
+                                
                                 logger.info(
-                                    "Bot info [{}] successfully registered as Bot(component={}, id={}]) but it does not start automatically",
+                                    "Bot info [{}] successfully registered as Bot(component={}, id={}]) but it does not start automatically because {}",
                                     res,
                                     bot.component,
-                                    bot.id
+                                    bot.id,
+                                    because
                                 )
                             }
                         } else {
