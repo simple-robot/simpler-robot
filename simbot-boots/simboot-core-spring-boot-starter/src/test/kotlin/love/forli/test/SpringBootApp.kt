@@ -18,7 +18,6 @@ import love.forte.simboot.annotation.Filter
 import love.forte.simboot.annotation.Filters
 import love.forte.simboot.annotation.Listener
 import love.forte.simboot.spring.autoconfigure.EnableSimbot
-import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.MutableAttributeMap
 import love.forte.simbot.event.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +31,6 @@ import org.springframework.stereotype.Component
 open class SpringBootApp
 
 
-@OptIn(ExperimentalSimbotApi::class)
 fun main(vararg args: String) {
     runApplication<SpringBootApp>(args = args).also { context ->
         //println(context.getBean("myFilterFactory"))

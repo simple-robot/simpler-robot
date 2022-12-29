@@ -112,13 +112,11 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure {
                 }.toList()
 
             if (botConfigResources.isNotEmpty()) {
-                application.botManagers
-
                 botConfigResources.forEach { res ->
                     register(application.providers, res).also { bot ->
                         if (bot != null) {
                             val isAutoStart =
-                                (application.configuration as? BootApplicationConfiguration)?.isAutoStartBots != false
+                                (application.configuration as? BootApplicationConfiguration)?.isAutoStartBots == true
                             if (isAutoStart) {
                                 val startResult = bot.start()
                                 logger.info(
