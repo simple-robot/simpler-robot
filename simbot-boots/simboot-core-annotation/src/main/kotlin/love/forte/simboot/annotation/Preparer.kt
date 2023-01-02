@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2022-2023 ForteScarlet <ForteScarlet@163.com>
  *
  * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
  * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
@@ -16,22 +16,6 @@ package love.forte.simboot.annotation
 import love.forte.simboot.interceptor.ListenerPreparer
 import love.forte.simbot.PriorityConstant
 import kotlin.reflect.KClass
-
-/**
- * 注解错误拼写注解的保留类型，暂做兼容。
- *
- * @see Preparer
- */
-@Deprecated("Use @Preparer.", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("@Preparer(value)", "love.forte.simboot.annotation.Preparer"))
-@Repeatable
-@Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
-public annotation class Preparator(
-    val value: KClass<out ListenerPreparer>,
-    val name: String = "",
-    val priority: Int = PriorityConstant.NORMAL
-)
-
 
 /**
  * 配合 [@Listener][Listener] 注解使用，标记需要在监听函数执行前进行的准备函数。

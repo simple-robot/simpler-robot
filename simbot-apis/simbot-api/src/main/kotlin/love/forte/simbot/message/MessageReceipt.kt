@@ -1,17 +1,14 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simbot.message
@@ -113,6 +110,16 @@ public abstract class AggregatedMessageReceipt : StandardMessageReceipt(), Itera
     /**
      * 删除其所代表的所有消息回执。
      *
+     * 如果希望明确得知删除成功内容的数量, 考虑使用 [deleteAll];
+     * 如果希望精准控制每一个回执的删除情况, 考虑使用循环控制。
+     * ```kotlin
+     * for (receipt in this) {
+     *      // ...
+     * }
+     * ```
+     *
+     * [delete]
+     *
      * @see deleteAll
      * @return 是否存在**任意**内容删除成功
      */
@@ -122,6 +129,13 @@ public abstract class AggregatedMessageReceipt : StandardMessageReceipt(), Itera
     
     /**
      * 删除其所代表的所有消息回执。
+     *
+     * [deleteAll] 会尝试依次删除当前复合回执中包含的每一个回执，
+     * 但是这个过程可能会因为发送异常而**被中断**。
+     *
+     * 如果希望能够保证每一个结果都被正确尝试，参考使用 [deleteAllSafely (Kotlin Only)][deleteAllSafely] 或自行使用循环进行精准控制。
+     *
+     * @return 删除成功的数量
      */
     public suspend fun deleteAll(): Int {
         var count = 0
@@ -133,3 +147,23 @@ public abstract class AggregatedMessageReceipt : StandardMessageReceipt(), Itera
         return count
     }
 }
+
+
+/**
+ * 尝试删除其所代表的所有消息回执。
+ *
+ * [deleteAllSafely] 内会直接使用循环尝试进行删除，并且会通过 try-catch 保证每一次循环的结果都经由 [onResult] 回调函数处理。
+ * 因此相比较于 [AggregatedMessageReceipt.deleteAll], [deleteAllSafely] 可以保证会尝试当前 [AggregatedMessageReceipt] 中的所有元素
+ * 而不会被可能发生的异常打断。
+ *
+ * _当然，前提是用户指定的[onResult]逻辑中不会产生异常，否则依旧会被打断。_
+ *
+ * @param onResult 每一个元素被执行删除后的结果回执，也可能是存在异常的回执。
+ * 默认情况下 [onResult] 会直接**忽略异常**。
+ */
+public suspend inline fun AggregatedMessageReceipt.deleteAllSafely(onResult: (Result<Boolean>) -> Unit = { /* Just.. ignore it. */ }) {
+    for (receipt in this) {
+        onResult(kotlin.runCatching { receipt.delete() })
+    }
+}
+

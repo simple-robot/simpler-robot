@@ -122,7 +122,7 @@ jobs:
         with:
           gradle-version: 7.6
           arguments: | 
-            dokkaHtmlMultiModuleAndPost
+            dokkaHtmlMultiModule
             --info 
             --warning-mode all
             -x test
@@ -168,6 +168,7 @@ jobs:
           arguments: createChangelog
 
         # Create gitHub release
+        # https://github.com/marketplace/actions/gh-release
       - name: Create Github Release
         uses: softprops/action-gh-release@v1
         with:

@@ -38,7 +38,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.4
-          arguments: clean build dokkaHtmlMultiModuleAndPost -Porg.gradle.daemon=false -DisSnapshot=false
+          arguments: clean build dokkaHtmlMultiModule -Porg.gradle.daemon=false -DisSnapshot=false
 
       # https://github.com/marketplace/actions/github-pages-action
       - name: Push to doc repository

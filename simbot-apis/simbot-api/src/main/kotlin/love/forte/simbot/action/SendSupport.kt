@@ -1,17 +1,14 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simbot.action
@@ -20,9 +17,11 @@ import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.SimbotIllegalStateException
-import love.forte.simbot.definition.Objective
 import love.forte.simbot.event.Event
-import love.forte.simbot.message.*
+import love.forte.simbot.message.Message
+import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.MessageReceipt
+import love.forte.simbot.message.Text
 
 
 /**
@@ -35,7 +34,6 @@ import love.forte.simbot.message.*
  *
  * @see love.forte.simbot.definition.Contact
  * @see love.forte.simbot.definition.ChatRoom
- * @see sendIfSupport
  *
  * @author ForteScarlet
  */
@@ -152,157 +150,8 @@ public interface ReplySupport {
 @JvmBlocking
 @JvmAsync
 public interface MessageReactSupport {
-    
     public suspend fun react(message: Message): MessageReceipt
 }
-
-
-// region send
-/**
- * **Deprecated**。
- * @suppress 你应当明确知道你所需要发送的目标是 [love.forte.simbot.definition.Contact]
- * 还是 [love.forte.simbot.definition.ChatRoom]。
- * [SendSupport] 默认实现于它们。
- *
- * ```kotlin
- * if (objective is Contact) {
- *    objective.send(message)
- * }
- * // or
- * if (objective is ChatRoom) {
- *    objective.send(message)
- * }
- * ```
- *
- */
-@JvmSynthetic
-@Deprecated(
-    "Use Contact.send(message) or ChatRoom.send(message)",
-    ReplaceWith("if (this is SendSupport) send(message) else null")
-)
-public suspend fun Objective.sendIfSupport(message: Message): MessageReceipt? =
-    if (this is SendSupport) send(message) else null
-
-/**
- * **Deprecated**。
- * @suppress 你应当明确知道你所需要发送的目标是 [love.forte.simbot.definition.Contact]
- * 还是 [love.forte.simbot.definition.ChatRoom]。
- * [SendSupport] 默认实现于它们。
- *
- * ```kotlin
- * if (objective is Contact) {
- *    objective.send(message)
- * }
- * // or
- * if (objective is ChatRoom) {
- *    objective.send(message)
- * }
- * ```
- *
- */
-@JvmSynthetic
-@Deprecated(
-    "Use Contact.send(message) or ChatRoom.send(message)",
-    ReplaceWith("if (this is SendSupport) send(message()) else null")
-)
-public suspend inline fun Objective.sendIfSupport(message: () -> Message): MessageReceipt? =
-    if (this is SendSupport) send(message()) else null
-
-/**
- * @suppress 通常消息载体不应具备 '消息发送' 的能力。而对于消息事件，则应参考 [love.forte.simbot.event.MessageEvent.reply]。
- */
-@JvmSynthetic
-@Deprecated(
-    "Use MessageEvent.reply(message)",
-    ReplaceWith("if (this is SendSupport) send(message) else null")
-)
-public suspend fun MessageContainer.sendIfSupport(message: Message): MessageReceipt? =
-    if (this is SendSupport) send(message) else null
-
-/**
- * @suppress 通常消息载体不应具备 '消息发送' 的能力。而对于消息事件，则应参考 [love.forte.simbot.event.MessageEvent.reply]。
- */
-@JvmSynthetic
-@Deprecated(
-    "Use MessageEvent.reply(message)",
-    ReplaceWith("if (this is SendSupport) send(message) else null")
-)
-public suspend inline fun MessageContainer.sendIfSupport(message: () -> Message): MessageReceipt? =
-    if (this is SendSupport) send(message()) else null
-
-/**
- * **Deprecated**。
- * @suppress 你应当明确知道你所需要发送的目标是 [love.forte.simbot.definition.Contact]
- * 还是 [love.forte.simbot.definition.ChatRoom]。
- * [SendSupport] 默认实现于它们。
- *
- * ```kotlin
- * if (objective is Contact) {
- *    objective.send(message)
- * }
- * // or
- * if (objective is ChatRoom) {
- *    objective.send(message)
- * }
- * ```
- *
- */
-@JvmSynthetic
-@Deprecated(
-    "Use Contact.send(message) or ChatRoom.send(message)",
-    ReplaceWith("if (this is SendSupport) send(message()) else null")
-)
-public suspend fun Objective.sendIfSupport(message: MessageContent): MessageReceipt? =
-    if (this is SendSupport) send(message) else null
-
-/**
- * @suppress 通常消息载体不应具备 '消息发送' 的能力。而对于消息事件，则应参考 [love.forte.simbot.event.MessageEvent.reply]。
- */
-@JvmSynthetic
-@Deprecated(
-    "Use MessageEvent.reply(message)",
-    ReplaceWith("if (this is SendSupport) send(message) else null")
-)
-public suspend fun MessageContainer.sendIfSupport(message: MessageContent): MessageReceipt? =
-    if (this is SendSupport) send(message) else null
-
-/**
- * **Deprecated**。
- * @suppress 你应当明确知道你所需要发送的目标是 [love.forte.simbot.definition.Contact]
- * 还是 [love.forte.simbot.definition.ChatRoom]。
- * [SendSupport] 默认实现于它们。
- *
- * ```kotlin
- * if (objective is Contact) {
- *    objective.send(message)
- * }
- * // or
- * if (objective is ChatRoom) {
- *    objective.send(message)
- * }
- * ```
- *
- */
-@JvmSynthetic
-@Deprecated(
-    "Use Contact.send(message) or ChatRoom.send(message)",
-    ReplaceWith("if (this is SendSupport) send(message()) else null")
-)
-public suspend fun Objective.sendIfSupport(message: String): MessageReceipt? =
-    if (this is SendSupport) send(message) else null
-
-/**
- * @suppress 通常消息载体不应具备 '消息发送' 的能力。而对于消息事件，则应参考 [love.forte.simbot.event.MessageEvent.reply]。
- */
-@JvmSynthetic
-@Deprecated(
-    "Use MessageEvent.reply(message)",
-    ReplaceWith("if (this is SendSupport) send(message) else null")
-)
-public suspend fun MessageContainer.sendIfSupport(message: String): MessageReceipt? =
-    if (this is SendSupport) send(message) else null
-// endregion
-
 
 // region reply
 /**
@@ -332,139 +181,8 @@ public suspend fun Event.replyIfSupport(message: MessageContent): MessageReceipt
 @JvmSynthetic
 public suspend fun Event.replyIfSupport(message: String): MessageReceipt? =
     if (this is ReplySupport) reply(message) else null
-
-/**
- * @suppress 消息回复由 [love.forte.simbot.event.MessageEvent] 实现，对于 [Objective] 来说通常不具备此能力。
- */
-@JvmSynthetic
-@Deprecated(
-    "Use MessageEvent.reply(message)", level = DeprecationLevel.ERROR,
-    replaceWith = ReplaceWith("if (this is ReplySupport) reply(message) else null")
-)
-public suspend fun Objective.replyIfSupport(message: Message): MessageReceipt? =
-    if (this is ReplySupport) reply(message) else null
-
-
-/**
- * @suppress 消息回复由 [love.forte.simbot.event.MessageEvent] 实现，对于 [Objective] 来说通常不具备此能力。
- */
-@JvmSynthetic
-@Deprecated(
-    "Use MessageEvent.reply(message)", level = DeprecationLevel.ERROR,
-    replaceWith = ReplaceWith("if (this is ReplySupport) reply(message) else null")
-)
-public suspend fun MessageContainer.replyIfSupport(message: Message): MessageReceipt? =
-    if (this is ReplySupport) reply(message) else null
-
-/**
- * @suppress 消息回复由 [love.forte.simbot.event.MessageEvent] 实现，对于 [Objective] 来说通常不具备此能力。
- */
-@JvmSynthetic
-@Deprecated(
-    "Use MessageEvent.reply(message)", level = DeprecationLevel.ERROR,
-    replaceWith = ReplaceWith("if (this is ReplySupport) reply(message()) else null")
-)
-public suspend inline fun Objective.replyIfSupport(message: () -> Message): MessageReceipt? =
-    if (this is ReplySupport) reply(message()) else null
-
-
-/**
- * @suppress 消息回复由 [love.forte.simbot.event.MessageEvent] 实现。
- */
-@JvmSynthetic
-@Deprecated("Use MessageEvent.reply(message)", level = DeprecationLevel.ERROR,
-    replaceWith = ReplaceWith("if (this is ReplySupport) reply(message()) else null")
-)
-public suspend inline fun MessageContainer.replyIfSupport(message: () -> Message): MessageReceipt? =
-    if (this is ReplySupport) reply(message()) else null
-
-
-/**
- * @suppress 消息回复由 [love.forte.simbot.event.MessageEvent] 实现，对于 [Objective] 来说通常不具备此能力。
- */
-@JvmSynthetic
-@Deprecated("Use MessageEvent.reply(message)", level = DeprecationLevel.ERROR,
-    replaceWith = ReplaceWith("if (this is ReplySupport) reply(message) else null")
-)
-public suspend fun Objective.replyIfSupport(message: MessageContent): MessageReceipt? =
-    if (this is ReplySupport) reply(message) else null
-
-
-/**
- * @suppress 消息回复由 [love.forte.simbot.event.MessageEvent] 实现。
- */
-@JvmSynthetic
-@Deprecated("Use MessageEvent.reply(message)", level = DeprecationLevel.ERROR,
-    replaceWith = ReplaceWith("if (this is ReplySupport) reply(message) else null")
-)
-public suspend fun MessageContainer.replyIfSupport(message: MessageContent): MessageReceipt? =
-    if (this is ReplySupport) reply(message) else null
-
-
-/**
- * @suppress 消息回复由 [love.forte.simbot.event.MessageEvent] 实现，对于 [Objective] 来说通常不具备此能力。
- */
-@JvmSynthetic
-@Deprecated("Use MessageEvent.reply(message)", level = DeprecationLevel.ERROR,
-    replaceWith = ReplaceWith("if (this is ReplySupport) reply(message) else null")
-)
-public suspend fun Objective.replyIfSupport(message: String): MessageReceipt? =
-    if (this is ReplySupport) reply(message) else null
-
-
-/**
- * @suppress 消息回复由 [love.forte.simbot.event.MessageEvent] 实现。
- */
-@JvmSynthetic
-@Deprecated("Use MessageEvent.reply(message)", level = DeprecationLevel.ERROR,
-    replaceWith = ReplaceWith("if (this is ReplySupport) reply(message) else null")
-)
-public suspend fun MessageContainer.replyIfSupport(message: String): MessageReceipt? =
-    if (this is ReplySupport) reply(message) else null
 // endregion
 
-
-// region react
-/**
- * @suppress react api使用场景较少，且大概率应用于 [MessageContent] 或 [MessageReceipt] 中，需要时可直接自行判断。
- */
-@JvmSynthetic
-@Deprecated("The react api is used in fewer scenarios and can be judged directly by itself when needed",
-    ReplaceWith("if (this is MessageReactSupport) react(message) else null")
-)
-public suspend fun Objective.reactIfSupport(message: Message): MessageReceipt? =
-    if (this is MessageReactSupport) react(message) else null
-
-/**
- * @suppress react api使用场景较少，且大概率应用于 [MessageContent] 或 [MessageReceipt] 中，需要时可直接自行判断。
- */
-@JvmSynthetic
-@Deprecated("The react api is used in fewer scenarios and can be judged directly by itself when needed",
-    ReplaceWith("if (this is MessageReactSupport) react(message) else null")
-)
-public suspend fun MessageContainer.reactIfSupport(message: Message): MessageReceipt? =
-    if (this is MessageReactSupport) react(message) else null
-
-/**
- * @suppress react api使用场景较少，且大概率应用于 [MessageContent] 或 [MessageReceipt] 中，需要时可直接自行判断。
- */
-@JvmSynthetic
-@Deprecated("The react api is used in fewer scenarios and can be judged directly by itself when needed",
-    ReplaceWith("if (this is MessageReactSupport) react(message) else null")
-)
-public suspend inline fun Objective.reactIfSupport(message: () -> Message): MessageReceipt? =
-    if (this is MessageReactSupport) react(message()) else null
-
-/**
- * @suppress react api使用场景较少，且大概率应用于 [MessageContent] 或 [MessageReceipt] 中，需要时可直接自行判断。
- */
-@JvmSynthetic
-@Deprecated("The react api is used in fewer scenarios and can be judged directly by itself when needed",
-    ReplaceWith("if (this is MessageReactSupport) react(message) else null")
-)
-public suspend inline fun MessageContainer.reactIfSupport(message: () -> Message): MessageReceipt? =
-    if (this is MessageReactSupport) react(message()) else null
-// endregion
 
 
 /**

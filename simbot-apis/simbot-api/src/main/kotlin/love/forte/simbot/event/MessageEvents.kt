@@ -1,31 +1,26 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simbot.event
 
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
-import love.forte.simbot.Api4J
 import love.forte.simbot.ID
 import love.forte.simbot.action.ReplySupport
 import love.forte.simbot.action.SendSupport
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.*
-import love.forte.simbot.utils.runInNoScopeBlocking
 
 
 /**
@@ -173,34 +168,6 @@ public interface ChatRoomMessageEvent : MessageEvent, OrganizationEvent, RemoteM
     @JvmBlocking(asProperty = true, suffix = "")
     @JvmAsync(asProperty = true)
     public suspend fun author(): Member
-    
-    
-    /**
-     * 预期内，假若当前bot拥有足够的权限则可以对消息进行删除（撤回）操作。
-     *
-     * Deprecated: 使用 [messageContent.delete][RemoteMessageContent.delete]。
-     *
-     * @see messageContent
-     */
-    @JvmSynthetic
-    @Deprecated("Use messageContent.delete()", ReplaceWith("messageContent.delete()"), level = DeprecationLevel.ERROR)
-    public suspend fun delete(): Boolean = messageContent.delete()
-    
-    /**
-     * 预期内，假若当前bot拥有足够的权限则可以对消息进行删除（撤回）操作。
-     *
-     * Deprecated: 使用 [messageContent.deleteBlocking][RemoteMessageContent.delete]。
-     *
-     * @see messageContent
-     */
-    @Api4J
-    @Deprecated(
-        "Use getMessageContent().deleteBlocking()",
-        ReplaceWith("messageContent.deleteBlocking()"),
-        level = DeprecationLevel.ERROR
-    )
-    public fun deleteBlocking(): Boolean = runInNoScopeBlocking { messageContent.delete() }
-    
     
     public companion object Key : BaseEventKey<ChatRoomMessageEvent>(
         "api.chat_room_message", MessageEvent.Key

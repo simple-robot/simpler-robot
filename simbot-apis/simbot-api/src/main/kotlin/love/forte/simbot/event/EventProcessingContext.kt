@@ -1,26 +1,21 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simbot.event
 
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.Attribute
-import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.MutableAttributeMap
-import love.forte.simbot.attribute
 import love.forte.simbot.event.EventProcessingResult.Empty.resultsView
 import love.forte.simbot.utils.view.IndexAccessView
 import org.jetbrains.annotations.UnmodifiableView
@@ -54,7 +49,7 @@ public interface EventProcessingContext : CoroutineContext.Element, InstantScope
      * 请使用 [resultsView], 此api会在适当时机被删除。
      * @see resultsView
      */
-    @Deprecated("Use 'resultsView'", replaceWith = ReplaceWith("resultsView"))
+    @Deprecated("Use 'resultsView'", replaceWith = ReplaceWith("resultsView"), level = DeprecationLevel.ERROR)
     public val results: @UnmodifiableView List<EventResult> get() = resultsView.toList()
     
     /**
@@ -77,43 +72,6 @@ public interface EventProcessingContext : CoroutineContext.Element, InstantScope
      *
      */
     override fun <T : Any> getAttribute(attribute: Attribute<T>): T?
-    
-    
-    /**
-     * 事件流程上下文的部分作用域。 [Scope] 中的所有作用域应该按照约定由 [EventProcessingContext] 的产生者进行实现与提供。
-     *
-     * 通过 [getAttribute] 获取对应作用域结果。
-     *
-     * _Deprecated: Scope将作为核心模块（`simbot-core`）的SimpleApplication特性，不再属于api模块中的标准类型。_
-     */
-    @Deprecated(
-        "Just use love.forte.simbot.core.scope.SimpleScope",
-        ReplaceWith("SimpleScope", "love.forte.simbot.core.scope.SimpleScope"), level = DeprecationLevel.ERROR
-    )
-    public object Scope {
-        /**
-         * 全局作用域。 一个 [ScopeContext], 此作用域下的内容应当保持.
-         *
-         */
-        @JvmField
-        public val Global: Attribute<ScopeContext> = attribute("context.scope.global")
-        
-        /**
-         * 无效属性
-         */
-        @JvmField
-        @Deprecated("Just use EventProcessingContext itself", level = DeprecationLevel.ERROR)
-        public val Instant: Attribute<ScopeContext> = attribute("context.scope.instant")
-        
-        
-        /**
-         * 持续会话作用域. 可以通过持续会话作用域来达成监听函数之间的信息通讯的目的。
-         */
-        @JvmField
-        @ExperimentalSimbotApi
-        public val ContinuousSession: Attribute<ContinuousSessionContext> =
-            attribute("context.scope.continuous.session")
-    }
     
 }
 

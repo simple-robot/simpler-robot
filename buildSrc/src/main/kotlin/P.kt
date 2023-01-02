@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2022-2023 ForteScarlet <ForteScarlet@163.com>
  *
  * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
  * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
@@ -14,8 +14,6 @@
 @file:Suppress("unused")
 
 import love.forte.gradle.common.core.project.*
-import org.jetbrains.kotlin.konan.target.HostManager
-import org.jetbrains.kotlin.konan.target.KonanTarget
 
 /*
 *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
@@ -39,10 +37,10 @@ inline fun isSnapshot(b: () -> Unit = {}): Boolean {
     b()
     val snapProp = System.getProperty("isSnapshot")?.toBoolean() ?: false
     val snapEnv = System.getenv(Env.IS_SNAPSHOT)?.toBoolean() ?: false
-
+    
     println("IsSnapshot from system.property: $snapProp")
     println("IsSnapshot from system.env:      $snapEnv")
-
+    
     return snapProp || snapEnv
 }
 
@@ -51,37 +49,49 @@ inline fun isSnapshot(b: () -> Unit = {}): Boolean {
  * Project versions.
  */
 sealed class P(override val group: String) : ProjectDetail() {
+    /*
+    val groupProject = P::class.sealedSubclasses.mapNotNull { it.objectInstance }.associateBy { obj -> obj.group }
+            project = groupProject[p.group] ?: error("unknown project group: ${p.group}")
+            
+     */
     companion object {
         const val GROUP = "love.forte.simbot"
         const val BOOT_GROUP = "love.forte.simbot.boot"
         const val TEST_GROUP = "love.forte.simbot.test"
         const val UTIL_GROUP = "love.forte.simbot.util"
-
+        
         // const val COMPONENT_GROUP = "love.forte.simbot.component"
         const val DESCRIPTION = "Simple Robot，一个通用的bot风格事件调度框架，以灵活的统一标准来编写bot应用。"
         const val HOMEPAGE = "https://github.com/ForteScarlet/simpler-robot"
+        
+        fun findProjectDetailByGroup(group: String): ProjectDetail? {
+            val groupProject =
+                P::class.sealedSubclasses.mapNotNull { it.objectInstance }.associateBy { obj -> obj.group }
+            return groupProject[group]
+        }
+        
     }
-
+    
     override val homepage: String get() = HOMEPAGE
-
+    
     object Simbot : P(GROUP)
     object SimbotBoot : P(BOOT_GROUP)
     object SimbotTest : P(TEST_GROUP)
     object SimbotUtil : P(UTIL_GROUP)
-
-    override val version: Version
+    
+    final override val version: Version
     val versionWithoutSnapshot: Version
-
+    
     init {
         val mainVersion = version(3, 0, 0)
-        var status = version("M6")
+        var status = version("RC")
         versionWithoutSnapshot = mainVersion - status.copy()
         if (isSnapshot()) {
-            status = status - Version.SNAPSHOT
+            status -= Version.SNAPSHOT
         }
         version = mainVersion - status
     }
-
+    
     override val description: String get() = DESCRIPTION
     override val developers: List<Developer> = developers {
         developer {
@@ -112,6 +122,6 @@ sealed class P(override val group: String) : ProjectDetail() {
         connection = "scm:git:$HOMEPAGE.git"
         developerConnection = "scm:git:ssh://git@github.com/simple-robot/simpler-robot.git"
     }
-
-
+    
+    
 }

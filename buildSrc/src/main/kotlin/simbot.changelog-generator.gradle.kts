@@ -46,11 +46,6 @@ tasks.create("createChangelog") {
             it.mkdirs()
         }
         
-        val simbotLoggerKotlin =
-            project(":simbot-logger").extensions.getByName<KotlinMultiplatformExtension>(
-                "kotlin"
-            )
-        
         val file = File(changelogDir, "$version.md")
         if (!file.exists()) {
             file.createNewFile()
@@ -62,13 +57,40 @@ tasks.create("createChangelog") {
                 
                 appendLine("| **模块** | **search.maven** |")
                 appendLine("|---------|------------------|")
-                repoRowMulti(simbotLoggerKotlin, "simbot-logger", "love.forte.simbot", "simbot-logger", realVersion)
-                repoRow("simbot-api", "love.forte.simbot", "simbot-api", realVersion)
-                repoRow("simbot-core", "love.forte.simbot", "simbot-core", realVersion)
-                repoRow("simboot-api", "love.forte.simbot.boot", "simboot-api", realVersion)
-                repoRow("simboot-core", "love.forte.simbot.boot", "simboot-core", realVersion)
-                repoRow("simboot-core-annotation", "love.forte.simbot.boot", "simboot-core-annotation", realVersion)
-                repoRow("simboot-core-spring-boot-starter", "love.forte.simbot.boot", "simboot-core-spring-boot-starter", realVersion)
+                
+                rootProject.subprojects
+                    .filter { project ->
+                        project.extensions.findByType<PublishingExtension>() != null
+                    }.forEach { project ->
+                        // not publishable
+                        val multiplatformExtension =
+                            project.extensions.findByName("kotlin") as? KotlinMultiplatformExtension
+                        if (multiplatformExtension != null) {
+                            //val group = P.findProjectDetailByGroup(project.group.toString())
+                            repoRowMulti(
+                                multiplatformExtension,
+                                project.name,
+                                project.group.toString(),
+                                project.name,
+                                realVersion
+                            )
+                        } else {
+                            repoRow(project.name, project.group.toString(), project.name, realVersion)
+                        }
+                    }
+
+//                repoRowMulti(simbotLoggerKotlin, "simbot-logger", "love.forte.simbot", "simbot-logger", realVersion)
+//                repoRow("simbot-api", "love.forte.simbot", "simbot-api", realVersion)
+//                repoRow("simbot-core", "love.forte.simbot", "simbot-core", realVersion)
+//                repoRow("simboot-api", "love.forte.simbot.boot", "simboot-api", realVersion)
+//                repoRow("simboot-core", "love.forte.simbot.boot", "simboot-core", realVersion)
+//                repoRow("simboot-core-annotation", "love.forte.simbot.boot", "simboot-core-annotation", realVersion)
+//                repoRow(
+//                    "simboot-core-spring-boot-starter",
+//                    "love.forte.simbot.boot",
+//                    "simboot-core-spring-boot-starter",
+//                    realVersion
+//                )
                 
                 appendLine()
                 appendLine("</details>")
@@ -110,7 +132,8 @@ fun StringBuilder.repoRowMulti(
     }.forEach {
         when (it.platformType) {
             KotlinPlatformType.common ->
-                repoRow("$moduleName", group, id, version)
+                repoRow(moduleName, group, id, version)
+            
             else ->
                 repoRow("$moduleName-${it.targetName}", group, "$id-${it.targetName.toLowerCase()}", version)
         }

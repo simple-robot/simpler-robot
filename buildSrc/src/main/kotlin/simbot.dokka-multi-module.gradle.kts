@@ -25,7 +25,7 @@ plugins {
 
 fun org.jetbrains.dokka.gradle.AbstractDokkaTask.configOutput(format: String) {
     moduleName.set("simple-robot")
-    outputDirectory.set(rootProject.file("build/dokka/$format/v$version"))
+    outputDirectory.set(rootProject.file("build/dokka/$format"))
 }
 
 tasks.named<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>("dokkaHtmlMultiModule") {

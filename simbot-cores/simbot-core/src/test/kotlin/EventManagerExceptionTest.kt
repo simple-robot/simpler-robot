@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.core.event.buildSimpleListener
 import love.forte.simbot.core.event.simpleListenerManager
+import love.forte.simbot.event.EventResult
 
 /**
  *
@@ -11,9 +12,10 @@ import love.forte.simbot.core.event.simpleListenerManager
  */
 class EventManagerExceptionTest {
     
+    @OptIn(ExperimentalSimbotApi::class)
     private val manager = simpleListenerManager {
         listenerExceptionHandler {
-            TODO()
+            EventResult.invalid()
         }
     }
     private val botManager = TestBotManager(manager)

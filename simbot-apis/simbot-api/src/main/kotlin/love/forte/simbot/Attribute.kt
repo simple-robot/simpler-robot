@@ -1,17 +1,14 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 @file:JvmName("Attributes")
@@ -19,8 +16,6 @@
 package love.forte.simbot
 
 import kotlinx.serialization.Serializable
-import kotlin.reflect.KClass
-import kotlin.reflect.jvm.jvmName
 
 
 /*
@@ -84,13 +79,6 @@ public class Attribute<T : Any> private constructor(
         @Suppress("UNUSED_PARAMETER")
         public fun <T : Any> of(name: String, type: Class<T>): Attribute<T> = of(name)
         
-        
-        @Suppress("UNUSED_PARAMETER")
-        @Deprecated("Use of(name)", ReplaceWith("of(name)"), level = DeprecationLevel.ERROR)
-        @JvmSynthetic
-        public fun <T : Any> of(name: String, type: KClass<T>): Attribute<T> = of(name)
-        
-        
         /**
          * 构建一个 [Attribute] 实例。
          *
@@ -109,16 +97,10 @@ public class Attribute<T : Any> private constructor(
          */
         @JvmStatic
         public fun <T : Any> of(name: String): Attribute<T> = Attribute(name)
-        
     }
     
     
 }
-
-@Suppress("UNUSED_PARAMETER")
-@JvmSynthetic
-@Deprecated("Use attribute(name)", ReplaceWith("attribute(name)"), level = DeprecationLevel.ERROR)
-public fun <T : Any> attribute(name: String, type: KClass<T>): Attribute<T> = attribute(name)
 
 /**
  * 构建一个 [Attribute] 实例。
@@ -129,11 +111,6 @@ public fun <T : Any> attribute(name: String, type: KClass<T>): Attribute<T> = at
  *
  */
 public fun <T : Any> attribute(name: String): Attribute<T> = Attribute.of(name)
-
-@Deprecated("Use attribute(name)", ReplaceWith("attribute(name)"), level = DeprecationLevel.ERROR)
-public inline fun <reified T : Any> attribute(): Attribute<T> =
-    with(T::class) { Attribute.of(this.qualifiedName ?: this.simpleName ?: this.jvmName) }
-
 
 /**
  * 一个通过 [Attribute] 作为键值来界定其元素类型的映射表。

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2023 ForteScarlet <ForteScarlet@163.com>
  *
  * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
  * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
@@ -14,7 +14,6 @@
 package love.forte.simboot.annotation
 
 import love.forte.simboot.annotation.Filter.Targets
-import love.forte.simboot.annotation.Filter.Targets.Companion.NON_PREFIX
 import love.forte.simboot.filter.MatchType
 import love.forte.simboot.filter.MultiFilterMatchType
 import love.forte.simbot.event.ChannelEvent
@@ -104,24 +103,6 @@ public annotation class Filter(
      *
      * 整合了常见的一些过滤参数，例如群号或者发送人账号。
      *
-     * _Deprecated: 使用 [targets]_
-     *
-     * @see [targets]
-     */
-    @Suppress("DEPRECATION_ERROR")
-    @Deprecated("Use targets", ReplaceWith("targets"), level = DeprecationLevel.ERROR)
-    val target: TargetFilter = TargetFilter(),
-
-    /*
-        在 target 还存在的情况下，
-        当使用了 targets, 则不会使用 target。
-     */
-
-    /**
-     * 目标过滤内容。
-     *
-     * 整合了常见的一些过滤参数，例如群号或者发送人账号。
-     *
      * @see [Targets]
      */
     val targets: Targets = Targets(),
@@ -149,13 +130,15 @@ public annotation class Filter(
      *
      * 以下所有属性的匹配结果为并集，即**全部**匹配成功后得到true。假如某参数为空，则认为其为 `true`.
      *
+     * @see Filter
+     */
+    /*
+     * TODO
      * ## “非”前缀
      *
      * 下述所有属性中，如果某个值的前缀为 [NON_PREFIX], 则其代表的意思与正常相反：即需要不等于。
      * 例如一个 `@TargetFilter(bots = ["forliy"])`, 其代表此事件只能由 `bot.id == "forliy"` 的bot匹配。
      * 而如果使用 `@TargetFilter(bots = ["!forliy"])`, 则代表由所有 `bot.id != "forliy"` 的bot匹配。
-     *
-     * @see Filter
      */
     @Retention(AnnotationRetention.SOURCE)
     @Target(allowedTargets = [])
@@ -234,108 +217,11 @@ public annotation class Filter(
     ) {
         public companion object {
             /**
-             * [TargetFilter] 中的“非”前缀。
+             * [Filter.Targets] 中的“非”前缀。
              *
              */
             public const val NON_PREFIX: String = "!"
         }
-    }
-}
-
-
-/**
- * 通用属性过滤规则。
- *
- * 已弃用并重命名迁移至 [Filter.Targets].
- *
- * @see Filter
- * @see Filter.Targets
- */
-@Retention(AnnotationRetention.SOURCE)
-@Target(allowedTargets = [])
-@Deprecated(
-    "Use @Filter.Target",
-    ReplaceWith("Filter.Targets", "love.forte.simboot.annotation.Filter.Targets"), level = DeprecationLevel.ERROR
-)
-public annotation class TargetFilter(
-    /**
-     * 对接收事件的组件匹配. 大多数情况下，对于组件的唯一ID，组件实现库都应当有所说明或通过常量提供。 `["comp1", "comp2"]`
-     *
-     * 相当于:
-     * ```kotlin
-     *  event.component.id.literal in components
-     * ```
-     *
-     * 除了通过此 [components] 作为组件的筛选条件，直接监听一个组件下特有的事件类型能够更好的起到组件过滤的作用。
-     */
-    val components: Array<String> = [],
-
-    /**
-     * 对接收事件的botID匹配。
-     *
-     * 相当于:
-     * ```kotlin
-     * event.bot.id.literal in bots
-     * ```
-     */
-    val bots: Array<String> = [],
-
-    /**
-     * 对消息发送者的ID匹配。
-     *
-     * 相当于:
-     * ```kotlin
-     * event.author().id.literal in authors
-     * ```
-     */
-    val authors: Array<String> = [],
-
-    /**
-     * 如果这是个[群相关事件][GroupEvent] ，则对群ID匹配。
-     *
-     * 相当于:
-     * ```kotlin
-     * event.group().id.literal in groups
-     * ```
-     *
-     */
-    val groups: Array<String> = [],
-
-    /**
-     * 如果是个[子频道相关事件][ChannelEvent], 则对频道ID匹配。
-     *
-     * 相当于:
-     * ```kotlin
-     * event.channel().id.literal in channels
-     * ```
-     */
-    val channels: Array<String> = [],
-
-    /**
-     * 如果是个[频道服务器相关事件][GuildEvent], 则对频道服务器ID匹配。
-     */
-    val guilds: Array<String> = [],
-
-    /**
-     * 只有当前消息中存在任意一个 [At.target][love.forte.simbot.message.At.target] == event.bot.id 的 [At][love.forte.simbot.message.At] 消息的时候才会通过匹配。
-     *
-     * 相当于:
-     * ```kotlin
-     * event.messageContent.messages.any { it is At && it.target == event.bot.id }
-     * ```
-     * 此参数只有在当前事件类型为 [ChatroomMessageEvent][love.forte.simbot.event.ChatRoomMessageEvent] 的时候才会生效，且建议配合 [ContentTrim] 一起使用。
-     *
-     * 需要注意的是, [atBot] 的匹配结果**不一定准确**，例如当 bot.id 与实际的at目标ID不一致的时候。是否准确由对应组件下Bot、At等相关内容的构建与实现方式有关。此问题或许会在后续版本提供一个约定接口来完善相关匹配。
-     *
-     */
-    val atBot: Boolean = false,
-) {
-    public companion object {
-        /**
-         * [TargetFilter] 中的“非”前缀。
-         *
-         */
-        public const val NON_PREFIX: String = "!"
     }
 }
 
