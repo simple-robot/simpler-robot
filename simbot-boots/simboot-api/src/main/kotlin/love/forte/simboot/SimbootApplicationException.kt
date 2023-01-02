@@ -11,17 +11,15 @@
  * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
-package love.forte.simbot.core.event
+package love.forte.simboot
 
+import love.forte.simbot.SimbotException
 
-/**
- * 构建一个 [SimpleEventListenerManager].
- *
- * 可以选择提供一个初始的 [SimpleListenerManagerConfiguration]。
- */
-public inline fun simpleListenerManager(
-    initial: SimpleListenerManagerConfiguration = SimpleListenerManagerConfiguration(),
-    block: SimpleListenerManagerConfiguration.() -> Unit,
-): SimpleEventListenerManager {
-    return SimpleEventListenerManager.newInstance(initial.also(block))
+@Deprecated("Unused")
+public open class SimbootApplicationException : SimbotException {
+    public constructor() : super()
+    public constructor(message: String?) : super(message)
+    public constructor(message: String?, cause: Throwable?) : super(message, cause)
+    public constructor(cause: Throwable?) : super(cause)
 }
+

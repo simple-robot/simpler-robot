@@ -1,17 +1,14 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 
@@ -80,17 +77,6 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
      * 如果相关组件支持，则为对应时间，如果不支持则一般为构建时的瞬时时间戳。
      */
     public val timestamp: Timestamp
-
-    /**
-     * 这个事件客观上的 [可见范围][VisibleScope]。
-     *
-     * 此属性意义不大，未来可能会移除。
-     *
-     */
-    @Suppress("DEPRECATION_ERROR")
-    @Deprecated("此属性意义不大，未来可能会移除。", ReplaceWith("VisibleScope.PUBLIC", "love.forte.simbot.event.Event.VisibleScope"), level = DeprecationLevel.ERROR)
-    public val visibleScope: VisibleScope get() = VisibleScope.PUBLIC
-
 
     /**
      * 得到当前事件所对应的类型key。
@@ -251,45 +237,6 @@ public interface Event : BotContainer, IDContainer, ComponentContainer {
         }
 
     }
-
-
-    /**
-     * 消息事件的可见范围类型。
-     *
-     * _Deprecated: 含义不明确，缺少应用场景，未来可能会移除_
-     */
-    @Deprecated("Ambiguous meaning, lack of application scenarios, may be removed in the future", level = DeprecationLevel.ERROR)
-    public enum class VisibleScope {
-
-        /**
-         * 公共的可见范围, 代表这个事件是可能在当前环境下（例如一个组织中）所有人都可见的事件，
-         * 不仅是当前bot，可能同样会被其他任何人看到。
-         *
-         * 此类型的表现形式可以参考例如群聊、公开频道等。
-         *
-         */
-        PUBLIC,
-
-        /**
-         * 内部的可见范围，代表这个事件是可能在当前环境下（例如一个组织中）所有**相关内部人员**都可见的事件。
-         * 所谓的相关内部人员，可能指的是有一定特殊条件的人员范围、一定权限的人员范围等。
-         *
-         * 这样的范围划分有可能是事件提供者所决定的，也有可能是由当前的事件环境所决定的。
-         * 不一定必须要在事件环境（例如一个群消息）范围下的部分人可见才能作为内部消息，其从客观角度如果可以理解为 “内部”，那么也可以作为内部消息。
-         *
-         * 此类型的表现形式可以参考例如一个服务器中的某个只有管理员的频道、只有管理员能够看得到的申请等等。
-         *
-         */
-        INTERNAL,
-
-        /**
-         * 私有的可见范围，代表这个事件理论上来讲，应当只有bot自身和事件来源者能够了解到。
-         *
-         * 常见表现形式为例如私聊性质的消息事件、好友申请事件等。
-         */
-        PRIVATE
-
-    }
 }
 
 
@@ -360,18 +307,6 @@ private class AnnotationEventKey<T : Event>(
 @JvmSynthetic
 @Suppress("RemoveRedundantQualifierName")
 public fun <T : Event> KClass<T>.getKey(): Event.Key<T> = Event.Key.getKey(this)
-
-
-/**
- * 判断当前类型是否为提供类型的子类型。
- *
- */
-@Deprecated("Just use '... isSub ...'",
-    ReplaceWith("this isSub parentMaybe", "love.forte.simbot.event.Event.Key.Companion.isSub"), level = DeprecationLevel.ERROR)
-public infix fun Event.Key<*>.isSubFrom(parentMaybe: Event.Key<*>): Boolean {
-    return this isSub parentMaybe
-}
-
 
 /**
  * 判断当前类型是否为提供类型的子类型。
