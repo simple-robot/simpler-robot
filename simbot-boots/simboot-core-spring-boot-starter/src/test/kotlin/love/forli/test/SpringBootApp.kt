@@ -32,9 +32,7 @@ open class SpringBootApp
 
 
 fun main(vararg args: String) {
-    runApplication<SpringBootApp>(args = args).also { context ->
-        //println(context.getBean("myFilterFactory"))
-    }
+    runApplication<SpringBootApp>(args = args)
 }
 
 @Component

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2022-2023 ForteScarlet <ForteScarlet@163.com>
  *
  * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
  * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
@@ -17,7 +17,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
-import love.forte.simbot.*
+import love.forte.simbot.Api4J
+import love.forte.simbot.Component
+import love.forte.simbot.NoSuchComponentException
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.bot.BotVerifyInfo
@@ -59,28 +61,6 @@ public interface Application : CoroutineScope {
          * 当前应用程序安装的所有组件的 **列表视图**。
          */
         public val components: List<Component>
-
-        /**
-         * 尝试根据ID获取一个指定的组件对象。如果未找到则会抛出 [NoSuchComponentException].
-         *
-         * @throws NoSuchComponentException 当没有找到目标ID的组件时
-         */
-        @Deprecated(
-            "Use getComponentOrNull(String)",
-            ReplaceWith("getComponent(id.literal)", "love.forte.simbot.literal"),
-            level = DeprecationLevel.ERROR
-        )
-        public fun getComponent(id: ID): Component = getComponent(id.literal)
-
-        /**
-         * 尝试根据ID获取一个指定的组件对象。如果未找到则会返回null。
-         */
-        @Deprecated(
-            "Use getComponentOrNull(String)",
-            ReplaceWith("getComponentOrNull(id.literal)", "love.forte.simbot.literal"),
-            level = DeprecationLevel.ERROR
-        )
-        public fun getComponentOrNull(id: ID): Component? = getComponentOrNull(id.literal)
 
         /**
          * 尝试根据ID获取一个指定的组件对象。如果未找到则会抛出 [NoSuchComponentException].

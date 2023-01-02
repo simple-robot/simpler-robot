@@ -1,25 +1,22 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simbot.event
 
-import love.forte.simbot.*
-import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.Api4J
+import love.forte.simbot.Attribute
+import love.forte.simbot.AttributeContainer
 import love.forte.simbot.utils.runWithInterruptible
-import org.slf4j.Logger
 
 
 /**
@@ -55,50 +52,15 @@ public fun interface BlockingEventListenerFunction : EventListenerFunction {
         runWithInterruptible { invokeBlocking(context) }
 }
 
-
-private val TEMPORARY_LOGGER = LoggerFactory.getLogger("love.forte.simbot.event.EventListener")
-private const val TEMPORARY_ID = ""
-private const val TEMPORARY_IS_ASYNC = false
-private const val TEMPORARY_IS_PRIORITY = PriorityConstant.NORMAL
-
 /**
  *
  * 一个事件的事件监听器。
- *
  * 事件监听器监听到实现并进行逻辑处理。此处不包含诸如过滤器等内容。
- * 事件监听器存在 [优先级][priority]，默认优先级为 [PriorityConstant.NORMAL].
- *
  *
  * @author ForteScarlet
  */
-public interface EventListener : java.util.EventListener, AttributeContainer, LoggerContainer,
+public interface EventListener : java.util.EventListener, AttributeContainer,
     EventListenerFunction {
-    
-    /**
-     * 监听函数本身不需要所谓的'唯一标识'.
-     */
-    @Deprecated("No longer needed", level = DeprecationLevel.ERROR)
-    public val id: String get() = TEMPORARY_ID
-    
-    /**
-     * 监听函数本身不需要所谓的'日志'.
-     */
-    @Deprecated("No longer needed", level = DeprecationLevel.ERROR)
-    override val logger: Logger get() = TEMPORARY_LOGGER
-    
-    /**
-     * 监听函数本身不持有'优先级'.
-     */
-    @Deprecated("No longer needed", level = DeprecationLevel.ERROR)
-    public val priority: Int get() = TEMPORARY_IS_PRIORITY
-    
-    /**
-     *
-     * 监听函数本身不需要所谓的'异步标识'.
-     *
-     */
-    @Deprecated("No longer needed", level = DeprecationLevel.ERROR)
-    public val isAsync: Boolean get() = TEMPORARY_IS_ASYNC
     
     /**
      * 判断当前监听函数是否可以对指定的事件进行监听。

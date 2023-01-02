@@ -1,17 +1,14 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2022-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simbot.message
@@ -107,16 +104,6 @@ public class MessagesBuilder @JvmOverloads constructor(collection: MutableCollec
     public fun emoji(id: ID): MessagesBuilder = appendElement(Emoji(id))
     
     /**
-     * 通过 [Bot.uploadImage] 上传并拼接一个 [Image] 消息到当前消息中。
-     *
-     * @see Bot.uploadImage
-     */
-    @Suppress("UNUSED_PARAMETER", "RedundantSuspendModifier")
-    @JvmSynthetic
-    @Deprecated("Just use image(resource, id)", ReplaceWith("image(resource)"), level = DeprecationLevel.ERROR)
-    public suspend fun image(bot: Bot, resource: Resource): MessagesBuilder = image(resource)
-    
-    /**
      * 通过 [ResourceImage] 拼接一个 [Image] 消息到当前消息中。
      *
      * @see Image.toImage
@@ -134,22 +121,11 @@ public class MessagesBuilder @JvmOverloads constructor(collection: MutableCollec
     public suspend fun image(bot: Bot, id: ID): MessagesBuilder = appendElement(bot.resolveImage(id))
     
     /**
-     * 通过 [Bot.uploadImageBlocking] 上传并拼接一个 [Image] 消息到当前消息中。
-     *
-     * @see Bot.uploadImageBlocking
-     */
-    @Api4J
-    @JvmName("image")
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated("Just use image(resource, id)", ReplaceWith("image(resource)"), level = DeprecationLevel.ERROR)
-    public fun image4J(bot: Bot, resource: Resource): MessagesBuilder = image(resource)
-    
-    
-    /**
      * 通过 [Bot.resolveImageBlocking] 获取并拼接一个 [Image] 消息到当前消息中。
      *
      * @see Bot.resolveImageBlocking
      */
+    @Suppress("KDocUnresolvedReference")
     @Api4J
     @JvmName("image")
     public fun image4J(bot: Bot, id: ID): MessagesBuilder = runBlocking { image(bot, id) }

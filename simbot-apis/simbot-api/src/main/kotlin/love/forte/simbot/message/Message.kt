@@ -24,7 +24,6 @@ import love.forte.simbot.message.Message.Element
  *
  * @see Element
  * @see Messages
- * @see SingleOnlyMessage
  */
 public sealed interface Message {
     
@@ -32,8 +31,6 @@ public sealed interface Message {
      * 一个 [消息][Message] 的 [元素][Element], 元素本身也是一种消息。
      *
      * 需尽量保证实现类是可序列化的。
-     *
-     * @see SingleOnlyMessage 约束一个消息列表中仅只能存在此一种消息元素的消息。
      */
     public interface Element<out E : Element<E>> : Message {
         public val key: Key<E>
@@ -65,7 +62,7 @@ public sealed interface Message {
 /**
  * @suppress 没什么实际用处的扩展函数，未来将考虑移除
  */
-@Deprecated("Unused")
+@Deprecated("Unused", level = DeprecationLevel.ERROR)
 public inline fun <reified E : Element<E>> Message.Key<E>.cast(value: Any?): E {
     if (value == null) throw NullPointerException("cast value")
     if (value !is E) throw ClassCastException("Value cannot be cast to ${E::class.simpleName}")

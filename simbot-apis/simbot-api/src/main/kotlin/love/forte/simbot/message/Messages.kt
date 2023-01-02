@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2023 ForteScarlet <ForteScarlet@163.com>
  *
  * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
  * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
@@ -40,7 +40,6 @@ import love.forte.simbot.message.Message.Element as MsgElement
  * 除了直接使用拼接的方式，你也可以参考 [MessagesBuilder] 通过构建器来构建 [Messages] 实例。
  *
  * @see EmptyMessages
- * @see SingleOnlyMessage
  * @see MessageList
  * @see MessagesBuilder
  */
@@ -224,53 +223,13 @@ public object EmptyMessages : Messages, View<MsgElement<*>> by emptyView() {
     override fun toString(): String = "EmptyMessages"
 }
 
-
-/**
- * @suppress [SingleOnlyMessage] 已弃用并会在未来被移除，其特性不再有效。
- */
-@Deprecated("Deprecated and will be removing in future", level = DeprecationLevel.ERROR)
-public abstract class SingleOnlyMessage<E : MsgElement<E>> : MsgElement<E>, Messages, IndexAccessView<MsgElement<*>> {
-    abstract override val key: Message.Key<E>
-    
-    /**
-     * 用作 [toString] 展示信息的消息字符串结果。
-     */
-    protected abstract fun messageString(): String
-    final override val size: Int get() = 1
-    override fun get(index: Int): MsgElement<*> =
-        if (index == 0) this else throw IndexOutOfBoundsException("Index $index of size 1")
-    
-    
-    /**
-     * 拼接元素。
-     */
-    override fun plus(element: MsgElement<*>): Messages = element.toMessages()
-    
-    /**
-     * 拼接元素。
-     */
-    override fun plus(messages: Iterable<MsgElement<*>>): Messages {
-        if (messages is Collection && messages.isEmpty()) {
-            return this
-        }
-        
-        val newMessages = messages.toMessages()
-        return if (newMessages.isEmpty()) this else newMessages
-    }
-    
-    
-    final override fun toString(): String {
-        return "S@Messages([$this])"
-    }
-}
-
 /**
  * 得到元素为空的 [Messages] 实例。
  */
 public fun messages(): Messages = EmptyMessages
 
 /**
- * 得到元素数量为1的[Messages]实例。如果当前消息元素为 [SingleOnlyMessage] 类型，则会直接返回其自身。
+ * 得到元素数量为1的[Messages]实例。
  */
 public fun MsgElement<*>.toMessages(): Messages = SingleValueMessageList(this)
 
