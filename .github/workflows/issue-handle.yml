@@ -4,18 +4,10 @@ on:
     types: [opened, closed]
 
 
-jobs:
-  echo-event: 
-    name: Echo Event
-    runs-on: ubuntu-latest
-    steps:
-      - name: echo
-        run: |
-          echo ${{ toJSON(github.event) }}
-      
+jobs:     
   issue-open-waiting-for-confirm:
     name: Issue Open Waiting Confirm
-    if: github.event.action == 'opened' && !contains(github.event.repository.collaborators.nodes.*.id, github.event.sender.id) && github.event.sender.id != github.event.repository.owner.id
+    if: github.event.action == 'opened' && !contains(fromJSON('["ForteScarlet", "ForliyScarlet"]'), github.event.sender.login)
     runs-on: ubuntu-latest
     steps:
       # https://github.com/marketplace/actions/simple-issue-labeler
