@@ -43,3 +43,5 @@ public sealed interface Objective : BotContainer, IDContainer {
      */
     override val bot: Bot
 }
+
+// Actor?
