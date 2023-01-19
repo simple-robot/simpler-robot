@@ -1,17 +1,14 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simbot.event
@@ -20,6 +17,7 @@ import love.forte.plugin.suspendtrans.annotation.JvmAsync
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.ID
+import love.forte.simbot.JSTP
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.doSafeCast
@@ -64,16 +62,14 @@ public interface RequestEvent : Event, UserInfoContainer {
      *
      * @see JoinRequestEvent.requester
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun requester(): UserInfo
     
     
     /**
      * 通常情况下, [user] 等同于 [requester].
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun user(): UserInfo
     
     /**
@@ -145,15 +141,13 @@ public interface JoinRequestEvent : RequestEvent {
      * 假如BOT是被邀请者，则此值可能代表 [bot], 而邀请的人则为 [inviter]。
      *
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun requester(): UserInfo
     
     /**
      * 邀请人。当无法获取或不存在时得到null。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun inviter(): UserInfo?
     
     
@@ -185,8 +179,7 @@ public interface GuildJoinRequestEvent : JoinRequestEvent, GuildRequestEvent {
     /**
      * 想要申请加入的人的信息。假如这是一个BOT被邀请的事件，则此信息可能等于 [bot].
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun requester(): UserInfo
     
     
@@ -221,8 +214,7 @@ public interface GroupJoinRequestEvent : GroupRequestEvent, JoinRequestEvent {
     /**
      * 想要加入目标群的人的信息。假如是BOT被邀请的事件，则此值可能等同于 [bot].
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun requester(): UserInfo
     
     public companion object Key : BaseEventKey<GroupJoinRequestEvent>(

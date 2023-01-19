@@ -15,8 +15,6 @@ package love.forte.simbot.message
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.ID
 import love.forte.simbot.definition.IDContainer
@@ -240,10 +238,9 @@ public interface Image<E : Image<E>> : StandardMessage<E>, IDContainer, Resource
     /**
      * 得到这个图片的数据资源。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JvmSynthetic
     override suspend fun resource(): Resource
-    
+
     
     public companion object Key : Message.Key<Image<*>> {
         override fun safeCast(value: Any): Image<*>? = doSafeCast(value)

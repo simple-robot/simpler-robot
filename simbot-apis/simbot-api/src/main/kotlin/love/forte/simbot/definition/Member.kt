@@ -1,25 +1,21 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simbot.definition
 
 import kotlinx.coroutines.flow.firstOrNull
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ID
+import love.forte.simbot.JSTP
 import love.forte.simbot.Timestamp
 import love.forte.simbot.action.MuteSupport
 import love.forte.simbot.bot.Bot
@@ -44,8 +40,7 @@ public interface Member : Contact, MemberInfo, MuteSupport {
     /**
      * 这个成员所属的组织。一般来讲，一个 [Member] 实例不会同时存在于 [Group] 和 [Channel].
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun organization(): Organization
     
     /**
@@ -70,8 +65,7 @@ public interface Member : Contact, MemberInfo, MuteSupport {
      *
      * @see Role.isAdmin
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun isAdmin(): Boolean = roles.asFlow().firstOrNull { it.isAdmin } != null
     
     /**
@@ -79,8 +73,7 @@ public interface Member : Contact, MemberInfo, MuteSupport {
      *
      * @see Organization.ownerId
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun isOwner(): Boolean = organization().ownerId == id
     
 }
@@ -93,16 +86,14 @@ public interface GuildMember : Member {
     /**
      * 这个成员所属的频道服务器。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun guild(): Guild
     
     
     /**
      * 这个成员所属的频道服务器。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun organization(): Guild = guild()
 }
 
@@ -111,16 +102,14 @@ public interface GroupMember : Member {
     /**
      * 这个成员所属的群。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun group(): Group
     
     
     /**
      * 这个成员所属的群。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun organization(): Group = group()
 }
 

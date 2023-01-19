@@ -13,8 +13,7 @@
 
 package love.forte.simbot.action
 
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
+import love.forte.simbot.JST
 import love.forte.simbot.SimbotIllegalArgumentException
 import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.event.Event
@@ -37,8 +36,7 @@ import love.forte.simbot.message.Text
  *
  * @author ForteScarlet
  */
-@JvmBlocking
-@JvmAsync
+@JST
 public interface SendSupport {
     
     /**
@@ -112,8 +110,7 @@ public interface SendSupport {
  * @see replyIfSupport
  *
  */
-@JvmBlocking
-@JvmAsync
+@JST
 public interface ReplySupport {
     
     /**
@@ -147,8 +144,7 @@ public interface ReplySupport {
  * 而回应则更多的是对于一个消息"作出回应"，通产情况下不会产生新的消息，一般会表现为标记一个表情。
  *
  */
-@JvmBlocking
-@JvmAsync
+@JST
 public interface MessageReactSupport {
     public suspend fun react(message: Message): MessageReceipt
 }
