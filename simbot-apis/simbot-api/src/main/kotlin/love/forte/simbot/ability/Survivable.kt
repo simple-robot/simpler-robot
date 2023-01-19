@@ -14,9 +14,8 @@
 package love.forte.simbot.ability
 
 import kotlinx.coroutines.CompletionHandler
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
+import love.forte.simbot.JST
 import love.forte.simbot.utils.runInNoScopeBlocking
 
 /**
@@ -25,14 +24,12 @@ import love.forte.simbot.utils.runInNoScopeBlocking
  *
  * @author ForteScarlet
  */
-@JvmBlocking
-@JvmAsync
 public interface Survivable : Switchable {
     
     /**
      * 挂起, 直到当前实例被 [cancel] 或完成.
      */
-    @JvmAsync(baseName = "asFuture", suffix = "")
+    @JST(asyncBaseName = "asFuture", asyncSuffix = "")
     public suspend fun join()
     
     /**

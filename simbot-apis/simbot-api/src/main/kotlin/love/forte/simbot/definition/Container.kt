@@ -13,12 +13,10 @@
 
 package love.forte.simbot.definition
 
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ID
+import love.forte.simbot.JSTP
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.resources.Resource
-import love.forte.simbot.utils.runInNoScopeBlocking
 
 /**
  * 定义一个 **容器**。
@@ -97,8 +95,7 @@ public interface ChannelInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [channel][ChannelInfo].
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun channel(): ChannelInfo
 }
 
@@ -120,8 +117,7 @@ public interface GuildInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [guild][GuildInfo].
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun guild(): GuildInfo
 }
 
@@ -143,8 +139,7 @@ public interface GroupInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [group][GroupInfo].
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun group(): GroupInfo
 }
 
@@ -167,8 +162,7 @@ public interface UserInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [user][UserInfo]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun user(): UserInfo
 }
 
@@ -190,8 +184,7 @@ public interface MemberInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [member][MemberInfo].
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun member(): MemberInfo
 }
 
@@ -213,8 +206,7 @@ public interface FriendInfoContainer : SuspendablePropertyContainer {
     /**
      * 当前 [friend][FriendInfo].
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun friend(): FriendInfo
 }
 
@@ -237,8 +229,7 @@ public interface ResourceContainer : SuspendablePropertyContainer {
     /**
      * 得到当前容器中的 [资源][Resource].
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun resource(): Resource
     
 }

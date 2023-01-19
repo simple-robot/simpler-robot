@@ -11,6 +11,7 @@
  * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
+
 package love.forte.simbot
 
 import love.forte.plugin.suspendtrans.annotation.JvmAsync
@@ -33,17 +34,24 @@ public annotation class JvmSuspendTrans(
     val asyncAsProperty: Boolean = false,
 )
 
+/**
+ * @see JvmSuspendTrans
+ */
+@Suppress("SpellCheckingInspection")
+internal typealias JST = JvmSuspendTrans
 
 
 /**
  * 用于代表同时标记 [@JvmBlocking][JvmBlocking] 和 [@JvmAsync][JvmAsync] 的整合性注解。
+ *
+ * [JvmSuspendTransProperty] 默认转化为属性类型，且 blocking 的转化默认没有后缀。
  *
  */
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
 public annotation class JvmSuspendTransProperty(
     val blockingBaseName: String = "",
-    val blockingSuffix: String = "Blocking",
+    val blockingSuffix: String = "", // nothing
     val blockingAsProperty: Boolean = true,
     
     val asyncBaseName: String = "",
@@ -51,3 +59,8 @@ public annotation class JvmSuspendTransProperty(
     val asyncAsProperty: Boolean = true,
 )
 
+/**
+ * @see JvmSuspendTransProperty
+ */
+@Suppress("SpellCheckingInspection")
+internal typealias JSTP = JvmSuspendTransProperty

@@ -15,10 +15,9 @@ package love.forte.simbot.application
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.modules.SerializersModule
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
 import love.forte.simbot.Component
+import love.forte.simbot.JST
 import love.forte.simbot.NoSuchComponentException
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotManager
@@ -99,8 +98,7 @@ public interface Application : CoroutineScope {
     /**
      * 挂起此应用直至其被终止。
      */
-    @JvmBlocking
-    @JvmAsync(baseName = "asFuture", suffix = "")
+    @JST(asyncBaseName = "asFuture", asyncSuffix = "")
     public suspend fun join()
 
 
@@ -110,8 +108,7 @@ public interface Application : CoroutineScope {
      * [Application] 被终止后将不能再次启动。
      *
      */
-    @JvmBlocking
-    @JvmAsync
+    @JST
     public suspend fun shutdown(reason: Throwable? = null)
 
     /**

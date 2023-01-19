@@ -31,7 +31,6 @@ object SuspendTransforms {
     private val includeAnnotationApi4JClassInfo = ClassInfo("love.forte.simbot", "Api4J")
     private val includeAnnotationApi4J = IncludeAnnotation(includeAnnotationApi4JClassInfo)
     private val includeAnnotations = listOf(includeAnnotationApi4J)
-    private val copyExcludes = listOf(SuspendTransformConfiguration)
     
     /**
      * JvmBlocking
@@ -77,6 +76,37 @@ object SuspendTransforms {
     val jvmSuspendTransTransformerForAsync = jvmAsyncTransformer.copy(
         markAnnotation = jvmSuspendTransMarkAnnotationForAsync,
         copyAnnotationExcludes = SuspendTransformConfiguration.jvmAsyncTransformer.copyAnnotationExcludes + jvmSuspendTransMarkAnnotationForAsync.classInfo
+    )
+    //endregion
+    
+    //region @JvmSuspendTransProperty
+    private val jvmSuspendTransPropMarkAnnotationClassInfo = ClassInfo("love.forte.simbot", "JvmSuspendTransProperty")
+    
+    private val jvmSuspendTransPropMarkAnnotationForBlocking = MarkAnnotation(
+        jvmSuspendTransPropMarkAnnotationClassInfo,
+        baseNameProperty = "blockingBaseName",
+        suffixProperty = "blockingSuffix",
+        asPropertyProperty = "blockingAsProperty",
+        defaultSuffix = "",
+        defaultAsProperty = true
+    )
+    private val jvmSuspendTransPropMarkAnnotationForAsync = MarkAnnotation(
+        jvmSuspendTransPropMarkAnnotationClassInfo,
+        baseNameProperty = "asyncBaseName",
+        suffixProperty = "asyncSuffix",
+        asPropertyProperty = "asyncAsProperty",
+        defaultSuffix = SuspendTransformConfiguration.jvmAsyncAnnotationInfo.defaultSuffix,
+        defaultAsProperty = true
+    )
+    
+    val jvmSuspendTransPropTransformerForBlocking = jvmBlockingTransformer.copy(
+        markAnnotation = jvmSuspendTransPropMarkAnnotationForBlocking,
+        copyAnnotationExcludes = SuspendTransformConfiguration.jvmBlockingTransformer.copyAnnotationExcludes + jvmSuspendTransPropMarkAnnotationForBlocking.classInfo
+    )
+    
+    val jvmSuspendTransPropTransformerForAsync = jvmAsyncTransformer.copy(
+        markAnnotation = jvmSuspendTransPropMarkAnnotationForAsync,
+        copyAnnotationExcludes = SuspendTransformConfiguration.jvmAsyncTransformer.copyAnnotationExcludes + jvmSuspendTransPropMarkAnnotationForAsync.classInfo
     )
     //endregion
     

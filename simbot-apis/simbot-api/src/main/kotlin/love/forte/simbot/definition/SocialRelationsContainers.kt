@@ -14,9 +14,9 @@
 package love.forte.simbot.definition
 
 import kotlinx.coroutines.flow.count
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ID
+import love.forte.simbot.JST
+import love.forte.simbot.JSTP
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.utils.item.Items
 
@@ -77,8 +77,7 @@ public interface FriendsContainer : SocialRelationsContainer {
      *
      * @since 3.0.0-RC.2
      */
-    @JvmBlocking(suffix = "", asProperty = true)
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun friendCount(): Int {
         return friends.asFlow().count()
     }
@@ -88,8 +87,7 @@ public interface FriendsContainer : SocialRelationsContainer {
      *
      * @param id 好友的唯一标识
      */
-    @JvmBlocking(baseName = "getFriend", suffix = "")
-    @JvmAsync(baseName = "getFriend")
+    @JST(blockingBaseName = "getFriend", blockingSuffix = "", asyncBaseName = "getFriend")
     public suspend fun friend(id: ID): Friend?
     
 }
@@ -156,8 +154,7 @@ public interface ContactsContainer : SocialRelationsContainer {
      *
      * @since 3.0.0-RC.2
      */
-    @JvmBlocking(suffix = "", asProperty = true)
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun contactCount(): Int {
         return contacts.asFlow().count()
     }
@@ -171,8 +168,7 @@ public interface ContactsContainer : SocialRelationsContainer {
      *
      * @param id 目标唯一标识
      */
-    @JvmBlocking(baseName = "getContact", suffix = "")
-    @JvmAsync(baseName = "getContact")
+    @JST(blockingBaseName = "getContact", blockingSuffix = "", asyncBaseName = "getContact")
     public suspend fun contact(id: ID): Contact?
 }
 
@@ -215,8 +211,7 @@ public interface GroupsContainer : SocialRelationsContainer {
      *
      * @since 3.0.0-RC.2
      */
-    @JvmBlocking(suffix = "", asProperty = true)
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun groupCount(): Int {
         return groups.asFlow().count()
     }
@@ -226,8 +221,7 @@ public interface GroupsContainer : SocialRelationsContainer {
      *
      * @param id 目标群唯一标识
      */
-    @JvmBlocking(baseName = "getGroup", suffix = "")
-    @JvmAsync(baseName = "getGroup")
+    @JST(blockingBaseName = "getGroup", blockingSuffix = "", asyncBaseName = "getGroup")
     public suspend fun group(id: ID): Group?
 }
 
@@ -269,8 +263,7 @@ public interface GuildsContainer : SocialRelationsContainer {
      *
      * @since 3.0.0-RC.2
      */
-    @JvmBlocking(suffix = "", asProperty = true)
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun guildCount(): Int {
         return guilds.asFlow().count()
     }
@@ -280,8 +273,7 @@ public interface GuildsContainer : SocialRelationsContainer {
      *
      * @param id 频道服务器唯一标识
      */
-    @JvmBlocking(baseName = "getGuild", suffix = "")
-    @JvmAsync(baseName = "getGuild")
+    @JST(blockingBaseName = "getGuild", blockingSuffix = "", asyncBaseName = "getGuild")
     public suspend fun guild(id: ID): Guild?
 }
 
