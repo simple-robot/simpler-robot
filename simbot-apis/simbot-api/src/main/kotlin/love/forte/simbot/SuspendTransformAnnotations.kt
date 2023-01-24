@@ -35,6 +35,7 @@ public annotation class JvmSuspendTrans(
 )
 
 /**
+ * **J**vm **S**uspend **T**rans
  * @see JvmSuspendTrans
  */
 @Suppress("SpellCheckingInspection")
@@ -60,6 +61,7 @@ public annotation class JvmSuspendTransProperty(
 )
 
 /**
+ * **J**vm **S**uspend **T**rans **P**roperty.
  * @see JvmSuspendTransProperty
  */
 @Suppress("SpellCheckingInspection")
