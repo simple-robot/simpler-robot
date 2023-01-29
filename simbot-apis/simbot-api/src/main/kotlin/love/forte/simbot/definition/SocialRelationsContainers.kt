@@ -1,24 +1,22 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2022-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simbot.definition
 
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
+import kotlinx.coroutines.flow.count
 import love.forte.simbot.ID
+import love.forte.simbot.JST
+import love.forte.simbot.JSTP
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.utils.item.Items
 
@@ -64,16 +62,32 @@ public interface FriendsContainer : SocialRelationsContainer {
     /**
      * 得到此容器下的好友序列。
      *
+     * [friends] 可能是一个根据 [Items.batch] 批次发起某种网络请求的真实序列，
+     * 也可能是由当前容器内部提前缓存好的伪序列，而不会发起真正的网络请求。
      */
     public val friends: Items<Friend>
+    
+    /**
+     * 得到当前容器中所有[好友][Friend]的总数量。
+     *
+     * [friendCount] 可能每次请求都会发起某种网络请求，
+     * 也可能仅跟随当前容器内部某种缓存机制刷新的数值，而不会发起真正的网络请求。
+     *
+     * 默认情况下（组件未实现、不支持直接查询数量等）相当于直接通过 [friends] 进行全量查询并计数。
+     *
+     * @since 3.0.0-RC.2
+     */
+    @JSTP
+    public suspend fun friendCount(): Int {
+        return friends.asFlow().count()
+    }
     
     /**
      * 通过唯一标识获取这个容器对应的某个好友，获取不到则为null。
      *
      * @param id 好友的唯一标识
      */
-    @JvmBlocking(baseName = "getFriend", suffix = "")
-    @JvmAsync(baseName = "getFriend")
+    @JST(blockingBaseName = "getFriend", blockingSuffix = "", asyncBaseName = "getFriend")
     public suspend fun friend(id: ID): Friend?
     
 }
@@ -112,6 +126,9 @@ public interface ContactsContainer : SocialRelationsContainer {
     /**
      * 得到当前容器中能够获取到的联系人序列。
      *
+     * [contacts] 可能是一个根据 [Items.batch] 批次发起某种网络请求的真实序列，
+     * 也可能是由当前容器内部提前缓存好的伪序列，而不会发起真正的网络请求。
+     *
      * 联系人序列不能保证结果为 **_预期内的_ 全量** 序列，尤其是对于一个 [Bot] 而言。
      * 因为站在容器对于"联系人"的角度上来说，[Contact] 大多数情况下代表为一个"会话"。
      * 如果一个联系人与当前容器从未构建过任何会话，
@@ -126,6 +143,22 @@ public interface ContactsContainer : SocialRelationsContainer {
      */
     public val contacts: Items<Contact>
     
+    
+    /**
+     * 得到当前容器中所有[联系人][Contact]的总数量。
+     *
+     * [contactCount] 可能每次请求都会发起某种网络请求，
+     * 也可能仅跟随当前容器内部某种缓存机制刷新的数值，而不会发起真正的网络请求。
+     *
+     * 默认情况下（组件未实现、不支持直接查询数量等）相当于直接通过 [contacts] 进行全量查询并计数。
+     *
+     * @since 3.0.0-RC.2
+     */
+    @JSTP
+    public suspend fun contactCount(): Int {
+        return contacts.asFlow().count()
+    }
+    
     /**
      * 通过唯一标识获取对应的 [Contact] 实例。当且仅当因标识对应联系人不存在而导致无法获取时得到null。
      *
@@ -135,8 +168,7 @@ public interface ContactsContainer : SocialRelationsContainer {
      *
      * @param id 目标唯一标识
      */
-    @JvmBlocking(baseName = "getContact", suffix = "")
-    @JvmAsync(baseName = "getContact")
+    @JST(blockingBaseName = "getContact", blockingSuffix = "", asyncBaseName = "getContact")
     public suspend fun contact(id: ID): Contact?
 }
 
@@ -163,16 +195,33 @@ public interface GroupsContainer : SocialRelationsContainer {
     /**
      * 获取当前bot所处的群聊序列。
      *
+     * [groups] 可能是一个根据 [Items.batch] 批次发起某种网络请求的真实序列，
+     * 也可能是由当前容器内部提前缓存好的伪序列，而不会发起真正的网络请求。
+     *
      */
     public val groups: Items<Group>
+    
+    /**
+     * 得到当前容器中所有[群][Group]的总数量。
+     *
+     * [groupCount] 可能每次请求都会发起某种网络请求，
+     * 也可能仅跟随当前容器内部某种缓存机制刷新的数值，而不会发起真正的网络请求。
+     *
+     * 默认情况下（组件未实现、不支持直接查询数量等）相当于直接通过 [groups] 进行全量查询并计数。
+     *
+     * @since 3.0.0-RC.2
+     */
+    @JSTP
+    public suspend fun groupCount(): Int {
+        return groups.asFlow().count()
+    }
     
     /**
      * 通过唯一标识获取这个bot对应的某个群，获取不到则为null。
      *
      * @param id 目标群唯一标识
      */
-    @JvmBlocking(baseName = "getGroup", suffix = "")
-    @JvmAsync(baseName = "getGroup")
+    @JST(blockingBaseName = "getGroup", blockingSuffix = "", asyncBaseName = "getGroup")
     public suspend fun group(id: ID): Group?
 }
 
@@ -198,17 +247,33 @@ public interface GuildsContainer : SocialRelationsContainer {
     
     /**
      * 获取当前的所有频道服务器序列。
+     *
+     * [guilds] 可能是一个根据 [Items.batch] 批次发起某种网络请求的真实序列，
+     * 也可能是由当前容器内部提前缓存好的伪序列，而不会发起真正的网络请求。
      */
     public val guilds: Items<Guild>
     
+    /**
+     * 得到当前容器中所有[频道服务器][Guild]的总数量。
+     *
+     * [guildCount] 可能每次请求都会发起某种网络请求，
+     * 也可能仅跟随当前容器内部某种缓存机制刷新的数值，而不会发起真正的网络请求。
+     *
+     * 默认情况下（组件未实现、不支持直接查询数量等）相当于直接通过 [guilds] 进行全量查询并计数。
+     *
+     * @since 3.0.0-RC.2
+     */
+    @JSTP
+    public suspend fun guildCount(): Int {
+        return guilds.asFlow().count()
+    }
     
     /**
      * 通过唯一标识获取这个bot对应的某个频道，获取不到则为null。
      *
      * @param id 频道服务器唯一标识
      */
-    @JvmBlocking(baseName = "getGuild", suffix = "")
-    @JvmAsync(baseName = "getGuild")
+    @JST(blockingBaseName = "getGuild", blockingSuffix = "", asyncBaseName = "getGuild")
     public suspend fun guild(id: ID): Guild?
 }
 

@@ -1,23 +1,19 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simbot.event
 
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
+import love.forte.simbot.JSTP
 import love.forte.simbot.action.ActionType
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.doSafeCast
@@ -45,8 +41,7 @@ public interface MemberChangedEvent :
      * 无法保证当前事件能够获取到 [operator] 的信息，当不支持对此信息进行获取的时候，将会得到 `null`。
      *
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun operator(): MemberInfo?
     
     
@@ -74,15 +69,13 @@ public interface MemberIncreaseEvent :
     /**
      * 成员增加事件发生所在的组织。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun source(): Organization
     
     /**
      * 增加的[成员][Member]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun after(): Member
     
     
@@ -115,8 +108,7 @@ public interface MemberDecreaseEvent :
     /**
      * 离开的[成员][Member]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun before(): Member
     
     /**
@@ -152,22 +144,19 @@ public interface GroupMemberIncreaseEvent : MemberIncreaseEvent, GroupEvent {
     /**
      * 成员增加事件发生所在的[群][Group]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun source(): Group
     
     /**
      * 增加的[群成员][GroupMember]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun after(): GroupMember
     
     /**
      * 增加的[群成员][GroupMember]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun member(): GroupMember
     
     
@@ -200,24 +189,21 @@ public interface GuildMemberIncreaseEvent : MemberIncreaseEvent, GuildEvent {
     /**
      * 成员增加事件发生所在的[频道服务器][Guild]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun source(): Guild
     
     
     /**
      * 增加的[频道成员][GuildMember]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun after(): GuildMember
     
     
     /**
      * 增加的[频道成员][GuildMember]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun member(): GuildMember
     
     
@@ -250,24 +236,21 @@ public interface GroupMemberDecreaseEvent : MemberDecreaseEvent, GroupEvent {
     /**
      * 成员减少事件发生所在的[群][Group]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun source(): Group
     
     
     /**
      * 减少的[群成员][GroupMember]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun before(): GroupMember
     
     
     /**
      * 减少的[群成员][GroupMember]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun member(): GroupMember
     
     
@@ -300,24 +283,21 @@ public interface GuildMemberDecreaseEvent : MemberDecreaseEvent, GuildEvent {
     /**
      * 成员减少事件发生所在的[频道服务器][Guild]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun source(): Guild
     
     
     /**
      * 减少的[频道成员][GuildMember]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun before(): GuildMember
     
     
     /**
      * 减少的[频道成员][GuildMember]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun member(): GuildMember
     
     

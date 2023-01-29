@@ -17,8 +17,6 @@ import kotlinx.coroutines.CompletionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.*
 import love.forte.simbot.ability.Survivable
 import love.forte.simbot.definition.*
@@ -131,8 +129,7 @@ public interface Bot : User, BotInfo, Survivable,
      *  这个 [Image] 不一定是真正远端图片结果，它有可能只是一个预处理类型。
      *  在执行 [resolveImage] 的过程中也不一定出现真正地挂起行为，具体细节请参考具体实现。
      */
-    @JvmBlocking
-    @JvmAsync
+    @JST
     public suspend fun resolveImage(id: ID): Image<*>
     
     

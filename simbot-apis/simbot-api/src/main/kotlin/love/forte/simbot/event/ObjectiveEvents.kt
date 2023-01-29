@@ -1,23 +1,19 @@
 /*
- *  Copyright (c) 2021-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2021-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simbot.event
 
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
+import love.forte.simbot.JSTP
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.definition.*
 import love.forte.simbot.message.doSafeCast
@@ -44,8 +40,7 @@ public interface UserEvent : ObjectiveEvent, UserInfoContainer {
     /**
      * 这个[用户][User]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun user(): User
     
     public companion object Key : BaseEventKey<UserEvent>("api.user") {
@@ -67,16 +62,14 @@ public interface MemberEvent : UserEvent, MemberInfoContainer {
     /**
      * 这个[成员][Member]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun member(): Member
     
     
     /**
      * 这个[成员][Member]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun user(): Member
     
     
@@ -98,15 +91,13 @@ public interface FriendEvent : UserEvent, FriendInfoContainer {
     /**
      * 这个[好友][Friend]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun friend(): Friend
     
     /**
      * 这个[好友][Friend]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun user(): Friend
     
     public companion object Key : BaseEventKey<FriendEvent>("api.friend", UserEvent) {
@@ -131,8 +122,7 @@ public interface OrganizationEvent : ObjectiveEvent {
     /**
      * 这个[组织][Organization]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun organization(): Organization
     
     public companion object Key : BaseEventKey<OrganizationEvent>("api.organization") {
@@ -157,15 +147,13 @@ public interface GroupEvent : OrganizationEvent, GroupInfoContainer {
     /**
      * 这个[群][Group]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun group(): Group
     
     /**
      * 这个[群][Group]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun organization(): Group
     
     
@@ -187,15 +175,13 @@ public interface GuildEvent : OrganizationEvent {
     /**
      * 这个[频道服务器][Guild]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun guild(): Guild
     
     /**
      * 这个[频道服务器][Guild]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun organization(): Guild
     
     
@@ -218,16 +204,14 @@ public interface ChannelEvent : OrganizationEvent {
     /**
      * 这个[频道][Channel]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun channel(): Channel
     
     
     /**
      * 这个[频道][Channel]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun organization(): Channel
     
     public companion object Key : BaseEventKey<ChannelEvent>("api.channel", OrganizationEvent) {

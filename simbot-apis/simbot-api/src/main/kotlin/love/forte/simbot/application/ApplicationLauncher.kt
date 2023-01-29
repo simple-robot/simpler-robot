@@ -1,26 +1,22 @@
 /*
- *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
+ * Copyright (c) 2022-2023 ForteScarlet <ForteScarlet@163.com>
  *
- *  本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x ) 的一部分。
+ * 本文件是 simply-robot (或称 simple-robot 3.x 、simbot 3.x 、simbot3 等) 的一部分。
+ * simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+ * 发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
  *
- *  simply-robot 是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
- *
- *  发布 simply-robot 是希望它能有用，但是并无保障;甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
- *
- *  你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
- *  https://www.gnu.org/licenses
- *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
- *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
- *
+ * 你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看:
+ * https://www.gnu.org/licenses
+ * https://www.gnu.org/licenses/gpl-3.0-standalone.html
+ * https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  */
 
 package love.forte.simbot.application
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.Api4J
+import love.forte.simbot.JST
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -40,16 +36,15 @@ public interface ApplicationLauncher<out A : Application> {
     /**
      * 开始启动当前应用程序，并在内部应用程序启动成功后得到目标应用程序实例 [A].
      */
-    @JvmBlocking
-    @JvmAsync
+    @JST
     public suspend fun launch(): A
     
     
     /**
-     * 异步的启动当前应用程序，并在内部应用程序启动成功后将目标应用程序实例 [A] 应用于回调函数 [onCompletion] .
-     *
+     * @suppress 直接使用 `launchAsync()` 得到 [java.util.concurrent.CompletableFuture] 并使用即可。
      */
     @Api4J
+    @Deprecated("Just use launch")
     public fun launchAsync(onCompletion: OnCompletion<A>)
     
 }
@@ -89,6 +84,7 @@ private class ApplicationLauncherImpl<out A : Application>(
     override suspend fun launch(): A = create()
     
     @Api4J
+    @Deprecated("Just use launch", ReplaceWith("launch { onCompletion(launch()) }", "kotlinx.coroutines.launch"))
     override fun launchAsync(onCompletion: OnCompletion<A>) {
         launch {
             onCompletion(launch())

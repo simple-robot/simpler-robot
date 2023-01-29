@@ -13,9 +13,8 @@
 
 package love.forte.simbot.event
 
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 import love.forte.simbot.ID
+import love.forte.simbot.JSTP
 import love.forte.simbot.action.ReplySupport
 import love.forte.simbot.action.SendSupport
 import love.forte.simbot.bot.Bot
@@ -45,8 +44,7 @@ public interface MessageEvent : Event, RemoteMessageContainer, ReplySupport {
      * 通常情况下，[source] 都是可以 [发送消息][SendSupport] 的。
      *
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun source(): Objective
     
     
@@ -86,16 +84,14 @@ public interface ContactMessageEvent : MessageEvent, UserEvent {
     /**
      * 消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun user(): Contact
     
     
     /**
      * 消息的信息来源是一个可以进行信息交互的 [联系人][Contact]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun source(): Contact
     
     
@@ -124,15 +120,13 @@ public interface FriendMessageEvent : ContactMessageEvent, FriendEvent {
     /**
      * 消息的信息来源是一个可以进行信息交互的 [好友][Friend]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun user(): Friend
     
     /**
      * 消息的信息来源是一个可以进行信息交互的 [好友][Friend]
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun source(): Friend
     
     
@@ -158,15 +152,13 @@ public interface ChatRoomMessageEvent : MessageEvent, OrganizationEvent, RemoteM
     /**
      * 来自的聊天室，通常是一个[群][Group]或者一个[频道][Channel]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun source(): ChatRoom
     
     /**
      * 这个消息的发送者.
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     public suspend fun author(): Member
     
     public companion object Key : BaseEventKey<ChatRoomMessageEvent>(
@@ -205,8 +197,7 @@ public interface GroupMessageEvent : ChatRoomMessageEvent, GroupEvent {
     /**
      * 消息来自的[群][Group]。
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun source(): Group
     
     
@@ -228,8 +219,7 @@ public interface ChannelMessageEvent : ChatRoomMessageEvent, ChannelEvent {
     /**
      * 消息事件来源的[频道][Channel].
      */
-    @JvmBlocking(asProperty = true, suffix = "")
-    @JvmAsync(asProperty = true)
+    @JSTP
     override suspend fun source(): Channel
     
     public companion object Key : BaseEventKey<ChannelMessageEvent>(

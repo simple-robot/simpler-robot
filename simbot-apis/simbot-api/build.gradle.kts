@@ -20,6 +20,7 @@ plugins {
     kotlin("plugin.serialization")
     kotlin("kapt")
     id("simbot.suspend-transform-configure")
+    id("com.github.gmazzo.buildconfig") version "3.1.0"
 }
 
 dependencies {
@@ -57,3 +58,12 @@ dependencies {
     testAnnotationProcessor(libs.openjdk.jmh.generator.annprocess)
 }
 
+
+buildConfig {
+    useKotlinOutput()
+    packageName.set("love.forte.simbot")
+    className.set("SimbotInformation")
+    
+    buildConfigField("String", "VERSION", "\"${project.version}\" // auto-generated")
+    buildConfigField("boolean", "IS_SNAPSHOT", "${isSnapshot()} // auto-generated")
+}
