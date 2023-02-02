@@ -15,7 +15,6 @@
  */
 
 import love.forte.gradle.common.core.Gpg
-import love.forte.gradle.common.core.property.systemProp
 import love.forte.gradle.common.publication.configure.jvmConfigPublishing
 import utils.checkPublishConfigurable
 
@@ -58,6 +57,8 @@ if (!isCi || isLinux) {
             }
             
             val jarJavadoc by tasks.registering(Jar::class) {
+                dependsOn(tasks.dokkaJavadoc)
+                from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
                 archiveClassifier.set("javadoc")
             }
             
@@ -89,6 +90,10 @@ fun show() {
         group, name, version, description
     )
 }
+
+
+internal val TaskContainer.dokkaJavadoc: TaskProvider<org.jetbrains.dokka.gradle.DokkaTask>
+    get() = named<org.jetbrains.dokka.gradle.DokkaTask>("dokkaJavadoc")
 
 
 inline val Project.sourceSets: SourceSetContainer

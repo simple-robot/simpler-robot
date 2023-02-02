@@ -14,7 +14,7 @@
  *
  */
 
-import love.forte.gradle.common.core.repository.Repositories
+import org.jetbrains.dokka.DokkaConfiguration
 import java.net.URL
 
 /*
@@ -38,20 +38,27 @@ plugins {
 }
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
-    dokkaSourceSets {
+    dokkaSourceSets.configureEach {
         version = P.Simbot.versionWithoutSnapshot
-        configureEach {
-            skipEmptyPackages.set(true)
-            jdkVersion.set(8)
-            reportUndocumented.set(true)
-            if (project.file("Module.md").exists()) {
-                includes.from("Module.md")
-            }
-            
-            perPackageOption {
-                matchingRegex.set(""".*\.internal.*""") // will match all .internal packages and sub-packages
-                suppress.set(true)
-            }
+        documentedVisibilities.set(listOf(DokkaConfiguration.Visibility.PUBLIC, DokkaConfiguration.Visibility.PROTECTED))
+        skipEmptyPackages.set(true)
+        jdkVersion.set(8)
+        reportUndocumented.set(true)
+        if (project.file("Module.md").exists()) {
+            includes.from("Module.md")
+        }
+    
+        
+        sourceLink {
+            localDirectory.set(projectDir.resolve("src"))
+            val relativeTo = projectDir.relativeTo(rootProject.projectDir)
+            remoteUrl.set(URL("${P.HOMEPAGE}/tree/v3-main/$relativeTo/src"))
+            remoteLineSuffix.set("#L")
+        }
+    
+        perPackageOption {
+            matchingRegex.set(".*internal.*") // will match all .internal packages and sub-packages
+            suppress.set(true)
         }
     }
 }
