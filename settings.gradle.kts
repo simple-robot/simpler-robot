@@ -29,25 +29,22 @@ dependencyResolutionManagement {
 }
 
 include(
-    util("stage-loop"),
-    utilApiReq("core"),
-    utilApiReq("ktor"),
+    ":simbot-util-api-requestor-core",
+    ":simbot-util-api-requestor-ktor",
+    ":simbot-util-stage-loop",
 )
 
-include("simbot-logger")
-include("simbot-logger-slf4j-impl")
+include(":simbot-logger")
+include(":simbot-logger-slf4j-impl")
+
+include(":simbot-api")
+include(":simbot-core")
 
 include(
-    api("api"),
-)
-
-include(core("core"))
-
-include(
-    boot("api"),
-    boot("core-annotation"),
-    boot("core"),
-    boot("core-spring-boot-starter"),
+    ":simboot-api",
+    ":simboot-core-annotation",
+    ":simboot-core",
+    ":simboot-core-spring-boot-starter",
 )
 
 // project test
@@ -59,9 +56,7 @@ if (!System.getenv("IS_CI").toBoolean()) {
         projectTest("jmh-duration"),
     )
 
-    include(
-        componentHttpServer("api")
-    )
+    include(":simbot-component-http-server-api")
 }
 
 
