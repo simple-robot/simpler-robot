@@ -60,6 +60,21 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
             matchingRegex.set(".*internal.*") // will match all .internal packages and sub-packages
             suppress.set(true)
         }
+    
+        fun externalDocumentation(docUrl: URL) {
+            externalDocumentationLink {
+                url.set(docUrl)
+                packageListUrl.set(URL(docUrl, "${docUrl.path}/package-list"))
+            }
+        }
+    
+        // kotlin-coroutines doc
+        externalDocumentation(URL("https://kotlinlang.org/api/kotlinx.coroutines"))
+    
+        // kotlin-serialization doc
+        externalDocumentation(URL("https://kotlinlang.org/api/kotlinx.serialization"))
+        
+        
     }
 }
 
