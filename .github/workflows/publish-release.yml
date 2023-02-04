@@ -137,9 +137,9 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PUSH_TOKEN }}
-          external_repository: simple-robot-library/simbot3-main-apiDoc
-#          publish_branch: gh-pages  # default: gh-pages
-#          keep_files: true
+          external_repository: simple-robot-library/simbot3-api-docs
+          # deploy to sub dir
+          destination_dir: main
           publish_dir: ./build/dokka/html
 
   create-release:
