@@ -16,7 +16,6 @@ env:
 jobs:
   deploy-doc:
     name: Deploy API Doc
-    needs: test-and-publish-release
     runs-on: ubuntu-latest
     steps:
       # 检出仓库代码
