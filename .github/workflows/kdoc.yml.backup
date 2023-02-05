@@ -1,52 +1,52 @@
 name: Deploy doc
 on: # push
   push:
-    tags:
-      - doc**
-      - v3.*.*
+    branches:
+      - pref_doc
 
 jobs:
   deploy-doc:
-    if: github.repository == 'ForteScarlet/simpler-robot'
-    name: Deploy-doc
+    name: Deploy API Doc
     runs-on: ubuntu-latest
     steps:
       # 检出仓库代码
       - name: Check out repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
           fetch-depth: 0
-          submodules: true
 
       # setup Java
       - name: Setup java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: 11
           cache: 'gradle'
 
-      - name: Create gradle.properties
-        run: |
-          echo "org.gradle.parallel=true" > gradle.properties
-          echo "org.gradle.workers.max=16" >> gradle.properties
-          echo "org.gradle.jvmargs=-Xmx8G -Xms2G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8" >> gradle.properties
-
       # setup Gradle
       - name: Gradle generate documentation
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.4
-          arguments: clean build dokkaHtmlMultiModule -Porg.gradle.daemon=false -DisSnapshot=false
+          gradle-version: 7.6
+          arguments: |
+            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
+            -Porg.gradle.daemon=false
+            --info 
+            --warning-mode all
+            -x test
+            --build-cache
+            dokkaHtmlMultiModule
+        env:
+          SIMBOT_IS_SNAPSHOT: false
 
       # https://github.com/marketplace/actions/github-pages-action
       - name: Push to doc repository
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PUSH_TOKEN }}
-          external_repository: simple-robot-library/simbot3-main-apiDoc
-          publish_branch: gh-pages  # default: gh-pages
-          keep_files: true
-          publish_dir: ./dokka/html
-          full_commit_message: Publish ${{ github.ref_name }} documentation
+          external_repository: simple-robot-library/simbot3-api-docs
+          # deploy to sub dir
+          destination_dir: main
+          publish_dir: ./build/dokka/html
+

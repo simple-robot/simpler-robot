@@ -41,11 +41,11 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
     dokkaSourceSets.configureEach {
         version = P.Simbot.versionWithoutSnapshot
         documentedVisibilities.set(listOf(DokkaConfiguration.Visibility.PUBLIC, DokkaConfiguration.Visibility.PROTECTED))
-        skipEmptyPackages.set(true)
         jdkVersion.set(8)
-        reportUndocumented.set(true)
         if (project.file("Module.md").exists()) {
             includes.from("Module.md")
+        } else if (project.file("README.md").exists()) {
+            includes.from("README.md")
         }
     
         
@@ -61,10 +61,10 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
             suppress.set(true)
         }
     
-        fun externalDocumentation(docUrl: URL) {
+        fun externalDocumentation(docUrl: URL, suffix: String = "package-list") {
             externalDocumentationLink {
                 url.set(docUrl)
-                packageListUrl.set(URL(docUrl, "${docUrl.path}/package-list"))
+                packageListUrl.set(URL(docUrl, "${docUrl.path}/$suffix"))
             }
         }
     
@@ -73,6 +73,16 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
     
         // kotlin-serialization doc
         externalDocumentation(URL("https://kotlinlang.org/api/kotlinx.serialization"))
+        
+        // SLF4J
+        externalDocumentation(URL("https://www.slf4j.org/apidocs"))
+        
+        // Spring Framework
+        externalDocumentation(URL("https://docs.spring.io/spring-framework/docs/current/javadoc-api"), "element-list")
+        
+        // Spring Boot
+//        externalDocumentation(URL("https://docs.spring.io/spring-boot/docs/current/api/element-list"))
+    
         
         
     }

@@ -1,3 +1,3 @@
-# Core
+# Module simbot-core
 
-对 api 模块的基础功能实现模块
+`api` 模块的实现模块，根据其标准提供完整的基础实现。

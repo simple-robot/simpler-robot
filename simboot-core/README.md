@@ -1,3 +1,3 @@
-# BOOT 
+# Module simboot-core
 
-基于核心模块的友好的一键启动模块
+`simboot-api` 模块的实现模块，根据其标准提供完整的基础实现。
