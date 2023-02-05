@@ -1,0 +1,52 @@
+name: Deploy doc
+on: # push
+  push:
+    branches:
+      - pref_doc
+
+jobs:
+  deploy-doc:
+    name: Deploy API Doc
+    runs-on: ubuntu-latest
+    steps:
+      # 检出仓库代码
+      - name: Check out repo
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      # setup Java
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 11
+          cache: 'gradle'
+
+      # setup Gradle
+      - name: Gradle generate documentation
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 7.6
+          arguments: |
+            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
+            -Porg.gradle.daemon=false
+            --info 
+            --warning-mode all
+            -x test
+            --build-cache
+            dokkaHtmlMultiModule
+        env:
+          SIMBOT_IS_SNAPSHOT: false
+
+      # https://github.com/marketplace/actions/github-pages-action
+      - name: Push to doc repository
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.PUSH_TOKEN }}
+          external_repository: simple-robot-library/simbot3-api-docs
+          # deploy to sub dir
+          destination_dir: main
+          publish_dir: ./build/dokka/html
+
