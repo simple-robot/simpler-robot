@@ -1,3 +1,3 @@
-## API
+# Module simbot-api
 
-Api模块，提供simbot的基础信息定义与规范。
+simbot3的基础模块，定义simbot中的各项标准接口, 是其他模块的基础模块。

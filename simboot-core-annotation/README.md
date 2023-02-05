@@ -1,3 +1,3 @@
-# BOOT Annotation
+# Module simboot-core-annotation
 
-Boot模块所依赖的基础annotation模块。
+`simboot-core` 所用的相关注解模块。

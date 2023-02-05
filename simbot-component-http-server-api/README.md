@@ -1,4 +1,4 @@
-# Component Http Server
+# Module simbot-component-http-server-api
 
 用于抽象并提供与 **Http服务器** 有关的事件和Bot类型，以允许事件和Bot支持与Http服务器相关的联动。
 
