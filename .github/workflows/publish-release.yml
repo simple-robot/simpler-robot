@@ -138,8 +138,7 @@ jobs:
         with:
           personal_token: ${{ secrets.PUSH_TOKEN }}
           external_repository: simple-robot-library/simbot3-api-docs
-          # deploy to sub dir
-          destination_dir: main
+          publish_branch: kdoc-deploy/main
           publish_dir: ./build/dokka/html
 
   create-release:
