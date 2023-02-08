@@ -2,7 +2,7 @@ name: Deploy doc
 on: # push
   push:
     branches:
-      - pref_doc
+      - pref_kdoc_deploy
 
 jobs:
   deploy-doc:
@@ -46,6 +46,7 @@ jobs:
         with:
           personal_token: ${{ secrets.PUSH_TOKEN }}
           external_repository: simple-robot-library/simbot3-api-docs
+          publish_branch: kdoc-deploy-main
           # deploy to sub dir
           destination_dir: main
           publish_dir: ./build/dokka/html
