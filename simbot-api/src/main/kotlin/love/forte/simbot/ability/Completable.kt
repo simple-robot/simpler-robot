@@ -16,7 +16,9 @@ package love.forte.simbot.ability
 
 /**
  *
- * 可以感知到某个目标的完成的。
+ * 可以感知到某个目标的完成。
+ *
+ * 是要给功能性接口。
  *
  * @author ForteScarlet
  */
