@@ -17,10 +17,6 @@ import kotlin.reflect.KClass
 
 
 /**
- *
- * @author ForteScarlet
- */
-/**
  * Annotated on annotation type.
  * Just like... An annotation extends other annotation?
  *
