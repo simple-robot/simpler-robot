@@ -47,36 +47,29 @@ import kotlin.random.asKotlinRandom
  * [ID] 是 [可排序的][Comparable]。
  *
  *
- * ## 序列化
+ * ### 序列化
  *
- * [ID] 应当支持序列化, 且 [ID] 的序列化器应当都是一个 `primitive` 序列化器。
- * 所有的 [ID] 序列化后都不应是结构体, 而是一个原始类型值。
- *
+ * [ID] 支持序列化, 且 [ID] 的序列化器应当都是一个 `primitive` 序列化器。
+ * [ID] 序列化后都不应是结构体, 而是一个值类型。
  *
  * 例如：
  * ```kotlin
- *
  * @Serializable
  * data class User(val id: LongID, val name: String)
  *
  * val json = Json.encodeToString(User(213L.ID, "ForteScarlet"))
  * // json: {"id": 213, "name": "ForteScarlet"}
- *
  * ```
  *
- * 鉴于 [ID] 的最终序列化结果为原始类型，并且是非封闭性的，
- * 因此在序列化是时使用 [ID]，需要使用一个具体的最终类型。
+ * 而由于 [ID] 的最终序列化结果为值类型，因此在序列化是时使用 [ID]，需要使用一个具体的最终类型。
  *
  * ```kotlin
  * // 直接使用具体的ID类型，比如LongID
  * @Serializable
  * data class User(val id: LongID)
- *
  * ```
  *
- * 对于一个可序列化类型，作为属性的 [ID] 必须是一个具体的可字面量序列化类型，而不能是一个抽象类型。
- *
- * 如果对于一个ID字段，你希望能够保证它能够完全的正反序列化，并且你只关心它的字面量而不关系其他方面，
+ * 在某个可序列化类型中，对于一个ID字段，如果你希望能够保证它能够完全的正反序列化，并且你只关心它的字面量而不关系其他方面，
  * 那么你可以考虑将此字段的序列化器标记为 [ID.AsCharSequenceIDSerializer].
  *
  * ```kotlin
@@ -88,9 +81,43 @@ import kotlin.random.asKotlinRandom
  * )
  * ```
  *
- * 此序列化其会永远将ID视为其字面值字符串作为序列化目标。
+ * 此序列化其会永远将ID视为字符串作为序列化目标。
  *
- 
+ * ### 构造
+ *
+ * [ID] 提供了名为 `ID` 的后缀扩展属性来将某个值构造为 [ID] 类型。
+ *
+ * ```kotlin
+ * 123.ID // IntID
+ * 'b'.ID // IntID
+ * 123L.ID // LongID
+ * 123.4.ID // DoubleID
+ * 123.4F.ID // FloatID
+ * "str".ID // CharSequenceID
+ * ```
+ *
+ * Java使用者可以通过 `Identifies.ID(...)` 来进行与上述类似的操作。
+ *
+ * ```java
+ * IntID          intId    = Identifies.ID(123);
+ * IntID          charId   = Identifies.ID('b');
+ * LongID         longId   = Identifies.ID(123L);
+ * DoubleID       doubleId = Identifies.ID(123.4);
+ * FloatID        floatId  = Identifies.ID(123.4F);
+ * CharSequenceID strId    = Identifies.ID("str");
+ * ```
+ *
+ *
+ * 更多参考 [Int.ID] [Long.ID] [Char.ID] [Double.ID] [FloatID] [CharSequence.ID]
+ *
+ * ### 随机ID
+ *
+ * 如果你需要获取一个随机的ID，可以考虑使用 [randomID]. [randomID] 内使用 [RandomIDUtil.randomID]
+ * 生成一个 _类UUID风格_ 的随机字符串并包装为 [ID] 并返回.
+ *
+ * ### 具体类型
+ *
+ * [ID] 是一个抽象类型，有关其他具体实现类型参阅它们各自的说明。
  *
  * @see CharSequenceID
  * @see NumericalID

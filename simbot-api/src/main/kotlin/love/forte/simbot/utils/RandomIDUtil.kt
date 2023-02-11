@@ -21,7 +21,9 @@ import kotlin.random.Random
 public object RandomIDUtil {
     
     /**
-     * 生成一个近似UUID的随机字符串。
+     * 生成一个类UUID风格的随机字符串。
+     *
+     * _需要注意的是返回值内的字符范围并非与hex对应。_
      */
     @JvmStatic
     @JvmOverloads
