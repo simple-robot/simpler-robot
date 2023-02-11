@@ -58,6 +58,8 @@ if (!isCi || isLinux) {
             }
             
             val jarJavadoc by tasks.registering(Jar::class) {
+                dependsOn(tasks.dokkaHtml)
+                from(tasks.dokkaHtml.flatMap { it.outputDirectory })
                 archiveClassifier.set("javadoc")
             }
             
@@ -93,3 +95,6 @@ fun show() {
 
 inline val Project.sourceSets: SourceSetContainer
     get() = extensions.getByName("sourceSets") as SourceSetContainer
+
+internal val TaskContainer.dokkaHtml: TaskProvider<org.jetbrains.dokka.gradle.DokkaTask>
+    get() = named<org.jetbrains.dokka.gradle.DokkaTask>("dokkaHtml")

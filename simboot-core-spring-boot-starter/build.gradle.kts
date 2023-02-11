@@ -20,10 +20,8 @@ plugins {
 
 dependencies {
     api(project(":simboot-core"))
-
-
+    
     api(libs.javax.inject)
-    api(libs.forte.di.spring)
     api(libs.spring.boot.logging)
 
     compileOnly(libs.spring.boot.autoconfigure)
@@ -32,7 +30,8 @@ dependencies {
     kapt(libs.spring.boot.configuration.processor)
 
     compileOnly(libs.javax.annotation.api)
-    compileOnly(libs.forte.annotationTool.api)
+    compileOnly(project(":simbot-util-annotation-tool"))
+    
     testImplementation(libs.spring.boot.test)
     testImplementation(libs.kotlinx.serialization.json)
     testImplementation(libs.kotlinx.serialization.properties)
@@ -43,7 +42,7 @@ dependencies {
     // testImplementation(libs.spring.boot.webflux)
 
     // @Suppress("VulnerableLibrariesLocal")
-    testImplementation("love.forte.simbot.component:simbot-component-mirai-boot:3.0.0.0-beta.6")
+    testImplementation("love.forte.simbot.component:simbot-component-mirai-core:3.0.0.0-M5")
     // testImplementation(V.Kotlinx.Coroutines.Reactor.notation)
 }
 

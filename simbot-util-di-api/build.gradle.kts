@@ -12,27 +12,47 @@
  *  https://www.gnu.org/licenses/gpl-3.0-standalone.html
  *  https://www.gnu.org/licenses/lgpl-3.0-standalone.html
  *
- *
  */
 
 plugins {
-    id("simbot.boot-module-conventions")
+    kotlin("jvm")
+    id("simbot.util-module-conventions")
     `simbot-jvm-maven-publish`
-    kotlin("plugin.serialization")
+    id("simbot.dokka-module-configuration")
 }
 
+val springVersion = "5.3.13"
+val springBootVersion: String = libs.versions.spring.boot.get()
+
 dependencies {
-    api(project(":simboot-api"))
     api(libs.javax.inject)
+    api(libs.slf4j.api)
+    
+    compileOnly(project(":simbot-util-annotation-tool"))
     
     compileOnly(libs.javax.annotation.api)
-    compileOnly(project(":simbot-util-annotation-tool"))
-    compileOnly(libs.spring.boot.autoconfigure)
-    testImplementation(libs.kotlinx.serialization.json)
-    testImplementation(libs.kotlinx.serialization.properties)
-    testImplementation(libs.kotlinx.serialization.protobuf)
-    testImplementation(libs.javax.annotation.api)
-    testImplementation(project(":simbot-util-annotation-tool"))
-    testImplementation(libs.spring.boot.autoconfigure)
-    
+    compileOnly("org.springframework:spring-context:5.3.13")
+    compileOnly("org.springframework:spring-core:5.3.13")
+    compileOnly("org.springframework.boot:spring-boot:$springBootVersion")
+    compileOnly("org.springframework.boot:spring-boot-autoconfigure:$springBootVersion")
+}
+
+
+kotlin {
+    explicitApi()
+}
+
+
+tasks.withType<JavaCompile> {
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+    options.encoding = "UTF-8"
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        javaParameters = true
+        jvmTarget = "1.8"
+        freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
+    }
 }

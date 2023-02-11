@@ -35,10 +35,9 @@ public open class SpringBeanContainerFactory(private val listableBeanFactory: Li
 }
 
 /**
- * 基于 [ListableBeanFactory] 的 [love.forte.di.spring.SpringBeanContainer] 实现。
+ * 基于 [ListableBeanFactory] 的 [love.forte.di.BeanContainer] 实现。
  */
-public open class SpringBeanContainer(override val listableBeanFactory: ListableBeanFactory) : BeanContainer,
-    love.forte.di.spring.SpringBeanContainer {
+public open class SpringBeanContainer(private val listableBeanFactory: ListableBeanFactory) : BeanContainer {
     
     //// ———————— container ———————— ////
     override fun contains(name: String): Boolean {

@@ -17,21 +17,19 @@
 */
 rootProject.name = "simply-robot"
 
-enableFeaturePreview("VERSION_CATALOGS")
-
-dependencyResolutionManagement {
-    @Suppress("UnstableApiUsage")
-    versionCatalogs {
-        create("libs") {
-            from(files(File(rootProject.projectDir, "libs.versions.toml")))
-        }
-    }
-}
-
 include(
     ":simbot-util-api-requestor-core",
     ":simbot-util-api-requestor-ktor",
     ":simbot-util-stage-loop",
+)
+
+include(
+    ":simbot-util-annotation-tool"
+)
+
+include(
+    ":simbot-util-di-api",
+    ":simbot-util-di-core",
 )
 
 include(":simbot-logger")

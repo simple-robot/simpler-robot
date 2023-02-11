@@ -15,29 +15,36 @@
  */
 
 plugins {
-    id("simbot.boot-module-conventions")
+    kotlin("jvm")
+    id("simbot.util-module-conventions")
     `simbot-jvm-maven-publish`
-    kotlin("plugin.serialization")
-    id("simbot.suspend-transform-configure")
+    id("simbot.dokka-module-configuration")
 }
 
-fun ExternalModuleDependency.excludeKotlinStdlib() {
-    exclude("org.jetbrains.kotlin", "kotlin-stdlib")
-}
 
 dependencies {
-    // boot-core 使用 simbot-logger
-    api(project(":simbot-logger"))
-    api(project(":simboot-api"))
-    api(project(":simboot-core-annotation"))
-    api(libs.slf4j.api)
-    api(libs.kotlinx.coroutines.core)
-    api(libs.kotlinx.serialization.core)
-    api(libs.kotlinx.serialization.json)
-    api(project(":simbot-util-di-core"))
-    api(project(":simbot-util-annotation-tool"))
-    
-    testImplementation(libs.kotlinx.serialization.properties)
-    testImplementation(libs.kotlinx.serialization.protobuf)
-    
+    api(project(":simbot-util-di-api"))
+    api(kotlin("reflect"))
+    compileOnly("org.springframework:spring-context:5.3.13") // component
+    compileOnly("org.springframework:spring-core:5.3.13") // aliasFor
+    compileOnly("org.springframework.boot:spring-boot:${libs.versions.spring.boot.get()}") // ConfigurationProperties
+}
+
+kotlin {
+    explicitApi()
+}
+
+tasks.withType<JavaCompile> {
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+    options.encoding = "UTF-8"
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        this.useK2
+        javaParameters = true
+        jvmTarget = "1.8"
+        freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
+    }
 }
