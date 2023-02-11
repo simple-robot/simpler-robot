@@ -26,13 +26,13 @@ dependencies {
     api(libs.javax.inject)
     
     compileOnly(libs.javax.annotation.api)
-    compileOnly(libs.forte.annotationTool.api)
+    compileOnly(project(":simbot-util-annotation-tool"))
     compileOnly(libs.spring.boot.autoconfigure)
     testImplementation(libs.kotlinx.serialization.json)
     testImplementation(libs.kotlinx.serialization.properties)
     testImplementation(libs.kotlinx.serialization.protobuf)
     testImplementation(libs.javax.annotation.api)
-    testImplementation(libs.forte.annotationTool.api)
+    testImplementation(project(":simbot-util-annotation-tool"))
     testImplementation(libs.spring.boot.autoconfigure)
     
 }

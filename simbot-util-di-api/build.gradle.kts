@@ -15,31 +15,20 @@
  */
 
 plugins {
-    id("simbot.boot-module-conventions")
+    id("simbot.util-module-conventions")
     `simbot-jvm-maven-publish`
-    kotlin("plugin.serialization")
-    id("simbot.suspend-transform-configure")
+    id("simbot.dokka-module-configuration")
 }
 
-fun ExternalModuleDependency.excludeKotlinStdlib() {
-    exclude("org.jetbrains.kotlin", "kotlin-stdlib")
-}
 
 dependencies {
-    // boot-core 使用 simbot-logger
-    api(project(":simbot-logger"))
-    api(project(":simboot-api"))
-    api(project(":simboot-core-annotation"))
-    api(libs.slf4j.api)
-    api(libs.kotlinx.coroutines.core)
-    api(libs.kotlinx.serialization.core)
-    api(libs.kotlinx.serialization.json)
-    api(libs.forte.di.core) {
-        excludeKotlinStdlib()
-    }
-    api(project(":simbot-util-annotation-tool"))
+    api("javax.inject:javax.inject:1")
+    api("org.slf4j:slf4j-api:1.7.32")
     
-    testImplementation(libs.kotlinx.serialization.properties)
-    testImplementation(libs.kotlinx.serialization.protobuf)
-    
+    compileOnly("javax.annotation:javax.annotation-api:1.3.2")
+    compileOnly("org.springframework:spring-context:5.3.13")
+    compileOnly("org.springframework:spring-core:5.3.13")
+    compileOnly("org.springframework.boot:spring-boot:2.6.1")
+    compileOnly("org.springframework.boot:spring-boot-autoconfigure:2.6.1")
+    compileOnly("love.forte.annotation-tool:api:0.6.1")
 }
