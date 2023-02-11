@@ -39,6 +39,27 @@ body:
       description: 如果有需要补充的其他版本信息，可以在此补充
       placeholder: "例如: simbot-component-kook: v3.0.0.0-xx"
 
+  - type: dropdown
+    id: language
+    attributes:
+      label: 选择此问题涉及的编程语言 (如果没有或无对应选项则选择'其他'后在后续描述中补充说明即可)
+      options:
+        - Java
+        - Kotlin
+        - 其他
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: 选择此问题涉及的组件库 (如果没有或无对应选项则在后续描述中补充说明即可)
+      multiple: true
+      options:
+        - mirai
+        - kook
+        - QQ频道
+        - 其他
          
   - type: textarea
     id: description
