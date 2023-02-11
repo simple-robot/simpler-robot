@@ -8,14 +8,17 @@ body:
     attributes:
       value: |
          ## 须知
+         ### 确认
          在进行问题反馈前，请**确认**以下内容：
          1. 我已参阅过相关文档、注释。
          2. 我已确认 [issues](https://github.com/ForteScarlet/simpler-robot/issues) 没有类似/重复问题。
          3. 我已确认所述内容不涉及任何个人隐私或其他敏感信息。
          
+         ### 知悉
          请**知悉**以下内容：
-         1. 当被标记 **`等待反馈`** 标签时，代表处理人正在等待您对其的回应。这可能包括处理人需要您提供进一步信息、或者通过处理人所提供的信息进行尝试后的反馈。
-         2. 当问题反馈未被完全确认或等待发起者回复的情况下，发起者如果超过一周未作应答，则会视为「无效」并做关闭处理。
+         1. 请注意反馈内容格式，与**代码**或**日志**相关的内容请使用**多行代码块**包裹。
+         2. 当被标记 **`等待反馈`** 标签时，代表处理人正在等待您对其的回应。这可能包括处理人需要您提供进一步信息、或者通过处理人所提供的信息进行尝试后的反馈。
+         3. 当问题反馈未被完全确认或等待发起者回复的情况下，发起者如果超过一周未作应答，则会视为「无效」并做关闭处理。
          
          <hr />
          
@@ -24,8 +27,8 @@ body:
     id: version
     attributes:
       label: 版本号
-      description: 反馈所涉及的版本
-      placeholder: "例如: v3.0.0"
+      description: 反馈所涉及的具体版本
+      placeholder: "例如: v3.0.0-xx 或 v6.6.6 等"
     validations:
       required: true       
          
@@ -34,8 +37,31 @@ body:
     attributes:
       label: 附加版本
       description: 如果有需要补充的其他版本信息，可以在此补充
-      placeholder: "例如: simbot-component-tencentguild: v3.0.0-0.1"
+      placeholder: "例如: simbot-component-kook: v3.0.0.0-xx"
 
+  - type: dropdown
+    id: language
+    attributes:
+      label: 选择此问题涉及的编程语言
+      description: 如果没有或无对应选项则选择'其他'后在后续描述中补充说明即可
+      options:
+        - Java
+        - Kotlin
+        - 其他
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: 选择此问题涉及的组件库
+      description: 如果没有或无对应选项则在后续描述中补充说明即可
+      multiple: true
+      options:
+        - mirai
+        - kook
+        - QQ频道
+        - 其他
          
   - type: textarea
     id: description

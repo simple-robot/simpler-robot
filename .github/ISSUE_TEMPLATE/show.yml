@@ -9,7 +9,7 @@ body:
     id: show
     attributes:
       label: 作品信息
-      description: 提供你的作品以及相关信息，尽可能的详细，例如开发人员、仓库地址、简介、logo之类的。
+      description: 提供你的作品以及相关信息，尽可能的详细，例如开发人员、仓库/网站地址、类型、简介、logo之类的。
       placeholder: "详细的作品信息"
     validations:
       required: true

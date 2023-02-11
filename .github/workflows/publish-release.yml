@@ -137,9 +137,8 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PUSH_TOKEN }}
-          external_repository: simple-robot-library/simbot3-main-apiDoc
-#          publish_branch: gh-pages  # default: gh-pages
-#          keep_files: true
+          external_repository: simple-robot-library/simbot3-api-docs
+          publish_branch: kdoc-deploy/main
           publish_dir: ./build/dokka/html
 
   create-release:
@@ -153,19 +152,6 @@ jobs:
       # 检出仓库代码
       - name: Check Out Repo
         uses: actions/checkout@v3
-
-      # setup Java
-      - name: Setup Java 11
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: 11
-
-      - name: Run All Tests
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: 7.6
-          arguments: createChangelog
 
         # Create gitHub release
         # https://github.com/marketplace/actions/gh-release

@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":simbot-boots:simboot-core"))
+    implementation(project(":simboot-core"))
 }

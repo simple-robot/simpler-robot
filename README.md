@@ -57,11 +57,9 @@
 ## 文档
 
 对于使用文档，可以去看看 [**Simple Robot 3 官方网站**][doc-homepage] (尚在更新，并不完整)，
-而API文档则可以前往 [API doc](https://simple-robot-library.github.io/simbot3-main-apiDoc) 看看。API文档归根随着版本的发布而同步更新。
+而API文档则可以前往 [文档引导站点](https://docs.simbot.forte.love) 寻找并查看。API文档归根随着版本的发布而同步更新。
 
 而这些内容，你都可以在 [**Simple Robot 图书馆**](http://github.com/simple-robot-library) 处找到。
-
-除了这些，还有一个可以简单作为参考的[路线图](Roadmap.md)，会简单记录计划中未来可能会进行的工作。
 
 ## 组件
 
@@ -70,7 +68,7 @@
 <br>
 simbot3目前已经实现的组件有：
 
-|                  组件目标                   |    作者/团队    |                                                     仓库地址                                                      | 状态  |
+|                  组件目标                   |    主要成员     |                                                     仓库地址                                                      | 状态  |
 |:---------------------------------------:|:-----------:|:-------------------------------------------------------------------------------------------------------------:|:---:|
 | [Mirai](https://github.com/mamoe/mirai) | simbot team |         [simple-robot/simbot-component-mirai](https://github.com/simple-robot/simbot-component-mirai)         | 维护中 |
 |  [Kook(开黑啦)](https://www.kookapp.cn/)   | simbot team |          [simple-robot/simbot-component-kook](https://github.com/simple-robot/simbot-component-kook)          | 维护中 |
@@ -83,8 +81,6 @@ simbot3目前已经实现的组件有：
 ## 快速开始
 
 你可以前往 [**官方网站**][doc-homepage] 的**文档**内查看与快速开始有关的内容。
-
-> 文档尚在编撰完善中...
 
 ## 信息资讯
 如果你想要时刻关注版本的发布信息，你可以通过GitHub的 **Watch** 功能来订阅包括 

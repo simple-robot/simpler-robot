@@ -14,7 +14,7 @@
  *
  */
 
-import love.forte.gradle.common.core.repository.Repositories
+import org.jetbrains.dokka.DokkaConfiguration
 import java.net.URL
 
 /*
@@ -38,21 +38,53 @@ plugins {
 }
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
-    dokkaSourceSets {
+    dokkaSourceSets.configureEach {
         version = P.Simbot.versionWithoutSnapshot
-        configureEach {
-            skipEmptyPackages.set(true)
-            jdkVersion.set(8)
-            reportUndocumented.set(true)
-            if (project.file("Module.md").exists()) {
-                includes.from("Module.md")
-            }
-            
-            perPackageOption {
-                matchingRegex.set(""".*\.internal.*""") // will match all .internal packages and sub-packages
-                suppress.set(true)
+        documentedVisibilities.set(listOf(DokkaConfiguration.Visibility.PUBLIC, DokkaConfiguration.Visibility.PROTECTED))
+        jdkVersion.set(8)
+        if (project.file("Module.md").exists()) {
+            includes.from("Module.md")
+        } else if (project.file("README.md").exists()) {
+            includes.from("README.md")
+        }
+    
+        
+        sourceLink {
+            localDirectory.set(projectDir.resolve("src"))
+            val relativeTo = projectDir.relativeTo(rootProject.projectDir)
+            remoteUrl.set(URL("${P.HOMEPAGE}/tree/v3-main/$relativeTo/src"))
+            remoteLineSuffix.set("#L")
+        }
+    
+        perPackageOption {
+            matchingRegex.set(".*internal.*") // will match all .internal packages and sub-packages
+            suppress.set(true)
+        }
+    
+        fun externalDocumentation(docUrl: URL, suffix: String = "package-list") {
+            externalDocumentationLink {
+                url.set(docUrl)
+                packageListUrl.set(URL(docUrl, "${docUrl.path}/$suffix"))
             }
         }
+    
+        // kotlin-coroutines doc
+        externalDocumentation(URL("https://kotlinlang.org/api/kotlinx.coroutines"))
+    
+        // kotlin-serialization doc
+        externalDocumentation(URL("https://kotlinlang.org/api/kotlinx.serialization"))
+        
+        // SLF4J
+        externalDocumentation(URL("https://www.slf4j.org/apidocs"))
+        
+        // Spring Framework
+        externalDocumentation(URL("https://docs.spring.io/spring-framework/docs/current/javadoc-api"), "element-list")
+        
+        // Spring Boot
+//        externalDocumentation(URL("https://docs.spring.io/spring-boot/docs/current/api/element-list"))
+    
+        
+        
     }
 }
 

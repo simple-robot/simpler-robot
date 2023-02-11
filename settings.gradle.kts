@@ -17,37 +17,32 @@
 */
 rootProject.name = "simply-robot"
 
-enableFeaturePreview("VERSION_CATALOGS")
-
-dependencyResolutionManagement {
-    @Suppress("UnstableApiUsage")
-    versionCatalogs {
-        create("libs") {
-            from(files(File(rootProject.projectDir, "libs.versions.toml")))
-        }
-    }
-}
-
 include(
-    util("stage-loop"),
-    utilApiReq("core"),
-    utilApiReq("ktor"),
+    ":simbot-util-api-requestor-core",
+    ":simbot-util-api-requestor-ktor",
+    ":simbot-util-stage-loop",
 )
 
-include("simbot-logger")
-include("simbot-logger-slf4j-impl")
-
 include(
-    api("api"),
+    ":simbot-util-annotation-tool"
 )
 
-include(core("core"))
+include(
+    ":simbot-util-di-api",
+    ":simbot-util-di-core",
+)
+
+include(":simbot-logger")
+include(":simbot-logger-slf4j-impl")
+
+include(":simbot-api")
+include(":simbot-core")
 
 include(
-    boot("api"),
-    boot("core-annotation"),
-    boot("core"),
-    boot("core-spring-boot-starter"),
+    ":simboot-api",
+    ":simboot-core-annotation",
+    ":simboot-core",
+    ":simboot-core-spring-boot-starter",
 )
 
 // project test
@@ -59,9 +54,7 @@ if (!System.getenv("IS_CI").toBoolean()) {
         projectTest("jmh-duration"),
     )
 
-    include(
-        componentHttpServer("api")
-    )
+    include(":simbot-component-http-server-api")
 }
 
 

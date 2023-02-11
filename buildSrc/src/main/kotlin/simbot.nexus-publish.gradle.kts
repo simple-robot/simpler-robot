@@ -49,53 +49,28 @@ logger.info("isReleaseOnly: {}", isReleaseOnly)
 logger.info("isPublishConfigurable: {}", isPublishConfigurable)
 
 
+//if (!isCi || isPublishConfigurable) {
+val userInfo = love.forte.gradle.common.publication.sonatypeUserInfoOrNull
 
-if (isPublishConfigurable) {
-    val userInfo = love.forte.gradle.common.publication.sonatypeUserInfoOrNull
-    
-    if (userInfo == null) {
-        logger.warn("sonatype.username or sonatype.password is null, cannot config nexus publishing.")
-    }
-    
-    nexusPublishConfig {
-        projectDetail = P.Simbot
-        useStaging = project.provider { !project.version.toString().endsWith("SNAPSHOT", ignoreCase = true) }
-        repositoriesConfig = {
-            sonatype {
-                snapshotRepositoryUrl.set(uri(Repositories.Snapshot.URL))
-                username.set(userInfo?.username)
-                password.set(userInfo?.password)
-            }
+if (userInfo == null) {
+    logger.warn("sonatype.username or sonatype.password is null, cannot config nexus publishing.")
+}
+
+nexusPublishConfig {
+    projectDetail = P.Simbot
+    useStaging = project.provider { !project.version.toString().endsWith("SNAPSHOT", ignoreCase = true) }
+    repositoriesConfig = {
+        sonatype {
+            snapshotRepositoryUrl.set(uri(Repositories.Snapshot.URL))
+            username.set(userInfo?.username)
+            password.set(userInfo?.password)
         }
     }
-    
-    // nexusPublishing {
-    //     println("[NEXUS] - project.group:   ${project.group}")
-    //     println("[NEXUS] - project.version: ${project.version}")
-    //     packageGroup.set(project.group.toString())
-    //     repositoryDescription.set(project.description)
-    //
-    //     useStaging.set(
-    //         project.provider { !project.version.toString().endsWith("SNAPSHOT", ignoreCase = true) }
-    //     )
-    //
-    //     transitionCheckOptions {
-    //         maxRetries.set(100)
-    //         delayBetween.set(Duration.ofSeconds(5))
-    //     }
-    //
-    //
-    //     repositories {
-    //         sonatype {
-    //             snapshotRepositoryUrl.set(uri(Sonatype.Snapshot.URL))
-    //             username.set(sonatypeUsername)
-    //             password.set(sonatypePassword)
-    //         }
-    //     }
-    // }
-    
-    logger.info("[nexus-publishing-configure] - [{}] configured.", name)
 }
+
+
+logger.info("[nexus-publishing-configure] - [{}] configured.", name)
+//}
 
 
 
