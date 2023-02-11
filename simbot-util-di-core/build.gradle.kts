@@ -21,27 +21,18 @@ plugins {
     id("simbot.dokka-module-configuration")
 }
 
-val springVersion = "5.3.13"
-val springBootVersion: String = libs.versions.spring.boot.get()
 
 dependencies {
-    api(libs.javax.inject)
-    api(libs.slf4j.api)
-    
-    compileOnly(project(":simbot-util-annotation-tool"))
-    
-    compileOnly(libs.javax.annotation.api)
-    compileOnly("org.springframework:spring-context:5.3.13")
-    compileOnly("org.springframework:spring-core:5.3.13")
-    compileOnly("org.springframework.boot:spring-boot:$springBootVersion")
-    compileOnly("org.springframework.boot:spring-boot-autoconfigure:$springBootVersion")
+    api(project(":simbot-util-di-api"))
+    api(kotlin("reflect"))
+    compileOnly("org.springframework:spring-context:5.3.13") // component
+    compileOnly("org.springframework:spring-core:5.3.13") // aliasFor
+    compileOnly("org.springframework.boot:spring-boot:${libs.versions.spring.boot.get()}") // ConfigurationProperties
 }
-
 
 kotlin {
     explicitApi()
 }
-
 
 tasks.withType<JavaCompile> {
     sourceCompatibility = "1.8"
@@ -51,6 +42,7 @@ tasks.withType<JavaCompile> {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
+        this.useK2
         javaParameters = true
         jvmTarget = "1.8"
         freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")

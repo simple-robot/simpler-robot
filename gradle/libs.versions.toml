@@ -3,8 +3,8 @@ kotlinx-coroutines = "1.6.4"
 kotlinx-serialization = "1.5.0-RC"
 spring-boot = "2.7.6"
 openjdk-jmh = "1.35"
-forte-di = "0.0.3"
-forte-annotationTool = "0.6.3"
+#forte-di = "0.0.3"
+#forte-annotationTool = "0.6.3"
 ktor = "2.1.1"
 
 [libraries]
@@ -58,13 +58,13 @@ lmax-disruptor = "com.lmax:disruptor:3.4.4"
 openjdk-jmh-core = { group = "org.openjdk.jmh", name = "jmh-core", version.ref = "openjdk-jmh" }
 openjdk-jmh-generator-annprocess = { group = "org.openjdk.jmh", name = "jmh-generator-annprocess", version.ref = "openjdk-jmh" }
 
-forte-di-api = { group = "love.forte.di", name = "di-api", version.ref = "forte-di" }
-forte-di-core = { group = "love.forte.di", name = "di-core", version.ref = "forte-di" }
-forte-di-spring = { group = "love.forte.di", name = "di-spring", version.ref = "forte-di" }
-
-forte-annotationTool-api = { group = "love.forte.annotation-tool", name = "api", version.ref = "forte-annotationTool" }
-forte-annotationTool-core = { group = "love.forte.annotation-tool", name = "core", version.ref = "forte-annotationTool" }
-forte-annotationTool-kcore = { group = "love.forte.annotation-tool", name = "kcore", version.ref = "forte-annotationTool" }
+#forte-di-api = { group = "love.forte.di", name = "di-api", version.ref = "forte-di" }
+#forte-di-core = { group = "love.forte.di", name = "di-core", version.ref = "forte-di" }
+#forte-di-spring = { group = "love.forte.di", name = "di-spring", version.ref = "forte-di" }
+#
+#forte-annotationTool-api = { group = "love.forte.annotation-tool", name = "api", version.ref = "forte-annotationTool" }
+#forte-annotationTool-core = { group = "love.forte.annotation-tool", name = "core", version.ref = "forte-annotationTool" }
+#forte-annotationTool-kcore = { group = "love.forte.annotation-tool", name = "kcore", version.ref = "forte-annotationTool" }
 
 # ktor
 ktor-server-core = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }

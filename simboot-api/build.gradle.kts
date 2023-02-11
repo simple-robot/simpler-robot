@@ -25,7 +25,7 @@ dependencies {
     api(project(":simbot-core")) {
         exclude("love.forte.simbot", "simbot-logger")
     }
-    api(libs.forte.di.api)
+    api(project(":simbot-util-di-api"))
     
     api(libs.slf4j.api)
     api(libs.kotlinx.coroutines.core)

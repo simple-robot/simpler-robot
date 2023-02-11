@@ -27,6 +27,11 @@ include(
     ":simbot-util-annotation-tool"
 )
 
+include(
+    ":simbot-util-di-api",
+    ":simbot-util-di-core",
+)
+
 include(":simbot-logger")
 include(":simbot-logger-slf4j-impl")
 

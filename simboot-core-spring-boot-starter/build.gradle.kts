@@ -31,6 +31,7 @@ dependencies {
 
     compileOnly(libs.javax.annotation.api)
     compileOnly(project(":simbot-util-annotation-tool"))
+    
     testImplementation(libs.spring.boot.test)
     testImplementation(libs.kotlinx.serialization.json)
     testImplementation(libs.kotlinx.serialization.properties)

@@ -34,9 +34,7 @@ dependencies {
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.serialization.core)
     api(libs.kotlinx.serialization.json)
-    api(libs.forte.di.core) {
-        excludeKotlinStdlib()
-    }
+    api(project(":simbot-util-di-core"))
     api(project(":simbot-util-annotation-tool"))
     
     testImplementation(libs.kotlinx.serialization.properties)
