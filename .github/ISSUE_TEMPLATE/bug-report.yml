@@ -42,7 +42,8 @@ body:
   - type: dropdown
     id: language
     attributes:
-      label: 选择此问题涉及的编程语言 (如果没有或无对应选项则选择'其他'后在后续描述中补充说明即可)
+      label: 选择此问题涉及的编程语言
+      description: 如果没有或无对应选项则选择'其他'后在后续描述中补充说明即可
       options:
         - Java
         - Kotlin
@@ -53,7 +54,8 @@ body:
   - type: dropdown
     id: component
     attributes:
-      label: 选择此问题涉及的组件库 (如果没有或无对应选项则在后续描述中补充说明即可)
+      label: 选择此问题涉及的组件库
+      description: 如果没有或无对应选项则在后续描述中补充说明即可
       multiple: true
       options:
         - mirai
