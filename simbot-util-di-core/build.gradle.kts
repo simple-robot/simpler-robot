@@ -15,10 +15,9 @@
  */
 
 plugins {
-    kotlin("jvm")
+    id("simbot.base-module-conventions")
     id("simbot.util-module-conventions")
     `simbot-jvm-maven-publish`
-    id("simbot.dokka-module-configuration")
 }
 
 
@@ -30,21 +29,4 @@ dependencies {
     compileOnly("org.springframework.boot:spring-boot:${libs.versions.spring.boot.get()}") // ConfigurationProperties
 }
 
-kotlin {
-    explicitApi()
-}
 
-tasks.withType<JavaCompile> {
-    sourceCompatibility = "1.8"
-    targetCompatibility = "1.8"
-    options.encoding = "UTF-8"
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        this.useK2
-        javaParameters = true
-        jvmTarget = "1.8"
-        freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
-    }
-}

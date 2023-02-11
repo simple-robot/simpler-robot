@@ -16,7 +16,6 @@
 
 import love.forte.gradle.common.core.Gpg
 import love.forte.gradle.common.publication.configure.jvmConfigPublishing
-import utils.checkPublishConfigurable
 
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
@@ -41,40 +40,39 @@ plugins {
     id("maven-publish")
 }
 
-if (!isCi || isLinux) {
-    checkPublishConfigurable {
-        val p = project
+
+//if (!isCi || (isLinux && checkPublishConfigurable().isPublishConfigurable)) {
+    val p = project
+    
+    jvmConfigPublishing {
+        val groupProject = P::class.sealedSubclasses.mapNotNull { it.objectInstance }.associateBy { obj -> obj.group }
+        project = groupProject[p.group] ?: error("unknown project group: ${p.group}")
         
-        jvmConfigPublishing {
-            val groupProject = P::class.sealedSubclasses.mapNotNull { it.objectInstance }.associateBy { obj -> obj.group }
-            project = groupProject[p.group] ?: error("unknown project group: ${p.group}")
-            
-            publicationName = "simbotDist"
-            
-            val jarSources by tasks.registering(Jar::class) {
-                archiveClassifier.set("sources")
-                from(sourceSets["main"].allSource)
-            }
-            
-            val jarJavadoc by tasks.registering(Jar::class) {
-                dependsOn(tasks.dokkaJavadoc)
-                from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
-                archiveClassifier.set("javadoc")
-            }
-            
-            artifact(jarSources)
-            artifact(jarJavadoc)
-            
-            isSnapshot = project.version.toString().contains("SNAPSHOT", true)
-            releasesRepository = ReleaseRepository
-            snapshotRepository = SnapshotRepository
-            gpg = Gpg.ofSystemPropOrNull()
-            
-            
+        publicationName = "simbotDist"
+        
+        val jarSources by tasks.registering(Jar::class) {
+            archiveClassifier.set("sources")
+            from(sourceSets["main"].allSource)
         }
-        show()
+        
+        val jarJavadoc by tasks.registering(Jar::class) {
+            dependsOn(tasks.dokkaJavadoc)
+            from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
+            archiveClassifier.set("javadoc")
+        }
+        
+        artifact(jarSources)
+        artifact(jarJavadoc)
+        
+        isSnapshot = project.version.toString().contains("SNAPSHOT", true)
+        releasesRepository = ReleaseRepository
+        snapshotRepository = SnapshotRepository
+        gpg = Gpg.ofSystemPropOrNull()
+        
+        
     }
-}
+    show()
+//}
 
 fun show() {
     //// show project info
