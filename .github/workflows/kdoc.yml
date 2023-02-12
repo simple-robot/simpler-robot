@@ -3,6 +3,7 @@ on: # push
   push:
     branches:
       - pref_kdoc_deploy
+      - v3-dev
 
 jobs:
   deploy-doc:
@@ -48,4 +49,5 @@ jobs:
           external_repository: simple-robot-library/simbot3-api-docs
           publish_branch: kdoc-deploy/main
           publish_dir: ./build/dokka/html
+          destination_dir: main
 
