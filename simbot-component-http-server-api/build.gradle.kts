@@ -29,25 +29,14 @@ dependencies {
     
     testImplementation(libs.ktor.server.core)
     testImplementation(libs.ktor.server.netty)
-    
-    // compileOnly(libs.kotlinx.serialization.json)
-    // compileOnly(libs.kotlinx.serialization.properties)
-    // compileOnly(libs.charleskorn.kaml)
-    // compileOnly(libs.kotlinx.serialization.protobuf)
-    // compileOnly(libs.kotlinx.coroutines.reactive)
-    // compileOnly(libs.kotlinx.coroutines.reactor)
-    // compileOnly(libs.kotlinx.coroutines.rx2)
-    // compileOnly(libs.kotlinx.coroutines.rx3)
-    
-    // testImplementation(libs.kotlinx.serialization.json)
-    // testImplementation(libs.kotlinx.serialization.properties)
-    // testImplementation(libs.charleskorn.kaml)
-    // testImplementation(libs.kotlinx.serialization.protobuf)
-    // testImplementation(libs.kotlinx.serialization.cbor)
-    // testImplementation(libs.kotlinx.serialization.hocon)
-    // testImplementation(libs.openjdk.jmh.core)
-    // testImplementation(libs.openjdk.jmh.generator.annprocess)
-    //kaptTest(libs.openjdk.jmh.generator.annprocess)
-    //testAnnotationProcessor(libs.openjdk.jmh.generator.annprocess)
 }
 
+// suppress all
+tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
+    dokkaSourceSets.configureEach {
+        suppress.set(true)
+        perPackageOption {
+            suppress.set(true)
+        }
+    }
+}

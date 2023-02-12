@@ -4,5 +4,5 @@
 
 > [原仓库](https://github.com/forte-projects/forte-DI)
 
-_**⚠ 此模块目前对外不稳定，不保证API兼容性，仅对内使用。**_
+_**⚠ 此模块目前对外不稳定，仅对内使用。**_
 
