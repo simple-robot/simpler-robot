@@ -29,6 +29,7 @@
    <img alt="forks" src="https://img.shields.io/github/forks/ForteScarlet/simpler-robot" />
    <img alt="watchers" src="https://img.shields.io/github/watchers/ForteScarlet/simpler-robot" />
    <img alt="repo-size" src="https://img.shields.io/github/repo-size/ForteScarlet/simpler-robot" />
+   <img alt="total-lines" src="https://img.shields.io/tokei/lines/github/simple-robot/simpler-robot" />
    
    <img alt="issues" src="https://img.shields.io/github/issues-closed/ForteScarlet/simpler-robot?color=green" />
    <img alt="last-commit" src="https://img.shields.io/github/last-commit/ForteScarlet/simpler-robot" />
