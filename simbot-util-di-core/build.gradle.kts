@@ -26,7 +26,7 @@ dependencies {
     api(project(":simbot-util-di-api"))
     api(kotlin("reflect"))
     compileOnly("org.springframework:spring-context:5.3.13") // component
-    compileOnly("org.springframework:spring-core:5.3.13") // aliasFor
+    compileOnly("org.springframework:spring-core:6.0.4") // aliasFor
     compileOnly("org.springframework.boot:spring-boot:${libs.versions.spring.boot.get()}") // ConfigurationProperties
 }
 
