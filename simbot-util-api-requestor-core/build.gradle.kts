@@ -65,3 +65,13 @@ kotlin {
     }
 
 }
+
+// suppress all
+tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
+    dokkaSourceSets.configureEach {
+        suppress.set(true)
+        perPackageOption {
+            suppress.set(true)
+        }
+    }
+}
