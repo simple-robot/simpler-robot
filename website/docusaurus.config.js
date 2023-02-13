@@ -151,7 +151,7 @@ async function createConfig() {
                         sidebarPath: require.resolve('./sidebars.js'),
                         showLastUpdateAuthor: true,
                         showLastUpdateTime: true,
-                        editUrl: 'https://github.com/simple-robot/simpler-robot/tree/v3-dev/website/docs',
+                        editUrl: 'https://github.com/simple-robot/simpler-robot/tree/v3-dev/website/',
                         lastVersion: 'current',
                         versions: {
                             current: {
@@ -173,7 +173,7 @@ async function createConfig() {
                         blogTitle: 'Simbot Blog',
                         blogDescription: '与simbot相关的或者不相关的各种博客！',
                         showReadingTime: true,
-                        editUrl: 'https://github.com/simple-robot/simpler-robot/tree/v3-dev/website/blog',
+                        editUrl: 'https://github.com/simple-robot/simpler-robot/tree/v3-dev/website/',
                         blogSidebarTitle: 'All posts',
                         blogSidebarCount: 'ALL',
                         feedOptions: {
