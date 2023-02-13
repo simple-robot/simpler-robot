@@ -3,8 +3,8 @@ on:
   push:
     branches:
       - v3-dev
-      - dev/move_website
-
+    paths:
+      - 'website/**'
 jobs:
   deploy-doc:
     name: Deploy Website
