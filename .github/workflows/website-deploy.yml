@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - v3-dev
-      - dev/move-website
+      - dev/move_website
 
 jobs:
   deploy-doc:
