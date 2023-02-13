@@ -1,0 +1,13 @@
+.yesFont {}
+
+
+[data-theme='light'] .yesFont {
+  color: #5fb422;
+}
+
+[data-theme='dark'] .yesFont {
+  color: #5fb422;
+  text-shadow: 0 0 1px #5fb422,
+  0 0 2px #5fb422,
+  0 0 3px #5fb422
+}

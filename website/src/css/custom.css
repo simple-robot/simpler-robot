@@ -1,0 +1,137 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+@font-face {
+    font-family: "JetBrains Mono";
+    src: url("/font/JetBrainsMono-SemiBold.woff2");
+    /*src: url("/font/JetBrainsMono.ttf");*/
+}
+
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css");
+
+strong[dark-theme='dark'] {
+    text-decoration-line: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.9);
+}
+
+strong {
+    text-decoration-line: underline;
+    text-decoration-color: rgba(0,0,0,0.25);
+
+}
+
+
+strong code {
+    text-decoration-line: underline;
+    text-decoration-color: #ef5d84;
+    /*#ef5d84: rgba(239,93,132,0.25)*/
+}
+
+strong code[dark-theme='dark'] {
+    text-decoration-line: underline;
+    text-decoration-color: #f339a9;
+    /*#f339a9*/
+}
+
+code {
+    border-color: rgba(0, 0, 0, 0.02);
+    color: #f339a9;
+
+}
+code[dark-theme='dark'] {
+    border-color: rgba(0, 0, 0, 0.02);
+    color: #ef5d84;
+}
+
+:root {
+    --ifm-color-primary-darkest: #f494ae;
+    --ifm-color-primary-darker: #f06b8e;
+    --ifm-color-primary-dark: #ef5d84;
+    --ifm-color-primary: #ec426f;
+    --ifm-color-primary-light: #e9275a;
+    --ifm-color-primary-lighter: #e81950;
+    --ifm-color-primary-lightest: #c01341;
+    --ifm-font-family-monospace: 'JetBrains Mono';
+    --ifm-code-font-size: 85%;
+    --ifm-code-font-color: #fcc;
+
+    /* 代码块高亮 */
+    --docusaurus-highlighted-code-line-bg: rgb(238, 241, 255);
+
+}
+
+
+[data-theme='dark'] {
+    --ifm-color-primary-darkest: #fbb8e0;
+    --ifm-color-primary-darker: #f888cb;
+    --ifm-color-primary-dark: #f779c5;
+    --ifm-color-primary: #f559b7;
+    --ifm-color-primary-light: #f339a9;
+    --ifm-color-primary-lighter: #f22aa3;
+    --ifm-color-primary-lightest: #d90d88;
+
+    /* 代码块高亮 */
+    --docusaurus-highlighted-code-line-bg: rgb(100, 100, 100);
+
+}
+
+/* f9a9c8 */
+
+:root {
+    background-color: #FFFFFF;
+}
+
+[data-theme='dark'] {
+    background-color: #333;
+}
+
+
+/*noinspection ALL*/
+.code-block-error-line {
+    background-color: #ff000020;
+    display: block;
+    margin: 0 calc(-1 * var(--ifm-pre-padding));
+    padding: 0 var(--ifm-pre-padding);
+    border-left: 2px solid #ff000080;
+}
+
+/*noinspection ALL*/
+.code-block-success-line {
+    background-color: rgba(0, 255, 21, 0.1);
+    display: block;
+    margin: 0 calc(-1 * var(--ifm-pre-padding));
+    padding: 0 var(--ifm-pre-padding);
+    border-left: 2px solid rgba(34, 255, 0, 0.53);
+}
+
+/* 公告条 */
+div[class^='announcementBar_'] {
+    --site-announcement-bar-stripe-color1: hsl(210, 100%, 86%);
+    --site-announcement-bar-stripe-color2: hsl(0, 0%, 100%);
+    background: repeating-linear-gradient(
+            55deg,
+            var(--site-announcement-bar-stripe-color1),
+            var(--site-announcement-bar-stripe-color1) 20px,
+            var(--site-announcement-bar-stripe-color2) 10px,
+            var(--site-announcement-bar-stripe-color2) 40px
+    );
+    font-weight: bold;
+}
+
+/* warn配色 */
+/*div[class^='announcementBar_'] {*/
+/*    --site-announcement-bar-stripe-color1: hsl(52, 84%, 78%);*/
+/*    --site-announcement-bar-stripe-color2: hsl(28, 58%, 94%);*/
+/*    background: repeating-linear-gradient(*/
+/*            35deg,*/
+/*            var(--site-announcement-bar-stripe-color1),*/
+/*            var(--site-announcement-bar-stripe-color1) 20px,*/
+/*            var(--site-announcement-bar-stripe-color2) 10px,*/
+/*            var(--site-announcement-bar-stripe-color2) 40px*/
+/*    );*/
+/*    font-weight: bold;*/
+/*}*/

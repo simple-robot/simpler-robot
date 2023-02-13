@@ -1,0 +1,69 @@
+---
+authors: forliy
+title: 2022年第21周周报
+tags: [2022周报,周报]
+---
+
+
+2022年第21周周报喵。
+
+<!--truncate-->
+
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## 🚀 版本更新
+在本周，[核心库](https://github.com/simple-robot/simpler-robot) 发布了几个小型的修复性版本：
+- [v3.0.0.preview.10.2](https://github.com/simple-robot/simpler-robot/releases/tag/v3.0.0.preview.10.2)
+- [v3.0.0.preview.10.1](https://github.com/simple-robot/simpler-robot/releases/tag/v3.0.0.preview.10.1)
+
+以及在本周之内预计会发布一个新的版本 `v3.0.0.preview.11.0`。
+
+## 🚏 preview.11
+对于将要发布的 `v3.0.0.preview.11.0` 中，将要提供一些比较小型的特性，以及一些描述和约束的调整。
+
+### 🤖 组织中的bot
+从 v2.x 时代开始（甚至于v1.x时代），就经常能看到有人问"怎么在群里得到bot"这种稍微动动...这种比较考验思维能力的问题。
+
+按照常理来讲，实际上只要按照获取普通群成员的方式来获取bot，基本上就可以完成这个工作。不过在本次更新中，拟定增加一个新的特性。
+在 `v3.0.0.preview.11.0` 中会调整所有组织类型（`Organization` ）的 `bot` 属性的返回值，由 `Bot` 调整为 `BotMember`。
+
+顾名思义，`BotMember` 即代表此bot在目标组织中所扮演的角色。它实现 `Bot` 和 `Member`，可以作为bot或成员使用。
+
+<Tabs groupId="code">
+<TabItem value="Kotlin">
+
+```kotlin
+suspend fun onEvent(event: GroupEvent) {
+    val bot: BotGroupMember = event.group().bot
+}
+```
+
+</TabItem>
+<TabItem value="Java">
+
+```java
+public void onEvent(GroupEvent event) {
+    BotGroupMember bot = event.getGroup().getBot();
+}
+```
+
+</TabItem>
+</Tabs>
+
+
+### 🤫 Mute API
+简单调整了 `mute` api的描述与约束。现在禁言相关的api按照约定其时间周期参数仅在 **大于0** 的时候视为有效。
+
+
+## 📖 文档
+经过了 `v3.0.0.preview.10` 之后，目前已经暂时没有大范围的重构计划了。因此未来一段时间内我们会稍微分配一些精力到文档的编写上。
+目前你能够看得到的新内容有《快速开始》中的各部分。
+
+当然，一如既往的，如果文档中出现任何错误或者有任何建议意见，欢迎通过 [文档仓库](https://github.com/simple-robot-library/simbot3-website)
+的 [issues](https://github.com/simple-robot-library/simbot3-website/issues) 提交或通过
+[pr](https://github.com/simple-robot-library/simbot3-website/pulls) 协助我们完善，非常感谢。
+
+## 💼 保留节目
+最近团队成员中又开始出现了工作动荡的情况了，可能会在一段时间内影响到整体性的开发进度。

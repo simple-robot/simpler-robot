@@ -1,0 +1,75 @@
+---
+title: 模块概述
+---
+
+simbot每一代版本的迭代，不仅仅是功能的大篇幅更新与优化，更是对于我们团队成长的佐证。
+
+simbot3将会是基于 [gradle](http://gradle.org/) 构建的 [Kotlin](https://kotlinlang.org/) 语言多模块项目。
+
+<details>
+<summary>多平台?</summary>
+
+我们最终选择放弃对多平台的支持。~~simbot3版本将不会考虑提供其他平台（例如JS或native）的支持。也许...未来的版本会继续考虑吧。~~
+
+在simbot3全面中全面重构为多平台项目的工作量过于巨大，将难以完成，不过...可能会有一些小模块会逐渐发送改变也说不定呢。
+
+</details>
+
+:::caution
+
+simbot3正式版发布之前，你可以对目前simbot3文档或代码中出现的所有内容提出你宝贵的建议。
+
+团队的技术水平与精力十分有限，肯定会出现很多不够完善的内容，也许你提出的建议意见能够拯救在未来的simbot于水深火热之中。
+
+你可以通过
+[issue](https://github.com/simple-robot/simpler-robot/issues)
+或者 [github讨论区](https://github.com/orgs/simple-robot/discussions) 中提出建议，非常感谢。
+
+:::
+
+## 模块
+### simbot-api
+api模块是为整个simbot定义最基础的接口规范的多平台模块。
+
+其提供simbot中绝大多数通用的标准接口定义，且不提供 **任何实现** （除了一些默认实现、`object`或不需要外部实现的封闭实例集，例如 [唯一标识](../../definition/ID.md) ）。
+<br/>
+
+从simbot3开始，simbot将进行全异步改造，因此api模块所提供的绝大多数接口都会优先考虑异步。对于这些异步api的同步兼容实现将 *不会* 由api模块提供，而是由其实现方（例如 `core` 模块）进行考虑。
+<br/>
+
+simbot3开始，将不会再出现曾经版本的**以注解为主**的方式进行定义，而是向着所有的方法均可通过非反射的直接代码进行实现的方式前进。
+<br/>
+
+api模块并不一定只是一个 `api` 模块，“api模块”会是一系列对通用标准进行定义的模块，例如 `api` 、`api-xx` 等等。
+<br/>
+
+### simbot-core
+`core` 模块，是simbot官方针对于 `api` 模块通用标准进行实现的标准核心。此核心会为其他组件提供较为完整的标准实现，并提供一套标准的simbot组件-事件调度机制。
+<br/>
+
+简单来说，`core` 是一个针对于组件的api模块通用实现。
+
+### simbot-boot
+
+讲道理，现在回过头来看，我们可能也无法解释为什么我们总是始终执着于拥有一个额外的 'boot' 模块。总而言之，boot模块主要存在意义便是提供注解开发的基本定义，以及一套**轻量级**的依赖注入系统了。
+但是当你使用 spring boot starter 的时候，这些可能都不是那么重要。
+
+
+### spring boot starter
+spring整合模块为什么只是jvm-only我觉得我就不用解释了吧。
+<br/>
+
+在jvm平台，simbot依旧考虑支持与 [spring](https://spring.io/) 的整合，且应当设计的更加依赖 `spring`。当与 `spring` 进行整合时，
+包括但不限于依赖管理、事件处理全部应依靠spring机制。
+
+
+## 章节列表
+
+
+
+import DocCardList from '@theme/DocCardList';
+
+import {useCurrentSidebarCategory} from '@docusaurus/theme-common';
+
+
+<DocCardList items={useCurrentSidebarCategory().items}/>
