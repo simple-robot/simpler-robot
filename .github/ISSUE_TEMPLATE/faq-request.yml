@@ -1,0 +1,28 @@
+name: "📃文档:FAQ条目"
+description: "申请增加/修改文档中的FAQ条目或相关内容"
+labels: [ "文档" ]
+assignees: [ "ForteScarlet" ]
+# https://docs.github.com/cn/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema
+body:
+  - type: markdown
+    attributes:
+      value: |
+         ## 须知
+         在进行问题反馈前，请**确认**以下内容：
+         1. 我确认目前的FAQ条目中没有类似内容。
+         2. 我已确认所述内容不涉及任何个人隐私或其他敏感信息，遵守相关地区法律法规。
+         
+         请**知悉**以下内容：
+         1. 发起FAQ请求时，如果有涉及到的相关讨论、文档、议题等，请提供完整完善的相关连接，当申请通过时它们也会体现在最终的条目中。
+         
+         <hr />
+         
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 内容描述
+      description: 描述你的请求
+      placeholder: "例如: 我希望将'🐱'加入FAQ条目，因为猫猫很可爱"
+    validations:
+      required: true
