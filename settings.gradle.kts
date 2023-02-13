@@ -51,7 +51,7 @@ if (!System.getenv("IS_CI").toBoolean()) {
     include(
         projectTest("boot"),
         projectTest("spring-boot-starter"),
-        projectTest("jmh-duration"),
+        projectTest("jmh"),
     )
 
     include(":simbot-component-http-server-api")
