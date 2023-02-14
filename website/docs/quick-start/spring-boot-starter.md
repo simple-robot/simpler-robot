@@ -211,7 +211,7 @@ simbot.bot-configuration-resources[0]=classpath:simbot-bots/*.bot*
 
 不同的组件对于bot配置文件的具体属性都是不同的，但是它们都有一些共通点。
 
-首先阅读章节 [BOT配置](../basic/bot-config) 来了解bot配置文件的通用特性。
+首先阅读章节 [BOT配置](../basic/bot-config) 来了解bot配置文件的**通用特性**。
 
 然后前往你所需要的组件文档处，了解它的具体配置细节。
 
