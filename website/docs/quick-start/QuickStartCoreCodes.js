@@ -21,7 +21,7 @@ function mavenCode(version) {
 
 function gradleKts(version) {
     return `plugins {
-  \`kotlin\`
+  \`kotlin\` // or \`java\`
 }
 
 group = "..."
@@ -40,7 +40,7 @@ implementation("love.forte.simbot:simbot-core:${version.simbot.version}")
 
 function gradleGroovy(version) {
     return `plugins {
-  id 'kotlin'
+  id 'kotlin' // or 'java'
 }
 
 group = '...'
