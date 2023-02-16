@@ -27,7 +27,7 @@ body:
     id: version
     attributes:
       label: 版本号
-      description: 反馈所涉及的具体版本
+      description: 涉及的具体版本
       placeholder: "例如: v3.0.0-xx 或 v6.6.6 等"
     validations:
       required: true       
@@ -42,8 +42,8 @@ body:
   - type: dropdown
     id: language
     attributes:
-      label: 选择此问题涉及的编程语言
-      description: 如果没有或无对应选项则选择'其他'后在后续描述中补充说明即可
+      label: 涉及的编程语言
+      description: 如果没有或无对应选项则选择'其他'后在后续描述中补充说明
       options:
         - Java
         - Kotlin
@@ -52,13 +52,25 @@ body:
       required: true
 
   - type: dropdown
+    id: build-tool
+    attributes:
+      label: 项目构建工具
+      description: 如果没有或无对应选项则选择'其他'后在后续描述中补充说明
+      options:
+        - Maven
+        - Gradle
+        - 其他
+    validations:
+      required: true
+      
+  - type: dropdown
     id: component
     attributes:
-      label: 选择此问题涉及的组件库
-      description: 如果没有或无对应选项则在后续描述中补充说明即可
+      label: 涉及的组件库
+      description: 如果没有或无对应选项则在后续描述中补充说明
       multiple: true
       options:
-        - mirai
+        - mirai (QQ)
         - kook
         - QQ频道
         - 其他
@@ -67,8 +79,8 @@ body:
     id: description
     attributes:
       label: 问题描述
-      description: 描述你遇到的问题
-      placeholder: "例如: 我发现xx处注释有错别字"
+      description: 描述你遇到的问题 (代码、日志等内容注意使用 markdown 代码块)
+      placeholder: "描述内容"
     validations:
       required: true
 
@@ -78,7 +90,8 @@ body:
     id: recurrent
     attributes:
       label: 复现方式
-      description: 提供可行的问题复现方式
+      description: 提供可行的问题复现方式 (代码、日志等内容注意使用 markdown 代码块)
+      placeholder: "复现方案"
     validations:
       required: true
       
@@ -86,7 +99,7 @@ body:
     id: log
     attributes:
       label: 相关日志
-      description: 如果存在日志，请提供问题出现时的相关日志及上下文
+      description: 如果存在日志，请提供问题出现时的相关日志及上下文 (不需要使用 markdown 代码块格式)
       placeholder: 问题出现的相关日志
       render: Text
 
