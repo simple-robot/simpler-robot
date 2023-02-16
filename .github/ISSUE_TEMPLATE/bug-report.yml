@@ -67,7 +67,7 @@ body:
     id: component
     attributes:
       label: 涉及的组件库
-      description: 如果没有或无对应选项则在后续描述中补充说明
+      description: 请尽可能准确的选择使用的组件
       multiple: true
       options:
         - mirai (QQ)
