@@ -1,6 +1,6 @@
 blank_issues_enabled: false
 
-#contact_links:
-#  - name: xx
-#    url: xx
-#    about: xx
+contact_links:
+  - name: 文档反馈
+    url: https://github.com/simple-robot-library/simbot3-website/issues/new/choose
+    about: 对官网 simbot.forte.love 的反馈
