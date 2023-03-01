@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="版权标记文件" pattern="(file[*.main]:*.kt||file[*.main]:*.java||file[*.main]:*.kts||file:*.gradle.kts)&amp;&amp;!file:website/**" />
+</component>
