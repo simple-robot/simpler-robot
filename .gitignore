@@ -20,7 +20,8 @@ local.properties
 !gradle-wrapper.jar
 
 .idea/**
-!.idea/copyright/*
+!.idea/copyright/**
+!.idea/scopes/**
 *.iml
 
 # Cache of project
