@@ -27,7 +27,7 @@ dependencies {
     compileOnly(project(":simbot-util-annotation-tool"))
     
     compileOnly(libs.javax.annotation.api)
-    compileOnly("org.springframework:spring-context:5.3.25")
+    compileOnly("org.springframework:spring-context:6.0.6")
     compileOnly("org.springframework:spring-core:5.3.25")
     compileOnly("org.springframework.boot:spring-boot:$springBootVersion")
     compileOnly("org.springframework.boot:spring-boot-autoconfigure:$springBootVersion")
