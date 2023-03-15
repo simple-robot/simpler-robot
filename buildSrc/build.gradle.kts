@@ -33,7 +33,7 @@ dependencies {
     implementation("org.jetbrains.dokka:dokka-base:$dokkaPluginVersion")
 
     // see https://github.com/gradle-nexus/publish-plugin
-    implementation("io.github.gradle-nexus:publish-plugin:1.2.0")
+    implementation("io.github.gradle-nexus:publish-plugin:1.3.0")
     implementation("love.forte.plugin.suspend-transform:suspend-transform-plugin-gradle:$suspendTransformVersion")
 
     implementation("love.forte.gradle.common:gradle-common-core:$gradleCommon")
