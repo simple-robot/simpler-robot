@@ -13,7 +13,6 @@ jobs:
     strategy:
       matrix:
         os: [ macos-latest, windows-latest, ubuntu-latest ]
-        jv: [ 8, 11, 17 ]
     runs-on: ${{ matrix.os }}
     steps:
       # 检出仓库代码
@@ -25,7 +24,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: ${{ matrix.jv }}
+          java-version: 11
 
       - name: Run All Tests
         uses: gradle/gradle-build-action@v2
