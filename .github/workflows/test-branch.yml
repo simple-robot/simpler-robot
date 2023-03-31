@@ -1,6 +1,6 @@
 name: Test Branch
-on: # push
-  push:
+on:
+  pull_request:
     branches: v3-dev
 
 env:
