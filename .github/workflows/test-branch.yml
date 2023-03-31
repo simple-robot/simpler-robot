@@ -1,0 +1,40 @@
+name: Test Branch
+on: # push
+  push:
+    branches: v3-dev
+
+env:
+  IS_CI: true
+  GRADLE_OPTS: "-Dfile.encoding=UTF-8"
+
+jobs:
+  build-test:
+    name: Build and test
+    strategy:
+      matrix:
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
+        jv: [ 8, 11, 17 ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      # 检出仓库代码
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      # setup Java
+      - name: Setup java 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: ${{ matrix.jv }}
+
+      - name: Run All Tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 7.6
+          arguments: |
+            assemble
+            build
+            allTests
+            --info 
+            --warning-mode all
+
