@@ -17,6 +17,9 @@ changelog:
     - title: '✨ 优化'
       labels:
         - '优化'
+    - title: '📦 依赖更新'
+      labels: 
+        - 'dependencies'
     - title: '👀 其他变更'
       labels:
         - '*'
