@@ -34,7 +34,7 @@ kotlinx-serialization-properties = { group = "org.jetbrains.kotlinx", name = "ko
 charleskorn-kaml = "com.charleskorn.kaml:kaml:0.53.0"
 
 # slf4j
-slf4j-api = "org.slf4j:slf4j-api:1.7.36"
+slf4j-api = "org.slf4j:slf4j-api:2.0.7"
 slf4j-nop = "org.slf4j:slf4j-nop:2.0.7"
 
 # javax
