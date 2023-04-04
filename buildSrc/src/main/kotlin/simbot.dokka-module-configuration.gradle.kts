@@ -43,12 +43,12 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
         } else if (project.file("README.md").exists()) {
             includes.from("README.md")
         }
-    
-        
+
+
         sourceLink {
             localDirectory.set(projectDir.resolve("src"))
             val relativeTo = projectDir.relativeTo(rootProject.projectDir)
-            remoteUrl.set(URL("${P.HOMEPAGE}/tree/v3-main/$relativeTo/src"))
+            remoteUrl.set(URL("${P.HOMEPAGE}/tree/v3-dev/$relativeTo/src"))
             remoteLineSuffix.set("#L")
         }
     

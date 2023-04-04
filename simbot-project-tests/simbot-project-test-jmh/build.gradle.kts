@@ -16,7 +16,9 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":simbot-util-stage-loop"))
     implementation(libs.openjdk.jmh.core)
+    implementation(libs.kotlinx.coroutines.core)
     annotationProcessor(libs.openjdk.jmh.generator.annprocess)
     kapt(libs.openjdk.jmh.generator.annprocess)
 }
