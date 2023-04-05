@@ -168,7 +168,7 @@ fun Project.generateChangelog(tag: String) {
                         writer.appendLine("    <details><summary><code>$pre..${hashList.last()}</code></summary>")
                         writer.newLine()
                         hashList.forEach { hash ->
-                            writer.appendLine("    - [`$hash`](https://github.com/simple-robot/simpler-robot/commit/$hash))")
+                            writer.appendLine("    - [`$hash`](https://github.com/simple-robot/simpler-robot/commit/$hash)")
                         }
                         writer.newLine()
                         writer.appendLine("    </details>\n")
