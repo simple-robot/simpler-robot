@@ -20,7 +20,7 @@ import java.io.RandomAccessFile
 import java.nio.file.Files
 import java.util.*
 
-data class CommitLog(val message: String, val hash: MutableList<String>)
+data class CommitLog(val message: String, val hash: MutableList<String>, val pre: String?)
 
 fun Project.generateChangelog(tag: String) {
     println("Generate change log for $tag ...")
@@ -95,11 +95,14 @@ fun Project.generateChangelog(tag: String) {
 
 
         val lines = LinkedList<CommitLog>()
-
-        val match = Regex("((?!(release[a-zA-Z0-9-_]+|submodule[a-zA-Z0-9-_]+))[a-zA-Z0-9-_]+)(\\(.+\\))?: *.+")
+        // 不要:
+        val excludes = listOf("release", "submodule", "ci", "chore")
+        val match = Regex("((?!(${excludes.joinToString("|")}))[a-zA-Z0-9-_]+)(\\(.+\\))?: *.+")
 
         output.toString()
-            .lineSequence()
+            .lines()
+            .asReversed()
+            .asSequence()
             .filter { line ->
                 line.isNotEmpty()
             }.mapNotNull { line ->
@@ -115,18 +118,18 @@ fun Project.generateChangelog(tag: String) {
 
                 match.matches(message)
             }.forEach { (hash, message) ->
-                fun add() {
-                    lines.addLast(CommitLog(message, mutableListOf(hash)))
+                fun add(pre: String?) {
+                    lines.addLast(CommitLog(message, mutableListOf(hash), pre))
                 }
 
                 if (lines.isEmpty()) {
-                    add()
+                    add(null)
                 } else {
                     val last = lines.last
                     if (last.message == message) {
-                        last.hash.add(hash)
+                        last.hash.add(0, hash)
                     } else {
-                        add()
+                        add(last.hash.last())
                     }
                 }
             }
@@ -153,17 +156,17 @@ fun Project.generateChangelog(tag: String) {
             """.trimIndent()
             )
 
-            lines.forEach { (message, hashList) ->
-                if (hashList.size == 1) {
-                    writer.append("- $message (${hashList[0]})")
-                } else {
-                    writer.appendLine("- $message")
-                    hashList.forEach { hash ->
-                        writer.appendLine("    - $hash")
+            lines.asReversed()
+                .forEach { (message, hashList, preHash) ->
+                    if (hashList.size == 1) {
+                        writer.appendLine("- $message ([`${hashList[0]}`](https://github.com/simple-robot/simpler-robot/commit/${hashList[0]}))")
+                    } else {
+                        val pre = hashList[0]
+                        val post: String = preHash ?: lastTag ?: "HEAD"
+                        writer.appendLine("- $message ([`$pre..${hashList.last()}`](https://github.com/simple-robot/simpler-robot/compare/$pre..$post))")
+
                     }
                 }
-                writer.newLine()
-            }
 
             writer.newLine()
         }
