@@ -164,6 +164,27 @@ fun Project.generateChangelog(tag: String) {
                         val pre = hashList[0]
                         val post: String = preHash ?: lastTag ?: "HEAD"
                         writer.appendLine("- $message ([`$pre..${hashList.last()}`](https://github.com/simple-robot/simpler-robot/compare/$pre..$post))")
+                        writer.newLine()
+                        writer.appendLine("<details><summary>$pre..$post</summary>")
+                        writer.newLine()
+                        hashList.forEach { hash ->
+                            writer.appendLine("    - [`$hash`](https://github.com/simple-robot/simpler-robot/commit/$hash))")
+                        }
+                        writer.newLine()
+                        writer.appendLine("</details>")
+
+
+                        /*
+                        <details><summary>ec1e591a..cd1a6df5</summary>
+
+                                - 1
+
+                        - 2
+                        - 3
+
+                        </details>
+                         */
+
 
                     }
                 }

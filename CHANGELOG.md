@@ -9,6 +9,16 @@
 - pref: kdoc deploy ([`a3924b79..efcbbd06`](https://github.com/simple-robot/simpler-robot/compare/a3924b79..27eadaed))
 - doc: readme ([`27eadaed`](https://github.com/simple-robot/simpler-robot/commit/27eadaed))
 - doc: 优化KDoc的生成与表现效果 ([`ec1e591a..3e4e14ca`](https://github.com/simple-robot/simpler-robot/compare/ec1e591a..cd1a6df5))
+
+    <details><summary>ec1e591a..cd1a6df5</summary>
+    
+    - 1
+
+    - 2
+    - 3
+    
+    </details>
+
 - doc: 新的文档发布地址 ([`cd1a6df5`](https://github.com/simple-robot/simpler-robot/commit/cd1a6df5))
 - doc: 新的文档发布路径测试 ([`1ac9eb87..0b62fbc8`](https://github.com/simple-robot/simpler-robot/compare/1ac9eb87..109d8e8e))
 - doc: KDoc生成追加对kotlinx相关文档的引用链接 ([`109d8e8e`](https://github.com/simple-robot/simpler-robot/commit/109d8e8e))
