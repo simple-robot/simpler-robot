@@ -165,13 +165,13 @@ fun Project.generateChangelog(tag: String) {
                         val post: String = preHash ?: lastTag ?: "HEAD"
                         writer.appendLine("- $message ([`$pre..${hashList.last()}`](https://github.com/simple-robot/simpler-robot/compare/$pre..$post))")
                         writer.newLine()
-                        writer.appendLine("<details><summary><code>$pre..${hashList.last()}</code></summary>")
+                        writer.appendLine("    <details><summary><code>$pre..${hashList.last()}</code></summary>")
                         writer.newLine()
                         hashList.forEach { hash ->
                             writer.appendLine("    - [`$hash`](https://github.com/simple-robot/simpler-robot/commit/$hash))")
                         }
                         writer.newLine()
-                        writer.appendLine("</details>\n")
+                        writer.appendLine("    </details>\n")
 
 
                         /*

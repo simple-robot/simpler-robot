@@ -4,14 +4,17 @@
 
 - fix: build config ([`4cd0bb48..a6b8048d`](https://github.com/simple-robot/simpler-robot/compare/4cd0bb48..27055f7f))
 
-<details><summary><code>4cd0bb48..27055f7f</code></summary>
-
-    - [`4cd0bb48`](https://github.com/simple-robot/simpler-robot/commit/4cd0bb48))
-    - [`249209ce`](https://github.com/simple-robot/simpler-robot/commit/249209ce))
-    - [`5bc57233`](https://github.com/simple-robot/simpler-robot/commit/5bc57233))
-    - [`a6b8048d`](https://github.com/simple-robot/simpler-robot/commit/a6b8048d))
-
-</details>
+    <details><summary><code>4cd0bb48..27055f7f</code></summary>
+    
+    - [`4cd0bb48`](https://github.com/simple-robot/simpler-robot/commit/4cd0bb48)
+    
+    - [`249209ce`](https://github.com/simple-robot/simpler-robot/commit/249209ce)
+    
+    - [`5bc57233`](https://github.com/simple-robot/simpler-robot/commit/5bc57233)
+    
+    - [`a6b8048d`](https://github.com/simple-robot/simpler-robot/commit/a6b8048d)
+    
+    </details>
 
 - build: 迁移 forte-di 和 annotation-tool 到当前仓库 ([`27055f7f`](https://github.com/simple-robot/simpler-robot/commit/27055f7f))
 - build: 将 [annotationTool](https://github.com/ForteScarlet/annotation-tool) 迁移到当前仓库内 ([`d8325c7e`](https://github.com/simple-robot/simpler-robot/commit/d8325c7e))
@@ -19,11 +22,11 @@
 
 <details><summary><code>a3924b79..b56b6528</code></summary>
 
-    - [`a3924b79`](https://github.com/simple-robot/simpler-robot/commit/a3924b79))
-    - [`674f8ee7`](https://github.com/simple-robot/simpler-robot/commit/674f8ee7))
-    - [`da53248e`](https://github.com/simple-robot/simpler-robot/commit/da53248e))
-    - [`de208d0b`](https://github.com/simple-robot/simpler-robot/commit/de208d0b))
-    - [`efcbbd06`](https://github.com/simple-robot/simpler-robot/commit/efcbbd06))
+    - [`a3924b79`](https://github.com/simple-robot/simpler-robot/commit/a3924b79)
+    - [`674f8ee7`](https://github.com/simple-robot/simpler-robot/commit/674f8ee7)
+    - [`da53248e`](https://github.com/simple-robot/simpler-robot/commit/da53248e)
+    - [`de208d0b`](https://github.com/simple-robot/simpler-robot/commit/de208d0b)
+    - [`efcbbd06`](https://github.com/simple-robot/simpler-robot/commit/efcbbd06)
 
 </details>
 
