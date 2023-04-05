@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with Simple Robot. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import changelog.generateChangelog
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
@@ -34,66 +35,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 tasks.create("createChangelog") {
     group = "documentation"
     doFirst {
-        val realVersion = rootProject.version.toString()
-        val version = "v$realVersion"
-        println("Generate change log for $version ...")
-        // configurations.runtimeClasspath
-        val changelogDir = rootProject.file(".changelog").also {
-            it.mkdirs()
-        }
-        
-        val file = File(changelogDir, "$version.md")
-        if (!file.exists()) {
-            file.createNewFile()
-            
-            val autoGenerateText = buildString {
-                appendLine("<details>")
-                appendLine("<summary><b>仓库参考</b></summary>")
-                appendLine()
-                
-                appendLine("| **模块** | **search.maven** |")
-                appendLine("|---------|------------------|")
-                
-                rootProject.subprojects
-                    .filter { project ->
-                        project.extensions.findByType<PublishingExtension>() != null
-                    }.forEach { project ->
-                        // not publishable
-                        val multiplatformExtension =
-                            project.extensions.findByName("kotlin") as? KotlinMultiplatformExtension
-                        if (multiplatformExtension != null) {
-                            //val group = P.findProjectDetailByGroup(project.group.toString())
-                            repoRowMulti(
-                                multiplatformExtension,
-                                project.name,
-                                project.group.toString(),
-                                project.name,
-                                realVersion
-                            )
-                        } else {
-                            repoRow(project.name, project.group.toString(), project.name, realVersion)
-                        }
-                    }
-
-//                repoRowMulti(simbotLoggerKotlin, "simbot-logger", "love.forte.simbot", "simbot-logger", realVersion)
-//                repoRow("simbot-api", "love.forte.simbot", "simbot-api", realVersion)
-//                repoRow("simbot-core", "love.forte.simbot", "simbot-core", realVersion)
-//                repoRow("simboot-api", "love.forte.simbot.boot", "simboot-api", realVersion)
-//                repoRow("simboot-core", "love.forte.simbot.boot", "simboot-core", realVersion)
-//                repoRow("simboot-core-annotation", "love.forte.simbot.boot", "simboot-core-annotation", realVersion)
-//                repoRow(
-//                    "simboot-core-spring-boot-starter",
-//                    "love.forte.simbot.boot",
-//                    "simboot-core-spring-boot-starter",
-//                    realVersion
-//                )
-                
-                appendLine()
-                appendLine("</details>")
-            }
-            
-            file.writeText(autoGenerateText)
-        }
+        generateChangelog("v${P.Simbot.versionWithoutSnapshot}")
     }
 }
 
