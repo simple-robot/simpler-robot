@@ -96,7 +96,7 @@ fun Project.generateChangelog(tag: String) {
 
         val lines = LinkedList<CommitLog>()
         // 不要:
-        val excludes = listOf("release", "submodule", "ci", "chore")
+        val excludes = listOf("release", "submodule", "ci", "chore", "doc")
         val match = Regex("((?!(${excludes.joinToString("|")}))[a-zA-Z0-9-_]+)(\\(.+\\))?: *.+")
 
         output.toString()
@@ -165,13 +165,13 @@ fun Project.generateChangelog(tag: String) {
                         val post: String = preHash ?: lastTag ?: "HEAD"
                         writer.appendLine("- $message ([`$pre..${hashList.last()}`](https://github.com/simple-robot/simpler-robot/compare/$pre..$post))")
                         writer.newLine()
-                        writer.appendLine("<details><summary>$pre..$post</summary>")
+                        writer.appendLine("<details><summary><code>$pre..$post</code></summary>")
                         writer.newLine()
                         hashList.forEach { hash ->
                             writer.appendLine("    - [`$hash`](https://github.com/simple-robot/simpler-robot/commit/$hash))")
                         }
                         writer.newLine()
-                        writer.appendLine("</details>")
+                        writer.appendLine("</details>\n")
 
 
                         /*
