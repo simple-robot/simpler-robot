@@ -41,7 +41,7 @@ dependencies {
     implementation("love.forte.gradle.common:gradle-common-publication:$gradleCommon")
 
     // ktor
-    implementation("io.ktor:ktor-client-core:2.2.4")
+    implementation("io.ktor:ktor-client-core:2.3.0")
     implementation("io.ktor:ktor-client-content-negotiation:2.2.4")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.2.4")
 }

@@ -5,7 +5,7 @@ spring-boot = "2.7.10"
 openjdk-jmh = "1.36"
 #forte-di = "0.0.3"
 #forte-annotationTool = "0.6.3"
-ktor = "2.2.4"
+ktor = "2.3.0"
 
 [libraries]
 # jetbrains-annotation
