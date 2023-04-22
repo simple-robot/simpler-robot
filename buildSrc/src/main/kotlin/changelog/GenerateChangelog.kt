@@ -29,14 +29,15 @@ fun Project.generateChangelog(tag: String) {
         it.mkdirs()
     }
 
-    val file = File(changelogDir, "$tag.md")
-    if (!file.exists()) {
-        file.createNewFile()
+    File(changelogDir, "$tag.md").also {
+        if (!it.exists()) {
+            it.createNewFile()
+        }
     }
 
     val rootChangelogFile = rootProject.file("CHANGELOG.md").also {
-        if (!file.exists()) {
-            file.createNewFile()
+        if (!it.exists()) {
+            it.createNewFile()
         }
     }
 
