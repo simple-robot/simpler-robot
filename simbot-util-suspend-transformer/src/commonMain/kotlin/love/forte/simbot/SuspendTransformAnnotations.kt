@@ -10,15 +10,15 @@
  * You should have received a copy of the GNU Lesser General Public License along with Simple Robot. If not, see <https://www.gnu.org/licenses/>.
  */
 
-
+@file:Suppress("KDocUnresolvedReference")
 package love.forte.simbot
-
-import love.forte.plugin.suspendtrans.annotation.JvmAsync
-import love.forte.plugin.suspendtrans.annotation.JvmBlocking
 
 
 /**
- * 用于代表同时标记 [@JvmBlocking][JvmBlocking] 和 [@JvmAsync][JvmAsync] 的整合性注解。
+ * 用于代表一种类似同时标记
+ * [@JvmBlocking][love.forte.plugin.suspendtrans.annotation.JvmBlocking] 和
+ * [@JvmAsync][love.forte.plugin.suspendtrans.annotation.JvmAsync]
+ * 的整合性注解。
  *
  */
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
@@ -34,15 +34,19 @@ public annotation class JvmSuspendTrans(
 )
 
 /**
- * **J**vm **S**uspend **T**rans
+ * **J**vm **S**uspend **T**rans 的简写类型。
+ *
  * @see JvmSuspendTrans
  */
 @Suppress("SpellCheckingInspection")
-internal typealias JST = JvmSuspendTrans
+public typealias JST = JvmSuspendTrans
 
 
 /**
- * 用于代表同时标记 [@JvmBlocking][JvmBlocking] 和 [@JvmAsync][JvmAsync] 的整合性注解。
+ * 用于代表同时标记
+ * [@JvmBlocking][love.forte.plugin.suspendtrans.annotation.JvmBlocking] 和
+ * [@JvmAsync][love.forte.plugin.suspendtrans.annotation.JvmAsync]
+ * 的整合性注解。
  *
  * [JvmSuspendTransProperty] 默认转化为属性类型，且 blocking 的转化默认没有后缀。
  *
@@ -60,8 +64,9 @@ public annotation class JvmSuspendTransProperty(
 )
 
 /**
- * **J**vm **S**uspend **T**rans **P**roperty.
+ * **J**vm **S**uspend **T**rans **P**roperty 的简写类型。
+ *
  * @see JvmSuspendTransProperty
  */
 @Suppress("SpellCheckingInspection")
-internal typealias JSTP = JvmSuspendTransProperty
+public typealias JSTP = JvmSuspendTransProperty

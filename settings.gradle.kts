@@ -12,24 +12,10 @@
  */
 rootProject.name = "simply-robot"
 
-include(
-    ":simbot-util-api-requestor-core",
-    ":simbot-util-api-requestor-ktor",
-    ":simbot-util-stage-loop",
-)
-
-include(
-    ":simbot-util-annotation-tool"
-)
-
-include(
-    ":simbot-util-di-api",
-    ":simbot-util-di-core",
-)
-
 include(":simbot-logger")
 include(":simbot-logger-slf4j-impl")
 
+include(":simbot-annotations")
 include(":simbot-api")
 include(":simbot-core")
 
@@ -39,6 +25,22 @@ include(
     ":simboot-core",
     ":simboot-core-spring-boot-starter",
 )
+
+
+include(
+    ":simbot-util-api-requestor-core",
+    ":simbot-util-api-requestor-ktor",
+    ":simbot-util-stage-loop",
+)
+
+include(":simbot-util-annotation-tool")
+
+include(
+    ":simbot-util-di-api",
+    ":simbot-util-di-core",
+)
+
+include(":simbot-util-suspend-transformer")
 
 // project test
 // if not in CI workflows
@@ -54,25 +56,5 @@ if (!System.getenv("IS_CI").toBoolean()) {
 
 
 
-
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun api(moduleName: String): String = ":simbot-apis:simbot-$moduleName"
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun core(moduleName: String): String = ":simbot-cores:simbot-$moduleName"
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun boot(moduleName: String): String = ":simbot-boots:simboot-$moduleName"
-
 @Suppress("NOTHING_TO_INLINE")
 inline fun projectTest(moduleName: String): String = ":simbot-project-tests:simbot-project-test-$moduleName"
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun componentHttpServer(moduleName: String): String = ":simbot-components:http-server:simbot-component-http-server-$moduleName"
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun util(moduleName: String): String = ":simbot-utils:simbot-util-$moduleName"
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun utilApiReq(moduleName: String): String = ":simbot-utils:api-requestor:simbot-util-api-requestor-$moduleName"

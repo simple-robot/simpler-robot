@@ -77,7 +77,7 @@ private fun createDefaultDispatcher(
  * 对 [RejectedExecutionException] 的扩展, 当 [DefaultBlockingDispatcher] 将会在追加任务被拒绝时抛出此异常并携带 [runnable] 和 [executor] 信息供于外部用户捕获并处理.
  */
 @Suppress("MemberVisibilityCanBePrivate")
-public open class DefaultBlockingDispatcherTaskRejectedExecutionException(
+public class DefaultBlockingDispatcherTaskRejectedExecutionException(
     public val runnable: java.lang.Runnable, public val executor: Executor,
 ) : RejectedExecutionException("The task $runnable is rejected by default blocking task executor $executor")
 
@@ -519,7 +519,7 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
         }
     }
 
-    @Suppress("BlockingMethodInNonBlockingContext")
+//    @Suppress("BlockingMethodInNonBlockingContext")
     fun await(): Result<T> {
         synchronized(this) {
             @Suppress("UNUSED_VARIABLE") // emm?
