@@ -44,46 +44,54 @@ kotlin {
         nodejs()
     }
 
-     val mainPresets = mutableSetOf<KotlinSourceSet>()
-     val testPresets = mutableSetOf<KotlinSourceSet>()
+    val mainPresets = mutableSetOf<KotlinSourceSet>()
+    val testPresets = mutableSetOf<KotlinSourceSet>()
 
-     targets {
-         presets.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeTargetPreset<*>>()
-             .forEach { presets ->
-                 val target = fromPreset(presets, presets.name)
-                 mainPresets.add(target.compilations["main"].kotlinSourceSets.first())
-                 testPresets.add(target.compilations["test"].kotlinSourceSets.first())
-             }
-     }
+    targets {
+        presets.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeTargetPreset<*>>()
+            .forEach { presets ->
+                val target = fromPreset(presets, presets.name)
+                mainPresets.add(target.compilations["main"].kotlinSourceSets.first())
+                testPresets.add(target.compilations["test"].kotlinSourceSets.first())
+            }
+    }
 
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                api(project(":simbot-annotations"))
+                api(project(":simbot-logger"))
+            }
+        }
+
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
 
-         val nativeMain by creating {
-             dependsOn(commonMain)
-         }
-         val nativeTest by creating {
-             dependsOn(commonTest)
-         }
-
-         configure(mainPresets) { dependsOn(nativeMain) }
-         configure(testPresets) { dependsOn(nativeTest) }
-
-    }
-
-}
-
-// suppress all
-tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
-    dokkaSourceSets.configureEach {
-        suppress.set(true)
-        perPackageOption {
-            suppress.set(true)
+        getByName("jvmMain") {
+            dependencies {
+                api(libs.kotlinx.coroutines.core)
+                api(libs.kotlinx.coroutines.jdk8)
+            }
         }
+        getByName("jsMain") {
+            dependencies {
+                api(libs.kotlinx.coroutines.core)
+            }
+        }
+
+        val nativeMain by creating {
+            dependsOn(commonMain)
+        }
+        val nativeTest by creating {
+            dependsOn(commonTest)
+        }
+
+        configure(mainPresets) { dependsOn(nativeMain) }
+        configure(testPresets) { dependsOn(nativeTest) }
+
     }
+
 }

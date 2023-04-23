@@ -22,6 +22,8 @@ plugins {
 dependencies {
     api(kotlin("reflect"))
     api(project(":simbot-logger"))
+    api(project(":simbot-annotations"))
+    api(project(":simbot-util-suspend-transformer"))
 
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.jdk8)
