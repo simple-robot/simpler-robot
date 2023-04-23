@@ -44,17 +44,17 @@ kotlin {
         nodejs()
     }
 
-     val mainPresets = mutableSetOf<KotlinSourceSet>()
-     val testPresets = mutableSetOf<KotlinSourceSet>()
+    val mainPresets = mutableSetOf<KotlinSourceSet>()
+    val testPresets = mutableSetOf<KotlinSourceSet>()
 
-     targets {
-         presets.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeTargetPreset<*>>()
-             .forEach { presets ->
-                 val target = fromPreset(presets, presets.name)
-                 mainPresets.add(target.compilations["main"].kotlinSourceSets.first())
-                 testPresets.add(target.compilations["test"].kotlinSourceSets.first())
-             }
-     }
+    targets {
+        presets.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeTargetPreset<*>>()
+            .forEach { presets ->
+                val target = fromPreset(presets, presets.name)
+                mainPresets.add(target.compilations["main"].kotlinSourceSets.first())
+                testPresets.add(target.compilations["test"].kotlinSourceSets.first())
+            }
+    }
 
     sourceSets {
         val commonMain by getting {
@@ -67,8 +67,6 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.kotlinx.coroutines.test)
             }
         }
 
@@ -84,26 +82,16 @@ kotlin {
             }
         }
 
-         val nativeMain by creating {
-             dependsOn(commonMain)
-         }
-         val nativeTest by creating {
-             dependsOn(commonTest)
-         }
-
-         configure(mainPresets) { dependsOn(nativeMain) }
-         configure(testPresets) { dependsOn(nativeTest) }
-
-    }
-
-}
-
-// suppress all
-tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
-    dokkaSourceSets.configureEach {
-        suppress.set(true)
-        perPackageOption {
-            suppress.set(true)
+        val nativeMain by creating {
+            dependsOn(commonMain)
         }
+        val nativeTest by creating {
+            dependsOn(commonTest)
+        }
+
+        configure(mainPresets) { dependsOn(nativeMain) }
+        configure(testPresets) { dependsOn(nativeTest) }
+
     }
+
 }
