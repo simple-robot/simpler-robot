@@ -11,8 +11,6 @@
  */
 
 import changelog.generateChangelog
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 
 /*
  *  Copyright (c) 2022-2022 ForteScarlet <ForteScarlet@163.com>
@@ -40,42 +38,27 @@ tasks.create("createChangelog") {
 }
 
 
+tasks.create("updateWebsiteVersionJson") {
+    group = "documentation"
+    doFirst {
+        val version = P.Simbot.version.toString()
 
-fun StringBuilder.repoRow(moduleName: String, group: String, id: String, version: String) {
-    append("| ").append(moduleName)
-    append(" | [")
-    append("v").append(version)
-    append("](https://search.maven.org/artifact/")
-    append(group).append("/").append(id).append("/").append(version).append("/jar)  |")
-    appendLine()
-}
-
-private val multiPlatformType = setOf(
-    KotlinPlatformType.common,
-    KotlinPlatformType.jvm,
-    KotlinPlatformType.js,
-)
-
-fun StringBuilder.repoRowMulti(
-    kotlin: KotlinMultiplatformExtension,
-    moduleName: String,
-    group: String,
-    id: String,
-    version: String,
-) {
-    kotlin.targets.filter {
-        it.platformType in multiPlatformType
-    }.sortedBy {
-        it.platformType
-    }.forEach {
-        when (it.platformType) {
-            KotlinPlatformType.common ->
-                repoRow(moduleName, group, id, version)
-            
-            else ->
-                repoRow("$moduleName-${it.targetName}", group, "$id-${it.targetName.toLowerCase()}", version)
+        val websiteVersionJsonDir = rootProject.file("website/static")
+        if (!websiteVersionJsonDir.exists()) {
+            websiteVersionJsonDir.mkdirs()
         }
-        
+        val websiteVersionJsonFile = File(websiteVersionJsonDir, "version.json")
+        if (!websiteVersionJsonFile.exists()) {
+            websiteVersionJsonFile.createNewFile()
+        }
+
+        websiteVersionJsonFile.writeText(
+            """
+            {
+                "version": "$version"
+            }
+        """.trimIndent()
+        )
     }
-    
 }
+
