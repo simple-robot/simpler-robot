@@ -21,10 +21,11 @@ repositories {
     mavenLocal()
 }
 
-val kotlinVersion = "1.8.10"
+val kotlinVersion = "1.8.21"
 val dokkaPluginVersion = "1.8.10"
-val suspendTransformVersion = "0.2.7"
+val suspendTransformVersion = "0.3.1"
 val gradleCommon = "0.0.11"
+val ktor = "2.3.0"
 
 dependencies {
     implementation(kotlin("gradle-plugin", kotlinVersion))
@@ -41,9 +42,9 @@ dependencies {
     implementation("love.forte.gradle.common:gradle-common-publication:$gradleCommon")
 
     // ktor
-    implementation("io.ktor:ktor-client-core:2.3.0")
-    implementation("io.ktor:ktor-client-content-negotiation:2.2.4")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.2.4")
+    implementation("io.ktor:ktor-client-core:$ktor")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktor")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor")
 }
 
 idea {
