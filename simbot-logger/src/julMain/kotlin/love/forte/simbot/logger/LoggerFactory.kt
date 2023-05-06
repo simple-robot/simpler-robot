@@ -12,27 +12,23 @@
 
 package love.forte.simbot.logger
 
-import kotlin.jvm.JvmStatic
-
 /**
  * 日志工厂。
  *
  */
-public expect object LoggerFactory {
-    
+public actual object LoggerFactory {
     /**
      * 根据名称获取一个 [Logger] 实例。
      */
     @JvmStatic
-    public fun getLogger(name: String): Logger
-    
+    public actual fun getLogger(name: String): Logger {
+        java.util.logging.Logger.getLogger(name)
+        TODO("Not yet implemented")
+    }
+
 }
 
-/**
- * 使用 [LoggerFactory] 通过类型 [T] 构建 [Logger]。
- *
- * 通常这会使得结果 [Logger] 的 [name][Logger.getName]
- * 与目标类型 [T] 有关，比如为 [T] 的全限定名称。
- */
 @Suppress("unused")
-public expect inline fun <reified T> LoggerFactory.logger(): Logger
+public actual inline fun <reified T> LoggerFactory.logger(): Logger {
+    TODO("Not yet implemented")
+}

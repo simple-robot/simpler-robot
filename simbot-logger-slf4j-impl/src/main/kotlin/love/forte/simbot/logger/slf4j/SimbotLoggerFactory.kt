@@ -12,15 +12,11 @@
 
 package love.forte.simbot.logger.slf4j
 
-import com.lmax.disruptor.*
-import com.lmax.disruptor.dsl.Disruptor
-import com.lmax.disruptor.dsl.ProducerType
 import love.forte.simbot.logger.Logger
+import love.forte.simbot.logger.slf4j.DEBUG.debug
+import love.forte.simbot.logger.slf4j.dispatcher.LogDispatcher
 import org.slf4j.ILoggerFactory
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ThreadFactory
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
 
 /**
@@ -29,38 +25,28 @@ import kotlin.concurrent.thread
  * @property processors 对日志的处理器链。会按照顺序处理每一次的日志请求。
  */
 public class SimbotLoggerFactory(
-    private val processors: List<SimbotLoggerProcessor>
+    private val processors: List<SimbotLoggerProcessor>,
+    configuration: SimbotLoggerConfiguration
 ) : ILoggerFactory {
 
-    private val factory = LogInfoDataFactory()
-    private val disruptor: Disruptor<LogInfoEvent>
-    private val producer: LogInfoDataProducer
-    private val processThreadGroup = ThreadGroup("simbot-logger-process")
+    private val dispatcher: LogDispatcher
 
     init {
-        val index = AtomicInteger(0)
-        val disruptor = Disruptor(
-            factory,
-            524288, // 512*1024
-            ThreadFactory {
-                Thread(processThreadGroup, it, processThreadGroup.name + "-${index.getAndIncrement()}").also { t ->
-                    t.isDaemon = true
-                }
-            },
-            ProducerType.SINGLE,
-            SleepingWaitStrategy()
-        )
-        disruptor.handleEventsWith(LogInfoDataEventHandler(processors))
-        disruptor.start()
-        this.disruptor = disruptor
+        val mode = configuration.dispatcherMode ?: DispatchMode.DISRUPTOR
+        configuration.debug("SimbotLoggerFactory") { "Dispatch mode: $mode" }
 
-        val producer = LogInfoDataProducer(disruptor.ringBuffer)
-        this.producer = producer
+        this.dispatcher = mode.factory.create(processors, configuration)
+        configuration.debug("SimbotLoggerFactory") { "dispatcher: $dispatcher" }
 
         Runtime.getRuntime().addShutdownHook(thread(
-            start = false, name = "SimbotLoggerFactoryShutdownHook"
+            start = false, name = "SimbotLoggerDispatcherShutdownHook"
         ) {
-            disruptor.shutdown(5, TimeUnit.SECONDS)
+            runCatching {
+                dispatcher.close()
+            }.onFailure { e ->
+                System.err.println("Logger dispatcher $dispatcher close failed: ${e.localizedMessage}")
+                e.printStackTrace(System.err)
+            }
         })
     }
 
@@ -70,55 +56,12 @@ public class SimbotLoggerFactory(
      */
     override fun getLogger(name: String?): Logger {
         return loggerCache.computeIfAbsent(name.toString()) { loggerName ->
-            SimbotLogger(loggerName, processors, producer::onLog)
+            SimbotLogger(loggerName, processors, dispatcher::onLog)
         }
     }
-
 
     public companion object {
         private val loggerCache = ConcurrentHashMap<String, Logger>(32)
     }
 }
 
-
-private class LogInfoEvent {
-    lateinit var info: LogInfo
-}
-
-private class LogInfoDataFactory : EventFactory<LogInfoEvent> {
-    override fun newInstance(): LogInfoEvent = LogInfoEvent()
-}
-
-private class LogInfoDataEventHandler(
-    private val processors: List<SimbotLoggerProcessor>
-) : EventHandler<LogInfoEvent>, WorkHandler<LogInfoEvent> {
-    override fun onEvent(event: LogInfoEvent, sequence: Long, endOfBatch: Boolean) {
-        processors.forEach { processor ->
-            val info = event.info
-            if (processor.isLevelEnabled(event.info.fullName, info.level, info.marker)) {
-                processor.doHandle(info)
-            }
-        }
-    }
-
-    override fun onEvent(event: LogInfoEvent) {
-        processors.forEach { processor ->
-            val info = event.info
-            if (processor.isLevelEnabled(event.info.fullName, info.level, info.marker)) {
-                processor.doHandle(info)
-            }
-        }
-    }
-}
-
-private class LogInfoDataProducer(private val ringBuffer: RingBuffer<LogInfoEvent>) {
-    fun onLog(logInfo: LogInfo) {
-        val sequence = ringBuffer.next()
-        try {
-            val event = ringBuffer[sequence]
-            event.info = logInfo
-        } finally {
-            ringBuffer.publish(sequence)
-        }
-    }
-}

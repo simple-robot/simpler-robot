@@ -10,6 +10,8 @@
  * You should have received a copy of the GNU Lesser General Public License along with Simple Robot. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import logger.loggerFrameworkAttribute
+import logger.loggerFrameworkAttributeSlf4j
 import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeTargetPreset
 
 plugins {
@@ -18,21 +20,32 @@ plugins {
     id("simbot.dokka-module-configuration")
 }
 
+
 kotlin {
     explicitApi()
-    jvm {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-                javaParameters = true
-                freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
+
+    fun configJvm(name: String, attrValue: String, withJava: Boolean = false) {
+        jvm(name) {
+            attributes.attribute(loggerFrameworkAttribute, attrValue)
+            compilations.all {
+                kotlinOptions {
+                    jvmTarget = "1.8"
+                    javaParameters = true
+                    freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
+                }
+            }
+            if (withJava) {
+                withJava()
+            }
+            testRuns["test"].executionTask.configure {
+                useJUnitPlatform()
             }
         }
-        withJava()
-        testRuns["test"].executionTask.configure {
-            useJUnitPlatform()
-        }
     }
+
+    configJvm("jvm", loggerFrameworkAttributeSlf4j, withJava = true)
+//    configJvm("jul", loggerFrameworkAttributeJUL)
+
     js(IR) {
         browser()
         nodejs()

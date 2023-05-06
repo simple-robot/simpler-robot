@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 ForteScarlet.
+ * Copyright (c) 2023 ForteScarlet.
  *
  * This file is part of Simple Robot.
  *
@@ -14,10 +14,41 @@ plugins {
     id("simbot.simple-module-conventions")
     `simbot-jvm-maven-publish`
     kotlin("plugin.serialization")
+    id("com.github.gmazzo.buildconfig")
 }
 
+
+tasks.withType<JavaCompile> {
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+    options.encoding = "UTF-8"
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        javaParameters = true
+        jvmTarget = "1.8"
+        freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
+    }
+}
 
 dependencies {
     api(project(":simbot-logger"))
     api("com.lmax:disruptor:3.4.4")
+}
+
+buildConfig {
+    useKotlinOutput {
+        internalVisibility = true
+    }
+    packageName.set("love.forte.simbot.logger.slf4j")
+    className.set("SLF4JInformation")
+    var slf4jVersion = libs.versions.slf4j.get()
+    val last = slf4jVersion.lastIndexOf('.')
+    if (last >= 0) {
+        slf4jVersion = slf4jVersion.replaceRange(last, slf4jVersion.length, ".99")
+    }
+
+    buildConfigField("String", "VERSION", "\"$slf4jVersion\" // auto-generated")
+
 }

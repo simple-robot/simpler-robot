@@ -34,6 +34,13 @@ public interface SimbotLoggerProcessor {
     public fun doHandle(info: LogInfo)
 }
 
+public fun SimbotLoggerProcessor.doHandleIfLevelEnabled(info: LogInfo) {
+    if (isLevelEnabled(info.fullName, info.level, info.marker)) {
+        doHandle(info)
+    }
+}
+
+
 /**
  * [SimbotLoggerProcessor] 的工厂接口， 通过 `Java Service Loader` ([java.util.ServiceLoader]) 进行加载。
  */

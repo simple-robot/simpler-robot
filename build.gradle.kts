@@ -15,6 +15,7 @@ plugins {
     id("simbot.changelog-generator")
     id("simbot.nexus-publish")
     id("simbot.dokka-multi-module")
+    id("com.github.gmazzo.buildconfig") version "4.0.4" apply false
     idea
 }
 
