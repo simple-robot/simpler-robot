@@ -16,7 +16,7 @@ plugins {
     kotlin("plugin.serialization")
     kotlin("kapt")
     id("simbot.suspend-transform-configure")
-    id("com.github.gmazzo.buildconfig") version "3.1.0"
+    id("com.github.gmazzo.buildconfig") version "4.0.4"
 }
 
 dependencies {
