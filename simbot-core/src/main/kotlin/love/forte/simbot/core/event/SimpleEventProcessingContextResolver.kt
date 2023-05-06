@@ -40,28 +40,28 @@ internal class SimpleEventProcessingContextResolver(
     coroutineScope: CoroutineScope,
 ) : EventProcessingContextResolver<SimpleEventProcessingContext> {
     private val continuousSessionListenerManager = ContinuousSessionListenerManager()
-    
+
     @ExperimentalSimbotApi
     override val globalContext = GlobalScopeContextImpl()
-    
+
     @ExperimentalSimbotApi
     override val continuousSessionContext =
         SimpleContinuousSessionContext(coroutineScope, continuousSessionListenerManager)
-    
-    
+
+
     internal class GlobalScopeContextImpl : GlobalScopeContext,
         MutableAttributeMap by AttributeMutableMap(ConcurrentHashMap())
-    
-    
+
+
     internal class InstantScopeContextImpl(private val attributeMap: AttributeMutableMap) : InstantScopeContext,
         MutableAttributeMap by attributeMap
-    
+
     /**
      * 根据一个事件和当前事件对应的监听函数数量得到一个事件上下文实例。
      */
     @OptIn(ExperimentalSimbotApi::class)
     override suspend fun resolveEventToContext(event: Event, listenerSize: Int): SimpleEventProcessingContext? {
-        
+
         val context = SimpleEventProcessingContext(
             event,
             messagesSerializersModule = EmptySerializersModule(),
@@ -69,15 +69,15 @@ internal class SimpleEventProcessingContextResolver(
             continuousSessionContext,
             listenerSize
         )
-        
+
         if (continuousSessionListenerManager.process(context)) {
             return null
         }
-        
+
         return context
     }
-    
-    
+
+
     /**
      * 将一次事件结果拼接到当前上下文结果集中。
      */
@@ -89,33 +89,33 @@ internal class SimpleEventProcessingContextResolver(
             is AsyncEventResult -> {
                 context.addResult(result)
             }
-            
+
             else -> {
                 context.addResult(tryCollect(result))
             }
         }
-        
+
         return if (result.isTruncated) ListenerInvokeType.TRUNCATED
         else ListenerInvokeType.CONTINUE
     }
-    
+
     /**
      * 只要存在任意会话监听函数，则都需要进行监听事件推送。
      */
     override fun isProcessable(eventKey: Event.Key<*>): Boolean {
         return !continuousSessionListenerManager.isEmpty()
     }
-    
+
     private companion object {
         private val logger = LoggerFactory.getLogger(SimpleEventProcessingContextResolver::class.java)
-        
+
         private val reactiveSupport: Boolean by lazy {
             kotlin.runCatching {
                 Companion::class.java.classLoader.loadClass("org.reactivestreams.Publisher")
                 true
             }.getOrElse { false }
         }
-        
+
         private val reactiveKotlinSupport: Boolean by lazy {
             try {
                 Companion::class.java.classLoader.loadClass("kotlinx.coroutines.reactive.ReactiveFlowKt")
@@ -128,7 +128,7 @@ internal class SimpleEventProcessingContextResolver(
                 false
             }
         }
-        
+
         private val reactorSupport: Boolean by lazy {
             kotlin.runCatching {
                 Companion::class.java.classLoader.loadClass("reactor.core.publisher.Flux")
@@ -136,7 +136,7 @@ internal class SimpleEventProcessingContextResolver(
                 true
             }.getOrElse { false }
         }
-        
+
         private val reactorKotlinSupport: Boolean by lazy {
             try {
                 Companion::class.java.classLoader.loadClass("kotlinx.coroutines.reactor.MonoKt")
@@ -149,7 +149,7 @@ internal class SimpleEventProcessingContextResolver(
                 false
             }
         }
-        
+
         private val rx2Support: Boolean by lazy {
             kotlin.runCatching {
                 Companion::class.java.classLoader.loadClass("io.reactivex.Completable")
@@ -160,7 +160,7 @@ internal class SimpleEventProcessingContextResolver(
                 true
             }.getOrElse { false }
         }
-        
+
         private val rx2KotlinSupport: Boolean by lazy {
             try {
                 Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx2.RxAwaitKt")
@@ -174,7 +174,7 @@ internal class SimpleEventProcessingContextResolver(
                 false
             }
         }
-        
+
         private val rx3Support: Boolean by lazy {
             kotlin.runCatching {
                 Companion::class.java.classLoader.loadClass("io.reactivex.rxjava3.core.Completable")
@@ -185,7 +185,7 @@ internal class SimpleEventProcessingContextResolver(
                 true
             }.getOrElse { false }
         }
-        
+
         private val rx3KotlinSupport: Boolean by lazy {
             try {
                 Companion::class.java.classLoader.loadClass("kotlinx.coroutines.rx3.RxAwaitKt")
@@ -199,78 +199,91 @@ internal class SimpleEventProcessingContextResolver(
                 false
             }
         }
-        
+
         private suspend fun tryCollect(result: EventResult): EventResult {
             if (result !is ReactivelyCollectableEventResult) return result
             val content = result.content ?: return result
-            
+
             when {
                 content is kotlinx.coroutines.flow.Flow<*> -> {
                     return result.collected(content.toList())
                 }
-                
+
                 content is CompletionStage<*> -> {
                     return result.collected(content.await())
                 }
-                
+
                 content is Deferred<*> -> {
                     return result.collected(content.await())
                 }
-                
+
                 reactorSupport -> {
                     when (content) {
                         is reactor.core.publisher.Flux<*> -> return if (reactiveKotlinSupport) result.collected(
                             content.asFlow().toList()
                         ) else result // else return itself
-                        
+
                         is reactor.core.publisher.Mono<*> -> return if (reactorKotlinSupport) result.collected(content.awaitSingleOrNull()) else result
                     }
                 }
-                
+
                 rx2Support -> {
                     when (content) {
                         is io.reactivex.CompletableSource -> {
                             content.await() // Just await
                             return result.collected(null)
                         }
-                        
+
                         is io.reactivex.SingleSource<*> -> return if (rx2KotlinSupport) result.collected(content.await()) else result
                         is io.reactivex.MaybeSource<*> -> return if (rx2KotlinSupport) result.collected(content.awaitSingleOrNull()) else result
                         is io.reactivex.ObservableSource<*> -> return if (reactiveKotlinSupport) result.collected(
                             content.asFlow().toList()
                         ) else result
-                        
+
                         is io.reactivex.Flowable<*> -> return if (reactiveKotlinSupport) result.collected(
                             content.asFlow().toList()
                         ) else result
                     }
                 }
-                
+
                 rx3Support -> {
                     when (content) {
                         is io.reactivex.rxjava3.core.Completable -> {
                             content.await()
                             return result.collected(null)
                         }
-                        
-                        is io.reactivex.rxjava3.core.SingleSource<*> -> return if (rx3KotlinSupport) result.collected(
-                            content.await()
-                        ) else result
-                        
-                        is io.reactivex.rxjava3.core.MaybeSource<*> -> return if (rx3KotlinSupport) result.collected(
-                            content.awaitSingleOrNull()
-                        ) else result
-                        
+
+                        is io.reactivex.rxjava3.core.SingleSource<*> -> {
+                            if (rx3KotlinSupport) {
+                                @Suppress("UNCHECKED_CAST")
+                                val awaitValue = (content as io.reactivex.rxjava3.core.SingleSource<Any>).await()
+                                return result.collected(awaitValue)
+                            }
+
+                            return result
+                        }
+
+                        is io.reactivex.rxjava3.core.MaybeSource<*> -> {
+                            if (rx3KotlinSupport) {
+                                @Suppress("UNCHECKED_CAST")
+                                val awaitValue =
+                                    (content as io.reactivex.rxjava3.core.MaybeSource<Any>).awaitSingleOrNull()
+                                return result.collected(awaitValue)
+                            }
+
+                            return result
+                        }
+
                         is io.reactivex.rxjava3.core.ObservableSource<*> -> return result.collected(
                             content.asFlow().toList()
                         )
-                        
+
                         is io.reactivex.rxjava3.core.Flowable<*> -> return result.collected(
                             content.asFlow().toList()
                         )
                     }
                 }
-                
+
                 reactiveSupport -> {
                     when (content) {
                         is org.reactivestreams.Publisher<*> -> return if (reactiveKotlinSupport) result.collected(
@@ -279,10 +292,10 @@ internal class SimpleEventProcessingContextResolver(
                     }
                 }
             }
-            
+
             return result
         }
     }
-    
+
 }
 
