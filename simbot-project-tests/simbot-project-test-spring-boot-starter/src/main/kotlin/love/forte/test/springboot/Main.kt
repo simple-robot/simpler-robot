@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 ForteScarlet.
+ * Copyright (c) 2023 ForteScarlet.
  *
  * This file is part of Simple Robot.
  *
@@ -10,26 +10,14 @@
  * You should have received a copy of the GNU Lesser General Public License along with Simple Robot. If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    java
-    kotlin("jvm")
-    id("org.springframework.boot") version "2.7.6"
-    id("io.spring.dependency-management") version "1.1.0"
+package love.forte.test.springboot
+
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
+
+@SpringBootApplication
+open class Main
+
+fun main() {
+    runApplication<Main>()
 }
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-
-    implementation(project(":simboot-core-spring-boot-starter"))
-    implementation("love.forte.simbot.component:simbot-component-mirai-core:3.0.0.0-RC.2")
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
