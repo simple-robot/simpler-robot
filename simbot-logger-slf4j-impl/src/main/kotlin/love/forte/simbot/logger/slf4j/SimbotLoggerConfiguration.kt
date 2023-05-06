@@ -14,10 +14,27 @@ package love.forte.simbot.logger.slf4j
 
 import love.forte.simbot.logger.LogLevel
 import love.forte.simbot.logger.slf4j.SimbotLoggerConfiguration.Companion.JVM_PROPERTY_PREFIX
+import love.forte.simbot.logger.slf4j.dispatcher.AsyncDispatcher
+import love.forte.simbot.logger.slf4j.dispatcher.DisruptorDispatcher
+import love.forte.simbot.logger.slf4j.dispatcher.LogDispatcherFactory
+import love.forte.simbot.logger.slf4j.dispatcher.SyncDispatcher
 
 
 /**
  * simbot-logger的实现中进行传递的配置文件。
+ *
+ * 配置中存在一些全局性的配置，它们会在 [SimbotLoggerConfiguration]
+ * 构建之初就被解析为各属性而存在。有关它们的说明可参考 [SimbotLoggerConfiguration]
+ * 的各个属性，例如 [debug] 、[defaultLevel]、[dispatcherMode] 等。
+ *
+ * 配置中
+ *
+ * 配置中的属性可能会被所有的 [SimbotLoggerProcessor] 各取所需。
+ * 对于默认的实现，可以参考它们的文档说明：
+ * - [ConsoleSimbotLoggerProcessor]
+ *
+ *
+ *
  * @author ForteScarlet
  */
 public abstract class SimbotLoggerConfiguration {
@@ -30,9 +47,35 @@ public abstract class SimbotLoggerConfiguration {
     public abstract val properties: Map<String, Property>
 
     /**
-     * 属性键为 [DEFAULT_LEVEL_PROPERTY] 时对应的结果。如果为找到此属性则得到null。
+     * 通过指定的 [key] 寻找一个配置项属性。
+     */
+    public open operator fun get(key: String): Property? = properties[key]
+
+    /**
+     * 是否输出 `debug` 信息，
+     * 属性键为 [`debug`][DEBUG_PROPERTY] 时对应的结果。
+     *
+     * 当设置为 `true` 时，日志相关内容在初始化、解析等环节可能会向控制台输出一些测试信息。
+     *
+     */
+    public abstract val debug: Boolean
+
+    /**
+     * 全局的默认日志等级，
+     * 属性键为 [`level`][DEFAULT_LEVEL_PROPERTY] 时对应的结果。
+     *
+     * 如果未找到此属性则得到null。
      */
     public abstract val defaultLevel: LogLevel?
+
+    /**
+     * 日志的调度模式（决定使用的调度器），
+     * 属性键为 [`dispatcher`][DISPATCH_MODE_PROPERTY] 时对应的结果，
+     * 元素与枚举 [DispatchMode] 中的元素对应。
+     *
+     * 如果未找到则得到null。
+     */
+    public abstract val dispatcherMode: DispatchMode?
 
     /**
      * 指定了前缀的等级配置，例如
@@ -54,6 +97,15 @@ public abstract class SimbotLoggerConfiguration {
         public const val JVM_PROPERTY_PREFIX: String = "simbot.logger"
 
         /**
+         * 是否标记为允许输出一些调试用的信息。
+         *
+         * ```
+         * debug=true
+         * ```
+         */
+        public const val DEBUG_PROPERTY: String = "debug"
+
+        /**
          * 默认（全局）的日志等级配置属性键。此键对应的值必须为 [LogLevel] 中的元素名称。
          *
          * ```
@@ -62,9 +114,21 @@ public abstract class SimbotLoggerConfiguration {
          *
          */
         public const val DEFAULT_LEVEL_PROPERTY: String = "level"
+
+        /**
+         * 日志的调度器，值为 [DispatchMode] 的元素名。
+         *
+         * ```
+         * dispatcher=DISRUPTOR
+         * ```
+         *
+         */
+        public const val DISPATCH_MODE_PROPERTY: String = "dispatcher"
     }
 
-
+    /**
+     * 一个配置项的属性。
+     */
     public interface Property {
         /**
          * 此属性的键。
@@ -77,6 +141,9 @@ public abstract class SimbotLoggerConfiguration {
         public val stringValue: String
     }
 
+    /**
+     * 前缀日志级别信息。
+     */
     public interface PrefixLogLevel {
         /**
          * 匹配前缀
@@ -111,6 +178,71 @@ internal fun createSimbotLoggerConfiguration(
     return SimbotLoggerConfigurationImpl(properties.mapValues { (k, v) -> PropertyImpl(k, v) })
 }
 
+
+/**
+ * 日志的调度模式。
+ */
+public enum class DispatchMode(internal val factory: LogDispatcherFactory) {
+
+    /**
+     * 使用 [Disruptor][com.lmax.disruptor.dsl.Disruptor] 进行 **异步** 调度。
+     *
+     * 在内部会使用 [Disruptor][com.lmax.disruptor.dsl.Disruptor]
+     * 作为调度器来对收集的日志进行异步调度。
+     *
+     * [DISRUPTOR] 是未配置时的默认选择。
+     *
+     * @see DisruptorDispatcher
+     */
+    DISRUPTOR(DisruptorDispatcher),
+
+    /**
+     * 同步地进行调度。
+     *
+     * @see SyncDispatcher
+     */
+    SYNC(SyncDispatcher),
+
+    /**
+     * 纯粹异步地进行调度。
+     *
+     * @see AsyncDispatcher
+     */
+    ASYNC(AsyncDispatcher),
+
+    ;
+
+    public companion object {
+
+        /**
+         * 根据名称寻找一个 [DispatchMode] 对应的元素。无法找到时得到null。
+         *
+         */
+        @JvmStatic
+        public fun find(name: String): DispatchMode? {
+            try {
+                return DispatchMode.valueOf(name)
+            } catch (illArg: IllegalArgumentException) {
+                // not found
+            }
+
+            val name0 = name.replace('-', '_').uppercase()
+
+            try {
+                return DispatchMode.valueOf(name0)
+            } catch (illArg: IllegalArgumentException) {
+                // also not found
+            }
+
+            return null
+        }
+    }
+}
+
+
+//// impls
+
+
 private data class PropertyImpl(override val key: String, private val value: String) :
     SimbotLoggerConfiguration.Property {
     override val stringValue: String
@@ -124,7 +256,14 @@ private data class SimbotLoggerConfigurationImpl(
     override val properties: Map<String, Property>
 ) : SimbotLoggerConfiguration() {
     @Transient
+    override val debug: Boolean = properties[DEBUG_PROPERTY]?.stringValue.toBoolean()
+
+    @Transient
     override val defaultLevel: LogLevel? = properties[DEFAULT_LEVEL_PROPERTY]?.stringValue?.let { LogLevel.valueOf(it) }
+
+    @Transient
+    override val dispatcherMode: DispatchMode? =
+        properties[DISPATCH_MODE_PROPERTY]?.stringValue?.let { DispatchMode.find(it) }
 
     @Transient
     override val prefixLevelList: List<PrefixLogLevel>

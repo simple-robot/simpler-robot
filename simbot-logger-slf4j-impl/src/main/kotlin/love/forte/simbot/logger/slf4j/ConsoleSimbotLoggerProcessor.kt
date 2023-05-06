@@ -23,6 +23,10 @@ import java.time.Instant
 
 /**
  * 将日志直接打印到控制台上的处理器。
+ *
+ * ## 使用配置
+ * ### 日志级别
+ *
  * 当参数 [defaultLevel] 未指定日志等级的时候，会尝试加载系统参数 [`simbot.logger.level`][SIMBOT_LEVEL_PROPERTY_KEY], 如果系统参数也找不到，则默认为 [LogLevel.INFO][love.forte.simbot.logger.LogLevel.INFO] 级别。
  *
  * 你可以通过JVM参数 [`simbot.logger.level`][SIMBOT_LEVEL_PROPERTY_KEY]
