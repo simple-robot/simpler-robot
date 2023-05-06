@@ -10,29 +10,11 @@
  * You should have received a copy of the GNU Lesser General Public License along with Simple Robot. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.logger
+package logger
 
-import kotlin.jvm.JvmStatic
+import org.gradle.api.attributes.Attribute
 
-/**
- * 日志工厂。
- *
- */
-public expect object LoggerFactory {
-    
-    /**
-     * 根据名称获取一个 [Logger] 实例。
-     */
-    @JvmStatic
-    public fun getLogger(name: String): Logger
-    
-}
 
-/**
- * 使用 [LoggerFactory] 通过类型 [T] 构建 [Logger]。
- *
- * 通常这会使得结果 [Logger] 的 [name][Logger.getName]
- * 与目标类型 [T] 有关，比如为 [T] 的全限定名称。
- */
-@Suppress("unused")
-public expect inline fun <reified T> LoggerFactory.logger(): Logger
+val loggerFrameworkAttribute: Attribute<String> = Attribute.of("love.forte.simbot.logger.loggerFramework", String::class.java)
+const val loggerFrameworkAttributeSlf4j = "slf4j"
+const val loggerFrameworkAttributeJUL = "jul"

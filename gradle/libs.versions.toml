@@ -7,6 +7,8 @@ openjdk-jmh = "1.36"
 #forte-annotationTool = "0.6.3"
 ktor = "2.3.0"
 
+slf4j = "2.0.7"
+
 [libraries]
 # jetbrains-annotation
 jetbrains-annotations = "org.jetbrains:annotations:24.0.1"
@@ -34,8 +36,8 @@ kotlinx-serialization-properties = { group = "org.jetbrains.kotlinx", name = "ko
 charleskorn-kaml = "com.charleskorn.kaml:kaml:0.53.0"
 
 # slf4j
-slf4j-api = "org.slf4j:slf4j-api:1.7.36"
-slf4j-nop = "org.slf4j:slf4j-nop:2.0.7"
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
+slf4j-nop = { group = "org.slf4j", name = "slf4j-nop", version.ref = "slf4j" }
 
 # javax
 javax-inject = "javax.inject:javax.inject:1"
