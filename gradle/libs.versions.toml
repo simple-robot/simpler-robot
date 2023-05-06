@@ -1,5 +1,5 @@
 [versions]
-kotlinx-coroutines = "1.6.4"
+kotlinx-coroutines = "1.7.0"
 kotlinx-serialization = "1.5.0"
 spring-boot = "2.7.10"
 openjdk-jmh = "1.36"
