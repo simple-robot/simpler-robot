@@ -23,7 +23,7 @@ dispatcher=DISRUPTOR
 # 或：同步处理，非异步
 # dispatcher=SYNC
 # 或：普通的基于线程池的异步处理
-# dispatcher=SYNC
+# dispatcher=ASYNC
 ```
 
 更多可用的配置相关内容参考 [`SimbotLoggerConfiguration`](src/main/kotlin/love/forte/simbot/logger/slf4j/SimbotLoggerConfiguration.kt)。
