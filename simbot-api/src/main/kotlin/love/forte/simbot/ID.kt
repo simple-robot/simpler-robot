@@ -132,6 +132,15 @@ import kotlin.random.asKotlinRandom
 @SerialName("ID")
 @Suppress("EqualsOrHashCode")
 public sealed class ID : Comparable<ID>, Cloneable {
+    /*
+        实际上常用的ID类型总共就那么几个：整型和字符串。
+        如果算上无符号，实际上就只有5种类型就够用了
+        正常人谁会用 Double 当ID类型?
+
+        而且就算真有莫名其妙的类型，String会出手。
+        也不知道当初谁写的这个ID，搞这么多类型有个屁用，还给自己留坑
+     */
+
     /**
      * [ID] 的 [toString] 结果必须是当前ID所对应的字面值。
      */
