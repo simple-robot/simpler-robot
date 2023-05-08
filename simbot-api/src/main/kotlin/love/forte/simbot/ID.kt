@@ -17,6 +17,7 @@ package love.forte.simbot
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -87,12 +88,15 @@ import kotlin.random.asKotlinRandom
  * [ID] 提供了名为 `ID` 的后缀扩展属性来将某个值构造为 [ID] 类型。
  *
  * ```kotlin
- * 123.ID // IntID
- * 'b'.ID // IntID
- * 123L.ID // LongID
- * 123.4.ID // DoubleID
+ * 123.ID    // IntID
+ * 'b'.ID    // IntID
+ * 123L.ID   // LongID
+ * 123.4.ID  // DoubleID
  * 123.4F.ID // FloatID
- * "str".ID // CharSequenceID
+ * "str".ID  // CharSequenceID
+ * 123u.ID   // UInt.ID
+ * val ul: ULong = 123u
+ * ul.ID     // ULongID
  * ```
  *
  * Java使用者可以通过 `Identifies.ID(...)` 来进行与上述类似的操作。
@@ -132,78 +136,78 @@ public sealed class ID : Comparable<ID>, Cloneable {
      * [ID] 的 [toString] 结果必须是当前ID所对应的字面值。
      */
     abstract override fun toString(): String
-    
+
     /**
      * ID之间应当是可以排序的。
      */
     abstract override fun compareTo(other: ID): Int
-    
+
     final override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is ID) return false
         if (doEquals(other)) return true
         return literal == other.literal
     }
-    
+
     protected abstract fun doEquals(other: ID): Boolean
-    
+
     abstract override fun hashCode(): Int
-    
+
     @Suppress("FunctionName")
     public companion object {
         @Bonus
         @JvmStatic
         public fun `$`(value: Int): ID = value.ID
-        
+
         @Bonus
         @JvmStatic
         public fun `$`(value: Char): ID = value.ID
-        
+
         @Bonus
         @JvmStatic
         public fun `$`(value: Long): ID = value.ID
-        
+
         @Bonus
         @JvmStatic
         public fun `$`(value: Double): ID = value.ID
-        
+
         @Bonus
         @JvmStatic
         public fun `$`(value: Float): ID = value.ID
-        
+
         @Bonus
         @JvmStatic
         public fun `$`(value: CharSequence): ID = value.ID
-        
+
         @Bonus
         @JvmStatic
         public fun `$`(value: UUID): ID = value.ID
-        
+
         @Bonus
         @JvmStatic
         public fun `$`(value: AtomicInteger): ID = value.ID
-        
+
         @Bonus
         @JvmStatic
         public fun `$`(value: LongAdder): ID = value.ID
-        
+
         @Bonus
         @JvmStatic
         public fun `$`(value: LongAccumulator): ID = value.ID
     }
-    
+
     /**
      * 将一个 [ID] 视为一个 [CharSequenceID] 进行序列化。
      */
     public object AsCharSequenceIDSerializer : KSerializer<ID> {
         override fun deserialize(decoder: Decoder): ID = decoder.decodeString().ID
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("AsCharSequenceId", PrimitiveKind.STRING)
-        
+
         override fun serialize(encoder: Encoder, value: ID) {
             encoder.encodeString(value.toString())
         }
-        
-        
+
+
     }
 }
 
@@ -273,15 +277,12 @@ public val UUID.ID: CharSequenceID
 public fun randomID(random: Random = Random): ID = RandomIDUtil.randomID(random).ID
 
 
-
 /**
  * 取得一个随机ID。
  *
  * @see RandomIDUtil.randomID
  */
 public fun randomID(random: java.util.Random): ID = RandomIDUtil.randomID(random.asKotlinRandom()).ID
-
-
 
 
 /**
@@ -347,86 +348,90 @@ public fun currentTimeMillisID(): LongID = System.currentTimeMillis().ID
 @Suppress("MemberVisibilityCanBePrivate", "EqualsOrHashCode")
 @SerialName("ID.Number")
 @Serializable
-public sealed class NumericalID<N : Number> : ID() {
-    
+public sealed class NumericalID<N : Number> : ID(), NumberSimilarly {
+
     /**
      * 此数字ID的值。
      */
     public abstract val value: N
-    
+
     override fun compareTo(other: ID): Int {
-        if (other === this) return 0
-        if (other is NumericalID<*>) {
-            return when (other) {
-                is IntID -> toInt().compareTo(other.number)
-                is LongID -> toLong().compareTo(other.number)
-                is DoubleID -> toDouble().compareTo(other.number)
-                is FloatID -> toFloat().compareTo(other.number)
-                is BigIntegerID -> when (this) {
-                    is BigIntegerID -> this.value.compareTo(other.value)
-                    is BigDecimalID -> this.value.compareTo(other.value.toBigDecimal())
-                    is IntID -> number.compareTo(other.value.toInt())
-                    is LongID -> number.compareTo(other.value.toLong())
-                    is DoubleID -> number.compareTo(other.value.toDouble())
-                    is FloatID -> number.compareTo(other.value.toFloat())
-                }
-                is BigDecimalID -> when (this) {
-                    is BigDecimalID -> value.compareTo(other.value)
-                    is BigIntegerID -> value.compareTo(other.value.toBigInteger())
-                    is IntID -> number.compareTo(other.value.toInt())
-                    is LongID -> number.compareTo(other.value.toLong())
-                    is DoubleID -> number.compareTo(other.value.toDouble())
-                    is FloatID -> number.compareTo(other.value.toFloat())
+        when {
+            other === this -> return 0
+            other is NumericalID<*> -> {
+                return when (other) {
+                    is IntID -> toInt().compareTo(other.number)
+                    is LongID -> toLong().compareTo(other.number)
+                    is DoubleID -> toDouble().compareTo(other.number)
+                    is FloatID -> toFloat().compareTo(other.number)
+                    is BigIntegerID -> when (this) {
+                        is BigIntegerID -> this.value.compareTo(other.value)
+                        is BigDecimalID -> this.value.compareTo(other.value.toBigDecimal())
+                        is IntID -> number.compareTo(other.value.toInt())
+                        is LongID -> number.compareTo(other.value.toLong())
+                        is DoubleID -> number.compareTo(other.value.toDouble())
+                        is FloatID -> number.compareTo(other.value.toFloat())
+                    }
+
+                    is BigDecimalID -> when (this) {
+                        is BigDecimalID -> value.compareTo(other.value)
+                        is BigIntegerID -> value.compareTo(other.value.toBigInteger())
+                        is IntID -> number.compareTo(other.value.toInt())
+                        is LongID -> number.compareTo(other.value.toLong())
+                        is DoubleID -> number.compareTo(other.value.toDouble())
+                        is FloatID -> number.compareTo(other.value.toFloat())
+                    }
                 }
             }
+            other is UIntID -> return -other.compareTo(this)
+            other is ULongID -> return -other.compareTo(this)
+            else -> return toString().compareTo(other.toString())
         }
-        return toString().compareTo(other.toString())
+
     }
-    
-    // region from kotlin.Number
+
     /**
      * 将当前数字转为 [Double]. 同 [Number.toDouble].
      * @see Number.toDouble
      */
-    public open fun toDouble(): Double = value.toDouble()
-    
+    override fun toDouble(): Double = value.toDouble()
+
     /**
      * 将当前数字转为 [Float]. 同 [Number.toFloat].
      * @see Number.toFloat
      */
-    public open fun toFloat(): Float = value.toFloat()
-    
+    override fun toFloat(): Float = value.toFloat()
+
     /**
      * 将当前数字转为 [Long]. 同 [Number.toLong].
      * @see Number.toLong
      */
-    public open fun toLong(): Long = value.toLong()
-    
+    override fun toLong(): Long = value.toLong()
+
     /**
      * 将当前数字转为 [Int]. 同 [Number.toInt].
      * @see Number.toInt
      */
-    public open fun toInt(): Int = value.toInt()
-    
+    override fun toInt(): Int = value.toInt()
+
     /**
      * 将当前数字转为 [Char]. 同 [Number.toChar].
      * @see Number.toChar
      */
-    public open fun toChar(): Char = value.toChar()
-    
+    override fun toChar(): Char = value.toChar()
+
     /**
      * 将当前数字转为 [Short]. 同 [Number.toShort].
      * @see Number.toShort
      */
-    public open fun toShort(): Short = value.toShort()
-    
+    override fun toShort(): Short = value.toShort()
+
     /**
      * 将当前数字转为 [Byte]. 同 [Number.toByte].
      * @see Number.toByte
      */
-    public open fun toByte(): Byte = value.toByte()
-    
-    // endregion
+    override fun toByte(): Byte = value.toByte()
+
     override fun doEquals(other: ID): Boolean {
         if (other is NumericalID<*>) {
             return when (other) {
@@ -438,10 +443,10 @@ public sealed class NumericalID<N : Number> : ID() {
                 is BigDecimalID -> this is BigDecimalID && (value == other.value)
             }
         }
-        
+
         return false
     }
-    
+
     override fun hashCode(): Int = value.hashCode()
     final override fun toString(): String = value.toString()
 }
@@ -453,13 +458,13 @@ public sealed class NumericalID<N : Number> : ID() {
 public data class IntID(public val number: Int) : NumericalID<Int>() {
     override val value: Int
         get() = number
-    
+
     public constructor(char: Char) : this(char.code)
-    
+
     override fun toInt(): Int = number
     override fun toChar(): Char = number.toChar()
     override fun clone(): IntID = copy()
-    
+
     internal object Serializer : KSerializer<IntID> {
         override fun deserialize(decoder: Decoder): IntID = IntID(decoder.decodeInt())
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("IntID", PrimitiveKind.INT)
@@ -475,11 +480,11 @@ public data class IntID(public val number: Int) : NumericalID<Int>() {
 public data class LongID(public val number: Long) : NumericalID<Long>() {
     override val value: Long
         get() = number
-    
+
     override fun toLong(): Long = number
     override fun toInt(): Int = number.toInt()
     override fun clone(): LongID = copy()
-    
+
     internal object Serializer : KSerializer<LongID> {
         override fun deserialize(decoder: Decoder): LongID = LongID(decoder.decodeLong())
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("LongID", PrimitiveKind.LONG)
@@ -495,10 +500,10 @@ public data class LongID(public val number: Long) : NumericalID<Long>() {
 public data class DoubleID(public val number: Double) : NumericalID<Double>() {
     override val value: Double
         get() = number
-    
+
     override fun toDouble(): Double = number
     override fun clone(): DoubleID = copy()
-    
+
     internal object Serializer : KSerializer<DoubleID> {
         override fun deserialize(decoder: Decoder): DoubleID = DoubleID(decoder.decodeDouble())
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("DoubleID", PrimitiveKind.DOUBLE)
@@ -514,10 +519,10 @@ public data class DoubleID(public val number: Double) : NumericalID<Double>() {
 public data class FloatID(public val number: Float) : NumericalID<Float>() {
     override val value: Float
         get() = number
-    
+
     override fun toFloat(): Float = number
     override fun clone(): FloatID = copy()
-    
+
     internal object Serializer : KSerializer<FloatID> {
         override fun deserialize(decoder: Decoder): FloatID = FloatID(decoder.decodeFloat())
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("FloatID", PrimitiveKind.FLOAT)
@@ -527,6 +532,335 @@ public data class FloatID(public val number: Float) : NumericalID<Float>() {
     }
 }
 // endregion
+
+
+/**
+ * 使用 [UInt] 字面值的 [ID] 实现。
+ *
+ * [UInt] 不是 [Number] 的实现，因此 [UIntID] 并非 [NumericalID] 类型。
+ * 但是 [UInt] 会提供类似于 [NumericalID] 的一些数值转化类型，并且允许与 [NumericalID] 进行数值比较。
+ *
+ * [UIntID] 与 [IntID] 是**不同**的，不要使用值可能为负的 [IntID] 来代替 [UIntID]。
+ * [UIntID] 在进行 `equals` 和 `compareTo` 的时候，如果目标为数值类型且值为负，
+ * 则会直接将其判定为不相等或小数值。
+ *
+ * 举个明显的例子：
+ * ```kotlin
+ *  val ui = UInt.MAX_VALUE
+ *  val i = UInt.MAX_VALUE.toInt()
+ *
+ *  println(ui.toInt() == i)            // true
+ *  println(ui == i.toUInt())           // true
+ *  println(ui.toInt() compareTo i)     // 0
+ *  println(ui compareTo i.toUInt())    // 0
+ *
+ *  val uiID: ID = ui.ID
+ *  val iID: ID = i.ID
+ *
+ *  println(uiID == iID)                // false
+ *  println(uiID compareTo iID)         // 1
+ * ```
+ *
+ * 在JVM中，当仅作为数值而互相转化、比较时，`ui` 和 `i` 的实际数值是一样的，
+ * 而当它们各自作为 [UIntID] 和 [IntID] 时，
+ * 不论是 `equals` 还是 `compareTo` 的结果都表明它们是不同的。
+ *
+ * @see UInt.ID
+ *
+ * @since 3.1.0
+ *
+ */
+@SerialName("ID.UInt")
+@Serializable(with = UIntID.Serializer::class)
+public data class UIntID(public val number: UInt) : ID(), NumberSimilarly {
+    override fun toDouble(): Double = number.toDouble()
+    override fun toFloat(): Float = number.toFloat()
+    override fun toLong(): Long = number.toLong()
+    override fun toInt(): Int = number.toInt()
+    override fun toChar(): Char = number.toInt().toChar()
+    override fun toShort(): Short = number.toShort()
+    override fun toByte(): Byte = number.toByte()
+
+    override fun compareTo(other: ID): Int {
+        when (other) {
+            is UIntID -> return number.compareTo(other.number)
+            is NumericalID<*> -> {
+                when (other) {
+                    is IntID -> {
+                        if (other.number < 0) {
+                            return 1
+                        }
+
+                        return number.compareTo(other.number.toUInt())
+                    }
+
+                    is LongID -> {
+                        if (other.number < 0) {
+                            return 1
+                        }
+                        if (other.number > UINT_MAX_LONG_VALUE) {
+                            return -1
+                        }
+
+                        return number.compareTo(other.number.toUInt())
+                    }
+
+                    is DoubleID -> {
+                        if (other.number < 0) {
+                            return 1
+                        }
+
+                        if (other.number > UINT_MAX_D_VALUE) {
+                            return -1
+                        }
+
+                        return number.compareTo(other.number.toUInt())
+                    }
+
+                    is FloatID -> {
+                        if (other.number < 0) {
+                            return 1
+                        }
+
+                        return number.compareTo(other.number.toUInt())
+                    }
+
+                    is BigDecimalID -> {
+                        if (other.value < BigDecimal.ZERO) {
+                            return 1
+                        }
+
+                        if (other.value > UINT_MAX_BGD) {
+                            return -1
+                        }
+
+                        return other.value.compareTo(BigDecimal(number.toString()))
+                    }
+
+                    is BigIntegerID -> {
+                        if (other.value < BigInteger.ZERO) {
+                            return 1
+                        }
+
+                        if (other.value > UINT_MAX_BGI) {
+                            return -1
+                        }
+
+                        return other.value.compareTo(BigInteger(number.toString()))
+                    }
+                }
+            }
+
+            else -> return number.toString().compareTo(other.toString())
+        }
+    }
+
+    override fun doEquals(other: ID): Boolean {
+        if (other is UIntID) return number == other.number
+        if (other is ULongID) return number == other.number.toUInt()
+        if (other is NumericalID<*>) {
+            val v = other.toLong()
+            if (v < 0) {
+                return false
+            }
+
+            return number == v.toUInt()
+        }
+
+        return false
+    }
+
+    public companion object {
+        /**
+         * [UInt.MAX_VALUE] 作为 [Long] 的值。
+         */
+        private const val UINT_MAX_LONG_VALUE: Long = 4294967295L
+        private const val UINT_MAX_D_VALUE: Double = 4294967295.0
+        private val UINT_MAX_BGD = BigDecimal(UInt.MAX_VALUE.toString())
+        private val UINT_MAX_BGI = BigInteger(UInt.MAX_VALUE.toString())
+    }
+
+    internal object Serializer : KSerializer<UIntID> {
+        override fun deserialize(decoder: Decoder): UIntID {
+            val value = UInt.serializer().deserialize(decoder)
+            return UIntID(value)
+        }
+
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("UIntID", PrimitiveKind.INT)
+        override fun serialize(encoder: Encoder, value: UIntID) {
+            UInt.serializer().serialize(encoder, value.number)
+        }
+    }
+}
+
+
+/**
+ * 使用 [ULong] 字面值的 [ID] 实现。
+ *
+ * [ULong] 不是 [Number] 的实现，因此 [ULongID] 并非 [NumericalID] 类型。
+ * 但是 [ULong] 会提供类似于 [NumericalID] 的一些数值转化类型，并且允许与 [NumericalID] 进行数值比较。
+ *
+ * [ULongID] 与 [LongID] 是**不同**的，不要使用值可能为负的 [LongID] 来代替 [ULongID]。
+ * [ULongID] 在进行 `equals` 和 `compareTo` 的时候，如果目标为数值类型且值为负，
+ * 则会直接将其判定为不相等或小数值。
+ *
+ * 举个明显的例子：
+ * ```kotlin
+ *  val ul = ULong.MAX_VALUE
+ *  val l = ULong.MAX_VALUE.toLong()
+ *
+ *  println(ul.toLong() == l)          // true
+ *  println(ul == l.toULong())         // true
+ *  println(ul.toLong() compareTo l)   // 0
+ *  println(ul compareTo l.toULong())  // 0
+ *
+ *  val ulID: ID = ul.ID
+ *  val lID: ID = l.ID
+ *
+ *  println(ulID == lID)                // false
+ *  println(ulID compareTo lID)         // 1
+ * ```
+ *
+ * 在JVM中，当仅作为数值而互相转化、比较时，`ul` 和 `l` 的实际数值是一样的，
+ * 而当它们各自作为 [ULongID] 和 [LongID] 时，
+ * 不论是 `equals` 还是 `compareTo` 的结果都表明它们是不同的。
+ *
+ * @see ULong.ID
+ *
+ * @since 3.1.0
+ *
+ */
+@SerialName("ID.ULong")
+@Serializable(with = ULongID.Serializer::class)
+public data class ULongID(public val number: ULong) : ID(), NumberSimilarly {
+    override fun toDouble(): Double = number.toDouble()
+    override fun toFloat(): Float = number.toFloat()
+    override fun toLong(): Long = number.toLong()
+    override fun toInt(): Int = number.toInt()
+    override fun toChar(): Char = number.toInt().toChar()
+    override fun toShort(): Short = number.toShort()
+    override fun toByte(): Byte = number.toByte()
+
+    override fun compareTo(other: ID): Int {
+        when (other) {
+            is UIntID -> return number.compareTo(other.number)
+            is ULongID -> return number.compareTo(other.number)
+            is NumericalID<*> -> {
+                when (other) {
+                    is IntID -> {
+                        if (other.number < 0) {
+                            return 1
+                        }
+
+                        return number.compareTo(other.number.toULong())
+                    }
+
+                    is LongID -> {
+                        if (other.number < 0) {
+                            return 1
+                        }
+                        return number.compareTo(other.number.toULong())
+                    }
+
+                    is DoubleID -> {
+                        if (other.number < 0) {
+                            return 1
+                        }
+
+                        return number.compareTo(other.number.toULong())
+                    }
+
+                    is FloatID -> {
+                        if (other.number < 0) {
+                            return 1
+                        }
+
+                        return number.compareTo(other.number.toULong())
+                    }
+
+                    is BigDecimalID -> {
+                        if (other.value < BigDecimal.ZERO) {
+                            return 1
+                        }
+
+                        if (other.value > ULONG_MAX_BGD) {
+                            return -1
+                        }
+
+                        return other.value.compareTo(BigDecimal(number.toString()))
+                    }
+
+                    is BigIntegerID -> {
+                        if (other.value < BigInteger.ZERO) {
+                            return 1
+                        }
+
+                        if (other.value > ULONG_MAX_BGI) {
+                            return -1
+                        }
+
+                        return other.value.compareTo(BigInteger(number.toString()))
+                    }
+                }
+            }
+
+            else -> return number.toString().compareTo(other.toString())
+        }
+    }
+
+    override fun doEquals(other: ID): Boolean {
+        if (other is ULongID) return number == other.number
+        if (other is UIntID) return number == other.number.toULong()
+        if (other is NumericalID<*>) {
+            val v = other.toLong()
+            if (v < 0) {
+                return false
+            }
+
+            return number == v.toULong()
+        }
+
+        return false
+    }
+
+    public companion object {
+        // ULong MAX = 18446744073709551615
+        private val ULONG_MAX_BGD = BigDecimal(ULong.MAX_VALUE.toString())
+        private val ULONG_MAX_BGI = BigInteger(ULong.MAX_VALUE.toString())
+    }
+
+    internal object Serializer : KSerializer<ULongID> {
+        override fun deserialize(decoder: Decoder): ULongID {
+            val value = ULong.serializer().deserialize(decoder)
+            return ULongID(value)
+        }
+
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ULongID", PrimitiveKind.LONG)
+        override fun serialize(encoder: Encoder, value: ULongID) {
+            ULong.serializer().serialize(encoder, value.number)
+        }
+    }
+}
+
+
+/**
+ * 将一个 [UInt] 作为 [ID][UIntID].
+ *
+ * @since 3.1.0
+ */
+@get:JvmName("UID")
+public val UInt.ID: UIntID
+    get() = UIntID(this)
+
+
+/**
+ * 将一个 [ULong] 作为 [ID][ULongID].
+ *
+ * @since 3.1.0
+ */
+@get:JvmName("UID")
+public val ULong.ID: ULongID
+    get() = ULongID(this)
 
 
 /**
@@ -551,7 +885,7 @@ public sealed class ArbitraryNumericalID<N : Number> : NumericalID<N>()
 @Serializable(with = BigDecimalID.Serializer::class)
 public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID<BigDecimal>() {
     override fun clone(): BigDecimalID = BigDecimalID(value)
-    
+
     internal object Serializer : KSerializer<BigDecimalID> {
         override fun deserialize(decoder: Decoder): BigDecimalID = BigDecimalID(BigDecimal(decoder.decodeString()))
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BigDecimalID", PrimitiveKind.STRING)
@@ -559,8 +893,8 @@ public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID
             encoder.encodeString(value.value.toString())
         }
     }
-    
-    
+
+
     /**
      * 转为 [BigIntegerID].
      *
@@ -571,15 +905,15 @@ public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID
     @JvmOverloads
     public fun toBigIntegerID(exact: Boolean = false): BigIntegerID = if (exact) value.toBigIntegerExact().ID
     else value.toBigInteger().ID
-    
-    
+
+
     public companion object {
         @JvmStatic
         public val ZERO: BigDecimalID = BigDecimalID(BigDecimal.ZERO)
-        
+
         @JvmStatic
         public val ONE: BigDecimalID = BigDecimalID(BigDecimal.ONE)
-        
+
         @JvmStatic
         public val TEN: BigDecimalID = BigDecimalID(BigDecimal.TEN)
     }
@@ -595,7 +929,7 @@ public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID
 @Serializable(with = BigIntegerID.Serializer::class)
 public class BigIntegerID(override val value: BigInteger) : ArbitraryNumericalID<BigInteger>() {
     override fun clone(): BigIntegerID = BigIntegerID(value)
-    
+
     internal object Serializer : KSerializer<BigIntegerID> {
         override fun deserialize(decoder: Decoder): BigIntegerID = BigIntegerID(BigInteger(decoder.decodeString()))
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BigIntegerID", PrimitiveKind.STRING)
@@ -603,27 +937,27 @@ public class BigIntegerID(override val value: BigInteger) : ArbitraryNumericalID
             encoder.encodeString(value.value.toString())
         }
     }
-    
+
     /**
      * 转为 [BigDecimalID].
      */
     public fun toBigDecimalID(): BigDecimalID = value.toBigDecimal().ID
-    
+
     /**
      * 转为 [BigDecimalID].
      */
     @JvmOverloads
     public fun toBigDecimalID(scale: Int, mathContext: MathContext = MathContext.UNLIMITED): BigDecimalID =
         value.toBigDecimal(scale, mathContext).ID
-    
-    
+
+
     public companion object {
         @JvmStatic
         public val ZERO: BigIntegerID = BigIntegerID(BigInteger.ZERO)
-        
+
         @JvmStatic
         public val ONE: BigIntegerID = BigIntegerID(BigInteger.ONE)
-        
+
         @JvmStatic
         public val TEN: BigIntegerID = BigIntegerID(BigInteger.TEN)
     }
@@ -724,12 +1058,12 @@ public data class CharSequenceID(val value: CharSequence) : ID() {
     override fun toString(): String = value.toString()
     override fun compareTo(other: ID): Int = if (other === this) 0 else toString().compareTo(other.toString())
     override fun clone(): CharSequenceID = copy()
-    
+
     /**
      * 当前字符序列长度。
      */
     public val length: Int get() = value.length
-    
+
     /**
      * [CharSequenceID] 的字面值序列化器。
      */
@@ -740,7 +1074,7 @@ public data class CharSequenceID(val value: CharSequence) : ID() {
             encoder.encodeString(value.toString())
         }
     }
-    
+
     public companion object {
         @JvmStatic
         public val EMPTY: CharSequenceID = CharSequenceID("")
@@ -775,26 +1109,26 @@ public fun ID.tryToNumericalID(intAsLong: Boolean = true): NumericalID<*> {
             // Long MAX: 9223372036854775807
             val literal = this.literal
             if (literal.isEmpty()) throw IDException("Unable to convert an empty string ('') to NumericalID.")
-            
+
             fun bigDecimalID(): BigDecimalID = BigDecimal(literal).ID
-            
+
             if (literal.length > 19) {
                 // > Long MAX
                 return bigDecimalID()
             }
-            
+
             val i1 = literal.indexOf('.')
             if (i1 >= 0 && literal.lastIndexOf('.') == i1) {
                 // maybe double
                 return literal.toDouble().ID
             }
-            
+
             if (literal.length == 19) {
                 return literal.toLongOrNull()?.ID ?: bigDecimalID()
             }
-            
-            
-            if (literal.length in 10 .. 18) {
+
+
+            if (literal.length in 10..18) {
                 return literal.toLong().ID
             }
             // less than 10, int value.
@@ -850,3 +1184,51 @@ public open class IDException : RuntimeException {
     public constructor(cause: Throwable?) : super(cause)
 }
 
+/**
+ * 一个提供数值转化能力的接口。
+ *
+ * @since 3.1.0
+ */
+public interface NumberSimilarly {
+    /**
+     * 将当前数字转为 [Double]. 类似于 [Number.toDouble].
+     * @see Number.toDouble
+     */
+    public fun toDouble(): Double
+
+    /**
+     * 将当前数字转为 [Float]. 类似于 [Number.toFloat].
+     * @see Number.toFloat
+     */
+    public fun toFloat(): Float
+
+    /**
+     * 将当前数字转为 [Long]. 类似于 [Number.toLong].
+     * @see Number.toLong
+     */
+    public fun toLong(): Long
+
+    /**
+     * 将当前数字转为 [Int]. 类似于 [Number.toInt].
+     * @see Number.toInt
+     */
+    public fun toInt(): Int
+
+    /**
+     * 将当前数字转为 [Char]. 类似于 [Number.toChar].
+     * @see Number.toChar
+     */
+    public fun toChar(): Char
+
+    /**
+     * 将当前数字转为 [Short]. 类似于 [Number.toShort].
+     * @see Number.toShort
+     */
+    public fun toShort(): Short
+
+    /**
+     * 将当前数字转为 [Byte]. 类似于 [Number.toByte].
+     * @see Number.toByte
+     */
+    public fun toByte(): Byte
+}
