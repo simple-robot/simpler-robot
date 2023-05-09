@@ -45,11 +45,11 @@ include(":simbot-util-suspend-transformer")
 // project test
 // if not in CI workflows
 if (!System.getenv("IS_CI").toBoolean()) {
-    include(
-        projectTest("boot"),
-        projectTest("spring-boot-starter"),
-        projectTest("jmh"),
-    )
+//    include(
+//        projectTest("boot"),
+//        projectTest("spring-boot-starter"),
+//        projectTest("jmh"),
+//    )
 
     include(":simbot-component-http-server-api")
 }
