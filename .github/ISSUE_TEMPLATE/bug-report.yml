@@ -62,7 +62,7 @@ body:
         - 其他
     validations:
       required: true
-      
+
   - type: dropdown
     id: component
     attributes:
@@ -71,7 +71,7 @@ body:
       multiple: true
       options:
         - mirai (QQ)
-        - kook
+        - KOOK
         - QQ频道
         - 其他
          

@@ -1,3 +1,17 @@
+/*
+ * Copyright (c) 2023 ForteScarlet.
+ *
+ * This file is part of Simple Robot.
+ *
+ * Simple Robot is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * Simple Robot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with Simple Robot. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import logger.loggerFrameworkAttribute
+import logger.loggerFrameworkAttributeSlf4j
 import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeTargetPreset
 
 plugins {
@@ -6,21 +20,32 @@ plugins {
     id("simbot.dokka-module-configuration")
 }
 
+
 kotlin {
     explicitApi()
-    jvm {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-                javaParameters = true
-                freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
+
+    fun configJvm(name: String, attrValue: String, withJava: Boolean = false) {
+        jvm(name) {
+            attributes.attribute(loggerFrameworkAttribute, attrValue)
+            compilations.all {
+                kotlinOptions {
+                    jvmTarget = "1.8"
+                    javaParameters = true
+                    freeCompilerArgs = freeCompilerArgs + listOf("-Xjvm-default=all")
+                }
+            }
+            if (withJava) {
+                withJava()
+            }
+            testRuns["test"].executionTask.configure {
+                useJUnitPlatform()
             }
         }
-        withJava()
-        testRuns["test"].executionTask.configure {
-            useJUnitPlatform()
-        }
     }
+
+    configJvm("jvm", loggerFrameworkAttributeSlf4j, withJava = true)
+//    configJvm("jul", loggerFrameworkAttributeJUL)
+
     js(IR) {
         browser()
         nodejs()

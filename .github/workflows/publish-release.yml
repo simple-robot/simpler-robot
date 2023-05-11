@@ -31,13 +31,13 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 11
+          cache: 'gradle'
 
       - name: Run All Tests
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 7.6
           arguments: clean assemble test
-          cache: 'gradle'
 
       # setup Gradle
       - name: Gradle Publish Release
@@ -140,6 +140,7 @@ jobs:
           external_repository: simple-robot-library/simbot3-api-docs
           publish_branch: kdoc-deploy/main
           publish_dir: ./build/dokka/html
+          destination_dir: main
 
   create-release:
     if: ${{ !contains(github.ref_name, 'dev') }}

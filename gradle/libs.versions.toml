@@ -1,15 +1,17 @@
 [versions]
-kotlinx-coroutines = "1.6.4"
-kotlinx-serialization = "1.5.0-RC"
-spring-boot = "2.7.6"
-openjdk-jmh = "1.35"
+kotlinx-coroutines = "1.7.0"
+kotlinx-serialization = "1.5.0"
+spring-boot = "2.7.11"
+openjdk-jmh = "1.36"
 #forte-di = "0.0.3"
 #forte-annotationTool = "0.6.3"
-ktor = "2.1.1"
+ktor = "2.3.0"
+
+slf4j = "2.0.7"
 
 [libraries]
 # jetbrains-annotation
-jetbrains-annotations = "org.jetbrains:annotations:23.0.0"
+jetbrains-annotations = "org.jetbrains:annotations:24.0.1"
 
 # kotlinx-coroutines
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -31,11 +33,11 @@ kotlinx-serialization-hocon = { group = "org.jetbrains.kotlinx", name = "kotlinx
 kotlinx-serialization-protobuf = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-protobuf", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-cbor = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-properties = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-properties", version.ref = "kotlinx-serialization" }
-charleskorn-kaml = "com.charleskorn.kaml:kaml:0.49.0"
+charleskorn-kaml = "com.charleskorn.kaml:kaml:0.53.0"
 
 # slf4j
-slf4j-api = "org.slf4j:slf4j-api:1.7.36"
-slf4j-nop = "org.slf4j:slf4j-nop:1.7.36"
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
+slf4j-nop = { group = "org.slf4j", name = "slf4j-nop", version.ref = "slf4j" }
 
 # javax
 javax-inject = "javax.inject:javax.inject:1"
@@ -75,4 +77,4 @@ ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "
 
 # Lincheck
 # https://kotlinlang.org/docs/lincheck-guide.html#associate-compiler-tasks
-kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.15"
+kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.17"
