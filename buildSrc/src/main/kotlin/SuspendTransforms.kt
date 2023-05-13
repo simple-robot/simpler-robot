@@ -45,7 +45,7 @@ object SuspendTransforms {
      */
     val jvmAsyncTransformer = SuspendTransformConfiguration.jvmAsyncTransformer.copy(
         syntheticFunctionIncludeAnnotations = includeAnnotations,
-        transformFunctionInfo = FunctionInfo("love.forte.simbot.utils", null, "$\$runInAsync"),
+        transformFunctionInfo = FunctionInfo("love.forte.simbot.utils", null, "$\$runInAsync1"),
         copyAnnotationExcludes = SuspendTransformConfiguration.jvmAsyncTransformer.copyAnnotationExcludes + SuspendTransformConfiguration.jvmAsyncTransformer.markAnnotation.classInfo
     )
     

@@ -498,9 +498,22 @@ public fun <T> runInAsync(block: suspend CoroutineScope.() -> T): CompletableFut
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
 public fun <T> `$$runInBlocking`(block: suspend () -> T): T = runInNoScopeBlocking(block = block)
 
+/**
+ * [#670](https://github.com/simple-robot/simpler-robot/pull/670) 后仅保留做兼容，
+ * 更新后使用 `$$runInAsync1`
+ */
+@InternalSimbotApi
+@Deprecated("Compatible with 3.0.0 and earlier", level = DeprecationLevel.HIDDEN)
+public fun <T> `$$runInAsync`(block: suspend () -> T): CompletableFuture<T> {
+    return runInAsync { block() }
+}
+
+/**
+ * @since 3.1.0
+ */
 @InternalSimbotApi
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
-public fun <T> `$$runInAsync`(block: suspend () -> T, scope: CoroutineScope = `$$DefaultScope`): CompletableFuture<T> {
+public fun <T> `$$runInAsync1`(block: suspend () -> T, scope: CoroutineScope = `$$DefaultScope`): CompletableFuture<T> {
     return runInAsync(scope) { block() }
 }
 
@@ -591,4 +604,6 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
 
 private fun systemLong(key: String): Long? = System.getProperty(key)?.toLongOrNull()
 private fun systemInt(key: String): Int? = System.getProperty(key)?.toIntOrNull()
+
+@Suppress("SameParameterValue")
 private fun systemBool(key: String): Boolean = System.getProperty(key)?.toBoolean() ?: false
