@@ -500,10 +500,8 @@ public fun <T> `$$runInBlocking`(block: suspend () -> T): T = runInNoScopeBlocki
 
 @InternalSimbotApi
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
-public fun <T> `$$runInAsync`(block: suspend () -> T): CompletableFuture<T> {
-    return runInAsync {
-        block()
-    }
+public fun <T> `$$runInAsync`(block: suspend () -> T, scope: CoroutineScope = `$$DefaultScope`): CompletableFuture<T> {
+    return runInAsync(scope) { block() }
 }
 
 
