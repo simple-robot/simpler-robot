@@ -35,6 +35,19 @@ import java.util.concurrent.atomic.LongAdder
 import kotlin.random.Random
 import kotlin.random.asKotlinRandom
 
+/**
+ * 标记一个可能没有实际用途、令人感到迷惑的ID类型或相关方法/属性。
+ *
+ * 这些类型/方法/属性未来可能会调整、过时或被删除，且应当尽力避免使用它们。
+ *
+ * 比如 `FloatID`，没有人会使用浮点数作为ID的。
+ *
+ */
+@RequiresOptIn("An ID type that may have no practical use may be removed in the future", level = RequiresOptIn.Level.WARNING)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+public annotation class ConfusedIDType
+
 
 /**
  * 唯一标识 [ID].
@@ -85,14 +98,12 @@ import kotlin.random.asKotlinRandom
  *
  * ### 构造
  *
- * [ID] 提供了名为 `ID` 的后缀扩展属性来将某个值构造为 [ID] 类型。
+ * [ID] 提供了名为 `ID` 的后缀扩展属性来将某个值构造为 [ID] 类型，
+ * 其中你需要关系的是几个常见的ID类型，即字符串类型和各整型类型的ID。
  *
  * ```kotlin
  * 123.ID    // IntID
- * 'b'.ID    // IntID
  * 123L.ID   // LongID
- * 123.4.ID  // DoubleID
- * 123.4F.ID // FloatID
  * "str".ID  // CharSequenceID
  * 123u.ID   // UInt.ID
  * val ul: ULong = 123u
@@ -103,27 +114,31 @@ import kotlin.random.asKotlinRandom
  *
  * ```java
  * IntID          intId    = Identifies.ID(123);
- * IntID          charId   = Identifies.ID('b');
  * LongID         longId   = Identifies.ID(123L);
- * DoubleID       doubleId = Identifies.ID(123.4);
- * FloatID        floatId  = Identifies.ID(123.4F);
  * CharSequenceID strId    = Identifies.ID("str");
  * ```
  *
  *
- * 更多参考 [Int.ID] [Long.ID] [Char.ID] [Double.ID] [FloatID] [CharSequence.ID]
+ * 更多参考:
+ *
+ * - [Int.ID]
+ * - [Long.ID]
+ * - [CharSequence.ID]
  *
  * ### 随机ID
  *
  * 如果你需要获取一个随机的ID，可以考虑使用 [randomID]. [randomID] 内使用 [RandomIDUtil.randomID]
  * 生成一个 _类UUID风格_ 的随机字符串并包装为 [ID] 并返回.
  *
+ * 不过需要注意，这个随机ID返回的内容并非标准的HEX字符串或UUID字符串。
+ *
  * ### 具体类型
  *
  * [ID] 是一个抽象类型，有关其他具体实现类型参阅它们各自的说明。
  *
  * @see CharSequenceID
- * @see NumericalID
+ * @see IntID
+ * @see LongID
  *
  *
  * @author ForteScarlet
@@ -131,6 +146,7 @@ import kotlin.random.asKotlinRandom
 @Serializable
 @SerialName("ID")
 @Suppress("EqualsOrHashCode")
+@OptIn(ConfusedIDType::class)
 public sealed class ID : Comparable<ID>, Cloneable {
     /*
         实际上常用的ID类型总共就那么几个：整型和字符串。
@@ -236,6 +252,7 @@ public val Int.ID: IntID
  * 将一个 [Char] 作为 [ID][IntID].
  */
 @get:JvmName("ID")
+@ConfusedIDType
 public val Char.ID: IntID
     get() = IntID(this)
 
@@ -250,6 +267,7 @@ public val Long.ID: LongID
  * 将一个 [Double] 作为 [ID][DoubleID].
  */
 @get:JvmName("ID")
+@ConfusedIDType
 public val Double.ID: DoubleID
     get() = DoubleID(this)
 
@@ -257,6 +275,7 @@ public val Double.ID: DoubleID
  * 将一个 [Float] 作为 [ID][FloatID].
  */
 @get:JvmName("ID")
+@ConfusedIDType
 public val Float.ID: FloatID
     get() = FloatID(this)
 
@@ -343,20 +362,16 @@ public fun currentTimeMillisID(): LongID = System.currentTimeMillis().ID
  *
  * @see IntID
  * @see LongID
- * @see DoubleID
- * @see FloatID
  * @see ArbitraryNumericalID
- * @see BigDecimalID
  * @see BigIntegerID
  *
  * @see Int.ID
  * @see Long.ID
- * @see Double.ID
- * @see Float.ID
  */
 @Suppress("MemberVisibilityCanBePrivate", "EqualsOrHashCode")
 @SerialName("ID.Number")
 @Serializable
+@OptIn(ConfusedIDType::class)
 public sealed class NumericalID<N : Number> : ID(), NumberSimilarly {
 
     /**
@@ -506,6 +521,7 @@ public data class LongID(public val number: Long) : NumericalID<Long>() {
 /** 使用 [Double] 字面值的 [NumericalID] 实现。 */
 @SerialName("ID.Double")
 @Serializable(with = DoubleID.Serializer::class)
+@ConfusedIDType
 public data class DoubleID(public val number: Double) : NumericalID<Double>() {
     override val value: Double
         get() = number
@@ -525,6 +541,7 @@ public data class DoubleID(public val number: Double) : NumericalID<Double>() {
 /** 使用 [Float] 字面值的 [NumericalID] 实现。 */
 @SerialName("ID.Float")
 @Serializable(with = FloatID.Serializer::class)
+@ConfusedIDType
 public data class FloatID(public val number: Float) : NumericalID<Float>() {
     override val value: Float
         get() = number
@@ -581,6 +598,7 @@ public data class FloatID(public val number: Float) : NumericalID<Float>() {
  */
 @SerialName("ID.UInt")
 @Serializable(with = UIntID.Serializer::class)
+@OptIn(ConfusedIDType::class)
 public data class UIntID(public val number: UInt) : ID(), NumberSimilarly {
     override fun toDouble(): Double = number.toDouble()
     override fun toFloat(): Float = number.toFloat()
@@ -741,6 +759,7 @@ public data class UIntID(public val number: UInt) : ID(), NumberSimilarly {
  */
 @SerialName("ID.ULong")
 @Serializable(with = ULongID.Serializer::class)
+@OptIn(ConfusedIDType::class)
 public data class ULongID(public val number: ULong) : ID(), NumberSimilarly {
     override fun toDouble(): Double = number.toDouble()
     override fun toFloat(): Float = number.toFloat()
@@ -892,6 +911,7 @@ public sealed class ArbitraryNumericalID<N : Number> : NumericalID<N>()
  */
 @SerialName("ID.BigDecimal")
 @Serializable(with = BigDecimalID.Serializer::class)
+@ConfusedIDType
 public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID<BigDecimal>() {
     override fun clone(): BigDecimalID = BigDecimalID(value)
 
@@ -932,10 +952,13 @@ public class BigDecimalID(override val value: BigDecimal) : ArbitraryNumericalID
 /**
  * 由 [BigInteger] 作为字面量值的 [NumericalID] 实现。
  *
+ * _过长的整型应当考虑使用 [CharSequenceID] 作为ID_
+ *
  * @see BigInteger.ID
  */
 @SerialName("ID.BigInteger")
 @Serializable(with = BigIntegerID.Serializer::class)
+@ConfusedIDType
 public class BigIntegerID(override val value: BigInteger) : ArbitraryNumericalID<BigInteger>() {
     override fun clone(): BigIntegerID = BigIntegerID(value)
 
@@ -976,6 +999,7 @@ public class BigIntegerID(override val value: BigInteger) : ArbitraryNumericalID
  * 得到一个字面值为 [BigDecimal] 的 [NumericalID].
  */
 @get:JvmName("ID")
+@ConfusedIDType
 public val BigDecimal.ID: BigDecimalID
     get() = when (this) {
         BigDecimal.ZERO -> BigDecimalID.ZERO
@@ -988,6 +1012,7 @@ public val BigDecimal.ID: BigDecimalID
  * 得到一个字面值为 [BigInteger] 的 [NumericalID].
  */
 @get:JvmName("ID")
+@ConfusedIDType
 public val BigInteger.ID: BigIntegerID
     get() = when (this) {
         BigInteger.ZERO -> BigIntegerID.ZERO
@@ -1106,10 +1131,13 @@ public fun ID.toCharSequenceID(): CharSequenceID = if (this is CharSequenceID) t
  *
  * 如果当前ID不是一个 [NumericalID] 类型，则会尝试将其转化为合适的数字类型。
  *
+ * _应优先考虑使用更明确的 [tryToLongID]_
+ *
  * @param intAsLong 如果为 `true`, 则当提供的ID字面值中的字符小于 `10` 个时，依旧将其作为 [Long] 处理。否则将会作为 [Int] 处理。
  * @throws IDException 无法进行转化或内部抛出 [NumberFormatException] 时。
  */
 @JvmOverloads
+@ConfusedIDType
 public fun ID.tryToNumericalID(intAsLong: Boolean = true): NumericalID<*> {
     if (this is NumericalID<*>) return this
     else {
