@@ -121,7 +121,6 @@ public interface Application : CoroutineScope {
 }
 
 
-
 /**
  * [Application] 中注册完成的所有 [BotManager] 集。
  *
@@ -138,8 +137,26 @@ public interface BotManagers : List<BotManager<*>> {
      * 如果没有找到符合组件id的 [Bot注册器][love.forte.simbot.bot.BotRegistrar] 存在，则返回null。
      */
     public fun register(botVerifyInfo: BotVerifyInfo): Bot?
-}
 
+
+    /**
+     * 寻找第一个指定类型的 [BotManager]，或得到null。
+     */
+    @Api4J
+    public fun <T : BotManager<*>> getFirstOrNull(type: Class<T>): T? {
+        return firstOrNull { b -> type.isInstance(b) }?.let { type.cast(it) }
+    }
+
+    /**
+     * 寻找第一个指定类型的 [BotManager]，或得到 [NoSuchElementException] 异常。
+     *
+     * @throws NoSuchElementException 如果没找到
+     */
+    @Api4J
+    public fun <T : BotManager<*>> getFirst(type: Class<T>): T {
+        return getFirstOrNull(type) ?: throw NoSuchElementException("Type of $type")
+    }
+}
 
 
 /**
