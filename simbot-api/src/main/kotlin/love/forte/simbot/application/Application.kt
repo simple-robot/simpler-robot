@@ -91,6 +91,8 @@ public interface Application : CoroutineScope {
 
     /**
      * 当前应用下的所有 [bot管理器][BotManager]。
+     *
+     * [botManagers] 的内容是 [providers] 的子集。
      */
     public val botManagers: BotManagers
 

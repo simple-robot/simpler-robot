@@ -1,7 +1,8 @@
 name: Test Branch
 on:
   pull_request:
-    branches: v3-dev
+    branches:
+      - 'v3-dev'
 
 env:
   IS_CI: true
