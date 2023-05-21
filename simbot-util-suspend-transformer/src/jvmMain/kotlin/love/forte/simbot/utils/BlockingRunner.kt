@@ -392,8 +392,15 @@ private object DefaultRunInNoScopeBlockingStrategy : RunInNoScopeBlockingStrateg
     override fun <T> invoke(context: CoroutineContext, block: suspend () -> T): T {
         val runner = SuspendRunner<T>(context)
         block.startCoroutine(runner)
-        return runner.await().getOrThrow()
+        return runner.await(SuspendRunner.isWaitTimeoutEnabled).getOrThrow()
     }
+
+    fun <T> invokeWithoutTimeoutLog(context: CoroutineContext, block: suspend () -> T): T {
+        val runner = SuspendRunner<T>(context)
+        block.startCoroutine(runner)
+        return runner.await(isWaitTimeoutEnabled = false).getOrThrow()
+    }
+
 }
 
 /**
@@ -456,6 +463,27 @@ public fun <T> runInNoScopeBlocking(
     context: CoroutineContext = DefaultBlockingContext,
     block: suspend () -> T,
 ): T = runInNoScopeBlockingStrategy(context, block)
+
+/**
+ * @suppress 内部API
+ *
+ * @see DefaultBlockingContext
+ * @see runBlocking
+ */
+@OptIn(ExperimentalSimbotApi::class)
+@Throws(InterruptedException::class)
+@InternalSimbotApi
+public fun <T> runInNoScopeBlockingWithoutTimeoutDebug(
+    context: CoroutineContext = DefaultBlockingContext,
+    block: suspend () -> T,
+): T {
+    val strategy = runInNoScopeBlockingStrategy
+    if (strategy is DefaultRunInNoScopeBlockingStrategy) {
+        return strategy.invokeWithoutTimeoutLog(context, block)
+    }
+
+    return strategy(context, block)
+}
 
 /**
  * 如果超时，则抛出 [TimeoutException].
@@ -530,8 +558,8 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
         }
     }
 
-//    @Suppress("BlockingMethodInNonBlockingContext")
-    fun await(): Result<T> {
+    //    @Suppress("BlockingMethodInNonBlockingContext")
+    fun await(isWaitTimeoutEnabled: Boolean): Result<T> {
         synchronized(this) {
             @Suppress("UNUSED_VARIABLE") // emm?
             var times = 0
@@ -585,7 +613,7 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
         private const val DEFAULT_WAIT_TIME = 60_000L // 60s
         private val waitTimeout =
             systemLong(BLOCKING_RUNNER_DEFAULT_WAIT_TIME_PROPERTY_NAME)?.takeIf { it > 0 } ?: DEFAULT_WAIT_TIME
-        private val isWaitTimeoutEnabled = !systemBool(BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME)
+        internal val isWaitTimeoutEnabled = !systemBool(BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME)
 
         init {
             if (isWaitTimeoutEnabled) {
