@@ -14,15 +14,14 @@ package love.forte.simbot.application
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.modules.SerializersModule
-import love.forte.simbot.Api4J
-import love.forte.simbot.Component
-import love.forte.simbot.JST
-import love.forte.simbot.NoSuchComponentException
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.simbot.*
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.bot.BotVerifyInfo
 import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.utils.runInNoScopeBlocking
+import love.forte.simbot.utils.runInNoScopeBlockingWithoutTimeoutDebug
 
 
 /**
@@ -99,9 +98,18 @@ public interface Application : CoroutineScope {
     /**
      * 挂起此应用直至其被终止。
      */
-    @JST(asyncBaseName = "asFuture", asyncSuffix = "")
+//    @JST( asyncBaseName = "asFuture", asyncSuffix = "")
+    @JvmAsync(baseName = "asFuture", suffix = "")
     public suspend fun join()
 
+    /**
+     * 阻塞此应用直至其被终止。
+     */
+    @Api4J
+    @OptIn(InternalSimbotApi::class)
+    public fun joinBlocking() {
+        runInNoScopeBlockingWithoutTimeoutDebug { join() }
+    }
 
     /**
      * 终止当前应用，并关闭其中所有可能的资源。
