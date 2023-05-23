@@ -21,6 +21,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.time.Instant
+import kotlin.reflect.KProperty
 
 /**
  * 一个 **时间戳** 。
@@ -35,26 +36,26 @@ import java.time.Instant
 @Serializable(TimestampSerializer::class)
 @SerialName("ts")
 public sealed class Timestamp : Comparable<Timestamp> {
-    
+
     /**
      * 此时间戳对应的秒。
      */
     public abstract val second: Long
-    
+
     /**
      * 此时间戳对应的毫秒值。
      */
     public abstract val millisecond: Long
-    
-    
+
+
     /**
      * 此时间戳是否是一个被支持的真实时间戳。
      * 如果得到false，则代表此时间戳本质上不存在，
      * 且上述 [second] 和 [millisecond] 最终结果应为-1。
      */
     public abstract fun isSupport(): Boolean
-    
-    
+
+
     /**
      * 一个代表"不支持"的时间戳类型.
      */
@@ -69,26 +70,26 @@ public sealed class Timestamp : Comparable<Timestamp> {
             return if (other === NotSupport) 0 else -1
         }
     }
-    
+
     public companion object {
         /**
          * 得到一个 [Timestamp.millisecond] 始终为 -1 的 [Timestamp] 实例。
          */
         @JvmStatic
         public fun notSupport(): Timestamp = NotSupport
-        
+
         /**
          * 通过 [Instant] 构建一个 [Timestamp] 实例。
          */
         @JvmStatic
         public fun byInstant(instant: Instant): Timestamp = InstantTimestamp(instant.epochSecond, instant.nano)
-        
+
         /**
          * 根据当前时间瞬时构建一个 [Timestamp].
          */
         @JvmStatic
         public fun now(): Timestamp = byMillisecond(System.currentTimeMillis())
-    
+
         /**
          * 根据一个秒级时间和它的nano偏移值来构建一个 [Timestamp]。
          * 如果 [epochSecond] 小于0，则视为无效并等同于使用 [notSupport]。
@@ -104,7 +105,7 @@ public sealed class Timestamp : Comparable<Timestamp> {
             }
             return InstantTimestamp(epochSecond, nanoAdjustment)
         }
-    
+
         /**
          * 根据一个毫秒时间戳来构建一个 [Timestamp] 实例。
          * 如果 [epochMilli] 小于 0，则相当于使用 [notSupport]。
@@ -114,10 +115,10 @@ public sealed class Timestamp : Comparable<Timestamp> {
             if (epochMilli < 0) {
                 return notSupport()
             }
-            
+
             val secs = Math.floorDiv(epochMilli, 1000.toLong())
             val mos = Math.floorMod(epochMilli, 1000.toLong()).toInt()
-            
+
             return bySecond(secs, mos * 1000_000)
         }
     }
@@ -142,11 +143,11 @@ public class InstantTimestamp internal constructor(
     override val second: Long,
     public val nanos: Int,
 ) : Timestamp() {
-    
+
     init {
         Simbot.require(second >= 0) { "'second' must >= 0, but $second" }
     }
-    
+
     /**
      * 瞬时时间所代表的毫秒值。此值应始终不小于0。
      */
@@ -155,34 +156,34 @@ public class InstantTimestamp internal constructor(
             val millis = Math.multiplyExact(second, 1000L)
             return Math.addExact(millis, nanos / 1000000L)
         }
-    
+
     /**
      * 根据 [millisecond] 构建一个 [Instant] 实例。
      */
     public fun toInstant(): Instant {
         return Instant.ofEpochSecond(second, nanos.toLong())
     }
-    
+
     override fun isSupport(): Boolean = true
-    
+
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is InstantTimestamp) return false
-        
+
         return millisecond == other.millisecond
     }
-    
+
     override fun hashCode(): Int {
         return millisecond.hashCode()
     }
-    
+
     override fun toString(): String {
         return "InstantTimestamp(millisecond=$millisecond)"
     }
-    
+
     override fun compareTo(other: Timestamp): Int {
         if (other === NotSupport) return 1
-        
+
         other as InstantTimestamp
         return millisecond.compareTo(other.millisecond)
     }
@@ -212,11 +213,27 @@ public object TimestampSerializer : KSerializer<Timestamp> {
         val millisecond = decoder.decodeLong()
         return Timestamp.byMillisecond(millisecond)
     }
-    
+
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("TimestampMillisecond", PrimitiveKind.LONG)
-    
+
     override fun serialize(encoder: Encoder, value: Timestamp) {
         encoder.encodeLong(value.millisecond)
     }
-    
+
 }
+
+/**
+ * 将一个**毫秒时间戳**代理为 [Timestamp].
+ *
+ * e.g.
+ * ```kotlin
+ * val now: Timestamp by System.currentTimeMillis()
+ * ```
+ *
+ * @since 3.1.0
+ *
+ * @see Timestamp
+ *
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline operator fun Long.getValue(o: Any?, property: KProperty<*>?): Timestamp = Timestamp.byMillisecond(this)
