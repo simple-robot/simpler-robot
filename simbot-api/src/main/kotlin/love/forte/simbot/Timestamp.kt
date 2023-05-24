@@ -20,6 +20,8 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import love.forte.simbot.delegate.TimestampDelegate
+import love.forte.simbot.delegate.getValue
 import java.time.Instant
 
 /**
@@ -28,6 +30,39 @@ import java.time.Instant
  * 通常情况下，[second] 或 [millisecond] 得到-1的值，那么就说明此时间戳并不是一个真正的时间戳，
  * 而是一个不被支持的默认值。
  * 通过 [Timestamp] 你可以直接通过 [isSupport] 对支持情况进行判断。
+ *
+ * ## 简单包装器
+ *
+ * [Timestamp] 是一种简单包装器类型，因此建议那些对外公开的 [Timestamp] 属性使用 **即用即造** 的形式，即不会急切的初始化属性，
+ * 而是每次获取时临时创建。
+ *
+ * 例如：
+ *
+ * ```kotlin
+ * val container = ...
+ *
+ * // 下面会产生3个 Timestamp 对象
+ * useTimestamp(container.timestamp)
+ * useTimestamp(container.timestamp)
+ * useTimestamp(container.timestamp)
+ * ```
+ *
+ * 也因此，大多数通过属性获取 [Timestamp] 的情况下建议通过局部变量保存以复用。
+ *
+ * ```kotlin
+ * val container = ...
+ * val timestamp = container.timestamp
+ *
+ * // 重复利用
+ * useTimestamp(timestamp)
+ * useTimestamp(timestamp)
+ * useTimestamp(timestamp)
+ * ```
+ *
+ * ## 属性委托
+ *
+ * 面向公开属性的场景 [Timestamp] 提供了一些更简便的属性委托API来简化代码。
+ * 有关它们的说明参考 [TimestampDelegate.getValue]
  *
  * @see InstantTimestamp
  * @author ForteScarlet

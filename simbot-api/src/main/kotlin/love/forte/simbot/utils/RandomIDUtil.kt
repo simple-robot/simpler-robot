@@ -15,14 +15,14 @@ package love.forte.simbot.utils
 import kotlin.random.Random
 
 /**
- * 一般为内部使用的随机ID工具。
+ * 随机ID工具。
+ *
+ * 一般为内部使用。
  */
 public object RandomIDUtil {
-    
+
     /**
-     * 生成一个类UUID风格的随机字符串。
-     *
-     * _需要注意的是返回值内的字符范围并非与hex对应。_
+     * 生成一个32字节长度的随机字符串。
      */
     @JvmStatic
     @JvmOverloads
@@ -38,7 +38,7 @@ public object RandomIDUtil {
         }
         return String(buf, Charsets.UTF_8)
     }
-    
+
     private fun ByteArray.formatUnsignedLong(value: Long, offset: Int, len: Int) {
         var v = value
         var charPos = offset + len
@@ -48,11 +48,15 @@ public object RandomIDUtil {
             v = v ushr 4
         } while (charPos > offset)
     }
-    
+
     private const val D = "1908356FORTESCAL"
-    
-    
+
+
 }
 
+/**
+ * 得到一个随机ID字符串。
+ * @see RandomIDUtil.randomID
+ */
 @JvmSynthetic
 public fun randomIdStr(random: Random = Random): String = RandomIDUtil.randomID(random)

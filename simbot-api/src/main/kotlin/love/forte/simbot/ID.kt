@@ -23,6 +23,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import love.forte.simbot.delegate.*
 import love.forte.simbot.utils.RandomIDUtil
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -62,8 +63,35 @@ public annotation class ConfusedIDType
  *
  * [ID] 是 [可排序的][Comparable]。
  *
+ * ## 简单包装器
  *
- * ### 序列化
+ * [ID] 是一种简单包装器类型，因此建议那些对外公开的 [ID] 属性使用 **即用即造** 的形式，即不会急切的初始化属性，
+ * 而是每次获取时临时创建。
+ *
+ * 例如：
+ *
+ * ```kotlin
+ * val idContainer = ...
+ *
+ * // 下面会产生3个ID对象
+ * useID(idContainer.id)
+ * useID(idContainer.id)
+ * useID(idContainer.id)
+ * ```
+ *
+ * 也因此，大多数通过属性获取 [ID] 的情况下建议通过局部变量保存以复用。
+ *
+ * ```kotlin
+ * val idContainer = ...
+ * val id = idContainer.id
+ *
+ * // 重复利用
+ * useID(id)
+ * useID(id)
+ * useID(id)
+ * ```
+ *
+ * ## 序列化
  *
  * [ID] 支持序列化, 且 [ID] 的序列化器应当都是一个 `primitive` 序列化器。
  * [ID] 序列化后都不应是结构体, 而是一个值类型。
@@ -99,7 +127,7 @@ public annotation class ConfusedIDType
  *
  * 此序列化其会永远将ID视为字符串作为序列化目标。
  *
- * ### 构造
+ * ## 构造
  *
  * [ID] 提供了名为 `ID` 的后缀扩展属性来将某个值构造为 [ID] 类型，
  * 其中你需要关系的是几个常见的ID类型，即字符串类型和各整型类型的ID。
@@ -128,16 +156,29 @@ public annotation class ConfusedIDType
  * - [Long.ID]
  * - [CharSequence.ID]
  *
- * ### 随机ID
+ * ## 随机ID
  *
  * 如果你需要获取一个随机的ID，可以考虑使用 [randomID]. [randomID] 内使用 [RandomIDUtil.randomID]
  * 生成一个 _类UUID风格_ 的随机字符串并包装为 [ID] 并返回.
  *
  * 不过需要注意，这个随机ID返回的内容并非标准的HEX字符串或UUID字符串。
  *
- * ### 具体类型
+ * ## 具体类型
  *
  * [ID] 是一个抽象类型，有关其他具体实现类型参阅它们各自的说明。
+ *
+ *
+ * ## 属性委托
+ *
+ * 面向公开属性的场景 [ID] 提供了一些更简便的属性委托API来简化代码。
+ *
+ * 有关它们的说明参考
+ * - [IntIDDelegate.getValue]
+ * - [UIntIDDelegate.getValue]
+ * - [LongIDDelegate.getValue]
+ * - [ULongIDDelegate.getValue]
+ * - [CharSequenceIDDelegate.getValue]
+ *
  *
  * @see CharSequenceID
  * @see IntID

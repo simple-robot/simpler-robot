@@ -31,6 +31,61 @@ import kotlin.reflect.KProperty
  * val now by timestamp { now }
  * ```
  *
+ * ## 作用域与应用场景
+ *
+ * [TimestampDelegate.getValue] 委托主要应用于对外的公开属性场景，
+ * 通过委托来减少某个对象在初始化时产生过多的简单包装器。
+ *
+ * 你需要避免一些错误的做法：
+ *
+ * 1. 避免在一个类的私有作用域使用此委托，例如使用一个私有属性作为委托目标如下：
+ *
+ * ```kotlin
+ * // Bad
+ * class Foo {
+ *    // 私有属性没有代理的必要
+ *    private val now by timestamp { now }
+ * }
+ * ```
+ *
+ * 你可以修改为
+ *
+ * ```kotlin
+ * // Good
+ * class Foo {
+ *     private val nowMillis = System.currentTimeMillis()
+ *     // 委托对外公开的属性而非内部应用的属性
+ *     private val timestamp by timestamp { nowMillis }
+ * }
+ * ```
+ *
+ * 2. 避免在局部作用域使用此委托，例如一个方法中如下：
+ *
+ * ```kotlin
+ * // Bad
+ * fun foo() {
+ *    val now by timestamp { now }
+ *
+ *    // 下面会产生3个 Timestamp 对象
+ *    useTimestamp(now)
+ *    useTimestamp(now)
+ *    useTimestamp(now)
+ * }
+ * ```
+ *
+ * 你可以修改为
+ *
+ * ```kotlin
+ * fun foo() {
+ *    // 直接使用 Timestamp 本身的API即可。
+ *    val now = Timestamp.now()
+ *    useTimestamp(now)
+ *    useTimestamp(now)
+ *    useTimestamp(now)
+ * }
+ * ```
+ *
+ *
  * @since 3.1.0
  *
  * @see Timestamp
@@ -71,5 +126,4 @@ public value class TimestampDelegate @PublishedApi internal constructor(@Publish
  */
 public inline fun timestamp(block: TimestampDelegate.Companion.() -> Long): TimestampDelegate =
     TimestampDelegate(block(TimestampDelegate))
-
 
