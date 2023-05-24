@@ -21,7 +21,6 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import java.time.Instant
-import kotlin.reflect.KProperty
 
 /**
  * 一个 **时间戳** 。
@@ -221,19 +220,3 @@ public object TimestampSerializer : KSerializer<Timestamp> {
     }
 
 }
-
-/**
- * 将一个**毫秒时间戳**代理为 [Timestamp].
- *
- * e.g.
- * ```kotlin
- * val now: Timestamp by System.currentTimeMillis()
- * ```
- *
- * @since 3.1.0
- *
- * @see Timestamp
- *
- */
-@Suppress("NOTHING_TO_INLINE")
-public inline operator fun Long.getValue(o: Any?, property: KProperty<*>?): Timestamp = Timestamp.byMillisecond(this)

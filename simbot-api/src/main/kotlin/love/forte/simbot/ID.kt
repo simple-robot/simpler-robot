@@ -43,7 +43,10 @@ import kotlin.random.asKotlinRandom
  * 比如 `FloatID`，没有人会使用浮点数作为ID的。
  *
  */
-@RequiresOptIn("An ID type that may have no practical use may be removed in the future", level = RequiresOptIn.Level.WARNING)
+@RequiresOptIn(
+    "An ID type that may have no practical use may be removed in the future",
+    level = RequiresOptIn.Level.WARNING
+)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 public annotation class ConfusedIDType
@@ -407,6 +410,7 @@ public sealed class NumericalID<N : Number> : ID(), NumberSimilarly {
                     }
                 }
             }
+
             other is UIntID -> return -other.compareTo(this)
             other is ULongID -> return -other.compareTo(this)
             else -> return toString().compareTo(other.toString())
@@ -1269,3 +1273,4 @@ public interface NumberSimilarly {
      */
     public fun toByte(): Byte
 }
+
