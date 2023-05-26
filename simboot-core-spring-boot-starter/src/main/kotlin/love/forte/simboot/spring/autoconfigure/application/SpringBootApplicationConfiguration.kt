@@ -14,6 +14,7 @@ package love.forte.simboot.spring.autoconfigure.application
 
 import love.forte.simboot.core.application.BootApplicationConfiguration
 import love.forte.simboot.core.application.BootApplicationConfiguration.Companion.DEFAULT_BOT_VERIFY_GLOB
+import love.forte.simboot.core.application.BotRegistrationFailurePolicy
 import love.forte.simbot.bot.Bot
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -40,8 +41,19 @@ public class SpringBootApplicationConfigurationProperties {
      *
      */
     public var isAutoStartBots: Boolean = true
-    
-    
+
+    /**
+     * 当（通过扫描bot配置文件）注册多个bot时，其中某个bot注册失败时（出现异常时）的处理策略。
+     *
+     * 默认情况下会直接抛出出现异常。
+     *
+     * @see BotRegistrationFailurePolicy
+     *
+     * @since 3.1.0
+     */
+    public var botAutoRegistrationFailurePolicy: BotRegistrationFailurePolicy = BotRegistrationFailurePolicy.ERROR
+
+
     public fun toConfiguration(
         applicationArguments: ApplicationArguments,
         applicationContext: ApplicationContext,
@@ -55,6 +67,7 @@ public class SpringBootApplicationConfigurationProperties {
                 config.classLoader = it
             }
             config.isAutoStartBots = this.isAutoStartBots
+            config.botAutoRegistrationFailurePolicy = this.botAutoRegistrationFailurePolicy
         }
     }
 }

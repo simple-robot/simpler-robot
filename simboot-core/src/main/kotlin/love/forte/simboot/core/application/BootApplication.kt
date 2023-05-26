@@ -29,7 +29,10 @@ import love.forte.simboot.annotation.Listener
 import love.forte.simboot.core.binder.*
 import love.forte.simboot.core.listener.FunctionalListenerProcessContext
 import love.forte.simboot.core.listener.KFunctionListenerProcessor
-import love.forte.simboot.core.utils.*
+import love.forte.simboot.core.utils.isFinal
+import love.forte.simboot.core.utils.isStatic
+import love.forte.simboot.core.utils.scanResources
+import love.forte.simboot.core.utils.scanTopClass
 import love.forte.simboot.interceptor.AnnotatedEventListenerInterceptor
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simbot.*
@@ -86,7 +89,7 @@ public object Boot : ApplicationFactory<BootApplicationConfiguration, BootApplic
             val duration = (System.nanoTime() - startTime).nanoseconds
             logger.info("Boot Application built in {}", duration.toString())
         }
-        
+
     }
 }
 
@@ -98,13 +101,13 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
     public companion object {
         public const val DEFAULT_BOT_VERIFY_GLOB: String = "simbot-bots/*.bot*"
     }
-    
-    
+
+
     /**
      * 提供额外参数，例如命令行参数。
      */
     public open var args: List<String> = emptyList()
-    
+
     /**
      * 追加或设置 [BootApplicationConfiguration.args] 命令行参数。
      * 如果 [append] 为 `true`，则在 [BootApplicationConfiguration.args] 的基础上追加，否则覆盖。
@@ -122,25 +125,25 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
             this.args = args.asList()
         }
     }
-    
+
     /**
      * 在通过 [classesScanPackage] 或 [topLevelListenerScanPackage] 进行包扫描的时候所使用的类加载器。
      */
     public open var classLoader: ClassLoader = BootApplicationConfiguration::class.java.classLoader
-    
+
     /**
      * 需要加载的所有 `*.bot(.*)?` 文件的资源扫描glob。默认为 [DEFAULT_BOT_VERIFY_GLOB]。
      *
      */
     @Suppress("MemberVisibilityCanBePrivate")
     public open var botConfigurationResources: List<String> = listOf(DEFAULT_BOT_VERIFY_GLOB)
-    
+
     /**
      * 在 [botConfigurationResources] 之外可以提供其他独立的配置资源信息。
      * 例如一些系统文件系统中的某些指定资源作为 *.bot 验证信息文件。
      */
     public open var botConfigurations: List<Resource> = emptyList()
-    
+
     /**
      * 配置用于针对 `*.bot` 配置文件的解码器列表。
      *
@@ -149,10 +152,10 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
      */
     protected open val botVerifyInfoDecoderFactories: MutableMap<BotVerifyInfoDecoderFactory<*, *>, () -> BotVerifyInfoDecoder> =
         mutableMapOf()
-    
+
     protected open val botVerifyInfoDecoderConfigurations: MutableMap<BotVerifyInfoDecoderFactory<*, *>, Any.() -> Unit> =
         mutableMapOf()
-    
+
     /**
      * 使用一个 [BotVerifyInfoDecoderFactory]
      * 来配置并添加一个 [BotVerifyInfoDecoder] 到 [botVerifyInfoDecoderFactories] 中。
@@ -165,7 +168,7 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
         configurator: C.() -> Unit = {},
     ) {
         val oldConfig = botVerifyInfoDecoderConfigurations[factory] as? C.() -> Unit
-        
+
         @Suppress("UNCHECKED_CAST") val newConfig: Any.() -> Unit = if (oldConfig == null) {
             {
                 this as C
@@ -178,25 +181,25 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
                 configurator()
             }
         }
-        
+
         botVerifyInfoDecoderConfigurations[factory] = newConfig
-        
+
         val createFactory: () -> BotVerifyInfoDecoder = {
             factory.create(newConfig)
         }
-        
+
         botVerifyInfoDecoderFactories.merge(factory, createFactory) { _, curr ->
             curr
         }
     }
-    
+
     internal data class BotVerifyInfoDecoderFactoryWithConfiguration(
         val factory: BotVerifyInfoDecoderFactory<*, *>,
         val creator: () -> BotVerifyInfoDecoder,
     ) {
         fun create(): BotVerifyInfoDecoder = creator()
     }
-    
+
     @OptIn(ExperimentalSimbotApi::class, ExperimentalSerializationApi::class)
     internal fun botVerifyDecodersOrDefaultStandards(): List<BotVerifyInfoDecoderFactoryWithConfiguration> {
         if (botVerifyInfoDecoderFactories.isNotEmpty()) {
@@ -204,29 +207,29 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
                 BotVerifyInfoDecoderFactoryWithConfiguration(k, v)
             }
         }
-        
+
         return StandardBotVerifyInfoDecoderFactory.supportDecoderFactories(logger, classLoader)
             .map { BotVerifyInfoDecoderFactoryWithConfiguration(it) { it.create() } }
     }
-    
+
     /**
      * 需要进行依赖扫描的所有包路径。
      *
      */
     public open var classesScanPackage: List<String> = emptyList()
-    
+
     /**
      * 需要进行顶层监听函数扫描的包路径。
      */
     public open var topLevelListenerScanPackage: List<String> = emptyList()
-    
-    
+
+
     /**
      * 需要进行顶层Binder函数扫描的包路径。
      */
     public open var topLevelBinderScanPackage: List<String> = emptyList()
-    
-    
+
+
     /**
      * 是否在bot注册后，在 application 构建完毕的时候自动执行 `Bot.start`。
      *
@@ -249,7 +252,48 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
      *
      */
     public open var isAutoStartBots: Boolean = true
-    
+
+    /**
+     * 当（通过扫描bot配置文件）注册多个bot时，其中某个bot注册失败时（出现异常时）的处理策略。
+     *
+     * 默认情况下会直接抛出出现异常。
+     *
+     * @see BotRegistrationFailurePolicy
+     *
+     * @since 3.1.0
+     */
+    public var botAutoRegistrationFailurePolicy: BotRegistrationFailurePolicy = BotRegistrationFailurePolicy.ERROR
+
+
+    // BOT注册失败策略
+
+}
+
+/**
+ * 当自动扫描的bot注册失败时的处理策略。
+ *
+ * @see BootApplicationConfiguration.botAutoRegistrationFailurePolicy
+ *
+ * @since 3.1.0
+ */
+public enum class BotRegistrationFailurePolicy {
+
+    /**
+     * 当bot注册过程中出现异常以及bot最终无法被注册 (没有匹配的 component) 时都会抛出异常。
+     *
+     * 是默认的选项。
+     */
+    ERROR,
+
+    /**
+     * 当bot注册过程中出现异常以及bot最终无法被注册 (没有匹配的 component) 时会输出带有异常信息的警告日志。
+     */
+    WARN,
+
+    /**
+     * 当bot注册过程中出现异常以及bot最终无法被注册 (没有匹配的 component) 时仅会输出 debug 调试日志。
+     */
+    IGNORE;
 }
 
 
@@ -257,14 +301,14 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
  * 用于构建 [BootApplication] 的构建器。
  */
 public interface BootApplicationBuilder : StandardApplicationBuilder<BootApplication> {
-    
+
     /**
      * 事件处理器。
      */
     @ApplicationBuilderDsl
     override fun eventProcessor(configurator: SimpleListenerManagerConfiguration.(environment: Application.Environment) -> Unit)
-    
-    
+
+
     /**
      *
      * 配置当前环境中所使用的依赖管理器。
@@ -286,14 +330,14 @@ public interface BootApplicationBuilder : StandardApplicationBuilder<BootApplica
      */
     @ApplicationBuilderDsl
     public fun beans(beanContainerBuilder: BeanContainerBuilder.() -> Unit)
-    
-    
+
+
     /**
      * 在 [beans] 之外额外配置binder信息。
      */
     @ApplicationBuilderDsl
     public fun binders(parameterBinderBuilder: ParameterBinderBuilder.() -> Unit)
-    
+
 }
 
 
@@ -303,28 +347,28 @@ public interface BootApplicationBuilder : StandardApplicationBuilder<BootApplica
  * @see Boot
  */
 public interface BootApplication : SimpleApplication, SimbootContext {
-    
+
     /**
      * 当前环境中的 [Bean容器][BeanContainer].
      */
     public val beanContainer: BeanContainer
-    
+
     /**
      * [BootApplication] 不需要执行 [start], 将会始终返回 `true`。
      */
     override suspend fun start(): Boolean = true
-    
+
     /**
      * [BootApplication] 从一开始就是启用状态。
      */
     override val isStarted: Boolean
         get() = true
-    
-    
+
+
     @JvmBlocking
     @JvmAsync(baseName = "asFuture", suffix = "")
     override suspend fun join()
-    
+
 }
 
 
@@ -339,24 +383,24 @@ private class BootApplicationImpl(
     providerList: List<EventProvider>,
 ) : BootApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
-    
+
     override val coroutineContext = environment.coroutineContext
     override val logger = environment.logger
-    
+
     private val job: Job? get() = coroutineContext[Job]
-    
+
     override val isActive: Boolean
         get() = job?.isActive ?: true
-    
+
     override val isCancelled: Boolean
         get() = job?.isCancelled ?: false
-    
-    
+
+
     override suspend fun cancel(reason: Throwable?): Boolean {
         shutdown(reason)
         return true
     }
-    
+
     override fun invokeOnCompletion(handler: CompletionHandler) {
         job?.invokeOnCompletion(handler) ?: handler.invoke(null)
     }
@@ -376,7 +420,7 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
             }
         }
     }
-    
+
     private var binderBuilderConfig: (ParameterBinderBuilder.() -> Unit) = {}
     override fun binders(parameterBinderBuilder: ParameterBinderBuilder.() -> Unit) {
         binderBuilderConfig.also { old ->
@@ -386,15 +430,15 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
             }
         }
     }
-    
-    
+
+
     @OptIn(ExperimentalSimbotApi::class)
     @Suppress("DuplicatedCode")
     suspend fun build(configuration: BootApplicationConfiguration): BootApplication {
         val logger = configuration.logger
         val classLoader = configuration.classLoader
         val tool = KAnnotationTool(ConcurrentHashMap(), ConcurrentHashMap())
-        
+
         // region build components
         logger.debug("Building components...")
         if (componentFactoriesSize() <= 0) {
@@ -405,15 +449,15 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
         logger.debug("Components are built: {}", components)
         logger.info("The size of components built is {}", components.size)
         // endregion
-        
-        
+
+
         logger.debug("Creating boot environment...")
         val environment = BootEnvironment(
             components, logger, configuration.coroutineContext
         )
         logger.debug("Boot environment created: {}", environment)
-        
-        
+
+
         // region build bean container
         val beanContainerBuilder = BeanContainerBuilderImpl(tool, classLoader, configuration)
         val scanPackage = configuration.classesScanPackage
@@ -422,42 +466,42 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
             logger.debug("Scan packages {} for bean", scanPackage)
             beanContainerBuilder.scan(classLoader, scanPackage)
         }
-        
+
         logger.debug("Building bean container by builder: {}", beanContainerBuilder)
         beanContainerBuilder.beanContainerBuilderConfig()
-        
+
         val beanContainer: CoreBeanManager = beanContainerBuilder.build()
         if (logger.isDebugEnabled) {
             logger.debug("Bean container is built: {}, The size of beans: {}", beanContainer, beanContainer.all.size)
         }
-        
+
         // endregion
-        
+
         // region build binders
         val binderBuilder = ParameterBinderBuilderImpl().also(binderBuilderConfig)
-        
-        
+
+
         // Binder containers.
         resolvedBinderContainerFromBeanContainer(binderBuilder, beanContainer, tool)
         resolvedBinderContainerFromScanTopLevelFunctions(
             binderBuilder, classLoader, configuration.topLevelBinderScanPackage, tool
         )
-        
+
         // include default global binders
         binderBuilder.includeDefaults()
-        
+
         val binderManager = binderBuilder.build()
         // endregion
-        
+
         // region build listeners
         val processor = KFunctionListenerProcessor()
-        
+
         eventProcessor {
             interceptors {
                 autoConfigInterceptors(beanContainer)
             }
         }
-        
+
         // auto scan listeners.
         listeners {
             autoConfigFromBeanContainer(logger, binderManager, beanContainer, processor, tool)
@@ -471,16 +515,16 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
                 configuration.topLevelListenerScanPackage
             )
         }
-        
-        
+
+
         logger.debug("Building listener manager...")
         val listenerManager = buildListenerManager(configuration, environment)
         logger.debug("Listener manager is built: {}", listenerManager)
         // endregion
-        
+
         // region build components
         // endregion
-        
+
         // region build providers
         logger.debug("Building providers...")
         if (eventProviderFactoriesSize() <= 0) {
@@ -492,13 +536,13 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
         if (providers.isNotEmpty()) {
             logger.debug("The built providers: {}", providers)
         }
-        
+
         // endregion
-        
+
         // region scan bots verify info and decoders
         logger.debug("Resolving bot verify infos and bot verify decoders...")
         // scan and auto register bot
-        
+
         val botVerifyDecoderFactories = configuration.botVerifyDecodersOrDefaultStandards()
         if (logger.isDebugEnabled) {
             logger.debug("Using bot verify info decoder factories: {}", botVerifyDecoderFactories.map { it.factory })
@@ -513,20 +557,21 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
                     logger,
                     configuration.botConfigurationResources,
                     botVerifyDecoderFactories,
-                    configuration.botConfigurations
+                    configuration.botConfigurations,
+                    configuration
                 )
             }
         }
         // endregion
-        
+
         // create application
         val application = BootApplicationImpl(configuration, environment, listenerManager, beanContainer, providers)
         // set application attribute
         listenerManager.globalScopeContext[ApplicationAttributes.Application] = application
-        
+
         // complete.
         complete(application)
-        
+
         // region register bots
         // after complete.
         logger.debug("Registering bots...")
@@ -548,12 +593,12 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
             logger.debug("But the registered bots are empty.")
         }
         // endregion
-        
-        
+
+
         return application
     }
-    
-    
+
+
 }
 
 
@@ -567,17 +612,17 @@ private fun resolvedBinderContainerFromBeanContainer(
         val type = beanContainer.getType(name)
         if (type.isSubclassOf(ParameterBinderFactory::class)) {
             val binder = tool.getAnnotation<Binder>(type)
-            
+
             fun globalBinderFactory() {
                 val instance = beanContainer[name, type] as ParameterBinderFactory
                 parameterBinderBuilder.binder(binderFactory = instance)
             }
-            
+
             fun specifyBinderFactory(id: String) {
                 val instance = beanContainer[name, type] as ParameterBinderFactory
                 parameterBinderBuilder.binder(id = id, binderFactory = instance)
             }
-            
+
             if (binder == null) {
                 globalBinderFactory()
             } else {
@@ -590,7 +635,7 @@ private fun resolvedBinderContainerFromBeanContainer(
                         }
                         specifyBinderFactory(id)
                     }
-                    
+
                     DEFAULT -> {
                         if (id == null) {
                             globalBinderFactory()
@@ -598,13 +643,13 @@ private fun resolvedBinderContainerFromBeanContainer(
                             specifyBinderFactory(id)
                         }
                     }
-                    
+
                     else -> {
                         // 通过类实现的ParameterBinderFactory不允许使用Binder.Scope.CURRENT
                         throw SimbotIllegalStateException("Parameter Binder Factory implemented by class does not allow Binder.Scope.CURRENT, but $binder")
                     }
                 }
-                
+
             }
         } else {
             fun globalBinderFactory(func: KFunction<*>) {
@@ -612,28 +657,28 @@ private fun resolvedBinderContainerFromBeanContainer(
                     context.beanContainer[name, type]
                 }
             }
-            
+
             fun specifyBinderFactory(id: String, func: KFunction<*>) {
                 parameterBinderBuilder.binder(id, func) { context ->
                     context.beanContainer[name, type]
                 }
             }
-            
+
             runCatching {
                 type.allFunctions.forEach a@{ func ->
                     // must be public
                     if (func.visibility != KVisibility.PUBLIC) return@a
-                    
+
                     val binder = tool.getAnnotation<Binder>(func) ?: return@a
                     val id = binder.value.firstOrNull()
                     val scope = binder.scope
-                    
+
                     // if current, skip.
                     if (scope == CURRENT) return@a
-                    
+
                     // if listener, skip.
                     if (tool.getAnnotation<Listener>(func) != null) return@a
-                    
+
                     when (scope) {
                         GLOBAL -> globalBinderFactory(func)
                         SPECIFY -> {
@@ -642,7 +687,7 @@ private fun resolvedBinderContainerFromBeanContainer(
                             }
                             specifyBinderFactory(id, func)
                         }
-                        
+
                         else -> {
                             // is default, as global
                             globalBinderFactory(func)
@@ -662,15 +707,15 @@ private fun resolvedBinderContainerFromScanTopLevelFunctions(
     packages: List<String>,
     tool: KAnnotationTool,
 ) {
-    
+
     fun globalBinderFactory(func: KFunction<*>) {
         parameterBinderBuilder.binder(function = func) { null }
     }
-    
+
     fun specifyBinderFactory(id: String, func: KFunction<*>) {
         parameterBinderBuilder.binder(id, func) { null }
     }
-    
+
     if (packages.isNotEmpty()) {
         scanTopClass(classLoader, packages, { _, _ ->
             null
@@ -682,12 +727,12 @@ private fun resolvedBinderContainerFromScanTopLevelFunctions(
                         val binder = tool.getAnnotation<Binder>(func) ?: return@a
                         val scope = binder.scope
                         val id = binder.value.firstOrNull()
-                        
+
                         if (scope == Binder.Scope.CURRENT) {
                             // 顶层函数不能使用 CURRENT 作用域。
                             throw SimbotIllegalStateException("Top-level binder function cannot use the CURRENT scope. but the binder of function [$func] is $binder")
                         }
-                        
+
                         when (scope) {
                             Binder.Scope.GLOBAL -> globalBinderFactory(func)
                             Binder.Scope.SPECIFY -> {
@@ -696,7 +741,7 @@ private fun resolvedBinderContainerFromScanTopLevelFunctions(
                                 }
                                 specifyBinderFactory(id, func)
                             }
-                            
+
                             else -> {
                                 // default
                                 if (id == null) {
@@ -711,7 +756,7 @@ private fun resolvedBinderContainerFromScanTopLevelFunctions(
             }
         }
     }
-    
+
 }
 
 
@@ -738,7 +783,7 @@ private fun EventInterceptorsGenerator.autoConfigProcessingInterceptors(beanCont
         if (!type.isSubclassOf(EventProcessingInterceptor::class)) {
             return@forEach
         }
-        
+
         val instance = beanContainer[name, type] as EventProcessingInterceptor
         processingIntercept(name, instance)
     }
@@ -750,12 +795,12 @@ private fun EventInterceptorsGenerator.autoConfigListenerInterceptors(beanContai
         if (!type.isSubclassOf(EventListenerInterceptor::class)) {
             return@forEach
         }
-        
+
         if (type.isSubclassOf(AnnotatedEventListenerInterceptor::class)) {
             // 不使用 AnnotatedEventListenerInterceptor
             return@forEach
         }
-        
+
         val instance = beanContainer[name, type] as EventListenerInterceptor
         listenerIntercept(name, instance)
     }
@@ -780,14 +825,14 @@ private fun EventListenerRegistrationDescriptionsGenerator.autoConfigFromBeanCon
                 listener(listener)
                 count.increment()
             }
-            
+
             type.isSubclassOf(EventListenerBuilder::class) -> {
                 val builder = beanContainer[name, type] as EventListenerBuilder
                 logger.debug("Load event listener builder instance [{}] by type [{}] named [{}]", builder, type, name)
                 listener(builder.build())
                 count.increment()
             }
-            
+
             else -> {
                 for (function in type.allFunctions) {
                     val listener = tool.getAnnotation(function, Listener::class) ?: continue
@@ -823,7 +868,7 @@ private fun EventListenerRegistrationDescriptionsGenerator.resolveEventListenerF
     } else {
         logger.debug("Resolving listener function [{}] from type [{}]", function, type)
     }
-    
+
     val resolvedListener = listenerProcessor.process(
         FunctionalListenerProcessContext(
             function = function,
@@ -831,15 +876,15 @@ private fun EventListenerRegistrationDescriptionsGenerator.resolveEventListenerF
             beanContainer = beanContainer,
         )
     )
-    
+
     val description = resolvedListener.toRegistrationDescription(priority = listener.priority, isAsync = listener.async)
-    
+
     if (type == null) {
         logger.debug("Resolved top-level listener description: [{}] by processor [{}]", description, listenerProcessor)
     } else {
         logger.debug("Resolved listener description: [{}] by processor [{}]", description, listenerProcessor)
     }
-    
+
     // include listener.
     count.increment()
     listener(description)
@@ -861,7 +906,7 @@ private fun EventListenerRegistrationDescriptionsGenerator.resolveEventListenerO
         )
     }
     val parameters = kParameters.associateWith { beanContainer.getByKParameter(it) }
-    
+
     when (val result = function.callBy(parameters)) {
         is EventListenerRegistrationDescriptionBuilder -> {
             val buildDescription = result.buildDescription()
@@ -877,7 +922,7 @@ private fun EventListenerRegistrationDescriptionsGenerator.resolveEventListenerO
                 )
             }
         }
-        
+
         is EventListenerBuilder -> {
             val built = result.build()
             val description = built.toRegistrationDescription(priority = listener.priority, isAsync = listener.async)
@@ -899,7 +944,7 @@ private fun EventListenerRegistrationDescriptionsGenerator.resolveEventListenerO
                 )
             }
         }
-        
+
         is EventListener -> {
             val description = result.toRegistrationDescription(priority = listener.priority, isAsync = listener.async)
             listener(description)
@@ -909,13 +954,13 @@ private fun EventListenerRegistrationDescriptionsGenerator.resolveEventListenerO
                 logger.debug("Resolved listener [{}] with description: [{}] from [{}]", result, description, type)
             }
         }
-        
+
         else -> return
     }
-    
-    
-    
-    
+
+
+
+
     count.increment()
 }
 
@@ -958,12 +1003,12 @@ private fun EventListenerRegistrationDescriptionsGenerator.autoScanTopFunction(
                         if (!m.isFinal || !m.isStatic) {
                             return@mapNotNull null
                         }
-                        
+
                         val kf = m.kotlinFunction ?: return@mapNotNull null
                         if (kf.instanceParameter != null) {
                             return@mapNotNull null
                         }
-                        
+
                         kf
                     }.getOrElse { e ->
                         if (logger.isDebugEnabled) {
@@ -976,7 +1021,7 @@ private fun EventListenerRegistrationDescriptionsGenerator.autoScanTopFunction(
                 }.forEach { function ->
                     kotlin.runCatching {
                         val listener = tool.getAnnotation<Listener>(function) ?: return@runCatching
-                        
+
                         // 没有参数、且返回值为 EventListenerBuilder, 则使用EventListenerBuilder返回值。
                         val returnType = function.returnType.classifier as? KClass<*>?
                         if (returnType?.isSubclassOf(EventListenerBuilder::class) == true) {
@@ -996,7 +1041,7 @@ private fun EventListenerRegistrationDescriptionsGenerator.autoScanTopFunction(
             }
         }
     }
-    
+
     logger.info("The size of resolved Top-Level event listeners is {}", count.sum())
 }
 
@@ -1007,6 +1052,7 @@ private fun BotRegistrar.autoRegisterBots(
     scanResources: List<String>,
     decoderFactories: List<BootApplicationConfiguration.BotVerifyInfoDecoderFactoryWithConfiguration>,
     botResources: List<Resource>,
+    configuration: BootApplicationConfiguration,
 ) {
     val botVerifyInfoList = scanResources(classLoader, scanResources) {
         plus(botResources).mapNotNull { r ->
@@ -1015,19 +1061,64 @@ private fun BotRegistrar.autoRegisterBots(
                 logger.warn("No decoder factories match resource [{}] named [{}], skip.", r, r.name)
                 return@mapNotNull null
             }
-            
+
             r.toBotVerifyInfo(decoder)
         }
     }.toList()
-    
+
     logger.info("The size of resolved bot verify infos is {}", botVerifyInfoList.size)
-    
+
+    val failurePolicy = configuration.botAutoRegistrationFailurePolicy
+
     botVerifyInfoList.forEach { botInfo ->
-        register(botInfo)
+        val bot = try {
+            register(botInfo)
+        } catch (e: Throwable) {
+            when (failurePolicy) {
+                BotRegistrationFailurePolicy.ERROR -> {
+                    logger.error("Bot verify info [{}] registration failed (with {})", botInfo, this)
+                    throw e
+                }
+
+                BotRegistrationFailurePolicy.IGNORE -> {
+                    logger.debug("Bot verify info [{}] registration failed (with {})", botInfo, this, e)
+                    null
+                }
+
+                BotRegistrationFailurePolicy.WARN -> {
+                    // 忽略它并输出此警告
+                    logger.warn("Bot verify info [{}] registration failed (with {})", botInfo, this, e)
+                    null
+                }
+            }
+        }
+
+        if (bot == null) {
+            when (failurePolicy) {
+                BotRegistrationFailurePolicy.ERROR -> {
+                    val err = BotAutoRegistrationFailureException("Bot($botInfo)")
+                    logger.error("Bot verify info [{}] is not matched by any manager.", botInfo, err)
+                    throw err
+                }
+
+                BotRegistrationFailurePolicy.WARN -> {
+                    val warn = BotAutoRegistrationFailureException("Bot($botInfo)") // For log only.
+                    logger.warn("Bot verify info [{}] is not matched by any manager.", botInfo, warn)
+                }
+
+                else -> {
+                    // do nothing.
+                }
+            }
+        }
     }
-    
-    
 }
+
+/**
+ * 通过自动扫描注册bot时bot无法注册时出现的异常。
+ *
+ */
+public class BotAutoRegistrationFailureException internal constructor(message: String?) : IllegalStateException(message)
 
 
 private val KClass<*>.allFunctions: List<KFunction<*>>
@@ -1048,22 +1139,22 @@ private fun BeanContainer.getByKParameter(parameter: KParameter): Any {
         name == null && type == null -> {
             throw IllegalStateException("The name and type of parameter [$parameter] are both null")
         }
-        
+
         name == null && type != null -> {
             // only type
             get(type)
         }
-        
+
         type == null && name != null -> {
             // only name
             get(name)
         }
-        
+
         else -> {
             // both not null
             get(name!!, type!!)
         }
     }
-    
+
     return value
 }
