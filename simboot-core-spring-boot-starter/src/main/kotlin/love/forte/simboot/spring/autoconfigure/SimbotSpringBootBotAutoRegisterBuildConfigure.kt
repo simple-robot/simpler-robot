@@ -14,6 +14,7 @@ package love.forte.simboot.spring.autoconfigure
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import love.forte.simboot.core.application.BootApplicationConfiguration
+import love.forte.simboot.core.application.BotRegistrationFailurePolicy
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.application.Application
 import love.forte.simbot.application.EventProvider
@@ -63,6 +64,16 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure {
             val decoderList = customDecoderFactories + StandardBotVerifyInfoDecoderFactory.supportDecoderFactories()
 
             val configuration = application.configuration as? BootApplicationConfiguration
+
+            logger.debug("Boot configuration: {}", configuration)
+
+            val policy = configuration?.botAutoRegistrationFailurePolicy ?: BotRegistrationFailurePolicy.ERROR
+            // TODO
+            if (configuration == null) {
+                logger.debug("Bot registration Failure policy: {} (by default)", policy)
+            } else {
+                logger.debug("Bot registration Failure policy: {}", policy)
+            }
 
             val botConfigResources = (configuration?.botConfigurationResources ?: emptyList())
                 .asSequence()
