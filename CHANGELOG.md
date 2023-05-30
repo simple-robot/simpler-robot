@@ -1,3 +1,32 @@
+# v3.1.0
+
+> Release & Pull Notes: [v3.1.0](https://github.com/simple-robot/simpler-robot/releases/tag/v3.1.0) 
+
+- build(deps): bump com.charleskorn.kaml:kaml from 0.53.0 to 0.54.0 ([`035b7812`](https://github.com/simple-robot/simpler-robot/commit/035b7812))
+- fix(boot): BotRegistrationFailurePolicy 支持 Spring Boot 配置 ([`4ab38750`](https://github.com/simple-robot/simpler-robot/commit/4ab38750))
+- feat(boot): 支持对自动加载bot过程中出现的异常进行策略配置 ([`66e7f392`](https://github.com/simple-robot/simpler-robot/commit/66e7f392))
+- build: upgrade version ([`568537c7`](https://github.com/simple-robot/simpler-robot/commit/568537c7))
+- feat(api): 提供 ID 和 Timestamp 的属性委托API并完善文档 ([`80852ac8`](https://github.com/simple-robot/simpler-robot/commit/80852ac8))
+- feat(api): 实现有关 Timestamp 的委托API 和部分 ID 的委托API ([`2f306ac8`](https://github.com/simple-robot/simpler-robot/commit/2f306ac8))
+- feat(api): Timestamp 新增 Delegate API ([`cd52a211`](https://github.com/simple-robot/simpler-robot/commit/cd52a211))
+- pref(api): Application在使用 `joinBlocking` 时不再输出 timeout debug ([`9c48bf2a`](https://github.com/simple-robot/simpler-robot/commit/9c48bf2a))
+- feat(api): 为 BotManagers 增加部分Java友好的API: getFirst(Class), getFirstOrNull(Class) ([`4e1f3b28`](https://github.com/simple-robot/simpler-robot/commit/4e1f3b28))
+- pref(api): 增加对迷惑的ID类型的警告注解与部分说明 ([`ec0c9739`](https://github.com/simple-robot/simpler-robot/commit/ec0c9739))
+- feat(api): 支持两个无符号整型的ID类型 `UIntID` 和 `ULongID` ([`41f67929`](https://github.com/simple-robot/simpler-robot/commit/41f67929))
+- feat(api): Timestamp 新增 Delegate API ([`52e1eb54`](https://github.com/simple-robot/simpler-robot/commit/52e1eb54))
+- pref(api): Application在使用 `joinBlocking` 时不再输出 timeout debug ([`6d6493d3`](https://github.com/simple-robot/simpler-robot/commit/6d6493d3))
+- feat(api): 为 BotManagers 增加部分Java友好的API: getFirst(Class), getFirstOrNull(Class) ([`3526cb29`](https://github.com/simple-robot/simpler-robot/commit/3526cb29))
+- build(deps): bump spring-boot from 2.7.11 to 2.7.12 ([`fd4febeb`](https://github.com/simple-robot/simpler-robot/commit/fd4febeb))
+- pref(api): 增加对迷惑的ID类型的警告注解与部分说明 ([`e5566eff`](https://github.com/simple-robot/simpler-robot/commit/e5566eff))
+- feat(api): 支持两个无符号整型的ID类型 `UIntID` 和 `ULongID` ([`ce822898`](https://github.com/simple-robot/simpler-robot/commit/ce822898))
+- fix: 使生成的 xxxAsync 函数会正确的使用当前类作为 CoroutineScope (如果可以的话) ([`47ea2ac1`](https://github.com/simple-robot/simpler-robot/commit/47ea2ac1))
+- build(deps): bump kotlinx-serialization from 1.5.0 to 1.5.1 ([`0591ede3`](https://github.com/simple-robot/simpler-robot/commit/0591ede3))
+- fix: 使生成的 xxxAsync 函数会正确的使用当前类作为 CoroutineScope (如果可以的话) ([`060ad2b5`](https://github.com/simple-robot/simpler-robot/commit/060ad2b5))
+- build(deps): bump kotlinx-coroutines from 1.7.0 to 1.7.1 ([`e22b4d7b`](https://github.com/simple-robot/simpler-robot/commit/e22b4d7b))
+- build(deps): bump gradleCommon from 0.1.0 to 0.1.1 ([`6b5830a4`](https://github.com/simple-robot/simpler-robot/commit/6b5830a4))
+- build(deps): bump gradleCommon from 0.0.11 to 0.1.0 ([`c628b2ee`](https://github.com/simple-robot/simpler-robot/commit/c628b2ee))
+- feat(api): 支持两个无符号整型的ID类型 `UIntID` 和 `ULongID` ([`a792859e`](https://github.com/simple-robot/simpler-robot/commit/a792859e))
+
 # v3.0.0
 
 > Release & Pull Notes: [v3.0.0](https://github.com/simple-robot/simpler-robot/releases/tag/v3.0.0) 

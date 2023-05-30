@@ -37,5 +37,6 @@ dependencies {
     testImplementation(libs.kotlinx.serialization.protobuf)
     testImplementation(libs.kotlinx.coroutines.reactor)
     testImplementation(libs.kotlinx.lincheck)
-    testImplementation(libs.slf4j.nop)
+//    testImplementation(libs.slf4j.nop)
+    testImplementation(project(":simbot-logger-slf4j-impl"))
 }

@@ -14,15 +14,14 @@ package love.forte.simbot.application
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.modules.SerializersModule
-import love.forte.simbot.Api4J
-import love.forte.simbot.Component
-import love.forte.simbot.JST
-import love.forte.simbot.NoSuchComponentException
+import love.forte.plugin.suspendtrans.annotation.JvmAsync
+import love.forte.simbot.*
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.bot.BotVerifyInfo
 import love.forte.simbot.event.EventListenerManager
 import love.forte.simbot.utils.runInNoScopeBlocking
+import love.forte.simbot.utils.runInNoScopeBlockingWithoutTimeoutDebug
 
 
 /**
@@ -91,15 +90,26 @@ public interface Application : CoroutineScope {
 
     /**
      * 当前应用下的所有 [bot管理器][BotManager]。
+     *
+     * [botManagers] 的内容是 [providers] 的子集。
      */
     public val botManagers: BotManagers
 
     /**
      * 挂起此应用直至其被终止。
      */
-    @JST(asyncBaseName = "asFuture", asyncSuffix = "")
+//    @JST( asyncBaseName = "asFuture", asyncSuffix = "")
+    @JvmAsync(baseName = "asFuture", suffix = "")
     public suspend fun join()
 
+    /**
+     * 阻塞此应用直至其被终止。
+     */
+    @Api4J
+    @OptIn(InternalSimbotApi::class)
+    public fun joinBlocking() {
+        runInNoScopeBlockingWithoutTimeoutDebug { join() }
+    }
 
     /**
      * 终止当前应用，并关闭其中所有可能的资源。
@@ -121,7 +131,6 @@ public interface Application : CoroutineScope {
 }
 
 
-
 /**
  * [Application] 中注册完成的所有 [BotManager] 集。
  *
@@ -138,8 +147,26 @@ public interface BotManagers : List<BotManager<*>> {
      * 如果没有找到符合组件id的 [Bot注册器][love.forte.simbot.bot.BotRegistrar] 存在，则返回null。
      */
     public fun register(botVerifyInfo: BotVerifyInfo): Bot?
-}
 
+
+    /**
+     * 寻找第一个指定类型的 [BotManager]，或得到null。
+     */
+    @Api4J
+    public fun <T : BotManager<*>> getFirstOrNull(type: Class<T>): T? {
+        return firstOrNull { b -> type.isInstance(b) }?.let { type.cast(it) }
+    }
+
+    /**
+     * 寻找第一个指定类型的 [BotManager]，或得到 [NoSuchElementException] 异常。
+     *
+     * @throws NoSuchElementException 如果没找到
+     */
+    @Api4J
+    public fun <T : BotManager<*>> getFirst(type: Class<T>): T {
+        return getFirstOrNull(type) ?: throw NoSuchElementException("Type of $type")
+    }
+}
 
 
 /**
