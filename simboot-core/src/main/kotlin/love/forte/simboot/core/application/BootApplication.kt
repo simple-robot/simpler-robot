@@ -1046,6 +1046,7 @@ private fun EventListenerRegistrationDescriptionsGenerator.autoScanTopFunction(
 }
 
 
+@OptIn(InternalSimbotApi::class)
 private fun BotRegistrar.autoRegisterBots(
     classLoader: ClassLoader,
     logger: Logger,
@@ -1094,6 +1095,7 @@ private fun BotRegistrar.autoRegisterBots(
         }
 
         if (bot == null) {
+            @Suppress("DuplicatedCode")
             when (failurePolicy) {
                 BotRegistrationFailurePolicy.ERROR -> {
                     val err = BotAutoRegistrationFailureException("Bot($botInfo)")
@@ -1118,7 +1120,7 @@ private fun BotRegistrar.autoRegisterBots(
  * 通过自动扫描注册bot时bot无法注册时出现的异常。
  *
  */
-public class BotAutoRegistrationFailureException internal constructor(message: String?) : IllegalStateException(message)
+public class BotAutoRegistrationFailureException @InternalSimbotApi constructor(message: String?) : IllegalStateException(message)
 
 
 private val KClass<*>.allFunctions: List<KFunction<*>>

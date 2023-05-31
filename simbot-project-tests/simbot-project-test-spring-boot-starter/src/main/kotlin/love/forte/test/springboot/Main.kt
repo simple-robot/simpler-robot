@@ -12,10 +12,12 @@
 
 package love.forte.test.springboot
 
+import love.forte.simboot.spring.autoconfigure.EnableSimbot
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
+@EnableSimbot
 open class Main
 
 fun main() {
