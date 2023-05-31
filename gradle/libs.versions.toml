@@ -77,4 +77,4 @@ ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "
 
 # Lincheck
 # https://kotlinlang.org/docs/lincheck-guide.html#associate-compiler-tasks
-kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.17"
+kotlinx-lincheck = "org.jetbrains.kotlinx:lincheck:2.18.1"
