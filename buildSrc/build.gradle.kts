@@ -22,7 +22,7 @@ repositories {
 }
 
 val kotlinVersion = "1.8.21"
-val dokkaPluginVersion = "1.8.10"
+val dokkaPluginVersion = "1.8.20"
 val suspendTransformVersion = "0.3.1"
 val gradleCommon = "0.1.1"
 val ktor = "2.3.0"
