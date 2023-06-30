@@ -13,17 +13,19 @@
 
 package love.forli.test
 
-import love.forte.simboot.annotation.AnnotationEventFilterFactory
-import love.forte.simboot.annotation.Filter
-import love.forte.simboot.annotation.Filters
-import love.forte.simboot.annotation.Listener
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
 import love.forte.simboot.spring.autoconfigure.EnableSimbot
-import love.forte.simbot.MutableAttributeMap
-import love.forte.simbot.event.*
-import org.springframework.beans.factory.annotation.Autowired
+import love.forte.simbot.Attribute
+import love.forte.simbot.ComponentFactory
+import love.forte.simbot.application.Application
+import org.springframework.beans.factory.getBean
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.stereotype.Component
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
 
 @EnableSimbot
@@ -32,41 +34,52 @@ open class SpringBootApp
 
 
 fun main(vararg args: String) {
-    runApplication<SpringBootApp>(args = args)
+    val app = runApplication<SpringBootApp>(args = args)
+
+    val simbotApp = app.getBean<Application>()
+
+    println(simbotApp.environment.components)
+
+    println(simbotApp.environment.serializersModule)
+
+    // TODO Json decode BUG
+    println(Json {
+        isLenient = true
+        ignoreUnknownKeys = true
+        serializersModule = simbotApp.environment.serializersModule
+    }.decodeFromString<Root>("""{"config": {"a": 1}}"""))
 }
 
-@Component
-open class MyListener {
+@Configuration
+open class CompConfig {
 
-    @Filter(by = MyFilterFactory::class)
-    @Listener
-    fun FriendMessageEvent.listen(){}
-
+    @Bean
+    open fun myCp() = MyComponent
 }
 
-@Component
-open class MyInterceptor : EventProcessingInterceptor {
-    override suspend fun intercept(context: EventProcessingInterceptor.Context): EventProcessingResult {
-        return context.proceed()
+@Serializable
+data class Root(val config: Config)
+
+@Serializable
+sealed class Config {
+    @Serializable
+    @SerialName("def")
+    class Default : Config()
+
+    @Serializable
+    @SerialName("value")
+    data class Value(val value: Int) : Config()
+}
+
+class MyComponent : love.forte.simbot.Component {
+    override val id: String = "simbot.test"
+    override val componentSerializersModule: SerializersModule = SerializersModule {
+        polymorphicDefaultDeserializer(Config::class) { Config.Default.serializer() }
     }
-}
 
-@Component
-open class MyFilterFactory @Autowired constructor(private val filter: MyEventFilter) : AnnotationEventFilterFactory {
-    override fun resolveFilter(
-        listener: EventListener,
-        listenerAttributes: MutableAttributeMap,
-        filter: Filter,
-        filters: Filters
-    ): EventFilter {
-        return this.filter
-    }
-}
+    companion object Factory : ComponentFactory<MyComponent, Unit> {
+        override val key: Attribute<MyComponent> = Attribute.Companion.of("simbot.test")
 
-@Component
-open class MyEventFilter : EventFilter {
-    override suspend fun test(context: EventListenerProcessingContext): Boolean {
-        println("FILTER!")
-        return true
+        override suspend fun create(configurator: Unit.() -> Unit): MyComponent = MyComponent()
     }
 }
