@@ -77,15 +77,14 @@ public open class SimbotSpringBootComponentAutoInstallBuildConfigure {
         val factories0 = factories ?: emptyList()
         return SimbotSpringBootApplicationBuildConfigure { configuration ->
             logger.info("The number of Installable Event Provider Factories is {}", factories0.size)
-            if (factories0.isEmpty()) {
-                val classLoader = configuration.classLoader
-                logger.info("Install components by [installAllComponents] via classLoader {}", classLoader)
-                installAllComponents(classLoader)
-            } else {
-                logger.debug("Install components by: {}", factories)
-                factories0.forEach {
-                    install(it)
-                }
+
+            val classLoader = configuration.classLoader
+            logger.info("Install components by [installAllComponents] via classLoader {}", classLoader)
+            installAllComponents(classLoader)
+
+            logger.debug("Install components by: {}", factories)
+            factories0.forEach {
+                install(it)
             }
         }
     }

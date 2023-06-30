@@ -122,12 +122,23 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure {
                     if (it.isFile) {
                         kotlin.runCatching {
                             botVerifyInfo =
-                                it.file.takeIf { f -> f.exists() }?.toPath()?.toBotVerifyInfo(decoderFactory)
-                                    ?: return@runCatching
+                                it.file.takeIf { f -> f.exists() }?.toPath()?.let { path ->
+                                    if (decoderFactory is StandardBotVerifyInfoDecoderFactory) {
+                                        path.toBotVerifyInfo(decoderFactory.create(application.environment.serializersModule))
+                                    } else {
+                                        path.toBotVerifyInfo(decoderFactory)
+                                    }
+                                } ?: return@runCatching
                         }.getOrNull()
                     }
 
-                    botVerifyInfo ?: it.url.toBotVerifyInfo(decoderFactory)
+                    botVerifyInfo ?: it.url.let { url ->
+                        if (decoderFactory is StandardBotVerifyInfoDecoderFactory) {
+                            url.toBotVerifyInfo(decoderFactory.create(application.environment.serializersModule))
+                        } else {
+                            url.toBotVerifyInfo(decoderFactory)
+                        }
+                    }
                 }.toList()
 
             if (botConfigResources.isNotEmpty()) {
