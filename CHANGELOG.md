@@ -1,4 +1,24 @@
-# v3.1.0
+# v3.2.0
+
+> Release & Pull Notes: [v3.2.0](https://github.com/simple-robot/simpler-robot/releases/tag/v3.2.0) 
+
+- Release: v3.2.0 ([`875eff03`](https://github.com/simple-robot/simpler-robot/commit/875eff03))
+- fix(util): 修复异步调度器的Job会因异常而被关闭的问题 ([`d6784de8`](https://github.com/simple-robot/simpler-robot/commit/d6784de8))
+- feat(boot): 支持在配置文件读取的时候使用 SerializersModule ([`c7e0208c`](https://github.com/simple-robot/simpler-robot/commit/c7e0208c))
+- build: version to 3.2.0 ([`bedc962e`](https://github.com/simple-robot/simpler-robot/commit/bedc962e))
+- build(deps): bump org.jetbrains.kotlinx:lincheck from 2.17 to 2.19 ([`54f66a13`](https://github.com/simple-robot/simpler-robot/commit/54f66a13))
+- build(deps): bump dokkaPluginVersion from 1.8.10 to 1.8.20 ([`c63ad2e0`](https://github.com/simple-robot/simpler-robot/commit/c63ad2e0))
+- build(deps): bump ktor from 2.3.0 to 2.3.1 ([`fd818cf3`](https://github.com/simple-robot/simpler-robot/commit/fd818cf3))
+- fix(spring-boot): 在SpringBoot中支持 BotAutoRegistrationFailurePolicy ([`5316f1bf..c8b3769b`](https://github.com/simple-robot/simpler-robot/compare/5316f1bf..v3.1.0))
+
+    <details><summary><code>5316f1bf..c8b3769b</code></summary>
+
+    - [`5316f1bf`](https://github.com/simple-robot/simpler-robot/commit/5316f1bf)
+    - [`c8b3769b`](https://github.com/simple-robot/simpler-robot/commit/c8b3769b)
+
+    </details>
+
+
 
 > Release & Pull Notes: [v3.1.0](https://github.com/simple-robot/simpler-robot/releases/tag/v3.1.0) 
 
