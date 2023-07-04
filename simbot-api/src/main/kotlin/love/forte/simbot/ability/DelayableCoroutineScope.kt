@@ -17,6 +17,7 @@ import kotlinx.coroutines.future.asDeferred
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.selects.select
 import love.forte.simbot.Api4J
+import love.forte.simbot.FragileSimbotApi
 import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.JavaDuration
 import love.forte.simbot.utils.DefaultAsyncContext
@@ -170,7 +171,7 @@ private class DelayableCompletableFutureImpl<T>(
         /**
          * 默认使用的异步调度作用域.
          */
-        @OptIn(InternalSimbotApi::class)
+        @OptIn(InternalSimbotApi::class, FragileSimbotApi::class)
         private val asyncPoolScope =
             CoroutineScope(DefaultAsyncContext + CoroutineName("DelayableCompletableFutureCommon"))
     }

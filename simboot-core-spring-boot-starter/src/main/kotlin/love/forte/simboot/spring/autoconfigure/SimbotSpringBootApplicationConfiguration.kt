@@ -140,6 +140,7 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
     @Bean
     public fun simbotApplicationEventListenerManager(
         application: Application,
+        @Suppress("unused")
         marker: AutoConfigureMarker.AfterApplicationPostProcessor
     ): EventListenerManager =
         application.eventListenerManager
@@ -152,6 +153,7 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
     @Bean
     public fun simbotApplicationBotManagers(
         application: Application,
+        @Suppress("unused")
         marker: AutoConfigureMarker.AfterApplicationPostProcessor
     ): BotManagers = application.botManagers
     // endregion
