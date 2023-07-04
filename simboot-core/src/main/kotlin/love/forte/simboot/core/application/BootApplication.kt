@@ -201,7 +201,7 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
     }
 
     @OptIn(ExperimentalSimbotApi::class, ExperimentalSerializationApi::class)
-    internal fun botVerifyDecodersOrDefaultStandards(): List<BotVerifyInfoDecoderFactoryWithConfiguration> {
+    internal fun botVerifyDecodersOrDefaultStandards(environment: BootEnvironment): List<BotVerifyInfoDecoderFactoryWithConfiguration> {
         if (botVerifyInfoDecoderFactories.isNotEmpty()) {
             return botVerifyInfoDecoderFactories.map { (k, v) ->
                 BotVerifyInfoDecoderFactoryWithConfiguration(k, v)
@@ -209,7 +209,7 @@ public open class BootApplicationConfiguration : SimpleApplicationConfiguration(
         }
 
         return StandardBotVerifyInfoDecoderFactory.supportDecoderFactories(logger, classLoader)
-            .map { BotVerifyInfoDecoderFactoryWithConfiguration(it) { it.create() } }
+            .map { BotVerifyInfoDecoderFactoryWithConfiguration(it) { it.create(environment.serializersModule) } }
     }
 
     /**
@@ -543,7 +543,7 @@ private class BootApplicationBuilderImpl : BootApplicationBuilder, BaseStandardA
         logger.debug("Resolving bot verify infos and bot verify decoders...")
         // scan and auto register bot
 
-        val botVerifyDecoderFactories = configuration.botVerifyDecodersOrDefaultStandards()
+        val botVerifyDecoderFactories = configuration.botVerifyDecodersOrDefaultStandards(environment)
         if (logger.isDebugEnabled) {
             logger.debug("Using bot verify info decoder factories: {}", botVerifyDecoderFactories.map { it.factory })
         }
@@ -1046,6 +1046,7 @@ private fun EventListenerRegistrationDescriptionsGenerator.autoScanTopFunction(
 }
 
 
+@OptIn(InternalSimbotApi::class)
 private fun BotRegistrar.autoRegisterBots(
     classLoader: ClassLoader,
     logger: Logger,
@@ -1094,6 +1095,7 @@ private fun BotRegistrar.autoRegisterBots(
         }
 
         if (bot == null) {
+            @Suppress("DuplicatedCode")
             when (failurePolicy) {
                 BotRegistrationFailurePolicy.ERROR -> {
                     val err = BotAutoRegistrationFailureException("Bot($botInfo)")
@@ -1118,7 +1120,7 @@ private fun BotRegistrar.autoRegisterBots(
  * 通过自动扫描注册bot时bot无法注册时出现的异常。
  *
  */
-public class BotAutoRegistrationFailureException internal constructor(message: String?) : IllegalStateException(message)
+public class BotAutoRegistrationFailureException @InternalSimbotApi constructor(message: String?) : IllegalStateException(message)
 
 
 private val KClass<*>.allFunctions: List<KFunction<*>>

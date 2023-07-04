@@ -14,7 +14,10 @@ package love.forte.simboot.spring.autoconfigure
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import love.forte.simboot.core.application.BootApplicationConfiguration
+import love.forte.simboot.core.application.BotAutoRegistrationFailureException
+import love.forte.simboot.core.application.BotRegistrationFailurePolicy
 import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.application.Application
 import love.forte.simbot.application.EventProvider
 import love.forte.simbot.bot.*
@@ -53,7 +56,7 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure {
         }
 
 
-        @OptIn(ExperimentalSerializationApi::class, ExperimentalSimbotApi::class)
+        @OptIn(ExperimentalSerializationApi::class, ExperimentalSimbotApi::class, InternalSimbotApi::class)
         private suspend fun config(
             application: Application,
             customDecoderFactories: List<BotVerifyInfoDecoderFactory<*, *>>
@@ -64,16 +67,33 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure {
 
             val configuration = application.configuration as? BootApplicationConfiguration
 
+            logger.debug("Boot configuration: {}", configuration)
+
+            val policy = configuration?.botAutoRegistrationFailurePolicy ?: BotRegistrationFailurePolicy.ERROR
+
+            if (configuration == null) {
+                logger.debug("Bot registration Failure policy: {} (by default)", policy)
+            } else {
+                logger.debug("Bot registration Failure policy: {}", policy)
+            }
+
             val botConfigResources = (configuration?.botConfigurationResources ?: emptyList())
                 .asSequence()
                 .flatMap {
                     try {
                         resolver.getResources(it).asList()
                     } catch (fne: FileNotFoundException) {
+                        // 由于 FileNotFoundException 而找不到资源 A
                         logger.warn(
-                            "Can not resolve resource path 「{}」: {}, just use empty resources.",
+                            "Resource path 「{}」 could not be resolved because of FileNotFoundException(message={}), just use empty resources.",
                             it,
                             fne.localizedMessage
+                        )
+                        logger.debug(
+                            "Resource path 「{}」 could not be resolved because of FileNotFoundException(message={}), just use empty resources.",
+                            it,
+                            fne.localizedMessage,
+                            fne
                         )
                         emptyList()
                     }
@@ -102,17 +122,30 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure {
                     if (it.isFile) {
                         kotlin.runCatching {
                             botVerifyInfo =
-                                it.file.takeIf { f -> f.exists() }?.toPath()?.toBotVerifyInfo(decoderFactory)
-                                    ?: return@runCatching
+                                it.file.takeIf { f -> f.exists() }?.toPath()?.let { path ->
+                                    if (decoderFactory is StandardBotVerifyInfoDecoderFactory) {
+                                        path.toBotVerifyInfo(decoderFactory.create(application.environment.serializersModule))
+                                    } else {
+                                        path.toBotVerifyInfo(decoderFactory)
+                                    }
+                                } ?: return@runCatching
                         }.getOrNull()
                     }
 
-                    botVerifyInfo ?: it.url.toBotVerifyInfo(decoderFactory)
+                    botVerifyInfo ?: it.url.let { url ->
+                        if (decoderFactory is StandardBotVerifyInfoDecoderFactory) {
+                            url.toBotVerifyInfo(decoderFactory.create(application.environment.serializersModule))
+                        } else {
+                            url.toBotVerifyInfo(decoderFactory)
+                        }
+                    }
                 }.toList()
 
             if (botConfigResources.isNotEmpty()) {
                 botConfigResources.forEach { res ->
-                    register(application.providers, res).also { bot ->
+                    @Suppress("DuplicatedCode")
+                    try {
+                        val bot = register(application.providers, res)
                         if (bot != null) {
                             val isAutoStart =
                                 (application.configuration as? BootApplicationConfiguration)?.isAutoStartBots == true
@@ -131,7 +164,7 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure {
                                     is BootApplicationConfiguration -> "the configuration property 'autoStartBots' is false"
                                     else -> "the type of application configuration is not BootApplicationConfiguration"
                                 }
-                                
+
                                 logger.info(
                                     "Bot info [{}] successfully registered as Bot(component={}, id={}]) but it does not start automatically because {}",
                                     res,
@@ -141,13 +174,60 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure {
                                 )
                             }
                         } else {
-                            logger.warn(
-                                "Bot verify info [{}] not registered by any registrars, skip. The botRegistrar: {}",
-                                res,
-                                this
-                            )
+                            // bot is null
+                            when (policy) {
+                                BotRegistrationFailurePolicy.ERROR -> {
+                                    val err = BotAutoRegistrationFailureException("Bot($res)")
+                                    logger.error("Bot verify info [{}] is not matched by any manager.", res, err)
+                                    throw err
+                                }
+
+                                BotRegistrationFailurePolicy.WARN -> {
+                                    val warn = BotAutoRegistrationFailureException("Bot($res)") // For log only.
+                                    logger.warn("Bot verify info [{}] is not matched by any manager.", res, warn)
+                                }
+
+                                else -> {
+                                    // do nothing.
+                                    logger.warn(
+                                        "Bot verify info [{}] not registered by any registrars, skip. The botRegistrar: {}",
+                                        res,
+                                        this
+                                    )
+                                }
+                            }
+                        }
+                    } catch (e: Throwable) {
+                        when (policy) {
+                            BotRegistrationFailurePolicy.ERROR -> {
+                                logger.error(
+                                    "Bot verify info [{}] registration failed or start failed (with {})",
+                                    res,
+                                    this
+                                )
+                                throw e
+                            }
+
+                            BotRegistrationFailurePolicy.IGNORE -> {
+                                logger.debug(
+                                    "Bot verify info [{}] registration failed or start failed (with {})",
+                                    res,
+                                    this,
+                                    e
+                                )
+                            }
+
+                            BotRegistrationFailurePolicy.WARN -> {
+                                logger.warn(
+                                    "Bot verify info [{}] registration failed or start failed (with {})",
+                                    res,
+                                    this,
+                                    e
+                                )
+                            }
                         }
                     }
+
                 }
             }
 
@@ -175,7 +255,6 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure {
                 }
             }
 
-            logger.warn("Bot verify info [{}] is not matched by any manager, skip it.", botVerifyInfo)
             return null
         }
     }

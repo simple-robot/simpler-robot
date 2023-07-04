@@ -17,7 +17,9 @@ import com.charleskorn.kaml.YamlConfiguration
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonBuilder
+import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.plus
 import kotlinx.serialization.properties.Properties
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.logger.LoggerFactory
@@ -170,6 +172,18 @@ public interface BotVerifyInfoDecoder : DeserializableResourceDecoder {
  */
 public sealed class StandardBotVerifyInfoDecoderFactory<C : Any, D : BotVerifyInfoDecoder> :
     BotVerifyInfoDecoderFactory<C, D> {
+
+    abstract override fun create(configurator: C.() -> Unit): D
+
+    /**
+     * 提供一个 [serializersModule] 来构建目标序列化器。
+     *
+     * @since 3.2.0
+     */
+    public open fun create(serializersModule: SerializersModule, configurator: C.() -> Unit = {}) : D =
+        // 为了兼容旧版本，此函数必须提供默认实现
+        // 字类需要重新此函数
+        create(configurator)
 
     public companion object {
         private val logger: Logger = LoggerFactory.getLogger("love.forte.simbot.bot.StandardBotVerifyInfoDecoderFactory")
@@ -399,6 +413,18 @@ public class JsonBotVerifyInfoDecoder(override val format: Json) :
             })
         }
 
+        override fun create(
+            serializersModule: SerializersModule,
+            configurator: JsonBuilder.() -> Unit
+        ): JsonBotVerifyInfoDecoder {
+            return JsonBotVerifyInfoDecoder(Json {
+                this.serializersModule = serializersModule
+                isLenient = true
+                ignoreUnknownKeys = true
+                configurator()
+            })
+        }
+
         public fun create(decoder: Json): JsonBotVerifyInfoDecoder {
             return JsonBotVerifyInfoDecoder(decoder)
         }
@@ -435,9 +461,24 @@ public class YamlBotVerifyInfoDecoder(override val format: Yaml) :
             )
         }
 
+        override fun create(
+            serializersModule: SerializersModule,
+            configurator: YamlBotVerifyInfoDecoderConfiguration.() -> Unit
+        ): YamlBotVerifyInfoDecoder {
+            val configuration = YamlBotVerifyInfoDecoderConfiguration().also(configurator)
+            return YamlBotVerifyInfoDecoder(
+                Yaml(
+                    serializersModule + configuration.serializersModule,
+                    configuration.createYamlConfiguration()
+                )
+            )
+        }
+
         public fun create(decoder: Yaml): YamlBotVerifyInfoDecoder {
             return YamlBotVerifyInfoDecoder(decoder)
         }
+
+
     }
 
     /**
@@ -521,13 +562,20 @@ public class PropertiesBotVerifyInfoDecoder(override val format: Properties) :
         override fun create(configurator: PropertiesConfiguration.() -> Unit): PropertiesBotVerifyInfoDecoder {
             return PropertiesBotVerifyInfoDecoder(Properties(PropertiesConfiguration().also(configurator).serializersModule))
         }
+
+        override fun create(
+            serializersModule: SerializersModule,
+            configurator: PropertiesConfiguration.() -> Unit
+        ): PropertiesBotVerifyInfoDecoder {
+            return PropertiesBotVerifyInfoDecoder(Properties(serializersModule + PropertiesConfiguration().also(configurator).serializersModule))
+        }
     }
 
     /**
      * 服务于 [PropertiesBotVerifyInfoDecoder.Factory] 的配置类。
      */
     public open class PropertiesConfiguration {
-        public var serializersModule: SerializersModule = SerializersModule {}
+        public var serializersModule: SerializersModule = EmptySerializersModule()
     }
 }
 

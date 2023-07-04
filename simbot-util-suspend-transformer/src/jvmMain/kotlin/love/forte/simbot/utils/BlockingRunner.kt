@@ -18,6 +18,7 @@ package love.forte.simbot.utils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.future.future
 import love.forte.simbot.ExperimentalSimbotApi
+import love.forte.simbot.FragileSimbotApi
 import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.logger.LoggerFactory
 import java.util.concurrent.*
@@ -326,23 +327,34 @@ public val DefaultAsyncDispatcherOrNull: CoroutineDispatcher? by lazy {
 public val DefaultAsyncDispatcher: CoroutineDispatcher
     get() = DefaultAsyncDispatcherOrNull ?: Dispatchers.Default
 
+
+@Suppress("ObjectPropertyName")
+private val `$$DefaultScopeJob` = SupervisorJob()
+
 /**
  * 默认的异步调用（Java异步，例如 [CompletableFuture] 或 [runInAsync]）上下文。
  *
- * 使用的上下文与 [DefaultBlockingContext] 一致。
+ * [DefaultAsyncContext] 的基本内容如下：
+ * - 一个 [CoroutineName]
+ * - 如果 [DefaultAsyncDispatcherOrNull] 不为null，则使用它。
+ * - 一个全局的 [SupervisorJob]
+ *
+ * **Warning**: 如果 [DefaultAsyncContext] 中的 [Job] 被关闭，则会导致程序无法再使用
+ * 此默认作用域进行异步任务作业。
  *
  */
 @InternalSimbotApi
+@FragileSimbotApi
 public val DefaultAsyncContext: CoroutineContext by lazy {
     val asyncDispatcher = DefaultAsyncDispatcherOrNull
     if (asyncDispatcher == null) {
-        CoroutineName("defaultAsync")
+        CoroutineName("defaultAsync") + `$$DefaultScopeJob`
     } else {
-        CoroutineName("defaultAsync") + asyncDispatcher
+        CoroutineName("defaultAsync") + `$$DefaultScopeJob` + asyncDispatcher
     }
 }
 
-
+@OptIn(FragileSimbotApi::class)
 @Suppress("unused", "ObjectPropertyName")
 @InternalSimbotApi
 private val `$$DefaultScope`: CoroutineScope by lazy {
@@ -351,6 +363,14 @@ private val `$$DefaultScope`: CoroutineScope by lazy {
 
 
 // region run in blocking strategy
+
+/**
+ * 阻塞API所使用的执行策略。
+ *
+ * 可以通过 [setRunInBlockingStrategy]
+ * 来自定义一个**全局**的阻塞函数执行策略。
+ *
+ */
 @ExperimentalSimbotApi
 public interface RunInBlockingStrategy {
     @kotlin.jvm.Throws(Exception::class)
@@ -370,6 +390,8 @@ private object DefaultRunInBlockingStrategy : RunInBlockingStrategy {
 
 /**
  * 设置一个 [runInBlocking] 函数的实际调度逻辑。
+ *
+ * 默认情况下的调度策略与 [runBlocking] 一致。
  */
 @ExperimentalSimbotApi
 public fun setRunInBlockingStrategy(strategy: RunInBlockingStrategy) {
@@ -378,6 +400,13 @@ public fun setRunInBlockingStrategy(strategy: RunInBlockingStrategy) {
 // endregion
 
 // region run in no scope blocking strategy
+/**
+ * 无作用域的阻塞API所使用的执行策略。
+ *
+ * 可以通过 [setRunInNoScopeBlockingStrategy]
+ * 来自定义一个**全局**的无作用域阻塞函数执行策略。
+ *
+ */
 @ExperimentalSimbotApi
 public interface RunInNoScopeBlockingStrategy {
     @kotlin.jvm.Throws(Exception::class)
@@ -405,6 +434,8 @@ private object DefaultRunInNoScopeBlockingStrategy : RunInNoScopeBlockingStrateg
 
 /**
  * 设置一个 [runInNoScopeBlocking] 函数的实际调度逻辑。
+ *
+ * 默认情况下 [runInNoScopeBlocking] 的策略为在当前线程上阻塞并等待。
  */
 @ExperimentalSimbotApi
 public fun setRunInNoScopeBlockingStrategy(strategy: RunInNoScopeBlockingStrategy) {
@@ -604,7 +635,7 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
     }
 
     // for displaying the stack only
-    private class LongTimeBlockingException(message: String) : IllegalStateException(message)
+    private class LongTimeBlockingException(message: String) : RuntimeException(message)
 
     companion object {
         private const val BLOCKING_RUNNER_DEFAULT_WAIT_TIME_PROPERTY_NAME =
