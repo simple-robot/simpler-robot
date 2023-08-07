@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - 'v3-dev'
+      - v3-dev
 
 jobs:
   qodana:
