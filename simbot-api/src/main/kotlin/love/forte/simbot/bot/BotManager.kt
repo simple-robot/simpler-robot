@@ -13,6 +13,7 @@
 package love.forte.simbot.bot
 
 import love.forte.simbot.*
+import love.forte.simbot.ability.Survivable
 import love.forte.simbot.application.EventProvider
 
 
