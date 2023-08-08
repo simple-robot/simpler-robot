@@ -27,10 +27,6 @@ public class WeakMap<K, V>(private val delegateMap: MutableMap<K, WeakReference<
     private val queue = ReferenceQueue<V>()
     private inner class WeakReferenceWithKey<K>(val key: K, value: V) : WeakReference<V>(value, queue)
 
-    init {
-    }
-
-
     private fun checkWeak() {
         var polled: Reference<out V>? = queue.poll()
         while (polled != null) {
