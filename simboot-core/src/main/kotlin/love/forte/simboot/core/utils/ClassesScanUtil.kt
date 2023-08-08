@@ -40,7 +40,7 @@ public fun <T> scanClass(
         }
         scanner.visitJarEntry { entry, _ ->
             val className = entry.name.replace(pathReplace, ".").substringBeforeLast(".class")
-            val loadClass = runCatching {
+            val loadClass: Class<*>? = runCatching {
                 scanner.classLoader.loadClass(className)
             }.getOrElse { onFailure(it, className) }
             if (loadClass != null) {

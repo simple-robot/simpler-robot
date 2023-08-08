@@ -89,7 +89,7 @@ internal class SimpleKAnnotationMetadata<A : Annotation>(override val annotation
         propertyTypes = propertiesMap.mapValues { e -> e.value.returnType }
         propertyDefaultValues = propertiesMap.mapNotNull { entry ->
             kotlin.runCatching {
-                val def = entry.value.javaGetter?.defaultValue
+                val def: Any? = entry.value.javaGetter?.defaultValue
                 if (def != null) entry.key to def else null
             }.getOrNull()
         }.toMap()
