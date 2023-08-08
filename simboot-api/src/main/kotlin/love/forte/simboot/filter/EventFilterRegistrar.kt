@@ -16,10 +16,11 @@ import love.forte.simbot.event.EventFilter
 
 /**
  *
- * 事件过滤器注册器，由 `boot-api` 所提供用于 [FilterAnnotationProcessor] 进行过滤器注册的功能接口。
+ * 事件过滤器注册器.
  *
  * @author ForteScarlet
  */
+@Deprecated("未完成")
 public interface EventFilterRegistrar {
 
     /**

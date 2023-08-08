@@ -17,7 +17,6 @@ import love.forte.annotationtool.core.getAnnotation
 import love.forte.annotationtool.core.getAnnotations
 import love.forte.di.BeanContainer
 import love.forte.simboot.annotation.*
-import love.forte.simboot.annotation.Filter
 import love.forte.simboot.core.filter.CoreFiltersAnnotationProcessor
 import love.forte.simboot.core.filter.FiltersAnnotationProcessContext
 import love.forte.simboot.filter.MultiFilterMatchType
@@ -27,13 +26,16 @@ import love.forte.simboot.listener.BindException
 import love.forte.simboot.listener.ParameterBinder
 import love.forte.simboot.listener.ParameterBinderFactory
 import love.forte.simboot.listener.ParameterBinderResult
-import love.forte.simbot.*
+import love.forte.simbot.AttributeMutableMap
+import love.forte.simbot.MutableAttributeMap
+import love.forte.simbot.SimbotIllegalStateException
 import love.forte.simbot.core.event.EventInterceptEntrance
 import love.forte.simbot.core.event.plus
 import love.forte.simbot.core.event.proxy
 import love.forte.simbot.event.*
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
+import love.forte.simbot.set
 import org.slf4j.Logger
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Named
@@ -235,7 +237,7 @@ public class KFunctionListenerProcessor(
                         // to binder factory
                         val binder =
                             kotlin.runCatching { annotationTool.getAnnotation(it, Binder::class) }.getOrElse { e ->
-                                logger.debug("Cannot get annotation @Binder from function $it", e)
+                                logger.debug("Cannot get annotation @Binder from function {}", it, e)
                                 null
                             } ?: return@forEach
 
@@ -264,7 +266,7 @@ public class KFunctionListenerProcessor(
 
                             binderFactories.add(factory)
                         }.getOrElse { e ->
-                            logger.debug("Resolve function $it to binder factory failure: ${e.localizedMessage}", e)
+                            logger.debug("Resolve function {} to binder factory failure: {}", it, e.localizedMessage, e)
                         }
                     }
             }

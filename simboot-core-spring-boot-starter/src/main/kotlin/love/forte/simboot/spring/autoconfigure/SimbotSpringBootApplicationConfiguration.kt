@@ -24,6 +24,7 @@ import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
 import love.forte.simbot.utils.runInNoScopeBlocking
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.getBean
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -57,9 +58,9 @@ public open class SimbotSpringBootApplicationConfiguration : ResourceLoaderAware
     @ConditionalOnMissingBean(SpringBootApplicationConfiguration::class)
     public fun applicationConfiguration(
         applicationConfigurationProperties: SpringBootApplicationConfigurationProperties,
-        applicationContext: ApplicationContext,
-        applicationArguments: ApplicationArguments,
+        applicationContext: ApplicationContext
     ): SpringBootApplicationConfiguration {
+        val applicationArguments = applicationContext.getBean<ApplicationArguments>()
 
         return applicationConfigurationProperties.toConfiguration(
             applicationArguments,

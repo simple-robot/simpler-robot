@@ -24,7 +24,7 @@ import love.forte.simbot.bot.Bot
  *
  * 对于Bot来讲，一个用户可能是一个陌生的人，一个[群成员][Member], 或者一个好友。
  *
- * 当然，[User] 也有可能代表了 [love.forte.simbot.Bot] 自身.
+ * 当然，[User] 也有可能代表了 [Bot] 自身.
  *
  * @author ForteScarlet
  */

@@ -22,9 +22,9 @@ public fun interface KeywordMatcher : Matcher<String, Keyword>
 
 
 /**
- * 使用 keyword 进行的正则匹配.
+ * 使用 keyword 进行得正则匹配.
  *
- * 如果你想使用 [StringMatcher] 作为 [KeywordMatcher] 使用，参考 [asKeywordMatcher].
+ * 如果你想使用 [StringMatcher] 作为 [KeywordMatcher] 使用，参考 [toKeywordMatcher].
  *
  */
 public enum class KeywordRegexMatchers(private val matcher: KeywordMatcher) :
