@@ -295,7 +295,8 @@ public val DefaultAsyncDispatcherOrNull: CoroutineDispatcher? by lazy {
         val useDefault = hasCause || (coreSize == null && maxSize == null && keepAliveTime == null)
         val dispatcher = if (useDefault) {
             // default.
-            if (hasCause && cause != null) { // 消除nullable编译错误
+            if (hasCause) {
+                cause as Throwable
                 logger.debug(
                     "Default async dispatcher will use the default blocking dispatcher because an exception thrown duration initialization: {}",
                     cause.localizedMessage,
