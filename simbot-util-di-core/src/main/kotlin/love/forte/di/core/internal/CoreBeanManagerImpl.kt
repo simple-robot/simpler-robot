@@ -64,7 +64,7 @@ internal class CoreBeanManagerImpl(
                         locker.write {
                             val instance0 = instanceNamedMap[name]
                             if (instance0 != null) {
-                                return@write delegate.type.cast(instance)
+                                return@write delegate.type.cast(instance0)
                             } else {
                                 val value = delegate.get()
                                 instanceNamedMap[name] = value
