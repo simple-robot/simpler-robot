@@ -118,13 +118,13 @@ internal class SimpleKAnnotationMetadata<A : Annotation>(override val annotation
 
     // repeatable | deprecated | mustDocumented
     override val isDeprecated: Boolean
-        get() = marks and deprecatedByte != ZERO_BYTE
+        get() = marks and DEPRECATED_BYTE != ZERO_BYTE
 
     override val isMustBeDocumented: Boolean
-        get() = marks and mustDocumentedByte != ZERO_BYTE
+        get() = marks and MUST_DOCUMENTED_BYTE != ZERO_BYTE
 
     override val isRepeatable: Boolean
-        get() = marks and repeatableByte != ZERO_BYTE
+        get() = marks and REPEATABLE_BYTE != ZERO_BYTE
 
     override val propertyNames: Set<String>
         get() = propertyTypes.keys
@@ -189,11 +189,10 @@ internal class SimpleKAnnotationMetadata<A : Annotation>(override val annotation
     companion object {
         // repeatable | deprecated | mustDocumented
         private const val ZERO_BYTE: Byte = 0
-        private const val mustDocumentedByte: Byte = 1
-        private const val deprecatedByte: Byte = 2
-        private const val repeatableByte: Byte = 4
+        private const val MUST_DOCUMENTED_BYTE: Byte = 1
+        private const val DEPRECATED_BYTE: Byte = 2
+        private const val REPEATABLE_BYTE: Byte = 4
 
-        @OptIn(ExperimentalStdlibApi::class)
         private fun <A : Annotation> resolveNamingMaps(
             property: KProperty1<A, *>,
             defaultMapType: KClass<out Annotation>?,
@@ -231,13 +230,13 @@ internal class SimpleKAnnotationMetadata<A : Annotation>(override val annotation
         ): Byte {
             var marks: Byte = 0
             if (annotationType.hasAnnotation<MustBeDocumented>()) {
-                marks = marks or mustDocumentedByte
+                marks = marks or MUST_DOCUMENTED_BYTE
             }
             if (deprecated) {
-                marks = marks or deprecatedByte
+                marks = marks or DEPRECATED_BYTE
             }
             if (repeatable) {
-                marks = marks or repeatableByte
+                marks = marks or REPEATABLE_BYTE
             }
             return marks
         }
