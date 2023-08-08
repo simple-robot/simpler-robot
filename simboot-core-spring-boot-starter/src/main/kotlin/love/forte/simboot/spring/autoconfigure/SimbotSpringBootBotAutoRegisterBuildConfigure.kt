@@ -177,14 +177,14 @@ public open class SimbotSpringBootBotAutoRegisterBuildConfigure {
                             // bot is null
                             when (policy) {
                                 BotRegistrationFailurePolicy.ERROR -> {
-                                    val err = BotAutoRegistrationFailureException("Bot($res)")
-                                    logger.error("Bot verify info [{}] is not matched by any manager.", res, err)
-                                    throw err
+                                    val e: Throwable = BotAutoRegistrationFailureException("Bot($res)")
+                                    logger.error("Bot verify info [{}] is not matched by any manager.", res, e)
+                                    throw e
                                 }
 
                                 BotRegistrationFailurePolicy.WARN -> {
-                                    val warn = BotAutoRegistrationFailureException("Bot($res)") // For log only.
-                                    logger.warn("Bot verify info [{}] is not matched by any manager.", res, warn)
+                                    val e: Throwable = BotAutoRegistrationFailureException("Bot($res)") // For log only.
+                                    logger.warn("Bot verify info [{}] is not matched by any manager.", res, e)
                                 }
 
                                 else -> {

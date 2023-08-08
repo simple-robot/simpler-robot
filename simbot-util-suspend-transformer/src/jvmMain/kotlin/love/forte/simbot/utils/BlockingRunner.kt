@@ -603,10 +603,11 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
                                 if (logger.isDebugEnabled) {
                                     val durationString = duration.toString()
                                     logger.warn("Blocking runner has been blocking for at least {}.", durationString)
+                                    val e: Throwable = LongTimeBlockingException(durationString)
                                     logger.debug(
                                         "Long time blocking duration at least {}",
                                         durationString,
-                                        LongTimeBlockingException(durationString)
+                                        e
                                     )
                                 } else {
                                     logger.warn(
