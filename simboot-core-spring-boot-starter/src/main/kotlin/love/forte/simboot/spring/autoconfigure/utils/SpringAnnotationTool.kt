@@ -133,7 +133,7 @@ private val KAnnotatedElement.javaAnnotatedElement: AnnotatedElement?
 
             is KClass<*> -> java
             is KType -> when (val classifier = classifier) {
-                is KClass<*> -> classifier.javaAnnotatedElement
+                is KClass<*> -> classifier.java
                 else -> null
             }
             // not support for KParameter
@@ -141,3 +141,4 @@ private val KAnnotatedElement.javaAnnotatedElement: AnnotatedElement?
             else -> null
         }
     }
+
