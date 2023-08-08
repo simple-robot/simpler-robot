@@ -13,7 +13,6 @@
 package love.forte.simbot.bot
 
 import love.forte.simbot.*
-import love.forte.simbot.ability.Survivable
 import love.forte.simbot.application.EventProvider
 
 
@@ -67,7 +66,7 @@ public open class VerifyFailureException : SimbotIllegalStateException {
  * [BotManager] 应当是 获取、注册 [Bot] 的唯一公开途径，
  * 所有 [BotManager] 均由 [OriginBotManager] 进行管理。
  *
- * [BotManager] 实现 [Survivable], 其存活周期与 [Bot] 无关。
+ * [BotManager] 实现 [Survivable][love.forte.simbot.ability.Survivable], 其存活周期与 [Bot] 无关。
  *
  * ## 事件提供者
  *
