@@ -47,7 +47,8 @@
 
 ## 简介
 
-**`Simple Robot`** 是一个JVM平台（和多平台）的bot风格事件调度框架（下文简称simbot），提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写bot风格的事件调度应用。目前主要应用于对接各种类型的bot应用平台/框架，并提供统一的API实现。
+**`Simple Robot`** 是一个JVM平台（和多平台）的bot风格事件调度框架（下文简称simbot），提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写bot风格的事件调度应用。
+目前主要应用于对接各种类型的bot应用平台/框架，并提供统一的API实现。
 
 **`simbot`** 通过 [Kotlin](https://kotlinlang.org/) 语言开发并兼容Java（jdk8+）等JVM平台语言，且提供Javaer最爱的Spring Boot Starter，协助你快速开发。
 
@@ -59,7 +60,7 @@
 
 ## 文档
 
-对于使用文档，可以去看看 [**Simple Robot 3 官方网站**][doc-homepage] (尚在更新，并不完整)，
+对于使用文档，可以去看看 [**Simple Robot 3 官方网站**][doc-homepage] (建议开启“魔法”访问)，
 而API文档则可以前往 [文档引导站点](https://docs.simbot.forte.love) 寻找并查看。API文档归根随着版本的发布而同步更新。
 
 而这些内容，你都可以在 [**Simple Robot 图书馆**](http://github.com/simple-robot-library) 处找到。
