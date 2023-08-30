@@ -59,7 +59,7 @@ internal object NonConverters : Converters {
                         Byte::class -> to.cast(fromType.cast(instance).toByte())
                         Short::class -> to.cast(fromType.cast(instance).toShort())
                         Int::class -> to.cast(fromType.cast(instance).toInt())
-                        Char::class -> to.cast(fromType.cast(instance).toChar())
+                        Char::class -> to.cast(fromType.cast(instance).toInt().toChar())
                         Long::class -> to.cast(fromType.cast(instance).toLong())
                         Float::class -> to.cast(fromType.cast(instance).toFloat())
                         Double::class -> to.cast(fromType.cast(instance).toDouble())

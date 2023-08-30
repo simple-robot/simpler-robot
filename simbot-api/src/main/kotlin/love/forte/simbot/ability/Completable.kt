@@ -12,6 +12,9 @@
 
 package love.forte.simbot.ability
 
+import love.forte.simbot.Api4J
+import java.util.function.Consumer
+
 
 /**
  *
@@ -22,10 +25,21 @@ package love.forte.simbot.ability
  * @author ForteScarlet
  */
 public interface CompletionPerceivable<T> {
-    
+
     /**
      * 当目标完成时执行注册的回调函数。
      */
+    @JvmSynthetic // since 3.3.0
     public fun onCompletion(handle: suspend (application: T) -> Unit)
-    
+
+    /**
+     * 当目标完成时执行注册的回调函数。
+     *
+     * @since 3.3.0
+     * @see onCompletion
+     */
+    @Api4J
+    public fun onCompletion(handle: Consumer<in T>) {
+        onCompletion { handle.accept(it) }
+    }
 }
