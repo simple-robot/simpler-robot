@@ -42,7 +42,6 @@ fun main(vararg args: String) {
 
     println(simbotApp.environment.serializersModule)
 
-    // TODO Json decode BUG
     println(Json {
         isLenient = true
         ignoreUnknownKeys = true
