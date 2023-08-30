@@ -47,7 +47,7 @@ include(":simbot-util-suspend-transformer")
 if (!System.getenv("IS_CI").toBoolean()) {
     include(
 //        projectTest("boot"),
-        projectTest("spring-boot-starter"),
+//        projectTest("spring-boot-starter"),
 //        projectTest("jmh"),
     )
 
