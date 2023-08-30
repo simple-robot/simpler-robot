@@ -40,5 +40,6 @@ public interface ChatRoom : Organization, SendSupport {
      *
      * 默认得到null，通常情况下能够作为聊天室的组织不存在子集。
      */
+    @JvmSynthetic
     override suspend fun child(id: ID): Organization? = null
 }

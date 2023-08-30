@@ -569,12 +569,28 @@ public fun <T> `$$runInAsync`(block: suspend () -> T): CompletableFuture<T> {
 }
 
 /**
+ *
+ * [KSTCP#32](https://github.com/ForteScarlet/kotlin-suspend-transform-compiler-plugin/pull/32)
+ * 之后对可以为null的 [CoroutineScope] 参数有更好的支持，
+ * 因此更建议使用 `$$runInAsyncNullable` 。
+ *
  * @since 3.1.0
+ *
+ * see `$$runInAsyncNullable`
+ */
+@InternalSimbotApi
+@Deprecated("Compatible with 3.2.0 and earlier", level = DeprecationLevel.HIDDEN)
+public fun <T> `$$runInAsync1`(block: suspend () -> T, scope: CoroutineScope = `$$DefaultScope`): CompletableFuture<T> {
+    return runInAsync(scope) { block() }
+}
+
+/**
+ * @since 3.3.0
  */
 @InternalSimbotApi
 @Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
-public fun <T> `$$runInAsync1`(block: suspend () -> T, scope: CoroutineScope = `$$DefaultScope`): CompletableFuture<T> {
-    return runInAsync(scope) { block() }
+public fun <T> `$$runInAsyncNullable`(block: suspend () -> T, scope: CoroutineScope? = null): CompletableFuture<T> {
+    return runInAsync(scope ?: `$$DefaultScope`) { block() }
 }
 
 
