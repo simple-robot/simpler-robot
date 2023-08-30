@@ -46,13 +46,13 @@ jobs:
       - name: Run All Tests
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.6
+          gradle-version: 8.3
           arguments: assemble allTests
 
       - name: Gradle publish snapshot
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.6
+          gradle-version: 8.3
           arguments: |
             publishToSonatype
             closeAndReleaseStagingRepository
@@ -88,7 +88,7 @@ jobs:
       - name: Gradle generate documentation
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.6
+          gradle-version: 8.3
           arguments: |
             dokkaHtmlMultiModule
             --info 
