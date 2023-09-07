@@ -76,8 +76,8 @@ simbot3目前已经实现的组件有：
 |:---------------------------------------:|:-----------:|:-------------------------------------------------------------------------------------------------------------:|:---:|
 | [Mirai](https://github.com/mamoe/mirai) | simbot team |         [simple-robot/simbot-component-mirai](https://github.com/simple-robot/simbot-component-mirai)         | 维护中 |
 |  [Kook(开黑啦)](https://www.kookapp.cn)   | simbot team |          [simple-robot/simbot-component-kook](https://github.com/simple-robot/simbot-component-kook)          | 维护中 |
-|  [QQ频道](https://bot.q.qq.com/wiki)   | simbot team | [simple-robot/simbot-component-tencent-guild](https://github.com/simple-robot/simbot-component-qq-guild) | 维护中 |
-|  [米游社大别野](https://open.miyoushe.com)   | simbot team | [simple-robot/simbot-component-tencent-miyoushe](https://github.com/simple-robot/simbot-component-miyoushe) | _计划中_ |
+|  [QQ频道](https://bot.q.qq.com/wiki)   | simbot team | [simple-robot/simbot-component-qq-guild](https://github.com/simple-robot/simbot-component-qq-guild) | 维护中 |
+|  [米游社大别野](https://open.miyoushe.com)   | simbot team | [simple-robot/simbot-component-miyoushe](https://github.com/simple-robot/simbot-component-miyoushe) | _计划中_ |
 
 有关于这些组件等simbot附属内容的相关信息，你可以从 [**Simple Robot 附属组织库**](https://github.com/simple-robot) 处查看~
 
