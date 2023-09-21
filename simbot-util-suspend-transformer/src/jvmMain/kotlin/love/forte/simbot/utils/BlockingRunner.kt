@@ -21,7 +21,9 @@ import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.FragileSimbotApi
 import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.logger.LoggerFactory
+import sun.jvm.hotspot.oops.CellTypeState.value
 import java.util.concurrent.*
+import java.util.concurrent.CancellationException
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
@@ -422,13 +424,13 @@ private object DefaultRunInNoScopeBlockingStrategy : RunInNoScopeBlockingStrateg
     override fun <T> invoke(context: CoroutineContext, block: suspend () -> T): T {
         val runner = SuspendRunner<T>(context)
         block.startCoroutine(runner)
-        return runner.await(SuspendRunner.isWaitTimeoutEnabled).getOrThrow()
+        return runner.await(SuspendRunner.isWaitTimeoutEnabled)
     }
 
     fun <T> invokeWithoutTimeoutLog(context: CoroutineContext, block: suspend () -> T): T {
         val runner = SuspendRunner<T>(context)
         block.startCoroutine(runner)
-        return runner.await(isWaitTimeoutEnabled = false).getOrThrow()
+        return runner.await(isWaitTimeoutEnabled = false)
     }
 
 }
@@ -595,61 +597,62 @@ public fun <T> `$$runInAsyncNullable`(block: suspend () -> T, scope: CoroutineSc
 
 
 // Yes. I am the BlockingRunner.
-@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCoroutineContext) : Continuation<T> {
-    private var result: Result<T>? = null
+    val future: CompletableFuture<T> = CompletableFuture()
 
     override fun resumeWith(result: Result<T>) {
-        synchronized(this) {
-            this.result = result
-            (this as Object).notifyAll()
+        result.onSuccess { value ->
+            future.complete(value)
+        }.onFailure { e ->
+            future.completeExceptionally(e)
         }
     }
 
-    //    @Suppress("BlockingMethodInNonBlockingContext")
-    fun await(isWaitTimeoutEnabled: Boolean): Result<T> {
-        synchronized(this) {
-            @Suppress("UNUSED_VARIABLE") // emm?
-            var times = 0
-            while (true) {
-                when (val result = this.result) {
-                    null -> {
-                        if (isWaitTimeoutEnabled) {
-                            if (times > 0) {
-                                val duration = (waitTimeout * times).milliseconds
-                                if (logger.isDebugEnabled) {
-                                    val durationString = duration.toString()
-                                    logger.warn("Blocking runner has been blocking for at least {}.", durationString)
-                                    val e: Throwable = LongTimeBlockingException(durationString)
-                                    logger.debug(
-                                        "Long time blocking duration at least {}",
-                                        durationString,
-                                        e
-                                    )
-                                } else {
-                                    logger.warn(
-                                        "Blocking runner has been blocking for at least {}. Enable debug logging for '{}' for more stack information.",
-                                        duration.toString(),
-                                        LOGGER_NAME
-                                    )
-                                }
-                            }
-                            (this as Object).wait(waitTimeout)
-                            times += 1
+    /**
+     * @see CompletableFuture.join
+     */
+    fun await(isWaitTimeoutEnabled: Boolean): T {
+        if (!isWaitTimeoutEnabled) {
+            return future.join()
+        }
 
-                        } else {
-                            // just wait.
-                            (this as Object).wait()
-                        }
-
-                    }
-
-                    else -> {
-                        return result
-                    }
+        var times = 0
+        while (!future.isDone) {
+            if (times > 0) {
+                val duration = (waitTimeout * times).milliseconds
+                if (logger.isDebugEnabled) {
+                    val durationString = duration.toString()
+                    logger.warn("Blocking runner has been blocking for at least {}.", durationString)
+                    val e: Throwable = LongTimeBlockingException(durationString)
+                    logger.debug(
+                        "Long time blocking duration at least {}",
+                        durationString,
+                        e
+                    )
+                } else {
+                    logger.warn(
+                        "Blocking runner has been blocking for at least {}. Enable debug logging for '{}' for more stack information.",
+                        duration.toString(),
+                        LOGGER_NAME
+                    )
                 }
             }
+
+            try {
+                return future.get(waitTimeout, TimeUnit.MILLISECONDS)
+            } catch (timeout: TimeoutException) {
+                times += 1
+            } catch (cancellation: CancellationException) {
+                throw cancellation
+            } catch (completion: CompletionException) {
+                throw completion
+            } catch (other: Exception) {
+                throw CompletionException(other)
+            }
         }
+
+        // done.
+        return future.join()
     }
 
     // for displaying the stack only
