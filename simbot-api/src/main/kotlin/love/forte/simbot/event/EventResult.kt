@@ -162,7 +162,7 @@ public interface EventResult {
      *
      * 当一个监听事件的结果为 [Invalid], 则代表它“没有真正地执行成功”，或可以简单的理解为“忽略结果”。
      */
-    public object Invalid : SpecialEventResult() {
+    public data object Invalid : SpecialEventResult() {
         override val content: Any?
             get() = null
         
@@ -176,12 +176,12 @@ public interface EventResult {
      * @see Truncated
      */
     private sealed class Default : EventResult {
-        object Truncated : Default() {
+        data object Truncated : Default() {
             override val content: Any? get() = null
             override val isTruncated: Boolean get() = true
         }
         
-        object NormalEmpty : Default() {
+        data object NormalEmpty : Default() {
             override val content: Any? get() = null
             override val isTruncated: Boolean get() = false
         }

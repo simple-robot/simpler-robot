@@ -177,13 +177,13 @@ public class ResourcesScanner<T>(
     private sealed class ResourceModel {
         abstract fun getResources(classLoader: ClassLoader, resource: String): Sequence<URL>
         
-        object Current : ResourceModel() {
+        data object Current : ResourceModel() {
             override fun getResources(classLoader: ClassLoader, resource: String): Sequence<URL> {
                 return classLoader.getResource(resource)?.let { sequenceOf(it) } ?: emptySequence()
             }
         }
         
-        object All : ResourceModel() {
+        data object All : ResourceModel() {
             override fun getResources(classLoader: ClassLoader, resource: String): Sequence<URL> {
                 return classLoader.getResources(resource).asSequence()
             }

@@ -198,5 +198,5 @@ public sealed class AutoConfigureMarker {
      * 当 [Application] 创建完成且完成了所有的 [ApplicationPostProcessor] 处理后的标记类。
      *
      */
-    public object AfterApplicationPostProcessor : AutoConfigureMarker()
+    public data object AfterApplicationPostProcessor : AutoConfigureMarker()
 }

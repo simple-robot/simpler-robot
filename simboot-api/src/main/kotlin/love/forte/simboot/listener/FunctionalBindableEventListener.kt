@@ -315,7 +315,7 @@ public sealed class ParameterBinderResult {
     /**
      * 没有结果. 此结果应当被抛弃.
      */
-    public object Empty : ParameterBinderResult() {
+    public data object Empty : ParameterBinderResult() {
         override val binder: ParameterBinder? get() = null
     }
     

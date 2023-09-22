@@ -60,7 +60,7 @@ public enum class BackGroundColor(
         /** 通过颜色代码获取字体颜色枚举  */
         @JvmStatic
         public fun getColor(index: Int): BackGroundColor? {
-            return values().find { it.colorIndex == index }
+            return entries.find { it.colorIndex == index }
         }
     }
 }
