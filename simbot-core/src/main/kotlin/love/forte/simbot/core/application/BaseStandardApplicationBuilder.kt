@@ -12,6 +12,7 @@
 
 package love.forte.simbot.core.application
 
+import kotlinx.coroutines.Job
 import love.forte.simbot.application.Application
 import love.forte.simbot.application.ApplicationBuilder
 import love.forte.simbot.application.ApplicationBuilderDsl
@@ -71,7 +72,7 @@ public abstract class BaseStandardApplicationBuilder<A : Application> : BaseAppl
         environment: Application.Environment,
     ): SimpleEventListenerManager {
         val initial = SimpleListenerManagerConfiguration {
-            coroutineContext = appConfig.coroutineContext
+            coroutineContext = appConfig.coroutineContext.minusKey(Job)
         }
         
         return simpleListenerManager(initial = initial) {

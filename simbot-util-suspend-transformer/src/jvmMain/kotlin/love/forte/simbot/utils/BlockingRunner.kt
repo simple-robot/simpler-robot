@@ -50,7 +50,7 @@ private fun createDefaultDispatcher(
     if (coreSize == null && maxSize == null && keepAliveTime == null) {
         return null
     }
-    // cpu / 2 or 1
+    // cpu / 2 or 8
     val availableProcessors = Runtime.getRuntime().availableProcessors()
     val coreSize = (coreSize ?: (availableProcessors / 2)).coerceAtLeast(8)
     val maxSize =
@@ -129,7 +129,7 @@ private const val ASYNC_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$ASYNC_DISPATCHER
  * 可以选择使用 [CustomBlockingExecutorProvider] 类型。
  *
  * @see CustomBlockingDispatcherProvider
- *
+ * @since 3.3.0
  */
 public abstract class CustomBlockingDispatcherProvider {
     /**
@@ -142,6 +142,7 @@ public abstract class CustomBlockingDispatcherProvider {
  * 提供一个用于阻塞调用的调度器的供应商。
  *
  * @see CustomBlockingDispatcherProvider
+ * @since 3.3.0
  */
 public abstract class CustomBlockingExecutorProvider : CustomBlockingDispatcherProvider() {
     final override fun blockingDispatcher(): CoroutineDispatcher = blockingExecutor().asCoroutineDispatcher()
@@ -211,7 +212,7 @@ private fun loadCustomBlockingDispatcher(loader: ClassLoader?): CoroutineDispatc
  * | `simbot.runInBlocking.dispatcher=main` | [Dispatchers.Main] | 使用 [Dispatchers.Main] 作为默认调度器. |
  * | `simbot.runInBlocking.dispatcher=unconfined` | [Dispatchers.Unconfined] | 使用 [Dispatchers.Unconfined] 作为默认调度器. |
  * | `simbot.runInBlocking.dispatcher=forkJoinPool` | [ForkJoinPool] | 使用 [ForkJoinPool] 作为默认调度器. |
- * | `simbot.runInBlocking.dispatcher=custom` | 通过 SPI 加载 [CustomBlockingDispatcherProvider] 并通过其构建 [CoroutineDispatcher] |
+ * | `simbot.runInBlocking.dispatcher=custom` | (since 3.3.0) 通过 SPI 加载 [CustomBlockingDispatcherProvider] 并通过其构建 [CoroutineDispatcher] |
  *
  * 如果选择了使用某个具体的调度器，那么你可以额外指定属性 `simbot.runInBlocking.dispatcher.limitedParallelism` 来通过 [CoroutineDispatcher.limitedParallelism]
  * 来限制使用的最大并发数。更多说明（和警告）参考 [CoroutineDispatcher.limitedParallelism]。
@@ -357,7 +358,7 @@ public val DefaultBlockingContext: CoroutineContext by lazy {
  * | `simbot.runInAsync.dispatcher=main` | [Dispatchers.Main] | 使用 [Dispatchers.Main] 作为默认调度器. |
  * | `simbot.runInAsync.dispatcher=unconfined` | [Dispatchers.Unconfined] | 使用 [Dispatchers.Unconfined] 作为默认调度器. |
  * | `simbot.runInAsync.dispatcher=forkJoinPool` | [ForkJoinPool] | 使用 [ForkJoinPool] 作为默认调度器. |
- *
+ * | `simbot.runInAsync.dispatcher=custom` | (since 3.3.0) 通过 SPI 加载 [CustomBlockingDispatcherProvider] 并通过其构建 [CoroutineDispatcher] |
  */
 @InternalSimbotApi
 public val DefaultAsyncDispatcherOrNull: CoroutineDispatcher? by lazy {

@@ -12,6 +12,7 @@
 
 package love.forte.simboot.spring.autoconfigure.application
 
+import kotlinx.coroutines.Job
 import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.application.*
 import love.forte.simbot.core.application.*
@@ -47,7 +48,7 @@ public object SpringBoot :
         val configuration = SpringBootApplicationConfiguration().also(configurator)
         return create(configuration, builder)
     }
-    
+
     /**
      * 直接提供配置类进行构建。
      */
@@ -109,7 +110,7 @@ public interface SpringBootApplication : Application
  */
 public interface SpringBootApplicationBuilder : ApplicationBuilder<SpringBootApplication>,
     EventProcessableApplicationBuilder<SpringBootApplication> {
-    
+
     /**
      * 配置内部的 core listener manager.
      *
@@ -126,8 +127,8 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
     BaseApplicationBuilder<SpringBootApplication>() {
     private var listenerManagerConfigurator: SimpleListenerManagerConfiguration.(environment: Application.Environment) -> Unit =
         {}
-    
-    
+
+
     /**
      * 配置内部的 listener manager.
      */
@@ -135,57 +136,57 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
         val old = listenerManagerConfigurator
         listenerManagerConfigurator = { env -> old(env); configurator(env) }
     }
-    
+
     private fun buildListenerManager(
         appConfig: SpringBootApplicationConfiguration,
         environment: Application.Environment,
     ): SimpleEventListenerManager {
         val initial = SimpleListenerManagerConfiguration {
-            // TODO job?
-            coroutineContext = appConfig.coroutineContext
+            // Init context from app context (without Job)
+            coroutineContext = appConfig.coroutineContext.minusKey(Job)
         }
-        
+
         return simpleListenerManager(initial = initial, block = fun SimpleListenerManagerConfiguration.() {
             listenerManagerConfigurator(environment)
         })
     }
-    
-    
+
+
     @OptIn(ExperimentalSimbotApi::class)
     @Suppress("DuplicatedCode")
     suspend fun build(configuration: SpringBootApplicationConfiguration): SpringBootApplication {
         val components = buildComponents()
-        
+
         val logger = configuration.logger
-        
+
         val environment = SpringBootEnvironment(
             components, logger, configuration.coroutineContext
         )
-        
+
         logger.debug("Building listener manager...")
         val listenerManager = buildListenerManager(configuration, environment)
         logger.debug("Listener manager is built: {}", listenerManager)
-        
-        
+
+
         logger.debug("Building providers...")
         val providers = buildProviders(listenerManager, components, configuration)
         logger.info("The size of providers built is {}", providers.size)
         if (providers.isNotEmpty()) {
             logger.debug("The built providers: {}", providers)
         }
-        
+
         val application = SpringBootApplicationImpl(configuration, environment, listenerManager, providers)
         // set application attribute
         listenerManager.globalScopeContext[ApplicationAttributes.Application] = application
-        
+
         // complete.
         complete(application)
-        
+
         // region register bots
         // after complete.
         logger.debug("Registering bots...")
         val bots = registerBots(providers)
-        
+
         logger.info("Bots all registered. The size of bots: {}", bots.size)
         if (bots.isNotEmpty()) {
             logger.debug("The all registered bots: {}", bots)
@@ -193,21 +194,21 @@ private class SpringBootApplicationBuilderImpl : SpringBootApplicationBuilder,
         val isAutoStartBots = configuration.isAutoStartBots
         logger.debug("Auto start bots: {}", isAutoStartBots)
         if (isAutoStartBots && bots.isNotEmpty()) {
-                bots.forEach { bot ->
-                    logger.info("Starting bot {}", bot)
-                    val started = bot.start()
-                    logger.info("Bot [{}] started: {}", bot, started)
-                }
+            bots.forEach { bot ->
+                logger.info("Starting bot {}", bot)
+                val started = bot.start()
+                logger.info("Bot [{}] started: {}", bot, started)
+            }
         }
-        
+
         if (isAutoStartBots && bots.isEmpty()) {
             logger.debug("But the registered bots are empty.")
         }
         // endregion
-        
+
         return application
     }
-    
+
 }
 
 
@@ -218,7 +219,7 @@ private class SpringBootApplicationImpl(
     providerList: List<EventProvider>,
 ) : SpringBootApplication, BaseApplication() {
     override val providers: List<EventProvider> = providerList.view()
-    
+
     override val coroutineContext = environment.coroutineContext
     override val logger: Logger = environment.logger
 }

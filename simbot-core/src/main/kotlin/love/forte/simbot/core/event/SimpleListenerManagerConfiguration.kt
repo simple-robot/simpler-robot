@@ -12,11 +12,16 @@
 
 package love.forte.simbot.core.event
 
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.*
 import love.forte.simbot.event.*
 import love.forte.simbot.event.EventListenerRegistrationDescription.Companion.toRegistrationDescription
+import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.logger.logger
+import java.util.concurrent.Executor
 import java.util.function.Function
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -43,7 +48,24 @@ public open class SimpleListenerManagerConfiguration {
      */
     @SimpleEventManagerConfigDSL
     public var coroutineContext: CoroutineContext = EmptyCoroutineContext
-    
+        set(value) {
+            if (value[Job] != null) {
+                logger.warn("Job in SimpleListenerManagerConfiguration.coroutineContext will be dropped.")
+            }
+            field = value.minusKey(Job)
+        }
+
+    /**
+     * 向 [coroutineContext] 中应用一个 [Executor]。
+     * 面向Java开发者的友好API，在Java中可以更方便的指定一个调度器。
+     *
+     * @since 3.3.0
+     */
+    @Api4J
+    public open fun appendExecutorToCoroutineContext(executor: Executor) {
+        coroutineContext += executor.asCoroutineDispatcher()
+    }
+
     /**
      * 事件流程拦截器的列表。
      */
@@ -266,6 +288,8 @@ public open class SimpleListenerManagerConfiguration {
         public inline operator fun invoke(block: SimpleListenerManagerConfiguration.() -> Unit): SimpleListenerManagerConfiguration {
             return SimpleListenerManagerConfiguration().also(block)
         }
+
+        private val logger = LoggerFactory.logger<SimpleListenerManagerConfiguration>()
     }
     
 }
