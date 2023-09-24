@@ -54,6 +54,7 @@ if (!System.getenv("IS_CI").toBoolean()) {
     include(":simbot-component-http-server-api")
 }
 
+//include(":simbot-project-tests:simbot-project-test-j21")
 
 
 @Suppress("NOTHING_TO_INLINE")

@@ -12,13 +12,16 @@
 
 package love.forte.simbot.application
 
+import kotlinx.coroutines.asCoroutineDispatcher
 import love.forte.plugin.suspendtrans.annotation.JvmBlocking
+import love.forte.simbot.Api4J
 import love.forte.simbot.Component
 import love.forte.simbot.ComponentFactory
 import love.forte.simbot.ability.CompletionPerceivable
 import love.forte.simbot.bot.Bot
 import love.forte.simbot.bot.BotVerifyInfo
 import org.slf4j.Logger
+import java.util.concurrent.Executor
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -33,7 +36,7 @@ public interface ApplicationFactory<
         Builder : ApplicationBuilder<A>,
         A : Application,
         > {
-    
+
     /**
      * 提供配置函数和构建器函数，构建一个 [Application] 实例。
      */
@@ -51,7 +54,7 @@ public interface ApplicationFactory<
  * @param A 目标 [Application] 类型
  */
 public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> {
-    
+
     /**
      * 注册一个 [组件][Component].
      */
@@ -60,7 +63,7 @@ public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> 
         componentFactory: ComponentFactory<C, Config>,
         configurator: Config.(perceivable: CompletionPerceivable<A>) -> Unit = {},
     )
-    
+
     /**
      * 注册一个事件提供者。
      */
@@ -69,15 +72,15 @@ public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> 
         eventProviderFactory: EventProviderFactory<P, Config>,
         configurator: Config.(perceivable: CompletionPerceivable<A>) -> Unit = {},
     )
-    
-    
+
+
     /**
      * 提供一个可以使用 [BotVerifyInfo] 进行通用性bot注册的配置方式。
      */
     @ApplicationBuilderDsl
     public fun bots(registrar: suspend BotRegistrar.() -> Unit)
-    
-    
+
+
     /**
      * 注册一个当 [Application] 构建完成后的回调函数。
      *
@@ -91,7 +94,7 @@ public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> 
      */
     @ApplicationBuilderDsl
     override fun onCompletion(handle: suspend (application: A) -> Unit)
-    
+
 }
 
 
@@ -105,7 +108,7 @@ public interface ApplicationBuilder<A : Application> : CompletionPerceivable<A> 
  *
  */
 public interface BotRegistrar {
-    
+
     /**
      * 当前环境中的所有事件提供者。
      *
@@ -124,8 +127,8 @@ public interface BotRegistrar {
      *
      */
     public val providers: List<EventProvider>
-    
-    
+
+
     /**
      * 通过 [BotVerifyInfo] 中的 [组件信息][BotVerifyInfo.componentId]
      * 去当前环境中寻找对应组件的、实现了 [Bot注册器][love.forte.simbot.bot.BotRegistrar] 的 [事件提供者][EventProvider],
@@ -150,7 +153,7 @@ public annotation class ApplicationBuilderDsl
  * 整个应用程序进行构建所需的基本配置信息。
  */
 public open class ApplicationConfiguration {
-    
+
     /**
      * 当前application内所使用的协程上下文。
      *
@@ -159,10 +162,21 @@ public open class ApplicationConfiguration {
      *
      */
     public open var coroutineContext: CoroutineContext = EmptyCoroutineContext
-    
+
     /**
      * 提供一个用于Application内部的日志对象。
      */
-    public open var logger: Logger = love.forte.simbot.logger.LoggerFactory.getLogger("love.forte.simbot.application.ApplicationConfiguration")
-    
+    public open var logger: Logger =
+        love.forte.simbot.logger.LoggerFactory.getLogger("love.forte.simbot.application.ApplicationConfiguration")
+
+    /**
+     * 向 [coroutineContext] 中应用一个 [Executor]。
+     * 面向Java开发者的友好API，在Java中可以更方便的指定一个调度器。
+     *
+     * @since 3.3.0
+     */
+    @Api4J
+    public open fun appendExecutorToCoroutineContext(executor: Executor) {
+        coroutineContext += executor.asCoroutineDispatcher()
+    }
 }
