@@ -676,6 +676,7 @@ public fun <T> `$$runInAsyncNullable`(block: suspend () -> T, scope: CoroutineSc
 
 // Yes. I am the BlockingRunner.
 private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCoroutineContext) : Continuation<T> {
+    @Suppress("unused")
     @Volatile
     var s: Int = 0
     // 1 = resume - success
