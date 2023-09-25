@@ -38,7 +38,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * 如果不支持虚拟线程则会抛出 [UnsupportedOperationException]。
  *
  * @since 3.3.0
- *
+ * @see DefaultBlockingDispatcherOrNull
  * @throws UnsupportedOperationException 不支持虚拟线程时
  */
 @ExperimentalSimbotApi
@@ -355,6 +355,7 @@ private inline fun initDefaultBlockingDispatcher(
  * - 名称为 `"runInBlocking"` 的 [CoroutineName].
  * - 默认调度器 [DefaultBlockingDispatcher].
  *
+ * @see DefaultBlockingDispatcherOrNull
  */
 @InternalSimbotApi
 public val DefaultBlockingContext: CoroutineContext by lazy {
