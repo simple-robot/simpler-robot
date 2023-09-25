@@ -135,7 +135,7 @@ fun Project.generateChangelog(tag: String) {
                 }
             }
 
-        val tmpDir = rootProject.buildDir.resolve("tmp/changelog").apply { mkdirs() }
+        val tmpDir = rootProject.layout.buildDirectory.dir("tmp/changelog").get().asFile.apply { mkdirs() }
 
         val tmpFile =
             Files.createTempFile(tmpDir.toPath(), "changelog", "tmp").toFile()
