@@ -487,7 +487,7 @@ public sealed class NumericalID<N : Number> : ID(), NumberSimilarly {
      * 将当前数字转为 [Char]. 同 [Number.toChar].
      * @see Number.toChar
      */
-    override fun toChar(): Char = value.toChar()
+    override fun toChar(): Char = value.toInt().toChar()
 
     /**
      * 将当前数字转为 [Short]. 同 [Number.toShort].
@@ -1084,7 +1084,6 @@ private class NumericalIdNumber(private val id: NumericalID<*>) : Number() {
     override fun toShort(): Short = id.toShort()
     override fun toInt(): Int = id.toInt()
     override fun toLong(): Long = id.toLong()
-    override fun toChar(): Char = id.toChar()
     override fun toDouble(): Double = id.toDouble()
     override fun toFloat(): Float = id.toFloat()
 }
