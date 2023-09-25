@@ -24,6 +24,11 @@ tasks.named("dokkaHtml").configure {
         dependsOn(kaptKotlinTask)
     }
 }
+tasks.named("dokkaHtmlPartial").configure {
+    tasks.findByName("kaptKotlin")?.also { kaptKotlinTask ->
+        dependsOn(kaptKotlinTask)
+    }
+}
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
     dokkaSourceSets.configureEach {
