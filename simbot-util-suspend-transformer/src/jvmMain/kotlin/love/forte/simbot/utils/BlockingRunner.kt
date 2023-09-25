@@ -22,6 +22,7 @@ import love.forte.simbot.FragileSimbotApi
 import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.logger.LoggerFactory
 import java.lang.invoke.MethodHandles
+import java.lang.invoke.MethodType
 import java.util.*
 import java.util.concurrent.*
 import java.util.concurrent.CancellationException
@@ -32,6 +33,23 @@ import kotlin.concurrent.Volatile
 import kotlin.coroutines.*
 import kotlin.time.Duration.Companion.milliseconds
 
+/**
+ * 使用 `Executors.newVirtualThreadPerTaskExecutor` 构建的全局虚拟线程“线程池”。
+ * 如果不支持虚拟线程则会抛出 [UnsupportedOperationException]。
+ *
+ * @since 3.3.0
+ *
+ * @throws UnsupportedOperationException 不支持虚拟线程时
+ */
+@ExperimentalSimbotApi
+public val VirtualThreadDispatcher: CoroutineDispatcher by lazy {
+    runCatching {
+        val handle = MethodHandles.publicLookup().findStatic(Executors::class.java, "newVirtualThreadPerTaskExecutor", MethodType.methodType(ExecutorService::class.java))
+        (handle.invoke() as Executor).asCoroutineDispatcher()
+    }.getOrElse { e ->
+        throw UnsupportedOperationException("Virtual thread dispatcher is not support. Mark sure you are using JDK 21+ now or try to provide the dispatcher via 'love.forte.simbot.utils.CustomBlockingDispatcherProvider'", e)
+    }
+}
 
 private const val DEFAULT_KEEP_ALIVE_TIME = 60_000L // 60s
 
@@ -93,6 +111,8 @@ private const val DISPATCHER_USE_DEFAULT_PROPERTY_VALUE = "default"
 private const val DISPATCHER_USE_MAIN_PROPERTY_VALUE = "main"
 private const val DISPATCHER_USE_UNCONFINED_PROPERTY_VALUE = "unconfined"
 private const val DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE = "forkJoinPool"
+private const val DISPATCHER_USE_VIRTUAL_PROPERTY_VALUE = "virtual"
+private const val DISPATCHER_USE_VIRTUAL_OR_IO_PROPERTY_VALUE = "virtualOrIo"
 private const val DISPATCHER_USE_CUSTOM_PROPERTY_VALUE = "custom"
 
 private const val DISPATCHER_LIMITED_PARALLELISM = "limitedParallelism"
@@ -212,7 +232,9 @@ private fun loadCustomBlockingDispatcher(loader: ClassLoader?): CoroutineDispatc
  * | `simbot.runInBlocking.dispatcher=main` | [Dispatchers.Main] | 使用 [Dispatchers.Main] 作为默认调度器. |
  * | `simbot.runInBlocking.dispatcher=unconfined` | [Dispatchers.Unconfined] | 使用 [Dispatchers.Unconfined] 作为默认调度器. |
  * | `simbot.runInBlocking.dispatcher=forkJoinPool` | [ForkJoinPool] | 使用 [ForkJoinPool] 作为默认调度器. |
- * | `simbot.runInBlocking.dispatcher=custom` | (since 3.3.0) 通过 SPI 加载 [CustomBlockingDispatcherProvider] 并通过其构建 [CoroutineDispatcher] |
+ * | `simbot.runInBlocking.dispatcher=virtual` | [VirtualThreadDispatcher] | (since 3.3.0) 使用 [VirtualThreadDispatcher] 作为默认调度器. |
+ * | `simbot.runInBlocking.dispatcher=virtualOrIo` | [VirtualThreadDispatcher] or [Dispatchers.IO] if virtual thread not support | (since 3.3.0) 使用 [VirtualThreadDispatcher] 作为默认调度器，如果虚拟线程不支持，则退化为 [Dispatchers.IO] |
+ * | `simbot.runInBlocking.dispatcher=custom` | dispatcher from [CustomBlockingDispatcherProvider] | (since 3.3.0) 通过 SPI 加载 [CustomBlockingDispatcherProvider] 并通过其构建 [CoroutineDispatcher] |
  *
  * 如果选择了使用某个具体的调度器，那么你可以额外指定属性 `simbot.runInBlocking.dispatcher.limitedParallelism` 来通过 [CoroutineDispatcher.limitedParallelism]
  * 来限制使用的最大并发数。更多说明（和警告）参考 [CoroutineDispatcher.limitedParallelism]。
@@ -248,6 +270,7 @@ public val DefaultBlockingDispatcher: CoroutineDispatcher
 
 private infix fun String.eq(other: String): Boolean = equals(other = other, ignoreCase = true)
 
+@OptIn(ExperimentalSimbotApi::class)
 private inline fun initDefaultBlockingDispatcher(
     dispatcherPropertyName: String,
     dispatcherLimitedParallelismPropertyName: String,
@@ -275,8 +298,14 @@ private inline fun initDefaultBlockingDispatcher(
                 dispatcher eq DISPATCHER_USE_DEFAULT_PROPERTY_VALUE -> Dispatchers.Default
                 dispatcher eq DISPATCHER_USE_MAIN_PROPERTY_VALUE -> Dispatchers.Main
                 dispatcher eq DISPATCHER_USE_UNCONFINED_PROPERTY_VALUE -> Dispatchers.Unconfined
-                dispatcher eq DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE -> ForkJoinPool.commonPool()
-                    .asCoroutineDispatcher()
+                dispatcher eq DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE -> ForkJoinPool.commonPool().asCoroutineDispatcher()
+                dispatcher eq DISPATCHER_USE_VIRTUAL_PROPERTY_VALUE -> VirtualThreadDispatcher
+                dispatcher eq DISPATCHER_USE_VIRTUAL_OR_IO_PROPERTY_VALUE -> runCatching {
+                    VirtualThreadDispatcher
+                }.getOrElse { e ->
+                    logger.warn("Virtual thread dispatcher is not supported.", e)
+                    Dispatchers.IO
+                }
 
                 dispatcher eq DISPATCHER_USE_CUSTOM_PROPERTY_VALUE -> loadCustomBlockingDispatcher(Thread.currentThread().contextClassLoader)
                 else -> null
@@ -358,7 +387,10 @@ public val DefaultBlockingContext: CoroutineContext by lazy {
  * | `simbot.runInAsync.dispatcher=main` | [Dispatchers.Main] | 使用 [Dispatchers.Main] 作为默认调度器. |
  * | `simbot.runInAsync.dispatcher=unconfined` | [Dispatchers.Unconfined] | 使用 [Dispatchers.Unconfined] 作为默认调度器. |
  * | `simbot.runInAsync.dispatcher=forkJoinPool` | [ForkJoinPool] | 使用 [ForkJoinPool] 作为默认调度器. |
- * | `simbot.runInAsync.dispatcher=custom` | (since 3.3.0) 通过 SPI 加载 [CustomBlockingDispatcherProvider] 并通过其构建 [CoroutineDispatcher] |
+ * | `simbot.runInAsync.dispatcher=virtual` | [VirtualThreadDispatcher] | 使用 [VirtualThreadDispatcher] 作为默认调度器. |
+ * | `simbot.runInAsync.dispatcher=virtualOrIo` | [VirtualThreadDispatcher] or [Dispatchers.IO] if virtual thread not supported. | 使用 [VirtualThreadDispatcher] 作为默认调度器，并在虚拟线程不支持的情况下退化为 [Dispatchers.IO] |
+ * | `simbot.runInAsync.dispatcher=forkJoinPool` | [ForkJoinPool] | 使用 [ForkJoinPool] 作为默认调度器. |
+ * | `simbot.runInAsync.dispatcher=custom` | [CustomBlockingDispatcherProvider] | (since 3.3.0) 通过 SPI 加载 [CustomBlockingDispatcherProvider] 并通过其构建 [CoroutineDispatcher] |
  */
 @InternalSimbotApi
 public val DefaultAsyncDispatcherOrNull: CoroutineDispatcher? by lazy {
@@ -824,7 +856,7 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
         // val threadIsV = MethodHandles.publicLookup().findVirtual(Thread::class.java, "isVirtual", MethodType.methodType(java.lang.Boolean.TYPE))
 
         private val isVirtualThreadFunc = runCatching<(Thread) -> Boolean> {
-                        val mh = MethodHandles.publicLookup().findVirtual(Thread::class.java, "isVirtual", java.lang.invoke.MethodType.methodType(java.lang.Boolean.TYPE))
+                        val mh = MethodHandles.publicLookup().findVirtual(Thread::class.java, "isVirtual", MethodType.methodType(java.lang.Boolean.TYPE))
             return@runCatching { t -> mh.invoke(t) as Boolean }
         }.getOrElse {
             return@getOrElse { false }

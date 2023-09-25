@@ -8,7 +8,7 @@ import kotlin.coroutines.resume
 
 fun main() {
     System.setProperty("simbot.blockingRunner.waitTimeoutMilliseconds", "2000")
-    System.setProperty("simbot.runInBlocking.dispatcher", "forkjoinpool")
+    System.setProperty("simbot.runInBlocking.dispatcher", "virtualOrIO")
 //    MethodHandles.publicLookup().findVirtual(Thread::class.java, "isVirtual", MethodType.methodType(java.lang.Boolean.TYPE))
 
 //    runInNoScopeBlocking {
