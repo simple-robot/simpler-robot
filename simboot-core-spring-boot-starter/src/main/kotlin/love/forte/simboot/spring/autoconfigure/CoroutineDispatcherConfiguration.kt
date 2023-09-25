@@ -42,6 +42,5 @@ public open class CoroutineDispatcherConfiguration {
     @ConditionalOnMissingBean(CoroutineDispatcherContainer::class)
     public open fun defaultSimbotEventDispatcher(executor: ThreadPoolTaskExecutor): CoroutineDispatcherContainer =
         CoroutineDispatcherContainer(executor.asCoroutineDispatcher())
-    
-    
+
 }
