@@ -32,7 +32,7 @@ tasks.named("dokkaHtmlPartial").configure {
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
     dokkaSourceSets.configureEach {
-        version = P.Simbot.versionWithoutSnapshot
+        version = P.Simbot.version
         documentedVisibilities.set(listOf(DokkaConfiguration.Visibility.PUBLIC, DokkaConfiguration.Visibility.PROTECTED))
         jdkVersion.set(8)
         if (project.file("Module.md").exists()) {
