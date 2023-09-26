@@ -101,7 +101,7 @@ jobs:
             -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
             -Porg.gradle.daemon=false
         env:
-          SIMBOT_IS_SNAPSHOT: false
+          SIMBOT_IS_SNAPSHOT: true
 
       # https://github.com/marketplace/actions/github-pages-action
       - name: Push to doc repository
