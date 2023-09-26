@@ -55,13 +55,13 @@ public class SpringBootApplicationConfigurationProperties {
 
 
     public fun toConfiguration(
-        applicationArguments: ApplicationArguments,
+        applicationArguments: ApplicationArguments?,
         applicationContext: ApplicationContext,
     ): SpringBootApplicationConfiguration {
         return SpringBootApplicationConfiguration().also { config ->
             config.applicationContext = applicationContext
-            config.applicationArguments = applicationArguments
-            config.args = applicationArguments.sourceArgs.asList()
+//            config.applicationArguments = applicationArguments
+            config.args = applicationArguments?.sourceArgs?.asList() ?: emptyList()
             config.botConfigurationResources = this.botConfigurationResources
             applicationContext.classLoader?.also {
                 config.classLoader = it
@@ -76,12 +76,12 @@ public class SpringBootApplicationConfigurationProperties {
 /**
  * 在 [SpringBoot] 中所使用的应用程序配置类。
  *
- * 在使用前需要对 [applicationArguments] 、[applicationContext] 等与 Spring Boot 相关的配置信息。
+ * 在使用前需要对 [applicationContext] 等 Spring Boot 相关的配置信息。
  *
  * @see BootApplicationConfiguration
  */
 public open class SpringBootApplicationConfiguration : BootApplicationConfiguration() {
-    public open lateinit var applicationArguments: ApplicationArguments
+//    public open lateinit var applicationArguments: ApplicationArguments
     public open lateinit var applicationContext: ApplicationContext
     
     override var logger: Logger = LoggerFactory.getLogger(SpringBootApplicationConfiguration::class.java)

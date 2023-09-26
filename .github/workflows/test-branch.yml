@@ -27,7 +27,7 @@ jobs:
       - name: Run All Tests
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.6
+          gradle-version: 8.3
           arguments: |
             assemble
             build

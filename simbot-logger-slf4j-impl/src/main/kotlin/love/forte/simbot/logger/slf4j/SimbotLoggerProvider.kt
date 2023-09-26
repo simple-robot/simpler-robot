@@ -81,7 +81,7 @@ internal object InternalSimbotLoggerProvider {
     private const val CONFIG_FILE_FILEPATH = "simbot.logger.configFile.file"
     private const val DEFAULT_CONFIG_FILE_NAME = "simbot-logger-slf4j.properties"
 
-    val processFactory by lazy {
+    private val processFactory: SimbotLoggerProcessorsFactory by lazy {
         val loader = ServiceLoader.load(SimbotLoggerProcessorsFactory::class.java, javaClass.classLoader)
         val processorList = loader.toList()
 

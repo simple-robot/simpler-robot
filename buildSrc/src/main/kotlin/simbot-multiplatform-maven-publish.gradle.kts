@@ -12,7 +12,6 @@
 
 import love.forte.gradle.common.core.Gpg
 import love.forte.gradle.common.core.property.systemProp
-import love.forte.gradle.common.publication.configure.MavenMultiplatformPublishingConfigExtensions
 import love.forte.gradle.common.publication.configure.multiplatformConfigPublishing
 import org.jetbrains.kotlin.konan.target.HostManager
 import org.jetbrains.kotlin.konan.target.KonanTarget
@@ -75,6 +74,12 @@ multiplatformConfigPublishing {
 //        mainHostSupportedTargets = mainHost?.supports(hostManager) ?: emptySet()
 //    }
 
+}
+
+// TODO see https://github.com/gradle-nexus/publish-plugin/issues/208#issuecomment-1465029831
+val signingTasks: TaskCollection<Sign> = tasks.withType<Sign>()
+tasks.withType<PublishToMavenRepository>().configureEach {
+    mustRunAfter(signingTasks)
 }
 
 fun KonanTarget.supports(hostManager: HostManager): Set<String> {

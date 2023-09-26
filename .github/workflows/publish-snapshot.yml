@@ -1,5 +1,6 @@
 name: Publish Snapshot
 on: # push
+  workflow_dispatch:
   push:
     branches:
       - v3-dev
@@ -10,6 +11,8 @@ on: # push
     paths:
       - '**src/**/kotlin/**.kt'
       - '**src/**/java/**.java'
+      - '**/build.gradle.kts'
+      - 'build.gradle.kts'
       - 'buildSrc'
 
 env:
@@ -46,13 +49,13 @@ jobs:
       - name: Run All Tests
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.6
+          gradle-version: 8.3
           arguments: assemble allTests
 
       - name: Gradle publish snapshot
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.6
+          gradle-version: 8.3
           arguments: |
             publishToSonatype
             closeAndReleaseStagingRepository
@@ -88,7 +91,7 @@ jobs:
       - name: Gradle generate documentation
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.6
+          gradle-version: 8.3
           arguments: |
             dokkaHtmlMultiModule
             --info 
@@ -98,7 +101,7 @@ jobs:
             -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
             -Porg.gradle.daemon=false
         env:
-          SIMBOT_IS_SNAPSHOT: false
+          SIMBOT_IS_SNAPSHOT: true
 
       # https://github.com/marketplace/actions/github-pages-action
       - name: Push to doc repository

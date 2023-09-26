@@ -21,14 +21,35 @@ import love.forte.simbot.ExperimentalSimbotApi
 import love.forte.simbot.FragileSimbotApi
 import love.forte.simbot.InternalSimbotApi
 import love.forte.simbot.logger.LoggerFactory
+import java.lang.invoke.MethodHandles
+import java.lang.invoke.MethodType
+import java.util.*
 import java.util.concurrent.*
+import java.util.concurrent.CancellationException
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater
 import java.util.concurrent.atomic.AtomicLong
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.startCoroutine
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater
+import kotlin.concurrent.Volatile
+import kotlin.coroutines.*
 import kotlin.time.Duration.Companion.milliseconds
 
+/**
+ * 使用 `Executors.newVirtualThreadPerTaskExecutor` 构建的全局虚拟线程“线程池”。
+ * 如果不支持虚拟线程则会抛出 [UnsupportedOperationException]。
+ *
+ * @since 3.3.0
+ * @see DefaultBlockingDispatcherOrNull
+ * @throws UnsupportedOperationException 不支持虚拟线程时
+ */
+@ExperimentalSimbotApi
+public val VirtualThreadDispatcher: CoroutineDispatcher by lazy {
+    runCatching {
+        val handle = MethodHandles.publicLookup().findStatic(Executors::class.java, "newVirtualThreadPerTaskExecutor", MethodType.methodType(ExecutorService::class.java))
+        (handle.invoke() as Executor).asCoroutineDispatcher()
+    }.getOrElse { e ->
+        throw UnsupportedOperationException("Virtual thread dispatcher is not support. Mark sure you are using JDK 21+ now or try to provide the dispatcher via 'love.forte.simbot.utils.CustomBlockingDispatcherProvider'", e)
+    }
+}
 
 private const val DEFAULT_KEEP_ALIVE_TIME = 60_000L // 60s
 
@@ -47,7 +68,7 @@ private fun createDefaultDispatcher(
     if (coreSize == null && maxSize == null && keepAliveTime == null) {
         return null
     }
-    // cpu / 2 or 1
+    // cpu / 2 or 8
     val availableProcessors = Runtime.getRuntime().availableProcessors()
     val coreSize = (coreSize ?: (availableProcessors / 2)).coerceAtLeast(8)
     val maxSize =
@@ -90,6 +111,9 @@ private const val DISPATCHER_USE_DEFAULT_PROPERTY_VALUE = "default"
 private const val DISPATCHER_USE_MAIN_PROPERTY_VALUE = "main"
 private const val DISPATCHER_USE_UNCONFINED_PROPERTY_VALUE = "unconfined"
 private const val DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE = "forkJoinPool"
+private const val DISPATCHER_USE_VIRTUAL_PROPERTY_VALUE = "virtual"
+private const val DISPATCHER_USE_VIRTUAL_OR_IO_PROPERTY_VALUE = "virtualOrIo"
+private const val DISPATCHER_USE_CUSTOM_PROPERTY_VALUE = "custom"
 
 private const val DISPATCHER_LIMITED_PARALLELISM = "limitedParallelism"
 
@@ -108,6 +132,80 @@ private const val ASYNC_DISPATCHER_CORE_SIZE_PROPERTY = "$ASYNC_DISPATCHER_BASE_
 private const val ASYNC_DISPATCHER_MAX_SIZE_PROPERTY = "$ASYNC_DISPATCHER_BASE_PROPERTY.maxSize"
 private const val ASYNC_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$ASYNC_DISPATCHER_BASE_PROPERTY.keepAliveTime"
 // endregion
+
+
+/**
+ * 提供一个用于阻塞调用的调度器的供应商。
+ *
+ * 当JVM参数 `simbot.runInBlocking.dispatcher` 的值为 `custom` 时：
+ * ```
+ * -Dsimbot.runInBlocking.dispatcher=custom
+ * ```
+ * 会通过 SPI 加载 [CustomBlockingDispatcherProvider] 来作为阻塞调用时的默认调度器。
+ *
+ * 如果 SPI 检测到环境种存在多个 `CustomBlockingExecutorProvider`，会输出警告并就近选择其中一个。
+ *
+ * 对于不是非常容易得到 [CoroutineDispatcher] 类型的情况（例如使用Java）或希望单纯提供一个 [Executor] 时，
+ * 可以选择使用 [CustomBlockingExecutorProvider] 类型。
+ *
+ * @see CustomBlockingDispatcherProvider
+ * @since 3.3.0
+ */
+public abstract class CustomBlockingDispatcherProvider {
+    /**
+     * 得到用于阻塞调用的调度器。
+     */
+    public abstract fun blockingDispatcher(): CoroutineDispatcher
+}
+
+/**
+ * 提供一个用于阻塞调用的调度器的供应商。
+ *
+ * @see CustomBlockingDispatcherProvider
+ * @since 3.3.0
+ */
+public abstract class CustomBlockingExecutorProvider : CustomBlockingDispatcherProvider() {
+    final override fun blockingDispatcher(): CoroutineDispatcher = blockingExecutor().asCoroutineDispatcher()
+
+    /**
+     * 得到用于阻塞调用的 [Executor]。
+     * 会通过 [asCoroutineDispatcher] 转化为 [CoroutineDispatcher]。
+     */
+    public abstract fun blockingExecutor(): Executor
+}
+
+
+private class CustomBlockingDispatcherProviderNotFoundException(
+    classLoader: ClassLoader?
+) : RuntimeException("System property 'simbot.runInBlocking.dispatcher' is 'custom', but there is no provider loaded via classLoader $classLoader")
+
+
+private fun loadCustomBlockingDispatcher(loader: ClassLoader?): CoroutineDispatcher {
+    val serviceLoader = ServiceLoader.load(CustomBlockingDispatcherProvider::class.java, loader)
+    val services = serviceLoader.toList()
+
+    if (services.isEmpty()) {
+        throw CustomBlockingDispatcherProviderNotFoundException(loader)
+    }
+
+    val first = services.first()
+    val dis = first.blockingDispatcher()
+
+    if (services.size > 1) {
+        // log
+        logger.warn(
+            "System property 'simbot.runInBlocking.dispatcher' is 'custom', and the size of providers are more than 1: {}",
+            services.size
+        )
+        for ((index, provider) in services.withIndex()) {
+            logger.warn("index: {}, provider: {}", index, provider)
+        }
+
+        logger.warn("Will choose the first (index=0) dispatcher {} of provider {}", dis, first)
+    }
+
+    return dis
+}
 
 
 /**
@@ -134,6 +232,9 @@ private const val ASYNC_DISPATCHER_KEEP_ALIVE_TIME_PROPERTY = "$ASYNC_DISPATCHER
  * | `simbot.runInBlocking.dispatcher=main` | [Dispatchers.Main] | 使用 [Dispatchers.Main] 作为默认调度器. |
  * | `simbot.runInBlocking.dispatcher=unconfined` | [Dispatchers.Unconfined] | 使用 [Dispatchers.Unconfined] 作为默认调度器. |
  * | `simbot.runInBlocking.dispatcher=forkJoinPool` | [ForkJoinPool] | 使用 [ForkJoinPool] 作为默认调度器. |
+ * | `simbot.runInBlocking.dispatcher=virtual` | [VirtualThreadDispatcher] | (since 3.3.0) 使用 [VirtualThreadDispatcher] 作为默认调度器. |
+ * | `simbot.runInBlocking.dispatcher=virtualOrIo` | [VirtualThreadDispatcher] or [Dispatchers.IO] if virtual thread not support | (since 3.3.0) 使用 [VirtualThreadDispatcher] 作为默认调度器，如果虚拟线程不支持，则退化为 [Dispatchers.IO] |
+ * | `simbot.runInBlocking.dispatcher=custom` | dispatcher from [CustomBlockingDispatcherProvider] | (since 3.3.0) 通过 SPI 加载 [CustomBlockingDispatcherProvider] 并通过其构建 [CoroutineDispatcher] |
  *
  * 如果选择了使用某个具体的调度器，那么你可以额外指定属性 `simbot.runInBlocking.dispatcher.limitedParallelism` 来通过 [CoroutineDispatcher.limitedParallelism]
  * 来限制使用的最大并发数。更多说明（和警告）参考 [CoroutineDispatcher.limitedParallelism]。
@@ -169,6 +270,7 @@ public val DefaultBlockingDispatcher: CoroutineDispatcher
 
 private infix fun String.eq(other: String): Boolean = equals(other = other, ignoreCase = true)
 
+@OptIn(ExperimentalSimbotApi::class)
 private inline fun initDefaultBlockingDispatcher(
     dispatcherPropertyName: String,
     dispatcherLimitedParallelismPropertyName: String,
@@ -196,9 +298,16 @@ private inline fun initDefaultBlockingDispatcher(
                 dispatcher eq DISPATCHER_USE_DEFAULT_PROPERTY_VALUE -> Dispatchers.Default
                 dispatcher eq DISPATCHER_USE_MAIN_PROPERTY_VALUE -> Dispatchers.Main
                 dispatcher eq DISPATCHER_USE_UNCONFINED_PROPERTY_VALUE -> Dispatchers.Unconfined
-                dispatcher eq DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE -> ForkJoinPool.commonPool()
-                    .asCoroutineDispatcher()
+                dispatcher eq DISPATCHER_USE_FORK_JOIN_POOL_PROPERTY_VALUE -> ForkJoinPool.commonPool().asCoroutineDispatcher()
+                dispatcher eq DISPATCHER_USE_VIRTUAL_PROPERTY_VALUE -> VirtualThreadDispatcher
+                dispatcher eq DISPATCHER_USE_VIRTUAL_OR_IO_PROPERTY_VALUE -> runCatching {
+                    VirtualThreadDispatcher
+                }.getOrElse { e ->
+                    logger.warn("Virtual thread dispatcher is not supported.", e)
+                    Dispatchers.IO
+                }
 
+                dispatcher eq DISPATCHER_USE_CUSTOM_PROPERTY_VALUE -> loadCustomBlockingDispatcher(Thread.currentThread().contextClassLoader)
                 else -> null
             }
 
@@ -246,6 +355,7 @@ private inline fun initDefaultBlockingDispatcher(
  * - 名称为 `"runInBlocking"` 的 [CoroutineName].
  * - 默认调度器 [DefaultBlockingDispatcher].
  *
+ * @see DefaultBlockingDispatcherOrNull
  */
 @InternalSimbotApi
 public val DefaultBlockingContext: CoroutineContext by lazy {
@@ -278,7 +388,10 @@ public val DefaultBlockingContext: CoroutineContext by lazy {
  * | `simbot.runInAsync.dispatcher=main` | [Dispatchers.Main] | 使用 [Dispatchers.Main] 作为默认调度器. |
  * | `simbot.runInAsync.dispatcher=unconfined` | [Dispatchers.Unconfined] | 使用 [Dispatchers.Unconfined] 作为默认调度器. |
  * | `simbot.runInAsync.dispatcher=forkJoinPool` | [ForkJoinPool] | 使用 [ForkJoinPool] 作为默认调度器. |
- *
+ * | `simbot.runInAsync.dispatcher=virtual` | [VirtualThreadDispatcher] | 使用 [VirtualThreadDispatcher] 作为默认调度器. |
+ * | `simbot.runInAsync.dispatcher=virtualOrIo` | [VirtualThreadDispatcher] or [Dispatchers.IO] if virtual thread not supported. | 使用 [VirtualThreadDispatcher] 作为默认调度器，并在虚拟线程不支持的情况下退化为 [Dispatchers.IO] |
+ * | `simbot.runInAsync.dispatcher=forkJoinPool` | [ForkJoinPool] | 使用 [ForkJoinPool] 作为默认调度器. |
+ * | `simbot.runInAsync.dispatcher=custom` | [CustomBlockingDispatcherProvider] | (since 3.3.0) 通过 SPI 加载 [CustomBlockingDispatcherProvider] 并通过其构建 [CoroutineDispatcher] |
  */
 @InternalSimbotApi
 public val DefaultAsyncDispatcherOrNull: CoroutineDispatcher? by lazy {
@@ -295,7 +408,8 @@ public val DefaultAsyncDispatcherOrNull: CoroutineDispatcher? by lazy {
         val useDefault = hasCause || (coreSize == null && maxSize == null && keepAliveTime == null)
         val dispatcher = if (useDefault) {
             // default.
-            if (hasCause && cause != null) { // 消除nullable编译错误
+            if (hasCause) {
+                cause as Throwable
                 logger.debug(
                     "Default async dispatcher will use the default blocking dispatcher because an exception thrown duration initialization: {}",
                     cause.localizedMessage,
@@ -421,13 +535,13 @@ private object DefaultRunInNoScopeBlockingStrategy : RunInNoScopeBlockingStrateg
     override fun <T> invoke(context: CoroutineContext, block: suspend () -> T): T {
         val runner = SuspendRunner<T>(context)
         block.startCoroutine(runner)
-        return runner.await(SuspendRunner.isWaitTimeoutEnabled).getOrThrow()
+        return runner.await(SuspendRunner.isWaitTimeoutEnabled)
     }
 
     fun <T> invokeWithoutTimeoutLog(context: CoroutineContext, block: suspend () -> T): T {
         val runner = SuspendRunner<T>(context)
         block.startCoroutine(runner)
-        return runner.await(isWaitTimeoutEnabled = false).getOrThrow()
+        return runner.await(isWaitTimeoutEnabled = false)
     }
 
 }
@@ -568,76 +682,192 @@ public fun <T> `$$runInAsync`(block: suspend () -> T): CompletableFuture<T> {
 }
 
 /**
+ *
+ * [KSTCP#32](https://github.com/ForteScarlet/kotlin-suspend-transform-compiler-plugin/pull/32)
+ * 之后对可以为null的 [CoroutineScope] 参数有更好的支持，
+ * 因此更建议使用 `$$runInAsyncNullable` 。
+ *
  * @since 3.1.0
+ *
+ * see `$$runInAsyncNullable`
  */
 @InternalSimbotApi
-@Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
+@Deprecated("Compatible with 3.2.0 and earlier", level = DeprecationLevel.HIDDEN)
 public fun <T> `$$runInAsync1`(block: suspend () -> T, scope: CoroutineScope = `$$DefaultScope`): CompletableFuture<T> {
     return runInAsync(scope) { block() }
 }
 
+/**
+ * @since 3.3.0
+ */
+@InternalSimbotApi
+@Deprecated("Just used by compiler", level = DeprecationLevel.HIDDEN)
+public fun <T> `$$runInAsyncNullable`(block: suspend () -> T, scope: CoroutineScope? = null): CompletableFuture<T> {
+    return runInAsync(scope ?: `$$DefaultScope`) { block() }
+}
+
 
 // Yes. I am the BlockingRunner.
-@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCoroutineContext) : Continuation<T> {
-    private var result: Result<T>? = null
+    @Suppress("unused")
+    @Volatile
+    var s: Int = 0
+    // 1 = resume - success
+    // 2 = resume - exception
+    // 3 = suspend
+
+    // 1 -> value
+    // 2 -> ex
+    // 3 -> CompletableFuture<T>
+    @Volatile
+    var value: Any? = null
+
+    private object NULL
 
     override fun resumeWith(result: Result<T>) {
-        synchronized(this) {
-            this.result = result
-            (this as Object).notifyAll()
-        }
-    }
-
-    //    @Suppress("BlockingMethodInNonBlockingContext")
-    fun await(isWaitTimeoutEnabled: Boolean): Result<T> {
-        synchronized(this) {
-            @Suppress("UNUSED_VARIABLE") // emm?
-            var times = 0
-            while (true) {
-                when (val result = this.result) {
-                    null -> {
-                        if (isWaitTimeoutEnabled) {
-                            if (times > 0) {
-                                val duration = (waitTimeout * times).milliseconds
-                                if (logger.isDebugEnabled) {
-                                    val durationString = duration.toString()
-                                    logger.warn("Blocking runner has been blocking for at least {}.", durationString)
-                                    logger.debug(
-                                        "Long time blocking duration at least {}",
-                                        durationString,
-                                        LongTimeBlockingException(durationString)
-                                    )
-                                } else {
-                                    logger.warn(
-                                        "Blocking runner has been blocking for at least {}. Enable debug logging for '{}' for more stack information.",
-                                        duration.toString(),
-                                        LOGGER_NAME
-                                    )
-                                }
-                            }
-                            (this as Object).wait(waitTimeout)
-                            times += 1
-
-                        } else {
-                            // just wait.
-                            (this as Object).wait()
-                        }
-
-                    }
-
-                    else -> {
-                        return result
+        val resumed =
+            signalUpdater.compareAndSet(
+                this,
+                SIGNAL_NONE,
+                if (result.isSuccess) SIGNAL_RESUME_SUCCESS else SIGNAL_RESUME_FAILED
+            )
+        if (!resumed) {
+            // value is future.
+            @Suppress("UNCHECKED_CAST")
+            valueUpdater.updateAndGet(this) { curr ->
+                ((curr as? CompletableFuture<T>) ?: CompletableFuture<T>()).also { f ->
+                    result.onSuccess { value ->
+                        f.complete(value)
+                    }.onFailure { e ->
+                        f.completeExceptionally(e)
                     }
                 }
             }
+        } else {
+            // resume success, set value
+            result.onSuccess { value ->
+                valueUpdater.set(this, value ?: NULL)
+            }.onFailure { e ->
+                valueUpdater.set(this, e)
+            }
         }
+    }
+
+    /**
+     * @see CompletableFuture.join
+     * @see CompletableFuture.get
+     * @throws CancellationException cancellation
+     * @throws CompletionException completion
+     * @throws ExecutionException if [ExecutionException.cause] is null
+     * @throws Exception [ExecutionException.cause]
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun await(isWaitTimeoutEnabled: Boolean): T {
+        val future: CompletableFuture<T>
+
+        // 预期为异步挂起。如果成功，value设置为 CompletableFuture.
+        if (signalUpdater.compareAndSet(this, SIGNAL_NONE, SIGNAL_SUSPEND)) {
+            future = valueUpdater.updateAndGet(this) { curr ->
+                (curr as? CompletableFuture<T>) ?: CompletableFuture<T>()
+            } as CompletableFuture<T>
+        } else {
+            // 失败，则获取，或等待结果
+            var value: Any?
+            do {
+                value = valueUpdater.get(this)
+            } while (value == null)
+
+            if (value == NULL) {
+                return null as T
+            }
+
+            // success or failed
+            if (signalUpdater.get(this) == SIGNAL_RESUME_SUCCESS) {
+                return value as T
+            }
+
+            throw (value as Throwable)
+        }
+
+        if (!isWaitTimeoutEnabled || (!logIfVirtual && Thread.currentThread().isVirtualThread())) {
+            try {
+                return future.get()
+            } catch (cancellation: CancellationException) {
+                throw cancellation
+            } catch (execution: ExecutionException) {
+                throw execution.cause ?: execution
+            } catch (other: Throwable) {
+                throw CompletionException(other)
+            }
+        }
+
+        var times = 0
+        while (!future.isDone && !Thread.currentThread().isInterrupted) {
+            if (times > 0) {
+                val duration = (waitTimeout * times).milliseconds
+                if (logger.isDebugEnabled) {
+                    val durationString = duration.toString()
+                    logger.warn("Blocking runner has been blocking for at least {}.", durationString)
+                    val e: Throwable = LongTimeBlockingException(durationString)
+                    logger.debug(
+                        "Long time blocking duration at least {}",
+                        durationString,
+                        e
+                    )
+                } else {
+                    logger.warn(
+                        "Blocking runner has been blocking for at least {}. Enable debug logging for '{}' for more stack information.",
+                        duration.toString(),
+                        LOGGER_NAME
+                    )
+                }
+            }
+
+            try {
+                return future.get(waitTimeout, TimeUnit.MILLISECONDS)
+            } catch (timeout: TimeoutException) {
+                times += 1
+            } catch (cancellation: CancellationException) {
+                throw cancellation
+            } catch (execution: ExecutionException) {
+                throw execution.cause ?: execution
+            } catch (other: Throwable) {
+                throw CompletionException(other)
+            }
+        }
+
+        // done.
+        return future.join()
     }
 
     // for displaying the stack only
     private class LongTimeBlockingException(message: String) : RuntimeException(message)
 
     companion object {
+        private const val SIGNAL_NONE = 0
+        private const val SIGNAL_RESUME_SUCCESS = 1
+        private const val SIGNAL_RESUME_FAILED = 2
+        private const val SIGNAL_SUSPEND = 3
+        private val signalUpdater = AtomicIntegerFieldUpdater.newUpdater(SuspendRunner::class.java, "s")
+        private val valueUpdater =
+            AtomicReferenceFieldUpdater.newUpdater(SuspendRunner::class.java, Any::class.java, "value")
+//        private val futureUpdater = AtomicReferenceFieldUpdater.newUpdater(SuspendRunner::class.java, CompletableFuture::class.java, "future")
+
+        // ignore for Virtual thread?
+        // val threadIsV = MethodHandles.publicLookup().findVirtual(Thread::class.java, "isVirtual", MethodType.methodType(java.lang.Boolean.TYPE))
+
+        private val isVirtualThreadFunc = runCatching<(Thread) -> Boolean> {
+                        val mh = MethodHandles.publicLookup().findVirtual(Thread::class.java, "isVirtual", MethodType.methodType(java.lang.Boolean.TYPE))
+            return@runCatching { t -> mh.invoke(t) as Boolean }
+        }.getOrElse {
+            return@getOrElse { false }
+        }
+
+        private fun Thread.isVirtualThread(): Boolean = isVirtualThreadFunc(this)
+
+        private const val BLOCKING_RUNNER_WAIT_TIME_LOG_IF_VIRTUAL_PROPERTY_NAME =
+            "simbot.blockingRunner.waitTimeoutLogIfVirtual"
+
         private const val BLOCKING_RUNNER_DEFAULT_WAIT_TIME_PROPERTY_NAME =
             "simbot.blockingRunner.waitTimeoutMilliseconds"
         private const val BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME = "simbot.blockingRunner.disableWaitTimeout"
@@ -645,6 +875,8 @@ private class SuspendRunner<T>(override val context: CoroutineContext = EmptyCor
         private val waitTimeout =
             systemLong(BLOCKING_RUNNER_DEFAULT_WAIT_TIME_PROPERTY_NAME)?.takeIf { it > 0 } ?: DEFAULT_WAIT_TIME
         internal val isWaitTimeoutEnabled = !systemBool(BLOCKING_RUNNER_DISABLE_WAIT_TIME_PROPERTY_NAME)
+
+        private val logIfVirtual = systemBool(BLOCKING_RUNNER_WAIT_TIME_LOG_IF_VIRTUAL_PROPERTY_NAME)
 
         init {
             if (isWaitTimeoutEnabled) {

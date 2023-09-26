@@ -29,45 +29,50 @@ import kotlin.reflect.jvm.javaGetter
  *
  * @author ForteScarlet
  */
+@Suppress("RedundantModalityModifier")
 internal class SimpleKAnnotationMetadata<A : Annotation>(override val annotationType: KClass<A>) :
     KAnnotationMetadata<A>, java.io.Serializable {
 
-    @Transient
-    override val retention: AnnotationRetention
+    /*
+        Warn: Property must be initialized, be final, or be abstract. This warning will become an error in future releases.
+        因此属性添加 final ，但是加 final 又会提示 final 冗余，所以再加一个 @Suppress
+     */
 
     @Transient
-    override val targets: Set<AnnotationTarget>
+    final override val retention: AnnotationRetention
+
+    @Transient
+    final override val targets: Set<AnnotationTarget>
 
     // repeatable | deprecated | mustDocumented
     @Transient
     private val marks: Byte
 
     @Transient
-    override val deprecatedMessage: String?
+    final override val deprecatedMessage: String?
 
     @Transient
-    override val deprecatedReplaceWithExpression: String?
+    final override val deprecatedReplaceWithExpression: String?
 
     @Transient
-    override val deprecatedReplaceWithImports: Set<String>?
+    final override val deprecatedReplaceWithImports: Set<String>?
 
     @Transient
-    override val deprecatedLevel: DeprecationLevel?
+    final override val deprecatedLevel: DeprecationLevel?
 
     @Transient
-    override val propertyDefaultValues: Map<String, Any>
+    final override val propertyDefaultValues: Map<String, Any>
 
     @Transient
     private val propertiesMap: Map<String, KProperty1<A, Any>>
 
     @Transient
-    override val propertyTypes: Map<String, KType> // get() = propertiesMap.mapValues { e -> e.value.returnType }
+    final override val propertyTypes: Map<String, KType> // get() = propertiesMap.mapValues { e -> e.value.returnType }
 
     @Transient
     private val namingMaps: MutableMap<KClass<out Annotation>, MutableMap<String, String>>
 
     init {
-
         // repeatable
         val repeatable = annotationType.hasAnnotation<Repeatable>()
 
@@ -89,7 +94,7 @@ internal class SimpleKAnnotationMetadata<A : Annotation>(override val annotation
         propertyTypes = propertiesMap.mapValues { e -> e.value.returnType }
         propertyDefaultValues = propertiesMap.mapNotNull { entry ->
             kotlin.runCatching {
-                val def = entry.value.javaGetter?.defaultValue
+                val def: Any? = entry.value.javaGetter?.defaultValue
                 if (def != null) entry.key to def else null
             }.getOrNull()
         }.toMap()
@@ -113,13 +118,13 @@ internal class SimpleKAnnotationMetadata<A : Annotation>(override val annotation
 
     // repeatable | deprecated | mustDocumented
     override val isDeprecated: Boolean
-        get() = marks and deprecatedByte != ZERO_BYTE
+        get() = marks and DEPRECATED_BYTE != ZERO_BYTE
 
     override val isMustBeDocumented: Boolean
-        get() = marks and mustDocumentedByte != ZERO_BYTE
+        get() = marks and MUST_DOCUMENTED_BYTE != ZERO_BYTE
 
     override val isRepeatable: Boolean
-        get() = marks and repeatableByte != ZERO_BYTE
+        get() = marks and REPEATABLE_BYTE != ZERO_BYTE
 
     override val propertyNames: Set<String>
         get() = propertyTypes.keys
@@ -184,20 +189,20 @@ internal class SimpleKAnnotationMetadata<A : Annotation>(override val annotation
     companion object {
         // repeatable | deprecated | mustDocumented
         private const val ZERO_BYTE: Byte = 0
-        private const val mustDocumentedByte: Byte = 1
-        private const val deprecatedByte: Byte = 2
-        private const val repeatableByte: Byte = 4
+        private const val MUST_DOCUMENTED_BYTE: Byte = 1
+        private const val DEPRECATED_BYTE: Byte = 2
+        private const val REPEATABLE_BYTE: Byte = 4
 
-        @OptIn(ExperimentalStdlibApi::class)
         private fun <A : Annotation> resolveNamingMaps(
             property: KProperty1<A, *>,
             defaultMapType: KClass<out Annotation>?,
             namingMaps: MutableMap<KClass<out Annotation>, MutableMap<String, String>>
         ) {
             val name = property.name
-            val properties: List<AnnotationMapper.Property> = property.findAnnotations<AnnotationMapper.Property>().ifEmpty {
-                property.getter.findAnnotations()
-            }
+            val properties: List<AnnotationMapper.Property> =
+                property.findAnnotations<AnnotationMapper.Property>().ifEmpty {
+                    property.getter.findAnnotations()
+                }
 
             if (properties.isNotEmpty()) {
                 for (mapperProperty in properties) {
@@ -225,13 +230,13 @@ internal class SimpleKAnnotationMetadata<A : Annotation>(override val annotation
         ): Byte {
             var marks: Byte = 0
             if (annotationType.hasAnnotation<MustBeDocumented>()) {
-                marks = marks or mustDocumentedByte
+                marks = marks or MUST_DOCUMENTED_BYTE
             }
             if (deprecated) {
-                marks = marks or deprecatedByte
+                marks = marks or DEPRECATED_BYTE
             }
             if (repeatable) {
-                marks = marks or repeatableByte
+                marks = marks or REPEATABLE_BYTE
             }
             return marks
         }

@@ -104,7 +104,7 @@ public object MessageValueBinderFactory : ParameterBinderFactory {
 
 
 private sealed class MessagesSelfBinder : ParameterBinder {
-    object Nullable : MessagesSelfBinder() {
+    data object Nullable : MessagesSelfBinder() {
         override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
             val event = context.event
             return if (event is MessageEvent) {
@@ -115,7 +115,7 @@ private sealed class MessagesSelfBinder : ParameterBinder {
         }
     }
     
-    object NotNull : MessagesSelfBinder() {
+    data object NotNull : MessagesSelfBinder() {
         override suspend fun arg(context: EventListenerProcessingContext): Result<Any?> {
             val event = context.event
             return if (event is MessageEvent) {

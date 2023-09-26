@@ -163,8 +163,8 @@ public class SimbotListenerMethodProcessor : ApplicationContextAware, Configurat
 
             val context = applicationContext
 
-            annotatedMethods.forEach { method, binderAnnotation ->
-                val scope = binderAnnotation.scope
+            annotatedMethods.forEach { (method, binderAnnotation) ->
+                val scope: Binder.Scope = binderAnnotation.scope
 
                 // skip if scope == CURRENT.
                 if (scope == Binder.Scope.CURRENT) {

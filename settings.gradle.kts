@@ -47,13 +47,14 @@ include(":simbot-util-suspend-transformer")
 if (!System.getenv("IS_CI").toBoolean()) {
     include(
 //        projectTest("boot"),
-        projectTest("spring-boot-starter"),
+//        projectTest("spring-boot-starter"),
 //        projectTest("jmh"),
     )
 
     include(":simbot-component-http-server-api")
 }
 
+//include(":simbot-project-tests:simbot-project-test-j21")
 
 
 @Suppress("NOTHING_TO_INLINE")

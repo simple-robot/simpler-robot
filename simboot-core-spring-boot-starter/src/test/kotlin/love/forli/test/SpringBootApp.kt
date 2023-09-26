@@ -32,7 +32,6 @@ import org.springframework.context.annotation.Configuration
 @SpringBootApplication
 open class SpringBootApp
 
-
 fun main(vararg args: String) {
     val app = runApplication<SpringBootApp>(args = args)
 
@@ -42,12 +41,12 @@ fun main(vararg args: String) {
 
     println(simbotApp.environment.serializersModule)
 
-    // TODO Json decode BUG
-    println(Json {
+    val json = Json {
         isLenient = true
         ignoreUnknownKeys = true
         serializersModule = simbotApp.environment.serializersModule
-    }.decodeFromString<Root>("""{"config": {"a": 1}}"""))
+    }
+    println(json.decodeFromString<Root>("""{"config": {"a": 1}}"""))
 }
 
 @Configuration

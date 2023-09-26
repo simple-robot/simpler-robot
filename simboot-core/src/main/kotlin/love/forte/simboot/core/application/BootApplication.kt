@@ -1098,14 +1098,14 @@ private fun BotRegistrar.autoRegisterBots(
             @Suppress("DuplicatedCode")
             when (failurePolicy) {
                 BotRegistrationFailurePolicy.ERROR -> {
-                    val err = BotAutoRegistrationFailureException("Bot($botInfo)")
-                    logger.error("Bot verify info [{}] is not matched by any manager.", botInfo, err)
-                    throw err
+                    val e: Throwable = BotAutoRegistrationFailureException("Bot($botInfo)")
+                    logger.error("Bot verify info [{}] is not matched by any manager.", botInfo, e)
+                    throw e
                 }
 
                 BotRegistrationFailurePolicy.WARN -> {
-                    val warn = BotAutoRegistrationFailureException("Bot($botInfo)") // For log only.
-                    logger.warn("Bot verify info [{}] is not matched by any manager.", botInfo, warn)
+                    val e: Throwable = BotAutoRegistrationFailureException("Bot($botInfo)") // For log only.
+                    logger.warn("Bot verify info [{}] is not matched by any manager.", botInfo, e)
                 }
 
                 else -> {

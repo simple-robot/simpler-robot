@@ -22,8 +22,10 @@
    <a href="https://github.com/ForteScarlet/simpler-robot/releases/latest"><img alt="release" src="https://img.shields.io/github/v/release/ForteScarlet/simpler-robot" /></a>
 <a href="https://repo1.maven.org/maven2/love/forte/simbot/simbot-api/" target="_blank">
   <img alt="release" src="https://img.shields.io/maven-central/v/love.forte.simbot/simbot-api" /></a>
-<a href="https://www.yuque.com/simpler-robot/simpler-robot-doc" target="_blank">
-  <img alt="doc" src="https://img.shields.io/badge/doc-yuque-brightgreen" /></a>
+<a href="https://simbot.forte.love" target="_blank">
+  <img alt="doc" src="https://img.shields.io/badge/doc-simbot-brightgreen" /></a>
+<a href="https://qodana.cloud/projects/p9mmM/reports/79Xen" target="_blank">
+  <img alt="Qodana" src="https://github.com/simple-robot/simpler-robot/actions/workflows/qodana_code_quality.yml/badge.svg" /></a>
    <hr>
    <img alt="stars" src="https://img.shields.io/github/stars/ForteScarlet/simpler-robot" />
    <img alt="forks" src="https://img.shields.io/github/forks/ForteScarlet/simpler-robot" />
@@ -45,7 +47,8 @@
 
 ## 简介
 
-**`Simple Robot`** 是一个JVM平台（和多平台）的bot风格事件调度框架（下文简称simbot），提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写bot风格的事件调度应用。目前主要应用于对接各种类型的bot应用平台/框架，并提供统一的API实现。
+**`Simple Robot`** 是一个JVM平台（和多平台）的bot风格事件调度框架（下文简称simbot），提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写bot风格的事件调度应用。
+目前主要应用于对接各种类型的bot应用平台/框架，并提供统一的API实现。
 
 **`simbot`** 通过 [Kotlin](https://kotlinlang.org/) 语言开发并兼容Java（jdk8+）等JVM平台语言，且提供Javaer最爱的Spring Boot Starter，协助你快速开发。
 
@@ -57,7 +60,7 @@
 
 ## 文档
 
-对于使用文档，可以去看看 [**Simple Robot 3 官方网站**][doc-homepage] (尚在更新，并不完整)，
+对于使用文档，可以去看看 [**Simple Robot 3 官方网站**][doc-homepage] (建议开启“魔法”访问)，
 而API文档则可以前往 [文档引导站点](https://docs.simbot.forte.love) 寻找并查看。API文档归根随着版本的发布而同步更新。
 
 而这些内容，你都可以在 [**Simple Robot 图书馆**](http://github.com/simple-robot-library) 处找到。
@@ -72,11 +75,11 @@ simbot3目前已经实现的组件有：
 |                  组件目标                   |    主要成员     |                                                     仓库地址                                                      | 状态  |
 |:---------------------------------------:|:-----------:|:-------------------------------------------------------------------------------------------------------------:|:---:|
 | [Mirai](https://github.com/mamoe/mirai) | simbot team |         [simple-robot/simbot-component-mirai](https://github.com/simple-robot/simbot-component-mirai)         | 维护中 |
-|  [Kook(开黑啦)](https://www.kookapp.cn/)   | simbot team |          [simple-robot/simbot-component-kook](https://github.com/simple-robot/simbot-component-kook)          | 维护中 |
-|  [QQ频道机器人](https://bot.q.qq.com/wiki)   | simbot team | [simple-robot/simbot-component-tencent-guild](https://github.com/simple-robot/simbot-component-tencent-guild) | 维护中 |
+|  [Kook(开黑啦)](https://www.kookapp.cn)   | simbot team |          [simple-robot/simbot-component-kook](https://github.com/simple-robot/simbot-component-kook)          | 维护中 |
+|  [QQ频道](https://bot.q.qq.com/wiki)   | simbot team | [simple-robot/simbot-component-qq-guild](https://github.com/simple-robot/simbot-component-qq-guild) | 维护中 |
+|  [米游社大别野](https://open.miyoushe.com)   | simbot team | [simple-robot/simbot-component-miyoushe](https://github.com/simple-robot/simbot-component-miyoushe) | _计划中_ |
 
 有关于这些组件等simbot附属内容的相关信息，你可以从 [**Simple Robot 附属组织库**](https://github.com/simple-robot) 处查看~
-
 
 
 ## 快速开始

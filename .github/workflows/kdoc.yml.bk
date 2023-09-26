@@ -29,7 +29,7 @@ jobs:
       - name: Gradle generate documentation
         uses: gradle/gradle-build-action@v2
         with:
-          gradle-version: 7.6
+          gradle-version: 8.3
           arguments: |
             -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
             -Porg.gradle.daemon=false

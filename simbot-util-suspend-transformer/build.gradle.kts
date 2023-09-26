@@ -76,6 +76,13 @@ kotlin {
                 api(libs.kotlinx.coroutines.jdk8)
             }
         }
+
+        getByName("jvmTest") {
+            dependencies {
+                api(project(":simbot-logger-slf4j-impl"))
+            }
+        }
+
         getByName("jsMain") {
             dependencies {
                 api(libs.kotlinx.coroutines.core)

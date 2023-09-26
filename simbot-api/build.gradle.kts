@@ -52,7 +52,7 @@ dependencies {
     testImplementation(libs.kotlinx.serialization.hocon)
     testImplementation(libs.openjdk.jmh.core)
     testImplementation(libs.openjdk.jmh.generator.annprocess)
-    kaptTest(libs.openjdk.jmh.generator.annprocess)
+    //kaptTest(libs.openjdk.jmh.generator.annprocess)
     testAnnotationProcessor(libs.openjdk.jmh.generator.annprocess)
 }
 

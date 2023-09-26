@@ -26,6 +26,7 @@ class BotManagersTests {
         assertNull(SimpleBotManagersImpl(listOf(SimpleBotMangerImpl(), SimpleBotMangerImpl())).getFirstOrNull(SimpleBotMangerImpl2::class.java))
         assertNotNull(SimpleBotManagersImpl(listOf(SimpleBotMangerImpl2(), SimpleBotMangerImpl())).getFirstOrNull(SimpleBotMangerImpl::class.java))
         assertNotNull(SimpleBotManagersImpl(listOf(SimpleBotMangerImpl(), SimpleBotMangerImpl())).getFirstOrNull(BotManager::class.java))
+        
     }
 
 }
