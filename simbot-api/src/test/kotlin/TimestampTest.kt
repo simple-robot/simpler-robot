@@ -1,4 +1,3 @@
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import love.forte.simbot.Timestamp
@@ -49,4 +48,5 @@ class TimestampTest {
         
         assert(newList.first() === Timestamp.NotSupport)
     }
+
 }
