@@ -48,5 +48,4 @@ class TimestampTest {
         
         assert(newList.first() === Timestamp.NotSupport)
     }
-
 }
