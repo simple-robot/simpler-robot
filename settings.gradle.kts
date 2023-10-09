@@ -12,6 +12,8 @@
  */
 rootProject.name = "simply-robot"
 
+include(":simbot-common")
+
 include(":simbot-logger")
 include(":simbot-logger-slf4j-impl")
 
