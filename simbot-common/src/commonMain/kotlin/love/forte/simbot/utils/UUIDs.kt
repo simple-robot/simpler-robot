@@ -12,7 +12,7 @@
 
 package love.forte.simbot.utils
 
-// 以下内容参考自JDK UUID
+// 以下内容参考自JDK `java.util.UUID`
 /*
  * Copyright (c) 2003, 2014, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -39,8 +39,9 @@ package love.forte.simbot.utils
  */
 
 /**
+ * 尝试将字符串解析为UUID的高低64位整型。
  *
- * @throws IllegalArgumentException
+ * @throws IllegalArgumentException 如果无法解析
  */
 public inline fun <T> String.toUUIDSigs(block: (most: Long, least: Long) -> T): T {
     require(length <= 36) { "UUID string too large" }
@@ -72,7 +73,7 @@ public inline fun <T> String.toUUIDSigs(block: (most: Long, least: Long) -> T): 
     return block(mostSigBits, leastSigBits)
 }
 
-//// 以下内容参考自 kotlin.text 中相关实现
+//// 以下内容参考自 `kotlin.text` 中相关实现
 /*
  * Copyright 2010-2018 JetBrains s.r.o. and Kotlin Programming Language contributors.
  * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
@@ -111,10 +112,12 @@ internal fun String.toLong(begin: Int, end: Int, radix: Int): Long {
                 isNegative = true
                 limit = Long.MIN_VALUE
             }
+
             '+' -> {
                 isNegative = false
                 limit = -Long.MAX_VALUE
             }
+
             else -> throw IllegalArgumentException("unknown sign '$firstChar'")
         }
     } else {
@@ -240,16 +243,8 @@ private fun Char.digitToIntImpl(): Int {
     return if (diff < 10) diff else -1
 }
 
-/**
- * Returns `true` if this character is a digit.
- */
-private fun Char.isDigitImpl(): Boolean {
-    return digitToIntImpl() >= 0
-}
 
-
-
-//// 下述代码参考自 JDK Long.java
+//// 下述代码参考自 JDK `java.lang.Long`
 /*
  * Copyright (c) 1994, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
@@ -274,16 +269,6 @@ private fun Char.isDigitImpl(): Boolean {
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-
-private val digits = charArrayOf(
-    '0', '1', '2', '3', '4', '5',
-    '6', '7', '8', '9', 'a', 'b',
-    'c', 'd', 'e', 'f', 'g', 'h',
-    'i', 'j', 'k', 'l', 'm', 'n',
-    'o', 'p', 'q', 'r', 's', 't',
-    'u', 'v', 'w', 'x', 'y', 'z'
-)
-
 
 private const val DIGITS = "0123456789abcdef"
 
@@ -314,7 +299,7 @@ private fun formatUnsignedLong0(value: Long, buf: ByteArray, offset: Int, len: I
 }
 
 
-internal fun uuidString0(msb: Long, lsb: Long): String {
+internal fun uuidString(msb: Long, lsb: Long): String {
     val buf = ByteArray(36)
     formatUnsignedLong0(lsb, buf, 24, 12)
     formatUnsignedLong0(lsb ushr 48, buf, 19, 4)
