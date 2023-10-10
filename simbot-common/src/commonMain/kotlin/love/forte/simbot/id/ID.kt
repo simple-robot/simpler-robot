@@ -20,6 +20,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.id.StringID.Companion.ID
+import love.forte.simbot.id.UUID.Companion.UUID
 import love.forte.simbot.utils.Cloneable
 import love.forte.simbot.utils.toUUIDSigs
 import love.forte.simbot.utils.uuidString0
@@ -42,7 +43,7 @@ import kotlin.random.Random
 public expect sealed class ID() : Comparable<ID>, Cloneable {
 
     /**
-     * ID 的字面值字符串。
+     * ID 的 **字面值** 字符串。
      *
      * @return 字面值字符串
      */
@@ -108,7 +109,7 @@ public object AsStringIDSerializer : KSerializer<ID> {
  * @property value 字符串ID的源值
  */
 @Serializable(with = StringID.Serializer::class)
-public class StringID(public val value: String) : ID() {
+public class StringID private constructor(public val value: String) : ID() {
     override fun toString(): String = value
     override fun hashCode(): Int = value.hashCode()
 
@@ -176,7 +177,18 @@ public class StringID(public val value: String) : ID() {
     }
 }
 
-
+/**
+ * 一个不可变的 "universally unique identifier" (UUID) 。
+ *
+ * [UUID] 是一个128位的不可变唯一标识，由两个分别代表高低位的 [Long] 组成。
+ *
+ * [UUID] 的实现逻辑大多数参考自 `java.util.UUID`，
+ * 在多平台化实现中进行了部分调整。
+ *
+ * @see java.util.UUID
+ * @see [RFC 4122: A Universally Unique IDentifier (UUID) URN Namespace](https://www.ietf.org/rfc/rfc4122.txt)
+ */
+@Suppress("KDocUnresolvedReference")
 @Serializable(with = UUID.UUIDSerializer::class)
 public class UUID private constructor(
     public val mostSignificantBits: Long,
@@ -201,6 +213,15 @@ public class UUID private constructor(
     private val stringValue: String
         get() = if (::s.isInitialized) s else uuidString0(mostSignificantBits, leastSignificantBits).also { s = it }
 
+    /**
+     * 与另一个 [ID] 进行比较。
+     *
+     * - 如果它同样是 [UUID]，则会通过 [mostSignificantBits] 和 [leastSignificantBits] 进行对比；
+     * - 如果是一个 [NumericalID]，则 [UUID] 始终得到 `1` —— 128位数字的威力就是如此；
+     * - 如果是一个 [StringID]，则会通过 [toString] 的值进行比较；
+     * - 其他情况，始终得到 `-1`。
+     *
+     */
     override fun compareTo(other: ID): Int {
         return when (other) {
             is UUID -> {
@@ -216,6 +237,15 @@ public class UUID private constructor(
         }
     }
 
+    /**
+     * 得到 UUID 的字符串字面值。
+     *
+     * [UUID] 的字符串值在计算后会被缓存，后续获取将会直接得到结果。
+     *
+     * 但是不能保证计算次数，如果同时有多个线程访问，依然可能产生多次字符串计算，
+     * 但是最终结果是相同的。
+     *
+     */
     override fun toString(): String = stringValue
 
     override fun hashCode(): Int {
@@ -223,6 +253,14 @@ public class UUID private constructor(
         return (hilo shr 32).toInt() xor hilo.toInt()
     }
 
+    /**
+     * 判断与另一个目标是否为 [ID] 且字面值相同。
+     *
+     * - 如果同样是 [UUID]，没什么可说的，正常判断
+     * - 如果是 [NumericalID]，始终得到 `false`
+     * - 其他情况，通过 [toString] 进行判断。
+     *
+     */
     override fun equals(other: Any?): Boolean = idCommonEq(other) {
         when (it) {
             is NumericalID -> false
@@ -231,6 +269,9 @@ public class UUID private constructor(
         }
     }
 
+    /**
+     * 判断另一个目标是否是 [UUID]，且值相同。
+     */
     override fun equalsExact(other: Any?): Boolean = idExactEq(other) {
         mostSignificantBits == it.mostSignificantBits && leastSignificantBits == it.leastSignificantBits
     }
@@ -308,9 +349,273 @@ public class UUID private constructor(
 
 }
 
-// TODO
+/**
+ * 通过一个数字作为ID值的 [ID] 实现。主要有4个子类型，按照最大可表示的数值按顺序为：
+ *
+ * - [IntID] 32位有符号整型
+ * - [UIntID] 32位无符号整型
+ * - [LongID] 64位有符号整型
+ * - [ULongID] 64位无符号整型
+ *
+ * 如果想要作为ID的数字已经超过64位无符号 ([ULongID]) 锁能表示的最大数字，
+ * 那么建议使用其他类型来表示，例如字符串ID [StringID] 或 UUID ([UUID]，也可以算是一个128位数字的ID)
+ *
+ *
+ * @see IntID
+ * @see UIntID
+ * @see LongID
+ * @see ULongID
+ */
 public sealed class NumericalID : ID() {
-    // TODO
+
+    /**
+     * 将数字值转化为 [Double]。类似于 [Number.toDouble]
+     */
+    public abstract fun toDouble(): Double
+
+    /**
+     * 将数字值转化为 [Float]。类似于 [Number.toFloat]
+     */
+    public abstract fun toFloat(): Float
+
+    /**
+     * 将数字值转化为 [Long]。类似于 [Number.toLong]
+     */
+    public abstract fun toLong(): Long
+
+    /**
+     * 将数字值转化为 [Int]。类似于 [Number.toInt]
+     */
+    public abstract fun toInt(): Int
+
+    /**
+     * 将数字值转化为 [Short]。类似于 [Number.toShort]
+     */
+    public abstract fun toShort(): Short
+
+    /**
+     * 将数字值转化为 [Byte]。类似于 [Number.toByte]
+     */
+    public abstract fun toByte(): Byte
+
+    final override fun compareTo(other: ID): Int {
+        return when (other) {
+            is StringID -> 1
+            is UUID -> -1
+            is NumericalID -> compareNumber(this, other)
+            else -> -1
+        }
+    }
+
+    public companion object {
+        internal const val INT_MAX_ON_UINT: UInt = 2147483647u // Int.MAX_VALUE.toUInt()
+        internal const val INT_MAX_ON_LONG: Long = 2147483647L // Int.MAX_VALUE
+        internal const val INT_MAX_ON_ULONG: ULong = 2147483647u // Int.MAX_VALUE
+
+        internal const val LONG_MAX_ON_ULONG: ULong = 9223372036854775807u // Long.MAX_VALUE.toULong()
+
+    }
+}
+
+/**
+ * 一个通过 [32位整型 (Int)][Int] 作为ID值的 [NumericalID] 实现。
+ *
+ * @property value 源值
+ */
+public class IntID private constructor(public val value: Int) : NumericalID() {
+    override fun toDouble(): Double = value.toDouble()
+    override fun toFloat(): Float = value.toFloat()
+    override fun toLong(): Long = value.toLong()
+    override fun toInt(): Int = value
+    override fun toShort(): Short = value.toShort()
+    override fun toByte(): Byte = value.toByte()
+    override fun toString(): String = value.toString()
+    override fun hashCode(): Int = value.hashCode()
+
+    override fun equals(other: Any?): Boolean = idCommonEq(other) {
+        when (it) {
+            is UUID -> false
+            is NumericalID -> compareNumber(this, it) == 0
+            else -> value.toString() == it.toString()
+        }
+    }
+
+    override fun equalsExact(other: Any?): Boolean = idExactEq(other) {
+        value == it.value
+    }
+
+    override fun copy(): IntID = IntID(value)
+
+    public companion object {
+        /**
+         * 将一个 [Int] 转化为 [IntID]。
+         */
+        @get:JvmStatic
+        @get:JvmName("valueOf")
+        public val Int.ID: IntID
+            get() = IntID(this)
+
+
+    }
+
+    public object IntIDSerializer : KSerializer<IntID> {
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("IntID", PrimitiveKind.INT)
+        override fun deserialize(decoder: Decoder): IntID = IntID(decoder.decodeInt())
+        override fun serialize(encoder: Encoder, value: IntID) {
+            encoder.encodeInt(value.value)
+        }
+
+    }
+}
+
+/**
+ * 一个通过 [32位无符号整型 (unsigned int)][UInt] 作为ID值的 [NumericalID] 实现。
+ *
+ * @property value 源值。
+ * 对于不支持直接操作无符号类型的目标来说，可能需要使用额外手段操作。
+ *
+ * 例如 Java 中，需要借助 `java.lang.Integer` 中与无符号相关的API进行操作，
+ * 比如 `java.lang.Integer.toUnsignedString`。
+ */
+public class UIntID private constructor(
+    @get:JvmName("getValue") public val value: UInt
+) : NumericalID() {
+    override fun toDouble(): Double = value.toDouble()
+    override fun toFloat(): Float = value.toFloat()
+    override fun toLong(): Long = value.toLong()
+    override fun toInt(): Int = value.toInt()
+    override fun toShort(): Short = value.toShort()
+    override fun toByte(): Byte = value.toByte()
+    override fun toString(): String = value.toString()
+    override fun hashCode(): Int = value.hashCode()
+
+    override fun equals(other: Any?): Boolean = idCommonEq(other) {
+        when (it) {
+            is UUID -> false
+            is NumericalID -> compareNumber(this, it) == 0
+            else -> value.toString() == it.toString()
+        }
+    }
+
+    override fun equalsExact(other: Any?): Boolean = idExactEq(other) {
+        value == it.value
+    }
+
+    override fun copy(): UIntID = UIntID(value)
+
+    public companion object {
+        /**
+         * 将一个 [UInt] 转化为 [UIntID]。
+         */
+        @get:JvmStatic
+        @get:JvmName("valueOf")
+        public val UInt.ID: UIntID
+            get() = UIntID(this)
+
+    }
+}
+
+/**
+ * 一个通过 [64位整型 (Long)][Long] 作为ID值的 [NumericalID] 实现。
+ *
+ *  @property value 源值。
+ */
+public class LongID private constructor(public val value: Long) : NumericalID() {
+    override fun toDouble(): Double = value.toDouble()
+    override fun toFloat(): Float = value.toFloat()
+    override fun toLong(): Long = value
+    override fun toInt(): Int = value.toInt()
+    override fun toShort(): Short = value.toShort()
+    override fun toByte(): Byte = value.toByte()
+    override fun toString(): String = value.toString()
+    override fun hashCode(): Int = value.hashCode()
+
+    override fun equals(other: Any?): Boolean = idCommonEq(other) {
+        when (it) {
+            is UUID -> false
+            is NumericalID -> compareNumber(this, it) == 0
+            else -> value.toString() == it.toString()
+        }
+    }
+
+    override fun equalsExact(other: Any?): Boolean = idExactEq(other) {
+        value == it.value
+    }
+
+    override fun copy(): LongID = LongID(value)
+
+    public companion object {
+        /**
+         * 将一个 [Long] 转化为 [LongID]。
+         */
+        @get:JvmStatic
+        @get:JvmName("valueOf")
+        public val Long.ID: LongID
+            get() = LongID(this)
+
+    }
+}
+
+/**
+ * 一个通过 [64位无符号整型 (unsigned long)][ULong] 作为ID值的 [NumericalID] 实现。
+ *
+ * @property value 源值。
+ * 对于不支持直接操作无符号类型的目标来说，可能需要使用额外手段操作。
+ *
+ * 例如 Java 中，需要借助 `java.lang.Long` 中与无符号相关的API进行操作，
+ * 比如 `java.lang.Long.toUnsignedString`。
+ */
+public class ULongID private constructor(@get:JvmName("getValue") public val value: ULong) : NumericalID() {
+    override fun toDouble(): Double = value.toDouble()
+    override fun toFloat(): Float = value.toFloat()
+    override fun toLong(): Long = value.toLong()
+    override fun toInt(): Int = value.toInt()
+    override fun toShort(): Short = value.toShort()
+    override fun toByte(): Byte = value.toByte()
+    override fun toString(): String = value.toString()
+    override fun hashCode(): Int = value.hashCode()
+
+    override fun equals(other: Any?): Boolean = idCommonEq(other) {
+        when (it) {
+            is UUID -> false
+            is NumericalID -> compareNumber(this, it) == 0
+            else -> value.toString() == it.toString()
+        }
+    }
+
+    override fun equalsExact(other: Any?): Boolean = idExactEq(other) {
+        value == it.value
+    }
+
+    override fun copy(): ULongID = ULongID(value)
+
+    public companion object {
+        /**
+         * 将一个 [ULong] 转化为 [ULongID]。
+         */
+        @get:JvmStatic
+        @get:JvmName("valueOf")
+        public val ULong.ID: ULongID
+            get() = ULongID(this)
+
+    }
+}
+
+
+private fun compareNumber(source: NumericalID, target: NumericalID): Int {
+    return when (source) {
+        is IntID -> when (target) {
+            is IntID -> source.value.compareTo(target.value)
+            is UIntID -> when {
+                source.value < 0 || target.value > NumericalID.INT_MAX_ON_UINT -> -1
+                else -> source.value.compareTo(target.value.toInt())
+            }
+
+            else -> TODO()
+        }
+
+        else -> TODO()
+    }
 }
 
 
