@@ -102,8 +102,8 @@ import kotlin.random.Random
  * ```java
  * long value = -1;
  *
- * ongID longID = LongID.valueOf(value);
- * LongID uLongID = ULongID.valueOf(value);
+ * LongID longID = LongID.valueOf(value);
+ * ULongID uLongID = ULongID.valueOf(value);
  *
  * System.out.println(longID);  // -1
  * System.out.println(uLongID); // 18446744073709551615
