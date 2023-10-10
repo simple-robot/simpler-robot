@@ -44,8 +44,6 @@ import love.forte.simbot.id.UUID.Companion.UUID
  * // 序列化结果: {"value": 123456}
  * ```
  *
- * 在Java中 [ID] 也实现了 [java.io.Serializable]。
- *
  * ### 可排序的
  *
  * [ID] 实现 [Comparable] 并允许所有 [ID] 类型之间存在排序关系。
@@ -154,15 +152,10 @@ import love.forte.simbot.id.UUID.Companion.UUID
  * // size: 1, values: {1=also value 1}
  * ```
  *
- * ### Cloneable
- *
- * 在 JVM 平台中，[ID] 实现了 [java.lang.Cloneable], 可以通过 [clone] 直接得到当前ID的一份副本。
- * 不过需要注意，在某些ID类型中可能会存在一些 "常量" 类型，这可能会破坏常量类型提供的 "小额优化"。
- *
  * @author ForteScarlet
  */
 @Serializable(with = AsStringIDSerializer::class)
-public actual sealed class ID actual constructor() : Comparable<ID>, Cloneable, java.io.Serializable {
+public actual sealed class ID actual constructor() : Comparable<ID> {
     /**
      * ID 的字面值字符串。
      *
@@ -201,14 +194,4 @@ public actual sealed class ID actual constructor() : Comparable<ID>, Cloneable, 
      * 复制一个当前ID。
      */
     public actual abstract fun copy(): ID
-
-    /**
-     * 克隆当前ID。
-     */
-    public override fun clone(): ID = super.clone() as ID
-
-    public companion object {
-        @Suppress("ConstPropertyName")
-        private const val serialVersionUID: Long = 1L
-    }
 }

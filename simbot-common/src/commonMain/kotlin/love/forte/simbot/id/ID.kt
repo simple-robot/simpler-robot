@@ -14,19 +14,18 @@ package love.forte.simbot.id
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.id.StringID.Companion.ID
 import love.forte.simbot.id.UUID.Companion.UUID
-import love.forte.simbot.utils.Cloneable
 import love.forte.simbot.utils.toUUIDSigs
-import love.forte.simbot.utils.uuidString0
+import love.forte.simbot.utils.uuidString
 import kotlin.concurrent.Volatile
 import kotlin.experimental.and
 import kotlin.experimental.or
+import kotlin.js.JsName
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
@@ -34,13 +33,144 @@ import kotlin.random.Random
 
 
 /**
+ * [ID] 是用于表示 _唯一标识_ 的不可变类值类型。
  *
+ * [ID] 是一个密封类型，它提供的最终类型有：
  *
+ * - [StringID]
+ * - [UUID]
+ * - [IntID]
+ * - [LongID]
+ * - [UIntID]
+ * - [ULongID]
+ *
+ * 它们可以粗略的被归类为字符串类型（ [UUID] 的字面值表现为字符串）和数字类型。
+ *
+ * ### 序列化
+ *
+ * 所有**具体的**ID类型都是可序列化的，它们都会通过 Kotlinx serialization
+ * 提供一个可作为**字面值**序列化的序列化器实现。
+ *
+ * 所有的ID类型都**不会**被序列化为结构体，例如 [UIntID] 会被直接序列化为一个数字:
+ *
+ * ```kotlin
+ * @Serializable
+ * data class Foo(val value: UIntID)
+ * // 序列化结果: {"value": 123456}
+ * ```
+ *
+ * ### 可排序的
+ *
+ * [ID] 实现 [Comparable] 并允许所有 [ID] 类型之间存在排序关系。
+ * 具体的排序规则参考每个具体的 [ID] 类型的 [compareTo] 的文档说明。
+ *
+ * ### 字面值与 `toString`
+ *
+ * 一个 [ID] 所表示的字符串值即为其字面值，也就是 [ID.toString] 的输出结果。
+ *
+ * 对于 [StringID] 来说，字面值就是它内部的字符串的值。
+ *
+ * ```kotlin
+ * val id = "abc".ID
+ * // toString: abc
+ * ```
+ *
+ * 对于 [UUID] 来说，字面值即为其内部 128 位数字通过一定算法计算而得到的具有规律且唯一的字符串值。
+ *
+ * ```kotlin
+ * val id = UUID.random()
+ * // toString: 817d2625-1c9b-4cc4-880e-5d6ba86a42b7
+ * ```
+ *
+ * 对于各数字类型的ID [NumericalID] 来说，字面值即为数字转为字符串的值。
+ *
+ * ```kotlin
+ * val iID: IntID = 1.ID     // toString: 1
+ * val lID: LongID = 1L.ID   // toString: 1
+ * val uiID: UIntID = 1u.ID  // toString: 1
+ * val ul: ULong = 1u
+ * val ulID: ULongID = ul.ID  // toString: 1
+ * ```
+ *
+ * 在Java中需要尤其注意的是，一个相同的数值，
+ * 使用无符号类型和有符号类型的ID在通过 `valueOf`
+ * 构建的结果可能是不同的，获取到的 `value` 和字面值也可能是不同的。
+ *
+ * Java在操作无符号ID的时候需要注意使用相关的无符号API。
+ * 以 `long` 为例：
+ *
+ * ```java
+ * long value = -1;
+ *
+ * ongID longID = LongID.valueOf(value);
+ * LongID uLongID = ULongID.valueOf(value);
+ *
+ * System.out.println(longID);  // -1
+ * System.out.println(uLongID); // 18446744073709551615
+ *
+ * System.out.println(longID.getValue());  // -1
+ * System.out.println(uLongID.getValue()); // -1
+ * ```
+ *
+ * 如果希望得到一些符合预期的结果，你应该使用Java中的无符号相关API：
+ *
+ * ```java
+ * long value = Long.parseUnsignedLong("18446744073709551615");
+ * ULongID uLongID = ULongID.valueOf(value);
+ * System.out.println(uLongID); // 18446744073709551615
+ * System.out.println(Long.toUnsignedString(uLongID.getValue()));
+ * // 18446744073709551615
+ * ```
+ *
+ * ### `equals` 与 `hashCode`
+ *
+ * [ID] 下所有类型均允许互相通过 [ID.equals] 判断是否具有相同的 **字面值**。
+ * [ID.equals] 实际上不会判断类型，因此如果两个不同类型的 [ID] 的字面值相同，
+ * 例如值为 `"1"` 的 [StringID] 和值为 `1` 的 [IntID]，它们之间使用 [ID.equals]
+ * 会得到 `true`。
+ *
+ * [ID] 作为一个"唯一标识"载体，大多数情况下，它的类型无关紧要。
+ * 并且 [ID] 属性的提供者也应当以抽象类 [ID] 类型本身对外提供，
+ * 而将具体的类型与构建隐藏在实现内部。
+ *
+ * ```kotlin
+ * public interface Foo {
+ *    val id: ID
+ * }
+ *
+ * internal class FooImpl(override val id: ULongID) : Foo
+ * ```
+ *
+ * 如果你希望严格匹配两个 [ID] 类型，而不是将它们视为统一的"唯一标识"，那么使用 [ID.equalsExact]
+ * 来进行。[equalsExact] 会像传统数据类型的 `equals` 一样，同时判断类型与值。
+ *
+ * 由于 [ID] 类型之间通过 [equals] 会仅比较字面值，且对外应仅暴露 [ID] 本身，
+ * 但是不同类型但字面值相同的 [ID] 的 [hashCode] 值可能并不相同，
+ * 因此 [ID] 这个抽象类型本身 **不适合** 作为一种 hash Key, 例如作为 HashMap 的 Key:
+ *
+ * ```kotlin
+ * // ❌Bad!
+ * val map1 = hashMapOf<ID, String>("1".ID to "value 1", 1.ID to "also value 1")
+ * // size: 2, values: {1=value 1, 1=also value 1}
+ * // ❌Bad!
+ * val uuid = UUID.random()
+ * val strId = uuid.toString().ID
+ * val map2 = hashMapOf<ID, String>(uuid to "UUID value", strId to "string ID value")
+ * // size: 2, values: {2afb3d3e-d3f4-4c15-89ed-eec0e258d533=UUID value, 2afb3d3e-d3f4-4c15-89ed-eec0e258d533=string ID value}
+ * ```
+ *
+ * 如果有必要，你应该使用一个**具体的**最终ID类型作为某种 hash key, 例如：
+ *
+ * ```kotlin
+ * // ✔ OK.
+ * val map = hashMapOf<IntID, String>(1.ID to "value 1", 1.ID to "also value 1")
+ * // size: 1, values: {1=also value 1}
+ * ```
  *
  * @author ForteScarlet
  */
 @Serializable(with = AsStringIDSerializer::class)
-public expect sealed class ID() : Comparable<ID>, Cloneable {
+public expect sealed class ID() : Comparable<ID> {
 
     /**
      * ID 的 **字面值** 字符串。
@@ -104,7 +234,10 @@ public object AsStringIDSerializer : KSerializer<ID> {
 
 
 /**
+ * 一个使用字符串 [String] 作为ID值的 [ID] 实现。
  *
+ * 任何 [ID] 类型都可以作为一个字符串类型进行序列化。如果希望通用化 [ID] ，无视它的具体类型而作为字符串进行序列化，
+ * 参考序列化器 [AsStringIDSerializer]。
  *
  * @property value 字符串ID的源值
  */
@@ -129,12 +262,22 @@ public class StringID private constructor(public val value: String) : ID() {
 
     override fun copy(): StringID = value.ID
 
+    /**
+     * 使 [StringID] 与某任意类型的 [ID] 排序。
+     *
+     * 如果目标类型是 [StringID] 或 [UUID]，则通过字面值排序。
+     * 否则（是 [NumericalID]）始终得到 `-1`。
+     *
+     */
     override fun compareTo(other: ID): Int {
-        if (other !is StringID) {
-            return -1
+        if (other is StringID) {
+            return value.compareTo(other.value)
+        }
+        if (other is UUID) {
+            return value.compareTo(other.toString())
         }
 
-        return value.compareTo(other.value)
+        return -1
     }
 
     public companion object {
@@ -146,14 +289,16 @@ public class StringID private constructor(public val value: String) : ID() {
          */
         @get:JvmStatic
         @get:JvmName("valueOf")
+        @get:JsName("valueOfString")
         public val String.ID: StringID get() = if (isEmpty()) EMPTY else StringID(this)
 
         /**
-         * 通过 [CharSequence] 构建一个 [StringID].
+         * 通过 [CharSequence.toString] 构建一个 [StringID].
          *
          */
         @get:JvmStatic
         @get:JvmName("valueOf")
+        @get:JsName("valueOfCharSequence")
         public val CharSequence.ID: StringID get() = if (isEmpty()) EMPTY else StringID(toString())
     }
 
@@ -182,14 +327,14 @@ public class StringID private constructor(public val value: String) : ID() {
  *
  * [UUID] 是一个128位的不可变唯一标识，由两个分别代表高低位的 [Long] 组成。
  *
- * [UUID] 的实现逻辑大多数参考自 `java.util.UUID`，
- * 在多平台化实现中进行了部分调整。
+ * > [UUID] 的实现逻辑大多数参考自 Java 的 `java.util.UUID`，在多平台化实现中进行了部分调整。
+ *
+ * see also: [RFC 4122: A Universally Unique IDentifier (UUID) URN Namespace](https://www.ietf.org/rfc/rfc4122.txt)
  *
  * @see java.util.UUID
- * @see [RFC 4122: A Universally Unique IDentifier (UUID) URN Namespace](https://www.ietf.org/rfc/rfc4122.txt)
  */
 @Suppress("KDocUnresolvedReference")
-@Serializable(with = UUID.UUIDSerializer::class)
+@Serializable(with = UUID.Serializer::class)
 public class UUID private constructor(
     public val mostSignificantBits: Long,
     public val leastSignificantBits: Long,
@@ -211,14 +356,14 @@ public class UUID private constructor(
      *
      */
     private val stringValue: String
-        get() = if (::s.isInitialized) s else uuidString0(mostSignificantBits, leastSignificantBits).also { s = it }
+        get() = if (::s.isInitialized) s else uuidString(mostSignificantBits, leastSignificantBits).also { s = it }
 
     /**
      * 与另一个 [ID] 进行比较。
      *
      * - 如果它同样是 [UUID]，则会通过 [mostSignificantBits] 和 [leastSignificantBits] 进行对比；
-     * - 如果是一个 [NumericalID]，则 [UUID] 始终得到 `1` —— 128位数字的威力就是如此；
-     * - 如果是一个 [StringID]，则会通过 [toString] 的值进行比较；
+     * - 如果是一个 [NumericalID]，则 [UUID] 始终得到 `1` —— 128位数字的威力就是如此。
+     * - 如果是一个 [StringID]，则会通过 [toString] 的值进行比较。
      * - 其他情况，始终得到 `-1`。
      *
      */
@@ -329,13 +474,18 @@ public class UUID private constructor(
          *
          */
         @get:JvmStatic
-        @get:JvmName("fromString")
+        @get:JvmName("valueOf")
         public val String.UUID: UUID
             get() = toUUIDSigs(::UUID)
     }
 
-
-    public object UUIDSerializer : KSerializer<UUID> {
+    /**
+     *
+     * [UUID] 的序列化器，会将其作为字符串处理。
+     *
+     * @see UUID
+     */
+    public object Serializer : KSerializer<UUID> {
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("UUIDString", PrimitiveKind.STRING)
 
         override fun deserialize(decoder: Decoder): UUID {
@@ -402,18 +552,17 @@ public sealed class NumericalID : ID() {
         return when (other) {
             is StringID -> 1
             is UUID -> -1
-            is NumericalID -> compareNumber(this, other)
+            is NumericalID -> compareNumber(other)
             else -> -1
         }
     }
 
+    protected abstract fun compareNumber(target: NumericalID): Int
+
     public companion object {
         internal const val INT_MAX_ON_UINT: UInt = 2147483647u // Int.MAX_VALUE.toUInt()
-        internal const val INT_MAX_ON_LONG: Long = 2147483647L // Int.MAX_VALUE
         internal const val INT_MAX_ON_ULONG: ULong = 2147483647u // Int.MAX_VALUE
-
         internal const val LONG_MAX_ON_ULONG: ULong = 9223372036854775807u // Long.MAX_VALUE.toULong()
-
     }
 }
 
@@ -422,6 +571,7 @@ public sealed class NumericalID : ID() {
  *
  * @property value 源值
  */
+@Serializable(with = IntID.Serializer::class)
 public class IntID private constructor(public val value: Int) : NumericalID() {
     override fun toDouble(): Double = value.toDouble()
     override fun toFloat(): Float = value.toFloat()
@@ -435,7 +585,7 @@ public class IntID private constructor(public val value: Int) : NumericalID() {
     override fun equals(other: Any?): Boolean = idCommonEq(other) {
         when (it) {
             is UUID -> false
-            is NumericalID -> compareNumber(this, it) == 0
+            is NumericalID -> compareNumber(it) == 0
             else -> value.toString() == it.toString()
         }
     }
@@ -443,6 +593,8 @@ public class IntID private constructor(public val value: Int) : NumericalID() {
     override fun equalsExact(other: Any?): Boolean = idExactEq(other) {
         value == it.value
     }
+
+    override fun compareNumber(target: NumericalID): Int = compareIntID(target)
 
     override fun copy(): IntID = IntID(value)
 
@@ -458,7 +610,10 @@ public class IntID private constructor(public val value: Int) : NumericalID() {
 
     }
 
-    public object IntIDSerializer : KSerializer<IntID> {
+    /**
+     * [IntID] 的序列化器。不出意外地将 [IntID] 作为 [Int] 进行序列化。
+     */
+    internal object Serializer : KSerializer<IntID> {
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("IntID", PrimitiveKind.INT)
         override fun deserialize(decoder: Decoder): IntID = IntID(decoder.decodeInt())
         override fun serialize(encoder: Encoder, value: IntID) {
@@ -477,9 +632,8 @@ public class IntID private constructor(public val value: Int) : NumericalID() {
  * 例如 Java 中，需要借助 `java.lang.Integer` 中与无符号相关的API进行操作，
  * 比如 `java.lang.Integer.toUnsignedString`。
  */
-public class UIntID private constructor(
-    @get:JvmName("getValue") public val value: UInt
-) : NumericalID() {
+@Serializable(with = UIntID.Serializer::class)
+public class UIntID private constructor(@get:JvmName("getValue") public val value: UInt) : NumericalID() {
     override fun toDouble(): Double = value.toDouble()
     override fun toFloat(): Float = value.toFloat()
     override fun toLong(): Long = value.toLong()
@@ -492,7 +646,7 @@ public class UIntID private constructor(
     override fun equals(other: Any?): Boolean = idCommonEq(other) {
         when (it) {
             is UUID -> false
-            is NumericalID -> compareNumber(this, it) == 0
+            is NumericalID -> compareNumber(it) == 0
             else -> value.toString() == it.toString()
         }
     }
@@ -500,6 +654,8 @@ public class UIntID private constructor(
     override fun equalsExact(other: Any?): Boolean = idExactEq(other) {
         value == it.value
     }
+
+    override fun compareNumber(target: NumericalID): Int = compareUIntID(target)
 
     override fun copy(): UIntID = UIntID(value)
 
@@ -513,6 +669,17 @@ public class UIntID private constructor(
             get() = UIntID(this)
 
     }
+
+    /**
+     * [UIntID] 的序列化器。将 [UIntID] 作为 [UInt] 进行序列化。
+     */
+    internal object Serializer : KSerializer<UIntID> {
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("UIntID", PrimitiveKind.INT)
+        override fun deserialize(decoder: Decoder): UIntID = UInt.serializer().deserialize(decoder).ID
+        override fun serialize(encoder: Encoder, value: UIntID) {
+            UInt.serializer().serialize(encoder, value.value)
+        }
+    }
 }
 
 /**
@@ -520,6 +687,7 @@ public class UIntID private constructor(
  *
  *  @property value 源值。
  */
+@Serializable(with = LongID.Serializer::class)
 public class LongID private constructor(public val value: Long) : NumericalID() {
     override fun toDouble(): Double = value.toDouble()
     override fun toFloat(): Float = value.toFloat()
@@ -533,7 +701,7 @@ public class LongID private constructor(public val value: Long) : NumericalID() 
     override fun equals(other: Any?): Boolean = idCommonEq(other) {
         when (it) {
             is UUID -> false
-            is NumericalID -> compareNumber(this, it) == 0
+            is NumericalID -> compareNumber(it) == 0
             else -> value.toString() == it.toString()
         }
     }
@@ -541,6 +709,8 @@ public class LongID private constructor(public val value: Long) : NumericalID() 
     override fun equalsExact(other: Any?): Boolean = idExactEq(other) {
         value == it.value
     }
+
+    override fun compareNumber(target: NumericalID): Int = compareLongID(target)
 
     override fun copy(): LongID = LongID(value)
 
@@ -554,6 +724,17 @@ public class LongID private constructor(public val value: Long) : NumericalID() 
             get() = LongID(this)
 
     }
+
+    /**
+     * [LongID] 的序列化器。不出意外地将 [LongID] 作为 [Long] 进行序列化。
+     */
+    public object Serializer : KSerializer<LongID> {
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("LongID", PrimitiveKind.LONG)
+        override fun deserialize(decoder: Decoder): LongID = decoder.decodeLong().ID
+        override fun serialize(encoder: Encoder, value: LongID) {
+            encoder.encodeLong(value.value)
+        }
+    }
 }
 
 /**
@@ -565,6 +746,7 @@ public class LongID private constructor(public val value: Long) : NumericalID() 
  * 例如 Java 中，需要借助 `java.lang.Long` 中与无符号相关的API进行操作，
  * 比如 `java.lang.Long.toUnsignedString`。
  */
+@Serializable(with = ULongID.Serializer::class)
 public class ULongID private constructor(@get:JvmName("getValue") public val value: ULong) : NumericalID() {
     override fun toDouble(): Double = value.toDouble()
     override fun toFloat(): Float = value.toFloat()
@@ -578,7 +760,7 @@ public class ULongID private constructor(@get:JvmName("getValue") public val val
     override fun equals(other: Any?): Boolean = idCommonEq(other) {
         when (it) {
             is UUID -> false
-            is NumericalID -> compareNumber(this, it) == 0
+            is NumericalID -> compareNumber(it) == 0
             else -> value.toString() == it.toString()
         }
     }
@@ -586,6 +768,8 @@ public class ULongID private constructor(@get:JvmName("getValue") public val val
     override fun equalsExact(other: Any?): Boolean = idExactEq(other) {
         value == it.value
     }
+
+    override fun compareNumber(target: NumericalID): Int = compareULongID(target)
 
     override fun copy(): ULongID = ULongID(value)
 
@@ -597,27 +781,68 @@ public class ULongID private constructor(@get:JvmName("getValue") public val val
         @get:JvmName("valueOf")
         public val ULong.ID: ULongID
             get() = ULongID(this)
-
     }
-}
 
+    internal object Serializer : KSerializer<ULongID> {
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ULongID", PrimitiveKind.LONG)
 
-private fun compareNumber(source: NumericalID, target: NumericalID): Int {
-    return when (source) {
-        is IntID -> when (target) {
-            is IntID -> source.value.compareTo(target.value)
-            is UIntID -> when {
-                source.value < 0 || target.value > NumericalID.INT_MAX_ON_UINT -> -1
-                else -> source.value.compareTo(target.value.toInt())
-            }
+        override fun deserialize(decoder: Decoder): ULongID = ULong.serializer().deserialize(decoder).ID
 
-            else -> TODO()
+        override fun serialize(encoder: Encoder, value: ULongID) {
+            ULong.serializer().serialize(encoder, value.value)
         }
-
-        else -> TODO()
     }
 }
 
+private fun IntID.compareIntID(target: NumericalID): Int = when (target) {
+    is IntID -> this.value.compareTo(target.value)
+    is LongID -> this.value.compareTo(target.value)
+    is UIntID -> when {
+        this.value < 0 || target.value > NumericalID.INT_MAX_ON_UINT -> -1
+        else -> this.value.compareTo(target.value.toInt())
+    }
+
+    is ULongID -> when {
+        this.value < 0 || target.value > NumericalID.INT_MAX_ON_ULONG -> -1
+        else -> this.value.compareTo(target.toInt())
+    }
+}
+
+private fun LongID.compareLongID(target: NumericalID): Int = when (target) {
+    is IntID -> this.value.compareTo(target.value)
+    is LongID -> this.value.compareTo(target.value)
+    is UIntID -> this.value.compareTo(target.value.toLong())
+    is ULongID -> when {
+        this.value < 0L || target.value > NumericalID.LONG_MAX_ON_ULONG -> -1
+        else -> this.value.compareTo(target.value.toLong())
+    }
+}
+
+private fun UIntID.compareUIntID(target: NumericalID): Int = when (target) {
+    is IntID -> when {
+        target.value < 0 || this.value > NumericalID.INT_MAX_ON_UINT -> 1
+        else -> this.value.toInt().compareTo(target.value)
+    }
+
+    is LongID -> this.value.toLong().compareTo(target.value)
+    is UIntID -> this.value.compareTo(target.value)
+    is ULongID -> this.value.compareTo(target.value)
+}
+
+private fun ULongID.compareULongID(target: NumericalID): Int = when (target) {
+    is IntID -> when {
+        target.value < 0 || this.value > NumericalID.INT_MAX_ON_ULONG -> 1
+        else -> this.value.toInt().compareTo(target.value)
+    }
+
+    is LongID -> when {
+        target.value < 0 || this.value > NumericalID.LONG_MAX_ON_ULONG -> 1
+        else -> this.value.toLong().compareTo(target.value)
+    }
+
+    is UIntID -> this.value.compareTo(target.value)
+    is ULongID -> this.value.compareTo(target.value)
+}
 
 private inline fun <reified T : ID> T.idCommonEq(other: Any?, orElse: T.(ID) -> Boolean): Boolean {
     if (other == null) return false
