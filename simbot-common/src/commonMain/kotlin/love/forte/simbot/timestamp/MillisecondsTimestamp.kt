@@ -12,38 +12,27 @@
 
 package love.forte.simbot.timestamp
 
-import love.forte.simbot.utils.TimeUnit
-import java.time.Instant
-
 
 /**
- * 基于 [Instant] 的 [Timestamp] 实现。
+ * 使用 [毫秒级时间戳][milliseconds] 作为基础数据进行简单包装的 [Timestamp] 实现。
  *
- * @property instant [Instant]
+ * @see Timestamp
  *
  * @author ForteScarlet
  */
-@Suppress("MemberVisibilityCanBePrivate")
-public class InstantTimestamp(public val instant: Instant) : Timestamp {
-    override val milliseconds: Long
-        get() = instant.toEpochMilli()
+public class MillisecondsTimestamp(override val milliseconds: Long) : Timestamp {
 
-    override fun timeAs(unit: TimeUnit): Long {
-        return when (unit) {
-            TimeUnit.MILLISECONDS -> milliseconds
-            TimeUnit.SECONDS -> instant.epochSecond
-            else -> unit.convert(milliseconds, TimeUnit.MILLISECONDS)
-        }
-    }
-
+    /**
+     * [MillisecondsTimestamp] 与其他 [Timestamp] 始终通过 [milliseconds] 进行比较。
+     *
+     */
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
         if (other !is Timestamp) return false
-        if (other is InstantTimestamp) return instant == other.instant
 
         return milliseconds == other.milliseconds
     }
 
-    override fun hashCode(): Int = instant.hashCode()
-    override fun toString(): String = "InstantTimestamp(milliseconds=$milliseconds, instant=$instant)"
+    override fun hashCode(): Int = milliseconds.hashCode()
+    override fun toString(): String = "MillisecondsTimestamp(milliseconds=$milliseconds)"
 }
