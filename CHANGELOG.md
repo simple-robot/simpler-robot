@@ -1,3 +1,8 @@
+# v3.3.0
+
+> Release & Pull Notes: [v3.3.0](https://github.com/simple-robot/simpler-robot/releases/tag/v3.3.0) 
+
+
 # v3.3.0-beta1
 
 > Release & Pull Notes: [v3.3.0-beta1](https://github.com/simple-robot/simpler-robot/releases/tag/v3.3.0-beta1) 
@@ -85,94 +90,6 @@
 - fix: Could not autowire bean 'ApplicationArguments' critical ([`722c2faf`](https://github.com/simple-robot/simpler-robot/commit/722c2faf))
 - build(deps): bump love.forte.simbot.component:simbot-component-mirai-core ([`0e69f5c9`](https://github.com/simple-robot/simpler-robot/commit/0e69f5c9))
 
-# v3.3.0
-
-> Release & Pull Notes: [v3.3.0](https://github.com/simple-robot/simpler-robot/releases/tag/v3.3.0) 
-
-- CI: snapshot API Doc ([`c70b2541`](https://github.com/simple-robot/simpler-robot/commit/c70b2541))
-- build(deps): bump com.github.gmazzo.buildconfig from 4.0.4 to 4.1.2 ([`e4d82d86`](https://github.com/simple-robot/simpler-robot/commit/e4d82d86))
-- fix: 尝试修复无法发布快照的问题 ([`d2c79ec9..a0b7e11d`](https://github.com/simple-robot/simpler-robot/compare/d2c79ec9..8b14b21a))
-
-    <details><summary><code>d2c79ec9..a0b7e11d</code></summary>
-
-    - [`d2c79ec9`](https://github.com/simple-robot/simpler-robot/commit/d2c79ec9)
-    - [`a0b7e11d`](https://github.com/simple-robot/simpler-robot/commit/a0b7e11d)
-
-    </details>
-
-- fix: 更新dokka到 1.9.0 并修复与 kapt 冲突的问题（[#3153](https://github.com/Kotlin/dokka/issues/3153)） ([`f4cbbc0d..8b14b21a`](https://github.com/simple-robot/simpler-robot/compare/f4cbbc0d..a9725fbc))
-
-    <details><summary><code>f4cbbc0d..8b14b21a</code></summary>
-
-    - [`f4cbbc0d`](https://github.com/simple-robot/simpler-robot/commit/f4cbbc0d)
-    - [`8b14b21a`](https://github.com/simple-robot/simpler-robot/commit/8b14b21a)
-
-    </details>
-
-- pref: BlockingRunner 增加对虚拟线程的配置支持 ([`a9725fbc`](https://github.com/simple-robot/simpler-robot/commit/a9725fbc))
-- fix: 尝试修复无法发布快照的问题 ([`ab9270a2..648918f7`](https://github.com/simple-robot/simpler-robot/compare/ab9270a2..f22b074e))
-
-    <details><summary><code>ab9270a2..648918f7</code></summary>
-
-    - [`ab9270a2`](https://github.com/simple-robot/simpler-robot/commit/ab9270a2)
-    - [`8b1f3cb2`](https://github.com/simple-robot/simpler-robot/commit/8b1f3cb2)
-    - [`648918f7`](https://github.com/simple-robot/simpler-robot/commit/648918f7)
-
-    </details>
-
-- fix: hide warn ([`f22b074e`](https://github.com/simple-robot/simpler-robot/commit/f22b074e))
-- pref: suspend blocking runner 调整实现，增加对虚拟线程的部分支持 ([`f0802f3b..d983c05f`](https://github.com/simple-robot/simpler-robot/compare/f0802f3b..69a818da))
-
-    <details><summary><code>f0802f3b..d983c05f</code></summary>
-
-    - [`f0802f3b`](https://github.com/simple-robot/simpler-robot/commit/f0802f3b)
-    - [`d983c05f`](https://github.com/simple-robot/simpler-robot/commit/d983c05f)
-
-    </details>
-
-- fix: 改善部分代码到kt1.9 ([`69a818da`](https://github.com/simple-robot/simpler-robot/commit/69a818da))
-- pref: suspend blocking runner 调整实现，移除对 `synchronized` 的使用并更换为 CompletableFuture 的内部实现 ([`57c29746`](https://github.com/simple-robot/simpler-robot/commit/57c29746))
-- build: 更新 Kotlinx Coroutines 到 v1.7.3 ([`968ecbb9`](https://github.com/simple-robot/simpler-robot/commit/968ecbb9))
-- build: 更新 Kotlinx Serialization 到 v1.6.0 ([`83ae4a60`](https://github.com/simple-robot/simpler-robot/commit/83ae4a60))
-- fix: 更新部分过时代码 ([`fa224fd1`](https://github.com/simple-robot/simpler-robot/commit/fa224fd1))
-- build: 更新CI中gradle版本到 8.3; upgrade yarn.lock ([`7d806665`](https://github.com/simple-robot/simpler-robot/commit/7d806665))
-- build: 更新Kotlin到 1.9.10; 优化针对Java的异步桥接函数的内部实现 ([`a8298f8b`](https://github.com/simple-robot/simpler-robot/commit/a8298f8b))
-- WIP: Upgrade kotlin to 1.9.0 ([`bfccf89f..33a95929`](https://github.com/simple-robot/simpler-robot/compare/bfccf89f..7bc425f5))
-
-    <details><summary><code>bfccf89f..33a95929</code></summary>
-
-    - [`bfccf89f`](https://github.com/simple-robot/simpler-robot/commit/bfccf89f)
-    - [`33a95929`](https://github.com/simple-robot/simpler-robot/commit/33a95929)
-
-    </details>
-
-- build: README and Qodana CI config ([`7bc425f5`](https://github.com/simple-robot/simpler-robot/commit/7bc425f5))
-- fix: const name ([`62684f76`](https://github.com/simple-robot/simpler-robot/commit/62684f76))
-- fix: 一些不应该是警告的警告 ([`edf3ed00..e53ab095`](https://github.com/simple-robot/simpler-robot/compare/edf3ed00..3b295b64))
-
-    <details><summary><code>edf3ed00..e53ab095</code></summary>
-
-    - [`edf3ed00`](https://github.com/simple-robot/simpler-robot/commit/edf3ed00)
-    - [`e53ab095`](https://github.com/simple-robot/simpler-robot/commit/e53ab095)
-
-    </details>
-
-- fix: Condition 'cause != null' is always true ([`3b295b64`](https://github.com/simple-robot/simpler-robot/commit/3b295b64))
-- fix: Logger more arguments provided ([`58446e97`](https://github.com/simple-robot/simpler-robot/commit/58446e97))
-- fix: Cannot resolve symbol 'Survivable' ([`c55d05aa`](https://github.com/simple-robot/simpler-robot/commit/c55d05aa))
-- fix: Value of 'instance' os always null ([`e637775e`](https://github.com/simple-robot/simpler-robot/commit/e637775e))
-- fix: Redundant empty initializer block ([`2053b967`](https://github.com/simple-robot/simpler-robot/commit/2053b967))
-- fix: Declaration has type inferred a platform call ([`faca1c5b`](https://github.com/simple-robot/simpler-robot/commit/faca1c5b))
-- fix: Cannot resolve symbol 'Bot' ([`67f6f3cf`](https://github.com/simple-robot/simpler-robot/commit/67f6f3cf))
-- fix: Cannot resolve symbol 'Survivable' ([`a6cc0e90`](https://github.com/simple-robot/simpler-robot/commit/a6cc0e90))
-- fix: Cannot resolve symbol 'Preparator' ([`19099189`](https://github.com/simple-robot/simpler-robot/commit/19099189))
-- fix: Cannot resolve symbol 'asKeywordMatcher' ([`95e0704e`](https://github.com/simple-robot/simpler-robot/commit/95e0704e))
-- fix: Recursive property accessor ([`927a187e`](https://github.com/simple-robot/simpler-robot/commit/927a187e))
-- fix: String template as argument to 'debug()' logging call ([`8518b105`](https://github.com/simple-robot/simpler-robot/commit/8518b105))
-- fix: Could not autowire bean 'ApplicationArguments' critical ([`722c2faf`](https://github.com/simple-robot/simpler-robot/commit/722c2faf))
-- build(deps): bump love.forte.simbot.component:simbot-component-mirai-core ([`0e69f5c9`](https://github.com/simple-robot/simpler-robot/commit/0e69f5c9))
-
-# v3.2.0
 
 > Release & Pull Notes: [v3.2.0](https://github.com/simple-robot/simpler-robot/releases/tag/v3.2.0) 
 
