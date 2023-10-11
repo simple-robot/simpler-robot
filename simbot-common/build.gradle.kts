@@ -62,7 +62,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(libs.kotlinx.serialization.core)
+                compileOnly(libs.kotlinx.coroutines.core)
+                api(libs.kotlinx.serialization.core)
             }
         }
         val commonTest by getting {

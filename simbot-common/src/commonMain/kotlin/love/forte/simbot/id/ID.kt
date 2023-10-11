@@ -20,8 +20,6 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import love.forte.simbot.id.StringID.Companion.ID
 import love.forte.simbot.id.UUID.Companion.UUID
-import love.forte.simbot.utils.toUUIDSigs
-import love.forte.simbot.utils.uuidString
 import kotlin.concurrent.Volatile
 import kotlin.experimental.and
 import kotlin.experimental.or

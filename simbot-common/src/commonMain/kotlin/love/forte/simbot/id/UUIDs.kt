@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with Simple Robot. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package love.forte.simbot.utils
+package love.forte.simbot.id
 
 // 以下内容参考自JDK `java.util.UUID`
 /*
