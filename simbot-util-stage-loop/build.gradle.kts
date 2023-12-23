@@ -10,8 +10,6 @@
  * You should have received a copy of the GNU Lesser General Public License along with Simple Robot. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-
 plugins {
     id("simbot.util-module-conventions")
     `simbot-multiplatform-maven-publish`
@@ -24,6 +22,7 @@ repositories {
 
 kotlin {
     explicitApi()
+    applyDefaultHierarchyTemplate()
 
     jvm {
         compilations.all {
@@ -44,17 +43,31 @@ kotlin {
         nodejs()
     }
 
-     val mainPresets = mutableSetOf<KotlinSourceSet>()
-     val testPresets = mutableSetOf<KotlinSourceSet>()
+    // tier1
+    linuxX64()
+    macosX64()
+    macosArm64()
+    iosSimulatorArm64()
+    iosX64()
 
-     targets {
-         presets.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeTargetPreset<*>>()
-             .forEach { presets ->
-                 val target = fromPreset(presets, presets.name)
-                 mainPresets.add(target.compilations["main"].kotlinSourceSets.first())
-                 testPresets.add(target.compilations["test"].kotlinSourceSets.first())
-             }
-     }
+    // tier2
+    linuxArm64()
+    watchosSimulatorArm64()
+    watchosX64()
+    watchosArm32()
+    watchosArm64()
+    tvosSimulatorArm64()
+    tvosX64()
+    tvosArm64()
+    iosArm64()
+
+    // tier3
+    androidNativeArm32()
+    androidNativeArm64()
+    androidNativeX86()
+    androidNativeX64()
+    mingwX64()
+    watchosDeviceArm64()
 
     sourceSets {
         val commonMain by getting
@@ -63,17 +76,6 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-
-         val nativeMain by creating {
-             dependsOn(commonMain)
-         }
-         val nativeTest by creating {
-             dependsOn(commonTest)
-         }
-
-         configure(mainPresets) { dependsOn(nativeMain) }
-         configure(testPresets) { dependsOn(nativeTest) }
-
     }
 
 }

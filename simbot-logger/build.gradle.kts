@@ -12,7 +12,6 @@
 
 import logger.loggerFrameworkAttribute
 import logger.loggerFrameworkAttributeSlf4j
-import org.jetbrains.kotlin.gradle.plugin.mpp.AbstractKotlinNativeTargetPreset
 
 plugins {
     `simbot-simple-project-setup`
@@ -51,17 +50,31 @@ kotlin {
         nodejs()
     }
 
-    val mainPresets = mutableSetOf<org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet>()
-    val testPresets = mutableSetOf<org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet>()
+    // tier1
+    linuxX64()
+    macosX64()
+    macosArm64()
+    iosSimulatorArm64()
+    iosX64()
 
-    targets {
-        presets.filterIsInstance<AbstractKotlinNativeTargetPreset<*>>()
-            .forEach { preset ->
-                val target = fromPreset(preset, preset.name)
-                mainPresets.add(target.compilations["main"].kotlinSourceSets.first())
-                testPresets.add(target.compilations["test"].kotlinSourceSets.first())
-            }
-    }
+    // tier2
+    linuxArm64()
+    watchosSimulatorArm64()
+    watchosX64()
+    watchosArm32()
+    watchosArm64()
+    tvosSimulatorArm64()
+    tvosX64()
+    tvosArm64()
+    iosArm64()
+
+    // tier3
+    androidNativeArm32()
+    androidNativeArm64()
+    androidNativeX86()
+    androidNativeX64()
+    mingwX64()
+    watchosDeviceArm64()
 
     sourceSets {
         val commonMain by getting
@@ -75,15 +88,6 @@ kotlin {
                 api(libs.slf4j.api)
             }
         }
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
-        val nativeTest by creating {
-            dependsOn(commonTest)
-        }
-
-        configure(mainPresets) { dependsOn(nativeMain) }
-        configure(testPresets) { dependsOn(nativeTest) }
     }
 }
 
