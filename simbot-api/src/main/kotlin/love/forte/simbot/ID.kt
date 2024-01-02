@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 ForteScarlet.
+ * Copyright (c) 2021-2024 ForteScarlet.
  *
  * This file is part of Simple Robot.
  *
@@ -742,6 +742,8 @@ public data class UIntID(public val number: UInt) : ID(), NumberSimilarly {
         return false
     }
 
+    override fun toString(): String = number.toString()
+
     public companion object {
         /**
          * [UInt.MAX_VALUE] 作为 [Long] 的值。
@@ -895,6 +897,8 @@ public data class ULongID(public val number: ULong) : ID(), NumberSimilarly {
 
         return false
     }
+
+    override fun toString(): String = number.toString()
 
     public companion object {
         // ULong MAX = 18446744073709551615
