@@ -55,7 +55,6 @@
 <br>
 <br>
 
-
 > _如果你想参考simbot2, 可以参考 [simple-robot-v2](https://github.com/simple-robot/simple-robot-v2)_
 
 ## 文档
@@ -72,12 +71,12 @@
 <br>
 simbot3目前已经实现的组件有：
 
-|                  组件目标                   |    主要成员     |                                                     仓库地址                                                      | 状态  |
-|:---------------------------------------:|:-----------:|:-------------------------------------------------------------------------------------------------------------:|:---:|
-| [Mirai](https://github.com/mamoe/mirai) | simbot team |         [simple-robot/simbot-component-mirai](https://github.com/simple-robot/simbot-component-mirai)         | 维护中 |
-|  [Kook(开黑啦)](https://www.kookapp.cn)   | simbot team |          [simple-robot/simbot-component-kook](https://github.com/simple-robot/simbot-component-kook)          | 维护中 |
-|  [QQ频道](https://bot.q.qq.com/wiki)   | simbot team | [simple-robot/simbot-component-qq-guild](https://github.com/simple-robot/simbot-component-qq-guild) | 维护中 |
-|  [米游社大别野](https://open.miyoushe.com)   | simbot team | [simple-robot/simbot-component-miyoushe](https://github.com/simple-robot/simbot-component-miyoushe) | _计划中_ |
+|                  组件目标                   |    主要成员     |                                                      仓库地址                                                       | 状态  |
+|:---------------------------------------:|:-----------:|:---------------------------------------------------------------------------------------------------------------:|:---:|
+| [Mirai](https://github.com/mamoe/mirai) | simbot team |          [simple-robot/simbot-component-mirai](https://github.com/simple-robot/simbot-component-mirai)          | 濒死  |
+|   [Kook(开黑啦)](https://www.kookapp.cn)   | simbot team |           [simple-robot/simbot-component-kook](https://github.com/simple-robot/simbot-component-kook)           | 维护中 |
+|    [QQ频道](https://bot.q.qq.com/wiki)    | simbot team |       [simple-robot/simbot-component-qq-guild](https://github.com/simple-robot/simbot-component-qq-guild)       | 维护中 |
+|   [米游社大别野](https://open.miyoushe.com)   | simbot team | [simple-robot/simbot-component-miyoushe-villa](https://github.com/simple-robot/simbot-component-miyoushe-villa) | 维护中 |
 
 有关于这些组件等simbot附属内容的相关信息，你可以从 [**Simple Robot 附属组织库**](https://github.com/simple-robot) 处查看~
 
@@ -92,8 +91,7 @@ simbot3目前已经实现的组件有：
 在内的各种仓库资讯。
 
 如果你感兴趣，可以时不时的去 [**Simple Robot Blog**](https://simbot.forte.love/blog) 看一看，
-那里会有基本上每周更新的 [**周报**](https://simbot.forte.love/blog/tags/%E5%91%A8%E6%8A%A5) 
-以及一些其他可能不定时更新发布的博客，或者碎碎念！
+那里会有不定期更新的博客以及一些其他的杂七杂八，或者碎碎念！
 
 ## 协助我们
 为我们点亮一个**✨star🌟**便是能够给予我们继续走下去的最大动力与支持！
