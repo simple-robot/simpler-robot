@@ -55,7 +55,7 @@ import kotlin.random.Random
  *
  * 它们可以粗略的被归类为字符串类型（ [UUID] 的字面值表现为字符串）和数字类型。
  *
- * ### 序列化
+ * ## 序列化
  *
  * 所有**具体的**ID类型都是可序列化的，它们都会通过 Kotlinx serialization
  * 提供一个可作为**字面值**序列化的序列化器实现。
@@ -68,12 +68,12 @@ import kotlin.random.Random
  * // 序列化结果: {"value": 123456}
  * ```
  *
- * ### 可排序的
+ * ## 顺序
  *
  * [ID] 实现 [Comparable] 并允许所有 [ID] 类型之间存在排序关系。
  * 具体的排序规则参考每个具体的 [ID] 类型的 [compareTo] 的文档说明。
  *
- * ### 字面值与 `toString`
+ * ## 字面值与 `toString`
  *
  * 一个 [ID] 所表示的字符串值即为其字面值，也就是 [ID.toString] 的输出结果。
  *
@@ -131,7 +131,7 @@ import kotlin.random.Random
  * // 18446744073709551615
  * ```
  *
- * ### `equals` 与 `hashCode`
+ * ## `equals` 与 `hashCode`
  *
  * [ID] 下所有类型均允许互相通过 [ID.equals] 判断是否具有相同的 **字面值**。
  * [ID.equals] 实际上不会判断类型，因此如果两个不同类型的 [ID] 的字面值相同，

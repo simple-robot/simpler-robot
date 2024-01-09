@@ -43,7 +43,7 @@ import kotlin.jvm.JvmName
  * 用于描述一个可以被读取字节数据（[data]）的资源。
  * 通常代表一些二进制数据或本地文件资源。
  *
- * ### 序列化
+ * ## 序列化
  *
  * [Resource] 提供了一个基于 [Base64] 进行序列化操作的 [ResourceBase64Serializer]。
  *

@@ -4,7 +4,9 @@ module simbot.common.core {
     requires transitive simbot.common.suspendrunner;
     requires transitive simbot.common.collection;
     requires static kotlinx.coroutines.core;
+    requires static kotlinx.coroutines.reactor;
     requires transitive kotlinx.serialization.core;
+    requires static reactor.core;
 
     exports love.forte.simbot.common;
     exports love.forte.simbot.common.async;

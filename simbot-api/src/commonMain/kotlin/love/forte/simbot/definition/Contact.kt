@@ -34,7 +34,7 @@ import love.forte.simbot.ability.SendSupport
  * 联系人是一种可以与 bot 建立独立会话、进行通讯的行为目标。
  * 联系人可能代表一个其他用户，也可能代表一个与某用户关联的“会话”。
  *
- * ### DeleteSupport
+ * ## DeleteSupport
  *
  * 联系人有可能会实现 [DeleteSupport]。如果实现，则或许代表 bot 可以主动的与此联系人断开关系，
  * 或者主动删除与之关联的 “会话”。

@@ -34,7 +34,7 @@ import kotlin.jvm.JvmStatic
  *
  * 通过 [EventListener.handle] 响应得到，用于表示此次事件处理的结果内容。
  *
- * ### Standard Event Result
+ * ## Standard Event Result
  *
  * [StandardEventResult] 定义了一些特殊的、具有含义的类型实现。
  * 它们可能会被特殊处理或用作一些逻辑判断。

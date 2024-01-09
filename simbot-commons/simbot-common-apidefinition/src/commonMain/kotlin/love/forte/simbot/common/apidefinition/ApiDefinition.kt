@@ -37,13 +37,13 @@ import kotlinx.serialization.DeserializationStrategy
  * [ApiDefinition] 中的信息主要基于 `kotlinx.serialization` 和 `Ktor`，
  * 但其仅描述信息，不提供功能，因此对其的请求并不一定限于 `Ktor`。
  *
- * ### 不可变
+ * ## 不可变
  *
  * [ApiDefinition] 的实现理应是 **不可变** 的。[ApiDefinition] 最终可能产生的请求应当在填入参数构造它的时候就可以确定，
  * 且不可中途变更。
  * [ApiDefinition] 内部也许会存在一些懒加载的属性。
  *
- * ### 构建方式
+ * ## 构建方式
  *
  * 推荐在实现 [ApiDefinition] 的时候，隐藏其构造方法而使用工厂方法或构建器取而代之，例如：
  *
@@ -58,7 +58,7 @@ import kotlinx.serialization.DeserializationStrategy
  * }
  * ```
  *
- * ### 响应类型
+ * ## 响应类型
  *
  * 预期响应结果类型 [R] 不应为 null，如果可能响应空内容，则使用 `object` 类型代替，
  * 例如 [Unit]。需要注意的是部分反序列化器可能无法自动将 `null` 解析为 `object`，

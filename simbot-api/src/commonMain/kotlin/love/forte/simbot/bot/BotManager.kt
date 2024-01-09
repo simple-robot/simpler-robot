@@ -35,7 +35,7 @@ import love.forte.simbot.suspendrunner.ST
  *
  * [Bot] 的管理器。
  *
- * ### 生命周期
+ * ## 生命周期
  *
  * [BotManager] 持有一个会影响诞生自它的所有 [Bot] 的生命周期的 [Job][kotlinx.coroutines.Job]。
  * 当 [BotManager] 被执行了 [BotManager.cancel]，除了影响 [BotManager] 自身的生命周期以外，

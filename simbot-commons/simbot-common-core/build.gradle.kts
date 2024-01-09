@@ -106,6 +106,11 @@ kotlin {
             }
         }
 
+        jvmMain.dependencies {
+            compileOnly(libs.kotlinx.coroutines.reactor)
+            compileOnly(libs.kotlinx.coroutines.reactive)
+        }
+
         jvmTest {
             dependencies {
                 implementation(kotlin("test-junit5"))

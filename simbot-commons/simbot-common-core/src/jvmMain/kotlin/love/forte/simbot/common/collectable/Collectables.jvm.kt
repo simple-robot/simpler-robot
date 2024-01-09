@@ -31,11 +31,13 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.reactor.asFlux
 import love.forte.simbot.common.async.Async
 import love.forte.simbot.common.async.asAsync
 import love.forte.simbot.common.collection.asIterator
 import love.forte.simbot.common.function.Action
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
+import reactor.core.publisher.Flux
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import kotlin.streams.asSequence
@@ -217,4 +219,18 @@ private class StreamCollectableImpl<T>(private val stream: Stream<T>) : Sequence
     override fun forEach(action: Action<T>): Unit = stream.forEach(action::invoke)
     override fun toList(): List<T> = stream.collect(Collectors.toUnmodifiableList())
 }
+
+
+// reactor
+
+/**
+ * 将 [Collectable] 转化为 [Flux]。
+ * 需要环境中存在
+ * [`kotlinx-coroutines-reactor`](https://github.com/Kotlin/kotlinx.coroutines/tree/master/reactive)
+ * 依赖。
+ *
+ */
+public fun <T : Any> Collectable<T>.asFlux(): Flux<T> =
+    asFlow().asFlux()
+
 

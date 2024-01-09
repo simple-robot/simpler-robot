@@ -37,7 +37,7 @@ import kotlin.jvm.JvmSynthetic
  * 事件流程处理器。推送一个事件 [Event] 并得到结果。
  * [EventProcessor] 在功能上可以认为是一组 [EventListener] 的统一处理单位。
  *
- * ### 协程上下文
+ * ## 协程上下文
  *
  * 当通过 [EventProcessor.push] 推送一个事件并得到一个事件处理链时，
  * 这其中的每一个事件处理器所处上下文可由 [EventDispatcherConfiguration.coroutineContext]
@@ -112,7 +112,7 @@ public interface EventProcessor {
      *      .collect { ... } // flow 中切换了调度上下文，这可能会使所有的listener都被实际上的执行，但是只收集到3个最新的结果。
      * ```
      *
-     * ### 异常
+     * ## 异常
      *
      * 如果事件处理器 [EventListener] 或者事件拦截器 [EventInterceptor] 的执行过程中产生了异常，
      * 则对应位置的 [EventResult] 将会是包装了此异常的 [StandardEventResult.Error]，

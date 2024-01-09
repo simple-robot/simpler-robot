@@ -32,7 +32,7 @@ import love.forte.simbot.common.id.ID
 /**
  * 一个消息本体内容。通常是通过一个事件接收到的消息本体。
  *
- * ### [DeleteSupport]
+ * ## [DeleteSupport]
  *
  * [MessageContent] 实现 [DeleteSupport]，提供可能支持的删除行为。更多说明参考 [MessageContent.delete]
  *

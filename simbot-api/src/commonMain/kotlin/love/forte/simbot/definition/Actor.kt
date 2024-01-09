@@ -36,7 +36,7 @@ import love.forte.simbot.common.id.IDContainer
  * [Actor] 是可能具有行为的目标的父类型，
  * 例如一个聊天室（群聊、文字频道等）或一个联系人（`Contact`）或组织成员（`Member`）。
  *
- * ### [CoroutineScope]
+ * ## [CoroutineScope]
  *
  * [Actor] 继承 [CoroutineScope]，提供一个与所属 [Bot] 相关的作用域。
  * [Actor] 所描述的协程作用域可能与 [Bot] 相同、可能属于 [Bot] 的子作用域，也可能不存在 [Job]。

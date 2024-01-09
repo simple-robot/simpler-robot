@@ -41,7 +41,7 @@ import love.forte.simbot.suspendrunner.STP
 /**
  * 一个 `Bot`。
  *
- * ### 行为关系
+ * ## 行为关系
  *
  * [Bot] 实现 [BotRelations] 并提供了部分基础的行为关系对象，
  * 它们可以提供针对 [Guild]、[ChatGroup]、[Contact] 等常见行为对象的操作。

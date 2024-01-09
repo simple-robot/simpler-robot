@@ -280,7 +280,7 @@ public expect fun Resource.toOfflineResourceImage(): OfflineResourceImage
 /**
  * 最基础的、基于 [Resource] 实现的 [OfflineResourceImage]。
  *
- * ### 序列化
+ * ## 序列化
  *
  * 序列化中 [resource] 会使用基于 `Base64` 实现的 [ResourceBase64Serializer] 来作为其序列化器。
  * 请谨慎使用，频繁地将具有一定尺寸的 bytes 数据进行 base64 编码或解码可能会存在一定的性能损耗。

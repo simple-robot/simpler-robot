@@ -38,7 +38,7 @@ import kotlin.jvm.JvmStatic
  *
  * 当然，也可以自行实现 `Timestamp` 来定制化其内部细节。
  *
- * ### 简单包装
+ * ## 简单包装
  *
  * [Timestamp] 是一种简单的包装类型，大多数情况下对外提供的 [Timestamp] 很可能是在保证结果一致的情况下即用即造的。
  * 例如：
@@ -54,12 +54,12 @@ import kotlin.jvm.JvmStatic
  * }
  * ```
  *
- * ### [equals] & [hashCode]
+ * ## [equals] & [hashCode]
  *
  * [Timestamp] 应支持与任意 [Timestamp] 类型进行匹配，但是无法保证 [equals] 结果为 `true` 的两个结果的 [hashCode] 相同。
  *
  *
- * ### [MillisecondTimestamp]
+ * ## [MillisecondTimestamp]
  *
  * [MillisecondTimestamp] 是全平台的默认实现，提供一个毫秒值，进行一个简单的包装。
  *
