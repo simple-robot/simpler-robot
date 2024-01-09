@@ -27,6 +27,7 @@ import love.forte.simbot.event.MessageEvent
 import love.forte.simbot.message.Message
 import love.forte.simbot.message.MessageContent
 import love.forte.simbot.message.MessageReceipt
+import love.forte.simbot.suspendrunner.ST
 
 
 /**
@@ -37,6 +38,7 @@ import love.forte.simbot.message.MessageReceipt
  *
  * @author ForteScarlet
  */
+@ST
 public interface ReplySupport {
 
     /**

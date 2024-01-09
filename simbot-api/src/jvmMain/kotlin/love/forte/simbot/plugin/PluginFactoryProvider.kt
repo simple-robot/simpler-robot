@@ -28,6 +28,7 @@ package love.forte.simbot.plugin
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
 import java.util.*
+import java.util.stream.Collectors
 import java.util.stream.Stream
 
 /**
@@ -139,7 +140,7 @@ private fun <C : Any> PluginFactoryProvider<C>.loadConfigurersAndToPlugin(
     }
 
     val loader = configurersLoader() ?: return factory
-    val configurerList = loader.stream().map { it.get() }.toList()
+    val configurerList = loader.stream().map { it.get() }.collect(Collectors.toList())
 
     return ProviderPluginFactory(factory, configurerList)
 }
