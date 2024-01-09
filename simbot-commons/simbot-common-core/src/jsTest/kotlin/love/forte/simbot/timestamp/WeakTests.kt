@@ -39,13 +39,16 @@ class WeakTests {
         val ref = weakRef(data)
         println(ref)
         println(ref::class)
-        println(ref.value)
-        println(ref.value?.let { it::class })
+        val value = ref.value
+        println(value)
+        if (value != null) {
+            println(value::class)
+        }
     }
 
     @Test
     fun jsWeakTest() {
-        val ref = Any()
+        @Suppress("UNUSED_VARIABLE") val ref = Any()
         val jsWeakRef = js("new WeakRef(ref);")
         println(jsWeakRef.deref)
         println(jsWeakRef.deref1)

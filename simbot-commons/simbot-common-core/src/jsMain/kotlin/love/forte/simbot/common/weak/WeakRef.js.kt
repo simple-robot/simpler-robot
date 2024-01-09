@@ -42,9 +42,14 @@ public actual fun <T : Any> weakRef(ref: T): WeakRef<T> {
 
 private class JsWeakRefImpl<T : Any>(private var weakRef: dynamic /* WeakRef */) : WeakRef<T> {
     override val value: T?
-        get() = weakRef?.let { r ->
-            (r.deref() as T?).also { if (it == null) weakRef = null }
-        } as? T
+        get() {
+            val r = weakRef
+            if (r != null) {
+                return (r.deref().unsafeCast<T?>()).also { if (it == null) weakRef = null } as? T
+            }
+
+            return null
+        }
 
     override fun clear() {
         weakRef = null

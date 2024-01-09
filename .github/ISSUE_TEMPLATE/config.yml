@@ -1,6 +1,12 @@
 blank_issues_enabled: false
 
 contact_links:
-  - name: 文档反馈
+  - name: 讨论社区
+    url: https://github.com/orgs/simple-robot/discussions
+    about: 前往讨论区与开发团队或其他人交流、互动
+  - name: v3文档反馈
     url: https://github.com/simple-robot-library/simbot3-website/issues/new/choose
     about: 对官网 simbot.forte.love 的反馈
+  - name: v4文档反馈
+    url: https://github.com/simple-robot-library/simbot4-website/issues/new/choose
+    about: 对官网 simbot4.forte.love 的反馈

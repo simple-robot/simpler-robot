@@ -29,11 +29,7 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import love.forte.simbot.application.BotManagers
-import love.forte.simbot.bot.Bot
-import love.forte.simbot.bot.BotManager
-import love.forte.simbot.bot.BotRegisterFailureException
-import love.forte.simbot.bot.SerializableBotConfiguration
+import love.forte.simbot.bot.*
 import love.forte.simbot.component.Component
 import love.forte.simbot.logger.Logger
 import love.forte.simbot.logger.LoggerFactory
@@ -358,7 +354,12 @@ private class BotAutoLoader(
         val policy = properties.autoRegistrationFailurePolicy
         val autoStartMode = properties.autoStartMode
 
-        logger.debug("Auto start bots is {} with onFailure policy {} and start mode {}", autoStartBots, policy, autoStartMode)
+        logger.debug(
+            "Auto start bots is {} with onFailure policy {} and start mode {}",
+            autoStartBots,
+            policy,
+            autoStartMode
+        )
 
         if (autoStartBots) {
             when (autoStartMode) {

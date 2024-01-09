@@ -39,7 +39,7 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
         list.removeAll(predicate)
     }
 
-    override fun iterator(): Iterator<T> = list.iterator()
+    override fun iterator(): Iterator<T> = list.toList().iterator()
 
     override fun toString(): String = list.toString()
 }
@@ -92,7 +92,13 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
         removeAll(predicate) && isEmpty()
 
     override fun iterator(): Iterator<T> {
-        return lists.values.asSequence().flatMap { it }.iterator()
+        val sorted = lists.toMap().entries.sortedBy { it.key }
+        return iterator {
+            sorted.forEach { (_, v) ->
+                v.forEach { yield(it) }
+            }
+        }
+        // return lists.toMap().asSequence().sortedBy { it.key }.flatMap { it.value }.iterator()
     }
 
     override fun toString(): String = lists.toString()

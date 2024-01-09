@@ -45,6 +45,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 configJavaCompileWithModule("simbot.quantcat.common")
@@ -98,6 +99,7 @@ kotlin {
             dependencies {
                 compileOnly(project(":simbot-api"))
                 compileOnly(project(":simbot-commons:simbot-common-annotations"))
+                compileOnly(libs.suspend.reversal.annotations)
             }
         }
 

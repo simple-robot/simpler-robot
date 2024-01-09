@@ -102,6 +102,7 @@ kotlin {
                 compileOnly(libs.jetbrains.annotations)
                 compileOnly(project(":simbot-commons:simbot-common-annotations"))
                 api(project(":simbot-api"))
+                compileOnly(libs.suspend.reversal.annotations)
                 // suspend reversal annotations
                 // compileOnly(libs.suspend.reversal.annotations)
             }

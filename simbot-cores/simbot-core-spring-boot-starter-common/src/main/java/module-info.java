@@ -1,4 +1,4 @@
-module simbot.core.springboot.common {
+module simbot.spring.common {
     requires kotlin.stdlib;
     requires static simbot.common.annotations;
     requires transitive simbot.quantcat.annotations;

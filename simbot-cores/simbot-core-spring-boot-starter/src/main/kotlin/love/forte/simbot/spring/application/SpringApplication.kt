@@ -28,18 +28,18 @@ import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.application.*
 import love.forte.simbot.bot.BotManager
+import love.forte.simbot.bot.toBotManagers
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeBy
 import love.forte.simbot.common.function.invokeWith
-import love.forte.simbot.component.Component
-import love.forte.simbot.component.ComponentConfigureContext
-import love.forte.simbot.component.ComponentFactoriesConfigurator
+import love.forte.simbot.component.*
 import love.forte.simbot.core.event.createSimpleEventDispatcherImpl
 import love.forte.simbot.core.event.impl.SimpleEventDispatcherConfigurationImpl
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.plugin.Plugin
 import love.forte.simbot.plugin.PluginConfigureContext
 import love.forte.simbot.plugin.PluginFactoriesConfigurator
+import love.forte.simbot.plugin.toPlugins
 import love.forte.simbot.spring.application.internal.SpringApplicationImpl
 import love.forte.simbot.spring.application.internal.SpringEventDispatcherConfigurationImpl
 
@@ -77,7 +77,7 @@ public object Spring : SpringApplicationFactory {
             c.invokeWith(registrar)
         }
 
-        // TODO components
+        // components
         val components = springConfigurer.componentFactoriesConfigurator.createAll(object : ComponentConfigureContext {
             override val applicationConfiguration: ApplicationConfiguration
                 get() = configuration

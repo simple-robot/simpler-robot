@@ -75,7 +75,7 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
         do {
             val found = findByPriority(priority)
 
-            val done = if (found != null) {
+            val compared = if (found != null) {
                 val foundList = found.list
                 val expected = foundList.value
                 val newValue = expected + value
@@ -90,8 +90,7 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
 
                 addedNewValue
             }
-
-        } while (done)
+        } while (!compared)
 
 
     }

@@ -24,7 +24,9 @@
 package love.forte.simbot.core.application
 
 import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.application.launchApplication
 import love.forte.simbot.application.onCancelled
@@ -58,134 +60,136 @@ class SimpleApplicationTests {
         var requestCancel = false
         var cancelled = false
 
-        val app = launchApplication(Simple) {
-            config {
-                coroutineContext += CoroutineName("TEST-SIMPLE")
-            }
-
-            eventDispatcher {
-                coroutineContext = CoroutineName("TEST-DIS")
-
-                addDispatchInterceptor {
-                    it.invoke()
+        withContext(Dispatchers.Default) {
+            val app = launchApplication(Simple) {
+                config {
+                    coroutineContext += CoroutineName("TEST-SIMPLE")
                 }
 
-                addInterceptor({
-                    priority = 1
-                }) {
-                    println("context1: $it")
-                    println("context1.eventListenerContext: ${it.eventListenerContext}")
-                    val res = it.invoke()
-                    println("context1.end: $it")
-                    println("context1.end.eventListenerContext: ${it.eventListenerContext}")
-                    res
-                }
-                addInterceptor({
-                    priority = 2
-                }) {
-                    println("context2: $it")
-                    println("context2.eventListenerContext: ${it.eventListenerContext}")
-                    val newEventListenerContext = object : EventListenerContext by it.eventListenerContext {
-                        override fun toString(): String = "DeleteEventListenerContext(${it.eventListenerContext})"
+                eventDispatcher {
+                    coroutineContext = CoroutineName("TEST-DIS")
+
+                    addDispatchInterceptor {
+                        it.invoke()
                     }
-                    println("newEventListenerContext: $newEventListenerContext")
-                    val res = it.invoke(newEventListenerContext)
-                    println("context2.end: $it")
-                    println("context2.end.eventListenerContext: ${it.eventListenerContext}")
-                    res
-                }
-                addInterceptor({
-                    priority = 3
-                }) {
-                    println("context3: $it")
-                    println("context3.eventListenerContext: ${it.eventListenerContext}")
-                    val res = it.invoke()
-                    println("context3.end: $it")
-                    println("context3.end.eventListenerContext: ${it.eventListenerContext}")
-                    res
+
+                    addInterceptor({
+                        priority = 1
+                    }) {
+                        println("context1: $it")
+                        println("context1.eventListenerContext: ${it.eventListenerContext}")
+                        val res = it.invoke()
+                        println("context1.end: $it")
+                        println("context1.end.eventListenerContext: ${it.eventListenerContext}")
+                        res
+                    }
+                    addInterceptor({
+                        priority = 2
+                    }) {
+                        println("context2: $it")
+                        println("context2.eventListenerContext: ${it.eventListenerContext}")
+                        val newEventListenerContext = object : EventListenerContext by it.eventListenerContext {
+                            override fun toString(): String = "DeleteEventListenerContext(${it.eventListenerContext})"
+                        }
+                        println("newEventListenerContext: $newEventListenerContext")
+                        val res = it.invoke(newEventListenerContext)
+                        println("context2.end: $it")
+                        println("context2.end.eventListenerContext: ${it.eventListenerContext}")
+                        res
+                    }
+                    addInterceptor({
+                        priority = 3
+                    }) {
+                        println("context3: $it")
+                        println("context3.eventListenerContext: ${it.eventListenerContext}")
+                        val res = it.invoke()
+                        println("context3.end: $it")
+                        println("context3.end.eventListenerContext: ${it.eventListenerContext}")
+                        res
+                    }
+
+                    addInterceptor({
+                        priority = 1
+                    }) {
+                        it.invoke()
+                    }
+                    addDispatchInterceptor({
+                        priority = 1
+                    }
+                    ) {
+                        it.invoke()
+                    }
+                    addInterceptor({
+                        priority = 1
+                    }) {
+                        it.invoke()
+                    }
+                    addInterceptor({
+                        priority = 1
+                    }) {
+                        it.invoke()
+                    }
                 }
 
-                addInterceptor({
-                    priority = 1
-                }) {
-                    it.invoke()
+                stageEvents {
+                    onLaunch {
+                        launched = true
+                    }
+                    onRequestCancel {
+                        requestCancel = true
+                    }
+                    onCancelled {
+                        cancelled = true
+                    }
                 }
-                addDispatchInterceptor({
-                    priority = 1
+
+                install(TestPlugin) {
+                    assertEquals(num, 10)
+                    assertEquals(name, "forliy")
                 }
-                ) {
-                    it.invoke()
+
+                install(TestPlugin) {
+                    num = numValue
                 }
-                addInterceptor({
-                    priority = 1
-                }) {
-                    it.invoke()
+
+                install(TestPlugin) {
+                    name = nameValue
                 }
-                addInterceptor({
-                    priority = 1
-                }) {
-                    it.invoke()
+
+                install(TestPlugin) {
+                    assertEquals(num, numValue)
+                    assertEquals(name, nameValue)
                 }
             }
 
-            stageEvents {
-                onLaunch {
-                    launched = true
-                }
-                onRequestCancel {
-                    requestCancel = true
-                }
-                onCancelled {
-                    cancelled = true
-                }
+            println(app)
+
+            val coroutineName = app.coroutineContext[CoroutineName]
+            assertNotNull(coroutineName)
+            assertEquals(coroutineName.name, "TEST-SIMPLE")
+
+            val myPlugin = app.plugins.first()
+            println(myPlugin)
+
+            app.eventDispatcher.register { context ->
+                println("Context: $context")
+                println("Context.context: ${context.context}")
+                println("Event: ${context.event}")
+                EventResult.of()
+            }
+            app.eventDispatcher.pushAndCollect(TestEvent()) {
+                println("EventResult: $it")
             }
 
-            install(TestPlugin) {
-                assertEquals(num, 10)
-                assertEquals(name, "forliy")
-            }
+            app.cancel()
+            app.join()
 
-            install(TestPlugin) {
-                num = numValue
-            }
+            assertEquals(app.isActive, false)
 
-            install(TestPlugin) {
-                name = nameValue
-            }
-
-            install(TestPlugin) {
-                assertEquals(num, numValue)
-                assertEquals(name, nameValue)
-            }
+            assertEquals(launched, true)
+            assertEquals(requestCancel, true)
+            assertEquals(cancelled, true)
         }
-
-        println(app)
-
-        val coroutineName = app.coroutineContext[CoroutineName]
-        assertNotNull(coroutineName)
-        assertEquals(coroutineName.name, "TEST-SIMPLE")
-
-        val myPlugin = app.plugins.first()
-        println(myPlugin)
-
-        app.eventDispatcher.register { context ->
-            println("Context: $context")
-            println("Context.context: ${context.context}")
-            println("Event: ${context.event}")
-            EventResult.of()
-        }
-        app.eventDispatcher.pushAndCollect(TestEvent()) {
-            println("EventResult: $it")
-        }
-
-        app.cancel()
-        app.join()
-
-        assertEquals(app.isActive, false)
-
-        assertEquals(launched, true)
-        assertEquals(requestCancel, true)
-        assertEquals(cancelled, true)
 
     }
 }
@@ -207,7 +211,7 @@ private class TestPluginConf {
 }
 
 @OptIn(ExperimentalSimbotAPI::class)
-private val TestPlugin = createPlugin("TestPlugin", ::TestPluginConf) { conf ->
+private val TestPlugin = createPlugin("TestPlugin", ::TestPluginConf) {
     applicationEventRegistrar.onLaunch {
         println("Launch!")
     }

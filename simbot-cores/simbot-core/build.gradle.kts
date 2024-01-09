@@ -21,6 +21,7 @@
  *
  */
 
+import love.forte.plugin.suspendtrans.gradle.SuspendTransformGradleExtension
 import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 
 plugins {
@@ -93,6 +94,7 @@ kotlin {
             dependencies {
                 compileOnly(project(":simbot-commons:simbot-common-annotations"))
                 compileOnly(project(":simbot-commons:simbot-common-collection"))
+                compileOnly(libs.suspend.reversal.annotations)
                 api(project(":simbot-api"))
                 api(libs.kotlinx.coroutines.core)
                 // api(libs.kotlinx.serialization.core)
@@ -109,6 +111,7 @@ kotlin {
 
         jvmTest {
             dependencies {
+                implementation(project(":simbot-api"))
                 implementation(kotlin("test-junit5"))
             }
         }
@@ -116,15 +119,7 @@ kotlin {
         jsMain.dependencies {
             implementation(project(":simbot-commons:simbot-common-annotations"))
             implementation(project(":simbot-commons:simbot-common-collection"))
+            implementation("love.forte.plugin.suspend-transform:suspend-transform-annotation:${SuspendTransformGradleExtension().annotationDependencyVersion}")
         }
-
-        nativeMain
-        nativeTest
-
-        linuxMain
-        linuxTest
-
-        appleMain
-        appleTest
     }
 }

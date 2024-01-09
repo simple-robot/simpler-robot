@@ -27,8 +27,14 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import love.forte.simbot.ability.OnCompletion
-import love.forte.simbot.application.*
+import love.forte.simbot.application.ApplicationConfiguration
+import love.forte.simbot.application.ApplicationLaunchStage
+import love.forte.simbot.application.ApplicationLaunchStages
+import love.forte.simbot.application.NormalApplicationEventHandler
+import love.forte.simbot.bot.BotManagers
+import love.forte.simbot.component.Components
 import love.forte.simbot.event.EventDispatcher
+import love.forte.simbot.plugin.Plugins
 import love.forte.simbot.spring.application.SpringApplication
 import kotlin.coroutines.CoroutineContext
 

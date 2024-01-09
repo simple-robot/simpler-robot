@@ -23,6 +23,7 @@
 
 package love.forte.simbot.spring.configuration.application
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import love.forte.simbot.application.Application
 import love.forte.simbot.logger.LoggerFactory
@@ -60,19 +61,43 @@ public open class SimbotApplicationRunner(
     private fun registerOnComplete() {
         application.onCompletion { cause ->
             if (cause != null) {
-                logger.info("Application {} was on completion with cause: {}", application, cause.message)
-                logger.debug("Application {} was on completion with cause: {}", application, cause.message, cause)
+                if (cause is CancellationException) {
+                    val cancelCause = cause.cause
+                    if (cancelCause == null) {
+                        logger.info(
+                            "Application {} was cancelled without cause: {}",
+                            application,
+                            cause.message
+                        )
+                    } else {
+                        logger.info(
+                            "Application {} was cancelled with cause: {}",
+                            application,
+                            cause.message,
+                            cause
+                        )
+                    }
+                } else {
+                    // not cancelled exception
+                    logger.error("Application {} was on completion with an error: {}", application, cause.message, cause)
+                }
             } else {
-                logger.info("Application {} was on completion", application)
+                logger.info("Application {} was on completion without cause", application)
             }
         }
     }
 
     private fun launchApp() {
-        when (properties.application.applicationLaunchMode) {
+        val launchMode = properties.application.applicationLaunchMode
+        logger.info("Launch application {} with mode: {}", application, launchMode)
+        when (launchMode) {
             THREAD -> {
-                launchThread = ApplicationLaunchThread(application).also { it.start() }
+                launchThread = ApplicationLaunchThread(application).also {
+                    it.start()
+                    logger.debug("Started application launch thread {}", it)
+                }
             }
+
             NONE -> {
                 // nothing.
             }

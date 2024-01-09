@@ -34,7 +34,19 @@ setup(P.Simbot)
 
 // https://github.com/detekt/detekt/blob/main/build.gradle.kts
 
-allprojects {
+repositories {
+    mavenCentral()
+    love.forte.gradle.common.core.repository.Repositories.Snapshot.Default.apply {
+        configMaven {
+            mavenContent {
+                snapshotsOnly()
+            }
+        }
+    }
+    mavenLocal()
+}
+
+subprojects {
     repositories {
         mavenCentral()
         love.forte.gradle.common.core.repository.Repositories.Snapshot.Default.apply {
@@ -47,10 +59,6 @@ allprojects {
         mavenLocal()
     }
 
-    // apply(plugin = "io.gitlab.arturbosch.detekt")
-}
-
-subprojects {
     afterEvaluate {
         if (plugins.hasPlugin("io.gitlab.arturbosch.detekt")) {
             return@afterEvaluate

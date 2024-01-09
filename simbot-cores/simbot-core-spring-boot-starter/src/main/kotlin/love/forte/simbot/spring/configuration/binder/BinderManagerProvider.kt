@@ -50,7 +50,7 @@ public interface ParameterBinderManagerBuilder {
 }
 
 /**
- * 在默认行为中会被 [DefaultBinderManagerProvider] 批量加载并配置。
+ * 在默认行为中会被 [ResolveBinderManagerProcessor] 批量加载并配置。
  */
 public fun interface ParameterBinderManagerBuilderConfigurer {
     /**

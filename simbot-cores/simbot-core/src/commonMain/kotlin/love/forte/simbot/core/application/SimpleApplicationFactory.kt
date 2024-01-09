@@ -30,19 +30,17 @@ import love.forte.simbot.ability.OnCompletion
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.application.*
 import love.forte.simbot.bot.BotManager
+import love.forte.simbot.bot.BotManagers
+import love.forte.simbot.bot.toBotManagers
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeBy
 import love.forte.simbot.common.function.invokeWith
-import love.forte.simbot.component.Component
-import love.forte.simbot.component.ComponentConfigureContext
-import love.forte.simbot.component.ComponentFactoriesConfigurator
+import love.forte.simbot.component.*
 import love.forte.simbot.core.event.SimpleEventDispatcher
 import love.forte.simbot.core.event.SimpleEventDispatcherConfiguration
 import love.forte.simbot.core.event.createSimpleEventDispatcherImpl
 import love.forte.simbot.event.EventDispatcher
-import love.forte.simbot.plugin.Plugin
-import love.forte.simbot.plugin.PluginConfigureContext
-import love.forte.simbot.plugin.PluginFactoriesConfigurator
+import love.forte.simbot.plugin.*
 import kotlin.coroutines.CoroutineContext
 
 

@@ -25,14 +25,9 @@ import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
 import love.forte.simbot.application.ApplicationConfiguration
 import love.forte.simbot.application.ApplicationEventRegistrar
-import love.forte.simbot.application.Components
-import love.forte.simbot.application.toComponents
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
-import love.forte.simbot.component.Component
-import love.forte.simbot.component.ComponentConfigureContext
-import love.forte.simbot.component.ComponentFactoriesConfigurator
-import love.forte.simbot.component.ComponentFactory
+import love.forte.simbot.component.*
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.plugin.Plugin
 import love.forte.simbot.plugin.PluginConfigureContext

@@ -25,6 +25,8 @@ package love.forte.simbot.spring.configuration.listener
 
 import love.forte.simbot.application.Application
 import love.forte.simbot.event.EventListener
+import love.forte.simbot.logger.LoggerFactory
+import love.forte.simbot.logger.logger
 import love.forte.simbot.quantcat.annotations.ApplyBinder
 import love.forte.simbot.quantcat.annotations.Listener
 import love.forte.simbot.quantcat.common.binder.BinderManager
@@ -32,7 +34,6 @@ import love.forte.simbot.spring.utils.findMergedAnnotationSafely
 import love.forte.simbot.spring.utils.getKotlinFunctionSafely
 import love.forte.simbot.spring.utils.getTargetTypeSafely
 import love.forte.simbot.spring.utils.selectMethodsSafely
-import org.slf4j.LoggerFactory
 import org.springframework.aop.scope.ScopedProxyUtils
 import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
@@ -105,7 +106,11 @@ public open class SimbotEventListenerFunctionProcessor : ApplicationContextAware
             val beanDefinition = resolveToBeanDefinition(eventListenerResolverDescription)
             val beanDefinitionName = generatedListenerBeanName(beanName, method)
 
-            logger.debug("Generate event listener resolver bean definition {} named {}", beanDefinition, beanDefinitionName)
+            logger.debug(
+                "Generate event listener resolver bean definition {} named {}",
+                beanDefinition,
+                beanDefinitionName
+            )
 
             registry.registerBeanDefinition(beanDefinitionName, beanDefinition)
         }
@@ -139,7 +144,7 @@ public open class SimbotEventListenerFunctionProcessor : ApplicationContextAware
     }
 
     public companion object {
-        private val logger = LoggerFactory.getLogger(SimbotEventListenerFunctionProcessor::class.java)
+        private val logger = LoggerFactory.logger<SimbotEventListenerFunctionProcessor>()
     }
 }
 

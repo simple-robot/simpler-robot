@@ -26,7 +26,7 @@ import org.slf4j.spi.SLF4JServiceProvider;
 
 module simbot.logger.slf4j2impl {
     requires kotlin.stdlib;
-    requires simbot.logger;
+    requires transitive simbot.logger;
     requires com.lmax.disruptor;
 
     exports love.forte.simbot.logger.slf4j2;
