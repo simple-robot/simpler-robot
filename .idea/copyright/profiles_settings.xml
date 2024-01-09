@@ -1,7 +1,7 @@
 <component name="CopyrightManager">
-  <settings>
+  <settings default="simbot4">
     <module2copyright>
-      <element module="copyright-files" copyright="simbot3" />
+      <element module="copyright-files" copyright="simbot4" />
     </module2copyright>
   </settings>
 </component>

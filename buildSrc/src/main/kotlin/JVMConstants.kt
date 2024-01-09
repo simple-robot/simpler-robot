@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2022-2024. ForteScarlet.
+ *     Copyright (c) 2024. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,25 +21,7 @@
  *
  */
 
-import org.gradle.api.Project
-import java.net.URI
-
-sealed class Sonatype {
-    abstract val name: String
-    abstract val url: String
-    fun Project.uri(): URI = uri(url)
-    
-    object Central : Sonatype() {
-        const val NAME = "central"
-        const val URL = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-        override val name: String get() = NAME
-        override val url: String get() = URL
-    }
-    
-    object Snapshot : Sonatype() {
-        const val NAME = "snapshot"
-        const val URL = "https://oss.sonatype.org/content/repositories/snapshots/"
-        override val name: String get() = NAME
-        override val url get() = URL
-    }
+object JVMConstants {
+    const val KT_JVM_TARGET_VALUE = 11
+    const val KT_JVM_TARGET = "11"
 }
