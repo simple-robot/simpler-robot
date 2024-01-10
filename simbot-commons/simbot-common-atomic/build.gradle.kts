@@ -35,6 +35,8 @@ configJavaCompileWithModule("simbot.common.atomic")
 apply(plugin = "simbot.dokka-module-configuration")
 apply(plugin = "simbot-multiplatform-maven-publish")
 
+configJsTestTasks()
+
 kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
@@ -44,6 +46,7 @@ kotlin {
     js(IR) {
         browser()
         nodejs()
+        configJs()
     }
 
     // tier1

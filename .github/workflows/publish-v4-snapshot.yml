@@ -29,8 +29,8 @@ env:
   GRADLE_OPTS: "-Dfile.encoding=UTF-8"
 
 jobs:
-  publish-snapshot:
-    name: Publish snapshot
+  publish-v4-snapshot:
+    name: Publish v4 snapshot
     strategy:
       matrix:
         os: [ macos-latest, windows-latest, ubuntu-latest ]
@@ -45,7 +45,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 11
+          java-version: 21
           cache: 'gradle'
 
       - name: Run All Tests
@@ -69,48 +69,48 @@ jobs:
             -Porg.gradle.daemon=false
 
 
-#  deploy-doc:
-#    name: Deploy snapshots API doc
-#    needs: publish-snapshot
-#    runs-on: ubuntu-latest
-#    steps:
-#      # 检出仓库代码
-#      - name: Check out repo
-#        uses: actions/checkout@v3
-#        with:
-#          persist-credentials: false
-#          fetch-depth: 0
-#
-#      # setup Java
-#      - name: Setup java
-#        uses: actions/setup-java@v3
-#        with:
-#          distribution: 'zulu'
-#          java-version: 11
-#          cache: 'gradle'
-#
-#      # setup Gradle
-#      - name: Gradle generate documentation
-#        uses: gradle/gradle-build-action@v2
-#        with:
-#          gradle-version: 8.5
-#          arguments: |
-#            dokkaHtmlMultiModule
-#            --info
-#            --warning-mode all
-#            -x test
-#            --build-cache
-#            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
-#            -Porg.gradle.daemon=false
-#        env:
-#          SIMBOT_IS_SNAPSHOT: true
-#
-#      # https://github.com/marketplace/actions/github-pages-action
-#      - name: Push to doc repository
-#        uses: peaceiris/actions-gh-pages@v3
-#        with:
-#          personal_token: ${{ secrets.PUSH_TOKEN }}
-#          external_repository: simple-robot-library/simbot3-api-docs
-#          publish_branch: kdoc-deploy/snapshots/main-v4
-#          publish_dir: ./build/dokka/html
-#          destination_dir: snapshots/main-v4
+  deploy-doc:
+    name: Deploy snapshots API doc
+    needs: publish-v4-snapshot
+    runs-on: ubuntu-latest
+    steps:
+      # 检出仓库代码
+      - name: Check out repo
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      # setup Java
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 21
+          cache: 'gradle'
+
+      # setup Gradle
+      - name: Gradle generate documentation
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.5
+          arguments: |
+            dokkaHtmlMultiModule
+            --info
+            --warning-mode all
+            -x test
+            --build-cache
+            -Porg.gradle.jvmargs="-Xms2G -Xmx8G -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
+            -Porg.gradle.daemon=false
+        env:
+          SIMBOT_IS_SNAPSHOT: true
+
+      # https://github.com/marketplace/actions/github-pages-action
+      - name: Push to doc repository
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.PUSH_TOKEN }}
+          external_repository: simple-robot-library/simbot3-api-docs
+          publish_branch: kdoc-deploy/snapshots/main-v4
+          publish_dir: ./build/dokka/html
+          destination_dir: snapshots/main-v4

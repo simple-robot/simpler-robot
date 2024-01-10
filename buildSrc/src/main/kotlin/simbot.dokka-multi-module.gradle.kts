@@ -21,6 +21,7 @@
  *
  */
 
+import love.forte.gradle.common.core.property.systemProp
 import org.jetbrains.dokka.base.DokkaBase
 import org.jetbrains.dokka.base.DokkaBaseConfiguration
 import org.jetbrains.dokka.gradle.DokkaMultiModuleFileLayout
@@ -39,6 +40,11 @@ tasks.named<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>("dokkaHtmlMultiModu
     moduleName.set("Simple Robot")
     outputDirectory.set(rootProject.file("build/dokka/html"))
     fileLayout.set(DokkaMultiModuleFileLayout.CompactInParent)
+
+    if (systemProp("SIMBOT_LOCAL").toBoolean()) {
+        logger.info("Is 'SIMBOT_LOCAL', offline")
+        offlineMode.set(true)
+    }
 
     pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
         customAssets = listOf(rootProject.file(".simbot/dokka-assets/logo-icon.svg"))
