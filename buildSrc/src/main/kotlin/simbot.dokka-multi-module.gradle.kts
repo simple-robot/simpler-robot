@@ -24,7 +24,6 @@
 import love.forte.gradle.common.core.property.systemProp
 import org.jetbrains.dokka.base.DokkaBase
 import org.jetbrains.dokka.base.DokkaBaseConfiguration
-import org.jetbrains.dokka.gradle.DokkaMultiModuleFileLayout
 import java.time.Year
 
 
@@ -39,7 +38,6 @@ plugins {
 tasks.named<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>("dokkaHtmlMultiModule") {
     moduleName.set("Simple Robot")
     outputDirectory.set(rootProject.file("build/dokka/html"))
-    fileLayout.set(DokkaMultiModuleFileLayout.CompactInParent)
 
     if (systemProp("SIMBOT_LOCAL").toBoolean()) {
         logger.info("Is 'SIMBOT_LOCAL', offline")

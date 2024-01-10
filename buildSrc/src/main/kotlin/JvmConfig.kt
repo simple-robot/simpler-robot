@@ -91,7 +91,6 @@ inline fun Project.configJavaCompileWithModule(
         targetCompatibility = jvmVersion
 
         if (moduleName != null) {
-            modularity.inferModulePath.set(true)
             options.compilerArgumentProviders.add(CommandLineArgumentProvider {
                 // Provide compiled Kotlin classes to javac – needed for Java/Kotlin mixed sources to work
                 listOf("--patch-module", "$moduleName=${sourceSets["main"].output.asPath}")

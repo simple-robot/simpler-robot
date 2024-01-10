@@ -21,13 +21,15 @@
  *
  */
 
+import love.forte.gradle.common.core.property.systemProp
 import org.jetbrains.dokka.DokkaConfiguration
 import java.net.URI
+import java.net.URL
 
 
-// plugins {
-//     id("org.jetbrains.dokka")
-// }
+plugins {
+    id("org.jetbrains.dokka")
+}
 
 tasks.named("dokkaHtml").configure {
     tasks.findByName("kaptKotlin")?.also { kaptKotlinTask ->
@@ -53,13 +55,16 @@ tasks.named("dokkaHtmlPartial").configure {
 }
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
-    // impliesSubProjects = true
+    if (systemProp("SIMBOT_LOCAL").toBoolean()) {
+        logger.info("Is 'SIMBOT_LOCAL', offline")
+        offlineMode.set(true)
+    }
 
     dokkaSourceSets.configureEach {
         skipEmptyPackages.set(true)
         suppressGeneratedFiles.set(false)
 
-        version = "v" + P.Simbot.version
+        version = P.Simbot.version
         documentedVisibilities.set(
             listOf(
                 DokkaConfiguration.Visibility.PUBLIC,
@@ -72,7 +77,6 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
                 logger.info("project {} found jdkVersionValue: {}", project, it)
             } ?: JVMConstants.KT_JVM_TARGET_VALUE
 
-
         jdkVersion.set(jdkVersionValue)
         if (project.file("Module.md").exists()) {
             includes.from("Module.md")
@@ -80,17 +84,13 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
             includes.from("README.md")
         }
 
-        // with(rootDir.resolve("dokka-cache")) {
-        //     mkdirs()
-        //     cacheRoot.set(this)
-        // }
-
-        // sourceLink {
-        //     localDirectory.set(projectDir.resolve("src"))
-        //     val relativeTo = projectDir.relativeTo(rootProject.projectDir)
-        //     remoteUrl.set(URI.create("${P.HOMEPAGE}/tree/v4-dev/$relativeTo/src").toURL())
-        //     remoteLineSuffix.set("#L")
-        // }
+        sourceLink {
+            localDirectory.set(File(projectDir, "src")) // .resolve("src")
+            val relativeTo = projectDir.relativeTo(rootProject.projectDir)
+            // remoteUrl.set(URI.create("${P.HOMEPAGE}/tree/v4-dev/$relativeTo/src/").toURL())
+            remoteUrl.set(URL("${P.HOMEPAGE}/tree/v4-dev/$relativeTo/src/"))
+            remoteLineSuffix.set("#L")
+        }
 
         perPackageOption {
             matchingRegex.set(".*internal.*") // will match all .internal packages and sub-packages
