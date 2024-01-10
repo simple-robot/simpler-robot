@@ -72,7 +72,7 @@ jobs:
   deploy-doc:
     name: Deploy snapshots API doc
     needs: publish-v4-snapshot
-    runs-on: ubuntu-latest
+    runs-on: macos-latest # ubuntu-latest
     steps:
       # 检出仓库代码
       - name: Check out repo
