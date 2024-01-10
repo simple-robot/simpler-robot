@@ -74,8 +74,8 @@ inline fun KotlinJvmProjectExtension.configKotlinJvm(
     compilerOptions {
         javaParameters = true
         jvmTarget.set(JvmTarget.fromTarget(jdkVersion.toString()))
-        freeCompilerArgs.addAll("-Xjvm-default=all", "-Xjsr305=strict")
-        // freeCompilerArgs.set(freeCompilerArgs.getOrElse(emptyList()) + listOf("-Xjvm-default=all", "-Xjsr305=strict"))
+        // freeCompilerArgs.addAll("-Xjvm-default=all", "-Xjsr305=strict")
+        freeCompilerArgs.set(freeCompilerArgs.getOrElse(emptyList()) + listOf("-Xjvm-default=all", "-Xjsr305=strict"))
     }
     block()
 }
