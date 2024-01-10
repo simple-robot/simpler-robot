@@ -65,7 +65,7 @@ jobs:
             --warning-mode all
             -x test
             --build-cache
-             
+            -Porg.gradle.jvmargs="-Xms2G -Xmx8G -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
             -Porg.gradle.daemon=false
 
 
