@@ -50,6 +50,7 @@ plugins {
 //    id("simbot.simple-module-conventions")
 //    `simbot-jvm-maven-publish`
     kotlin("jvm")
+    id("simbot.dokka-module-configuration")
     id("com.github.gmazzo.buildconfig")
 }
 
@@ -65,7 +66,7 @@ kotlin {
 
 dependencies {
     api(project(":simbot-logger"))
-    api("com.lmax:disruptor:3.4.4")
+    api(libs.lmax.disruptor)
 }
 
 buildConfig {
