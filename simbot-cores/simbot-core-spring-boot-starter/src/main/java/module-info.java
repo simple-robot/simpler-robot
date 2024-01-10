@@ -17,6 +17,7 @@ module simbot.spring.starter {
     requires simbot.common.core;
     requires static simbot.common.annotations;
 
+
     exports love.forte.simbot.spring;
     exports love.forte.simbot.spring.application;
     exports love.forte.simbot.spring.configuration;
