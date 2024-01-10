@@ -38,15 +38,14 @@ import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 
 plugins {
 //    `simbot-multiplatform-maven-publish`
-    `java-library`
     kotlin("multiplatform")
-    id("simbot.dokka-module-configuration")
 }
 
 setup(P.SimbotLogger)
 apply(plugin = "simbot-multiplatform-maven-publish")
 
 configJavaCompileWithModule("simbot.logger")
+apply(plugin = "simbot.dokka-module-configuration")
 
 kotlin {
     explicitApi()

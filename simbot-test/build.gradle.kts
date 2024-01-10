@@ -28,7 +28,6 @@ plugins {
 //    `java-library`
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    id("simbot.dokka-module-configuration")
 //    id("io.gitlab.arturbosch.detekt")
     id("simbot.suspend-transform-configure")
     alias(libs.plugins.ksp)
@@ -38,6 +37,7 @@ setup(P.Simbot)
 apply(plugin = "simbot-multiplatform-maven-publish")
 
 configJavaCompileWithModule("simbot.test")
+apply(plugin = "simbot.dokka-module-configuration")
 
 kotlin {
     explicitApi()

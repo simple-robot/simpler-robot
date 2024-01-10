@@ -26,11 +26,8 @@ import love.forte.plugin.suspendtrans.gradle.SuspendTransformGradleExtension
 import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 
 plugins {
-//    `java-library`
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-//    `simbot-multiplatform-maven-publish`
-    id("simbot.dokka-module-configuration")
 //    id("io.gitlab.arturbosch.detekt")
 }
 
@@ -42,6 +39,7 @@ setup(P.Simbot)
 apply(plugin = "simbot-multiplatform-maven-publish")
 
 configJavaCompileWithModule("simbot.core")
+apply(plugin = "simbot.dokka-module-configuration")
 
 kotlin {
     explicitApi()

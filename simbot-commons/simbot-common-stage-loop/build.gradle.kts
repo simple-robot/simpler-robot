@@ -47,15 +47,14 @@ import love.forte.gradle.common.core.project.setup
  */
 
 plugins {
-    `java-library`
     kotlin("multiplatform")
-    id("simbot.dokka-module-configuration")
 }
 
 setup(P.Simbot)
 apply(plugin = "simbot-multiplatform-maven-publish")
 
 configJavaCompileWithModule("simbot.common.stageloop")
+apply(plugin = "simbot.dokka-module-configuration")
 
 kotlin {
     explicitApi()

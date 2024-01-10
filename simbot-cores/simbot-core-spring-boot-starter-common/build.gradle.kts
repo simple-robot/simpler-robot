@@ -47,7 +47,7 @@ import love.forte.gradle.common.core.project.setup
  */
 
 plugins {
-    // id("simbot.boot-module-conventions")
+    `java-library`
     kotlin("jvm")
     kotlin("plugin.serialization")
 }
@@ -56,6 +56,7 @@ setup(P.Simbot)
 apply(plugin = "simbot-jvm-maven-publish")
 
 configJavaCompileWithModule("simbot.spring.common")
+apply(plugin = "simbot.dokka-module-configuration")
 
 kotlin {
     explicitApi()

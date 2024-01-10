@@ -25,10 +25,7 @@ import love.forte.gradle.common.core.project.setup
 import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 
 plugins {
-//    `java-library`
     kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("simbot.dokka-module-configuration")
 //    id("io.gitlab.arturbosch.detekt")
 }
 
@@ -36,6 +33,7 @@ setup(P.Simbot)
 apply(plugin = "simbot-multiplatform-maven-publish")
 
 configJavaCompileWithModule("simbot.common.atomic")
+apply(plugin = "simbot.dokka-module-configuration")
 
 kotlin {
     explicitApi()

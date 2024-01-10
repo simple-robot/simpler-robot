@@ -41,13 +41,13 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
 //    `simbot-multiplatform-maven-publish`
-    id("simbot.dokka-module-configuration")
 }
 
 setup(P.SimbotQuantcat)
 apply(plugin = "simbot-multiplatform-maven-publish")
 
 configJavaCompileWithModule("simbot.quantcat.common")
+apply(plugin = "simbot.dokka-module-configuration")
 
 kotlin {
     explicitApi()
