@@ -57,10 +57,10 @@ repositories {
 }
 
 setup(P.Simbot)
-apply(plugin = "simbot-jvm-maven-publish")
 
 configJavaCompileWithModule("simbot.spring.starter", jvmVersion = "17")
 apply(plugin = "simbot.dokka-module-configuration")
+apply(plugin = "simbot-jvm-maven-publish")
 
 kotlin {
     explicitApi()

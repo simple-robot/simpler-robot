@@ -44,10 +44,10 @@ plugins {
 }
 
 setup(P.SimbotQuantcat)
-apply(plugin = "simbot-multiplatform-maven-publish")
 
 configJavaCompileWithModule("simbot.quantcat.annotations")
 apply(plugin = "simbot.dokka-module-configuration")
+apply(plugin = "simbot-multiplatform-maven-publish")
 
 kotlin {
     explicitApi()

@@ -42,10 +42,10 @@ plugins {
 }
 
 setup(P.SimbotLogger)
-apply(plugin = "simbot-multiplatform-maven-publish")
 
 configJavaCompileWithModule("simbot.logger")
 apply(plugin = "simbot.dokka-module-configuration")
+apply(plugin = "simbot-multiplatform-maven-publish")
 
 kotlin {
     explicitApi()

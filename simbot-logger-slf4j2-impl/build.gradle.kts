@@ -47,17 +47,16 @@ import love.forte.gradle.common.core.project.setup
  */
 
 plugins {
-//    id("simbot.simple-module-conventions")
-//    `simbot-jvm-maven-publish`
+    `java-library`
     kotlin("jvm")
     id("com.github.gmazzo.buildconfig")
 }
 
 setup(P.SimbotLogger)
-apply(plugin = "simbot-jvm-maven-publish")
 
 configJavaCompileWithModule("simbot.logger.slf4j2impl")
 apply(plugin = "simbot.dokka-module-configuration")
+apply(plugin = "simbot-jvm-maven-publish")
 
 kotlin {
     explicitApi()
