@@ -1,5 +1,5 @@
 <!--suppress HtmlDeprecatedAttribute -->
-<div align="center">
+<div align="center" hidden="hidden">
     <a href="https://simbot.forte.love/"><img src=".simbot/logo.png" alt="logo" style="width:230px; height:230px; border-radius:50%; " /></a>
     <h2>
         - Simple Robot -
@@ -47,51 +47,15 @@
 
 ## 简介
 
-**`Simple Robot`** 是一个JVM平台（和多平台）的bot风格事件调度框架（下文简称simbot），提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写bot风格的事件调度应用。
-目前主要应用于对接各种类型的bot应用平台/框架，并提供统一的API实现。
+**`Simple Robot`** v4 是一个基于 **KMP** 的多平台 Bot 风格事件调度框架（下文简称simbot），
+提供统一的异步API和易用的风格设计，可以协助你更快速高效的编写 Bot 风格的事件调度应用。
+目前主要应用于对接各种类型的 Bot 应用平台/框架，并提供统一的API实现。
 
-**`simbot`** 通过 [Kotlin](https://kotlinlang.org/) 语言开发并兼容Java（jdk8+）等JVM平台语言，且提供Javaer最爱的Spring Boot Starter，协助你快速开发。
+**`simbot`** 通过 [Kotlin](https://kotlinlang.org/) 语言开发并兼容Java（**jdk11+**）等JVM平台语言，
+且提供大量 Java 友好 API 和 Spring Boot Starter，协助你快速开发。
 
-<br>
-<br>
-
-> _如果你想参考simbot2, 可以参考 [simple-robot-v2](https://github.com/simple-robot/simple-robot-v2)_
-
-## 文档
-
-对于使用文档，可以去看看 [**Simple Robot 3 官方网站**][doc-homepage] (建议开启“魔法”访问)，
-而API文档则可以前往 [文档引导站点](https://docs.simbot.forte.love) 寻找并查看。API文档归根随着版本的发布而同步更新。
-
-而这些内容，你都可以在 [**Simple Robot 图书馆**](http://github.com/simple-robot-library) 处找到。
-
-## 组件
-
-在simbot3相关的系列组件中，大部分需要依赖第三方库（也有可能是由simbot团队实现的）的组件，基本上都会使用独立的仓库进行管理，
-并且会尽量遵循simbot3的 [命名概述](https://www.yuque.com/simpler-robot/simpler-robot-doc/yqlxig) 中所约定的规则。
-<br>
-simbot3目前已经实现的组件有：
-
-|                  组件目标                   |    主要成员     |                                                      仓库地址                                                       | 状态  |
-|:---------------------------------------:|:-----------:|:---------------------------------------------------------------------------------------------------------------:|:---:|
-| [Mirai](https://github.com/mamoe/mirai) | simbot team |          [simple-robot/simbot-component-mirai](https://github.com/simple-robot/simbot-component-mirai)          | 濒死  |
-|   [Kook(开黑啦)](https://www.kookapp.cn)   | simbot team |           [simple-robot/simbot-component-kook](https://github.com/simple-robot/simbot-component-kook)           | 维护中 |
-|    [QQ频道](https://bot.q.qq.com/wiki)    | simbot team |       [simple-robot/simbot-component-qq-guild](https://github.com/simple-robot/simbot-component-qq-guild)       | 维护中 |
-|   [米游社大别野](https://open.miyoushe.com)   | simbot team | [simple-robot/simbot-component-miyoushe-villa](https://github.com/simple-robot/simbot-component-miyoushe-villa) | 维护中 |
-
-有关于这些组件等simbot附属内容的相关信息，你可以从 [**Simple Robot 附属组织库**](https://github.com/simple-robot) 处查看~
-
-
-## 快速开始
-
-你可以前往 [**官方网站**][doc-homepage] 的**文档**内查看与快速开始有关的内容。
-
-## 信息资讯
-如果你想要时刻关注版本的发布信息，你可以通过GitHub的 **Watch** 功能来订阅包括 
-[**Releases**](https://github.com/simple-robot/simpler-robot/releases) 
-在内的各种仓库资讯。
-
-如果你感兴趣，可以时不时的去 [**Simple Robot Blog**](https://simbot.forte.love/blog) 看一看，
-那里会有不定期更新的博客以及一些其他的杂七杂八，或者碎碎念！
+> [!warning]
+> 施工中
 
 ## 协助我们
 为我们点亮一个**✨star🌟**便是能够给予我们继续走下去的最大动力与支持！
@@ -112,92 +76,6 @@ simbot3目前已经实现的组件有：
 [discussions]: https://github.com/orgs/simple-robot/discussions
 
 
-## 走马观花
-
-**事件监听(标准库)**
-
-```kotlin
-suspend fun main() {
-    // 构建Application
-    val app = createSimpleApplication {  }
-    // 注册监听函数
-    app.eventListenerManager.listeners {
-    // 注册一个 '好友消息' 事件
-    FriendMessageEvent { event ->
-        event.reply("你也好")
-      } onMatch { textContent == "你好" }
-    }
-    // 挂起并直到被关闭
-    app.join()
-}
-```
-
-**事件监听(BOOT)**
-
-```kotlin
-@Listener
-@Filter("喵{1,3}")   // match: 喵,喵喵,喵喵喵
-suspend fun FriendMessageEvent.onEvent() {
-  // ...
-}
-```
-
-```kotlin
-@Listener
-@ContentTrim // 匹配前trim
-@Filter("喵{1,3}") // match: 喵,喵喵,喵喵喵
-suspend fun FriendMessageEvent.onEvent() {
-  // ...
-}
-```
-
-**消息发送**
-
-```kotlin
-@Listener
-suspend fun GroupMessageEvent.onEvent() {
-    group().send(At(114.ID) + "喵!".toText() + Face(514.ID))
-}
-```
-
-**会话**
-
-```kotlin
-@Listener
-suspend fun FriendMessageEvent.onEvent(session: ContinuousSessionContext) {
-    // import love.forte.simbot.event.invoke
-    val nextEvent: FriendMessageEvent = session { next(FriendMessageEvent) }
-    session {
-        val next1: FriendMessageEvent = next(FriendMessageEvent)
-        val next2: FriendMessageEvent = next(FriendMessageEvent)
-        val next3: FriendMessageEvent = next(FriendMessageEvent)
-        // ...
-    }
-}
-```
-
-**Java(Spring Boot Starter)**
-
-```java
-@SpringBootApplication
-@EnableSimbot // 启用
-public class MyApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(MyApplication.class, args);
-    }
-    
-    /** 事件监听 */
-    @Listener
-    public void onFriendMessage(FriendMessageEvent event) {
-        event.replyBlocking("Hello, ");
-        event.getFriend().sendAsync("Simbot");
-        // 阻塞或异步的不同风格的Java API
-    }
-}
-```
-
-
-
 ## 特别鸣谢
 
 [<img src=".simbot/jetbrains.png" width="200" alt="jetbrains" />](https://www.jetbrains.com/?from=simpler-robot)
@@ -214,6 +92,8 @@ public class MyApplication {
 
 ## License
 
+Simple Robot 使用 [LGPLv3](https://www.gnu.org/licenses/#LGPL) 协议开源。
+
 ```
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by 
@@ -228,9 +108,5 @@ Lesser GNU General Public License for more details.
 You should have received a copy of the Lesser GNU General Public License 
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
-
-Simple Robot 以 [LGPLv3](https://www.gnu.org/licenses/#LGPL) 
-协议开源。
-
 
 [doc-homepage]: https://simbot.forte.love/
