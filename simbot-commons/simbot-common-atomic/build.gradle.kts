@@ -21,20 +21,19 @@
  *
  */
 
+import love.forte.gradle.common.core.project.setup
 import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 
 plugins {
 //    `java-library`
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-//    `simbot-multiplatform-maven-publish`
     id("simbot.dokka-module-configuration")
 //    id("io.gitlab.arturbosch.detekt")
 }
 
-repositories {
-    mavenCentral()
-}
+setup(P.Simbot)
+apply(plugin = "simbot-multiplatform-maven-publish")
 
 configJavaCompileWithModule("simbot.common.atomic")
 

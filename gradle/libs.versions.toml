@@ -10,7 +10,7 @@ ktor = "2.3.7"
 
 slf4j = "2.0.7"
 suspendReversal = "0.2.0"
-ksp = "1.9.21-1.0.16"
+ksp = "1.9.22-1.0.16"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "1.15.3"
 

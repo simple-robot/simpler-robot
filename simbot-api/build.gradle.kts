@@ -35,13 +35,7 @@ plugins {
 }
 
 setup(P.Simbot)
-
 apply(plugin = "simbot-multiplatform-maven-publish")
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
 
 configJavaCompileWithModule("simbot.api")
 

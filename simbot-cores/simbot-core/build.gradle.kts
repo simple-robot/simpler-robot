@@ -21,6 +21,7 @@
  *
  */
 
+import love.forte.gradle.common.core.project.setup
 import love.forte.plugin.suspendtrans.gradle.SuspendTransformGradleExtension
 import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 
@@ -36,6 +37,9 @@ plugins {
 repositories {
     mavenCentral()
 }
+
+setup(P.Simbot)
+apply(plugin = "simbot-multiplatform-maven-publish")
 
 configJavaCompileWithModule("simbot.core")
 

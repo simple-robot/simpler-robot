@@ -45,7 +45,7 @@ private class JsWeakRefImpl<T : Any>(private var weakRef: dynamic /* WeakRef */)
         get() {
             val r = weakRef
             if (r != null) {
-                return (r.deref().unsafeCast<T?>()).also { if (it == null) weakRef = null } as? T
+                return (r.deref().unsafeCast<T?>()).also { if (it == null) weakRef = null }
             }
 
             return null

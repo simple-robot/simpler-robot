@@ -21,6 +21,7 @@
  *
  */
 
+import love.forte.gradle.common.core.project.setup
 import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 
 /*
@@ -43,10 +44,8 @@ plugins {
     id("simbot.dokka-module-configuration")
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
+setup(P.SimbotQuantcat)
+apply(plugin = "simbot-multiplatform-maven-publish")
 
 configJavaCompileWithModule("simbot.quantcat.common")
 

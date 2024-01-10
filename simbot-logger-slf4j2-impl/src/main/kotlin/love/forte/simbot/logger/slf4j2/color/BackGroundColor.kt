@@ -25,8 +25,7 @@ package love.forte.simbot.logger.slf4j2.color
 
 /**
  * 背景颜色
- * @author ForteScarlet <[163邮箱地址]ForteScarlet@163.com>
- * @since JDK1.8
+ * @author ForteScarlet
  */
 public enum class BackGroundColor(
     /** 颜色代码  */

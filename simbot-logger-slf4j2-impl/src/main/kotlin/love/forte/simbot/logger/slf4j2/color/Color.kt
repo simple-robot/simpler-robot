@@ -23,8 +23,7 @@
 package love.forte.simbot.logger.slf4j2.color
 
 /**
- * @author ForteScarlet <[163邮箱地址]ForteScarlet@163.com>
- * @since JDK1.8
+ * @author ForteScarlet
  */
 public interface Color {
     public val colorIndex: Int
