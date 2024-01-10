@@ -42,14 +42,11 @@ kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
 
-    configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
+    configKotlinJvm()
 
     js(IR) {
         browser()
-        nodejs {
-            testTask {
-            }
-        }
+        nodejs()
     }
 
     // tier1
