@@ -21,7 +21,7 @@
  *
  */
 
-package love.forte.simbot.spring
+package love.forte.simbot.spring.common
 
 import love.forte.simbot.bot.BotManager
 import love.forte.simbot.bot.SerializableBotConfiguration

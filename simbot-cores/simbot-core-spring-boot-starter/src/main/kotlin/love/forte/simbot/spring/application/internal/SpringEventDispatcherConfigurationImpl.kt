@@ -26,7 +26,7 @@ package love.forte.simbot.spring.application.internal
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.core.event.impl.SimpleEventDispatcherConfigurationImpl
 import love.forte.simbot.event.*
-import love.forte.simbot.spring.application.SpringEventDispatcherConfiguration
+import love.forte.simbot.spring.common.application.SpringEventDispatcherConfiguration
 import kotlin.coroutines.CoroutineContext
 
 

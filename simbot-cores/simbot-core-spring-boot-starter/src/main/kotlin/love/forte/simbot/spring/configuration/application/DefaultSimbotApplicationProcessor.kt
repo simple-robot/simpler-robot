@@ -34,10 +34,10 @@ import love.forte.simbot.component.Component
 import love.forte.simbot.logger.Logger
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import love.forte.simbot.spring.BotAutoStartOnFailureException
-import love.forte.simbot.spring.BotConfigResourceLoadOnFailureException
-import love.forte.simbot.spring.MismatchConfigurableBotManagerException
-import love.forte.simbot.spring.application.*
+import love.forte.simbot.spring.common.BotAutoStartOnFailureException
+import love.forte.simbot.spring.common.BotConfigResourceLoadOnFailureException
+import love.forte.simbot.spring.common.MismatchConfigurableBotManagerException
+import love.forte.simbot.spring.common.application.*
 import love.forte.simbot.spring.configuration.listener.SimbotEventListenerResolver
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import org.springframework.beans.factory.annotation.Autowired

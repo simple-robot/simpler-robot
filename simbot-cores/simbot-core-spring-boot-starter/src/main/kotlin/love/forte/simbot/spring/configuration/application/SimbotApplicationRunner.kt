@@ -28,10 +28,10 @@ import kotlinx.coroutines.runBlocking
 import love.forte.simbot.application.Application
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import love.forte.simbot.spring.application.ApplicationLaunchMode.NONE
-import love.forte.simbot.spring.application.ApplicationLaunchMode.THREAD
-import love.forte.simbot.spring.application.SpringApplication
-import love.forte.simbot.spring.application.SpringApplicationConfigurationProperties
+import love.forte.simbot.spring.common.application.ApplicationLaunchMode.NONE
+import love.forte.simbot.spring.common.application.ApplicationLaunchMode.THREAD
+import love.forte.simbot.spring.common.application.SpringApplication
+import love.forte.simbot.spring.common.application.SpringApplicationConfigurationProperties
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.context.ApplicationContext

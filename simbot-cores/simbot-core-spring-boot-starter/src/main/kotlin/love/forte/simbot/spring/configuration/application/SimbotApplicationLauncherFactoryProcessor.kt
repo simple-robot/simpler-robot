@@ -24,7 +24,7 @@
 package love.forte.simbot.spring.configuration.application
 
 import love.forte.simbot.spring.application.Spring
-import love.forte.simbot.spring.application.SpringApplicationLauncher
+import love.forte.simbot.spring.common.application.SpringApplicationLauncher
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

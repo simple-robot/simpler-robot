@@ -35,7 +35,7 @@ import love.forte.simbot.bot.BotManagers
 import love.forte.simbot.component.Components
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.plugin.Plugins
-import love.forte.simbot.spring.application.SpringApplication
+import love.forte.simbot.spring.common.application.SpringApplication
 import kotlin.coroutines.CoroutineContext
 
 

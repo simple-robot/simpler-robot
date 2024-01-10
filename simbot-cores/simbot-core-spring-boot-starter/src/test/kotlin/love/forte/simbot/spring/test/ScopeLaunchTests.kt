@@ -25,6 +25,7 @@ package love.forte.simbot.spring.test
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 
@@ -34,6 +35,8 @@ import org.junit.jupiter.api.Test
  */
 class ScopeLaunchTests {
 
+    private class InternalErr(message: String) : RuntimeException(message)
+
     @Test
     fun scopeLaunchAndThrowTest() = runTest {
         try {
@@ -41,14 +44,14 @@ class ScopeLaunchTests {
                 withContext(Dispatchers.IO) {
                     repeat(20) { i ->
                         launch {
-                            delay(100)
-                            error("ERROR in $i")
+                            delay(10)
+                            throw InternalErr("ERROR in $i")
                         }
                     }
                 }
             }
         } catch (e: Throwable) {
-            e.printStackTrace()
+            Assertions.assertInstanceOf(InternalErr::class.java, e)
         }
     }
 

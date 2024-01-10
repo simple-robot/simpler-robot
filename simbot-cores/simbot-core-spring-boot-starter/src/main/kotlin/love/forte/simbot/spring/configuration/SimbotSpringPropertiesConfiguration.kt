@@ -23,7 +23,7 @@
 
 package love.forte.simbot.spring.configuration
 
-import love.forte.simbot.spring.application.SpringApplicationConfigurationProperties
+import love.forte.simbot.spring.common.application.SpringApplicationConfigurationProperties
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean

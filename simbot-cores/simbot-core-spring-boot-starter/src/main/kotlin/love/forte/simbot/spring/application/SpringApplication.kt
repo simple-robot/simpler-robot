@@ -42,6 +42,7 @@ import love.forte.simbot.plugin.PluginFactoriesConfigurator
 import love.forte.simbot.plugin.toPlugins
 import love.forte.simbot.spring.application.internal.SpringApplicationImpl
 import love.forte.simbot.spring.application.internal.SpringEventDispatcherConfigurationImpl
+import love.forte.simbot.spring.common.application.*
 
 /**
  * Factory for [SpringApplication].

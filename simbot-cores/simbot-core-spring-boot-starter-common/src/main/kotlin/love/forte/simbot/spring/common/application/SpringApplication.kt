@@ -21,7 +21,7 @@
  *
  */
 
-package love.forte.simbot.spring.application
+package love.forte.simbot.spring.common.application
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher

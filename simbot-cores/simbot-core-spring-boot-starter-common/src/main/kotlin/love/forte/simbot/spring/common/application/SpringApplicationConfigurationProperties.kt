@@ -21,7 +21,7 @@
  *
  */
 
-package love.forte.simbot.spring.application
+package love.forte.simbot.spring.common.application
 
 import love.forte.simbot.application.Application
 import love.forte.simbot.bot.Bot
@@ -59,13 +59,15 @@ public class SpringApplicationConfigurationProperties {
         /**
          * 当加载用于注册bot的配置文件出现错误时的处理策略。默认为 [BotConfigResourceLoadFailurePolicy.ERROR] 即抛出异常。
          */
-        public var autoRegistrationResourceLoadFailurePolicy: BotConfigResourceLoadFailurePolicy = BotConfigResourceLoadFailurePolicy.ERROR
+        public var autoRegistrationResourceLoadFailurePolicy: BotConfigResourceLoadFailurePolicy =
+            BotConfigResourceLoadFailurePolicy.ERROR
 
         /**
          * 当无法为某个 [SerializableBotConfiguration] 找到任何可供其注册的 [BotManager] 时的处理策略。
          * 默认为 [MismatchConfigurableBotManagerPolicy.ERROR_LOG] 输出 `error` 日志。
          */
-        public var autoRegistrationMismatchConfigurableBotManagerPolicy: MismatchConfigurableBotManagerPolicy = MismatchConfigurableBotManagerPolicy.ERROR_LOG
+        public var autoRegistrationMismatchConfigurableBotManagerPolicy: MismatchConfigurableBotManagerPolicy =
+            MismatchConfigurableBotManagerPolicy.ERROR_LOG
 
         /**
          * 是否在 `Bot` 注册后使用 [Bot.start] 启动它们。

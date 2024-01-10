@@ -27,7 +27,7 @@ import love.forte.simbot.component.ComponentFactory
 import love.forte.simbot.component.ComponentInstaller
 import love.forte.simbot.component.findAnyInstallAllPlugins
 import love.forte.simbot.logger.LoggerFactory
-import love.forte.simbot.spring.application.SpringApplicationConfigurationProperties
+import love.forte.simbot.spring.common.application.SpringApplicationConfigurationProperties
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean

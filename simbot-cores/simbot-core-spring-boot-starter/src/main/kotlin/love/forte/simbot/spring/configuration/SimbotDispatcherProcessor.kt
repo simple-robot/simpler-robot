@@ -27,7 +27,7 @@ import love.forte.simbot.event.EventDispatchInterceptor
 import love.forte.simbot.event.EventInterceptor
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import love.forte.simbot.spring.application.SpringEventDispatcherConfiguration
+import love.forte.simbot.spring.common.application.SpringEventDispatcherConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean

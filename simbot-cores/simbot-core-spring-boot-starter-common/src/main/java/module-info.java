@@ -7,6 +7,6 @@ module simbot.spring.common {
     requires static java.annotation;
     requires kotlinx.coroutines.core;
 
-    exports love.forte.simbot.spring.application;
-    exports love.forte.simbot.spring;
+    exports love.forte.simbot.spring.common.application;
+    exports love.forte.simbot.spring.common;
 }

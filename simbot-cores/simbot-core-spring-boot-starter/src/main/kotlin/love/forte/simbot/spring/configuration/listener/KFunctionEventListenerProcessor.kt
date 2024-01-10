@@ -49,7 +49,7 @@ import love.forte.simbot.quantcat.common.filter.MultiFilterMatchType
 import love.forte.simbot.quantcat.common.keyword.EmptyKeyword
 import love.forte.simbot.quantcat.common.keyword.KeywordListAttribute
 import love.forte.simbot.quantcat.common.keyword.SimpleKeyword
-import love.forte.simbot.spring.MultipleIncompatibleTypesEventException
+import love.forte.simbot.spring.common.MultipleIncompatibleTypesEventException
 import love.forte.simbot.spring.utils.findMergedAnnotationSafely
 import love.forte.simbot.spring.utils.findRepeatableMergedAnnotationSafely
 import org.springframework.beans.factory.NoSuchBeanDefinitionException

@@ -23,8 +23,8 @@
 
 package love.forte.simbot.spring.configuration.application
 
-import love.forte.simbot.spring.application.SpringApplication
-import love.forte.simbot.spring.application.SpringApplicationLauncher
+import love.forte.simbot.spring.common.application.SpringApplication
+import love.forte.simbot.spring.common.application.SpringApplicationLauncher
 import love.forte.simbot.suspendrunner.runInNoScopeBlocking
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

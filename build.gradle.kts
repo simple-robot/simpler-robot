@@ -77,17 +77,17 @@ subprojects {
 }
 
 fun Project.applyDetekt() {
-    apply(plugin = "io.gitlab.arturbosch.detekt")
-
-    detekt {
-//        buildUponDefaultConfig = true
-        config.from(rootProject.projectDir.resolve(".detekt/config/detekt.yml"))
-        baseline = rootProject.projectDir.resolve(".detekt/baseline/detekt-baseline.xml")
-        // "detekt-baseline.xml"
-        dependencies {
-            detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
-        }
-    }
+//     apply(plugin = "io.gitlab.arturbosch.detekt")
+//
+//     detekt {
+// //        buildUponDefaultConfig = true
+//         config.from(rootProject.projectDir.resolve(".detekt/config/detekt.yml"))
+//         baseline = rootProject.projectDir.resolve(".detekt/baseline/detekt-baseline.xml")
+//         // "detekt-baseline.xml"
+//         dependencies {
+//             detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
+//         }
+//     }
 }
 
 idea {

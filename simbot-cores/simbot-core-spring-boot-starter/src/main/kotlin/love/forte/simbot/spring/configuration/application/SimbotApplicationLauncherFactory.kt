@@ -24,7 +24,11 @@
 package love.forte.simbot.spring.configuration.application
 
 import love.forte.simbot.application.ApplicationFactoryConfigurer
-import love.forte.simbot.spring.application.*
+import love.forte.simbot.spring.application.Spring
+import love.forte.simbot.spring.common.application.SpringApplicationBuilder
+import love.forte.simbot.spring.common.application.SpringApplicationEventRegistrar
+import love.forte.simbot.spring.common.application.SpringApplicationLauncher
+import love.forte.simbot.spring.common.application.SpringEventDispatcherConfiguration
 
 
 /**
