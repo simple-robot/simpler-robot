@@ -9,8 +9,8 @@ on: # push
     paths:
       - '**src/**/kotlin/**.kt'
       - '**src/**/java/**.java'
-      - '**/**/src/**/kotlin/**.kt'
-      - '**/**/src/**/java/**.java'
+      - '**/src/**/kotlin/**.kt'
+      - '**/src/**/java/**.java'
       - '**/build.gradle.kts'
       - 'build.gradle.kts'
       - 'settings.gradle.kts'
