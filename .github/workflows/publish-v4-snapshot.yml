@@ -51,7 +51,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: 8.5
-          arguments: assemble allTests
+          arguments: assemble allTests --info --warning-mode all
 
       - name: Gradle publish snapshot
         uses: gradle/gradle-build-action@v2

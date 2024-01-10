@@ -30,6 +30,7 @@ import kotlin.contracts.contract
 
 /**
  * Atomic [Long].
+ *
  * @author ForteScarlet
  */
 public interface AtomicLong {
