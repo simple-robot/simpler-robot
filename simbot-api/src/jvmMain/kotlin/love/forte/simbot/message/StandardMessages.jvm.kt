@@ -51,7 +51,7 @@ import kotlin.io.path.readBytes
 /**
  * 将 [Resource] 转化为 [OfflineResourceImage]。
  *
- * 如果 [Resource] 类型为 [FileResource]、[PathResource]、[URLResource]，
+ * 如果 [Resource] 类型为 [FileResource]、[PathResource]、[URIResource]，
  * 则会分别对应地得到 [OfflineFileImage]、[OfflinePathImage]、[OfflineURLImage]，
  *
  * 否则将会使用 [SimpleOfflineResourceImage]。
@@ -61,7 +61,7 @@ public actual fun Resource.toOfflineResourceImage(): OfflineResourceImage {
     return when (this) {
         is FileResource -> toOfflineFileImage()
         is PathResource -> toOfflinePathImage()
-        is URLResource -> toOfflineImage()
+        is URIResource -> toOfflineImage()
         else -> SimpleOfflineResourceImage(this)
     }
 }
@@ -251,16 +251,16 @@ public data class OfflineURLImage(@Serializable(URLSerializer::class) public val
 
         @JvmStatic
         @JvmName("of")
-        public fun URLResource.toOfflineImage(): OfflineURLImage =
-            OfflineURLImage(url).also { image ->
+        public fun URIResource.toOfflineImage(): OfflineURLImage =
+            OfflineURLImage(uri).also { image ->
                 image._resource = this
             }
     }
 
     @Transient
-    private var _resource: URLResource? = null
+    private var _resource: URIResource? = null
 
-    override val resource: URLResource
+    override val resource: URIResource
         get() = _resource ?: url.toResource().also {
             _resource = it
         }

@@ -1,18 +1,29 @@
 /*
- * Copyright (c) 2022-2023 ForteScarlet.
+ *     Copyright (c) 2022-2024. ForteScarlet.
  *
- * This file is part of Simple Robot.
+ *     Project    https://github.com/simple-robot/simpler-robot
+ *     Email      ForteScarlet@163.com
  *
- * Simple Robot is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *     This file is part of the Simple Robot Library.
  *
- * Simple Robot is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Lesser General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU Lesser General Public License along with Simple Robot. If not, see <https://www.gnu.org/licenses/>.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     Lesser GNU General Public License for more details.
+ *
+ *     You should have received a copy of the Lesser GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 import org.jetbrains.dokka.DokkaConfiguration
+import java.net.URI
 import java.net.URL
-
 
 
 plugins {
@@ -33,7 +44,12 @@ tasks.named("dokkaHtmlPartial").configure {
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
     dokkaSourceSets.configureEach {
         version = P.Simbot.version
-        documentedVisibilities.set(listOf(DokkaConfiguration.Visibility.PUBLIC, DokkaConfiguration.Visibility.PROTECTED))
+        documentedVisibilities.set(
+            listOf(
+                DokkaConfiguration.Visibility.PUBLIC,
+                DokkaConfiguration.Visibility.PROTECTED
+            )
+        )
         jdkVersion.set(8)
         if (project.file("Module.md").exists()) {
             includes.from("Module.md")
@@ -48,36 +64,38 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
             remoteUrl.set(URL("${P.HOMEPAGE}/tree/v3-dev/$relativeTo/src"))
             remoteLineSuffix.set("#L")
         }
-    
+
         perPackageOption {
             matchingRegex.set(".*internal.*") // will match all .internal packages and sub-packages
             suppress.set(true)
         }
-    
-        fun externalDocumentation(docUrl: URL, suffix: String = "package-list") {
+
+        fun externalDocumentation(docUrl: URI, suffix: String = "package-list") {
             externalDocumentationLink {
-                url.set(docUrl)
-                packageListUrl.set(URL(docUrl, "${docUrl.path}/$suffix"))
+                url.set(docUrl.toURL())
+                packageListUrl.set(docUrl.resolve(docUrl.path).resolve(suffix).toURL())
             }
         }
-    
+
         // kotlin-coroutines doc
-        externalDocumentation(URL("https://kotlinlang.org/api/kotlinx.coroutines"))
-    
+        externalDocumentation(URI.create("https://kotlinlang.org/api/kotlinx.coroutines"))
+
         // kotlin-serialization doc
-        externalDocumentation(URL("https://kotlinlang.org/api/kotlinx.serialization"))
-        
+        externalDocumentation(URI.create("https://kotlinlang.org/api/kotlinx.serialization"))
+
         // SLF4J
-        externalDocumentation(URL("https://www.slf4j.org/apidocs"))
-        
+        // externalDocumentation(URL("https://www.slf4j.org/apidocs"))
+
         // Spring Framework
-        externalDocumentation(URL("https://docs.spring.io/spring-framework/docs/current/javadoc-api"), "element-list")
-        
+        externalDocumentation(
+            URI.create("https://docs.spring.io/spring-framework/docs/current/javadoc-api"),
+            "element-list"
+        )
+
         // Spring Boot
-//        externalDocumentation(URL("https://docs.spring.io/spring-boot/docs/current/api/element-list"))
-    
-        
-        
+        externalDocumentation(URI.create("https://docs.spring.io/spring-boot/docs/current/api/element-list"))
+
+
     }
 }
 

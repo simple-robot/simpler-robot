@@ -25,7 +25,7 @@ import love.forte.gradle.common.core.project.setup
 
 plugins {
     idea
-    //id("simbot.dokka-multi-module")
+    id("simbot.dokka-multi-module")
     id("com.github.gmazzo.buildconfig") version "4.1.2" apply false
     id("io.gitlab.arturbosch.detekt")
     id("simbot.nexus-publish")

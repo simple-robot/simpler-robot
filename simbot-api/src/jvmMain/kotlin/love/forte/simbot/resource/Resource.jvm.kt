@@ -29,6 +29,7 @@ package love.forte.simbot.resource
 import java.io.*
 import java.net.MalformedURLException
 import java.net.URI
+import java.net.URISyntaxException
 import java.net.URL
 import java.nio.charset.Charset
 import java.nio.file.OpenOption
@@ -217,29 +218,33 @@ private data class PathResourceImpl(
 }
 
 /**
- * [URLResource] 是一个输入流资源的接口。
+ * [URIResource] 是一个输入流资源的接口。
  *
  * @author forte
  */
-public interface URLResource : InputStreamResource, StringResource {
+public interface URIResource : InputStreamResource, StringResource {
     /**
      * 与此资源关联的 [URI]
      */
-    public val url: URL
+    public val uri: URI
 
     /**
-     * 该方法简单地打开一个连接到此 [URL] 的输入流，然后返回该输入流。
+     * 该方法简单地打开一个连接到 [uri] 的输入流，然后返回该输入流。
      *
+     * @throws IllegalArgumentException see [URI.toURL]
+     * @throws MalformedURLException see [URI.toURL]
      * @throws IOException 如果无法打开输入流，则抛出此异常。具体参看 [URL.openStream][java.net.URL.openStream]
      *
      * @return 返回从 `URL` 读取数据的输入流。
      */
     @Throws(IOException::class)
-    override fun inputStream(): InputStream = url.openStream()
+    override fun inputStream(): InputStream
 
     /**
-     * 读取 [url] 中的内容并作为字符串返回。
+     * 读取 [uri] 中的内容并作为字符串返回。
      *
+     * @throws IllegalArgumentException see [URI.toURL]
+     * @throws MalformedURLException see [URI.toURL]
      * @throws IOException 如果无法打开输入流，则抛出此异常。具体参看 [URL.openStream][java.net.URL.openStream]
      */
     @Throws(IOException::class)
@@ -247,29 +252,40 @@ public interface URLResource : InputStreamResource, StringResource {
 }
 
 /**
- * Converts the current [URL] to a [URLResource].
+ * Converts the current [URL] to a [URIResource].
  *
- * @return The converted [URLResource].
+ * 使用 [URL] 构建的 [URIResource]
+ * 在使用 [URIResource.string] 或 [URIResource.inputStream]
+ * 时应当不会再产生 [IllegalArgumentException] 或 [MalformedURLException]
+ * 了，因为 [URL] 已经初始化好了。
+ * 取而代之的是 [URL.toResource] 可能会产生 [URISyntaxException]，
+ * 因为需要使用 [URL.toURI]。
+ *
+ * @throws URISyntaxException see [URL.toURI]
+ * @return The converted [URIResource].
  */
+@kotlin.jvm.Throws(URISyntaxException::class)
 @JvmName("valueOf")
 @JvmOverloads
-public fun URL.toResource(charset: Charset = Charsets.UTF_8): URLResource = URLResourceImpl(this, charset)
+public fun URL.toResource(charset: Charset = Charsets.UTF_8): URIResource = URIResourceImpl(toURI(), charset, this)
 
 /**
- * Converts the current [URI] to a [URLResource].
+ * Converts the current [URI] to a [URIResource].
  *
- * @return The converted [URLResource].
- *
- * @throws IllegalArgumentException If this URL is not absolute. see [URI.toURL]
- * @throws MalformedURLException
- * If a protocol handler for the URL could not be found,
- * or if some other error occurred while constructing the URL. see [URI.toURL]
+ * @return The converted [URIResource].
  */
-@Throws(MalformedURLException::class)
 @JvmName("valueOf")
 @JvmOverloads
-public fun URI.toResource(charset: Charset = Charsets.UTF_8): URLResource = toURL().toResource(charset = charset)
+public fun URI.toResource(charset: Charset = Charsets.UTF_8): URIResource = URIResourceImpl(this, charset, null)
 
-private data class URLResourceImpl(override val url: URL, val charset: Charset) : URLResource {
-    override fun string(): String = url.readText(charset)
+private class URIResourceImpl(override val uri: URI, val charset: Charset, private var url: URL? = null) : URIResource {
+    private val urlValue: URL
+        get() = url ?: run {
+            uri.toURL().also { url = it }
+        }
+
+    override fun inputStream(): InputStream = urlValue.openStream()
+    override fun string(): String = urlValue.readText(charset)
+
+    override fun toString(): String = "URIResourceImpl(uri=$uri, charset=$charset)"
 }
