@@ -48,6 +48,8 @@ repositories {
 }
 
 subprojects {
+    apply(plugin = "org.jetbrains.dokka")
+
     repositories {
         mavenCentral()
         love.forte.gradle.common.core.repository.Repositories.Snapshot.Default.apply {

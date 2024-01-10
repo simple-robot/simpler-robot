@@ -22,7 +22,6 @@
  */
 
 import love.forte.gradle.common.core.project.setup
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 /*
  *     Copyright (c) 2023-2024. ForteScarlet.
@@ -48,9 +47,7 @@ import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
  */
 
 plugins {
-    `java-library`
     kotlin("multiplatform")
-    kotlin("plugin.serialization")
 }
 
 setup(P.Simbot)
@@ -97,12 +94,12 @@ kotlin {
     watchosDeviceArm64()
 
     // wasm
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        nodejs()
-        browser()
-        binaries.library()
-    }
+    // @OptIn(ExperimentalWasmDsl::class)
+    // wasmJs {
+    //     nodejs()
+    //     browser()
+    //     binaries.library()
+    // }
 
     sourceSets {
         commonTest {

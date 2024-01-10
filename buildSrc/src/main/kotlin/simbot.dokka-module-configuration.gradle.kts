@@ -25,44 +25,72 @@ import org.jetbrains.dokka.DokkaConfiguration
 import java.net.URI
 
 
-plugins {
-    id("org.jetbrains.dokka")
-}
+// plugins {
+//     id("org.jetbrains.dokka")
+// }
 
 tasks.named("dokkaHtml").configure {
     tasks.findByName("kaptKotlin")?.also { kaptKotlinTask ->
         dependsOn(kaptKotlinTask)
+    }
+    tasks.findByName("kspKotlin")?.also { kspKotlinTask ->
+        dependsOn(kspKotlinTask)
+    }
+    tasks.findByName("kspKotlinJvm")?.also { kspKotlinTask ->
+        dependsOn(kspKotlinTask)
     }
 }
 tasks.named("dokkaHtmlPartial").configure {
     tasks.findByName("kaptKotlin")?.also { kaptKotlinTask ->
         dependsOn(kaptKotlinTask)
     }
+    tasks.findByName("kspKotlin")?.also { kspKotlinTask ->
+        dependsOn(kspKotlinTask)
+    }
+    tasks.findByName("kspKotlinJvm")?.also { kspKotlinTask ->
+        dependsOn(kspKotlinTask)
+    }
 }
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
+    // impliesSubProjects = true
+
     dokkaSourceSets.configureEach {
-        version = P.Simbot.version
+        skipEmptyPackages.set(true)
+        suppressGeneratedFiles.set(false)
+
+        version = "v" + P.Simbot.version
         documentedVisibilities.set(
             listOf(
                 DokkaConfiguration.Visibility.PUBLIC,
                 DokkaConfiguration.Visibility.PROTECTED
             )
         )
-        jdkVersion.set(8)
+
+        val jdkVersionValue = project.tasks.withType(JavaCompile::class.java).firstOrNull()
+            ?.targetCompatibility?.toInt().also {
+                logger.info("project {} found jdkVersionValue: {}", project, it)
+            } ?: JVMConstants.KT_JVM_TARGET_VALUE
+
+
+        jdkVersion.set(jdkVersionValue)
         if (project.file("Module.md").exists()) {
             includes.from("Module.md")
         } else if (project.file("README.md").exists()) {
             includes.from("README.md")
         }
 
+        // with(rootDir.resolve("dokka-cache")) {
+        //     mkdirs()
+        //     cacheRoot.set(this)
+        // }
 
-        sourceLink {
-            localDirectory.set(projectDir.resolve("src"))
-            val relativeTo = projectDir.relativeTo(rootProject.projectDir)
-            remoteUrl.set(URI.create("${P.HOMEPAGE}/tree/v3-dev/$relativeTo/src").toURL())
-            remoteLineSuffix.set("#L")
-        }
+        // sourceLink {
+        //     localDirectory.set(projectDir.resolve("src"))
+        //     val relativeTo = projectDir.relativeTo(rootProject.projectDir)
+        //     remoteUrl.set(URI.create("${P.HOMEPAGE}/tree/v4-dev/$relativeTo/src").toURL())
+        //     remoteLineSuffix.set("#L")
+        // }
 
         perPackageOption {
             matchingRegex.set(".*internal.*") // will match all .internal packages and sub-packages
@@ -72,27 +100,33 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
         fun externalDocumentation(docUrl: URI, suffix: String = "package-list") {
             externalDocumentationLink {
                 url.set(docUrl.toURL())
-                packageListUrl.set(docUrl.resolve(docUrl.path).resolve(suffix).toURL())
+                packageListUrl.set(docUrl.resolve(suffix).toURL())
             }
         }
 
         // kotlin-coroutines doc
-        externalDocumentation(URI.create("https://kotlinlang.org/api/kotlinx.coroutines"))
+        externalDocumentation(URI.create("https://kotlinlang.org/api/kotlinx.coroutines/"))
 
         // kotlin-serialization doc
-        externalDocumentation(URI.create("https://kotlinlang.org/api/kotlinx.serialization"))
+        externalDocumentation(URI.create("https://kotlinlang.org/api/kotlinx.serialization/"))
+
+        // ktor
+        externalDocumentation(URI.create("https://api.ktor.io/"))
 
         // SLF4J
-        // externalDocumentation(URL("https://www.slf4j.org/apidocs"))
+        externalDocumentation(URI.create("https://www.slf4j.org/apidocs/"), "element-list")
 
         // Spring Framework
         externalDocumentation(
-            URI.create("https://docs.spring.io/spring-framework/docs/current/javadoc-api"),
+            URI.create("https://docs.spring.io/spring-framework/docs/current/javadoc-api/"),
             "element-list"
         )
 
         // Spring Boot
-        externalDocumentation(URI.create("https://docs.spring.io/spring-boot/docs/current/api/element-list"))
+        externalDocumentation(
+            URI.create("https://docs.spring.io/spring-boot/docs/current/api/"),
+            "element-list"
+        )
 
 
     }

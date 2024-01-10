@@ -25,7 +25,6 @@ import love.forte.gradle.common.core.project.setup
 import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 
 plugins {
-//    `java-library`
     kotlin("multiplatform")
     kotlin("plugin.serialization")
 //    id("io.gitlab.arturbosch.detekt")
@@ -175,3 +174,4 @@ kotlin {
 dependencies {
     add("kspJvm", libs.suspend.reversal.processor)
 }
+
