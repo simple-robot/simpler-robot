@@ -23,7 +23,6 @@
 
 import org.jetbrains.dokka.DokkaConfiguration
 import java.net.URI
-import java.net.URL
 
 
 plugins {
@@ -61,7 +60,7 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
         sourceLink {
             localDirectory.set(projectDir.resolve("src"))
             val relativeTo = projectDir.relativeTo(rootProject.projectDir)
-            remoteUrl.set(URL("${P.HOMEPAGE}/tree/v3-dev/$relativeTo/src"))
+            remoteUrl.set(URI.create("${P.HOMEPAGE}/tree/v3-dev/$relativeTo/src").toURL())
             remoteLineSuffix.set("#L")
         }
 
