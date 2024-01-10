@@ -21,11 +21,16 @@
  *
  */
 
+@file:JvmName("Atomics")
+@file:JvmMultifileClass
+
 package love.forte.simbot.common.atomic
 
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
 
 
 /**
@@ -285,7 +290,82 @@ public inline fun <T> AtomicRef<T>.update(block: (T) -> T): T {
 }
 
 
+/**
+ * Operator `+=` for [AtomicInt].
+ *
+ * e.g.
+ * ```kotlin
+ * atomic += 1
+ * ```
+ */
 public operator fun AtomicInt.plusAssign(delta: Int) { incrementAndGet(delta) }
+
+/**
+ * Operator `+=` for [AtomicUInt].
+ *
+ * e.g.
+ * ```kotlin
+ * atomic += 1u
+ * ```
+ */
 public operator fun AtomicUInt.plusAssign(delta: UInt) { incrementAndGet(delta) }
+
+/**
+ * Operator `+=` for [AtomicLong].
+ *
+ * e.g.
+ * ```kotlin
+ * atomic += 1L
+ * ```
+ */
 public operator fun AtomicLong.plusAssign(delta: Long) { incrementAndGet(delta) }
+
+/**
+ * Operator `+=` for [AtomicULong].
+ *
+ * e.g.
+ * ```kotlin
+ * atomic += 1u
+ * ```
+ */
 public operator fun AtomicULong.plusAssign(delta: ULong) { incrementAndGet(delta) }
+
+/**
+ * Operator `-=` for [AtomicInt].
+ *
+ * e.g.
+ * ```kotlin
+ * atomic -= 1
+ * ```
+ */
+public operator fun AtomicInt.minusAssign(delta: Int) { decrementAndGet(delta) }
+
+/**
+ * Operator `-=` for [AtomicUInt].
+ *
+ * e.g.
+ * ```kotlin
+ * atomic -= 1u
+ * ```
+ */
+public operator fun AtomicUInt.minusAssign(delta: UInt) { decrementAndGet(delta) }
+
+/**
+ * Operator `-=` for [AtomicLong].
+ *
+ * e.g.
+ * ```kotlin
+ * atomic -= 1L
+ * ```
+ */
+public operator fun AtomicLong.minusAssign(delta: Long) { decrementAndGet(delta) }
+
+/**
+ * Operator `-=` for [AtomicULong].
+ *
+ * e.g.
+ * ```kotlin
+ * atomic -= 1u
+ * ```
+ */
+public operator fun AtomicULong.minusAssign(delta: ULong) { decrementAndGet(delta) }

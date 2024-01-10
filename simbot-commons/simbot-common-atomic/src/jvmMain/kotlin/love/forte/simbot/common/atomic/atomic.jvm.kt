@@ -21,6 +21,9 @@
  *
  */
 
+@file:JvmName("Atomics")
+@file:JvmMultifileClass
+
 package love.forte.simbot.common.atomic
 
 import java.util.concurrent.atomic.AtomicInteger
