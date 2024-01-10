@@ -30,7 +30,6 @@ import kotlinx.cinterop.ptr
 import platform.posix.mingw_gettimeofday
 import platform.posix.timeval
 
-
 /**
  * 得到一个记录了当前时间戳信息的 [Timestamp] 实例。
  */
