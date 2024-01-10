@@ -78,6 +78,7 @@ public class NSDateTimestamp(public val date: NSDate) : Timestamp {
         /**
          * 通过 [NSDate] 获取 [Timestamp]。
          */
+        @ExperimentalSimbotAPI
         public fun NSDate.toTimestamp(): Timestamp = NSDateTimestamp(this)
 
     }
