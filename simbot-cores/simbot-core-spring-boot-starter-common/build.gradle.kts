@@ -28,7 +28,7 @@ plugins {
     kotlin("plugin.serialization")
 }
 
-configJavaCompileWithModule("simbot.core.springboot.common")
+configJavaCompileWithModule("simbot.spring.common")
 
 kotlin {
     explicitApi()

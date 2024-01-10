@@ -35,7 +35,7 @@ repositories {
     mavenCentral()
 }
 
-configJavaCompileWithModule("simbot.core.springboot.starter", jvmVersion = "17")
+configJavaCompileWithModule("simbot.spring.starter", jvmVersion = "17")
 
 kotlin {
     explicitApi()
