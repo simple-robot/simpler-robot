@@ -40,6 +40,12 @@ kotlin {
     explicitApi()
     applyDefaultHierarchyTemplate()
 
+    sourceSets.configureEach {
+        languageSettings {
+            //optIn("love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi")
+        }
+    }
+
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {

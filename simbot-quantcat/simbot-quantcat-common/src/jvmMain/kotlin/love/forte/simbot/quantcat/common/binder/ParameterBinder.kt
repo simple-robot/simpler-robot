@@ -292,7 +292,7 @@ public interface ParameterBinderFactory : BaseParameterBinderFactory<ParameterBi
     /**
      * 工厂优先级.
      */
-    override val priority: Int get() = PriorityConstant.NORMAL
+    override val priority: Int get() = PriorityConstant.DEFAULT
 
     /**
      * 根据 [Context] 提供的各项参数进行解析与预变异，并得到一个最终的 [ParameterBinder] 到对应的parameter中。

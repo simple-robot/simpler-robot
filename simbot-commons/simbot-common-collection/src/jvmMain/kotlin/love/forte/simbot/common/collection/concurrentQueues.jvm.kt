@@ -26,7 +26,7 @@ package love.forte.simbot.common.collection
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.ConcurrentSkipListMap
 
-@OptIn(ExperimentalCollectionApi::class)
+@OptIn(ExperimentalSimbotCollectionApi::class)
 internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
     private val queue = ConcurrentLinkedQueue<T>()
 
@@ -51,6 +51,7 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
  *
  * @author ForteScarlet
  */
+@OptIn(ExperimentalSimbotCollectionApi::class)
 internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
     private val queueMap = ConcurrentSkipListMap<Int, ConcurrentLinkedQueue<T>>()
 

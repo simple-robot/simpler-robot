@@ -46,7 +46,7 @@ public interface BaseParameterBinderFactory<C : BaseParameterBinderFactory.Conte
     /**
      * 工厂优先级.
      */
-    public val priority: Int get() = PriorityConstant.NORMAL
+    public val priority: Int get() = PriorityConstant.DEFAULT
 
     /**
      * 根据 [Context] 提供的各项参数进行解析与预变异，并得到一个最终的 [ParameterBinder] 到对应的parameter中。

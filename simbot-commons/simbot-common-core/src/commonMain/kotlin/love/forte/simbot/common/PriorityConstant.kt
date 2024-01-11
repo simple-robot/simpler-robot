@@ -25,6 +25,34 @@ package love.forte.simbot.common
 
 /**
  * 优先级常量类。
+ *
+ * 优先级以 `0` 为中心向两侧扩张，
+ * 负数值越小越趋近于 “最优先”，直到达到 [Int.MIN_VALUE];
+ * 正数值越大越趋近于 “最滞后”，直到达到 [Int.MAX_VALUE]。
+ *
+ * 分别提供正负9个“较为优先/滞后”的值，各自从 `100`/`-100`向正/负延伸。
+ *
+ * 默认的优先级为 [DEFAULT] 也就是 `0`。
+ *
+ * 优先级次序为：
+ * ```
+ *               <<<<---- 更优先
+ * Int.MIN_VALUE
+ * -> ...
+ *   -> PRIORITIZE_1
+ *     -> PRIORITIZE_2
+ *       -> ...
+ *         -> PRIORITIZE_9
+ *           -> DEFAULT
+ *             -> DE_PRIORITIZE_1
+ *               -> DE_PRIORITIZE_2
+ *                 -> ...
+ *                   -> DE_PRIORITIZE_9
+ *                     -> ...
+ *                       -> Int.MAX_VALUE
+ *        更滞后 ---->>>>
+ * ```
+ *
  */
 @Suppress("MemberVisibilityCanBePrivate")
 public object PriorityConstant {
@@ -32,45 +60,101 @@ public object PriorityConstant {
     // 前九个 "较为优先" 级别。
     // 优先级次序为 PRIORITIZED_1 > PRIORITIZED_2 > ... > PRIORITIZED_9
 
-    public const val PRIORITIZED_1: Int = 10
-    public const val PRIORITIZED_2: Int = PRIORITIZED_1 + 10
-    public const val PRIORITIZED_3: Int = PRIORITIZED_2 + 10
-    public const val PRIORITIZED_4: Int = PRIORITIZED_3 + 10
-    public const val PRIORITIZED_5: Int = PRIORITIZED_4 + 10
-    public const val PRIORITIZED_6: Int = PRIORITIZED_5 + 10
-    public const val PRIORITIZED_7: Int = PRIORITIZED_6 + 10
-    public const val PRIORITIZED_8: Int = PRIORITIZED_7 + 10
-    public const val PRIORITIZED_9: Int = PRIORITIZED_8 + 10
+    /**
+     * 第9个 “较为” 优先的值: `-100`
+     */
+    public const val PRIORITIZE_9: Int = -100
 
     /**
-     * 普通地默认值。存在优先级属性相关的内容，默认使用次值。
+     * 第8个 “较为” 优先的值: `-200`
      */
-    public const val NORMAL: Int = 500
+    public const val PRIORITIZE_8: Int = -200
 
     /**
-     * 最高的优先级.
-     *
-     * 常量中，最高优先级定义为 0，而不是 [Int.MIN_VALUE].
+     * 第7个 “较为” 优先的值: `-300`
      */
-    public const val FIRST: Int = 0
+    public const val PRIORITIZE_7: Int = -300
 
     /**
-     * 最低的优先级.
-     *
-     * 其优先级会比 [Int.MAX_VALUE] 高。
+     * 第6个 “较为” 优先的值: `-400`
      */
-    public const val LAST: Int = Int.MAX_VALUE - 100
+    public const val PRIORITIZE_6: Int = -400
 
-    // 后九个 "较为次后" 级别。
-    // 优先级次序为 AFTER_1 > AFTER_2 > ... > AFTER_9
+    /**
+     * 第5个 “较为” 优先的值: `-500`
+     */
+    public const val PRIORITIZE_5: Int = -500
 
-    public const val AFTER_1: Int = 1100
-    public const val AFTER_2: Int = AFTER_1 + 10
-    public const val AFTER_3: Int = AFTER_2 + 10
-    public const val AFTER_4: Int = AFTER_3 + 10
-    public const val AFTER_5: Int = AFTER_4 + 10
-    public const val AFTER_6: Int = AFTER_5 + 10
-    public const val AFTER_7: Int = AFTER_6 + 10
-    public const val AFTER_8: Int = AFTER_7 + 10
-    public const val AFTER_9: Int = AFTER_8 + 10
+    /**
+     * 第4个 “较为” 优先的值: `-600`
+     */
+    public const val PRIORITIZE_4: Int = -600
+
+    /**
+     * 第3个 “较为” 优先的值: `-700`
+     */
+    public const val PRIORITIZE_3: Int = -700
+
+    /**
+     * 第2个 “较为” 优先的值: `-800`
+     */
+    public const val PRIORITIZE_2: Int = -800
+
+    /**
+     * 第1个 “较为” 优先的值: `-900`
+     */
+    public const val PRIORITIZE_1: Int = -900
+
+    /**
+     * 默认值，整个优先级常量的中心 `0`。
+     */
+    public const val DEFAULT: Int = 0
+
+    // 后九个 "较为滞后" 级别。
+    // 优先级次序为 DE_PRIORITIZE_1 > DE_PRIORITIZE_2 > ... > DE_PRIORITIZE_9
+
+    /**
+     * 第1个“较为”滞后的优先级，值为 `100`
+     */
+    public const val DE_PRIORITIZE_1: Int = 100
+
+    /**
+     * 第2个“较为”滞后的优先级，值为 `200`
+     */
+    public const val DE_PRIORITIZE_2: Int = 200
+
+    /**
+     * 第3个“较为”滞后的优先级，值为 `300`
+     */
+    public const val DE_PRIORITIZE_3: Int = 300
+
+    /**
+     * 第4个“较为”滞后的优先级，值为 `400`
+     */
+    public const val DE_PRIORITIZE_4: Int = 400
+
+    /**
+     * 第5个“较为”滞后的优先级，值为 `500`
+     */
+    public const val DE_PRIORITIZE_5: Int = 500
+
+    /**
+     * 第6个“较为”滞后的优先级，值为 `600`
+     */
+    public const val DE_PRIORITIZE_6: Int = 600
+
+    /**
+     * 第7个“较为”滞后的优先级，值为 `700`
+     */
+    public const val DE_PRIORITIZE_7: Int = 700
+
+    /**
+     * 第8个“较为”滞后的优先级，值为 `800`
+     */
+    public const val DE_PRIORITIZE_8: Int = 800
+
+    /**
+     * 第9个“较为”滞后的优先级，值为 `900`
+     */
+    public const val DE_PRIORITIZE_9: Int = 900
 }

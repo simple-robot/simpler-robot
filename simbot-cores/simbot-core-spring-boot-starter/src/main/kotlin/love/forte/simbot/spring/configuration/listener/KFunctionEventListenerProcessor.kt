@@ -678,15 +678,15 @@ private class ContentEventMatchHelper(private val event: Event) {
 private fun merge(type: MultiFilterMatchType, func: Collection<EventFilterData>): EventFilterData {
     val funcArray = func.sortedBy { it.priority }.map { it.matcher }.toTypedArray()
     return when (type) {
-        MultiFilterMatchType.ANY -> EventFilterData(PriorityConstant.NORMAL) { c ->
+        MultiFilterMatchType.ANY -> EventFilterData(PriorityConstant.DEFAULT) { c ->
             funcArray.any { m -> m.invoke(c) }
         }
 
-        MultiFilterMatchType.ALL -> EventFilterData(PriorityConstant.NORMAL) { c ->
+        MultiFilterMatchType.ALL -> EventFilterData(PriorityConstant.DEFAULT) { c ->
             funcArray.all { m -> m.invoke(c) }
         }
 
-        MultiFilterMatchType.NONE -> EventFilterData(PriorityConstant.NORMAL) { c ->
+        MultiFilterMatchType.NONE -> EventFilterData(PriorityConstant.DEFAULT) { c ->
             funcArray.none { m -> m.invoke(c) }
         }
     }

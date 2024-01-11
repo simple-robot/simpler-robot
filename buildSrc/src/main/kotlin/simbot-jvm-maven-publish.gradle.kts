@@ -54,6 +54,7 @@ if (!isCi || isLinux) {
         
         jvmConfigPublishing {
             project = P.findProjectDetailByGroup(p.group.toString()) ?: error("Unknown project group: ${p.group}")
+            isSnapshot = project.version.toString().contains("SNAPSHOT", true)
 
             publicationName = "simbotDist"
             
@@ -63,15 +64,16 @@ if (!isCi || isLinux) {
             }
             
             val jarJavadoc by tasks.registering(Jar::class) {
-                dependsOn(tasks.dokkaHtml)
-                from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+                if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
+                    dependsOn(tasks.dokkaHtml)
+                    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+                }
                 archiveClassifier.set("javadoc")
             }
             
             artifact(jarSources)
             artifact(jarJavadoc)
             
-            isSnapshot = project.version.toString().contains("SNAPSHOT", true)
             releasesRepository = ReleaseRepository
             snapshotRepository = SnapshotRepository
             gpg = Gpg.ofSystemPropOrNull()

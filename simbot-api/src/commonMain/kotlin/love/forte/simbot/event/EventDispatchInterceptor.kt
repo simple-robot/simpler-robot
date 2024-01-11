@@ -107,7 +107,7 @@ public fun interface EventDispatchInterceptor {
  */
 public interface EventDispatchInterceptorRegistrationProperties {
     /**
-     * 优先级。数值越小优先级越高。通常默认为 [PriorityConstant.NORMAL]。
+     * 优先级。数值越小优先级越高。通常默认为 [PriorityConstant.DEFAULT]。
      */
     public var priority: Int
 }

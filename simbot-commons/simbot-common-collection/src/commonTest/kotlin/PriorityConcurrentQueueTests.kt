@@ -26,6 +26,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
+import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
 import love.forte.simbot.common.collection.createPriorityConcurrentQueue
 import kotlin.random.Random
 import kotlin.test.Test
@@ -93,6 +94,7 @@ class PriorityConcurrentQueueTests {
     }
 
 
+    @OptIn(ExperimentalSimbotCollectionApi::class)
     @Test
     fun priorityConcurrentQueueIteratorTest_iterator_next() {
         val queue = createPriorityConcurrentQueue<String>()

@@ -34,6 +34,7 @@ import kotlinx.coroutines.withContext
 import love.forte.simbot.common.PriorityConstant
 import love.forte.simbot.common.attribute.MutableAttributeMap
 import love.forte.simbot.common.attribute.mutableAttributeMapOf
+import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
 import love.forte.simbot.common.collection.PriorityConcurrentQueue
 import love.forte.simbot.common.collection.concurrentMutableMap
 import love.forte.simbot.common.function.ConfigurerFunction
@@ -70,7 +71,7 @@ public open class SimpleEventDispatcherConfigurationImpl : AbstractEventDispatch
  * [SimpleEventInterceptorRegistrationProperties] 的简单实现
  */
 public open class SimpleEventInterceptorRegistrationPropertiesImpl : SimpleEventInterceptorRegistrationProperties {
-    override var priority: Int = PriorityConstant.NORMAL
+    override var priority: Int = PriorityConstant.DEFAULT
 }
 
 /**
@@ -78,7 +79,7 @@ public open class SimpleEventInterceptorRegistrationPropertiesImpl : SimpleEvent
  */
 public open class SimpleEventDispatchInterceptorRegistrationPropertiesImpl :
     SimpleEventDispatchInterceptorRegistrationProperties {
-    override var priority: Int = PriorityConstant.NORMAL
+    override var priority: Int = PriorityConstant.DEFAULT
 }
 
 /**
@@ -87,7 +88,7 @@ public open class SimpleEventDispatchInterceptorRegistrationPropertiesImpl :
 public class SimpleEventListenerRegistrationPropertiesImpl(private val interceptorBuilder: SimpleEventInterceptorsBuilder) :
     SimpleEventListenerRegistrationProperties {
 
-    override var priority: Int = PriorityConstant.NORMAL
+    override var priority: Int = PriorityConstant.DEFAULT
 
     override fun addInterceptor(
         propertiesConsumer: ConfigurerFunction<EventInterceptorRegistrationProperties>?,
@@ -259,6 +260,7 @@ public fun SimpleEventDispatcherConfigurationImpl.resolveInterceptors(): SimpleE
  *
  * @author ForteScarlet
  */
+@OptIn(ExperimentalSimbotCollectionApi::class)
 public class SimpleEventDispatcherImpl(
     private val configuration: SimpleEventDispatcherConfiguration,
     private val interceptors: SimpleEventInterceptors,

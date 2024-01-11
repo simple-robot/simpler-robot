@@ -39,7 +39,7 @@ public sealed class ParameterBinderResult {
     /**
      * 优先级
      */
-    public open val priority: Int = PriorityConstant.NORMAL
+    public open val priority: Int = PriorityConstant.DEFAULT
 
     public companion object {
         @JvmStatic
@@ -47,17 +47,17 @@ public sealed class ParameterBinderResult {
 
         @JvmStatic
         @JvmOverloads
-        public fun normal(binder: ParameterBinder, priority: Int = PriorityConstant.NORMAL): NotEmpty =
+        public fun normal(binder: ParameterBinder, priority: Int = PriorityConstant.DEFAULT): NotEmpty =
             Normal(binder, priority)
 
         @JvmStatic
         @JvmOverloads
-        public fun only(binder: ParameterBinder, priority: Int = PriorityConstant.NORMAL): NotEmpty =
+        public fun only(binder: ParameterBinder, priority: Int = PriorityConstant.DEFAULT): NotEmpty =
             Only(binder, priority)
 
         @JvmStatic
         @JvmOverloads
-        public fun spare(binder: ParameterBinder, priority: Int = PriorityConstant.NORMAL): NotEmpty =
+        public fun spare(binder: ParameterBinder, priority: Int = PriorityConstant.DEFAULT): NotEmpty =
             Spare(binder, priority)
 
     }

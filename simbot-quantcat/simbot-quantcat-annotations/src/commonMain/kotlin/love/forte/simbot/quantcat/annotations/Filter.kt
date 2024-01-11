@@ -60,7 +60,7 @@ public annotation class Filter(
      * 为 [FilterMode.INTERCEPTOR]
      * 时代表其作为拦截器注册时的优先级。
      */
-    val priority: Int = PriorityConstant.NORMAL,
+    val priority: Int = PriorityConstant.DEFAULT,
     /**
      * 针对部分特定目标的过滤匹配。
      *

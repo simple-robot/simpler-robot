@@ -52,18 +52,21 @@ val p = project
 
 multiplatformConfigPublishing {
     project = P.findProjectDetailByGroup(p.group.toString()) ?: error("Unknown project group: ${p.group}")
-
-    val jarJavadoc by tasks.registering(Jar::class) {
-        group = "documentation"
-        archiveClassifier.set("javadoc")
-        from(tasks.findByName("dokkaHtml"))
-    }
-
-    artifact(jarJavadoc)
     isSnapshot = project.version.toString().contains("SNAPSHOT", true)
     releasesRepository = ReleaseRepository
     snapshotRepository = SnapshotRepository
     gpg = Gpg.ofSystemPropOrNull()
+
+    val jarJavadoc by tasks.registering(Jar::class) {
+        group = "documentation"
+        archiveClassifier.set("javadoc")
+        if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
+            dependsOn(tasks.dokkaHtml)
+            from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+        }
+    }
+
+    artifact(jarJavadoc)
 
     if (systemProp("SIMBOT_LOCAL").toBoolean()) {
         logger.info("Is 'SIMBOT_LOCAL', mainHost set as null")
@@ -101,3 +104,6 @@ fun show() {
 
 inline val Project.sourceSets: SourceSetContainer
     get() = extensions.getByName("sourceSets") as SourceSetContainer
+
+internal val TaskContainer.dokkaHtml: TaskProvider<org.jetbrains.dokka.gradle.DokkaTask>
+    get() = named<org.jetbrains.dokka.gradle.DokkaTask>("dokkaHtml")

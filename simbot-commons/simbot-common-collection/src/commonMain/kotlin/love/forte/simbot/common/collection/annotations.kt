@@ -34,4 +34,4 @@ package love.forte.simbot.common.collection
     level = RequiresOptIn.Level.WARNING
 )
 @MustBeDocumented
-public annotation class ExperimentalCollectionApi(vararg val platforms: String)
+public annotation class ExperimentalSimbotCollectionApi

@@ -48,6 +48,6 @@ import love.forte.simbot.common.PriorityConstant
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 public annotation class Listener(
     val id: String = "",
-    val priority: Int = PriorityConstant.NORMAL,
+    val priority: Int = PriorityConstant.DEFAULT,
 )
 

@@ -50,6 +50,7 @@ public actual fun <T> Collection<T>.toImmutable(): Collection<T> {
  *
  * @return 返回一个新创建的优先级并发队列。
  */
+@ExperimentalSimbotCollectionApi
 public actual fun <T> createPriorityConcurrentQueue(): PriorityConcurrentQueue<T> = PriorityConcurrentQueueImpl()
 
 /**
@@ -59,5 +60,5 @@ public actual fun <T> createPriorityConcurrentQueue(): PriorityConcurrentQueue<T
  *
  * @return 返回一个新创建的并发队列。
  */
-@OptIn(ExperimentalCollectionApi::class)
+@ExperimentalSimbotCollectionApi
 public actual fun <T> createConcurrentQueue(): ConcurrentQueue<T> = ConcurrentQueueImpl()

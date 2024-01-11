@@ -30,7 +30,7 @@ package love.forte.simbot.common.collection
  *
  * @author ForteScarlet
  */
-@ExperimentalCollectionApi("js", "native")
+@ExperimentalSimbotCollectionApi
 public interface ConcurrentQueue<T> : Iterable<T> {
 
     /**
@@ -68,6 +68,7 @@ public interface ConcurrentQueue<T> : Iterable<T> {
  *
  * @author ForteScarlet
  */
+@ExperimentalSimbotCollectionApi
 public interface PriorityConcurrentQueue<T> : Iterable<T> {
 
     /**

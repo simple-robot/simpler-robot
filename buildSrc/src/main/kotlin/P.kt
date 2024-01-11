@@ -27,6 +27,7 @@ import love.forte.gradle.common.core.project.ProjectDetail
 import love.forte.gradle.common.core.project.Version
 import love.forte.gradle.common.core.project.minus
 import love.forte.gradle.common.core.project.version
+import love.forte.gradle.common.core.property.systemProp
 
 inline fun isSnapshot(b: () -> Unit = {}): Boolean {
     b()
@@ -131,3 +132,5 @@ sealed class P(override val group: String) : ProjectDetail() {
 
 
 }
+
+fun isSimbotLocal(): Boolean = systemProp("SIMBOT_LOCAL").toBoolean()

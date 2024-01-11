@@ -116,7 +116,7 @@ public fun interface EventInterceptor {
  */
 public interface EventInterceptorRegistrationProperties {
     /**
-     * 优先级。数值越小优先级越高。通常默认为 [PriorityConstant.NORMAL]。
+     * 优先级。数值越小优先级越高。通常默认为 [PriorityConstant.DEFAULT]。
      * 此优先级与在 [EventDispatcher] 中全局性添加到所有事件监听器上的拦截器共用。
      */
     public var priority: Int

@@ -25,7 +25,7 @@ package love.forte.simbot.common.collection
 
 import kotlin.concurrent.AtomicReference
 
-@ExperimentalCollectionApi("native")
+@ExperimentalSimbotCollectionApi
 internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
     private val listRef: AtomicReference<List<T>> = AtomicReference(emptyList())
 
@@ -61,6 +61,7 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
     override fun toString(): String = listRef.value.toString()
 }
 
+@ExperimentalSimbotCollectionApi
 internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
     private data class ListWithPriority<T>(
         val priority: Int,
