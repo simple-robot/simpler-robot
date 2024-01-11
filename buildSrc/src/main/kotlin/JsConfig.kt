@@ -78,7 +78,7 @@ inline fun KotlinWasmJsTargetDsl.configWasmJs(
 ) {
     if (nodeJs && isLinux) {
         // win in candy node `21.0.0-v8-canary202309143a48826a08` is not supported
-        nodejs()
+        // nodejs()
     }
 
     if (browser) {
@@ -97,7 +97,7 @@ inline fun KotlinWasmJsTargetDsl.configWasmJs(
 }
 
 inline fun Project.configWasmJsTest(block: () -> Unit = {}) {
-    if (isLinux) {
+    if (false) {
         // see https://youtrack.jetbrains.com/issue/KT-63014/Running-tests-with-wasmJs-in-1.9.20-requires-Chrome-Canary#focus=Comments-27-8321383.0-0
         rootProject.the<NodeJsRootExtension>().apply {
             // nodeVersion = "21.0.0-v8-canary202309143a48826a08"
