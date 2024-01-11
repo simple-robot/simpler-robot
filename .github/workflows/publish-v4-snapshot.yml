@@ -41,7 +41,7 @@ jobs:
         uses: actions/checkout@v3
 
       # setup Java
-      - name: Setup java 11
+      - name: Setup java
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
@@ -65,9 +65,9 @@ jobs:
             --warning-mode all
             -x test
             --build-cache
-            -Porg.gradle.jvmargs="-Xms4G -XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8" 
-            -Porg.gradle.daemon=false
-            -Porg.gradle.cache=false
+            -Porg.gradle.jvmargs="-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
+#            -Porg.gradle.daemon=false
+#            -Porg.gradle.parallel=false
 
 
   deploy-doc:
@@ -101,9 +101,10 @@ jobs:
             --warning-mode all
             -x test
             --build-cache
-            -Porg.gradle.jvmargs="-Xms4G -XX:MaxMetaspaceSize=2g -Dfile.encoding=UTF-8"
-            -Porg.gradle.daemon=false
-            -Porg.gradle.cache=false
+            -Porg.gradle.jvmargs="-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
+
+#            -Porg.gradle.daemon=false
+#            -Porg.gradle.parallel=false
         env:
           SIMBOT_IS_SNAPSHOT: true
 
