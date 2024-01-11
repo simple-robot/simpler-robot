@@ -23,12 +23,17 @@
 
 package love.forte.simbot.timestamp
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
 import love.forte.simbot.common.time.MillisecondTimestamp
 import love.forte.simbot.common.time.TimeUnit
 import love.forte.simbot.common.time.Timestamp
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 
 /**
@@ -61,7 +66,17 @@ class TimestampTests {
         assertEquals(now, timeOfNow)
         assertEquals(now.milliseconds, timeOfNow.milliseconds)
         assertEquals(now.compareTo(timeOfNow), 0)
+    }
 
+    @OptIn(ExperimentalSimbotAPI::class)
+    @Test
+    fun nowTimestampValueTest() = runTest {
+        val now1 = Timestamp.now()
+        withContext(Dispatchers.Default) {
+            delay(200)
+        }
+        val now2 = Timestamp.now()
+        assertTrue(now2.milliseconds - now1.milliseconds >= 200)
     }
 
 }

@@ -29,16 +29,12 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
 //    id("io.gitlab.arturbosch.detekt")
-}
-
-repositories {
-    mavenCentral()
+    id("simbot.dokka-module-configuration")
 }
 
 setup(P.Simbot)
 
 configJavaCompileWithModule("simbot.core")
-apply(plugin = "simbot.dokka-module-configuration")
 apply(plugin = "simbot-multiplatform-maven-publish")
 
 kotlin {
@@ -48,8 +44,7 @@ kotlin {
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {
-        browser()
-        nodejs()
+        configJs()
     }
 
     // tier1

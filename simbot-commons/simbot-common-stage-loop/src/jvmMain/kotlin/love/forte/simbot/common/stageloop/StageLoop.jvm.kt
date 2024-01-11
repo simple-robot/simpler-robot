@@ -42,6 +42,8 @@ import java.util.concurrent.ConcurrentLinkedDeque
  * stageLoop.loop()
  * ```
  *
+ * 在 JVM 平台实现中内部的队列是并发安全的。
+ *
  * @see StageLoop.loop
  *
  * @param S 用于界定一定范围内的状态
@@ -86,7 +88,8 @@ private class StageLoopImpl<S : Stage<S>> : StageLoop<S> {
 }
 
 /**
- * 构建一个默认的 [StageLoop] 实现。内部使用 [ConcurrentLinkedDeque] 作为事件队列。
+ * 构建一个默认的 [StageLoop] 实现。
+ * 在 JVM 平台实现中内部的事件队列是并发安全的。
  */
 @Suppress("FunctionName")
 public actual fun <S : Stage<S>> DefaultStageLoop(): StageLoop<S> = StageLoopImpl()

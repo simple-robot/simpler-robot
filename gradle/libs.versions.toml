@@ -1,6 +1,8 @@
 [versions]
-kotlinx-coroutines = "1.7.3"
-kotlinx-serialization = "1.6.0"
+#kotlinx-coroutines = "1.7.3"
+# support wasm
+kotlinx-coroutines = "1.8.0-RC2"
+kotlinx-serialization = "1.6.2"
 spring-boot-v2 = "2.7.18"
 spring-boot-v3 = "3.2.1"
 openjdk-jmh = "1.36"

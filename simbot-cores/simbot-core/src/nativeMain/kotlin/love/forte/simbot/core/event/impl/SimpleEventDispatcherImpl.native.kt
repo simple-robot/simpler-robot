@@ -23,12 +23,14 @@
 
 package love.forte.simbot.core.event.impl
 
+import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
 import love.forte.simbot.common.collection.PriorityConcurrentQueue
 import love.forte.simbot.event.EventListenerRegistrationHandle
 import kotlin.concurrent.Volatile
 import kotlin.experimental.ExperimentalNativeApi
 import kotlin.native.ref.WeakReference
 
+@OptIn(ExperimentalSimbotCollectionApi::class)
 internal actual fun <T : Any> createQueueRegistrationHandle(
     priority: Int,
     queue: PriorityConcurrentQueue<T>,
@@ -37,7 +39,7 @@ internal actual fun <T : Any> createQueueRegistrationHandle(
     WeakEventListenerRegistrationHandle(priority, queue, target)
 
 
-@OptIn(ExperimentalNativeApi::class)
+@OptIn(ExperimentalNativeApi::class, ExperimentalSimbotCollectionApi::class)
 private class WeakEventListenerRegistrationHandle<T : Any>(
     private val priority: Int,
     queue: PriorityConcurrentQueue<T>,

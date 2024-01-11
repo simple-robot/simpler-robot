@@ -50,16 +50,12 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
     kotlin("kapt")
-}
-
-repositories {
-    mavenCentral()
+    id("simbot.dokka-module-configuration")
 }
 
 setup(P.Simbot)
 
 configJavaCompileWithModule("simbot.spring.starter", jvmVersion = "17")
-apply(plugin = "simbot.dokka-module-configuration")
 apply(plugin = "simbot-jvm-maven-publish")
 
 kotlin {

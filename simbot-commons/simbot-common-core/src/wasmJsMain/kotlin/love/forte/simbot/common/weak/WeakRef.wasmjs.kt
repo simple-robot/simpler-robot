@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2023-2024. ForteScarlet.
+ *     Copyright (c) 2024. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,5 +21,32 @@
  *
  */
 
-package love.forte.simbot.common.collection
+package love.forte.simbot.common.weak
 
+/**
+ * wasmJs 平台实现中没有真正的“弱引用”。
+ * 会直接使用 [NonWeakRefImpl]。
+ *
+ */
+public actual fun <T : Any> weakRef(ref: T): WeakRef<T> {
+    return NonWeakRefImpl(ref)
+}
+//
+// private fun newWeakRef(ref: JsAny): JsAny =
+//     js("new WeakRef(ref)")
+
+// private class JsWeakRefImpl<T : Any>(private var weakRef: JsAny /* WeakRef */) : WeakRef<T> {
+//     override val value: T?
+//         get() {
+//             val r = weakRef
+//             if (r != null) {
+//                 return (r.deref().unsafeCast<T?>()).also { if (it == null) weakRef = null }
+//             }
+//
+//             return null
+//         }
+//
+//     override fun clear() {
+//         weakRef = null
+//     }
+// }

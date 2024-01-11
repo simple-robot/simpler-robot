@@ -50,12 +50,12 @@ plugins {
     `java-library`
     kotlin("jvm")
     id("com.github.gmazzo.buildconfig")
+    id("simbot.dokka-module-configuration")
 }
 
 setup(P.SimbotLogger)
 
 configJavaCompileWithModule("simbot.logger.slf4j2impl")
-apply(plugin = "simbot.dokka-module-configuration")
 apply(plugin = "simbot-jvm-maven-publish")
 
 kotlin {

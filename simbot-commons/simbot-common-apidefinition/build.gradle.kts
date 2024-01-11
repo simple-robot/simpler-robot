@@ -22,15 +22,18 @@
  */
 
 import love.forte.gradle.common.core.project.setup
+import love.forte.gradle.common.kotlin.multiplatform.applyTier1
+import love.forte.gradle.common.kotlin.multiplatform.applyTier2
+import love.forte.gradle.common.kotlin.multiplatform.applyTier3
 
 plugins {
     kotlin("multiplatform")
+    id("simbot.dokka-module-configuration")
 }
 
 setup(P.Simbot)
 
 configJavaCompileWithModule("simbot.common.apidefinition")
-apply(plugin = "simbot.dokka-module-configuration")
 apply(plugin = "simbot-multiplatform-maven-publish")
 
 kotlin {
@@ -40,35 +43,13 @@ kotlin {
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {
-        browser()
-        nodejs()
+        configJs()
     }
 
-    // tier1
-    linuxX64()
-    macosX64()
-    macosArm64()
-    iosSimulatorArm64()
-    iosX64()
 
-    // tier2
-    linuxArm64()
-    watchosSimulatorArm64()
-    watchosX64()
-    watchosArm32()
-    watchosArm64()
-    tvosSimulatorArm64()
-    tvosX64()
-    tvosArm64()
-    iosArm64()
-
-    // tier3
-    // androidNativeArm32()
-    // androidNativeArm64()
-    // androidNativeX86()
-    // androidNativeX64()
-    mingwX64()
-    // watchosDeviceArm64()
+    applyTier1()
+    applyTier2()
+    applyTier3(supportKtorClient = true)
 
     sourceSets {
         commonMain.dependencies {

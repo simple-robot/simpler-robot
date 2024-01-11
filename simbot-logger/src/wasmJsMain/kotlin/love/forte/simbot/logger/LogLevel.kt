@@ -1,5 +1,5 @@
 /*
- *     Copyright (c) 2024. ForteScarlet.
+ *     Copyright (c) 2023-2024. ForteScarlet.
  *
  *     Project    https://github.com/simple-robot/simpler-robot
  *     Email      ForteScarlet@163.com
@@ -21,5 +21,12 @@
  *
  */
 
-package love.forte.simbot.common.collection
+package love.forte.simbot.logger
 
+/**
+ *
+ * @author ForteScarlet
+ */
+public actual enum class LogLevel {
+    ERROR, WARN, INFO, DEBUG, TRACE,
+}

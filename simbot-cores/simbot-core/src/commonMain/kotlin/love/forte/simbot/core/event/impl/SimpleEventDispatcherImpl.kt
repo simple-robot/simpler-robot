@@ -420,6 +420,7 @@ private class SimpleEventListenerInvoker(
 
 }
 
+@OptIn(ExperimentalSimbotCollectionApi::class)
 internal expect fun <T : Any> createQueueRegistrationHandle(
     priority: Int,
     queue: PriorityConcurrentQueue<T>,

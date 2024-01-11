@@ -21,7 +21,6 @@
  *
  */
 
-import love.forte.gradle.common.core.property.systemProp
 import org.jetbrains.dokka.DokkaConfiguration
 import java.net.URI
 import java.net.URL
@@ -55,7 +54,7 @@ tasks.named("dokkaHtmlPartial").configure {
 }
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>().configureEach {
-    if (systemProp("SIMBOT_LOCAL").toBoolean()) {
+    if (isSimbotLocal()) {
         logger.info("Is 'SIMBOT_LOCAL', offline")
         offlineMode.set(true)
     }

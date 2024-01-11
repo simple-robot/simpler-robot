@@ -24,7 +24,8 @@
 package love.forte.simbot.common.weak
 
 /**
- * 会尝试构建并
+ * 会尝试构建并使用 [`WeakRef`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/WeakRef)，
+ * 如果无法构建则会降级使用 [NonWeakRefImpl]。
  *
  */
 public actual fun <T : Any> weakRef(ref: T): WeakRef<T> {
@@ -53,11 +54,5 @@ private class JsWeakRefImpl<T : Any>(private var weakRef: dynamic /* WeakRef */)
 
     override fun clear() {
         weakRef = null
-    }
-}
-
-private class NonWeakRefImpl<T : Any>(override var value: T?) : WeakRef<T> {
-    override fun clear() {
-        value = null
     }
 }

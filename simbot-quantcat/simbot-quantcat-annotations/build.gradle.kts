@@ -37,16 +37,14 @@ import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
  */
 
 plugins {
-    `java-library`
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-//    `simbot-multiplatform-maven-publish`
+    id("simbot.dokka-module-configuration")
 }
 
 setup(P.SimbotQuantcat)
 
 configJavaCompileWithModule("simbot.quantcat.annotations")
-apply(plugin = "simbot.dokka-module-configuration")
 apply(plugin = "simbot-multiplatform-maven-publish")
 
 kotlin {
@@ -56,8 +54,7 @@ kotlin {
     configKotlinJvm(JVMConstants.KT_JVM_TARGET_VALUE)
 
     js(IR) {
-        browser()
-        nodejs()
+        configJs()
     }
 
     // tier1

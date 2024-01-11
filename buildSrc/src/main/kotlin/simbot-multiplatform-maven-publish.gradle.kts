@@ -60,15 +60,15 @@ multiplatformConfigPublishing {
     val jarJavadoc by tasks.registering(Jar::class) {
         group = "documentation"
         archiveClassifier.set("javadoc")
-        if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
+        // if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
             dependsOn(tasks.dokkaHtml)
             from(tasks.dokkaHtml.flatMap { it.outputDirectory })
-        }
+        // }
     }
 
     artifact(jarJavadoc)
 
-    if (systemProp("SIMBOT_LOCAL").toBoolean()) {
+    if (isSimbotLocal()) {
         logger.info("Is 'SIMBOT_LOCAL', mainHost set as null")
         mainHost = null
     }
