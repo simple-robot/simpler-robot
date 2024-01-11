@@ -66,8 +66,10 @@ jobs:
             -x test
             --build-cache
             -Porg.gradle.jvmargs="-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
+            -Porg.gradle.parallel=false
+
+# parallel=true 容易出现 Metaspace 的异常
 #            -Porg.gradle.daemon=false
-#            -Porg.gradle.parallel=false
 
 
   deploy-doc:
@@ -102,9 +104,9 @@ jobs:
             -x test
             --build-cache
             -Porg.gradle.jvmargs="-Xms4G -XX:MaxMetaspaceSize=1G -Dfile.encoding=UTF-8"
+            -Porg.gradle.parallel=false
 
 #            -Porg.gradle.daemon=false
-#            -Porg.gradle.parallel=false
         env:
           SIMBOT_IS_SNAPSHOT: true
 

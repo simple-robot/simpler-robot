@@ -26,8 +26,11 @@ package love.forte.simbot.common.collection
 /**
  * 可以并发安全地操作元素地并发队列类型。
  *
+ * 注意：非 JVM 平台的实现仍处于试验阶段。
+ *
  * @author ForteScarlet
  */
+@ExperimentalCollectionApi("js", "native")
 public interface ConcurrentQueue<T> : Iterable<T> {
 
     /**
@@ -60,6 +63,8 @@ public interface ConcurrentQueue<T> : Iterable<T> {
 
 /**
  * 表示一个基于优先级的并发队列，可以根据元素的优先级添加和删除元素。
+ *
+ * 注意：非 JVM 平台的实现仍处于试验阶段。
  *
  * @author ForteScarlet
  */

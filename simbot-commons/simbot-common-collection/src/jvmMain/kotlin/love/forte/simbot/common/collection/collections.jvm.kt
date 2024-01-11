@@ -61,4 +61,5 @@ public actual fun <T> createPriorityConcurrentQueue(): PriorityConcurrentQueue<T
  *
  * @return 返回一个新创建的并发队列。
  */
+@OptIn(ExperimentalCollectionApi::class)
 public actual fun <T> createConcurrentQueue(): ConcurrentQueue<T> = ConcurrentQueueImpl()

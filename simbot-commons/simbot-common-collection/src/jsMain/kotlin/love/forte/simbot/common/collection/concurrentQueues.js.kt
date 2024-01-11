@@ -24,6 +24,7 @@
 package love.forte.simbot.common.collection
 
 
+@ExperimentalCollectionApi("js")
 internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
     private val list = mutableListOf<T>()
 

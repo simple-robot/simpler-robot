@@ -25,6 +25,7 @@ package love.forte.simbot.common.collection
 
 import kotlin.concurrent.AtomicReference
 
+@ExperimentalCollectionApi("native")
 internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
     private val listRef: AtomicReference<List<T>> = AtomicReference(emptyList())
 
