@@ -67,6 +67,7 @@ jobs:
             --build-cache
             -Porg.gradle.jvmargs="-Xms2G -Xmx8G -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
             -Porg.gradle.daemon=false
+            -Porg.gradle.parallel=false
 
 
   deploy-doc:
@@ -102,6 +103,7 @@ jobs:
             --build-cache
             -Porg.gradle.jvmargs="-Xms2G -Xmx8G -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
             -Porg.gradle.daemon=false
+            -Porg.gradle.parallel=false
         env:
           SIMBOT_IS_SNAPSHOT: true
 
