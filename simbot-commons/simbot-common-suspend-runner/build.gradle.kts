@@ -84,6 +84,14 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.rx3)
             }
         }
+
+        jsMain.dependencies {
+            implementation(project(":simbot-commons:simbot-common-annotations"))
+        }
+
+        getByName("wasmJsMain").dependencies {
+            implementation(project(":simbot-commons:simbot-common-annotations"))
+        }
     }
 }
 

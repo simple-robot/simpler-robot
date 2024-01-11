@@ -60,10 +60,10 @@ multiplatformConfigPublishing {
     val jarJavadoc by tasks.registering(Jar::class) {
         group = "documentation"
         archiveClassifier.set("javadoc")
-        // if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
+        if (!(isSnapshot || isSnapshot() || isSimbotLocal())) {
             dependsOn(tasks.dokkaHtml)
             from(tasks.dokkaHtml.flatMap { it.outputDirectory })
-        // }
+        }
     }
 
     artifact(jarJavadoc)

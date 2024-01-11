@@ -119,7 +119,10 @@ kotlin {
         }
 
         jsMain.dependencies {
+            implementation(project(":simbot-api"))
+            implementation(libs.suspend.reversal.annotations)
             implementation(project(":simbot-commons:simbot-common-annotations"))
+            implementation(project(":simbot-quantcat:simbot-quantcat-common"))
         }
     }
 

@@ -38,6 +38,7 @@ import kotlin.test.assertTrue
  *
  * @author ForteScarlet
  */
+@OptIn(ExperimentalSimbotCollectionApi::class)
 class PriorityConcurrentQueueTests {
 
     @Test

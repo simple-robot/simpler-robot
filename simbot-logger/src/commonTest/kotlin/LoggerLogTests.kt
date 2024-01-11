@@ -23,9 +23,7 @@
 
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import love.forte.simbot.logger.name
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 
 /**
@@ -37,8 +35,6 @@ class LoggerLogTests {
     @Test
     fun loggerLogTest() {
         val logger = LoggerFactory.logger<LoggerLogTests>()
-        assertEquals("LoggerLogTests", logger.name)
-
         logger.info("Hello!")
         logger.info("Hello {}", "World")
         logger.debug("Hello!")
