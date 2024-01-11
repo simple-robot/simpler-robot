@@ -33,7 +33,7 @@ plugins {
     id("simbot.dokka-module-configuration")
 }
 
-setup(P.Simbot)
+setup(P.SimbotCommon)
 
 configJavaCompileWithModule("simbot.common.atomic")
 apply(plugin = "simbot-multiplatform-maven-publish")
