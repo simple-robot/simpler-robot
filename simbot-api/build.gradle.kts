@@ -118,11 +118,17 @@ kotlin {
             }
         }
 
+        nativeMain.dependencies {
+            api(libs.jetbrains.annotations)
+            api(project(":simbot-commons:simbot-common-annotations"))
+            api(libs.suspend.reversal.annotations)
+        }
+
         jsMain.dependencies {
-            implementation("love.forte.plugin.suspend-transform:suspend-transform-annotation:${SuspendTransformGradleExtension().annotationDependencyVersion}")
-            implementation(project(":simbot-commons:simbot-common-annotations"))
-            implementation(libs.jetbrains.annotations)
-            implementation(libs.suspend.reversal.annotations)
+            api("love.forte.plugin.suspend-transform:suspend-transform-annotation:${SuspendTransformGradleExtension().annotationDependencyVersion}")
+            api(project(":simbot-commons:simbot-common-annotations"))
+            api(libs.jetbrains.annotations)
+            api(libs.suspend.reversal.annotations)
         }
 
         jsTest.dependencies {

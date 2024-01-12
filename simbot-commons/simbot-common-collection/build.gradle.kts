@@ -93,12 +93,16 @@ kotlin {
             }
         }
 
+        nativeMain.dependencies {
+            api(libs.kotlinx.coroutines.core)
+        }
+
         jsMain.dependencies {
-            implementation(libs.kotlinx.coroutines.core)
+            api(libs.kotlinx.coroutines.core)
         }
 
         getByName("wasmJsMain").dependencies {
-            implementation(libs.kotlinx.coroutines.core)
+            api(libs.kotlinx.coroutines.core)
         }
     }
 }

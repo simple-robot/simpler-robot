@@ -96,14 +96,19 @@ kotlin {
             }
         }
 
-        jsMain {
-            dependencies {
-                implementation(project(":simbot-commons:simbot-common-annotations"))
-            }
+        nativeMain.dependencies {
+            api(project(":simbot-commons:simbot-common-annotations"))
+            api(libs.kotlinx.coroutines.core)
+        }
+
+        jsMain.dependencies {
+            api(project(":simbot-commons:simbot-common-annotations"))
+            api(libs.kotlinx.coroutines.core)
         }
 
         getByName("wasmJsMain").dependencies {
-            implementation(project(":simbot-commons:simbot-common-annotations"))
+            api(project(":simbot-commons:simbot-common-annotations"))
+            api(libs.kotlinx.coroutines.core)
         }
     }
 }

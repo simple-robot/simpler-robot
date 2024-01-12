@@ -85,8 +85,12 @@ kotlin {
             }
         }
 
+        nativeMain.dependencies {
+            api(project(":simbot-commons:simbot-common-annotations"))
+        }
+
         jsMain.dependencies {
-            implementation(project(":simbot-commons:simbot-common-annotations"))
+            api(project(":simbot-commons:simbot-common-annotations"))
         }
 
         getByName("wasmJsMain").dependencies {
