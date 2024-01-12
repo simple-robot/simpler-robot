@@ -150,6 +150,7 @@ public expect fun <T> atomicRef(value: T): AtomicRef<T>
  */
 public fun atomicUL(value: ULong): AtomicULong = atomic(value)
 
+//region update
 /**
  * Update value by [AtomicLong.compareAndSet] and then return the old value.
  *
@@ -288,6 +289,159 @@ public inline fun <T> AtomicRef<T>.update(block: (T) -> T): T {
         }
     }
 }
+//endregion
+
+//region updateAndGet
+/**
+ * Update value by [AtomicLong.compareAndSet] and then return the new value.
+ *
+ * ```kotlin
+ * while (true) {
+ *     val current = value
+ *     val new = block(current)
+ *     if (compareAndSet(current, new)) {
+ *         return new
+ *     }
+ * }
+ * ```
+ *
+ * @return The new value that been exchanged.
+ */
+@OptIn(ExperimentalContracts::class)
+public inline fun AtomicLong.updateAndGet(block: (Long) -> Long): Long {
+    contract {
+        callsInPlace(block, InvocationKind.AT_LEAST_ONCE)
+    }
+
+    while (true) {
+        val current = value
+        val new = block(current)
+        if (compareAndSet(current, new)) {
+            return new
+        }
+    }
+}
+
+/**
+ * Update value by [AtomicInt.compareAndSet] and then return the new value.
+ *
+ * ```kotlin
+ * while (true) {
+ *     val current = value
+ *     val new = block(current)
+ *     if (compareAndSet(current, new)) {
+ *         return new
+ *     }
+ * }
+ * ```
+ *
+ * @return The new value that been exchanged.
+ */
+@OptIn(ExperimentalContracts::class)
+public inline fun AtomicInt.updateAndGet(block: (Int) -> Int): Int {
+    contract {
+        callsInPlace(block, InvocationKind.AT_LEAST_ONCE)
+    }
+
+    while (true) {
+        val current = value
+        val new = block(current)
+        if (compareAndSet(current, new)) {
+            return new
+        }
+    }
+}
+
+/**
+ * Update value by [AtomicULong.compareAndSet] and then return the new value.
+ *
+ * ```kotlin
+ * while (true) {
+ *     val current = value
+ *     val new = block(current)
+ *     if (compareAndSet(current, new)) {
+ *         return new
+ *     }
+ * }
+ * ```
+ *
+ * @return The new value that been exchanged.
+ */
+@OptIn(ExperimentalContracts::class)
+public inline fun AtomicULong.updateAndGet(block: (ULong) -> ULong): ULong {
+    contract {
+        callsInPlace(block, InvocationKind.AT_LEAST_ONCE)
+    }
+
+    while (true) {
+        val current = value
+        val new = block(current)
+        if (compareAndSet(current, new)) {
+            return new
+        }
+    }
+}
+
+/**
+ * Update value by [AtomicUInt.compareAndSet] and then return the new value.
+ *
+ * ```kotlin
+ * while (true) {
+ *     val current = value
+ *     val new = block(current)
+ *     if (compareAndSet(current, new)) {
+ *         return new
+ *     }
+ * }
+ * ```
+ *
+ * @return The new value that been exchanged.
+ */
+@OptIn(ExperimentalContracts::class)
+public inline fun AtomicUInt.updateAndGet(block: (UInt) -> UInt): UInt {
+    contract {
+        callsInPlace(block, InvocationKind.AT_LEAST_ONCE)
+    }
+
+    while (true) {
+        val current = value
+        val new = block(current)
+        if (compareAndSet(current, new)) {
+            return new
+        }
+    }
+}
+
+/**
+ * Update value by [AtomicRef.compareAndSet] and then return the new value.
+ *
+ * ```kotlin
+ * while (true) {
+ *     val current = value
+ *     val new = block(current)
+ *     if (compareAndSet(current, new)) {
+ *         return new
+ *     }
+ * }
+ * ```
+ *
+ * @return The new value that been exchanged.
+ */
+@OptIn(ExperimentalContracts::class)
+public inline fun <T> AtomicRef<T>.updateAndGet(block: (T) -> T): T {
+    contract {
+        callsInPlace(block, InvocationKind.AT_LEAST_ONCE)
+    }
+
+    while (true) {
+        val current = value
+        val new = block(current)
+        if (compareAndSet(current, new)) {
+            return new
+        }
+    }
+}
+//endregion
 
 
 /**
@@ -298,7 +452,9 @@ public inline fun <T> AtomicRef<T>.update(block: (T) -> T): T {
  * atomic += 1
  * ```
  */
-public operator fun AtomicInt.plusAssign(delta: Int) { incrementAndGet(delta) }
+public operator fun AtomicInt.plusAssign(delta: Int) {
+    incrementAndGet(delta)
+}
 
 /**
  * Operator `+=` for [AtomicUInt].
@@ -308,7 +464,9 @@ public operator fun AtomicInt.plusAssign(delta: Int) { incrementAndGet(delta) }
  * atomic += 1u
  * ```
  */
-public operator fun AtomicUInt.plusAssign(delta: UInt) { incrementAndGet(delta) }
+public operator fun AtomicUInt.plusAssign(delta: UInt) {
+    incrementAndGet(delta)
+}
 
 /**
  * Operator `+=` for [AtomicLong].
@@ -318,7 +476,9 @@ public operator fun AtomicUInt.plusAssign(delta: UInt) { incrementAndGet(delta) 
  * atomic += 1L
  * ```
  */
-public operator fun AtomicLong.plusAssign(delta: Long) { incrementAndGet(delta) }
+public operator fun AtomicLong.plusAssign(delta: Long) {
+    incrementAndGet(delta)
+}
 
 /**
  * Operator `+=` for [AtomicULong].
@@ -328,7 +488,9 @@ public operator fun AtomicLong.plusAssign(delta: Long) { incrementAndGet(delta) 
  * atomic += 1u
  * ```
  */
-public operator fun AtomicULong.plusAssign(delta: ULong) { incrementAndGet(delta) }
+public operator fun AtomicULong.plusAssign(delta: ULong) {
+    incrementAndGet(delta)
+}
 
 /**
  * Operator `-=` for [AtomicInt].
@@ -338,7 +500,9 @@ public operator fun AtomicULong.plusAssign(delta: ULong) { incrementAndGet(delta
  * atomic -= 1
  * ```
  */
-public operator fun AtomicInt.minusAssign(delta: Int) { decrementAndGet(delta) }
+public operator fun AtomicInt.minusAssign(delta: Int) {
+    decrementAndGet(delta)
+}
 
 /**
  * Operator `-=` for [AtomicUInt].
@@ -348,7 +512,9 @@ public operator fun AtomicInt.minusAssign(delta: Int) { decrementAndGet(delta) }
  * atomic -= 1u
  * ```
  */
-public operator fun AtomicUInt.minusAssign(delta: UInt) { decrementAndGet(delta) }
+public operator fun AtomicUInt.minusAssign(delta: UInt) {
+    decrementAndGet(delta)
+}
 
 /**
  * Operator `-=` for [AtomicLong].
@@ -358,7 +524,9 @@ public operator fun AtomicUInt.minusAssign(delta: UInt) { decrementAndGet(delta)
  * atomic -= 1L
  * ```
  */
-public operator fun AtomicLong.minusAssign(delta: Long) { decrementAndGet(delta) }
+public operator fun AtomicLong.minusAssign(delta: Long) {
+    decrementAndGet(delta)
+}
 
 /**
  * Operator `-=` for [AtomicULong].
@@ -368,4 +536,6 @@ public operator fun AtomicLong.minusAssign(delta: Long) { decrementAndGet(delta)
  * atomic -= 1u
  * ```
  */
-public operator fun AtomicULong.minusAssign(delta: ULong) { decrementAndGet(delta) }
+public operator fun AtomicULong.minusAssign(delta: ULong) {
+    decrementAndGet(delta)
+}
