@@ -22,7 +22,6 @@
  */
 
 import love.forte.gradle.common.core.project.setup
-import love.forte.plugin.suspendtrans.gradle.SuspendTransformGradleExtension
 import love.forte.plugin.suspendtrans.gradle.withKotlinTargets
 
 plugins {
@@ -116,7 +115,6 @@ kotlin {
         jsMain.dependencies {
             api(project(":simbot-commons:simbot-common-annotations"))
             api(project(":simbot-commons:simbot-common-collection"))
-            api("love.forte.plugin.suspend-transform:suspend-transform-annotation:${SuspendTransformGradleExtension().annotationDependencyVersion}")
         }
 
         nativeMain.dependencies {

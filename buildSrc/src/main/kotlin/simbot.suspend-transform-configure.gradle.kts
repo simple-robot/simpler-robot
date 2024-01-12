@@ -27,6 +27,7 @@ plugins {
 
 suspendTransform {
     includeRuntime = false
+    includeAnnotation = false
     
     addJvmTransformers(
         // @JvmBlocking
