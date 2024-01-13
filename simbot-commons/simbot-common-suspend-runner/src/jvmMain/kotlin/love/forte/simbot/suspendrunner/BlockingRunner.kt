@@ -261,7 +261,7 @@ private fun loadCustomBlockingDispatcher(loader: ClassLoader?): CoroutineDispatc
  */
 @InternalSimbotAPI
 public val DefaultBlockingDispatcherOrNull: CoroutineDispatcher? by lazy {
-    initDefaultBlockingDispatcher(
+    initDispatcher(
         BLOCKING_DISPATCHER_BASE_PROPERTY,
         BLOCKING_DISPATCHER_LIMITED_PARALLELISM_PROPERTY,
         BLOCKING_DISPATCHER_CORE_SIZE_PROPERTY,
@@ -279,17 +279,18 @@ public val DefaultBlockingDispatcherOrNull: CoroutineDispatcher? by lazy {
 }
 
 /**
- * 如果 [DefaultBlockingDispatcherOrNull] 为 null，得到 [Dispatchers.Default], 否则得到 [DefaultBlockingDispatcherOrNull]的值。
+ * 如果 [DefaultBlockingDispatcherOrNull] 为 null，
+ * 得到 [Dispatchers.IO], 否则使用 [DefaultBlockingDispatcherOrNull] 的值。
  * @see DefaultBlockingDispatcherOrNull
  */
 @InternalSimbotAPI
 public val DefaultBlockingDispatcher: CoroutineDispatcher
-    get() = DefaultBlockingDispatcherOrNull ?: Dispatchers.Default
+    get() = DefaultBlockingDispatcherOrNull ?: Dispatchers.IO
 
 private infix fun String.eq(other: String): Boolean = equals(other = other, ignoreCase = true)
 
 @OptIn(ExperimentalSimbotAPI::class)
-private inline fun initDefaultBlockingDispatcher(
+private inline fun initDispatcher(
     dispatcherPropertyName: String,
     dispatcherLimitedParallelismPropertyName: String,
     coreSizePropertyName: String,
@@ -372,16 +373,17 @@ private inline fun initDefaultBlockingDispatcher(
  * 在 [runInBlocking] 中使用的默认上下文实例。
  *
  * [DefaultBlockingContext] 的内容如下：
- * - 名称为 `"runInBlocking"` 的 [CoroutineName].
+ * - 名称为 `"def-block"` 的 [CoroutineName].
  * - 默认调度器 [DefaultBlockingDispatcher].
  *
- * @see DefaultBlockingDispatcherOrNull
+ * @see DefaultBlockingDispatcher
  */
 @InternalSimbotAPI
 public val DefaultBlockingContext: CoroutineContext by lazy {
-    CoroutineName("defaultBlocking").let { name ->
-        if (DefaultBlockingDispatcherOrNull == null) name else DefaultBlockingDispatcher + name
-    }
+    DefaultBlockingDispatcher + CoroutineName("def-block")
+    // CoroutineName("def-block").let { name ->
+    //     if (DefaultBlockingDispatcherOrNull == null) name else DefaultBlockingDispatcher + name
+    // }
 }
 
 /**
@@ -415,7 +417,7 @@ public val DefaultBlockingContext: CoroutineContext by lazy {
  */
 @InternalSimbotAPI
 public val DefaultAsyncDispatcherOrNull: CoroutineDispatcher? by lazy {
-    initDefaultBlockingDispatcher(
+    initDispatcher(
         ASYNC_DISPATCHER_BASE_PROPERTY,
         ASYNC_DISPATCHER_LIMITED_PARALLELISM_PROPERTY,
         ASYNC_DISPATCHER_CORE_SIZE_PROPERTY,
@@ -481,9 +483,9 @@ private val `$$DefaultScopeJob` = SupervisorJob()
 public val DefaultAsyncContext: CoroutineContext by lazy {
     val asyncDispatcher = DefaultAsyncDispatcherOrNull
     if (asyncDispatcher == null) {
-        CoroutineName("defaultAsync") + `$$DefaultScopeJob`
+        CoroutineName("def-async") + `$$DefaultScopeJob`
     } else {
-        CoroutineName("defaultAsync") + `$$DefaultScopeJob` + asyncDispatcher
+        CoroutineName("def-async") + `$$DefaultScopeJob` + asyncDispatcher
     }
 }
 
@@ -963,4 +965,4 @@ private fun systemLong(key: String): Long? = System.getProperty(key)?.toLongOrNu
 private fun systemInt(key: String): Int? = System.getProperty(key)?.toIntOrNull()
 
 @Suppress("SameParameterValue")
-private fun systemBool(key: String): Boolean = System.getProperty(key)?.toBoolean() ?: false
+private fun systemBool(key: String): Boolean = System.getProperty(key).toBoolean()
