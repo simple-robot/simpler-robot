@@ -23,29 +23,27 @@
 
 package love.forte.simbot.definition
 
-import love.forte.simbot.ability.DeleteSupport
-import love.forte.simbot.ability.SendSupport
-
 
 /**
+ * 可以用来代表一个“人”的行为对象，
+ * 例如某个频道中的成员 [Member]。
  *
- * 一个联系人。
- *
- * 联系人是一种可以与 bot 建立独立会话、进行通讯的行为目标。
- * 联系人可能代表一个其他用户，也可能代表一个与某用户关联的“会话”。
- *
- * ## DeleteSupport
- *
- * 联系人有可能会实现 [DeleteSupport]。如果实现，则或许代表 bot 可以主动的与此联系人断开关系，
- * 或者主动删除与之关联的 “会话”。
- * 具体的实际含义由实现者定义并提供说明。
- *
+ * [User] 不一定代表真人，也可能是对应平台下的其他 bot
+ * 或者某种默认的系统用户 。
  *
  * @author ForteScarlet
  */
-public interface Contact : User, SendSupport {
+public interface User : Actor {
     /**
-     * 此联系人的名称
+     * 这个人的名称，或者说昵称。
+     * 但是是与任何组织范围无关的名称。
      */
-    override val name: String
+    public val name: String
+
+    /**
+     * 这个人的头像链接。
+     * 如果没有头像链接、无法获取或者头像信息无法通过
+     * [String] 表达则得到 `null`。
+     */
+    public val avatar: String?
 }

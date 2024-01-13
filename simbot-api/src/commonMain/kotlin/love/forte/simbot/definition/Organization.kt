@@ -87,11 +87,11 @@ public interface Organization : Actor {
  *
  * @see Organization
  */
-public interface Member : Actor, SendSupport {
+public interface Member : User, SendSupport {
     /**
      * 此成员的名称。通常是代表它作为一个用户的名称，而不是在某个组织内的“昵称”。
      */
-    public val name: String
+    override val name: String
 
     /**
      * 此成员在组织内的昵称。如果未设置或无法获取则会得到 `null`。
