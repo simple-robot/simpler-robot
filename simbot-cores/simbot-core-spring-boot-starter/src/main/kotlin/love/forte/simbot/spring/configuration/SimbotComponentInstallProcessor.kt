@@ -25,7 +25,7 @@ package love.forte.simbot.spring.configuration
 
 import love.forte.simbot.component.ComponentFactory
 import love.forte.simbot.component.ComponentInstaller
-import love.forte.simbot.component.findAnyInstallAllPlugins
+import love.forte.simbot.component.findAndInstallAllComponents
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.spring.common.application.SpringApplicationConfigurationProperties
 import org.springframework.beans.factory.annotation.Autowired
@@ -103,7 +103,7 @@ public class DefaultSimbotComponentInstallProcessor(
 ) : SimbotComponentInstallProcessor {
     override fun process(installer: ComponentInstaller) {
         if (autoInstallProviders) {
-            installer.findAnyInstallAllPlugins(autoInstallProviderConfigurers)
+            installer.findAndInstallAllComponents(autoInstallProviderConfigurers)
             logger.debug(
                 "Automatically install all component providers automatically with autoLoadProviderConfigurers={}",
                 autoInstallProviderConfigurers

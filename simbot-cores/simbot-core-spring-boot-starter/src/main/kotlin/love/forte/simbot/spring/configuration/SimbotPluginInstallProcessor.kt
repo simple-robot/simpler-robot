@@ -26,7 +26,7 @@ package love.forte.simbot.spring.configuration
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.plugin.PluginFactory
 import love.forte.simbot.plugin.PluginInstaller
-import love.forte.simbot.plugin.findAnyInstallAllPlugins
+import love.forte.simbot.plugin.findAndInstallAllPlugins
 import love.forte.simbot.spring.common.application.SpringApplicationConfigurationProperties
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -103,7 +103,7 @@ public class DefaultSimbotPluginInstallProcessor(
 ) : SimbotPluginInstallProcessor {
     override fun process(installer: PluginInstaller) {
         if (autoInstallProviders) {
-            installer.findAnyInstallAllPlugins(autoInstallProviderConfigurers)
+            installer.findAndInstallAllPlugins(autoInstallProviderConfigurers)
             logger.debug(
                 "Automatically install all plugin providers automatically with autoLoadProviderConfigurers={}",
                 autoInstallProviderConfigurers

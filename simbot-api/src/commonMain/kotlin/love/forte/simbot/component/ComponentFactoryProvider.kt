@@ -22,16 +22,15 @@
  */
 
 @file:JvmName("ComponentFactoryProviders")
+@file:JvmMultifileClass
 
 package love.forte.simbot.component
 
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
-import love.forte.simbot.plugin.loadPluginFactoriesFromProviders
-import java.util.*
-import java.util.stream.Collectors
-import java.util.stream.Stream
-
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
+import kotlin.jvm.JvmSynthetic
 
 /**
  * 用于支持自动加载 [ComponentFactory] 的 SPI 接口。
@@ -45,16 +44,31 @@ public interface ComponentFactoryProvider<CONF : Any> {
     public fun provide(): ComponentFactory<*, CONF>
 
     /**
-     * 提供额外配置类的类型用于一些可自动加载的加载器。
+     * 提供额外配置类的类型用于一些可自动加载的加载器的加载结果。
      * 如果返回 `null` 则代表不提供、不加载可自动加载的额外配置类型。
      *
-     * 这些加载器的类型建议由 [ComponentFactory] 的实现者提供，
-     * 因此 [ServiceLoader] 也需要由实现者直接提供。
+     * 在 JVM 中使用 `ServiceLoader` 实现。
      */
-    public fun configurersLoader(): ServiceLoader<out ComponentFactoryConfigurerProvider<CONF>>?
+    public fun loadConfigurers(): Sequence<ComponentFactoryConfigurerProvider<CONF>>?
 }
 
-private class ProviderComponentFactory<COM : Component, CONF : Any>(
+/**
+ * 用于在加载 [ComponentFactoryProvider] 后、构建对应的 [Component] 时，
+ * 作为自动加载的额外配置类型的 SPI，
+ * 在使用 `loadComponentFactoriesFromProviders` （JVM平台下） 或其他衍生函数
+ * 且参数 `loadConfigurers` 为 `true` 时会被自动加载并作为构建 [Component] 的前置配置逻辑。
+ *
+ * @author ForteScarlet
+ */
+public interface ComponentFactoryConfigurerProvider<CONF : Any> {
+    /**
+     * 处理配置
+     */
+    public fun configure(config: CONF)
+}
+
+
+internal class ProviderComponentFactory<COM : Component, CONF : Any>(
     private val factory: ComponentFactory<COM, CONF>,
     private val configurers: List<ComponentFactoryConfigurerProvider<CONF>>
 ) : ComponentFactory<COM, CONF> {
@@ -71,68 +85,51 @@ private class ProviderComponentFactory<COM : Component, CONF : Any>(
     }
 }
 
+/**
+ * 添加一个用于获取 [ComponentFactoryProvider] 的函数。
+ * 这是用于兼容在非 `JVM` 平台下没有 `ServiceLoader` 的方案，
+ * 在 `JVM` 中应直接使用 `ServiceLoader` 加载 SPI 的方式，
+ * 因此 [addProvider] 实际上对 JVM （或者说Java）隐藏。
+ * 但是如果使用 Kotlin 或其他手段强行添加结果，[loadComponentProviders]
+ * 也还是会得到这些结果的。
+ */
+@JvmSynthetic
+public expect fun addProvider(providerCreator: () -> ComponentFactoryProvider<*>)
 
 /**
- * 用于在加载 [ComponentFactoryProvider] 后、构建对应的 [Component] 时，
- * 作为自动加载的额外配置类型的 SPI，
- * 在使用 [loadComponentFactoriesFromProviders] （或其他衍生函数）
- * 且参数 `loadConfigurers` 为 `true` 时会被自动加载并作为构建 [Component] 的前置配置逻辑。
+ * 清理所有通过 [addProvider] 添加的 provider 构建器。
+ */
+@JvmSynthetic
+public expect fun clearProviders()
+
+/**
+ * 尝试自动加载环境中可获取的所有 [ComponentFactoryProvider] 实例。
+ * 在 `JVM` 平台下通过 `ServiceLoader` 加载 [ComponentFactoryProvider] 并得到结果，
+ * 而在其他平台则会得到预先从 [addProvider] 中添加的所有函数构建出来的结果。
  *
- * @author ForteScarlet
  */
-public interface ComponentFactoryConfigurerProvider<CONF : Any> {
-    /**
-     * 处理配置
-     */
-    public fun configure(config: CONF)
-}
-
+public expect fun loadComponentProviders(): Sequence<ComponentFactoryProvider<*>>
 
 /**
- * 通过 [ServiceLoader] 加载 [ComponentFactoryProvider] 并得到流结果。
+ * 通过 [loadComponentProviders] 加载 [ComponentFactoryProvider] 并得到流结果。
  */
-public fun loadComponentProviders(loader: ClassLoader): Stream<ComponentFactoryProvider<*>> {
-    return ServiceLoader.load(ComponentFactoryProvider::class.java, loader)
-        .stream().map { it.get() }
-}
-
-/**
- * 通过 [ServiceLoader] 加载 [ComponentFactoryProvider] 并得到流结果。
- */
-public fun loadComponentProviders(): Stream<ComponentFactoryProvider<*>> {
-    return ServiceLoader.load(ComponentFactoryProvider::class.java)
-        .stream().map { it.get() }
-}
-
-/**
- * 通过 [ServiceLoader] 加载 [ComponentFactoryProvider] 并得到流结果。
- */
-public fun loadComponentFactoriesFromProviders(
-    loader: ClassLoader,
-    loadConfigurers: Boolean
-): Stream<ComponentFactory<*, *>> {
-    return loadComponentProviders(loader).map { it.loadConfigurersAndToPlugin(loadConfigurers) }
-}
-
-/**
- * 通过 [ServiceLoader] 加载 [ComponentFactoryProvider] 并得到流结果。
- */
-public fun loadComponentFactoriesFromProviders(loadConfigurers: Boolean): Stream<ComponentFactory<*, *>> {
+public fun loadComponentFactoriesFromProviders(loadConfigurers: Boolean): Sequence<ComponentFactory<*, *>> {
     return loadComponentProviders().map { it.loadConfigurersAndToPlugin(loadConfigurers) }
 }
 
 /**
- * 通过 [loadPluginFactoriesFromProviders] 加载并安装所有可寻得的组件。
+ * 通过 [loadComponentFactoriesFromProviders] 加载并安装所有可寻得的组件。
  *
  * @param loadConfigurers 是否同时加载所有可用的前置配置
  */
-public fun ComponentInstaller.findAnyInstallAllPlugins(loadConfigurers: Boolean) {
+public fun ComponentInstaller.findAndInstallAllComponents(loadConfigurers: Boolean) {
     loadComponentFactoriesFromProviders(loadConfigurers).forEach { factory ->
         install(factory)
     }
 }
 
-private fun <C : Any> ComponentFactoryProvider<C>.loadConfigurersAndToPlugin(
+
+internal fun <C : Any> ComponentFactoryProvider<C>.loadConfigurersAndToPlugin(
     loadConfigurers: Boolean
 ): ComponentFactory<*, C> {
     val factory = provide()
@@ -140,8 +137,8 @@ private fun <C : Any> ComponentFactoryProvider<C>.loadConfigurersAndToPlugin(
         return factory
     }
 
-    val loader = configurersLoader() ?: return factory
-    val configurerList = loader.stream().map { it.get() }.collect(Collectors.toList())
+    val loader = loadConfigurers() ?: return factory
+    val configurerList = loader.toList()
 
     return ProviderComponentFactory(factory, configurerList)
 }

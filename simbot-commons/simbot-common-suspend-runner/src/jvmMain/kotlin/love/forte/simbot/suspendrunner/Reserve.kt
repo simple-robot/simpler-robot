@@ -36,6 +36,7 @@ import kotlin.coroutines.CoroutineContext
  * @property context the [CoroutineContext] to use for running the coroutine
  * @property block the suspend function block that represents the reserve logic
  */
+@Deprecated("Use SuspendReserve")
 public class Reserve<out T>(private val scope: CoroutineScope, private val context: CoroutineContext, private val block: suspend () -> T) {
 
     /**
