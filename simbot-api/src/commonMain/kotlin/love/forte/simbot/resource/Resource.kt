@@ -41,7 +41,7 @@ import kotlin.jvm.JvmName
  * 一个**资源**。
  *
  * 用于描述一个可以被读取字节数据（[data]）的资源。
- * 通常代表一些二进制数据或本地文件资源。
+ * [Resource] 用于代表一些二进制数据或**本地**文件资源。
  *
  * ## 序列化
  *
@@ -57,7 +57,6 @@ public interface Resource {
     @Throws(Exception::class)
     public fun data(): ByteArray
 }
-
 
 /**
  * 通过提供的 [ByteArray] 直接构建一个 [Resource]。

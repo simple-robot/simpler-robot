@@ -60,7 +60,7 @@ public interface MessageReceipt : DeleteSupport {
  * @see SingleMessageReceipt
  * @see AggregatedMessageReceipt
  */
-public sealed class StandardMessageReceipt : MessageReceipt
+public sealed interface StandardMessageReceipt : MessageReceipt
 
 /**
  * 明确代表为一个或零个（发送失败时）具体消息的消息回执，可以作为 [AggregatedMessageReceipt] 的元素进行聚合。
@@ -68,14 +68,14 @@ public sealed class StandardMessageReceipt : MessageReceipt
  * @see StandardMessageReceipt
  * @see AggregatedMessageReceipt
  */
-public abstract class SingleMessageReceipt : StandardMessageReceipt() {
+public interface SingleMessageReceipt : StandardMessageReceipt {
     /**
      * 一个消息回执中存在一个ID.
      *
      * [id] 不一定具有实际含义，也有可能是仅仅只是一个随机值。
      *
      */
-    public abstract val id: ID
+    public val id: ID
 }
 
 /**
@@ -85,18 +85,18 @@ public abstract class SingleMessageReceipt : StandardMessageReceipt() {
  * @see SingleMessageReceipt
  * @see aggregation
  */
-public abstract class AggregatedMessageReceipt : StandardMessageReceipt(), Iterable<SingleMessageReceipt> {
+public interface AggregatedMessageReceipt : StandardMessageReceipt, Iterable<SingleMessageReceipt> {
     /**
      * 当前聚合消息中包含的所有 [MessageReceipt] 的数量。
      */
-    public abstract val size: Int
+    public val size: Int
 
     /**
      * 根据索引值获取到指定位置的 [SingleMessageReceipt]。
      *
      * @throws IndexOutOfBoundsException 索引越界时
      */
-    public abstract operator fun get(index: Int): SingleMessageReceipt
+    public operator fun get(index: Int): SingleMessageReceipt
 
     /**
      * 删除其所代表的所有消息回执。
@@ -128,7 +128,7 @@ public abstract class AggregatedMessageReceipt : StandardMessageReceipt(), Itera
      *
      * @return 删除成功的数量
      */
-    public open suspend fun deleteAll(vararg options: DeleteOption): Int {
+    public suspend fun deleteAll(vararg options: DeleteOption): Int {
         var count = 0
         for (receipt in this) {
             receipt.delete(options = options)
