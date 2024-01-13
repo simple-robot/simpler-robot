@@ -48,6 +48,19 @@ public annotation class ExperimentalSimbotAPI
 public annotation class InternalSimbotAPI
 
 /**
+ * 一个脆弱的、或者具有复杂的须知、备注、条件的API。
+ * 这类API通常有很多前提条件以及注意事项，需要谨慎使用。
+ */
+@Retention(AnnotationRetention.BINARY)
+@RequiresOptIn(
+    message = "一个脆弱的、或者具有复杂的须知、备注、条件的API。" +
+            "这类API通常有很多前提条件以及注意事项，需要谨慎使用。",
+    level = RequiresOptIn.Level.WARNING
+)
+@MustBeDocumented
+public annotation class FragileSimbotAPI
+
+/**
  * 一个设计为仅供 Java 用户使用的API
  */
 @Retention(AnnotationRetention.BINARY)
