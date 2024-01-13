@@ -26,10 +26,13 @@ package love.forte.simbot.common.collection
 
 @ExperimentalSimbotCollectionApi
 internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
-    private val list = mutableListOf<T>()
+    private val list = ArrayDeque<T>()
+
+    override val size: Int
+        get() = list.size
 
     override fun add(value: T) {
-        list.add(value)
+        list.addLast(value)
     }
 
     override fun remove(value: T) {
@@ -40,6 +43,10 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
         list.removeAll(predicate)
     }
 
+    override fun clear() {
+        list.clear()
+    }
+
     override fun iterator(): Iterator<T> = list.toList().iterator()
 
     override fun toString(): String = list.toString()
@@ -48,10 +55,13 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
 
 @ExperimentalSimbotCollectionApi
 internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
-    private val lists = mutableMapOf<Int, MutableList<T>>()
+    private val lists = mutableMapOf<Int, ArrayDeque<T>>()
+
+    override val size: Int
+        get() = lists.values.sumOf { it.size }
 
     override fun add(priority: Int, value: T) {
-        val list = lists.getOrPut(priority) { mutableListOf() }
+        val list = lists.getOrPut(priority) { ArrayDeque() }
         list.add(value)
     }
 
@@ -89,6 +99,10 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
         lists.values.removeAll { list -> list.removedAllAndEmpty(predicate) }
     }
 
+    override fun clear() {
+        lists.clear()
+    }
+
     private fun <T> MutableList<T>.removedAndEmpty(target: T): Boolean = remove(target) && isEmpty()
     private fun <T> MutableList<T>.removedAllAndEmpty(predicate: (T) -> Boolean): Boolean =
         removeAll(predicate) && isEmpty()
@@ -97,7 +111,7 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
         val sorted = lists.toMap().entries.sortedBy { it.key }
         return iterator {
             sorted.forEach { (_, v) ->
-                v.forEach { yield(it) }
+                v.toList().forEach { yield(it) }
             }
         }
         // return lists.toMap().asSequence().sortedBy { it.key }.flatMap { it.value }.iterator()

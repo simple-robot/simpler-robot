@@ -26,10 +26,13 @@ package love.forte.simbot.common.collection
 
 @ExperimentalSimbotCollectionApi
 internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
-    private val list = mutableListOf<T>()
+    private val list = ArrayDeque<T>()
+
+    override val size: Int
+        get() = list.size
 
     override fun add(value: T) {
-        list.add(value)
+        list.addLast(value)
     }
 
     override fun remove(value: T) {
@@ -38,6 +41,10 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
 
     override fun removeIf(predicate: (T) -> Boolean) {
         list.removeAll(predicate)
+    }
+
+    override fun clear() {
+        list.clear()
     }
 
     override fun iterator(): Iterator<T> = list.toList().iterator()
@@ -49,6 +56,9 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
 @ExperimentalSimbotCollectionApi
 internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
     private val lists = mutableMapOf<Int, MutableList<T>>()
+
+    override val size: Int
+        get() = lists.values.sumOf { it.size }
 
     override fun add(priority: Int, value: T) {
         val list = lists.getOrPut(priority) { mutableListOf() }
@@ -89,15 +99,21 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
         lists.values.removeAll { list -> list.removedAllAndEmpty(predicate) }
     }
 
+
+    override fun clear() {
+        lists.clear()
+    }
+
     private fun <T> MutableList<T>.removedAndEmpty(target: T): Boolean = remove(target) && isEmpty()
     private fun <T> MutableList<T>.removedAllAndEmpty(predicate: (T) -> Boolean): Boolean =
         removeAll(predicate) && isEmpty()
 
+    // copy iterator
     override fun iterator(): Iterator<T> {
         val sorted = lists.toMap().entries.sortedBy { it.key }
         return iterator {
             sorted.forEach { (_, v) ->
-                v.forEach { yield(it) }
+                v.toList().forEach { yield(it) }
             }
         }
         // return lists.toMap().asSequence().sortedBy { it.key }.flatMap { it.value }.iterator()

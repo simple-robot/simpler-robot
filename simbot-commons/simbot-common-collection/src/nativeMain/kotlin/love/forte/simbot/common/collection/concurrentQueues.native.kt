@@ -29,6 +29,9 @@ import kotlin.concurrent.AtomicReference
 internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
     private val listRef: AtomicReference<List<T>> = AtomicReference(emptyList())
 
+    override val size: Int
+        get() = listRef.value.size
+
     override fun add(value: T) {
         listRef.update { old ->
             when (old.size) {
@@ -56,6 +59,10 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
         }
     }
 
+    override fun clear() {
+        listRef.update { emptyList() }
+    }
+
     override fun iterator(): Iterator<T> = listRef.value.iterator()
 
     override fun toString(): String = listRef.value.toString()
@@ -69,6 +76,9 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
     )
 
     private val lists = AtomicReference<List<ListWithPriority<T>>>(emptyList())
+
+    override val size: Int
+        get() = lists.value.sumOf { it.list.value.size }
 
     private fun findByPriority(priority: Int): ListWithPriority<T>? =
         lists.value.find { it.priority == priority }
@@ -251,6 +261,9 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
         }
     }
 
+    override fun clear() {
+        lists.update { emptyList() }
+    }
 
     override fun iterator(): Iterator<T> {
         return lists.value.asSequence().flatMap { it.list.value }.iterator()

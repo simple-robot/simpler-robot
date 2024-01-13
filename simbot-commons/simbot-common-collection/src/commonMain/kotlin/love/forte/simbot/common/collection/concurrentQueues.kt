@@ -32,6 +32,10 @@ package love.forte.simbot.common.collection
  */
 @ExperimentalSimbotCollectionApi
 public interface ConcurrentQueue<T> : Iterable<T> {
+    /**
+     * 获取元素数量
+     */
+    public val size: Int
 
     /**
      * 添加指定元素
@@ -54,11 +58,17 @@ public interface ConcurrentQueue<T> : Iterable<T> {
 
     /**
      * 返回用于遍历此对象元素的迭代器。
+     * 此迭代器应当可以安全的在遍历途中对队列本体内元素进行修改，
+     * 但是不确保此迭代器可以看见这些变更（例如迭代器实际上为一个副本）。
      *
      * @return 允许遍历此对象元素的迭代器对象。
      */
     override fun iterator(): Iterator<T>
 
+    /**
+     * 清除其中的所有元素。
+     */
+    public fun clear()
 }
 
 /**
@@ -70,6 +80,10 @@ public interface ConcurrentQueue<T> : Iterable<T> {
  */
 @ExperimentalSimbotCollectionApi
 public interface PriorityConcurrentQueue<T> : Iterable<T> {
+    /**
+     * 获取元素数量
+     */
+    public val size: Int
 
     /**
      * 将具有指定优先级的元素添加到集合中。
@@ -111,8 +125,15 @@ public interface PriorityConcurrentQueue<T> : Iterable<T> {
 
     /**
      * 返回用于遍历此对象元素的迭代器。
+     * 此迭代器应当可以安全的在遍历途中对队列本体内元素进行修改，
+     * 但是不确保此迭代器可以看见这些变更（例如迭代器实际上为一个副本）。
      *
      * @return 允许遍历此对象元素的迭代器对象。
      */
     override fun iterator(): Iterator<T>
+
+    /**
+     * 清除其中的所有元素。
+     */
+    public fun clear()
 }

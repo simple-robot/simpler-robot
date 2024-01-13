@@ -30,6 +30,9 @@ import java.util.concurrent.ConcurrentSkipListMap
 internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
     private val queue = ConcurrentLinkedQueue<T>()
 
+    override val size: Int
+        get() = queue.size
+
     override fun add(value: T) {
         queue.add(value)
     }
@@ -40,6 +43,10 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
 
     override fun removeIf(predicate: (T) -> Boolean) {
         queue.removeIf(predicate)
+    }
+
+    override fun clear() {
+        queue.clear()
     }
 
     override fun iterator(): Iterator<T> = queue.iterator()
@@ -54,6 +61,9 @@ internal class ConcurrentQueueImpl<T> : ConcurrentQueue<T> {
 @OptIn(ExperimentalSimbotCollectionApi::class)
 internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
     private val queueMap = ConcurrentSkipListMap<Int, ConcurrentLinkedQueue<T>>()
+
+    override val size: Int
+        get() = queueMap.values.sumOf { it.size }
 
     override fun add(priority: Int, value: T) {
         val queue = queueMap.computeIfAbsent(priority) { ConcurrentLinkedQueue() }
@@ -103,6 +113,10 @@ internal class PriorityConcurrentQueueImpl<T> : PriorityConcurrentQueue<T> {
                 }
             }
         }
+    }
+
+    override fun clear() {
+        queueMap.clear()
     }
 
     override fun iterator(): Iterator<T> {
