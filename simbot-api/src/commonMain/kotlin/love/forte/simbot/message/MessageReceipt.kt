@@ -68,14 +68,14 @@ public sealed interface StandardMessageReceipt : MessageReceipt
  * @see StandardMessageReceipt
  * @see AggregatedMessageReceipt
  */
-public interface SingleMessageReceipt : StandardMessageReceipt {
+public abstract class SingleMessageReceipt : StandardMessageReceipt {
     /**
      * 一个消息回执中存在一个ID.
      *
      * [id] 不一定具有实际含义，也有可能是仅仅只是一个随机值。
      *
      */
-    public val id: ID
+    public abstract val id: ID
 }
 
 /**
@@ -85,18 +85,18 @@ public interface SingleMessageReceipt : StandardMessageReceipt {
  * @see SingleMessageReceipt
  * @see aggregation
  */
-public interface AggregatedMessageReceipt : StandardMessageReceipt, Iterable<SingleMessageReceipt> {
+public abstract class AggregatedMessageReceipt : StandardMessageReceipt, Iterable<SingleMessageReceipt> {
     /**
      * 当前聚合消息中包含的所有 [MessageReceipt] 的数量。
      */
-    public val size: Int
+    public abstract val size: Int
 
     /**
      * 根据索引值获取到指定位置的 [SingleMessageReceipt]。
      *
      * @throws IndexOutOfBoundsException 索引越界时
      */
-    public operator fun get(index: Int): SingleMessageReceipt
+    public abstract operator fun get(index: Int): SingleMessageReceipt
 
     /**
      * 删除其所代表的所有消息回执。
@@ -128,7 +128,7 @@ public interface AggregatedMessageReceipt : StandardMessageReceipt, Iterable<Sin
      *
      * @return 删除成功的数量
      */
-    public suspend fun deleteAll(vararg options: DeleteOption): Int {
+    public open suspend fun deleteAll(vararg options: DeleteOption): Int {
         var count = 0
         for (receipt in this) {
             receipt.delete(options = options)
@@ -152,7 +152,10 @@ public interface AggregatedMessageReceipt : StandardMessageReceipt, Iterable<Sin
  * @param onResult 每一个元素被执行删除后的结果回执，也可能是存在异常的回执。
  * 默认情况下 [onResult] 会直接**忽略异常**。
  */
-public suspend inline fun AggregatedMessageReceipt.deleteAllSafely(vararg options: DeleteOption, onResult: (Result<Unit>) -> Unit = { /* Ignore it. */ }) {
+public suspend inline fun AggregatedMessageReceipt.deleteAllSafely(
+    vararg options: DeleteOption,
+    onResult: (Result<Unit>) -> Unit = { /* Ignore it. */ }
+) {
     for (receipt in this) {
         onResult(kotlin.runCatching { receipt.delete(options = options) })
     }
