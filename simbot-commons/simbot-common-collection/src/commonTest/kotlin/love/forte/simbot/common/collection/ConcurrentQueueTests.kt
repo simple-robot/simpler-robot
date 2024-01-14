@@ -21,8 +21,8 @@
  *
  */
 
-import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
-import love.forte.simbot.common.collection.createConcurrentQueue
+package love.forte.simbot.common.collection
+
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

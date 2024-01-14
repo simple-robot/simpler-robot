@@ -21,13 +21,13 @@
  *
  */
 
+package love.forte.simbot.common.collection
+
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
-import love.forte.simbot.common.collection.ExperimentalSimbotCollectionApi
-import love.forte.simbot.common.collection.createPriorityConcurrentQueue
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals

@@ -21,16 +21,14 @@
  *
  */
 
-package love.forte.simbot.quantcat.common
+package love.forte.simbot.common.collection
 
 /**
- * 一些默认提供的标准 [AnnotationEventInterceptorFactory] 实现。
  *
  * @author ForteScarlet
  */
-public sealed class StandardAnnotationEventInterceptorFactories : AnnotationEventInterceptorFactory
+class ConcurrentMapTests {
+    // TODO
 
-// TODO
 
-public object ContentTrimEventInterceptorFactory
-
+}

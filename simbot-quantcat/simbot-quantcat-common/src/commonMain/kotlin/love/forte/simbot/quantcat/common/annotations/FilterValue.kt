@@ -21,7 +21,7 @@
  *
  */
 
-package love.forte.simbot.quantcat.annotations
+package love.forte.simbot.quantcat.common.annotations
 
 import love.forte.simbot.quantcat.common.filter.FilterValueProperties
 

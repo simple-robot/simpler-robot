@@ -27,8 +27,8 @@ import love.forte.simbot.application.Application
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
-import love.forte.simbot.quantcat.annotations.ApplyBinder
-import love.forte.simbot.quantcat.annotations.Listener
+import love.forte.simbot.quantcat.common.annotations.ApplyBinder
+import love.forte.simbot.quantcat.common.annotations.Listener
 import love.forte.simbot.quantcat.common.binder.BinderManager
 import love.forte.simbot.spring.utils.findMergedAnnotationSafely
 import love.forte.simbot.spring.utils.getKotlinFunctionSafely

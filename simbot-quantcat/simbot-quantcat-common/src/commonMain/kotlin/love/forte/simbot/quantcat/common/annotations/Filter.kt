@@ -21,10 +21,10 @@
  *
  */
 
-package love.forte.simbot.quantcat.annotations
+package love.forte.simbot.quantcat.common.annotations
 
 import love.forte.simbot.common.PriorityConstant
-import love.forte.simbot.quantcat.annotations.Filter.Targets
+import love.forte.simbot.quantcat.common.annotations.Filter.Targets
 import love.forte.simbot.quantcat.common.filter.*
 
 /**

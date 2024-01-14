@@ -127,7 +127,7 @@ public interface ChatGroupMemberMessageEvent : MessageEvent, MemberEvent {
     /**
      * 事件中 [member][content] 所在的 [ChatGroup]。
      */
-    override suspend fun organization(): ChatGroup
+    override suspend fun source(): ChatGroup
 }
 
 /**
@@ -140,7 +140,7 @@ public interface GuildMemberMessageEvent : MessageEvent, MemberEvent {
     /**
      * 事件中 [member][content] 所在的 [Guild]。
      */
-    override suspend fun organization(): Guild
+    override suspend fun source(): Guild
 }
 
 /**

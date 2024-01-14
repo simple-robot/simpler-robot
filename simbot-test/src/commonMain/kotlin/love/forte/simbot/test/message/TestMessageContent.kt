@@ -21,44 +21,28 @@
  *
  */
 
-import love.forte.simbot.quantcat.common.annotations.Filter
+package love.forte.simbot.test.message
+
+import love.forte.simbot.ability.DeleteOption
+import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.UUID
+import love.forte.simbot.message.MessageContent
+import love.forte.simbot.message.Messages
+import love.forte.simbot.message.PlainText
+import love.forte.simbot.message.emptyMessages
+
 
 /**
  *
  * @author ForteScarlet
  */
-class FilterTargetMergeTests {
-
-
-    @Filter(targets = [Filter.Targets(bots = ["A1", "A2"]), Filter.Targets(bots = ["B1", "B2"], atBot = true)])
-    private fun func1() {
+public class TestMessageContent(
+    override var id: ID = UUID.random(),
+    override var messages: Messages = emptyMessages(),
+    override var plainText: String? = messages.asSequence().filterIsInstance<PlainText>().joinToString("") { it.text },
+    public var onDelete: (Array<out DeleteOption>) -> Unit = {}
+) : MessageContent {
+    override suspend fun delete(vararg options: DeleteOption) {
+        onDelete(options)
     }
-
-    @Filter(targets = [Filter.Targets(bots = ["A3", "A4"]), Filter.Targets(bots = ["B3", "B4"])])
-    private fun func2() {
-    }
-
-    @Filter(targets = [Filter.Targets()])
-    private fun func3() {
-    }
-
-    @Filter(targets = [Filter.Targets()])
-    private fun func4() {
-    }
-
-    @Filter
-    @Filter
-    fun func5() {
-    }
-
-    //
-    // @Test
-    // fun multiAnnotationTest() {
-    //     val javaMethod = ::func5.javaMethod!!
-    //
-    //     val annotations = javaMethod.getAnnotationsByType(Filter::class.java)
-    //     println(annotations.toList())
-    //     assertEquals(2, annotations.size)
-    // }
-
 }

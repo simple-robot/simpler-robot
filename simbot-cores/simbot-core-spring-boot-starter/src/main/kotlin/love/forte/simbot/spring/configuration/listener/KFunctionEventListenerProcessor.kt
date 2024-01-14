@@ -38,7 +38,7 @@ import love.forte.simbot.event.*
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
 import love.forte.simbot.message.At
-import love.forte.simbot.quantcat.annotations.*
+import love.forte.simbot.quantcat.common.annotations.*
 import love.forte.simbot.quantcat.common.binder.*
 import love.forte.simbot.quantcat.common.binder.impl.EmptyBinder
 import love.forte.simbot.quantcat.common.binder.impl.MergedBinder
@@ -46,6 +46,7 @@ import love.forte.simbot.quantcat.common.filter.FilterMode
 import love.forte.simbot.quantcat.common.filter.FilterProperties
 import love.forte.simbot.quantcat.common.filter.FilterTargetsProperties
 import love.forte.simbot.quantcat.common.filter.MultiFilterMatchType
+import love.forte.simbot.quantcat.common.interceptor.AnnotationEventInterceptorFactory
 import love.forte.simbot.quantcat.common.keyword.EmptyKeyword
 import love.forte.simbot.quantcat.common.keyword.KeywordListAttribute
 import love.forte.simbot.quantcat.common.keyword.SimpleKeyword
@@ -61,6 +62,8 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.createInstance
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.findAnnotations
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.javaMethod
@@ -111,6 +114,7 @@ internal class KFunctionEventListenerProcessor {
 
         // filters & interceptors
         function.filtersAndInterceptorsByFilterAnnotations(
+            applicationContext,
             listenerAttributeMap,
             onFilter = { filter ->
                 filters.add(filter)
@@ -267,13 +271,15 @@ internal class KFunctionEventListenerProcessor {
     data class Data(val properties: FilterProperties, val matcher: MatcherFunc?)
 
     private inline fun KFunction<*>.filtersAndInterceptorsByFilterAnnotations(
+        applicationContext: ApplicationContext,
         listenerAttributeMap: MutableAttributeMap,
         onFilter: (EventFilterData) -> Unit,
         onInterceptor: (EventInterceptorData) -> Unit,
     ) {
         // filter annotations
-        val filterAnnotations = javaMethod?.findRepeatableMergedAnnotationSafely<Filter>() ?: return
-        val multiFilter = javaMethod?.findMergedAnnotationSafely<MultiFilter>()
+        val filterAnnotations =
+            javaMethod?.findRepeatableMergedAnnotationSafely<Filter>() ?: findAnnotations<Filter>().toSet()
+        val multiFilter = javaMethod?.findMergedAnnotationSafely<MultiFilter>() ?: findAnnotation<MultiFilter>()
         val matchType = multiFilter?.matchType ?: MultiFilterMatchType.Default
 
         val grouped =
@@ -329,6 +335,65 @@ internal class KFunctionEventListenerProcessor {
             }
         }
 
+        // resolve listener-level interceptor
+        resolveListenerInterceptor(applicationContext, onInterceptor)
+    }
+
+    private inline fun KFunction<*>.resolveListenerInterceptor(
+        applicationContext: ApplicationContext,
+        onInterceptor: (EventInterceptorData) -> Unit,
+    ) {
+        val cache = mutableMapOf<KClass<*>, AnnotationEventInterceptorFactory>()
+
+        val interceptors =
+            javaMethod?.findRepeatableMergedAnnotationSafely<Interceptor>() ?: findAnnotations<Interceptor>().toSet()
+        for (interceptorAnno in interceptors) {
+            val factoryType = interceptorAnno.value
+            val errs = ArrayDeque<Throwable>()
+
+            var factory: AnnotationEventInterceptorFactory? = null
+
+            try {
+                factory = applicationContext.getBean(factoryType.java)
+            } catch (noBean: NoSuchBeanDefinitionException) {
+                logger.debug(
+                    "Type of factory {} in @Interceptor on function {} was not found in spring ApplicationContext, try to create an instance",
+                    factoryType,
+                    this
+                )
+                errs.add(noBean)
+            }
+
+            // try to create an instance
+            if (factory == null) {
+                factoryType.objectInstance?.also { factory = it }
+            }
+
+            if (factory == null) {
+                runCatching {
+                    factory = cache.computeIfAbsent(factoryType) { factoryType.createInstance() }
+                }.onFailure { e ->
+                    errs.add(e)
+                }
+            }
+
+            val f = factory
+
+            if (f == null) {
+                val msg =
+                    "Can't to get or create an instance for listener annotated interceptor factory $factoryType on function $this"
+
+                throw ListenerInterceptorFactoryInstantiationFailedException(msg).apply {
+                    errs.forEach { addSuppressed(it) }
+                }
+            }
+
+            val result = f.create(AnnotationEventInterceptorFactoryContextImpl(this, interceptorAnno.priority))
+                ?: continue
+
+            onInterceptor(EventInterceptorData(result.configuration, result.interceptor))
+        }
+
     }
 
 
@@ -336,6 +401,23 @@ internal class KFunctionEventListenerProcessor {
         private val logger = LoggerFactory.logger<KFunctionEventListenerProcessor>()
     }
 }
+
+private class AnnotationEventInterceptorFactoryContextImpl(
+    override val function: KFunction<*>,
+    override val priority: Int
+) : AnnotationEventInterceptorFactory.Context {
+    @Suppress("UNCHECKED_CAST")
+    override fun <A : Annotation> findAnnotation(type: KClass<A>): A? =
+        function.javaMethod?.findMergedAnnotationSafely(type)
+            ?: function.annotations.firstOrNull { type.isInstance(it) } as? A
+
+    override fun <A : Annotation> findAnnotations(type: KClass<A>): List<A> =
+        function.javaMethod?.findRepeatableMergedAnnotationSafely(type)?.toList()
+            ?: function.findAnnotations(type)
+}
+
+private class ListenerInterceptorFactoryInstantiationFailedException(message: String?) : RuntimeException(message)
+
 
 private data class ParameterBinderFactoryContextImpl(
     override val source: KFunction<*>,
@@ -632,7 +714,7 @@ private class ContentEventMatchHelper(private val event: Event) {
     var content: Any? = null
 
     /**
-     * 如果事件是 [OrganizationAwareEvent] 或 [OrganizationEvent], 可初始化
+     * 如果事件是 [OrganizationSourceEvent] 或 [OrganizationEvent], 可初始化
      */
     var org: Organization? = null
 
@@ -666,8 +748,8 @@ private class ContentEventMatchHelper(private val event: Event) {
                     }
                 }
             }
-            if (event is OrganizationAwareEvent) {
-                org = event.organization()
+            if (event is OrganizationSourceEvent) {
+                org = event.source()
             }
         }
 

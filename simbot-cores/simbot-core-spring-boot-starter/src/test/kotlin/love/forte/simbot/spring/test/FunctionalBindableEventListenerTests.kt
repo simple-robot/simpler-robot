@@ -25,7 +25,7 @@ package love.forte.simbot.spring.test
 
 import kotlinx.coroutines.delay
 import love.forte.simbot.application.ApplicationLauncher
-import love.forte.simbot.quantcat.annotations.Listener
+import love.forte.simbot.quantcat.common.annotations.Listener
 import love.forte.simbot.quantcat.common.binder.BinderManager
 import love.forte.simbot.spring.EnableSimbot
 import love.forte.simbot.spring.configuration.listener.SimbotEventListenerResolver

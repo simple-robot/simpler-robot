@@ -56,6 +56,8 @@ public class EmptyBinder(
     override fun arg(context: EventListenerContext): Result<Any?> {
         return resultProvider()
     }
+
+    override fun toString(): String = "EmptyBinder(parameter=$parameter)"
 }
 
 

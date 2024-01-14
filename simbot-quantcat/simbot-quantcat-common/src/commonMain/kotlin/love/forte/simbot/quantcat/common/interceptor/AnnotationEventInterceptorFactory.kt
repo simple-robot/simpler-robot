@@ -21,19 +21,17 @@
  *
  */
 
-package love.forte.simbot.quantcat.common
+package love.forte.simbot.quantcat.common.interceptor
 
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.common.function.plus
 import love.forte.simbot.event.EventInterceptor
 import love.forte.simbot.event.EventInterceptorRegistrationProperties
-import love.forte.simbot.quantcat.common.AnnotationEventInterceptorFactory.Result.Companion.build
+import love.forte.simbot.quantcat.common.interceptor.AnnotationEventInterceptorFactory.Result.Companion.build
 import kotlin.jvm.JvmStatic
+import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
-
-// TODO 注解拦截器
-// 
 
 /**
  * 用于 [@Interceptor][love.forte.simbot.quantcat.annotations.Interceptor] 中的拦截器工厂。
@@ -47,10 +45,10 @@ public fun interface AnnotationEventInterceptorFactory {
      *
      * @see Result
      */
-    public fun interceptor(context: Context): Result?
+    public fun create(context: Context): Result?
 
     /**
-     * Context of [AnnotationEventInterceptorFactory.interceptor].
+     * Context of [AnnotationEventInterceptorFactory.create].
      */
     public interface Context {
         /**
@@ -60,13 +58,32 @@ public fun interface AnnotationEventInterceptorFactory {
          * _Note: Java 中可以使用 `ReflectJvmMapping.javaMethod` 转化为 `Method`。_
          */
         public val function: KFunction<*>?
+
+        /**
+         * 此拦截器预期被注册的优先级。
+         */
+        public val priority: Int
+
+        /**
+         * 由工厂的实现者提供的针对 [function] 的注解获取API，
+         * 用于从 [function] 中寻找第一个目标注解的结果。
+         * 注解是否支持“嵌套”查询由具体实现决定。
+         */
+        public fun <A : Annotation> findAnnotation(type: KClass<A>): A?
+
+        /**
+         * 由工厂的实现者提供的针对 [function] 的注解获取API，
+         * 用于从 [function] 中寻找所有的目标注解的结果。
+         * 注解是否支持“嵌套”查询由具体实现决定。
+         */
+        public fun <A : Annotation> findAnnotations(type: KClass<A>): List<A>
     }
 
     /**
      * 拦截器工厂的响应结果。包含一个拦截器实例 [interceptor] 以及用于注册的配置器 [configuration]。
      * 可以通过 [build] 快速构建。
      *
-     * @see AnnotationEventInterceptorFactory.interceptor
+     * @see AnnotationEventInterceptorFactory.create
      * @author ForteScarlet
      */
     public abstract class Result {
@@ -115,12 +132,13 @@ public fun interface AnnotationEventInterceptorFactory {
             /**
              * 构建 [Result]。
              *
-             * @throws IllegalStateException 如果 [interceptor] 尚未设置
+             * @throws IllegalStateException 如果 [create] 尚未设置
              */
             public fun build(): Result
         }
     }
 }
+
 
 private class EventInterceptorFactoryResultBuilderImpl : AnnotationEventInterceptorFactory.Result.Builder {
     private var interceptor: EventInterceptor? = null

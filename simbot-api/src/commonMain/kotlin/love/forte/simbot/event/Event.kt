@@ -94,6 +94,17 @@ public interface ContentEvent : Event {
 }
 
 /**
+ * 存在一个 [源头][source] 的事件类型。
+ */
+@STP
+public interface SourceEvent : Event {
+    /**
+     * 这个事件的“源头”。
+     */
+    public suspend fun source(): Any?
+}
+
+/**
  * 发生了某种变化的事件。
  *
  * @author ForteScarlet

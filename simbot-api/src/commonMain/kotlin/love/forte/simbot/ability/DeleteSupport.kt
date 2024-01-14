@@ -128,7 +128,7 @@ public enum class StandardDeleteOption : DeleteOption {
         @OptIn(ExperimentalContracts::class)
         public inline fun Array<out DeleteOption>.inStandardAnalysis(
             onEach: (DeleteOption) -> Unit = {},
-            block: () -> Unit
+            block: StandardAnalysis.() -> Unit
         ): StandardAnalysis {
             contract {
                 callsInPlace(block, InvocationKind.EXACTLY_ONCE)
@@ -149,9 +149,20 @@ public enum class StandardDeleteOption : DeleteOption {
          * 判断是否存在某个标准选项。
          */
         public operator fun contains(option: StandardDeleteOption): Boolean = value and (1 shl option.ordinal) != 0
+
+        /**
+         * 判断是否包含任意的 [StandardDeleteOption]
+         */
+        public val isEmpty: Boolean
+            get() = value == 0
+
+        /**
+         * 判断是否包含所有的 [StandardDeleteOption]
+         */
+        public val isFull: Boolean
+            get() = value == (0xffff shr (16 - StandardDeleteOption.entries.size))
     }
 }
-
 
 /**
  * @see DeleteSupport.delete

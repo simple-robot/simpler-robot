@@ -24,7 +24,7 @@
 package love.forte.simbot.spring.configuration.binder
 
 import love.forte.simbot.annotations.ExperimentalSimbotAPI
-import love.forte.simbot.quantcat.annotations.Binder
+import love.forte.simbot.quantcat.common.annotations.Binder
 import love.forte.simbot.quantcat.common.binder.ParameterBinderFactory
 import love.forte.simbot.quantcat.common.binder.SimpleBinderManager
 import love.forte.simbot.quantcat.common.binder.toBinderFactory

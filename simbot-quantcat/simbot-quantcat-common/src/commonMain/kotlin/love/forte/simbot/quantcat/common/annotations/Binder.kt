@@ -22,9 +22,9 @@
  */
 
 
-package love.forte.simbot.quantcat.annotations
+package love.forte.simbot.quantcat.common.annotations
 
-import love.forte.simbot.quantcat.annotations.Binder.Scope
+import love.forte.simbot.quantcat.common.annotations.Binder.Scope
 import love.forte.simbot.quantcat.common.binder.BaseParameterBinderFactory
 import kotlin.reflect.KClass
 

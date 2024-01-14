@@ -67,7 +67,6 @@ dependencies {
     implementation(platform(libs.spring.boot.v3.dependencies))
 
     compileOnly(project(":simbot-commons:simbot-common-annotations"))
-    compileOnly(project(":simbot-quantcat:simbot-quantcat-annotations"))
     api(project(":simbot-quantcat:simbot-quantcat-common"))
     api(project(":simbot-cores:simbot-core"))
     api(project(":simbot-cores:simbot-core-spring-boot-starter-common"))

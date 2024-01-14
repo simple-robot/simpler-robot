@@ -42,7 +42,6 @@ kotlin {
 
 dependencies {
     compileOnly(project(":simbot-commons:simbot-common-annotations"))
-    api(project(":simbot-quantcat:simbot-quantcat-annotations"))
     api(project(":simbot-quantcat:simbot-quantcat-common"))
     api(project(":simbot-cores:simbot-core"))
 

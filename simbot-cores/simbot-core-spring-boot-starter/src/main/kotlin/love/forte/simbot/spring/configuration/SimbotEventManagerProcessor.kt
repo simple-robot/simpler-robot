@@ -26,7 +26,7 @@ package love.forte.simbot.spring.configuration
 import love.forte.simbot.event.EventDispatcher
 import love.forte.simbot.event.EventListener
 import love.forte.simbot.event.EventListenerRegistrar
-import love.forte.simbot.quantcat.annotations.Listener
+import love.forte.simbot.quantcat.common.annotations.Listener
 
 
 /**

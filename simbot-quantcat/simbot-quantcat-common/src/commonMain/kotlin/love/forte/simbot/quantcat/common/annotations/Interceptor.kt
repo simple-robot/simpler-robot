@@ -21,15 +21,18 @@
  *
  */
 
-package love.forte.simbot.quantcat.annotations
+package love.forte.simbot.quantcat.common.annotations
 
-import love.forte.simbot.quantcat.common.AnnotationEventInterceptorFactory
+import love.forte.simbot.common.PriorityConstant
+import love.forte.simbot.event.EventListenerContext
+import love.forte.simbot.quantcat.common.interceptor.AnnotationEventInterceptorFactory
+import love.forte.simbot.quantcat.common.interceptor.impl.ContentTrimEventInterceptorFactory
 import kotlin.reflect.KClass
 
 /**
  * 配合 [@Listener][Listener] 使用，为被标记的事件处理器添加一个目标工厂所产生的拦截器。
  *
- * [factories] 提供一个 [AnnotationEventInterceptorFactory] 的 **实现类型**。如果此类型是 `object`，
+ * [value] 提供一个 [AnnotationEventInterceptorFactory] 的 **实现类型**。如果此类型是 `object`，
  * 则直接使用，否则会构建一个实例。此实例 **可能会被共享**，因此请考虑处理并发。
  *
  * 在一些有 DI 能力的实现中（例如 Spring Boot starter），则可能会根据类型从 bean 池中获取，
@@ -47,8 +50,23 @@ public annotation class Interceptor(
      *
      * 注意：只有**第一个**元素有效。如果提供多个元素则会抛出异常。[Array] 类型仅为了提供默认值。
      * 如果希望添加多个拦截器，请使用多个 [Interceptor] 注解。
-     *
-     * [factories] 与 [factoryClassName] 同时存在时，优先使用 [factories]。
      */
-    vararg val factories: KClass<out AnnotationEventInterceptorFactory> = []
+    val value: KClass<out AnnotationEventInterceptorFactory>,
+
+    /**
+     * 提供给 [AnnotationEventInterceptorFactory] 的预期注册优先级。
+     */
+    val priority: Int = PriorityConstant.DEFAULT
 )
+
+
+/**
+ * 用于产生一个附加在目标函数上的拦截器，
+ * 此拦截器将 [EventListenerContext.plainText]
+ * 使用 [trim][String.trim] 处理。
+ *
+ */
+@Suppress("RUNTIME_ANNOTATION_NOT_SUPPORTED")
+@Target(AnnotationTarget.FUNCTION)
+@Interceptor(ContentTrimEventInterceptorFactory::class)
+public annotation class ContentTrim

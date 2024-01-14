@@ -140,15 +140,15 @@ public interface ChatChannelEvent : ChannelEvent, ChatRoomEvent {
 }
 
 /**
- * 可以感知到 [Organization] 的事件类型。
+ * [Organization] 作为源头、但并非事件主要本体的事件类型。
  * 此类型由一些存在组织信息、但组织信息不是主要信息的事件类型实现。
  */
 @STP
-public interface OrganizationAwareEvent : BotEvent {
+public interface OrganizationSourceEvent : BotEvent, SourceEvent {
     /**
      * 事件中的 [Organization].
      */
-    public suspend fun organization(): Organization
+    override suspend fun source(): Organization
 }
 
 /**
@@ -157,12 +157,12 @@ public interface OrganizationAwareEvent : BotEvent {
  * @author ForteScarlet
  */
 @STP
-public interface MemberEvent : ActorEvent, OrganizationAwareEvent {
+public interface MemberEvent : ActorEvent, OrganizationSourceEvent {
     /**
      * 事件中 [member][content] 所属的 [Organization]。
      *
      */
-    override suspend fun organization(): Organization
+    override suspend fun source(): Organization
 
     /**
      * 被作为事件中心的 [Member]。
@@ -180,7 +180,7 @@ public interface ChatGroupMemberEvent : MemberEvent {
     /**
      * 事件中 [member][content] 所属的 [ChatGroup]。
      */
-    override suspend fun organization(): ChatGroup
+    override suspend fun source(): ChatGroup
 
     /**
      * 被作为事件中心的 [Member]。
@@ -198,7 +198,7 @@ public interface GuildMemberEvent : MemberEvent {
     /**
      * 事件中 [member][content] 所属的 [Guild]。
      */
-    override suspend fun organization(): Guild
+    override suspend fun source(): Guild
 
     /**
      * 被作为事件中心的 [Member]。

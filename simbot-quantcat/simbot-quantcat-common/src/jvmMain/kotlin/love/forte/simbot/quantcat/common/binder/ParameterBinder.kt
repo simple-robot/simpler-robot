@@ -30,6 +30,7 @@ import love.forte.simbot.common.PriorityConstant
 import love.forte.simbot.event.EventListenerContext
 import love.forte.simbot.event.EventResult
 import love.forte.simbot.quantcat.common.listener.FunctionalEventListener
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.net.BindException
 import kotlin.reflect.*
@@ -217,11 +218,14 @@ public abstract class FunctionalBindableEventListener(
             }
         }
 
-        val result =
+        val result = try {
             if (caller.isSuspend) caller.callSuspend(args = args)
             // TODO 是否要对非挂起函数进行处理？
             // else runInterruptible(Dispatchers.IO) { caller.call(args = args) }
             else caller.call(args = args)
+        } catch (e: InvocationTargetException) {
+            throw e.targetException ?: e
+        }
 
         return resultProcess(result)
     }
@@ -270,11 +274,14 @@ public abstract class FunctionalBindableEventListener(
             }
         }
 
-        val result =
+        val result = try {
             if (caller.isSuspend) caller.callSuspendBy(args)
-                // TODO 是否要对非挂起函数进行处理?
+            // TODO 是否要对非挂起函数进行处理?
             // else runInterruptible(Dispatchers.IO) { caller.callBy(args) }
             else caller.callBy(args)
+        } catch (e: InvocationTargetException) {
+            throw e.targetException ?: e
+        }
 
         return resultProcess(result)
     }

@@ -23,6 +23,8 @@
 
 package love.forte.simbot.event
 
+import love.forte.simbot.definition.ChatGroup
+import love.forte.simbot.definition.Guild
 import love.forte.simbot.definition.Member
 import love.forte.simbot.suspendrunner.STP
 
@@ -35,6 +37,44 @@ import love.forte.simbot.suspendrunner.STP
 @STP
 public interface MemberChangeEvent : ChangeEvent, MemberEvent {
     /**
+     * 发送了变化的 [Member]。
+     *
+     */
+    override suspend fun content(): Member
+}
+
+/**
+ * 当 [Guild] 的 [Member] 发生了某种变化时的事件。
+ *
+ * @author ForteScarlet
+ */
+@STP
+public interface GuildMemberChangeEvent : ChangeEvent, GuildMemberEvent {
+    /**
+     * 变化成员所在 [Guild]
+     */
+    override suspend fun source(): Guild
+
+        /**
+     * 发送了变化的 [Member]。
+     *
+     */
+    override suspend fun content(): Member
+}
+
+/**
+ * 当 [ChatGroup] 的 [Member] 发生了某种变化时的事件。
+ *
+ * @author ForteScarlet
+ */
+@STP
+public interface GroupMemberChangeEvent : ChangeEvent, ChatGroupMemberEvent {
+    /**
+     * 变化成员所在 [ChatGroup]
+     */
+    override suspend fun source(): ChatGroup
+
+        /**
      * 发送了变化的 [Member]。
      *
      */
