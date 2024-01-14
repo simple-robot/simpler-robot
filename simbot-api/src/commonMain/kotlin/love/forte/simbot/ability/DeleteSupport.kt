@@ -48,10 +48,11 @@ public interface DeleteSupport {
      *
      * 在实现者本质上不支持删除行为时，抛出 [UnsupportedOperationException]。
      *
-     * [delete] 行为如果遇到诸如权限不足、已被删除等API支持、但由于逻辑、业务原因而导致删除失败的情况下，都应抛出异常，
-     * 且议使用或扩展 [DeleteFailureException] 类型。
+     * [delete] 行为如果遇到诸如权限不足、已被删除等API支持、但由于逻辑、业务原因而导致删除失败的情况下
+     * （也就是说由API或可预知的原因所导致的异常），都建议抛出 [DeleteFailureException] 类型异常。
      *
-     * “删除行为”的具体含义由实现者定义。例如在 `MessageContent` 中，代表删除、撤回、撤销这个消息。
+     * “删除行为”的具体含义由实现者定义。例如在 `MessageContent` 中，代表删除、撤回、撤销这个消息，
+     * 而在某个 `User` 类型下它可能代表踢出、移除这个用户。
      *
      * @param options 删除时的可选选项。不支持的选项将会被忽略。更多说明参考 [DeleteOption]。
      *
