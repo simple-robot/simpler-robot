@@ -13,6 +13,7 @@ module simbot.common.core {
     exports love.forte.simbot.common.attribute;
     exports love.forte.simbot.common.collectable;
     exports love.forte.simbot.common.coroutines;
+    exports love.forte.simbot.common.exception;
     exports love.forte.simbot.common.function;
     exports love.forte.simbot.common.id;
     exports love.forte.simbot.common.serialization;
