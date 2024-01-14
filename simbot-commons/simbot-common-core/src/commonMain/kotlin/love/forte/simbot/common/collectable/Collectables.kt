@@ -27,9 +27,7 @@
 package love.forte.simbot.common.collectable
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.*
 import love.forte.simbot.common.async.Async
 import love.forte.simbot.common.async.completedAsync
 import love.forte.simbot.common.function.Action
@@ -64,6 +62,11 @@ internal fun Collectable<*>.isEmptyCollectable(): Boolean = this === EmptyCollec
 @JvmName("valueOf")
 public fun <T> Flow<T>.asCollectable(): Collectable<T> = FlowCollectable(this)
 
+/**
+ * 构建一个基于 [Flow] 的 [Collectable]。
+ */
+public inline fun <T> flowCollectable(crossinline block: suspend FlowCollector<T>.() -> Unit): Flow<T> =
+    flow { block() }
 
 private class FlowCollectable<T>(private val flow: Flow<T>) : Collectable<T> {
     override fun asFlow(): Flow<T> = flow
