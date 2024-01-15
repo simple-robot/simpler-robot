@@ -1,0 +1,166 @@
+name: Publish V4 Release
+on:
+  push:
+    tags:
+      - v4.**.**
+
+env:
+  IS_CI: true
+  GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+  GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+  GPG_PASSWORD: ${{ secrets.GPG_PASSWORD }}
+  SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+  SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+  GRADLE_OPTS: "-Dfile.encoding=UTF-8"
+
+jobs:
+  test-and-publish-v4-release:
+    name: Publish Release
+    strategy:
+      matrix:
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      # 检出仓库代码
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+
+      # setup Java
+      - name: Setup Java 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 21
+          #cache: 'gradle'
+
+      - name: Run All Tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.5
+          arguments: assemble test
+
+      # setup Gradle
+      - name: Gradle Publish Release
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.5
+          arguments: | 
+            publishToSonatype
+            closeAndReleaseStagingRepository
+            --info 
+            --warning-mode all
+            -x test
+            --build-cache
+            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8"
+        env:
+          SIMBOT_IS_SNAPSHOT: false
+          SIMBOT_RELEASES_ONLY: true
+          SIMBOT_SNAPSHOT_ONLY: false
+
+  publish-snapshot:
+    name: Publish snapshot
+    strategy:
+      matrix:
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+    needs: test-and-publish-v4-release
+    steps:
+      # 检出仓库代码
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      # setup Java
+      - name: Setup java 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 21
+          cache: 'gradle'
+
+      # setup Gradle
+      - name: Gradle publish snapshot
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.5
+          arguments: |
+            publishToSonatype
+            closeAndReleaseStagingRepository
+            --info 
+            --warning-mode all
+            -x test
+            --build-cache
+            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
+
+        env:
+          SIMBOT_IS_SNAPSHOT: true
+          SIMBOT_SNAPSHOT_ONLY: true
+          SIMBOT_RELEASES_ONLY: false
+
+  deploy-doc:
+    name: Deploy V4 API Doc
+    needs: test-and-publish-v4-release
+    runs-on: ubuntu-latest
+    steps:
+      # 检出仓库代码
+      - name: Check out repo
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      # setup Java
+      - name: Setup java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 21
+          cache: 'gradle'
+
+      # setup Gradle
+      - name: Gradle generate documentation
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 8.5
+          arguments: | 
+            dokkaHtmlMultiModule
+            --info 
+            --warning-mode all
+            -x test
+            --build-cache
+            -Porg.gradle.jvmargs="-XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8" 
+            -Porg.gradle.daemon=false
+        env:
+          SIMBOT_IS_SNAPSHOT: false
+
+      # https://github.com/marketplace/actions/github-pages-action
+      - name: Push to doc repository
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.PUSH_TOKEN }}
+          external_repository: simple-robot-library/simbot3-api-docs
+          publish_branch: kdoc-deploy/main-v4
+          publish_dir: ./build/dokka/html
+          destination_dir: main-v4
+
+  create-release:
+    if: ${{ !contains(github.ref_name, 'dev') }}
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [ publish-snapshot, deploy-doc ]
+    permissions:
+      contents: write
+    steps:
+      # 检出仓库代码
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+
+        # Create gitHub release
+        # https://github.com/marketplace/actions/gh-release
+      - name: Create Github Release
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.PUSH_TOKEN }}
+          body_path: .changelog/${{ github.ref_name }}.md
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, 'preview') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') || contains(github.ref_name, 'dev') }}
+
