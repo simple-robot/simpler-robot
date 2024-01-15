@@ -21,11 +21,15 @@
  *
  */
 
+@file:JvmName("Jobs")
+@file:JvmMultifileClass
+
 package love.forte.simbot.common.coroutines
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.DisposableHandle
 import kotlinx.coroutines.Job
+import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 

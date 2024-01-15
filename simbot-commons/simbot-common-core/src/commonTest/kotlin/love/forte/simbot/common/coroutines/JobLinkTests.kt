@@ -21,10 +21,9 @@
  *
  */
 
-package love.forte.simbot.common
+package love.forte.simbot.common.coroutines
 
 import kotlinx.coroutines.Job
-import love.forte.simbot.common.coroutines.linkTo
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
