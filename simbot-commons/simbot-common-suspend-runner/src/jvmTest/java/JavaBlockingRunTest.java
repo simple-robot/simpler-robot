@@ -21,6 +21,7 @@
  *
  */
 
+import love.forte.simbot.suspendrunner.SuspendFoo;
 import love.forte.simbot.suspendrunner.reserve.SuspendReserves;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

@@ -21,12 +21,39 @@
  *
  */
 
-package love.forte.simbot.common.collection
+package love.forte.simbot.suspendrunner
+
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.suspendrunner.reserve.mono
+import love.forte.simbot.suspendrunner.reserve.suspendReserve
+import reactor.test.StepVerifier
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.test.Test
+
 
 /**
  *
  * @author ForteScarlet
  */
-class FlowIteratorTests {
-    // TODO
+class JvmReserveTests {
+
+    @OptIn(InternalSimbotAPI::class, DelicateCoroutinesApi::class)
+    @Test
+    fun jvmReserveMonoTest() {
+        val reserve = suspendReserve(GlobalScope, EmptyCoroutineContext) { run() }
+        val mono = reserve.transform(mono())
+
+        StepVerifier.create(mono)
+            .expectNext(1)
+            .verifyComplete()
+    }
+
+    private suspend fun run(): Int {
+        delay(1)
+        return 1
+    }
+
 }

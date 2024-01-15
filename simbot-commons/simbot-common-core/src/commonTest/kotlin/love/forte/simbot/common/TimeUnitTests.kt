@@ -21,7 +21,7 @@
  *
  */
 
-package love.forte.simbot
+package love.forte.simbot.common
 
 import love.forte.simbot.common.time.TimeUnit
 import kotlin.random.Random
@@ -61,7 +61,33 @@ class TimeUnitTests {
         TimeUnit.DAYS.doConvert(Random.nextLong())
     }
 
-    // todo convert test, to xxx test
+    @Test
+    fun timeUnitConvertTest() {
+        val td = 1L
+        val th = td * 24L
+        val tm = th * 60L
+        val ts = tm * 60L
+        val tms = ts * 1000L
+        val tus = tms * 1000L
+        val tns = tus * 1000L
 
+        fun doConvert(duration: Long, unit: TimeUnit) {
+            assertEquals(td, TimeUnit.DAYS.convert(duration, unit))
+            assertEquals(th, TimeUnit.HOURS.convert(duration, unit))
+            assertEquals(tm, TimeUnit.MINUTES.convert(duration, unit))
+            assertEquals(ts, TimeUnit.SECONDS.convert(duration, unit))
+            assertEquals(tms, TimeUnit.MILLISECONDS.convert(duration, unit))
+            assertEquals(tus, TimeUnit.MICROSECONDS.convert(duration, unit))
+            assertEquals(tns, TimeUnit.NANOSECONDS.convert(duration, unit))
+        }
+
+        doConvert(td, TimeUnit.DAYS)
+        doConvert(th, TimeUnit.HOURS)
+        doConvert(tm, TimeUnit.MINUTES)
+        doConvert(ts, TimeUnit.SECONDS)
+        doConvert(tms, TimeUnit.MILLISECONDS)
+        doConvert(tus, TimeUnit.MICROSECONDS)
+        doConvert(tns, TimeUnit.NANOSECONDS)
+    }
 
 }

@@ -21,27 +21,26 @@
  *
  */
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import love.forte.simbot.annotations.InternalSimbotAPI
-import love.forte.simbot.suspendrunner.reserve.suspendReserve
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
+package love.forte.simbot.common.text
+
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
 
 /**
  *
  * @author ForteScarlet
  */
-class SuspendFoo : CoroutineScope {
-    override val coroutineContext: CoroutineContext = EmptyCoroutineContext
+class TextTests {
 
-    @JvmSynthetic
-    suspend fun run(name: String): String {
-        delay(100)
-        return name
+    @OptIn(ExperimentalStdlibApi::class)
+    @Test
+    fun hexTest() {
+        val text = "Hello".encodeToByteArray()
+        assertEquals(text.toHexString().uppercase(), text.toHex().uppercase())
+        // https://www.lddgo.net/string/hex
+        assertEquals("48656C6C6F", text.toHex().uppercase())
+        assertEquals("48656C6C6F", text.toHexString().uppercase())
     }
-
-    @OptIn(InternalSimbotAPI::class)
-    fun runReserve(name: String) = suspendReserve(this, EmptyCoroutineContext) { run(name) }
 
 }

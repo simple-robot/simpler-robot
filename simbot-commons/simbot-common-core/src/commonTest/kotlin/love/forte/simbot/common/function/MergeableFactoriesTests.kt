@@ -21,27 +21,20 @@
  *
  */
 
-import love.forte.simbot.common.id.UUID
+package love.forte.simbot.common.function
+
 import kotlin.test.Test
+
 
 /**
  *
  * @author ForteScarlet
  */
-class UUIDTests {
+class MergeableFactoriesTests {
 
     @Test
-    fun uuidTest() {
-        val uuid = UUID.random()
-        val javaUUID = java.util.UUID(uuid.mostSignificantBits, uuid.leastSignificantBits)
-
-        println(uuid)
-        println(javaUUID)
-
-        println(uuid.toString() == javaUUID.toString())
-        println(uuid.toString() == javaUUID.toString())
-        println(uuid.toString() == javaUUID.toString())
-
+    fun mergeTest() {
+        // TODO
     }
 
 }

@@ -93,6 +93,8 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation(kotlin("test-junit5"))
+                implementation(libs.kotlinx.coroutines.reactor)
+                implementation("io.projectreactor:reactor-test:3.6.2")
             }
         }
 

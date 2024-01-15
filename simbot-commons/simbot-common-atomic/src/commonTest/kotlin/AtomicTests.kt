@@ -330,6 +330,27 @@ class AtomicTests {
     }
 
     @Test
+    fun atomicUpdateTest() {
+        with (atomic(0)) {
+            assertEquals(0, update { 2 })
+            assertEquals(10, updateAndGet { 10 })
+        }
+        with (atomic(0L)) {
+            assertEquals(0L, update { 2L })
+            assertEquals(10L, updateAndGet { 10L })
+        }
+        with (atomic(0u)) {
+            assertEquals(0u, update { 2u })
+            assertEquals(10u, updateAndGet { 10u })
+        }
+        with (atomicUL(0u)) {
+            assertEquals(0u, update { 2u })
+            assertEquals(10u, updateAndGet { 10u })
+        }
+
+    }
+
+    @Test
     fun atomicRefTest() {
         data class Value(val value: Int)
 
@@ -349,6 +370,9 @@ class AtomicTests {
         assertEquals(v3, atomic.compareAndExchange(v4, v5))
         assertEquals(v3, atomic.compareAndExchange(v3, v5))
         assertEquals(v5.toString(), atomic.toString())
+
+        assertEquals(v5, atomic.update { Value(6) })
+        assertEquals(Value(7), atomic.updateAndGet { Value(7) })
     }
 
 }

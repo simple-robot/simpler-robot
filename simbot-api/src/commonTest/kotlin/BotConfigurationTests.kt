@@ -100,7 +100,7 @@ class BotConfigurationTests {
         val json = Json {
             isLenient = true
             ignoreUnknownKeys = true
-            classDiscriminator = "component"
+            classDiscriminator = Component.CLASS_DISCRIMINATOR
             serializersModule = FooComponent.serializersModule
         }
 

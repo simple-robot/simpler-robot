@@ -21,7 +21,7 @@
  *
  */
 
-package love.forte.simbot
+package love.forte.simbot.common
 
 import kotlinx.coroutines.Job
 import love.forte.simbot.common.coroutines.linkTo

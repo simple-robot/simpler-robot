@@ -21,7 +21,7 @@
  *
  */
 
-package love.forte.simbot.timestamp
+package love.forte.simbot.common.timestamp
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

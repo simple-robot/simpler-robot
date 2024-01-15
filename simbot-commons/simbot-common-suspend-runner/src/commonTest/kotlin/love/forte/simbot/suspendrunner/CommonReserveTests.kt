@@ -21,19 +21,34 @@
  *
  */
 
-import love.forte.simbot.common.weak.getValue
-import love.forte.simbot.common.weak.weakRef
+package love.forte.simbot.suspendrunner
+
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.runTest
+import love.forte.simbot.annotations.InternalSimbotAPI
+import love.forte.simbot.suspendrunner.reserve.deferred
+import love.forte.simbot.suspendrunner.reserve.suspendReserve
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
 
 /**
  *
  * @author ForteScarlet
  */
-class WeakTest {
-    val property by weakRef(Any())
+class CommonReserveTests {
 
+    @OptIn(InternalSimbotAPI::class)
+    @Test
+    fun commonReserveTest() = runTest {
+        val reserve = suspendReserve(this, EmptyCoroutineContext) { run() }
+        val value = reserve.transform(deferred()).await()
+        assertEquals(1, value)
+    }
 
-    private fun b() {
-        val property by weakRef(Any())
-        println(property)
+    private suspend fun run(): Int {
+        delay(1)
+        return 1
     }
 }

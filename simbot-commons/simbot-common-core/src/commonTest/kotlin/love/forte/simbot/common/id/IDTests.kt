@@ -21,10 +21,9 @@
  *
  */
 
-package love.forte.simbot.id
+package love.forte.simbot.common.id
 
 import kotlinx.serialization.json.Json
-import love.forte.simbot.common.id.*
 import love.forte.simbot.common.id.IntID.Companion.ID
 import love.forte.simbot.common.id.LongID.Companion.ID
 import love.forte.simbot.common.id.StringID.Companion.ID
