@@ -81,7 +81,6 @@ public open class ResolveBinderManagerProcessor : ConfigurationClassPostProcesso
         beanType: Class<*>,
         builder: ParameterBinderManagerBuilderImpl
     ) {
-        println(beanType)
         if (ParameterBinderFactory::class.java.isAssignableFrom(beanType)) {
             resolveFactoryInstance(beanName, beanType as Class<out ParameterBinderFactory>, builder)
         }
