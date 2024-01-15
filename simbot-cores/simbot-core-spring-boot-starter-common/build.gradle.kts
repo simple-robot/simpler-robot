@@ -53,6 +53,7 @@ dependencies {
     // kapt(libs.spring.boot.v3.configuration.processor)
 
     compileOnly(libs.javax.annotation.api)
+    // compileOnly(libs.spring.boot.v3.configuration.processor)
 
     // testImplementation(libs.spring.boot.v3.test)
     testImplementation(libs.kotlinx.serialization.json)

@@ -65,7 +65,7 @@ spring-boot-v3-dependencies = { group = "org.springframework.boot", name = "spri
 spring-boot-v3-autoconfigure = { group = "org.springframework.boot", name = "spring-boot-autoconfigure" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-logging = { group = "org.springframework.boot", name = "spring-boot-starter-logging" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" } # , version.ref = "spring-boot-v3"
-spring-boot-v3-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor" } # , version.ref = "spring-boot-v3"
+spring-boot-v3-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor", version.ref = "spring-boot-v3" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-aop = { group = "org.springframework.boot", name = "spring-boot-starter-aop" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" } # , version.ref = "spring-boot-v3"
 spring-boot-v3-webflux = { group = "org.springframework.boot", name = "spring-boot-starter-webflux" } # , version.ref = "spring-boot-v3"
