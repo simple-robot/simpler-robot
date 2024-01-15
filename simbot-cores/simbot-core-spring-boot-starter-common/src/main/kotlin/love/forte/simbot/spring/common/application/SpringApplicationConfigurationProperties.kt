@@ -150,9 +150,9 @@ public class SpringApplicationConfigurationProperties {
 
 public enum class BotAutoStartMode {
     /**
-     * 依次阻塞启动。
+     * 依次同步启动。
      */
-    BLOCK,
+    SYNC,
 
     /**
      * 每个 bot 独立地异步启动。

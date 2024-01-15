@@ -363,7 +363,7 @@ private class BotAutoLoader(
 
         if (autoStartBots) {
             when (autoStartMode) {
-                BotAutoStartMode.BLOCK -> startBotsInBlocking(policy, botList)
+                BotAutoStartMode.SYNC -> startBotsInBlocking(policy, botList)
                 BotAutoStartMode.ASYNC -> startBotsInAsync(policy, botList)
             }
         }
