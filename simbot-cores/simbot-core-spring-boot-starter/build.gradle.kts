@@ -63,8 +63,6 @@ dependencies {
     testImplementation(project(":simbot-commons:simbot-common-annotations"))
     testImplementation(project(":simbot-test"))
     testImplementation(libs.spring.boot.v3.test)
-    testImplementation(libs.kotlinx.serialization.properties)
-    testImplementation(libs.kotlinx.serialization.protobuf)
     testImplementation(libs.spring.boot.v3.aop)
     testImplementation(libs.spring.boot.v3.autoconfigure)
     testImplementation(libs.spring.boot.v3.configuration.processor)
