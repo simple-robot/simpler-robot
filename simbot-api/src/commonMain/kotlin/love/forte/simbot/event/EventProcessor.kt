@@ -28,6 +28,7 @@ package love.forte.simbot.event
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
@@ -178,6 +179,32 @@ public interface EventProcessor {
     }
 }
 
+
+/**
+ * 将事件推送并异步处理。
+ */
+@JvmSynthetic
+public fun EventProcessor.pushAndLaunch(
+    scope: CoroutineScope,
+    event: Event,
+    collector: FlowCollector<EventResult>? = null,
+): Job = scope.launch {
+    with(push(event)) {
+        if (collector != null) collect(collector) else collect()
+    }
+}
+
+/**
+ * 将事件推送并异步处理。
+ */
+@JvmSynthetic
+public inline fun EventProcessor.pushAndLaunchThen(
+    scope: CoroutineScope,
+    event: Event,
+    crossinline useFlow: (Flow<EventResult>) -> Unit
+): Job = scope.launch {
+    useFlow(push(event))
+}
 
 /**
  * 将事件推送并收集处理。

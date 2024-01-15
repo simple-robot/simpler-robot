@@ -160,6 +160,15 @@ fun Project.generateChangelog(tag: String) {
 
         FileWriter(rootChangelogFile).buffered().use { writer ->
             writer.appendLine("# $tag")
+            if ("-dev" in tag) {
+                writer.appendLine(
+                    """
+                        > [!warning]
+                        > 这是一个尚在开发中的**预览版**，它可能不稳定，可能会频繁变更，且没有可用性保证。
+                        
+                    """.trimIndent()
+                )
+            }
             writer.appendLine(
                 """
                 

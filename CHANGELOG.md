@@ -1,3 +1,24 @@
+# v4.0.0-dev1
+> [!warning]
+> 这是一个尚在开发中的**预览版**，它可能不稳定，可能会频繁变更，且没有可用性保证。
+
+
+> Release & Pull Notes: [v4.0.0-dev1](https://github.com/simple-robot/simpler-robot/releases/tag/v4.0.0-dev1) 
+
+- feat: Collectable ([`5d145237`](https://github.com/simple-robot/simpler-robot/commit/5d145237))
+- feat: ID、Timestamp and Job link ([`60f8634f`](https://github.com/simple-robot/simpler-robot/commit/60f8634f))
+- feat: Timestamp ([`3db7aa8f`](https://github.com/simple-robot/simpler-robot/commit/3db7aa8f))
+- feat: (WIP) multiplatform ID ([`5eafba6e..1727015e`](https://github.com/simple-robot/simpler-robot/compare/5eafba6e..v3.3.0))
+
+    <details><summary><code>5eafba6e..1727015e</code></summary>
+
+    - [`5eafba6e`](https://github.com/simple-robot/simpler-robot/commit/5eafba6e)
+    - [`3e0919a2`](https://github.com/simple-robot/simpler-robot/commit/3e0919a2)
+    - [`1727015e`](https://github.com/simple-robot/simpler-robot/commit/1727015e)
+
+    </details>
+
+
 # v3.3.0
 
 > Release & Pull Notes: [v3.3.0](https://github.com/simple-robot/simpler-robot/releases/tag/v3.3.0) 

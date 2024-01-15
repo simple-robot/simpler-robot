@@ -23,14 +23,13 @@
 
 package love.forte.simbot.suspendrunner
 
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.runTest
 import love.forte.simbot.annotations.InternalSimbotAPI
 import love.forte.simbot.suspendrunner.reserve.mono
 import love.forte.simbot.suspendrunner.reserve.suspendReserve
 import reactor.test.StepVerifier
-import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.test.Test
 
 
@@ -40,10 +39,10 @@ import kotlin.test.Test
  */
 class JvmReserveTests {
 
-    @OptIn(InternalSimbotAPI::class, DelicateCoroutinesApi::class)
+    @OptIn(InternalSimbotAPI::class)
     @Test
-    fun jvmReserveMonoTest() {
-        val reserve = suspendReserve(GlobalScope, EmptyCoroutineContext) { run() }
+    fun jvmReserveMonoTest() = runTest {
+        val reserve = suspendReserve(this, Dispatchers.Default) { run() }
         val mono = reserve.transform(mono())
 
         StepVerifier.create(mono)

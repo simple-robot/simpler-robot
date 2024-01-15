@@ -29,6 +29,7 @@ plugins {
     id("com.github.gmazzo.buildconfig") version "4.1.2" apply false
     id("io.gitlab.arturbosch.detekt")
     id("simbot.nexus-publish")
+    id("simbot.changelog-generator")
 }
 
 setup(P.Simbot)
