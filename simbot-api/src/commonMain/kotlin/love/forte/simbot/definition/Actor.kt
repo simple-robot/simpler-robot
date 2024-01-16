@@ -33,6 +33,8 @@ import love.forte.simbot.common.id.IDContainer
  *
  * 一个行为主体。
  *
+ * 或称为行为对象。
+ *
  * [Actor] 是可能具有行为的目标的父类型，
  * 例如一个聊天室（群聊、文字频道等）或一个联系人（`Contact`）或组织成员（`Member`）。
  *

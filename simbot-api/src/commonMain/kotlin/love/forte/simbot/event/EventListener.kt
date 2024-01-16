@@ -21,8 +21,13 @@
  *
  */
 
+@file:JvmName("EventListeners")
+@file:JvmMultifileClass
+
 package love.forte.simbot.event
 
+import kotlin.jvm.JvmMultifileClass
+import kotlin.jvm.JvmName
 import kotlin.jvm.JvmSynthetic
 
 /**

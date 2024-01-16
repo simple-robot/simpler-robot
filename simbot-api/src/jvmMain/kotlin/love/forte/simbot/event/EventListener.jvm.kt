@@ -21,15 +21,18 @@
  *
  */
 
+@file:JvmName("EventListeners")
+@file:JvmMultifileClass
+
 package love.forte.simbot.event
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runInterruptible
 import love.forte.simbot.event.JAsyncEventListener.Companion.toListener
-import love.forte.simbot.event.JBlockingEventListener.Companion.toListener
+import love.forte.simbot.event.JBlockEventListener.Companion.toListener
 import love.forte.simbot.event.TypedJAsyncEventListener.Companion.toListener
-import love.forte.simbot.event.TypedJBlockingEventListener.Companion.toListener
+import love.forte.simbot.event.TypedJBlockEventListener.Companion.toListener
 import org.jetbrains.annotations.Blocking
 import org.jetbrains.annotations.NonBlocking
 import java.util.concurrent.CompletionStage
@@ -171,15 +174,15 @@ private class TypedJAsyncEventListenerImpl<E : Event>(
  *
  * 是针对JVM平台的兼容类型，可以通过 [toListener] 转化为 [EventListener] 类型。
  *
- * 如果希望针对某个具体的事件类型进行处理，可参考 [TypedJBlockingEventListener]
+ * 如果希望针对某个具体的事件类型进行处理，可参考 [TypedJBlockEventListener]
  *
  * @see EventListener
  * @see toListener
- * @see TypedJBlockingEventListener
+ * @see TypedJBlockEventListener
  *
  * @author ForteScarlet
  */
-public fun interface JBlockingEventListener {
+public fun interface JBlockEventListener {
     /**
      * 通过 [context] 处理事件并得到响应结果。
      *
@@ -191,24 +194,25 @@ public fun interface JBlockingEventListener {
 
     public companion object {
         /**
-         * Converts a [JBlockingEventListener] to an EventListener.
+         * Converts a [JBlockEventListener] to an EventListener.
          *
          * @param dispatcherContext The coroutine context to be used for dispatching events. Default value is [Dispatchers.IO].
-         * @param listener The [JBlockingEventListener] to be converted.
+         * Will be used in [runInterruptible].
+         * @param listener The [JBlockEventListener] to be converted.
          * @return The converted [EventListener].
          */
         @JvmStatic
         @JvmOverloads
         public fun toListener(
             dispatcherContext: CoroutineContext = Dispatchers.IO,
-            listener: JBlockingEventListener
+            listener: JBlockEventListener
         ): EventListener = listener.toEventListener(dispatcherContext)
 
 
         /**
-         * 将 [JBlockingEventListener] 转化为 [EventListener]。
+         * 将 [JBlockEventListener] 转化为 [EventListener]。
          */
-        private fun JBlockingEventListener.toEventListener(dispatcherContext: CoroutineContext = Dispatchers.IO): EventListener =
+        private fun JBlockEventListener.toEventListener(dispatcherContext: CoroutineContext = Dispatchers.IO): EventListener =
             JBlockingEventListenerImpl(this, dispatcherContext)
     }
 }
@@ -225,7 +229,7 @@ public fun interface JBlockingEventListener {
  *
  * @author ForteScarlet
  */
-public fun interface TypedJBlockingEventListener<E : Event> {
+public fun interface TypedJBlockEventListener<E : Event> {
     /**
      * 通过 [context] 处理事件并得到响应结果。
      *
@@ -237,10 +241,11 @@ public fun interface TypedJBlockingEventListener<E : Event> {
 
     public companion object {
         /**
-         * Converts a [TypedJBlockingEventListener] to an EventListener.
+         * Converts a [TypedJBlockEventListener] to an EventListener.
          *
          * @param dispatcherContext The coroutine context to be used for dispatching events. Default value is [Dispatchers.IO].
-         * @param listener The [TypedJBlockingEventListener] to be converted.
+         * Will be used in [runInterruptible].
+         * @param listener The [TypedJBlockEventListener] to be converted.
          * @return The converted [EventListener].
          */
         @JvmStatic
@@ -248,14 +253,14 @@ public fun interface TypedJBlockingEventListener<E : Event> {
         public fun <E : Event> toListener(
             dispatcherContext: CoroutineContext = Dispatchers.IO,
             type: Class<E>,
-            listener: TypedJBlockingEventListener<E>
+            listener: TypedJBlockEventListener<E>
         ): EventListener = listener.toEventListener(type, dispatcherContext)
 
 
         /**
-         * 将 [TypedJBlockingEventListener] 转化为 [EventListener]。
+         * 将 [TypedJBlockEventListener] 转化为 [EventListener]。
          */
-        private fun <E : Event> TypedJBlockingEventListener<E>.toEventListener(
+        private fun <E : Event> TypedJBlockEventListener<E>.toEventListener(
             type: Class<E>,
             dispatcherContext: CoroutineContext = Dispatchers.IO
         ): EventListener =
@@ -264,11 +269,11 @@ public fun interface TypedJBlockingEventListener<E : Event> {
 }
 
 private class JBlockingEventListenerImpl(
-    private val jbListener: JBlockingEventListener,
+    private val jbListener: JBlockEventListener,
     private val dispatcherContext: CoroutineContext
 ) : EventListener {
     override suspend fun handle(context: EventListenerContext): EventResult {
-        return withContext(dispatcherContext) {
+        return runInterruptible(dispatcherContext) {
             jbListener.handle(context)
         }
     }
@@ -290,19 +295,19 @@ private class JBlockingEventListenerImpl(
     }
 
     override fun toString(): String {
-        return "JBlockingEventListener(jbListener=$jbListener, dispatcherContext=$dispatcherContext)"
+        return "JBlockEventListener(jbListener=$jbListener, dispatcherContext=$dispatcherContext)"
     }
 }
 
 private class TypedJBlockingEventListenerImpl<E : Event>(
     private val type: Class<E>,
-    private val jbListener: TypedJBlockingEventListener<E>,
+    private val jbListener: TypedJBlockEventListener<E>,
     private val dispatcherContext: CoroutineContext
 ) : EventListener {
     override suspend fun handle(context: EventListenerContext): EventResult {
         val event = context.context.event
         if (type.isInstance(event)) {
-            return withContext(dispatcherContext) {
+            return runInterruptible(dispatcherContext) {
                 jbListener.handle(context, type.cast(event))
             }
         }
@@ -329,7 +334,48 @@ private class TypedJBlockingEventListenerImpl<E : Event>(
     }
 
     override fun toString(): String {
-        return "TypedJBlockingEventListener(type=$type, dispatcherContext=$dispatcherContext)"
+        return "TypedJBlockEventListener(type=$type, dispatcherContext=$dispatcherContext)"
     }
-
 }
+
+
+/**
+ * 创建一个基于 [CompletionStage] 的异步事件处理器。
+ */
+public fun async(function: JAsyncEventListener): EventListener =
+    toListener(function)
+
+/**
+ * 创建一个基于 [CompletionStage] 的异步事件处理器，
+ * 只处理 [type] 类型的事件。
+ * 其他类型的事件会直接返回 [EventResult.invalid]。
+ */
+public fun <E : Event> async(type: Class<E>, function: TypedJAsyncEventListener<E>): EventListener =
+    toListener(type, function)
+
+/**
+ * 创建一个阻塞事件处理器。
+ *
+ * @param dispatcherContext 阻塞逻辑的调度上下文。默认为 [Dispatchers.IO]。
+ * 会在 [runInterruptible] 中使用。
+ */
+@JvmOverloads
+public fun block(dispatcherContext: CoroutineContext = Dispatchers.IO, function: JBlockEventListener): EventListener =
+    toListener(dispatcherContext, function)
+
+/**
+ * 创建一个阻塞事件处理器，
+ * 只处理 [type] 类型的事件。
+ * 其他类型的事件会直接返回 [EventResult.invalid]。
+ *
+ * @param dispatcherContext 阻塞逻辑的调度上下文。默认为 [Dispatchers.IO]。
+ * 会在 [runInterruptible] 中使用。
+ */
+@JvmOverloads
+public fun <E : Event> block(
+    dispatcherContext: CoroutineContext = Dispatchers.IO,
+    type: Class<E>,
+    function: TypedJBlockEventListener<E>
+): EventListener =
+    toListener(dispatcherContext, type, function)
+

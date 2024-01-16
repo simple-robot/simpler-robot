@@ -21,31 +21,27 @@
  *
  */
 
-package love.forte.simbot.definition
+import love.forte.gradle.common.core.project.setup
 
-import love.forte.simbot.ability.DeleteSupport
-import love.forte.simbot.ability.SendSupport
+plugins {
+    `java-library`
+    kotlin("jvm")
+    // id("com.github.gmazzo.buildconfig")
+    id("simbot.dokka-module-configuration")
+}
 
+setup(P.SimbotGradle)
 
-/**
- *
- * 一个联系人。
- *
- * 联系人是一种可以与 bot 建立独立会话、进行通讯的行为对象。
- * 联系人可能代表一个其他用户，也可能代表一个与某用户关联的“会话”。
- *
- * ## DeleteSupport
- *
- * 联系人有可能会实现 [DeleteSupport]。如果实现，则或许代表 bot 可以主动的与此联系人断开关系，
- * 或者主动删除与之关联的 “会话”。
- * 具体的实际含义由实现者定义并提供说明。
- *
- *
- * @author ForteScarlet
- */
-public interface Contact : User, SendSupport {
-    /**
-     * 此联系人的名称
-     */
-    override val name: String
+configJavaCompileWithModule("simbot.gradle.suspendtransforms")
+apply(plugin = "simbot-jvm-maven-publish")
+
+kotlin {
+    explicitApi()
+    configJavaToolchain(JVMConstants.KT_JVM_TARGET_VALUE)
+}
+
+val suspendTransformVersion = "0.6.0-beta3"
+
+dependencies {
+    api("love.forte.plugin.suspend-transform:suspend-transform-plugin-gradle:$suspendTransformVersion")
 }

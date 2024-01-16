@@ -54,6 +54,7 @@ sealed class P(override val group: String) : ProjectDetail() {
         const val GROUP = "love.forte.simbot"
         const val GROUP_COMMON = "love.forte.simbot.common"
         const val GROUP_LOGGER = "love.forte.simbot.logger"
+        const val GROUP_GRADLE = "love.forte.simbot.gradle"
         const val GROUP_QUANTCAT = "love.forte.simbot.quantcat"
 
         // const val COMPONENT_GROUP = "love.forte.simbot.component"
@@ -73,13 +74,14 @@ sealed class P(override val group: String) : ProjectDetail() {
     object Simbot : P(GROUP)
     object SimbotCommon : P(GROUP_COMMON)
     object SimbotLogger : P(GROUP_LOGGER)
+    object SimbotGradle : P(GROUP_GRADLE)
     object SimbotQuantcat : P(GROUP_QUANTCAT)
 
     final override val version: Version
     val versionWithoutSnapshot: Version
 
     init {
-        val mainVersion = version(4, 0, 0) - version("dev2")
+        val mainVersion = version(4, 0, 0) - version("dev3")
 
         fun initVersionWithoutSnapshot(status: Version?): Version = if (status == null) {
             mainVersion

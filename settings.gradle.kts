@@ -33,6 +33,8 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
 }
 
+include(":simbot-gradles:simbot-gradle-suspendtransforms")
+
 include(":simbot-commons:simbot-common-annotations")
 include(":simbot-commons:simbot-common-collection")
 include(":simbot-commons:simbot-common-atomic")

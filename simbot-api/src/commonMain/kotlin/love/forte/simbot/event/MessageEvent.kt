@@ -32,11 +32,21 @@ import love.forte.simbot.message.MessageContent
 import love.forte.simbot.suspendrunner.STP
 
 /**
+ * 一个含有 [MessageContent] 的事件。
+ */
+public interface MessageContentAwareEvent : Event {
+    /**
+     * 事件中收到的消息内容。
+     */
+    public val messageContent: MessageContent
+}
+
+/**
  * 一个 [Bot] 收到消息的事件。
  *
  * @author ForteScarlet
  */
-public interface MessageEvent : BotEvent, ReplySupport {
+public interface MessageEvent : BotEvent, ReplySupport, MessageContentAwareEvent {
     /**
      * 这个消息的发送者的ID。
      */
@@ -45,7 +55,7 @@ public interface MessageEvent : BotEvent, ReplySupport {
     /**
      * 事件中收到的消息内容。
      */
-    public val messageContent: MessageContent
+    override val messageContent: MessageContent
 }
 
 /**
