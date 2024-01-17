@@ -28,6 +28,7 @@ import love.forte.simbot.common.id.ID
 import love.forte.simbot.definition.ChatGroup
 import love.forte.simbot.definition.Guild
 import love.forte.simbot.definition.Organization
+import love.forte.simbot.definition.User
 import love.forte.simbot.suspendrunner.ST
 import love.forte.simbot.suspendrunner.STP
 
@@ -96,7 +97,7 @@ public interface RequestEvent : BotEvent {
 public interface OrganizationRequestEvent : RequestEvent, OrganizationEvent
 
 /**
- * 某个用户想要假如目标 [Organization] 的请求事件。
+ * 某个用户想要加入目标 [Organization] 的请求事件。
  *
  * @author ForteScarlet
  */
@@ -111,21 +112,9 @@ public interface OrganizationJoinRequestEvent : OrganizationEvent {
      * 如果无法获取或不支持，则可能得到 `null`。
      */
     @STP
-    public suspend fun requester(): Requester?
+    public suspend fun requester(): User?
 }
 
-/**
- * [OrganizationJoinRequestEvent] 中申请者的部分基础信息。
- * [Requester] 中的所有属性都可能在不支持、无法获取等情况下得到 `null`。
- *
- */
-public interface Requester {
-    /**
-     * 申请者的名称。
-     */
-    public val name: String?
-
-}
 
 /**
  * 某用户申请加入 [ChatGroup] 的事件。
