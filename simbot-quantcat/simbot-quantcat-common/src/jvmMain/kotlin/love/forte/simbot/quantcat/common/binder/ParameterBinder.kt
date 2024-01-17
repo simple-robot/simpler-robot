@@ -33,6 +33,7 @@ import love.forte.simbot.quantcat.common.listener.FunctionalEventListener
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.net.BindException
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.*
 import kotlin.reflect.full.callSuspend
 import kotlin.reflect.full.callSuspendBy
@@ -55,6 +56,7 @@ public abstract class FunctionalBindableEventListener(
      * 当前监听函数所对应的执行器。
      */
     public final override val caller: KFunction<*>,
+    private val dispatcherContext: CoroutineContext = Dispatchers.IO
 ) : FunctionalEventListener() {
 
     /**
@@ -98,80 +100,38 @@ public abstract class FunctionalBindableEventListener(
     private val isOptional = caller.parameters.any { it.isOptional }
     private val initialSize = if (isOptional) 0 else caller.parameters.size.initialSize
 
-    // private class KParameterArrayMap(parameters: Array<KParameter>) : Map<KParameter, Any?> {
-    //     private val sourceSize = parameters.size
-    //     private var _size = 0
-    //
-    //     private data object NONE
-    //
-    //     private val _values: Array<Any?> =
-    //         Array(parameters.size * 2) { i -> if (i % 2 == 0) parameters[i / 2] else NONE }
-    //
-    //     override fun toString(): String = _values.toString()
-    //
-    //     private inner class Entry(private val i: Int) : Map.Entry<KParameter, Any?> {
-    //         override val key: KParameter
-    //             get() = _values[i * 2] as KParameter
-    //         override val value: Any?
-    //             get() = _values[(i * 2) + 1].takeIf { it !== NONE }
-    //     }
-    //
-    //     override val entries: Set<Map.Entry<KParameter, Any?>>
-    //         get() = buildSet {
-    //             repeat(sourceSize) { i ->
-    //                 if (_values[(i * 2) + 1] !== NONE) {
-    //                     add(Entry(i))
-    //                 }
-    //             }
-    //         }
-    //
-    //     override val keys: Set<KParameter>
-    //         get() = buildSet {
-    //             repeat(sourceSize) { i ->
-    //                 add(_values[i * 2] as KParameter)
-    //             }
-    //         }
-    //
-    //     override val size: Int
-    //         get() = _size
-    //
-    //     override val values: Collection<Any?>
-    //         get() = buildList {
-    //             repeat(sourceSize) { i ->
-    //                 val v = _values[(i * 2) + 1]
-    //                 if (v !== NONE) {
-    //                     add(v)
-    //                 }
-    //             }
-    //         }
-    //
-    //     private fun computeValueIndex(i: Int): Int = (i * 2) + 1
-    //
-    //     override fun containsKey(key: KParameter): Boolean {
-    //         return _values[computeValueIndex(key.index)] !== NONE
-    //     }
-    //
-    //     override fun containsValue(value: Any?): Boolean {
-    //         repeat(sourceSize) { i ->
-    //             val v = _values[computeValueIndex(i)]
-    //             if (v === NONE) return@repeat
-    //             if (v == value) return true
-    //         }
-    //
-    //         return false
-    //     }
-    //
-    //     override fun get(key: KParameter): Any? {
-    //         return _values[computeValueIndex(key.index)].takeIf { it !is NONE }
-    //     }
-    //
-    //     override fun isEmpty(): Boolean = _size != 0
-    //
-    //     operator fun set(i: Int, value: Any?) {
-    //         _values[computeValueIndex(i)] = value
-    //         _size++
-    //     }
-    // }
+    private val funcCall: (suspend (EventListenerContext) -> EventResult)
+
+    init {
+        if (isOptional) {
+            // invokeCallBy
+            funcCall = if (caller.isSuspend) {
+                { context ->
+                    invokeCallBy(context) { args -> caller.callSuspendBy(args) }
+                }
+            } else {
+                { context ->
+                    invokeCallBy(context) { args ->
+                        runInterruptible(dispatcherContext) { caller.callBy(args) }
+                    }
+                }
+            }
+        } else {
+            // invokeCall
+            funcCall = if (caller.isSuspend) {
+                { context ->
+                    invokeCall(context) { args -> caller.callSuspend(args = args) }
+                }
+            } else {
+                { context ->
+                    invokeCall(context) { args ->
+                        runInterruptible(dispatcherContext) { caller.call(args = args) }
+                    }
+                }
+            }
+
+        }
+    }
 
     /**
      * 可能存在的整合到 [handle] 中的逻辑匹配。
@@ -181,19 +141,18 @@ public abstract class FunctionalBindableEventListener(
     /**
      * 函数执行。
      */
-    override suspend fun handle(context: EventListenerContext): EventResult {
-        if (!match(context)) {
+    override suspend fun EventListenerContext.handle(): EventResult {
+        if (!match(this)) {
             return EventResult.invalid
         }
 
-        return if (isOptional) {
-            invokeCallBy(context)
-        } else {
-            invokeCall(context)
-        }
+        return funcCall(this)
     }
 
-    private suspend fun invokeCall(context: EventListenerContext): EventResult {
+    private inline fun invokeCall(
+        context: EventListenerContext,
+        callFunction: (args: Array<Any?>) -> Any?
+    ): EventResult {
         val args = arrayOfNulls<Any?>(binders.size)
         // first instance
         if (instance != null && instanceParameter != null) {
@@ -219,10 +178,7 @@ public abstract class FunctionalBindableEventListener(
         }
 
         val result = try {
-            if (caller.isSuspend) caller.callSuspend(args = args)
-            // TODO 是否要对非挂起函数进行处理？
-            // else runInterruptible(Dispatchers.IO) { caller.call(args = args) }
-            else caller.call(args = args)
+            callFunction(args)
         } catch (e: InvocationTargetException) {
             throw e.targetException ?: e
         }
@@ -230,33 +186,11 @@ public abstract class FunctionalBindableEventListener(
         return resultProcess(result)
     }
 
-    private suspend fun invokeCallBy(context: EventListenerContext): EventResult {
+    private inline fun invokeCallBy(
+        context: EventListenerContext,
+        callFunction: (Map<KParameter, Any?>) -> Any?
+    ): EventResult {
         val args = LinkedHashMap<KParameter, Any?>(initialSize)
-        // val args = KParameterArrayMap(fullParameters)
-
-        // // first instance
-        // if (instance != null && instanceParameter != null) {
-        //     args[0] = instance
-        // } else {
-        //     args[0] = binders[0].arg(context).getOrElse { e ->
-        //         if (e is BindException) throw e
-        //         else throw BindException(e)
-        //     }.let { value ->
-        //         convertValue(value, fullParameters[0])
-        //     }
-        // }
-        //
-        // // others
-        // repeat(binders.size - 1) { i ->
-        //     val index = i + 1
-        //
-        //     args[i] = binders[index].arg(context).getOrElse { e ->
-        //         if (e is BindException) throw e
-        //         else throw BindException(e)
-        //     }.let { value ->
-        //         convertValue(value, fullParameters[index])
-        //     }
-        // }
 
         binders.forEachIndexed { i, b ->
             if (i == 0 && (instance != null && instanceParameter != null)) {
@@ -275,10 +209,7 @@ public abstract class FunctionalBindableEventListener(
         }
 
         val result = try {
-            if (caller.isSuspend) caller.callSuspendBy(args)
-            // TODO 是否要对非挂起函数进行处理?
-            // else runInterruptible(Dispatchers.IO) { caller.callBy(args) }
-            else caller.callBy(args)
+            callFunction(args)
         } catch (e: InvocationTargetException) {
             throw e.targetException ?: e
         }
@@ -287,7 +218,7 @@ public abstract class FunctionalBindableEventListener(
     }
 
     private inline val Int.initialSize: Int
-        get() = (this.toFloat() / 0.75F + 1.0F).toInt()
+        get() = ((toFloat() / 0.75F) + 1.0F).toInt()
 }
 
 /**

@@ -62,7 +62,7 @@ public interface EventContext : CoroutineScope {
  *
  * @author ForteScarlet
  */
-public interface EventListenerContext {
+public interface  EventListenerContext {
     /**
      * 整个事件调度流程中的 [EventContext]。
      */

@@ -84,9 +84,9 @@ public inline fun <reified E : Event> EventListenerRegistrar.listen(
 ) {
     register(
         propertiesConsumer = propertiesConsumer,
-        listener = { context ->
-            val event = context.event
-            if (event is E) listenerFunction(context, event) else defaultResult(context)
+        listener = {
+            val event = this.event
+            if (event is E) listenerFunction(this, event) else defaultResult(this)
         })
 }
 

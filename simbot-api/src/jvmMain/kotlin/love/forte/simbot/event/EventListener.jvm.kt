@@ -35,6 +35,7 @@ import love.forte.simbot.event.TypedJAsyncEventListener.Companion.toListener
 import love.forte.simbot.event.TypedJBlockEventListener.Companion.toListener
 import org.jetbrains.annotations.Blocking
 import org.jetbrains.annotations.NonBlocking
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 import kotlin.coroutines.CoroutineContext
 
@@ -59,6 +60,27 @@ public fun interface JAsyncEventListener {
     @Throws(Exception::class)
     @NonBlocking
     public fun handle(context: EventListenerContext): CompletionStage<out EventResult>
+
+    /**
+     * 快速构建一个可用于返回的、值为 [EventResult.empty] 的 [CompletionStage] 类型结果。
+     *
+     * 用于辅助 [handle]。
+     */
+    public fun emptyResult(): CompletionStage<out EventResult> = CompletableFuture.completedStage(EventResult.empty())
+
+    /**
+     * 快速构建一个可用于返回的、值为 [EventResult.invalid] 的 [CompletionStage] 类型结果。
+     *
+     * 用于辅助 [handle]。
+     */
+    public fun invalidResult(): CompletionStage<out EventResult> = CompletableFuture.completedStage(EventResult.invalid)
+
+    /**
+     * 快速构建一个可用于返回的、值为 [result] 的 [CompletionStage] 类型结果。
+     *
+     * 用于辅助 [handle]。
+     */
+    public fun result(result: EventResult): CompletionStage<out EventResult> = CompletableFuture.completedStage(result)
 
     public companion object {
         /**
@@ -97,6 +119,27 @@ public fun interface TypedJAsyncEventListener<E : Event> {
     @NonBlocking
     public fun handle(context: EventListenerContext, event: E): CompletionStage<out EventResult>
 
+    /**
+     * 快速构建一个可用于返回的、值为 [EventResult.empty] 的 [CompletionStage] 类型结果。
+     *
+     * 用于辅助 [handle]。
+     */
+    public fun emptyResult(): CompletionStage<out EventResult> = CompletableFuture.completedStage(EventResult.empty())
+
+    /**
+     * 快速构建一个可用于返回的、值为 [EventResult.invalid] 的 [CompletionStage] 类型结果。
+     *
+     * 用于辅助 [handle]。
+     */
+    public fun invalidResult(): CompletionStage<out EventResult> = CompletableFuture.completedStage(EventResult.invalid)
+
+    /**
+     * 快速构建一个可用于返回的、值为 [result] 的 [CompletionStage] 类型结果。
+     *
+     * 用于辅助 [handle]。
+     */
+    public fun result(result: EventResult): CompletionStage<out EventResult> = CompletableFuture.completedStage(result)
+
     public companion object {
         /**
          * Converts the given [TypedJAsyncEventListener] to a standard [EventListener].
@@ -118,8 +161,8 @@ public fun interface TypedJAsyncEventListener<E : Event> {
 }
 
 private class JAsyncEventListenerImpl(private val jaListener: JAsyncEventListener) : EventListener {
-    override suspend fun handle(context: EventListenerContext): EventResult =
-        jaListener.handle(context).await()
+    override suspend fun EventListenerContext.handle(): EventResult =
+        jaListener.handle(this).await()
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
@@ -139,10 +182,10 @@ private class TypedJAsyncEventListenerImpl<E : Event>(
     private val type: Class<E>,
     private val jaListener: TypedJAsyncEventListener<E>
 ) : EventListener {
-    override suspend fun handle(context: EventListenerContext): EventResult {
-        val event = context.context.event
+    override suspend fun EventListenerContext.handle(): EventResult {
+        val event = context.event
         if (type.isInstance(event)) {
-            return jaListener.handle(context, type.cast(event)).await()
+            return jaListener.handle(this, type.cast(event)).await()
         }
 
         return EventResult.invalid
@@ -272,9 +315,9 @@ private class JBlockingEventListenerImpl(
     private val jbListener: JBlockEventListener,
     private val dispatcherContext: CoroutineContext
 ) : EventListener {
-    override suspend fun handle(context: EventListenerContext): EventResult {
+    override suspend fun EventListenerContext.handle(): EventResult {
         return runInterruptible(dispatcherContext) {
-            jbListener.handle(context)
+            jbListener.handle(this)
         }
     }
 
@@ -304,11 +347,11 @@ private class TypedJBlockingEventListenerImpl<E : Event>(
     private val jbListener: TypedJBlockEventListener<E>,
     private val dispatcherContext: CoroutineContext
 ) : EventListener {
-    override suspend fun handle(context: EventListenerContext): EventResult {
-        val event = context.context.event
+    override suspend fun EventListenerContext.handle(): EventResult {
+        val event = context.event
         if (type.isInstance(event)) {
             return runInterruptible(dispatcherContext) {
-                jbListener.handle(context, type.cast(event))
+                jbListener.handle(this, type.cast(event))
             }
         }
 

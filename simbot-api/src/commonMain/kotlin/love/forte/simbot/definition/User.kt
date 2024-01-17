@@ -25,11 +25,10 @@ package love.forte.simbot.definition
 
 
 /**
- * 可以用来代表一个“人”的行为对象，
- * 例如某个频道中的成员 [Member]。
+ * 可以用来代表一个“用户”的行为对象，例如某个频道中的成员 [Member]。
  *
  * [User] 不一定代表真人，也可能是对应平台下的其他 bot
- * 或者某种默认的系统用户 。
+ * 或者某种默认的系统用户。
  *
  * @author ForteScarlet
  */

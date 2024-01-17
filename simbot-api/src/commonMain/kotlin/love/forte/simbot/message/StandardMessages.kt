@@ -36,6 +36,7 @@ import love.forte.simbot.message.Text.Companion.of
 import love.forte.simbot.resource.ByteArrayResource
 import love.forte.simbot.resource.Resource
 import love.forte.simbot.resource.ResourceBase64Serializer
+import love.forte.simbot.suspendrunner.STP
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.js.JsName
 import kotlin.jvm.JvmMultifileClass
@@ -345,6 +346,7 @@ public data class RemoteIDImage(override val id: ID) : RemoteImage
  *
  * @see RemoteImage
  */
+@STP
 public interface RemoteUrlAwareImage : RemoteImage {
     /**
      * 获取或查询此图片的链接。

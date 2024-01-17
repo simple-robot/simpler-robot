@@ -34,6 +34,7 @@ import love.forte.simbot.bot.BotManager
 import love.forte.simbot.bot.BotManagers
 import love.forte.simbot.component.Components
 import love.forte.simbot.event.EventDispatcher
+import love.forte.simbot.event.EventListenerRegistrar
 import love.forte.simbot.plugin.Plugins
 import love.forte.simbot.suspendrunner.ST
 import kotlin.coroutines.CoroutineContext
@@ -102,5 +103,29 @@ public interface Application : CoroutineScope, LifecycleAware, CompletionAware {
      */
     @ST(asyncBaseName = "asFuture", asyncSuffix = "")
     public suspend fun join()
+}
+
+/**
+ * 在 [block] 中操作 [EventListenerRegistrar] 来注册事件处理器。
+ * 是通过 [Application] 注册事件处理器的DSL风格简化API。
+ *
+ * ```kotlin
+ * application.listeners {
+ *     listen<Event> {
+ *        // ...
+ *        return ...
+ *     }
+ *
+ *     register {
+ *         // ...
+ *         return ...
+ *     }
+ * }
+ * ```
+ *
+ *
+ */
+public inline fun Application.listeners(block: EventListenerRegistrar.() -> Unit) {
+    eventDispatcher.block()
 }
 

@@ -302,7 +302,8 @@ public sealed class StandardEventResult : EventResult {
      * 建议通过工厂函数 [EventResult.of] 来间接获取 [Simple] 并在可能的情况下使用其他选项来减少对象实例的构建。
      *
      */
-    public data class Simple(override val content: Any?, override val isTruncated: Boolean) : CollectableReactivelyResult() {
+    public data class Simple(override val content: Any?, override val isTruncated: Boolean) :
+        CollectableReactivelyResult() {
         override fun collected(collectedContent: Any?): EventResult = EventResult.of(collectedContent, isTruncated)
     }
 

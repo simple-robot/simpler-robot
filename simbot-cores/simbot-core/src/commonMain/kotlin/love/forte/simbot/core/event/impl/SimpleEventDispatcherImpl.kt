@@ -415,7 +415,7 @@ private class SimpleEventListenerInvoker(
     }
 
     suspend fun invoke(context: EventListenerContext): EventResult {
-        return interceptorsInvoker?.invoke(context, listener::handle) ?: listener.handle(context)
+        return interceptorsInvoker?.invoke(context, listener::handleWith) ?: listener.handleWith(context)
     }
 
 }
