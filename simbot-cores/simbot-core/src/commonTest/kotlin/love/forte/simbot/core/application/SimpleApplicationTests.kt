@@ -171,10 +171,10 @@ class SimpleApplicationTests {
             val myPlugin = app.plugins.first()
             println(myPlugin)
 
-            app.eventDispatcher.register { context ->
-                println("Context: $context")
-                println("Context.context: ${context.context}")
-                println("Event: ${context.event}")
+            app.eventDispatcher.register {
+                println("Context: $this")
+                println("Context.context: $context")
+                println("Event: $event")
                 EventResult.of()
             }
             app.eventDispatcher.pushAndCollect(TestEvent()) {

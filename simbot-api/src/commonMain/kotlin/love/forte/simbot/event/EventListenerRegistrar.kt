@@ -25,6 +25,7 @@ package love.forte.simbot.event
 
 import love.forte.simbot.common.PriorityConstant
 import love.forte.simbot.common.function.ConfigurerFunction
+import love.forte.simbot.event.EventResult.Companion.invalid
 
 
 /**
@@ -79,7 +80,7 @@ public interface EventListenerRegistrar {
  */
 public inline fun <reified E : Event> EventListenerRegistrar.listen(
     propertiesConsumer: ConfigurerFunction<EventListenerRegistrationProperties>? = null,
-    crossinline defaultResult: EventListenerContext.() -> EventResult = { EventResult.invalid },
+    crossinline defaultResult: EventListenerContext.() -> EventResult = { invalid() },
     crossinline listenerFunction: suspend EventListenerContext.(E) -> EventResult,
 ) {
     register(

@@ -24,9 +24,10 @@
 package love.forte.simbot.event
 
 import love.forte.simbot.event.StandardEventResult.Invalid.isTruncated
-import kotlin.jvm.JvmName
+import kotlin.js.JsName
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
+import kotlin.jvm.JvmSynthetic
 
 
 /**
@@ -68,9 +69,26 @@ public interface EventResult {
          * @see StandardEventResult.Invalid
          * @see StandardEventResult.Empty
          */
-        @get:JvmStatic
-        @get:JvmName("invalid")
-        public val invalid: EventResult get() = StandardEventResult.Invalid
+        @get:JvmSynthetic
+        @JsName("invalid_0")
+        @Deprecated("Use invalid()", ReplaceWith("invalid()", "love.forte.simbot.event.EventResult.Companion.invalid"))
+        public inline val invalid: EventResult
+            get() = invalid()
+
+        /**
+         * 得到一个代表无效的结果。
+         *
+         * [invalid] 通常用于表示事件不匹配、逻辑不匹配等情况。
+         *
+         * 如果你的监听器正常执行，只是没有可用的结果或无需提供结果，
+         * 那么推荐使用 [empty]。
+         *
+         * @see StandardEventResult.Invalid
+         * @see StandardEventResult.Empty
+         */
+        @JvmStatic
+        @JsName("invalid")
+        public fun invalid(): EventResult = StandardEventResult.Invalid
 
         /**
          * 得到一个代表错误的结果。

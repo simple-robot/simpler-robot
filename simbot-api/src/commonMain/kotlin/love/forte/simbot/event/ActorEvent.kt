@@ -107,18 +107,29 @@ public interface GuildEvent : OrganizationEvent {
 }
 
 /**
+ * [Organization] 作为源头、但并非事件主要本体的事件类型。
+ * 此类型由一些存在组织信息、但组织信息不是主要信息的事件类型实现。
+ */
+@STP
+public interface OrganizationSourceEvent : BotEvent, SourceEvent {
+    /**
+     * 事件中的 [Organization].
+     */
+    override suspend fun source(): Organization
+}
+
+/**
  * 一个以某 [Channel] 为中心的事件。
  *
  * @author ForteScarlet
  */
 @STP
-public interface ChannelEvent : ActorEvent {
-
+public interface ChannelEvent : ActorEvent, OrganizationSourceEvent {
     /**
      * 事件中的 [channel][content] 所属的 [Guild]。
      *
      */
-    public suspend fun guild(): Guild
+    override suspend fun source(): Guild
 
     /**
      * 被作为事件中心的 [Channel]。
@@ -137,18 +148,6 @@ public interface ChatChannelEvent : ChannelEvent, ChatRoomEvent {
      * 被作为事件中心的 [ChatChannel]。
      */
     override suspend fun content(): ChatChannel
-}
-
-/**
- * [Organization] 作为源头、但并非事件主要本体的事件类型。
- * 此类型由一些存在组织信息、但组织信息不是主要信息的事件类型实现。
- */
-@STP
-public interface OrganizationSourceEvent : BotEvent, SourceEvent {
-    /**
-     * 事件中的 [Organization].
-     */
-    override suspend fun source(): Organization
 }
 
 /**

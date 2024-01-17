@@ -29,6 +29,7 @@ package love.forte.simbot.event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.runInterruptible
+import love.forte.simbot.event.EventResult.Companion.invalid
 import love.forte.simbot.event.JAsyncEventListener.Companion.toListener
 import love.forte.simbot.event.JBlockEventListener.Companion.toListener
 import love.forte.simbot.event.TypedJAsyncEventListener.Companion.toListener
@@ -73,7 +74,7 @@ public fun interface JAsyncEventListener {
      *
      * 用于辅助 [handle]。
      */
-    public fun invalidResult(): CompletionStage<out EventResult> = CompletableFuture.completedStage(EventResult.invalid)
+    public fun invalidResult(): CompletionStage<out EventResult> = CompletableFuture.completedStage(invalid())
 
     /**
      * 快速构建一个可用于返回的、值为 [result] 的 [CompletionStage] 类型结果。
@@ -131,7 +132,7 @@ public fun interface TypedJAsyncEventListener<E : Event> {
      *
      * 用于辅助 [handle]。
      */
-    public fun invalidResult(): CompletionStage<out EventResult> = CompletableFuture.completedStage(EventResult.invalid)
+    public fun invalidResult(): CompletionStage<out EventResult> = CompletableFuture.completedStage(invalid())
 
     /**
      * 快速构建一个可用于返回的、值为 [result] 的 [CompletionStage] 类型结果。
@@ -188,7 +189,7 @@ private class TypedJAsyncEventListenerImpl<E : Event>(
             return jaListener.handle(this, type.cast(event)).await()
         }
 
-        return EventResult.invalid
+        return invalid()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -355,7 +356,7 @@ private class TypedJBlockingEventListenerImpl<E : Event>(
             }
         }
 
-        return EventResult.invalid
+        return invalid()
     }
 
     override fun equals(other: Any?): Boolean {

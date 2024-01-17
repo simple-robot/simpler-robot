@@ -35,6 +35,7 @@ import love.forte.simbot.common.id.StringID.Companion.ID
 import love.forte.simbot.common.id.literal
 import love.forte.simbot.definition.*
 import love.forte.simbot.event.*
+import love.forte.simbot.event.EventResult.Companion.invalid
 import love.forte.simbot.logger.LoggerFactory
 import love.forte.simbot.logger.logger
 import love.forte.simbot.message.At
@@ -326,7 +327,7 @@ internal class KFunctionEventListenerProcessor {
             if (matcher != null) {
                 val priority = properties.priority
                 val interceptor = EventInterceptor { c ->
-                    if (matcher.invoke(c.eventListenerContext)) c.invoke() else EventResult.invalid
+                    if (matcher.invoke(c.eventListenerContext)) c.invoke() else invalid()
                 }
 
                 onInterceptor(EventInterceptorData({
