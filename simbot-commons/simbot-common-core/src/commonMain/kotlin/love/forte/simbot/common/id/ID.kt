@@ -436,6 +436,8 @@ public class UUID private constructor(
          *
          * @throws IllegalArgumentException 长度不符合条件时
          */
+        @JvmStatic
+        @JvmName("valueOf")
         public fun fromData(data: ByteArray): UUID {
             require(data.size == 16) { "data must be 16 bytes in length" }
             var msb = 0L

@@ -38,7 +38,7 @@ internal actual fun nowInternal(): Timestamp = DateTimestamp(newDate())
 @Suppress("MemberVisibilityCanBePrivate")
 public class DateTimestamp(public val date: JsAny) : Timestamp {
     override val milliseconds: Long
-        get() = getDateTime(date).toString().toLong()
+        get() = getDateTime(date).toDouble().toLong()
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
