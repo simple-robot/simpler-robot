@@ -82,14 +82,12 @@ public inline fun <reified E : Event> EventListenerRegistrar.listen(
     propertiesConsumer: ConfigurerFunction<EventListenerRegistrationProperties>? = null,
     crossinline typeMismatchResult: EventListenerContext.() -> EventResult = { invalid() },
     crossinline listenerFunction: suspend EventListenerContext.(E) -> EventResult,
-) {
-    register(
-        propertiesConsumer = propertiesConsumer,
-        listener = {
-            val event = this.event
-            if (event is E) listenerFunction(this, event) else typeMismatchResult(this)
-        })
-}
+): EventListenerRegistrationHandle = register(
+    propertiesConsumer = propertiesConsumer,
+    listener = {
+        val event = this.event
+        if (event is E) listenerFunction(this, event) else typeMismatchResult(this)
+    })
 
 /**
  * 是 [listen] 或 [EventListenerRegistrar.register] 的进一步简写形式，
@@ -102,14 +100,12 @@ public inline fun EventListenerRegistrar.process(
     crossinline defaultResult: () -> EventResult = { EventResult.empty() },
     propertiesConsumer: ConfigurerFunction<EventListenerRegistrationProperties>? = null,
     crossinline listenerFunction: suspend EventListenerContext.() -> Unit,
-) {
-    register(
-        propertiesConsumer = propertiesConsumer,
-        listener = {
-            listenerFunction()
-            defaultResult()
-        })
-}
+): EventListenerRegistrationHandle = register(
+    propertiesConsumer = propertiesConsumer,
+    listener = {
+        listenerFunction()
+        defaultResult()
+    })
 
 /**
  * 是 [listen] 或 [EventListenerRegistrar.register] 的进一步简写形式，
@@ -125,17 +121,15 @@ public inline fun <reified E : Event> EventListenerRegistrar.process(
     propertiesConsumer: ConfigurerFunction<EventListenerRegistrationProperties>? = null,
     crossinline typeMismatchResult: EventListenerContext.() -> EventResult = { invalid() },
     crossinline listenerFunction: suspend EventListenerContext.(E) -> Unit,
-) {
-    register(
-        propertiesConsumer = propertiesConsumer,
-        listener = {
-            val event = this.event
-            if (event is E) {
-                listenerFunction(event)
-                defaultResult()
-            } else typeMismatchResult()
-        })
-}
+): EventListenerRegistrationHandle = register(
+    propertiesConsumer = propertiesConsumer,
+    listener = {
+        val event = this.event
+        if (event is E) {
+            listenerFunction(event)
+            defaultResult()
+        } else typeMismatchResult()
+    })
 
 /**
  * 注册事件监听器的额外属性。
