@@ -63,7 +63,7 @@ public interface Organization : Actor {
     public suspend fun member(id: ID): Member?
 
     /**
-     * 获取此组织内的所有成员集合。也会包括 bot 自身在组织内的表现。
+     * 获取此组织内的所有成员集合。也会包括 Bot 自身在组织内的表现，除非平台特性无法混淆 Bot 与 [Member]。
      */
     public val members: Collectable<Member>
 

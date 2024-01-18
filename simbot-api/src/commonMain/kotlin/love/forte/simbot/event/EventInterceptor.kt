@@ -76,7 +76,7 @@ public fun interface EventInterceptor {
      *
      */
     @JvmSynthetic
-    public suspend fun intercept(context: Context): EventResult
+    public suspend fun Context.intercept(): EventResult
 
     /**
      * 拦截器中被拦截的对象信息。

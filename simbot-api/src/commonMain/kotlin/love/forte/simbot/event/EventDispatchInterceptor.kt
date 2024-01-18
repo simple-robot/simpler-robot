@@ -72,7 +72,7 @@ public fun interface EventDispatchInterceptor {
      *
      */
     @Throws(Exception::class)
-    public fun intercept(context: Context): Flow<EventResult>
+    public fun Context.intercept(): Flow<EventResult>
 
     /**
      * 拦截器中被拦截的对象信息。

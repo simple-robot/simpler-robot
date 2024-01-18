@@ -59,8 +59,8 @@ public fun interface JAsyncEventInterceptor : EventInterceptor {
      * 构建 [Context]。可以实现此函数来重定义实现逻辑，
      * 例如变更默认的异步执行作用域。
      */
-    public fun createContext(context: EventInterceptor.Context): Context =
-        Context(context, context.eventListenerContext.context)
+    public fun EventInterceptor.Context.createContext(): Context =
+        Context(this, this.eventListenerContext.context)
 
     /**
      * 以异步的形式实现 [EventInterceptor.intercept].
@@ -71,8 +71,8 @@ public fun interface JAsyncEventInterceptor : EventInterceptor {
     public fun intercept(context: Context): CompletableFuture<EventResult>
 
     @JvmSynthetic
-    override suspend fun intercept(context: EventInterceptor.Context): EventResult =
-        intercept(createContext(context)).await()
+    override suspend fun EventInterceptor.Context.intercept(): EventResult =
+        intercept(createContext()).await()
 }
 
 /**
@@ -124,11 +124,11 @@ public fun interface JBlockEventInterceptor : EventInterceptor {
      * @see EventInterceptor.intercept
      */
     @Throws(Exception::class)
-    public fun intercept(context: Context): EventResult
+    public fun Context.intercept(): EventResult
 
     @JvmSynthetic
-    override suspend fun intercept(context: EventInterceptor.Context): EventResult =
-        intercept(Context(context))
+    override suspend fun EventInterceptor.Context.intercept(): EventResult =
+        Context(this).intercept()
 }
 
 /**

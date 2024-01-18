@@ -81,7 +81,7 @@ sealed class P(override val group: String) : ProjectDetail() {
     val versionWithoutSnapshot: Version
 
     init {
-        val mainVersion = version(4, 0, 0) - version("dev7")
+        val mainVersion = version(4, 0, 0) - version("dev8")
 
         fun initVersionWithoutSnapshot(status: Version?): Version = if (status == null) {
             mainVersion

@@ -54,12 +54,12 @@ public data object ContentTrimEventInterceptorFactory : StandardAnnotationEventI
     }
 
     private data object InterceptorImpl : EventInterceptor {
-        override suspend fun intercept(context: EventInterceptor.Context): EventResult {
-            with(context.eventListenerContext) {
+        override suspend fun EventInterceptor.Context.intercept(): EventResult {
+            with(eventListenerContext) {
                 plainText = plainText?.trim()
             }
 
-            return context.invoke()
+            return invoke()
         }
     }
 }

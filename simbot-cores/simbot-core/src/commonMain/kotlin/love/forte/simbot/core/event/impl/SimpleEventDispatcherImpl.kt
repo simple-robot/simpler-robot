@@ -174,7 +174,7 @@ public class SimpleEventInterceptorsInvoker(private val interceptors: Iterable<S
         @Throws(Exception::class)
         override suspend fun invoke(): EventResult {
             return if (iterator.hasNext()) {
-                iterator.next().intercept(this)
+                iterator.next().run { intercept() }
             } else {
                 actualTarget(eventListenerContext)
             }
@@ -185,7 +185,7 @@ public class SimpleEventInterceptorsInvoker(private val interceptors: Iterable<S
         @Throws(Exception::class)
         override suspend fun invoke(eventListenerContext: EventListenerContext): EventResult {
             return if (iterator.hasNext()) {
-                iterator.next().intercept(copy(eventListenerContext))
+                iterator.next().run { copy(eventListenerContext).intercept() }
             } else {
                 actualTarget(eventListenerContext)
             }
@@ -214,7 +214,7 @@ public class SimpleEventDispatchInterceptorsInvoker(private val interceptors: It
     ) : EventDispatchInterceptor.Context {
         override fun invoke(): Flow<EventResult> {
             return if (iterator.hasNext()) {
-                iterator.next().intercept(this)
+                iterator.next().run { intercept() }
             } else {
                 actualTarget(eventContext)
             }
@@ -222,7 +222,7 @@ public class SimpleEventDispatchInterceptorsInvoker(private val interceptors: It
 
         override fun invoke(eventContext: EventContext): Flow<EventResult> {
             return if (iterator.hasNext()) {
-                iterator.next().intercept(copy(eventContext))
+                iterator.next().run { copy(eventContext).intercept() }
             } else {
                 actualTarget(eventContext)
             }
@@ -397,7 +397,8 @@ public class SimpleEventDispatcherImpl(
     }
 }
 
-private data class EventListenerContextImpl(override val context: EventContext, override val listener: EventListener) : EventListenerContext {
+private data class EventListenerContextImpl(override val context: EventContext, override val listener: EventListener) :
+    EventListenerContext {
     @Volatile
     override var plainText: String? = (context.event as? MessageEvent)?.messageContent?.plainText
 }
