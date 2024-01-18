@@ -326,8 +326,8 @@ internal class KFunctionEventListenerProcessor {
         grouped[FilterMode.INTERCEPTOR]?.forEach { (properties, matcher) ->
             if (matcher != null) {
                 val priority = properties.priority
-                val interceptor = EventInterceptor { c ->
-                    if (matcher.invoke(c.eventListenerContext)) c.invoke() else invalid()
+                val interceptor = EventInterceptor {
+                    if (matcher.invoke(eventListenerContext)) invoke() else invalid()
                 }
 
                 onInterceptor(EventInterceptorData({
