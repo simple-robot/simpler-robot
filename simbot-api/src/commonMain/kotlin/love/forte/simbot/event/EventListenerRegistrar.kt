@@ -69,7 +69,7 @@ public interface EventListenerRegistrar {
  * @param E The type of event to register the listener for.
  * @param propertiesConsumer An optional function that consumes the configuration properties of the listener registration.
  *        The function should have the signature `ConfigurerFunction<EventListenerRegistrationProperties>`.
- * @param defaultResult The default result function that will be invoked if the event is not of type `E`.
+ * @param typeMismatchResult The default result function that will be invoked if the event is not of type `E`.
  *        The function should have the signature `EventContext.() -> EventResult`.
  *        By default, it returns an invalid result.
  * @param listenerFunction The listener function that will be invoked when the event is fired.
@@ -80,14 +80,60 @@ public interface EventListenerRegistrar {
  */
 public inline fun <reified E : Event> EventListenerRegistrar.listen(
     propertiesConsumer: ConfigurerFunction<EventListenerRegistrationProperties>? = null,
-    crossinline defaultResult: EventListenerContext.() -> EventResult = { invalid() },
+    crossinline typeMismatchResult: EventListenerContext.() -> EventResult = { invalid() },
     crossinline listenerFunction: suspend EventListenerContext.(E) -> EventResult,
 ) {
     register(
         propertiesConsumer = propertiesConsumer,
         listener = {
             val event = this.event
-            if (event is E) listenerFunction(this, event) else defaultResult(this)
+            if (event is E) listenerFunction(this, event) else typeMismatchResult(this)
+        })
+}
+
+/**
+ * 是 [listen] 或 [EventListenerRegistrar.register] 的进一步简写形式，
+ * 注册一个事件处理器。
+ * 通过 [process] 注册的事件处理器函数不会要求你返回 [EventResult]，
+ * 取而代之的是始终返回默认的 [defaultResult]，默认为 [EventResult.empty]。
+ *
+ */
+public inline fun EventListenerRegistrar.process(
+    crossinline defaultResult: () -> EventResult = { EventResult.empty() },
+    propertiesConsumer: ConfigurerFunction<EventListenerRegistrationProperties>? = null,
+    crossinline listenerFunction: suspend EventListenerContext.() -> Unit,
+) {
+    register(
+        propertiesConsumer = propertiesConsumer,
+        listener = {
+            listenerFunction()
+            defaultResult()
+        })
+}
+
+/**
+ * 是 [listen] 或 [EventListenerRegistrar.register] 的进一步简写形式，
+ * 注册一个处理特定类型 [E] 的事件处理器。
+ * 通过 [process] 注册的事件处理器函数不会要求你返回 [EventResult]，
+ * 取而代之的是始终返回默认的 [defaultResult]，默认为 [EventResult.empty]。
+ *
+ * @param defaultResult 事件处理后的默认返回值
+ * @param typeMismatchResult 事件类型与 [E] 不匹配时的默认返回值
+ */
+public inline fun <reified E : Event> EventListenerRegistrar.process(
+    crossinline defaultResult: () -> EventResult = { EventResult.empty() },
+    propertiesConsumer: ConfigurerFunction<EventListenerRegistrationProperties>? = null,
+    crossinline typeMismatchResult: EventListenerContext.() -> EventResult = { invalid() },
+    crossinline listenerFunction: suspend EventListenerContext.(E) -> Unit,
+) {
+    register(
+        propertiesConsumer = propertiesConsumer,
+        listener = {
+            val event = this.event
+            if (event is E) {
+                listenerFunction(event)
+                defaultResult()
+            } else typeMismatchResult()
         })
 }
 
