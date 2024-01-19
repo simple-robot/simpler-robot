@@ -100,7 +100,7 @@ class DispatcherTests {
             }
 
             val concurrentMap =
-                flow.collectBy(this, Collectors.toConcurrentMap(Function.identity(), Function.identity()))
+                flow.collectBy(scope = this, collector = Collectors.toConcurrentMap(Function.identity(), Function.identity()))
             val keySet = concurrentMap.keys
             assertEquals(100, keySet.size)
             repeat(100) {
@@ -137,8 +137,8 @@ class DispatcherTests {
 
             val concurrentList =
                 flow.collectBy(
-                    this,
-                    Collector.of(
+                    scope = this,
+                    collector = Collector.of(
                         { CopyOnWriteArrayList<Int>() },
                         { l, v -> l.add(v) },
                         { r1, r2 ->
