@@ -29,6 +29,7 @@ package love.forte.simbot.message
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import love.forte.simbot.common.id.ID
+import love.forte.simbot.common.id.IDContainer
 import love.forte.simbot.message.At.Companion.equals
 import love.forte.simbot.message.At.Companion.hashCode
 import love.forte.simbot.message.OfflineImage.Companion.toOfflineImage
@@ -187,6 +188,24 @@ public data class At @JvmOverloads constructor(
 
     public companion object {
         public const val DEFAULT_AT_TYPE: String = "user"
+
+        /**
+         * 构建 [At]。
+         */
+        @JvmStatic
+        @JvmOverloads
+        public fun of(target: ID, type: String = DEFAULT_AT_TYPE, originContent: String = "@$target"): At =
+            At(target = target, type = type, originContent = originContent)
+
+        /**
+         * 构建 [At]。
+         */
+        @JvmStatic
+        @JvmOverloads
+        public fun of(container: IDContainer, type: String = DEFAULT_AT_TYPE, originContent: String? = null): At {
+            val id = container.id
+            return of(id, type, originContent ?: "@$id")
+        }
     }
 }
 

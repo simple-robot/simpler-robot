@@ -280,6 +280,37 @@ private class ListMessages(private val list: List<Message.Element>) : Messages {
 }
 
 /**
+ * 合并两个 [Message] 为 [Messages]。
+ *
+ */
+public operator fun Message.plus(other: Message): Messages {
+    if (this is EmptyMessages || other is EmptyMessages) {
+        val valid = if (this is EmptyMessages) other else this
+        return when (valid) {
+            is Messages -> valid
+            is Message.Element -> messagesOf(valid)
+        }
+    }
+
+    // all valid
+
+    return when {
+        this is Message.Element && other is Message.Element -> messagesOf(this, other)
+        this is Messages -> when (other) {
+            is Messages -> this.plus(other)
+            is Message.Element -> this.plus(other)
+        }
+        else -> {
+            other as Messages
+            when (this) {
+                is Messages -> other.plus(this)
+                is Message.Element -> other.plus(this)
+            }
+        }
+    }
+}
+
+/**
  * 返回一个空的 [Messages] 对象
  *
  * @return 空的Messages对象
