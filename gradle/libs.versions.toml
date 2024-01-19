@@ -16,6 +16,8 @@ ksp = "1.9.22-1.0.16"
 # https://square.github.io/kotlinpoet/
 kotlinPoet = "1.15.3"
 
+reactor = "3.6.2"
+
 [libraries]
 # jetbrains-annotation
 jetbrains-annotations = "org.jetbrains:annotations:24.0.1"
@@ -101,6 +103,8 @@ suspend-reversal-processor = { module = "love.forte.suspend-interface-reversal:p
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 # https://square.github.io/kotlinpoet/interop-ksp/
 kotlinPoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinPoet" }
+
+reactor-core = { group = "io.projectreactor", name = "reactor-core", version.ref = "reactor" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

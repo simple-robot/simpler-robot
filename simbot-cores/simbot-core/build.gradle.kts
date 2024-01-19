@@ -109,6 +109,8 @@ kotlin {
             dependencies {
                 implementation(project(":simbot-api"))
                 implementation(kotlin("test-junit5"))
+                implementation(libs.kotlinx.coroutines.reactor)
+                implementation(libs.reactor.core)
             }
         }
 
