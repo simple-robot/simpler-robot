@@ -183,7 +183,7 @@ public interface GuildRelation {
      *
      * 如果实现者不支持也可能始终得到 `null`。
      */
-    @ST(blockingBaseName = "getGuild", blockingSuffix = "", asyncBaseName = "getGuild")
+    @ST(blockingBaseName = "getGuild", blockingSuffix = "", asyncBaseName = "getGuild", reserveBaseName = "getGuild")
     public suspend fun guild(id: ID): Guild?
 
     /**
@@ -214,7 +214,7 @@ public interface GroupRelation {
      *
      * 如果实现者不支持也可能始终得到 `null`。
      */
-    @ST(blockingBaseName = "getGroup", blockingSuffix = "", asyncBaseName = "getGroup")
+    @ST(blockingBaseName = "getGroup", blockingSuffix = "", asyncBaseName = "getGroup", reserveBaseName = "getGroup")
     public suspend fun group(id: ID): ChatGroup?
 
     /**
@@ -247,7 +247,7 @@ public interface ContactRelation {
      *
      * 如果实现者不支持也可能始终得到 `null`。
      */
-    @ST(blockingBaseName = "getContact", blockingSuffix = "", asyncBaseName = "getContact")
+    @ST(blockingBaseName = "getContact", blockingSuffix = "", asyncBaseName = "getContact", reserveBaseName = "getContact")
     public suspend fun contact(id: ID): Contact?
 
     /**

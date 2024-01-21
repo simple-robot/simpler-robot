@@ -48,6 +48,7 @@ import kotlin.reflect.KFunction
 
 /**
  * 用于通过 [Application] 注册 [EventListener] 的函数接口。
+ * 主要是用于通过 [SimbotEventListenerFunctionProcessor] 生成。
  */
 public fun interface SimbotEventListenerResolver {
     public fun resolve(application: Application)

@@ -92,7 +92,7 @@ public interface Guild : Organization {
      * 根据ID获取一个指定的频道。
      * 如果找不到则会得到 `null`。
      */
-    @ST(blockingBaseName = "getChannel", blockingSuffix = "", asyncBaseName = "getChannel")
+    @ST(blockingBaseName = "getChannel", blockingSuffix = "", asyncBaseName = "getChannel", reserveBaseName = "getChannel")
     public suspend fun channel(id: ID): Channel?
 
     /**
@@ -104,7 +104,7 @@ public interface Guild : Organization {
      * 根据ID获取一个指定的聊天频道。
      * 如果找不到则会得到 `null`。
      */
-    @ST(blockingBaseName = "getChatChannel", blockingSuffix = "", asyncBaseName = "getChatChannel")
+    @ST(blockingBaseName = "getChatChannel", blockingSuffix = "", asyncBaseName = "getChatChannel", reserveBaseName = "getChatChannel")
     public suspend fun chatChannel(id: ID): ChatChannel?
 
     /**

@@ -29,7 +29,7 @@ package love.forte.simbot.plugin
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
 import love.forte.simbot.common.services.Services
-import love.forte.simbot.component.addProvider
+import love.forte.simbot.component.addComponentFactoryProvider
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
 
@@ -93,24 +93,24 @@ public interface PluginFactoryConfigurerProvider<CONF : Any> {
  * 添加一个用于获取 [PluginFactoryProvider] 的函数。
  * 这是用于兼容在非 `JVM` 平台下没有 `ServiceLoader` 的方案，
  * 在 `JVM` 中应直接使用 `ServiceLoader` 加载 SPI 的方式，
- * 但是如果使用 [addProvider] 强行添加结果，[loadPluginProviders]
+ * 但是如果使用 [addComponentFactoryProvider] 强行添加结果，[loadPluginProviders]
  * 也还是会得到这些结果的。
  */
-public fun addProvider(providerCreator: () -> PluginFactoryProvider<*>) {
+public fun addPluginFactoryProvider(providerCreator: () -> PluginFactoryProvider<*>) {
     Services.addProvider<PluginFactoryProvider<*>>(providerCreator)
 }
 
 /**
- * 清理所有通过 [addProvider] 添加的 provider 构建器。
+ * 清理所有通过 [addComponentFactoryProvider] 添加的 provider 构建器。
  */
-public fun clearProviders() {
+public fun clearPluginFactoryProviders() {
     Services.clearProviders<PluginFactoryProvider<*>>()
 }
 
 /**
  * 尝试自动加载环境中可获取的所有 [PluginFactoryProvider] 实例。
  * 在 `JVM` 平台下通过 `ServiceLoader` 加载 [PluginFactoryProvider] 并得到结果，
- * 而在其他平台则会得到预先从 [addProvider] 中添加的所有函数构建出来的结果。
+ * 而在其他平台则会得到预先从 [addComponentFactoryProvider] 中添加的所有函数构建出来的结果。
  */
 public expect fun loadPluginProviders(): Sequence<PluginFactoryProvider<*>>
 

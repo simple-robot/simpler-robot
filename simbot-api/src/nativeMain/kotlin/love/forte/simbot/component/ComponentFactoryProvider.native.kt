@@ -26,7 +26,7 @@ package love.forte.simbot.component
 import love.forte.simbot.common.services.Services
 
 /**
- * 获取通过 [addProvider] 添加的内容的副本序列。
+ * 获取通过 [addComponentFactoryProvider] 添加的内容的副本序列。
  */
 public actual fun loadComponentProviders(): Sequence<ComponentFactoryProvider<*>> =
     Services.loadProviders<ComponentFactoryProvider<*>>().map { it() }

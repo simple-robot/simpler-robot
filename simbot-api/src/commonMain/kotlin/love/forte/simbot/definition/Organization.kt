@@ -59,7 +59,7 @@ public interface Organization : Actor {
      *
      * @throws Exception 可能产生任何异常
      */
-    @ST(blockingBaseName = "getMember", blockingSuffix = "", asyncBaseName = "getMember")
+    @ST(blockingBaseName = "getMember", blockingSuffix = "", asyncBaseName = "getMember", reserveBaseName = "getMember")
     public suspend fun member(id: ID): Member?
 
     /**

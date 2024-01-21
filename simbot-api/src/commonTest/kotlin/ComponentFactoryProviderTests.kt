@@ -77,14 +77,14 @@ class ComponentFactoryProviderTests {
 
     @Test
     fun addAndGet() {
-        addProvider { FacP() }
-        addProvider { FacP() }
-        addProvider { FacP() }
+        addComponentFactoryProvider { FacP() }
+        addComponentFactoryProvider { FacP() }
+        addComponentFactoryProvider { FacP() }
 
         val list = loadComponentProviders().toList()
         assertEquals(3, list.size)
 
-        clearProviders()
+        clearComponentFactoryProviders()
     }
 
     @Test
@@ -93,17 +93,17 @@ class ComponentFactoryProviderTests {
             withContext(Dispatchers.Default) {
                 launch {
                     repeat(100) {
-                        addProvider { FacP() }
+                        addComponentFactoryProvider { FacP() }
                     }
                 }
                 launch {
                     repeat(100) {
-                        addProvider { FacP() }
+                        addComponentFactoryProvider { FacP() }
                     }
                 }
                 launch {
                     repeat(100) {
-                        addProvider { FacP() }
+                        addComponentFactoryProvider { FacP() }
                     }
                 }
             }
@@ -111,7 +111,7 @@ class ComponentFactoryProviderTests {
 
         val list = loadComponentProviders().toList()
         assertEquals(300, list.size)
-        clearProviders()
+        clearComponentFactoryProviders()
     }
 
 }

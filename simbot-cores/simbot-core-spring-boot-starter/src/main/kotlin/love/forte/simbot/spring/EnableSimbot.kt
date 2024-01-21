@@ -31,7 +31,48 @@ import love.forte.simbot.spring.configuration.config.DefaultSimbotApplicationCon
 import love.forte.simbot.spring.configuration.listener.SimbotEventListenerFunctionProcessor
 import org.springframework.context.annotation.Import
 
-
+/**
+ * 启用 simbot 的各项配置。
+ *
+ * 将其标记在你的启动类或某个配置类上。
+ *
+ * Kotlin
+ *
+ * ```kotlin
+ * @EnableSimbot
+ * @SpringBootApplication
+ * open class MyApplication {
+ *  // ...
+ * }
+ * ```
+ *
+ * ```kotlin
+ * @EnableSimbot
+ * @Configuration
+ * open class MyConfig {
+ *  // ...
+ * }
+ * ```
+ *
+ * Java
+ *
+ * ```java
+ * @EnableSimbot
+ * @SpringBootApplication
+ * public class MyApplication {
+ *  // ...
+ * }
+ * ```
+ *
+ * ```java
+ * @EnableSimbot
+ * @Configuration
+ * public class MyConfig {
+ *  // ...
+ * }
+ * ```
+ *
+ */
 @Target(AnnotationTarget.CLASS)
 @Import(
     SimbotSpringPropertiesConfiguration::class,
@@ -40,7 +81,6 @@ import org.springframework.context.annotation.Import
     DefaultSimbotDispatcherProcessorConfiguration::class,
     DefaultSimbotComponentInstallProcessorConfiguration::class,
     DefaultSimbotPluginInstallProcessorConfiguration::class,
-    DefaultSimbotSpringApplicationLauncherFactoryConfiguration::class,
     DefaultSimbotEventDispatcherProcessorConfiguration::class,
     DefaultBinderManagerProvidersConfiguration::class,
     // listeners directly
@@ -56,6 +96,5 @@ import org.springframework.context.annotation.Import
     // post listeners
     SimbotEventListenerFunctionProcessor::class,
     SimbotApplicationRunner::class
-
 )
 public annotation class EnableSimbot

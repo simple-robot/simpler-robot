@@ -61,7 +61,7 @@ internal actual fun <T : Any> loadProvidersInternal(type: KClass<T>): Sequence<(
     return synchronized(lock) {
         globalProviderCreators[type]?.toList()
             ?.asSequence()
-            ?.map { provider -> { type.cast(provider) } }
+            ?.map { provider -> { type.cast(provider()) } }
             ?: emptySequence()
     }
 }

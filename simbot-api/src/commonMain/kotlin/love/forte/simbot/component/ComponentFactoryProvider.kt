@@ -95,24 +95,24 @@ internal class ProviderComponentFactory<COM : Component, CONF : Any>(
  * 添加一个用于获取 [ComponentFactoryProvider] 的函数。
  * 这是用于兼容在非 `JVM` 平台下没有 `ServiceLoader` 的方案，
  * 在 `JVM` 中应直接使用 `ServiceLoader` 加载 SPI 的方式
- * 但是如果强行使用 [addProvider] 添加结果，
+ * 但是如果强行使用 [addComponentFactoryProvider] 添加结果，
  * [loadComponentProviders] 也还是会得到这些结果的。
  */
-public fun addProvider(providerCreator: () -> ComponentFactoryProvider<*>) {
+public fun addComponentFactoryProvider(providerCreator: () -> ComponentFactoryProvider<*>) {
     Services.addProvider<ComponentFactoryProvider<*>>(providerCreator)
 }
 
 /**
- * 清理所有通过 [addProvider] 添加的 provider 构建器。
+ * 清理所有通过 [addComponentFactoryProvider] 添加的 provider 构建器。
  */
-public fun clearProviders() {
+public fun clearComponentFactoryProviders() {
     Services.clearProviders<ComponentFactoryProvider<*>>()
 }
 
 /**
  * 尝试自动加载环境中可获取的所有 [ComponentFactoryProvider] 实例。
  * 在 `JVM` 平台下通过 `ServiceLoader` 加载 [ComponentFactoryProvider] 并得到结果，
- * 而在其他平台则会得到预先从 [addProvider] 中添加的所有函数构建出来的结果。
+ * 而在其他平台则会得到预先从 [addComponentFactoryProvider] 中添加的所有函数构建出来的结果。
  *
  */
 public expect fun loadComponentProviders(): Sequence<ComponentFactoryProvider<*>>
