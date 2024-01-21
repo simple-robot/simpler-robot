@@ -78,12 +78,13 @@ simbot4应用手册: [simbot.forte.love][doc-homepage]
 - 你可以通过 [**Pull Request**][pr] 为项目代码作出贡献。
 - 你可以通过 [**Issues**][issues] 提出一个建议或者反馈一个问题。
 - 你可以通过 [**讨论区**][discussions] 与其他人或者simbot开发团队相互友好交流。
-- 如果你通过此项目创建了一个很酷的项目，欢迎通过 [ISSUES][issues]、[讨论区][discussions]
-  等方式联系团队开发人员，并将你酷酷的项目展示在作品展示区。
+- 如果你通过此项目创建了一个很酷的开源项目，欢迎通过 [ISSUES][issues]、[讨论区][discussions]
+  等方式留下你的开源项目信息，并将你酷酷的项目展示在作品展示区。
 
 ## 联系我们
 - 如果想要反馈问题、提出建议建议或提出问题，请通过 [**ISSUES**][issues]。
 - 如果想要与开发团队交流、与其他开发者交流，请前往 [**讨论区**][discussions]。
+- 可以前往 [GitHub 组织首页](https://github.com/simple-robot/) 查看更多**社群信息**。
 
 
 [pr]: https://github.com/simple-robot/simpler-robot/pulls
