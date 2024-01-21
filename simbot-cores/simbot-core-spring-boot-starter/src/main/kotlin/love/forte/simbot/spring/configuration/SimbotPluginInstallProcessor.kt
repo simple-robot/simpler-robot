@@ -79,7 +79,7 @@ public open class DefaultSimbotPluginInstallProcessorConfiguration {
     ): DefaultSimbotPluginInstallProcessor {
         return DefaultSimbotPluginInstallProcessor(
             properties.plugins.autoInstallProviders,
-            properties.plugins.autoInstallProviderConfigurers,
+            properties.plugins.autoInstallProviderConfigures,
             factories ?: emptyList(),
             installers ?: emptyList()
         )
@@ -97,16 +97,16 @@ public open class DefaultSimbotPluginInstallProcessorConfiguration {
  */
 public class DefaultSimbotPluginInstallProcessor(
     private val autoInstallProviders: Boolean,
-    private val autoInstallProviderConfigurers: Boolean,
+    private val autoInstallProviderConfigures: Boolean,
     private val factories: List<PluginFactory<*, *>>,
     private val installers: List<SimbotPluginInstaller>,
 ) : SimbotPluginInstallProcessor {
     override fun process(installer: PluginInstaller) {
         if (autoInstallProviders) {
-            installer.findAndInstallAllPlugins(autoInstallProviderConfigurers)
+            installer.findAndInstallAllPlugins(autoInstallProviderConfigures)
             logger.debug(
-                "Automatically install all plugin providers automatically with autoLoadProviderConfigurers={}",
-                autoInstallProviderConfigurers
+                "Automatically install all plugin providers automatically with autoLoadProviderConfigures={}",
+                autoInstallProviderConfigures
             )
         } else {
             logger.debug("Automatic installation from plugin providers was disabled")

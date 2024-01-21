@@ -26,37 +26,15 @@
 
 package love.forte.simbot.component
 
+import love.forte.simbot.common.services.Services
 import java.util.*
 import kotlin.streams.asSequence
-
-private val globalProviderCreators =
-    mutableListOf<() -> ComponentFactoryProvider<*>>()
-
-@JvmSynthetic
-public actual fun addProvider(providerCreator: () -> ComponentFactoryProvider<*>) {
-    synchronized(globalProviderCreators) {
-        globalProviderCreators.add(providerCreator)
-    }
-}
-
-/**
- * 清理所有通过 [addProvider] 添加的 provider 构建器。
- */
-@JvmSynthetic
-public actual fun clearProviders() {
-    synchronized(globalProviderCreators) {
-        globalProviderCreators.clear()
-    }
-}
 
 /**
  * 通过 [ServiceLoader] 加载 [ComponentFactoryProvider] 并得到流结果。
  */
 public actual fun loadComponentProviders(): Sequence<ComponentFactoryProvider<*>> {
-    val globalsCopy = synchronized(globalProviderCreators) {
-        globalProviderCreators.toList()
-    }.asSequence().map { it() }
-
+    val globalsCopy = Services.loadProviders<ComponentFactoryProvider<*>>().map { it() }
     val loaded = ServiceLoader.load(ComponentFactoryProvider::class.java)
         .stream().map { it.get() }.asSequence()
 
@@ -67,10 +45,7 @@ public actual fun loadComponentProviders(): Sequence<ComponentFactoryProvider<*>
  * 通过 [ServiceLoader] 加载 [ComponentFactoryProvider] 并得到流结果。
  */
 public fun loadComponentProviders(loader: ClassLoader): Sequence<ComponentFactoryProvider<*>> {
-    val globalsCopy = synchronized(globalProviderCreators) {
-        globalProviderCreators.toList()
-    }.asSequence().map { it() }
-
+    val globalsCopy = Services.loadProviders<ComponentFactoryProvider<*>>().map { it() }
     val loaded = ServiceLoader.load(ComponentFactoryProvider::class.java, loader)
         .stream().map { it.get() }.asSequence()
 

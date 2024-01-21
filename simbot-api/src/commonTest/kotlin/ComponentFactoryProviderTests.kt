@@ -72,7 +72,7 @@ class ComponentFactoryProviderTests {
 
     private class FacP : ComponentFactoryProvider<Any> {
         override fun provide(): ComponentFactory<*, Any> = Fac()
-        override fun loadConfigurers(): Sequence<ComponentFactoryConfigurerProvider<Any>>? = null
+        override fun loadConfigures(): Sequence<ComponentFactoryConfigurerProvider<Any>>? = null
     }
 
     @Test

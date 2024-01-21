@@ -28,10 +28,10 @@ package love.forte.simbot.plugin
 
 import love.forte.simbot.common.function.ConfigurerFunction
 import love.forte.simbot.common.function.invokeWith
+import love.forte.simbot.common.services.Services
 import love.forte.simbot.component.addProvider
 import kotlin.jvm.JvmMultifileClass
 import kotlin.jvm.JvmName
-import kotlin.jvm.JvmSynthetic
 
 /**
  * 用于支持自动加载 [PluginFactory] 的 SPI 接口。
@@ -48,7 +48,13 @@ public interface PluginFactoryProvider<CONF : Any> {
      * 提供额外配置类的类型用于一些可自动加载的加载器。
      * 如果返回 `null` 则代表不提供、不加载可自动加载的额外配置类型。
      */
-    public fun configurersLoader(): Sequence<PluginFactoryConfigurerProvider<CONF>>?
+    public fun loadConfigures(): Sequence<PluginFactoryConfigurerProvider<CONF>>? = null
+
+    /**
+     * @suppress 命名错误
+     */
+    @Deprecated("Use 'loadConfigures'", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("loadConfigures()"))
+    public fun configurersLoader(): Sequence<PluginFactoryConfigurerProvider<CONF>>? = loadConfigures()
 }
 
 internal class ProviderPluginFactory<P : Plugin, CONF : Any>(
@@ -83,23 +89,23 @@ public interface PluginFactoryConfigurerProvider<CONF : Any> {
     public fun configure(config: CONF)
 }
 
-
 /**
  * 添加一个用于获取 [PluginFactoryProvider] 的函数。
  * 这是用于兼容在非 `JVM` 平台下没有 `ServiceLoader` 的方案，
  * 在 `JVM` 中应直接使用 `ServiceLoader` 加载 SPI 的方式，
- * 因此 [addProvider] 实际上对 JVM （或者说Java）隐藏。
- * 但是如果使用 Kotlin 或其他手段强行添加结果，[loadPluginProviders]
+ * 但是如果使用 [addProvider] 强行添加结果，[loadPluginProviders]
  * 也还是会得到这些结果的。
  */
-@JvmSynthetic
-public expect fun addProvider(providerCreator: () -> PluginFactoryProvider<*>)
+public fun addProvider(providerCreator: () -> PluginFactoryProvider<*>) {
+    Services.addProvider<PluginFactoryProvider<*>>(providerCreator)
+}
 
 /**
  * 清理所有通过 [addProvider] 添加的 provider 构建器。
  */
-@JvmSynthetic
-public expect fun clearProviders()
+public fun clearProviders() {
+    Services.clearProviders<PluginFactoryProvider<*>>()
+}
 
 /**
  * 尝试自动加载环境中可获取的所有 [PluginFactoryProvider] 实例。
@@ -127,14 +133,14 @@ public fun PluginInstaller.findAndInstallAllPlugins(loadConfigurers: Boolean) {
 }
 
 internal fun <C : Any> PluginFactoryProvider<C>.loadConfigurersAndToPlugin(
-    loadConfigurers: Boolean
+    loadConfigures: Boolean
 ): PluginFactory<*, C> {
     val factory = provide()
-    if (!loadConfigurers) {
+    if (!loadConfigures) {
         return factory
     }
 
-    val loader = configurersLoader() ?: return factory
+    val loader = loadConfigures() ?: return factory
     val configurerList = loader.toList()
 
     return ProviderPluginFactory(factory, configurerList)

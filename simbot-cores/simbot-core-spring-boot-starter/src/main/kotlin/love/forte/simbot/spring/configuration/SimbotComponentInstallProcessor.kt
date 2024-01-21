@@ -80,7 +80,7 @@ public open class DefaultSimbotComponentInstallProcessorConfiguration {
     ): DefaultSimbotComponentInstallProcessor {
         return DefaultSimbotComponentInstallProcessor(
             properties.components.autoInstallProviders,
-            properties.components.autoInstallProviderConfigurers,
+            properties.components.autoInstallProviderConfigures,
             factories ?: emptyList(),
             installers ?: emptyList()
         )
@@ -97,16 +97,16 @@ public open class DefaultSimbotComponentInstallProcessorConfiguration {
  */
 public class DefaultSimbotComponentInstallProcessor(
     private val autoInstallProviders: Boolean,
-    private val autoInstallProviderConfigurers: Boolean,
+    private val autoInstallProviderConfigures: Boolean,
     private val factories: List<ComponentFactory<*, *>>,
     private val installers: List<SimbotComponentInstaller>,
 ) : SimbotComponentInstallProcessor {
     override fun process(installer: ComponentInstaller) {
         if (autoInstallProviders) {
-            installer.findAndInstallAllComponents(autoInstallProviderConfigurers)
+            installer.findAndInstallAllComponents(autoInstallProviderConfigures)
             logger.debug(
-                "Automatically install all component providers automatically with autoLoadProviderConfigurers={}",
-                autoInstallProviderConfigurers
+                "Automatically install all component providers automatically with autoLoadProviderConfigures={}",
+                autoInstallProviderConfigures
             )
         } else {
             logger.debug("Automatic installation from component providers was disabled")

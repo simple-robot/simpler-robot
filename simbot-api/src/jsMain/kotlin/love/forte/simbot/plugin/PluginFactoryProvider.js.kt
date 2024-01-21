@@ -23,29 +23,11 @@
 
 package love.forte.simbot.plugin
 
+import love.forte.simbot.common.services.Services
 import love.forte.simbot.component.addProvider
-
-private val globalProviderCreators = mutableListOf<() -> PluginFactoryProvider<*>>()
-
-/**
- * 添加一个用于获取 [PluginFactoryProvider] 的函数到全局。
- */
-@Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT")
-public actual fun addProvider(providerCreator: () -> PluginFactoryProvider<*>) {
-    globalProviderCreators.add(providerCreator)
-}
-
-/**
- * 清理所有通过 [addProvider] 添加的 provider 构建器。
- */
-@Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT")
-public actual fun clearProviders() {
-    globalProviderCreators.clear()
-}
 
 /**
  * 加载所有通过 [addProvider] 添加的函数构建出来的 [PluginFactoryProvider] 实例。
  */
-public actual fun loadPluginProviders(): Sequence<PluginFactoryProvider<*>> {
-    return globalProviderCreators.toList().asSequence().map { it() }
-}
+public actual fun loadPluginProviders(): Sequence<PluginFactoryProvider<*>> =
+    Services.loadProviders<PluginFactoryProvider<*>>().map { it() }

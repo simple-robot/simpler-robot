@@ -106,7 +106,7 @@ public class SpringApplicationConfigurationProperties {
          * 是否在加载 SPI providers 时候也同时加载它们的前置配置。
          * [autoInstallProviders] 为 `true` 时有效。
          */
-        public var autoInstallProviderConfigurers: Boolean = true
+        public var autoInstallProviderConfigures: Boolean = true
     }
 
     /**
@@ -127,7 +127,7 @@ public class SpringApplicationConfigurationProperties {
          * 是否在加载 SPI providers 时候也同时加载它们的前置配置。
          * [autoInstallProviders] 为 `true` 时有效。
          */
-        public var autoInstallProviderConfigurers: Boolean = true
+        public var autoInstallProviderConfigures: Boolean = true
     }
 
     /**

@@ -23,41 +23,11 @@
 
 package love.forte.simbot.component
 
-import kotlinx.atomicfu.locks.SynchronizedObject
-import kotlinx.atomicfu.locks.synchronized
-
-private val globalProviderCreators =
-    mutableListOf<() -> ComponentFactoryProvider<*>>()
-
-private val lock = SynchronizedObject()
-
-/**
- * 添加一个 [providerCreator] 到一个全局列表中。
- */
-@Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT")
-public actual fun addProvider(providerCreator: () -> ComponentFactoryProvider<*>) {
-    synchronized(lock) {
-        globalProviderCreators.add(providerCreator)
-    }
-}
-
-/**
- * 清理所有通过 [addProvider] 添加的 provider 构建器。
- */
-@Suppress("ACTUAL_ANNOTATIONS_NOT_MATCH_EXPECT")
-public actual fun clearProviders() {
-    synchronized(lock) {
-        globalProviderCreators.clear()
-    }
-}
-
+import love.forte.simbot.common.services.Services
 
 /**
  * 获取通过 [addProvider] 添加的内容的副本序列。
  */
-public actual fun loadComponentProviders(): Sequence<ComponentFactoryProvider<*>> {
-    return synchronized(lock) {
-        globalProviderCreators.toList()
-    }.asSequence().map { it() }
-}
+public actual fun loadComponentProviders(): Sequence<ComponentFactoryProvider<*>> =
+    Services.loadProviders<ComponentFactoryProvider<*>>().map { it() }
 

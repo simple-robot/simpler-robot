@@ -26,39 +26,15 @@
 
 package love.forte.simbot.plugin
 
+import love.forte.simbot.common.services.Services
 import java.util.*
 import kotlin.streams.asSequence
-
-private val globalProviderCreators = mutableListOf<() -> PluginFactoryProvider<*>>()
-
-/**
- * 添加一个用于获取 [PluginFactoryProvider] 的函数到全局中。
- */
-@JvmSynthetic
-public actual fun addProvider(providerCreator: () -> PluginFactoryProvider<*>) {
-    synchronized(globalProviderCreators) {
-        globalProviderCreators.add(providerCreator)
-    }
-}
-
-/**
- * 清理所有通过 [addProvider] 添加的 provider 构建器。
- */
-@JvmSynthetic
-public actual fun clearProviders() {
-    synchronized(globalProviderCreators) {
-        globalProviderCreators.clear()
-    }
-}
 
 /**
  * 通过 [ServiceLoader] 加载 [PluginFactoryProvider] 并得到流结果。
  */
 public actual fun loadPluginProviders(): Sequence<PluginFactoryProvider<*>> {
-    val globalCopy = synchronized(globalProviderCreators) {
-        globalProviderCreators.toList()
-    }.asSequence().map { it() }
-
+    val globalCopy = Services.loadProviders<PluginFactoryProvider<*>>().map { it() }
     val loaded = ServiceLoader.load(PluginFactoryProvider::class.java)
         .stream().map { it.get() }.asSequence()
 
@@ -69,10 +45,7 @@ public actual fun loadPluginProviders(): Sequence<PluginFactoryProvider<*>> {
  * 通过 [ServiceLoader] 加载 [PluginFactoryProvider] 并得到流结果。
  */
 public fun loadPluginProviders(loader: ClassLoader): Sequence<PluginFactoryProvider<*>> {
-    val globalCopy = synchronized(globalProviderCreators) {
-        globalProviderCreators.toList()
-    }.asSequence().map { it() }
-
+    val globalCopy = Services.loadProviders<PluginFactoryProvider<*>>().map { it() }
     val loaded = ServiceLoader.load(PluginFactoryProvider::class.java, loader)
         .stream().map { it.get() }.asSequence()
 
@@ -84,8 +57,8 @@ public fun loadPluginProviders(loader: ClassLoader): Sequence<PluginFactoryProvi
  */
 public fun loadPluginFactoriesFromProviders(
     loader: ClassLoader,
-    loadConfigurers: Boolean
+    loadConfigures: Boolean
 ): Sequence<PluginFactory<*, *>> {
-    return loadPluginProviders(loader).map { it.loadConfigurersAndToPlugin(loadConfigurers) }
+    return loadPluginProviders(loader).map { it.loadConfigurersAndToPlugin(loadConfigures) }
 }
 
